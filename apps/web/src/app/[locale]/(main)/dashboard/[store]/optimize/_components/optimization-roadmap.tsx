@@ -228,7 +228,7 @@ const PhaseCard = ({
         }}
       >
         <span className="flex min-w-0 flex-1 items-center gap-3">
-          <span className="flex size-9 shrink-0 items-center justify-center border border-accent-foreground bg-background-dimmed">
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-md border border-accent-foreground bg-background-dimmed">
             {PHASE_ICON[phase.id]}
           </span>
           <span className="min-w-0 text-left">

@@ -145,23 +145,20 @@ export default ({
     table={
       <QueryTransitionProvider>
         <div>
-          <div className="flex flex-wrap items-center gap-2 border-accent-foreground border-b p-4">
+          <div className="flex items-center gap-2 border-accent-foreground border-b p-4">
             <Suspense
               fallback={
-                <div className="h-9 w-64 animate-pulse bg-foreground/10" />
+                <div className="h-10 w-0 min-w-0 flex-1 animate-pulse bg-foreground/10" />
               }
             >
               <ProductsSearch />
             </Suspense>
             <Suspense
               fallback={
-                <div className="h-9 w-28 animate-pulse bg-foreground/10" />
+                <div className="h-10 w-28 shrink-0 animate-pulse bg-foreground/10" />
               }
             >
               <ProductsFilters />
-            </Suspense>
-            <Suspense>
-              <MissingFields params={params} />
             </Suspense>
           </div>
           <QueryTransitionFade>
@@ -592,9 +589,14 @@ const Products = async ({
       pageIndex={pagination.page}
       kicker={translate("sections.catalog")}
       action={
-        <p className="text-foreground-dimmed text-sm">
-          {translate("count.products", { count: pagination.total })}
-        </p>
+        <>
+          <Suspense>
+            <MissingFields params={params} />
+          </Suspense>
+          <p className="text-foreground-dimmed text-sm">
+            {translate("count.products", { count: pagination.total })}
+          </p>
+        </>
       }
     />
   );

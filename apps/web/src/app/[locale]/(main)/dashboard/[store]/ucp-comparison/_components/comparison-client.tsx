@@ -510,7 +510,7 @@ export const ComparisonClient = () => {
 
           <div className="mt-2 space-y-2">
             {competitorInputs.map((input, index) => (
-              <div key={input.id} className="flex items-stretch gap-2">
+              <div key={input.id} className="flex items-center gap-2">
                 <TextField
                   value={input.url}
                   onValueChange={(value) =>
@@ -531,7 +531,7 @@ export const ComparisonClient = () => {
                   size="icon"
                   onClick={() => removeCompetitor(input.id)}
                   disabled={competitorInputs.length <= 1 || isRunning}
-                  className="h-auto shrink-0"
+                  className="size-10 shrink-0"
                   aria-label={translate("competitors.removeAriaLabel", {
                     index: index + 1,
                   })}

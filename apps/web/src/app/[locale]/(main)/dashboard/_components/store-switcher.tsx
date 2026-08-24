@@ -5,7 +5,6 @@ import {
   CheckIcon,
   ChevronDownIcon,
   PlusIcon,
-  ShoppingCartIcon,
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import {
@@ -27,32 +26,43 @@ export namespace StoreSwitcher {
   };
 }
 
+const storefrontHost = (domain: string) =>
+  domain.replace(/^https?:\/\//, "").replace(/\/$/, "");
+
+const StoreMark = ({ name }: { name: string }) => (
+  <span
+    aria-hidden
+    className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10 font-semibold text-primary text-xs"
+  >
+    {name.slice(0, 1).toUpperCase() || "?"}
+  </span>
+);
+
 export const StoreSwitcher = ({
   store,
   current,
   stores,
 }: StoreSwitcher.Props) => {
   const translate = useTranslations("dashboard.stores");
+  const currentName = current?.name ?? translate("selectStore");
 
   return (
     <div className="border-accent-foreground border-b p-2">
       <DropdownMenu>
-        <DropdownMenuTrigger className="group flex w-full items-center gap-2.5 border border-accent-foreground bg-background px-2.5 py-2 text-left transition-colors hover:bg-background-dimmed">
-          <div className="flex size-8 shrink-0 items-center justify-center border border-accent-foreground bg-background-rich">
-            <ShoppingCartIcon className="size-4 text-foreground-dimmed" />
-          </div>
+        <DropdownMenuTrigger className="group flex w-full items-center gap-2.5 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-background-dimmed data-popup-open:bg-background-dimmed">
+          <StoreMark name={currentName} />
           <div className="flex min-w-0 flex-1 flex-col">
             <span className="truncate font-semibold text-foreground text-sm">
-              {current?.name ?? translate("selectStore")}
+              {currentName}
             </span>
             <span className="truncate text-[11px] text-foreground-dimmed">
-              {current?.domain ?? "—"}
+              {current?.domain ? storefrontHost(current.domain) : "—"}
             </span>
           </div>
           <ChevronDownIcon className="size-4 shrink-0 text-foreground-dimmed transition-transform group-data-[popup-open]:rotate-180" />
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          className="min-w-64 rounded-none border border-accent-foreground bg-background-rich p-1"
+          className="min-w-64 border border-accent-foreground bg-background-rich p-1"
           sideOffset={6}
         >
           {stores.map((item) => {
@@ -62,20 +72,15 @@ export const StoreSwitcher = ({
               <DropdownMenuItem
                 key={item.id}
                 render={<Link href={`/dashboard/${item.id}`} />}
-                className={cn(
-                  "gap-2.5 rounded-none px-2 py-2",
-                  isCurrent && "bg-primary/5",
-                )}
+                className={cn("gap-2.5 px-2 py-2", isCurrent && "bg-primary/5")}
               >
-                <span className="flex size-8 shrink-0 items-center justify-center border border-accent-foreground bg-background">
-                  <ShoppingCartIcon className="size-4 text-foreground-dimmed" />
-                </span>
+                <StoreMark name={item.name} />
                 <span className="flex min-w-0 flex-1 flex-col">
                   <span className="truncate font-medium text-foreground text-sm">
                     {item.name}
                   </span>
                   <span className="truncate text-[11px] text-foreground-dimmed">
-                    {item.domain}
+                    {storefrontHost(item.domain)}
                   </span>
                 </span>
                 {isCurrent && (
@@ -87,20 +92,16 @@ export const StoreSwitcher = ({
           <DropdownMenuSeparator className="bg-accent-foreground" />
           <DropdownMenuItem
             render={<Link href="/dashboard" />}
-            className="gap-2.5 rounded-none px-2 py-2 text-foreground-dimmed"
+            className="text-foreground-dimmed"
           >
-            <span className="flex size-8 shrink-0 items-center justify-center">
-              <ArrowLeftIcon className="size-4" />
-            </span>
+            <ArrowLeftIcon />
             {translate("allStores")}
           </DropdownMenuItem>
           <DropdownMenuItem
             render={<Link href="/onboarding/connect" />}
-            className="gap-2.5 rounded-none px-2 py-2 font-medium text-primary focus:bg-primary/10"
+            className="font-medium text-primary focus:bg-primary/10"
           >
-            <span className="flex size-8 shrink-0 items-center justify-center">
-              <PlusIcon className="size-4" />
-            </span>
+            <PlusIcon />
             {translate("action.primary")}
           </DropdownMenuItem>
         </DropdownMenuContent>

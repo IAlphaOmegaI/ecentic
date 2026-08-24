@@ -3,7 +3,7 @@ import { cacheLife, cacheTag } from "next/cache";
 import { localizePath } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
 import { seo } from "@/lib/seo";
-import * as Blog from "@/server/app/blog"; 
+import * as Blog from "@/server/app/blog";
 
 export default async (): Promise<MetadataRoute.Sitemap> => {
   // Tag the route's own cache entry, not just the `listPublished` reads inside

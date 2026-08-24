@@ -28,7 +28,7 @@ type StoreParams = LayoutProps<"/dashboard/[store]">["params"];
  * included, sat behind all three queries.
  */
 export const Sidebar = ({ params }: { params: StoreParams }) => (
-  <aside className="relative hidden w-60 flex-col overflow-hidden border-accent-foreground border-r bg-background-rich md:flex">
+  <aside className="relative hidden min-h-0 w-60 flex-col overflow-hidden border-accent-foreground border-r bg-background-rich md:flex">
     <Suspense
       fallback={
         <div className="flex h-14 items-center justify-center overflow-hidden border-accent-foreground border-b pr-22 pl-5">

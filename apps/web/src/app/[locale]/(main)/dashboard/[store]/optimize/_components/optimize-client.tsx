@@ -98,7 +98,7 @@ const EmptyState = ({
 }) => (
   <div className="flex flex-col items-center gap-4 bg-background-rich px-6 py-14 text-center">
     {icon && (
-      <div className="flex size-10 items-center justify-center border border-accent-foreground bg-background-dimmed text-foreground-dimmed">
+      <div className="flex size-10 items-center justify-center rounded-md border border-accent-foreground bg-background-dimmed text-foreground-dimmed">
         {icon}
       </div>
     )}

@@ -36,23 +36,41 @@ export const SectionGutter = () => (
  */
 export const Slot = ({ children }: PropsWithChildren) => children;
 
-export const SectionKicker = ({ children }: PropsWithChildren) => {
+export const SectionKicker = ({
+  children,
+  className,
+}: PropsWithChildren<{ className?: string }>) => {
   if (typeof children !== "string")
     return (
-      <p className="font-medium text-[11px] text-foreground-dimmed uppercase">
+      <p
+        className={cn(
+          "font-medium text-[11px] text-foreground-dimmed uppercase",
+          className,
+        )}
+      >
         {children}
       </p>
     );
 
-  const [index, ...label] = children.split("—");
+  const [index, ...rest] = children.split("—");
+  const caption = rest.join("—").trim();
 
   return (
-    <p className="font-medium text-[11px] text-foreground-dimmed uppercase">
-      <span className="font-mono font-semibold text-primary">
-        {index?.trim()}
-      </span>
-      {label.length > 0 && (
-        <span className="ml-2">{label.join("—").trim()}</span>
+    <p
+      className={cn(
+        "font-medium text-[11px] text-foreground-dimmed uppercase",
+        className,
+      )}
+    >
+      {caption ? (
+        <>
+          <span className="font-mono font-semibold text-primary">
+            {index?.trim()}
+          </span>
+          <span className="ml-2">{caption}</span>
+        </>
+      ) : (
+        index?.trim()
       )}
     </p>
   );

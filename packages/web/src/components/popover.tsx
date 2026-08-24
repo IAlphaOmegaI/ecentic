@@ -73,7 +73,7 @@ export const PopoverPopup = ({
   return (
     <PopoverPrimitive.Popup
       className={createClassName(
-        "origin-(--transform-origin) border border-accent-foreground bg-background px-6 py-4 text-foreground transition-[transform,scale,opacity] data-ending-style:scale-90 data-starting-style:scale-90 data-ending-style:opacity-0 data-starting-style:opacity-0",
+        "origin-(--transform-origin) overflow-hidden rounded-lg border border-accent-foreground bg-background px-6 py-4 text-foreground shadow-md transition-[transform,scale,opacity] data-ending-style:scale-90 data-starting-style:scale-90 data-ending-style:opacity-0 data-starting-style:opacity-0",
         className,
       )}
       {...props}

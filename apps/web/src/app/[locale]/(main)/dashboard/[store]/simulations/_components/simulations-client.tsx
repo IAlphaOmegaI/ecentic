@@ -13,6 +13,7 @@ import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { Checkbox } from "@zenncore/web/components/checkbox";
+import { Progress } from "@zenncore/web/components/progress";
 import { useToastManager } from "@zenncore/web/components/toast";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
@@ -177,10 +178,10 @@ const RosterList = ({
                   onError={() =>
                     setFailed((previous) => new Set(previous).add(entry.id))
                   }
-                  className="size-8 shrink-0 bg-background-dimmed object-cover"
+                  className="size-8 shrink-0 rounded-md bg-background-dimmed object-cover"
                 />
               ) : (
-                <div className="size-8 shrink-0 bg-background-dimmed" />
+                <div className="size-8 shrink-0 rounded-md bg-background-dimmed" />
               )}
               <span
                 className="min-w-0 flex-1 truncate text-foreground text-sm"
@@ -581,12 +582,7 @@ export const SimulationsClient = ({
                     {stats.progress}%
                   </span>
                 </div>
-                <div className="mt-2 h-1.5 w-full bg-accent-foreground">
-                  <div
-                    className="h-full bg-primary transition-[width] duration-300"
-                    style={{ width: `${stats.progress}%` }}
-                  />
-                </div>
+                <Progress value={stats.progress} className="mt-2" />
               </div>
 
               {/* Progress now lives in the labeled bar above, so the stat band
@@ -812,10 +808,8 @@ const SimulationComplete = ({ data }: { data: SimulationCompleteData }) => {
         </div>
       </div>
 
-      <div className="h-1 w-full bg-accent-foreground" />
-
       {/* 3 models — see note above: a 4-col grid leaves a phantom empty cell. */}
-      <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground sm:grid-cols-3">
         {models.map(({ id, label, logo }) => {
           const rates = modelRates[id];
           const rate = rates?.rate ?? 0;
@@ -853,13 +847,7 @@ const SimulationComplete = ({ data }: { data: SimulationCompleteData }) => {
                     {rates?.losses ?? 0}L
                   </span>
                 </div>
-                {/* Sharp rule, matching the band seams. */}
-                <div className="mt-3 h-1 w-full bg-accent-foreground">
-                  <div
-                    className="h-full bg-primary transition-[width] duration-300"
-                    style={{ width: `${rate}%` }}
-                  />
-                </div>
+                <Progress value={rate} className="mt-3" />
               </div>
             </div>
           );

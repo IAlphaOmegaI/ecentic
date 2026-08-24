@@ -13,6 +13,7 @@ import {
   Popover,
   PopoverPopup,
   PopoverPositioner,
+  PopoverTitle,
   PopoverTrigger,
 } from "@zenncore/web/components/popover";
 import {
@@ -136,7 +137,7 @@ export const ProductsSearch = () => {
     <TextField
       value={value}
       onValueChange={handleValueChange}
-      className="h-9 w-64 bg-background"
+      className="h-10 w-0 min-w-0 flex-1 bg-background"
     >
       <SearchIcon className="size-4 shrink-0 text-foreground-dimmed" />
       <TextFieldInput
@@ -186,7 +187,7 @@ const ConditionRow = ({
   const operators = operatorsForField(condition.field);
 
   return (
-    <div className="flex items-center gap-2">
+    <div className="flex items-center gap-1.5">
       <Select
         value={condition.field}
         onValueChange={(field: string | null) => {
@@ -201,7 +202,7 @@ const ConditionRow = ({
           });
         }}
       >
-        <SelectTrigger className="h-9 w-32 shrink-0 bg-background text-sm">
+        <SelectTrigger className="h-8 min-w-0 flex-1 bg-background px-2.5 text-sm">
           {translate(`fields.${condition.field}`)}
         </SelectTrigger>
         <SelectPositioner>
@@ -227,7 +228,7 @@ const ConditionRow = ({
           onPatch({ operator: operator as ProductFilterOperator });
         }}
       >
-        <SelectTrigger className="h-9 w-36 shrink-0 bg-background text-sm">
+        <SelectTrigger className="h-8 min-w-0 flex-1 bg-background px-2.5 text-sm">
           {translate(`operators.${condition.operator}`)}
         </SelectTrigger>
         <SelectPositioner>
@@ -249,7 +250,7 @@ const ConditionRow = ({
         <TextField
           value={condition.value}
           onValueChange={(value) => onPatch({ value })}
-          className="h-9 min-w-0 flex-1 bg-background"
+          className="h-8 min-w-0 flex-1 bg-background"
         >
           <TextFieldInput
             placeholder={translate("valuePlaceholder")}
@@ -262,7 +263,7 @@ const ConditionRow = ({
         size="icon"
         variant="ghost"
         color="accent"
-        className="size-7 shrink-0"
+        className="size-8 shrink-0"
         onClick={onRemove}
         aria-label={translate("removeCondition")}
       >
@@ -331,7 +332,11 @@ export const ProductsFilters = () => {
 
   return (
     <Popover open={open} onOpenChange={handleOpenChange}>
-      <PopoverTrigger render={<Button variant="outline" color="accent" />}>
+      <PopoverTrigger
+        render={
+          <Button variant="outline" color="accent" className="h-10 shrink-0" />
+        }
+      >
         <FilterIcon className="size-4" />
         {translate("addFilter")}
         {applied.length > 0 && (
@@ -341,13 +346,15 @@ export const ProductsFilters = () => {
         )}
       </PopoverTrigger>
 
-      <PopoverPositioner side="bottom" align="start" sideOffset={8}>
-        <PopoverPopup className="w-104 max-w-[calc(100vw-2rem)] border border-accent-foreground bg-background-rich p-4 shadow-xl">
-          <p className="font-medium text-[11px] text-foreground-dimmed uppercase tracking-[0.05em]">
-            {translate("title")}
-          </p>
+      <PopoverPositioner side="bottom" align="end" sideOffset={8}>
+        <PopoverPopup className="w-96 max-w-[calc(100vw-2rem)] bg-background-rich p-0">
+          <div className="border-accent-foreground border-b px-3 py-2.5">
+            <PopoverTitle className="font-medium text-foreground text-sm">
+              {translate("title")}
+            </PopoverTitle>
+          </div>
 
-          <div className="mt-3 flex flex-col gap-2">
+          <div className="flex flex-col gap-2 p-3">
             {conditions.map((condition) => (
               <ConditionRow
                 key={condition.key}
@@ -356,25 +363,30 @@ export const ProductsFilters = () => {
                 onRemove={() => removeCondition(condition.key)}
               />
             ))}
+
+            <Button
+              variant="ghost"
+              color="accent"
+              className="h-8 self-start px-2 text-foreground-dimmed"
+              onClick={() =>
+                setConditions((current) => [...current, blankCondition()])
+              }
+            >
+              <PlusIcon className="size-4" />
+              {translate("addCondition")}
+            </Button>
           </div>
 
-          <Button
-            variant="outline"
-            color="accent"
-            className="mt-3"
-            onClick={() =>
-              setConditions((current) => [...current, blankCondition()])
-            }
-          >
-            <PlusIcon className="size-4" />
-            {translate("addCondition")}
-          </Button>
-
-          <div className="mt-4 flex items-center justify-end gap-2">
-            <Button variant="ghost" color="accent" onClick={handleClear}>
+          <div className="flex items-center justify-end gap-2 border-accent-foreground border-t px-3 py-2">
+            <Button
+              variant="ghost"
+              color="accent"
+              className="h-8"
+              onClick={handleClear}
+            >
               {translate("clear")}
             </Button>
-            <Button color="primary" onClick={handleApply}>
+            <Button color="primary" className="h-8" onClick={handleApply}>
               {translate("apply")}
             </Button>
           </div>

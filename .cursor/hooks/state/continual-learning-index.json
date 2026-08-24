@@ -70,12 +70,12 @@
       "lastProcessedAt": "2026-08-09T12:13:53.305Z"
     },
     "/Users/xhurianshaba/.cursor/projects/Users-xhurianshaba-Developer-zennit-ecentic/agent-transcripts/22e289c3-6dc7-4a0e-88f8-6d27d88b0575/22e289c3-6dc7-4a0e-88f8-6d27d88b0575.jsonl": {
-      "mtimeMs": 1786277566458.0398,
-      "lastProcessedAt": "2026-08-09T12:13:53.305Z"
+      "mtimeMs": 1786277640250.176,
+      "lastProcessedAt": "2026-08-20T14:04:29.915Z"
     },
     "/Users/xhurianshaba/.cursor/projects/Users-xhurianshaba-Developer-zennit-ecentic/agent-transcripts/22e289c3-6dc7-4a0e-88f8-6d27d88b0575/subagents/ae9b0317-5f72-44e0-8c37-3ca8ba535229.jsonl": {
-      "mtimeMs": 1786277584642.9517,
-      "lastProcessedAt": "2026-08-09T12:13:53.305Z"
+      "mtimeMs": 1786277637577.098,
+      "lastProcessedAt": "2026-08-20T14:04:29.915Z"
     },
     "/Users/xhurianshaba/.cursor/projects/Users-xhurianshaba-Developer-zennit-ecentic/agent-transcripts/25814c49-e3af-4c68-a28f-5c693ad34491/25814c49-e3af-4c68-a28f-5c693ad34491.jsonl": {
       "mtimeMs": 1785064910214.805,
@@ -118,8 +118,8 @@
       "lastProcessedAt": "2026-08-09T12:13:53.305Z"
     },
     "/Users/xhurianshaba/.cursor/projects/Users-xhurianshaba-Developer-zennit-ecentic/agent-transcripts/47bcd04c-d63d-4d3f-a946-4eadc3506dea/47bcd04c-d63d-4d3f-a946-4eadc3506dea.jsonl": {
-      "mtimeMs": 1786277622915.8254,
-      "lastProcessedAt": "2026-08-09T12:13:53.305Z"
+      "mtimeMs": 1786277930420.9067,
+      "lastProcessedAt": "2026-08-20T14:04:29.915Z"
     },
     "/Users/xhurianshaba/.cursor/projects/Users-xhurianshaba-Developer-zennit-ecentic/agent-transcripts/48299eec-8c19-4917-88e7-a0573e223943/48299eec-8c19-4917-88e7-a0573e223943.jsonl": {
       "mtimeMs": 1786039327740.7441,
@@ -128,6 +128,10 @@
     "/Users/xhurianshaba/.cursor/projects/Users-xhurianshaba-Developer-zennit-ecentic/agent-transcripts/49256682-a061-4f98-8673-dd8760ed1a8e/49256682-a061-4f98-8673-dd8760ed1a8e.jsonl": {
       "mtimeMs": 1785343145595.0815,
       "lastProcessedAt": "2026-08-09T12:13:53.305Z"
+    },
+    "/Users/xhurianshaba/.cursor/projects/Users-xhurianshaba-Developer-zennit-ecentic/agent-transcripts/4a046fd5-9db1-40d8-8c18-b9de3af54a6f/4a046fd5-9db1-40d8-8c18-b9de3af54a6f.jsonl": {
+      "mtimeMs": 1786530752701.4834,
+      "lastProcessedAt": "2026-08-20T14:04:29.915Z"
     },
     "/Users/xhurianshaba/.cursor/projects/Users-xhurianshaba-Developer-zennit-ecentic/agent-transcripts/50f11131-03f7-446c-9299-4f9d83475f3e/50f11131-03f7-446c-9299-4f9d83475f3e.jsonl": {
       "mtimeMs": 1773592118230.4246,
@@ -253,6 +257,14 @@
       "mtimeMs": 1774094021493.4563,
       "lastProcessedAt": "2026-08-09T12:13:53.305Z"
     },
+    "/Users/xhurianshaba/.cursor/projects/Users-xhurianshaba-Developer-zennit-ecentic/agent-transcripts/79361407-0301-4dfa-bcb4-272b7446a4f9/79361407-0301-4dfa-bcb4-272b7446a4f9.jsonl": {
+      "mtimeMs": 1787234472656.9392,
+      "lastProcessedAt": "2026-08-20T14:04:29.915Z"
+    },
+    "/Users/xhurianshaba/.cursor/projects/Users-xhurianshaba-Developer-zennit-ecentic/agent-transcripts/79361407-0301-4dfa-bcb4-272b7446a4f9/subagents/ae96c61f-c298-475a-ac6f-5ac63e933541.jsonl": {
+      "mtimeMs": 1787234542653.179,
+      "lastProcessedAt": "2026-08-20T14:04:29.915Z"
+    },
     "/Users/xhurianshaba/.cursor/projects/Users-xhurianshaba-Developer-zennit-ecentic/agent-transcripts/830c0ec4-a47a-4967-9b8b-75d1d2d724c2/830c0ec4-a47a-4967-9b8b-75d1d2d724c2.jsonl": {
       "mtimeMs": 1774274672307.1692,
       "lastProcessedAt": "2026-08-09T12:13:53.305Z"
@@ -328,6 +340,10 @@
     "/Users/xhurianshaba/.cursor/projects/Users-xhurianshaba-Developer-zennit-ecentic/agent-transcripts/ad46fec9-7981-47d7-9f6c-3be3516251c5/ad46fec9-7981-47d7-9f6c-3be3516251c5.jsonl": {
       "mtimeMs": 1772969831309.8643,
       "lastProcessedAt": "2026-08-09T12:13:53.305Z"
+    },
+    "/Users/xhurianshaba/.cursor/projects/Users-xhurianshaba-Developer-zennit-ecentic/agent-transcripts/b09be928-edd4-4bc7-bc55-1da771816a1f/b09be928-edd4-4bc7-bc55-1da771816a1f.jsonl": {
+      "mtimeMs": 1787227100251.6108,
+      "lastProcessedAt": "2026-08-20T14:04:29.915Z"
     },
     "/Users/xhurianshaba/.cursor/projects/Users-xhurianshaba-Developer-zennit-ecentic/agent-transcripts/b1de591b-3e3d-466b-ad5f-65cb540c5c48/b1de591b-3e3d-466b-ad5f-65cb540c5c48.jsonl": {
       "mtimeMs": 1773570639018.7222,
@@ -494,5 +510,5 @@
       "lastProcessedAt": "2026-08-09T12:13:53.305Z"
     }
   },
-  "lastProcessedAt": "2026-08-09T12:13:53.305Z"
+  "lastProcessedAt": "2026-08-20T14:04:29.915Z"
 }

@@ -207,12 +207,12 @@ export const ChartSkeleton = () => (
   </div>
 );
 
-// Mirrors the filter toolbar above the products table: the "Add filter"
-// trigger and one missing-attribute chip.
+// Mirrors the filter toolbar above the products table: a growing search
+// field and the "Add filter" trigger pinned to the right.
 export const FiltersSkeleton = () => (
-  <div className="flex flex-wrap items-center gap-2 border-accent-foreground border-b p-4">
-    <div className="h-9 w-28 animate-pulse bg-foreground/10" />
-    <div className="h-8 w-64 animate-pulse rounded-full bg-foreground/10" />
+  <div className="flex items-center gap-2 border-accent-foreground border-b p-4">
+    <div className="h-10 w-0 min-w-0 flex-1 animate-pulse bg-foreground/10" />
+    <div className="h-10 w-28 shrink-0 animate-pulse bg-foreground/10" />
   </div>
 );
 

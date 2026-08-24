@@ -98,12 +98,13 @@ const buildColumns = (
     accessorKey: "title",
     header: fields.product,
     enableHiding: false,
+    meta: { className: "overflow-hidden" },
     cell: ({ row }) => (
       <Link
         href={`/dashboard/${store}/products/${row.original._id}`}
-        className="group flex items-center gap-2"
+        className="group flex w-full min-w-0 items-center gap-2 overflow-hidden"
       >
-        <Avatar className="size-9 min-w-9 rounded-md bg-background-dimmed">
+        <Avatar className="size-9 shrink-0 rounded-md bg-background-dimmed">
           <AvatarImage
             src={row.original.image ?? "/images/fallback.png"}
             alt={row.original.title}
@@ -112,12 +113,14 @@ const buildColumns = (
             <Image src="/images/fallback.png" alt="Fallback" fill />
           </AvatarFallback>
         </Avatar>
-        <div>
-          <p className="font-medium text-foreground-rich transition-colors group-hover:text-primary">
+        <div className="min-w-0 flex-1 overflow-hidden">
+          <p className="truncate font-medium text-foreground-rich transition-colors group-hover:text-primary">
             {row.original.title}
           </p>
           {row.original.sku && (
-            <p className="text-foreground-dimmed">{row.original.sku}</p>
+            <p className="truncate text-foreground-dimmed">
+              {row.original.sku}
+            </p>
           )}
         </div>
       </Link>
@@ -126,6 +129,7 @@ const buildColumns = (
   {
     accessorKey: "price",
     header: fields.price,
+    meta: { className: "w-24" },
     cell: ({ row }) => (
       <span className="text-foreground tabular-nums">
         {formatPrice(row.original.price, row.original.currency)}
@@ -135,11 +139,13 @@ const buildColumns = (
   {
     accessorKey: "winRate.total",
     header: fields.winRate,
+    meta: { className: "w-40" },
     cell: ({ row }) => <WinRateBar rate={row.original.winRate.total} />,
   },
   {
     accessorKey: "winRate.gpt4",
     header: "ChatGPT",
+    meta: { className: "w-20" },
     cell: ({ row }) => (
       <span className="text-foreground tabular-nums">
         {row.original.winRate.gpt4}%
@@ -149,6 +155,7 @@ const buildColumns = (
   {
     accessorKey: "winRate.claude",
     header: "Claude",
+    meta: { className: "w-20" },
     cell: ({ row }) => (
       <span className="text-foreground tabular-nums">
         {row.original.winRate.claude}%
@@ -158,6 +165,7 @@ const buildColumns = (
   {
     accessorKey: "winRate.gemini",
     header: "Gemini",
+    meta: { className: "w-20" },
     cell: ({ row }) => (
       <span className="text-foreground tabular-nums">
         {row.original.winRate.gemini}%
@@ -167,11 +175,13 @@ const buildColumns = (
   {
     accessorKey: "quality",
     header: fields.quality,
+    meta: { className: "w-40" },
     cell: ({ row }) => <QualityBar score={row.original.quality} />,
   },
   {
     accessorKey: "updatedAt",
     header: fields.lastScan,
+    meta: { className: "w-32" },
     cell: ({ row }) => (
       <span className="whitespace-nowrap text-foreground-dimmed">
         {formatRelativeTime(row.original.updatedAt)}
@@ -182,9 +192,7 @@ const buildColumns = (
     id: "actions",
     header: undefined,
     enableHiding: false,
-    // Absorbs the table's spare width so content columns pack to the left,
-    // keeping only the row action pinned to the right edge.
-    meta: { className: "w-full text-right" },
+    meta: { className: "w-12 text-right" },
     cell: ({ row }) => (
       <Button
         size="icon"
@@ -215,7 +223,7 @@ const ColumnsMenu = () => {
       </DropdownMenuTrigger>
       <DropdownMenuContent
         align="end"
-        className="min-w-48 rounded-none border border-accent-foreground bg-background-rich p-1"
+        className="min-w-48 overflow-hidden rounded-lg border border-accent-foreground bg-background-rich p-1"
       >
         {columns.map((column) => (
           <DropdownMenuCheckboxItem
@@ -229,7 +237,7 @@ const ColumnsMenu = () => {
               : column.id}
           </DropdownMenuCheckboxItem>
         ))}
-        <DropdownMenuSeparator />
+        <DropdownMenuSeparator className="bg-accent-foreground" />
         <DropdownMenuItem onClick={() => table.resetColumnVisibility()}>
           {translate("reset")}
         </DropdownMenuItem>
@@ -285,13 +293,13 @@ export const ProductsTable = ({
             {resolvedTitle}
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center justify-end gap-3">
           {action}
           {columnsMenu && <ColumnsMenu />}
         </div>
       </div>
       <div className="overflow-x-auto">
-        <DataTable className={cn(!paginated && "border-b-0")}>
+        <DataTable className={cn("table-fixed", !paginated && "border-b-0")}>
           <DataTableEmpty>
             <div className="p-8 text-center">
               <BoxMinusIcon className="mx-auto mb-6 size-24" />

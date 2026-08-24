@@ -1,18 +1,9 @@
 import { Crosshair, SectionGutter } from "./grid";
 
-// Mirrors SidebarNav's items: same count and order, widths sized to each
-// label, badges on the rows that render one (Products, Optimize, UCP & Data).
-const navPlaceholders = [
-  { key: "overview", width: "w-20" },
-  { key: "products", width: "w-16", badge: true },
-  { key: "competitors", width: "w-24" },
-  { key: "simulations", width: "w-22" },
-  { key: "discovery", width: "w-24" },
-  { key: "optimize", width: "w-16", badge: true },
-  { key: "visibility", width: "w-18" },
-  { key: "ucp", width: "w-20", badge: true },
-  { key: "ucp-playground", width: "w-28" },
-  { key: "ucp-comparison", width: "w-30" },
+const navGroupPlaceholders = [
+  { key: "catalog", width: "w-16" },
+  { key: "intelligence", width: "w-22" },
+  { key: "channels", width: "w-18" },
 ] as const;
 
 // The chrome renders its frame statically and streams each data-backed region
@@ -33,8 +24,8 @@ export const StatusPillSkeleton = ({
 
 export const StoreSwitcherSkeleton = () => (
   <div className="border-accent-foreground border-b p-2">
-    <div className="flex w-full items-center gap-2.5 border border-accent-foreground bg-background px-2.5 py-2">
-      <div className="size-8 shrink-0 animate-pulse border border-accent-foreground bg-background-rich" />
+    <div className="flex w-full items-center gap-2.5 rounded-md px-2 py-1.5">
+      <div className="size-8 shrink-0 animate-pulse rounded-md bg-primary/10" />
       <div className="flex min-w-0 flex-1 flex-col gap-1.5">
         <div className="h-3.5 w-24 animate-pulse bg-accent-foreground/30" />
         <div className="h-2.5 w-16 animate-pulse bg-accent-foreground/30" />
@@ -45,23 +36,26 @@ export const StoreSwitcherSkeleton = () => (
 );
 
 export const SidebarNavSkeleton = () => (
-  <nav className="relative flex flex-1 flex-col">
-    {navPlaceholders.map((item) => (
-      <div
-        key={item.key}
-        className="flex h-10 items-center gap-2.5 border-transparent border-l-[3px] px-5"
-      >
+  <nav className="relative flex min-h-0 flex-1 flex-col overflow-hidden">
+    <div className="min-h-0 flex-1 overflow-y-auto">
+      <div className="flex h-10 items-center gap-2.5 border-transparent border-l-[3px] px-5">
         <div className="size-4 shrink-0 animate-pulse bg-accent-foreground/30" />
-        <div
-          className={`h-4 animate-pulse bg-accent-foreground/30 ${item.width}`}
-        />
-        {"badge" in item && item.badge && (
-          <div className="ml-auto h-4 w-7 animate-pulse rounded-full bg-accent-foreground/30" />
-        )}
+        <div className="h-4 w-20 animate-pulse bg-accent-foreground/30" />
       </div>
-    ))}
+      {navGroupPlaceholders.map((group) => (
+        <div
+          key={group.key}
+          className="flex h-8 items-center justify-between border-accent-foreground border-b px-5"
+        >
+          <div
+            className={`h-3 animate-pulse bg-accent-foreground/30 ${group.width}`}
+          />
+          <div className="size-4 shrink-0 animate-pulse bg-accent-foreground/30" />
+        </div>
+      ))}
+    </div>
 
-    <div className="mt-auto border-accent-foreground border-t">
+    <div className="border-accent-foreground border-t">
       <div className="flex h-10 items-center gap-2.5 border-transparent border-l-[3px] px-5">
         <div className="size-4 shrink-0 animate-pulse bg-accent-foreground/30" />
         <div className="h-4 w-16 animate-pulse bg-accent-foreground/30" />

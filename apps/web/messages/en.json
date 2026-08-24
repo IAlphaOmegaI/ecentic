@@ -433,7 +433,12 @@
       "settings": "Settings",
       "billing": "Billing",
       "integrations": "Integrations",
-      "stores": "Stores"
+      "stores": "Stores",
+      "groups": {
+        "catalog": "Catalog",
+        "intelligence": "Intelligence",
+        "channels": "Channels"
+      }
     },
     "sidebar": {
       "allStores": "All stores"

@@ -43,9 +43,7 @@ const WinRateSummary = ({ wins, losses }: { wins: number; losses: number }) => {
 
   return (
     <div>
-      <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-        {translate("winRate")}
-      </p>
+      <SectionKicker>{translate("winRate")}</SectionKicker>
       <div className="mt-2 flex items-baseline gap-3">
         <span
           className={cn(
@@ -83,9 +81,9 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
           <div className="grid grid-cols-1 gap-px border-accent-foreground border-y bg-accent-foreground sm:grid-cols-[1fr_auto]">
             <div className="bg-background-rich p-6 transition-colors hover:bg-background">
               <RocketIcon className="size-7.5 text-error" />
-              <p className="mt-4 text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+              <SectionKicker className="mt-4">
                 {translate("impact")}
-              </p>
+              </SectionKicker>
               <p className="mt-2 text-foreground leading-relaxed">
                 {finding.impactDescription}
               </p>
@@ -105,9 +103,7 @@ const InsightCard = ({ scan }: { scan: ScanInsight }) => {
 
           {finding.missingAttributes.length > 0 && (
             <div className="flex flex-col gap-4 p-4">
-              <p className="text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-                {translate("missingAttributes")}
-              </p>
+              <SectionKicker>{translate("missingAttributes")}</SectionKicker>
               <div className="flex flex-wrap gap-2">
                 {finding.missingAttributes.map((attribute) => (
                   <span

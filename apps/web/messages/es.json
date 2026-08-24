@@ -433,7 +433,12 @@
       "settings": "Ajustes",
       "billing": "Facturación",
       "integrations": "Integraciones",
-      "stores": "Tiendas"
+      "stores": "Tiendas",
+      "groups": {
+        "catalog": "Catálogo",
+        "intelligence": "Inteligencia",
+        "channels": "Canales"
+      }
     },
     "products": {
       "action": {

@@ -19,11 +19,18 @@ import * as Product from "@/server/app/product";
 // carries an absolute `href` instead.
 const navItems = [
   { key: "overview", segment: "" },
+  { key: "brand", segment: "/brand" },
   { key: "products", segment: "/products" },
+  { key: "quality", segment: "/quality" },
+  { key: "optimize", segment: "/optimize" },
   { key: "competitors", segment: "/competitors" },
   { key: "simulations", segment: "/simulations" },
-  { key: "ucpStructuredData", segment: "/ucp" },
-  { key: "optimize", segment: "/optimize" },
+  { key: "discovery", segment: "/discovery" },
+  { key: "visibility", segment: "/visibility" },
+  { key: "googleShopping", segment: "/google-shopping" },
+  { key: "ucp", segment: "/ucp" },
+  { key: "ucpPlayground", segment: "/ucp-playground" },
+  { key: "ucpComparison", segment: "/ucp-comparison" },
   { key: "settings", href: "/dashboard/settings" },
 ] as const;
 
@@ -86,6 +93,7 @@ type Catalog = {
 const Results = ({ onClose }: { onClose: () => void }) => {
   const pathname = usePathname();
   const translate = useTranslations("dashboard.commandPalette");
+  const translateNav = useTranslations("dashboard.nav");
   const store = pathname.split("/")[2] ?? "";
   const base = `/dashboard/${store}`;
 
@@ -137,7 +145,7 @@ const Results = ({ onClose }: { onClose: () => void }) => {
   );
 
   const matchedNav = navItems.filter((item) => {
-    const label = translate(`nav.${item.key}`);
+    const label = translateNav(item.key);
     return !normalized || label.toLowerCase().includes(normalized);
   });
 
@@ -251,7 +259,7 @@ const Results = ({ onClose }: { onClose: () => void }) => {
             {matchedNav.map((item) => {
               const href =
                 "href" in item ? item.href : `${base}${item.segment}`;
-              const label = translate(`nav.${item.key}`);
+              const label = translateNav(item.key);
               return (
                 <Link
                   key={item.key}

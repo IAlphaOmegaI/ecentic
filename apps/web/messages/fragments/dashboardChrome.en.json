@@ -7,6 +7,9 @@
       "simulations": "Simulations",
       "optimize": "Optimize",
       "visibility": "Visibility",
+      "googleShopping": "Google Shopping",
+      "quality": "Data Quality",
+      "brand": "Brand",
       "discovery": "Discovery",
       "ucp": "UCP",
       "ucpPlayground": "UCP Playground",
@@ -15,7 +18,12 @@
       "settings": "Settings",
       "billing": "Billing",
       "integrations": "Integrations",
-      "stores": "Stores"
+      "stores": "Stores",
+      "groups": {
+        "catalog": "Catalog",
+        "intelligence": "Intelligence",
+        "channels": "Channels"
+      }
     },
     "sidebar": {
       "allStores": "All stores"

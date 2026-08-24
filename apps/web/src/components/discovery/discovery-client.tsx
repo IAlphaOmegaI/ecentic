@@ -368,7 +368,7 @@ export const DiscoveryClient = ({
 
           <div className="mt-2 space-y-2">
             {queryInputs.map((input, index) => (
-              <div key={input.id} className="flex items-stretch gap-2">
+              <div key={input.id} className="flex items-center gap-2">
                 <TextField
                   value={input.value}
                   onValueChange={(value) => updateQuery(input.id, value)}
@@ -387,7 +387,7 @@ export const DiscoveryClient = ({
                   size="icon"
                   onClick={() => removeQuery(input.id)}
                   disabled={queryInputs.length <= 1 || isRunning}
-                  className="h-auto shrink-0"
+                  className="size-10 shrink-0"
                   aria-label={translate("queries.removeAriaLabel", {
                     index: index + 1,
                   })}
