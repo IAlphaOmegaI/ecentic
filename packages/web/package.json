@@ -13,7 +13,7 @@
   },
   "dependencies": {
     "@base-ui/react": "^1.7.0",
-    "@tanstack/react-table": "^9.1.2",
+    "@tanstack/react-table": "^9.2.3",
     "@zenncore/data-table": "workspace:*",
     "@zenncore/icons": "workspace:*",
     "@zenncore/inferred-form": "workspace:*",

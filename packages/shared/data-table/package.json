@@ -14,7 +14,7 @@
     "@zenncore/utils": "workspace:*"
   },
   "peerDependencies": {
-    "@tanstack/react-table": "^9.1.2",
+    "@tanstack/react-table": "^9.2.3",
     "react": "catalog:"
   },
   "devDependencies": {
