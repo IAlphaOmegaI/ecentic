@@ -133,11 +133,7 @@
         "title": "Errores de la API",
         "accent": "de ecentic.",
         "description": "Cada fallo de la API de ecentic es un documento de problema tipado, no una página HTML. El código es el contrato: es estable, legible por máquinas y seguro para tomar decisiones.",
-        "assurances": [
-          "RFC 9457",
-          "Códigos estables",
-          "Pistas de resolución"
-        ],
+        "assurances": ["RFC 9457", "Códigos estables", "Pistas de resolución"],
         "art": {
           "alt": "Ilustración en ASCII de un escudo"
         },
@@ -277,11 +273,7 @@
         "title": "Servidor MCP",
         "accent": "de ecentic.",
         "description": "Claude, ChatGPT y cualquier cliente del Model Context Protocol pueden llamar a ecentic de forma nativa por JSON-RPC 2.0. Esta página es la referencia de conexión: el endpoint, el transporte, el handshake y todas las herramientas que expone.",
-        "assurances": [
-          "Streamable HTTP",
-          "JSON-RPC 2.0",
-          "7 herramientas"
-        ],
+        "assurances": ["Streamable HTTP", "JSON-RPC 2.0", "7 herramientas"],
         "art": {
           "alt": "Ilustración ASCII de un robot"
         },
