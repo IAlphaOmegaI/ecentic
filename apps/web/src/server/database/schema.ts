@@ -10,6 +10,7 @@ import {
   timestamp,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
+import type * as Agentic from "@/server/app/intelligence/agentic-contract";
 import type * as Brand from "@/server/app/intelligence/brand";
 import type * as Simulate from "@/server/app/intelligence/simulate";
 
@@ -467,6 +468,45 @@ export const brandSnapshot = pgTable(
   ],
 );
 
+/**
+ * One is-agentic.com scan of a store's public domain. The score is a third
+ * party's, so it is stored verbatim under its own table rather than folded into
+ * an ecentic-computed number — and kept as history, because the trend across
+ * scans is the part `npx is-agentic` cannot give a merchant.
+ *
+ * `report` is null until the run lands; a row that stays `running` past the
+ * staleness window is a killed run, not one in flight.
+ */
+export const agenticScan = pgTable(
+  "agentic_scan",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    userId: text("userId")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    /** The bare host handed to the scanner, e.g. `acme.com`. */
+    target: text("target").notNull(),
+    status: text("status")
+      .$type<"running" | "complete" | "failed">()
+      .notNull()
+      .default("running"),
+    /** Denormalised off `report` so the trend chart never reads the jsonb. */
+    score: integer("score"),
+    grade: text("grade"),
+    report: jsonb("report").$type<Agentic.Report>(),
+    error: text("error"),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("agentic_scan_store_created_idx").on(table.storeId, table.createdAt),
+    index("agentic_scan_user_idx").on(table.userId),
+  ],
+);
+
 export const ucpProfile = pgTable("ucp_profile", {
   id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
   userId: text("userId")
@@ -914,6 +954,7 @@ export const tables = {
   scan,
   simulation,
   brandSnapshot,
+  agenticScan,
   ucpProfile,
   agentVisit,
   agentTrafficDaily,
@@ -974,6 +1015,7 @@ export const relations = defineRelations(tables, (r) => ({
     agentVisits: r.many.agentVisit(),
     agentTrafficDaily: r.many.agentTrafficDaily(),
     brandSnapshots: r.many.brandSnapshot(),
+    agenticScans: r.many.agenticScan(),
   },
   brandSnapshot: {
     store: r.one.store({
@@ -982,6 +1024,16 @@ export const relations = defineRelations(tables, (r) => ({
     }),
     user: r.one.user({
       from: r.brandSnapshot.userId,
+      to: r.user.id,
+    }),
+  },
+  agenticScan: {
+    store: r.one.store({
+      from: r.agenticScan.storeId,
+      to: r.store.id,
+    }),
+    user: r.one.user({
+      from: r.agenticScan.userId,
       to: r.user.id,
     }),
   },

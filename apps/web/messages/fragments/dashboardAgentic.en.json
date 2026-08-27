@@ -1,0 +1,87 @@
+{
+  "dashboard": {
+    "agentic": {
+      "eyebrow": "Intelligence",
+      "title": "Agentic score",
+      "description": "How usable your storefront is to an AI agent, scored by Is Agentic across discovery, accessibility, usability, and agentic payments.",
+      "sections": {
+        "scan": "01 — Scan",
+        "score": "02 — Score",
+        "checks": "04 — Evidence",
+        "competitors": "03 — Competitors",
+        "methodology": "05 — Methodology"
+      },
+      "scan": {
+        "title": "Run a scan",
+        "description": "Every scan reads your live storefront. Results are stored here so you can watch the score move.",
+        "action": "Run scan",
+        "running": "Scanning…",
+        "starting": "Starting scan",
+        "progress": "{done} / {total} checks",
+        "target": "Scanning {target}",
+        "lastScanned": "Last scanned {when}.",
+        "never": "This store has not been scanned yet.",
+        "blocked": {
+          "running": "A scan is already running for this store. It will appear here when it lands.",
+          "cooldown": "This store was scanned recently. The next scan is available {when}."
+        },
+        "disclosure": "Scans are run by Is Agentic, a free public service from Vercel Labs. Your storefront domain is sent to is-agentic.com; no customer or order data leaves ecentic.",
+        "disclosureLink": "Is Agentic docs",
+        "announceProgress": "Scan {percent}% complete.",
+        "announceComplete": "Scan complete. Score {score} out of 100."
+      },
+      "score": {
+        "title": "Where you stand",
+        "description": "The score is Is Agentic's, shown unchanged. Layers are ordered by what matters most to a store.",
+        "scoreLabel": "Agentic score",
+        "attribution": "View the full report on is-agentic.com",
+        "trend": "Score across your scans",
+        "fixesTitle": "Highest-impact fixes",
+        "gain": "+{points} pts",
+        "layerCounts": "{passed} passed · {warning} partial · {failed} failed · {notApplicable} not applicable",
+        "empty": "Run your first scan to see how agents read this storefront.",
+        "publicOnly": "Is Agentic already holds a public report for this domain, scoring {score} / 100 — {label}. Run a scan to pull in the full check-by-check detail and start tracking the trend.",
+        "publicLink": "View the public report",
+        "status": {
+          "success": "Strong",
+          "warning": "Needs work",
+          "error": "Weak"
+        },
+        "fixesNote": "This list is Is Agentic's, ranked by the points each fix is worth. Items about API specs, SDKs, or developer portals apply to the whole domain, not to your catalog — start with the ones ecentic can take on.",
+        "publicOnlyUnscored": "Is Agentic holds a report for this domain but has not scored it yet — {label}. Run a scan to pull in the full check-by-check detail and start tracking the trend.",
+        "trendSummary": "{count} scans since {since}, from {first} to {latest} out of 100."
+      },
+      "checks": {
+        "title": "Every check",
+        "description": "The evidence behind the score, grouped by layer. Checks that do not apply to a storefront are listed last with the reason.",
+        "summary": "{applicable} applicable · {failed} to fix",
+        "notApplicable": "This check does not apply to your storefront.",
+        "remedy": "Fix this in ecentic",
+        "empty": "Run a scan to see the full check list."
+      },
+      "checkStatus": {
+        "pass": "Pass",
+        "warning": "Partial",
+        "fail": "Fail",
+        "error": "Check errored",
+        "na": "Not applicable",
+        "unknown": "Unrecognised"
+      },
+      "competitors": {
+        "title": "How rivals score",
+        "description": "The same scan run against the storefronts behind your selected competitors. Each domain has its own scan cooldown, so checking a rival never uses up your own.",
+        "action": "Scan",
+        "scanned": "Last scanned {when}.",
+        "never": "Not scanned yet.",
+        "unscored": "No score",
+        "ahead": "You lead by {points}",
+        "behind": "You trail by {points}",
+        "empty": "No competitor storefronts yet. Add competitors and ecentic will scan the domains behind them."
+      },
+      "methodology": {
+        "title": "How this score works",
+        "description": "Is Agentic's own description of the scoring model, read live from their MCP server."
+      }
+    }
+  }
+}

@@ -1,0 +1,87 @@
+{
+  "dashboard": {
+    "agentic": {
+      "eyebrow": "Inteligencia",
+      "title": "Puntuación agéntica",
+      "description": "Qué tan utilizable es tu tienda para un agente de IA, puntuada por Is Agentic en descubrimiento, accesibilidad, usabilidad y pagos agénticos.",
+      "sections": {
+        "scan": "01 — Análisis",
+        "score": "02 — Puntuación",
+        "checks": "04 — Evidencia",
+        "competitors": "03 — Competidores",
+        "methodology": "05 — Metodología"
+      },
+      "scan": {
+        "title": "Ejecutar un análisis",
+        "description": "Cada análisis lee tu tienda en vivo. Los resultados se guardan aquí para que veas cómo evoluciona la puntuación.",
+        "action": "Ejecutar análisis",
+        "running": "Analizando…",
+        "starting": "Iniciando análisis",
+        "progress": "{done} / {total} comprobaciones",
+        "target": "Analizando {target}",
+        "lastScanned": "Último análisis {when}.",
+        "never": "Esta tienda aún no se ha analizado.",
+        "blocked": {
+          "running": "Ya hay un análisis en curso para esta tienda. Aparecerá aquí cuando termine.",
+          "cooldown": "Esta tienda se analizó hace poco. El próximo análisis estará disponible el {when}."
+        },
+        "disclosure": "Los análisis los ejecuta Is Agentic, un servicio público gratuito de Vercel Labs. El dominio de tu tienda se envía a is-agentic.com; ningún dato de clientes o pedidos sale de ecentic.",
+        "disclosureLink": "Documentación de Is Agentic",
+        "announceProgress": "Análisis {percent}% completado.",
+        "announceComplete": "Análisis completado. Puntuación {score} sobre 100."
+      },
+      "score": {
+        "title": "Dónde estás",
+        "description": "La puntuación es de Is Agentic y se muestra sin modificar. Las capas van ordenadas por lo que más importa a una tienda.",
+        "scoreLabel": "Puntuación agéntica",
+        "attribution": "Ver el informe completo en is-agentic.com",
+        "trend": "Puntuación a lo largo de tus análisis",
+        "fixesTitle": "Correcciones de mayor impacto",
+        "gain": "+{points} pts",
+        "layerCounts": "{passed} superadas · {warning} parciales · {failed} fallidas · {notApplicable} no aplicables",
+        "empty": "Ejecuta tu primer análisis para ver cómo leen los agentes esta tienda.",
+        "publicOnly": "Is Agentic ya tiene un informe público de este dominio, con {score} / 100 — {label}. Ejecuta un análisis para traer el detalle comprobación por comprobación y empezar a seguir la evolución.",
+        "publicLink": "Ver el informe público",
+        "status": {
+          "success": "Sólida",
+          "warning": "Mejorable",
+          "error": "Débil"
+        },
+        "fixesNote": "Esta lista es de Is Agentic, ordenada por los puntos que aporta cada corrección. Los puntos sobre especificaciones de API, SDK o portales para desarrolladores afectan al dominio entero, no a tu catálogo — empieza por los que ecentic puede asumir.",
+        "publicOnlyUnscored": "Is Agentic tiene un informe de este dominio pero aún no lo ha puntuado — {label}. Ejecuta un análisis para traer el detalle comprobación por comprobación y empezar a seguir la evolución.",
+        "trendSummary": "{count} análisis desde el {since}, de {first} a {latest} sobre 100."
+      },
+      "checks": {
+        "title": "Todas las comprobaciones",
+        "description": "La evidencia detrás de la puntuación, agrupada por capa. Las comprobaciones que no aplican a una tienda aparecen al final con su motivo.",
+        "summary": "{applicable} aplicables · {failed} por corregir",
+        "notApplicable": "Esta comprobación no aplica a tu tienda.",
+        "remedy": "Corregirlo en ecentic",
+        "empty": "Ejecuta un análisis para ver la lista completa."
+      },
+      "checkStatus": {
+        "pass": "Superada",
+        "warning": "Parcial",
+        "fail": "Fallida",
+        "error": "Error en la comprobación",
+        "na": "No aplica",
+        "unknown": "No reconocida"
+      },
+      "competitors": {
+        "title": "Cómo puntúan tus rivales",
+        "description": "El mismo análisis aplicado a las tiendas de los competidores que has seleccionado. Cada dominio tiene su propio periodo de espera, así que revisar a un rival nunca consume el tuyo.",
+        "action": "Analizar",
+        "scanned": "Último análisis {when}.",
+        "never": "Todavía sin analizar.",
+        "unscored": "Sin puntuación",
+        "ahead": "Les superas por {points}",
+        "behind": "Te superan por {points}",
+        "empty": "Aún no hay tiendas competidoras. Añade competidores y ecentic analizará los dominios que hay detrás."
+      },
+      "methodology": {
+        "title": "Cómo funciona esta puntuación",
+        "description": "La descripción del modelo de puntuación de Is Agentic, leída en directo desde su servidor MCP."
+      }
+    }
+  }
+}
