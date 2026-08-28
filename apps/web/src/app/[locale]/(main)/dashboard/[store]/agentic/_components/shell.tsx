@@ -187,7 +187,14 @@ export const JourneySkeleton = () => (
       <div className="h-4 w-full max-w-2xl animate-pulse bg-foreground/10" />
     </div>
     <div className="p-4">
-      <div className="min-h-48 rounded-lg bg-foreground/90" />
+      <div className="overflow-hidden rounded-lg bg-foreground/90">
+        <div className="min-h-48" />
+        <div className="flex gap-6 border-background/10 border-t px-4 py-3">
+          <div className="h-3 w-16 animate-pulse bg-background/10" />
+          <div className="h-3 w-28 animate-pulse bg-background/10" />
+          <div className="h-3 w-20 animate-pulse bg-background/10" />
+        </div>
+      </div>
     </div>
   </div>
 );

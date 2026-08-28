@@ -2537,11 +2537,7 @@
         },
         "frequency": {
           "title": "Simulation Frequency",
-          "options": [
-            "Manual only",
-            "Daily",
-            "Weekly"
-          ]
+          "options": ["Manual only", "Daily", "Weekly"]
         },
         "persona": {
           "title": "Purchase Persona",
@@ -2835,7 +2831,12 @@
         "empty": "No agent walk is on record for this domain yet. It appears on the Is Agentic report once a run finishes.",
         "running": "An agent is walking this storefront now. The map fills in as it goes.",
         "runningLabel": "In progress",
-        "nodes": "{count} steps",
+        "reasoning": "Reasoning",
+        "analytics": {
+          "stepLabel": "{count, plural, one {step} other {steps}}",
+          "reasoningLabel": "{count, plural, one {reasoning step} other {reasoning steps}}",
+          "searchLabel": "{count, plural, one {search} other {searches}}"
+        },
         "attribution": "Observed task on is-agentic.com",
         "verdict": {
           "satisfied": "Task satisfied",
@@ -6681,13 +6682,7 @@
       },
       "selection": "{selected} of {limit} products selected",
       "table": {
-        "headers": [
-          "Product",
-          "Price",
-          "Currency",
-          "Status",
-          "Quality"
-        ]
+        "headers": ["Product", "Price", "Currency", "Status", "Quality"]
       },
       "states": {
         "active": "Active",
@@ -6793,12 +6788,7 @@
         "description": "Select the competitors you'd like to include in your AI agent simulations.",
         "summary": "{total} competitor products across {brands} brands — {selected} selected",
         "table": {
-          "headers": [
-            "Competitor",
-            "Price",
-            "Currency",
-            "Brand"
-          ]
+          "headers": ["Competitor", "Price", "Currency", "Brand"]
         },
         "action": {
           "back": "Back",
@@ -7105,11 +7095,7 @@
         "title": "ecentic API",
         "accent": "errors.",
         "description": "Every failure on the ecentic API is a typed problem document, not an HTML page. The code is the contract: it is stable, machine-readable, and safe to branch on.",
-        "assurances": [
-          "RFC 9457",
-          "Stable codes",
-          "Resolution hints"
-        ],
+        "assurances": ["RFC 9457", "Stable codes", "Resolution hints"],
         "art": {
           "alt": "ASCII-art illustration of a shield"
         },
@@ -7144,11 +7130,7 @@
         "title": "ecentic API",
         "accent": "rate limits.",
         "description": "Every public response carries the live state of your window, so an agent can pace itself instead of discovering the limit by being rejected.",
-        "assurances": [
-          "Live headers",
-          "Retry-After on 429",
-          "Per-key windows"
-        ],
+        "assurances": ["Live headers", "Retry-After on 429", "Per-key windows"],
         "art": {
           "alt": "ASCII-art illustration of a balance scale"
         },
@@ -7249,11 +7231,7 @@
         "title": "ecentic MCP",
         "accent": "server.",
         "description": "Claude, ChatGPT, and any Model Context Protocol client can call ecentic natively over JSON-RPC 2.0. This page is the connection reference: the endpoint, the transport, the handshake, and every tool it exposes.",
-        "assurances": [
-          "Streamable HTTP",
-          "JSON-RPC 2.0",
-          "7 tools"
-        ],
+        "assurances": ["Streamable HTTP", "JSON-RPC 2.0", "7 tools"],
         "art": {
           "alt": "ASCII-art illustration of a robot"
         },
@@ -7322,11 +7300,7 @@
         "title": "ecentic API",
         "accent": "authentication.",
         "description": "Public discovery needs no credential at all. Anything that reads or changes a merchant account takes a bearer key you mint yourself — no sales call, no manual provisioning.",
-        "assurances": [
-          "Self-serve keys",
-          "Bearer tokens",
-          "OAuth metadata"
-        ],
+        "assurances": ["Self-serve keys", "Bearer tokens", "OAuth metadata"],
         "art": {
           "alt": "ASCII-art illustration of a shield"
         },

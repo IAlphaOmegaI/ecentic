@@ -64,15 +64,17 @@ export const CheckStatusMark = ({
   status,
   label,
   compact = false,
+  className,
 }: {
   status: CheckStatus;
   label: string;
   compact?: boolean;
+  className?: string;
 }) => {
   const Glyph = CHECK_ICONS[status];
 
   return (
-    <span className="inline-flex items-center gap-1.5">
+    <span className={cn("inline-flex items-center gap-1.5", className)}>
       <Glyph
         aria-hidden
         className={cn("size-4 shrink-0", CHECK_ICON_CLASS[status])}

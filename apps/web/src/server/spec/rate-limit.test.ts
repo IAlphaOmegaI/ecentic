@@ -68,7 +68,7 @@ describe("rateLimitHeaders", () => {
     const headers = rateLimitHeaders(verdict());
 
     expect(headers["RateLimit-Policy"]).toBe('"public";q=120;w=60');
-    expect(headers["RateLimit"]).toBe('"public";r=118;t=42');
+    expect(headers.RateLimit).toBe('"public";r=118;t=42');
     expect(headers["RateLimit-Limit"]).toBe("120");
     expect(headers["RateLimit-Remaining"]).toBe("118");
     expect(headers["RateLimit-Reset"]).toBe("42");
@@ -90,6 +90,6 @@ describe("rateLimitHeaders", () => {
     );
 
     expect(headers["RateLimit-Remaining"]).toBe("0");
-    expect(headers["RateLimit"]).toBe('"public";r=0;t=5');
+    expect(headers.RateLimit).toBe('"public";r=0;t=5');
   });
 });

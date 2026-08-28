@@ -21,6 +21,10 @@ import { StatusPill } from "../../../_components/grid";
 const POLL_MS = 8_000;
 const MAX_NODES = 64;
 const PILL_HEIGHT = 32;
+const PILL_PAD = 8;
+const PILL_GAP = 4;
+const PILL_ICON = 16;
+const PILL_CHAR = 7.2;
 const HUB_SIZE = 20;
 const COLUMN_WIDTH = 176;
 const ROW_HEIGHT = 44;
@@ -35,6 +39,7 @@ type GraphNode = {
   family: Family;
   label: string;
   parentId: number | null;
+  detail: string | null;
 };
 
 type Placed = GraphNode & {
@@ -60,6 +65,14 @@ const FAMILY_CLASS = {
 
 const clip = (value: string) =>
   value.length > 24 ? `${value.slice(0, 23)}…` : value;
+
+const previewOf = (value: string) =>
+  value
+    .split("\n")
+    .map((line) =>
+      line.replace(/^#{1,6}\s+/, "").replace(/\*\*/g, "").trim(),
+    )
+    .find((line) => line.length > 0) ?? value;
 
 const familyOf = (step: JourneyStep): Family => {
   if (step.action === "search") return "search";
@@ -91,7 +104,14 @@ const labelOf = (step: JourneyStep): string => {
 };
 
 const widthOf = (node: GraphNode) =>
-  node.kind === "hub" ? HUB_SIZE : Math.min(200, 40 + node.label.length * 7);
+  node.kind === "hub"
+    ? HUB_SIZE
+    : Math.min(
+        200,
+        Math.ceil(
+          PILL_PAD * 2 + PILL_ICON + PILL_GAP + node.label.length * PILL_CHAR,
+        ),
+      );
 
 const parentIdOf = (step: JourneyStep) =>
   step.parent_id ?? step.attribution?.referrer?.step_id ?? null;
@@ -118,6 +138,7 @@ const graphNodes = (steps: JourneyStep[]): GraphNode[] => {
             family: familyOf(step),
             label: labelOf(step),
             parentId: parentIdOf(step),
+            detail: null,
           },
         ];
       case step.type === "text" && parents.has(step.id):
@@ -128,6 +149,7 @@ const graphNodes = (steps: JourneyStep[]): GraphNode[] => {
             family: "page" as const,
             label: "…",
             parentId: parentIdOf(step),
+            detail: step.text?.trim() || null,
           },
         ];
       default:
@@ -228,7 +250,83 @@ const Glyph = ({ family }: { family: Family }) => {
   return <Icon aria-hidden className="size-4 shrink-0" />;
 };
 
-const MapCanvas = ({ nodes }: { nodes: GraphNode[] }) => {
+const NodeMark = ({
+  node,
+  active,
+  reasoning,
+  onActive,
+}: {
+  node: Placed;
+  active: boolean;
+  reasoning: string;
+  onActive: (id: number | null) => void;
+}) => {
+  const box = {
+    left: node.x,
+    top: node.y,
+    width: node.width,
+    height: node.height,
+  };
+
+  return (() => {
+    switch (true) {
+      case node.kind === "pill":
+        return (
+          <span
+            className={cn(
+              "absolute flex items-center justify-center gap-1 overflow-hidden rounded-full border bg-foreground p-2 font-mono text-xs leading-none",
+              FAMILY_CLASS[node.family],
+            )}
+            style={box}
+          >
+            <Glyph family={node.family} />
+            {node.label}
+          </span>
+        );
+      case node.detail !== null:
+        return (
+          <button
+            type="button"
+            aria-label={reasoning}
+            onMouseEnter={() => onActive(node.id)}
+            onMouseLeave={() => onActive(null)}
+            onFocus={() => onActive(node.id)}
+            onBlur={() => onActive(null)}
+            className={cn(
+              "absolute flex items-center justify-center rounded-full border bg-foreground font-mono text-background/50 text-xs outline-none transition-[border-color,color] duration-150 ease-out hover:border-background/50 hover:text-background/80 focus-visible:border-background/60",
+              active
+                ? "border-background/60 text-background/80"
+                : "border-background/30",
+            )}
+            style={box}
+          >
+            …
+          </button>
+        );
+      default:
+        return (
+          <span
+            aria-hidden
+            className="absolute flex items-center justify-center rounded-full border border-background/30 font-mono text-background/50 text-xs"
+            style={box}
+          >
+            …
+          </span>
+        );
+    }
+  })();
+};
+
+const MapCanvas = ({
+  nodes,
+  activeId,
+  onActive,
+}: {
+  nodes: GraphNode[];
+  activeId: number | null;
+  onActive: (id: number | null) => void;
+}) => {
+  const translate = useTranslations("dashboard.agentic");
   const placed = placeForest(nodes.slice(0, MAX_NODES));
   const lookup = new Map(placed.map((node) => [node.id, node]));
   const present = new Set(placed.map((node) => node.id));
@@ -264,7 +362,7 @@ const MapCanvas = ({ nodes }: { nodes: GraphNode[] }) => {
   });
 
   return (
-    <div className="overflow-x-auto" aria-hidden>
+    <div className="overflow-x-auto">
       <div
         className="relative"
         style={{ width: canvasWidth, height: canvasHeight }}
@@ -285,44 +383,26 @@ const MapCanvas = ({ nodes }: { nodes: GraphNode[] }) => {
             />
           ))}
         </svg>
-        {placed.map((node) =>
-          node.kind === "hub" ? (
-            <span
-              key={node.id}
-              aria-hidden
-              className="absolute flex items-center justify-center rounded-full border border-background/30 font-mono text-background/50 text-xs"
-              style={{
-                left: node.x,
-                top: node.y,
-                width: node.width,
-                height: node.height,
-              }}
-            >
-              …
-            </span>
-          ) : (
-            <span
-              key={node.id}
-              className={cn(
-                "absolute inline-flex items-center gap-1.5 overflow-hidden rounded-full border bg-foreground px-2.5 font-mono text-xs",
-                FAMILY_CLASS[node.family],
-              )}
-              style={{
-                left: node.x,
-                top: node.y,
-                width: node.width,
-                height: node.height,
-              }}
-            >
-              <Glyph family={node.family} />
-              {node.label}
-            </span>
-          ),
-        )}
+        {placed.map((node) => (
+          <NodeMark
+            key={node.id}
+            node={node}
+            active={activeId === node.id}
+            reasoning={translate("journey.reasoning")}
+            onActive={onActive}
+          />
+        ))}
       </div>
     </div>
   );
 };
+
+const Stat = ({ count, label }: { count: number; label: string }) => (
+  <p className="font-mono text-xs">
+    <span className="text-background tabular-nums">{count}</span>{" "}
+    <span className="text-background/50">{label}</span>
+  </p>
+);
 
 export const JourneyTrace = ({
   store,
@@ -333,6 +413,7 @@ export const JourneyTrace = ({
 }) => {
   const translate = useTranslations("dashboard.agentic");
   const [snapshot, setSnapshot] = useState(initial);
+  const [hovered, setHovered] = useState<number | null>(null);
   const run = snapshot?.id;
   const status = snapshot?.status;
 
@@ -363,6 +444,18 @@ export const JourneyTrace = ({
 
   const nodes = snapshot ? graphNodes(snapshot.steps) : [];
   const pills = nodes.filter((node) => node.kind === "pill");
+  const thoughts = snapshot
+    ? snapshot.steps.flatMap((step) => {
+        if (step.type !== "text") return [];
+        const text = step.text?.trim();
+        return text ? [{ id: step.id, text }] : [];
+      })
+    : [];
+  const searches = snapshot
+    ? snapshot.steps.filter((step) => step.action === "search").length
+    : 0;
+  const active =
+    thoughts.find((thought) => thought.id === hovered) ?? thoughts.at(-1);
 
   if (!snapshot)
     return (
@@ -374,26 +467,26 @@ export const JourneyTrace = ({
   return (
     <div className="flex flex-col">
       <div className="flex flex-col gap-3 border-accent-foreground border-b p-4">
-        <div className="flex flex-wrap items-center gap-2">
-          {snapshot.verdict && (
-            <StatusPill
-              tone={VERDICT_TONE[snapshot.verdict]}
-              className="normal-case tracking-normal"
-            >
-              {translate(`journey.verdict.${snapshot.verdict}`)}
-            </StatusPill>
-          )}
-          {snapshot.status === "running" && (
-            <StatusPill tone="primary" className="normal-case tracking-normal">
-              {translate("journey.runningLabel")}
-            </StatusPill>
-          )}
-          {pills.length > 0 && (
-            <p className="text-foreground-dimmed text-sm">
-              {translate("journey.nodes", { count: String(pills.length) })}
-            </p>
-          )}
-        </div>
+        {(snapshot.verdict || snapshot.status === "running") && (
+          <div className="flex flex-wrap items-center gap-2">
+            {snapshot.verdict && (
+              <StatusPill
+                tone={VERDICT_TONE[snapshot.verdict]}
+                className="normal-case tracking-normal"
+              >
+                {translate(`journey.verdict.${snapshot.verdict}`)}
+              </StatusPill>
+            )}
+            {snapshot.status === "running" && (
+              <StatusPill
+                tone="primary"
+                className="normal-case tracking-normal"
+              >
+                {translate("journey.runningLabel")}
+              </StatusPill>
+            )}
+          </div>
+        )}
         {snapshot.insight && (
           <p className="max-w-3xl text-foreground-dimmed text-sm">
             {snapshot.insight}
@@ -408,9 +501,45 @@ export const JourneyTrace = ({
       <div className="p-4">
         <div className="overflow-hidden rounded-lg bg-foreground">
           {pills.length > 0 ? (
-            <div className="p-2">
-              <MapCanvas nodes={nodes} />
-            </div>
+            <>
+              {active && (
+                <div className="border-background/15 border-b p-3">
+                  <p className="text-background/50 text-xs">
+                    {translate("journey.reasoning")}
+                  </p>
+                  <p className="mt-1 line-clamp-3 max-w-2xl text-background/80 text-sm">
+                    {previewOf(active.text)}
+                  </p>
+                </div>
+              )}
+              <div className="p-2">
+                <MapCanvas
+                  nodes={nodes}
+                  activeId={hovered}
+                  onActive={setHovered}
+                />
+              </div>
+              <div className="flex flex-wrap gap-x-6 gap-y-1 border-background/15 border-t px-4 py-3">
+                <Stat
+                  count={snapshot.steps.length}
+                  label={translate("journey.analytics.stepLabel", {
+                    count: snapshot.steps.length,
+                  })}
+                />
+                <Stat
+                  count={thoughts.length}
+                  label={translate("journey.analytics.reasoningLabel", {
+                    count: thoughts.length,
+                  })}
+                />
+                <Stat
+                  count={searches}
+                  label={translate("journey.analytics.searchLabel", {
+                    count: searches,
+                  })}
+                />
+              </div>
+            </>
           ) : (
             <div className="flex min-h-48 items-center px-6">
               <p className="text-background/60 text-sm">

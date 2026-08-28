@@ -206,15 +206,20 @@ export const ScanRunner = ({
         </div>
         <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
           {reportUrl && (
-            <a
-              href={reportUrl}
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center justify-center gap-1.5 font-medium text-foreground-dimmed text-sm underline-offset-2 hover:text-foreground hover:underline"
+            <Button
+              color="accent"
+              className="w-full whitespace-normal sm:w-auto"
+              render={
+                <a
+                  href={reportUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                />
+              }
             >
               {translate("score.attribution")}
-              <ShareIcon aria-hidden className="size-3.5" />
-            </a>
+              <ShareIcon aria-hidden className="size-4" />
+            </Button>
           )}
           <Button
             color="primary"

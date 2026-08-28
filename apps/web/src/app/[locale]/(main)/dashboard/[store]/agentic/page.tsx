@@ -31,6 +31,7 @@ import {
 import * as Store from "@/server/app/store";
 import { unwrapEntitled } from "@/server/utils/entitlement";
 import { Environment } from "@/server/utils/environment";
+import { renderProse } from "../../../_components/rich-text";
 import { StatCell, StatusPill } from "../../_components/grid";
 import {
   CompetitorScans,
@@ -239,9 +240,9 @@ const ScoreSection = async ({ params }: { params: StoreParams }) => {
             aria-hidden
             className="mt-0.5 size-4 shrink-0 text-foreground-dimmed"
           />
-          <p className="max-w-3xl text-foreground-dimmed text-sm">
-            {report.summary}
-          </p>
+          <div className="max-w-3xl text-foreground-dimmed text-sm">
+            {renderProse(report.summary)}
+          </div>
         </div>
       )}
 
@@ -304,9 +305,9 @@ const ScoreSection = async ({ params }: { params: StoreParams }) => {
                       </span>
                     </StatusPill>
                   </div>
-                  <p className="max-w-3xl text-foreground-dimmed text-sm">
-                    {fix.recommendation}
-                  </p>
+                  <div className="max-w-3xl text-foreground-dimmed text-sm">
+                    {renderProse(fix.recommendation)}
+                  </div>
                   {PAYMENT_CHECK_REMEDIES[fix.id] && (
                     <Link
                       href={`/dashboard/${store}${PAYMENT_CHECK_REMEDIES[fix.id]}`}
@@ -344,29 +345,36 @@ const CheckRow = ({
   remedy: string | null;
   labels: { status: string; notApplicable: string; remedy: string };
 }) => (
-  <div className="flex gap-3 p-4">
-    <CheckStatusMark status={check.status} label={labels.status} compact />
+  <div className="flex items-start gap-3 p-4">
+    <CheckStatusMark
+      status={check.status}
+      label={labels.status}
+      compact
+      className="mt-0.5"
+    />
     <div className="min-w-0 flex-1">
       <p className="font-medium text-foreground text-sm">{check.name}</p>
       {check.status === "na" ? (
-        <p className="mt-1 max-w-3xl text-foreground-dimmed text-sm">
-          {reason ?? labels.notApplicable}
-        </p>
+        <div className="mt-1 max-w-3xl text-foreground-dimmed text-sm">
+          {reason ? renderProse(reason) : labels.notApplicable}
+        </div>
       ) : (
         <>
           {check.details && (
-            <p className="mt-1 max-w-3xl text-foreground-dimmed text-sm">
-              {check.details}
-            </p>
+            <div className="mt-1 max-w-3xl text-foreground-dimmed text-sm">
+              {renderProse(check.details)}
+            </div>
           )}
           {check.recommendation && check.status !== "pass" && (
-            <p className="mt-2 flex max-w-3xl gap-2 text-foreground text-sm">
+            <div className="mt-2 flex max-w-3xl gap-2 text-foreground text-sm">
               <ArrowRightIcon
                 aria-hidden
                 className="mt-1 size-3.5 shrink-0 text-primary"
               />
-              {check.recommendation}
-            </p>
+              <div className="min-w-0 flex-1">
+                {renderProse(check.recommendation)}
+              </div>
+            </div>
           )}
         </>
       )}
@@ -547,12 +555,12 @@ const MethodologySection = async () => {
             {block.text}
           </p>
         ) : (
-          <p
+          <div
             key={block.text}
             className="max-w-3xl text-foreground-dimmed text-sm"
           >
-            {block.text}
-          </p>
+            {renderProse(block.text)}
+          </div>
         ),
       )}
     </div>

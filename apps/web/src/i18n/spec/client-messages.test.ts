@@ -264,6 +264,6 @@ describe("pickMessages", () => {
 
   test("does not share structure with the source catalog", () => {
     const picked = pickMessages(catalog, ["home.hero"]);
-    expect(picked["home"]).not.toBe(catalog["home"]);
+    expect(picked.home).not.toBe(catalog.home);
   });
 });

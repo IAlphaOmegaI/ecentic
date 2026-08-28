@@ -60,7 +60,12 @@
         "empty": "No agent walk is on record for this domain yet. It appears on the Is Agentic report once a run finishes.",
         "running": "An agent is walking this storefront now. The map fills in as it goes.",
         "runningLabel": "In progress",
-        "nodes": "{count} steps",
+        "reasoning": "Reasoning",
+        "analytics": {
+          "stepLabel": "{count, plural, one {step} other {steps}}",
+          "reasoningLabel": "{count, plural, one {reasoning step} other {reasoning steps}}",
+          "searchLabel": "{count, plural, one {search} other {searches}}"
+        },
         "attribution": "Observed task on is-agentic.com",
         "verdict": {
           "satisfied": "Task satisfied",

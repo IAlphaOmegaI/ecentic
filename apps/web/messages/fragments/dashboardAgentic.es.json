@@ -60,7 +60,12 @@
         "empty": "Aún no hay un recorrido de agente para este dominio. Aparece en el informe de Is Agentic cuando termina una ejecución.",
         "running": "Un agente está recorriendo esta tienda ahora. El mapa se completa sobre la marcha.",
         "runningLabel": "En curso",
-        "nodes": "{count} pasos",
+        "reasoning": "Razonamiento",
+        "analytics": {
+          "stepLabel": "{count, plural, one {paso} other {pasos}}",
+          "reasoningLabel": "{count, plural, one {paso de razonamiento} other {pasos de razonamiento}}",
+          "searchLabel": "{count, plural, one {búsqueda} other {búsquedas}}"
+        },
         "attribution": "Tarea observada en is-agentic.com",
         "verdict": {
           "satisfied": "Tarea cumplida",

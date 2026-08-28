@@ -34,7 +34,7 @@ describe("problem", () => {
   test("takes its status from the catalogue", async () => {
     const { status, body } = await read(problem("rate-limited", "slow down"));
     expect(status).toBe(429);
-    expect(body["status"]).toBe(429);
+    expect(body.status).toBe(429);
   });
 
   test("carries a code, a resolution hint, and a documentation anchor", async () => {
@@ -44,11 +44,11 @@ describe("problem", () => {
       }),
     );
 
-    expect(body["code"]).toBe("unauthenticated");
-    expect(body["detail"]).toBe("missing bearer");
-    expect(body["instance"]).toBe("/api/v1/plans");
-    expect(body["resolution"]).toContain("auth.md");
-    expect(body["type"]).toBe("https://ecentic.ai/docs/errors#unauthenticated");
+    expect(body.code).toBe("unauthenticated");
+    expect(body.detail).toBe("missing bearer");
+    expect(body.instance).toBe("/api/v1/plans");
+    expect(body.resolution).toContain("auth.md");
+    expect(body.type).toBe("https://ecentic.ai/docs/errors#unauthenticated");
   });
 
   test("omits instance when there is none rather than sending null", () => {
@@ -64,7 +64,7 @@ describe("problem", () => {
     );
     expect(status).toBe(418);
     // The body still reports the type's canonical status.
-    expect(body["status"]).toBe(400);
+    expect(body.status).toBe(400);
   });
 
   test("is never cached", () => {

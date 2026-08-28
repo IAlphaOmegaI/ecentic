@@ -85,9 +85,9 @@ describe("served", () => {
     expect(response.headers.get("cache-control")).toBe("no-store");
 
     const body = (await response.json()) as Record<string, unknown>;
-    expect(body["code"]).toBe("rate-limited");
-    expect(body["instance"]).toBe("/api/v1/plans");
-    expect(body["resolution"]).toContain("Retry-After");
+    expect(body.code).toBe("rate-limited");
+    expect(body.instance).toBe("/api/v1/plans");
+    expect(body.resolution).toContain("Retry-After");
   });
 
   test("the payload is never served once the window is exhausted", async () => {
