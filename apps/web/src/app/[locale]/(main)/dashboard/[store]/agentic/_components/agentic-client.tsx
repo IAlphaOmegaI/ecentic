@@ -1,11 +1,26 @@
 "use client";
 
 import { readStreamableValue } from "@ai-sdk/rsc";
-import { ShareIcon } from "@zenncore/icons";
+import {
+  ClockIcon,
+  GlobeIcon,
+  ShareIcon,
+  TrendDownIcon,
+  TrendUpIcon,
+} from "@zenncore/icons";
+import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@zenncore/web/components/table";
 import { useRouter } from "next/navigation";
-import { useFormatter, useTranslations } from "next-intl";
+import { useFormatter, useNow, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import {
   Area,
@@ -17,11 +32,11 @@ import {
 } from "recharts";
 import { scan as runScan } from "@/server/app/intelligence/agentic";
 import {
-  CHECK_TONES,
   type CheckStatus,
   scoreTone,
 } from "@/server/app/intelligence/agentic-contract";
 import { StatusPill } from "../../../_components/grid";
+import { CheckStatusMark } from "./marks";
 
 type LogLine = {
   id: string;
@@ -39,10 +54,12 @@ export const ScanRunner = ({
   store,
   target,
   lastScannedAt,
+  reportUrl,
 }: {
   store: string;
   target: string;
   lastScannedAt: string | null;
+  reportUrl: string | null;
 }) => {
   const translate = useTranslations("dashboard.agentic");
   const format = useFormatter();
@@ -168,26 +185,46 @@ export const ScanRunner = ({
       </p>
 
       <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="min-w-0">
-          <p className="font-medium text-foreground text-sm">
-            {translate("scan.target", { target })}
-          </p>
-          <p className="mt-1 text-foreground-dimmed text-sm">
-            {lastScannedAt
-              ? translate("scan.lastScanned", {
-                  when: format.relativeTime(new Date(lastScannedAt)),
-                })
-              : translate("scan.never")}
-          </p>
+        <div className="flex min-w-0 items-start gap-3">
+          <GlobeIcon
+            aria-hidden
+            className="mt-0.5 size-4 shrink-0 text-foreground-dimmed"
+          />
+          <div className="min-w-0">
+            <p className="font-medium text-foreground text-sm">
+              {translate("scan.target", { target })}
+            </p>
+            <p className="mt-1 flex items-center gap-1.5 text-foreground-dimmed text-sm">
+              <ClockIcon aria-hidden className="size-3.5 shrink-0" />
+              {lastScannedAt
+                ? translate("scan.lastScanned", {
+                    when: format.relativeTime(new Date(lastScannedAt)),
+                  })
+                : translate("scan.never")}
+            </p>
+          </div>
         </div>
-        <Button
-          color="primary"
-          onClick={handleScan}
-          disabled={isScanning}
-          className="w-full sm:w-auto"
-        >
-          {isScanning ? translate("scan.running") : translate("scan.action")}
-        </Button>
+        <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
+          {reportUrl && (
+            <a
+              href={reportUrl}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center justify-center gap-1.5 font-medium text-foreground-dimmed text-sm underline-offset-2 hover:text-foreground hover:underline"
+            >
+              {translate("score.attribution")}
+              <ShareIcon aria-hidden className="size-3.5" />
+            </a>
+          )}
+          <Button
+            color="primary"
+            onClick={handleScan}
+            disabled={isScanning}
+            className="w-full sm:w-auto"
+          >
+            {isScanning ? translate("scan.running") : translate("scan.action")}
+          </Button>
+        </div>
       </div>
 
       {(isScanning || phase) && (
@@ -225,9 +262,11 @@ export const ScanRunner = ({
                 key={line.id}
                 className="flex items-center gap-3 px-4 py-2 text-sm"
               >
-                <StatusPill tone={CHECK_TONES[line.status]}>
-                  {translate(`checkStatus.${line.status}`)}
-                </StatusPill>
+                <CheckStatusMark
+                  status={line.status}
+                  label={translate(`checkStatus.${line.status}`)}
+                  compact
+                />
                 <span className="min-w-0 truncate text-foreground">
                   {line.name}
                 </span>
@@ -280,9 +319,15 @@ export const ScoreTrend = ({
 
   return (
     <div className="flex flex-col gap-3 border-accent-foreground border-t p-4">
-      <p className="font-medium text-foreground text-sm">
-        {translate("score.trend")}
-      </p>
+      <div className="flex items-center gap-2">
+        <TrendUpIcon
+          aria-hidden
+          className="size-4 shrink-0 text-foreground-dimmed"
+        />
+        <p className="font-medium text-foreground text-sm">
+          {translate("score.trend")}
+        </p>
+      </div>
       {/* The line is decorative on its own — the reading of it is the content. */}
       <p className="text-foreground-dimmed text-sm">
         {translate("score.trendSummary", {
@@ -361,19 +406,18 @@ const CompetitorRow = ({
   store,
   target,
   score,
-  grade,
   scannedAt,
   ownScore,
 }: {
   store: string;
   target: string;
   score: number | null;
-  grade: string | null;
   scannedAt: string | null;
   ownScore: number | null;
 }) => {
   const translate = useTranslations("dashboard.agentic");
   const format = useFormatter();
+  const now = useNow();
   const router = useRouter();
 
   const [progress, setProgress] = useState<string | null>(null);
@@ -426,45 +470,68 @@ const CompetitorRow = ({
   // a gap.
   const delta = score !== null && ownScore !== null ? ownScore - score : null;
 
-  return (
-    <div className="flex flex-col gap-2 p-4 sm:grid sm:grid-cols-[1fr_auto] sm:items-center sm:gap-4">
-      <div className="min-w-0">
-        <p className="truncate font-medium text-foreground text-sm">{target}</p>
-        <p className="mt-1 text-foreground-dimmed text-sm">
-          {progress ??
-            notice ??
-            (scannedAt
-              ? translate("competitors.scanned", {
-                  when: format.relativeTime(new Date(scannedAt)),
-                })
-              : translate("competitors.never"))}
-        </p>
-      </div>
+  const scanned = (() => {
+    if (progress) return progress;
+    if (notice) return notice;
+    if (scannedAt) return format.relativeTime(new Date(scannedAt), now);
+    return translate("competitors.never");
+  })();
 
-      <div className="flex items-center gap-3">
+  return (
+    <TableRow className="hover:bg-background-dimmed/40">
+      <TableCell className="max-w-0 font-medium">
+        <div className="flex min-w-0 items-center gap-2">
+          <GlobeIcon
+            aria-hidden
+            className="size-4 shrink-0 text-foreground-dimmed"
+          />
+          <span className="min-w-0 truncate">{target}</span>
+        </div>
+      </TableCell>
+      <TableCell className="whitespace-nowrap text-foreground-dimmed">
+        {scanned}
+      </TableCell>
+      <TableCell className="whitespace-nowrap">
         {score === null ? (
           <StatusPill>{translate("competitors.unscored")}</StatusPill>
         ) : (
-          <>
-            <p className="font-bold text-foreground-rich text-xl tabular-nums">
-              {score}
-              <span className="ml-0.5 font-medium text-foreground-dimmed text-sm">
-                /100
-              </span>
-            </p>
-            {grade && <StatusPill tone={scoreTone(score)}>{grade}</StatusPill>}
-            {delta !== null && delta !== 0 && (
-              <StatusPill tone={delta > 0 ? "success" : "error"}>
-                {translate(
-                  delta > 0 ? "competitors.ahead" : "competitors.behind",
-                  {
-                    points: String(Math.abs(delta)),
-                  },
-                )}
-              </StatusPill>
+          <p
+            className={cn(
+              "font-semibold tabular-nums",
+              {
+                success: "text-success",
+                warning: "text-warning",
+                error: "text-error",
+              }[scoreTone(score)],
             )}
-          </>
+          >
+            {score}
+            <span className="ml-0.5 font-medium text-foreground-dimmed">
+              /100
+            </span>
+          </p>
         )}
+      </TableCell>
+      <TableCell className="whitespace-nowrap">
+        {delta !== null && delta !== 0 ? (
+          <StatusPill
+            tone={delta > 0 ? "success" : "error"}
+            className="normal-case tracking-normal"
+          >
+            {delta > 0 ? (
+              <TrendUpIcon aria-hidden className="size-3" />
+            ) : (
+              <TrendDownIcon aria-hidden className="size-3" />
+            )}
+            {translate(delta > 0 ? "competitors.ahead" : "competitors.behind", {
+              points: String(Math.abs(delta)),
+            })}
+          </StatusPill>
+        ) : (
+          <span className="text-foreground-dimmed">—</span>
+        )}
+      </TableCell>
+      <TableCell className="text-right">
         <Button
           color="accent"
           onClick={handleScan}
@@ -475,8 +542,8 @@ const CompetitorRow = ({
             ? translate("scan.running")
             : translate("competitors.action")}
         </Button>
-      </div>
-    </div>
+      </TableCell>
+    </TableRow>
   );
 };
 
@@ -490,21 +557,71 @@ export const CompetitorScans = ({
   rows: {
     target: string;
     score: number | null;
-    grade: string | null;
     scannedAt: string | null;
   }[];
-}) => (
-  <div className="divide-y divide-accent-foreground">
-    {rows.map((row) => (
-      <CompetitorRow
-        key={row.target}
-        store={store}
-        target={row.target}
-        score={row.score}
-        grade={row.grade}
-        scannedAt={row.scannedAt}
-        ownScore={ownScore}
-      />
-    ))}
-  </div>
-);
+}) => {
+  const translate = useTranslations("dashboard.agentic");
+  const scored = rows.filter((row) => row.score !== null).length;
+  const coverage =
+    rows.length === 0 ? 0 : Math.round((scored / rows.length) * 100);
+
+  return (
+    <div className="p-4">
+      <div className="overflow-hidden rounded-lg border border-accent-foreground bg-background">
+        <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
+          <div>
+            <p className="font-medium text-base text-foreground">
+              {translate("competitors.coverage", {
+                scored: String(scored),
+                total: String(rows.length),
+              })}
+            </p>
+            <div className="mt-1.5 h-0.5 w-28 bg-accent-foreground">
+              <div
+                className="h-full bg-primary transition-all duration-700"
+                style={{ width: `${coverage}%` }}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="overflow-x-auto">
+          <Table className="border-b-0">
+            <TableHeader>
+              <TableRow>
+                <TableHead className="w-full font-medium text-foreground-dimmed text-xs normal-case tracking-normal">
+                  {translate("competitors.columnStorefront")}
+                </TableHead>
+                <TableHead className="font-medium text-foreground-dimmed text-xs normal-case tracking-normal">
+                  {translate("competitors.columnScanned")}
+                </TableHead>
+                <TableHead className="font-medium text-foreground-dimmed text-xs normal-case tracking-normal">
+                  {translate("competitors.columnScore")}
+                </TableHead>
+                <TableHead className="font-medium text-foreground-dimmed text-xs normal-case tracking-normal">
+                  {translate("competitors.columnGap")}
+                </TableHead>
+                <TableHead className="w-0">
+                  <span className="sr-only">
+                    {translate("competitors.action")}
+                  </span>
+                </TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {rows.map((row) => (
+                <CompetitorRow
+                  key={row.target}
+                  store={store}
+                  target={row.target}
+                  score={row.score}
+                  scannedAt={row.scannedAt}
+                  ownScore={ownScore}
+                />
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+      </div>
+    </div>
+  );
+};

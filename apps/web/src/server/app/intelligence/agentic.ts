@@ -9,12 +9,14 @@
  * `npx is-agentic <domain>` does not: the scan runs against the connected
  * store's domain without the merchant typing it, the result is stored so the
  * trend across scans is visible, and the six payment checks are linked to the
- * ecentic pages that fix them.
+ * ecentic pages that fix them. The node map is the observed agent walk from
+ * the same public report — supporting evidence, not a second score.
  *
  * Scanning is always merchant-initiated. Nothing here runs on a cron or on
  * render: a scan sends the merchant's domain to a third party, so it happens
  * when they press the button and not before. The wire contract, and why the
  * stream is treated as best-effort, is documented in `agentic-contract.ts`.
+ * The journey map is read-only: we never dispatch an agent walk of our own.
  */
 
 import { resultify } from "@zenncore/utils";
@@ -30,10 +32,15 @@ import * as Competitor from "../competitor";
 import * as Store from "../store";
 import {
   IS_AGENTIC_ORIGIN,
+  type JourneySnapshot,
+  type JourneyStep,
+  journeyRecordSchema,
+  journeySnapshotSchema,
   METHODOLOGY_TTL_MS,
   type MethodologyBlock,
   methodologyToolSchema,
   normalizeTarget,
+  ORA_ORIGIN,
   parseMethodology,
   type Report,
   RUNNING_STALE_MS,
@@ -42,6 +49,7 @@ import {
   type ScanEvent,
   type SlimReport,
   slimReportSchema,
+  stepsFromPayload,
   streamFrameSchema,
   USER_AGENT,
 } from "./agentic-contract";
@@ -160,6 +168,219 @@ export const methodology = withSubscription(async () => {
 
   return { success: true as const, data: blocks };
 }, "Agentic.methodology");
+
+/**
+ * How long a discovered journey run id is reused before we re-read the public
+ * Is Agentic report page. Hits last longer than misses so a missing walk is
+ * retried soon without hammering their HTML on every dashboard render.
+ */
+const JOURNEY_HIT_TTL_MS = 30 * 60 * 1000;
+const JOURNEY_MISS_TTL_MS = 2 * 60 * 1000;
+const JOURNEY_PAGE_TIMEOUT_MS = 12_000;
+const JOURNEY_RUN_TIMEOUT_MS = 10_000;
+const JOURNEY_STREAM_TIMEOUT_MS = 4_000;
+const JOURNEY_RUN_ID =
+  /\/api\/journey\/runs\/([0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12})/i;
+
+const journeyIndex = new Map<string, { id: string | null; expires: number }>();
+
+const oraHeaders = {
+  Accept: "application/json",
+  "User-Agent": USER_AGENT,
+} as const;
+
+/**
+ * Is Agentic's public report page embeds the Ora run that drew the node map.
+ * The versioned score API does not carry that walk, and listing journeys by
+ * domain needs a partner key we do not hold — so the run id is read from the
+ * page they already publish, then the trajectory is fetched from Ora.
+ */
+const discoverRunId = async (target: string): Promise<string | null> => {
+  const cached = journeyIndex.get(target);
+  if (cached && Date.now() < cached.expires) return cached.id;
+
+  const endpoint = new URL(`/scan/${target}`, IS_AGENTIC_ORIGIN);
+  const response = await HTTP.request(
+    endpoint.toString(),
+    {
+      method: "GET",
+      headers: { Accept: "text/html", "User-Agent": USER_AGENT },
+    },
+    { timeout: JOURNEY_PAGE_TIMEOUT_MS },
+  );
+  if (!response.success || !response.data.ok) {
+    journeyIndex.set(target, {
+      id: null,
+      expires: Date.now() + JOURNEY_MISS_TTL_MS,
+    });
+    return null;
+  }
+
+  const body = await resultify(() => response.data.text());
+  const match = body.success ? body.data.match(JOURNEY_RUN_ID) : null;
+  const id = match?.[1] ?? null;
+
+  journeyIndex.set(target, {
+    id,
+    expires: Date.now() + (id ? JOURNEY_HIT_TTL_MS : JOURNEY_MISS_TTL_MS),
+  });
+  return id;
+};
+
+/**
+ * A live run's GET body has no trajectory — those frames only exist on the
+ * SSE stream. We open it briefly, keep the latest cumulative snapshot, then
+ * abort so a dashboard render never holds the connection for the whole walk.
+ */
+const peekTrajectory = async (id: string): Promise<JourneyStep[]> => {
+  const endpoint = new URL(`/api/journey/runs/${id}/stream`, ORA_ORIGIN);
+  const response = await resultify(() =>
+    fetch(endpoint.toString(), {
+      method: "GET",
+      headers: {
+        Accept: "text/event-stream",
+        "Cache-Control": "no-store",
+        "User-Agent": USER_AGENT,
+      },
+      signal: AbortSignal.timeout(JOURNEY_STREAM_TIMEOUT_MS),
+    }),
+  );
+  if (!response.success || !response.data.ok || !response.data.body) return [];
+
+  const reader = response.data.body.getReader();
+  const decoder = new TextDecoder();
+  const state = { buffer: "", steps: [] as JourneyStep[] };
+
+  const handle = (frame: string) => {
+    const event = frame.match(/^event:\s*(.+)$/m)?.[1]?.trim();
+    const data = frame
+      .split("\n")
+      .filter((line) => line.startsWith("data:"))
+      .map((line) => line.slice(5).trim())
+      .join("\n");
+    if (event !== "trajectory" && event !== "result") return;
+    if (!data) return;
+
+    const payload = resultify(() => JSON.parse(data) as unknown);
+    if (!payload.success) return;
+
+    const steps = stepsFromPayload(payload.data);
+    if (steps.length > 0) state.steps = steps;
+  };
+
+  const drain = async () => {
+    for (;;) {
+      const chunk = await reader.read();
+      if (chunk.done) break;
+
+      state.buffer += decoder.decode(chunk.value, { stream: true });
+      state.buffer = state.buffer.replace(/\r\n/g, "\n");
+
+      const boundary = () => state.buffer.indexOf("\n\n");
+      while (boundary() !== -1) {
+        handle(state.buffer.slice(0, boundary()));
+        state.buffer = state.buffer.slice(boundary() + 2);
+      }
+    }
+
+    state.buffer += decoder.decode();
+    if (state.buffer.trim()) handle(state.buffer);
+  };
+
+  await resultify(drain);
+  await resultify(() => reader.cancel());
+  reader.releaseLock();
+  if (state.buffer.trim()) handle(state.buffer);
+  return state.steps;
+};
+
+const readJourney = async (
+  id: string,
+  target: string,
+): Promise<JourneySnapshot | null> => {
+  const endpoint = new URL(`/api/journey/runs/${id}`, ORA_ORIGIN);
+  const response = await HTTP.request(
+    endpoint.toString(),
+    { method: "GET", headers: oraHeaders },
+    { timeout: JOURNEY_RUN_TIMEOUT_MS },
+  );
+  if (!response.success || !response.data.ok) return null;
+
+  const body = await resultify(() => response.data.json());
+  if (!body.success) return null;
+
+  const parsed = journeyRecordSchema.safeParse(body.data);
+  if (!parsed.success) return null;
+
+  const domain = normalizeTarget(parsed.data.domain ?? "");
+  if (domain && domain !== target) return null;
+
+  const snapshot = journeySnapshotSchema.safeParse({
+    id: parsed.data.id,
+    status: parsed.data.status,
+    domain: domain || target,
+    intentId: parsed.data.intent_id ?? null,
+    verdict: parsed.data.result?.verdict ?? parsed.data.verdict ?? null,
+    insight: parsed.data.result?.insight?.summary ?? null,
+    steps: parsed.data.result?.trajectory?.steps ?? [],
+    reportUrl: `${IS_AGENTIC_ORIGIN}/scan/${target}`,
+  });
+  if (!snapshot.success) return null;
+
+  if (snapshot.data.status === "running" && snapshot.data.steps.length === 0) {
+    const live = await peekTrajectory(id);
+    if (live.length > 0) return { ...snapshot.data, steps: live };
+  }
+
+  return snapshot.data;
+};
+
+/**
+ * The observed agent walk Is Agentic shows on the public report — supporting
+ * evidence, not part of the numeric score. `null` when they have not published
+ * a run for this domain yet.
+ */
+export const observedJourney = withSubscription(
+  async (_context, { store: storeId }: { store: string }) => {
+    const store = await Store.resolveForUser(Environment.SERVER, {
+      store: storeId,
+    });
+    if (!store.success) return store;
+
+    const target = normalizeTarget(store.data.domain);
+    if (!target) return { success: true as const, data: null };
+
+    const id = await discoverRunId(target);
+    if (!id) return { success: true as const, data: null };
+
+    const snapshot = await readJourney(id, target);
+    return { success: true as const, data: snapshot };
+  },
+  "Agentic.observedJourney",
+);
+
+/**
+ * Re-reads one run so the map can fill in while an agent is still walking.
+ * The id must already belong to this store's domain — this is not a way to
+ * start a journey, or to read someone else's.
+ */
+export const journeySnapshot = withSubscription(
+  async (_context, { store: storeId, run }: { store: string; run: string }) => {
+    const store = await Store.resolveForUser(Environment.SERVER, {
+      store: storeId,
+    });
+    if (!store.success) return store;
+
+    const target = normalizeTarget(store.data.domain);
+    if (!target) return { success: true as const, data: null };
+    if (!JOURNEY_RUN_ID.test(`/api/journey/runs/${run}`))
+      return { success: true as const, data: null };
+
+    const snapshot = await readJourney(run, target);
+    return { success: true as const, data: snapshot };
+  },
+  "Agentic.journeySnapshot",
+);
 
 /**
  * The distinct storefront domains behind this store's selected competitors.

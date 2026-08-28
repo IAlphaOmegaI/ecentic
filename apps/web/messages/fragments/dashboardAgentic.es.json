@@ -7,9 +7,10 @@
       "sections": {
         "scan": "01 — Análisis",
         "score": "02 — Puntuación",
-        "checks": "04 — Evidencia",
-        "competitors": "03 — Competidores",
-        "methodology": "05 — Metodología"
+        "journey": "03 — Tarea del agente",
+        "competitors": "04 — Competidores",
+        "checks": "05 — Evidencia",
+        "methodology": "06 — Metodología"
       },
       "scan": {
         "title": "Ejecutar un análisis",
@@ -34,10 +35,12 @@
         "title": "Dónde estás",
         "description": "La puntuación es de Is Agentic y se muestra sin modificar. Las capas van ordenadas por lo que más importa a una tienda.",
         "scoreLabel": "Puntuación agéntica",
+        "gradeLabel": "Nota",
         "attribution": "Ver el informe completo en is-agentic.com",
         "trend": "Puntuación a lo largo de tus análisis",
         "fixesTitle": "Correcciones de mayor impacto",
-        "gain": "+{points} pts",
+        "gain": "+{points}",
+        "gainAria": "{points} puntos",
         "layerCounts": "{passed} superadas · {warning} parciales · {failed} fallidas · {notApplicable} no aplicables",
         "empty": "Ejecuta tu primer análisis para ver cómo leen los agentes esta tienda.",
         "publicOnly": "Is Agentic ya tiene un informe público de este dominio, con {score} / 100 — {label}. Ejecuta un análisis para traer el detalle comprobación por comprobación y empezar a seguir la evolución.",
@@ -50,6 +53,21 @@
         "fixesNote": "Esta lista es de Is Agentic, ordenada por los puntos que aporta cada corrección. Los puntos sobre especificaciones de API, SDK o portales para desarrolladores afectan al dominio entero, no a tu catálogo — empieza por los que ecentic puede asumir.",
         "publicOnlyUnscored": "Is Agentic tiene un informe de este dominio pero aún no lo ha puntuado — {label}. Ejecuta un análisis para traer el detalle comprobación por comprobación y empezar a seguir la evolución.",
         "trendSummary": "{count} análisis desde el {since}, de {first} a {latest} sobre 100."
+      },
+      "journey": {
+        "title": "Qué hizo un agente de verdad",
+        "description": "Is Agentic envía un agente real a esta tienda y registra el recorrido. Ese mapa es evidencia de apoyo: no cambia la puntuación numérica.",
+        "empty": "Aún no hay un recorrido de agente para este dominio. Aparece en el informe de Is Agentic cuando termina una ejecución.",
+        "running": "Un agente está recorriendo esta tienda ahora. El mapa se completa sobre la marcha.",
+        "runningLabel": "En curso",
+        "nodes": "{count} pasos",
+        "attribution": "Tarea observada en is-agentic.com",
+        "verdict": {
+          "satisfied": "Tarea cumplida",
+          "partial": "Parcialmente cumplida",
+          "unsatisfied": "No cumplida",
+          "not_gradable": "No evaluable"
+        }
       },
       "checks": {
         "title": "Todas las comprobaciones",
@@ -76,6 +94,11 @@
         "unscored": "Sin puntuación",
         "ahead": "Les superas por {points}",
         "behind": "Te superan por {points}",
+        "coverage": "{scored} de {total} tiendas puntuadas",
+        "columnStorefront": "Tienda",
+        "columnScanned": "Último análisis",
+        "columnScore": "Puntuación",
+        "columnGap": "Frente a ti",
         "empty": "Aún no hay tiendas competidoras. Añade competidores y ecentic analizará los dominios que hay detrás."
       },
       "methodology": {

@@ -20,6 +20,12 @@ import * as z from "zod";
 
 export const IS_AGENTIC_ORIGIN = "https://is-agentic.com";
 
+/**
+ * Ora hosts the agent-journey API that draws the node map on an Is Agentic
+ * report. The score stream never includes it; we read it from here.
+ */
+export const ORA_ORIGIN = "https://ora.ai";
+
 /** Sent on every request so their logs can attribute the traffic to us. */
 export const USER_AGENT = "ecentic-agentic-score/1.0 (+https://ecentic.ai)";
 
@@ -381,6 +387,99 @@ export const CHECK_TONES = {
  */
 const HOSTNAME =
   /^[a-z0-9](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9-]*[a-z0-9])?)*\.[a-z](?:[a-z0-9-]*[a-z0-9])?$/;
+
+export const JOURNEY_STATUSES = ["running", "succeeded", "failed"] as const;
+export type JourneyStatus = (typeof JOURNEY_STATUSES)[number];
+
+export const JOURNEY_VERDICTS = [
+  "satisfied",
+  "partial",
+  "unsatisfied",
+  "not_gradable",
+] as const;
+export type JourneyVerdict = (typeof JOURNEY_VERDICTS)[number];
+
+const isJourneyStatus = (value: string): value is JourneyStatus =>
+  (JOURNEY_STATUSES as readonly string[]).includes(value);
+
+const isJourneyVerdict = (value: string): value is JourneyVerdict =>
+  (JOURNEY_VERDICTS as readonly string[]).includes(value);
+
+/**
+ * One step of Ora's trajectory tree. Lenient: a field they add later is
+ * ignored, and a type we do not draw still parses so the rest of the walk
+ * stays on the page.
+ */
+export const journeyStepSchema = z.object({
+  id: z.number(),
+  type: z.string(),
+  parent_id: z.number().optional(),
+  action: z.string().optional(),
+  tool: z.string().optional(),
+  url_host: z.string().optional(),
+  url_path: z.string().optional(),
+  search_query: z.string().optional(),
+  label: z.string().optional(),
+  completed: z.boolean().optional(),
+  text: z.string().optional(),
+  attribution: z
+    .object({
+      referrer: z.object({ step_id: z.number().optional() }).optional(),
+    })
+    .optional(),
+});
+
+export type JourneyStep = z.infer<typeof journeyStepSchema>;
+
+/** Pulls `steps` out of a live `trajectory` frame or a finished `result` body. */
+export const stepsFromPayload = (data: unknown): JourneyStep[] => {
+  const parsed = z
+    .object({
+      steps: z.array(journeyStepSchema).optional(),
+      trajectory: z.object({ steps: z.array(journeyStepSchema) }).optional(),
+    })
+    .safeParse(data);
+  if (!parsed.success) return [];
+  return parsed.data.steps ?? parsed.data.trajectory?.steps ?? [];
+};
+
+/** The GET /api/journey/runs/{id} body, only the fields the map needs. */
+export const journeyRecordSchema = z.object({
+  id: z.string(),
+  status: z.string(),
+  domain: z.string().optional(),
+  intent_id: z.string().optional(),
+  verdict: z.string().optional(),
+  result: z
+    .object({
+      verdict: z.string().optional(),
+      insight: z.object({ summary: z.string() }).optional(),
+      trajectory: z.object({ steps: z.array(journeyStepSchema) }).optional(),
+    })
+    .optional(),
+});
+
+export const journeySnapshotSchema = z.object({
+  id: z.string(),
+  status: z
+    .string()
+    .transform<JourneyStatus>((value) =>
+      isJourneyStatus(value) ? value : "failed",
+    ),
+  domain: z.string(),
+  intentId: z.string().nullable(),
+  verdict: z
+    .string()
+    .nullable()
+    .transform<JourneyVerdict | null>((value) =>
+      value && isJourneyVerdict(value) ? value : null,
+    ),
+  insight: z.string().nullable(),
+  steps: z.array(journeyStepSchema),
+  reportUrl: z.string(),
+});
+
+export type JourneySnapshot = z.infer<typeof journeySnapshotSchema>;
 
 /**
  * The scanner takes a bare host. Two very different things arrive here: a

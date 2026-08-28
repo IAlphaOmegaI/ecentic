@@ -2745,9 +2745,10 @@
       "sections": {
         "scan": "01 — Scan",
         "score": "02 — Score",
-        "checks": "04 — Evidence",
-        "competitors": "03 — Competitors",
-        "methodology": "05 — Methodology"
+        "checks": "05 — Evidence",
+        "competitors": "04 — Competitors",
+        "methodology": "06 — Methodology",
+        "journey": "03 — Agent task"
       },
       "scan": {
         "title": "Run a scan",
@@ -2775,7 +2776,7 @@
         "attribution": "View the full report on is-agentic.com",
         "trend": "Score across your scans",
         "fixesTitle": "Highest-impact fixes",
-        "gain": "+{points} pts",
+        "gain": "+{points}",
         "layerCounts": "{passed} passed · {warning} partial · {failed} failed · {notApplicable} not applicable",
         "empty": "Run your first scan to see how agents read this storefront.",
         "publicOnly": "Is Agentic already holds a public report for this domain, scoring {score} / 100 — {label}. Run a scan to pull in the full check-by-check detail and start tracking the trend.",
@@ -2787,7 +2788,9 @@
         },
         "fixesNote": "This list is Is Agentic's, ranked by the points each fix is worth. Items about API specs, SDKs, or developer portals apply to the whole domain, not to your catalog — start with the ones ecentic can take on.",
         "publicOnlyUnscored": "Is Agentic holds a report for this domain but has not scored it yet — {label}. Run a scan to pull in the full check-by-check detail and start tracking the trend.",
-        "trendSummary": "{count} scans since {since}, from {first} to {latest} out of 100."
+        "trendSummary": "{count} scans since {since}, from {first} to {latest} out of 100.",
+        "gradeLabel": "Grade",
+        "gainAria": "{points} points"
       },
       "checks": {
         "title": "Every check",
@@ -2815,11 +2818,31 @@
         "unscored": "No score",
         "ahead": "You lead by {points}",
         "behind": "You trail by {points}",
-        "empty": "No competitor storefronts yet. Add competitors and ecentic will scan the domains behind them."
+        "empty": "No competitor storefronts yet. Add competitors and ecentic will scan the domains behind them.",
+        "coverage": "{scored} of {total} storefronts scored",
+        "columnStorefront": "Storefront",
+        "columnScanned": "Last scanned",
+        "columnScore": "Score",
+        "columnGap": "vs you"
       },
       "methodology": {
         "title": "How this score works",
         "description": "Is Agentic's own description of the scoring model, read live from their MCP server."
+      },
+      "journey": {
+        "title": "What an agent actually did",
+        "description": "Is Agentic sends a real agent at this storefront and records the walk. That map is supporting evidence — it does not change the numeric score.",
+        "empty": "No agent walk is on record for this domain yet. It appears on the Is Agentic report once a run finishes.",
+        "running": "An agent is walking this storefront now. The map fills in as it goes.",
+        "runningLabel": "In progress",
+        "nodes": "{count} steps",
+        "attribution": "Observed task on is-agentic.com",
+        "verdict": {
+          "satisfied": "Task satisfied",
+          "partial": "Partly satisfied",
+          "unsatisfied": "Not satisfied",
+          "not_gradable": "Not gradable"
+        }
       }
     }
   },

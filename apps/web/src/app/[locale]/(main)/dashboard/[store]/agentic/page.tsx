@@ -1,4 +1,12 @@
-import { ArrowRightIcon, ShareIcon } from "@zenncore/icons";
+import {
+  ArrowRightIcon,
+  AwardIcon,
+  GaugeIcon,
+  HammerIcon,
+  RobotIcon,
+  ShareIcon,
+  TrendUpIcon,
+} from "@zenncore/icons";
 import {
   Accordion,
   AccordionItem,
@@ -12,7 +20,6 @@ import { Link } from "@/i18n/navigation";
 import * as AgenticScan from "@/server/app/agentic-scan";
 import * as Agentic from "@/server/app/intelligence/agentic";
 import {
-  CHECK_TONES,
   type Layer,
   orderedChecks,
   orderedLayers,
@@ -24,16 +31,19 @@ import {
 import * as Store from "@/server/app/store";
 import { unwrapEntitled } from "@/server/utils/entitlement";
 import { Environment } from "@/server/utils/environment";
-import { SectionKicker, StatusPill } from "../../_components/grid";
+import { StatCell, StatusPill } from "../../_components/grid";
 import {
   CompetitorScans,
   ScanRunner,
   ScoreTrend,
 } from "./_components/agentic-client";
+import { JourneyTrace } from "./_components/journey";
+import { CheckStatusMark, LayerGlyph, LayerTally } from "./_components/marks";
 import {
   AgenticShell,
   ChecksSkeleton,
   CompetitorsSkeleton,
+  JourneySkeleton,
   MethodologySkeleton,
   ScanSkeleton,
   ScoreSkeleton,
@@ -62,30 +72,61 @@ const ScanSection = async ({ params }: { params: StoreParams }) => {
       store={store}
       target={record.data.domain}
       lastScannedAt={overview?.complete?.createdAt.toISOString() ?? null}
+      reportUrl={overview?.complete?.report?.reportUrl ?? null}
     />
   );
 };
 
-const LayerBar = ({ layer, label }: { layer: Layer; label: string }) => {
+const LayerBar = ({
+  layer,
+  counts,
+  labels,
+}: {
+  layer: Layer;
+  counts: ReturnType<typeof tally>;
+  labels: {
+    passed: string;
+    warning: string;
+    failed: string;
+    notApplicable: string;
+    summary: string;
+  };
+}) => {
   const percentage = layer.maxScore
     ? Math.round((layer.score / layer.maxScore) * 100)
     : 0;
 
   return (
-    <div className="flex flex-col gap-2 bg-background-rich p-4">
-      <div className="flex items-baseline justify-between gap-3">
-        <p className="font-medium text-foreground text-sm">{layer.name}</p>
+    <div className="flex flex-col overflow-hidden rounded-lg border border-accent-foreground bg-background">
+      <div className="flex items-center justify-between gap-3 border-accent-foreground border-b px-4 py-3">
+        <div className="flex min-w-0 items-center gap-2">
+          <LayerGlyph
+            id={layer.id}
+            className="size-4 shrink-0 text-foreground-dimmed"
+          />
+          <p className="truncate font-medium text-foreground text-sm">
+            {layer.name}
+          </p>
+        </div>
         <p className="shrink-0 text-foreground-dimmed text-sm tabular-nums">
           {layer.score} / {layer.maxScore}
         </p>
       </div>
-      <div className="h-1.5 w-full overflow-hidden rounded-full bg-background-dimmed">
-        <div
-          className={`h-full rounded-full ${SCORE_FILLS[scoreTone(percentage)]}`}
-          style={{ width: `${percentage}%` }}
+      <div className="flex flex-col gap-3 p-4">
+        <div className="h-1.5 w-full overflow-hidden rounded-full bg-background-dimmed">
+          <div
+            className={`h-full rounded-full ${SCORE_FILLS[scoreTone(percentage)]}`}
+            style={{ width: `${percentage}%` }}
+          />
+        </div>
+        <LayerTally
+          passed={counts.passed}
+          warning={counts.warning}
+          failed={counts.failed}
+          notApplicable={counts.notApplicable}
+          labels={labels}
         />
       </div>
-      <p className="text-foreground-dimmed text-xs tabular-nums">{label}</p>
     </div>
   );
 };
@@ -111,136 +152,171 @@ const ScoreSection = async ({ params }: { params: StoreParams }) => {
     );
 
     return (
-      <div className="flex flex-col gap-3 p-4">
-        <p className="text-foreground text-sm">
-          {(() => {
-            if (!published) return translate("score.empty");
-            // Their API models an unscored report as a null score; rendering it
-            // as 0 would tell the merchant they failed everything.
-            if (published.score === null)
-              return translate("score.publicOnlyUnscored", {
+      <div className="flex gap-3 p-4">
+        <GaugeIcon
+          aria-hidden
+          className="mt-0.5 size-4 shrink-0 text-foreground-dimmed"
+        />
+        <div className="flex min-w-0 flex-col gap-3">
+          <p className="text-foreground text-sm">
+            {(() => {
+              if (!published) return translate("score.empty");
+              // Their API models an unscored report as a null score; rendering it
+              // as 0 would tell the merchant they failed everything.
+              if (published.score === null)
+                return translate("score.publicOnlyUnscored", {
+                  label: published.score_label,
+                });
+              return translate("score.publicOnly", {
+                score: String(published.score),
                 label: published.score_label,
               });
-            return translate("score.publicOnly", {
-              score: String(published.score),
-              label: published.score_label,
-            });
-          })()}
-        </p>
-        {published && (
-          <a
-            href={published.report_url}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex w-fit items-center gap-1.5 font-medium text-primary-text text-sm underline-offset-2 hover:underline"
-          >
-            {translate("score.publicLink")}
-            <ShareIcon aria-hidden className="size-3.5" />
-          </a>
-        )}
+            })()}
+          </p>
+          {published && (
+            <a
+              href={published.report_url}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex w-fit items-center gap-1.5 font-medium text-primary-text text-sm underline-offset-2 hover:underline"
+            >
+              {translate("score.publicLink")}
+              <ShareIcon aria-hidden className="size-3.5" />
+            </a>
+          )}
+        </div>
       </div>
     );
   }
 
   const tone = scoreTone(report.score);
   const fixes = (report.topFixes ?? []).slice(0, 5);
+  const tallyLabels = (counts: ReturnType<typeof tally>) => ({
+    passed: translate("checkStatus.pass"),
+    warning: translate("checkStatus.warning"),
+    failed: translate("checkStatus.fail"),
+    notApplicable: translate("checkStatus.na"),
+    summary: translate("score.layerCounts", {
+      passed: String(counts.passed),
+      warning: String(counts.warning),
+      failed: String(counts.failed),
+      notApplicable: String(counts.notApplicable),
+    }),
+  });
 
   return (
     <div className="flex flex-col">
       {/* design.md §10.2 — the band leads with the answer. */}
-      <div className="flex flex-col gap-3 border-accent-foreground border-b p-4">
-        <div className="flex flex-wrap items-center gap-3">
-          <SectionKicker>{translate("score.scoreLabel")}</SectionKicker>
-          <StatusPill tone={tone}>
-            {report.grade ?? translate(`score.status.${tone}`)}
-          </StatusPill>
-        </div>
-        <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
-          {report.score}
-          <span className="ml-1 font-medium text-foreground-dimmed text-xl">
-            / {report.scoreMax ?? 100}
-          </span>
-        </p>
-        <div
-          className="h-1.5 w-full overflow-hidden rounded-full bg-background-dimmed"
-          role="img"
-          aria-label={translate("score.scoreLabel")}
-        >
-          <div
-            className={`h-full rounded-full transition-[width] duration-500 ${SCORE_FILLS[tone]}`}
-            style={{ width: `${report.score}%` }}
+      <div
+        className={`grid gap-px bg-accent-foreground ${report.grade ? "sm:grid-cols-2" : ""}`}
+      >
+        {report.grade && (
+          <StatCell
+            label={translate("score.gradeLabel")}
+            icon={<AwardIcon />}
+            value={report.grade}
+            tone={tone}
+            detail={
+              <StatusPill tone={tone}>
+                {translate(`score.status.${tone}`)}
+              </StatusPill>
+            }
           />
-        </div>
-        {report.summary && (
+        )}
+        <StatCell
+          label={translate("score.scoreLabel")}
+          icon={<GaugeIcon />}
+          value={report.score}
+          suffix={`/ ${report.scoreMax ?? 100}`}
+          progress={report.score}
+          tone={tone}
+        />
+      </div>
+
+      {report.summary && (
+        <div className="flex gap-3 border-accent-foreground border-t p-4">
+          <RobotIcon
+            aria-hidden
+            className="mt-0.5 size-4 shrink-0 text-foreground-dimmed"
+          />
           <p className="max-w-3xl text-foreground-dimmed text-sm">
             {report.summary}
           </p>
-        )}
-        <a
-          href={report.reportUrl}
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex w-fit items-center gap-1.5 text-foreground-dimmed text-sm underline-offset-2 hover:underline"
-        >
-          {translate("score.attribution")}
-          <ShareIcon aria-hidden className="size-3.5" />
-        </a>
-      </div>
+        </div>
+      )}
 
-      <div className="grid gap-px bg-accent-foreground sm:grid-cols-2">
+      <div className="grid gap-3 border-accent-foreground border-t p-4 sm:grid-cols-2">
         {orderedLayers(report).map((layer) => {
           const counts = tally(layer.checks);
           return (
             <LayerBar
               key={layer.id}
               layer={layer}
-              label={translate("score.layerCounts", {
-                passed: String(counts.passed),
-                warning: String(counts.warning),
-                failed: String(counts.failed),
-                notApplicable: String(counts.notApplicable),
-              })}
+              counts={counts}
+              labels={tallyLabels(counts)}
             />
           );
         })}
-        {orderedLayers(report).length % 2 === 1 && (
-          <div className="hidden bg-background-rich sm:block" />
-        )}
       </div>
 
       {fixes.length > 0 && (
         <div className="flex flex-col">
-          <p className="px-4 pt-4 font-medium text-foreground text-sm">
-            {translate("score.fixesTitle")}
-          </p>
-          <p className="mt-1 max-w-3xl border-accent-foreground border-b px-4 pb-4 text-foreground-dimmed text-sm">
-            {translate("score.fixesNote")}
-          </p>
+          <div className="flex flex-col gap-1 border-accent-foreground border-b p-4">
+            <div className="flex items-center gap-2">
+              <HammerIcon
+                aria-hidden
+                className="size-4 shrink-0 text-foreground-dimmed"
+              />
+              <h3 className="font-semibold text-foreground-rich text-lg">
+                {translate("score.fixesTitle")}
+              </h3>
+            </div>
+            <p className="max-w-3xl text-foreground-dimmed text-sm">
+              {translate("score.fixesNote")}
+            </p>
+          </div>
           <div className="divide-y divide-accent-foreground">
             {fixes.map((fix) => (
-              <div key={fix.id} className="flex flex-col gap-1 p-4">
-                <div className="flex items-baseline justify-between gap-3">
-                  <p className="font-medium text-foreground text-sm">
-                    {fix.name}
+              <div key={fix.id} className="flex gap-3 p-4">
+                <LayerGlyph
+                  id={fix.layerId}
+                  className="mt-0.5 size-4 shrink-0 text-primary"
+                />
+                <div className="flex min-w-0 flex-1 flex-col gap-1">
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="font-medium text-foreground text-sm">
+                      {fix.name}
+                    </p>
+                    <StatusPill
+                      tone="primary"
+                      className="shrink-0 normal-case tracking-normal"
+                    >
+                      <TrendUpIcon aria-hidden className="size-3" />
+                      <span aria-hidden>
+                        {translate("score.gain", {
+                          points: fix.estScoreGain.toFixed(1),
+                        })}
+                      </span>
+                      <span className="sr-only">
+                        {translate("score.gainAria", {
+                          points: fix.estScoreGain.toFixed(1),
+                        })}
+                      </span>
+                    </StatusPill>
+                  </div>
+                  <p className="max-w-3xl text-foreground-dimmed text-sm">
+                    {fix.recommendation}
                   </p>
-                  <p className="shrink-0 text-primary text-sm tabular-nums">
-                    {translate("score.gain", {
-                      points: fix.estScoreGain.toFixed(1),
-                    })}
-                  </p>
+                  {PAYMENT_CHECK_REMEDIES[fix.id] && (
+                    <Link
+                      href={`/dashboard/${store}${PAYMENT_CHECK_REMEDIES[fix.id]}`}
+                      className="mt-1 inline-flex w-fit items-center gap-1.5 font-medium text-primary-text text-sm underline-offset-2 hover:underline"
+                    >
+                      {translate("checks.remedy")}
+                      <ArrowRightIcon aria-hidden className="size-3.5" />
+                    </Link>
+                  )}
                 </div>
-                <p className="max-w-3xl text-foreground-dimmed text-sm">
-                  {fix.recommendation}
-                </p>
-                {PAYMENT_CHECK_REMEDIES[fix.id] && (
-                  <Link
-                    href={`/dashboard/${store}${PAYMENT_CHECK_REMEDIES[fix.id]}`}
-                    className="mt-1 inline-flex w-fit items-center gap-1.5 font-medium text-primary-text text-sm underline-offset-2 hover:underline"
-                  >
-                    {translate("checks.remedy")}
-                    <ArrowRightIcon aria-hidden className="size-3.5" />
-                  </Link>
-                )}
               </div>
             ))}
           </div>
@@ -268,11 +344,9 @@ const CheckRow = ({
   remedy: string | null;
   labels: { status: string; notApplicable: string; remedy: string };
 }) => (
-  <div className="flex flex-col gap-2 p-4 sm:grid sm:grid-cols-[9rem_1fr] sm:gap-4">
-    <div>
-      <StatusPill tone={CHECK_TONES[check.status]}>{labels.status}</StatusPill>
-    </div>
-    <div className="min-w-0">
+  <div className="flex gap-3 p-4">
+    <CheckStatusMark status={check.status} label={labels.status} compact />
+    <div className="min-w-0 flex-1">
       <p className="font-medium text-foreground text-sm">{check.name}</p>
       {check.status === "na" ? (
         <p className="mt-1 max-w-3xl text-foreground-dimmed text-sm">
@@ -342,14 +416,30 @@ const ChecksSection = async ({ params }: { params: StoreParams }) => {
             className="border-accent-foreground border-b last:border-b-0"
           >
             <AccordionTrigger className="items-center gap-3 px-4 py-3">
+              <LayerGlyph
+                id={layer.id}
+                className="size-4 shrink-0 text-foreground-dimmed"
+              />
               <span className="font-medium text-foreground text-sm">
                 {layer.name}
               </span>
-              <span className="ml-auto shrink-0 text-foreground-dimmed text-sm tabular-nums">
-                {translate("checks.summary", {
-                  applicable: String(counts.applicable),
-                  failed: String(counts.failed + counts.warning),
-                })}
+              <span className="ml-auto shrink-0">
+                <LayerTally
+                  passed={counts.passed}
+                  warning={counts.warning}
+                  failed={counts.failed}
+                  notApplicable={counts.notApplicable}
+                  labels={{
+                    passed: translate("checkStatus.pass"),
+                    warning: translate("checkStatus.warning"),
+                    failed: translate("checkStatus.fail"),
+                    notApplicable: translate("checkStatus.na"),
+                    summary: translate("checks.summary", {
+                      applicable: String(counts.applicable),
+                      failed: String(counts.failed + counts.warning),
+                    }),
+                  }}
+                />
               </span>
             </AccordionTrigger>
             <AccordionPanel>
@@ -415,11 +505,24 @@ const CompetitorsSection = async ({ params }: { params: StoreParams }) => {
       rows={targets.map((target) => ({
         target,
         score: latest[target]?.score ?? null,
-        grade: latest[target]?.grade ?? null,
         scannedAt: latest[target]?.createdAt.toISOString() ?? null,
       }))}
     />
   );
+};
+
+/**
+ * The observed agent walk from the public Is Agentic report — the same node
+ * map they draw under the score, brought here as supporting evidence.
+ */
+const JourneySection = async ({ params }: { params: StoreParams }) => {
+  await connection();
+  const { store } = await params;
+  const snapshot = unwrapEntitled(
+    await Agentic.observedJourney(Environment.SERVER, { store }),
+  );
+
+  return <JourneyTrace store={store} initial={snapshot ?? null} />;
 };
 
 /**
@@ -468,6 +571,11 @@ export default ({
     score={
       <Suspense fallback={<ScoreSkeleton />}>
         <ScoreSection params={params} />
+      </Suspense>
+    }
+    journey={
+      <Suspense fallback={<JourneySkeleton />}>
+        <JourneySection params={params} />
       </Suspense>
     }
     checks={

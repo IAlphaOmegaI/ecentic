@@ -2,6 +2,7 @@ import {
   AgenticShell,
   ChecksSkeleton,
   CompetitorsSkeleton,
+  JourneySkeleton,
   MethodologySkeleton,
   ScanSkeleton,
   ScoreSkeleton,
@@ -13,6 +14,7 @@ export default () => (
   <AgenticShell
     scan={<ScanSkeleton />}
     score={<ScoreSkeleton />}
+    journey={<JourneySkeleton />}
     competitors={<CompetitorsSkeleton />}
     checks={<ChecksSkeleton />}
     methodology={<MethodologySkeleton />}
