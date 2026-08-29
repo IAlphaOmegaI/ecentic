@@ -33,6 +33,7 @@ import {
 import * as Utils from "./utils";
 
 // ecentic UCP platform profile
+//Google UCP profile: https://ucp.goog/.well-known/ucp.json
 export const AGENT_PROFILE = "https://ecentic.ai/ucp/agent-profile";
 
 // The playground drives one agent through the UCP tool flow — it demonstrates the

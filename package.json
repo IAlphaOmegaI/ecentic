@@ -22,7 +22,7 @@
     "clean": "turbo run clean && rm -rf node_modules"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.5.10",
+    "@biomejs/biome": "^2.5.11",
     "@turbo/gen": "^2.10.12",
     "babel-plugin-react-compiler": "^1.0.0",
     "turbo": "^2.10.12"
@@ -51,7 +51,7 @@
       "tailwindcss": "^4.3.3",
       "tsdown": "^0.22.14",
       "typescript": "^6.0.3",
-      "zod": "^4.4.3"
+      "zod": "^4.5.2"
     }
   }
 }
