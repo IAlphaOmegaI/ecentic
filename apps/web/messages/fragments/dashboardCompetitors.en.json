@@ -69,7 +69,8 @@
         "tabs": {
           "autoDetect": "Auto-detect",
           "pasteUrls": "Paste URLs",
-          "searchBrand": "Search Brand"
+          "searchBrand": "Search Brand",
+          "googleMerchant": "Google"
         }
       }
     }

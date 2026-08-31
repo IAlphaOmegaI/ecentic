@@ -11,6 +11,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { AutoDetectTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/auto-detect-tab";
 import { CompetitorList } from "@/app/[locale]/(auth)/onboarding/competitors/_components/competitor-list";
+import { MerchantTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/merchant-tab";
 import { SearchTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/search-tab";
 import { UrlTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/url-tab";
 import * as Competitor from "@/server/app/competitor";
@@ -94,6 +95,9 @@ export const AddCompetitors = ({
             <Tab value="search" className="flex-1">
               {translate("tabs.searchBrand")}
             </Tab>
+            <Tab value="merchant" className="flex-1">
+              {translate("tabs.googleMerchant")}
+            </Tab>
           </TabsList>
 
           {/* keepMounted: a detection stream in progress must survive switching
@@ -107,7 +111,7 @@ export const AddCompetitors = ({
             />
           </TabsPanel>
 
-          <TabsPanel value="url" className="border-0">
+          <TabsPanel value="url" keepMounted className="border-0">
             <UrlTab
               store={store}
               onSuccess={handleAdded}
@@ -115,9 +119,17 @@ export const AddCompetitors = ({
             />
           </TabsPanel>
 
-          <TabsPanel value="search" className="border-0">
+          <TabsPanel value="search" keepMounted className="border-0">
             <SearchTab
               productNames={productNames}
+              store={store}
+              onSuccess={handleAdded}
+              className="h-130 border-0"
+            />
+          </TabsPanel>
+
+          <TabsPanel value="merchant" keepMounted className="border-0">
+            <MerchantTab
               store={store}
               onSuccess={handleAdded}
               className="h-130 border-0"

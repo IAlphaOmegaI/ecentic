@@ -367,7 +367,45 @@
       "tabs": {
         "auto": "Auto-detect",
         "url": "Paste URLs",
-        "search": "Search Brand"
+        "search": "Search Brand",
+        "merchant": "Google"
+      },
+      "merchant": {
+        "label": "Competitors Google measured",
+        "description": "Rivals Google served alongside your own products in Shopping results — observed, not suggested.",
+        "loading": "Reading your Google Shopping report…",
+        "categoryPlaceholder": "Choose a category",
+        "country": "Market: {country}",
+        "measured": "{count, plural, one {# rival measured} other {# rivals measured}}",
+        "overlap": "{value} shared result pages",
+        "higher": "ranked above you {value}",
+        "traffic": {
+          "organic": "Free listings",
+          "ads": "Shopping ads"
+        },
+        "reason": {
+          "unsupported": "Google Shopping data is available for Shopify stores today. Other platforms are coming soon.",
+          "unlinked": "Connect your Google Merchant Center account to see the rivals Google measured against your store.",
+          "unknownCategory": "We couldn't tell which category your catalog sells in. Pick one above and we'll pull Google's ranking for it.",
+          "noData": "Google doesn't have enough Shopping impressions for this store yet. This fills in once your products have been serving for a few weeks — use the other tabs in the meantime."
+        },
+        "validation": {
+          "summary": "Google corroborates {confirmed} of the {total} competitors on your roster — the rest it hasn't served alongside your products in this category."
+        },
+        "action": {
+          "connect": "Connect Google Merchant Center",
+          "add": "{count, plural, =0 {Add selected} one {Add # competitor} other {Add # competitors}}",
+          "adding": "Adding…",
+          "validate": "Check my roster",
+          "validating": "Checking…"
+        },
+        "toast": {
+          "failed": "Couldn't load Google's competitor report",
+          "added": {
+            "title": "Competitors added",
+            "description": "{count} measured competitors added to your roster."
+          }
+        }
       },
       "action": {
         "back": "Back",
@@ -442,7 +480,8 @@
       "results": {
         "countCompetitorFound": "{count, plural, one {# competitor found} other {# competitors found}}",
         "countProductExtracted": "{count, plural, one {# product extracted} other {# products extracted}}",
-        "clear": "Clear"
+        "clear": "Clear",
+        "measured": "Measured"
       },
       "review": {
         "title": "Review your competitors",
