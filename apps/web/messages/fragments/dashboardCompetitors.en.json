@@ -67,6 +67,7 @@
         "rosterSummary": "{total} across {brands, plural, one {# brand} other {# brands}} — {selected} selected",
         "emptyRoster": "No competitors tracked yet. Add some above and they'll appear here.",
         "tabs": {
+          "liveOffers": "Live offers",
           "autoDetect": "Auto-detect",
           "pasteUrls": "Paste URLs",
           "searchBrand": "Search Brand",

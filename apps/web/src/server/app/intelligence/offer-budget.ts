@@ -104,6 +104,68 @@ export const consumeBudget = async ({
 };
 
 /**
+ * What an account with no active plan may spend, ever.
+ *
+ * Onboarding is where this feature has to prove it is not guessing: a merchant
+ * comparing their listing against a real rival at a real price is the whole
+ * pitch, and showing them a model's recollection instead wastes the one moment
+ * they are paying attention. So the free tier gets measured competitors too —
+ * the same argument that makes the onboarding scan free.
+ *
+ * A LIFETIME cap rather than a monthly one, unlike {@link MONTHLY_LOOKUPS}:
+ * there is no recurring revenue behind a free account to fund a monthly reset,
+ * so this is a one-off cost of acquisition (~$0.28 at the interactive rate) and
+ * is budgeted as one. Same shape as the anonymous playground cap.
+ */
+export const TRIAL_LOOKUP_LIMIT = 10;
+
+/** A year: long enough not to be trivially reset, bounded so the keyspace is. */
+const TRIAL_TTL_SECONDS = 60 * 60 * 24 * 365;
+
+/**
+ * Books one lookup against a free account's lifetime allowance.
+ *
+ * Keyed on the store rather than the user because the store is what a lookup is
+ * attributed to everywhere else in this file, and a merchant with two catalogs
+ * is genuinely evaluating the product twice.
+ */
+export const consumeTrialLookup = async ({
+  store,
+  operation,
+}: {
+  store: string;
+  operation: string;
+}): Promise<BudgetVerdict> => {
+  const key = `offers:trial:${store}`;
+  const marker = `offers:op:${operation}`;
+
+  try {
+    const first = await redis.set(marker, "1", { nx: true, ex: 3600 });
+    if (first === null) {
+      const used = Number((await redis.get(key)) ?? 0);
+      return {
+        allowed: used <= TRIAL_LOOKUP_LIMIT,
+        used,
+        allowance: TRIAL_LOOKUP_LIMIT,
+      };
+    }
+
+    const used = await redis.incr(key);
+    if (used === 1) await redis.expire(key, TRIAL_TTL_SECONDS);
+
+    return {
+      allowed: used <= TRIAL_LOOKUP_LIMIT,
+      used,
+      allowance: TRIAL_LOOKUP_LIMIT,
+    };
+  } catch {
+    // Fails open like every other limiter here — but a free account failing
+    // open is unmetered spend, so this one is worth watching if Redis is flaky.
+    return { allowed: true, used: 0, allowance: TRIAL_LOOKUP_LIMIT };
+  }
+};
+
+/**
  * Normalized lookup key.
  *
  * The cache is shared across tenants because catalogs overlap heavily — the

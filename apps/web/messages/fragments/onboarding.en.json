@@ -365,10 +365,40 @@
         "description": "We'll test your products head-to-head against these competitors in AI agent simulations."
       },
       "tabs": {
+        "offers": "Live offers",
         "auto": "Auto-detect",
         "url": "Paste URLs",
         "search": "Search Brand",
         "merchant": "Google"
+      },
+      "offers": {
+        "title": "Who else sells your products",
+        "description": "We look up each of your products and record the sellers carrying it right now, with their real prices.",
+        "action": "Find live offers",
+        "measuring": "Measuring",
+        "complete": "Complete",
+        "checking": "Checking sellers",
+        "runAgain": "Run again",
+        "finishedIn": "Finished in {elapsed}",
+        "sellerLog": "{seller} — {price}",
+        "exclusiveLog": "No other seller carries {title}",
+        "budgetLog": "Offer allowance used up for now",
+        "measured": "{count, plural, one {# competing offer measured} other {# competing offers measured}}",
+        "errors": {
+          "failed": "Offer lookup failed",
+          "noneFound": "No competing offers found for these products"
+        },
+        "toast": {
+          "failed": "Could not look up offers",
+          "found": {
+            "title": "Competing offers added",
+            "description": "{count, plural, one {# rival offer with a real price} other {# rival offers with real prices}}"
+          },
+          "noneFound": {
+            "title": "No competing offers",
+            "description": "Nobody else appears to sell these products. Try another tab to add rivals by brand or URL."
+          }
+        }
       },
       "merchant": {
         "label": "Competitors Google measured",

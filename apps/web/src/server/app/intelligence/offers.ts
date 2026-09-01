@@ -1,11 +1,15 @@
 "use server";
 
-import { withSubscription } from "@/server/utils/entitlement";
+import { eq } from "drizzle-orm";
+import { withAuthentication } from "@/server/utils/authentication";
+import { isEntitled, withSubscription } from "@/server/utils/entitlement";
 import { isPlanKey } from "@/server/utils/stripe";
+import { schema } from "../../database";
 import { Environment } from "../../utils/environment";
-import { RequestError } from "../../utils/error";
+import { RequestError, ValidationError } from "../../utils/error";
 import * as Store from "../store";
-import { resolveOffers } from "./offer-resolve";
+import * as Subscription from "../subscription";
+import { discoverOffers, resolveOffers } from "./offer-resolve";
 
 /**
  * Product-level competitor offers — the interactive entry point.
@@ -71,4 +75,59 @@ export const resolveOffersForProduct = withSubscription(
     return resolution;
   },
   "Offers.resolveOffersForProduct",
+);
+
+/**
+ * Streams measured competitor discovery for a set of products.
+ *
+ * `withAuthentication`, NOT `withSubscription`, and that is the deliberate part.
+ * The competitor step in onboarding runs before any billing row exists, so
+ * gating this the way `resolveOffersForProduct` is gated would make measured
+ * rivals invisible at exactly the moment the product has to demonstrate it is
+ * not guessing. AGENTS.md draws the same line: modules shared with the free
+ * onboarding scan stay on `withAuthentication`.
+ *
+ * The spend gate moves into the body instead. An entitled account draws on its
+ * plan's monthly allowance; everyone else draws on a small lifetime one
+ * (`TRIAL_LOOKUP_LIMIT`), so a free account can see the feature work without
+ * being an open tap.
+ */
+export const streamOfferDiscovery = withAuthentication(
+  async (
+    context,
+    { store: storeId, products }: { store: string; products: string[] },
+  ) => {
+    if (products.length === 0)
+      return {
+        success: false as const,
+        error: new ValidationError("No products selected"),
+      };
+
+    const owned = await ownedStore(storeId, context.session.user.id);
+    if (!owned.success) return owned;
+
+    // Read the billing row directly rather than through the entitlement
+    // wrapper: the absence of one is a supported state here, not a rejection.
+    const rows = await Subscription.find(Environment.SERVER, {
+      where: eq(schema.subscription.userId, context.session.user.id),
+      limit: 1,
+    });
+    if (!rows.success) return rows;
+
+    const subscription = rows.data[0] ?? null;
+    const entitled = isEntitled(subscription);
+    const plan = subscription?.plan ?? "";
+
+    return {
+      success: true as const,
+      data: discoverOffers({
+        userId: context.session.user.id,
+        storeId,
+        productIds: products,
+        plan: entitled && isPlanKey(plan) ? plan : null,
+        trial: !entitled,
+      }),
+    };
+  },
+  "Offers.streamOfferDiscovery",
 );

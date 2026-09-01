@@ -67,6 +67,7 @@
         "rosterSummary": "{total} en {brands, plural, one {# marca} other {# marcas}} — {selected} seleccionados",
         "emptyRoster": "Aún no hay competidores registrados. Añade algunos arriba y aparecerán aquí.",
         "tabs": {
+          "liveOffers": "Ofertas en vivo",
           "autoDetect": "Detección automática",
           "pasteUrls": "Pegar URLs",
           "searchBrand": "Buscar marca",

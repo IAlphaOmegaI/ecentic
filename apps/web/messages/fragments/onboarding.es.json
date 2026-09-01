@@ -365,10 +365,40 @@
         "description": "Probaremos tus productos cara a cara contra estos competidores en simulaciones de agentes de IA."
       },
       "tabs": {
+        "offers": "Ofertas en vivo",
         "auto": "Detección automática",
         "url": "Pegar URLs",
         "search": "Buscar marca",
         "merchant": "Google"
+      },
+      "offers": {
+        "title": "Quién más vende tus productos",
+        "description": "Consultamos cada uno de tus productos y registramos los vendedores que lo ofrecen ahora mismo, con sus precios reales.",
+        "action": "Buscar ofertas en vivo",
+        "measuring": "Midiendo",
+        "complete": "Completado",
+        "checking": "Comprobando vendedores",
+        "runAgain": "Ejecutar de nuevo",
+        "finishedIn": "Finalizado en {elapsed}",
+        "sellerLog": "{seller} — {price}",
+        "exclusiveLog": "Ningún otro vendedor ofrece {title}",
+        "budgetLog": "Se agotó el límite de consultas por ahora",
+        "measured": "{count, plural, one {# oferta competidora medida} other {# ofertas competidoras medidas}}",
+        "errors": {
+          "failed": "Falló la búsqueda de ofertas",
+          "noneFound": "No se encontraron ofertas competidoras para estos productos"
+        },
+        "toast": {
+          "failed": "No se pudieron buscar ofertas",
+          "found": {
+            "title": "Ofertas competidoras añadidas",
+            "description": "{count, plural, one {# oferta rival con precio real} other {# ofertas rivales con precios reales}}"
+          },
+          "noneFound": {
+            "title": "Sin ofertas competidoras",
+            "description": "Parece que nadie más vende estos productos. Prueba otra pestaña para añadir rivales por marca o URL."
+          }
+        }
       },
       "merchant": {
         "label": "Competidores medidos por Google",

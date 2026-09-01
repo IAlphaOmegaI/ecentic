@@ -17,6 +17,7 @@ import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
 import { AutoDetectTab } from "./auto-detect-tab";
 import { MerchantTab } from "./merchant-tab";
+import { OffersTab } from "./offers-tab";
 import { SearchTab } from "./search-tab";
 import { UrlTab } from "./url-tab";
 
@@ -47,9 +48,16 @@ export const CompetitorManager = ({
           <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <Tabs defaultValue="auto" className="h-full">
+          {/* Offers leads, and the order is the argument: it is the only tab
+              whose rivals and prices were observed rather than recalled. The
+              model-driven tabs stay because a private-label catalog has no
+              competing offers to find — they are the fallback, not the default. */}
+          <Tabs defaultValue="offers" className="h-full">
             <TabsList className={"w-full rounded-none border-x-0 border-t-0"}>
               <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
+              <Tab value="offers" className={"flex-1"}>
+                {translate("tabs.offers")}
+              </Tab>
               <Tab value="auto" className={"flex-1"}>
                 {translate("tabs.auto")}
               </Tab>
@@ -63,6 +71,18 @@ export const CompetitorManager = ({
                 {translate("tabs.merchant")}
               </Tab>
             </TabsList>
+
+            <TabsPanel
+              value="offers"
+              keepMounted
+              className={"h-[calc(100%-(var(--spacing)*9))] flex-1 border-0"}
+            >
+              <OffersTab
+                products={products}
+                store={store}
+                className={"h-full flex-1 border-accent-foreground border-b"}
+              />
+            </TabsPanel>
 
             <TabsPanel
               value="auto"
