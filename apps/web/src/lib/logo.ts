@@ -13,3 +13,26 @@ export const getBrandLogo = (brand: string | null | undefined) => {
   if (!domain) return null;
   return `https://www.google.com/s2/favicons?domain=${domain}.com&sz=128`;
 };
+
+/**
+ * Logo for a rival we know by hostname rather than by brand name — the shape
+ * Google's competitive-visibility report returns.
+ *
+ * {@link getBrandLogo} cannot be reused for these: it strips punctuation and
+ * appends ".com", so "wayfair.com" would come back as "wayfaircom.com". Here
+ * the domain is already the answer and only needs normalizing.
+ */
+export const getDomainLogo = (domain: string | null | undefined) => {
+  if (!domain) return null;
+
+  const host = domain
+    .trim()
+    .toLowerCase()
+    .replace(/^https?:\/\//, "")
+    .replace(/^www\./, "")
+    .split("/")[0];
+
+  if (!host) return null;
+
+  return `https://www.google.com/s2/favicons?domain=${host}&sz=128`;
+};

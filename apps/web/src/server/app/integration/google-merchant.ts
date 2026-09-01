@@ -2566,6 +2566,194 @@ export const disconnect = withAuthentication(
   "GoogleMerchant.disconnect",
 );
 
+export type MeasuredRival = {
+  domain: string;
+  /** 1-based position among competing domains; lower is more visible. */
+  rank: number;
+  relativeVisibility: number | null;
+  pageOverlapRate: number | null;
+  higherPositionRate: number | null;
+};
+
+export type CompetitiveVisibility = {
+  country: string;
+  categoryId: number | null;
+  categoryName: string | null;
+  trafficSource: GoogleMerchantAPI.TrafficSource;
+  /** The level-1 taxonomy, so the client can offer a picker without a round trip. */
+  categories: { id: number; name: string }[];
+  rivals: MeasuredRival[];
+  /**
+   * Why the list is empty, when it is. Separated from `error` on purpose: none
+   * of these are failures, they are states the merchant can act on.
+   */
+  reason: "unsupported" | "unlinked" | "unknown-category" | "no-data" | null;
+};
+
+const CATEGORIES = GoogleMerchantAPI.PRODUCT_CATEGORIES.map((category) => ({
+  id: category.id,
+  name: category.name,
+}));
+
+/**
+ * The country the report is asked about. Google's plugin writes the target
+ * market into the primary feed's label, which is the only country signal we
+ * hold — `store` has no country column. Anything that isn't a two-letter code
+ * (merchants do label feeds "primary", "main", …) falls back to US rather than
+ * sending Google a filter it will reject.
+ */
+const reportCountry = (feedLabel: string | null) =>
+  feedLabel && /^[A-Za-z]{2}$/.test(feedLabel) ? feedLabel.toUpperCase() : "US";
+
+/**
+ * The merchant's dominant level-1 category, by offer count.
+ *
+ * Sampled from one page of products rather than the full catalogue: this only
+ * picks a default for a selector the merchant can override, so paging through
+ * 100k offers to sharpen a guess would be wasted. Offers carrying a bare leaf
+ * id instead of a taxonomy path simply don't vote.
+ */
+const dominantCategory = async (accessToken: string, accountId: string) => {
+  const products = await GoogleMerchantAPI.listProducts(
+    accessToken,
+    accountId,
+    { maximumPages: 1 },
+  );
+  if (!products.success) return null;
+
+  const tally = new Map<number, number>();
+
+  for (const product of products.data) {
+    const id = GoogleMerchantAPI.categoryIdFromProductCategory(
+      product.productAttributes?.googleProductCategory,
+    );
+    if (id !== null) tally.set(id, (tally.get(id) ?? 0) + 1);
+  }
+
+  const ranked = [...tally.entries()].sort(([, a], [, b]) => b - a);
+  return ranked[0]?.[0] ?? null;
+};
+
+/**
+ * The rivals Google measured against this store — the one competitor source in
+ * the product that is observed rather than inferred.
+ *
+ * Everything about this is best-effort by design. An unlinked or unsupported
+ * store, a catalogue with no Google category, and an account below Google's
+ * (undocumented) minimum impression volume all return `reason` with an empty
+ * list, because none of them is an error the merchant can be shown a stack
+ * trace for — they are the normal states of a store that just connected.
+ */
+export const getCompetitiveVisibility = withAuthentication(
+  async (
+    context,
+    {
+      store: storeId,
+      categoryId: requestedCategory,
+      country: requestedCountry,
+      trafficSource = "ORGANIC",
+    }: {
+      store: string;
+      categoryId?: number;
+      country?: string;
+      trafficSource?: GoogleMerchantAPI.TrafficSource;
+    },
+  ): Promise<
+    | { success: true; data: CompetitiveVisibility }
+    | { success: false; error: Error }
+  > => {
+    const store = await ownedStore(storeId, context.session.user.id);
+    if (!store.success) return store;
+
+    const empty = (
+      reason: CompetitiveVisibility["reason"],
+      overrides: Partial<CompetitiveVisibility> = {},
+    ) => ({
+      success: true as const,
+      data: {
+        country: requestedCountry ?? "US",
+        categoryId: requestedCategory ?? null,
+        categoryName: requestedCategory
+          ? GoogleMerchantAPI.categoryName(requestedCategory)
+          : null,
+        trafficSource,
+        categories: CATEGORIES,
+        rivals: [],
+        reason,
+        ...overrides,
+      },
+    });
+
+    if (!SUPPORTED_PLATFORMS.includes(store.data.platform))
+      return empty("unsupported");
+
+    const account = await GoogleMerchantAccount.find(Environment.SERVER, {
+      where: eq(schema.googleMerchantAccount.storeId, storeId),
+    });
+    if (!account.success) return account;
+
+    const record = account.data[0];
+    if (!record?.googleAccountId) return empty("unlinked");
+
+    const resolved = await resolveAccessToken(storeId);
+    if (!resolved.success) return resolved;
+
+    const country = requestedCountry ?? reportCountry(record.feedLabel);
+    const categoryId =
+      requestedCategory ??
+      (await dominantCategory(resolved.accessToken, record.googleAccountId));
+
+    if (categoryId === null) return empty("unknown-category", { country });
+
+    const report = await GoogleMerchantAPI.competitiveVisibilityCompetitors(
+      resolved.accessToken,
+      record.googleAccountId,
+      { country, categoryId, trafficSource },
+    );
+    if (!report.success) return report;
+
+    // `is_your_domain` marks the merchant's own row — it is in the report so a
+    // caller can see where they place, never as someone to compete against.
+    const rivals = report.data
+      .filter((row) => row.domain && !row.isYourDomain)
+      .map(
+        (row): MeasuredRival => ({
+          domain: row.domain as string,
+          rank: row.rank ?? 0,
+          relativeVisibility: row.relativeVisibility ?? null,
+          pageOverlapRate: row.pageOverlapRate ?? null,
+          higherPositionRate: row.higherPositionRate ?? null,
+        }),
+      )
+      .sort((a, b) => a.rank - b.rank);
+
+    context.span.addBreadcrumb({
+      category: "google.reports.competitive_visibility",
+      data: {
+        "store.id": storeId,
+        country,
+        "category.id": categoryId,
+        "traffic.source": trafficSource,
+        rivals: rivals.length,
+      },
+    });
+
+    return {
+      success: true,
+      data: {
+        country,
+        categoryId,
+        categoryName: GoogleMerchantAPI.categoryName(categoryId),
+        trafficSource,
+        categories: CATEGORIES,
+        rivals,
+        reason: rivals.length === 0 ? "no-data" : null,
+      },
+    };
+  },
+  "GoogleMerchant.getCompetitiveVisibility",
+);
+
 export type Status = {
   /** False for platforms Path 1 doesn't cover yet (WooCommerce, feed, CSV). */
   supported: boolean;

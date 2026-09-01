@@ -16,6 +16,7 @@ import { Motion } from "@/components/motion";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
 import { AutoDetectTab } from "./auto-detect-tab";
+import { MerchantTab } from "./merchant-tab";
 import { SearchTab } from "./search-tab";
 import { UrlTab } from "./url-tab";
 
@@ -58,6 +59,9 @@ export const CompetitorManager = ({
               <Tab value="search" className={"flex-1"}>
                 {translate("tabs.search")}
               </Tab>
+              <Tab value="merchant" className={"flex-1"}>
+                {translate("tabs.merchant")}
+              </Tab>
             </TabsList>
 
             <TabsPanel
@@ -92,6 +96,21 @@ export const CompetitorManager = ({
             >
               <SearchTab
                 productNames={productNames}
+                store={store}
+                className={"h-full flex-1 border-accent-foreground border-b"}
+              />
+            </TabsPanel>
+
+            {/* keepMounted so the picked rivals survive a tab switch. The
+                mount-time fetch this costs is a single query against our own
+                tables for the common onboarding case — a store with no Google
+                link never reaches Google's API. */}
+            <TabsPanel
+              value="merchant"
+              keepMounted
+              className={"h-[calc(100%-(var(--spacing)*9))] flex-1 border-0"}
+            >
+              <MerchantTab
                 store={store}
                 className={"h-full flex-1 border-accent-foreground border-b"}
               />
