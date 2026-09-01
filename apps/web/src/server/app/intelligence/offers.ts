@@ -1,15 +1,12 @@
 "use server";
 
-import { eq } from "drizzle-orm";
 import { withAuthentication } from "@/server/utils/authentication";
-import { isEntitled, withSubscription } from "@/server/utils/entitlement";
+import { withSubscription } from "@/server/utils/entitlement";
 import { isPlanKey } from "@/server/utils/stripe";
-import { schema } from "../../database";
 import { Environment } from "../../utils/environment";
 import { RequestError, ValidationError } from "../../utils/error";
 import * as Store from "../store";
-import * as Subscription from "../subscription";
-import { discoverOffers, resolveOffers } from "./offer-resolve";
+import { billingFor, discoverOffers, resolveOffers } from "./offer-resolve";
 
 /**
  * Product-level competitor offers — the interactive entry point.
@@ -106,17 +103,9 @@ export const streamOfferDiscovery = withAuthentication(
     const owned = await ownedStore(storeId, context.session.user.id);
     if (!owned.success) return owned;
 
-    // Read the billing row directly rather than through the entitlement
-    // wrapper: the absence of one is a supported state here, not a rejection.
-    const rows = await Subscription.find(Environment.SERVER, {
-      where: eq(schema.subscription.userId, context.session.user.id),
-      limit: 1,
-    });
-    if (!rows.success) return rows;
-
-    const subscription = rows.data[0] ?? null;
-    const entitled = isEntitled(subscription);
-    const plan = subscription?.plan ?? "";
+    // The absence of a billing row is a supported state here, not a rejection —
+    // see the note on the wrapper above.
+    const billing = await billingFor(context.session.user.id);
 
     return {
       success: true as const,
@@ -124,8 +113,7 @@ export const streamOfferDiscovery = withAuthentication(
         userId: context.session.user.id,
         storeId,
         productIds: products,
-        plan: entitled && isPlanKey(plan) ? plan : null,
-        trial: !entitled,
+        ...billing,
       }),
     };
   },

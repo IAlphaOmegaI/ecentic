@@ -17,6 +17,7 @@ import {
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { usePaginationChangeHandler } from "@/hooks/pagination";
+import { formatPrice } from "@/lib/currency";
 import { formatRelativeTime } from "@/lib/date";
 import { SectionKicker } from "./grid";
 
@@ -48,6 +49,9 @@ const WinRateBar = ({ rate }: { rate: number }) => {
 const buildColumns = (
   fields: {
     brand: string;
+    price: string;
+    measured: string;
+    unmeasured: string;
     winRate: string;
     simulations: string;
     lastUpdated: string;
@@ -78,6 +82,32 @@ const buildColumns = (
         </div>
       </div>
     ),
+  },
+  {
+    accessorKey: "lowestPrice",
+    header: fields.price,
+    cell: ({ row }) => {
+      // Deliberately shows the OBSERVED price only. A brand whose rows all came
+      // from a model has a price stored, but rendering it here beside measured
+      // ones would present a recollection and an observation as the same kind
+      // of fact — which is exactly the confusion this column exists to remove.
+      const price = row.original.lowestPrice;
+      if (!price)
+        return (
+          <span className="text-foreground-dimmed/50">{fields.unmeasured}</span>
+        );
+
+      return (
+        <div className="flex items-center gap-2">
+          <span className="font-medium text-foreground-rich tabular-nums">
+            {formatPrice(price, null)}
+          </span>
+          <span className="shrink-0 border border-primary/40 bg-primary/10 px-1.5 py-px font-medium text-[10px] text-primary uppercase tracking-wide">
+            {fields.measured}
+          </span>
+        </div>
+      );
+    },
   },
   {
     accessorKey: "winRate",
@@ -119,6 +149,9 @@ export const CompetitorsTable = ({
   const columns = buildColumns(
     {
       brand: translate("fields.brand"),
+      price: translate("fields.price"),
+      measured: translate("fields.measured"),
+      unmeasured: translate("fields.unmeasured"),
       winRate: translate("fields.winRate"),
       simulations: translate("fields.simulations"),
       lastUpdated: translate("fields.lastUpdated"),
@@ -204,5 +237,14 @@ export namespace CompetitorsTable {
     winRate: number;
     simulations: number;
     updatedAt: Date;
+    /**
+     * Provenance. Optional so the two callers that do not aggregate it yet keep
+     * compiling — a row without these renders no price and no badge rather than
+     * an empty column.
+     */
+    measured?: number;
+    /** Cheapest OBSERVED price for this brand. Null when nothing was measured. */
+    lowestPrice?: string | null;
+    measuredAt?: Date | null;
   };
 }

@@ -63,6 +63,7 @@ import {
   StatLabel,
   StatusPill,
 } from "../../../../_components/grid";
+import { FindOffers } from "./find-offers";
 
 export type ProductDetailData = {
   product: {
@@ -435,7 +436,12 @@ export const ProductDetail = ({ data }: ProductDetail.Props) => {
       </TabsList>
 
       <TabsPanel value="overview">
-        <OverviewTab store={store} models={models} competitors={competitors} />
+        <OverviewTab
+          store={store}
+          product={product.id}
+          models={models}
+          competitors={competitors}
+        />
       </TabsPanel>
 
       <TabsPanel value="replay">
@@ -444,6 +450,7 @@ export const ProductDetail = ({ data }: ProductDetail.Props) => {
 
       <TabsPanel value="battlecard">
         <BattlecardTab
+          store={store}
           product={product}
           winRate={winRate}
           canPublish={canPublish}
@@ -472,10 +479,13 @@ export namespace ProductDetail {
 
 const OverviewTab = ({
   store,
+  product,
   models,
   competitors,
 }: {
   store: string;
+  /** Needed only so the empty state can offer to go and find rivals. */
+  product: string;
   models: ProductDetailData["models"];
   competitors: ProductDetailData["competitors"];
 }) => {
@@ -582,9 +592,12 @@ const OverviewTab = ({
       >
         <DataTable className="border-b-0">
           <DataTableEmpty>
-            <p className="p-6 text-center font-light text-foreground-dimmed text-sm">
-              {translate("noCompetitors")}
-            </p>
+            <div className="flex flex-col items-center gap-3 p-6">
+              <p className="text-center font-light text-foreground-dimmed text-sm">
+                {translate("noCompetitors")}
+              </p>
+              <FindOffers store={store} product={product} />
+            </div>
           </DataTableEmpty>
         </DataTable>
       </DataTableProvider>
@@ -1047,12 +1060,15 @@ const Outcome = ({
 );
 
 const BattlecardTab = ({
+  store,
   product,
   winRate,
   canPublish,
   competitors,
   simulations,
 }: {
+  /** The trimmed `product` shape carries no storeId, so it is passed alongside. */
+  store: string;
   product: ProductDetailData["product"];
   winRate: number;
   canPublish: boolean;
@@ -1064,10 +1080,11 @@ const BattlecardTab = ({
 
   if (competitors.length === 0)
     return (
-      <div className="border-accent-foreground border-t bg-background-rich p-8 text-center">
+      <div className="flex flex-col items-center gap-3 border-accent-foreground border-t bg-background-rich p-8 text-center">
         <p className="font-light text-foreground-dimmed text-sm">
           {translate("empty")}
         </p>
+        <FindOffers store={store} product={product.id} />
       </div>
     );
 

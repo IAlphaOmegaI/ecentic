@@ -18,7 +18,7 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { type ReactNode, useEffect, useRef, useState } from "react";
-import { AutoDetectTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/auto-detect-tab";
+import { OffersTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/offers-tab";
 import { useScanRunner } from "@/app/[locale]/(auth)/onboarding/scan/_components/use-scan-runner";
 import { isJudgeable } from "@/lib/competitor-evidence";
 import {
@@ -474,7 +474,12 @@ export const SimulationsClient = ({
               })}
             </p>
           </div>
-          <AutoDetectTab
+          {/* Measured offers, not model recall. This block builds the roster a
+              scan is about to judge, which is the last place an invented price
+              belongs: `isJudgeable` accepts any non-empty price, so a
+              hallucinated one is fed to the rubric exactly like an observed
+              one — and the resulting win rate is what the whole page reports. */}
+          <OffersTab
             products={productIds}
             store={store}
             onSuccess={handleDetectionSuccess}

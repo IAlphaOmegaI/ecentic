@@ -373,6 +373,22 @@ export const aggregateBrandsForStore = withInstrumentation(
             simulations: countRows(schema.simulation.id),
             wins: sql<number>`count(${schema.simulation.id}) filter (where ${schema.simulation.winner} = 'product')`,
             updatedAt: max(schema.competitor.updatedAt),
+            // Provenance, aggregated. Without it the dashboard renders a price
+            // GPT recalled and a price observed from a named seller
+            // identically, which is the one thing a merchant must be able to
+            // tell apart before acting on either.
+            //
+            // `countDistinct` on the competitor id rather than a bare count:
+            // the simulation join multiplies rows, so a plain count would
+            // report the number of judgements, not the number of rivals.
+            measured: sql<number>`count(distinct ${schema.competitor.id}) filter (where ${schema.competitor.confidence} in ('measured','corroborated'))`,
+            // Cheapest observed rival price in the group, and when it was seen.
+            // Null for a brand with no measured row, which the UI renders as
+            // "no observed price" rather than as free.
+            lowestPrice: sql<
+              string | null
+            >`min(${schema.competitor.priceAmount}) filter (where ${schema.competitor.confidence} in ('measured','corroborated'))`,
+            measuredAt: max(schema.competitor.measuredAt),
           })
           .from(schema.competitor)
           .leftJoin(
@@ -418,6 +434,11 @@ export const aggregateBrandsForStore = withInstrumentation(
               : 0,
           simulations: row.simulations,
           updatedAt: row.updatedAt ?? new Date(0),
+          /** How many of this brand's rows carry an observed price. */
+          measured: Number(row.measured ?? 0),
+          /** Cheapest observed price, or null when nothing here was measured. */
+          lowestPrice: row.lowestPrice,
+          measuredAt: row.measuredAt,
         })),
         total: totals[0]?.value ?? 0,
       },

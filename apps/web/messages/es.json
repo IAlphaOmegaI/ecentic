@@ -592,6 +592,23 @@
             "standardTitle": "Usando markup estándar de ecentic",
             "standardText": "El app embed renderiza datos estructurados por defecto del contenido del producto en vivo. Publica la versión optimizada por IA abajo para ofrecer a los agentes un markup más rico y competitivo para este producto."
           }
+        },
+        "findOffers": {
+          "action": "Buscar quién más lo vende",
+          "finding": "Comprobando vendedores…",
+          "toast": {
+            "failed": "No se pudieron buscar ofertas",
+            "found": {
+              "title": "Ofertas competidoras encontradas",
+              "description": "{count, plural, one {# vendedor ofrece este producto} other {# vendedores ofrecen este producto}}"
+            },
+            "none": {
+              "title": "Sin ofertas competidoras",
+              "exclusive": "Ningún otro vendedor parece ofrecer este producto.",
+              "budget": "Has agotado las consultas de ofertas de este mes.",
+              "unconfigured": "La búsqueda de ofertas no está habilitada en este entorno."
+            }
+          }
         }
       },
       "add": {
@@ -735,7 +752,10 @@
           "brand": "Marca",
           "winRate": "Tasa de victoria",
           "simulations": "Simulaciones",
-          "lastUpdated": "Última actualización"
+          "lastUpdated": "Última actualización",
+          "price": "Precio observado",
+          "measured": "Medido",
+          "unmeasured": "Sin medir"
         },
         "productCount": "{count, plural, one {# producto} other {# productos}}",
         "states": {

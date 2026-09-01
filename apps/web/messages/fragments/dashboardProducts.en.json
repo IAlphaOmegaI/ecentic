@@ -95,6 +95,23 @@
           "reviewQueue": "Review queue",
           "optimizePublish": "Optimize & publish"
         },
+        "findOffers": {
+          "action": "Find who else sells this",
+          "finding": "Checking sellers…",
+          "toast": {
+            "failed": "Could not look up offers",
+            "found": {
+              "title": "Competing offers found",
+              "description": "{count, plural, one {# seller carries this product} other {# sellers carry this product}}"
+            },
+            "none": {
+              "title": "No competing offers",
+              "exclusive": "No other seller appears to carry this product.",
+              "budget": "You have used this month's offer lookups.",
+              "unconfigured": "Offer lookup is not enabled on this environment."
+            }
+          }
+        },
         "battlecard": {
           "empty": "No competitor data available. Run a scan to generate battlecards.",
           "headToHead": "Head-to-Head Results",
