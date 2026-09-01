@@ -777,7 +777,8 @@
         "tabs": {
           "autoDetect": "Detección automática",
           "pasteUrls": "Pegar URLs",
-          "searchBrand": "Buscar marca"
+          "searchBrand": "Buscar marca",
+          "googleMerchant": "Google"
         },
         "shellTitle": "Añadir competidores",
         "shellDescription": "Las marcas contra las que se juzga el catálogo de esta tienda. Los competidores pertenecen a una sola tienda, así que nunca se mezclan con tus otras tiendas."
@@ -2171,7 +2172,11 @@
         },
         "frequency": {
           "title": "Frecuencia de simulación",
-          "options": ["Solo manual", "Diaria", "Semanal"]
+          "options": [
+            "Solo manual",
+            "Diaria",
+            "Semanal"
+          ]
         },
         "persona": {
           "title": "Persona de compra",
@@ -6682,7 +6687,13 @@
       },
       "selection": "{selected} de {limit} productos seleccionados",
       "table": {
-        "headers": ["Producto", "Precio", "Moneda", "Estado", "Calidad"]
+        "headers": [
+          "Producto",
+          "Precio",
+          "Moneda",
+          "Estado",
+          "Calidad"
+        ]
       },
       "states": {
         "active": "Activo",
@@ -6706,7 +6717,8 @@
       "tabs": {
         "auto": "Detección automática",
         "url": "Pegar URLs",
-        "search": "Buscar marca"
+        "search": "Buscar marca",
+        "merchant": "Google"
       },
       "action": {
         "back": "Atrás",
@@ -6781,18 +6793,61 @@
       "results": {
         "countCompetitorFound": "{count, plural, one {# competidor encontrado} other {# competidores encontrados}}",
         "countProductExtracted": "{count, plural, one {# producto extraído} other {# productos extraídos}}",
-        "clear": "Limpiar"
+        "clear": "Limpiar",
+        "measured": "Medido"
       },
       "review": {
         "title": "Revisa tus competidores",
         "description": "Selecciona los competidores que quieres incluir en tus simulaciones de agentes de IA.",
         "summary": "{total} productos competidores en {brands} marcas — {selected} seleccionados",
         "table": {
-          "headers": ["Competidor", "Precio", "Moneda", "Marca"]
+          "headers": [
+            "Competidor",
+            "Precio",
+            "Moneda",
+            "Marca"
+          ]
         },
         "action": {
           "back": "Atrás",
           "next": "Siguiente: Ejecutar escaneo"
+        }
+      },
+      "merchant": {
+        "label": "Competidores medidos por Google",
+        "description": "Rivales que Google mostró junto a tus productos en Shopping: observados, no sugeridos.",
+        "loading": "Leyendo tu informe de Google Shopping…",
+        "categoryPlaceholder": "Elige una categoría",
+        "country": "Mercado: {country}",
+        "measured": "{count, plural, one {# rival medido} other {# rivales medidos}}",
+        "overlap": "{value} de páginas de resultados compartidas",
+        "higher": "por encima de ti el {value}",
+        "traffic": {
+          "organic": "Fichas gratuitas",
+          "ads": "Anuncios de Shopping"
+        },
+        "reason": {
+          "unsupported": "Los datos de Google Shopping están disponibles hoy para tiendas Shopify. Otras plataformas llegarán pronto.",
+          "unlinked": "Conecta tu cuenta de Google Merchant Center para ver los rivales que Google midió frente a tu tienda.",
+          "unknownCategory": "No pudimos determinar en qué categoría vende tu catálogo. Elige una arriba y traeremos la clasificación de Google.",
+          "noData": "Google aún no tiene suficientes impresiones de Shopping para esta tienda. Esto se completará cuando tus productos lleven unas semanas publicados; mientras tanto usa las otras pestañas."
+        },
+        "action": {
+          "connect": "Conectar Google Merchant Center",
+          "add": "{count, plural, =0 {Añadir seleccionados} one {Añadir # competidor} other {Añadir # competidores}}",
+          "adding": "Añadiendo…",
+          "validate": "Revisar mi lista",
+          "validating": "Revisando…"
+        },
+        "toast": {
+          "failed": "No se pudo cargar el informe de competidores de Google",
+          "added": {
+            "title": "Competidores añadidos",
+            "description": "Se añadieron {count} competidores medidos a tu lista."
+          }
+        },
+        "validation": {
+          "summary": "Google corrobora {confirmed} de los {total} competidores de tu lista; al resto no los ha mostrado junto a tus productos en esta categoría."
         }
       }
     },
@@ -7095,7 +7150,11 @@
         "title": "Errores de la API",
         "accent": "de ecentic.",
         "description": "Cada fallo de la API de ecentic es un documento de problema tipado, no una página HTML. El código es el contrato: es estable, legible por máquinas y seguro para tomar decisiones.",
-        "assurances": ["RFC 9457", "Códigos estables", "Pistas de resolución"],
+        "assurances": [
+          "RFC 9457",
+          "Códigos estables",
+          "Pistas de resolución"
+        ],
         "art": {
           "alt": "Ilustración en ASCII de un escudo"
         },
@@ -7235,7 +7294,11 @@
         "title": "Servidor MCP",
         "accent": "de ecentic.",
         "description": "Claude, ChatGPT y cualquier cliente del Model Context Protocol pueden llamar a ecentic de forma nativa por JSON-RPC 2.0. Esta página es la referencia de conexión: el endpoint, el transporte, el handshake y todas las herramientas que expone.",
-        "assurances": ["Streamable HTTP", "JSON-RPC 2.0", "7 herramientas"],
+        "assurances": [
+          "Streamable HTTP",
+          "JSON-RPC 2.0",
+          "7 herramientas"
+        ],
         "art": {
           "alt": "Ilustración ASCII de un robot"
         },

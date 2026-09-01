@@ -624,6 +624,14 @@ export type MerchantProduct = {
     title?: string;
     description?: string;
     productTypes?: string[];
+    /**
+     * Google's own taxonomy for the offer, as either a path
+     * ("Home & Garden > Kitchen & Dining") or a bare leaf id ("1604"). Distinct
+     * from `productTypes`, which is the merchant's private taxonomy — only this
+     * one maps onto `report_category_id`. See
+     * {@link categoryIdFromProductCategory}.
+     */
+    googleProductCategory?: string;
   };
   /** Post-merge custom attributes — reading these back verifies a UCP push. */
   customAttributes?: CustomAttribute[];
@@ -950,6 +958,228 @@ export const buildUcpCustomAttributes = (
 
   return attributes;
 };
+
+/**
+ * Level-1 Google product taxonomy categories, the unit `report_category_id`
+ * accepts (the reports take categories at levels 1–3; we only ever ask at
+ * level 1, which is the whole taxonomy in 21 rows).
+ *
+ * Hardcoded from Google's published `taxonomy-with-ids.en-US.txt`
+ * (version 2021-09-21) rather than fetched: the top level has been stable for
+ * years, and the alternative is shipping a 5,595-row table to resolve 21
+ * values. Google's own reports example uses 536 (Home & Garden), which is the
+ * cross-check that these ids are the ones the report wants.
+ */
+export const PRODUCT_CATEGORIES = [
+  { id: 1, name: "Animals & Pet Supplies" },
+  { id: 166, name: "Apparel & Accessories" },
+  { id: 8, name: "Arts & Entertainment" },
+  { id: 537, name: "Baby & Toddler" },
+  { id: 111, name: "Business & Industrial" },
+  { id: 141, name: "Cameras & Optics" },
+  { id: 222, name: "Electronics" },
+  { id: 412, name: "Food, Beverages & Tobacco" },
+  { id: 436, name: "Furniture" },
+  { id: 632, name: "Hardware" },
+  { id: 469, name: "Health & Beauty" },
+  { id: 536, name: "Home & Garden" },
+  { id: 5181, name: "Luggage & Bags" },
+  { id: 772, name: "Mature" },
+  { id: 783, name: "Media" },
+  { id: 922, name: "Office Supplies" },
+  { id: 5605, name: "Religious & Ceremonial" },
+  { id: 2092, name: "Software" },
+  { id: 988, name: "Sporting Goods" },
+  { id: 1239, name: "Toys & Games" },
+  { id: 888, name: "Vehicles & Parts" },
+] as const;
+
+export const categoryName = (id: number) =>
+  PRODUCT_CATEGORIES.find((category) => category.id === id)?.name ?? null;
+
+/**
+ * Maps a product's `googleProductCategory` to a level-1 category id.
+ *
+ * The attribute is a free-form string that Google accepts in two shapes: a
+ * taxonomy path ("Home & Garden > Kitchen & Dining") or a bare numeric id
+ * ("1604"). Only the path form is resolvable here — a numeric id is a leaf we
+ * cannot walk up to its root without the full taxonomy — so a numeric value
+ * returns null and the caller falls back to asking the merchant.
+ */
+export const categoryIdFromProductCategory = (
+  value: string | null | undefined,
+): number | null => {
+  if (!value) return null;
+
+  const root = value.split(">")[0]?.trim().toLowerCase();
+  if (!root) return null;
+
+  return (
+    PRODUCT_CATEGORIES.find((category) => category.name.toLowerCase() === root)
+      ?.id ?? null
+  );
+};
+
+export type ReportRow<Key extends string, View> = {
+  [K in Key]?: View;
+};
+
+/**
+ * Runs one Merchant API report query, following `nextPageToken` to the end.
+ *
+ * The query language is snake_case (`report_country_code`) while the JSON it
+ * returns is camelCase (`reportCountryCode`), and every row arrives wrapped in
+ * a per-view envelope — `results: [{ competitiveVisibilityCompetitorView: {…} }]`
+ * — so callers unwrap by view key rather than reading the row directly.
+ */
+const searchReport = async <Key extends string, View>(
+  accessToken: string,
+  accountId: string,
+  {
+    query,
+    view,
+    maximumPages = 10,
+  }: {
+    query: string;
+    view: Key;
+    maximumPages?: number;
+  },
+): Promise<Result<View[], Error>> => {
+  const all: View[] = [];
+  let pageToken: string | null = null;
+
+  for (const _ of Array.from({ length: maximumPages })) {
+    const page: Result<
+      { results?: ReportRow<Key, View>[]; nextPageToken?: string },
+      Error
+    > = await api(
+      accessToken,
+      `/reports/v1/accounts/${accountId}/reports:search`,
+      {
+        method: "POST",
+        body: {
+          query,
+          pageSize: 1000,
+          ...(pageToken ? { pageToken } : {}),
+        },
+      },
+    );
+    if (!page.success) return page;
+
+    for (const row of page.data.results ?? []) {
+      const value = row[view];
+      if (value) all.push(value);
+    }
+
+    pageToken = page.data.nextPageToken ?? null;
+    if (!pageToken) break;
+  }
+
+  return { success: true, data: all };
+};
+
+export type CompetitiveVisibilityRow = {
+  domain?: string;
+  isYourDomain?: boolean;
+  /** 1-based position among competing domains; lower is more visible. */
+  rank?: number;
+  /** Ratio 0–1 of how often this rival appeared versus the merchant. */
+  relativeVisibility?: number;
+  /** Ratio 0–1 of result pages carrying both this rival and the merchant. */
+  pageOverlapRate?: number;
+  /** Ratio 0–1 of those shared pages where the rival placed higher. */
+  higherPositionRate?: number;
+  adsOrganicRatio?: number;
+};
+
+export type TrafficSource = "ADS" | "ORGANIC";
+
+/**
+ * The rivals Google actually observed competing with this merchant.
+ *
+ * Every filter here is mandatory per the reports guide — a date range plus
+ * `report_country_code`, `report_category_id` and `traffic_source` — and
+ * `domain` must be selected but cannot be filtered on. An account below
+ * Google's (undocumented) minimum impression volume returns zero rows rather
+ * than an error, which is why callers treat empty as "not enough data yet"
+ * instead of as a failure.
+ */
+export const competitiveVisibilityCompetitors = async (
+  accessToken: string,
+  accountId: string,
+  {
+    country,
+    categoryId,
+    trafficSource,
+    days = 30,
+  }: {
+    country: string;
+    categoryId: number;
+    trafficSource: TrafficSource;
+    days?: number;
+  },
+): Promise<Result<CompetitiveVisibilityRow[], Error>> => {
+  // These three land in the query as string literals, and every one of them
+  // arrives from a server action — that is, from the client, where the compiler's
+  // types are no longer load-bearing. Validated rather than escaped: all three
+  // have tiny closed domains, so an allowlist is both stricter and simpler than
+  // quoting rules for a query language whose escaping we do not control.
+  if (!/^[A-Z]{2}$/.test(country))
+    return {
+      success: false,
+      error: new RequestError(`Invalid report country: ${country}`),
+    };
+
+  if (trafficSource !== "ADS" && trafficSource !== "ORGANIC")
+    return {
+      success: false,
+      error: new RequestError(`Invalid traffic source: ${trafficSource}`),
+    };
+
+  if (!PRODUCT_CATEGORIES.some((category) => category.id === categoryId))
+    return {
+      success: false,
+      error: new RequestError(`Unknown report category: ${categoryId}`),
+    };
+
+  const day = 24 * 60 * 60 * 1000;
+  // Google's competitive data lags a few days; ending the window today
+  // reliably returned nothing, so the range stops three days back.
+  const until = new Date(Date.now() - 3 * day);
+  // `BETWEEN` is inclusive on both ends, so the span is (days - 1) back from
+  // the end date — otherwise a 30-day window would cover 31 dates.
+  const since = new Date(until.getTime() - (days - 1) * day);
+  const stamp = (date: Date) => date.toISOString().slice(0, 10);
+
+  const query = [
+    "SELECT report_country_code, report_category_id, traffic_source, domain,",
+    "is_your_domain, rank, ads_organic_ratio, page_overlap_rate,",
+    "higher_position_rate, relative_visibility",
+    "FROM competitive_visibility_competitor_view",
+    `WHERE date BETWEEN '${stamp(since)}' AND '${stamp(until)}'`,
+    `AND report_country_code = '${country}'`,
+    `AND report_category_id = ${categoryId}`,
+    `AND traffic_source = '${trafficSource}'`,
+    "ORDER BY rank",
+  ].join(" ");
+
+  return searchReport<
+    "competitiveVisibilityCompetitorView",
+    CompetitiveVisibilityRow
+  >(accessToken, accountId, {
+    query,
+    view: "competitiveVisibilityCompetitorView",
+  });
+};
+
+/*
+ * `price_competitiveness_product_view` is the other half of this reporting
+ * surface — benchmark price per offer — and `searchReport` already generalizes
+ * to it. It is deliberately not wrapped here: it carries no rival identity
+ * (Google anonymizes the benchmark), so it can price a competitor set but never
+ * discover one, and nothing in the product consumes prices from it yet. Adding
+ * the wrapper before a caller exists would ship an untested export.
+ */
 
 /** Extracts the numeric account id from an `accounts/{id}` resource name. */
 export const accountIdFromName = (name: string): string | null => {

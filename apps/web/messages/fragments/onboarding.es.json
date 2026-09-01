@@ -367,7 +367,45 @@
       "tabs": {
         "auto": "Detección automática",
         "url": "Pegar URLs",
-        "search": "Buscar marca"
+        "search": "Buscar marca",
+        "merchant": "Google"
+      },
+      "merchant": {
+        "label": "Competidores medidos por Google",
+        "description": "Rivales que Google mostró junto a tus productos en Shopping: observados, no sugeridos.",
+        "loading": "Leyendo tu informe de Google Shopping…",
+        "categoryPlaceholder": "Elige una categoría",
+        "country": "Mercado: {country}",
+        "measured": "{count, plural, one {# rival medido} other {# rivales medidos}}",
+        "overlap": "{value} de páginas de resultados compartidas",
+        "higher": "por encima de ti el {value}",
+        "traffic": {
+          "organic": "Fichas gratuitas",
+          "ads": "Anuncios de Shopping"
+        },
+        "reason": {
+          "unsupported": "Los datos de Google Shopping están disponibles hoy para tiendas Shopify. Otras plataformas llegarán pronto.",
+          "unlinked": "Conecta tu cuenta de Google Merchant Center para ver los rivales que Google midió frente a tu tienda.",
+          "unknownCategory": "No pudimos determinar en qué categoría vende tu catálogo. Elige una arriba y traeremos la clasificación de Google.",
+          "noData": "Google aún no tiene suficientes impresiones de Shopping para esta tienda. Esto se completará cuando tus productos lleven unas semanas publicados; mientras tanto usa las otras pestañas."
+        },
+        "validation": {
+          "summary": "Google corrobora {confirmed} de los {total} competidores de tu lista; al resto no los ha mostrado junto a tus productos en esta categoría."
+        },
+        "action": {
+          "connect": "Conectar Google Merchant Center",
+          "add": "{count, plural, =0 {Añadir seleccionados} one {Añadir # competidor} other {Añadir # competidores}}",
+          "adding": "Añadiendo…",
+          "validate": "Revisar mi lista",
+          "validating": "Revisando…"
+        },
+        "toast": {
+          "failed": "No se pudo cargar el informe de competidores de Google",
+          "added": {
+            "title": "Competidores añadidos",
+            "description": "Se añadieron {count} competidores medidos a tu lista."
+          }
+        }
       },
       "action": {
         "back": "Atrás",
@@ -442,7 +480,8 @@
       "results": {
         "countCompetitorFound": "{count, plural, one {# competidor encontrado} other {# competidores encontrados}}",
         "countProductExtracted": "{count, plural, one {# producto extraído} other {# productos extraídos}}",
-        "clear": "Limpiar"
+        "clear": "Limpiar",
+        "measured": "Medido"
       },
       "review": {
         "title": "Revisa tus competidores",

@@ -10,6 +10,7 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Spring } from "@/lib/animations";
+import { isMeasuredCompetitor } from "@/lib/competitor-source";
 import { formatPrice } from "@/lib/currency";
 import type * as Competitor from "@/server/app/competitor";
 
@@ -53,9 +54,19 @@ export const CompetitorResults = ({
                 </AvatarFallback>
               </Avatar>
               <div className="min-w-0 flex-1">
-                <p className="truncate font-medium text-foreground text-sm">
-                  {competitor.title}
-                </p>
+                <div className="flex items-center gap-1.5">
+                  <p className="truncate font-medium text-foreground text-sm">
+                    {competitor.title}
+                  </p>
+                  {/* The one provenance distinction worth surfacing: every
+                      other tab is a model's guess at who a rival is, these
+                      Google actually observed on the same result pages. */}
+                  {isMeasuredCompetitor(competitor.source) && (
+                    <span className="shrink-0 border border-primary/40 bg-primary/10 px-1.5 py-px font-medium text-[10px] text-primary uppercase tracking-wide">
+                      {translate("measured")}
+                    </span>
+                  )}
+                </div>
                 <p className="text-foreground-dimmed text-xs">
                   {[competitor.brand, competitor.source]
                     .filter(Boolean)
