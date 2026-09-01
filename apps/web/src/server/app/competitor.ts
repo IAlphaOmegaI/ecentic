@@ -120,19 +120,35 @@ export const countForCurrentUser = withAuthentication(
   async (context, { store }: { store?: string } = {}) => {
     const user = context.session.user.id;
 
-    const [total, selected] = await Promise.all([
+    const [total, selected, judgeable] = await Promise.all([
       count(Environment.SERVER, scope(user, store)),
       count(
         Environment.SERVER,
         and(scope(user, store), eq(schema.competitor.selected, true)),
       ),
+      count(
+        Environment.SERVER,
+        and(
+          scope(user, store),
+          eq(schema.competitor.selected, true),
+          // The SQL half of `isJudgeable` (lib/competitor-evidence.ts) — the
+          // scan drops priceless rivals, so an estimate built on `selected`
+          // would advertise comparisons the engine never runs. Change both.
+          sql`length(trim(coalesce(${schema.competitor.price}, ''))) > 0`,
+        ),
+      ),
     ]);
     if (!total.success) return total;
     if (!selected.success) return selected;
+    if (!judgeable.success) return judgeable;
 
     return {
       success: true as const,
-      data: { total: total.data, selected: selected.data },
+      data: {
+        total: total.data,
+        selected: selected.data,
+        judgeable: judgeable.data,
+      },
     };
   },
   "Competitor.countForCurrentUser",

@@ -38,7 +38,7 @@ const FALLBACKS: Placeholders = {
   rep: "…",
   contact: "there",
   company: "your store",
-  product: "the product page",
+  product: "product",
   finding: "what I found",
   email: "that address",
 };

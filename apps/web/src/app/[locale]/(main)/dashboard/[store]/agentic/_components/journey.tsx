@@ -70,7 +70,10 @@ const previewOf = (value: string) =>
   value
     .split("\n")
     .map((line) =>
-      line.replace(/^#{1,6}\s+/, "").replace(/\*\*/g, "").trim(),
+      line
+        .replace(/^#{1,6}\s+/, "")
+        .replace(/\*\*/g, "")
+        .trim(),
     )
     .find((line) => line.length > 0) ?? value;
 

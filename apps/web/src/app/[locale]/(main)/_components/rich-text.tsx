@@ -158,9 +158,7 @@ const List = ({
         <li
           // biome-ignore lint/suspicious/noArrayIndexKey: split output is deterministic for this renderer
           key={index}
-          className={
-            ordered ? "leading-relaxed" : "flex gap-3 leading-relaxed"
-          }
+          className={ordered ? "leading-relaxed" : "flex gap-3 leading-relaxed"}
         >
           {ordered ? (
             renderInline(itemText(line), options)

@@ -20,7 +20,12 @@ import { useTranslations } from "next-intl";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { AutoDetectTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/auto-detect-tab";
 import { useScanRunner } from "@/app/[locale]/(auth)/onboarding/scan/_components/use-scan-runner";
-import { formatScanEstimate } from "@/lib/scan-estimate";
+import { isJudgeable } from "@/lib/competitor-evidence";
+import {
+  countSimulations,
+  formatScanEstimate,
+  uniformPairing,
+} from "@/lib/scan-estimate";
 import type * as Competitor from "@/server/app/competitor";
 import type * as Simulate from "@/server/app/intelligence/simulate";
 import type * as Product from "@/server/app/product";
@@ -266,11 +271,22 @@ export const SimulationsClient = ({
     container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
   }, [logs]);
 
-  const totalSimulations = selectedProducts.size * selectedCompetitors.size * 3;
+  // Count only the rivals the engine will actually judge. A competitor without
+  // a price is dropped server-side (lib/competitor-evidence.ts), so counting
+  // the raw selection here would promise a scan duration the run never spends
+  // and leave the progress bar short of 100%.
+  const judgeableCompetitors = competitorList.filter(
+    (competitor) =>
+      selectedCompetitors.has(competitor.id) && isJudgeable(competitor),
+  ).length;
+
+  const totalSimulations = countSimulations(
+    uniformPairing(selectedProducts.size, judgeableCompetitors),
+  );
   const estimatedDuration = formatScanEstimate(totalSimulations);
 
   const canRunWinRateScan =
-    selectedProducts.size > 0 && selectedCompetitors.size > 0;
+    selectedProducts.size > 0 && judgeableCompetitors > 0;
 
   const toggleProduct = (id: string) =>
     setSelectedProducts((previous) => {

@@ -210,11 +210,7 @@ export const ScanRunner = ({
               color="accent"
               className="w-full whitespace-normal sm:w-auto"
               render={
-                <a
-                  href={reportUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                />
+                <a href={reportUrl} target="_blank" rel="noopener noreferrer" />
               }
             >
               {translate("score.attribution")}

@@ -44,3 +44,34 @@ export const formatScanEstimate = (simulations: number) => {
       return `~${Math.floor(seconds / 3600)} h ${Math.ceil((seconds % 3600) / 60)} min`;
   }
 };
+
+/**
+ * The client's copy of the judge panel size. The engine's `perspectives` array
+ * binds model ids, so a client estimator cannot import it; server callers pass
+ * their own `perspectives.length` to {@link countSimulations} instead and are
+ * therefore always right, leaving drift here as a wrong estimate rather than a
+ * wrong scan.
+ */
+export const PERSPECTIVE_COUNT = 3;
+
+/**
+ * Simulations a scan will run, from the shaped pair graph: one entry per
+ * product, holding the number of competitors THAT product will be judged
+ * against.
+ *
+ * It takes the graph rather than two scalars because pairing is uniform only
+ * today. Every caller used to multiply `products * competitors * 3` on its own,
+ * and the moment a product is paired with its own rivals instead of the whole
+ * roster those copies drift apart — the progress bar stops reaching 100%, or
+ * the UI promises a duration off by an order of magnitude.
+ */
+export const countSimulations = (
+  competitorsPerProduct: readonly number[],
+  perspectives: number = PERSPECTIVE_COUNT,
+) =>
+  competitorsPerProduct.reduce((total, competitors) => total + competitors, 0) *
+  perspectives;
+
+/** The pair graph for today's uniform pairing: every product against every competitor. */
+export const uniformPairing = (products: number, competitors: number) =>
+  Array.from({ length: products }, () => competitors);

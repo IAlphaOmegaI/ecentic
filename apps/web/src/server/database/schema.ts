@@ -552,6 +552,21 @@ export const simulation = pgTable(
     index("simulation_scan_idx").on(table.scanId),
     index("simulation_product_idx").on(table.productId),
     index("simulation_competitor_idx").on(table.competitorId),
+    /**
+     * One verdict per pair per model. The engine's resume path already keys on
+     * exactly this tuple to decide what still needs judging
+     * (`background-scan.ts`), and the stale-scan reaper's heartbeat keeps a live
+     * worker from being requeued — so duplicates are narrow today rather than
+     * routine. This is the defence-in-depth that keeps them impossible once
+     * pairing is generated rather than hand-picked: a duplicate here is not a
+     * cosmetic row, it double-counts a win.
+     */
+    uniqueIndex("simulation_pair_unique").on(
+      table.scanId,
+      table.productId,
+      table.competitorId,
+      table.model,
+    ),
   ],
 );
 
