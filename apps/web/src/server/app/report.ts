@@ -166,11 +166,19 @@ export const exportProductPerformance = withSubscription(async (context) => {
 // means one rival tracked in two stores is two rows with two different win
 // rates — the `store` column is what keeps those rows readable as distinct
 // rather than duplicated.
+// `confidence`, `sellerDomain` and `measuredAt` are exported because without
+// them a spreadsheet cannot tell an observed price from a model's guess — the
+// two render as the same number, and this file is what a merchant takes into a
+// pricing decision.
 const COMPETITOR_COLUMNS = [
   "store",
   "title",
   "brand",
   "source",
+  "sellerDomain",
+  "confidence",
+  "price",
+  "measuredAt",
   "simulations",
   "winRateAgainstYou",
 ];
@@ -220,6 +228,13 @@ export const exportCompetitorAnalysis = withSubscription(async (context) => {
       competitor.title,
       competitor.brand ?? "",
       competitor.source ?? "",
+      competitor.sellerDomain ?? "",
+      // Empty rather than "unknown": a Google-measured domain row genuinely
+      // makes no offer-level claim, and inventing a label for that would be the
+      // same overstatement this column exists to prevent.
+      competitor.confidence ?? "",
+      competitor.priceAmount ?? competitor.price ?? "",
+      competitor.measuredAt?.toISOString() ?? "",
       total,
       winRateAgainstYou,
     ];

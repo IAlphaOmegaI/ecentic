@@ -7,6 +7,7 @@ import * as AI from "../../utils/ai";
 import { withAuthentication } from "../../utils/authentication";
 import { Environment } from "../../utils/environment";
 import * as Competitor from "../competitor";
+import { billingFor, searchOffers } from "./offer-resolve";
 
 const candidate = z.object({
   title: z.string(),
@@ -26,6 +27,24 @@ export const searchCompetitors = withAuthentication(
         error: new Error("Search query is required"),
       };
 
+    // Measured first. A shopping index can answer "who sells this" for anything
+    // with a catalog cluster, and when it does there is no reason to ask a model
+    // to recall the same answer less accurately and with an invented price.
+    const billing = await billingFor(context.session.user.id);
+    const measured = await searchOffers({
+      userId: context.session.user.id,
+      storeId: store,
+      query,
+      ...billing,
+    });
+    if (!measured.success) return measured;
+    if (measured.data.length > 0)
+      return { success: true as const, data: measured.data };
+
+    // Nothing measured. That is the expected outcome for a category query, a
+    // private-label brand, or anything without a catalog cluster — so the model
+    // still runs, and its rows are written `inferred` so the difference stays
+    // visible everywhere downstream.
     const result = await resultify(() =>
       AI.generate({
         label: "search.competitors",

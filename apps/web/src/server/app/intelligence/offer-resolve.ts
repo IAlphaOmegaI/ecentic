@@ -1,5 +1,6 @@
-import { and, eq, inArray, isNotNull, max, or, sql } from "drizzle-orm";
+import { and, eq, inArray, isNotNull, isNull, max, or, sql } from "drizzle-orm";
 import { getDomainLogo } from "@/lib/logo";
+import { isEntitled } from "@/server/utils/entitlement";
 import { isPlanKey, type PlanKey } from "@/server/utils/stripe";
 import { db, schema } from "../../database";
 import { streamable } from "../../utils/ai";
@@ -10,6 +11,7 @@ import type { Offer } from "../../utils/serp";
 import * as Serp from "../../utils/serp";
 import * as Competitor from "../competitor";
 import * as Product from "../product";
+import * as Subscription from "../subscription";
 import {
   cachedLookup,
   cacheLookup,
@@ -372,6 +374,178 @@ export const resolveOffers = async ({
   await record("offers", resolution);
 
   return { success: true as const, data: resolution };
+};
+
+/**
+ * Which allowance a user's lookups are booked against.
+ *
+ * Read directly rather than through `withSubscription`, because the absence of
+ * a billing row is a supported state on the discovery paths — onboarding runs
+ * before one exists — not a rejection. Callers that ARE gated keep using the
+ * wrapper.
+ */
+export const billingFor = async (userId: string) => {
+  const rows = await Subscription.find(Environment.SERVER, {
+    where: eq(schema.subscription.userId, userId),
+    limit: 1,
+  });
+
+  const subscription = rows.success ? (rows.data[0] ?? null) : null;
+  const entitled = isEntitled(subscription);
+  const plan = subscription?.plan ?? "";
+
+  return {
+    plan: entitled && isPlanKey(plan) ? plan : null,
+    trial: !entitled,
+  };
+};
+
+// ---------------------------------------------------------------------------
+// Free-text search
+// ---------------------------------------------------------------------------
+
+/**
+ * Measured rivals for a brand or category query.
+ *
+ * The sibling of {@link resolveOffers} for the one discovery surface keyed on
+ * text rather than a product id. Three things differ, all forced by that:
+ *
+ * - Rows are store-wide (`productId: null`), because a brand search names
+ *   rivals for the catalog, not offers on one item. `pairCompetitors` already
+ *   treats store-wide rows as the fallback set for every product.
+ * - No `assess` guard. It compares an offer against a specific product's title
+ *   and price; there is no product here, so there is nothing to compare to and
+ *   a guard would be theatre.
+ * - No `competitor_offer` history, whose `productId` is NOT NULL by design — a
+ *   price series belongs to a product, and these rows have none.
+ *
+ * What is preserved is the part that matters: the seller, the domain and the
+ * price are observed, so these rows are `measured` rather than recalled.
+ */
+export const searchOffers = async ({
+  userId,
+  storeId,
+  query,
+  plan,
+  trial,
+}: {
+  userId: string;
+  storeId: string;
+  query: string;
+  plan: PlanKey | null;
+  trial: boolean;
+}) => {
+  if (!Serp.serpApi.configured())
+    return { success: true as const, data: [] as Competitor.Type[] };
+
+  const trimmed = query.trim();
+  if (!trimmed)
+    return { success: false as const, error: new RequestError("Empty query") };
+
+  const key = fingerprint(trimmed);
+  const started = Date.now();
+
+  const hit = await cachedLookup(key);
+
+  const lookup = await (async () => {
+    if (hit) return { success: true as const, data: hit, fresh: false };
+
+    const operation = `${storeId}:search:${key}`;
+    const budget = trial
+      ? await consumeTrialLookup({ store: storeId, operation })
+      : await consumeBudget({ store: storeId, plan, operation });
+    if (!budget.allowed) return { success: false as const, exhausted: true };
+
+    const fetched = await Serp.serpApi.lookup(trimmed, { country: "us" });
+    if (!fetched.success)
+      return { success: false as const, error: fetched.error };
+
+    await cacheLookup(key, fetched.data);
+    return { success: true as const, data: fetched.data, fresh: true };
+  })();
+
+  const bill = (outcome: string, credits: number, count: number) =>
+    usage.create(Environment.SERVER, {
+      userId,
+      storeId,
+      productId: null,
+      provider: Serp.serpApi.name,
+      credits,
+      cached: Boolean(hit),
+      outcome,
+      offerCount: count,
+      milliseconds: Date.now() - started,
+    });
+
+  if (!lookup.success) {
+    await bill("exhausted" in lookup ? "budget-exhausted" : "error", 0, 0);
+    if ("exhausted" in lookup)
+      return { success: true as const, data: [] as Competitor.Type[] };
+    return { success: false as const, error: lookup.error };
+  }
+
+  const credits = lookup.fresh ? lookup.data.credits : 0;
+  const offers = lookup.data.offers.filter(
+    (offer) => offer.sellerDomain !== null,
+  );
+
+  if (offers.length === 0) {
+    await bill("no-match", credits, 0);
+    return { success: true as const, data: [] as Competitor.Type[] };
+  }
+
+  // Store-wide rows are not covered by `competitor_product_seller_unique`
+  // (partial, `productId IS NOT NULL`), so a repeated search would otherwise
+  // stack the same seller. Deduped in code against what is already stored.
+  const existing = await Competitor.find(Environment.SERVER, {
+    where: and(
+      eq(schema.competitor.storeId, storeId),
+      isNull(schema.competitor.productId),
+    ),
+  });
+  if (!existing.success) return existing;
+
+  const taken = new Set(
+    existing.data
+      .map((row) => row.sellerDomain)
+      .filter((domain): domain is string => domain !== null),
+  );
+
+  const measuredAt = new Date();
+
+  const created = await Promise.all(
+    offers
+      .filter((offer) => !taken.has(offer.sellerDomain as string))
+      .map((offer) => {
+        const price = offer.price === null ? null : String(offer.price);
+
+        return Competitor.create(Environment.SERVER, {
+          title: offer.title ?? lookup.data.matched?.title ?? trimmed,
+          brand: lookup.data.matched?.brand ?? null,
+          price,
+          priceAmount: price,
+          currency: offer.currency,
+          image: offer.image ?? getDomainLogo(offer.sellerDomain as string),
+          url: offer.url,
+          source: offer.seller,
+          sellerDomain: offer.sellerDomain,
+          measuredAt,
+          confidence: "measured" as const,
+          userId,
+          storeId,
+          selected: true,
+        });
+      }),
+  );
+
+  const rows = created
+    .filter((record) => record.success)
+    .map((record) => record.data)
+    .filter((row): row is Competitor.Type => Boolean(row));
+
+  await bill("offers", credits, rows.length);
+
+  return { success: true as const, data: rows };
 };
 
 // ---------------------------------------------------------------------------

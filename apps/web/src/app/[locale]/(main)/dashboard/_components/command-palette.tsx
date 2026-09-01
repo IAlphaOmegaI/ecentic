@@ -9,6 +9,7 @@ import {
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { Link, usePathname } from "@/i18n/navigation";
+import { isVerifiedCompetitor } from "@/lib/competitor-source";
 import { formatPrice } from "@/lib/currency";
 import type * as CompetitorTypes from "@/server/app/competitor";
 import * as Competitor from "@/server/app/competitor";
@@ -241,11 +242,16 @@ const Results = ({ onClose }: { onClose: () => void }) => {
                     {competitor.title}
                   </span>
                 </div>
-                {competitor.price && (
-                  <span className="font-light text-foreground-dimmed text-xs">
-                    {formatPrice(competitor.price, competitor.currency)}
-                  </span>
-                )}
+                {/* Observed prices only. A model-recalled price rendered here
+                    reads as a fact about the rival, in a surface with no room
+                    to qualify it — so an unverified row shows its name and
+                    nothing more rather than a number we cannot stand behind. */}
+                {competitor.price &&
+                  isVerifiedCompetitor(competitor.confidence) && (
+                    <span className="font-light text-foreground-dimmed text-xs">
+                      {formatPrice(competitor.price, competitor.currency)}
+                    </span>
+                  )}
               </Link>
             ))}
           </div>

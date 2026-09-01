@@ -1,6 +1,6 @@
 "use server";
 
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray } from "drizzle-orm";
 import { MEASURED_COMPETITOR_SOURCE } from "@/lib/competitor-source";
 import { getDomainLogo } from "@/lib/logo";
 import { schema } from "../../database";
@@ -171,20 +171,40 @@ export const importMeasuredCompetitors = withAuthentication(
     });
     if (!existing.success) return existing;
 
-    // Matched on two keys. The stored URL's host is the exact one — a row this
+    // Matched on three keys. The stored URL's host is the exact one — a row this
     // action wrote keeps the measured domain in `url`, so a re-import of the
     // same rival is idempotent regardless of how the brand was prettified. The
     // brand/title key is the fuzzy one, and catches the same rival arriving
     // first from one of the model-driven tabs.
+    //
+    // `sellerDomain` is the one that matters most now: a seller we already hold
+    // as a measured OFFER is strictly better than the brand row this import
+    // would add — it carries a product, a price and a real listing URL, where
+    // this would add a priceless duplicate that `isJudgeable` drops from every
+    // scan. So the offer wins and the domain is corroborated instead.
     const taken = new Set(
       existing.data.flatMap((competitor) =>
         [
           competitor.brand?.toLowerCase(),
           competitor.title.toLowerCase(),
           competitor.url ? hostname(competitor.url) : null,
+          competitor.sellerDomain,
         ].filter((value): value is string => Boolean(value)),
       ),
     );
+
+    // Before the early return below, not after: when every reported rival is
+    // already held as a measured offer there is nothing left to import — which
+    // is precisely the case where corroboration has the most to say. Running it
+    // after the return would skip it exactly then.
+    //
+    // Every rival Google reports, not only the ones the merchant ticked: a
+    // seller we already measured is confirmed by Google's data whether or not
+    // the merchant chose to add that domain to the roster.
+    await corroborate({
+      store,
+      domains: report.data.rivals.map((rival) => hostname(rival.domain)),
+    });
 
     const fresh = measured.filter(
       (rival) =>
@@ -220,6 +240,11 @@ export const importMeasuredCompetitors = withAuthentication(
           // Normalized through the same helper the dedupe reads back with, so
           // the next import recognizes this row.
           url: `https://${hostname(rival.domain)}`,
+          // The join key. `serp.ts` normalizes seller hosts the same way
+          // (lowercase, no `www.`), so a rival Google names here and a seller an
+          // offer lookup returns land on the same string — which is what makes
+          // corroboration below possible at all.
+          sellerDomain: hostname(rival.domain),
           source: MEASURED_COMPETITOR_SOURCE,
           userId: context.session.user.id,
           storeId: store,
@@ -242,6 +267,51 @@ export const importMeasuredCompetitors = withAuthentication(
   },
   "Intelligence.importMeasuredCompetitors",
 );
+
+/**
+ * Promotes measured offers that Google independently names as rivals.
+ *
+ * `measured` means one source observed the seller carrying this product.
+ * `corroborated` means a second, unrelated source — Google's
+ * competitive-visibility report — also puts that seller in front of the same
+ * shoppers. That is a stronger claim about the rival mattering, not just about
+ * the price being real, and `competitor-source.ts` has defined the state since
+ * the beginning with nothing to write it.
+ *
+ * One-way on purpose: it never demotes. A rival dropping out of one month's
+ * report is a change in Google's sample, not evidence that a price we watched
+ * a seller charge was never charged.
+ */
+const corroborate = async ({
+  store,
+  domains,
+}: {
+  store: string;
+  domains: string[];
+}) => {
+  const reported = domains.filter(Boolean);
+  if (reported.length === 0) return 0;
+
+  const measured = await Competitor.find(Environment.SERVER, {
+    where: and(
+      eq(schema.competitor.storeId, store),
+      eq(schema.competitor.confidence, "measured"),
+      inArray(schema.competitor.sellerDomain, reported),
+    ),
+  });
+  if (!measured.success) return 0;
+
+  const promoted = await Promise.all(
+    measured.data.map((competitor) =>
+      Competitor.update(Environment.SERVER, competitor.id, {
+        confidence: "corroborated" as const,
+        updatedAt: new Date(),
+      }),
+    ),
+  );
+
+  return promoted.filter((record) => record.success).length;
+};
 
 export type CompetitorVerdict = {
   id: string;
