@@ -1,3 +1,4 @@
+import * as Evidence from "@/lib/competitor-evidence";
 import type * as Competitor from "../competitor";
 
 /**
@@ -8,33 +9,10 @@ import type * as Competitor from "../competitor";
  * identically. The enqueue freezes a roster and a `totalSimulations` count onto
  * the scan row; if the engine later shapes pairs differently, the progress bar
  * either stalls short of 100% or runs past it.
+ *
+ * The judgeability floor itself lives in `lib/competitor-evidence.ts`, next to
+ * the capture-gap rules the formatter and the client estimators share.
  */
-
-/**
- * Whether a competitor row carries enough substance to be judged at all.
- *
- * A safety boundary, not a quality filter. `formatCompetitor` prints
- * "Price: MISSING" for a null price, and RUBRIC_CORE instructs the judge to
- * "penalize each decisive attribute that is missing or unverifiable; do NOT
- * neutral-rate gaps" — so a row without one lands in the 0-30 anchor band by
- * construction. A brand- or domain-level entry (Google Merchant Center reports
- * rivals as domains, so those rows are `title === brand` with no price) is then
- * not a weak competitor but a strawman, and the merchant "wins" a comparison
- * that never happened. That inflation propagates into every win rate the
- * product displays.
- *
- * Price is the test because it is the one field that both separates a product
- * listing from a brand entry and that the rubric treats as decisive. A row
- * failing this keeps all of its value — its measured Google ranking still shows
- * in the competitors UI and still feeds `validateAgainstGoogle` — it simply
- * does not enter a head-to-head it cannot lose.
- *
- * Says nothing about whether the price is TRUE: `detect.ts` and `search.ts`
- * type it non-nullable, so model-sourced rows always carry one. Provenance is a
- * separate axis, tracked on `source` and `confidence`.
- */
-export const isJudgeableListing = (competitor: Competitor.Type): boolean =>
-  Boolean(competitor.price);
 
 export type Pair<Product> = {
   product: Product;
@@ -65,7 +43,7 @@ export const pairCompetitors = <Product extends { id: string }>(
   products: Product[],
   competitors: Competitor.Type[],
 ): Pair<Product>[] => {
-  const judgeable = competitors.filter(isJudgeableListing);
+  const judgeable = competitors.filter(Evidence.isJudgeable);
   const storeWide = judgeable.filter(
     (competitor) => competitor.productId === null,
   );

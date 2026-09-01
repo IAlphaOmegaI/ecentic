@@ -19,42 +19,6 @@ export const SCAN_CONCURRENCY = 12;
 
 export const AVERAGE_SIMULATION_SECONDS = 16;
 
-/**
- * Model perspectives a scan runs each pair through.
- *
- * Must match `perspectives` in background-scan.ts. The server passes its own
- * `perspectives.length` into the counters below rather than trusting this, so
- * the engine cannot drift from itself; this constant exists for the client,
- * which cannot import a server module and was hardcoding `* 3` in two places.
- */
-export const PERSPECTIVE_COUNT = 3;
-
-/**
- * Simulations a scan will run.
- *
- * Takes competitors PER PRODUCT rather than a store-wide total because pairing
- * is not necessarily uniform: a product with its own measured competitor offers
- * is judged against those, not against the entire roster. Summing the shaped
- * pair graph is the only count that stays correct in both regimes.
- *
- * This is the single definition. It previously lived in three places — the
- * engine and both client estimates — each independently multiplying by a
- * hardcoded 3, which is a drift waiting to happen the moment pairing changes.
- */
-export const countSimulations = (
-  competitorsPerProduct: readonly number[],
-  perspectives: number = PERSPECTIVE_COUNT,
-) =>
-  competitorsPerProduct.reduce((total, count) => total + count, 0) *
-  perspectives;
-
-/** The uniform case: every product judged against the same roster. */
-export const countUniformSimulations = (
-  products: number,
-  competitors: number,
-  perspectives: number = PERSPECTIVE_COUNT,
-) => products * competitors * perspectives;
-
 const STARTUP_SECONDS = 10;
 
 const STRAGGLER_TASK_SECONDS = 30;
@@ -80,3 +44,34 @@ export const formatScanEstimate = (simulations: number) => {
       return `~${Math.floor(seconds / 3600)} h ${Math.ceil((seconds % 3600) / 60)} min`;
   }
 };
+
+/**
+ * The client's copy of the judge panel size. The engine's `perspectives` array
+ * binds model ids, so a client estimator cannot import it; server callers pass
+ * their own `perspectives.length` to {@link countSimulations} instead and are
+ * therefore always right, leaving drift here as a wrong estimate rather than a
+ * wrong scan.
+ */
+export const PERSPECTIVE_COUNT = 3;
+
+/**
+ * Simulations a scan will run, from the shaped pair graph: one entry per
+ * product, holding the number of competitors THAT product will be judged
+ * against.
+ *
+ * It takes the graph rather than two scalars because pairing is uniform only
+ * today. Every caller used to multiply `products * competitors * 3` on its own,
+ * and the moment a product is paired with its own rivals instead of the whole
+ * roster those copies drift apart — the progress bar stops reaching 100%, or
+ * the UI promises a duration off by an order of magnitude.
+ */
+export const countSimulations = (
+  competitorsPerProduct: readonly number[],
+  perspectives: number = PERSPECTIVE_COUNT,
+) =>
+  competitorsPerProduct.reduce((total, competitors) => total + competitors, 0) *
+  perspectives;
+
+/** The pair graph for today's uniform pairing: every product against every competitor. */
+export const uniformPairing = (products: number, competitors: number) =>
+  Array.from({ length: products }, () => competitors);

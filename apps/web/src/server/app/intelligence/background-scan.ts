@@ -3,6 +3,7 @@
 import { resultify } from "@zenncore/utils";
 import { and, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
+import * as Evidence from "@/lib/competitor-evidence";
 import { countSimulations, SCAN_CONCURRENCY } from "@/lib/scan-estimate";
 import { schema } from "../../database";
 import { generate, type ModelId } from "../../utils/ai";
@@ -112,31 +113,35 @@ const runScanForUser = async (
     ? competitors.data
     : competitors.data.filter((competitor) => competitor.selected);
 
-  // Rows too sparse to judge are dropped here rather than fed to the rubric,
-  // which would score them 0-30 by construction and hand the merchant a free
-  // win. See `Pairing.isJudgeableListing`.
-  const selected = chosen.filter(Pairing.isJudgeableListing);
+  // A rival we never captured a price for cannot be compared, only guessed at,
+  // and the rubric reads that guess as a listing with critical data missing —
+  // a free win for the merchant that inflates every win rate downstream (see
+  // lib/competitor-evidence.ts). Drop those before pairing so they cost neither
+  // model spend nor accuracy.
+  const selected = chosen.filter(Evidence.isJudgeable);
+  const unpriced = chosen.length - selected.length;
 
-  if (products.data.length === 0 || selected.length === 0)
-    return {
-      success: true,
-      data: {
-        skipped: true,
-        // Distinguished so "you have no competitors" and "the competitors you
-        // have carry no price to compare on" are not the same message — the
-        // second is actionable and the first is not.
-        reason:
-          products.data.length === 0 || chosen.length === 0
-            ? "missing products or competitors"
-            : "no judgeable competitors",
-      },
-    };
+  if (products.data.length === 0 || selected.length === 0) {
+    const reason = (() => {
+      switch (true) {
+        case products.data.length === 0:
+          return "missing products";
+        case unpriced > 0:
+          return "every selected competitor is missing a price";
+        default:
+          return "missing competitors";
+      }
+    })();
 
+    return { success: true, data: { skipped: true, reason } };
+  }
+
+  // Pairing is no longer uniform: a product carrying its own measured offers is
+  // judged against THOSE, not the whole roster. `uniformPairing` remains correct
+  // for a store with no measured offers, which `pairCompetitors` reproduces by
+  // falling every product back to the store-wide rows.
   const pairing = Pairing.pairCompetitors(products.data, selected);
 
-  // Non-uniform by construction now — a product with its own measured offers is
-  // judged against those, not the whole roster — so the count is a sum over the
-  // shaped pair graph rather than a multiplication.
   const totalSimulations = countSimulations(
     pairing.map((entry) => entry.competitors.length),
     perspectives.length,
@@ -152,13 +157,30 @@ const runScanForUser = async (
     : { success: true as const, data: [] as Simulation.Type[] };
   if (!persisted.success) return persisted;
 
+  // Only verdicts for pairs this run still plans to judge count as progress. A
+  // scan enqueued before a deploy that narrows the roster — the price floor
+  // above, or a product deleted mid-flight — carries verdicts for pairs no
+  // longer in the plan; counting them pushes `completedSimulations` past
+  // `totalSimulations` and strands the progress bar over 100%. Dropping them
+  // from `seededWins` is the same correction applied to the win rate: those
+  // comparisons are exactly the strawmen this change exists to stop counting.
+  const plannedProducts = new Set(products.data.map((product) => product.id));
+  const plannedCompetitors = new Set(
+    selected.map((competitor) => competitor.id),
+  );
+  const resumable = persisted.data.filter(
+    (simulation) =>
+      plannedProducts.has(simulation.productId) &&
+      plannedCompetitors.has(simulation.competitorId),
+  );
+
   const judged = new Set(
-    persisted.data.map(
+    resumable.map(
       (simulation) =>
         `${simulation.productId}:${simulation.competitorId}:${simulation.model}`,
     ),
   );
-  const seededWins = persisted.data.filter(
+  const seededWins = resumable.filter(
     (simulation) => simulation.winner === "product",
   ).length;
 
@@ -196,6 +218,7 @@ const runScanForUser = async (
       "user.id": user,
       "products.count": products.data.length,
       "competitors.count": selected.length,
+      "competitors.unpriced": unpriced,
       "simulations.total": totalSimulations,
     },
   });

@@ -2,6 +2,23 @@ import type * as Competitor from "../competitor";
 import type * as Product from "../product";
 import * as Formating from "./formating";
 
+/**
+ * The capture-gap exception, shared by every prompt that renders a rival through
+ * `Formating.formatCompetitor` — the A/B and legacy judges here, and the UCP
+ * lift judge in `ucp/simulation.ts`.
+ *
+ * All of those rubrics tell the model to punish missing data, which is right for
+ * the merchant's own catalog and wrong for a third party we simply never
+ * measured: it scores our blind spot as the rival's defect and hands the
+ * merchant a free win. The formatter names what it did not observe
+ * (lib/competitor-evidence.ts); this teaches the model what that line means.
+ *
+ * It lives in one constant because a prompt that renders the line without
+ * carrying this rule is strictly worse than one that renders neither — the
+ * model reads an unexplained gap list and penalizes it anyway.
+ */
+export const CAPTURE_GAP_RULE = `CAPTURE GAPS: a listing may end with a line beginning "Not captured about this listing:". Those attributes were never observed by the tool that collected the listing — they are UNKNOWN, not confirmed absent — so do NOT score them for or against that listing, and do not cite them among the deciding factors. Decide the comparison on the attributes recorded for BOTH listings. If too little was captured on one side to compare on this category's decisive attributes, say so explicitly in your reasoning and score only what is comparable. Anything NOT named on that line is confirmed absent and is penalized normally.`;
+
 // Framing-agnostic scoring rubric shared by both judge prompts below. STEP 1-4
 // never name which listing is the merchant's, so the same rubric composes into
 // the legacy product/competitor prompt AND the position-swap A/B prompt without
@@ -20,7 +37,11 @@ STEP 3 — SCORE each listing independently 0-100 using these anchors:
 - 85-100: exceptional and category-leading (rare)
 70+ is rare — do not inflate. Penalize each decisive attribute that is missing or unverifiable; do NOT neutral-rate gaps.
 
-STEP 4 — WINNER: set 'winner' to whichever listing has the HIGHER score. If the scores tie, pick the one with more verifiable decisive attributes. Provide 3-6 'keyFactors', each naming a SPECIFIC present or absent attribute (never a marketing adjective).`;
+STEP 4 — WINNER: set 'winner' to whichever listing has the HIGHER score. If the scores tie, pick the one with more verifiable decisive attributes. Provide 3-6 'keyFactors', each naming a SPECIFIC present or absent attribute (never a marketing adjective).
+
+${CAPTURE_GAP_RULE}
+
+(That is the ONLY exception to STEP 3's penalize-gaps rule.)`;
 
 // Legacy single-pass judge prompt (product/competitor labels). Still used by the
 // dead streaming path in simulate.ts. The LIVE engine (background-scan.ts) uses

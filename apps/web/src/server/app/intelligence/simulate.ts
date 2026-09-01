@@ -4,6 +4,7 @@ import { resultify } from "@zenncore/utils";
 import { and, eq, inArray } from "drizzle-orm";
 import { after } from "next/server";
 import { z } from "zod";
+import * as Evidence from "@/lib/competitor-evidence";
 import { countSimulations } from "@/lib/scan-estimate";
 import { withAuthentication } from "@/server/utils/authentication";
 import { schema } from "../../database";
@@ -238,7 +239,12 @@ export const runScan = withAuthentication(
     }
 
     const stream = AI.streamable<ScanEvent>(async (update) => {
-      const selected = competitors.data.filter((record) => record.selected);
+      // Priceless rivals are dropped here for the same reason the live engine
+      // drops them (lib/competitor-evidence.ts): the rubric scores an
+      // unmeasured listing as an empty one and the merchant wins by default.
+      const selected = competitors.data
+        .filter((record) => record.selected)
+        .filter(Evidence.isJudgeable);
 
       if (products.data.length === 0) {
         update({ kind: "error", text: "No products found" });
@@ -250,8 +256,10 @@ export const runScan = withAuthentication(
         return;
       }
 
-      const totalSimulations =
-        products.data.length * selected.length * perspectives.length;
+      const totalSimulations = countSimulations(
+        uniformPairing(products.data.length, selected.length),
+        perspectives.length,
+      );
 
       const scan = await Scan.create(Environment.SERVER, {
         userId: context.session.user.id,
@@ -727,27 +735,23 @@ export const enqueueScan = withAuthentication(
       ? competitors.data
       : competitors.data.filter((record) => record.selected);
 
-    // Filtered at enqueue as well as in the engine, because the roster is
-    // FROZEN onto the scan row below — an unjudgeable row left in here would be
-    // counted in `totalSimulations` and then dropped at drain time, so the
-    // progress bar could never reach 100%.
-    const selected = chosen.filter(Pairing.isJudgeableListing);
+    // Filter before freezing the roster, not after: the drain applies the same
+    // rule (background-scan.ts), so an unpriced rival left in `competitorIds`
+    // would only inflate the `totalSimulations` the progress bar counts up to.
+    const selected = chosen.filter(Evidence.isJudgeable);
 
     if (products.data.length === 0)
       return {
         success: false as const,
         error: new RequestError("No products selected"),
       };
-    if (chosen.length === 0)
-      return {
-        success: false as const,
-        error: new ValidationError("No competitors selected"),
-      };
     if (selected.length === 0)
       return {
         success: false as const,
         error: new ValidationError(
-          "None of the selected competitors carry a price to compare against",
+          chosen.length > 0
+            ? "The selected competitors have no price recorded, so they cannot be compared. Add competitors with prices and run the scan again."
+            : "No competitors selected",
         ),
       };
 

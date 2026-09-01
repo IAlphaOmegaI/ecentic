@@ -20,9 +20,11 @@ import { useTranslations } from "next-intl";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { AutoDetectTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/auto-detect-tab";
 import { useScanRunner } from "@/app/[locale]/(auth)/onboarding/scan/_components/use-scan-runner";
+import { isJudgeable } from "@/lib/competitor-evidence";
 import {
-  countUniformSimulations,
+  countSimulations,
   formatScanEstimate,
+  uniformPairing,
 } from "@/lib/scan-estimate";
 import type * as Competitor from "@/server/app/competitor";
 import type * as Simulate from "@/server/app/intelligence/simulate";
@@ -269,22 +271,22 @@ export const SimulationsClient = ({
     container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
   }, [logs]);
 
-  // Only priced competitors are actually judged — the engine drops the rest
-  // rather than hand the merchant a free win against a strawman. Counting the
-  // full selection here would promise a scan longer than the one that runs.
+  // Count only the rivals the engine will actually judge. A competitor without
+  // a price is dropped server-side (lib/competitor-evidence.ts), so counting
+  // the raw selection here would promise a scan duration the run never spends
+  // and leave the progress bar short of 100%.
   const judgeableCompetitors = competitorList.filter(
     (competitor) =>
-      selectedCompetitors.has(competitor.id) && Boolean(competitor.price),
+      selectedCompetitors.has(competitor.id) && isJudgeable(competitor),
   ).length;
 
-  const totalSimulations = countUniformSimulations(
-    selectedProducts.size,
-    judgeableCompetitors,
+  const totalSimulations = countSimulations(
+    uniformPairing(selectedProducts.size, judgeableCompetitors),
   );
   const estimatedDuration = formatScanEstimate(totalSimulations);
 
   const canRunWinRateScan =
-    selectedProducts.size > 0 && selectedCompetitors.size > 0;
+    selectedProducts.size > 0 && judgeableCompetitors > 0;
 
   const toggleProduct = (id: string) =>
     setSelectedProducts((previous) => {

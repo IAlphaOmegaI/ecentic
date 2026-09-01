@@ -192,23 +192,23 @@ export const SectionHeader = ({
   title,
   description,
   actions,
+  icon,
 }: {
   kicker?: string;
   title: string;
   description?: string;
   actions?: ReactNode;
+  icon?: ReactNode;
 }) => (
   <div className="flex flex-col gap-4 border-accent-foreground border-b p-4 sm:flex-row sm:items-end sm:justify-between">
     <div className="min-w-0">
       {kicker && <SectionKicker>{kicker}</SectionKicker>}
-      <p
-        className={cn(
-          "font-semibold text-foreground-rich text-lg",
-          kicker && "mt-2",
+      <div className={cn("flex items-center gap-2.5", kicker && "mt-2")}>
+        {icon && (
+          <span className="shrink-0 text-foreground-dimmed">{icon}</span>
         )}
-      >
-        {title}
-      </p>
+        <p className="font-semibold text-foreground-rich text-lg">{title}</p>
+      </div>
       {description && (
         <p className="mt-1 max-w-3xl text-foreground-dimmed text-sm">
           {description}

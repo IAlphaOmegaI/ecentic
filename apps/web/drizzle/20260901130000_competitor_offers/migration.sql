@@ -137,20 +137,7 @@ CREATE INDEX IF NOT EXISTS "offer_usage_store_created_idx" ON "offer_usage" USIN
 CREATE INDEX IF NOT EXISTS "offer_usage_user_idx" ON "offer_usage" USING btree ("userId");
 --> statement-breakpoint
 
--- The only statement here that touches existing rows.
---
--- `simulation` has never had a uniqueness constraint; the scan engine dedupes in
--- memory against persisted rows, which is correct but is not enforcement. A
--- duplicate double-counts into a scan's wins/losses, so removing one is a
--- repair, not data loss. Deterministic: keeps the earliest row per logical key,
--- with id as the tiebreaker. A no-op on a clean database.
-DELETE FROM "simulation" a
-USING "simulation" b
-WHERE a."scanId" = b."scanId"
-  AND a."productId" = b."productId"
-  AND a."competitorId" = b."competitorId"
-  AND a."model" = b."model"
-  AND (a."createdAt" > b."createdAt"
-       OR (a."createdAt" = b."createdAt" AND a."id" > b."id"));
---> statement-breakpoint
-CREATE UNIQUE INDEX IF NOT EXISTS "simulation_pair_model_unique" ON "simulation" USING btree ("scanId","productId","competitorId","model");
+-- Note: the `simulation` dedupe and its `simulation_pair_unique` index are NOT
+-- here. They landed separately in 20260901120000_simulation_pair_unique, which
+-- this migration is ordered after — the only statement in this feature that
+-- touches existing rows is already applied by the time these tables appear.

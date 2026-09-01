@@ -7,7 +7,6 @@ import {
   count as countRows,
   eq,
   inArray,
-  isNotNull,
   max,
   min,
   sql,
@@ -127,15 +126,15 @@ export const countForCurrentUser = withAuthentication(
         Environment.SERVER,
         and(scope(user, store), eq(schema.competitor.selected, true)),
       ),
-      // The SQL twin of `Formating.isJudgeableListing`. A priceless row is
-      // skipped by the scan engine, so counting it in a pre-scan estimate
-      // promises work that will never run.
       count(
         Environment.SERVER,
         and(
           scope(user, store),
           eq(schema.competitor.selected, true),
-          isNotNull(schema.competitor.price),
+          // The SQL half of `isJudgeable` (lib/competitor-evidence.ts) — the
+          // scan drops priceless rivals, so an estimate built on `selected`
+          // would advertise comparisons the engine never runs. Change both.
+          sql`length(trim(coalesce(${schema.competitor.price}, ''))) > 0`,
         ),
       ),
     ]);
