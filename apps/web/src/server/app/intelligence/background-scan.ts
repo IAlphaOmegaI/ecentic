@@ -4,11 +4,7 @@ import { resultify } from "@zenncore/utils";
 import { and, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
 import * as Evidence from "@/lib/competitor-evidence";
-import {
-  countSimulations,
-  SCAN_CONCURRENCY,
-  uniformPairing,
-} from "@/lib/scan-estimate";
+import { countSimulations, SCAN_CONCURRENCY } from "@/lib/scan-estimate";
 import { schema } from "../../database";
 import { generate, type ModelId } from "../../utils/ai";
 import { type GenericContext, withContext } from "../../utils/context";
@@ -21,6 +17,7 @@ import * as Simulation from "../simulation";
 import * as Store from "../store";
 import * as User from "../user";
 import * as Judge from "./judge";
+import * as Pairing from "./pairing";
 
 // The 4 models form a panel; they share one rubric (Judge.JUDGE_SYSTEM) — the
 // value is diversity of model, not divergence of instructions.
@@ -139,8 +136,14 @@ const runScanForUser = async (
     return { success: true, data: { skipped: true, reason } };
   }
 
+  // Pairing is no longer uniform: a product carrying its own measured offers is
+  // judged against THOSE, not the whole roster. `uniformPairing` remains correct
+  // for a store with no measured offers, which `pairCompetitors` reproduces by
+  // falling every product back to the store-wide rows.
+  const pairing = Pairing.pairCompetitors(products.data, selected);
+
   const totalSimulations = countSimulations(
-    uniformPairing(products.data.length, selected.length),
+    pairing.map((entry) => entry.competitors.length),
     perspectives.length,
   );
 
@@ -220,8 +223,8 @@ const runScanForUser = async (
     },
   });
 
-  const tasks = products.data.flatMap((product) =>
-    selected.flatMap((competitor) =>
+  const tasks = pairing.flatMap(({ product, competitors: rivals }) =>
+    rivals.flatMap((competitor) =>
       perspectives
         .filter(
           (perspective) =>

@@ -5,7 +5,7 @@ import { and, eq, inArray } from "drizzle-orm";
 import { after } from "next/server";
 import { z } from "zod";
 import * as Evidence from "@/lib/competitor-evidence";
-import { countSimulations, uniformPairing } from "@/lib/scan-estimate";
+import { countSimulations } from "@/lib/scan-estimate";
 import { withAuthentication } from "@/server/utils/authentication";
 import { schema } from "../../database";
 import * as AI from "../../utils/ai";
@@ -17,6 +17,7 @@ import * as Scan from "../scan";
 import * as Simulation from "../simulation";
 import * as Store from "../store";
 import * as Judge from "./judge";
+import * as Pairing from "./pairing";
 
 const STRICT_SCORING_RULES = `
 STRICT SCORING RULES — apply these to BOTH products equally:
@@ -754,8 +755,13 @@ export const enqueueScan = withAuthentication(
         ),
       };
 
+    // Shaped exactly as the engine will shape it — same helper, same inputs.
+    // The count and the roster are frozen onto the scan row below, so a
+    // divergence here is a progress bar that never lands on 100%.
     const totalSimulations = countSimulations(
-      uniformPairing(products.data.length, selected.length),
+      Pairing.pairCompetitors(products.data, selected).map(
+        (entry) => entry.competitors.length,
+      ),
       perspectives.length,
     );
 

@@ -78,6 +78,8 @@ Rules:
           userId: context.session.user.id,
           storeId: store,
           selected: true,
+          // A model named this; no fetch confirmed it.
+          confidence: "inferred" as const,
           image: getBrandLogo(entry.brand.trim() || entry.title.trim()),
         }),
       ),

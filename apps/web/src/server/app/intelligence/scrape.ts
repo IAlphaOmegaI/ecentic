@@ -186,6 +186,8 @@ Rules:
           userId: ctx.session.user.id,
           storeId: store,
           selected: true,
+          // The page was really fetched, but the fields are model-extracted.
+          confidence: "inferred" as const,
         }),
       ),
     );
