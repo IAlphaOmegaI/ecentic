@@ -1,12 +1,17 @@
 "use server";
 
+import { and, eq } from "drizzle-orm";
 import { withAuthentication } from "@/server/utils/authentication";
 import { withSubscription } from "@/server/utils/entitlement";
 import { isPlanKey } from "@/server/utils/stripe";
+import { schema } from "../../database";
 import { Environment } from "../../utils/environment";
 import { RequestError, ValidationError } from "../../utils/error";
+import { repository } from "../../utils/repository";
 import * as Store from "../store";
 import { billingFor, discoverOffers, resolveOffers } from "./offer-resolve";
+
+const offers = repository(schema.competitorOffer);
 
 /**
  * Product-level competitor offers — the interactive entry point.
@@ -72,6 +77,113 @@ export const resolveOffersForProduct = withSubscription(
     return resolution;
   },
   "Offers.resolveOffersForProduct",
+);
+
+export type SellerOffer = {
+  seller: string;
+  sellerDomain: string | null;
+  title: string | null;
+  price: number | null;
+  /** The price observed the time before, when there is one. */
+  previousPrice: number | null;
+  currency: string | null;
+  total: number | null;
+  offerUrl: string | null;
+  imageUrl: string | null;
+  position: number | null;
+  measuredAt: Date;
+  /** How many times we have observed this seller on this product. */
+  observations: number;
+};
+
+/**
+ * The current shelf for one product: who sells it, at what price, and whether
+ * that price moved since we last looked.
+ *
+ * `competitor_offer` has been written on every resolution and read by nothing —
+ * the price series existed with no surface. This is the read side.
+ *
+ * Grouped in JS rather than SQL. The per-seller latest-plus-previous shape
+ * wants a window function, which the query builder expresses badly, and the row
+ * count here is small and bounded: one product, a handful of sellers, one row
+ * per refresh. A `distinct on` would be tidier at ten times the scale and
+ * harder to change at this one.
+ */
+export const listOffersForProduct = withAuthentication(
+  async (
+    context,
+    { store: storeId, product: productId }: { store: string; product: string },
+  ) => {
+    const owned = await ownedStore(storeId, context.session.user.id);
+    if (!owned.success) return owned;
+
+    const history = await offers.find(Environment.SERVER, {
+      where: and(
+        eq(schema.competitorOffer.storeId, storeId),
+        eq(schema.competitorOffer.productId, productId),
+      ),
+      orderBy: [
+        { column: schema.competitorOffer.measuredAt, direction: "desc" },
+      ],
+      // Bounded so a long-lived product cannot turn this into a table scan the
+      // page waits on. Newest first, so the cap drops the oldest history rather
+      // than the current shelf.
+      limit: 200,
+    });
+    if (!history.success) return history;
+
+    const bySeller = new Map<string, typeof history.data>();
+    for (const row of history.data) {
+      const key = row.sellerDomain ?? row.seller ?? row.id;
+      bySeller.set(key, [...(bySeller.get(key) ?? []), row]);
+    }
+
+    const amount = (value: string | null) => {
+      if (value === null) return null;
+      const parsed = Number.parseFloat(value);
+      return Number.isFinite(parsed) ? parsed : null;
+    };
+
+    const sellers = [...bySeller.values()]
+      .map((rows): SellerOffer | null => {
+        // Already sorted newest-first by the query, so [0] is current and the
+        // first row after it with a different price is what it moved from.
+        const [current] = rows;
+        if (!current) return null;
+
+        const price = amount(current.priceAmount);
+        const previous =
+          rows
+            .slice(1)
+            .map((row) => amount(row.priceAmount))
+            .find((value) => value !== null && value !== price) ?? null;
+
+        return {
+          seller: current.seller ?? current.sellerDomain ?? "Unknown seller",
+          sellerDomain: current.sellerDomain,
+          title: current.title,
+          price,
+          previousPrice: previous,
+          currency: current.currency,
+          total: amount(current.total),
+          offerUrl: current.offerUrl,
+          imageUrl: current.imageUrl,
+          position: current.position,
+          measuredAt: current.measuredAt,
+          observations: rows.length,
+        };
+      })
+      .filter((offer): offer is SellerOffer => offer !== null)
+      // Cheapest first: on a shelf, that is the one that beats the merchant.
+      .sort(
+        (a, b) =>
+          (a.price ?? Number.POSITIVE_INFINITY) -
+          (b.price ?? Number.POSITIVE_INFINITY),
+      );
+
+    return { success: true as const, data: sellers };
+  },
+  "Offers.listOffersForProduct",
 );
 
 /**

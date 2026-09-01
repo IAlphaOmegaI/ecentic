@@ -887,6 +887,16 @@
               "unconfigured": "Offer lookup is not enabled on this environment."
             }
           }
+        },
+        "shelf": {
+          "kicker": "Observed shelf",
+          "title": "Who else sells this",
+          "description": "Sellers we have seen carrying this product, cheapest first, with any price movement since the last check.",
+          "position": "#{position} on Google",
+          "observed": "{count, plural, one {Seen once, {when}} other {Seen # times, last {when}}}",
+          "total": "{total} with shipping",
+          "down": "↓ {amount} since last check",
+          "up": "↑ {amount} since last check"
         }
       },
       "add": {

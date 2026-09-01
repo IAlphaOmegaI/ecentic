@@ -609,6 +609,16 @@
               "unconfigured": "La búsqueda de ofertas no está habilitada en este entorno."
             }
           }
+        },
+        "shelf": {
+          "kicker": "Estante observado",
+          "title": "Quién más lo vende",
+          "description": "Vendedores que hemos visto ofreciendo este producto, del más barato al más caro, con la variación de precio desde la última comprobación.",
+          "position": "#{position} en Google",
+          "observed": "{count, plural, one {Visto una vez, {when}} other {Visto # veces, la última {when}}}",
+          "total": "{total} con envío",
+          "down": "↓ {amount} desde la última comprobación",
+          "up": "↑ {amount} desde la última comprobación"
         }
       },
       "add": {

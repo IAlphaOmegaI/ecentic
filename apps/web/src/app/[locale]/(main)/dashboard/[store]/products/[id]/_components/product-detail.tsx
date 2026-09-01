@@ -64,6 +64,7 @@ import {
   StatusPill,
 } from "../../../../_components/grid";
 import { FindOffers } from "./find-offers";
+import { OfferShelf } from "./offer-shelf";
 
 export type ProductDetailData = {
   product: {
@@ -601,6 +602,10 @@ const OverviewTab = ({
           </DataTableEmpty>
         </DataTable>
       </DataTableProvider>
+
+      {/* Renders itself away when there is no observed history, so it costs a
+          query and nothing else on a product that has never been resolved. */}
+      <OfferShelf store={store} product={product} />
     </section>
   );
 };
