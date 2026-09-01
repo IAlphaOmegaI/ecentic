@@ -4,6 +4,7 @@ import { resultify } from "@zenncore/utils";
 import { and, eq, inArray } from "drizzle-orm";
 import { after } from "next/server";
 import { z } from "zod";
+import { countSimulations } from "@/lib/scan-estimate";
 import { withAuthentication } from "@/server/utils/authentication";
 import { schema } from "../../database";
 import * as AI from "../../utils/ai";
@@ -15,6 +16,7 @@ import * as Scan from "../scan";
 import * as Simulation from "../simulation";
 import * as Store from "../store";
 import * as Judge from "./judge";
+import * as Pairing from "./pairing";
 
 const STRICT_SCORING_RULES = `
 STRICT SCORING RULES — apply these to BOTH products equally:
@@ -721,22 +723,43 @@ export const enqueueScan = withAuthentication(
 
     // An explicit roster IS the selection; the store's `selected` flag only
     // drives the fallback when no roster was picked.
-    const selected = competitorSelection?.length
+    const chosen = competitorSelection?.length
       ? competitors.data
       : competitors.data.filter((record) => record.selected);
+
+    // Filtered at enqueue as well as in the engine, because the roster is
+    // FROZEN onto the scan row below — an unjudgeable row left in here would be
+    // counted in `totalSimulations` and then dropped at drain time, so the
+    // progress bar could never reach 100%.
+    const selected = chosen.filter(Pairing.isJudgeableListing);
+
     if (products.data.length === 0)
       return {
         success: false as const,
         error: new RequestError("No products selected"),
       };
-    if (selected.length === 0)
+    if (chosen.length === 0)
       return {
         success: false as const,
         error: new ValidationError("No competitors selected"),
       };
+    if (selected.length === 0)
+      return {
+        success: false as const,
+        error: new ValidationError(
+          "None of the selected competitors carry a price to compare against",
+        ),
+      };
 
-    const totalSimulations =
-      products.data.length * selected.length * perspectives.length;
+    // Shaped exactly as the engine will shape it — same helper, same inputs.
+    // The count and the roster are frozen onto the scan row below, so a
+    // divergence here is a progress bar that never lands on 100%.
+    const totalSimulations = countSimulations(
+      Pairing.pairCompetitors(products.data, selected).map(
+        (entry) => entry.competitors.length,
+      ),
+      perspectives.length,
+    );
 
     // Freeze the resolved roster on the scan row so the drain (and any resumed
     // invocation) runs exactly what the user saw in the setup step, immune to

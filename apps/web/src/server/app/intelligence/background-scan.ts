@@ -3,7 +3,7 @@
 import { resultify } from "@zenncore/utils";
 import { and, eq, inArray } from "drizzle-orm";
 import { z } from "zod";
-import { SCAN_CONCURRENCY } from "@/lib/scan-estimate";
+import { countSimulations, SCAN_CONCURRENCY } from "@/lib/scan-estimate";
 import { schema } from "../../database";
 import { generate, type ModelId } from "../../utils/ai";
 import { type GenericContext, withContext } from "../../utils/context";
@@ -16,6 +16,7 @@ import * as Simulation from "../simulation";
 import * as Store from "../store";
 import * as User from "../user";
 import * as Judge from "./judge";
+import * as Pairing from "./pairing";
 
 // The 4 models form a panel; they share one rubric (Judge.JUDGE_SYSTEM) — the
 // value is diversity of model, not divergence of instructions.
@@ -107,21 +108,39 @@ const runScanForUser = async (
 
   // An explicit roster IS the selection — the store's `selected` flag only
   // drives the fallback when no roster was picked.
-  const selected = roster?.competitors?.length
+  const chosen = roster?.competitors?.length
     ? competitors.data
     : competitors.data.filter((competitor) => competitor.selected);
+
+  // Rows too sparse to judge are dropped here rather than fed to the rubric,
+  // which would score them 0-30 by construction and hand the merchant a free
+  // win. See `Pairing.isJudgeableListing`.
+  const selected = chosen.filter(Pairing.isJudgeableListing);
 
   if (products.data.length === 0 || selected.length === 0)
     return {
       success: true,
       data: {
         skipped: true,
-        reason: "missing products or competitors",
+        // Distinguished so "you have no competitors" and "the competitors you
+        // have carry no price to compare on" are not the same message — the
+        // second is actionable and the first is not.
+        reason:
+          products.data.length === 0 || chosen.length === 0
+            ? "missing products or competitors"
+            : "no judgeable competitors",
       },
     };
 
-  const totalSimulations =
-    products.data.length * selected.length * perspectives.length;
+  const pairing = Pairing.pairCompetitors(products.data, selected);
+
+  // Non-uniform by construction now — a product with its own measured offers is
+  // judged against those, not the whole roster — so the count is a sum over the
+  // shaped pair graph rather than a multiplication.
+  const totalSimulations = countSimulations(
+    pairing.map((entry) => entry.competitors.length),
+    perspectives.length,
+  );
 
   // Resume support: results persist per-simulation as they finish, so when a
   // drain invocation dies mid-scan (deploy timeout, crash) and the scan comes
@@ -181,8 +200,8 @@ const runScanForUser = async (
     },
   });
 
-  const tasks = products.data.flatMap((product) =>
-    selected.flatMap((competitor) =>
+  const tasks = pairing.flatMap(({ product, competitors: rivals }) =>
+    rivals.flatMap((competitor) =>
       perspectives
         .filter(
           (perspective) =>

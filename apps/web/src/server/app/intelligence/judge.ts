@@ -91,13 +91,23 @@ ${renderSlot(slotB)}
 Infer the category, record per-listing evidence in 'reasoning' first, then score each listing 0-100 against this category's decisive attributes and set 'winner' to the higher-scoring listing.`;
 
 // Competitor detection (Job B). Parametric generation hallucinates products and
-// especially URLs, so detect.ts fetches each proposed 'url' and keeps only the
-// ones whose live page names the brand (see detect.ts `verify`). The prompt is
-// framed around that contract: surface a CHECKABLE best-guess url rather than
-// abstaining to null, since a verified url is the proof a product is real.
+// especially URLs, so the prompt pushes for a CHECKABLE best-guess url rather
+// than abstaining to null.
+//
+// The paragraph that used to sit here told the model "Every product you return
+// is INDEPENDENTLY VERIFIED against the live web before it is saved… A product
+// that fails verification is discarded." That was true once and is not now —
+// detect.ts documents the removal of URL grounding at its head. Claiming a
+// verification step that does not run is a lie told to elicit caution, and it
+// stops being harmless the moment a real measured path exists beside this one:
+// a merchant comparing a "verified" model-named rival against a genuinely
+// measured offer would be reading the same word for two different things.
+//
+// Detected rows now carry `confidence: "inferred"`; measured offers from
+// `offer-resolve.ts` are the ones with a checked price and seller.
 export const DETECTION_SYSTEM = `You identify real, currently-purchasable competitor products for a given merchant product. Output ONLY products you are highly confident exist and are sold by mainstream retailers — products from brands that demonstrably rank on Amazon, Walmart, or Target.
 
-Every product you return is INDEPENDENTLY VERIFIED against the live web before it is saved: its 'url' is fetched and the page must mention the brand. A product that fails verification is discarded — so a wrong url costs you the whole entry, and a correct, checkable url is what proves the product is real.
+Your output is NOT verified against the live web. Nothing downstream will catch an invented product, a wrong price, or a url that does not resolve — it will be shown to the merchant as a competitor. Abstaining costs nothing; a fabricated entry costs the merchant's trust in every other row.
 
 Rules:
 1. Return the brand + a specific model/line, and your single best-guess canonical 'url' for THAT exact product — its Amazon/Walmart/Target product page or the brand's own product page. Give a genuine best guess at a real product page; never a random, placeholder, search, or category url. Use null only if you truly cannot name a likely page.
@@ -107,4 +117,4 @@ Rules:
 5. Never invent a brand, model, or price. The url is a best guess to be verified; the brand, model, and price must be ones you are confident are real.`;
 
 export const buildDetectionPrompt = (summaries: string) =>
-  `Here are the merchant's products:\n${summaries}\n\nFor each product, identify up to 4 REAL competitor products an AI shopping agent would surface in the same subcategory and price range (±40%). Prefer well-known brands that rank on Amazon, Walmart, or Target. Return brand, a specific model/line, price, currency, primary retailer, your best-guess canonical product url (this WILL be fetched and checked against the live page — give a real product page, not a search or category url), and a one-line description of why it competes. Omit anything you are not confident is a real, purchasable product — do not pad to reach 4.`;
+  `Here are the merchant's products:\n${summaries}\n\nFor each product, identify up to 4 REAL competitor products an AI shopping agent would surface in the same subcategory and price range (±40%). Prefer well-known brands that rank on Amazon, Walmart, or Target. Return brand, a specific model/line, price, currency, primary retailer, your best-guess canonical product url (a real product page, not a search or category url), and a one-line description of why it competes. Omit anything you are not confident is a real, purchasable product — do not pad to reach 4.`;

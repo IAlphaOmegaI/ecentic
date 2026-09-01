@@ -481,7 +481,8 @@
         "countCompetitorFound": "{count, plural, one {# competitor found} other {# competitors found}}",
         "countProductExtracted": "{count, plural, one {# product extracted} other {# products extracted}}",
         "clear": "Clear",
-        "measured": "Measured"
+        "measured": "Measured",
+        "verified": "Verified price"
       },
       "review": {
         "title": "Review your competitors",

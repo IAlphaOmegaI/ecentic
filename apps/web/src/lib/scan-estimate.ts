@@ -19,6 +19,42 @@ export const SCAN_CONCURRENCY = 12;
 
 export const AVERAGE_SIMULATION_SECONDS = 16;
 
+/**
+ * Model perspectives a scan runs each pair through.
+ *
+ * Must match `perspectives` in background-scan.ts. The server passes its own
+ * `perspectives.length` into the counters below rather than trusting this, so
+ * the engine cannot drift from itself; this constant exists for the client,
+ * which cannot import a server module and was hardcoding `* 3` in two places.
+ */
+export const PERSPECTIVE_COUNT = 3;
+
+/**
+ * Simulations a scan will run.
+ *
+ * Takes competitors PER PRODUCT rather than a store-wide total because pairing
+ * is not necessarily uniform: a product with its own measured competitor offers
+ * is judged against those, not against the entire roster. Summing the shaped
+ * pair graph is the only count that stays correct in both regimes.
+ *
+ * This is the single definition. It previously lived in three places — the
+ * engine and both client estimates — each independently multiplying by a
+ * hardcoded 3, which is a drift waiting to happen the moment pairing changes.
+ */
+export const countSimulations = (
+  competitorsPerProduct: readonly number[],
+  perspectives: number = PERSPECTIVE_COUNT,
+) =>
+  competitorsPerProduct.reduce((total, count) => total + count, 0) *
+  perspectives;
+
+/** The uniform case: every product judged against the same roster. */
+export const countUniformSimulations = (
+  products: number,
+  competitors: number,
+  perspectives: number = PERSPECTIVE_COUNT,
+) => products * competitors * perspectives;
+
 const STARTUP_SECONDS = 10;
 
 const STRAGGLER_TASK_SECONDS = 30;

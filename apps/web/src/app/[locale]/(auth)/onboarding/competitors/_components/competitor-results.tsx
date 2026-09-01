@@ -10,7 +10,10 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Spring } from "@/lib/animations";
-import { isMeasuredCompetitor } from "@/lib/competitor-source";
+import {
+  isMeasuredCompetitor,
+  isVerifiedCompetitor,
+} from "@/lib/competitor-source";
 import { formatPrice } from "@/lib/currency";
 import type * as Competitor from "@/server/app/competitor";
 
@@ -58,14 +61,29 @@ export const CompetitorResults = ({
                   <p className="truncate font-medium text-foreground text-sm">
                     {competitor.title}
                   </p>
-                  {/* The one provenance distinction worth surfacing: every
-                      other tab is a model's guess at who a rival is, these
-                      Google actually observed on the same result pages. */}
-                  {isMeasuredCompetitor(competitor.source) && (
-                    <span className="shrink-0 border border-primary/40 bg-primary/10 px-1.5 py-px font-medium text-[10px] text-primary uppercase tracking-wide">
-                      {translate("measured")}
-                    </span>
-                  )}
+                  {/* Provenance, which is the distinction a merchant is owed
+                      here: a verified row's price was observed from a named
+                      seller, a Google row is a rival observed on the same
+                      result pages, and everything else is a model's guess.
+                      Only one chip shows — the strongest claim that holds. */}
+                  {(() => {
+                    switch (true) {
+                      case isVerifiedCompetitor(competitor.confidence):
+                        return (
+                          <span className="shrink-0 border border-primary/40 bg-primary/10 px-1.5 py-px font-medium text-[10px] text-primary uppercase tracking-wide">
+                            {translate("verified")}
+                          </span>
+                        );
+                      case isMeasuredCompetitor(competitor.source):
+                        return (
+                          <span className="shrink-0 border border-primary/40 bg-primary/10 px-1.5 py-px font-medium text-[10px] text-primary uppercase tracking-wide">
+                            {translate("measured")}
+                          </span>
+                        );
+                      default:
+                        return null;
+                    }
+                  })()}
                 </div>
                 <p className="text-foreground-dimmed text-xs">
                   {[competitor.brand, competitor.source]

@@ -23,3 +23,43 @@ export const MEASURED_COMPETITOR_SOURCE = "Google Merchant Center";
  */
 export const isMeasuredCompetitor = (source: string | null | undefined) =>
   source === MEASURED_COMPETITOR_SOURCE;
+
+/**
+ * How much weight a competitor row's facts carry.
+ *
+ * Three states, because the roster now mixes genuinely different kinds of
+ * claim and blending them into one "competitor" reads as more certain than the
+ * data is:
+ *
+ * - `measured`     — a provider returned this offer: real seller, real price,
+ *                    observed at `measuredAt`.
+ * - `corroborated` — measured AND confirmed by a second source (a rival Google's
+ *                    competitive-visibility report also names).
+ * - `inferred`     — a model named it. Nothing checked the price or the url.
+ *
+ * Null is a real fourth state, not an oversight: a Google Merchant Center row
+ * makes no offer-level claim at all. Google measured that the domain competes,
+ * never at what price — so calling it `measured` would borrow the word from a
+ * stronger claim. Those rows keep their own badge via
+ * {@link isMeasuredCompetitor}.
+ *
+ * Kept as a column rather than derived from `source`, which is free text a model
+ * writes and therefore cannot be branched on safely.
+ */
+export type Confidence = "measured" | "corroborated" | "inferred";
+
+export const CONFIDENCE_ORDER: Confidence[] = [
+  "corroborated",
+  "measured",
+  "inferred",
+];
+
+/**
+ * Rows whose price is an observation rather than a recollection. This is the
+ * distinction the merchant is owed on screen — and, separately, the reason the
+ * win rate for these rows means something.
+ */
+export const isVerifiedCompetitor = (
+  confidence: string | null | undefined,
+): confidence is "measured" | "corroborated" =>
+  confidence === "measured" || confidence === "corroborated";

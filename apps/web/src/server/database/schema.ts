@@ -5,6 +5,7 @@ import {
   index,
   integer,
   jsonb,
+  numeric,
   pgTable,
   text,
   timestamp,
@@ -346,6 +347,17 @@ export const product = pgTable(
     images: text("images").default("[]"),
     url: text("url"),
     sku: text("sku"),
+    /**
+     * Barcode / manufacturer part number. Not used to query the offer providers
+     * — none of them accept a GTIN as a lookup key — but it is the hard gate on
+     * Google's price-benchmark reports, and it is the only identifier that makes
+     * a competitor comparison same-product rather than same-category.
+     *
+     * Backfillable without a re-sync for Shopify: {@link rawData} holds the raw
+     * REST product, whose `variants[].barcode` carries it.
+     */
+    gtin: text("gtin"),
+    mpn: text("mpn"),
     status: text("status").default("active"),
     rawData: text("rawData"),
     structuredData: text("structuredData"),
@@ -380,14 +392,50 @@ export const competitor = pgTable(
     storeId: text("storeId")
       .notNull()
       .references(() => store.id, { onDelete: "cascade" }),
+    /**
+     * The merchant product this rival offer competes with, when it is a
+     * measured one. Null means a store-wide rival — every model-sourced row,
+     * and every row that predates offer discovery.
+     *
+     * This column is what keeps product-level competitors affordable. The scan
+     * engine pairs each product with its OWN offers instead of the whole
+     * roster; without it the fan-out is a cartesian product and a 50-product
+     * store goes from ~3,000 judge calls to ~120,000.
+     */
+    productId: text("productId").references(() => product.id, {
+      onDelete: "cascade",
+    }),
     title: text("title").notNull(),
     description: text("description"),
+    /** Display string, kept for the existing UI. {@link priceAmount} is authoritative. */
     price: text("price"),
+    /**
+     * The first numeric price in the system. `price` is text and was never
+     * parsed anywhere, which is why no price-gap feature could exist. Written
+     * from the same code path as `price`, never independently.
+     */
+    priceAmount: numeric("priceAmount"),
     currency: text("currency").default("USD"),
     image: text("image"),
     url: text("url"),
     source: text("source"),
     brand: text("brand"),
+    /**
+     * The selling merchant's host, which is distinct from {@link brand} — the
+     * manufacturer. Before offers existed these were the same string.
+     */
+    sellerDomain: text("sellerDomain"),
+    /** When the price was observed. A price is a dated observation, not a fact. */
+    measuredAt: timestamp("measuredAt", { mode: "date" }),
+    /**
+     * How the row was obtained: `measured` (a provider returned this offer),
+     * `corroborated` (measured and confirmed by a second source), `inferred` (a
+     * model named it). Drives the provenance badge, and keeps measured and
+     * guessed comparisons out of one blended win rate.
+     */
+    confidence: text("confidence").$type<
+      "measured" | "corroborated" | "inferred"
+    >(),
     selected: boolean("selected").notNull().default(true),
     createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
     updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
@@ -395,6 +443,131 @@ export const competitor = pgTable(
   (table) => [
     index("competitor_user_idx").on(table.userId),
     index("competitor_store_idx").on(table.storeId),
+    index("competitor_product_idx").on(table.productId),
+    /**
+     * One offer per seller per product. The table carried no uniqueness at all,
+     * which was survivable while every writer was a human clicking a button and
+     * is not once a cron refreshes offers on a schedule.
+     *
+     * Partial, because store-wide rivals (`productId IS NULL`) legitimately
+     * repeat — several model-sourced rows can name the same brand.
+     */
+    uniqueIndex("competitor_product_seller_unique")
+      .on(table.storeId, table.productId, table.sellerDomain)
+      .where(sql`"productId" is not null and "sellerDomain" is not null`),
+  ],
+);
+
+/**
+ * One observation of one rival offer at one moment.
+ *
+ * Separate from {@link competitor} because they answer different questions.
+ * `competitor` is the current roster — what the judge compares against right
+ * now, one row per rival. This is the history, and history is the point:
+ * `docs/context/idea.md` specs price-change detection and win-rate trends, and
+ * `docs/context/strategy.md` argues the accumulated series is the moat. Neither
+ * had a table.
+ *
+ * Shaped like {@link agenticScan}: the provider's payload is kept verbatim in
+ * `raw` because it is a third party's data and re-deriving it later is
+ * impossible, while the scalars the charts read are denormalized out so a trend
+ * query never parses jsonb.
+ */
+export const competitorOffer = pgTable(
+  "competitor_offer",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    userId: text("userId")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    productId: text("productId")
+      .notNull()
+      .references(() => product.id, { onDelete: "cascade" }),
+    /**
+     * Nullable: an observation outlives the roster row it seeded. Deleting a
+     * competitor must not erase the price history that justified it.
+     */
+    competitorId: text("competitorId").references(() => competitor.id, {
+      onDelete: "set null",
+    }),
+    sellerDomain: text("sellerDomain"),
+    seller: text("seller"),
+    title: text("title"),
+    priceAmount: numeric("priceAmount"),
+    currency: text("currency"),
+    shipping: numeric("shipping"),
+    /** Price + shipping + estimated tax, when the provider computed one. */
+    total: numeric("total"),
+    offerUrl: text("offerUrl"),
+    /** Remote URL only — hotlinked, never copied into our storage. */
+    imageUrl: text("imageUrl"),
+    rating: numeric("rating"),
+    reviews: integer("reviews"),
+    /** 1-based order the provider listed the seller in. */
+    position: integer("position"),
+    /** Which provider produced this, so a swap stays auditable. */
+    provider: text("provider"),
+    raw: jsonb("raw"),
+    measuredAt: timestamp("measuredAt", { mode: "date" })
+      .notNull()
+      .defaultNow(),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("competitor_offer_product_measured_idx").on(
+      table.productId,
+      table.measuredAt,
+    ),
+    index("competitor_offer_store_measured_idx").on(
+      table.storeId,
+      table.measuredAt,
+    ),
+    index("competitor_offer_seller_idx").on(table.sellerDomain),
+  ],
+);
+
+/**
+ * One paid offer lookup, billed or served from cache.
+ *
+ * The ledger of record for what this feature costs. Redis gates spend fast but
+ * is a cache — it expires, fails open, and cannot be reconciled against an
+ * invoice. This table is what makes COGS per merchant answerable, which the
+ * pay-as-you-go performance fee needs and nothing else in the codebase provides
+ * (`scrapellm.ts` types `credits_used` and never stores it).
+ *
+ * Rows are written for MISSES too. A lookup that returned nothing still cost a
+ * search, and the miss rate is the number that decides whether this feature is
+ * worth its bill.
+ */
+export const offerUsage = pgTable(
+  "offer_usage",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    userId: text("userId")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    productId: text("productId").references(() => product.id, {
+      onDelete: "set null",
+    }),
+    provider: text("provider").notNull(),
+    /** Billable searches consumed. Zero on a cache hit. */
+    credits: integer("credits").notNull().default(0),
+    cached: boolean("cached").notNull().default(false),
+    /** `offers` | `no-match` | `low-relevance` | `error` | `budget-exhausted`. */
+    outcome: text("outcome").notNull(),
+    offerCount: integer("offerCount").notNull().default(0),
+    milliseconds: integer("milliseconds"),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("offer_usage_store_created_idx").on(table.storeId, table.createdAt),
+    index("offer_usage_user_idx").on(table.userId),
   ],
 );
 
@@ -552,6 +725,18 @@ export const simulation = pgTable(
     index("simulation_scan_idx").on(table.scanId),
     index("simulation_product_idx").on(table.productId),
     index("simulation_competitor_idx").on(table.competitorId),
+    /**
+     * The logical identity of a judgement. Resume dedupes in memory against
+     * persisted rows, which is correct but is not enforcement: nothing at the
+     * database level stopped the same pair being scored twice, and a duplicate
+     * double-counts into a scan's `wins` / `losses`.
+     */
+    uniqueIndex("simulation_pair_model_unique").on(
+      table.scanId,
+      table.productId,
+      table.competitorId,
+      table.model,
+    ),
   ],
 );
 
@@ -951,6 +1136,8 @@ export const tables = {
   googleMerchantUcp,
   product,
   competitor,
+  competitorOffer,
+  offerUsage,
   scan,
   simulation,
   brandSnapshot,

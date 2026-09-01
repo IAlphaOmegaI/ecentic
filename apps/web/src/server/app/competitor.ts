@@ -7,6 +7,7 @@ import {
   count as countRows,
   eq,
   inArray,
+  isNotNull,
   max,
   min,
   sql,
@@ -120,19 +121,35 @@ export const countForCurrentUser = withAuthentication(
   async (context, { store }: { store?: string } = {}) => {
     const user = context.session.user.id;
 
-    const [total, selected] = await Promise.all([
+    const [total, selected, judgeable] = await Promise.all([
       count(Environment.SERVER, scope(user, store)),
       count(
         Environment.SERVER,
         and(scope(user, store), eq(schema.competitor.selected, true)),
       ),
+      // The SQL twin of `Formating.isJudgeableListing`. A priceless row is
+      // skipped by the scan engine, so counting it in a pre-scan estimate
+      // promises work that will never run.
+      count(
+        Environment.SERVER,
+        and(
+          scope(user, store),
+          eq(schema.competitor.selected, true),
+          isNotNull(schema.competitor.price),
+        ),
+      ),
     ]);
     if (!total.success) return total;
     if (!selected.success) return selected;
+    if (!judgeable.success) return judgeable;
 
     return {
       success: true as const,
-      data: { total: total.data, selected: selected.data },
+      data: {
+        total: total.data,
+        selected: selected.data,
+        judgeable: judgeable.data,
+      },
     };
   },
   "Competitor.countForCurrentUser",

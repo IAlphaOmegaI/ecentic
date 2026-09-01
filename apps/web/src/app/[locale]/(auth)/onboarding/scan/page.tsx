@@ -10,7 +10,10 @@ import { connection } from "next/server";
 import { getMessages, getTranslations } from "next-intl/server";
 import { Motion } from "@/components/motion";
 import { Plus } from "@/components/plus";
-import { formatScanEstimate } from "@/lib/scan-estimate";
+import {
+  countUniformSimulations,
+  formatScanEstimate,
+} from "@/lib/scan-estimate";
 import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";
 import * as Store from "@/server/app/store";
@@ -61,10 +64,15 @@ export default async () => {
             store: store.id,
           }),
         )
-      : Promise.resolve({ total: 0, selected: 0 }),
+      : Promise.resolve({ total: 0, selected: 0, judgeable: 0 }),
   ]);
 
-  const simulations = productCount * competitorCounts.selected * 3;
+  // `judgeable`, not `selected`: a priceless competitor is skipped by the scan
+  // engine, so counting it here would quote a duration the run never takes.
+  const simulations = countUniformSimulations(
+    productCount,
+    competitorCounts.judgeable,
+  );
   const estimation = formatScanEstimate(simulations);
 
   const labels = [

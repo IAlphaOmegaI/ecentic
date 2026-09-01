@@ -4,6 +4,7 @@ import { Environment } from "@/server/utils/environment";
 import * as PerformanceFee from "./billing/performance-fee";
 import * as Blog from "./blog";
 import * as BackgroundScan from "./intelligence/background-scan";
+import * as OfferResolve from "./intelligence/offer-resolve";
 
 /**
  * The scheduled jobs, each carrying its own scheduler authorization so the
@@ -57,6 +58,27 @@ export const reconcileBlogCatalog = withCron(
     return { success: true, data: { scheduled: true } };
   },
   "Cron.reconcileBlogCatalog",
+);
+
+/**
+ * Keeps measured competitor prices current. Same handoff as the drain: each
+ * lookup is a network round trip to a paid provider, so a tick's batch runs far
+ * past what the scheduler waits for.
+ *
+ * `limit` is the real cost throttle — a tick resolves at most this many
+ * products, and raising the schedule frequency is the safe way to move more
+ * volume. Entitlement is applied when selecting the batch, not only when
+ * spending, so unentitled stores never occupy a slot.
+ */
+export const refreshOffers = withCron(
+  async (_context, { limit = 25 }: { limit?: number } = {}) => {
+    after(async () => {
+      await OfferResolve.refreshDueOffers({ limit });
+    });
+
+    return { success: true, data: { scheduled: true } };
+  },
+  "Cron.refreshOffers",
 );
 
 export const drainPendingScans = withCron(
