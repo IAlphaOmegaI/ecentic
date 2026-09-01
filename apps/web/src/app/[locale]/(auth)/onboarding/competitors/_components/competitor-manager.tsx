@@ -72,8 +72,11 @@ export const CompetitorManager = ({
               />
             </TabsPanel>
 
+            {/* keepMounted, like the auto panel: extracted rows and an
+                in-flight extraction must survive a tab switch. */}
             <TabsPanel
               value="url"
+              keepMounted
               className={"h-[calc(100%-(var(--spacing)*9))] flex-1 border-0"}
             >
               <UrlTab
@@ -84,6 +87,7 @@ export const CompetitorManager = ({
 
             <TabsPanel
               value="search"
+              keepMounted
               className={"h-[calc(100%-(var(--spacing)*9))] flex-1 border-0"}
             >
               <SearchTab

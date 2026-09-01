@@ -6,6 +6,7 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { useRouter } from "@/i18n/navigation";
+import { formatPlanPrice } from "@/lib/agent-api";
 import * as Payg from "@/server/app/billing/payg";
 import type * as PerformanceFee from "@/server/app/billing/performance-fee";
 import * as Subscription from "@/server/app/subscription";
@@ -18,11 +19,17 @@ type Props = {
 
 type SubscriptionPlan = "compete" | "scale" | "dominate";
 
-const PLAN_PRICES = {
-  compete: "14.90",
-  scale: "44.90",
-  dominate: "149",
-} as const;
+/**
+ * Read from `PLAN_CATALOG` rather than held here, so this panel, the public
+ * plans endpoint and the call sheet cannot quote three different numbers.
+ * `formatPlanPrice` already carries the "$"; these two call sites print their
+ * own, so strip it.
+ */
+const PLAN_PRICES: Record<SubscriptionPlan, string> = {
+  compete: formatPlanPrice("compete")?.replace("$", "") ?? "",
+  scale: formatPlanPrice("scale")?.replace("$", "") ?? "",
+  dominate: formatPlanPrice("dominate")?.replace("$", "") ?? "",
+};
 
 /** Next tier up for the in-dashboard upgrade button; Dominate is the ceiling. */
 const UPGRADE_LADDER = {

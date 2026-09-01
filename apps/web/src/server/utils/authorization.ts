@@ -12,9 +12,13 @@ export const authorize = (
   whitelist: UserRole[],
 ): Enhancer<AuthenticatedContext, AuthenticatedContext, UnauthorizedError> => {
   return async (context) => {
-    const current = context.session.user.role as UserRole;
+    // `role` is a nullable text column, so the session can carry anything —
+    // including a value from a vocabulary that says nothing about permissions
+    // here. Compare without asserting the type: an unrecognized role simply
+    // fails the membership check rather than being cast into the union.
+    const current = context.session.user.role;
 
-    if (!whitelist.includes(current))
+    if (!whitelist.some((role) => role === current))
       return {
         success: false,
         error: new UnauthorizedError(
@@ -22,7 +26,7 @@ export const authorize = (
         ),
       };
 
-    context.span.setAttribute("session.user.role", current);
+    context.span.setAttribute("session.user.role", current ?? "none");
 
     return { success: true, data: context };
   };

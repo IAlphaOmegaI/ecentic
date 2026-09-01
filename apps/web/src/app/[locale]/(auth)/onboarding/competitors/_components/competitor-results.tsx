@@ -92,3 +92,19 @@ export const CompetitorResults = ({
     </>
   );
 };
+
+// Shared by both manual tabs: an inline reason for a failed extraction/search.
+// The toast that accompanies it disappears; this stays next to the input the
+// user is about to retry with.
+export const ErrorNotice = ({
+  title,
+  message,
+}: {
+  title: string;
+  message: string;
+}) => (
+  <div className="border border-error/30 bg-error/5 px-3 py-2">
+    <p className="font-medium text-error text-xs">{title}</p>
+    <p className="mt-0.5 text-error/80 text-xs">{message}</p>
+  </div>
+);

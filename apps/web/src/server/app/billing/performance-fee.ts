@@ -231,12 +231,12 @@ export const getCurrentPeriodSummary = withAuthentication(async (context) => {
 }, "PerformanceFee.getCurrentPeriodSummary");
 
 /**
- * Admin-only override of a user's fee terms — the surface Enterprise contracts
+ * Staff-only override of a user's fee terms — the surface Enterprise contracts
  * negotiate against (custom rate/cap, or the fee toggled off entirely). Passing
  * `null` for rate/cap reverts that field to the env default.
  */
 export const setConfig = withAuthorization(
-  [UserRole.ADMIN],
+  [UserRole.STAFF],
   async (
     _,
     {

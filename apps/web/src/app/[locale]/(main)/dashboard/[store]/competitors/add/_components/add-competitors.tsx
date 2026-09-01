@@ -107,7 +107,7 @@ export const AddCompetitors = ({
             />
           </TabsPanel>
 
-          <TabsPanel value="url" className="border-0">
+          <TabsPanel value="url" keepMounted className="border-0">
             <UrlTab
               store={store}
               onSuccess={handleAdded}
@@ -115,7 +115,7 @@ export const AddCompetitors = ({
             />
           </TabsPanel>
 
-          <TabsPanel value="search" className="border-0">
+          <TabsPanel value="search" keepMounted className="border-0">
             <SearchTab
               productNames={productNames}
               store={store}

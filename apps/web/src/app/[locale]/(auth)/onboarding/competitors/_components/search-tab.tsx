@@ -12,7 +12,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import type * as Competitor from "@/server/app/competitor";
 import * as Search from "@/server/app/intelligence/search";
-import { CompetitorResults } from "./competitor-results";
+import { CompetitorResults, ErrorNotice } from "./competitor-results";
 
 export namespace SearchTab {
   export type Props = {
@@ -32,6 +32,7 @@ export const SearchTab = ({
   const toast = useToastManager();
   const translate = useTranslations("onboarding.competitors.search");
   const [query, setQuery] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [competitors, setCompetitors] = useState<Competitor.Type[]>([]);
 
   const [handleSearch, isSearching] = useAsyncAction(
@@ -39,9 +40,14 @@ export const SearchTab = ({
       const term = manual ?? query;
       if (!term?.trim()) return;
 
+      setError(null);
+
       const result = await Search.searchCompetitors({ query: term, store });
 
       if (!result.success) {
+        // Inline as well as in a toast — a search that returns nothing is the
+        // one case where the user needs the reason to change their query.
+        setError(result.error.message);
         toast.add({
           title: translate("toast.failed"),
           description: result.error.message,
@@ -120,6 +126,12 @@ export const SearchTab = ({
                 : translate("action.search")}
             </Button>
           </div>
+
+          {error && (
+            <div className="mt-3">
+              <ErrorNotice title={translate("toast.failed")} message={error} />
+            </div>
+          )}
 
           {productNames.length > 0 && (
             <div className="mt-4 flex flex-col gap-2">

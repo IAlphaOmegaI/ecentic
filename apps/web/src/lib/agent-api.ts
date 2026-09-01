@@ -275,6 +275,23 @@ export const isPlanKey = (value: string): value is PlanKey =>
   PLAN_CATALOG.some((plan) => plan.key === value);
 
 /**
+ * One plan's price as it is spoken and written — "$14.90", "$149". Whole
+ * amounts drop the cents so nobody quotes "$149.00" on a call.
+ *
+ * This exists so every surface that names a price reads it from
+ * {@link PLAN_CATALOG} rather than holding its own copy. `spec/agent-api.test.ts`
+ * asserts the message catalogs agree with it.
+ */
+export const formatPlanPrice = (key: PlanKey): string | null => {
+  const plan = PLAN_CATALOG.find((entry) => entry.key === key);
+  if (!plan?.price) return null;
+
+  const amount = plan.price.amountCents / 100;
+
+  return `$${amount % 1 === 0 ? amount.toFixed(0) : amount.toFixed(2)}`;
+};
+
+/**
  * `key` narrows the catalog to one plan. An agent that already knows which plan
  * it is quoting should not have to fetch five and filter client-side, and the
  * parameter gives the operation a typed input an LLM can fill in.

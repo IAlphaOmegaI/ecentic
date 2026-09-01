@@ -39,10 +39,10 @@ const createAdmin = async () => {
   if (existing.length > 0) {
     await db
       .update(schema.user)
-      .set({ role: "administrator", emailVerified: true })
+      .set({ role: "staff", emailVerified: true })
       .where(eq(schema.user.email, email));
     console.log(
-      `User ${email} already existed — promoted to administrator and verified.`,
+      `User ${email} already existed — promoted to ecentic staff and verified.`,
     );
     return;
   }
@@ -53,16 +53,16 @@ const createAdmin = async () => {
       surname: name.includes(" ") ? name.split(" ").slice(1).join(" ") : name,
       email,
       password,
-      role: "administrator",
+      role: "staff",
     },
   });
 
   await db
     .update(schema.user)
-    .set({ role: "administrator", emailVerified: true })
+    .set({ role: "staff", emailVerified: true })
     .where(eq(schema.user.email, email));
 
-  console.log(`Created administrator account: ${email}`);
+  console.log(`Created ecentic staff account: ${email}`);
 };
 
 void createAdmin()

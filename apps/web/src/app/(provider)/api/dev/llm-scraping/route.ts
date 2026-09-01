@@ -5,6 +5,7 @@ import {
   isSurface,
   PROMPT_LIMIT,
 } from "@/lib/llm-scraping";
+import { isInternalStaff } from "@/server/database/validators";
 import * as ScrapeLlm from "@/server/utils/scrapellm";
 
 // A capture holds the connection until the surface finishes answering —
@@ -14,11 +15,11 @@ export const maxDuration = 300;
 export const POST = async (request: Request) => {
   // The proxy matcher skips /api entirely, so this route guards itself. It
   // spends ScrapeLLM credits on arbitrary prompts, so it holds the same bar as
-  // the /dev page that calls it — administrator only — once deployed. Local
-  // development stays open so the sandbox needs no admin account to iterate on.
+  // the /dev page that calls it — ecentic staff only — once deployed. Local
+  // development stays open so the sandbox needs no staff account to iterate on.
   if (process.env.NODE_ENV === "production") {
     const session = await auth.api.getSession({ headers: await headers() });
-    if (session?.user.role !== "administrator")
+    if (!isInternalStaff(session?.user.role))
       return new Response("Unauthorized", { status: 401 });
   }
 
