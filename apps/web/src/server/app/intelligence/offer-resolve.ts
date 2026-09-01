@@ -2,6 +2,7 @@ import { and, eq, inArray, isNotNull, max, or, sql } from "drizzle-orm";
 import { getDomainLogo } from "@/lib/logo";
 import { isPlanKey, type PlanKey } from "@/server/utils/stripe";
 import { db, schema } from "../../database";
+import { streamable } from "../../utils/ai";
 import { Environment } from "../../utils/environment";
 import { RequestError } from "../../utils/error";
 import { repository, resultifyRead } from "../../utils/repository";
@@ -13,21 +14,23 @@ import {
   cachedLookup,
   cacheLookup,
   consumeBudget,
+  consumeTrialLookup,
   fingerprint,
 } from "./offer-budget";
 
 /**
  * Resolving one product's competing offers — the shared core.
  *
- * Deliberately NOT `"use server"`. Two callers need this: the interactive path
- * (`offers.ts`, session-gated behind `withSubscription`) and the scheduled
- * refresh (`cron.ts`, authorized by the cron bearer and holding no session).
+ * Deliberately NOT `"use server"`. Three callers need it — the per-product
+ * action and the streaming discovery in `offers.ts`, and the scheduled refresh
+ * in `cron.ts`, which is authorized by the cron bearer and holds no session.
  * Putting the core in a `"use server"` module would make the cron entry point a
  * second, unauthenticated door onto the same paid operation — the concern
  * `cron.ts` states in its own header.
  *
- * Ownership is therefore the CALLER's responsibility: this function trusts the
- * `userId` / `storeId` it is given.
+ * Ownership and entitlement are therefore the CALLER's responsibility: this
+ * function trusts the `userId` / `storeId` it is given, and `trial` decides
+ * which allowance the spend is booked against.
  */
 
 const offers = repository(schema.competitorOffer);
@@ -124,6 +127,12 @@ export type Resolution = {
   credits: number;
   cached: boolean;
   reason: Reason | null;
+  /**
+   * The roster rows this resolution wrote, so a streaming caller can push them
+   * to the UI as they land instead of re-reading the table per product. Empty
+   * on every outcome that wrote nothing.
+   */
+  competitors: Competitor.Type[];
 };
 
 const empty = (
@@ -139,6 +148,7 @@ const empty = (
   credits: 0,
   cached: false,
   reason,
+  competitors: [],
   ...extra,
 });
 
@@ -147,11 +157,17 @@ export const resolveOffers = async ({
   storeId,
   productId,
   plan,
+  trial = false,
 }: {
   userId: string;
   storeId: string;
   productId: string;
   plan: PlanKey | null;
+  /**
+   * Bill against the free lifetime allowance instead of a plan's monthly one.
+   * Set by the onboarding path, where the merchant has no billing row yet.
+   */
+  trial?: boolean;
 }) => {
   if (!Serp.serpApi.configured())
     return {
@@ -198,14 +214,14 @@ export const resolveOffers = async ({
   const lookup = await (async () => {
     if (hit) return { success: true as const, data: hit, fresh: false };
 
-    const budget = await consumeBudget({
-      store: storeId,
-      plan,
-      // Keyed on the product and fingerprint so retrying THIS attempt is free
-      // while a genuinely new lookup is not. The chain has a real
-      // partial-success state, so a bare increment would double-charge.
-      operation: `${storeId}:${productId}:${key}`,
-    });
+    // Keyed on the product and fingerprint so retrying THIS attempt is free
+    // while a genuinely new lookup is not. The chain has a real
+    // partial-success state, so a bare increment would double-charge.
+    const operation = `${storeId}:${productId}:${key}`;
+
+    const budget = trial
+      ? await consumeTrialLookup({ store: storeId, operation })
+      : await consumeBudget({ store: storeId, plan, operation });
     if (!budget.allowed) return { success: false as const, budget };
 
     const fetched = await Serp.serpApi.lookup(product.title, {
@@ -331,7 +347,11 @@ export const resolveOffers = async ({
           measuredAt,
         });
 
-      return { created: !previous, ok: row.success };
+      return {
+        created: !previous,
+        ok: row.success,
+        competitor: row.success ? row.data : null,
+      };
     }),
   );
 
@@ -344,12 +364,141 @@ export const resolveOffers = async ({
     credits,
     cached,
     reason: null,
+    competitors: written
+      .map((entry) => entry.competitor)
+      .filter((competitor) => competitor !== null),
   };
 
   await record("offers", resolution);
 
   return { success: true as const, data: resolution };
 };
+
+// ---------------------------------------------------------------------------
+// Interactive discovery
+// ---------------------------------------------------------------------------
+
+/**
+ * Streamed back as discovery runs, so the roster fills in per product rather
+ * than after the whole catalog. Mirrors `DetectionEvent` — the tabs share a log
+ * component and a mental model.
+ */
+export type DiscoveryEvent =
+  | { kind: "status"; message: string }
+  | { kind: "competitor"; competitor: Competitor.Type }
+  | {
+      kind: "product";
+      title: string;
+      offers: number;
+      reason: Reason | null;
+    }
+  | { kind: "done"; total: number; credits: number; unmatched: number }
+  | { kind: "error"; message: string };
+
+/**
+ * How many products one interactive run will resolve.
+ *
+ * The chain is ~2.7s and runs sequentially (the provider meters concurrency by
+ * plan, so parallelism buys rate-limit retries rather than speed), which puts a
+ * 12-product run near a minute. That is already at the edge of what someone
+ * will watch; more than this belongs to the cron.
+ */
+const INTERACTIVE_LIMIT = 12;
+
+/**
+ * Resolves offers for a set of products, streaming each rival as it lands.
+ *
+ * This is the path the competitor screens call. It is deliberately the same
+ * engine the cron uses — a merchant should never see a different competitor set
+ * depending on whether a schedule or a button produced it.
+ */
+export const discoverOffers = ({
+  userId,
+  storeId,
+  productIds,
+  plan,
+  trial,
+}: {
+  userId: string;
+  storeId: string;
+  productIds: string[];
+  plan: PlanKey | null;
+  trial: boolean;
+}) =>
+  streamable<DiscoveryEvent>(async (update) => {
+    if (!Serp.serpApi.configured()) {
+      update({
+        kind: "error",
+        message: "Offer discovery is not configured on this environment.",
+      });
+      return;
+    }
+
+    const targets = productIds.slice(0, INTERACTIVE_LIMIT);
+
+    const products = await Product.find(Environment.SERVER, {
+      where: and(
+        eq(schema.product.userId, userId),
+        eq(schema.product.storeId, storeId),
+        inArray(schema.product.id, targets),
+      ),
+    });
+    if (!products.success) {
+      update({ kind: "error", message: "Could not read your catalog." });
+      return;
+    }
+
+    const summary = { total: 0, credits: 0, unmatched: 0 };
+
+    for (const product of products.data) {
+      update({
+        kind: "status",
+        message: `Looking up who else sells ${product.title}`,
+      });
+
+      const resolution = await resolveOffers({
+        userId,
+        storeId,
+        productId: product.id,
+        plan,
+        trial,
+      });
+
+      if (!resolution.success) {
+        // One product failing is not the run failing — the merchant still gets
+        // the rivals for everything else in their catalog.
+        summary.unmatched += 1;
+        update({
+          kind: "product",
+          title: product.title,
+          offers: 0,
+          reason: null,
+        });
+        continue;
+      }
+
+      summary.credits += resolution.data.credits;
+      if (resolution.data.offers === 0) summary.unmatched += 1;
+
+      for (const competitor of resolution.data.competitors) {
+        summary.total += 1;
+        update({ kind: "competitor", competitor });
+      }
+
+      update({
+        kind: "product",
+        title: product.title,
+        offers: resolution.data.offers,
+        reason: resolution.data.reason,
+      });
+
+      // Nothing further will succeed this period; stop rather than walk the
+      // rest of the catalog collecting the same verdict.
+      if (resolution.data.reason === "budget-exhausted") break;
+    }
+
+    update({ kind: "done", ...summary });
+  });
 
 // ---------------------------------------------------------------------------
 // Scheduled refresh
