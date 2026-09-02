@@ -5,9 +5,8 @@ import { Newsletter } from "@/public/templates/newsletter";
 import { db, schema } from "@/server/database";
 
 const AUDIENCE = "General";
-const SUBJECT =
-  "ecentic is live on WooCommerce — let AI agents buy from your store";
-const NAME = "WooCommerce launch + last issue recap";
+const SUBJECT = "Four new things in ecentic, starting with Google Shopping";
+const NAME = "Sep 2026 — Google Shopping, Brand, Agentic Score, Data Quality";
 
 // Recipients that are not ecentic users but should receive the newsletter.
 const EXTRAS: { email: string; name?: string }[] = [
@@ -23,6 +22,10 @@ const EXTRAS: { email: string; name?: string }[] = [
   { email: "abhishek@purenutrition.in", name: "Abhishek" },
   { email: "josip@lebesgue.io", name: "Josip" },
   { email: "desireeshank@gmail.com", name: "Desiree Shank" },
+  // Approved YC redeemers who have not created an account yet, so the user
+  // query above never reaches them.
+  { email: "noah@barbaros.ca", name: "Noah Barbaros" },
+  { email: "jayagarwal133@gmail.com", name: "Jay Agarwal" },
 ];
 
 const resend = new Resend(process.env.RESEND_API_KEY);

@@ -136,8 +136,8 @@ export const DealApprovedEmail = ({
               />
               <Column className="px-6 py-6">
                 <Text className="m-0 mb-4 text-[15px] text-foreground leading-6">
-                  Hi {contactName}, we verified your {programName} redemption —
-                  your ecentic deal is approved and waiting on your account.
+                  Hi {contactName}, your {programName} redemption checked out.
+                  The deal is approved and sitting on your address.
                 </Text>
                 <Text className="m-0 mb-4 text-[15px] text-foreground leading-6">
                   Create your account using{" "}
@@ -146,11 +146,17 @@ export const DealApprovedEmail = ({
                   {planName
                     ? `choose the ${planName} plan. Your partner discount is applied automatically at checkout`
                     : "pick whichever plan fits you. Your partner discount is applied automatically at checkout, on any tier you choose"}
-                  {" — there is no code to enter."}
+                  {", and there is no code to enter."}
+                </Text>
+                <Text className="m-0 mb-4 text-[15px] text-foreground leading-6">
+                  There is no rush and no deadline on it. The approval stays on
+                  your address, so activate it today or months from now,
+                  whenever you actually have time to point it at a catalog.
                 </Text>
                 <Text className="m-0 mb-6 text-[13px] text-foreground-dimmed leading-5">
-                  Signing up with a different address will not find your deal,
-                  so use the one above.
+                  The discount is matched on your email, so signing up with a
+                  different address quietly puts you on list price. Use the one
+                  above.
                 </Text>
                 <Button
                   className="bg-primary px-6 py-3 font-medium text-[15px] text-background-rich"
@@ -182,10 +188,15 @@ export const DealApprovedEmail = ({
                   Perplexity
                 </Text>
                 <Text className="m-0 mb-2 text-[14px] text-foreground leading-5">
-                  · Continuous simulations and one-click publish from Scale up
+                  · Continuous simulations and one-click publish on Scale and
+                  above
                 </Text>
                 <Text className="m-0 mb-2 text-[14px] text-foreground leading-5">
                   · Model drift alerts and UCP generation on Dominate
+                </Text>
+                <Text className="m-0 mb-2 text-[14px] text-foreground leading-5">
+                  · Brand visibility, agentic readability, and data quality
+                  reports, all shipped in the last few weeks
                 </Text>
                 <Text className="m-0 text-[14px] text-foreground leading-5">
                   · White-glove onboarding for your catalog
