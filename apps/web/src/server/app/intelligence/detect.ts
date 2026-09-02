@@ -109,6 +109,8 @@ export const stream = ({
         userId: user,
         storeId: store,
         selected: true,
+        // Nothing checked this price or url — see judge.ts DETECTION_SYSTEM.
+        confidence: "inferred" as const,
         image: getBrandLogo(brand || title),
       });
       if (!creation.success) return;

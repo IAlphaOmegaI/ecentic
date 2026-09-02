@@ -12,6 +12,7 @@ import type {
   PlaygroundUsage,
 } from "@/lib/ai-playground";
 import { auth } from "@/lib/auth";
+import { isInternalStaff } from "@/server/database/validators";
 import * as AI from "@/server/utils/ai";
 
 // Reasoning models on a long prompt can sit well past the default.
@@ -104,11 +105,11 @@ const runObject = async (settings: Settings, schema: unknown, emit: Emit) => {
 export const POST = async (request: Request) => {
   // The proxy matcher skips /api entirely, so this route guards itself. It runs
   // arbitrary prompts against every configured provider, so it holds the same bar
-  // as the /dev page that calls it — administrator only — once deployed. Local
-  // development stays open so the sandbox needs no admin account to iterate on.
+  // as the /dev page that calls it — ecentic staff only — once deployed. Local
+  // development stays open so the sandbox needs no staff account to iterate on.
   if (process.env.NODE_ENV === "production") {
     const session = await auth.api.getSession({ headers: await headers() });
-    if (session?.user.role !== "administrator")
+    if (!isInternalStaff(session?.user.role))
       return new Response("Unauthorized", { status: 401 });
   }
 

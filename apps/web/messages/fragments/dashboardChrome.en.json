@@ -272,6 +272,9 @@
         "title": "Competitor Brands",
         "fields": {
           "brand": "Brand",
+          "price": "Observed price",
+          "measured": "Measured",
+          "unmeasured": "Not measured",
           "winRate": "Win Rate",
           "simulations": "Simulations",
           "lastUpdated": "Last Updated"

@@ -10,6 +10,7 @@ import {
 import { routing } from "@/i18n/routing";
 import { agentHomepageLinkHeader } from "@/lib/agent-discovery";
 import { auth } from "@/lib/auth";
+import { isInternalStaff } from "@/server/database/validators";
 
 type Route = string | RegExp;
 
@@ -31,12 +32,15 @@ const PROTECTED = [
   "/complete-profile",
 ] as const satisfies readonly Route[];
 
-// Protected *and* gated on role. Authenticated non-administrators are sent to
-// the dashboard rather than the sign-in page — they are signed in, just not
-// permitted here.
-const ADMINISTRATOR_ONLY = [
-  /^\/dev(\/.*)?$/,
-] as const satisfies readonly Route[];
+// Protected *and* gated on role: ecentic's own internal surfaces. Authenticated
+// non-staff are sent to the dashboard rather than the sign-in page — they are
+// signed in, just not permitted here.
+//
+// The gate is `staff`, never `administrator`: Shopify OAuth mints
+// `administrator` for every non-owner staff member of a *merchant's* store
+// (`lib/auth.ts` → `getUserInfo`), so gating on it would hand these pages to
+// our own customers' employees.
+const STAFF_ONLY = [/^\/dev(\/.*)?$/] as const satisfies readonly Route[];
 
 // Signed-in users have no business on these; bounce them to the dashboard.
 const AUTHENTICATION = [
@@ -83,10 +87,10 @@ export const proxy = async (request: Request) => {
     return response;
   }
 
-  const administratorOnly = matches(pathnameWithoutLocale, ADMINISTRATOR_ONLY);
+  const staffOnly = matches(pathnameWithoutLocale, STAFF_ONLY);
   const authenticationRoute = matches(pathnameWithoutLocale, AUTHENTICATION);
   const requiresSession =
-    administratorOnly ||
+    staffOnly ||
     authenticationRoute ||
     matches(pathnameWithoutLocale, PROTECTED);
 
@@ -124,7 +128,7 @@ export const proxy = async (request: Request) => {
         pathnameWithoutLocale + request.nextUrl.search,
       );
     }
-    case administratorOnly && session?.user.role !== "administrator": {
+    case staffOnly && !isInternalStaff(session?.user.role): {
       return redirect(request, localizePath("/dashboard", locale));
     }
     default: {

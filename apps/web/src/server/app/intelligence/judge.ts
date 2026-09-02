@@ -2,6 +2,23 @@ import type * as Competitor from "../competitor";
 import type * as Product from "../product";
 import * as Formating from "./formating";
 
+/**
+ * The capture-gap exception, shared by every prompt that renders a rival through
+ * `Formating.formatCompetitor` — the A/B and legacy judges here, and the UCP
+ * lift judge in `ucp/simulation.ts`.
+ *
+ * All of those rubrics tell the model to punish missing data, which is right for
+ * the merchant's own catalog and wrong for a third party we simply never
+ * measured: it scores our blind spot as the rival's defect and hands the
+ * merchant a free win. The formatter names what it did not observe
+ * (lib/competitor-evidence.ts); this teaches the model what that line means.
+ *
+ * It lives in one constant because a prompt that renders the line without
+ * carrying this rule is strictly worse than one that renders neither — the
+ * model reads an unexplained gap list and penalizes it anyway.
+ */
+export const CAPTURE_GAP_RULE = `CAPTURE GAPS: a listing may end with a line beginning "Not captured about this listing:". Those attributes were never observed by the tool that collected the listing — they are UNKNOWN, not confirmed absent — so do NOT score them for or against that listing, and do not cite them among the deciding factors. Decide the comparison on the attributes recorded for BOTH listings. If too little was captured on one side to compare on this category's decisive attributes, say so explicitly in your reasoning and score only what is comparable. Anything NOT named on that line is confirmed absent and is penalized normally.`;
+
 // Framing-agnostic scoring rubric shared by both judge prompts below. STEP 1-4
 // never name which listing is the merchant's, so the same rubric composes into
 // the legacy product/competitor prompt AND the position-swap A/B prompt without
@@ -20,7 +37,11 @@ STEP 3 — SCORE each listing independently 0-100 using these anchors:
 - 85-100: exceptional and category-leading (rare)
 70+ is rare — do not inflate. Penalize each decisive attribute that is missing or unverifiable; do NOT neutral-rate gaps.
 
-STEP 4 — WINNER: set 'winner' to whichever listing has the HIGHER score. If the scores tie, pick the one with more verifiable decisive attributes. Provide 3-6 'keyFactors', each naming a SPECIFIC present or absent attribute (never a marketing adjective).`;
+STEP 4 — WINNER: set 'winner' to whichever listing has the HIGHER score. If the scores tie, pick the one with more verifiable decisive attributes. Provide 3-6 'keyFactors', each naming a SPECIFIC present or absent attribute (never a marketing adjective).
+
+${CAPTURE_GAP_RULE}
+
+(That is the ONLY exception to STEP 3's penalize-gaps rule.)`;
 
 // Legacy single-pass judge prompt (product/competitor labels). Still used by the
 // dead streaming path in simulate.ts. The LIVE engine (background-scan.ts) uses
@@ -91,13 +112,23 @@ ${renderSlot(slotB)}
 Infer the category, record per-listing evidence in 'reasoning' first, then score each listing 0-100 against this category's decisive attributes and set 'winner' to the higher-scoring listing.`;
 
 // Competitor detection (Job B). Parametric generation hallucinates products and
-// especially URLs, so detect.ts fetches each proposed 'url' and keeps only the
-// ones whose live page names the brand (see detect.ts `verify`). The prompt is
-// framed around that contract: surface a CHECKABLE best-guess url rather than
-// abstaining to null, since a verified url is the proof a product is real.
+// especially URLs, so the prompt pushes for a CHECKABLE best-guess url rather
+// than abstaining to null.
+//
+// The paragraph that used to sit here told the model "Every product you return
+// is INDEPENDENTLY VERIFIED against the live web before it is saved… A product
+// that fails verification is discarded." That was true once and is not now —
+// detect.ts documents the removal of URL grounding at its head. Claiming a
+// verification step that does not run is a lie told to elicit caution, and it
+// stops being harmless the moment a real measured path exists beside this one:
+// a merchant comparing a "verified" model-named rival against a genuinely
+// measured offer would be reading the same word for two different things.
+//
+// Detected rows now carry `confidence: "inferred"`; measured offers from
+// `offer-resolve.ts` are the ones with a checked price and seller.
 export const DETECTION_SYSTEM = `You identify real, currently-purchasable competitor products for a given merchant product. Output ONLY products you are highly confident exist and are sold by mainstream retailers — products from brands that demonstrably rank on Amazon, Walmart, or Target.
 
-Every product you return is INDEPENDENTLY VERIFIED against the live web before it is saved: its 'url' is fetched and the page must mention the brand. A product that fails verification is discarded — so a wrong url costs you the whole entry, and a correct, checkable url is what proves the product is real.
+Your output is NOT verified against the live web. Nothing downstream will catch an invented product, a wrong price, or a url that does not resolve — it will be shown to the merchant as a competitor. Abstaining costs nothing; a fabricated entry costs the merchant's trust in every other row.
 
 Rules:
 1. Return the brand + a specific model/line, and your single best-guess canonical 'url' for THAT exact product — its Amazon/Walmart/Target product page or the brand's own product page. Give a genuine best guess at a real product page; never a random, placeholder, search, or category url. Use null only if you truly cannot name a likely page.
@@ -107,4 +138,4 @@ Rules:
 5. Never invent a brand, model, or price. The url is a best guess to be verified; the brand, model, and price must be ones you are confident are real.`;
 
 export const buildDetectionPrompt = (summaries: string) =>
-  `Here are the merchant's products:\n${summaries}\n\nFor each product, identify up to 4 REAL competitor products an AI shopping agent would surface in the same subcategory and price range (±40%). Prefer well-known brands that rank on Amazon, Walmart, or Target. Return brand, a specific model/line, price, currency, primary retailer, your best-guess canonical product url (this WILL be fetched and checked against the live page — give a real product page, not a search or category url), and a one-line description of why it competes. Omit anything you are not confident is a real, purchasable product — do not pad to reach 4.`;
+  `Here are the merchant's products:\n${summaries}\n\nFor each product, identify up to 4 REAL competitor products an AI shopping agent would surface in the same subcategory and price range (±40%). Prefer well-known brands that rank on Amazon, Walmart, or Target. Return brand, a specific model/line, price, currency, primary retailer, your best-guess canonical product url (a real product page, not a search or category url), and a one-line description of why it competes. Omit anything you are not confident is a real, purchasable product — do not pad to reach 4.`;

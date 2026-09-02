@@ -10,6 +10,10 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Spring } from "@/lib/animations";
+import {
+  isMeasuredCompetitor,
+  isVerifiedCompetitor,
+} from "@/lib/competitor-source";
 import { formatPrice } from "@/lib/currency";
 import type * as Competitor from "@/server/app/competitor";
 
@@ -53,9 +57,34 @@ export const CompetitorResults = ({
                 </AvatarFallback>
               </Avatar>
               <div className="min-w-0 flex-1">
-                <p className="truncate font-medium text-foreground text-sm">
-                  {competitor.title}
-                </p>
+                <div className="flex items-center gap-1.5">
+                  <p className="truncate font-medium text-foreground text-sm">
+                    {competitor.title}
+                  </p>
+                  {/* Provenance, which is the distinction a merchant is owed
+                      here: a verified row's price was observed from a named
+                      seller, a Google row is a rival observed on the same
+                      result pages, and everything else is a model's guess.
+                      Only one chip shows — the strongest claim that holds. */}
+                  {(() => {
+                    switch (true) {
+                      case isVerifiedCompetitor(competitor.confidence):
+                        return (
+                          <span className="shrink-0 border border-primary/40 bg-primary/10 px-1.5 py-px font-medium text-[10px] text-primary uppercase tracking-wide">
+                            {translate("verified")}
+                          </span>
+                        );
+                      case isMeasuredCompetitor(competitor.source):
+                        return (
+                          <span className="shrink-0 border border-primary/40 bg-primary/10 px-1.5 py-px font-medium text-[10px] text-primary uppercase tracking-wide">
+                            {translate("measured")}
+                          </span>
+                        );
+                      default:
+                        return null;
+                    }
+                  })()}
+                </div>
                 <p className="text-foreground-dimmed text-xs">
                   {[competitor.brand, competitor.source]
                     .filter(Boolean)
@@ -92,3 +121,19 @@ export const CompetitorResults = ({
     </>
   );
 };
+
+// Shared by both manual tabs: an inline reason for a failed extraction/search.
+// The toast that accompanies it disappears; this stays next to the input the
+// user is about to retry with.
+export const ErrorNotice = ({
+  title,
+  message,
+}: {
+  title: string;
+  message: string;
+}) => (
+  <div className="border border-error/30 bg-error/5 px-3 py-2">
+    <p className="font-medium text-error text-xs">{title}</p>
+    <p className="mt-0.5 text-error/80 text-xs">{message}</p>
+  </div>
+);

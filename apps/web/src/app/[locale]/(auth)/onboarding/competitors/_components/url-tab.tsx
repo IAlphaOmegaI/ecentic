@@ -11,7 +11,7 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import type * as Competitor from "@/server/app/competitor";
 import * as Scrape from "@/server/app/intelligence/scrape";
-import { CompetitorResults } from "./competitor-results";
+import { CompetitorResults, ErrorNotice } from "./competitor-results";
 
 export namespace UrlTab {
   export type Props = {
@@ -25,6 +25,7 @@ export const UrlTab = ({ className, onSuccess, store }: UrlTab.Props) => {
   const toast = useToastManager();
   const translate = useTranslations("onboarding.competitors.url");
   const [url, setUrl] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [competitors, setCompetitors] = useState<Competitor.Type[]>([]);
 
   const [handleScrape, isScraping] = useAsyncAction(async () => {
@@ -36,9 +37,14 @@ export const UrlTab = ({ className, onSuccess, store }: UrlTab.Props) => {
 
     if (urls.length === 0) return;
 
+    setError(null);
+
     const result = await Scrape.scrapeUrls({ urls, store });
 
     if (!result.success) {
+      // Also inline: a toast is easy to miss, and the reason an extraction
+      // failed (bot wall, category page) is what tells the user what to try next.
+      setError(result.error.message);
       toast.add({
         title: translate("toast.failed"),
         description: result.error.message,
@@ -101,6 +107,12 @@ export const UrlTab = ({ className, onSuccess, store }: UrlTab.Props) => {
                   className="font-mono text-sm"
                 />
               </Textarea>
+              {error && (
+                <ErrorNotice
+                  title={translate("toast.failed")}
+                  message={error}
+                />
+              )}
               <Button
                 color="primary"
                 type="button"
@@ -148,6 +160,15 @@ export const UrlTab = ({ className, onSuccess, store }: UrlTab.Props) => {
                   : translate("action.extractShort")}
               </Button>
             </div>
+
+            {error && (
+              <div className="border-accent-foreground border-b bg-background-dimmed px-3 pb-3">
+                <ErrorNotice
+                  title={translate("toast.failed")}
+                  message={error}
+                />
+              </div>
+            )}
 
             <CompetitorResults
               competitors={competitors}

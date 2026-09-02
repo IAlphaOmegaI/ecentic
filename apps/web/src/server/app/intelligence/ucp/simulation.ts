@@ -12,6 +12,7 @@ import { RequestError } from "../../../utils/error";
 import * as Competitor from "../../competitor";
 import * as Product from "../../product";
 import * as Formating from "../formating";
+import * as Judge from "../judge";
 import * as Ucp from "./profile";
 
 // A single consistent judge carries the lift measurement — the metric is the
@@ -37,7 +38,9 @@ const scoringSystem = `You are a rigorous, skeptical AI shopping agent performin
 - Missing or vague data is a FAILURE, not neutral — penalize it.
 - Do NOT favor either listing by its label ("PRODUCT" vs "COMPETITOR") — labels are arbitrary.
 - Reward concrete, verifiable specifics; ignore marketing fluff without evidence.
-- Output only the structured fields.`;
+- Output only the structured fields.
+
+${Judge.CAPTURE_GAP_RULE}`;
 
 const scoringPrompt = (
   product: Product.Type,

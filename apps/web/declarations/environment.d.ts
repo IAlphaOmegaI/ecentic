@@ -135,6 +135,18 @@ declare namespace NodeJS {
     readonly SCRAPELLM_API_KEY?: string;
 
     /**
+     * SerpApi — product-level competitor offers (who else sells this product,
+     * and at what price). Unset disables offer discovery entirely: lookups
+     * return `reason: "not-configured"` with zero credits spent, and the hourly
+     * `/api/cron/offers` refresh becomes a no-op. Nothing else degrades.
+     *
+     * Billed per search, and a lookup is TWO searches — the offer endpoint
+     * accepts only a page_token minted by a prior shopping search. See
+     * `server/utils/serp.ts`.
+     */
+    readonly SERPAPI_API_KEY?: string;
+
+    /**
      * x402 pay-to address (EVM) for `/api` via `@x402/next`. Unset falls back
      * to the zero address for discovery-only probes; set a real wallet before
      * enabling settlement.

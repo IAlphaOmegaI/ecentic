@@ -55,6 +55,9 @@
         "title": "Marcas competidoras",
         "fields": {
           "brand": "Marca",
+          "price": "Precio observado",
+          "measured": "Medido",
+          "unmeasured": "Sin medir",
           "winRate": "Tasa de victoria",
           "simulations": "Simulaciones",
           "lastUpdated": "Última actualización"

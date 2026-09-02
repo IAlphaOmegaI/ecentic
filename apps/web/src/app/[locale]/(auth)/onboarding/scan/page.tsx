@@ -10,7 +10,11 @@ import { connection } from "next/server";
 import { getMessages, getTranslations } from "next-intl/server";
 import { Motion } from "@/components/motion";
 import { Plus } from "@/components/plus";
-import { formatScanEstimate } from "@/lib/scan-estimate";
+import {
+  countSimulations,
+  formatScanEstimate,
+  uniformPairing,
+} from "@/lib/scan-estimate";
 import * as Competitor from "@/server/app/competitor";
 import * as Product from "@/server/app/product";
 import * as Store from "@/server/app/store";
@@ -61,10 +65,15 @@ export default async () => {
             store: store.id,
           }),
         )
-      : Promise.resolve({ total: 0, selected: 0 }),
+      : Promise.resolve({ total: 0, selected: 0, judgeable: 0 }),
   ]);
 
-  const simulations = productCount * competitorCounts.selected * 3;
+  // `judgeable`, not `selected`: the engine drops priceless rivals before
+  // pairing (lib/competitor-evidence.ts), so the two figures on this screen
+  // stay arithmetically consistent with the run that follows.
+  const simulations = countSimulations(
+    uniformPairing(productCount, competitorCounts.judgeable),
+  );
   const estimation = formatScanEstimate(simulations);
 
   const labels = [
@@ -74,7 +83,7 @@ export default async () => {
     },
     {
       key: "competitorsMatched" as const,
-      value: competitorCounts.selected.toLocaleString(),
+      value: competitorCounts.judgeable.toLocaleString(),
     },
     {
       key: "simulations" as const,

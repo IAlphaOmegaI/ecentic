@@ -18,9 +18,14 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { type ReactNode, useEffect, useRef, useState } from "react";
-import { AutoDetectTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/auto-detect-tab";
+import { OffersTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/offers-tab";
 import { useScanRunner } from "@/app/[locale]/(auth)/onboarding/scan/_components/use-scan-runner";
-import { formatScanEstimate } from "@/lib/scan-estimate";
+import { isJudgeable } from "@/lib/competitor-evidence";
+import {
+  countSimulations,
+  formatScanEstimate,
+  uniformPairing,
+} from "@/lib/scan-estimate";
 import type * as Competitor from "@/server/app/competitor";
 import type * as Simulate from "@/server/app/intelligence/simulate";
 import type * as Product from "@/server/app/product";
@@ -266,11 +271,22 @@ export const SimulationsClient = ({
     container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
   }, [logs]);
 
-  const totalSimulations = selectedProducts.size * selectedCompetitors.size * 3;
+  // Count only the rivals the engine will actually judge. A competitor without
+  // a price is dropped server-side (lib/competitor-evidence.ts), so counting
+  // the raw selection here would promise a scan duration the run never spends
+  // and leave the progress bar short of 100%.
+  const judgeableCompetitors = competitorList.filter(
+    (competitor) =>
+      selectedCompetitors.has(competitor.id) && isJudgeable(competitor),
+  ).length;
+
+  const totalSimulations = countSimulations(
+    uniformPairing(selectedProducts.size, judgeableCompetitors),
+  );
   const estimatedDuration = formatScanEstimate(totalSimulations);
 
   const canRunWinRateScan =
-    selectedProducts.size > 0 && selectedCompetitors.size > 0;
+    selectedProducts.size > 0 && judgeableCompetitors > 0;
 
   const toggleProduct = (id: string) =>
     setSelectedProducts((previous) => {
@@ -458,7 +474,12 @@ export const SimulationsClient = ({
               })}
             </p>
           </div>
-          <AutoDetectTab
+          {/* Measured offers, not model recall. This block builds the roster a
+              scan is about to judge, which is the last place an invented price
+              belongs: `isJudgeable` accepts any non-empty price, so a
+              hallucinated one is fed to the rubric exactly like an observed
+              one — and the resulting win rate is what the whole page reports. */}
+          <OffersTab
             products={productIds}
             store={store}
             onSuccess={handleDetectionSuccess}

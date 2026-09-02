@@ -11,6 +11,8 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { AutoDetectTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/auto-detect-tab";
 import { CompetitorList } from "@/app/[locale]/(auth)/onboarding/competitors/_components/competitor-list";
+import { MerchantTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/merchant-tab";
+import { OffersTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/offers-tab";
 import { SearchTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/search-tab";
 import { UrlTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/url-tab";
 import * as Competitor from "@/server/app/competitor";
@@ -82,9 +84,15 @@ export const AddCompetitors = ({
           </p>
         </div>
 
-        <Tabs defaultValue="auto">
+        {/* Offers leads here for the same reason it does in onboarding: it is
+            the only tab whose rivals and prices were observed rather than
+            recalled. */}
+        <Tabs defaultValue="offers">
           <TabsList className="w-full rounded-none border-x-0">
             <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
+            <Tab value="offers" className="flex-1">
+              {translate("tabs.liveOffers")}
+            </Tab>
             <Tab value="auto" className="flex-1">
               {translate("tabs.autoDetect")}
             </Tab>
@@ -94,10 +102,22 @@ export const AddCompetitors = ({
             <Tab value="search" className="flex-1">
               {translate("tabs.searchBrand")}
             </Tab>
+            <Tab value="merchant" className="flex-1">
+              {translate("tabs.googleMerchant")}
+            </Tab>
           </TabsList>
 
           {/* keepMounted: a detection stream in progress must survive switching
               to another tab instead of being torn down and restarted. */}
+          <TabsPanel value="offers" keepMounted className="border-0">
+            <OffersTab
+              products={products}
+              store={store}
+              onSuccess={handleAdded}
+              className="h-130 border-0"
+            />
+          </TabsPanel>
+
           <TabsPanel value="auto" keepMounted className="border-0">
             <AutoDetectTab
               products={products}
@@ -107,7 +127,7 @@ export const AddCompetitors = ({
             />
           </TabsPanel>
 
-          <TabsPanel value="url" className="border-0">
+          <TabsPanel value="url" keepMounted className="border-0">
             <UrlTab
               store={store}
               onSuccess={handleAdded}
@@ -115,9 +135,17 @@ export const AddCompetitors = ({
             />
           </TabsPanel>
 
-          <TabsPanel value="search" className="border-0">
+          <TabsPanel value="search" keepMounted className="border-0">
             <SearchTab
               productNames={productNames}
+              store={store}
+              onSuccess={handleAdded}
+              className="h-130 border-0"
+            />
+          </TabsPanel>
+
+          <TabsPanel value="merchant" keepMounted className="border-0">
+            <MerchantTab
               store={store}
               onSuccess={handleAdded}
               className="h-130 border-0"
