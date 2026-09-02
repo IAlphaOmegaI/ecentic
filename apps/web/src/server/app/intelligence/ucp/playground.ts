@@ -11,9 +11,11 @@ import {
   cancelCheckoutRequestSchema,
   checkoutResponseSchema,
   checkoutWithFulfillmentResponseSchema,
+  completeCheckoutRequestSchema,
   completeCheckoutWithFulfillmentResponseSchema,
   createCartRequestSchema,
   createCartResponseSchema,
+  createCheckoutWithFulfillmentRequestSchema,
   getCartRequestSchema,
   getCartResponseSchema,
   getCheckoutRequestSchema,
@@ -29,12 +31,14 @@ import {
   ucpMCPResponseSchema,
   updateCartRequestSchema,
   updateCartResponseSchema,
+  updateCheckoutWithFulfillmentRequestSchema,
 } from "./advanced-validator";
 import * as Utils from "./utils";
 
-// ecentic UCP platform profile
-//Google UCP profile: https://ucp.goog/.well-known/ucp.json
-export const AGENT_PROFILE = "https://ecentic.ai/ucp/agent-profile";
+export type PlaygroundTransport = "mcp" | "rest";
+
+// Google UCP agent profile used for capability negotiation.
+export const AGENT_PROFILE = "https://ucp.goog/.well-known/ucp.json";
 
 // The playground drives one agent through the UCP tool flow — it demonstrates the
 // protocol, it does not compare vendors — so it has no reason to reach past the
@@ -51,7 +55,9 @@ export const PLAYGROUND_MODEL = "gpt";
 
 // Single source of truth for the tool argument shapes the agent must follow, so
 // they never drift from the tool definitions below.
-const UCP_ARGUMENT_SHAPES = `CRITICAL ARGUMENT SHAPES — follow these exactly, do not add or remove top-level keys:
+const buildUcpArgumentShapes = (
+  transport: PlaygroundTransport,
+): string => `CRITICAL ARGUMENT SHAPES — follow these exactly, do not add or remove top-level keys:
 
 search_catalog:
   example parameters: { catalog: { query: "...", pagination: { limit: 5 }, filters: {}, context: {} } } (only define them if the user asks something that could be done by using the catalog properties even tho they might have been defined in the schema).
@@ -70,15 +76,25 @@ update_cart:
 cancel_cart:
   { id: "<cart id from create_cart>" }
 create_checkout:
-  The argument object has EXACTLY ONE top-level key — either cart_id OR checkout, never both.
+  ${
+    transport === "rest"
+      ? `{ checkout: { buyer: { email, first_name, last_name }, line_items: [{ item: { id: "<variant_id>" }, quantity: 1 }], fulfillment: { methods: [...] } } }
+  REST checkout creation always starts from checkout.line_items. Do NOT pass cart_id or currency.`
+      : `The argument object has EXACTLY ONE top-level key — either cart_id OR checkout, never both.
   • A cart already exists (whenever you have a cart_id — this is the normal case): { cart_id: "<cart id from create_cart>" }
     Include ONLY cart_id. Do NOT add a "checkout" key — not even an empty {} or one with empty line_items. The business builds the checkout from the cart's line_items/buyer.
   • No cart exists (build from scratch — this is the path when the user asks to check out directly with a product and no cart_id exists): { checkout: { buyer: { email, first_name, last_name }, line_items: [{ item: { id: "<variant_id>" }, quantity: 1 }], currency: "USD", fulfillment: { methods: [...] } } }
-    Include ONLY checkout (with a non-empty line_items). Do NOT add a "cart_id" key. Do NOT call create_cart first just to obtain a cart_id — call create_checkout directly with the checkout object.
+    Include ONLY checkout (with a non-empty line_items). Do NOT add a "cart_id" key. Do NOT call create_cart first just to obtain a cart_id — call create_checkout directly with the checkout object.`
+  }
 get_checkout:
   { id: "<checkout id from create_checkout>" }
 update_checkout:
-  { id: "<checkout id>", checkout: { buyer: {...}, line_items: [{ id: "li_...", item: { id: "<variant_id>" }, quantity: 1 }], currency: "USD", fulfillment: { methods: [{ id: "...", line_item_ids: [...], groups: [{ id: "...", selected_option_id: "..." }] }] } } }
+  ${
+    transport === "rest"
+      ? `{ id: "<checkout id>", checkout: { buyer: {...}, line_items: [{ id: "li_...", item: { id: "<variant_id>" }, quantity: 1 }], fulfillment: { methods: [{ id: "...", line_item_ids: [...], groups: [{ id: "...", selected_option_id: "..." }] }] } } }
+  Do NOT pass currency in a REST checkout request; the business determines it.`
+      : `{ id: "<checkout id>", checkout: { buyer: {...}, line_items: [{ id: "li_...", item: { id: "<variant_id>" }, quantity: 1 }], currency: "USD", fulfillment: { methods: [{ id: "...", line_item_ids: [...], groups: [{ id: "...", selected_option_id: "..." }] }] } } }`
+  }
   id is only at arguments top level — never inside checkout.
 complete_checkout:
   { id: "<checkout id>", checkout: { payment: { instruments: [...] } } }
@@ -309,8 +325,6 @@ const _createUcpMcpFetch = (agentProfileUrl: string): typeof fetch => {
 
   return Object.assign(ucpMcpFetch, { preconnect: fetch.preconnect });
 };
-
-export type PlaygroundTransport = "mcp" | "rest";
 
 // Custom UI message data parts streamed alongside the assistant reply. `profile`
 // confirms the resolved transport/endpoint once per session; `error` reports a
@@ -583,14 +597,34 @@ const parseMcpToolResult = <T>(
   return parseUcpToolContent(data.structuredContent, successSchema, context);
 };
 
+type RestRequestOptions = {
+  body?: unknown;
+  idempotent?: boolean;
+};
+
 const callRest = async (
   baseEndpoint: string,
-  method: "GET" | "POST" | "PUT" | "DELETE",
+  method: "GET" | "POST" | "PUT",
   path: string,
   agentProfileUrl: string,
-  body?: unknown,
+  options: RestRequestOptions = {},
 ): Promise<{ data: unknown; context: UcpCallContext }> => {
   const url = `${baseEndpoint.replace(/\/+$/, "")}${path}`;
+  const headers = new Headers({
+    Accept: "application/json",
+    "Request-Id": crypto.randomUUID(),
+    "UCP-Agent": `profile="${agentProfileUrl}"`,
+    "User-Agent": "UCP-Playground/1.0 (ecentic; https://ecentic.ai)",
+  });
+
+  if (options.body !== undefined) {
+    headers.set("Content-Type", "application/json");
+  }
+
+  if (options.idempotent) {
+    headers.set("Idempotency-Key", crypto.randomUUID());
+  }
+
   // REST has no MCP-style tool name; label the call by its HTTP operation so
   // Sentry still shows which endpoint/path produced a schema mismatch.
   const context: UcpCallContext = {
@@ -603,13 +637,9 @@ const callRest = async (
   const response = await resultify(() =>
     fetch(url, {
       method,
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        "UCP-Agent": `profile="${agentProfileUrl}"`,
-        "User-Agent": "UCP-Playground/1.0 (ecentic; https://ecentic.ai)",
-      },
-      body: body !== undefined ? JSON.stringify(body) : undefined,
+      headers,
+      body:
+        options.body !== undefined ? JSON.stringify(options.body) : undefined,
       signal: AbortSignal.timeout(12_000),
       cache: "no-store",
     }),
@@ -906,22 +936,21 @@ export const buildMcpTools = (endpoint: string, agentProfileUrl: string) => ({
   }),
 });
 
-// REST transport: same input shapes as MCP tools; IDs move to URL path per HTTP conventions
+// REST tool inputs keep the agent-friendly wrappers used by the UI. The request
+// bodies are unwrapped below and IDs move to their canonical URL path segments.
 export const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
   search_catalog: tool({
     description:
       "Search the store product catalog. Returns matching products with IDs, titles, prices, and variant IDs. Arguments go under the 'catalog' key per UCP spec.",
-    inputSchema: searchCatalogRequestSchema,
-    execute: async (input) => {
+    inputSchema: z.object({ catalog: searchCatalogRequestSchema }),
+    execute: async ({ catalog }) => {
       const result = await callRest(
         endpoint,
         "POST",
         "/catalog/search",
         agentProfileUrl,
-        input,
+        { body: catalog },
       );
-
-      console.log("result", result);
 
       return parseRestToolResult(result, searchCatalogResponseSchema);
     },
@@ -937,7 +966,7 @@ export const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
         "POST",
         "/catalog/lookup",
         agentProfileUrl,
-        catalog,
+        { body: catalog },
       );
       return parseRestToolResult(result, lookupCatalogResponseSchema);
     },
@@ -951,9 +980,9 @@ export const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
       const result = await callRest(
         endpoint,
         "POST",
-        "/catalog/products",
+        "/catalog/product",
         agentProfileUrl,
-        catalog,
+        { body: catalog },
       );
       return parseRestToolResult(result, getProductResponseSchema);
     },
@@ -969,7 +998,7 @@ export const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
         "POST",
         "/carts",
         agentProfileUrl,
-        cart,
+        { body: cart, idempotent: true },
       );
       const created = parseRestToolResult(result, createCartResponseSchema);
 
@@ -985,7 +1014,7 @@ export const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
       const result = await callRest(
         endpoint,
         "GET",
-        `/carts/${id}`,
+        `/carts/${encodeURIComponent(id)}`,
         agentProfileUrl,
       );
       return parseRestToolResult(result, getCartResponseSchema);
@@ -1003,9 +1032,9 @@ export const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
       const result = await callRest(
         endpoint,
         "PUT",
-        `/carts/${id}`,
+        `/carts/${encodeURIComponent(id)}`,
         agentProfileUrl,
-        cart,
+        { body: cart, idempotent: true },
       );
       const updated = parseRestToolResult(result, updateCartResponseSchema);
 
@@ -1020,9 +1049,10 @@ export const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
     execute: async ({ id }) => {
       const result = await callRest(
         endpoint,
-        "DELETE",
-        `/carts/${id}`,
+        "POST",
+        `/carts/${encodeURIComponent(id)}/cancel`,
         agentProfileUrl,
+        { idempotent: true },
       );
       return parseRestToolResult(result, cancelCartResponseSchema);
     },
@@ -1030,23 +1060,26 @@ export const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
 
   create_checkout: tool({
     description:
-      "Create a checkout session. To convert an existing cart, pass cart_id (the cart id from create_cart) and omit checkout — the business uses the cart's line_items/buyer. Otherwise pass the checkout body to create from scratch. Provide cart_id OR checkout, never both.",
-    inputSchema: Utils.createCheckoutMcpInputSchema,
-    execute: async (input) => {
+      "Create a checkout session from checkout.line_items. REST UCP does not accept cart_id; pass the checkout body under the 'checkout' tool argument.",
+    inputSchema: z.object({
+      checkout: createCheckoutWithFulfillmentRequestSchema,
+    }),
+    execute: async ({ checkout }) => {
       const result = await callRest(
         endpoint,
         "POST",
-        "/checkouts",
+        "/checkout-sessions",
         agentProfileUrl,
-        Utils.normalizeCreateCheckoutArgs(input),
+        { body: checkout, idempotent: true },
       );
-      const checkout = parseRestToolResult(
+      const createdCheckout = parseRestToolResult(
         result,
         checkoutWithFulfillmentResponseSchema,
       );
 
       return (
-        rejectedEveryItem(checkout, requestedCheckoutItems(input)) ?? checkout
+        rejectedEveryItem(createdCheckout, checkout.line_items.length) ??
+        createdCheckout
       );
     },
   }),
@@ -1059,7 +1092,7 @@ export const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
       const result = await callRest(
         endpoint,
         "GET",
-        `/checkouts/${id}`,
+        `/checkout-sessions/${encodeURIComponent(id)}`,
         agentProfileUrl,
       );
       return parseRestToolResult(result, checkoutWithFulfillmentResponseSchema);
@@ -1069,14 +1102,17 @@ export const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
   update_checkout: tool({
     description:
       "Replace checkout session state (full PUT). id at top level; full checkout body nested under checkout (no session id inside checkout).",
-    inputSchema: Utils.updateCheckoutMcpInputSchema,
+    inputSchema: z.object({
+      id: updateCheckoutWithFulfillmentRequestSchema.shape.id,
+      checkout: updateCheckoutWithFulfillmentRequestSchema.omit({ id: true }),
+    }),
     execute: async ({ id, checkout }) => {
       const result = await callRest(
         endpoint,
         "PUT",
-        `/checkouts/${id}`,
+        `/checkout-sessions/${encodeURIComponent(id)}`,
         agentProfileUrl,
-        checkout,
+        { body: checkout, idempotent: true },
       );
       return parseRestToolResult(result, checkoutWithFulfillmentResponseSchema);
     },
@@ -1085,14 +1121,17 @@ export const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
   complete_checkout: tool({
     description:
       "Place the order when status is ready_for_complete. id at top level; payment nested under checkout.payment. Do not use when status is requires_escalation.",
-    inputSchema: Utils.completeCheckoutMcpInputSchema,
+    inputSchema: z.object({
+      id: completeCheckoutRequestSchema.shape.id,
+      checkout: completeCheckoutRequestSchema.omit({ id: true }),
+    }),
     execute: async ({ id, checkout }) => {
       const result = await callRest(
         endpoint,
         "POST",
-        `/checkouts/${id}/complete`,
+        `/checkout-sessions/${encodeURIComponent(id)}/complete`,
         agentProfileUrl,
-        { ...checkout, meta: { "idempotency-key": crypto.randomUUID() } },
+        { body: checkout, idempotent: true },
       );
       return parseRestToolResult(
         result,
@@ -1107,9 +1146,10 @@ export const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
     execute: async ({ id }) => {
       const result = await callRest(
         endpoint,
-        "DELETE",
-        `/checkouts/${id}`,
+        "POST",
+        `/checkout-sessions/${encodeURIComponent(id)}/cancel`,
         agentProfileUrl,
+        { idempotent: true },
       );
       return parseRestToolResult(result, checkoutResponseSchema);
     },
@@ -1122,7 +1162,7 @@ export const buildRestTools = (endpoint: string, agentProfileUrl: string) => ({
       const result = await callRest(
         endpoint,
         "GET",
-        `/orders/${id}`,
+        `/orders/${encodeURIComponent(id)}`,
         agentProfileUrl,
       );
       return parseRestToolResult(result, orderResponseSchema);
@@ -1148,11 +1188,15 @@ export const buildChatSystemPrompt = (
   domain: string,
 ): string => `You are a UCP (Universal Commerce Protocol) shopping agent in an interactive test console, connected to a live ${transport.toUpperCase()} endpoint at ${endpoint} (store: ${domain}). You act on the user's instructions, calling UCP tools to search the catalog, inspect products, build carts, and run checkout.
 
-${UCP_ARGUMENT_SHAPES}
+${buildUcpArgumentShapes(transport)}
 
 How to behave in this console:
 - Do exactly what the user asks in their latest message — one action (or a small set of directly related actions) at a time. Do NOT run the whole search→cart→checkout flow unless the user explicitly asks you to.
-- When the user wants to check out (e.g. "checkout with the X", "buy X now", "check out with that product"), go straight to create_checkout — do NOT call create_cart first. If a cart already exists for what they want, pass its cart_id. Otherwise build the checkout from scratch by passing the checkout object with line_items (the variant id + quantity). Only call create_cart when the user explicitly asks to add something to a cart or to build/view a cart.
+- When the user wants to check out (e.g. "checkout with the X", "buy X now", "check out with that product"), go straight to create_checkout — do NOT call create_cart first. ${
+  transport === "rest"
+    ? "Build the checkout from scratch with checkout.line_items; REST UCP does not support converting a cart with cart_id."
+    : "If a cart already exists for what they want, pass its cart_id. Otherwise build the checkout from scratch by passing the checkout object with line_items (the variant id + quantity)."
+} Only call create_cart when the user explicitly asks to add something to a cart or to build/view a cart.
 - Never try to buy something the store cannot sell. Before create_cart, update_cart or create_checkout, check the variant you are about to use: if its availability.available is false, or availability.status is out_of_stock or discontinued, do NOT call the tool. Reply that you cannot add it because that item is not available (out of stock), and offer the closest in-stock variant or product instead.
 - If you have no availability data for the variant the user wants, look it up (get_product or lookup_catalog) before adding it — do not assume it is in stock.
 - If a cart or checkout tool reports the item as unavailable — an out_of_stock / item_unavailable message, or "${UNAVAILABLE_ITEM_ERROR}" — do NOT call it again with that variant. Tell the user plainly that it cannot be added because it is out of stock, and suggest an available alternative.
