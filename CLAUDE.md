@@ -11,9 +11,10 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Consulting Codex
 
-Get second opinions from Codex — always the `gpt-5.6-sol` model at `xhigh`
-(extra high) reasoning effort, always in a read-only sandbox: Codex is a
-consultant here, not an implementer, and must not edit files.
+Get second opinions from Codex — always the `gpt-5.6-sol` model, always in
+a read-only sandbox: Codex is a consultant here, not an implementer, and must
+not edit files. Reasoning effort is **`xhigh` by default**; `max` is reserved
+for the cases in § Reasoning effort below.
 
 A consultation starts one of two ways, with identical mechanics:
 
@@ -29,8 +30,9 @@ A consultation starts one of two ways, with identical mechanics:
   hard-to-reverse architecture, data integrity, filings) — or when you are
   truly stuck after your own attempts. When those conditions hold, consult at
   any point in the process, more than once in a hard task if needed — but each
-  consultation costs real time (5–15 minutes) and real tokens, so it is an
-  exception, not a habit.
+  consultation costs real time (budget 5–15 minutes at `xhigh`, 10–30 at
+  `max`, potentially longer) and real tokens, so it is an exception, not a
+  habit.
 
 - **Standing checkpoints** — for work that meets the bar (multi-file features,
   schema or migration changes, security-sensitive code, new architectural
@@ -53,30 +55,71 @@ A consultation starts one of two ways, with identical mechanics:
    resulting fixes yourself rather than re-submitting them to Codex, unless a
    fix is itself large enough to meet the bar.
 
-**Primary transport — the codex MCP server** (registered in `.mcp.json`, where
-the model and effort are pinned):
+**Reasoning effort** — `xhigh` is the default for every consultation, including
+both standing checkpoints. Above `xhigh`, each level buys a large latency and
+token cost for a gain that on ordinary questions is usually nil — in practice
+`max` returns the same answer as `xhigh`, only much later. Use `max` only when:
+
+- the user asks for it (the prompt says "at max", "max effort" or similar) —
+  then it is mandatory for that consultation, not a suggestion; or
+- the question is **architectural blueprinting**: a design that has to hold
+  across many modules at once (a data model shared by several features, a
+  migration strategy for a live schema, a security or authorization model,
+  the boundary with a third-party platform such as Shopify), or a correctness
+  argument that has to survive many cases (an authorization rule, a state
+  machine, a billing or quota invariant). That is a plan checkpoint for a
+  large piece of work, not a review checkpoint: the post-implementation
+  review reads code, and `xhigh` is the level for that.
+
+Never `max` for a single-file decision, a code question, a bug, or a review
+pass. Name the level in the one-line status ("consulting Codex at max on X")
+so the longer silence is explained. Levels above `max` (`ultra`) are never used
+here.
+
+The session default is the variable `CODEX_REASONING_EFFORT`, falling back to
+`xhigh`: `.mcp.json` expands it into the server's `-c` pin, the
+`codex-consultant` fallback reads it into its `codex exec` line, and for MCP
+calls it is the level to put in `config` unless § Reasoning effort selects
+`max` for that consultation. Check it once per session
+(`echo "${CODEX_REASONING_EFFORT:-xhigh}"`) rather than assuming `xhigh`. So
+`CODEX_REASONING_EFFORT=max claude` runs a whole session at max without editing
+any file; the per-call rule still decides a single consultation.
+
+**Primary transport — the codex MCP server** (registered in `.mcp.json`):
 
 - Call the `mcp__codex__codex` tool with the complete focused question as
-  `prompt`, including relevant file paths — and **always pass
-  `sandbox: "read-only"` in the arguments.** This per-call argument is the
-  only effective sandbox control (verified: a server-side `sandbox_mode` pin
-  is overridden by the tool's default) — a call without it lets Codex write to
-  the working tree.
+  `prompt`, including relevant file paths — and **always pass, on every call:**
+  `sandbox: "read-only"`, `model: "gpt-5.6-sol"`, and
+  `config: { "model_reasoning_effort": "<level>" }` — the session default
+  above, or `"max"` when § Reasoning effort says so. The per-call arguments
+  are the only settings that bind:
+  verified against the codex 0.146.0 source, a tool call builds its
+  configuration from `~/.codex/config.toml` plus the call's own arguments, and
+  the `-c` pins the server is launched with in `.mcp.json` never reach it
+  (they stay there as the documented intent). A call without `sandbox` lets
+  Codex write to the working tree; a call without `config` runs at whatever
+  effort the user's global config names — `ultra` at the time of writing —
+  which is the most expensive level, not the default.
 - For a follow-up in the same consultation, call `mcp__codex__codex-reply`
-  with the returned `threadId` (plus `sandbox: "read-only"` again if accepted).
+  with the returned `threadId` — the thread keeps the model, effort and sandbox
+  of the opening call.
 - Independent questions fan out as parallel `mcp__codex__codex` calls in a
   single message.
-- The call blocks for the consultation's duration — typically 5–15 minutes at
-  `xhigh`. Long calls are safe by default (the MCP tool timeout defaults to
-  ~28 hours); the codex entry in `.mcp.json` sets a per-server `timeout` of
-  30 minutes purely as a runaway-spend cap — a consultation still running past
-  that is broken, not thorough. Say the one-line status before calling so the
-  silence is explained.
+- The call blocks for the consultation's duration. [OpenAI documents](https://developers.openai.com/api/docs/guides/reasoning#reasoning-effort)
+  higher reasoning effort as trading latency and token usage for quality, but
+  does not publish a fixed runtime; budget 5–15 minutes at `xhigh` and 10–30
+  at `max`, with complex or tool-heavy calls potentially taking longer. The
+  codex entry in `.mcp.json`
+  sets a per-server hard `timeout` of 60 minutes as a runaway-spend cap — a
+  consultation still running past that is broken, not thorough. Say the one-line
+  status before calling so the silence is explained.
 
 **Fallback — only when the MCP tool is absent from the session:** use the
 `codex-consultant` subagent (`.claude/agents/codex-consultant.md`), which
-drives the CLI directly with the same pins. For a quick one-off, the direct
-CLI also works:
+drives the CLI directly with the same pins — it runs at `xhigh` unless the
+brief carries an `effort: max` line, and never escalates on its own. For a
+quick one-off, the direct CLI also works (swap `xhigh` for `max` under the
+same rule):
 
 ```bash
 codex exec -m gpt-5.6-sol -c model_reasoning_effort="xhigh" --sandbox read-only "<focused question, including relevant file paths>"
