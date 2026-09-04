@@ -410,7 +410,7 @@ export const resolveShoppingService = async (
     (shoppingService) => shoppingService.transport === "rest",
   );
   const endpoint =
-  // restShoppingService?.endpoint ?? mcpShoppingService?.endpoint;
+    // restShoppingService?.endpoint ?? mcpShoppingService?.endpoint;
     mcpShoppingService?.endpoint ?? restShoppingService?.endpoint;
 
   if (!endpoint) {
@@ -425,8 +425,8 @@ export const resolveShoppingService = async (
     success: true,
     endpoint,
     transport:
-    // restShoppingService ? "rest" : "mcp",
-    mcpShoppingService ? "mcp" : "rest",
+      // restShoppingService ? "rest" : "mcp",
+      mcpShoppingService ? "mcp" : "rest",
     profileUrl: businessProfileUrl,
   };
 };
