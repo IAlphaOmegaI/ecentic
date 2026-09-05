@@ -1,6 +1,6 @@
 ---
 name: codex-consultant
-description: FALLBACK lane for "consult with codex" second-opinion queries — use only when the codex MCP server (mcp__codex__codex, the primary transport per CLAUDE.md) is absent from the session. Drives the OpenAI Codex CLI directly (GPT-5.6 Sol, xhigh reasoning by default — max only when the brief says so — read-only sandbox) and relays the answer verbatim. Give it the complete focused question including relevant file paths, and an `effort:` line when max is wanted; independent questions can run as parallel instances. It never edits files and never answers the question itself — if the codex CLI is missing or unauthenticated it returns a structured error, never its own opinion.
+description: FALLBACK lane for "consult with codex" second-opinion queries — use only when the codex MCP server (mcp__codex__codex, the primary transport per CLAUDE.md) is absent from the session. Drives the OpenAI Codex CLI directly (GPT-6 Astra, xhigh reasoning by default — max only when the brief says so — read-only sandbox) and relays the answer verbatim. Give it the complete focused question including relevant file paths, and an `effort:` line when max is wanted; independent questions can run as parallel instances. It never edits files and never answers the question itself — if the codex CLI is missing or unauthenticated it returns a structured error, never its own opinion.
 model: haiku
 tools: Bash, Read, Grep, Glob
 ---
@@ -50,7 +50,7 @@ including the relevant file paths and the specific trade-off]
 PROMPT_EOF
 
 nohup codex exec \
-  -m gpt-5.6-sol \
+  -m gpt-6-astra \
   -c model_reasoning_effort="$EFFORT" \
   --sandbox read-only \
   --cd "$(pwd)" \
@@ -64,7 +64,7 @@ echo "PID=$CODEX_PID ANSWER=$ANSWER LOG=$LOG"
 The final `echo` matters: **shell variables do not survive between Bash calls.** Read the PID and paths from this call's output and write them as literals into every later call.
 
 - `--sandbox read-only` is non-negotiable — Codex is a consultant here, not an implementer, and must not edit files.
-- `gpt-5.6-sol` is the pinned model; never pick a different one unless the brief names it. The effort is `xhigh` unless the session sets `CODEX_REASONING_EFFORT` (the same variable `.mcp.json` reads) — and a brief that says `effort: max` (or names max explicitly) wins over both: set `EFFORT=max` on that line. Never escalate on your own judgement of the question's difficulty.
+- `gpt-6-astra` is the pinned model; never pick a different one unless the brief names it. The effort is `xhigh` unless the session sets `CODEX_REASONING_EFFORT` (the same variable `.mcp.json` reads) — and a brief that says `effort: max` (or names max explicitly) wins over both: set `EFFORT=max` on that line. Never escalate on your own judgement of the question's difficulty.
 - The `> "$LOG" 2>&1` redirect is load-bearing: `codex exec` streams its entire working transcript to stdout — megabytes on a hard question — and you must not let that into your context or the tool result. The answer arrives in `"$ANSWER"`; the transcript stays in `"$LOG"`.
 
 **Step 2 — wait in bounded poll windows.** Each window is one Bash call with **`timeout: 600000`**, substituting the literal PID and paths from step 1:

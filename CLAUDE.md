@@ -11,7 +11,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Consulting Codex
 
-Get second opinions from Codex — always the `gpt-5.6-sol` model, always in
+Get second opinions from Codex — always the `gpt-6-astra` model, always in
 a read-only sandbox: Codex is a consultant here, not an implementer, and must
 not edit files. Reasoning effort is **`xhigh` by default**; `max` is reserved
 for the cases in § Reasoning effort below.
@@ -89,7 +89,7 @@ any file; the per-call rule still decides a single consultation.
 
 - Call the `mcp__codex__codex` tool with the complete focused question as
   `prompt`, including relevant file paths — and **always pass, on every call:**
-  `sandbox: "read-only"`, `model: "gpt-5.6-sol"`, and
+  `sandbox: "read-only"`, `model: "gpt-6-astra"`, and
   `config: { "model_reasoning_effort": "<level>" }` — the session default
   above, or `"max"` when § Reasoning effort says so. The per-call arguments
   are the only settings that bind:
@@ -122,7 +122,7 @@ quick one-off, the direct CLI also works (swap `xhigh` for `max` under the
 same rule):
 
 ```bash
-codex exec -m gpt-5.6-sol -c model_reasoning_effort="xhigh" --sandbox read-only "<focused question, including relevant file paths>"
+codex exec -m gpt-6-astra -c model_reasoning_effort="xhigh" --sandbox read-only "<focused question, including relevant file paths>"
 ```
 
 - Ask a focused question with enough context rather than restating the whole task.
