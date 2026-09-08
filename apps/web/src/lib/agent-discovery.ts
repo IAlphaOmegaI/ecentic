@@ -1940,7 +1940,7 @@ export const openApiDocument = {
             type: "string",
             description: "Feed `guid`; the identity of an exact repeat.",
           },
-          alsoIn: {
+          alsoIn: { 
             type: "array",
             description:
               "Other publishers that carried the same story, from the syndication merge. Named both ways because the feed's own source strings mix brand names and bare domains; group on `domain`.",
