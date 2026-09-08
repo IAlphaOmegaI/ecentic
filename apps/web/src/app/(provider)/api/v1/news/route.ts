@@ -55,6 +55,28 @@ const terms = (raw: string | null) => {
   return parsed.length > 0 ? parsed : null;
 };
 
+/**
+ * Every parameter this endpoint understands. Anything else is refused rather
+ * than ignored: `q[]=agentic+payments` is not a spelling of `q` that
+ * `getAll("q")` sees, so silently ignoring unknowns answered that request with
+ * the defaults — a plausible-looking 200 about entirely different search terms,
+ * with nothing to indicate the input was dropped. A typo in a scheduled job
+ * fails the same way, and quietly.
+ */
+const KNOWN_PARAMETERS = new Set([
+  "q",
+  "when",
+  "limit",
+  "resolve",
+  "dedupe",
+  "relevance",
+  "aiTerms",
+  "commerceTerms",
+  "hl",
+  "gl",
+  "ceid",
+]);
+
 export const GET = async (request: Request) => {
   const parameters = new URL(request.url).searchParams;
 
@@ -75,6 +97,28 @@ export const GET = async (request: Request) => {
       limiter,
       policy,
     });
+
+  const unknown = [...new Set(parameters.keys())].filter(
+    (name) => !KNOWN_PARAMETERS.has(name),
+  );
+
+  if (unknown.length > 0)
+    return refused(
+      request,
+      "validation-failed",
+      [
+        `Unknown query parameter${unknown.length > 1 ? "s" : ""}: ${unknown.map((name) => `"${name}"`).join(", ")}.`,
+        // Only when they actually reached for the array spelling; an unrelated
+        // typo does not need advice about brackets.
+        unknown.some((name) => name.startsWith("q["))
+          ? 'Repeat "q" itself for several queries — bracket syntax is not accepted.'
+          : "",
+        "Every parameter this endpoint accepts is listed in /openapi.json.",
+      ]
+        .filter(Boolean)
+        .join(" "),
+      { limiter, policy },
+    );
 
   // An absent `q` takes the defaults; a `q` that is present but empty is a
   // caller passing an unset variable, and is refused like any other malformed

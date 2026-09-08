@@ -493,7 +493,7 @@ describe("resolution health", () => {
       article({ headline: "Unresolved", publisher: "Reuters" }),
     ]);
 
-    expect(health).toEqual({ attempted: 3, resolved: 2, mismatched: 1 });
+    expect(health).toEqual({ attempted: 3, succeeded: 2, mismatched: 1 });
   });
 
   test("treats a subdomain of the named publisher as a match", () => {
@@ -507,5 +507,30 @@ describe("resolution health", () => {
 
   test("does not match two different sites under one public suffix", () => {
     expect(domainMatches("bbc.co.uk", "https://itv.co.uk/story")).toBe(false);
+  });
+});
+
+describe("query parameter contract", () => {
+  test("the allowlist names every parameter the OpenAPI document declares", async () => {
+    // The endpoint refuses unknown parameters, so the allowlist and the
+    // published spec drifting apart would 422 a request the spec says is
+    // valid. Checked here rather than trusted.
+    const { openApiDocument } = await import("@/lib/agent-discovery");
+    const operation = (
+      openApiDocument as unknown as {
+        paths: Record<
+          string,
+          { get: { parameters: { name: string; in: string }[] } }
+        >;
+      }
+    ).paths["/api/v1/news"]?.get;
+
+    const documented = (operation?.parameters ?? [])
+      .filter((parameter) => parameter.in === "query")
+      .map((parameter) => parameter.name);
+
+    expect(documented.length).toBeGreaterThan(0);
+    expect(documented).toContain("q");
+    expect(documented).not.toContain("q[]");
   });
 });

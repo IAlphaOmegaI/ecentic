@@ -567,48 +567,93 @@ export const isArticleUrl = (raw: string) => {
 const MAX_REDIRECTS = 3;
 
 /**
+ * Why a resolution attempt ended the way it did.
+ *
+ * Resolution runs from wherever the app is deployed, and Google does not treat
+ * every origin alike: the same code that resolves every article from a
+ * residential address resolved none from Vercel, failing in under two seconds.
+ * A bare "0 of 5" cannot tell that apart from a broken RPC or a changed page,
+ * so each attempt reports which of the three it was.
+ */
+type Attempt =
+  | { kind: "ok"; signature: Signature }
+  /** The article page answered, but with a status we cannot read. */
+  | { kind: "refused"; status: number }
+  /** No answer at all — network, timeout, or a redirect off-origin. */
+  | { kind: "unreachable" }
+  /** The page came back but carried no signature: an interstitial, or a
+   *  markup change on Google's side. */
+  | { kind: "unsigned" };
+
+/**
  * Follows redirects by hand so each hop can be checked against the same origin
  * rule as the first. Letting `fetch` follow them automatically would turn any
  * open redirect on the Google side into a request to an attacker's host, made
  * by our server, with our egress.
  */
-const fetchArticle = async (url: string): Promise<Response | null> => {
+const fetchArticle = async (
+  url: string,
+): Promise<{ response: Response } | { status: number | null }> => {
   const state = { url, hops: 0 };
 
   for (;;) {
-    if (!isArticleUrl(state.url)) return null;
+    if (!isArticleUrl(state.url)) return { status: null };
 
     const response = await HTTP.request(
       state.url,
       {
         method: "GET",
         redirect: "manual",
-        headers: { Accept: "text/html", "User-Agent": USER_AGENT },
+        headers: {
+          Accept: "text/html",
+          // Google serves a consent interstitial to a client it has not seen
+          // accept one — carrying no signature, which is indistinguishable
+          // downstream from a markup change. This is the value a browser holds
+          // after the user accepts, and it is what makes the article page
+          // render server-side.
+          Cookie: "CONSENT=YES+cb",
+          "Accept-Language": "en-US,en;q=0.9",
+          "User-Agent": USER_AGENT,
+        },
       },
       { timeout: 15000 },
     );
 
-    if (!response.success) return null;
+    if (!response.success) return { status: null };
     if (response.data.status < 300 || response.data.status >= 400)
-      return response.data.ok ? response.data : null;
+      return response.data.ok
+        ? { response: response.data }
+        : { status: response.data.status };
 
     const location = response.data.headers.get("location");
-    if (!location || state.hops >= MAX_REDIRECTS) return null;
+    if (!location || state.hops >= MAX_REDIRECTS)
+      return { status: response.data.status };
 
     const next = resultify(() => new URL(location, state.url).toString());
-    if (!next.success) return null;
+    if (!next.success) return { status: null };
 
     state.url = next.data;
     state.hops += 1;
   }
 };
 
-const fetchSignature = async (googleUrl: string): Promise<Signature | null> => {
-  const response = await fetchArticle(googleUrl);
-  if (!response) return null;
+const fetchSignature = async (googleUrl: string): Promise<Attempt> => {
+  const fetched = await fetchArticle(googleUrl);
 
-  const html = await readBounded(response, ARTICLE_BYTE_LIMIT, BODY_TIMEOUT_MS);
-  return html.success ? signatureFrom(html.data) : null;
+  if (!("response" in fetched))
+    return fetched.status === null
+      ? { kind: "unreachable" }
+      : { kind: "refused", status: fetched.status };
+
+  const html = await readBounded(
+    fetched.response,
+    ARTICLE_BYTE_LIMIT,
+    BODY_TIMEOUT_MS,
+  );
+  if (!html.success) return { kind: "unreachable" };
+
+  const signature = signatureFrom(html.data);
+  return signature ? { kind: "ok", signature } : { kind: "unsigned" };
 };
 
 /**
@@ -892,10 +937,45 @@ const writeCache = async (entries: [string, string][]) => {
  * Cost is one `GET` per article plus one `POST` per batch, so this is the
  * expensive half of the pipeline and opt-in everywhere it is exposed.
  */
+export type ResolutionDiagnosis = {
+  /**
+   * Articles whose publisher URL we now hold, cache hits included.
+   *
+   * Named `succeeded`, not `resolved`: the response already carries a boolean
+   * `resolved` saying whether resolution ran at all, and a sibling integer of
+   * the same name was misread as the boolean's true type in a bug report. Two
+   * fields one word apart, one a flag and one a count, is a defect in the
+   * contract even when both are correct.
+   */
+  succeeded: number;
+  /** Served straight from cache, costing no upstream request. */
+  cached: number;
+  /** Page fetched and signed, but the RPC returned no URL for it. */
+  unpaired: number;
+  /** Page answered with a status we cannot read, by status code. */
+  refused: Record<string, number>;
+  /** No answer at all: network, timeout, or an off-origin redirect. */
+  unreachable: number;
+  /** Page returned, carrying no signature — an interstitial, or a page change. */
+  unsigned: number;
+};
+
+/**
+ * Fills in `url` where resolution succeeds, and reports why it did not
+ * elsewhere.
+ *
+ * Returns the diagnosis alongside the articles rather than only the articles —
+ * a divergence from the reference spec, and a deliberate one. Resolution
+ * depends on a host that answers our datacenter differently from a laptop, so
+ * "0 of 5" without a reason is the one result this function must never give.
+ *
+ * Never rejects: an article whose signature or RPC answer is missing keeps
+ * `url: null`, and the caller falls back to `googleUrl`.
+ */
 export const resolveUrls = async (
   items: Article[],
   { edition = DEFAULT_EDITION }: { edition?: string } = {},
-): Promise<Article[]> => {
+): Promise<{ articles: Article[]; diagnosis: ResolutionDiagnosis }> => {
   const cached = await readCache(items);
 
   // Only the misses cost an upstream request.
@@ -903,16 +983,18 @@ export const resolveUrls = async (
     cached.has(item.articleId) ? [] : [{ item, index }],
   );
 
-  const signatures = await mapConcurrently(
+  const attempts = await mapConcurrently(
     pending,
     RESOLVE_CONCURRENCY,
     ({ item }) => fetchSignature(item.googleUrl),
   );
 
-  // Indices are the position within this batch, not within `items`, so the
-  // mapping back is explicit rather than positional.
-  const signed = signatures.flatMap((signature, position) =>
-    signature ? [{ index: position, signature }] : [],
+  // Positions are within this batch, not within `items`, so the mapping back
+  // is explicit rather than positional.
+  const signed = attempts.flatMap((attempt, position) =>
+    attempt.kind === "ok"
+      ? [{ index: position, signature: attempt.signature }]
+      : [],
   );
 
   const batches = await Promise.all(
@@ -930,10 +1012,28 @@ export const resolveUrls = async (
 
   const urls = new Map([...cached, ...fresh]);
 
-  return items.map((item) => ({
-    ...item,
-    url: urls.get(item.articleId) ?? item.url,
-  }));
+  const refused = attempts.reduce<Record<string, number>>((counts, attempt) => {
+    if (attempt.kind !== "refused") return counts;
+
+    const key = String(attempt.status);
+    counts[key] = (counts[key] ?? 0) + 1;
+    return counts;
+  }, {});
+
+  return {
+    articles: items.map((item) => ({
+      ...item,
+      url: urls.get(item.articleId) ?? item.url,
+    })),
+    diagnosis: {
+      succeeded: urls.size,
+      cached: cached.size,
+      unpaired: signed.length - fresh.length,
+      refused,
+      unreachable: attempts.filter((a) => a.kind === "unreachable").length,
+      unsigned: attempts.filter((a) => a.kind === "unsigned").length,
+    },
+  };
 };
 
 /**
@@ -956,7 +1056,7 @@ export const resolutionHealth = (articles: Article[]) => {
 
   return {
     attempted,
-    resolved: resolved.length,
+    succeeded: resolved.length,
     mismatched: mismatched.length,
   };
 };
@@ -1251,7 +1351,7 @@ type Outcome = {
   /** Whether resolution actually ran, so a null `url` is never ambiguous. */
   resolved: boolean;
   /** Present only when resolution ran. */
-  resolution?: ReturnType<typeof resolutionHealth>;
+  resolution?: ReturnType<typeof resolutionHealth> & ResolutionDiagnosis;
 };
 
 const pipeline = async (
@@ -1286,14 +1386,17 @@ const pipeline = async (
   resolutions.active += 1;
 
   try {
-    const resolvedArticles = await resolveUrls(articles, {
+    const outcome = await resolveUrls(articles, {
       edition: options.edition ?? DEFAULT_EDITION,
     });
 
     return {
-      articles: resolvedArticles,
+      articles: outcome.articles,
       resolved: true,
-      resolution: resolutionHealth(resolvedArticles),
+      resolution: {
+        ...resolutionHealth(outcome.articles),
+        ...outcome.diagnosis,
+      },
     };
   } finally {
     resolutions.active -= 1;

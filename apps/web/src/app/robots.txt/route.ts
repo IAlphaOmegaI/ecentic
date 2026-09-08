@@ -33,6 +33,10 @@ export const GET = () =>
   new Response(body, {
     headers: {
       "Content-Type": "text/plain; charset=utf-8",
-      "Cache-Control": "public, max-age=3600, s-maxage=3600",
+      // Five minutes, not an hour. This file is a few hundred bytes, and a
+      // crawler that read a stale copy keeps acting on withdrawn rules for the
+      // whole TTL — after the `Allow: /api/v1` fix went out, agents stayed
+      // blocked for the remainder of the hour they had already cached.
+      "Cache-Control": "public, max-age=300, s-maxage=300",
     },
   });

@@ -1930,7 +1930,12 @@ export const openApiDocument = {
             description:
               "The publisher's own URL. `null` when resolution was not requested or did not succeed — fall back to `googleUrl`, which always works in a browser.",
           },
-          googleUrl: { type: "string", format: "uri" },
+          googleUrl: {
+            type: "string",
+            format: "uri",
+            description:
+              "Google's redirect for the article. Treat it as a stable identifier rather than a link: news.google.com is robots-disallowed, so a well-behaved crawler cannot follow it. Ask for `resolve=true` to get a followable `url`.",
+          },
           articleId: {
             type: "string",
             description: "Feed `guid`; the identity of an exact repeat.",
@@ -1987,11 +1992,35 @@ export const openApiDocument = {
           resolution: {
             type: "object",
             description:
-              "Resolution health, present only when resolution ran. A non-zero `mismatched` means resolved URLs disagree with the publishers the feed named — the signal that the internal Google RPC this depends on has changed shape.",
+              "Resolution health and diagnosis, present only when resolution ran. `mismatched` above zero means resolved URLs disagree with the publishers the feed named — the internal Google RPC has changed shape. The remaining counters say why the rest failed, which matters because Google answers a datacenter differently from a browser: `refused` and `unsigned` above zero mean the deployment's egress is being blocked or served a consent interstitial, not that the code is broken.",
             properties: {
               attempted: { type: "integer" },
-              resolved: { type: "integer" },
+              succeeded: { type: "integer" },
               mismatched: { type: "integer" },
+              cached: {
+                type: "integer",
+                description: "Served from cache, costing no upstream request.",
+              },
+              unpaired: {
+                type: "integer",
+                description:
+                  "Page fetched and signed, but the RPC returned no URL for it.",
+              },
+              refused: {
+                type: "object",
+                description: "Count of non-readable responses, by status code.",
+                additionalProperties: { type: "integer" },
+              },
+              unreachable: {
+                type: "integer",
+                description:
+                  "No answer at all: network, timeout, or an off-origin redirect.",
+              },
+              unsigned: {
+                type: "integer",
+                description:
+                  "Page returned but carried no signature — an interstitial, or a change to Google's markup.",
+              },
             },
           },
           count: { type: "integer" },
