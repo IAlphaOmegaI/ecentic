@@ -91,7 +91,7 @@ export const GET = async (request: Request) => {
       "validation-failed",
       `At most ${MAX_QUERIES} "q" parameters per request; ${queries.length} were sent.`,
       { limiter, policy },
-    );
+    ); 
 
   const oversized = queries.find((query) => query.length > MAX_QUERY_LENGTH);
   if (oversized !== undefined)
