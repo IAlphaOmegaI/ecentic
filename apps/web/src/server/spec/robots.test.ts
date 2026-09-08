@@ -2,7 +2,6 @@ import { describe, expect, test } from "bun:test";
 import { GET } from "@/app/robots.txt/route";
 import { V1_ENDPOINTS } from "@/lib/agent-api";
 
- 
 /**
  * robots.txt is a contract with the agents this product is built for, and it
  * is one line away from contradicting every discovery document the app
