@@ -28,6 +28,33 @@ export const PUBLIC_API_POLICY: Policy = {
   window: 60,
 };
 
+/**
+ * `/api/v1/news` reads an upstream feed per request, so it is metered well
+ * below the shared default.
+ */
+export const NEWS_POLICY: Policy = { name: "news", limit: 30, window: 60 };
+
+/**
+ * `?resolve=true` additionally makes the origin fetch one page per article.
+ * Priced as what it is: the most expensive thing an unauthenticated caller can
+ * ask this API to do.
+ */
+export const NEWS_RESOLVE_POLICY: Policy = {
+  name: "news-resolve",
+  limit: 6,
+  window: 60,
+};
+
+/**
+ * Every policy the public surface enforces, so the documentation renders what
+ * the code applies instead of a number kept in sync by hand.
+ */
+export const POLICIES: readonly (Policy & { scope: string })[] = [
+  { ...PUBLIC_API_POLICY, scope: "every /api/v1 endpoint" },
+  { ...NEWS_POLICY, scope: "/api/v1/news" },
+  { ...NEWS_RESOLVE_POLICY, scope: "/api/v1/news?resolve=true" },
+] as const;
+
 export type Verdict = {
   policy: Policy;
   /** `false` only when the window was actually counted and is exhausted. */

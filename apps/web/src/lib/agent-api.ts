@@ -83,6 +83,13 @@ export const V1_ENDPOINTS: readonly Endpoint[] = [
     authentication: "none",
   },
   {
+    path: "/api/v1/news",
+    method: "GET",
+    summary:
+      "AI-commerce news wire: Google News search results parsed into JSON records.",
+    authentication: "none",
+  },
+  {
     path: "/api/mcp",
     method: "POST",
     summary: "MCP JSON-RPC endpoint (tools/list, tools/call).",

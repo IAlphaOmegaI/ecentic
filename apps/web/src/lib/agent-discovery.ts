@@ -880,6 +880,136 @@ export const openApiDocument = {
         },
       },
     },
+    "/api/v1/news": {
+      get: {
+        tags: ["catalog"],
+        summary: "AI-commerce news wire",
+        operationId: "getApiV1News",
+        // Public: no credential required.
+        security: [],
+        description:
+          "Google News search results parsed into JSON records: headline with the publisher suffix removed, publisher and domain, an ISO 8601 timestamp, and the publisher's own URL where it could be resolved. Syndicated copies are merged into one record that names the other outlets in `alsoIn`, and a headline filter drops the documents Google matched on body text alone. The upstream feed is undocumented and caps every response at 100 items with no pagination, so breadth comes from several `q` values rather than from paging.",
+        parameters: [
+          API_VERSION_PARAMETER,
+          {
+            name: "q",
+            in: "query",
+            required: false,
+            description:
+              "Search query, repeatable up to 5 times; results are merged and deduplicated across them. Google News operators are accepted. Defaults to `ai shopping` and `ai commerce`.",
+            explode: true,
+            schema: {
+              type: "array",
+              maxItems: 5,
+              items: { type: "string", maxLength: 200 },
+            },
+          },
+          {
+            name: "when",
+            in: "query",
+            required: false,
+            description:
+              "Rolling time window, applied as the feed's `when:` operator. Omit for no restriction. `1d` means the previous 24 hours, not a calendar day.",
+            schema: { type: "string", enum: ["1h", "1d", "7d", "30d", "1y"] },
+          },
+          {
+            name: "limit",
+            in: "query",
+            required: false,
+            description:
+              "Maximum articles returned, applied after filtering and deduplication. Capped at 25 when `resolve=true`.",
+            schema: { type: "integer", minimum: 1, maximum: 100, default: 25 },
+          },
+          {
+            name: "resolve",
+            in: "query",
+            required: false,
+            description:
+              "Resolve each `googleUrl` to the publisher's own URL. Costs one upstream request per article and is metered on a tighter rate-limit policy, so it is off by default. An article whose resolution fails keeps `url: null`.",
+            schema: { type: "boolean", default: false },
+          },
+          {
+            name: "dedupe",
+            in: "query",
+            required: false,
+            description:
+              "Merge syndicated copies of one story into the earliest item, recording the other publishers in `alsoIn`.",
+            schema: { type: "boolean", default: true },
+          },
+          {
+            name: "relevance",
+            in: "query",
+            required: false,
+            description:
+              "`ai-commerce` requires one AI term and one commerce term in the headline, which removes the results Google matched elsewhere in the document. `off` returns the feed unfiltered.",
+            schema: {
+              type: "string",
+              enum: ["ai-commerce", "off"],
+              default: "ai-commerce",
+            },
+          },
+          {
+            name: "aiTerms",
+            in: "query",
+            required: false,
+            description:
+              "Comma-separated override for the AI half of the headline filter.",
+            schema: { type: "string" },
+          },
+          {
+            name: "commerceTerms",
+            in: "query",
+            required: false,
+            description:
+              "Comma-separated override for the commerce half of the headline filter.",
+            schema: { type: "string" },
+          },
+          {
+            name: "hl",
+            in: "query",
+            required: false,
+            description:
+              "Interface language. Keep consistent with `gl` and `ceid`; an inconsistent set returns an empty or mixed feed.",
+            schema: { type: "string", default: "en-US" },
+          },
+          {
+            name: "gl",
+            in: "query",
+            required: false,
+            description: "Two-letter country bias.",
+            schema: { type: "string", default: "US" },
+          },
+          {
+            name: "ceid",
+            in: "query",
+            required: false,
+            description: "Google News edition, such as `US:en`.",
+            schema: { type: "string", default: "US:en" },
+          },
+        ],
+        responses: {
+          "200": {
+            description:
+              "Parsed articles, newest first. Articles with no `publishedAt` sort last.",
+            headers: RATE_LIMIT_RESPONSE_HEADERS,
+            content: {
+              "application/json": {
+                schema: { $ref: "#/components/schemas/News" },
+              },
+            },
+          },
+          "422": INVALID_REQUEST_RESPONSE,
+          "429": RATE_LIMITED_RESPONSE,
+          "500": INTERNAL_ERROR_RESPONSE,
+          "504": {
+            description:
+              "Google News did not answer for any query. The upstream feed is undocumented and unowned, so this is an expected condition rather than a defect; retry with backoff.",
+            headers: RATE_LIMIT_RESPONSE_HEADERS,
+            content: PROBLEM_CONTENT,
+          },
+        },
+      },
+    },
     "/api/v1/onboarding": {
       get: {
         tags: ["discovery"],
@@ -1771,6 +1901,99 @@ export const openApiDocument = {
           skills: {
             type: "array",
             items: { $ref: "#/components/schemas/Skill" },
+          },
+        },
+      },
+      NewsArticle: {
+        type: "object",
+        title: "NewsArticle",
+        required: ["headline", "googleUrl", "articleId", "alsoIn"],
+        properties: {
+          headline: {
+            type: "string",
+            description: "Headline with the ` - Publisher` suffix removed.",
+          },
+          publisher: { type: ["string", "null"] },
+          publisherDomain: {
+            type: ["string", "null"],
+            description:
+              "Host of the feed's `<source url>` attribute, without a `www.` prefix. Present even when `url` could not be resolved.",
+          },
+          publishedAt: {
+            type: ["string", "null"],
+            format: "date-time",
+            description: "ISO 8601, converted from the feed's RFC 822 value.",
+          },
+          url: {
+            type: ["string", "null"],
+            format: "uri",
+            description:
+              "The publisher's own URL. `null` when resolution was not requested or did not succeed — fall back to `googleUrl`, which always works in a browser.",
+          },
+          googleUrl: { type: "string", format: "uri" },
+          articleId: {
+            type: "string",
+            description: "Feed `guid`; the identity of an exact repeat.",
+          },
+          alsoIn: {
+            type: "array",
+            items: { type: "string" },
+            description:
+              "Other publishers that carried the same story, from the syndication merge.",
+          },
+          query: {
+            type: "string",
+            description: "The `q` value this record came from.",
+          },
+        },
+      },
+      News: {
+        type: "object",
+        title: "News",
+        required: [
+          "source",
+          "retrievedAt",
+          "queries",
+          "count",
+          "articles",
+          "failures",
+        ],
+        properties: {
+          source: { type: "string", enum: ["Google News RSS"] },
+          retrievedAt: { type: "string", format: "date-time" },
+          queries: { type: "array", items: { type: "string" } },
+          window: { type: ["string", "null"] },
+          locale: {
+            type: "object",
+            properties: {
+              language: { type: "string" },
+              country: { type: "string" },
+              edition: { type: "string" },
+            },
+          },
+          relevance: { type: "string", enum: ["ai-commerce", "off"] },
+          deduplicated: { type: "boolean" },
+          resolved: {
+            type: "boolean",
+            description:
+              "Whether publisher-URL resolution was attempted, so a null `url` can be told apart from one that was never asked for.",
+          },
+          count: { type: "integer" },
+          articles: {
+            type: "array",
+            items: { $ref: "#/components/schemas/NewsArticle" },
+          },
+          failures: {
+            type: "array",
+            description:
+              "Queries whose feed could not be read. A partial answer is returned rather than none.",
+            items: {
+              type: "object",
+              properties: {
+                query: { type: "string" },
+                error: { type: "string" },
+              },
+            },
           },
         },
       },

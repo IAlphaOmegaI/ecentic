@@ -12,7 +12,7 @@ import {
   organizationSchema,
 } from "@/lib/seo";
 import Art from "@/public/images/ascii/scale.png";
-import { PUBLIC_API_POLICY } from "@/server/utils/rate-limit";
+import { POLICIES, PUBLIC_API_POLICY } from "@/server/utils/rate-limit";
 import {
   ContentPageFooter,
   ContentPageLayout,
@@ -56,7 +56,12 @@ export default async () => {
   const messages = await getMessages();
   const content = messages.docs.rateLimitsPage;
 
-  const policy = `${PUBLIC_API_POLICY.limit} requests / ${PUBLIC_API_POLICY.window}s · policy "${PUBLIC_API_POLICY.name}"`;
+  // Rendered from the policies the limiter actually enforces, so an endpoint
+  // metered below the shared default cannot be documented as if it were not.
+  const policy = POLICIES.map(
+    ({ limit, window, name, scope }) =>
+      `${limit} requests / ${window}s · policy "${name}" · ${scope}`,
+  ).join("\n");
 
   return (
     <ContentPageLayout
