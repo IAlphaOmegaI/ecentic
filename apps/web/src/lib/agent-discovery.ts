@@ -2027,8 +2027,8 @@ export const openApiDocument = {
                   "Google diverted the request to its consent flow instead of serving the article. Observed intermittently and independently of any consent cookie; it clears on its own, and each attempt is retried once.",
               },
             },
-          },
-          count: { type: "integer", description: "Articles in this response." },
+          }, 
+           count: { type: "integer", description: "Articles in this response." },
           total: {
             type: "integer",
             description:
