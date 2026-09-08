@@ -567,6 +567,18 @@ export const isArticleUrl = (raw: string) => {
 const MAX_REDIRECTS = 3;
 
 /**
+ * Where Google sends a client it has decided to put through the consent flow.
+ * Observed intermittently and independently of any consent cookie — the same
+ * request that lands here one minute is served normally the next — so it is a
+ * rolling upstream behaviour rather than something a header fixes.
+ *
+ * Worth naming separately because the origin check refuses the hop (correctly:
+ * it leaves news.google.com), and reporting that as a generic network failure
+ * hides the one explanation an operator can act on.
+ */
+const CONSENT_HOSTS = new Set(["consent.google.com", "consent.youtube.com"]);
+
+/**
  * Why a resolution attempt ended the way it did.
  *
  * Resolution runs from wherever the app is deployed, and Google does not treat
@@ -581,6 +593,8 @@ type Attempt =
   | { kind: "refused"; status: number }
   /** No answer at all — network, timeout, or a redirect off-origin. */
   | { kind: "unreachable" }
+  /** Google diverted the page to its consent flow instead of serving it. */
+  | { kind: "consent" }
   /** The page came back but carried no signature: an interstitial, or a
    *  markup change on Google's side. */
   | { kind: "unsigned" };
@@ -593,7 +607,9 @@ type Attempt =
  */
 const fetchArticle = async (
   url: string,
-): Promise<{ response: Response } | { status: number | null }> => {
+): Promise<
+  { response: Response } | { status: number | null } | { consent: true }
+> => {
   const state = { url, hops: 0 };
 
   for (;;) {
@@ -629,16 +645,20 @@ const fetchArticle = async (
     if (!location || state.hops >= MAX_REDIRECTS)
       return { status: response.data.status };
 
-    const next = resultify(() => new URL(location, state.url).toString());
+    const next = resultify(() => new URL(location, state.url));
     if (!next.success) return { status: null };
 
-    state.url = next.data;
+    if (CONSENT_HOSTS.has(next.data.hostname)) return { consent: true };
+
+    state.url = next.data.toString();
     state.hops += 1;
   }
 };
 
-const fetchSignature = async (googleUrl: string): Promise<Attempt> => {
+const readSignature = async (googleUrl: string): Promise<Attempt> => {
   const fetched = await fetchArticle(googleUrl);
+
+  if ("consent" in fetched) return { kind: "consent" };
 
   if (!("response" in fetched))
     return fetched.status === null
@@ -654,6 +674,35 @@ const fetchSignature = async (googleUrl: string): Promise<Attempt> => {
 
   const signature = signatureFrom(html.data);
   return signature ? { kind: "ok", signature } : { kind: "unsigned" };
+};
+
+/** One retry, not a ladder: a failing article doubles its cost, no more. */
+const ARTICLE_RETRY_DELAY_MS = 400;
+
+const RETRIABLE = new Set<Attempt["kind"]>([
+  "consent",
+  "unreachable",
+  "refused",
+]);
+
+/**
+ * Retries once on a failure that might not repeat. A consent diversion clears
+ * on its own, and a 429 or a dropped connection is transient by definition — but
+ * `unsigned` is not retried, because a page that rendered without a signature
+ * will render without one again, and 25 articles retrying in lockstep is how a
+ * bad minute becomes a bad quarter-hour.
+ *
+ * The original diagnosis is kept when the retry also fails, so the reported
+ * cause is the first thing that went wrong rather than whatever the retry hit.
+ */
+const fetchSignature = async (googleUrl: string): Promise<Attempt> => {
+  const first = await readSignature(googleUrl);
+  if (!RETRIABLE.has(first.kind)) return first;
+
+  await new Promise((resolve) => setTimeout(resolve, ARTICLE_RETRY_DELAY_MS));
+
+  const retried = await readSignature(googleUrl);
+  return retried.kind === "ok" ? retried : first;
 };
 
 /**
@@ -970,6 +1019,8 @@ export type ResolutionDiagnosis = {
   unreachable: number;
   /** Page returned, carrying no signature — an interstitial, or a page change. */
   unsigned: number;
+  /** Google diverted the request to its consent flow instead of the article. */
+  consent: number;
 };
 
 /**
@@ -1044,6 +1095,7 @@ export const resolveUrls = async (
       refused,
       unreachable: attempts.filter((a) => a.kind === "unreachable").length,
       unsigned: attempts.filter((a) => a.kind === "unsigned").length,
+      consent: attempts.filter((a) => a.kind === "consent").length,
     },
   };
 };
@@ -1358,8 +1410,55 @@ export type CollectOptions = FeedOptions & {
 const byRecency = (left: Article, right: Article) =>
   -chronologically(left, right);
 
+/**
+ * The single categorical answer to "did resolution work", so a consumer does
+ * not have to derive it by comparing two counters. The failure that shipped a
+ * linkless brief was invisible precisely because telling `resolved: 0` apart
+ * from "nothing to resolve" required arithmetic nobody was doing.
+ */
+export type ResolveStatus =
+  /** Not asked for. */
+  | "skipped"
+  /** Asked for, but the per-instance gate was full; nothing was attempted. */
+  | "unavailable"
+  /** Every article that was attempted resolved — including an empty set. */
+  | "ok"
+  /** Some resolved, some did not. */
+  | "partial"
+  /** Nothing resolved, and the upstream refused with 429s. */
+  | "rate-limited"
+  /** Nothing resolved: Google diverted the requests to its consent flow. */
+  | "diverted"
+  /** Nothing resolved, for some other reason. */
+  | "failed";
+
+export const resolveStatusFor = (
+  requested: boolean,
+  health: Pick<
+    ResolutionDiagnosis & { attempted: number },
+    "attempted" | "succeeded" | "refused" | "consent"
+  > | null,
+): ResolveStatus => {
+  if (!requested) return "skipped";
+  if (!health) return "unavailable";
+  if (health.attempted === 0 || health.succeeded === health.attempted)
+    return "ok";
+  if (health.succeeded > 0) return "partial";
+
+  // Total failure. Both of these clear on their own and are worth retrying
+  // later; `failed` is the one that means something actually changed. A caller
+  // should not have to read a counter to tell them apart.
+  if ((health.refused["429"] ?? 0) > 0) return "rate-limited";
+  if (health.consent > 0) return "diverted";
+
+  return "failed";
+};
+
 type Outcome = {
   articles: Article[];
+  /** Articles available before `limit` was applied, so truncation is visible. */
+  total: number;
+  resolveStatus: ResolveStatus;
   /** Whether resolution actually ran, so a null `url` is never ambiguous. */
   resolved: boolean;
   /** Present only when resolution ran. */
@@ -1385,15 +1484,27 @@ const pipeline = async (
       : dedupe(relevant, options.threshold ?? DEFAULT_SIMILARITY_THRESHOLD);
 
   const sorted = [...merged].sort(byRecency);
+  const total = sorted.length;
   const articles =
     options.limit === undefined ? sorted : sorted.slice(0, options.limit);
 
-  if (!options.resolve) return { articles, resolved: false };
+  if (!options.resolve)
+    return {
+      articles,
+      total,
+      resolved: false,
+      resolveStatus: resolveStatusFor(false, null),
+    };
 
   // Checked and claimed together, with no await in between, so two concurrent
   // requests cannot both read the same free slot.
   if (resolutions.active >= MAX_CONCURRENT_RESOLUTIONS)
-    return { articles, resolved: false };
+    return {
+      articles,
+      total,
+      resolved: false,
+      resolveStatus: resolveStatusFor(true, null),
+    };
 
   resolutions.active += 1;
 
@@ -1402,13 +1513,17 @@ const pipeline = async (
       edition: options.edition ?? DEFAULT_EDITION,
     });
 
+    const resolution = {
+      ...resolutionHealth(outcome.articles),
+      ...outcome.diagnosis,
+    };
+
     return {
       articles: outcome.articles,
+      total,
       resolved: true,
-      resolution: {
-        ...resolutionHealth(outcome.articles),
-        ...outcome.diagnosis,
-      },
+      resolveStatus: resolveStatusFor(true, resolution),
+      resolution,
     };
   } finally {
     resolutions.active -= 1;

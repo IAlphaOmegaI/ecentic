@@ -2021,9 +2021,37 @@ export const openApiDocument = {
                 description:
                   "Page returned but carried no signature — an interstitial, or a change to Google's markup.",
               },
+              consent: {
+                type: "integer",
+                description:
+                  "Google diverted the request to its consent flow instead of serving the article. Observed intermittently and independently of any consent cookie; it clears on its own, and each attempt is retried once.",
+              },
             },
           },
-          count: { type: "integer" },
+          count: { type: "integer", description: "Articles in this response." },
+          total: {
+            type: "integer",
+            description:
+              "Articles available before `limit` was applied. `count === limit` is otherwise indistinguishable from there being exactly that many.",
+          },
+          truncated: {
+            type: "boolean",
+            description: "Whether `limit` cut the result set short.",
+          },
+          resolveStatus: {
+            type: "string",
+            enum: [
+              "skipped",
+              "unavailable",
+              "ok",
+              "partial",
+              "rate-limited",
+              "diverted",
+              "failed",
+            ],
+            description:
+              "The categorical outcome of resolution, so a client need not compare counters to notice a failure. `skipped` — not asked for. `unavailable` — asked for, but the origin's resolution gate was full and nothing was attempted. `ok` — everything attempted resolved. `partial` — some did not. `rate-limited` — none did, and the upstream answered 429. `diverted` — none did, because Google routed the requests into its consent flow. `failed` — none did, for another reason. `rate-limited` and `diverted` clear on their own and are worth retrying; `failed` means something changed. Responses that are not `skipped`, `ok` or `partial` are sent `Cache-Control: no-store`, so a transient failure cannot be cached and re-served after it has passed.",
+          },
           articles: {
             type: "array",
             items: { $ref: "#/components/schemas/NewsArticle" },

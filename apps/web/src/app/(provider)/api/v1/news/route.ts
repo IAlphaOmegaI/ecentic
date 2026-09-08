@@ -35,6 +35,21 @@ const DEFAULT_LIMIT = 25;
  */
 const MAX_RESOLVED = 25;
 
+/**
+ * Resolution outcomes whose response must not outlive the request.
+ *
+ * A transient upstream failure lasted minutes; the linkless response it
+ * produced was still being served an hour later out of a caller's cache. The
+ * transient is not preventable from here — instructing every cache not to keep
+ * the wreckage is.
+ */
+const DEGRADED = new Set<News.ResolveStatus>([
+  "failed",
+  "rate-limited",
+  "diverted",
+  "unavailable",
+]);
+
 /** Absent means "take the default"; anything else must be exactly true/false. */
 const boolean = (raw: string | null, fallback: boolean) => {
   if (raw === null) return fallback;
@@ -240,9 +255,8 @@ export const GET = async (request: Request) => {
       { limiter, policy },
     );
 
-  const { articles, failures, resolved, resolution } = await News.collectAll(
-    queries,
-    {
+  const { articles, failures, resolved, resolveStatus, resolution, total } =
+    await News.collectAll(queries, {
       when: when ?? undefined,
       language: language ?? undefined,
       country: country ?? undefined,
@@ -255,8 +269,7 @@ export const GET = async (request: Request) => {
       ...(aiTerms ? { aiTerms } : {}),
       ...(commerceTerms ? { commerceTerms } : {}),
       ...(relevance === "off" ? { aiTerms: null, commerceTerms: null } : {}),
-    },
-  );
+    });
 
   // Every feed failing is an upstream outage, not an empty result set — saying
   // "0 articles" there would read as "no such news" to an agent that cannot
@@ -287,12 +300,19 @@ export const GET = async (request: Request) => {
       // null `url` knows whether it means "not asked for" or "resolution
       // failed" and can decide whether to retry.
       resolved,
+      // The categorical answer, so a consumer never has to compare two
+      // counters to notice that resolution failed.
+      resolveStatus,
       // Only present when resolution ran. `mismatched` counts articles whose
       // resolved host disagrees with the publisher the feed named — the tell
       // that the internal RPC's contract has shifted, which otherwise shows up
       // as plausible URLs on the wrong stories.
       ...(resolution ? { resolution } : {}),
       count: articles.length,
+      // `count === limit` is indistinguishable from "there were exactly that
+      // many" without these.
+      total,
+      truncated: total > articles.length,
       articles,
       failures,
     },
@@ -302,7 +322,15 @@ export const GET = async (request: Request) => {
       // Headlines move in minutes, not seconds, and the window is per-caller
       // for the same reason every other public response is: these carry the
       // caller's own rate-limit counters.
-      cacheControl: "private, max-age=300",
+      //
+      // A degraded body is never cached, at any layer. Origin caching was not
+      // what served an hour-old linkless response — that was a client's own
+      // cache — but `no-store` is the instruction that stops it there too, and
+      // a stale failure outlives the transient that caused it by an order of
+      // magnitude.
+      cacheControl: DEGRADED.has(resolveStatus)
+        ? "no-store"
+        : "private, max-age=300",
     },
   );
 };

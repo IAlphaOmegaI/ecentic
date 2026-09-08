@@ -13,6 +13,7 @@ import {
   isTimeWindow,
   parseFeed,
   resolutionHealth,
+  resolveStatusFor,
   resolveUrls,
   stripPublisherSuffix,
 } from "@/server/utils/google-news";
@@ -657,5 +658,164 @@ describe("resolution failure diagnosis", () => {
     expect(diagnosis.succeeded).toBe(1);
     expect(articles[0]?.url).toBe("https://publisher0.example/story");
     expect(articles[1]?.url).toBeNull();
+  });
+});
+
+describe("resolve status", () => {
+  test("names an outcome for every shape a resolution can end in", () => {
+    const health = (
+      attempted: number,
+      succeeded: number,
+      refused: Record<string, number> = {},
+      consent = 0,
+    ) => ({ attempted, succeeded, refused, consent });
+
+    expect(resolveStatusFor(false, null)).toBe("skipped");
+    expect(resolveStatusFor(true, null)).toBe("unavailable");
+    expect(resolveStatusFor(true, health(0, 0))).toBe("ok");
+    expect(resolveStatusFor(true, health(5, 5))).toBe("ok");
+    expect(resolveStatusFor(true, health(5, 3))).toBe("partial");
+    expect(resolveStatusFor(true, health(5, 0))).toBe("failed");
+  });
+
+  test("distinguishes being rate limited from being broken", () => {
+    // "back off and retry" and "something changed" call for different client
+    // behaviour, so they are not both reported as `failed`.
+    expect(
+      resolveStatusFor(true, {
+        attempted: 5,
+        succeeded: 0,
+        refused: { "429": 5 },
+        consent: 0,
+      }),
+    ).toBe("rate-limited");
+
+    // The failure actually observed in production: Google routes the article
+    // fetches into its consent flow. Transient, and not the same advice to a
+    // caller as "something changed".
+    expect(
+      resolveStatusFor(true, {
+        attempted: 5,
+        succeeded: 0,
+        refused: {},
+        consent: 5,
+      }),
+    ).toBe("diverted");
+
+    expect(
+      resolveStatusFor(true, {
+        attempted: 5,
+        succeeded: 0,
+        refused: { "503": 5 },
+        consent: 0,
+      }),
+    ).toBe("failed");
+  });
+
+  test("a degraded outcome is one the route must not let anyone cache", () => {
+    // Pairs with the route's `no-store` branch: the failure that shipped a
+    // linkless brief was served from a cache for an hour after it had passed.
+    const degraded = ["failed", "rate-limited", "diverted", "unavailable"];
+    const cacheable = ["skipped", "ok", "partial"];
+
+    expect([...degraded, ...cacheable].sort()).toEqual(
+      [
+        "diverted",
+        "failed",
+        "ok",
+        "partial",
+        "rate-limited",
+        "skipped",
+        "unavailable",
+      ].sort(),
+    );
+  });
+});
+
+describe("consent diversion", () => {
+  const realFetch = globalThis.fetch;
+  afterEach(() => {
+    globalThis.fetch = realFetch;
+  });
+
+  const consentRedirect = () =>
+    new Response("", {
+      status: 302,
+      headers: {
+        location:
+          "https://consent.google.com/m?continue=https://news.google.com/rss/articles/CBMi0",
+      },
+    });
+
+  const item = () => [
+    article({
+      headline: "Diverted",
+      articleId: "CBMi0",
+      googleUrl: "https://news.google.com/rss/articles/CBMi0?oc=5",
+    }),
+  ];
+
+  test("is reported as `consent`, not as a generic network failure", async () => {
+    // The origin check refuses the hop — correctly, it leaves news.google.com —
+    // and calling that `unreachable` hides the only cause an operator can act on.
+    globalThis.fetch = (async (input: RequestInfo | URL) =>
+      String(input instanceof Request ? input.url : input).includes(
+        "/rss/articles/",
+      )
+        ? consentRedirect()
+        : (() => {
+            throw new Error("unavailable");
+          })()) as typeof fetch;
+
+    const { diagnosis } = await resolveUrls(item());
+
+    expect(diagnosis.consent).toBe(1);
+    expect(diagnosis.unreachable).toBe(0);
+    expect(diagnosis.succeeded).toBe(0);
+  });
+
+  test("a diversion that clears on retry resolves normally", async () => {
+    const calls = { articles: 0 };
+    const signed =
+      '<html><c-wiz data-n-a-id="ID" data-n-a-ts="1" data-n-a-sg="SIG"></c-wiz></html>';
+
+    globalThis.fetch = (async (input: RequestInfo | URL) => {
+      const url = String(input instanceof Request ? input.url : input);
+      if (!url.includes("/rss/articles/"))
+        return new Response(
+          `)]}'\n\n[["wrb.fr","Fbv4je","[null,\\"https://publisher.example/story\\"]",null,null,null,"0"]]`,
+          { status: 200 },
+        );
+
+      calls.articles += 1;
+      return calls.articles === 1
+        ? consentRedirect()
+        : new Response(signed, { status: 200 });
+    }) as typeof fetch;
+
+    const { articles, diagnosis } = await resolveUrls(item());
+
+    expect(calls.articles).toBe(2);
+    expect(diagnosis.succeeded).toBe(1);
+    expect(articles[0]?.url).toBe("https://publisher.example/story");
+  });
+
+  test("a page with no signature is not retried", async () => {
+    // Retrying it cannot help, and 25 articles retrying in lockstep turns a bad
+    // minute into a bad quarter-hour.
+    const calls = { articles: 0 };
+
+    globalThis.fetch = (async (input: RequestInfo | URL) => {
+      const url = String(input instanceof Request ? input.url : input);
+      if (!url.includes("/rss/articles/")) throw new Error("unavailable");
+
+      calls.articles += 1;
+      return new Response("<html>no signature here</html>", { status: 200 });
+    }) as typeof fetch;
+
+    const { diagnosis } = await resolveUrls(item());
+
+    expect(calls.articles).toBe(1);
+    expect(diagnosis.unsigned).toBe(1);
   });
 });
