@@ -896,7 +896,7 @@ export const openApiDocument = {
             in: "query",
             required: false,
             description:
-              "Search query, repeatable up to 5 times; results are merged and deduplicated across them. Google News operators are accepted. Omit entirely to use the defaults (`ai shopping`, `ai commerce`); sending it empty is rejected rather than silently defaulted.",
+              "Search query, repeatable up to 5 times; results are merged and deduplicated across them. Google News operators are accepted. Omit entirely to use the defaults (`ai shopping`, `ai commerce`); sending it empty is rejected rather than silently defaulted, and more than 5 returns 422 rather than truncating.\n\nClient hazard: some HTTP clients — including agent fetch tools that model a query string as a flat map — collapse a repeated parameter to its first value before the request is sent. The server never sees the rest, so it cannot report the loss, and the truncated request is perfectly valid. Every response echoes the `queries` it actually ran for exactly this reason: compare it against what you sent, and if it is short, your client is flattening repeats and each query needs its own request. Bracket syntax (`q[]=`) is not an alternative — it is rejected as an unknown parameter. Neither is a comma-separated value, which is read as one literal search string.",
             explode: true,
             schema: {
               type: "array",
@@ -1940,7 +1940,7 @@ export const openApiDocument = {
             type: "string",
             description: "Feed `guid`; the identity of an exact repeat.",
           },
-          alsoIn: { 
+          alsoIn: {
             type: "array",
             description:
               "Other publishers that carried the same story, from the syndication merge. Named both ways because the feed's own source strings mix brand names and bare domains; group on `domain`.",

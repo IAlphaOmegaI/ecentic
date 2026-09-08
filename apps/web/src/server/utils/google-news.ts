@@ -747,6 +747,15 @@ const entryFor = (signature: Signature, edition: string, index: number) => {
  */
 const FRAME_MARKER = /^\d+$/;
 
+/**
+ * The anti-JSON-hijacking prefix Google puts at the head of the stream. It is
+ * a frame boundary in its own right, not just noise: without treating it as
+ * one, a response that omits the byte-length lines glues the prefix onto the
+ * first payload and nothing parses — the whole batch then reads as "resolved
+ * nothing", with no error anywhere to say why.
+ */
+const HIJACK_PREFIX = /^\)\]\}'?/;
+
 const frames = (body: string): string[] => {
   const collected: string[] = [];
   const current: string[] = [];
@@ -758,10 +767,13 @@ const frames = (body: string): string[] => {
   };
 
   for (const line of body.split("\n")) {
-    if (FRAME_MARKER.test(line.trim())) {
+    const trimmed = line.trim();
+
+    if (FRAME_MARKER.test(trimmed) || HIJACK_PREFIX.test(trimmed)) {
       flush();
       continue;
     }
+
     current.push(line);
   }
 

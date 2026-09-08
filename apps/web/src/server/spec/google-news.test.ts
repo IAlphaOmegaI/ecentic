@@ -1,4 +1,4 @@
-import { describe, expect, test } from "bun:test";
+import { afterEach, describe, expect, test } from "bun:test";
 import {
   type Article,
   cleanPublisher,
@@ -13,6 +13,7 @@ import {
   isTimeWindow,
   parseFeed,
   resolutionHealth,
+  resolveUrls,
   stripPublisherSuffix,
 } from "@/server/utils/google-news";
 
@@ -532,5 +533,129 @@ describe("query parameter contract", () => {
     expect(documented.length).toBeGreaterThan(0);
     expect(documented).toContain("q");
     expect(documented).not.toContain("q[]");
+  });
+});
+
+/**
+ * The resolver's failure paths, proved against a stubbed upstream.
+ *
+ * These exist because the one production failure — 9 articles, every `url`
+ * null, nothing in the payload saying why — could not be reproduced on demand,
+ * and waiting to catch it live is not a test strategy. `fetch` is stubbed at
+ * the network boundary and restored after each case, rather than mocking the
+ * module, so nothing leaks into the rest of the run.
+ */
+describe("resolution failure diagnosis", () => {
+  const realFetch = globalThis.fetch;
+  afterEach(() => {
+    globalThis.fetch = realFetch;
+  });
+
+  const SIGNED_PAGE =
+    '<html><body><c-wiz data-n-a-id="ID-1" data-n-a-ts="1757000000" data-n-a-sg="SIG-1"></c-wiz></body></html>';
+
+  /**
+   * Anything that is not a Google News article page — the Upstash cache probe,
+   * the batchexecute POST — is answered by `elsewhere`, so a test never depends
+   * on Redis being reachable.
+   */
+  const stub = (
+    article: (url: string) => Response | Promise<Response>,
+    elsewhere: () => Response | Promise<Response> = () => {
+      throw new Error("unavailable");
+    },
+  ) => {
+    globalThis.fetch = (async (input: RequestInfo | URL) => {
+      const url = String(input instanceof Request ? input.url : input);
+      return url.includes("/rss/articles/") ? article(url) : elsewhere();
+    }) as typeof fetch;
+  };
+
+  const items = (count: number) =>
+    Array.from({ length: count }, (_, index) =>
+      article({
+        headline: `Story ${index}`,
+        articleId: `CBMi${index}`,
+        publisher: `Publisher ${index}`,
+        // Distinct per item, so a stub can answer one article differently.
+        googleUrl: `https://news.google.com/rss/articles/CBMi${index}?oc=5`,
+      }),
+    );
+
+  test("a refused article page is counted by status, not silently dropped", async () => {
+    stub(() => new Response("", { status: 429 }));
+
+    const { articles, diagnosis } = await resolveUrls(items(3));
+
+    expect(diagnosis.succeeded).toBe(0);
+    expect(diagnosis.refused).toEqual({ "429": 3 });
+    expect(diagnosis.unsigned).toBe(0);
+    expect(articles.every((item) => item.url === null)).toBe(true);
+  });
+
+  test("a page with no signature reports `unsigned`, not a generic failure", async () => {
+    // What a consent interstitial looks like: 200, real HTML, no signature.
+    stub(
+      () => new Response("<html>Before you continue</html>", { status: 200 }),
+    );
+
+    const { diagnosis } = await resolveUrls(items(2));
+
+    expect(diagnosis).toMatchObject({
+      succeeded: 0,
+      unsigned: 2,
+      unreachable: 0,
+    });
+    expect(diagnosis.refused).toEqual({});
+  });
+
+  test("an unreachable upstream is distinguished from one that answered", async () => {
+    stub(() => {
+      throw new Error("ECONNREFUSED");
+    });
+
+    const { diagnosis } = await resolveUrls(items(2));
+
+    expect(diagnosis).toMatchObject({
+      succeeded: 0,
+      unreachable: 2,
+      unsigned: 0,
+    });
+  });
+
+  test("a signed page whose RPC returns nothing reports `unpaired`", async () => {
+    // This is the shape that means Google changed the RPC — as opposed to
+    // blocking us, which is `refused`. Telling them apart is the whole point.
+    stub(
+      () => new Response(SIGNED_PAGE, { status: 200 }),
+      () => new Response(')]}\'\n\n[["di",4]]', { status: 200 }),
+    );
+
+    const { diagnosis } = await resolveUrls(items(2));
+
+    expect(diagnosis).toMatchObject({ succeeded: 0, unpaired: 2, unsigned: 0 });
+  });
+
+  test("one failing article does not sink the others", async () => {
+    // The report guessed a `Promise.all` rejecting the whole batch. It does not:
+    // failures are per-article, so a partial result is a real outcome.
+    stub(
+      (url) =>
+        url.includes("CBMi1")
+          ? new Response("", { status: 500 })
+          : new Response(SIGNED_PAGE, { status: 200 }),
+      () =>
+        new Response(
+          `)]}'\n\n[["wrb.fr","Fbv4je","[null,\\"https://publisher0.example/story\\"]",null,null,null,"0"]]`,
+          { status: 200 },
+        ),
+    );
+
+    const { articles, diagnosis } = await resolveUrls(items(3));
+
+    expect(diagnosis.refused).toEqual({ "500": 1 });
+    expect(diagnosis.succeeded).toBe(1);
+    expect(articles[0]?.url).toBe("https://publisher0.example/story");
+    expect(articles[1]?.url).toBeNull();
   });
 });
