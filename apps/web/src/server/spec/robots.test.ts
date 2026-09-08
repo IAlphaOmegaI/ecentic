@@ -1,6 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { GET } from "@/app/robots.txt/route";
-import { V1_ENDPOINTS } from "@/lib/agent-api"; 
+import { V1_ENDPOINTS } from "@/lib/agent-api";
 
 /**
  * robots.txt is a contract with the agents this product is built for, and it
@@ -24,7 +24,7 @@ const rules = (body: string): Rule[] =>
  * RFC 9309 §2.2.2: the most specific — longest — matching rule wins, and a path
  * no rule matches is allowed.
  */
-const verdict = (path: string, parsed: Rule[]) => {
+const byLongestMatch = (path: string, parsed: Rule[]) => {
   const matching = parsed
     .filter((rule) => path.startsWith(rule.path))
     .sort((left, right) => right.path.length - left.path.length);
@@ -32,9 +32,43 @@ const verdict = (path: string, parsed: Rule[]) => {
   return matching[0]?.kind ?? "Allow";
 };
 
+/**
+ * What a large share of deployed parsers actually do — Python's
+ * `urllib.robotparser` among them: take the first matching line in the file and
+ * stop. An `Allow` written after the `Disallow` it excepts is never reached
+ * under this reading, which is how a file that is correct by the RFC can still
+ * close the public API to a real client.
+ */
+const byFirstMatch = (path: string, parsed: Rule[]) =>
+  parsed.find((rule) => path.startsWith(rule.path))?.kind ?? "Allow";
+
+/** Only a rule set both readings agree on is actually safe to ship. */
+const verdict = (path: string, parsed: Rule[]) => {
+  const longest = byLongestMatch(path, parsed);
+  const first = byFirstMatch(path, parsed);
+
+  return longest === first ? longest : "ambiguous";
+};
+
 const body = async () => await (await GET()).text();
 
 describe("robots.txt", () => {
+  test("resolves identically under first-match and longest-match parsers", async () => {
+    // The difference between the two readings is invisible in the file and
+    // total in effect, so it is asserted rather than reasoned about.
+    const parsed = rules(await body());
+
+    for (const path of [
+      "/api/v1",
+      "/api/v1/news",
+      "/api/auth/session",
+      "/dashboard/products",
+    ])
+      expect(byFirstMatch(path, parsed), path).toBe(
+        byLongestMatch(path, parsed),
+      );
+  });
+
   test("every public agent API endpoint it advertises is reachable", async () => {
     const parsed = rules(await body());
 

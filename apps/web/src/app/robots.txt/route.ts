@@ -8,20 +8,21 @@ import { seo } from "@/lib/seo";
 const body = [
   "User-Agent: *",
   "Content-Signal: ai-train=no, search=yes, ai-input=yes",
+  // The allow comes FIRST, deliberately.
+  //
+  // RFC 9309 §2.2.2 resolves a conflict by longest match, which makes order
+  // irrelevant — but a large share of real parsers, the Python standard
+  // library's `urllib.robotparser` among them, take the first matching line in
+  // the file instead. Under that reading a trailing `Allow` never runs: the
+  // earlier `Disallow: /api/` answers first and the public API stays shut.
+  // Listing the exception above the rule it excepts satisfies both readings,
+  // and under neither does it open anything else — /api/auth, /api/cron,
+  // /api/dev, /api/stripe and /api/webhooks match only `Disallow: /api/`.
+  "Allow: /api/v1",
+  "Disallow: /api/",
   "Disallow: /dashboard/",
   "Disallow: /onboarding/",
   "Disallow: /verify",
-  // Everything under /api is closed by default — auth, cron, webhooks, the
-  // Stripe and Shopify callbacks, the staff-only /api/dev tree — and then the
-  // one public part is opened back up. A longer matching rule wins over a
-  // shorter one, so this allows /api/v1 and its children while /api/auth,
-  // /api/cron and the rest stay disallowed.
-  //
-  // Without the exception, robots.txt contradicts the app's own machine-readable
-  // guidance: /openapi.json, /.well-known/api-catalog and /llms.txt all send
-  // agents to /api/v1, and a compliant fetcher then refuses to go there.
-  "Disallow: /api/",
-  "Allow: /api/v1",
   "",
   `Host: ${seo.host}`,
   `Sitemap: ${seo.host}/sitemap.xml`,
