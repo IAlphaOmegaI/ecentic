@@ -896,7 +896,7 @@ export const openApiDocument = {
             in: "query",
             required: false,
             description:
-              "Search query, repeatable up to 5 times; results are merged and deduplicated across them. Google News operators are accepted. Defaults to `ai shopping` and `ai commerce`.",
+              "Search query, repeatable up to 5 times; results are merged and deduplicated across them. Google News operators are accepted. Omit entirely to use the defaults (`ai shopping`, `ai commerce`); sending it empty is rejected rather than silently defaulted.",
             explode: true,
             schema: {
               type: "array",
@@ -1937,9 +1937,15 @@ export const openApiDocument = {
           },
           alsoIn: {
             type: "array",
-            items: { type: "string" },
             description:
-              "Other publishers that carried the same story, from the syndication merge.",
+              "Other publishers that carried the same story, from the syndication merge. Named both ways because the feed's own source strings mix brand names and bare domains; group on `domain`.",
+            items: {
+              type: "object",
+              properties: {
+                publisher: { type: ["string", "null"] },
+                domain: { type: ["string", "null"] },
+              },
+            },
           },
           query: {
             type: "string",
@@ -1976,7 +1982,17 @@ export const openApiDocument = {
           resolved: {
             type: "boolean",
             description:
-              "Whether publisher-URL resolution was attempted, so a null `url` can be told apart from one that was never asked for.",
+              "Whether publisher-URL resolution was attempted, so a null `url` can be told apart from one that was never asked for. False even when `resolve=true` was asked for, if the per-instance resolution gate was already full.",
+          },
+          resolution: {
+            type: "object",
+            description:
+              "Resolution health, present only when resolution ran. A non-zero `mismatched` means resolved URLs disagree with the publishers the feed named — the signal that the internal Google RPC this depends on has changed shape.",
+            properties: {
+              attempted: { type: "integer" },
+              resolved: { type: "integer" },
+              mismatched: { type: "integer" },
+            },
           },
           count: { type: "integer" },
           articles: {

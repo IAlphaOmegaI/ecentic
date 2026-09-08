@@ -50,6 +50,18 @@ export const isTimeWindow = (value: string): value is TimeWindow =>
 /** The feed caps every response at 100 items and offers no pagination. */
 export const FEED_ITEM_CAP = 100;
 
+/**
+ * A publisher, named both ways. Google's `<source>` text is a brand name for
+ * some outlets and a bare domain for others — "PYMNTS.com" beside
+ * "ecommercenews.com.au" — so a list of those strings cannot be grouped or
+ * counted without double-counting the same outlet under two spellings. The
+ * domain is the stable key; the name is what a human reads.
+ */
+export type Source = {
+  publisher: string | null;
+  domain: string | null;
+};
+
 export type Article = {
   /** Headline with the ` - Publisher` suffix removed. */
   headline: string;
@@ -65,7 +77,7 @@ export type Article = {
   /** Feed `guid` — the identity of an exact repeat. */
   articleId: string;
   /** Publishers that carried the same story, from the syndication merge. */
-  alsoIn: string[];
+  alsoIn: Source[];
   /** The feed query this record came from, when several were merged. */
   query?: string;
 };
@@ -354,6 +366,35 @@ export const stripPublisherSuffix = (
     : headline;
 };
 
+/** Longest first, so " | " is not left behind by a shorter separator. */
+const TITLE_SEPARATORS = [" | ", " - ", " — ", " · "];
+const MAX_PUBLISHER_LENGTH = 60;
+
+/**
+ * Google sometimes captures a page's `<title>` as the source name — one feed
+ * returned "Euronext Markets: Real-time Stock Market Data | live" as a
+ * publisher. Cut at the first separator and cap the length.
+ *
+ * Applied for output only, never before `stripPublisherSuffix`: the title's
+ * suffix carries the *raw* source string, so cleaning first would stop the
+ * suffix matching and leave it on every headline.
+ */
+export const cleanPublisher = (publisher: string | null) => {
+  if (!publisher) return null;
+
+  const cut = TITLE_SEPARATORS.reduce(
+    (name, separator) => name.split(separator)[0] ?? name,
+    publisher,
+  ).trim();
+
+  const name = cut || publisher.trim();
+  if (!name) return null;
+
+  return name.length > MAX_PUBLISHER_LENGTH
+    ? `${name.slice(0, MAX_PUBLISHER_LENGTH).trimEnd()}…`
+    : name;
+};
+
 const domainOf = (url: string | null) => {
   if (!url) return null;
 
@@ -420,12 +461,13 @@ export const parseFeed = (xml: string, query?: string): Article[] => {
     const title = text(item["title"]);
     if (!title) return [];
 
+    // Raw for the suffix match, cleaned for the record.
     const publisher = text(item["source"]);
 
     return [
       {
         headline: stripPublisherSuffix(title, publisher),
-        publisher,
+        publisher: cleanPublisher(publisher),
         publisherDomain: domainOf(attribute(item["source"], "url")),
         publishedAt: isoDate(text(item["pubDate"])),
         url: null,
@@ -780,6 +822,69 @@ const chunk = <T>(items: T[], size: number): T[][] =>
   );
 
 /**
+ * Resolution cache, keyed on `articleId`.
+ *
+ * The id is stable and the publisher URL behind it never changes, so resolving
+ * the same article twice is pure waste — and resolution is the expensive half
+ * of this module, at one upstream GET per article. It also buys a fallback for
+ * the failure that is coming: `Fbv4je` is an internal RPC with no stability
+ * contract, and when Google changes it, cached ids keep answering while live
+ * resolution returns nothing.
+ *
+ * Resolved from the same lazy client `rate-limit.ts` uses, and degrades the
+ * same way: no Redis simply means no cache, never a failed request.
+ */
+const RESOLUTION_CACHE_TTL_SECONDS = 60 * 60 * 24 * 30;
+
+const cache = async () => {
+  const module = await resultify(() => import("./durable"));
+  if (!module.success) return null;
+
+  const resolved = resultify(() => module.data.redis);
+  return resolved.success ? resolved.data : null;
+};
+
+const cacheKey = (articleId: string) => `gnews:url:${articleId}`;
+
+const readCache = async (items: Article[]): Promise<Map<string, string>> => {
+  if (items.length === 0) return new Map();
+
+  const client = await cache();
+  if (!client) return new Map();
+
+  const stored = await resultify(() =>
+    client.mget<(string | null)[]>(
+      ...items.map((item) => cacheKey(item.articleId)),
+    ),
+  );
+  if (!stored.success) return new Map();
+
+  return items.reduce((hits, item, index) => {
+    const url = stored.data[index];
+    return typeof url === "string" && url.length > 0
+      ? hits.set(item.articleId, url)
+      : hits;
+  }, new Map<string, string>());
+};
+
+const writeCache = async (entries: [string, string][]) => {
+  if (entries.length === 0) return;
+
+  const client = await cache();
+  if (!client) return;
+
+  await resultify(() => {
+    const pipeline = client.pipeline();
+    for (const [articleId, url] of entries)
+      pipeline.set(cacheKey(articleId), url, {
+        ex: RESOLUTION_CACHE_TTL_SECONDS,
+      });
+
+    return pipeline.exec();
+  });
+};
+
+/**
  * Fills in `url` where resolution succeeds. Never rejects: an article whose
  * signature or RPC answer is missing keeps `url: null`, and the caller falls
  * back to `googleUrl`, which always works in a browser.
@@ -791,24 +896,82 @@ export const resolveUrls = async (
   items: Article[],
   { edition = DEFAULT_EDITION }: { edition?: string } = {},
 ): Promise<Article[]> => {
-  const signatures = await mapConcurrently(items, RESOLVE_CONCURRENCY, (item) =>
-    fetchSignature(item.googleUrl),
+  const cached = await readCache(items);
+
+  // Only the misses cost an upstream request.
+  const pending = items.flatMap((item, index) =>
+    cached.has(item.articleId) ? [] : [{ item, index }],
   );
 
-  const pending = signatures.flatMap((signature, index) =>
-    signature ? [{ index, signature }] : [],
+  const signatures = await mapConcurrently(
+    pending,
+    RESOLVE_CONCURRENCY,
+    ({ item }) => fetchSignature(item.googleUrl),
+  );
+
+  // Indices are the position within this batch, not within `items`, so the
+  // mapping back is explicit rather than positional.
+  const signed = signatures.flatMap((signature, position) =>
+    signature ? [{ index: position, signature }] : [],
   );
 
   const batches = await Promise.all(
-    chunk(pending, BATCH_SIZE).map((batch) => resolveBatch(batch, edition)),
+    chunk(signed, BATCH_SIZE).map((batch) => resolveBatch(batch, edition)),
   );
 
   const resolved = new Map(batches.flatMap((batch) => [...batch]));
 
-  return items.map((item, index) => ({
+  const fresh = [...resolved].flatMap(([position, url]): [string, string][] => {
+    const entry = pending[position];
+    return entry ? [[entry.item.articleId, url]] : [];
+  });
+
+  await writeCache(fresh);
+
+  const urls = new Map([...cached, ...fresh]);
+
+  return items.map((item) => ({
     ...item,
-    url: resolved.get(index) ?? item.url,
+    url: urls.get(item.articleId) ?? item.url,
   }));
+};
+
+/**
+ * A resolution that returns a URL belonging to a different publisher than the
+ * feed named is the signature of the RPC contract shifting underneath us — the
+ * failure mode that looks like success, because every URL is valid and only the
+ * pairing is wrong. Counted on every response so a break is visible as a number
+ * rather than as plausible links on the wrong stories.
+ */
+export const resolutionHealth = (articles: Article[]) => {
+  const attempted = articles.length;
+  const resolved = articles.filter((article) => article.url !== null);
+
+  const mismatched = resolved.filter(
+    (article) =>
+      article.publisherDomain !== null &&
+      article.url !== null &&
+      !domainMatches(article.publisherDomain, article.url),
+  );
+
+  return {
+    attempted,
+    resolved: resolved.length,
+    mismatched: mismatched.length,
+  };
+};
+
+/** Suffix match on label boundaries, so `bbc.co.uk` never matches `itv.co.uk`. */
+export const domainMatches = (publisherDomain: string, url: string) => {
+  const parsed = resultify(() => new URL(url));
+  if (!parsed.success) return false;
+
+  const host = parsed.data.hostname.replace(/^www\./, "").toLowerCase();
+  const feed = publisherDomain.replace(/^www\./, "").toLowerCase();
+
+  return (
+    host === feed || host.endsWith(`.${feed}`) || feed.endsWith(`.${host}`)
+  );
 };
 
 // ---------------------------------------------------------------------------
@@ -877,7 +1040,13 @@ const similarity = (left: Set<string>, right: Set<string>) => {
   return shared / (left.size + right.size - shared);
 };
 
-export const DEFAULT_SIMILARITY_THRESHOLD = 0.6;
+/**
+ * Raised from 0.6 after that merged independently written coverage of one
+ * announcement into the press release's cluster. On a live 81-item feed the
+ * change costs a single merge and keeps every cluster, so the trade is close to
+ * free in the direction of not inventing syndication that is not there.
+ */
+export const DEFAULT_SIMILARITY_THRESHOLD = 0.75;
 
 const earliest = (left: Article, right: Article) => {
   if (!left.publishedAt) return right;
@@ -890,6 +1059,14 @@ const earliest = (left: Article, right: Article) => {
  * publishers on it — the fact that many outlets carried a story is signal, not
  * noise, so it is preserved rather than discarded with the duplicate.
  */
+const sourceOf = (article: Article): Source => ({
+  publisher: article.publisher,
+  domain: article.publisherDomain,
+});
+
+const sourceKey = (source: Source) =>
+  (source.domain ?? source.publisher ?? "").toLowerCase();
+
 const chronologically = (left: Article, right: Article) => {
   if (left.publishedAt === right.publishedAt) return 0;
   if (!left.publishedAt) return 1;
@@ -935,15 +1112,18 @@ export const dedupe = (
       continue;
     }
 
-    const publishers = [
-      ...new Set(
-        [...match.article.alsoIn, ...item.alsoIn, item.publisher].filter(
-          (publisher): publisher is string =>
-            typeof publisher === "string" &&
-            publisher !== match.article.publisher,
-        ),
-      ),
-    ];
+    // Keyed on domain first: the same outlet arrives as "PYMNTS.com" from one
+    // feed and "pymnts.com" from another, and a name-keyed set would list it
+    // twice.
+    const own = sourceKey(sourceOf(match.article));
+    const carried = new Map(
+      [...match.article.alsoIn, ...item.alsoIn, sourceOf(item)]
+        .filter((source) => {
+          const key = sourceKey(source);
+          return key.length > 0 && key !== own;
+        })
+        .map((source) => [sourceKey(source), source]),
+    );
 
     // The cluster keeps its own identity but the union of what either copy
     // managed to resolve — a mirror that resolved is still the best URL we have
@@ -951,7 +1131,7 @@ export const dedupe = (
     match.article = {
       ...match.article,
       url: match.article.url ?? item.url,
-      alsoIn: publishers,
+      alsoIn: [...carried.values()],
     };
   }
 
@@ -1070,6 +1250,8 @@ type Outcome = {
   articles: Article[];
   /** Whether resolution actually ran, so a null `url` is never ambiguous. */
   resolved: boolean;
+  /** Present only when resolution ran. */
+  resolution?: ReturnType<typeof resolutionHealth>;
 };
 
 const pipeline = async (
@@ -1104,11 +1286,14 @@ const pipeline = async (
   resolutions.active += 1;
 
   try {
+    const resolvedArticles = await resolveUrls(articles, {
+      edition: options.edition ?? DEFAULT_EDITION,
+    });
+
     return {
-      articles: await resolveUrls(articles, {
-        edition: options.edition ?? DEFAULT_EDITION,
-      }),
+      articles: resolvedArticles,
       resolved: true,
+      resolution: resolutionHealth(resolvedArticles),
     };
   } finally {
     resolutions.active -= 1;

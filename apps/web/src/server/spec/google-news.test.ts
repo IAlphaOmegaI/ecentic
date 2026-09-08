@@ -1,15 +1,18 @@
 import { describe, expect, test } from "bun:test";
 import {
   type Article,
+  cleanPublisher,
   DEFAULT_EDITION,
   decodeEntities,
   dedupe,
+  domainMatches,
   feedUrl,
   filterRelevant,
   isArticleUrl,
   isEdition,
   isTimeWindow,
   parseFeed,
+  resolutionHealth,
   stripPublisherSuffix,
 } from "@/server/utils/google-news";
 
@@ -211,7 +214,7 @@ const article = (
   overrides: Partial<Article> & { headline: string },
 ): Article => ({
   publisher: "Reuters",
-  publisherDomain: "reuters.com",
+  publisherDomain: `${(overrides.publisher ?? "Reuters").toLowerCase().replaceAll(" ", "")}.com`,
   publishedAt: "2026-09-08T12:00:00.000Z",
   url: null,
   googleUrl: "https://news.google.com/rss/articles/CBMi?oc=5",
@@ -246,7 +249,9 @@ describe("dedupe", () => {
 
     expect(merged).toHaveLength(1);
     expect(merged[0]?.publisher).toBe("Reuters");
-    expect(merged[0]?.alsoIn).toEqual(["Yahoo Finance"]);
+    expect(merged[0]?.alsoIn).toEqual([
+      { publisher: "Yahoo Finance", domain: "yahoofinance.com" },
+    ]);
   });
 
   test("keeps the earliest item, whichever order they arrive in", () => {
@@ -432,5 +437,75 @@ describe("hardening", () => {
 
     expect(dedupe([early, late])[0]?.publisher).toBe("Reuters");
     expect(dedupe([late, early])[0]?.publisher).toBe("Reuters");
+  });
+});
+
+describe("publisher names", () => {
+  test("cuts a page title Google captured as a source", () => {
+    expect(
+      cleanPublisher("Euronext Markets: Real-time Stock Market Data | live"),
+    ).toBe("Euronext Markets: Real-time Stock Market Data");
+  });
+
+  test("caps a name that is really a sentence", () => {
+    expect((cleanPublisher("A".repeat(200)) ?? "").length).toBeLessThanOrEqual(
+      61,
+    );
+  });
+
+  test("leaves an ordinary name alone", () => {
+    for (const name of ["Reuters", "PYMNTS.com", "ecommercenews.com.au"])
+      expect(cleanPublisher(name)).toBe(name);
+  });
+
+  test("runs after the suffix match, not before it", () => {
+    // The title carries the RAW source string, so cleaning first would stop
+    // the suffix matching and leave it on the headline.
+    const messy = "Euronext Markets: Data | live";
+    const parsed = parseFeed(
+      feed(
+        item({
+          title: `AI agents reshape checkout - ${messy}`,
+          source: messy,
+          sourceUrl: "https://www.euronext.com",
+        }),
+      ),
+    );
+
+    expect(parsed[0]?.headline).toBe("AI agents reshape checkout");
+    expect(parsed[0]?.publisher).toBe("Euronext Markets: Data");
+  });
+});
+
+describe("resolution health", () => {
+  test("counts a resolved URL that belongs to a different publisher", () => {
+    const health = resolutionHealth([
+      article({
+        headline: "Correctly paired",
+        publisher: "Reuters",
+        url: "https://www.reuters.com/story",
+      }),
+      article({
+        headline: "Mispaired",
+        publisher: "Reuters",
+        url: "https://example.test/some-other-story",
+      }),
+      article({ headline: "Unresolved", publisher: "Reuters" }),
+    ]);
+
+    expect(health).toEqual({ attempted: 3, resolved: 2, mismatched: 1 });
+  });
+
+  test("treats a subdomain of the named publisher as a match", () => {
+    expect(domainMatches("yahoo.com", "https://finance.yahoo.com/story")).toBe(
+      true,
+    );
+    expect(domainMatches("finance.yahoo.com", "https://yahoo.com/story")).toBe(
+      true,
+    );
+  });
+
+  test("does not match two different sites under one public suffix", () => {
+    expect(domainMatches("bbc.co.uk", "https://itv.co.uk/story")).toBe(false);
   });
 });

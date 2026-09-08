@@ -76,14 +76,26 @@ export const GET = async (request: Request) => {
       policy,
     });
 
-  const queries = (() => {
-    const provided = parameters
-      .getAll("q")
-      .map((query) => query.trim())
-      .filter((query) => query.length > 0);
+  // An absent `q` takes the defaults; a `q` that is present but empty is a
+  // caller passing an unset variable, and is refused like any other malformed
+  // parameter. Silently substituting defaults there answers a question nobody
+  // asked, and it is the one case where that is most likely to go unnoticed.
+  const supplied = parameters.getAll("q");
+  if (
+    supplied.length > 0 &&
+    supplied.some((query) => query.trim().length === 0)
+  )
+    return refused(
+      request,
+      "validation-failed",
+      'Every "q" must be a non-empty search query. Omit the parameter entirely to use the defaults.',
+      { limiter, policy },
+    );
 
-    return provided.length > 0 ? provided : DEFAULT_QUERIES;
-  })();
+  const queries =
+    supplied.length > 0
+      ? supplied.map((query) => query.trim())
+      : DEFAULT_QUERIES;
 
   if (queries.length > MAX_QUERIES)
     return refused(
@@ -91,7 +103,7 @@ export const GET = async (request: Request) => {
       "validation-failed",
       `At most ${MAX_QUERIES} "q" parameters per request; ${queries.length} were sent.`,
       { limiter, policy },
-    ); 
+    );
 
   const oversized = queries.find((query) => query.length > MAX_QUERY_LENGTH);
   if (oversized !== undefined)
@@ -184,20 +196,23 @@ export const GET = async (request: Request) => {
       { limiter, policy },
     );
 
-  const { articles, failures, resolved } = await News.collectAll(queries, {
-    when: when ?? undefined,
-    language: language ?? undefined,
-    country: country ?? undefined,
-    edition: edition ?? undefined,
-    resolve,
-    dedupe: merge,
-    limit: resolve ? Math.min(limit, MAX_RESOLVED) : limit,
-    // `off` last, so it cannot be quietly re-enabled by a term list sent
-    // alongside it — which reported `"relevance": "off"` while still filtering.
-    ...(aiTerms ? { aiTerms } : {}),
-    ...(commerceTerms ? { commerceTerms } : {}),
-    ...(relevance === "off" ? { aiTerms: null, commerceTerms: null } : {}),
-  });
+  const { articles, failures, resolved, resolution } = await News.collectAll(
+    queries,
+    {
+      when: when ?? undefined,
+      language: language ?? undefined,
+      country: country ?? undefined,
+      edition: edition ?? undefined,
+      resolve,
+      dedupe: merge,
+      limit: resolve ? Math.min(limit, MAX_RESOLVED) : limit,
+      // `off` last, so it cannot be quietly re-enabled by a term list sent
+      // alongside it — which reported `"relevance": "off"` while still filtering.
+      ...(aiTerms ? { aiTerms } : {}),
+      ...(commerceTerms ? { commerceTerms } : {}),
+      ...(relevance === "off" ? { aiTerms: null, commerceTerms: null } : {}),
+    },
+  );
 
   // Every feed failing is an upstream outage, not an empty result set — saying
   // "0 articles" there would read as "no such news" to an agent that cannot
@@ -228,6 +243,11 @@ export const GET = async (request: Request) => {
       // null `url` knows whether it means "not asked for" or "resolution
       // failed" and can decide whether to retry.
       resolved,
+      // Only present when resolution ran. `mismatched` counts articles whose
+      // resolved host disagrees with the publisher the feed named — the tell
+      // that the internal RPC's contract has shifted, which otherwise shows up
+      // as plausible URLs on the wrong stories.
+      ...(resolution ? { resolution } : {}),
       count: articles.length,
       articles,
       failures,
