@@ -47,6 +47,7 @@ const DEGRADED = new Set<News.ResolveStatus>([
   "failed",
   "rate-limited",
   "diverted",
+  "unrecognised",
   "unavailable",
 ]);
 
@@ -218,7 +219,7 @@ export const GET = async (request: Request) => {
       { limiter, policy },
     );
 
-  const relevance = parameters.get("relevance") ?? "ai-commerce";
+  const relevance = parameters.get("relevance") ?? "off";
   if (relevance !== "ai-commerce" && relevance !== "off")
     return refused(
       request,
@@ -255,21 +256,28 @@ export const GET = async (request: Request) => {
       { limiter, policy },
     );
 
-  const { articles, failures, resolved, resolveStatus, resolution, total } =
-    await News.collectAll(queries, {
-      when: when ?? undefined,
-      language: language ?? undefined,
-      country: country ?? undefined,
-      edition: edition ?? undefined,
-      resolve,
-      dedupe: merge,
-      limit: resolve ? Math.min(limit, MAX_RESOLVED) : limit,
-      // `off` last, so it cannot be quietly re-enabled by a term list sent
-      // alongside it — which reported `"relevance": "off"` while still filtering.
-      ...(aiTerms ? { aiTerms } : {}),
-      ...(commerceTerms ? { commerceTerms } : {}),
-      ...(relevance === "off" ? { aiTerms: null, commerceTerms: null } : {}),
-    });
+  const {
+    articles,
+    failures,
+    resolved,
+    resolveStatus,
+    retryable,
+    resolution,
+    total,
+  } = await News.collectAll(queries, {
+    when: when ?? undefined,
+    language: language ?? undefined,
+    country: country ?? undefined,
+    edition: edition ?? undefined,
+    resolve,
+    dedupe: merge,
+    limit: resolve ? Math.min(limit, MAX_RESOLVED) : limit,
+    // `off` last, so it cannot be quietly re-enabled by a term list sent
+    // alongside it — which reported `"relevance": "off"` while still filtering.
+    ...(aiTerms ? { aiTerms } : {}),
+    ...(commerceTerms ? { commerceTerms } : {}),
+    ...(relevance === "off" ? { aiTerms: null, commerceTerms: null } : {}),
+  });
 
   // Every feed failing is an upstream outage, not an empty result set — saying
   // "0 articles" there would read as "no such news" to an agent that cannot
@@ -303,6 +311,9 @@ export const GET = async (request: Request) => {
       // The categorical answer, so a consumer never has to compare two
       // counters to notice that resolution failed.
       resolveStatus,
+      // The one bit a client can act on. `unrecognised` is a code fix on our
+      // side, so a consumer retrying it just burns its own budget.
+      retryable,
       // Only present when resolution ran. `mismatched` counts articles whose
       // resolved host disagrees with the publisher the feed named — the tell
       // that the internal RPC's contract has shifted, which otherwise shows up

@@ -10,6 +10,7 @@ import {
   filterRelevant,
   isArticleUrl,
   isEdition,
+  isRetryable,
   isTimeWindow,
   parseFeed,
   resolutionHealth,
@@ -662,14 +663,19 @@ describe("resolution failure diagnosis", () => {
 });
 
 describe("resolve status", () => {
-  test("names an outcome for every shape a resolution can end in", () => {
-    const health = (
-      attempted: number,
-      succeeded: number,
-      refused: Record<string, number> = {},
-      consent = 0,
-    ) => ({ attempted, succeeded, refused, consent });
+  const health = (
+    attempted: number,
+    succeeded: number,
+    refused: Record<string, number> = {},
+    consent = 0,
+    batch: {
+      requests: number;
+      statuses: Record<string, number>;
+      unrecognised: number;
+    } = { requests: 1, statuses: { "200": 1 }, unrecognised: 0 },
+  ) => ({ attempted, succeeded, refused, consent, unreachable: 0, batch });
 
+  test("names an outcome for every shape a resolution can end in", () => {
     expect(resolveStatusFor(false, null)).toBe("skipped");
     expect(resolveStatusFor(true, null)).toBe("unavailable");
     expect(resolveStatusFor(true, health(0, 0))).toBe("ok");
@@ -681,41 +687,28 @@ describe("resolve status", () => {
   test("distinguishes being rate limited from being broken", () => {
     // "back off and retry" and "something changed" call for different client
     // behaviour, so they are not both reported as `failed`.
-    expect(
-      resolveStatusFor(true, {
-        attempted: 5,
-        succeeded: 0,
-        refused: { "429": 5 },
-        consent: 0,
-      }),
-    ).toBe("rate-limited");
+    expect(resolveStatusFor(true, health(5, 0, { "429": 5 }))).toBe(
+      "rate-limited",
+    );
 
     // The failure actually observed in production: Google routes the article
     // fetches into its consent flow. Transient, and not the same advice to a
     // caller as "something changed".
-    expect(
-      resolveStatusFor(true, {
-        attempted: 5,
-        succeeded: 0,
-        refused: {},
-        consent: 5,
-      }),
-    ).toBe("diverted");
+    expect(resolveStatusFor(true, health(5, 0, {}, 5))).toBe("diverted");
 
-    expect(
-      resolveStatusFor(true, {
-        attempted: 5,
-        succeeded: 0,
-        refused: { "503": 5 },
-        consent: 0,
-      }),
-    ).toBe("failed");
+    expect(resolveStatusFor(true, health(5, 0, { "503": 5 }))).toBe("failed");
   });
 
   test("a degraded outcome is one the route must not let anyone cache", () => {
     // Pairs with the route's `no-store` branch: the failure that shipped a
     // linkless brief was served from a cache for an hour after it had passed.
-    const degraded = ["failed", "rate-limited", "diverted", "unavailable"];
+    const degraded = [
+      "failed",
+      "rate-limited",
+      "diverted",
+      "unrecognised",
+      "unavailable",
+    ];
     const cacheable = ["skipped", "ok", "partial"];
 
     expect([...degraded, ...cacheable].sort()).toEqual(
@@ -727,6 +720,7 @@ describe("resolve status", () => {
         "rate-limited",
         "skipped",
         "unavailable",
+        "unrecognised",
       ].sort(),
     );
   });
@@ -817,5 +811,216 @@ describe("consent diversion", () => {
 
     expect(calls.articles).toBe(1);
     expect(diagnosis.unsigned).toBe(1);
+  });
+});
+
+/**
+ * The two steps report separately.
+ *
+ * Step A is a cheap page fetch; step B is the metered RPC. Everything below
+ * distinguishes a failure of one from a failure of the other, because the four
+ * causes that used to share the reading "signed N, paired 0" call for three
+ * different reactions.
+ */
+describe("two-step resolution diagnosis", () => {
+  const batch = (
+    statuses: Record<string, number>,
+    unrecognised = 0,
+    requests = 1,
+  ) => ({ requests, statuses, unrecognised });
+
+  const health = (
+    over: Partial<{
+      attempted: number;
+      succeeded: number;
+      refused: Record<string, number>;
+      consent: number;
+      unreachable: number;
+      batch: ReturnType<typeof batch>;
+    }> = {},
+  ) => ({
+    attempted: 5,
+    succeeded: 0,
+    refused: {},
+    consent: 0,
+    unreachable: 0,
+    batch: batch({ "200": 1 }),
+    ...over,
+  });
+
+  test("a throttled POST reports `rate-limited`, not `failed`", () => {
+    // The case the status exists for, and the one it could not previously see:
+    // every page fetch succeeds and only the metered RPC is limited.
+    expect(resolveStatusFor(true, health({ batch: batch({ "429": 1 }) }))).toBe(
+      "rate-limited",
+    );
+  });
+
+  test("a throttled GET still reports `rate-limited`", () => {
+    expect(resolveStatusFor(true, health({ refused: { "429": 5 } }))).toBe(
+      "rate-limited",
+    );
+  });
+
+  test("a 2xx the parser cannot read is `unrecognised`, not a throttle", () => {
+    expect(
+      resolveStatusFor(true, health({ batch: batch({ "200": 1 }, 1) })),
+    ).toBe("unrecognised");
+  });
+
+  test("a throttle outranks an unreadable envelope", () => {
+    // A 429 never carries an envelope, so counting it as unrecognised would
+    // send a client to read code when it should have waited sixty seconds.
+    expect(
+      resolveStatusFor(
+        true,
+        health({ batch: batch({ "429": 1, "200": 1 }, 1, 2) }),
+      ),
+    ).toBe("rate-limited");
+  });
+
+  test("a signature the RPC understood but rejected is not `unrecognised`", () => {
+    // Envelope recognised, no URL for our ids: clock skew, a shortened validity
+    // window, a signing change. A code or config fix — never a backoff.
+    const status = resolveStatusFor(true, health());
+
+    expect(status).toBe("failed");
+    expect(isRetryable(status, health())).toBe(false);
+  });
+});
+
+describe("retryable", () => {
+  const health = (
+    over: Partial<Parameters<typeof isRetryable>[1] & object> = {},
+  ) =>
+    ({
+      attempted: 5,
+      succeeded: 0,
+      refused: {},
+      consent: 0,
+      unreachable: 0,
+      batch: { requests: 1, statuses: { "200": 1 }, unrecognised: 0 },
+      ...over,
+    }) as NonNullable<Parameters<typeof isRetryable>[1]>;
+
+  test("tells a client to wait on the transient outcomes", () => {
+    for (const status of [
+      "rate-limited",
+      "diverted",
+      "unavailable",
+      "partial",
+    ] as const)
+      expect(isRetryable(status, health()), status).toBe(true);
+  });
+
+  test("tells a client to stop when retrying cannot help", () => {
+    // `unrecognised` is our parser, not their budget — a consumer cannot fix it.
+    for (const status of ["ok", "skipped", "unrecognised"] as const)
+      expect(isRetryable(status, health()), status).toBe(false);
+  });
+
+  test("decides `failed` on what actually contributed, not on the label", () => {
+    expect(isRetryable("failed", health({ unreachable: 3 }))).toBe(true);
+    expect(isRetryable("failed", health({ refused: { "503": 3 } }))).toBe(true);
+    expect(
+      isRetryable(
+        "failed",
+        health({
+          batch: { requests: 1, statuses: { none: 1 }, unrecognised: 0 },
+        }),
+      ),
+    ).toBe(true);
+
+    // A page that rendered without a signature will render without one again.
+    expect(isRetryable("failed", health({ unsigned: 5 } as never))).toBe(false);
+  });
+});
+
+describe("step B failures reach the diagnosis", () => {
+  const realFetch = globalThis.fetch;
+  afterEach(() => {
+    globalThis.fetch = realFetch;
+  });
+
+  const SIGNED =
+    '<html><c-wiz data-n-a-id="ID" data-n-a-ts="1" data-n-a-sg="SIG"></c-wiz></html>';
+
+  /** Page fetches always succeed; only the metered POST varies. */
+  const stub = (post: () => Response) => {
+    globalThis.fetch = (async (input: RequestInfo | URL) =>
+      String(input instanceof Request ? input.url : input).includes(
+        "/rss/articles/",
+      )
+        ? new Response(SIGNED, { status: 200 })
+        : post()) as typeof fetch;
+  };
+
+  const items = () =>
+    Array.from({ length: 2 }, (_, index) =>
+      article({
+        headline: `Story ${index}`,
+        articleId: `CBMi${index}`,
+        googleUrl: `https://news.google.com/rss/articles/CBMi${index}?oc=5`,
+      }),
+    );
+
+  test("a throttled POST is recorded as a 429, not as an empty result", async () => {
+    stub(() => new Response("", { status: 429 }));
+
+    const { diagnosis } = await resolveUrls(items());
+
+    expect(diagnosis.batch.statuses).toEqual({ "429": 1 });
+    expect(diagnosis.batch.unrecognised).toBe(0);
+    expect(resolveStatusFor(true, { ...diagnosis, attempted: 2 })).toBe(
+      "rate-limited",
+    );
+  });
+
+  test("a 2xx with an envelope we do not know is recorded as unrecognised", async () => {
+    // Renamed key, new nesting, different rpcids — permanent until a parser fix.
+    stub(() => new Response(')]}\'\n\n3\n[["di",4]]', { status: 200 }));
+
+    const { diagnosis } = await resolveUrls(items());
+
+    expect(diagnosis.batch.unrecognised).toBe(1);
+    expect(diagnosis.batch.statuses).toEqual({ "200": 1 });
+
+    const status = resolveStatusFor(true, { ...diagnosis, attempted: 2 });
+    expect(status).toBe("unrecognised");
+    expect(isRetryable(status, { ...diagnosis, attempted: 2 })).toBe(false);
+  });
+
+  test("a recognised envelope that pairs nothing is not called unrecognised", async () => {
+    // Our RPC answered for an id we did not issue: the protocol still holds,
+    // the signatures were rejected. Reading code is right; backing off is not.
+    stub(
+      () =>
+        new Response(
+          `)]}'\n\n3\n[["wrb.fr","Fbv4je","[null,\\"https://elsewhere.example/x\\"]",null,null,null,"99"]]`,
+          { status: 200 },
+        ),
+    );
+
+    const { diagnosis } = await resolveUrls(items());
+
+    expect(diagnosis.batch.unrecognised).toBe(0);
+    expect(diagnosis.unpaired).toBe(2);
+    expect(diagnosis.succeeded).toBe(0);
+    expect(resolveStatusFor(true, { ...diagnosis, attempted: 2 })).toBe(
+      "failed",
+    );
+  });
+
+  test("a POST that never answers is recorded, and is retryable", async () => {
+    stub(() => {
+      throw new Error("ETIMEDOUT");
+    });
+
+    const { diagnosis } = await resolveUrls(items());
+
+    expect(diagnosis.batch.statuses).toEqual({ none: 1 });
+
+    const health = { ...diagnosis, attempted: 2 };
+    expect(isRetryable(resolveStatusFor(true, health), health)).toBe(true);
   });
 });
