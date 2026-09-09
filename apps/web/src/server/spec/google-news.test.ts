@@ -16,6 +16,7 @@ import {
   resolutionHealth,
   resolveStatusFor,
   resolveUrls,
+  sortArticles,
   stripPublisherSuffix,
 } from "@/server/utils/google-news";
 
@@ -223,6 +224,7 @@ const article = (
   googleUrl: "https://news.google.com/rss/articles/CBMi?oc=5",
   articleId: overrides.headline,
   alsoIn: [],
+  relevanceRank: 1,
   ...overrides,
 });
 
@@ -1022,5 +1024,121 @@ describe("step B failures reach the diagnosis", () => {
 
     const health = { ...diagnosis, attempted: 2 };
     expect(isRetryable(resolveStatusFor(true, health), health)).toBe(true);
+  });
+});
+
+describe("relevance ordering", () => {
+  const feed = (titles: string[]) =>
+    `<?xml version="1.0"?><rss version="2.0"><channel>${titles
+      .map((title, index) =>
+        item({
+          title: `${title} - Publisher${index}`,
+          source: `Publisher${index}`,
+          guid: `CBMi${index}`,
+          link: `https://news.google.com/rss/articles/CBMi${index}?oc=5`,
+          pubDate: `Tue, 0${index + 1} Sep 2026 04:00:00 GMT`,
+        }),
+      )
+      .join("")}</channel></rss>`;
+
+  test("records the feed position Google returned each item in", () => {
+    // The only relevance signal the feed carries, and unrecoverable once the
+    // list is reordered — so it is captured before anything reorders it.
+    const parsed = parseFeed(feed(["First", "Second", "Third"]));
+
+    expect(parsed.map((entry) => entry.relevanceRank)).toEqual([1, 2, 3]);
+  });
+
+  test("the rank survives the headline filter as a gap, not a renumbering", () => {
+    // A jump from 1 to 3 says "Google ranked something between these and we
+    // dropped it", which renumbering would erase.
+    const parsed = parseFeed(
+      feed([
+        "AI shopping agents arrive",
+        "Local bakery opens",
+        "Retail checkout gets an AI agent",
+      ]),
+    );
+
+    expect(filterRelevant(parsed).map((entry) => entry.relevanceRank)).toEqual([
+      1, 3,
+    ]);
+  });
+
+  test("a merged cluster keeps the best rank of its copies", () => {
+    // Ranked 1st for one query and 40th for another, it is a 1st-place story;
+    // burying it at the loser's rank would be the merge losing information.
+    const merged = dedupe([
+      article({
+        headline: "Mastercard predicts one in 10 will use AI agents to shop",
+        articleId: "A",
+        publisher: "Reuters",
+        publishedAt: "2026-09-08T04:00:00.000Z",
+        relevanceRank: 40,
+      }),
+      article({
+        headline:
+          "Mastercard predicts one in 10 people will use AI agents to shop",
+        articleId: "B",
+        publisher: "Yahoo Finance",
+        publishedAt: "2026-09-08T09:00:00.000Z",
+        relevanceRank: 1,
+      }),
+    ]);
+
+    expect(merged).toHaveLength(1);
+    expect(merged[0]?.relevanceRank).toBe(1);
+  });
+});
+
+describe("default ordering", () => {
+  const items = [
+    article({
+      headline: "Aggregator republishes the story",
+      articleId: "LATE",
+      publishedAt: "2026-09-09T09:00:00.000Z",
+      relevanceRank: 96,
+    }),
+    article({
+      headline: "Reuters breaks the story",
+      articleId: "TOP",
+      publishedAt: "2026-09-02T16:00:00.000Z",
+      relevanceRank: 1,
+    }),
+  ];
+
+  const headlines = ({
+    sort,
+    limit,
+  }: {
+    sort?: "relevance" | "date";
+    limit?: number;
+  }) =>
+    sortArticles(items, sort)
+      .slice(0, limit)
+      .map((entry) => entry.headline);
+
+  test("an omitted sort keeps Google's order, not the newest first", () => {
+    // The default decides which articles `limit` keeps. On a live feed the
+    // newest items in a window were ranks 96, 94, 82, 97 — aggregators that
+    // republish constantly — while ranks 1-8 were the originals.
+    expect(headlines({})).toEqual([
+      "Reuters breaks the story",
+      "Aggregator republishes the story",
+    ]);
+  });
+
+  test("sort=date is still available and still sorts by date", () => {
+    expect(headlines({ sort: "date" })).toEqual([
+      "Aggregator republishes the story",
+      "Reuters breaks the story",
+    ]);
+  });
+
+  test("limit selects on the chosen order, not merely displays it", () => {
+    expect(headlines({ limit: 1 })).toEqual(["Reuters breaks the story"]);
+    expect(headlines({ limit: 1, sort: "date" })).toEqual([
+      "Aggregator republishes the story",
+    ]);
   });
 });

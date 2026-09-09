@@ -937,6 +937,18 @@ export const openApiDocument = {
             schema: { type: "boolean", default: true },
           },
           {
+            name: "sort",
+            in: "query",
+            required: false,
+            description:
+              "`relevance` (default) returns the order Google returned, which is what the feed is actually ordered by. `date` returns newest first. This chooses which articles `limit` keeps, not merely how they read, which is why relevance is the default: inside a bounded `when:` window the feed's order carries essentially no date information (Spearman about -0.15 against publication time), so sorting by date there ranks on noise — and selects against quality, since the newest items in a window are the aggregators that republish constantly. Across several `q` values, ranks are per-feed and ties break by recency, which interleaves the queries — every query's best item, then every query's second. Not to be confused with the `relevance` parameter, which is the headline filter.",
+            schema: {
+              type: "string",
+              enum: ["relevance", "date"],
+              default: "relevance",
+            },
+          },
+          {
             name: "relevance",
             in: "query",
             required: false,
@@ -990,7 +1002,7 @@ export const openApiDocument = {
         responses: {
           "200": {
             description:
-              "Parsed articles, newest first. Articles with no `publishedAt` sort last.",
+              "Parsed articles in the order named by `sort` — Google's own relevance order by default. Under `sort=date`, articles carrying no `publishedAt` come last. Every article reports both `relevanceRank` and `publishedAt` whichever order is used, so a client can reorder without a second request.",
             headers: RATE_LIMIT_RESPONSE_HEADERS,
             content: {
               "application/json": {
@@ -1907,7 +1919,13 @@ export const openApiDocument = {
       NewsArticle: {
         type: "object",
         title: "NewsArticle",
-        required: ["headline", "googleUrl", "articleId", "alsoIn"],
+        required: [
+          "headline",
+          "googleUrl",
+          "articleId",
+          "alsoIn",
+          "relevanceRank",
+        ],
         properties: {
           headline: {
             type: "string",
@@ -1952,6 +1970,11 @@ export const openApiDocument = {
               },
             },
           },
+          relevanceRank: {
+            type: "integer",
+            description:
+              "1-based position in the feed Google returned this item in — the only relevance signal the feed carries. Gaps are meaningful: a jump from 3 to 7 means the items between were dropped by the headline filter or the syndication merge, not that Google ranked them differently. A merged cluster keeps the best rank of its copies.",
+          },
           query: {
             type: "string",
             description: "The `q` value this record came from.",
@@ -1981,6 +2004,11 @@ export const openApiDocument = {
               country: { type: "string" },
               edition: { type: "string" },
             },
+          },
+          sort: {
+            type: "string",
+            enum: ["relevance", "date"],
+            description: "The order `limit` selected on.",
           },
           relevance: { type: "string", enum: ["ai-commerce", "off"] },
           deduplicated: { type: "boolean" },

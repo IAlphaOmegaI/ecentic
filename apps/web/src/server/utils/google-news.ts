@@ -78,6 +78,15 @@ export type Article = {
   articleId: string;
   /** Publishers that carried the same story, from the syndication merge. */
   alsoIn: Source[];
+  /**
+   * 1-based position in the feed Google returned it in — the only relevance
+   * signal the feed carries, and unrecoverable once the list is reordered.
+   *
+   * Gaps are meaningful: a jump from 3 to 7 means the items between were
+   * dropped by the headline filter or the syndication merge, not that Google
+   * ranked them differently.
+   */
+  relevanceRank: number;
   /** The feed query this record came from, when several were merged. */
   query?: string;
 };
@@ -448,7 +457,7 @@ export const parseFeed = (xml: string, query?: string): Article[] => {
     "channel"
   ] as Record<string, unknown> | undefined;
 
-  return toArray(channel?.["item"]).flatMap((raw): Article[] => {
+  return toArray(channel?.["item"]).flatMap((raw, index): Article[] => {
     if (typeof raw !== "object" || raw === null) return [];
 
     const item = raw as Record<string, unknown>;
@@ -474,6 +483,9 @@ export const parseFeed = (xml: string, query?: string): Article[] => {
         googleUrl,
         articleId,
         alsoIn: [],
+        // Taken from the raw feed position, before any filtering, so the number
+        // means what Google meant by it.
+        relevanceRank: index + 1,
         ...(query === undefined ? {} : { query }),
       },
     ];
@@ -1364,6 +1376,9 @@ export const dedupe = (
       ...match.article,
       url: match.article.url ?? item.url,
       alsoIn: [...carried.values()],
+      // A story Google ranked 3rd for one query and 40th for another is a
+      // 3rd-place story; the merge must not bury it at the loser's rank.
+      relevanceRank: Math.min(match.article.relevanceRank, item.relevanceRank),
     };
   }
 
@@ -1465,6 +1480,18 @@ export type CollectOptions = FeedOptions & {
   commerceTerms?: readonly string[] | null;
   /** Hard cap applied after filtering, before resolution. */
   limit?: number;
+  /**
+   * `relevance` (default) keeps Google's own order; `date` sorts newest first.
+   *
+   * This decides which articles `limit` keeps, not merely how they read, and
+   * that is why relevance is the default. Inside a bounded `when:` window the
+   * feed's order carries no date information at all (measured: Spearman ≈ -0.15
+   * against publication time), so sorting by date there ranks on noise — and
+   * worse, it selects against quality: on a live 7-day feed the eight newest
+   * items were Google's ranks 96, 94, 82 and 97, aggregators that republish
+   * constantly, while ranks 1-8 were the Reuters and PYMNTS originals.
+   */
+  sort?: Sort;
 };
 
 /**
@@ -1477,6 +1504,32 @@ export type CollectOptions = FeedOptions & {
  */
 const byRecency = (left: Article, right: Article) =>
   -chronologically(left, right);
+
+/**
+ * Google's own ordering, restored.
+ *
+ * Ranks are per-feed, so merging several queries means several items share
+ * rank 1. Sorting on rank and breaking ties by recency therefore interleaves
+ * the queries — every query's best item, then every query's second — which is
+ * the fair merge and costs nothing to get.
+ */
+const byRelevance = (left: Article, right: Article) =>
+  left.relevanceRank === right.relevanceRank
+    ? byRecency(left, right)
+    : left.relevanceRank - right.relevanceRank;
+
+export const SORTS = ["relevance", "date"] as const;
+export type Sort = (typeof SORTS)[number];
+
+export const isSort = (value: string): value is Sort =>
+  (SORTS as readonly string[]).includes(value);
+
+/**
+ * Orders a result set. `relevance` is the default because the sort decides
+ * which articles `limit` keeps, not merely how they read.
+ */
+export const sortArticles = (items: Article[], sort?: Sort): Article[] =>
+  [...items].sort(sort === "date" ? byRecency : byRelevance);
 
 /**
  * The single categorical answer to "did resolution work", so a consumer does
@@ -1609,7 +1662,7 @@ const pipeline = async (
       ? relevant
       : dedupe(relevant, options.threshold ?? DEFAULT_SIMILARITY_THRESHOLD);
 
-  const sorted = [...merged].sort(byRecency);
+  const sorted = sortArticles(merged, options.sort);
   const total = sorted.length;
   const articles =
     options.limit === undefined ? sorted : sorted.slice(0, options.limit);

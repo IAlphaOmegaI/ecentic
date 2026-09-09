@@ -86,6 +86,7 @@ const KNOWN_PARAMETERS = new Set([
   "resolve",
   "dedupe",
   "relevance",
+  "sort",
   "aiTerms",
   "commerceTerms",
   "hl",
@@ -219,6 +220,15 @@ export const GET = async (request: Request) => {
       { limiter, policy },
     );
 
+  const sort = parameters.get("sort") ?? "relevance";
+  if (!News.isSort(sort))
+    return refused(
+      request,
+      "validation-failed",
+      `Unknown sort "${sort}". Use one of ${News.SORTS.join(", ")}.`,
+      { limiter, policy },
+    );
+
   const relevance = parameters.get("relevance") ?? "off";
   if (relevance !== "ai-commerce" && relevance !== "off")
     return refused(
@@ -272,6 +282,7 @@ export const GET = async (request: Request) => {
     resolve,
     dedupe: merge,
     limit: resolve ? Math.min(limit, MAX_RESOLVED) : limit,
+    sort,
     // `off` last, so it cannot be quietly re-enabled by a term list sent
     // alongside it — which reported `"relevance": "off"` while still filtering.
     ...(aiTerms ? { aiTerms } : {}),
@@ -303,6 +314,8 @@ export const GET = async (request: Request) => {
         edition: edition ?? News.DEFAULT_EDITION,
       },
       relevance,
+      // Which order `limit` selected on, not just how the list reads.
+      sort,
       deduplicated: merge,
       // States plainly whether `url` was even attempted, so a client reading a
       // null `url` knows whether it means "not asked for" or "resolution
