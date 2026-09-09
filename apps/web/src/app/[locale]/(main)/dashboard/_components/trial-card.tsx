@@ -5,15 +5,36 @@ import { Button } from "@zenncore/web/components/button";
 import { AnimatePresence, motion } from "motion/react";
 import { useMessages, useTranslations } from "next-intl";
 import { useState } from "react";
+import { Link } from "@/i18n/navigation";
 import { Spring } from "@/lib/animations";
 
-const TRIAL_DAYS_LEFT = 7;
+/**
+ * Every number here arrives as a prop from the stored subscription row — see
+ * `TrialStatus` in `sidebar.tsx`. The component used to hardcode seven days
+ * left, divide by a trial length of fourteen that nothing sold, and quote $99,
+ * which is not a price on any plan; it was harmless only because nothing
+ * rendered it. `progress` is null when the row carries no period start, in
+ * which case the bar is dropped rather than drawn against an invented total.
+ */
+export type TrialCardProps = {
+  plan: string;
+  price: string | null;
+  daysLeft: number;
+  endsOn: string;
+  progress: { used: number; total: number; percent: number } | null;
+};
 
-export const TrialCard = () => {
+export const TrialCard = ({
+  plan,
+  price,
+  daysLeft,
+  endsOn,
+  progress,
+}: TrialCardProps) => {
   const [upgrade, setUpgrade] = useState(false);
   const translate = useTranslations("dashboard.trial");
   const messages = useMessages();
-  const proFeatures = messages.dashboard.trial.features;
+  const features = messages.dashboard.trial.features;
 
   return (
     <>
@@ -31,17 +52,24 @@ export const TrialCard = () => {
               </span>
             </div>
             <span className="font-mono text-foreground-dimmed text-xs tabular-nums">
-              {translate("daysLeft", { days: String(TRIAL_DAYS_LEFT) })}
+              {translate("daysLeft", { days: String(daysLeft) })}
             </span>
           </div>
-          <div className="mb-2 h-1 w-full bg-accent-foreground">
-            <div
-              className="h-full bg-warning/60 transition-all"
-              style={{
-                width: `${Math.round((TRIAL_DAYS_LEFT / 14) * 100)}%`,
-              }}
-            />
+
+          {progress && (
+            <div className="mb-2 h-1 w-full bg-accent-foreground">
+              <div
+                className="h-full bg-warning/60 transition-all"
+                style={{ width: `${progress.percent}%` }}
+              />
+            </div>
+          )}
+
+          {/* A date is what stops the support email; a day count alone does not. */}
+          <div className="mb-2 font-light text-foreground-dimmed text-xs">
+            {translate("endsOn", { date: endsOn })}
           </div>
+
           <div className="flex items-center justify-between">
             <span className="font-light text-foreground-dimmed text-xs">
               {translate("upgradeHint")}
@@ -84,13 +112,11 @@ export const TrialCard = () => {
                       }}
                     />
                     <span className="font-medium text-warning text-xs uppercase tracking-[0.2em]">
-                      {translate("modal.endingIn", {
-                        days: String(TRIAL_DAYS_LEFT),
-                      })}
+                      {translate("modal.endingIn", { date: endsOn })}
                     </span>
                   </div>
                   <h2 className="font-medium text-foreground text-xl leading-tight">
-                    {translate("modal.title")}
+                    {translate("modal.title", { plan })}
                   </h2>
                   <p className="mt-1 font-light text-foreground-dimmed text-sm">
                     {translate("modal.description")}
@@ -105,35 +131,36 @@ export const TrialCard = () => {
                 </button>
               </div>
 
-              <div className="border-accent-foreground border-b px-6 py-4">
-                <div className="mb-1.5 flex items-center justify-between">
-                  <span className="font-light text-foreground-dimmed text-xs">
-                    {translate("modal.progress")}
-                  </span>
-                  <span className="font-mono text-foreground-dimmed text-xs">
-                    {translate("modal.daysUsed", {
-                      used: String(14 - TRIAL_DAYS_LEFT),
-                    })}
-                  </span>
+              {progress && (
+                <div className="border-accent-foreground border-b px-6 py-4">
+                  <div className="mb-1.5 flex items-center justify-between">
+                    <span className="font-light text-foreground-dimmed text-xs">
+                      {translate("modal.progress")}
+                    </span>
+                    <span className="font-mono text-foreground-dimmed text-xs">
+                      {translate("modal.daysUsed", {
+                        used: String(progress.used),
+                        total: String(progress.total),
+                      })}
+                    </span>
+                  </div>
+                  <div className="h-1.5 w-full bg-accent-foreground">
+                    <motion.div
+                      className="h-full bg-warning"
+                      initial={{ width: 0 }}
+                      animate={{ width: `${progress.percent}%` }}
+                      transition={{ ...Spring.Gentle, delay: 0.2 }}
+                    />
+                  </div>
                 </div>
-                <div className="h-1.5 w-full bg-accent-foreground">
-                  <motion.div
-                    className="h-full bg-warning"
-                    initial={{ width: 0 }}
-                    animate={{
-                      width: `${Math.round(((14 - TRIAL_DAYS_LEFT) / 14) * 100)}%`,
-                    }}
-                    transition={{ ...Spring.Gentle, delay: 0.2 }}
-                  />
-                </div>
-              </div>
+              )}
 
               <div className="border-accent-foreground border-b px-6 py-5">
                 <p className="mb-3 font-medium text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
-                  {translate("modal.featuresHeading")}
+                  {translate("modal.featuresHeading", { plan })}
                 </p>
                 <div className="grid grid-cols-1 gap-2">
-                  {proFeatures.map((feature, index) => (
+                  {features.map((feature, index) => (
                     <motion.div
                       key={feature}
                       className="flex items-center gap-2.5"
@@ -156,20 +183,25 @@ export const TrialCard = () => {
               </div>
 
               <div className="px-6 py-5">
-                <div className="mb-4 flex items-end gap-1.5">
-                  <span className="font-semibold text-4xl text-foreground leading-none">
-                    $99
-                  </span>
-                  <span className="mb-1 font-light text-foreground-dimmed text-sm">
-                    {translate("modal.pricePerMonth")}
-                  </span>
-                </div>
+                {/* Read from the pricing catalog, never restated here — a price
+                    typed into a component is one edit away from disagreeing with
+                    what Stripe charges. */}
+                {price && (
+                  <div className="mb-4 flex items-end gap-1.5">
+                    <span className="font-semibold text-4xl text-foreground leading-none">
+                      {price}
+                    </span>
+                    <span className="mb-1 font-light text-foreground-dimmed text-sm">
+                      {translate("modal.pricePerMonth")}
+                    </span>
+                  </div>
+                )}
 
                 <Button
                   color="primary"
-                  type="button"
-                  className="mb-2 w-full py-3 font-medium text-sm transition-colors"
+                  render={<Link href="/dashboard/settings" />}
                   onClick={() => setUpgrade(false)}
+                  className="mb-2 w-full py-3 font-medium text-sm transition-colors"
                 >
                   {translate("modal.action.primary")}
                 </Button>
@@ -179,7 +211,7 @@ export const TrialCard = () => {
                   className="w-full py-2 font-light text-foreground-dimmed text-xs transition-colors hover:text-foreground"
                 >
                   {translate("modal.action.secondary", {
-                    days: String(TRIAL_DAYS_LEFT),
+                    days: String(daysLeft),
                   })}
                 </button>
               </div>

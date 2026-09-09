@@ -542,27 +542,28 @@
     "trial": {
       "badge": "Free Trial",
       "daysLeft": "{days}d left",
-      "upgradeHint": "Upgrade before it ends",
+      "upgradeHint": "Add a card before it ends",
       "modal": {
-        "endingIn": "Trial ending in {days} days",
-        "title": "Upgrade to Pro",
+        "endingIn": "Trial ends {date}",
+        "title": "Keep {plan}",
         "description": "Keep full access to simulations, insights, and competitor intelligence.",
         "progress": "Trial progress",
-        "daysUsed": "{used}/14 days used",
-        "featuresHeading": "Everything in Pro",
+        "daysUsed": "{used}/{total} days used",
+        "featuresHeading": "Everything in {plan}",
         "pricePerMonth": "/month",
         "action": {
-          "primary": "Upgrade Now",
+          "primary": "Go to billing",
           "secondary": "Maybe later ({days} days remaining)"
         }
       },
       "features": [
         "Unlimited AI simulations",
-        "All 3 model perspectives",
+        "All 4 model perspectives",
         "Competitor auto-detection",
         "UCP structured data export",
         "Priority support"
-      ]
+      ],
+      "endsOn": "Free until {date}"
     },
     "simulation": {
       "action": {

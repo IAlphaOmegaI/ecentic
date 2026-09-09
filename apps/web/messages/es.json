@@ -2664,27 +2664,28 @@
     "trial": {
       "badge": "Prueba gratuita",
       "daysLeft": "{days} d restantes",
-      "upgradeHint": "Mejora antes de que termine",
+      "upgradeHint": "Añade una tarjeta antes de que termine",
       "modal": {
-        "endingIn": "La prueba termina en {days} días",
-        "title": "Mejorar a Pro",
+        "endingIn": "La prueba termina el {date}",
+        "title": "Mantén {plan}",
         "description": "Mantén acceso completo a simulaciones, hallazgos e inteligencia competitiva.",
         "progress": "Progreso de la prueba",
-        "daysUsed": "{used}/14 días usados",
-        "featuresHeading": "Todo en Pro",
+        "daysUsed": "{used}/{total} días usados",
+        "featuresHeading": "Todo en {plan}",
         "pricePerMonth": "/mes",
         "action": {
-          "primary": "Mejorar ahora",
+          "primary": "Ir a facturación",
           "secondary": "Quizá más tarde ({days} días restantes)"
         }
       },
       "features": [
         "Simulaciones con IA ilimitadas",
-        "Las 3 perspectivas de modelo",
+        "Las 4 perspectivas de modelo",
         "Detección automática de competidores",
         "Exportación de datos estructurados UCP",
         "Soporte prioritario"
-      ]
+      ],
+      "endsOn": "Gratis hasta el {date}"
     },
     "simulation": {
       "action": {
