@@ -1,7 +1,7 @@
 import { resultify } from "@zenncore/utils";
 import { type NextRequest, NextResponse as Response } from "next/server";
 import type Stripe from "stripe";
-import { handleStripeEvent } from "@/server/app/subscription";
+import { handleStripeEvent } from "@/server/app/billing/stripe-sync";
 import { Environment } from "@/server/utils/environment";
 import { stripe } from "@/server/utils/stripe";
 
