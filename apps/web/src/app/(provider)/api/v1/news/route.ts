@@ -35,22 +35,6 @@ const DEFAULT_LIMIT = 25;
  */
 const MAX_RESOLVED = 25;
 
-/**
- * Resolution outcomes whose response must not outlive the request.
- *
- * A transient upstream failure lasted minutes; the linkless response it
- * produced was still being served an hour later out of a caller's cache. The
- * transient is not preventable from here — instructing every cache not to keep
- * the wreckage is.
- */
-const DEGRADED = new Set<News.ResolveStatus>([
-  "failed",
-  "rate-limited",
-  "diverted",
-  "unrecognised",
-  "unavailable",
-]);
-
 /** Absent means "take the default"; anything else must be exactly true/false. */
 const boolean = (raw: string | null, fallback: boolean) => {
   if (raw === null) return fallback;
@@ -343,18 +327,14 @@ export const GET = async (request: Request) => {
     {
       limiter,
       policy,
-      // Headlines move in minutes, not seconds, and the window is per-caller
-      // for the same reason every other public response is: these carry the
-      // caller's own rate-limit counters.
-      //
-      // A degraded body is never cached, at any layer. Origin caching was not
-      // what served an hour-old linkless response — that was a client's own
-      // cache — but `no-store` is the instruction that stops it there too, and
-      // a stale failure outlives the transient that caused it by an order of
-      // magnitude.
-      cacheControl: DEGRADED.has(resolveStatus)
-        ? "no-store"
-        : "private, max-age=300",
+      // Never stored, healthy or not. Freshness is the product here, and
+      // `max-age=300` bought nothing: the origin keeps no copy and the edge
+      // reports MISS, so the only cache it licensed was the caller's own — and
+      // agent fetch clients were observed serving these bodies a day stale,
+      // far past the five minutes they were given. A stale failure was the
+      // first symptom; a stale success is worse, because it reads as a quiet
+      // news day. `retrievedAt` remains the check that the body is live.
+      cacheControl: "no-store",
     },
   );
 };

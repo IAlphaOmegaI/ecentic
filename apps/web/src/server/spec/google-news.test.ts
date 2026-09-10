@@ -700,32 +700,6 @@ describe("resolve status", () => {
 
     expect(resolveStatusFor(true, health(5, 0, { "503": 5 }))).toBe("failed");
   });
-
-  test("a degraded outcome is one the route must not let anyone cache", () => {
-    // Pairs with the route's `no-store` branch: the failure that shipped a
-    // linkless brief was served from a cache for an hour after it had passed.
-    const degraded = [
-      "failed",
-      "rate-limited",
-      "diverted",
-      "unrecognised",
-      "unavailable",
-    ];
-    const cacheable = ["skipped", "ok", "partial"];
-
-    expect([...degraded, ...cacheable].sort()).toEqual(
-      [
-        "diverted",
-        "failed",
-        "ok",
-        "partial",
-        "rate-limited",
-        "skipped",
-        "unavailable",
-        "unrecognised",
-      ].sort(),
-    );
-  });
 });
 
 describe("consent diversion", () => {
