@@ -8,6 +8,7 @@ import { Environment } from "../../utils/environment";
 import { RequestError } from "../../utils/error";
 import { stripe } from "../../utils/stripe";
 import * as Subscription from "../subscription";
+import * as StripeSync from "./stripe-sync";
 
 /**
  * Activates pay-as-you-go for the current user — free to start, no card, full
@@ -75,7 +76,7 @@ export const createPaymentSetupSession = withAuthentication(async (context) => {
       error: new RequestError("Pay-as-you-go is not active for this account"),
     };
 
-  const customer = await Subscription.ensureCustomer(Environment.SERVER, {
+  const customer = await StripeSync.ensureCustomer(Environment.SERVER, {
     user,
   });
   if (!customer.success) return customer;
