@@ -132,7 +132,13 @@ export const ShopifyForm = () => {
         type: "success",
       });
 
-      router.push("/onboarding/products?connected=shopify");
+      // A re-import of a store this user already onboarded skips the product
+      // picker, which would otherwise let them select past their plan's limit.
+      router.push(
+        result.data.reconnected
+          ? `/dashboard/${result.data.store.id}`
+          : "/onboarding/products?connected=shopify",
+      );
     },
   );
 

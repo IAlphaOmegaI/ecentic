@@ -254,7 +254,7 @@ type StorePlatform = (typeof schema.store.$inferSelect)["platform"];
 
 const CONNECTED_PLATFORMS: Record<string, StorePlatform[]> = {
   shopify: ["shopify", "shopify-public"],
-  woocommerce: ["woocommerce"],
+  woocommerce: ["woocommerce", "woocommerce-public"],
 };
 
 /**

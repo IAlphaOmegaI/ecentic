@@ -13,7 +13,6 @@
  */
 import { resultify } from "@zenncore/utils";
 import * as HTTP from "../../utils/http";
-import { isSafePublicHttpUrl } from "../../utils/ssrf";
 import {
   catalogContextFor,
   evaluateListing,
@@ -159,39 +158,27 @@ export const hostOf = (origin: string): string => {
 type Fetched = {
   status: number;
   body: string;
+  /** The URL that answered — the last hop after redirects. */
   url: string;
-  location: string | null;
 };
 
 /**
- * One guarded GET, no redirect following. The URL is rep-supplied, so it goes
- * through the SSRF check before any request leaves the process — none of the
- * repo's other cold-path scanners do this, and this one takes free-text input
- * from a browser.
+ * One guarded GET. The URL is rep-supplied free text from a browser, so it goes
+ * through `HTTP.request`'s SSRF guard — every redirect hop is re-checked, since
+ * stores redirect constantly (apex to www, http to https, handle to canonical).
+ *
+ * 403/503 from a bot wall is a different conversation from "no data" — the rep
+ * must not report an empty scan as though the store were bare.
  */
-const fetchOnce = async (
+const fetchText = async (
   url: string,
 ): Promise<
   { success: true; data: Fetched } | { success: false; error: ScanFailure }
 > => {
-  const safe = await isSafePublicHttpUrl(url);
-  if (!safe)
-    return {
-      success: false,
-      error: {
-        kind: "invalid-url",
-        detail: "Not a reachable public https URL",
-      },
-    };
-
   const response = await HTTP.request(
     url,
     {
       method: "GET",
-      // Redirects are followed by hand in `fetchText` so the SSRF guard runs
-      // on every hop. `follow` would let a public URL bounce to a private one
-      // *after* the check and fetch it anyway.
-      redirect: "manual",
       headers: {
         // Identify honestly. A prospect who greps their logs after the call
         // should find us under our own name.
@@ -201,26 +188,35 @@ const fetchOnce = async (
       },
       cache: "no-store",
     },
-    { timeout: FETCH_TIMEOUT_MS },
+    { timeout: FETCH_TIMEOUT_MS, guard: true },
   );
 
   if (!response.success)
-    return response.error.name === "timeout-error"
-      ? { success: false, error: { kind: "timeout" } }
-      : {
+    switch (response.error.name) {
+      case "validation-error":
+        return {
+          success: false,
+          error: {
+            kind: "invalid-url",
+            detail: "Not a reachable public https URL",
+          },
+        };
+      case "timeout-error":
+        return { success: false, error: { kind: "timeout" } };
+      default:
+        return {
           success: false,
           error: { kind: "unreachable", detail: response.error.message },
         };
+    }
 
-  // 403/503 from a bot wall is a different conversation from "no data" — the
-  // rep must not report an empty scan as though the store were bare.
   if (response.data.status === 403 || response.data.status === 503)
     return {
       success: false,
       error: { kind: "blocked", status: response.data.status },
     };
 
-  const body = await resultify(() => response.data.text());
+  const body = await HTTP.read(response.data);
   if (!body.success)
     return {
       success: false,
@@ -232,51 +228,9 @@ const fetchOnce = async (
     data: {
       status: response.data.status,
       body: body.data,
-      url,
-      location: response.data.headers.get("location"),
+      url: response.data.url || url,
     },
   };
-};
-
-const MAX_REDIRECTS = 5;
-const REDIRECT_STATUSES = new Set([301, 302, 303, 307, 308]);
-
-/**
- * A GET that follows redirects itself, re-running the SSRF guard on each hop.
- * Stores redirect constantly — apex to www, http to https, handle to canonical
- * — so refusing redirects outright is not an option.
- */
-const fetchText = async (
-  url: string,
-  hops = 0,
-): Promise<
-  { success: true; data: Fetched } | { success: false; error: ScanFailure }
-> => {
-  const response = await fetchOnce(url);
-  if (!response.success) return response;
-  if (!REDIRECT_STATUSES.has(response.data.status)) return response;
-
-  if (hops >= MAX_REDIRECTS)
-    return {
-      success: false,
-      error: { kind: "unreachable", detail: "Too many redirects" },
-    };
-
-  const location = response.data.location;
-  if (!location)
-    return {
-      success: false,
-      error: { kind: "unreachable", detail: "Redirect with no destination" },
-    };
-
-  const next = resultify(() => new URL(location, url).toString());
-  if (!next.success)
-    return {
-      success: false,
-      error: { kind: "unreachable", detail: "Unreadable redirect target" },
-    };
-
-  return fetchText(next.data, hops + 1);
 };
 
 // ---------------------------------------------------------------------------

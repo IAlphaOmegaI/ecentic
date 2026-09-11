@@ -71,10 +71,17 @@ type RawVariant = {
 type RawProductPayload = {
   vendor?: unknown;
   brand?: unknown;
+  /** WooCommerce Brands (core since 9.6). */
+  brands?: unknown;
+  sku?: unknown;
   product_type?: unknown;
   handle?: unknown;
   categories?: unknown;
   variants?: unknown;
+  /** WooCommerce keyed REST API (`wc/v3`). */
+  stock_status?: unknown;
+  /** WooCommerce public Store API (`wc/store/v1`). */
+  is_in_stock?: unknown;
 };
 
 export const extractCatalogFacts = (
@@ -113,6 +120,10 @@ export const extractCatalogFacts = (
   const gtin = barcode && GTIN_PATTERN.test(barcode) ? barcode : null;
 
   const availability = (() => {
+    // WooCommerce states stock on the product itself — `stock_status` in the
+    // keyed REST API, `is_in_stock` in the public Store API.
+    if (parsed.stock_status === "outofstock" || parsed.is_in_stock === false)
+      return "out_of_stock" as const;
     if (!firstVariant) return "in_stock" as const;
     const quantity = firstVariant.inventory_quantity;
     const policy = asString(firstVariant.inventory_policy);
@@ -124,11 +135,17 @@ export const extractCatalogFacts = (
   const wooCategories = Array.isArray(parsed.categories)
     ? (parsed.categories as { name?: unknown }[])
     : [];
+  const wooBrands = Array.isArray(parsed.brands)
+    ? (parsed.brands as { name?: unknown }[])
+    : [];
 
   return {
-    brand: asString(parsed.vendor) ?? asString(parsed.brand),
+    brand:
+      asString(parsed.vendor) ??
+      asString(parsed.brand) ??
+      asString(wooBrands[0]?.name),
     gtin,
-    mpn: asString(firstVariant?.sku),
+    mpn: asString(firstVariant?.sku) ?? asString(parsed.sku),
     productType:
       asString(parsed.product_type) ?? asString(wooCategories[0]?.name),
     handle: asString(parsed.handle),

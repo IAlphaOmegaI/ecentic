@@ -72,7 +72,8 @@ export const GoogleMerchantControls = ({
       <div className="mt-3 flex items-center gap-3 border-accent-foreground border-t pt-3">
         <span className="text-foreground-dimmed text-xs">Google Shopping</span>
         <Chip tone="neutral">
-          {store.platform === "woocommerce"
+          {store.platform === "woocommerce" ||
+          store.platform === "woocommerce-public"
             ? "Coming soon for WooCommerce"
             : "Coming soon"}
         </Chip>

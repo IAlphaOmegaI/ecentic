@@ -57,6 +57,19 @@ AI agents don't see ads, don't scroll, don't read marketing copy. They read stru
 
 ## User Flows
 
+### Landing entry
+
+The landing hero is a store-URL field (autofocused on desktop). Submitting it
+(`Entry.begin`, `server/app/entry.ts`) detects the platform anonymously — one
+guarded homepage read shared by the Shopify probe (`/meta.json` +
+`/products.json`) and the WooCommerce probe (public Store API, REST root from
+the homepage's `rel="https://api.w.org/"` link) — rate-limited per IP and
+SSRF-guarded (`HTTP.request(..., { guard: true })`). A typo or unreachable host
+is reported inline; anything reachable is carried in the httpOnly
+`ecentic_entry` cookie (`src/lib/redirect.ts`) to sign-up, which shows the
+detected store. Login stays the conversion step: nothing is imported before an
+account exists.
+
 ### Authentication
 
 1. Sign up with email/password (full name split into name + surname)
@@ -65,7 +78,7 @@ AI agents don't see ads, don't scroll, don't read marketing copy. They read stru
 
 ### Onboarding (4 steps)
 
-1. **Connect Store** — Choose a platform (Shopify, WooCommerce, Custom Feed). Each has a dedicated sub-page with field explanations. BigCommerce and Amazon are planned but disabled.
+1. **Connect Store** — With a hero entry, the store's public catalog is imported automatically (Shopify → `shopify-public`, WooCommerce → `woocommerce-public`; read-only, no credentials) and the visitor lands on product selection; a password-protected or API-locked store, a store claimed by another account, or an unsupported platform is explained with the verified connect (Shopify app, WooCommerce plugin/keys) and the platform grid as ways forward. Without an entry: choose a platform (Shopify, WooCommerce, Custom Feed). Each has a dedicated sub-page with field explanations. BigCommerce and Amazon are planned but disabled. A later verified connect of the same store upgrades the public row in place.
 2. **Select Products** — Pick which imported products to include in simulations.
 3. **Add Competitors** — Add competitor products (URL, title, price, brand) to benchmark against.
 4. **Run Scan** — Trigger AI simulations across selected products and competitors. See live progress and results.

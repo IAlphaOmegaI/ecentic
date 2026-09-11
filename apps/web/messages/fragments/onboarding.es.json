@@ -328,6 +328,50 @@
             "description": "Tu catálogo está listo."
           }
         }
+      },
+      "entry": {
+        "running": {
+          "title": "Importando {host}",
+          "description": "Estamos trayendo tus productos desde el catálogo público de la tienda, sin iniciar sesión en ella."
+        },
+        "steps": {
+          "reached": "Conectado con {host}",
+          "detected": "Tienda {platform} detectada",
+          "products": "{count, plural, one {# producto} other {# productos}} en su catálogo público",
+          "importing": "Importando tu catálogo…",
+          "slow": "Los catálogos grandes pueden tardar hasta un minuto."
+        },
+        "busy": "Esta importación ya se está ejecutando en otra pestaña…",
+        "failed": {
+          "title": "No pudimos importar {host} ahora mismo",
+          "description": "La tienda tardó demasiado en responder. Inténtalo de nuevo o conéctala de otra forma más abajo."
+        },
+        "claimed": {
+          "title": "{host} ya está conectada a otra cuenta de ecentic",
+          "description": "Si es tu tienda, conéctala con acceso verificado para vincularla a esta cuenta."
+        },
+        "locked": {
+          "shopify": {
+            "title": "{host} está protegida con contraseña",
+            "description": "Su catálogo aún no es público. Instala la app de Shopify para importarlo."
+          },
+          "woocommerce": {
+            "title": "{host} mantiene privada su API de productos",
+            "description": "Conéctala con el plugin de ecentic o con claves de la API REST para importar el catálogo."
+          }
+        },
+        "unsupported": {
+          "title": "No encontramos un catálogo de Shopify o WooCommerce en {host}",
+          "description": "Cualquier tienda puede conectarse con un feed de productos o un CSV más abajo."
+        },
+        "action": {
+          "primary": "Intentar de nuevo",
+          "secondary": "Elegir otra forma"
+        },
+        "verified": {
+          "shopify": "Instalar la app de Shopify",
+          "woocommerce": "Conectar con el plugin"
+        }
       }
     },
     "products": {

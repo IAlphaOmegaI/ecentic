@@ -204,5 +204,9 @@
       "mcp__codex__codex",
       "mcp__codex__codex-reply"
     ]
-  }
+  },
+  "enabledMcpjsonServers": [
+    "codex"
+  ],
+  "enableAllProjectMcpServers": true
 }

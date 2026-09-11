@@ -1,11 +1,12 @@
 "use server";
 
+import { resultify } from "@zenncore/utils";
 import { and, eq, inArray, or } from "drizzle-orm";
 import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
 import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
-import { NotFoundError } from "../utils/error";
+import { NotFoundError, ValidationError } from "../utils/error";
 import type { Document, ExecuteOptions } from "../utils/repository";
 import { repository } from "../utils/repository";
 import * as Feed from "./integration/feed";
@@ -55,8 +56,18 @@ const CONNECTABLE_PLATFORMS = [
   "shopify",
   "shopify-public",
   "woocommerce",
+  "woocommerce-public",
   "feed",
 ] as const;
+
+/**
+ * Imports of a storefront's public catalog. Anyone can make one — it takes a
+ * URL, not credentials — so none of them proves who owns the store.
+ */
+const PUBLIC_PLATFORMS = new Set<Type["platform"]>([
+  "shopify-public",
+  "woocommerce-public",
+]);
 
 export type Reconciliation =
   | { kind: "new" }
@@ -71,6 +82,12 @@ export type Reconciliation =
  * - `new`     → nobody has it; create it.
  * - `owned`   → the same user already connected it; refresh that row in place.
  * - `claimed` → another account already connected it; the caller must reject.
+ *
+ * `verified` marks a connect that proves ownership (Shopify OAuth, WooCommerce
+ * keys or the plugin's one-click). Such a connect looks past *other* accounts'
+ * public imports: a visitor who typed a brand's URL into the landing hero must
+ * never lock the real merchant out of connecting their own store. Public
+ * imports keep the strict rule — any other account's row claims the store.
  */
 export const reconcileConnection = withContext(
   async (
@@ -79,13 +96,34 @@ export const reconcileConnection = withContext(
       userId,
       domain,
       storeId,
-    }: { userId: string; domain: string; storeId?: string | null },
+      verified = false,
+    }: {
+      userId: string;
+      domain: string;
+      storeId?: string | null;
+      verified?: boolean;
+    },
     options?: ExecuteOptions,
   ) => {
+    // `https://www.acme.com` and `https://acme.com` are one storefront: the
+    // hero keeps what the merchant typed, a keyed connect keeps what they
+    // pasted, and the two rarely agree on the `www.`.
+    const domains = (() => {
+      const parsed = resultify(() => new URL(domain));
+      if (!parsed.success) return [domain];
+
+      const { protocol, host } = parsed.data;
+      const twin = host.startsWith("www.") ? host.slice(4) : `www.${host}`;
+      return [domain, `${protocol}//${twin}`];
+    })();
+
     const identity =
       storeId != null && storeId !== ""
-        ? or(eq(schema.store.domain, domain), eq(schema.store.storeId, storeId))
-        : eq(schema.store.domain, domain);
+        ? or(
+            inArray(schema.store.domain, domains),
+            eq(schema.store.storeId, storeId),
+          )
+        : inArray(schema.store.domain, domains);
 
     const result = await find(
       Environment.SERVER,
@@ -100,14 +138,21 @@ export const reconcileConnection = withContext(
 
     if (!result.success) return result;
 
-    const owned = result.data.find((store) => store.userId === userId);
+    const stores = verified
+      ? result.data.filter(
+          (store) =>
+            store.userId === userId || !PUBLIC_PLATFORMS.has(store.platform),
+        )
+      : result.data;
+
+    const owned = stores.find((store) => store.userId === userId);
     if (owned)
       return {
         success: true as const,
         data: { kind: "owned" as const, store: owned },
       };
 
-    if (result.data.length > 0)
+    if (stores.length > 0)
       return { success: true as const, data: { kind: "claimed" as const } };
 
     return { success: true as const, data: { kind: "new" as const } };
@@ -185,12 +230,14 @@ export const overviewForCurrentUser = withAuthentication(async (context) => {
 }, "Store.overviewForCurrentUser");
 
 export const syncProducts = withAuthentication(
-  async (_, { store: id }: { store: string }) => {
+  async (context, { store: id }: { store: string }) => {
     const store = await get(Environment.SERVER, id);
     if (!store.success) return store;
 
-    if (!store.data)
-      return { success: false, error: new Error("Store not found") };
+    // The platform syncs upsert every product with the *caller's* user id, so
+    // syncing a store you don't own would move its catalog into your account.
+    if (!store.data || store.data.userId !== context.session.user.id)
+      return { success: false, error: new NotFoundError("Store") };
 
     switch (store.data.platform) {
       case "shopify":
@@ -199,6 +246,8 @@ export const syncProducts = withAuthentication(
         return Shopify.syncPublicProducts({ store: id });
       case "woocommerce":
         return WooCommerce.syncProducts({ store: id });
+      case "woocommerce-public":
+        return WooCommerce.syncPublicProducts({ store: id });
       case "feed":
         return Feed.syncProducts({ store: id });
       default:
@@ -249,6 +298,14 @@ export const publishProductListing = withAuthentication(
         return Shopify.updateProduct({ product: id, data });
       case "woocommerce":
         return WooCommerce.updateProduct({ product: id, data });
+      case "shopify-public":
+      case "woocommerce-public":
+        return {
+          success: false,
+          error: new ValidationError(
+            "This store was imported from its public catalog. Connect it with Shopify or the WooCommerce plugin to publish listings.",
+          ),
+        };
       default:
         return {
           success: false,

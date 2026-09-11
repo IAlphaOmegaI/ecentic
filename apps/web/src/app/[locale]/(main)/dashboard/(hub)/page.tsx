@@ -89,6 +89,7 @@ const Stores = async () => {
       case "shopify-public":
         return translate("platforms.shopify");
       case "woocommerce":
+      case "woocommerce-public":
         return translate("platforms.woocommerce");
       case "feed":
         return translate("platforms.feed");

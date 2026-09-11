@@ -6,7 +6,7 @@ import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { render } from "react-email";
 import { Resend } from "resend";
-import { sanitizeRedirect } from "@/lib/redirect";
+import { ENTRY_COOKIE, sanitizeRedirect } from "@/lib/redirect";
 import { ResetPasswordEmail } from "@/public/templates/reset-password";
 import { VerifyEmail } from "@/public/templates/verify";
 import { schema } from "../database";
@@ -172,6 +172,10 @@ export const signOut = withContext(async (context) => {
   // better-auth expires both the session token and its cookie cache here, so
   // there is no cache of ours left to clear.
   if (!result.success) return result;
+
+  // A store typed into the landing hero belongs to whoever typed it. On a
+  // shared device the next account to sign in must not import it.
+  (await cookies()).delete(ENTRY_COOKIE);
 
   // Redirect from the action itself. Sign-out is invoked from the settings page,
   // so without this Next re-renders that page's server components in the same

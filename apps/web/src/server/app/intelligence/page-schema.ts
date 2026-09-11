@@ -1,4 +1,3 @@
-import { resultify } from "@zenncore/utils";
 import { cacheLife, cacheTag } from "next/cache";
 import * as HTTP from "../../utils/http";
 
@@ -119,17 +118,19 @@ export const checkProductPageSchema = async (
   "use cache";
   cacheTag(pageSchemaTag(url));
 
+  // Product URLs come from whatever a catalog said — a public import, a feed —
+  // so the fetch is guarded: every redirect hop re-checked, the body capped.
   const response = await HTTP.request(
     url,
     { method: "GET", headers: { "User-Agent": "EcenticAudit/1.0" } },
-    { timeout: FETCH_TIMEOUT_MS },
+    { timeout: FETCH_TIMEOUT_MS, guard: true },
   );
   if (!response.success || !response.data.ok) {
     cacheLife("minutes");
     return { status: "unreachable", embed: "unknown" };
   }
 
-  const body = await resultify(() => response.data.text());
+  const body = await HTTP.read(response.data);
   if (!body.success) {
     cacheLife("minutes");
     return { status: "unreachable", embed: "unknown" };

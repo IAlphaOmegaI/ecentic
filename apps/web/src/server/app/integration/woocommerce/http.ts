@@ -121,3 +121,164 @@ export const authorizedRequest = async (
 
   return HTTP.request(withQueryAuth(url, consumerKey, consumerSecret), options);
 };
+
+// ---------------------------------------------------------------------------
+// Store API — the public catalog every WooCommerce store serves without keys
+// (enabled by default since WooCommerce 6). Read-only: it backs the
+// `woocommerce-public` import, never a write.
+// ---------------------------------------------------------------------------
+
+/** The Store API product fields this app reads; the rest rides in `rawData`. */
+export type StoreApiProduct = {
+  id: number;
+  name: string;
+  permalink: string;
+  sku: string;
+  description: string;
+  short_description: string;
+  is_in_stock?: boolean;
+  prices: {
+    price: string;
+    regular_price: string;
+    sale_price: string;
+    currency_code: string;
+    currency_minor_unit: number;
+  };
+  images: {
+    id?: number;
+    src: string;
+    alt?: string;
+    name?: string;
+    thumbnail?: string;
+    srcset?: string;
+    sizes?: string;
+  }[];
+  categories?: { name: string }[];
+  brands?: { name: string }[];
+  /** Presentation-only payloads — dropped before a product is stored. */
+  price_html?: string;
+  add_to_cart?: unknown;
+  extensions?: unknown;
+};
+
+const REST_LINK_HEADER = /<([^>]+)>\s*;\s*rel="https:\/\/api\.w\.org\/"/i;
+const REST_LINK_TAGS = [
+  /<link[^>]+rel=["']https:\/\/api\.w\.org\/["'][^>]*href=["']([^"']+)["']/i,
+  /<link[^>]+href=["']([^"']+)["'][^>]*rel=["']https:\/\/api\.w\.org\/["']/i,
+];
+
+/**
+ * The WordPress REST root a site advertises about itself — the `Link` header
+ * or the `<link rel="https://api.w.org/">` tag. It is `https://acme.com/wp-json/`
+ * on most stores, but `https://acme.com/shop/wp-json/` for an install in a
+ * subfolder and `https://acme.com/?rest_route=/` without pretty permalinks —
+ * guessing `/wp-json/` breaks both.
+ */
+export const advertisedRestRoot = (page: HTTP.Page) => {
+  const header = page.headers.get("link")?.match(REST_LINK_HEADER)?.[1];
+  const tag = REST_LINK_TAGS.map(
+    (pattern) => page.body.match(pattern)?.[1],
+  ).find(Boolean);
+  const href = header ?? tag;
+  if (!href) return null;
+
+  const parsed = (() => {
+    try {
+      return new URL(href.replaceAll("&amp;", "&"), page.url);
+    } catch {
+      return null;
+    }
+  })();
+  return parsed?.toString() ?? null;
+};
+
+export const isWordPressPage = (page: HTTP.Page) =>
+  advertisedRestRoot(page) !== null || page.body.includes("/wp-content/");
+
+/**
+ * WooCommerce's own footprint — its plugin assets, its body/wrapper classes,
+ * its block markup or Store API header. A page that merely mentions the word
+ * (a blog post about WooCommerce) is not a store.
+ */
+export const isWooCommercePage = (page: HTTP.Page) =>
+  page.headers.has("x-wc-store-api-nonce") ||
+  page.body.includes("/wp-content/plugins/woocommerce/") ||
+  /class=["'][^"']*\bwoocommerce(?:-page|-js|-no-js)?\b/i.test(page.body) ||
+  /\bwc-block-/.test(page.body);
+
+/**
+ * A WordPress REST URL from an advertised root, for both the path form
+ * (`/wp-json/`) and the query form (`?rest_route=/`).
+ */
+export const restUrl = (
+  root: string,
+  route: string,
+  parameters: Record<string, string> = {},
+) => {
+  const url = new URL(root);
+  const current = url.searchParams.get("rest_route");
+
+  if (current === null)
+    url.pathname = `${url.pathname.replace(/\/$/, "")}/${route}`;
+  else
+    url.searchParams.set(
+      "rest_route",
+      `${current.replace(/\/$/, "")}/${route}`,
+    );
+
+  for (const [key, value] of Object.entries(parameters))
+    url.searchParams.set(key, value);
+
+  return url.toString();
+};
+
+/**
+ * Store API prices are integer strings in the currency's minor unit (`"1999"`
+ * with `currency_minor_unit: 2`). Converted by string, never through a float,
+ * and with the unit the store reports — a store may configure 0 decimals.
+ */
+export const toMajor = (minor: string | undefined, digits: number) => {
+  if (!minor || !/^\d+$/.test(minor)) return null;
+  if (digits <= 0) return minor.replace(/^0+(?=\d)/, "");
+
+  const padded = minor.padStart(digits + 1, "0");
+  const whole = padded.slice(0, -digits).replace(/^0+(?=\d)/, "");
+  return `${whole}.${padded.slice(-digits)}`;
+};
+
+const NAMED_ENTITIES: Record<string, string> = {
+  amp: "&",
+  lt: "<",
+  gt: ">",
+  quot: '"',
+  apos: "'",
+  nbsp: " ",
+};
+
+/**
+ * The Store API runs names through `prepare_html_response`, so a title arrives
+ * as `Tee &#8211; Black &amp; White`. Stored titles are plain text everywhere
+ * else (the v3 importer gets them raw), so decode before they reach a listing.
+ */
+export const decodeEntities = (text: string) =>
+  text.replace(/&(#x[\da-f]+|#\d+|[a-z]+);/gi, (entity, code: string) => {
+    const point = (() => {
+      switch (true) {
+        case code.startsWith("#x") || code.startsWith("#X"):
+          return Number.parseInt(code.slice(2), 16);
+        case code.startsWith("#"):
+          return Number.parseInt(code.slice(1), 10);
+        default:
+          return null;
+      }
+    })();
+
+    if (point === null) return NAMED_ENTITIES[code.toLowerCase()] ?? entity;
+
+    // Out of range, a NUL (Postgres rejects it) or a lone surrogate would throw
+    // here or poison the row — one bad title must not fail the whole import.
+    const decodable =
+      point > 0 && point <= 0x10ffff && (point < 0xd800 || point > 0xdfff);
+
+    return decodable ? String.fromCodePoint(point) : entity;
+  });

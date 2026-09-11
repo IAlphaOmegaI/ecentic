@@ -281,14 +281,21 @@ export const listDashboard = withSubscription(
       const structuredMissing = !product.structuredData;
 
       if (!isPublishable) {
+        const imported =
+          store?.platform === "shopify-public" ||
+          store?.platform === "woocommerce-public";
+
         insights.push({
           productId: product.id,
           winRate,
           category: "platform",
           severity: "high",
-          message: `Store platform "${store?.platform ?? "unknown"}" does not support one-click publishing in Optimization Center.`,
-          recommendation:
-            "Use Shopify or WooCommerce for one-click publishing, or manually apply the recommended SEO/content fixes below.",
+          message: imported
+            ? "This store was imported from its public catalog, so Optimization Center cannot publish to it."
+            : `Store platform "${store?.platform ?? "unknown"}" does not support one-click publishing in Optimization Center.`,
+          recommendation: imported
+            ? "Connect it with the Shopify app or the WooCommerce plugin for one-click publishing, or apply the recommended SEO/content fixes below manually."
+            : "Use Shopify or WooCommerce for one-click publishing, or manually apply the recommended SEO/content fixes below.",
         });
       }
 

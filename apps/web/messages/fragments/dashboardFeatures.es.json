@@ -780,6 +780,11 @@
           "linked": "Vinculado",
           "setupInProgress": "Configuración en curso",
           "manage": "Gestionar →"
+        },
+        "publicImport": {
+          "note": "Importada desde su catálogo público · solo lectura.",
+          "upgradeShopify": "Instala la app de Shopify para publicar",
+          "upgradeWooCommerce": "Conecta el plugin para publicar"
         }
       },
       "billing": {

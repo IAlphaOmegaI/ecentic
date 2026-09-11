@@ -543,16 +543,21 @@ If a surface can be distinguished through spacing, border, and lightness, it doe
 
 ### 8.1 Landing background
 
-The landing hero uses the hands artwork from `public/images/background.webp`:
+The landing hero uses the hands artwork from `public/images/background.webp` (two hands passing
+products between them):
 
-- fill the hero;
-- `object-top`;
-- approximately `opacity-20`;
+- a frame sized to the headline-and-entry block, not the whole section, so the hands meet around
+  the store-URL field rather than drifting behind the product film;
+- `object-contain object-center`;
+- approximately `opacity-50` — the ASCII strokes are thin, so lower values read as noise rather
+  than hands;
 - `invert` over the light canvas;
-- keep it behind a restrained primary radial glow.
+- keep it behind a restrained primary radial glow;
+- eager, high-priority loading — it is the page's LCP element.
 
-The hands imply an agent-mediated handoff without resorting to robot imagery. Text must remain the
-dominant layer.
+The hands imply an agent-mediated handoff — the visitor hands over their store — without resorting to
+robot imagery. Text and the entry field must remain the dominant layer; the field sits on a solid
+`bg-background` surface.
 
 ### 8.2 Pricing and content hero texture
 
@@ -965,14 +970,16 @@ Footer rules:
 
 ### Job
 
-Explain why AI-agent selection matters and move a visitor toward installation or a product
-conversation.
+Explain why AI-agent selection matters and move a visitor to enter their store (which carries them
+through sign-up into onboarding with their catalog already imported) or into a product conversation.
 
 ### Composition
 
 1. **Fixed navbar** inside the centered rail.
-2. **Light hero** with hands artwork, restrained primary glow, direct value proposition, installation
-   CTA, trust note, and product film.
+2. **Light hero** with hands artwork, restrained primary glow, direct value proposition, the
+   autofocused store-URL entry (single field + primary action, inline outcome line under it), trust
+   note, a quiet Shopify App Store link, and product film. The entry replaces the install buttons —
+   the platform is detected, never asked.
 3. **Proof** as a full-bleed statement plus connected metric grid.
 4. **Partner evidence** through a compact logo strip and partnership banner.
 5. **Three-step loop** inside one dominant primary block.

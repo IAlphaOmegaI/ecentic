@@ -36,7 +36,7 @@ const SUPPORTED_PLATFORMS = ["shopify", "shopify-public"];
 
 const unsupportedPlatformError = (platform: string) =>
   new RequestError(
-    platform === "woocommerce"
+    platform === "woocommerce" || platform === "woocommerce-public"
       ? "Google Shopping optimization for WooCommerce is coming soon"
       : "Google Shopping optimization is currently available for Shopify stores only",
   );

@@ -24,7 +24,7 @@
         "competitive intelligence ecommerce"
       ]
     },
-    "backdropAlt": "ASCII-art eagle emblem in the ecentic brand texture",
+    "backdropAlt": "ASCII-art illustration of two hands passing products between them, in the ecentic brand texture",
     "search": {
       "label": "Search"
     },
@@ -240,6 +240,11 @@
     "states": {
       "creatingAccount": "Creating account...",
       "signingInWithGoogle": "Signing in with Google..."
+    },
+    "entry": {
+      "detected": "{platform} store detected",
+      "products": "{platform} store · {count, plural, one {# product} other {# products}} ready to import",
+      "unknown": "We'll help you connect it after you sign up"
     }
   },
   "signOut": {
@@ -2606,6 +2611,11 @@
           "linked": "Linked",
           "setupInProgress": "Setup in progress",
           "manage": "Manage →"
+        },
+        "publicImport": {
+          "note": "Imported from its public catalog · read-only.",
+          "upgradeShopify": "Install the Shopify app to publish",
+          "upgradeWooCommerce": "Connect the plugin to publish"
         }
       },
       "billing": {
@@ -2931,7 +2941,28 @@
         "accent": "AI recommends."
       },
       "description": "Shoppers now ask ChatGPT, Gemini, and Perplexity what to buy. ecentic gets your product named in the answer, then sends those buyers to your store.",
-      "proof": "2-minute setup · No credit card · See your free score first"
+      "proof": "2-minute setup · No credit card · See your free score first",
+      "entry": {
+        "label": "Your store's address",
+        "placeholder": "yourstore.com",
+        "hint": "Works with Shopify, WooCommerce and most stores — we detect yours automatically.",
+        "action": {
+          "primary": "Check my store free",
+          "secondary": "Install from the Shopify App Store"
+        },
+        "appStore": {
+          "lead": "Prefer the app?"
+        },
+        "states": {
+          "pending": "Checking your store…"
+        },
+        "errors": {
+          "invalid": "Enter your store's address, like yourstore.com.",
+          "unreachable": "We couldn't reach {host}. Check the address and try again.",
+          "limited": "That's a lot of checks in a row — try again in a minute.",
+          "failed": "Something went wrong checking your store. Try again."
+        }
+      }
     },
     "action": {
       "primary": "Get started",
@@ -6698,6 +6729,50 @@
             "title": "{count, plural, one {# product imported} other {# products imported}}",
             "description": "Your catalog is ready."
           }
+        }
+      },
+      "entry": {
+        "running": {
+          "title": "Importing {host}",
+          "description": "We're pulling your products from the store's public catalog — no store login needed."
+        },
+        "steps": {
+          "reached": "Reached {host}",
+          "detected": "{platform} store detected",
+          "products": "{count, plural, one {# product} other {# products}} in its public catalog",
+          "importing": "Importing your catalog…",
+          "slow": "Large catalogs can take up to a minute."
+        },
+        "busy": "This import is already running in another tab…",
+        "failed": {
+          "title": "We couldn't import {host} just now",
+          "description": "The store took too long to answer. Try again, or connect it another way below."
+        },
+        "claimed": {
+          "title": "{host} is already connected to another ecentic account",
+          "description": "If it's your store, connect it with verified access to link it to this account."
+        },
+        "locked": {
+          "shopify": {
+            "title": "{host} is password-protected",
+            "description": "Its catalog isn't public yet. Install the Shopify app to import it."
+          },
+          "woocommerce": {
+            "title": "{host} keeps its product API private",
+            "description": "Connect it with the ecentic plugin or REST API keys to import the catalog."
+          }
+        },
+        "unsupported": {
+          "title": "We couldn't find a Shopify or WooCommerce catalog at {host}",
+          "description": "Any store can still connect with a product feed or a CSV below."
+        },
+        "action": {
+          "primary": "Try again",
+          "secondary": "Choose another way"
+        },
+        "verified": {
+          "shopify": "Install the Shopify app",
+          "woocommerce": "Connect with the plugin"
         }
       }
     },

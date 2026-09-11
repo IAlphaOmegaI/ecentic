@@ -10,6 +10,7 @@ import {
 import { routing } from "@/i18n/routing";
 import { agentHomepageLinkHeader } from "@/lib/agent-discovery";
 import { auth } from "@/lib/auth";
+import { ENTRY_COOKIE, parseEntry } from "@/lib/redirect";
 import { isInternalStaff } from "@/server/database/validators";
 
 type Route = string | RegExp;
@@ -115,10 +116,24 @@ export const proxy = async (request: Request) => {
   // Fail closed: an unreadable session must never grant access.
   const session = result.success ? result.data : null;
 
+  // A store typed into the landing hero that has not been imported yet. The
+  // signed-in account finishes that import before anything else — a Google
+  // sign-in defaults to the dashboard, and a signed-in visitor who re-runs the
+  // hero is sent to sign-up. Only `pending`: an outcome the onboarding panel
+  // explains (claimed, locked, unsupported) must never trap the account there.
+  const importing =
+    parseEntry(request.cookies.get(ENTRY_COOKIE)?.value)?.status === "pending";
+
   switch (true) {
     case authenticationRoute: {
       return session
-        ? redirect(request, localizePath("/dashboard", locale))
+        ? redirect(
+            request,
+            localizePath(
+              importing ? "/onboarding/connect" : "/dashboard",
+              locale,
+            ),
+          )
         : internationalized;
     }
     case session === null: {
@@ -130,6 +145,9 @@ export const proxy = async (request: Request) => {
     }
     case staffOnly && !isInternalStaff(session?.user.role): {
       return redirect(request, localizePath("/dashboard", locale));
+    }
+    case importing && pathnameWithoutLocale === "/dashboard": {
+      return redirect(request, localizePath("/onboarding/connect", locale));
     }
     default: {
       return internationalized;

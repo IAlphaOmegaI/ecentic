@@ -1,6 +1,7 @@
 import { cookies, headers } from "next/headers";
 import { type NextRequest, NextResponse as Response } from "next/server";
 import { auth } from "@/lib/auth";
+import { ENTRY_COOKIE } from "@/lib/redirect";
 import * as Shopify from "@/server/app/integration/shopify";
 import { verifyHmac } from "@/server/app/integration/shopify/hmac";
 import { Environment } from "@/server/utils/environment";
@@ -58,6 +59,11 @@ export const GET = async (request: NextRequest) => {
         : "integration_failed";
     return Response.redirect(connectPage(reason));
   }
+
+  // An app install is the verified connect a hero entry would otherwise have
+  // public-imported later — importing it again would duplicate the store. A
+  // failed install leaves the entry alone: its public import is still wanted.
+  jar.delete(ENTRY_COOKIE);
 
   // A reconnect only refreshed the access tokens for a store this user already
   // onboarded. Sending them back through the onboarding product picker would let

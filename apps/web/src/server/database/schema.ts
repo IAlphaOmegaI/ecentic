@@ -103,8 +103,20 @@ export const store = pgTable(
       .references(() => user.id, { onDelete: "cascade" }),
     /** External platform store id (Shopify numeric shop id). Only known for OAuth integrations. */
     storeId: text("storeId"),
+    /**
+     * `shopify-public` / `woocommerce-public` are read-only imports of the
+     * storefront's public catalog (no credentials, no write-back); a verified
+     * connect of the same store upgrades the row in place.
+     */
     platform: text("platform")
-      .$type<"shopify" | "shopify-public" | "woocommerce" | "feed" | "csv">()
+      .$type<
+        | "shopify"
+        | "shopify-public"
+        | "woocommerce"
+        | "woocommerce-public"
+        | "feed"
+        | "csv"
+      >()
       .notNull(),
     name: text("name").notNull(),
     domain: text("domain").notNull(),
@@ -134,7 +146,8 @@ export const store = pgTable(
  * Per-store platform credentials (1:1 with {@link store}). Only created for
  * platforms that carry credentials — OAuth platforms (Shopify, and future ones
  * like BigCommerce) and API-key platforms (WooCommerce). `shopify-public`,
- * `feed`, and `csv` stores never get a row. The parent {@link store}'s
+ * `woocommerce-public`, `feed`, and `csv` stores never get a row. The parent
+ * {@link store}'s
  * `platform` determines which credential set is populated; columns are named by
  * auth mechanism, not vendor, so platforms sharing a mechanism reuse them —
  * mirrors the better-auth {@link account} table.

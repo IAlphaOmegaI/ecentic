@@ -3,16 +3,15 @@ import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { seo } from "@/lib/seo";
 import shopify from "@/public/images/shopify.svg";
 import woocommerce from "@/public/images/woocommerce.svg";
-
-const SHOPIFY_APP_STORE_URL = "https://apps.shopify.com/ecentic-ai";
 
 const platforms = [
   {
     name: "Shopify",
     logo: shopify,
-    href: SHOPIFY_APP_STORE_URL,
+    href: seo.shopifyAppStore,
     labelKey: "installShopify" as const,
   },
   {

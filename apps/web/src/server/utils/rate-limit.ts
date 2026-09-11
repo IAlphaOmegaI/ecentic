@@ -20,6 +20,12 @@ export type Policy = {
   limit: number;
   /** Window length in seconds. */
   window: number;
+  /**
+   * Whether an API key gets its own window. Off for anonymous surfaces: a
+   * caller could otherwise mint a fresh window per request by inventing a
+   * `Bearer` header, and the limit would never apply.
+   */
+  keyed?: boolean;
 };
 
 export const PUBLIC_API_POLICY: Policy = {
@@ -43,6 +49,18 @@ export const NEWS_RESOLVE_POLICY: Policy = {
   name: "news-resolve",
   limit: 6,
   window: 60,
+};
+
+/**
+ * The landing hero's store-URL check. Anonymous, and every call fetches a
+ * stranger's storefront — metered tightly so the form cannot be used as a free
+ * reachability probe. Not part of the public API, so not listed below.
+ */
+export const ENTRY_POLICY: Policy = {
+  name: "entry",
+  limit: 10,
+  window: 60,
+  keyed: false,
 };
 
 /**
@@ -83,9 +101,14 @@ const client = async () => {
  * The identity a window is counted against. An API key gets its own window so
  * one noisy agent cannot spend a shared IP's budget; everything else falls back
  * to the edge-provided client IP.
+ *
+ * Takes anything carrying headers, not only a `Request`, so a server action can
+ * pass `await headers()` — it has no `Request` to hand over.
  */
-export const identify = (request: Request) => {
-  const authorization = request.headers.get("authorization");
+type Caller = { headers: Pick<Headers, "get"> };
+
+export const identify = (request: Caller, { keyed = true } = {}) => {
+  const authorization = keyed ? request.headers.get("authorization") : null;
   if (authorization?.startsWith("Bearer "))
     // The key itself is a secret and must not become a Redis key. A prefix is
     // enough to separate callers without storing the credential.
@@ -96,7 +119,7 @@ export const identify = (request: Request) => {
 };
 
 export const consume = async (
-  request: Request,
+  request: Caller,
   policy: Policy = PUBLIC_API_POLICY,
 ): Promise<Verdict> => {
   const now = Math.floor(Date.now() / 1000);
@@ -106,7 +129,7 @@ export const consume = async (
   const redis = await client();
   if (!redis) return { policy, allowed: true, remaining: null, reset };
 
-  const key = `ratelimit:${policy.name}:${identify(request)}:${windowStart}`;
+  const key = `ratelimit:${policy.name}:${identify(request, { keyed: policy.keyed ?? true })}:${windowStart}`;
 
   const count = await resultify(async () => {
     // INCR and EXPIRE go out together. Setting the expiry only on the request

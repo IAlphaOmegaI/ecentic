@@ -24,7 +24,7 @@
         "inteligencia competitiva para ecommerce"
       ]
     },
-    "backdropAlt": "Emblema de águila en arte ASCII con la textura de marca de ecentic",
+    "backdropAlt": "Ilustración en arte ASCII de dos manos que se pasan productos, con la textura de marca de ecentic",
     "search": {
       "label": "Buscar"
     },
@@ -240,6 +240,11 @@
     "states": {
       "creatingAccount": "Creando cuenta...",
       "signingInWithGoogle": "Iniciando sesión con Google..."
+    },
+    "entry": {
+      "detected": "Tienda {platform} detectada",
+      "products": "Tienda {platform} · {count, plural, one {# producto listo} other {# productos listos}} para importar",
+      "unknown": "Te ayudaremos a conectarla después de registrarte"
     }
   },
   "signOut": {
@@ -2240,6 +2245,11 @@
           "linked": "Vinculado",
           "setupInProgress": "Configuración en curso",
           "manage": "Gestionar →"
+        },
+        "publicImport": {
+          "note": "Importada desde su catálogo público · solo lectura.",
+          "upgradeShopify": "Instala la app de Shopify para publicar",
+          "upgradeWooCommerce": "Conecta el plugin para publicar"
         }
       },
       "billing": {
@@ -2931,7 +2941,28 @@
         "accent": "que recomienda la IA."
       },
       "description": "Los compradores ya preguntan a ChatGPT, Gemini y Perplexity qué comprar. ecentic consigue que tu producto salga en la respuesta y envía a esos compradores a tu tienda.",
-      "proof": "Configuración en 2 minutos · Sin tarjeta · Primero tu puntuación gratis"
+      "proof": "Configuración en 2 minutos · Sin tarjeta · Primero tu puntuación gratis",
+      "entry": {
+        "label": "La dirección de tu tienda",
+        "placeholder": "tutienda.com",
+        "hint": "Funciona con Shopify, WooCommerce y la mayoría de tiendas: detectamos la tuya automáticamente.",
+        "action": {
+          "primary": "Analizar mi tienda gratis",
+          "secondary": "Instálala desde la Shopify App Store"
+        },
+        "appStore": {
+          "lead": "¿Prefieres la app?"
+        },
+        "states": {
+          "pending": "Revisando tu tienda…"
+        },
+        "errors": {
+          "invalid": "Escribe la dirección de tu tienda, por ejemplo tutienda.com.",
+          "unreachable": "No pudimos acceder a {host}. Revisa la dirección e inténtalo de nuevo.",
+          "limited": "Demasiadas comprobaciones seguidas. Inténtalo de nuevo en un minuto.",
+          "failed": "Algo salió mal al revisar tu tienda. Inténtalo de nuevo."
+        }
+      }
     },
     "action": {
       "primary": "Empezar",
@@ -6698,6 +6729,50 @@
             "title": "{count, plural, one {# producto importado} other {# productos importados}}",
             "description": "Tu catálogo está listo."
           }
+        }
+      },
+      "entry": {
+        "running": {
+          "title": "Importando {host}",
+          "description": "Estamos trayendo tus productos desde el catálogo público de la tienda, sin iniciar sesión en ella."
+        },
+        "steps": {
+          "reached": "Conectado con {host}",
+          "detected": "Tienda {platform} detectada",
+          "products": "{count, plural, one {# producto} other {# productos}} en su catálogo público",
+          "importing": "Importando tu catálogo…",
+          "slow": "Los catálogos grandes pueden tardar hasta un minuto."
+        },
+        "busy": "Esta importación ya se está ejecutando en otra pestaña…",
+        "failed": {
+          "title": "No pudimos importar {host} ahora mismo",
+          "description": "La tienda tardó demasiado en responder. Inténtalo de nuevo o conéctala de otra forma más abajo."
+        },
+        "claimed": {
+          "title": "{host} ya está conectada a otra cuenta de ecentic",
+          "description": "Si es tu tienda, conéctala con acceso verificado para vincularla a esta cuenta."
+        },
+        "locked": {
+          "shopify": {
+            "title": "{host} está protegida con contraseña",
+            "description": "Su catálogo aún no es público. Instala la app de Shopify para importarlo."
+          },
+          "woocommerce": {
+            "title": "{host} mantiene privada su API de productos",
+            "description": "Conéctala con el plugin de ecentic o con claves de la API REST para importar el catálogo."
+          }
+        },
+        "unsupported": {
+          "title": "No encontramos un catálogo de Shopify o WooCommerce en {host}",
+          "description": "Cualquier tienda puede conectarse con un feed de productos o un CSV más abajo."
+        },
+        "action": {
+          "primary": "Intentar de nuevo",
+          "secondary": "Elegir otra forma"
+        },
+        "verified": {
+          "shopify": "Instalar la app de Shopify",
+          "woocommerce": "Conectar con el plugin"
         }
       }
     },

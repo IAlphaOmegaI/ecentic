@@ -7,6 +7,7 @@ import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { seo } from "@/lib/seo";
 import type * as GoogleMerchant from "@/server/app/integration/google-merchant";
 import * as Store from "@/server/app/store";
 
@@ -56,8 +57,31 @@ const PLATFORM_BADGE: Record<string, { label: string; className: string }> = {
     className: "bg-[#96BF48] text-background-rich",
   },
   woocommerce: { label: "WC", className: "bg-[#7F54B3] text-background-rich" },
+  "woocommerce-public": {
+    label: "WC",
+    className: "bg-[#7F54B3] text-background-rich",
+  },
   feed: { label: "FD", className: "bg-primary/80 text-primary-foreground" },
   csv: { label: "CSV", className: "bg-accent-foreground text-background" },
+};
+
+/**
+ * Public catalog imports are read-only — no credentials, so no publishing, no
+ * tracker, no attribution. Each points at the verified connect that upgrades
+ * the same row in place.
+ */
+const upgradeFor = (store: Store.Type) => {
+  switch (store.platform) {
+    case "shopify-public":
+      return { key: "upgradeShopify" as const, href: seo.shopifyAppStore };
+    case "woocommerce-public":
+      return {
+        key: "upgradeWooCommerce" as const,
+        href: `/onboarding/connect/woocommerce?store_url=${encodeURIComponent(store.domain)}`,
+      };
+    default:
+      return null;
+  }
 };
 
 export const IntegrationsSection = ({
@@ -137,6 +161,7 @@ export const IntegrationsSection = ({
               };
               const status = google[store.id] ?? null;
               const summary = googleSummary(status, translate);
+              const upgrade = upgradeFor(store);
 
               return (
                 <div key={store.id} className="px-4 py-4">
@@ -157,6 +182,17 @@ export const IntegrationsSection = ({
                         <p className="mt-0.5 text-foreground-dimmed text-xs capitalize">
                           {store.platform} · {store.name}
                         </p>
+                        {upgrade && (
+                          <p className="mt-1 text-foreground-dimmed text-xs">
+                            {translate("publicImport.note")}{" "}
+                            <Link
+                              href={upgrade.href}
+                              className="text-primary hover:underline"
+                            >
+                              {translate(`publicImport.${upgrade.key}`)}
+                            </Link>
+                          </p>
+                        )}
                       </div>
                     </div>
                     <div className="flex items-center gap-3">

@@ -1,21 +1,24 @@
-"use client";
-
 import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import * as motion from "motion/react-client";
 import Image from "next/image";
-import { useMessages, useTranslations } from "next-intl";
+import { getMessages, getTranslations } from "next-intl/server";
+import { Suspense } from "react";
 import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
 import { Fade } from "@/lib/animations";
+import { EntryChip } from "./_components/entry-chip";
 import { SignUpForm } from "./_components/sign-up-form";
 
-export default () => {
-  const translate = useTranslations("signUp");
-  const translateAuthChrome = useTranslations("authChrome");
-  const messages = useMessages();
+// A server page so the store typed into the landing hero can be read from its
+// httpOnly cookie. Only that chip is dynamic — it streams in behind its own
+// boundary while the rest of the page stays a static shell.
+export default async () => {
+  const translate = await getTranslations("signUp");
+  const translateAuthChrome = await getTranslations("authChrome");
+  const messages = await getMessages();
 
   return (
     <div className="flex h-screen overflow-hidden bg-primary">
@@ -64,6 +67,9 @@ export default () => {
                   {translate("description")}
                 </p>
               </div>
+              <Suspense>
+                <EntryChip />
+              </Suspense>
             </div>
           </Motion.Item>
 

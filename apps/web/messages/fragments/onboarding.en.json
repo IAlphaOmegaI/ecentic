@@ -328,6 +328,50 @@
             "description": "Your catalog is ready."
           }
         }
+      },
+      "entry": {
+        "running": {
+          "title": "Importing {host}",
+          "description": "We're pulling your products from the store's public catalog — no store login needed."
+        },
+        "steps": {
+          "reached": "Reached {host}",
+          "detected": "{platform} store detected",
+          "products": "{count, plural, one {# product} other {# products}} in its public catalog",
+          "importing": "Importing your catalog…",
+          "slow": "Large catalogs can take up to a minute."
+        },
+        "busy": "This import is already running in another tab…",
+        "failed": {
+          "title": "We couldn't import {host} just now",
+          "description": "The store took too long to answer. Try again, or connect it another way below."
+        },
+        "claimed": {
+          "title": "{host} is already connected to another ecentic account",
+          "description": "If it's your store, connect it with verified access to link it to this account."
+        },
+        "locked": {
+          "shopify": {
+            "title": "{host} is password-protected",
+            "description": "Its catalog isn't public yet. Install the Shopify app to import it."
+          },
+          "woocommerce": {
+            "title": "{host} keeps its product API private",
+            "description": "Connect it with the ecentic plugin or REST API keys to import the catalog."
+          }
+        },
+        "unsupported": {
+          "title": "We couldn't find a Shopify or WooCommerce catalog at {host}",
+          "description": "Any store can still connect with a product feed or a CSV below."
+        },
+        "action": {
+          "primary": "Try again",
+          "secondary": "Choose another way"
+        },
+        "verified": {
+          "shopify": "Install the Shopify app",
+          "woocommerce": "Connect with the plugin"
+        }
       }
     },
     "products": {

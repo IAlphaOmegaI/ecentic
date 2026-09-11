@@ -13,6 +13,8 @@ export const seo = {
     "https://www.linkedin.com/company/ecentic/posts/?feedView=all",
     "https://www.instagram.com/ecentic.ai/",
   ],
+  /** Where a Shopify merchant installs the app — the verified connect. */
+  shopifyAppStore: "https://apps.shopify.com/ecentic-ai",
 } as const;
 
 export const absoluteUrl = (path = "/") => new URL(path, seo.host).toString();

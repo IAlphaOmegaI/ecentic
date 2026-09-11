@@ -23,6 +23,7 @@ const PLATFORM_LABEL: Record<Exclude<Store.Type["platform"], "csv">, string> = {
   shopify: "Shopify",
   "shopify-public": "Shopify",
   woocommerce: "WooCommerce",
+  "woocommerce-public": "WooCommerce",
   feed: "feed",
 };
 

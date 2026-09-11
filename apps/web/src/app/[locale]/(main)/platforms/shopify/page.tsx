@@ -11,6 +11,7 @@ import {
   createBreadcrumbSchema,
   createFaqSchema,
   createMetadata,
+  seo,
 } from "@/lib/seo";
 import Art from "@/public/images/ascii/bag.png";
 import shopify from "@/public/images/shopify.svg";
@@ -26,8 +27,6 @@ import { Compare } from "./_components/compare";
 import { RelatedPages } from "./_components/related";
 import { Why } from "./_components/why";
 import { Workflow } from "./_components/workflow";
-
-const SHOPIFY_APP_STORE_URL = "https://apps.shopify.com/ecentic-ai";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const locale = await getLocale();
@@ -99,7 +98,7 @@ export default async () => {
           <Button
             color="accent"
             className={bannerAction.lead}
-            render={<Link href={SHOPIFY_APP_STORE_URL} />}
+            render={<Link href={seo.shopifyAppStore} />}
           >
             <Image src={shopify} alt="" className="size-5" />
             {translate("hero.action.primary")}

@@ -1,6 +1,6 @@
 import * as Sentry from "@sentry/nextjs";
 import { resultify } from "@zenncore/utils";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { schema } from "@/server/database";
 import { withContext } from "@/server/utils/context";
 import { Environment } from "@/server/utils/environment";
@@ -40,8 +40,14 @@ type OrdersPaidPayload = {
  * conversion when a signal is present. Idempotent downstream on (store, order).
  */
 const recordPaidOrder = async (shop: string, payload: OrdersPaidPayload) => {
+  // Only the app-installed row can receive this webhook. A public catalog
+  // import of the same myshopify host (anyone's, from a typed URL) shares the
+  // domain but must never be credited — or billed — for the order.
   const stores = await Store.find(Environment.SERVER, {
-    where: eq(schema.store.domain, `https://${shop}`),
+    where: and(
+      eq(schema.store.domain, `https://${shop}`),
+      eq(schema.store.platform, "shopify"),
+    ),
     limit: 1,
   });
 
@@ -83,8 +89,15 @@ const recordPaidOrder = async (shop: string, payload: OrdersPaidPayload) => {
 };
 
 const redactShop = async (shop: string) => {
+  // Erase what the app install gave us — the `shopify` row. A public catalog
+  // import of the same myshopify host belongs to another account (anyone can
+  // make one from a typed URL, and a verified install no longer blocks it);
+  // deleting it would destroy that account's own work.
   const stores = await Store.find(Environment.SERVER, {
-    where: eq(schema.store.domain, `https://${shop}`),
+    where: and(
+      eq(schema.store.domain, `https://${shop}`),
+      eq(schema.store.platform, "shopify"),
+    ),
   });
 
   if (!stores.success) return stores;

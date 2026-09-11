@@ -9,7 +9,9 @@ import { Environment } from "../../../utils/environment";
 import {
   ConflictError,
   IntegrationAuthError,
+  NotFoundError,
   RequestError,
+  ValidationError,
 } from "../../../utils/error";
 import * as HTTP from "../../../utils/http";
 import {
@@ -500,6 +502,7 @@ export const handleOAuthCallback = withContext(
       userId,
       domain: shopBaseUrl(shopId),
       storeId: String(shop.data.shop.id),
+      verified: true,
     });
     if (!reconciliation.success) return reconciliation;
 
@@ -513,6 +516,12 @@ export const handleOAuthCallback = withContext(
 
     const existing =
       reconciliation.data.kind === "owned" ? reconciliation.data.store : null;
+
+    // A public catalog import (matched by the shop id `/meta.json` gave it)
+    // becoming a real install. The row is refreshed in place — same products,
+    // same ids — but it has never had a tracker key, script tag or webhook, so
+    // those steps run as they would for a fresh connect.
+    const upgrading = existing?.platform === "shopify-public";
 
     const transaction = await resultify(() =>
       withTransaction(async (tx) => {
@@ -531,6 +540,9 @@ export const handleOAuthCallback = withContext(
                 storefrontHosts,
                 status: "connected",
                 storeId: String(shop.data.shop.id),
+                // Keeps a reconnect's live tracker key; gives an upgraded
+                // public import its first one.
+                trackerApiKey: existing.trackerApiKey ?? trackerApiKey,
               },
               { tx },
             )
@@ -595,8 +607,9 @@ export const handleOAuthCallback = withContext(
 
     // On a fresh connect, install the storefront tracker script tag. On an
     // owned reconnect the existing tag (and its tracker key) are still in place,
-    // so re-posting would just create a duplicate — skip it.
-    if (!existing) {
+    // so re-posting would just create a duplicate — skip it. An upgraded public
+    // import never had one, so it gets the full install.
+    if (!existing || upgrading) {
       const origin = resolveTrackerPublicOrigin();
 
       const probe =
@@ -604,7 +617,7 @@ export const handleOAuthCallback = withContext(
 
       const src = `${origin}/tracker.js?sid=${encodeURIComponent(
         store.id,
-      )}&k=${encodeURIComponent(trackerApiKey)}${probe}`;
+      )}&k=${encodeURIComponent(store.trackerApiKey ?? trackerApiKey)}${probe}`;
 
       await HTTP.request(
         `https://${shopId}/admin/api/${API_VERSION}/script_tags.json`,
@@ -1341,26 +1354,272 @@ const normalizeDomain = (domain: string): string => {
     url.hostname = `${url.hostname}.myshopify.com`;
   }
 
-  return `${url.protocol}//${url.hostname}`;
+  // Storefronts serve https; the SSRF guard refuses plain http in production,
+  // so a typed `http://` must not turn into "no public catalog".
+  const protocol =
+    process.env.NODE_ENV === "production" ? "https:" : url.protocol;
+
+  return `${protocol}//${url.hostname}`;
 };
 
-const detectCurrency = async (domain: string): Promise<string> => {
-  const response = await HTTP.request(`${domain}/meta.json`, {
-    method: "GET",
-    headers: { Accept: "application/json" },
-  });
+// ---------------------------------------------------------------------------
+// Public storefront — what any Shopify store serves without credentials. Every
+// request goes through `HTTP.request`'s SSRF guard: the domain is typed by a
+// visitor, and a storefront is free to redirect wherever it likes.
+// ---------------------------------------------------------------------------
 
-  if (!response.success) return "USD";
+const PROBE_TIMEOUT_MS = 5000;
+const CATALOG_TIMEOUT_MS = 20000;
+const CATALOG_LIMIT_BYTES = 16 * 1024 * 1024;
+const CATALOG_PAGE_SIZE = 250;
+const CATALOG_MAX_PAGES = 10;
 
-  const parsed = await HTTP.parse<{ currency: string }>(response);
-  if (!parsed.success) return "USD";
-
-  return parsed.data.currency || "USD";
+type PublicMeta = {
+  id: number;
+  name: string | null;
+  currency: string | null;
+  myshopify_domain: string;
+  published_products_count: number | null;
 };
 
 /**
- * Imports products from the public Shopify storefront `/products.json` endpoint.
- * No OAuth or access token required.
+ * Whether a storefront's public catalog is readable. `closed` is an answer —
+ * a password page, a 404, a non-JSON body; `unreachable` is the absence of one
+ * (timeout, 429, 5xx) and is worth a retry, so the two must never be merged.
+ */
+type CatalogState = "open" | "closed" | "unreachable";
+
+const json = <T>(body: string) => {
+  const parsed = resultify(() => JSON.parse(body) as T);
+  return parsed.success ? parsed.data : null;
+};
+
+const text = (value: unknown) =>
+  typeof value === "string" && value.trim() ? value.trim().slice(0, 200) : null;
+
+const count = (value: unknown) =>
+  typeof value === "number" && Number.isInteger(value) && value >= 0
+    ? value
+    : null;
+
+/**
+ * `/meta.json` is every Shopify storefront's public identity card. Its `id` is
+ * the same shop id the Admin API returns, which is what lets a public import
+ * and a later app install of the same store recognise each other. Any site can
+ * serve a `/meta.json`; only Shopify's names a myshopify host. Every field is
+ * the storefront's say-so, so each is type-checked before it is trusted.
+ */
+const fetchPublicMeta = async (domain: string): Promise<PublicMeta | null> => {
+  const page = await HTTP.page(`${domain}/meta.json`, {
+    timeout: PROBE_TIMEOUT_MS,
+    limit: 256 * 1024,
+    accept: "application/json",
+  });
+  if (!page.success || page.data.status !== 200) return null;
+
+  const meta = json<Partial<Record<keyof PublicMeta, unknown>>>(page.data.body);
+  if (!meta || typeof meta.id !== "number" || !Number.isSafeInteger(meta.id))
+    return null;
+
+  const myshopify = text(meta.myshopify_domain);
+  if (!myshopify?.endsWith(".myshopify.com")) return null;
+
+  return {
+    id: meta.id,
+    name: text(meta.name),
+    currency: text(meta.currency),
+    myshopify_domain: myshopify,
+    published_products_count: count(meta.published_products_count),
+  };
+};
+
+const catalogState = async (domain: string): Promise<CatalogState> => {
+  const page = await HTTP.page(`${domain}/products.json?limit=1`, {
+    timeout: PROBE_TIMEOUT_MS,
+    limit: 1024 * 1024,
+    accept: "application/json",
+  });
+
+  if (!page.success)
+    return page.error.name === "validation-error" ? "closed" : "unreachable";
+
+  const { status } = page.data;
+  if (status === 429 || status >= 500) return "unreachable";
+  if (status !== 200) return "closed";
+
+  return Array.isArray(json<{ products?: unknown }>(page.data.body)?.products)
+    ? "open"
+    : "closed";
+};
+
+const isShopifyMarkup = (page: HTTP.Page) =>
+  page.headers.has("x-shopid") ||
+  page.headers.has("x-shopify-stage") ||
+  /shopify/i.test(page.headers.get("powered-by") ?? "") ||
+  page.body.includes("Shopify.shop") ||
+  // Theme stylesheets: `cdn.shopify.com/s/files/…` on older themes, the
+  // store's own `/cdn/shop/…` on current ones.
+  /<link[^>]+href=["'][^"']*(?:cdn\.shopify\.com\/s\/files|\/cdn\/shop\/)[^"']*\.css/i.test(
+    page.body,
+  );
+
+/**
+ * Whether `domain` is a Shopify storefront and whether its public catalog
+ * answers — `null` when it is not Shopify at all. A password-protected store
+ * hides `/meta.json` and `/products.json` behind its password page, but that
+ * page is still Shopify's markup (its theme stylesheets live on Shopify's
+ * CDN — a Buy Button script embedded on another platform does not count):
+ * recognisably Shopify, just not importable without the app.
+ *
+ * `home` is the storefront's homepage when the caller already read it (the
+ * landing hero's check shares one read between platforms); omitted, it is
+ * fetched only if the identity card is missing.
+ */
+export const probe = withContext(
+  async (_, { domain, home }: { domain: string; home?: HTTP.Page | null }) => {
+    const [meta, catalog] = await Promise.all([
+      fetchPublicMeta(domain),
+      catalogState(domain),
+    ]);
+
+    if (meta)
+      return {
+        success: true as const,
+        data: {
+          importable: catalog === "open",
+          name: meta.name,
+          products: meta.published_products_count,
+        },
+      };
+
+    const page = await (async () => {
+      if (home !== undefined) return home;
+
+      const fetched = await HTTP.page(domain, {
+        timeout: PROBE_TIMEOUT_MS,
+        limit: 3 * 1024 * 1024,
+      });
+      return fetched.success ? fetched.data : null;
+    })();
+
+    if (!page || !isShopifyMarkup(page))
+      return { success: true as const, data: null };
+
+    return {
+      success: true as const,
+      data: { importable: catalog === "open", name: null, products: null },
+    };
+  },
+  "Shopify.probe",
+);
+
+/**
+ * Every product the public `/products.json` lists, page by page — fetched in
+ * full *before* anything is written, so a storefront that stops answering
+ * never leaves an empty store behind (or holds a transaction open while it
+ * thinks). A first page that fails is a catalog we could not read; a later
+ * page that fails ends the walk with what was gathered.
+ */
+const fetchPublicProducts = async (
+  domain: string,
+  page = 1,
+  gathered: Type[] = [],
+): Promise<
+  { success: true; data: Type[] } | { success: false; error: Error }
+> => {
+  const response = await HTTP.page(
+    `${domain}/products.json?limit=${CATALOG_PAGE_SIZE}&page=${page}`,
+    {
+      timeout: CATALOG_TIMEOUT_MS,
+      limit: CATALOG_LIMIT_BYTES,
+      accept: "application/json",
+    },
+  );
+
+  const products =
+    response.success && response.data.status === 200
+      ? json<{ products?: Type[] }>(response.data.body)?.products
+      : null;
+
+  if (!Array.isArray(products))
+    return page === 1
+      ? {
+          success: false,
+          error: new RequestError(
+            "Could not read this store's public catalog. Try again, or connect it with the Shopify app.",
+          ),
+        }
+      : { success: true, data: gathered };
+
+  const all = [...gathered, ...products];
+  const done = products.length < CATALOG_PAGE_SIZE || page >= CATALOG_MAX_PAGES;
+
+  return done
+    ? { success: true, data: all }
+    : fetchPublicProducts(domain, page + 1, all);
+};
+
+const savePublicCatalog = async ({
+  user,
+  store,
+  domain,
+  products,
+  currency,
+  tx,
+}: {
+  user: string;
+  store: string;
+  domain: string;
+  products: Type[];
+  currency: string;
+  tx?: TransactionScope;
+}) => {
+  const options = tx ? { tx } : undefined;
+
+  const results = await Promise.all(
+    products.map((item) => {
+      const variant = item.variants[0];
+
+      return Product.sync(
+        Environment.SERVER,
+        {
+          storeId: store,
+          userId: user,
+          externalId: item.id.toString(),
+          title: item.title,
+          description: item.body_html,
+          price: variant?.price ?? null,
+          compareAtPrice: variant?.compare_at_price ?? null,
+          currency,
+          images: JSON.stringify(item.images.map((image) => image.src)),
+          url: `${domain}/products/${item.handle}`,
+          sku: variant?.sku ?? null,
+          status: item.published_at ? "active" : "draft",
+          rawData: JSON.stringify(item),
+          syncedAt: new Date(),
+        },
+        options,
+      );
+    }),
+  );
+
+  const update = await Store.update(
+    Environment.SERVER,
+    store,
+    { status: "connected", lastSyncedAt: new Date() },
+    options,
+  );
+  if (!update.success) return update;
+
+  return {
+    success: true as const,
+    data: results.filter((result) => result.success).length,
+  };
+};
+
+/**
+ * Re-imports a public Shopify store from its storefront `/products.json`. No
+ * OAuth or access token required.
  */
 export const syncPublicCatalog = withContext(
   async (
@@ -1389,9 +1648,13 @@ export const syncPublicCatalog = withContext(
         error: new Error("Store is not a public Shopify store"),
       };
 
-    const { domain } = store.data;
+    const domain = normalizeDomain(store.data.domain);
 
-    const currency = await detectCurrency(domain);
+    const [products, meta] = await Promise.all([
+      fetchPublicProducts(domain),
+      fetchPublicMeta(domain),
+    ]);
+    if (!products.success) return products;
 
     const update = await Store.update(
       Environment.SERVER,
@@ -1399,83 +1662,28 @@ export const syncPublicCatalog = withContext(
       { status: "syncing" },
       options,
     );
-
     if (!update.success) return update;
 
-    const all: Type[] = [];
-
-    const limit = 250;
-    const maximum = 10;
-
-    for (const page of Array.from({ length: maximum }, (_, i) => i + 1)) {
-      const response = await HTTP.request(
-        `${domain}/products.json?limit=${limit}&page=${page}`,
-        {
-          method: "GET",
-          headers: { Accept: "application/json" },
-        },
-      );
-
-      if (!response.success) break;
-
-      const parsed = await HTTP.parse<{ products: Type[] }>(response);
-      if (!parsed.success) break;
-
-      if (parsed.data.products.length === 0) break;
-
-      all.push(...parsed.data.products);
-
-      if (parsed.data.products.length < limit) break;
-    }
-
-    const results = await Promise.all(
-      all.map((item) => {
-        const variant = item.variants[0];
-
-        return Product.sync(
-          Environment.SERVER,
-          {
-            storeId,
-            userId,
-            externalId: item.id.toString(),
-            title: item.title,
-            description: item.body_html,
-            price: variant?.price ?? null,
-            compareAtPrice: variant?.compare_at_price ?? null,
-            currency,
-            images: JSON.stringify(item.images.map((image) => image.src)),
-            url: `${domain}/products/${item.handle}`,
-            sku: variant?.sku ?? null,
-            status: item.published_at ? "active" : "draft",
-            rawData: JSON.stringify(item),
-            syncedAt: new Date(),
-          },
-          options,
-        );
-      }),
-    );
-
-    const imported = results.filter((result) => result.success).length;
+    const saved = await savePublicCatalog({
+      user: userId,
+      store: storeId,
+      domain,
+      products: products.data,
+      currency: meta?.currency || "USD",
+      tx,
+    });
+    if (!saved.success) return saved;
 
     context.span.addBreadcrumb({
       category: "shopify-public.catalog.sync",
       data: {
         "store.id": storeId,
-        "products.fetched": all.length,
-        "products.imported": imported,
+        "products.fetched": products.data.length,
+        "products.imported": saved.data,
       },
     });
 
-    const insertion = await Store.update(
-      Environment.SERVER,
-      storeId,
-      { status: "connected", lastSyncedAt: new Date() },
-      options,
-    );
-
-    if (!insertion.success) return insertion;
-
-    return { success: true, data: imported };
+    return saved;
   },
   "Shopify.syncPublicCatalog",
 );
@@ -1484,12 +1692,12 @@ export const connectPublic = withAuthentication(
   async (context, { domain }: { domain: string }) => {
     const host = normalizeDomain(domain);
 
-    const probe = await HTTP.request(`${host}/products.json?limit=1`, {
-      method: "GET",
-      headers: { Accept: "application/json" },
-    });
+    const [meta, catalog] = await Promise.all([
+      fetchPublicMeta(host),
+      catalogState(host),
+    ]);
 
-    if (!probe.success)
+    if (catalog === "unreachable")
       return {
         success: false,
         error: new RequestError(
@@ -1497,26 +1705,32 @@ export const connectPublic = withAuthentication(
         ),
       };
 
-    if (!probe.data.ok)
+    if (catalog === "closed")
       return {
         success: false,
-        error: new RequestError(
-          probe.data.status === 404
-            ? "This store does not expose a public product catalog. Check the domain and try again."
-            : `Shopify returned ${probe.data.status}`,
+        error: new ValidationError(
+          "This store does not expose a public product catalog. Check the domain, or connect it with the Shopify app.",
         ),
       };
 
+    // The whole catalog before any write — see `fetchPublicProducts`.
+    const products = await fetchPublicProducts(host);
+    if (!products.success) return products;
+
     context.span.addBreadcrumb({
       category: "shopify-public.probe",
-      data: { "store.host": host },
+      data: { "store.host": host, "products.fetched": products.data.length },
     });
 
     const storefrontHosts = [normalizeHostname(host)];
 
+    // The shop id from `/meta.json` is what an app install of this store will
+    // also carry — reconciling on it lets that install upgrade this row in
+    // place, and stops a public import of a store another account installed.
     const reconciliation = await Store.reconcileConnection(Environment.SERVER, {
       userId: context.session.user.id,
       domain: host,
+      storeId: meta ? String(meta.id) : null,
     });
     if (!reconciliation.success) return reconciliation;
 
@@ -1531,6 +1745,17 @@ export const connectPublic = withAuthentication(
     const existing =
       reconciliation.data.kind === "owned" ? reconciliation.data.store : null;
 
+    // Never downgrade a verified install. The app-connected row keeps its
+    // tokens, tracker and webhooks; the caller just lands on that store.
+    if (existing && existing.platform !== "shopify-public")
+      return {
+        success: true as const,
+        data: { store: existing, reconnected: true },
+      };
+
+    const name =
+      meta?.name || new URL(host).hostname.replace(".myshopify.com", "");
+
     const transaction = await resultify(() =>
       withTransaction(async (tx) => {
         const store = existing
@@ -1539,10 +1764,11 @@ export const connectPublic = withAuthentication(
               existing.id,
               {
                 platform: "shopify-public",
-                name: new URL(host).hostname.replace(".myshopify.com", ""),
+                name,
                 domain: host,
                 storefrontHosts,
-                status: "connected",
+                status: "syncing",
+                storeId: meta ? String(meta.id) : existing.storeId,
               },
               { tx },
             )
@@ -1551,10 +1777,11 @@ export const connectPublic = withAuthentication(
               {
                 userId: context.session.user.id,
                 platform: "shopify-public",
-                name: new URL(host).hostname.replace(".myshopify.com", ""),
+                name,
                 domain: host,
                 storefrontHosts,
-                status: "connected",
+                status: "syncing",
+                storeId: meta ? String(meta.id) : null,
               },
               { tx },
             );
@@ -1562,35 +1789,51 @@ export const connectPublic = withAuthentication(
         if (!store.success) throw store.error;
         if (!store.data) throw new Error("Store creation returned no data");
 
-        const sync = await syncPublicCatalog(Environment.SERVER, {
+        const saved = await savePublicCatalog({
           user: context.session.user.id,
           store: store.data.id,
+          domain: host,
+          products: products.data,
+          currency: meta?.currency || "USD",
           tx,
         });
-
-        if (!sync.success) throw sync.error;
+        if (!saved.success) throw saved.error;
 
         return store.data;
       }),
     );
 
-    if (transaction.success) {
-      context.span.addBreadcrumb({
-        category: "shopify-public.connect.complete",
-        data: { "store.id": transaction.data.id, "store.host": host },
-      });
-    }
+    if (!transaction.success) return transaction;
 
-    return transaction;
+    context.span.addBreadcrumb({
+      category: "shopify-public.connect.complete",
+      data: { "store.id": transaction.data.id, "store.host": host },
+    });
+
+    // `reconnected` marks a re-import of a store this user already onboarded.
+    // Callers use it to skip the onboarding product picker, which would
+    // otherwise let them select past their plan's product limit.
+    return {
+      success: true as const,
+      data: { store: transaction.data, reconnected: Boolean(existing) },
+    };
   },
   "Shopify.connectPublic",
 );
 
 export const syncPublicProducts = withAuthentication(
-  async (context, { store }: { store: string }) => {
+  async (context, { store: id }: { store: string }) => {
+    const store = await Store.get(Environment.SERVER, id);
+    if (!store.success) return store;
+
+    // The sync writes every product under the caller's id — only the owner's
+    // own store may be synced.
+    if (!store.data || store.data.userId !== context.session.user.id)
+      return { success: false, error: new NotFoundError("Store") };
+
     return syncPublicCatalog(Environment.SERVER, {
       user: context.session.user.id,
-      store,
+      store: id,
     });
   },
   "Shopify.syncPublicProducts",
