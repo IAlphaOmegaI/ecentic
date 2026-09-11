@@ -35,21 +35,6 @@ const DEFAULT_LIMIT = 25;
  */
 const MAX_RESOLVED = 25;
 
-/**
- * Resolution outcomes whose response must not outlive the request.
- *
- * A transient upstream failure lasted minutes; the linkless response it
- * produced was still being served an hour later out of a caller's cache. The
- * transient is not preventable from here — instructing every cache not to keep
- * the wreckage is.
- */
-const DEGRADED = new Set<News.ResolveStatus>([
-  "failed",
-  "rate-limited",
-  "diverted",
-  "unavailable",
-]);
-
 /** Absent means "take the default"; anything else must be exactly true/false. */
 const boolean = (raw: string | null, fallback: boolean) => {
   if (raw === null) return fallback;
@@ -85,6 +70,7 @@ const KNOWN_PARAMETERS = new Set([
   "resolve",
   "dedupe",
   "relevance",
+  "sort",
   "aiTerms",
   "commerceTerms",
   "hl",
@@ -218,7 +204,16 @@ export const GET = async (request: Request) => {
       { limiter, policy },
     );
 
-  const relevance = parameters.get("relevance") ?? "ai-commerce";
+  const sort = parameters.get("sort") ?? "relevance";
+  if (!News.isSort(sort))
+    return refused(
+      request,
+      "validation-failed",
+      `Unknown sort "${sort}". Use one of ${News.SORTS.join(", ")}.`,
+      { limiter, policy },
+    );
+
+  const relevance = parameters.get("relevance") ?? "off";
   if (relevance !== "ai-commerce" && relevance !== "off")
     return refused(
       request,
@@ -255,21 +250,29 @@ export const GET = async (request: Request) => {
       { limiter, policy },
     );
 
-  const { articles, failures, resolved, resolveStatus, resolution, total } =
-    await News.collectAll(queries, {
-      when: when ?? undefined,
-      language: language ?? undefined,
-      country: country ?? undefined,
-      edition: edition ?? undefined,
-      resolve,
-      dedupe: merge,
-      limit: resolve ? Math.min(limit, MAX_RESOLVED) : limit,
-      // `off` last, so it cannot be quietly re-enabled by a term list sent
-      // alongside it — which reported `"relevance": "off"` while still filtering.
-      ...(aiTerms ? { aiTerms } : {}),
-      ...(commerceTerms ? { commerceTerms } : {}),
-      ...(relevance === "off" ? { aiTerms: null, commerceTerms: null } : {}),
-    });
+  const {
+    articles,
+    failures,
+    resolved,
+    resolveStatus,
+    retryable,
+    resolution,
+    total,
+  } = await News.collectAll(queries, {
+    when: when ?? undefined,
+    language: language ?? undefined,
+    country: country ?? undefined,
+    edition: edition ?? undefined,
+    resolve,
+    dedupe: merge,
+    limit: resolve ? Math.min(limit, MAX_RESOLVED) : limit,
+    sort,
+    // `off` last, so it cannot be quietly re-enabled by a term list sent
+    // alongside it — which reported `"relevance": "off"` while still filtering.
+    ...(aiTerms ? { aiTerms } : {}),
+    ...(commerceTerms ? { commerceTerms } : {}),
+    ...(relevance === "off" ? { aiTerms: null, commerceTerms: null } : {}),
+  });
 
   // Every feed failing is an upstream outage, not an empty result set — saying
   // "0 articles" there would read as "no such news" to an agent that cannot
@@ -295,6 +298,8 @@ export const GET = async (request: Request) => {
         edition: edition ?? News.DEFAULT_EDITION,
       },
       relevance,
+      // Which order `limit` selected on, not just how the list reads.
+      sort,
       deduplicated: merge,
       // States plainly whether `url` was even attempted, so a client reading a
       // null `url` knows whether it means "not asked for" or "resolution
@@ -303,6 +308,9 @@ export const GET = async (request: Request) => {
       // The categorical answer, so a consumer never has to compare two
       // counters to notice that resolution failed.
       resolveStatus,
+      // The one bit a client can act on. `unrecognised` is a code fix on our
+      // side, so a consumer retrying it just burns its own budget.
+      retryable,
       // Only present when resolution ran. `mismatched` counts articles whose
       // resolved host disagrees with the publisher the feed named — the tell
       // that the internal RPC's contract has shifted, which otherwise shows up
@@ -319,18 +327,14 @@ export const GET = async (request: Request) => {
     {
       limiter,
       policy,
-      // Headlines move in minutes, not seconds, and the window is per-caller
-      // for the same reason every other public response is: these carry the
-      // caller's own rate-limit counters.
-      //
-      // A degraded body is never cached, at any layer. Origin caching was not
-      // what served an hour-old linkless response — that was a client's own
-      // cache — but `no-store` is the instruction that stops it there too, and
-      // a stale failure outlives the transient that caused it by an order of
-      // magnitude.
-      cacheControl: DEGRADED.has(resolveStatus)
-        ? "no-store"
-        : "private, max-age=300",
+      // Never stored, healthy or not. Freshness is the product here, and
+      // `max-age=300` bought nothing: the origin keeps no copy and the edge
+      // reports MISS, so the only cache it licensed was the caller's own — and
+      // agent fetch clients were observed serving these bodies a day stale,
+      // far past the five minutes they were given. A stale failure was the
+      // first symptom; a stale success is worse, because it reads as a quiet
+      // news day. `retrievedAt` remains the check that the body is live.
+      cacheControl: "no-store",
     },
   );
 };

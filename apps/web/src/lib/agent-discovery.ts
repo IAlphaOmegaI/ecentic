@@ -937,15 +937,27 @@ export const openApiDocument = {
             schema: { type: "boolean", default: true },
           },
           {
+            name: "sort",
+            in: "query",
+            required: false,
+            description:
+              "`relevance` (default) returns the order Google returned, which is what the feed is actually ordered by. `date` returns newest first. This chooses which articles `limit` keeps, not merely how they read, which is why relevance is the default: inside a bounded `when:` window the feed's order carries essentially no date information (Spearman about -0.15 against publication time), so sorting by date there ranks on noise — and selects against quality, since the newest items in a window are the aggregators that republish constantly. Across several `q` values, ranks are per-feed and ties break by recency, which interleaves the queries — every query's best item, then every query's second. Not to be confused with the `relevance` parameter, which is the headline filter.",
+            schema: {
+              type: "string",
+              enum: ["relevance", "date"],
+              default: "relevance",
+            },
+          },
+          {
             name: "relevance",
             in: "query",
             required: false,
             description:
-              "`ai-commerce` requires one AI term and one commerce term in the headline, which removes the results Google matched elsewhere in the document. `off` returns the feed unfiltered.",
+              "`ai-commerce` requires one AI term and one commerce term in the headline, which removes the results Google matched elsewhere in the document. `off` (default) returns the feed unfiltered.",
             schema: {
               type: "string",
               enum: ["ai-commerce", "off"],
-              default: "ai-commerce",
+              default: "off",
             },
           },
           {
@@ -990,7 +1002,7 @@ export const openApiDocument = {
         responses: {
           "200": {
             description:
-              "Parsed articles, newest first. Articles with no `publishedAt` sort last.",
+              "Parsed articles in the order named by `sort` — Google's own relevance order by default. Under `sort=date`, articles carrying no `publishedAt` come last. Every article reports both `relevanceRank` and `publishedAt` whichever order is used, so a client can reorder without a second request.",
             headers: RATE_LIMIT_RESPONSE_HEADERS,
             content: {
               "application/json": {
@@ -1907,7 +1919,13 @@ export const openApiDocument = {
       NewsArticle: {
         type: "object",
         title: "NewsArticle",
-        required: ["headline", "googleUrl", "articleId", "alsoIn"],
+        required: [
+          "headline",
+          "googleUrl",
+          "articleId",
+          "alsoIn",
+          "relevanceRank",
+        ],
         properties: {
           headline: {
             type: "string",
@@ -1952,6 +1970,11 @@ export const openApiDocument = {
               },
             },
           },
+          relevanceRank: {
+            type: "integer",
+            description:
+              "1-based position in the feed Google returned this item in — the only relevance signal the feed carries. Gaps are meaningful: a jump from 3 to 7 means the items between were dropped by the headline filter or the syndication merge, not that Google ranked them differently. A merged cluster keeps the best rank of its copies.",
+          },
           query: {
             type: "string",
             description: "The `q` value this record came from.",
@@ -1982,8 +2005,18 @@ export const openApiDocument = {
               edition: { type: "string" },
             },
           },
+          sort: {
+            type: "string",
+            enum: ["relevance", "date"],
+            description: "The order `limit` selected on.",
+          },
           relevance: { type: "string", enum: ["ai-commerce", "off"] },
           deduplicated: { type: "boolean" },
+          retryable: {
+            type: "boolean",
+            description:
+              "Whether another attempt could plausibly do better. The one field a client should branch on: `unrecognised` is a defect on our side that a consumer cannot fix by retrying, while a throttle or a consent diversion clears on its own. For the heterogeneous `failed` case this is decided by what actually contributed — a page that rendered without a signature will render without one again.",
+          },
           resolved: {
             type: "boolean",
             description:
@@ -2026,6 +2059,29 @@ export const openApiDocument = {
                 description:
                   "Google diverted the request to its consent flow instead of serving the article. Observed intermittently and independently of any consent cookie; it clears on its own, and each attempt is retried once.",
               },
+              batch: {
+                type: "object",
+                description:
+                  "What the batched RPC did — the second, metered half of resolution. The counters above describe the per-article page fetch; these describe the POST. They fail independently and for different reasons, and only this half is metered, so a throttle almost always appears here rather than there.",
+                properties: {
+                  requests: {
+                    type: "integer",
+                    description:
+                      "POST requests made — one per batch of up to 20 articles.",
+                  },
+                  statuses: {
+                    type: "object",
+                    description:
+                      "Count by HTTP status. The key `none` means the POST never answered.",
+                    additionalProperties: { type: "integer" },
+                  },
+                  unrecognised: {
+                    type: "integer",
+                    description:
+                      "2xx responses carrying no envelope this parser understands. Above zero means Google changed the RPC contract and a code fix is needed — never a reason to wait and retry. A signature the RPC understood but rejected does not count here; that shows as `unpaired` with `unrecognised: 0`.",
+                  },
+                },
+              },
             },
           },
           count: { type: "integer", description: "Articles in this response." },
@@ -2047,10 +2103,11 @@ export const openApiDocument = {
               "partial",
               "rate-limited",
               "diverted",
+              "unrecognised",
               "failed",
             ],
             description:
-              "The categorical outcome of resolution, so a client need not compare counters to notice a failure. `skipped` — not asked for. `unavailable` — asked for, but the origin's resolution gate was full and nothing was attempted. `ok` — everything attempted resolved. `partial` — some did not. `rate-limited` — none did, and the upstream answered 429. `diverted` — none did, because Google routed the requests into its consent flow. `failed` — none did, for another reason. `rate-limited` and `diverted` clear on their own and are worth retrying; `failed` means something changed. Responses that are not `skipped`, `ok` or `partial` are sent `Cache-Control: no-store`, so a transient failure cannot be cached and re-served after it has passed.",
+              "The categorical outcome of resolution, so a client need not compare counters to notice a failure. `skipped` — not asked for. `unavailable` — asked for, but the origin's resolution gate was full and nothing was attempted. `ok` — everything attempted resolved. `partial` — some did not. `rate-limited` — none did, and Google throttled either step. `diverted` — none did, because Google routed the requests into its consent flow. `unrecognised` — the RPC answered 2xx with an envelope this parser does not understand, so the contract moved and no amount of waiting fixes it. `failed` — none did, for another reason. Read `retryable` rather than inferring from this. Responses that are not `skipped`, `ok` or `partial` are sent `Cache-Control: no-store`, so a transient failure cannot be cached and re-served after it has passed.",
           },
           articles: {
             type: "array",
@@ -2175,7 +2232,7 @@ export const openApiDocument = {
           method: {
             type: "string",
             enum: ["initialize", "tools/list", "tools/call"],
-          },
+          }, 
           params: {
             type: "object",
             description:

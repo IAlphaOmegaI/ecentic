@@ -78,6 +78,15 @@ export type Article = {
   articleId: string;
   /** Publishers that carried the same story, from the syndication merge. */
   alsoIn: Source[];
+  /**
+   * 1-based position in the feed Google returned it in — the only relevance
+   * signal the feed carries, and unrecoverable once the list is reordered.
+   *
+   * Gaps are meaningful: a jump from 3 to 7 means the items between were
+   * dropped by the headline filter or the syndication merge, not that Google
+   * ranked them differently.
+   */
+  relevanceRank: number;
   /** The feed query this record came from, when several were merged. */
   query?: string;
 };
@@ -448,7 +457,7 @@ export const parseFeed = (xml: string, query?: string): Article[] => {
     "channel"
   ] as Record<string, unknown> | undefined;
 
-  return toArray(channel?.["item"]).flatMap((raw): Article[] => {
+  return toArray(channel?.["item"]).flatMap((raw, index): Article[] => {
     if (typeof raw !== "object" || raw === null) return [];
 
     const item = raw as Record<string, unknown>;
@@ -474,6 +483,9 @@ export const parseFeed = (xml: string, query?: string): Article[] => {
         googleUrl,
         articleId,
         alsoIn: [],
+        // Taken from the raw feed position, before any filtering, so the number
+        // means what Google meant by it.
+        relevanceRank: index + 1,
         ...(query === undefined ? {} : { query }),
       },
     ];
@@ -866,10 +878,31 @@ const urlFrom = (payload: unknown): string | null => {
     : null;
 };
 
+/**
+ * What the batched POST — step B, the actual RPC — did.
+ *
+ * Step A is a cheap unauthenticated page fetch; step B is the call Google
+ * meters. Returning only the URLs it produced threw away the one status that
+ * matters under load: a throttled POST and a changed envelope both arrived as
+ * an empty map, so "signed N, paired 0" had four possible causes and three
+ * wrong reactions available for any incident.
+ */
+type BatchOutcome = {
+  urls: Map<number, string>;
+  /** HTTP status of the POST; `null` if it never answered at all. */
+  status: number | null;
+  /**
+   * Whether a 2xx body contained at least one envelope for our RPC.
+   * Meaningful only for a 2xx — a 429 is not an unrecognised envelope, it is a
+   * refusal, and conflating them is exactly the confusion this exists to end.
+   */
+  recognised: boolean;
+};
+
 const resolveBatch = async (
   signatures: { index: number; signature: Signature }[],
   edition: string,
-): Promise<Map<number, string>> => {
+): Promise<BatchOutcome> => {
   const entries = signatures.map(({ index, signature }) =>
     entryFor(signature, edition, index),
   );
@@ -896,14 +929,22 @@ const resolveBatch = async (
     { timeout: 20000 },
   );
 
-  if (!response.success || !response.data.ok) return new Map();
+  const empty = new Map<number, string>();
+
+  if (!response.success)
+    return { urls: empty, status: null, recognised: false };
+
+  if (!response.data.ok)
+    return { urls: empty, status: response.data.status, recognised: false };
+
+  const status = response.data.status;
 
   const body = await readBounded(
     response.data,
     ARTICLE_BYTE_LIMIT,
     BODY_TIMEOUT_MS,
   );
-  if (!body.success) return new Map();
+  if (!body.success) return { urls: empty, status, recognised: false };
 
   // Only ids this batch actually issued are accepted. `Number(part[6])` alone
   // coerces a null id to 0 and silently hands article zero somebody else's URL —
@@ -911,15 +952,23 @@ const resolveBatch = async (
   // the other direction.
   const issued = new Set(signatures.map(({ index }) => String(index)));
 
-  return envelopes(body.data).reduce((resolved, part) => {
-    if (part[0] !== "wrb.fr" || part[1] !== RPC_ID) return resolved;
+  // Counted before the id filter: an envelope for our RPC means Google still
+  // speaks the protocol we wrote against, whether or not it accepted these
+  // particular signatures. Losing that distinction is what makes a rejected
+  // signature look like a broken parser.
+  const ours = envelopes(body.data).filter(
+    (part) => part[0] === "wrb.fr" && part[1] === RPC_ID,
+  );
 
+  const urls = ours.reduce((resolved, part) => {
     const id = part[6];
     if (typeof id !== "string" || !issued.has(id)) return resolved;
 
     const url = urlFrom(part[2]);
     return url ? resolved.set(Number(id), url) : resolved;
   }, new Map<number, string>());
+
+  return { urls, status, recognised: ours.length > 0 };
 };
 
 const chunk = <T>(items: T[], size: number): T[][] =>
@@ -1021,6 +1070,18 @@ export type ResolutionDiagnosis = {
   unsigned: number;
   /** Google diverted the request to its consent flow instead of the article. */
   consent: number;
+  /** What the batched RPC itself did — the metered half of resolution. */
+  batch: {
+    /** POST requests made (one per batch of up to 20 articles). */
+    requests: number;
+    /** Count by HTTP status; the key `"none"` means it never answered. */
+    statuses: Record<string, number>;
+    /**
+     * 2xx responses carrying no envelope for our RPC. Above zero means the
+     * contract changed and a parser fix is needed — never a reason to back off.
+     */
+    unrecognised: number;
+  };
 };
 
 /**
@@ -1064,13 +1125,15 @@ export const resolveUrls = async (
     chunk(signed, BATCH_SIZE).map((batch) => resolveBatch(batch, edition)),
   );
 
-  const resolved = new Map(batches.flatMap((batch) => [...batch]));
+  const resolved = new Map(batches.flatMap((batch) => [...batch.urls]));
 
   const fresh = [...resolved].flatMap(([position, url]): [string, string][] => {
     const entry = pending[position];
     return entry ? [[entry.item.articleId, url]] : [];
   });
 
+  // Only resolved URLs are ever written. A failure is never stored, so a
+  // transient refusal cannot be replayed out of the cache after it has passed.
   await writeCache(fresh);
 
   const urls = new Map([...cached, ...fresh]);
@@ -1079,6 +1142,12 @@ export const resolveUrls = async (
     if (attempt.kind !== "refused") return counts;
 
     const key = String(attempt.status);
+    counts[key] = (counts[key] ?? 0) + 1;
+    return counts;
+  }, {});
+
+  const statuses = batches.reduce<Record<string, number>>((counts, batch) => {
+    const key = batch.status === null ? "none" : String(batch.status);
     counts[key] = (counts[key] ?? 0) + 1;
     return counts;
   }, {});
@@ -1096,6 +1165,17 @@ export const resolveUrls = async (
       unreachable: attempts.filter((a) => a.kind === "unreachable").length,
       unsigned: attempts.filter((a) => a.kind === "unsigned").length,
       consent: attempts.filter((a) => a.kind === "consent").length,
+      batch: {
+        requests: batches.length,
+        statuses,
+        unrecognised: batches.filter(
+          (batch) =>
+            batch.status !== null &&
+            batch.status >= 200 &&
+            batch.status < 300 &&
+            !batch.recognised,
+        ).length,
+      },
     },
   };
 };
@@ -1296,6 +1376,9 @@ export const dedupe = (
       ...match.article,
       url: match.article.url ?? item.url,
       alsoIn: [...carried.values()],
+      // A story Google ranked 3rd for one query and 40th for another is a
+      // 3rd-place story; the merge must not bury it at the loser's rank.
+      relevanceRank: Math.min(match.article.relevanceRank, item.relevanceRank),
     };
   }
 
@@ -1397,6 +1480,18 @@ export type CollectOptions = FeedOptions & {
   commerceTerms?: readonly string[] | null;
   /** Hard cap applied after filtering, before resolution. */
   limit?: number;
+  /**
+   * `relevance` (default) keeps Google's own order; `date` sorts newest first.
+   *
+   * This decides which articles `limit` keeps, not merely how they read, and
+   * that is why relevance is the default. Inside a bounded `when:` window the
+   * feed's order carries no date information at all (measured: Spearman ≈ -0.15
+   * against publication time), so sorting by date there ranks on noise — and
+   * worse, it selects against quality: on a live 7-day feed the eight newest
+   * items were Google's ranks 96, 94, 82 and 97, aggregators that republish
+   * constantly, while ranks 1-8 were the Reuters and PYMNTS originals.
+   */
+  sort?: Sort;
 };
 
 /**
@@ -1409,6 +1504,32 @@ export type CollectOptions = FeedOptions & {
  */
 const byRecency = (left: Article, right: Article) =>
   -chronologically(left, right);
+
+/**
+ * Google's own ordering, restored.
+ *
+ * Ranks are per-feed, so merging several queries means several items share
+ * rank 1. Sorting on rank and breaking ties by recency therefore interleaves
+ * the queries — every query's best item, then every query's second — which is
+ * the fair merge and costs nothing to get.
+ */
+const byRelevance = (left: Article, right: Article) =>
+  left.relevanceRank === right.relevanceRank
+    ? byRecency(left, right)
+    : left.relevanceRank - right.relevanceRank;
+
+export const SORTS = ["relevance", "date"] as const;
+export type Sort = (typeof SORTS)[number];
+
+export const isSort = (value: string): value is Sort =>
+  (SORTS as readonly string[]).includes(value);
+
+/**
+ * Orders a result set. `relevance` is the default because the sort decides
+ * which articles `limit` keeps, not merely how they read.
+ */
+export const sortArticles = (items: Article[], sort?: Sort): Article[] =>
+  [...items].sort(sort === "date" ? byRecency : byRelevance);
 
 /**
  * The single categorical answer to "did resolution work", so a consumer does
@@ -1425,19 +1546,38 @@ export type ResolveStatus =
   | "ok"
   /** Some resolved, some did not. */
   | "partial"
-  /** Nothing resolved, and the upstream refused with 429s. */
+  /** Nothing resolved, and Google throttled one of the two steps. */
   | "rate-limited"
   /** Nothing resolved: Google diverted the requests to its consent flow. */
   | "diverted"
+  /**
+   * Nothing resolved: the RPC answered 2xx with an envelope we do not
+   * understand. The contract moved; no amount of waiting fixes it.
+   */
+  | "unrecognised"
   /** Nothing resolved, for some other reason. */
   | "failed";
 
+type Health = Pick<
+  ResolutionDiagnosis & { attempted: number },
+  "attempted" | "succeeded" | "refused" | "consent" | "unreachable" | "batch"
+>;
+
+const throttled = (health: Health) =>
+  (health.refused["429"] ?? 0) > 0 || (health.batch.statuses["429"] ?? 0) > 0;
+
+/**
+ * Resolution is two steps, and only the second is metered.
+ *
+ * Step A is a cheap unauthenticated page fetch; step B is the batched RPC. So
+ * the overwhelmingly likely way to be throttled is every step A succeeding and
+ * only the POST being limited — which, while `rate-limited` was derived from
+ * step A alone, reported as plain `failed`. The status whose entire job is to
+ * say "back off" was structurally blind to the most common reason to back off.
+ */
 export const resolveStatusFor = (
   requested: boolean,
-  health: Pick<
-    ResolutionDiagnosis & { attempted: number },
-    "attempted" | "succeeded" | "refused" | "consent"
-  > | null,
+  health: Health | null,
 ): ResolveStatus => {
   if (!requested) return "skipped";
   if (!health) return "unavailable";
@@ -1445,13 +1585,50 @@ export const resolveStatusFor = (
     return "ok";
   if (health.succeeded > 0) return "partial";
 
-  // Total failure. Both of these clear on their own and are worth retrying
-  // later; `failed` is the one that means something actually changed. A caller
-  // should not have to read a counter to tell them apart.
-  if ((health.refused["429"] ?? 0) > 0) return "rate-limited";
+  // Total failure, most actionable cause first. A 429 anywhere means wait; a
+  // consent diversion clears on its own; an unreadable envelope needs a code
+  // change. Three different responses, so three different names.
+  if (throttled(health)) return "rate-limited";
   if (health.consent > 0) return "diverted";
+  if (health.batch.unrecognised > 0) return "unrecognised";
 
   return "failed";
+};
+
+/**
+ * The one bit a client can actually act on: is another attempt worth making?
+ *
+ * A consumer cannot fix our parser, and telling it "unrecognised" without
+ * telling it "stop retrying" leaves it doing the only thing it knows how to do.
+ * `failed` is the heterogeneous case, so it is decided by what actually
+ * contributed rather than by the label: a page that rendered without a
+ * signature will render without one again, and a signature the RPC understood
+ * but rejected is a clock or a scheme problem, not a busy minute.
+ */
+export const isRetryable = (
+  status: ResolveStatus,
+  health: Health | null,
+): boolean => {
+  switch (status) {
+    case "ok":
+    case "skipped":
+    case "unrecognised":
+      return false;
+    case "rate-limited":
+    case "diverted":
+    case "unavailable":
+    case "partial":
+      return true;
+    default:
+      return health === null
+        ? false
+        : health.unreachable > 0 ||
+            health.consent > 0 ||
+            Object.keys(health.refused).some((code) => Number(code) >= 500) ||
+            Object.keys(health.batch.statuses).some(
+              (code) => code === "none" || Number(code) >= 500,
+            );
+  }
 };
 
 type Outcome = {
@@ -1459,6 +1636,8 @@ type Outcome = {
   /** Articles available before `limit` was applied, so truncation is visible. */
   total: number;
   resolveStatus: ResolveStatus;
+  /** Whether another attempt could plausibly do better. */
+  retryable: boolean;
   /** Whether resolution actually ran, so a null `url` is never ambiguous. */
   resolved: boolean;
   /** Present only when resolution ran. */
@@ -1483,7 +1662,7 @@ const pipeline = async (
       ? relevant
       : dedupe(relevant, options.threshold ?? DEFAULT_SIMILARITY_THRESHOLD);
 
-  const sorted = [...merged].sort(byRecency);
+  const sorted = sortArticles(merged, options.sort);
   const total = sorted.length;
   const articles =
     options.limit === undefined ? sorted : sorted.slice(0, options.limit);
@@ -1494,6 +1673,7 @@ const pipeline = async (
       total,
       resolved: false,
       resolveStatus: resolveStatusFor(false, null),
+      retryable: false,
     };
 
   // Checked and claimed together, with no await in between, so two concurrent
@@ -1504,6 +1684,7 @@ const pipeline = async (
       total,
       resolved: false,
       resolveStatus: resolveStatusFor(true, null),
+      retryable: true,
     };
 
   resolutions.active += 1;
@@ -1518,11 +1699,14 @@ const pipeline = async (
       ...outcome.diagnosis,
     };
 
+    const resolveStatus = resolveStatusFor(true, resolution);
+
     return {
       articles: outcome.articles,
       total,
       resolved: true,
-      resolveStatus: resolveStatusFor(true, resolution),
+      resolveStatus,
+      retryable: isRetryable(resolveStatus, resolution),
       resolution,
     };
   } finally {
