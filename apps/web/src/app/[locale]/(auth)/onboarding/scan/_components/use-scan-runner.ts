@@ -422,21 +422,10 @@ export const useScanRunner = (options: ScanRunnerOptions) => {
 
       stopTimers();
       const run = generation.current;
-      setPhase("running");
-      setLogs([]);
-      setStats(initialStats);
-      setStatuses(initialStatuses);
-      setModelStats({});
-      setWinRates({});
-      setTopFinding(null);
-      setCount(0);
-      setElapsed(0);
-      shown.current = 0;
-      start.current = Date.now();
 
-      // Two attempts: a lone blip on a user-initiated click should recover
-      // silently, and idempotent enqueue makes the repeat safe. Whatever still
-      // fails after that is persistent enough to surface — and to report.
+      // Stay on pre until enqueue actually accepts the scan. Flipping to
+      // running first made a failed start look like the simulation ran and
+      // then dumped the user back on the same screen.
       const enqueue = await callWithRetry(
         () =>
           Simulate.enqueueScan({
@@ -452,8 +441,6 @@ export const useScanRunner = (options: ScanRunnerOptions) => {
       if (generation.current !== run) return;
 
       if (!enqueue.success) {
-        stopTimers();
-        setPhase("pre");
         if (enqueue.error instanceof TransportError) {
           Sentry.captureException(enqueue.error);
         }
@@ -461,6 +448,17 @@ export const useScanRunner = (options: ScanRunnerOptions) => {
         return;
       }
 
+      setPhase("running");
+      setLogs([]);
+      setStats(initialStats);
+      setStatuses(initialStatuses);
+      setModelStats({});
+      setWinRates({});
+      setTopFinding(null);
+      setCount(0);
+      setElapsed(0);
+      shown.current = 0;
+      start.current = Date.now();
       setScanId(enqueue.data.scanId);
       poll(enqueue.data.scanId);
     },

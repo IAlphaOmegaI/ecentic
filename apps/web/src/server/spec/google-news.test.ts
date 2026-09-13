@@ -973,7 +973,7 @@ describe("step B failures reach the diagnosis", () => {
       () =>
         new Response(
           `)]}'\n\n3\n[["wrb.fr","Fbv4je","[null,\\"https://elsewhere.example/x\\"]",null,null,null,"99"]]`,
-          { status: 200 }, 
+          { status: 200 },
         ),
     );
 

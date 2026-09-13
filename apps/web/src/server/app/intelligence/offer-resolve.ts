@@ -7,11 +7,12 @@ import { streamable } from "../../utils/ai";
 import { Environment } from "../../utils/environment";
 import { RequestError } from "../../utils/error";
 import { repository, resultifyRead } from "../../utils/repository";
-import type { Offer } from "../../utils/serp";
+import type { Offer, OfferLookup } from "../../utils/serp";
 import * as Serp from "../../utils/serp";
 import * as Competitor from "../competitor";
 import * as Product from "../product";
 import * as Subscription from "../subscription";
+import { assess } from "./offer-assess";
 import {
   cachedLookup,
   cacheLookup,
@@ -19,6 +20,7 @@ import {
   consumeTrialLookup,
   fingerprint,
 } from "./offer-budget";
+import { deriveCategoryQuery } from "./offer-category";
 
 /**
  * Resolving one product's competing offers — the shared core.
@@ -38,72 +40,8 @@ import {
 const offers = repository(schema.competitorOffer);
 const usage = repository(schema.offerUsage);
 
-// ---------------------------------------------------------------------------
-// Relevance guard
-// ---------------------------------------------------------------------------
-
-/**
- * Google clusters the catalog, so there is no entity-resolution subsystem here
- * — but a free-text search can still resolve to the wrong cluster, and a wrong
- * competitor is worse than none: it is a confident, measured-looking comparison
- * against an unrelated product.
- *
- * Deterministic and free. A guard that cost a model call per offer would cost
- * more than the lookup it guards.
- */
-
-/**
- * The band `judge.ts:104` has always asserted to the detection model ("within
- * ±40% of its price") and that nothing could enforce, because until
- * `priceAmount` there was no numeric price on either side to compare.
- */
-const PRICE_BAND = 0.4;
-
-/** Low on purpose: this rejects the unrelated, not the imperfectly worded. */
-const TOKEN_OVERLAP = 0.25;
-
-const significantTokens = (value: string) =>
-  new Set(
-    value
-      .toLowerCase()
-      .replace(/[^a-z0-9\s]/g, " ")
-      .split(/\s+/)
-      .filter((token) => token.length > 2),
-  );
-
-const amount = (value: string | null) => {
-  if (!value) return null;
-  const parsed = Number.parseFloat(value.replace(/[^0-9.]/g, ""));
-  return Number.isFinite(parsed) ? parsed : null;
-};
-
-export type Rejection = "price-band" | "unrelated";
-
-export const assess = (
-  offer: Offer,
-  product: { title: string; price: string | null },
-): Rejection | null => {
-  const ours = amount(product.price);
-
-  if (ours !== null && ours > 0 && offer.price !== null) {
-    const ratio = offer.price / ours;
-    if (ratio < 1 - PRICE_BAND || ratio > 1 + PRICE_BAND) return "price-band";
-  }
-
-  // An offer with no title cannot be checked for relatedness; the price band is
-  // the only guard it gets, which is why it is not rejected outright.
-  if (!offer.title) return null;
-
-  const ourTokens = significantTokens(product.title);
-  if (ourTokens.size === 0) return null;
-
-  const theirTokens = significantTokens(offer.title);
-  const shared = [...ourTokens].filter((token) =>
-    theirTokens.has(token),
-  ).length;
-
-  return shared / ourTokens.size >= TOKEN_OVERLAP ? null : "unrelated";
-};
+export type { Rejection } from "./offer-assess";
+export { assess } from "./offer-assess";
 
 // ---------------------------------------------------------------------------
 // Resolution
@@ -120,6 +58,8 @@ export type Reason =
   | "low-relevance"
   | "budget-exhausted";
 
+export type MatchKind = "sku" | "category";
+
 export type Resolution = {
   productId: string;
   created: number;
@@ -129,6 +69,12 @@ export type Resolution = {
   credits: number;
   cached: boolean;
   reason: Reason | null;
+  /**
+   * How rivals were found when `offers > 0`. Null on empty / error outcomes.
+   * Category peers are still `measured` — observed on Google Shopping — but
+   * same-category rather than same-SKU.
+   */
+  match: MatchKind | null;
   /**
    * The roster rows this resolution wrote, so a streaming caller can push them
    * to the UI as they land instead of re-reading the table per product. Empty
@@ -150,6 +96,7 @@ const empty = (
   credits: 0,
   cached: false,
   reason,
+  match: null,
   competitors: [],
   ...extra,
 });
@@ -208,6 +155,139 @@ export const resolveOffers = async ({
       milliseconds: Date.now() - started,
     });
 
+  const spend = async (operation: string) => {
+    const budget = trial
+      ? await consumeTrialLookup({ store: storeId, operation })
+      : await consumeBudget({ store: storeId, plan, operation });
+    return budget;
+  };
+
+  const writeAccepted = async ({
+    accepted,
+    rejected,
+    credits,
+    cached,
+    match,
+    fallbackTitle,
+    brand,
+  }: {
+    accepted: Offer[];
+    rejected: number;
+    credits: number;
+    cached: boolean;
+    match: MatchKind;
+    fallbackTitle: string;
+    brand: string | null;
+  }) => {
+    const existing = await Competitor.find(Environment.SERVER, {
+      where: and(
+        eq(schema.competitor.storeId, storeId),
+        eq(schema.competitor.productId, productId),
+      ),
+    });
+    if (!existing.success) return existing;
+
+    const bySeller = new Map(
+      existing.data
+        .filter((row) => row.sellerDomain !== null)
+        .map((row) => [row.sellerDomain as string, row]),
+    );
+
+    const measuredAt = new Date();
+
+    const written = await Promise.all(
+      accepted.map(async (offer) => {
+        const domain = offer.sellerDomain as string;
+        const logoHost =
+          match === "category" ? Serp.categoryPeerHost(domain) : domain;
+
+        // Both price representations are written here and nowhere else, so they
+        // cannot drift: `priceAmount` is authoritative, `price` is its display
+        // form for the existing UI.
+        const price = offer.price === null ? null : String(offer.price);
+
+        const fields = {
+          title: offer.title ?? fallbackTitle,
+          brand,
+          price,
+          priceAmount: price,
+          currency: offer.currency,
+          image: offer.image ?? getDomainLogo(logoHost),
+          url: offer.url,
+          source: offer.seller,
+          sellerDomain: domain,
+          measuredAt,
+          confidence: "measured" as const,
+        };
+
+        const previous = bySeller.get(domain);
+
+        const row = previous
+          ? await Competitor.update(Environment.SERVER, previous.id, {
+              ...fields,
+              updatedAt: measuredAt,
+            })
+          : await Competitor.create(Environment.SERVER, {
+              ...fields,
+              userId,
+              storeId,
+              productId,
+              selected: true,
+            });
+
+        if (row.success)
+          await offers.create(Environment.SERVER, {
+            userId,
+            storeId,
+            productId,
+            competitorId: row.data?.id ?? null,
+            sellerDomain: domain,
+            seller: offer.seller,
+            title: offer.title,
+            priceAmount: price,
+            currency: offer.currency,
+            shipping: offer.shipping === null ? null : String(offer.shipping),
+            total: offer.total === null ? null : String(offer.total),
+            offerUrl: offer.url,
+            imageUrl: offer.image,
+            rating: offer.rating === null ? null : String(offer.rating),
+            reviews: offer.reviews,
+            position: offer.position,
+            provider: Serp.serpApi.name,
+            measuredAt,
+          });
+
+        return {
+          created: !previous,
+          ok: row.success,
+          competitor: row.success ? row.data : null,
+        };
+      }),
+    );
+
+    const resolution: Resolution = {
+      productId,
+      created: written.filter((entry) => entry.ok && entry.created).length,
+      updated: written.filter((entry) => entry.ok && !entry.created).length,
+      offers: accepted.length,
+      rejected,
+      credits,
+      cached,
+      reason: null,
+      match,
+      competitors: written
+        .map((entry) => entry.competitor)
+        .filter((competitor) => competitor !== null),
+    };
+
+    await record(
+      match === "category" ? "category-match" : "offers",
+      resolution,
+    );
+
+    return { success: true as const, data: resolution };
+  };
+
   // Cache first, budget second: a cache hit costs nothing, so charging the
   // merchant's allowance for one would meter our storage rather than the
   // vendor's bill.
@@ -221,9 +301,7 @@ export const resolveOffers = async ({
     // partial-success state, so a bare increment would double-charge.
     const operation = `${storeId}:${productId}:${key}`;
 
-    const budget = trial
-      ? await consumeTrialLookup({ store: storeId, operation })
-      : await consumeBudget({ store: storeId, plan, operation });
+    const budget = await spend(operation);
     if (!budget.allowed) return { success: false as const, budget };
 
     const fetched = await Serp.serpApi.lookup(product.title, {
@@ -247,133 +325,130 @@ export const resolveOffers = async ({
     return { success: false as const, error: lookup.error };
   }
 
-  const credits = lookup.fresh ? lookup.data.credits : 0;
-  const cached = !lookup.fresh;
+  const skuCredits = lookup.fresh ? lookup.data.credits : 0;
+  const skuCached = !lookup.fresh;
 
-  if (lookup.data.offers.length === 0) {
-    const resolution = empty(productId, "no-match", { credits, cached });
+  const skuAccepted =
+    lookup.data.offers.length === 0
+      ? []
+      : lookup.data.offers.filter(
+          (offer) =>
+            offer.sellerDomain !== null && assess(offer, product) === null,
+        );
+  const skuRejected =
+    lookup.data.offers.length === 0
+      ? 0
+      : lookup.data.offers.length - skuAccepted.length;
+
+  if (skuAccepted.length > 0) {
+    return writeAccepted({
+      accepted: skuAccepted,
+      rejected: skuRejected,
+      credits: skuCredits,
+      cached: skuCached,
+      match: "sku",
+      fallbackTitle: lookup.data.matched?.title ?? product.title,
+      brand: lookup.data.matched?.brand ?? null,
+    });
+  }
+
+  // Exact-SKU miss (empty cluster or everything failed the relevance guard).
+  // Private-label titles still need category peers for simulations — one
+  // broadened Shopping lookup, light results only.
+  const categoryQuery = await deriveCategoryQuery(product);
+  if (!categoryQuery) {
+    const reason: Reason =
+      lookup.data.offers.length === 0 ? "no-match" : "low-relevance";
+    const resolution = empty(productId, reason, {
+      credits: skuCredits,
+      cached: skuCached,
+      rejected: skuRejected,
+    });
+    await record(reason, resolution);
+    return { success: true as const, data: resolution };
+  }
+
+  // Prefixed so a category query that coincides with another product's title
+  // never reuses that product's immersive seller cache as peer products.
+  const categoryKey = `category:${fingerprint(categoryQuery)}`;
+  const categoryHit = await cachedLookup(categoryKey);
+
+  const categoryLookup = await (async (): Promise<
+    | { success: true; data: OfferLookup; fresh: boolean }
+    | { success: false; budget: true }
+    | { success: false; error: Error }
+  > => {
+    if (categoryHit)
+      return { success: true as const, data: categoryHit, fresh: false };
+
+    const operation = `${storeId}:${productId}:${categoryKey}`;
+    const budget = await spend(operation);
+    if (!budget.allowed) return { success: false as const, budget: true };
+
+    const fetched = await Serp.searchCategoryPeers(categoryQuery, {
+      country: "us",
+    });
+    if (!fetched.success)
+      return { success: false as const, error: fetched.error };
+
+    await cacheLookup(categoryKey, fetched.data);
+    return { success: true as const, data: fetched.data, fresh: true };
+  })();
+
+  if (!categoryLookup.success) {
+    if ("budget" in categoryLookup && categoryLookup.budget) {
+      const resolution = empty(productId, "budget-exhausted", {
+        credits: skuCredits,
+        cached: skuCached,
+        rejected: skuRejected,
+      });
+      await record("budget-exhausted", resolution);
+      return { success: true as const, data: resolution };
+    }
+
+    // Category provider error: surface the original SKU miss, not a hard fail.
+    const reason: Reason =
+      lookup.data.offers.length === 0 ? "no-match" : "low-relevance";
+    const resolution = empty(productId, reason, {
+      credits: skuCredits,
+      cached: skuCached,
+      rejected: skuRejected,
+    });
+    await record(reason, resolution);
+    return { success: true as const, data: resolution };
+  }
+
+  const credits =
+    skuCredits + (categoryLookup.fresh ? categoryLookup.data.credits : 0);
+  const cached = skuCached && !categoryLookup.fresh;
+
+  const categoryAccepted = categoryLookup.data.offers.filter(
+    (offer) =>
+      offer.sellerDomain !== null &&
+      assess(offer, product, { against: categoryQuery }) === null,
+  );
+  const categoryRejected =
+    categoryLookup.data.offers.length - categoryAccepted.length;
+
+  if (categoryAccepted.length === 0) {
+    const resolution = empty(productId, "no-match", {
+      credits,
+      cached,
+      rejected: skuRejected + categoryRejected,
+    });
     await record("no-match", resolution);
     return { success: true as const, data: resolution };
   }
 
-  const accepted = lookup.data.offers.filter(
-    (offer) => offer.sellerDomain !== null && assess(offer, product) === null,
-  );
-  const rejected = lookup.data.offers.length - accepted.length;
-
-  if (accepted.length === 0) {
-    const resolution = empty(productId, "low-relevance", {
-      credits,
-      cached,
-      rejected,
-    });
-    await record("low-relevance", resolution);
-    return { success: true as const, data: resolution };
-  }
-
-  // Existing rows for this product, so a refresh updates prices in place rather
-  // than growing a duplicate roster on every cron tick.
-  const existing = await Competitor.find(Environment.SERVER, {
-    where: and(
-      eq(schema.competitor.storeId, storeId),
-      eq(schema.competitor.productId, productId),
-    ),
-  });
-  if (!existing.success) return existing;
-
-  const bySeller = new Map(
-    existing.data
-      .filter((row) => row.sellerDomain !== null)
-      .map((row) => [row.sellerDomain as string, row]),
-  );
-
-  const measuredAt = new Date();
-
-  const written = await Promise.all(
-    accepted.map(async (offer) => {
-      const domain = offer.sellerDomain as string;
-
-      // Both price representations are written here and nowhere else, so they
-      // cannot drift: `priceAmount` is authoritative, `price` is its display
-      // form for the existing UI.
-      const price = offer.price === null ? null : String(offer.price);
-
-      const fields = {
-        title: offer.title ?? lookup.data.matched?.title ?? product.title,
-        brand: lookup.data.matched?.brand ?? null,
-        price,
-        priceAmount: price,
-        currency: offer.currency,
-        image: offer.image ?? getDomainLogo(domain),
-        url: offer.url,
-        source: offer.seller,
-        sellerDomain: domain,
-        measuredAt,
-        confidence: "measured" as const,
-      };
-
-      const previous = bySeller.get(domain);
-
-      const row = previous
-        ? await Competitor.update(Environment.SERVER, previous.id, {
-            ...fields,
-            updatedAt: measuredAt,
-          })
-        : await Competitor.create(Environment.SERVER, {
-            ...fields,
-            userId,
-            storeId,
-            productId,
-            selected: true,
-          });
-
-      if (row.success)
-        await offers.create(Environment.SERVER, {
-          userId,
-          storeId,
-          productId,
-          competitorId: row.data?.id ?? null,
-          sellerDomain: domain,
-          seller: offer.seller,
-          title: offer.title,
-          priceAmount: price,
-          currency: offer.currency,
-          shipping: offer.shipping === null ? null : String(offer.shipping),
-          total: offer.total === null ? null : String(offer.total),
-          offerUrl: offer.url,
-          imageUrl: offer.image,
-          rating: offer.rating === null ? null : String(offer.rating),
-          reviews: offer.reviews,
-          position: offer.position,
-          provider: Serp.serpApi.name,
-          measuredAt,
-        });
-
-      return {
-        created: !previous,
-        ok: row.success,
-        competitor: row.success ? row.data : null,
-      };
-    }),
-  );
-
-  const resolution: Resolution = {
-    productId,
-    created: written.filter((entry) => entry.ok && entry.created).length,
-    updated: written.filter((entry) => entry.ok && !entry.created).length,
-    offers: accepted.length,
-    rejected,
+  return writeAccepted({
+    accepted: categoryAccepted,
+    rejected: skuRejected + categoryRejected,
     credits,
     cached,
-    reason: null,
-    competitors: written
-      .map((entry) => entry.competitor)
-      .filter((competitor) => competitor !== null),
-  };
-
-  await record("offers", resolution);
-
-  return { success: true as const, data: resolution };
+    match: "category",
+    fallbackTitle: categoryQuery,
+    brand: null,
+  });
 };
 
 /**
@@ -565,6 +640,7 @@ export type DiscoveryEvent =
       title: string;
       offers: number;
       reason: Reason | null;
+      match: MatchKind | null;
     }
   | { kind: "done"; total: number; credits: number; unmatched: number }
   | { kind: "error"; message: string };
@@ -647,6 +723,7 @@ export const discoverOffers = ({
           title: product.title,
           offers: 0,
           reason: null,
+          match: null,
         });
         continue;
       }
@@ -664,6 +741,7 @@ export const discoverOffers = ({
         title: product.title,
         offers: resolution.data.offers,
         reason: resolution.data.reason,
+        match: resolution.data.match,
       });
 
       // Nothing further will succeed this period; stop rather than walk the

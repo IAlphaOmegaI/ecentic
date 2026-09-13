@@ -1,13 +1,13 @@
 import { unwrapResult } from "@zenncore/utils";
+import { Button } from "@zenncore/web/components/button";
 import { connection } from "next/server";
 import { getTranslations } from "next-intl/server";
+import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
 import * as Subscription from "@/server/app/subscription";
 import { isEntitled } from "@/server/utils/entitlement";
 import { Environment } from "@/server/utils/environment";
-import { PricingCTA } from "../../pricing/_components/pricing-cta";
-
-const PLAN_KEYS = ["payg", "compete", "scale", "dominate"] as const;
+import { PlanCards, PlanEnterprise } from "../../pricing/_components/plan-grid";
 
 /**
  * The dashboard paywall. Rendered in its own Suspense boundary *beside* the
@@ -33,71 +33,54 @@ export const SubscriptionGate = async () => {
   if (isEntitled(subscription)) return null;
 
   const translate = await getTranslations("dashboard.paywall");
-  const plans = await getTranslations("pricing.plans");
 
   return (
     <div className="absolute inset-0 z-40 overflow-y-auto bg-background">
-      <div className="mx-auto flex min-h-full w-full max-w-3xl flex-col justify-center gap-8 px-6 py-12">
-        <div className="flex flex-col gap-3">
-          <p className="font-medium text-primary text-sm">
-            {translate("kicker")}
-          </p>
-          <h1 className="font-bold text-2xl text-foreground-rich tracking-[-0.02em]">
-            {translate("title")}
-          </h1>
-          <p className="max-w-xl text-foreground-dimmed text-sm">
-            {translate("description")}
-          </p>
-        </div>
+      <div className="mx-auto w-full max-w-6xl px-4 py-12 sm:px-6">
+        <div className="relative border border-accent-foreground">
+          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
 
-        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-          {PLAN_KEYS.map((plan) => (
-            <div
-              key={plan}
-              className="flex flex-col gap-3 border border-accent-foreground bg-background-rich p-6"
-            >
-              <div>
-                <p className="font-semibold text-foreground-rich text-lg">
-                  {plans(`${plan}.name`)}
-                </p>
-                <p className="mt-0.5 text-foreground-dimmed text-sm">
-                  {plans(`${plan}.tagline`)}
-                </p>
-              </div>
-              <p>
-                <span className="font-semibold text-3xl text-foreground-rich">
-                  {plans(`${plan}.figure`)}
-                </span>{" "}
-                <span className="text-foreground-dimmed text-sm">
-                  {plans(`${plan}.suffix`)}
-                </span>
+          <div className="p-6 md:p-12">
+            <p className="font-medium text-primary text-sm">
+              {translate("kicker")}
+            </p>
+            <h1 className="mt-2 max-w-2xl font-body font-medium text-3xl text-foreground md:text-5xl">
+              {translate("title")}
+            </h1>
+            <p className="mt-4 max-w-2xl font-light text-foreground-dimmed text-lg md:text-xl">
+              {translate("description")}
+            </p>
+          </div>
+
+          <PlanCards />
+
+          <PlanEnterprise />
+
+          <div className="grid grid-cols-1 border-accent-foreground border-t md:grid-cols-3">
+            <div className="col-span-2 flex flex-col justify-center bg-background p-6 md:px-12 md:py-8">
+              <p className="font-body font-light text-foreground-dimmed">
+                {translate("manage")}{" "}
+                <Link
+                  href="/dashboard/settings"
+                  className="text-primary transition-opacity hover:opacity-80"
+                >
+                  {translate("manageAction")}
+                </Link>
               </p>
-              <p className="text-foreground-dimmed text-xs">
-                {plans(`${plan}.note`)}
-              </p>
-              <PricingCTA plan={plan} className="mt-auto w-full">
-                {plans(`${plan}.action.primary`)}
-              </PricingCTA>
             </div>
-          ))}
-        </div>
-
-        <div className="flex flex-col gap-1 text-foreground-dimmed text-sm">
-          <Link
-            href="/pricing"
-            className="w-fit text-primary transition-opacity hover:opacity-80"
-          >
-            {translate("compare")}
-          </Link>
-          <p>
-            {translate("manage")}{" "}
-            <Link
-              href="/dashboard/settings"
-              className="text-primary transition-opacity hover:opacity-80"
-            >
-              {translate("manageAction")}
-            </Link>
-          </p>
+            <div className="flex flex-col justify-end border-accent-foreground border-t bg-background p-6 md:border-t-0 md:border-l md:p-8">
+              <Button
+                color="neutral"
+                className="w-full"
+                render={<Link href="/pricing" />}
+              >
+                {translate("compare")}
+              </Button>
+            </div>
+          </div>
         </div>
       </div>
     </div>

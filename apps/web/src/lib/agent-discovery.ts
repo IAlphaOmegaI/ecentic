@@ -2232,7 +2232,7 @@ export const openApiDocument = {
           method: {
             type: "string",
             enum: ["initialize", "tools/list", "tools/call"],
-          }, 
+          },
           params: {
             type: "object",
             description:

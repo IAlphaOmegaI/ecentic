@@ -486,3 +486,114 @@ export const serpApi: OfferProvider = {
     };
   },
 };
+
+// ---------------------------------------------------------------------------
+// Category peers (light results only — no immersive expansion)
+// ---------------------------------------------------------------------------
+
+/** How many distinct shopping hits to keep as category rivals. */
+const CATEGORY_PEER_LIMIT = 5;
+
+/**
+ * Turn a Shopping `source` label ("Amazon.com", "Target") into a registrable
+ * host when the string already looks like one; otherwise null so the caller
+ * can mint a stable synthetic key.
+ */
+const hostFromSource = (source: string | undefined): string | null => {
+  if (!source) return null;
+  const trimmed = source.trim().toLowerCase();
+  if (!trimmed) return null;
+
+  // "Amazon.com - Seller" / "Walmart.com"
+  const dotted = trimmed.match(
+    /\b([a-z0-9][a-z0-9-]*\.[a-z]{2,}(?:\.[a-z]{2})?)\b/,
+  );
+  if (dotted?.[1]) return dotted[1].replace(/^www\./, "");
+
+  return null;
+};
+
+/**
+ * Identity key for a category peer. Same-SKU offers dedupe on seller domain
+ * alone; category peers are distinct *products*, so two Amazon hits must not
+ * collapse under one `sellerDomain`. The host (when known) stays as a prefix
+ * so favicon helpers can still recover a real domain.
+ */
+export const categoryPeerDomain = (
+  source: string | undefined,
+  title: string,
+): string => {
+  const host = hostFromSource(source) ?? "peer";
+  const titleKey = title
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, " ")
+    .split(/\s+/)
+    .filter((token) => token.length > 1)
+    .slice(0, 6)
+    .join("-");
+  return `${host}#${titleKey || "item"}`;
+};
+
+/** Host portion of a {@link categoryPeerDomain} key, for favicons. */
+export const categoryPeerHost = (sellerDomain: string) =>
+  sellerDomain.split("#")[0] || sellerDomain;
+
+/**
+ * Category-peer lookup: one `google_shopping_light` call, no immersive
+ * expansion. Each priced result becomes its own rival product — the shape
+ * private-label merchants need when nobody else sells their exact SKU.
+ *
+ * Returned as {@link OfferLookup} so the offer cache and budget layers stay
+ * shared with the same-SKU path.
+ */
+export const searchCategoryPeers = async (
+  query: string,
+  options: LookupOptions = {},
+): Promise<Result<OfferLookup, Error>> => {
+  const trimmed = query.trim();
+  if (!trimmed)
+    return { success: false, error: new RequestError("Empty lookup query") };
+
+  const search = await searchShopping(trimmed, options);
+  if (!search.success) return search;
+
+  const seen = new Set<string>();
+  const offers: Offer[] = [];
+
+  for (const result of search.data) {
+    const title = result.title?.trim() || null;
+    const price = numeric(result.extracted_price);
+    if (!title || price === null) continue;
+
+    const domain = categoryPeerDomain(result.source, title);
+    if (seen.has(domain)) continue;
+    seen.add(domain);
+
+    offers.push({
+      seller: result.source?.trim() || "Unknown seller",
+      sellerDomain: domain,
+      title,
+      price,
+      currency: currencyFrom(result.price),
+      shipping: null,
+      total: null,
+      url: null,
+      image: result.thumbnail ?? null,
+      rating: numeric(result.rating),
+      reviews: numeric(result.reviews),
+      position: offers.length + 1,
+    });
+
+    if (offers.length >= CATEGORY_PEER_LIMIT) break;
+  }
+
+  return {
+    success: true,
+    data: {
+      query: trimmed,
+      matched: null,
+      offers,
+      credits: 1,
+    },
+  };
+};

@@ -17,7 +17,7 @@ export const ToastViewport = ({
     <ToastPrimitive.Portal container={container}>
       <ToastPrimitive.Viewport
         className={createClassName(
-          "fixed top-auto right-6 bottom-6 mx-auto flex w-fit max-w-[420px] sm:right-10 sm:bottom-10",
+          "fixed top-auto right-6 bottom-6 z-[100] mx-auto flex w-fit max-w-[420px] sm:right-10 sm:bottom-10",
           className,
         )}
         {...props}

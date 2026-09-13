@@ -17,9 +17,50 @@ import * as Competitor from "@/server/app/competitor";
 type LogEntry = {
   id: number;
   text: string;
-  elapsed: number;
+  /** Milliseconds from run start when this line arrived — frozen, never ticks. */
+  arrivedAt: number;
   type: "info" | "success" | "error";
 };
+
+/** Isolated from the header timer so per-line stamps stay frozen while elapsed ticks. */
+const DiscoveryLogLines = ({
+  logs,
+  active,
+}: {
+  logs: LogEntry[];
+  active: boolean;
+}) => (
+  <>
+    {logs.map((log, index) => {
+      const age = logs.length - 1 - index;
+      const opacity = active ? Math.max(0.2, 1 - age * 0.1) : 1;
+      return (
+        <motion.div
+          key={log.id}
+          initial={{ opacity: 0, x: -6 }}
+          animate={{ opacity, x: 0 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+          className="flex items-baseline gap-2"
+        >
+          <span className="shrink-0 font-mono text-foreground-dimmed/50 tabular-nums">
+            {formatElapsed(log.arrivedAt)}
+          </span>
+          <span
+            className={
+              log.type === "error"
+                ? "text-error leading-relaxed"
+                : log.type === "success"
+                  ? "font-medium text-success leading-relaxed"
+                  : "text-foreground-dimmed leading-relaxed"
+            }
+          >
+            {log.text}
+          </span>
+        </motion.div>
+      );
+    })}
+  </>
+);
 
 export namespace AutoDetectTab {
   export type Props = {
@@ -46,13 +87,13 @@ export const AutoDetectTab = ({
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
   const logRef = useRef<HTMLDivElement>(null);
 
-  const addLog = (entry: Omit<LogEntry, "id" | "elapsed">) =>
+  const addLog = (entry: Omit<LogEntry, "id" | "arrivedAt">) =>
     setLogs((previous) => [
       ...previous,
       {
         ...entry,
         id: previous.length + 1,
-        elapsed: Date.now() - start.current,
+        arrivedAt: Date.now() - start.current,
       },
     ]);
 
@@ -248,35 +289,7 @@ export const AutoDetectTab = ({
               ref={logRef}
               className="min-h-0 flex-1 space-y-1 overflow-y-auto scroll-smooth p-4"
             >
-              {logs.map((log, index) => {
-                const age = logs.length - 1 - index;
-                const opacity = isDetecting ? Math.max(0.2, 1 - age * 0.1) : 1;
-                return (
-                  <motion.div
-                    // biome-ignore lint/suspicious/noArrayIndexKey: we want to use the index as the key
-                    key={index}
-                    initial={{ opacity: 0, x: -6 }}
-                    animate={{ opacity, x: 0 }}
-                    transition={{ duration: 0.25, ease: "easeOut" }}
-                    className="flex items-baseline gap-2"
-                  >
-                    <span className="shrink-0 font-mono text-foreground-dimmed/50 tabular-nums">
-                      {formatElapsed(log.elapsed)}
-                    </span>
-                    <span
-                      className={
-                        log.type === "error"
-                          ? "text-error leading-relaxed"
-                          : log.type === "success"
-                            ? "font-medium text-success leading-relaxed"
-                            : "text-foreground-dimmed leading-relaxed"
-                      }
-                    >
-                      {log.text}
-                    </span>
-                  </motion.div>
-                );
-              })}
+              <DiscoveryLogLines logs={logs} active={isDetecting} />
               {logs.length === 0 && (
                 <p className="text-foreground-dimmed/50">
                   {translate("initializing")}

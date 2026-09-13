@@ -17,9 +17,50 @@ import * as Offers from "@/server/app/intelligence/offers";
 type LogEntry = {
   id: number;
   text: string;
-  elapsed: number;
+  /** Milliseconds from run start when this line arrived — frozen, never ticks. */
+  arrivedAt: number;
   type: "info" | "success" | "error";
 };
+
+/** Isolated from the header timer so per-line stamps stay frozen while elapsed ticks. */
+const DiscoveryLogLines = ({
+  logs,
+  active,
+}: {
+  logs: LogEntry[];
+  active: boolean;
+}) => (
+  <>
+    {logs.map((log, index) => {
+      const age = logs.length - 1 - index;
+      const opacity = active ? Math.max(0.2, 1 - age * 0.1) : 1;
+      return (
+        <motion.div
+          key={log.id}
+          initial={{ opacity: 0, x: -6 }}
+          animate={{ opacity, x: 0 }}
+          transition={{ duration: 0.25, ease: "easeOut" }}
+          className="flex items-baseline gap-2"
+        >
+          <span className="shrink-0 font-mono text-foreground-dimmed/50 tabular-nums">
+            {formatElapsed(log.arrivedAt)}
+          </span>
+          <span
+            className={
+              log.type === "error"
+                ? "text-error leading-relaxed"
+                : log.type === "success"
+                  ? "font-medium text-success leading-relaxed"
+                  : "text-foreground-dimmed leading-relaxed"
+            }
+          >
+            {log.text}
+          </span>
+        </motion.div>
+      );
+    })}
+  </>
+);
 
 export namespace OffersTab {
   export type Props = {
@@ -58,13 +99,13 @@ export const OffersTab = ({
   const timer = useRef<ReturnType<typeof setInterval> | null>(null);
   const logRef = useRef<HTMLDivElement>(null);
 
-  const addLog = (entry: Omit<LogEntry, "id" | "elapsed">) =>
+  const addLog = (entry: Omit<LogEntry, "id" | "arrivedAt">) =>
     setLogs((previous) => [
       ...previous,
       {
         ...entry,
         id: previous.length + 1,
-        elapsed: Date.now() - start.current,
+        arrivedAt: Date.now() - start.current,
       },
     ]);
 
@@ -121,8 +162,9 @@ export const OffersTab = ({
             break;
           case "product":
             // A product nobody else sells is a finding, not a gap — say so
-            // rather than leaving a silent hole in the log.
-            if (event.offers === 0)
+            // rather than leaving a silent hole in the log. Category peers are
+            // a successful fallback when the exact SKU has no other sellers.
+            if (event.offers === 0) {
               addLog({
                 text:
                   event.reason === "budget-exhausted"
@@ -130,6 +172,17 @@ export const OffersTab = ({
                     : translate("exclusiveLog", { title: event.title }),
                 type: "info",
               });
+              break;
+            }
+            if (event.match === "category") {
+              addLog({
+                text: translate("categoryLog", {
+                  title: event.title,
+                  count: event.offers,
+                }),
+                type: "success",
+              });
+            }
             break;
           case "done":
             // Per-product outcomes are already in the log; the totals here add
@@ -271,37 +324,7 @@ export const OffersTab = ({
               ref={logRef}
               className="min-h-0 flex-1 space-y-1 overflow-y-auto scroll-smooth p-4"
             >
-              {logs.map((log, index) => {
-                const age = logs.length - 1 - index;
-                const opacity = isDiscovering
-                  ? Math.max(0.2, 1 - age * 0.1)
-                  : 1;
-                return (
-                  <motion.div
-                    // biome-ignore lint/suspicious/noArrayIndexKey: the log is append-only
-                    key={index}
-                    initial={{ opacity: 0, x: -6 }}
-                    animate={{ opacity, x: 0 }}
-                    transition={{ duration: 0.25, ease: "easeOut" }}
-                    className="flex items-baseline gap-2"
-                  >
-                    <span className="shrink-0 font-mono text-foreground-dimmed/50 tabular-nums">
-                      {formatElapsed(log.elapsed)}
-                    </span>
-                    <span
-                      className={
-                        log.type === "error"
-                          ? "text-error leading-relaxed"
-                          : log.type === "success"
-                            ? "font-medium text-success leading-relaxed"
-                            : "text-foreground-dimmed leading-relaxed"
-                      }
-                    >
-                      {log.text}
-                    </span>
-                  </motion.div>
-                );
-              })}
+              <DiscoveryLogLines logs={logs} active={isDiscovering} />
             </div>
 
             {isDiscovering ? (

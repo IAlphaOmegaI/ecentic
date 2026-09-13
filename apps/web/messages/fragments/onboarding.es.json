@@ -427,6 +427,7 @@
         "finishedIn": "Finalizado en {elapsed}",
         "sellerLog": "{seller} — {price}",
         "exclusiveLog": "Ningún otro vendedor ofrece {title}",
+        "categoryLog": "{title}: sin vendedores exactos — {count, plural, one {# rival de categoría} other {# rivales de categoría}} en Shopping",
         "budgetLog": "Se agotó el límite de consultas por ahora",
         "measured": "{count, plural, one {# oferta competidora medida} other {# ofertas competidoras medidas}}",
         "errors": {
@@ -441,7 +442,7 @@
           },
           "noneFound": {
             "title": "Sin ofertas competidoras",
-            "description": "Parece que nadie más vende estos productos. Prueba otra pestaña para añadir rivales por marca o URL."
+            "description": "Parece que nadie más vende estos productos y tampoco encontramos rivales de categoría. Prueba otra pestaña para añadir rivales por marca o URL."
           }
         }
       },

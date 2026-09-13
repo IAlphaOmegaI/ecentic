@@ -2,6 +2,7 @@
 
 import { XIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
+import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import {
   Dialog,
@@ -13,11 +14,13 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useScanRunner } from "@/app/[locale]/(auth)/onboarding/scan/_components/use-scan-runner";
 import { Motion } from "@/components/motion";
+import { Link } from "@/i18n/navigation";
 import { Spring, Stagger } from "@/lib/animations";
 import { formatElapsed } from "@/lib/date";
+import { countForCurrentUser } from "@/server/app/competitor";
 import type * as Simulate from "@/server/app/intelligence/simulate";
 import { StatusPill, TopFindingCallout } from "./grid";
 
@@ -64,7 +67,9 @@ export const SimulationModal = ({
 }: SimulationModal.Props) => {
   const toast = useToastManager();
   const translate = useTranslations("dashboard.simulation");
+  const general = useTranslations("general");
   const target = useRef<HTMLDivElement>(null);
+  const [error, setError] = useState<string | null>(null);
 
   const {
     phase,
@@ -80,13 +85,36 @@ export const SimulationModal = ({
     reset,
   } = useScanRunner({
     store,
-    onError: (text) =>
+    onError: (text) => {
+      setError(text);
       toast.add({
         title: translate("toast.failed.title"),
         description: text,
         type: "error",
-      }),
+      });
+    },
   });
+
+  const [start, isStarting] = useAsyncAction(async () => {
+    setError(null);
+    await handleRun();
+  }, false);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const controller = new AbortController();
+
+    void (async () => {
+      const result = await countForCurrentUser({ store });
+      if (controller.signal.aborted || !result.success) return;
+      if (result.data.total === 0) {
+        setError(translate("pre.noCompetitors"));
+      }
+    })();
+
+    return () => controller.abort();
+  }, [open, store, translate]);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: scroll to bottom on new log
   useEffect(() => {
@@ -95,10 +123,14 @@ export const SimulationModal = ({
 
   const handleClose = () => {
     onClose();
-    setTimeout(reset, 300);
+    setTimeout(() => {
+      setError(null);
+      reset();
+    }, 300);
   };
 
   const closable = phase !== "running";
+  const needsCompetitors = Boolean(error?.toLowerCase().includes("competitor"));
 
   return (
     <Dialog
@@ -108,10 +140,15 @@ export const SimulationModal = ({
       }}
     >
       <DialogPopup
-        className="mt-0 flex h-[min(680px,92vh)] w-[min(1100px,calc(100vw-2rem))] max-w-none flex-col bg-background-rich p-0 shadow-2xl"
+        className={cn(
+          "z-50 mt-0 flex w-[min(1100px,calc(100vw-2rem))] max-w-none flex-col bg-background-rich p-0 opacity-100 shadow-2xl",
+          phase === "pre"
+            ? "h-auto max-h-[min(680px,92vh)]"
+            : "h-[min(680px,92vh)]",
+        )}
         classList={{
           backdrop:
-            "fixed inset-0 bg-foreground/40 opacity-100 backdrop-blur-sm transition-all duration-200 data-ending-style:opacity-0 data-starting-style:opacity-0",
+            "z-50 bg-foreground/40 opacity-100 backdrop-blur-sm transition-all duration-200 data-ending-style:opacity-0 data-starting-style:opacity-0",
         }}
       >
         <div className="flex shrink-0 items-center justify-between border-accent-foreground border-b px-6 py-3.5">
@@ -141,16 +178,13 @@ export const SimulationModal = ({
             {phase === "pre" && (
               <motion.div
                 key="pre"
-                className="absolute inset-0 flex flex-col overflow-y-auto"
+                className="flex flex-col"
                 initial={{ opacity: 0, y: 10 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -10 }}
                 transition={Spring.Gentle}
               >
-                <Motion.Stagger
-                  stagger={0.05}
-                  className="flex h-full flex-col overflow-hidden"
-                >
+                <Motion.Stagger stagger={0.05} className="flex flex-col">
                   <Motion.Item className="border-accent-foreground border-b px-8">
                     <div className="border-accent-foreground border-x p-6">
                       <p className="mb-2 font-medium text-2xl text-foreground">
@@ -167,17 +201,18 @@ export const SimulationModal = ({
                       {providers.map((provider) => (
                         <div
                           key={provider.model}
-                          className="flex aspect-square flex-col bg-background-rich p-4"
+                          className="flex flex-col gap-2 bg-background-rich p-4"
                         >
                           <Image
                             src={provider.logo}
                             alt={provider.model}
-                            width={40}
-                            height={40}
+                            width={32}
+                            height={32}
+                            className="size-8"
                           />
                           <span
                             className={cn(
-                              "mt-auto font-medium text-lg",
+                              "font-medium text-lg",
                               provider.textColor,
                             )}
                           >
@@ -191,17 +226,36 @@ export const SimulationModal = ({
                     </div>
                   </Motion.Item>
 
-                  <Motion.Item className="mt-auto px-8">
-                    <div className="border-accent-foreground border-x p-6">
-                      <Button
-                        type="button"
-                        onClick={() => handleRun()}
-                        disabled={isRunning}
-                        color="primary"
-                        className="w-full"
-                      >
-                        {translate("action.primary")}
-                      </Button>
+                  <Motion.Item className="px-8">
+                    <div className="flex flex-col gap-3 border-accent-foreground border-x p-6">
+                      {error && (
+                        <p className="text-foreground-dimmed text-sm">
+                          {error}
+                        </p>
+                      )}
+                      {needsCompetitors ? (
+                        <Button
+                          color="primary"
+                          className="w-full"
+                          render={
+                            <Link href={`/dashboard/${store}/competitors`} />
+                          }
+                        >
+                          {translate("pre.addCompetitors")}
+                        </Button>
+                      ) : (
+                        <Button
+                          type="button"
+                          onClick={() => start()}
+                          disabled={isRunning || isStarting}
+                          color="primary"
+                          className="w-full"
+                        >
+                          {isStarting
+                            ? general("states.pending.primary")
+                            : translate("action.primary")}
+                        </Button>
+                      )}
                     </div>
                   </Motion.Item>
                 </Motion.Stagger>

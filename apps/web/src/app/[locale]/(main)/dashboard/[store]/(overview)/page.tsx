@@ -46,7 +46,7 @@ export default ({ params }: PageProps<"/dashboard/[store]">) => (
         <LastUpdated params={params} />
       </Suspense>
     }
-    actions={<OverviewActions params={params} />}
+    actions={<OverviewActions />}
     stats={
       <Suspense fallback={<StatsSkeleton />}>
         <StatCards params={params} />

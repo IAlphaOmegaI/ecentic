@@ -590,7 +590,9 @@
       },
       "pre": {
         "heading": "AI Shopping Simulation",
-        "description": "Simulate how ChatGPT, Claude & Gemini compare your products against your competitors and see who they pick."
+        "description": "Simulate how ChatGPT, Claude & Gemini compare your products against your competitors and see who they pick.",
+        "addCompetitors": "Add competitors",
+        "noCompetitors": "This store has no competitors yet. Add some so the models have something to compare against."
       },
       "running": {
         "heading": "Live Intelligence Scan",
@@ -6970,9 +6972,10 @@
           },
           "noneFound": {
             "title": "No competing offers",
-            "description": "Nobody else appears to sell these products. Try another tab to add rivals by brand or URL."
+            "description": "Nobody else appears to sell these products, and we could not find category peers either. Try another tab to add rivals by brand or URL."
           }
-        }
+        },
+        "categoryLog": "{title}: no exact sellers — {count, plural, one {# category peer} other {# category peers}} from Shopping"
       }
     },
     "scan": {

@@ -168,7 +168,9 @@
       },
       "pre": {
         "heading": "AI Shopping Simulation",
-        "description": "Simulate how ChatGPT, Claude & Gemini compare your products against your competitors and see who they pick."
+        "description": "Simulate how ChatGPT, Claude & Gemini compare your products against your competitors and see who they pick.",
+        "addCompetitors": "Add competitors",
+        "noCompetitors": "This store has no competitors yet. Add some so the models have something to compare against."
       },
       "running": {
         "heading": "Live Intelligence Scan",

@@ -731,9 +731,12 @@ export const enqueueScan = withAuthentication(
 
     // An explicit roster IS the selection; the store's `selected` flag only
     // drives the fallback when no roster was picked.
+    const marked = competitors.data.filter((record) => record.selected);
     const chosen = competitorSelection?.length
       ? competitors.data
-      : competitors.data.filter((record) => record.selected);
+      : marked.length > 0
+        ? marked
+        : competitors.data;
 
     // Filter before freezing the roster, not after: the drain applies the same
     // rule (background-scan.ts), so an unpriced rival left in `competitorIds`
@@ -751,7 +754,7 @@ export const enqueueScan = withAuthentication(
         error: new ValidationError(
           chosen.length > 0
             ? "The selected competitors have no price recorded, so they cannot be compared. Add competitors with prices and run the scan again."
-            : "No competitors selected",
+            : "Add at least one competitor before running a simulation.",
         ),
       };
 

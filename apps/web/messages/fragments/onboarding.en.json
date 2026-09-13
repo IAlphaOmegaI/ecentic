@@ -427,6 +427,7 @@
         "finishedIn": "Finished in {elapsed}",
         "sellerLog": "{seller} — {price}",
         "exclusiveLog": "No other seller carries {title}",
+        "categoryLog": "{title}: no exact sellers — {count, plural, one {# category peer} other {# category peers}} from Shopping",
         "budgetLog": "Offer allowance used up for now",
         "measured": "{count, plural, one {# competing offer measured} other {# competing offers measured}}",
         "errors": {
@@ -441,7 +442,7 @@
           },
           "noneFound": {
             "title": "No competing offers",
-            "description": "Nobody else appears to sell these products. Try another tab to add rivals by brand or URL."
+            "description": "Nobody else appears to sell these products, and we could not find category peers either. Try another tab to add rivals by brand or URL."
           }
         }
       },
