@@ -21,6 +21,7 @@ import {
 import * as Product from "../../product";
 import * as Store from "../../store";
 import * as StoreAccount from "../../store-account";
+import { fetchPublicMeta } from "./domain";
 import { redeemRefreshToken } from "./token";
 
 type Type = {
@@ -1374,14 +1375,6 @@ const CATALOG_LIMIT_BYTES = 16 * 1024 * 1024;
 const CATALOG_PAGE_SIZE = 250;
 const CATALOG_MAX_PAGES = 10;
 
-type PublicMeta = {
-  id: number;
-  name: string | null;
-  currency: string | null;
-  myshopify_domain: string;
-  published_products_count: number | null;
-};
-
 /**
  * Whether a storefront's public catalog is readable. `closed` is an answer —
  * a password page, a 404, a non-JSON body; `unreachable` is the absence of one
@@ -1392,45 +1385,6 @@ type CatalogState = "open" | "closed" | "unreachable";
 const json = <T>(body: string) => {
   const parsed = resultify(() => JSON.parse(body) as T);
   return parsed.success ? parsed.data : null;
-};
-
-const text = (value: unknown) =>
-  typeof value === "string" && value.trim() ? value.trim().slice(0, 200) : null;
-
-const count = (value: unknown) =>
-  typeof value === "number" && Number.isInteger(value) && value >= 0
-    ? value
-    : null;
-
-/**
- * `/meta.json` is every Shopify storefront's public identity card. Its `id` is
- * the same shop id the Admin API returns, which is what lets a public import
- * and a later app install of the same store recognise each other. Any site can
- * serve a `/meta.json`; only Shopify's names a myshopify host. Every field is
- * the storefront's say-so, so each is type-checked before it is trusted.
- */
-const fetchPublicMeta = async (domain: string): Promise<PublicMeta | null> => {
-  const page = await HTTP.page(`${domain}/meta.json`, {
-    timeout: PROBE_TIMEOUT_MS,
-    limit: 256 * 1024,
-    accept: "application/json",
-  });
-  if (!page.success || page.data.status !== 200) return null;
-
-  const meta = json<Partial<Record<keyof PublicMeta, unknown>>>(page.data.body);
-  if (!meta || typeof meta.id !== "number" || !Number.isSafeInteger(meta.id))
-    return null;
-
-  const myshopify = text(meta.myshopify_domain);
-  if (!myshopify?.endsWith(".myshopify.com")) return null;
-
-  return {
-    id: meta.id,
-    name: text(meta.name),
-    currency: text(meta.currency),
-    myshopify_domain: myshopify,
-    published_products_count: count(meta.published_products_count),
-  };
 };
 
 const catalogState = async (domain: string): Promise<CatalogState> => {

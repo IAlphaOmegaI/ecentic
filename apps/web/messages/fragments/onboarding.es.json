@@ -142,21 +142,21 @@
         "description": "Conexión OAuth. Nunca vemos tu contraseña de Shopify.",
         "howItWorks": "¿Cómo funciona?",
         "steps": [
-          "Introduce el dominio de tu tienda. Es la URL yourstore.myshopify.com que usas para entrar al admin de Shopify.",
+          "Introduce el dominio de tu tienda: la URL que ven tus clientes (tumarca.com) o tu dominio admin yourstore.myshopify.com.",
           "Serás redirigido a Shopify para autorizar acceso de solo lectura a tu catálogo. Solo pedimos permisos de productos, nunca pedidos ni clientes.",
           "Tras aprobar, Shopify permite a ecentic leer y escribir los datos de productos de tu tienda."
         ],
         "fields": {
           "shop": {
             "label": "Dominio de la tienda",
-            "placeholder": "tutienda.myshopify.com",
+            "placeholder": "tumarca.com",
             "validation": "El dominio de la tienda es obligatorio",
             "description": {
-              "beforeExample": "El subdominio que usas para acceder al admin de Shopify. Si tu URL de admin es",
-              "exampleAdmin": "acmestore.myshopify.com/admin",
-              "middle": ", introduce",
+              "beforeExample": "La URL pública de tu tienda o el dominio admin de Shopify. Ejemplos:",
+              "exampleAdmin": "tumarca.com",
+              "middle": ",",
               "exampleHandle": "acmestore",
-              "orFull": "o el dominio completo",
+              "orFull": "o",
               "exampleDomain": "acmestore.myshopify.com"
             }
           }
@@ -170,12 +170,13 @@
           "missing_parameters": "La respuesta de Shopify no incluía los parámetros necesarios. Vuelve a iniciar la conexión.",
           "invalid_state": "El intento de conexión expiró o ya se usó. Vuelve a iniciarlo.",
           "invalid_hmac": "No pudimos verificar la respuesta de Shopify. Vuelve a iniciar la conexión.",
-          "already_connected": "Esta tienda ya está conectada a otra cuenta de écentic. Inicia sesión con esa cuenta o contacta con soporte para trasladarla."
+          "already_connected": "Esta tienda ya está conectada a otra cuenta de écentic. Inicia sesión con esa cuenta o contacta con soporte para trasladarla.",
+          "invalidShop": "No encontramos una tienda Shopify en ese dominio. Prueba la URL que ven tus clientes (tumarca.com) o yourstore.myshopify.com."
         },
         "toast": {
           "invalidDomain": {
-            "title": "Introduce tu dominio myshopify.com",
-            "description": "OAuth necesita el dominio admin de Shopify (p. ej. tutienda.myshopify.com) o el identificador de la tienda, no una URL de escaparate personalizada."
+            "title": "No encontramos esa tienda Shopify",
+            "description": "Prueba la URL que ven tus clientes (tumarca.com) o yourstore.myshopify.com."
           },
           "connectionFailed": "Error de conexión",
           "connected": {

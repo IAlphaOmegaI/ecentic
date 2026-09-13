@@ -269,10 +269,7 @@ const connectShopify = (raw: unknown) => {
   const parsed = parseToolArgs(Utils.schema.connectShopify, raw);
   if (!parsed.success) return { error: parsed.error };
 
-  const sanitized = parsed.data.shop.replace(/[^a-zA-Z0-9\-.]/g, "");
-  const domain = sanitized.includes(".myshopify.com")
-    ? sanitized
-    : `${sanitized}.myshopify.com`;
+  const domain = parsed.data.shop.replace(/[^a-zA-Z0-9\-.]/g, "");
 
   return {
     result: createText({

@@ -1,7 +1,6 @@
 "use client";
 
 import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
-import { resultify } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { FieldDescription } from "@zenncore/web/components/form";
@@ -20,25 +19,6 @@ import { useCurrentUser } from "@/context/auth";
 import { useRouter } from "@/i18n/navigation";
 import * as Shopify from "@/server/app/integration/shopify";
 
-const resolveShopDomain = (shop: string): string | null => {
-  const trimmed = shop.trim().toLowerCase();
-  if (!trimmed) return null;
-
-  const host = (() => {
-    const candidate = trimmed.includes("://") ? trimmed : `https://${trimmed}`;
-    const parsed = resultify(() => new URL(candidate).hostname);
-    return parsed.success ? parsed.data : (trimmed.split("/")[0] ?? trimmed);
-  })();
-
-  const cleaned = host.replace(/[^a-z0-9.-]/g, "");
-  if (!cleaned) return null;
-
-  if (cleaned.endsWith(".myshopify.com")) return cleaned;
-  if (!cleaned.includes(".")) return `${cleaned}.myshopify.com`;
-
-  return null;
-};
-
 export const ShopifyForm = () => {
   const router = useRouter();
   const toast = useToastManager();
@@ -56,6 +36,8 @@ export const ShopifyForm = () => {
       case "invalid_hmac":
       case "already_connected":
         return translate(`shopify.errors.${errorCode}`);
+      case "invalid-shop":
+        return translate("shopify.errors.invalidShop");
       default:
         return translate("shopify.errors.generic");
     }
@@ -97,19 +79,7 @@ export const ShopifyForm = () => {
   const [handleSubmit, isPending] = useAsyncAction(
     async (data: FormEntries<typeof config>) => {
       if (user.role === "administrator" || user.role === "owner") {
-        const shop = resolveShopDomain(data.shop);
-
-        if (!shop) {
-          toast.add({
-            title: translate("shopify.toast.invalidDomain.title"),
-            description: translate("shopify.toast.invalidDomain.description"),
-            type: "error",
-          });
-          return;
-        }
-
-        window.location.href = `/api/integrations/shopify/install?shop=${encodeURIComponent(shop)}`;
-
+        window.location.href = `/api/integrations/shopify/install?shop=${encodeURIComponent(data.shop.trim())}`;
         return;
       }
 

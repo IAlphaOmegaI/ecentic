@@ -142,21 +142,21 @@
         "description": "OAuth connection. We never see your Shopify password.",
         "howItWorks": "How it works?",
         "steps": [
-          "Enter your store domain below. This is the yourstore.myshopify.com URL you use to log into Shopify admin.",
+          "Enter your store domain below — the URL customers see (yourbrand.com) or yourstore.myshopify.com.",
           "You'll be redirected to Shopify to authorize read-only access to your product catalog. We only request product scopes, never orders or customers.",
           "After you approve, Shopify allows ecentic to read and write your store's product data."
         ],
         "fields": {
           "shop": {
             "label": "Shop Domain",
-            "placeholder": "yourstore.myshopify.com",
+            "placeholder": "yourbrand.com",
             "validation": "Shop domain is required",
             "description": {
-              "beforeExample": "The subdomain you use to access Shopify admin. If your admin URL is",
-              "exampleAdmin": "acmestore.myshopify.com/admin",
-              "middle": ", enter",
+              "beforeExample": "Your public store URL or Shopify admin domain. Examples:",
+              "exampleAdmin": "yourbrand.com",
+              "middle": ",",
               "exampleHandle": "acmestore",
-              "orFull": "or the full",
+              "orFull": "or",
               "exampleDomain": "acmestore.myshopify.com"
             }
           }
@@ -170,12 +170,13 @@
           "missing_parameters": "Shopify's response was missing required parameters. Start the connection again.",
           "invalid_state": "The connection attempt expired or was already used. Start it again.",
           "invalid_hmac": "We couldn't verify Shopify's response. Start the connection again.",
-          "already_connected": "This store is already connected to another écentic account. Sign in with that account, or contact support to move it."
+          "already_connected": "This store is already connected to another écentic account. Sign in with that account, or contact support to move it.",
+          "invalidShop": "We couldn't find a Shopify store at that domain. Try the URL customers see (yourbrand.com) or yourstore.myshopify.com."
         },
         "toast": {
           "invalidDomain": {
-            "title": "Enter your myshopify.com domain",
-            "description": "OAuth needs your Shopify admin domain (e.g. yourstore.myshopify.com) or store handle, rather than a custom storefront URL."
+            "title": "We couldn't find that Shopify store",
+            "description": "Try the URL customers see (yourbrand.com) or yourstore.myshopify.com."
           },
           "connectionFailed": "Connection failed",
           "connected": {

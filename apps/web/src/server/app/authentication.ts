@@ -13,7 +13,12 @@ import { schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
 import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
-import { InvalidCredentialsError, RequestError } from "../utils/error";
+import {
+  InvalidCredentialsError,
+  RequestError,
+  ValidationError,
+} from "../utils/error";
+import { resolveAdminHost } from "./integration/shopify/domain";
 import * as User from "./user";
 
 // TODO: use betterAuth client instead of server actions (default redirection)
@@ -36,15 +41,16 @@ export const signInWithShopify = withContext(
   ) => {
     const jar = await cookies();
 
-    const shopifyDomain = shop
-      .trim()
-      .replace(/^https?:\/\//, "")
-      .replace(/\/.*$/, "");
-    const normalizedShopifyDomain = shopifyDomain.includes(".myshopify.com")
-      ? shopifyDomain
-      : `${shopifyDomain}.myshopify.com`;
+    const domain = await resolveAdminHost(shop);
+    if (!domain)
+      return {
+        success: false,
+        error: new ValidationError(
+          "We couldn't find a Shopify store at that domain. Use the URL customers see, or yourstore.myshopify.com.",
+        ),
+      };
 
-    jar.set("shopify_auth_shop", normalizedShopifyDomain, {
+    jar.set("shopify_auth_shop", domain, {
       httpOnly: true,
       secure: true,
       sameSite: "lax",
@@ -66,7 +72,7 @@ export const signInWithShopify = withContext(
             callbackURL: sanitizeRedirect(callbackURL, "/dashboard"),
             // `/onboarding/connect/shopify?shop=${encodeURIComponent(shop)}`
             // TODO: replace with /api/auth/shopify-proxy/authorize
-            newUserCallbackURL: `/api/integrations/shopify/install?shop=${encodeURIComponent(shop)}`,
+            newUserCallbackURL: `/api/integrations/shopify/install?shop=${encodeURIComponent(domain)}`,
             // additionalData: {
             //   shop,
             // },

@@ -95,7 +95,8 @@ export const Utils = {
         properties: {
           shop: {
             type: "string",
-            description: "Shop domain, with or without .myshopify.com.",
+            description:
+              "Shop domain: custom storefront URL, store handle, or *.myshopify.com.",
           },
         },
         required: ["shop"],
