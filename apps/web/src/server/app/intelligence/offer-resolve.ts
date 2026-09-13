@@ -321,24 +321,27 @@ export const resolveOffers = async ({
       return { success: true as const, data: resolution };
     }
 
+    // Exact-title Serp chain failed (timeout, upstream error, …). Private-label
+    // catalogs hit this often; aborting here skipped category peers entirely and
+    // left stores like MIJA with dozens of `error` rows and an empty roster.
     await record("error", empty(productId, "no-match"));
-    return { success: false as const, error: lookup.error };
   }
 
-  const skuCredits = lookup.fresh ? lookup.data.credits : 0;
-  const skuCached = !lookup.fresh;
+  const skuCredits = lookup.success && lookup.fresh ? lookup.data.credits : 0;
+  const skuCached = lookup.success ? !lookup.fresh : false;
+  const skuOffers = lookup.success ? lookup.data.offers : [];
+  const skuMatched = lookup.success ? lookup.data.matched : null;
 
-  const skuAccepted =
-    lookup.data.offers.length === 0
-      ? []
-      : lookup.data.offers.filter(
-          (offer) =>
-            offer.sellerDomain !== null && assess(offer, product) === null,
-        );
-  const skuRejected =
-    lookup.data.offers.length === 0
-      ? 0
-      : lookup.data.offers.length - skuAccepted.length;
+  const skuAccepted = skuOffers.filter(
+    (offer) =>
+      offer.sellerDomain !== null &&
+      assess(offer, {
+        title: product.title,
+        price: product.price,
+        currency: product.currency,
+      }) === null,
+  );
+  const skuRejected = skuOffers.length - skuAccepted.length;
 
   if (skuAccepted.length > 0) {
     return writeAccepted({
@@ -347,24 +350,25 @@ export const resolveOffers = async ({
       credits: skuCredits,
       cached: skuCached,
       match: "sku",
-      fallbackTitle: lookup.data.matched?.title ?? product.title,
-      brand: lookup.data.matched?.brand ?? null,
+      fallbackTitle: skuMatched?.title ?? product.title,
+      brand: skuMatched?.brand ?? null,
     });
   }
 
-  // Exact-SKU miss (empty cluster or everything failed the relevance guard).
+  // Exact-SKU miss (empty cluster, relevance reject, or provider error).
   // Private-label titles still need category peers for simulations — one
   // broadened Shopping lookup, light results only.
   const categoryQuery = await deriveCategoryQuery(product);
   if (!categoryQuery) {
     const reason: Reason =
-      lookup.data.offers.length === 0 ? "no-match" : "low-relevance";
+      !lookup.success || skuOffers.length === 0 ? "no-match" : "low-relevance";
     const resolution = empty(productId, reason, {
       credits: skuCredits,
       cached: skuCached,
       rejected: skuRejected,
     });
-    await record(reason, resolution);
+    // Provider error already recorded above; don't double-write usage.
+    if (lookup.success) await record(reason, resolution);
     return { success: true as const, data: resolution };
   }
 
@@ -408,13 +412,13 @@ export const resolveOffers = async ({
 
     // Category provider error: surface the original SKU miss, not a hard fail.
     const reason: Reason =
-      lookup.data.offers.length === 0 ? "no-match" : "low-relevance";
+      !lookup.success || skuOffers.length === 0 ? "no-match" : "low-relevance";
     const resolution = empty(productId, reason, {
       credits: skuCredits,
       cached: skuCached,
       rejected: skuRejected,
     });
-    await record(reason, resolution);
+    if (lookup.success) await record(reason, resolution);
     return { success: true as const, data: resolution };
   }
 
@@ -422,11 +426,34 @@ export const resolveOffers = async ({
     skuCredits + (categoryLookup.fresh ? categoryLookup.data.credits : 0);
   const cached = skuCached && !categoryLookup.fresh;
 
-  const categoryAccepted = categoryLookup.data.offers.filter(
-    (offer) =>
-      offer.sellerDomain !== null &&
-      assess(offer, product, { against: categoryQuery }) === null,
-  );
+  const productForAssess = {
+    title: product.title,
+    price: product.price,
+    currency: product.currency,
+  };
+
+  const categoryAccepted = (() => {
+    const peers = categoryLookup.data.offers.filter(
+      (offer) => offer.sellerDomain !== null,
+    );
+
+    // Prefer peers in the same price band (after FX). If none survive, keep
+    // token-related peers from other price tiers — an empty category roster is
+    // worse than a mix of budget and premium rivals.
+    const inBand = peers.filter(
+      (offer) =>
+        assess(offer, productForAssess, { against: categoryQuery }) === null,
+    );
+    if (inBand.length > 0) return inBand;
+
+    return peers.filter(
+      (offer) =>
+        assess(offer, productForAssess, {
+          against: categoryQuery,
+          requirePriceBand: false,
+        }) === null,
+    );
+  })();
   const categoryRejected =
     categoryLookup.data.offers.length - categoryAccepted.length;
 

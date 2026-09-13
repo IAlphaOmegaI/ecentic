@@ -71,19 +71,48 @@ describe("assess — category mode", () => {
   test("category mode accepts peers that overlap the broadened query", () => {
     const rejection = assess(
       offer({ title: "Brixton Wide Brim Hat", price: 42 }),
-      { title: "Sophia Mija Hat", price: "40" },
+      { title: "Sophia Mija Hat", price: "40", currency: "USD" },
       { against: "women's wide brim hat" },
     );
     expect(rejection).toBeNull();
   });
 
-  test("category mode still enforces the price band", () => {
+  test("category mode still enforces the price band when currencies match", () => {
     const rejection = assess(
-      offer({ title: "Brixton Wide Brim Hat", price: 120 }),
-      { title: "Sophia Mija Hat", price: "40" },
+      offer({ title: "Brixton Wide Brim Hat", price: 120, currency: "USD" }),
+      { title: "Sophia Mija Hat", price: "40", currency: "USD" },
       { against: "women's wide brim hat" },
     );
     expect(rejection).toBe("price-band");
+  });
+
+  test("converts MKD to USD before applying the price band", () => {
+    // 3790 MKD ≈ $68; a $45 hat is within ±40%.
+    const rejection = assess(
+      offer({ title: "Brixton Wide Brim Hat", price: 45, currency: "USD" }),
+      { title: "Classic Hat White", price: "3790.00", currency: "MKD" },
+      { against: "Hat" },
+    );
+    expect(rejection).toBeNull();
+  });
+
+  test("rejects after FX when the peer is far outside the band", () => {
+    // 3790 MKD ≈ $68; a $500 hat is out of band.
+    const rejection = assess(
+      offer({ title: "Designer Brim Hat", price: 500, currency: "USD" }),
+      { title: "Classic Hat White", price: "3790.00", currency: "MKD" },
+      { against: "Hat" },
+    );
+    expect(rejection).toBe("price-band");
+  });
+
+  test("requirePriceBand false keeps other price-tier peers", () => {
+    const rejection = assess(
+      offer({ title: "Designer Brim Hat", price: 500, currency: "USD" }),
+      { title: "Classic Hat White", price: "3790.00", currency: "MKD" },
+      { against: "Hat", requirePriceBand: false },
+    );
+    expect(rejection).toBeNull();
   });
 });
 

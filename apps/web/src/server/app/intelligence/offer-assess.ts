@@ -1,4 +1,5 @@
 import type { Offer } from "../../utils/serp";
+import { toUsd } from "./offer-fx";
 
 /**
  * Relevance guard for measured offers — deterministic and free.
@@ -40,21 +41,57 @@ const amount = (value: string | null) => {
 
 export type Rejection = "price-band" | "unrelated";
 
-export const assess = (
-  offer: Offer,
-  product: { title: string; price: string | null },
+export type AssessProduct = {
+  title: string;
+  price: string | null;
+  /** ISO currency when known — used to convert into USD for the price band. */
+  currency?: string | null;
+};
+
+export type AssessOptions = {
   /**
    * Token source for relatedness. Same-SKU mode uses the product title;
    * category fallback uses the broadened shopping query so unique names like
    * "Sophia Mija Hat" do not reject every peer that only shares "hat".
    */
-  options: { against?: string } = {},
-): Rejection | null => {
-  const ours = amount(product.price);
+  against?: string;
+  /**
+   * When false, skip the price band and keep only the token check. Used by
+   * category discovery after an in-band pass finds nothing — still want peers
+   * from other price tiers rather than an empty roster.
+   */
+  requirePriceBand?: boolean;
+};
 
-  if (ours !== null && ours > 0 && offer.price !== null) {
-    const ratio = offer.price / ours;
-    if (ratio < 1 - PRICE_BAND || ratio > 1 + PRICE_BAND) return "price-band";
+/**
+ * Compare offer price to product price in a shared unit (USD after FX).
+ * Returns null when conversion is impossible — caller should not reject on band.
+ */
+export const priceRatio = (
+  offer: Offer,
+  product: AssessProduct,
+): number | null => {
+  const ours = amount(product.price);
+  if (ours === null || ours <= 0 || offer.price === null) return null;
+
+  const ourUsd = toUsd(ours, product.currency ?? "USD");
+  const theirUsd = toUsd(offer.price, offer.currency ?? "USD");
+  if (ourUsd === null || theirUsd === null || ourUsd <= 0) return null;
+
+  return theirUsd / ourUsd;
+};
+
+export const assess = (
+  offer: Offer,
+  product: AssessProduct,
+  options: AssessOptions = {},
+): Rejection | null => {
+  const requirePriceBand = options.requirePriceBand !== false;
+
+  if (requirePriceBand) {
+    const ratio = priceRatio(offer, product);
+    if (ratio !== null && (ratio < 1 - PRICE_BAND || ratio > 1 + PRICE_BAND))
+      return "price-band";
   }
 
   // An offer with no title cannot be checked for relatedness; the price band is
