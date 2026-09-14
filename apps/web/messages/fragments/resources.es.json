@@ -1,0 +1,70 @@
+{
+  "resources": {
+    "tools": {
+      "number": "01",
+      "title": "Cuatro herramientas gratis, cuatro preguntas respondidas.",
+      "description": "Mide la selección, comprueba protocolos de comercio, encuentra indicios de WebMCP u observa a un agente en una tienda. Sin tarjeta.",
+      "items": [
+        {
+          "number": "Herramienta 01",
+          "category": "Simulación de tasa de victoria",
+          "title": "Escaneo de puntuación de agente IA",
+          "description": "Ejecuta una simulación única de tus 10 productos principales en ChatGPT, Claude, Gemini y Perplexity. Ve dónde ganas, dónde pierdes y qué arreglar primero.",
+          "features": [
+            "Top 10 productos",
+            "Cuatro perspectivas de modelos",
+            "Resultados en unos dos minutos"
+          ],
+          "action": {
+            "primary": "Escanea tu tienda gratis"
+          }
+        },
+        {
+          "number": "Herramienta 02",
+          "category": "Comprobación de protocolo",
+          "title": "Validador UCP",
+          "description": "Comprueba si una tienda publica un Perfil de Comercio Universal válido en /.well-known/ucp y si los principales agentes de compras están permitidos en robots.txt.",
+          "features": [
+            "Accesibilidad del endpoint",
+            "Validación de esquema",
+            "Revisión de acceso de agentes"
+          ],
+          "action": {
+            "primary": "Validar una tienda"
+          }
+        },
+        {
+          "number": "Herramienta 03",
+          "category": "Sandbox de agentes",
+          "title": "Playground UCP",
+          "description": "Conduce un agente de compras con IA real contra cualquier tienda compatible con UCP. Busca catálogos, crea carritos, inicia checkout e inspecciona cada llamada a herramientas.",
+          "features": [
+            "Búsqueda y consulta de catálogo",
+            "Operaciones de carrito",
+            "{count} mensajes gratis sin cuenta"
+          ],
+          "action": {
+            "primary": "Abrir playground"
+          }
+        },
+        {
+          "number": "Herramienta 04",
+          "category": "Auditoría de flujos de compra",
+          "title": "Escáner WebMCP",
+          "description": "Revisa WebMCP en ocho operaciones de tienda, desde búsquedas y variantes hasta carritos, acceso al pago y pedidos. Obtén fuentes y mejoras prácticas para tus flujos de compra.",
+          "features": [
+            "Ocho flujos de compra",
+            "Mejoras prácticas basadas en el código",
+            "Sin cuenta"
+          ],
+          "action": {
+            "primary": "Auditar herramientas de compra"
+          }
+        }
+      ]
+    },
+    "meta": {
+      "description": "Recursos gratuitos de ecentic para comerciantes y desarrolladores: escaneo de agente IA, validador UCP, escáner WebMCP, playground UCP, guías y API públicas para agentes."
+    }
+  }
+}

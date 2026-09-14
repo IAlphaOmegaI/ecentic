@@ -41,6 +41,7 @@ export const CLIENT_MESSAGES = {
   platforms: [...MARKETING, "shopify", "woocommerce"],
   pricing: [...MARKETING, "pricing"],
   ucpValidator: [...MARKETING, "ucpValidator"],
+  webmcpScanner: [...MARKETING, "webmcpScanner"],
   // The playground client reads its catalog through `useMessages()`, which
   // walks the object directly — the whole `dashboard` sub-tree has to be there.
   ucpPlayground: [...MARKETING, "dashboard"],
@@ -53,6 +54,7 @@ export const CLIENT_MESSAGES = {
     "onboarding",
     "pricing",
     "ucpValidator",
+    "webmcpScanner",
   ],
   auth: [
     ...CHROME,

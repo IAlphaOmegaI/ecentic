@@ -95,6 +95,7 @@ account exists.
 | Reports | `/dashboard/reports` | Downloadable reports (Win Rate Summary, Product Performance, Competitor Analysis, etc.); scheduled reports |
 | Settings | `/dashboard/settings` | Account, team, integrations, notifications, simulation config (models, frequency, persona), billing |
 | UCP | `/dashboard/ucp` | Universal Commerce Protocol profile editor; completeness score; JSON preview; install instructions |
+| WebMCP scanner | `/dashboard/[store]/webmcp` | Free storefront source audit, also public at `/webmcp-scanner`. Eight shopping workflows report tool evidence, forms only, not observed, or review; seven audit checks add prioritized findings, merchant-specific fix hints, and parameter metadata. Reports distinguish observed storefront context from unconfirmed context and prioritize a product/collection sample within three pages. Unknown or generic-site forms get no enablement suggestion; checkout, orders, returns, accounts, and sensitive forms require manual review. Reports remain unsaved, disclose source coverage, and make no readiness-score or runtime-registration claim. See [scan methodology](../integrations/webmcp.md). |
 
 ---
 

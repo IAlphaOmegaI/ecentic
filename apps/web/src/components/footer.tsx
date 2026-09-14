@@ -70,6 +70,7 @@ export const Footer = async ({ stacked = false }: Footer.Props) => {
         { href: "/blog", label: translate("links.blog") },
         { href: "/compare/best-ai-ecommerce-tools", label: "Compare" },
         { href: "/ucp-validator", label: "UCP Validator" },
+        { href: "/webmcp-scanner", label: translate("links.webmcpScanner") },
         { href: "/ucp-playground", label: "UCP Playground" },
         { href: "/demo", label: translate("links.demo") },
       ],

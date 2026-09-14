@@ -1,10 +1,12 @@
 import { ArrowRightIcon, CheckIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
+import Image from "next/image";
 import { getMessages, getTranslations } from "next-intl/server";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
 import { Link } from "@/i18n/navigation";
+import WebMcpArt from "@/public/images/ascii/console.png";
 import { ANONYMOUS_MESSAGE_LIMIT } from "@/server/app/intelligence/ucp/playground-limit";
 import type enMessages from "../../../../../../messages/en.json";
 import { PlaygroundArt, ScanArt, UcpArt } from "./resource-art";
@@ -14,11 +16,16 @@ type ToolItem = (typeof enMessages)["resources"]["tools"]["items"][number];
 type Tool = ToolItem & {
   href: string;
   highlighted?: boolean;
-  art: "scan" | "ucp" | "playground";
+  art: "scan" | "ucp" | "playground" | "webmcp";
 };
 
-const toolHrefs = ["/sign-up", "/ucp-validator", "/ucp-playground"] as const;
-const toolArt = ["scan", "ucp", "playground"] as const;
+const toolHrefs = [
+  "/sign-up",
+  "/ucp-validator",
+  "/ucp-playground",
+  "/webmcp-scanner",
+] as const;
+const toolArt = ["scan", "ucp", "playground", "webmcp"] as const;
 
 const ToolArt = ({
   art,
@@ -34,6 +41,14 @@ const ToolArt = ({
       return <UcpArt className={className} />;
     case "playground":
       return <PlaygroundArt className={className} />;
+    case "webmcp":
+      return (
+        <Image
+          src={WebMcpArt}
+          alt=""
+          className={cn("object-contain p-8", className)}
+        />
+      );
     default: {
       const exhaustive: never = art;
       return exhaustive;

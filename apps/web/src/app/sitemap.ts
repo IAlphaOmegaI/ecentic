@@ -59,6 +59,7 @@ export default async (): Promise<MetadataRoute.Sitemap> => {
     { path: "/docs/rate-limits", changeFrequency: "monthly", priority: 0.6 },
     { path: "/docs/versioning", changeFrequency: "monthly", priority: 0.6 },
     { path: "/ucp-validator", changeFrequency: "monthly", priority: 0.7 },
+    { path: "/webmcp-scanner", changeFrequency: "monthly", priority: 0.7 },
     { path: "/ucp-playground", changeFrequency: "monthly", priority: 0.7 },
     { path: "/support", changeFrequency: "monthly", priority: 0.6 },
     { path: "/yc", changeFrequency: "monthly", priority: 0.5 },

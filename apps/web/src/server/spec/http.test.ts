@@ -188,6 +188,9 @@ describe("read", () => {
     const body = await readBody(new Response("x".repeat(64)), { limit: 16 });
 
     expect(body.success).toBe(false);
-    if (!body.success) expect(body.error.message).toBe("Response too large");
+    if (!body.success) {
+      expect(body.error.message).toBe("Response too large");
+      expect(body.error.name).toBe("response-too-large-error");
+    }
   });
 });

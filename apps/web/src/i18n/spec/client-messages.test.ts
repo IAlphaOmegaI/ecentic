@@ -84,6 +84,10 @@ const SCOPES: ReadonlyArray<{
     entries: entriesUnder(join(APP, "(main)/ucp-playground")),
   },
   {
+    scope: "webmcpScanner",
+    entries: entriesUnder(join(APP, "(main)/webmcp-scanner")),
+  },
+  {
     scope: "deals",
     entries: [
       ...entriesUnder(join(APP, "(main)/yc")),

@@ -96,7 +96,8 @@
       "woocommerce": "WooCommerce",
       "productListings": "Product Listings",
       "docs": "Developer docs",
-      "apiReference": "API reference"
+      "apiReference": "API reference",
+      "webmcpScanner": "WebMCP scanner"
     },
     "cta": {
       "eyebrow": "Get picked by AI",
@@ -446,7 +447,8 @@
         "intelligence": "Intelligence",
         "channels": "Channels"
       },
-      "agentic": "Agentic Score"
+      "agentic": "Agentic Score",
+      "webmcp": "WebMCP"
     },
     "sidebar": {
       "allStores": "All stores"
@@ -2577,7 +2579,11 @@
         },
         "frequency": {
           "title": "Simulation Frequency",
-          "options": ["Manual only", "Daily", "Weekly"]
+          "options": [
+            "Manual only",
+            "Daily",
+            "Weekly"
+          ]
         },
         "persona": {
           "title": "Purchase Persona",
@@ -3735,7 +3741,7 @@
   "resources": {
     "meta": {
       "title": "Free agent-commerce tools and merchant guides",
-      "description": "Free ecentic resources for merchants and builders: AI Agent Score Scan, UCP Validator, UCP Playground, buyer guides, blog, and public agent API surfaces."
+      "description": "Free ecentic resources for merchants and builders: AI Agent Score Scan, UCP Validator, WebMCP scanner, UCP Playground, guides, and public agent APIs."
     },
     "breadcrumb": {
       "home": "Home",
@@ -3764,8 +3770,8 @@
     },
     "tools": {
       "number": "01",
-      "title": "Three free tools, three questions answered.",
-      "description": "Measure selection, check protocol readiness, or watch a live agent work through a storefront. No credit card for any of them.",
+      "title": "Four free tools, four questions answered.",
+      "description": "Measure selection, check commerce protocols, find WebMCP source evidence, or watch a live agent work through a storefront. No credit card required.",
       "items": [
         {
           "number": "Tool 01",
@@ -3807,6 +3813,20 @@
           ],
           "action": {
             "primary": "Open playground"
+          }
+        },
+        {
+          "number": "Tool 04",
+          "category": "Shopping workflow audit",
+          "title": "WebMCP scanner",
+          "description": "Review WebMCP across eight store operations, from product search and variant selection to carts, checkout handoffs, and orders. Get source evidence and practical fixes for your shopping workflows.",
+          "features": [
+            "Eight shopping workflows",
+            "Practical store fixes backed by source",
+            "No account required"
+          ],
+          "action": {
+            "primary": "Audit shopping tools"
           }
         }
       ]
@@ -6793,7 +6813,13 @@
       },
       "selection": "{selected} of {limit} products selected",
       "table": {
-        "headers": ["Product", "Price", "Currency", "Status", "Quality"]
+        "headers": [
+          "Product",
+          "Price",
+          "Currency",
+          "Status",
+          "Quality"
+        ]
       },
       "states": {
         "active": "Active",
@@ -6903,7 +6929,12 @@
         "description": "Select the competitors you'd like to include in your AI agent simulations.",
         "summary": "{total} competitor products across {brands} brands — {selected} selected",
         "table": {
-          "headers": ["Competitor", "Price", "Currency", "Brand"]
+          "headers": [
+            "Competitor",
+            "Price",
+            "Currency",
+            "Brand"
+          ]
         },
         "action": {
           "back": "Back",
@@ -7277,7 +7308,11 @@
         "title": "ecentic API",
         "accent": "errors.",
         "description": "Every failure on the ecentic API is a typed problem document, not an HTML page. The code is the contract: it is stable, machine-readable, and safe to branch on.",
-        "assurances": ["RFC 9457", "Stable codes", "Resolution hints"],
+        "assurances": [
+          "RFC 9457",
+          "Stable codes",
+          "Resolution hints"
+        ],
         "art": {
           "alt": "ASCII-art illustration of a shield"
         },
@@ -7312,7 +7347,11 @@
         "title": "ecentic API",
         "accent": "rate limits.",
         "description": "Every public response carries the live state of your window, so an agent can pace itself instead of discovering the limit by being rejected.",
-        "assurances": ["Live headers", "Retry-After on 429", "Per-key windows"],
+        "assurances": [
+          "Live headers",
+          "Retry-After on 429",
+          "Per-key windows"
+        ],
         "art": {
           "alt": "ASCII-art illustration of a balance scale"
         },
@@ -7413,7 +7452,11 @@
         "title": "ecentic MCP",
         "accent": "server.",
         "description": "Claude, ChatGPT, and any Model Context Protocol client can call ecentic natively over JSON-RPC 2.0. This page is the connection reference: the endpoint, the transport, the handshake, and every tool it exposes.",
-        "assurances": ["Streamable HTTP", "JSON-RPC 2.0", "7 tools"],
+        "assurances": [
+          "Streamable HTTP",
+          "JSON-RPC 2.0",
+          "7 tools"
+        ],
         "art": {
           "alt": "ASCII-art illustration of a robot"
         },
@@ -7482,7 +7525,11 @@
         "title": "ecentic API",
         "accent": "authentication.",
         "description": "Public discovery needs no credential at all. Anything that reads or changes a merchant account takes a bearer key you mint yourself — no sales call, no manual provisioning.",
-        "assurances": ["Self-serve keys", "Bearer tokens", "OAuth metadata"],
+        "assurances": [
+          "Self-serve keys",
+          "Bearer tokens",
+          "OAuth metadata"
+        ],
         "art": {
           "alt": "ASCII-art illustration of a shield"
         },
@@ -7519,6 +7566,487 @@
       "footer": {
         "note": "Credentials are never required to evaluate ecentic — only to act on a merchant account."
       }
+    }
+  },
+  "webmcpScanner": {
+    "meta": {
+      "name": "WebMCP shopping audit",
+      "title": "Free WebMCP shopping audit for stores",
+      "description": "Audit storefront WebMCP support for product search, variants, carts, checkout, policies, and orders. Get shopping workflow evidence and practical fixes."
+    },
+    "hero": {
+      "title": "Audit your store’s shopping tools",
+      "accent": "from search to checkout.",
+      "description": "See which shopping operations your store exposes through WebMCP. Review catalog search, product choices, carts, and checkout handoffs, with source evidence and merchant-focused fixes.",
+      "assurances": [
+        "Free to use",
+        "No account required",
+        "Source inspection only"
+      ],
+      "art": "A console rendered in ASCII characters",
+      "action": {
+        "primary": "Audit a storefront"
+      }
+    },
+    "form": {
+      "title": "Audit your storefront",
+      "description": "Start with a public product or collection page for the clearest shopping context. The report maps source evidence to store operations and shows what to review next.",
+      "fields": {
+        "url": {
+          "label": "Storefront URL",
+          "placeholder": "example.com/products/your-product",
+          "description": "A public store domain or page URL. You can include the page path.",
+          "storeDescription": "Your connected storefront is prefilled. You can scan another page on this same domain.",
+          "required": "Enter a store domain or page URL.",
+          "invalid": "Enter a valid public store URL."
+        }
+      },
+      "action": {
+        "primary": "Run WebMCP audit"
+      },
+      "pending": "Auditing source…",
+      "progress": "Reading public pages, scripts, and referenced modules. This can take a few moments.",
+      "complete": "Audit complete. Review the findings below.",
+      "scope": "Reads the entered page and up to 2 linked shopping pages, prioritizing product and collection pages, plus at most 12 external scripts or modules. Follows explicit references and imports without running JavaScript, changing a cart, or placing an order.",
+      "errors": {
+        "failed": "The scan could not finish. Please try again.",
+        "invalid": "Enter a public HTTPS storefront URL. Dashboard scans must use the connected store’s domain.",
+        "unreachable": "We could not read this page. Check the URL and whether the storefront is publicly accessible.",
+        "limited": "You have reached the scan limit. Please wait before trying again.",
+        "retryAfter": "Try again in {seconds, number} seconds.",
+        "tooLarge": "This page is larger than the scanner can process. Try a product or collection page on the same store."
+      },
+      "sources": {
+        "label": "Learn more:",
+        "specification": "WebMCP specification",
+        "chrome": "Chrome WebMCP guide"
+      }
+    },
+    "report": {
+      "label": "WebMCP shopping audit",
+      "scannedAt": "Scanned {date}",
+      "status": {
+        "markupFound": {
+          "title": "WebMCP declarations found; names unresolved",
+          "description": "We found WebMCP declarations, but could not resolve their tool names from the inspected source. The tool inventory is incomplete; this does not mean the store has no tools."
+        },
+        "scriptSignals": {
+          "title": "WebMCP evidence found; tools unresolved",
+          "description": "The inspected code references WebMCP APIs, but the tool inventory could not be resolved from source. Tools may still be available in a browser. API references alone can also be feature checks or code that never runs."
+        },
+        "noEvidence": {
+          "title": "No WebMCP evidence in this scan",
+          "description": "We did not find WebMCP declarations or API signals in the source we inspected. This does not prove WebMCP is absent: other pages, scripts loaded later, or tools behind sign-in may expose it."
+        },
+        "toolsFound": {
+          "title": "Named WebMCP tools found in source",
+          "description": "We extracted named WebMCP tool definitions from the inspected source. The count covers these definitions; registration and availability in a browser remain unverified."
+        }
+      },
+      "counts": {
+        "tools": "Named tool definitions",
+        "signals": "API signals",
+        "pages": "Pages read",
+        "scripts": "Scripts read",
+        "notResolved": "Not resolved"
+      },
+      "tools": {
+        "title": "Tool definitions",
+        "description": "Definitions extracted from source, including parameter metadata and execution declarations. These are not confirmed browser registrations.",
+        "unnamed": "Unnamed definition",
+        "empty": "No tool definitions could be extracted from the inspected source.",
+        "noDescription": "No literal description could be read from this definition.",
+        "page": "Page",
+        "source": "Source",
+        "inputs": "Input names found",
+        "noInputs": "No input names could be read from source.",
+        "kind": {
+          "declarative": "HTML form declaration",
+          "imperative": "JavaScript definition"
+        },
+        "unresolved": "WebMCP evidence was detected, but no tool names could be resolved from the inspected source. The inventory is incomplete; this is not a count of zero available tools.",
+        "partiallyResolved": "Some definitions have unresolved names. The count includes only named definitions extracted from source; additional tools may be available in the browser.",
+        "parametersTitle": "Top-level input parameters",
+        "schemaLabel": "Input schema",
+        "executionLabel": "Execution",
+        "schema": {
+          "absent": "No schema declared; a schema is optional.",
+          "resolved": "Schema metadata resolved from source.",
+          "unresolved": "Schema could not be resolved from source.",
+          "notApplicable": "Inputs are described by the HTML form."
+        },
+        "execution": {
+          "declared": "Handler declared in source; not executed.",
+          "missing": "No handler identified in this definition.",
+          "unresolved": "Handler could not be resolved from source.",
+          "form": "Declarative form submission; not submitted."
+        },
+        "typeUnknown": "Type unresolved",
+        "required": "Required",
+        "optional": "Optional",
+        "requirementUnknown": "Requirement unresolved",
+        "parameterDescriptionMissing": "No parameter description found in source."
+      },
+      "issues": {
+        "missingName": "A tool name could not be read from this definition.",
+        "missingDescription": "A tool description could not be read from this definition.",
+        "missingSchema": "No literal input schema could be read. Input schemas are optional in the current draft.",
+        "autoSubmit": "This form declares automatic submission. Review whether that behavior is appropriate for the action.",
+        "unresolvedDefinition": "Part of this definition is dynamic or indirect and could not be resolved from source."
+      },
+      "signals": {
+        "title": "API evidence",
+        "description": "Source references are evidence of integration code, not proof of a registered tool.",
+        "contextApi": "modelContext API reference",
+        "registerTool": "registerTool call",
+        "provideContext": "provideContext call"
+      },
+      "coverage": {
+        "title": "Scan coverage",
+        "scanned": "Source read",
+        "unavailable": "Unavailable",
+        "skipped": "{scripts, number} external scripts or modules skipped · {resources, number} resources could not be read",
+        "totals": "{pages, number} pages read · {scripts, number} scripts or modules read"
+      },
+      "limitations": {
+        "title": "What this scan can tell you",
+        "staticOnly": "This is a source scan. It never runs remote JavaScript, submits forms, or invokes tools. Runtime registration and execution remain unverified.",
+        "pageLimit": "More linked pages were found than this scan covers. Scan a specific product, catalog, or search URL to inspect it directly.",
+        "scriptLimit": "Some external scripts or referenced modules were outside the scan limit. Their tools may be missing from these results.",
+        "resourceFailures": "Some pages or scripts could not be read. Findings cover only the accessible resources.",
+        "parseFailures": "Some source could not be fully parsed. Dynamic or unsupported definitions may be missing."
+      },
+      "nextStep": "Confirm the findings in a browser that supports WebMCP and inspect its registered tools. WebMCP is evolving; these findings are not a certification or an agent visibility score.",
+      "tabs": {
+        "label": "WebMCP report sections",
+        "audit": "Audit findings",
+        "tools": "Tools",
+        "forms": "Forms",
+        "coverage": "Coverage"
+      },
+      "audit": {
+        "title": "Review your store’s shopping tools",
+        "description": "Shopping workflow evidence first, followed by implementation findings. Source matches do not confirm browser availability, tool outputs, or completed purchases.",
+        "summary": {
+          "high": "High priority",
+          "improvements": "Improvements",
+          "opportunities": "Form opportunities",
+          "tools": "Named tools found"
+        },
+        "checksTitle": "Technical source checks",
+        "checksDescription": "Pass means this source check found no issue. Unknown means the evidence is insufficient. These checks are not a runtime certification.",
+        "checkStatus": {
+          "pass": "Pass",
+          "attention": "Attention",
+          "unknown": "Unknown"
+        },
+        "checks": {
+          "discovery": {
+            "title": "Tool discovery",
+            "description": "Named definitions or API evidence found in the inspected source."
+          },
+          "metadata": {
+            "title": "Names and descriptions",
+            "description": "Readable tool names and useful descriptions."
+          },
+          "parameters": {
+            "title": "Input metadata",
+            "description": "Resolvable parameter details and descriptions where provided."
+          },
+          "implementation": {
+            "title": "Execution declaration",
+            "description": "An identifiable handler or declarative form operation."
+          },
+          "forms": {
+            "title": "Form opportunities",
+            "description": "Annotations and possible links to existing tools, subject to review."
+          },
+          "coverage": {
+            "title": "Source coverage",
+            "description": "Whether the bounded scan could read and parse its target resources."
+          },
+          "runtime": {
+            "title": "Browser verification",
+            "description": "Registration, tool execution, and behavior in a supported browser."
+          }
+        },
+        "findingsTitle": "Implementation findings",
+        "findingsDescription": "Review the source issues behind these shopping operations. Start with high-priority fixes; possible form integrations require checking the existing store workflow.",
+        "priority": {
+          "high": "High priority",
+          "medium": "Improvement",
+          "low": "Suggestion",
+          "opportunity": "Opportunity",
+          "info": "Review"
+        },
+        "why": "Why it matters",
+        "fix": "Suggested fix",
+        "evidence": "Source evidence",
+        "relatedTools": "Possibly related tools",
+        "page": "Page",
+        "source": "Source",
+        "snippet": "Suggested code",
+        "snippetNote": "Draft attributes only. Verify that the tool name and description match the form’s real operation before merging. Preserve its action, controls, validation, and consent, and review existing tools first.",
+        "copied": "Copied",
+        "copyFailed": "Could not copy. Select the snippet and copy it manually.",
+        "action": {
+          "secondary": "Copy code"
+        },
+        "empty": "No actionable source issues were identified. Browser verification and the scan’s coverage limits still apply.",
+        "findings": {
+          "missingToolName": {
+            "title": "Give this tool a clear name",
+            "why": "A tool name could not be read from the definition. Agents need a stable identifier to select the intended operation.",
+            "fix": "Check the complete definition and add a unique, descriptive name if it is missing. Confirm that the same name appears in the browser’s registered tools."
+          },
+          "missingToolDescription": {
+            "title": "Describe what this tool does",
+            "why": "A description could not be read from this definition. Without clear metadata, an agent may not know when to use the tool or what it returns.",
+            "fix": "Add a description that explains the operation, expected result, and relevant constraints. If the description is generated, confirm its final value in the browser."
+          },
+          "missingHandler": {
+            "title": "Check the tool’s execution handler",
+            "why": "The inspected JavaScript definition has no identifiable execution handler. Metadata alone does not implement the operation.",
+            "fix": "Connect the definition to its intended execute callback, or verify an existing imported handler. Keep authentication, validation, and user confirmation in the execution path."
+          },
+          "unresolvedDefinition": {
+            "title": "Resolve this tool definition",
+            "why": "Part of the definition is dynamic, indirect, or outside the inspected source. Its metadata or implementation cannot be confirmed by this scan.",
+            "fix": "Trace the referenced variables and modules, then inspect the final registered definition in a browser with WebMCP support. Verify the name, description, inputs, and handler there."
+          },
+          "briefDescription": {
+            "title": "Make the tool description more useful",
+            "why": "The description is shorter than 40 characters and may not explain the operation well enough for an agent to choose it. This threshold is a clarity heuristic, not a WebMCP specification requirement.",
+            "fix": "Explain when to use the tool, what it returns, and any important limitations. For a product search, describe the supported search criteria and result details."
+          },
+          "missingParameterDescriptions": {
+            "title": "Explain the tool’s inputs",
+            "why": "Some top-level input properties lack descriptions in the inspected schema. Descriptions help agents supply the right values; they are not mandatory for every property.",
+            "fix": "Describe the shopping meaning of each relevant parameter: query and filters, product or variant IDs, cart-line IDs, absolute versus changed quantity, currency, or postcode. Keep required inputs aligned with the handler and provide useful examples."
+          },
+          "duplicateToolName": {
+            "title": "Review overlapping tool names",
+            "why": "Different source definitions share a tool name. They may conflict if registered in the same page context; reuse on separate pages is not necessarily a problem.",
+            "fix": "Check where each definition registers. If both tools coexist, give distinct operations distinct names. Otherwise ensure the intended definition is the one exposed to the browser."
+          },
+          "automaticSubmission": {
+            "title": "Review automatic form submission",
+            "why": "This form declares automatic submission. Depending on the operation, that may bypass an expected review or confirmation step.",
+            "fix": "Confirm that automatic submission is intentional and appropriate. Preserve validation and consent, and remove the automatic-submission attribute when the action should wait for user review."
+          },
+          "unnamedFields": {
+            "title": "Review form fields without names",
+            "why": "Some form controls have no name in the inspected markup. Such controls may not map to meaningful tool inputs.",
+            "fix": "Add descriptive names to controls that should be submitted and exposed as inputs. Preserve labels and validation, and keep credentials, tokens, and internal fields out of tool metadata."
+          },
+          "formOpportunity": {
+            "title": "Review this storefront workflow for agents",
+            "why": "This public form has no WebMCP form annotations in the inspected markup, and no confidently related named tool was identified. An existing JavaScript tool may still cover the workflow.",
+            "fix": "Review existing tools first. If this workflow would help agents, merge toolname and tooldescription into the existing form. Preserve its action, controls, validation, and consent; do not replace the form or enable automatic submission by default."
+          },
+          "formReview": {
+            "title": "Review this form before adding a tool",
+            "why": "The form may correspond to an existing tool or contain sensitive fields. Source inspection alone cannot determine whether another tool is needed or appropriate.",
+            "fix": "Inspect any related tools and confirm how the form handles authentication, sensitive inputs, and consent. Reuse an existing operation where appropriate and keep sensitive actions under the intended user controls."
+          },
+          "incompleteCoverage": {
+            "title": "Check the parts outside this scan",
+            "why": "Some pages, scripts, or definitions could not be inspected completely. The findings and tool count cover only the source that was resolved.",
+            "fix": "Review the Coverage tab, scan relevant product or search pages directly, and inspect remaining imports or protected flows in your browser. Re-run after inaccessible resources are available."
+          },
+          "noToolEvidence": {
+            "title": "Confirm whether this store exposes WebMCP",
+            "why": "No tool definitions or API evidence were found in the inspected source. This does not prove that the store has no WebMCP tools.",
+            "fix": "Inspect the site’s registered tools in a supported browser and try a relevant product or search page. If no tools exist, start with a useful, well-defined workflow such as catalog search."
+          },
+          "runtimeUnverified": {
+            "title": "Verify registration and behavior in a browser",
+            "why": "Source inspection cannot confirm that the browser registers a tool or that its handler works. This audit does not execute scripts, submit forms, or invoke tools.",
+            "fix": "Use a browser with WebMCP support to inspect registered metadata and test a safe read-only operation. Verify inputs, outputs, and error handling, and keep the intended confirmations for actions that change store state."
+          }
+        },
+        "occurrences": "Found in {count, number} locations"
+      },
+      "forms": {
+        "title": "Forms found in source",
+        "description": "Review forms in the context of real store operations. Labels are inferred from source metadata. Check existing tools before adding support; unfamiliar forms and sensitive purchase or account flows require manual review.",
+        "declared": "WebMCP form annotations found",
+        "unannotated": "No WebMCP form annotations in this markup",
+        "selector": "Selector",
+        "page": "Page",
+        "action": "Form action",
+        "method": "Method",
+        "currentPage": "Current page",
+        "toolName": "Declared tool name",
+        "relatedTools": "Possibly related tools",
+        "relatedNote": "These tool names were found somewhere in this scan. Their availability on this page and connection to this form are unverified; confirm both before adding another integration.",
+        "sensitive": "Sensitive fields were detected. Review authentication, privacy, and consent before exposing this workflow to an agent.",
+        "fields": "Form fields",
+        "unnamedField": "Unnamed field",
+        "required": "Required",
+        "optional": "Optional",
+        "noFields": "No field metadata could be read from this form.",
+        "empty": "No public forms were found in the inspected HTML. Forms created by JavaScript or behind sign-in may still exist.",
+        "intent": {
+          "search": "Search form",
+          "cart": "Cart form",
+          "newsletter": "Newsletter signup",
+          "contact": "Contact form",
+          "account": "Account form",
+          "other": "Storefront form",
+          "product": "Product form",
+          "variant": "Variant selection",
+          "coupon": "Coupon form",
+          "shipping": "Shipping estimate",
+          "checkout": "Checkout flow",
+          "orderTracking": "Order tracking",
+          "returns": "Returns flow"
+        },
+        "autoSubmit": "This form declares automatic submission. Verify the intended user confirmation and validation before changing its WebMCP integration.",
+        "guidance": {
+          "search": {
+            "why": "The source suggests a catalog search form. A JavaScript tool may already cover this workflow; form markup alone does not establish a missing integration.",
+            "fix": "Review existing search tools first. Check the query field, catalog filters, pagination, and result identifiers. If a new integration is appropriate, describe the actual search inputs and preserve the form’s validation and behavior."
+          },
+          "product": {
+            "why": "This appears to be a product workflow. Agents need a stable product identity and current shopping information rather than a generic form submission.",
+            "fix": "Confirm the product or SKU identifier and the operation’s purpose. For product reads, describe price, currency, stock, and canonical URL metadata; if the form changes a cart, review cart and variant behavior instead."
+          },
+          "variant": {
+            "why": "This form appears to select product options or a variant. A selected label alone may not identify the purchasable item or its current availability.",
+            "fix": "Check product and variant IDs, allowed option values, stock, and variant price. Preserve option validation and distinguish choosing a variant from adding it to a cart."
+          },
+          "cart": {
+            "why": "This appears to change cart contents. A generic form wrapper may hide which item changes or what a quantity value means.",
+            "fix": "Check the variant or cart-line identifier and whether quantity is absolute or a delta. Validate stock, return updated totals with currency, and prevent unintended duplicates when requests repeat. Reuse an existing cart tool when it covers this operation."
+          },
+          "coupon": {
+            "why": "This appears to apply or remove a discount. Coupon validity and the resulting price depend on the current cart and store rules.",
+            "fix": "Validate codes on the server against the correct cart. Explain acceptance and rejection, return updated discounts and totals with currency, and preserve the store’s existing coupon restrictions."
+          },
+          "shipping": {
+            "why": "This appears to collect shipping information or request an estimate. An estimate is different from confirming delivery details or placing an order.",
+            "fix": "Use only the country or postcode data needed for an estimate. Describe returned methods, costs, currency, and estimate limitations. Preserve address validation and checkout consent; do not expose customer details unnecessarily."
+          },
+          "checkout": {
+            "why": "This form appears to enter checkout or purchase confirmation. Exposing it as a generic submit tool could obscure a consequential step.",
+            "fix": "Review this flow manually. Distinguish navigation to checkout from placing an order, preserve cart state and validation, and retain the intended authentication, payment handoff, and explicit purchase confirmation."
+          },
+          "orderTracking": {
+            "why": "This appears to concern an existing order. Order-history navigation alone does not mean an agent can read authorized order data.",
+            "fix": "Review the flow manually. Require the correct authentication and ownership checks before returning status, tracking, or customer data. Scope identifiers to the current buyer and preserve any secure user handoff."
+          },
+          "returns": {
+            "why": "This appears to involve a return or another post-purchase operation. Reading a returns policy and creating a return are different capabilities.",
+            "fix": "Review this flow manually. Verify order ownership, item eligibility, and store policy, limit personal data, and require the intended confirmation before initiating a return, refund, or order change."
+          },
+          "newsletter": {
+            "why": "This appears to be a marketing subscription form, not a core product-search or cart operation. It may already have a separate integration.",
+            "fix": "Keep marketing consent explicit and separate from shopping actions. Review existing integrations before considering an agent tool; do not enroll a buyer as a side effect of search, cart updates, or checkout."
+          },
+          "contact": {
+            "why": "This appears to be a contact or support form. Its presence does not by itself justify a new shopping tool.",
+            "fix": "Confirm the support use case and existing integrations. Preserve validation, spam protection, and consent, and do not expose a generic submission operation without a clear merchant purpose."
+          },
+          "account": {
+            "why": "This appears to handle account access or customer details. Authentication must not be replaced by a generic form tool.",
+            "fix": "Review this flow manually. Keep authentication and account ownership checks in the existing secure flow, protect passwords and tokens, and use an explicit user handoff where sign-in is required."
+          },
+          "other": {
+            "why": "The source did not establish a specific shopping purpose for this form. A missing annotation is not enough to recommend a new tool.",
+            "fix": "Identify the merchant workflow and inspect existing tools before changing anything. This scan alone does not recommend wrapping an unknown form or automating its submission."
+          }
+        }
+      },
+      "commerce": {
+        "title": "Shopping workflows",
+        "description": "Source evidence across eight store operations. Expand a workflow for source links and merchant checks. This audit does not call the tools or test their outputs.",
+        "unconfirmed": {
+          "title": "Storefront context is unconfirmed",
+          "description": "This page did not provide enough product, catalog, cart, or commerce-tool evidence. Try a public product or collection URL. The workflows below are inspection guidance, not a list of missing store features."
+        },
+        "status": {
+          "toolFound": "Tool evidence found",
+          "formOnly": "Form evidence only",
+          "notObserved": "Not observed",
+          "review": "Review mapping"
+        },
+        "toolEvidence": "Tool names found in source",
+        "formEvidence": "{count, number} related forms in source",
+        "guidance": "What to verify for your store",
+        "notObserved": "Not observed means no matching evidence was found within this scan. It is not a defect or proof that a shopping capability is absent.",
+        "evidenceNote": "Matches are inferred from source names, descriptions, fields, and URLs. A related tool may be registered on another page; availability, outputs, and connection to these forms remain unverified.",
+        "workflows": {
+          "catalogSearch": {
+            "title": "Catalog search",
+            "purpose": "Find relevant products by query and shopping filters.",
+            "guidance": "Review query, category, price, availability, and pagination inputs. Search results should identify each product and make its price, currency, and availability clear."
+          },
+          "productDetails": {
+            "title": "Product details",
+            "purpose": "Read the information an agent needs to compare a product.",
+            "guidance": "Check product identifiers, canonical URLs, descriptions, current prices, currency, and stock metadata. A link to a product page is not proof that a tool returns those details."
+          },
+          "variants": {
+            "title": "Variant selection",
+            "purpose": "Match size, color, and other options to a purchasable variant.",
+            "guidance": "Check product and variant IDs, allowed option values, current stock, and variant pricing. Confirm how invalid or unavailable combinations are reported before changing a cart."
+          },
+          "cartRead": {
+            "title": "Cart contents",
+            "purpose": "Inspect the buyer’s current items and totals.",
+            "guidance": "Review whether the operation returns cart and line identifiers, selected variants, quantities, discounts, totals, and currency. Opening the cart page does not demonstrate that these values can be read."
+          },
+          "cartUpdate": {
+            "title": "Cart changes",
+            "purpose": "Add, remove, or update items without unintended duplicates.",
+            "guidance": "Check whether quantity means an absolute amount or a change. Validate variant and line IDs, stock, coupon codes, recalculated totals, and currency; confirm how repeated requests are handled."
+          },
+          "checkout": {
+            "title": "Checkout handoff",
+            "purpose": "Move the buyer into the intended checkout and confirmation flow.",
+            "guidance": "Distinguish opening checkout from placing an order. Review cart continuity, validation, authentication where required, and the manual handoff for payment and purchase confirmation."
+          },
+          "policies": {
+            "title": "Shipping and returns policies",
+            "purpose": "Explain delivery, returns, and the terms that affect a purchase.",
+            "guidance": "Review accessible shipping and returns terms. Shipping estimates need appropriate country or postcode inputs, costs and currency; a policy page alone does not establish live quote availability."
+          },
+          "orders": {
+            "title": "Orders and aftercare",
+            "purpose": "Support authorized order questions and post-purchase requests.",
+            "guidance": "Opening order history is not the same as reading order data. Verify authentication and ownership for tracking or returns, limit personal data, and preserve confirmation before initiating a return or changing an order."
+          }
+        }
+      }
+    },
+    "dashboard": {
+      "label": "Free store tool",
+      "title": "WebMCP audit",
+      "description": "Review how your store exposes shopping operations to browser agents, from product search and variant selection to carts and checkout. Get source evidence and fixes without a paid plan.",
+      "store": "Connected store: {name}"
+    },
+    "faq": {
+      "title": "Understand your audit.",
+      "description": "A store audit connects WebMCP source findings to the shopping journey. Browser verification confirms whether the tools expose the expected data and behavior.",
+      "items": [
+        {
+          "question": "What does WebMCP add to a store?",
+          "answer": "WebMCP lets a website describe tools for browser agents, such as product search or cart actions. The draft includes JavaScript registration and HTML form declarations. A tool is available only when the website and the browser expose it successfully."
+        },
+        {
+          "question": "How does the scanner find WebMCP?",
+          "answer": "It reads the entered public page, up to two linked catalog, product, or search pages, and at most twelve external scripts or modules, including CDN resources. It follows explicit script references and imports, including dynamic module URLs. It looks for form attributes such as toolname and tooldescription, and JavaScript references to document.modelContext or the earlier navigator.modelContext API. It does not execute the code."
+        },
+        {
+          "question": "Does a finding mean an agent can use the tool?",
+          "answer": "No. Source may contain disabled code, feature checks, or definitions that fail at runtime. This scanner does not execute JavaScript or call any tool. Confirm registration in a browser that supports the API."
+        },
+        {
+          "question": "What should I do if nothing is found?",
+          "answer": "Try a product, catalog, or search page directly. Tools can be registered after JavaScript runs, loaded by other scripts, or exposed only after sign-in. No evidence in this scan does not prove your store has no WebMCP support."
+        }
+      ]
     }
   }
 }

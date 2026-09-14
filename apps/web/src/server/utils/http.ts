@@ -2,6 +2,7 @@ import { type Result, resultify } from "@zenncore/utils";
 import {
   ParseError,
   RequestError,
+  ResponseTooLargeError,
   TimeoutError,
   ValidationError,
 } from "./error";
@@ -265,7 +266,10 @@ export const read = async (
     };
 
   if (!chunks.data)
-    return { success: false, error: new RequestError("Response too large") };
+    return {
+      success: false,
+      error: new ResponseTooLargeError("Response too large"),
+    };
 
   return {
     success: true,

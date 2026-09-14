@@ -93,6 +93,7 @@ const groups = [
   {
     key: "channels",
     items: [
+      { icon: SearchIcon, key: "webmcp", segment: "/webmcp", exact: true },
       {
         icon: RocketIcon,
         key: "googleShopping",

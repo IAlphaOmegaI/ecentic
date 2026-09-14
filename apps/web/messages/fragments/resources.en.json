@@ -1,0 +1,70 @@
+{
+  "resources": {
+    "tools": {
+      "number": "01",
+      "title": "Four free tools, four questions answered.",
+      "description": "Measure selection, check commerce protocols, find WebMCP source evidence, or watch a live agent work through a storefront. No credit card required.",
+      "items": [
+        {
+          "number": "Tool 01",
+          "category": "Win-rate simulation",
+          "title": "AI Agent Score Scan",
+          "description": "Run a one-time simulation of your top 10 products across ChatGPT, Claude, Gemini, and Perplexity. See where you win, where you lose, and what to fix first.",
+          "features": [
+            "Top 10 products",
+            "Four model perspectives",
+            "Results in about two minutes"
+          ],
+          "action": {
+            "primary": "Scan your store free"
+          }
+        },
+        {
+          "number": "Tool 02",
+          "category": "Protocol check",
+          "title": "UCP Validator",
+          "description": "Check whether a storefront publishes a valid Universal Commerce Profile at /.well-known/ucp and whether major shopping agents are allowed in robots.txt.",
+          "features": [
+            "Endpoint reachability",
+            "Schema validation",
+            "Agent access review"
+          ],
+          "action": {
+            "primary": "Validate a store"
+          }
+        },
+        {
+          "number": "Tool 03",
+          "category": "Agent sandbox",
+          "title": "UCP Playground",
+          "description": "Drive a real AI shopping agent against any UCP-compliant storefront. Search catalogs, build carts, start checkout, and inspect every tool call.",
+          "features": [
+            "Catalog search and lookup",
+            "Cart operations",
+            "{count} free messages without an account"
+          ],
+          "action": {
+            "primary": "Open playground"
+          }
+        },
+        {
+          "number": "Tool 04",
+          "category": "Shopping workflow audit",
+          "title": "WebMCP scanner",
+          "description": "Review WebMCP across eight store operations, from product search and variant selection to carts, checkout handoffs, and orders. Get source evidence and practical fixes for your shopping workflows.",
+          "features": [
+            "Eight shopping workflows",
+            "Practical store fixes backed by source",
+            "No account required"
+          ],
+          "action": {
+            "primary": "Audit shopping tools"
+          }
+        }
+      ]
+    },
+    "meta": {
+      "description": "Free ecentic resources for merchants and builders: AI Agent Score Scan, UCP Validator, WebMCP scanner, UCP Playground, guides, and public agent APIs."
+    }
+  }
+}

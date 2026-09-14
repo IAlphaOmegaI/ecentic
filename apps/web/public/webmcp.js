@@ -9,6 +9,7 @@
     shopify: "/platforms/shopify",
     woocommerce: "/platforms/woocommerce",
     "ucp-validator": "/ucp-validator",
+    "webmcp-scanner": "/webmcp-scanner",
     "ucp-playground": "/ucp-playground",
     "sign-up": "/sign-up",
     "sign-in": "/sign-in",

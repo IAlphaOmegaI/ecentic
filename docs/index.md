@@ -14,6 +14,7 @@ Central navigation for product context, agent rules, and package/component docum
 ### If you are working on store integrations or hosted UCP
 
 - [Store integrations progress tracker](./integrations/overview.md)
+- [WebMCP store scans](./integrations/webmcp.md) — free public and dashboard source scans, detection evidence, current browser APIs, and runtime verification limits
 - [Google UCP — agentic checkout guide](./integrations/google-ucp.md) — merchant checklist for checkout on Google AI surfaces + which steps ecentic automates
 - [Hosted UCP — woo-ucp conformance](./integrations/woo-ucp-conformance.md) — how the backend UCP surface (`apps/web/src/server/app/ucp/`) maps to the woo-ucp reference, the thin-plugin bridge contract, known divergences, and deployment notes
 - [Google OAuth verification — submission pack](./integrations/google-oauth-verification.md) — scope justification, console config, reviewer access + test credentials, demo-video shot list, and the privacy-policy row mapping for the `content` scope review

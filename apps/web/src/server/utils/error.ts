@@ -62,6 +62,11 @@ export class NotFoundError extends error("not-found-error", DatabaseError) {}
 
 export class RequestError extends error("request-error", Error) {}
 
+export class ResponseTooLargeError extends error(
+  "response-too-large-error",
+  RequestError,
+) {}
+
 /**
  * Input that fails a business rule before it reaches the database — an empty
  * selection, a malformed URL. The user is told what to correct, so it is never

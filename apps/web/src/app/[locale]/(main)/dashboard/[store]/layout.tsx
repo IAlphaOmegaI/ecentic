@@ -3,6 +3,7 @@ import { Suspense } from "react";
 import * as Store from "@/server/app/store";
 import { Environment } from "@/server/utils/environment";
 import { Sidebar } from "../_components/sidebar";
+import { StoreSubscriptionGate } from "../_components/store-subscription-gate";
 import { SubscriptionGate } from "../_components/subscription-gate";
 import { Topbar } from "../_components/topbar";
 
@@ -49,7 +50,9 @@ export default ({ children, params }: LayoutProps<"/dashboard/[store]">) => (
       <div className="relative flex-1 overflow-hidden">
         <main className="h-full overflow-y-auto">{children}</main>
         <Suspense>
-          <SubscriptionGate />
+          <StoreSubscriptionGate>
+            <SubscriptionGate />
+          </StoreSubscriptionGate>
         </Suspense>
       </div>
     </div>

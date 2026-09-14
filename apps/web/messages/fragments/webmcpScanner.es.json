@@ -1,0 +1,489 @@
+{
+  "webmcpScanner": {
+    "meta": {
+      "name": "Auditoría de compras WebMCP",
+      "title": "Auditoría de compras WebMCP gratis para tiendas",
+      "description": "Audita WebMCP para búsqueda de productos, variantes, carritos, pago, políticas y pedidos. Obtén evidencia de flujos de compra y mejoras prácticas."
+    },
+    "hero": {
+      "title": "Audita las herramientas de compra",
+      "accent": "de la búsqueda al pago.",
+      "description": "Descubre qué operaciones expone tu tienda mediante WebMCP. Revisa búsquedas, opciones de producto, carritos y acceso al pago, con fuentes y mejoras orientadas al comerciante.",
+      "assurances": ["Gratis", "Sin cuenta", "Solo inspección del código"],
+      "art": "Una consola representada con caracteres ASCII",
+      "action": {
+        "primary": "Auditar una tienda"
+      }
+    },
+    "form": {
+      "title": "Audita tu tienda",
+      "description": "Empieza por una página pública de producto o colección para obtener un contexto de compra claro. El informe relaciona el código con operaciones de tienda e indica qué revisar.",
+      "fields": {
+        "url": {
+          "label": "URL de la tienda",
+          "placeholder": "ejemplo.com/products/tu-producto",
+          "description": "Un dominio o una URL pública de la tienda. Puedes incluir la ruta de la página.",
+          "storeDescription": "La dirección de tu tienda conectada ya está incluida. Puedes escanear otra página del mismo dominio.",
+          "required": "Introduce el dominio o la URL de una tienda.",
+          "invalid": "Introduce una URL pública válida de la tienda."
+        }
+      },
+      "action": {
+        "primary": "Ejecutar auditoría WebMCP"
+      },
+      "pending": "Auditando el código…",
+      "progress": "Leyendo páginas públicas, scripts y módulos referenciados. Puede tardar unos momentos.",
+      "complete": "Auditoría completada. Revisa los hallazgos a continuación.",
+      "scope": "Lee la página introducida y hasta 2 páginas de compra enlazadas, priorizando productos y colecciones, además de un máximo de 12 scripts o módulos externos. Sigue referencias e importaciones sin ejecutar JavaScript, cambiar un carrito ni realizar un pedido.",
+      "errors": {
+        "failed": "No se pudo completar el escaneo. Inténtalo de nuevo.",
+        "invalid": "Introduce una URL pública HTTPS. Los escaneos del panel deben usar el dominio de la tienda conectada.",
+        "unreachable": "No pudimos leer esta página. Comprueba la URL y que la tienda sea accesible públicamente.",
+        "tooLarge": "Esta página supera el tamaño que puede procesar el escáner. Prueba una página de producto o de colección de la misma tienda.",
+        "limited": "Has alcanzado el límite de escaneos. Espera antes de volver a intentarlo.",
+        "retryAfter": "Vuelve a intentarlo en {seconds, number} segundos."
+      },
+      "sources": {
+        "label": "Más información:",
+        "specification": "Especificación WebMCP",
+        "chrome": "Guía WebMCP de Chrome"
+      }
+    },
+    "report": {
+      "label": "Auditoría de compras WebMCP",
+      "scannedAt": "Escaneado el {date}",
+      "status": {
+        "markupFound": {
+          "title": "Declaraciones WebMCP encontradas; nombres sin resolver",
+          "description": "Encontramos declaraciones WebMCP, pero no pudimos resolver sus nombres a partir del código inspeccionado. El inventario está incompleto; esto no significa que la tienda no tenga herramientas."
+        },
+        "scriptSignals": {
+          "title": "Indicios de WebMCP encontrados; herramientas sin resolver",
+          "description": "El código inspeccionado hace referencia a las API WebMCP, pero no se pudo resolver el inventario de herramientas. Pueden estar disponibles en el navegador. Las referencias a la API también pueden ser comprobaciones de compatibilidad o código que nunca se ejecuta."
+        },
+        "noEvidence": {
+          "title": "Sin indicios de WebMCP en este escaneo",
+          "description": "No encontramos declaraciones ni indicios de la API WebMCP en el código inspeccionado. Esto no demuestra su ausencia: otras páginas, scripts que se cargan después o herramientas que requieren iniciar sesión podrían exponerlo."
+        },
+        "toolsFound": {
+          "title": "Herramientas WebMCP con nombre encontradas",
+          "description": "Extrajimos definiciones de herramientas WebMCP con nombre del código inspeccionado. El recuento incluye estas definiciones; su registro y disponibilidad en el navegador siguen sin verificarse."
+        }
+      },
+      "counts": {
+        "tools": "Definiciones con nombre",
+        "signals": "Indicios de la API",
+        "pages": "Páginas leídas",
+        "scripts": "Scripts leídos",
+        "notResolved": "Sin resolver"
+      },
+      "tools": {
+        "title": "Definiciones de herramientas",
+        "description": "Definiciones extraídas del código, con metadatos de parámetros y declaraciones de ejecución. No son registros confirmados del navegador.",
+        "unnamed": "Definición sin nombre",
+        "empty": "No se pudieron extraer definiciones de herramientas del código inspeccionado.",
+        "noDescription": "No se pudo leer una descripción literal en esta definición.",
+        "page": "Página",
+        "source": "Fuente",
+        "inputs": "Nombres de entradas encontrados",
+        "noInputs": "No se pudieron leer nombres de entradas del código.",
+        "kind": {
+          "declarative": "Declaración de formulario HTML",
+          "imperative": "Definición de JavaScript"
+        },
+        "unresolved": "Se detectaron indicios de WebMCP, pero no se pudieron resolver nombres de herramientas a partir del código inspeccionado. El inventario está incompleto; no significa que haya cero herramientas disponibles.",
+        "partiallyResolved": "Algunas definiciones tienen nombres sin resolver. El recuento solo incluye definiciones con nombre extraídas del código; puede haber más herramientas disponibles en el navegador.",
+        "parametersTitle": "Parámetros de entrada de primer nivel",
+        "schemaLabel": "Esquema de entrada",
+        "executionLabel": "Ejecución",
+        "schema": {
+          "absent": "Sin esquema declarado; el esquema es opcional.",
+          "resolved": "Metadatos del esquema resueltos a partir del código.",
+          "unresolved": "No se pudo resolver el esquema a partir del código.",
+          "notApplicable": "Las entradas se describen en el formulario HTML."
+        },
+        "execution": {
+          "declared": "Manejador declarado en el código; no ejecutado.",
+          "missing": "No se identificó un manejador en esta definición.",
+          "unresolved": "No se pudo resolver el manejador a partir del código.",
+          "form": "Envío de formulario declarativo; no enviado."
+        },
+        "typeUnknown": "Tipo sin resolver",
+        "required": "Obligatorio",
+        "optional": "Opcional",
+        "requirementUnknown": "Requisito sin resolver",
+        "parameterDescriptionMissing": "No se encontró una descripción del parámetro en el código."
+      },
+      "issues": {
+        "missingName": "No se pudo leer el nombre de la herramienta en esta definición.",
+        "missingDescription": "No se pudo leer una descripción en esta definición.",
+        "missingSchema": "No se pudo leer un esquema de entrada literal. Los esquemas de entrada son opcionales en el borrador actual.",
+        "autoSubmit": "Este formulario declara el envío automático. Revisa si ese comportamiento es apropiado para la acción.",
+        "unresolvedDefinition": "Parte de esta definición es dinámica o indirecta y no pudo resolverse a partir del código."
+      },
+      "signals": {
+        "title": "Indicios de la API",
+        "description": "Las referencias del código indican una posible integración, pero no prueban que exista una herramienta registrada.",
+        "contextApi": "Referencia a la API modelContext",
+        "registerTool": "Llamada a registerTool",
+        "provideContext": "Llamada a provideContext"
+      },
+      "coverage": {
+        "title": "Cobertura del escaneo",
+        "scanned": "Código leído",
+        "unavailable": "No disponible",
+        "skipped": "{scripts, number} scripts o módulos externos omitidos · {resources, number} recursos no se pudieron leer",
+        "totals": "{pages, number} páginas leídas · {scripts, number} scripts o módulos leídos"
+      },
+      "limitations": {
+        "title": "Qué puede indicar este escaneo",
+        "staticOnly": "Este escaneo inspecciona el código. Nunca ejecuta JavaScript remoto, envía formularios ni invoca herramientas. El registro y la ejecución en el navegador no se verifican.",
+        "pageLimit": "Se encontraron más páginas enlazadas de las que cubre este escaneo. Escanea directamente una URL de producto, catálogo o búsqueda para inspeccionarla.",
+        "scriptLimit": "Algunos scripts externos o módulos referenciados superaron el límite del escaneo. Sus herramientas podrían faltar en estos resultados.",
+        "resourceFailures": "No se pudieron leer algunas páginas o scripts. Los hallazgos solo cubren los recursos accesibles.",
+        "parseFailures": "No se pudo analizar completamente parte del código. Pueden faltar definiciones dinámicas o no compatibles."
+      },
+      "nextStep": "Confirma los hallazgos en un navegador compatible con WebMCP e inspecciona sus herramientas registradas. WebMCP sigue evolucionando; estos hallazgos no son una certificación ni una puntuación de visibilidad para agentes.",
+      "tabs": {
+        "label": "Secciones del informe WebMCP",
+        "audit": "Hallazgos",
+        "tools": "Herramientas",
+        "forms": "Formularios",
+        "coverage": "Cobertura"
+      },
+      "audit": {
+        "title": "Revisa las herramientas de compra de tu tienda",
+        "description": "Primero, los flujos de compra; después, los hallazgos de implementación. Las coincidencias del código no confirman disponibilidad, resultados ni compras completadas.",
+        "summary": {
+          "high": "Prioridad alta",
+          "improvements": "Mejoras",
+          "opportunities": "Oportunidades de formularios",
+          "tools": "Herramientas con nombre"
+        },
+        "checksTitle": "Comprobaciones técnicas",
+        "checksDescription": "Aprobado significa que esta comprobación no encontró problemas en el código. Desconocido indica evidencia insuficiente. No es una certificación de funcionamiento.",
+        "checkStatus": {
+          "pass": "Aprobado",
+          "attention": "Revisar",
+          "unknown": "Desconocido"
+        },
+        "checks": {
+          "discovery": {
+            "title": "Descubrimiento de herramientas",
+            "description": "Definiciones con nombre o indicios de la API en el código inspeccionado."
+          },
+          "metadata": {
+            "title": "Nombres y descripciones",
+            "description": "Nombres legibles y descripciones útiles de herramientas."
+          },
+          "parameters": {
+            "title": "Metadatos de entrada",
+            "description": "Detalles de parámetros resueltos y descripciones cuando existen."
+          },
+          "implementation": {
+            "title": "Declaración de ejecución",
+            "description": "Un manejador identificable o una operación de formulario declarativa."
+          },
+          "forms": {
+            "title": "Oportunidades de formularios",
+            "description": "Anotaciones y posibles vínculos con herramientas existentes, pendientes de revisión."
+          },
+          "coverage": {
+            "title": "Cobertura del código",
+            "description": "Si el escaneo acotado pudo leer y analizar los recursos seleccionados."
+          },
+          "runtime": {
+            "title": "Verificación en el navegador",
+            "description": "Registro, ejecución y comportamiento en un navegador compatible."
+          }
+        },
+        "findingsTitle": "Hallazgos de implementación",
+        "findingsDescription": "Revisa los problemas de código detrás de estas operaciones. Empieza por las correcciones prioritarias; las posibles integraciones requieren comprobar el flujo existente de la tienda.",
+        "priority": {
+          "high": "Prioridad alta",
+          "medium": "Mejora",
+          "low": "Sugerencia",
+          "opportunity": "Oportunidad",
+          "info": "Revisión"
+        },
+        "why": "Por qué importa",
+        "fix": "Mejora sugerida",
+        "evidence": "Evidencia del código",
+        "relatedTools": "Herramientas posiblemente relacionadas",
+        "page": "Página",
+        "source": "Fuente",
+        "snippet": "Código sugerido",
+        "snippetNote": "Solo atributos de borrador. Verifica que el nombre y la descripción coincidan con la operación real antes de incorporarlos. Conserva la acción, controles, validación y consentimiento, y revisa primero las herramientas existentes.",
+        "copied": "Copiado",
+        "copyFailed": "No se pudo copiar. Selecciona el fragmento y cópialo manualmente.",
+        "action": {
+          "secondary": "Copiar código"
+        },
+        "empty": "No se identificaron problemas de código que requieran cambios. Siguen siendo aplicables la verificación en el navegador y los límites de cobertura.",
+        "findings": {
+          "missingToolName": {
+            "title": "Asigna un nombre claro a esta herramienta",
+            "why": "No se pudo leer el nombre en la definición. Los agentes necesitan un identificador estable para elegir la operación correcta.",
+            "fix": "Revisa la definición completa y añade un nombre único y descriptivo si falta. Confirma que aparezca en las herramientas registradas del navegador."
+          },
+          "missingToolDescription": {
+            "title": "Describe qué hace esta herramienta",
+            "why": "No se pudo leer una descripción en esta definición. Sin metadatos claros, un agente puede no saber cuándo usarla o qué devuelve.",
+            "fix": "Añade una descripción de la operación, el resultado esperado y las restricciones relevantes. Si se genera dinámicamente, confirma su valor final en el navegador."
+          },
+          "missingHandler": {
+            "title": "Comprueba el manejador de ejecución",
+            "why": "La definición JavaScript inspeccionada no tiene un manejador de ejecución identificable. Los metadatos por sí solos no implementan la operación.",
+            "fix": "Conecta la definición con su callback execute o verifica el manejador importado existente. Mantén la autenticación, validación y confirmación del usuario en la ejecución."
+          },
+          "unresolvedDefinition": {
+            "title": "Resuelve esta definición de herramienta",
+            "why": "Parte de la definición es dinámica, indirecta o está fuera del código inspeccionado. Este escaneo no puede confirmar sus metadatos o implementación.",
+            "fix": "Sigue las variables y módulos referenciados e inspecciona la definición registrada final en un navegador compatible con WebMCP. Verifica allí el nombre, la descripción, las entradas y el manejador."
+          },
+          "briefDescription": {
+            "title": "Mejora la descripción de la herramienta",
+            "why": "La descripción tiene menos de 40 caracteres y puede no explicar la operación lo suficiente para que un agente la elija. Este umbral es una orientación de claridad, no un requisito de la especificación WebMCP.",
+            "fix": "Explica cuándo usar la herramienta, qué devuelve y sus limitaciones importantes. Para una búsqueda de productos, describe los criterios admitidos y los detalles de los resultados."
+          },
+          "missingParameterDescriptions": {
+            "title": "Explica las entradas de la herramienta",
+            "why": "Algunas propiedades de entrada de primer nivel no tienen descripción en el esquema inspeccionado. Las descripciones ayudan a introducir valores correctos; no son obligatorias para todas las propiedades.",
+            "fix": "Describe el significado comercial de cada parámetro: consulta y filtros, ID de producto o variante, líneas de carrito, cantidad absoluta o incremento, moneda o código postal. Ajusta las entradas obligatorias al manejador e incluye ejemplos útiles."
+          },
+          "duplicateToolName": {
+            "title": "Revisa los nombres de herramienta repetidos",
+            "why": "Distintas definiciones comparten un nombre. Pueden entrar en conflicto si se registran en el mismo contexto de página; reutilizarlo en páginas separadas no siempre es un problema.",
+            "fix": "Comprueba dónde se registra cada definición. Si coexisten, asigna nombres distintos a operaciones distintas. En caso contrario, confirma que el navegador exponga la definición prevista."
+          },
+          "automaticSubmission": {
+            "title": "Revisa el envío automático del formulario",
+            "why": "Este formulario declara el envío automático. Según la operación, podría omitir un paso de revisión o confirmación esperado.",
+            "fix": "Confirma que el envío automático sea intencionado y apropiado. Conserva la validación y el consentimiento y elimina el atributo cuando la acción deba esperar la revisión del usuario."
+          },
+          "unnamedFields": {
+            "title": "Revisa los campos sin nombre",
+            "why": "Algunos controles del formulario no tienen nombre en el marcado inspeccionado. Es posible que no se correspondan con entradas útiles para una herramienta.",
+            "fix": "Añade nombres descriptivos a los controles que deban enviarse y exponerse como entradas. Conserva las etiquetas y la validación, y excluye credenciales, tokens y campos internos de los metadatos."
+          },
+          "formOpportunity": {
+            "title": "Revisa este flujo de tienda para agentes",
+            "why": "Este formulario público no tiene anotaciones WebMCP en el marcado inspeccionado y no se identificó una herramienta relacionada con suficiente certeza. Una herramienta JavaScript existente podría cubrir el flujo.",
+            "fix": "Revisa primero las herramientas existentes. Si el flujo resulta útil para agentes, incorpora toolname y tooldescription al formulario actual. Conserva su acción, controles, validación y consentimiento; no lo sustituyas ni actives el envío automático por defecto."
+          },
+          "formReview": {
+            "title": "Revisa el formulario antes de añadir una herramienta",
+            "why": "El formulario puede corresponder a una herramienta existente o contener campos sensibles. El código por sí solo no permite determinar si otra herramienta es necesaria o apropiada.",
+            "fix": "Inspecciona las herramientas relacionadas y confirma cómo se gestionan la autenticación, las entradas sensibles y el consentimiento. Reutiliza una operación existente cuando corresponda y conserva los controles de usuario previstos para acciones sensibles."
+          },
+          "incompleteCoverage": {
+            "title": "Comprueba lo que quedó fuera del escaneo",
+            "why": "No se pudieron inspeccionar completamente algunas páginas, scripts o definiciones. Los hallazgos y el recuento solo cubren el código resuelto.",
+            "fix": "Revisa la pestaña Cobertura, escanea directamente las páginas relevantes e inspecciona las importaciones o los flujos protegidos restantes en tu navegador. Repite el escaneo cuando los recursos sean accesibles."
+          },
+          "noToolEvidence": {
+            "title": "Confirma si la tienda expone WebMCP",
+            "why": "No se encontraron definiciones ni indicios de la API en el código inspeccionado. Esto no demuestra que la tienda carezca de herramientas WebMCP.",
+            "fix": "Inspecciona las herramientas registradas en un navegador compatible y prueba una página de producto o búsqueda. Si no existen herramientas, empieza por un flujo útil y bien definido, como la búsqueda de catálogo."
+          },
+          "runtimeUnverified": {
+            "title": "Verifica el registro y el comportamiento en el navegador",
+            "why": "Inspeccionar el código no confirma que el navegador registre una herramienta ni que funcione su manejador. Esta auditoría no ejecuta scripts, envía formularios ni invoca herramientas.",
+            "fix": "Usa un navegador compatible con WebMCP para inspeccionar los metadatos registrados y probar una operación segura de solo lectura. Verifica entradas, salidas y errores, y conserva las confirmaciones previstas para acciones que modifican el estado de la tienda."
+          }
+        },
+        "occurrences": "Encontrado en {count, number} ubicaciones"
+      },
+      "forms": {
+        "title": "Formularios encontrados en el código",
+        "description": "Revisa los formularios según las operaciones reales de la tienda. Las etiquetas se infieren del código. Comprueba las herramientas existentes; los formularios desconocidos y los flujos sensibles de compra o cuenta requieren revisión manual.",
+        "declared": "Se encontraron anotaciones WebMCP",
+        "unannotated": "Sin anotaciones WebMCP en este marcado",
+        "selector": "Selector",
+        "page": "Página",
+        "action": "Acción del formulario",
+        "method": "Método",
+        "currentPage": "Página actual",
+        "toolName": "Nombre de herramienta declarado",
+        "relatedTools": "Herramientas posiblemente relacionadas",
+        "relatedNote": "Estos nombres de herramientas se encontraron en alguna parte de este escaneo. Su disponibilidad en esta página y su relación con este formulario no están verificadas; confirma ambas antes de añadir otra integración.",
+        "sensitive": "Se detectaron campos sensibles. Revisa la autenticación, la privacidad y el consentimiento antes de exponer este flujo a un agente.",
+        "fields": "Campos del formulario",
+        "unnamedField": "Campo sin nombre",
+        "required": "Obligatorio",
+        "optional": "Opcional",
+        "noFields": "No se pudieron leer metadatos de campos de este formulario.",
+        "empty": "No se encontraron formularios públicos en el HTML inspeccionado. Pueden existir formularios creados por JavaScript o que requieran iniciar sesión.",
+        "intent": {
+          "search": "Formulario de búsqueda",
+          "cart": "Formulario de carrito",
+          "newsletter": "Suscripción al boletín",
+          "contact": "Formulario de contacto",
+          "account": "Formulario de cuenta",
+          "other": "Formulario de la tienda",
+          "product": "Formulario de producto",
+          "variant": "Selección de variantes",
+          "coupon": "Formulario de cupón",
+          "shipping": "Estimación de envío",
+          "checkout": "Flujo de pago",
+          "orderTracking": "Seguimiento de pedido",
+          "returns": "Flujo de devoluciones"
+        },
+        "autoSubmit": "Este formulario declara el envío automático. Verifica la confirmación y validación previstas antes de cambiar su integración WebMCP.",
+        "guidance": {
+          "search": {
+            "why": "El código sugiere un formulario de búsqueda de catálogo. Una herramienta JavaScript puede cubrirlo; el marcado no demuestra que falte una integración.",
+            "fix": "Revisa primero las herramientas de búsqueda existentes. Comprueba consulta, filtros, paginación e identificadores de resultados. Si procede una integración, describe las entradas reales y conserva la validación y el comportamiento."
+          },
+          "product": {
+            "why": "Parece un flujo de producto. Los agentes necesitan una identidad estable e información comercial actual, no un envío de formulario genérico.",
+            "fix": "Confirma el ID de producto o SKU y el propósito de la operación. Para consultas, describe precio, moneda, stock y URL canónica; si modifica el carrito, revisa el comportamiento del carrito y las variantes."
+          },
+          "variant": {
+            "why": "Este formulario parece seleccionar opciones o una variante. Una etiqueta no siempre identifica el artículo comprable o su disponibilidad actual.",
+            "fix": "Comprueba los ID de producto y variante, las opciones admitidas, el stock y el precio. Conserva la validación de opciones y distingue seleccionar una variante de añadirla al carrito."
+          },
+          "cart": {
+            "why": "Parece modificar el contenido del carrito. Una integración genérica puede ocultar qué artículo cambia o qué significa la cantidad.",
+            "fix": "Comprueba el ID de variante o línea y si la cantidad es absoluta o un incremento. Valida stock, devuelve totales con moneda y evita duplicados al repetir solicitudes. Reutiliza una herramienta existente cuando cubra la operación."
+          },
+          "coupon": {
+            "why": "Parece aplicar o quitar un descuento. La validez del cupón y el precio resultante dependen del carrito y de las reglas de la tienda.",
+            "fix": "Valida los códigos en el servidor para el carrito correcto. Explica aceptación y rechazo, devuelve descuentos y totales actualizados con moneda y conserva las restricciones de cupones de la tienda."
+          },
+          "shipping": {
+            "why": "Parece recoger datos de envío o solicitar una estimación. Estimar no equivale a confirmar una dirección o realizar un pedido.",
+            "fix": "Solicita solo el país o código postal necesario. Describe métodos, costes, moneda y límites de la estimación. Conserva la validación de dirección y el consentimiento de compra, y no expongas datos de clientes innecesarios."
+          },
+          "checkout": {
+            "why": "Parece iniciar el pago o confirmar una compra. Exponerlo como un envío genérico podría ocultar un paso importante.",
+            "fix": "Revisa el flujo manualmente. Distingue acceder al pago de realizar el pedido, conserva el carrito y la validación, y mantén la autenticación, el paso de pago y la confirmación explícita de compra."
+          },
+          "orderTracking": {
+            "why": "Parece referirse a un pedido existente. Navegar al historial no significa que un agente pueda leer datos autorizados del pedido.",
+            "fix": "Revisa el flujo manualmente. Exige autenticación y comprobación de titularidad antes de devolver estado, seguimiento o datos personales. Limita los ID al comprador actual y conserva cualquier paso seguro del usuario."
+          },
+          "returns": {
+            "why": "Parece implicar una devolución u otra operación posventa. Leer una política y crear una devolución son capacidades distintas.",
+            "fix": "Revisa el flujo manualmente. Verifica titularidad, artículos admisibles y política de tienda, limita datos personales y exige la confirmación prevista antes de iniciar devoluciones, reembolsos o cambios de pedido."
+          },
+          "newsletter": {
+            "why": "Parece una suscripción comercial, no una operación principal de búsqueda o carrito. Puede tener una integración independiente.",
+            "fix": "Mantén el consentimiento comercial explícito y separado de las compras. Revisa las integraciones existentes antes de considerar una herramienta; no suscribas al comprador como efecto de búsquedas, cambios de carrito o pagos."
+          },
+          "contact": {
+            "why": "Parece un formulario de contacto o soporte. Su presencia no justifica por sí sola una herramienta de compras.",
+            "fix": "Confirma el caso de soporte y las integraciones existentes. Conserva validación, protección antispam y consentimiento; no expongas un envío genérico sin un propósito comercial claro."
+          },
+          "account": {
+            "why": "Parece gestionar acceso a la cuenta o datos del cliente. Una herramienta de formulario genérica no debe sustituir la autenticación.",
+            "fix": "Revisa el flujo manualmente. Mantén autenticación y comprobación de titularidad en el flujo seguro existente, protege contraseñas y tokens y conserva la intervención del usuario cuando deba iniciar sesión."
+          },
+          "other": {
+            "why": "El código no permitió establecer un propósito de compra concreto. Una anotación ausente no basta para recomendar otra herramienta.",
+            "fix": "Identifica el flujo comercial y revisa las herramientas existentes antes de cambiar nada. Este escaneo no recomienda exponer un formulario desconocido ni automatizar su envío."
+          }
+        }
+      },
+      "commerce": {
+        "title": "Flujos de compra",
+        "description": "Evidencia del código en ocho operaciones de tienda. Abre un flujo para ver fuentes y comprobaciones comerciales. Esta auditoría no llama a herramientas ni prueba sus resultados.",
+        "unconfirmed": {
+          "title": "El contexto de tienda no está confirmado",
+          "description": "La página no proporcionó suficiente evidencia de productos, catálogo, carrito o herramientas comerciales. Prueba una URL pública de producto o colección. Los flujos siguientes orientan la revisión; no enumeran funciones ausentes."
+        },
+        "status": {
+          "toolFound": "Indicios de herramienta",
+          "formOnly": "Solo evidencia de formulario",
+          "notObserved": "No observado",
+          "review": "Revisar relación"
+        },
+        "toolEvidence": "Nombres encontrados en el código",
+        "formEvidence": "{count, number} formularios relacionados en el código",
+        "guidance": "Qué verificar en tu tienda",
+        "notObserved": "No observado significa que no se encontró evidencia coincidente dentro de este escaneo. No es un defecto ni prueba que falte una capacidad de compra.",
+        "evidenceNote": "Las coincidencias se infieren de nombres, descripciones, campos y URL. Una herramienta puede registrarse en otra página; su disponibilidad, resultados y relación con los formularios siguen sin verificarse.",
+        "workflows": {
+          "catalogSearch": {
+            "title": "Búsqueda de catálogo",
+            "purpose": "Encontrar productos relevantes por consulta y filtros de compra.",
+            "guidance": "Revisa las entradas de consulta, categoría, precio, disponibilidad y paginación. Los resultados deben identificar cada producto e indicar su precio, moneda y disponibilidad."
+          },
+          "productDetails": {
+            "title": "Detalles del producto",
+            "purpose": "Leer la información necesaria para comparar un producto.",
+            "guidance": "Comprueba identificadores, URL canónicas, descripciones, precios actuales, moneda y stock. Un enlace a una página de producto no prueba que una herramienta devuelva esos detalles."
+          },
+          "variants": {
+            "title": "Selección de variantes",
+            "purpose": "Relacionar talla, color y otras opciones con una variante comprable.",
+            "guidance": "Comprueba los ID de producto y variante, las opciones admitidas, el stock y los precios. Confirma cómo se notifican combinaciones inválidas o agotadas antes de modificar el carrito."
+          },
+          "cartRead": {
+            "title": "Contenido del carrito",
+            "purpose": "Consultar los artículos actuales del comprador y sus totales.",
+            "guidance": "Revisa si la operación devuelve ID de carrito y líneas, variantes, cantidades, descuentos, totales y moneda. Abrir la página del carrito no demuestra que esos datos puedan leerse."
+          },
+          "cartUpdate": {
+            "title": "Cambios en el carrito",
+            "purpose": "Añadir, quitar o actualizar artículos sin duplicados involuntarios.",
+            "guidance": "Comprueba si la cantidad representa un valor absoluto o un cambio. Valida los ID de variante y línea, el stock, los cupones, los totales y la moneda; confirma cómo se gestionan solicitudes repetidas."
+          },
+          "checkout": {
+            "title": "Acceso al pago",
+            "purpose": "Llevar al comprador al flujo previsto de pago y confirmación.",
+            "guidance": "Distingue abrir el pago de realizar un pedido. Revisa la continuidad del carrito, la validación, la autenticación necesaria y el paso manual de pago y confirmación de compra."
+          },
+          "policies": {
+            "title": "Políticas de envío y devoluciones",
+            "purpose": "Explicar la entrega, las devoluciones y las condiciones de compra.",
+            "guidance": "Revisa las condiciones accesibles de envío y devolución. Las estimaciones necesitan país o código postal, costes y moneda; una página de políticas no demuestra que haya presupuestos en tiempo real."
+          },
+          "orders": {
+            "title": "Pedidos y posventa",
+            "purpose": "Atender consultas autorizadas sobre pedidos y solicitudes posteriores.",
+            "guidance": "Abrir el historial no equivale a leer datos de pedidos. Verifica autenticación y titularidad para seguimiento o devoluciones, limita los datos personales y conserva la confirmación antes de iniciar una devolución o modificar un pedido."
+          }
+        }
+      }
+    },
+    "dashboard": {
+      "label": "Herramienta gratuita",
+      "title": "Auditoría WebMCP",
+      "description": "Revisa cómo tu tienda expone operaciones a agentes, desde búsquedas y selección de variantes hasta carritos y pago. Obtén fuentes y mejoras sin plan de pago.",
+      "store": "Tienda conectada: {name}"
+    },
+    "faq": {
+      "title": "Interpreta tu auditoría.",
+      "description": "Una auditoría de tienda relaciona los hallazgos WebMCP con el recorrido de compra. La verificación en el navegador confirma si las herramientas exponen los datos y el comportamiento esperados.",
+      "items": [
+        {
+          "question": "¿Qué aporta WebMCP a una tienda?",
+          "answer": "WebMCP permite describir herramientas para agentes del navegador, como búsquedas de productos o acciones del carrito. El borrador incluye registro mediante JavaScript y declaraciones de formularios HTML. Una herramienta solo está disponible cuando el sitio y el navegador la exponen correctamente."
+        },
+        {
+          "question": "¿Cómo encuentra WebMCP el escáner?",
+          "answer": "Lee la página pública introducida, hasta dos páginas enlazadas de catálogo, producto o búsqueda y un máximo de doce scripts o módulos externos, incluidos recursos de CDN. Sigue referencias explícitas a scripts e importaciones, incluidas URL de módulos dinámicos. Busca atributos de formulario como toolname y tooldescription, y referencias en JavaScript a document.modelContext o a la API anterior navigator.modelContext. No ejecuta el código."
+        },
+        {
+          "question": "¿Un hallazgo significa que un agente puede usar la herramienta?",
+          "answer": "No. El código puede contener funciones desactivadas, comprobaciones de compatibilidad o definiciones que fallan al ejecutarse. Este escáner no ejecuta JavaScript ni llama a herramientas. Confirma el registro en un navegador compatible con la API."
+        },
+        {
+          "question": "¿Qué hago si no se encuentra nada?",
+          "answer": "Prueba directamente una página de producto, catálogo o búsqueda. Las herramientas pueden registrarse después de ejecutar JavaScript, cargarse mediante otros scripts o aparecer solo tras iniciar sesión. No encontrar indicios no demuestra que tu tienda carezca de WebMCP."
+        }
+      ]
+    }
+  },
+  "dashboard": {
+    "nav": {
+      "webmcp": "WebMCP"
+    }
+  },
+  "footer": {
+    "links": {
+      "webmcpScanner": "Escáner WebMCP"
+    }
+  }
+}
