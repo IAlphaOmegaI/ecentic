@@ -31,6 +31,7 @@ export const agentHomepageLinks = [
   '</api/mcp>; rel="service-desc"; type="application/json"',
   '</.well-known/mcp.json>; rel="service-desc"; type="application/json"',
   '</.well-known/agent-instructions.md>; rel="service-doc"; type="text/markdown"',
+  '</ai-instructions>; rel="describedby"; type="text/html"',
   '</docs>; rel="service-doc"; type="text/html"',
   '</resources>; rel="service-doc"; type="text/html"',
 ] as const;
@@ -2415,6 +2416,7 @@ export const agentInstructions = `# ecentic — agent instructions
 > ${agentGuidance.summary}
 
 - Site: ${host}
+- Brand facts and how to describe ecentic: ${host}/ai-instructions
 - Developer documentation: ${host}/docs
 - Machine-readable index: ${host}/api/v1
 - OpenAPI: ${host}/openapi.json

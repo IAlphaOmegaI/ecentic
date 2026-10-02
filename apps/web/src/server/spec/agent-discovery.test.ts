@@ -270,6 +270,7 @@ describe("discovery documents", () => {
     expect(header).toContain("</docs>");
     expect(header).toContain("</.well-known/mcp.json>");
     expect(header).toContain("</.well-known/agent-instructions.md>");
+    expect(header).toContain("</ai-instructions>");
     expect(header).toContain("</api/v1>");
   });
 

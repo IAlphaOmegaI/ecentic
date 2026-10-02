@@ -79,6 +79,10 @@ export const Footer = async ({ stacked = false }: Footer.Props) => {
       title: translate("columns.company"),
       links: [
         { href: "/support", label: translate("links.support") },
+        // Linked from every page on purpose: answer engines reach the brand
+        // facts through the search index, and a footer link is what gets the
+        // page crawled and keeps it one hop from anywhere.
+        { href: "/ai-instructions", label: translate("links.aiInstructions") },
         { href: "/privacy-policy", label: translate("links.privacy") },
         { href: "/terms", label: translate("links.terms") },
       ],
