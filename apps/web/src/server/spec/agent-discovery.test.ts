@@ -12,6 +12,7 @@ import {
   oauthAuthorizationServer,
   oauthProtectedResource,
   openApiDocument,
+  resourceMetadataWwwAuthenticate,
   ucpDiscoveryProfile,
 } from "@/lib/agent-discovery";
 import { organizationSchema } from "@/lib/seo";
@@ -290,6 +291,15 @@ describe("discovery documents", () => {
     expect(oauthProtectedResource.resource).toBe(`${HOST}/api/mcp`);
     expect(oauthAuthorizationServer.issuer).toBe(HOST);
     expect(authMd).toContain("/.well-known/oauth-protected-resource");
+  });
+
+  test("the 401 challenge names the protected resource metadata (RFC 9728)", () => {
+    expect(resourceMetadataWwwAuthenticate).toStartWith(
+      'Bearer resource_metadata="',
+    );
+    expect(resourceMetadataWwwAuthenticate).toContain(
+      "/.well-known/oauth-protected-resource",
+    );
   });
 
   test("commerce profiles keep their protocol versions", () => {

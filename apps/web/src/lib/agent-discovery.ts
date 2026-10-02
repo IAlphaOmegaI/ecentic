@@ -2612,4 +2612,4 @@ export const markdownHeaders = {
   ...agentDiscovery.cors,
 } as const;
 
-export const resourceMetadataWwwAuthenticate = `Bearer FAKESECRET_g3h4i5j6k7l8m9n0o1p2="${host}/.well-known/oauth-protected-resource"`;
+export const resourceMetadataWwwAuthenticate = `Bearer resource_metadata="${host}/.well-known/oauth-protected-resource"`;
