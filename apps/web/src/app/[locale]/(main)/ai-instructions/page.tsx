@@ -19,7 +19,7 @@ import {
   seo,
   softwareApplicationSchema,
 } from "@/lib/seo";
-import Art from "@/public/images/ascii/robot.png";
+import Art from "@/public/images/ascii/bubble.png";
 import {
   ContentPageFooter,
   ContentPageLayout,
