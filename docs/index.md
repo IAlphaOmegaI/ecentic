@@ -24,6 +24,10 @@ Central navigation for product context, agent rules, and package/component docum
 
 - [Pricing + Shopify Billing API](./tasks/shopify-billing-pricing.md) — how Partner Dashboard plans, Billing API charges, and ecentic entitlements should align
 
+### If you are working on social link previews
+
+- [Social preview images](./tasks/social-preview-images.md) — image routing, metadata defaults, and crawler checks
+
 ### If you are working on AI-surface scraping / capture
 
 - [LLM surface scraping plan](./tasks/llm-surface-scraping.md) — ScrapeLLM adapter, capture envelope, `/dev/llm-scraping` sandbox, phased rollout to cycles + sentinel

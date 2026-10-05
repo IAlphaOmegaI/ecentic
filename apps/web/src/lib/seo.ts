@@ -143,10 +143,23 @@ export const createMetadata = ({
   path,
   keywords = [],
   type = "website",
+  image = "/opengraph-image",
 }: createMetadata.Props): Metadata => {
   // Hreflang lives in each page's head (and only there): the sitemap stays
   // namespace-free so browsers render it with the plain XML tree view.
   const basePath = stripLocalePrefix(path);
+  // Page-level openGraph/twitter objects replace inherited ones. Supply the
+  // public brand image unless this page delegates to its own image route.
+  const images = image
+    ? [
+        {
+          url: absoluteUrl(image),
+          width: 1200,
+          height: 630,
+          alt: "ecentic — Win every AI shopping agent's cart",
+        },
+      ]
+    : undefined;
 
   return {
     title,
@@ -170,11 +183,13 @@ export const createMetadata = ({
       siteName: seo.name,
       title: `${title} | ${seo.name}`,
       description,
+      ...(images ? { images } : {}),
     },
     twitter: {
       card: "summary_large_image",
       title: `${title} | ${seo.name}`,
       description,
+      ...(images ? { images } : {}),
     },
   };
 };
@@ -186,6 +201,8 @@ export namespace createMetadata {
     path: string;
     keywords?: readonly string[];
     type?: "article" | "website";
+    /** false leaves images unset so Next.js can attach a colocated image file. */
+    image?: string | false;
   };
 }
 

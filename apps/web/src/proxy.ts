@@ -95,6 +95,21 @@ export const proxy = async (request: Request) => {
     authenticationRoute ||
     matches(pathnameWithoutLocale, PROTECTED);
 
+  // Next.js emits image URLs with an explicit locale. Keep it: stripping /en
+  // from the homepage image sends its hashed name to an unrelated root route.
+  // Unprefixed nested image URLs still need the normal locale rewrite below.
+  const imageLocale = routing.locales.find((locale) =>
+    pathname.startsWith(`/${locale}/`),
+  );
+  const imagePath = imageLocale ? pathname.slice(imageLocale.length + 1) : null;
+  if (
+    imagePath &&
+    !matches(imagePath, PROTECTED) &&
+    !matches(imagePath, STAFF_ONLY) &&
+    /\/(?:opengraph-image|twitter-image)(?:-[^/]+)?$/.test(imagePath)
+  )
+    return Response.next();
+
   // Locale negotiation / rewrite first so downstream pages see `/[locale]/…`.
   const internationalized = handleI18nRouting(request);
 

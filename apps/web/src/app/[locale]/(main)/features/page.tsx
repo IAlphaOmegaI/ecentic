@@ -25,6 +25,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
   const translate = await getTranslations("features");
 
   return createMetadata({
+    image: false,
     title: translate("meta.title"),
     description: translate("meta.description"),
     path: localizePath("/features", locale),
