@@ -77,52 +77,101 @@ so the longer silence is explained. Levels above `max` (`ultra`) are never used
 here.
 
 The session default is the variable `CODEX_REASONING_EFFORT`, falling back to
-`xhigh`: `.mcp.json` expands it into the server's `-c` pin, the
-`codex-consultant` fallback reads it into its `codex exec` line, and for MCP
-calls it is the level to put in `config` unless § Reasoning effort selects
-`max` for that consultation. Check it once per session
-(`echo "${CODEX_REASONING_EFFORT:-xhigh}"`) rather than assuming `xhigh`. So
-`CODEX_REASONING_EFFORT=max claude` runs a whole session at max without editing
-any file; the per-call rule still decides a single consultation.
+`xhigh`: the consult script reads it, and it is the level every run is pinned
+to unless § Reasoning effort selects `max` for that consultation. Check it
+once per session (`echo "${CODEX_REASONING_EFFORT:-xhigh}"`) rather than
+assuming `xhigh`. So `CODEX_REASONING_EFFORT=max claude` runs a whole session
+at max without editing any file; the per-call rule still decides a single
+consultation.
 
-**Primary transport — the codex MCP server** (registered in `.mcp.json`):
+**Transport — the `codex-consultant` subagent** (`.claude/agents/codex-consultant.md`),
+a courier that runs one script, `.claude/scripts/codex-consult.sh`, and
+nothing else. There is no codex MCP server:
+`codex mcp-server` was deprecated upstream at codex-cli 0.149.1 and removed in
+0.154.0 (9 Sep 2026) in favour of `codex app-server`, which speaks Codex's own
+JSON-RPC protocol and is not an MCP server. It existed in 0.146.0 and 0.153.4,
+the last version installed here before the auto-update to 0.155.1, whose
+binary carries no `codex`/`codex-reply` tool surface at all — so `.mcp.json`
+no longer registers one. `codex exec` is the supported lane, and the script is
+the only thing that calls it:
 
-- Call the `mcp__codex__codex` tool with the complete focused question as
-  `prompt`, including relevant file paths — and **always pass, on every call:**
-  `sandbox: "read-only"`, `model: "gpt-6-astra"`, and
-  `config: { "model_reasoning_effort": "<level>" }` — the session default
-  above, or `"max"` when § Reasoning effort says so. The per-call arguments
-  are the only settings that bind:
-  verified against the codex 0.146.0 source, a tool call builds its
-  configuration from `~/.codex/config.toml` plus the call's own arguments, and
-  the `-c` pins the server is launched with in `.mcp.json` never reach it
-  (they stay there as the documented intent). A call without `sandbox` lets
-  Codex write to the working tree; a call without `config` runs at whatever
-  effort the user's global config names — `ultra` at the time of writing —
-  which is the most expensive level, not the default.
-- For a follow-up in the same consultation, call `mcp__codex__codex-reply`
-  with the returned `threadId` — the thread keeps the model, effort and sandbox
-  of the opening call.
-- Independent questions fan out as parallel `mcp__codex__codex` calls in a
-  single message.
-- The call blocks for the consultation's duration. [OpenAI documents](https://developers.openai.com/api/docs/guides/reasoning#reasoning-effort)
+- **The question travels as a file, and so does the answer.** Write the
+  complete focused question, relevant file paths included, to a file in the
+  scratchpad (a path without spaces), and dispatch the subagent with one line
+  and nothing else — `brief: <absolute path>` — plus `effort: max` on a line
+  of its own when § Reasoning effort calls for it; it runs at the session
+  default otherwise and never escalates on its own. The script pipes that file
+  to Codex byte for byte. A question typed into the prompt is not carried: it
+  comes back `STATUS: rejected`. Independent questions fan out as parallel
+  subagent instances in a single message, one brief file each.
+- **The hand-back is five lines, none of them Codex's words**: `CODEX
+  CONSULT`, `STATUS:` (`complete`, `partial`, `failed`, `timeout`, `rejected`
+  or `unavailable`), `SESSION: <uuid>`, `ANSWER_FILE: <path>` and
+  `REPORT_FILE: <path>`, with a `REASON:` line when the run did not complete.
+  **Codex's answer is the contents of `ANSWER_FILE` — read that file
+  yourself, once `verify` (below) has said `VERIFIED`.** `REPORT_FILE` records
+  what Codex's own header said it ran with (model, effort, sandbox), the
+  session file it wrote under `~/.codex/sessions/` — the proof a session ran —
+  the SHA-256 of the brief Codex was sent, which is your file's
+  (`shasum -a 256`) when an answer seems to be to another question, and the
+  SHA-256 of the answer as the run ended. `verify` compares the file with that
+  digest: `CHANGED` means something has written to it since, and it is not
+  used — tell the user, as for a hand-back in another shape.
+- **Codex's session file is opened in one case only: a run that ended with no
+  answer** — a crash, a clean exit that wrote nothing, a process lost, the
+  cap. If the file records a turn Codex finished since the run began, that
+  turn's final message becomes `ANSWER_FILE`, the status is `partial` and the
+  `REASON:` says so; with no finished turn the run stays `failed` or
+  `timeout`. The working notes of an unfinished turn are transcript and are
+  never lifted, and a run failed for its sandbox recovers nothing. The
+  record's format is Codex's own: after an update that changes it, recovery
+  finds nothing and the run fails as it did before.
+- **A hand-back in any other shape is not Codex's.** Prose, findings, a
+  review, an `ANSWER:` section, an `ANSWER_FILE` that does not exist: the
+  subagent wrote it, whatever it is headed. Do not read it as an answer and do
+  not send the subagent again — tell the user the lane failed, and run the
+  script yourself (below). This rule is what the transport exists for. Of 51
+  consultations between 22 Sep and 6 Oct 2026, under a subagent *instructed*
+  to relay verbatim, two were answered by the subagent with Codex never
+  launched, 33 began with the subagent reading the repository itself, about
+  ten rewrote the question on its way in, and every answer was retyped by the
+  model on its way back. So nothing is left to instruction: the subagent has
+  no file tools, a hook refuses every command but the script and every report
+  but the script's own text, and neither the question nor the answer passes
+  through it. An agent definition is read when a session starts, so a session
+  opened before the file last changed still runs the one it loaded.
+- **The pins are the script's, on every run**: `--sandbox read-only` (Codex is
+  a consultant, not an implementer — without it Codex can write to the working
+  tree; a run whose header does not report it is stopped and failed),
+  `-m gpt-6-astra`, and `-c model_reasoning_effort=<level>`. A hand-typed
+  `codex exec` without the effort pin inherits whatever the user's global
+  `~/.codex/config.toml` names — `max` at the time of writing, the most
+  expensive level, not the default — so never hand-type one.
+- A run takes minutes, not seconds. [OpenAI documents](https://developers.openai.com/api/docs/guides/reasoning#reasoning-effort)
   higher reasoning effort as trading latency and token usage for quality, but
   does not publish a fixed runtime; budget 5–15 minutes at `xhigh` and 10–30
-  at `max`, with complex or tool-heavy calls potentially taking longer. The
-  codex entry in `.mcp.json`
-  sets a per-server hard `timeout` of 60 minutes as a runaway-spend cap — a
-  consultation still running past that is broken, not thorough. Say the one-line
-  status before calling so the silence is explained.
+  at `max`, with complex or tool-heavy runs potentially taking longer. The
+  script launches Codex detached and keeps the clock, so no tool-call timeout
+  kills the run; it stops the run at 55 minutes (`STATUS: timeout` — resume
+  the session and ask for what it has). A second `start` for a brief that is
+  running, or was answered in the last two hours, returns that run rather than
+  paying for another. Say the one-line status before dispatching so the
+  silence is explained.
+- For a follow-up in the same consultation, the hand-back carries the run's
+  `SESSION: <uuid>`; a rebuttal is a new brief file and a new subagent
+  instance, dispatched with `brief: <path>` and `resume: <uuid>`, and it runs
+  `codex exec resume <uuid>` under the same pins. Never `--last`: with
+  parallel consultations the newest session may be another question's. This
+  replaces the retired MCP `threadId`.
 
-**Fallback — only when the MCP tool is absent from the session:** use the
-`codex-consultant` subagent (`.claude/agents/codex-consultant.md`), which
-drives the CLI directly with the same pins — it runs at `xhigh` unless the
-brief carries an `effort: max` line, and never escalates on its own. For a
-quick one-off, the direct CLI also works (swap `xhigh` for `max` under the
-same rule):
+The same script is the direct lane — when a hand-back is not valid, or for a
+consultation the session runs itself:
 
 ```bash
-codex exec -m gpt-6-astra -c model_reasoning_effort="xhigh" --sandbox read-only "<focused question, including relevant file paths>"
+.claude/scripts/codex-consult.sh start <brief file> [--effort max] [--resume <uuid>]   # the hand-back, or NEXT: the wait command
+.claude/scripts/codex-consult.sh wait <run directory> --until-done                      # in a background Bash call; prints the hand-back
+.claude/scripts/codex-consult.sh verify <ANSWER_FILE>                                   # before reading an answer: VERIFIED, or CHANGED — not used
+.claude/scripts/codex-consult.sh list                                                   # recent runs — wait on one a subagent left running, never start it again
 ```
 
 - Ask a focused question with enough context rather than restating the whole task.
@@ -140,8 +189,8 @@ Codex output is advisory, never authoritative:
   § How To Work In This Repo).
 
 Single round by default; escalate only when another round can change the
-outcome. After verifying Codex's answer, send a rebuttal via
-`mcp__codex__codex-reply` (same `threadId`) only when one of these holds:
+outcome. After verifying Codex's answer, send a rebuttal through the subagent
+with a `resume: <SESSION uuid>` line only when one of these holds:
 
 1. **Your verification contradicts a material claim** — send the evidence
    (file:line, build output, installed-package source) and ask Codex to defend
@@ -173,4 +222,4 @@ Report one answer, not the negotiation:
 - Mention Codex explicitly only when it materially changed your conclusion, or
   when a disagreement remains unresolved after verification — then state both
   positions in a sentence or two so the user can decide. Codex's full answer
-  stays available in the consultant subagent's report if the user asks for it.
+  stays in the run's `ANSWER_FILE` if the user asks for it.
