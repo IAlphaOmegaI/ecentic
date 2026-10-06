@@ -27,6 +27,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
   const translate = await getTranslations("woocommerce");
 
   return createMetadata({
+    image: false,
     title: translate("meta.title"),
     description: translate("meta.description"),
     path: localizePath("/platforms/woocommerce", locale),

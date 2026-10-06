@@ -52,6 +52,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
   // `"%s | ecentic"` template supplies the suffix, exactly as `brandedTitle`
   // would for a title this short.
   return createMetadata({
+    image: false,
     title: translate("meta.title"),
     description: translate("meta.description"),
     path: localizePath("/blog", locale),

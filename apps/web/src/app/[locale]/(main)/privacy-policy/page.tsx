@@ -87,6 +87,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
   const translate = await getTranslations("legal");
 
   return createMetadata({
+    image: false,
     title: translate("privacyPolicy.meta.title"),
     description: translate("privacyPolicy.meta.description"),
     path: localizePath("/privacy-policy", locale),

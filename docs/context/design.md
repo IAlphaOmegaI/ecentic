@@ -583,7 +583,7 @@ Hide the narrative panel below `lg`; the task pane must remain fully usable alon
 
 ### 8.4 Product film and media
 
-The landing product film uses `/videos/banner.mp4` in a dark emphasis frame. Media is evidence of the
+The landing product film uses the versioned assets documented in [Homepage launch film](../tasks/homepage-launch-video.md), with a small silent preview and the full film loaded on request in a dark emphasis frame. Media is evidence of the
 product, so it may receive stronger separation, a larger radius, and a controlled shadow than
 ordinary sections.
 

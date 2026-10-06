@@ -10,35 +10,94 @@ import {
   DialogTrigger,
 } from "@zenncore/web/components/dialog";
 import { useTranslations } from "next-intl";
+import { useEffect, useRef, useState } from "react";
+import { useDocument } from "@/hooks/use-document";
 
-const source = "/videos/banner.mp4";
+// /videos/* is cached immutably. A new film must always get new filenames.
+const source = "/videos/ecentic-launch-20261005.mp4";
+const loop = "/videos/ecentic-launch-preview-20261005.mp4";
+const poster = "/videos/ecentic-launch-poster-20261005.webp";
 
-// The trigger loops silently forever behind a "Play video" affordance, so it
-// has no use for the film's 70 seconds or its audio track. It gets a 15s, 960w,
-// soundless cut (357KB); the full 15.8MB film stays behind the dialog, where it
-// only downloads once someone actually asks for it. `autoPlay` overrides
-// `preload`, so whatever this element points at is fetched on load regardless.
-const loop = "/videos/banner-loop.mp4";
+// Only the short, silent preview can load automatically. The complete 59s,
+// 1080p/60fps film is mounted after the visitor opens the dialog.
 
 export const HeroVideo = () => {
   const translate = useTranslations("home.heroVideo");
+  const { document, window } = useDocument();
+  const video = useRef<HTMLVideoElement>(null);
+  const [open, setOpen] = useState(false);
+  const [preview, setPreview] = useState(false);
+  const [reduced, setReduced] = useState(true);
+
+  useEffect(() => {
+    if (!window || !document || !video.current) return;
+
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const connection = (
+      window.navigator as Navigator & {
+        connection?: EventTarget & { saveData?: boolean };
+      }
+    ).connection;
+    const viewport = { visible: false };
+    const update = () => {
+      setReduced(motion.matches);
+      setPreview(
+        viewport.visible &&
+          !document.hidden &&
+          !open &&
+          !motion.matches &&
+          !connection?.saveData,
+      );
+    };
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        viewport.visible = entry?.isIntersecting ?? false;
+        update();
+      },
+      { rootMargin: "160px" },
+    );
+
+    update();
+    observer.observe(video.current);
+    motion.addEventListener("change", update);
+    connection?.addEventListener("change", update);
+    document.addEventListener("visibilitychange", update);
+
+    return () => {
+      observer.disconnect();
+      motion.removeEventListener("change", update);
+      connection?.removeEventListener("change", update);
+      document.removeEventListener("visibilitychange", update);
+    };
+  }, [document, window, open]);
+
+  useEffect(() => {
+    if (preview) return;
+    // Removing the source plus load() also cancels downloads and restores the
+    // poster when the tab is hidden, the dialog opens, or preferences change.
+    video.current?.pause();
+    video.current?.load();
+  }, [preview]);
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       {/* No `aria-label`: the name derives from the visible text below, which is
         what a voice-control user would say out loud. */}
       <DialogTrigger className="group relative h-auto w-full overflow-hidden rounded-2xl border border-accent-foreground bg-emphasis p-0 text-left shadow-2xl shadow-primary/10 outline-offset-4">
         <video
+          ref={video}
           aria-hidden
-          autoPlay
+          autoPlay={preview}
           loop
           muted
           playsInline
-          poster="/images/hero-poster.webp"
-          className="aspect-video w-full object-cover transition-transform duration-150 group-hover:scale-[1.01] motion-reduce:transition-none"
-        >
-          <source src={loop} type="video/mp4" />
-        </video>
+          preload="none"
+          width={960}
+          height={540}
+          src={preview ? loop : undefined}
+          poster={poster}
+          className="aspect-video w-full object-cover"
+        />
         <span
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-linear-to-t from-emphasis/70 via-transparent to-transparent"
@@ -75,16 +134,22 @@ export const HeroVideo = () => {
         >
           <XIcon aria-hidden className="size-5" />
         </DialogClose>
-        <video
-          autoPlay
-          controls
-          playsInline
-          preload="auto"
-          className="aspect-video w-full bg-emphasis object-contain"
-        >
-          <source src={source} type="video/mp4" />
-          {translate("fallback")}
-        </video>
+        {open && (
+          // biome-ignore lint/a11y/useMediaCaption: No speech; all information is on screen. The soundtrack is decorative music and effects.
+          <video
+            autoPlay={!reduced}
+            controls
+            playsInline
+            preload="none"
+            width={1920}
+            height={1080}
+            poster={poster}
+            className="aspect-video w-full bg-emphasis object-contain"
+          >
+            <source src={source} type="video/mp4" />
+            {translate("fallback")}
+          </video>
+        )}
       </DialogPopup>
     </Dialog>
   );

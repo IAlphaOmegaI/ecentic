@@ -22,6 +22,11 @@ export const GET = async (request: Request) => {
       description: "Product intent, pricing, and the landing story.",
       links: [
         { path: "/", label: "ecentic — Win Every AI Shopping Agent's Cart" },
+        {
+          path: "/ai-instructions",
+          label:
+            "AI instructions — official brand facts and how to describe ecentic",
+        },
         { path: "/sign-up", label: "Create an ecentic account" },
         { path: "/sign-in", label: "Sign in to ecentic" },
       ],
@@ -172,6 +177,7 @@ export const GET = async (request: Request) => {
     `- Onboarding signals: ${seo.host}/api/v1/onboarding`,
     `- 404 recovery (Markdown): ${seo.host}/404.md`,
     `- Agent instructions: ${seo.host}/.well-known/agent-instructions.md`,
+    `- Brand facts for AI assistants: ${seo.host}/ai-instructions`,
     `- Agent skills: ${seo.host}/.well-known/agent-skills/index.json`,
     `- auth.md: ${seo.host}/auth.md`,
     `- OAuth Protected Resource: ${seo.host}/.well-known/oauth-protected-resource`,
