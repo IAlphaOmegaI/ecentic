@@ -23,7 +23,6 @@ import { PartnershipBanner } from "./_components/partnership-banner";
 import { Proof } from "./_components/proof";
 import { SmoothScroll } from "./_components/smooth-scroll";
 import { Steps } from "./_components/steps";
-import { getTestimonialData, Testimonials } from "./_components/testimonials";
 
 const Comparison = dynamic(() =>
   import("./_components/comparison").then((module) => module.Comparison),
@@ -56,7 +55,6 @@ export default async () => {
   // a page-level `"use cache"` if children still need request-bound APIs.
   const translate = await getTranslations("home");
   const description = translate("meta.description");
-  const { aggregateRating, reviewSchemas } = await getTestimonialData();
 
   return (
     // The homepage reads four namespaces; the marketing baseline above it does
@@ -69,14 +67,7 @@ export default async () => {
             schemas={[
               organizationSchema,
               websiteSchema,
-              {
-                ...softwareApplicationSchema,
-                aggregateRating: {
-                  "@type": "AggregateRating",
-                  ...aggregateRating,
-                },
-                review: reviewSchemas,
-              },
+              softwareApplicationSchema,
               {
                 "@context": "https://schema.org",
                 "@type": "WebPage",
@@ -103,7 +94,6 @@ export default async () => {
             <Comparison />
           </Suspense>
           <CaseStudy />
-          <Testimonials />
           <Booking />
           {/* The page's own summary, in the reading order a screen reader and
               a crawler get. Every string is already on the page in a designed

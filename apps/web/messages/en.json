@@ -3158,30 +3158,6 @@
         "period": "in 30 days"
       }
     },
-    "testimonials": {
-      "title": "What customers tell us.",
-      "starsAria": "{count} out of 5 stars",
-      "items": {
-        "sarah": {
-          "name": "Sarah Chen",
-          "role": "Head of Ecommerce",
-          "company": "Meridian Goods",
-          "text": "We had no idea AI agents were comparing our listings against competitors until we saw the simulation. We fixed three product titles that week and agent-referred traffic went up."
-        },
-        "marcus": {
-          "name": "Marcus Trejo",
-          "role": "DTC Brand Manager",
-          "company": "Olven Studio",
-          "text": "The battlecards saved us hours of manual research. Now we know which attributes to add so our products stop losing to cheaper alternatives in AI shopping results."
-        },
-        "priya": {
-          "name": "Priya Nair",
-          "role": "Shopify Store Owner",
-          "company": "Leafwork",
-          "text": "Connecting my store took two minutes and I could see straight away which listings AI agents were ignoring. The suggestions are things I can actually go do, not generic SEO advice."
-        }
-      }
-    },
     "booking": {
       "eyebrow": "Book a call",
       "title": "See your AI win rate, live in 15 minutes.",

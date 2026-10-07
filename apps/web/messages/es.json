@@ -3158,30 +3158,6 @@
         "period": "en 30 días"
       }
     },
-    "testimonials": {
-      "title": "Lo que nos dicen los clientes.",
-      "starsAria": "{count} de 5 estrellas",
-      "items": {
-        "sarah": {
-          "name": "Sarah Chen",
-          "role": "Directora de Ecommerce",
-          "company": "Meridian Goods",
-          "text": "No teníamos ni idea de que los agentes de IA comparaban nuestras fichas con las de la competencia hasta que vimos la simulación. Esa semana corregimos tres títulos de producto y el tráfico referido por agentes subió."
-        },
-        "marcus": {
-          "name": "Marcus Trejo",
-          "role": "Brand Manager DTC",
-          "company": "Olven Studio",
-          "text": "Las battlecards nos ahorraron horas de investigación manual. Ahora sabemos qué atributos añadir para que nuestros productos dejen de perder frente a alternativas más baratas en los resultados de compra con IA."
-        },
-        "priya": {
-          "name": "Priya Nair",
-          "role": "Propietaria de tienda Shopify",
-          "company": "Leafwork",
-          "text": "Conectar mi tienda me llevó dos minutos y enseguida vi qué fichas ignoraban los agentes de IA. Las sugerencias son cosas que puedo hacer de verdad, no consejos genéricos de SEO."
-        }
-      }
-    },
     "booking": {
       "eyebrow": "Reserva una llamada",
       "title": "Mira tu tasa de victoria en IA, en vivo en 15 minutos.",
