@@ -36,11 +36,21 @@ export const generateMetadata = async ({
   const locale = await getLocale();
   const translate = await getTranslations({ locale, namespace: "blog.tag" });
 
-  return createMetadata({
-    title: translate("metaTitle", { slug }),
-    description: translate("metaDescription", { slug }),
-    path: localizePath(`/blog/tag/${slug}`, locale),
-  });
+  return {
+    ...createMetadata({
+      title: translate("metaTitle", { slug }),
+      description: translate("metaDescription", { slug }),
+      path: localizePath(`/blog/tag/${slug}`, locale),
+    }),
+    // A tag archive is a short list repeating article cards, usually for a
+    // single post. Keep it crawlable so its links still reach the articles,
+    // but out of the index.
+    robots: {
+      index: false,
+      follow: true,
+      googleBot: { index: false, follow: true },
+    },
+  };
 };
 
 export default async ({ params }: TagPageProps) => {

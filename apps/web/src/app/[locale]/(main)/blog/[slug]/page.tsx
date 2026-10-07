@@ -10,6 +10,7 @@ import { routing } from "@/i18n/routing";
 import {
   hasFaqSection,
   isFaqSectionTitle,
+  leadingTags,
   splitBlogHtmlByH2,
 } from "@/lib/blog-html";
 import {
@@ -48,11 +49,6 @@ const toBlogIsoDate = (value: Date | string) => normalize(value).toISOString();
 /** Left-rail index continuing a section list that may or may not open at `00`. */
 const nextSectionNumber = (sections: readonly { number: string }[]) =>
   String(Number(sections.at(-1)?.number ?? "00") + 1).padStart(2, "0");
-
-const languageAlternates = (slug: string) => ({
-  en: `/blog/${slug}`,
-  es: `/es/blog/${slug}`,
-});
 
 /**
  * A title tag is not an H1. Where the headline we want on the page is longer
@@ -102,17 +98,30 @@ export const generateMetadata = async ({
 
   const post = resolved.post;
   const path = localizePath(`/blog/${post.slug}`, locale);
+  const tags = leadingTags(post.tags);
 
   return {
     // `absolute` so the locale layout's `"%s | ecentic"` cannot re-append a
     // suffix `brandedTitle` may have deliberately dropped.
     title: { absolute: blogTitleTag(post) },
     description: post.description,
-    keywords: [...post.tags],
-    alternates: {
-      canonical: path,
-      languages: languageAlternates(post.slug),
-    },
+    keywords: tags,
+    // No hreflang pair: the other-locale article is a machine translation kept
+    // out of the index below, and an alternate has to be indexable to count.
+    alternates: { canonical: path },
+    // Spanish articles are unreviewed machine translations of the English
+    // ones (or the English row itself, when no translation has landed). They
+    // stay readable and crawlable for Spanish visitors, but only the original
+    // is offered to search.
+    ...(locale === routing.defaultLocale
+      ? {}
+      : {
+          robots: {
+            index: false,
+            follow: true,
+            googleBot: { index: false, follow: true },
+          },
+        }),
     openGraph: {
       type: "article",
       url: `https://ecentic.ai${path}`,
@@ -123,7 +132,7 @@ export const generateMetadata = async ({
       modifiedTime: toBlogIsoDate(post.updatedAt),
       authors: ["ecentic"],
       section: post.category,
-      tags: [...post.tags],
+      tags,
     },
     twitter: {
       card: "summary_large_image",
@@ -145,6 +154,7 @@ export default async ({ params }: BlogPageProps) => {
 
   const post = resolved.post;
   const path = localizePath(`/blog/${post.slug}`, locale);
+  const tags = leadingTags(post.tags);
 
   // Answers are stored in the row's own language, so a /es page falling back to
   // the English row publishes English answers — the same ones it renders.
@@ -167,7 +177,7 @@ export default async ({ params }: BlogPageProps) => {
     inLanguage: locale,
     url: absoluteUrl(path),
     mainEntityOfPage: absoluteUrl(path),
-    keywords: post.tags.join(", "),
+    keywords: tags.join(", "),
     articleSection: post.category,
     ...(post.thumbnailUrl
       ? {
@@ -220,7 +230,7 @@ export default async ({ params }: BlogPageProps) => {
         description={post.description}
       >
         <JsonLd schemas={structuredData} />
-        <HtmlArticleSections sections={sections} keywords={[...post.tags]} />
+        <HtmlArticleSections sections={sections} keywords={tags} />
         {showsFaq && (
           <FaqSection
             number={nextSectionNumber(sections)}

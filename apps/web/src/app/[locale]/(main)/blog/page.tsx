@@ -5,6 +5,7 @@ import { getLocale, getTranslations } from "next-intl/server";
 import { localizePath } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
+import { leadingTags } from "@/lib/blog-html";
 import { createMetadata } from "@/lib/seo";
 import * as Blog from "@/server/app/blog";
 import {
@@ -136,7 +137,7 @@ export default async () => {
       datePublished: toBlogIsoDate(entry.publishedAt),
       dateModified: toBlogIsoDate(entry.updatedAt),
       url: `https://ecentic.ai${localizePath(`/blog/${entry.slug}`, locale)}`,
-      keywords: entry.tags.join(", "),
+      keywords: leadingTags(entry.tags).join(", "),
       inLanguage: locale,
       author: {
         "@type": "Organization",
@@ -210,7 +211,7 @@ export default async () => {
               </div>
 
               <div className="flex flex-wrap gap-2">
-                {entry.tags.slice(0, 3).map((tag) => (
+                {leadingTags(entry.tags).map((tag) => (
                   <span
                     key={tag}
                     className="border border-accent-foreground bg-background-dimmed p-2 text-foreground-dimmed text-sm"

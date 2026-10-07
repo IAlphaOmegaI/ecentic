@@ -24,6 +24,24 @@ Same slug is shared across locales. Spanish copies are **not** published back in
 
 Index, tags, sitemap, `llms.txt`, OG images, and `generateStaticParams` / `Blog.resolve` read **Postgres only** — never live BabyLoveGrowth during prerender (multi-worker SSG would 429 their 2 req/s cap). Pages are fully static for every slug × locale; the webhook (or editorial write) purges `revalidateTag("blog")` so ISR regenerates from stored rows.
 
+## Search indexing
+
+Only the English article is offered to search. The rules live in the route metadata, not in the rows:
+
+| Surface | Robots | Why |
+|---------|--------|-----|
+| `/blog/<slug>` | `index, follow` | The original article. Self-canonical, no hreflang pair. |
+| `/es/blog/<slug>` | `noindex, follow` | An unreviewed machine translation (or the EN row, on fallback). Readable and linked for Spanish visitors, left out of the index and the sitemap. |
+| `/blog/tag/<slug>` (both locales) | `noindex, follow` | A tag archive is usually a one-post list; its links still reach the articles. |
+
+Three more things keep a CMS article from reading as generated to a crawler:
+
+- **Tags are capped** — `leadingTags` (`lib/blog-html.ts`) keeps the first three. A BabyLoveGrowth post arrives with a dozen near-identical search phrases; printed in full as chips, `keywords` meta and JSON-LD they are a keyword list. Use the helper anywhere tags reach the page.
+- **Outbound links are qualified** — `splitBlogHtmlByH2` rewrites every external `<a>` in a CMS body to `rel="nofollow noopener noreferrer"`. BabyLoveGrowth leaves its own partner placements followed; links to `ecentic.ai` and relative links are untouched.
+- **The sitemap lists English articles only**, since it should name what search is meant to index.
+
+If a Spanish article is ever reviewed by a person and meant to rank, that is a per-post decision: it needs its own `index` rule, a sitemap entry, and the hreflang pair restored on both locales together.
+
 ## Database
 
 `blog_post` columns:

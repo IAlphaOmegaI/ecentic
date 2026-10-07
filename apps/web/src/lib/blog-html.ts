@@ -1,4 +1,5 @@
 import { isLocale, type Locale, routing } from "@/i18n/routing";
+import { seo } from "@/lib/seo";
 
 export type BlogHtmlSection = {
   number: string;
@@ -100,6 +101,32 @@ const stripTags = (value: string) =>
 const stripScripts = (html: string) =>
   html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "").trim();
 
+const isExternal = (href: string) =>
+  /^https?:\/\//i.test(href) &&
+  URL.canParse(href) &&
+  new URL(href).hostname.replace(/^www\./, "") !== new URL(seo.host).hostname;
+
+/**
+ * CMS bodies decide per link whether it is followed, and the ones left followed
+ * include the vendor's own partner placements. Qualify every outbound link the
+ * same way, so no article passes ranking credit on someone else's behalf.
+ */
+const qualifyExternalLinks = (html: string) =>
+  html.replace(/<a\b[^>]*>/gi, (anchor) => {
+    const href = anchor.match(/\bhref\s*=\s*(["'])(.*?)\1/i)?.[2];
+    if (!href || !isExternal(href)) return anchor;
+    return anchor
+      .replace(/\s+rel\s*=\s*(["']).*?\1/i, "")
+      .replace(/\s*>$/, ' rel="nofollow noopener noreferrer">');
+  });
+
+/**
+ * A CMS post arrives with a dozen or more near-identical search phrases as its
+ * tags. Printed in full — as chips, `keywords` meta and JSON-LD — that is a
+ * keyword list, not navigation; the first few are the ones the article is about.
+ */
+export const leadingTags = (tags: readonly string[]) => tags.slice(0, 3);
+
 /** Keep wide CMS tables inside the right rail without blowing out the 5fr/8fr grid. */
 const wrapScrollableTables = (html: string) =>
   html.replace(
@@ -123,7 +150,7 @@ export const splitBlogHtmlByH2 = (
     : STRUCTURE[routing.defaultLocale];
   const isTakeaways = (title: string) => structure.takeaways.test(title.trim());
 
-  const withoutScripts = stripScripts(html);
+  const withoutScripts = qualifyExternalLinks(stripScripts(html));
   const withoutLeadingTitle = withoutScripts.replace(
     /^\s*<h1\b[^>]*>[\s\S]*?<\/h1>\s*/i,
     "",

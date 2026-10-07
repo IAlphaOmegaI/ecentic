@@ -16,12 +16,8 @@ export default async (): Promise<MetadataRoute.Sitemap> => {
   cacheLife("hours");
   cacheTag(Blog.BLOG_CACHE_TAG);
 
-  const [blogs, spanish] = await Promise.all([
-    Blog.listPublished("en"),
-    Blog.listPublished("es"),
-  ]);
+  const blogs = await Blog.listPublished("en");
   const latestBlog = blogs[0]?.updatedAt ?? new Date("2026-04-07");
-  const spanishBySlug = new Map(spanish.map((post) => [post.slug, post]));
 
   const marketing = [
     { path: "", changeFrequency: "weekly", priority: 1 },
@@ -91,24 +87,15 @@ export default async (): Promise<MetadataRoute.Sitemap> => {
     }),
   );
 
-  const englishArticles = blogs.map((post) => ({
+  // English articles only: the `/es/blog/<slug>` routes still serve, but they
+  // are machine translations marked `noindex`, and a sitemap lists only what
+  // search is meant to index.
+  const articles = blogs.map((post) => ({
     url: `${seo.host}/blog/${post.slug}`,
     lastModified: post.updatedAt,
     changeFrequency: "monthly" as const,
     priority: 0.72,
   }));
 
-  // Same slug set as English — ES routes are first-class even before a
-  // translated row exists (`Blog.resolve` falls back to EN).
-  const spanishCatalog = blogs.map((post) => {
-    const translated = spanishBySlug.get(post.slug);
-    return {
-      url: `${seo.host}/es/blog/${post.slug}`,
-      lastModified: translated?.updatedAt ?? post.updatedAt,
-      changeFrequency: "monthly" as const,
-      priority: 0.72,
-    };
-  });
-
-  return [...marketingEntries, ...englishArticles, ...spanishCatalog];
+  return [...marketingEntries, ...articles];
 };
