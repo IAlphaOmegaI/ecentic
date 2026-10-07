@@ -8,6 +8,13 @@
  * Spec: https://ucp.dev/2026-04-08/specification/overview/
  */
 
+/**
+ * The one UCP revision this hosted service implements on the wire: what its
+ * profiles declare, what negotiation accepts from a platform, and what its
+ * responses and webhooks are stamped with. It moves only when the service
+ * itself is ported to a newer revision — never to follow the spec's latest,
+ * which is `LATEST_UCP_VERSION` in `lib/ucp.ts` and belongs to the validator.
+ */
 export const UCP_VERSION = "2026-04-08";
 
 const SPEC_BASE = `https://ucp.dev/${UCP_VERSION}`;

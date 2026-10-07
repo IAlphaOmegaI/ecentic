@@ -402,7 +402,10 @@ export const mcpServerCard = {
     "Authenticate with Authorization: Bearer ecentic_sk_…. Discover registration at /auth.md, developer documentation at /docs, and OAuth Protected Resource Metadata at /.well-known/oauth-protected-resource. Read-only tools such as list_plans work without a token.",
 };
 
-/** Keep in sync with `UCP_VERSION` in `server/app/ucp/protocol.ts`. */
+/**
+ * Keep in sync with `UCP_VERSION` in `server/app/ucp/protocol.ts` — the
+ * revision our own endpoints serve, not the spec's latest (`lib/ucp.ts`).
+ */
 const ucpVersion = "2026-04-08";
 const ucpSpecBase = `https://ucp.dev/${ucpVersion}`;
 

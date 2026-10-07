@@ -156,8 +156,8 @@
         "ucpReady": "Listo para UCP",
         "needsFixes": "Necesita correcciones",
         "noIssuesFound": "Sin problemas",
-        "signingKeysNotAdvertised": "signing_keys no anunciadas",
-        "signingKeysEmpty": "signing_keys está vacío",
+        "signingKeysNotAdvertised": "Claves de firma no anunciadas",
+        "signingKeysEmpty": "El array de claves de firma está vacío",
         "missingKid": "(falta kid)",
         "transport": "Transporte · {value}",
         "version": "Versión · {value}",
@@ -168,7 +168,9 @@
         "crv": "crv · {value}",
         "latestSuffix": " · última {version}",
         "envelope": "envoltorio: {kind}",
-        "envelopeFlatKind": "plano"
+        "envelopeFlatKind": "plano",
+        "notValidated": "No validado",
+        "notValidatedSuffix": " · no validado"
       },
       "services": {
         "title": "Servicios y transportes",
@@ -200,7 +202,8 @@
       "spec": {
         "title": "Validación de la especificación",
         "description": "{errors, plural, one {# error} other {# errores}}, {warnings, plural, one {# advertencia} other {# advertencias}} agrupados por área de la especificación.",
-        "noIssuesBody": "El perfil actual pasó el validador sin errores ni advertencias de esquema."
+        "noIssuesBody": "El perfil actual pasó el validador sin errores ni advertencias de esquema.",
+        "noProfileBody": "No se leyó ningún perfil, así que no había nada que validar."
       },
       "results": {
         "responseHealth": "Estado de la respuesta",
@@ -217,7 +220,9 @@
         "specErrors": {
           "label": "Errores de especificación",
           "noneDetail": "No se encontraron problemas de esquema bloqueantes.",
-          "someDetail": "Problemas bloqueantes que conviene corregir primero."
+          "someDetail": "Problemas bloqueantes que conviene corregir primero.",
+          "notValidatedDetail": "No validado contra esta revisión.",
+          "noProfileDetail": "No se leyó ningún perfil, así que no se comprobó nada."
         },
         "capabilities": {
           "label": "Capacidades",
@@ -258,12 +263,13 @@
           "label": "Última versión del protocolo",
           "latest": "El perfil declara {version}, la última versión publicada de UCP.",
           "outdated": "El perfil declara {version}; la última es {latest}.",
-          "none": "No se declara ninguna versión en la raíz del perfil."
+          "none": "No se declara ninguna versión en la raíz del perfil.",
+          "notValidated": "El perfil declara {version}, una revisión que este validador no implementa ({revisions}). No se validó contra ella."
         },
         "signingKeys": {
           "label": "Claves de firma anunciadas",
           "published": "{count, plural, one {# JWK publicada} other {# JWK publicadas}} para la verificación RFC 9421.",
-          "none": "No se anuncian signing_keys: la verificación sin permisos no es posible."
+          "none": "No se anuncian claves de firma: la verificación sin permisos no es posible."
         }
       },
       "robots": {
@@ -291,7 +297,7 @@
       "intro": {
         "eyebrow": "Validación en vivo",
         "title": "Ejecuta una validación en vivo",
-        "description": "Pega un dominio y obtendremos el documento <code>/.well-known/ucp</code> en vivo, analizaremos cada servicio, capacidad, gestor de pago y clave de firma, y luego lo validaremos contra la especificación <code>{version}</code>."
+        "description": "Pega un dominio y obtendremos el documento <code>/.well-known/ucp</code> en vivo, analizaremos cada servicio, capacidad, gestor de pago y clave de firma, y luego lo validaremos contra la revisión de la especificación que declara, hasta <code>{version}</code>."
       }
     }
   }

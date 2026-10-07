@@ -156,8 +156,8 @@
         "ucpReady": "UCP ready",
         "needsFixes": "Needs fixes",
         "noIssuesFound": "No issues found",
-        "signingKeysNotAdvertised": "signing_keys not advertised",
-        "signingKeysEmpty": "signing_keys is empty",
+        "signingKeysNotAdvertised": "No signing keys advertised",
+        "signingKeysEmpty": "Signing keys array is empty",
         "missingKid": "(missing kid)",
         "transport": "Transport · {value}",
         "version": "Version · {value}",
@@ -168,7 +168,9 @@
         "crv": "crv · {value}",
         "latestSuffix": " · latest {version}",
         "envelope": "envelope: {kind}",
-        "envelopeFlatKind": "flat"
+        "envelopeFlatKind": "flat",
+        "notValidated": "Not validated",
+        "notValidatedSuffix": " · not validated"
       },
       "services": {
         "title": "Services & transports",
@@ -200,7 +202,8 @@
       "spec": {
         "title": "Spec validation",
         "description": "{errors, plural, one {# error} other {# errors}}, {warnings, plural, one {# warning} other {# warnings}} grouped by spec area.",
-        "noIssuesBody": "The current profile passed the validator without schema errors or warnings."
+        "noIssuesBody": "The current profile passed the validator without schema errors or warnings.",
+        "noProfileBody": "No profile was read, so there was nothing to validate."
       },
       "results": {
         "responseHealth": "Response health",
@@ -217,7 +220,9 @@
         "specErrors": {
           "label": "Spec Errors",
           "noneDetail": "No blocking schema issues found.",
-          "someDetail": "Blocking issues that should be fixed first."
+          "someDetail": "Blocking issues that should be fixed first.",
+          "notValidatedDetail": "Not validated against this revision.",
+          "noProfileDetail": "No profile was read, so nothing was checked."
         },
         "capabilities": {
           "label": "Capabilities",
@@ -258,12 +263,13 @@
           "label": "Latest protocol version",
           "latest": "Profile declares {version} — the latest published UCP version.",
           "outdated": "Profile declares {version}; latest is {latest}.",
-          "none": "No version declared at the profile root."
+          "none": "No version declared at the profile root.",
+          "notValidated": "Profile declares {version}, a revision this validator does not implement ({revisions}). It was not validated against it."
         },
         "signingKeys": {
           "label": "Signing keys advertised",
           "published": "{count, plural, one {# JWK} other {# JWKs}} published for RFC 9421 verification.",
-          "none": "No signing_keys advertised — permissionless verification not possible."
+          "none": "No signing keys advertised — permissionless verification not possible."
         }
       },
       "robots": {
@@ -291,7 +297,7 @@
       "intro": {
         "eyebrow": "Live validation",
         "title": "Run a live validation",
-        "description": "Paste a domain and we'll fetch the live <code>/.well-known/ucp</code> document, parse every service, capability, payment handler and signing key, then validate it against the <code>{version}</code> spec."
+        "description": "Paste a domain and we'll fetch the live <code>/.well-known/ucp</code> document, parse every service, capability, payment handler and signing key, then validate it against the revision of the spec it declares, up to <code>{version}</code>."
       }
     }
   }
