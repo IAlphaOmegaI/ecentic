@@ -41,6 +41,23 @@ The seam is the discovery profile's `endpoint` field: agents discover the
 store at its own `/.well-known/ucp` and are pointed at
 `https://ecentic.ai/api/ucp/stores/{store}` for every operation.
 
+## Discovery profile shape
+
+`buildDiscoveryProfile` follows the `2026-04-08` profile structure, pinned by
+`apps/web/src/server/spec/ucp-profile.test.ts`:
+
+- `ucp.services` and `ucp.payment_handlers` are always present.
+  `payment_handlers` is `{}` until the merchant declares a handler — the
+  registry is required even when empty.
+- Every capability entry carries a `spec` and a `schema` on `https://ucp.dev`,
+  the namespace authority of `dev.ucp.*`.
+- `signing_keys[]` sits at the top level of the profile, beside `ucp`, never
+  inside it; it is omitted when `UCP_SIGNING_PRIVATE_KEY` is unset. This port
+  used to nest it inside `ucp`, where a spec-following verifier does not look.
+- There is no `supported_versions`: it maps *older* protocol versions to their
+  own leaf profiles, and this service speaks one version. This port used to
+  map the current version to the store's own `/.well-known/ucp`.
+
 ## Request pipeline parity
 
 Same order as the reference `pre_dispatch`:

@@ -435,22 +435,34 @@ export const ucpDiscoveryProfile = {
       ],
     },
     capabilities: {
-      "dev.ucp.shopping.checkout": [{ version: ucpVersion }],
+      "dev.ucp.shopping.checkout": [
+        {
+          version: ucpVersion,
+          spec: `${ucpSpecBase}/specification/checkout`,
+          schema: `${ucpSpecBase}/schemas/shopping/checkout.json`,
+        },
+      ],
       "dev.ucp.shopping.fulfillment": [
         {
           version: ucpVersion,
+          spec: `${ucpSpecBase}/specification/fulfillment`,
+          schema: `${ucpSpecBase}/schemas/shopping/fulfillment.json`,
           extends: ["dev.ucp.shopping.checkout", "dev.ucp.shopping.cart"],
         },
       ],
       "dev.ucp.shopping.buyer_consent": [
         {
           version: ucpVersion,
+          spec: `${ucpSpecBase}/specification/buyer-consent`,
+          schema: `${ucpSpecBase}/schemas/shopping/buyer_consent.json`,
           extends: "dev.ucp.shopping.checkout",
         },
       ],
       "dev.ucp.shopping.discount": [
         {
           version: ucpVersion,
+          spec: `${ucpSpecBase}/specification/discount`,
+          schema: `${ucpSpecBase}/schemas/shopping/discount.json`,
           extends: ["dev.ucp.shopping.checkout", "dev.ucp.shopping.cart"],
         },
       ],
@@ -483,10 +495,9 @@ export const ucpDiscoveryProfile = {
         },
       ],
     },
+    // Required even when empty. `supported_versions` is left out on purpose:
+    // it maps older revisions to their own profiles, and only one is served.
     payment_handlers: {},
-    supported_versions: {
-      [ucpVersion]: `${host}/.well-known/ucp`,
-    },
   },
 } as const;
 
@@ -2288,7 +2299,12 @@ export const openApiDocument = {
         properties: {
           ucp: {
             type: "object",
-            required: ["version", "services", "capabilities"],
+            required: [
+              "version",
+              "services",
+              "capabilities",
+              "payment_handlers",
+            ],
             properties: {
               version: { type: "string" },
               services: {
@@ -2301,9 +2317,15 @@ export const openApiDocument = {
                 description:
                   "Capability namespaces, keyed by reverse-domain identifier.",
               },
-              payment_handlers: { type: "object" },
+              payment_handlers: {
+                type: "object",
+                description:
+                  "Payment handler registry, keyed by reverse-domain identifier. Always present; empty when no handler is declared.",
+              },
               supported_versions: {
                 type: "object",
+                description:
+                  "Older protocol versions still supported, each mapped to its own profile. Omitted while `version` is the only one.",
                 additionalProperties: { type: "string", format: "uri" },
               },
             },
