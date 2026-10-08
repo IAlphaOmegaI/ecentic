@@ -84,6 +84,11 @@ export type ParsedSupportedVersion = {
 // `business_schema` in ucp.json describes the contents of that member, not a
 // flat document.
 
+/** The registries keyed by reverse-domain name, as issue categories. */
+type Registry = "services" | "capabilities" | "payment_handlers";
+/** The URLs an entry of one may declare. */
+type EntryUrl = "spec" | "schema";
+
 /**
  * What differs between revisions, within what this validator inspects.
  * Everything else in the file holds for all of them.
@@ -103,6 +108,16 @@ type Rules = {
   capabilitySchema: boolean;
   /** Every `dev.ucp.*` entry must repeat the profile's `ucp.version`. */
   pinned: boolean;
+  /**
+   * Authority binding: the registries whose entries must have the listed URLs
+   * served by the domain that owns the entry's reverse-domain name, and what a
+   * URL that is not is reported as. `bindingFault` holds the derivation.
+   */
+  binding: {
+    registries: readonly Registry[];
+    urls: readonly EntryUrl[];
+    severity: SpecIssueSeverity;
+  };
 };
 
 const RULES: Record<UcpRevision, Rules> = {
@@ -111,12 +126,36 @@ const RULES: Record<UcpRevision, Rules> = {
     keys: "signing_keys",
     capabilitySchema: false,
     pinned: false,
+    // "Spec URL Binding" asks it of capabilities alone, of `spec` as much as
+    // `schema`, and has platforms SHOULD reject where the later revision says
+    // MUST. It names the "namespace authority" through two examples and no
+    // algorithm, so where an authority ends inside a name is left to the
+    // reader. A failure is therefore a warning, and only a URL that fails the
+    // 2026-08-25 derivation gets one: an origin made of the name's leading
+    // labels reversed — two of them or more — passes that derivation, so what
+    // it turns down is unbound under every reading of this revision. Services
+    // and payment handlers are left alone: the text does not mention them, and
+    // its own example profile serves `com.google.pay` from pay.google.com with
+    // a `spec` on developers.google.com.
+    binding: {
+      registries: ["capabilities"],
+      urls: ["spec", "schema"],
+      severity: "warning",
+    },
   },
   "2026-08-25": {
     name: /^[a-z](?:[a-z0-9-]*[a-z0-9])?(?:\.[a-z0-9](?:[a-z0-9_-]*[a-z0-9_])?)+$/,
     keys: "keys",
     capabilitySchema: true,
     pinned: true,
+    // "Authority Binding" asks it of every entry that declares a `schema`, and
+    // a platform MUST reject one that fails — hence an error. `spec` is
+    // documentation there: it has to be https and may sit on any host.
+    binding: {
+      registries: ["services", "capabilities", "payment_handlers"],
+      urls: ["schema"],
+      severity: "error",
+    },
   },
 };
 
@@ -252,6 +291,7 @@ const PaymentHandlerEntrySchema = z
   .object({
     version: z.string().optional(),
     id: z.string().optional(),
+    schema: z.string().optional(),
   })
   .passthrough();
 
@@ -341,6 +381,89 @@ const checkPinnedVersion = (
       field,
       `"${name}" is a dev.ucp.* entry, so in a ${reading.version} profile it must declare version ${reading.version} (got "${version}"). Platforms treat a mismatched entry as absent; an older release is advertised through "supported_versions" instead.`,
       "error",
+    ),
+  );
+};
+
+const binds = (rules: Rules, registry: Registry, member: EntryUrl) =>
+  rules.binding.registries.includes(registry) &&
+  rules.binding.urls.includes(member);
+
+/**
+ * Why `value` is not served by the owner of `name`, or null when it is — the
+ * derivation 2026-08-25 gives (overview → Namespace Governance → Authority
+ * Binding). The authority is read off the URL's host, not guessed from the
+ * name: the host's labels, reversed, must be the whole name or its leading
+ * labels. `pay.example.com` and `example.com` both own `com.example.pay`;
+ * `cdn.example.com` does not, and `example.com` does not own
+ * `com.examplecorp.pay`.
+ *
+ * The host is what a WHATWG parser makes of the URL, never a substring of its
+ * text: "https://ucp.dev@evil.example/" is served by evil.example. The Public
+ * Suffix List is not consulted — the spec's own choice — so a suffix such as
+ * "co.uk" stands as an authority like any other host.
+ */
+const bindingFault = (name: string, value: string) => {
+  if (!URL.canParse(value)) return `is not a valid URL (got "${value}")`;
+
+  const url = new URL(value);
+  // The parser has already lowercased an https host and written it in A-label
+  // form; the trailing dot of a fully-qualified name is left for us to drop.
+  const host = url.hostname.replace(/\.$/, "");
+  const labels = host.split(".");
+  const prefix = [...labels].reverse().join(".");
+
+  switch (true) {
+    case url.username !== "" || url.password !== "":
+      return `must not put a username or password before its host, which is "${host}"`;
+    // Parsed, an IPv6 host is one bracketed label and an IPv4 host ends in a
+    // number, so neither is a domain name of two labels or more.
+    case labels.length < 2 ||
+      labels.includes("") ||
+      /^\d+$/.test(labels.at(-1) ?? ""):
+      return `is served from "${host}", which is not a domain name of at least two labels: an IP address or a single-label host owns no reverse-domain name`;
+    case name === prefix || name.startsWith(`${prefix}.`):
+      return null;
+    default:
+      return `is served from "${host}", which does not own the name "${name}": the host's labels reversed ("${prefix}") must be the whole name or its leading labels`;
+  }
+};
+
+/**
+ * Authority binding, where the declared revision asks for it (see `RULES`): a
+ * URL an entry declares must be served by the party that owns the entry's
+ * reverse-domain name. It establishes who publishes the entry, not that the
+ * entry deserves trust, and it is read off the declared text — nothing is
+ * fetched.
+ */
+const checkAuthorityBinding = (
+  name: string,
+  member: EntryUrl,
+  value: string,
+  path: string,
+  category: Registry,
+  reading: Reading,
+) => {
+  const { binding } = reading.rules;
+  if (!binds(reading.rules, category, member)) return;
+  // Not an https URL at all: `checkHttpsUrl` has said so on this field, and
+  // one finding per URL is enough.
+  if (!HTTPS_RE.test(value)) return;
+
+  const fault = bindingFault(name, value);
+  if (fault === null) return;
+
+  const consequence =
+    binding.severity === "error"
+      ? `A ${reading.version} platform must reject the entry: it never fetches the schema and treats "${name}" as absent.`
+      : `${reading.version} has a capability's "spec" and "schema" served from its namespace authority, and platforms should reject one that is not.`;
+
+  reading.issues.push(
+    issue(
+      category,
+      `${path}.${member}`,
+      `"${path}.${member}" ${fault}. ${consequence}`,
+      binding.severity,
     ),
   );
 };
@@ -490,6 +613,14 @@ const parseServiceEntries = (
       const schemaUrl = (() => {
         if (entry.schema === undefined) return null;
         checkHttpsUrl(entry.schema, `${path}.schema`, "services", issues);
+        checkAuthorityBinding(
+          name,
+          "schema",
+          entry.schema,
+          path,
+          "services",
+          reading,
+        );
         return entry.schema;
       })();
 
@@ -625,6 +756,14 @@ const parseCapabilityEntries = (
       const spec = (() => {
         if (entry.spec === undefined) return null;
         checkHttpsUrl(entry.spec, `${path}.spec`, "capabilities", issues);
+        checkAuthorityBinding(
+          name,
+          "spec",
+          entry.spec,
+          path,
+          "capabilities",
+          reading,
+        );
         return entry.spec;
       })();
 
@@ -642,6 +781,14 @@ const parseCapabilityEntries = (
           return null;
         }
         checkHttpsUrl(entry.schema, `${path}.schema`, "capabilities", issues);
+        checkAuthorityBinding(
+          name,
+          "schema",
+          entry.schema,
+          path,
+          "capabilities",
+          reading,
+        );
         return entry.schema;
       })();
 
@@ -762,6 +909,28 @@ const parsePaymentHandlerEntries = (
             "error",
           ),
         );
+
+      // Nothing else here reads a handler's `schema`, so it is looked at only
+      // under a revision that binds it: as an https URL, then for its host.
+      if (
+        entry.schema !== undefined &&
+        binds(rules, "payment_handlers", "schema")
+      ) {
+        checkHttpsUrl(
+          entry.schema,
+          `${path}.schema`,
+          "payment_handlers",
+          issues,
+        );
+        checkAuthorityBinding(
+          key,
+          "schema",
+          entry.schema,
+          path,
+          "payment_handlers",
+          reading,
+        );
+      }
 
       handlers.push({
         registryKey: key,

@@ -303,6 +303,21 @@ describe("a live profile on the latest revision", () => {
       "services.dev.ucp.shopping[1].version",
     ]);
   });
+
+  /**
+   * com.google.pay is served from pay.google.com, whose labels reversed are
+   * the name itself; dev.shopify.shop_pay from shopify.dev and the dev.ucp.*
+   * entries from ucp.dev, whose labels reversed lead the name. dev.shopify.card
+   * documents itself on ucp.dev, which is its right: `spec` is not bound in
+   * 2026-08-25.
+   */
+  test("has every schema served by the owner of its name", () => {
+    expect(
+      validation.issues.filter((issue) =>
+        /\.(?:spec|schema)$/.test(issue.field),
+      ),
+    ).toEqual([]);
+  });
 });
 
 describe("a profile on a revision the validator has no rules for", () => {
@@ -570,6 +585,215 @@ describe("what each revision asks for", () => {
       "capabilities.dev.ucp.shopping.checkout[0].version",
     ]);
     expect(errors(mixed("2026-04-08"))).toEqual([]);
+  });
+});
+
+/**
+ * An entry's `schema` has to be served by the party that owns its
+ * reverse-domain name, so that nothing is published under a namespace its
+ * author does not control. The owner is read off the URL's host: the host's
+ * labels, reversed, are the whole name or its leading labels.
+ */
+describe("authority binding", () => {
+  const registries = ["services", "capabilities", "payment_handlers"] as const;
+
+  /**
+   * The findings on the URLs of one entry: `name` declared in `registry`, with
+   * nothing else about it to report under either revision.
+   */
+  const declared = (
+    version: UcpRevision,
+    registry: (typeof registries)[number],
+    name: string,
+    urls: { spec?: string; schema?: string },
+  ) => {
+    const validation = Validator.validateUcpSpec(
+      profile(version, {
+        [registry]: {
+          [name]: [{ id: "entry", version, transport: "embedded", ...urls }],
+        },
+      }),
+    );
+
+    return {
+      spec: at(validation, `${registry}.${name}[0].spec`),
+      schema: at(validation, `${registry}.${name}[0].schema`),
+    };
+  };
+
+  /** The table under "Derivation algorithm" in 2026-08-25, row for row. */
+  const table = [
+    { name: "dev.ucp.shopping.checkout", host: "ucp.dev", bound: true },
+    {
+      name: "dev.ucp.shopping.checkout",
+      host: "shopping.ucp.dev",
+      bound: true,
+    },
+    {
+      name: "com.example.payments.installments",
+      host: "example.com",
+      bound: true,
+    },
+    { name: "com.example.pay", host: "pay.example.com", bound: true },
+    { name: "com.example.pay", host: "example.com", bound: true },
+    { name: "com.example.pay", host: "evil.example", bound: false },
+    { name: "dev.ucp.shopping.checkout", host: "evil.example", bound: false },
+    { name: "com.examplecorp.pay", host: "example.com", bound: false },
+    { name: "com.example.pay", host: "cdn.example.com", bound: false },
+  ];
+
+  /** The table as the validator reads it for one registry of one revision. */
+  const read = (version: UcpRevision, registry: (typeof registries)[number]) =>
+    table.map(({ name, host }) => ({
+      name,
+      host,
+      bound:
+        declared(version, registry, name, {
+          schema: `https://${host}/schema.json`,
+        }).schema.length === 0,
+    }));
+
+  test("2026-08-25 holds every entry with a schema to the spec's nine cases", () => {
+    for (const registry of registries)
+      expect(read("2026-08-25", registry)).toEqual(table);
+  });
+
+  test("a failed binding is an error on the entry's schema, in plain words", () => {
+    for (const registry of registries) {
+      const { schema } = declared("2026-08-25", registry, "com.example.pay", {
+        schema: "https://cdn.example.com/pay.json",
+      });
+
+      expect(schema).toMatchObject([
+        {
+          severity: "error",
+          category: registry,
+          field: `${registry}.com.example.pay[0].schema`,
+        },
+      ]);
+      expect(schema[0]?.message).toContain('"cdn.example.com"');
+      expect(schema[0]?.message).toContain('"com.example.cdn"');
+    }
+  });
+
+  /**
+   * The host is what a WHATWG parser reads, not a substring of the text, and
+   * it has to be a domain name: an address or a lone label owns no namespace.
+   */
+  test("the host is the parser's, and a domain name of two labels", () => {
+    const checkout = (schema: string) =>
+      declared("2026-08-25", "capabilities", "dev.ucp.shopping.checkout", {
+        schema,
+      }).schema;
+
+    for (const schema of [
+      "https://ucp.dev/checkout.json",
+      "HTTPS://UCP.DEV/checkout.json",
+      "https://ucp.dev./checkout.json",
+      "https://ucp.dev:8443/checkout.json",
+    ])
+      expect(checkout(schema)).toEqual([]);
+
+    for (const schema of [
+      // The spec's own example: this URL is served by evil.example.
+      "https://ucp.dev@evil.example/checkout.json",
+      // Userinfo is refused even in front of the right host.
+      "https://user:secret@ucp.dev/checkout.json",
+      "https://203.0.113.10/checkout.json",
+      "https://[2001:db8::1]/checkout.json",
+      "https://localhost/checkout.json",
+      // Reversed, "dev" does lead the name; one label is still no authority.
+      "https://dev/checkout.json",
+      "https://ucp.dev../checkout.json",
+      "https://ucp dev/checkout.json",
+    ])
+      expect(checkout(schema)).toMatchObject([{ severity: "error" }]);
+
+    // An address is no authority even for a name spelled out of its digits.
+    expect(
+      declared("2026-08-25", "payment_handlers", "10.113.0.203.pay", {
+        schema: "https://203.0.113.10/pay.json",
+      }).schema,
+    ).toMatchObject([{ severity: "error" }]);
+
+    // An internationalized host is compared in its A-label form.
+    expect(
+      declared("2026-08-25", "capabilities", "example.xn--bcher-kva.loyalty", {
+        schema: "https://bücher.example/loyalty.json",
+      }).schema,
+    ).toEqual([]);
+  });
+
+  test("a schema that is not https is reported once, as that", () => {
+    for (const registry of registries) {
+      const { schema } = declared("2026-08-25", registry, "com.example.pay", {
+        schema: "http://example.com/pay.json",
+      });
+
+      expect(schema).toHaveLength(1);
+      expect(schema[0]?.message).toContain("HTTPS");
+    }
+  });
+
+  test("2026-08-25 leaves spec free of it, and an entry without a schema", () => {
+    for (const registry of registries)
+      expect(
+        declared("2026-08-25", registry, "com.example.pay", {
+          spec: "https://docs.example.org/pay",
+          schema: "https://example.com/pay.json",
+        }),
+      ).toEqual({ spec: [], schema: [] });
+
+    // A capability is left out: without a schema it has a fault of its own.
+    for (const registry of ["services", "payment_handlers"] as const)
+      expect(
+        declared("2026-08-25", registry, "com.example.pay", {
+          spec: "https://docs.example.org/pay",
+        }),
+      ).toEqual({ spec: [], schema: [] });
+  });
+
+  /**
+   * 2026-04-08 words it differently — capabilities only, `spec` as well as
+   * `schema`, and platforms SHOULD reject — and gives no derivation. So what
+   * fails under every reading of it is reported, and as a warning.
+   */
+  test("2026-04-08 asks it of a capability's spec and schema, as a warning", () => {
+    const stray = {
+      spec: "https://docs.example.org/pay",
+      schema: "https://cdn.example.com/pay.json",
+    };
+
+    expect(
+      declared("2026-04-08", "capabilities", "com.example.pay", stray),
+    ).toMatchObject({
+      spec: [{ severity: "warning", category: "capabilities" }],
+      schema: [{ severity: "warning", category: "capabilities" }],
+    });
+    expect(
+      declared("2026-04-08", "capabilities", "com.example.pay", {
+        spec: "https://example.com/pay",
+        schema: "https://pay.example.com/pay.json",
+      }),
+    ).toEqual({ spec: [], schema: [] });
+    expect(read("2026-04-08", "capabilities")).toEqual(table);
+
+    for (const registry of ["services", "payment_handlers"] as const)
+      expect(
+        declared("2026-04-08", registry, "com.example.pay", stray),
+      ).toEqual({ spec: [], schema: [] });
+  });
+
+  /** The handler both revisions print in their example profile. */
+  test("the spec's own Google Pay handler binds under both revisions", () => {
+    for (const version of UCP_REVISIONS)
+      expect(
+        declared(version, "payment_handlers", "com.google.pay", {
+          spec: "https://developers.google.com/merchant/ucp/guides/gpay-payment-handler",
+          schema:
+            "https://pay.google.com/gp/p/ucp/2026-01-11/schemas/gpay_config.json",
+        }),
+      ).toEqual({ spec: [], schema: [] });
   });
 });
 
