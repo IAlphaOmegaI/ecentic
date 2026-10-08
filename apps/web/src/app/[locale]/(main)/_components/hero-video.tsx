@@ -14,11 +14,11 @@ import { useEffect, useRef, useState } from "react";
 import { useDocument } from "@/hooks/use-document";
 
 // /videos/* is cached immutably. A new film must always get new filenames.
-const source = "/videos/ecentic-launch-20261005.mp4";
-const loop = "/videos/ecentic-launch-preview-20261005.mp4";
-const poster = "/videos/ecentic-launch-poster-20261005.webp";
+const source = "/videos/ecentic-launch-20261008.mp4";
+const loop = "/videos/ecentic-launch-preview-20261008.mp4";
+const poster = "/videos/ecentic-launch-poster-20261008.webp";
 
-// Only the short, silent preview can load automatically. The complete 59s,
+// Only the short, silent preview can load automatically. The complete 58s,
 // 1080p/60fps film is mounted after the visitor opens the dialog.
 
 export const HeroVideo = () => {

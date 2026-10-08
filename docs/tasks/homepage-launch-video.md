@@ -1,17 +1,17 @@
 # Homepage launch film
 
-Updated 5 October 2026. The main homepage film is the approved 59-second launch
-cut, with its original 60fps motion and Artlist soundtrack. `HeroVideo` is shared
+Updated 8 October 2026. The main homepage film is the approved 58-second launch
+cut with the overlapping storefront-to-card transformation, with its original 60fps motion and Artlist soundtrack. `HeroVideo` is shared
 by the English and Spanish homepages.
 
 | Asset in `apps/web/public/videos/` | Encoding | Bytes |
 | --- | --- | ---: |
-| `ecentic-launch-20261005.mp4` | 1920×1080, H.264 High 4.2, 60fps, AAC stereo 128kbps, 59s | 12,788,439 |
-| `ecentic-launch-preview-20261005.mp4` | 960×540, H.264, 30fps, 14s, no audio | 400,552 |
-| `ecentic-launch-poster-20261005.webp` | 1600×900 WebP | 82,040 |
+| `ecentic-launch-20261008.mp4` | 1920×1080, H.264 High 4.2, 60fps, AAC stereo 128kbps, 58s | 12,197,943 |
+| `ecentic-launch-preview-20261008.mp4` | 960×540, H.264, 30fps, 14s, no audio | 498,651 |
+| `ecentic-launch-poster-20261008.webp` | 1600×900 WebP | 81,230 |
 
-The full file is 66.9% smaller than the 38,623,964-byte delivery
-master. Automatic preview video bytes are 95.6% lower than the
+The full file is 69.0% smaller than the 39,381,470-byte delivery
+master. Automatic preview video bytes are 94.5% lower than the
 previous 9,046,291-byte asset. The old banner and loop were identical 70-second
 files with audio; the preview now has its own short, silent encode.
 
@@ -41,7 +41,7 @@ longer references them. Both new MP4s have their `moov` index before media data
 (`+faststart`) and the server supports byte-range seeking.
 
 The approved master has SHA-256:
-`7cac88aab8a56959454623646ad9b03b2274a4664621b96ce9045c239129a7d2`.
+`59ee2246f7fd2ac984a1096d7c2e184518c15ca9261892c85a55fbc38f55886e`.
 Reproduce these assets from that master, from the repository root:
 
 ```sh
@@ -50,31 +50,32 @@ ffmpeg -i "$launch_master" -map 0:v:0 -map 0:a:0 \
   -c:v libx264 -preset slow -crf 23 -profile:v high -level:v 4.2 \
   -pix_fmt yuv420p -g 120 -maxrate 6M -bufsize 12M \
   -c:a aac -b:a 128k -ar 48000 -movflags +faststart -map_metadata -1 \
-  apps/web/public/videos/ecentic-launch-20261005.mp4
+  apps/web/public/videos/ecentic-launch-20261008.mp4
 ffmpeg -i "$launch_master" -t 14 -an \
   -vf 'fps=30,scale=960:-2:flags=lanczos,fade=t=out:st=13.6:d=0.4:color=0xf5f5f5' \
   -c:v libx264 -preset slow -crf 28 -profile:v high -level:v 3.1 \
   -pix_fmt yuv420p -g 60 -maxrate 700k -bufsize 1400k \
   -movflags +faststart -map_metadata -1 \
-  apps/web/public/videos/ecentic-launch-preview-20261005.mp4
+  apps/web/public/videos/ecentic-launch-preview-20261008.mp4
 ffmpeg -ss 1.4 -i "$launch_master" -frames:v 1 \
   -vf 'scale=1600:-2:flags=lanczos' -c:v libwebp -quality 82 \
-  apps/web/public/videos/ecentic-launch-poster-20261005.webp
+  apps/web/public/videos/ecentic-launch-poster-20261008.webp
 ```
 
 ## Verification
 
-- Both MP4s decode completely; the full film retains 3,540 frames and the preview
-  has 420 frames with no audio stream. The full container is 59.050s (AAC padding).
-- Master/encode comparisons of ChatGPT cards, écentic and Shopify charts, the
-  closing CTA, preview and poster show no material compression or clipping issue.
-- Browser checks cover mobile and desktop playback, seeking to the ending,
-  English/Spanish dialog labels, close cleanup, and focus return. DOM checks show
-  the preview source is removed while the full film is mounted and restored on
-  close, with no full-film element while closed.
-- HTTP checks return `video/mp4`, immutable caching, and `206 Partial Content`
-  for a 1,024-byte range. Both files pass the faststart atom-order check.
-- Scoped Biome passes. Under the same generated types, TypeScript reports the
-  same 298 baseline errors before and after this change, with no new diagnostics.
-- `bun run build:web` passes: all seven tasks successful. The final source
-  review found no loading-lifecycle or media-versioning blockers.
+- Approved master SHA-256 matches the final Overlapping transformation delivery.
+- Both new MP4s decode completely. Full film: 3,480 frames at 60fps, 58.000s
+  video with stereo AAC. Preview: 420 frames at 30fps, 14.000s, no audio stream.
+- Both MP4s have their `moov` index before media data. The poster is 1600×900.
+- Scoped Biome and whitespace checks pass. The component change consists only
+  of three asset paths and the duration comment; loading and dialog behavior
+  are preserved.
+- The 5 October assets stay available for previously cached pages and rollback.
+  This release is based on the production commit `b16d3236`.
+
+| Asset | SHA-256 |
+| --- | --- |
+| Full film | `458afae6e4686cda724009ff410667684d5766ebee913916d70ecb95c6dfcf87` |
+| Preview | `1f3e5a7f53d29b0ea8d82d1bd1a85f4c387660bab3fabbd08a622fc8874f0f5f` |
+| Poster | `3711da6319af5aca072aa6ea20dd17bf4d50e3005bf2fb16b9ec6154ef443a18` |
