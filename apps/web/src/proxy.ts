@@ -182,6 +182,8 @@ export const proxy = async (request: Request) => {
 // production. The list is an allowlist of what should be publicly served — a
 // `public/` file with an extension outside it stays unreachable, which is the
 // intent for `templates/*.tsx` and `stubs/*.csv` (local artifacts, not assets).
+// `html` is listed for ownership-verification files a third party fetches from
+// the root (`/zoho-domain-verification.html`); no page route carries the suffix.
 //
 // Anchored with `$` so a slug that merely *contains* a dotted word — say
 // `/es/blog/why-node.js-wins` — still gets its locale rewrite.
@@ -194,6 +196,6 @@ export const proxy = async (request: Request) => {
 // `/ucp-playground` and `/ucp-comparison` pages still route through next-intl.
 export const config = {
   matcher: [
-    "/((?!monitoring|_next/static|_next/image|api|\\.well-known(?:/.*)?$|ucp(?:/.*)?$|mcp(?:/.*)?$|opengraph-image(?:-[^/]+)?$|twitter-image(?:-[^/]+)?$|.*\\.(?:js|mjs|css|txt|md|xml|json|webmanifest|ico|png|jpg|jpeg|gif|webp|avif|svg|mp4|webm|woff|woff2|ttf|otf)$).*)",
+    "/((?!monitoring|_next/static|_next/image|api|\\.well-known(?:/.*)?$|ucp(?:/.*)?$|mcp(?:/.*)?$|opengraph-image(?:-[^/]+)?$|twitter-image(?:-[^/]+)?$|.*\\.(?:js|mjs|css|txt|md|xml|json|html|webmanifest|ico|png|jpg|jpeg|gif|webp|avif|svg|mp4|webm|woff|woff2|ttf|otf)$).*)",
   ],
 } satisfies ProxyConfig;
