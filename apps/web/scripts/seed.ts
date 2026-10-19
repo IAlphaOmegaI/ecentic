@@ -1438,12 +1438,12 @@ They can complement each other — track visibility with Alhena, win the head-to
     category: "Comparisons",
     title: "Best AI Shopping Agent Optimization Tools (2026)",
     description:
-      "The best AI shopping agent optimization tools in 2026, grouped by job: visibility monitors, listing optimizers, agent-readiness, and win-the-cart simulation.",
+      "The best AI shopping agent optimization tools in 2026, grouped by job, plus a readiness checklist for getting products picked by ChatGPT, Gemini and Perplexity.",
     introduction:
-      "The tools for optimizing an ecommerce store for AI shopping agents fall into four jobs, and most buyers conflate them. Some monitor whether AI answers mention your brand. Some generate better listing content. Some make your catalog readable to agents. And a smaller group simulates whether an agent actually picks your product over a competitor. Choosing well means matching the tool to the job, not the loudest label.\n\nThis guide groups the notable 2026 tools by what they actually do, with honest notes on strengths and gaps, so you can shortlist the two or three that fit your situation. It is written by the team behind ecentic, which sits in the last category — winning the agent's cart — so we have flagged that bias openly and given credit where competitors are the better pick.\n\nOne market note first: AI shopping is real but still early, so choose for where it is going, not only where it is today.",
+      "The tools for optimizing an ecommerce store for AI shopping agents fall into four jobs, and most buyers conflate them. Some monitor whether AI answers mention your brand. Some generate better listing content. Some make your catalog readable to agents. And a smaller group simulates whether an agent actually picks your product over a competitor. Choosing well means matching the tool to the job, not the loudest label.\n\nThis guide explains the four jobs, shows what agents read before they pick a product, with a readiness checklist you can run this week, and then groups the notable 2026 tools by what they actually do, with honest notes on strengths and gaps, so you can shortlist the two or three that fit your situation. It is written by the team behind ecentic, which sits in the last category — winning the agent's cart — so we have flagged that bias openly and given credit where competitors are the better pick.\n\nOne market note first: AI shopping is real but still early, so choose for where it is going, not only where it is today.",
     publishedAt: "2026-07-01",
-    updatedAt: "2026-07-01",
-    readTime: "9 min",
+    updatedAt: "2026-10-19",
+    readTime: "11 min",
     thumbnailUrl: "/images/blog/best-ai-tools.jpg",
     tags: [
       "AI shopping agent optimization",
@@ -1454,6 +1454,7 @@ They can complement each other — track visibility with Alhena, win the head-to
     ],
     takeaways: [
       "AI shopping agent optimization tools fall into four jobs: monitor AI visibility, generate listing content, make catalogs agent-readable, and simulate whether agents pick your product.",
+      "Agents can only pick what they can read: server-rendered product facts, complete Product schema, and a feed that matches the page exactly come before any tool.",
       "Semrush's 2026 AI Visibility Index found 45% of marketing leaders cannot accurately measure their brand's visibility in AI answers, which is why monitoring tools are crowded.",
       "Brand-visibility monitors (Profound, Otterly, and others) tell you if AI mentions you; they do not optimize the product decision.",
       "For winning head-to-head product comparisons across models and publishing fixes, simulation-and-optimization tools like ecentic are a distinct, smaller category.",
@@ -1463,6 +1464,18 @@ They can complement each other — track visibility with Alhena, win the head-to
         question: "What is the best AI shopping agent optimization tool?",
         answer:
           "There is no single best — it depends on the job. For brand visibility in AI answers, a monitor like Profound; for listing content at scale, Ecomtent; for agent-readiness, Feedonomics or Schema App; for winning competitor comparisons, a simulation tool like ecentic. Most stores need one monitor and one optimizer.",
+      },
+      {
+        question:
+          "How do I optimize my ecommerce store for AI shopping agents?",
+        answer:
+          "Make your products readable first, then measure. Let AI crawlers through robots.txt and your firewall, server-render price, availability and ratings, add complete Product and Offer schema, and keep your Merchant Center feed identical to the page. Then record how often each AI model picks your product against a named competitor, and re-test after every fix.",
+      },
+      {
+        question:
+          "Which products should I optimize for AI shopping agents first?",
+        answer:
+          "Fix anything disapproved in Merchant Center first, since those products cannot appear at all. Then start with your highest-revenue products, followed by high-margin products in categories shoppers research before buying. Complete data on a few dozen products does more than partial data on hundreds.",
       },
       {
         question:
@@ -1498,6 +1511,43 @@ Use two questions to place any tool: does it work at the brand level or the prod
       },
       {
         number: "02",
+        title: "What AI shopping agents read before they pick",
+        content: `Every tool in this guide works on the same raw material: the product facts an agent can read. Agents assemble those facts from three places, and a gap in any one of them can keep a product out of the answer, whichever tools you buy.
+
+**The page.** Agents read the HTML your server returns. If price, availability or the star rating only appear after JavaScript runs, many AI crawlers never see them. Fetch a product page with curl and check that those values are in the raw response. Then make sure robots.txt and your CDN or firewall rules let the AI crawlers in: OAI-SearchBot and ChatGPT-User for ChatGPT, PerplexityBot for Perplexity, ClaudeBot and Claude-User for Claude, and Googlebot, whose index Google's AI features draw on.
+
+**The structured data.** Product JSON-LD turns the page into fields an agent can compare: name, brand, gtin or mpn, an Offer with price, priceCurrency and availability, aggregateRating, shippingDetails and hasMerchantReturnPolicy. Use ProductGroup with hasVariant for sizes and colors, so an agent can answer "the blue one in medium" without guessing. Our [structured data checklist](/blog/structured-data-checklist-for-ecommerce-product-pages) covers each field.
+
+**The feed.** Google Merchant Center feeds Google's shopping surfaces, and ChatGPT accepts merchant product feeds as well. Refresh feeds at least daily and keep every value identical to the page. A feed that says $39.99 and in stock, beside a page that says $44.99 and ships in a week, is a listing that contradicts itself, and an agent comparing it with a competitor has no reason to trust it.
+
+Two newer protocols go one step further and let an agent check out inside the conversation: the Universal Commerce Protocol (UCP) and OpenAI's Agentic Commerce Protocol (ACP). You do not need them to be recommended, but they decide whether an agent can finish the purchase. You can check a UCP profile with our [free UCP validator](/ucp-validator).`,
+      },
+      {
+        number: "03",
+        title: "A readiness checklist you can run this week",
+        content: `Work through it in order. The first block is configuration, the second needs a developer or your theme and feed apps, and the third keeps you in the running once the first fixes land.
+
+**Access and rendering (hours)**
+- Allow the AI crawlers in robots.txt and in your CDN or firewall bot rules, then check your server logs for 403 and 429 responses to them
+- Confirm that price, availability and rating appear in the server-rendered HTML of your top product pages
+- Keep an XML sitemap of every product page, with canonical URLs so variant pages do not compete with each other
+
+**Product data (one to two weeks)**
+- Complete the Product and Offer JSON-LD on your top-revenue products and validate it with Google's [Rich Results Test](https://search.google.com/test/rich-results)
+- Fix every Merchant Center disapproval first: a disapproved product cannot appear in Google's shopping listings at all
+- Give variant products one concrete default price. An agent can quote $34.99 for black in medium, but it cannot quote "from $29"
+- Use one brand string everywhere: feed, schema and page title
+
+**Copy and trust (ongoing)**
+- Open each description with the facts an agent would quote: what it is, who it is for, and the key spec. "Holds 300 lbs, seat height 17 to 21 inches, ships assembled" gives an agent something to cite; "premium ergonomic comfort" does not
+- Answer real buying objections in a visible FAQ: fit and compatibility, battery life, assembly, delivery time and returns
+- State shipping cost, delivery time and the return window as structured data, not only in the footer
+- Mark products out of stock the moment they sell out, and update priceValidUntil when a promotion ends
+
+Start with your highest-revenue products rather than the whole catalog: complete data on a few dozen products does more than partial data on hundreds. Before you change anything, record a baseline — how often each AI model picks your product against a named competitor — and re-run the same prompts after each fix, because one change can move ChatGPT and leave Perplexity where it was. Measuring that, and acting on it, is what the tools below are for.`,
+      },
+      {
+        number: "04",
         title: "Brand-visibility monitors",
         content: `These tools track whether and how AI engines mention your brand. It is the largest and most mature category, and the right choice when your question is share of voice in AI answers.
 
@@ -1510,7 +1560,7 @@ What they share is a ceiling: they tell you how you appear in AI answers, not wh
 - Gap: monitoring, not product-level optimization`,
       },
       {
-        number: "03",
+        number: "05",
         title: "Listing content and SKU optimizers",
         content: `This smaller group works at the product level — generating listing content or tracking SKU visibility — which puts it closer to conversion than brand monitoring.
 
@@ -1523,7 +1573,7 @@ The gap in this group is the competitive decision: generating content or trackin
 - Gap: no head-to-head competitor simulation or win-rate loop`,
       },
       {
-        number: "04",
+        number: "06",
         title: "Agent-readiness: feeds, schema, and reviews",
         content: `Before an agent can pick your product, it has to read it — which is what this group ensures. These tools make catalogs, structured data, and trust signals legible to AI, and several added explicit agentic features in 2026.
 
@@ -1536,7 +1586,7 @@ Treat these as foundations rather than decision engines. They make your catalog 
 - Gap: readiness is the input, not the competitive verdict`,
       },
       {
-        number: "05",
+        number: "07",
         title: "Agent-traffic measurement",
         content: `You cannot optimize what you cannot see, and this group measures agent traffic hitting your store. It complements everything else on this list.
 
@@ -1549,7 +1599,7 @@ These answer "are agents here, and who are they" — essential context, but not 
 - Gap: measurement only, no optimization`,
       },
       {
-        number: "06",
+        number: "08",
         title: "Win the cart: simulation and optimization",
         content: `The smallest category simulates whether an agent actually picks your product over a competitor — and, until recently, no commercial tool did this. The capability existed mainly in academia, in benchmarks like the ACES agentic-commerce simulator and research such as [Harvard Business Review's finding that traditional marketing does not work on AI shopping agents](https://hbr.org/2026/05/research-traditional-marketing-doesnt-work-on-ai-shopping-agents).
 
@@ -1565,11 +1615,28 @@ We build ecentic, so treat this section as informed but interested. The honest c
   },
 ];
 
+/**
+ * `bun run db:seed -- <slug> …` writes only the named posts, so one edited
+ * post can ship without rewriting every editorial row; no arguments writes
+ * them all. An unknown slug fails before anything is written.
+ */
 const seed = async () => {
-  console.log("Seeding blog posts...");
+  const slugs = process.argv.slice(2);
+  const unknown = slugs.filter(
+    (slug) => !posts.some((post) => post.slug === slug),
+  );
+  if (unknown.length > 0)
+    throw new Error(`No editorial post with slug: ${unknown.join(", ")}`);
+
+  const selected =
+    slugs.length > 0
+      ? posts.filter((post) => slugs.includes(post.slug))
+      : posts;
+
+  console.log(`Seeding ${selected.length} blog posts...`);
 
   await Promise.all(
-    posts.map((post) =>
+    selected.map((post) =>
       db
         .insert(schema.blogPost)
         .values({
@@ -1612,7 +1679,7 @@ const seed = async () => {
     ),
   );
 
-  console.log(`Seeded ${posts.length} blog posts.`);
+  console.log(`Seeded ${selected.length} blog posts.`);
 };
 
 void seed()
