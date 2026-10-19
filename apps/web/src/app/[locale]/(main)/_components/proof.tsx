@@ -1,6 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
+import { Link } from "@/i18n/navigation";
 import { Counter } from "./counter";
 
 const statKeys = ["cyberWeek", "conversion", "growth", "visibility"] as const;
@@ -12,6 +13,7 @@ export const Proof = async () => {
     value: translate(`proof.stats.${key}.value`),
     label: translate(`proof.stats.${key}.label`),
     source: translate(`proof.stats.${key}.source`),
+    url: translate(`proof.stats.${key}.url`),
   }));
 
   return (
@@ -49,9 +51,16 @@ export const Proof = async () => {
                 className="font-body font-bold text-5xl text-primary md:text-6xl"
               />
               <span className="text-foreground">{stat.label}</span>
-              <span className="text-foreground-rich text-xs">
+              {/* Linked to the primary release each figure comes from, so a
+                  reader (or an answer engine) can check the number. */}
+              <Link
+                href={stat.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="self-start text-foreground-rich text-xs underline-offset-4 hover:underline"
+              >
                 {stat.source}
-              </span>
+              </Link>
             </RevealItem>
           ))}
         </Reveal>

@@ -98,7 +98,8 @@
       "docs": "Developer docs",
       "apiReference": "API reference",
       "webmcpScanner": "WebMCP scanner",
-      "aiInstructions": "AI instructions"
+      "aiInstructions": "AI instructions",
+      "about": "About"
     },
     "cta": {
       "eyebrow": "Get picked by AI",
@@ -106,7 +107,11 @@
       "description": "Install free on Shopify or WooCommerce and see your AI score in minutes."
     },
     "copyright": "© 2026 ecentic. All rights reserved.",
-    "madeFor": "Made for merchants who refuse to be invisible to AI."
+    "madeFor": "Made for merchants who refuse to be invisible to AI.",
+    "company": {
+      "taxId": "NIPT",
+      "country": "Albania"
+    }
   },
   "authChrome": {
     "footer": "Free to start. No credit card required.",
@@ -2933,20 +2938,24 @@
         "primary": "Read article"
       },
       "note": "More guides for merchants improving search, shopping, and AI visibility."
+    },
+    "author": {
+      "role": "Co-founder and CEO",
+      "byline": "By <author>{name}</author>, co-founder and CEO of ecentic"
     }
   },
   "home": {
     "meta": {
-      "title": "ecentic — Be the product AI recommends",
-      "description": "Get picked by AI shopping agents. ecentic optimizes your Shopify or WooCommerce product listings so ChatGPT, Gemini, and Perplexity recommend you first."
+      "title": "AI shopping optimization for Shopify & WooCommerce",
+      "description": "ecentic is an AI shopping optimization app for Shopify and WooCommerce. See how ChatGPT, Gemini and Perplexity rank your products, then fix the ones they skip."
     },
     "hero": {
-      "eyebrow": "Built for Shopify & WooCommerce",
+      "eyebrow": "AI shopping optimization for Shopify & WooCommerce",
       "title": {
         "primary": "Be the product",
         "accent": "AI recommends."
       },
-      "description": "Shoppers now ask ChatGPT, Gemini, and Perplexity what to buy. ecentic gets your product named in the answer, then sends those buyers to your store.",
+      "description": "ecentic is an AI shopping optimization app for Shopify and WooCommerce. When shoppers ask ChatGPT, Gemini or Perplexity what to buy, ecentic gets your product named in the answer, then sends those buyers to your store.",
       "proof": "2-minute setup · No credit card · See your free score first",
       "entry": {
         "label": "Your store's address",
@@ -2985,22 +2994,26 @@
         "cyberWeek": {
           "value": "20%",
           "label": "of Cyber Week 2025 orders were influenced by AI ($67B)",
-          "source": "Salesforce"
+          "source": "Salesforce, 2025",
+          "url": "https://www.salesforce.com/news/press-releases/2025/12/05/cyber-week-ai-agents-sales/"
         },
         "conversion": {
           "value": "31%",
-          "label": "higher conversion from AI-referred shoppers",
-          "source": "Salesforce, 2025"
+          "label": "higher conversion from AI-referred shoppers in the 2025 holidays",
+          "source": "Adobe, 2026",
+          "url": "https://business.adobe.com/blog/ai-driven-traffic-surges-across-industries"
         },
         "growth": {
           "value": "13%",
-          "label": "sales growth for stores built for AI agents (vs 2% without)",
-          "source": "Adobe / Bain"
+          "label": "sales growth for retailers running their own AI agents (vs 2% without)",
+          "source": "Salesforce, 2025",
+          "url": "https://www.salesforce.com/news/stories/2025-cyber-week-predictions/"
         },
         "visibility": {
           "value": "45%",
           "label": "of marketing leaders can't measure their AI visibility",
-          "source": "Semrush, 2026"
+          "source": "Semrush, 2026",
+          "url": "https://www.semrush.com/news/463141-semrush-releases-expanded-2026-ai-visibility-index-analyzing-126-million-ai-search-prompts/"
         }
       }
     },
@@ -3070,11 +3083,11 @@
       }
     },
     "steps": {
-      "title": "Live in three steps.",
+      "title": "Get picked by AI in three steps.",
       "description": "Connect your store and ecentic does the rest.",
       "connect": {
         "title": "Connect your store",
-        "description": "Install on Shopify or WooCommerce in about two minutes. No developer needed."
+        "description": "Install on <shopify>Shopify</shopify> or <woocommerce>WooCommerce</woocommerce> in about two minutes. No developer needed."
       },
       "diagnose": {
         "title": "See where you lose",
@@ -3086,7 +3099,7 @@
       }
     },
     "features": {
-      "title": "What ecentic actually does.",
+      "title": "What AI shopping optimization does for your store.",
       "items": {
         "aiScore": {
           "title": "Your AI score",
@@ -3308,12 +3321,35 @@
     },
     "heroVideo": {
       "title": "ecentic product film",
-      "description": "A video introduction to the ecentic platform.",
+      "description": "A 58-second film introducing ecentic, the AI shopping optimization app for Shopify and WooCommerce.",
       "close": "Close video",
       "fallback": "Your browser does not support embedded video."
     },
-    "summary": {
-      "label": "About ecentic"
+    "faq": {
+      "title": "Questions about AI shopping optimization",
+      "description": "What merchants ask before they connect a store.",
+      "items": [
+        {
+          "question": "What is AI shopping optimization?",
+          "answer": "AI shopping optimization is the work of getting your products recommended when shoppers ask AI assistants such as ChatGPT, Gemini or Perplexity what to buy. It covers the product data those assistants read, like titles, descriptions, attributes, price, stock, reviews and structured data, and how your products compare with competitors on each of them."
+        },
+        {
+          "question": "How do I get my products recommended by ChatGPT?",
+          "answer": "Give ChatGPT complete, specific product data it can compare: a clear title, the attributes shoppers ask about, accurate price and stock, reviews and Product schema on the page. ecentic runs your products through simulated ChatGPT, Claude, Gemini and Perplexity shopping prompts, shows which ones lose and why, and rewrites those listings."
+        },
+        {
+          "question": "Does ecentic work with Shopify and WooCommerce?",
+          "answer": "Yes. Install ecentic from the Shopify App Store, or connect a WooCommerce store with REST API keys. ecentic imports your catalog and publishes the listing changes you approve back to your store. Any other store can start with a free scan from its address."
+        },
+        {
+          "question": "How is ecentic different from AI visibility tracking tools?",
+          "answer": "Tracking tools report how often AI assistants mention your brand. ecentic works product by product: it simulates the shopping decision against named competitors, explains why a product loses, writes the fix, and tracks the AI-referred visits and sales that follow."
+        },
+        {
+          "question": "How much does ecentic cost?",
+          "answer": "The first scan is free and needs no credit card. After that you can pay as you go, with a performance fee only on orders that AI assistants send you, or choose a flat monthly plan with no fee. Current prices are on the pricing page."
+        }
+      ]
     }
   },
   "cookieConsent": {
@@ -3366,7 +3402,7 @@
     "choosePayment": {
       "number": "01",
       "title": "Choose how you pay",
-      "description": "Every plan runs the same simulate → diagnose → optimize loop. Start with pay-as-you-go and pay only on agent-driven orders, or pick a flat monthly plan when you want predictable billing. No minimums, month-to-month, no setup fees. The EU Presence bundle takes 20% off."
+      "description": "Every plan runs the same simulate → diagnose → optimize loop. Start with pay-as-you-go and pay only on agent-driven orders, or pick a flat monthly plan when you want predictable billing. No minimums, month-to-month, no setup fees. The EU Presence bundle takes 20% off. All prices are in US dollars (USD)."
     },
     "plans": {
       "payg": {
@@ -3945,8 +3981,8 @@
   },
   "howItWorks": {
     "meta": {
-      "title": "How it works — simulate, diagnose, optimize",
-      "description": "How ecentic works: simulate how ChatGPT, Claude, Gemini, and Perplexity compare your products, diagnose why you lose, then optimize listings to win carts."
+      "title": "How to get your products recommended by ChatGPT",
+      "description": "ecentic simulates how ChatGPT, Claude, Gemini and Perplexity compare your products, shows why they lose, then rewrites the listings so AI recommends you."
     },
     "breadcrumb": {
       "home": "Home",
@@ -3972,7 +4008,7 @@
     "hero": {
       "eyebrow": "How it works",
       "title": {
-        "primary": "From invisible to chosen",
+        "primary": "How to get your products picked by AI,",
         "accent": "in three steps."
       },
       "description": "ecentic simulates how AI shopping agents compare your products, explains why you lose in plain language, and rewrites your listings so the next comparison goes your way.",
@@ -4477,8 +4513,8 @@
     "hero": {
       "eyebrow": "Features",
       "title": {
-        "primary": "Every tool you need to",
-        "accent": "win the AI shopper."
+        "primary": "AI ecommerce tools that get your products",
+        "accent": "picked by AI shoppers."
       },
       "description": "Simulate how AI shopping agents compare your products, see exactly why competitors win, and publish the listing fixes that flip the result, all from one loop.",
       "assurances": [
@@ -4609,7 +4645,7 @@
           "color": "accent"
         },
         {
-          "href": "/compare/best-ai-ecommerce-tools",
+          "href": "/blog/best-ecommerce-ai-platforms",
           "eyebrow": "Comparison",
           "title": "Understand where agent-commerce optimization fits",
           "description": "Use the buyer's guide to compare content generators, personalization tools, analytics platforms, and agent-focused workflows.",
@@ -4985,7 +5021,7 @@
           "color": "accent"
         },
         {
-          "href": "/compare/best-ai-ecommerce-tools",
+          "href": "/blog/best-ecommerce-ai-platforms",
           "name": "Comparison",
           "title": "Compare AI ecommerce categories before you buy",
           "description": "Use the guide to separate content generators from agent-commerce optimization tools.",
@@ -5037,7 +5073,7 @@
   },
   "shopify": {
     "meta": {
-      "title": "AI for Shopify — listing and catalog optimization",
+      "title": "Shopify AI app for ChatGPT and AI shopping",
       "description": "AI for Shopify stores that need stronger product listings, clearer competitor analysis, and approved updates pushed straight back into the Shopify Admin."
     },
     "breadcrumb": {
@@ -5199,7 +5235,7 @@
           "color": "primary"
         },
         {
-          "href": "/compare/best-ai-ecommerce-tools",
+          "href": "/blog/best-ecommerce-ai-platforms",
           "name": "Comparison",
           "title": "Compare AI ecommerce tool categories before you commit",
           "description": "Use the guide to understand when Shopify-native generation is enough and when a broader optimization loop adds value.",
@@ -5361,7 +5397,7 @@
   },
   "woocommerce": {
     "meta": {
-      "title": "AI for WooCommerce — catalog optimization",
+      "title": "WooCommerce AI plugin for ChatGPT and AI shopping",
       "description": "AI for WooCommerce stores that need product listing optimization, competitor analysis, and a clearer path from agent insights to published catalog updates."
     },
     "breadcrumb": {
@@ -5560,7 +5596,7 @@
           "color": "accent"
         },
         {
-          "href": "/compare/best-ai-ecommerce-tools",
+          "href": "/blog/best-ecommerce-ai-platforms",
           "name": "Comparison",
           "title": "See how AI ecommerce categories fit different teams",
           "description": "The guide helps buyers separate content generation, analytics, personalization, and agent-commerce optimization tools.",
@@ -5616,228 +5652,6 @@
         "secondary": "Back to features"
       },
       "note": "No platform migration · No credit card · See your free score first"
-    }
-  },
-  "compare": {
-    "meta": {
-      "title": "Best AI ecommerce tools in 2026 — category guide",
-      "description": "Best AI tools for ecommerce in 2026, organized by category so merchants can compare content, personalization, search, analytics, and agent-commerce workflows."
-    },
-    "breadcrumb": {
-      "home": "Home",
-      "page": "Best AI Tools for Ecommerce in 2026"
-    },
-    "hero": {
-      "eyebrow": "Comparison",
-      "title": {
-        "primary": "Best AI tools for ecommerce",
-        "accent": "in 2026."
-      },
-      "description": "Not every AI ecommerce tool solves the same problem. This guide compares categories before brand names, so your shortlist starts from the job you are hiring the tool to do.",
-      "assurances": [
-        "Six tools across five categories",
-        "Category-first, not feature checklists",
-        "Updated for 2026"
-      ],
-      "art": {
-        "alt": "ASCII-art illustration of a balance scale"
-      }
-    },
-    "guide": {
-      "number": "01",
-      "title": "How to use this guide.",
-      "description": "Comparing categories first makes the final vendor decision faster and less likely to end up on the wrong shortlist.",
-      "body": [
-        "A merchant choosing between a content generator, a personalization platform, a search product, and an agent-commerce workflow can easily end up with the wrong shortlist if everything is forced into one generic feature table.",
-        "The better question is: what job are you hiring the tool to do right now?"
-      ],
-      "categoriesHeading": "The five categories in this guide",
-      "categories": [
-        {
-          "title": "Content generation",
-          "description": "Product descriptions and catalog content at scale."
-        },
-        {
-          "title": "Platform-native AI",
-          "description": "Built-in assistance for merchants staying close to their stack."
-        },
-        {
-          "title": "Personalization & merchandising",
-          "description": "Onsite experiences, segmentation, and conversion."
-        },
-        {
-          "title": "Search & discovery",
-          "description": "Product relevance and navigation infrastructure."
-        },
-        {
-          "title": "Agent-commerce optimization",
-          "description": "AI shopping visibility and product selection."
-        }
-      ]
-    },
-    "tools": {
-      "number": "02",
-      "title": "The tools most merchants compare.",
-      "description": "One row per tool, ours included. The last column is the one worth reading: every tool here is the wrong pick for someone, and knowing who that is shortens the shortlist faster than a feature checklist.",
-      "scrollHint": "Scroll to compare →",
-      "usLabel": "·us",
-      "columns": {
-        "tool": "Tool",
-        "category": "Category",
-        "bestAt": "Best at",
-        "wrongPick": "When it's the wrong pick"
-      },
-      "items": [
-        {
-          "name": "ecentic",
-          "category": "Agent-commerce optimization",
-          "bestAt": "Seeing why AI assistants pick a competitor over you, and rewriting the listing so they stop.",
-          "wrongPick": "Buyers still arrive from search and ads, and no meaningful share of your traffic is AI-mediated yet.",
-          "us": true
-        },
-        {
-          "name": "Hypotenuse AI",
-          "category": "Product content generation",
-          "bestAt": "Drafting descriptions, bullets, and marketplace copy across a catalog too large to write by hand.",
-          "wrongPick": "The copy already reads well and the real problem is which products get surfaced, not how they are written.",
-          "us": false
-        },
-        {
-          "name": "Shopify Magic",
-          "category": "Platform-native drafting",
-          "bestAt": "Quick AI assistance inside the admin you already use, with nothing new to buy, learn, or integrate.",
-          "wrongPick": "You need competitive context. It only ever sees your own store, never the products you lose to.",
-          "us": false
-        },
-        {
-          "name": "Nosto",
-          "category": "Personalization",
-          "bestAt": "Changing what each returning visitor sees onsite: recommendations, segments, and merchandising rules.",
-          "wrongPick": "Traffic is thin, or the decision is being made before anyone reaches your storefront at all.",
-          "us": false
-        },
-        {
-          "name": "Constructor",
-          "category": "Search and discovery",
-          "bestAt": "Making a large catalog findable: query understanding, ranking, and browse relevance at scale.",
-          "wrongPick": "Your catalog is small enough that shoppers rarely search, or discovery is not where you lose them.",
-          "us": false
-        },
-        {
-          "name": "Bloomreach",
-          "category": "Enterprise intelligence",
-          "bestAt": "Running search, merchandising, and campaign data as one stack across a large organization.",
-          "wrongPick": "You are a lean team. The implementation and onboarding cost outruns the problem you have today.",
-          "us": false
-        }
-      ]
-    },
-    "bottleneck": {
-      "number": "03",
-      "title": "Match the category to your bottleneck.",
-      "description": "The most useful evaluation narrows to the specific operational bottleneck first, not to the longest feature checklist.",
-      "body": [
-        "A common mistake is to compare every AI ecommerce product as though it were a copy tool. That makes some evaluations look simpler, but it also hides the real buying decision.",
-        "Shortlist one tool per category first, then narrow based on the bottleneck that matters most this quarter."
-      ],
-      "mappingsHeading": "What each category actually improves",
-      "mappings": [
-        {
-          "title": "Content generation",
-          "description": "Production speed for descriptions and catalog copy."
-        },
-        {
-          "title": "Personalization",
-          "description": "Onsite relevance, segmentation, and conversion."
-        },
-        {
-          "title": "Search tools",
-          "description": "Discovery and navigation inside your own store."
-        },
-        {
-          "title": "Analytics tools",
-          "description": "Reporting visibility across the funnel."
-        },
-        {
-          "title": "Agent-commerce optimization",
-          "description": "Product selection when AI systems compare competing listings.",
-          "emphasized": true
-        }
-      ]
-    },
-    "related": {
-      "number": "04",
-      "title": "Explore the pages behind the shortlist.",
-      "description": "Each page below goes deeper on a specific part of the decision: workflow, platform, or listing optimization.",
-      "links": [
-        {
-          "href": "/features",
-          "name": "Features",
-          "title": "Review the core AI ecommerce tools workflow",
-          "description": "Use the features page if you want the product-led overview before diving into a specific platform or comparison path.",
-          "label": "Open features page",
-          "color": "primary"
-        },
-        {
-          "href": "/features/product-listings",
-          "name": "Product listings",
-          "title": "Go deeper on AI product listing optimization",
-          "description": "This page is the best next step if better product content and clearer attributes are the main priority.",
-          "label": "View listing workflow",
-          "color": "accent"
-        },
-        {
-          "href": "/platforms/shopify",
-          "name": "Shopify",
-          "title": "See the Shopify-specific buying path",
-          "description": "Choose this page if your shortlist currently includes Shopify-native and Shopify-adjacent AI tools.",
-          "label": "Open Shopify page",
-          "color": "accent"
-        },
-        {
-          "href": "/platforms/woocommerce",
-          "name": "WooCommerce",
-          "title": "See the WooCommerce-specific buying path",
-          "description": "Use the WooCommerce page if you need a truthful supported-platform path instead of a generic comparison only.",
-          "label": "Open WooCommerce page",
-          "color": "accent"
-        }
-      ]
-    },
-    "faqSection": {
-      "number": "05",
-      "title": "Frequently asked questions",
-      "description": "Common questions from merchants comparing AI ecommerce tools and platforms."
-    },
-    "faq": {
-      "items": [
-        {
-          "question": "What are the best AI tools for ecommerce in 2026?",
-          "answer": "The best AI tools for ecommerce in 2026 depend on the job to be done. Merchants usually compare product content tools, personalization platforms, search and discovery products, analytics software, and newer agent-commerce optimization tools."
-        },
-        {
-          "question": "How should merchants compare AI ecommerce software?",
-          "answer": "The cleanest way is to compare tools by category first. Decide whether the immediate problem is product content, onsite personalization, search relevance, analytics visibility, or AI shopping selection. Then compare vendors inside that category."
-        },
-        {
-          "question": "Where does ecentic fit in a comparison like this?",
-          "answer": "ecentic fits in the agent-commerce optimization category. It is built for merchants who need to simulate AI shopping decisions, diagnose why competitors win, and improve product listings based on that competitive context."
-        },
-        {
-          "question": "Why is a category-based guide better than a giant feature checklist?",
-          "answer": "A category-based guide is easier to trust because it avoids pretending every tool solves the same problem. It helps buyers understand why a personalization platform, a copy generator, and an agent-commerce workflow should not be evaluated with the same rubric."
-        }
-      ]
-    },
-    "footer": {
-      "primary": "Start with ecentic",
-      "secondary": "Back to home",
-      "note": "2-minute setup · No credit card · See your free score first"
-    },
-    "structuredData": {
-      "articleHeadline": "Best AI Tools for Ecommerce in 2026",
-      "itemListName": "Best AI tools for ecommerce in 2026",
-      "toolDescription": "{category}. Best at: {bestAt} Wrong pick when: {wrongPick}"
     }
   },
   "techstars": {
@@ -8011,8 +7825,8 @@
       "aiInstructions": "AI instructions"
     },
     "lastUpdated": {
-      "label": "Last updated: October 2, 2026",
-      "iso": "2026-10-02"
+      "label": "Last updated: October 19, 2026",
+      "iso": "2026-10-19"
     },
     "hero": {
       "eyebrow": "For AI assistants",
@@ -8065,7 +7879,7 @@
         },
         {
           "title": "Operated by",
-          "description": "[zennit](https://www.zennit.dev), with its registered business address in Tirana, Albania."
+          "description": "ECENTIC ShPK (NIPT M61628008M), registered in Tirana, Albania."
         },
         {
           "title": "Website",
@@ -8118,7 +7932,7 @@
         "number": "08",
         "title": "Company and contact",
         "description": "Who runs ecentic and how to reach it.",
-        "content": "ecentic is operated by [zennit](https://www.zennit.dev), whose registered business address is in Tirana, Albania. The full address is published in the [terms of service](/terms).\n\n- Website: [ecentic.ai](https://ecentic.ai)\n- Support: support@ecentic.ai\n- Privacy: privacy@ecentic.ai\n- Legal: legal@ecentic.ai\n- Shopify App Store: [apps.shopify.com/ecentic-ai](https://apps.shopify.com/ecentic-ai)\n- X: [@ecentic_ai](https://x.com/ecentic_ai)\n- LinkedIn: [ecentic](https://www.linkedin.com/company/ecentic/)\n- Instagram: [@ecentic.ai](https://www.instagram.com/ecentic.ai/)\n\nThe site and the product are available in English and Spanish."
+        "content": "ecentic is operated by ECENTIC ShPK (NIPT M61628008M), registered at Pallatet Merkaj, Hyrja 1, Dera 12, Rruga Muhamed Deliu, Qesarakë, 1030 Tiranë, Albania. Phone: +355 68 459 4667. Company details and the founder are on the [About page](/about).\n\n- Website: [ecentic.ai](https://ecentic.ai)\n- Support: support@ecentic.ai\n- Privacy: privacy@ecentic.ai\n- Legal: legal@ecentic.ai\n- Shopify App Store: [apps.shopify.com/ecentic-ai](https://apps.shopify.com/ecentic-ai)\n- X: [@ecentic_ai](https://x.com/ecentic_ai)\n- LinkedIn: [ecentic](https://www.linkedin.com/company/ecentic/)\n- Instagram: [@ecentic.ai](https://www.instagram.com/ecentic.ai/)\n\nThe site and the product are available in English and Spanish."
       }
     },
     "pricing": {
@@ -8167,7 +7981,7 @@
         },
         {
           "question": "Who is behind ecentic?",
-          "answer": "ecentic is operated by zennit, whose registered business address is in Tirana, Albania."
+          "answer": "ecentic is operated by ECENTIC ShPK (NIPT M61628008M), registered in Tirana, Albania. Its founder and CEO is Xhurian Shaba."
         },
         {
           "question": "How do I contact ecentic?",
@@ -8181,6 +7995,70 @@
         "secondary": "Back to home"
       },
       "note": "Written for AI assistants. Readable by everyone."
+    }
+  },
+  "about": {
+    "meta": {
+      "title": "About ecentic, the AI shopping optimization app",
+      "description": "ecentic is an AI shopping optimization app for Shopify and WooCommerce, built by ECENTIC ShPK in Tirana, Albania. Meet the founder and see our company details."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "about": "About"
+    },
+    "hero": {
+      "eyebrow": "About",
+      "title": {
+        "primary": "The company behind",
+        "accent": "ecentic."
+      },
+      "description": "ecentic is an AI shopping optimization app for Shopify and WooCommerce stores. It shows merchants how ChatGPT, Gemini, Claude and Perplexity choose between products, and fixes the listings those assistants skip.",
+      "assurances": [
+        "Founded in 2026 in Tirana, Albania",
+        "Built for Shopify and WooCommerce",
+        "Plug and Play Tirana programme, 2026"
+      ],
+      "art": {
+        "alt": "ASCII-art illustration of a handshake"
+      }
+    },
+    "mission": {
+      "number": "01",
+      "title": "What we do",
+      "paragraphs": [
+        "Shoppers increasingly ask AI assistants what to buy, and the assistant decides which products make the answer. Most stores cannot see how that decision is made or why they lose it.",
+        "ecentic runs a store's products through simulated shopping prompts in ChatGPT, Claude, Gemini and Perplexity, compares them with named competitors, and explains why a product is skipped. It then rewrites the listing, publishes the change the merchant approves, and tracks the AI-referred visits and sales that follow.",
+        "ecentic works with Shopify and WooCommerce. Any other store can start with a free scan from its address."
+      ]
+    },
+    "team": {
+      "number": "02",
+      "title": "Who is behind it",
+      "founder": {
+        "role": "Co-founder and CEO",
+        "bio": "Xhurian Shaba is the co-founder and CEO of ecentic. Before ecentic, Xhurian co-founded zennit, a software and design studio in Tirana, and spent more than five years building web products in Next.js and TypeScript for startups in the US, Canada and Europe. Xhurian studied at the Université de Technologie de Compiègne.",
+        "linkedin": "LinkedIn profile"
+      }
+    },
+    "details": {
+      "number": "03",
+      "title": "Company details",
+      "description": "The legal entity that operates ecentic.",
+      "labels": {
+        "legalName": "Legal name",
+        "taxId": "Tax ID (NIPT)",
+        "address": "Registered address",
+        "telephone": "Phone",
+        "email": "Email"
+      },
+      "country": "Albania"
+    },
+    "footer": {
+      "action": {
+        "primary": "Run your free scan",
+        "secondary": "Contact support"
+      },
+      "note": "2-minute setup · No credit card · See your free score first"
     }
   }
 }

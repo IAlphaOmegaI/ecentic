@@ -1,7 +1,7 @@
 {
   "woocommerce": {
     "meta": {
-      "title": "AI for WooCommerce — catalog optimization",
+      "title": "WooCommerce AI plugin for ChatGPT and AI shopping",
       "description": "AI for WooCommerce stores that need product listing optimization, competitor analysis, and a clearer path from agent insights to published catalog updates."
     },
     "breadcrumb": {
@@ -200,7 +200,7 @@
           "color": "accent"
         },
         {
-          "href": "/compare/best-ai-ecommerce-tools",
+          "href": "/blog/best-ecommerce-ai-platforms",
           "name": "Comparison",
           "title": "See how AI ecommerce categories fit different teams",
           "description": "The guide helps buyers separate content generation, analytics, personalization, and agent-commerce optimization tools.",

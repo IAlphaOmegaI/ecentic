@@ -58,8 +58,8 @@ export const GET = async (request: Request) => {
       links: [
         { path: "/resources", label: "Free tools and resources" },
         {
-          path: "/compare/best-ai-ecommerce-tools",
-          label: "Best AI tools for ecommerce — buyer's guide",
+          path: "/blog/best-ecommerce-ai-platforms",
+          label: "AI ecommerce platforms in 2026: how to choose",
         },
         {
           path: "/ucp-validator",

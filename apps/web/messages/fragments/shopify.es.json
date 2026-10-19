@@ -1,7 +1,7 @@
 {
   "shopify": {
     "meta": {
-      "title": "IA para Shopify — optimización de fichas y catálogo",
+      "title": "App de IA para Shopify: ChatGPT y compras con IA",
       "description": "IA para tiendas Shopify que necesitan fichas de producto más sólidas, análisis de competidores más claro y actualizaciones aprobadas enviadas directamente al Shopify Admin."
     },
     "breadcrumb": {
@@ -163,7 +163,7 @@
           "color": "primary"
         },
         {
-          "href": "/compare/best-ai-ecommerce-tools",
+          "href": "/blog/best-ecommerce-ai-platforms",
           "name": "Comparación",
           "title": "Compara categorías de herramientas de IA para ecommerce antes de comprometerte",
           "description": "Usa la guía para entender cuándo basta la generación nativa de Shopify y cuándo aporta valor un ciclo de optimización más amplio.",

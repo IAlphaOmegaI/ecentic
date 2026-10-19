@@ -18,7 +18,7 @@ const relatedMeta: readonly (
 )[] = [
   { href: "/features/product-listings", icon: CircleBoltIcon },
   { href: "/platforms/shopify", logo: shopify },
-  { href: "/compare/best-ai-ecommerce-tools", icon: SquareChartIcon },
+  { href: "/blog/best-ecommerce-ai-platforms", icon: SquareChartIcon },
   { href: "/blog", icon: FileIcon },
 ];
 

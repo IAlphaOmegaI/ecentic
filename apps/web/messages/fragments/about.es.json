@@ -1,0 +1,66 @@
+{
+  "about": {
+    "meta": {
+      "title": "Sobre ecentic: optimización para compras con IA",
+      "description": "ecentic es una app de optimización para compras con IA en Shopify y WooCommerce, de ECENTIC ShPK (Tirana, Albania). Conoce al fundador y los datos de la empresa."
+    },
+    "breadcrumb": {
+      "home": "Inicio",
+      "about": "Sobre nosotros"
+    },
+    "hero": {
+      "eyebrow": "Sobre nosotros",
+      "title": {
+        "primary": "La empresa detrás de",
+        "accent": "ecentic."
+      },
+      "description": "ecentic es una app de optimización para compras con IA para tiendas Shopify y WooCommerce. Muestra a los comercios cómo eligen ChatGPT, Gemini, Claude y Perplexity entre productos, y corrige las fichas que esos asistentes omiten.",
+      "assurances": [
+        "Fundada en 2026 en Tirana, Albania",
+        "Hecha para Shopify y WooCommerce",
+        "Programa Plug and Play Tirana, 2026"
+      ],
+      "art": {
+        "alt": "Ilustración ASCII de un apretón de manos"
+      }
+    },
+    "mission": {
+      "number": "01",
+      "title": "Qué hacemos",
+      "paragraphs": [
+        "Cada vez más compradores preguntan a asistentes de IA qué comprar, y el asistente decide qué productos aparecen en la respuesta. La mayoría de las tiendas no ve cómo se toma esa decisión ni por qué la pierde.",
+        "ecentic pasa los productos de una tienda por consultas de compra simuladas en ChatGPT, Claude, Gemini y Perplexity, los compara con competidores concretos y explica por qué se omite un producto. Después reescribe la ficha, publica el cambio que aprueba el comercio y mide las visitas y ventas que llegan desde la IA.",
+        "ecentic funciona con Shopify y WooCommerce. Cualquier otra tienda puede empezar con un análisis gratuito desde su dirección."
+      ]
+    },
+    "team": {
+      "number": "02",
+      "title": "Quién está detrás",
+      "founder": {
+        "role": "CEO de ecentic",
+        "bio": "Xhurian Shaba es CEO de ecentic, que cofundó en 2026. Antes cofundó zennit, un estudio de software y diseño en Tirana, y pasó más de cinco años creando productos web con Next.js y TypeScript para startups de Estados Unidos, Canadá y Europa. Estudió en la Université de Technologie de Compiègne.",
+        "linkedin": "Perfil de LinkedIn"
+      }
+    },
+    "details": {
+      "number": "03",
+      "title": "Datos de la empresa",
+      "description": "La entidad legal que opera ecentic.",
+      "labels": {
+        "legalName": "Razón social",
+        "taxId": "NIF (NIPT)",
+        "address": "Domicilio social",
+        "telephone": "Teléfono",
+        "email": "Correo"
+      },
+      "country": "Albania"
+    },
+    "footer": {
+      "action": {
+        "primary": "Haz tu análisis gratis",
+        "secondary": "Contactar con soporte"
+      },
+      "note": "Configuración en 2 minutos · Sin tarjeta · Ve tu puntuación gratis primero"
+    }
+  }
+}

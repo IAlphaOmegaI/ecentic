@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import dynamic from "next/dynamic";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { Footer } from "@/components/footer";
 import { JsonLd } from "@/components/json-ld";
@@ -9,6 +9,7 @@ import { ClientMessages } from "@/i18n/client-messages";
 import { localizePath } from "@/i18n/locale";
 import {
   absoluteUrl,
+  createFaqSchema,
   createMetadata,
   organizationSchema,
   softwareApplicationSchema,
@@ -18,6 +19,7 @@ import { Booking } from "./_components/booking";
 import { CaseStudy } from "./_components/case-study";
 import { Features } from "./_components/features";
 import { Hero } from "./_components/hero";
+import { HomeFaq } from "./_components/home-faq";
 import { PartnersStrip } from "./_components/partners-strip";
 import { PartnershipBanner } from "./_components/partnership-banner";
 import { Proof } from "./_components/proof";
@@ -54,6 +56,7 @@ export default async () => {
   // read it themselves instead of taking it as a prop. Keep this tree outside
   // a page-level `"use cache"` if children still need request-bound APIs.
   const translate = await getTranslations("home");
+  const messages = await getMessages();
   const description = translate("meta.description");
 
   return (
@@ -81,6 +84,20 @@ export default async () => {
                   "AI shopping agents",
                 ],
               },
+              createFaqSchema(messages.home.faq.items),
+              {
+                "@context": "https://schema.org",
+                "@type": "VideoObject",
+                name: translate("heroVideo.title"),
+                description: translate("heroVideo.description"),
+                thumbnailUrl: absoluteUrl(
+                  "/videos/ecentic-launch-poster-20261008.webp",
+                ),
+                contentUrl: absoluteUrl("/videos/ecentic-launch-20261008.mp4"),
+                uploadDate: "2026-10-08",
+                duration: "PT58S",
+                inLanguage: locale,
+              },
             ]}
           />
           <Navbar />
@@ -95,46 +112,7 @@ export default async () => {
           </Suspense>
           <CaseStudy />
           <Booking />
-          {/* The page's own summary, in the reading order a screen reader and
-              a crawler get. Every string is already on the page in a designed
-              component; this repeats them as a plain, nested outline so a
-              client that runs no JavaScript still reads a complete h1 → h2 → h3
-              document instead of a hero and a wall of sections. Nothing here is
-              new copy — it is the same catalog entries the visible sections
-              render. */}
-          <section aria-label={translate("summary.label")} className="sr-only">
-            <h2>{translate("meta.title")}</h2>
-            <p>{description}</p>
-            <p>{translate("proof.title")}</p>
-
-            <h3>{translate("steps.title")}</h3>
-            <p>{translate("steps.description")}</p>
-            <ul>
-              {(["connect", "diagnose", "optimize"] as const).map((step) => (
-                <li key={step}>
-                  <strong>{translate(`steps.${step}.title`)}</strong>{" "}
-                  {translate(`steps.${step}.description`)}
-                </li>
-              ))}
-            </ul>
-
-            <h3>{translate("features.title")}</h3>
-            <ul>
-              {(["aiScore", "competitors", "fixes", "track"] as const).map(
-                (feature) => (
-                  <li key={feature}>
-                    <strong>
-                      {translate(`features.items.${feature}.title`)}
-                    </strong>{" "}
-                    {translate(`features.items.${feature}.description`)}
-                  </li>
-                ),
-              )}
-            </ul>
-
-            <h3>{translate("caseStudy.title")}</h3>
-            <p>{translate("caseStudy.description")}</p>
-          </section>
+          <HomeFaq />
           <Footer />
         </main>
       </SmoothScroll>

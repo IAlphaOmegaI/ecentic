@@ -11,8 +11,8 @@
     "hero": {
       "eyebrow": "Features",
       "title": {
-        "primary": "Every tool you need to",
-        "accent": "win the AI shopper."
+        "primary": "AI ecommerce tools that get your products",
+        "accent": "picked by AI shoppers."
       },
       "description": "Simulate how AI shopping agents compare your products, see exactly why competitors win, and publish the listing fixes that flip the result, all from one loop.",
       "assurances": [
@@ -143,7 +143,7 @@
           "color": "accent"
         },
         {
-          "href": "/compare/best-ai-ecommerce-tools",
+          "href": "/blog/best-ecommerce-ai-platforms",
           "eyebrow": "Comparison",
           "title": "Understand where agent-commerce optimization fits",
           "description": "Use the buyer's guide to compare content generators, personalization tools, analytics platforms, and agent-focused workflows.",

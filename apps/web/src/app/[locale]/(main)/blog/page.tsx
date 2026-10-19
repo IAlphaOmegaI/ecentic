@@ -52,7 +52,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
   // `meta` keys. The string here is unbranded: the locale layout's
   // `"%s | ecentic"` template supplies the suffix, exactly as `brandedTitle`
   // would for a title this short.
-  return createMetadata({
+  const metadata = createMetadata({
     image: false,
     title: translate("meta.title"),
     description: translate("meta.description"),
@@ -65,6 +65,14 @@ export const generateMetadata = async (): Promise<Metadata> => {
       "ecommerce blog",
     ],
   });
+
+  return {
+    ...metadata,
+    alternates: {
+      ...metadata.alternates,
+      types: { "application/rss+xml": "/rss.xml" },
+    },
+  };
 };
 
 export default async () => {

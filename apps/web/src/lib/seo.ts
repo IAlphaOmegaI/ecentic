@@ -34,26 +34,77 @@ export const brandedTitle = (title: string) =>
     : title;
 
 /**
+ * The legal entity behind ecentic, exactly as registered. The footer, the
+ * About page and the Organization schema all read it from here: tooling that
+ * cross-checks a business (NAP consistency) needs the same name, address and
+ * phone in the page text and in the structured data.
+ */
+export const company = {
+  legalName: "ECENTIC ShPK",
+  // Albanian tax identification number (NIPT).
+  taxId: "M61628008M",
+  telephone: "+355 68 459 4667",
+  email: "support@ecentic.ai",
+  address: {
+    streetAddress:
+      "Pallatet Merkaj, Hyrja 1, Dera 12, Rruga Muhamed Deliu, Qesarakë",
+    postalCode: "1030",
+    addressLocality: "Tiranë",
+    addressCountry: "AL",
+  },
+} as const;
+
+/**
+ * The named author of the blog and the person on the About page. `url` is the
+ * profile anchor on /about, so a byline, the Person node and the page agree.
+ */
+export const founder = {
+  name: "Xhurian Shaba",
+  url: absoluteUrl("/about#xhurian-shaba"),
+  linkedin: "https://www.linkedin.com/in/xhurian-shaba",
+} as const;
+
+/** Schema.org `Person` for the founder; `jobTitle` is the page's language. */
+export const createFounderSchema = (jobTitle: string) => ({
+  "@type": "Person",
+  name: founder.name,
+  jobTitle,
+  url: founder.url,
+  sameAs: [founder.linkedin],
+  worksFor: { "@type": "Organization", name: seo.name, url: seo.host },
+});
+
+/**
  * Organization schema.
  *
  * `contactPoint` and `address` are here because verification tooling reads them
  * to decide whether a business is real, and an Organization node without either
- * scores as an unverifiable claim. `address` is the registered business address
- * of zennit, the company behind ecentic, and matches the one published in the
- * terms — tooling that cross-checks structured data against page content needs
- * to find the same address in both places. No postal code is published for it,
- * so none is invented — a fabricated component is worse than an absent one.
+ * scores as an unverifiable claim. Every company field comes from `company`,
+ * which the footer and the About page render as visible text.
  */
 export const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: seo.name,
+  // Searchers and answer engines spell the brand three ways; naming all of
+  // them lets each resolve to this one entity.
+  alternateName: ["écentic", "ecentic.ai"],
+  legalName: company.legalName,
+  taxID: company.taxId,
   url: seo.host,
   logo: {
     "@type": "ImageObject",
     url: absoluteUrl("/icons/icon-512.png"),
   },
-  email: "support@ecentic.ai",
+  email: company.email,
+  telephone: company.telephone,
+  foundingDate: "2026",
+  founder: {
+    "@type": "Person",
+    name: founder.name,
+    url: founder.url,
+    sameAs: [founder.linkedin],
+  },
   parentOrganization: {
     "@type": "Organization",
     name: "zennit",
@@ -61,10 +112,7 @@ export const organizationSchema = {
   },
   address: {
     "@type": "PostalAddress",
-    streetAddress:
-      "Pallatet Merkaj, Hyrja 1, Dera 12, Rruga Muhamed Deliu, Qesarakë",
-    addressLocality: "Tiranë",
-    addressCountry: "AL",
+    ...company.address,
   },
   contactPoint: [
     {

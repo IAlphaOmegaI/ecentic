@@ -1,7 +1,7 @@
 {
   "woocommerce": {
     "meta": {
-      "title": "IA para WooCommerce — optimización de catálogo",
+      "title": "Plugin de IA para WooCommerce y compras con IA",
       "description": "IA para tiendas WooCommerce que necesitan optimización de fichas de producto, análisis de competidores y una ruta más clara de la información de agentes a actualizaciones de catálogo publicadas."
     },
     "breadcrumb": {
@@ -200,7 +200,7 @@
           "color": "accent"
         },
         {
-          "href": "/compare/best-ai-ecommerce-tools",
+          "href": "/blog/best-ecommerce-ai-platforms",
           "name": "Comparación",
           "title": "Ve cómo encajan las categorías de IA para ecommerce con distintos equipos",
           "description": "La guía ayuda a los compradores a separar generación de contenido, analítica, personalización y herramientas de optimización de comercio con agentes.",

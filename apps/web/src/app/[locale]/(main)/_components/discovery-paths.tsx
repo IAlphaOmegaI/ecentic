@@ -30,7 +30,7 @@ const pageKeys = [
     icon: RocketIcon,
   },
   {
-    href: "/compare/best-ai-ecommerce-tools",
+    href: "/blog/best-ecommerce-ai-platforms",
     key: "compare" as const,
     icon: GaugeIcon,
   },

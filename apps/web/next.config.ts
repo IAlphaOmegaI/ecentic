@@ -40,6 +40,19 @@ export default withSentryConfig(
       { source: "/developer", destination: "/docs", permanent: true },
       { source: "/api-docs", destination: "/docs", permanent: true },
       { source: "/documentation", destination: "/docs", permanent: true },
+      // The category guide and the BLG article targeted the same searches
+      // ("ai ecommerce platform"), and Google ranked the article (position
+      // ~20) over the guide (~41). One URL now collects both pages' signals.
+      {
+        source: "/compare/best-ai-ecommerce-tools",
+        destination: "/blog/best-ecommerce-ai-platforms",
+        permanent: true,
+      },
+      {
+        source: "/es/compare/best-ai-ecommerce-tools",
+        destination: "/es/blog/best-ecommerce-ai-platforms",
+        permanent: true,
+      },
       // Predictable developer-resource URLs. `/docs/webhooks` is a redirect
       // rather than a page because ecentic receives webhooks but publishes no
       // outbound ones — a page would be documentation for a feature that does
@@ -98,6 +111,24 @@ export default withSentryConfig(
     // Markdown-for-Agents negotiates on Accept; CDN must vary HTML vs markdown.
     // Homepage also advertises agent discovery Links (RFC 8288 / RFC 9727).
     headers: async () => [
+      // Baseline hygiene on every response (HSTS already comes from Vercel).
+      // No `X-Frame-Options` or CSP here: Shopify and booking embeds frame
+      // parts of the app, and a framing or script policy has to be rolled out
+      // in report-only mode first rather than guessed at.
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          {
+            key: "Referrer-Policy",
+            value: "strict-origin-when-cross-origin",
+          },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=()",
+          },
+        ],
+      },
       {
         source: "/",
         headers: [

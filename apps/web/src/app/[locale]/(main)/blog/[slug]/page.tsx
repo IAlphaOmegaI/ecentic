@@ -5,6 +5,7 @@ import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
+import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { routing } from "@/i18n/routing";
 import {
@@ -18,6 +19,8 @@ import {
   brandedTitle,
   createBreadcrumbSchema,
   createFaqSchema,
+  createFounderSchema,
+  founder,
   seo,
 } from "@/lib/seo";
 import * as Blog from "@/server/app/blog";
@@ -58,6 +61,46 @@ const nextSectionNumber = (sections: readonly { number: string }[]) =>
 const BLOG_TITLE_TAGS: Record<string, Record<string, string>> = {
   "ecentic-eu-presence-partnership-compliance-ai-visibility-bundle": {
     en: "EU Presence Bundle: Compliance + AI Visibility",
+  },
+  // BLG headlines lead with a promise ("Get AI Citations in 30–90 Days…")
+  // and often never say the phrase the slug targets, so the title tag names
+  // the search term first. Each one describes what the article actually is
+  // (most are guides, not ranked lists), from its own headings.
+  "best-ecommerce-ai-platforms": {
+    en: "AI ecommerce platforms in 2026: how to choose",
+  },
+  "best-agentic-seo-tools": {
+    en: "Agentic SEO for Shopify and WooCommerce stores",
+  },
+  "best-ecommerce-competitor-tools": {
+    en: "Best ecommerce competitor analysis tools by category",
+  },
+  "best-llm-search-tools": {
+    en: "LLM search tools for ecommerce: what to check",
+  },
+  "best-chatgpt-seo-tools": {
+    en: "ChatGPT SEO tools for ecommerce: what they should do",
+  },
+  "best-gemini-seo-tools": {
+    en: "Gemini SEO tools for ecommerce: how to choose",
+  },
+  "best-ecommerce-ai-seo": {
+    en: "Ecommerce AI SEO in 2026: how AI finds products",
+  },
+  "best-ecommerce-content-tools": {
+    en: "Best ecommerce content tools for AI search (2026)",
+  },
+  "best-product-listing-optimization": {
+    en: "Product listing optimization for AI shopping agents",
+  },
+  "best-ecommerce-ai-analytics": {
+    en: "Ecommerce AI analytics tools: how to evaluate them",
+  },
+  "best-shopify-on-page-seo-tools": {
+    en: "Shopify on-page SEO tools: app, manual or platform?",
+  },
+  "woocommerce-ai-seo": {
+    en: "WooCommerce AI SEO: technical checklist and tools",
   },
 };
 
@@ -108,7 +151,10 @@ export const generateMetadata = async ({
     keywords: tags,
     // No hreflang pair: the other-locale article is a machine translation kept
     // out of the index below, and an alternate has to be indexable to count.
-    alternates: { canonical: path },
+    alternates: {
+      canonical: path,
+      types: { "application/rss+xml": "/rss.xml" },
+    },
     // Spanish articles are unreviewed machine translations of the English
     // ones (or the English row itself, when no translation has landed). They
     // stay readable and crawlable for Spanish visitors, but only the original
@@ -130,7 +176,7 @@ export const generateMetadata = async ({
       description: post.description,
       publishedTime: toBlogIsoDate(post.publishedAt),
       modifiedTime: toBlogIsoDate(post.updatedAt),
-      authors: ["ecentic"],
+      authors: [founder.name],
       section: post.category,
       tags,
     },
@@ -189,7 +235,7 @@ export default async ({ params }: BlogPageProps) => {
           },
         }
       : {}),
-    author: { "@type": "Organization", name: "ecentic", url: seo.host },
+    author: createFounderSchema(translate("author.role")),
     publisher: {
       "@type": "Organization",
       name: "ecentic",
@@ -200,6 +246,29 @@ export default async ({ params }: BlogPageProps) => {
       },
     },
   };
+
+  // Visible byline and date: answer engines and Google read the author from
+  // the page, not only from the schema, and a generic "ecentic" byline scores
+  // as anonymous. The name links to the profile the Person node points at.
+  const byline = (
+    <p>
+      <time dateTime={toBlogIsoDate(post.publishedAt)}>
+        {translate("published")}: {formatBlogDate(post.publishedAt, locale)}
+      </time>{" "}
+      ·{" "}
+      {translate.rich("author.byline", {
+        name: founder.name,
+        author: (chunks) => (
+          <Link
+            href="/about#xhurian-shaba"
+            className="underline underline-offset-4"
+          >
+            {chunks}
+          </Link>
+        ),
+      })}
+    </p>
+  );
 
   const breadcrumbSchema = createBreadcrumbSchema([
     { name: "Blog", path: localizePath("/blog", locale) },
@@ -222,10 +291,10 @@ export default async ({ params }: BlogPageProps) => {
         eyebrow={post.category}
         title={post.title}
         meta={
-          <p>
-            {translate("published")}: {formatBlogDate(post.publishedAt, locale)}{" "}
-            · {translate("minRead", { minutes })}
-          </p>
+          <>
+            {byline}
+            <p>{translate("minRead", { minutes })}</p>
+          </>
         }
         description={post.description}
       >
@@ -260,10 +329,10 @@ export default async ({ params }: BlogPageProps) => {
       eyebrow={post.category}
       title={post.title}
       meta={
-        <p>
-          {translate("published")}: {formatBlogDate(post.publishedAt, locale)} ·{" "}
-          {post.readTime}
-        </p>
+        <>
+          {byline}
+          <p>{post.readTime}</p>
+        </>
       }
       description={post.introduction}
     >

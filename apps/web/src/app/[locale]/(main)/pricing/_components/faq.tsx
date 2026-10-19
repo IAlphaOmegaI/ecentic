@@ -7,9 +7,14 @@ import {
   AccordionTrigger,
 } from "@zenncore/web/components/accordion";
 
+// `hiddenUntilFound` keeps every closed answer in the server HTML (as
+// `hidden="until-found"`) instead of mounting it on first open. Crawlers that
+// run no JavaScript — GPTBot, ClaudeBot, PerplexityBot — otherwise read only
+// the one open answer, while the page's FAQPage schema claims all of them.
 export const Faq = ({ items }: Faq.Props) => (
   <Accordion
     className="w-full"
+    hiddenUntilFound
     defaultValue={items.slice(0, 1).map((item) => item.question)}
   >
     {items.map((item) => (

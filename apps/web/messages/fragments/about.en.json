@@ -1,0 +1,66 @@
+{
+  "about": {
+    "meta": {
+      "title": "About ecentic, the AI shopping optimization app",
+      "description": "ecentic is an AI shopping optimization app for Shopify and WooCommerce, built by ECENTIC ShPK in Tirana, Albania. Meet the founder and see our company details."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "about": "About"
+    },
+    "hero": {
+      "eyebrow": "About",
+      "title": {
+        "primary": "The company behind",
+        "accent": "ecentic."
+      },
+      "description": "ecentic is an AI shopping optimization app for Shopify and WooCommerce stores. It shows merchants how ChatGPT, Gemini, Claude and Perplexity choose between products, and fixes the listings those assistants skip.",
+      "assurances": [
+        "Founded in 2026 in Tirana, Albania",
+        "Built for Shopify and WooCommerce",
+        "Plug and Play Tirana programme, 2026"
+      ],
+      "art": {
+        "alt": "ASCII-art illustration of a handshake"
+      }
+    },
+    "mission": {
+      "number": "01",
+      "title": "What we do",
+      "paragraphs": [
+        "Shoppers increasingly ask AI assistants what to buy, and the assistant decides which products make the answer. Most stores cannot see how that decision is made or why they lose it.",
+        "ecentic runs a store's products through simulated shopping prompts in ChatGPT, Claude, Gemini and Perplexity, compares them with named competitors, and explains why a product is skipped. It then rewrites the listing, publishes the change the merchant approves, and tracks the AI-referred visits and sales that follow.",
+        "ecentic works with Shopify and WooCommerce. Any other store can start with a free scan from its address."
+      ]
+    },
+    "team": {
+      "number": "02",
+      "title": "Who is behind it",
+      "founder": {
+        "role": "Co-founder and CEO",
+        "bio": "Xhurian Shaba is the co-founder and CEO of ecentic. Before ecentic, Xhurian co-founded zennit, a software and design studio in Tirana, and spent more than five years building web products in Next.js and TypeScript for startups in the US, Canada and Europe. Xhurian studied at the Université de Technologie de Compiègne.",
+        "linkedin": "LinkedIn profile"
+      }
+    },
+    "details": {
+      "number": "03",
+      "title": "Company details",
+      "description": "The legal entity that operates ecentic.",
+      "labels": {
+        "legalName": "Legal name",
+        "taxId": "Tax ID (NIPT)",
+        "address": "Registered address",
+        "telephone": "Phone",
+        "email": "Email"
+      },
+      "country": "Albania"
+    },
+    "footer": {
+      "action": {
+        "primary": "Run your free scan",
+        "secondary": "Contact support"
+      },
+      "note": "2-minute setup · No credit card · See your free score first"
+    }
+  }
+}

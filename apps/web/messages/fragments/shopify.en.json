@@ -1,7 +1,7 @@
 {
   "shopify": {
     "meta": {
-      "title": "AI for Shopify — listing and catalog optimization",
+      "title": "Shopify AI app for ChatGPT and AI shopping",
       "description": "AI for Shopify stores that need stronger product listings, clearer competitor analysis, and approved updates pushed straight back into the Shopify Admin."
     },
     "breadcrumb": {
@@ -163,7 +163,7 @@
           "color": "primary"
         },
         {
-          "href": "/compare/best-ai-ecommerce-tools",
+          "href": "/blog/best-ecommerce-ai-platforms",
           "name": "Comparison",
           "title": "Compare AI ecommerce tool categories before you commit",
           "description": "Use the guide to understand when Shopify-native generation is enough and when a broader optimization loop adds value.",

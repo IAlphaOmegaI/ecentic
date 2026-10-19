@@ -16,7 +16,7 @@ const relatedMeta: readonly {
   icon: Icon;
 }[] = [
   { href: "/features/product-listings", icon: CircleBoltIcon },
-  { href: "/compare/best-ai-ecommerce-tools", icon: SquareChartIcon },
+  { href: "/blog/best-ecommerce-ai-platforms", icon: SquareChartIcon },
   { href: "/blog", icon: FileIcon },
   { href: "/features", icon: BarChartIcon },
 ];

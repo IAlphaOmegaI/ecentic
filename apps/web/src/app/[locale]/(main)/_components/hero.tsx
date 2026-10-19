@@ -48,15 +48,18 @@ export const Hero = async () => {
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[500px] bg-radial-[at_50%_0%] from-primary/25 via-primary/5 to-transparent"
       />
-      <p className="font-body text-foreground-dimmed text-sm uppercase tracking-wide">
+      {/* The category line is the `h1` and the slogan below is display copy:
+          search reads the `h1` as the page's topic, and "Be the product AI
+          recommends" shares no words with what merchants search for. */}
+      <h1 className="font-body font-medium text-base text-foreground-dimmed md:text-lg">
         {translate("hero.eyebrow")}
-      </p>
+      </h1>
 
-      <h1 className="max-w-3xl font-body font-semibold text-4xl text-foreground-rich md:text-6xl">
+      <p className="max-w-3xl font-body font-semibold text-4xl text-foreground-rich md:text-6xl">
         {translate("hero.title.primary")}
         <br />
         <span className="text-primary">{translate("hero.title.accent")}</span>
-      </h1>
+      </p>
 
       <p className="max-w-2xl font-body text-foreground-dimmed text-lg">
         {translate("hero.description")}

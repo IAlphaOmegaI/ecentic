@@ -4,6 +4,7 @@ import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { InstallCta } from "@/app/[locale]/(main)/_components/install-cta";
 import { Link } from "@/i18n/navigation";
+import { company } from "@/lib/seo";
 import WordMark from "@/public/images/wordmark.svg";
 import { CookieSettings } from "./cookie-settings";
 import { Plus } from "./plus";
@@ -68,7 +69,7 @@ export const Footer = async ({ stacked = false }: Footer.Props) => {
         },
         { href: "/resources", label: translate("links.resources") },
         { href: "/blog", label: translate("links.blog") },
-        { href: "/compare/best-ai-ecommerce-tools", label: "Compare" },
+        { href: "/blog/best-ecommerce-ai-platforms", label: "Compare" },
         { href: "/ucp-validator", label: "UCP Validator" },
         { href: "/webmcp-scanner", label: translate("links.webmcpScanner") },
         { href: "/ucp-playground", label: "UCP Playground" },
@@ -78,6 +79,7 @@ export const Footer = async ({ stacked = false }: Footer.Props) => {
     {
       title: translate("columns.company"),
       links: [
+        { href: "/about", label: translate("links.about") },
         { href: "/support", label: translate("links.support") },
         // Linked from every page on purpose: answer engines reach the brand
         // facts through the search index, and a footer link is what gets the
@@ -90,7 +92,7 @@ export const Footer = async ({ stacked = false }: Footer.Props) => {
   ] as const;
 
   return (
-    <section className="relative -left-[calc(50vw-50%)] w-screen">
+    <footer className="relative -left-[calc(50vw-50%)] w-screen">
       <div
         className={cn(
           "relative isolate mx-auto max-w-6xl border-accent-foreground",
@@ -210,8 +212,26 @@ export const Footer = async ({ stacked = false }: Footer.Props) => {
             {translate("madeFor")}
           </p>
         </div>
+
+        {/* The registered company, as text on every page: the same name,
+            address and phone as the Organization schema (`company`). */}
+        <address className="border-accent-foreground border-t p-6 font-light text-foreground-dimmed text-xs not-italic leading-relaxed md:px-8">
+          {company.legalName} · {translate("company.taxId")} {company.taxId} ·{" "}
+          {company.address.streetAddress}, {company.address.postalCode}{" "}
+          {company.address.addressLocality}, {translate("company.country")} ·{" "}
+          <a
+            href={`tel:${company.telephone.replaceAll(" ", "")}`}
+            className="hover:text-primary"
+          >
+            {company.telephone}
+          </a>{" "}
+          ·{" "}
+          <a href={`mailto:${company.email}`} className="hover:text-primary">
+            {company.email}
+          </a>
+        </address>
       </div>
-    </section>
+    </footer>
   );
 };
 

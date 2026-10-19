@@ -1,6 +1,7 @@
 import { CircleBoltIcon, FaceSearchIcon, RobotIcon } from "@zenncore/icons";
 import { getTranslations } from "next-intl/server";
 import { Reveal, RevealItem } from "@/components/reveal";
+import { Link } from "@/i18n/navigation";
 
 /**
  * The three step titles are `h3`, not `p`: they are the children of this
@@ -38,7 +39,24 @@ export const Steps = async () => {
                 {translate("steps.connect.title")}
               </h3>
               <p className="text-left font-light text-lg md:text-right">
-                {translate("steps.connect.description")}
+                {translate.rich("steps.connect.description", {
+                  shopify: (chunks) => (
+                    <Link
+                      href="/platforms/shopify"
+                      className="underline underline-offset-4"
+                    >
+                      {chunks}
+                    </Link>
+                  ),
+                  woocommerce: (chunks) => (
+                    <Link
+                      href="/platforms/woocommerce"
+                      className="underline underline-offset-4"
+                    >
+                      {chunks}
+                    </Link>
+                  ),
+                })}
               </p>
             </RevealItem>
             <div className="hidden md:block" />
