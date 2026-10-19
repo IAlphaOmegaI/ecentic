@@ -1,6 +1,7 @@
 import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import { RETIRED_BLOG_POSTS } from "./src/lib/blog-redirects";
 
 // Keep in sync with `agentHomepageLinkHeader` in `src/lib/agent-discovery.ts`.
 // next.config cannot import that module (path aliases / Node resolution).
@@ -53,6 +54,20 @@ export default withSentryConfig(
         destination: "/es/blog/best-ecommerce-ai-platforms",
         permanent: true,
       },
+      // Blog posts that split one intent, each folded into the post Google
+      // already ranked for it (see `src/lib/blog-redirects.ts`).
+      ...[...RETIRED_BLOG_POSTS].flatMap(([slug, target]) => [
+        {
+          source: `/blog/${slug}`,
+          destination: `/blog/${target}`,
+          permanent: true,
+        },
+        {
+          source: `/es/blog/${slug}`,
+          destination: `/es/blog/${target}`,
+          permanent: true,
+        },
+      ]),
       // Predictable developer-resource URLs. `/docs/webhooks` is a redirect
       // rather than a page because ecentic receives webhooks but publishes no
       // outbound ones — a page would be documentation for a feature that does

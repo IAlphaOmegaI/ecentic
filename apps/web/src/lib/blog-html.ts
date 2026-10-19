@@ -1,4 +1,5 @@
 import { isLocale, type Locale, routing } from "@/i18n/routing";
+import { RETIRED_BLOG_POSTS } from "@/lib/blog-redirects";
 import { seo } from "@/lib/seo";
 
 export type BlogHtmlSection = {
@@ -120,6 +121,32 @@ const qualifyExternalLinks = (html: string) =>
       .replace(/\s*>$/, ' rel="nofollow noopener noreferrer">');
   });
 
+/** The replacement for a link to a retired post, or `null` for any other link. */
+const retiredPostHref = (href: string) => {
+  if (!URL.canParse(href, seo.host)) return null;
+  const url = new URL(href, seo.host);
+  if (url.hostname.replace(/^www\./, "") !== new URL(seo.host).hostname)
+    return null;
+  const slug = url.pathname.match(/^(?:\/es)?\/blog\/([^/]+)\/?$/)?.[1];
+  const target = slug && RETIRED_BLOG_POSTS.get(slug);
+  if (!target) return null;
+  return href.replace(`/blog/${slug}`, `/blog/${target}`);
+};
+
+/**
+ * A retired post keeps a permanent redirect, but a CMS link that still names it
+ * costs every reader a hop and keeps telling crawlers the old URL is live. Point
+ * it at the post that replaced it — same host form, locale prefix, query and
+ * fragment.
+ */
+const retargetRetiredLinks = (html: string) =>
+  html.replace(/<a\b[^>]*>/gi, (anchor) => {
+    const href = anchor.match(/\bhref\s*=\s*(["'])(.*?)\1/i)?.[2];
+    const target = href ? retiredPostHref(href) : null;
+    if (!href || !target) return anchor;
+    return anchor.replace(href, () => target);
+  });
+
 /**
  * A CMS post arrives with a dozen or more near-identical search phrases as its
  * tags. Printed in full — as chips, `keywords` meta and JSON-LD — that is a
@@ -150,7 +177,9 @@ export const splitBlogHtmlByH2 = (
     : STRUCTURE[routing.defaultLocale];
   const isTakeaways = (title: string) => structure.takeaways.test(title.trim());
 
-  const withoutScripts = qualifyExternalLinks(stripScripts(html));
+  const withoutScripts = qualifyExternalLinks(
+    retargetRetiredLinks(stripScripts(html)),
+  );
   const withoutLeadingTitle = withoutScripts.replace(
     /^\s*<h1\b[^>]*>[\s\S]*?<\/h1>\s*/i,
     "",

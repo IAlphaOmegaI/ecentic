@@ -102,6 +102,19 @@ const BLOG_TITLE_TAGS: Record<string, Record<string, string>> = {
   "woocommerce-ai-seo": {
     en: "WooCommerce AI SEO: technical checklist and tools",
   },
+  // Kept apart from the AI-shopping-agent pillar
+  // (`best-ai-shopping-agent-optimization-tools-2026`, see
+  // `lib/blog-redirects.ts`): each tag names the narrower search its post
+  // answers instead of repeating "AI shopping agents".
+  "rank-in-chatgpt": {
+    en: "How to rank your products in ChatGPT Shopping",
+  },
+  "future-of-ai-shopping": {
+    en: "The future of AI shopping: 3 levers for retailers",
+  },
+  "data-sources-ai-shopping": {
+    en: "AI shopping data sources: feeds, schema and reviews",
+  },
 };
 
 // Keyed on the row's own locale rather than the requested one: a /es page

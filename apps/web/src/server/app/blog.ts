@@ -10,6 +10,7 @@ import { and, eq } from "drizzle-orm";
 import { cacheLife, cacheTag, revalidateTag } from "next/cache";
 import { after } from "next/server";
 import { z } from "zod";
+import { RETIRED_BLOG_POSTS } from "@/lib/blog-redirects";
 import { schema } from "../database";
 import * as AI from "../utils/ai";
 import { withContext } from "../utils/context";
@@ -44,6 +45,12 @@ const purgeBlogCache = () => {
 const published = eq(schema.blogPost.status, "published");
 
 /**
+ * A post folded into another one stays `published` in Postgres (BLG may
+ * re-send it) but leaves every public list — its URL now redirects.
+ */
+const isListed = (row: { slug: string }) => !RETIRED_BLOG_POSTS.has(row.slug);
+
+/**
  * Public blog reads use `"use cache"`. Repository helpers go through
  * headers-free `withInstrumentation`, so these are safe inside a cache scope.
  * Throw on failure so bad renders stay out of cache.
@@ -61,7 +68,7 @@ export const listPublished = async (locale = "en") => {
     ],
   });
   if (!rows.success) throw rows.error;
-  return rows.data;
+  return rows.data.filter(isListed);
 };
 
 /**
@@ -524,7 +531,7 @@ export const listCatalogSlugs = async () => {
     where: and(eq(schema.blogPost.locale, "en"), published),
   });
   if (!englishRows.success) throw englishRows.error;
-  return englishRows.data.map((row) => row.slug);
+  return englishRows.data.filter(isListed).map((row) => row.slug);
 };
 
 /** Published posts whose category/tags slugify to `tagSlug`. */

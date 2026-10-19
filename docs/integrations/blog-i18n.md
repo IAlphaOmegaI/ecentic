@@ -37,10 +37,20 @@ Only the English article is offered to search. The rules live in the route metad
 Three more things keep a CMS article from reading as generated to a crawler:
 
 - **Tags are capped** — `leadingTags` (`lib/blog-html.ts`) keeps the first three. A BabyLoveGrowth post arrives with a dozen near-identical search phrases; printed in full as chips, `keywords` meta and JSON-LD they are a keyword list. Use the helper anywhere tags reach the page.
-- **Outbound links are qualified** — `splitBlogHtmlByH2` rewrites every external `<a>` in a CMS body to `rel="nofollow noopener noreferrer"`. BabyLoveGrowth leaves its own partner placements followed; links to `ecentic.ai` and relative links are untouched.
+- **Outbound links are qualified** — `splitBlogHtmlByH2` rewrites every external `<a>` in a CMS body to `rel="nofollow noopener noreferrer"`. BabyLoveGrowth leaves its own partner placements followed; links to `ecentic.ai` and relative links keep their `rel`, and only change when they name a retired post (below).
 - **The sitemap lists English articles only**, since it should name what search is meant to index.
 
 If a Spanish article is ever reviewed by a person and meant to rank, that is a per-post decision: it needs its own `index` rule, a sitemap entry, and the hreflang pair restored on both locales together.
+
+### Retired posts
+
+When several posts split one search intent, the weaker ones fold into the post Google already ranks for it. `RETIRED_BLOG_POSTS` (`lib/blog-redirects.ts`) maps each retired slug to its replacement and is the only place to record one:
+
+- `next.config.ts` turns every entry into permanent (308) redirects for `/blog/<slug>` and `/es/blog/<slug>`.
+- `Blog.listPublished` and `Blog.listCatalogSlugs` drop retired rows, so the post leaves the sitemap, `llms.txt`, RSS, the index and tag pages, and static params.
+- `splitBlogHtmlByH2` rewrites CMS links that still name a retired post to point at its replacement, so readers and crawlers skip the redirect hop.
+
+The row stays `published` in Postgres: BabyLoveGrowth may send it again, and the redirect still wins. A replacement must be a live post — never another retired slug (`spec/blog-html.test.ts` checks it). To set the posts that stay in the same topic apart, give them narrower title tags in `BLOG_TITLE_TAGS` (`blog/[slug]/page.tsx`).
 
 ## Database
 
