@@ -3156,19 +3156,13 @@
     },
     "caseStudy": {
       "eyebrow": "Historia de cliente",
-      "title": "DUA Flavours pasó de omitido a elegido en 30 días.",
-      "description": "DUA Flavours conectó su tienda. ecentic mostró qué productos omitían los agentes de IA, reescribió esas fichas y en un mes los agentes empezaron a enviarles compradores.",
+      "title": "DUA Flavours: un 12% más de visitas desde asistentes de IA y tráfico directo.",
+      "description": "DUA Flavours conectó su tienda. ecentic mostró qué productos omitían los agentes de IA y cerró las carencias de sus datos estructurados y de su feed de productos. Entre abril y julio de 2026, las visitas desde asistentes de IA y tráfico directo crecieron un 12%.",
       "verified": "Cliente verificado de ecentic · publicado con permiso",
-      "metrics": {
-        "visits": {
-          "value": "+15%",
-          "label": "visitas de agentes IA"
-        },
-        "sales": {
-          "value": "+12%",
-          "label": "ventas"
-        },
-        "period": "en 30 días"
+      "metric": {
+        "value": "+12%",
+        "label": "visitas desde asistentes de IA y tráfico directo",
+        "period": "De abril a julio de 2026"
       }
     },
     "booking": {
@@ -3189,7 +3183,8 @@
           "description": "Te vas con los cambios de ficha que más conviene hacer primero, y nada de esto tiene que pasar por procurement."
         }
       },
-      "footnote": "Sin tarjeta y sin compromiso. Son 15 minutos para ver cómo los agentes ven tu catálogo. Elige una hora a la derecha y quedas reservado."
+      "footnote": "Sin tarjeta y sin compromiso. Son 15 minutos para ver cómo los agentes ven tu catálogo. Elige una hora a la derecha y quedas reservado.",
+      "fallback": "Abrir la página de reservas"
     },
     "blindSpot": {
       "eyebrow": "El punto ciego",
@@ -4239,6 +4234,9 @@
         "secondary": "Ver precios"
       },
       "note": "¿Prefieres autoservicio? Ejecuta tu primer escaneo sin tarjeta."
+    },
+    "booking": {
+      "fallback": "Abrir la página de reservas"
     }
   },
   "enterprise": {

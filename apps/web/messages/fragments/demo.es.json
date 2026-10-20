@@ -24,6 +24,9 @@
         "alt": "Ilustración ASCII de un calendario de escritorio"
       }
     },
+    "booking": {
+      "fallback": "Abrir la página de reservas"
+    },
     "whatWeCover": {
       "number": "01",
       "title": "Qué cubriremos.",

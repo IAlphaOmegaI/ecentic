@@ -4,6 +4,7 @@ import { BookingEmbed } from "@/components/cal";
 import { JsonLd } from "@/components/json-ld";
 import { Plus } from "@/components/plus";
 import { localizePath } from "@/i18n/locale";
+import { booking } from "@/lib/booking";
 import {
   absoluteUrl,
   createBreadcrumbSchema,
@@ -85,6 +86,18 @@ export default async () => {
           <div className="h-[680px] w-full bg-background">
             <BookingEmbed />
           </div>
+          {/* The embed renders nothing on the server, so this is the booking
+              link a crawler, a link preview or a blocked embed script gets. */}
+          <p className="border-accent-foreground border-t p-4 text-center font-light text-sm">
+            <a
+              href={booking.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-primary underline-offset-4 hover:underline"
+            >
+              {translate("booking.fallback")}
+            </a>
+          </p>
         </div>
       </div>
 

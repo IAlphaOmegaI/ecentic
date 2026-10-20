@@ -24,6 +24,9 @@
         "alt": "ASCII-art illustration of a desk calendar"
       }
     },
+    "booking": {
+      "fallback": "Open the booking page"
+    },
     "whatWeCover": {
       "number": "01",
       "title": "What we'll cover.",

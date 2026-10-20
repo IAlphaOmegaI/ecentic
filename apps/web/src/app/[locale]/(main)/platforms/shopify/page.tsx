@@ -11,7 +11,6 @@ import {
   createBreadcrumbSchema,
   createFaqSchema,
   createMetadata,
-  seo,
 } from "@/lib/seo";
 import Art from "@/public/images/ascii/bag.png";
 import shopify from "@/public/images/shopify.svg";
@@ -99,7 +98,9 @@ export default async () => {
           <Button
             color="accent"
             className={bannerAction.lead}
-            render={<Link href={seo.shopifyAppStore} />}
+            // Sign-up, not the App Store: the listing still shows retired
+            // plans and prices until it is updated.
+            render={<Link href="/sign-up?platform=shopify" />}
           >
             <Image src={shopify} alt="" className="size-5" />
             {translate("hero.action.primary")}

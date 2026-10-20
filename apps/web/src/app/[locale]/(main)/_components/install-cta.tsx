@@ -3,15 +3,18 @@ import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import { seo } from "@/lib/seo";
 import shopify from "@/public/images/shopify.svg";
 import woocommerce from "@/public/images/woocommerce.svg";
 
+// Both buttons start at sign-up. The App Store listing still shows retired
+// plans and prices, so it stays a secondary "Prefer the app?" link in the
+// hero until the listing is fixed. Sign-up does not read `platform` today; it
+// keeps the two buttons apart in analytics.
 const platforms = [
   {
     name: "Shopify",
     logo: shopify,
-    href: seo.shopifyAppStore,
+    href: "/sign-up?platform=shopify",
     labelKey: "installShopify" as const,
   },
   {

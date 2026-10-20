@@ -6,15 +6,8 @@ import { Reveal, RevealItem } from "@/components/reveal";
 import DuaLogo from "@/public/partners/dua-flavours.png";
 import { Counter } from "./counter";
 
-const metricKeys = ["visits", "sales"] as const;
-
 export const CaseStudy = async () => {
   const translate = await getTranslations("home");
-  const metrics = metricKeys.map((key) => ({
-    key,
-    value: translate(`caseStudy.metrics.${key}.value`),
-    label: translate(`caseStudy.metrics.${key}.label`),
-  }));
 
   return (
     <section className="relative -left-[calc(50vw-50%)] w-screen">
@@ -47,31 +40,22 @@ export const CaseStudy = async () => {
             </p>
           </div>
 
-          <Reveal className="grid divide-y divide-accent-foreground border-accent-foreground border-t md:grid-rows-2 md:border-t-0 md:border-l">
-            {metrics.map((metric, index) => (
-              <RevealItem
-                key={metric.key}
-                className="relative flex flex-col justify-center gap-1 bg-background-dimmed p-6 md:p-12"
-              >
-                {index === 0 && (
-                  <>
-                    <Plus className="bottom-0 left-0 hidden -translate-x-1/2 translate-y-1/2 md:flex" />
-                    <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
-                  </>
-                )}
-                <Counter
-                  value={metric.value}
-                  delay={index * 0.15}
-                  className="font-body font-bold text-6xl text-primary md:text-7xl"
-                />
-                <p className="font-body text-foreground text-lg">
-                  {metric.label}
-                </p>
-                <p className="font-light text-foreground-dimmed text-sm">
-                  {translate("caseStudy.metrics.period")}
-                </p>
-              </RevealItem>
-            ))}
+          {/* One figure, because DUA confirmed one: visits from AI assistants
+              and direct traffic over April to July 2026. There is no confirmed
+              sales figure, so no second cell stands in for one. */}
+          <Reveal className="grid border-accent-foreground border-t md:border-t-0 md:border-l">
+            <RevealItem className="relative flex flex-col justify-center gap-1 bg-background-dimmed p-6 md:p-12">
+              <Counter
+                value={translate("caseStudy.metric.value")}
+                className="font-body font-bold text-6xl text-primary md:text-7xl"
+              />
+              <p className="font-body text-foreground text-lg">
+                {translate("caseStudy.metric.label")}
+              </p>
+              <p className="font-light text-foreground-dimmed text-sm">
+                {translate("caseStudy.metric.period")}
+              </p>
+            </RevealItem>
           </Reveal>
         </div>
       </div>

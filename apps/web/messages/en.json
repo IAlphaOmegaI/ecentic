@@ -3156,19 +3156,13 @@
     },
     "caseStudy": {
       "eyebrow": "Customer story",
-      "title": "DUA Flavours went from skipped to picked in 30 days.",
-      "description": "DUA Flavours connected their store. ecentic showed which products AI agents were skipping, rewrote those listings, and within a month the agents started sending shoppers their way.",
+      "title": "DUA Flavours: 12% more visits from AI assistants and direct traffic.",
+      "description": "DUA Flavours connected their store. ecentic showed which products AI agents were skipping and closed the gaps in their structured data and product feed. Between April and July 2026, visits from AI assistants and direct traffic rose 12%.",
       "verified": "Verified ecentic customer · published with permission",
-      "metrics": {
-        "visits": {
-          "value": "+15%",
-          "label": "AI-agent visits"
-        },
-        "sales": {
-          "value": "+12%",
-          "label": "sales"
-        },
-        "period": "in 30 days"
+      "metric": {
+        "value": "+12%",
+        "label": "visits from AI assistants and direct traffic",
+        "period": "April to July 2026"
       }
     },
     "booking": {
@@ -3189,7 +3183,8 @@
           "description": "You leave with the listing changes worth making first, and nothing here has to go through procurement."
         }
       },
-      "footnote": "No card and no commitment. It's a 15-minute look at how agents see your catalog. Pick a time on the right and you're booked."
+      "footnote": "No card and no commitment. It's a 15-minute look at how agents see your catalog. Pick a time on the right and you're booked.",
+      "fallback": "Open the booking page"
     },
     "blindSpot": {
       "eyebrow": "The Blind Spot",
@@ -4239,6 +4234,9 @@
         "secondary": "See pricing"
       },
       "note": "Prefer self-serve? Run your first scan with no credit card."
+    },
+    "booking": {
+      "fallback": "Open the booking page"
     }
   },
   "enterprise": {

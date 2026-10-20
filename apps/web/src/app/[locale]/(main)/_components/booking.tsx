@@ -1,6 +1,7 @@
 import { CheckIcon } from "@zenncore/icons";
 import { getTranslations } from "next-intl/server";
 import { Plus } from "@/components/plus";
+import { booking } from "@/lib/booking";
 import { DeferredBookingEmbed } from "./deferred-booking-embed";
 
 const expectationKeys = ["winRate", "diagnosis", "optimizations"] as const;
@@ -47,9 +48,22 @@ export const Booking = async () => {
                 </div>
               </div>
             ))}
-            <p className="mt-auto p-6 font-light text-foreground-dimmed md:p-8">
-              {translate("booking.footnote")}
-            </p>
+            <div className="mt-auto flex flex-col gap-3 p-6 md:p-8">
+              <p className="font-light text-foreground-dimmed">
+                {translate("booking.footnote")}
+              </p>
+              {/* The calendar beside this is client-only and mounts on
+                  approach, so the server HTML carries no booking link without
+                  this one. */}
+              <a
+                href={booking.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="w-fit text-primary underline-offset-4 hover:underline"
+              >
+                {translate("booking.fallback")}
+              </a>
+            </div>
           </div>
 
           <div className="h-[620px] w-full overflow-hidden bg-background md:col-span-3">
