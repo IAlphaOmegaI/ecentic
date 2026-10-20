@@ -20,6 +20,7 @@ import { buildGoogleFeed, extractCatalogFacts, feedUrl } from "../feed-export";
 import { themeEmbedDeepLink } from "../integration/shopify/hmac";
 import * as Product from "../product";
 import * as Store from "../store";
+import { classifyPageAccess } from "./bot-challenge";
 import { hasEcenticEmbed, hasSchemaOrgProduct } from "./page-schema";
 import { CRITICAL_CRAWLERS, isCrawlerBlocked, parseRobots } from "./robots";
 
@@ -44,13 +45,18 @@ export type ReadinessReport = {
 };
 
 const checkRobots = async (host: string): Promise<ReadinessCheck> => {
+  // The domain is whatever the merchant connected, so the fetch is guarded.
   const response = await HTTP.request(
     `https://${host}/robots.txt`,
     { method: "GET", headers: { "User-Agent": "EcenticAudit/1.0" } },
-    { timeout: FETCH_TIMEOUT_MS },
+    { timeout: FETCH_TIMEOUT_MS, guard: true },
   );
+  const body =
+    response.success && response.data.ok
+      ? await HTTP.read(response.data)
+      : null;
 
-  if (!response.success || !response.data.ok)
+  if (!body?.success)
     return {
       key: "robots",
       label: "AI crawler access (robots.txt)",
@@ -58,8 +64,7 @@ const checkRobots = async (host: string): Promise<ReadinessCheck> => {
       detail: `Could not fetch https://${host}/robots.txt — crawlers will assume everything is allowed, but verify the domain is reachable.`,
     };
 
-  const body = await response.data.text();
-  const groups = parseRobots(body);
+  const groups = parseRobots(body.data);
   const blocked = CRITICAL_CRAWLERS.filter((crawler) =>
     isCrawlerBlocked(groups, crawler),
   );
@@ -82,10 +87,98 @@ const checkRobots = async (host: string): Promise<ReadinessCheck> => {
   };
 };
 
-const checkRenderedStructuredData = async (
-  urls: string[],
-): Promise<ReadinessCheck & { ecenticEmbedDetected: boolean }> => {
-  if (urls.length === 0)
+type SampledPage =
+  | { access: "ok"; hasProductJsonLd: boolean; hasEcenticEmbed: boolean }
+  | { access: "challenged"; vendor: string | null }
+  | { access: "unreachable" };
+
+// The sampled pages are independent storefront fetches, so they go out
+// together. Serially this was up to PAGE_SAMPLE_SIZE × FETCH_TIMEOUT_MS of
+// dead wait — and the audit already runs this alongside the robots and feed
+// checks, so the slowest single page now bounds the whole group instead of
+// their sum.
+const samplePages = (urls: string[]): Promise<SampledPage[]> =>
+  Promise.all(
+    urls.map(async (url): Promise<SampledPage> => {
+      // Product URLs come from whatever a catalog said — a public import, a
+      // feed — so the fetch is guarded and the body capped.
+      const response = await HTTP.request(
+        url,
+        { method: "GET", headers: { "User-Agent": "EcenticAudit/1.0" } },
+        { timeout: FETCH_TIMEOUT_MS, guard: true },
+      );
+      if (!response.success) return { access: "unreachable" };
+
+      // A blocked response is read too: the challenge page's markup is what
+      // names the vendor.
+      const body = await HTTP.read(response.data);
+      const access = classifyPageAccess({
+        status: response.data.status,
+        headers: response.data.headers,
+        body: body.success ? body.data : "",
+      });
+
+      if (access.kind === "challenged")
+        return { access: "challenged", vendor: access.vendor };
+      if (access.kind === "unreachable" || !body.success)
+        return { access: "unreachable" };
+
+      return {
+        access: "ok",
+        hasProductJsonLd: hasSchemaOrgProduct(body.data),
+        hasEcenticEmbed: hasEcenticEmbed(body.data),
+      };
+    }),
+  );
+
+const checkPageAccess = (sampled: SampledPage[]): ReadinessCheck => {
+  const challenged = sampled.flatMap((page) =>
+    page.access === "challenged" ? [page] : [],
+  );
+  const loaded = sampled.filter((page) => page.access === "ok").length;
+
+  if (challenged.length > 0) {
+    const vendors = [
+      ...new Set(
+        challenged.flatMap((page) => (page.vendor ? [page.vendor] : [])),
+      ),
+    ];
+    const by =
+      vendors.length > 0 ? ` (${vendors.join(", ")})` : " (403 or 429)";
+
+    return {
+      key: "access",
+      label: "Agent access to product pages",
+      status: "fail",
+      detail: `${challenged.length}/${sampled.length} sampled product pages answered with a bot challenge${by}. AI shopping agents mostly fetch from cloud infrastructure and hit the same wall, so they leave before reading price, stock, or markup.`,
+      recommendation:
+        "In your bot-protection or WAF settings, let verified bots and AI crawlers through on product pages instead of challenging them.",
+    };
+  }
+
+  if (loaded === 0)
+    return {
+      key: "access",
+      label: "Agent access to product pages",
+      status: "warn",
+      detail:
+        sampled.length === 0
+          ? "No synced product has a public URL to sample."
+          : "Sampled product pages could not be fetched, so bot protection could not be checked.",
+    };
+
+  return {
+    key: "access",
+    label: "Agent access to product pages",
+    status: "pass",
+    detail: `${loaded}/${sampled.length} sampled product pages loaded without a bot challenge.`,
+  };
+};
+
+const checkRenderedStructuredData = (
+  sampled: SampledPage[],
+): ReadinessCheck & { ecenticEmbedDetected: boolean } => {
+  if (sampled.length === 0)
     return {
       key: "jsonld",
       label: "Structured data in rendered HTML",
@@ -94,37 +187,21 @@ const checkRenderedStructuredData = async (
       ecenticEmbedDetected: false,
     };
 
-  // The sampled pages are independent storefront fetches, so they go out
-  // together. Serially this was up to PAGE_SAMPLE_SIZE × FETCH_TIMEOUT_MS of
-  // dead wait — and the audit already runs this alongside the robots and feed
-  // checks, so the slowest single page now bounds the whole group instead of
-  // their sum. Unreachable pages still drop out rather than failing the check.
-  const sampled = await Promise.all(
-    urls.map(async (url) => {
-      const response = await HTTP.request(
-        url,
-        { method: "GET", headers: { "User-Agent": "EcenticAudit/1.0" } },
-        { timeout: FETCH_TIMEOUT_MS },
-      );
-      if (!response.success || !response.data.ok) return null;
-
-      const html = await response.data.text();
-      return {
-        url,
-        hasProductJsonLd: hasSchemaOrgProduct(html),
-        hasEcenticEmbed: hasEcenticEmbed(html),
-      };
-    }),
+  // Only pages that actually loaded are evidence about markup: a challenge
+  // page carries no product, and counting it as "no JSON-LD" would send the
+  // merchant to fix markup when the bot wall is the problem.
+  const results = sampled.flatMap((page) =>
+    page.access === "ok" ? [page] : [],
   );
-
-  const results = sampled.filter((entry) => entry !== null);
 
   if (results.length === 0)
     return {
       key: "jsonld",
       label: "Structured data in rendered HTML",
       status: "warn",
-      detail: "Sampled product pages could not be fetched.",
+      detail: sampled.some((page) => page.access === "challenged")
+        ? "Sampled product pages were blocked by a bot challenge, so their markup could not be read."
+        : "Sampled product pages could not be fetched.",
       ecenticEmbedDetected: false,
     };
 
@@ -273,11 +350,14 @@ export const auditStore = withSubscription(
       .filter((url): url is string => Boolean(url))
       .slice(0, PAGE_SAMPLE_SIZE);
 
-    const [robots, jsonLdResult, feed] = await Promise.all([
+    const [robots, sampled, feed] = await Promise.all([
       checkRobots(host),
-      checkRenderedStructuredData(sampleUrls),
+      samplePages(sampleUrls),
       buildGoogleFeed(storeId),
     ]);
+
+    const access = checkPageAccess(sampled);
+    const jsonLdResult = checkRenderedStructuredData(sampled);
 
     // For Shopify stores the fix is one toggle away: deep-link straight into
     // the theme editor's App embeds panel. `activateAppId={api key}/{block
@@ -332,6 +412,7 @@ export const auditStore = withSubscription(
 
     const automated = [
       robots,
+      access,
       jsonLd,
       feedCheck,
       checkOfferIdentity(products.data),
