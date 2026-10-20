@@ -7,6 +7,7 @@ import {
   createBreadcrumbSchema,
   createFaqSchema,
   createMetadata,
+  createSoftwareApplicationSchema,
   organizationSchema,
 } from "@/lib/seo";
 import Art from "@/public/images/ascii/coins.png";
@@ -49,32 +50,11 @@ export default async () => {
   const plans = messages.pricing.schema.plans;
 
   const structuredData = [
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      name: "ecentic",
-      applicationCategory: "BusinessApplication",
-      operatingSystem: "Web",
+    createSoftwareApplicationSchema({
+      plans,
       description,
       url: absoluteUrl(localizePath("/pricing", locale)),
-      offers: {
-        "@type": "AggregateOffer",
-        priceCurrency: "USD",
-        lowPrice: "0",
-        highPrice: "149",
-        offerCount: plans.length,
-        offers: plans
-          .filter((plan) => plan.price !== "Custom")
-          .map((plan) => ({
-            "@type": "Offer",
-            name: plan.name,
-            price: plan.price,
-            priceCurrency: "USD",
-            description: plan.description,
-            url: absoluteUrl(localizePath("/pricing", locale)),
-          })),
-      },
-    },
+    }),
     organizationSchema,
     createBreadcrumbSchema([
       { name: translate("breadcrumb.home"), path: localizePath("/", locale) },

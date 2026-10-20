@@ -7,7 +7,7 @@ export const seo = {
   name: "ecentic",
   title: "ecentic",
   description:
-    "Optimize product listings for AI shopping agents. Simulate ChatGPT, Claude, Gemini, and Perplexity decisions, diagnose losses, and improve win rate.",
+    "Get the sale when AI does the shopping. ecentic shows which products ChatGPT, Claude, Gemini and Perplexity skip, fixes the listings, and tracks the AI-agent visits and sales that follow.",
   links: [
     "https://x.com/ecentic_ai",
     "https://www.linkedin.com/company/ecentic/posts/?feedView=all",
@@ -151,26 +151,68 @@ export const organizationSchema = {
   sameAs: [...seo.links],
 } as const;
 
-export const softwareApplicationSchema = {
-  "@context": "https://schema.org",
-  "@type": "SoftwareApplication",
-  name: seo.name,
-  applicationCategory: "BusinessApplication",
-  operatingSystem: "Web",
-  description: seo.description,
-  url: seo.host,
-  offers: {
-    "@type": "Offer",
-    price: "0",
-    priceCurrency: "USD",
-    description: "Scan plan available",
-  },
-  publisher: {
-    "@type": "Organization",
+/**
+ * SoftwareApplication schema, priced from the pricing page's own plan list
+ * (`pricing.schema.plans`) so no figure is restated here. `lowPrice` and
+ * `highPrice` are the cheapest and dearest listed prices — the free Scan and
+ * Dominate today — and `offerCount` counts every listed plan, Enterprise's
+ * custom price included, though only priced plans become `Offer` nodes.
+ */
+export const createSoftwareApplicationSchema = ({
+  plans,
+  description = seo.description,
+  url = seo.host,
+}: createSoftwareApplicationSchema.Props) => {
+  const priced = plans.filter((plan) => Number.isFinite(Number(plan.price)));
+  const byPrice = [...priced].sort(
+    (left, right) => Number(left.price) - Number(right.price),
+  );
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
     name: seo.name,
-    url: seo.host,
-  },
-} as const;
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    description,
+    url,
+    offers: {
+      "@type": "AggregateOffer",
+      priceCurrency: "USD",
+      lowPrice: byPrice[0]?.price,
+      highPrice: byPrice.at(-1)?.price,
+      offerCount: plans.length,
+      offers: priced.map((plan) => ({
+        "@type": "Offer",
+        name: plan.name,
+        price: plan.price,
+        priceCurrency: "USD",
+        description: plan.description,
+        url,
+      })),
+    },
+    publisher: {
+      "@type": "Organization",
+      name: seo.name,
+      url: seo.host,
+    },
+  };
+};
+
+export namespace createSoftwareApplicationSchema {
+  export type Plan = {
+    name: string;
+    /** A number as a string ("14.90"), or a word ("Custom") for unpriced. */
+    price: string;
+    description: string;
+  };
+
+  export type Props = {
+    plans: readonly Plan[];
+    description?: string;
+    url?: string;
+  };
+}
 
 export const websiteSchema = {
   "@context": "https://schema.org",
@@ -188,6 +230,7 @@ export const websiteSchema = {
 export const createMetadata = ({
   title,
   description,
+  socialTitle = title,
   path,
   keywords = [],
   type = "website",
@@ -204,7 +247,7 @@ export const createMetadata = ({
           url: absoluteUrl(image),
           width: 1200,
           height: 630,
-          alt: "ecentic — Win every AI shopping agent's cart",
+          alt: "ecentic: Get the sale when AI does the shopping",
         },
       ]
     : undefined;
@@ -229,13 +272,13 @@ export const createMetadata = ({
       type,
       url: absoluteUrl(path),
       siteName: seo.name,
-      title: `${title} | ${seo.name}`,
+      title: `${socialTitle} | ${seo.name}`,
       description,
       ...(images ? { images } : {}),
     },
     twitter: {
       card: "summary_large_image",
-      title: `${title} | ${seo.name}`,
+      title: `${socialTitle} | ${seo.name}`,
       description,
       ...(images ? { images } : {}),
     },
@@ -246,6 +289,11 @@ export namespace createMetadata {
   export type Props = {
     title: string;
     description: string;
+    /**
+     * The headline for link previews (`og:title`, `twitter:title`) when it
+     * should differ from the search `<title>`. Defaults to `title`.
+     */
+    socialTitle?: string;
     path: string;
     keywords?: readonly string[];
     type?: "article" | "website";

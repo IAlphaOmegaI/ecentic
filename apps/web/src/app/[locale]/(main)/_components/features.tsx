@@ -3,6 +3,7 @@ import {
   CodeIcon,
   HammerIcon,
   ShieldCheckIcon,
+  ShoppingCartIcon,
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { getTranslations } from "next-intl/server";
@@ -14,6 +15,7 @@ const featureKeys = [
   { key: "competitors", icon: ShieldCheckIcon, color: "text-green-500" },
   { key: "fixes", icon: HammerIcon, color: "text-red-500" },
   { key: "track", icon: CodeIcon, color: "text-purple-500" },
+  { key: "ucp", icon: ShoppingCartIcon, color: "text-warning" },
 ] as const;
 
 export const Features = async () => {
@@ -40,7 +42,14 @@ export const Features = async () => {
           {featureKeys.map((feature, index) => (
             <RevealItem
               key={feature.key}
-              className="relative flex flex-col justify-end gap-2 bg-background-dimmed p-4 md:h-82"
+              className={cn(
+                "relative flex flex-col justify-end gap-2 bg-background-dimmed p-4 md:h-82",
+                // An odd card out spans the row instead of leaving a hole in
+                // the two-column grid.
+                index === featureKeys.length - 1 &&
+                  featureKeys.length % 2 === 1 &&
+                  "md:col-span-2",
+              )}
             >
               {index === 0 && (
                 <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />

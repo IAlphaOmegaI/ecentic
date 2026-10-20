@@ -1,12 +1,12 @@
 import { createOgImage, ogImageContentType, ogImageSize } from "@/lib/og";
 
-export const alt = "ecentic — Win every AI shopping agent's cart";
+export const alt = "ecentic: Get the sale when AI does the shopping";
 export const size = ogImageSize;
 export const contentType = ogImageContentType;
 
 export default () =>
   createOgImage({
-    title: "Win every AI shopping agent's cart.",
+    title: "Get the sale when AI does the shopping.",
     description:
       "Simulate how ChatGPT, Claude, Gemini, and Perplexity choose your products, diagnose losses, and auto-optimize listings.",
   });

@@ -49,8 +49,8 @@ export const Hero = async () => {
         className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[500px] bg-radial-[at_50%_0%] from-primary/25 via-primary/5 to-transparent"
       />
       {/* The category line is the `h1` and the slogan below is display copy:
-          search reads the `h1` as the page's topic, and "Be the product AI
-          recommends" shares no words with what merchants search for. */}
+          search reads the `h1` as the page's topic, and "Get the sale when AI
+          does the shopping" shares no words with what merchants search for. */}
       <h1 className="font-body font-medium text-base text-foreground-dimmed md:text-lg">
         {translate("hero.eyebrow")}
       </h1>
@@ -79,6 +79,17 @@ export const Hero = async () => {
           >
             {translate("hero.entry.action.secondary")}
           </Link>
+        </p>
+        {/* The buyer with a team and a budget books a call rather than
+            typing a store address; the booking section sits further down. */}
+        <p>
+          {translate("hero.team.lead")}{" "}
+          <a
+            href="#book"
+            className="text-primary underline-offset-4 hover:underline"
+          >
+            {translate("hero.team.action")}
+          </a>
         </p>
       </div>
 

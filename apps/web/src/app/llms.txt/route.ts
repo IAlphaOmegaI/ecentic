@@ -21,7 +21,10 @@ export const GET = async (request: Request) => {
       title: "Core",
       description: "Product intent, pricing, and the landing story.",
       links: [
-        { path: "/", label: "ecentic — Win Every AI Shopping Agent's Cart" },
+        {
+          path: "/",
+          label: "ecentic: Get the sale when AI does the shopping",
+        },
         {
           path: "/ai-instructions",
           label:

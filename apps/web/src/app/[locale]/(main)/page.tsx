@@ -11,8 +11,8 @@ import {
   absoluteUrl,
   createFaqSchema,
   createMetadata,
+  createSoftwareApplicationSchema,
   organizationSchema,
-  softwareApplicationSchema,
   websiteSchema,
 } from "@/lib/seo";
 import { Booking } from "./_components/booking";
@@ -38,6 +38,9 @@ export const generateMetadata = async (): Promise<Metadata> => {
     image: false,
     title: translate("meta.title"),
     description: translate("meta.description"),
+    // The search title keeps the category phrase; previews lead with the
+    // one-liner.
+    socialTitle: translate("meta.socialTitle"),
     path: localizePath("/", locale),
     keywords: [
       "AI ecommerce tools",
@@ -70,7 +73,9 @@ export default async () => {
             schemas={[
               organizationSchema,
               websiteSchema,
-              softwareApplicationSchema,
+              createSoftwareApplicationSchema({
+                plans: messages.pricing.schema.plans,
+              }),
               {
                 "@context": "https://schema.org",
                 "@type": "WebPage",

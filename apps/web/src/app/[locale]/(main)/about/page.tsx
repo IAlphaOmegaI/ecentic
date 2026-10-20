@@ -61,6 +61,32 @@ export default async () => {
     },
   ];
 
+  // The founder's anchor and profile come from `founder`, which the blog
+  // byline and the Person schema share; the co-founders are listed here.
+  const team = [
+    {
+      id: "xhurian-shaba",
+      name: founder.name,
+      linkedin: founder.linkedin,
+      role: translate("team.founder.role"),
+      bio: translate("team.founder.bio"),
+    },
+    {
+      id: "alvi-palloshi",
+      name: "Alvi Palloshi",
+      linkedin: "https://www.linkedin.com/in/alvipalloshi",
+      role: translate("team.members.alvi.role"),
+      bio: translate("team.members.alvi.bio"),
+    },
+    {
+      id: "iseld-muca",
+      name: "Iseld Muça",
+      linkedin: "https://www.linkedin.com/in/iseldmuca",
+      role: translate("team.members.iseld.role"),
+      bio: translate("team.members.iseld.bio"),
+    },
+  ];
+
   const structuredData = [
     {
       "@context": "https://schema.org",
@@ -117,32 +143,40 @@ export default async () => {
         title={translate("team.title")}
         gutter
       >
-        <article
-          id="xhurian-shaba"
-          className="flex max-w-3xl scroll-mt-24 flex-col gap-3"
-        >
-          <h3 className="font-body font-medium text-2xl text-foreground">
-            {founder.name}
-          </h3>
-          <p className="text-primary">{translate("team.founder.role")}</p>
+        <div className="flex max-w-3xl flex-col gap-10">
           <p className="font-light text-foreground-dimmed text-lg leading-relaxed">
-            {translate("team.founder.bio")}
+            {translate("team.intro")}
           </p>
-          <Button
-            color="accent"
-            className="mt-2 w-fit"
-            render={
-              <Link
-                href={founder.linkedin}
-                target="_blank"
-                rel="noopener noreferrer"
-              />
-            }
-          >
-            {translate("team.founder.linkedin")}
-            <ArrowRightIcon className="size-4" />
-          </Button>
-        </article>
+          {team.map((member) => (
+            <article
+              key={member.id}
+              id={member.id}
+              className="flex scroll-mt-24 flex-col gap-3"
+            >
+              <h3 className="font-body font-medium text-2xl text-foreground">
+                {member.name}
+              </h3>
+              <p className="text-primary">{member.role}</p>
+              <p className="font-light text-foreground-dimmed text-lg leading-relaxed">
+                {member.bio}
+              </p>
+              <Button
+                color="accent"
+                className="mt-2 w-fit"
+                render={
+                  <Link
+                    href={member.linkedin}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  />
+                }
+              >
+                {translate("team.founder.linkedin")}
+                <ArrowRightIcon className="size-4" />
+              </Button>
+            </article>
+          ))}
+        </div>
       </ContentPageSection>
 
       <ContentPageSection

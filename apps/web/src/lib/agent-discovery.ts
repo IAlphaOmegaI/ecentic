@@ -2377,7 +2377,7 @@ export const openApiDocument = {
  */
 export const agentGuidance = {
   summary:
-    "ecentic measures and improves how AI shopping agents — ChatGPT, Claude, Gemini, Perplexity — rank a merchant's products against competitors, and rewrites listings to win those comparisons.",
+    "Get the sale when AI does the shopping. ecentic measures and improves how AI shopping agents — ChatGPT, Claude, Gemini, Perplexity — rank a merchant's products against competitors, and rewrites listings to win those comparisons.",
   bestFor: [
     {
       job: "Find out whether AI assistants recommend a store's products",

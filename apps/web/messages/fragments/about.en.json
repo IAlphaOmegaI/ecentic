@@ -15,11 +15,7 @@
         "accent": "ecentic."
       },
       "description": "ecentic is an AI shopping optimization app for Shopify and WooCommerce stores. It shows merchants how ChatGPT, Gemini, Claude and Perplexity choose between products, and fixes the listings those assistants skip.",
-      "assurances": [
-        "Founded in 2026 in Tirana, Albania",
-        "Built for Shopify and WooCommerce",
-        "Plug and Play Tirana programme, 2026"
-      ],
+      "assurances": ["Founded 2026", "Built for Shopify and WooCommerce"],
       "art": {
         "alt": "ASCII-art illustration of a handshake"
       }
@@ -36,10 +32,21 @@
     "team": {
       "number": "02",
       "title": "Who is behind it",
+      "intro": "The three founders have built products together since high school, including LookUp, a parking startup that raised a $125K pre-seed.",
       "founder": {
         "role": "Co-founder and CEO",
         "bio": "Xhurian Shaba is the co-founder and CEO of ecentic. Before ecentic, Xhurian co-founded zennit, a software and design studio in Tirana, and spent more than five years building web products in Next.js and TypeScript for startups in the US, Canada and Europe. Xhurian studied at the Université de Technologie de Compiègne.",
         "linkedin": "LinkedIn profile"
+      },
+      "members": {
+        "alvi": {
+          "role": "Co-founder and CTO",
+          "bio": "Alvi leads product engineering and the simulation infrastructure behind ecentic. Before ecentic he was CTO of LookUp, which he took from concept to market, and led a backend rewrite at Avatid."
+        },
+        "iseld": {
+          "role": "Co-founder and Head of Sales",
+          "bio": "Iseld leads sales. He ran his own Shopify store selling tech products and watched its sales fall by more than half after Gemini 3.1 came out, with nothing changed on his side and no way to see why. That's the problem ecentic exists to fix."
+        }
       }
     },
     "details": {

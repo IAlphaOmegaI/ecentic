@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "ecentic — Win Every AI Shopping Agent's Cart",
+    name: "ecentic: Get the sale when AI does the shopping",
     short_name: "ecentic",
     description:
       "E-commerce optimization platform for the AI agent economy. Simulate, diagnose, and auto-optimize product listings for AI shopping agents.",

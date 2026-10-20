@@ -153,7 +153,7 @@ export const createOgImage = ({ title, description }: createOgImage.Params) => {
             }}
           >
             <span>ecentic.ai</span>
-            <span>Win every AI agent's cart</span>
+            <span>Get the sale when AI does the shopping</span>
           </div>
         </section>
       </section>

@@ -15,9 +15,9 @@ import {
   createBreadcrumbSchema,
   createFaqSchema,
   createMetadata,
+  createSoftwareApplicationSchema,
   organizationSchema,
   seo,
-  softwareApplicationSchema,
 } from "@/lib/seo";
 import Art from "@/public/images/ascii/bubble.png";
 import {
@@ -125,7 +125,7 @@ export default async () => {
       dateModified: copy.lastUpdated.iso,
     },
     organizationSchema,
-    softwareApplicationSchema,
+    createSoftwareApplicationSchema({ plans: messages.pricing.schema.plans }),
     createBreadcrumbSchema([
       { name: translate("breadcrumb.home"), path: localizePath("/", locale) },
       {

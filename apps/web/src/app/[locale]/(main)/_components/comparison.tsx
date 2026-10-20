@@ -17,7 +17,8 @@ type Capability = {
     | "agentPurchasing"
     | "winRate"
     | "optimizedListings"
-    | "modelUpdates";
+    | "modelUpdates"
+    | "ucpReady";
   audit: Status;
   geo: Status;
   ecentic: Status;
@@ -62,6 +63,13 @@ const capabilities: Capability[] = [
   {
     _id: "model-updates",
     labelKey: "modelUpdates",
+    audit: "no",
+    geo: "no",
+    ecentic: "yes",
+  },
+  {
+    _id: "ucp-ready",
+    labelKey: "ucpReady",
     audit: "no",
     geo: "no",
     ecentic: "yes",
