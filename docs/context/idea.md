@@ -8,9 +8,9 @@ This document describes what ecentic is, how it works, what has been built, and 
 
 ecentic (styled **ecentic**) is an e-commerce optimization platform for the AI agent economy. As AI shopping agents (ChatGPT, Claude, Gemini, etc.) increasingly choose products on behalf of consumers, merchants need to ensure their listings are selected over competitors. ecentic simulates these agent decisions, diagnoses why products win or lose, and auto-optimizes listings to get picked first.
 
-**Target audience:** E-commerce merchants, D2C brands, and teams selling through AI-powered shopping channels.
+**Target audience:** E-commerce brands with an in-house growth, e-commerce or marketing team and an existing marketing budget; the buyer is a head of growth, head of e-commerce or marketing lead, not a developer. Smaller merchants sign up on their own through the free scan and the monthly plans. Agencies co-sell.
 
-**Core value prop:** "Win every agent's cart." Not monitoring. Not auditing. Autonomous optimization.
+**Core value prop:** "Get the sale when AI does the shopping." Not monitoring. Not auditing. Autonomous optimization.
 
 ---
 
