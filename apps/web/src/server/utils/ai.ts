@@ -268,6 +268,9 @@ export type OutputOptions<T extends z.ZodTypeAny> = {
   schemaName?: string;
   schemaDescription?: string;
   label?: string;
+  /** Bounds the call — a background run with a hard deadline passes one. */
+  abortSignal?: AbortSignal;
+  maxRetries?: number;
 };
 
 const outputSettings = <T extends z.ZodTypeAny>(
@@ -282,6 +285,8 @@ const outputSettings = <T extends z.ZodTypeAny>(
     schemaName,
     schemaDescription,
     label = schemaName ?? fallback,
+    abortSignal,
+    maxRetries,
   } = options;
   // `id` travels beside the settings rather than resolved into them: each
   // attempt supplies its own model so a retry can pick a different rail.
@@ -294,6 +299,8 @@ const outputSettings = <T extends z.ZodTypeAny>(
       prompt,
       schemaName,
       schemaDescription,
+      abortSignal,
+      maxRetries,
       experimental_repairText: repairText,
       experimental_telemetry: telemetry(label),
     },

@@ -1,0 +1,238 @@
+{
+  "dashboard": {
+    "claims": {
+      "eyebrow": "Verificación de afirmaciones",
+      "title": "Verificación de afirmaciones",
+      "description": "Qué afirmaciones de este anuncio respalda algo fuera de tu tienda, cuáles solo afirmas tú y dónde los asistentes de IA dicen algo distinto.",
+      "action": {
+        "primary": "Verificar afirmaciones",
+        "secondary": "Volver al producto"
+      },
+      "toast": {
+        "started": {
+          "title": "Verificación iniciada",
+          "description": "Tarda uno o dos minutos. Puedes salir de esta página."
+        },
+        "alreadyRunning": "Ya hay una verificación en curso para este producto.",
+        "limit": "Límite diario alcanzado",
+        "failed": "No se pudo iniciar la verificación"
+      },
+      "running": {
+        "title": "Verificando afirmaciones…",
+        "description": "Leyendo tu página publicada, consultando a los asistentes e investigando cada afirmación. Esta página se actualiza al terminar."
+      },
+      "failed": {
+        "title": "La última verificación no terminó",
+        "expired": "Se quedó sin tiempo antes de terminar. Vuelve a ejecutarla.",
+        "description": "Algo salió mal. Vuelve a ejecutarla."
+      },
+      "empty": {
+        "title": "Aún no hay verificación",
+        "description": "ecentic extrae las afirmaciones concretas de este anuncio, contrasta cada una con páginas fuera de tu tienda y pregunta a ChatGPT, Claude y Gemini qué saben del producto."
+      },
+      "product": {
+        "label": "Producto",
+        "checkedAt": "Verificado {time}",
+        "changed": "Este anuncio cambió después de la verificación. Vuelve a ejecutarla para verificar la versión actual."
+      },
+      "summary": {
+        "verified": "Verificadas",
+        "verifiedDetail": "de {count, plural, one {# afirmación revisada} other {# afirmaciones revisadas}}",
+        "merchantOnly": "Sin respaldo externo",
+        "merchantOnlyDetail": "no se halló ninguna fuente fuera de tu tienda o marca",
+        "contradicted": "Contradichas",
+        "contradictedDetail": "una página externa dice otra cosa",
+        "divergent": "Los asistentes difieren",
+        "divergentDetail": "afirmaciones que un asistente expresa distinto"
+      },
+      "verdicts": {
+        "kicker": "01 — Veredictos",
+        "title": "Qué significa cada veredicto",
+        "description": "Aquí \"verificado\" significa una sola cosa concreta, y nada más laxo.",
+        "assistants": "A ChatGPT, Claude y Gemini se les pregunta por cada atributo sin mostrarles los valores de tu anuncio (sí ven el nombre del producto). Sus respuestas nunca verifican ni contradicen una afirmación; solo muestran dónde un asistente dice algo distinto.",
+        "verified": {
+          "label": "Verificada",
+          "definition": "Una página fuera de tu tienda y del sitio de la propia marca, que ecentic abrió por sí mismo, lo afirma. Se muestra la cita."
+        },
+        "cited": {
+          "label": "Citada",
+          "definition": "Perplexity cita una fuente externa, pero ecentic no pudo confirmarlo en la propia página."
+        },
+        "merchantOnly": {
+          "label": "Sin respaldo externo",
+          "definition": "Esta verificación no encontró ninguna fuente fuera de tu tienda y del sitio de la propia marca que lo afirme."
+        },
+        "contradicted": {
+          "label": "Contradicha",
+          "definition": "Una página fuera de tu tienda y del sitio de la propia marca, que ecentic abrió, afirma algo distinto."
+        },
+        "notCheckable": {
+          "label": "No verificable",
+          "definition": "Marketing tal como está escrito: sin una medida, prueba o comparación que alguien pueda comprobar."
+        },
+        "unresearched": {
+          "label": "Sin investigar",
+          "definition": "La investigación web no estuvo disponible durante esta verificación, así que no se consultó nada."
+        }
+      },
+      "facts": {
+        "kicker": "02 — Datos básicos",
+        "title": "Tu catálogo frente a tu página publicada",
+        "description": "Comparado sin IA: lo que dice tu catálogo frente a los datos estructurados que los agentes leen en tu página de producto.",
+        "columns": {
+          "fact": "Dato",
+          "catalog": "Tu catálogo",
+          "page": "Página publicada",
+          "status": "Estado",
+          "assistants": "Los asistentes dicen"
+        },
+        "keys": {
+          "price": "Precio",
+          "availability": "Stock",
+          "gtin": "GTIN",
+          "brand": "Marca"
+        },
+        "status": {
+          "consistent": "Coincide",
+          "conflicting": "No coincide",
+          "unknown": "No comparable"
+        },
+        "notes": {
+          "noPage": "No se pudo leer la página del producto.",
+          "noMarkup": "La página no tiene datos estructurados de producto.",
+          "ambiguousMarkup": "La página describe varios productos y ninguno coincide con este anuncio.",
+          "missingInListing": "No figura en tu catálogo.",
+          "missingOnPage": "No figura en los datos estructurados de la página.",
+          "currencyMismatch": "La página muestra otra moneda.",
+          "variantNotMatched": "Ninguno de los precios de variante de la página coincide con el precio de tu catálogo.",
+          "invalidGtin": "El GTIN de tu catálogo no supera su dígito de control.",
+          "currencyMissing": "El precio de la página no indica moneda."
+        },
+        "availability": {
+          "inStock": "En stock",
+          "outOfStock": "Agotado",
+          "discontinued": "Descatalogado"
+        },
+        "stance": {
+          "unknown": "No lo sabe",
+          "diverges": "Difiere"
+        },
+        "notStated": "—"
+      },
+      "claims": {
+        "kicker": "03 — Afirmaciones",
+        "title": "Afirmaciones de este anuncio",
+        "description": "{checked, number} de {found, number} afirmaciones revisadas, las más decisivas primero.",
+        "none": "No se encontraron afirmaciones concretas en el título ni en la descripción de este anuncio.",
+        "extractionFailed": "No se pudieron extraer las afirmaciones de este anuncio. Vuelve a ejecutar la verificación.",
+        "assistantsDiffer": "Los asistentes difieren",
+        "kinds": {
+          "spec": "Especificación",
+          "performance": "Rendimiento",
+          "certification": "Certificación",
+          "comparative": "Comparación",
+          "superlative": "Superlativo",
+          "origin": "Origen",
+          "policy": "Política",
+          "other": "Otra"
+        },
+        "confidence": {
+          "high": "Confianza alta",
+          "medium": "Confianza media",
+          "low": "Confianza baja"
+        },
+        "cited": {
+          "supports": "La fuente citada parece respaldarla.",
+          "contradicts": "La fuente citada parece contradecirla."
+        },
+        "evidence": {
+          "title": "Evidencia",
+          "none": "No se encontró evidencia externa.",
+          "perplexity": "Resumen de Perplexity:",
+          "opened": "Abierta y leída por ecentic",
+          "citedOnly": "Citada por Perplexity, sin confirmar en la página",
+          "retrieved": "consultada {time}",
+          "party": {
+            "independent": "Externa",
+            "manufacturer": "Sitio de la marca",
+            "merchant": "Tu tienda"
+          },
+          "relation": {
+            "supports": "Respalda",
+            "contradicts": "Contradice",
+            "unrelated": "Citada"
+          },
+          "redirected": "citada como {url}"
+        },
+        "assistants": {
+          "title": "Qué dijeron los asistentes",
+          "none": "Ningún asistente respondió durante esta verificación.",
+          "unknown": "No lo sabe",
+          "stance": {
+            "agrees": "Coincide",
+            "diverges": "Difiere",
+            "unknown": "No lo sabe"
+          }
+        },
+        "changeIf": {
+          "title": "Qué cambiaría este veredicto",
+          "verified": "Una página fuera de tu tienda que la contradiga, o que esta afirmación cambie en tu anuncio.",
+          "cited": "Que ecentic encuentre la afirmación en la propia página citada, o en otra página independiente.",
+          "contradicted": "Que {host} se corrija, o que tu anuncio cambie para coincidir con ella.",
+          "notCheckable": "Reformularla como algo medible: un número, una prueba concreta o una comparación concreta.",
+          "unresearched": "Volver a ejecutar la verificación cuando la investigación web esté disponible.",
+          "merchantOnly": "Una reseña, un anuncio de otro minorista o un informe de pruebas fuera de tu tienda y tu marca que indique el dato de {attribute}."
+        },
+        "fix": {
+          "title": "Qué hacer",
+          "verified": "Mantenla. Cita o enlaza la fuente en tu página de producto para que los asistentes encuentren la evidencia junto a la afirmación.",
+          "cited": "Asegúrate de que la evidencia de esta afirmación también esté en tu propia página, con palabras que un asistente pueda citar.",
+          "contradicted": "Contrasta \"{span}\" con {host}. Si tu anuncio es correcto, publica la evidencia; si no, corrígelo.",
+          "notCheckable": "Sustituye \"{span}\" por una afirmación medible —un número, una prueba concreta o una comparación concreta— o elimínala.",
+          "merchantOnlySpec": "Indica las condiciones de prueba o la norma detrás de \"{span}\" y enlaza una ficha técnica o una prueba de terceros.",
+          "merchantOnlyCertification": "Indica el organismo certificador y el número de certificado de \"{span}\" y enlaza el certificado.",
+          "merchantOnlyComparative": "Indica con qué se compara \"{span}\" y cita una referencia fechada.",
+          "merchantOnlyOrigin": "Respalda \"{span}\" con algo verificable: el fabricante, la planta o un certificado de origen.",
+          "merchantOnlyPolicy": "Publica la política detrás de \"{span}\" en su propia página y enlázala desde el anuncio.",
+          "merchantOnlyOther": "Respalda \"{span}\" con una fuente que un asistente pueda comprobar y enlázala desde el anuncio."
+        },
+        "divergenceFix": "{assistants} indican otro dato de {attribute}. Pon el valor correcto en los datos estructurados de tu producto para que los asistentes lo lean de ti."
+      },
+      "details": {
+        "kicker": "04 — Ejecución",
+        "title": "Cómo se hizo esta verificación",
+        "description": "Cada fuente que usó esta verificación y lo que no estuvo disponible.",
+        "rows": {
+          "page": "Página publicada",
+          "research": "Investigación web",
+          "sources": "Páginas citadas",
+          "judge": "Comparación",
+          "synced": "Catálogo sincronizado"
+        },
+        "page": {
+          "found": "Leída, con datos estructurados de producto",
+          "missing": "Leída, sin datos estructurados de producto",
+          "unreachable": "No se pudo leer",
+          "noUrl": "Tu catálogo no tiene URL de producto"
+        },
+        "assistant": {
+          "ok": "Respondió",
+          "okUnrecognized": "Respondió, pero no conoce este producto exacto",
+          "failed": "No disponible durante esta verificación"
+        },
+        "research": {
+          "ok": "Perplexity devolvió {count, plural, one {# fuente} other {# fuentes}}",
+          "failed": "Perplexity no estuvo disponible",
+          "skipped": "Nada que investigar"
+        },
+        "sources": "ecentic abrió {read, number} de {attempted, number} páginas citadas",
+        "judge": {
+          "failed": "Falló, así que no se pudo evaluar ningún extracto de página"
+        },
+        "never": "Nunca",
+        "apiNote": "Las respuestas de los asistentes son respuestas de API obtenidas durante esta verificación, no capturas de las aplicaciones de consumo.",
+        "brandNote": "Cualquier sitio distinto de tu tienda cuenta como externo, salvo uno con el nombre de la marca, que se considera de la propia marca. Externo no significa imparcial."
+      }
+    }
+  }
+}

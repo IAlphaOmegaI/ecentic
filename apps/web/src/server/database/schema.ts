@@ -13,6 +13,7 @@ import {
 } from "drizzle-orm/pg-core";
 import type * as Agentic from "@/server/app/intelligence/agentic-contract";
 import type * as Brand from "@/server/app/intelligence/brand";
+import type * as ClaimCheck from "@/server/app/intelligence/claim-check-rules";
 import type * as Simulate from "@/server/app/intelligence/simulate";
 
 /**
@@ -693,6 +694,56 @@ export const agenticScan = pgTable(
   ],
 );
 
+/**
+ * One claim check of one product (`intelligence/claim-check-engine.ts`): the
+ * listing's assertions with a verdict and the evidence behind each, plus the
+ * catalog-vs-live-page core facts. History is kept — the page shows the latest
+ * `complete` row, and the counts are denormalized so a store-level view never
+ * reads the jsonb.
+ *
+ * At most one `running` row per product, enforced by a partial unique index:
+ * two clicks racing each other cannot both start a paid run.
+ */
+export const claimCheck = pgTable(
+  "claim_check",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    userId: text("userId")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    storeId: text("storeId")
+      .notNull()
+      .references(() => store.id, { onDelete: "cascade" }),
+    productId: text("productId")
+      .notNull()
+      .references(() => product.id, { onDelete: "cascade" }),
+    status: text("status")
+      .$type<"running" | "complete" | "failed">()
+      .notNull()
+      .default("running"),
+    claims: integer("claims"),
+    verified: integer("verified"),
+    contradicted: integer("contradicted"),
+    divergent: integer("divergent"),
+    report: jsonb("report").$type<ClaimCheck.Report>(),
+    error: text("error"),
+    completedAt: timestamp("completedAt", { mode: "date" }),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    index("claim_check_product_created_idx").on(
+      table.productId,
+      table.createdAt,
+    ),
+    index("claim_check_store_created_idx").on(table.storeId, table.createdAt),
+    index("claim_check_user_idx").on(table.userId),
+    uniqueIndex("claim_check_product_running_unique")
+      .on(table.productId)
+      .where(sql`"status" = 'running'`),
+  ],
+);
+
 export const ucpProfile = pgTable("ucp_profile", {
   id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
   userId: text("userId")
@@ -1158,6 +1209,7 @@ export const tables = {
   simulation,
   brandSnapshot,
   agenticScan,
+  claimCheck,
   ucpProfile,
   agentVisit,
   agentTrafficDaily,

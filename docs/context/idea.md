@@ -220,6 +220,22 @@ Four tabs:
 
 > **Apply-to-store wiring:** Both publish actions call the existing `Optimization.approveProductListing` server action, behind an `AlertDialog` confirmation (it writes to a live store). The button is disabled with a "Connect Shopify to apply" label unless `getDetail` reports `canPublish` (store platform is Shopify or WooCommerce). Publishing dispatches to `Shopify.updateProduct` / `WooCommerce.updateProduct` and records before/after win rates on the optimization row.
 
+### Claim Check (`/dashboard/[store]/products/[id]/claims`)
+
+Per-product verification of what the listing claims, linked from the product detail header. One on-demand run (background, ~1–2 min, capped at 20 runs per store per day):
+
+1. **Core facts, no AI** — price, stock, GTIN and brand in the catalog vs. the live page's schema.org JSON-LD: matches / doesn't match / can't compare. Variant-, SKU- and currency-aware; an unknown value is never a conflict. A mismatch says the two records disagree, not which is right.
+2. **Claims** — up to 10 assertions extracted verbatim from title + description (qualifiers kept), each with a verdict:
+   - **Verified** — a page beyond the merchant's store and the brand's own site, which ecentic opened itself (judged on the URL that actually answered, after redirects), states it; the verbatim quote is shown.
+   - **Cited** — Perplexity cites an outside source, but ecentic couldn't confirm it on the page.
+   - **No outside support** — this check found no source beyond the store and brand stating it (bounded research, not proof of absence).
+   - **Contradicted** — an outside page ecentic opened says otherwise.
+   - **Not checkable** — marketing as written (no measure, test or comparison).
+   - **Not researched** — research was unavailable or skipped this claim, so nothing was looked up.
+3. **Assistant divergence** — ChatGPT, Claude and Gemini are asked about each attribute without being shown the listing's values (they do see the product name). Their answers never verify or contradict; they only flag where an assistant states something different, and an assistant that says it doesn't know the product counts as "doesn't know".
+
+Each claim shows its evidence (link, quote or Perplexity's summary, retrieval date), "what would change this verdict", and a templated fix that never invents specs. Evidence URLs come only from the citations the provider returned. "External" means not the merchant's hosts and not a host named after the brand — a heuristic, not a judgment of impartiality. Rules: `server/app/intelligence/claim-check-rules.ts`; pipeline: `claim-check-engine.ts`; actions: `claim-check.ts`. Admission is serialized per store (advisory lock) so the daily cap holds under concurrent starts; runs only ever leave `running` once.
+
 > **Note:** A standalone "Attribute Gaps" tab was specified originally as a side-by-side of your attributes vs. the winning competitor's. The `competitor` table stores only title/description/price/brand/url — there are no structured attributes to compare — so that comparison isn't yet feasible. The listing-completeness checklist (your product's field coverage) was folded into the **Optimize** tab, where it is directly actionable. Restore a dedicated gaps view once competitor attributes are modeled.
 
 ### Competitors (`/dashboard/competitors`)
@@ -384,6 +400,11 @@ The autonomous features above require a background job system. Recommended appro
   - id, scanId (FK scan), productId (FK product), competitorId (FK competitor)
   - model (the panel seat's stored id: `gpt4`, `claude`, `gemini`), winner (`product` | `competitor`)
   - reasoning (agent's explanation), productScore, competitorScore, createdAt
+
+- **claim_check** — One claim-check run of one product (history kept)
+  - id, userId (FK user), storeId (FK store), productId (FK product)
+  - status (`running` | `complete` | `failed`) — at most one `running` row per product (partial unique index)
+  - claims, verified, contradicted, divergent (denormalized counts), report (versioned jsonb incl. the listing snapshot it judged), error, completedAt, timestamps
 
 ---
 

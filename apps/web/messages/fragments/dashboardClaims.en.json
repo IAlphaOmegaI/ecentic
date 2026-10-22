@@ -1,0 +1,238 @@
+{
+  "dashboard": {
+    "claims": {
+      "eyebrow": "Claim check",
+      "title": "Claim check",
+      "description": "Which of this listing's claims something outside your store backs up, which only you state, and where AI assistants say something different.",
+      "action": {
+        "primary": "Run claim check",
+        "secondary": "Back to product"
+      },
+      "toast": {
+        "started": {
+          "title": "Claim check started",
+          "description": "It takes a minute or two. You can leave this page."
+        },
+        "alreadyRunning": "A claim check for this product is already running.",
+        "limit": "Daily limit reached",
+        "failed": "Couldn't start the claim check"
+      },
+      "running": {
+        "title": "Checking claims…",
+        "description": "Reading your live page, asking the assistants and researching each claim. This page updates when it's done."
+      },
+      "failed": {
+        "title": "The last claim check didn't finish",
+        "expired": "It ran out of time before finishing. Run it again.",
+        "description": "Something went wrong. Run it again."
+      },
+      "empty": {
+        "title": "No claim check yet",
+        "description": "ecentic pulls the factual claims out of this listing, checks each one against pages outside your store, and asks ChatGPT, Claude and Gemini what they know about the product."
+      },
+      "product": {
+        "label": "Product",
+        "checkedAt": "Checked {time}",
+        "changed": "This listing changed after the check. Run it again to check the current version."
+      },
+      "summary": {
+        "verified": "Verified",
+        "verifiedDetail": "of {count, plural, one {# claim} other {# claims}} checked",
+        "merchantOnly": "No outside support",
+        "merchantOnlyDetail": "no source beyond your store or brand found",
+        "contradicted": "Contradicted",
+        "contradictedDetail": "an outside page says otherwise",
+        "divergent": "Assistants differ",
+        "divergentDetail": "claims an assistant states differently"
+      },
+      "verdicts": {
+        "kicker": "01 — Verdicts",
+        "title": "What each verdict means",
+        "description": "\"Verified\" means one specific thing here, and nothing looser.",
+        "assistants": "ChatGPT, Claude and Gemini are asked about each attribute without being shown your listing's values (they do see the product name). Their answers never verify or contradict a claim; they only show where an assistant says something different.",
+        "verified": {
+          "label": "Verified",
+          "definition": "A page beyond your store and the brand's own site, which ecentic opened itself, states it. The quote is shown."
+        },
+        "cited": {
+          "label": "Cited",
+          "definition": "Perplexity cites an outside source for it, but ecentic couldn't confirm it on the page itself."
+        },
+        "merchantOnly": {
+          "label": "No outside support",
+          "definition": "This check found no source beyond your store and the brand's own site that states it."
+        },
+        "contradicted": {
+          "label": "Contradicted",
+          "definition": "A page beyond your store and the brand's own site, which ecentic opened, states something different."
+        },
+        "notCheckable": {
+          "label": "Not checkable",
+          "definition": "Marketing as written: no measure, test or comparison anyone could check."
+        },
+        "unresearched": {
+          "label": "Not researched",
+          "definition": "Web research was unavailable during this check, so nothing was looked up."
+        }
+      },
+      "facts": {
+        "kicker": "02 — Core facts",
+        "title": "Your catalog against your live page",
+        "description": "Compared without AI: what your catalog says against the structured data agents read on your product page.",
+        "columns": {
+          "fact": "Fact",
+          "catalog": "Your catalog",
+          "page": "Live page",
+          "status": "Status",
+          "assistants": "Assistants say"
+        },
+        "keys": {
+          "price": "Price",
+          "availability": "Stock",
+          "gtin": "GTIN",
+          "brand": "Brand"
+        },
+        "status": {
+          "consistent": "Matches",
+          "conflicting": "Doesn't match",
+          "unknown": "Can't compare"
+        },
+        "notes": {
+          "noPage": "The product page couldn't be read.",
+          "noMarkup": "No product structured data on the page.",
+          "ambiguousMarkup": "The page describes several products and none matches this listing.",
+          "missingInListing": "Not in your catalog.",
+          "missingOnPage": "Not in the page's structured data.",
+          "currencyMismatch": "The page shows a different currency.",
+          "variantNotMatched": "None of the page's variant prices match your catalog price.",
+          "invalidGtin": "Your catalog GTIN fails its check digit.",
+          "currencyMissing": "The page's price has no currency."
+        },
+        "availability": {
+          "inStock": "In stock",
+          "outOfStock": "Out of stock",
+          "discontinued": "Discontinued"
+        },
+        "stance": {
+          "unknown": "Doesn't know",
+          "diverges": "Differs"
+        },
+        "notStated": "—"
+      },
+      "claims": {
+        "kicker": "03 — Claims",
+        "title": "Claims in this listing",
+        "description": "{checked, number} of {found, number} claims checked, most decisive first.",
+        "none": "No factual claims found in this listing's title and description.",
+        "extractionFailed": "Couldn't read the claims out of this listing. Run the check again.",
+        "assistantsDiffer": "Assistants differ",
+        "kinds": {
+          "spec": "Specification",
+          "performance": "Performance",
+          "certification": "Certification",
+          "comparative": "Comparison",
+          "superlative": "Superlative",
+          "origin": "Origin",
+          "policy": "Policy",
+          "other": "Other"
+        },
+        "confidence": {
+          "high": "High confidence",
+          "medium": "Medium confidence",
+          "low": "Low confidence"
+        },
+        "cited": {
+          "supports": "The cited source appears to back it.",
+          "contradicts": "The cited source appears to dispute it."
+        },
+        "evidence": {
+          "title": "Evidence",
+          "none": "No outside evidence found.",
+          "perplexity": "Perplexity's summary:",
+          "opened": "Opened and read by ecentic",
+          "citedOnly": "Cited by Perplexity, not confirmed on the page",
+          "retrieved": "retrieved {time}",
+          "party": {
+            "independent": "External",
+            "manufacturer": "Brand's own site",
+            "merchant": "Your store"
+          },
+          "relation": {
+            "supports": "Supports",
+            "contradicts": "Contradicts",
+            "unrelated": "Cited"
+          },
+          "redirected": "cited as {url}"
+        },
+        "assistants": {
+          "title": "What the assistants said",
+          "none": "No assistant answered during this check.",
+          "unknown": "Doesn't know",
+          "stance": {
+            "agrees": "Agrees",
+            "diverges": "Differs",
+            "unknown": "Doesn't know"
+          }
+        },
+        "changeIf": {
+          "title": "What would change this verdict",
+          "verified": "A page outside your store disputing it, or this claim changing in your listing.",
+          "cited": "ecentic finding the claim on the cited page itself, or on another independent page.",
+          "contradicted": "{host} correcting itself, or your listing changing to match it.",
+          "notCheckable": "Restating it as something measurable: a number, a named test or a named comparison.",
+          "unresearched": "Running the check again once web research is available.",
+          "merchantOnly": "A review, retailer listing or test report beyond your store and brand that states the {attribute}."
+        },
+        "fix": {
+          "title": "What to do",
+          "verified": "Keep it. Cite or link the source on your product page so assistants find the evidence next to the claim.",
+          "cited": "Make sure the evidence for this claim is also on your own page, in words an assistant can quote.",
+          "contradicted": "Check \"{span}\" against {host}. If your listing is right, publish the evidence; if not, correct it.",
+          "notCheckable": "Replace \"{span}\" with a measurable statement — a number, a named test or a named comparison — or remove it.",
+          "merchantOnlySpec": "State the test conditions or standard behind \"{span}\", and link a datasheet or third-party test.",
+          "merchantOnlyCertification": "Name the certifying body and certificate number for \"{span}\", and link the certificate.",
+          "merchantOnlyComparative": "Say what \"{span}\" is compared against, and cite a dated benchmark.",
+          "merchantOnlyOrigin": "Back \"{span}\" with something checkable: the manufacturer, the facility, or a certificate of origin.",
+          "merchantOnlyPolicy": "Publish the policy behind \"{span}\" on its own page and link it from the listing.",
+          "merchantOnlyOther": "Back \"{span}\" with a source an assistant can check, and link it from the listing."
+        },
+        "divergenceFix": "{assistants} state a different {attribute}. Put the correct value in your product's structured data so assistants can read it from you."
+      },
+      "details": {
+        "kicker": "04 — Run",
+        "title": "How this check ran",
+        "description": "Every source this check used, and what was unavailable.",
+        "rows": {
+          "page": "Live page",
+          "research": "Web research",
+          "sources": "Cited pages",
+          "judge": "Comparison",
+          "synced": "Catalog synced"
+        },
+        "page": {
+          "found": "Read, product structured data found",
+          "missing": "Read, no product structured data",
+          "unreachable": "Couldn't be read",
+          "noUrl": "No product URL in your catalog"
+        },
+        "assistant": {
+          "ok": "Answered",
+          "okUnrecognized": "Answered, but doesn't know this exact product",
+          "failed": "Unavailable during this check"
+        },
+        "research": {
+          "ok": "Perplexity returned {count, plural, one {# source} other {# sources}}",
+          "failed": "Perplexity was unavailable",
+          "skipped": "Nothing to research"
+        },
+        "sources": "ecentic opened {read, number} of {attempted, number} cited pages",
+        "judge": {
+          "failed": "Failed, so no page excerpt could be judged"
+        },
+        "never": "Never",
+        "apiNote": "Assistant answers are API responses sampled during this check, not captures of the consumer apps.",
+        "brandNote": "Any site other than your store counts as external, except one named after the brand, which is treated as the brand's own. External is not the same as impartial."
+      }
+    }
+  }
+}

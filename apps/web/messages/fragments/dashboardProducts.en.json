@@ -38,6 +38,7 @@
       "detail": {
         "backToProducts": "Back to Products",
         "optimize": "Optimize",
+        "claimCheck": "Claim check",
         "noSimulationsYet": "No simulations run yet",
         "winRate": "Win Rate",
         "dataQuality": "Data Quality",

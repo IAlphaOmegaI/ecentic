@@ -5,6 +5,7 @@ import {
   ChevronLeftIcon,
   GaugeIcon,
   RadarIcon,
+  ShieldCheckIcon,
 } from "@zenncore/icons";
 import { cn, unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
@@ -120,6 +121,15 @@ const ProductDetailContent = async ({
             >
               <ChevronLeftIcon className="size-4" />
               {translate("backToProducts")}
+            </Button>
+            <Button
+              color="accent"
+              render={
+                <Link href={`/dashboard/${store}/products/${id}/claims`} />
+              }
+            >
+              <ShieldCheckIcon className="size-4" />
+              {translate("claimCheck")}
             </Button>
             <Button
               color="primary"

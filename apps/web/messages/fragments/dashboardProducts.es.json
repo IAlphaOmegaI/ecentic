@@ -38,6 +38,7 @@
       "detail": {
         "backToProducts": "Volver a productos",
         "optimize": "Optimizar",
+        "claimCheck": "Verificar afirmaciones",
         "noSimulationsYet": "Aún no hay simulaciones",
         "winRate": "Tasa de victoria",
         "dataQuality": "Calidad de datos",
