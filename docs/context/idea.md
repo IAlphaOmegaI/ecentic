@@ -236,6 +236,8 @@ Per-product verification of what the listing claims, linked from the product det
 
 Each claim shows its evidence (link, quote or Perplexity's summary, retrieval date), "what would change this verdict", and a templated fix that never invents specs. Evidence URLs come only from the citations the provider returned. "External" means not the merchant's hosts and not a host named after the brand — a heuristic, not a judgment of impartiality. Rules: `server/app/intelligence/claim-check-rules.ts`; pipeline: `claim-check-engine.ts`; actions: `claim-check.ts`. Admission is serialized per store (advisory lock) so the daily cap holds under concurrent starts; runs only ever leave `running` once.
 
+**Live demo (`/dev/claim-check`, staff only):** paste any public Shopify (`/products/…`, read via the public product JSON + `/meta.json`) or WooCommerce (`/product/…`, read via the Store API) product page and the same engine runs on it with no store connection and nothing stored; the report renders with the dashboard's own components. Gated by `proxy.ts`, a staff check in the page, and `withAuthorization([UserRole.STAFF])` on `runDemoClaimCheck`, since every run spends model calls.
+
 > **Note:** A standalone "Attribute Gaps" tab was specified originally as a side-by-side of your attributes vs. the winning competitor's. The `competitor` table stores only title/description/price/brand/url — there are no structured attributes to compare — so that comparison isn't yet feasible. The listing-completeness checklist (your product's field coverage) was folded into the **Optimize** tab, where it is directly actionable. Restore a dedicated gaps view once competitor attributes are modeled.
 
 ### Competitors (`/dashboard/competitors`)

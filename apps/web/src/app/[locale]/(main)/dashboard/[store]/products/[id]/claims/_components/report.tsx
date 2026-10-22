@@ -1,10 +1,12 @@
+"use client";
+
 import {
   CheckBadgeIcon,
   CircleMinusIcon,
   RobotIcon,
   XCircleIcon,
 } from "@zenncore/icons";
-import { getFormatter, getTranslations } from "next-intl/server";
+import { useFormatter, useTranslations } from "next-intl";
 import type * as Rules from "@/server/app/intelligence/claim-check-rules";
 import {
   Band,
@@ -24,7 +26,7 @@ import {
   VERDICT_TONE,
 } from "./verdicts";
 
-export const ProductBand = async ({
+export const ProductBand = ({
   product,
   checkedAt,
   listingChanged,
@@ -33,8 +35,8 @@ export const ProductBand = async ({
   checkedAt: Date | null;
   listingChanged: boolean;
 }) => {
-  const translate = await getTranslations("dashboard.claims.product");
-  const format = await getFormatter();
+  const translate = useTranslations("dashboard.claims.product");
+  const format = useFormatter();
 
   return (
     <Band>
@@ -60,14 +62,14 @@ export const ProductBand = async ({
   );
 };
 
-export const FailedNote = async ({
+export const FailedNote = ({
   expired,
   error,
 }: {
   expired: boolean;
   error: string | null;
 }) => {
-  const translate = await getTranslations("dashboard.claims.failed");
+  const translate = useTranslations("dashboard.claims.failed");
 
   return (
     <Band surface={false} className="bg-warning/5 px-6 py-4">
@@ -81,12 +83,12 @@ export const FailedNote = async ({
   );
 };
 
-export const ClaimsEmpty = async ({
+export const ClaimsEmpty = ({
   params,
 }: {
   params: Promise<{ store: string; id: string }>;
 }) => {
-  const translate = await getTranslations("dashboard.claims.empty");
+  const translate = useTranslations("dashboard.claims.empty");
 
   return (
     <Band>
@@ -107,9 +109,13 @@ export const ClaimsEmpty = async ({
  * The page's answer first — how many claims anything outside the store backs —
  * then what the words mean, then the evidence: core facts, claims, and how the
  * run went.
+ *
+ * Client components with plain-data props: the dashboard fetches the report on
+ * the server and hands it down, and the staff demo (`/dev/claim-check`) renders
+ * the one its action returned.
  */
-export const ClaimsReport = async ({ report }: { report: Rules.Report }) => {
-  const translate = await getTranslations("dashboard.claims");
+export const ClaimsReport = ({ report }: { report: Rules.Report }) => {
+  const translate = useTranslations("dashboard.claims");
   const { summary } = report;
 
   return (
@@ -195,8 +201,8 @@ export const ClaimsReport = async ({ report }: { report: Rules.Report }) => {
  * The report defines its own words. "Verified" has no shared meaning among
  * shoppers, so the page states exactly what earns it here.
  */
-const VerdictDefinitions = async () => {
-  const translate = await getTranslations("dashboard.claims.verdicts");
+const VerdictDefinitions = () => {
+  const translate = useTranslations("dashboard.claims.verdicts");
 
   return (
     <Band marks="top">
@@ -230,9 +236,9 @@ const VerdictDefinitions = async () => {
   );
 };
 
-const RunDetails = async ({ report }: { report: Rules.Report }) => {
-  const translate = await getTranslations("dashboard.claims.details");
-  const format = await getFormatter();
+const RunDetails = ({ report }: { report: Rules.Report }) => {
+  const translate = useTranslations("dashboard.claims.details");
+  const format = useFormatter();
 
   const pageLine = (() => {
     switch (report.page.status) {
