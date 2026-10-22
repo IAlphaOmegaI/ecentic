@@ -200,7 +200,9 @@
       "Bash(command -v claude)",
       "Bash(claude --version)",
       "Bash(claude plugin *)",
-      "Bash(grep -iA3 claude-seo)"
+      "Bash(grep -iA3 claude-seo)",
+      "mcp__claude-in-chrome__tabs_context_mcp",
+      "ClaudeInChromeDomain(product.ai)"
     ]
   },
   "enableAllProjectMcpServers": true
