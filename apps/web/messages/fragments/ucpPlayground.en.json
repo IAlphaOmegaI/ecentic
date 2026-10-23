@@ -46,7 +46,7 @@
         },
         {
           "question": "Which stores can I test?",
-          "answer": "Any storefront that publishes a valid Universal Commerce Profile at /.well-known/ucp with a dev.ucp.shopping service. The playground prefers the MCP transport and falls back to REST."
+          "answer": "Any storefront that publishes a valid Universal Commerce Protocol profile at /.well-known/ucp with a dev.ucp.shopping service. The playground prefers the MCP transport and falls back to REST."
         },
         {
           "question": "Do I need an account?",

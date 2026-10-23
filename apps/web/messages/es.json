@@ -137,8 +137,8 @@
       },
       "points": [
         "Retoma justo donde lo dejaste",
-        "Tus simulaciones de agentes se ejecutan continuamente en segundo plano",
-        "Sigue la mejora de tu posicionamiento a lo largo del tiempo"
+        "Vuelve a escanear cada vez que cambies una ficha",
+        "Sigue tu tasa de victoria a lo largo del tiempo"
       ]
     },
     "action": {
@@ -182,9 +182,9 @@
         "accent": "carrito de agente."
       },
       "points": [
-        "Simula cómo ChatGPT, Claude, Gemini y Perplexity eligen productos",
+        "Simula cómo ChatGPT, Claude y Gemini eligen productos",
         "Diagnostica exactamente por qué los agentes omiten los tuyos",
-        "Optimiza automáticamente las fichas para ganar cada carrito"
+        "Corrige tus fichas en un clic"
       ]
     },
     "action": {
@@ -5585,7 +5585,7 @@
         },
         {
           "question": "¿Qué tiendas puedo probar?",
-          "answer": "Cualquier tienda que publique un Universal Commerce Profile válido en /.well-known/ucp con un servicio dev.ucp.shopping. El playground prefiere el transporte MCP y recurre a REST."
+          "answer": "Cualquier tienda que publique un perfil válido de Universal Commerce Protocol en /.well-known/ucp con un servicio dev.ucp.shopping. El playground prefiere el transporte MCP y recurre a REST."
         },
         {
           "question": "¿Necesito una cuenta?",
@@ -5600,7 +5600,7 @@
   "ucpValidator": {
     "meta": {
       "title": "Validador UCP — comprobación del Universal Commerce Protocol",
-      "description": "Validador UCP gratuito: comprueba si una tienda publica un Universal Commerce Profile válido, valida su esquema y confirma que los agentes de IA pasan robots.txt."
+      "description": "Validador UCP gratuito: comprueba si una tienda publica un perfil válido de Universal Commerce Protocol, valida su esquema y confirma que los agentes de IA pasan robots.txt."
     },
     "breadcrumb": {
       "home": "Inicio",
@@ -5612,7 +5612,7 @@
         "primary": "UCP",
         "accent": "Validador"
       },
-      "description": "Comprueba si una tienda publica un Universal Commerce Profile válido en /.well-known/ucp y si los agentes de compra pueden leerlo sin fricción.",
+      "description": "Comprueba si una tienda publica un perfil válido de Universal Commerce Protocol en /.well-known/ucp y si los agentes de compra pueden leerlo sin fricción.",
       "assurances": [
         "Gratis",
         "Sin cuenta",
@@ -5662,12 +5662,12 @@
           "answer": "Solicita el dominio HTTPS público, confirma que /.well-known/ucp responde, parsea el cuerpo como JSON y reporta errores y avisos de la spec UCP para que sepas si el perfil está bien formado."
         },
         {
-          "question": "¿Dónde debe publicarse un Universal Commerce Profile?",
+          "question": "¿Dónde debe publicarse un perfil de Universal Commerce Protocol?",
           "answer": "En /.well-known/ucp del dominio HTTPS público de tu tienda. El validador obtiene exactamente esa ruta y muestra si es alcanzable."
         },
         {
           "question": "¿Comprueba si los agentes de compra con IA pueden leer mi tienda?",
-          "answer": "Sí. El validador revisa robots.txt para que veas si los bots principales de compras e indexación pueden llegar a tu Universal Commerce Profile sin fricción."
+          "answer": "Sí. El validador revisa robots.txt para que veas si los bots principales de compras e indexación pueden llegar a tu perfil de Universal Commerce Protocol sin fricción."
         }
       ]
     },
@@ -6107,7 +6107,7 @@
             "line2": "está ganando."
           },
           "points": [
-            "ChatGPT, Claude, Gemini y Perplexity simulan consultas reales de compra",
+            "ChatGPT, Claude y Gemini simulan consultas reales de compra",
             "Puntuamos cada producto frente a tus competidores",
             "Sabrás exactamente qué corregir antes de salir de esta página"
           ]

@@ -46,7 +46,7 @@
         },
         {
           "question": "¿Qué tiendas puedo probar?",
-          "answer": "Cualquier tienda que publique un Universal Commerce Profile válido en /.well-known/ucp con un servicio dev.ucp.shopping. El playground prefiere el transporte MCP y recurre a REST."
+          "answer": "Cualquier tienda que publique un perfil válido de Universal Commerce Protocol en /.well-known/ucp con un servicio dev.ucp.shopping. El playground prefiere el transporte MCP y recurre a REST."
         },
         {
           "question": "¿Necesito una cuenta?",
