@@ -668,6 +668,34 @@ type Article = {
   faqs?: readonly Faq[];
 };
 
+/** Whether a markdown file in `content/blog` has claimed this slug. */
+const claimedByRepo = async (slug: string) => {
+  const rows = await find(Environment.SERVER, {
+    where: and(
+      eq(schema.blogPost.slug, slug),
+      eq(schema.blogPost.source, "repo"),
+    ),
+    limit: 1,
+  });
+  if (!rows.success) throw rows.error;
+  return rows.data.length > 0;
+};
+
+const skipRepoOwned = (slug: string, id?: string | number) => {
+  Sentry.captureMessage(
+    "BLG publish skipped: slug is published from the repo",
+    {
+      level: "info",
+      tags: { integration: "babylovegrowth" },
+      extra: { slug, id },
+    },
+  );
+  return {
+    success: true as const,
+    data: { skipped: true as const, reason: "repo-owned" as const },
+  };
+};
+
 /**
  * Persist EN, Azure-translate to ES, upsert both rows (same slug), purge the
  * `blog` tag so static pages regenerate. Shared by the BabyLoveGrowth webhook
@@ -721,6 +749,18 @@ const ingestArticleCore = async (article: Article) => {
       },
     };
 
+  // The translation took minutes, long enough for a repo file to claim the
+  // slug, and a BLG write never lands on a repo row.
+  if (article.source === "blg" && (await claimedByRepo(article.slug)))
+    return skipRepoOwned(article.slug, article.externalId);
+
+  // A repo post's English body is the sanitized render of a reviewed file; its
+  // Spanish body is model output, so it goes through the same allowlist.
+  const spanishHtml =
+    article.source === "repo"
+      ? BlogContent.sanitize(translation.data.contentHtml)
+      : translation.data.contentHtml;
+
   const spanish = await upsertLocaleRow({
     slug: article.slug,
     locale: "es",
@@ -731,11 +771,11 @@ const ingestArticleCore = async (article: Article) => {
     description: translation.data.metaDescription,
     introduction: translation.data.introduction,
     publishedAt: article.publishedAt,
-    readTime: estimateReadTime(translation.data.contentHtml),
+    readTime: estimateReadTime(spanishHtml),
     thumbnailUrl: article.thumbnailUrl,
     tags: translation.data.tags,
     takeaways: translation.data.takeaways,
-    contentHtml: translation.data.contentHtml,
+    contentHtml: spanishHtml,
     faqs: translation.data.faqs,
   });
 
@@ -777,25 +817,8 @@ const ingestPublishCore = async (payload: PublishPayload) => {
       data: { skipped: true as const, reason: "non-english" as const },
     };
 
-  const stored = await find(Environment.SERVER, {
-    where: eq(schema.blogPost.slug, payload.slug),
-  });
-  if (!stored.success) throw stored.error;
-
-  if (BlogContent.isRepoOwned(stored.data)) {
-    Sentry.captureMessage(
-      "BLG publish skipped: slug is published from the repo",
-      {
-        level: "info",
-        tags: { integration: "babylovegrowth" },
-        extra: { slug: payload.slug, id: payload.id },
-      },
-    );
-    return {
-      success: true as const,
-      data: { skipped: true as const, reason: "repo-owned" as const },
-    };
-  }
+  if (await claimedByRepo(payload.slug))
+    return skipRepoOwned(payload.slug, payload.id);
 
   return await ingestArticleCore({
     slug: payload.slug,
@@ -848,10 +871,13 @@ export const reconcileCatalog = async ({
 
     // `ingestPublishCore` would skip these anyway; leaving them out here is
     // what keeps a repo post that is missing a locale from being picked every
-    // tick and starving the BLG backlog behind it.
-    const repoOwned = new Set(
-      stored.data.filter((row) => row.source === "repo").map((row) => row.slug),
-    );
+    // tick and starving the BLG backlog behind it. Any status counts, as it
+    // does for that skip, so a repo row hidden by hand cannot do the same.
+    const repoRows = await find(Environment.SERVER, {
+      where: eq(schema.blogPost.source, "repo"),
+    });
+    if (!repoRows.success) throw repoRows.error;
+    const repoOwned = new Set(repoRows.data.map((row) => row.slug));
 
     const catalog = await BabyLoveGrowth.listArticlesFresh();
 
@@ -930,7 +956,13 @@ export const reconcileCatalog = async ({
  */
 export const reconcileRepoPosts = async ({
   limit = 1,
-  directory = join(process.cwd(), BlogContent.CONTENT_DIRECTORY),
+  // `turbopackIgnore`: a `process.cwd()` path is otherwise read as "any file",
+  // and Turbopack traces the whole project into every route importing this
+  // module. The folder reaches the cron through `outputFileTracingIncludes`.
+  directory = join(
+    /*turbopackIgnore: true*/ process.cwd(),
+    BlogContent.CONTENT_DIRECTORY,
+  ),
 }: {
   limit?: number;
   directory?: string;
@@ -952,6 +984,8 @@ export const reconcileRepoPosts = async ({
     const failed: { slug: string; error: string }[] = [];
 
     for (const post of pending.slice(0, limit)) {
+      // A tick cut off at `maxDuration` mid-translation reports nothing else.
+      console.info("[blog] ingesting", post.path);
       const result = await resultify(() =>
         ingestArticleCore({
           slug: post.slug,
@@ -983,6 +1017,7 @@ export const reconcileRepoPosts = async ({
 
       // EN landed, ES did not. The ES row still carries the old hash (or is
       // missing), so the next tick retries — no separate repair path.
+      if (result.data.data.skipped) continue;
       if (result.data.data.action === "upserted-en-only") {
         partial.push({ slug: post.slug, esError: result.data.data.esError });
         continue;
@@ -1111,6 +1146,11 @@ export const resyncSpanishFromEnglishCore = async (slug: string) => {
   });
   if (!translation.success) return translation;
 
+  const spanishHtml =
+    english.source === "repo"
+      ? BlogContent.sanitize(translation.data.contentHtml)
+      : translation.data.contentHtml;
+
   const spanish = await upsertLocaleRow({
     slug: english.slug,
     locale: "es",
@@ -1121,12 +1161,12 @@ export const resyncSpanishFromEnglishCore = async (slug: string) => {
     description: translation.data.metaDescription,
     introduction: translation.data.introduction,
     publishedAt: english.publishedAt,
-    readTime: estimateReadTime(translation.data.contentHtml),
+    readTime: estimateReadTime(spanishHtml),
     thumbnailUrl: english.thumbnailUrl,
     tags: translation.data.tags,
     takeaways: translation.data.takeaways,
     sections: [],
-    contentHtml: translation.data.contentHtml,
+    contentHtml: spanishHtml,
     faqs: translation.data.faqs,
   });
 

@@ -16,10 +16,10 @@ jobs:
       # - run: bunx biome ci apps/web/src
       # - run: cd apps/web && bun test src
   # Posts in apps/web/content/blog publish on merge, so their checks gate the
-  # PR. A job-level filter rather than `on.pull_request.paths`, which would
-  # also skip `verify`; a PR that touches no post finishes green in seconds.
+  # PR, and run again on main for work pushed there directly. A job-level
+  # filter rather than `paths:`, which would also skip `verify`; a change that
+  # touches nothing the check reads finishes green in seconds.
   blog-content:
-    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -27,9 +27,11 @@ jobs:
           fetch-depth: 0
       - id: changes
         env:
-          BASE_REF: ${{ github.base_ref }}
+          BASE: ${{ github.event_name == 'pull_request' && format('origin/{0}', github.base_ref) || github.event.before }}
         run: |
-          if git diff --name-only "origin/$BASE_REF...HEAD" | grep -qE '^apps/web/(content/blog/|public/blog/|scripts/check-blog-content\.ts$|src/server/utils/blog-content\.ts$)'; then
+          # A new branch or a force push leaves no usable base: check anyway.
+          if ! git cat-file -e "$BASE^{commit}" 2>/dev/null ||
+            git diff --name-only "$BASE...HEAD" | grep -qE '^(apps/web/(content/blog/|public/blog/|scripts/check-blog-content\.ts$|src/server/utils/blog-content\.ts$|src/lib/blog-(html|redirects)\.ts$|package\.json$)|bun\.lock$)'; then
             echo "blog=true" >> "$GITHUB_OUTPUT"
           fi
       - if: steps.changes.outputs.blog == 'true'

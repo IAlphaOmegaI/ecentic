@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+import { serializeJsonLd } from "@/components/json-ld";
 import { RETIRED_BLOG_POSTS } from "@/lib/blog-redirects";
 import * as BlogContent from "@/server/utils/blog-content";
 
@@ -309,12 +310,12 @@ describe("rendering", () => {
     expect(rules(parse(BASE, "\nText.\n\n# Another\n"))).toEqual(["heading"]);
   });
 
-  test("footnote links point at ids that exist", () => {
-    const html =
-      parse(BASE, "\nA claim.[^1]\n\n[^1]: The source.\n").post?.contentHtml ??
-      "";
-    expect(html).toContain('href="#user-content-fn-1"');
-    expect(html).toContain('id="user-content-fn-1"');
+  test("footnotes are refused: the page would split their block in half", () => {
+    expect(rules(parse(BASE, "\nA claim.[^1]\n\n[^1]: The source.\n"))).toEqual(
+      ["footnote"],
+    );
+    // An inline marker with no definition is plain text, as the README asks.
+    expect(rules(parse(BASE, "\nA claim [1].\n"))).toEqual([]);
   });
 
   test("body images are listed for the existence check", () => {
@@ -324,6 +325,32 @@ describe("rendering", () => {
         "\n![chart](/blog/chart.png)\n\n![x](https://a.example/b.png)\n",
       ).images,
     ).toEqual(["/blog/chart.png"]);
+  });
+});
+
+describe("sanitizing translated HTML", () => {
+  test("ids the model invents are prefixed so they cannot clobber globals", () => {
+    expect(BlogContent.sanitize('<p id="location" name="x">Hola</p>')).toBe(
+      '<p id="user-content-location" name="user-content-x">Hola</p>',
+    );
+  });
+
+  test("model output loses scripts, handlers and iframes", () => {
+    const html = BlogContent.sanitize(
+      '<h2>Título</h2><p onclick="steal()">Texto <script>alert(1)</script><a href="javascript:alert(1)">x</a></p><iframe src="https://evil.example"></iframe><img src="/blog/a.png" onerror="alert(1)" alt="a">',
+    );
+    expect(html).toBe(
+      '<h2>Título</h2><p>Texto <a>x</a></p><img src="/blog/a.png" alt="a">',
+    );
+  });
+
+  test("what render produced survives a round trip", () => {
+    const english =
+      parse(BASE, `${BODY}\n| A | B |\n| --- | --- |\n| 1 | 2 |\n`).post
+        ?.contentHtml ?? "";
+    // Empty attributes come back spelled `=""`, which is the same HTML.
+    const normalize = (html: string) => html.replaceAll('=""', "");
+    expect(normalize(BlogContent.sanitize(english))).toBe(normalize(english));
   });
 });
 
@@ -339,7 +366,8 @@ describe("change detection", () => {
     source: string,
     externalId: string | null,
     slug = "what-shopping-agents-read",
-  ) => ({ slug, locale, source, externalId });
+    updatedAt = "2026-10-01T00:00:00Z",
+  ) => ({ slug, locale, source, externalId, updatedAt });
 
   const plan = (
     posts: BlogContent.Post[],
@@ -398,24 +426,33 @@ describe("change detection", () => {
     ).toHaveLength(1);
   });
 
-  test("posts with no rows go first, then missing a locale, then stale", () => {
+  test("posts with no rows go first, then the least recently attempted", () => {
     const fresh = BlogContent.parse(file(BASE, BODY, "fresh")).post;
-    const halfway = BlogContent.parse(file(BASE, BODY, "halfway")).post;
+    const failing = BlogContent.parse(file(BASE, BODY, "failing")).post;
     const stale = BlogContent.parse(file(BASE, BODY, "stale")).post;
-    if (!fresh || !halfway || !stale) throw new Error("fixture");
+    if (!fresh || !failing || !stale) throw new Error("fixture");
 
+    // `failing` lost its Spanish row on the last tick; `stale` was edited
+    // weeks after its last ingest. The edit goes first, so a translation that
+    // keeps failing cannot hold the queue.
     const result = plan(
-      [stale, halfway, fresh],
+      [failing, stale, fresh],
       [
-        row("en", "repo", "old", "stale"),
-        row("es", "repo", "old", "stale"),
-        row("en", "repo", halfway.externalId, "halfway"),
+        row("en", "repo", "old", "stale", "2026-09-01T00:00:00Z"),
+        row("es", "repo", "old", "stale", "2026-09-01T00:00:00Z"),
+        row(
+          "en",
+          "repo",
+          failing.externalId,
+          "failing",
+          "2026-10-22T10:00:00Z",
+        ),
       ],
     );
     expect(result.pending.map((entry) => entry.slug)).toEqual([
       "fresh",
-      "halfway",
       "stale",
+      "failing",
     ]);
   });
 
@@ -538,19 +575,59 @@ See [the docs](https://example.com/a--b).
     expect(check("\nOur paying customers love it.\n")).toHaveLength(1);
   });
 
-  test("private store names are flagged everywhere, code included", () => {
+  test("private store names are flagged everywhere, code and URLs included", () => {
     const issues = BlogContent.checkVoice(
-      `${frontmatter({ ...BASE, title: "What Flaviar taught us" })}\n\nWe audited \`red bull shop\`.\n`,
+      `${frontmatter({ ...BASE, title: "What flaviar taught us" })}\n\nWe audited \`Red Bull Shop\`.\n\n[x](https://upflex.example)\n`,
     );
     expect(issues.map((issue) => [issue.line, issue.rule])).toEqual([
       [2, "private-name"],
       [7, "private-name"],
+      [9, "private-name"],
     ]);
+  });
+
+  test("a name of several words only matches as written", () => {
+    expect(check("\nTrue organic growth, up a rock face.\n")).toEqual([]);
+  });
+
+  test("a store name in the file name fails, since it is the URL", () => {
+    expect(rules(parse(BASE, BODY, "red-bull-shop-case-study"))).toEqual([
+      "private-name",
+    ]);
+    expect(rules(parse(BASE, BODY, "biano-review"))).toEqual(["private-name"]);
+  });
+
+  test("link targets, the hero path and indented code are not prose", () => {
+    const body = `
+Read [the guide](/blog/how-to-leverage-ai) first.
+
+[ref]: /blog/unlock-sales
+
+    npm i --save something
+`;
+    expect(
+      BlogContent.checkVoice(
+        `${frontmatter({ ...BASE, image: "/blog/supercharge-sales.png" })}\n${body}`,
+      ),
+    ).toEqual([]);
   });
 
   test("a voice hit keeps the post from publishing", () => {
     const report = parse(BASE, `${BODY}\nThis is a seamless flow.\n`);
     expect(report.post).toBeNull();
     expect(rules(report)).toEqual(["wording"]);
+  });
+});
+
+describe("JSON-LD from post text", () => {
+  test("an FAQ answer cannot close the script tag it is rendered into", () => {
+    const answer = parse(
+      BASE,
+      "\n## FAQ\n\n### What does the tag look like?\n\nIt ends in `</script><script>alert(1)</script>`.\n",
+    ).post?.faqs[0]?.answer;
+    expect(answer).toContain("</script>");
+    const json = serializeJsonLd({ answer });
+    expect(json).not.toContain("</script>");
+    expect(JSON.parse(json).answer).toBe(answer);
   });
 });

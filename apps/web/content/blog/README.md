@@ -47,7 +47,7 @@ Plain markdown (GitHub-flavored: tables and lists work).
 - Optionally start with the title as a `#` heading. Every other heading is `##` or deeper.
 - Sections are `##` headings, in sentence case.
 - Near the end, a `## FAQ` section with each question as a `###` heading and its answer under it. These questions also become the post's FAQ structured data for search engines.
-- Close with a `## Sources` section: a numbered list of the primary sources, marked inline as `[1]`, `[2]`.
+- Close with a `## Sources` section: a numbered list of the primary sources, marked inline as `[1]`, `[2]`. No markdown footnotes (`[^1]`); the check refuses them.
 - No raw HTML. It is not published, so the check fails rather than let it disappear.
 - Links are `https://...`, `mailto:...`, or a `/path` on ecentic.ai.
 - Images inside the body work the same as the hero: `![alt text](/blog/<file>.png)` with the file in `apps/web/public/blog/`.
@@ -58,10 +58,13 @@ Posts are written as Xhurian Shaba, co-founder and CEO of ecentic. Follow
 [`docs/context/seo/blog-voice.md`](../../../../docs/context/seo/blog-voice.md),
 which is the same text as Okara's article settings.
 
-The check enforces the parts a machine can: no em dashes or double hyphens, no
-words from the banned list (leverage, seamless, unlock and the rest), no
+The check enforces the parts a machine can: no em dashes or double hyphens, none
+of the words and phrases on its list (leverage, seamless, unlock and the others
+in `VOICE_RULES`, in `apps/web/src/server/utils/blog-content.ts`), no
 "Conclusion" or "Final thoughts" heading, no "paying customers", and never the
-names of stores we audited or pilot with.
+names of stores we audited or pilot with, in the text or the file name. Code,
+link targets and image paths are not checked for wording. The rest of the
+voice file is for the writer and the reviewer.
 
 ## Checks
 
@@ -71,9 +74,11 @@ Run from `apps/web`:
 bun run blog:check
 ```
 
-It runs on every pull request that touches this folder or `apps/web/public/blog/`,
-and prints each problem with its file, line and a fix. A post that fails it is
-not published even if merged.
+It runs on every pull request that touches this folder or `apps/web/public/blog/`
+(and again on `main`), and prints each problem with its file, line and a fix.
+The blog cron runs the same checks before it publishes, so a post that fails
+them is not published even if merged. The one exception is a missing image,
+which only this check can see: the post would go live with a broken image.
 
 ## How a post goes live
 

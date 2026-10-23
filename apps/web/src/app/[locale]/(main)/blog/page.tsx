@@ -2,6 +2,7 @@ import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
 import { getLocale, getTranslations } from "next-intl/server";
+import { serializeJsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -170,7 +171,7 @@ export default async () => {
       <script
         type="application/ld+json"
         // biome-ignore lint/security/noDangerouslySetInnerHtml: JSON-LD must be rendered inline for search engines
-        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        dangerouslySetInnerHTML={{ __html: serializeJsonLd(structuredData) }}
       />
 
       <EditorialSplitSection

@@ -77,14 +77,32 @@ export const reconcileBlogCatalog = withCron(
             ? await Blog.reconcileCatalog({ limit })
             : await Blog.reconcileRepoPosts({ limit });
         Object.assign(results, { [source]: result });
+        // A failed ingest may have translated before it threw, so it counts.
         if (
           result.success &&
-          result.data.ingested.length + result.data.partial.length > 0
+          result.data.ingested.length +
+            result.data.partial.length +
+            result.data.failed.length >
+            0
         )
           break;
       }
 
-      console.info("[cron/blog]", JSON.stringify({ order, ...results }));
+      // An `Error` serializes to `{}`; keep the reason readable in the log.
+      const log = Object.fromEntries(
+        Object.entries(results).map(([source, result]) => [
+          source,
+          result.success
+            ? result.data
+            : {
+                error:
+                  result.error instanceof Error
+                    ? result.error.message
+                    : String(result.error),
+              },
+        ]),
+      );
+      console.info("[cron/blog]", JSON.stringify({ order, ...log }));
 
       const { repo } = results;
       if (repo && !repo.success)

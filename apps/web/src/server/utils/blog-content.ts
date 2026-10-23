@@ -2,6 +2,7 @@ import { createHash } from "node:crypto";
 import { readdir, readFile } from "node:fs/promises";
 import { join } from "node:path";
 import type { Element, Root as HastRoot } from "hast";
+import { fromHtml } from "hast-util-from-html";
 import { toHtml } from "hast-util-to-html";
 import type { Root as MdastRoot, Nodes, RootContent } from "mdast";
 import rehypeSanitize, { defaultSchema } from "rehype-sanitize";
@@ -66,7 +67,12 @@ export const VOICE_RULES = {
     },
   ],
   headings: ["conclusion", "final thoughts"],
-  /** Stores we audited or pilot with. Never public, whatever the context. */
+  /**
+   * Stores we audited or pilot with. Never public, whatever the context. A
+   * one-word name matches in any case; a name of several words only as written
+   * here, so "true organic growth" and a climber's "rock face" are left alone.
+   * File names are checked too, in their slug form (`red-bull-shop`).
+   */
   names: [
     "Flaviar",
     "Upflex",
@@ -246,10 +252,10 @@ const processor = unified()
   // `parse` reports it as an error so nothing vanishes silently.
   .use(remarkRehype)
   // GitHub's own allowlist: no script, style or iframe, no event handlers, no
-  // `javascript:` URLs. Its `user-content-` id prefix is turned off because
-  // `remark-rehype` already applies it to the only ids a post can have (raw
-  // HTML never gets this far), and a second pass broke every footnote link.
-  .use(rehypeSanitize, { ...defaultSchema, clobberPrefix: "" });
+  // `javascript:` URLs, and any `id`/`name` prefixed so it cannot clobber a
+  // global. Footnotes, the one markdown feature that emits ids, are refused by
+  // `checkStructure`, so the prefix never splits a link from its target.
+  .use(rehypeSanitize, defaultSchema);
 
 const isExternal = (href: string) =>
   /^https?:\/\//i.test(href) &&
@@ -273,6 +279,22 @@ const markExternalLinks = (node: HastRoot | Element) => {
       };
     markExternalLinks(child);
   }
+};
+
+const sanitizer = unified().use(rehypeSanitize, defaultSchema);
+
+/**
+ * The same allowlist for HTML that did not come out of `render`: the Spanish
+ * body Azure writes from it. A reviewed English file can still carry a
+ * sentence that talks the model into emitting markup the file never had, and
+ * that body is injected into the page as it is stored.
+ */
+export const sanitize = (html: string) => {
+  const tree = sanitizer.runSync(
+    fromHtml(html, { fragment: true }),
+  ) as unknown as HastRoot;
+  markExternalLinks(tree);
+  return toHtml(tree, { characterReferences: { useNamedReferences: true } });
 };
 
 /** Markdown to the HTML shape BabyLoveGrowth stores in `contentHtml`. */
@@ -360,6 +382,15 @@ const checkStructure = (tree: MdastRoot, offset: number) => {
       });
     if (node.type === "image" && node.url.startsWith("/"))
       images.push(node.url);
+    // The page splits the body at every H2, and remark-gfm's footnote block
+    // brings its own ("Footnotes") inside a <section> the split cuts in half.
+    if (node.type === "footnoteDefinition")
+      issues.push({
+        line: lineOf(node),
+        rule: "footnote",
+        message: "footnotes are not supported",
+        fix: "mark the source inline as [1] and list it under ## Sources",
+      });
     // The sanitizer strips any other scheme, which leaves a dead link behind.
     if (node.type === "link" && !/^(https?:\/\/|mailto:|\/|#)/i.test(node.url))
       issues.push({
@@ -404,12 +435,21 @@ const checkStructure = (tree: MdastRoot, offset: number) => {
 const escapePattern = (value: string) =>
   value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-const wordPattern = (phrase: string) =>
+const wordPattern = (phrase: string, flags = "giu") =>
   new RegExp(
     `(?<![\\p{L}\\p{N}_])${escapePattern(phrase)
       .replace(/'/g, "['’]")
       .replace(/ /g, "\\s+")}(?![\\p{L}\\p{N}_])`,
-    "giu",
+    flags,
+  );
+
+const namePattern = (name: string) =>
+  wordPattern(name, name.includes(" ") ? "gu" : "giu");
+
+/** `Red Bull Shop` as it would appear in a file name: `red-bull-shop`. */
+const nameInSlug = (slug: string) =>
+  VOICE_RULES.names.find((name) =>
+    `-${slug}-`.includes(`-${name.toLowerCase().replace(/\s+/g, "-")}-`),
   );
 
 /** Same length and line breaks, so offsets still map to the same lines. */
@@ -422,20 +462,51 @@ const isStructuralDashes = (line: string) =>
   /^\s{0,3}(?:\*\s*){3,}$/.test(line) ||
   /^\s*\|?\s*:?-+:?\s*(?:\|\s*:?-+:?\s*)+\|?\s*$/.test(line);
 
+/** Every way the frontmatter can name the hero image. */
+const IMAGE_KEYS = ["image", ...FIELDS.image].join("|");
+
 /**
  * The voice rules over the whole file, frontmatter included, with the line of
- * every hit. Code (fenced or inline) is skipped for the wording rules — a
- * `--flag` in a command is not a double hyphen — but never for store names.
+ * every hit. Wording rules read prose only: code of any kind (fenced, indented,
+ * inline), HTML comments, link and image targets and the hero path are blanked
+ * first, so a `--flag` in a command or a URL that happens to contain "leverage"
+ * passes. Store names are checked everywhere, those included.
  */
 export const checkVoice = (raw: string) => {
   const starts = [...raw.matchAll(/\n/g)].map((match) => match.index + 1);
   const lineAt = (offset: number) =>
     starts.filter((start) => start <= offset).length + 1;
 
-  const prose = raw
-    .replace(/<!--[\s\S]*?-->/g, blank)
-    .replace(/^(\s*)(`{3,}|~{3,})[\s\S]*?^\1\2/gm, blank)
-    .replace(/`[^`\n]+`/g, blank)
+  const frontmatter = raw.match(FRONTMATTER)?.[0] ?? "";
+  const code: [number, number][] = [];
+  walk(processor.parse(raw.slice(frontmatter.length)), (node) => {
+    const start = node.position?.start.offset;
+    const end = node.position?.end.offset;
+    if (
+      (node.type === "code" ||
+        node.type === "inlineCode" ||
+        node.type === "html") &&
+      start !== undefined &&
+      end !== undefined
+    )
+      code.push([start + frontmatter.length, end + frontmatter.length]);
+  });
+
+  const prose = code
+    .reduce(
+      (text, [start, end]) =>
+        text.slice(0, start) + blank(text.slice(start, end)) + text.slice(end),
+      raw,
+    )
+    .replace(
+      new RegExp(`^((?:${IMAGE_KEYS}):)(.*)$`, "m"),
+      (_match, key: string, value: string) => key + blank(value),
+    )
+    .replace(/\]\([^)\n]*\)/g, blank)
+    .replace(
+      /^(\s{0,3}\[[^\]\n]+\]:)(.*)$/gm,
+      (_match, label: string, target: string) => label + blank(target),
+    )
     .replace(/https?:\/\/[^\s)>\]]+/g, blank);
 
   const issues: Issue[] = [];
@@ -481,7 +552,7 @@ export const checkVoice = (raw: string) => {
   });
 
   for (const name of VOICE_RULES.names)
-    for (const match of raw.matchAll(wordPattern(name)))
+    for (const match of raw.matchAll(namePattern(name)))
       issues.push({
         line: lineAt(match.index),
         rule: "private-name",
@@ -514,6 +585,15 @@ export const parse = ({ path, raw }: File): Report => {
       rule: "slug",
       message: `"${slug}" is not a valid slug`,
       fix: "name the file with lowercase letters, digits and single hyphens",
+    });
+
+  const named = nameInSlug(slug);
+  if (named)
+    errors.push({
+      line: 1,
+      rule: "private-name",
+      message: `the file name puts ${named} in the URL; it is an audit or pilot store and never appears in public`,
+      fix: "rename the file",
     });
 
   const retired = RETIRED_BLOG_POSTS.get(slug);
@@ -676,6 +756,8 @@ export type StoredRow = {
   locale: string;
   source: string;
   externalId: string | null;
+  /** Bumped by every ingest attempt, since English is written first. */
+  updatedAt?: Date | string | null;
 };
 
 /**
@@ -686,27 +768,30 @@ export const isRepoOwned = (rows: readonly StoredRow[]) =>
   rows.some((row) => row.source === "repo");
 
 /**
- * How urgently a post needs ingesting, or `null` when both locale rows already
- * hold this exact file. Lower goes first: a post with no rows is a 404, one
- * missing a locale still renders (Spanish falls back to English), and a stale
- * or not-yet-claimed post is live in its previous form.
+ * Whether a post needs ingesting: `0` when it has no rows (a 404), `1` when a
+ * locale row is missing, belongs to another source or holds other bytes, and
+ * `null` when both rows already hold this exact file.
  */
 const urgency = (post: Post, rows: readonly StoredRow[]) => {
   const english = rows.find((row) => row.locale === "en");
   const spanish = rows.find((row) => row.locale === "es");
-  const current = (row: StoredRow) =>
-    row.source === "repo" && row.externalId === post.externalId;
+  const current = (row?: StoredRow) =>
+    row?.source === "repo" && row.externalId === post.externalId;
 
   switch (true) {
     case !english && !spanish:
       return 0;
-    case !english || !spanish:
+    case !(current(english) && current(spanish)):
       return 1;
-    case !(english && current(english) && spanish && current(spanish)):
-      return 2;
     default:
       return null;
   }
+};
+
+/** When this post was last attempted: its English row is written first. */
+const attemptedAt = (rows: readonly StoredRow[]) => {
+  const row = rows.find((entry) => entry.locale === "en") ?? rows[0];
+  return row?.updatedAt ? new Date(row.updatedAt).getTime() : 0;
 };
 
 /**
@@ -727,19 +812,27 @@ export const plan = ({
     return groups;
   }, new Map<string, StoredRow[]>());
 
+  // 404s first, newest post first. Everything else rotates, least recently
+  // attempted first: an attempt rewrites the English row, so a post whose
+  // translation keeps failing moves to the back instead of holding the queue.
   const pending = posts
     .filter((post) => !post.draft)
-    .map((post) => ({
-      post,
-      urgency: urgency(post, bySlug.get(post.slug) ?? []),
-    }))
+    .map((post) => {
+      const stored = bySlug.get(post.slug) ?? [];
+      return {
+        post,
+        urgency: urgency(post, stored),
+        attempted: attemptedAt(stored),
+      };
+    })
     .filter(
-      (entry): entry is { post: Post; urgency: number } =>
+      (entry): entry is { post: Post; urgency: number; attempted: number } =>
         entry.urgency !== null,
     )
     .sort(
       (first, second) =>
         first.urgency - second.urgency ||
+        first.attempted - second.attempted ||
         second.post.publishedAt.localeCompare(first.post.publishedAt) ||
         first.post.slug.localeCompare(second.post.slug),
     )

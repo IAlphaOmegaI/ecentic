@@ -17,7 +17,7 @@ Metadata route files (`opengraph-image.tsx`) compile to Route Handlers, so they 
 
 | Locale | URL prefix | Content source |
 |--------|------------|----------------|
-| `en` | none (`/blog/foo`) | `blog_post` `locale=en` (BabyLoveGrowth webhook or editorial). |
+| `en` | none (`/blog/foo`) | `blog_post` `locale=en` (BabyLoveGrowth webhook, a `content/blog` file, or editorial). |
 | `es` | `/es` (`/es/blog/foo`) | `blog_post` `locale=es` (same slug). Fall back to EN row until Spanish is written. |
 
 Same slug is shared across locales. Spanish copies are **not** published back into BabyLoveGrowth.
@@ -57,8 +57,8 @@ The row stays `published` in Postgres: BabyLoveGrowth may send it again, and the
 `blog_post` columns:
 
 - `locale` — `en` | `es`
-- `source` — `local` | `blg`
-- `externalId` — BabyLoveGrowth article id when `source=blg`
+- `source` — `local` | `blg` | `repo` (plain text: a new origin needs no migration)
+- `externalId` — BabyLoveGrowth article id when `source=blg`; `content/blog/<slug>.md#<sha256>` when `source=repo`
 - `contentHtml` — HTML body for BLG-sourced / translated articles
 - `faqs` — `{ question, answer }[]` in the row's own locale
 
@@ -69,7 +69,9 @@ Unique on `(slug, locale)`.
 Every post carries Q&A pairs in `blog_post.faqs`, in the row's own language.
 They are always emitted as `FAQPage` JSON-LD (`createFaqSchema`, which strips the
 `**bold**` / `[label](href)` markup the editorial renderer accepts). Answers may
-use that markup; structured data gets the prose alone.
+use that markup; structured data gets the prose alone. Inline JSON-LD goes
+through `serializeJsonLd` (`components/json-ld.tsx`), which escapes `<` so an
+answer that quotes `</script>` cannot close the tag.
 
 Where they come from:
 
@@ -79,6 +81,10 @@ Where they come from:
   what is stored* (`[]` clears). Without that, the 15-minute reconcile would wipe
   the hand-written pairs on the older BLG posts every time it re-ingested one.
 - **Editorial posts** own theirs in `scripts/seed.ts`, next to `takeaways`.
+- **Repo posts** (`content/blog/*.md`) take them from the `## FAQ` section:
+  each `###` is a question and the blocks under it its answer, as plain text.
+  The block stays in `contentHtml` as well, so `hasFaqSection` hides the
+  duplicate. A repo post always writes its pairs explicitly, `[]` included.
 - **Spanish** is translated with the rest of the metadata in `translateMetaCore`,
   count- and order-aligned to English like `tags` and `takeaways`.
 
@@ -108,6 +114,8 @@ All blog server logic lives in `apps/web/src/server/app/blog.ts`:
 - `generateStaticParams` prerenders **every slug × en/es** (Cache Components — do not set `dynamicParams`)
 - Public pages use `resolve` only — no Azure on the render path
 - `Blog.ingestPublish` (webhook) upserts **EN + ES** and purges the `blog` tag
+- `ingestArticleCore` is the one ingest path (EN upsert, Azure ES, ES upsert, purge) behind the webhook, the BLG reconcile and repo posts
+- `Blog.reconcileRepoPosts` publishes `content/blog/*.md`; the pure half (frontmatter, rendering, FAQ extraction, voice check, planning) is `server/utils/blog-content.ts`, which the `blog:check` script and specs load without Next
 
 BabyLoveGrowth CMS client stays in `babylovegrowth.ts` for optional admin/CMS reads. Public blog routes do not call it — catalog and bodies come from Postgres after the webhook writes.
 
@@ -159,6 +167,86 @@ either locale, through the same `ingestPublishCore` the webhook uses.
   cannot starve a brand-new post out of the site.
 - Handoff via `after()`, like `/api/cron/drain`, so the tick returns inside the
   scheduler's window while the ingest runs under `maxDuration`.
+
+## Posts from the repo (`content/blog`)
+
+The second automatic write path. A post is a markdown file,
+`apps/web/content/blog/<slug>.md`, with its hero image in
+`apps/web/public/blog/`; the format is in `apps/web/content/blog/README.md` and
+the voice in `docs/context/seo/blog-voice.md`. Okara opens pull requests here.
+
+- **Reviewed before it ships.** `bun run blog:check` (CI job `blog-content`, on
+  PRs and pushes to `main` that touch `content/blog`, `public/blog`, the
+  checker, `lib/blog-html.ts`, `lib/blog-redirects.ts` or dependencies)
+  validates the frontmatter, the slug (file name, uniqueness, not a retired
+  slug, no private store name), the markdown structure (no raw HTML, no
+  footnotes, no stray `#`), the house voice, and that every image the post names
+  is in `public/`.
+- **Rendering.** remark-parse + remark-gfm + remark-rehype + rehype-sanitize
+  (GitHub's schema) + hast-util-to-html, in `server/utils/blog-content.ts`.
+  Raw HTML is dropped by the pipeline and reported as an error by the check, so
+  nothing vanishes silently; external links get `target="_blank" rel="noopener"`
+  (and `splitBlogHtmlByH2` still adds `nofollow` at render). The output is the
+  same plain `h2`/`h3`/`p`/`ul`/`table` shape BabyLoveGrowth stores. The
+  Spanish body Azure writes from it goes through the same allowlist
+  (`BlogContent.sanitize`) before it is stored, since it is model output that
+  the page injects as it is.
+- **Published from the deployed files.** `/api/cron/blog` reads
+  `content/blog/*.md` from its own function bundle (`outputFileTracingIncludes`
+  in `next.config.ts`), so a post and its hero image always go live in the same
+  deploy. A missing folder is a loud error, not an empty catalog.
+- **Same checks before publishing.** The cron runs the same validation as
+  `blog:check` (all but the image lookup, since `public/` is not in a function
+  bundle). A file that fails is listed under `invalid` and never published; a
+  post merged past a red check stays off the site. `draft: true` is skipped, and
+  does not take down a post that is already live.
+- **Change detection.** `externalId` is `<path>#<sha256>` of the file plus a
+  `RENDER_VERSION`. A post needs work when its EN or ES row is missing, belongs
+  to another source, or carries a different hash; bump `RENDER_VERSION` to
+  re-ingest every repo post after a rendering change. EN is written first, so
+  an ES translation failure leaves the ES row on the old hash and the next tick
+  retries.
+- **Pacing.** One post per tick. Posts with no rows (404s) go first; every other
+  post rotates, least recently attempted first (an attempt rewrites the EN row,
+  so its `updatedAt` is the attempt time). A post whose translation keeps
+  failing moves to the back each tick instead of holding the queue.
+- **Deleted files.** Their rows stay published and are listed as `orphaned` in
+  the cron log; removing them is a manual decision.
+
+### Slug clash: the repo wins
+
+A file whose slug BabyLoveGrowth already wrote (Okara refreshes several old BLG
+posts) takes it over: both locale rows are rewritten from the file and
+`source` becomes `repo`, FAQs and tags included. From then on the slug is
+repo-owned: `ingestPublishCore` skips it (Sentry `info`, "BLG publish skipped:
+slug is published from the repo"), checking again before its Spanish write in
+case the repo claimed the slug while it translated, and `reconcileCatalog`
+leaves it out of its missing list, so neither the webhook nor the backstop
+writes the BLG article back.
+
+### One tick, two sources
+
+`Cron.reconcileBlogCatalog` runs both rails inside the same `after()`. A tick
+spends itself on one ingest at most, since one translation can take most of the
+300s `maxDuration`. Whichever source wrote a row most recently (`Blog.lastWriter`)
+goes second, and the second runs only when the first had nothing to translate
+(an ingest that failed counts as one that translated).
+The one that just ingested yields the next tick, so neither starves the other.
+The tick logs `[cron/blog]` with both results and sends Sentry a warning when a
+repo post is invalid, failed, or saved EN only.
+
+From merge to live: the deploy, then the next tick (at most 15 minutes) writes
+EN at once and ES after the translation (a few minutes). If BabyLoveGrowth used
+that tick, add one more: about 30 minutes in the worst case for a single post,
+plus 15 minutes for each repo post queued ahead of it.
+
+### Without BabyLoveGrowth
+
+Nothing here depends on it. With the BabyLoveGrowth env vars removed,
+`listArticlesFresh` returns no articles, so the BLG rail is a no-op and the repo
+rail gets every tick; the webhook answers 500 (no secret) and writes nothing;
+the public blog keeps serving every stored row, BLG ones included, because it
+reads Postgres only.
 
 ## Env
 
