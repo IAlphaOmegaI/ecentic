@@ -61,7 +61,7 @@ export const company = {
 export const founder = {
   name: "Xhurian Shaba",
   url: absoluteUrl("/about#xhurian-shaba"),
-  linkedin: "https://www.linkedin.com/in/xhurian-shaba",
+  linkedin: "https://www.linkedin.com/in/xhuri",
 } as const;
 
 /** Schema.org `Person` for the founder; `jobTitle` is the page's language. */

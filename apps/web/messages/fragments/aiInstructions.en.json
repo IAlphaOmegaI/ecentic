@@ -67,7 +67,7 @@
         },
         {
           "title": "Published results",
-          "description": "DUA Flavours (published with permission): visits from AI assistants and direct traffic rose 12% between April and July 2026."
+          "description": "DUA Flavours (pilot, published with permission): visits from AI assistants and direct traffic rose 12% between April and July 2026."
         },
         {
           "title": "Operated by",
@@ -99,8 +99,8 @@
       "product": {
         "number": "03",
         "title": "What ecentic does",
-        "description": "One loop, run continuously: simulate, diagnose, optimize.",
-        "content": "The product runs one loop:\n\n- **Simulate.** ecentic runs ChatGPT, Claude, Gemini, and Perplexity against a merchant's products and named competitors. Each assistant compares both listings and picks a winner.\n- **Diagnose.** The merchant sees a win rate per product and per assistant, a replay of the assistant's reasoning, the attributes that cost the recommendation, and a battlecard against each competitor.\n- **Optimize.** ecentic generates improved titles, descriptions, and structured attributes, and publishes them back to the store on approval or automatically.\n\nAround that loop, ecentic also:\n\n- Tracks visits and referrals from AI agents to a storefront.\n- Alerts merchants when a model update shifts their win rates (model drift).\n- Generates Universal Commerce Protocol (UCP) profiles so AI agents can discover and understand a store.\n- Offers free tools: a [UCP validator](/ucp-validator), a [UCP playground](/ucp-playground), and a [WebMCP scanner](/webmcp-scanner).\n- Publishes a [REST API and an MCP server](/docs) for AI agents and developers."
+        "description": "One loop, rerun any time: simulate, diagnose, optimize.",
+        "content": "The product runs one loop:\n\n- **Simulate.** ecentic has ChatGPT, Claude and Gemini compare a merchant's products with named competitors. Each model compares both listings and picks one.\n- **Diagnose.** The merchant sees a win rate per product, per model and per competitor, a replay of the model's reasoning, the attributes that cost the pick, and a battlecard against each competitor.\n- **Optimize.** ecentic rewrites the title, the description and the structured data, and publishes them to the store when the merchant clicks Apply. Nothing changes in the store before that. The lift shown after a fix is an estimate; a rescan shows the measured win rate.\n\nAround that loop, ecentic also:\n\n- Sends published fixes to Google Merchant Center as a supplemental data source for Shopify stores, shows Merchant Center diagnostics, and checks the settings Google's agent checkout needs.\n- Sets WooCommerce stores up for agent checkout: the free ecentic plugin serves `/.well-known/ucp`, ecentic hosts the catalog, cart, checkout and order endpoints, and agent orders land in WooCommerce as real orders paid through the merchant's own gateway.\n- Records, on Shopify, visits referred by AI assistants and visits from known AI agents and crawlers.\n- Audits agent readiness (robots.txt rules per AI crawler, bot walls, structured data, GTIN and brand coverage) and listing quality against 34 rules drawn from Google's and ChatGPT's feed specifications.\n- Offers free tools: a [UCP validator](/ucp-validator), a [UCP playground](/ucp-playground), and a [WebMCP scanner](/webmcp-scanner).\n- Publishes a [REST API and an MCP server](/docs) for AI agents and developers, and the `@ecentic/cli` command line tool."
       },
       "audience": {
         "number": "04",
@@ -118,7 +118,7 @@
         "number": "07",
         "title": "Key terms",
         "description": "The vocabulary ecentic uses, with the meaning it intends.",
-        "content": "- **Win rate.** The percentage of simulations in which an AI agent picks the merchant's product over a competitor's.\n- **Simulation.** A single matchup: one product against one competitor, judged by one AI model.\n- **Scan.** A batch of simulations across the chosen products and competitors of one store.\n- **Agent replay.** A step-by-step log of what the agent read and how it reached its decision.\n- **Battlecard.** A per-product comparison against a competitor: where the product wins, where it loses, and suggested fixes.\n- **Model drift.** A change in AI model behavior, such as a new model version, that shifts win rates.\n- **UCP.** The Universal Commerce Protocol: a merchant profile served at `/.well-known/ucp` so AI agents can discover and understand the merchant."
+        "content": "- **Win rate.** The percentage of simulations in which an AI agent picks the merchant's product over a competitor's.\n- **Simulation.** A single matchup: one product against one competitor, judged by one AI model.\n- **Scan.** A batch of simulations across the chosen products and competitors of one store.\n- **Agent replay.** A step-by-step log of what the agent read and how it reached its decision.\n- **Battlecard.** A per-product comparison against a competitor: where the product wins, where it loses, and suggested fixes.\n- **UCP.** The Universal Commerce Protocol: a merchant profile served at `/.well-known/ucp` so AI agents can discover and understand the merchant."
       },
       "company": {
         "number": "08",
@@ -131,7 +131,7 @@
       "number": "05",
       "title": "Pricing",
       "description": "Three separate products. The table reads its figures from the live pricing page.",
-      "content": "ecentic has three separate products: a free scan, pay-as-you-go, and flat monthly subscriptions.\n\n- **Scan** is free and one-time. It simulates a store's top 10 products across ChatGPT, Claude, Gemini, and Perplexity and returns a Win Rate Report. No credit card is needed.\n- **Pay-as-you-go** is free to start. The only charge is a performance fee on orders attributed to AI-agent traffic, with a monthly cap. No card is required until a fee is due.\n- **Compete, Scale, and Dominate** are flat monthly subscriptions with no performance fee.\n- **Enterprise** has custom limits and pricing, arranged on a call.\n\nThe performance fee is never charged on top of a subscription. Full details are on [ecentic.ai/pricing](/pricing).",
+      "content": "ecentic has three separate products: a free scan, pay-as-you-go, and flat monthly subscriptions.\n\n- **Scan** is free and one-time. It simulates a store's top 10 products across ChatGPT, Claude and Gemini and returns a Win Rate Report. No credit card is needed.\n- **Pay-as-you-go** is free to start. The only charge is a performance fee on orders attributed to AI-agent traffic, with a monthly cap. No card is required until a fee is due.\n- **Compete, Scale, and Dominate** are flat monthly subscriptions with no performance fee.\n- **Enterprise** has custom limits and pricing, arranged on a call.\n\nThe performance fee is never charged on top of a subscription. Full details are on [ecentic.ai/pricing](/pricing).",
       "scan": "Scan"
     },
     "faq": {
@@ -153,7 +153,7 @@
         },
         {
           "question": "Is ecentic free?",
-          "answer": "The Scan plan is free: a one-time simulation of a store's top 10 products across ChatGPT, Claude, Gemini, and Perplexity, with no credit card. Pay-as-you-go is also free to start and only charges a fee on orders AI agents drive."
+          "answer": "The Scan plan is free: a one-time simulation of a store's top 10 products across ChatGPT, Claude and Gemini, with no credit card. Pay-as-you-go is also free to start and only charges a fee on orders AI agents drive."
         },
         {
           "question": "Which platforms does ecentic work with?",
@@ -161,7 +161,7 @@
         },
         {
           "question": "Which AI assistants does ecentic cover?",
-          "answer": "ecentic simulates ChatGPT, Claude, Gemini, and Perplexity."
+          "answer": "ecentic's simulations run on ChatGPT, Claude and Gemini. Visit tracking on Shopify also recognizes Perplexity, Copilot and other assistants."
         },
         {
           "question": "Is ecentic an SEO tool?",

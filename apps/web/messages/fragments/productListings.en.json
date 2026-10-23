@@ -18,7 +18,7 @@
       "description": "AI shopping systems compare your product data in seconds. ecentic turns losing product pages into clearer buying inputs, for agents and for the high-intent shoppers they send you.",
       "assurances": [
         "Titles, descriptions & structured data",
-        "Approval-ready rewrites",
+        "One-click fixes",
         "Publishes back to Shopify & WooCommerce"
       ],
       "art": {
@@ -79,8 +79,8 @@
     "workflow": {
       "number": "03",
       "title": "A closed loop, not a one-off rewrite.",
-      "description": "The workflow runs from simulation to diagnosis to an approval-ready listing update, without rebuilding your catalog from scratch.",
-      "paragraph": "Simulate who wins, diagnose the gaps, then publish the fix back into the store. The same loop works whether you are cleaning up a handful of priority SKUs or running continuous catalog ops.",
+      "description": "The workflow runs from simulation to diagnosis to a listing fix you publish in one click, without rebuilding your catalog from scratch.",
+      "paragraph": "Simulate who wins, diagnose the gaps, then publish the fix back into the store. The same loop works whether you are cleaning up a handful of priority SKUs or working through the whole catalog.",
       "panelTitle": "Simulate, diagnose, publish",
       "audiences": [
         {
@@ -111,7 +111,7 @@
         },
         {
           "title": "Publish",
-          "description": "Approved titles, descriptions, and product data push straight back into supported platforms instead of being copied by hand."
+          "description": "New titles, descriptions and product data go to your store when you click Apply, instead of being copied by hand."
         }
       ]
     },
@@ -124,7 +124,7 @@
           "href": "/platforms/shopify",
           "name": "Shopify",
           "title": "See the workflow for Shopify catalogs",
-          "description": "Connect products, benchmark competitors, and publish approved listing updates back into Shopify.",
+          "description": "Connect products, benchmark competitors, and publish listing fixes back into Shopify.",
           "label": "Open Shopify page",
           "color": "primary"
         },
@@ -175,7 +175,7 @@
         },
         {
           "question": "How does ecentic help with product listing optimization?",
-          "answer": "ecentic simulates how AI shopping agents compare products, shows why a competitor wins, and turns those findings into improved titles, descriptions, and listing updates merchants can approve and publish."
+          "answer": "ecentic simulates how AI shopping agents compare products, shows why a competitor wins, and turns those findings into new titles, descriptions and structured data that merchants publish to their store in one click."
         }
       ]
     },

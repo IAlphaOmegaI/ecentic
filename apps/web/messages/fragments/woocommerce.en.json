@@ -14,11 +14,11 @@
         "primary": "AI for WooCommerce stores that need",
         "accent": "cleaner product workflows."
       },
-      "description": "Import your catalog, see where listings lose to competitors in AI-mediated comparisons, and publish approved improvements back into WooCommerce without changing platforms.",
+      "description": "Import your catalog, see where listings lose to competitors in AI-mediated comparisons, and publish the fixes back into WooCommerce in one click, without changing platforms.",
       "assurances": [
         "No platform migration",
         "Free plugin on WordPress.org",
-        "Approved updates publish via the REST API",
+        "Fixes publish via the REST API",
         "See your free score first"
       ],
       "art": {
@@ -61,7 +61,7 @@
       "number": "02",
       "title": "The WooCommerce workflow in ecentic.",
       "description": "The workflow connects product data to competitor analysis, then to a publishing path back inside WooCommerce instead of another manual content handoff.",
-      "paragraph": "Install the plugin, import the catalog, benchmark the products that matter, then approve REST publish-backs. You stay inside WooCommerce and you never rewrite the storefront.",
+      "paragraph": "Install the plugin, import the catalog, benchmark the products that matter, then click Apply to publish the fixes over the REST API. You stay inside WooCommerce and you never rewrite the storefront.",
       "panelTitle": "Connect, diagnose, publish",
       "advantages": [
         {
@@ -95,8 +95,8 @@
           "description": "Products are compared against competitors, surfacing the changes that matter: title quality, description clarity, weak details."
         },
         {
-          "title": "Approve & publish",
-          "description": "Approved optimizations move back into WooCommerce through the documented REST update path, keeping insight tied to the live store."
+          "title": "Apply & publish",
+          "description": "Click Apply and the new name, description and structured data go back into WooCommerce over the REST API."
         }
       ]
     },
@@ -172,7 +172,7 @@
         },
         {
           "title": "Publishing friction",
-          "description": "Good insights exist but turn into live improvements slowly because review and publishing are disconnected from the store. An approve-and-publish path inside WooCommerce cuts the handoff cost.",
+          "description": "Good insights exist but turn into live improvements slowly because review and publishing are disconnected from the store. A one-click publish path inside WooCommerce cuts the handoff cost.",
           "fit": "Where ecentic fits",
           "covered": true
         }
@@ -230,7 +230,7 @@
         },
         {
           "question": "Can WooCommerce stores publish optimized product updates?",
-          "answer": "Yes. Approved rewrites are published straight back into WooCommerce over the REST API, using credentials with read and write access. You review every change before it goes live, and nothing reaches your storefront without your approval."
+          "answer": "Yes. Rewrites are published straight back into WooCommerce over the REST API, using credentials with read and write access. Nothing reaches your storefront until you click Apply on a product."
         },
         {
           "question": "Do I need the plugin, or can I connect with API keys?",

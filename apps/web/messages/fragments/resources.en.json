@@ -9,10 +9,10 @@
           "number": "Tool 01",
           "category": "Win-rate simulation",
           "title": "AI Agent Score Scan",
-          "description": "Run a one-time simulation of your top 10 products across ChatGPT, Claude, Gemini, and Perplexity. See where you win, where you lose, and what to fix first.",
+          "description": "Run a one-time simulation of your top 10 products across ChatGPT, Claude and Gemini. See where you win, where you lose, and what to fix first.",
           "features": [
             "Top 10 products",
-            "Four model perspectives",
+            "Three models",
             "Results in about two minutes"
           ],
           "action": {
@@ -23,7 +23,7 @@
           "number": "Tool 02",
           "category": "Protocol check",
           "title": "UCP Validator",
-          "description": "Check whether a storefront publishes a valid Universal Commerce Profile at /.well-known/ucp and whether major shopping agents are allowed in robots.txt.",
+          "description": "Check whether a storefront publishes a valid Universal Commerce Protocol profile at /.well-known/ucp and whether major shopping agents are allowed in robots.txt.",
           "features": [
             "Endpoint reachability",
             "Schema validation",

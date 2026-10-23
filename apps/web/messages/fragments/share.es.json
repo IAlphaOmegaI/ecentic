@@ -6,7 +6,7 @@
         "line2": "ya están."
       },
       "points": [
-        "ChatGPT, Claude, Gemini y Perplexity simularon comparaciones reales de compra",
+        "ChatGPT, Claude y Gemini hicieron comparaciones de compra simuladas",
         "Cada producto se puntuó cara a cara frente a competidores",
         "Este informe muestra dónde ganas y dónde pierdes"
       ]
@@ -33,7 +33,7 @@
     },
     "cta": {
       "title": "¿Listo para ganar el carrito de cada agente de IA?",
-      "description": "ecentic optimiza tus fichas automáticamente. Gratis para empezar.",
+      "description": "ecentic corrige los datos de producto que leen los agentes. Gratis para empezar.",
       "action": "Empezar gratis"
     }
   }

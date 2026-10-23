@@ -16,7 +16,7 @@
       },
       "description": "Simulate how AI shopping agents compare your products, see exactly why competitors win, and publish the listing fixes that flip the result, all from one loop.",
       "assurances": [
-        "Simulates ChatGPT, Claude, Gemini & Perplexity",
+        "Simulates ChatGPT, Claude & Gemini",
         "One-click listing rewrites",
         "Live agent traffic"
       ],
@@ -32,7 +32,7 @@
         {
           "step": "Step 01",
           "title": "Simulate",
-          "description": "ecentic asks the top AI shopping agents to shop your catalog against real competitors, the same way buyers do."
+          "description": "ecentic has ChatGPT, Claude and Gemini compare your products with real competitors', the way they would for a shopper."
         },
         {
           "step": "Step 02",
@@ -42,12 +42,12 @@
         {
           "step": "Step 03",
           "title": "Optimize",
-          "description": "Approve rewritten titles, descriptions, and structured data, then publish them back to your store in one click."
+          "description": "ecentic rewrites the title, description and structured data. Click Apply and the fix goes to your store."
         },
         {
           "step": "Step 04",
           "title": "Track",
-          "description": "Track your win rate, AI-agent visits, and attributed revenue week over week, then rescan and repeat."
+          "description": "Rescan after a fix to see how your win rate moved. On Shopify, watch the visits AI assistants send you, week over week."
         }
       ]
     },
@@ -58,7 +58,7 @@
       "items": [
         {
           "title": "AI win-rate score",
-          "description": "See how often ChatGPT, Claude, Gemini, and Perplexity pick your products when a shopper asks what to buy.",
+          "description": "See how often ChatGPT, Claude and Gemini pick your product over a named competitor's, product by product.",
           "features": [
             "Per-agent win rates",
             "Product-level scoring",
@@ -72,21 +72,21 @@
           "features": [
             "Side-by-side comparisons",
             "Missing-attribute detection",
-            "Category benchmarks"
+            "Battlecards per competitor"
           ]
         },
         {
           "title": "One-click listing rewrites",
-          "description": "Approval-ready rewrites of titles, descriptions, and structured product data, published straight back to your store.",
+          "description": "New titles, descriptions and structured product data, published to your store when you click Apply.",
           "features": [
-            "Approval-ready drafts",
+            "Published when you click Apply",
             "Shopify + WooCommerce write-back",
-            "Before / after lift tracking"
+            "Estimated lift per fix"
           ]
         },
         {
           "title": "Agent traffic analytics",
-          "description": "Know when an AI agent visits your store, which products it reads, and what revenue those visits turn into.",
+          "description": "On Shopify, see the visits AI assistants and agents make to your store, and which products they land on.",
           "features": [
             "AI-agent visit detection",
             "Daily traffic rollups",
@@ -94,21 +94,21 @@
           ]
         },
         {
-          "title": "UCP profile",
-          "description": "A machine-readable merchant profile built on the Universal Commerce Protocol, so agents can trust and verify your store.",
+          "title": "Agent checkout (UCP)",
+          "description": "On WooCommerce, the free ecentic plugin lets agents search, fill a cart and check out through UCP, and the order lands in your store. On Shopify, ecentic checks the Merchant Center settings Google's agent checkout needs.",
           "features": [
-            "Auto-generated profile",
-            "Structured product data",
-            "Agent-verifiable identity"
+            "WooCommerce plugin with hosted UCP",
+            "Merchant Center checkout settings (Shopify)",
+            "Free UCP validator and playground"
           ]
         },
         {
-          "title": "Continuous rescans",
-          "description": "Scores go stale the moment a competitor updates a listing. Scheduled rescans keep every product benchmarked.",
+          "title": "Google Merchant Center sync",
+          "description": "On Shopify, ecentic sends the fixes you publish to Merchant Center as a supplemental feed, so Google's AI Mode and Gemini read the same product data your store shows. It also flags Merchant Center issues and the settings agent checkout needs.",
           "features": [
-            "Scheduled catalog scans",
-            "Win-rate change alerts",
-            "Regression detection"
+            "Supplemental feed of your fixes",
+            "Merchant Center diagnostics",
+            "Agent checkout readiness"
           ]
         }
       ]
@@ -129,8 +129,8 @@
         {
           "href": "/platforms/shopify",
           "eyebrow": "Shopify",
-          "title": "Connect a Shopify catalog and publish approved updates",
-          "description": "Benchmark products, review why agents prefer competitors, and send approved listing changes back to Shopify.",
+          "title": "Connect a Shopify catalog and publish fixes in one click",
+          "description": "Benchmark products, see why agents prefer competitors, and send listing fixes back to Shopify and your Merchant Center feed.",
           "label": "See Shopify page",
           "color": "accent"
         },

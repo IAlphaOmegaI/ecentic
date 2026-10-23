@@ -14,11 +14,11 @@
         "primary": "IA para tiendas WooCommerce que necesitan",
         "accent": "flujos de producto más limpios."
       },
-      "description": "Importa tu catálogo, ve dónde las fichas pierden frente a competidores en comparaciones mediadas por IA, y publica mejoras aprobadas de vuelta en WooCommerce sin cambiar de plataforma.",
+      "description": "Importa tu catálogo, ve dónde pierden tus fichas frente a la competencia en comparaciones mediadas por IA, y publica las correcciones de vuelta en WooCommerce con un clic, sin cambiar de plataforma.",
       "assurances": [
         "Sin migración de plataforma",
         "Plugin gratis en WordPress.org",
-        "Las actualizaciones aprobadas se publican vía REST API",
+        "Las correcciones se publican vía REST API",
         "Ve tu puntuación gratis primero"
       ],
       "art": {
@@ -61,7 +61,7 @@
       "number": "02",
       "title": "El flujo WooCommerce en ecentic.",
       "description": "El flujo conecta datos de producto con análisis de competidores y luego con una ruta de publicación de vuelta dentro de WooCommerce en lugar de otro traspaso manual de contenido.",
-      "paragraph": "Instala el plugin, importa el catálogo, referencia los productos que importan y aprueba publicaciones REST. Te quedas dentro de WooCommerce y nunca reescribes la tienda.",
+      "paragraph": "Instala el plugin, importa el catálogo, compara los productos que importan y haz clic en Aplicar para publicar las correcciones vía REST API. Te quedas dentro de WooCommerce y nunca reescribes la tienda.",
       "panelTitle": "Conectar, diagnosticar, publicar",
       "advantages": [
         {
@@ -95,8 +95,8 @@
           "description": "Los productos se comparan con competidores, mostrando los cambios que importan: calidad del título, claridad de la descripción, detalles débiles."
         },
         {
-          "title": "Aprobar y publicar",
-          "description": "Las optimizaciones aprobadas vuelven a WooCommerce por la ruta REST documentada, manteniendo la información ligada a la tienda en vivo."
+          "title": "Aplicar y publicar",
+          "description": "Haz clic en Aplicar y el nuevo nombre, la descripción y los datos estructurados vuelven a WooCommerce vía REST API."
         }
       ]
     },
@@ -172,7 +172,7 @@
         },
         {
           "title": "Fricción de publicación",
-          "description": "Hay buena información pero las mejoras en vivo llegan despacio porque revisión y publicación están desconectadas de la tienda. Una ruta de aprobar-y-publicar dentro de WooCommerce reduce el coste del traspaso.",
+          "description": "Hay buena información pero las mejoras en vivo llegan despacio porque revisión y publicación están desconectadas de la tienda. Una ruta de publicación en un clic dentro de WooCommerce reduce el coste del traspaso.",
           "fit": "Donde encaja ecentic",
           "covered": true
         }
@@ -230,7 +230,7 @@
         },
         {
           "question": "¿Pueden las tiendas WooCommerce publicar actualizaciones de producto optimizadas?",
-          "answer": "Sí. Las reescrituras aprobadas se publican directamente de vuelta en WooCommerce por REST API, con credenciales de lectura y escritura. Revisas cada cambio antes de que esté en vivo, y nada llega a tu tienda sin tu aprobación."
+          "answer": "Sí. Las reescrituras se publican directamente de vuelta en WooCommerce vía REST API, con credenciales de lectura y escritura. Nada llega a tu tienda hasta que haces clic en Aplicar en un producto."
         },
         {
           "question": "¿Necesito el plugin o puedo conectar con claves API?",

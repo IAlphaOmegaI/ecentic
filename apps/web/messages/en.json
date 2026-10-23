@@ -3071,7 +3071,7 @@
         },
         "ecenticDominate": {
           "name": "ecentic Dominate",
-          "detail": "Continuous simulations, auto-optimization, drift alerts, and UCP generation"
+          "detail": "Simulations, one-click fixes, Merchant Center sync and agent checkout setup"
         }
       },
       "guarantees": {
@@ -3124,7 +3124,7 @@
         },
         "ucp": {
           "title": "Ready for agent checkout",
-          "description": "ecentic generates the UCP profile agents use to find your store and read your catalog. Included in Dominate."
+          "description": "On WooCommerce, the free ecentic plugin lets agents search, fill a cart and check out through UCP, and the order lands in your store. On Shopify, ecentic checks the Merchant Center settings Google's agent checkout needs."
         }
       }
     },
@@ -3158,19 +3158,16 @@
         "optimizedListings": {
           "label": "Auto-generates optimized listings"
         },
-        "modelUpdates": {
-          "label": "Re-optimizes when models update"
-        },
         "ucpReady": {
           "label": "Gets your store ready for AI agents (UCP)"
         }
       }
     },
     "caseStudy": {
-      "eyebrow": "Customer story",
+      "eyebrow": "Pilot result",
       "title": "DUA Flavours: 12% more visits from AI assistants and direct traffic.",
       "description": "DUA Flavours connected their store. ecentic showed which products AI agents were skipping and closed the gaps in their structured data and product feed. Between April and July 2026, visits from AI assistants and direct traffic rose 12%.",
-      "verified": "Verified ecentic customer · published with permission",
+      "verified": "ecentic pilot · published with permission",
       "metric": {
         "value": "+12%",
         "label": "visits from AI assistants and direct traffic",
@@ -3184,7 +3181,7 @@
       "expectations": {
         "winRate": {
           "title": "Live win-rate read",
-          "description": "We run your top products through ChatGPT, Claude, Gemini, and Perplexity while you watch."
+          "description": "We run your top products through ChatGPT, Claude and Gemini while you watch."
         },
         "diagnosis": {
           "title": "Why you win or lose",
@@ -3197,134 +3194,6 @@
       },
       "footnote": "No card and no commitment. It's a 15-minute look at how agents see your catalog. Pick a time on the right and you're booked.",
       "fallback": "Open the booking page"
-    },
-    "blindSpot": {
-      "eyebrow": "The Blind Spot",
-      "title": "Your products are invisible to the buyer doing the actual choosing.",
-      "description": "AI agents are already shopping for your customers. They don't see your ads and they don't scroll your page. They read data, compare specs, and pick in milliseconds. You have no idea how often they pick you, or what to do about it.",
-      "descriptionAccent": "ecentic fixes this.",
-      "story": {
-        "ask": {
-          "title": "A customer asks",
-          "description": "\"Find me the best shisha flavour under £30.\" They never open a store or scroll a results page."
-        },
-        "pick": {
-          "title": "The agent picks 3",
-          "description": "In milliseconds the AI compares structured data, trust signals, and spec depth, then names three products."
-        },
-        "invisible": {
-          "title": "You're invisible",
-          "description": "Your store didn't show up. You don't know it happened. Shopify analytics never sees the visit."
-        }
-      },
-      "panels": {
-        "humans": {
-          "label": "What Humans see",
-          "productTitle": "Pro Wireless Earbuds - Light",
-          "productDescription": "Immerse yourself in crystal-clear sound with our award-winning ergonomic design. The perfect companion for your daily commute.",
-          "addToCart": "Add to Cart - $139"
-        },
-        "agentsNow": {
-          "label": "What Agents see now",
-          "result": "RESULT: Dropped from consideration set. Competitor chosen due to explicit spec verification."
-        },
-        "agentsAfter": {
-          "label": "What Agents see after ecentic",
-          "productTitle": "Pro Wireless Earbuds",
-          "productMeta": "Pro Audio · $139",
-          "result": "RESULT: Top pick across ChatGPT, Claude, Gemini & Perplexity."
-        }
-      },
-      "closing": "Some of the sales you lost this week, an AI agent made that call. Find out where you stand."
-    },
-    "discoveryShift": {
-      "eyebrow": "The Shift",
-      "title": "Shoppers stopped choosing. Agents started.",
-      "description": {
-        "before": "For 20 years shoppers got ten blue links and chose for themselves. Now they ask one question and an AI agent hands back ",
-        "highlight": "a single answer",
-        "after": ". You're the pick, or you don't exist."
-      },
-      "searchEra": {
-        "label": "Before — the search era",
-        "searchQuery": "best noise cancelling headphones",
-        "resultsCount": "About 123,000,000 results",
-        "summary": "Ten results. You could rank, run ads, and earn the click. Visibility was something you could buy and optimize for."
-      },
-      "agentEra": {
-        "label": "Now — the agent era",
-        "question": "What are the best noise cancelling headphones?",
-        "answerTitle": "Sony WH-1000XM5 — $348",
-        "answerDescription": "Best overall. Industry-leading noise cancellation, excellent sound, all-day comfort.",
-        "buyNow": "Buy now — $348",
-        "summary": "One question. One answer. No ads, no scrolling, no second place. The agent decides in milliseconds and you never see it happen."
-      }
-    },
-    "discoveryPaths": {
-      "title": "Find the page that matches your buying stage",
-      "pages": {
-        "features": {
-          "eyebrow": "Features",
-          "title": "AI ecommerce tools for product visibility and conversion",
-          "description": "The workflows merchants use to simulate AI shopping decisions, find out where they lose, and decide which listings to fix first.",
-          "label": "Explore features"
-        },
-        "productListings": {
-          "eyebrow": "Product listings",
-          "title": "AI product listing optimization for titles, descriptions, and data",
-          "description": "See how clearer product content and stronger attributes change the way AI shopping systems compare you.",
-          "label": "View listing page"
-        },
-        "shopify": {
-          "eyebrow": "Shopify",
-          "title": "AI for Shopify stores that need more than basic copy generation",
-          "description": "Connect your catalog, benchmark against competitors, and publish approved product listing updates back to Shopify.",
-          "label": "See Shopify workflow"
-        },
-        "compare": {
-          "eyebrow": "Comparison",
-          "title": "Best AI tools for ecommerce in 2026",
-          "description": "A guide to when you need content generation, personalization, analytics, or agent-commerce optimization.",
-          "label": "Read comparison guide"
-        },
-        "enterprise": {
-          "eyebrow": "Enterprise",
-          "title": "Multi-brand agent intelligence for enterprise merchants",
-          "description": "API access, SSO, SOC 2, UCP signing, and a dedicated CSM, for teams running hundreds of SKUs across platforms.",
-          "label": "See enterprise plan"
-        }
-      }
-    },
-    "whyNow": {
-      "eyebrow": "Why now",
-      "title": "Six months ago, agents couldn't buy. Now they can.",
-      "description": "This isn't a forecast. Visa, Mastercard, Google, and OpenAI all shipped agent checkout in the last two quarters. The carts are already moving. Your product is either in them or it isn't.",
-      "milestones": {
-        "visa": {
-          "date": "Oct 2025",
-          "title": "Agent payments go live",
-          "description": "Visa lets agents pay on a shopper's behalf, with Microsoft, Shopify, Stripe, and Worldpay."
-        },
-        "google": {
-          "date": "NRF 2026",
-          "title": "Agentic shopping protocol",
-          "description": "Opened to the market, with Shopify, Walmart, Target, Etsy, Visa, Mastercard, and PayPal behind it."
-        },
-        "mastercard": {
-          "date": "Live now",
-          "title": "Agent Pay merchant framework",
-          "description": "Agent-initiated checkout running across partner shops, with payments built for AI buyers."
-        },
-        "openai": {
-          "date": "Live now",
-          "title": "Checkout inside ChatGPT",
-          "description": "Buy without leaving the chat. Etsy, Coach, Kate Spade, Revolve, and URBN are already in."
-        }
-      }
-    },
-    "ucpCallout": {
-      "title": "Is your store visible to AI agents?",
-      "description": "Check your store's UCP profile in 10 seconds and see whether GPTBot, ClaudeBot, Gemini, and Perplexity can read your listings."
     },
     "heroVideo": {
       "title": "ecentic product film",
@@ -3350,7 +3219,7 @@
         },
         {
           "question": "How is ecentic different from AI visibility tracking tools?",
-          "answer": "Tracking tools tell you how often AI assistants mention your brand. Mentions aren't sales. ecentic works product by product: it runs the shopping decision against named competitors, shows why a product loses, writes the fix, publishes it to your store, and tracks the AI-referred visits and sales that follow."
+          "answer": "Tracking tools tell you how often AI assistants mention your brand. Mentions aren't sales. ecentic works product by product: it runs the shopping decision against named competitors, shows why a product loses, writes the fix, publishes it to your store, and tracks the AI-referred visits that follow."
         },
         {
           "question": "How much does ecentic cost?",
@@ -3371,7 +3240,7 @@
   "pricing": {
     "meta": {
       "title": "Pricing — start free, pay when agents pick you",
-      "description": "ecentic pricing: scan free, then pay-as-you-go. Free to start, 3% only on AI-attributed orders, capped. Or a flat Compete/Dominate plan with no fee."
+      "description": "ecentic pricing: scan free, then pay 3% of AI-attributed orders (capped at $500/mo) or a flat Compete, Scale or Dominate plan with no fee."
     },
     "breadcrumb": {
       "home": "Home",
@@ -3396,7 +3265,7 @@
     "scan": {
       "badge": "Free · no card required",
       "title": "Scan your store. See your AI Agent Score.",
-      "description": "A one-time simulation of your top 10 products across ChatGPT, Claude, Gemini, and Perplexity.",
+      "description": "A one-time simulation of your top 10 products across ChatGPT, Claude and Gemini.",
       "action": {
         "primary": "Scan your store free"
       },
@@ -3442,9 +3311,9 @@
         "note": "Flat monthly · no performance fee.",
         "features": [
           "Up to 100 products",
-          "Daily agent simulations",
+          "Agent simulations and rescans",
           "Competitor battlecards",
-          "Manual optimization suggestions"
+          "Field-by-field fix suggestions"
         ],
         "action": {
           "primary": "Start Competing"
@@ -3462,8 +3331,8 @@
         "note": "Flat monthly · no performance fee.",
         "features": [
           "Up to 1000 products",
-          "Continuous simulations",
-          "Auto-optimization + one-click publish",
+          "Agent simulations and rescans",
+          "One-click fixes published to your store",
           "Competitor battlecards"
         ],
         "action": {
@@ -3482,9 +3351,8 @@
         "note": "Flat monthly · no performance fee.",
         "features": [
           "Everything in Scale",
-          "Model drift alerts",
-          "UCP generation",
-          "Partner deal tier (YC, Techstars)"
+          "Google Merchant Center sync (Shopify)",
+          "Agent checkout setup (UCP)"
         ],
         "action": {
           "primary": "Start Dominating"
@@ -3495,7 +3363,7 @@
       },
       "enterprise": {
         "title": "Enterprise",
-        "description": "Custom limits, enterprise security, UCP signing, multi-brand dashboards, and dedicated support.",
+        "description": "Custom limits, every store in one account, API and MCP access, a DPA, and a founder on your account.",
         "action": {
           "primary": "Book a call"
         }
@@ -3504,7 +3372,7 @@
     "feeExplainer": {
       "number": "02",
       "title": "How the performance fee works",
-      "description": "On pay-as-you-go you only ever pay on orders we can attribute to AI-agent traffic we optimize for. Everything else is $0.",
+      "description": "On pay-as-you-go you only ever pay on orders that follow a visit from an AI assistant. Everything else is $0.",
       "steps": [
         {
           "title": "An agent recommends you",
@@ -3512,7 +3380,7 @@
         },
         {
           "title": "They buy: a $120 order",
-          "description": "The order carries our attribution signal or follows a recent AI-referral visit to your store."
+          "description": "The order follows a visit from an AI assistant to your store in the previous 7 days."
         },
         {
           "title": "We take 3% of that order",
@@ -3525,13 +3393,13 @@
       ],
       "billing": {
         "title": "Prefer predictable billing?",
-        "description": "Compete and Dominate are flat monthly with no performance fee. Both run the same optimization loop."
+        "description": "Compete, Scale and Dominate are flat monthly with no performance fee. All three run the same optimization loop."
       }
     },
     "compare": {
       "number": "03",
       "title": "Compare plans",
-      "description": "The core loop is identical everywhere. Paid tiers add scale, automation, and protocol features. Let the size of your catalog decide.",
+      "description": "The core loop is identical everywhere. Paid tiers add volume, one-click publishing, and Merchant Center and checkout setup. Let the size of your catalog decide.",
       "planHeader": "Plan",
       "rows": [
         {
@@ -3559,12 +3427,12 @@
           "dominate": "Up to 1000"
         },
         {
-          "label": "Agent simulations",
+          "label": "Rescans",
           "scan": "One-time",
-          "payg": "Continuous",
-          "compete": "Daily",
-          "scale": "Continuous",
-          "dominate": "Continuous"
+          "payg": "Any time",
+          "compete": "Any time",
+          "scale": "Any time",
+          "dominate": "Any time"
         },
         {
           "label": "Win Rate Report",
@@ -3583,12 +3451,12 @@
           "dominate": true
         },
         {
-          "label": "Optimization suggestions",
+          "label": "Fix suggestions",
           "scan": false,
-          "payg": "Automatic",
-          "compete": "Manual",
-          "scale": "Automatic",
-          "dominate": "Automatic"
+          "payg": true,
+          "compete": true,
+          "scale": true,
+          "dominate": true
         },
         {
           "label": "One-click publish",
@@ -3599,7 +3467,7 @@
           "dominate": true
         },
         {
-          "label": "Model drift alerts",
+          "label": "Google Merchant Center sync (Shopify)",
           "scan": false,
           "payg": true,
           "compete": false,
@@ -3607,7 +3475,7 @@
           "dominate": true
         },
         {
-          "label": "UCP generation",
+          "label": "Agent checkout setup (UCP)",
           "scan": false,
           "payg": true,
           "compete": false,
@@ -3646,7 +3514,7 @@
         },
         {
           "name": "ecentic Dominate",
-          "detail": "Continuous simulations, auto-optimization, drift alerts, and UCP generation"
+          "detail": "Simulations, one-click fixes, Merchant Center sync and agent checkout setup"
         }
       ],
       "guarantees": [
@@ -3676,31 +3544,31 @@
       "items": [
         {
           "question": "Is there really a free plan?",
-          "answer": "Yes. The Scan plan runs a one-time simulation of your top 10 products across ChatGPT, Claude, Gemini, and Perplexity and returns a Win Rate Report. It needs no credit card and takes about two minutes to set up."
+          "answer": "Yes. The Scan plan runs a one-time simulation of your top 10 products across ChatGPT, Claude and Gemini and returns a Win Rate Report. It needs no credit card and takes about two minutes to set up."
         },
         {
           "question": "What is the difference between Compete, Scale, and Dominate?",
-          "answer": "Compete is for teams that want to understand where they lose: up to 100 products, daily simulations, and competitor battlecards with manual suggestions. Scale adds volume and automation: up to 1000 products, continuous simulations, and one-click or auto-published optimizations. Dominate adds the protocol layer on top of Scale (model drift alerts and UCP generation) and is the tier our Techstars deal is redeemed against. The Y Combinator deal applies to any of the three."
+          "answer": "Compete is for teams that want to see where they lose: up to 100 products, simulations and rescans, and competitor battlecards with fix suggestions. Scale adds volume and one-click fixes published to your store, for up to 1000 products. Dominate adds Google Merchant Center sync for Shopify stores and agent checkout setup through UCP."
         },
         {
           "question": "What is the difference between pay-as-you-go and a subscription?",
-          "answer": "Pay-as-you-go is free to start with no card and unlocks every feature. You only pay a 3% fee on orders we can attribute to AI-agent traffic we optimize for. A subscription (Compete, Scale, or Dominate) is a flat monthly price with no performance fee, for teams that prefer predictable billing. Both run the same optimization loop; pick whichever pricing fits how you'd rather pay."
+          "answer": "Pay-as-you-go is free to start with no card and unlocks every feature. You only pay a 3% fee on orders that follow a visit from an AI assistant to your store. A subscription (Compete, Scale, or Dominate) is a flat monthly price with no performance fee, for teams that prefer predictable billing. Both run the same optimization loop; pick whichever pricing fits how you'd rather pay."
         },
         {
           "question": "How does the pay-as-you-go performance fee work?",
-          "answer": "On pay-as-you-go you pay a 3% fee only on orders we can attribute to AI-agent traffic we optimize for. An order counts only when it carries our attribution signal or follows a recent AI-referral visit to your store. You are never charged on your other sales, never per agent visit, and the fee is capped at $500 per month. It is free to start with no card; we only ask for a payment method once a fee is actually due. Flat subscriptions and the free Scan have no performance fee."
+          "answer": "On pay-as-you-go you pay a 3% fee only on AI-attributed orders. An order counts only when it follows a visit from an AI assistant to your store in the previous 7 days. You are never charged on your other sales, never per agent visit, and the fee is capped at $500 per month. It is free to start with no card; we only ask for a payment method once a fee is actually due. Flat subscriptions and the free Scan have no performance fee."
         },
         {
           "question": "Can I change plans or cancel later?",
-          "answer": "You can start on the free Scan, activate pay-as-you-go for ongoing optimization at no upfront cost, switch to a flat Compete, Scale, or Dominate subscription when you want predictable billing, and move to Enterprise once you need custom limits or security. Nothing locks you into a long contract to try the platform."
+          "answer": "You can start on the free Scan, activate pay-as-you-go for ongoing optimization at no upfront cost, switch to a flat Compete, Scale, or Dominate subscription when you want predictable billing, and move to Enterprise once you need custom limits, a DPA or every store in one account. Nothing locks you into a long contract to try the platform."
         },
         {
           "question": "When should I talk to sales instead of self-serving?",
-          "answer": "Book a call if you run hundreds of SKUs across multiple stores, need UCP signing or SSO, or want a custom ROI estimate for your catalog size before committing. Everything else is faster to start on the free Scan plan."
+          "answer": "Book a call if you run thousands of SKUs across multiple stores, need a DPA or a security review, or want a custom ROI estimate for your catalog size before committing. Everything else is faster to start on the free Scan plan."
         },
         {
           "question": "What is the EU Presence bundle?",
-          "answer": "We partnered with EU Presence so you can go live in Europe and stay picked by AI agents in one engagement. The Compliance + AI Visibility bundle combines their GDPR representative, GPSR responsible person, and Privacy Center Plus with ecentic Scale. It is billed together with a 20% bundle discount, no minimums, and no setup fees. Book a bundle call from the pricing page to set it up."
+          "answer": "We partnered with EU Presence so you can go live in Europe and stay picked by AI agents in one engagement. The Compliance + AI Visibility bundle combines their GDPR representative, GPSR responsible person, and Privacy Center Plus with ecentic Dominate. It is billed together with a 20% bundle discount, no minimums, and no setup fees. Book a bundle call from the pricing page to set it up."
         }
       ]
     },
@@ -3719,22 +3587,22 @@
         {
           "name": "Compete",
           "price": "14.90",
-          "description": "Flat monthly, no performance fee. Up to 100 products, daily simulations, competitor battlecards, and manual optimization suggestions."
+          "description": "Flat monthly, no performance fee. Up to 100 products, agent simulations and rescans, competitor battlecards, and field-by-field fix suggestions."
         },
         {
           "name": "Scale",
           "price": "44.90",
-          "description": "Flat monthly, no performance fee. Up to 1000 products, continuous simulations, auto-optimization with one-click publish, and competitor battlecards."
+          "description": "Flat monthly, no performance fee. Up to 1000 products, agent simulations and rescans, one-click fixes published to your store, and competitor battlecards."
         },
         {
           "name": "Dominate",
           "price": "149",
-          "description": "Everything in Scale plus model drift alerts and UCP generation. The tier partner deals (Y Combinator, Techstars) are redeemed against."
+          "description": "Everything in Scale plus Google Merchant Center sync for Shopify stores and agent checkout setup through UCP."
         },
         {
           "name": "Enterprise",
           "price": "Custom",
-          "description": "Custom limits, enterprise security, UCP signing, multi-brand dashboards, and dedicated support."
+          "description": "Custom limits, every store in one account, API and MCP access, a DPA, and a founder on your account."
         }
       ]
     },
@@ -3793,10 +3661,10 @@
           "number": "Tool 01",
           "category": "Win-rate simulation",
           "title": "AI Agent Score Scan",
-          "description": "Run a one-time simulation of your top 10 products across ChatGPT, Claude, Gemini, and Perplexity. See where you win, where you lose, and what to fix first.",
+          "description": "Run a one-time simulation of your top 10 products across ChatGPT, Claude and Gemini. See where you win, where you lose, and what to fix first.",
           "features": [
             "Top 10 products",
-            "Four model perspectives",
+            "Three models",
             "Results in about two minutes"
           ],
           "action": {
@@ -3807,7 +3675,7 @@
           "number": "Tool 02",
           "category": "Protocol check",
           "title": "UCP Validator",
-          "description": "Check whether a storefront publishes a valid Universal Commerce Profile at /.well-known/ucp and whether major shopping agents are allowed in robots.txt.",
+          "description": "Check whether a storefront publishes a valid Universal Commerce Protocol profile at /.well-known/ucp and whether major shopping agents are allowed in robots.txt.",
           "features": [
             "Endpoint reachability",
             "Schema validation",
@@ -3898,7 +3766,7 @@
         {
           "name": "Shopify",
           "title": "Shopify platform guide",
-          "description": "Install from the App Store, import your catalog, and publish approved listing updates back into Shopify.",
+          "description": "Install from the App Store, import your catalog, and publish listing fixes back into Shopify in one click.",
           "action": {
             "primary": "Open Shopify guide"
           }
@@ -3906,7 +3774,7 @@
         {
           "name": "WooCommerce",
           "title": "WooCommerce platform guide",
-          "description": "Connect with REST API keys, run the same simulation loop, and publish improvements without changing platforms.",
+          "description": "Install the free plugin or connect with REST API keys, run the same simulation loop, and publish fixes without changing platforms.",
           "action": {
             "primary": "Open WooCommerce guide"
           }
@@ -3937,7 +3805,7 @@
         },
         {
           "title": "UCP agent profile",
-          "description": "ecentic's public Universal Commerce Profile for agent discovery and protocol conformance."
+          "description": "ecentic's public Universal Commerce Protocol profile for agent discovery and protocol conformance."
         },
         {
           "title": "MCP endpoint",
@@ -4000,7 +3868,7 @@
       "steps": [
         {
           "name": "Simulate",
-          "text": "ecentic runs your products through ChatGPT, Claude, Gemini, and Perplexity at the same time and records how each agent compares your listings against every competitor in your category."
+          "text": "ecentic runs your products through ChatGPT, Claude and Gemini and records how each one compares your listing with each competitor's, and which one it picks."
         },
         {
           "name": "Diagnose",
@@ -4008,7 +3876,7 @@
         },
         {
           "name": "Optimize",
-          "text": "ecentic rewrites titles, descriptions, and structured data for maximum agent selection. Approve in one click or set auto-publish, and listings stay re-optimized as models evolve."
+          "text": "ecentic rewrites titles, descriptions and structured data. Nothing changes in your store until you click Apply, and a rescan after the fix shows how the win rate moved."
         }
       ]
     },
@@ -4021,7 +3889,7 @@
       "description": "ecentic simulates how AI shopping agents compare your products, explains why you lose in plain language, and rewrites your listings so the next comparison goes your way.",
       "assurances": [
         "First scan in about two minutes",
-        "Approval-ready rewrites",
+        "One-click fixes",
         "No developer needed"
       ],
       "art": {
@@ -4032,8 +3900,8 @@
       "simulate": {
         "number": "01",
         "title": "Simulate",
-        "subheading": "See how every major AI shopping model compares your products against the competition, in real time.",
-        "paragraph": "AI shopping agents do not read your store the way a human shopper does. They compare structured signals like titles, attributes, pricing, and trust markers across every product in a category in seconds. ecentic recreates that comparison by running your catalog through the top models at once and recording the outcome for each one.",
+        "subheading": "See how ChatGPT, Claude and Gemini compare your products with your competitors'.",
+        "paragraph": "AI shopping agents do not read your store the way a human shopper does. They compare structured signals like titles, attributes, pricing, and trust markers across every product in a category in seconds. ecentic recreates that comparison by running your products through ChatGPT, Claude and Gemini and recording what each one picks.",
         "itemsLabel": "What every scan tells you",
         "agentStripLabel": "Simulated agents",
         "items": [
@@ -4079,21 +3947,21 @@
       "optimize": {
         "number": "03",
         "title": "Optimize",
-        "subheading": "Approve the highest-impact changes and keep listings tuned as the models evolve.",
-        "paragraph": "The final step converts the diagnosis into approval-ready listing updates. ecentic rewrites titles, descriptions, and structured data for maximum agent selection and queues them for review. Every change is tracked, so you can measure the lift in win rate and the agent traffic that follows.",
-        "itemsLabel": "You choose how much is automated",
+        "subheading": "Pick the fixes worth making, click Apply, then rescan to see what moved.",
+        "paragraph": "The final step turns the diagnosis into a new title, description and structured data for each product. Nothing changes in your store until you click Apply. ecentic then publishes the fix and records the change, so a rescan can show how the win rate moved.",
+        "itemsLabel": "What happens when you click Apply",
         "items": [
           {
             "title": "One-click publish",
-            "description": "Review each rewrite and push it live to Shopify or WooCommerce in a single click."
+            "description": "The new title, description and structured data go live on Shopify or WooCommerce in one click."
           },
           {
-            "title": "Auto-publish",
-            "description": "Enable it for products where the loop has earned your trust."
+            "title": "Google Merchant Center",
+            "description": "On Shopify, push the published fixes into your Merchant Center feed."
           },
           {
-            "title": "Continuous re-optimization",
-            "description": "Simulations keep running, so listings stay tuned as the underlying models drift."
+            "title": "Rescan after every fix",
+            "description": "Run the simulation again to see whether the fix moved your win rate."
           }
         ]
       }
@@ -4107,19 +3975,19 @@
       "items": [
         {
           "question": "How does ecentic simulate AI shopping agents?",
-          "answer": "ecentic sends your product data through the major AI models the same way a shopping assistant would, then records how each one compares your listing against competitors. The result is a repeatable read on whether agents pick you, and why."
+          "answer": "ecentic sends your product data through ChatGPT, Claude and Gemini the way a shopping assistant would, then records how each one compares your listing with a competitor's. The result is a repeatable read on whether agents pick you, and why."
         },
         {
           "question": "What does the diagnosis actually tell me?",
           "answer": "It identifies the concrete reasons a product loses: a title that misses buying context, missing specifications, weak trust signals, or a competitor with clearer structured data. Each finding maps to a specific listing change."
         },
         {
-          "question": "Do I have to publish changes automatically?",
-          "answer": "No. Optimizations are approval-ready. You can review and publish in one click, or enable auto-publish for products where you trust the loop. Either way, changes are tracked so you can measure the impact on win rate."
+          "question": "Does ecentic change my store without asking?",
+          "answer": "No. Nothing changes until you click Apply on a product. ecentic then writes the new title, description and structured data to your store and records the change."
         },
         {
           "question": "How long before I see results?",
-          "answer": "The first scan runs in about two minutes and returns a Win Rate Report immediately. From there, daily or continuous simulations keep the diagnosis current as your catalog and the underlying models change."
+          "answer": "The first scan runs in about two minutes and returns a Win Rate Report. After you apply fixes, rescan to see how the win rate moved."
         }
       ]
     },
@@ -4134,7 +4002,7 @@
   "demo": {
     "meta": {
       "title": "Book a demo — see your AI win rate live",
-      "description": "Book a 15-minute ecentic demo. We run your top products through ChatGPT, Claude, Gemini, and Perplexity live and scope your highest-impact listing fixes."
+      "description": "Book a 15-minute ecentic demo. We run your top products through ChatGPT, Claude and Gemini live and scope your highest-impact listing fixes."
     },
     "breadcrumb": {
       "home": "Home",
@@ -4146,7 +4014,7 @@
         "primary": "See your AI win rate,",
         "accent": "live in 15 minutes."
       },
-      "description": "We run your top products through ChatGPT, Claude, Gemini, and Perplexity while you watch, show you why you win or lose, and scope the highest-impact listing fixes. Pick a slot below.",
+      "description": "We run your top products through ChatGPT, Claude and Gemini while you watch, show you why you win or lose, and scope the highest-impact listing fixes. Pick a slot below.",
       "assurances": [
         "15 minutes, not a slide deck",
         "No account or catalog connection needed",
@@ -4254,7 +4122,7 @@
   "enterprise": {
     "meta": {
       "title": "Enterprise — agent commerce at scale",
-      "description": "Agent-commerce intelligence for enterprise merchants: multi-brand dashboards, API access, SSO, SOC 2 compliance, UCP signing, and a dedicated CSM team."
+      "description": "ecentic for enterprise merchants: every store in one account, API and MCP access, a DPA, and a founder on your account from day one."
     },
     "breadcrumb": {
       "home": "Home",
@@ -4266,12 +4134,12 @@
         "primary": "Agent-commerce infrastructure",
         "accent": "at scale."
       },
-      "description": "Multi-brand dashboards, API access, UCP signing, and dedicated support for commerce teams running hundreds of SKUs across multiple platforms.",
+      "description": "Every store in one account, API and MCP access, Merchant Center sync and agent checkout setup, for commerce teams running thousands of SKUs across stores and platforms.",
       "assurances": [
-        "Multi-brand dashboards",
-        "Custom API access",
-        "Dedicated CSM",
-        "SOC 2 in progress"
+        "Every store in one account",
+        "REST API, MCP and CLI",
+        "A founder on your account",
+        "DPA on request"
       ],
       "art": {
         "alt": "ASCII-art illustration of an office tower"
@@ -4284,41 +4152,33 @@
     "capabilities": {
       "number": "02",
       "title": "Everything in Dominate, plus the enterprise layer.",
-      "description": "The security, scale, and support layer enterprise teams need to run agent-commerce optimization across brands.",
+      "description": "What enterprise teams get on top of Dominate to run agent-commerce optimization across brands and stores.",
       "items": [
         {
-          "title": "Multi-brand rollups",
-          "description": "One dashboard across every brand and region. Aggregate win-rate, agent traffic, and optimization lift in a single view."
+          "title": "Every store in one account",
+          "description": "Connect each brand and store to one account and see stores, products and win rates side by side in one view."
         },
         {
-          "title": "API access",
-          "description": "Read-only API for programmatic access to scan results, agent traffic, and UCP profiles."
+          "title": "API, MCP and CLI",
+          "description": "Connect stores, check onboarding and manage API keys from your own tools or AI agents, through the REST API, the MCP server or the ecentic CLI."
         },
         {
-          "title": "SSO",
-          "description": "Okta, Google Workspace, and Azure AD supported. Provision seats without touching ecentic directly."
+          "title": "Merchant Center and agent checkout",
+          "description": "Google Merchant Center sync for Shopify stores and agent checkout setup through UCP, including the free ecentic plugin for WooCommerce."
         },
         {
-          "title": "SOC 2 Type II",
-          "description": "Audit in progress. Data residency options, GDPR-compliant processing, and a DPA on request."
+          "title": "DPA and security review",
+          "description": "We sign a DPA on request and answer your security questionnaire before you connect a live store."
         },
         {
-          "title": "UCP signing service",
-          "description": "ecentic manages cryptographic signing of your UCP profile so agents can verify merchant identity."
+          "title": "SSO and SOC 2, planned",
+          "description": "SOC 2 is on our roadmap, timed to customer security reviews, and so is SSO beyond Google sign-in. Tell us what your review needs and we'll scope it on the call."
         },
         {
-          "title": "Dedicated CSM",
-          "description": "A named customer success manager, quarterly business reviews, and direct engineering escalation."
+          "title": "A founder on your account",
+          "description": "One of the founders owns the relationship, with a direct line to the engineers who build the product."
         }
       ],
-      "cta": {
-        "badge": "Custom · talk to sales",
-        "title": "Built for enterprise merchants running at scale.",
-        "description": "Custom limits, enterprise security, UCP signing, multi-brand dashboards, and dedicated support, scoped to your catalog and compliance needs.",
-        "action": {
-          "primary": "Talk to sales"
-        }
-      },
       "scoping": [
         {
           "title": "Short discovery call",
@@ -4339,94 +4199,25 @@
     "compare": {
       "number": "03",
       "title": "Where Dominate ends and Enterprise begins.",
-      "description": "Dominate runs the full optimization loop for a single brand. Enterprise adds security, scale, and support for multi-brand commerce teams.",
-      "table": {
-        "feature": "Feature",
-        "dominate": "Dominate",
-        "enterprise": "Enterprise"
-      },
-      "rows": [
-        {
-          "label": "Price",
-          "dominate": "$149/mo",
-          "enterprise": "Custom"
-        },
-        {
-          "label": "Products",
-          "dominate": "Up to 1000",
-          "enterprise": "Custom limits"
-        },
-        {
-          "label": "Agent simulations",
-          "dominate": "Continuous",
-          "enterprise": "Continuous + custom cadence"
-        },
-        {
-          "label": "Auto-optimization",
-          "dominate": true,
-          "enterprise": true
-        },
-        {
-          "label": "UCP generation",
-          "dominate": true,
-          "enterprise": true
-        },
-        {
-          "label": "UCP signing service",
-          "dominate": false,
-          "enterprise": true
-        },
-        {
-          "label": "Multi-brand rollups",
-          "dominate": false,
-          "enterprise": true
-        },
-        {
-          "label": "API access",
-          "dominate": false,
-          "enterprise": true
-        },
-        {
-          "label": "SSO",
-          "dominate": false,
-          "enterprise": true
-        },
-        {
-          "label": "SOC 2 Type II",
-          "dominate": false,
-          "enterprise": "In progress"
-        },
-        {
-          "label": "Dedicated CSM",
-          "dominate": false,
-          "enterprise": true
-        }
-      ],
-      "cta": {
-        "title": "Ready to scope Enterprise?",
-        "description": "We run a short discovery call, share a custom ROI estimate for your catalog size, and scope an onboarding timeline.",
-        "action": {
-          "primary": "Contact enterprise sales"
-        }
-      },
+      "description": "Dominate runs the full optimization loop for a single store. Enterprise adds every store in one account, API access and a founder on your account.",
       "dominate": {
         "badge": "Dominate",
-        "title": "Full loop for one brand.",
-        "description": "Continuous simulations, auto-optimization, and UCP generation for a single catalog up to 1000 products.",
+        "title": "Full loop for one store.",
+        "description": "Simulations, rescans, one-click fixes, Merchant Center sync and agent checkout setup for a single catalog up to 1000 products.",
         "strengths": [
-          "$149/mo with continuous agent simulations",
-          "Auto-optimization and UCP generation included",
-          "Best fit for a single brand up to 1000 products"
+          "$149/mo for the full loop",
+          "Merchant Center sync and agent checkout setup included",
+          "Best fit for a single store up to 1000 products"
         ]
       },
       "enterprise": {
         "badge": "Enterprise",
         "title": "Control plane for multi-brand teams.",
-        "description": "Everything in Dominate, plus multi-brand rollups, API access, SSO, managed UCP signing, and a dedicated CSM.",
+        "description": "Everything in Dominate, plus every store in one account, API and MCP access, a DPA, and a founder on your account.",
         "strengths": [
-          "Custom limits across brands and regions",
-          "SSO, API access, and UCP signing service",
-          "Named CSM with quarterly business reviews"
+          "Custom limits across brands and stores",
+          "REST API, MCP server and CLI",
+          "A founder on the account, with a direct line to engineering"
         ]
       },
       "paragraph": "Stay on Dominate while one brand owns the loop. Move to Enterprise when brand count, security review, or reporting requirements need a shared layer.",
@@ -4434,19 +4225,19 @@
       "triggers": [
         {
           "title": "Multiple brands or regions",
-          "description": "You need rollups across storefronts instead of separate Dominate seats."
+          "description": "You need every storefront in one account instead of separate Dominate seats."
         },
         {
-          "title": "SSO or DPA required",
-          "description": "Security or legal review blocks a self-serve plan until identity and contracts are covered."
+          "title": "A DPA or security review",
+          "description": "Legal or security review blocks a self-serve plan until the contract and their questions are covered."
         },
         {
-          "title": "Data must leave the UI",
-          "description": "Your analytics stack needs API access to scans, agent traffic, and UCP profiles."
+          "title": "Your own tools need in",
+          "description": "Your team wants to connect stores and run onboarding from its own tools or AI agents."
         },
         {
           "title": "A named owner matters",
-          "description": "You want a CSM, quarterly reviews, and a direct path into engineering."
+          "description": "You want a founder on the account and a direct path into engineering."
         }
       ]
     },
@@ -4459,7 +4250,7 @@
       "items": [
         {
           "question": "When should I choose Enterprise over Dominate?",
-          "answer": "Choose Enterprise when you run hundreds of SKUs across multiple brands or regions, need SSO or a DPA, want UCP signing managed for you, or need a dedicated CSM and custom API access. Dominate covers the full optimization loop for a single brand up to 1000 products."
+          "answer": "Choose Enterprise when you run thousands of SKUs across several brands or stores, need a DPA or a security review, or want API access and a founder on your account. Dominate covers the full optimization loop for a single store up to 1000 products."
         },
         {
           "question": "What does onboarding look like for Enterprise?",
@@ -4467,11 +4258,11 @@
         },
         {
           "question": "Is SOC 2 available today?",
-          "answer": "SOC 2 Type II is in progress. Enterprise accounts can request our DPA, discuss data residency options, and review our security posture during the sales process."
+          "answer": "Not yet. SOC 2 is on our roadmap, timed to customer security reviews. We'll answer your security questionnaire and sign a DPA now."
         },
         {
           "question": "Can Enterprise connect to our existing data stack?",
-          "answer": "Yes. Enterprise includes read-only API access for scan results, agent traffic, and UCP profiles so you can integrate ecentic data into your own analytics and reporting tools."
+          "answer": "Partly, today. The REST API, the MCP server and the CLI connect stores, report onboarding status and manage API keys. If your team needs scan results in its own tools, tell us on the call and we'll scope it."
         }
       ]
     },
@@ -4480,33 +4271,33 @@
         "primary": "Book a demo",
         "secondary": "View pricing"
       },
-      "note": "SOC 2 in progress · DPA on request"
+      "note": "DPA on request · A founder on your account"
     },
     "why": {
       "number": "01",
       "title": "When a single-brand plan stops being enough.",
-      "description": "Enterprise is for teams that need one agent-commerce layer across brands, regions, and security requirements, rather than another self-serve seat.",
+      "description": "Enterprise is for teams that need one account across brands, stores and security reviews, rather than another self-serve seat.",
       "paragraphs": [
-        "Dominate runs the full optimization loop for one brand. Enterprise adds the control plane: multi-brand rollups, SSO, API access, managed UCP signing, and a named CSM who owns the relationship.",
+        "Dominate runs the full loop for one store. Enterprise puts every store in one account, opens API and MCP access for your own tools, and puts a founder on the account with a direct line to engineering.",
         "The decision usually shows up when catalog size, brand count, or procurement requirements outgrow a flat monthly plan."
       ],
       "panelTitle": "Who this fits",
       "audiences": [
         {
           "title": "Multi-brand operators",
-          "description": "Teams running several storefronts or regions who need one win-rate and agent-traffic view."
+          "description": "Teams running several storefronts or regions who want every store's win rate in one view."
         },
         {
           "title": "Security-led buyers",
-          "description": "Organizations that need SSO, a DPA, and a clear path toward SOC 2 Type II."
+          "description": "Organizations that need a DPA and a filled-in security questionnaire. SSO and SOC 2 are on our roadmap, and we scope them with you on the call."
         },
         {
           "title": "Platform / data teams",
-          "description": "Groups that want read-only API access into scans, agent traffic, and UCP profiles."
+          "description": "Groups that want to connect stores and run onboarding from their own tools, through the REST API, the MCP server or the CLI."
         },
         {
           "title": "Commerce leadership",
-          "description": "Leaders who want a named CSM, quarterly reviews, and an engineering escalation path."
+          "description": "Leaders who want a founder on the account and a direct line to engineering."
         }
       ]
     }
@@ -4528,7 +4319,7 @@
       },
       "description": "Simulate how AI shopping agents compare your products, see exactly why competitors win, and publish the listing fixes that flip the result, all from one loop.",
       "assurances": [
-        "Simulates ChatGPT, Claude, Gemini & Perplexity",
+        "Simulates ChatGPT, Claude & Gemini",
         "One-click listing rewrites",
         "Live agent traffic"
       ],
@@ -4544,7 +4335,7 @@
         {
           "step": "Step 01",
           "title": "Simulate",
-          "description": "ecentic asks the top AI shopping agents to shop your catalog against real competitors, the same way buyers do."
+          "description": "ecentic has ChatGPT, Claude and Gemini compare your products with real competitors', the way they would for a shopper."
         },
         {
           "step": "Step 02",
@@ -4554,12 +4345,12 @@
         {
           "step": "Step 03",
           "title": "Optimize",
-          "description": "Approve rewritten titles, descriptions, and structured data, then publish them back to your store in one click."
+          "description": "ecentic rewrites the title, description and structured data. Click Apply and the fix goes to your store."
         },
         {
           "step": "Step 04",
           "title": "Track",
-          "description": "Track your win rate, AI-agent visits, and attributed revenue week over week, then rescan and repeat."
+          "description": "Rescan after a fix to see how your win rate moved. On Shopify, watch the visits AI assistants send you, week over week."
         }
       ]
     },
@@ -4570,7 +4361,7 @@
       "items": [
         {
           "title": "AI win-rate score",
-          "description": "See how often ChatGPT, Claude, Gemini, and Perplexity pick your products when a shopper asks what to buy.",
+          "description": "See how often ChatGPT, Claude and Gemini pick your product over a named competitor's, product by product.",
           "features": [
             "Per-agent win rates",
             "Product-level scoring",
@@ -4584,21 +4375,21 @@
           "features": [
             "Side-by-side comparisons",
             "Missing-attribute detection",
-            "Category benchmarks"
+            "Battlecards per competitor"
           ]
         },
         {
           "title": "One-click listing rewrites",
-          "description": "Approval-ready rewrites of titles, descriptions, and structured product data, published straight back to your store.",
+          "description": "New titles, descriptions and structured product data, published to your store when you click Apply.",
           "features": [
-            "Approval-ready drafts",
+            "Published when you click Apply",
             "Shopify + WooCommerce write-back",
-            "Before / after lift tracking"
+            "Estimated lift per fix"
           ]
         },
         {
           "title": "Agent traffic analytics",
-          "description": "Know when an AI agent visits your store, which products it reads, and what revenue those visits turn into.",
+          "description": "On Shopify, see the visits AI assistants and agents make to your store, and which products they land on.",
           "features": [
             "AI-agent visit detection",
             "Daily traffic rollups",
@@ -4606,21 +4397,21 @@
           ]
         },
         {
-          "title": "UCP profile",
-          "description": "A machine-readable merchant profile built on the Universal Commerce Protocol, so agents can trust and verify your store.",
+          "title": "Agent checkout (UCP)",
+          "description": "On WooCommerce, the free ecentic plugin lets agents search, fill a cart and check out through UCP, and the order lands in your store. On Shopify, ecentic checks the Merchant Center settings Google's agent checkout needs.",
           "features": [
-            "Auto-generated profile",
-            "Structured product data",
-            "Agent-verifiable identity"
+            "WooCommerce plugin with hosted UCP",
+            "Merchant Center checkout settings (Shopify)",
+            "Free UCP validator and playground"
           ]
         },
         {
-          "title": "Continuous rescans",
-          "description": "Scores go stale the moment a competitor updates a listing. Scheduled rescans keep every product benchmarked.",
+          "title": "Google Merchant Center sync",
+          "description": "On Shopify, ecentic sends the fixes you publish to Merchant Center as a supplemental feed, so Google's AI Mode and Gemini read the same product data your store shows. It also flags Merchant Center issues and the settings agent checkout needs.",
           "features": [
-            "Scheduled catalog scans",
-            "Win-rate change alerts",
-            "Regression detection"
+            "Supplemental feed of your fixes",
+            "Merchant Center diagnostics",
+            "Agent checkout readiness"
           ]
         }
       ]
@@ -4641,8 +4432,8 @@
         {
           "href": "/platforms/shopify",
           "eyebrow": "Shopify",
-          "title": "Connect a Shopify catalog and publish approved updates",
-          "description": "Benchmark products, review why agents prefer competitors, and send approved listing changes back to Shopify.",
+          "title": "Connect a Shopify catalog and publish fixes in one click",
+          "description": "Benchmark products, see why agents prefer competitors, and send listing fixes back to Shopify and your Merchant Center feed.",
           "label": "See Shopify page",
           "color": "accent"
         },
@@ -4912,7 +4703,7 @@
       "description": "AI shopping systems compare your product data in seconds. ecentic turns losing product pages into clearer buying inputs, for agents and for the high-intent shoppers they send you.",
       "assurances": [
         "Titles, descriptions & structured data",
-        "Approval-ready rewrites",
+        "One-click fixes",
         "Publishes back to Shopify & WooCommerce"
       ],
       "art": {
@@ -4973,8 +4764,8 @@
     "workflow": {
       "number": "03",
       "title": "A closed loop, not a one-off rewrite.",
-      "description": "The workflow runs from simulation to diagnosis to an approval-ready listing update, without rebuilding your catalog from scratch.",
-      "paragraph": "Simulate who wins, diagnose the gaps, then publish the fix back into the store. The same loop works whether you are cleaning up a handful of priority SKUs or running continuous catalog ops.",
+      "description": "The workflow runs from simulation to diagnosis to a listing fix you publish in one click, without rebuilding your catalog from scratch.",
+      "paragraph": "Simulate who wins, diagnose the gaps, then publish the fix back into the store. The same loop works whether you are cleaning up a handful of priority SKUs or working through the whole catalog.",
       "panelTitle": "Simulate, diagnose, publish",
       "audiences": [
         {
@@ -5005,7 +4796,7 @@
         },
         {
           "title": "Publish",
-          "description": "Approved titles, descriptions, and product data push straight back into supported platforms instead of being copied by hand."
+          "description": "New titles, descriptions and product data go to your store when you click Apply, instead of being copied by hand."
         }
       ]
     },
@@ -5018,7 +4809,7 @@
           "href": "/platforms/shopify",
           "name": "Shopify",
           "title": "See the workflow for Shopify catalogs",
-          "description": "Connect products, benchmark competitors, and publish approved listing updates back into Shopify.",
+          "description": "Connect products, benchmark competitors, and publish listing fixes back into Shopify.",
           "label": "Open Shopify page",
           "color": "primary"
         },
@@ -5069,7 +4860,7 @@
         },
         {
           "question": "How does ecentic help with product listing optimization?",
-          "answer": "ecentic simulates how AI shopping agents compare products, shows why a competitor wins, and turns those findings into improved titles, descriptions, and listing updates merchants can approve and publish."
+          "answer": "ecentic simulates how AI shopping agents compare products, shows why a competitor wins, and turns those findings into new titles, descriptions and structured data that merchants publish to their store in one click."
         }
       ]
     },
@@ -5084,7 +4875,7 @@
   "shopify": {
     "meta": {
       "title": "Shopify AI app for ChatGPT and AI shopping",
-      "description": "AI for Shopify stores that need stronger product listings, clearer competitor analysis, and approved updates pushed straight back into the Shopify Admin."
+      "description": "ecentic for Shopify: see why AI shopping agents pick competitors, fix titles, descriptions and structured data, and push fixes to Merchant Center."
     },
     "breadcrumb": {
       "home": "Home",
@@ -5096,10 +4887,10 @@
         "primary": "AI for Shopify stores that need",
         "accent": "more than automated copy."
       },
-      "description": "Connect your catalog, see why AI shopping agents pick competitors over you, and publish approved title and description updates straight back into Shopify.",
+      "description": "Connect your catalog, see why AI shopping agents pick competitors over you, and publish the fixes straight back into Shopify and your Merchant Center feed.",
       "assurances": [
         "2-minute install, no developer needed",
-        "Approved updates write back via the Admin API",
+        "Fixes write back through the Admin API",
         "See your free score first"
       ],
       "art": {
@@ -5146,7 +4937,7 @@
       "number": "02",
       "title": "The Shopify workflow in ecentic.",
       "description": "The workflow connects the catalog, surfaces competitive gaps, and makes improvements publishable back into Shopify instead of one more disconnected document.",
-      "paragraph": "Connect the store, pick the products that matter, benchmark them against competitors, then approve write-backs through the Admin API. You never leave the Shopify catalog workflow.",
+      "paragraph": "Connect the store, pick the products that matter, benchmark them against competitors, then click Apply to write the fixes back through the Admin API. You never leave the Shopify catalog workflow.",
       "panelTitle": "Connect, diagnose, publish",
       "outcomes": [
         {
@@ -5158,8 +4949,8 @@
           "description": "Better visibility into why product pages lose to specific competitors."
         },
         {
-          "title": "Review before go-live",
-          "description": "Faster review of listing updates before they ship to the storefront."
+          "title": "You choose what ships",
+          "description": "Nothing changes in your store until you click Apply."
         },
         {
           "title": "Stay in Shopify",
@@ -5180,8 +4971,8 @@
           "description": "Selected products are compared against competitors so you see where AI systems prefer another option, and why."
         },
         {
-          "title": "Approve & write back",
-          "description": "Review the stronger version of each listing and publish approved changes back to Shopify through the Admin API."
+          "title": "Apply & write back",
+          "description": "Click Apply on the products you want fixed and ecentic publishes the new title, description and structured data through the Admin API. Connect Merchant Center and the same fixes go into your Google feed."
         }
       ]
     },
@@ -5207,7 +4998,7 @@
           "Simulates how AI shopping agents compare your products",
           "Benchmarks listings against the competitors that keep winning",
           "Diagnoses why a page loses: missing data, weak positioning, unclear context",
-          "Turns findings into approval-ready updates published back to Shopify"
+          "Turns findings into fixes you publish to Shopify in one click"
         ]
       },
       "paragraph": "Generation alone is enough when speed is the only goal. The distinction starts to matter once the catalog, the competitors, or the review process get in the way.",
@@ -5279,15 +5070,15 @@
       "items": [
         {
           "question": "What does AI for Shopify stores mean in practice?",
-          "answer": "For Shopify merchants, it means connecting the catalog, understanding how products perform in AI-mediated comparisons, and turning those findings into approved listing updates that can be written back into Shopify."
+          "answer": "For Shopify merchants, it means connecting the catalog, understanding how products perform in AI-mediated comparisons, and turning those findings into listing fixes you publish back into Shopify with one click."
         },
         {
           "question": "How is this different from using Shopify Magic alone?",
-          "answer": "Shopify Magic helps with native content generation. ecentic adds simulation, competitor benchmarking, diagnosis, and approval-ready optimization workflows so merchants can see why products lose and what to fix next."
+          "answer": "Shopify Magic helps with native content generation. ecentic adds simulation, competitor benchmarking, diagnosis, and one-click listing fixes so merchants can see why products lose and what to fix next."
         },
         {
           "question": "Can Shopify merchants publish changes back to the store?",
-          "answer": "Yes. The documented workflow includes pushing approved title and description updates back through the Shopify Admin API for merchants who want the optimization loop to stay connected to the live catalog."
+          "answer": "Yes. When you click Apply, ecentic writes the new title, description and structured data back through the Shopify Admin API. If you connect Google Merchant Center, it also sends those fixes to your Google feed as a supplemental data source."
         },
         {
           "question": "When should Shopify teams move beyond native AI tools?",
@@ -5354,7 +5145,7 @@
         {
           "id": "enterprise",
           "title": "Enterprise escalation",
-          "description": "Enterprise accounts get a named CSM, quarterly reviews, and a direct engineering escalation path.",
+          "description": "Enterprise accounts get a founder on the account and a direct line to engineering.",
           "highlighted": false,
           "action": {
             "primary": "See Enterprise"
@@ -5378,21 +5169,21 @@
           "href": "/features",
           "name": "Features",
           "title": "See every tool in the platform",
-          "description": "Win-rate scores, competitor gap analysis, listing rewrites, agent traffic, UCP profiles, and rescans.",
+          "description": "Win rates, competitor gaps, one-click listing fixes, Merchant Center sync, agent checkout setup and visit tracking.",
           "label": "Open features page"
         },
         {
           "href": "/pricing",
           "name": "Pricing",
           "title": "Compare plans, from the free scan up",
-          "description": "The free Scan, Pay-as-you-go, and the Compete and Dominate subscriptions explained side by side.",
+          "description": "The free Scan, Pay-as-you-go, and the Compete, Scale and Dominate subscriptions explained side by side.",
           "label": "See pricing"
         },
         {
           "href": "/privacy-policy",
           "name": "Privacy",
           "title": "Check what data we store and never store",
-          "description": "Products-only scopes, no shopper personal data, essential cookies only, and how deletion works.",
+          "description": "Access to products and the visit-tracking script only, no shopper personal data, no advertising cookies, analytics only if you accept, and how deletion works.",
           "label": "Read the policy"
         }
       ]
@@ -5420,11 +5211,11 @@
         "primary": "AI for WooCommerce stores that need",
         "accent": "cleaner product workflows."
       },
-      "description": "Import your catalog, see where listings lose to competitors in AI-mediated comparisons, and publish approved improvements back into WooCommerce without changing platforms.",
+      "description": "Import your catalog, see where listings lose to competitors in AI-mediated comparisons, and publish the fixes back into WooCommerce in one click, without changing platforms.",
       "assurances": [
         "No platform migration",
         "Free plugin on WordPress.org",
-        "Approved updates publish via the REST API",
+        "Fixes publish via the REST API",
         "See your free score first"
       ],
       "art": {
@@ -5467,7 +5258,7 @@
       "number": "02",
       "title": "The WooCommerce workflow in ecentic.",
       "description": "The workflow connects product data to competitor analysis, then to a publishing path back inside WooCommerce instead of another manual content handoff.",
-      "paragraph": "Install the plugin, import the catalog, benchmark the products that matter, then approve REST publish-backs. You stay inside WooCommerce and you never rewrite the storefront.",
+      "paragraph": "Install the plugin, import the catalog, benchmark the products that matter, then click Apply to publish the fixes over the REST API. You stay inside WooCommerce and you never rewrite the storefront.",
       "panelTitle": "Connect, diagnose, publish",
       "advantages": [
         {
@@ -5501,8 +5292,8 @@
           "description": "Products are compared against competitors, surfacing the changes that matter: title quality, description clarity, weak details."
         },
         {
-          "title": "Approve & publish",
-          "description": "Approved optimizations move back into WooCommerce through the documented REST update path, keeping insight tied to the live store."
+          "title": "Apply & publish",
+          "description": "Click Apply and the new name, description and structured data go back into WooCommerce over the REST API."
         }
       ]
     },
@@ -5578,7 +5369,7 @@
         },
         {
           "title": "Publishing friction",
-          "description": "Good insights exist but turn into live improvements slowly because review and publishing are disconnected from the store. An approve-and-publish path inside WooCommerce cuts the handoff cost.",
+          "description": "Good insights exist but turn into live improvements slowly because review and publishing are disconnected from the store. A one-click publish path inside WooCommerce cuts the handoff cost.",
           "fit": "Where ecentic fits",
           "covered": true
         }
@@ -5636,7 +5427,7 @@
         },
         {
           "question": "Can WooCommerce stores publish optimized product updates?",
-          "answer": "Yes. Approved rewrites are published straight back into WooCommerce over the REST API, using credentials with read and write access. You review every change before it goes live, and nothing reaches your storefront without your approval."
+          "answer": "Yes. Rewrites are published straight back into WooCommerce over the REST API, using credentials with read and write access. Nothing reaches your storefront until you click Apply on a product."
         },
         {
           "question": "Do I need the plugin, or can I connect with API keys?",
@@ -5685,14 +5476,14 @@
       },
       "badge": {
         "alt": "Techstars",
-        "label": "Exclusive partner deal"
+        "label": "Founder deal"
       }
     },
     "deal": {
       "number": "01",
       "title": "What's in the deal",
-      "description": "Built for Techstars founders who would rather win AI agent recommendations than babysit a listings spreadsheet.",
-      "content": "ecentic shows you how AI shopping agents compare your products against competitors, diagnoses why you win or lose, and rewrites your listings to close the gap. The Techstars deal opens the full platform:\n\n- Extended ecentic Dominate, with continuous simulations across ChatGPT, Claude, Gemini, and Perplexity\n- Auto-optimization with one-click publish and model drift alerts\n- UCP generation so agents can verify your catalog directly\n- White-glove onboarding for your catalog and founder pricing after the deal period\n\nRedeem below and we'll verify your cohort, then email your activation link within one business day."
+      "description": "Built for Techstars founders who would rather get picked by AI shopping agents than babysit a listings spreadsheet.",
+      "content": "ecentic shows you how AI shopping agents compare your products against competitors, diagnoses why you win or lose, and rewrites your listings to close the gap. The Techstars deal opens the full platform:\n\n- Extended ecentic Dominate, with simulations on ChatGPT, Claude and Gemini\n- One-click fixes published to your store\n- Google Merchant Center sync for Shopify stores and agent checkout setup\n- White-glove onboarding for your catalog and founder pricing after the deal period\n\nRedeem below and we'll verify your cohort, then email your activation link within one business day."
     },
     "redeem": {
       "number": "02",
@@ -5703,7 +5494,7 @@
       "number": "03",
       "title": "How redemption works",
       "description": "Three steps from form to live deal. Most founders are running their first simulation the same day.",
-      "content": "There is no procurement maze here. The whole point is to get you simulating fast.\n\n- Submit the form with your company, cohort, and what you want ecentic to help you win\n- We verify your cohort against the Techstars portfolio, usually the same day\n- You get an activation link and white-glove help importing your catalog\n\nOnce your catalog is in, ecentic runs it through the major AI shopping models, shows you why competitors get picked, and turns the findings into listing changes you can approve in one click."
+      "content": "There is no procurement maze here. The whole point is to get you simulating fast.\n\n- Submit the form with your company, cohort, and what you want ecentic to help you win\n- We verify your cohort against the Techstars portfolio, usually the same day\n- You get an activation link and white-glove help importing your catalog\n\nOnce your catalog is in, ecentic runs it through the major AI shopping models, shows you why competitors get picked, and turns the findings into listing fixes you publish in one click."
     },
     "faqSection": {
       "number": "04",
@@ -5718,7 +5509,7 @@
         },
         {
           "question": "What do I actually get?",
-          "answer": "Extended access to ecentic Dominate: continuous AI agent simulations across ChatGPT, Claude, Gemini, and Perplexity, auto-optimization with one-click publish, drift alerts, and UCP generation. It also includes white-glove onboarding for your catalog and founder pricing when the deal period ends."
+          "answer": "Extended access to ecentic Dominate: simulations on ChatGPT, Claude and Gemini, one-click fixes published to your store, Google Merchant Center sync for Shopify stores, and agent checkout setup. It also includes white-glove onboarding for your catalog and founder pricing when the deal period ends."
         },
         {
           "question": "Do I need an account first?",
@@ -6104,7 +5895,7 @@
   "yc": {
     "meta": {
       "title": "ecentic for Y Combinator — redeem your deal",
-      "description": "An exclusive ecentic deal for Y Combinator students: extended access on any plan, white-glove onboarding, and student pricing. Redeem in under two minutes."
+      "description": "An exclusive ecentic deal for Y Combinator founders: extended access on any plan, white-glove onboarding, and founder pricing. Redeem in under two minutes."
     },
     "breadcrumb": {
       "home": "Home",
@@ -6116,20 +5907,20 @@
         "primary": "Your ecentic deal,",
         "accent": "ready to redeem."
       },
-      "description": "An exclusive ecentic deal for Y Combinator students: extended access on any plan, white-glove onboarding, and student pricing. Redeem in under two minutes.",
+      "description": "An exclusive ecentic deal for Y Combinator founders: extended access on any plan, white-glove onboarding, and founder pricing. Redeem in under two minutes.",
       "art": {
         "alt": "ASCII-art illustration of a handshake"
       },
       "badge": {
         "alt": "Y Combinator",
-        "label": "Exclusive partner deal"
+        "label": "Founder deal"
       }
     },
     "deal": {
       "number": "01",
       "title": "What's in the deal",
-      "description": "Built for YC students who would rather win AI agent recommendations than babysit a listings spreadsheet.",
-      "content": "ecentic shows you how AI shopping agents compare your products against competitors, diagnoses why you win or lose, and rewrites your listings to close the gap. Your YC discount applies to whichever plan fits: Compete, Scale, or Dominate.\n\n- Agent simulations across ChatGPT, Claude, Gemini, and Perplexity on every plan\n- Continuous simulations and auto-optimization with one-click publish from Scale up\n- Model drift alerts and UCP generation on Dominate, so agents can verify your catalog directly\n- White-glove onboarding for your catalog and student pricing after the deal period\n\nRedeem below and we'll verify your batch, then email your activation link within one business day."
+      "description": "Built for YC founders who would rather get picked by AI shopping agents than babysit a listings spreadsheet.",
+      "content": "ecentic shows you how AI shopping agents compare your products against competitors, diagnoses why you win or lose, and rewrites your listings to close the gap. Your YC discount applies to whichever plan fits: Compete, Scale, or Dominate.\n\n- Simulations on ChatGPT, Claude and Gemini on every plan\n- One-click fixes published to your store from Scale up\n- Google Merchant Center sync for Shopify stores and agent checkout setup on Dominate\n- White-glove onboarding for your catalog and founder pricing after the deal period\n\nRedeem below and we'll verify your batch, then email your activation link within one business day."
     },
     "redeem": {
       "number": "02",
@@ -6139,8 +5930,8 @@
     "howItWorks": {
       "number": "03",
       "title": "How redemption works",
-      "description": "Three steps from form to live deal. Most students are running their first simulation the same day.",
-      "content": "There is no procurement maze here. The whole point is to get you simulating fast.\n\n- Submit the form with your company, batch, and what you want ecentic to help you win\n- We verify your batch against the YC directory, usually the same day\n- You get an activation link and white-glove help importing your catalog\n\nOnce your catalog is in, ecentic runs it through the major AI shopping models, shows you why competitors get picked, and turns the findings into listing changes you can approve in one click."
+      "description": "Three steps from form to live deal. Most founders are running their first simulation the same day.",
+      "content": "There is no procurement maze here. The whole point is to get you simulating fast.\n\n- Submit the form with your company, batch, and what you want ecentic to help you win\n- We verify your batch against the YC directory, usually the same day\n- You get an activation link and white-glove help importing your catalog\n\nOnce your catalog is in, ecentic runs it through the major AI shopping models, shows you why competitors get picked, and turns the findings into listing fixes you publish in one click."
     },
     "faqSection": {
       "number": "04",
@@ -6155,7 +5946,7 @@
         },
         {
           "question": "What do I actually get?",
-          "answer": "Your student discount on whichever ecentic plan you pick: Compete, Scale, or Dominate. Every plan runs AI agent simulations across ChatGPT, Claude, Gemini, and Perplexity; Scale adds continuous simulations and auto-optimization with one-click publish; Dominate adds model drift alerts and UCP generation. All of them include white-glove onboarding for your catalog and student pricing when the deal period ends."
+          "answer": "Your founder discount on whichever ecentic plan you pick: Compete, Scale, or Dominate. Every plan runs simulations on ChatGPT, Claude and Gemini; Scale adds one-click fixes published to your store; Dominate adds Google Merchant Center sync for Shopify stores and agent checkout setup. All of them include white-glove onboarding for your catalog and founder pricing when the deal period ends."
         },
         {
           "question": "Do I need an account first?",
@@ -6170,11 +5961,11 @@
     "footer": {
       "primary": "Create your account",
       "secondary": "Book a demo",
-      "note": "YC students only. We verify your batch before activating the deal."
+      "note": "YC founders only. We verify your batch before activating the deal."
     },
     "structuredData": {
-      "offerName": "ecentic Y Combinator student deal",
-      "eligibleCustomerType": "Y Combinator students"
+      "offerName": "ecentic Y Combinator founder deal",
+      "eligibleCustomerType": "Y Combinator founders"
     }
   },
   "compareTool": {
@@ -6889,7 +6680,7 @@
         "line2": "are in."
       },
       "points": [
-        "ChatGPT, Claude, Gemini & Perplexity simulated real shopping comparisons",
+        "ChatGPT, Claude & Gemini ran simulated shopping comparisons",
         "Every product was scored head-to-head against competitors",
         "This report shows where you win and where you lose"
       ]
@@ -6916,7 +6707,7 @@
     },
     "cta": {
       "title": "Ready to win every AI agent's cart?",
-      "description": "ecentic auto-optimizes your listings. Free to start.",
+      "description": "ecentic fixes the product data agents read. Free to start.",
       "action": "Start free"
     }
   },
@@ -7893,7 +7684,7 @@
         },
         {
           "title": "Published results",
-          "description": "DUA Flavours (published with permission): visits from AI assistants and direct traffic rose 12% between April and July 2026."
+          "description": "DUA Flavours (pilot, published with permission): visits from AI assistants and direct traffic rose 12% between April and July 2026."
         },
         {
           "title": "Operated by",
@@ -7925,8 +7716,8 @@
       "product": {
         "number": "03",
         "title": "What ecentic does",
-        "description": "One loop, run continuously: simulate, diagnose, optimize.",
-        "content": "The product runs one loop:\n\n- **Simulate.** ecentic runs ChatGPT, Claude, Gemini, and Perplexity against a merchant's products and named competitors. Each assistant compares both listings and picks a winner.\n- **Diagnose.** The merchant sees a win rate per product and per assistant, a replay of the assistant's reasoning, the attributes that cost the recommendation, and a battlecard against each competitor.\n- **Optimize.** ecentic generates improved titles, descriptions, and structured attributes, and publishes them back to the store on approval or automatically.\n\nAround that loop, ecentic also:\n\n- Tracks visits and referrals from AI agents to a storefront.\n- Alerts merchants when a model update shifts their win rates (model drift).\n- Generates Universal Commerce Protocol (UCP) profiles so AI agents can discover and understand a store.\n- Offers free tools: a [UCP validator](/ucp-validator), a [UCP playground](/ucp-playground), and a [WebMCP scanner](/webmcp-scanner).\n- Publishes a [REST API and an MCP server](/docs) for AI agents and developers."
+        "description": "One loop, rerun any time: simulate, diagnose, optimize.",
+        "content": "The product runs one loop:\n\n- **Simulate.** ecentic has ChatGPT, Claude and Gemini compare a merchant's products with named competitors. Each model compares both listings and picks one.\n- **Diagnose.** The merchant sees a win rate per product, per model and per competitor, a replay of the model's reasoning, the attributes that cost the pick, and a battlecard against each competitor.\n- **Optimize.** ecentic rewrites the title, the description and the structured data, and publishes them to the store when the merchant clicks Apply. Nothing changes in the store before that. The lift shown after a fix is an estimate; a rescan shows the measured win rate.\n\nAround that loop, ecentic also:\n\n- Sends published fixes to Google Merchant Center as a supplemental data source for Shopify stores, shows Merchant Center diagnostics, and checks the settings Google's agent checkout needs.\n- Sets WooCommerce stores up for agent checkout: the free ecentic plugin serves `/.well-known/ucp`, ecentic hosts the catalog, cart, checkout and order endpoints, and agent orders land in WooCommerce as real orders paid through the merchant's own gateway.\n- Records, on Shopify, visits referred by AI assistants and visits from known AI agents and crawlers.\n- Audits agent readiness (robots.txt rules per AI crawler, bot walls, structured data, GTIN and brand coverage) and listing quality against 34 rules drawn from Google's and ChatGPT's feed specifications.\n- Offers free tools: a [UCP validator](/ucp-validator), a [UCP playground](/ucp-playground), and a [WebMCP scanner](/webmcp-scanner).\n- Publishes a [REST API and an MCP server](/docs) for AI agents and developers, and the `@ecentic/cli` command line tool."
       },
       "audience": {
         "number": "04",
@@ -7944,7 +7735,7 @@
         "number": "07",
         "title": "Key terms",
         "description": "The vocabulary ecentic uses, with the meaning it intends.",
-        "content": "- **Win rate.** The percentage of simulations in which an AI agent picks the merchant's product over a competitor's.\n- **Simulation.** A single matchup: one product against one competitor, judged by one AI model.\n- **Scan.** A batch of simulations across the chosen products and competitors of one store.\n- **Agent replay.** A step-by-step log of what the agent read and how it reached its decision.\n- **Battlecard.** A per-product comparison against a competitor: where the product wins, where it loses, and suggested fixes.\n- **Model drift.** A change in AI model behavior, such as a new model version, that shifts win rates.\n- **UCP.** The Universal Commerce Protocol: a merchant profile served at `/.well-known/ucp` so AI agents can discover and understand the merchant."
+        "content": "- **Win rate.** The percentage of simulations in which an AI agent picks the merchant's product over a competitor's.\n- **Simulation.** A single matchup: one product against one competitor, judged by one AI model.\n- **Scan.** A batch of simulations across the chosen products and competitors of one store.\n- **Agent replay.** A step-by-step log of what the agent read and how it reached its decision.\n- **Battlecard.** A per-product comparison against a competitor: where the product wins, where it loses, and suggested fixes.\n- **UCP.** The Universal Commerce Protocol: a merchant profile served at `/.well-known/ucp` so AI agents can discover and understand the merchant."
       },
       "company": {
         "number": "08",
@@ -7957,7 +7748,7 @@
       "number": "05",
       "title": "Pricing",
       "description": "Three separate products. The table reads its figures from the live pricing page.",
-      "content": "ecentic has three separate products: a free scan, pay-as-you-go, and flat monthly subscriptions.\n\n- **Scan** is free and one-time. It simulates a store's top 10 products across ChatGPT, Claude, Gemini, and Perplexity and returns a Win Rate Report. No credit card is needed.\n- **Pay-as-you-go** is free to start. The only charge is a performance fee on orders attributed to AI-agent traffic, with a monthly cap. No card is required until a fee is due.\n- **Compete, Scale, and Dominate** are flat monthly subscriptions with no performance fee.\n- **Enterprise** has custom limits and pricing, arranged on a call.\n\nThe performance fee is never charged on top of a subscription. Full details are on [ecentic.ai/pricing](/pricing).",
+      "content": "ecentic has three separate products: a free scan, pay-as-you-go, and flat monthly subscriptions.\n\n- **Scan** is free and one-time. It simulates a store's top 10 products across ChatGPT, Claude and Gemini and returns a Win Rate Report. No credit card is needed.\n- **Pay-as-you-go** is free to start. The only charge is a performance fee on orders attributed to AI-agent traffic, with a monthly cap. No card is required until a fee is due.\n- **Compete, Scale, and Dominate** are flat monthly subscriptions with no performance fee.\n- **Enterprise** has custom limits and pricing, arranged on a call.\n\nThe performance fee is never charged on top of a subscription. Full details are on [ecentic.ai/pricing](/pricing).",
       "scan": "Scan"
     },
     "faq": {
@@ -7979,7 +7770,7 @@
         },
         {
           "question": "Is ecentic free?",
-          "answer": "The Scan plan is free: a one-time simulation of a store's top 10 products across ChatGPT, Claude, Gemini, and Perplexity, with no credit card. Pay-as-you-go is also free to start and only charges a fee on orders AI agents drive."
+          "answer": "The Scan plan is free: a one-time simulation of a store's top 10 products across ChatGPT, Claude and Gemini, with no credit card. Pay-as-you-go is also free to start and only charges a fee on orders AI agents drive."
         },
         {
           "question": "Which platforms does ecentic work with?",
@@ -7987,7 +7778,7 @@
         },
         {
           "question": "Which AI assistants does ecentic cover?",
-          "answer": "ecentic simulates ChatGPT, Claude, Gemini, and Perplexity."
+          "answer": "ecentic's simulations run on ChatGPT, Claude and Gemini. Visit tracking on Shopify also recognizes Perplexity, Copilot and other assistants."
         },
         {
           "question": "Is ecentic an SEO tool?",

@@ -67,7 +67,7 @@
         },
         {
           "title": "Resultados publicados",
-          "description": "DUA Flavours (publicado con permiso): las visitas desde asistentes de IA y tráfico directo crecieron un 12% entre abril y julio de 2026."
+          "description": "DUA Flavours (piloto, publicado con permiso): las visitas desde asistentes de IA y tráfico directo crecieron un 12% entre abril y julio de 2026."
         },
         {
           "title": "Gestionado por",
@@ -99,8 +99,8 @@
       "product": {
         "number": "03",
         "title": "Qué hace ecentic",
-        "description": "Un ciclo que se ejecuta de forma continua: simular, diagnosticar, optimizar.",
-        "content": "El producto ejecuta un ciclo:\n\n- **Simular.** ecentic ejecuta ChatGPT, Claude, Gemini y Perplexity con los productos de un comerciante y los competidores que este indica. Cada asistente compara ambas fichas y elige un ganador.\n- **Diagnosticar.** El comerciante ve una tasa de victoria por producto y por asistente, una repetición del razonamiento del asistente, los atributos que costaron la recomendación y una battlecard frente a cada competidor.\n- **Optimizar.** ecentic genera títulos, descripciones y atributos estructurados mejorados, y los publica de vuelta en la tienda con aprobación o de forma automática.\n\nAlrededor de ese ciclo, ecentic también:\n\n- Registra las visitas y referencias de agentes de IA a una tienda.\n- Avisa a los comerciantes cuando una actualización de modelo altera sus tasas de victoria (deriva de modelos).\n- Genera perfiles de Universal Commerce Protocol (UCP) para que los agentes de IA puedan descubrir y entender una tienda.\n- Ofrece herramientas gratuitas: un [validador UCP](/es/ucp-validator), un [UCP Playground](/es/ucp-playground) y un [escáner WebMCP](/es/webmcp-scanner).\n- Publica una [API REST y un servidor MCP](/es/docs) para agentes de IA y desarrolladores."
+        "description": "Un ciclo que puedes repetir cuando quieras: simular, diagnosticar, optimizar.",
+        "content": "El producto ejecuta un ciclo:\n\n- **Simular.** ecentic hace que ChatGPT, Claude y Gemini comparen los productos de un comerciante con los competidores que este indica. Cada modelo compara ambas fichas y elige una.\n- **Diagnosticar.** El comerciante ve una tasa de victoria por producto, por modelo y por competidor, una repetición del razonamiento del modelo, los atributos que le costaron la elección y una battlecard frente a cada competidor.\n- **Optimizar.** ecentic reescribe el título, la descripción y los datos estructurados, y los publica en la tienda cuando el comerciante hace clic en Aplicar. Antes de eso no cambia nada en la tienda. La mejora que se muestra tras una corrección es una estimación; un reescaneo muestra la tasa de victoria medida.\n\nAlrededor de ese ciclo, ecentic también:\n\n- Envía las correcciones publicadas a Google Merchant Center como fuente de datos suplementaria para tiendas Shopify, muestra el diagnóstico de Merchant Center y revisa los ajustes que necesita el checkout con agentes de Google.\n- Prepara las tiendas WooCommerce para el checkout con agentes: el plugin gratuito de ecentic sirve `/.well-known/ucp`, ecentic aloja los endpoints de catálogo, carrito, checkout y pedidos, y los pedidos de agentes llegan a WooCommerce como pedidos reales cobrados con la pasarela del propio comerciante.\n- Registra, en Shopify, las visitas que envían los asistentes de IA y las visitas de agentes y rastreadores de IA conocidos.\n- Audita la preparación para agentes (reglas de robots.txt por rastreador de IA, muros anti-bots, datos estructurados, cobertura de GTIN y marca) y la calidad de las fichas con 34 reglas tomadas de las especificaciones de feeds de Google y ChatGPT.\n- Ofrece herramientas gratuitas: un [validador UCP](/es/ucp-validator), un [UCP Playground](/es/ucp-playground) y un [escáner WebMCP](/es/webmcp-scanner).\n- Publica una [API REST y un servidor MCP](/es/docs) para agentes de IA y desarrolladores, y la herramienta de línea de comandos `@ecentic/cli`."
       },
       "audience": {
         "number": "04",
@@ -118,7 +118,7 @@
         "number": "07",
         "title": "Términos clave",
         "description": "El vocabulario que usa ecentic, con el significado que le da.",
-        "content": "- **Tasa de victoria.** El porcentaje de simulaciones en las que un agente de IA elige el producto del comerciante frente al de un competidor.\n- **Simulación.** Un único enfrentamiento: un producto contra un competidor, evaluado por un modelo de IA.\n- **Escaneo.** Un lote de simulaciones con los productos y competidores elegidos de una tienda.\n- **Repetición del agente.** Un registro paso a paso de lo que leyó el agente y de cómo llegó a su decisión.\n- **Battlecard.** Una comparación por producto frente a un competidor: dónde gana el producto, dónde pierde y qué mejoras se sugieren.\n- **Deriva de modelos.** Un cambio en el comportamiento de un modelo de IA, como una nueva versión, que altera las tasas de victoria.\n- **UCP.** Universal Commerce Protocol: un perfil del comerciante servido en `/.well-known/ucp` para que los agentes de IA puedan descubrir y entender al comerciante."
+        "content": "- **Tasa de victoria.** El porcentaje de simulaciones en las que un agente de IA elige el producto del comerciante frente al de un competidor.\n- **Simulación.** Un único enfrentamiento: un producto contra un competidor, evaluado por un modelo de IA.\n- **Escaneo.** Un lote de simulaciones con los productos y competidores elegidos de una tienda.\n- **Repetición del agente.** Un registro paso a paso de lo que leyó el agente y de cómo llegó a su decisión.\n- **Battlecard.** Una comparación por producto frente a un competidor: dónde gana el producto, dónde pierde y qué mejoras se sugieren.\n- **UCP.** Universal Commerce Protocol: un perfil del comerciante servido en `/.well-known/ucp` para que los agentes de IA puedan descubrir y entender al comerciante."
       },
       "company": {
         "number": "08",
@@ -131,7 +131,7 @@
       "number": "05",
       "title": "Precios",
       "description": "Tres productos distintos. La tabla toma sus cifras de la página de precios en vivo.",
-      "content": "ecentic tiene tres productos distintos: un escaneo gratis, pay-as-you-go y suscripciones mensuales fijas.\n\n- **Scan** es gratis y se ejecuta una sola vez. Simula los 10 productos principales de una tienda en ChatGPT, Claude, Gemini y Perplexity y devuelve un informe de tasa de victoria. No requiere tarjeta.\n- **Pay-as-you-go** es gratis para empezar. El único cargo es una comisión por rendimiento sobre los pedidos atribuidos al tráfico de agentes de IA, con un tope mensual. No se pide tarjeta hasta que hay una comisión pendiente.\n- **Compete, Scale y Dominate** son suscripciones mensuales fijas sin comisión por rendimiento.\n- **Enterprise** tiene límites y precios a medida, que se acuerdan en una llamada.\n\nLa comisión por rendimiento nunca se cobra encima de una suscripción. Todos los detalles están en [ecentic.ai/pricing](/es/pricing).",
+      "content": "ecentic tiene tres productos distintos: un escaneo gratis, pay-as-you-go y suscripciones mensuales fijas.\n\n- **Scan** es gratis y se ejecuta una sola vez. Simula los 10 productos principales de una tienda en ChatGPT, Claude y Gemini y devuelve un informe de tasa de victoria. No requiere tarjeta.\n- **Pay-as-you-go** es gratis para empezar. El único cargo es una comisión por rendimiento sobre los pedidos atribuidos al tráfico de agentes de IA, con un tope mensual. No se pide tarjeta hasta que hay una comisión pendiente.\n- **Compete, Scale y Dominate** son suscripciones mensuales fijas sin comisión por rendimiento.\n- **Enterprise** tiene límites y precios a medida, que se acuerdan en una llamada.\n\nLa comisión por rendimiento nunca se cobra encima de una suscripción. Todos los detalles están en [ecentic.ai/pricing](/es/pricing).",
       "scan": "Scan"
     },
     "faq": {
@@ -153,7 +153,7 @@
         },
         {
           "question": "¿ecentic es gratis?",
-          "answer": "El plan Scan es gratis: una simulación única de los 10 productos principales de una tienda en ChatGPT, Claude, Gemini y Perplexity, sin tarjeta. Pay-as-you-go también es gratis para empezar y solo cobra una comisión sobre los pedidos que generan los agentes de IA."
+          "answer": "El plan Scan es gratis: una simulación única de los 10 productos principales de una tienda en ChatGPT, Claude y Gemini, sin tarjeta. Pay-as-you-go también es gratis para empezar y solo cobra una comisión sobre los pedidos que generan los agentes de IA."
         },
         {
           "question": "¿Con qué plataformas funciona ecentic?",
@@ -161,7 +161,7 @@
         },
         {
           "question": "¿Qué asistentes de IA cubre ecentic?",
-          "answer": "ecentic simula ChatGPT, Claude, Gemini y Perplexity."
+          "answer": "Las simulaciones de ecentic se ejecutan en ChatGPT, Claude y Gemini. El seguimiento de visitas en Shopify también reconoce Perplexity, Copilot y otros asistentes."
         },
         {
           "question": "¿ecentic es una herramienta de SEO?",

@@ -35,7 +35,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
       "YC startup deal",
       "ecentic YC",
       "AI ecommerce tool for startups",
-      "YC student perks",
+      "YC founder perks",
     ],
   });
 };

@@ -2,7 +2,7 @@
   "shopify": {
     "meta": {
       "title": "Shopify AI app for ChatGPT and AI shopping",
-      "description": "AI for Shopify stores that need stronger product listings, clearer competitor analysis, and approved updates pushed straight back into the Shopify Admin."
+      "description": "ecentic for Shopify: see why AI shopping agents pick competitors, fix titles, descriptions and structured data, and push fixes to Merchant Center."
     },
     "breadcrumb": {
       "home": "Home",
@@ -14,10 +14,10 @@
         "primary": "AI for Shopify stores that need",
         "accent": "more than automated copy."
       },
-      "description": "Connect your catalog, see why AI shopping agents pick competitors over you, and publish approved title and description updates straight back into Shopify.",
+      "description": "Connect your catalog, see why AI shopping agents pick competitors over you, and publish the fixes straight back into Shopify and your Merchant Center feed.",
       "assurances": [
         "2-minute install, no developer needed",
-        "Approved updates write back via the Admin API",
+        "Fixes write back through the Admin API",
         "See your free score first"
       ],
       "art": {
@@ -64,7 +64,7 @@
       "number": "02",
       "title": "The Shopify workflow in ecentic.",
       "description": "The workflow connects the catalog, surfaces competitive gaps, and makes improvements publishable back into Shopify instead of one more disconnected document.",
-      "paragraph": "Connect the store, pick the products that matter, benchmark them against competitors, then approve write-backs through the Admin API. You never leave the Shopify catalog workflow.",
+      "paragraph": "Connect the store, pick the products that matter, benchmark them against competitors, then click Apply to write the fixes back through the Admin API. You never leave the Shopify catalog workflow.",
       "panelTitle": "Connect, diagnose, publish",
       "outcomes": [
         {
@@ -76,8 +76,8 @@
           "description": "Better visibility into why product pages lose to specific competitors."
         },
         {
-          "title": "Review before go-live",
-          "description": "Faster review of listing updates before they ship to the storefront."
+          "title": "You choose what ships",
+          "description": "Nothing changes in your store until you click Apply."
         },
         {
           "title": "Stay in Shopify",
@@ -98,8 +98,8 @@
           "description": "Selected products are compared against competitors so you see where AI systems prefer another option, and why."
         },
         {
-          "title": "Approve & write back",
-          "description": "Review the stronger version of each listing and publish approved changes back to Shopify through the Admin API."
+          "title": "Apply & write back",
+          "description": "Click Apply on the products you want fixed and ecentic publishes the new title, description and structured data through the Admin API. Connect Merchant Center and the same fixes go into your Google feed."
         }
       ]
     },
@@ -125,7 +125,7 @@
           "Simulates how AI shopping agents compare your products",
           "Benchmarks listings against the competitors that keep winning",
           "Diagnoses why a page loses: missing data, weak positioning, unclear context",
-          "Turns findings into approval-ready updates published back to Shopify"
+          "Turns findings into fixes you publish to Shopify in one click"
         ]
       },
       "paragraph": "Generation alone is enough when speed is the only goal. The distinction starts to matter once the catalog, the competitors, or the review process get in the way.",
@@ -197,15 +197,15 @@
       "items": [
         {
           "question": "What does AI for Shopify stores mean in practice?",
-          "answer": "For Shopify merchants, it means connecting the catalog, understanding how products perform in AI-mediated comparisons, and turning those findings into approved listing updates that can be written back into Shopify."
+          "answer": "For Shopify merchants, it means connecting the catalog, understanding how products perform in AI-mediated comparisons, and turning those findings into listing fixes you publish back into Shopify with one click."
         },
         {
           "question": "How is this different from using Shopify Magic alone?",
-          "answer": "Shopify Magic helps with native content generation. ecentic adds simulation, competitor benchmarking, diagnosis, and approval-ready optimization workflows so merchants can see why products lose and what to fix next."
+          "answer": "Shopify Magic helps with native content generation. ecentic adds simulation, competitor benchmarking, diagnosis, and one-click listing fixes so merchants can see why products lose and what to fix next."
         },
         {
           "question": "Can Shopify merchants publish changes back to the store?",
-          "answer": "Yes. The documented workflow includes pushing approved title and description updates back through the Shopify Admin API for merchants who want the optimization loop to stay connected to the live catalog."
+          "answer": "Yes. When you click Apply, ecentic writes the new title, description and structured data back through the Shopify Admin API. If you connect Google Merchant Center, it also sends those fixes to your Google feed as a supplemental data source."
         },
         {
           "question": "When should Shopify teams move beyond native AI tools?",

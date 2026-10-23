@@ -50,7 +50,7 @@
         {
           "id": "enterprise",
           "title": "Enterprise escalation",
-          "description": "Enterprise accounts get a named CSM, quarterly reviews, and a direct engineering escalation path.",
+          "description": "Enterprise accounts get a founder on the account and a direct line to engineering.",
           "highlighted": false,
           "action": {
             "primary": "See Enterprise"
@@ -74,21 +74,21 @@
           "href": "/features",
           "name": "Features",
           "title": "See every tool in the platform",
-          "description": "Win-rate scores, competitor gap analysis, listing rewrites, agent traffic, UCP profiles, and rescans.",
+          "description": "Win rates, competitor gaps, one-click listing fixes, Merchant Center sync, agent checkout setup and visit tracking.",
           "label": "Open features page"
         },
         {
           "href": "/pricing",
           "name": "Pricing",
           "title": "Compare plans, from the free scan up",
-          "description": "The free Scan, Pay-as-you-go, and the Compete and Dominate subscriptions explained side by side.",
+          "description": "The free Scan, Pay-as-you-go, and the Compete, Scale and Dominate subscriptions explained side by side.",
           "label": "See pricing"
         },
         {
           "href": "/privacy-policy",
           "name": "Privacy",
           "title": "Check what data we store and never store",
-          "description": "Products-only scopes, no shopper personal data, essential cookies only, and how deletion works.",
+          "description": "Access to products and the visit-tracking script only, no shopper personal data, no advertising cookies, analytics only if you accept, and how deletion works.",
           "label": "Read the policy"
         }
       ]

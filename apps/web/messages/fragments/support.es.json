@@ -50,7 +50,7 @@
         {
           "id": "enterprise",
           "title": "Escalado Enterprise",
-          "description": "Las cuentas Enterprise tienen un CSM asignado, revisiones trimestrales y una ruta de escalado directa a ingeniería.",
+          "description": "Las cuentas Enterprise tienen a un fundador en la cuenta y una línea directa con ingeniería.",
           "highlighted": false,
           "action": {
             "primary": "Ver Enterprise"
@@ -74,21 +74,21 @@
           "href": "/features",
           "name": "Funciones",
           "title": "Ve cada herramienta de la plataforma",
-          "description": "Puntuaciones de tasa de victoria, análisis de brechas con competidores, reescrituras de fichas, tráfico de agentes, perfiles UCP y reescaneos.",
+          "description": "Tasas de victoria, brechas con competidores, correcciones de fichas en un clic, sincronización con Merchant Center, configuración del checkout para agentes y seguimiento de visitas.",
           "label": "Abrir página de funciones"
         },
         {
           "href": "/pricing",
           "name": "Precios",
           "title": "Compara planes, desde el escaneo gratis",
-          "description": "El escaneo gratis, Pay-as-you-go y las suscripciones Compete y Dominate explicadas lado a lado.",
+          "description": "El escaneo gratis, Pay-as-you-go y las suscripciones Compete, Scale y Dominate explicadas lado a lado.",
           "label": "Ver precios"
         },
         {
           "href": "/privacy-policy",
           "name": "Privacidad",
           "title": "Consulta qué datos guardamos y cuáles nunca",
-          "description": "Alcances solo de productos, sin datos personales de compradores, solo cookies esenciales y cómo funciona la eliminación.",
+          "description": "Acceso solo a productos y al script de seguimiento de visitas, sin datos personales de compradores, sin cookies publicitarias, analítica solo si aceptas, y cómo funciona la eliminación.",
           "label": "Leer la política"
         }
       ]

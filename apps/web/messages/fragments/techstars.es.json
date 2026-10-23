@@ -20,14 +20,14 @@
       },
       "badge": {
         "alt": "Techstars",
-        "label": "Oferta exclusiva de partner"
+        "label": "Oferta para founders"
       }
     },
     "deal": {
       "number": "01",
       "title": "Qué incluye la oferta",
-      "description": "Pensada para founders de Techstars que prefieren ganar recomendaciones de agentes de IA antes que cuidar una hoja de cálculo de fichas.",
-      "content": "ecentic te muestra cómo los agentes de compra con IA comparan tus productos con los competidores, diagnostica por qué ganas o pierdes y reescribe tus fichas para cerrar la brecha. La oferta Techstars abre la plataforma completa:\n\n- ecentic Dominate extendido, con simulaciones continuas en ChatGPT, Claude, Gemini y Perplexity\n- Auto-optimización con publicación en un clic y alertas de deriva de modelos\n- Generación UCP para que los agentes verifiquen tu catálogo directamente\n- Onboarding personalizado para tu catálogo y precio para founders tras el periodo de la oferta\n\nCanjea abajo y verificaremos tu cohorte; luego te enviaremos el enlace de activación en un día laborable."
+      "description": "Pensada para founders de Techstars que prefieren que los agentes de compras con IA los elijan antes que cuidar una hoja de cálculo de fichas.",
+      "content": "ecentic te muestra cómo los agentes de compra con IA comparan tus productos con los competidores, diagnostica por qué ganas o pierdes y reescribe tus fichas para cerrar la brecha. La oferta Techstars abre la plataforma completa:\n\n- ecentic Dominate extendido, con simulaciones en ChatGPT, Claude y Gemini\n- Correcciones en un clic publicadas en tu tienda\n- Sincronización con Google Merchant Center para tiendas Shopify y configuración del checkout para agentes\n- Onboarding personalizado para tu catálogo y precio para founders tras el periodo de la oferta\n\nCanjea abajo y verificaremos tu cohorte; luego te enviaremos el enlace de activación en un día laborable."
     },
     "redeem": {
       "number": "02",
@@ -38,7 +38,7 @@
       "number": "03",
       "title": "Cómo funciona el canje",
       "description": "Tres pasos del formulario a la oferta activa. La mayoría de founders ejecutan su primera simulación el mismo día.",
-      "content": "Aquí no hay laberinto de procurement. El objetivo es que empieces a simular rápido.\n\n- Envía el formulario con tu empresa, tu cohorte y qué quieres que ecentic te ayude a ganar\n- Verificamos tu cohorte contra el portfolio de Techstars, normalmente el mismo día\n- Recibes un enlace de activación y ayuda personalizada para importar tu catálogo\n\nUna vez dentro tu catálogo, ecentic lo pasa por los principales modelos de compra con IA, te muestra por qué eligen a los competidores y convierte los hallazgos en cambios de ficha que puedes aprobar en un clic."
+      "content": "Aquí no hay laberinto de procurement. El objetivo es que empieces a simular rápido.\n\n- Envía el formulario con tu empresa, tu cohorte y qué quieres que ecentic te ayude a ganar\n- Verificamos tu cohorte contra el portfolio de Techstars, normalmente el mismo día\n- Recibes un enlace de activación y ayuda personalizada para importar tu catálogo\n\nUna vez dentro tu catálogo, ecentic lo pasa por los principales modelos de compra con IA, te muestra por qué eligen a los competidores y convierte los hallazgos en correcciones de ficha que publicas en un clic."
     },
     "faqSection": {
       "number": "04",
@@ -53,7 +53,7 @@
         },
         {
           "question": "¿Qué recibo exactamente?",
-          "answer": "Acceso extendido a ecentic Dominate: simulaciones continuas de agentes de IA en ChatGPT, Claude, Gemini y Perplexity, auto-optimización con publicación en un clic, alertas de deriva y generación UCP. También incluye onboarding personalizado para tu catálogo y precio para founders cuando termine el periodo de la oferta."
+          "answer": "Acceso extendido a ecentic Dominate: simulaciones en ChatGPT, Claude y Gemini, correcciones en un clic publicadas en tu tienda, sincronización con Google Merchant Center para tiendas Shopify y configuración del checkout para agentes. También incluye onboarding personalizado para tu catálogo y precio para founders cuando termine el periodo de la oferta."
         },
         {
           "question": "¿Necesito una cuenta antes?",

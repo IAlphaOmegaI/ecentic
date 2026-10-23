@@ -2,7 +2,7 @@
   "yc": {
     "meta": {
       "title": "ecentic for Y Combinator — redeem your deal",
-      "description": "An exclusive ecentic deal for Y Combinator students: extended access on any plan, white-glove onboarding, and student pricing. Redeem in under two minutes."
+      "description": "An exclusive ecentic deal for Y Combinator founders: extended access on any plan, white-glove onboarding, and founder pricing. Redeem in under two minutes."
     },
     "breadcrumb": {
       "home": "Home",
@@ -14,20 +14,20 @@
         "primary": "Your ecentic deal,",
         "accent": "ready to redeem."
       },
-      "description": "An exclusive ecentic deal for Y Combinator students: extended access on any plan, white-glove onboarding, and student pricing. Redeem in under two minutes.",
+      "description": "An exclusive ecentic deal for Y Combinator founders: extended access on any plan, white-glove onboarding, and founder pricing. Redeem in under two minutes.",
       "art": {
         "alt": "ASCII-art illustration of a handshake"
       },
       "badge": {
         "alt": "Y Combinator",
-        "label": "Exclusive partner deal"
+        "label": "Founder deal"
       }
     },
     "deal": {
       "number": "01",
       "title": "What's in the deal",
-      "description": "Built for YC students who would rather win AI agent recommendations than babysit a listings spreadsheet.",
-      "content": "ecentic shows you how AI shopping agents compare your products against competitors, diagnoses why you win or lose, and rewrites your listings to close the gap. Your YC discount applies to whichever plan fits: Compete, Scale, or Dominate.\n\n- Agent simulations across ChatGPT, Claude, Gemini, and Perplexity on every plan\n- Continuous simulations and auto-optimization with one-click publish from Scale up\n- Model drift alerts and UCP generation on Dominate, so agents can verify your catalog directly\n- White-glove onboarding for your catalog and student pricing after the deal period\n\nRedeem below and we'll verify your batch, then email your activation link within one business day."
+      "description": "Built for YC founders who would rather get picked by AI shopping agents than babysit a listings spreadsheet.",
+      "content": "ecentic shows you how AI shopping agents compare your products against competitors, diagnoses why you win or lose, and rewrites your listings to close the gap. Your YC discount applies to whichever plan fits: Compete, Scale, or Dominate.\n\n- Simulations on ChatGPT, Claude and Gemini on every plan\n- One-click fixes published to your store from Scale up\n- Google Merchant Center sync for Shopify stores and agent checkout setup on Dominate\n- White-glove onboarding for your catalog and founder pricing after the deal period\n\nRedeem below and we'll verify your batch, then email your activation link within one business day."
     },
     "redeem": {
       "number": "02",
@@ -37,8 +37,8 @@
     "howItWorks": {
       "number": "03",
       "title": "How redemption works",
-      "description": "Three steps from form to live deal. Most students are running their first simulation the same day.",
-      "content": "There is no procurement maze here. The whole point is to get you simulating fast.\n\n- Submit the form with your company, batch, and what you want ecentic to help you win\n- We verify your batch against the YC directory, usually the same day\n- You get an activation link and white-glove help importing your catalog\n\nOnce your catalog is in, ecentic runs it through the major AI shopping models, shows you why competitors get picked, and turns the findings into listing changes you can approve in one click."
+      "description": "Three steps from form to live deal. Most founders are running their first simulation the same day.",
+      "content": "There is no procurement maze here. The whole point is to get you simulating fast.\n\n- Submit the form with your company, batch, and what you want ecentic to help you win\n- We verify your batch against the YC directory, usually the same day\n- You get an activation link and white-glove help importing your catalog\n\nOnce your catalog is in, ecentic runs it through the major AI shopping models, shows you why competitors get picked, and turns the findings into listing fixes you publish in one click."
     },
     "faqSection": {
       "number": "04",
@@ -53,7 +53,7 @@
         },
         {
           "question": "What do I actually get?",
-          "answer": "Your student discount on whichever ecentic plan you pick: Compete, Scale, or Dominate. Every plan runs AI agent simulations across ChatGPT, Claude, Gemini, and Perplexity; Scale adds continuous simulations and auto-optimization with one-click publish; Dominate adds model drift alerts and UCP generation. All of them include white-glove onboarding for your catalog and student pricing when the deal period ends."
+          "answer": "Your founder discount on whichever ecentic plan you pick: Compete, Scale, or Dominate. Every plan runs simulations on ChatGPT, Claude and Gemini; Scale adds one-click fixes published to your store; Dominate adds Google Merchant Center sync for Shopify stores and agent checkout setup. All of them include white-glove onboarding for your catalog and founder pricing when the deal period ends."
         },
         {
           "question": "Do I need an account first?",
@@ -68,11 +68,11 @@
     "footer": {
       "primary": "Create your account",
       "secondary": "Book a demo",
-      "note": "YC students only. We verify your batch before activating the deal."
+      "note": "YC founders only. We verify your batch before activating the deal."
     },
     "structuredData": {
-      "offerName": "ecentic Y Combinator student deal",
-      "eligibleCustomerType": "Y Combinator students"
+      "offerName": "ecentic Y Combinator founder deal",
+      "eligibleCustomerType": "Y Combinator founders"
     }
   }
 }

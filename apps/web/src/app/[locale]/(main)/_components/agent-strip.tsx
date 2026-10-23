@@ -2,13 +2,13 @@ import Image from "next/image";
 import chatgpt from "@/public/images/chatgpt.svg";
 import claude from "@/public/images/claude.svg";
 import gemini from "@/public/images/gemini.svg";
-import perplexity from "@/public/images/perplexity.svg";
 
+// The scan panel: the models `background-scan.ts` simulates. Perplexity is
+// tracked as a visit source but does not judge, so it stays off this strip.
 const agents = [
   { name: "ChatGPT", logo: chatgpt },
   { name: "Claude", logo: claude },
   { name: "Gemini", logo: gemini },
-  { name: "Perplexity", logo: perplexity },
 ] as const;
 
 export const AgentStrip = ({ label }: AgentStrip.Props) => (

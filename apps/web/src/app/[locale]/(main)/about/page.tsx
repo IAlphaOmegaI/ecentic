@@ -81,7 +81,7 @@ export default async () => {
     {
       id: "iseld-muca",
       name: "Iseld Muça",
-      linkedin: "https://www.linkedin.com/in/iseldmuca",
+      linkedin: "https://www.linkedin.com/in/iseld-muca-532786311",
       role: translate("team.members.iseld.role"),
       bio: translate("team.members.iseld.bio"),
     },

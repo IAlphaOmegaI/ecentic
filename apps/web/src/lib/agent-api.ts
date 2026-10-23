@@ -230,7 +230,7 @@ export const PLAN_CATALOG = [
     currency: "USD",
     performanceFee: null,
     summary:
-      "One-time free simulation of your top 10 products across ChatGPT, Claude, Gemini, and Perplexity.",
+      "One-time free simulation of your top 10 products across ChatGPT, Claude and Gemini.",
   },
   {
     key: "payg",
@@ -254,7 +254,7 @@ export const PLAN_CATALOG = [
     currency: "USD",
     performanceFee: null,
     summary:
-      "Up to 100 products, daily agent simulations, competitor battlecards, manual optimization suggestions.",
+      "Up to 100 products, agent simulations and rescans, competitor battlecards, field-by-field fix suggestions.",
   },
   {
     key: "scale",
@@ -263,7 +263,8 @@ export const PLAN_CATALOG = [
     price: { amountCents: 4490, interval: "month" },
     currency: "USD",
     performanceFee: null,
-    summary: "Automated listing optimization on top of the Compete loop.",
+    summary:
+      "Up to 1000 products, with one-click fixes published to your store on top of the Compete loop.",
   },
   {
     key: "dominate",
@@ -272,7 +273,8 @@ export const PLAN_CATALOG = [
     price: { amountCents: 14900, interval: "month" },
     currency: "USD",
     performanceFee: null,
-    summary: "Top tier — the full optimization loop across the whole catalog.",
+    summary:
+      "Everything in Scale plus Google Merchant Center sync for Shopify stores and agent checkout setup through UCP.",
   },
 ] as const;
 

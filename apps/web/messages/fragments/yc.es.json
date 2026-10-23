@@ -2,7 +2,7 @@
   "yc": {
     "meta": {
       "title": "ecentic para Y Combinator — canjea tu oferta",
-      "description": "Una oferta exclusiva de ecentic para estudiantes de Y Combinator: acceso extendido en cualquier plan, onboarding personalizado y precio para estudiantes. Canjea en menos de dos minutos."
+      "description": "Una oferta exclusiva de ecentic para founders de Y Combinator: acceso extendido en cualquier plan, onboarding personalizado y precio para founders. Canjea en menos de dos minutos."
     },
     "breadcrumb": {
       "home": "Inicio",
@@ -14,20 +14,20 @@
         "primary": "Tu oferta ecentic,",
         "accent": "lista para canjear."
       },
-      "description": "Una oferta exclusiva de ecentic para estudiantes de Y Combinator: acceso extendido en cualquier plan, onboarding personalizado y precio para estudiantes. Canjea en menos de dos minutos.",
+      "description": "Una oferta exclusiva de ecentic para founders de Y Combinator: acceso extendido en cualquier plan, onboarding personalizado y precio para founders. Canjea en menos de dos minutos.",
       "art": {
         "alt": "Ilustración ASCII de un apretón de manos"
       },
       "badge": {
         "alt": "Y Combinator",
-        "label": "Oferta exclusiva de partner"
+        "label": "Oferta para founders"
       }
     },
     "deal": {
       "number": "01",
       "title": "Qué incluye la oferta",
-      "description": "Pensada para estudiantes de YC que prefieren ganar recomendaciones de agentes de IA antes que cuidar una hoja de cálculo de fichas.",
-      "content": "ecentic te muestra cómo los agentes de compra con IA comparan tus productos con los competidores, diagnostica por qué ganas o pierdes y reescribe tus fichas para cerrar la brecha. Tu descuento YC se aplica al plan que mejor te encaje: Compete, Scale o Dominate.\n\n- Simulaciones de agentes en ChatGPT, Claude, Gemini y Perplexity en todos los planes\n- Simulaciones continuas y auto-optimización con publicación en un clic desde Scale\n- Alertas de deriva de modelos y generación UCP en Dominate, para que los agentes verifiquen tu catálogo directamente\n- Onboarding personalizado para tu catálogo y precio para estudiantes tras el periodo de la oferta\n\nCanjea abajo y verificaremos tu batch; luego te enviaremos el enlace de activación en un día laborable."
+      "description": "Pensada para founders de YC que prefieren que los agentes de compras con IA los elijan antes que cuidar una hoja de cálculo de fichas.",
+      "content": "ecentic te muestra cómo los agentes de compra con IA comparan tus productos con los competidores, diagnostica por qué ganas o pierdes y reescribe tus fichas para cerrar la brecha. Tu descuento YC se aplica al plan que mejor te encaje: Compete, Scale o Dominate.\n\n- Simulaciones en ChatGPT, Claude y Gemini en todos los planes\n- Correcciones en un clic publicadas en tu tienda desde Scale\n- Sincronización con Google Merchant Center para tiendas Shopify y configuración del checkout para agentes en Dominate\n- Onboarding personalizado para tu catálogo y precio para founders tras el periodo de la oferta\n\nCanjea abajo y verificaremos tu batch; luego te enviaremos el enlace de activación en un día laborable."
     },
     "redeem": {
       "number": "02",
@@ -37,8 +37,8 @@
     "howItWorks": {
       "number": "03",
       "title": "Cómo funciona el canje",
-      "description": "Tres pasos del formulario a la oferta activa. La mayoría de estudiantes ejecutan su primera simulación el mismo día.",
-      "content": "Aquí no hay laberinto de procurement. El objetivo es que empieces a simular rápido.\n\n- Envía el formulario con tu empresa, tu batch y qué quieres que ecentic te ayude a ganar\n- Verificamos tu batch contra el directorio de YC, normalmente el mismo día\n- Recibes un enlace de activación y ayuda personalizada para importar tu catálogo\n\nUna vez dentro tu catálogo, ecentic lo pasa por los principales modelos de compra con IA, te muestra por qué eligen a los competidores y convierte los hallazgos en cambios de ficha que puedes aprobar en un clic."
+      "description": "Tres pasos del formulario a la oferta activa. La mayoría de founders ejecutan su primera simulación el mismo día.",
+      "content": "Aquí no hay laberinto de procurement. El objetivo es que empieces a simular rápido.\n\n- Envía el formulario con tu empresa, tu batch y qué quieres que ecentic te ayude a ganar\n- Verificamos tu batch contra el directorio de YC, normalmente el mismo día\n- Recibes un enlace de activación y ayuda personalizada para importar tu catálogo\n\nUna vez dentro tu catálogo, ecentic lo pasa por los principales modelos de compra con IA, te muestra por qué eligen a los competidores y convierte los hallazgos en correcciones de ficha que publicas en un clic."
     },
     "faqSection": {
       "number": "04",
@@ -53,7 +53,7 @@
         },
         {
           "question": "¿Qué recibo exactamente?",
-          "answer": "Tu descuento de estudiante en el plan de ecentic que elijas: Compete, Scale o Dominate. Todos los planes ejecutan simulaciones de agentes de IA en ChatGPT, Claude, Gemini y Perplexity; Scale añade simulaciones continuas y auto-optimización con publicación en un clic; Dominate añade alertas de deriva de modelos y generación UCP. Todos incluyen onboarding personalizado para tu catálogo y precio para estudiantes cuando termine el periodo de la oferta."
+          "answer": "Tu descuento de founder en el plan de ecentic que elijas: Compete, Scale o Dominate. Todos los planes ejecutan simulaciones en ChatGPT, Claude y Gemini; Scale añade correcciones en un clic publicadas en tu tienda; Dominate añade sincronización con Google Merchant Center para tiendas Shopify y configuración del checkout para agentes. Todos incluyen onboarding personalizado para tu catálogo y precio para founders cuando termine el periodo de la oferta."
         },
         {
           "question": "¿Necesito una cuenta antes?",
@@ -68,11 +68,11 @@
     "footer": {
       "primary": "Crea tu cuenta",
       "secondary": "Reservar una demo",
-      "note": "Solo estudiantes YC. Verificamos tu batch antes de activar la oferta."
+      "note": "Solo founders de YC. Verificamos tu batch antes de activar la oferta."
     },
     "structuredData": {
-      "offerName": "Oferta ecentic para estudiantes de Y Combinator",
-      "eligibleCustomerType": "Estudiantes de Y Combinator"
+      "offerName": "Oferta ecentic para founders de Y Combinator",
+      "eligibleCustomerType": "Founders de Y Combinator"
     }
   }
 }

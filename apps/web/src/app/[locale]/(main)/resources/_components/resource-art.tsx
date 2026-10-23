@@ -7,7 +7,6 @@ import Background from "@/public/images/background.webp";
 import chatgpt from "@/public/images/chatgpt.svg";
 import claude from "@/public/images/claude.svg";
 import gemini from "@/public/images/gemini.svg";
-import perplexity from "@/public/images/perplexity.svg";
 import shopify from "@/public/images/shopify.svg";
 import ucp from "@/public/images/ucp.png";
 import woocommerce from "@/public/images/woocommerce.svg";
@@ -16,7 +15,6 @@ const agents = [
   { name: "ChatGPT", logo: chatgpt },
   { name: "Claude", logo: claude },
   { name: "Gemini", logo: gemini },
-  { name: "Perplexity", logo: perplexity },
 ] as const;
 
 const LogoTile = ({
@@ -41,7 +39,6 @@ const agentScores = [
   { name: "ChatGPT", logo: chatgpt, score: 78, bar: "bg-emerald-500" },
   { name: "Claude", logo: claude, score: 71, bar: "bg-orange-400" },
   { name: "Gemini", logo: gemini, score: 69, bar: "bg-blue-500" },
-  { name: "Perplexity", logo: perplexity, score: 74, bar: "bg-purple-500" },
 ] as const;
 
 export const ScanArt = async ({
@@ -361,7 +358,7 @@ export const GuideArt = ({ kind }: GuideArt.Props) => {
     case "how-it-works":
       return (
         <div className="flex items-center gap-2">
-          {agents.slice(0, 3).map((agent) => (
+          {agents.map((agent) => (
             <LogoTile key={agent.name} src={agent.logo} alt={agent.name} />
           ))}
         </div>

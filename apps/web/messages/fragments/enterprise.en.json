@@ -2,7 +2,7 @@
   "enterprise": {
     "meta": {
       "title": "Enterprise — agent commerce at scale",
-      "description": "Agent-commerce intelligence for enterprise merchants: multi-brand dashboards, API access, SSO, SOC 2 compliance, UCP signing, and a dedicated CSM team."
+      "description": "ecentic for enterprise merchants: every store in one account, API and MCP access, a DPA, and a founder on your account from day one."
     },
     "breadcrumb": {
       "home": "Home",
@@ -14,12 +14,12 @@
         "primary": "Agent-commerce infrastructure",
         "accent": "at scale."
       },
-      "description": "Multi-brand dashboards, API access, UCP signing, and dedicated support for commerce teams running hundreds of SKUs across multiple platforms.",
+      "description": "Every store in one account, API and MCP access, Merchant Center sync and agent checkout setup, for commerce teams running thousands of SKUs across stores and platforms.",
       "assurances": [
-        "Multi-brand dashboards",
-        "Custom API access",
-        "Dedicated CSM",
-        "SOC 2 in progress"
+        "Every store in one account",
+        "REST API, MCP and CLI",
+        "A founder on your account",
+        "DPA on request"
       ],
       "art": {
         "alt": "ASCII-art illustration of an office tower"
@@ -32,59 +32,59 @@
     "why": {
       "number": "01",
       "title": "When a single-brand plan stops being enough.",
-      "description": "Enterprise is for teams that need one agent-commerce layer across brands, regions, and security requirements, rather than another self-serve seat.",
+      "description": "Enterprise is for teams that need one account across brands, stores and security reviews, rather than another self-serve seat.",
       "paragraphs": [
-        "Dominate runs the full optimization loop for one brand. Enterprise adds the control plane: multi-brand rollups, SSO, API access, managed UCP signing, and a named CSM who owns the relationship.",
+        "Dominate runs the full loop for one store. Enterprise puts every store in one account, opens API and MCP access for your own tools, and puts a founder on the account with a direct line to engineering.",
         "The decision usually shows up when catalog size, brand count, or procurement requirements outgrow a flat monthly plan."
       ],
       "panelTitle": "Who this fits",
       "audiences": [
         {
           "title": "Multi-brand operators",
-          "description": "Teams running several storefronts or regions who need one win-rate and agent-traffic view."
+          "description": "Teams running several storefronts or regions who want every store's win rate in one view."
         },
         {
           "title": "Security-led buyers",
-          "description": "Organizations that need SSO, a DPA, and a clear path toward SOC 2 Type II."
+          "description": "Organizations that need a DPA and a filled-in security questionnaire. SSO and SOC 2 are on our roadmap, and we scope them with you on the call."
         },
         {
           "title": "Platform / data teams",
-          "description": "Groups that want read-only API access into scans, agent traffic, and UCP profiles."
+          "description": "Groups that want to connect stores and run onboarding from their own tools, through the REST API, the MCP server or the CLI."
         },
         {
           "title": "Commerce leadership",
-          "description": "Leaders who want a named CSM, quarterly reviews, and an engineering escalation path."
+          "description": "Leaders who want a founder on the account and a direct line to engineering."
         }
       ]
     },
     "capabilities": {
       "number": "02",
       "title": "Everything in Dominate, plus the enterprise layer.",
-      "description": "The security, scale, and support layer enterprise teams need to run agent-commerce optimization across brands.",
+      "description": "What enterprise teams get on top of Dominate to run agent-commerce optimization across brands and stores.",
       "items": [
         {
-          "title": "Multi-brand rollups",
-          "description": "One dashboard across every brand and region. Aggregate win-rate, agent traffic, and optimization lift in a single view."
+          "title": "Every store in one account",
+          "description": "Connect each brand and store to one account and see stores, products and win rates side by side in one view."
         },
         {
-          "title": "API access",
-          "description": "Read-only API for programmatic access to scan results, agent traffic, and UCP profiles."
+          "title": "API, MCP and CLI",
+          "description": "Connect stores, check onboarding and manage API keys from your own tools or AI agents, through the REST API, the MCP server or the ecentic CLI."
         },
         {
-          "title": "SSO",
-          "description": "Okta, Google Workspace, and Azure AD supported. Provision seats without touching ecentic directly."
+          "title": "Merchant Center and agent checkout",
+          "description": "Google Merchant Center sync for Shopify stores and agent checkout setup through UCP, including the free ecentic plugin for WooCommerce."
         },
         {
-          "title": "SOC 2 Type II",
-          "description": "Audit in progress. Data residency options, GDPR-compliant processing, and a DPA on request."
+          "title": "DPA and security review",
+          "description": "We sign a DPA on request and answer your security questionnaire before you connect a live store."
         },
         {
-          "title": "UCP signing service",
-          "description": "ecentic manages cryptographic signing of your UCP profile so agents can verify merchant identity."
+          "title": "SSO and SOC 2, planned",
+          "description": "SOC 2 is on our roadmap, timed to customer security reviews, and so is SSO beyond Google sign-in. Tell us what your review needs and we'll scope it on the call."
         },
         {
-          "title": "Dedicated CSM",
-          "description": "A named customer success manager, quarterly business reviews, and direct engineering escalation."
+          "title": "A founder on your account",
+          "description": "One of the founders owns the relationship, with a direct line to the engineers who build the product."
         }
       ],
       "paragraph": "We scope Enterprise around catalog size, platforms, and compliance needs, then share a custom ROI estimate before anyone writes a procurement deck.",
@@ -107,25 +107,25 @@
     "compare": {
       "number": "03",
       "title": "Where Dominate ends and Enterprise begins.",
-      "description": "Dominate runs the full optimization loop for a single brand. Enterprise adds security, scale, and support for multi-brand commerce teams.",
+      "description": "Dominate runs the full optimization loop for a single store. Enterprise adds every store in one account, API access and a founder on your account.",
       "dominate": {
         "badge": "Dominate",
-        "title": "Full loop for one brand.",
-        "description": "Continuous simulations, auto-optimization, and UCP generation for a single catalog up to 1000 products.",
+        "title": "Full loop for one store.",
+        "description": "Simulations, rescans, one-click fixes, Merchant Center sync and agent checkout setup for a single catalog up to 1000 products.",
         "strengths": [
-          "$149/mo with continuous agent simulations",
-          "Auto-optimization and UCP generation included",
-          "Best fit for a single brand up to 1000 products"
+          "$149/mo for the full loop",
+          "Merchant Center sync and agent checkout setup included",
+          "Best fit for a single store up to 1000 products"
         ]
       },
       "enterprise": {
         "badge": "Enterprise",
         "title": "Control plane for multi-brand teams.",
-        "description": "Everything in Dominate, plus multi-brand rollups, API access, SSO, managed UCP signing, and a dedicated CSM.",
+        "description": "Everything in Dominate, plus every store in one account, API and MCP access, a DPA, and a founder on your account.",
         "strengths": [
-          "Custom limits across brands and regions",
-          "SSO, API access, and UCP signing service",
-          "Named CSM with quarterly business reviews"
+          "Custom limits across brands and stores",
+          "REST API, MCP server and CLI",
+          "A founder on the account, with a direct line to engineering"
         ]
       },
       "paragraph": "Stay on Dominate while one brand owns the loop. Move to Enterprise when brand count, security review, or reporting requirements need a shared layer.",
@@ -133,19 +133,19 @@
       "triggers": [
         {
           "title": "Multiple brands or regions",
-          "description": "You need rollups across storefronts instead of separate Dominate seats."
+          "description": "You need every storefront in one account instead of separate Dominate seats."
         },
         {
-          "title": "SSO or DPA required",
-          "description": "Security or legal review blocks a self-serve plan until identity and contracts are covered."
+          "title": "A DPA or security review",
+          "description": "Legal or security review blocks a self-serve plan until the contract and their questions are covered."
         },
         {
-          "title": "Data must leave the UI",
-          "description": "Your analytics stack needs API access to scans, agent traffic, and UCP profiles."
+          "title": "Your own tools need in",
+          "description": "Your team wants to connect stores and run onboarding from its own tools or AI agents."
         },
         {
           "title": "A named owner matters",
-          "description": "You want a CSM, quarterly reviews, and a direct path into engineering."
+          "description": "You want a founder on the account and a direct path into engineering."
         }
       ]
     },
@@ -158,7 +158,7 @@
       "items": [
         {
           "question": "When should I choose Enterprise over Dominate?",
-          "answer": "Choose Enterprise when you run hundreds of SKUs across multiple brands or regions, need SSO or a DPA, want UCP signing managed for you, or need a dedicated CSM and custom API access. Dominate covers the full optimization loop for a single brand up to 1000 products."
+          "answer": "Choose Enterprise when you run thousands of SKUs across several brands or stores, need a DPA or a security review, or want API access and a founder on your account. Dominate covers the full optimization loop for a single store up to 1000 products."
         },
         {
           "question": "What does onboarding look like for Enterprise?",
@@ -166,11 +166,11 @@
         },
         {
           "question": "Is SOC 2 available today?",
-          "answer": "SOC 2 Type II is in progress. Enterprise accounts can request our DPA, discuss data residency options, and review our security posture during the sales process."
+          "answer": "Not yet. SOC 2 is on our roadmap, timed to customer security reviews. We'll answer your security questionnaire and sign a DPA now."
         },
         {
           "question": "Can Enterprise connect to our existing data stack?",
-          "answer": "Yes. Enterprise includes read-only API access for scan results, agent traffic, and UCP profiles so you can integrate ecentic data into your own analytics and reporting tools."
+          "answer": "Partly, today. The REST API, the MCP server and the CLI connect stores, report onboarding status and manage API keys. If your team needs scan results in its own tools, tell us on the call and we'll scope it."
         }
       ]
     },
@@ -179,7 +179,7 @@
         "primary": "Book a demo",
         "secondary": "View pricing"
       },
-      "note": "SOC 2 in progress · DPA on request"
+      "note": "DPA on request · A founder on your account"
     }
   }
 }

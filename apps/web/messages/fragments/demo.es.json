@@ -2,7 +2,7 @@
   "demo": {
     "meta": {
       "title": "Reservar una demo — ve tu tasa de victoria con IA en vivo",
-      "description": "Reserva una demo de 15 minutos de ecentic. Ejecutamos tus productos principales en ChatGPT, Claude, Gemini y Perplexity en vivo y definimos las correcciones de fichas de mayor impacto."
+      "description": "Reserva una demo de 15 minutos de ecentic. Pasamos tus productos principales por ChatGPT, Claude y Gemini en vivo y definimos las correcciones de fichas de mayor impacto."
     },
     "breadcrumb": {
       "home": "Inicio",
@@ -14,7 +14,7 @@
         "primary": "Ve tu tasa de victoria con IA,",
         "accent": "en vivo en 15 minutos."
       },
-      "description": "Ejecutamos tus productos principales en ChatGPT, Claude, Gemini y Perplexity mientras miras, te mostramos por qué ganas o pierdes y definimos las correcciones de fichas de mayor impacto. Elige un hueco abajo.",
+      "description": "Pasamos tus productos principales por ChatGPT, Claude y Gemini mientras miras, te mostramos por qué ganas o pierdes y definimos las correcciones de fichas de mayor impacto. Elige un hueco abajo.",
       "assurances": [
         "15 minutos, no un deck de diapositivas",
         "Sin cuenta ni conexión de catálogo",
@@ -51,7 +51,7 @@
         },
         {
           "title": "Bosquejar el ciclo",
-          "description": "Cómo sería un ciclo de optimización continuo para tu catálogo."
+          "description": "Cómo sería un ciclo de optimización recurrente para tu catálogo."
         }
       ]
     },

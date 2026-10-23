@@ -18,7 +18,7 @@
       "description": "Los sistemas de compras con IA comparan tus datos de producto en segundos. ecentic convierte páginas de producto perdedoras en entradas de compra más claras, para agentes y para los compradores de alta intención que te envían.",
       "assurances": [
         "Títulos, descripciones y datos estructurados",
-        "Reescrituras listas para aprobar",
+        "Correcciones en un clic",
         "Publica de vuelta en Shopify y WooCommerce"
       ],
       "art": {
@@ -79,8 +79,8 @@
     "workflow": {
       "number": "03",
       "title": "Un ciclo cerrado, no una reescritura puntual.",
-      "description": "El flujo va de simulación a diagnóstico a actualización de ficha lista para aprobar, sin reconstruir tu catálogo desde cero.",
-      "paragraph": "Simula quién gana, diagnostica las brechas y publica la corrección de vuelta en la tienda. El mismo ciclo funciona tanto si limpias un puñado de SKU prioritarios como si ejecutas operaciones continuas de catálogo.",
+      "description": "El flujo va de la simulación al diagnóstico y a una corrección de ficha que publicas en un clic, sin reconstruir tu catálogo desde cero.",
+      "paragraph": "Simula quién gana, diagnostica las brechas y publica la corrección de vuelta en la tienda. El mismo ciclo funciona tanto si limpias un puñado de SKU prioritarios como si recorres todo el catálogo.",
       "panelTitle": "Simular, diagnosticar, publicar",
       "audiences": [
         {
@@ -111,7 +111,7 @@
         },
         {
           "title": "Publicar",
-          "description": "Títulos, descripciones y datos de producto aprobados se envían directamente a plataformas compatibles en lugar de copiarse a mano."
+          "description": "Los nuevos títulos, descripciones y datos de producto llegan a tu tienda cuando haces clic en Aplicar, en lugar de copiarse a mano."
         }
       ]
     },
@@ -124,7 +124,7 @@
           "href": "/platforms/shopify",
           "name": "Shopify",
           "title": "Ve el flujo para catálogos Shopify",
-          "description": "Conecta productos, referencia competidores y publica actualizaciones de fichas aprobadas de vuelta en Shopify.",
+          "description": "Conecta productos, compara con la competencia y publica correcciones de fichas de vuelta en Shopify.",
           "label": "Abrir página de Shopify",
           "color": "primary"
         },
@@ -175,7 +175,7 @@
         },
         {
           "question": "¿Cómo ayuda ecentic con la optimización de fichas de producto?",
-          "answer": "ecentic simula cómo los agentes de compras con IA comparan productos, muestra por qué gana un competidor y convierte esos hallazgos en títulos, descripciones y actualizaciones de fichas mejoradas que los comerciantes pueden aprobar y publicar."
+          "answer": "ecentic simula cómo los agentes de compras con IA comparan productos, muestra por qué gana un competidor y convierte esos hallazgos en nuevos títulos, descripciones y datos estructurados que los comerciantes publican en su tienda con un clic."
         }
       ]
     },

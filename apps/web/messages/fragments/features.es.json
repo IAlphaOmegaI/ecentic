@@ -16,7 +16,7 @@
       },
       "description": "Simula cómo los agentes de compras con IA comparan tus productos, ve exactamente por qué ganan los competidores y publica las correcciones de fichas que invierten el resultado, todo desde un solo ciclo.",
       "assurances": [
-        "Simula ChatGPT, Claude, Gemini y Perplexity",
+        "Simula ChatGPT, Claude y Gemini",
         "Reescrituras de fichas en un clic",
         "Tráfico de agentes en vivo"
       ],
@@ -32,7 +32,7 @@
         {
           "step": "Paso 01",
           "title": "Simular",
-          "description": "ecentic pide a los principales agentes de compras con IA que compren en tu catálogo frente a competidores reales, igual que hacen los compradores."
+          "description": "ecentic hace que ChatGPT, Claude y Gemini comparen tus productos con los de competidores reales, igual que lo harían para un comprador."
         },
         {
           "step": "Paso 02",
@@ -42,12 +42,12 @@
         {
           "step": "Paso 03",
           "title": "Optimizar",
-          "description": "Aprueba títulos, descripciones y datos estructurados reescritos, y publícalos de vuelta en tu tienda en un clic."
+          "description": "ecentic reescribe el título, la descripción y los datos estructurados. Haz clic en Aplicar y la corrección llega a tu tienda."
         },
         {
           "step": "Paso 04",
           "title": "Seguir",
-          "description": "Sigue tu tasa de victoria, las visitas de agentes de IA y los ingresos atribuidos semana a semana, y vuelve a escanear y repetir."
+          "description": "Vuelve a escanear después de una corrección para ver cómo se movió tu tasa de victoria. En Shopify, sigue las visitas que te envían los asistentes de IA, semana a semana."
         }
       ]
     },
@@ -58,7 +58,7 @@
       "items": [
         {
           "title": "Puntuación de tasa de victoria con IA",
-          "description": "Ve con qué frecuencia ChatGPT, Claude, Gemini y Perplexity eligen tus productos cuando un comprador pregunta qué comprar.",
+          "description": "Mira con qué frecuencia ChatGPT, Claude y Gemini eligen tu producto frente al de un competidor concreto, producto a producto.",
           "features": [
             "Tasas de victoria por agente",
             "Puntuación por producto",
@@ -72,21 +72,21 @@
           "features": [
             "Comparaciones lado a lado",
             "Detección de atributos faltantes",
-            "Referencias por categoría"
+            "Battlecards por competidor"
           ]
         },
         {
           "title": "Reescrituras de fichas en un clic",
-          "description": "Reescrituras listas para aprobar de títulos, descripciones y datos estructurados de producto, publicadas directamente en tu tienda.",
+          "description": "Nuevos títulos, descripciones y datos estructurados de producto, publicados en tu tienda cuando haces clic en Aplicar.",
           "features": [
-            "Borradores listos para aprobar",
+            "Se publica cuando haces clic en Aplicar",
             "Escritura de vuelta en Shopify + WooCommerce",
-            "Seguimiento de mejora antes/después"
+            "Mejora estimada por corrección"
           ]
         },
         {
           "title": "Analítica de tráfico de agentes",
-          "description": "Sabe cuándo un agente de IA visita tu tienda, qué productos lee y qué ingresos generan esas visitas.",
+          "description": "En Shopify, ve las visitas que hacen a tu tienda los asistentes y agentes de IA, y en qué productos aterrizan.",
           "features": [
             "Detección de visitas de agentes de IA",
             "Agregados diarios de tráfico",
@@ -94,21 +94,21 @@
           ]
         },
         {
-          "title": "Perfil UCP",
-          "description": "Un perfil de comerciante legible por máquina basado en el Universal Commerce Protocol, para que los agentes puedan confiar y verificar tu tienda.",
+          "title": "Checkout para agentes (UCP)",
+          "description": "En WooCommerce, el plugin gratuito de ecentic permite a los agentes buscar, llenar un carrito y pagar con UCP, y el pedido llega a tu tienda. En Shopify, ecentic revisa los ajustes de Merchant Center que necesita el checkout con agentes de Google.",
           "features": [
-            "Perfil autogenerado",
-            "Datos estructurados de producto",
-            "Identidad verificable por agentes"
+            "Plugin de WooCommerce con UCP alojado",
+            "Ajustes de checkout en Merchant Center (Shopify)",
+            "Validador y playground UCP gratuitos"
           ]
         },
         {
-          "title": "Reescaneos continuos",
-          "description": "Las puntuaciones caducan en cuanto un competidor actualiza una ficha. Los reescaneos programados mantienen cada producto referenciado.",
+          "title": "Sincronización con Google Merchant Center",
+          "description": "En Shopify, ecentic envía las correcciones que publicas a Merchant Center como feed suplementario, para que AI Mode y Gemini de Google lean los mismos datos de producto que muestra tu tienda. También señala los problemas de Merchant Center y los ajustes que necesita el checkout con agentes.",
           "features": [
-            "Escaneos programados del catálogo",
-            "Alertas de cambio en tasa de victoria",
-            "Detección de regresiones"
+            "Feed suplementario con tus correcciones",
+            "Diagnóstico de Merchant Center",
+            "Preparación para el checkout con agentes"
           ]
         }
       ]
@@ -129,8 +129,8 @@
         {
           "href": "/platforms/shopify",
           "eyebrow": "Shopify",
-          "title": "Conecta un catálogo Shopify y publica actualizaciones aprobadas",
-          "description": "Referencia productos, revisa por qué los agentes prefieren competidores y envía cambios de fichas aprobados de vuelta a Shopify.",
+          "title": "Conecta un catálogo Shopify y publica correcciones en un clic",
+          "description": "Compara productos, ve por qué los agentes prefieren a la competencia y envía correcciones de fichas a Shopify y a tu feed de Merchant Center.",
           "label": "Ver página de Shopify",
           "color": "accent"
         },

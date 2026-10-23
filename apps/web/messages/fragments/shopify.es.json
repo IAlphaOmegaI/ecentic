@@ -2,7 +2,7 @@
   "shopify": {
     "meta": {
       "title": "App de IA para Shopify: ChatGPT y compras con IA",
-      "description": "IA para tiendas Shopify que necesitan fichas de producto más sólidas, análisis de competidores más claro y actualizaciones aprobadas enviadas directamente al Shopify Admin."
+      "description": "ecentic para Shopify: descubre por qué los agentes de compras con IA eligen a la competencia, corrige títulos, descripciones y datos estructurados, y envía las correcciones a Merchant Center."
     },
     "breadcrumb": {
       "home": "Inicio",
@@ -14,10 +14,10 @@
         "primary": "IA para tiendas Shopify que necesitan",
         "accent": "más que copy automatizado."
       },
-      "description": "Conecta tu catálogo, ve por qué los agentes de compras con IA eligen competidores en lugar de ti, y publica actualizaciones de título y descripción aprobadas directamente en Shopify.",
+      "description": "Conecta tu catálogo, descubre por qué los agentes de compras con IA eligen a la competencia en lugar de a ti, y publica las correcciones directamente en Shopify y en tu feed de Merchant Center.",
       "assurances": [
         "Instalación en 2 minutos, sin desarrollador",
-        "Las actualizaciones aprobadas se escriben vía Admin API",
+        "Las correcciones se escriben vía Admin API",
         "Ve tu puntuación gratis primero"
       ],
       "art": {
@@ -64,7 +64,7 @@
       "number": "02",
       "title": "El flujo Shopify en ecentic.",
       "description": "El flujo conecta el catálogo, expone brechas competitivas y hace que las mejoras sean publicables de vuelta en Shopify en lugar de otro documento desconectado.",
-      "paragraph": "Conecta la tienda, elige los productos que importan, referéncialos frente a competidores y aprueba escrituras de vuelta vía Admin API. No sales del flujo de catálogo de Shopify.",
+      "paragraph": "Conecta la tienda, elige los productos que importan, compáralos con la competencia y haz clic en Aplicar para escribir las correcciones vía Admin API. No sales del flujo de catálogo de Shopify.",
       "panelTitle": "Conectar, diagnosticar, publicar",
       "outcomes": [
         {
@@ -76,8 +76,8 @@
           "description": "Mejor visibilidad de por qué las páginas de producto pierden frente a competidores concretos."
         },
         {
-          "title": "Revisar antes de publicar",
-          "description": "Revisión más rápida de actualizaciones de fichas antes de que lleguen a la tienda."
+          "title": "Tú decides qué se publica",
+          "description": "Nada cambia en tu tienda hasta que haces clic en Aplicar."
         },
         {
           "title": "Quedarse en Shopify",
@@ -98,8 +98,8 @@
           "description": "Los productos seleccionados se comparan con competidores para ver dónde los sistemas de IA prefieren otra opción, y por qué."
         },
         {
-          "title": "Aprobar y escribir de vuelta",
-          "description": "Revisa la versión más sólida de cada ficha y publica los cambios aprobados de vuelta en Shopify vía Admin API."
+          "title": "Aplicar y escribir de vuelta",
+          "description": "Haz clic en Aplicar en los productos que quieras corregir y ecentic publica el nuevo título, la descripción y los datos estructurados vía Admin API. Conecta Merchant Center y las mismas correcciones van a tu feed de Google."
         }
       ]
     },
@@ -125,7 +125,7 @@
           "Simula cómo los agentes de compras con IA comparan tus productos",
           "Referencia fichas frente a los competidores que siguen ganando",
           "Diagnostica por qué pierde una página: datos faltantes, posicionamiento débil, contexto poco claro",
-          "Convierte hallazgos en actualizaciones listas para aprobar publicadas de vuelta en Shopify"
+          "Convierte los hallazgos en correcciones que publicas en Shopify con un clic"
         ]
       },
       "paragraph": "La generación sola basta cuando la velocidad es el único objetivo. La distinción empieza a importar cuando el catálogo, los competidores o el proceso de revisión se interponen.",
@@ -197,15 +197,15 @@
       "items": [
         {
           "question": "¿Qué significa IA para tiendas Shopify en la práctica?",
-          "answer": "Para comerciantes Shopify, significa conectar el catálogo, entender cómo rinden los productos en comparaciones mediadas por IA, y convertir esos hallazgos en actualizaciones de fichas aprobadas que pueden escribirse de vuelta en Shopify."
+          "answer": "Para comerciantes Shopify, significa conectar el catálogo, entender cómo rinden los productos en comparaciones mediadas por IA, y convertir esos hallazgos en correcciones de fichas que publicas de vuelta en Shopify con un clic."
         },
         {
           "question": "¿En qué se diferencia de usar solo Shopify Magic?",
-          "answer": "Shopify Magic ayuda con generación de contenido nativa. ecentic añade simulación, referencia con competidores, diagnóstico y flujos de optimización listos para aprobar para que los comerciantes vean por qué pierden productos y qué arreglar después."
+          "answer": "Shopify Magic ayuda con generación de contenido nativa. ecentic añade simulación, referencia con competidores, diagnóstico y correcciones de fichas en un clic para que los comerciantes vean por qué pierden productos y qué arreglar después."
         },
         {
           "question": "¿Pueden los comerciantes Shopify publicar cambios de vuelta en la tienda?",
-          "answer": "Sí. El flujo documentado incluye enviar actualizaciones de título y descripción aprobadas de vuelta vía Shopify Admin API para comerciantes que quieren que el ciclo de optimización siga conectado al catálogo en vivo."
+          "answer": "Sí. Cuando haces clic en Aplicar, ecentic escribe el nuevo título, la descripción y los datos estructurados vía Shopify Admin API. Si conectas Google Merchant Center, también envía esas correcciones a tu feed de Google como fuente de datos suplementaria."
         },
         {
           "question": "¿Cuándo deberían los equipos Shopify ir más allá de las herramientas de IA nativas?",
