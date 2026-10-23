@@ -134,6 +134,52 @@ export default async () => {
       </ContentPageSection>
 
       <ContentPageSection
+        number={translate("howItWorks.number")}
+        title={translate("howItWorks.title")}
+        gutter
+      >
+        <div className="flex max-w-3xl flex-col gap-8">
+          <p className="font-light text-foreground-dimmed text-lg leading-relaxed">
+            {translate("howItWorks.intro")}
+          </p>
+          <ol className="flex flex-col gap-6">
+            {messages.about.howItWorks.steps.map((step, index) => (
+              <li key={step.title} className="flex gap-5">
+                <span className="text-2xl text-primary">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+                <div className="flex flex-col gap-2">
+                  <h3 className="font-body font-medium text-foreground text-xl">
+                    {step.title}
+                  </h3>
+                  <p className="font-light text-foreground-dimmed leading-relaxed">
+                    {step.description}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </ContentPageSection>
+
+      <ContentPageSection
+        number={translate("audience.number")}
+        title={translate("audience.title")}
+        gutter
+      >
+        <div className="flex max-w-3xl flex-col gap-5">
+          {messages.about.audience.paragraphs.map((paragraph) => (
+            <p
+              key={paragraph}
+              className="font-light text-foreground-dimmed text-lg leading-relaxed"
+            >
+              {paragraph}
+            </p>
+          ))}
+        </div>
+      </ContentPageSection>
+
+      <ContentPageSection
         number={translate("team.number")}
         title={translate("team.title")}
         gutter

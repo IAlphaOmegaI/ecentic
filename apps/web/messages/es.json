@@ -2965,7 +2965,7 @@
         "primary": "Consigue la venta",
         "accent": "cuando la IA hace la compra."
       },
-      "description": "Los compradores preguntan a ChatGPT y Gemini qué comprar, y el agente es quien elige. Nunca ve tu página de inicio. Lee tu feed de productos y tu catálogo, y en Google puede completar la compra por el comprador. ecentic optimiza ese feed y ese catálogo para que los agentes elijan tus productos y puedan comprarlos de verdad.",
+      "description": "Los compradores preguntan a ChatGPT y Gemini qué comprar, y el agente es quien elige. Nunca ve tu página de inicio. Lee tu feed de productos y tu catálogo. En Google, incluso puede completar la compra por el comprador. ecentic optimiza ese feed y ese catálogo para que los agentes elijan tus productos y puedan comprarlos.",
       "proof": "Configuración en 2 minutos · Sin tarjeta · Primero tu puntuación gratis",
       "team": {
         "lead": "¿Diriges un equipo de growth o e-commerce?",
@@ -2974,7 +2974,7 @@
       "entry": {
         "label": "La dirección de tu tienda",
         "placeholder": "tutienda.com",
-        "hint": "Funciona con Shopify, WooCommerce y la mayoría de tiendas: detectamos la tuya automáticamente.",
+        "hint": "Funciona con Shopify, WooCommerce y la mayoría de las demás tiendas. Detectamos cuál usas.",
         "action": {
           "primary": "Analizar mi tienda gratis",
           "secondary": "Instálala desde la Shopify App Store"
@@ -3105,7 +3105,7 @@
       },
       "diagnose": {
         "title": "Ve dónde pierdes",
-        "description": "ecentic pone tus productos delante de ChatGPT, Claude y Gemini junto a los de tus competidores y te muestra cuáles se quedan fuera, y el detalle que faltaba y costó la venta."
+        "description": "ecentic pone tus productos delante de ChatGPT, Claude y Gemini, junto a los de tus competidores. Te muestra cuáles se quedan fuera y el detalle que faltaba y costó la venta."
       },
       "optimize": {
         "title": "Corrígelo en el origen",
@@ -3133,7 +3133,7 @@
         },
         "ucp": {
           "title": "Lista para el checkout con agentes",
-          "description": "En WooCommerce, el plugin gratuito de ecentic permite a los agentes buscar, llenar un carrito y pagar con UCP, y el pedido llega a tu tienda. En Shopify, ecentic revisa los ajustes de Merchant Center que necesita el checkout con agentes de Google."
+          "description": "En WooCommerce, el plugin gratuito de ecentic permite a los agentes buscar, llenar un carrito y pagar con UCP. El pedido llega a tu tienda. En Shopify, ecentic revisa los ajustes de Merchant Center que necesita el checkout con agentes de Google."
         }
       }
     },
@@ -3193,7 +3193,7 @@
         },
         "diagnosis": {
           "title": "Por qué ganas o pierdes",
-          "description": "Un diagnóstico claro del título, el precio y las señales de confianza que ponderan los agentes."
+          "description": "Una explicación clara de por qué los agentes te eligen o te descartan: el título, el precio y las señales de confianza que ponderan."
         },
         "optimizations": {
           "title": "Tus primeras optimizaciones",
@@ -3215,11 +3215,11 @@
       "items": [
         {
           "question": "¿Qué es la optimización para compras con IA?",
-          "answer": "Es el trabajo de conseguir que tus productos se elijan, y se compren, cuando un comprador pregunta a un asistente de IA como ChatGPT o Gemini qué comprar. El asistente no navega por tu web. Lee tu feed de productos, tu catálogo y los datos estructurados de tus páginas de producto, y en Google puede completar la compra por el comprador. Así que el trabajo consiste en que esos datos estén completos y correctos frente a los competidores con los que se comparan, y en asegurarte de que un agente pueda terminar el pedido."
+          "answer": "Es el trabajo de conseguir que tus productos se elijan, y se compren, cuando un comprador pregunta a un asistente de IA como ChatGPT o Gemini qué comprar. El asistente no navega por tu web. Lee tu feed de productos, tu catálogo y los datos estructurados de tus páginas de producto. En Google, también puede completar la compra por el comprador. Así que el trabajo tiene dos partes. Que esos datos estén completos y correctos frente a los competidores con los que se comparan. Y que un agente pueda terminar el pedido."
         },
         {
           "question": "¿Cómo consigo que ChatGPT recomiende mis productos?",
-          "answer": "Dale a ChatGPT datos de producto completos y concretos que pueda comparar: un título claro, los atributos por los que preguntan los compradores, precio y stock correctos, y schema de Product en la página. ecentic compara tus productos con los de la competencia en ChatGPT, Claude y Gemini, te muestra cuáles pierden y por qué, y reescribe esas fichas."
+          "answer": "Dale a ChatGPT datos de producto completos y concretos que pueda comparar. Es decir, un título claro, los detalles por los que preguntan los compradores, precio y stock correctos, y schema de Product en la página. ecentic hace que ChatGPT, Claude y Gemini comparen tus productos con los de tus competidores. Te muestra cuáles pierden y por qué, y después reescribe esas fichas."
         },
         {
           "question": "¿ecentic funciona con Shopify y WooCommerce?",
@@ -3227,7 +3227,7 @@
         },
         {
           "question": "¿En qué se diferencia ecentic de las herramientas de seguimiento de visibilidad en IA?",
-          "answer": "Las herramientas de seguimiento te dicen cuántas veces mencionan tu marca los asistentes de IA. Las menciones no son ventas. ecentic trabaja producto a producto: ejecuta la decisión de compra frente a competidores concretos, muestra por qué pierde un producto, redacta la corrección, la publica en tu tienda y mide las visitas que llegan después desde la IA."
+          "answer": "Las herramientas de seguimiento te dicen cuántas veces mencionan tu marca los asistentes de IA. Las menciones no son ventas. ecentic trabaja producto a producto. Ejecuta la decisión de compra frente a competidores concretos y muestra por qué pierde un producto. Después redacta la corrección, la publica en tu tienda y mide las visitas que te envían los asistentes de IA."
         },
         {
           "question": "¿Cuánto cuesta ecentic?",
@@ -7635,7 +7635,7 @@
   "aiInstructions": {
     "meta": {
       "title": "Instrucciones para IA y datos oficiales",
-      "description": "La referencia oficial sobre cómo ChatGPT, Gemini, Claude, Perplexity y otros asistentes de IA deben describir ecentic: qué es, qué hace, sus precios y quién lo gestiona."
+      "description": "Instrucciones para IA dirigidas a ChatGPT, Gemini, Claude y Perplexity: los datos oficiales sobre qué es ecentic, qué hace, cuánto cuesta y quién lo gestiona."
     },
     "breadcrumb": {
       "home": "Inicio",
@@ -7824,7 +7824,7 @@
   },
   "about": {
     "meta": {
-      "title": "Sobre ecentic: optimización de feed y catálogo para compras con IA",
+      "title": "Sobre ecentic: optimización de compras con IA",
       "description": "ecentic optimiza feeds de productos y catálogos para que los agentes de compras con IA elijan los productos de una tienda y puedan comprarlos. Conoce a los tres fundadores."
     },
     "breadcrumb": {
@@ -7834,8 +7834,8 @@
     "hero": {
       "eyebrow": "Sobre nosotros",
       "title": {
-        "primary": "La empresa detrás de",
-        "accent": "ecentic."
+        "primary": "El equipo detrás de ecentic,",
+        "accent": "la app de optimización de compras con IA."
       },
       "description": "ecentic es optimización del feed de productos y del catálogo para agentes de compras con IA, hecha para tiendas Shopify y WooCommerce. Muestra cómo ChatGPT, Claude y Gemini comparan los productos de una tienda con los de la competencia, corrige los datos que leen esos agentes y prepara la tienda para el checkout con agentes.",
       "assurances": ["Fundada en 2026", "Hecha para Shopify y WooCommerce"],
@@ -7853,7 +7853,7 @@
       ]
     },
     "team": {
-      "number": "02",
+      "number": "04",
       "title": "Quién está detrás",
       "founder": {
         "role": "Cofundador y CEO",
@@ -7873,7 +7873,7 @@
       }
     },
     "details": {
-      "number": "03",
+      "number": "05",
       "title": "Datos de la empresa",
       "description": "La entidad legal que opera ecentic.",
       "labels": {
@@ -7891,6 +7891,37 @@
         "secondary": "Contactar con soporte"
       },
       "note": "Configuración en 2 minutos · Sin tarjeta · Ve tu puntuación gratis primero"
+    },
+    "howItWorks": {
+      "number": "02",
+      "title": "Cómo funciona",
+      "intro": "ecentic funciona en cuatro pasos. Nada cambia en tu tienda hasta que haces clic en Aplicar.",
+      "steps": [
+        {
+          "title": "Conecta tu tienda",
+          "description": "Instala ecentic desde la Shopify App Store o conecta WooCommerce con el plugin gratuito o con claves de la API REST. La configuración lleva unos dos minutos y no necesita desarrolladores. Cualquier otra tienda puede empezar con un análisis gratuito desde su dirección o un feed de productos."
+        },
+        {
+          "title": "Descubre dónde pierdes",
+          "description": "ecentic hace que ChatGPT, Claude y Gemini comparen tus productos con los de competidores concretos y elijan uno. Tu informe de tasa de victoria muestra cuántas veces gana cada producto y qué dato le faltó para ganar la venta."
+        },
+        {
+          "title": "Corrígelo en el origen",
+          "description": "ecentic reescribe el título, la descripción y los datos estructurados que leen los agentes. Cuando haces clic en Aplicar, la corrección se publica en tu tienda. En Shopify, las mismas correcciones pueden ir a tu feed de Google Merchant Center."
+        },
+        {
+          "title": "Mide el resultado",
+          "description": "Vuelve a analizar después de un cambio para ver la nueva tasa de victoria. En Shopify, ecentic también muestra las visitas que te envían los asistentes de IA, semana a semana."
+        }
+      ]
+    },
+    "audience": {
+      "number": "03",
+      "title": "Para quién es",
+      "paragraphs": [
+        "ecentic está hecho para marcas de e-commerce en Shopify y WooCommerce que quieren que se elijan sus productos cuando un comprador pregunta a un asistente de IA qué comprar. Quien suele decidir es el responsable de crecimiento, de e-commerce o de marketing, no un desarrollador.",
+        "Las tiendas más pequeñas se registran por su cuenta. El primer análisis es gratuito, no necesita tarjeta de crédito y cubre los 10 productos principales. Después, una tienda puede pagar por uso, con una comisión solo sobre los pedidos que le envían los asistentes de IA, o elegir un plan mensual fijo sin comisión."
+      ]
     }
   }
 }

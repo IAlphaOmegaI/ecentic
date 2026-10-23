@@ -1,7 +1,7 @@
 {
   "about": {
     "meta": {
-      "title": "About ecentic: feed and catalog optimization for AI shopping",
+      "title": "About ecentic: the AI shopping optimization app",
       "description": "ecentic optimizes product feeds and catalogs so AI shopping agents pick a store's products and can buy them. Meet the three founders."
     },
     "breadcrumb": {
@@ -11,8 +11,8 @@
     "hero": {
       "eyebrow": "About",
       "title": {
-        "primary": "The company behind",
-        "accent": "ecentic."
+        "primary": "The team behind ecentic,",
+        "accent": "the AI shopping optimization app."
       },
       "description": "ecentic is product feed and catalog optimization for AI shopping agents, built for Shopify and WooCommerce stores. It shows how ChatGPT, Claude and Gemini compare a store's products with competitors', fixes the data those agents read, and sets the store up for agent checkout.",
       "assurances": ["Founded 2026", "Built for Shopify and WooCommerce"],
@@ -29,8 +29,39 @@
         "ecentic works with Shopify and WooCommerce. Any other store can start with a free scan from its address."
       ]
     },
-    "team": {
+    "howItWorks": {
       "number": "02",
+      "title": "How it works",
+      "intro": "ecentic works in four steps. Nothing changes in your store until you click Apply.",
+      "steps": [
+        {
+          "title": "Connect your store",
+          "description": "Install ecentic from the Shopify App Store, or connect WooCommerce with the free plugin or REST API keys. Setup takes about two minutes and needs no developer. Any other store can start with a free scan from its address or a product feed."
+        },
+        {
+          "title": "See where you lose",
+          "description": "ecentic has ChatGPT, Claude and Gemini compare your products with named competitors' products and pick one. Your Win Rate Report shows how often each product wins, and the missing detail that cost it the sale."
+        },
+        {
+          "title": "Fix it at the source",
+          "description": "ecentic rewrites the title, description and structured data that agents read. When you click Apply, the fix goes live in your store. On Shopify, the same fixes can go into your Google Merchant Center feed."
+        },
+        {
+          "title": "Track the payoff",
+          "description": "Rescan after a change to see the new win rate. On Shopify, ecentic also shows the visits AI assistants send you, week over week."
+        }
+      ]
+    },
+    "audience": {
+      "number": "03",
+      "title": "Who it is for",
+      "paragraphs": [
+        "ecentic is built for e-commerce brands on Shopify and WooCommerce that want their products picked when a shopper asks an AI assistant what to buy. The usual buyer is a head of growth, a head of e-commerce or a marketing lead, not a developer.",
+        "Smaller stores sign up on their own. The first scan is free, needs no credit card and covers the top 10 products. After that a store can pay as you go, with a fee only on orders that AI assistants send it, or choose a flat monthly plan with no fee."
+      ]
+    },
+    "team": {
+      "number": "04",
       "title": "Who is behind it",
       "intro": "The three founders met at 14 in high school and have built together for seven years. Before ecentic they ran zennit, a development studio, and LookUp, a parking startup that reached €10K in monthly revenue, raised a $125K pre-seed and had a small exit.",
       "founder": {
@@ -50,7 +81,7 @@
       }
     },
     "details": {
-      "number": "03",
+      "number": "05",
       "title": "Company details",
       "description": "The legal entity that operates ecentic.",
       "labels": {

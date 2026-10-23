@@ -1,7 +1,7 @@
 {
   "about": {
     "meta": {
-      "title": "Sobre ecentic: optimización de feed y catálogo para compras con IA",
+      "title": "Sobre ecentic: optimización de compras con IA",
       "description": "ecentic optimiza feeds de productos y catálogos para que los agentes de compras con IA elijan los productos de una tienda y puedan comprarlos. Conoce a los tres fundadores."
     },
     "breadcrumb": {
@@ -11,8 +11,8 @@
     "hero": {
       "eyebrow": "Sobre nosotros",
       "title": {
-        "primary": "La empresa detrás de",
-        "accent": "ecentic."
+        "primary": "El equipo detrás de ecentic,",
+        "accent": "la app de optimización de compras con IA."
       },
       "description": "ecentic es optimización del feed de productos y del catálogo para agentes de compras con IA, hecha para tiendas Shopify y WooCommerce. Muestra cómo ChatGPT, Claude y Gemini comparan los productos de una tienda con los de la competencia, corrige los datos que leen esos agentes y prepara la tienda para el checkout con agentes.",
       "assurances": ["Fundada en 2026", "Hecha para Shopify y WooCommerce"],
@@ -29,8 +29,39 @@
         "ecentic funciona con Shopify y WooCommerce. Cualquier otra tienda puede empezar con un análisis gratuito desde su dirección."
       ]
     },
-    "team": {
+    "howItWorks": {
       "number": "02",
+      "title": "Cómo funciona",
+      "intro": "ecentic funciona en cuatro pasos. Nada cambia en tu tienda hasta que haces clic en Aplicar.",
+      "steps": [
+        {
+          "title": "Conecta tu tienda",
+          "description": "Instala ecentic desde la Shopify App Store o conecta WooCommerce con el plugin gratuito o con claves de la API REST. La configuración lleva unos dos minutos y no necesita desarrolladores. Cualquier otra tienda puede empezar con un análisis gratuito desde su dirección o un feed de productos."
+        },
+        {
+          "title": "Descubre dónde pierdes",
+          "description": "ecentic hace que ChatGPT, Claude y Gemini comparen tus productos con los de competidores concretos y elijan uno. Tu informe de tasa de victoria muestra cuántas veces gana cada producto y qué dato le faltó para ganar la venta."
+        },
+        {
+          "title": "Corrígelo en el origen",
+          "description": "ecentic reescribe el título, la descripción y los datos estructurados que leen los agentes. Cuando haces clic en Aplicar, la corrección se publica en tu tienda. En Shopify, las mismas correcciones pueden ir a tu feed de Google Merchant Center."
+        },
+        {
+          "title": "Mide el resultado",
+          "description": "Vuelve a analizar después de un cambio para ver la nueva tasa de victoria. En Shopify, ecentic también muestra las visitas que te envían los asistentes de IA, semana a semana."
+        }
+      ]
+    },
+    "audience": {
+      "number": "03",
+      "title": "Para quién es",
+      "paragraphs": [
+        "ecentic está hecho para marcas de e-commerce en Shopify y WooCommerce que quieren que se elijan sus productos cuando un comprador pregunta a un asistente de IA qué comprar. Quien suele decidir es el responsable de crecimiento, de e-commerce o de marketing, no un desarrollador.",
+        "Las tiendas más pequeñas se registran por su cuenta. El primer análisis es gratuito, no necesita tarjeta de crédito y cubre los 10 productos principales. Después, una tienda puede pagar por uso, con una comisión solo sobre los pedidos que le envían los asistentes de IA, o elegir un plan mensual fijo sin comisión."
+      ]
+    },
+    "team": {
+      "number": "04",
       "title": "Quién está detrás",
       "intro": "Los tres fundadores se conocieron a los 14 años en el instituto y llevan siete años construyendo juntos. Antes de ecentic dirigieron zennit, un estudio de desarrollo, y LookUp, una startup de aparcamiento que llegó a 10.000 € de ingresos mensuales, levantó una ronda pre-seed de 125.000 $ y tuvo una pequeña salida.",
       "founder": {
@@ -50,7 +81,7 @@
       }
     },
     "details": {
-      "number": "03",
+      "number": "05",
       "title": "Datos de la empresa",
       "description": "La entidad legal que opera ecentic.",
       "labels": {
