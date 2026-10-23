@@ -27,9 +27,10 @@ export const Hero = async () => {
           The frame is sized to the headline-and-entry block rather than the
           whole section, so the two hands meet around the store field — the
           handoff the artwork is about — instead of drifting behind the film.
-          `sizes` stays deliberately under-declared: the texture sits at low
-          opacity behind an inversion, where half-resolution is invisible and
-          the bytes are not. */}
+          `sizes` stays deliberately under-declared and `quality` low for the
+          same reason: the texture sits at low opacity behind an inversion,
+          where half-resolution and heavier compression are invisible and the
+          bytes are not. */}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-20 -z-20 h-[34rem] md:top-6 md:h-[44rem]"
@@ -40,6 +41,7 @@ export const Hero = async () => {
           fill
           loading="eager"
           fetchPriority="high"
+          quality={50}
           sizes="(max-width: 768px) 60vw, 1000px"
           className="select-none object-contain object-center opacity-50 invert"
         />

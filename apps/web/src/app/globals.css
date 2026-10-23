@@ -3,7 +3,6 @@
 
 @theme inline {
   --font-body: var(--font-redhat-display);
-  --font-superior: var(--font-lt-superior);
 }
 
 html {

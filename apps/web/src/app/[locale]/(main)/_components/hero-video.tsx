@@ -17,6 +17,10 @@ import { useDocument } from "@/hooks/use-document";
 const source = "/videos/ecentic-launch-20261008.mp4";
 const loop = "/videos/ecentic-launch-preview-20261008.mp4";
 const poster = "/videos/ecentic-launch-poster-20261008.webp";
+// The in-page preview is at most 896px wide, and its poster downloads with the
+// hero, against the LCP image. 960w is 22KB to the full poster's 81KB; the
+// full one stays for the 1080p film in the dialog.
+const still = "/videos/ecentic-launch-poster-20261008-960.webp";
 
 // Only the short, silent preview can load automatically. The complete 58s,
 // 1080p/60fps film is mounted after the visitor opens the dialog.
@@ -95,7 +99,7 @@ export const HeroVideo = () => {
           width={960}
           height={540}
           src={preview ? loop : undefined}
-          poster={poster}
+          poster={still}
           className="aspect-video w-full object-cover"
         />
         <span

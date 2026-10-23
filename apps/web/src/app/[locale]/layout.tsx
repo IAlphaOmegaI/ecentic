@@ -2,7 +2,6 @@ import { GoogleAnalytics } from "@next/third-parties/google";
 import { ToastProvider } from "@zenncore/web/components/toast";
 import type { Metadata } from "next";
 import { Red_Hat_Display } from "next/font/google";
-import localFont from "next/font/local";
 import Script from "next/script";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { type PropsWithChildren, Suspense } from "react";
@@ -22,40 +21,12 @@ import { ClientMessages } from "@/i18n/client-messages";
 import { openGraphLocale } from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
 
+// The only face loaded on every route. LT Superior is declared where it is
+// drawn (`PageBanner`), so next/font preloads it only on the routes that render
+// a banner instead of putting four weights on the homepage's critical path.
 const redHatDisplay = Red_Hat_Display({
   subsets: ["latin"],
   variable: "--font-redhat-display",
-});
-
-// woff2, subset to latin + latin-ext: 1357KB of TTF became 135KB. TTF is a
-// desktop format and was costing ~170KB per weight over the wire even after
-// brotli. The `.ttf` originals stay on disk — `lib/og.tsx` feeds them to Satori,
-// which cannot read woff2 — they are simply no longer what browsers fetch.
-const ltSuperior = localFont({
-  src: [
-    {
-      path: "../../../public/fonts/LTSuperior/LTSuperior-Regular.woff2",
-      weight: "400",
-      style: "normal",
-    },
-    {
-      path: "../../../public/fonts/LTSuperior/LTSuperior-Medium.woff2",
-      weight: "500",
-      style: "normal",
-    },
-    {
-      path: "../../../public/fonts/LTSuperior/LTSuperior-SemiBold.woff2",
-      weight: "600",
-      style: "normal",
-    },
-    {
-      path: "../../../public/fonts/LTSuperior/LTSuperior-Bold.woff2",
-      weight: "700",
-      style: "normal",
-    },
-  ],
-  variable: "--font-lt-superior",
-  display: "swap",
 });
 
 export const generateStaticParams = () =>
@@ -151,12 +122,9 @@ export default async ({ children }: PropsWithChildren) => {
           // biome-ignore lint/security/noDangerouslySetInnerHtml: must be inline to run before paint
           dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }}
         />
-        <link rel="preconnect" href="https://eu.i.posthog.com" />
-        <link
-          rel="preconnect"
-          href="https://eu-assets.i.posthog.com"
-          crossOrigin="anonymous"
-        />
+        {/* No PostHog preconnects: PostHog loads only once the cookie banner
+            is accepted (`context/posthog.tsx`), so an early handshake with its
+            hosts was spent on every visitor who never consents. */}
         <link rel="preconnect" href="https://www.googletagmanager.com" />
         {/* {process.env.NODE_ENV === "development" && (
           <Script
@@ -222,7 +190,7 @@ export default async ({ children }: PropsWithChildren) => {
         <meta name="apple-mobile-web-app-title" content="ecentic" />
       </head>
       <body
-        className={`${redHatDisplay.variable} ${ltSuperior.variable} overflow-x-hidden bg-background font-body antialiased`}
+        className={`${redHatDisplay.variable} overflow-x-hidden bg-background font-body antialiased`}
         // React Grab hydration errors
         suppressHydrationWarning={process.env.NODE_ENV === "development"}
       >

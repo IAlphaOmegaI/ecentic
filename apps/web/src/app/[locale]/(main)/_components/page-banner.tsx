@@ -1,6 +1,20 @@
+import localFont from "next/font/local";
 import type { StaticImageData } from "next/image";
 import Image from "next/image";
 import type { ReactNode } from "react";
+
+// Declared here rather than in the root layout: next/font preloads a face on
+// the routes whose tree calls it, and the title accent below is the only text
+// set in LT Superior. Loaded from the root it was four preloaded weights
+// (~140KB) on every page, the homepage included, competing with its LCP image
+// for bandwidth. Only Medium is drawn, so only Medium ships. The `.ttf`
+// originals stay on disk for `lib/og.tsx` — Satori cannot read woff2.
+const ltSuperior = localFont({
+  src: "../../../../../public/fonts/LTSuperior/LTSuperior-Medium.woff2",
+  weight: "500",
+  style: "normal",
+  display: "swap",
+});
 
 /**
  * The single banner every secondary page opens with: a full-viewport primary
@@ -67,7 +81,9 @@ export const PageBanner = ({
         <h1 className="max-w-4xl font-semibold text-5xl text-white tracking-tight md:text-7xl">
           {title}
           {accent && (
-            <span className="font-medium font-superior text-white underline decoration-2 underline-offset-[0.18em]">
+            <span
+              className={`${ltSuperior.className} text-white underline decoration-2 underline-offset-[0.18em]`}
+            >
               {" "}
               {accent}
             </span>

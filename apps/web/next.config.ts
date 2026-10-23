@@ -117,6 +117,14 @@ export default withSentryConfig(
     // Required to support PostHog trailing slash API requests
     skipTrailingSlashRedirect: true,
     images: {
+      // AVIF first: the hero texture is the homepage's LCP element, and at the
+      // 640w a phone fetches it is 58KB as WebP q75 but 22KB as AVIF q50
+      // (measured with sharp, Oct 2026). Browsers without AVIF still negotiate
+      // WebP through `Accept`.
+      formats: ["image/avif", "image/webp"],
+      // 50 is for decorative art that sits behind an opacity or blend, where
+      // the loss is invisible and the bytes are not (the hero texture).
+      qualities: [50, 75],
       remotePatterns: [
         {
           protocol: "https",
