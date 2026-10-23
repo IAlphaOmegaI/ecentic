@@ -30,7 +30,7 @@ Now the limits.
 
 The product allowance. Business optimizes 20 products a month, Growth 40 and Scale 80 [1]. The Shopify App Store listing, which is where you are billed, words it as 25, 50 and 80 product audits a month [2], so ask which number applies before you size a plan. Every product is analyzed, but a product only counts once Vizby generates and applies changes for it. A 400-product catalog on Business takes 20 months to get through once.
 
-Engines by tier. Business covers ChatGPT and Gemini only. Perplexity arrives on Growth at $249 a month ($199 billed annually), and Claude only on Scale at $499 a month ($399 billed annually) [1]. Assistants disagree with each other more than you would expect. In our own simulations in October 2026 (36,797 simulated purchases across ChatGPT, Claude, Gemini and Perplexity), ChatGPT picked the product about three times as often as Claude or Gemini on the same catalog: 51.6% against about 18.5%. A store watched on two assistants is guessing about the rest.
+Engines by tier. Business covers ChatGPT and Gemini only. Perplexity arrives on Growth at $249 a month ($199 billed annually), and Claude only on Scale at $499 a month ($399 billed annually) [1]. Assistants disagree with each other more than you would expect. When we had ChatGPT, Claude and Gemini compare the same catalog's products with competitors' in October 2026, ChatGPT picked the store's product about three times as often as the other two: 51.6% against about 18.5%. A store watched on two assistants is guessing about the rest.
 
 Shopify only. Vizby describes itself as Shopify-only [3]. If you also run WooCommerce, or a headless store next to Shopify, part of your catalog is out of reach.
 
@@ -44,9 +44,9 @@ These are the tools AI assistants name next to Vizby for this question. For a wi
 
 ### ecentic
 
-ecentic helps online stores sell when AI agents do the shopping: we optimize the product feed and catalog so ChatGPT and Gemini pick your products and can actually buy them. Instead of counting brand mentions, we simulate the agent choosing between your product and a named competitor's, show you why it picked the other one, and fix the product data it reads. It connects to Shopify, WooCommerce and product feeds.
+ecentic helps online stores sell when AI agents do the shopping: we optimize the product feed and catalog so ChatGPT and Gemini pick your products and can actually buy them. Instead of counting brand mentions, we have ChatGPT, Claude and Gemini compare your products with the competitors you name and pick one, show you why they picked the other product, and help you fix the product data they read. It connects to Shopify, WooCommerce and product feeds.
 
-The free scan runs your top 10 products against ChatGPT, Claude and Gemini once, with no card [8]. Paid plans add rescans any time and competitor battlecards, and store discovery in the dashboard also asks Perplexity which stores it would recommend. Compete ($14.90 a month, up to 100 products) gives field-by-field fix suggestions that you apply yourself. Scale ($44.90 a month, up to 1,000 products) adds one-click fixes published to your store. Dominate ($149 a month) adds Google Merchant Center sync for Shopify stores and agent checkout setup through UCP. Or skip the subscription: pay-as-you-go has everything in Dominate, costs $0 until an agent drives a sale, then takes 3% of AI-attributed orders, capped at $500 a month [8]. The full table is on our [pricing page](/pricing).
+The free scan runs your top 10 products against ChatGPT, Claude and Gemini once, with no card [8]. Paid plans add rescans any time and competitor battlecards. Compete ($14.90 a month, up to 100 products) gives field-by-field fix suggestions that you apply yourself. Scale ($44.90 a month, up to 1,000 products) adds one-click fixes: nothing changes in your store until you click Apply. Dominate ($149 a month) adds Google Merchant Center sync for Shopify stores and agent checkout setup through UCP. Or skip the subscription: pay-as-you-go has everything in Dominate, costs $0 until an agent drives a sale, then takes 3% of AI-attributed orders, capped at $500 a month [8]. The full table is on our [pricing page](/pricing).
 
 Fair caveat: we are newer than Vizby or Profound and have fewer public case studies. We are running pilots, and the one result we can publish is DUA Flavours: "DUA Flavours connected their store. ecentic showed which products AI agents were skipping and closed the gaps in their structured data and product feed. Between April and July 2026, visits from AI assistants and direct traffic rose 12%." Those are visits, not sales. If your main need is brand share-of-voice reporting for a marketing team, Profound or Peec AI are built for that and we are not.
 
@@ -74,7 +74,7 @@ Prices are monthly billing, checked on each vendor's pricing page on 23 October 
 |---|---|---|---|---|---|
 | Entry price | $79/mo ($63 billed annually) [1] | Free scan; pay-as-you-go $0 to start; Compete $14.90/mo [8] | Custom [4] | $95/mo [5] | $29/mo [6] |
 | Free tier or trial | 7-day trial on Business [1] | Free one-time scan of 10 products [8] | 7-day trial, 50 prompts [4] | Free trial [5] | Free trial [6] |
-| AI engines covered | ChatGPT, Gemini; Perplexity from Growth; Claude from Scale [1] | ChatGPT, Claude, Gemini; Perplexity in store discovery | Trial: ChatGPT, Gemini, AI Overviews; up to 9 on Enterprise [4] | Pick 3 of ChatGPT, Gemini, Copilot, Google AI; Perplexity add-on; Claude on Enterprise [5] | ChatGPT, AI Overviews, Perplexity, Copilot; Claude, Gemini as add-ons [6] |
+| AI engines covered | ChatGPT, Gemini; Perplexity from Growth; Claude from Scale [1] | ChatGPT, Claude, Gemini [8] | Trial: ChatGPT, Gemini, AI Overviews; up to 9 on Enterprise [4] | Pick 3 of ChatGPT, Gemini, Copilot, Google AI; Perplexity add-on; Claude on Enterprise [5] | ChatGPT, AI Overviews, Perplexity, Copilot; Claude, Gemini as add-ons [6] |
 | Ships fixes to the store | Yes, approve or auto-apply [2] | Suggestions on Compete; one-click publish on Scale, Dominate, pay-as-you-go [8] | Drafts content, no store publishing listed [4] | Recommendations only [5] | Recommendations only [6] |
 | Shopify native install | Yes [2] | Yes, plus WooCommerce and feeds | Web app [4] | Web app; imports a Shopify catalog [5] | Web app |
 | Performance pricing | No, fixed plans [1] | Yes, 3% of AI-attributed orders, capped at $500/mo [8] | Not listed [4] | No, flat plans [5] | No, flat plans [6] |
@@ -84,11 +84,11 @@ Prices are monthly billing, checked on each vendor's pricing page on 23 October 
 
 ### Revenue attribution
 
-Being named in an answer only matters if it turns into orders. Vizby reports orders and revenue, Profound has agent analytics for AI-sourced traffic [4], and Peec AI reports visits arriving from AI assistants [5]. At ecentic the attribution is also the bill: on pay-as-you-go, an order counts when it follows a visit from an AI assistant to your store in the previous seven days, and those are the only orders we charge on [8].
+Being named in an answer only matters if it turns into orders. Vizby reports orders and revenue, Profound has agent analytics for AI-sourced traffic [4], and Peec AI reports visits arriving from AI assistants [5]. On Shopify, ecentic tracks the visits AI assistants send, week over week, and the attribution is also the bill: on pay-as-you-go, an order counts when it follows a visit from an AI assistant to your store in the previous seven days, and those are the only orders we charge on [8].
 
 ### Model drift
 
-Assistants change their models without asking anyone, and answers move when they do. Vizby monitors weekly on Business and twice a week on Growth and Scale [1]; Peec AI and Otterly track daily [5][6]. Monitoring tells you that something moved. What you need next is the reason, and a fix, which is why we let you rerun a simulation the day a model changes and see which products lost and why.
+Assistants change their models without asking anyone, and answers move when they do. Vizby monitors weekly on Business and twice a week on Growth and Scale [1]; Peec AI and Otterly track daily [5][6]. Monitoring tells you that something moved. What you need next is the reason, and a fix. On ecentic's paid plans you can rescan any time, so after a model update you see which products lost and why [8].
 
 ### Paying on results
 
@@ -96,7 +96,7 @@ Every tool in this list charges a flat fee except one. I am biased here, obvious
 
 ### WooCommerce
 
-Vizby and Surfient are Shopify apps. Profound, Peec AI and Otterly track any brand on any platform but do not change your store. If you sell on WooCommerce and want the product data itself fixed, your options are short. ecentic publishes fixes back through the WooCommerce API on the plans that include one-click publishing.
+Vizby and Surfient are Shopify apps. Profound, Peec AI and Otterly track any brand on any platform but do not change your store. If you sell on WooCommerce and want the product data itself fixed, your options are short. ecentic publishes fixes back through the WooCommerce API when you click Apply, on the plans that include one-click publishing, and our free WooCommerce plugin lets agents search the store, fill a cart and check out through UCP.
 
 ## FAQ
 
@@ -114,7 +114,7 @@ Yes, but pick one owner for product titles, descriptions and structured data. Tw
 
 ### How long until AI assistants notice product changes?
 
-It depends on the assistant. Engines that browse live, like Perplexity, can read a changed page the next time someone asks; others rely on crawls, feeds and periodic updates. Measure in weeks, and rerun your simulation or prompt tracking after each batch of changes instead of after every edit.
+It depends on the assistant. Engines that browse live, like Perplexity, can read a changed page the next time someone asks; others rely on crawls, feeds and periodic updates. Measure in weeks, and rescan or rerun your prompt tracking after each batch of changes instead of after every edit.
 
 ## Where to start
 
