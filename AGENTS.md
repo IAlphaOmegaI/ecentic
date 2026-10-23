@@ -250,6 +250,14 @@ const Feature = {
 
 ---
 
+## Publishing a Blog Post
+
+A new post is a markdown file, `apps/web/content/blog/<slug>.md`, plus an optional hero image in `apps/web/public/blog/`. The format, the body rules and an example are in `apps/web/content/blog/README.md`; the voice is `docs/context/seo/blog-voice.md`. Run `bun run blog:check` in `apps/web` before opening the PR (CI runs it on PRs that touch either folder). Merging and deploying publishes it: the blog cron ingests the file into `blog_post` as EN plus an Azure ES translation, `source = "repo"` (details in `docs/integrations/blog-i18n.md`).
+
+Posts never go anywhere else: not `scripts/seed.ts`, not a page component, not a migration or a messages file. To rewrite a live post, BabyLoveGrowth ones included, edit or add the file with its slug; the file wins and BabyLoveGrowth never overwrites it again.
+
+---
+
 ## Tech Stack
 
 | Layer | Technology |
