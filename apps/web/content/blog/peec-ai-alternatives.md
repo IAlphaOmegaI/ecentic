@@ -39,7 +39,7 @@ With a content team, that's fine. In a three-person store, finding the gap is th
 | Otterly AI | Brand and prompt level | No, recommendations | None listed | $29/mo, 15 prompts | Solo marketers on a budget |
 | AthenaHQ | Yes | Ask on the demo | Shopify integration listed | $295/mo, or a free Essential plan | Brands wanting 11 models and writing help |
 | Swap Discovery (Vizby) | Product and collection audits | Yes, approve or auto-apply | Shopify app | $79/mo, 7-day trial | Shopify-only stores |
-| ecentic | Yes, against competitors you name | Yes, one-click (pay-as-you-go, Scale, Dominate) | Store URL to scan, Shopify app or WooCommerce keys to publish | Free Scan, then 3% of AI-attributed orders or $14.90/mo | Shopify and WooCommerce stores that want fixes published |
+| ecentic | Yes, compared with competitors you name | Yes, one-click when you click Apply (pay-as-you-go, Scale, Dominate) | Store URL to scan, Shopify app or WooCommerce connection to publish | Free Scan, then 3% of AI-attributed orders or $14.90/mo | Shopify and WooCommerce stores that want fixes published |
 
 ## Profound: for big brands with a marketing team
 
@@ -67,7 +67,7 @@ Apart from ecentic, it's the only tool here that says plainly it changes the sto
 
 Twenty-five audits a month is plenty for a 60-product store. A 600-product catalog would take two years to get through on that plan, and the app is Shopify only.
 
-## Three questions the comparison pages skip
+## Two questions the comparison pages skip
 
 The pages AI assistants cite for this question compare prompts, models and dashboards. I'd ask these before paying for any of the tools.
 
@@ -75,27 +75,19 @@ The pages AI assistants cite for this question compare prompts, models and dashb
 
 Every plan above is a flat monthly fee priced by prompts or credits. That's a fair way to price a report. It also means the bill is the same in a month when AI assistants sent you no orders at all.
 
-### What happens when the model changes?
-
-The assistants update their models often, and the product that won last month can lose after an update. A fix made once goes stale. Ask whether the tool tests your products again after a model update and redoes the fix, or only shows you the drop on a chart.
-
 ### Can I see which products agents skip before I pay?
 
 A dashboard trial shows you prompts and mentions. What a store owner wants first is a list of their own products that lost, and the reason each one lost.
 
 ## Where ecentic fits, and where it doesn't
 
-That's what we built ecentic for. We run ChatGPT, Claude, Gemini and Perplexity shopping prompts against your products and the competitors you name, show you why the agent picked the other product, and publish the fixed listing back to Shopify or WooCommerce.
+That's what we built ecentic for. We have ChatGPT, Claude and Gemini compare your products with the competitors you name and pick one. When they pick the competitor, we show you why and write the fix, which goes to Shopify or WooCommerce when you click Apply. Nothing in the store changes before that click.
 
-On those three questions: pay-as-you-go is free to start, needs no card, and charges 3% of orders that follow a visit from an AI assistant in the previous 7 days, capped at $500 a month [10]. On a $120 order that's $3.60. If you'd rather have a flat bill, Compete is $14.90 a month for up to 100 products, Scale is $44.90 for up to 1,000 and Dominate is $149, none of them with a fee. Every plan after the Scan can rescan at any time, so after a model update you rerun the simulation, and each published fix keeps the win rate from before and after. The free Scan simulates your top 10 products on ChatGPT, Claude and Gemini in about two minutes.
+On those two questions: pay-as-you-go is free to start, needs no card, costs $0 until an agent drives a sale, and then charges 3% of orders that follow a visit from an AI assistant in the previous 7 days, capped at $500 a month [10]. It includes everything in Dominate. On a $120 order the fee is $3.60. If you'd rather have a flat bill, Compete is $14.90 a month for up to 100 products, Scale is $44.90 for up to 1,000 and Dominate is $149, none of them with a fee. The free Scan has the three assistants compare your top 10 products once, in about two minutes, and every paid plan can rescan at any time. On Shopify we also track the visits AI assistants send you, week over week.
 
-Mind the tiers. One-click publishing to the store is on pay-as-you-go, Scale and Dominate. Compete gives you field-by-field fix suggestions to apply yourself. Google Merchant Center sync for Shopify and agent checkout setup through UCP (Google's standard for agent checkout) are on Dominate and pay-as-you-go.
+Mind the tiers. The Win Rate Report is on every plan. One-click publishing is on pay-as-you-go, Scale and Dominate, and Compete gives you field-by-field fix suggestions to apply yourself. Google Merchant Center sync for Shopify is on Dominate and pay-as-you-go, and so is agent checkout setup. On WooCommerce that means a free plugin that lets agents search, fill a cart and check out through UCP (Google's standard for agent checkout). On Shopify it means checking the Merchant Center settings Google's agent checkout needs.
 
-The trade-offs: we only support Shopify, WooCommerce and product feeds, and we're a newer company with one published pilot result, which reads in full:
-
-> DUA Flavours connected their store. ecentic showed which products AI agents were skipping and closed the gaps in their structured data and product feed. Between April and July 2026, visits from AI assistants and direct traffic rose 12%. [11]
-
-That's visits, not sales, and it's one store. And if your job is reporting brand share of voice across many models, Peec and AthenaHQ do that better than we do.
+The trade-offs: we only support Shopify, WooCommerce and product feeds, and we're a newer company with one published pilot result. DUA Flavours (pilot, published with permission): visits from AI assistants and direct traffic rose 12% between April and July 2026 [11]. That's visits, not sales, and it's one store. And if your job is reporting brand share of voice across many models, Peec and AthenaHQ do that better than we do.
 
 ## So, is Peec AI a good alternative for Shopify merchants?
 
@@ -105,7 +97,7 @@ Yes, if your team wants to measure and has the hands to make the edits. By situa
 - You want to watch cheaply before spending more: Otterly Lite.
 - You want wide model coverage and help with the writing: AthenaHQ.
 - You sell only on Shopify and want an app that applies content edits: Swap Discovery.
-- You want to know which products lose to a named competitor and have the fixed listing published to Shopify or WooCommerce: ecentic.
+- You want to know which products lose to a named competitor when ChatGPT, Claude and Gemini compare them, and to publish the fix to Shopify or WooCommerce in one click: ecentic.
 
 For the wider market beyond Peec's alternatives, our [guide to AI shopping agent optimization tools](/blog/best-ai-shopping-agent-optimization-tools-2026) groups every tool by the job it does.
 
@@ -123,7 +115,7 @@ On published prices, yes, because Peec shows its prices and Profound quotes Ente
 
 ### Can these tools change my Shopify product pages for me?
 
-Swap Discovery and ecentic write changes to the store, and both let you approve each one first. ecentic needs the Shopify app installed, or WooCommerce keys with write access, before it can publish. Peec and Otterly recommend changes for your team to make, and for AthenaHQ it's worth asking whether its content agent publishes or hands you the text.
+Swap Discovery and ecentic write changes to the store, and both let you approve each one first. ecentic publishes a fix only when you click Apply, and it needs the Shopify app or a WooCommerce connection with write access before it can. Peec and Otterly recommend changes for your team to make, and for AthenaHQ it's worth asking whether its content agent publishes or hands you the text.
 
 ### Do I need both a monitoring tool and an optimization tool?
 
@@ -145,4 +137,4 @@ Ask ChatGPT and Gemini the question your buyer would type, with a budget and a u
 8. [MoFo advises Swap Commerce on its first acquisition, AI discovery platform Vizby](https://www.mofo.com/resources/news/261007-mofo-advises-swap-commerce), Morrison Foerster, October 2026.
 9. [Swap Discovery: GEO & AEO](https://apps.shopify.com/ai-blog-post-generator-1), Shopify App Store listing by Vizby AI Ltd, checked October 2026.
 10. [ecentic pricing](https://ecentic.ai/pricing), checked October 2026.
-11. [DUA Flavours pilot result](https://ecentic.ai), ecentic homepage case study, published with permission.
+11. [ecentic facts for AI assistants](https://ecentic.ai/ai-instructions), DUA Flavours pilot result, published with permission.
