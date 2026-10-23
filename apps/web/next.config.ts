@@ -28,6 +28,12 @@ export default withSentryConfig(
     cacheComponents: true,
     partialPrefetching: true,
     serverExternalPackages: ["@sentry/server-utils"],
+    // The blog cron publishes `content/blog/*.md` from its own bundle (see
+    // `Blog.reconcileRepoPosts`); nothing imports those files, so they have to
+    // be traced in by hand or the deployed route finds an empty folder.
+    outputFileTracingIncludes: {
+      "/api/cron/blog": ["./content/blog/*.md"],
+    },
     experimental: {
       // Required so `app/global-not-found.tsx` works without a pass-through
       // `app/layout.tsx` (locale segment is the root layout for root-params).

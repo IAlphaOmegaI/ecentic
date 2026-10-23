@@ -1,3 +1,5 @@
+import * as Sentry from "@sentry/nextjs";
+import { resultify } from "@zenncore/utils";
 import { after } from "next/server";
 import { withCron } from "@/server/utils/cron";
 import { Environment } from "@/server/utils/environment";
@@ -44,15 +46,68 @@ export const reportDuePeriods = withCron(
 );
 
 /**
- * Backstop for the BabyLoveGrowth webhook. Same handoff as the drain: a single
- * ingest Azure-translates a whole article and runs past what the scheduler
- * waits for, so the tick returns immediately and the work continues under the
- * route's `maxDuration`.
+ * Both automatic blog write paths share this tick: the backstop for the
+ * BabyLoveGrowth webhook (`Blog.reconcileCatalog`) and posts kept as markdown
+ * in the repo (`Blog.reconcileRepoPosts`). One ingest Azure-translates a whole
+ * article and can take most of the route's `maxDuration`, so a tick spends
+ * itself on one source at most: whichever wrote last goes second, and the
+ * second runs only when the first had nothing to translate. Neither can hold
+ * the schedule, since the one that just ingested yields the next tick.
+ *
+ * Same handoff as the drain: the tick returns immediately and the work
+ * continues under `maxDuration`.
  */
 export const reconcileBlogCatalog = withCron(
   async (_context, { limit = 1 }: { limit?: number } = {}) => {
     after(async () => {
-      await Blog.reconcileCatalog({ limit });
+      const writer = await resultify(() => Blog.lastWriter());
+      const order =
+        writer.success && writer.data === "repo"
+          ? (["blg", "repo"] as const)
+          : (["repo", "blg"] as const);
+
+      const results: {
+        blg?: Awaited<ReturnType<typeof Blog.reconcileCatalog>>;
+        repo?: Awaited<ReturnType<typeof Blog.reconcileRepoPosts>>;
+      } = {};
+
+      for (const source of order) {
+        const result =
+          source === "blg"
+            ? await Blog.reconcileCatalog({ limit })
+            : await Blog.reconcileRepoPosts({ limit });
+        Object.assign(results, { [source]: result });
+        if (
+          result.success &&
+          result.data.ingested.length + result.data.partial.length > 0
+        )
+          break;
+      }
+
+      console.info("[cron/blog]", JSON.stringify({ order, ...results }));
+
+      const { repo } = results;
+      if (repo && !repo.success)
+        Sentry.captureException(repo.error, { tags: { route: "cron/blog" } });
+      // A merged post that does not go live is the one failure here nobody
+      // would otherwise notice; orphaned rows are a choice, so they stay in
+      // the log above.
+      if (
+        repo?.success &&
+        repo.data.invalid.length +
+          repo.data.failed.length +
+          repo.data.partial.length >
+          0
+      )
+        Sentry.captureMessage("Blog posts in content/blog need attention", {
+          level: "warning",
+          tags: { route: "cron/blog" },
+          extra: {
+            invalid: repo.data.invalid,
+            failed: repo.data.failed,
+            partial: repo.data.partial,
+          },
+        });
     });
 
     return { success: true, data: { scheduled: true } };

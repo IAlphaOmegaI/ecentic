@@ -67,10 +67,16 @@ const structureFor = (locale: string) =>
 export const hasFaqSection = (
   sections: readonly BlogHtmlSection[],
   locale: string = routing.defaultLocale,
-) =>
-  sections.some((section) =>
-    structureFor(locale).faq.test(section.title.trim()),
-  );
+) => sections.some((section) => isFaqHeading(section.title, locale));
+
+/**
+ * The heading test behind `hasFaqSection`, shared with the repo-post renderer
+ * so the FAQ it extracts into `faqs` is the same block the page later hides.
+ */
+export const isFaqHeading = (
+  title: string,
+  locale: string = routing.defaultLocale,
+) => structureFor(locale).faq.test(title.trim());
 
 /**
  * The same question for an editorial post's own `sections`, where FAQ prose used
