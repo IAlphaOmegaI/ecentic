@@ -15,14 +15,14 @@ One market note before the list. Buying inside the answer is live on Google AI M
 
 ## Optimizing product titles and descriptions for AI shopping agents
 
-Most tools in this space monitor whether a brand is mentioned. ecentic works one level down, on the product. It simulates agent product selection across ChatGPT, Claude, Gemini and Perplexity: each model acts as a shopping agent, compares your product with a competitor's and picks one. Then ecentic rewrites the titles, descriptions and product data the agent read, so agents pick your products. It connects to Shopify, WooCommerce and product feeds.
+Most tools in this space monitor whether a brand is mentioned. ecentic works one level down, on the product. ChatGPT, Claude and Gemini each act as a shopping agent, compare your products with named competitors' and pick one. Then ecentic rewrites the titles, descriptions and product data the agent read, so agents pick your products. It connects to Shopify, WooCommerce and product feeds.
 
-- **Win Rate Report.** Which of your products agents skip, against which competitor, and the reason each model gave. The free Scan includes one [1].
-- **Listing rewrites.** New titles and descriptions, plus the structured data fields that were missing, written from the reasons the agent picked the other product. Field-by-field fix suggestions come with every plan after the free Scan [1].
-- **Auto-optimization with one-click publish.** ecentic writes the fix and you publish it to your Shopify or WooCommerce store in one click. That is on Scale ($44.90/mo), Dominate ($149/mo) and pay-as-you-go [1].
-- **Rescans.** Run the same comparison again after a change, any time, and see which models moved [1].
+- **Win Rate Report.** Which of your products agents skip, and why. It comes with every plan, including the free Scan [1].
+- **Competitor battlecards.** Your product side by side with each named competitor's, so you can see where it loses. On every plan after the free Scan [1].
+- **Title, description and structured data rewrites.** A new title and description, plus the structured data fields that were missing, written from the reasons the agent picked the other product. Compete gets them as field-by-field fix suggestions [1].
+- **One-click publish to Shopify or WooCommerce.** The rewrite goes to your store when you click Apply, and nothing changes before that. On Scale ($44.90/mo), Dominate ($149/mo) and pay-as-you-go [1].
 
-The one result we can share so far comes from a pilot. DUA Flavours connected their store. ecentic showed which products AI agents were skipping and closed the gaps in their structured data and product feed. Between April and July 2026, visits from AI assistants and direct traffic rose 12% [2]. To be clear, that is visits, not sales, and it is one store.
+The one result we can share so far comes from a pilot, published with permission. DUA Flavours connected their store. ecentic showed which products AI agents were skipping and closed the gaps in their structured data and product feed. Between April and July 2026, visits from AI assistants and direct traffic rose 12% [2]. To be clear, that is visits, not sales, and it is one store.
 
 To see where your own products stand, [scan your top 10 products free](/sign-up). It needs no credit card, runs ChatGPT, Claude and Gemini against your catalog and gives you your Win Rate Report in about two minutes [1].
 
@@ -36,7 +36,7 @@ Here is how the three tools that come up most for this question compare with ece
 
 | Tool | Simulates agent product selection | One-click title and description rewrites | Brand-visibility monitoring |
 |------|-----------------------------------|------------------------------------------|-----------------------------|
-| ecentic | Yes, across ChatGPT, Claude, Gemini and Perplexity [1] | Yes, published to Shopify or WooCommerce on Scale, Dominate and pay-as-you-go [1] | Not the focus |
+| ecentic | Yes. ChatGPT, Claude and Gemini compare your product with a named competitor's and pick [1] | Yes. Publishes to Shopify or WooCommerce when you click Apply, on Scale, Dominate and pay-as-you-go [1] | Not the focus |
 | Profound | No. Tracks where products appear in real ChatGPT Shopping answers [5] | Partly. Its AI Marketer rewrites web pages and stages them in your CMS [6] | Yes, its core product [4] |
 | Peec AI | No. Tracks per-product visibility, position and win rate in real answers [7] | No. Ranks recommended actions [7] | Yes, from $95/mo [7] |
 | Otterly.ai | No | No. On-page GEO recommendations and content audits [8] | Yes, from $29/mo [8] |
@@ -86,7 +86,7 @@ Work through it in order. The first block is configuration, the second needs a d
 - State shipping cost, delivery time and the return window as structured data, not only in the footer
 - Mark products out of stock the moment they sell out, and update priceValidUntil when a promotion ends
 
-Start with your highest-revenue products rather than the whole catalog. Complete data on a few dozen products does more than partial data on hundreds. Before you change anything, record a baseline: how often each AI model picks your product against a named competitor. Then run the same prompts after each fix, because one change can move ChatGPT and leave Perplexity where it was. Measuring that, and acting on it, is what the tools below are for.
+Start with your highest-revenue products rather than the whole catalog. Complete data on a few dozen products does more than partial data on hundreds. Before you change anything, record a baseline: how often each AI model picks your product against a named competitor. Then run the same prompts after each fix, because one change can move ChatGPT and leave Gemini where it was. Measuring that, and acting on it, is what the tools below are for.
 
 ## Brand-visibility monitors
 
@@ -138,11 +138,11 @@ These answer "are agents here, and who are they", which is useful context, but n
 
 ## Win the cart: simulation and optimization
 
-The smallest category simulates whether an agent actually picks your product over a competitor's. The method started in research. The ACES framework from Allouah and colleagues audits how AI agents choose products, and found that agents pile demand onto a few products, that a model update can reshuffle market shares, and that simple, query-specific description tweaks can win a seller significant share [11]. Harvard Business Review published research from the marketing side with a blunt title: traditional marketing doesn't work on AI shopping agents [12].
+The smallest category tests whether an agent picks your product over a competitor's. The method started in research. The ACES framework from Allouah and colleagues audits how AI agents choose products, and found that agents pile demand onto a few products, that a model update can reshuffle market shares, and that simple, query-specific description tweaks can win a seller significant share [11]. Harvard Business Review published research from the marketing side with a blunt title: traditional marketing doesn't work on AI shopping agents [12].
 
 That reshuffling is the reason I think a one-off audit isn't enough. A listing that wins on ChatGPT this month can lose after the next model update, and a brand-level dashboard won't tell you which product slipped or why.
 
-This is where ecentic sits, as described at the top: per-model simulation against a named competitor, the agent's reasoning, the rewrite, one-click publish to Shopify or WooCommerce and a rescan to check the result. On Dominate and pay-as-you-go it also sets up agent checkout through UCP and syncs Shopify catalogs with Google Merchant Center [1]. We build it, so treat this section as informed but interested. The claim worth checking is narrow: among the tools above, the head-to-head simulation plus the publish-and-rescan loop is rare.
+This is where ecentic sits, as described at the top. ChatGPT, Claude and Gemini compare your product with a named competitor's, you see why it lost, and the rewrite goes to Shopify or WooCommerce when you click Apply. After a fix or a model update you rescan, and on Shopify you can watch the visits AI assistants send you, week over week [13]. For checkout, the free ecentic plugin for WooCommerce lets agents search, fill a cart and check out through UCP, and on Shopify ecentic checks the Merchant Center settings Google's agent checkout needs [13]. Merchant Center sync for Shopify comes with Dominate and pay-as-you-go [1]. We build it, so treat this section as informed but interested. The claim worth checking is narrow: among the tools above, the head-to-head comparison plus the publish-and-rescan loop is rare.
 
 The plain next step is the [free Scan](/sign-up), or a [15-minute call](https://cal.com/ecentic-ai/15min) if you'd rather walk through your catalog with us.
 
@@ -150,7 +150,7 @@ The plain next step is the [free Scan](/sign-up), or a [15-minute call](https://
 
 ### What is the best tool for optimizing product titles and descriptions for AI shopping agents?
 
-Pick by the question you need answered. To see whether AI answers mention your brand, a monitor like Profound, Peec AI or Otterly.ai fits. To get titles and descriptions that win a specific comparison, use a tool that simulates the agent's pick and rewrites the listing, which is what ecentic does for Shopify and WooCommerce stores.
+Pick by the question you need answered. To see whether AI answers mention your brand, a monitor like Profound, Peec AI or Otterly.ai fits. To get titles and descriptions that win a specific comparison, use a tool that has AI models compare your listing with a competitor's and then rewrites it, which is what ecentic does for Shopify and WooCommerce stores.
 
 ### How do I optimize my ecommerce store for AI shopping agents?
 
@@ -182,3 +182,4 @@ Often two, rarely more. A monitor shows how your brand appears across AI answers
 10. [Ecomtent pricing](https://www.ecomtent.ai/pricing), checked October 2026.
 11. [What Is Your AI Agent Buying? Evaluation, Implications and Emerging Questions for Agentic E-Commerce](https://arxiv.org/abs/2508.02630), Allouah et al., arXiv, December 2025 revision.
 12. [Research: Traditional Marketing Doesn't Work on AI Shopping Agents](https://hbr.org/2026/05/research-traditional-marketing-doesnt-work-on-ai-shopping-agents), Harvard Business Review, May 2026.
+13. [ecentic features](https://ecentic.ai/features), visit tracking and agent checkout, checked October 2026.
