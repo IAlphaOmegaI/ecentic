@@ -246,8 +246,10 @@ const processor = unified()
   // `parse` reports it as an error so nothing vanishes silently.
   .use(remarkRehype)
   // GitHub's own allowlist: no script, style or iframe, no event handlers, no
-  // `javascript:` URLs, and `id`/`name` prefixed so they cannot clobber globals.
-  .use(rehypeSanitize, defaultSchema);
+  // `javascript:` URLs. Its `user-content-` id prefix is turned off because
+  // `remark-rehype` already applies it to the only ids a post can have (raw
+  // HTML never gets this far), and a second pass broke every footnote link.
+  .use(rehypeSanitize, { ...defaultSchema, clobberPrefix: "" });
 
 const isExternal = (href: string) =>
   /^https?:\/\//i.test(href) &&
@@ -461,7 +463,7 @@ export const checkVoice = (raw: string) => {
       issues.push({
         line: lineAt(match.index),
         rule: "wording",
-        message: `"${match[0]}"`,
+        message: `"${match[0].replace(/\s+/g, " ")}"`,
         fix,
       });
 
