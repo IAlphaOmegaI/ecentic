@@ -119,6 +119,14 @@ const BLOG_TITLE_TAGS: Record<string, Record<string, string>> = {
   "40rty-alternatives": {
     en: "40rty alternatives for Shopify and WooCommerce stores",
   },
+  // Repo posts whose headline is the full question they answer (65 and 66
+  // characters); the tag keeps the question's words inside the limit.
+  "peec-ai-alternatives": {
+    en: "Peec AI alternatives for Shopify product optimization",
+  },
+  "vizby-alternatives": {
+    en: "Is Vizby worth it for Shopify? Alternatives compared",
+  },
 };
 
 // Keyed on the row's own locale rather than the requested one: a /es page
