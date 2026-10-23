@@ -32,20 +32,20 @@
     "team": {
       "number": "02",
       "title": "Quién está detrás",
-      "intro": "Los tres fundadores crean productos juntos desde el instituto, entre ellos LookUp, una startup de aparcamiento que levantó una ronda pre-seed de 125.000 dólares.",
+      "intro": "Los tres fundadores se conocieron a los 14 años en el instituto y llevan siete años construyendo juntos. Antes de ecentic dirigieron zennit, un estudio de desarrollo, y LookUp, una startup de aparcamiento que llegó a 10.000 € de ingresos mensuales, levantó una ronda pre-seed de 125.000 $ y tuvo una pequeña salida.",
       "founder": {
-        "role": "CEO de ecentic",
-        "bio": "Xhurian Shaba es CEO de ecentic, que cofundó en 2026. Antes cofundó zennit, un estudio de software y diseño en Tirana, y pasó más de cinco años creando productos web con Next.js y TypeScript para startups de Estados Unidos, Canadá y Europa. Estudió en la Université de Technologie de Compiègne.",
+        "role": "Cofundador y CEO",
+        "bio": "Xhurian lleva el producto y la captación de inversión. Mientras aún estudiaba tuvo dos trabajos de ingeniería en remoto a la vez, como responsable de desarrollo web en Zerapy.ai, una startup de IA, y en MetaLingo, y cofundó zennit, el estudio que creó software para Eurocar, Albuji y las plataformas británicas Exelor y Ubix. Estudió en la Université de Technologie de Compiègne.",
         "linkedin": "Perfil de LinkedIn"
       },
       "members": {
         "alvi": {
           "role": "Cofundador y CTO",
-          "bio": "Alvi dirige la ingeniería de producto y la infraestructura de simulación de ecentic. Antes de ecentic fue CTO de LookUp, que llevó del concepto al mercado, y dirigió la reescritura del backend de Avatid."
+          "bio": "Alvi lleva la infraestructura y el motor de simulación. Ha trabajado en startups de IA. Como CTO de LookUp la escaló a 1.000 conductores activos en 2.000 plazas de aparcamiento, y en zennit construyó él solo Ubix, una plataforma británica de búsqueda de empleo que soportaba 10.000 usuarios simultáneos."
         },
         "iseld": {
           "role": "Cofundador y responsable de ventas",
-          "bio": "Iseld dirige las ventas. Tenía su propia tienda Shopify de productos tecnológicos y vio cómo sus ventas caían más de la mitad tras la llegada de Gemini 3.1, sin haber cambiado nada por su parte y sin forma de saber por qué. Ese es el problema que ecentic existe para resolver."
+          "bio": "Iseld lleva las ventas. Fue asesor de ventas de Shopify Plus y tuvo su propia tienda Shopify. En LookUp cerró en persona el acuerdo de aparcamiento público con el Ayuntamiento de Tirana."
         }
       }
     },

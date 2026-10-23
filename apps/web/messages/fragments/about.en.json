@@ -32,20 +32,20 @@
     "team": {
       "number": "02",
       "title": "Who is behind it",
-      "intro": "The three founders have built products together since high school, including LookUp, a parking startup that raised a $125K pre-seed.",
+      "intro": "The three founders met at 14 in high school and have built together for seven years. Before ecentic they ran zennit, a development studio, and LookUp, a parking startup that reached €10K in monthly revenue, raised a $125K pre-seed and had a small exit.",
       "founder": {
         "role": "Co-founder and CEO",
-        "bio": "Xhurian Shaba is the co-founder and CEO of ecentic. Before ecentic, Xhurian co-founded zennit, a software and design studio in Tirana, and spent more than five years building web products in Next.js and TypeScript for startups in the US, Canada and Europe. Xhurian studied at the Université de Technologie de Compiègne.",
+        "bio": "Xhurian runs product and fundraising. While still in school he held two remote engineering jobs at once, as web dev lead at Zerapy.ai, an AI startup, and at MetaLingo, and co-founded zennit, the studio that built software for Eurocar, Albuji and the UK platforms Exelor and Ubix. He studied at the Université de Technologie de Compiègne.",
         "linkedin": "LinkedIn profile"
       },
       "members": {
         "alvi": {
           "role": "Co-founder and CTO",
-          "bio": "Alvi leads product engineering and the simulation infrastructure behind ecentic. Before ecentic he was CTO of LookUp, which he took from concept to market, and led a backend rewrite at Avatid."
+          "bio": "Alvi runs infrastructure and the simulation engine. He has worked at AI startups. As CTO of LookUp he scaled it to 1,000 active drivers across 2,000 parking spots, and at zennit he built Ubix, a UK job-search platform that handled 10,000 concurrent users, on his own."
         },
         "iseld": {
           "role": "Co-founder and Head of Sales",
-          "bio": "Iseld leads sales. He ran his own Shopify store selling tech products and watched its sales fall by more than half after Gemini 3.1 came out, with nothing changed on his side and no way to see why. That's the problem ecentic exists to fix."
+          "bio": "Iseld runs sales. He was a sales advisor for Shopify Plus and ran his own Shopify store. At LookUp he closed the Tirana Municipality's public-parking partnership in person."
         }
       }
     },

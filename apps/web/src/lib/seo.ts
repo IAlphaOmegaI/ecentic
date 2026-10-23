@@ -55,14 +55,33 @@ export const company = {
 } as const;
 
 /**
- * The named author of the blog and the person on the About page. `url` is the
- * profile anchor on /about, so a byline, the Person node and the page agree.
+ * The three founders, in the order the About page lists them. `url` is each
+ * one's profile anchor on /about, so the page, the Organization schema and the
+ * blog byline agree.
  */
-export const founder = {
-  name: "Xhurian Shaba",
-  url: absoluteUrl("/about#xhurian-shaba"),
-  linkedin: "https://www.linkedin.com/in/xhuri",
-} as const;
+export const founders = [
+  {
+    id: "xhurian-shaba",
+    name: "Xhurian Shaba",
+    url: absoluteUrl("/about#xhurian-shaba"),
+    linkedin: "https://www.linkedin.com/in/xhuri",
+  },
+  {
+    id: "alvi-palloshi",
+    name: "Alvi Palloshi",
+    url: absoluteUrl("/about#alvi-palloshi"),
+    linkedin: "https://www.linkedin.com/in/alvipalloshi",
+  },
+  {
+    id: "iseld-muca",
+    name: "Iseld Muça",
+    url: absoluteUrl("/about#iseld-muca"),
+    linkedin: "https://www.linkedin.com/in/iseld-muca-532786311",
+  },
+] as const;
+
+/** The CEO, who is the named author of the blog. */
+export const founder = founders[0];
 
 /** Schema.org `Person` for the founder; `jobTitle` is the page's language. */
 export const createFounderSchema = (jobTitle: string) => ({
@@ -99,17 +118,12 @@ export const organizationSchema = {
   email: company.email,
   telephone: company.telephone,
   foundingDate: "2026",
-  founder: {
+  founder: founders.map((person) => ({
     "@type": "Person",
-    name: founder.name,
-    url: founder.url,
-    sameAs: [founder.linkedin],
-  },
-  parentOrganization: {
-    "@type": "Organization",
-    name: "zennit",
-    url: "https://www.zennit.dev",
-  },
+    name: person.name,
+    url: person.url,
+    sameAs: [person.linkedin],
+  })),
   address: {
     "@type": "PostalAddress",
     ...company.address,

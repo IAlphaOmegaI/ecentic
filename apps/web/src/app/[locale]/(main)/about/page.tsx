@@ -11,7 +11,7 @@ import {
   createBreadcrumbSchema,
   createFounderSchema,
   createMetadata,
-  founder,
+  founders,
   organizationSchema,
 } from "@/lib/seo";
 import Art from "@/public/images/ascii/handshake.png";
@@ -61,27 +61,22 @@ export default async () => {
     },
   ];
 
-  // The founder's anchor and profile come from `founder`, which the blog
-  // byline and the Person schema share; the co-founders are listed here.
+  // Anchors and profiles come from `founders`, which the blog byline and the
+  // Organization schema share.
+  const [ceo, cto, sales] = founders;
   const team = [
     {
-      id: "xhurian-shaba",
-      name: founder.name,
-      linkedin: founder.linkedin,
+      ...ceo,
       role: translate("team.founder.role"),
       bio: translate("team.founder.bio"),
     },
     {
-      id: "alvi-palloshi",
-      name: "Alvi Palloshi",
-      linkedin: "https://www.linkedin.com/in/alvipalloshi",
+      ...cto,
       role: translate("team.members.alvi.role"),
       bio: translate("team.members.alvi.bio"),
     },
     {
-      id: "iseld-muca",
-      name: "Iseld Muça",
-      linkedin: "https://www.linkedin.com/in/iseld-muca-532786311",
+      ...sales,
       role: translate("team.members.iseld.role"),
       bio: translate("team.members.iseld.bio"),
     },
