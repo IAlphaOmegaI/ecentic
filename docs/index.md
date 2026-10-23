@@ -18,7 +18,12 @@ Central navigation for product context, agent rules, and package/component docum
 - [Google UCP — agentic checkout guide](./integrations/google-ucp.md) — merchant checklist for checkout on Google AI surfaces + which steps ecentic automates
 - [Hosted UCP — woo-ucp conformance](./integrations/woo-ucp-conformance.md) — how the backend UCP surface (`apps/web/src/server/app/ucp/`) maps to the woo-ucp reference, the thin-plugin bridge contract, known divergences, and deployment notes
 - [Google OAuth verification — submission pack](./integrations/google-oauth-verification.md) — scope justification, console config, reviewer access + test credentials, demo-video shot list, and the privacy-policy row mapping for the `content` scope review
-- [Blog i18n (EN/ES + Azure translate)](./integrations/blog-i18n.md) — next-intl locales, `blog_post` locale columns, BabyLoveGrowth webhook → Azure Spanish translations
+- [Blog i18n (EN/ES + Azure translate)](./integrations/blog-i18n.md) — next-intl locales, `blog_post` locale columns, BabyLoveGrowth webhook and `content/blog` repo posts → Azure Spanish translations
+
+### If you are writing or publishing a blog post
+
+- [Blog post format](../apps/web/content/blog/README.md) — one markdown file per post in `apps/web/content/blog`, frontmatter, body rules, `bun run blog:check`
+- [Blog voice](./context/seo/blog-voice.md) — how posts are written; the same text as Okara's article settings
 
 ### If you are planning billing or Shopify App Store pricing
 
