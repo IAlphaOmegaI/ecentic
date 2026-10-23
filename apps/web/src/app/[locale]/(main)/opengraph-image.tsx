@@ -8,5 +8,5 @@ export default () =>
   createOgImage({
     title: "Get the sale when AI does the shopping.",
     description:
-      "AI ecommerce platform for product listing optimization, competitor analysis, and AI shopping visibility.",
+      "Product feed and catalog optimization for AI shopping agents.",
   });

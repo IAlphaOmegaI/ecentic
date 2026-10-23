@@ -324,13 +324,13 @@ export const SKILLS = [
     summary:
       "Connect a Shopify or WooCommerce store to ecentic, measure AI agent traffic, and improve agent-driven commerce readiness.",
     whenToUse:
-      "Setting up agent tracking, UCP hosting, or catalog sync for a merchant.",
+      "Setting up agent tracking, agent checkout, or catalog sync for a merchant.",
     path: "/.well-known/agent-skills/agent-commerce/SKILL.md",
   },
   {
     name: "optimize-listings",
     summary:
-      "Optimize ecommerce product listings so AI shopping agents recommend them.",
+      "Optimize ecommerce product listings so AI shopping agents pick them.",
     whenToUse:
       "Improving titles, descriptions, attributes, or win rate against named competitors.",
     path: "/.well-known/agent-skills/optimize-listings/SKILL.md",

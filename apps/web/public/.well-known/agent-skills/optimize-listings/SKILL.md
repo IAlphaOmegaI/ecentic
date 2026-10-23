@@ -1,7 +1,7 @@
 ---
 name: optimize-listings
-description: Optimize ecommerce product listings so AI shopping agents (ChatGPT, Claude, Gemini, Perplexity) recommend them. Use when improving titles, descriptions, attributes, or win rate against competitors.
-when_to_use: Use when a product loses head-to-head comparisons run by ChatGPT, Claude, Gemini, or Perplexity, and its title, description, or structured attributes need to be rewritten for machine comparison.
+description: Optimize ecommerce product listings so AI shopping agents (ChatGPT, Claude, Gemini) pick them. Use when improving titles, descriptions, attributes, or win rate against competitors.
+when_to_use: Use when a product loses head-to-head comparisons run by ChatGPT, Claude or Gemini, and its title, description, or structured attributes need to be rewritten for machine comparison.
 ---
 
 # Optimize Listings for AI Shopping Agents
@@ -10,9 +10,9 @@ Use ecentic to simulate how AI shopping agents compare a product against competi
 
 ## When to use
 
-- A merchant asks why ChatGPT, Claude, Gemini, or Perplexity prefers a competitor
+- A merchant asks why ChatGPT, Claude or Gemini prefers a competitor
 - Product titles/descriptions need agent-readable structure (specs, constraints, differentiators)
-- You need a before/after win-rate lift after rewriting a listing
+- You want to see how the win rate moves after rewriting a listing
 
 ## When not to use
 
@@ -27,7 +27,7 @@ Use ecentic to simulate how AI shopping agents compare a product against competi
 2. Connect Shopify, WooCommerce, or a product feed from onboarding
 3. Pick a product and run an AI simulation against competitors
 4. Read the diagnosis (missing attributes, weak claims, price framing)
-5. Apply the optimized listing rewrite and publish back to the store
+5. Click Apply to publish the rewrite to the store (nothing changes in the store before that)
 6. Re-scan to measure win-rate change
 
 ## Key URLs
@@ -42,4 +42,4 @@ Use ecentic to simulate how AI shopping agents compare a product against competi
 
 - Free Scan is one-time and does not require a card
 - Pay-as-you-go bills only via performance fee when attributed AI-referred revenue is due
-- Subscription plans (Compete / Dominate) are flat-rate with no performance fee
+- Subscription plans (Compete, Scale, Dominate) are flat-rate with no performance fee

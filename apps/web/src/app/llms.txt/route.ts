@@ -150,7 +150,7 @@ export const GET = async (request: Request) => {
     {
       title: "Blog",
       description:
-        "Long-form guides on structured data, agent traffic, and catalog visibility.",
+        "Long-form guides on structured data, agent traffic, and product feeds.",
       links: [{ path: "/blog", label: "ecentic blog — index" }, ...blogLinks],
     },
   ];
@@ -160,7 +160,7 @@ export const GET = async (request: Request) => {
     "",
     `> ${seo.description}`,
     "",
-    "ecentic simulates how AI shopping agents — ChatGPT, Claude, Gemini, Perplexity — evaluate product listings against competitors, diagnoses why a product wins or loses, and auto-optimizes catalog content so merchants capture agent-driven commerce.",
+    "ecentic simulates how AI shopping agents (ChatGPT, Claude, Gemini) compare a store's products with competitors', diagnoses why a product wins or loses, fixes the listing and structured data, pushes the fixes to Google Merchant Center for Shopify stores, and sets stores up for agent checkout through UCP.",
     "",
     `- Site: ${seo.host}`,
     `- Sitemap: ${seo.host}/sitemap.xml`,

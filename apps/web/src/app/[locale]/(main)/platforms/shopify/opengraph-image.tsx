@@ -8,5 +8,5 @@ export default () =>
   createOgImage({
     title: "AI for Shopify Stores",
     description:
-      "AI for Shopify stores that need stronger product listings, clearer competitor analysis, and approved updates pushed back into Shopify.",
+      "AI for Shopify stores that need stronger product listings, clearer competitor analysis, and fixes pushed back into Shopify and Merchant Center.",
   });

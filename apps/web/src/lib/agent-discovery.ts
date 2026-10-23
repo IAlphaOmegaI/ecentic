@@ -2377,12 +2377,12 @@ export const openApiDocument = {
  */
 export const agentGuidance = {
   summary:
-    "Get the sale when AI does the shopping. ecentic measures and improves how AI shopping agents — ChatGPT, Claude, Gemini, Perplexity — rank a merchant's products against competitors, and rewrites listings to win those comparisons.",
+    "Get the sale when AI does the shopping. ecentic optimizes a store's product feed and catalog so AI shopping agents such as ChatGPT and Gemini pick its products and can complete the purchase.",
   bestFor: [
     {
-      job: "Find out whether AI assistants recommend a store's products",
+      job: "Find out whether AI shopping agents pick a store's products",
       detail:
-        "Run a free scan of the top products across four assistants and return an AI Agent Score with per-product win rates.",
+        "Run a free scan of the top products across ChatGPT, Claude and Gemini and return an AI Agent Score with per-product win rates.",
       start: `${host}/api/v1/plans`,
     },
     {
@@ -2404,9 +2404,15 @@ export const agentGuidance = {
       start: `${host}/ucp-validator`,
     },
     {
-      job: "Measure AI agent traffic to a store",
+      job: "Set a store up for agent checkout",
       detail:
-        "Track which assistants crawl or cite a catalog, at what volume, and which products they land on.",
+        "Check a store's UCP profile and checkout flow, connect WooCommerce through the ecentic plugin, or push checkout settings to Google Merchant Center for Shopify.",
+      start: `${host}/ucp-validator`,
+    },
+    {
+      job: "Measure AI assistant traffic to a Shopify store",
+      detail:
+        "Track which AI assistants send visitors to the store and which products they land on.",
       start: `${host}/.well-known/agent-skills/agent-commerce/SKILL.md`,
     },
     {
@@ -2484,7 +2490,7 @@ ${agentGuidance.howToCall
 ${[
   {
     name: "agent-commerce",
-    when: "Setting up agent tracking, UCP hosting, or catalog sync for a merchant.",
+    when: "Setting up agent tracking, agent checkout, or catalog sync for a merchant.",
   },
   {
     name: "optimize-listings",

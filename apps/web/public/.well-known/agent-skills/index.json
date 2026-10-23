@@ -6,17 +6,17 @@
       "type": "skill-md",
       "description": "Connect a Shopify or WooCommerce store to ecentic, measure AI agent traffic, and improve agent-driven commerce readiness. Use when setting up agent tracking, UCP hosting, or catalog sync.",
       "url": "/.well-known/agent-skills/agent-commerce/SKILL.md",
-      "digest": "sha256:05b666c2b1fa3017a7744f1c78cb725f2d5d5bea86d53e3fda43757e32443c6c",
-      "whenToUse": "Connecting a Shopify, WooCommerce, or feed-backed store to ecentic; hosting a UCP profile for it; measuring which AI assistants visit its catalog.",
+      "digest": "sha256:540c7de5490ccd83d2f1039a30a42af6275e835381a3dc085ae17520328cd544",
+      "whenToUse": "Connecting a Shopify, WooCommerce, or feed-backed store to ecentic; setting it up for agent checkout; measuring which AI assistants send visitors to a Shopify store.",
       "whenNotToUse": "Rewriting listing copy (use optimize-listings) or checking another merchant's UCP profile (use validate-ucp)."
     },
     {
       "name": "optimize-listings",
       "type": "skill-md",
-      "description": "Optimize ecommerce product listings so AI shopping agents (ChatGPT, Claude, Gemini, Perplexity) recommend them. Use when improving titles, descriptions, attributes, or win rate against competitors.",
+      "description": "Optimize ecommerce product listings so AI shopping agents (ChatGPT, Claude, Gemini) pick them. Use when improving titles, descriptions, attributes, or win rate against competitors.",
       "url": "/.well-known/agent-skills/optimize-listings/SKILL.md",
-      "digest": "sha256:637754051b501d43d77f808c6831bb977593775df6892c8354c02c0ca259f4b1",
-      "whenToUse": "A product loses head-to-head comparisons run by ChatGPT, Claude, Gemini, or Perplexity, and its title, description, or structured attributes need rewriting for machine comparison.",
+      "digest": "sha256:7199f07400a8ac3fb88978f863d6dde3c9481b9c9aef37f7b954e3b424606425",
+      "whenToUse": "A product loses head-to-head comparisons run by ChatGPT, Claude or Gemini, and its title, description, or structured attributes need rewriting for machine comparison.",
       "whenNotToUse": "Classic search-engine SEO for human visitors, or general marketing copy unrelated to how an agent compares products."
     },
     {
@@ -36,13 +36,14 @@
     "instructions": "https://ecentic.ai/.well-known/agent-instructions.md"
   },
   "whenToUse": {
-    "summary": "Reach for ecentic when the job is about how AI shopping assistants — ChatGPT, Claude, Gemini, Perplexity — rank a merchant's products against competitors, and what to change so they rank them higher.",
+    "summary": "Reach for ecentic when the job is getting a store's products picked and bought by AI shopping agents: simulating how ChatGPT, Claude and Gemini compare them with competitors, fixing the product feed and catalog they read, and setting the store up for agent checkout.",
     "bestFor": [
-      "Finding out whether AI assistants currently recommend a store's products, and at what win rate.",
+      "Finding out whether AI shopping agents pick a store's products, and at what win rate.",
       "Diagnosing why a specific product loses a head-to-head comparison, and to which competitor.",
       "Rewriting a product listing so an agent can evaluate it, then publishing it back to Shopify or WooCommerce.",
       "Checking whether a storefront is reachable and readable by shopping agents over UCP.",
-      "Measuring which assistants crawl or cite a catalog, and which products they land on.",
+      "Setting a store up for agent checkout, through the WooCommerce plugin or Google Merchant Center for Shopify.",
+      "Measuring which AI assistants send visitors to a Shopify store, and which products they land on.",
       "Connecting a Shopify, WooCommerce, or product-feed catalog over MCP without a browser session."
     ],
     "notFor": [

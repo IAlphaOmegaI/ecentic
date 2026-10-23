@@ -8,5 +8,5 @@ export default () =>
   createOgImage({
     title: "Blog",
     description:
-      "SEO, structured data, and AI commerce guides for merchants building modern ecommerce catalogs.",
+      "Product feed, structured data and AI commerce guides for merchants selling through AI shopping agents.",
   });
