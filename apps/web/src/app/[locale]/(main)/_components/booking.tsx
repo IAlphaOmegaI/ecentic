@@ -59,7 +59,7 @@ export const Booking = async () => {
                 href={booking.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="w-fit text-primary underline-offset-4 hover:underline"
+                className="w-fit text-primary-text underline underline-offset-4"
               >
                 {translate("booking.fallback")}
               </a>

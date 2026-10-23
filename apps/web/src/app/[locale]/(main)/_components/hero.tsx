@@ -73,11 +73,14 @@ export const Hero = async () => {
         <p>{translate("hero.proof")}</p>
         {/* The App Store stays one click away: an install is the verified
             connect (write-back, tracking), and App Store attribution counts. */}
+        {/* Inline links take `primary-text`, the AA shade of the brand blue
+            (5.58:1 here, where `primary` is 3.99:1), and keep the underline at
+            rest: colour alone does not set them apart from the dimmed line. */}
         <p>
           {translate("hero.entry.appStore.lead")}{" "}
           <Link
             href={seo.shopifyAppStore}
-            className="text-primary underline-offset-4 hover:underline"
+            className="text-primary-text underline underline-offset-4"
           >
             {translate("hero.entry.action.secondary")}
           </Link>
@@ -88,7 +91,7 @@ export const Hero = async () => {
           {translate("hero.team.lead")}{" "}
           <a
             href="#book"
-            className="text-primary underline-offset-4 hover:underline"
+            className="text-primary-text underline underline-offset-4"
           >
             {translate("hero.team.action")}
           </a>

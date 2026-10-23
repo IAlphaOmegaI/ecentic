@@ -17,7 +17,9 @@ export const HomeFaq = async () => {
           <h2 className="font-body font-medium text-3xl text-foreground md:text-4xl">
             {translate("faq.title")}
           </h2>
-          <p className="max-w-sm font-light text-foreground-dimmed text-lg">
+          {/* `text-foreground`, not `-dimmed`: on this dimmed panel the
+              dimmed grey measures 4.34:1, just under AA for body copy. */}
+          <p className="max-w-sm font-light text-foreground text-lg">
             {translate("faq.description")}
           </p>
         </div>
