@@ -13,13 +13,12 @@ type Capability = {
   _id: string;
   labelKey:
     | "aiReady"
-    | "brandMentions"
     | "agentPurchasing"
     | "winRate"
     | "optimizedListings"
+    | "merchantCenter"
     | "ucpReady";
   audit: Status;
-  geo: Status;
   ecentic: Status;
 };
 
@@ -28,42 +27,36 @@ const capabilities: Capability[] = [
     _id: "ai-ready",
     labelKey: "aiReady",
     audit: "yes",
-    geo: "no",
-    ecentic: "yes",
-  },
-  {
-    _id: "brand-mentions",
-    labelKey: "brandMentions",
-    audit: "no",
-    geo: "yes",
     ecentic: "yes",
   },
   {
     _id: "agent-purchasing",
     labelKey: "agentPurchasing",
     audit: "no",
-    geo: "no",
     ecentic: "yes",
   },
   {
     _id: "win-rate",
     labelKey: "winRate",
     audit: "no",
-    geo: "no",
     ecentic: "yes",
   },
   {
     _id: "optimized-listings",
     labelKey: "optimizedListings",
     audit: "partial",
-    geo: "no",
+    ecentic: "yes",
+  },
+  {
+    _id: "merchant-center",
+    labelKey: "merchantCenter",
+    audit: "no",
     ecentic: "yes",
   },
   {
     _id: "ucp-ready",
     labelKey: "ucpReady",
     audit: "no",
-    geo: "no",
     ecentic: "yes",
   },
 ];
@@ -119,17 +112,6 @@ export const Comparison = () => {
       header: () => (
         <span className="flex w-full min-w-20 justify-center text-center text-lg md:min-w-32">
           {translate("comparison.table.auditTools")}
-        </span>
-      ),
-    },
-    {
-      accessorKey: "geo",
-      cell: ({ row }: { row: { original: Capability } }) => (
-        <StatusCell status={row.original.geo} partialLabel={partialLabel} />
-      ),
-      header: () => (
-        <span className="flex w-full min-w-28 justify-center text-center text-lg md:min-w-48">
-          {translate("comparison.table.geoMonitoring")}
         </span>
       ),
     },

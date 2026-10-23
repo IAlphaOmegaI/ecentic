@@ -3,9 +3,9 @@
     "brand": "ecentic",
     "meta": {
       "title": "Get the sale when AI does the shopping | ecentic",
-      "description": "Optimize product listings for AI shopping agents. Simulate ChatGPT, Claude, Gemini, and Perplexity decisions, diagnose losses, and improve win rate.",
-      "openGraphDescription": "Simulate how AI shopping agents choose your products, diagnose why they don't, and auto-optimize your listings. Built for the agent economy.",
-      "twitterDescription": "Simulate how ChatGPT, Claude, Gemini & Perplexity choose your products vs. competitors. Diagnose losses. Auto-optimize.",
+      "description": "Product feed and catalog optimization for AI shopping agents. See why ChatGPT, Claude and Gemini skip your products, fix the data, set up agent checkout.",
+      "openGraphDescription": "Shopping agents read your product feed, not your homepage. ecentic fixes the feed and catalog so ChatGPT and Gemini pick your products and can buy them.",
+      "twitterDescription": "Shopping agents read your product feed, not your homepage. ecentic fixes the feed and catalog so ChatGPT and Gemini pick your products and can buy them.",
       "keywords": [
         "AI shopping agent optimization",
         "e-commerce AI optimization",
@@ -16,8 +16,12 @@
         "Gemini shopping",
         "win rate optimization",
         "AI commerce platform",
-        "agent SEO",
-        "GEO generative engine optimization",
+        "product feed optimization",
+        "catalog optimization for AI",
+        "agentic commerce",
+        "Universal Commerce Protocol",
+        "Google Merchant Center optimization",
+        "AI agent checkout",
         "Shopify AI optimization",
         "WooCommerce AI",
         "product content optimization",
@@ -68,7 +72,7 @@
         "quaternary": "Close navigation menu"
       }
     },
-    "tagline": "Get picked by AI shopping agents.",
+    "tagline": "Get the sale when AI does the shopping.",
     "installHint": "Install free. See your AI score in minutes."
   },
   "footer": {
@@ -102,12 +106,12 @@
       "about": "About"
     },
     "cta": {
-      "eyebrow": "Get picked by AI",
+      "eyebrow": "Free store check",
       "title": "Find out which products AI agents skip.",
       "description": "Install free on Shopify or WooCommerce and see your AI score in minutes."
     },
     "copyright": "© 2026 ecentic. All rights reserved.",
-    "madeFor": "Made for merchants who refuse to be invisible to AI.",
+    "madeFor": "Made for merchants who'd rather sell to robots than lose to them.",
     "company": {
       "taxId": "NIPT",
       "country": "Albania"
@@ -2903,7 +2907,7 @@
   "blog": {
     "meta": {
       "title": "Blog: AI Shopping Agents & Optimization Guides",
-      "description": "Guides and research on AI shopping agents: how ChatGPT, Claude, Gemini, and Perplexity rank products, why listings lose, and what to change to win carts."
+      "description": "Guides and research on AI shopping agents: how ChatGPT, Claude, Gemini, and Perplexity pick products, why listings lose, and what to change to win carts."
     },
     "title": "Blog",
     "description": "Guides and research on winning AI shopping agents.",
@@ -2937,7 +2941,7 @@
       "action": {
         "primary": "Read article"
       },
-      "note": "More guides for merchants improving search, shopping, and AI visibility."
+      "note": "More guides for merchants selling through AI shopping agents."
     },
     "author": {
       "role": "Co-founder and CEO",
@@ -2947,7 +2951,7 @@
   "home": {
     "meta": {
       "title": "AI shopping optimization for Shopify & WooCommerce",
-      "description": "ecentic shows which products ChatGPT, Gemini and Perplexity skip, fixes the listings, and tracks the AI-agent visits and sales that follow.",
+      "description": "ecentic optimizes your product feed and catalog so ChatGPT and Gemini pick your products and can actually buy them. Built for Shopify and WooCommerce.",
       "socialTitle": "Get the sale when AI does the shopping"
     },
     "hero": {
@@ -2956,7 +2960,7 @@
         "primary": "Get the sale",
         "accent": "when AI does the shopping."
       },
-      "description": "Shoppers ask ChatGPT, Gemini and Perplexity what to buy, and the agent picks for them. ecentic finds the products agents skip, fixes the data they read, and gets your store ready for them to buy from.",
+      "description": "Shoppers ask ChatGPT and Gemini what to buy, and the agent does the picking. It never sees your homepage. It reads your product feed and catalog, and on Google it can check out for the shopper. ecentic optimizes that feed and catalog so agents pick your products and can actually buy them.",
       "proof": "2-minute setup · No credit card · See your free score first",
       "team": {
         "lead": "Run a growth or e-commerce team?",
@@ -3014,11 +3018,11 @@
           "source": "Salesforce, 2025",
           "url": "https://www.salesforce.com/news/stories/2025-cyber-week-predictions/"
         },
-        "visibility": {
-          "value": "45%",
-          "label": "of marketing leaders can't measure their AI visibility",
-          "source": "Semrush, 2026",
-          "url": "https://www.semrush.com/news/463141-semrush-releases-expanded-2026-ai-visibility-index-analyzing-126-million-ai-search-prompts/"
+        "agentRetail": {
+          "value": "$1T",
+          "label": "of US retail revenue could run through AI agents by 2030",
+          "source": "McKinsey, 2025",
+          "url": "https://www.mckinsey.com/industries/retail/our-insights/the-agentic-commerce-opportunity-how-ai-agents-are-ushering-in-a-new-era-for-consumers-and-merchants"
         }
       }
     },
@@ -3030,10 +3034,10 @@
           "caption": "Shopify App Store partner"
         },
         "plugAndPlay": {
-          "caption": "Plug and Play — Tirana Batch 2"
+          "caption": "Plug and Play — GOAL Silicon Valley"
         },
         "redBullBasement": {
-          "caption": "Red Bull Basement — Albania national winner"
+          "caption": "Red Bull Basement — national winner, world final in Silicon Valley"
         },
         "founderGames": {
           "caption": "The Founder Games — Part of season 2"
@@ -3054,7 +3058,7 @@
       "ariaLabel": "ecentic × EU Presence bundle",
       "visitEuPresence": "Visit EU Presence",
       "title": "ecentic × EU Presence",
-      "subtitle": "Compliance + AI Visibility",
+      "subtitle": "Compliance + AI shopping",
       "description": "Buy it once and both sides are covered. EU Presence handles representation and compliance across all 27 member states, and ecentic keeps your listings winning the agent comparison.",
       "items": {
         "gdpr": {
@@ -3088,39 +3092,39 @@
       }
     },
     "steps": {
-      "title": "Get picked by AI in three steps.",
-      "description": "Connect your store and ecentic does the rest.",
+      "title": "Three steps. No developer.",
+      "description": "Connect your store and ecentic does the rest. Nothing changes in your store until you click Apply.",
       "connect": {
         "title": "Connect your store",
-        "description": "Install on <shopify>Shopify</shopify> or <woocommerce>WooCommerce</woocommerce> in about two minutes. No developer needed."
+        "description": "Install on <shopify>Shopify</shopify> or <woocommerce>WooCommerce</woocommerce> in about two minutes, or import a product feed. No developer needed."
       },
       "diagnose": {
         "title": "See where you lose",
-        "description": "ecentic sends the top AI shopping agents through your catalog and shows you which products they skip, and why."
+        "description": "ecentic puts your products in front of ChatGPT, Claude and Gemini next to your competitors' and shows which ones get skipped, and the missing detail that cost the sale."
       },
       "optimize": {
-        "title": "Get picked",
-        "description": "One click rewrites your listings so agents recommend you first. From there you watch the visits and sales it brings in."
+        "title": "Fix it at the source",
+        "description": "One click rewrites the title, description and structured data and publishes them to your store. On Shopify, the same fixes can go into your Google Merchant Center feed."
       }
     },
     "features": {
       "title": "What AI shopping optimization does for your store.",
       "items": {
         "aiScore": {
-          "title": "Your AI score",
-          "description": "See how often ChatGPT, Claude, Gemini, and Perplexity pick your products."
+          "title": "Your AI win rate",
+          "description": "How often ChatGPT, Claude and Gemini pick your product over a named competitor's, product by product."
         },
         "competitors": {
           "title": "Beat your competitors",
-          "description": "Find out who agents recommend instead of you, and what they have that you don't."
+          "description": "Find out who agents pick instead of you, and what their listing has that yours doesn't."
         },
         "fixes": {
-          "title": "One-click fixes",
-          "description": "ecentic rewrites your titles, descriptions, and product data so agents choose you."
+          "title": "Feed and catalog fixes",
+          "description": "ecentic rewrites titles, descriptions and structured data and publishes them when you click Apply. On Shopify it can push them to Google Merchant Center too."
         },
         "track": {
           "title": "Track the payoff",
-          "description": "See AI-agent visits and revenue, week over week."
+          "description": "On Shopify, see the visits AI assistants send you, week over week."
         },
         "ucp": {
           "title": "Ready for agent checkout",
@@ -3136,7 +3140,6 @@
       "table": {
         "capabilities": "Capabilities",
         "auditTools": "Audit Tools",
-        "geoMonitoring": "GEO Monitoring",
         "ecentic": "écentic"
       },
       "states": {
@@ -3146,20 +3149,20 @@
         "aiReady": {
           "label": "Tells you if products are \"AI-ready\""
         },
-        "brandMentions": {
-          "label": "Tracks brand mentions in AI agent search"
-        },
         "agentPurchasing": {
-          "label": "Simulates actual agent purchasing"
+          "label": "Simulates the agent's pick against named competitors"
         },
         "winRate": {
           "label": "Measures win rate vs. specific competitors"
         },
         "optimizedListings": {
-          "label": "Auto-generates optimized listings"
+          "label": "Writes the fix and publishes it to your store"
         },
         "ucpReady": {
-          "label": "Gets your store ready for AI agents (UCP)"
+          "label": "Sets your store up for agent checkout (UCP)"
+        },
+        "merchantCenter": {
+          "label": "Pushes fixes to Google Merchant Center"
         }
       }
     },
@@ -3207,15 +3210,15 @@
       "items": [
         {
           "question": "What is AI shopping optimization?",
-          "answer": "AI shopping optimization is the work of getting your products recommended when shoppers ask AI assistants such as ChatGPT, Gemini or Perplexity what to buy. It covers the product data those assistants read, like titles, descriptions, attributes, price, stock, reviews and structured data, and how your products compare with competitors on each of them."
+          "answer": "It's the work of getting your products picked, and bought, when a shopper asks an AI assistant like ChatGPT or Gemini what to buy. The assistant doesn't browse your site. It reads your product feed, your catalog and the structured data on your product pages, and on Google it can check out for the shopper. So the work is making that data complete and correct against the competitors it's compared with, and making sure an agent can finish the order."
         },
         {
           "question": "How do I get my products recommended by ChatGPT?",
-          "answer": "Give ChatGPT complete, specific product data it can compare: a clear title, the attributes shoppers ask about, accurate price and stock, reviews and Product schema on the page. ecentic runs your products through simulated ChatGPT, Claude, Gemini and Perplexity shopping prompts, shows which ones lose and why, and rewrites those listings."
+          "answer": "Give ChatGPT complete, specific product data it can compare: a clear title, the attributes shoppers ask about, accurate price and stock, and Product schema on the page. ecentic compares your products with competitors' in ChatGPT, Claude and Gemini, shows which ones lose and why, and rewrites those listings."
         },
         {
           "question": "Does ecentic work with Shopify and WooCommerce?",
-          "answer": "Yes. Install ecentic from the Shopify App Store, or connect a WooCommerce store with REST API keys. ecentic imports your catalog and publishes the listing changes you approve back to your store. Any other store can start with a free scan from its address."
+          "answer": "Yes. Install ecentic from the Shopify App Store, or connect WooCommerce with the free plugin or REST API keys. ecentic imports your catalog and publishes the fixes you apply back to your store. Shopify stores can also connect Google Merchant Center. Any other store can start with a free scan from its address or a product feed."
         },
         {
           "question": "How is ecentic different from AI visibility tracking tools?",
@@ -3284,7 +3287,7 @@
       "payg": {
         "name": "Pay-as-you-go",
         "category": "Pay for results",
-        "tagline": "Only pay when we sell",
+        "tagline": "Only pay when agents sell for you",
         "badge": "Free to start",
         "figure": "3%",
         "suffix": "on AI-attributed orders",
@@ -3325,7 +3328,7 @@
       "scale": {
         "name": "Scale",
         "category": "Flat monthly",
-        "tagline": "Optimize on autopilot",
+        "tagline": "Fix at scale",
         "figure": "$44.90",
         "suffix": "/mo",
         "note": "Flat monthly · no performance fee.",
@@ -3375,7 +3378,7 @@
       "description": "On pay-as-you-go you only ever pay on orders that follow a visit from an AI assistant. Everything else is $0.",
       "steps": [
         {
-          "title": "An agent recommends you",
+          "title": "An agent picks you",
           "description": "A shopper asks ChatGPT, Gemini, or Perplexity what to buy, and your optimized listing wins the comparison."
         },
         {
@@ -3497,7 +3500,7 @@
     "partnershipBundle": {
       "ariaLabel": "ecentic × EU Presence bundle",
       "title": "ecentic × EU Presence",
-      "subtitle": "Compliance + AI Visibility",
+      "subtitle": "Compliance + AI shopping",
       "description": "Buy it once and both sides are covered. EU Presence handles representation and compliance across all 27 member states, and ecentic keeps your listings winning the agent comparison.",
       "items": [
         {
@@ -3568,7 +3571,7 @@
         },
         {
           "question": "What is the EU Presence bundle?",
-          "answer": "We partnered with EU Presence so you can go live in Europe and stay picked by AI agents in one engagement. The Compliance + AI Visibility bundle combines their GDPR representative, GPSR responsible person, and Privacy Center Plus with ecentic Dominate. It is billed together with a 20% bundle discount, no minimums, and no setup fees. Book a bundle call from the pricing page to set it up."
+          "answer": "We partnered with EU Presence so you can go live in Europe and stay picked by AI agents in one engagement. The Compliance + AI shopping bundle combines their GDPR representative, GPSR responsible person, and Privacy Center Plus with ecentic Dominate. It is billed together with a 20% bundle discount, no minimums, and no setup fees. Book a bundle call from the pricing page to set it up."
         }
       ]
     },
@@ -3719,7 +3722,7 @@
       "number": "02",
       "title": "Learn the system, then choose your depth.",
       "description": "Begin with the product loop, compare the market, or go straight to platform-specific implementation.",
-      "agentsIntro": "The same four agents that decide what to recommend also shape what merchants need to learn first: how selection works, then how to act on it for their stack.",
+      "agentsIntro": "Each of the big assistants reads product data a little differently. Here's what each one leans on.",
       "agents": [
         {
           "title": "ChatGPT",
@@ -3758,7 +3761,7 @@
         {
           "name": "Long-form",
           "title": "Blog",
-          "description": "Guides on structured data, agent traffic, catalog visibility, and the protocols shaping AI shopping, written for merchants and operators.",
+          "description": "Guides on structured data, agent traffic, product feeds, and the protocols shaping AI shopping, written for merchants and operators.",
           "action": {
             "primary": "Browse articles"
           }
@@ -3857,7 +3860,7 @@
   "howItWorks": {
     "meta": {
       "title": "How to get your products recommended by ChatGPT",
-      "description": "ecentic simulates how ChatGPT, Claude, Gemini and Perplexity compare your products, shows why they lose, then rewrites the listings so AI recommends you."
+      "description": "ecentic simulates how ChatGPT, Claude and Gemini compare your products, shows why they lose, then fixes the listings and product data they read."
     },
     "breadcrumb": {
       "home": "Home",
@@ -3886,7 +3889,7 @@
         "primary": "How to get your products picked by AI,",
         "accent": "in three steps."
       },
-      "description": "ecentic simulates how AI shopping agents compare your products, explains why you lose in plain language, and rewrites your listings so the next comparison goes your way.",
+      "description": "ecentic simulates how AI shopping agents compare your products, explains why you lose in plain language, and fixes the listing and product data they read.",
       "assurances": [
         "First scan in about two minutes",
         "One-click fixes",
@@ -4305,7 +4308,7 @@
   "features": {
     "meta": {
       "title": "AI ecommerce tools for merchant product listings",
-      "description": "AI ecommerce tools for product listing optimization, competitor analysis, and AI shopping visibility. See how ecentic helps merchants win more carts today."
+      "description": "AI ecommerce tools that optimize your product feed and catalog for AI shopping agents: competitor simulations, listing fixes, Merchant Center sync."
     },
     "breadcrumb": {
       "home": "Home",
@@ -4317,7 +4320,7 @@
         "primary": "AI ecommerce tools that get your products",
         "accent": "picked by AI shoppers."
       },
-      "description": "Simulate how AI shopping agents compare your products, see exactly why competitors win, and publish the listing fixes that flip the result, all from one loop.",
+      "description": "Simulate how AI shopping agents compare your products, see exactly why competitors win, and publish the fixes from one place.",
       "assurances": [
         "Simulates ChatGPT, Claude & Gemini",
         "One-click listing rewrites",
@@ -4329,8 +4332,8 @@
     },
     "loop": {
       "number": "01",
-      "title": "One loop from invisible to recommended.",
-      "description": "Visibility in AI-assisted shopping is not a brand metric. It is an operational loop, and ecentic runs all four steps for every product in your catalog.",
+      "title": "One loop, from skipped to fixed.",
+      "description": "Getting picked by a shopping agent isn't a brand metric. It's catalog work, and ecentic runs the loop for every product you choose.",
       "steps": [
         {
           "step": "Step 01",
@@ -4371,7 +4374,7 @@
         },
         {
           "title": "Competitor gap analysis",
-          "description": "Find out who agents recommend instead of you, and exactly what their listing has that yours doesn't.",
+          "description": "Find out who agents pick instead of you, and exactly what their listing has that yours doesn't.",
           "features": [
             "Side-by-side comparisons",
             "Missing-attribute detection",
@@ -4687,7 +4690,7 @@
   "productListings": {
     "meta": {
       "title": "AI product listing optimization for merchants",
-      "description": "AI product listing optimization for titles, descriptions, and structured product data. See how ecentic helps merchants improve visibility with AI agents."
+      "description": "AI product listing optimization for titles, descriptions and structured data, so AI shopping agents can compare your products and pick them."
     },
     "breadcrumb": {
       "home": "Home",
@@ -4832,7 +4835,7 @@
         {
           "href": "/blog",
           "name": "Blog",
-          "title": "Go deeper on structured data, AI traffic, and catalog visibility",
+          "title": "Go deeper on structured data, AI traffic, and product feeds",
           "description": "The blog turns product listing optimization into repeatable operational checklists for merchants and teams.",
           "label": "Visit the blog",
           "color": "accent"
@@ -4910,7 +4913,7 @@
       "title": "Why Shopify merchants outgrow native AI.",
       "description": "Most Shopify merchants eventually hit a ceiling with native generation tools. This is what comes next.",
       "paragraphs": [
-        "Most Shopify teams already have the basics: a storefront, a catalog, and a merchandising workflow. The real challenge is that product visibility now depends on more than theme design or ad performance. Titles, descriptions, attributes, and competitor context all shape whether a product feels easy to recommend.",
+        "Most Shopify teams already have the basics: a storefront, a catalog, and a merchandising workflow. The real challenge is that whether an agent picks a product now depends on more than theme design or ad performance. Titles, descriptions, attributes, and competitor context all shape whether a product feels easy to recommend.",
         "The most useful AI workflow for Shopify stores goes beyond generation alone. Merchants need to know which products underperform, which competitor listing keeps winning, and which changes are worth shipping first."
       ],
       "panelTitle": "Who this decision point fits",
@@ -4946,7 +4949,7 @@
         },
         {
           "title": "See why pages lose",
-          "description": "Better visibility into why product pages lose to specific competitors."
+          "description": "A clear reason why each product page loses to a specific competitor."
         },
         {
           "title": "You choose what ships",
@@ -5079,6 +5082,10 @@
         {
           "question": "Can Shopify merchants publish changes back to the store?",
           "answer": "Yes. When you click Apply, ecentic writes the new title, description and structured data back through the Shopify Admin API. If you connect Google Merchant Center, it also sends those fixes to your Google feed as a supplemental data source."
+        },
+        {
+          "question": "Does Shopify already handle agent checkout?",
+          "answer": "Partly. Shopify can serve the UCP endpoint Google's agents use to check out. What comes through it is still your data: prices, stock, policies and your Merchant Center setup. ecentic checks the Merchant Center settings agent checkout needs and pushes your product fixes there."
         },
         {
           "question": "When should Shopify teams move beyond native AI tools?",
@@ -5242,7 +5249,7 @@
         },
         {
           "title": "Staying on WooCommerce",
-          "description": "Teams that want better product visibility without changing ecommerce platforms."
+          "description": "Teams that want products agents pick without changing ecommerce platforms."
         },
         {
           "title": "Insight tied to updates",
@@ -6706,7 +6713,7 @@
       "missingAttributes": "Missing attributes"
     },
     "cta": {
-      "title": "Ready to win every AI agent's cart?",
+      "title": "Find out which products AI agents skip.",
       "description": "ecentic fixes the product data agents read. Free to start.",
       "action": "Start free"
     }
@@ -7808,8 +7815,8 @@
   },
   "about": {
     "meta": {
-      "title": "About ecentic, the AI shopping optimization app",
-      "description": "ecentic is an AI shopping optimization app for Shopify and WooCommerce, built by ECENTIC ShPK in Tirana, Albania. Meet the founder and see our company details."
+      "title": "About ecentic: feed and catalog optimization for AI shopping",
+      "description": "ecentic optimizes product feeds and catalogs so AI shopping agents pick a store's products and can buy them. Meet the three founders."
     },
     "breadcrumb": {
       "home": "Home",
@@ -7821,7 +7828,7 @@
         "primary": "The company behind",
         "accent": "ecentic."
       },
-      "description": "ecentic is an AI shopping optimization app for Shopify and WooCommerce stores. It shows merchants how ChatGPT, Gemini, Claude and Perplexity choose between products, and fixes the listings those assistants skip.",
+      "description": "ecentic is product feed and catalog optimization for AI shopping agents, built for Shopify and WooCommerce stores. It shows how ChatGPT, Claude and Gemini compare a store's products with competitors', fixes the data those agents read, and sets the store up for agent checkout.",
       "assurances": ["Founded 2026", "Built for Shopify and WooCommerce"],
       "art": {
         "alt": "ASCII-art illustration of a handshake"
@@ -7831,8 +7838,8 @@
       "number": "01",
       "title": "What we do",
       "paragraphs": [
-        "Shoppers increasingly ask AI assistants what to buy, and the assistant decides which products make the answer. Most stores cannot see how that decision is made or why they lose it.",
-        "ecentic runs a store's products through simulated shopping prompts in ChatGPT, Claude, Gemini and Perplexity, compares them with named competitors, and explains why a product is skipped. It then rewrites the listing, publishes the change the merchant approves, and tracks the AI-referred visits and sales that follow.",
+        "Shoppers increasingly ask AI assistants what to buy, and the assistant decides which products make the answer. On Google it can also check out for them. Most stores can't see how that decision gets made, or why they lose it.",
+        "ecentic has ChatGPT, Claude and Gemini compare a store's products with named competitors and explains why a product gets skipped. It then rewrites the title, description and structured data, publishes the fix when the merchant clicks Apply, and on Shopify can push it into Google Merchant Center. For WooCommerce stores, the free ecentic plugin lets agents check out through UCP.",
         "ecentic works with Shopify and WooCommerce. Any other store can start with a free scan from its address."
       ]
     },

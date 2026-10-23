@@ -37,7 +37,7 @@
       "title": "Why Shopify merchants outgrow native AI.",
       "description": "Most Shopify merchants eventually hit a ceiling with native generation tools. This is what comes next.",
       "paragraphs": [
-        "Most Shopify teams already have the basics: a storefront, a catalog, and a merchandising workflow. The real challenge is that product visibility now depends on more than theme design or ad performance. Titles, descriptions, attributes, and competitor context all shape whether a product feels easy to recommend.",
+        "Most Shopify teams already have the basics: a storefront, a catalog, and a merchandising workflow. The real challenge is that whether an agent picks a product now depends on more than theme design or ad performance. Titles, descriptions, attributes, and competitor context all shape whether a product feels easy to recommend.",
         "The most useful AI workflow for Shopify stores goes beyond generation alone. Merchants need to know which products underperform, which competitor listing keeps winning, and which changes are worth shipping first."
       ],
       "panelTitle": "Who this decision point fits",
@@ -73,7 +73,7 @@
         },
         {
           "title": "See why pages lose",
-          "description": "Better visibility into why product pages lose to specific competitors."
+          "description": "A clear reason why each product page loses to a specific competitor."
         },
         {
           "title": "You choose what ships",
@@ -206,6 +206,10 @@
         {
           "question": "Can Shopify merchants publish changes back to the store?",
           "answer": "Yes. When you click Apply, ecentic writes the new title, description and structured data back through the Shopify Admin API. If you connect Google Merchant Center, it also sends those fixes to your Google feed as a supplemental data source."
+        },
+        {
+          "question": "Does Shopify already handle agent checkout?",
+          "answer": "Partly. Shopify can serve the UCP endpoint Google's agents use to check out. What comes through it is still your data: prices, stock, policies and your Merchant Center setup. ecentic checks the Merchant Center settings agent checkout needs and pushes your product fixes there."
         },
         {
           "question": "When should Shopify teams move beyond native AI tools?",

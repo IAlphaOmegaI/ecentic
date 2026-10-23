@@ -37,7 +37,7 @@
       "title": "Por qué los comerciantes Shopify superan la IA nativa.",
       "description": "La mayoría de comerciantes Shopify acaban chocando con un techo con las herramientas nativas de generación. Esto es lo que viene después.",
       "paragraphs": [
-        "La mayoría de equipos Shopify ya tienen lo básico: una tienda, un catálogo y un flujo de merchandising. El reto real es que la visibilidad del producto depende ahora de más que el diseño del tema o el rendimiento de anuncios. Títulos, descripciones, atributos y contexto competitivo moldean si un producto parece fácil de recomendar.",
+        "La mayoría de equipos Shopify ya tienen lo básico: una tienda, un catálogo y un flujo de merchandising. El reto real es que que un agente elija un producto depende ahora de más que el diseño del tema o el rendimiento de anuncios. Títulos, descripciones, atributos y contexto competitivo moldean si un producto parece fácil de recomendar.",
         "El flujo de IA más útil para tiendas Shopify va más allá de la generación sola. Los comerciantes necesitan saber qué productos rinden mal, qué ficha de competidor sigue ganando y qué cambios merece la pena publicar primero."
       ],
       "panelTitle": "A quién encaja este punto de decisión",
@@ -73,7 +73,7 @@
         },
         {
           "title": "Ver por qué pierden las páginas",
-          "description": "Mejor visibilidad de por qué las páginas de producto pierden frente a competidores concretos."
+          "description": "Una razón clara de por qué cada página de producto pierde frente a un competidor concreto."
         },
         {
           "title": "Tú decides qué se publica",
@@ -206,6 +206,10 @@
         {
           "question": "¿Pueden los comerciantes Shopify publicar cambios de vuelta en la tienda?",
           "answer": "Sí. Cuando haces clic en Aplicar, ecentic escribe el nuevo título, la descripción y los datos estructurados vía Shopify Admin API. Si conectas Google Merchant Center, también envía esas correcciones a tu feed de Google como fuente de datos suplementaria."
+        },
+        {
+          "question": "¿Shopify ya se encarga del checkout con agentes?",
+          "answer": "En parte. Shopify puede servir el endpoint UCP que usan los agentes de Google para completar la compra. Lo que pasa por él siguen siendo tus datos: precios, stock, políticas y tu configuración de Merchant Center. ecentic revisa los ajustes de Merchant Center que necesita el checkout con agentes y envía allí las correcciones de tus productos."
         },
         {
           "question": "¿Cuándo deberían los equipos Shopify ir más allá de las herramientas de IA nativas?",

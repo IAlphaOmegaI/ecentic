@@ -60,7 +60,7 @@ const nextSectionNumber = (sections: readonly { number: string }[]) =>
  */
 const BLOG_TITLE_TAGS: Record<string, Record<string, string>> = {
   "ecentic-eu-presence-partnership-compliance-ai-visibility-bundle": {
-    en: "EU Presence Bundle: Compliance + AI Visibility",
+    en: "EU Presence Bundle: Compliance + AI Shopping",
   },
   // BLG headlines lead with a promise ("Get AI Citations in 30–90 Days…")
   // and often never say the phrase the slug targets, so the title tag names

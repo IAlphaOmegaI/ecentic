@@ -7,7 +7,7 @@ export const seo = {
   name: "ecentic",
   title: "ecentic",
   description:
-    "Get the sale when AI does the shopping. ecentic shows which products ChatGPT, Claude, Gemini and Perplexity skip, fixes the listings, and tracks the AI-agent visits and sales that follow.",
+    "Get the sale when AI does the shopping. ecentic optimizes your product feed and catalog so ChatGPT and Gemini pick your products and can actually buy them.",
   links: [
     "https://x.com/ecentic_ai",
     "https://www.linkedin.com/company/ecentic/posts/?feedView=all",

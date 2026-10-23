@@ -4,7 +4,7 @@ import { Reveal, RevealItem } from "@/components/reveal";
 import { Link } from "@/i18n/navigation";
 import { Counter } from "./counter";
 
-const statKeys = ["cyberWeek", "conversion", "growth", "visibility"] as const;
+const statKeys = ["cyberWeek", "conversion", "growth", "agentRetail"] as const;
 
 export const Proof = async () => {
   const translate = await getTranslations("home");

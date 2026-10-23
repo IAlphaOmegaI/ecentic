@@ -2,7 +2,7 @@
   "productListings": {
     "meta": {
       "title": "AI product listing optimization for merchants",
-      "description": "AI product listing optimization for titles, descriptions, and structured product data. See how ecentic helps merchants improve visibility with AI agents."
+      "description": "AI product listing optimization for titles, descriptions and structured data, so AI shopping agents can compare your products and pick them."
     },
     "breadcrumb": {
       "home": "Home",
@@ -147,7 +147,7 @@
         {
           "href": "/blog",
           "name": "Blog",
-          "title": "Go deeper on structured data, AI traffic, and catalog visibility",
+          "title": "Go deeper on structured data, AI traffic, and product feeds",
           "description": "The blog turns product listing optimization into repeatable operational checklists for merchants and teams.",
           "label": "Visit the blog",
           "color": "accent"

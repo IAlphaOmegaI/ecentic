@@ -3,9 +3,9 @@
     "brand": "ecentic",
     "meta": {
       "title": "Consigue la venta cuando la IA hace la compra | ecentic",
-      "description": "Optimiza tus fichas de producto para los agentes de compras con IA. Simula las decisiones de ChatGPT, Claude, Gemini y Perplexity, diagnostica por qué pierdes y mejora tu tasa de victoria.",
-      "openGraphDescription": "Simula cómo los agentes de compras con IA eligen tus productos, diagnostica por qué no lo hacen y optimiza tus fichas automáticamente. Creado para la economía de agentes.",
-      "twitterDescription": "Simula cómo ChatGPT, Claude, Gemini y Perplexity eligen tus productos frente a los de la competencia. Diagnostica pérdidas. Optimiza automáticamente.",
+      "description": "Optimización del feed de productos y del catálogo para agentes de compras con IA. Descubre por qué ChatGPT, Claude y Gemini omiten tus productos, corrige los datos y prepara el checkout con agentes.",
+      "openGraphDescription": "Los agentes de compras leen tu feed de productos, no tu página de inicio. ecentic corrige el feed y el catálogo para que ChatGPT y Gemini elijan tus productos y puedan comprarlos.",
+      "twitterDescription": "Los agentes de compras leen tu feed de productos, no tu página de inicio. ecentic corrige el feed y el catálogo para que ChatGPT y Gemini elijan tus productos y puedan comprarlos.",
       "keywords": [
         "optimización para agentes de compras con IA",
         "optimización de comercio electrónico con IA",
@@ -16,8 +16,12 @@
         "compras con Gemini",
         "optimización de la tasa de victoria",
         "plataforma de comercio con IA",
-        "SEO para agentes",
-        "GEO optimización para motores generativos",
+        "optimización del feed de productos",
+        "optimización del catálogo para IA",
+        "comercio agéntico",
+        "Universal Commerce Protocol",
+        "optimización de Google Merchant Center",
+        "checkout con agentes de IA",
         "optimización de Shopify con IA",
         "WooCommerce con IA",
         "optimización de contenido de producto",
@@ -68,7 +72,7 @@
         "quaternary": "Cerrar menú de navegación"
       }
     },
-    "tagline": "Que te elijan los agentes de compras con IA.",
+    "tagline": "Consigue la venta cuando la IA hace la compra.",
     "installHint": "Instala gratis. Ve tu puntuación de IA en minutos."
   },
   "footer": {
@@ -102,12 +106,12 @@
       "about": "Sobre nosotros"
     },
     "cta": {
-      "eyebrow": "Que te elija la IA",
+      "eyebrow": "Revisión gratis de tu tienda",
       "title": "Descubre qué productos omiten los agentes de IA.",
       "description": "Instálalo gratis en Shopify o WooCommerce y mira tu puntuación de IA en minutos."
     },
     "copyright": "© 2026 ecentic. Todos los derechos reservados.",
-    "madeFor": "Hecho para comercios que se niegan a ser invisibles para la IA.",
+    "madeFor": "Hecho para comercios que prefieren venderles a los robots antes que perder contra ellos.",
     "company": {
       "taxId": "NIPT",
       "country": "Albania"
@@ -2937,7 +2941,7 @@
       "action": {
         "primary": "Leer artículo"
       },
-      "note": "Más guías para comercios que mejoran su visibilidad en búsqueda, compras e IA."
+      "note": "Más guías para comercios que venden a través de agentes de compras con IA."
     },
     "author": {
       "role": "CEO de ecentic",
@@ -2947,7 +2951,7 @@
   "home": {
     "meta": {
       "title": "Compras con IA: optimiza Shopify y WooCommerce",
-      "description": "ecentic muestra qué productos omiten ChatGPT, Gemini y Perplexity, corrige las fichas y mide las visitas y ventas de agentes de IA que llegan después.",
+      "description": "ecentic optimiza tu feed de productos y tu catálogo para que ChatGPT y Gemini elijan tus productos y puedan comprarlos de verdad. Hecho para Shopify y WooCommerce.",
       "socialTitle": "Consigue la venta cuando la IA hace la compra"
     },
     "hero": {
@@ -2956,7 +2960,7 @@
         "primary": "Consigue la venta",
         "accent": "cuando la IA hace la compra."
       },
-      "description": "Los compradores preguntan a ChatGPT, Gemini y Perplexity qué comprar, y el agente elige por ellos. ecentic encuentra los productos que los agentes omiten, corrige los datos que leen y prepara tu tienda para que puedan comprarte.",
+      "description": "Los compradores preguntan a ChatGPT y Gemini qué comprar, y el agente es quien elige. Nunca ve tu página de inicio. Lee tu feed de productos y tu catálogo, y en Google puede completar la compra por el comprador. ecentic optimiza ese feed y ese catálogo para que los agentes elijan tus productos y puedan comprarlos de verdad.",
       "proof": "Configuración en 2 minutos · Sin tarjeta · Primero tu puntuación gratis",
       "team": {
         "lead": "¿Diriges un equipo de growth o e-commerce?",
@@ -3014,11 +3018,11 @@
           "source": "Salesforce, 2025",
           "url": "https://www.salesforce.com/news/stories/2025-cyber-week-predictions/"
         },
-        "visibility": {
-          "value": "45%",
-          "label": "de los líderes de marketing no pueden medir su visibilidad en IA",
-          "source": "Semrush, 2026",
-          "url": "https://www.semrush.com/news/463141-semrush-releases-expanded-2026-ai-visibility-index-analyzing-126-million-ai-search-prompts/"
+        "agentRetail": {
+          "value": "1 billón $",
+          "label": "en ingresos del retail de EE. UU. podrían pasar por agentes de IA en 2030",
+          "source": "McKinsey, 2025",
+          "url": "https://www.mckinsey.com/industries/retail/our-insights/the-agentic-commerce-opportunity-how-ai-agents-are-ushering-in-a-new-era-for-consumers-and-merchants"
         }
       }
     },
@@ -3030,10 +3034,10 @@
           "caption": "Partner de Shopify App Store"
         },
         "plugAndPlay": {
-          "caption": "Plug and Play — Tirana Batch 2"
+          "caption": "Plug and Play — GOAL Silicon Valley"
         },
         "redBullBasement": {
-          "caption": "Red Bull Basement — ganador nacional de Albania"
+          "caption": "Red Bull Basement — ganador nacional, final mundial en Silicon Valley"
         },
         "founderGames": {
           "caption": "The Founder Games — Temporada 2"
@@ -3054,7 +3058,7 @@
       "ariaLabel": "Bundle ecentic × EU Presence",
       "visitEuPresence": "Visitar EU Presence",
       "title": "ecentic × EU Presence",
-      "subtitle": "Cumplimiento + visibilidad en IA",
+      "subtitle": "Cumplimiento + compras con IA",
       "description": "Contrátalo una vez y cubres los dos lados. EU Presence gestiona la representación y el cumplimiento en los 27 estados miembro, y ecentic mantiene tus fichas ganando la comparación de agentes.",
       "items": {
         "gdpr": {
@@ -3088,39 +3092,39 @@
       }
     },
     "steps": {
-      "title": "Que la IA te elija en tres pasos.",
-      "description": "Conecta tu tienda y ecentic hace el resto.",
+      "title": "Tres pasos. Sin desarrollador.",
+      "description": "Conecta tu tienda y ecentic hace el resto. Nada cambia en tu tienda hasta que haces clic en Aplicar.",
       "connect": {
         "title": "Conecta tu tienda",
-        "description": "Instala en <shopify>Shopify</shopify> o <woocommerce>WooCommerce</woocommerce> en unos dos minutos. No necesitas desarrollador."
+        "description": "Instala en <shopify>Shopify</shopify> o <woocommerce>WooCommerce</woocommerce> en unos dos minutos, o importa un feed de productos. No necesitas desarrollador."
       },
       "diagnose": {
         "title": "Ve dónde pierdes",
-        "description": "ecentic pasa a los principales agentes de compra con IA por tu catálogo y te muestra qué productos omiten, y por qué."
+        "description": "ecentic pone tus productos delante de ChatGPT, Claude y Gemini junto a los de tus competidores y te muestra cuáles se quedan fuera, y el detalle que faltaba y costó la venta."
       },
       "optimize": {
-        "title": "Sé elegido",
-        "description": "Un clic reescribe tus fichas para que los agentes te recomienden primero. A partir de ahí ves las visitas y las ventas que trae."
+        "title": "Corrígelo en el origen",
+        "description": "Un clic reescribe el título, la descripción y los datos estructurados y los publica en tu tienda. En Shopify, las mismas correcciones pueden ir a tu feed de Google Merchant Center."
       }
     },
     "features": {
       "title": "Lo que la optimización para compras con IA hace por tu tienda.",
       "items": {
         "aiScore": {
-          "title": "Tu puntuación de IA",
-          "description": "Mira con qué frecuencia ChatGPT, Claude, Gemini y Perplexity eligen tus productos."
+          "title": "Tu tasa de victoria en IA",
+          "description": "Con qué frecuencia ChatGPT, Claude y Gemini eligen tu producto frente al de un competidor concreto, producto a producto."
         },
         "competitors": {
           "title": "Supera a tus competidores",
-          "description": "Descubre a quién recomiendan los agentes en tu lugar y qué tienen ellos que tú no."
+          "description": "Descubre a quién eligen los agentes en tu lugar, y qué tiene su ficha que la tuya no."
         },
         "fixes": {
-          "title": "Arreglos en un clic",
-          "description": "ecentic reescribe tus títulos, descripciones y datos de producto para que los agentes te elijan."
+          "title": "Correcciones de feed y catálogo",
+          "description": "ecentic reescribe títulos, descripciones y datos estructurados y los publica cuando haces clic en Aplicar. En Shopify también puede enviarlos a Google Merchant Center."
         },
         "track": {
           "title": "Mide el resultado",
-          "description": "Mira las visitas y los ingresos de agentes de IA, semana a semana."
+          "description": "En Shopify, mira las visitas que te envían los asistentes de IA, semana a semana."
         },
         "ucp": {
           "title": "Lista para el checkout con agentes",
@@ -3136,7 +3140,6 @@
       "table": {
         "capabilities": "Capacidades",
         "auditTools": "Herramientas de auditoría",
-        "geoMonitoring": "Monitorización GEO",
         "ecentic": "écentic"
       },
       "states": {
@@ -3146,20 +3149,20 @@
         "aiReady": {
           "label": "Te dice si los productos están \"listos para IA\""
         },
-        "brandMentions": {
-          "label": "Rastrea menciones de marca en búsquedas de agentes IA"
-        },
         "agentPurchasing": {
-          "label": "Simula compras reales de agentes"
+          "label": "Simula la elección del agente frente a competidores concretos"
         },
         "winRate": {
           "label": "Mide la tasa de victoria frente a competidores concretos"
         },
         "optimizedListings": {
-          "label": "Genera fichas optimizadas automáticamente"
+          "label": "Escribe la corrección y la publica en tu tienda"
         },
         "ucpReady": {
-          "label": "Prepara tu tienda para los agentes de IA (UCP)"
+          "label": "Prepara tu tienda para el checkout con agentes (UCP)"
+        },
+        "merchantCenter": {
+          "label": "Envía las correcciones a Google Merchant Center"
         }
       }
     },
@@ -3207,15 +3210,15 @@
       "items": [
         {
           "question": "¿Qué es la optimización para compras con IA?",
-          "answer": "La optimización para compras con IA consiste en conseguir que tus productos se recomienden cuando los compradores preguntan a asistentes como ChatGPT, Gemini o Perplexity qué comprar. Abarca los datos de producto que leen esos asistentes, como títulos, descripciones, atributos, precio, stock, reseñas y datos estructurados, y cómo se comparan tus productos con los de la competencia en cada uno."
+          "answer": "Es el trabajo de conseguir que tus productos se elijan, y se compren, cuando un comprador pregunta a un asistente de IA como ChatGPT o Gemini qué comprar. El asistente no navega por tu web. Lee tu feed de productos, tu catálogo y los datos estructurados de tus páginas de producto, y en Google puede completar la compra por el comprador. Así que el trabajo consiste en que esos datos estén completos y correctos frente a los competidores con los que se comparan, y en asegurarte de que un agente pueda terminar el pedido."
         },
         {
           "question": "¿Cómo consigo que ChatGPT recomiende mis productos?",
-          "answer": "Dale a ChatGPT datos de producto completos y concretos que pueda comparar: un título claro, los atributos por los que preguntan los compradores, precio y stock correctos, reseñas y schema de Product en la página. ecentic pasa tus productos por consultas de compra simuladas en ChatGPT, Claude, Gemini y Perplexity, te muestra cuáles pierden y por qué, y reescribe esas fichas."
+          "answer": "Dale a ChatGPT datos de producto completos y concretos que pueda comparar: un título claro, los atributos por los que preguntan los compradores, precio y stock correctos, y schema de Product en la página. ecentic compara tus productos con los de la competencia en ChatGPT, Claude y Gemini, te muestra cuáles pierden y por qué, y reescribe esas fichas."
         },
         {
           "question": "¿ecentic funciona con Shopify y WooCommerce?",
-          "answer": "Sí. Instala ecentic desde la Shopify App Store o conecta una tienda WooCommerce con claves de la API REST. ecentic importa tu catálogo y publica en tu tienda los cambios de fichas que apruebes. Cualquier otra tienda puede empezar con un análisis gratuito desde su dirección."
+          "answer": "Sí. Instala ecentic desde la Shopify App Store, o conecta WooCommerce con el plugin gratuito o con claves de la API REST. ecentic importa tu catálogo y publica en tu tienda las correcciones que aplicas. Las tiendas Shopify también pueden conectar Google Merchant Center. Cualquier otra tienda puede empezar con un análisis gratuito desde su dirección o un feed de productos."
         },
         {
           "question": "¿En qué se diferencia ecentic de las herramientas de seguimiento de visibilidad en IA?",
@@ -3284,7 +3287,7 @@
       "payg": {
         "name": "Pay-as-you-go",
         "category": "Paga por resultados",
-        "tagline": "Solo pagas cuando vendemos",
+        "tagline": "Solo pagas cuando los agentes venden por ti",
         "badge": "Gratis al inicio",
         "figure": "3%",
         "suffix": "en pedidos atribuidos a la IA",
@@ -3325,7 +3328,7 @@
       "scale": {
         "name": "Scale",
         "category": "Mensual fijo",
-        "tagline": "Optimiza en piloto automático",
+        "tagline": "Corrige a escala",
         "figure": "44,90 $",
         "suffix": "/mes",
         "note": "Mensual fijo · sin comisión por rendimiento.",
@@ -3375,7 +3378,7 @@
       "description": "Con pago por uso solo pagas en pedidos que llegan después de una visita desde un asistente de IA. Todo lo demás cuesta 0 $.",
       "steps": [
         {
-          "title": "Un agente te recomienda",
+          "title": "Un agente te elige",
           "description": "Un comprador pregunta a ChatGPT, Gemini o Perplexity qué comprar, y tu ficha optimizada gana la comparación."
         },
         {
@@ -3497,7 +3500,7 @@
     "partnershipBundle": {
       "ariaLabel": "Bundle ecentic × EU Presence",
       "title": "ecentic × EU Presence",
-      "subtitle": "Cumplimiento + visibilidad IA",
+      "subtitle": "Cumplimiento + compras con IA",
       "description": "Contrátalo una vez y cubres los dos lados. EU Presence gestiona la representación y el cumplimiento en los 27 estados miembro, y ecentic mantiene tus fichas ganando la comparación de agentes.",
       "items": [
         {
@@ -3568,7 +3571,7 @@
         },
         {
           "question": "¿Qué es el bundle EU Presence?",
-          "answer": "Nos hemos asociado con EU Presence para que puedas lanzarte en Europa y seguir siendo elegido por agentes de IA en un solo proyecto. El bundle Cumplimiento + visibilidad IA combina su representante GDPR, persona responsable GPSR y Privacy Center Plus con ecentic Dominate. Se factura junto con un 20% de descuento en el bundle, sin mínimos ni cuotas de configuración. Reserva una llamada del bundle desde la página de precios para configurarlo."
+          "answer": "Nos hemos asociado con EU Presence para que puedas lanzarte en Europa y seguir siendo elegido por agentes de IA en un solo proyecto. El bundle Cumplimiento + compras con IA combina su representante GDPR, persona responsable GPSR y Privacy Center Plus con ecentic Dominate. Se factura junto con un 20% de descuento en el bundle, sin mínimos ni cuotas de configuración. Reserva una llamada del bundle desde la página de precios para configurarlo."
         }
       ]
     },
@@ -3719,7 +3722,7 @@
       "number": "02",
       "title": "Aprende el sistema, luego elige profundidad.",
       "description": "Empieza con el ciclo del producto, compara el mercado o ve directo a la implementación por plataforma.",
-      "agentsIntro": "Los mismos cuatro agentes que deciden qué recomendar también marcan lo que los comerciantes deben aprender primero: cómo funciona la selección y luego cómo actuar para su stack.",
+      "agentsIntro": "Cada uno de los grandes asistentes lee los datos de producto de forma un poco distinta. Esto es en lo que se apoya cada uno.",
       "agents": [
         {
           "title": "ChatGPT",
@@ -3758,7 +3761,7 @@
         {
           "name": "Formato largo",
           "title": "Blog",
-          "description": "Guías sobre datos estructurados, tráfico de agentes, visibilidad de catálogo y los protocolos que moldean las compras con IA, escritas para comerciantes y operadores.",
+          "description": "Guías sobre datos estructurados, tráfico de agentes, feeds de producto y los protocolos que moldean las compras con IA, escritas para comerciantes y operadores.",
           "action": {
             "primary": "Ver artículos"
           }
@@ -3857,7 +3860,7 @@
   "howItWorks": {
     "meta": {
       "title": "Cómo lograr que ChatGPT recomiende tus productos",
-      "description": "ecentic simula cómo ChatGPT, Claude, Gemini y Perplexity comparan tus productos, muestra por qué pierden y reescribe las fichas para que la IA te recomiende."
+      "description": "ecentic simula cómo ChatGPT, Claude y Gemini comparan tus productos, muestra por qué pierden y después corrige las fichas y los datos de producto que leen."
     },
     "breadcrumb": {
       "home": "Inicio",
@@ -3886,7 +3889,7 @@
         "primary": "Cómo lograr que la IA elija tus productos,",
         "accent": "en tres pasos."
       },
-      "description": "ecentic simula cómo los agentes de compras con IA comparan tus productos, explica por qué pierdes en lenguaje claro y reescribe tus fichas para que la siguiente comparación vaya a tu favor.",
+      "description": "ecentic simula cómo los agentes de compras con IA comparan tus productos, explica por qué pierdes en lenguaje claro y corrige la ficha y los datos de producto que leen.",
       "assurances": [
         "Primer escaneo en unos dos minutos",
         "Correcciones en un clic",
@@ -4305,7 +4308,7 @@
   "features": {
     "meta": {
       "title": "Herramientas de IA para las fichas de producto de tu tienda",
-      "description": "Herramientas de IA para ecommerce: optimización de fichas de producto, análisis de competidores y visibilidad en compras con IA. Descubre cómo ecentic ayuda a los comerciantes a ganar más carritos hoy."
+      "description": "Herramientas de IA para ecommerce que optimizan tu feed de productos y tu catálogo para los agentes de compras con IA: simulaciones frente a competidores, correcciones de fichas y sincronización con Merchant Center."
     },
     "breadcrumb": {
       "home": "Inicio",
@@ -4317,7 +4320,7 @@
         "primary": "Herramientas de IA para ecommerce",
         "accent": "para que la IA elija tus productos."
       },
-      "description": "Simula cómo los agentes de compras con IA comparan tus productos, ve exactamente por qué ganan los competidores y publica las correcciones de fichas que invierten el resultado, todo desde un solo ciclo.",
+      "description": "Simula cómo los agentes de compras con IA comparan tus productos, ve exactamente por qué ganan los competidores y publica las correcciones desde un solo lugar.",
       "assurances": [
         "Simula ChatGPT, Claude y Gemini",
         "Reescrituras de fichas en un clic",
@@ -4329,8 +4332,8 @@
     },
     "loop": {
       "number": "01",
-      "title": "Un ciclo de invisible a recomendado.",
-      "description": "La visibilidad en compras asistidas por IA no es una métrica de marca. Es un ciclo operativo, y ecentic ejecuta los cuatro pasos para cada producto de tu catálogo.",
+      "title": "Un ciclo, de omitido a corregido.",
+      "description": "Que un agente de compras te elija no es una métrica de marca. Es trabajo de catálogo, y ecentic ejecuta el ciclo para cada producto que eliges.",
       "steps": [
         {
           "step": "Paso 01",
@@ -4371,7 +4374,7 @@
         },
         {
           "title": "Análisis de brechas con competidores",
-          "description": "Descubre a quién recomiendan los agentes en lugar de ti, y exactamente qué tiene su ficha que la tuya no.",
+          "description": "Descubre a quién eligen los agentes en tu lugar, y exactamente qué tiene su ficha que la tuya no.",
           "features": [
             "Comparaciones lado a lado",
             "Detección de atributos faltantes",
@@ -4687,7 +4690,7 @@
   "productListings": {
     "meta": {
       "title": "Optimización de fichas de producto con IA para comerciantes",
-      "description": "Optimización de fichas de producto con IA para títulos, descripciones y datos estructurados de producto. Descubre cómo ecentic ayuda a los comerciantes a mejorar la visibilidad con agentes de IA."
+      "description": "Optimización de fichas de producto con IA para títulos, descripciones y datos estructurados, para que los agentes de compras con IA puedan comparar tus productos y elegirlos."
     },
     "breadcrumb": {
       "home": "Inicio",
@@ -4832,7 +4835,7 @@
         {
           "href": "/blog",
           "name": "Blog",
-          "title": "Profundiza en datos estructurados, tráfico de IA y visibilidad de catálogo",
+          "title": "Profundiza en datos estructurados, tráfico de IA y feeds de producto",
           "description": "El blog convierte la optimización de fichas en listas de verificación operativas repetibles para comerciantes y equipos.",
           "label": "Visitar el blog",
           "color": "accent"
@@ -4910,7 +4913,7 @@
       "title": "Por qué los comerciantes Shopify superan la IA nativa.",
       "description": "La mayoría de comerciantes Shopify acaban chocando con un techo con las herramientas nativas de generación. Esto es lo que viene después.",
       "paragraphs": [
-        "La mayoría de equipos Shopify ya tienen lo básico: una tienda, un catálogo y un flujo de merchandising. El reto real es que la visibilidad del producto depende ahora de más que el diseño del tema o el rendimiento de anuncios. Títulos, descripciones, atributos y contexto competitivo moldean si un producto parece fácil de recomendar.",
+        "La mayoría de equipos Shopify ya tienen lo básico: una tienda, un catálogo y un flujo de merchandising. El reto real es que que un agente elija un producto depende ahora de más que el diseño del tema o el rendimiento de anuncios. Títulos, descripciones, atributos y contexto competitivo moldean si un producto parece fácil de recomendar.",
         "El flujo de IA más útil para tiendas Shopify va más allá de la generación sola. Los comerciantes necesitan saber qué productos rinden mal, qué ficha de competidor sigue ganando y qué cambios merece la pena publicar primero."
       ],
       "panelTitle": "A quién encaja este punto de decisión",
@@ -4946,7 +4949,7 @@
         },
         {
           "title": "Ver por qué pierden las páginas",
-          "description": "Mejor visibilidad de por qué las páginas de producto pierden frente a competidores concretos."
+          "description": "Una razón clara de por qué cada página de producto pierde frente a un competidor concreto."
         },
         {
           "title": "Tú decides qué se publica",
@@ -5079,6 +5082,10 @@
         {
           "question": "¿Pueden los comerciantes Shopify publicar cambios de vuelta en la tienda?",
           "answer": "Sí. Cuando haces clic en Aplicar, ecentic escribe el nuevo título, la descripción y los datos estructurados vía Shopify Admin API. Si conectas Google Merchant Center, también envía esas correcciones a tu feed de Google como fuente de datos suplementaria."
+        },
+        {
+          "question": "¿Shopify ya se encarga del checkout con agentes?",
+          "answer": "En parte. Shopify puede servir el endpoint UCP que usan los agentes de Google para completar la compra. Lo que pasa por él siguen siendo tus datos: precios, stock, políticas y tu configuración de Merchant Center. ecentic revisa los ajustes de Merchant Center que necesita el checkout con agentes y envía allí las correcciones de tus productos."
         },
         {
           "question": "¿Cuándo deberían los equipos Shopify ir más allá de las herramientas de IA nativas?",
@@ -5242,7 +5249,7 @@
         },
         {
           "title": "Quedándose en WooCommerce",
-          "description": "Equipos que quieren mejor visibilidad de producto sin cambiar de plataforma ecommerce."
+          "description": "Equipos que quieren productos que los agentes elijan sin cambiar de plataforma ecommerce."
         },
         {
           "title": "Información ligada a actualizaciones",
@@ -6706,7 +6713,7 @@
       "missingAttributes": "Atributos faltantes"
     },
     "cta": {
-      "title": "¿Listo para ganar el carrito de cada agente de IA?",
+      "title": "Descubre qué productos omiten los agentes de IA.",
       "description": "ecentic corrige los datos de producto que leen los agentes. Gratis para empezar.",
       "action": "Empezar gratis"
     }
@@ -7812,8 +7819,8 @@
   },
   "about": {
     "meta": {
-      "title": "Sobre ecentic: optimización para compras con IA",
-      "description": "ecentic es una app de optimización para compras con IA en Shopify y WooCommerce, de ECENTIC ShPK (Tirana, Albania). Conoce al fundador y los datos de la empresa."
+      "title": "Sobre ecentic: optimización de feed y catálogo para compras con IA",
+      "description": "ecentic optimiza feeds de productos y catálogos para que los agentes de compras con IA elijan los productos de una tienda y puedan comprarlos. Conoce a los tres fundadores."
     },
     "breadcrumb": {
       "home": "Inicio",
@@ -7825,7 +7832,7 @@
         "primary": "La empresa detrás de",
         "accent": "ecentic."
       },
-      "description": "ecentic es una app de optimización para compras con IA para tiendas Shopify y WooCommerce. Muestra a los comercios cómo eligen ChatGPT, Gemini, Claude y Perplexity entre productos, y corrige las fichas que esos asistentes omiten.",
+      "description": "ecentic es optimización del feed de productos y del catálogo para agentes de compras con IA, hecha para tiendas Shopify y WooCommerce. Muestra cómo ChatGPT, Claude y Gemini comparan los productos de una tienda con los de la competencia, corrige los datos que leen esos agentes y prepara la tienda para el checkout con agentes.",
       "assurances": ["Fundada en 2026", "Hecha para Shopify y WooCommerce"],
       "art": {
         "alt": "Ilustración ASCII de un apretón de manos"
@@ -7835,8 +7842,8 @@
       "number": "01",
       "title": "Qué hacemos",
       "paragraphs": [
-        "Cada vez más compradores preguntan a asistentes de IA qué comprar, y el asistente decide qué productos aparecen en la respuesta. La mayoría de las tiendas no ve cómo se toma esa decisión ni por qué la pierde.",
-        "ecentic pasa los productos de una tienda por consultas de compra simuladas en ChatGPT, Claude, Gemini y Perplexity, los compara con competidores concretos y explica por qué se omite un producto. Después reescribe la ficha, publica el cambio que aprueba el comercio y mide las visitas y ventas que llegan desde la IA.",
+        "Cada vez más compradores preguntan a asistentes de IA qué comprar, y el asistente decide qué productos entran en la respuesta. En Google también puede completar la compra por ellos. La mayoría de tiendas no pueden ver cómo se toma esa decisión, ni por qué la pierden.",
+        "ecentic hace que ChatGPT, Claude y Gemini comparen los productos de una tienda con competidores concretos y explica por qué se omite un producto. Después reescribe el título, la descripción y los datos estructurados, publica la corrección cuando el comerciante hace clic en Aplicar y, en Shopify, puede enviarla a Google Merchant Center. Para tiendas WooCommerce, el plugin gratuito de ecentic permite a los agentes completar la compra con UCP.",
         "ecentic funciona con Shopify y WooCommerce. Cualquier otra tienda puede empezar con un análisis gratuito desde su dirección."
       ]
     },

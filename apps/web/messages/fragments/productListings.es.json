@@ -2,7 +2,7 @@
   "productListings": {
     "meta": {
       "title": "Optimización de fichas de producto con IA para comerciantes",
-      "description": "Optimización de fichas de producto con IA para títulos, descripciones y datos estructurados de producto. Descubre cómo ecentic ayuda a los comerciantes a mejorar la visibilidad con agentes de IA."
+      "description": "Optimización de fichas de producto con IA para títulos, descripciones y datos estructurados, para que los agentes de compras con IA puedan comparar tus productos y elegirlos."
     },
     "breadcrumb": {
       "home": "Inicio",
@@ -147,7 +147,7 @@
         {
           "href": "/blog",
           "name": "Blog",
-          "title": "Profundiza en datos estructurados, tráfico de IA y visibilidad de catálogo",
+          "title": "Profundiza en datos estructurados, tráfico de IA y feeds de producto",
           "description": "El blog convierte la optimización de fichas en listas de verificación operativas repetibles para comerciantes y equipos.",
           "label": "Visitar el blog",
           "color": "accent"

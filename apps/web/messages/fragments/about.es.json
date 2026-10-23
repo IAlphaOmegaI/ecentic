@@ -1,8 +1,8 @@
 {
   "about": {
     "meta": {
-      "title": "Sobre ecentic: optimización para compras con IA",
-      "description": "ecentic es una app de optimización para compras con IA en Shopify y WooCommerce, de ECENTIC ShPK (Tirana, Albania). Conoce al fundador y los datos de la empresa."
+      "title": "Sobre ecentic: optimización de feed y catálogo para compras con IA",
+      "description": "ecentic optimiza feeds de productos y catálogos para que los agentes de compras con IA elijan los productos de una tienda y puedan comprarlos. Conoce a los tres fundadores."
     },
     "breadcrumb": {
       "home": "Inicio",
@@ -14,7 +14,7 @@
         "primary": "La empresa detrás de",
         "accent": "ecentic."
       },
-      "description": "ecentic es una app de optimización para compras con IA para tiendas Shopify y WooCommerce. Muestra a los comercios cómo eligen ChatGPT, Gemini, Claude y Perplexity entre productos, y corrige las fichas que esos asistentes omiten.",
+      "description": "ecentic es optimización del feed de productos y del catálogo para agentes de compras con IA, hecha para tiendas Shopify y WooCommerce. Muestra cómo ChatGPT, Claude y Gemini comparan los productos de una tienda con los de la competencia, corrige los datos que leen esos agentes y prepara la tienda para el checkout con agentes.",
       "assurances": ["Fundada en 2026", "Hecha para Shopify y WooCommerce"],
       "art": {
         "alt": "Ilustración ASCII de un apretón de manos"
@@ -24,8 +24,8 @@
       "number": "01",
       "title": "Qué hacemos",
       "paragraphs": [
-        "Cada vez más compradores preguntan a asistentes de IA qué comprar, y el asistente decide qué productos aparecen en la respuesta. La mayoría de las tiendas no ve cómo se toma esa decisión ni por qué la pierde.",
-        "ecentic pasa los productos de una tienda por consultas de compra simuladas en ChatGPT, Claude, Gemini y Perplexity, los compara con competidores concretos y explica por qué se omite un producto. Después reescribe la ficha, publica el cambio que aprueba el comercio y mide las visitas y ventas que llegan desde la IA.",
+        "Cada vez más compradores preguntan a asistentes de IA qué comprar, y el asistente decide qué productos entran en la respuesta. En Google también puede completar la compra por ellos. La mayoría de tiendas no pueden ver cómo se toma esa decisión, ni por qué la pierden.",
+        "ecentic hace que ChatGPT, Claude y Gemini comparen los productos de una tienda con competidores concretos y explica por qué se omite un producto. Después reescribe el título, la descripción y los datos estructurados, publica la corrección cuando el comerciante hace clic en Aplicar y, en Shopify, puede enviarla a Google Merchant Center. Para tiendas WooCommerce, el plugin gratuito de ecentic permite a los agentes completar la compra con UCP.",
         "ecentic funciona con Shopify y WooCommerce. Cualquier otra tienda puede empezar con un análisis gratuito desde su dirección."
       ]
     },

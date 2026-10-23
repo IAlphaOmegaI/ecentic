@@ -2,7 +2,7 @@
   "features": {
     "meta": {
       "title": "AI ecommerce tools for merchant product listings",
-      "description": "AI ecommerce tools for product listing optimization, competitor analysis, and AI shopping visibility. See how ecentic helps merchants win more carts today."
+      "description": "AI ecommerce tools that optimize your product feed and catalog for AI shopping agents: competitor simulations, listing fixes, Merchant Center sync."
     },
     "breadcrumb": {
       "home": "Home",
@@ -14,7 +14,7 @@
         "primary": "AI ecommerce tools that get your products",
         "accent": "picked by AI shoppers."
       },
-      "description": "Simulate how AI shopping agents compare your products, see exactly why competitors win, and publish the listing fixes that flip the result, all from one loop.",
+      "description": "Simulate how AI shopping agents compare your products, see exactly why competitors win, and publish the fixes from one place.",
       "assurances": [
         "Simulates ChatGPT, Claude & Gemini",
         "One-click listing rewrites",
@@ -26,8 +26,8 @@
     },
     "loop": {
       "number": "01",
-      "title": "One loop from invisible to recommended.",
-      "description": "Visibility in AI-assisted shopping is not a brand metric. It is an operational loop, and ecentic runs all four steps for every product in your catalog.",
+      "title": "One loop, from skipped to fixed.",
+      "description": "Getting picked by a shopping agent isn't a brand metric. It's catalog work, and ecentic runs the loop for every product you choose.",
       "steps": [
         {
           "step": "Step 01",
@@ -68,7 +68,7 @@
         },
         {
           "title": "Competitor gap analysis",
-          "description": "Find out who agents recommend instead of you, and exactly what their listing has that yours doesn't.",
+          "description": "Find out who agents pick instead of you, and exactly what their listing has that yours doesn't.",
           "features": [
             "Side-by-side comparisons",
             "Missing-attribute detection",

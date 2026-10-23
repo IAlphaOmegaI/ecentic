@@ -2,7 +2,7 @@
   "features": {
     "meta": {
       "title": "Herramientas de IA para las fichas de producto de tu tienda",
-      "description": "Herramientas de IA para ecommerce: optimización de fichas de producto, análisis de competidores y visibilidad en compras con IA. Descubre cómo ecentic ayuda a los comerciantes a ganar más carritos hoy."
+      "description": "Herramientas de IA para ecommerce que optimizan tu feed de productos y tu catálogo para los agentes de compras con IA: simulaciones frente a competidores, correcciones de fichas y sincronización con Merchant Center."
     },
     "breadcrumb": {
       "home": "Inicio",
@@ -14,7 +14,7 @@
         "primary": "Herramientas de IA para ecommerce",
         "accent": "para que la IA elija tus productos."
       },
-      "description": "Simula cómo los agentes de compras con IA comparan tus productos, ve exactamente por qué ganan los competidores y publica las correcciones de fichas que invierten el resultado, todo desde un solo ciclo.",
+      "description": "Simula cómo los agentes de compras con IA comparan tus productos, ve exactamente por qué ganan los competidores y publica las correcciones desde un solo lugar.",
       "assurances": [
         "Simula ChatGPT, Claude y Gemini",
         "Reescrituras de fichas en un clic",
@@ -26,8 +26,8 @@
     },
     "loop": {
       "number": "01",
-      "title": "Un ciclo de invisible a recomendado.",
-      "description": "La visibilidad en compras asistidas por IA no es una métrica de marca. Es un ciclo operativo, y ecentic ejecuta los cuatro pasos para cada producto de tu catálogo.",
+      "title": "Un ciclo, de omitido a corregido.",
+      "description": "Que un agente de compras te elija no es una métrica de marca. Es trabajo de catálogo, y ecentic ejecuta el ciclo para cada producto que eliges.",
       "steps": [
         {
           "step": "Paso 01",
@@ -68,7 +68,7 @@
         },
         {
           "title": "Análisis de brechas con competidores",
-          "description": "Descubre a quién recomiendan los agentes en lugar de ti, y exactamente qué tiene su ficha que la tuya no.",
+          "description": "Descubre a quién eligen los agentes en tu lugar, y exactamente qué tiene su ficha que la tuya no.",
           "features": [
             "Comparaciones lado a lado",
             "Detección de atributos faltantes",

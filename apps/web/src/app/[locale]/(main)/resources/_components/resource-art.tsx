@@ -387,7 +387,7 @@ export const GuideArt = ({ kind }: GuideArt.Props) => {
               Long-form guides
             </p>
             <p className="text-foreground-dimmed text-xs">
-              Structured data, agent traffic, catalog visibility
+              Structured data, agent traffic, product feeds
             </p>
           </div>
         </div>
