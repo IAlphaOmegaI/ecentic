@@ -1,6 +1,7 @@
 import { describe, expect, test } from "bun:test";
 import { leadingTags, splitBlogHtmlByH2 } from "@/lib/blog-html";
 import { RETIRED_BLOG_POSTS } from "@/lib/blog-redirects";
+import { isOptimizable } from "@/lib/image-hosts";
 
 const render = (html: string) =>
   splitBlogHtmlByH2(html)
@@ -125,5 +126,94 @@ describe("leadingTags", () => {
 
   test("returns a short list unchanged", () => {
     expect(leadingTags(["ai shopping agents"])).toEqual(["ai shopping agents"]);
+  });
+});
+
+describe("CMS article images", () => {
+  const card =
+    "https://media.babylovegrowth.ai/blog-images/organization-49436/1792564518313_card.jpeg";
+
+  test("an image on an optimizer host is resized through /_next/image", () => {
+    const html = render(`<h2>Next</h2><p><img src="${card}" alt="A card"></p>`);
+    const encoded = encodeURIComponent(card);
+
+    expect(html).toContain(
+      `src="/_next/image?url=${encoded}&amp;w=1080&amp;q=75"`,
+    );
+    expect(html).toContain(
+      `/_next/image?url=${encoded}&amp;w=640&amp;q=75 640w`,
+    );
+    expect(html).toContain('sizes="(max-width: 768px) 100vw, 720px"');
+    expect(html).toContain('alt="A card"');
+    expect(html).toContain('loading="lazy" decoding="async"');
+  });
+
+  test("a local image is resized too", () => {
+    const html = render(
+      '<h2>Next</h2><p><img src="/blog/chart.png" alt=""></p>',
+    );
+
+    expect(html).toContain(
+      'src="/_next/image?url=%2Fblog%2Fchart.png&amp;w=1080',
+    );
+  });
+
+  test("an image on any other host is only made lazy", () => {
+    const html = render(
+      '<h2>Next</h2><p><img src="https://cdn.example.com/a.jpg" alt=""></p>',
+    );
+
+    expect(html).toContain(
+      '<img src="https://cdn.example.com/a.jpg" alt="" loading="lazy" decoding="async">',
+    );
+  });
+
+  test("an SVG, a set srcset and explicit loading are left as written", () => {
+    const html = render(
+      [
+        "<h2>Next</h2>",
+        '<p><img src="/blog/diagram.svg" alt=""></p>',
+        `<p><img src="${card}" srcset="${card} 1x" alt=""></p>`,
+        `<p><img src="${card}" loading="eager" alt=""></p>`,
+      ].join(""),
+    );
+
+    expect(html).toContain(
+      '<img src="/blog/diagram.svg" alt="" loading="lazy"',
+    );
+    expect(html).toContain(`srcset="${card} 1x"`);
+    expect(html).not.toContain('loading="eager" alt="" loading="lazy"');
+    expect(html.match(/loading="lazy"/g)?.length).toBe(2);
+  });
+});
+
+describe("isOptimizable", () => {
+  test("accepts local paths and the configured remote prefixes", () => {
+    expect(isOptimizable("/images/blog/best-ai-tools.jpg")).toBe(true);
+    expect(
+      isOptimizable(
+        "https://csuxjmfbwmkxiegfpljm.supabase.co/storage/v1/object/public/blog-images/a.jpeg",
+      ),
+    ).toBe(true);
+  });
+
+  test("refuses other paths, hosts, protocols and SVG", () => {
+    expect(
+      isOptimizable(
+        "https://csuxjmfbwmkxiegfpljm.supabase.co/storage/private/a.jpeg",
+      ),
+    ).toBe(false);
+    expect(
+      isOptimizable(
+        "https://media.babylovegrowth.ai.example.com/blog-images/a.jpeg",
+      ),
+    ).toBe(false);
+    expect(
+      isOptimizable("http://media.babylovegrowth.ai/blog-images/a.jpeg"),
+    ).toBe(false);
+    expect(isOptimizable("//media.babylovegrowth.ai/blog-images/a.jpeg")).toBe(
+      false,
+    );
+    expect(isOptimizable("/images/logo.svg")).toBe(false);
   });
 });

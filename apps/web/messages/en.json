@@ -2910,6 +2910,11 @@
       "description": "Guides and research on AI shopping agents: how ChatGPT, Claude, Gemini, and Perplexity pick products, why listings lose, and what to change to win carts."
     },
     "title": "Blog",
+    "eyebrow": "Insights",
+    "heading": {
+      "primary": "The ecentic blog on",
+      "accent": "AI shopping agents."
+    },
     "description": "Guides and research on winning AI shopping agents.",
     "minRead": "{minutes} min read",
     "tags": "Tags",

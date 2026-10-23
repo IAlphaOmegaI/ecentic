@@ -115,6 +115,10 @@ const BLOG_TITLE_TAGS: Record<string, Record<string, string>> = {
   "data-sources-ai-shopping": {
     en: "AI shopping data sources: feeds, schema and reviews",
   },
+  // The BLG headline runs 69 characters, so Google clipped its tail.
+  "40rty-alternatives": {
+    en: "40rty alternatives for Shopify and WooCommerce stores",
+  },
 };
 
 // Keyed on the row's own locale rather than the requested one: a /es page

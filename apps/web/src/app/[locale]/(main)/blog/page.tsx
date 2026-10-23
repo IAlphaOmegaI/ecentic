@@ -48,9 +48,9 @@ export const generateMetadata = async (): Promise<Metadata> => {
   const locale = await getLocale();
   const translate = await getTranslations("blog");
 
-  // `blog.title` / `blog.description` stay the visible H1 and standfirst (and
-  // the nav/breadcrumb label), so the search-facing copy lives in its own
-  // `meta` keys. The string here is unbranded: the locale layout's
+  // The visible H1 is `blog.heading` and the standfirst `blog.description`
+  // (`blog.title` is the nav/breadcrumb label), so the search-facing copy
+  // lives in its own `meta` keys. The string here is unbranded: the locale layout's
   // `"%s | ecentic"` template supplies the suffix, exactly as `brandedTitle`
   // would for a title this short.
   const metadata = createMetadata({
@@ -156,9 +156,12 @@ export default async () => {
   };
 
   return (
+    // The H1 names the topic ("…on AI shopping agents"); `blog.title` stays
+    // the short "Blog" the navbar and breadcrumbs use.
     <EditorialLayout
-      eyebrow="Insights"
-      title={translate("title")}
+      eyebrow={translate("eyebrow")}
+      title={translate("heading.primary")}
+      accent={translate("heading.accent")}
       meta={
         <p>
           {latest
@@ -234,12 +237,17 @@ export default async () => {
                 <p className="max-w-2xl text-foreground-dimmed leading-relaxed">
                   {entry.takeaway}
                 </p>
+                {/* Ninety "Read more" links read as one link repeated, to a
+                    crawler and a screen reader alike. The title rides along
+                    off-screen, so each link's text names its post while the
+                    visible label (and the name a voice user says) stays. */}
                 <Button
                   color="primary"
                   className="self-start"
                   render={<Link href={`/blog/${entry.slug}`} prefetch={true} />}
                 >
                   {translate("action.primary")}
+                  <span className="sr-only">: {entry.title}</span>
                   <ArrowRightIcon className="size-4" />
                 </Button>
               </div>

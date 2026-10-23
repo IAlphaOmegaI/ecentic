@@ -2910,6 +2910,11 @@
       "description": "Guías e investigación sobre agentes de compras con IA: cómo ChatGPT, Claude, Gemini y Perplexity eligen productos y qué cambiar para ganar más carritos."
     },
     "title": "Blog",
+    "eyebrow": "Análisis",
+    "heading": {
+      "primary": "El blog de ecentic sobre",
+      "accent": "agentes de compras con IA."
+    },
     "description": "Guías e investigación para ganar con agentes de compras con IA.",
     "minRead": "{minutes} min de lectura",
     "tags": "Etiquetas",

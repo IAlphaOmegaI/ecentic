@@ -1,5 +1,6 @@
 import { isLocale, type Locale, routing } from "@/i18n/routing";
 import { RETIRED_BLOG_POSTS } from "@/lib/blog-redirects";
+import { isOptimizable } from "@/lib/image-hosts";
 import { seo } from "@/lib/seo";
 
 export type BlogHtmlSection = {
@@ -127,6 +128,49 @@ const qualifyExternalLinks = (html: string) =>
       .replace(/\s*>$/, ' rel="nofollow noopener noreferrer">');
   });
 
+/**
+ * Widths `/_next/image` serves for an article image — Next's default
+ * `deviceSizes`; any other `w` is a 400. The article rail is ~720px wide on a
+ * desktop, so 1200 covers it at a high density and the rest cover phones.
+ */
+const ARTICLE_IMAGE_WIDTHS = [640, 828, 1080, 1200] as const;
+
+const optimizerUrl = (source: string, width: number) =>
+  `/_next/image?url=${encodeURIComponent(source)}&amp;w=${width}&amp;q=75`;
+
+/**
+ * CMS bodies carry bare `<img src>` tags at the uploaded size — ~140KB title
+ * cards and diagrams, none lazy — so every image in an article downloaded with
+ * its first screen. Each image is made lazy and async-decoded, and one the
+ * optimizer can fetch is re-pointed at `/_next/image` with a `srcset`, which
+ * sizes it to the rail and serves AVIF or WebP. A tag that brings its own
+ * `srcset` keeps it.
+ */
+const optimizeImages = (html: string) =>
+  html.replace(/<img\b([^>]*?)\s*\/?>/gi, (_tag, attributes: string) => {
+    const hints = [
+      /\sloading\s*=/i.test(attributes) ? "" : ' loading="lazy"',
+      /\sdecoding\s*=/i.test(attributes) ? "" : ' decoding="async"',
+    ].join("");
+    const source = attributes
+      .match(/\ssrc\s*=\s*(["'])(.*?)\1/i)?.[2]
+      ?.replaceAll("&amp;", "&");
+
+    if (!source || /\ssrcset\s*=/i.test(attributes) || !isOptimizable(source))
+      return `<img${attributes}${hints}>`;
+
+    const srcset = ARTICLE_IMAGE_WIDTHS.map(
+      (width) => `${optimizerUrl(source, width)} ${width}w`,
+    ).join(", ");
+    const optimized = attributes.replace(
+      /\ssrc\s*=\s*(["']).*?\1/i,
+      () =>
+        ` src="${optimizerUrl(source, 1080)}" srcset="${srcset}" sizes="(max-width: 768px) 100vw, 720px"`,
+    );
+
+    return `<img${optimized}${hints}>`;
+  });
+
 /** The replacement for a link to a retired post, or `null` for any other link. */
 const retiredPostHref = (href: string) => {
   if (!URL.canParse(href, seo.host)) return null;
@@ -183,8 +227,8 @@ export const splitBlogHtmlByH2 = (
     : STRUCTURE[routing.defaultLocale];
   const isTakeaways = (title: string) => structure.takeaways.test(title.trim());
 
-  const withoutScripts = qualifyExternalLinks(
-    retargetRetiredLinks(stripScripts(html)),
+  const withoutScripts = optimizeImages(
+    qualifyExternalLinks(retargetRetiredLinks(stripScripts(html))),
   );
   const withoutLeadingTitle = withoutScripts.replace(
     /^\s*<h1\b[^>]*>[\s\S]*?<\/h1>\s*/i,

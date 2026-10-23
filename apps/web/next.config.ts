@@ -2,6 +2,7 @@ import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 import { RETIRED_BLOG_POSTS } from "./src/lib/blog-redirects";
+import { REMOTE_IMAGES } from "./src/lib/image-hosts";
 
 // Keep in sync with `agentHomepageLinkHeader` in `src/lib/agent-discovery.ts`.
 // next.config cannot import that module (path aliases / Node resolution).
@@ -125,17 +126,13 @@ export default withSentryConfig(
       // 50 is for decorative art that sits behind an opacity or blend, where
       // the loss is invisible and the bytes are not (the hero texture).
       qualities: [50, 75],
-      remotePatterns: [
-        {
-          protocol: "https",
-          hostname: "d2qswj4ah2.ufs.sh",
-        },
-        {
-          protocol: "https",
-          hostname: "csuxjmfbwmkxiegfpljm.supabase.co",
-          pathname: "/storage/v1/object/public/blog-images/**",
-        },
-      ],
+      // Shared with the blog, which skips the optimizer for any other origin
+      // instead of rendering a 400 (see `src/lib/image-hosts.ts`).
+      remotePatterns: REMOTE_IMAGES.map((image) => ({
+        protocol: "https" as const,
+        hostname: image.hostname,
+        pathname: `${image.prefix}**`,
+      })),
     },
     // Markdown-for-Agents negotiates on Accept; CDN must vary HTML vs markdown.
     // Homepage also advertises agent discovery Links (RFC 8288 / RFC 9727).
