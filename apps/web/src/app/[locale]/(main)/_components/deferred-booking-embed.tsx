@@ -13,9 +13,9 @@ const BookingEmbed = dynamic(() =>
   import("@/components/cal").then((module) => module.BookingEmbed),
 );
 
-const MARGIN = "400px";
-
-export const DeferredBookingEmbed = () => {
+export const DeferredBookingEmbed = ({
+  margin = "400px",
+}: DeferredBookingEmbed.Props) => {
   const container = useRef<HTMLDivElement>(null);
   const [approached, setApproached] = useState(false);
 
@@ -36,12 +36,12 @@ export const DeferredBookingEmbed = () => {
         setApproached(true);
         observer.disconnect();
       },
-      { rootMargin: MARGIN },
+      { rootMargin: margin },
     );
     observer.observe(element);
 
     return () => observer.disconnect();
-  }, []);
+  }, [margin]);
 
   return (
     <div ref={container} className="size-full">
@@ -49,3 +49,15 @@ export const DeferredBookingEmbed = () => {
     </div>
   );
 };
+
+export namespace DeferredBookingEmbed {
+  export type Props = {
+    /**
+     * How far outside the viewport the calendar starts loading. The homepage
+     * gives it a head start; `/demo`, where it sits right under a
+     * full-viewport banner, loads it only once it is actually on screen, so
+     * the 2MB embed never counts against a visit that doesn't scroll to it.
+     */
+    margin?: string;
+  };
+}

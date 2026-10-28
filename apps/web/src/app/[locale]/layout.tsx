@@ -133,26 +133,35 @@ export default async ({ children }: PropsWithChildren) => {
             strategy="beforeInteractive"
           />
         )} */}
-        {/* `lazyOnload`, not `afterInteractive`: the widget pulls ~508KB
-            (including a 148KB stylesheet and its own copy of Vue) for a support
-            bubble almost nobody opens. Idle time is the right budget for that,
-            not the critical path. */}
+        {/* The widget pulls ~550KB (a 176KB stylesheet and its own copy of
+            Vue) for a support bubble almost nobody opens, so it waits for the
+            visitor's first scroll, tap or key press rather than for idle time.
+            Loaded at idle it still landed in every page's weight and in every
+            audit, crawler and bounced visit, none of which can use a chat. */}
         {process.env.NEXT_PUBLIC_CHATWOOT_BASE_URL &&
           process.env.NEXT_PUBLIC_CHATWOOT_WEBSITE_TOKEN && (
             <Script id="chatwoot-widget" strategy="lazyOnload">
               {`
             (function(d,t) {
               var BASE_URL="${process.env.NEXT_PUBLIC_CHATWOOT_BASE_URL}";
-              var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-              g.src=BASE_URL+"/packs/js/sdk.js";
-              g.async = true;
-              s.parentNode.insertBefore(g,s);
-              g.onload=function(){
-                window.chatwootSDK.run({
-                  websiteToken: "${process.env.NEXT_PUBLIC_CHATWOOT_WEBSITE_TOKEN}",
-                  baseUrl: BASE_URL
-                })
-              }
+              var events=["pointerdown","keydown","scroll","touchstart"];
+              var loaded=false;
+              var load=function(){
+                if(loaded) return;
+                loaded=true;
+                events.forEach(function(e){ window.removeEventListener(e, load); });
+                var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
+                g.src=BASE_URL+"/packs/js/sdk.js";
+                g.async = true;
+                s.parentNode.insertBefore(g,s);
+                g.onload=function(){
+                  window.chatwootSDK.run({
+                    websiteToken: "${process.env.NEXT_PUBLIC_CHATWOOT_WEBSITE_TOKEN}",
+                    baseUrl: BASE_URL
+                  })
+                }
+              };
+              events.forEach(function(e){ window.addEventListener(e, load, { passive: true }); });
           })(document,"script");
             `}
             </Script>

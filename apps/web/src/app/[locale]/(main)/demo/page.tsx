@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
-import { BookingEmbed } from "@/components/cal";
 import { JsonLd } from "@/components/json-ld";
 import { Plus } from "@/components/plus";
 import { localizePath } from "@/i18n/locale";
@@ -18,6 +17,7 @@ import {
   ContentPageLayout,
   ContentPageSection,
 } from "../_components/content";
+import { DeferredBookingEmbed } from "../_components/deferred-booking-embed";
 import { Faq } from "../pricing/_components/faq";
 import { WhatWeCover } from "./_components/what-we-cover";
 import { WhoShouldBook } from "./_components/who-should-book";
@@ -83,8 +83,12 @@ export default async () => {
         <div className="relative mx-auto max-w-6xl border-accent-foreground border-x">
           <Plus className="bottom-0 left-0 hidden -translate-x-1/2 translate-y-1/2 md:flex" />
           <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
+          {/* Mounted when it scrolls into view: the banner above fills the
+              first screen, and Cal's embed is ~2MB of avatar, fonts and
+              script that a visit which never scrolls here shouldn't pay for.
+              The fixed height keeps the layout from moving when it arrives. */}
           <div className="h-[680px] w-full bg-background">
-            <BookingEmbed />
+            <DeferredBookingEmbed margin="0px" />
           </div>
           {/* The embed renders nothing on the server, so this is the booking
               link a crawler, a link preview or a blocked embed script gets. */}
@@ -93,7 +97,7 @@ export default async () => {
               href={booking.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary underline-offset-4 hover:underline"
+              className="text-primary-text underline underline-offset-4"
             >
               {translate("booking.fallback")}
             </a>
