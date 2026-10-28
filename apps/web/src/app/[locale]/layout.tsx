@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { Red_Hat_Display } from "next/font/google";
 import Script from "next/script";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
-import { type PropsWithChildren, Suspense } from "react";
+import type { PropsWithChildren } from "react";
 import "../globals.css";
 import { CookieConsent } from "@/components/cookie-consent";
 import { ToastList } from "@/components/ui/toast";
@@ -203,31 +203,35 @@ export default async ({ children }: PropsWithChildren) => {
         // React Grab hydration errors
         suppressHydrationWarning={process.env.NODE_ENV === "development"}
       >
-        <Suspense>
-          <ConsentProvider>
-            <PostHogProvider>
-              <ThemeProvider>
-                <MotionProvider>
-                  <ToastProvider>
-                    {/* Scoped: this provider covers only the chrome rendered
-                        here. Route groups below re-provide their own subset —
-                        see `i18n/client-messages.tsx`. Serializing the whole
-                        catalog here put 242KB of JSON into every page. */}
-                    <ClientMessages scope="root">
-                      <div className="isolate">{children}</div>
-                      {/* Must sit under a message provider — `useTranslations`
-                          / locale `Link` need the client provider. */}
-                      <CookieConsent />
-                    </ClientMessages>
-                    <ToastList
-                      types={["error", "success", "info", "loading"]}
-                    />
-                  </ToastProvider>
-                </MotionProvider>
-              </ThemeProvider>
-            </PostHogProvider>
-          </ConsentProvider>
-        </Suspense>
+        {/* No <Suspense> around the providers. Wrapped in one, the whole
+            page became a single outlined boundary: React streamed it hidden
+            and revealed it only once the parser reached its reveal script,
+            ~40% into the document (~50% on /blog). Nothing painted before
+            that, however early the banner and H1 had arrived. Without it the
+            page is part of the shell and paints as it streams; the one
+            provider that reads search params (PostHog's pageview tracker)
+            keeps its own boundary. */}
+        <ConsentProvider>
+          <PostHogProvider>
+            <ThemeProvider>
+              <MotionProvider>
+                <ToastProvider>
+                  {/* Scoped: this provider covers only the chrome rendered
+                      here. Route groups below re-provide their own subset —
+                      see `i18n/client-messages.tsx`. Serializing the whole
+                      catalog here put 242KB of JSON into every page. */}
+                  <ClientMessages scope="root">
+                    <div className="isolate">{children}</div>
+                    {/* Must sit under a message provider — `useTranslations`
+                        / locale `Link` need the client provider. */}
+                    <CookieConsent />
+                  </ClientMessages>
+                  <ToastList types={["error", "success", "info", "loading"]} />
+                </ToastProvider>
+              </MotionProvider>
+            </ThemeProvider>
+          </PostHogProvider>
+        </ConsentProvider>
       </body>
     </html>
   );

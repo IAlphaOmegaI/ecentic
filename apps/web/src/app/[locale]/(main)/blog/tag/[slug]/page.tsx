@@ -3,6 +3,7 @@ import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getLocale, getTranslations } from "next-intl/server";
+import { Suspense } from "react";
 import { localizePath } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
@@ -53,7 +54,7 @@ export const generateMetadata = async ({
   };
 };
 
-export default async ({ params }: TagPageProps) => {
+const TagPage = async ({ params }: TagPageProps) => {
   const { slug } = await params;
   const locale = await getLocale();
   const translate = await getTranslations("blog");
@@ -133,3 +134,12 @@ export default async ({ params }: TagPageProps) => {
     </EditorialLayout>
   );
 };
+
+// Tags have no static params, so the page reads `params` per request. Its
+// boundary used to be the root layout's, which wrapped every route; it lives
+// here now, so the rest of the site can paint as it streams.
+export default ({ params }: TagPageProps) => (
+  <Suspense>
+    <TagPage params={params} />
+  </Suspense>
+);
