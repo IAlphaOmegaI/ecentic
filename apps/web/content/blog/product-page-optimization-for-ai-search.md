@@ -1,13 +1,13 @@
 ---
-title: How to write this product so AI cites it in search
-description: Learn how to write this product so AI cites it in search results. Get step by step guidance on schema, copy, crawlability, and distribution.
+title: Product page optimization for AI search in five steps
+description: Product page optimization for AI search, step by step. Let AI crawlers in, structure the HTML, add Product schema, write quotable copy and get listed.
 date: 2026-10-28
 keyword: product page optimization for AI search
 tags: [product page optimization, AI search citations, structured data, GEO]
-image: /images/blog/how-to-write-this-product-so-ai-cites-it-in-search.png
+image: /blog/product-page-optimization-for-ai-search.webp
 ---
 
-AI search engines cite sources that answer questions directly, load cleanly, and carry structured data. To get this product cited by ChatGPT, Gemini, or Perplexity, place a self-contained answer in your first sentence, use Product schema and HTML tables, distribute content to authoritative third-party sites, and make sure no security layer blocks AI crawlers. These steps cover the full retrieve-read-synthesize pipeline.
+Product page optimization for AI search means making a product page easy for ChatGPT, Gemini or Perplexity to fetch, read and quote. In practice: let AI crawlers in, put a self-contained answer in the first sentence, add Product schema and HTML tables, and get the product listed on the third-party sites these engines already cite.
 
 Ranking on Google is no longer enough. If an AI assistant can't read your page, quote your copy, and confirm your product is buyable, you don't exist in that answer. The five steps below cover the full pipeline from crawler access to third-party distribution.
 
@@ -17,9 +17,9 @@ AI search engines don't browse the web the way a human does. They run a three-st
 
 Retrieval is a crawlability question. If a bot can't fetch your page, you're out before the competition starts. Reading is a structure question. The model scans your HTML and decides which text is the actual content and which is navigation, footers, and noise. Synthesis is a copy question. The model looks for sentences it can quote without editing.
 
-Placement inside the page matters more than most guides admit. An analysis by Kevin Indig of 1.2 million AI answers found that 44.2% of citations are pulled from the first 30% of a page's content. That figure comes from a 2026 study and covers LLM citation behavior broadly, not a single platform. The practical reading: if your most important product claim is buried below the fold, most AI models will never reach it.
+Where a sentence sits on the page counts too. Kevin Indig's study of 18,012 verified ChatGPT citations found that 44.2% came from the first 30% of a page's content and only 24.7% from the last third [1]. It measured ChatGPT alone, so treat it as a strong hint for the other engines rather than a rule. Still, a product claim buried below the fold is a claim the model is less likely to quote.
 
-Distribution matters too. AI Overviews now appear on 83% of "best [product]" search queries [1]. That means third-party pages mentioning your product, review sites, aggregators, and press coverage compete directly with your own page for the citation slot.
+Your own page is also not the only candidate. Review sites, aggregators and press coverage that mention your product compete with it for the same citation slot.
 
 Fix the pipeline in order. Technical access first, then structure, then copy, then distribution.
 
@@ -27,7 +27,7 @@ Fix the pipeline in order. Technical access first, then structure, then copy, th
 
 AI crawlers are not browsers. They don't execute JavaScript, they don't click "accept cookies," and they don't wait for lazy-loaded content. If your page depends on any of those to show the product title, price, or description, the crawler leaves with an empty page.
 
-Start with your `robots.txt` file. Common AI crawlers use these user-agent strings: `GPTBot` (OpenAI), `Google-Extended` (Google), `ClaudeBot` (Anthropic), and `PerplexityBot`. If any of these are blocked, the corresponding AI system cannot retrieve your page at all. Check the [robots.txt configuration for AI bots](/blog/robotstxt-for-ai-bots) before anything else, because no amount of schema or copy optimization helps a page that's blocked at the door.
+Start with your `robots.txt` file. The tokens that decide AI search are `OAI-SearchBot` (ChatGPT search), `Googlebot` (Google Search, AI Overviews included), `ClaudeBot` (Anthropic) and `PerplexityBot` (Perplexity). Block one and that engine can't retrieve your page. Two tokens get mixed up a lot: `GPTBot` only decides whether OpenAI may train on your pages, not whether ChatGPT search shows them [2], and `Google-Extended` covers Gemini training and grounding but has no effect on Google Search [3]. Check the [robots.txt configuration for AI bots](/blog/robotstxt-for-ai-bots) before anything else, because no amount of schema or copy optimization helps a page that's blocked at the door.
 
 Next, check your WAF (web application firewall) and bot-protection settings. Many Shopify and WooCommerce stores use Cloudflare or a similar service. These tools sometimes classify AI crawlers as malicious traffic and return a 403 or a CAPTCHA challenge. The crawler logs an error and moves on. You never know it happened.
 
@@ -49,7 +49,7 @@ Use these elements, in this order of priority:
 4. **`<dl>`, `<dt>`, `<dd>`** (definition list) for short attribute pairs when a full table is too heavy. Use this for things like "Compatible with: iOS 16 and above."
 5. **ARIA landmarks** where your theme doesn't use semantic tags. If your product description sits inside a generic `<div>`, add `role="main"` or `aria-label="Product description"` so the model's accessibility tree can identify it.
 
-Analysis of 1.2 million AI answers confirms that 44.2% of citations come from the first 30% of a page's content. Semantic structure amplifies this effect: a model that can identify your `<h1>` and first `<p>` tag quickly will extract them before it reaches the noise lower on the page.
+Semantic structure helps with placement, too: a model that can find your `<h1>` and first `<p>` quickly reads them before it reaches the noise lower on the page.
 
 One practical check: paste your page's raw HTML into a plain-text editor and read the first screen. If your product name, a one-sentence description, and a price are visible in that first scroll, your structure is working. If you see navigation menus, scripts, and tracking pixels before any product content, restructure the template.
 
@@ -89,7 +89,7 @@ Here is a before-and-after rewrite for a hypothetical trail shoe product descrip
 
 The second version defines the use case, names the terrain, and explicitly excludes a use case. That exclusion matters: AI models use it to match the product to specific queries and to avoid recommending it for the wrong ones.
 
-Include at least one quotable sentence per product. A 2026 Princeton GEO study found that including relevant quotations increased a source's visibility in AI-generated answers by 41% [2].
+Give the model something credible to quote, too. The GEO study by researchers at Princeton and partners (2023, published at KDD 2024) found that adding quotations, statistics and citations from credible sources were the strongest edits a page could make, lifting its visibility in generated answers by up to 40%. Quotations alone lifted it 22% on Perplexity [4]. On a product page, that is a lab result, a certification or a named reviewer's line, not another adjective.
 
 Write your product copy as if you are answering a question, not writing an ad. Answer first. Qualify second. Sell third, if at all.
 
@@ -97,7 +97,7 @@ Write your product copy as if you are answering a question, not writing an ad. A
 
 Your product page competes for the citation slot against every other page that mentions your product. That includes review sites, comparison aggregators, press articles, and data feeds. Distributing your product content to those surfaces increases the number of pages an AI model can retrieve and cite.
 
-AI Overviews appear on 83% of "best [product]" search queries [1]. Most of those cited sources are not the brand's own page. They are third-party review and comparison sites. If your product is not mentioned on those sites, you are absent from most of those answers.
+For "best [product]" questions, many of the sources an engine cites are third-party review and comparison pages rather than brand sites. If your product isn't on those pages, it's missing from those answers.
 
 Work through this distribution checklist in order:
 
@@ -110,19 +110,19 @@ Distribution is not a one-time task. Update your third-party listings when you c
 
 ## ChatGPT vs. Google AI Overviews: a platform-specific checklist
 
-ChatGPT and Google AI Overviews run different pipelines, so they respond to different signals. Treating them as identical is the most common mistake in AI search optimization.
+ChatGPT and Google AI Overviews run different pipelines, so they respond to different signals. Treating them as one engine is an easy mistake.
 
-BrightEdge data shows AI Overviews concentrate heavily on comparison-intent queries [1]. That tells you something specific about what Google's system is doing: it is synthesizing ranked recommendations, not just surfacing a single authoritative page. ChatGPT's shopping behavior is different. It is trying to confirm a product is buyable and match it to a stated need, which means availability and use-case copy carry more weight.
+I think the difference shows in the answers themselves. AI Overviews tend to build a ranked set of recommendations from several pages. ChatGPT's shopping answers try to confirm a product is in stock and match it to a stated need, so availability and use-case copy carry more weight there.
 
 Use this checklist to separate your work by platform:
 
 | Signal | ChatGPT | Google AI Overviews |
 |---|---|---|
-| Robots.txt | Allow `GPTBot` | Allow `Google-Extended` |
+| Robots.txt | Allow `OAI-SearchBot` | Allow `Googlebot` |
 | Schema priority | `offers.availability` and `offers.price` | `aggregateRating` and `brand` |
 | Copy format | Answer-first, use-case specific, explicit exclusions | Comparative, category-level claims, spec completeness |
 | Third-party citations | Press coverage, data aggregators | Review platforms, comparison sites indexed by Google |
-| Feed requirement | UCP or direct checkout capability | Google Merchant Center feed, kept current |
+| Feed and checkout | Accurate price and stock in your product data; buyers check out on your own store | Google Merchant Center feed, kept current |
 | Page structure | Server-rendered HTML, product data in the top portion of the DOM | Structured data validated in Rich Results Test |
 
 Fix the robots.txt entries first, because a blocked crawler makes every other row irrelevant. Then address schema by platform: for ChatGPT, `availability` and `price` are the fields an agent checks before recommending a product. For Google AI Overviews, `aggregateRating` and a complete `brand` object increase citation confidence in comparison answers.
@@ -131,21 +131,15 @@ The copy column is where most product pages diverge from what each platform need
 
 Do not optimize for one platform and ignore the other. The fixes overlap enough that you can satisfy both with one well-structured page and a current feed.
 
-## How ecentic automates AI citation optimization for your store
+## Where ecentic fits
 
 Every step in this guide requires you to find the gap, write the fix, and publish it. That loop is manageable for ten products. It breaks down at a hundred.
 
-[Ecentic](https://ecentic.ai/) is an AI visibility tool for Shopify and WooCommerce stores. It connects to your store and product feed, then has ChatGPT, Claude, and Gemini compare each of your products against a named competitor. It shows you exactly why the agent picked the other brand: missing availability data, a weak description, a schema field that's absent. When you click Apply, it rewrites the title, description, and structured data and publishes them directly to your store. On Shopify, it also pushes the fixes to Google Merchant Center and tracks visits from AI assistants so you can see which products are getting cited and which aren't.
+That's what we fix at [ecentic](https://ecentic.ai/). It connects to your Shopify or WooCommerce store or your product feed, has ChatGPT, Claude and Gemini compare each product with a named competitor's, and shows you why the agent picked the other one: missing availability data, a weak description, a schema field that isn't there. It writes the fix for the title, description and structured data, and on the Scale, Dominate and pay-as-you-go plans, clicking Apply publishes it to your store. On Shopify it also counts visits from AI assistants week over week, which shows whether more shoppers arrive, not which answers quoted you.
 
-What it does is execute the retrieve-read-synthesize checklist above across your full catalog, not just your top ten.
+Fair caveat: that covers the schema and copy steps above. Crawler access and third-party listings are still on you.
 
 The free scan covers your top 10 products with no credit card required. That is enough to see where your current product data fails the pipeline.
-
-## What makes a product citable
-
-Getting cited by AI search engines comes down to three things: your page must be retrievable, your HTML must be readable, and your copy must be quotable. Product schema and third-party distribution extend those fundamentals to the platforms and surfaces where AI models look for sources.
-
-Work through the steps in order: fix crawler access, clean up your HTML structure, add complete Product schema, rewrite your first sentence to answer the question directly, and get your product listed on the third-party sites AI models actually cite. That sequence is repeatable for every product you add.
 
 ## FAQ
 
@@ -171,5 +165,7 @@ Page length matters less than content placement. A 400-word product page with a 
 
 ## Sources
 
-1. [AI Overviews and product page SEO for AI](https://premierecreative.com/blog/product-page-seo-for-ai-how-to-write-pdps-that-get-cited/), Premiere Creative, BrightEdge data cited, checked October 2026.
-2. [How to get your content cited by AI search engines](https://searchaxe.com/blog/get-content-cited-by-ai-search-engines/), Searchaxe, Princeton GEO study cited, checked October 2026.
+1. [The science of how AI pays attention](https://www.growth-memo.com/p/the-science-of-how-ai-pays-attention), Kevin Indig, Growth Memo, February 2026, checked October 2026.
+2. [Overview of OpenAI crawlers](https://platform.openai.com/docs/bots), OpenAI, checked October 2026.
+3. [Google's common crawlers](https://developers.google.com/search/docs/crawling-indexing/google-common-crawlers), Google Search Central, checked October 2026.
+4. [GEO: Generative Engine Optimization](https://arxiv.org/abs/2311.09735), Aggarwal et al., KDD 2024, checked October 2026.
