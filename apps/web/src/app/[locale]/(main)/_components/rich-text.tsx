@@ -9,6 +9,9 @@ const isBullet = (line: string) =>
 const isOrdered = (line: string) => /^\d+\.\s/.test(line);
 const isList = (line: string) => isBullet(line) || isOrdered(line);
 
+// Inline links take `primary-text`, the AA shade of the brand blue (5.58:1
+// on the page background, where `primary` is 3.99:1), and stay underlined:
+// set inside dimmed body copy, colour alone does not mark them as links.
 const renderLinksAndEmails = (
   text: string,
   offset: number,
@@ -30,7 +33,7 @@ const renderLinksAndEmails = (
               rel="noopener noreferrer"
               className={
                 options.linkClassName ??
-                "text-primary underline-offset-2 hover:underline"
+                "text-primary-text underline underline-offset-2"
               }
             >
               {link[1]}
@@ -49,7 +52,7 @@ const renderLinksAndEmails = (
               href={`mailto:${segment}`}
               className={
                 options.emailClassName ??
-                "text-primary underline-offset-2 hover:underline"
+                "text-primary-text underline underline-offset-2"
               }
             >
               {segment}

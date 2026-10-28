@@ -197,7 +197,7 @@ export default async () => {
               <h3 className="font-body font-medium text-2xl text-foreground">
                 {member.name}
               </h3>
-              <p className="text-primary">{member.role}</p>
+              <p className="text-primary-text">{member.role}</p>
               <p className="font-light text-foreground-dimmed text-lg leading-relaxed">
                 {member.bio}
               </p>
