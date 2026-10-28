@@ -40,3 +40,11 @@ export const isOptimizable = (source: string) => {
     )
   );
 };
+
+/**
+ * The `/_next/image` URL for one width of an optimizable source. `width` has to
+ * be one of Next's `deviceSizes`/`imageSizes` and the quality one of
+ * `images.qualities`, or the optimizer answers 400.
+ */
+export const optimizedUrl = (source: string, width: number, quality = 75) =>
+  `/_next/image?url=${encodeURIComponent(source)}&w=${width}&q=${quality}`;

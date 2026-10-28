@@ -7,7 +7,7 @@ import { Footer } from "@/components/footer";
 import { Navbar } from "@/components/navbar";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
-import { isOptimizable } from "@/lib/image-hosts";
+import { isOptimizable, optimizedUrl } from "@/lib/image-hosts";
 import Art from "@/public/images/ascii/books.png";
 import { PageBanner } from "../../_components/page-banner";
 import { renderInline } from "../../_components/rich-text";
@@ -128,18 +128,24 @@ export const EditorialSplitSection = ({
       >
         {/* An image, not a CSS background: the index lists every post, and as
             backgrounds all ~90 title cards downloaded at full size (~140KB
-            each, ~12MB) on first load. `next/image` lazy-loads them and sizes
-            them to this column; a source the optimizer cannot fetch is shown
-            as-is rather than as a 400. Decorative under the dark scrim, so the
-            alt is empty — the post's title sits beside it. */}
+            each, ~12MB) on first load. Lazy, and one optimized width rather
+            than `next/image`'s srcset: the card is at most 448px wide under a
+            60% scrim, where 828w is plenty, and the eight-width srcset made
+            each card's markup ~2KB (~180KB across the index, and again in the
+            RSC payload). A source the optimizer cannot fetch is shown as-is
+            rather than as a 400. Decorative, so the alt is empty — the post's
+            title sits beside it. */}
         {thumbnail && (
           <>
             <Image
-              src={thumbnail}
+              src={
+                isOptimizable(thumbnail)
+                  ? optimizedUrl(thumbnail, 828)
+                  : thumbnail
+              }
               alt=""
               fill
-              sizes="(max-width: 768px) 100vw, 448px"
-              unoptimized={!isOptimizable(thumbnail)}
+              unoptimized
               className="object-cover"
             />
             <div className="absolute inset-0 bg-black/60" />

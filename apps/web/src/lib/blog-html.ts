@@ -1,6 +1,6 @@
 import { isLocale, type Locale, routing } from "@/i18n/routing";
 import { RETIRED_BLOG_POSTS } from "@/lib/blog-redirects";
-import { isOptimizable } from "@/lib/image-hosts";
+import { isOptimizable, optimizedUrl } from "@/lib/image-hosts";
 import { seo } from "@/lib/seo";
 
 export type BlogHtmlSection = {
@@ -135,8 +135,9 @@ const qualifyExternalLinks = (html: string) =>
  */
 const ARTICLE_IMAGE_WIDTHS = [640, 828, 1080, 1200] as const;
 
+// Escaped for an HTML attribute: this lands in a raw HTML string.
 const optimizerUrl = (source: string, width: number) =>
-  `/_next/image?url=${encodeURIComponent(source)}&amp;w=${width}&amp;q=75`;
+  optimizedUrl(source, width).replaceAll("&", "&amp;");
 
 /**
  * CMS bodies carry bare `<img src>` tags at the uploaded size — ~140KB title
