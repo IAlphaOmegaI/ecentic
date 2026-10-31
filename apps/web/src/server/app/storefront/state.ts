@@ -5,11 +5,9 @@ import { sql } from "drizzle-orm";
 import { db } from "../../database";
 
 /**
- * `/agents` run state in one small Postgres table. Values are JSON in a text
- * column, so nothing depends on how a driver encodes jsonb.
- *
- * The table is `agentsState` in `schema.ts`, with a migration. The app still
- * creates it on first use until that migration has reached production.
+ * `/agents` run state in one small Postgres table, `agentsState` in `schema.ts`.
+ * Values are JSON in a text column, so nothing depends on how a driver encodes
+ * jsonb.
  */
 
 export type SetOptions = { ex: number; nx?: boolean };
@@ -29,16 +27,9 @@ type Row = { key: string; value: string };
 
 const setup = { pending: null as Promise<void> | null };
 
-/** Once per process. Expired rows are only ever filtered, so this also sweeps them. */
-const ready = () => {
+/** Once per process. Expired rows are only ever filtered, so nothing else removes them. */
+const sweep = () => {
   setup.pending ??= (async () => {
-    await db.execute(sql`
-      create table if not exists agents_state (
-        key text primary key,
-        value text not null,
-        expires_at timestamptz
-      )
-    `);
     await db.execute(sql`delete from agents_state where expires_at <= now()`);
   })().catch((error) => {
     setup.pending = null;
@@ -48,7 +39,7 @@ const ready = () => {
 };
 
 const rows = async (query: Parameters<typeof db.execute>[0]) => {
-  await ready();
+  await sweep();
   return [...(await db.execute(query))] as unknown as Row[];
 };
 
