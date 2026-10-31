@@ -303,7 +303,12 @@ export const start = async ({
     return { kind: "started" as const, id, fresh: true };
   });
 
-  return outcome.success ? outcome.data : refused("unavailable");
+  if (!outcome.success) {
+    console.error("[agents] start", outcome.error);
+    return refused("unavailable");
+  }
+
+  return outcome.data;
 };
 
 /**

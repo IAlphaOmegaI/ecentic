@@ -10,11 +10,13 @@ export const GET = async () => {
   await connection();
 
   const board = await resultify(() => Run.board());
-  if (!board.success)
+  if (!board.success) {
+    console.error("[agents] board", board.error);
     return NextResponse.json(
       { error: "Could not read the board" },
       { status: 503, headers: HEADERS },
     );
+  }
 
   return NextResponse.json(board.data, { headers: HEADERS });
 };
