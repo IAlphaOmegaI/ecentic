@@ -18,7 +18,7 @@ import type * as Catalog from "@/server/app/storefront/catalog";
 import { StageSkeleton } from "./skeletons";
 
 /** Enough to read from the back of the room and still fit 1080p. */
-const VISIBLE_OFFERS = 4;
+const VISIBLE_OFFERS = 5;
 
 const format = (elapsed: number) => {
   const minutes = Math.floor(elapsed / 60000);
@@ -96,6 +96,12 @@ const Line = ({ children }: { children: string }) => (
   </p>
 );
 
+/** One destination, because the full list would push the product's name off the line. */
+const listing = ({ destinations }: Catalog.OfferLine) =>
+  destinations
+    .find((destination) => destination.startsWith("FREE_LISTINGS"))
+    ?.replace("FREE_LISTINGS", "Free listings");
+
 const Offer = ({ line }: { line: Catalog.OfferLine }) => (
   <Motion.Up
     initial="hidden"
@@ -105,10 +111,8 @@ const Offer = ({ line }: { line: Catalog.OfferLine }) => (
     <span className="min-w-0 flex-1 truncate text-foreground-rich">
       {offerTitle(line)}
     </span>
-    {line.status === "merged" && line.destinations.length > 0 && (
-      <span className="min-w-0 truncate text-foreground-dimmed">
-        {line.destinations.join(", ")}
-      </span>
+    {listing(line) && (
+      <span className="shrink-0 text-foreground-dimmed">{listing(line)}</span>
     )}
     <span
       className={cn(
