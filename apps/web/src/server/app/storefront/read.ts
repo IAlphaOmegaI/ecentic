@@ -53,7 +53,7 @@ import {
  * "unknown".
  */
 
-const BUDGET_MS = 60_000;
+const BUDGET_MS = 90_000;
 const HOME_TIMEOUT_MS = 5000;
 const CATALOG_TIMEOUT_MS = 15_000;
 const VARIATION_TIMEOUT_MS = 8000;
@@ -205,6 +205,24 @@ const pool = async <Item, Output>(
     .map(({ output }) => output);
 };
 
+/**
+ * A bot check has no product on it. Cloudflare's script sits on real pages too and
+ * trips the signature, so a page that states a product is a page we read, whatever
+ * else it carries.
+ */
+const accessOf = (
+  page: Parameters<typeof classifyPageAccess>[0],
+  url: string,
+) => {
+  const parsed =
+    page.status < 400 && page.body ? parsePage(page.body, url) : null;
+  const access = classifyPageAccess(page);
+
+  return parsed?.product || access.kind === "ok"
+    ? { access: { kind: "ok" as const }, parsed }
+    : { access, parsed: null };
+};
+
 const visitPage = async (
   run: Run,
   url: string,
@@ -214,14 +232,8 @@ const visitPage = async (
   if (!page.success)
     return { url, access: { kind: "unreachable" }, parsed: null };
 
-  const access = classifyPageAccess(page.data);
-  if (access.kind !== "ok") return { url, access, parsed: null };
-
-  return {
-    url: page.data.url,
-    access,
-    parsed: parsePage(page.data.body, page.data.url),
-  };
+  const access = accessOf(page.data, page.data.url);
+  return { url: page.data.url, ...access };
 };
 
 const blockage = (visits: Visit[]) => {
@@ -1273,7 +1285,8 @@ const viaFirecrawl = async (
   );
   const looking = links.filter(isProductPath);
   const urls = homeMarketFirst(looking.length > 0 ? looking : links, home);
-  const candidates = urls.slice(0, MAX_CANDIDATES);
+  // Not MAX_CANDIDATES: the plan runs two pages at a time, about 1.5s a page.
+  const candidates = urls.slice(0, MAX_PRODUCTS);
 
   if (candidates.length === 0)
     return {
@@ -1307,18 +1320,17 @@ const viaFirecrawl = async (
         const url = document.metadata?.sourceURL ?? document.metadata?.url;
         if (!url || !sameSite(url, run.origin)) return [];
 
-        const body = document.rawHtml ?? "";
-        const access = classifyPageAccess({
-          status: document.metadata?.statusCode ?? 200,
-          headers: new Headers(),
-          body,
-        });
-
         return [
           {
             url,
-            access,
-            parsed: access.kind === "ok" && body ? parsePage(body, url) : null,
+            ...accessOf(
+              {
+                status: document.metadata?.statusCode ?? 200,
+                headers: new Headers(),
+                body: document.rawHtml ?? "",
+              },
+              url,
+            ),
           },
         ];
       }),
