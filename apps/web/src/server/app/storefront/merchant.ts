@@ -59,7 +59,7 @@ export type Landing = {
 /**
  * Credentials for every merchant {@link eligibility} approved. Keyed on the
  * object so the token material can never land in the summary JSON, and so a
- * `Merchant` rebuilt from Redis or written by hand, whatever its `eligible` says,
+ * `Merchant` rebuilt from storage or written by hand, whatever its `eligible` says,
  * has no grant and cannot push.
  */
 const grants = new WeakMap<Merchant, Grant>();

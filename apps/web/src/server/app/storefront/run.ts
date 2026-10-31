@@ -1,10 +1,11 @@
 // Deliberately NOT a "use server" module: every export of an action file is a
 // public RPC door. Route handlers under /api/agents read the request and call in.
 
+import { createHash } from "node:crypto";
 import { gunzipSync, gzipSync } from "node:zlib";
 import * as Sentry from "@sentry/nextjs";
 import { resultify } from "@zenncore/utils";
-import { consume, type Policy } from "../../utils/rate-limit";
+import { identify } from "../../utils/rate-limit";
 import { isSafePublicHttpUrl, resolveOrigin } from "../../utils/ssrf";
 import type {
   Board,
@@ -19,10 +20,10 @@ import * as Google from "./google";
 import * as MerchantCenter from "./merchant";
 import * as Prepare from "./prepare";
 import * as Read from "./read";
+import * as State from "./state";
 
 /**
- * One `/agents` run: read → prepare → channels, with its state in Redis because
- * a new table would mean a migration against production tonight.
+ * One `/agents` run: read → prepare → channels, with its state in `state.ts`.
  *
  * `agents:run:{id}`           Summary, what the stage screen and board poll
  * `agents:run:{id}:prepared`  Prepared[] gzipped, for the results and the feeds
@@ -45,18 +46,14 @@ const BURST_LIMIT = 60;
 const BURST_WINDOW = 600;
 const DEDUPE_SECONDS = 120;
 const WRITE_INTERVAL = 500;
-/** A run not finished after this long is reported as failed, whatever Redis says. */
+/** A run not finished after this long is reported as failed, whatever storage says. */
 const STALE_AFTER = 6 * 60 * 1000;
 /** Inside `maxDuration` (300s), so a slow run says so itself before the platform kills it. */
 const RUN_DEADLINE = 285_000;
 
-const POLICY: Policy = {
-  name: "agents",
-  /** High on purpose: a whole room shares one Wi-Fi address tonight. */
-  limit: 30,
-  window: 600,
-  keyed: false,
-};
+/** High on purpose: a whole room shares one Wi-Fi address tonight. */
+const CALLER_LIMIT = 30;
+const CALLER_WINDOW = 600;
 
 const RUN_ID = /^[\da-f]{8}-[\da-f]{4}-[\da-f]{4}-[\da-f]{4}-[\da-f]{12}$/;
 
@@ -67,21 +64,12 @@ const keys = {
   host: (host: string) => `agents:host:${host}`,
   day: () => `agents:day:${new Date().toISOString().slice(0, 10)}`,
   burst: () => `agents:burst:${Math.floor(Date.now() / (BURST_WINDOW * 1000))}`,
+  caller: (caller: string) =>
+    `agents:caller:${createHash("sha256").update(caller).digest("hex")}:${Math.floor(Date.now() / (CALLER_WINDOW * 1000))}`,
   runs: "agents:runs",
 };
 
-type SetOptions = { ex: number; nx?: boolean };
-
-type Backend = {
-  get: <T>(key: string) => Promise<T | null>;
-  /** Resolves false only when `nx` was asked for and the key already exists. */
-  set: (key: string, value: unknown, options: SetOptions) => Promise<boolean>;
-  remove: (key: string) => Promise<void>;
-  increment: (key: string, ttl: number) => Promise<number>;
-  prepend: (key: string, value: string, keep: number) => Promise<void>;
-  range: (key: string) => Promise<string[]>;
-  many: <T>(keys: string[]) => Promise<(T | null)[]>;
-};
+type Backend = State.Backend;
 
 type Slot = { value: string; expires: number };
 
@@ -106,8 +94,8 @@ const peek = (key: string) => {
 const FOREVER = Number.MAX_SAFE_INTEGER;
 
 /**
- * Local dev must not touch production Redis. Values go through JSON so a shape
- * Upstash would mangle fails here too.
+ * Local dev and specs must not touch the production database. Values go through
+ * JSON, as they do in `state.ts`.
  */
 const memory: Backend = {
   get: async <T>(key: string) => {
@@ -148,48 +136,10 @@ const memory: Backend = {
     }),
 };
 
-/** A loopback URL is the worktree preview's dead placeholder, not a Redis. */
-const isDurable = (url = process.env.UPSTASH_REDIS_REST_URL) =>
-  Boolean(url) && !/^https?:\/\/(127\.0\.0\.1|localhost)\b/.test(url ?? "");
-
-const backend = async (): Promise<Backend> => {
-  if (!isDurable()) return memory;
-
-  // Imported only here: `Redis.fromEnv()` runs at module load.
-  const { redis } = await import("../../utils/durable");
-
-  return {
-    get: <T>(key: string) => redis.get<T>(key),
-    set: async (key, value, { ex, nx }) => {
-      const answer = nx
-        ? await redis.set(key, value, { ex, nx: true })
-        : await redis.set(key, value, { ex });
-      return answer !== null;
-    },
-    remove: async (key) => {
-      await redis.del(key);
-    },
-    // Together, so a crash between the two cannot leak a counter with no expiry.
-    increment: async (key, ttl) => {
-      const [count] = (await redis
-        .pipeline()
-        .incr(key)
-        .expire(key, ttl)
-        .exec()) as [number, number];
-      return count;
-    },
-    prepend: async (key, value, keep) => {
-      await redis
-        .pipeline()
-        .lpush(key, value)
-        .ltrim(key, 0, keep - 1)
-        .exec();
-    },
-    range: (key) => redis.lrange<string>(key, 0, -1),
-    many: async <T>(list: string[]) =>
-      list.length === 0 ? [] : redis.mget<(T | null)[]>(...list),
-  };
-};
+const backend = async (): Promise<Backend> =>
+  process.env.NODE_ENV === "production" && process.env.DATABASE_URL
+    ? State.postgres
+    : memory;
 
 /**
  * A summary as it should be reported at `now`. Never leaves a run stuck: the
@@ -257,7 +207,7 @@ export const start = async ({
   request,
 }: {
   url: string;
-  request: Parameters<typeof consume>[0];
+  request: Parameters<typeof identify>[0];
 }) => {
   const target = resolveOrigin(url);
   if (!target) return refused("invalid");
@@ -276,8 +226,11 @@ export const start = async ({
       await memo.remove(lock);
     }
 
-    const verdict = await consume(request, POLICY);
-    if (!verdict.allowed) return refused("limited");
+    const caller = await memo.increment(
+      keys.caller(identify(request, { keyed: false })),
+      CALLER_WINDOW,
+    );
+    if (caller > CALLER_LIMIT) return refused("limited");
 
     const burst = await memo.increment(keys.burst(), BURST_WINDOW);
     if (burst > BURST_LIMIT) return refused("limited");

@@ -10,16 +10,11 @@ import type {
 } from "../app/storefront/catalog";
 
 /**
- * Run state against the in-memory fallback. The Redis variables are removed
- * before anything loads, so this spec can never reach a real Redis.
+ * Run state against the in-memory fallback, which is all anything but a
+ * production build uses, so this spec can never reach a real database.
  */
 
-for (const name of [
-  "UPSTASH_REDIS_REST_URL",
-  "UPSTASH_REDIS_REST_TOKEN",
-  "AGENTS_DEMO_DOMAIN",
-])
-  Reflect.deleteProperty(process.env, name);
+Reflect.deleteProperty(process.env, "AGENTS_DEMO_DOMAIN");
 
 // `utils/ai` pulls `@ai-sdk/rsc`, and `store` reaches the same bundle; neither
 // loads under the test runner, and neither is called on these paths.
