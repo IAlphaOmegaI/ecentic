@@ -408,7 +408,7 @@ const landedElsewhere = (product: Product, landed: string, facts: Facts) => {
 const enrichAll = async (run: Run, products: Product[], timeout: number) => {
   run.report(`Reading ${products.length} product pages for identifiers.`);
 
-  const visits = await pool(
+  const first = await pool(
     products,
     async (product) => ({
       product,
@@ -421,6 +421,23 @@ const enrichAll = async (run: Run, products: Product[], timeout: number) => {
       },
     },
   );
+
+  // A few slow pages on a cold store are worth one more try. Most of them failing
+  // is a store refusing us, and a bot check will say the same thing twice.
+  const missed = first.filter(
+    ({ visit }) => visit?.access.kind === "unreachable",
+  );
+  const visits =
+    missed.length > 0 && missed.length <= products.length / 2
+      ? await pool(first, async (entry) =>
+          entry.product.url && missed.includes(entry)
+            ? {
+                product: entry.product,
+                visit: await visitPage(run, entry.product.url, timeout * 2),
+              }
+            : entry,
+        )
+      : first;
 
   const outcomes = visits.map(({ product, visit }) => {
     const facts = visit?.parsed?.product;
@@ -649,10 +666,13 @@ const walkShopify = async (
 const readShopify = async (run: Run): Promise<Result<Reading>> => {
   run.report("Reading the Shopify catalog.");
 
-  const [meta, listing] = await Promise.all([
+  const [answer, listing] = await Promise.all([
     fetchPublicMeta(run.origin),
     walkShopify(run),
   ]);
+  // The one place a store states its currency without a product page, and a cold
+  // store can miss the first read's deadline.
+  const meta = answer ?? (await fetchPublicMeta(run.origin));
 
   if (listing.items.length === 0)
     return {
