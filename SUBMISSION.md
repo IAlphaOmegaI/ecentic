@@ -40,7 +40,48 @@ A merchant pastes any store URL. écentic reads up to 40 products, lists what AI
 Not built: the OpenAI Ads live upload and the Agent checkout stage row. Both were cut under the brief's cut order.
 
 ```text
-{diff stat}
+ AGENTS.md                                          |    4 +
+ SUBMISSION.md                                      |  101 +
+ apps/web/.env.example                              |    6 +
+ apps/web/package.json                              |    2 +
+ .../src/app/(provider)/api/agents/board/route.ts   |   22 +
+ .../api/agents/runs/[id]/feed/[channel]/route.ts   |   34 +
+ .../api/agents/runs/[id]/prepared/route.ts         |   27 +
+ .../app/(provider)/api/agents/runs/[id]/route.ts   |   31 +
+ .../src/app/(provider)/api/agents/runs/route.ts    |   36 +
+ .../app/[locale]/(main)/agents/_components/live.ts |  164 ++
+ .../app/[locale]/(main)/agents/_components/run.tsx |  641 ++++++
+ .../(main)/agents/_components/skeletons.tsx        |   26 +
+ .../(main)/agents/_components/store-form.tsx       |  132 ++
+ apps/web/src/app/[locale]/(main)/agents/page.tsx   |   31 +
+ .../app/[locale]/(main)/agents/runs/[id]/page.tsx  |   54 +
+ .../src/app/[locale]/(stage)/_components/board.tsx |  142 ++
+ .../app/[locale]/(stage)/_components/skeletons.tsx |   29 +
+ .../src/app/[locale]/(stage)/_components/stage.tsx |  215 ++
+ .../src/app/[locale]/(stage)/agents/board/page.tsx |   15 +
+ .../[locale]/(stage)/agents/stage/[id]/page.tsx    |   23 +
+ apps/web/src/app/[locale]/(stage)/layout.tsx       |   13 +
+ apps/web/src/components/cookie-consent.tsx         |    3 +
+ apps/web/src/server/app/storefront/catalog.ts      |  208 ++
+ apps/web/src/server/app/storefront/chatgpt.ts      |  667 ++++++
+ apps/web/src/server/app/storefront/google.ts       |  429 ++++
+ apps/web/src/server/app/storefront/merchant.ts     |  568 +++++
+ apps/web/src/server/app/storefront/page.ts         |  867 ++++++++
+ apps/web/src/server/app/storefront/policy.ts       |  166 ++
+ apps/web/src/server/app/storefront/prepare.ts      |  757 +++++++
+ apps/web/src/server/app/storefront/read.ts         | 1842 ++++++++++++++++
+ apps/web/src/server/app/storefront/run.ts          |  565 +++++
+ apps/web/src/server/app/storefront/state.ts        |  132 ++
+ .../src/server/spec/storefront-channels.test.ts    | 1171 +++++++++++
+ .../src/server/spec/storefront-merchant.test.ts    |  603 ++++++
+ .../web/src/server/spec/storefront-prepare.test.ts |  782 +++++++
+ apps/web/src/server/spec/storefront-read.test.ts   | 2223 ++++++++++++++++++++
+ apps/web/src/server/spec/storefront-run.test.ts    |  806 +++++++
+ apps/web/src/server/utils/google-merchant.ts       |    7 +
+ bun.lock                                           |   46 +
+ docs/nighthack-map.md                              |  134 ++
+ turbo.json                                         |    2 +
+ 41 files changed, 13726 insertions(+)
 ```
 
 Generated with `git diff nighthack-start..HEAD --stat`. `nighthack-start` is the last commit before 4:15pm PT.
