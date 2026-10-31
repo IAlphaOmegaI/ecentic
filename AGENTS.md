@@ -354,6 +354,10 @@ GOOGLE_MERCHANT_CLIENT_ID
 GOOGLE_MERCHANT_CLIENT_SECRET
 ECENTIC_MCA_ID                            # numeric Merchant Center advanced-account id
 GOOGLE_MERCHANT_MCA_REFRESH_TOKEN         # optional — MCA-admin grant; auto-approves incoming link proposals (unset = approve manually in the MCA's Merchant Center)
+
+# Public agent storefront (/agents, server/app/storefront/).
+FIRECRAWL_API_KEY                         # optional — reads stores that block plain requests; unset = sitemap walk only
+AGENTS_DEMO_DOMAIN                        # the one store /agents may publish to Merchant Center for; unset = nothing is eligible, ever
 ```
 
 ---

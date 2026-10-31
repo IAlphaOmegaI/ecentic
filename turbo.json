@@ -79,6 +79,8 @@
         "SHOPIFY_CATALOG_MCP_URL",
         "UCP_AGENT_PROFILE_URL",
         "SCRAPELLM_API_KEY",
+        "FIRECRAWL_API_KEY",
+        "AGENTS_DEMO_DOMAIN",
         "X402_PAY_TO",
         "X402_FACILITATOR_URL",
         "X402_NETWORK"
