@@ -21,7 +21,9 @@ const Live = async ({ params }: { params: RunParams }) => {
 };
 
 export default ({ params }: PageProps<"/[locale]/agents/runs/[id]">) => (
-  <main className="flex min-h-screen flex-col">
+  // The product list streams in above the footer: anchoring to the footer would
+  // carry a phone, already scrolled to the form, to the bottom of the page.
+  <main className="flex min-h-screen flex-col [overflow-anchor:none]">
     <div className="mx-auto w-full max-w-6xl border-accent-foreground border-x">
       {/* Reads the pathname, unknown at build for a run id. It is fixed-position, so no shift. */}
       <Suspense>
