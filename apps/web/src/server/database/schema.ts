@@ -1150,6 +1150,20 @@ export const dealRedemption = pgTable(
   ],
 );
 
+/**
+ * `/agents` run state: a small key/value table with per-row expiry, read and
+ * written with raw SQL in `server/app/storefront/state.ts`. `value` is JSON in a
+ * text column, so nothing depends on how a driver encodes jsonb. A null
+ * `expires_at` is a row capped by length rather than aged out (`agents:runs`).
+ *
+ * Snake case because the table was live before it was in this file.
+ */
+export const agentsState = pgTable("agents_state", {
+  key: text("key").primaryKey(),
+  value: text("value").notNull(),
+  expiresAt: timestamp("expires_at", { mode: "date", withTimezone: true }),
+});
+
 /** Tables object for defineRelations and better-auth adapter */
 export const tables = {
   user,
@@ -1180,6 +1194,7 @@ export const tables = {
   blogPost,
   dealRedemption,
   ucpOrder,
+  agentsState,
 };
 
 /** Relations */

@@ -8,9 +8,8 @@ import { db } from "../../database";
  * `/agents` run state in one small Postgres table. Values are JSON in a text
  * column, so nothing depends on how a driver encodes jsonb.
  *
- * The app creates the table itself on first use. It is not in `schema.ts` and has
- * no migration, so `drizzle-kit push` will offer to drop it: move it into the
- * schema if `/agents` outlives tonight.
+ * The table is `agentsState` in `schema.ts`, with a migration. The app still
+ * creates it on first use until that migration has reached production.
  */
 
 export type SetOptions = { ex: number; nx?: boolean };
