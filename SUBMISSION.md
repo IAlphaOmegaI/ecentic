@@ -9,17 +9,21 @@ Night Hack at Founders, Inc., 30 October 2026.
 
 ## Public demo
 
-Open {url}, paste any store's website.
+Open https://ecentic.ai/agents, paste any store's website.
 
-No login. The stage screen is `{url}/agents/stage/{run id}` (linked from every run) and the room board is `{url}/agents/board`.
+No login. Every run links to its stage screen (`https://ecentic.ai/agents/stage/{run id}`). The room board is https://ecentic.ai/agents/board.
+
+Backup link, same code and same data: https://ecentic-git-nighthack-zennit.vercel.app/agents
 
 ## 30-second test plan for judges
 
-1. Open {url} on your phone, paste a store you know (for example `allbirds.com`, or your own), and press the button.
+1. Open https://ecentic.ai/agents on your phone, paste a store you know (for example `allbirds.com`, or your own), and press the button.
 2. Watch the counters: products read, issues found, fixes applied. Most stores finish in under a minute.
 3. Open any product. Check its price and availability against the store's own page, then read the fixes: each is labelled and shown before and after.
 4. Download the ChatGPT CSV and the Google feed.
-5. Open `{url}/agents/board` to see every store prepared tonight.
+5. Open https://ecentic.ai/agents/board to see every store prepared tonight.
+
+To see the live Merchant Center push, paste `ecentic.myshopify.com`, our demo store, and open its stage screen. Each line is Google's API answer for that product.
 
 ## What it does
 
@@ -36,8 +40,11 @@ A merchant pastes any store URL. écentic reads up to 40 products, lists what AI
 - A policy check that reads OpenAI's prohibited-products policy from its own page at run time and flags matching items, rather than a hard-coded list.
 - The Merchant API push for the demo store (supplemental `productInputs` overrides, then `products.get` to show the merge), guarded so it only runs for a linked account whose website is claimed.
 - The public page, a results view, the stage screen with its timer, and the room board with a QR code.
+- One small new table, `agents_state`, for run state.
 
 Not built: the OpenAI Ads live upload and the Agent checkout stage row. Both were cut under the brief's cut order.
+
+Known limits: up to 40 products per store. `/es/agents` shows English. Some stores block even Firecrawl, and the page says so. Google disapproves most demo store products at the moment because they have no images, and we don't invent images.
 
 ```text
  AGENTS.md                                          |    4 +
