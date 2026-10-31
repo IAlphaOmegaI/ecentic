@@ -6,6 +6,7 @@
 
 import { createHash } from "node:crypto";
 import { redis } from "@/server/utils/durable";
+import { reportFailOpen } from "@/server/utils/fail-open";
 
 const WINDOW_SECONDS = 60;
 const DEFAULT_MAX_PER_MINUTE = 120;
@@ -40,7 +41,8 @@ export const isRateLimited = async ({
       const count = await redis.incr(key);
       if (count === 1) await redis.expire(key, WINDOW_SECONDS);
       return count > maxPerMinute;
-    } catch {
+    } catch (error) {
+      reportFailOpen("ucp-requests", error);
       return false; // fail open — availability over strictness for reads
     }
   })();

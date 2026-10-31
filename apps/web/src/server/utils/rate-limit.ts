@@ -1,5 +1,5 @@
-import * as Sentry from "@sentry/nextjs";
 import { resultify } from "@zenncore/utils";
+import { reportFailOpen } from "./fail-open";
 
 /**
  * Fixed-window rate limiting for the public agent API, plus the response
@@ -97,36 +97,6 @@ const client = async () => {
   return resultify(() => module.data.redis);
 };
 
-const FAIL_OPEN_REPORT_INTERVAL_MS = 60_000;
-
-const failOpen = { reportedAt: Number.NEGATIVE_INFINITY };
-
-/**
- * Failing open keeps the API up and turns the limits off without one failed
- * request to show for it, which is how the Upstash database behind this could
- * disappear unnoticed. So it has to say so, but `consume` runs on every public
- * request and an outage is exactly when nothing is limiting that volume: at most
- * once a minute per process, and one Sentry issue however many policies and
- * causes feed it. All this adds is the policy name: never the bucket key, which
- * names the caller.
- */
-const reportFailOpen = (policy: Policy, cause: Error) => {
-  const now = Date.now();
-  if (now - failOpen.reportedAt < FAIL_OPEN_REPORT_INTERVAL_MS) return;
-  failOpen.reportedAt = now;
-
-  const error = new Error(
-    `Rate limits are not being enforced: the counter failed on "${policy.name}"`,
-    { cause },
-  );
-
-  console.error(error);
-  Sentry.captureException(error, {
-    fingerprint: ["rate-limit-fail-open"],
-    tags: { rate_limit_policy: policy.name },
-  });
-};
-
 /**
  * The identity a window is counted against. An API key gets its own window so
  * one noisy agent cannot spend a shared IP's budget; everything else falls back
@@ -158,7 +128,7 @@ export const consume = async (
 
   // Fail open: a Redis outage must not turn every agent request into a 429.
   const open = (cause: Error): Verdict => {
-    reportFailOpen(policy, cause);
+    reportFailOpen(policy.name, cause);
     return { policy, allowed: true, remaining: null, reset };
   };
 

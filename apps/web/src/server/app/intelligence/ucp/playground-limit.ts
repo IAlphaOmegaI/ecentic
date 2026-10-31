@@ -7,6 +7,7 @@
 
 import { createHash } from "node:crypto";
 import { redis } from "@/server/utils/durable";
+import { reportFailOpen } from "@/server/utils/fail-open";
 
 /** Hard cap on messages an anonymous visitor may send, ever. */
 export const ANONYMOUS_MESSAGE_LIMIT = 10;
@@ -49,7 +50,8 @@ export const consumeAnonymousMessage = async (
     if (used > ANONYMOUS_MESSAGE_LIMIT) return { allowed: false, remaining: 0 };
 
     return { allowed: true, remaining: ANONYMOUS_MESSAGE_LIMIT - used };
-  } catch {
+  } catch (error) {
+    reportFailOpen("ucp-playground-quota", error);
     return { allowed: true, remaining: ANONYMOUS_MESSAGE_LIMIT };
   }
 };

@@ -11,6 +11,7 @@
 
 import { createHash } from "node:crypto";
 import { redis } from "@/server/utils/durable";
+import { reportFailOpen } from "@/server/utils/fail-open";
 import {
   businessCapabilityDefinitions,
   type CapabilityEntry,
@@ -55,7 +56,8 @@ const profileFetchAllowed = async (): Promise<boolean> => {
     const count = await redis.incr(key);
     if (count === 1) await redis.expire(key, DISCOVERY_WINDOW);
     return count <= DISCOVERY_MAX;
-  } catch {
+  } catch (error) {
+    reportFailOpen("ucp-profile-fetches", error);
     return true; // fail open — a redis outage shouldn't block negotiation
   }
 };

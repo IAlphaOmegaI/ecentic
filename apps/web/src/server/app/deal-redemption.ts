@@ -7,6 +7,7 @@ import { schema } from "../database";
 import { withContext, withDurable } from "../utils/context";
 import { Environment } from "../utils/environment";
 import { ValidationError } from "../utils/error";
+import { reportFailOpen } from "../utils/fail-open";
 import { repository } from "../utils/repository";
 
 /**
@@ -271,7 +272,10 @@ const isRateLimited = withContext.append(withDurable)(
     const count = await resultify(() => context.durable.redis.incr(key));
 
     // Fail open: a Redis hiccup must never drop a real redemption.
-    if (!count.success) return { success: true, data: false };
+    if (!count.success) {
+      reportFailOpen("deal-redemption", count.error);
+      return { success: true, data: false };
+    }
 
     if (count.data === 1)
       await resultify(() =>

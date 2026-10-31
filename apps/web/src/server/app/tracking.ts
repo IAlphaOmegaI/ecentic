@@ -1,6 +1,6 @@
 "use server";
 
-import type { UnwrapResult } from "@zenncore/utils";
+import { resultify, type UnwrapResult } from "@zenncore/utils";
 import { and, count, eq, gte, sql } from "drizzle-orm";
 import { z } from "zod";
 import { db, schema } from "../database";
@@ -12,6 +12,7 @@ import {
 import { withSubscription } from "../utils/entitlement";
 import { Environment } from "../utils/environment";
 import { DatabaseError } from "../utils/error";
+import { reportFailOpen } from "../utils/fail-open";
 import { repository, resultifyRead } from "../utils/repository";
 import {
   isOriginAllowedForStore,
@@ -76,14 +77,33 @@ const RATE_LIMIT_WINDOW = 3600;
 const RATE_LIMIT_MAX = 1000;
 
 const isRateLimited = withContext.append(withDurable)(
-  async (ctx, { store }: { store: string }) => {
-    const key = `rate_limit:agent_visit:${store}`;
-    const count = await ctx.durable.redis.incr(key);
+  async (context, { store }: { store: string }) => {
+    const window = Math.floor(Date.now() / 1000 / RATE_LIMIT_WINDOW);
+    const key = `rate_limit:agent_visit:${store}:${window}`;
 
-    if (count === 1) await ctx.durable.redis.expire(key, RATE_LIMIT_WINDOW);
+    // The key names its window and INCR and EXPIRE go out together, because a
+    // counter whose EXPIRE was lost to a Redis hiccup would never reset, and
+    // would drop every visit past the cap from then on.
+    const count = await resultify(async () => {
+      const [value] = (await context.durable.redis
+        .pipeline()
+        .incr(key)
+        .expire(key, RATE_LIMIT_WINDOW)
+        .exec()) as [number, number];
 
-    return { success: true, data: count > RATE_LIMIT_MAX };
+      return value;
+    });
+
+    // Fail open: dashboards and fee attribution read these rows, so a Redis
+    // outage must never lose a visit.
+    if (!count.success) {
+      reportFailOpen("agent-visit", count.error);
+      return { success: true, data: false };
+    }
+
+    return { success: true, data: count.data > RATE_LIMIT_MAX };
   },
+  "Tracking.isRateLimited",
 );
 
 const AGENT_LABELS: Record<string, string> = {

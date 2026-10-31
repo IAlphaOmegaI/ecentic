@@ -1,4 +1,5 @@
 import { redis } from "@/server/utils/durable";
+import { reportFailOpen } from "@/server/utils/fail-open";
 import type { OfferLookup } from "@/server/utils/serp";
 import type { PlanKey } from "@/server/utils/stripe";
 
@@ -98,7 +99,8 @@ export const consumeBudget = async ({
     if (used === 1) await redis.expire(key, BUDGET_TTL_SECONDS);
 
     return { allowed: used <= allowance, used, allowance };
-  } catch {
+  } catch (error) {
+    reportFailOpen("offers-budget", error);
     return { allowed: true, used: 0, allowance };
   }
 };
@@ -158,9 +160,10 @@ export const consumeTrialLookup = async ({
       used,
       allowance: TRIAL_LOOKUP_LIMIT,
     };
-  } catch {
+  } catch (error) {
     // Fails open like every other limiter here — but a free account failing
     // open is unmetered spend, so this one is worth watching if Redis is flaky.
+    reportFailOpen("offers-trial", error);
     return { allowed: true, used: 0, allowance: TRIAL_LOOKUP_LIMIT };
   }
 };
