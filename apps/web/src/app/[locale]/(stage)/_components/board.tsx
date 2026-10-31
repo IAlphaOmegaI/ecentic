@@ -96,7 +96,9 @@ export const Board = () => {
 
   if (!data && !failed) return <BoardSkeleton />;
 
-  const runs = [...(data?.runs ?? [])]
+  // A store we could not read has nothing to show the room. Its visitor saw why.
+  const runs = (data?.runs ?? [])
+    .filter((run) => run.stage !== "failed")
     .sort((left, right) => right.startedAt - left.startedAt)
     .slice(0, VISIBLE_RUNS);
   const url = origin ? `${origin}/agents` : null;
