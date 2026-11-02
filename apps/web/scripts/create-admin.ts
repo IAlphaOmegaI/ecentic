@@ -13,7 +13,7 @@ const parseArgs = (): { email: string; password: string; name: string } => {
     if (key !== undefined && value !== undefined) args.set(key, value);
   }
 
-  const email = args.get("email");
+  const email = args.get("email"); 
   const password = args.get("password");
   const name = args.get("name") ?? "Administrator User";
 
