@@ -31,7 +31,7 @@ export const StoreEntry = ({ className }: StoreEntry.Props) => {
   // Focus the field for visitors who already have a keyboard under their
   // hands. On touch screens it would pop the keyboard over the headline the
   // moment the page opens, so they tap in themselves. `preventScroll` keeps the
-  // smooth-scroll container from jumping to the field.
+  // page from jumping to the field.
   useEffect(() => {
     if (!window.matchMedia("(pointer: fine)").matches) return;
     form.current

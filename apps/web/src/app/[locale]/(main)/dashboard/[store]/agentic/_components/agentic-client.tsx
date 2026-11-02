@@ -84,7 +84,7 @@ export const ScanRunner = ({
     const container = logRef.current;
     if (!container) return;
 
-    container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
+    container.scrollTo({ top: container.scrollHeight });
   }, [lines]);
 
   const setNoticeAndAnnounce = (message: string) => {

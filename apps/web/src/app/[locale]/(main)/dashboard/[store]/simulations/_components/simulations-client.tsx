@@ -268,7 +268,7 @@ export const SimulationsClient = ({
     const container = logRef.current;
     if (!container) return;
 
-    container.scrollTo({ top: container.scrollHeight, behavior: "smooth" });
+    container.scrollTo({ top: container.scrollHeight });
   }, [logs]);
 
   // Count only the rivals the engine will actually judge. A competitor without
@@ -709,7 +709,7 @@ export const SimulationsClient = ({
                 </div>
                 <div
                   ref={logRef}
-                  className="max-h-72 overflow-y-auto scroll-smooth bg-background-rich px-5 py-4"
+                  className="max-h-72 overflow-y-auto bg-background-rich px-5 py-4"
                 >
                   {logs.length === 0 ? (
                     <p className="font-mono text-foreground-dimmed text-xs">

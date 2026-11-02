@@ -153,9 +153,7 @@ export const CompareForm = () => {
             break;
         }
 
-        requestAnimationFrame(() =>
-          target.current?.scrollIntoView({ behavior: "smooth" }),
-        );
+        requestAnimationFrame(() => target.current?.scrollIntoView());
       }
     });
 
@@ -320,7 +318,7 @@ export const CompareForm = () => {
             </div>
           )}
 
-          <div className="min-h-0 flex-1 space-y-1 overflow-y-auto scroll-smooth p-4">
+          <div className="min-h-0 flex-1 space-y-1 overflow-y-auto p-4">
             {logs.map((log, index) => {
               const age = logs.length - 1 - index;
               const opacity = Math.max(0.2, 1 - age * 0.1);

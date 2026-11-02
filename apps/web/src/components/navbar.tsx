@@ -27,7 +27,7 @@ const scrollToHash = (href: string) => {
   if (!hash) return false;
   const target = document.getElementById(hash);
   if (!target) return false;
-  target.scrollIntoView({ behavior: "smooth" });
+  target.scrollIntoView();
   window.history.pushState(null, "", `/#${hash}`);
   return true;
 };
@@ -283,7 +283,7 @@ export const Navbar = () => {
     const hash = window.location.hash.slice(1);
     if (!hash) return;
     requestAnimationFrame(() => {
-      document.getElementById(hash)?.scrollIntoView({ behavior: "smooth" });
+      document.getElementById(hash)?.scrollIntoView();
     });
   }, [pathname]);
 

@@ -666,9 +666,10 @@ Do not use motion to:
 - animate layout dimensions when `transform` or `opacity` will do;
 - create scroll-jacking.
 
-### 9.4 Smooth scroll
+### 9.4 Scrolling
 
-Native smooth scrolling is acceptable for page anchors. In a bounded log panel, scroll the
+Use default browser scrolling for page anchors and programmatic scrolls. Do not enable smooth
+scrolling through CSS, JavaScript, or scroll libraries. In a bounded log panel, scroll the
 `overflow-y-auto` container with `scrollTo`; do not use `scrollIntoView` on a sentinel when it may
 move ancestor or page scrollers.
 

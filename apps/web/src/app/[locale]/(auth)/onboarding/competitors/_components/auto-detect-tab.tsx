@@ -104,10 +104,7 @@ export const AutoDetectTab = ({
     if (!container) return;
 
     requestAnimationFrame(() => {
-      container.scrollTo({
-        top: container.scrollHeight,
-        behavior: "smooth",
-      });
+      container.scrollTo({ top: container.scrollHeight });
     });
   }, [logs]);
 
@@ -287,7 +284,7 @@ export const AutoDetectTab = ({
 
             <div
               ref={logRef}
-              className="min-h-0 flex-1 space-y-1 overflow-y-auto scroll-smooth p-4"
+              className="min-h-0 flex-1 space-y-1 overflow-y-auto p-4"
             >
               <DiscoveryLogLines logs={logs} active={isDetecting} />
               {logs.length === 0 && (

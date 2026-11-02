@@ -118,7 +118,7 @@ export const SimulationModal = ({
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: scroll to bottom on new log
   useEffect(() => {
-    target.current?.scrollIntoView({ behavior: "smooth" });
+    target.current?.scrollIntoView();
   }, [logs]);
 
   const handleClose = () => {
@@ -373,7 +373,7 @@ export const SimulationModal = ({
 
                   <Motion.Item className="flex min-h-0 flex-1 flex-col border-accent-foreground border-b px-8">
                     <div className="flex h-full flex-col border-accent-foreground border-x bg-background-rich">
-                      <div className="h-56 flex-1 space-y-1.5 overflow-y-auto scroll-smooth px-6 py-4">
+                      <div className="h-56 flex-1 space-y-1.5 overflow-y-auto px-6 py-4">
                         {logs.map((entry, index) => {
                           const age = logs.length - 1 - index;
                           const opacity = Math.max(0.2, 1 - age * 0.1);
