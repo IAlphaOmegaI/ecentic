@@ -21,8 +21,10 @@ export type Result<T = void, E = Error> =
       error: E;
     };
 
+// Any thenable, not only a native Promise: the implementation awaits whatever
+// `isThenable` accepts, so a sync overload match would type a promise as a Result.
 export function resultify<
-  T extends (...args: unknown[]) => Promise<unknown>,
+  T extends (...args: unknown[]) => PromiseLike<unknown>,
   E = Error,
 >(fn: T): Promise<Result<Awaited<ReturnType<T>>, E>>;
 
@@ -33,16 +35,17 @@ export function resultify<T extends (...args: unknown[]) => unknown, E = Error>(
 export function resultify<
   T extends
     | ((...args: unknown[]) => unknown)
-    | ((...args: unknown[]) => Promise<unknown>),
+    | ((...args: unknown[]) => PromiseLike<unknown>),
   E = Error,
 >(
   fn: T,
 ): Promise<Result<Awaited<ReturnType<T>>, E>> | Result<ReturnType<T>, E> {
   // Drizzle query builders are PromiseLike but not `instanceof Promise`.
   // Without this, `resultify(() => db.select()...)` returns the builder as
-  // `data` instead of awaiting rows.
+  // `data` instead of awaiting rows. A thenable may also be a function, as it
+  // may for `await`.
   const isThenable = (value: unknown): value is PromiseLike<unknown> =>
-    typeof value === "object" &&
+    (typeof value === "object" || typeof value === "function") &&
     value !== null &&
     "then" in value &&
     typeof (value as { then: unknown }).then === "function";

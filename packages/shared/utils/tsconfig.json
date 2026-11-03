@@ -1,4 +1,7 @@
 {
   "extends": "@zenncore/config/typescript/lib",
+  "compilerOptions": {
+    "types": ["bun-types"]
+  },
   "include": ["src"]
 }

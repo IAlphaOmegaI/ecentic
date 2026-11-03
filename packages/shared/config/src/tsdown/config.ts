@@ -17,7 +17,9 @@ const normalizeOptions = ({ typeOnly, ...options }: TsdownOptions) => {
 
   return Object.entries(extraOptions).reduce(
     (accumulator, [optionName, optionValue]) => {
-      if (optionValue === undefined) return accumulator;
+      // Every extra option is a boolean flag: only `true` turns it on, so
+      // `typeOnly: false` builds the same as leaving it out.
+      if (optionValue !== true) return accumulator;
 
       switch (optionName as keyof ExtraOptions) {
         case "typeOnly":

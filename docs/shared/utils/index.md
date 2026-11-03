@@ -17,6 +17,7 @@ bun add @zenncore/utils
 | `cn()` | Merge class names (from `clsx`) |
 | `cva()` | Create variant props (class-variance-authority) |
 | `createClassName()` | Create class names with defaults |
+| `pipe()` | Compose functions left to right; the first takes the call's arguments, each next one the previous output |
 
 ### Hooks
 

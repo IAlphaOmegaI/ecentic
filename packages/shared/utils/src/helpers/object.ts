@@ -29,8 +29,8 @@ export const access = <T extends EmptyObject, A extends PropertyAccessor<T>>(
 ): PropertyValue<T, A> => {
   const [key, ...rest] = accessor.toString().split(".");
   if (rest.length === 0) return accessee[key as keyof T] as PropertyValue<T, A>;
-  // @ts-expect-error: this is fine
-  return access(accessee[key as keyof T], rest);
+  // @ts-expect-error: TypeScript cannot tie the nested value and the rest of the path back to `A`
+  return access(accessee[key as keyof T], rest.join("."));
 };
 
 export type IsOptionalProperty<T, K extends keyof T> =
@@ -232,7 +232,10 @@ export type Merge<T extends Object, S extends Object> = {
 export const merge = <T extends Object, S extends Object>(
   target: T,
   sources: S,
-): Merge<T, S> => mergePrimitive(structuredClone(target), sources);
+): Merge<T, S> =>
+  // es-toolkit models the result with its own `Merge` type, which TypeScript
+  // cannot relate to the one declared here, so the result is cast to it.
+  mergePrimitive(structuredClone(target), sources) as unknown as Merge<T, S>;
 
 export { isPlainObject };
 
@@ -240,12 +243,12 @@ export const removeUndefinedEntries = <O extends EmptyObject>(
   obj: O,
 ): OmitUndefinedEntries<O> =>
   Object.fromEntries(
-    Object.entries(obj).filter(([_, value]) => !!value) as [
+    Object.entries(obj).filter(([_, value]) => value !== undefined) as [
       keyof O,
       Exclude<O[keyof O], undefined>,
     ][],
   ) as OmitUndefinedEntries<O>;
 
 export type OmitUndefinedEntries<T extends EmptyObject> = {
-  [K in keyof T as T[K] extends undefined | "" | null ? never : K]: T[K];
+  [K in keyof T as T[K] extends undefined ? never : K]: T[K];
 };

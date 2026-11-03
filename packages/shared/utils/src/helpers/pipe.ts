@@ -74,7 +74,8 @@ export function pipe<
   return (
     ...args: PipeHeadInput<Pipe<Head, Tail>>
   ): PipeEndOutput<Pipe<Head, Tail>> => {
-    return pipeables.reduce(
+    // The head already ran on `args`, so only the tail folds over its output.
+    return pipeables.slice(1).reduce(
       // @ts-ignore: the type system cannot infer the correct type for the first pipeable
       (acc, fn) => fn(acc),
       pipeables[0](...args),

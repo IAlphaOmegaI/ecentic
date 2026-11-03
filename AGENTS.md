@@ -87,9 +87,11 @@ bun run db:reset      # Reset database (scripts/reset.ts)
 ```
 
 ```bash
-# Tests (Bun's runner; specs live in apps/web/src/server/spec/ and src/i18n/spec/)
-bun run test          # all apps
+# Tests (Bun's runner; specs live in apps/web/src/server/spec/ and src/i18n/spec/,
+# and in packages/shared/{utils,config}/src/spec/)
+bun run test          # all apps and the shared packages that have specs
 cd apps/web && bun test src
+cd packages/shared/utils && bun test src   # its type-level specs run in `bun run typecheck`
 ```
 
 Note: `bun run typecheck` is not a clean gate — the repository carries a few
@@ -217,7 +219,7 @@ import { unwrapResult } from "@zenncore/utils";
 import { Environment } from "@/server/utils/environment";
 const products = await unwrapResult(Products.skimForCurrentUser(Environment.SERVER));
 ```
-`@zenncore/utils` `Result<T>` uses a non-distributive void check so `T | undefined` and `any` success branches always include `data`. `resultify` awaits PromiseLike values (not only `instanceof Promise`) so Drizzle query builders are not returned as `data`.
+`@zenncore/utils` `Result<T>` uses a non-distributive void check so `T | undefined` and `any` success branches always include `data`. `resultify` awaits PromiseLike values (not only `instanceof Promise`, and a thenable function too) so Drizzle query builders are not returned as `data`; its types match, so a thunk returning any `PromiseLike` gives `Promise<Result<…>>`.
 
 ### Server module imports — namespace pattern
 ```ts

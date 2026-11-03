@@ -45,7 +45,7 @@ import type { Nullable, Prettify, DistributiveOmit } from "@zenncore/utils/types
 - `cn(...)` — Tailwind class merging (clsx + tailwind-merge)
 - `cva(...)` — class variance authority for variant-based components
 - `ClassList<K>` — type for `classList` prop (targeted sub-element styling)
-- `resultify(fn)` — wraps sync/async function in `Result<T, E>`
+- `resultify(fn)` — wraps a sync function in `Result<T, E>`, and one returning a Promise or any other thenable in `Promise<Result<T, E>>`
 - `type Result<T, E>` — `{ success: true; data: T } | { success: false; error: E }`
 
 ---

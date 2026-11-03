@@ -4,6 +4,7 @@ export * from "./array";
 export * from "./class-name";
 export * from "./form";
 export * from "./object";
+export * from "./pipe";
 export * from "./ref";
 export * from "./result";
 export * from "./url";

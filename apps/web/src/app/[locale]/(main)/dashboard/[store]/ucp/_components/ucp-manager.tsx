@@ -292,20 +292,22 @@ export const UcpManager = ({
     : 0;
 
   const live = useMemo(() => {
+    // A cleared field is "" and a stored one may be null; both stay out of
+    // the preview, so they go in as undefined, the only value it drops.
     const json = removeUndefinedEntries({
       "@context": "https://ucp.ai/schema",
       "@type": "Merchant",
-      name: state.merchantName,
-      description: state.description,
-      logo: state.logoUrl,
+      name: state.merchantName || undefined,
+      description: state.description || undefined,
+      logo: state.logoUrl || undefined,
       paymentMethods: state.paymentMethods
         ?.split(",")
         .map((s) => s.trim())
         .filter(Boolean),
-      shippingPolicy: state.shippingPolicy,
-      returnPolicy: state.returnPolicy,
+      shippingPolicy: state.shippingPolicy || undefined,
+      returnPolicy: state.returnPolicy || undefined,
       contact: { email: state.contactEmail },
-      sustainability: state.sustainability,
+      sustainability: state.sustainability || undefined,
       certifications: state.certifications
         ?.split(",")
         .map((s) => s.trim())
