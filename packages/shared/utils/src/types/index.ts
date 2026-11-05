@@ -12,6 +12,7 @@ export type {
 export * from "./branded";
 export * from "./distributive-omit";
 export * from "./empty-object";
+export * from "./generic-object";
 export * from "./nullable";
 export * from "./override";
 export * from "./prettify";

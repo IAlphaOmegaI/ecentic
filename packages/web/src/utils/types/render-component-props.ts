@@ -3,6 +3,7 @@ import type {
   DistributiveOmit,
   DistributiveOverride,
   EmptyObject,
+  GenericObject,
   Prettify,
 } from "@zenncore/utils/types";
 import type { ElementType, HTMLProps } from "react";
@@ -12,7 +13,7 @@ export type RenderComponentProps<
   T extends ElementType,
   State extends StateShape = EmptyObject, // extends State | undefined = undefined
   // biome-ignore lint/suspicious/noExplicitAny: any for Component.Props to work
-  Props extends Record<PropertyKey, any> = EmptyObject,
+  Props extends Record<PropertyKey, any> = GenericObject,
   // biome-ignore lint/suspicious/noExplicitAny: any component props
   RenderProps = HTMLProps<any>,
 > = Prettify<
@@ -36,7 +37,7 @@ export type RenderComponentProps<
       //           ? CL
       //           : never;
       //       }
-      //     : EmptyObject)
+      //     : GenericObject)
     >
   >
 >;

@@ -1,6 +1,6 @@
-import type { EmptyObject } from "@zenncore/utils/types";
+import type { GenericObject } from "@zenncore/utils/types";
 
-type Constructor<T extends EmptyObject = EmptyObject> = new (
+type Constructor<T extends GenericObject = GenericObject> = new (
   ...args: never[]
 ) => T;
 

@@ -47,6 +47,8 @@ import type { Nullable, Prettify, DistributiveOmit } from "@zenncore/utils/types
 - `ClassList<K>` — type for `classList` prop (targeted sub-element styling)
 - `resultify(fn)` — wraps a sync function in `Result<T, E>`, and one returning a Promise or any other thenable in `Promise<Result<T, E>>`
 - `type Result<T, E>` — `{ success: true; data: T } | { success: false; error: E }`
+- `GenericObject` (`@zenncore/utils/types`) — "any object": use it for `T extends …` constraints and as the "nothing to add" branch of an intersection
+- `EmptyObject` (`@zenncore/utils/types`) — an object with no keys: use it only where `{}` itself is meant (a "no state" default, `EmptyObject extends Pick<T, K>`); as a constraint it rejects every object with a key, and in an intersection it turns every key into `never`
 
 ---
 

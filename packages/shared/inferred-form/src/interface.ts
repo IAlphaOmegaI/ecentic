@@ -1,10 +1,10 @@
-import type { EmptyObject } from "@zenncore/utils/types";
+import type { GenericObject } from "@zenncore/utils/types";
 import type { core } from "zod";
 import type { CustomField } from "./custom-field";
 
 export type InterfaceValue<
   FieldValidator extends core.$ZodType,
-  FieldProps extends EmptyObject,
+  FieldProps extends GenericObject,
 > = {
   validator: FieldValidator;
   props: FieldProps;
@@ -12,7 +12,7 @@ export type InterfaceValue<
 
 export type GenericInterface = Record<
   string,
-  InterfaceValue<core.$ZodType, EmptyObject>
+  InterfaceValue<core.$ZodType, GenericObject>
 >;
 
 export type CompleteInterface<Interface extends GenericInterface> =

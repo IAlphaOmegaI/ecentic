@@ -1,10 +1,10 @@
 /**
- * Any non-primitive value: the "some object" constraint (`T extends
- * EmptyObject`) and the "nothing to add" member of an intersection.
+ * An object with no keys: `{}` is one, `{ name: "ecentic" }` and primitives
+ * are not. Use it where the empty object itself is meant, such as "no state"
+ * or a test of whether `{}` fits a type (`EmptyObject extends Pick<T, K>`).
  *
- * `object`, not `Record<never, never>` (which is `{}` and so also accepts
- * numbers, strings and the other primitives), and not an index signature of
- * `never` (which rejects every object with a key, and turns each property of
- * an intersection into `never`).
+ * Not for "any object" constraints or intersections: every key of
+ * `A & EmptyObject` is `never`, and an object with keys does not satisfy
+ * `T extends EmptyObject`. Use `GenericObject` for those.
  */
-export type EmptyObject = object;
+export type EmptyObject = { [key: PropertyKey]: never };

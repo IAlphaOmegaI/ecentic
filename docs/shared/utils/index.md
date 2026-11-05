@@ -41,6 +41,8 @@ bun add @zenncore/utils
 | `ClassList` | Type for component class lists |
 | `ComponentState` | Type for component state |
 | `Nullable<T>` | Type that can be T or null |
+| `GenericObject` | Any object (not a primitive): the `T extends GenericObject` constraint, and "nothing to add" in an intersection |
+| `EmptyObject` | An object with no keys, for where `{}` itself is meant (such as "no state"); never a constraint or an intersection member |
 | `Prettify<T>` | Flatten type for readability |
 | `StrictOmit<T, K>` | Omit with strict typing |
 

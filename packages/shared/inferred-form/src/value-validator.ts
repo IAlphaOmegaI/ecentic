@@ -1,4 +1,4 @@
-import type { EmptyObject } from "@zenncore/utils/types";
+import type { GenericObject } from "@zenncore/utils/types";
 import type { z } from "zod";
 
 export type InferredValueValidator<T> = T extends string
@@ -13,7 +13,7 @@ export type InferredValueValidator<T> = T extends string
           ? z.ZodUndefined
           : T extends Array<infer I>
             ? z.ZodArray<InferredValueValidator<I>>
-            : T extends EmptyObject
+            : T extends GenericObject
               ? z.ZodObject<{
                   [K in keyof T]: InferredValueValidator<T[K]>;
                 }>

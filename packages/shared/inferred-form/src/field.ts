@@ -1,5 +1,5 @@
 import type { ClassList } from "@zenncore/utils";
-import type { EmptyObject, Prettify } from "@zenncore/utils/types";
+import type { GenericObject, Prettify } from "@zenncore/utils/types";
 import type * as z from "zod";
 import type { GenericProps, InferredProps } from "./inferred-props";
 import type { GenericInterface } from "./interface";
@@ -38,7 +38,7 @@ export type InferredFieldConfig<
     ClassList<"root" | "label" | "description" | "error" | "field"> &
       ("classList" extends keyof Props
         ? { control?: Props["classList"] }
-        : EmptyObject)
+        : GenericObject)
   >;
 };
 

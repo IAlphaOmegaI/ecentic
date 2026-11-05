@@ -1,10 +1,10 @@
 import { merge as mergePrimitive } from "es-toolkit/object";
 import { isPlainObject } from "es-toolkit/predicate";
-import type { EmptyObject } from "../types";
+import type { EmptyObject, GenericObject } from "../types";
 
 export type ValueOf<T> = T[keyof T];
 
-export type PropertyAccessor<T extends EmptyObject> =
+export type PropertyAccessor<T extends GenericObject> =
   | keyof T
   | ValueOf<{
       [K in keyof T as T[K] extends Record<string, unknown>
@@ -14,7 +14,7 @@ export type PropertyAccessor<T extends EmptyObject> =
     }>;
 
 export type PropertyValue<
-  T extends EmptyObject,
+  T extends GenericObject,
   K extends PropertyAccessor<T>,
 > = K extends keyof T
   ? T[K]
@@ -23,7 +23,7 @@ export type PropertyValue<
       PropertyValue<T[K], R>
     : never;
 
-export const access = <T extends EmptyObject, A extends PropertyAccessor<T>>(
+export const access = <T extends GenericObject, A extends PropertyAccessor<T>>(
   accessee: T,
   accessor: A,
 ): PropertyValue<T, A> => {
@@ -239,7 +239,7 @@ export const merge = <T extends Object, S extends Object>(
 
 export { isPlainObject };
 
-export const removeUndefinedEntries = <O extends EmptyObject>(
+export const removeUndefinedEntries = <O extends GenericObject>(
   obj: O,
 ): OmitUndefinedEntries<O> =>
   Object.fromEntries(
@@ -249,6 +249,6 @@ export const removeUndefinedEntries = <O extends EmptyObject>(
     ][],
   ) as OmitUndefinedEntries<O>;
 
-export type OmitUndefinedEntries<T extends EmptyObject> = {
+export type OmitUndefinedEntries<T extends GenericObject> = {
   [K in keyof T as T[K] extends undefined ? never : K]: T[K];
 };
