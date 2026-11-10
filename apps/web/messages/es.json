@@ -5652,8 +5652,8 @@
   },
   "compare": {
     "meta": {
-      "title": "Mejores herramientas de IA para ecommerce en 2026",
-      "description": "Las mejores herramientas de IA para ecommerce en 2026, organizadas por categoría para que los comerciantes comparen contenido, personalización, búsqueda, analítica y flujos de agent-commerce."
+      "title": "Herramientas de IA para ecommerce: guía",
+      "description": "Compara herramientas para contenido de productos, personalización, búsqueda, analítica y comercio con agentes, organizadas por categoría."
     },
     "breadcrumb": {
       "home": "Inicio",
@@ -5950,8 +5950,8 @@
   },
   "ucpPlayground": {
     "meta": {
-      "title": "Playground UCP — prueba agentes de IA en cualquier tienda",
-      "description": "Playground UCP gratuito: conduce un agente de compra con IA real contra cualquier tienda UCP. Ejecuta búsqueda de catálogo, carrito y checkout por MCP o REST e inspecciona las llamadas."
+      "title": "Playground UCP para agentes de compra",
+      "description": "Prueba búsquedas de catálogo, carrito y checkout en una tienda UCP. Consulta solicitudes y respuestas por MCP o REST."
     },
     "breadcrumb": {
       "home": "Inicio",
@@ -6009,8 +6009,8 @@
   },
   "ucpValidator": {
     "meta": {
-      "title": "Validador UCP — comprobación del Universal Commerce Protocol",
-      "description": "Validador UCP gratuito: comprueba si una tienda publica un Universal Commerce Profile válido, valida su esquema y confirma que los agentes de IA pasan robots.txt."
+      "title": "Validador UCP para tiendas",
+      "description": "Comprueba el perfil UCP de una tienda, sus datos de descubrimiento, esquema y acceso en robots.txt con el validador gratuito."
     },
     "breadcrumb": {
       "home": "Inicio",
@@ -7182,7 +7182,7 @@
   "docs": {
     "meta": {
       "title": "Documentación de la API de ecentic",
-      "description": "Documentación para desarrolladores de ecentic: API REST, servidor MCP, autenticación, errores tipados, límites de uso, versionado, webhooks y la CLI de ecentic."
+      "description": "Documentación de la API REST, servidor MCP, CLI, autenticación, errores, límites de solicitudes y versiones."
     },
     "breadcrumb": {
       "home": "Inicio",
@@ -7307,7 +7307,7 @@
     "errorsPage": {
       "meta": {
         "title": "Errores de la API de ecentic",
-        "description": "Cada código de error de la API de ecentic, su estado HTTP, qué significa y cómo lo resuelve un agente. Los errores son application/problem+json según RFC 9457."
+        "description": "Consulta códigos de error, estados HTTP y pistas para resolver problemas. Las respuestas siguen el formato RFC 9457."
       },
       "hero": {
         "title": "Errores de la API",
@@ -7410,8 +7410,8 @@
     },
     "versioningPage": {
       "meta": {
-        "title": "Versionado de la API de ecentic",
-        "description": "Cómo se versiona la API de ecentic, cómo se señalan las obsolescencias con las cabeceras Deprecation y Sunset, y durante cuánto tiempo se mantiene una versión."
+        "title": "Versiones de la API de ecentic",
+        "description": "Consulta cómo ecentic versiona su API y anuncia retiradas mediante las cabeceras Deprecation y Sunset."
       },
       "hero": {
         "title": "Versionado de",
@@ -7451,7 +7451,7 @@
     "mcpPage": {
       "meta": {
         "title": "Servidor MCP de ecentic",
-        "description": "Cómo conectar un cliente MCP al servidor MCP de ecentic: transporte Streamable HTTP, el handshake, el catálogo de herramientas, la autenticación y los errores que devuelve."
+        "description": "Conecta un cliente MCP a ecentic. Consulta transporte, inicio de conexión, herramientas, autenticación y gestión de errores."
       },
       "hero": {
         "title": "Servidor MCP",
@@ -7523,8 +7523,8 @@
     },
     "authenticationPage": {
       "meta": {
-        "title": "Autenticación de la API de ecentic",
-        "description": "Cómo autenticarse en la API de ecentic: qué superficies son públicas, cómo generar una clave de agente, cómo se envían los tokens bearer y qué te dice un 401."
+        "title": "Autenticación en la API de ecentic",
+        "description": "Descubre qué interfaces son públicas, cómo obtener una clave de API, enviar tokens bearer y resolver errores de autenticación."
       },
       "hero": {
         "title": "Autenticación de la",

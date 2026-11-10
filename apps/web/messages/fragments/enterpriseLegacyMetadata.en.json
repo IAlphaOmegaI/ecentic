@@ -1,0 +1,38 @@
+{
+  "compare": {
+    "meta": {
+      "title": "AI ecommerce tools: a category guide",
+      "description": "Compare ecommerce tools for product content, personalization, search, analytics and agent commerce, organized by category."
+    }
+  },
+  "docs": {
+    "meta": {
+      "title": "ecentic API documentation",
+      "description": "Developer documentation for the REST API, MCP server, CLI, authentication, errors, rate limits and versioning."
+    },
+    "mcpPage": {
+      "meta": {
+        "title": "ecentic MCP server",
+        "description": "Connect an MCP client to ecentic. Read the transport, handshake, supported tools, authentication and error-handling reference."
+      }
+    },
+    "authenticationPage": {
+      "meta": {
+        "title": "ecentic API authentication",
+        "description": "Learn which API surfaces are public, how to obtain an agent API key, send bearer tokens and handle authentication errors."
+      }
+    },
+    "errorsPage": {
+      "meta": {
+        "title": "ecentic API errors",
+        "description": "Look up API error codes, HTTP status values and resolution hints. Responses use the RFC 9457 problem format."
+      }
+    },
+    "versioningPage": {
+      "meta": {
+        "title": "ecentic API versioning",
+        "description": "Read how ecentic versions its API and announces deprecations through Deprecation and Sunset headers."
+      }
+    }
+  }
+}

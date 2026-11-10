@@ -1,12 +1,13 @@
-import { createOgImage, ogImageContentType, ogImageSize } from "@/lib/og";
+import {
+  createEnterpriseOgImage,
+  enterpriseOgContentType,
+  enterpriseOgSize,
+} from "@/lib/enterprise-og";
+import messages from "../../messages/fragments/enterpriseRecovery.en.json";
 
-export const alt = "ecentic — Win every AI shopping agent's cart";
-export const size = ogImageSize;
-export const contentType = ogImageContentType;
+export const alt = "ecentic";
+export const size = enterpriseOgSize;
+export const contentType = enterpriseOgContentType;
 
 export default () =>
-  createOgImage({
-    title: "Win every AI shopping agent's cart.",
-    description:
-      "Simulate how ChatGPT, Claude, Gemini, and Perplexity choose your products, diagnose losses, and auto-optimize listings.",
-  });
+  createEnterpriseOgImage(messages.enterpriseRecovery.og.home);

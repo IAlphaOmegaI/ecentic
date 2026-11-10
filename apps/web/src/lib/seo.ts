@@ -189,7 +189,13 @@ export const createMetadata = ({
   const imageSuffix = djb2Hash(`/[locale]/(main)${imageSection}`)
     .toString(36)
     .slice(0, 6);
-  const imagePath = `/${localeFromPathname(path)}${imageSection}/opengraph-image-${imageSuffix}`;
+  // The proxy excludes root metadata image paths. Use the actual global EN
+  // image there; its locale-prefixed group URL would normalize to a missing URL.
+  const imageLocale = localeFromPathname(path);
+  const imagePath =
+    imageSection === "" && imageLocale === "en"
+      ? "/opengraph-image"
+      : `/${imageLocale}${imageSection}/opengraph-image-${imageSuffix}`;
   const socialImage = {
     url: absoluteUrl(imagePath),
     width: 1200,

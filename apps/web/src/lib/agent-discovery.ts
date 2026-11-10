@@ -1,3 +1,4 @@
+import { marketingRoutes } from "@/lib/marketing-routes";
 import { seo } from "@/lib/seo";
 
 const host = seo.host;
@@ -2351,25 +2352,25 @@ export const openApiDocument = {
  */
 export const agentGuidance = {
   summary:
-    "ecentic measures and improves how AI shopping agents — ChatGPT, Claude, Gemini, Perplexity — rank a merchant's products against competitors, and rewrites listings to win those comparisons.",
+    "ecentic is the agentic commerce platform: connect a catalog, simulate ChatGPT, Claude and Gemini comparisons, apply listing fixes, enable supported agent checkout, and track AI visits.",
   bestFor: [
     {
       job: "Find out whether AI assistants recommend a store's products",
       detail:
-        "Run a free scan of the top products across four assistants and return an AI Agent Score with per-product win rates.",
-      start: `${host}/api/v1/plans`,
+        "Run a free check of the top 10 products across ChatGPT, Claude and Gemini. Results describe simulated comparisons, not live marketplace rankings.",
+      start: `${host}/platform/simulate`,
     },
     {
       job: "Diagnose why a product loses a head-to-head comparison",
       detail:
-        "Replay the comparison an assistant ran, name the attribute or claim that cost the recommendation, and identify the competitor that won it.",
-      start: `${host}/api/mcp`,
+        "Read the simulated comparison, the winning competitor, and the product details that influenced the result. A run is evidence from that test, not a universal assistant ranking.",
+      start: `${host}/platform/simulate`,
     },
     {
       job: "Rewrite a product listing so agents can evaluate it",
       detail:
-        "Optimize titles, descriptions, and structured attributes for machine comparison, then publish back to Shopify or WooCommerce.",
-      start: `${host}/.well-known/agent-skills/optimize-listings/SKILL.md`,
+        "Prepare changes to titles, descriptions and structured product data. Nothing changes until the merchant clicks Apply; publishing requires a supported Shopify or WooCommerce connector.",
+      start: `${host}/platform/fix`,
     },
     {
       job: "Check whether a storefront is reachable by shopping agents",
@@ -2380,8 +2381,8 @@ export const agentGuidance = {
     {
       job: "Measure AI agent traffic to a store",
       detail:
-        "Track which assistants crawl or cite a catalog, at what volume, and which products they land on.",
-      start: `${host}/.well-known/agent-skills/agent-commerce/SKILL.md`,
+        "Inspect classified AI-referred visits and page or product destinations. The Shopify browser script observes JavaScript visits; it cannot measure every crawler or infer a shopper-to-order link.",
+      start: `${host}/platform/track`,
     },
     {
       job: "Connect a Shopify, WooCommerce, or product-feed store",
@@ -2390,7 +2391,8 @@ export const agentGuidance = {
     },
   ],
   notFor: [
-    "Classic search-engine SEO aimed at human visitors — ecentic optimizes for agent comparison, not SERP rank.",
+    "ecentic isn't an SEO or GEO tool.",
+    "Promising a live assistant ranking, a sale, or access to an unpublished ChatGPT app. The ChatGPT app is Coming soon until its public directory listing is confirmed; ACP is Coming soon.",
     "Running ad campaigns, managing inventory, or fulfilling orders.",
     "Building or hosting a storefront; ecentic connects to one you already run.",
     "General copywriting unrelated to how an agent evaluates a product.",
@@ -2410,12 +2412,14 @@ export const agentGuidance = {
  * Markdown document, for agents that look for an instruction file rather than
  * parsing llms.txt.
  */
-export const agentInstructions = `# ecentic — agent instructions
+export const agentInstructions = `# ecentic: agent instructions
 
 > ${agentGuidance.summary}
 
 - Site: ${host}
 - Developer documentation: ${host}/docs
+- Rendered API reference: ${host}/docs/api
+- Human-readable guidance: ${host}/ai-instructions
 - Machine-readable index: ${host}/api/v1
 - OpenAPI: ${host}/openapi.json
 - MCP endpoint: ${host}/mcp
@@ -2424,6 +2428,12 @@ export const agentInstructions = `# ecentic — agent instructions
 - Authentication reference: ${host}/docs/authentication
 - Zero-auth sandbox: ${host}/api/v1/sandbox
 - Onboarding signals, each with a verify URL: ${host}/api/v1/onboarding
+
+## Current pages
+
+${marketingRoutes.map((route) => `- [${route.label}](${host}${route.path})`).join("\n")}
+
+Research drafts are not published. All public marketing pages are also available under /es. Existing published articles remain at /blog.
 
 ## When to use ecentic
 

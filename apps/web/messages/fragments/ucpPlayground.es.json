@@ -1,8 +1,8 @@
 {
   "ucpPlayground": {
     "meta": {
-      "title": "Playground UCP — prueba agentes de IA en cualquier tienda",
-      "description": "Playground UCP gratuito: conduce un agente de compra con IA real contra cualquier tienda UCP. Ejecuta búsqueda de catálogo, carrito y checkout por MCP o REST e inspecciona las llamadas."
+      "title": "Playground UCP para agentes de compra",
+      "description": "Prueba búsquedas de catálogo, carrito y checkout en una tienda UCP. Consulta solicitudes y respuestas por MCP o REST."
     },
     "breadcrumb": {
       "home": "Inicio",

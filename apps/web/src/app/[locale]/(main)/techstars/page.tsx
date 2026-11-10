@@ -26,18 +26,21 @@ export const generateMetadata = async (): Promise<Metadata> => {
   const locale = await getLocale();
   const translate = await getTranslations("techstars");
 
-  return createMetadata({
-    title: translate("meta.title"),
-    description: translate("meta.description"),
-    path: localizePath("/techstars", locale),
-    keywords: [
-      "Techstars deal",
-      "Techstars startup deal",
-      "ecentic Techstars",
-      "AI ecommerce tool for startups",
-      "Techstars founder perks",
-    ],
-  });
+  return {
+    ...createMetadata({
+      title: translate("meta.title"),
+      description: translate("meta.description"),
+      path: localizePath("/techstars", locale),
+      keywords: [
+        "Techstars deal",
+        "Techstars startup deal",
+        "ecentic Techstars",
+        "AI ecommerce tool for startups",
+        "Techstars founder perks",
+      ],
+    }),
+    robots: { index: false, follow: true },
+  };
 };
 
 export default async () => {

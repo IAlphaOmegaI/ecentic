@@ -18,7 +18,7 @@ type Props = {
 export const PricingCTA = ({ plan, color, className, children }: Props) => {
   const router = useRouter();
   const toast = useToastManager();
-  const translate = useTranslations("pricing");
+  const translate = useTranslations("pricing.error");
   const general = useTranslations("general");
 
   const [handleClick, isPending] = useAsyncAction(async () => {
@@ -32,7 +32,7 @@ export const PricingCTA = ({ plan, color, className, children }: Props) => {
           return;
         }
         toast.add({
-          title: translate("error.payg.title"),
+          title: translate("payg.title"),
           description: activation.error.message,
           type: "error",
         });
@@ -49,7 +49,7 @@ export const PricingCTA = ({ plan, color, className, children }: Props) => {
         return;
       }
       toast.add({
-        title: translate("error.checkout.title"),
+        title: translate("checkout.title"),
         description: checkout.error.message,
         type: "error",
       });

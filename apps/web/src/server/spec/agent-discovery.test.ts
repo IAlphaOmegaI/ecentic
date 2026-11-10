@@ -323,6 +323,12 @@ describe("agent guidance", () => {
 });
 
 describe("organization schema", () => {
+  test("names the three founders without an unconfirmed legal operator", () => {
+    expect(organizationSchema.founder).toHaveLength(3);
+    expect(organizationSchema).not.toHaveProperty("parentOrganization");
+    expect(organizationSchema).not.toHaveProperty("legalName");
+  });
+
   test("carries both a contactPoint and an address", () => {
     expect(organizationSchema.address["@type"]).toBe("PostalAddress");
     expect(organizationSchema.address.addressCountry.length).toBe(2);
@@ -361,7 +367,6 @@ describe("organization schema", () => {
     for (const contact of organizationSchema.contactPoint) {
       expect(contact["@type"]).toBe("ContactPoint");
       expect(contact.contactType.length).toBeGreaterThan(0);
-      expect(contact.email).toMatch(/^[^@]+@ecentic\.ai$/);
       expect(contact.url).toStartWith(HOST);
     }
   });

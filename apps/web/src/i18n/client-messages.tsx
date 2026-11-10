@@ -29,7 +29,6 @@ import type { PropsWithChildren } from "react";
 /** Chrome on every marketing page: navbar, language switcher, sign-in link. */
 const CHROME = [
   "general",
-  "nav",
   "signIn",
   "enterpriseChrome",
   "enterpriseNav",
@@ -42,10 +41,10 @@ export const CLIENT_MESSAGES = {
   /** Root layout: only the cookie banner renders above the route groups. */
   root: ["cookieConsent"],
   marketing: MARKETING,
-  home: [...MARKETING, "home"],
+  home: [...MARKETING, "home.heroVideo"],
   features: [...MARKETING, "productListings"],
   platforms: [...MARKETING, "shopify", "woocommerce"],
-  pricing: [...MARKETING, "pricing"],
+  pricing: [...MARKETING, "pricing.error"],
   ucpValidator: [...MARKETING, "ucpValidator"],
   webmcpScanner: [...MARKETING, "webmcpScanner"],
   // The playground client reads its catalog through `useMessages()`, which

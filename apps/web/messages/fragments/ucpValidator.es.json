@@ -1,8 +1,8 @@
 {
   "ucpValidator": {
     "meta": {
-      "title": "Validador UCP — comprobación del Universal Commerce Protocol",
-      "description": "Validador UCP gratuito: comprueba si una tienda publica un Universal Commerce Profile válido, valida su esquema y confirma que los agentes de IA pasan robots.txt."
+      "title": "Validador UCP para tiendas",
+      "description": "Comprueba el perfil UCP de una tienda, sus datos de descubrimiento, esquema y acceso en robots.txt con el validador gratuito."
     },
     "breadcrumb": {
       "home": "Inicio",

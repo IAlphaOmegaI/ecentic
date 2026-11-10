@@ -5652,8 +5652,8 @@
   },
   "compare": {
     "meta": {
-      "title": "Best AI ecommerce tools in 2026 — category guide",
-      "description": "Best AI tools for ecommerce in 2026, organized by category so merchants can compare content, personalization, search, analytics, and agent-commerce workflows."
+      "title": "AI ecommerce tools: a category guide",
+      "description": "Compare ecommerce tools for product content, personalization, search, analytics and agent commerce, organized by category."
     },
     "breadcrumb": {
       "home": "Home",
@@ -5950,8 +5950,8 @@
   },
   "ucpPlayground": {
     "meta": {
-      "title": "UCP Playground — test AI agents on any storefront",
-      "description": "Free UCP Playground: drive a real AI shopping agent against any UCP storefront. Run catalog search, cart, and checkout over MCP or REST and inspect calls."
+      "title": "UCP Playground for shopping agents",
+      "description": "Test catalog search, cart and checkout against a UCP storefront. Inspect requests and responses over MCP or REST."
     },
     "breadcrumb": {
       "home": "Home",
@@ -6009,8 +6009,8 @@
   },
   "ucpValidator": {
     "meta": {
-      "title": "UCP Validator — Universal Commerce Protocol check",
-      "description": "Free UCP Validator: check whether a storefront publishes a valid Universal Commerce Profile, validate its schema, and confirm AI agents pass robots.txt."
+      "title": "UCP Validator for storefronts",
+      "description": "Check a storefront’s Universal Commerce Protocol profile, discovery data, schema and robots.txt access with the free UCP validator."
     },
     "breadcrumb": {
       "home": "Home",
@@ -7182,7 +7182,7 @@
   "docs": {
     "meta": {
       "title": "ecentic API documentation",
-      "description": "ecentic developer documentation: REST API, MCP server, authentication, typed errors, rate limits, versioning, webhooks, and the ecentic CLI."
+      "description": "Developer documentation for the REST API, MCP server, CLI, authentication, errors, rate limits and versioning."
     },
     "breadcrumb": {
       "home": "Home",
@@ -7307,7 +7307,7 @@
     "errorsPage": {
       "meta": {
         "title": "ecentic API errors",
-        "description": "Every ecentic API error code, its HTTP status, what it means, and how an agent resolves it. Errors are RFC 9457 application/problem+json."
+        "description": "Look up API error codes, HTTP status values and resolution hints. Responses use the RFC 9457 problem format."
       },
       "hero": {
         "title": "ecentic API",
@@ -7411,7 +7411,7 @@
     "versioningPage": {
       "meta": {
         "title": "ecentic API versioning",
-        "description": "How the ecentic API is versioned, how deprecations are signalled with Deprecation and Sunset headers, and how long a version is supported."
+        "description": "Read how ecentic versions its API and announces deprecations through Deprecation and Sunset headers."
       },
       "hero": {
         "title": "ecentic API",
@@ -7451,7 +7451,7 @@
     "mcpPage": {
       "meta": {
         "title": "ecentic MCP server",
-        "description": "How to connect an MCP client to the ecentic MCP server: Streamable HTTP transport, the handshake, the tool catalog, authentication, and the errors it returns."
+        "description": "Connect an MCP client to ecentic. Read the transport, handshake, supported tools, authentication and error-handling reference."
       },
       "hero": {
         "title": "ecentic MCP",
@@ -7524,7 +7524,7 @@
     "authenticationPage": {
       "meta": {
         "title": "ecentic API authentication",
-        "description": "How to authenticate with the ecentic API: which surfaces are public, how to mint an agent API key, how bearer tokens are sent, and what a 401 tells you."
+        "description": "Learn which API surfaces are public, how to obtain an agent API key, send bearer tokens and handle authentication errors."
       },
       "hero": {
         "title": "ecentic API",

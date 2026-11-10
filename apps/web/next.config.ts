@@ -36,6 +36,38 @@ export default withSentryConfig(
     // paths crawlers and agents guess first; a permanent redirect is cheaper
     // than four copies of the same page and keeps one URL in the index.
     redirects: async () => [
+      ...["", "/es"].flatMap((prefix) => [
+        {
+          source: `${prefix}/features`,
+          destination: `${prefix}/platform`,
+          statusCode: 301 as const,
+        },
+        {
+          source: `${prefix}/how-it-works`,
+          destination: `${prefix}/platform`,
+          statusCode: 301 as const,
+        },
+        {
+          source: `${prefix}/features/product-listings`,
+          destination: `${prefix}/platform/fix`,
+          statusCode: 301 as const,
+        },
+        {
+          source: `${prefix}/enterprise`,
+          destination: `${prefix}/solutions/enterprise`,
+          statusCode: 301 as const,
+        },
+        {
+          source: `${prefix}/platforms/shopify`,
+          destination: `${prefix}/integrations/shopify`,
+          statusCode: 301 as const,
+        },
+        {
+          source: `${prefix}/platforms/woocommerce`,
+          destination: `${prefix}/integrations/woocommerce`,
+          statusCode: 301 as const,
+        },
+      ]),
       { source: "/developers", destination: "/docs", permanent: true },
       { source: "/developer", destination: "/docs", permanent: true },
       { source: "/api-docs", destination: "/docs", permanent: true },
@@ -44,7 +76,6 @@ export default withSentryConfig(
       // rather than a page because ecentic receives webhooks but publishes no
       // outbound ones — a page would be documentation for a feature that does
       // not exist.
-      { source: "/docs/api", destination: "/docs#endpoints", permanent: false },
       {
         source: "/docs/openapi",
         destination: "/openapi.json",

@@ -1,4 +1,5 @@
 import { agentGuidance } from "@/lib/agent-discovery";
+import { marketingRoutes } from "@/lib/marketing-routes";
 import { seo } from "@/lib/seo";
 import * as Blog from "@/server/app/blog";
 
@@ -16,82 +17,33 @@ export const GET = async (request: Request) => {
     label: post.title,
   }));
 
+  const categories = [
+    "Platform",
+    "Solutions",
+    "AI channels",
+    "Integrations",
+    "Company",
+    "Resources",
+    "Developers",
+    "Policies",
+  ] as const;
   const sections = [
+    ...categories.map((category) => ({
+      title: category,
+      description:
+        "Current public pages in English; each page is also available under /es.",
+      links: marketingRoutes
+        .filter(
+          (route) => route.category === category && route.path !== "/blog",
+        )
+        .map(({ path, label }) => ({ path, label })),
+    })),
     {
-      title: "Core",
-      description: "Product intent, pricing, and the landing story.",
+      title: "Account",
+      description: "Create an account or sign in.",
       links: [
-        { path: "/", label: "ecentic — Win Every AI Shopping Agent's Cart" },
         { path: "/sign-up", label: "Create an ecentic account" },
         { path: "/sign-in", label: "Sign in to ecentic" },
-      ],
-    },
-    {
-      title: "Features",
-      description:
-        "What ecentic does: AI simulation, diagnosis, and product listing optimization.",
-      links: [
-        { path: "/features", label: "AI ecommerce tools for merchants" },
-        {
-          path: "/features/product-listings",
-          label: "AI product listing optimization",
-        },
-      ],
-    },
-    {
-      title: "Platforms",
-      description: "How ecentic connects to the underlying commerce stack.",
-      links: [
-        { path: "/platforms/shopify", label: "AI for Shopify stores" },
-        { path: "/platforms/woocommerce", label: "AI for WooCommerce stores" },
-      ],
-    },
-    {
-      title: "Research",
-      description:
-        "Category comparisons and tooling for teams evaluating the space.",
-      links: [
-        { path: "/resources", label: "Free tools and resources" },
-        {
-          path: "/compare/best-ai-ecommerce-tools",
-          label: "Best AI tools for ecommerce — buyer's guide",
-        },
-        {
-          path: "/ucp-validator",
-          label: "Universal Commerce Protocol (UCP) validator",
-        },
-        {
-          path: "/ucp-playground",
-          label: "UCP Playground — test AI shopping agents",
-        },
-      ],
-    },
-    {
-      title: "Policies",
-      description: "Legal and data handling.",
-      links: [{ path: "/privacy-policy", label: "Privacy Policy" }],
-    },
-    {
-      title: "Developers",
-      description:
-        "Human-readable reference for the ecentic API: endpoints, authentication, typed errors, rate limits, and versioning.",
-      links: [
-        { path: "/docs", label: "ecentic API documentation" },
-        {
-          path: "/docs/mcp",
-          label: "ecentic MCP server — connect and call it",
-        },
-        {
-          path: "/docs/authentication",
-          label: "ecentic API authentication — keys and bearer tokens",
-        },
-        { path: "/docs/errors", label: "ecentic API errors (RFC 9457 codes)" },
-        { path: "/docs/rate-limits", label: "ecentic API rate limits" },
-        {
-          path: "/docs/versioning",
-          label: "ecentic API versioning and deprecation policy",
-        },
-        { path: "/openapi.json", label: "OpenAPI 3.1 document" },
       ],
     },
     {
@@ -142,8 +94,8 @@ export const GET = async (request: Request) => {
     {
       title: "Blog",
       description:
-        "Long-form guides on structured data, agent traffic, and catalog visibility.",
-      links: [{ path: "/blog", label: "ecentic blog — index" }, ...blogLinks],
+        "All currently published English articles from the database; editorial and imported posts remain live.",
+      links: [{ path: "/blog", label: "ecentic blog" }, ...blogLinks],
     },
   ];
 
@@ -152,7 +104,10 @@ export const GET = async (request: Request) => {
     "",
     `> ${seo.description}`,
     "",
-    "ecentic simulates how AI shopping agents — ChatGPT, Claude, Gemini, Perplexity — evaluate product listings against competitors, diagnoses why a product wins or loses, and auto-optimizes catalog content so merchants capture agent-driven commerce.",
+    "ecentic is the agentic commerce platform: connect a catalog, simulate ChatGPT, Claude and Gemini comparisons, fix listings with Apply, enable supported agent checkout, and track AI visits.",
+    "",
+    "ecentic isn't an SEO or GEO tool.",
+    "Simulations are not live marketplace rankings. Nothing changes in a store until the merchant clicks Apply. ChatGPT app availability is unconfirmed and marketed as Coming soon; ACP is Coming soon.",
     "",
     `- Site: ${seo.host}`,
     `- Sitemap: ${seo.host}/sitemap.xml`,
@@ -168,6 +123,8 @@ export const GET = async (request: Request) => {
     `- MCP manifest: ${seo.host}/.well-known/mcp.json`,
     `- Public REST API (v1): ${seo.host}/api/v1`,
     `- Developer documentation: ${seo.host}/docs`,
+    `- Rendered API reference: ${seo.host}/docs/api`,
+    `- Human-readable AI instructions: ${seo.host}/ai-instructions`,
     `- Zero-auth sandbox: ${seo.host}/api/v1/sandbox`,
     `- Onboarding signals: ${seo.host}/api/v1/onboarding`,
     `- 404 recovery (Markdown): ${seo.host}/404.md`,
