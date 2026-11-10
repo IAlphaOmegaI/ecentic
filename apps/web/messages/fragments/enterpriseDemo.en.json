@@ -1,0 +1,66 @@
+{
+  "enterpriseDemo": {
+    "meta": {
+      "title": "Book a demo of ecentic",
+      "description": "See how ChatGPT, Claude and Gemini compare your products with a competitor's, live, with a founder. Bring one category."
+    },
+    "eyebrow": "Book a demo",
+    "title": "See how AI shops your catalog.",
+    "description": "A call with a founder. Bring one category, and we'll show you how ChatGPT, Claude and Gemini compare it with a competitor's, live.",
+    "sections": [
+      {
+        "id": "what-we-cover",
+        "eyebrow": "A working conversation",
+        "title": "What we'll cover.",
+        "ordered": true,
+        "columns": 4,
+        "items": [
+          {
+            "title": "One or two products",
+            "body": "A live simulation against a competitor you name."
+          },
+          {
+            "title": "Why a listing wins",
+            "body": "The reasons behind an assistant’s choice, within the simulation."
+          },
+          {
+            "title": "What to fix first",
+            "body": "The changes worth reviewing in your catalog."
+          },
+          {
+            "title": "A pilot for your team",
+            "body": "The scope, baseline and readout we would agree together."
+          }
+        ]
+      },
+      {
+        "id": "request",
+        "title": "Start with your category.",
+        "description": "Three short steps. Tell us about your business, choose a focus and review your request."
+      },
+      {
+        "id": "single-store",
+        "title": "Running a single store?",
+        "description": "Book the 15-minute call, or start with the free store check.",
+        "links": [
+          {
+            "label": "Book the 15-minute call",
+            "href": "https://cal.com/ecentic-ai/15min"
+          },
+          {
+            "label": "Check my store free",
+            "href": "/sign-up"
+          }
+        ]
+      }
+    ],
+    "form": {
+      "steps": ["About you", "What you want", "Review and send"],
+      "progress": "Demo request progress",
+      "reviewTitle": "A brief for your demo.",
+      "reviewDescription": "Check your details before sending. We will follow up by email to agree the next step.",
+      "bookingNote": "Prefer to choose a time now? The existing self-serve call is 15 minutes. Enterprise demo scope and duration are agreed with you.",
+      "sentDescription": "Your demo request has been sent. We will use your work email to arrange the next step."
+    }
+  }
+}

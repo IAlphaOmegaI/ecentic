@@ -1,0 +1,66 @@
+{
+  "enterpriseDemo": {
+    "meta": {
+      "title": "Reserva una demo de ecentic",
+      "description": "Descubre con un fundador cómo ChatGPT, Claude y Gemini comparan tus productos con los de un competidor. Trae una categoría."
+    },
+    "eyebrow": "Reserva una demo",
+    "title": "Descubre cómo compra la IA en tu catálogo.",
+    "description": "Una llamada con un fundador. Trae una categoría y te mostraremos en directo cómo ChatGPT, Claude y Gemini la comparan con la de un competidor.",
+    "sections": [
+      {
+        "id": "what-we-cover",
+        "eyebrow": "Una conversación práctica",
+        "title": "Qué veremos.",
+        "ordered": true,
+        "columns": 4,
+        "items": [
+          {
+            "title": "Uno o dos productos",
+            "body": "Una simulación en directo frente al competidor que elijas."
+          },
+          {
+            "title": "Por qué gana una ficha",
+            "body": "Los motivos de la elección del asistente dentro de la simulación."
+          },
+          {
+            "title": "Qué corregir primero",
+            "body": "Los cambios que conviene revisar en tu catálogo."
+          },
+          {
+            "title": "Un piloto para tu equipo",
+            "body": "El alcance, la referencia inicial y los resultados que acordaríamos juntos."
+          }
+        ]
+      },
+      {
+        "id": "request",
+        "title": "Empieza por tu categoría.",
+        "description": "Tres pasos breves. Cuéntanos sobre tu empresa, elige un objetivo y revisa tu solicitud."
+      },
+      {
+        "id": "single-store",
+        "title": "¿Gestionas una sola tienda?",
+        "description": "Reserva la llamada de 15 minutos o empieza con la revisión gratuita de tu tienda.",
+        "links": [
+          {
+            "label": "Reservar la llamada de 15 minutos",
+            "href": "https://cal.com/ecentic-ai/15min"
+          },
+          {
+            "label": "Revisar mi tienda gratis",
+            "href": "/sign-up"
+          }
+        ]
+      }
+    ],
+    "form": {
+      "steps": ["Sobre ti", "Tus objetivos", "Revisar y enviar"],
+      "progress": "Progreso de la solicitud de demo",
+      "reviewTitle": "El punto de partida de tu demo.",
+      "reviewDescription": "Revisa tus datos antes de enviarlos. Te contactaremos por correo para acordar el siguiente paso.",
+      "bookingNote": "¿Prefieres elegir una hora ahora? La llamada de reserva directa dura 15 minutos. Acordaremos contigo el alcance y la duración de la demo para empresas.",
+      "sentDescription": "Hemos enviado tu solicitud de demo. Te escribiremos a tu correo de trabajo para acordar el siguiente paso."
+    }
+  }
+}

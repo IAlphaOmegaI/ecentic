@@ -30,6 +30,7 @@ const formatBlogDate = (value: Date | string, locale: Locale) =>
 const toBlogIsoDate = (value: Date | string) => normalize(value).toISOString();
 
 type IndexEntry = {
+  source: Blog.Type["source"];
   slug: string;
   title: string;
   description: string;
@@ -83,6 +84,7 @@ export default async () => {
   );
 
   const fromPost = (post: (typeof englishPosts)[number]): IndexEntry => ({
+    source: post.source,
     slug: post.slug,
     title: post.title,
     description: post.description,
@@ -103,13 +105,24 @@ export default async () => {
       }
       return fromPost(post);
     })
-    .sort(
+    .sort((left, right) => {
+      const editorialPriority =
+        Number(right.source === "local") - Number(left.source === "local");
+      return (
+        editorialPriority ||
+        normalize(right.publishedAt).getTime() -
+          normalize(left.publishedAt).getTime()
+      );
+    });
+
+  // Pin hand-written entries without making the update line follow an older
+  // editorial post. Every published entry remains in its locale's index.
+  const latest =
+    entries.toSorted(
       (left, right) =>
         normalize(right.publishedAt).getTime() -
         normalize(left.publishedAt).getTime(),
-    );
-
-  const latest = entries[0] ?? null;
+    )[0] ?? null;
   const blogPath = localizePath("/blog", locale);
 
   const structuredData = {

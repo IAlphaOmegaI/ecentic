@@ -19,7 +19,13 @@ const highlightedIndex = 3;
 const format = (amount: number) =>
   Number.isInteger(amount) ? `${amount}` : amount.toFixed(2);
 
-export const PartnershipBundle = async () => {
+export const PartnershipBundle = async ({
+  description,
+  productDetail,
+}: {
+  description?: string;
+  productDetail?: string;
+} = {}) => {
   const translate = await getTranslations("pricing");
   const messages = await getMessages();
   const items = messages.pricing.partnershipBundle.items;
@@ -68,7 +74,7 @@ export const PartnershipBundle = async () => {
             </div>
 
             <p className="mt-6 max-w-lg font-light text-foreground-dimmed text-lg">
-              {translate("partnershipBundle.description")}
+              {description ?? translate("partnershipBundle.description")}
             </p>
 
             <ul className="mt-8 divide-y divide-accent-foreground overflow-hidden rounded-xl border border-accent-foreground">
@@ -96,7 +102,9 @@ export const PartnershipBundle = async () => {
                     <div>
                       <p className="font-medium text-foreground">{item.name}</p>
                       <p className="font-light text-foreground-dimmed text-sm">
-                        {item.detail}
+                        {index === highlightedIndex
+                          ? (productDetail ?? item.detail)
+                          : item.detail}
                       </p>
                     </div>
                   </div>

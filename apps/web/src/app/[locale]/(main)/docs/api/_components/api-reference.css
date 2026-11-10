@@ -1,0 +1,103 @@
+.api-reference-facts {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 32px;
+  margin-top: 48px;
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+}
+.api-reference-facts dt {
+  font-size: 13px;
+  color: var(--muted);
+}
+.api-reference-facts dd {
+  margin-top: 8px;
+  overflow-wrap: anywhere;
+}
+.api-reference-index {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.api-reference-index a {
+  display: grid;
+  grid-template-columns: 68px minmax(0, 1fr);
+  gap: 10px 16px;
+  padding: 24px 28px;
+  border-top: 1px solid var(--line);
+  color: var(--blue-text);
+}
+.api-reference-index a:nth-child(odd) {
+  border-right: 1px solid var(--line);
+}
+.api-reference-index code {
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+.api-reference-index span {
+  grid-column: 2;
+  font-size: 14px;
+  color: var(--body);
+}
+.api-reference-index a:hover {
+  background: var(--field);
+}
+.api-reference-operation {
+  border-top: 1px solid var(--line);
+  scroll-margin-top: 100px;
+}
+.api-reference-method {
+  display: flex;
+  gap: 20px;
+  color: var(--blue-text);
+  font-size: 14px;
+  overflow-wrap: anywhere;
+  margin-bottom: 24px;
+}
+.api-definition {
+  margin-top: 24px;
+}
+.api-reference-operation pre,
+.api-reference-schemas pre,
+.api-reference-security {
+  max-height: 32rem;
+  overflow: auto;
+  padding: 24px;
+  margin-top: 24px;
+  background: var(--field);
+  font-size: 13px;
+  line-height: 1.7;
+  tab-size: 2;
+}
+.api-definition .api-definition-scroll pre {
+  max-height: none;
+  overflow: visible;
+}
+.api-reference-schemas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+}
+.api-reference-schemas article {
+  border-top: 1px solid var(--line);
+  min-width: 0;
+  scroll-margin-top: 100px;
+}
+.api-reference-schemas article:nth-child(odd) {
+  border-right: 1px solid var(--line);
+}
+.marketing-site .api-reference-schemas h3 {
+  font-size: 20px;
+  overflow-wrap: anywhere;
+}
+@media (max-width: 760px) {
+  .api-reference-index,
+  .api-reference-schemas {
+    grid-template-columns: 1fr;
+  }
+  .api-reference-index a:nth-child(odd),
+  .api-reference-schemas article:nth-child(odd) {
+    border-right: 0;
+  }
+  .api-reference-index a {
+    padding-inline: 20px;
+  }
+}

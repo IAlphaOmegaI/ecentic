@@ -1,0 +1,240 @@
+{
+  "enterprisePricing": {
+    "meta": {
+      "title": "Pricing: free store check, plans and enterprise pilots",
+      "description": "Start with a free store check. Pay monthly or on AI-attributed orders, capped at $500 a month. Enterprise pilots scoped with your team."
+    },
+    "eyebrow": "Free store check · No card to start · Month to month",
+    "title": "Start free. Scale when AI starts buying.",
+    "description": "Check your store for free, then pick a monthly plan or pay on AI-attributed orders. Running several stores or brands? Talk to us about a pilot.",
+    "actions": [
+      {
+        "label": "Check my store free",
+        "href": "/sign-up"
+      },
+      {
+        "label": "Talk to us",
+        "href": "/demo"
+      }
+    ],
+    "sections": [
+      {
+        "id": "free-check",
+        "eyebrow": "01 / Free store check",
+        "title": "See how AI compares your products.",
+        "description": "One free check of your top 10 products across ChatGPT, Claude and Gemini. See what wins, what loses, and which listing details to fix first."
+      },
+      {
+        "id": "pricing",
+        "eyebrow": "02 / Plans",
+        "title": "Choose how you pay.",
+        "description": "Start with a self-serve plan, or agree a pilot around your stores, catalog and review process."
+      },
+      {
+        "id": "pay-as-you-go",
+        "eyebrow": "03 / Pay-as-you-go",
+        "title": "A fee after an attributed order.",
+        "description": "Pay-as-you-go is free to activate. The performance fee applies to an order with an explicit AI attribution signal, or an order placed within 7 days of an AI-referred visit to your store. The window is store-level, not a link between an individual visitor and an order."
+      },
+      {
+        "id": "compare",
+        "eyebrow": "04 / Compare plans",
+        "title": "The detail, side by side.",
+        "description": "Prices and product limits come from the existing plan catalog. Simulations run when you start them. You review listing changes and choose when to publish them."
+      },
+      {
+        "id": "never-billed",
+        "eyebrow": "05 / Never billed",
+        "title": "The check. The tools. Unattributed orders.",
+        "paragraphs": [
+          "The free store check and public tools have no charge. On pay-as-you-go, an order without an explicit AI attribution signal is not billed when your store had no AI-referred visit in the preceding 7 days. Visits themselves are never billed. Flat subscriptions carry no performance fee."
+        ]
+      },
+      {
+        "id": "europe",
+        "eyebrow": "06 / EU Presence bundle",
+        "title": "Representation and catalog work, together."
+      }
+    ],
+    "sample": {
+      "label": "Example with sample data",
+      "caption": "This sample score is not a result for your store. Run your own check to see the evidence behind each recommendation.",
+      "action": {
+        "primary": "Check my store free"
+      }
+    },
+    "plans": {
+      "payg": {
+        "tagline": "Pay only after AI sends you visitors",
+        "note": "No card to start. Fees follow the attribution rules below, with the existing monthly cap.",
+        "action": {
+          "primary": "Choose pay-as-you-go"
+        }
+      },
+      "compete": {
+        "action": {
+          "primary": "Choose Compete"
+        }
+      },
+      "scale": {
+        "tagline": "Fix at scale",
+        "action": {
+          "primary": "Choose Scale"
+        }
+      },
+      "dominate": {
+        "action": {
+          "primary": "Choose Dominate"
+        }
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "tagline": "Scoped with your team, on public data first",
+        "figure": "Custom pilot",
+        "note": "Agree the scope, review process and targets before starting.",
+        "features": [
+          "Every store in one account",
+          "API, MCP server and CLI",
+          "DPA on request",
+          "A founder on the account",
+          "Pilot readout with agreed targets"
+        ],
+        "action": {
+          "primary": "Talk to us"
+        }
+      }
+    },
+    "featureCorrections": {
+      "onDemand": "On-demand agent simulations",
+      "reviewAndApply": "Review suggestions and publish with Apply",
+      "paygAttribution": "Fees on AI-attributed orders under the rules below"
+    },
+    "availability": "Simulations run on demand. You review suggestions and choose when to apply changes. Publishing requires a supported direct connector and your approval.",
+    "fee": {
+      "steps": [
+        {
+          "title": "An AI assistant sends you a visitor",
+          "body": "Your store records a visit referred by an AI assistant. That starts the 7-day attribution window for the store."
+        },
+        {
+          "title": "They buy: a $120 order",
+          "body": "An order qualifies when it carries an explicit AI attribution signal or falls within the store’s active 7-day referral window."
+        },
+        {
+          "title": "The fee is $3.60",
+          "body": "At the standard 3% rate, an attributed $120 order produces a $3.60 fee. A visit alone has no charge."
+        },
+        {
+          "title": "Fees stop at $500 a month",
+          "body": "The standard monthly cap is $500. No card is needed to start; a payment method is requested when a fee is due."
+        }
+      ],
+      "example": {
+        "order": "Attributed order",
+        "rate": "Standard rate",
+        "fee": "Performance fee",
+        "window": "7-day store-level window",
+        "cap": "$500 monthly cap"
+      },
+      "billingTitle": "Prefer a flat monthly bill?",
+      "billingBody": "Compete, Scale and Dominate have no performance fee. Their monthly prices are shown above."
+    },
+    "comparison": {
+      "title": "Plan comparison",
+      "feature": "Feature",
+      "yes": "Included",
+      "no": "Not included",
+      "agreed": "Agreed in pilot",
+      "onDemand": "On demand",
+      "suggestions": "Review before applying",
+      "publish": "Publishing with Apply",
+      "enterpriseRows": [
+        {
+          "label": "Every store in one account",
+          "selfServe": true
+        },
+        {
+          "label": "API, MCP server and CLI",
+          "selfServe": true
+        },
+        {
+          "label": "DPA on request",
+          "selfServe": true
+        },
+        {
+          "label": "A founder on the account",
+          "selfServe": false
+        },
+        {
+          "label": "Pilot readout with agreed targets",
+          "selfServe": false
+        }
+      ],
+      "enterpriseNote": "Enterprise terms, product limits and any fees are agreed in the pilot scope. Public API discovery, MCP and CLI documentation are available without a paid plan."
+    },
+    "bundle": {
+      "description": "EU Presence handles representation and compliance across all 27 member states. The bundle pairs its existing services with the ecentic Dominate plan, on the existing commercial terms below.",
+      "productDetail": "Product simulations, competitor comparisons, and listing suggestions you review before publishing"
+    },
+    "faqTitle": "Pricing questions",
+    "faqs": [
+      {
+        "question": "Is there really a free plan?",
+        "answer": "Yes. The free store check runs a one-time simulation of your top 10 products across ChatGPT, Claude and Gemini and returns a Win Rate Report. No credit card is required."
+      },
+      {
+        "question": "What is the difference between Compete, Scale, and Dominate?",
+        "answer": "Compete covers up to 100 products with competitor comparisons and manual optimization suggestions. Scale covers up to 1,000 products with listing suggestions you can review and publish using Apply. Dominate includes Scale and is the plan tied to the Techstars offer. The Y Combinator offer can apply to any flat subscription. Simulations are on demand; the product does not promise a scheduled cadence."
+      },
+      {
+        "question": "What is the difference between pay-as-you-go and a subscription?",
+        "answer": "Pay-as-you-go has no upfront fee and uses a standard 3% performance fee, capped at $500 a month, under the attribution rules below. Compete, Scale and Dominate charge a flat monthly price with no performance fee. Choose the billing model that fits your team."
+      },
+      {
+        "question": "How does the pay-as-you-go performance fee work?",
+        "answer": "An order counts if it carries an explicit AI attribution signal, or if any AI-referred visit reached your store in the preceding 7 days. This is a store-level window, not individual shopper attribution. The standard fee is 3% of qualifying orders, capped at $500 per calendar month. Visits have no fee. A payment method is only requested when a fee is due. The free check and flat subscriptions carry no performance fee."
+      },
+      {
+        "question": "Can I change plans or cancel later?",
+        "answer": "Yes. Start with the free check, activate pay-as-you-go, or choose a flat subscription. Plans are month to month and you can cancel. Talk to us to scope an enterprise pilot before agreeing its terms."
+      },
+      {
+        "question": "When should I talk to sales instead of self-serving?",
+        "answer": "When you run several stores or brands, have thousands of products, need a security review, or want a pilot with targets agreed in writing."
+      },
+      {
+        "question": "What is the EU Presence bundle?",
+        "answer": "The bundle combines EU Presence’s GDPR representative, GPSR responsible person and Privacy Center Plus with ecentic Dominate. The existing bundle offers a 20% discount, with no minimums and no setup fees. Use the bundle call link to discuss it."
+      },
+      {
+        "question": "What happens to our data if we leave?",
+        "answer": "The Privacy policy retains data while your account is active. Disconnecting a store deletes its access tokens immediately; imported products remain for simulation history unless you request deletion. Deleting your account permanently deletes the profile, credentials, stores, tokens, imported products, simulation results, optimization history, reports, UCP profile, agent orders including shopper details, and Google Merchant Center connection records. Shopify’s shop/redact webhook deletes that shop’s store data, products and associated records. Where tax or accounting rules require billing records, the order reference and amount are retained, not shopper contact or address details. The policy specifies no separate deletion turnaround or backup purge period."
+      },
+      {
+        "question": "Is anything billed that we did not ask for?",
+        "answer": "No plan is billed without activation. Plans are month to month. Under the standard pay-as-you-go terms, a 3% fee applies to an order with an explicit AI attribution signal or an order within 7 days of an AI-referred visit to your store, up to $500 per calendar month. The referral window covers the store, not an identified shopper. Flat subscriptions have no performance fee."
+      },
+      {
+        "question": "Do you sign a DPA?",
+        "answer": "Yes, on request. Contact us to arrange a DPA and discuss the security review for your account."
+      }
+    ],
+    "policyLinks": [
+      {
+        "label": "Read the Privacy policy",
+        "href": "/privacy-policy"
+      },
+      {
+        "label": "Review data protection",
+        "href": "/security#dpa"
+      }
+    ],
+    "offerDescriptions": [
+      "One-time free store check. No credit card required.",
+      "No upfront fee. Standard 3% performance fee on qualifying AI-attributed orders, capped at $500 a month.",
+      "Monthly subscription for up to 100 products, with no performance fee.",
+      "Monthly subscription for up to 1,000 products, with no performance fee.",
+      "Monthly subscription including Scale, with no performance fee."
+    ]
+  }
+}

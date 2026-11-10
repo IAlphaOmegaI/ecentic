@@ -1,131 +1,82 @@
-import type { Metadata } from "next";
-import { getLocale, getMessages, getTranslations } from "next-intl/server";
+import { getLocale, getMessages } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
+import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
+import { MarketingActions } from "@/components/marketing/primitives";
 import { localizePath } from "@/i18n/locale";
-import {
-  absoluteUrl,
-  createBreadcrumbSchema,
-  createFaqSchema,
-  createMetadata,
-  organizationSchema,
-} from "@/lib/seo";
-import Art from "@/public/images/ascii/coins.png";
-import {
-  ContentPageFooter,
-  ContentPageLayout,
-  ContentPageSection,
-} from "../_components/content";
+import { absoluteUrl } from "@/lib/seo";
 import { PartnershipBundle } from "../_components/partnership-bundle";
-import { Compare } from "./_components/compare";
-import { Faq } from "./_components/faq";
-import { FeeExplainer } from "./_components/fee-explainer";
-import { Plans } from "./_components/plans";
+import {
+  EnterprisePlanComparison,
+  EnterprisePlanLedger,
+  FreeStoreCheck,
+  PerformanceFeeLedger,
+} from "./_components/enterprise-pricing";
 
-export const generateMetadata = async (): Promise<Metadata> => {
-  const locale = await getLocale();
-  const translate = await getTranslations("pricing");
-
-  return createMetadata({
-    title: translate("meta.title"),
-    description: translate("meta.description"),
-    path: localizePath("/pricing", locale),
-    keywords: [
-      "ecentic pricing",
-      "AI ecommerce tool pricing",
-      "product listing optimization pricing",
-      "AI shopping agent software cost",
-    ],
-  });
+export const generateMetadata = async () => {
+  const { enterprisePricing } = await getMessages();
+  return marketingMetadata(enterprisePricing.meta, "/pricing");
 };
 
 export default async () => {
+  const { enterprisePricing, pricing } = await getMessages();
   const locale = await getLocale();
-
-  const translate = await getTranslations("pricing");
-  const messages = await getMessages();
-  const description = translate("meta.description");
-  const assurances = messages.pricing.hero.assurances;
-  const faq = messages.pricing.faq.items;
-  const plans = messages.pricing.schema.plans;
-
-  const structuredData = [
-    {
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      name: "ecentic",
-      applicationCategory: "BusinessApplication",
-      operatingSystem: "Web",
-      description,
-      url: absoluteUrl(localizePath("/pricing", locale)),
-      offers: {
-        "@type": "AggregateOffer",
-        priceCurrency: "USD",
-        lowPrice: "0",
-        highPrice: "149",
-        offerCount: plans.length,
-        offers: plans
-          .filter((plan) => plan.price !== "Custom")
-          .map((plan) => ({
-            "@type": "Offer",
-            name: plan.name,
-            price: plan.price,
-            priceCurrency: "USD",
-            description: plan.description,
-            url: absoluteUrl(localizePath("/pricing", locale)),
-          })),
-      },
-    },
-    organizationSchema,
-    createBreadcrumbSchema([
-      { name: translate("breadcrumb.home"), path: localizePath("/", locale) },
-      {
-        name: translate("breadcrumb.pricing"),
-        path: localizePath("/pricing", locale),
-      },
-    ]),
-    createFaqSchema(faq),
-  ];
-
+  const offers = pricing.schema.plans.filter((plan) =>
+    Number.isFinite(Number(plan.price)),
+  );
+  const prices = offers.map((plan) => Number(plan.price));
+  const url = absoluteUrl(localizePath("/pricing", locale));
   return (
-    <ContentPageLayout
-      eyebrow={translate("hero.eyebrow")}
-      title={translate("hero.title.primary")}
-      accent={translate("hero.title.accent")}
-      description={translate("hero.description")}
-      assurances={assurances}
-      art={{ source: Art, alt: translate("hero.art.alt") }}
+    <MarketingPage
+      content={enterprisePricing}
+      path="/pricing"
+      sectionChildren={{
+        "free-check": <FreeStoreCheck />,
+        pricing: <EnterprisePlanLedger />,
+        "pay-as-you-go": <PerformanceFeeLedger />,
+        compare: <EnterprisePlanComparison />,
+        europe: (
+          <div className="pricing-partnership">
+            <PartnershipBundle
+              description={enterprisePricing.bundle.description}
+              productDetail={enterprisePricing.bundle.productDetail}
+            />
+          </div>
+        ),
+      }}
     >
-      <JsonLd schemas={structuredData} />
-
-      <Plans />
-
-      <FeeExplainer />
-
-      <Compare />
-
-      <PartnershipBundle />
-
-      <ContentPageSection
-        number={translate("faqSection.number")}
-        title={translate("faqSection.title")}
-        description={translate("faqSection.description")}
-        gutter
-        classList={{ body: "p-0" }}
-      >
-        <Faq items={faq} />
-      </ContentPageSection>
-
-      <ContentPageFooter
-        primary={{
-          href: "/sign-up",
-          label: translate("footer.action.primary"),
-        }}
-        secondary={{
-          href: "/demo",
-          label: translate("footer.action.secondary"),
-        }}
-        note={translate("footer.note")}
+      <JsonLd
+        schemas={[
+          {
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            name: "ecentic",
+            applicationCategory: "BusinessApplication",
+            operatingSystem: "Web",
+            description: enterprisePricing.meta.description,
+            url,
+            offers: {
+              "@type": "AggregateOffer",
+              priceCurrency: "USD",
+              lowPrice: String(Math.min(...prices)),
+              highPrice: String(Math.max(...prices)),
+              offerCount: offers.length,
+              offers: offers.map((plan, index) => ({
+                "@type": "Offer",
+                name: plan.name,
+                price: plan.price,
+                priceCurrency: "USD",
+                description: enterprisePricing.offerDescriptions[index],
+                url,
+              })),
+            },
+          },
+        ]}
       />
-    </ContentPageLayout>
+      <div className="marketing-rail">
+        <div className="marketing-cell">
+          <MarketingActions actions={enterprisePricing.policyLinks} />
+        </div>
+      </div>
+    </MarketingPage>
   );
 };

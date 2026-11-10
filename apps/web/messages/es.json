@@ -15377,5 +15377,543 @@
         "trademark": "Amazon y Alexa son marcas de Amazon.com, Inc. o sus filiales. ecentic no está afiliado a Amazon ni cuenta con su respaldo."
       }
     }
+  },
+  "enterpriseDemo": {
+    "meta": {
+      "title": "Reserva una demo de ecentic",
+      "description": "Descubre con un fundador cómo ChatGPT, Claude y Gemini comparan tus productos con los de un competidor. Trae una categoría."
+    },
+    "eyebrow": "Reserva una demo",
+    "title": "Descubre cómo compra la IA en tu catálogo.",
+    "description": "Una llamada con un fundador. Trae una categoría y te mostraremos en directo cómo ChatGPT, Claude y Gemini la comparan con la de un competidor.",
+    "sections": [
+      {
+        "id": "what-we-cover",
+        "eyebrow": "Una conversación práctica",
+        "title": "Qué veremos.",
+        "ordered": true,
+        "columns": 4,
+        "items": [
+          {
+            "title": "Uno o dos productos",
+            "body": "Una simulación en directo frente al competidor que elijas."
+          },
+          {
+            "title": "Por qué gana una ficha",
+            "body": "Los motivos de la elección del asistente dentro de la simulación."
+          },
+          {
+            "title": "Qué corregir primero",
+            "body": "Los cambios que conviene revisar en tu catálogo."
+          },
+          {
+            "title": "Un piloto para tu equipo",
+            "body": "El alcance, la referencia inicial y los resultados que acordaríamos juntos."
+          }
+        ]
+      },
+      {
+        "id": "request",
+        "title": "Empieza por tu categoría.",
+        "description": "Tres pasos breves. Cuéntanos sobre tu empresa, elige un objetivo y revisa tu solicitud."
+      },
+      {
+        "id": "single-store",
+        "title": "¿Gestionas una sola tienda?",
+        "description": "Reserva la llamada de 15 minutos o empieza con la revisión gratuita de tu tienda.",
+        "links": [
+          {
+            "label": "Reservar la llamada de 15 minutos",
+            "href": "https://cal.com/ecentic-ai/15min"
+          },
+          {
+            "label": "Revisar mi tienda gratis",
+            "href": "/sign-up"
+          }
+        ]
+      }
+    ],
+    "form": {
+      "steps": [
+        "Sobre ti",
+        "Tus objetivos",
+        "Revisar y enviar"
+      ],
+      "progress": "Progreso de la solicitud de demo",
+      "reviewTitle": "El punto de partida de tu demo.",
+      "reviewDescription": "Revisa tus datos antes de enviarlos. Te contactaremos por correo para acordar el siguiente paso.",
+      "bookingNote": "¿Prefieres elegir una hora ahora? La llamada de reserva directa dura 15 minutos. Acordaremos contigo el alcance y la duración de la demo para empresas.",
+      "sentDescription": "Hemos enviado tu solicitud de demo. Te escribiremos a tu correo de trabajo para acordar el siguiente paso."
+    }
+  },
+  "enterprisePricing": {
+    "meta": {
+      "title": "Precios: revisión gratis, planes y pilotos para empresas",
+      "description": "Empieza con una revisión gratis. Paga al mes o por pedidos atribuidos a la IA, con un tope de 500 $ al mes. Pilotos definidos con tu equipo."
+    },
+    "eyebrow": "Revisión gratis · Sin tarjeta para empezar · Mes a mes",
+    "title": "Empieza gratis. Crece cuando la IA empiece a comprar.",
+    "description": "Revisa tu tienda gratis y elige un plan mensual o paga por pedidos atribuidos a la IA. ¿Gestionas varias tiendas o marcas? Hablemos de un piloto.",
+    "actions": [
+      {
+        "label": "Revisar mi tienda gratis",
+        "href": "/sign-up"
+      },
+      {
+        "label": "Habla con nosotros",
+        "href": "/demo"
+      }
+    ],
+    "sections": [
+      {
+        "id": "free-check",
+        "eyebrow": "01 / Revisión gratis",
+        "title": "Descubre cómo la IA compara tus productos.",
+        "description": "Una revisión gratis de tus 10 productos principales con ChatGPT, Claude y Gemini. Mira qué gana, qué pierde y qué detalles de las fichas conviene corregir primero."
+      },
+      {
+        "id": "pricing",
+        "eyebrow": "02 / Planes",
+        "title": "Elige cómo pagar.",
+        "description": "Empieza con un plan de autoservicio o acuerda un piloto según tus tiendas, catálogo y proceso de revisión."
+      },
+      {
+        "id": "pay-as-you-go",
+        "eyebrow": "03 / Pago por uso",
+        "title": "Una comisión tras un pedido atribuido.",
+        "description": "El pago por uso se activa gratis. La comisión se aplica a un pedido con una señal explícita de atribución a la IA, o a uno realizado en los 7 días posteriores a una visita de IA a tu tienda. La ventana abarca la tienda; no vincula un visitante individual con un pedido."
+      },
+      {
+        "id": "compare",
+        "eyebrow": "04 / Compara planes",
+        "title": "Los detalles, uno al lado del otro.",
+        "description": "Los precios y límites de productos proceden del catálogo de planes actual. Las simulaciones se ejecutan cuando las inicias. Tú revisas los cambios y decides cuándo publicarlos."
+      },
+      {
+        "id": "never-billed",
+        "eyebrow": "05 / Sin cargos",
+        "title": "La revisión. Las herramientas. Los pedidos sin atribución.",
+        "paragraphs": [
+          "La revisión gratis y las herramientas públicas no tienen coste. En pago por uso, un pedido sin señal explícita de atribución a la IA no genera comisión si la tienda no recibió visitas referidas por IA en los 7 días anteriores. Las visitas nunca se facturan. Las suscripciones no tienen comisión por rendimiento."
+        ]
+      },
+      {
+        "id": "europe",
+        "eyebrow": "06 / Paquete EU Presence",
+        "title": "Representación y trabajo de catálogo, juntos."
+      }
+    ],
+    "sample": {
+      "label": "Ejemplo con datos de muestra",
+      "caption": "Esta puntuación de muestra no es un resultado de tu tienda. Ejecuta tu revisión para ver las pruebas de cada recomendación.",
+      "action": {
+        "primary": "Revisar mi tienda gratis"
+      }
+    },
+    "plans": {
+      "payg": {
+        "tagline": "Paga solo después de recibir visitas de la IA",
+        "note": "Sin tarjeta para empezar. Las comisiones siguen las reglas de atribución de abajo y el tope mensual vigente.",
+        "action": {
+          "primary": "Elegir pago por uso"
+        }
+      },
+      "compete": {
+        "action": {
+          "primary": "Elegir Compete"
+        }
+      },
+      "scale": {
+        "tagline": "Corrige a escala",
+        "action": {
+          "primary": "Elegir Scale"
+        }
+      },
+      "dominate": {
+        "action": {
+          "primary": "Elegir Dominate"
+        }
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "tagline": "Definido con tu equipo, primero con datos públicos",
+        "figure": "Piloto a medida",
+        "note": "Acordamos el alcance, la revisión y los objetivos antes de empezar.",
+        "features": [
+          "Todas las tiendas en una cuenta",
+          "API, servidor MCP y CLI",
+          "DPA bajo petición",
+          "Un fundador en la cuenta",
+          "Informe del piloto con objetivos acordados"
+        ],
+        "action": {
+          "primary": "Habla con nosotros"
+        }
+      }
+    },
+    "featureCorrections": {
+      "onDemand": "Simulaciones de agentes bajo demanda",
+      "reviewAndApply": "Revisa las sugerencias y publica con Aplicar",
+      "paygAttribution": "Comisiones por pedidos atribuidos a la IA según las reglas de abajo"
+    },
+    "availability": "Las simulaciones se ejecutan bajo demanda. Revisas las sugerencias y decides cuándo aplicar cambios. Publicar requiere un conector directo compatible y tu aprobación.",
+    "fee": {
+      "steps": [
+        {
+          "title": "Un asistente de IA te envía una visita",
+          "body": "Tu tienda registra una visita referida por un asistente de IA. Se abre una ventana de atribución de 7 días para la tienda."
+        },
+        {
+          "title": "Compran: un pedido de 120 $",
+          "body": "Un pedido cumple las condiciones si incluye una señal explícita de atribución a la IA o se realiza dentro de la ventana activa de 7 días de la tienda."
+        },
+        {
+          "title": "La comisión es de 3,60 $",
+          "body": "Con el tipo estándar del 3%, un pedido atribuido de 120 $ genera una comisión de 3,60 $. Una visita por sí sola no tiene coste."
+        },
+        {
+          "title": "Las comisiones paran en 500 $ al mes",
+          "body": "El tope mensual estándar es de 500 $. No hace falta tarjeta para empezar; se solicita un medio de pago cuando hay una comisión pendiente."
+        }
+      ],
+      "example": {
+        "order": "Pedido atribuido",
+        "rate": "Tipo estándar",
+        "fee": "Comisión por rendimiento",
+        "window": "Ventana de 7 días para la tienda",
+        "cap": "Tope de 500 $ al mes"
+      },
+      "billingTitle": "¿Prefieres una factura mensual fija?",
+      "billingBody": "Compete, Scale y Dominate no tienen comisión por rendimiento. Sus precios mensuales aparecen arriba."
+    },
+    "comparison": {
+      "title": "Comparación de planes",
+      "feature": "Función",
+      "yes": "Incluido",
+      "no": "No incluido",
+      "agreed": "Acordado en el piloto",
+      "onDemand": "Bajo demanda",
+      "suggestions": "Revisión antes de aplicar",
+      "publish": "Publicar con Aplicar",
+      "enterpriseRows": [
+        {
+          "label": "Todas las tiendas en una cuenta",
+          "selfServe": true
+        },
+        {
+          "label": "API, servidor MCP y CLI",
+          "selfServe": true
+        },
+        {
+          "label": "DPA bajo petición",
+          "selfServe": true
+        },
+        {
+          "label": "Un fundador en la cuenta",
+          "selfServe": false
+        },
+        {
+          "label": "Informe del piloto con objetivos acordados",
+          "selfServe": false
+        }
+      ],
+      "enterpriseNote": "Las condiciones de Enterprise, los límites de productos y las posibles comisiones se acuerdan en el alcance del piloto. El descubrimiento de la API pública y la documentación de MCP y CLI están disponibles sin plan de pago."
+    },
+    "bundle": {
+      "description": "EU Presence gestiona la representación y el cumplimiento en los 27 Estados miembros. El paquete combina sus servicios actuales con el plan ecentic Dominate, bajo las condiciones comerciales que se muestran abajo.",
+      "productDetail": "Simulaciones de productos, comparación con competidores y sugerencias de fichas que revisas antes de publicar"
+    },
+    "faqTitle": "Preguntas sobre precios",
+    "faqs": [
+      {
+        "question": "¿De verdad hay un plan gratis?",
+        "answer": "Sí. La revisión gratuita ejecuta una simulación única de tus 10 productos principales con ChatGPT, Claude y Gemini y entrega un informe de tasa de victorias. No requiere tarjeta de crédito."
+      },
+      {
+        "question": "¿Qué diferencia hay entre Compete, Scale y Dominate?",
+        "answer": "Compete cubre hasta 100 productos con comparaciones y sugerencias de optimización manual. Scale cubre hasta 1.000 productos con sugerencias que puedes revisar y publicar con Aplicar. Dominate incluye Scale y es el plan vinculado a la oferta de Techstars. La oferta de Y Combinator puede aplicarse a cualquier suscripción fija. Las simulaciones son bajo demanda; el producto no promete una frecuencia programada."
+      },
+      {
+        "question": "¿Qué diferencia hay entre el pago por uso y una suscripción?",
+        "answer": "El pago por uso no tiene coste inicial y aplica una comisión estándar del 3%, con un tope de 500 $ al mes, según las reglas de atribución de abajo. Compete, Scale y Dominate tienen un precio mensual fijo sin comisión por rendimiento. Elige el modelo que convenga a tu equipo."
+      },
+      {
+        "question": "¿Cómo funciona la comisión del pago por uso?",
+        "answer": "Un pedido cuenta si incluye una señal explícita de atribución a la IA o si la tienda recibió alguna visita referida por IA en los 7 días anteriores. Es una ventana para toda la tienda, no una atribución a un comprador individual. La comisión estándar es del 3% de los pedidos que cumplen las condiciones, con un tope de 500 $ por mes natural. Las visitas no tienen comisión. Solo se solicita un medio de pago cuando hay una comisión pendiente. La revisión gratis y las suscripciones no tienen comisión por rendimiento."
+      },
+      {
+        "question": "¿Puedo cambiar de plan o cancelarlo después?",
+        "answer": "Sí. Empieza con la revisión gratis, activa el pago por uso o elige una suscripción fija. Los planes son mes a mes y puedes cancelarlos. Habla con nosotros para definir un piloto antes de acordar sus condiciones."
+      },
+      {
+        "question": "¿Cuándo debería hablar con ventas en lugar de empezar por mi cuenta?",
+        "answer": "Cuando gestionas varias tiendas o marcas, tienes miles de productos, necesitas una revisión de seguridad o quieres un piloto con objetivos acordados por escrito."
+      },
+      {
+        "question": "¿Qué es el paquete EU Presence?",
+        "answer": "El paquete combina el representante RGPD, la persona responsable GPSR y Privacy Center Plus de EU Presence con ecentic Dominate. El paquete vigente ofrece un descuento del 20%, sin mínimos ni costes de alta. Usa el enlace para hablar del paquete."
+      },
+      {
+        "question": "¿Qué ocurre con nuestros datos si nos vamos?",
+        "answer": "La Política de privacidad conserva los datos mientras la cuenta está activa. Desconectar una tienda elimina sus tokens de acceso de inmediato; los productos importados permanecen para el historial de simulaciones salvo que solicites su eliminación. Eliminar la cuenta borra permanentemente el perfil, credenciales, tiendas, tokens, productos importados, resultados de simulación, historial de optimización, informes, perfil UCP, pedidos de agentes con datos del comprador y registros de conexión de Google Merchant Center. El webhook shop/redact de Shopify elimina los datos, productos y registros de esa tienda. Cuando las normas fiscales o contables obligan a conservar registros de facturación, se guardan la referencia y el importe del pedido, no los datos de contacto ni la dirección del comprador. La política no especifica un plazo adicional de eliminación ni de purga de copias de seguridad."
+      },
+      {
+        "question": "¿Se factura algo que no hayamos solicitado?",
+        "answer": "Ningún plan se factura sin activarlo. Los planes son mes a mes. En las condiciones estándar del pago por uso, se aplica un 3% a pedidos con señal explícita de atribución a la IA o realizados en los 7 días posteriores a una visita referida por IA a la tienda, hasta 500 $ por mes natural. La ventana abarca la tienda, no un comprador identificado. Las suscripciones fijas no tienen comisión por rendimiento."
+      },
+      {
+        "question": "¿Firmáis un DPA?",
+        "answer": "Sí, bajo petición. Contacta con nosotros para organizar el DPA y la revisión de seguridad de tu cuenta."
+      }
+    ],
+    "policyLinks": [
+      {
+        "label": "Leer la Política de privacidad",
+        "href": "/privacy-policy"
+      },
+      {
+        "label": "Revisar la protección de datos",
+        "href": "/security#dpa"
+      }
+    ],
+    "offerDescriptions": [
+      "Revisión gratuita única de la tienda. Sin tarjeta de crédito.",
+      "Sin coste inicial. Comisión estándar del 3% por pedidos atribuidos a la IA que cumplen las condiciones, con un tope de 500 $ al mes.",
+      "Suscripción mensual para hasta 100 productos, sin comisión por rendimiento.",
+      "Suscripción mensual para hasta 1.000 productos, sin comisión por rendimiento.",
+      "Suscripción mensual que incluye Scale, sin comisión por rendimiento."
+    ]
+  },
+  "enterpriseRecovery": {
+    "api": {
+      "meta": {
+        "title": "Referencia de la API | ecentic",
+        "description": "Consulta la referencia OpenAPI de ecentic: endpoints REST, MCP, descubrimiento, parámetros, esquemas de respuesta y autenticación."
+      },
+      "eyebrow": "Desarrolladores / Referencia de la API",
+      "title": "La API, desde su fuente.",
+      "description": "Definiciones de solicitudes y respuestas desde la misma fuente que /openapi.json. Los esquemas conservan el texto canónico en inglés. Esta referencia no envía solicitudes.",
+      "actions": [
+        {
+          "label": "Documentación",
+          "href": "/docs"
+        },
+        {
+          "label": "Descargar OpenAPI JSON",
+          "href": "https://ecentic.ai/openapi.json"
+        }
+      ],
+      "sections": [
+        {
+          "id": "api-reference",
+          "title": "Endpoints",
+          "description": "Selecciona un método y una ruta para consultar sus parámetros, cuerpo de solicitud, requisitos de seguridad y respuestas."
+        },
+        {
+          "id": "api-schemas",
+          "title": "Esquemas compartidos",
+          "description": "Definiciones reutilizables a las que hacen referencia los endpoints anteriores."
+        },
+        {
+          "id": "api-auth",
+          "title": "Esquemas de seguridad",
+          "description": "Cada operación declara sus propios requisitos de seguridad. La definición de abajo identifica los esquemas disponibles."
+        }
+      ],
+      "operationNames": {
+        "getApiV1Index": "Índice de la API pública para agentes",
+        "getApiV1Health": "Estado del servicio",
+        "getApiV1Discovery": "Descubrimiento de protocolos y documentos",
+        "getApiV1Plans": "Catálogo de planes",
+        "getApiV1Skills": "Habilidades para agentes",
+        "getApiV1News": "Noticias",
+        "getApiV1Onboarding": "Inicio para agentes",
+        "getApiV1Sandbox": "Capacidades del entorno de prueba",
+        "postApiV1SandboxSimulation": "Ejecutar una simulación de muestra",
+        "getAgentApiRoot": "Raíz de la API para agentes",
+        "getMcp": "Flujo de eventos MCP",
+        "postMcp": "Solicitud MCP",
+        "deleteMcpSession": "Cerrar una sesión MCP",
+        "postMcpAlias": "Alias de MCP",
+        "getWellKnownMcpManifest": "Manifiesto de descubrimiento MCP",
+        "getWellKnownUcp": "Perfil de descubrimiento UCP",
+        "getWellKnownAcp": "Perfil de descubrimiento ACP"
+      },
+      "navigation": "Navegación de endpoints",
+      "operation": "Operación",
+      "version": "Versión de la API",
+      "specification": "Versión de OpenAPI",
+      "server": "Servidor",
+      "definition": "Definición de solicitud y respuesta",
+      "schema": "Esquema"
+    },
+    "notFound": {
+      "meta": {
+        "title": "Esta página no está aquí | ecentic",
+        "description": "Encuentra la plataforma, integraciones, canales de IA, precios, documentación y contacto de ecentic, junto con enlaces de recuperación."
+      },
+      "title": "Esta página no está aquí.",
+      "description": "Puede haberse movido al reconstruir el sitio. Estas son las páginas que más se buscan:",
+      "home": "Inicio de ecentic",
+      "navigation": "Encontrar una página",
+      "links": [
+        {
+          "label": "Plataforma",
+          "href": "/platform"
+        },
+        {
+          "label": "Integraciones",
+          "href": "/integrations"
+        },
+        {
+          "label": "Canales de IA",
+          "href": "/ai-channels"
+        },
+        {
+          "label": "Precios",
+          "href": "/pricing"
+        },
+        {
+          "label": "Documentación",
+          "href": "/docs"
+        },
+        {
+          "label": "Contacto",
+          "href": "/contact"
+        }
+      ],
+      "machineTitle": "Recuperación para agentes",
+      "machineDescription": "Los documentos de descubrimiento y la lista de recuperación existentes siguen disponibles.",
+      "machineNavigation": "Enlaces de recuperación para máquinas",
+      "markdownTitle": "La misma lista de recuperación en Markdown",
+      "markdownAction": "Abrir el documento Markdown",
+      "recoveryLinks": [
+        {
+          "label": "Inicio",
+          "description": "Qué hace ecentic y para quién es."
+        },
+        {
+          "label": "Documentación para desarrolladores",
+          "description": "Referencia de la API, autenticación, errores, MCP y webhooks."
+        },
+        {
+          "label": "Mapa del sitio",
+          "description": "Páginas indexables en ambos idiomas."
+        },
+        {
+          "label": "llms.txt",
+          "description": "El mapa del sitio para modelos de lenguaje."
+        },
+        {
+          "label": "Catálogo de la API",
+          "description": "El conjunto de enlaces RFC 9727 para interfaces de máquinas."
+        },
+        {
+          "label": "Documento OpenAPI",
+          "description": "Esquemas de solicitudes y respuestas de la API pública."
+        }
+      ]
+    },
+    "instructions": {
+      "meta": {
+        "title": "Instrucciones para IA: cuándo usar ecentic",
+        "description": "Cómo usar ecentic, dónde terminan sus capacidades y dónde encontrar la API pública, MCP y la documentación actual."
+      },
+      "eyebrow": "Desarrolladores / Instrucciones para IA",
+      "title": "Dale al agente un punto de partida claro.",
+      "description": "ecentic ayuda a preparar datos de productos para las compras con IA. Usa estos límites y puntos de entrada para elegir el siguiente paso. ecentic no es una herramienta de SEO ni de GEO.",
+      "actions": [
+        {
+          "label": "Leer la referencia de la API",
+          "href": "/docs/api"
+        },
+        {
+          "label": "Abrir instrucciones para agentes",
+          "href": "https://ecentic.ai/.well-known/agent-instructions.md"
+        }
+      ],
+      "sections": [
+        {
+          "id": "jobs",
+          "title": "En qué puede ayudar ecentic.",
+          "ordered": true,
+          "columns": 2,
+          "items": [
+            {
+              "title": "Conectar y comparar",
+              "body": "Importa un catálogo de Shopify, WooCommerce o un feed compatible. Ejecuta comparaciones bajo demanda con ChatGPT, Claude y Gemini y revisa los productos y atributos de cada resultado.",
+              "href": "/platform/simulate",
+              "label": "Explorar simulaciones"
+            },
+            {
+              "title": "Corregir con tu aprobación",
+              "body": "Prepara cambios en las fichas a partir de los resultados. Nada cambia en la tienda conectada hasta que haces clic en Aplicar. Publicar requiere un conector directo compatible.",
+              "href": "/platform/fix",
+              "label": "Explorar correcciones"
+            },
+            {
+              "title": "Habilitar el checkout para agentes",
+              "body": "Usa la interfaz de checkout implementada con una integración compatible. Las páginas de canales e integraciones describen la disponibilidad y los controles del comerciante.",
+              "href": "/platform/sell",
+              "label": "Explorar el checkout para agentes"
+            },
+            {
+              "title": "Consultar visitas de IA",
+              "body": "Consulta las visitas clasificadas y sus destinos. Un script de navegador no observa todos los rastreadores, y una referencia de IA no vincula por sí sola un comprador individual con un pedido.",
+              "href": "/platform/track",
+              "label": "Explorar el seguimiento"
+            }
+          ]
+        },
+        {
+          "id": "boundaries",
+          "title": "Interpreta las pruebas en su contexto.",
+          "paragraphs": [
+            "Las simulaciones describen una prueba, no una posición real en un marketplace ni una venta garantizada. La revisión gratis usa tres asistentes; la herramienta gratuita de comparación de productos puede usar cuatro.",
+            "ecentic no gestiona campañas publicitarias, alojamiento de tiendas, inventario ni envíos. No se ha confirmado una app publicada en el directorio de ChatGPT, por lo que sigue marcada como Próximamente. ACP también sigue como Próximamente."
+          ]
+        },
+        {
+          "id": "entry-points",
+          "title": "Empieza con los contratos públicos.",
+          "columns": 3,
+          "items": [
+            {
+              "title": "API REST",
+              "body": "Consulta el índice de la API pública, las definiciones de endpoints y los esquemas compartidos. Cada operación declara sus requisitos de autenticación.",
+              "href": "/docs/api",
+              "label": "Leer la referencia"
+            },
+            {
+              "title": "Servidor MCP",
+              "body": "Consulta las herramientas compatibles y la guía de conexión. El descubrimiento es público; las operaciones de una cuenta requieren autorización.",
+              "href": "/docs/mcp",
+              "label": "Leer la guía de MCP"
+            },
+            {
+              "title": "CLI y credenciales",
+              "body": "Consulta la guía para usar la CLI y la autenticación. Nunca pongas una clave privada de API en una página pública ni en el código enviado al navegador.",
+              "href": "/docs",
+              "label": "Abrir documentación"
+            }
+          ]
+        },
+        {
+          "id": "machine-guidance",
+          "title": "Las instrucciones para máquinas.",
+          "description": "Este es el mismo documento canónico en inglés que se sirve en /.well-known/agent-instructions.md. Los identificadores de protocolos, rutas y datos conservan su forma original."
+        }
+      ]
+    },
+    "og": {
+      "home": {
+        "title": "Consigue la venta cuando la IA hace la compra.",
+        "description": "La plataforma de comercio agéntico. Conecta, simula, corrige, vende y mide."
+      },
+      "docs": {
+        "title": "Construye sobre la plataforma de comercio agéntico.",
+        "description": "Referencia de la API, MCP, CLI y documentos públicos para desarrolladores."
+      }
+    }
   }
 }
