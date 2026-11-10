@@ -1,0 +1,646 @@
+{
+  "enterpriseNav": {
+    "pricing": "Pricing",
+    "home": "ecentic homepage",
+    "groups": [
+      {
+        "id": "platform",
+        "label": "Platform",
+        "columns": [
+          {
+            "title": "Connect",
+            "items": [
+              {
+                "href": "/integrations/shopify",
+                "label": "Shopify app",
+                "description": "Install from the Shopify App Store.",
+                "status": ""
+              },
+              {
+                "href": "/integrations/woocommerce",
+                "label": "WooCommerce plugin",
+                "description": "Free plugin, or REST API keys.",
+                "status": ""
+              },
+              {
+                "href": "/platform/connect#product-feeds",
+                "label": "Product feeds",
+                "description": "Import supported XML or JSON feeds.",
+                "status": ""
+              },
+              {
+                "href": "/platform/connect#csv",
+                "label": "CSV upload",
+                "description": "Start from a spreadsheet export.",
+                "status": ""
+              },
+              {
+                "href": "/platform/connect#store-address",
+                "label": "Store address",
+                "description": "Import public product pages.",
+                "status": ""
+              },
+              {
+                "href": "/integrations/google-merchant-center",
+                "label": "Google Merchant Center",
+                "description": "Send published fixes to Google, on Shopify.",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "Simulate",
+            "items": [
+              {
+                "href": "/platform/simulate#simulations",
+                "label": "Agent simulations",
+                "description": "ChatGPT, Claude and Gemini compare listings.",
+                "status": ""
+              },
+              {
+                "href": "/platform/simulate#win-rate",
+                "label": "AI win rate",
+                "description": "Per product, model and competitor.",
+                "status": ""
+              },
+              {
+                "href": "/platform/simulate#battlecards",
+                "label": "Competitor battlecards",
+                "description": "See why the other listing won.",
+                "status": ""
+              },
+              {
+                "href": "/platform/simulate#replay",
+                "label": "Agent replay",
+                "description": "Read the recorded reasoning.",
+                "status": ""
+              },
+              {
+                "href": "/platform/simulate#readiness",
+                "label": "Readiness audit",
+                "description": "Crawler rules, structured data and identifiers.",
+                "status": ""
+              },
+              {
+                "href": "/platform/simulate#listing-quality",
+                "label": "Listing quality check",
+                "description": "34 rules for product data.",
+                "status": ""
+              },
+              {
+                "href": "/platform/simulate#brand-visibility",
+                "label": "Brand Visibility",
+                "description": "Test how ChatGPT describes your brand.",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "Fix",
+            "items": [
+              {
+                "href": "/platform/fix#listings",
+                "label": "Listing rewrites",
+                "description": "New titles and descriptions.",
+                "status": ""
+              },
+              {
+                "href": "/platform/fix#structured-data",
+                "label": "Structured data",
+                "description": "Generate and publish Product data separately.",
+                "status": ""
+              },
+              {
+                "href": "/platform/fix#attributes",
+                "label": "Missing attributes",
+                "description": "See which listing fields are missing.",
+                "status": ""
+              },
+              {
+                "href": "/platform/fix#publish",
+                "label": "Publish on Apply",
+                "description": "You choose each product to change.",
+                "status": ""
+              },
+              {
+                "href": "/platform/fix#merchant-center",
+                "label": "Merchant Center sync",
+                "description": "Send published fixes when you choose.",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "Sell",
+            "items": [
+              {
+                "href": "/platform/sell#checkout",
+                "label": "Agent checkout",
+                "description": "For WooCommerce, with your payments.",
+                "status": ""
+              },
+              {
+                "href": "/platform/sell#chatgpt",
+                "label": "Sell inside ChatGPT",
+                "description": "The ecentic app, pending publication.",
+                "status": "soon"
+              },
+              {
+                "href": "/ucp-playground",
+                "label": "Checkout playground",
+                "description": "Test a shopping agent on your store.",
+                "status": ""
+              },
+              {
+                "href": "/ucp-validator",
+                "label": "Checkout validator",
+                "description": "Check your agent checkout profile.",
+                "status": ""
+              },
+              {
+                "href": "/webmcp-scanner",
+                "label": "WebMCP scanner",
+                "description": "Inspect actions in storefront source.",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "Track",
+            "items": [
+              {
+                "href": "/platform/track#traffic",
+                "label": "AI traffic",
+                "description": "Visits per assistant on Shopify.",
+                "status": ""
+              },
+              {
+                "href": "/platform/track#lift",
+                "label": "Estimated lift",
+                "description": "An estimate, checked by rescanning.",
+                "status": ""
+              },
+              {
+                "href": "/platform/track#rescans",
+                "label": "Rescans",
+                "description": "Run another simulation after a fix.",
+                "status": ""
+              },
+              {
+                "href": "/platform/track#stores",
+                "label": "Every store, one account",
+                "description": "Keep your storefronts together.",
+                "status": ""
+              },
+              {
+                "href": "/docs",
+                "label": "API, MCP server and CLI",
+                "description": "Discovery and store onboarding tools.",
+                "status": ""
+              }
+            ]
+          }
+        ],
+        "featured": {
+          "href": "/platform",
+          "title": "See ecentic in a minute",
+          "description": "Follow the catalog from connection to checkout."
+        }
+      },
+      {
+        "id": "solutions",
+        "label": "Solutions",
+        "columns": [
+          {
+            "title": "By business",
+            "items": [
+              {
+                "href": "/solutions/brands",
+                "label": "Brands",
+                "description": "Be the product the answer names.",
+                "status": ""
+              },
+              {
+                "href": "/solutions/retailers-and-marketplaces",
+                "label": "Retailers and marketplaces",
+                "description": "Work through large supplier catalogs.",
+                "status": ""
+              },
+              {
+                "href": "/solutions/enterprise",
+                "label": "Enterprise",
+                "description": "Run AI as a sales channel.",
+                "status": ""
+              },
+              {
+                "href": "/solutions/agencies-and-partners",
+                "label": "Agencies and partners",
+                "description": "Add AI commerce to your services.",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "By team",
+            "items": [
+              {
+                "href": "/solutions#ecommerce-and-growth",
+                "label": "E-commerce and growth",
+                "description": "Understand the products AI picks.",
+                "status": ""
+              },
+              {
+                "href": "/solutions#marketing",
+                "label": "Marketing",
+                "description": "Check the product facts AI reads.",
+                "status": ""
+              },
+              {
+                "href": "/solutions#marketplace-and-channel-managers",
+                "label": "Marketplace and channel managers",
+                "description": "Improve the feeds you own.",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "By sector",
+            "items": [
+              {
+                "href": "/solutions/sectors/food-and-beverage",
+                "label": "Food and beverage",
+                "description": "Product data for your category.",
+                "status": ""
+              },
+              {
+                "href": "/solutions/sectors/wine-and-spirits",
+                "label": "Wine and spirits",
+                "description": "Product data for your category.",
+                "status": ""
+              },
+              {
+                "href": "/solutions/sectors/beauty-and-personal-care",
+                "label": "Beauty and personal care",
+                "description": "Product data for your category.",
+                "status": ""
+              },
+              {
+                "href": "/solutions/sectors/consumer-electronics",
+                "label": "Consumer electronics",
+                "description": "Product data for your category.",
+                "status": ""
+              },
+              {
+                "href": "/solutions/sectors/home-and-furniture",
+                "label": "Home and furniture",
+                "description": "Product data for your category.",
+                "status": ""
+              },
+              {
+                "href": "/solutions/sectors/fashion-and-outdoor",
+                "label": "Fashion and outdoor",
+                "description": "Product data for your category.",
+                "status": ""
+              },
+              {
+                "href": "/solutions/sectors/health-wellness-and-pet",
+                "label": "Health, wellness and pet",
+                "description": "Product data for your category.",
+                "status": ""
+              },
+              {
+                "href": "/solutions/sectors/travel-and-experiences",
+                "label": "Travel and experiences",
+                "description": "Product data for your category.",
+                "status": ""
+              },
+              {
+                "href": "/solutions/sectors",
+                "label": "All sectors",
+                "description": "Find your category.",
+                "status": ""
+              }
+            ]
+          }
+        ],
+        "featured": {
+          "href": "/stories/dua-flavours",
+          "title": "DUA Flavours pilot",
+          "description": "+12% visits from AI assistants or direct traffic."
+        }
+      },
+      {
+        "id": "channels",
+        "label": "AI channels",
+        "columns": [
+          {
+            "title": "AI channels",
+            "items": [
+              {
+                "href": "/ai-channels/google-ai-mode-gemini",
+                "label": "Google AI Mode and Gemini",
+                "description": "Current coverage and platform requirements.",
+                "status": "simulated"
+              },
+              {
+                "href": "/ai-channels/chatgpt",
+                "label": "ChatGPT",
+                "description": "Current coverage and platform requirements.",
+                "status": "simulated"
+              },
+              {
+                "href": "/ai-channels/claude",
+                "label": "Claude",
+                "description": "Current coverage and platform requirements.",
+                "status": "simulated"
+              },
+              {
+                "href": "/ai-channels/microsoft-copilot",
+                "label": "Microsoft Copilot",
+                "description": "Current coverage and platform requirements.",
+                "status": "soon"
+              },
+              {
+                "href": "/ai-channels/perplexity",
+                "label": "Perplexity",
+                "description": "Current coverage and platform requirements.",
+                "status": "soon"
+              },
+              {
+                "href": "/ai-channels/amazon",
+                "label": "Amazon",
+                "description": "Current coverage and platform requirements.",
+                "status": "soon"
+              }
+            ]
+          }
+        ],
+        "featured": {
+          "href": "/ai-channels",
+          "title": "Where AI shops",
+          "description": "What each assistant needs, and what we do today."
+        }
+      },
+      {
+        "id": "integrations",
+        "label": "Integrations",
+        "columns": [
+          {
+            "title": "Commerce platforms",
+            "items": [
+              {
+                "href": "/integrations/shopify",
+                "label": "Shopify",
+                "description": "Direct catalog connection.",
+                "status": "live"
+              },
+              {
+                "href": "/integrations/woocommerce",
+                "label": "WooCommerce",
+                "description": "Free plugin or REST API.",
+                "status": "live"
+              },
+              {
+                "href": "/integrations#commerce",
+                "label": "BigCommerce",
+                "description": "Import a supported feed or CSV.",
+                "status": "feed"
+              },
+              {
+                "href": "/integrations#commerce",
+                "label": "Adobe Commerce",
+                "description": "Import a supported feed or CSV.",
+                "status": "feed"
+              },
+              {
+                "href": "/integrations#commerce",
+                "label": "Shopware",
+                "description": "Import a supported feed or CSV.",
+                "status": "feed"
+              },
+              {
+                "href": "/integrations#commerce",
+                "label": "Wix",
+                "description": "Import a supported feed or CSV.",
+                "status": "feed"
+              }
+            ]
+          },
+          {
+            "title": "Feeds and data",
+            "items": [
+              {
+                "href": "/integrations/google-merchant-center",
+                "label": "Google Merchant Center",
+                "description": "For Shopify stores.",
+                "status": "live"
+              },
+              {
+                "href": "/integrations/product-feeds",
+                "label": "Product feeds and CSV",
+                "description": "Read-only catalog imports.",
+                "status": "live"
+              },
+              {
+                "href": "/integrations#feeds",
+                "label": "Microsoft Merchant Center",
+                "description": "Feed export on the build list.",
+                "status": "soon"
+              },
+              {
+                "href": "/integrations#feeds",
+                "label": "Amazon Shop Direct",
+                "description": "Catalog export on the build list.",
+                "status": "soon"
+              }
+            ]
+          },
+          {
+            "title": "Product information",
+            "items": [
+              {
+                "href": "/integrations#pim",
+                "label": "Plytix and Pimcore",
+                "description": "Through a compatible product export.",
+                "status": "feed"
+              },
+              {
+                "href": "/integrations#pim",
+                "label": "Akeneo",
+                "description": "Direct connection on the build list.",
+                "status": "soon"
+              },
+              {
+                "href": "/integrations#pim",
+                "label": "Salsify",
+                "description": "Direct connection on the build list.",
+                "status": "soon"
+              }
+            ]
+          },
+          {
+            "title": "Payments and checkout",
+            "items": [
+              {
+                "href": "/platform/sell",
+                "label": "Your payment gateway",
+                "description": "On WooCommerce agent checkout.",
+                "status": "live"
+              },
+              {
+                "href": "/integrations#payments",
+                "label": "Stripe Agentic Commerce Suite",
+                "description": "Integration on the build list.",
+                "status": "soon"
+              }
+            ]
+          }
+        ],
+        "featured": {
+          "href": "/integrations",
+          "title": "Connect your stack",
+          "description": "Live, through a feed, or on the build list."
+        }
+      },
+      {
+        "id": "resources",
+        "label": "Resources",
+        "columns": [
+          {
+            "title": "Learn",
+            "items": [
+              {
+                "href": "/blog",
+                "label": "Blog",
+                "description": "Articles from ecentic.",
+                "status": ""
+              },
+              {
+                "href": "/resources",
+                "label": "Guides",
+                "description": "Product data and agent commerce.",
+                "status": ""
+              },
+              {
+                "href": "/stories",
+                "label": "Pilot stories",
+                "description": "Results with the method behind them.",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "Free tools",
+            "items": [
+              {
+                "href": "/sign-up",
+                "label": "AI Agent Score",
+                "description": "Start with a free store check.",
+                "status": ""
+              },
+              {
+                "href": "/ucp-validator",
+                "label": "Checkout validator",
+                "description": "Check an agent checkout profile.",
+                "status": ""
+              },
+              {
+                "href": "/ucp-playground",
+                "label": "Checkout playground",
+                "description": "Run a test shopping agent.",
+                "status": ""
+              },
+              {
+                "href": "/webmcp-scanner",
+                "label": "WebMCP scanner",
+                "description": "Inspect storefront source.",
+                "status": ""
+              },
+              {
+                "href": "/compare",
+                "label": "Compare",
+                "description": "Compare products across assistants.",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "Developers",
+            "items": [
+              {
+                "href": "/docs",
+                "label": "Docs",
+                "description": "Build with ecentic.",
+                "status": ""
+              },
+              {
+                "href": "/docs/api",
+                "label": "API reference",
+                "description": "A readable endpoint reference.",
+                "status": ""
+              },
+              {
+                "href": "/docs/mcp",
+                "label": "MCP server",
+                "description": "Connect your agent tools.",
+                "status": ""
+              },
+              {
+                "href": "/docs#cli",
+                "label": "CLI",
+                "description": "Use ecentic from your terminal.",
+                "status": ""
+              },
+              {
+                "href": "/changelog",
+                "label": "Changelog",
+                "description": "What has shipped.",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "Company",
+            "items": [
+              {
+                "href": "/about",
+                "label": "About",
+                "description": "Meet the founders.",
+                "status": ""
+              },
+              {
+                "href": "/security",
+                "label": "Security and trust",
+                "description": "Data, access and controls.",
+                "status": ""
+              },
+              {
+                "href": "/partners",
+                "label": "Partners",
+                "description": "Work with ecentic.",
+                "status": ""
+              },
+              {
+                "href": "/contact",
+                "label": "Contact",
+                "description": "Find the right conversation.",
+                "status": ""
+              },
+              {
+                "href": "/support",
+                "label": "Help center",
+                "description": "Get help with your account.",
+                "status": ""
+              }
+            ]
+          }
+        ],
+        "featured": {
+          "href": "/tools",
+          "title": "Start with a free check",
+          "description": "Practical tools for product data and checkout."
+        }
+      }
+    ]
+  }
+}

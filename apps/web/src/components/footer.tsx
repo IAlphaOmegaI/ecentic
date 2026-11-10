@@ -1,218 +1,167 @@
-import { InstagramIcon, LinkedinIcon, XTwitterIcon } from "@zenncore/icons";
-import { cn } from "@zenncore/utils";
+import { LinkedinIcon, XTwitterIcon } from "@zenncore/icons";
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
-import { InstallCta } from "@/app/[locale]/(main)/_components/install-cta";
+import { getMessages } from "next-intl/server";
+import { CookieSettings } from "@/components/cookie-settings";
+import { LanguageSwitcher } from "@/components/language-switcher";
+import { FooterColumns } from "@/components/marketing/footer-columns";
+import {
+  MarketingBand,
+  MarketingClosing,
+} from "@/components/marketing/primitives";
 import { Link } from "@/i18n/navigation";
-import WordMark from "@/public/images/wordmark.svg";
-import { CookieSettings } from "./cookie-settings";
-import { Plus } from "./plus";
+import "./marketing/navigation.css";
 
-const socials = [
-  {
-    href: "https://x.com/ecentic_ai",
-    icon: <XTwitterIcon className="size-5" fill="currentColor" />,
-    label: "X",
-  },
-  {
-    href: "https://www.linkedin.com/company/ecentic/posts/?feedView=all",
-    icon: <LinkedinIcon className="size-5" fill="currentColor" />,
-    label: "LinkedIn",
-  },
-  {
-    href: "https://www.instagram.com/ecentic.ai/",
-    icon: <InstagramIcon className="size-5" fill="currentColor" />,
-    label: "Instagram",
-  },
-] as const;
-
-export const Footer = async ({ stacked = false }: Footer.Props) => {
-  const translate = await getTranslations("footer");
-
+export const Footer = async (_props: Footer.Props = {}) => {
+  const { enterpriseChrome: chrome, enterpriseNav: navigation } =
+    await getMessages();
+  const copy = chrome.footer;
+  const group = (id: string) =>
+    navigation.groups.find((entry) => entry.id === id);
+  const links = (id: string, title?: string) =>
+    group(id)
+      ?.columns.filter((column) => !title || column.title === title)
+      .flatMap((column) =>
+        column.items.map(({ href, label }) => ({ href, label })),
+      ) ?? [];
   const columns = [
     {
-      title: translate("columns.product"),
+      title: copy.platform,
+      links: (group("platform")?.columns ?? []).map((column, index) => ({
+        label: column.title,
+        href: `/platform/${["connect", "simulate", "fix", "sell", "track"][index]}`,
+      })),
+    },
+    {
+      title: copy.solutions,
       links: [
-        { href: "/features", label: translate("links.features") },
-        { href: "/how-it-works", label: translate("links.howItWorks") },
-        { href: "/pricing", label: translate("links.pricing") },
-        {
-          href: "/features/product-listings",
-          label: translate("links.productListings"),
-        },
+        ...(group("solutions")?.columns[0]?.items.map(({ href, label }) => ({
+          href,
+          label,
+        })) ?? []),
+        { href: "/solutions/sectors", label: copy.allSectors },
       ],
     },
     {
-      title: translate("columns.platforms"),
+      title: copy.channels,
       links: [
-        { href: "/platforms/shopify", label: translate("links.shopify") },
-        {
-          href: "/platforms/woocommerce",
-          label: translate("links.woocommerce"),
-        },
-        { href: "/enterprise", label: translate("links.enterprise") },
+        ...links("channels"),
+        { href: "/ai-channels", label: copy.allChannels },
       ],
     },
     {
-      title: translate("columns.resources"),
+      title: copy.integrations,
       links: [
-        { href: "/docs", label: translate("links.docs") },
-        // Not a page — a route handler serving the OpenAPI document. It is in
-        // the footer because "is the API documented" is answered by a crawler
-        // reading the homepage, and a link it can follow is the only answer
-        // that counts.
+        { href: "/integrations/shopify", label: "Shopify" },
+        { href: "/integrations/woocommerce", label: "WooCommerce" },
         {
-          href: "/openapi.json",
-          label: translate("links.apiReference"),
-          external: true,
+          href: "/integrations/google-merchant-center",
+          label: "Google Merchant Center",
         },
-        { href: "/resources", label: translate("links.resources") },
-        { href: "/blog", label: translate("links.blog") },
-        { href: "/compare/best-ai-ecommerce-tools", label: "Compare" },
-        { href: "/ucp-validator", label: "UCP Validator" },
-        { href: "/webmcp-scanner", label: translate("links.webmcpScanner") },
-        { href: "/ucp-playground", label: "UCP Playground" },
-        { href: "/demo", label: translate("links.demo") },
+        {
+          href: "/integrations/product-feeds",
+          label: group("platform")?.columns[0]?.items[2]?.label ?? "",
+        },
+        { href: "/integrations", label: copy.allIntegrations },
+        { href: "/integrations#request", label: copy.requestIntegration },
       ],
     },
     {
-      title: translate("columns.company"),
+      title: copy.resources,
       links: [
-        { href: "/support", label: translate("links.support") },
-        { href: "/privacy-policy", label: translate("links.privacy") },
-        { href: "/terms", label: translate("links.terms") },
+        ...(group("resources")?.columns[0]?.items.map(({ href, label }) => ({
+          href,
+          label,
+        })) ?? []),
+        { href: "/tools", label: copy.tools },
+        ...(group("resources")
+          ?.columns[2]?.items.filter(
+            (item) => item.href === "/docs" || item.href === "/changelog",
+          )
+          .map(({ href, label }) => ({ href, label })) ?? []),
       ],
     },
-  ] as const;
-
+    {
+      title: copy.company,
+      links:
+        group("resources")?.columns[3]?.items.map(({ href, label }) => ({
+          href,
+          label,
+        })) ?? [],
+    },
+    {
+      title: copy.legal,
+      links: [
+        { href: "/terms", label: copy.terms },
+        { href: "/privacy-policy", label: copy.privacy },
+        { href: "/security#dpa", label: copy.dpa },
+        { href: "/security#sub-processors", label: copy.subProcessors },
+        { href: "/ai-instructions", label: copy.aiInstructions },
+      ],
+    },
+  ];
   return (
-    <section className="relative -left-[calc(50vw-50%)] w-screen">
-      <div
-        className={cn(
-          "relative isolate mx-auto max-w-6xl border-accent-foreground",
-          stacked ? "border-x" : "border-t",
-        )}
-      >
-        {!stacked && (
-          <>
-            <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-            <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-          </>
-        )}
-
-        <div className="relative border-accent-foreground border-b p-6 md:p-12">
-          <div
-            aria-hidden
-            className="pointer-events-none absolute inset-0 -z-10 bg-radial-[at_50%_100%] from-primary/20 via-primary/5 to-transparent"
-          />
-          <span className="font-light text-primary text-xl">
-            {translate("cta.eyebrow")}
-          </span>
-          <h2 className="mt-4 max-w-4xl font-body font-medium text-3xl text-foreground leading-tight tracking-tight md:text-5xl">
-            {translate("cta.title")}
-          </h2>
-          <p className="mt-6 max-w-xl font-light text-foreground-dimmed text-lg">
-            {translate("cta.description")}
-          </p>
-          <InstallCta className="mt-8" />
+    <footer className="marketing-site marketing-footer">
+      <MarketingClosing
+        title={chrome.closing.title}
+        description={chrome.closing.description}
+        actions={[
+          { href: "/demo", label: chrome.action.primary },
+          { href: "/sign-up", label: chrome.action.secondary },
+        ]}
+      />
+      <MarketingBand>
+        <div className="marketing-footer-columns">
+          {columns.map((column) => (
+            <nav aria-label={column.title} key={column.title}>
+              <h2>{column.title}</h2>
+              <ul>
+                {column.links.map((link) => (
+                  <li key={link.href}>
+                    <Link href={link.href}>{link.label}</Link>
+                  </li>
+                ))}
+              </ul>
+              {column.title === copy.legal && (
+                <CookieSettings label={copy.cookies} />
+              )}
+            </nav>
+          ))}
         </div>
-
-        <div className="relative grid border-accent-foreground border-b md:grid-cols-12">
-          <div className="flex flex-col gap-5 border-accent-foreground border-b p-6 md:col-span-4 md:border-r md:border-b-0 md:p-8">
+        <FooterColumns columns={columns} />
+      </MarketingBand>
+      <MarketingBand>
+        <div className="marketing-footer-bottom">
+          <Link href="/">
             <Image
-              src={WordMark}
+              src="/images/trademark.svg"
               alt="ecentic"
-              className="h-5 w-auto self-start"
+              width={140}
+              height={36}
             />
-            <p className="max-w-xs font-light text-base text-foreground-dimmed">
-              {translate("tagline")}
-            </p>
-            <div className="flex items-center gap-3">
-              {socials.map(({ href, icon, label }) => (
-                <a
-                  key={href}
-                  href={href}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  aria-label={label}
-                  className="flex size-10 items-center justify-center border border-accent-foreground bg-background text-foreground-dimmed transition-colors hover:border-primary hover:text-primary"
-                >
-                  {icon}
-                </a>
-              ))}
-            </div>
-            <div className="mt-auto flex items-center gap-2 pt-4">
-              <span className="relative flex size-3 shrink-0 items-center justify-center">
-                <span className="absolute size-full animate-ping rounded-full bg-success opacity-40" />
-                <span className="relative size-1.5 rounded-full bg-success" />
-              </span>
-              <span className="font-light text-foreground-dimmed text-sm">
-                {translate("status")}
-              </span>
-            </div>
-          </div>
-
-          <div className="grid grid-cols-2 md:col-span-8 md:grid-cols-4">
-            {columns.map((column, index) => (
-              <nav
-                key={column.title}
-                className={`relative flex flex-col gap-4 border-accent-foreground p-6 md:border-b-0 md:p-8 ${
-                  index < 2 ? "border-b" : ""
-                } ${index % 2 === 0 ? "border-r" : "md:border-r"} ${
-                  index === columns.length - 1 ? "md:border-r-0" : ""
-                }`}
-              >
-                <span className="font-medium text-foreground-dimmed text-xs uppercase tracking-widest">
-                  {column.title}
-                </span>
-                <ul className="flex flex-col gap-3">
-                  {column.links.map((link) => (
-                    <li key={link.href}>
-                      {"external" in link && link.external ? (
-                        <a
-                          href={link.href}
-                          className="font-light text-base text-foreground transition-colors hover:text-primary"
-                        >
-                          {link.label}
-                        </a>
-                      ) : (
-                        <Link
-                          href={link.href}
-                          className="font-light text-base text-foreground transition-colors hover:text-primary"
-                        >
-                          {link.label}
-                        </Link>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </nav>
-            ))}
-          </div>
-        </div>
-
-        <div className="relative flex flex-col items-center justify-between gap-3 p-6 md:flex-row md:px-8">
-          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-          <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-          <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+          </Link>
+          <p>{copy.tagline}</p>
+          <p>{copy.copyright}</p>
           <div className="flex items-center gap-4">
-            <p className="font-light text-foreground-dimmed text-sm">
-              {translate("copyright")}
-            </p>
-            <CookieSettings />
+            <a
+              href="https://www.linkedin.com/company/ecentic/"
+              aria-label="LinkedIn"
+            >
+              <LinkedinIcon className="size-4" />
+            </a>
+            <a href="https://x.com/ecentic_ai" aria-label="X">
+              <XTwitterIcon className="size-4" />
+            </a>
+            <LanguageSwitcher />
           </div>
-          <p className="font-light text-foreground-dimmed text-sm">
-            {translate("madeFor")}
-          </p>
+          <div className="marketing-footer-mobile">
+            <CookieSettings label={copy.cookies} />
+          </div>
         </div>
-      </div>
-    </section>
+        <p className="marketing-footer-trademark">{copy.trademark}</p>
+      </MarketingBand>
+    </footer>
   );
 };
-
 export namespace Footer {
-  export type Props = {
-    stacked?: boolean;
-  };
+  export type Props = { stacked?: boolean };
 }

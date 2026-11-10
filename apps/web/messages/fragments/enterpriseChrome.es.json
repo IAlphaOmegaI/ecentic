@@ -29,7 +29,25 @@
     "footer": {
       "tagline": "Consigue la venta cuando la IA hace la compra.",
       "copyright": "© 2026 {{TODO: nombre legal de la empresa operadora polaca}}",
-      "trademark": "Los nombres y logotipos de los productos son marcas de sus propietarios. Mostrarlos no implica que respalden a ecentic ni que colaboren con ella."
+      "trademark": "Los nombres y logotipos de los productos son marcas de sus propietarios. Mostrarlos no implica que respalden a ecentic ni que colaboren con ella.",
+      "platform": "Plataforma",
+      "solutions": "Soluciones",
+      "channels": "Canales de IA",
+      "integrations": "Integraciones",
+      "resources": "Recursos",
+      "company": "Empresa",
+      "legal": "Legal",
+      "allSectors": "Todos los sectores",
+      "allChannels": "Todos los canales",
+      "allIntegrations": "Todas las integraciones",
+      "requestIntegration": "Solicita una integración",
+      "terms": "Condiciones",
+      "privacy": "Privacidad",
+      "dpa": "DPA",
+      "subProcessors": "Subencargados",
+      "cookies": "Configura las cookies",
+      "aiInstructions": "Instrucciones para IA",
+      "tools": "Herramientas gratuitas"
     }
   }
 }

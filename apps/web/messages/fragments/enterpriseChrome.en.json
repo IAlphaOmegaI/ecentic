@@ -29,7 +29,25 @@
     "footer": {
       "tagline": "Get the sale when AI does the shopping.",
       "copyright": "© 2026 {{TODO: legal name of the Polish operating company}}",
-      "trademark": "Product names and logos are trademarks of their owners. Showing them doesn't mean they endorse or partner with ecentic."
+      "trademark": "Product names and logos are trademarks of their owners. Showing them doesn't mean they endorse or partner with ecentic.",
+      "platform": "Platform",
+      "solutions": "Solutions",
+      "channels": "AI channels",
+      "integrations": "Integrations",
+      "resources": "Resources",
+      "company": "Company",
+      "legal": "Legal",
+      "allSectors": "All sectors",
+      "allChannels": "All channels",
+      "allIntegrations": "All integrations",
+      "requestIntegration": "Request an integration",
+      "terms": "Terms",
+      "privacy": "Privacy",
+      "dpa": "DPA",
+      "subProcessors": "Sub-processors",
+      "cookies": "Cookie settings",
+      "aiInstructions": "AI instructions",
+      "tools": "Free tools"
     }
   }
 }
