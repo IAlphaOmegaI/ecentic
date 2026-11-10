@@ -32,6 +32,20 @@ export const MarketingShell = async ({ children }: { children: ReactNode }) => {
   const { enterpriseChrome } = await getMessages();
   return (
     <div className="marketing-site">
+      <link
+        rel="preload"
+        href="/fonts/marketing/RedHatDisplay-Regular.woff2"
+        as="font"
+        type="font/woff2"
+        crossOrigin="anonymous"
+      />
+      <link
+        rel="preload"
+        href="/fonts/marketing/RedHatDisplay-Medium.woff2"
+        as="font"
+        type="font/woff2"
+        crossOrigin="anonymous"
+      />
       <a className="marketing-skip" href="#main-content">
         {enterpriseChrome.skip}
       </a>
@@ -107,14 +121,16 @@ export const MarketingSection = ({
     {section.items && (
       <div
         className="marketing-grid"
+        data-columns={section.columns ?? 3}
+        data-ordered={section.ordered || undefined}
         style={{ "--columns": section.columns ?? 3 } as CSSProperties}
       >
         {section.items.map((item, index) => (
           <article key={item.title}>
             {section.ordered && (
-              <MarketingEyebrow>
+              <span className="marketing-step-index">
                 {String(index + 1).padStart(2, "0")}
-              </MarketingEyebrow>
+              </span>
             )}
             {item.status && (
               <MarketingStatus status={item.status}>

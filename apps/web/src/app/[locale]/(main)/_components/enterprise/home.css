@@ -1,0 +1,711 @@
+.enterprise-blue {
+  --line: rgb(255 255 255 / 28%);
+  --cross: rgb(255 255 255 / 62%);
+  background: linear-gradient(
+    100deg,
+    var(--blue-text) 0%,
+    var(--blue-text) 28%,
+    var(--blue) 100%
+  );
+  color: var(--canvas);
+}
+.enterprise-blue h1 {
+  color: var(--canvas);
+  max-width: 920px;
+  font-size: clamp(3rem, 5.2vw, 4.8rem);
+  line-height: 1.025;
+  letter-spacing: -0.043em;
+}
+.enterprise-blue .marketing-eyebrow {
+  color: var(--canvas);
+}
+.enterprise-blue .marketing-actions a:first-child {
+  background: var(--canvas);
+  color: var(--blue-text);
+}
+.enterprise-blue .marketing-actions a + a {
+  color: var(--canvas);
+  border-color: rgb(255 255 255 / 70%);
+}
+.enterprise-copy {
+  position: relative;
+  z-index: 1;
+}
+.enterprise-description {
+  margin-top: 28px;
+  max-width: 720px;
+  font-size: 18px;
+  line-height: 1.55;
+}
+.enterprise-platforms {
+  margin-top: 22px;
+  font-size: 13px;
+}
+.enterprise-journey .marketing-cell {
+  padding-block: 60px 48px;
+}
+.enterprise-art {
+  position: absolute;
+  inset: 0 -60px 0 24%;
+  pointer-events: none;
+  background:
+    url("/images/marketing/commerce-ascii.webp") right center / contain
+    no-repeat;
+  opacity: 0.45;
+  mask-image: linear-gradient(100deg, transparent 22%, #000 90%);
+}
+.enterprise-stage-list {
+  display: grid;
+  width: 100%;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  border: 0;
+  border-radius: 0;
+  overflow: visible;
+}
+.enterprise-stage-tab {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  align-items: center;
+  justify-content: start;
+  height: auto;
+  padding: 22px 28px;
+  gap: 14px 10px;
+  text-align: left;
+  color: var(--body);
+  border-right: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  border-radius: 0;
+}
+.enterprise-stage-tab > span:last-child {
+  grid-column: 1 / -1;
+  font-size: 19px;
+  font-weight: 500;
+}
+.enterprise-stage-tab[data-active],
+.enterprise-stage-tab[data-selected] {
+  background: var(--canvas);
+  color: var(--blue-text);
+  border-bottom-color: transparent;
+}
+.enterprise-stage-number {
+  font-family: var(--font-lt-superior), sans-serif;
+  font-size: 27px;
+}
+.enterprise-stage-tab::before {
+  display: none;
+}
+.enterprise-stage-tab:focus-visible {
+  outline: 2px solid var(--blue-text);
+  outline-offset: -5px;
+}
+.enterprise-stage-tab + .enterprise-stage-tab::after,
+.enterprise-business-grid > article::before,
+.enterprise-channel-grid > a::before,
+.enterprise-proof-grid > article::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  left: -8px;
+  top: -8px;
+  z-index: 2;
+  width: 16px;
+  height: 16px;
+  background:
+    linear-gradient(var(--cross), var(--cross)) center / 16px 1px no-repeat,
+    linear-gradient(var(--cross), var(--cross)) center / 1px 16px no-repeat;
+}
+.enterprise-stage-content {
+  display: grid;
+  grid-template-columns: 2fr 3fr;
+  background: var(--canvas);
+}
+.enterprise-stage-providers {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  margin-top: 22px;
+}
+.enterprise-stage-providers img {
+  width: 26px;
+  height: 26px;
+}
+.enterprise-stage-heading {
+  padding: 38px 28px;
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+.enterprise-stage-heading h2 {
+  font-size: 48px;
+}
+.enterprise-stage-body {
+  padding: 38px 28px;
+  border-left: 1px solid var(--line);
+}
+.enterprise-stage-body p {
+  font-size: 18px;
+  line-height: 1.5;
+  max-width: 60ch;
+}
+.enterprise-stage-body ul,
+.enterprise-mechanisms ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 24px;
+  margin-top: 22px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.enterprise-stage-body .marketing-item-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 16px;
+  margin-top: 24px;
+  color: var(--blue-text);
+}
+.enterprise-stage-note {
+  border-top: 1px solid var(--line);
+  padding: 15px 28px;
+  font-size: 13px;
+}
+.enterprise-programs > .marketing-rail {
+  padding: 32px 28px;
+}
+.enterprise-programs > .marketing-rail > p {
+  font-size: 14px;
+  color: var(--muted);
+}
+.enterprise-programs > .marketing-rail > div {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  align-items: center;
+  gap: 48px;
+  margin-top: 30px;
+}
+.enterprise-programs img {
+  width: 100%;
+  height: 48px;
+  object-fit: contain;
+}
+.enterprise-program-todo {
+  font-size: 16px;
+  font-weight: 500;
+}
+.enterprise-program-todo small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.enterprise-business-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+}
+.enterprise-business-grid > article {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding: 32px 28px;
+  border-right: 1px solid var(--line);
+  min-width: 0;
+}
+.enterprise-business-grid > article:last-child {
+  border-right: 0;
+}
+.enterprise-business-heading {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+.enterprise-business-heading > p {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--blue-text);
+}
+.enterprise-business-grid h3 {
+  font-size: 28px;
+}
+.enterprise-business-grid h4 {
+  font-family: "Ecentic Red Hat", sans-serif;
+  font-size: 13px;
+  margin-top: auto;
+  letter-spacing: 0;
+}
+.enterprise-business-grid .marketing-note {
+  margin-top: 0;
+  font-size: 13px;
+}
+.enterprise-business-grid ul {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  font-size: 15px;
+}
+.enterprise-business-grid .marketing-item-link {
+  display: inline-flex;
+  gap: 10px;
+  align-items: center;
+  color: var(--blue-text);
+  font-size: 14px;
+  margin-top: 14px;
+}
+.enterprise-business-grid svg {
+  flex-shrink: 0;
+}
+.enterprise-index {
+  font-family: var(--font-lt-superior), sans-serif;
+  font-size: 38px;
+  color: var(--blue-text);
+  line-height: 1;
+}
+.enterprise-film {
+  background: var(--dark-0);
+}
+.enterprise-film-player {
+  padding: 0 28px 48px;
+}
+.enterprise-film-player > button {
+  border-radius: var(--control-radius);
+  box-shadow: none;
+}
+.enterprise-video-dialog {
+  border-radius: var(--control-radius);
+}
+.enterprise-channel-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.enterprise-channel-grid > a {
+  position: relative;
+  padding: 32px 28px;
+  border-top: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+.enterprise-channel-grid > a:nth-child(3n) {
+  border-right: 0;
+}
+.enterprise-channel-name {
+  font-size: 28px;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--ink);
+}
+.enterprise-channel-logo {
+  width: 48px;
+  height: 48px;
+  margin-bottom: 28px;
+}
+.enterprise-channel-grid p {
+  margin-top: 24px;
+  margin-bottom: 32px;
+}
+.enterprise-channel-grid > a > div {
+  margin-top: auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+.enterprise-channel-grid svg {
+  color: var(--blue-text);
+}
+.enterprise-integration-count {
+  margin-top: 28px;
+  color: var(--ink);
+  font-size: 20px;
+}
+.enterprise-integration-count > span {
+  color: var(--cross);
+  margin-inline: 12px;
+}
+.enterprise-integration-row {
+  display: grid;
+  grid-template-columns: 220px minmax(0, 1fr);
+  border-top: 1px solid var(--line);
+}
+.enterprise-integration-row > h3 {
+  padding: 28px;
+  font-family: "Ecentic Red Hat", sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+.enterprise-integration-row > div {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+.enterprise-integration-row article {
+  padding: 28px;
+  border-left: 1px solid var(--line);
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+  min-width: 0;
+}
+.enterprise-integration-mark {
+  height: 36px;
+  display: flex;
+  align-items: center;
+}
+.enterprise-integration-mark img {
+  height: 36px;
+  width: auto;
+  max-width: 136px;
+  object-fit: contain;
+}
+.enterprise-integration-row article:nth-child(n + 4) {
+  border-top: 1px solid var(--line);
+}
+@media (max-width: 800px) {
+  .enterprise-blue {
+    background: var(--blue-text);
+  }
+}
+.enterprise-integration-row article > a {
+  color: var(--ink);
+  font-size: 18px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+.enterprise-integration-row article > .marketing-status {
+  font-size: 12px;
+}
+.enterprise-integration-row article > button {
+  font-size: 13px;
+  color: var(--blue-text);
+  justify-content: flex-start;
+  padding: 0;
+}
+.enterprise-mechanisms article {
+  display: flex;
+  flex-direction: column;
+}
+.enterprise-mechanisms .marketing-item-link {
+  margin-top: auto;
+  padding-top: 28px;
+}
+.enterprise-mechanisms ul {
+  margin-bottom: 24px;
+}
+.enterprise-proof-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-top: 1px solid var(--line);
+}
+.enterprise-proof-grid > article {
+  position: relative;
+  padding: 40px 28px;
+  border-right: 1px solid var(--line);
+}
+.enterprise-proof-grid > article:last-child {
+  border-right: 0;
+}
+.enterprise-stat {
+  font-family: var(--font-lt-superior), sans-serif;
+  color: var(--blue-text);
+  font-size: clamp(3.25rem, 5.4vw, 5.5rem);
+  letter-spacing: -0.05em;
+  line-height: 1;
+  margin-bottom: 38px;
+}
+.enterprise-stat sup {
+  font-family: "Ecentic Red Hat", sans-serif;
+  font-size: 14px;
+  vertical-align: top;
+  letter-spacing: 0;
+  margin-left: 8px;
+  position: relative;
+  top: 12px;
+}
+.enterprise-proof-grid h3 {
+  font-size: 24px;
+}
+.enterprise-proof-grid article > p:last-child {
+  margin-top: 20px;
+}
+.enterprise-finding {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  border-top: 1px solid var(--line);
+  background: var(--field);
+}
+.enterprise-finding > h3,
+.enterprise-finding > div {
+  padding: 32px 28px;
+}
+.enterprise-finding > h3 {
+  border-right: 1px solid var(--line);
+  font-size: 26px;
+}
+.enterprise-finding > div > p:first-child {
+  font-size: 22px;
+  line-height: 1.5;
+}
+.enterprise-finding .marketing-note {
+  color: var(--body);
+}
+.enterprise-footnotes {
+  font-size: 13px;
+  padding-block: 28px;
+}
+.enterprise-footnotes p + p {
+  margin-top: 12px;
+}
+.enterprise-procurement {
+  background: var(--dark-0);
+}
+.enterprise-procurement-art {
+  position: absolute;
+  inset: 0;
+  opacity: 0.08;
+  pointer-events: none;
+  background:
+    url("/images/marketing/commerce-ascii.webp") right center / contain
+    no-repeat;
+  mask-image: linear-gradient(100deg, transparent, #000);
+}
+.enterprise-procurement .marketing-grid {
+  position: relative;
+}
+.enterprise-pricing-paths > a {
+  display: grid;
+  grid-template-columns: 68px 1fr auto;
+  align-items: center;
+  gap: 28px;
+  border-top: 1px solid var(--line);
+  padding: 32px 28px;
+}
+.enterprise-pricing-paths h3 {
+  font-size: 28px;
+}
+.enterprise-pricing-paths p {
+  margin-top: 12px;
+  max-width: 65ch;
+}
+.enterprise-path-action {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  color: var(--blue-text);
+  font-size: 14px;
+}
+@media (hover: hover) and (pointer: fine) {
+  .enterprise-channel-grid a:hover .enterprise-channel-name,
+  .enterprise-pricing-paths a:hover h3 {
+    color: var(--blue-text);
+  }
+}
+@media (max-width: 1000px) {
+  .enterprise-business-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .enterprise-business-grid > article:nth-child(2) {
+    border-right: 0;
+  }
+  .enterprise-business-grid > article:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
+  }
+  .enterprise-programs > .marketing-rail > div {
+    gap: 28px;
+  }
+  .enterprise-stage-tab {
+    padding-inline: 18px;
+  }
+  .enterprise-integration-row {
+    grid-template-columns: 160px minmax(0, 1fr);
+  }
+  .enterprise-integration-row > div {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .enterprise-integration-row article:nth-child(n + 3) {
+    border-top: 1px solid var(--line);
+  }
+  .enterprise-channel-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .enterprise-channel-grid > a:nth-child(3n) {
+    border-right: 1px solid var(--line);
+  }
+  .enterprise-channel-grid > a:nth-child(2n) {
+    border-right: 0;
+  }
+  .enterprise-pricing-paths > a {
+    grid-template-columns: 50px 1fr;
+  }
+  .enterprise-path-action {
+    grid-column: 2;
+  }
+}
+@media (max-width: 639px) {
+  .enterprise-blue .marketing-cell {
+    padding: 46px 16px 38px;
+  }
+  .enterprise-blue h1 {
+    font-size: 43px;
+    letter-spacing: -0.036em;
+  }
+  .enterprise-blue .marketing-eyebrow {
+    font-size: 12px;
+    margin-bottom: 28px;
+  }
+  .enterprise-description {
+    font-size: 16px;
+    margin-top: 24px;
+  }
+  .enterprise-art {
+    inset: 150px -16px 0 0;
+    opacity: 0.16;
+    mask-image: linear-gradient(180deg, transparent, #000);
+  }
+  .enterprise-platforms {
+    font-size: 12px;
+    max-width: 32ch;
+  }
+  .enterprise-blue .marketing-actions {
+    flex-wrap: wrap;
+    gap: 12px;
+    margin-top: 26px;
+  }
+  .enterprise-blue .marketing-actions a {
+    min-height: 44px;
+    padding: 10px 12px;
+    font-size: 13px;
+  }
+  .enterprise-stage-list {
+    overflow-x: auto;
+    grid-template-columns: repeat(5, minmax(130px, 1fr));
+  }
+  .enterprise-stage-tab {
+    padding: 18px 16px;
+  }
+  .enterprise-stage-tab > span:last-child {
+    font-size: 16px;
+  }
+  .enterprise-stage-number {
+    font-size: 22px;
+  }
+  .enterprise-stage-tab svg {
+    width: 24px;
+    height: 24px;
+  }
+  .enterprise-stage-tab + .enterprise-stage-tab::after {
+    display: none;
+  }
+  .enterprise-stage-content {
+    grid-template-columns: 1fr;
+  }
+  .enterprise-stage-heading {
+    padding: 28px 16px 0;
+    gap: 18px;
+  }
+  .enterprise-stage-heading h2 {
+    font-size: 36px;
+  }
+  .enterprise-stage-heading svg {
+    width: 36px;
+    height: 36px;
+  }
+  .enterprise-stage-body {
+    padding: 24px 16px 28px;
+    border: 0;
+  }
+  .enterprise-stage-body p {
+    font-size: 16px;
+  }
+  .enterprise-stage-note {
+    padding: 16px;
+  }
+  .enterprise-programs > .marketing-rail {
+    padding: 26px 16px;
+  }
+  .enterprise-programs > .marketing-rail > div {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px;
+  }
+  .enterprise-programs img {
+    height: 40px;
+  }
+  .enterprise-business-grid,
+  .enterprise-channel-grid,
+  .enterprise-proof-grid,
+  .enterprise-finding {
+    grid-template-columns: 1fr;
+  }
+  .enterprise-business-grid > article,
+  .enterprise-channel-grid > a,
+  .enterprise-proof-grid > article {
+    border-right: 0;
+    padding: 28px 16px;
+  }
+  .enterprise-business-grid > article + article,
+  .enterprise-proof-grid > article + article {
+    border-top: 1px solid var(--line);
+  }
+  .enterprise-business-grid h3 {
+    font-size: 30px;
+  }
+  .enterprise-channel-grid > a:nth-child(3n) {
+    border-right: 0;
+  }
+  .enterprise-film-player {
+    padding: 0 16px 28px;
+  }
+  .enterprise-integration-count {
+    font-size: 16px;
+  }
+  .enterprise-integration-count > span {
+    margin-inline: 4px;
+  }
+  .enterprise-integration-row {
+    grid-template-columns: 1fr;
+  }
+  .enterprise-integration-row > h3 {
+    padding: 22px 16px;
+    border-bottom: 1px solid var(--line);
+  }
+  .enterprise-integration-row article {
+    padding: 22px 16px;
+  }
+  .enterprise-integration-row article:nth-child(odd) {
+    border-left: 0;
+  }
+  .enterprise-integration-row article > a {
+    font-size: 15px;
+  }
+  .enterprise-finding > h3,
+  .enterprise-finding > div {
+    padding: 28px 16px;
+    border-right: 0;
+  }
+  .enterprise-finding > h3 {
+    padding-bottom: 0;
+  }
+  .enterprise-finding > div > p:first-child {
+    font-size: 19px;
+  }
+  .enterprise-stat {
+    font-size: 68px;
+    margin-bottom: 28px;
+  }
+  .enterprise-pricing-paths > a {
+    grid-template-columns: 36px 1fr;
+    gap: 18px;
+    padding: 28px 16px;
+  }
+  .enterprise-pricing-paths h3 {
+    font-size: 25px;
+  }
+  .enterprise-path-action {
+    font-size: 13px;
+  }
+  .enterprise-procurement-art {
+    opacity: 0.035;
+  }
+}

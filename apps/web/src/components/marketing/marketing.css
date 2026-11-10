@@ -402,3 +402,100 @@
     scroll-behavior: auto;
   }
 }
+
+/* Complete junctions where the content grid actually meets the rails. */
+.marketing-grid > * {
+  position: relative;
+}
+.marketing-grid > *::before {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  z-index: 2;
+  left: -8px;
+  top: -8px;
+  width: 16px;
+  height: 16px;
+  background:
+    linear-gradient(var(--cross), var(--cross)) center / 16px 1px no-repeat,
+    linear-gradient(var(--cross), var(--cross)) center / 1px 16px no-repeat;
+}
+.marketing-step-index {
+  display: block;
+  margin-bottom: 30px;
+  font-family: var(--font-lt-superior), sans-serif;
+  font-size: 42px;
+  line-height: 1;
+  color: var(--blue-text);
+}
+.marketing-grid[data-columns="2"] > :nth-child(2n),
+.marketing-grid[data-columns="3"] > :nth-child(3n),
+.marketing-grid[data-columns="4"] > :nth-child(4n),
+.marketing-grid[data-columns="5"] > :nth-child(5n) {
+  border-right: 0;
+}
+@media (min-width: 801px) {
+  .marketing-grid[data-ordered] > article {
+    padding-block: 40px;
+  }
+  .marketing-grid[data-ordered] h3 {
+    max-width: 20ch;
+  }
+}
+@media (min-width: 640px) and (max-width: 800px) {
+  .marketing-grid[data-columns] > :nth-child(odd) {
+    border-right: 1px solid var(--line);
+  }
+  .marketing-grid[data-columns] > :nth-child(even) {
+    border-right: 0;
+  }
+}
+
+/* The marketing system uses one control radius; product screenshots keep their source UI. */
+.marketing-site {
+  --control-radius: 2px;
+}
+.marketing-site
+  :where(
+    button,
+    input,
+    textarea,
+    select,
+    [role="combobox"],
+    .rounded-md,
+    .rounded-lg,
+    .rounded-xl,
+    .rounded-2xl
+  ) {
+  border-radius: var(--control-radius);
+}
+.marketing-site :where(div:has(> input), div:has(> textarea)) {
+  border-radius: var(--control-radius);
+}
+.marketing-site :where(button, [role="button"]) {
+  transition-property:
+    color, background-color, border-color, transform, opacity;
+  transition-duration: 160ms;
+  transition-timing-function: cubic-bezier(0.23, 1, 0.32, 1);
+}
+.marketing-field .marketing-note {
+  color: var(--body);
+}
+.marketing-footer button {
+  color: var(--body);
+}
+body:has(.marketing-site) [data-base-ui-portal] [role="listbox"] {
+  --color-background: #ffffff;
+  --color-background-rich: #ffffff;
+  --color-background-dimmed: #e7e7e7;
+  --color-foreground: #16181d;
+  --color-primary: #0a5bd3;
+  --color-accent-foreground: #dedede;
+  font-family: "Ecentic Red Hat", sans-serif;
+  border-radius: 2px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .marketing-site :where(button, [role="button"]) {
+    transition: none;
+  }
+}

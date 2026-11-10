@@ -1,0 +1,814 @@
+{
+  "enterpriseIntegrations": {
+    "statuses": {
+      "live": "Disponible",
+      "feed": "Mediante feed de productos",
+      "soon": "Próximamente",
+      "simulated": "Simulado"
+    },
+    "counter": "{live} disponibles · {feed} mediante feed · {soon} próximamente",
+    "counterNote": "Contamos las conexiones y funciones listadas, no proveedores distintos. Se excluyen los asistentes simulados.",
+    "checked": "Última comprobación",
+    "date": "10 de noviembre de 2026",
+    "sourceTitle": "Documentación oficial",
+    "sourceLink": "Fuente",
+    "field": "Campo o acceso",
+    "read": "Qué lee ecentic",
+    "write": "Qué escribe ecentic",
+    "faqTitle": "Respondemos a tus preguntas",
+    "open": "Ver detalles",
+    "directSoon": "App directa: próximamente",
+    "interest": "Avísame cuando esté disponible",
+    "groups": {
+      "commerce": "Plataformas de comercio",
+      "feeds": "Feeds y datos",
+      "channels": "Canales de IA",
+      "payments": "Pagos y checkout",
+      "pim": "Información de productos (PIM)"
+    },
+    "groupNotes": {
+      "commerce": "La publicación directa está disponible para Shopify y WooCommerce. Las vías mediante feed requieren adaptar la exportación a las columnas admitidas.",
+      "feeds": "Importa datos de productos o prepáralos para un canal. Siguen aplicándose los requisitos de acceso de cada plataforma.",
+      "channels": "Un asistente simulado es un modelo que probamos hoy. No implica una conexión directa de feed ni el acceso a su checkout.",
+      "payments": "Tu pasarela de WooCommerce gestiona el pago. El pago íntegro dentro del asistente depende del flujo compatible y de la configuración.",
+      "pim": "Usa una exportación compatible de tu sistema de información de productos. Las conexiones directas de PIM están previstas."
+    },
+    "legend": {
+      "title": "Qué significan las etiquetas",
+      "items": [
+        {
+          "title": "Disponible",
+          "body": "Conexión o vía de importación operativa de ecentic, con los límites descritos en su página."
+        },
+        {
+          "title": "Mediante feed de productos",
+          "body": "Usa un CSV compatible tras adaptar sus columnas. Las simulaciones y auditorías están disponibles; publicar en el origen requiere un conector directo."
+        },
+        {
+          "title": "Simulado",
+          "body": "ecentic prueba el modelo del asistente hoy. No conecta un feed del comercio con ese asistente."
+        },
+        {
+          "title": "Próximamente",
+          "body": "En nuestra lista de desarrollo, sin fecha prometida. Registra tu interés para ayudarnos a priorizar."
+        }
+      ]
+    },
+    "request": {
+      "title": "¿No ves tu herramienta?",
+      "description": "Cuéntanos qué integración necesita tu equipo y el tamaño del catálogo que gestiona.",
+      "button": "Solicitar una integración"
+    },
+    "standards": {
+      "title": "Estándares con los que trabajamos",
+      "description": "Datos estructurados, identificadores e interfaces para agentes. Cada estándar tiene un uso concreto; no es una certificación de la plataforma.",
+      "items": [
+        {
+          "title": "schema.org Product",
+          "body": "Comprobación y publicación de datos estructurados de productos."
+        },
+        {
+          "title": "GTIN",
+          "body": "Comprobación de identificadores. ecentic no genera GTIN."
+        },
+        {
+          "title": "MCP",
+          "body": "Herramientas para agentes y transporte de checkout."
+        },
+        {
+          "title": "WebMCP",
+          "body": "Escáner de código público. No ejecuta herramientas del navegador."
+        },
+        {
+          "title": "Checkout de agentes",
+          "body": "Catálogo, precios de carritos reales y flujos de pedidos compatibles de WooCommerce."
+        },
+        {
+          "title": "ACP · Próximamente",
+          "body": "Exportación específica de feeds de productos para ChatGPT."
+        }
+      ]
+    },
+    "feedPlatformsTitle": "Vías de exportación verificadas",
+    "feedPlatformsNote": "Estas plataformas documentan la exportación CSV. Adapta sus columnas a nuestra plantilla, usa comas como separador y una fila por producto. Exportar no implica un conector nativo ni actualización automática.",
+    "sources": {
+      "shopify": "Ficha en Shopify App Store",
+      "woocommerce": "Ficha del plugin en WordPress.org",
+      "wooRequirements": "Requisitos y funcionamiento publicados del plugin",
+      "googleMerchant": "Google: guía de integración con Merchant Center",
+      "googleEligibility": "Google: requisitos del checkout nativo",
+      "adobe": "Adobe Commerce: exportar datos",
+      "shopware": "Shopware: importación y exportación",
+      "wix": "Wix: exportar la lista de productos",
+      "prestashop": "PrestaShop: implementación de la exportación CSV de productos",
+      "plytix": "Plytix: exportar datos de productos"
+    },
+    "index": {
+      "meta": {
+        "title": "Integraciones: Shopify, WooCommerce, feeds y canales de IA",
+        "description": "Conecta Shopify, WooCommerce, Merchant Center o un feed compatible. Consulta qué está disponible, qué funciona mediante un feed y qué viene después."
+      },
+      "title": "Integraciones",
+      "description": "Conecta las herramientas que ya usas. Disponibles hoy, mediante tu feed de productos o próximamente.",
+      "sections": []
+    },
+    "labelNote": "Cada etiqueta refleja lo que hace el producto hoy. «Próximamente» significa que está en la lista de desarrollo, no que tenga una fecha prometida.",
+    "entries": {
+      "shopify": {
+        "name": "Shopify",
+        "description": "Comprobación gratis; después, elige un plan."
+      },
+      "woocommerce": {
+        "name": "for WooCommerce",
+        "description": "Plugin gratuito. Las simulaciones y correcciones usan tu plan de ecentic."
+      },
+      "bigcommerce": {
+        "name": "BigCommerce",
+        "description": "App directa: próximamente."
+      },
+      "adobe": {
+        "name": "Adobe Commerce (Magento)",
+        "description": "Exportación CSV adaptada a las columnas de ecentic."
+      },
+      "shopware": {
+        "name": "Shopware",
+        "description": "Exportación CSV adaptada al separador por comas."
+      },
+      "wix": {
+        "name": "Wix",
+        "description": "Exportación CSV de productos físicos, adaptada antes de subirla."
+      },
+      "prestashop": {
+        "name": "PrestaShop",
+        "description": "Exportación CSV de productos, adaptada antes de subirla."
+      },
+      "googleMerchant": {
+        "name": "Google Merchant Center",
+        "description": "Tiendas Shopify. Sincronización complementaria manual y separada."
+      },
+      "productFeeds": {
+        "name": "Feeds de productos (XML, JSON)",
+        "description": "Registros compatibles; reimportación manual."
+      },
+      "csv": {
+        "name": "Subida de CSV",
+        "description": "Un producto por fila y nombres de columna compatibles."
+      },
+      "storeAddress": {
+        "name": "Importar desde una dirección de tienda",
+        "description": "Catálogos públicos accesibles de Shopify y WooCommerce."
+      },
+      "microsoftMerchant": {
+        "name": "Microsoft Merchant Center",
+        "description": "Vía de feed prevista para Copilot."
+      },
+      "amazonShopDirect": {
+        "name": "Amazon Shop Direct",
+        "description": "Conexión de catálogo prevista para el programa de Estados Unidos."
+      },
+      "chatgptFeed": {
+        "name": "Feed de productos para ChatGPT (ACP)",
+        "description": "Exportación específica: próximamente."
+      },
+      "perplexityFeed": {
+        "name": "Feed para comercios de Perplexity",
+        "description": "Feed de catálogo para comercios: próximamente."
+      },
+      "google": {
+        "name": "Google AI Mode and Gemini",
+        "description": "Simulaciones con Gemini. Acceso guiado al checkout de Google próximamente."
+      },
+      "chatgpt": {
+        "name": "ChatGPT",
+        "description": "Simulaciones disponibles. App de ecentic para ChatGPT próximamente."
+      },
+      "claude": {
+        "name": "Claude",
+        "description": "Simulaciones."
+      },
+      "copilot": {
+        "name": "Microsoft Copilot",
+        "description": "Conexión de feed próximamente; referencias de Shopify disponibles."
+      },
+      "perplexity": {
+        "name": "Perplexity",
+        "description": "Análisis de tiendas próximamente; referencias de Shopify disponibles."
+      },
+      "amazon": {
+        "name": "Amazon",
+        "description": "Conexión con Shop Direct: próximamente."
+      },
+      "paymentGateway": {
+        "name": "Tu pasarela de pago",
+        "description": "Tu pasarela de WooCommerce gestiona el pago."
+      },
+      "stripeAcs": {
+        "name": "Stripe Agentic Commerce Suite",
+        "description": "Conexión específica: próximamente."
+      },
+      "plytix": {
+        "name": "Plytix",
+        "description": "Exportación CSV adaptada a las columnas de ecentic."
+      },
+      "akeneo": {
+        "name": "Akeneo",
+        "description": "Conexión directa: próximamente."
+      },
+      "salsify": {
+        "name": "Salsify",
+        "description": "Conexión directa: próximamente."
+      }
+    },
+    "interests": {
+      "bigcommerce-direct": "App directa de BigCommerce",
+      "adobe-commerce-direct": "App directa de Adobe Commerce",
+      "shopware-direct": "App directa de Shopware",
+      "wix-direct": "App directa de Wix",
+      "microsoft-merchant-center": "Feed para Microsoft Merchant Center",
+      "amazon-shop-direct": "Amazon Shop Direct",
+      "chatgpt-product-feed": "Feed de productos para ChatGPT",
+      "perplexity-merchant-feed": "Feed para comercios de Perplexity",
+      "perplexity-scans": "Análisis de tiendas con Perplexity",
+      "stripe-acs": "Stripe Agentic Commerce Suite",
+      "akeneo": "Akeneo",
+      "salsify": "Salsify",
+      "google-checkout-onboarding": "Acceso al checkout de Google AI Mode",
+      "chatgpt-app": "App de ecentic para ChatGPT"
+    },
+    "pages": {
+      "shopify": {
+        "meta": {
+          "title": "ecentic para Shopify: vende a través de asistentes de IA",
+          "description": "Conecta Shopify, compara productos con asistentes de IA y publica cambios. Envía las fichas publicadas a Merchant Center en una sincronización separada."
+        },
+        "title": "ecentic para Shopify",
+        "description": "Conecta tu tienda, descubre por qué los asistentes eligen a la competencia y publica las correcciones que elijas. Envía los cambios publicados a Merchant Center cuando decidas.",
+        "actions": [
+          {
+            "label": "Instalar desde Shopify App Store",
+            "href": "https://apps.shopify.com/ecentic-ai"
+          },
+          {
+            "label": "Reservar una demo",
+            "href": "/demo"
+          }
+        ],
+        "sections": [
+          {
+            "id": "workflow",
+            "title": "Del catálogo a una ficha más clara",
+            "description": "",
+            "items": [
+              {
+                "title": "Simula",
+                "body": "Compara productos seleccionados con competidores concretos usando ChatGPT, Claude y Gemini."
+              },
+              {
+                "title": "Corrige y publica",
+                "body": "Aplicar genera y publica un título y una descripción nuevos. Los datos estructurados se publican por separado y requieren activar la extensión del tema."
+              },
+              {
+                "title": "Mide",
+                "body": "Consulta referencias y visitas detectadas de IA por asistente y a lo largo del tiempo."
+              }
+            ]
+          },
+          {
+            "id": "access",
+            "title": "Qué lee y escribe ecentic",
+            "description": "Importar contenido no lo reescribe. La conexión también instala el script de seguimiento. La publicación y los datos estructurados requieren acciones explícitas."
+          },
+          {
+            "id": "requirements",
+            "title": "Requisitos y límites",
+            "description": "",
+            "paragraphs": [
+              "Aprueba los permisos OAuth de Shopify: read_products, write_products, write_script_tags y read_script_tags. Esta conexión no exige Shopify Plus.",
+              "Cada sincronización lee hasta 10 páginas de 250 productos: un máximo de 2.500 registros. El primer análisis gratuito selecciona hasta 10 productos. Consulta las cuotas de los planes en Precios.",
+              "La conexión usa la Admin API de Shopify y está sujeta a sus límites. La sincronización limita el número de páginas; no prometemos una cuota adicional fija por minuto. Una importación pública sin autorización no permite publicar."
+            ],
+            "links": [
+              {
+                "label": "Comparar planes",
+                "href": "/pricing"
+              }
+            ]
+          },
+          {
+            "id": "setup",
+            "title": "Configura tu tienda",
+            "description": "",
+            "ordered": true,
+            "columns": 2,
+            "items": [
+              {
+                "title": "Instala y autoriza",
+                "body": "Instala la app y aprueba los permisos. Reserva unos minutos; el tiempo de autorización e importación varía."
+              },
+              {
+                "title": "Elige la comparación",
+                "body": "Selecciona productos y competidores para el primer análisis. Su duración depende del tamaño de la comparación y de las respuestas de los modelos."
+              },
+              {
+                "title": "Publica los cambios que elijas",
+                "body": "Usa Aplicar para cambiar el título y la descripción. Publica los datos estructurados por separado y activa la extensión del tema para mostrarlos."
+              },
+              {
+                "title": "Conecta Google por separado",
+                "body": "Vincula Merchant Center y sincroniza los cambios publicados desde sus controles."
+              }
+            ],
+            "note": "Consejo: conecta primero una tienda de desarrollo de Shopify para revisar el flujo antes de publicar en un catálogo real."
+          }
+        ],
+        "ledger": [
+          {
+            "field": "Título y descripción",
+            "read": "Título y descripción HTML actuales.",
+            "write": "Se actualizan mediante la Admin API al elegir Aplicar o una acción masiva explícita."
+          },
+          {
+            "field": "Metacampo de datos estructurados",
+            "read": "Datos del producto para crear Product JSON-LD.",
+            "write": "Una acción separada escribe el metacampo. La extensión del tema debe estar activa para mostrarlo."
+          },
+          {
+            "field": "Precio y existencias",
+            "read": "Precios de variantes y datos importados del producto. Sin sincronización de inventario separada.",
+            "write": "Las acciones de publicación de fichas no los cambian."
+          },
+          {
+            "field": "Imágenes y URLs de productos",
+            "read": "URLs de imágenes y enlaces a los productos de la tienda.",
+            "write": "No se cambian; no se generan imágenes."
+          },
+          {
+            "field": "Script de la tienda",
+            "read": "Señales detectadas de referencias y visitas de agentes.",
+            "write": "La conexión instala un ScriptTag con evento onload para medir visitas."
+          },
+          {
+            "field": "Pedidos",
+            "read": "Se intenta registrar un webhook de pedidos pagados para atribución cuando esté disponible; no se importa el historial.",
+            "write": "No se crean ni editan pedidos de Shopify."
+          }
+        ],
+        "faqs": [
+          {
+            "question": "¿ecentic cambia el contenido sin preguntar?",
+            "answer": "No. Los cambios de fichas requieren Aplicar o una acción masiva explícita. Los datos estructurados se publican por separado. Conectar sí instala el script de seguimiento, por lo que puede cambiar la configuración de la tienda."
+          },
+          {
+            "question": "¿Para qué sirve si Shopify ya distribuye mi catálogo?",
+            "answer": "Distribuir el catálogo y mejorar sus datos son tareas distintas. ecentic compara fichas con competidores y permite publicar cambios en los datos que controlas. No garantiza recomendaciones en ningún canal."
+          },
+          {
+            "question": "¿Puedo conectar Google Merchant Center?",
+            "answer": "Sí, en Shopify. Usa el control separado de Google para enviar títulos y descripciones publicados, además de atributos de checkout seleccionados. Aplicar una ficha no sincroniza Google automáticamente."
+          },
+          {
+            "question": "¿Cómo se carga el script de seguimiento?",
+            "answer": "Shopify lo instala con evento onload. Detecta señales de referencias o agentes compatibles y envía una pequeña petición a ecentic. No hemos medido un impacto universal y no prometemos una carga nula."
+          }
+        ]
+      },
+      "woocommerce": {
+        "meta": {
+          "title": "ecentic para WooCommerce: vende con asistentes de IA",
+          "description": "El plugin gratuito de ecentic para WooCommerce: compara productos, publica cambios y permite que agentes compatibles compren en tu tienda."
+        },
+        "title": "ecentic para WooCommerce",
+        "description": "Instala el plugin gratuito, compara tus productos con la competencia, publica correcciones y permite que agentes de IA compatibles compren en tu propia tienda.",
+        "actions": [
+          {
+            "label": "Obtener el plugin gratuito",
+            "href": "https://wordpress.org/plugins/ecentic-for-woocommerce/"
+          },
+          {
+            "label": "Reservar una demo",
+            "href": "/demo"
+          }
+        ],
+        "sections": [
+          {
+            "id": "workflow",
+            "title": "Un catálogo y un checkout para agentes",
+            "description": "",
+            "items": [
+              {
+                "title": "Simula",
+                "body": "Compara productos seleccionados con competidores concretos en ChatGPT, Claude y Gemini."
+              },
+              {
+                "title": "Corrige y publica",
+                "body": "Aplicar publica un nombre y una descripción nuevos mediante la REST API. Los datos estructurados se publican por separado y el plugin los muestra."
+              },
+              {
+                "title": "Checkout de agentes",
+                "body": "Los agentes compatibles pueden buscar productos, calcular un carrito real y crear un pedido. Tu pasarela gestiona el pago."
+              }
+            ]
+          },
+          {
+            "id": "agent-checkout",
+            "title": "Tú controlas el checkout de agentes",
+            "description": "",
+            "paragraphs": [
+              "El plugin publica un perfil de descubrimiento en una dirección estándar de tu dominio. Los carritos usan las existencias y reglas de impuestos, envíos y cupones de WooCommerce. Los pedidos quedan marcados como pedidos de agentes; tú sigues siendo el vendedor responsable.",
+              "Activa o desactiva el checkout, configura una lista de agentes permitidos, exige peticiones firmadas y define límites. Una lista vacía permite todos los agentes compatibles. Exigir firmas es opcional.",
+              "Por defecto, el agente crea un pedido pendiente de pago y el comprador paga en tu enlace de checkout. Los pagos de Stripe en el servidor son opcionales, están desactivados inicialmente y requieren WooCommerce Stripe Gateway. Los secretos de pago permanecen en tu servidor."
+            ],
+            "links": [
+              {
+                "label": "Probar un checkout de agentes",
+                "href": "/ucp-playground"
+              }
+            ]
+          },
+          {
+            "id": "access",
+            "title": "Qué lee y escribe ecentic",
+            "description": "El plugin y las credenciales REST aprobadas permiten las operaciones de catálogo y pedidos necesarias para las funciones elegidas."
+          },
+          {
+            "id": "requirements",
+            "title": "Requisitos y límites",
+            "description": "",
+            "paragraphs": [
+              "El plugin publicado requiere WordPress 6.0+, WooCommerce 7.0+ y PHP 8.0+. Conecta desde wp-admin o facilita claves REST; publicar requiere acceso de lectura y escritura.",
+              "La sincronización lee hasta 20 páginas de 100 productos: un máximo de 2.000 registros por ejecución. El primer análisis gratuito selecciona hasta 10 productos.",
+              "Los endpoints alojados de agentes usan por defecto 120 peticiones por minuto, por tienda e identidad del cliente. El comercio puede configurar el límite. El checkout requiere el plugin; las claves REST del catálogo por sí solas no lo instalan.",
+              "La medición de visitas de IA y la sincronización de Merchant Center de ecentic no están disponibles para WooCommerce hoy."
+            ],
+            "links": [
+              {
+                "label": "Ver planes y cuotas",
+                "href": "/pricing"
+              }
+            ]
+          },
+          {
+            "id": "setup",
+            "title": "Configura tu tienda",
+            "description": "",
+            "ordered": true,
+            "columns": 2,
+            "items": [
+              {
+                "title": "Instala el plugin",
+                "body": "Instala y activa el plugin gratuito desde WordPress.org. La activación por sí sola no contacta con ecentic."
+              },
+              {
+                "title": "Autoriza en wp-admin",
+                "body": "Conecta desde los ajustes del plugin y aprueba el acceso. No necesitas copiar claves; las claves REST son una alternativa."
+              },
+              {
+                "title": "Haz la primera comparación",
+                "body": "Elige productos y competidores y ejecuta un análisis. Reserva unos minutos para configurar; el tiempo del catálogo y los modelos varía."
+              },
+              {
+                "title": "Publica y prueba el checkout",
+                "body": "Aplica los cambios que elijas. Activa el checkout de agentes cuando estés listo y prueba el flujo de pago."
+              }
+            ],
+            "note": "Consejo: usa primero una tienda de pruebas y el entorno de checkout antes de habilitar compras reales."
+          }
+        ],
+        "ledger": [
+          {
+            "field": "Nombre y descripción",
+            "read": "Nombre, descripción y datos actuales del producto.",
+            "write": "Un nombre y una descripción nuevos al elegir Aplicar o una acción masiva explícita."
+          },
+          {
+            "field": "Datos estructurados",
+            "read": "Datos existentes para generar Product JSON-LD.",
+            "write": "Una acción separada escribe metadatos protegidos que muestra el plugin."
+          },
+          {
+            "field": "Precio, existencias, imágenes y variantes",
+            "read": "Datos importados del catálogo e información del carrito real.",
+            "write": "Las correcciones no cambian estos campos. El checkout normal puede afectar al inventario mediante WooCommerce."
+          },
+          {
+            "field": "Carrito, envíos, impuestos y cupones",
+            "read": "Cálculos reales de WooCommerce y configuración de la tienda.",
+            "write": "Sesiones de carrito y selecciones del comprador mediante el puente privado."
+          },
+          {
+            "field": "Pedidos y datos del comprador",
+            "read": "Estado de pedidos de agentes y datos necesarios para entregarlos.",
+            "write": "Pedidos nativos marcados como pedidos de agentes; las operaciones compatibles pueden actualizarlos."
+          },
+          {
+            "field": "Credenciales de pago",
+            "read": "Resultados del pago e información de métodos compatibles.",
+            "write": "ecentic no guarda secretos de pago. La pasarela cobra el método aprobado o el comprador paga en el enlace de la tienda."
+          }
+        ],
+        "faqs": [
+          {
+            "question": "¿El plugin es gratuito?",
+            "answer": "Sí. Se instala gratis desde WordPress.org. Los planes de ecentic se aplican a las simulaciones y funciones de fichas; consulta las condiciones en Precios."
+          },
+          {
+            "question": "¿ecentic cobra el pago?",
+            "answer": "Tu pasarela cobra y el pedido es tuyo. El flujo predeterminado lleva al comprador a tu página de pago. Stripe en el servidor requiere la pasarela y activar esa opción."
+          },
+          {
+            "question": "¿Medís visitas de IA en WooCommerce?",
+            "answer": "Aún no. La medición de visitas de IA funciona en Shopify hoy."
+          },
+          {
+            "question": "¿Podemos desactivar el checkout de agentes?",
+            "answer": "Sí, desde los ajustes del plugin. También puedes restringir agentes, exigir firmas o revocar las credenciales."
+          },
+          {
+            "question": "¿Hay que cambiar el tema o copiar claves?",
+            "answer": "El plugin incorpora el descubrimiento y el puente. Puedes autorizar en wp-admin sin copiar claves, o usar claves REST de lectura y escritura para publicar. Prueba primero el tema y los pagos en un entorno de pruebas."
+          }
+        ]
+      },
+      "googleMerchant": {
+        "meta": {
+          "title": "ecentic y Google Merchant Center",
+          "description": "Envía cambios publicados a Merchant Center, revisa diagnósticos y comprueba los ajustes del checkout de Google. Para tiendas Shopify."
+        },
+        "title": "Google Merchant Center",
+        "description": "Envía cambios publicados como datos complementarios a Google. Revisa diagnósticos y prepara los ajustes de checkout desde un mismo lugar. Disponible para Shopify.",
+        "actions": [
+          {
+            "label": "Conectar Merchant Center",
+            "href": "/sign-up"
+          },
+          {
+            "label": "Reservar una demo",
+            "href": "/demo"
+          }
+        ],
+        "sections": [
+          {
+            "id": "workflow",
+            "title": "Prepara los datos que recibe Google",
+            "description": "",
+            "columns": 2,
+            "items": [
+              {
+                "title": "Datos complementarios",
+                "body": "Envía títulos y descripciones publicados con una sincronización separada. Se conserva la fuente principal de productos."
+              },
+              {
+                "title": "Atributos de checkout",
+                "body": "Configura los atributos de productos elegibles e inclúyelos en la sincronización complementaria."
+              },
+              {
+                "title": "Diagnósticos de productos",
+                "body": "Consulta incidencias de Google y comprueba si los cambios complementarios se han aplicado."
+              },
+              {
+                "title": "Preparación del checkout",
+                "body": "Revisa cuenta, envíos, devoluciones y atención al cliente. El comercio sigue a cargo de incorporarse al programa de Google."
+              }
+            ],
+            "note": "Google aprobó el acceso de escritura de ecentic a Merchant Center en septiembre de 2026. Es una aprobación de acceso, no un respaldo."
+          },
+          {
+            "id": "access",
+            "title": "Qué lee y escribe ecentic",
+            "description": "La conexión solicita el permiso OAuth de Content API de Google. Tu consentimiento autoriza las operaciones indicadas; no te inscribe en el checkout de Google."
+          },
+          {
+            "id": "requirements",
+            "title": "Requisitos y límites",
+            "description": "",
+            "paragraphs": [
+              "Una tienda Shopify conectada y una cuenta de Merchant Center que puedas autorizar. La conexión actual no admite WooCommerce.",
+              "Permiso OAuth: https://www.googleapis.com/auth/content. Selecciona la cuenta de comercio y completa la vinculación que indica el flujo.",
+              "La correspondencia usa la identidad del producto de Shopify y la oferta en Merchant Center. Google determina la aceptación mediante sus diagnósticos y procesamiento. No se garantiza un plazo fijo.",
+              "Los cambios publicados se envían al ejecutar la sincronización. El mantenimiento en segundo plano comprueba los ajustes existentes y las cuentas; no envía automáticamente nuevas correcciones."
+            ]
+          },
+          {
+            "id": "setup",
+            "title": "Conecta, revisa y sincroniza",
+            "description": "",
+            "ordered": true,
+            "columns": 2,
+            "items": [
+              {
+                "title": "Autoriza tu cuenta de Google",
+                "body": "Abre la conexión de Google para tu tienda Shopify y concede acceso a la cuenta de Merchant Center correspondiente."
+              },
+              {
+                "title": "Crea la fuente complementaria",
+                "body": "Completa la vinculación y la configuración de datos. Comprueba los productos asociados y la prioridad de las fuentes."
+              },
+              {
+                "title": "Elige los cambios",
+                "body": "Publica las fichas en Shopify y configura los atributos de checkout pertinentes. Revisa los diagnósticos de Google."
+              },
+              {
+                "title": "Envía los datos",
+                "body": "Ejecuta la sincronización complementaria y comprueba el estado de las ofertas procesadas. Ten en cuenta el tiempo de Google."
+              }
+            ],
+            "note": "Consejo: usa una configuración de pruebas cuando esté disponible y verifica primero unas pocas ofertas asociadas."
+          }
+        ],
+        "ledger": [
+          {
+            "field": "Cuenta y fuentes de datos",
+            "read": "Identidad de la cuenta, fuentes conectadas y configuración.",
+            "write": "Solicitudes de vinculación, una fuente complementaria y reglas de prioridad al configurarla."
+          },
+          {
+            "field": "Título y descripción",
+            "read": "Cambios publicados en ecentic y ofertas procesadas en Merchant Center.",
+            "write": "Valores complementarios de título y descripción al sincronizar explícitamente."
+          },
+          {
+            "field": "Precio, existencias y feed principal",
+            "read": "Ofertas procesadas para correspondencia y diagnósticos.",
+            "write": "No sustituye la fuente principal; los valores complementarios configurados tienen prioridad en sus campos."
+          },
+          {
+            "field": "Atributos de checkout",
+            "read": "Ajustes guardados y elegibilidad procesada por Google.",
+            "write": "Atributos elegidos mediante la fuente complementaria."
+          },
+          {
+            "field": "Envíos, devoluciones y soporte",
+            "read": "Ajustes de envío, políticas de devoluciones y atención al cliente.",
+            "write": "Datos de atención o una política de devoluciones mediante sus acciones de guardado. No escribe tarifas de envío."
+          },
+          {
+            "field": "Diagnósticos",
+            "read": "Incidencias y estado de aceptación de los cambios.",
+            "write": "No modifica las decisiones de Google."
+          }
+        ],
+        "faqs": [
+          {
+            "question": "¿Sobrescribe nuestro feed principal?",
+            "answer": "Se conserva la fuente principal. ecentic crea una fuente complementaria y cambia su prioridad en las reglas de la principal. Sus atributos pueden sustituir los valores efectivos que Google utiliza para esos campos."
+          },
+          {
+            "question": "¿Está disponible para WooCommerce?",
+            "answer": "Aún no. La integración de Merchant Center de ecentic admite Shopify hoy."
+          },
+          {
+            "question": "¿Esto nos incorpora al programa de checkout de Google?",
+            "answer": "No. Google decide la elegibilidad y la aprobación. ecentic prepara datos, comprueba ajustes y ayuda a probarlos; inscribirte es un trámite separado."
+          },
+          {
+            "question": "¿Aplicar actualiza Google automáticamente?",
+            "answer": "No. Aplicar publica el cambio de la ficha en la tienda. Usa la acción separada de sincronización de Merchant Center para enviarlo a Google."
+          }
+        ]
+      },
+      "productFeeds": {
+        "meta": {
+          "title": "Usa ecentic con un feed de productos o CSV",
+          "description": "Importa XML o JSON compatible, CSV o un catálogo público accesible de Shopify o WooCommerce para simulaciones y auditorías."
+        },
+        "title": "Feeds de productos y CSV",
+        "description": "Empieza con los datos que puedes exportar. Importa un feed o CSV compatible, o un catálogo público accesible de Shopify o WooCommerce, sin conexión directa de publicación.",
+        "actions": [
+          {
+            "label": "Importar datos de productos",
+            "href": "/sign-up"
+          },
+          {
+            "label": "Reservar una demo",
+            "href": "/demo"
+          }
+        ],
+        "sections": [
+          {
+            "id": "workflow",
+            "title": "Empieza por los datos del producto",
+            "description": "",
+            "items": [
+              {
+                "title": "Simula",
+                "body": "Compara productos importados con competidores concretos usando los modelos del análisis de tiendas."
+              },
+              {
+                "title": "Audita",
+                "body": "Comprueba la calidad de fichas y una muestra de páginas. Usa los resultados para orientar las correcciones de tu equipo."
+              },
+              {
+                "title": "Conecta cuando necesites publicar",
+                "body": "Publicar requiere una conexión Shopify o WooCommerce. Google funciona solo en Shopify; el checkout requiere el plugin de WooCommerce; las visitas se miden en Shopify."
+              }
+            ]
+          },
+          {
+            "id": "formats",
+            "title": "Formatos que lee el importador",
+            "description": "Ser un archivo XML o JSON no basta. Usa las estructuras indicadas.",
+            "rows": [
+              {
+                "label": "XML",
+                "value": "Registros RSS channel/item o feed/entry, incluidos campos de producto al estilo de Google Shopping."
+              },
+              {
+                "label": "JSON",
+                "value": "Un array de productos o un objeto con un array products o items. Campos compatibles: título, descripción, precio, moneda, imagen, URL, SKU e ID."
+              },
+              {
+                "label": "CSV",
+                "value": "Texto separado por comas, un producto por fila. Columnas: title o name; description; price; image, image_link o image_url; url o link; sku; id.",
+                "detail": "Se omiten las filas sin título. Incluye la moneda en price, por ejemplo 29.99 EUR; una columna CSV currency separada no se importa. Evita saltos de línea dentro de las celdas."
+              },
+              {
+                "label": "Tamaño del feed",
+                "value": "Las descargas XML y JSON están limitadas a 10 MiB."
+              },
+              {
+                "label": "Dirección de tienda",
+                "value": "Catálogos públicos accesibles de Shopify y WooCommerce. No es un importador universal de sitios web."
+              }
+            ]
+          },
+          {
+            "id": "access",
+            "title": "Qué lee y escribe ecentic",
+            "description": "La importación guarda productos en ecentic. No cambia el feed, archivo o tienda de origen."
+          },
+          {
+            "id": "export-platforms",
+            "title": "Usa una exportación compatible",
+            "description": "Las vías verificadas requieren adaptar las columnas. Los conectores nativos son una función distinta."
+          },
+          {
+            "id": "setup",
+            "title": "Importa y compara",
+            "description": "",
+            "ordered": true,
+            "columns": 2,
+            "items": [
+              {
+                "title": "Prepara el archivo",
+                "body": "Usa una URL de feed compatible o adapta el CSV a los nombres de columna admitidos y al separador por comas."
+              },
+              {
+                "title": "Importa el catálogo",
+                "body": "Conecta el feed o sube el CSV. Comprueba títulos, precios, moneda y URLs antes de seleccionar productos."
+              },
+              {
+                "title": "Elige la comparación",
+                "body": "Selecciona hasta 10 productos para el primer análisis gratuito y añade competidores concretos."
+              },
+              {
+                "title": "Revisa y vuelve a importar",
+                "body": "Usa las auditorías para corregir el origen. Reimporta cuando cambie el catálogo; no hay actualización programada."
+              }
+            ],
+            "note": "Consejo: empieza con una muestra pequeña para comprobar las columnas antes de importar el catálogo."
+          }
+        ],
+        "ledger": [
+          {
+            "field": "Título, descripción, precio y moneda",
+            "read": "Campos compatibles del feed o CSV. La moneda del CSV puede formar parte del precio.",
+            "write": "Se guardan productos en ecentic. El origen no cambia."
+          },
+          {
+            "field": "Imágenes, URLs, SKU e ID",
+            "read": "URLs de imágenes, enlaces e identificadores compatibles.",
+            "write": "Se guardan en ecentic; no se generan nuevas imágenes ni identificadores."
+          },
+          {
+            "field": "Existencias, atributos propios y campos de plataforma",
+            "read": "Solo se usan los campos que procesa el importador; no admite cualquier esquema de exportación.",
+            "write": "No se escribe en la plataforma de comercio de origen."
+          },
+          {
+            "field": "Auditorías y simulaciones",
+            "read": "Productos importados y muestras accesibles de la tienda.",
+            "write": "Resultados en ecentic. No hay archivo descargable de fichas reescritas hoy."
+          }
+        ],
+        "faqs": [
+          {
+            "question": "¿Importar un feed es de solo lectura?",
+            "answer": "Respecto al origen, sí: ecentic no cambia el feed, archivo o tienda. Sí guarda los productos importados en tu cuenta de ecentic."
+          },
+          {
+            "question": "¿Con qué frecuencia se actualiza el feed?",
+            "answer": "Reimporta cuando cambie el catálogo. No hay actualización programada hoy."
+          },
+          {
+            "question": "¿Podemos descargar las correcciones como archivo?",
+            "answer": "No hay exportación de fichas reescritas hoy. Usa los resultados de la auditoría para orientar cambios en el origen o conecta Shopify o WooCommerce para publicar con las acciones compatibles."
+          },
+          {
+            "question": "¿Funciona cualquier exportación XML o JSON?",
+            "answer": "No. El importador acepta las estructuras indicadas. Otros esquemas requieren conversión previa. Adaptar las columnas de un CSV suele ser la vía más sencilla."
+          }
+        ]
+      }
+    }
+  }
+}

@@ -21,6 +21,7 @@
         "DEV_DISCOVERY_TOKEN",
         "RESEND_API_KEY",
         "FROM_EMAIL",
+        "MARKETING_LEAD_EMAIL",
         "SHOPIFY_API_KEY",
         "SHOPIFY_API_SECRET",
 

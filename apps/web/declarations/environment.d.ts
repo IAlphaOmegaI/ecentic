@@ -14,6 +14,8 @@ declare namespace NodeJS {
 
     readonly RESEND_API_KEY: string;
     readonly FROM_EMAIL?: string;
+    /** Destination for public demo, integration and partner enquiries. Defaults to support@ecentic.ai. */
+    readonly MARKETING_LEAD_EMAIL?: string;
 
     readonly SHOPIFY_API_KEY: string;
     readonly SHOPIFY_API_SECRET: string;

@@ -100,6 +100,13 @@
   margin-top: 4px;
   flex-shrink: 0;
 }
+.marketing-nav-provider {
+  margin-top: 2px;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+  object-fit: contain;
+}
 .marketing-mega-label {
   display: block;
   color: var(--ink);

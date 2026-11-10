@@ -1,5 +1,10 @@
 import type { Metadata } from "next";
-import { localizePath, stripLocalePrefix } from "@/i18n/locale";
+import { djb2Hash } from "next/dist/shared/lib/hash";
+import {
+  localeFromPathname,
+  localizePath,
+  stripLocalePrefix,
+} from "@/i18n/locale";
 import { routing } from "@/i18n/routing";
 
 export const seo = {
@@ -7,7 +12,7 @@ export const seo = {
   name: "ecentic",
   title: "ecentic",
   description:
-    "Optimize product listings for AI shopping agents. Simulate ChatGPT, Claude, Gemini, and Perplexity decisions, diagnose losses, and improve win rate.",
+    "The agentic commerce platform. Connect your catalog, simulate AI shopping decisions, fix product data, enable agent checkout, and track AI visits.",
   links: [
     "https://x.com/ecentic_ai",
     "https://www.linkedin.com/company/ecentic/posts/?feedView=all",
@@ -34,31 +39,37 @@ export const brandedTitle = (title: string) =>
     : title;
 
 /**
- * Organization schema.
- *
- * `contactPoint` and `address` are here because verification tooling reads them
- * to decide whether a business is real, and an Organization node without either
- * scores as an unverifiable claim. `address` is the registered business address
- * of zennit, the company behind ecentic, and matches the one published in the
- * terms — tooling that cross-checks structured data against page content needs
- * to find the same address in both places. No postal code is published for it,
- * so none is invented — a fabricated component is worse than an absent one.
+ * Public brand and team. The operating legal name remains unconfirmed and is
+ * deliberately absent; the visible company page carries the launch TODO.
+ * The Tirana address is the published contact location, not a new registered
+ * office claim. Unverified legal/privacy mailboxes are not machine contacts.
  */
 export const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: seo.name,
   url: seo.host,
-  logo: {
-    "@type": "ImageObject",
-    url: absoluteUrl("/icons/icon-512.png"),
-  },
-  email: "support@ecentic.ai",
-  parentOrganization: {
-    "@type": "Organization",
-    name: "zennit",
-    url: "https://www.zennit.dev",
-  },
+  logo: { "@type": "ImageObject", url: absoluteUrl("/images/trademark.svg") },
+  founder: [
+    {
+      "@type": "Person",
+      name: "Xhurian Shaba",
+      jobTitle: "Chief executive officer",
+      sameAs: "https://www.linkedin.com/in/xhurian-shaba",
+    },
+    {
+      "@type": "Person",
+      name: "Alvi Palloshi",
+      jobTitle: "Chief technology officer",
+      sameAs: "https://www.linkedin.com/in/alvipalloshi",
+    },
+    {
+      "@type": "Person",
+      name: "Iseld Muça",
+      jobTitle: "Head of sales",
+      sameAs: "https://www.linkedin.com/in/iseld-muca-532786311",
+    },
+  ],
   address: {
     "@type": "PostalAddress",
     streetAddress:
@@ -70,37 +81,20 @@ export const organizationSchema = {
     {
       "@type": "ContactPoint",
       contactType: "customer support",
-      email: "support@ecentic.ai",
       url: absoluteUrl("/support"),
       availableLanguage: ["en", "es"],
-      areaServed: "Worldwide",
     },
     {
       "@type": "ContactPoint",
-      contactType: "technical support",
-      email: "support@ecentic.ai",
-      url: absoluteUrl("/docs"),
-      availableLanguage: ["en"],
-      areaServed: "Worldwide",
-    },
-    {
-      "@type": "ContactPoint",
-      contactType: "privacy",
-      email: "privacy@ecentic.ai",
-      url: absoluteUrl("/privacy-policy"),
+      contactType: "sales",
+      url: absoluteUrl("/demo"),
       availableLanguage: ["en", "es"],
-      areaServed: "Worldwide",
-    },
-    {
-      "@type": "ContactPoint",
-      contactType: "legal",
-      email: "legal@ecentic.ai",
-      url: absoluteUrl("/terms"),
-      availableLanguage: ["en", "es"],
-      areaServed: "Worldwide",
     },
   ],
-  sameAs: [...seo.links],
+  sameAs: [
+    "https://www.linkedin.com/company/ecentic/posts/?feedView=all",
+    "https://x.com/ecentic_ai",
+  ],
 } as const;
 
 export const softwareApplicationSchema = {
@@ -115,7 +109,7 @@ export const softwareApplicationSchema = {
     "@type": "Offer",
     price: "0",
     priceCurrency: "USD",
-    description: "Scan plan available",
+    description: "One-time free store check. No credit card required.",
   },
   publisher: {
     "@type": "Organization",
@@ -123,6 +117,30 @@ export const softwareApplicationSchema = {
     url: seo.host,
   },
 } as const;
+
+export const createSoftwareApplicationSchema = (
+  plans: readonly { name: string; price: string }[],
+) => {
+  const offers = plans.filter((plan) => Number.isFinite(Number(plan.price)));
+  const prices = offers.map((plan) => Number(plan.price));
+  return {
+    ...softwareApplicationSchema,
+    offers: {
+      "@type": "AggregateOffer",
+      priceCurrency: "USD",
+      lowPrice: String(Math.min(...prices)),
+      highPrice: String(Math.max(...prices)),
+      offerCount: offers.length,
+      offers: offers.map((plan) => ({
+        "@type": "Offer",
+        name: plan.name,
+        price: plan.price,
+        priceCurrency: "USD",
+        url: absoluteUrl("/pricing"),
+      })),
+    },
+  };
+};
 
 export const websiteSchema = {
   "@context": "https://schema.org",
@@ -147,6 +165,37 @@ export const createMetadata = ({
   // Hreflang lives in each page's head (and only there): the sitemap stays
   // namespace-free so browsers render it with the plain XML tree view.
   const basePath = stripLocalePrefix(path);
+  const imageSection =
+    [
+      "/platform",
+      "/solutions",
+      "/ai-channels",
+      "/integrations",
+      "/pricing",
+      "/resources",
+      "/security",
+      "/about",
+      "/stories",
+      "/partners",
+      "/contact",
+      "/tools",
+      "/changelog",
+      "/docs",
+    ].find(
+      (section) => basePath === section || basePath.startsWith(`${section}/`),
+    ) ?? "";
+  // Next metadata image routes inside a route group receive the same stable
+  // suffix as the group path. A bare /platform/opengraph-image is not a route.
+  const imageSuffix = djb2Hash(`/[locale]/(main)${imageSection}`)
+    .toString(36)
+    .slice(0, 6);
+  const imagePath = `/${localeFromPathname(path)}${imageSection}/opengraph-image-${imageSuffix}`;
+  const socialImage = {
+    url: absoluteUrl(imagePath),
+    width: 1200,
+    height: 630,
+    alt: title,
+  };
 
   return {
     title,
@@ -166,6 +215,7 @@ export const createMetadata = ({
     },
     openGraph: {
       type,
+      images: [socialImage],
       url: absoluteUrl(path),
       siteName: seo.name,
       title: `${title} | ${seo.name}`,
@@ -173,6 +223,7 @@ export const createMetadata = ({
     },
     twitter: {
       card: "summary_large_image",
+      images: [socialImage],
       title: `${title} | ${seo.name}`,
       description,
     },

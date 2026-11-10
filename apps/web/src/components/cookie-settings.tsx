@@ -8,9 +8,9 @@ import { useConsent } from "@/context/consent";
  * it was to give, so this stays reachable from every page via the footer.
  */
 export const CookieSettings = ({
-  label = "Cookie settings",
+  label,
 }: {
-  label?: string;
+  label: string;
 }) => {
   const { revisit } = useConsent();
 

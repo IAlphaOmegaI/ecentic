@@ -3337,7 +3337,12 @@
       "title": "ecentic product film",
       "description": "A video introduction to the ecentic platform.",
       "close": "Close video",
-      "fallback": "Your browser does not support embedded video."
+      "fallback": "Your browser does not support embedded video.",
+      "heading": "See ecentic in action",
+      "caption": "Watch the product film",
+      "action": {
+        "primary": "Play video"
+      }
     },
     "summary": {
       "label": "About ecentic"
@@ -8098,7 +8103,8 @@
       "cookies": "Cookie settings",
       "aiInstructions": "AI instructions",
       "tools": "Free tools"
-    }
+    },
+    "loading": "Loading page"
   },
   "enterpriseNav": {
     "pricing": "Pricing",
@@ -8743,5 +8749,2720 @@
         }
       }
     ]
+  },
+  "enterpriseHome": {
+    "meta": {
+      "title": "AI shopping optimization and agent checkout | ecentic",
+      "description": "AI shopping optimization for Shopify, WooCommerce and product feeds. Simulate product choices, improve listings and connect agent checkout with ecentic."
+    },
+    "hero": {
+      "eyebrow": "The agentic commerce platform",
+      "title": "Get the sale when AI does the shopping.",
+      "description": "AI is becoming another way to find and compare products. ecentic helps yours compete: improve the product data assistants read, connect agent checkout on WooCommerce, and run a fresh simulation when you want to check again.",
+      "actions": [
+        {
+          "label": "Book a demo",
+          "href": "/demo"
+        },
+        {
+          "label": "Check my store free",
+          "href": "/sign-up"
+        }
+      ],
+      "facts": [
+        "Connect Shopify and WooCommerce, or import a supported product feed or CSV."
+      ],
+      "screenshot": {
+        "alt": "ecentic win-rate overview showing explicitly labelled sample data.",
+        "caption": "Product screenshot · sample data"
+      }
+    },
+    "programs": {
+      "eyebrow": "Programs we're part of",
+      "title": "Built with support from these programs.",
+      "items": [
+        {
+          "id": "plug-and-play",
+          "title": "Plug and Play"
+        },
+        {
+          "id": "microsoft-for-startups",
+          "title": "Microsoft for Startups"
+        },
+        {
+          "id": "red-bull-basement",
+          "title": "Red Bull Basement"
+        },
+        {
+          "id": "founder-games",
+          "title": "The Founder Games"
+        },
+        {
+          "id": "fil-rouge-capital",
+          "title": "Fil Rouge Capital"
+        }
+      ],
+      "missingAsset": "{{TODO: official logo}}"
+    },
+    "businesses": {
+      "eyebrow": "01 · Who it's for",
+      "title": "Different businesses. Same new shopper.",
+      "description": "Start with the way you sell and the questions your team needs to answer.",
+      "painLabel": "The usual problems",
+      "items": [
+        {
+          "id": "brands",
+          "eyebrow": "Brands",
+          "title": "Be the product the answer names.",
+          "description": "DTC and consumer brands",
+          "pains": [
+            "AI recommends a competitor in your own category.",
+            "Retailers describe your products better than you do.",
+            "You cannot see which products assistants skip."
+          ],
+          "href": "/solutions/brands",
+          "label": "See how it works for you"
+        },
+        {
+          "id": "retailers-and-marketplaces",
+          "eyebrow": "Retailers and marketplaces",
+          "title": "Thousands of listings. One shot at the agent.",
+          "description": "Large catalogs, many suppliers",
+          "pains": [
+            "Supplier data that assistants cannot compare.",
+            "The feed and site disagree on price or stock.",
+            "There is no way to check every product by hand."
+          ],
+          "href": "/solutions/retailers-and-marketplaces",
+          "label": "See how it works for you"
+        },
+        {
+          "id": "enterprise",
+          "eyebrow": "Enterprise",
+          "title": "AI is a new channel. Run it like one.",
+          "description": "Many brands, markets and teams",
+          "pains": [
+            "Every market brings different shopping questions.",
+            "Security review comes before catalog access.",
+            "Nobody owns AI as a sales channel."
+          ],
+          "href": "/solutions/enterprise",
+          "label": "See how it works for you"
+        },
+        {
+          "id": "agencies-and-partners",
+          "eyebrow": "Agencies and partners",
+          "title": "Add AI commerce to what you already sell.",
+          "description": "Running stores for clients",
+          "pains": [
+            "Clients ask about ChatGPT and you need an answer.",
+            "Catalog audits still happen by hand.",
+            "You need a clear service for this new channel."
+          ],
+          "href": "/solutions/agencies-and-partners",
+          "label": "See how it works for you"
+        }
+      ]
+    },
+    "loop": {
+      "eyebrow": "02 · How it works",
+      "title": "From product feed to AI checkout.",
+      "description": "Connect, compare, improve, sell and check again. You choose which changes to publish.",
+      "steps": [
+        {
+          "id": "connect",
+          "title": "Connect",
+          "body": "Bring your catalog into one place through Shopify, WooCommerce, a supported XML or JSON feed, or a CSV.",
+          "tags": [
+            "Shopify",
+            "WooCommerce",
+            "Product feeds"
+          ],
+          "href": "/platform/connect",
+          "label": "Explore Connect"
+        },
+        {
+          "id": "simulate",
+          "title": "Simulate",
+          "body": "See which product ChatGPT, Claude and Gemini pick in a comparison, and read the reasoning behind each simulated choice.",
+          "tags": [
+            "Win rate",
+            "Battlecards",
+            "Readiness audit"
+          ],
+          "href": "/platform/simulate",
+          "label": "Explore Simulate"
+        },
+        {
+          "id": "fix",
+          "title": "Fix",
+          "body": "Apply generates and publishes titles and descriptions using existing product facts. Publish structured data and sync Merchant Center through separate controls.",
+          "tags": [
+            "Listings",
+            "Structured data",
+            "Merchant Center"
+          ],
+          "href": "/platform/fix",
+          "label": "Explore Fix"
+        },
+        {
+          "id": "sell",
+          "title": "Sell",
+          "body": "Connect agent checkout on WooCommerce, test the flow and keep your own payment provider. Platform eligibility and payment handoffs still apply.",
+          "tags": [
+            "Agent checkout",
+            "Checkout testing",
+            "Your payments"
+          ],
+          "href": "/platform/sell",
+          "label": "Explore Sell"
+        },
+        {
+          "id": "track",
+          "title": "Track",
+          "body": "Follow detected AI referrals on Shopify, compare completed simulations and request a fresh scan when you want to check again.",
+          "tags": [
+            "AI traffic",
+            "Manual rescans",
+            "Multiple stores"
+          ],
+          "href": "/platform/track",
+          "label": "Explore Track"
+        }
+      ]
+    },
+    "film": {
+      "eyebrow": "03 · Watch it work",
+      "title": "See ecentic in a minute.",
+      "description": "A quick look at the product, from a comparison to the next decision for your catalog.",
+      "caption": "ecentic product film",
+      "action": {
+        "primary": "Watch the film"
+      }
+    },
+    "channels": {
+      "eyebrow": "04 · AI channels",
+      "title": "One catalog. The assistants your customers ask.",
+      "description": "Each assistant has its own product sources and rules for buying. See what ecentic supports today and what is planned.",
+      "checked": "Checked 10 November 2026. Every channel page is dated and links to its sources.",
+      "items": [
+        {
+          "id": "google",
+          "title": "Google AI Mode and Gemini",
+          "body": "Gemini simulations, plus Merchant Center sync for Shopify.",
+          "status": "simulated",
+          "statusLabel": "Simulated",
+          "href": "/ai-channels/google-ai-mode-gemini"
+        },
+        {
+          "id": "chatgpt",
+          "title": "ChatGPT",
+          "body": "Simulations and listing checks against OpenAI's feed rules.",
+          "status": "simulated",
+          "statusLabel": "Simulated",
+          "href": "/ai-channels/chatgpt"
+        },
+        {
+          "id": "claude",
+          "title": "Claude",
+          "body": "Simulations of how Claude compares your products.",
+          "status": "simulated",
+          "statusLabel": "Simulated",
+          "href": "/ai-channels/claude"
+        },
+        {
+          "id": "copilot",
+          "title": "Microsoft Copilot",
+          "body": "A Microsoft Merchant Center feed export is planned.",
+          "status": "coming-soon",
+          "statusLabel": "Coming soon",
+          "href": "/ai-channels/microsoft-copilot"
+        },
+        {
+          "id": "perplexity",
+          "title": "Perplexity",
+          "body": "Store-scan simulations and a merchant feed are planned.",
+          "status": "coming-soon",
+          "statusLabel": "Coming soon",
+          "href": "/ai-channels/perplexity"
+        },
+        {
+          "id": "amazon",
+          "title": "Amazon",
+          "body": "Catalog delivery to Shop Direct is planned.",
+          "status": "coming-soon",
+          "statusLabel": "Coming soon",
+          "href": "/ai-channels/amazon"
+        }
+      ],
+      "link": {
+        "label": "See every AI channel",
+        "href": "/ai-channels"
+      }
+    },
+    "integration": {
+      "eyebrow": "05 · Integrations",
+      "title": "Plugs into the stack you already run.",
+      "description": "Direct connections, supported feeds and the integrations we are building next. Each tile states its current status.",
+      "counter": {
+        "live": "live",
+        "feed": "via product feed",
+        "soon": "coming soon"
+      },
+      "links": [
+        {
+          "label": "See all integrations",
+          "href": "/integrations"
+        },
+        {
+          "label": "Request an integration",
+          "href": "/integrations#request"
+        }
+      ]
+    },
+    "mechanisms": {
+      "eyebrow": "06 · Under the hood",
+      "title": "Everything between “AI skipped us” and “AI bought from us”.",
+      "items": [
+        {
+          "id": "simulations",
+          "title": "Agent simulations",
+          "body": "ChatGPT, Claude and Gemini choose between your product and a competitor's in a recorded simulation.",
+          "tags": [
+            "Win rate",
+            "Replay",
+            "Battlecards"
+          ],
+          "href": "/platform/simulate",
+          "label": "See simulations"
+        },
+        {
+          "id": "readiness",
+          "title": "Readiness audit",
+          "body": "Check crawler rules, sampled page HTML, product identifiers and feed eligibility. Inaccessible pages are flagged for review.",
+          "tags": [
+            "Crawlers",
+            "Schema",
+            "GTIN"
+          ],
+          "href": "/platform/simulate#readiness",
+          "label": "See the audit"
+        },
+        {
+          "id": "catalog",
+          "title": "Catalog fixes",
+          "body": "Generate and publish titles and descriptions from your existing product facts. Structured data has its own publish action.",
+          "tags": [
+            "Listings",
+            "Attributes",
+            "Publish"
+          ],
+          "href": "/platform/fix",
+          "label": "See catalog fixes"
+        },
+        {
+          "id": "merchant-center",
+          "title": "Merchant Center sync",
+          "body": "Send published listing fixes and checkout attributes through a separate supplemental-feed sync for Shopify.",
+          "tags": [
+            "Supplemental feed",
+            "Diagnostics",
+            "Shopify"
+          ],
+          "href": "/platform/fix#merchant-center",
+          "label": "See the sync"
+        },
+        {
+          "id": "checkout",
+          "title": "Agent checkout for WooCommerce",
+          "body": "Give supported agent flows a route through your own store and payment provider, with checkout testing and configurable controls.",
+          "tags": [
+            "Setup",
+            "Testing",
+            "Validator"
+          ],
+          "href": "/platform/sell",
+          "label": "See agent checkout"
+        },
+        {
+          "id": "developers",
+          "title": "API, MCP server and CLI",
+          "body": "Use the published interfaces for discovery, plans, store connection and onboarding status.",
+          "tags": [
+            "REST",
+            "MCP",
+            "CLI"
+          ],
+          "href": "/docs",
+          "label": "Open developer docs"
+        }
+      ]
+    },
+    "proof": {
+      "eyebrow": "07 · What we've seen so far",
+      "title": "Early numbers, stated plainly.",
+      "stats": [
+        {
+          "value": "36,797",
+          "title": "Simulated purchases",
+          "body": "Across ChatGPT, Claude, Gemini and Perplexity.",
+          "footnote": "1"
+        },
+        {
+          "value": "2.8×",
+          "title": "As often on the same catalog",
+          "body": "ChatGPT picked the same product 51.6% of the time; Claude and Gemini about 18.5%.",
+          "footnote": "1"
+        },
+        {
+          "value": "+12%",
+          "title": "Visits for DUA Flavours",
+          "body": "Visits from AI assistants or direct traffic, April to July 2026. DUA Flavours, ecentic pilot, published with permission.",
+          "footnote": "2"
+        }
+      ],
+      "study": {
+        "title": "A large spirits marketplace",
+        "body": "88% of 9,699 products had at least one fault in the data agents read. Asked where to buy two bottles it stocked, an agent named it 0 times out of 20.",
+        "note": "An anonymised finding. A snapshot of one catalog and question set, not a prediction for every store."
+      },
+      "footnotes": [
+        {
+          "marker": "1",
+          "text": "ecentic simulations, 2026. Simulated shopping decisions, not live agent traffic. Perplexity was part of the research set; store scans run on ChatGPT, Claude and Gemini. The methodology write-up is not yet published."
+        },
+        {
+          "marker": "2",
+          "text": "Pilot result, confirmed by DUA Flavours in writing. Visits, not sales. Includes direct traffic and does not establish incremental sales caused by ecentic."
+        }
+      ],
+      "pipeline": "Pilots in scoping with companies in enterprise retail, travel and flexible workspace."
+    },
+    "procurement": {
+      "eyebrow": "08 · Enterprise",
+      "title": "Bring the right questions to security review.",
+      "items": [
+        {
+          "title": "You choose what gets published.",
+          "body": "Listing changes require your chosen Apply action. Structured data and Merchant Center sync have separate controls. Connecting Shopify also installs visit tracking."
+        },
+        {
+          "title": "Pilots on public data.",
+          "body": "Start with an accessible public catalog or a supported feed. Agree the scope before connecting systems or granting write access."
+        },
+        {
+          "title": "Data handling you can review.",
+          "body": "Review the privacy policy, request a DPA and see the named sub-processors. Confirm operational and contracting requirements with us."
+        },
+        {
+          "title": "A founder on the account.",
+          "body": "A direct conversation with the people who build ecentic, from the first category to the pilot readout."
+        }
+      ],
+      "links": [
+        {
+          "label": "Talk to us",
+          "href": "/demo"
+        },
+        {
+          "label": "Read security and trust",
+          "href": "/security"
+        }
+      ]
+    },
+    "pricing": {
+      "eyebrow": "09 · Pricing",
+      "title": "Start free. Scale when AI starts buying.",
+      "description": "Choose a starting point that fits your store and your team.",
+      "items": [
+        {
+          "title": "Free store check",
+          "body": "Create an account and see how your products compare.",
+          "href": "/sign-up",
+          "label": "Check my store free"
+        },
+        {
+          "title": "Self-serve plans for single stores",
+          "body": "Monthly plans or pay-as-you-go, with the current limits and attribution rules explained on Pricing.",
+          "href": "/pricing",
+          "label": "Compare plans"
+        },
+        {
+          "title": "Enterprise pilots, scoped with you",
+          "body": "Agree the category, baseline and decisions your team needs to make.",
+          "href": "/demo",
+          "label": "Talk about a pilot"
+        }
+      ],
+      "action": {
+        "label": "See pricing",
+        "href": "/pricing"
+      }
+    },
+    "editorial": {
+      "eyebrow": "10 · From the team",
+      "title": "What we're learning.",
+      "description": "Product notes and practical guides, written by the ecentic team.",
+      "loading": "Loading articles",
+      "empty": "Our next product notes and guides will appear here.",
+      "read": "Read the article",
+      "links": [
+        {
+          "label": "Explore resources",
+          "href": "/resources"
+        }
+      ]
+    },
+    "faq": {
+      "title": "Questions before you start.",
+      "items": [
+        {
+          "question": "What does ecentic do?",
+          "answer": "ecentic helps online stores compete when AI does the shopping. It simulates how ChatGPT, Claude and Gemini compare products, helps improve the product data they read, and supports agent checkout on WooCommerce."
+        },
+        {
+          "question": "Which AI assistants does it cover?",
+          "answer": "Store simulations run on ChatGPT, Claude and Gemini. Shopify visit tracking recognises supported AI referral signals, including ChatGPT, Perplexity, Claude, Gemini and Copilot. Checkout depends on your store setup and the shopping platform’s eligibility. Each AI channel page shows the current status."
+        },
+        {
+          "question": "Does ecentic change our store without asking?",
+          "answer": "Listing changes require your chosen Apply action, which generates and publishes a title and description. Structured data and Merchant Center sync use separate controls. Connecting Shopify also installs the visit-tracking script. Importing product content does not rewrite it."
+        },
+        {
+          "question": "Does it work with our platform?",
+          "answer": "Shopify and WooCommerce connect directly. Other platforms can import a supported XML or JSON product feed or a CSV. Feed support depends on the export structure and mapped fields; feed imports do not write back to the original platform."
+        },
+        {
+          "question": "Do you need access to our systems for a pilot?",
+          "answer": "A pilot can start from an accessible public catalog or a supported product feed. We agree the scope with you before any system integration or store-write access is required."
+        },
+        {
+          "question": "How is our data handled?",
+          "answer": "The security page describes current catalog access, tracking and AI-provider handling. You can review our privacy policy, request a DPA and see named sub-processors. Confirm deployment and contracting requirements with us before a pilot."
+        },
+        {
+          "question": "Is this SEO?",
+          "answer": "ecentic focuses on the product data and checkout that AI shopping assistants use to compare and buy. The work can overlap with structured-data and catalog quality practices, but its measurements are simulations, detected AI referrals and checkout checks, rather than search rankings."
+        },
+        {
+          "question": "What does it cost?",
+          "answer": "The store check is free with an account. Single stores can choose a monthly plan or pay-as-you-go. The performance-fee attribution rules and limits are explained on Pricing; attribution does not prove incremental sales. Enterprise pilots are scoped with you."
+        }
+      ]
+    },
+    "closing": {
+      "title": "AI is already choosing products in your category.",
+      "description": "Find out if it's choosing yours.",
+      "actions": [
+        {
+          "label": "Book a demo",
+          "href": "/demo"
+        },
+        {
+          "label": "Check my store free",
+          "href": "/sign-up"
+        }
+      ]
+    }
+  },
+  "enterpriseIntegrations": {
+    "statuses": {
+      "live": "Live",
+      "feed": "Via product feed",
+      "soon": "Coming soon",
+      "simulated": "Simulated"
+    },
+    "counter": "{live} live · {feed} via product feed · {soon} coming soon",
+    "counterNote": "Counts describe listed connections and surfaces, not distinct vendors. Simulated assistants are excluded.",
+    "checked": "Last checked",
+    "date": "10 November 2026",
+    "sourceTitle": "Official documentation",
+    "sourceLink": "Source",
+    "field": "Field or access",
+    "read": "What ecentic reads",
+    "write": "What ecentic writes",
+    "faqTitle": "Your questions, answered",
+    "open": "Explore",
+    "directSoon": "Direct app: coming soon",
+    "interest": "Tell me when it’s live",
+    "groups": {
+      "commerce": "Commerce platforms",
+      "feeds": "Feeds and data",
+      "channels": "AI channels",
+      "payments": "Payments and checkout",
+      "pim": "Product information (PIM)"
+    },
+    "groupNotes": {
+      "commerce": "Direct publishing is available for Shopify and WooCommerce. Feed routes require an export mapped to the supported columns.",
+      "feeds": "Import product data or prepare it for a specific channel. A channel’s admission requirements still apply.",
+      "channels": "A simulated assistant is a model we test today. It is not a direct feed connection or a checkout enrollment.",
+      "payments": "Your WooCommerce gateway handles payment. Fully in-context payment depends on the supported flow and merchant configuration.",
+      "pim": "Bring a supported export from your product information system. Direct PIM connections are on the build list."
+    },
+    "legend": {
+      "title": "What the labels mean",
+      "items": [
+        {
+          "title": "Live",
+          "body": "A working ecentic connection or import surface, with the limits described on its page."
+        },
+        {
+          "title": "Via product feed",
+          "body": "Use a supported CSV export, after mapping its columns. Simulations and audits are available; publishing back needs a direct connector."
+        },
+        {
+          "title": "Simulated",
+          "body": "ecentic tests the assistant’s model today. It does not connect a merchant feed to that assistant."
+        },
+        {
+          "title": "Coming soon",
+          "body": "On our build list, without a promised launch date. Register interest to help us choose what to build next."
+        }
+      ]
+    },
+    "request": {
+      "title": "Don’t see yours?",
+      "description": "Tell us which integration your team needs and the size of the catalog you manage.",
+      "button": "Request an integration"
+    },
+    "standards": {
+      "title": "Standards we work with",
+      "description": "Structured product data, identifiers and agent interfaces. Each standard has a specific use; it is not a platform certification.",
+      "items": [
+        {
+          "title": "schema.org Product",
+          "body": "Product structured-data checks and publishing."
+        },
+        {
+          "title": "GTIN",
+          "body": "Identifier coverage checks. ecentic does not generate GTINs."
+        },
+        {
+          "title": "MCP",
+          "body": "Agent tools and checkout transport."
+        },
+        {
+          "title": "WebMCP",
+          "body": "Public source scanner. It does not execute browser tools."
+        },
+        {
+          "title": "Agent checkout",
+          "body": "Catalog, real-cart quotes and supported WooCommerce order flows."
+        },
+        {
+          "title": "ACP · Coming soon",
+          "body": "Dedicated ChatGPT product feed export."
+        }
+      ]
+    },
+    "feedPlatformsTitle": "Verified export routes",
+    "feedPlatformsNote": "These platforms document CSV export. Map their columns to our template before upload, use a comma delimiter and keep each product on one row. Export support does not mean a native connector or automatic refresh.",
+    "sources": {
+      "shopify": "Shopify App Store listing",
+      "woocommerce": "WordPress.org plugin listing",
+      "wooRequirements": "Published plugin requirements and behavior",
+      "googleMerchant": "Google: Merchant Center integration guide",
+      "googleEligibility": "Google: native checkout eligibility",
+      "adobe": "Adobe Commerce: export data",
+      "shopware": "Shopware: import and export",
+      "wix": "Wix: export the product list",
+      "prestashop": "PrestaShop: product CSV export implementation",
+      "plytix": "Plytix: export product data"
+    },
+    "index": {
+      "meta": {
+        "title": "Integrations: Shopify, WooCommerce, feeds and AI channels",
+        "description": "Connect Shopify, WooCommerce, Google Merchant Center or a supported product feed. See what’s live, what works through a feed and what’s coming next."
+      },
+      "title": "Integrations",
+      "description": "Connect the stack you already run. Live today, through your product feed, or on the way.",
+      "sections": []
+    },
+    "labelNote": "Every label is checked against what the product does today. “Coming soon” means it’s on our build list, not a promise of a date.",
+    "entries": {
+      "shopify": {
+        "name": "Shopify",
+        "description": "Free check, then any plan."
+      },
+      "woocommerce": {
+        "name": "for WooCommerce",
+        "description": "Free plugin. Simulations and fixes use your ecentic plan."
+      },
+      "bigcommerce": {
+        "name": "BigCommerce",
+        "description": "Direct app: coming soon."
+      },
+      "adobe": {
+        "name": "Adobe Commerce (Magento)",
+        "description": "CSV export, mapped to ecentic’s columns."
+      },
+      "shopware": {
+        "name": "Shopware",
+        "description": "CSV export, converted to comma-separated columns."
+      },
+      "wix": {
+        "name": "Wix",
+        "description": "Physical-product CSV export, mapped before upload."
+      },
+      "prestashop": {
+        "name": "PrestaShop",
+        "description": "CSV product export, mapped before upload."
+      },
+      "googleMerchant": {
+        "name": "Google Merchant Center",
+        "description": "Shopify stores. Separate, manual supplemental sync."
+      },
+      "productFeeds": {
+        "name": "Product feeds (XML, JSON)",
+        "description": "Supported product records; manual re-import."
+      },
+      "csv": {
+        "name": "CSV upload",
+        "description": "One product per row, with supported column names."
+      },
+      "storeAddress": {
+        "name": "Import from a store address",
+        "description": "Accessible Shopify and WooCommerce public catalogs."
+      },
+      "microsoftMerchant": {
+        "name": "Microsoft Merchant Center",
+        "description": "Planned feed route into Copilot."
+      },
+      "amazonShopDirect": {
+        "name": "Amazon Shop Direct",
+        "description": "Planned catalog connection for the US shopping program."
+      },
+      "chatgptFeed": {
+        "name": "ChatGPT product feed (ACP)",
+        "description": "Dedicated export: coming soon."
+      },
+      "perplexityFeed": {
+        "name": "Perplexity merchant feed",
+        "description": "Merchant catalog feed: coming soon."
+      },
+      "google": {
+        "name": "Google AI Mode and Gemini",
+        "description": "Gemini simulations. Google checkout onboarding coming soon."
+      },
+      "chatgpt": {
+        "name": "ChatGPT",
+        "description": "Simulations today. ecentic ChatGPT app coming soon."
+      },
+      "claude": {
+        "name": "Claude",
+        "description": "Simulations."
+      },
+      "copilot": {
+        "name": "Microsoft Copilot",
+        "description": "Feed connection coming soon; Shopify referral tracking is live."
+      },
+      "perplexity": {
+        "name": "Perplexity",
+        "description": "Store scans coming soon; Shopify referral tracking is live."
+      },
+      "amazon": {
+        "name": "Amazon",
+        "description": "Shop Direct connection: coming soon."
+      },
+      "paymentGateway": {
+        "name": "Your payment gateway",
+        "description": "Your WooCommerce gateway handles the payment."
+      },
+      "stripeAcs": {
+        "name": "Stripe Agentic Commerce Suite",
+        "description": "Dedicated connection: coming soon."
+      },
+      "plytix": {
+        "name": "Plytix",
+        "description": "CSV export, mapped to ecentic’s columns."
+      },
+      "akeneo": {
+        "name": "Akeneo",
+        "description": "Direct connection: coming soon."
+      },
+      "salsify": {
+        "name": "Salsify",
+        "description": "Direct connection: coming soon."
+      }
+    },
+    "interests": {
+      "bigcommerce-direct": "BigCommerce direct app",
+      "adobe-commerce-direct": "Adobe Commerce direct app",
+      "shopware-direct": "Shopware direct app",
+      "wix-direct": "Wix direct app",
+      "microsoft-merchant-center": "Microsoft Merchant Center feed",
+      "amazon-shop-direct": "Amazon Shop Direct",
+      "chatgpt-product-feed": "ChatGPT product feed",
+      "perplexity-merchant-feed": "Perplexity merchant feed",
+      "perplexity-scans": "Perplexity store scans",
+      "stripe-acs": "Stripe Agentic Commerce Suite",
+      "akeneo": "Akeneo",
+      "salsify": "Salsify",
+      "google-checkout-onboarding": "Google AI Mode checkout onboarding",
+      "chatgpt-app": "ecentic ChatGPT app"
+    },
+    "pages": {
+      "shopify": {
+        "meta": {
+          "title": "ecentic for Shopify: sell through AI assistants",
+          "description": "Connect Shopify, compare products with AI assistants and publish selected listing changes. Send published changes to Merchant Center in a separate sync."
+        },
+        "title": "ecentic for Shopify",
+        "description": "Connect your store, see why AI assistants choose competitors, and publish selected fixes to Shopify. Send published fixes to Merchant Center when you choose.",
+        "actions": [
+          {
+            "label": "Install from Shopify App Store",
+            "href": "https://apps.shopify.com/ecentic-ai"
+          },
+          {
+            "label": "Book a demo",
+            "href": "/demo"
+          }
+        ],
+        "sections": [
+          {
+            "id": "workflow",
+            "title": "From catalog to a clearer listing",
+            "description": "",
+            "items": [
+              {
+                "title": "Simulate",
+                "body": "Compare selected products with named competitors using ChatGPT, Claude and Gemini."
+              },
+              {
+                "title": "Fix and publish",
+                "body": "Apply creates and publishes a revised title and description. Structured data has a separate publish action and requires the theme app embed."
+              },
+              {
+                "title": "Track",
+                "body": "See detected AI referrals and agent visits, by assistant and over time."
+              }
+            ]
+          },
+          {
+            "id": "access",
+            "title": "What ecentic reads and writes",
+            "description": "Importing product content does not rewrite it. Connecting also installs the storefront tracking script. Publishing and structured-data updates are explicit actions."
+          },
+          {
+            "id": "requirements",
+            "title": "Requirements and limits",
+            "description": "",
+            "paragraphs": [
+              "Approve Shopify OAuth permissions: read_products, write_products, write_script_tags and read_script_tags. No Shopify Plus requirement is enforced by this connection.",
+              "A catalog sync reads up to 10 pages of 250 products: at most 2,500 records per run. A free onboarding scan selects up to 10 products. Paid plan allowances are listed on Pricing.",
+              "The connection uses Shopify Admin API access and its rate limits. The sync is bounded by page count; no additional fixed requests-per-minute allowance is promised. Public-only catalog imports cannot publish changes."
+            ],
+            "links": [
+              {
+                "label": "Compare plans",
+                "href": "/pricing"
+              }
+            ]
+          },
+          {
+            "id": "setup",
+            "title": "Set up your store",
+            "description": "",
+            "ordered": true,
+            "columns": 2,
+            "items": [
+              {
+                "title": "Install and approve",
+                "body": "Install the app and approve Shopify’s permissions. Allow a few minutes; authorization and catalog import time vary."
+              },
+              {
+                "title": "Choose the comparison",
+                "body": "Select products and named competitors for the first scan. The scan duration depends on the comparison size and model responses."
+              },
+              {
+                "title": "Publish the changes you choose",
+                "body": "Use Apply for a revised title and description. Publish structured data separately and enable the theme app embed to show it."
+              },
+              {
+                "title": "Connect Google separately",
+                "body": "Link Merchant Center, then explicitly sync published fixes from the Google controls."
+              }
+            ],
+            "note": "Tip: connect a Shopify development store first to inspect the flow before publishing changes to a live catalog."
+          }
+        ],
+        "ledger": [
+          {
+            "field": "Title and description",
+            "read": "Existing product title and HTML description.",
+            "write": "Updated through the Admin API when you choose Apply or an explicit bulk action."
+          },
+          {
+            "field": "Structured-data metafield",
+            "read": "Product information used to build Product JSON-LD.",
+            "write": "A separate publish action writes the metafield. The theme app embed must be enabled to render it."
+          },
+          {
+            "field": "Price and stock",
+            "read": "Variant prices and the imported product payload. No separate inventory sync.",
+            "write": "Not changed by the listing publish actions."
+          },
+          {
+            "field": "Images and product URLs",
+            "read": "Existing image URLs and storefront product links.",
+            "write": "Not changed; no image generation."
+          },
+          {
+            "field": "Storefront script",
+            "read": "Detected AI referral and agent visit signals.",
+            "write": "An onload ScriptTag is installed during connection for visit tracking."
+          },
+          {
+            "field": "Orders",
+            "read": "A paid-order webhook is attempted for attribution where available; no order-history import.",
+            "write": "No Shopify order creation or editing."
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Does ecentic change product content without asking?",
+            "answer": "No. Listing content changes require Apply or an explicit bulk action. Structured data is published separately. Connecting does install the tracking script, so connection is not a promise of zero changes to the store configuration."
+          },
+          {
+            "question": "Why use ecentic if Shopify already distributes my catalog?",
+            "answer": "Catalog distribution and product quality are different jobs. ecentic compares selected listings with competitors and lets you publish changes to the data you control. It does not guarantee recommendations in any channel."
+          },
+          {
+            "question": "Can I connect Google Merchant Center?",
+            "answer": "Yes, for Shopify stores. Use the separate Google sync control to send published title and description overrides plus selected checkout attributes. Clicking Apply on a listing does not automatically sync Google."
+          },
+          {
+            "question": "How does the tracking script load?",
+            "answer": "Shopify installs it with its onload event. The script detects supported referral or agent signals and sends a small beacon to ecentic. We have not measured a universal performance impact and do not claim zero overhead."
+          }
+        ]
+      },
+      "woocommerce": {
+        "meta": {
+          "title": "ecentic for WooCommerce: sell through AI assistants",
+          "description": "The free ecentic plugin for WooCommerce: compare products, publish listing changes and let supported agents check out through your store."
+        },
+        "title": "ecentic for WooCommerce",
+        "description": "Install the free plugin, compare your products with competitors, publish selected fixes and let supported AI agents check out through your own store.",
+        "actions": [
+          {
+            "label": "Get the free plugin",
+            "href": "https://wordpress.org/plugins/ecentic-for-woocommerce/"
+          },
+          {
+            "label": "Book a demo",
+            "href": "/demo"
+          }
+        ],
+        "sections": [
+          {
+            "id": "workflow",
+            "title": "A catalog and checkout agents can use",
+            "description": "",
+            "items": [
+              {
+                "title": "Simulate",
+                "body": "Compare your selected products with named competitors on ChatGPT, Claude and Gemini."
+              },
+              {
+                "title": "Fix and publish",
+                "body": "Apply publishes a revised name and description through the WooCommerce REST API. Structured data is a separate action, rendered by the plugin."
+              },
+              {
+                "title": "Agent checkout",
+                "body": "Let compatible agents search products, price a real cart and create a WooCommerce order. Your payment gateway handles the payment."
+              }
+            ]
+          },
+          {
+            "id": "agent-checkout",
+            "title": "You control agent checkout",
+            "description": "",
+            "paragraphs": [
+              "The plugin publishes a discovery profile at a standard address on your own domain. Cart quotes use WooCommerce stock, tax, shipping and coupon rules. Orders are tagged as agent orders; you remain the seller of record.",
+              "Switch checkout on or off, configure an agent allow-list, require signed requests and set rate limits. A blank allow-list permits all supported agents. Signature requirements are optional settings.",
+              "By default, the agent creates an unpaid order and the buyer pays through your checkout link. Server-side Stripe payments are optional, off by default and require the WooCommerce Stripe Gateway. Payment secrets stay on your server."
+            ],
+            "links": [
+              {
+                "label": "Test an agent checkout",
+                "href": "/ucp-playground"
+              }
+            ]
+          },
+          {
+            "id": "access",
+            "title": "What ecentic reads and writes",
+            "description": "The plugin and approved REST credentials provide the catalog and order operations needed for your chosen features."
+          },
+          {
+            "id": "requirements",
+            "title": "Requirements and limits",
+            "description": "",
+            "paragraphs": [
+              "The published plugin requires WordPress 6.0+, WooCommerce 7.0+ and PHP 8.0+. Connect from wp-admin, or supply WooCommerce REST keys; publishing requires read/write access.",
+              "Catalog sync reads at most 20 pages of 100 products: up to 2,000 records per run. The free onboarding scan selects up to 10 products.",
+              "Hosted agent endpoints default to 120 requests per minute, per store and client identity. The merchant can configure the limit. Agent checkout needs the plugin; REST catalog keys alone do not install the checkout surface.",
+              "AI visit tracking and ecentic’s Merchant Center sync are not available for WooCommerce today."
+            ],
+            "links": [
+              {
+                "label": "See plans and allowances",
+                "href": "/pricing"
+              }
+            ]
+          },
+          {
+            "id": "setup",
+            "title": "Set up your store",
+            "description": "",
+            "ordered": true,
+            "columns": 2,
+            "items": [
+              {
+                "title": "Install the plugin",
+                "body": "Install and activate the free plugin from WordPress.org. Activation alone does not contact ecentic."
+              },
+              {
+                "title": "Approve in wp-admin",
+                "body": "Connect to ecentic from the plugin settings and approve the connection. No keys to copy in this flow; REST keys are an alternative."
+              },
+              {
+                "title": "Run your first comparison",
+                "body": "Choose products and competitors, then run a scan. Set aside a few minutes for setup; catalog and model processing times vary."
+              },
+              {
+                "title": "Publish and test checkout",
+                "body": "Apply the listing changes you choose. Enable agent checkout when ready and test your payment flow."
+              }
+            ],
+            "note": "Tip: use a staging site first, then run the checkout playground against it before enabling real purchases."
+          }
+        ],
+        "ledger": [
+          {
+            "field": "Product name and description",
+            "read": "Current name, description and product data.",
+            "write": "A revised name and description when you choose Apply or an explicit bulk action."
+          },
+          {
+            "field": "Structured product data",
+            "read": "Existing product facts used to generate Product JSON-LD.",
+            "write": "A separate action writes protected product metadata, rendered by the plugin."
+          },
+          {
+            "field": "Price, stock, images and variants",
+            "read": "Imported catalog data and live cart information.",
+            "write": "Listing fixes do not change these fields. Normal checkout can affect stock through WooCommerce."
+          },
+          {
+            "field": "Cart, shipping, tax and coupons",
+            "read": "Real WooCommerce cart calculations and store settings.",
+            "write": "Cart sessions and buyer checkout selections through the private bridge."
+          },
+          {
+            "field": "Orders and buyer details",
+            "read": "Agent order status and the buyer details needed to fulfill those orders.",
+            "write": "Native WooCommerce orders tagged as agent orders; supported checkout operations can update them."
+          },
+          {
+            "field": "Payment credentials",
+            "read": "Payment outcomes and supported payment-method information.",
+            "write": "No payment-secret storage in ecentic. The merchant gateway charges the approved payment method or the buyer pays via the store link."
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Is the plugin free?",
+            "answer": "Yes. Install it free from WordPress.org. ecentic plans apply to simulations and listing features; see Pricing for current terms."
+          },
+          {
+            "question": "Does ecentic take the payment?",
+            "answer": "Your existing gateway takes payment and the order belongs to you. The default flow hands the buyer to your payment page. Optional server-side Stripe payment requires the gateway and its setting to be enabled."
+          },
+          {
+            "question": "Do you track AI visits on WooCommerce?",
+            "answer": "Not yet. AI visit tracking runs on Shopify today."
+          },
+          {
+            "question": "Can we turn agent checkout off?",
+            "answer": "Yes. Disable it from the plugin settings. You can also restrict agents, require signatures or revoke the connection credentials."
+          },
+          {
+            "question": "Do we need to change our theme or copy API keys?",
+            "answer": "The plugin provides the discovery and bridge features. Approve its connection in wp-admin without copying keys, or use read/write REST keys for catalog publishing. Test any theme or payment setup on staging first."
+          }
+        ]
+      },
+      "googleMerchant": {
+        "meta": {
+          "title": "ecentic and Google Merchant Center",
+          "description": "Send published fixes to Merchant Center, inspect product diagnostics and check the settings Google’s agent checkout needs. For Shopify stores."
+        },
+        "title": "Google Merchant Center",
+        "description": "Send published listing changes to Google as supplemental product data. Review diagnostics and prepare checkout settings from one place. Available for Shopify stores.",
+        "actions": [
+          {
+            "label": "Connect Merchant Center",
+            "href": "/sign-up"
+          },
+          {
+            "label": "Book a demo",
+            "href": "/demo"
+          }
+        ],
+        "sections": [
+          {
+            "id": "workflow",
+            "title": "Keep Google’s product data ready",
+            "description": "",
+            "columns": 2,
+            "items": [
+              {
+                "title": "Supplemental data",
+                "body": "Send published title and description changes with a separate sync action. Your main product source is retained."
+              },
+              {
+                "title": "Checkout attributes",
+                "body": "Set eligible product checkout attributes and include them in the supplemental sync."
+              },
+              {
+                "title": "Product diagnostics",
+                "body": "See Google product issues and whether supplemental changes have taken effect."
+              },
+              {
+                "title": "Checkout readiness",
+                "body": "Check account, shipping, return and customer-support settings. Google program enrollment remains a merchant task."
+              }
+            ],
+            "note": "Google approved ecentic’s Merchant Center write access in September 2026. This is access approval, not an endorsement."
+          },
+          {
+            "id": "access",
+            "title": "What ecentic reads and writes",
+            "description": "The connection requests the Google Content API OAuth scope. Your consent authorizes the account operations below; it does not enroll you in Google checkout."
+          },
+          {
+            "id": "requirements",
+            "title": "Requirements and limits",
+            "description": "",
+            "paragraphs": [
+              "A connected Shopify store and a Merchant Center account you can authorize. The current ecentic connection does not support WooCommerce.",
+              "Google OAuth scope: https://www.googleapis.com/auth/content. Select the merchant account and complete the account-linking steps shown in the connection flow.",
+              "Matching relies on the Shopify product identity and the Merchant Center offer. Google’s diagnostics and processing determine whether each change is accepted. No fixed sync-completion time is guaranteed.",
+              "Published listing changes are sent only when you run the sync action. Background maintenance checks existing overrides and account links; it does not automatically send newly published listing fixes."
+            ]
+          },
+          {
+            "id": "setup",
+            "title": "Connect, review, then sync",
+            "description": "",
+            "ordered": true,
+            "columns": 2,
+            "items": [
+              {
+                "title": "Authorize your Google account",
+                "body": "Open the Google connection for your Shopify store and grant access to the intended Merchant Center account."
+              },
+              {
+                "title": "Provision the supplemental source",
+                "body": "Complete the account link and data-source setup. Check the matching products and source priority."
+              },
+              {
+                "title": "Choose product changes",
+                "body": "Publish listing updates to Shopify and set any eligible checkout attributes. Review Google’s diagnostics."
+              },
+              {
+                "title": "Send the overrides",
+                "body": "Run the separate supplemental sync and verify the processed offer state. Allow for Google processing time."
+              }
+            ],
+            "note": "Tip: use a test Merchant Center setup where available and verify a small set of matched offers first."
+          }
+        ],
+        "ledger": [
+          {
+            "field": "Merchant account and data sources",
+            "read": "Account identity, connected sources and their configuration.",
+            "write": "Account link requests, an ecentic supplemental source and source-priority rules when provisioned."
+          },
+          {
+            "field": "Product title and description",
+            "read": "Published ecentic listing records and processed Merchant Center offers.",
+            "write": "Supplemental title and description overrides on explicit sync."
+          },
+          {
+            "field": "Price, stock and main product feed",
+            "read": "Processed offers needed for matching and diagnostics.",
+            "write": "No replacement of the main product source; configured supplemental values take precedence for their fields."
+          },
+          {
+            "field": "Checkout attributes",
+            "read": "Saved product settings and Google’s processed checkout eligibility.",
+            "write": "Selected checkout attributes through the supplemental source."
+          },
+          {
+            "field": "Shipping, returns and support",
+            "read": "Account shipping settings, return policies and customer-support details.",
+            "write": "Customer-support details or a return policy only through their explicit save actions. No shipping-rate writer."
+          },
+          {
+            "field": "Diagnostics",
+            "read": "Product issues and the acceptance state of the overrides.",
+            "write": "No edits to Google’s diagnostic decisions."
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Will this overwrite our main feed?",
+            "answer": "The main data source is retained. ecentic creates a supplemental source and updates its priority in the primary source’s rules. The selected supplemental attributes can therefore replace the effective values Google uses for those fields."
+          },
+          {
+            "question": "Is it available for WooCommerce?",
+            "answer": "Not yet. ecentic’s Merchant Center integration supports Shopify today."
+          },
+          {
+            "question": "Does this get us into Google’s checkout program?",
+            "answer": "No. Google decides eligibility and approval. ecentic prepares data, checks settings and helps test readiness; enrollment is your separate step."
+          },
+          {
+            "question": "Does Apply automatically update Google?",
+            "answer": "No. Apply publishes the selected store listing change. Use the separate Merchant Center sync action to send published overrides to Google."
+          }
+        ]
+      },
+      "productFeeds": {
+        "meta": {
+          "title": "Use ecentic with a product feed or CSV",
+          "description": "Import a supported XML or JSON product feed, CSV, or accessible public Shopify or WooCommerce catalog for simulations and audits."
+        },
+        "title": "Product feeds and CSV",
+        "description": "Start with product data you can export. Import a supported feed or CSV, or use an accessible public Shopify or WooCommerce catalog, without a direct publishing connection.",
+        "actions": [
+          {
+            "label": "Import product data",
+            "href": "/sign-up"
+          },
+          {
+            "label": "Book a demo",
+            "href": "/demo"
+          }
+        ],
+        "sections": [
+          {
+            "id": "workflow",
+            "title": "Start with the product data",
+            "description": "",
+            "items": [
+              {
+                "title": "Simulate",
+                "body": "Compare imported products with named competitors using the store-scan models."
+              },
+              {
+                "title": "Audit",
+                "body": "Check listing quality and sampled storefront readiness. Use the findings to guide your team’s edits."
+              },
+              {
+                "title": "Connect when you need to publish",
+                "body": "Publishing to a store needs a Shopify or WooCommerce connection. Google sync is Shopify-only; agent checkout needs the WooCommerce plugin; tracking runs on Shopify."
+              }
+            ]
+          },
+          {
+            "id": "formats",
+            "title": "Formats the importer reads",
+            "description": "Use the documented shapes below. A file being XML or JSON alone does not make it compatible.",
+            "rows": [
+              {
+                "label": "XML",
+                "value": "RSS channel/item or feed/entry product records, including Google Shopping-style product fields."
+              },
+              {
+                "label": "JSON",
+                "value": "A product array, or an object containing products or items as an array. Supported fields include title, description, price, currency, image, URL, SKU and ID."
+              },
+              {
+                "label": "CSV",
+                "value": "Comma-separated text, one product per row. Columns: title or name; description; price; image, image_link or image_url; url or link; sku; id.",
+                "detail": "Rows without a title are skipped. Include a currency code in price, for example 29.99 EUR; a separate CSV currency column is not imported. Avoid embedded line breaks."
+              },
+              {
+                "label": "Feed size",
+                "value": "XML and JSON downloads are limited to 10 MiB."
+              },
+              {
+                "label": "Store address",
+                "value": "Accessible public Shopify and WooCommerce catalogs. This is not a universal import for every website."
+              }
+            ]
+          },
+          {
+            "id": "access",
+            "title": "What ecentic reads and writes",
+            "description": "An import stores product records in ecentic. It does not change the source feed, file or storefront."
+          },
+          {
+            "id": "export-platforms",
+            "title": "Use a supported export",
+            "description": "The verified platform routes below require column mapping. Native direct connections are a separate feature."
+          },
+          {
+            "id": "setup",
+            "title": "Import and compare",
+            "description": "",
+            "ordered": true,
+            "columns": 2,
+            "items": [
+              {
+                "title": "Prepare the file",
+                "body": "Use a supported feed URL or normalize your CSV to the supported column names and comma delimiter."
+              },
+              {
+                "title": "Import the catalog",
+                "body": "Connect the feed or upload the CSV. Check titles, prices, currency and product URLs before selecting products."
+              },
+              {
+                "title": "Choose the comparison",
+                "body": "Pick up to 10 products for the free onboarding scan and add named competitors."
+              },
+              {
+                "title": "Review and re-import",
+                "body": "Use audit findings to update your source system. Re-import when your catalog changes; there is no scheduled feed refresh."
+              }
+            ],
+            "note": "Tip: start with a small sample export to check the mapping before importing your catalog."
+          }
+        ],
+        "ledger": [
+          {
+            "field": "Title, description, price and currency",
+            "read": "Supported fields in the feed or CSV. CSV currency can be part of the price value.",
+            "write": "Stored as product records in ecentic. The source is not modified."
+          },
+          {
+            "field": "Images, product URLs, SKU and ID",
+            "read": "Supported image URLs, links and identifiers.",
+            "write": "Stored in ecentic; no new images or identifiers are generated."
+          },
+          {
+            "field": "Stock, custom attributes and platform-specific fields",
+            "read": "Only fields handled by the importer are used; an arbitrary export schema is not supported.",
+            "write": "No write-back to your commerce platform."
+          },
+          {
+            "field": "Audits and simulations",
+            "read": "Imported product records and accessible storefront samples.",
+            "write": "Results in ecentic. No downloadable file of generated listing rewrites is available today."
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Is importing a feed read-only?",
+            "answer": "It is read-only with respect to your source: ecentic does not change your feed, file or storefront. It does save the imported product records in your ecentic account."
+          },
+          {
+            "question": "How often is the feed refreshed?",
+            "answer": "Re-import whenever the catalog changes. Scheduled feed refresh is not available today."
+          },
+          {
+            "question": "Can we download the fixes as a file?",
+            "answer": "There is no export of generated listing rewrites today. Use the audit findings to guide edits in your source system, or connect Shopify or WooCommerce for supported publishing actions."
+          },
+          {
+            "question": "Does any XML or JSON export work?",
+            "answer": "No. The parser accepts the product record shapes listed above. Export formats with different structures must be converted first. CSV column mapping is usually the simplest route."
+          }
+        ]
+      }
+    }
+  },
+  "enterpriseLead": {
+    "kinds": {
+      "interest": {
+        "title": "Tell me when it's live",
+        "description": "Leave your details and we'll contact you about this integration.",
+        "action": {
+          "primary": "Notify me"
+        }
+      },
+      "integration": {
+        "title": "Request an integration",
+        "description": "Tell us what you want to connect and the size of your catalog.",
+        "action": {
+          "primary": "Send request"
+        }
+      },
+      "partner": {
+        "title": "Build something with ecentic.",
+        "description": "Tell us who you work with and what you have in mind.",
+        "action": {
+          "primary": "Send application"
+        }
+      }
+    },
+    "fields": {
+      "name": {
+        "label": "Name",
+        "placeholder": "Your name"
+      },
+      "email": {
+        "label": "Work email",
+        "placeholder": "you@company.com"
+      },
+      "company": {
+        "label": "Company",
+        "placeholder": "Company name"
+      },
+      "website": {
+        "label": "Website",
+        "placeholder": "yourstore.com"
+      },
+      "businessType": {
+        "label": "Business type",
+        "placeholder": "Choose your business type"
+      },
+      "catalogSize": {
+        "label": "Catalog size",
+        "placeholder": "Choose a catalog size"
+      },
+      "markets": {
+        "label": "Markets",
+        "placeholder": "Countries or regions you sell in"
+      },
+      "goals": {
+        "label": "What would you like to work on?",
+        "placeholder": "Tell us about your category, goals or questions."
+      },
+      "aiChannel": {
+        "label": "Which AI assistant matters most to you?",
+        "placeholder": "Choose an assistant"
+      },
+      "tool": {
+        "label": "Which tool or integration?",
+        "placeholder": "Name the tool you want to connect"
+      },
+      "track": {
+        "label": "Partner track",
+        "placeholder": "Choose a track"
+      },
+      "stores": {
+        "label": "How many stores do you work with?",
+        "placeholder": "For example, 12 client stores"
+      },
+      "note": {
+        "label": "A short note (optional)",
+        "placeholder": "Tell us what you would like to build together."
+      }
+    },
+    "options": {
+      "businessType": [
+        {
+          "value": "brand",
+          "label": "Brand"
+        },
+        {
+          "value": "retailer",
+          "label": "Retailer or marketplace"
+        },
+        {
+          "value": "enterprise",
+          "label": "Enterprise"
+        },
+        {
+          "value": "agency",
+          "label": "Agency"
+        }
+      ],
+      "catalogSize": [
+        {
+          "value": "under-1000",
+          "label": "Under 1,000 products"
+        },
+        {
+          "value": "1000-10000",
+          "label": "1,000 to 10,000 products"
+        },
+        {
+          "value": "10000-100000",
+          "label": "10,000 to 100,000 products"
+        },
+        {
+          "value": "over-100000",
+          "label": "Over 100,000 products"
+        }
+      ],
+      "aiChannel": [
+        {
+          "value": "chatgpt",
+          "label": "ChatGPT"
+        },
+        {
+          "value": "claude",
+          "label": "Claude"
+        },
+        {
+          "value": "gemini",
+          "label": "Gemini"
+        },
+        {
+          "value": "copilot",
+          "label": "Microsoft Copilot"
+        },
+        {
+          "value": "perplexity",
+          "label": "Perplexity"
+        },
+        {
+          "value": "amazon",
+          "label": "Amazon"
+        },
+        {
+          "value": "unsure",
+          "label": "Not sure yet"
+        }
+      ],
+      "track": [
+        {
+          "value": "agency",
+          "label": "Agency"
+        },
+        {
+          "value": "technology",
+          "label": "Technology partner"
+        },
+        {
+          "value": "creator",
+          "label": "Creator"
+        }
+      ]
+    },
+    "validation": {
+      "required": "Please complete this field.",
+      "email": "Enter a valid email address.",
+      "website": "Enter a valid website, such as yourstore.com.",
+      "choice": "Choose an option.",
+      "tooLong": "Please shorten this response."
+    },
+    "privacy": {
+      "text": "We use these details to respond to your request.",
+      "link": "Privacy policy"
+    },
+    "action": {
+      "primary": "Send demo request",
+      "secondary": "Back",
+      "tertiary": "Continue",
+      "quaternary": "Book the 15-minute call"
+    },
+    "pending": "Sending…",
+    "status": {
+      "sentTitle": "Your request is with us.",
+      "sentDescription": "We'll use the email you provided to follow up. You can close this page.",
+      "invalid": "Check your details and try again.",
+      "limited": "Too many requests. Please try again in 10 minutes.",
+      "unavailable": "We could not send your request. Your details are still here. Try again, or contact support@ecentic.ai."
+    },
+    "dialog": {
+      "action": {
+        "primary": "Close"
+      }
+    }
+  },
+  "enterpriseCompany": {
+    "security": {
+      "meta": {
+        "title": "Security and trust at ecentic",
+        "description": "How ecentic handles your catalog, store access and shopper data. Review the safeguards, AI providers, DPA and sub-processors."
+      },
+      "eyebrow": "Security and trust",
+      "title": "Security and trust",
+      "description": "How ecentic handles your catalog, your store access and your customers’ data. We update this page as we grow, and the date below changes when we do.",
+      "facts": [
+        "Read-only imports",
+        "Public data first for pilots",
+        "DPA on request",
+        "Dated sub-processor list"
+      ],
+      "actions": [
+        {
+          "label": "Talk to us",
+          "href": "/demo"
+        },
+        {
+          "label": "Read the privacy policy",
+          "href": "/privacy-policy"
+        }
+      ],
+      "sections": [
+        {
+          "id": "reviewed",
+          "title": "Last updated 10 November 2026",
+          "description": "This page describes the controls in the current product. Deployment details still awaiting confirmation are marked below."
+        },
+        {
+          "id": "store-access",
+          "title": "How we touch your store",
+          "paragraphs": [
+            "Importing product content does not rewrite it. Apply generates and publishes a title and description on a directly connected Shopify or WooCommerce store. Structured data uses a separate publish action. Connecting Shopify also installs the visit-tracking script.",
+            "If you connect Merchant Center for Shopify, ecentic adds a supplemental data source for published fixes and checkout attributes. It does not replace your main feed.",
+            "On Shopify, a storefront script records visits when it detects an AI assistant referrer or a known agent user-agent. It sends the full page URL, browser user-agent, referrer, page type, detected agent and detection method, and an available product identifier. The record includes the store and the time received.",
+            "This browser script observes visits that run JavaScript. It does not measure every crawler request or establish that a later order came from the same shopper.",
+            "Shopify access uses the Shopify Admin API and the permissions shown on the install screen. You can uninstall at any time. WooCommerce connects through the ecentic plugin or REST API keys that you create and can revoke.",
+            "When you enable agent checkout on WooCommerce, the checkout bridge creates real orders in your store. Your gateway takes payment and you remain merchant of record. Agent checkout supports signed requests, agent allow-lists and configurable rate limits; enforcement follows your store settings.",
+            "Enterprise pilots can start from public pages and product data, without access to your systems."
+          ]
+        },
+        {
+          "id": "infrastructure",
+          "title": "Infrastructure and data protection",
+          "field": true,
+          "rows": [
+            {
+              "label": "Application hosting",
+              "value": "Vercel. {{TODO: confirm deployed services and hosting regions}}"
+            },
+            {
+              "label": "Database",
+              "value": "PostgreSQL. {{TODO: confirm production provider and region}}"
+            },
+            {
+              "label": "Encryption",
+              "value": "{{TODO: confirm the deployed TLS minimum and encryption at rest}}"
+            },
+            {
+              "label": "Account passwords",
+              "value": "Passwords are hashed with scrypt through Better Auth."
+            },
+            {
+              "label": "Webhooks and OAuth",
+              "value": "Shopify webhooks use HMAC verification. OAuth callbacks validate state; supported checkout requests can use HTTP message signatures."
+            },
+            {
+              "label": "Production access",
+              "value": "{{TODO: confirm who has production access and whether MFA is enforced}}"
+            },
+            {
+              "label": "Backups and recovery",
+              "value": "{{TODO: confirm documented backup and recovery targets}}"
+            }
+          ]
+        },
+        {
+          "id": "ai-data",
+          "title": "AI models and your data",
+          "paragraphs": [
+            "The product catalog you connect is sent to AI providers to compare listings and write fixes. Store scans use ChatGPT, Claude and Gemini. GPT also generates listing rewrites and structured data. Perplexity is used in the separate comparison and discovery tools, not store scans.",
+            "GPT runs through Azure OpenAI when an Azure deployment is configured. Anthropic, Google and Perplexity requests use the Vercel AI Gateway; GPT can use that gateway as a fallback.",
+            "Data read from a connected Google Merchant Center account is kept separate from the store catalog used for AI work, as described in the privacy policy.",
+            "{{TODO: confirm account-specific provider retention and model-training terms before publishing a no-training promise}}"
+          ]
+        },
+        {
+          "id": "privacy",
+          "title": "Privacy and GDPR",
+          "rows": [
+            {
+              "label": "Operating company",
+              "value": "{{TODO: exact legal name of the Polish operating company}}"
+            },
+            {
+              "label": "Agent checkout data",
+              "value": "You are the data controller and ecentic is your processor for shopper details handled to carry out checkout."
+            },
+            {
+              "label": "Data requests",
+              "value": "{{TODO: confirm privacy@ecentic.ai receives data requests before activating the contact link}}"
+            }
+          ],
+          "links": [
+            {
+              "label": "Read the privacy policy",
+              "href": "/privacy-policy"
+            }
+          ]
+        },
+        {
+          "id": "dpa",
+          "title": "Data processing agreement",
+          "description": "A DPA is available on request. Ask for it as part of your pilot or security review.",
+          "note": "{{TODO: supply the approved DPA template and confirmed request contact}}",
+          "links": [
+            {
+              "label": "Discuss your requirements",
+              "href": "/demo"
+            }
+          ]
+        },
+        {
+          "id": "sub-processors",
+          "title": "Sub-processors",
+          "description": "Provider purposes in the current product, reviewed 10 November 2026. Processing locations require confirmation for the accounts in use.",
+          "note": "{{TODO: confirm the full contracted sub-processor list and processing locations before launch}}"
+        },
+        {
+          "id": "compliance",
+          "title": "Compliance roadmap",
+          "paragraphs": [
+            "SOC 2 is on our roadmap, timed to prospect security reviews. No certification or completed audit is claimed here.",
+            "{{TODO: confirm the security questionnaire process and available review materials}}"
+          ]
+        },
+        {
+          "id": "report",
+          "title": "Report a vulnerability",
+          "description": "{{TODO: confirm security@ecentic.ai is monitored before publishing the vulnerability contact}}"
+        }
+      ],
+      "subprocessors": {
+        "caption": "Sub-processors reviewed 10 November 2026",
+        "headers": [
+          "Provider",
+          "Purpose",
+          "Processing location"
+        ],
+        "rows": [
+          {
+            "name": "Azure OpenAI",
+            "purpose": "GPT simulations, listing rewrites and structured data.",
+            "location": "{{TODO: confirm Azure region}}"
+          },
+          {
+            "name": "Anthropic",
+            "purpose": "Claude listing comparisons through Vercel AI Gateway.",
+            "location": "{{TODO: confirm processing location}}"
+          },
+          {
+            "name": "Google",
+            "purpose": "Gemini listing comparisons through Vercel AI Gateway.",
+            "location": "{{TODO: confirm processing location}}"
+          },
+          {
+            "name": "Perplexity",
+            "purpose": "Separate comparison and discovery tools through Vercel AI Gateway.",
+            "location": "{{TODO: confirm processing location}}"
+          },
+          {
+            "name": "Vercel",
+            "purpose": "Application hosting and AI Gateway request routing.",
+            "location": "{{TODO: confirm hosting and gateway locations}}"
+          },
+          {
+            "name": "PostgreSQL provider",
+            "purpose": "Application records, connected catalog data and credentials.",
+            "location": "{{TODO: confirm provider and database region}}"
+          },
+          {
+            "name": "Upstash",
+            "purpose": "Redis caches, session data and rate-limit counters.",
+            "location": "{{TODO: confirm Redis region}}"
+          },
+          {
+            "name": "Sentry",
+            "purpose": "Error monitoring and application telemetry.",
+            "location": "{{TODO: confirm processing location}}"
+          },
+          {
+            "name": "PostHog",
+            "purpose": "Product analytics after analytics consent.",
+            "location": "{{TODO: confirm processing location}}"
+          },
+          {
+            "name": "Google Analytics 4",
+            "purpose": "Website analytics after analytics consent.",
+            "location": "{{TODO: confirm processing location}}"
+          },
+          {
+            "name": "Resend",
+            "purpose": "Transactional email delivery.",
+            "location": "{{TODO: confirm processing location}}"
+          },
+          {
+            "name": "UploadThing",
+            "purpose": "Storage for uploaded files.",
+            "location": "{{TODO: confirm storage region}}"
+          },
+          {
+            "name": "Stripe",
+            "purpose": "ecentic plan and performance-fee billing.",
+            "location": "{{TODO: confirm processing location}}"
+          }
+        ]
+      }
+    },
+    "about": {
+      "meta": {
+        "title": "About ecentic: the team behind ecentic",
+        "description": "ecentic helps online stores sell when AI does the shopping. Meet the three founders who have built together for seven years."
+      },
+      "title": "We build the commerce layer for AI shoppers.",
+      "description": "Three founders who have built together for seven years. ecentic exists because when AI does the shopping, a store needs to be ready for a customer that reads data instead of pages.",
+      "sections": [
+        {
+          "id": "why",
+          "title": "Why we started",
+          "paragraphs": [
+            "Whether people search Google, shop on Amazon or ask a chatbot, AI now answers with a product. Most stores have no idea how to be that product. They can’t see the decision, they can’t see why they lost it, and their analytics count the traffic as direct. We started ecentic to show stores that decision and help them fix it, product by product."
+          ]
+        },
+        {
+          "id": "how",
+          "title": "How we work",
+          "field": true,
+          "items": [
+            {
+              "title": "We publish what we ask you to publish.",
+              "body": "Our own llms.txt, API catalog, agent checkout profile and MCP endpoint are public.",
+              "href": "/resources#public-endpoints",
+              "label": "Explore our public endpoints"
+            },
+            {
+              "title": "We say what is built and what is coming.",
+              "body": "Every integration and AI channel is labelled, and our channel pages carry the date we last checked them.",
+              "href": "/integrations",
+              "label": "See integrations"
+            },
+            {
+              "title": "We start from public data.",
+              "body": "Our pilots begin with your public pages, not your systems.",
+              "href": "/solutions/enterprise",
+              "label": "Explore enterprise pilots"
+            }
+          ]
+        },
+        {
+          "id": "team",
+          "title": "The team",
+          "description": "Three founders, with engineering and sales working on the same product.",
+          "note": "{{TODO: supply approved founder portraits}}"
+        },
+        {
+          "id": "before",
+          "title": "Before ecentic",
+          "items": [
+            {
+              "title": "zennit",
+              "body": "The development studio the founders ran alongside school, building software for Eurocar, Albuji and the UK platforms Exelor and Ubix."
+            },
+            {
+              "title": "LookUp",
+              "body": "Their first startup, a parking platform. It reached €10K in monthly revenue, raised a $125K pre-seed and had a small exit."
+            },
+            {
+              "title": "Shopify Plus",
+              "body": "Iseld was a sales advisor for Shopify Plus."
+            }
+          ]
+        },
+        {
+          "id": "programs",
+          "title": "Programs we are part of",
+          "field": true
+        },
+        {
+          "id": "recognition",
+          "title": "Recognition",
+          "items": [
+            {
+              "title": "Startup World Cup",
+              "body": "Santa Cruz regional finalist."
+            },
+            {
+              "title": "Junction Helsinki 2024",
+              "body": "Honorable mention."
+            },
+            {
+              "title": "Entrepreneur First",
+              "body": "Nominated."
+            }
+          ]
+        },
+        {
+          "id": "company",
+          "title": "Company details",
+          "rows": [
+            {
+              "label": "Operating company",
+              "value": "{{TODO: exact legal name and registered address of the Polish operating company}}"
+            },
+            {
+              "label": "Delaware company",
+              "value": "{{TODO: exact legal name and registered address of the Delaware company}}"
+            },
+            {
+              "label": "Tirana contact address",
+              "value": "Pallatet Merkaj, Hyrja 1, Dera 12, Rruga Muhamed Deliu, Qesarakë, Tiranë, Albania"
+            },
+            {
+              "label": "Phone",
+              "value": "{{TODO: confirm the public +355 contact number}}"
+            },
+            {
+              "label": "Support",
+              "value": "support@ecentic.ai"
+            }
+          ],
+          "links": [
+            {
+              "label": "Contact us",
+              "href": "/contact"
+            }
+          ]
+        }
+      ],
+      "people": [
+        {
+          "name": "Xhurian Shaba",
+          "role": "Chief executive officer",
+          "body": "Xhurian is the administrator of ECENTIC and a co-founder of zennit, the Tirana studio the product comes from. He is a software engineer, and ecentic is the company he started so a merchant can see which listing an AI shopping agent actually picks.",
+          "href": "https://www.linkedin.com/in/xhurian-shaba",
+          "linkLabel": "LinkedIn"
+        },
+        {
+          "name": "Alvi Palloshi",
+          "role": "Chief technology officer",
+          "body": "Alvi is a founding partner of the company and a software engineer at zennit. He builds the product with the rest of the Tirana team.",
+          "href": "https://www.linkedin.com/in/alvipalloshi",
+          "linkLabel": "LinkedIn"
+        },
+        {
+          "name": "Iseld Muça",
+          "role": "Head of sales",
+          "body": "Iseld leads go-to-market and writes about what changes when the buyer is an AI agent. He and Xhurian represented ecentic at the Red Bull Basement World Final in San Francisco in 2026, after winning the Albania final.",
+          "href": "https://www.linkedin.com/in/iseld-muca-532786311",
+          "linkLabel": "LinkedIn"
+        }
+      ],
+      "programs": [
+        {
+          "name": "Plug and Play",
+          "description": "GOAL Silicon Valley programme"
+        },
+        {
+          "name": "Microsoft for Startups",
+          "description": "Startup programme"
+        },
+        {
+          "name": "Red Bull Basement",
+          "description": "National winner, world final in Silicon Valley"
+        },
+        {
+          "name": "The Founder Games",
+          "description": "Startup programme"
+        },
+        {
+          "name": "Fil Rouge Capital",
+          "description": "Accelerator. {{TODO: supply the official Fil Rouge Capital logo}}"
+        }
+      ]
+    },
+    "partners": {
+      "meta": {
+        "title": "Partner with ecentic",
+        "description": "Agencies, technology companies and creators: add AI commerce to your work, build on the ecentic API and apply to work together."
+      },
+      "title": "Partner with ecentic.",
+      "description": "For agencies, software companies and creators who serve online stores and want an answer to “what do we do about AI shopping?”",
+      "actions": [
+        {
+          "label": "Apply to work together",
+          "href": "#application"
+        },
+        {
+          "label": "Explore the API",
+          "href": "/docs"
+        }
+      ],
+      "sections": [
+        {
+          "id": "tracks",
+          "title": "Choose your track",
+          "items": [
+            {
+              "title": "Agencies and resellers",
+              "body": "You run Shopify, WooCommerce or marketplace stores for clients. Run ecentic on them, ship the fixes and keep the client relationship. {{TODO: approved agency and reseller benefits and terms}}"
+            },
+            {
+              "title": "Technology partners",
+              "body": "You sell something different to the same stores: product information, payments, checkout or data. Build on the REST API and MCP server, and sell together. {{TODO: approved technology partner benefits and terms}}"
+            },
+            {
+              "title": "Creators and affiliates",
+              "body": "You teach people to sell online. Share ecentic with them. {{TODO: approved creator and affiliate benefits and terms}}"
+            }
+          ]
+        },
+        {
+          "id": "process",
+          "title": "How it works",
+          "field": true,
+          "ordered": true,
+          "columns": 4,
+          "items": [
+            {
+              "title": "Apply",
+              "body": "Tell us what you do and which stores you work with."
+            },
+            {
+              "title": "Talk with us",
+              "body": "{{TODO: confirm the proposed 20-minute partner conversation}}"
+            },
+            {
+              "title": "Get access and materials",
+              "body": "{{TODO: confirm partner access, materials and onboarding}}"
+            },
+            {
+              "title": "Work together",
+              "body": "{{TODO: confirm the joint selling process}}"
+            }
+          ]
+        },
+        {
+          "id": "application",
+          "title": "Apply to work together",
+          "description": "Tell us about your company, your track and the stores you work with."
+        }
+      ],
+      "faqTitle": "Partner questions",
+      "faqs": [
+        {
+          "question": "Who is not a fit?",
+          "answer": "Companies that sell the same thing we do. We work with people who sell something different to the same stores."
+        },
+        {
+          "question": "Do you show partner logos?",
+          "answer": "Only with the partner’s written agreement."
+        },
+        {
+          "question": "Is there a fee to join?",
+          "answer": "{{TODO: confirm whether joining the partner programme is free}}"
+        }
+      ],
+      "formTitle": "Partner application"
+    },
+    "stories": {
+      "meta": {
+        "title": "Pilot stories from ecentic",
+        "description": "Results from ecentic pilots, published with permission and with the method behind every number."
+      },
+      "title": "Pilot stories.",
+      "description": "Results from ecentic pilots, published with each company’s permission, with the method behind every number.",
+      "sections": [
+        {
+          "id": "pilots",
+          "title": "DUA Flavours",
+          "description": "A UK flavours brand. April to July 2026.",
+          "paragraphs": [
+            "12% more visits from AI assistants or direct traffic. Visits, not sales."
+          ],
+          "links": [
+            {
+              "label": "Read the pilot story",
+              "href": "/stories/dua-flavours"
+            }
+          ]
+        }
+      ]
+    },
+    "duaFlavours": {
+      "meta": {
+        "title": "DUA Flavours pilot: 12% more AI and direct visits",
+        "description": "A UK flavours brand saw AI-assistant or direct visits rise 12% from April to July 2026. Read the pilot result and its limits."
+      },
+      "eyebrow": "Pilot story",
+      "title": "DUA Flavours: 12% more visits from AI assistants or direct traffic.",
+      "description": "A pilot with a UK flavours brand, published with permission. The result measures visits, not sales.",
+      "sections": [
+        {
+          "id": "at-a-glance",
+          "title": "At a glance",
+          "field": true,
+          "rows": [
+            {
+              "label": "Sector",
+              "value": "Food and drink"
+            },
+            {
+              "label": "Company",
+              "value": "UK flavours brand"
+            },
+            {
+              "label": "Period",
+              "value": "April to July 2026"
+            },
+            {
+              "label": "What changed",
+              "value": "{{TODO: describe what ecentic changed for DUA Flavours}}"
+            },
+            {
+              "label": "Result",
+              "value": "+12% visits from AI assistants or direct traffic"
+            }
+          ]
+        },
+        {
+          "id": "starting-point",
+          "title": "Where they started",
+          "paragraphs": [
+            "{{TODO: DUA Flavours’ starting position, supplied and approved by Xhurian}}"
+          ]
+        },
+        {
+          "id": "changes",
+          "title": "What we changed",
+          "paragraphs": [
+            "{{TODO: name the products and fields changed, and when the work happened}}"
+          ]
+        },
+        {
+          "id": "result",
+          "title": "What moved",
+          "paragraphs": [
+            "Visits from AI assistants or direct traffic rose 12% from April to July 2026."
+          ]
+        },
+        {
+          "id": "method",
+          "title": "How we measured this",
+          "field": true,
+          "paragraphs": [
+            "What was measured: visits from AI assistants or direct traffic, April to July 2026. What was not measured: sales. Other changes in that period may have contributed.",
+            "{{TODO: explain the April start and what ecentic did before the Shopify app launched on 20 May 2026}}"
+          ]
+        },
+        {
+          "id": "permission",
+          "title": "Published with permission",
+          "description": "Confirmed by DUA Flavours in writing on 3 September 2026.",
+          "links": [
+            {
+              "label": "See all pilot stories",
+              "href": "/stories"
+            }
+          ]
+        }
+      ]
+    },
+    "tools": {
+      "meta": {
+        "title": "Free tools for AI shopping and agent checkout",
+        "description": "Check your AI Agent Score, validate agent checkout, test a shopping agent, compare two products or inspect storefront WebMCP evidence."
+      },
+      "title": "Free tools for agent commerce.",
+      "description": "Check how ready your store is for AI shoppers. No account needed for most of them.",
+      "actions": [
+        {
+          "label": "Check my store free",
+          "href": "/sign-up"
+        },
+        {
+          "label": "Read the guides",
+          "href": "/resources#guides"
+        }
+      ],
+      "sections": [
+        {
+          "id": "free-tools",
+          "title": "Choose what to check",
+          "columns": 2,
+          "items": [
+            {
+              "title": "AI Agent Score",
+              "body": "A free scan of your top 10 products against competitors on ChatGPT, Claude and Gemini. About two minutes. An account is required.",
+              "href": "/sign-up",
+              "label": "Check my store free"
+            },
+            {
+              "title": "Checkout validator",
+              "body": "Fetches your store’s agent checkout profile live and checks its published structure. No account required.",
+              "href": "/ucp-validator",
+              "label": "Open UCP Validator"
+            },
+            {
+              "title": "Checkout playground",
+              "body": "Run a test agent through search, cart and checkout on your store. Ten free messages without an account.",
+              "href": "/ucp-playground",
+              "label": "Open UCP Playground"
+            },
+            {
+              "title": "WebMCP scanner",
+              "body": "Inspect storefront source evidence for shopping actions exposed to browser agents. Results distinguish observed tools from forms and unconfirmed runtime behavior.",
+              "href": "/webmcp-scanner",
+              "label": "Scan a storefront"
+            },
+            {
+              "title": "Compare",
+              "body": "Paste two product URLs and compare their listings across ChatGPT, Claude, Gemini and Perplexity. Read each model’s simulated choice and reasoning.",
+              "href": "/compare",
+              "label": "Compare two products"
+            }
+          ]
+        }
+      ]
+    },
+    "resources": {
+      "meta": {
+        "title": "Resources: guides, research and free tools",
+        "description": "Guides and free tools for selling through AI assistants, pilot stories and ecentic’s public developer endpoints."
+      },
+      "title": "Resources",
+      "description": "Guides, pilot stories and free tools for selling when AI does the shopping.",
+      "actions": [
+        {
+          "label": "Explore free tools",
+          "href": "/tools"
+        },
+        {
+          "label": "Open developer docs",
+          "href": "/docs"
+        }
+      ],
+      "sections": [
+        {
+          "id": "free-tools",
+          "title": "Free tools",
+          "columns": 2,
+          "items": [
+            {
+              "title": "AI Agent Score",
+              "body": "A free scan of your top 10 products against competitors on ChatGPT, Claude and Gemini. About two minutes. An account is required.",
+              "href": "/sign-up",
+              "label": "Check my store free"
+            },
+            {
+              "title": "Checkout validator",
+              "body": "Fetches your store’s agent checkout profile live and checks its published structure. No account required.",
+              "href": "/ucp-validator",
+              "label": "Open UCP Validator"
+            },
+            {
+              "title": "Checkout playground",
+              "body": "Run a test agent through search, cart and checkout on your store. Ten free messages without an account.",
+              "href": "/ucp-playground",
+              "label": "Open UCP Playground"
+            },
+            {
+              "title": "WebMCP scanner",
+              "body": "Inspect storefront source evidence for shopping actions exposed to browser agents. Results distinguish observed tools from forms and unconfirmed runtime behavior.",
+              "href": "/webmcp-scanner",
+              "label": "Scan a storefront"
+            },
+            {
+              "title": "Compare",
+              "body": "Paste two product URLs and compare their listings across ChatGPT, Claude, Gemini and Perplexity. Read each model’s simulated choice and reasoning.",
+              "href": "/compare",
+              "label": "Compare two products"
+            }
+          ],
+          "links": [
+            {
+              "label": "All free tools",
+              "href": "/tools"
+            }
+          ]
+        },
+        {
+          "id": "guides",
+          "title": "Guides",
+          "field": true,
+          "description": "Understand the platform, compare software by the job it does, or follow the guide for your store.",
+          "columns": 2,
+          "items": [
+            {
+              "title": "Platform walkthrough",
+              "body": "Connect a catalog, compare listings, fix product data, prepare checkout and track supported referrals.",
+              "href": "/platform",
+              "label": "Explore the platform"
+            },
+            {
+              "title": "Best AI tools for ecommerce",
+              "body": "A category-based comparison of commerce, content, personalization, search and analytics tools.",
+              "href": "/compare/best-ai-ecommerce-tools",
+              "label": "Read the buyer’s guide"
+            },
+            {
+              "title": "Shopify guide",
+              "body": "Import a public catalog or connect the app, then apply listing fixes with store access.",
+              "href": "/integrations/shopify",
+              "label": "Read the Shopify guide"
+            },
+            {
+              "title": "WooCommerce guide",
+              "body": "Connect the plugin or REST API keys, compare listings and apply fixes to your store.",
+              "href": "/integrations/woocommerce",
+              "label": "Read the WooCommerce guide"
+            }
+          ]
+        },
+        {
+          "id": "editorial",
+          "title": "From our editorial team",
+          "description": "Product guides and research from the locally authored archive.",
+          "links": [
+            {
+              "label": "Browse the full blog archive",
+              "href": "/blog"
+            }
+          ]
+        },
+        {
+          "id": "pilot-stories",
+          "title": "Pilot stories",
+          "items": [
+            {
+              "title": "DUA Flavours",
+              "body": "12% more visits from AI assistants or direct traffic, April to July 2026. Published with permission, with the measurement limits.",
+              "href": "/stories/dua-flavours",
+              "label": "Read the pilot story"
+            }
+          ],
+          "columns": 1
+        },
+        {
+          "id": "public-endpoints",
+          "title": "We publish what we ask you to publish.",
+          "description": "Everything ecentic asks merchants to publish, it publishes itself.",
+          "field": true,
+          "columns": 2,
+          "items": [
+            {
+              "title": "llms.txt",
+              "body": "A machine-readable index of ecentic pages, tools and articles.",
+              "href": "https://ecentic.ai/llms.txt",
+              "label": "Open llms.txt"
+            },
+            {
+              "title": "API catalog",
+              "body": "An RFC 9727 linkset for the public agent APIs, specifications and documentation.",
+              "href": "https://ecentic.ai/.well-known/api-catalog",
+              "label": "Open the API catalog"
+            },
+            {
+              "title": "OAuth discovery",
+              "body": "RFC 8414 authorization-server metadata for agent authentication.",
+              "href": "https://ecentic.ai/.well-known/oauth-authorization-server",
+              "label": "Open OAuth discovery"
+            },
+            {
+              "title": "Agent checkout profile",
+              "body": "ecentic’s public agent profile for commerce discovery.",
+              "href": "https://ecentic.ai/ucp/agent-profile",
+              "label": "Open the profile"
+            },
+            {
+              "title": "MCP endpoint",
+              "body": "JSON-RPC tools for agents connecting to ecentic.",
+              "href": "https://ecentic.ai/api/mcp",
+              "label": "Open the MCP endpoint"
+            },
+            {
+              "title": "Checkout discovery document",
+              "body": "The well-known commerce discovery document served from this site.",
+              "href": "https://ecentic.ai/.well-known/ucp",
+              "label": "Open the discovery document"
+            },
+            {
+              "title": "Agent skills index",
+              "body": "Public instructions for listing optimization, checkout validation and agent commerce.",
+              "href": "https://ecentic.ai/.well-known/agent-skills/index.json",
+              "label": "Open the skills index"
+            }
+          ]
+        }
+      ],
+      "faqTitle": "Questions before you start",
+      "faqs": [
+        {
+          "question": "Are these tools really free?",
+          "answer": "Yes. The AI Agent Score is a one-time free scan with no credit card. The validator is free, and the playground includes ten messages without an account. Ongoing optimization follows the plans on the pricing page."
+        },
+        {
+          "question": "Do I need an account to use the checkout tools?",
+          "answer": "The UCP Validator works without signing in. The UCP Playground gives you ten free messages without an account. Sign in to continue testing your connected store within the product’s limits."
+        },
+        {
+          "question": "What is the difference between the UCP Validator and the Playground?",
+          "answer": "The Validator checks the published checkout profile and whether the endpoint can be reached. The Playground runs an AI agent through supported catalog, cart and checkout operations so you can inspect its tool calls and responses."
+        },
+        {
+          "question": "Where should I start if I am new to agent commerce?",
+          "answer": "Start with the free store check if you have a Shopify or WooCommerce catalog. To check checkout support first, run the Validator on your domain, then read the platform overview."
+        }
+      ],
+      "editorial": {
+        "empty": "Our editorial archive is being prepared. The guides above are available now.",
+        "read": "Read article",
+        "loading": "Loading editorial articles"
+      }
+    },
+    "support": {
+      "meta": {
+        "title": "Help and support",
+        "description": "Get help with your ecentic account, scans, fixes and billing. Email support, book a walkthrough or read the docs."
+      },
+      "title": "Help and support",
+      "description": "Get help with your account, scans, fixes and billing. Choose the contact that fits your question.",
+      "actions": [
+        {
+          "label": "Email support",
+          "href": "mailto:support@ecentic.ai"
+        },
+        {
+          "label": "Open developer docs",
+          "href": "/docs"
+        }
+      ],
+      "sections": [
+        {
+          "id": "help",
+          "title": "How can we help?",
+          "columns": 2,
+          "items": [
+            {
+              "title": "Email support",
+              "body": "Send your question and store URL to support@ecentic.ai.",
+              "href": "mailto:support@ecentic.ai",
+              "label": "Email support"
+            },
+            {
+              "title": "Live walkthrough",
+              "body": "Book a 15-minute call to walk through your store and the product.",
+              "href": "https://cal.com/ecentic-ai/15min",
+              "label": "Book the 15-minute call"
+            },
+            {
+              "title": "Enterprise",
+              "body": "Discuss a pilot, your catalog scope or a security review with us.",
+              "href": "/demo",
+              "label": "Talk to us"
+            },
+            {
+              "title": "Developer docs",
+              "body": "Read the API reference, authentication guide, MCP tools and error documentation.",
+              "href": "/docs",
+              "label": "Open developer docs"
+            }
+          ]
+        },
+        {
+          "id": "self-service",
+          "title": "Find it yourself",
+          "field": true,
+          "columns": 2,
+          "items": [
+            {
+              "title": "Platform",
+              "body": "Read what each part of the product does.",
+              "href": "/platform",
+              "label": "Platform"
+            },
+            {
+              "title": "Integrations",
+              "body": "Check the connection and publishing support for your store.",
+              "href": "/integrations",
+              "label": "Integrations"
+            },
+            {
+              "title": "Pricing",
+              "body": "Compare the free scan, pay-as-you-go and subscription plans.",
+              "href": "/pricing",
+              "label": "Pricing"
+            },
+            {
+              "title": "Security",
+              "body": "Review store access, safeguards and data processing.",
+              "href": "/security",
+              "label": "Security"
+            },
+            {
+              "title": "Privacy policy",
+              "body": "Read what data is collected and how deletion works.",
+              "href": "/privacy-policy",
+              "label": "Privacy policy"
+            }
+          ]
+        }
+      ]
+    },
+    "contact": {
+      "meta": {
+        "title": "Contact ecentic",
+        "description": "Talk to sales, get support, apply to collaborate or find information about privacy and security at ecentic."
+      },
+      "title": "Contact ecentic",
+      "description": "Find the right place for your question.",
+      "sections": [
+        {
+          "id": "contacts",
+          "title": "Get in touch",
+          "columns": 3,
+          "items": [
+            {
+              "title": "Sales",
+              "body": "Pilots, enterprise accounts and demos.",
+              "href": "/demo",
+              "label": "Book a demo"
+            },
+            {
+              "title": "Support",
+              "body": "Help with your account, scans and billing. Email support@ecentic.ai.",
+              "href": "/support",
+              "label": "Open help and support"
+            },
+            {
+              "title": "Partners",
+              "body": "For agencies, technology companies and creators.",
+              "href": "/partners",
+              "label": "Apply to work together"
+            },
+            {
+              "title": "Press",
+              "body": "{{TODO: confirm press@ecentic.ai is active before publishing the press contact}}"
+            },
+            {
+              "title": "Security",
+              "body": "Report a vulnerability. {{TODO: confirm security@ecentic.ai is monitored before activating the contact link}}",
+              "href": "/security",
+              "label": "Read about security"
+            },
+            {
+              "title": "Privacy",
+              "body": "Data requests and DPA questions. {{TODO: confirm privacy@ecentic.ai is active before activating the contact link}}",
+              "href": "/security#dpa",
+              "label": "Read about the DPA"
+            }
+          ]
+        },
+        {
+          "id": "company",
+          "title": "Company details",
+          "field": true,
+          "rows": [
+            {
+              "label": "Operating company",
+              "value": "{{TODO: exact legal name and registered address of the Polish operating company}}"
+            },
+            {
+              "label": "Delaware company",
+              "value": "{{TODO: exact legal name and registered address of the Delaware company}}"
+            }
+          ],
+          "links": [
+            {
+              "label": "Meet the team",
+              "href": "/about"
+            }
+          ]
+        }
+      ]
+    },
+    "changelog": {
+      "meta": {
+        "title": "Changelog: what is new in ecentic",
+        "description": "Product updates in ecentic, newest first."
+      },
+      "title": "Changelog",
+      "description": "What we have shipped, newest first.",
+      "sections": [
+        {
+          "id": "updates",
+          "title": "Product updates",
+          "description": "Dates follow the product’s development history."
+        }
+      ],
+      "entries": [
+        {
+          "date": "2026-09-14",
+          "label": "New",
+          "title": "Inspect storefront WebMCP support.",
+          "body": "The free WebMCP scanner reviews source evidence for shopping actions and reports what it could and could not observe.",
+          "commit": "2edebb8e"
+        },
+        {
+          "date": "2026-09-13",
+          "label": "Improved",
+          "title": "Compare offers across currencies.",
+          "body": "Competitor offer assessment converts supported currencies before checking price bands.",
+          "commit": "404dfc2c"
+        },
+        {
+          "date": "2026-09-13",
+          "label": "Fixed",
+          "title": "Connect Shopify with your storefront domain.",
+          "body": "Shopify connection accepts custom store domains and resolves the matching admin host.",
+          "commit": "5644d6a9"
+        },
+        {
+          "date": "2026-09-11",
+          "label": "New",
+          "title": "Start with a public catalog import.",
+          "body": "Enter your store address, create an account and import the public Shopify or WooCommerce catalog read-only.",
+          "commit": "fc5c0436"
+        },
+        {
+          "date": "2026-09-01",
+          "label": "Improved",
+          "title": "Review measured competitor offers.",
+          "body": "Competitor discovery shows product-level offers with the evidence used to select them.",
+          "commit": "075058b5"
+        },
+        {
+          "date": "2026-08-25",
+          "label": "New",
+          "title": "Use ecentic from the command line.",
+          "body": "@ecentic/cli provides discovery, plans, health, skills and MCP tool commands.",
+          "commit": "14d92423"
+        },
+        {
+          "date": "2026-08-25",
+          "label": "New",
+          "title": "Try the API sandbox.",
+          "body": "Onboarding and sandbox commands include a sample simulation for evaluating the API.",
+          "commit": "19b1b78b"
+        },
+        {
+          "date": "2026-08-24",
+          "label": "Improved",
+          "title": "Find the developer reference in one place.",
+          "body": "Documentation covers authentication, errors, rate limits and API versions, with recovery links for unknown endpoints.",
+          "commit": "3a203235"
+        },
+        {
+          "date": "2026-08-06",
+          "label": "New",
+          "title": "Choose whether to allow analytics.",
+          "body": "The cookie banner gates Google Analytics and PostHog. Cookie settings lets you change the choice later.",
+          "commit": "8c2fddcf"
+        },
+        {
+          "date": "2026-07-30",
+          "label": "New",
+          "title": "Check Merchant Center checkout prerequisites.",
+          "body": "Shopify stores can review readiness and manage product checkout attributes in Google Shopping.",
+          "commit": "bbc6818d"
+        },
+        {
+          "date": "2026-07-29",
+          "label": "Fixed",
+          "title": "Reset your password by email.",
+          "body": "The password reset flow includes a new-password form and clear expired-link handling.",
+          "commit": "e16d3fe7"
+        },
+        {
+          "date": "2026-07-26",
+          "label": "New",
+          "title": "Manage Google Merchant Center listings.",
+          "body": "Connect Merchant Center and send approved product content through an ecentic supplemental data source.",
+          "commit": "4434a4e9"
+        },
+        {
+          "date": "2026-07-08",
+          "label": "New",
+          "title": "Test agent checkout in the playground.",
+          "body": "The public checkout playground includes ten messages without an account.",
+          "commit": "b86550e0"
+        },
+        {
+          "date": "2026-07-03",
+          "label": "New",
+          "title": "Connect WooCommerce to hosted agent checkout.",
+          "body": "Catalog, cart and checkout operations use the store bridge to create real WooCommerce orders.",
+          "commit": "b7d1902c"
+        }
+      ]
+    },
+    "researchDraft": {
+      "meta": {
+        "title": "36,797 simulated AI purchases: what we learned",
+        "description": "What happened in 36,797 simulated shopping decisions across ChatGPT, Claude, Gemini and Perplexity, and what it means for merchants."
+      },
+      "eyebrow": "Unpublished research draft",
+      "title": "What 36,797 simulated AI purchases tell us.",
+      "description": "We asked AI assistants to choose between products, tens of thousands of times. They often disagreed.",
+      "actions": [
+        {
+          "label": "Run the free store check",
+          "href": "/sign-up"
+        }
+      ],
+      "sections": [
+        {
+          "id": "summary",
+          "title": "Summary",
+          "paragraphs": [
+            "On the same catalog, ChatGPT picked the same product 51.6% of the time; Claude and Gemini picked it about 18.5% of the time.",
+            "{{TODO: confirm whether all products in the research were real products}}"
+          ]
+        },
+        {
+          "id": "question",
+          "title": "The question",
+          "description": "When an AI assistant chooses between two products, what decides it, and does every assistant decide the same way?"
+        },
+        {
+          "id": "method",
+          "title": "Method",
+          "rows": [
+            {
+              "label": "Products",
+              "value": "{{TODO: number of products}}"
+            },
+            {
+              "label": "Categories",
+              "value": "{{TODO: categories represented}}"
+            },
+            {
+              "label": "Questions",
+              "value": "{{TODO: question set and selection method}}"
+            },
+            {
+              "label": "Runs",
+              "value": "{{TODO: runs per question and total allocation}}"
+            },
+            {
+              "label": "Models",
+              "value": "{{TODO: models and exact versions}}"
+            },
+            {
+              "label": "Dates",
+              "value": "{{TODO: research dates}}"
+            },
+            {
+              "label": "Purchase definition",
+              "value": "{{TODO: definition of a simulated purchase}}"
+            }
+          ]
+        },
+        {
+          "id": "findings",
+          "title": "Findings",
+          "paragraphs": [
+            "ChatGPT selected the same product 51.6% of the time, compared with about 18.5% for Claude and Gemini.",
+            "{{TODO: add only further findings supported by the research data}}"
+          ]
+        },
+        {
+          "id": "merchants",
+          "title": "What it means for merchants",
+          "description": "Optimizing for one assistant is not enough, because they do not agree. The data each one reads has to be complete enough for all of them."
+        },
+        {
+          "id": "limits",
+          "title": "Limits",
+          "paragraphs": [
+            "These are simulated decisions, not live traffic. Models change, and results can shift with them. Perplexity was part of this research; ecentic’s store scans run on ChatGPT, Claude and Gemini."
+          ]
+        },
+        {
+          "id": "download",
+          "title": "Download the research",
+          "description": "{{TODO: supply the final, reviewed PDF before enabling its download}}"
+        },
+        {
+          "id": "citation",
+          "title": "Cite this research",
+          "description": "ecentic, “36,797 simulated AI purchases”, {{TODO: publication month}} 2026."
+        }
+      ]
+    }
   }
 }

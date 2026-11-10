@@ -46,19 +46,20 @@ export const HeroVideo = () => {
         <span className="absolute right-4 bottom-4 left-4 flex items-end justify-between gap-4 text-white">
           <span className="flex flex-col">
             <span className="font-body font-medium text-lg">
-              See ecentic in action
+              {translate("heading")}
             </span>
             <span className="font-body text-sm text-white/70">
-              Watch the product film
+              {translate("caption")}
             </span>
           </span>
           <span className="rounded-md border border-white/30 bg-background/90 px-3.5 py-2 font-body font-medium text-foreground shadow-sm backdrop-blur-md">
-            Play video
+            {translate("action.primary")}
           </span>
         </span>
       </DialogTrigger>
 
       <DialogPopup
+        className="marketing-site enterprise-video-dialog"
         classList={{
           backdrop:
             "z-50 bg-emphasis/85 opacity-100 backdrop-blur-md duration-150",
@@ -75,6 +76,7 @@ export const HeroVideo = () => {
         >
           <XIcon aria-hidden className="size-5" />
         </DialogClose>
+        {/* biome-ignore lint/a11y/useMediaCaption: Preserve the existing film; a caption track requires a verified transcript. */}
         <video
           autoPlay
           controls

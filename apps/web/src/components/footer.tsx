@@ -135,8 +135,9 @@ export const Footer = async (_props: Footer.Props = {}) => {
             <Image
               src="/images/trademark.svg"
               alt="ecentic"
-              width={140}
-              height={36}
+              style={{ width: 140, height: "auto" }}
+              width={1022}
+              height={257}
             />
           </Link>
           <p>{copy.tagline}</p>

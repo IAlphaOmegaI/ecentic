@@ -1,0 +1,526 @@
+{
+  "enterpriseHome": {
+    "meta": {
+      "title": "AI shopping optimization and agent checkout | ecentic",
+      "description": "AI shopping optimization for Shopify, WooCommerce and product feeds. Simulate product choices, improve listings and connect agent checkout with ecentic."
+    },
+    "hero": {
+      "eyebrow": "The agentic commerce platform",
+      "title": "Get the sale when AI does the shopping.",
+      "description": "AI is becoming another way to find and compare products. ecentic helps yours compete: improve the product data assistants read, connect agent checkout on WooCommerce, and run a fresh simulation when you want to check again.",
+      "actions": [
+        {
+          "label": "Book a demo",
+          "href": "/demo"
+        },
+        {
+          "label": "Check my store free",
+          "href": "/sign-up"
+        }
+      ],
+      "facts": [
+        "Connect Shopify and WooCommerce, or import a supported product feed or CSV."
+      ],
+      "screenshot": {
+        "alt": "ecentic win-rate overview showing explicitly labelled sample data.",
+        "caption": "Product screenshot · sample data"
+      }
+    },
+    "programs": {
+      "eyebrow": "Programs we're part of",
+      "title": "Built with support from these programs.",
+      "items": [
+        {
+          "id": "plug-and-play",
+          "title": "Plug and Play"
+        },
+        {
+          "id": "microsoft-for-startups",
+          "title": "Microsoft for Startups"
+        },
+        {
+          "id": "red-bull-basement",
+          "title": "Red Bull Basement"
+        },
+        {
+          "id": "founder-games",
+          "title": "The Founder Games"
+        },
+        {
+          "id": "fil-rouge-capital",
+          "title": "Fil Rouge Capital"
+        }
+      ],
+      "missingAsset": "{{TODO: official logo}}"
+    },
+    "businesses": {
+      "eyebrow": "01 · Who it's for",
+      "title": "Different businesses. Same new shopper.",
+      "description": "Start with the way you sell and the questions your team needs to answer.",
+      "painLabel": "The usual problems",
+      "items": [
+        {
+          "id": "brands",
+          "eyebrow": "Brands",
+          "title": "Be the product the answer names.",
+          "description": "DTC and consumer brands",
+          "pains": [
+            "AI recommends a competitor in your own category.",
+            "Retailers describe your products better than you do.",
+            "You cannot see which products assistants skip."
+          ],
+          "href": "/solutions/brands",
+          "label": "See how it works for you"
+        },
+        {
+          "id": "retailers-and-marketplaces",
+          "eyebrow": "Retailers and marketplaces",
+          "title": "Thousands of listings. One shot at the agent.",
+          "description": "Large catalogs, many suppliers",
+          "pains": [
+            "Supplier data that assistants cannot compare.",
+            "The feed and site disagree on price or stock.",
+            "There is no way to check every product by hand."
+          ],
+          "href": "/solutions/retailers-and-marketplaces",
+          "label": "See how it works for you"
+        },
+        {
+          "id": "enterprise",
+          "eyebrow": "Enterprise",
+          "title": "AI is a new channel. Run it like one.",
+          "description": "Many brands, markets and teams",
+          "pains": [
+            "Every market brings different shopping questions.",
+            "Security review comes before catalog access.",
+            "Nobody owns AI as a sales channel."
+          ],
+          "href": "/solutions/enterprise",
+          "label": "See how it works for you"
+        },
+        {
+          "id": "agencies-and-partners",
+          "eyebrow": "Agencies and partners",
+          "title": "Add AI commerce to what you already sell.",
+          "description": "Running stores for clients",
+          "pains": [
+            "Clients ask about ChatGPT and you need an answer.",
+            "Catalog audits still happen by hand.",
+            "You need a clear service for this new channel."
+          ],
+          "href": "/solutions/agencies-and-partners",
+          "label": "See how it works for you"
+        }
+      ]
+    },
+    "loop": {
+      "eyebrow": "02 · How it works",
+      "title": "From product feed to AI checkout.",
+      "description": "Connect, compare, improve, sell and check again. You choose which changes to publish.",
+      "steps": [
+        {
+          "id": "connect",
+          "title": "Connect",
+          "body": "Bring your catalog into one place through Shopify, WooCommerce, a supported XML or JSON feed, or a CSV.",
+          "tags": [
+            "Shopify",
+            "WooCommerce",
+            "Product feeds"
+          ],
+          "href": "/platform/connect",
+          "label": "Explore Connect"
+        },
+        {
+          "id": "simulate",
+          "title": "Simulate",
+          "body": "See which product ChatGPT, Claude and Gemini pick in a comparison, and read the reasoning behind each simulated choice.",
+          "tags": [
+            "Win rate",
+            "Battlecards",
+            "Readiness audit"
+          ],
+          "href": "/platform/simulate",
+          "label": "Explore Simulate"
+        },
+        {
+          "id": "fix",
+          "title": "Fix",
+          "body": "Apply generates and publishes titles and descriptions using existing product facts. Publish structured data and sync Merchant Center through separate controls.",
+          "tags": [
+            "Listings",
+            "Structured data",
+            "Merchant Center"
+          ],
+          "href": "/platform/fix",
+          "label": "Explore Fix"
+        },
+        {
+          "id": "sell",
+          "title": "Sell",
+          "body": "Connect agent checkout on WooCommerce, test the flow and keep your own payment provider. Platform eligibility and payment handoffs still apply.",
+          "tags": [
+            "Agent checkout",
+            "Checkout testing",
+            "Your payments"
+          ],
+          "href": "/platform/sell",
+          "label": "Explore Sell"
+        },
+        {
+          "id": "track",
+          "title": "Track",
+          "body": "Follow detected AI referrals on Shopify, compare completed simulations and request a fresh scan when you want to check again.",
+          "tags": [
+            "AI traffic",
+            "Manual rescans",
+            "Multiple stores"
+          ],
+          "href": "/platform/track",
+          "label": "Explore Track"
+        }
+      ]
+    },
+    "film": {
+      "eyebrow": "03 · Watch it work",
+      "title": "See ecentic in a minute.",
+      "description": "A quick look at the product, from a comparison to the next decision for your catalog.",
+      "caption": "ecentic product film",
+      "action": {
+        "primary": "Watch the film"
+      }
+    },
+    "channels": {
+      "eyebrow": "04 · AI channels",
+      "title": "One catalog. The assistants your customers ask.",
+      "description": "Each assistant has its own product sources and rules for buying. See what ecentic supports today and what is planned.",
+      "checked": "Checked 10 November 2026. Every channel page is dated and links to its sources.",
+      "items": [
+        {
+          "id": "google",
+          "title": "Google AI Mode and Gemini",
+          "body": "Gemini simulations, plus Merchant Center sync for Shopify.",
+          "status": "simulated",
+          "statusLabel": "Simulated",
+          "href": "/ai-channels/google-ai-mode-gemini"
+        },
+        {
+          "id": "chatgpt",
+          "title": "ChatGPT",
+          "body": "Simulations and listing checks against OpenAI's feed rules.",
+          "status": "simulated",
+          "statusLabel": "Simulated",
+          "href": "/ai-channels/chatgpt"
+        },
+        {
+          "id": "claude",
+          "title": "Claude",
+          "body": "Simulations of how Claude compares your products.",
+          "status": "simulated",
+          "statusLabel": "Simulated",
+          "href": "/ai-channels/claude"
+        },
+        {
+          "id": "copilot",
+          "title": "Microsoft Copilot",
+          "body": "A Microsoft Merchant Center feed export is planned.",
+          "status": "coming-soon",
+          "statusLabel": "Coming soon",
+          "href": "/ai-channels/microsoft-copilot"
+        },
+        {
+          "id": "perplexity",
+          "title": "Perplexity",
+          "body": "Store-scan simulations and a merchant feed are planned.",
+          "status": "coming-soon",
+          "statusLabel": "Coming soon",
+          "href": "/ai-channels/perplexity"
+        },
+        {
+          "id": "amazon",
+          "title": "Amazon",
+          "body": "Catalog delivery to Shop Direct is planned.",
+          "status": "coming-soon",
+          "statusLabel": "Coming soon",
+          "href": "/ai-channels/amazon"
+        }
+      ],
+      "link": {
+        "label": "See every AI channel",
+        "href": "/ai-channels"
+      }
+    },
+    "integration": {
+      "eyebrow": "05 · Integrations",
+      "title": "Plugs into the stack you already run.",
+      "description": "Direct connections, supported feeds and the integrations we are building next. Each tile states its current status.",
+      "counter": {
+        "live": "live",
+        "feed": "via product feed",
+        "soon": "coming soon"
+      },
+      "links": [
+        {
+          "label": "See all integrations",
+          "href": "/integrations"
+        },
+        {
+          "label": "Request an integration",
+          "href": "/integrations#request"
+        }
+      ]
+    },
+    "mechanisms": {
+      "eyebrow": "06 · Under the hood",
+      "title": "Everything between “AI skipped us” and “AI bought from us”.",
+      "items": [
+        {
+          "id": "simulations",
+          "title": "Agent simulations",
+          "body": "ChatGPT, Claude and Gemini choose between your product and a competitor's in a recorded simulation.",
+          "tags": [
+            "Win rate",
+            "Replay",
+            "Battlecards"
+          ],
+          "href": "/platform/simulate",
+          "label": "See simulations"
+        },
+        {
+          "id": "readiness",
+          "title": "Readiness audit",
+          "body": "Check crawler rules, sampled page HTML, product identifiers and feed eligibility. Inaccessible pages are flagged for review.",
+          "tags": [
+            "Crawlers",
+            "Schema",
+            "GTIN"
+          ],
+          "href": "/platform/simulate#readiness",
+          "label": "See the audit"
+        },
+        {
+          "id": "catalog",
+          "title": "Catalog fixes",
+          "body": "Generate and publish titles and descriptions from your existing product facts. Structured data has its own publish action.",
+          "tags": [
+            "Listings",
+            "Attributes",
+            "Publish"
+          ],
+          "href": "/platform/fix",
+          "label": "See catalog fixes"
+        },
+        {
+          "id": "merchant-center",
+          "title": "Merchant Center sync",
+          "body": "Send published listing fixes and checkout attributes through a separate supplemental-feed sync for Shopify.",
+          "tags": [
+            "Supplemental feed",
+            "Diagnostics",
+            "Shopify"
+          ],
+          "href": "/platform/fix#merchant-center",
+          "label": "See the sync"
+        },
+        {
+          "id": "checkout",
+          "title": "Agent checkout for WooCommerce",
+          "body": "Give supported agent flows a route through your own store and payment provider, with checkout testing and configurable controls.",
+          "tags": [
+            "Setup",
+            "Testing",
+            "Validator"
+          ],
+          "href": "/platform/sell",
+          "label": "See agent checkout"
+        },
+        {
+          "id": "developers",
+          "title": "API, MCP server and CLI",
+          "body": "Use the published interfaces for discovery, plans, store connection and onboarding status.",
+          "tags": [
+            "REST",
+            "MCP",
+            "CLI"
+          ],
+          "href": "/docs",
+          "label": "Open developer docs"
+        }
+      ]
+    },
+    "proof": {
+      "eyebrow": "07 · What we've seen so far",
+      "title": "Early numbers, stated plainly.",
+      "stats": [
+        {
+          "value": "36,797",
+          "title": "Simulated purchases",
+          "body": "Across ChatGPT, Claude, Gemini and Perplexity.",
+          "footnote": "1"
+        },
+        {
+          "value": "2.8×",
+          "title": "As often on the same catalog",
+          "body": "ChatGPT picked the same product 51.6% of the time; Claude and Gemini about 18.5%.",
+          "footnote": "1"
+        },
+        {
+          "value": "+12%",
+          "title": "Visits for DUA Flavours",
+          "body": "Visits from AI assistants or direct traffic, April to July 2026. DUA Flavours, ecentic pilot, published with permission.",
+          "footnote": "2"
+        }
+      ],
+      "study": {
+        "title": "A large spirits marketplace",
+        "body": "88% of 9,699 products had at least one fault in the data agents read. Asked where to buy two bottles it stocked, an agent named it 0 times out of 20.",
+        "note": "An anonymised finding. A snapshot of one catalog and question set, not a prediction for every store."
+      },
+      "footnotes": [
+        {
+          "marker": "1",
+          "text": "ecentic simulations, 2026. Simulated shopping decisions, not live agent traffic. Perplexity was part of the research set; store scans run on ChatGPT, Claude and Gemini. The methodology write-up is not yet published."
+        },
+        {
+          "marker": "2",
+          "text": "Pilot result, confirmed by DUA Flavours in writing. Visits, not sales. Includes direct traffic and does not establish incremental sales caused by ecentic."
+        }
+      ],
+      "pipeline": "Pilots in scoping with companies in enterprise retail, travel and flexible workspace."
+    },
+    "procurement": {
+      "eyebrow": "08 · Enterprise",
+      "title": "Bring the right questions to security review.",
+      "items": [
+        {
+          "title": "You choose what gets published.",
+          "body": "Listing changes require your chosen Apply action. Structured data and Merchant Center sync have separate controls. Connecting Shopify also installs visit tracking."
+        },
+        {
+          "title": "Pilots on public data.",
+          "body": "Start with an accessible public catalog or a supported feed. Agree the scope before connecting systems or granting write access."
+        },
+        {
+          "title": "Data handling you can review.",
+          "body": "Review the privacy policy, request a DPA and see the named sub-processors. Confirm operational and contracting requirements with us."
+        },
+        {
+          "title": "A founder on the account.",
+          "body": "A direct conversation with the people who build ecentic, from the first category to the pilot readout."
+        }
+      ],
+      "links": [
+        {
+          "label": "Talk to us",
+          "href": "/demo"
+        },
+        {
+          "label": "Read security and trust",
+          "href": "/security"
+        }
+      ]
+    },
+    "pricing": {
+      "eyebrow": "09 · Pricing",
+      "title": "Start free. Scale when AI starts buying.",
+      "description": "Choose a starting point that fits your store and your team.",
+      "items": [
+        {
+          "title": "Free store check",
+          "body": "Create an account and see how your products compare.",
+          "href": "/sign-up",
+          "label": "Check my store free"
+        },
+        {
+          "title": "Self-serve plans for single stores",
+          "body": "Monthly plans or pay-as-you-go, with the current limits and attribution rules explained on Pricing.",
+          "href": "/pricing",
+          "label": "Compare plans"
+        },
+        {
+          "title": "Enterprise pilots, scoped with you",
+          "body": "Agree the category, baseline and decisions your team needs to make.",
+          "href": "/demo",
+          "label": "Talk about a pilot"
+        }
+      ],
+      "action": {
+        "label": "See pricing",
+        "href": "/pricing"
+      }
+    },
+    "editorial": {
+      "eyebrow": "10 · From the team",
+      "title": "What we're learning.",
+      "description": "Product notes and practical guides, written by the ecentic team.",
+      "loading": "Loading articles",
+      "empty": "Our next product notes and guides will appear here.",
+      "read": "Read the article",
+      "links": [
+        {
+          "label": "Explore resources",
+          "href": "/resources"
+        }
+      ]
+    },
+    "faq": {
+      "title": "Questions before you start.",
+      "items": [
+        {
+          "question": "What does ecentic do?",
+          "answer": "ecentic helps online stores compete when AI does the shopping. It simulates how ChatGPT, Claude and Gemini compare products, helps improve the product data they read, and supports agent checkout on WooCommerce."
+        },
+        {
+          "question": "Which AI assistants does it cover?",
+          "answer": "Store simulations run on ChatGPT, Claude and Gemini. Shopify visit tracking recognises supported AI referral signals, including ChatGPT, Perplexity, Claude, Gemini and Copilot. Checkout depends on your store setup and the shopping platform’s eligibility. Each AI channel page shows the current status."
+        },
+        {
+          "question": "Does ecentic change our store without asking?",
+          "answer": "Listing changes require your chosen Apply action, which generates and publishes a title and description. Structured data and Merchant Center sync use separate controls. Connecting Shopify also installs the visit-tracking script. Importing product content does not rewrite it."
+        },
+        {
+          "question": "Does it work with our platform?",
+          "answer": "Shopify and WooCommerce connect directly. Other platforms can import a supported XML or JSON product feed or a CSV. Feed support depends on the export structure and mapped fields; feed imports do not write back to the original platform."
+        },
+        {
+          "question": "Do you need access to our systems for a pilot?",
+          "answer": "A pilot can start from an accessible public catalog or a supported product feed. We agree the scope with you before any system integration or store-write access is required."
+        },
+        {
+          "question": "How is our data handled?",
+          "answer": "The security page describes current catalog access, tracking and AI-provider handling. You can review our privacy policy, request a DPA and see named sub-processors. Confirm deployment and contracting requirements with us before a pilot."
+        },
+        {
+          "question": "Is this SEO?",
+          "answer": "ecentic focuses on the product data and checkout that AI shopping assistants use to compare and buy. The work can overlap with structured-data and catalog quality practices, but its measurements are simulations, detected AI referrals and checkout checks, rather than search rankings."
+        },
+        {
+          "question": "What does it cost?",
+          "answer": "The store check is free with an account. Single stores can choose a monthly plan or pay-as-you-go. The performance-fee attribution rules and limits are explained on Pricing; attribution does not prove incremental sales. Enterprise pilots are scoped with you."
+        }
+      ]
+    },
+    "closing": {
+      "title": "AI is already choosing products in your category.",
+      "description": "Find out if it's choosing yours.",
+      "actions": [
+        {
+          "label": "Book a demo",
+          "href": "/demo"
+        },
+        {
+          "label": "Check my store free",
+          "href": "/sign-up"
+        }
+      ]
+    }
+  },
+  "home": {
+    "heroVideo": {
+      "heading": "See ecentic in action",
+      "caption": "Watch the product film",
+      "action": {
+        "primary": "Play video"
+      }
+    }
+  }
+}

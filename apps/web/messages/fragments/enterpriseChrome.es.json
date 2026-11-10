@@ -48,6 +48,7 @@
       "cookies": "Configura las cookies",
       "aiInstructions": "Instrucciones para IA",
       "tools": "Herramientas gratuitas"
-    }
+    },
+    "loading": "Cargando página"
   }
 }

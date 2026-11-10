@@ -27,15 +27,16 @@ import type { PropsWithChildren } from "react";
  */
 
 /** Chrome on every marketing page: navbar, language switcher, sign-in link. */
-const CHROME = ["general", "nav", "signIn"] as const;
-
-/** Chrome plus the shared section grid every content page's layout draws. */
-const MARKETING = [
-  ...CHROME,
-  "dashboard.grid",
+const CHROME = [
+  "general",
+  "nav",
+  "signIn",
   "enterpriseChrome",
   "enterpriseNav",
 ] as const;
+
+/** Chrome plus the shared section grid every content page's layout draws. */
+const MARKETING = [...CHROME, "dashboard.grid"] as const;
 
 export const CLIENT_MESSAGES = {
   /** Root layout: only the cookie banner renders above the route groups. */
