@@ -145,10 +145,8 @@ export default async () => {
   ];
 
   return (
-    <main className="flex min-h-screen flex-col">
-      <div className="mx-auto w-full max-w-6xl border-accent-foreground border-x">
-        <Navbar />
-      </div>
+    <main className="marketing-content-shell flex min-h-screen flex-col">
+      <Navbar />
 
       <JsonLd schemas={structuredData} />
 

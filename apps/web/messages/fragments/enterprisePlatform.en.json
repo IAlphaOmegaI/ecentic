@@ -76,7 +76,6 @@
           "title": "See how AI shops your catalog. Product by product.",
           "eyebrow": "[02] Simulate",
           "description": "See which products the models pick, and why. ChatGPT, Claude and Gemini compare your product with a named competitor and record their reasoning.",
-          "field": true,
           "items": [
             {
               "title": "Agent simulations",
@@ -178,7 +177,6 @@
           "title": "Let AI check out. On your terms.",
           "eyebrow": "[04] Sell",
           "description": "Test what an agent meets at checkout. On WooCommerce, provide a path to cart and orders using your store’s gateway and configured access controls.",
-          "field": true,
           "items": [
             {
               "title": "Agent checkout on WooCommerce",
@@ -351,7 +349,6 @@
             "id": "how-it-works",
             "title": "Bring in the catalog. Choose what happens next.",
             "eyebrow": "[02] How it works",
-            "field": true,
             "ordered": true,
             "columns": 4,
             "items": [
@@ -564,7 +561,6 @@
             "eyebrow": "[02] How it works",
             "ordered": true,
             "columns": 4,
-            "field": true,
             "items": [
               {
                 "title": "Choose the matchup",
@@ -757,7 +753,6 @@
             "eyebrow": "[02] How it works",
             "ordered": true,
             "columns": 4,
-            "field": true,
             "items": [
               {
                 "title": "Choose a listing",
@@ -940,7 +935,6 @@
             "id": "how-it-works",
             "title": "Test the complete path.",
             "eyebrow": "[02] How it works",
-            "field": true,
             "ordered": true,
             "columns": 4,
             "items": [
@@ -1150,7 +1144,6 @@
             "id": "how-it-works",
             "title": "Keep visits, tests and estimates separate.",
             "eyebrow": "[02] How it works",
-            "field": true,
             "ordered": true,
             "columns": 4,
             "items": [
@@ -1413,6 +1406,28 @@
     "screenshot": {
       "alt": "The ecentic dashboard win-rate chart and product comparison breakdown using sample data.",
       "caption": "Product screenshot · sample data"
+    },
+    "screenshots": {
+      "connect": {
+        "alt": "ecentic connected-store settings with clearly labeled sample stores",
+        "caption": "Product UI · sample stores. No merchant account was connected."
+      },
+      "simulate": {
+        "alt": "The ecentic dashboard win-rate chart and product comparison breakdown using sample data.",
+        "caption": "Product screenshot · sample data"
+      },
+      "fix": {
+        "alt": "ecentic publishing history showing sample product records without performance figures",
+        "caption": "Product UI · sample publishing-history records. No measured lift or customer results are shown."
+      },
+      "sell": {
+        "alt": "ecentic UCP validator in its initial state before a store check",
+        "caption": "Product UI · validator before a check. This is not a completed checkout or a platform approval."
+      },
+      "track": {
+        "alt": "ecentic agent-visits chart with illustrative sample data",
+        "caption": "Product UI · illustrative sample visits, not a customer result."
+      }
     }
   }
 }

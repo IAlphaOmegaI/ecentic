@@ -52,7 +52,6 @@
             "id": "one-product",
             "title": "Sigue un producto.",
             "eyebrow": "[02] Ejemplo con datos de muestra",
-            "field": true,
             "ordered": true,
             "columns": 5,
             "items": [
@@ -203,7 +202,6 @@
             "eyebrow": "[02] Ejemplo con datos de muestra",
             "ordered": true,
             "columns": 5,
-            "field": true,
             "items": [
               {
                 "title": "Conectado",
@@ -578,7 +576,6 @@
             "title": "Basado en interfaces claras.",
             "eyebrow": "[07] Capacidades de la plataforma",
             "columns": 3,
-            "field": true,
             "items": [
               {
                 "title": "Tus tiendas en una cuenta",
@@ -789,7 +786,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "Son atributos que tu equipo debe verificar, no campos que ecentic invente o complete automáticamente. El importador actual admite campos definidos."
           },
           {
@@ -931,7 +927,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "Son atributos que tu equipo debe verificar, no campos que ecentic invente o complete automáticamente. El importador actual admite campos definidos."
           },
           {
@@ -1069,7 +1064,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "Son atributos que tu equipo debe verificar, no campos que ecentic invente o complete automáticamente. El importador actual admite campos definidos."
           },
           {
@@ -1207,7 +1201,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "Son atributos que tu equipo debe verificar, no campos que ecentic invente o complete automáticamente. El importador actual admite campos definidos."
           },
           {
@@ -1349,7 +1342,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "Son atributos que tu equipo debe verificar, no campos que ecentic invente o complete automáticamente. El importador actual admite campos definidos."
           },
           {
@@ -1487,7 +1479,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "Son atributos que tu equipo debe verificar, no campos que ecentic invente o complete automáticamente. El importador actual admite campos definidos."
           },
           {
@@ -1634,7 +1625,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "Son atributos que tu equipo debe verificar, no campos que ecentic invente o complete automáticamente. El importador actual admite campos definidos."
           },
           {
@@ -1777,7 +1767,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "Son atributos que tu equipo debe verificar, no campos que ecentic invente o complete automáticamente. El importador actual admite campos definidos."
           },
           {
@@ -1904,8 +1893,7 @@
               "label": "Escapada a Lisboa para un fin de semana largo de mayo"
             }
           ],
-          "columns": 2,
-          "field": true
+          "columns": 2
         },
         {
           "id": "other-sectors",
@@ -1933,7 +1921,6 @@
           "id": "business",
           "title": "Por negocio.",
           "columns": 2,
-          "field": true,
           "items": [
             {
               "title": "Para marcas",

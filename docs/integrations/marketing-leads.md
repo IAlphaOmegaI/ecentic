@@ -13,6 +13,8 @@ All client copy comes from typed `enterpriseLead` and `enterpriseDemo` catalog f
 
 `MarketingLead` accepts `kind`, `topic`, optional `title` and optional `triggerLabel`. For interest dialogs, `title` provides the contextual heading while `triggerLabel` can distinguish several requests on the same page (for example a ChatGPT feed and app). Omitting `triggerLabel` uses the localized default interest action.
 
+Interest triggers render a lightweight dialog shell. The InferredForm and validation bundle loads only after the first open, with a localized loading message and a stable focused heading. The form remains mounted after that first open so closing and reopening preserves entered details and submission state. Integration and partner forms remain inline; the demo submission hook is unchanged.
+
 ## Configuration
 
 - `RESEND_API_KEY`: existing Resend account credential.

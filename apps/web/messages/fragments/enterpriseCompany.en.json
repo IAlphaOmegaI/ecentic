@@ -46,7 +46,6 @@
         {
           "id": "infrastructure",
           "title": "Infrastructure and data protection",
-          "field": true,
           "rows": [
             {
               "label": "Application hosting",
@@ -234,7 +233,6 @@
         {
           "id": "how",
           "title": "How we work",
-          "field": true,
           "items": [
             {
               "title": "We publish what we ask you to publish.",
@@ -282,8 +280,7 @@
         },
         {
           "id": "programs",
-          "title": "Programs we are part of",
-          "field": true
+          "title": "Programs we are part of"
         },
         {
           "id": "recognition",
@@ -421,7 +418,6 @@
         {
           "id": "process",
           "title": "How it works",
-          "field": true,
           "ordered": true,
           "columns": 4,
           "items": [
@@ -502,7 +498,6 @@
         {
           "id": "at-a-glance",
           "title": "At a glance",
-          "field": true,
           "rows": [
             {
               "label": "Sector",
@@ -550,7 +545,6 @@
         {
           "id": "method",
           "title": "How we measured this",
-          "field": true,
           "paragraphs": [
             "What was measured: visits from AI assistants or direct traffic, April to July 2026. What was not measured: sales. Other changes in that period may have contributed.",
             "{{TODO: explain the April start and what ecentic did before the Shopify app launched on 20 May 2026}}"
@@ -690,7 +684,6 @@
         {
           "id": "guides",
           "title": "Guides",
-          "field": true,
           "description": "Understand the platform, compare software by the job it does, or follow the guide for your store.",
           "columns": 2,
           "items": [
@@ -748,7 +741,6 @@
           "id": "public-endpoints",
           "title": "We publish what we ask you to publish.",
           "description": "Everything ecentic asks merchants to publish, it publishes itself.",
-          "field": true,
           "columns": 2,
           "items": [
             {
@@ -873,7 +865,6 @@
         {
           "id": "self-service",
           "title": "Find it yourself",
-          "field": true,
           "columns": 2,
           "items": [
             {
@@ -962,7 +953,6 @@
         {
           "id": "company",
           "title": "Company details",
-          "field": true,
           "rows": [
             {
               "label": "Operating company",

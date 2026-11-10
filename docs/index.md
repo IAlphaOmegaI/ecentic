@@ -39,6 +39,7 @@ Central navigation for product context, agent rules, and package/component docum
 ### If you are building UI
 
 - [Design system + visual build guide](./context/design.md) — single source of truth for tokens, type, components, motifs, and page recipes
+- [Enterprise website rebuild delivery](./marketing/enterprise-rebuild.md) — decisions, claim/TODO audits, redirects, verification, screenshots and remaining launch facts
 - [Web components index](./web/index.md)
 - [Shared packages index](./shared/index.md)
 

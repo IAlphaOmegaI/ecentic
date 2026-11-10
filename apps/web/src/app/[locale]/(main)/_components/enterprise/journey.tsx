@@ -29,7 +29,7 @@ export const Journey = ({
 }) => {
   const reducedMotion = useReducedMotion();
   return (
-    <MarketingBand className="enterprise-journey-panel marketing-field">
+    <MarketingBand className="enterprise-journey-panel">
       <Tabs defaultValue="connect">
         <TabsList aria-label={copy.title} className="enterprise-stage-list">
           {copy.steps.map((step, index) => {

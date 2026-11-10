@@ -46,7 +46,6 @@
         {
           "id": "infrastructure",
           "title": "Infraestructura y protección de datos",
-          "field": true,
           "rows": [
             {
               "label": "Alojamiento de la aplicación",
@@ -234,7 +233,6 @@
         {
           "id": "how",
           "title": "Cómo trabajamos",
-          "field": true,
           "items": [
             {
               "title": "Publicamos lo que te pedimos publicar.",
@@ -282,8 +280,7 @@
         },
         {
           "id": "programs",
-          "title": "Programas en los que participamos",
-          "field": true
+          "title": "Programas en los que participamos"
         },
         {
           "id": "recognition",
@@ -421,7 +418,6 @@
         {
           "id": "process",
           "title": "Cómo funciona",
-          "field": true,
           "ordered": true,
           "columns": 4,
           "items": [
@@ -502,7 +498,6 @@
         {
           "id": "at-a-glance",
           "title": "De un vistazo",
-          "field": true,
           "rows": [
             {
               "label": "Sector",
@@ -550,7 +545,6 @@
         {
           "id": "method",
           "title": "Cómo lo medimos",
-          "field": true,
           "paragraphs": [
             "Qué se midió: visitas desde asistentes de IA o tráfico directo, de abril a julio de 2026. Qué no se midió: ventas. Otros cambios en ese periodo pueden haber contribuido.",
             "{{TODO: explicar el inicio en abril y qué hizo ecentic antes del lanzamiento de la app de Shopify el 20 de mayo de 2026}}"
@@ -690,7 +684,6 @@
         {
           "id": "guides",
           "title": "Guías",
-          "field": true,
           "description": "Conoce la plataforma, compara el software por la función que cumple o sigue la guía de tu tienda.",
           "columns": 2,
           "items": [
@@ -748,7 +741,6 @@
           "id": "public-endpoints",
           "title": "Publicamos lo que te pedimos publicar.",
           "description": "Todo lo que ecentic pide publicar a las tiendas, lo publica también.",
-          "field": true,
           "columns": 2,
           "items": [
             {
@@ -873,7 +865,6 @@
         {
           "id": "self-service",
           "title": "Encuéntralo tú",
-          "field": true,
           "columns": 2,
           "items": [
             {
@@ -962,7 +953,6 @@
         {
           "id": "company",
           "title": "Datos de la empresa",
-          "field": true,
           "rows": [
             {
               "label": "Empresa operadora",

@@ -4,8 +4,10 @@ import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import type { HTMLAttributes, ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
+import { AsciiClosingArtwork } from "./ascii-artwork";
 import { AsciiAtmosphere } from "./ascii-atmosphere";
 import "./marketing.css";
+import "./grid-guides.css";
 
 export const MarketingBand = ({
   children,
@@ -13,7 +15,14 @@ export const MarketingBand = ({
   ...props
 }: HTMLAttributes<HTMLElement>) => (
   <section className={cn("marketing-band", className)} {...props}>
-    <div className="marketing-rail">{children}</div>
+    <div className="marketing-rail">
+      <div aria-hidden="true" className="marketing-guides">
+        <span />
+        <span />
+        <span />
+      </div>
+      {children}
+    </div>
   </section>
 );
 
@@ -66,7 +75,11 @@ export const MarketingHero = ({
   children,
 }: MarketingHero.Props) => (
   <MarketingBand className={cn("marketing-hero", dark && "marketing-dark")}>
-    {dark && <AsciiAtmosphere className="marketing-closing-art" />}
+    {dark && (
+      <AsciiAtmosphere className="marketing-closing-art">
+        <AsciiClosingArtwork />
+      </AsciiAtmosphere>
+    )}
     <div className="marketing-cell">
       {eyebrow && <MarketingEyebrow>{eyebrow}</MarketingEyebrow>}
       <h1>{title}</h1>
@@ -98,7 +111,9 @@ export const MarketingClosing = ({
   actions: readonly { label: string; href: string }[];
 }) => (
   <MarketingBand className="marketing-closing marketing-dark">
-    <AsciiAtmosphere className="marketing-closing-art" />
+    <AsciiAtmosphere className="marketing-closing-art">
+      <AsciiClosingArtwork />
+    </AsciiAtmosphere>
     <div className="marketing-cell">
       <h2>{title}</h2>
       <p className="marketing-lead">{description}</p>
@@ -112,18 +127,22 @@ export const MarketingScreenshot = ({
   alt,
   caption,
   priority = false,
+  width = 1280,
+  height = 679,
 }: {
   src: string;
   alt: string;
   caption: string;
   priority?: boolean;
+  width?: number;
+  height?: number;
 }) => (
   <figure className="marketing-screenshot">
     <Image
       src={src}
       alt={alt}
-      width={1440}
-      height={900}
+      width={width}
+      height={height}
       sizes="(max-width: 640px) 100vw, 1184px"
       priority={priority}
     />

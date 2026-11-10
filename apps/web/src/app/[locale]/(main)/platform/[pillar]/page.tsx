@@ -6,6 +6,19 @@ import { ProductExample } from "../_components/product-example";
 
 const pillars = ["connect", "simulate", "fix", "sell", "track"] as const;
 
+const screenshots = {
+  connect: { file: "enterprise-connect-sample", width: 1280, en: 673, es: 673 },
+  simulate: {
+    file: "enterprise-dashboard-sample",
+    width: 1280,
+    en: 679,
+    es: 679,
+  },
+  fix: { file: "enterprise-fix-sample", width: 1280, en: 513, es: 513 },
+  sell: { file: "enterprise-sell-sample", width: 1280, en: 371, es: 376 },
+  track: { file: "enterprise-track-sample", width: 1280, en: 559, es: 559 },
+} as const;
+
 type Props = { params: Promise<{ pillar: string }> };
 
 export const generateStaticParams = () => pillars.map((pillar) => ({ pillar }));
@@ -32,17 +45,13 @@ export default async ({ params }: Props) => {
       content={enterprisePlatform.pages[pillar]}
       path={`/platform/${pillar}`}
       heroChildren={
-        pillar === "simulate" ? (
-          <MarketingScreenshot
-            src={
-              locale === "es"
-                ? "/screenshots/enterprise-dashboard-sample-es.png"
-                : "/screenshots/enterprise-dashboard-sample.png"
-            }
-            alt={enterprisePlatform.screenshot.alt}
-            caption={enterprisePlatform.screenshot.caption}
-          />
-        ) : undefined
+        <MarketingScreenshot
+          src={`/screenshots/${screenshots[pillar].file}${locale === "es" ? "-es" : ""}.png`}
+          width={screenshots[pillar].width}
+          height={screenshots[pillar][locale === "es" ? "es" : "en"]}
+          alt={enterprisePlatform.screenshots[pillar].alt}
+          caption={enterprisePlatform.screenshots[pillar].caption}
+        />
       }
       sectionChildren={{
         example: (

@@ -1,5 +1,6 @@
 import { getLocale, getMessages } from "next-intl/server";
-import { LeadForm } from "./lead-form";
+import { InlineLead } from "./inline-lead";
+import { InterestLead } from "./interest-lead";
 
 export const MarketingLead = async ({
   kind,
@@ -14,12 +15,22 @@ export const MarketingLead = async ({
 }) => {
   const locale = await getLocale();
   const { enterpriseLead } = await getMessages();
+  if (kind === "interest") {
+    return (
+      <InterestLead
+        topic={topic}
+        title={title}
+        triggerLabel={triggerLabel}
+        locale={locale}
+        copy={enterpriseLead}
+      />
+    );
+  }
   return (
-    <LeadForm
+    <InlineLead
       kind={kind}
       topic={topic}
       title={title}
-      triggerLabel={triggerLabel}
       locale={locale}
       copy={enterpriseLead}
     />

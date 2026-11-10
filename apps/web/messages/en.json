@@ -10265,7 +10265,8 @@
     "dialog": {
       "action": {
         "primary": "Close"
-      }
+      },
+      "loading": "Loading form…"
     }
   },
   "enterpriseCompany": {
@@ -10315,7 +10316,6 @@
         {
           "id": "infrastructure",
           "title": "Infrastructure and data protection",
-          "field": true,
           "rows": [
             {
               "label": "Application hosting",
@@ -10507,7 +10507,6 @@
         {
           "id": "how",
           "title": "How we work",
-          "field": true,
           "items": [
             {
               "title": "We publish what we ask you to publish.",
@@ -10555,8 +10554,7 @@
         },
         {
           "id": "programs",
-          "title": "Programs we are part of",
-          "field": true
+          "title": "Programs we are part of"
         },
         {
           "id": "recognition",
@@ -10694,7 +10692,6 @@
         {
           "id": "process",
           "title": "How it works",
-          "field": true,
           "ordered": true,
           "columns": 4,
           "items": [
@@ -10775,7 +10772,6 @@
         {
           "id": "at-a-glance",
           "title": "At a glance",
-          "field": true,
           "rows": [
             {
               "label": "Sector",
@@ -10823,7 +10819,6 @@
         {
           "id": "method",
           "title": "How we measured this",
-          "field": true,
           "paragraphs": [
             "What was measured: visits from AI assistants or direct traffic, April to July 2026. What was not measured: sales. Other changes in that period may have contributed.",
             "{{TODO: explain the April start and what ecentic did before the Shopify app launched on 20 May 2026}}"
@@ -10963,7 +10958,6 @@
         {
           "id": "guides",
           "title": "Guides",
-          "field": true,
           "description": "Understand the platform, compare software by the job it does, or follow the guide for your store.",
           "columns": 2,
           "items": [
@@ -11021,7 +11015,6 @@
           "id": "public-endpoints",
           "title": "We publish what we ask you to publish.",
           "description": "Everything ecentic asks merchants to publish, it publishes itself.",
-          "field": true,
           "columns": 2,
           "items": [
             {
@@ -11146,7 +11139,6 @@
         {
           "id": "self-service",
           "title": "Find it yourself",
-          "field": true,
           "columns": 2,
           "items": [
             {
@@ -11235,7 +11227,6 @@
         {
           "id": "company",
           "title": "Company details",
-          "field": true,
           "rows": [
             {
               "label": "Operating company",
@@ -11542,7 +11533,6 @@
           "title": "See how AI shops your catalog. Product by product.",
           "eyebrow": "[02] Simulate",
           "description": "See which products the models pick, and why. ChatGPT, Claude and Gemini compare your product with a named competitor and record their reasoning.",
-          "field": true,
           "items": [
             {
               "title": "Agent simulations",
@@ -11644,7 +11634,6 @@
           "title": "Let AI check out. On your terms.",
           "eyebrow": "[04] Sell",
           "description": "Test what an agent meets at checkout. On WooCommerce, provide a path to cart and orders using your store’s gateway and configured access controls.",
-          "field": true,
           "items": [
             {
               "title": "Agent checkout on WooCommerce",
@@ -11817,7 +11806,6 @@
             "id": "how-it-works",
             "title": "Bring in the catalog. Choose what happens next.",
             "eyebrow": "[02] How it works",
-            "field": true,
             "ordered": true,
             "columns": 4,
             "items": [
@@ -12030,7 +12018,6 @@
             "eyebrow": "[02] How it works",
             "ordered": true,
             "columns": 4,
-            "field": true,
             "items": [
               {
                 "title": "Choose the matchup",
@@ -12223,7 +12210,6 @@
             "eyebrow": "[02] How it works",
             "ordered": true,
             "columns": 4,
-            "field": true,
             "items": [
               {
                 "title": "Choose a listing",
@@ -12406,7 +12392,6 @@
             "id": "how-it-works",
             "title": "Test the complete path.",
             "eyebrow": "[02] How it works",
-            "field": true,
             "ordered": true,
             "columns": 4,
             "items": [
@@ -12616,7 +12601,6 @@
             "id": "how-it-works",
             "title": "Keep visits, tests and estimates separate.",
             "eyebrow": "[02] How it works",
-            "field": true,
             "ordered": true,
             "columns": 4,
             "items": [
@@ -12879,6 +12863,28 @@
     "screenshot": {
       "alt": "The ecentic dashboard win-rate chart and product comparison breakdown using sample data.",
       "caption": "Product screenshot · sample data"
+    },
+    "screenshots": {
+      "connect": {
+        "alt": "ecentic connected-store settings with clearly labeled sample stores",
+        "caption": "Product UI · sample stores. No merchant account was connected."
+      },
+      "simulate": {
+        "alt": "The ecentic dashboard win-rate chart and product comparison breakdown using sample data.",
+        "caption": "Product screenshot · sample data"
+      },
+      "fix": {
+        "alt": "ecentic publishing history showing sample product records without performance figures",
+        "caption": "Product UI · sample publishing-history records. No measured lift or customer results are shown."
+      },
+      "sell": {
+        "alt": "ecentic UCP validator in its initial state before a store check",
+        "caption": "Product UI · validator before a check. This is not a completed checkout or a platform approval."
+      },
+      "track": {
+        "alt": "ecentic agent-visits chart with illustrative sample data",
+        "caption": "Product UI · illustrative sample visits, not a customer result."
+      }
     }
   },
   "enterpriseSolutions": {
@@ -12934,7 +12940,6 @@
             "id": "one-product",
             "title": "Follow one product.",
             "eyebrow": "[02] Example with sample data",
-            "field": true,
             "ordered": true,
             "columns": 5,
             "items": [
@@ -13085,7 +13090,6 @@
             "eyebrow": "[02] Example with sample data",
             "ordered": true,
             "columns": 5,
-            "field": true,
             "items": [
               {
                 "title": "Connected",
@@ -13460,7 +13464,6 @@
             "title": "Built around clear interfaces.",
             "eyebrow": "[07] Platform capabilities",
             "columns": 3,
-            "field": true,
             "items": [
               {
                 "title": "Your stores in one account",
@@ -13671,7 +13674,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "These are attributes for your team to verify, not fields ecentic automatically invents or enriches. The current feed importer supports a defined field mapping."
           },
           {
@@ -13813,7 +13815,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "These are attributes for your team to verify, not fields ecentic automatically invents or enriches. The current feed importer supports a defined field mapping."
           },
           {
@@ -13951,7 +13952,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "These are attributes for your team to verify, not fields ecentic automatically invents or enriches. The current feed importer supports a defined field mapping."
           },
           {
@@ -14089,7 +14089,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "These are attributes for your team to verify, not fields ecentic automatically invents or enriches. The current feed importer supports a defined field mapping."
           },
           {
@@ -14231,7 +14230,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "These are attributes for your team to verify, not fields ecentic automatically invents or enriches. The current feed importer supports a defined field mapping."
           },
           {
@@ -14369,7 +14367,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "These are attributes for your team to verify, not fields ecentic automatically invents or enriches. The current feed importer supports a defined field mapping."
           },
           {
@@ -14516,7 +14513,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "These are attributes for your team to verify, not fields ecentic automatically invents or enriches. The current feed importer supports a defined field mapping."
           },
           {
@@ -14659,7 +14655,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "These are attributes for your team to verify, not fields ecentic automatically invents or enriches. The current feed importer supports a defined field mapping."
           },
           {
@@ -14786,8 +14781,7 @@
               "label": "City break in Lisbon for a long weekend in May"
             }
           ],
-          "columns": 2,
-          "field": true
+          "columns": 2
         },
         {
           "id": "other-sectors",
@@ -14815,7 +14809,6 @@
           "id": "business",
           "title": "By business.",
           "columns": 2,
-          "field": true,
           "items": [
             {
               "title": "For brands",

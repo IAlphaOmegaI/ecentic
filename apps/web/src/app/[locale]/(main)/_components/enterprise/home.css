@@ -4,7 +4,7 @@
   background: linear-gradient(
     100deg,
     var(--blue-text) 0%,
-    var(--blue-text) 28%,
+    var(--blue-text) 65%,
     var(--blue) 100%
   );
   color: var(--canvas);
@@ -42,16 +42,38 @@
   font-size: 13px;
 }
 .enterprise-journey .marketing-cell {
-  padding-block: 60px 48px;
+  display: flex;
+  align-items: center;
+  min-height: 600px;
+  padding-block: 72px 60px;
+}
+.enterprise-journey {
+  margin: 24px;
+  overflow: hidden;
+  border-radius: 12px;
+  border-bottom: 0;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 12%),
+    0 14px 30px -24px rgb(22 24 29 / 45%);
+}
+.enterprise-journey > .marketing-rail {
+  border-block: 0;
+  border-inline-color: rgb(255 255 255 / 15%);
+}
+.enterprise-journey + .marketing-band > .marketing-rail {
+  border-top: 1px solid var(--line);
+  --rail-top-cross: var(--cross);
+}
+.enterprise-journey .marketing-rail::before,
+.enterprise-journey .marketing-rail::after {
+  display: none;
 }
 .enterprise-art {
   position: absolute;
   inset: 0 -60px 0 24%;
   pointer-events: none;
-  background:
-    url("/images/marketing/commerce-ascii.webp") right center / contain
-    no-repeat;
-  opacity: 0.45;
+  color: var(--canvas);
+  opacity: 0.4;
   mask-image: linear-gradient(100deg, transparent 22%, #000 90%);
 }
 .enterprise-stage-list {
@@ -100,10 +122,7 @@
   outline: 2px solid var(--blue-text);
   outline-offset: -5px;
 }
-.enterprise-stage-tab + .enterprise-stage-tab::after,
-.enterprise-business-grid > article::before,
-.enterprise-channel-grid > a::before,
-.enterprise-proof-grid > article::before {
+.enterprise-stage-tab + .enterprise-stage-tab::after {
   content: "";
   pointer-events: none;
   position: absolute;
@@ -111,10 +130,18 @@
   top: -8px;
   z-index: 2;
   width: 16px;
-  height: 16px;
+  height: calc(100% + 16px);
   background:
-    linear-gradient(var(--cross), var(--cross)) center / 16px 1px no-repeat,
-    linear-gradient(var(--cross), var(--cross)) center / 1px 16px no-repeat;
+    linear-gradient(var(--cross), var(--cross)) center 7.5px / 16px 1px
+    no-repeat,
+    linear-gradient(var(--cross), var(--cross)) center top / 1px 16px no-repeat,
+    linear-gradient(var(--cross), var(--cross)) center calc(100% - 7.5px) / 16px
+    1px no-repeat,
+    linear-gradient(var(--cross), var(--cross)) center bottom / 1px 16px
+    no-repeat;
+}
+.enterprise-stage-tab:last-child {
+  border-right: 0;
 }
 .enterprise-stage-content {
   display: grid;
@@ -177,7 +204,7 @@
   font-size: 14px;
   color: var(--muted);
 }
-.enterprise-programs > .marketing-rail > div {
+.enterprise-programs > .marketing-rail > div:not(.marketing-guides) {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
   align-items: center;
@@ -278,6 +305,7 @@
 .enterprise-channel-grid {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
+  border-bottom: 1px solid var(--line);
 }
 .enterprise-channel-grid > a {
   position: relative;
@@ -363,6 +391,65 @@
 .enterprise-integration-row article:nth-child(n + 4) {
   border-top: 1px solid var(--line);
 }
+.enterprise-integrations-wall,
+.enterprise-pricing-paths {
+  border-bottom: 1px solid var(--line);
+}
+.enterprise-integration-row,
+.enterprise-pricing-paths > a,
+.enterprise-stage-note {
+  --junction-top-right: var(--cross);
+}
+.enterprise-integration-row:last-child,
+.enterprise-pricing-paths > a:last-child {
+  --junction-bottom-left: var(--cross);
+  --junction-bottom-right: var(--cross);
+}
+.enterprise-integration-row > h3 {
+  --junction-top-left: transparent;
+}
+.enterprise-stage-body::after {
+  content: "";
+  position: absolute;
+  left: -8px;
+  bottom: -8px;
+  width: 16px;
+  height: 16px;
+  pointer-events: none;
+  z-index: 2;
+  background:
+    linear-gradient(var(--cross), var(--cross)) center / 16px 1px no-repeat,
+    linear-gradient(var(--cross), var(--cross)) center / 1px 16px no-repeat;
+}
+.enterprise-stage-body {
+  position: relative;
+}
+@media (min-width: 1001px) {
+  .enterprise-integration-row
+    article:nth-child(n + 4):last-child:not(:nth-child(3n)) {
+    --junction-top-right: var(--cross);
+  }
+  .enterprise-integration-row:last-child
+    article:nth-child(3n + 1):nth-last-child(-n + 3),
+  .enterprise-integration-row:last-child
+    article:nth-child(3n + 1):nth-last-child(-n + 3)
+    ~ article {
+    --junction-bottom-left: var(--cross);
+  }
+}
+@media (max-width: 1000px) {
+  .enterprise-integration-row
+    article:nth-child(n + 3):last-child:not(:nth-child(2n)) {
+    --junction-top-right: var(--cross);
+  }
+  .enterprise-integration-row:last-child
+    article:nth-child(2n + 1):nth-last-child(-n + 2),
+  .enterprise-integration-row:last-child
+    article:nth-child(2n + 1):nth-last-child(-n + 2)
+    ~ article {
+    --junction-bottom-left: var(--cross);
+  }
+}
 @media (max-width: 800px) {
   .enterprise-blue {
     background: var(--blue-text);
@@ -434,7 +521,8 @@
   display: grid;
   grid-template-columns: 1fr 2fr;
   border-top: 1px solid var(--line);
-  background: var(--field);
+  border-bottom: 1px solid var(--line);
+  background: var(--canvas);
 }
 .enterprise-finding > h3,
 .enterprise-finding > div {
@@ -443,6 +531,19 @@
 .enterprise-finding > h3 {
   border-right: 1px solid var(--line);
   font-size: 26px;
+  --junction-bottom-left: var(--cross);
+}
+.enterprise-finding > div {
+  --junction-top-right: var(--cross);
+  --junction-bottom-left: var(--cross);
+  --junction-bottom-right: var(--cross);
+}
+.enterprise-proof-grid > article:first-child,
+.enterprise-proof-grid > article:nth-child(2) {
+  --junction-bottom-left: transparent;
+}
+.enterprise-proof-grid > article:last-child {
+  --junction-bottom-right: transparent;
 }
 .enterprise-finding > div > p:first-child {
   font-size: 22px;
@@ -458,7 +559,7 @@
 .enterprise-footnotes p + p {
   margin-top: 12px;
 }
-.enterprise-procurement {
+.enterprise-procurement > .marketing-rail {
   background: var(--dark-0);
 }
 .enterprise-procurement-art {
@@ -466,9 +567,7 @@
   inset: 0;
   opacity: 0.08;
   pointer-events: none;
-  background:
-    url("/images/marketing/commerce-ascii.webp") right center / contain
-    no-repeat;
+  color: var(--canvas);
   mask-image: linear-gradient(100deg, transparent, #000);
 }
 .enterprise-procurement .marketing-grid {
@@ -512,7 +611,7 @@
   .enterprise-business-grid > article:nth-child(n + 3) {
     border-top: 1px solid var(--line);
   }
-  .enterprise-programs > .marketing-rail > div {
+  .enterprise-programs > .marketing-rail > div:not(.marketing-guides) {
     gap: 28px;
   }
   .enterprise-stage-tab {
@@ -544,7 +643,12 @@
   }
 }
 @media (max-width: 639px) {
+  .enterprise-journey {
+    margin: 16px;
+    border-radius: 8px;
+  }
   .enterprise-blue .marketing-cell {
+    min-height: 0;
     padding: 46px 16px 38px;
   }
   .enterprise-blue h1 {
@@ -616,6 +720,9 @@
     padding: 24px 16px 28px;
     border: 0;
   }
+  .enterprise-stage-body::after {
+    display: none;
+  }
   .enterprise-stage-body p {
     font-size: 16px;
   }
@@ -625,7 +732,7 @@
   .enterprise-programs > .marketing-rail {
     padding: 26px 16px;
   }
-  .enterprise-programs > .marketing-rail > div {
+  .enterprise-programs > .marketing-rail > div:not(.marketing-guides) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 28px;
   }
@@ -669,12 +776,24 @@
   .enterprise-integration-row > h3 {
     padding: 22px 16px;
     border-bottom: 1px solid var(--line);
+    --junction-bottom-left: var(--cross);
+    --junction-bottom-right: var(--cross);
   }
   .enterprise-integration-row article {
     padding: 22px 16px;
   }
   .enterprise-integration-row article:nth-child(odd) {
     border-left: 0;
+  }
+  .enterprise-integration-row article:first-child {
+    --junction-top-left: transparent;
+  }
+  .enterprise-integration-row article:nth-child(2n + 2):not(:nth-child(2)) {
+    --junction-top-right: var(--cross);
+  }
+  .enterprise-integration-row:last-child
+    article:nth-child(2n + 1):nth-last-child(-n + 2) {
+    --junction-bottom-left: transparent;
   }
   .enterprise-integration-row article > a {
     font-size: 15px;
@@ -686,6 +805,15 @@
   }
   .enterprise-finding > h3 {
     padding-bottom: 0;
+    --junction-top-right: var(--cross);
+    --junction-bottom-left: transparent;
+  }
+  .enterprise-finding > div {
+    --junction-top-left: transparent;
+    --junction-top-right: transparent;
+  }
+  .enterprise-proof-grid > article:last-child {
+    --junction-bottom-left: transparent;
   }
   .enterprise-finding > div > p:first-child {
     font-size: 19px;

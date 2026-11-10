@@ -15,7 +15,13 @@
   margin-bottom: 16px;
   font-size: 30px;
 }
-body:has(.marketing-lead-dialog) [data-base-ui-portal]:has([role="listbox"]) {
+.marketing-lead-loading {
+  min-height: 280px;
+  padding-block: 24px;
+  color: var(--muted);
+}
+body:has(.marketing-lead-dialog:not([hidden]))
+  [data-base-ui-portal]:has([role="listbox"]) {
   position: relative;
   z-index: 130;
 }

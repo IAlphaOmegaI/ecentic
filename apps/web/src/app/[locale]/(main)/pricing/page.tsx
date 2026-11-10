@@ -35,7 +35,7 @@ export default async () => {
         "pay-as-you-go": <PerformanceFeeLedger />,
         compare: <EnterprisePlanComparison />,
         europe: (
-          <div className="pricing-partnership">
+          <div className="pricing-partnership bg-background-dimmed">
             <PartnershipBundle
               description={enterprisePricing.bundle.description}
               productDetail={enterprisePricing.bundle.productDetail}

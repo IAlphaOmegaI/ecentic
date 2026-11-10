@@ -99,6 +99,8 @@ export const Navbar = () => {
   const [active, setActive] = useState<string | null>(null);
   const [mobile, setMobile] = useState(false);
   const header = useRef<HTMLElement>(null);
+  const navigationRow = useRef<HTMLDivElement>(null);
+  const menuSurface = useRef<HTMLDivElement>(null);
   const pendingFocus = useRef<string | null>(null);
   const statusLabels = {
     live: chrome.status.live,
@@ -162,7 +164,12 @@ export const Navbar = () => {
   };
   return (
     <header className="marketing-site marketing-nav" ref={header}>
-      <div className="marketing-nav-inner">
+      <div aria-hidden="true" className="marketing-nav-blur">
+        <span />
+        <span />
+        <span />
+      </div>
+      <div className="marketing-nav-inner" ref={navigationRow}>
         <Link
           href="/"
           aria-label={navigation.home}
@@ -305,7 +312,8 @@ export const Navbar = () => {
           </NavigationMenuList>
           <NavigationMenuPositioner
             className="marketing-site marketing-mega-positioner"
-            anchor={header}
+            container={menuSurface}
+            anchor={navigationRow}
             sideOffset={0}
             align="center"
             collisionPadding={0}
@@ -367,6 +375,7 @@ export const Navbar = () => {
                               {column.items.map((item) => (
                                 <SheetClose
                                   nativeButton={false}
+                                  role="link"
                                   key={`${item.href}-${item.label}`}
                                   render={<Link href={item.href} />}
                                   className="marketing-mobile-link"
@@ -389,6 +398,7 @@ export const Navbar = () => {
               </nav>
               <SheetClose
                 nativeButton={false}
+                role="link"
                 render={<Link href="/pricing" />}
                 className="marketing-mobile-link"
               >
@@ -396,6 +406,7 @@ export const Navbar = () => {
               </SheetClose>
               <SheetClose
                 nativeButton={false}
+                role="link"
                 render={<Link href="/sign-in" />}
                 className="marketing-mobile-link"
               >
@@ -416,6 +427,7 @@ export const Navbar = () => {
           </Sheet>
         </div>
       </div>
+      <div ref={menuSurface} className="marketing-menu-surface" />
     </header>
   );
 };

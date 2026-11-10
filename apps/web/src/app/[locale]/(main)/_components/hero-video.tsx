@@ -10,35 +10,53 @@ import {
   DialogTrigger,
 } from "@zenncore/web/components/dialog";
 import { useTranslations } from "next-intl";
+import { useEffect, useRef, useState } from "react";
 
 const source = "/videos/banner.mp4";
 
-// The trigger loops silently forever behind a "Play video" affordance, so it
-// has no use for the film's 70 seconds or its audio track. It gets a 15s, 960w,
-// soundless cut (357KB); the full 15.8MB film stays behind the dialog, where it
-// only downloads once someone actually asks for it. `autoPlay` overrides
-// `preload`, so whatever this element points at is fetched on load regardless.
+// Keep the existing silent preview and full film. Autoplay overrides preload,
+// so attach the preview source only as the film approaches the viewport.
 const loop = "/videos/banner-loop.mp4";
 
 export const HeroVideo = () => {
   const translate = useTranslations("home.heroVideo");
+  const trigger = useRef<HTMLButtonElement>(null);
+  const [previewVisible, setPreviewVisible] = useState(false);
+
+  useEffect(() => {
+    const element = trigger.current;
+    if (!element) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry?.isIntersecting) return;
+        setPreviewVisible(true);
+        observer.disconnect();
+      },
+      { rootMargin: "240px" },
+    );
+    observer.observe(element);
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <Dialog>
       {/* No `aria-label`: the name derives from the visible text below, which is
         what a voice-control user would say out loud. */}
-      <DialogTrigger className="group relative h-auto w-full overflow-hidden rounded-2xl border border-accent-foreground bg-emphasis p-0 text-left shadow-2xl shadow-primary/10 outline-offset-4">
+      <DialogTrigger
+        ref={trigger}
+        className="group relative h-auto w-full overflow-hidden rounded-2xl border border-accent-foreground bg-emphasis p-0 text-left shadow-2xl shadow-primary/10 outline-offset-4"
+      >
         <video
           aria-hidden
           autoPlay
           loop
           muted
           playsInline
-          poster="/images/hero-poster.webp"
+          preload="none"
+          src={previewVisible ? loop : undefined}
+          poster={previewVisible ? "/images/hero-poster.webp" : undefined}
           className="aspect-video w-full object-cover transition-transform duration-150 group-hover:scale-[1.01] motion-reduce:transition-none"
-        >
-          <source src={loop} type="video/mp4" />
-        </video>
+        />
         <span
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-linear-to-t from-emphasis/70 via-transparent to-transparent"

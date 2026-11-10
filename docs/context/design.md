@@ -33,6 +33,24 @@ The recurring tension is intentional:
 The canvas, rails, grids, cells, and section boundaries are sharp. Controls, status pills, media,
 progress tracks, and truly elevated panels may be rounded. Do not soften the whole interface.
 
+### Marketing refinements · 10 November 2026
+
+The approved enterprise rebuild uses an off-white page canvas (`#F8F9FA`). Reserve the existing
+gray (`#E7E7E7`) for supporting service surfaces such as EU Presence, partner tracks and enquiry
+panels, confined inside their rails. Ordinary product, editorial and pricing content stays on the
+canvas. These choices apply to marketing; they do not change dashboard or onboarding tokens.
+
+Primary marketing buttons use the cookie banner's 6 px corners. Secondary actions, inputs and
+selectors use 2 px corners. The large blue hero may be subtly rounded, with equal 24 px margins
+above and beside it (16 px on mobile), while its content remains centered on the standard rails.
+Only vertical guides pass through that blue surface. Each shared border and junction has one
+owner; use crosses at actual intersections without stacking duplicate lines or marks.
+
+Decorative ASCII is literal text, not dotted bitmap texture. The navbar uses progressive backdrop
+blur and participates in document flow; desktop menus push content down and restore its position
+when closed. See [the delivery record](../marketing/enterprise-rebuild.md) and
+[ASCII provenance](../marketing/ascii-text-provenance.md).
+
 ### The four-part philosophy
 
 1. **Rails** create continuity. Content belongs to a larger system instead of floating as isolated

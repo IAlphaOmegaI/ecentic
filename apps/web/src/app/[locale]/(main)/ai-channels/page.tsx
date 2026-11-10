@@ -13,7 +13,7 @@ export default async function AiChannelsPage() {
   return (
     <MarketingPage content={copy.index} path="/ai-channels">
       <ChannelTiles copy={copy} />
-      <MarketingBand className="marketing-field">
+      <MarketingBand>
         <div className="marketing-cell">
           <h2>{copy.method.title}</h2>
           <p className="marketing-lead">{copy.method.body}</p>

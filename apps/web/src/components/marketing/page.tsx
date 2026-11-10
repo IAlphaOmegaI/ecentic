@@ -222,7 +222,7 @@ export const MarketingPage = async ({
         {heroChildren}
       </MarketingHero>
       {content.facts && (
-        <MarketingBand className="marketing-field">
+        <MarketingBand>
           <div
             className="marketing-grid"
             style={{ "--columns": content.facts.length } as CSSProperties}

@@ -122,11 +122,7 @@
           "id": "connect",
           "title": "Conecta",
           "body": "Reúne tu catálogo mediante Shopify, WooCommerce, un feed XML o JSON compatible, o un CSV.",
-          "tags": [
-            "Shopify",
-            "WooCommerce",
-            "Feeds de productos"
-          ],
+          "tags": ["Shopify", "WooCommerce", "Feeds de productos"],
           "href": "/platform/connect",
           "label": "Explora Conecta"
         },
@@ -134,11 +130,7 @@
           "id": "simulate",
           "title": "Simula",
           "body": "Descubre qué producto eligen ChatGPT, Claude y Gemini en una comparación y lee los motivos de cada elección simulada.",
-          "tags": [
-            "Tasa de éxito",
-            "Comparativas",
-            "Auditoría de preparación"
-          ],
+          "tags": ["Tasa de éxito", "Comparativas", "Auditoría de preparación"],
           "href": "/platform/simulate",
           "label": "Explora Simula"
         },
@@ -146,11 +138,7 @@
           "id": "fix",
           "title": "Mejora",
           "body": "Aplicar genera y publica títulos y descripciones a partir de los datos existentes. Publica datos estructurados y sincroniza Merchant Center con controles separados.",
-          "tags": [
-            "Fichas",
-            "Datos estructurados",
-            "Merchant Center"
-          ],
+          "tags": ["Fichas", "Datos estructurados", "Merchant Center"],
           "href": "/platform/fix",
           "label": "Explora Mejora"
         },
@@ -158,11 +146,7 @@
           "id": "sell",
           "title": "Vende",
           "body": "Conecta el checkout para agentes en WooCommerce, prueba el proceso y conserva tu proveedor de pagos. Se aplican los requisitos de cada plataforma y los pasos de pago necesarios.",
-          "tags": [
-            "Checkout para agentes",
-            "Pruebas de checkout",
-            "Tus pagos"
-          ],
+          "tags": ["Checkout para agentes", "Pruebas de checkout", "Tus pagos"],
           "href": "/platform/sell",
           "label": "Explora Vende"
         },
@@ -277,11 +261,7 @@
           "id": "simulations",
           "title": "Simulaciones de agentes",
           "body": "ChatGPT, Claude y Gemini eligen entre tu producto y el de un competidor en una simulación registrada.",
-          "tags": [
-            "Tasa de éxito",
-            "Replay",
-            "Comparativas"
-          ],
+          "tags": ["Tasa de éxito", "Replay", "Comparativas"],
           "href": "/platform/simulate",
           "label": "Ver simulaciones"
         },
@@ -289,11 +269,7 @@
           "id": "readiness",
           "title": "Auditoría de preparación",
           "body": "Comprueba reglas de rastreo, una muestra del HTML de las páginas, identificadores de productos y requisitos del feed. Las páginas inaccesibles se señalan para su revisión.",
-          "tags": [
-            "Rastreadores",
-            "Schema",
-            "GTIN"
-          ],
+          "tags": ["Rastreadores", "Schema", "GTIN"],
           "href": "/platform/simulate#readiness",
           "label": "Ver la auditoría"
         },
@@ -301,11 +277,7 @@
           "id": "catalog",
           "title": "Mejoras del catálogo",
           "body": "Genera y publica títulos y descripciones a partir de los datos existentes. Los datos estructurados se publican con una acción propia.",
-          "tags": [
-            "Fichas",
-            "Atributos",
-            "Publicación"
-          ],
+          "tags": ["Fichas", "Atributos", "Publicación"],
           "href": "/platform/fix",
           "label": "Ver las mejoras"
         },
@@ -313,11 +285,7 @@
           "id": "merchant-center",
           "title": "Sincronización de Merchant Center",
           "body": "Envía las mejoras de fichas publicadas y los atributos de checkout mediante una sincronización independiente del feed complementario para Shopify.",
-          "tags": [
-            "Feed complementario",
-            "Diagnósticos",
-            "Shopify"
-          ],
+          "tags": ["Feed complementario", "Diagnósticos", "Shopify"],
           "href": "/platform/fix#merchant-center",
           "label": "Ver la sincronización"
         },
@@ -325,11 +293,7 @@
           "id": "checkout",
           "title": "Checkout para agentes en WooCommerce",
           "body": "Ofrece a los flujos de agentes compatibles una vía a través de tu tienda y proveedor de pagos, con pruebas de checkout y controles configurables.",
-          "tags": [
-            "Configuración",
-            "Pruebas",
-            "Validador"
-          ],
+          "tags": ["Configuración", "Pruebas", "Validador"],
           "href": "/platform/sell",
           "label": "Ver el checkout para agentes"
         },
@@ -337,11 +301,7 @@
           "id": "developers",
           "title": "API, servidor MCP y CLI",
           "body": "Usa las interfaces publicadas para descubrir funciones, consultar planes, conectar tiendas y comprobar el estado del onboarding.",
-          "tags": [
-            "REST",
-            "MCP",
-            "CLI"
-          ],
+          "tags": ["REST", "MCP", "CLI"],
           "href": "/docs",
           "label": "Abrir la documentación"
         }

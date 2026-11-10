@@ -185,6 +185,7 @@
       "unavailable": "No hemos podido enviar tu solicitud. Tus datos siguen aquí. Inténtalo de nuevo o escribe a support@ecentic.ai."
     },
     "dialog": {
+      "loading": "Cargando formulario…",
       "action": {
         "primary": "Cerrar"
       }

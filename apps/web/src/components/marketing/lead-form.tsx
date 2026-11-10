@@ -2,16 +2,8 @@
 
 import { resultify } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
-import {
-  Dialog,
-  DialogClose,
-  DialogDescription,
-  DialogPopup,
-  DialogTitle,
-  DialogTrigger,
-} from "@zenncore/web/components/dialog";
 import { InferredForm } from "@zenncore/web/components/inferred-form";
-import { type ReactNode, useState, useTransition } from "react";
+import { type ReactNode, useEffect, useState, useTransition } from "react";
 import { Link } from "@/i18n/navigation";
 import type { MarketingLeadInput } from "@/lib/marketing-lead";
 import * as Leads from "@/server/app/marketing-lead";
@@ -147,18 +139,21 @@ export const LeadForm = ({
   kind,
   topic,
   title,
-  triggerLabel,
   locale,
   copy,
+  onPendingChange,
 }: {
   kind: "interest" | "integration" | "partner";
   topic: string;
   title?: string;
-  triggerLabel?: string;
   locale: "en" | "es";
   copy: LeadCopy;
+  onPendingChange?: (pending: boolean) => void;
 }) => {
   const state = useLeadSubmission(copy);
+  useEffect(() => {
+    onPendingChange?.(state.isPending);
+  }, [onPendingChange, state.isPending]);
   const content = copy.kinds[kind];
   const Form = (() => {
     switch (kind) {
@@ -170,7 +165,7 @@ export const LeadForm = ({
         return PartnerForm;
     }
   })();
-  const form = (
+  return (
     <div className="marketing-lead" aria-busy={state.isPending}>
       {state.sent ? (
         <div role="status">
@@ -210,26 +205,5 @@ export const LeadForm = ({
         </>
       )}
     </div>
-  );
-  if (kind !== "interest") return form;
-  return (
-    <Dialog>
-      <DialogTrigger className="h-auto min-h-11 whitespace-normal py-2 text-left text-primary">
-        {triggerLabel ?? content.title}
-      </DialogTrigger>
-      <DialogPopup
-        className="marketing-site marketing-lead-dialog"
-        classList={{ backdrop: "z-[110]" }}
-      >
-        <DialogTitle className="marketing-lead-dialog-title">
-          {title ?? content.title}
-        </DialogTitle>
-        <DialogDescription>{content.description}</DialogDescription>
-        {form}
-        <DialogClose className="mt-6" disabled={state.isPending}>
-          {copy.dialog.action.primary}
-        </DialogClose>
-      </DialogPopup>
-    </Dialog>
   );
 };

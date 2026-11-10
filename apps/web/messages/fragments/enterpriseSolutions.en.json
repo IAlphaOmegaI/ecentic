@@ -52,7 +52,6 @@
             "id": "one-product",
             "title": "Follow one product.",
             "eyebrow": "[02] Example with sample data",
-            "field": true,
             "ordered": true,
             "columns": 5,
             "items": [
@@ -203,7 +202,6 @@
             "eyebrow": "[02] Example with sample data",
             "ordered": true,
             "columns": 5,
-            "field": true,
             "items": [
               {
                 "title": "Connected",
@@ -578,7 +576,6 @@
             "title": "Built around clear interfaces.",
             "eyebrow": "[07] Platform capabilities",
             "columns": 3,
-            "field": true,
             "items": [
               {
                 "title": "Your stores in one account",
@@ -789,7 +786,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "These are attributes for your team to verify, not fields ecentic automatically invents or enriches. The current feed importer supports a defined field mapping."
           },
           {
@@ -931,7 +927,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "These are attributes for your team to verify, not fields ecentic automatically invents or enriches. The current feed importer supports a defined field mapping."
           },
           {
@@ -1069,7 +1064,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "These are attributes for your team to verify, not fields ecentic automatically invents or enriches. The current feed importer supports a defined field mapping."
           },
           {
@@ -1207,7 +1201,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "These are attributes for your team to verify, not fields ecentic automatically invents or enriches. The current feed importer supports a defined field mapping."
           },
           {
@@ -1349,7 +1342,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "These are attributes for your team to verify, not fields ecentic automatically invents or enriches. The current feed importer supports a defined field mapping."
           },
           {
@@ -1487,7 +1479,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "These are attributes for your team to verify, not fields ecentic automatically invents or enriches. The current feed importer supports a defined field mapping."
           },
           {
@@ -1634,7 +1625,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "These are attributes for your team to verify, not fields ecentic automatically invents or enriches. The current feed importer supports a defined field mapping."
           },
           {
@@ -1777,7 +1767,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "These are attributes for your team to verify, not fields ecentic automatically invents or enriches. The current feed importer supports a defined field mapping."
           },
           {
@@ -1904,8 +1893,7 @@
               "label": "City break in Lisbon for a long weekend in May"
             }
           ],
-          "columns": 2,
-          "field": true
+          "columns": 2
         },
         {
           "id": "other-sectors",
@@ -1933,7 +1921,6 @@
           "id": "business",
           "title": "By business.",
           "columns": 2,
-          "field": true,
           "items": [
             {
               "title": "For brands",

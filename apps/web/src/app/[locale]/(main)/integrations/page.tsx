@@ -45,7 +45,6 @@ export default async function IntegrationsPage() {
           title: copy.legend.title,
           items: copy.legend.items,
           columns: 2,
-          field: true,
         }}
       />
       <MarketingBand id="standards">

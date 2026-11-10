@@ -118,7 +118,7 @@ export default async () => {
   // Pin hand-written entries without making the update line follow an older
   // editorial post. Every published entry remains in its locale's index.
   const latest =
-    entries.toSorted(
+    [...entries].sort(
       (left, right) =>
         normalize(right.publishedAt).getTime() -
         normalize(left.publishedAt).getTime(),

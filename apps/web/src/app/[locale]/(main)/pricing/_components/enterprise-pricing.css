@@ -2,7 +2,7 @@
   display: grid;
   grid-template-columns: 1fr 1fr;
   border-top: 1px solid var(--line);
-  background: var(--field);
+  background: var(--canvas);
 }
 .pricing-free-check > :first-child {
   border-right: 1px solid var(--line);
@@ -125,7 +125,7 @@
   text-align: center;
 }
 .pricing-enterprise-plan {
-  background: var(--field);
+  background: var(--canvas);
 }
 .pricing-fee-steps {
   list-style: none;
@@ -151,7 +151,7 @@
   padding: 40px 28px;
   border-top: 1px solid var(--line);
   border-bottom: 1px solid var(--line);
-  background: var(--field);
+  background: var(--canvas);
 }
 .pricing-worked-example dl {
   display: grid;
@@ -197,7 +197,7 @@
 }
 .pricing-comparison th:last-child,
 .pricing-comparison td:last-child {
-  background: var(--field);
+  background: var(--canvas);
 }
 @media (max-width: 1023px) {
   .pricing-ledger {

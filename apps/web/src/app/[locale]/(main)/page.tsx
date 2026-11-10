@@ -10,6 +10,7 @@ import {
 import { getLocale, getMessages } from "next-intl/server";
 import { type CSSProperties, Suspense } from "react";
 import { JsonLd } from "@/components/json-ld";
+import { AsciiCommerceArtwork } from "@/components/marketing/ascii-artwork";
 import { AsciiAtmosphere } from "@/components/marketing/ascii-atmosphere";
 import {
   MarketingFaq,
@@ -73,7 +74,9 @@ export default async function HomePage() {
           ]}
         />
         <MarketingBand className="enterprise-blue enterprise-journey">
-          <AsciiAtmosphere className="enterprise-art" />
+          <AsciiAtmosphere className="enterprise-art">
+            <AsciiCommerceArtwork />
+          </AsciiAtmosphere>
           <div className="marketing-cell">
             <div className="enterprise-copy">
               <MarketingEyebrow>{copy.hero.eyebrow}</MarketingEyebrow>
@@ -91,10 +94,7 @@ export default async function HomePage() {
         <Journey copy={copy.loop} />
         <Programs copy={copy.programs} />
         <SectionGutter />
-        <MarketingBand
-          className="marketing-field enterprise-businesses"
-          id="solutions"
-        >
+        <MarketingBand className="enterprise-businesses" id="solutions">
           <div className="marketing-cell">
             <MarketingEyebrow>{copy.businesses.eyebrow}</MarketingEyebrow>
             <h2>{copy.businesses.title}</h2>
@@ -184,7 +184,7 @@ export default async function HomePage() {
             <MarketingActions actions={[copy.channels.link]} />
           </div>
         </MarketingBand>
-        <MarketingBand id="integrations" className="marketing-field">
+        <MarketingBand id="integrations">
           <div className="marketing-cell">
             <MarketingEyebrow>{copy.integration.eyebrow}</MarketingEyebrow>
             <h2>{copy.integration.title}</h2>
@@ -273,7 +273,9 @@ export default async function HomePage() {
           id="enterprise"
           className="marketing-dark enterprise-procurement"
         >
-          <AsciiAtmosphere className="enterprise-procurement-art" />
+          <AsciiAtmosphere className="enterprise-procurement-art">
+            <AsciiCommerceArtwork />
+          </AsciiAtmosphere>
           <div className="marketing-cell">
             <MarketingEyebrow>{copy.procurement.eyebrow}</MarketingEyebrow>
             <h2>{copy.procurement.title}</h2>
@@ -321,7 +323,7 @@ export default async function HomePage() {
             <MarketingActions actions={[copy.pricing.action]} />
           </div>
         </MarketingBand>
-        <MarketingBand id="resources" className="marketing-field">
+        <MarketingBand id="resources">
           <div className="marketing-cell">
             <MarketingEyebrow>{copy.editorial.eyebrow}</MarketingEyebrow>
             <h2>{copy.editorial.title}</h2>

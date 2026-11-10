@@ -76,7 +76,6 @@
           "title": "Mira cómo compra la IA en tu catálogo. Producto a producto.",
           "eyebrow": "[02] Simula",
           "description": "Mira qué productos eligen los modelos y por qué. ChatGPT, Claude y Gemini comparan tu producto con un competidor y registran su razonamiento.",
-          "field": true,
           "items": [
             {
               "title": "Simulaciones de agentes",
@@ -178,7 +177,6 @@
           "title": "Deja que la IA compre. Bajo tu control.",
           "eyebrow": "[04] Vende",
           "description": "Prueba qué encuentra un agente al pagar. En WooCommerce, ofrece carrito y pedidos con tu pasarela y controles de acceso configurados.",
-          "field": true,
           "items": [
             {
               "title": "Pago con agentes en WooCommerce",
@@ -351,7 +349,6 @@
             "id": "how-it-works",
             "title": "Importa el catálogo. Decide el siguiente paso.",
             "eyebrow": "[02] Cómo funciona",
-            "field": true,
             "ordered": true,
             "columns": 4,
             "items": [
@@ -564,7 +561,6 @@
             "eyebrow": "[02] Cómo funciona",
             "ordered": true,
             "columns": 4,
-            "field": true,
             "items": [
               {
                 "title": "Elige la comparación",
@@ -757,7 +753,6 @@
             "eyebrow": "[02] Cómo funciona",
             "ordered": true,
             "columns": 4,
-            "field": true,
             "items": [
               {
                 "title": "Elige una ficha",
@@ -940,7 +935,6 @@
             "id": "how-it-works",
             "title": "Prueba el recorrido completo.",
             "eyebrow": "[02] Cómo funciona",
-            "field": true,
             "ordered": true,
             "columns": 4,
             "items": [
@@ -1150,7 +1144,6 @@
             "id": "how-it-works",
             "title": "Distingue visitas, pruebas y estimaciones.",
             "eyebrow": "[02] Cómo funciona",
-            "field": true,
             "ordered": true,
             "columns": 4,
             "items": [
@@ -1413,6 +1406,28 @@
     "screenshot": {
       "alt": "Gráfico de tasa de elección y desglose de comparaciones del panel de ecentic con datos de muestra.",
       "caption": "Captura del producto · datos de muestra"
+    },
+    "screenshots": {
+      "connect": {
+        "alt": "Configuración de tiendas conectadas de ecentic con tiendas de muestra identificadas",
+        "caption": "Interfaz del producto · tiendas de muestra. No se conectó ninguna cuenta de comercio."
+      },
+      "simulate": {
+        "alt": "Gráfico de tasa de elección y desglose de comparaciones del panel de ecentic con datos de muestra.",
+        "caption": "Captura del producto · datos de muestra"
+      },
+      "fix": {
+        "alt": "Historial de publicación de ecentic con registros de muestra, sin cifras de rendimiento",
+        "caption": "Interfaz del producto · registros de publicación de muestra. No muestra mejoras medidas ni resultados de clientes."
+      },
+      "sell": {
+        "alt": "Validador UCP de ecentic en su estado inicial, antes de comprobar una tienda",
+        "caption": "Interfaz del producto · validador antes de una comprobación. No representa una compra completada ni una aprobación del canal."
+      },
+      "track": {
+        "alt": "Gráfico de visitas de agentes de ecentic con datos de muestra ilustrativos",
+        "caption": "Interfaz del producto · visitas de muestra ilustrativas, no resultados de un cliente."
+      }
     }
   }
 }

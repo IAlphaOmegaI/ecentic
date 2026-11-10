@@ -20,7 +20,7 @@
   font-display: swap;
 }
 .marketing-site {
-  --canvas: #ffffff;
+  --canvas: #f8f9fa;
   --field: #e7e7e7;
   --line: #dedede;
   --cross: #7d8590;
@@ -77,6 +77,10 @@
 .marketing-site :where(button, input, textarea, select, [data-slot="button"]) {
   border-radius: 2px;
 }
+.marketing-site :where(a, button).bg-primary,
+.marketing-site :where(a, button).from-primary-rich {
+  border-radius: var(--primary-control-radius);
+}
 .marketing-site .marketing-actions a {
   border-radius: 2px;
   min-height: 46px;
@@ -84,6 +88,7 @@
   font-size: 15px;
 }
 .marketing-site .marketing-actions a:first-child {
+  border-radius: var(--primary-control-radius);
   background: var(--blue-text);
   color: var(--canvas);
 }
@@ -100,13 +105,22 @@
 }
 .marketing-band {
   position: relative;
-  border-bottom: 1px solid var(--line);
 }
 .marketing-rail {
   position: relative;
   max-width: 1186px;
   margin-inline: auto;
-  border-inline: 1px solid var(--line);
+  border: 1px solid var(--line);
+  --rail-top-cross: var(--cross);
+}
+.marketing-band + .marketing-band > .marketing-rail,
+.marketing-site
+  > main
+  + .marketing-footer
+  > .marketing-band:first-child
+  > .marketing-rail {
+  border-top: 0;
+  --rail-top-cross: transparent;
 }
 .marketing-rail::before,
 .marketing-rail::after {
@@ -115,11 +129,17 @@
   position: absolute;
   z-index: 2;
   width: 16px;
-  height: 16px;
+  height: calc(100% + 16px);
   top: -8px;
   background:
-    linear-gradient(var(--cross), var(--cross)) center / 16px 1px no-repeat,
-    linear-gradient(var(--cross), var(--cross)) center / 1px 16px no-repeat;
+    linear-gradient(0deg, var(--rail-top-cross), var(--rail-top-cross)) center
+    7.5px / 16px 1px no-repeat,
+    linear-gradient(0deg, var(--rail-top-cross), var(--rail-top-cross)) center
+    top / 1px 16px no-repeat,
+    linear-gradient(var(--cross), var(--cross)) center calc(100% - 7.5px) / 16px
+    1px no-repeat,
+    linear-gradient(var(--cross), var(--cross)) center bottom / 1px 16px
+    no-repeat;
 }
 .marketing-rail::before {
   left: -8px;
@@ -165,20 +185,21 @@
   line-height: 1.55;
 }
 .marketing-field {
+  background: var(--canvas);
+}
+.marketing-field > .marketing-rail {
   background: var(--field);
 }
 .marketing-grid {
   display: grid;
   grid-template-columns: repeat(var(--columns, 3), minmax(0, 1fr));
+  border-bottom: 1px solid var(--line);
 }
 .marketing-grid > * {
   min-width: 0;
   padding: 32px 28px;
   border-top: 1px solid var(--line);
   border-right: 1px solid var(--line);
-}
-.marketing-grid > *:last-child {
-  border-right: 0;
 }
 .marketing-grid p {
   margin-top: 16px;
@@ -208,6 +229,13 @@
   gap: 28px;
   padding: 24px 28px;
   border-top: 1px solid var(--line);
+}
+.marketing-rows {
+  border-bottom: 1px solid var(--line);
+}
+.marketing-rail > :is(.marketing-grid, .marketing-rows):last-child,
+.marketing-grid:has(+ .marketing-rows) {
+  border-bottom: 0;
 }
 .marketing-rows dt {
   color: var(--ink);
@@ -247,13 +275,15 @@
 .marketing-dark {
   --line: #526077;
   --cross: #8994a3;
+  color: var(--on-dark-body);
+}
+.marketing-dark > .marketing-rail {
   background: linear-gradient(
     165deg,
     var(--dark-0) 25%,
     var(--dark-1) 66%,
     var(--dark-2)
   );
-  color: var(--on-dark-body);
 }
 .marketing-dark :where(h1, h2, h3) {
   color: var(--canvas);
@@ -282,8 +312,7 @@
   position: absolute;
   inset: 0;
   pointer-events: none;
-  background:
-    url("/images/marketing/closing-ascii.webp") center / contain no-repeat;
+  color: var(--canvas);
   opacity: 0.2;
   mask-image: linear-gradient(100deg, transparent, #000);
 }
@@ -403,23 +432,6 @@
   }
 }
 
-/* Complete junctions where the content grid actually meets the rails. */
-.marketing-grid > * {
-  position: relative;
-}
-.marketing-grid > *::before {
-  content: "";
-  pointer-events: none;
-  position: absolute;
-  z-index: 2;
-  left: -8px;
-  top: -8px;
-  width: 16px;
-  height: 16px;
-  background:
-    linear-gradient(var(--cross), var(--cross)) center / 16px 1px no-repeat,
-    linear-gradient(var(--cross), var(--cross)) center / 1px 16px no-repeat;
-}
 .marketing-step-index {
   display: block;
   margin-bottom: 30px;
@@ -451,9 +463,10 @@
   }
 }
 
-/* The marketing system uses one control radius; product screenshots keep their source UI. */
+/* Primary actions match the cookie banner; secondary actions and fields stay squarer. */
 .marketing-site {
   --control-radius: 2px;
+  --primary-control-radius: 6px;
 }
 .marketing-site
   :where(

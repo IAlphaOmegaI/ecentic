@@ -185,6 +185,7 @@
       "unavailable": "We could not send your request. Your details are still here. Try again, or contact support@ecentic.ai."
     },
     "dialog": {
+      "loading": "Loading form…",
       "action": {
         "primary": "Close"
       }

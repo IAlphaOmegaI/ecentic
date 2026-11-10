@@ -10265,7 +10265,8 @@
     "dialog": {
       "action": {
         "primary": "Cerrar"
-      }
+      },
+      "loading": "Cargando formulario…"
     }
   },
   "enterpriseCompany": {
@@ -10315,7 +10316,6 @@
         {
           "id": "infrastructure",
           "title": "Infraestructura y protección de datos",
-          "field": true,
           "rows": [
             {
               "label": "Alojamiento de la aplicación",
@@ -10507,7 +10507,6 @@
         {
           "id": "how",
           "title": "Cómo trabajamos",
-          "field": true,
           "items": [
             {
               "title": "Publicamos lo que te pedimos publicar.",
@@ -10555,8 +10554,7 @@
         },
         {
           "id": "programs",
-          "title": "Programas en los que participamos",
-          "field": true
+          "title": "Programas en los que participamos"
         },
         {
           "id": "recognition",
@@ -10694,7 +10692,6 @@
         {
           "id": "process",
           "title": "Cómo funciona",
-          "field": true,
           "ordered": true,
           "columns": 4,
           "items": [
@@ -10775,7 +10772,6 @@
         {
           "id": "at-a-glance",
           "title": "De un vistazo",
-          "field": true,
           "rows": [
             {
               "label": "Sector",
@@ -10823,7 +10819,6 @@
         {
           "id": "method",
           "title": "Cómo lo medimos",
-          "field": true,
           "paragraphs": [
             "Qué se midió: visitas desde asistentes de IA o tráfico directo, de abril a julio de 2026. Qué no se midió: ventas. Otros cambios en ese periodo pueden haber contribuido.",
             "{{TODO: explicar el inicio en abril y qué hizo ecentic antes del lanzamiento de la app de Shopify el 20 de mayo de 2026}}"
@@ -10963,7 +10958,6 @@
         {
           "id": "guides",
           "title": "Guías",
-          "field": true,
           "description": "Conoce la plataforma, compara el software por la función que cumple o sigue la guía de tu tienda.",
           "columns": 2,
           "items": [
@@ -11021,7 +11015,6 @@
           "id": "public-endpoints",
           "title": "Publicamos lo que te pedimos publicar.",
           "description": "Todo lo que ecentic pide publicar a las tiendas, lo publica también.",
-          "field": true,
           "columns": 2,
           "items": [
             {
@@ -11146,7 +11139,6 @@
         {
           "id": "self-service",
           "title": "Encuéntralo tú",
-          "field": true,
           "columns": 2,
           "items": [
             {
@@ -11235,7 +11227,6 @@
         {
           "id": "company",
           "title": "Datos de la empresa",
-          "field": true,
           "rows": [
             {
               "label": "Empresa operadora",
@@ -11542,7 +11533,6 @@
           "title": "Mira cómo compra la IA en tu catálogo. Producto a producto.",
           "eyebrow": "[02] Simula",
           "description": "Mira qué productos eligen los modelos y por qué. ChatGPT, Claude y Gemini comparan tu producto con un competidor y registran su razonamiento.",
-          "field": true,
           "items": [
             {
               "title": "Simulaciones de agentes",
@@ -11644,7 +11634,6 @@
           "title": "Deja que la IA compre. Bajo tu control.",
           "eyebrow": "[04] Vende",
           "description": "Prueba qué encuentra un agente al pagar. En WooCommerce, ofrece carrito y pedidos con tu pasarela y controles de acceso configurados.",
-          "field": true,
           "items": [
             {
               "title": "Pago con agentes en WooCommerce",
@@ -11817,7 +11806,6 @@
             "id": "how-it-works",
             "title": "Importa el catálogo. Decide el siguiente paso.",
             "eyebrow": "[02] Cómo funciona",
-            "field": true,
             "ordered": true,
             "columns": 4,
             "items": [
@@ -12030,7 +12018,6 @@
             "eyebrow": "[02] Cómo funciona",
             "ordered": true,
             "columns": 4,
-            "field": true,
             "items": [
               {
                 "title": "Elige la comparación",
@@ -12223,7 +12210,6 @@
             "eyebrow": "[02] Cómo funciona",
             "ordered": true,
             "columns": 4,
-            "field": true,
             "items": [
               {
                 "title": "Elige una ficha",
@@ -12406,7 +12392,6 @@
             "id": "how-it-works",
             "title": "Prueba el recorrido completo.",
             "eyebrow": "[02] Cómo funciona",
-            "field": true,
             "ordered": true,
             "columns": 4,
             "items": [
@@ -12616,7 +12601,6 @@
             "id": "how-it-works",
             "title": "Distingue visitas, pruebas y estimaciones.",
             "eyebrow": "[02] Cómo funciona",
-            "field": true,
             "ordered": true,
             "columns": 4,
             "items": [
@@ -12879,6 +12863,28 @@
     "screenshot": {
       "alt": "Gráfico de tasa de elección y desglose de comparaciones del panel de ecentic con datos de muestra.",
       "caption": "Captura del producto · datos de muestra"
+    },
+    "screenshots": {
+      "connect": {
+        "alt": "Configuración de tiendas conectadas de ecentic con tiendas de muestra identificadas",
+        "caption": "Interfaz del producto · tiendas de muestra. No se conectó ninguna cuenta de comercio."
+      },
+      "simulate": {
+        "alt": "Gráfico de tasa de elección y desglose de comparaciones del panel de ecentic con datos de muestra.",
+        "caption": "Captura del producto · datos de muestra"
+      },
+      "fix": {
+        "alt": "Historial de publicación de ecentic con registros de muestra, sin cifras de rendimiento",
+        "caption": "Interfaz del producto · registros de publicación de muestra. No muestra mejoras medidas ni resultados de clientes."
+      },
+      "sell": {
+        "alt": "Validador UCP de ecentic en su estado inicial, antes de comprobar una tienda",
+        "caption": "Interfaz del producto · validador antes de una comprobación. No representa una compra completada ni una aprobación del canal."
+      },
+      "track": {
+        "alt": "Gráfico de visitas de agentes de ecentic con datos de muestra ilustrativos",
+        "caption": "Interfaz del producto · visitas de muestra ilustrativas, no resultados de un cliente."
+      }
     }
   },
   "enterpriseSolutions": {
@@ -12934,7 +12940,6 @@
             "id": "one-product",
             "title": "Sigue un producto.",
             "eyebrow": "[02] Ejemplo con datos de muestra",
-            "field": true,
             "ordered": true,
             "columns": 5,
             "items": [
@@ -13085,7 +13090,6 @@
             "eyebrow": "[02] Ejemplo con datos de muestra",
             "ordered": true,
             "columns": 5,
-            "field": true,
             "items": [
               {
                 "title": "Conectado",
@@ -13460,7 +13464,6 @@
             "title": "Basado en interfaces claras.",
             "eyebrow": "[07] Capacidades de la plataforma",
             "columns": 3,
-            "field": true,
             "items": [
               {
                 "title": "Tus tiendas en una cuenta",
@@ -13671,7 +13674,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "Son atributos que tu equipo debe verificar, no campos que ecentic invente o complete automáticamente. El importador actual admite campos definidos."
           },
           {
@@ -13813,7 +13815,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "Son atributos que tu equipo debe verificar, no campos que ecentic invente o complete automáticamente. El importador actual admite campos definidos."
           },
           {
@@ -13951,7 +13952,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "Son atributos que tu equipo debe verificar, no campos que ecentic invente o complete automáticamente. El importador actual admite campos definidos."
           },
           {
@@ -14089,7 +14089,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "Son atributos que tu equipo debe verificar, no campos que ecentic invente o complete automáticamente. El importador actual admite campos definidos."
           },
           {
@@ -14231,7 +14230,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "Son atributos que tu equipo debe verificar, no campos que ecentic invente o complete automáticamente. El importador actual admite campos definidos."
           },
           {
@@ -14369,7 +14367,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "Son atributos que tu equipo debe verificar, no campos que ecentic invente o complete automáticamente. El importador actual admite campos definidos."
           },
           {
@@ -14516,7 +14513,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "Son atributos que tu equipo debe verificar, no campos que ecentic invente o complete automáticamente. El importador actual admite campos definidos."
           },
           {
@@ -14659,7 +14655,6 @@
               }
             ],
             "columns": 3,
-            "field": true,
             "note": "Son atributos que tu equipo debe verificar, no campos que ecentic invente o complete automáticamente. El importador actual admite campos definidos."
           },
           {
@@ -14786,8 +14781,7 @@
               "label": "Escapada a Lisboa para un fin de semana largo de mayo"
             }
           ],
-          "columns": 2,
-          "field": true
+          "columns": 2
         },
         {
           "id": "other-sectors",
@@ -14815,7 +14809,6 @@
           "id": "business",
           "title": "Por negocio.",
           "columns": 2,
-          "field": true,
           "items": [
             {
               "title": "Para marcas",
