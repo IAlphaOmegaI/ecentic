@@ -2210,7 +2210,11 @@
         },
         "frequency": {
           "title": "Frecuencia de simulación",
-          "options": ["Solo manual", "Diaria", "Semanal"]
+          "options": [
+            "Solo manual",
+            "Diaria",
+            "Semanal"
+          ]
         },
         "persona": {
           "title": "Persona de compra",
@@ -6809,7 +6813,13 @@
       },
       "selection": "{selected} de {limit} productos seleccionados",
       "table": {
-        "headers": ["Producto", "Precio", "Moneda", "Estado", "Calidad"]
+        "headers": [
+          "Producto",
+          "Precio",
+          "Moneda",
+          "Estado",
+          "Calidad"
+        ]
       },
       "states": {
         "active": "Activo",
@@ -6919,7 +6929,12 @@
         "description": "Selecciona los competidores que quieres incluir en tus simulaciones de agentes de IA.",
         "summary": "{total} productos competidores en {brands} marcas — {selected} seleccionados",
         "table": {
-          "headers": ["Competidor", "Precio", "Moneda", "Marca"]
+          "headers": [
+            "Competidor",
+            "Precio",
+            "Moneda",
+            "Marca"
+          ]
         },
         "action": {
           "back": "Atrás",
@@ -7293,7 +7308,11 @@
         "title": "Errores de la API",
         "accent": "de ecentic.",
         "description": "Cada fallo de la API de ecentic es un documento de problema tipado, no una página HTML. El código es el contrato: es estable, legible por máquinas y seguro para tomar decisiones.",
-        "assurances": ["RFC 9457", "Códigos estables", "Pistas de resolución"],
+        "assurances": [
+          "RFC 9457",
+          "Códigos estables",
+          "Pistas de resolución"
+        ],
         "art": {
           "alt": "Ilustración en ASCII de un escudo"
         },
@@ -7433,7 +7452,11 @@
         "title": "Servidor MCP",
         "accent": "de ecentic.",
         "description": "Claude, ChatGPT y cualquier cliente del Model Context Protocol pueden llamar a ecentic de forma nativa por JSON-RPC 2.0. Esta página es la referencia de conexión: el endpoint, el transporte, el handshake y todas las herramientas que expone.",
-        "assurances": ["Streamable HTTP", "JSON-RPC 2.0", "7 herramientas"],
+        "assurances": [
+          "Streamable HTTP",
+          "JSON-RPC 2.0",
+          "7 herramientas"
+        ],
         "art": {
           "alt": "Ilustración ASCII de un robot"
         },
@@ -7555,7 +7578,11 @@
       "title": "Audita las herramientas de compra",
       "accent": "de la búsqueda al pago.",
       "description": "Descubre qué operaciones expone tu tienda mediante WebMCP. Revisa búsquedas, opciones de producto, carritos y acceso al pago, con fuentes y mejoras orientadas al comerciante.",
-      "assurances": ["Gratis", "Sin cuenta", "Solo inspección del código"],
+      "assurances": [
+        "Gratis",
+        "Sin cuenta",
+        "Solo inspección del código"
+      ],
       "art": "Una consola representada con caracteres ASCII",
       "action": {
         "primary": "Auditar una tienda"
@@ -8020,6 +8047,39 @@
           "answer": "Prueba directamente una página de producto, catálogo o búsqueda. Las herramientas pueden registrarse después de ejecutar JavaScript, cargarse mediante otros scripts o aparecer solo tras iniciar sesión. No encontrar indicios no demuestra que tu tienda carezca de WebMCP."
         }
       ]
+    }
+  },
+  "enterpriseChrome": {
+    "skip": "Ir al contenido",
+    "faq": "Resolvemos tus dudas.",
+    "action": {
+      "primary": "Reserva una demo",
+      "secondary": "Analiza mi tienda gratis",
+      "tertiary": "Inicia sesión",
+      "quaternary": "Más información"
+    },
+    "closing": {
+      "title": "La IA ya está eligiendo productos en tu categoría.",
+      "description": "Descubre si está eligiendo los tuyos."
+    },
+    "status": {
+      "live": "Disponible",
+      "feed": "Mediante feed de productos",
+      "simulated": "Simulado",
+      "soon": "Próximamente",
+      "notYet": "Aún no"
+    },
+    "sample": "Ejemplo con datos de muestra",
+    "screenshot": "Captura del producto · datos de muestra",
+    "menu": {
+      "title": "Explora ecentic",
+      "open": "Abrir menú",
+      "close": "Cerrar menú"
+    },
+    "footer": {
+      "tagline": "Consigue la venta cuando la IA hace la compra.",
+      "copyright": "© 2026 {{TODO: nombre legal de la empresa operadora polaca}}",
+      "trademark": "Los nombres y logotipos de los productos son marcas de sus propietarios. Mostrarlos no implica que respalden a ecentic ni que colaboren con ella."
     }
   }
 }

@@ -1,0 +1,35 @@
+{
+  "enterpriseChrome": {
+    "skip": "Ir al contenido",
+    "faq": "Resolvemos tus dudas.",
+    "action": {
+      "primary": "Reserva una demo",
+      "secondary": "Analiza mi tienda gratis",
+      "tertiary": "Inicia sesión",
+      "quaternary": "Más información"
+    },
+    "closing": {
+      "title": "La IA ya está eligiendo productos en tu categoría.",
+      "description": "Descubre si está eligiendo los tuyos."
+    },
+    "status": {
+      "live": "Disponible",
+      "feed": "Mediante feed de productos",
+      "simulated": "Simulado",
+      "soon": "Próximamente",
+      "notYet": "Aún no"
+    },
+    "sample": "Ejemplo con datos de muestra",
+    "screenshot": "Captura del producto · datos de muestra",
+    "menu": {
+      "title": "Explora ecentic",
+      "open": "Abrir menú",
+      "close": "Cerrar menú"
+    },
+    "footer": {
+      "tagline": "Consigue la venta cuando la IA hace la compra.",
+      "copyright": "© 2026 {{TODO: nombre legal de la empresa operadora polaca}}",
+      "trademark": "Los nombres y logotipos de los productos son marcas de sus propietarios. Mostrarlos no implica que respalden a ecentic ni que colaboren con ella."
+    }
+  }
+}

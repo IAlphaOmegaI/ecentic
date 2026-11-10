@@ -1,0 +1,404 @@
+@font-face {
+  font-family: "Ecentic Red Hat";
+  src: url("/fonts/marketing/RedHatDisplay-SemiBold.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Ecentic Red Hat";
+  src: url("/fonts/marketing/RedHatDisplay-Regular.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Ecentic Red Hat";
+  src: url("/fonts/marketing/RedHatDisplay-Medium.woff2") format("woff2");
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+}
+.marketing-site {
+  --canvas: #ffffff;
+  --field: #e7e7e7;
+  --line: #dedede;
+  --cross: #7d8590;
+  --ink: #16181d;
+  --body: #404040;
+  --muted: #6b6b6b;
+  --blue: #1572fa;
+  --blue-text: #0a5bd3;
+  --dark-0: #111111;
+  --dark-1: #092645;
+  --dark-2: #005fd6;
+  --on-dark-body: rgb(255 255 255 / 82%);
+  --on-dark-accent: #9ac5ff;
+  --color-background: var(--canvas);
+  --color-background-rich: var(--canvas);
+  --color-background-dimmed: var(--field);
+  --color-foreground: var(--ink);
+  --color-foreground-dimmed: var(--body);
+  --color-accent-foreground: var(--line);
+  --color-primary: var(--blue-text);
+  background: var(--canvas);
+  color: var(--body);
+  font-family: "Ecentic Red Hat", var(--font-redhat-display), sans-serif;
+  font-synthesis: none;
+  font-size: 16px;
+  line-height: 1.6;
+}
+.marketing-site :where(h1, h2, h3, h4) {
+  color: var(--ink);
+  font-family: var(--font-lt-superior), "Ecentic Red Hat", sans-serif;
+  font-weight: 500;
+  text-wrap: balance;
+  letter-spacing: -0.035em;
+  line-height: 1.08;
+}
+.marketing-site h1 {
+  font-size: clamp(2.75rem, 5.5vw, 5rem);
+  max-width: 1040px;
+}
+.marketing-site h2 {
+  font-size: clamp(2rem, 3.6vw, 3.5rem);
+  max-width: 900px;
+}
+.marketing-site h3 {
+  font-size: clamp(1.4rem, 2vw, 1.85rem);
+}
+.marketing-site p {
+  text-wrap: pretty;
+}
+.marketing-site :where(a, button, input, select, textarea):focus-visible {
+  outline: 2px solid var(--blue-text);
+  outline-offset: 4px;
+}
+.marketing-site :where(button, input, textarea, select, [data-slot="button"]) {
+  border-radius: 2px;
+}
+.marketing-site .marketing-actions a {
+  border-radius: 2px;
+  min-height: 46px;
+  padding: 10px 18px;
+  font-size: 15px;
+}
+.marketing-site .marketing-actions a:first-child {
+  background: var(--blue-text);
+  color: var(--canvas);
+}
+.marketing-site .marketing-actions a + a {
+  background: transparent;
+  color: var(--blue-text);
+  border-color: var(--line);
+}
+.marketing-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 32px;
+}
+.marketing-band {
+  position: relative;
+  border-bottom: 1px solid var(--line);
+}
+.marketing-rail {
+  position: relative;
+  max-width: 1186px;
+  margin-inline: auto;
+  border-inline: 1px solid var(--line);
+}
+.marketing-rail::before,
+.marketing-rail::after {
+  content: "";
+  pointer-events: none;
+  position: absolute;
+  z-index: 2;
+  width: 16px;
+  height: 16px;
+  top: -8px;
+  background:
+    linear-gradient(var(--cross), var(--cross)) center / 16px 1px no-repeat,
+    linear-gradient(var(--cross), var(--cross)) center / 1px 16px no-repeat;
+}
+.marketing-rail::before {
+  left: -8px;
+}
+.marketing-rail::after {
+  right: -8px;
+}
+.marketing-cell {
+  position: relative;
+  padding: 56px 28px;
+  min-width: 0;
+}
+.marketing-cell > p {
+  max-width: 70ch;
+}
+.marketing-cell > h2 + p,
+.marketing-cell > h3 + p {
+  margin-top: 20px;
+}
+.marketing-eyebrow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+  font-size: 14px;
+  margin-bottom: 24px;
+  color: var(--blue-text);
+}
+.marketing-eyebrow > span {
+  width: 8px;
+  height: 8px;
+  flex: 0 0 8px;
+  border-radius: 50%;
+  background: currentColor;
+}
+.marketing-hero .marketing-cell {
+  padding-block: 88px 72px;
+}
+.marketing-lead {
+  max-width: 720px;
+  margin-top: 28px;
+  font-size: clamp(1.125rem, 1.6vw, 1.35rem);
+  line-height: 1.55;
+}
+.marketing-field {
+  background: var(--field);
+}
+.marketing-grid {
+  display: grid;
+  grid-template-columns: repeat(var(--columns, 3), minmax(0, 1fr));
+}
+.marketing-grid > * {
+  min-width: 0;
+  padding: 32px 28px;
+  border-top: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+}
+.marketing-grid > *:last-child {
+  border-right: 0;
+}
+.marketing-grid p {
+  margin-top: 16px;
+}
+.marketing-grid h3 {
+  max-width: 24ch;
+}
+.marketing-grid a,
+.marketing-text-link {
+  color: var(--blue-text);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 4px;
+}
+.marketing-grid a:hover,
+.marketing-text-link:hover {
+  text-decoration: underline;
+}
+.marketing-grid .marketing-item-link {
+  display: inline-flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 28px;
+}
+.marketing-rows > div {
+  display: grid;
+  grid-template-columns: minmax(140px, 1fr) 2fr;
+  gap: 28px;
+  padding: 24px 28px;
+  border-top: 1px solid var(--line);
+}
+.marketing-rows dt {
+  color: var(--ink);
+  font-weight: 500;
+}
+.marketing-rows dd {
+  margin: 0;
+}
+.marketing-note {
+  margin-top: 24px;
+  font-size: 14px;
+  color: var(--muted);
+}
+.marketing-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--body);
+}
+.marketing-status > span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--blue-text);
+  flex-shrink: 0;
+}
+.marketing-status[data-status="feed"] > span {
+  background: var(--muted);
+}
+.marketing-status[data-status="soon"] > span,
+.marketing-status[data-status="not-yet"] > span {
+  background: transparent;
+  border: 1px solid currentColor;
+}
+.marketing-dark {
+  --line: #526077;
+  --cross: #8994a3;
+  background: linear-gradient(
+    165deg,
+    var(--dark-0) 25%,
+    var(--dark-1) 66%,
+    var(--dark-2)
+  );
+  color: var(--on-dark-body);
+}
+.marketing-dark :where(h1, h2, h3) {
+  color: var(--canvas);
+}
+.marketing-dark .marketing-eyebrow {
+  color: var(--on-dark-accent);
+}
+.marketing-dark .marketing-actions a:first-child {
+  color: var(--ink);
+  background: var(--canvas);
+}
+.marketing-dark .marketing-actions a + a {
+  color: var(--canvas);
+  border-color: rgb(255 255 255 / 60%);
+}
+.marketing-closing .marketing-cell {
+  min-height: 460px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.marketing-closing h2 {
+  max-width: 780px;
+}
+.marketing-closing-art {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    url("/images/marketing/closing-ascii.webp") center / contain no-repeat;
+  opacity: 0.2;
+  mask-image: linear-gradient(100deg, transparent, #000);
+}
+.marketing-screenshot {
+  margin-top: 40px;
+}
+.marketing-screenshot img {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+.marketing-screenshot figcaption {
+  font-size: 13px;
+  color: var(--muted);
+  margin-top: 12px;
+}
+.marketing-dark .marketing-screenshot figcaption {
+  color: var(--on-dark-body);
+}
+.marketing-faq {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+}
+.marketing-faq > .marketing-cell {
+  border-right: 1px solid var(--line);
+}
+.marketing-faq article {
+  padding: 28px;
+  border-bottom: 1px solid var(--line);
+}
+.marketing-faq article:last-child {
+  border-bottom: 0;
+}
+.marketing-faq h3 {
+  font-size: 22px;
+  letter-spacing: -0.02em;
+}
+.marketing-faq p {
+  margin-top: 12px;
+}
+.marketing-skip {
+  position: fixed;
+  top: 8px;
+  left: 16px;
+  z-index: 100;
+  transform: translateY(-200%);
+  padding: 8px 16px;
+  background: var(--canvas);
+  color: var(--ink);
+}
+.marketing-skip:focus {
+  transform: translateY(0);
+}
+@media (max-width: 1190px) {
+  .marketing-rail {
+    margin-inline: 28px;
+  }
+}
+@media (max-width: 800px) {
+  .marketing-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .marketing-grid > :nth-child(even) {
+    border-right: 0;
+  }
+  .marketing-faq {
+    grid-template-columns: 1fr;
+  }
+  .marketing-faq > .marketing-cell {
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+  }
+}
+@media (max-width: 639px) {
+  .marketing-rail {
+    margin-inline: 16px;
+  }
+  .marketing-cell {
+    padding: 40px 16px;
+  }
+  .marketing-hero .marketing-cell {
+    padding-block: 52px;
+  }
+  .marketing-grid {
+    grid-template-columns: 1fr;
+  }
+  .marketing-grid > * {
+    padding: 28px 16px;
+    border-right: 0;
+  }
+  .marketing-rows > div {
+    grid-template-columns: 1fr;
+    gap: 8px;
+    padding: 24px 16px;
+  }
+  .marketing-faq article {
+    padding: 24px 16px;
+  }
+  .marketing-actions {
+    gap: 10px;
+  }
+  .marketing-actions a {
+    white-space: normal;
+    text-align: left;
+  }
+  .marketing-closing .marketing-cell {
+    min-height: 440px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marketing-site *,
+  .marketing-site *::before,
+  .marketing-site *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto;
+  }
+}

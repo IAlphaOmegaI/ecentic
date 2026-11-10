@@ -1,0 +1,35 @@
+{
+  "enterpriseChrome": {
+    "skip": "Skip to content",
+    "faq": "Questions, answered.",
+    "action": {
+      "primary": "Book a demo",
+      "secondary": "Check my store free",
+      "tertiary": "Log in",
+      "quaternary": "Learn more"
+    },
+    "closing": {
+      "title": "AI is already choosing products in your category.",
+      "description": "Find out if it's choosing yours."
+    },
+    "status": {
+      "live": "Live",
+      "feed": "Via product feed",
+      "simulated": "Simulated",
+      "soon": "Coming soon",
+      "notYet": "Not yet"
+    },
+    "sample": "Example with sample data",
+    "screenshot": "Product screenshot · sample data",
+    "menu": {
+      "title": "Explore ecentic",
+      "open": "Open menu",
+      "close": "Close menu"
+    },
+    "footer": {
+      "tagline": "Get the sale when AI does the shopping.",
+      "copyright": "© 2026 {{TODO: legal name of the Polish operating company}}",
+      "trademark": "Product names and logos are trademarks of their owners. Showing them doesn't mean they endorse or partner with ecentic."
+    }
+  }
+}
