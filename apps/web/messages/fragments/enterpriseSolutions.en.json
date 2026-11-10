@@ -1,0 +1,2077 @@
+{
+  "enterpriseSolutions": {
+    "business": {
+      "brands": {
+        "faqTitle": "Questions we hear",
+        "meta": {
+          "title": "ecentic for brands: compete in AI shopping",
+          "description": "See which products AI models pick against your competitors. Improve existing product data and test checkout. Start with a free store check."
+        },
+        "eyebrow": "For brands",
+        "title": "Give AI the facts about your product.",
+        "description": "When someone asks AI for an option in your category, it compares products. ecentic shows which of yours get picked in simulations, which lose to a competitor, and where your data needs work. You choose which listing changes to publish.",
+        "actions": [
+          {
+            "label": "Check my store free",
+            "href": "/sign-up"
+          },
+          {
+            "label": "Book a demo",
+            "href": "/demo"
+          }
+        ],
+        "challenges": [
+          {
+            "before": "AI picks a rival in your own category.",
+            "after": "Compare a product with named rivals and see the simulated win rate for each model.",
+            "href": "/platform/simulate"
+          },
+          {
+            "before": "Retailers explain your products more clearly.",
+            "after": "Use existing product facts to improve the title and description on your own store. Publish structured data separately.",
+            "href": "/platform/fix"
+          },
+          {
+            "before": "Nobody has tested the agent checkout path.",
+            "after": "Test the flow, and configure agent checkout on WooCommerce where supported.",
+            "href": "/platform/sell"
+          },
+          {
+            "before": "Referral reporting does not separate assistants.",
+            "after": "See recognized AI referrals by assistant on Shopify. Hidden direct traffic cannot always be identified.",
+            "href": "/platform/track"
+          }
+        ],
+        "sections": [
+          {
+            "id": "challenges",
+            "title": "Where it breaks today.",
+            "eyebrow": "[01] Your challenges"
+          },
+          {
+            "id": "one-product",
+            "title": "Follow one product.",
+            "eyebrow": "[02] Example with sample data",
+            "field": true,
+            "ordered": true,
+            "columns": 5,
+            "items": [
+              {
+                "title": "Connected",
+                "body": "Extra virgin olive oil, 750 ml. The supplier description includes the harvest year and region; the short title does not."
+              },
+              {
+                "title": "Simulated",
+                "body": "Question: “extra virgin olive oil for salad dressing under $25”. A rival wins 3 of 3 illustrative runs, with clearer source facts."
+              },
+              {
+                "title": "Fixed",
+                "body": "Apply rewrites the title and description using the year and region already in the source. Structured data is published in a separate action."
+              },
+              {
+                "title": "Checkout tested",
+                "body": "On a WooCommerce staging store, a test agent finds the product, prices a cart and reaches the gateway’s payment handoff."
+              },
+              {
+                "title": "Rescanned",
+                "body": "The product is selected in 2 of 3 illustrative follow-up runs. This sample is not a promised outcome or a measured sale."
+              }
+            ]
+          },
+          {
+            "id": "integrations",
+            "title": "Work with the data you control.",
+            "columns": 4,
+            "items": [
+              {
+                "title": "Shopify",
+                "body": "Live direct connection.",
+                "href": "/integrations/shopify",
+                "label": "See how it works"
+              },
+              {
+                "title": "WooCommerce",
+                "body": "Live direct connection.",
+                "href": "/integrations/woocommerce",
+                "label": "See how it works"
+              },
+              {
+                "title": "Google Merchant Center",
+                "body": "Live for Shopify; separate supplemental sync.",
+                "href": "/integrations/google-merchant-center",
+                "label": "See how it works"
+              },
+              {
+                "title": "Product feeds",
+                "body": "Supported formats for read-only imports.",
+                "href": "/integrations/product-feeds",
+                "label": "See how it works"
+              }
+            ]
+          },
+          {
+            "id": "start",
+            "title": "Start with your first comparison.",
+            "eyebrow": "[04] Where to start",
+            "description": "Run the free store check, then choose Compete or Scale according to your catalog.",
+            "links": [
+              {
+                "label": "Check my store free",
+                "href": "/sign-up"
+              },
+              {
+                "label": "Explore Scale",
+                "href": "/pricing?plan=scale"
+              }
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Do we need a developer?",
+            "answer": "The direct connection flows guide you through Shopify or WooCommerce. A supported product feed can start an import. Checkout and theme configuration may need your store team."
+          },
+          {
+            "question": "Will it change our brand voice?",
+            "answer": "Rewrites start from existing facts. Apply generates and publishes a listing rewrite; structured data has a separate control. There is no generated-copy preview before Apply today."
+          },
+          {
+            "question": "We also sell through retailers and Amazon. Does this help there?",
+            "answer": "It works on the data you control: your store and supported feeds. Shopify stores can separately sync published fixes to Merchant Center. Retailer listings remain theirs; an Amazon Shop Direct connector is planned."
+          },
+          {
+            "question": "How long until something changes?",
+            "answer": "Request a new scan after publishing to compare another set of decisions. Real assistants refresh their data on their own schedules, so we do not promise a date or a sale."
+          }
+        ],
+        "challengeLabels": {
+          "before": "Today",
+          "after": "With ecentic",
+          "link": "Explore this capability"
+        }
+      },
+      "retailers-and-marketplaces": {
+        "faqTitle": "Questions we hear",
+        "meta": {
+          "title": "ecentic for retailers and marketplaces",
+          "description": "Find gaps in supplier listings, compare products against competitors and choose where to improve your catalog. Start with one category."
+        },
+        "eyebrow": "For retailers and marketplaces",
+        "title": "Thousands of listings. A clearer place to start.",
+        "description": "Supplier data arrives in every shape. ecentic checks supported listing fields and compares products with named competitors. Use the findings to prioritize the catalog work your team can verify, then choose which changes to publish.",
+        "actions": [
+          {
+            "label": "Book a demo",
+            "href": "/demo"
+          },
+          {
+            "label": "Check my store free",
+            "href": "/sign-up"
+          }
+        ],
+        "challenges": [
+          {
+            "before": "Supplier data is difficult to compare.",
+            "after": "Review missing information identified in simulated comparisons and listing checks.",
+            "href": "/platform/simulate"
+          },
+          {
+            "before": "The page and feed can disagree.",
+            "after": "Inspect Merchant Center diagnostics on Shopify. Send your published listing changes with a separate supplemental sync; this does not correct every price or stock mismatch.",
+            "href": "/platform/fix"
+          },
+          {
+            "before": "Too many products to check by hand.",
+            "after": "Run the 34-rule listing check on supported fields in active imported products.",
+            "href": "/platform/simulate#listing-quality"
+          },
+          {
+            "before": "No clear picture of repeated losses.",
+            "after": "Review simulated win rate by product, model and named competitor.",
+            "href": "/platform/simulate"
+          }
+        ],
+        "sections": [
+          {
+            "id": "challenges",
+            "title": "Where it breaks today.",
+            "eyebrow": "[01] Your challenges"
+          },
+          {
+            "id": "one-product",
+            "title": "Follow one product.",
+            "eyebrow": "[02] Example with sample data",
+            "ordered": true,
+            "columns": 5,
+            "field": true,
+            "items": [
+              {
+                "title": "Connected",
+                "body": "An office chair listing has three colour variants. The supplier’s description states the seat-height range and weight capacity, but the short title is vague."
+              },
+              {
+                "title": "Simulated",
+                "body": "Question: “adjustable office chair for a tall person under $400”. A competitor wins 3 of 3 illustrative tests with clearer specifications."
+              },
+              {
+                "title": "Fixed",
+                "body": "The title and description are rewritten from the available specifications. Your team obtains the correct identifier for each variant; ecentic does not invent or copy one across variants."
+              },
+              {
+                "title": "Checkout tested",
+                "body": "On a WooCommerce staging store, a test agent prices the cart and reaches the required payment step."
+              },
+              {
+                "title": "Rescanned",
+                "body": "The chair is picked in 2 of 3 illustrative follow-up runs. Your team chooses the next products to test."
+              }
+            ]
+          },
+          {
+            "id": "integrations",
+            "title": "Start from your existing catalog.",
+            "items": [
+              {
+                "title": "Product feeds and CSV",
+                "body": "Compatible exports can be imported. No write-back connector is created by an import.",
+                "href": "/integrations/product-feeds",
+                "label": "See how it works"
+              },
+              {
+                "title": "Google Merchant Center",
+                "body": "Diagnostics and supplemental sync for Shopify.",
+                "href": "/integrations/google-merchant-center",
+                "label": "See how it works"
+              },
+              {
+                "title": "Shopify and WooCommerce",
+                "body": "Direct connections for supported publishing actions.",
+                "href": "/integrations",
+                "label": "See how it works"
+              },
+              {
+                "title": "PIM exports",
+                "body": "Start with a compatible feed from your PIM. Dedicated connector availability is shown on the integration wall.",
+                "href": "/integrations",
+                "label": "See how it works"
+              }
+            ]
+          },
+          {
+            "id": "start",
+            "title": "One category is enough to begin.",
+            "eyebrow": "[04] Where to start",
+            "description": "Scope an enterprise pilot around one category. Smaller catalogs can use Scale or Dominate.",
+            "links": [
+              {
+                "label": "Explore enterprise pilots",
+                "href": "/solutions/enterprise"
+              },
+              {
+                "label": "See plans",
+                "href": "/pricing"
+              }
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "question": "How many products can you handle?",
+            "answer": "Self-serve plans go up to 1,000 products. Enterprise accounts are scoped to your catalog; we confirm the operating limits before agreeing the pilot."
+          },
+          {
+            "question": "Do you need our PIM?",
+            "answer": "No. A compatible product feed or CSV export can be enough to start. The importer supports defined fields and formats."
+          },
+          {
+            "question": "Can we start with one category?",
+            "answer": "Yes. The proposed pilot starts with one market and one category, with the scope agreed before work begins."
+          },
+          {
+            "question": "Who owns the data and fixes?",
+            "answer": "Your store data remains yours. Publishing requires an action you choose. Public-data pilot delivery formats are agreed with your team."
+          }
+        ],
+        "challengeLabels": {
+          "before": "Today",
+          "after": "With ecentic",
+          "link": "Explore this capability"
+        }
+      },
+      "agencies-and-partners": {
+        "faqTitle": "Questions we hear",
+        "meta": {
+          "title": "ecentic for agencies and partners",
+          "description": "Add AI product comparisons and listing work to your client services. Explore agency, technology and creator tracks with ecentic."
+        },
+        "eyebrow": "For agencies and partners",
+        "title": "Add AI commerce to what you already sell.",
+        "description": "Your clients ask what to do about AI shopping. ecentic gives you product comparisons, listing checks and publishing controls to use within the relationship you already have. Discuss commercial terms before promising a resale or referral arrangement.",
+        "actions": [
+          {
+            "label": "Become a partner",
+            "href": "/partners"
+          },
+          {
+            "label": "Book a demo",
+            "href": "/demo"
+          }
+        ],
+        "challenges": [
+          {
+            "before": "Clients ask about AI shopping.",
+            "after": "Start with a free store check or a public tool before the conversation.",
+            "href": "/tools"
+          },
+          {
+            "before": "Audits are assembled by hand.",
+            "after": "Use simulations, the sampled readiness audit and the 34-rule listing check.",
+            "href": "/platform/simulate"
+          },
+          {
+            "before": "The commercial offer is unclear.",
+            "after": "Choose a partner track and agree its terms. {{TODO: Confirm agency margin or referral terms.}}",
+            "href": "/partners"
+          },
+          {
+            "before": "Clients need to understand what changed.",
+            "after": "Compare completed scans before and after chosen listing changes. Keep estimates separate from measured results.",
+            "href": "/platform/track"
+          }
+        ],
+        "sections": [
+          {
+            "id": "challenges",
+            "title": "Where it breaks today.",
+            "eyebrow": "[01] Your challenges"
+          },
+          {
+            "id": "tracks",
+            "title": "How partners work with ecentic.",
+            "eyebrow": "[02] Partner tracks",
+            "columns": 3,
+            "field": true,
+            "items": [
+              {
+                "title": "Agencies and resellers",
+                "body": "Run product checks for clients, ship verified changes and keep the client relationship. {{TODO: Confirm resale access and commercial terms.}}"
+              },
+              {
+                "title": "Technology partners",
+                "body": "For product-information, payments, checkout and data companies. Build around the documented discovery and onboarding interfaces."
+              },
+              {
+                "title": "Creators and affiliates",
+                "body": "Help your audience understand AI commerce. {{TODO: Confirm creator and affiliate payment terms.}}"
+              }
+            ]
+          },
+          {
+            "id": "access",
+            "title": "Keep account access explicit.",
+            "description": "One account can hold stores owned by that account. It is not a delegated agency workspace or a team-seat system. Agree how each client connects and controls its store.",
+            "note": "{{TODO: Confirm the supported agency account setup and client-report sharing terms.}}"
+          },
+          {
+            "id": "start",
+            "title": "Start with the right track.",
+            "eyebrow": "[04] Where to start",
+            "links": [
+              {
+                "label": "Apply to partner",
+                "href": "/partners"
+              }
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Is there a margin or referral fee?",
+            "answer": "{{TODO: Confirm the commercial terms for each partner track.}}"
+          },
+          {
+            "question": "Do clients need their own account?",
+            "answer": "Every store connects to an ecentic account. A single owner can hold multiple stores, but delegated agency permissions are not available today. Confirm the arrangement for each client before connecting."
+          },
+          {
+            "question": "Can we use reports with clients?",
+            "answer": "{{TODO: Confirm client-report sharing terms. No white-label report capability is claimed.}}"
+          }
+        ],
+        "challengeLabels": {
+          "before": "Today",
+          "after": "With ecentic",
+          "link": "Explore this capability"
+        }
+      },
+      "enterprise": {
+        "faqTitle": "Questions we hear",
+        "meta": {
+          "title": "ecentic for enterprise: run AI as a sales channel",
+          "description": "Scope a public-data pilot for one market and category. Agree targets before work begins, with a founder on the account and DPA on request."
+        },
+        "eyebrow": "For enterprise",
+        "title": "AI is a new sales channel. Run it like one.",
+        "description": "For retailers, brands and travel companies with many categories, markets or brands. Start with one market and one category, on public data, and agree the targets in writing before the work begins.",
+        "actions": [
+          {
+            "label": "Talk to us",
+            "href": "/demo"
+          },
+          {
+            "label": "Read security and trust",
+            "href": "/security"
+          }
+        ],
+        "facts": [
+          "Public data first. No logins, code on your site or customer data for the baseline.",
+          "Targets agreed in writing before work begins.",
+          "A founder on the account, with a direct line to engineering.",
+          "DPA on request and a dated sub-processor list."
+        ],
+        "challenges": [
+          {
+            "before": "Nobody owns AI as a channel. Teams each see a piece.",
+            "after": "Agree one question set and a readout owned by the team responsible for the category.",
+            "href": "/platform/simulate"
+          },
+          {
+            "before": "Different markets can produce different answers.",
+            "after": "Scope the market, questions and models explicitly so comparisons have a consistent method.",
+            "href": "/platform/simulate"
+          },
+          {
+            "before": "Product facts are incomplete or unclear.",
+            "after": "Prioritize verifiable source facts and chosen listing changes. On Shopify, send published fixes to Merchant Center separately.",
+            "href": "/platform/fix"
+          },
+          {
+            "before": "Nobody has tested the agent checkout flow.",
+            "after": "Run a test agent through supported search, cart and checkout steps on a staging store.",
+            "href": "/platform/sell"
+          }
+        ],
+        "sections": [
+          {
+            "id": "challenges",
+            "title": "Where it breaks today.",
+            "eyebrow": "[01] Your challenges"
+          },
+          {
+            "id": "ways-to-start",
+            "title": "Three ways to start.",
+            "eyebrow": "[02] Scope the work",
+            "field": true,
+            "columns": 3,
+            "items": [
+              {
+                "title": "Audit",
+                "body": "4 weeks, fixed fee. A baseline of how assistants answer agreed questions in one category, the data issues worth investigating and a prioritized fix list for your team."
+              },
+              {
+                "title": "Pilot",
+                "body": "6 weeks, one market, one category. Baseline at week 0, agreed data changes and the same questions at week 6. Any outcome-linked fee and target are agreed in advance."
+              },
+              {
+                "title": "Design study",
+                "body": "3 months. For checkout or booking questions that need more than a fix list. The agreed scope can include a prototype with dummy data and a month-3 readout."
+              }
+            ],
+            "note": "Fees depend on scope and are agreed on the first call. These are service engagements, not claims of automated product features."
+          },
+          {
+            "id": "pilot",
+            "title": "How a pilot runs.",
+            "eyebrow": "[03] The pilot",
+            "ordered": true,
+            "columns": 4,
+            "items": [
+              {
+                "title": "Week 0: baseline",
+                "body": "Agree the questions and run the baseline before changing data. {{TODO: Confirm the proposed 25 questions and three runs per assistant.}}"
+              },
+              {
+                "title": "Weeks 1 to 5: fix",
+                "body": "Work on the agreed category and test checkout where it applies. Public-data work is handed to your team; direct changes need explicit authorization."
+              },
+              {
+                "title": "Week 6: repeat",
+                "body": "Repeat the agreed questions with the same assistants and number of runs. Document model or access changes."
+              },
+              {
+                "title": "Readout",
+                "body": "Review what moved, the limits of the method and proposed next steps. You decide whether to continue."
+              }
+            ]
+          },
+          {
+            "id": "measures",
+            "title": "What we measure.",
+            "eyebrow": "[04] Agreed measures",
+            "columns": 4,
+            "items": [
+              {
+                "title": "Named",
+                "body": "How often an answer includes your product."
+              },
+              {
+                "title": "Position",
+                "body": "Where the product appears among the options in the sampled answer."
+              },
+              {
+                "title": "Linked",
+                "body": "Whether an answer links the shopper to your store."
+              },
+              {
+                "title": "Bought",
+                "body": "Whether the agreed test flow can complete an order or needs a payment handoff."
+              }
+            ],
+            "note": "We can also record wrong prices, stock or specifications in the sampled answers. Targets and collection methods are agreed in writing; these measures are not all automated dashboard features."
+          },
+          {
+            "id": "what-we-need",
+            "title": "What we need from you.",
+            "eyebrow": "[05] Your involvement",
+            "rows": [
+              {
+                "label": "To start",
+                "value": "A business owner, usually responsible for e-commerce, digital or direct bookings. The baseline uses agreed public pages and product data."
+              },
+              {
+                "label": "Later, only if you choose",
+                "value": "Read access to a feed or Merchant Center, and a staging store for checkout tests."
+              },
+              {
+                "label": "Time from your team",
+                "value": "{{TODO: Confirm expected weekly time from the business owner.}}"
+              }
+            ]
+          },
+          {
+            "id": "security",
+            "title": "Prepare for the security review.",
+            "eyebrow": "[06] Security and trust",
+            "items": [
+              {
+                "title": "Controlled changes",
+                "body": "Product imports do not rewrite listings. Public-data pilot recommendations go to your team. Direct publishing requires an action you choose."
+              },
+              {
+                "title": "Your data",
+                "body": "Review data handling, the DPA request route and the dated sub-processor list. {{TODO: Confirm operational security facts and contracting entity before launch.}}"
+              },
+              {
+                "title": "Straight answers",
+                "body": "SSO, team seats and SOC 2 are not available today. We will answer the security questions your team needs to assess the scope."
+              }
+            ],
+            "links": [
+              {
+                "label": "Read security and trust",
+                "href": "/security"
+              }
+            ]
+          },
+          {
+            "id": "scale",
+            "title": "Built around clear interfaces.",
+            "eyebrow": "[07] Platform capabilities",
+            "columns": 3,
+            "field": true,
+            "items": [
+              {
+                "title": "Your stores in one account",
+                "body": "Hold every store owned by one account under one login. This does not include delegated teams or SSO."
+              },
+              {
+                "title": "REST API",
+                "body": "A versioned public surface with OpenAPI 3.1, typed problem responses and documented rate limits."
+              },
+              {
+                "title": "MCP server and CLI",
+                "body": "Discovery, plans, connection and onboarding workflows. Dashboard scan and traffic exports are not exposed today."
+              },
+              {
+                "title": "Merchant Center sync",
+                "body": "Send published Shopify listing fixes through a separate supplemental-data sync."
+              },
+              {
+                "title": "Controlled agent checkout",
+                "body": "WooCommerce checkout with configurable agent allow-lists, signature requirements and rate limits. Your gateway handles payment."
+              },
+              {
+                "title": "Public discovery",
+                "body": "Our llms.txt, API catalog, checkout profile and MCP endpoint are public.",
+                "href": "/resources",
+                "label": "See how it works"
+              }
+            ]
+          },
+          {
+            "id": "checklist",
+            "title": "Your buyer’s checklist.",
+            "eyebrow": "[08] Before the pilot",
+            "rows": [
+              {
+                "label": "Do you need system access to start?",
+                "value": "No. The audit and baseline can use agreed public pages and product data."
+              },
+              {
+                "label": "Will you change our site?",
+                "value": "Only through actions you authorize after connecting a store. Public-data recommendations go to your team. {{TODO: Confirm pilot delivery formats.}}"
+              },
+              {
+                "label": "Do you process customer personal data?",
+                "value": "Not in the proposed public-data audit or baseline. Connected checkout flows have a separate data scope to review."
+              },
+              {
+                "label": "Who is involved on our side?",
+                "value": "A business owner and someone who can approve data changes."
+              },
+              {
+                "label": "What do we receive?",
+                "value": "An agreed written readout with the numbers, method, limits and next steps."
+              },
+              {
+                "label": "What happens after the pilot?",
+                "value": "You decide at the readout."
+              },
+              {
+                "label": "Will you sign our NDA?",
+                "value": "{{TODO: Confirm NDA policy before any non-public data is shared.}}"
+              }
+            ]
+          },
+          {
+            "id": "who",
+            "title": "Who it is for.",
+            "eyebrow": "[09] Your business",
+            "items": [
+              {
+                "title": "Retail groups and marketplaces",
+                "body": "Large catalogs, many suppliers and several markets.",
+                "href": "/solutions/retailers-and-marketplaces",
+                "label": "See how it works"
+              },
+              {
+                "title": "Consumer brands",
+                "body": "Products sold on your own site and through retailers.",
+                "href": "/solutions/brands",
+                "label": "See how it works"
+              },
+              {
+                "title": "Travel and experiences",
+                "body": "Packages, tickets and stays people research with AI.",
+                "href": "/solutions/sectors/travel-and-experiences",
+                "label": "See how it works"
+              }
+            ],
+            "note": "Pilots in scoping with companies in enterprise retail, travel and flexible workspace."
+          }
+        ],
+        "faqs": [
+          {
+            "question": "How long until we see results?",
+            "answer": "The proposed pilot measures week 6 against week 0. Assistants change over time, so the readout explains what moved and the limits of the comparison. No sales outcome is guaranteed."
+          },
+          {
+            "question": "Which assistants do you cover?",
+            "answer": "Product scans run on ChatGPT, Claude and Gemini. {{TODO: Confirm the assistants and collection method for bespoke pilot questions.}}"
+          },
+          {
+            "question": "Do you work in our markets and languages?",
+            "answer": "We start with one market. Tell us which one and we will confirm the scope on the first call."
+          },
+          {
+            "question": "Can our agency or systems integrator work with you?",
+            "answer": "Yes. We can agree how your existing store team verifies and ships the changes."
+          },
+          {
+            "question": "Is SOC 2 available?",
+            "answer": "Not yet. {{TODO: Confirm the compliance roadmap and available security materials.}} We do not claim a certification or an existing security pack."
+          }
+        ],
+        "challengeLabels": {
+          "before": "Today",
+          "after": "With ecentic",
+          "link": "Explore this capability"
+        }
+      }
+    },
+    "sectors": {
+      "wine-and-spirits": {
+        "name": "Wine and spirits",
+        "meta": {
+          "title": "Selling wine and spirits through AI assistants",
+          "description": "See the bottle facts assistants can compare: strength, age, region, style, size and availability. Prepare your data within platform restrictions."
+        },
+        "title": "Selling wine and spirits when AI picks the bottle.",
+        "description": "Ask an assistant for a gift bottle and strength, age, origin and price matter. Make those facts available as text and product data, while respecting the age and regional restrictions of each sales channel.",
+        "questions": [
+          "Smoky single malt under $80 for a gift",
+          "A Barolo that is ready to drink now",
+          "Low-sugar rum for cocktails"
+        ],
+        "faqs": [
+          {
+            "question": "Can AI buy alcohol for a shopper?",
+            "answer": "It depends on the channel, location and age-verification flow. ecentic does not grant permission to sell a restricted product or guarantee a compliant automated purchase."
+          },
+          {
+            "question": "Do we need a GTIN on every bottle?",
+            "answer": "Use the correct manufacturer-assigned identifier where one exists. Do not invent a GTIN for a limited release or reuse another product’s identifier."
+          },
+          {
+            "question": "What about limited releases with no stock feed?",
+            "answer": "Keep the public listing and any supported import accurate. The importer does not create a live inventory connector for an unsupported platform."
+          },
+          {
+            "question": "How do age checks work with agent checkout?",
+            "answer": "Validate your store’s exact requirements on a staging flow. The current checkout implementation does not establish a universal alcohol age-verification solution."
+          },
+          {
+            "question": "Does this work for thousands of bottles?",
+            "answer": "Start with a supported catalog import and one category. Self-serve plan limits stay in place; larger scopes are agreed for an enterprise pilot."
+          }
+        ],
+        "eyebrow": "Wine and spirits",
+        "faqTitle": "Questions for this sector",
+        "sections": [
+          {
+            "id": "questions",
+            "eyebrow": "[01] What shoppers ask",
+            "title": "Start with a real buying question.",
+            "items": [
+              {
+                "title": "Smoky single malt under $80 for a gift",
+                "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
+              },
+              {
+                "title": "A Barolo that is ready to drink now",
+                "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
+              },
+              {
+                "title": "Low-sugar rum for cocktails",
+                "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
+              }
+            ],
+            "columns": 3
+          },
+          {
+            "id": "attributes",
+            "eyebrow": "[02] What the agent compares",
+            "title": "What your product data needs to say.",
+            "items": [
+              {
+                "title": "Strength",
+                "body": "ABV as a number, not only in the bottle photo."
+              },
+              {
+                "title": "Age",
+                "body": "The stated age or vintage as its own product fact."
+              },
+              {
+                "title": "Origin",
+                "body": "Region and appellation, not just country."
+              },
+              {
+                "title": "Style",
+                "body": "Cask, grape or botanicals as explicit facts, not only tasting prose."
+              },
+              {
+                "title": "Size and price",
+                "body": "Volume and price that match the store and supported feed."
+              },
+              {
+                "title": "Availability",
+                "body": "Stock and shipping regions, subject to the relevant sale restrictions."
+              }
+            ],
+            "columns": 3,
+            "field": true,
+            "note": "These are attributes for your team to verify, not fields ecentic automatically invents or enriches. The current feed importer supports a defined field mapping."
+          },
+          {
+            "id": "rules",
+            "eyebrow": "[03] Sector rules",
+            "title": "Keep the rules with the product facts.",
+            "paragraphs": [
+              "Google’s alcohol policy restricts promotion by target country and requires compliance with applicable local laws. Product data or a working checkout does not remove those restrictions.",
+              "Do not assume an age check is automated. The merchant must confirm that its chosen sales and payment flow satisfies the applicable requirements."
+            ],
+            "note": "Sources checked 10 November 2026. Requirements can depend on the product, channel and country.",
+            "links": [
+              {
+                "label": "Google Merchant Center: alcohol",
+                "href": "https://support.google.com/merchants/answer/6150139?hl=en"
+              },
+              {
+                "label": "Google product identifiers",
+                "href": "https://support.google.com/merchants/answer/6324461?hl=en"
+              }
+            ]
+          },
+          {
+            "id": "business",
+            "eyebrow": "[04] Your business",
+            "title": "The same category, different teams.",
+            "columns": 4,
+            "items": [
+              {
+                "title": "Wine and spirits brands",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/brands",
+                "label": "See your solution"
+              },
+              {
+                "title": "Bottle shops and spirits marketplaces",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/retailers-and-marketplaces",
+                "label": "See your solution"
+              },
+              {
+                "title": "Groups selling across markets",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/enterprise",
+                "label": "See your solution"
+              },
+              {
+                "title": "Agencies running drinks stores",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/agencies-and-partners",
+                "label": "See your solution"
+              }
+            ]
+          }
+        ]
+      },
+      "food-and-beverage": {
+        "name": "Food and beverage",
+        "meta": {
+          "title": "Selling food and drink through AI assistants",
+          "description": "Make nutrition, ingredients, allergens and pack size readable in your product data. See what to check before applying listing changes."
+        },
+        "title": "Selling food and drink when AI reads the label.",
+        "description": "Shoppers ask for food that fits a diet, a budget or an allergy. Put the nutrition panel and allergen statement in text as well as on the pack. Product facts need to remain accurate, and health claims need supporting evidence.",
+        "questions": [
+          "High-protein snack under 150 calories",
+          "Gluten-free crackers my kids will actually eat",
+          "Vegan protein powder without stevia"
+        ],
+        "faqs": [
+          {
+            "question": "Will AI repeat our health claims?",
+            "answer": "An assistant may use published statements. Keep them accurate and permitted in your market. Rewrites start from source product facts; they do not validate a health claim."
+          },
+          {
+            "question": "Does nutrition data need to be text as well as a label photo?",
+            "answer": "Providing it as readable text gives tools an explicit source to inspect. An image alone does not supply the same structured fields."
+          },
+          {
+            "question": "We sell through supermarkets. Does this help?",
+            "answer": "It helps you work on your own store and supported data sources. A retailer controls its own listings; ecentic does not rewrite them through your account."
+          },
+          {
+            "question": "How should multipacks appear?",
+            "answer": "Keep the product’s pack count, size, servings and price explicit so it is distinguishable from a single unit."
+          }
+        ],
+        "eyebrow": "Food and beverage",
+        "faqTitle": "Questions for this sector",
+        "sections": [
+          {
+            "id": "questions",
+            "eyebrow": "[01] What shoppers ask",
+            "title": "Start with a real buying question.",
+            "items": [
+              {
+                "title": "High-protein snack under 150 calories",
+                "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
+              },
+              {
+                "title": "Gluten-free crackers my kids will actually eat",
+                "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
+              },
+              {
+                "title": "Vegan protein powder without stevia",
+                "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
+              }
+            ],
+            "columns": 3
+          },
+          {
+            "id": "attributes",
+            "eyebrow": "[02] What the agent compares",
+            "title": "What your product data needs to say.",
+            "items": [
+              {
+                "title": "Diet",
+                "body": "Dietary labels such as vegan or gluten-free, matching substantiated information on the pack."
+              },
+              {
+                "title": "Allergens",
+                "body": "The allergen statement in text, including “may contain” information."
+              },
+              {
+                "title": "Nutrition",
+                "body": "Calories, protein and sugar with clear units, per serving and per 100 g where supplied."
+              },
+              {
+                "title": "Size and value",
+                "body": "Pack size, servings per pack and unit price where applicable."
+              },
+              {
+                "title": "Ingredients",
+                "body": "The full ingredient list as text, preserving the source order."
+              },
+              {
+                "title": "Freshness and delivery",
+                "body": "Shelf life, storage requirements and shipping coverage."
+              }
+            ],
+            "columns": 3,
+            "field": true,
+            "note": "These are attributes for your team to verify, not fields ecentic automatically invents or enriches. The current feed importer supports a defined field mapping."
+          },
+          {
+            "id": "rules",
+            "eyebrow": "[03] Sector rules",
+            "title": "Keep the rules with the product facts.",
+            "paragraphs": [
+              "EU Regulation 1924/2006 sets conditions for nutrition and health claims on foods. Keep statements within supported source claims and review them for the market where the product is sold.",
+              "A listing rewrite is not a regulatory check or an allergen-safety determination. Verify the original facts before choosing Apply."
+            ],
+            "note": "Sources checked 10 November 2026. Requirements can depend on the product, channel and country.",
+            "links": [
+              {
+                "label": "EU nutrition and health claims regulation",
+                "href": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32006R1924"
+              }
+            ]
+          },
+          {
+            "id": "business",
+            "eyebrow": "[04] Your business",
+            "title": "The same category, different teams.",
+            "columns": 4,
+            "items": [
+              {
+                "title": "Snack and drinks brands",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/brands",
+                "label": "See your solution"
+              },
+              {
+                "title": "Online grocers and specialty shops",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/retailers-and-marketplaces",
+                "label": "See your solution"
+              },
+              {
+                "title": "Food groups with several brands",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/enterprise",
+                "label": "See your solution"
+              },
+              {
+                "title": "Agencies running food stores",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/agencies-and-partners",
+                "label": "See your solution"
+              }
+            ]
+          }
+        ]
+      },
+      "beauty-and-personal-care": {
+        "name": "Beauty and personal care",
+        "meta": {
+          "title": "Selling beauty through AI assistants",
+          "description": "Make ingredients, skin type, size, tested protection and certification facts clear in your beauty listings. Review claims before publishing."
+        },
+        "title": "Selling beauty when AI reads the ingredients.",
+        "description": "People ask for products that suit their skin or avoid an ingredient. Put the full ingredient list and supported claims in readable text. Keep product descriptions consistent with the pack and the evidence behind each statement.",
+        "questions": [
+          "Fragrance-free moisturiser for sensitive skin",
+          "Mineral sunscreen SPF 50 that does not leave a white cast",
+          "Vegan shampoo for curly hair"
+        ],
+        "faqs": [
+          {
+            "question": "Should every product have its INCI list?",
+            "answer": "Provide the correct ingredient list as readable text where applicable. It gives an assistant explicit information when a shopper asks to avoid an ingredient."
+          },
+          {
+            "question": "How should shade ranges appear?",
+            "answer": "Identify each shade as a distinct variant, with its correct name and manufacturer-assigned identifier where one exists."
+          },
+          {
+            "question": "Can a rewrite add “dermatologist tested”?",
+            "answer": "Do not add that statement without source evidence. The same claim must be accurate for the exact finished product."
+          },
+          {
+            "question": "What if most sales come through retailers?",
+            "answer": "Work on the sources you control. Retailers’ pages and claims remain under their control; ecentic does not change them automatically."
+          }
+        ],
+        "eyebrow": "Beauty and personal care",
+        "faqTitle": "Questions for this sector",
+        "sections": [
+          {
+            "id": "questions",
+            "eyebrow": "[01] What shoppers ask",
+            "title": "Start with a real buying question.",
+            "items": [
+              {
+                "title": "Fragrance-free moisturiser for sensitive skin",
+                "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
+              },
+              {
+                "title": "Mineral sunscreen SPF 50 that does not leave a white cast",
+                "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
+              },
+              {
+                "title": "Vegan shampoo for curly hair",
+                "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
+              }
+            ],
+            "columns": 3
+          },
+          {
+            "id": "attributes",
+            "eyebrow": "[02] What the agent compares",
+            "title": "What your product data needs to say.",
+            "items": [
+              {
+                "title": "Skin or hair type",
+                "body": "Explicit product suitability supported by the manufacturer’s data."
+              },
+              {
+                "title": "Ingredients",
+                "body": "The full INCI ingredient list as text."
+              },
+              {
+                "title": "Free-from statements",
+                "body": "Fragrance-free or sulfate-free statements that match the pack and evidence."
+              },
+              {
+                "title": "Protection",
+                "body": "SPF and UVA protection stated exactly as tested and labelled."
+              },
+              {
+                "title": "Size and price",
+                "body": "Quantity in ml or g and an unambiguous price."
+              },
+              {
+                "title": "Certifications",
+                "body": "The claimed certification and certifying organization, when verified."
+              }
+            ],
+            "columns": 3,
+            "field": true,
+            "note": "These are attributes for your team to verify, not fields ecentic automatically invents or enriches. The current feed importer supports a defined field mapping."
+          },
+          {
+            "id": "rules",
+            "eyebrow": "[03] Sector rules",
+            "title": "Keep the rules with the product facts.",
+            "paragraphs": [
+              "EU Regulation 655/2013 requires cosmetic claims to be truthful and backed by adequate, verifiable evidence. Ingredient properties must not imply an unproven effect in the finished product.",
+              "Use the manufacturer’s tested sun-protection information. ecentic does not create or certify efficacy, medical or sun-protection claims."
+            ],
+            "note": "Sources checked 10 November 2026. Requirements can depend on the product, channel and country.",
+            "links": [
+              {
+                "label": "EU common criteria for cosmetic claims",
+                "href": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32013R0655"
+              }
+            ]
+          },
+          {
+            "id": "business",
+            "eyebrow": "[04] Your business",
+            "title": "The same category, different teams.",
+            "columns": 4,
+            "items": [
+              {
+                "title": "Skincare and haircare brands",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/brands",
+                "label": "See your solution"
+              },
+              {
+                "title": "Beauty retailers and marketplaces",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/retailers-and-marketplaces",
+                "label": "See your solution"
+              },
+              {
+                "title": "Beauty groups with many brands",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/enterprise",
+                "label": "See your solution"
+              },
+              {
+                "title": "Agencies running beauty stores",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/agencies-and-partners",
+                "label": "See your solution"
+              }
+            ]
+          }
+        ]
+      },
+      "consumer-electronics": {
+        "name": "Consumer electronics",
+        "meta": {
+          "title": "Selling electronics through AI assistants",
+          "description": "Make model numbers, battery life, compatibility, connections and warranty clear. Compare electronics listings with named competitors."
+        },
+        "title": "Selling electronics when AI compares the spec sheet.",
+        "description": "Electronics questions are often about battery life, compatibility or ports. Give each model and variant clear identifiers and source specifications so a comparison does not depend on a product name alone.",
+        "questions": [
+          "Noise-cancelling earbuds with the longest battery under $200",
+          "Laptop for video editing with 32 GB of RAM",
+          "Robot vacuum that works with Google Home"
+        ],
+        "faqs": [
+          {
+            "question": "Our model numbers differ by retailer. Does that matter?",
+            "answer": "It can make matching ambiguous. Use the correct model and variant identifiers, and make any genuine retailer-specific configuration explicit."
+          },
+          {
+            "question": "Do we need GTINs?",
+            "answer": "Provide the correct assigned GTIN where available. Never generate one or borrow it from a similar product."
+          },
+          {
+            "question": "Will a model compare on price alone?",
+            "answer": "The question and available facts affect the comparison. State battery, compatibility and other relevant specifications so the model can inspect them."
+          },
+          {
+            "question": "How should refurbished products appear?",
+            "answer": "State refurbished condition, the actual configuration, price and warranty terms. Do not present them as new."
+          }
+        ],
+        "eyebrow": "Consumer electronics",
+        "faqTitle": "Questions for this sector",
+        "sections": [
+          {
+            "id": "questions",
+            "eyebrow": "[01] What shoppers ask",
+            "title": "Start with a real buying question.",
+            "items": [
+              {
+                "title": "Noise-cancelling earbuds with the longest battery under $200",
+                "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
+              },
+              {
+                "title": "Laptop for video editing with 32 GB of RAM",
+                "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
+              },
+              {
+                "title": "Robot vacuum that works with Google Home",
+                "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
+              }
+            ],
+            "columns": 3
+          },
+          {
+            "id": "attributes",
+            "eyebrow": "[02] What the agent compares",
+            "title": "What your product data needs to say.",
+            "items": [
+              {
+                "title": "Model",
+                "body": "Exact model number and the correct manufacturer-assigned GTIN for the variant, where available."
+              },
+              {
+                "title": "Battery and power",
+                "body": "Battery life, charge time and power draw with stated test conditions and units."
+              },
+              {
+                "title": "Compatibility",
+                "body": "Supported devices, operating systems and relevant versions."
+              },
+              {
+                "title": "Connectivity",
+                "body": "Ports, wireless standards and versions."
+              },
+              {
+                "title": "Warranty",
+                "body": "Warranty length, coverage and who honours it."
+              },
+              {
+                "title": "Condition",
+                "body": "New, refurbished or used as a separate product fact."
+              }
+            ],
+            "columns": 3,
+            "field": true,
+            "note": "These are attributes for your team to verify, not fields ecentic automatically invents or enriches. The current feed importer supports a defined field mapping."
+          },
+          {
+            "id": "rules",
+            "eyebrow": "[03] Sector rules",
+            "title": "Keep the rules with the product facts.",
+            "paragraphs": [
+              "Google recommends the correct GTIN when the manufacturer has assigned one. Its guidance says not to guess or invent a value. Accurate identifiers help distinguish models and variants.",
+              "Google’s Manufacturer Center has deprecated legacy energy-efficiency fields in favour of the certification attribute. Check the applicable energy-label requirements for your product and market."
+            ],
+            "note": "Sources checked 10 November 2026. Requirements can depend on the product, channel and country.",
+            "links": [
+              {
+                "label": "Google GTIN guidance",
+                "href": "https://support.google.com/merchants/answer/6324461?hl=en"
+              },
+              {
+                "label": "Google energy-efficiency attribute update",
+                "href": "https://support.google.com/manufacturers/answer/14711659?hl=en"
+              }
+            ]
+          },
+          {
+            "id": "business",
+            "eyebrow": "[04] Your business",
+            "title": "The same category, different teams.",
+            "columns": 4,
+            "items": [
+              {
+                "title": "Device and accessory brands",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/brands",
+                "label": "See your solution"
+              },
+              {
+                "title": "Electronics retailers and marketplaces",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/retailers-and-marketplaces",
+                "label": "See your solution"
+              },
+              {
+                "title": "Retail groups with electronics categories",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/enterprise",
+                "label": "See your solution"
+              },
+              {
+                "title": "Agencies running electronics stores",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/agencies-and-partners",
+                "label": "See your solution"
+              }
+            ]
+          }
+        ]
+      },
+      "home-and-furniture": {
+        "name": "Home and furniture",
+        "meta": {
+          "title": "Selling furniture and homeware through AI",
+          "description": "Make dimensions, materials, assembly, delivery and returns clear in furniture listings. Start with facts your team can verify."
+        },
+        "title": "Selling furniture when AI has to measure the room.",
+        "description": "People describe their room, budget and practical needs. A useful comparison needs dimensions, materials and delivery terms in readable text. Keep exact product measurements separate from illustrative photos.",
+        "questions": [
+          "Sofa bed that fits a 2-metre wall",
+          "Solid wood dining table for six under €1,000",
+          "Rug that is safe for underfloor heating"
+        ],
+        "faqs": [
+          {
+            "question": "Our dimensions are only in a drawing. Is that a problem?",
+            "answer": "Add the same verified dimensions as text with units. That provides explicit values tools can inspect without interpreting the drawing."
+          },
+          {
+            "question": "How should made-to-order lead times appear?",
+            "answer": "State the actual production and delivery window and explain what can change. Do not present made-to-order stock as immediately available."
+          },
+          {
+            "question": "We offer one sofa in 20 fabrics. How should it look?",
+            "answer": "Identify each variant’s fabric, colour, price and availability. Use correct dimensions if a variant changes them."
+          },
+          {
+            "question": "Can AI buy a sofa for someone?",
+            "answer": "It depends on the channel and supported checkout flow. Test delivery requirements and payment handoffs on a staging store before enabling agent orders."
+          }
+        ],
+        "eyebrow": "Home and furniture",
+        "faqTitle": "Questions for this sector",
+        "sections": [
+          {
+            "id": "questions",
+            "eyebrow": "[01] What shoppers ask",
+            "title": "Start with a real buying question.",
+            "items": [
+              {
+                "title": "Sofa bed that fits a 2-metre wall",
+                "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
+              },
+              {
+                "title": "Solid wood dining table for six under €1,000",
+                "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
+              },
+              {
+                "title": "Rug that is safe for underfloor heating",
+                "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
+              }
+            ],
+            "columns": 3
+          },
+          {
+            "id": "attributes",
+            "eyebrow": "[02] What the agent compares",
+            "title": "What your product data needs to say.",
+            "items": [
+              {
+                "title": "Dimensions",
+                "body": "Width, depth and height with explicit units, plus packed size where available."
+              },
+              {
+                "title": "Materials",
+                "body": "Frame, upholstery and finish described separately."
+              },
+              {
+                "title": "Capacity",
+                "body": "Seats, tested weight limit or sleeping area from the supplier."
+              },
+              {
+                "title": "Assembly",
+                "body": "Whether assembly is needed, supplied tools and instructions."
+              },
+              {
+                "title": "Delivery",
+                "body": "Lead time, delivery to the room or door, and charges."
+              },
+              {
+                "title": "Returns",
+                "body": "Return window, conditions and who pays collection costs."
+              }
+            ],
+            "columns": 3,
+            "field": true,
+            "note": "These are attributes for your team to verify, not fields ecentic automatically invents or enriches. The current feed importer supports a defined field mapping."
+          },
+          {
+            "id": "rules",
+            "eyebrow": "[03] Sector rules",
+            "title": "Keep the rules with the product facts.",
+            "paragraphs": [
+              "Article 19 of the EU General Product Safety Regulation requires online offers to show specified manufacturer or responsible-person information, product identification and relevant warnings. Check how it applies to the product you sell.",
+              "Keep special delivery terms explicit. A listing rewrite does not change shipping configuration or verify a load-bearing safety claim."
+            ],
+            "note": "Sources checked 10 November 2026. Requirements can depend on the product, channel and country.",
+            "links": [
+              {
+                "label": "EU General Product Safety Regulation, Article 19",
+                "href": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32023R0988"
+              }
+            ]
+          },
+          {
+            "id": "business",
+            "eyebrow": "[04] Your business",
+            "title": "The same category, different teams.",
+            "columns": 4,
+            "items": [
+              {
+                "title": "Furniture and homeware brands",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/brands",
+                "label": "See your solution"
+              },
+              {
+                "title": "Home retailers and marketplaces",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/retailers-and-marketplaces",
+                "label": "See your solution"
+              },
+              {
+                "title": "Home groups with several markets",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/enterprise",
+                "label": "See your solution"
+              },
+              {
+                "title": "Agencies running home stores",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/agencies-and-partners",
+                "label": "See your solution"
+              }
+            ]
+          }
+        ]
+      },
+      "fashion-and-outdoor": {
+        "name": "Fashion and outdoor",
+        "meta": {
+          "title": "Selling clothing and outdoor gear through AI",
+          "description": "Make sizing, materials, performance ratings and variants clear. Check textile and environmental claims before publishing listing changes."
+        },
+        "title": "Selling clothing when AI has to get the size right.",
+        "description": "Shoppers ask for gear that fits a body, a climate and an activity. Give them size systems, fit notes and fabric facts that can be checked. Performance and environmental claims need evidence for the exact product.",
+        "questions": [
+          "Waterproof jacket for hiking in Scotland",
+          "Running shoes for wide feet with good cushioning",
+          "Merino base layer that does not itch"
+        ],
+        "faqs": [
+          {
+            "question": "Do we need the size chart in the feed?",
+            "answer": "Submit supported size fields and variants. Keep verified fit notes and measurements available as readable text; a generic importer does not preserve every custom size-chart format."
+          },
+          {
+            "question": "How should 30 colour and size variants appear?",
+            "answer": "Each variant should carry the correct colour, size, price and availability. Use its own identifier where one is assigned."
+          },
+          {
+            "question": "Can we call a product sustainable?",
+            "answer": "Do not treat a generic environmental statement as harmless copy. Check the evidence and the rules applicable in the market; ecentic does not certify the claim."
+          },
+          {
+            "question": "Does this help on a marketplace with its own assistant?",
+            "answer": "It lets you improve data sources you control. A marketplace controls its own listings, assistant and access rules."
+          }
+        ],
+        "eyebrow": "Fashion and outdoor",
+        "faqTitle": "Questions for this sector",
+        "sections": [
+          {
+            "id": "questions",
+            "eyebrow": "[01] What shoppers ask",
+            "title": "Start with a real buying question.",
+            "items": [
+              {
+                "title": "Waterproof jacket for hiking in Scotland",
+                "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
+              },
+              {
+                "title": "Running shoes for wide feet with good cushioning",
+                "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
+              },
+              {
+                "title": "Merino base layer that does not itch",
+                "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
+              }
+            ],
+            "columns": 3
+          },
+          {
+            "id": "attributes",
+            "eyebrow": "[02] What the agent compares",
+            "title": "What your product data needs to say.",
+            "items": [
+              {
+                "title": "Size and fit",
+                "body": "Size system, fit notes and available size measurements."
+              },
+              {
+                "title": "Materials",
+                "body": "Fibre composition with percentages."
+              },
+              {
+                "title": "Performance",
+                "body": "Tested waterproof rating, breathability and insulation, with units and conditions."
+              },
+              {
+                "title": "Use",
+                "body": "Intended activity and supported temperature guidance."
+              },
+              {
+                "title": "Care",
+                "body": "Washing and care instructions matching the label."
+              },
+              {
+                "title": "Colour and variants",
+                "body": "Each available colour and size, with its own price and stock where applicable."
+              }
+            ],
+            "columns": 3,
+            "field": true,
+            "note": "These are attributes for your team to verify, not fields ecentic automatically invents or enriches. The current feed importer supports a defined field mapping."
+          },
+          {
+            "id": "rules",
+            "eyebrow": "[03] Sector rules",
+            "title": "Keep the rules with the product facts.",
+            "paragraphs": [
+              "Google’s size guidance requires size data for specified clothing and shoe listings, with requirements varying by destination and format. Check the exact apparel attributes for your market.",
+              "EU Regulation 1007/2011 requires fibre-composition information to be clearly available before an online purchase.",
+              "EU Directive 2024/825 calls for measures applying from 27 September 2026 that prohibit generic environmental claims without relevant recognised excellent environmental performance. Verify the national implementation before using a claim."
+            ],
+            "note": "Sources checked 10 November 2026. Requirements can depend on the product, channel and country.",
+            "links": [
+              {
+                "label": "Google apparel size specification",
+                "href": "https://support.google.com/merchants/answer/6324492?hl=en"
+              },
+              {
+                "label": "EU textile fibre information",
+                "href": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32011R1007"
+              },
+              {
+                "label": "EU environmental-claims directive",
+                "href": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024L0825"
+              }
+            ]
+          },
+          {
+            "id": "business",
+            "eyebrow": "[04] Your business",
+            "title": "The same category, different teams.",
+            "columns": 4,
+            "items": [
+              {
+                "title": "Apparel and outdoor brands",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/brands",
+                "label": "See your solution"
+              },
+              {
+                "title": "Fashion retailers and marketplaces",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/retailers-and-marketplaces",
+                "label": "See your solution"
+              },
+              {
+                "title": "Fashion groups with many markets",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/enterprise",
+                "label": "See your solution"
+              },
+              {
+                "title": "Agencies running fashion stores",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/agencies-and-partners",
+                "label": "See your solution"
+              }
+            ]
+          }
+        ]
+      },
+      "health-wellness-and-pet": {
+        "name": "Health, wellness and pet",
+        "meta": {
+          "title": "Selling wellness and pet products through AI",
+          "description": "Make ingredients, life stage, feeding guidance and supported claims explicit. Prepare wellness and pet product data within platform policies."
+        },
+        "title": "Selling wellness and pet products when AI checks the facts.",
+        "description": "People ask what is in a product, who it is for and how to use it. Make ingredients and manufacturer instructions readable, and separate ordinary product information from medical or nutritional claims that need evidence.",
+        "questions": [
+          "Grain-free food for a senior dog with a sensitive stomach",
+          "Magnesium supplement without fillers",
+          "Low-dust cat litter"
+        ],
+        "faqs": [
+          {
+            "question": "Will you write health claims for us?",
+            "answer": "We do not offer health-claim creation or validation. Listing work uses existing product facts; you must verify the statements allowed for your market."
+          },
+          {
+            "question": "Can a shopping assistant sell supplements?",
+            "answer": "Eligibility depends on the platform, product and location. Some products are restricted or prohibited; a working checkout does not override those policies."
+          },
+          {
+            "question": "Our pet food has life-stage versions. How should it appear?",
+            "answer": "Give each product its correct intended life stage, analysis and feeding guide. Do not transfer instructions from a different formulation."
+          },
+          {
+            "question": "Do you handle prescription products?",
+            "answer": "Prescription products are outside the proposed marketing and pilot scope on this page."
+          }
+        ],
+        "eyebrow": "Health, wellness and pet",
+        "faqTitle": "Questions for this sector",
+        "sections": [
+          {
+            "id": "questions",
+            "eyebrow": "[01] What shoppers ask",
+            "title": "Start with a real buying question.",
+            "items": [
+              {
+                "title": "Grain-free food for a senior dog with a sensitive stomach",
+                "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
+              },
+              {
+                "title": "Magnesium supplement without fillers",
+                "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
+              },
+              {
+                "title": "Low-dust cat litter",
+                "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
+              }
+            ],
+            "columns": 3
+          },
+          {
+            "id": "attributes",
+            "eyebrow": "[02] What the agent compares",
+            "title": "What your product data needs to say.",
+            "items": [
+              {
+                "title": "Who it is for",
+                "body": "Species and life stage for pets, or intended age group for people, from the manufacturer."
+              },
+              {
+                "title": "Ingredients",
+                "body": "The full list with nutritional analysis or amounts per serving where supplied."
+              },
+              {
+                "title": "Feeding or use guidance",
+                "body": "The manufacturer’s guide in text, preserving units and warnings."
+              },
+              {
+                "title": "Standards and testing",
+                "body": "The nutritional adequacy statement where applicable and named third-party tests where supported."
+              },
+              {
+                "title": "Size and servings",
+                "body": "Pack size and servings per pack, with clear units."
+              },
+              {
+                "title": "Product purpose",
+                "body": "A supported description that stays within the rules of the market."
+              }
+            ],
+            "columns": 3,
+            "field": true,
+            "note": "These are attributes for your team to verify, not fields ecentic automatically invents or enriches. The current feed importer supports a defined field mapping."
+          },
+          {
+            "id": "rules",
+            "eyebrow": "[03] Sector rules",
+            "title": "Keep the rules with the product facts.",
+            "paragraphs": [
+              "Nutrition and health claims for human food supplements in the EU are subject to Regulation 1924/2006. A product description is not permission to make an unapproved health claim.",
+              "Google restricts or prohibits specified healthcare products and unapproved pharmaceuticals or supplements. Check the exact product category and target-country policy.",
+              "ecentic does not diagnose conditions, prescribe products or certify health claims. Keep rewritten information tied to verified source facts."
+            ],
+            "note": "Sources checked 10 November 2026. Requirements can depend on the product, channel and country.",
+            "links": [
+              {
+                "label": "EU nutrition and health claims regulation",
+                "href": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32006R1924"
+              },
+              {
+                "label": "Google healthcare and medicines policy",
+                "href": "https://support.google.com/merchants/answer/6150151?hl=en"
+              }
+            ]
+          },
+          {
+            "id": "business",
+            "eyebrow": "[04] Your business",
+            "title": "The same category, different teams.",
+            "columns": 4,
+            "items": [
+              {
+                "title": "Supplement and pet brands",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/brands",
+                "label": "See your solution"
+              },
+              {
+                "title": "Pet and wellness retailers",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/retailers-and-marketplaces",
+                "label": "See your solution"
+              },
+              {
+                "title": "Consumer health groups",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/enterprise",
+                "label": "See your solution"
+              },
+              {
+                "title": "Agencies running wellness stores",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/agencies-and-partners",
+                "label": "See your solution"
+              }
+            ]
+          }
+        ]
+      },
+      "travel-and-experiences": {
+        "name": "Travel and experiences",
+        "meta": {
+          "title": "Selling trips and experiences through AI",
+          "description": "Make dates, total prices, inclusions and cancellation terms readable. Explore a travel pilot that starts from public pages and product data."
+        },
+        "title": "Selling trips when AI plans the holiday.",
+        "description": "People ask AI where to go, what to book and what it costs. Make dates, prices and terms clear on the pages you control. A travel pilot starts from your public site and agreed product data, without assuming a booking-engine integration.",
+        "questions": [
+          "City break in Lisbon for a long weekend in May",
+          "Food tour in Mexico City for two",
+          "Ski chalet in the Alps for eight people"
+        ],
+        "faqs": [
+          {
+            "question": "Can AI book a trip for someone?",
+            "answer": "It depends on the channel and booking flow. This pilot does not promise an automated booking integration; we examine the public information and agreed handoff path."
+          },
+          {
+            "question": "Does this help direct bookings if we use booking sites too?",
+            "answer": "It helps your team improve the information on pages you control. We do not guarantee that an assistant links to your site instead of a booking platform."
+          },
+          {
+            "question": "Do you need our booking engine?",
+            "answer": "No for the public-data baseline. Later access or integration work needs a separately agreed scope."
+          },
+          {
+            "question": "Which markets do you cover?",
+            "answer": "We start with one agreed market per pilot and confirm language and data coverage before beginning."
+          }
+        ],
+        "eyebrow": "Travel and experiences",
+        "faqTitle": "Questions for this sector",
+        "sections": [
+          {
+            "id": "questions",
+            "eyebrow": "[01] What shoppers ask",
+            "title": "Start with a real buying question.",
+            "items": [
+              {
+                "title": "City break in Lisbon for a long weekend in May",
+                "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
+              },
+              {
+                "title": "Food tour in Mexico City for two",
+                "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
+              },
+              {
+                "title": "Ski chalet in the Alps for eight people",
+                "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
+              }
+            ],
+            "columns": 3
+          },
+          {
+            "id": "attributes",
+            "eyebrow": "[02] What the agent compares",
+            "title": "What your product data needs to say.",
+            "items": [
+              {
+                "title": "Availability",
+                "body": "Dates and times in readable information, not only a calendar widget."
+              },
+              {
+                "title": "Price",
+                "body": "The price basis, such as per person, with mandatory fees and included taxes."
+              },
+              {
+                "title": "Inclusions",
+                "body": "Meals, transfers, tickets and luggage, including exclusions."
+              },
+              {
+                "title": "Cancellation and changes",
+                "body": "The policy in plain language with deadlines and charges."
+              },
+              {
+                "title": "Location and access",
+                "body": "Address, transport links and verified accessibility information."
+              },
+              {
+                "title": "Who it suits",
+                "body": "Age rules, group size, occupancy and children’s prices."
+              }
+            ],
+            "columns": 3,
+            "field": true,
+            "note": "These are attributes for your team to verify, not fields ecentic automatically invents or enriches. The current feed importer supports a defined field mapping."
+          },
+          {
+            "id": "rules",
+            "eyebrow": "[03] Sector rules",
+            "title": "Keep the rules with the product facts.",
+            "paragraphs": [
+              "The EU Package Travel Directive requires specified information before a package contract, including the main characteristics, total price and relevant terms. Make the applicable information clear before purchase.",
+              "The exact requirements depend on the travel product and market. A public-data pilot does not change your booking engine or validate every local travel rule."
+            ],
+            "note": "Sources checked 10 November 2026. Requirements can depend on the product, channel and country.",
+            "links": [
+              {
+                "label": "EU Package Travel Directive",
+                "href": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32015L2302"
+              }
+            ]
+          },
+          {
+            "id": "pilot",
+            "title": "How a travel pilot starts.",
+            "description": "Your public site and agreed product pages first. No booking-engine login, no customer data and no code on your site for the baseline.",
+            "links": [
+              {
+                "label": "Discuss a travel pilot",
+                "href": "/demo"
+              }
+            ]
+          },
+          {
+            "id": "business",
+            "eyebrow": "[04] Your business",
+            "title": "The same category, different teams.",
+            "columns": 4,
+            "items": [
+              {
+                "title": "Tour and experience operators",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/brands",
+                "label": "See your solution"
+              },
+              {
+                "title": "Travel retailers and agencies",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/retailers-and-marketplaces",
+                "label": "See your solution"
+              },
+              {
+                "title": "Travel groups with several markets",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/enterprise",
+                "label": "See your solution"
+              },
+              {
+                "title": "Agencies running travel sites",
+                "body": "Start from the way your business sells and manages its catalog.",
+                "href": "/solutions/agencies-and-partners",
+                "label": "See your solution"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "sectorIndex": {
+      "meta": {
+        "title": "Sectors: product data for AI shopping",
+        "description": "Explore what to check in food, drink, beauty, electronics, home, fashion, wellness, pet and travel product data."
+      },
+      "eyebrow": "Sectors",
+      "title": "What AI needs to compare your products.",
+      "description": "Different products need different facts. A sofa needs dimensions, a sunscreen needs substantiated protection information, a trip needs cancellation terms. Start with your category.",
+      "sections": [
+        {
+          "id": "sectors",
+          "title": "Choose your sector.",
+          "items": [
+            {
+              "title": "Wine and spirits",
+              "body": "Selling wine and spirits when AI picks the bottle.",
+              "href": "/solutions/sectors/wine-and-spirits",
+              "label": "Smoky single malt under $80 for a gift"
+            },
+            {
+              "title": "Food and beverage",
+              "body": "Selling food and drink when AI reads the label.",
+              "href": "/solutions/sectors/food-and-beverage",
+              "label": "High-protein snack under 150 calories"
+            },
+            {
+              "title": "Beauty and personal care",
+              "body": "Selling beauty when AI reads the ingredients.",
+              "href": "/solutions/sectors/beauty-and-personal-care",
+              "label": "Fragrance-free moisturiser for sensitive skin"
+            },
+            {
+              "title": "Consumer electronics",
+              "body": "Selling electronics when AI compares the spec sheet.",
+              "href": "/solutions/sectors/consumer-electronics",
+              "label": "Noise-cancelling earbuds with the longest battery under $200"
+            },
+            {
+              "title": "Home and furniture",
+              "body": "Selling furniture when AI has to measure the room.",
+              "href": "/solutions/sectors/home-and-furniture",
+              "label": "Sofa bed that fits a 2-metre wall"
+            },
+            {
+              "title": "Fashion and outdoor",
+              "body": "Selling clothing when AI has to get the size right.",
+              "href": "/solutions/sectors/fashion-and-outdoor",
+              "label": "Waterproof jacket for hiking in Scotland"
+            },
+            {
+              "title": "Health, wellness and pet",
+              "body": "Selling wellness and pet products when AI checks the facts.",
+              "href": "/solutions/sectors/health-wellness-and-pet",
+              "label": "Grain-free food for a senior dog with a sensitive stomach"
+            },
+            {
+              "title": "Travel and experiences",
+              "body": "Selling trips when AI plans the holiday.",
+              "href": "/solutions/sectors/travel-and-experiences",
+              "label": "City break in Lisbon for a long weekend in May"
+            }
+          ],
+          "columns": 2,
+          "field": true
+        },
+        {
+          "id": "other-sectors",
+          "title": "Do not see your sector?",
+          "description": "Tell us what you sell and which catalog facts are hardest to manage.",
+          "links": [
+            {
+              "label": "Talk to us",
+              "href": "/demo"
+            }
+          ]
+        }
+      ]
+    },
+    "index": {
+      "meta": {
+        "title": "Solutions for brands, retailers and enterprise | ecentic",
+        "description": "Explore AI commerce by business, team and sector. Compare products, improve verified data and test supported checkout flows."
+      },
+      "eyebrow": "Solutions",
+      "title": "Built for how you sell.",
+      "description": "AI shopping looks different for a brand, a marketplace and a travel company. Start from where you are.",
+      "sections": [
+        {
+          "id": "business",
+          "title": "By business.",
+          "columns": 2,
+          "field": true,
+          "items": [
+            {
+              "title": "For brands",
+              "body": "Give AI the facts about your product.",
+              "href": "/solutions/brands",
+              "label": "See how it works"
+            },
+            {
+              "title": "For retailers and marketplaces",
+              "body": "Thousands of listings. A clearer place to start.",
+              "href": "/solutions/retailers-and-marketplaces",
+              "label": "See how it works"
+            },
+            {
+              "title": "For agencies and partners",
+              "body": "Add AI commerce to what you already sell.",
+              "href": "/solutions/agencies-and-partners",
+              "label": "See how it works"
+            },
+            {
+              "title": "For enterprise",
+              "body": "AI is a new sales channel. Run it like one.",
+              "href": "/solutions/enterprise",
+              "label": "See how it works"
+            }
+          ]
+        },
+        {
+          "id": "ecommerce-and-growth",
+          "title": "E-commerce and growth",
+          "description": "You own conversion and channel revenue. Compare products in simulations and review recognized Shopify referrals, keeping tests separate from live visits.",
+          "links": [
+            {
+              "label": "Simulate",
+              "href": "/platform/simulate"
+            },
+            {
+              "label": "Track",
+              "href": "/platform/track"
+            }
+          ]
+        },
+        {
+          "id": "marketing",
+          "title": "Marketing",
+          "description": "You own the brand and budget. Inspect recorded product comparisons and the ChatGPT Brand Visibility feature, then work on the verified product facts you control.",
+          "links": [
+            {
+              "label": "Simulate",
+              "href": "/platform/simulate"
+            },
+            {
+              "label": "Fix",
+              "href": "/platform/fix"
+            }
+          ]
+        },
+        {
+          "id": "marketplace-and-channel-managers",
+          "title": "Marketplace and channel managers",
+          "description": "You own the feeds. Check supported listing fields against Google and OpenAI specifications. On Shopify, send published fixes to Merchant Center with a separate sync.",
+          "links": [
+            {
+              "label": "Fix",
+              "href": "/platform/fix"
+            },
+            {
+              "label": "Integrations",
+              "href": "/integrations"
+            }
+          ]
+        },
+        {
+          "id": "sectors",
+          "title": "By sector.",
+          "items": [
+            {
+              "title": "Wine and spirits",
+              "body": "Selling wine and spirits when AI picks the bottle.",
+              "href": "/solutions/sectors/wine-and-spirits",
+              "label": "Smoky single malt under $80 for a gift"
+            },
+            {
+              "title": "Food and beverage",
+              "body": "Selling food and drink when AI reads the label.",
+              "href": "/solutions/sectors/food-and-beverage",
+              "label": "High-protein snack under 150 calories"
+            },
+            {
+              "title": "Beauty and personal care",
+              "body": "Selling beauty when AI reads the ingredients.",
+              "href": "/solutions/sectors/beauty-and-personal-care",
+              "label": "Fragrance-free moisturiser for sensitive skin"
+            },
+            {
+              "title": "Consumer electronics",
+              "body": "Selling electronics when AI compares the spec sheet.",
+              "href": "/solutions/sectors/consumer-electronics",
+              "label": "Noise-cancelling earbuds with the longest battery under $200"
+            },
+            {
+              "title": "Home and furniture",
+              "body": "Selling furniture when AI has to measure the room.",
+              "href": "/solutions/sectors/home-and-furniture",
+              "label": "Sofa bed that fits a 2-metre wall"
+            },
+            {
+              "title": "Fashion and outdoor",
+              "body": "Selling clothing when AI has to get the size right.",
+              "href": "/solutions/sectors/fashion-and-outdoor",
+              "label": "Waterproof jacket for hiking in Scotland"
+            },
+            {
+              "title": "Health, wellness and pet",
+              "body": "Selling wellness and pet products when AI checks the facts.",
+              "href": "/solutions/sectors/health-wellness-and-pet",
+              "label": "Grain-free food for a senior dog with a sensitive stomach"
+            },
+            {
+              "title": "Travel and experiences",
+              "body": "Selling trips when AI plans the holiday.",
+              "href": "/solutions/sectors/travel-and-experiences",
+              "label": "City break in Lisbon for a long weekend in May"
+            }
+          ],
+          "columns": 2,
+          "links": [
+            {
+              "label": "All sectors",
+              "href": "/solutions/sectors"
+            }
+          ]
+        }
+      ]
+    },
+    "specificationLabels": {
+      "question": "What the shopper asks about",
+      "data": "What your data has to say"
+    }
+  }
+}
