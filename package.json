@@ -53,5 +53,8 @@
       "typescript": "^6.0.3",
       "zod": "^4.5.4"
     }
+  },
+  "patchedDependencies": {
+    "@lucasmarkes/hairline@0.5.1": "patches/@lucasmarkes%2Fhairline@0.5.1.patch"
   }
 }

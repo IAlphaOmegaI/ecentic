@@ -8,6 +8,7 @@ import {
   MarketingBand,
   MarketingScreenshot,
 } from "@/components/marketing/primitives";
+import { ExplodedFigure } from "./_components/exploded-figure";
 import { PlatformExplorer } from "./_components/platform-explorer";
 
 const endpoints = [
@@ -26,7 +27,7 @@ export const generateMetadata = async () => {
 
 export default async () => {
   const locale = await getLocale();
-  const { enterprisePlatform } = await getMessages();
+  const { enterprisePlatform, hairlinePlatform } = await getMessages();
   const content = enterprisePlatform.overview;
   const sections: readonly MarketingPage.Section[] = content.sections;
   const stages = sections.filter((section) => section.items?.length);
@@ -37,7 +38,7 @@ export default async () => {
     <MarketingPage
       content={{ ...content, sections: [] }}
       path="/platform"
-      heroArtwork="commerce"
+      heroIllustration={<ExplodedFigure label={hairlinePlatform.label} />}
     >
       <MarketingBand className="[&>.marketing-rail>.marketing-guides]:hidden">
         <PlatformExplorer sections={stages} label={content.eyebrow} />

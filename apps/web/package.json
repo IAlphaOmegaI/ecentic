@@ -31,6 +31,7 @@
     "@ai-sdk/rsc": "^3.0.90",
     "@calcom/embed-react": "^1.5.3",
     "@hookform/resolvers": "^5.9.1",
+    "@lucasmarkes/hairline": "^0.5.1",
     "@next/env": "^16.3.4",
     "@next/third-parties": "^16.3.4",
     "@number-flow/react": "^0.6.2",

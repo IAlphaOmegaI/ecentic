@@ -114,16 +114,19 @@ export const MarketingHero = ({
   meta,
   actionsSlot,
   identity,
+  illustration,
   children,
 }: MarketingHero.Props) => (
   <MarketingBand
     className={cn(
       "marketing-hero marketing-content-hero",
+      illustration &&
+        "[&>.marketing-rail>.marketing-guides]:hidden [&>.marketing-rail]:grid [&>.marketing-rail]:min-h-[calc(100dvh-68px)] [&>.marketing-rail]:grid-cols-2 max-md:[&>.marketing-rail]:grid-cols-1",
       dark &&
         "marketing-dark enterprise-blue enterprise-journey mx-3 -mt-[68px] mb-3 min-h-dvh overflow-hidden rounded-xl border-0 bg-linear-to-r from-primary-text via-primary-text to-primary text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_22%,transparent)] [--rail-cross:transparent] max-sm:mx-2 max-sm:-mt-[72px] max-sm:mb-2 max-sm:rounded-lg [&>.marketing-rail]:flex [&>.marketing-rail]:min-h-dvh [&>.marketing-rail]:items-end [&>.marketing-rail]:border-x-background-rich/15 [&>.marketing-rail]:border-y-0 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden [&_.marketing-eyebrow]:text-background-rich [&_.marketing-guides_span]:before:hidden [&_.marketing-guides_span]:after:hidden [&_.marketing-screenshot_figcaption]:text-background-rich/85 [&_.marketing-status>span]:bg-background-rich [&_.marketing-status]:text-background-rich [&_:is(h1,h2,h3)]:text-background-rich",
     )}
   >
-    {(dark || artwork) && (
+    {!illustration && (dark || artwork) && (
       <div
         className={cn(
           "pointer-events-none absolute inset-y-0 right-0 left-[35%] select-none [mask-image:linear-gradient(105deg,transparent_10%,black_85%)] max-sm:inset-x-0",
@@ -141,7 +144,9 @@ export const MarketingHero = ({
         "marketing-cell relative min-w-0 px-7 max-sm:px-4 [&>p]:max-w-[70ch]",
         dark
           ? "w-full pt-32 pb-16 max-sm:pt-28 max-sm:pb-10"
-          : "flex min-h-[480px] flex-col justify-center py-16 max-sm:min-h-0 max-sm:py-12",
+          : illustration
+            ? "flex min-h-[480px] flex-col justify-end py-16 max-sm:min-h-0 max-sm:py-12"
+            : "flex min-h-[480px] flex-col justify-center py-16 max-sm:min-h-0 max-sm:py-12",
       )}
     >
       {identity && <div className="mb-8 max-sm:mb-6">{identity}</div>}
@@ -168,6 +173,11 @@ export const MarketingHero = ({
       )}
       {children}
     </div>
+    {illustration && (
+      <div className="relative flex min-w-0 items-center border-accent-foreground border-l px-4 py-10 max-sm:px-2 max-sm:py-4 max-md:border-t max-md:border-l-0">
+        {illustration}
+      </div>
+    )}
   </MarketingBand>
 );
 
@@ -184,6 +194,7 @@ export namespace MarketingHero {
     meta?: ReactNode;
     actionsSlot?: ReactNode;
     identity?: ReactNode;
+    illustration?: ReactNode;
     children?: ReactNode;
   };
 }

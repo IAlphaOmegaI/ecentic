@@ -1538,3 +1538,12 @@ Restore concise sentence-case eyebrows where they help identify a section. Techn
 New marketing examples compose the shared StepPlayer, FlowDiagram, ComparePanel and Calculator. Their fields are square gray surfaces, active controls use a blue dot and ink text with an optional full outline, and inactive controls stay neutral. A tinted selected panel is not the active state. Each simulated example explicitly says “Example with sample data” in its locale. Real pricing and file viewers use canonical sources. First-render HTML contains a complete static explanation before progressive enhancement; reduced motion exposes every step or a complete final state. Replay starts only on Play and stops at the end. State transitions are 150–250 ms with no autonomous loops.
 
 Keep the original product film and real screenshots. Decorative figures and illustrations never imply measurements or outcomes. Security connector copy stays behind the server-side review gate until Alvi signs it off.
+
+
+## 26. Hairline illustrations
+
+Use one named Hairline figure per page for a decorative concept, on `bg-background` or `bg-background-dimmed` only. Hero placements use the neutral split hero; real product screenshots remain in their existing proof sections. Keep figures apart from replays and charts and remove competing decorative motion in the same section. Never add numbers, axes or data labels to a figure.
+
+`HairlineFigure` owns the shared 1px stroke, primary highlight and cross-gray edge through Tailwind properties referencing theme tokens. Match its `surface` to the containing field so occlusion plates disappear into the background. Page-only client islands lazy-load one named figure as the wrapper nears the viewport. `play` remains false. Reduced motion remounts the rest pose with zero intensity and blocks pointer and keyboard events; zero intensity alone still moves in version 0.5.1. Riffle retains its native keyboard controls and visible focus ring in normal motion. Decorative art does not replace the server-rendered explanation.
+
+The pinned 0.5.1 Bun patch adds only PURE annotations to the library's React component factories. Without these, a named React import retains all 33 figures (about 53 KB gzip); with them, individual Priority 1 figure bundles measure about 9 KB with React external. Retest tree-shaking before upgrading or removing the patch. No runtime engine or visual behavior is patched. Phosphor and Slow are excluded because they run without interaction.

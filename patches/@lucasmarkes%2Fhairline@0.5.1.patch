@@ -1,0 +1,77 @@
+diff --git a/dist/react.js b/dist/react.js
+index 21a6c1d41614a6ac01675ba9d6d5185d3638a689..d17d7d8a2c15e93a626fe6e9b41713166bf15654 100644
+--- a/dist/react.js
++++ b/dist/react.js
+@@ -42,39 +42,39 @@ function make(name, mount) {
+   Component.displayName = name;
+   return Component;
+ }
+-var Riffle = make("Riffle", riffle);
+-var Terrain = make("Terrain", terrain);
+-var Exploded = make("Exploded", exploded);
+-var Phosphor = make("Phosphor", phosphor);
+-var Slow = make("Slow", slow);
+-var Turntable = make("Turntable", turntable);
+-var Keyboard = make("Keyboard", keyboard);
+-var Elevator = make("Elevator", elevator);
+-var Phone = make("Phone", phone);
+-var Laptop = make("Laptop", laptop);
+-var Terminal = make("Terminal", terminal);
+-var Cabinet = make("Cabinet", cabinet);
+-var Branches = make("Branches", branches);
+-var Vault = make("Vault", vault);
+-var Lockers = make("Lockers", lockers);
+-var Loupe = make("Loupe", loupe);
+-var Padlock = make("Padlock", padlock);
+-var Patch = make("Patch", patch);
+-var Dish = make("Dish", dish);
+-var Router = make("Router", router);
+-var Sieve = make("Sieve", sieve);
+-var Rail = make("Rail", rail);
+-var Plug = make("Plug", plug);
+-var Query = make("Query", query);
+-var Drawer = make("Drawer", drawer);
+-var Basket = make("Basket", basket);
+-var Plot = make("Plot", plot);
+-var Hub = make("Hub", hub);
+-var Relay = make("Relay", relay);
+-var Settle = make("Settle", settle);
+-var Format = make("Format", format);
+-var Rebuild = make("Rebuild", rebuild);
+-var Stack = make("Stack", stack);
++var Riffle = /* @__PURE__ */ make("Riffle", riffle);
++var Terrain = /* @__PURE__ */ make("Terrain", terrain);
++var Exploded = /* @__PURE__ */ make("Exploded", exploded);
++var Phosphor = /* @__PURE__ */ make("Phosphor", phosphor);
++var Slow = /* @__PURE__ */ make("Slow", slow);
++var Turntable = /* @__PURE__ */ make("Turntable", turntable);
++var Keyboard = /* @__PURE__ */ make("Keyboard", keyboard);
++var Elevator = /* @__PURE__ */ make("Elevator", elevator);
++var Phone = /* @__PURE__ */ make("Phone", phone);
++var Laptop = /* @__PURE__ */ make("Laptop", laptop);
++var Terminal = /* @__PURE__ */ make("Terminal", terminal);
++var Cabinet = /* @__PURE__ */ make("Cabinet", cabinet);
++var Branches = /* @__PURE__ */ make("Branches", branches);
++var Vault = /* @__PURE__ */ make("Vault", vault);
++var Lockers = /* @__PURE__ */ make("Lockers", lockers);
++var Loupe = /* @__PURE__ */ make("Loupe", loupe);
++var Padlock = /* @__PURE__ */ make("Padlock", padlock);
++var Patch = /* @__PURE__ */ make("Patch", patch);
++var Dish = /* @__PURE__ */ make("Dish", dish);
++var Router = /* @__PURE__ */ make("Router", router);
++var Sieve = /* @__PURE__ */ make("Sieve", sieve);
++var Rail = /* @__PURE__ */ make("Rail", rail);
++var Plug = /* @__PURE__ */ make("Plug", plug);
++var Query = /* @__PURE__ */ make("Query", query);
++var Drawer = /* @__PURE__ */ make("Drawer", drawer);
++var Basket = /* @__PURE__ */ make("Basket", basket);
++var Plot = /* @__PURE__ */ make("Plot", plot);
++var Hub = /* @__PURE__ */ make("Hub", hub);
++var Relay = /* @__PURE__ */ make("Relay", relay);
++var Settle = /* @__PURE__ */ make("Settle", settle);
++var Format = /* @__PURE__ */ make("Format", format);
++var Rebuild = /* @__PURE__ */ make("Rebuild", rebuild);
++var Stack = /* @__PURE__ */ make("Stack", stack);
+ export {
+   Basket,
+   Branches,

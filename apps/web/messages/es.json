@@ -18720,5 +18720,8 @@
       "unreachable": "No pudimos acceder a {host}. Revisa la dirección e inténtalo de nuevo.",
       "failed": "No se pudo completar la comprobación. Inténtalo de nuevo."
     }
+  },
+  "hairlinePlatform": {
+    "label": "Ilustración: una ventana de plataforma en capas que se separan al mover el puntero."
   }
 }

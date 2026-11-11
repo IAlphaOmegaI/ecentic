@@ -38,6 +38,7 @@
         "@ai-sdk/rsc": "^3.0.90",
         "@calcom/embed-react": "^1.5.3",
         "@hookform/resolvers": "^5.9.1",
+        "@lucasmarkes/hairline": "^0.5.1",
         "@next/env": "^16.3.4",
         "@next/third-parties": "^16.3.4",
         "@number-flow/react": "^0.6.2",
@@ -218,6 +219,9 @@
         "react-hook-form": "catalog:",
       },
     },
+  },
+  "patchedDependencies": {
+    "@lucasmarkes/hairline@0.5.1": "patches/@lucasmarkes%2Fhairline@0.5.1.patch",
   },
   "overrides": {
     "kysely": "0.28.17",
@@ -539,6 +543,8 @@
     "@jridgewell/trace-mapping": ["@jridgewell/trace-mapping@0.3.31", "", { "dependencies": { "@jridgewell/resolve-uri": "^3.1.0", "@jridgewell/sourcemap-codec": "^1.4.14" } }, "sha512-zzNR+SdQSDJzc8joaeP8QQoCQr8NuYx2dIIytl1QeBEZHJ9uW6hebsrYgbz8hJwUQao3TWCMtmfV8Nu1twOLAw=="],
 
     "@js-temporal/polyfill": ["@js-temporal/polyfill@0.5.1", "", { "dependencies": { "jsbi": "^4.3.0" } }, "sha512-hloP58zRVCRSpgDxmqCWJNlizAlUgJFqG2ypq79DCvyv9tHjRYMDOcPFjzfl/A1/YxDvRCZz8wvZvmapQnKwFQ=="],
+
+    "@lucasmarkes/hairline": ["@lucasmarkes/hairline@0.5.1", "", { "peerDependencies": { "react": ">=18" }, "optionalPeers": ["react"] }, "sha512-zjY3bdMC3As/+enKitZ1X+D1HjpesQiAKzG1sbCFsOrb5xIuJEoepkJTBIO4jmFh6JXOQlGGylhV71nr9ipNpQ=="],
 
     "@mermaid-js/parser": ["@mermaid-js/parser@1.2.1", "", { "dependencies": { "@chevrotain/types": "~11.1.2" } }, "sha512-n12NohV3mrUyUL2o93IgG/ifeW9FTyeJn3zDxkhwa8MJ9Fxg3HQMlA3RiGmD/3UnJvheztkjjQAjA2T4LmUcpw=="],
 

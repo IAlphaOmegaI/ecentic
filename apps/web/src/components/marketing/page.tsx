@@ -242,6 +242,7 @@ export const MarketingPage = async ({
   heroArtworkClassName,
   heroMeta,
   heroIdentity,
+  heroIllustration,
   heroChildren,
   children,
   sectionChildren,
@@ -284,12 +285,13 @@ export const MarketingPage = async ({
             { label: enterpriseChrome.action.secondary, href: "/sign-up" },
           ]
         }
-        dark={darkHero}
+        dark={heroIllustration ? false : darkHero}
         artwork={heroArtwork}
         artworkFit={heroArtworkFit}
         artworkClassName={heroArtworkClassName}
         meta={heroMeta}
         identity={heroIdentity}
+        illustration={heroIllustration}
       >
         {heroChildren}
       </MarketingHero>
@@ -364,6 +366,7 @@ export namespace MarketingPage {
     heroArtworkClassName?: string;
     heroMeta?: ReactNode;
     heroIdentity?: ReactNode;
+    heroIllustration?: ReactNode;
     heroChildren?: ReactNode;
     children?: ReactNode;
     sectionChildren?: Record<string, ReactNode>;
