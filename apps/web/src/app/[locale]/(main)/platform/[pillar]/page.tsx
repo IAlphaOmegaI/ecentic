@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getLocale, getMessages } from "next-intl/server";
 import { canPublishEvidence } from "@/components/marketing/evidence-policy";
+import { CheckoutRun } from "@/components/marketing/interactive/checkout-run";
 import { SimulationEvidence } from "@/components/marketing/measured-evidence";
 import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
 import {
@@ -69,9 +70,12 @@ export default async ({ params }: Props) => {
       <Body
         sections={enterprisePlatform.pages[pillar].sections}
         sectionChildren={{
-          example: (
-            <ProductExample content={enterprisePlatform.examples[pillar]} />
-          ),
+          example:
+            pillar === "sell" ? (
+              <CheckoutRun />
+            ) : (
+              <ProductExample content={enterprisePlatform.examples[pillar]} />
+            ),
         }}
       />
       {pillar === "simulate" &&

@@ -17645,5 +17645,61 @@
         "primary": "Explore product imports"
       }
     }
+  },
+  "interactiveCheckout": {
+    "sampleLabel": "Example with sample data",
+    "title": "One checkout, before and after",
+    "description": "A sample WooCommerce checkout for an adjustable desk lamp. The payment step includes a buyer handoff through the store’s gateway; this example creates no real order.",
+    "controlsLabel": "Choose a checkout outcome",
+    "states": {
+      "before": "Before fix",
+      "after": "After fix"
+    },
+    "statuses": {
+      "complete": "Complete",
+      "stopped": "Stopped",
+      "pending": "Not reached"
+    },
+    "outcomes": {
+      "before": "The run stops at contact details. Payment and order placement are not reached.",
+      "after": "The sample run reaches order placement after the phone requirement is corrected and the buyer completes payment."
+    },
+    "steps": {
+      "find": {
+        "label": "Find the product",
+        "before": "Adjustable desk lamp",
+        "after": "Adjustable desk lamp"
+      },
+      "availability": {
+        "label": "Read price and stock",
+        "before": "Price and availability are present.",
+        "after": "Price and availability are present."
+      },
+      "cart": {
+        "label": "Add to cart",
+        "before": "The sample item enters the cart.",
+        "after": "The sample item enters the cart."
+      },
+      "shipping": {
+        "label": "Choose shipping",
+        "before": "A shipping option is available.",
+        "after": "A shipping option is available."
+      },
+      "contact": {
+        "label": "Contact details",
+        "before": "Checkout asks for a phone number the agent doesn’t have.",
+        "after": "Phone is optional in this example; required contact details are present."
+      },
+      "payment": {
+        "label": "Payment",
+        "before": "Waiting for contact details.",
+        "after": "The buyer completes payment through the store’s gateway."
+      },
+      "order": {
+        "label": "Order placed",
+        "before": "The blocked run creates no order.",
+        "after": "The sample reaches a WooCommerce order."
+      }
+    }
   }
 }

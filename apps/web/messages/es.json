@@ -17645,5 +17645,61 @@
         "primary": "Explorar importaciones de productos"
       }
     }
+  },
+  "interactiveCheckout": {
+    "sampleLabel": "Ejemplo con datos de muestra",
+    "title": "Una compra, antes y después",
+    "description": "Un proceso de compra de muestra en WooCommerce para una lámpara de escritorio ajustable. El comprador completa el pago en la pasarela de la tienda; este ejemplo no crea ningún pedido real.",
+    "controlsLabel": "Elige un resultado del proceso de compra",
+    "states": {
+      "before": "Antes de corregir",
+      "after": "Después de corregir"
+    },
+    "statuses": {
+      "complete": "Completado",
+      "stopped": "Detenido",
+      "pending": "No alcanzado"
+    },
+    "outcomes": {
+      "before": "El recorrido se detiene en los datos de contacto. No llega al pago ni a la creación del pedido.",
+      "after": "El recorrido de muestra llega al pedido cuando se corrige el requisito del teléfono y el comprador completa el pago."
+    },
+    "steps": {
+      "find": {
+        "label": "Encontrar el producto",
+        "before": "Lámpara de escritorio ajustable",
+        "after": "Lámpara de escritorio ajustable"
+      },
+      "availability": {
+        "label": "Leer precio y existencias",
+        "before": "El precio y la disponibilidad están indicados.",
+        "after": "El precio y la disponibilidad están indicados."
+      },
+      "cart": {
+        "label": "Añadir al carrito",
+        "before": "El artículo de muestra se añade al carrito.",
+        "after": "El artículo de muestra se añade al carrito."
+      },
+      "shipping": {
+        "label": "Elegir el envío",
+        "before": "Hay una opción de envío disponible.",
+        "after": "Hay una opción de envío disponible."
+      },
+      "contact": {
+        "label": "Datos de contacto",
+        "before": "El proceso de compra pide un teléfono que el agente no tiene.",
+        "after": "El teléfono es opcional en este ejemplo; los datos de contacto obligatorios están presentes."
+      },
+      "payment": {
+        "label": "Pago",
+        "before": "A la espera de los datos de contacto.",
+        "after": "El comprador completa el pago a través de la pasarela de la tienda."
+      },
+      "order": {
+        "label": "Pedido realizado",
+        "before": "El recorrido bloqueado no crea ningún pedido.",
+        "after": "El ejemplo llega a un pedido de WooCommerce."
+      }
+    }
   }
 }

@@ -107,10 +107,7 @@ const CheckoutSurface = ({ section, children }: MarketingSection.Props) => (
       <div className="relative min-w-0 px-8 py-12 max-sm:px-4 max-sm:py-8">
         <h2>{section.title}</h2>
         {section.paragraphs?.map((paragraph) => (
-          <p
-            key={paragraph}
-            className="mt-6 max-w-[56ch] text-foreground-dimmed"
-          >
+          <p key={paragraph} className="mt-6 max-w-[56ch] text-foreground">
             {paragraph}
           </p>
         ))}
@@ -135,7 +132,7 @@ const ToolSection = ({ section, children }: MarketingSection.Props) => (
       </div>
       <div className="relative px-8 py-10 max-sm:px-4 max-sm:pt-0 max-sm:pb-8">
         {section.paragraphs?.map((paragraph) => (
-          <p key={paragraph} className="max-w-[58ch] text-foreground-dimmed">
+          <p key={paragraph} className="max-w-[58ch] text-foreground">
             {paragraph}
           </p>
         ))}

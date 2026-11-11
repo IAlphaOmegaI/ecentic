@@ -181,7 +181,7 @@ const Setup = ({ section, children }: MarketingSection.Props) => (
     </ol>
     {children}
     {section.note && (
-      <p className="border-accent-foreground border-t bg-background-dimmed px-8 py-6 text-foreground-dimmed text-sm max-sm:px-4">
+      <p className="border-accent-foreground border-t bg-background-dimmed px-8 py-6 text-foreground text-sm max-sm:px-4">
         {section.note}
       </p>
     )}

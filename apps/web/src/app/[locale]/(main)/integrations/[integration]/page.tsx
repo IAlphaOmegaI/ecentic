@@ -1,6 +1,7 @@
 import { FileIcon } from "@zenncore/icons";
 import { notFound } from "next/navigation";
 import { getMessages } from "next-intl/server";
+import { CheckoutRun } from "@/components/marketing/interactive/checkout-run";
 import {
   MarketingFaq,
   MarketingPage,
@@ -78,6 +79,8 @@ export default async ({ params }: Props) => {
         sections={content.sections}
         sectionChildren={{
           access: <IntegrationLedger rows={content.ledger} copy={copy} />,
+          "agent-checkout":
+            integration.key === "woocommerce" ? <CheckoutRun /> : undefined,
           "export-platforms":
             integration.key === "productFeeds" ? (
               <FeedExporters copy={copy} />
