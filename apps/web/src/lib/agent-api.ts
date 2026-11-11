@@ -106,8 +106,7 @@ export const V1_ENDPOINTS: readonly Endpoint[] = [
 export const apiIndex = () => ({
   name: "ecentic agent API",
   version: API_VERSION,
-  description:
-    "Public, unauthenticated JSON surface for AI agents evaluating or integrating ecentic. Every response is application/json; every failure is RFC 9457 application/problem+json.",
+  description: `${seo.definition} Public JSON surfaces cover discovery, onboarding, account setup and billing. Authentication requirements are declared per endpoint; failures use RFC 9457 application/problem+json.`,
   documentation: `${seo.host}/docs`,
   openapi: `${seo.host}/openapi.json`,
   versioning: {

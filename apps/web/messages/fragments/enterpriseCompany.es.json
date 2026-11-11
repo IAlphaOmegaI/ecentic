@@ -3,7 +3,7 @@
     "security": {
       "meta": {
         "title": "Seguridad y confianza en ecentic",
-        "description": "Cómo ecentic trata tu catálogo, el acceso a tu tienda y los datos de compradores. Consulta las medidas, proveedores de IA y el DPA."
+        "description": "Cómo ecentic trata los datos del catálogo, el acceso a la tienda y los datos del comprador. Revisa los controles y tus requisitos de protección de datos."
       },
       "eyebrow": "Seguridad y confianza",
       "title": "Seguridad y confianza",
@@ -11,8 +11,8 @@
       "facts": [
         "Importaciones de solo lectura",
         "Datos públicos primero para los pilotos",
-        "DPA bajo solicitud",
-        "Lista de subencargados con fecha"
+        "Consulta tus requisitos de DPA",
+        "Finalidades de proveedores documentadas"
       ],
       "actions": [
         {
@@ -28,7 +28,7 @@
         {
           "id": "reviewed",
           "title": "Última actualización: 10 de noviembre de 2026",
-          "description": "Esta página describe las medidas del producto actual. Los detalles del despliegue pendientes de confirmar están indicados abajo."
+          "description": "Esta página describe los controles del producto actual. Confirma el despliegue, las ubicaciones de tratamiento y los requisitos contractuales de tu cuenta antes de compartir datos no públicos."
         },
         {
           "id": "store-access",
@@ -114,7 +114,7 @@
         {
           "id": "dpa",
           "title": "Acuerdo de tratamiento de datos",
-          "description": "El DPA está disponible bajo solicitud. Pídelo como parte de tu piloto o revisión de seguridad.",
+          "description": "Cuéntanos qué debe cubrir tu acuerdo de tratamiento de datos durante el piloto o la revisión de seguridad. Confirma el acuerdo y las condiciones de firma antes de compartir datos personales.",
           "note": "{{TODO: proporcionar la plantilla de DPA aprobada y el contacto confirmado}}",
           "links": [
             {
@@ -125,15 +125,15 @@
         },
         {
           "id": "sub-processors",
-          "title": "Subencargados del tratamiento",
-          "description": "Finalidad de los proveedores del producto actual, revisada el 10 de noviembre de 2026. Las ubicaciones de tratamiento deben confirmarse para las cuentas en uso.",
+          "title": "Proveedores utilizados por el producto",
+          "description": "Proveedores y finalidades identificados en el código del producto, revisados el 10 de noviembre de 2026. No es una lista confirmada de subencargados contratados ni de ubicaciones; dependen de las cuentas y los acuerdos utilizados.",
           "note": "{{TODO: confirmar la lista completa de subencargados contratados y las ubicaciones de tratamiento antes del lanzamiento}}"
         },
         {
           "id": "compliance",
           "title": "Hoja de ruta de cumplimiento",
           "paragraphs": [
-            "SOC 2 está en nuestra hoja de ruta, según las revisiones de seguridad de las empresas que evalúan ecentic. Esta página no afirma que exista una certificación o auditoría completada.",
+            "SOC 2 no está disponible hoy. No afirmamos tener una certificación ni una auditoría completada. Hablemos de tus requisitos de seguridad antes de acordar un piloto.",
             "{{TODO: confirmar el proceso de cuestionarios de seguridad y los materiales disponibles}}"
           ]
         },
@@ -144,7 +144,7 @@
         }
       ],
       "subprocessors": {
-        "caption": "Subencargados revisados el 10 de noviembre de 2026",
+        "caption": "Proveedores y finalidades del producto revisados el 10 de noviembre de 2026",
         "headers": ["Proveedor", "Finalidad", "Ubicación del tratamiento"],
         "rows": [
           {
@@ -280,7 +280,7 @@
         },
         {
           "id": "programs",
-          "title": "Programas en los que participamos"
+          "title": "Programas de los que formamos parte"
         },
         {
           "id": "recognition",
@@ -588,7 +588,7 @@
           "items": [
             {
               "title": "AI Agent Score",
-              "body": "Un escaneo gratis de tus 10 productos principales frente a competidores con ChatGPT, Claude y Gemini. Unos dos minutos. Requiere una cuenta.",
+              "body": "Un escaneo gratuito de tus 10 productos principales frente a competidores con ChatGPT, Claude y Gemini. Se necesita una cuenta.",
               "href": "/sign-up",
               "label": "Comprueba mi tienda gratis"
             },
@@ -645,7 +645,7 @@
           "items": [
             {
               "title": "AI Agent Score",
-              "body": "Un escaneo gratis de tus 10 productos principales frente a competidores con ChatGPT, Claude y Gemini. Unos dos minutos. Requiere una cuenta.",
+              "body": "Un escaneo gratuito de tus 10 productos principales frente a competidores con ChatGPT, Claude y Gemini. Se necesita una cuenta.",
               "href": "/sign-up",
               "label": "Comprueba mi tienda gratis"
             },
@@ -938,7 +938,7 @@
             },
             {
               "title": "Seguridad",
-              "body": "Comunica una vulnerabilidad. {{TODO: confirmar que security@ecentic.ai se supervisa antes de activar el enlace de contacto}}",
+              "body": "Consulta el acceso a la tienda, los controles implementados y el tratamiento de datos.",
               "href": "/security",
               "label": "Lee sobre seguridad"
             },
@@ -974,8 +974,8 @@
     },
     "changelog": {
       "meta": {
-        "title": "Novedades: qué cambia en ecentic",
-        "description": "Actualizaciones del producto ecentic, de la más reciente a la más antigua."
+        "title": "Registro de cambios: novedades de ecentic",
+        "description": "Actualizaciones publicadas de ecentic, de la más reciente a la más antigua."
       },
       "title": "Novedades",
       "description": "Lo que hemos publicado, de lo más reciente a lo más antiguo.",

@@ -17,7 +17,7 @@
         "description": "Conecta tu catálogo, compara con IA, publica cambios que tú eliges, prueba el pago con agentes y mide referencias detectadas en Shopify."
       },
       "eyebrow": "Plataforma",
-      "title": "De tu catálogo al pago con agentes.",
+      "title": "Todo lo que una tienda necesita para vender a través de la IA.",
       "description": "Cinco pasos, en orden. Conecta tu catálogo, mira cómo lo comparan los modelos, mejora los datos, prueba el pago y mide lo que puedes observar. Tú eliges qué publicar y cuándo volver a analizar.",
       "sections": [
         {
@@ -263,7 +263,7 @@
         },
         {
           "id": "control",
-          "title": "Tú decides qué cambia.",
+          "title": "Lo que ecentic no hace.",
           "paragraphs": [
             "Importar datos no reescribe tus fichas. Publicar requiere una acción elegida. Los modelos deciden qué recomendar; una simulación no promete una venta futura."
           ]
@@ -271,7 +271,7 @@
         {
           "id": "developers",
           "title": "Publicamos lo que te pedimos publicar.",
-          "description": "Nuestro llms.txt, catálogo de API, descubrimiento OAuth, perfil de pago con agentes y endpoint MCP son públicos. La API REST tiene versiones y documentación OpenAPI 3.1. La CLI está disponible como @ecentic/cli.",
+          "description": "Los documentos llms.txt, catálogo de API, descubrimiento OAuth, perfil de pago para agentes y endpoint MCP de ecentic son públicos. La API REST tiene versiones y documentación OpenAPI 3.1, y la CLI se ejecuta con npx @ecentic/cli.",
           "note": "Las interfaces actuales permiten descubrimiento e incorporación, no exportar resultados del panel.",
           "links": [
             {

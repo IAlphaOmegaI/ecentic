@@ -158,7 +158,9 @@ export const Footer = async (_props: Footer.Props = {}) => {
             />
           </Link>
           <p className="max-w-90 text-[13px]">{copy.tagline}</p>
-          <p className="max-w-90 text-[13px]">{copy.copyright}</p>
+          {copy.copyright && (
+            <p className="max-w-90 text-[13px]">{copy.copyright}</p>
+          )}
           <div className="flex items-center gap-4">
             <a
               href="https://www.linkedin.com/company/ecentic/"

@@ -2,13 +2,13 @@
   "enterpriseSolutions": {
     "business": {
       "brands": {
-        "faqTitle": "Preguntas que nos hacen",
+        "faqTitle": "Preguntas de las marcas",
         "meta": {
-          "title": "ecentic para marcas: compite en compras con IA",
+          "title": "ecentic para marcas: sé el producto que la IA recomienda",
           "description": "Mira qué productos elige la IA frente a competidores. Mejora datos existentes y prueba el pago. Empieza con un análisis gratuito."
         },
         "eyebrow": "Para marcas",
-        "title": "Dale a la IA los datos de tu producto.",
+        "title": "Sé el producto que aparece en la respuesta.",
         "description": "Cuando alguien pide una opción de tu categoría, la IA compara productos. ecentic muestra cuáles elige en simulaciones, cuáles pierden frente a un competidor y qué datos necesitan trabajo. Tú eliges qué cambios publicar.",
         "actions": [
           {
@@ -61,7 +61,7 @@
               },
               {
                 "title": "Simulado",
-                "body": "Pregunta: «aceite de oliva virgen extra para ensaladas por menos de 25 $». Un rival gana 3 de 3 pruebas ilustrativas con datos más claros."
+                "body": "Pregunta: «mejor aceite de oliva virgen extra para ensaladas por menos de 25 $». Un competidor gana en 3 de 3 pruebas ilustrativas, con datos de origen más claros."
               },
               {
                 "title": "Mejorado",
@@ -150,13 +150,13 @@
         }
       },
       "retailers-and-marketplaces": {
-        "faqTitle": "Preguntas que nos hacen",
+        "faqTitle": "Preguntas de los minoristas",
         "meta": {
           "title": "ecentic para distribuidores y marketplaces",
           "description": "Detecta carencias en fichas de proveedores, compara productos y decide dónde mejorar tu catálogo. Empieza con una categoría."
         },
         "eyebrow": "Para distribuidores y marketplaces",
-        "title": "Miles de fichas. Un punto de partida más claro.",
+        "title": "Miles de productos. Una oportunidad ante el agente.",
         "description": "Los proveedores envían datos de muchas formas. ecentic comprueba campos compatibles y compara productos con competidores concretos. Usa los hallazgos para priorizar trabajo que tu equipo pueda verificar y elige qué cambios publicar.",
         "actions": [
           {
@@ -209,7 +209,7 @@
               },
               {
                 "title": "Simulado",
-                "body": "Pregunta: «silla ajustable para una persona alta por menos de 400 $». Un competidor gana 3 de 3 pruebas ilustrativas con especificaciones más claras."
+                "body": "Pregunta: «silla de oficina para una persona alta con dolor de espalda por menos de 400 $». Un competidor gana en 3 de 3 pruebas ilustrativas con especificaciones más claras."
               },
               {
                 "title": "Mejorado",
@@ -283,7 +283,7 @@
           },
           {
             "question": "¿Podemos empezar con una categoría?",
-            "answer": "Sí. El piloto propuesto empieza con un mercado y una categoría, con el alcance acordado antes de comenzar."
+            "answer": "Sí. Empieza con un mercado y una categoría, una referencia en la semana 0 y un informe en la semana 6. Acordamos el alcance antes de empezar."
           },
           {
             "question": "¿De quién son los datos y las mejoras?",
@@ -297,14 +297,14 @@
         }
       },
       "agencies-and-partners": {
-        "faqTitle": "Preguntas que nos hacen",
+        "faqTitle": "Preguntas de los partners",
         "meta": {
           "title": "ecentic para agencias y colaboradores",
           "description": "Añade comparaciones con IA y mejoras de fichas a tus servicios. Explora las opciones de agencia, tecnología y creadores con ecentic."
         },
         "eyebrow": "Para agencias y colaboradores",
         "title": "Añade comercio con IA a lo que ya ofreces.",
-        "description": "Tus clientes preguntan qué hacer con las compras por IA. ecentic te ofrece comparaciones, comprobaciones y controles de publicación para usar en esa relación. Acuerda las condiciones antes de prometer una reventa o comisión.",
+        "description": "Tus clientes preguntan qué hacer con ChatGPT. ecentic te ofrece comprobaciones de productos, mejoras de fichas y una vía de colaboración, dentro de la relación que ya tienes. Las condiciones comerciales se acuerdan antes de una reventa o recomendación.",
         "actions": [
           {
             "label": "Solicita colaborar",
@@ -406,11 +406,11 @@
         "faqTitle": "Preguntas que nos hacen",
         "meta": {
           "title": "ecentic para empresas: gestiona la IA como un canal",
-          "description": "Define un piloto con datos públicos para un mercado y categoría. Acuerda objetivos antes de empezar, con un fundador y DPA bajo solicitud."
+          "description": "Pilotos para tiendas, marcas y empresas de viajes con datos públicos. Objetivos por escrito desde el primer día y un fundador a cargo."
         },
         "eyebrow": "Para empresas",
         "title": "La IA es un nuevo canal de ventas. Gestiónalo como tal.",
-        "description": "Para distribuidores, marcas y empresas de viajes con varias categorías, mercados o marcas. Empieza con un mercado y una categoría, con datos públicos, y acuerda los objetivos por escrito antes de comenzar.",
+        "description": "Para minoristas, marcas y empresas de viajes con muchas categorías, mercados o marcas. Empezamos con un mercado y una categoría, con datos públicos, y acordamos los objetivos por escrito el primer día.",
         "actions": [
           {
             "label": "Habla con nosotros",
@@ -423,13 +423,13 @@
         ],
         "facts": [
           "Primero, datos públicos. Sin accesos, código en tu web ni datos de clientes para la referencia inicial.",
-          "Objetivos acordados por escrito antes de empezar.",
+          "Objetivos acordados por escrito el primer día.",
           "Un fundador en la cuenta, con contacto directo con ingeniería.",
-          "DPA bajo solicitud y lista fechada de subencargados."
+          "Revisamos los requisitos de datos y contratación antes de conceder acceso."
         ],
         "challenges": [
           {
-            "before": "Nadie es responsable del canal de IA. Cada equipo ve una parte.",
+            "before": "Nadie es responsable de la IA como canal. Los equipos de búsqueda, marketplaces y comercio electrónico ven solo una parte.",
             "after": "Acuerda un conjunto de preguntas y un informe para el equipo responsable de la categoría.",
             "href": "/platform/simulate"
           },
@@ -475,7 +475,7 @@
                 "body": "3 meses. Para cuestiones de pago o reserva que necesitan más que una lista de mejoras. El alcance puede incluir un prototipo con datos ficticios y un informe en el mes 3."
               }
             ],
-            "note": "Las tarifas dependen del alcance y se acuerdan en la primera llamada. Son servicios, no funciones automatizadas del producto."
+            "note": "Los honorarios dependen del alcance y se acuerdan en la primera llamada. Son servicios; el informe del piloto sigue el método acordado con tu equipo."
           },
           {
             "id": "pilot",
@@ -493,7 +493,7 @@
                 "body": "Trabaja en la categoría acordada y prueba el pago donde corresponda. El trabajo con datos públicos se entrega a tu equipo; los cambios directos requieren autorización."
               },
               {
-                "title": "Semana 6: repetir",
+                "title": "Semana 6 · Repetición",
                 "body": "Repite las preguntas con los mismos asistentes y número de ejecuciones. Documenta cambios de modelo o acceso."
               },
               {
@@ -548,7 +548,7 @@
           },
           {
             "id": "security",
-            "title": "Prepara la revisión de seguridad.",
+            "title": "Preparados para tu revisión de seguridad.",
             "eyebrow": "[06] Seguridad y confianza",
             "items": [
               {
@@ -557,7 +557,7 @@
               },
               {
                 "title": "Tus datos",
-                "body": "Consulta el tratamiento de datos, la solicitud de DPA y la lista fechada de subencargados. {{TODO: Confirmar seguridad operativa y entidad contratante antes del lanzamiento.}}"
+                "body": "Revisa el tratamiento de datos y habla con nosotros sobre el acuerdo y la información de proveedores que necesita tu equipo. {{TODO: Confirmar el DPA aprobado, los subencargados contratados, las ubicaciones y la entidad contratante.}}"
               },
               {
                 "title": "Respuestas claras",
@@ -573,7 +573,7 @@
           },
           {
             "id": "scale",
-            "title": "Basado en interfaces claras.",
+            "title": "Preparado para crecer.",
             "eyebrow": "[07] Capacidades de la plataforma",
             "columns": 3,
             "items": [
@@ -598,7 +598,7 @@
                 "body": "Pago WooCommerce con listas de acceso, requisitos de firma y límites configurables. Tu pasarela procesa el pago."
               },
               {
-                "title": "Descubrimiento público",
+                "title": "Publicamos lo que te pedimos que publiques.",
                 "body": "Nuestro llms.txt, catálogo API, perfil de pago y endpoint MCP son públicos.",
                 "href": "/resources",
                 "label": "Ver cómo funciona"
@@ -607,7 +607,7 @@
           },
           {
             "id": "checklist",
-            "title": "Tu lista de comprobación.",
+            "title": "Lista de comprobación del comprador.",
             "eyebrow": "[08] Antes del piloto",
             "rows": [
               {
@@ -670,7 +670,7 @@
         "faqs": [
           {
             "question": "¿Cuándo veremos resultados?",
-            "answer": "El piloto propuesto compara la semana 6 con la 0. Los asistentes cambian, así que el informe explica qué varió y los límites de la comparación. No se garantiza un resultado de ventas."
+            "answer": "Medimos en la semana 6 frente a la referencia de la semana 0. Los asistentes cambian sus respuestas con el tiempo, por lo que el informe muestra los cambios y los límites de la comparación. No se garantiza un resultado de ventas."
           },
           {
             "question": "¿Qué asistentes cubrís?",
@@ -1833,11 +1833,11 @@
     },
     "sectorIndex": {
       "meta": {
-        "title": "Sectores: datos para compras con IA",
+        "title": "Sectores: qué necesita la IA para vender tus productos",
         "description": "Explora qué comprobar en datos de alimentos, bebidas, belleza, electrónica, hogar, moda, bienestar, mascotas y viajes."
       },
       "eyebrow": "Sectores",
-      "title": "Qué necesita la IA para comparar tus productos.",
+      "title": "Lo que la IA necesita para vender tus productos.",
       "description": "Cada producto necesita datos distintos. Un sofá necesita medidas, un protector información probada y un viaje condiciones de cancelación. Empieza por tu categoría.",
       "sections": [
         {
@@ -1898,7 +1898,7 @@
         {
           "id": "other-sectors",
           "title": "¿No ves tu sector?",
-          "description": "Cuéntanos qué vendes y qué datos del catálogo son más difíciles de gestionar.",
+          "description": "Cuéntanos qué vendes.",
           "links": [
             {
               "label": "Habla con nosotros",
@@ -1910,8 +1910,8 @@
     },
     "index": {
       "meta": {
-        "title": "Soluciones para marcas, tiendas y empresas | ecentic",
-        "description": "Explora comercio con IA por negocio, equipo y sector. Compara productos, mejora datos verificados y prueba pagos compatibles."
+        "title": "Soluciones de ecentic para marcas, tiendas y empresas",
+        "description": "Cómo ecentic ayuda a marcas, tiendas, grandes empresas y agencias a vender a través de la IA, por negocio, equipo y sector."
       },
       "eyebrow": "Soluciones",
       "title": "Pensado para tu forma de vender.",
@@ -1924,13 +1924,13 @@
           "items": [
             {
               "title": "Para marcas",
-              "body": "Dale a la IA los datos de tu producto.",
+              "body": "Sé el producto que aparece en la respuesta.",
               "href": "/solutions/brands",
               "label": "Ver cómo funciona"
             },
             {
               "title": "Para distribuidores y marketplaces",
-              "body": "Miles de fichas. Un punto de partida más claro.",
+              "body": "Miles de productos. Una oportunidad ante el agente.",
               "href": "/solutions/retailers-and-marketplaces",
               "label": "Ver cómo funciona"
             },

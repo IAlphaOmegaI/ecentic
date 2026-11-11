@@ -28,7 +28,7 @@ export const Programs = ({ copy }: Programs.Props) => (
             className="enterprise-program-todo text-(length:--text-base) font-medium [&_small]:mt-2 [&_small]:block [&_small]:text-[11px] [&_small]:text-foreground-dimmed"
           >
             {program.title}
-            <small>{copy.missingAsset}</small>
+            {copy.missingAsset && <small>{copy.missingAsset}</small>}
           </span>
         );
       })}

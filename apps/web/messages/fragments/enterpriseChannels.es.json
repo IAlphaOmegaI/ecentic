@@ -170,13 +170,13 @@
         "capabilities": {
           "simulate": "ChatGPT compara los productos seleccionados con competidores en los análisis de tiendas.",
           "fix": "Las comprobaciones de fichas incluyen reglas del feed de OpenAI. Publica un título y una descripción nuevos, o datos estructurados mediante una acción separada, en una tienda conectada.",
-          "checkout": "La app de ecentic para ChatGPT está prevista y todavía no se ha publicado. Las herramientas de checkout actuales no constituyen una integración activa de la app.",
+          "checkout": "App de ecentic para ChatGPT: próximamente. Su publicación en el directorio no está confirmada. Las herramientas de pago actuales no establecen una integración activa con una app de ChatGPT.",
           "track": "Mide referencias de ChatGPT y visitas reconocidas de agentes en Shopify."
         },
         "faqs": [
           {
             "question": "¿Se puede comprar dentro de ChatGPT?",
-            "answer": "La documentación beta actual de OpenAI describe checkout dentro de ChatGPT para plugins aprobados. Otros enlaces llevan al comercio. Depende de la integración; la app de ecentic no está publicada."
+            "answer": "La documentación beta actual de OpenAI describe el pago dentro de ChatGPT para integraciones de plugins aprobadas. Otros enlaces llevan al comprador a la tienda. La disponibilidad depende de la integración; la publicación de la app de ecentic no está confirmada."
           },
           {
             "question": "Usamos Shopify. ¿ecentic nos incorpora a ChatGPT?",
@@ -303,7 +303,7 @@
       },
       "perplexity": {
         "meta": {
-          "title": "Vender a través de Perplexity",
+          "title": "Vender a través de las compras de Perplexity",
           "description": "Cómo muestra Perplexity los resultados de compra, dónde se documenta su programa para comercios y qué ofrece ecentic hoy."
         },
         "title": "Vender a través de Perplexity",

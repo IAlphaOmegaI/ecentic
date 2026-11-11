@@ -136,7 +136,7 @@
       },
       "eyebrow": "Desarrolladores / Instrucciones para IA",
       "title": "Dale al agente un punto de partida claro.",
-      "description": "ecentic ayuda a preparar datos de productos para las compras con IA. Usa estos límites y puntos de entrada para elegir el siguiente paso. ecentic no es una herramienta de SEO ni de GEO.",
+      "description": "ecentic es una capa entre el catálogo de una marca y los asistentes de IA que venden sus productos. Optimiza los datos que leen, prepara el proceso de pago para que puedan comprar y cambia con ellos cuando cambian sus reglas.",
       "actions": [
         {
           "label": "Leer la referencia de la API",
@@ -162,7 +162,7 @@
             },
             {
               "title": "Corregir con tu aprobación",
-              "body": "Prepara cambios en las fichas a partir de los resultados. Nada cambia en la tienda conectada hasta que haces clic en Aplicar. Publicar requiere un conector directo compatible.",
+              "body": "Aplicar genera y publica un título y una descripción a partir de los datos existentes del producto. Los datos estructurados y la sincronización con Merchant Center tienen controles separados. Al conectar Shopify también se instala el seguimiento de visitas. Para publicar se necesita un conector directo compatible.",
               "href": "/platform/fix",
               "label": "Explorar correcciones"
             },
@@ -223,7 +223,7 @@
     "og": {
       "home": {
         "title": "Consigue la venta cuando la IA hace la compra.",
-        "description": "La plataforma de comercio agéntico. Conecta, simula, corrige, vende y mide."
+        "description": "La capa de comercio con IA."
       },
       "docs": {
         "title": "Construye sobre la plataforma de comercio agéntico.",

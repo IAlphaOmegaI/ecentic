@@ -1,0 +1,27 @@
+{
+  "enterpriseLayer": {
+    "eyebrow": "01 · How it fits",
+    "title": "Your stack on one side. The AI channels on the other. ecentic in between.",
+    "description": "Bring the catalog you already run. Use ecentic to prepare it for the assistants your customers use, with each channel’s current availability shown.",
+    "stack": "Your stack",
+    "channels": "AI channels",
+    "layer": "The AI commerce layer",
+    "stages": [
+      "Simulate",
+      "Fix",
+      "Sell",
+      "Track"
+    ],
+    "inputs": [
+      "Shopify",
+      "WooCommerce",
+      "Product feeds / CSV",
+      "PIM",
+      "Google Merchant Center"
+    ],
+    "legend": "Solid lines: available today, including simulations. Dashed lines: coming soon. Channel availability is not a guarantee of native checkout.",
+    "action": "See every AI channel",
+    "diagram": "Your existing commerce stack connects to ecentic, which prepares product data and supported checkout for six AI channels.",
+    "google": "Google AI Mode / Gemini"
+  }
+}

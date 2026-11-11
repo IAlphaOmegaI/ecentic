@@ -20,9 +20,11 @@ export const enterpriseOgContentType = "image/png";
 export const createEnterpriseOgImage = ({
   title,
   description,
+  signoff,
 }: {
   title: string;
   description: string;
+  signoff: string;
 }) =>
   new ImageResponse(
     <div
@@ -118,7 +120,16 @@ export const createEnterpriseOgImage = ({
             {description}
           </p>
         </div>
-        <div style={{ display: "flex", height: 1 }} />
+        <div
+          style={{
+            display: "flex",
+            fontFamily: "RedHatDisplay",
+            fontSize: 20,
+            opacity: 0.82,
+          }}
+        >
+          {title === signoff ? "ecentic.ai" : signoff}
+        </div>
       </div>
       {[119, 581].map((top) => (
         <div

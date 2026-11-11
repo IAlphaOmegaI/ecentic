@@ -4239,8 +4239,8 @@
   },
   "enterprise": {
     "meta": {
-      "title": "Enterprise — agent commerce at scale",
-      "description": "Agent-commerce intelligence for enterprise merchants: multi-brand dashboards, API access, SSO, SOC 2 compliance, UCP signing, and a dedicated CSM team."
+      "title": "ecentic for enterprise: run AI as a sales channel",
+      "description": "Pilots for retailers, brands and travel companies on public data first. Targets agreed in writing on day one, with a founder on the account."
     },
     "breadcrumb": {
       "home": "Home",
@@ -4249,15 +4249,15 @@
     "hero": {
       "eyebrow": "Enterprise",
       "title": {
-        "primary": "Agent-commerce infrastructure",
-        "accent": "at scale."
+        "primary": "AI is a new sales channel.",
+        "accent": "Run it like one."
       },
-      "description": "Multi-brand dashboards, API access, UCP signing, and dedicated support for commerce teams running hundreds of SKUs across multiple platforms.",
+      "description": "For retailers, brands and travel companies with many categories, markets or brands. We start with one market and one category, on public data, and agree the targets in writing on day one.",
       "assurances": [
-        "Multi-brand dashboards",
-        "Custom API access",
-        "Dedicated CSM",
-        "SOC 2 in progress"
+        "Public data first. No logins, code on your site or customer data for the baseline.",
+        "Targets agreed in writing on day one.",
+        "A founder on the account, with a direct line to engineering.",
+        "Product limits explained"
       ],
       "art": {
         "alt": "ASCII-art illustration of an office tower"
@@ -4269,32 +4269,32 @@
     },
     "capabilities": {
       "number": "02",
-      "title": "Everything in Dominate, plus the enterprise layer.",
-      "description": "The security, scale, and support layer enterprise teams need to run agent-commerce optimization across brands.",
+      "title": "Built for scale.",
+      "description": "Current capabilities and their boundaries.",
       "items": [
         {
-          "title": "Multi-brand rollups",
-          "description": "One dashboard across every brand and region. Aggregate win-rate, agent traffic, and optimization lift in a single view."
+          "title": "Your stores in one account",
+          "description": "Hold every store owned by one account under one login. This does not include delegated teams or SSO."
         },
         {
-          "title": "API access",
-          "description": "Read-only API for programmatic access to scan results, agent traffic, and UCP profiles."
+          "title": "REST API",
+          "description": "A versioned public surface with OpenAPI 3.1, typed problem responses and documented rate limits."
         },
         {
-          "title": "SSO",
-          "description": "Okta, Google Workspace, and Azure AD supported. Provision seats without touching ecentic directly."
+          "title": "MCP server and CLI",
+          "description": "Discovery, plans, connection and onboarding workflows. Dashboard scan and traffic exports are not exposed today."
         },
         {
-          "title": "SOC 2 Type II",
-          "description": "Audit in progress. Data residency options, GDPR-compliant processing, and a DPA on request."
+          "title": "Merchant Center sync",
+          "description": "Send published Shopify listing fixes through a separate supplemental-data sync."
         },
         {
-          "title": "UCP signing service",
-          "description": "ecentic manages cryptographic signing of your UCP profile so agents can verify merchant identity."
+          "title": "Controlled agent checkout",
+          "description": "WooCommerce checkout with configurable agent allow-lists, signature requirements and rate limits. Your gateway handles payment."
         },
         {
-          "title": "Dedicated CSM",
-          "description": "A named customer success manager, quarterly business reviews, and direct engineering escalation."
+          "title": "We publish what we ask you to publish.",
+          "description": "Our llms.txt, API catalog, checkout profile and MCP endpoint are public."
         }
       ],
       "cta": {
@@ -4307,25 +4307,25 @@
       },
       "scoping": [
         {
-          "title": "Short discovery call",
-          "description": "Catalog size, platforms, and compliance needs."
+          "title": "First conversation",
+          "description": "Agree the category, market and questions."
         },
         {
-          "title": "Custom ROI estimate",
-          "description": "Scoped to your SKU count and current win rates."
+          "title": "Written scope",
+          "description": "Define the baseline, changes, fees and readout."
         },
         {
-          "title": "Onboarding timeline",
-          "description": "No procurement deck required to begin."
+          "title": "Security review",
+          "description": "Confirm data handling and access before connecting systems."
         }
       ],
-      "paragraph": "We scope Enterprise around catalog size, platforms, and compliance needs, then share a custom ROI estimate before anyone writes a procurement deck.",
+      "paragraph": "Fees depend on scope and are agreed on the first call. These are service engagements; the pilot readout follows the method agreed with your team.",
       "panelTitle": "How scoping works"
     },
     "compare": {
       "number": "03",
-      "title": "Where Dominate ends and Enterprise begins.",
-      "description": "Dominate runs the full optimization loop for a single brand. Enterprise adds security, scale, and support for multi-brand commerce teams.",
+      "title": "A plan or a scoped pilot.",
+      "description": "Choose self-serve product access or a service engagement with agreed targets.",
       "table": {
         "feature": "Feature",
         "dominate": "Dominate",
@@ -4397,42 +4397,42 @@
       },
       "dominate": {
         "badge": "Dominate",
-        "title": "Full loop for one brand.",
-        "description": "Continuous simulations, auto-optimization, and UCP generation for a single catalog up to 1000 products.",
+        "title": "Self-serve catalog work.",
+        "description": "On-demand simulations and supported publishing actions, within the current plan limits.",
         "strengths": [
-          "$149/mo with continuous agent simulations",
-          "Auto-optimization and UCP generation included",
-          "Best fit for a single brand up to 1000 products"
+          "Monthly subscription without a performance fee",
+          "Simulations run when you request them",
+          "Current prices and product limits on Pricing"
         ]
       },
       "enterprise": {
         "badge": "Enterprise",
-        "title": "Control plane for multi-brand teams.",
-        "description": "Everything in Dominate, plus multi-brand rollups, API access, SSO, managed UCP signing, and a dedicated CSM.",
+        "title": "A pilot scoped with your team.",
+        "description": "6 weeks, one market, one category. Baseline at week 0, agreed data changes and the same questions at week 6. Any outcome-linked fee and target are agreed in advance.",
         "strengths": [
-          "Custom limits across brands and regions",
-          "SSO, API access, and UCP signing service",
-          "Named CSM with quarterly business reviews"
+          "One market and one category to start",
+          "Agreed baseline and week-6 readout",
+          "A founder on the account"
         ]
       },
-      "paragraph": "Stay on Dominate while one brand owns the loop. Move to Enterprise when brand count, security review, or reporting requirements need a shared layer.",
+      "paragraph": "The pilot scope defines the work and access required. It does not add SSO, team seats or dashboard-result API exports to the current product.",
       "triggersTitle": "When Enterprise becomes the clearer fit",
       "triggers": [
         {
-          "title": "Multiple brands or regions",
-          "description": "You need rollups across storefronts instead of separate Dominate seats."
+          "title": "Multiple brands or markets",
+          "description": "Start with the category and market that answer a clear business question."
         },
         {
-          "title": "SSO or DPA required",
-          "description": "Security or legal review blocks a self-serve plan until identity and contracts are covered."
+          "title": "A security review",
+          "description": "Confirm operational and contractual requirements before access."
         },
         {
-          "title": "Data must leave the UI",
-          "description": "Your analytics stack needs API access to scans, agent traffic, and UCP profiles."
+          "title": "A method your team can assess",
+          "description": "Agree the question set, baseline and written readout."
         },
         {
-          "title": "A named owner matters",
-          "description": "You want a CSM, quarterly reviews, and a direct path into engineering."
+          "title": "A named owner",
+          "description": "Work with a founder and your existing store team."
         }
       ]
     },
@@ -4444,20 +4444,20 @@
     "faq": {
       "items": [
         {
-          "question": "When should I choose Enterprise over Dominate?",
-          "answer": "Choose Enterprise when you run hundreds of SKUs across multiple brands or regions, need SSO or a DPA, want UCP signing managed for you, or need a dedicated CSM and custom API access. Dominate covers the full optimization loop for a single brand up to 1000 products."
+          "question": "When should I discuss an enterprise pilot?",
+          "answer": "When you run several stores or brands, have thousands of products, need a security review, or want a pilot with targets agreed in writing."
         },
         {
-          "question": "What does onboarding look like for Enterprise?",
-          "answer": "We start with a short discovery call, share a custom ROI estimate for your catalog size, and scope an onboarding timeline. No procurement deck is required to begin the conversation."
+          "question": "How does a pilot start?",
+          "answer": "Start with one market and one category on public data. Agree the scope, fees and collection method before work begins."
         },
         {
           "question": "Is SOC 2 available today?",
-          "answer": "SOC 2 Type II is in progress. Enterprise accounts can request our DPA, discuss data residency options, and review our security posture during the sales process."
+          "answer": "No. A certification or completed audit is not available today. Discuss your security requirements before agreeing a pilot."
         },
         {
-          "question": "Can Enterprise connect to our existing data stack?",
-          "answer": "Yes. Enterprise includes read-only API access for scan results, agent traffic, and UCP profiles so you can integrate ecentic data into your own analytics and reporting tools."
+          "question": "Can we export dashboard results through the API?",
+          "answer": "Not today. The public REST API, MCP server and CLI support discovery, plans, connection and onboarding workflows."
         }
       ]
     },
@@ -4466,33 +4466,33 @@
         "primary": "Book a demo",
         "secondary": "View pricing"
       },
-      "note": "SOC 2 in progress · DPA on request"
+      "note": "Public data first · Targets agreed in writing"
     },
     "why": {
       "number": "01",
-      "title": "When a single-brand plan stops being enough.",
-      "description": "Enterprise is for teams that need one agent-commerce layer across brands, regions, and security requirements, rather than another self-serve seat.",
+      "title": "Start with one market and one category.",
+      "description": "Enterprise pilots are scoped around your catalog, business questions and security review.",
       "paragraphs": [
-        "Dominate runs the full optimization loop for one brand. Enterprise adds the control plane: multi-brand rollups, SSO, API access, managed UCP signing, and a named CSM who owns the relationship.",
-        "The decision usually shows up when catalog size, brand count, or procurement requirements outgrow a flat monthly plan."
+        "Enterprise is a service engagement with agreed questions, data changes and a written readout. Current product limits still apply.",
+        "Start on public data. Agree the scope, targets and access requirements before the work begins."
       ],
       "panelTitle": "Who this fits",
       "audiences": [
         {
-          "title": "Multi-brand operators",
-          "description": "Teams running several storefronts or regions who need one win-rate and agent-traffic view."
+          "title": "Retail groups and marketplaces",
+          "description": "Large catalogs, many suppliers and several markets."
         },
         {
-          "title": "Security-led buyers",
-          "description": "Organizations that need SSO, a DPA, and a clear path toward SOC 2 Type II."
+          "title": "Consumer brands",
+          "description": "Products sold on your site and through retailers."
         },
         {
-          "title": "Platform / data teams",
-          "description": "Groups that want read-only API access into scans, agent traffic, and UCP profiles."
+          "title": "Travel and experiences",
+          "description": "Packages, tickets and stays people research with AI."
         },
         {
-          "title": "Commerce leadership",
-          "description": "Leaders who want a named CSM, quarterly reviews, and an engineering escalation path."
+          "title": "Agencies and partners",
+          "description": "Store teams that verify and ship the agreed changes."
         }
       ]
     }
@@ -8064,7 +8064,7 @@
       "quaternary": "Learn more"
     },
     "closing": {
-      "title": "AI is already choosing products in your category.",
+      "title": "Get the sale when AI does the buying.",
       "description": "Find out if it's choosing yours."
     },
     "status": {
@@ -8082,7 +8082,7 @@
       "close": "Close menu"
     },
     "footer": {
-      "tagline": "Get the sale when AI does the shopping.",
+      "tagline": "Get the sale when AI does the buying.",
       "copyright": "© 2026 {{TODO: legal name of the Polish operating company}}",
       "trademark": "Product names and logos are trademarks of their owners. Showing them doesn't mean they endorse or partner with ecentic.",
       "platform": "Platform",
@@ -8431,7 +8431,7 @@
           }
         ],
         "featured": {
-          "href": "/stories/dua-flavours",
+          "href": "/stories/dua-flavors",
           "title": "DUA Flavours pilot",
           "description": "+12% visits from AI assistants or direct traffic."
         }
@@ -8753,12 +8753,12 @@
   "enterpriseHome": {
     "meta": {
       "title": "AI shopping optimization and agent checkout | ecentic",
-      "description": "AI shopping optimization for Shopify, WooCommerce and product feeds. Simulate product choices, improve listings and connect agent checkout with ecentic."
+      "description": "The AI commerce layer: fix the product data AI assistants read, get checkout ready for AI to buy, and keep up when their rules change."
     },
     "hero": {
-      "eyebrow": "The agentic commerce platform",
-      "title": "Get the sale when AI does the shopping.",
-      "description": "AI is becoming another way to find and compare products. ecentic helps yours compete: improve the product data assistants read, connect agent checkout on WooCommerce, and run a fresh simulation when you want to check again.",
+      "eyebrow": "The AI commerce layer",
+      "title": "One layer between your catalog and the AI that sells it.",
+      "description": "Whether people search Google, shop on Amazon or ask a chatbot, AI now answers with a product, and every assistant has its own rules for choosing it and buying it. ecentic is one layer between your catalog and those assistants. It fixes the data they read, gets your checkout ready for them to buy, and keeps up when their rules change.",
       "actions": [
         {
           "label": "Book a demo",
@@ -8773,7 +8773,7 @@
         "Connect Shopify and WooCommerce, or import a supported product feed or CSV."
       ],
       "screenshot": {
-        "alt": "ecentic win-rate overview showing explicitly labelled sample data.",
+        "alt": "ecentic win-rate overview showing explicitly labeled sample data.",
         "caption": "Product screenshot · sample data"
       }
     },
@@ -8805,7 +8805,7 @@
       "missingAsset": "{{TODO: official logo}}"
     },
     "businesses": {
-      "eyebrow": "01 · Who it's for",
+      "eyebrow": "02 · Who it's for",
       "title": "Different businesses. Same new shopper.",
       "description": "Start with the way you sell and the questions your team needs to answer.",
       "painLabel": "The usual problems",
@@ -8865,7 +8865,7 @@
       ]
     },
     "loop": {
-      "eyebrow": "02 · How it works",
+      "eyebrow": "03 · How it works",
       "title": "From product feed to AI checkout.",
       "description": "Connect, compare, improve, sell and check again. You choose which changes to publish.",
       "steps": [
@@ -8932,7 +8932,7 @@
       ]
     },
     "film": {
-      "eyebrow": "03 · Watch it work",
+      "eyebrow": "04 · Watch it work",
       "title": "See ecentic in a minute.",
       "description": "A quick look at the product, from a comparison to the next decision for your catalog.",
       "caption": "ecentic product film",
@@ -8941,7 +8941,7 @@
       }
     },
     "channels": {
-      "eyebrow": "04 · AI channels",
+      "eyebrow": "05 · AI channels",
       "title": "One catalog. The assistants your customers ask.",
       "description": "Each assistant has its own product sources and rules for buying. See what ecentic supports today and what is planned.",
       "checked": "Checked 10 November 2026. Every channel page is dated and links to its sources.",
@@ -9001,7 +9001,7 @@
       }
     },
     "integration": {
-      "eyebrow": "05 · Integrations",
+      "eyebrow": "06 · Integrations",
       "title": "Plugs into the stack you already run.",
       "description": "Direct connections, supported feeds and the integrations we are building next. Each tile states its current status.",
       "counter": {
@@ -9021,7 +9021,7 @@
       ]
     },
     "mechanisms": {
-      "eyebrow": "06 · Under the hood",
+      "eyebrow": "07 · Under the hood",
       "title": "Everything between “AI skipped us” and “AI bought from us”.",
       "items": [
         {
@@ -9099,8 +9099,8 @@
       ]
     },
     "proof": {
-      "eyebrow": "07 · What we've seen so far",
-      "title": "Early numbers, stated plainly.",
+      "eyebrow": "08 · What we've measured so far",
+      "title": "What we've measured so far.",
       "stats": [
         {
           "value": "36,797",
@@ -9124,7 +9124,7 @@
       "study": {
         "title": "A large spirits marketplace",
         "body": "88% of 9,699 products had at least one fault in the data agents read. Asked where to buy two bottles it stocked, an agent named it 0 times out of 20.",
-        "note": "An anonymised finding. A snapshot of one catalog and question set, not a prediction for every store."
+        "note": "An anonymized finding. A snapshot of one catalog and question set, not a prediction for every store."
       },
       "footnotes": [
         {
@@ -9139,7 +9139,7 @@
       "pipeline": "Pilots in scoping with companies in enterprise retail, travel and flexible workspace."
     },
     "procurement": {
-      "eyebrow": "08 · Enterprise",
+      "eyebrow": "09 · Enterprise",
       "title": "Bring the right questions to security review.",
       "items": [
         {
@@ -9152,7 +9152,7 @@
         },
         {
           "title": "Data handling you can review.",
-          "body": "Review the privacy policy, request a DPA and see the named sub-processors. Confirm operational and contracting requirements with us."
+          "body": "Review the privacy policy and the providers used by the product. Discuss the data processing agreement, deployment and contracting requirements for your pilot."
         },
         {
           "title": "A founder on the account.",
@@ -9171,7 +9171,7 @@
       ]
     },
     "pricing": {
-      "eyebrow": "09 · Pricing",
+      "eyebrow": "10 · Pricing",
       "title": "Start free. Scale when AI starts buying.",
       "description": "Choose a starting point that fits your store and your team.",
       "items": [
@@ -9200,7 +9200,7 @@
       }
     },
     "editorial": {
-      "eyebrow": "10 · From the team",
+      "eyebrow": "11 · From the team",
       "title": "What we're learning.",
       "description": "Product notes and practical guides, written by the ecentic team.",
       "loading": "Loading articles",
@@ -9218,7 +9218,7 @@
       "items": [
         {
           "question": "What does ecentic do?",
-          "answer": "ecentic helps online stores compete when AI does the shopping. It simulates how ChatGPT, Claude and Gemini compare products, helps improve the product data they read, and supports agent checkout on WooCommerce."
+          "answer": "ecentic is one layer between your catalog and the AI assistants that sell it. It simulates how ChatGPT, Claude and Gemini compare products, helps improve the data they read, and supports agent checkout on WooCommerce."
         },
         {
           "question": "Which AI assistants does it cover?",
@@ -9238,7 +9238,7 @@
         },
         {
           "question": "How is our data handled?",
-          "answer": "The security page describes current catalog access, tracking and AI-provider handling. You can review our privacy policy, request a DPA and see named sub-processors. Confirm deployment and contracting requirements with us before a pilot."
+          "answer": "The security page describes current catalog access, tracking and AI-provider handling. Review our privacy policy and the providers used by the product, then confirm data processing, deployment and contracting requirements with us before a pilot."
         },
         {
           "question": "Is this SEO?",
@@ -9251,7 +9251,7 @@
       ]
     },
     "closing": {
-      "title": "AI is already choosing products in your category.",
+      "title": "Get the sale when AI does the buying.",
       "description": "Find out if it's choosing yours.",
       "actions": [
         {
@@ -10273,7 +10273,7 @@
     "security": {
       "meta": {
         "title": "Security and trust at ecentic",
-        "description": "How ecentic handles your catalog, store access and shopper data. Review the safeguards, AI providers, DPA and sub-processors."
+        "description": "How ecentic handles catalog data, store access and shopper details. Review implemented controls and discuss your data protection requirements."
       },
       "eyebrow": "Security and trust",
       "title": "Security and trust",
@@ -10281,8 +10281,8 @@
       "facts": [
         "Read-only imports",
         "Public data first for pilots",
-        "DPA on request",
-        "Dated sub-processor list"
+        "Discuss DPA requirements",
+        "Documented provider purposes"
       ],
       "actions": [
         {
@@ -10298,7 +10298,7 @@
         {
           "id": "reviewed",
           "title": "Last updated 10 November 2026",
-          "description": "This page describes the controls in the current product. Deployment details still awaiting confirmation are marked below."
+          "description": "This page describes controls in the current product. Confirm the deployment, processing locations and contractual requirements for your account before sharing non-public data."
         },
         {
           "id": "store-access",
@@ -10384,7 +10384,7 @@
         {
           "id": "dpa",
           "title": "Data processing agreement",
-          "description": "A DPA is available on request. Ask for it as part of your pilot or security review.",
+          "description": "Tell us what your data processing agreement must cover as part of your pilot or security review. Confirm the agreement and signing arrangements before sharing personal data.",
           "note": "{{TODO: supply the approved DPA template and confirmed request contact}}",
           "links": [
             {
@@ -10395,15 +10395,15 @@
         },
         {
           "id": "sub-processors",
-          "title": "Sub-processors",
-          "description": "Provider purposes in the current product, reviewed 10 November 2026. Processing locations require confirmation for the accounts in use.",
+          "title": "Providers used by the product",
+          "description": "Providers and purposes identified in the product code, reviewed November 10, 2026. This is not a confirmed list of contracted sub-processors or processing locations; those depend on the accounts and agreements in use.",
           "note": "{{TODO: confirm the full contracted sub-processor list and processing locations before launch}}"
         },
         {
           "id": "compliance",
           "title": "Compliance roadmap",
           "paragraphs": [
-            "SOC 2 is on our roadmap, timed to prospect security reviews. No certification or completed audit is claimed here.",
+            "SOC 2 is not available today. We do not claim a certification or a completed audit. Discuss your security requirements before agreeing a pilot.",
             "{{TODO: confirm the security questionnaire process and available review materials}}"
           ]
         },
@@ -10414,7 +10414,7 @@
         }
       ],
       "subprocessors": {
-        "caption": "Sub-processors reviewed 10 November 2026",
+        "caption": "Product providers and purposes reviewed November 10, 2026",
         "headers": [
           "Provider",
           "Purpose",
@@ -10516,7 +10516,7 @@
             },
             {
               "title": "We say what is built and what is coming.",
-              "body": "Every integration and AI channel is labelled, and our channel pages carry the date we last checked them.",
+              "body": "Every integration and AI channel is labeled, and our channel pages carry the date we last checked them.",
               "href": "/integrations",
               "label": "See integrations"
             },
@@ -10554,7 +10554,7 @@
         },
         {
           "id": "programs",
-          "title": "Programs we are part of"
+          "title": "Programs we’re part of"
         },
         {
           "id": "recognition",
@@ -10633,11 +10633,11 @@
       "programs": [
         {
           "name": "Plug and Play",
-          "description": "GOAL Silicon Valley programme"
+          "description": "GOAL Silicon Valley program"
         },
         {
           "name": "Microsoft for Startups",
-          "description": "Startup programme"
+          "description": "Startup program"
         },
         {
           "name": "Red Bull Basement",
@@ -10645,7 +10645,7 @@
         },
         {
           "name": "The Founder Games",
-          "description": "Startup programme"
+          "description": "Startup program"
         },
         {
           "name": "Fil Rouge Capital",
@@ -10731,7 +10731,7 @@
         },
         {
           "question": "Is there a fee to join?",
-          "answer": "{{TODO: confirm whether joining the partner programme is free}}"
+          "answer": "{{TODO: confirm whether joining the partner program is free}}"
         }
       ],
       "formTitle": "Partner application"
@@ -10747,14 +10747,14 @@
         {
           "id": "pilots",
           "title": "DUA Flavours",
-          "description": "A UK flavours brand. April to July 2026.",
+          "description": "A UK flavors brand. April to July 2026.",
           "paragraphs": [
             "12% more visits from AI assistants or direct traffic. Visits, not sales."
           ],
           "links": [
             {
               "label": "Read the pilot story",
-              "href": "/stories/dua-flavours"
+              "href": "/stories/dua-flavors"
             }
           ]
         }
@@ -10763,11 +10763,11 @@
     "duaFlavours": {
       "meta": {
         "title": "DUA Flavours pilot: 12% more AI and direct visits",
-        "description": "A UK flavours brand saw AI-assistant or direct visits rise 12% from April to July 2026. Read the pilot result and its limits."
+        "description": "A UK flavors brand saw AI-assistant or direct visits rise 12% from April to July 2026. Read the pilot result and its limits."
       },
       "eyebrow": "Pilot story",
       "title": "DUA Flavours: 12% more visits from AI assistants or direct traffic.",
-      "description": "A pilot with a UK flavours brand, published with permission. The result measures visits, not sales.",
+      "description": "A pilot with a UK flavors brand, published with permission. The result measures visits, not sales.",
       "sections": [
         {
           "id": "at-a-glance",
@@ -10779,7 +10779,7 @@
             },
             {
               "label": "Company",
-              "value": "UK flavours brand"
+              "value": "UK flavors brand"
             },
             {
               "label": "Period",
@@ -10862,7 +10862,7 @@
           "items": [
             {
               "title": "AI Agent Score",
-              "body": "A free scan of your top 10 products against competitors on ChatGPT, Claude and Gemini. About two minutes. An account is required.",
+              "body": "A free scan of your top 10 products against competitors on ChatGPT, Claude and Gemini. An account is required.",
               "href": "/sign-up",
               "label": "Check my store free"
             },
@@ -10919,7 +10919,7 @@
           "items": [
             {
               "title": "AI Agent Score",
-              "body": "A free scan of your top 10 products against competitors on ChatGPT, Claude and Gemini. About two minutes. An account is required.",
+              "body": "A free scan of your top 10 products against competitors on ChatGPT, Claude and Gemini. An account is required.",
               "href": "/sign-up",
               "label": "Check my store free"
             },
@@ -11005,7 +11005,7 @@
             {
               "title": "DUA Flavours",
               "body": "12% more visits from AI assistants or direct traffic, April to July 2026. Published with permission, with the measurement limits.",
-              "href": "/stories/dua-flavours",
+              "href": "/stories/dua-flavors",
               "label": "Read the pilot story"
             }
           ],
@@ -11212,7 +11212,7 @@
             },
             {
               "title": "Security",
-              "body": "Report a vulnerability. {{TODO: confirm security@ecentic.ai is monitored before activating the contact link}}",
+              "body": "Read about store access, implemented controls and data handling.",
               "href": "/security",
               "label": "Read about security"
             },
@@ -11248,11 +11248,11 @@
     },
     "changelog": {
       "meta": {
-        "title": "Changelog: what is new in ecentic",
-        "description": "Product updates in ecentic, newest first."
+        "title": "Changelog: what’s new in ecentic",
+        "description": "Product updates we’ve shipped in ecentic, newest first."
       },
       "title": "Changelog",
-      "description": "What we have shipped, newest first.",
+      "description": "What we’ve shipped, newest first.",
       "sections": [
         {
           "id": "updates",
@@ -11474,7 +11474,7 @@
         "description": "Connect your catalog, compare products with AI models, publish changes you choose, test agent checkout and track detected Shopify referrals."
       },
       "eyebrow": "Platform",
-      "title": "From your catalog to agent checkout.",
+      "title": "Everything a store needs to sell through AI.",
       "description": "Five steps, in order. Connect your catalog, see how AI models compare it, improve the data they read, test the path to checkout and track what you can observe. You choose what to publish and when to rescan.",
       "sections": [
         {
@@ -11720,7 +11720,7 @@
         },
         {
           "id": "control",
-          "title": "You decide what changes.",
+          "title": "What ecentic won’t do.",
           "paragraphs": [
             "Importing product data does not rewrite your listings. Publishing requires a chosen action. Models decide what to recommend; a simulation cannot promise a future sale."
           ]
@@ -11728,7 +11728,7 @@
         {
           "id": "developers",
           "title": "We publish what we ask you to publish.",
-          "description": "Our llms.txt, API catalog, OAuth discovery, agent checkout profile and MCP endpoint are public. The REST API is versioned and documented in OpenAPI 3.1. The CLI is available as @ecentic/cli.",
+          "description": "ecentic’s own llms.txt, API catalog, OAuth discovery, agent checkout profile and MCP endpoint are public. The REST API is versioned and documented in OpenAPI 3.1, and the CLI runs with npx @ecentic/cli.",
           "note": "Current developer interfaces support discovery and onboarding, not dashboard results export.",
           "links": [
             {
@@ -12890,13 +12890,13 @@
   "enterpriseSolutions": {
     "business": {
       "brands": {
-        "faqTitle": "Questions we hear",
+        "faqTitle": "Questions brands ask",
         "meta": {
-          "title": "ecentic for brands: compete in AI shopping",
+          "title": "ecentic for brands: be the product AI names",
           "description": "See which products AI models pick against your competitors. Improve existing product data and test checkout. Start with a free store check."
         },
         "eyebrow": "For brands",
-        "title": "Give AI the facts about your product.",
+        "title": "Be the product the answer names.",
         "description": "When someone asks AI for an option in your category, it compares products. ecentic shows which of yours get picked in simulations, which lose to a competitor, and where your data needs work. You choose which listing changes to publish.",
         "actions": [
           {
@@ -12949,7 +12949,7 @@
               },
               {
                 "title": "Simulated",
-                "body": "Question: “extra virgin olive oil for salad dressing under $25”. A rival wins 3 of 3 illustrative runs, with clearer source facts."
+                "body": "Question: “best extra virgin olive oil for salad dressing under $25”. A rival wins 3 of 3 illustrative runs, with clearer source facts."
               },
               {
                 "title": "Fixed",
@@ -13038,13 +13038,13 @@
         }
       },
       "retailers-and-marketplaces": {
-        "faqTitle": "Questions we hear",
+        "faqTitle": "Questions retailers ask",
         "meta": {
           "title": "ecentic for retailers and marketplaces",
           "description": "Find gaps in supplier listings, compare products against competitors and choose where to improve your catalog. Start with one category."
         },
         "eyebrow": "For retailers and marketplaces",
-        "title": "Thousands of listings. A clearer place to start.",
+        "title": "Thousands of listings. One shot at the agent.",
         "description": "Supplier data arrives in every shape. ecentic checks supported listing fields and compares products with named competitors. Use the findings to prioritize the catalog work your team can verify, then choose which changes to publish.",
         "actions": [
           {
@@ -13093,11 +13093,11 @@
             "items": [
               {
                 "title": "Connected",
-                "body": "An office chair listing has three colour variants. The supplier’s description states the seat-height range and weight capacity, but the short title is vague."
+                "body": "An office chair listing has three color variants. The supplier’s description states the seat-height range and weight capacity, but the short title is vague."
               },
               {
                 "title": "Simulated",
-                "body": "Question: “adjustable office chair for a tall person under $400”. A competitor wins 3 of 3 illustrative tests with clearer specifications."
+                "body": "Question: “office chair for a tall person with back pain under $400”. A competitor wins 3 of 3 illustrative tests with clearer specifications."
               },
               {
                 "title": "Fixed",
@@ -13171,7 +13171,7 @@
           },
           {
             "question": "Can we start with one category?",
-            "answer": "Yes. The proposed pilot starts with one market and one category, with the scope agreed before work begins."
+            "answer": "Yes. Start with one market and one category, with a baseline at week 0 and a readout at week 6. Agree the scope before work begins."
           },
           {
             "question": "Who owns the data and fixes?",
@@ -13185,14 +13185,14 @@
         }
       },
       "agencies-and-partners": {
-        "faqTitle": "Questions we hear",
+        "faqTitle": "Questions partners ask",
         "meta": {
           "title": "ecentic for agencies and partners",
           "description": "Add AI product comparisons and listing work to your client services. Explore agency, technology and creator tracks with ecentic."
         },
         "eyebrow": "For agencies and partners",
         "title": "Add AI commerce to what you already sell.",
-        "description": "Your clients ask what to do about AI shopping. ecentic gives you product comparisons, listing checks and publishing controls to use within the relationship you already have. Discuss commercial terms before promising a resale or referral arrangement.",
+        "description": "Your clients are asking what to do about ChatGPT. ecentic gives you product checks, listing fixes and a partner track to discuss, inside the relationship you already have. Commercial terms are agreed before a resale or referral arrangement.",
         "actions": [
           {
             "label": "Become a partner",
@@ -13294,11 +13294,11 @@
         "faqTitle": "Questions we hear",
         "meta": {
           "title": "ecentic for enterprise: run AI as a sales channel",
-          "description": "Scope a public-data pilot for one market and category. Agree targets before work begins, with a founder on the account and DPA on request."
+          "description": "Pilots for retailers, brands and travel companies on public data first. Targets agreed in writing on day one, with a founder on the account."
         },
         "eyebrow": "For enterprise",
         "title": "AI is a new sales channel. Run it like one.",
-        "description": "For retailers, brands and travel companies with many categories, markets or brands. Start with one market and one category, on public data, and agree the targets in writing before the work begins.",
+        "description": "For retailers, brands and travel companies with many categories, markets or brands. We start with one market and one category, on public data, and agree the targets in writing on day one.",
         "actions": [
           {
             "label": "Talk to us",
@@ -13311,13 +13311,13 @@
         ],
         "facts": [
           "Public data first. No logins, code on your site or customer data for the baseline.",
-          "Targets agreed in writing before work begins.",
+          "Targets agreed in writing on day one.",
           "A founder on the account, with a direct line to engineering.",
-          "DPA on request and a dated sub-processor list."
+          "Data handling and contracting requirements reviewed before access."
         ],
         "challenges": [
           {
-            "before": "Nobody owns AI as a channel. Teams each see a piece.",
+            "before": "Nobody owns AI as a channel. Search, marketplace and e-commerce teams each see a piece of it.",
             "after": "Agree one question set and a readout owned by the team responsible for the category.",
             "href": "/platform/simulate"
           },
@@ -13363,7 +13363,7 @@
                 "body": "3 months. For checkout or booking questions that need more than a fix list. The agreed scope can include a prototype with dummy data and a month-3 readout."
               }
             ],
-            "note": "Fees depend on scope and are agreed on the first call. These are service engagements, not claims of automated product features."
+            "note": "Fees depend on scope and are agreed on the first call. These are service engagements; the pilot readout follows the method agreed with your team."
           },
           {
             "id": "pilot",
@@ -13381,7 +13381,7 @@
                 "body": "Work on the agreed category and test checkout where it applies. Public-data work is handed to your team; direct changes need explicit authorization."
               },
               {
-                "title": "Week 6: repeat",
+                "title": "Week 6 · Re-run",
                 "body": "Repeat the agreed questions with the same assistants and number of runs. Document model or access changes."
               },
               {
@@ -13436,7 +13436,7 @@
           },
           {
             "id": "security",
-            "title": "Prepare for the security review.",
+            "title": "Ready for your security review.",
             "eyebrow": "[06] Security and trust",
             "items": [
               {
@@ -13445,7 +13445,7 @@
               },
               {
                 "title": "Your data",
-                "body": "Review data handling, the DPA request route and the dated sub-processor list. {{TODO: Confirm operational security facts and contracting entity before launch.}}"
+                "body": "Review data handling and discuss the agreement and provider information your team requires. {{TODO: Confirm the approved DPA, contracted sub-processors, processing locations and contracting entity.}}"
               },
               {
                 "title": "Straight answers",
@@ -13461,7 +13461,7 @@
           },
           {
             "id": "scale",
-            "title": "Built around clear interfaces.",
+            "title": "Built for scale.",
             "eyebrow": "[07] Platform capabilities",
             "columns": 3,
             "items": [
@@ -13486,7 +13486,7 @@
                 "body": "WooCommerce checkout with configurable agent allow-lists, signature requirements and rate limits. Your gateway handles payment."
               },
               {
-                "title": "Public discovery",
+                "title": "We publish what we ask you to publish.",
                 "body": "Our llms.txt, API catalog, checkout profile and MCP endpoint are public.",
                 "href": "/resources",
                 "label": "See how it works"
@@ -13495,7 +13495,7 @@
           },
           {
             "id": "checklist",
-            "title": "Your buyer’s checklist.",
+            "title": "Buyer’s checklist.",
             "eyebrow": "[08] Before the pilot",
             "rows": [
               {
@@ -13530,7 +13530,7 @@
           },
           {
             "id": "who",
-            "title": "Who it is for.",
+            "title": "Who it’s for.",
             "eyebrow": "[09] Your business",
             "items": [
               {
@@ -13558,7 +13558,7 @@
         "faqs": [
           {
             "question": "How long until we see results?",
-            "answer": "The proposed pilot measures week 6 against week 0. Assistants change over time, so the readout explains what moved and the limits of the comparison. No sales outcome is guaranteed."
+            "answer": "We measure at week 6 against the baseline from week 0. Assistants change their answers over time, so the readout shows what moved and the limits of the comparison. No sales outcome is guaranteed."
           },
           {
             "question": "Which assistants do you cover?",
@@ -13876,7 +13876,7 @@
         "title": "Selling beauty when AI reads the ingredients.",
         "description": "People ask for products that suit their skin or avoid an ingredient. Put the full ingredient list and supported claims in readable text. Keep product descriptions consistent with the pack and the evidence behind each statement.",
         "questions": [
-          "Fragrance-free moisturiser for sensitive skin",
+          "Fragrance-free moisturizer for sensitive skin",
           "Mineral sunscreen SPF 50 that does not leave a white cast",
           "Vegan shampoo for curly hair"
         ],
@@ -13907,7 +13907,7 @@
             "title": "Start with a real buying question.",
             "items": [
               {
-                "title": "Fragrance-free moisturiser for sensitive skin",
+                "title": "Fragrance-free moisturizer for sensitive skin",
                 "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
               },
               {
@@ -13940,7 +13940,7 @@
               },
               {
                 "title": "Protection",
-                "body": "SPF and UVA protection stated exactly as tested and labelled."
+                "body": "SPF and UVA protection stated exactly as tested and labeled."
               },
               {
                 "title": "Size and price",
@@ -14013,7 +14013,7 @@
         "title": "Selling electronics when AI compares the spec sheet.",
         "description": "Electronics questions are often about battery life, compatibility or ports. Give each model and variant clear identifiers and source specifications so a comparison does not depend on a product name alone.",
         "questions": [
-          "Noise-cancelling earbuds with the longest battery under $200",
+          "noise-canceling earbuds with the longest battery under $200",
           "Laptop for video editing with 32 GB of RAM",
           "Robot vacuum that works with Google Home"
         ],
@@ -14044,7 +14044,7 @@
             "title": "Start with a real buying question.",
             "items": [
               {
-                "title": "Noise-cancelling earbuds with the longest battery under $200",
+                "title": "noise-canceling earbuds with the longest battery under $200",
                 "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
               },
               {
@@ -14081,7 +14081,7 @@
               },
               {
                 "title": "Warranty",
-                "body": "Warranty length, coverage and who honours it."
+                "body": "Warranty length, coverage and who honors it."
               },
               {
                 "title": "Condition",
@@ -14154,7 +14154,7 @@
         "title": "Selling furniture when AI has to measure the room.",
         "description": "People describe their room, budget and practical needs. A useful comparison needs dimensions, materials and delivery terms in readable text. Keep exact product measurements separate from illustrative photos.",
         "questions": [
-          "Sofa bed that fits a 2-metre wall",
+          "Sofa bed that fits a 2-meter wall",
           "Solid wood dining table for six under €1,000",
           "Rug that is safe for underfloor heating"
         ],
@@ -14169,7 +14169,7 @@
           },
           {
             "question": "We offer one sofa in 20 fabrics. How should it look?",
-            "answer": "Identify each variant’s fabric, colour, price and availability. Use correct dimensions if a variant changes them."
+            "answer": "Identify each variant’s fabric, color, price and availability. Use correct dimensions if a variant changes them."
           },
           {
             "question": "Can AI buy a sofa for someone?",
@@ -14185,7 +14185,7 @@
             "title": "Start with a real buying question.",
             "items": [
               {
-                "title": "Sofa bed that fits a 2-metre wall",
+                "title": "Sofa bed that fits a 2-meter wall",
                 "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
               },
               {
@@ -14301,8 +14301,8 @@
             "answer": "Submit supported size fields and variants. Keep verified fit notes and measurements available as readable text; a generic importer does not preserve every custom size-chart format."
           },
           {
-            "question": "How should 30 colour and size variants appear?",
-            "answer": "Each variant should carry the correct colour, size, price and availability. Use its own identifier where one is assigned."
+            "question": "How should 30 color and size variants appear?",
+            "answer": "Each variant should carry the correct color, size, price and availability. Use its own identifier where one is assigned."
           },
           {
             "question": "Can we call a product sustainable?",
@@ -14347,7 +14347,7 @@
               },
               {
                 "title": "Materials",
-                "body": "Fibre composition with percentages."
+                "body": "Fiber composition with percentages."
               },
               {
                 "title": "Performance",
@@ -14362,8 +14362,8 @@
                 "body": "Washing and care instructions matching the label."
               },
               {
-                "title": "Colour and variants",
-                "body": "Each available colour and size, with its own price and stock where applicable."
+                "title": "Color and variants",
+                "body": "Each available color and size, with its own price and stock where applicable."
               }
             ],
             "columns": 3,
@@ -14375,8 +14375,8 @@
             "title": "Keep the rules with the product facts.",
             "paragraphs": [
               "Google’s size guidance requires size data for specified clothing and shoe listings, with requirements varying by destination and format. Check the exact apparel attributes for your market.",
-              "EU Regulation 1007/2011 requires fibre-composition information to be clearly available before an online purchase.",
-              "EU Directive 2024/825 calls for measures applying from 27 September 2026 that prohibit generic environmental claims without relevant recognised excellent environmental performance. Verify the national implementation before using a claim."
+              "EU Regulation 1007/2011 requires fiber-composition information to be clearly available before an online purchase.",
+              "EU Directive 2024/825 calls for measures applying from 27 September 2026 that prohibit generic environmental claims without relevant recognized excellent environmental performance. Verify the national implementation before using a claim."
             ],
             "note": "Sources checked 10 November 2026. Requirements can depend on the product, channel and country.",
             "links": [
@@ -14385,7 +14385,7 @@
                 "href": "https://support.google.com/merchants/answer/6324492?hl=en"
               },
               {
-                "label": "EU textile fibre information",
+                "label": "EU textile fiber information",
                 "href": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32011R1007"
               },
               {
@@ -14721,11 +14721,11 @@
     },
     "sectorIndex": {
       "meta": {
-        "title": "Sectors: product data for AI shopping",
+        "title": "Sectors: what AI needs to sell your products",
         "description": "Explore what to check in food, drink, beauty, electronics, home, fashion, wellness, pet and travel product data."
       },
       "eyebrow": "Sectors",
-      "title": "What AI needs to compare your products.",
+      "title": "What AI needs to sell your products.",
       "description": "Different products need different facts. A sofa needs dimensions, a sunscreen needs substantiated protection information, a trip needs cancellation terms. Start with your category.",
       "sections": [
         {
@@ -14748,19 +14748,19 @@
               "title": "Beauty and personal care",
               "body": "Selling beauty when AI reads the ingredients.",
               "href": "/solutions/sectors/beauty-and-personal-care",
-              "label": "Fragrance-free moisturiser for sensitive skin"
+              "label": "Fragrance-free moisturizer for sensitive skin"
             },
             {
               "title": "Consumer electronics",
               "body": "Selling electronics when AI compares the spec sheet.",
               "href": "/solutions/sectors/consumer-electronics",
-              "label": "Noise-cancelling earbuds with the longest battery under $200"
+              "label": "noise-canceling earbuds with the longest battery under $200"
             },
             {
               "title": "Home and furniture",
               "body": "Selling furniture when AI has to measure the room.",
               "href": "/solutions/sectors/home-and-furniture",
-              "label": "Sofa bed that fits a 2-metre wall"
+              "label": "Sofa bed that fits a 2-meter wall"
             },
             {
               "title": "Fashion and outdoor",
@@ -14785,8 +14785,8 @@
         },
         {
           "id": "other-sectors",
-          "title": "Do not see your sector?",
-          "description": "Tell us what you sell and which catalog facts are hardest to manage.",
+          "title": "Don’t see your sector?",
+          "description": "Tell us what you sell.",
           "links": [
             {
               "label": "Talk to us",
@@ -14798,8 +14798,8 @@
     },
     "index": {
       "meta": {
-        "title": "Solutions for brands, retailers and enterprise | ecentic",
-        "description": "Explore AI commerce by business, team and sector. Compare products, improve verified data and test supported checkout flows."
+        "title": "Solutions: ecentic for brands, retailers and enterprise",
+        "description": "How ecentic helps brands, retailers, enterprise teams and agencies sell through AI, by business, by team and by sector."
       },
       "eyebrow": "Solutions",
       "title": "Built for how you sell.",
@@ -14812,13 +14812,13 @@
           "items": [
             {
               "title": "For brands",
-              "body": "Give AI the facts about your product.",
+              "body": "Be the product the answer names.",
               "href": "/solutions/brands",
               "label": "See how it works"
             },
             {
               "title": "For retailers and marketplaces",
-              "body": "Thousands of listings. A clearer place to start.",
+              "body": "Thousands of listings. One shot at the agent.",
               "href": "/solutions/retailers-and-marketplaces",
               "label": "See how it works"
             },
@@ -14901,19 +14901,19 @@
               "title": "Beauty and personal care",
               "body": "Selling beauty when AI reads the ingredients.",
               "href": "/solutions/sectors/beauty-and-personal-care",
-              "label": "Fragrance-free moisturiser for sensitive skin"
+              "label": "Fragrance-free moisturizer for sensitive skin"
             },
             {
               "title": "Consumer electronics",
               "body": "Selling electronics when AI compares the spec sheet.",
               "href": "/solutions/sectors/consumer-electronics",
-              "label": "Noise-cancelling earbuds with the longest battery under $200"
+              "label": "noise-canceling earbuds with the longest battery under $200"
             },
             {
               "title": "Home and furniture",
               "body": "Selling furniture when AI has to measure the room.",
               "href": "/solutions/sectors/home-and-furniture",
-              "label": "Sofa bed that fits a 2-metre wall"
+              "label": "Sofa bed that fits a 2-meter wall"
             },
             {
               "title": "Fashion and outdoor",
@@ -15120,13 +15120,13 @@
         "capabilities": {
           "simulate": "ChatGPT evaluates selected products against competitors in store scans.",
           "fix": "Listing checks include OpenAI feed rules. Publish a revised title and description, or structured data through its separate action, to a connected store.",
-          "checkout": "The ecentic ChatGPT app is coming soon and has not been published. Current checkout tools do not establish a live ChatGPT app integration.",
+          "checkout": "The ecentic ChatGPT app is coming soon; its directory publication has not been confirmed. Current checkout tools do not establish a live ChatGPT app integration.",
           "track": "Tracks ChatGPT referrals and recognized agent visits on Shopify."
         },
         "faqs": [
           {
             "question": "Can shoppers buy inside ChatGPT?",
-            "answer": "OpenAI’s current beta documentation describes checkout inside ChatGPT for approved plugin integrations. Other product links take shoppers to the merchant. Eligibility depends on the integration; ecentic’s app is not published."
+            "answer": "OpenAI’s current beta documentation describes checkout inside ChatGPT for approved plugin integrations. Other product links take shoppers to the merchant. Eligibility depends on the integration; publication of ecentic’s app has not been confirmed."
           },
           {
             "question": "We use Shopify. Does ecentic enroll our store in ChatGPT?",
@@ -15253,7 +15253,7 @@
       },
       "perplexity": {
         "meta": {
-          "title": "Selling through Perplexity",
+          "title": "Selling through Perplexity shopping",
           "description": "How Perplexity presents shopping results, where its merchant program is documented, and what ecentic supports today."
         },
         "title": "Selling through Perplexity",
@@ -15535,7 +15535,7 @@
         "features": [
           "Every store in one account",
           "API, MCP server and CLI",
-          "DPA on request",
+          "Data processing requirements review",
           "A founder on the account",
           "Pilot readout with agreed targets"
         ],
@@ -15598,7 +15598,7 @@
           "selfServe": true
         },
         {
-          "label": "DPA on request",
+          "label": "Data processing requirements review",
           "selfServe": true
         },
         {
@@ -15656,7 +15656,7 @@
       },
       {
         "question": "Do you sign a DPA?",
-        "answer": "Yes, on request. Contact us to arrange a DPA and discuss the security review for your account."
+        "answer": "Discuss your DPA requirements with us during scoping. Confirm the agreement and signing arrangements before sharing personal data."
       }
     ],
     "policyLinks": [
@@ -15814,7 +15814,7 @@
       },
       "eyebrow": "Developers / AI instructions",
       "title": "Give an agent a clear starting point.",
-      "description": "ecentic helps teams prepare product data for AI shopping. Use these boundaries and public entry points to choose the right next step. ecentic isn’t an SEO or GEO tool.",
+      "description": "ecentic is one layer between a brand's catalog and the AI assistants that sell it. It optimizes the data they read, gets checkout ready for them to buy, and changes with them when their rules change.",
       "actions": [
         {
           "label": "Read the API reference",
@@ -15840,7 +15840,7 @@
             },
             {
               "title": "Fix with your approval",
-              "body": "Use the findings to prepare listing changes. Nothing changes in the connected store until you click Apply. Publishing requires a supported direct connector.",
+              "body": "Apply generates and publishes a title and description using existing product facts. Structured data and Merchant Center sync have separate controls. Connecting Shopify also installs visit tracking. Publishing requires a supported direct connector.",
               "href": "/platform/fix",
               "label": "Explore listing fixes"
             },
@@ -15900,13 +15900,41 @@
     },
     "og": {
       "home": {
-        "title": "Get the sale when AI does the shopping.",
-        "description": "The agentic commerce platform. Connect, simulate, fix, sell and track."
+        "title": "Get the sale when AI does the buying.",
+        "description": "The AI commerce layer."
       },
       "docs": {
         "title": "Build on the agentic commerce platform.",
         "description": "API reference, MCP, CLI and public discovery documents for developers."
       }
     }
+  },
+  "enterpriseLayer": {
+    "eyebrow": "01 · How it fits",
+    "title": "Your stack on one side. The AI channels on the other. ecentic in between.",
+    "description": "Bring the catalog you already run. Use ecentic to prepare it for the assistants your customers use, with each channel’s current availability shown.",
+    "stack": "Your stack",
+    "channels": "AI channels",
+    "layer": "The AI commerce layer",
+    "stages": [
+      "Simulate",
+      "Fix",
+      "Sell",
+      "Track"
+    ],
+    "inputs": [
+      "Shopify",
+      "WooCommerce",
+      "Product feeds / CSV",
+      "PIM",
+      "Google Merchant Center"
+    ],
+    "legend": "Solid lines: available today, including simulations. Dashed lines: coming soon. Channel availability is not a guarantee of native checkout.",
+    "action": "See every AI channel",
+    "diagram": "Your existing commerce stack connects to ecentic, which prepares product data and supported checkout for six AI channels.",
+    "google": "Google AI Mode / Gemini"
+  },
+  "enterpriseReview": {
+    "pending": "Pending confirmation"
   }
 }

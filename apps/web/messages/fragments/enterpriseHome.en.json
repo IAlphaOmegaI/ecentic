@@ -2,12 +2,12 @@
   "enterpriseHome": {
     "meta": {
       "title": "AI shopping optimization and agent checkout | ecentic",
-      "description": "AI shopping optimization for Shopify, WooCommerce and product feeds. Simulate product choices, improve listings and connect agent checkout with ecentic."
+      "description": "The AI commerce layer: fix the product data AI assistants read, get checkout ready for AI to buy, and keep up when their rules change."
     },
     "hero": {
-      "eyebrow": "The agentic commerce platform",
-      "title": "Get the sale when AI does the shopping.",
-      "description": "AI is becoming another way to find and compare products. ecentic helps yours compete: improve the product data assistants read, connect agent checkout on WooCommerce, and run a fresh simulation when you want to check again.",
+      "eyebrow": "The AI commerce layer",
+      "title": "One layer between your catalog and the AI that sells it.",
+      "description": "Whether people search Google, shop on Amazon or ask a chatbot, AI now answers with a product, and every assistant has its own rules for choosing it and buying it. ecentic is one layer between your catalog and those assistants. It fixes the data they read, gets your checkout ready for them to buy, and keeps up when their rules change.",
       "actions": [
         {
           "label": "Book a demo",
@@ -22,7 +22,7 @@
         "Connect Shopify and WooCommerce, or import a supported product feed or CSV."
       ],
       "screenshot": {
-        "alt": "ecentic win-rate overview showing explicitly labelled sample data.",
+        "alt": "ecentic win-rate overview showing explicitly labeled sample data.",
         "caption": "Product screenshot · sample data"
       }
     },
@@ -54,7 +54,7 @@
       "missingAsset": "{{TODO: official logo}}"
     },
     "businesses": {
-      "eyebrow": "01 · Who it's for",
+      "eyebrow": "02 · Who it's for",
       "title": "Different businesses. Same new shopper.",
       "description": "Start with the way you sell and the questions your team needs to answer.",
       "painLabel": "The usual problems",
@@ -114,7 +114,7 @@
       ]
     },
     "loop": {
-      "eyebrow": "02 · How it works",
+      "eyebrow": "03 · How it works",
       "title": "From product feed to AI checkout.",
       "description": "Connect, compare, improve, sell and check again. You choose which changes to publish.",
       "steps": [
@@ -161,7 +161,7 @@
       ]
     },
     "film": {
-      "eyebrow": "03 · Watch it work",
+      "eyebrow": "04 · Watch it work",
       "title": "See ecentic in a minute.",
       "description": "A quick look at the product, from a comparison to the next decision for your catalog.",
       "caption": "ecentic product film",
@@ -170,7 +170,7 @@
       }
     },
     "channels": {
-      "eyebrow": "04 · AI channels",
+      "eyebrow": "05 · AI channels",
       "title": "One catalog. The assistants your customers ask.",
       "description": "Each assistant has its own product sources and rules for buying. See what ecentic supports today and what is planned.",
       "checked": "Checked 10 November 2026. Every channel page is dated and links to its sources.",
@@ -230,7 +230,7 @@
       }
     },
     "integration": {
-      "eyebrow": "05 · Integrations",
+      "eyebrow": "06 · Integrations",
       "title": "Plugs into the stack you already run.",
       "description": "Direct connections, supported feeds and the integrations we are building next. Each tile states its current status.",
       "counter": {
@@ -250,7 +250,7 @@
       ]
     },
     "mechanisms": {
-      "eyebrow": "06 · Under the hood",
+      "eyebrow": "07 · Under the hood",
       "title": "Everything between “AI skipped us” and “AI bought from us”.",
       "items": [
         {
@@ -304,8 +304,8 @@
       ]
     },
     "proof": {
-      "eyebrow": "07 · What we've seen so far",
-      "title": "Early numbers, stated plainly.",
+      "eyebrow": "08 · What we've measured so far",
+      "title": "What we've measured so far.",
       "stats": [
         {
           "value": "36,797",
@@ -329,7 +329,7 @@
       "study": {
         "title": "A large spirits marketplace",
         "body": "88% of 9,699 products had at least one fault in the data agents read. Asked where to buy two bottles it stocked, an agent named it 0 times out of 20.",
-        "note": "An anonymised finding. A snapshot of one catalog and question set, not a prediction for every store."
+        "note": "An anonymized finding. A snapshot of one catalog and question set, not a prediction for every store."
       },
       "footnotes": [
         {
@@ -344,7 +344,7 @@
       "pipeline": "Pilots in scoping with companies in enterprise retail, travel and flexible workspace."
     },
     "procurement": {
-      "eyebrow": "08 · Enterprise",
+      "eyebrow": "09 · Enterprise",
       "title": "Bring the right questions to security review.",
       "items": [
         {
@@ -357,7 +357,7 @@
         },
         {
           "title": "Data handling you can review.",
-          "body": "Review the privacy policy, request a DPA and see the named sub-processors. Confirm operational and contracting requirements with us."
+          "body": "Review the privacy policy and the providers used by the product. Discuss the data processing agreement, deployment and contracting requirements for your pilot."
         },
         {
           "title": "A founder on the account.",
@@ -376,7 +376,7 @@
       ]
     },
     "pricing": {
-      "eyebrow": "09 · Pricing",
+      "eyebrow": "10 · Pricing",
       "title": "Start free. Scale when AI starts buying.",
       "description": "Choose a starting point that fits your store and your team.",
       "items": [
@@ -405,7 +405,7 @@
       }
     },
     "editorial": {
-      "eyebrow": "10 · From the team",
+      "eyebrow": "11 · From the team",
       "title": "What we're learning.",
       "description": "Product notes and practical guides, written by the ecentic team.",
       "loading": "Loading articles",
@@ -423,7 +423,7 @@
       "items": [
         {
           "question": "What does ecentic do?",
-          "answer": "ecentic helps online stores compete when AI does the shopping. It simulates how ChatGPT, Claude and Gemini compare products, helps improve the product data they read, and supports agent checkout on WooCommerce."
+          "answer": "ecentic is one layer between your catalog and the AI assistants that sell it. It simulates how ChatGPT, Claude and Gemini compare products, helps improve the data they read, and supports agent checkout on WooCommerce."
         },
         {
           "question": "Which AI assistants does it cover?",
@@ -443,7 +443,7 @@
         },
         {
           "question": "How is our data handled?",
-          "answer": "The security page describes current catalog access, tracking and AI-provider handling. You can review our privacy policy, request a DPA and see named sub-processors. Confirm deployment and contracting requirements with us before a pilot."
+          "answer": "The security page describes current catalog access, tracking and AI-provider handling. Review our privacy policy and the providers used by the product, then confirm data processing, deployment and contracting requirements with us before a pilot."
         },
         {
           "question": "Is this SEO?",
@@ -456,7 +456,7 @@
       ]
     },
     "closing": {
-      "title": "AI is already choosing products in your category.",
+      "title": "Get the sale when AI does the buying.",
       "description": "Find out if it's choosing yours.",
       "actions": [
         {

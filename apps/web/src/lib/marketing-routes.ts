@@ -2,7 +2,7 @@
 export const marketingRoutes = [
   {
     path: "/",
-    label: "Get the sale when AI does the shopping",
+    label: "Get the sale when AI does the buying.",
     category: "Platform",
     priority: 1,
     changeFrequency: "weekly",

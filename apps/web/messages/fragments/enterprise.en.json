@@ -1,8 +1,8 @@
 {
   "enterprise": {
     "meta": {
-      "title": "Enterprise — agent commerce at scale",
-      "description": "Agent-commerce intelligence for enterprise merchants: multi-brand dashboards, API access, SSO, SOC 2 compliance, UCP signing, and a dedicated CSM team."
+      "title": "ecentic for enterprise: run AI as a sales channel",
+      "description": "Pilots for retailers, brands and travel companies on public data first. Targets agreed in writing on day one, with a founder on the account."
     },
     "breadcrumb": {
       "home": "Home",
@@ -11,15 +11,15 @@
     "hero": {
       "eyebrow": "Enterprise",
       "title": {
-        "primary": "Agent-commerce infrastructure",
-        "accent": "at scale."
+        "primary": "AI is a new sales channel.",
+        "accent": "Run it like one."
       },
-      "description": "Multi-brand dashboards, API access, UCP signing, and dedicated support for commerce teams running hundreds of SKUs across multiple platforms.",
+      "description": "For retailers, brands and travel companies with many categories, markets or brands. We start with one market and one category, on public data, and agree the targets in writing on day one.",
       "assurances": [
-        "Multi-brand dashboards",
-        "Custom API access",
-        "Dedicated CSM",
-        "SOC 2 in progress"
+        "Public data first. No logins, code on your site or customer data for the baseline.",
+        "Targets agreed in writing on day one.",
+        "A founder on the account, with a direct line to engineering.",
+        "Product limits explained"
       ],
       "art": {
         "alt": "ASCII-art illustration of an office tower"
@@ -31,121 +31,121 @@
     },
     "why": {
       "number": "01",
-      "title": "When a single-brand plan stops being enough.",
-      "description": "Enterprise is for teams that need one agent-commerce layer across brands, regions, and security requirements, rather than another self-serve seat.",
+      "title": "Start with one market and one category.",
+      "description": "Enterprise pilots are scoped around your catalog, business questions and security review.",
       "paragraphs": [
-        "Dominate runs the full optimization loop for one brand. Enterprise adds the control plane: multi-brand rollups, SSO, API access, managed UCP signing, and a named CSM who owns the relationship.",
-        "The decision usually shows up when catalog size, brand count, or procurement requirements outgrow a flat monthly plan."
+        "Enterprise is a service engagement with agreed questions, data changes and a written readout. Current product limits still apply.",
+        "Start on public data. Agree the scope, targets and access requirements before the work begins."
       ],
       "panelTitle": "Who this fits",
       "audiences": [
         {
-          "title": "Multi-brand operators",
-          "description": "Teams running several storefronts or regions who need one win-rate and agent-traffic view."
+          "title": "Retail groups and marketplaces",
+          "description": "Large catalogs, many suppliers and several markets."
         },
         {
-          "title": "Security-led buyers",
-          "description": "Organizations that need SSO, a DPA, and a clear path toward SOC 2 Type II."
+          "title": "Consumer brands",
+          "description": "Products sold on your site and through retailers."
         },
         {
-          "title": "Platform / data teams",
-          "description": "Groups that want read-only API access into scans, agent traffic, and UCP profiles."
+          "title": "Travel and experiences",
+          "description": "Packages, tickets and stays people research with AI."
         },
         {
-          "title": "Commerce leadership",
-          "description": "Leaders who want a named CSM, quarterly reviews, and an engineering escalation path."
+          "title": "Agencies and partners",
+          "description": "Store teams that verify and ship the agreed changes."
         }
       ]
     },
     "capabilities": {
       "number": "02",
-      "title": "Everything in Dominate, plus the enterprise layer.",
-      "description": "The security, scale, and support layer enterprise teams need to run agent-commerce optimization across brands.",
+      "title": "Built for scale.",
+      "description": "Current capabilities and their boundaries.",
       "items": [
         {
-          "title": "Multi-brand rollups",
-          "description": "One dashboard across every brand and region. Aggregate win-rate, agent traffic, and optimization lift in a single view."
+          "title": "Your stores in one account",
+          "description": "Hold every store owned by one account under one login. This does not include delegated teams or SSO."
         },
         {
-          "title": "API access",
-          "description": "Read-only API for programmatic access to scan results, agent traffic, and UCP profiles."
+          "title": "REST API",
+          "description": "A versioned public surface with OpenAPI 3.1, typed problem responses and documented rate limits."
         },
         {
-          "title": "SSO",
-          "description": "Okta, Google Workspace, and Azure AD supported. Provision seats without touching ecentic directly."
+          "title": "MCP server and CLI",
+          "description": "Discovery, plans, connection and onboarding workflows. Dashboard scan and traffic exports are not exposed today."
         },
         {
-          "title": "SOC 2 Type II",
-          "description": "Audit in progress. Data residency options, GDPR-compliant processing, and a DPA on request."
+          "title": "Merchant Center sync",
+          "description": "Send published Shopify listing fixes through a separate supplemental-data sync."
         },
         {
-          "title": "UCP signing service",
-          "description": "ecentic manages cryptographic signing of your UCP profile so agents can verify merchant identity."
+          "title": "Controlled agent checkout",
+          "description": "WooCommerce checkout with configurable agent allow-lists, signature requirements and rate limits. Your gateway handles payment."
         },
         {
-          "title": "Dedicated CSM",
-          "description": "A named customer success manager, quarterly business reviews, and direct engineering escalation."
+          "title": "We publish what we ask you to publish.",
+          "description": "Our llms.txt, API catalog, checkout profile and MCP endpoint are public."
         }
       ],
-      "paragraph": "We scope Enterprise around catalog size, platforms, and compliance needs, then share a custom ROI estimate before anyone writes a procurement deck.",
+      "paragraph": "Fees depend on scope and are agreed on the first call. These are service engagements; the pilot readout follows the method agreed with your team.",
       "panelTitle": "How scoping works",
       "scoping": [
         {
-          "title": "Short discovery call",
-          "description": "Catalog size, platforms, and compliance needs."
+          "title": "First conversation",
+          "description": "Agree the category, market and questions."
         },
         {
-          "title": "Custom ROI estimate",
-          "description": "Scoped to your SKU count and current win rates."
+          "title": "Written scope",
+          "description": "Define the baseline, changes, fees and readout."
         },
         {
-          "title": "Onboarding timeline",
-          "description": "No procurement deck required to begin."
+          "title": "Security review",
+          "description": "Confirm data handling and access before connecting systems."
         }
       ]
     },
     "compare": {
       "number": "03",
-      "title": "Where Dominate ends and Enterprise begins.",
-      "description": "Dominate runs the full optimization loop for a single brand. Enterprise adds security, scale, and support for multi-brand commerce teams.",
+      "title": "A plan or a scoped pilot.",
+      "description": "Choose self-serve product access or a service engagement with agreed targets.",
       "dominate": {
         "badge": "Dominate",
-        "title": "Full loop for one brand.",
-        "description": "Continuous simulations, auto-optimization, and UCP generation for a single catalog up to 1000 products.",
+        "title": "Self-serve catalog work.",
+        "description": "On-demand simulations and supported publishing actions, within the current plan limits.",
         "strengths": [
-          "$149/mo with continuous agent simulations",
-          "Auto-optimization and UCP generation included",
-          "Best fit for a single brand up to 1000 products"
+          "Monthly subscription without a performance fee",
+          "Simulations run when you request them",
+          "Current prices and product limits on Pricing"
         ]
       },
       "enterprise": {
         "badge": "Enterprise",
-        "title": "Control plane for multi-brand teams.",
-        "description": "Everything in Dominate, plus multi-brand rollups, API access, SSO, managed UCP signing, and a dedicated CSM.",
+        "title": "A pilot scoped with your team.",
+        "description": "6 weeks, one market, one category. Baseline at week 0, agreed data changes and the same questions at week 6. Any outcome-linked fee and target are agreed in advance.",
         "strengths": [
-          "Custom limits across brands and regions",
-          "SSO, API access, and UCP signing service",
-          "Named CSM with quarterly business reviews"
+          "One market and one category to start",
+          "Agreed baseline and week-6 readout",
+          "A founder on the account"
         ]
       },
-      "paragraph": "Stay on Dominate while one brand owns the loop. Move to Enterprise when brand count, security review, or reporting requirements need a shared layer.",
+      "paragraph": "The pilot scope defines the work and access required. It does not add SSO, team seats or dashboard-result API exports to the current product.",
       "triggersTitle": "When Enterprise becomes the clearer fit",
       "triggers": [
         {
-          "title": "Multiple brands or regions",
-          "description": "You need rollups across storefronts instead of separate Dominate seats."
+          "title": "Multiple brands or markets",
+          "description": "Start with the category and market that answer a clear business question."
         },
         {
-          "title": "SSO or DPA required",
-          "description": "Security or legal review blocks a self-serve plan until identity and contracts are covered."
+          "title": "A security review",
+          "description": "Confirm operational and contractual requirements before access."
         },
         {
-          "title": "Data must leave the UI",
-          "description": "Your analytics stack needs API access to scans, agent traffic, and UCP profiles."
+          "title": "A method your team can assess",
+          "description": "Agree the question set, baseline and written readout."
         },
         {
-          "title": "A named owner matters",
-          "description": "You want a CSM, quarterly reviews, and a direct path into engineering."
+          "title": "A named owner",
+          "description": "Work with a founder and your existing store team."
         }
       ]
     },
@@ -157,20 +157,20 @@
     "faq": {
       "items": [
         {
-          "question": "When should I choose Enterprise over Dominate?",
-          "answer": "Choose Enterprise when you run hundreds of SKUs across multiple brands or regions, need SSO or a DPA, want UCP signing managed for you, or need a dedicated CSM and custom API access. Dominate covers the full optimization loop for a single brand up to 1000 products."
+          "question": "When should I discuss an enterprise pilot?",
+          "answer": "When you run several stores or brands, have thousands of products, need a security review, or want a pilot with targets agreed in writing."
         },
         {
-          "question": "What does onboarding look like for Enterprise?",
-          "answer": "We start with a short discovery call, share a custom ROI estimate for your catalog size, and scope an onboarding timeline. No procurement deck is required to begin the conversation."
+          "question": "How does a pilot start?",
+          "answer": "Start with one market and one category on public data. Agree the scope, fees and collection method before work begins."
         },
         {
           "question": "Is SOC 2 available today?",
-          "answer": "SOC 2 Type II is in progress. Enterprise accounts can request our DPA, discuss data residency options, and review our security posture during the sales process."
+          "answer": "No. A certification or completed audit is not available today. Discuss your security requirements before agreeing a pilot."
         },
         {
-          "question": "Can Enterprise connect to our existing data stack?",
-          "answer": "Yes. Enterprise includes read-only API access for scan results, agent traffic, and UCP profiles so you can integrate ecentic data into your own analytics and reporting tools."
+          "question": "Can we export dashboard results through the API?",
+          "answer": "Not today. The public REST API, MCP server and CLI support discovery, plans, connection and onboarding workflows."
         }
       ]
     },
@@ -179,7 +179,7 @@
         "primary": "Book a demo",
         "secondary": "View pricing"
       },
-      "note": "SOC 2 in progress · DPA on request"
+      "note": "Public data first · Targets agreed in writing"
     }
   }
 }

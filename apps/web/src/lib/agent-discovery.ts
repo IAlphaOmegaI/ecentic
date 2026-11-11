@@ -657,7 +657,8 @@ export const openApiDocument = {
     summary:
       "Public REST and MCP surfaces for AI agents integrating with ecentic.",
     description:
-      "ecentic simulates how AI shopping agents evaluate product listings, diagnoses why a product wins or loses, and optimizes catalog content.\n\nThis document describes the agent-facing surfaces: the versioned public REST API under `/api/v1`, the MCP JSON-RPC endpoint, commerce-protocol discovery (UCP and ACP), and the x402-payable API root.\n\nVersioning is in the URL path. Deprecations are announced with `Deprecation` (RFC 9745) and `Sunset` (RFC 8594) headers at least 180 days before removal — see /docs/versioning.\n\nAll failures are `application/problem+json` (RFC 9457) with a stable machine-readable `code` — see /docs/errors.\n\nAll responses carry RateLimit headers — see /docs/rate-limits.",
+      seo.definition +
+      "\n\nThis document describes the agent-facing surfaces: the versioned public REST API under `/api/v1`, the MCP JSON-RPC endpoint, commerce-protocol discovery (UCP and ACP), and the x402-payable API root.\n\nVersioning is in the URL path. Deprecations are announced with `Deprecation` (RFC 9745) and `Sunset` (RFC 8594) headers at least 180 days before removal — see /docs/versioning.\n\nAll failures are `application/problem+json` (RFC 9457) with a stable machine-readable `code` — see /docs/errors.\n\nAll responses carry RateLimit headers — see /docs/rate-limits.",
     termsOfService: `${host}/terms`,
     contact: {
       name: "ecentic support",
@@ -2351,8 +2352,7 @@ export const openApiDocument = {
  * knows where a tool stops wastes fewer calls finding out.
  */
 export const agentGuidance = {
-  summary:
-    "ecentic is the agentic commerce platform: connect a catalog, simulate ChatGPT, Claude and Gemini comparisons, apply listing fixes, enable supported agent checkout, and track AI visits.",
+  summary: seo.definition,
   bestFor: [
     {
       job: "Find out whether AI assistants recommend a store's products",
@@ -2369,7 +2369,7 @@ export const agentGuidance = {
     {
       job: "Rewrite a product listing so agents can evaluate it",
       detail:
-        "Prepare changes to titles, descriptions and structured product data. Nothing changes until the merchant clicks Apply; publishing requires a supported Shopify or WooCommerce connector.",
+        "Generate and publish a title and description with Apply, using the existing listing and simulation result. Structured data publishing and Merchant Center sync have separate controls; direct listing publishing requires Shopify or WooCommerce.",
       start: `${host}/platform/fix`,
     },
     {

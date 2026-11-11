@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import * as rootParams from "next/root-params";
 import { hasLocale } from "next-intl";
 import { getRequestConfig } from "next-intl/server";
+import { prepareMarketingMessages } from "./marketing-messages";
 import { routing } from "./routing";
 
 /**
@@ -19,8 +20,14 @@ export default getRequestConfig(async ({ locale: localeOverride }) => {
     notFound();
   })();
 
+  const messages = (await import(`../../messages/${locale}.json`)).default;
+  const review = process.env["NEXT_PUBLIC_REVIEW"] === "1";
+
   return {
     locale,
-    messages: (await import(`../../messages/${locale}.json`)).default,
+    messages: prepareMarketingMessages(messages, {
+      review,
+      pendingLabel: review ? messages.enterpriseReview.pending : "",
+    }),
   };
 });

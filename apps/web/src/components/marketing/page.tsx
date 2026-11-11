@@ -52,125 +52,165 @@ export const MarketingShell = async ({ children }: MarketingShell.Props) => {
   );
 };
 
-export const MarketingFaq = ({ title, items }: MarketingFaq.Props) => (
-  <MarketingBand>
-    <JsonLd
-      schemas={[
-        {
-          "@context": "https://schema.org",
-          "@type": "FAQPage",
-          mainEntity: items.map((item) => ({
-            "@type": "Question",
-            name: item.question,
-            acceptedAnswer: { "@type": "Answer", text: item.answer },
-          })),
-        },
-      ]}
-    />
-    <div className="marketing-faq grid grid-cols-[1fr_2fr] max-[801px]:grid-cols-1 [&>.marketing-cell]:border-[var(--rail-color)] [&>.marketing-cell]:border-r max-[801px]:[&>.marketing-cell]:border-r-0 max-[801px]:[&>.marketing-cell]:border-b [&_article:last-child]:border-b-0 [&_article]:border-[var(--rail-color)] [&_article]:border-b [&_article]:p-7 max-sm:[&_article]:px-4 max-sm:[&_article]:py-6 [&_h3]:text-[22px] [&_h3]:tracking-[-0.02em] [&_p]:mt-3">
-      <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
-        <h2>{title}</h2>
+export const MarketingFaq = ({ title, items }: MarketingFaq.Props) => {
+  const visibleItems = items.filter(
+    (item) => item.question.trim() && item.answer.trim(),
+  );
+  if (visibleItems.length === 0) return null;
+
+  return (
+    <MarketingBand>
+      <JsonLd
+        schemas={[
+          {
+            "@context": "https://schema.org",
+            "@type": "FAQPage",
+            mainEntity: visibleItems.map((item) => ({
+              "@type": "Question",
+              name: item.question,
+              acceptedAnswer: { "@type": "Answer", text: item.answer },
+            })),
+          },
+        ]}
+      />
+      <div className="marketing-faq grid grid-cols-[1fr_2fr] max-[801px]:grid-cols-1 [&>.marketing-cell]:border-[var(--rail-color)] [&>.marketing-cell]:border-r max-[801px]:[&>.marketing-cell]:border-r-0 max-[801px]:[&>.marketing-cell]:border-b [&_article:last-child]:border-b-0 [&_article]:border-[var(--rail-color)] [&_article]:border-b [&_article]:p-7 max-sm:[&_article]:px-4 max-sm:[&_article]:py-6 [&_h3]:text-[22px] [&_h3]:tracking-[-0.02em] [&_p]:mt-3">
+        <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+          <h2>{title}</h2>
+        </div>
+        <div>
+          {visibleItems.map((item) => (
+            <article key={item.question}>
+              <h3>{item.question}</h3>
+              <p>{item.answer}</p>
+            </article>
+          ))}
+        </div>
       </div>
-      <div>
-        {items.map((item) => (
-          <article key={item.question}>
-            <h3>{item.question}</h3>
-            <p>{item.answer}</p>
-          </article>
-        ))}
-      </div>
-    </div>
-  </MarketingBand>
-);
+    </MarketingBand>
+  );
+};
 
 export const MarketingSection = ({
   section,
   children,
-}: MarketingSection.Props) => (
-  <MarketingBand
-    id={section.id}
-    className={
-      section.field
-        ? "marketing-field bg-background [&>.marketing-rail]:bg-background-dimmed [&_.marketing-note]:text-foreground"
-        : undefined
-    }
-  >
-    <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
-      {section.eyebrow && (
-        <MarketingEyebrow>{section.eyebrow}</MarketingEyebrow>
-      )}
-      <h2>{section.title}</h2>
-      {section.description && (
-        <p className="marketing-lead mt-7 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
-          {section.description}
-        </p>
-      )}
-      {section.paragraphs?.map((paragraph) => (
-        <p className="mt-6" key={paragraph}>
-          {paragraph}
-        </p>
-      ))}
-    </div>
-    {section.items && (
-      <div
-        className="marketing-grid grid grid-cols-3 border-[var(--rail-color)] border-b data-[columns=1]:grid-cols-1 data-[columns=2]:grid-cols-2 data-[columns=4]:grid-cols-4 data-[columns=5]:grid-cols-5 max-sm:grid-cols-1 max-sm:data-[columns]:grid-cols-1 max-[801px]:grid-cols-2 max-[801px]:data-[columns]:grid-cols-2 [&>*]:min-w-0 [&>*]:border-[var(--rail-color)] [&>*]:border-t [&>*]:border-r [&>*]:px-7 [&>*]:py-8 max-sm:[&>*]:border-r-0 max-sm:[&>*]:px-4 max-sm:[&>*]:py-7 min-[801px]:data-ordered:[&>article]:py-10 [&_.marketing-item-link]:mt-7 [&_.marketing-item-link]:inline-flex [&_.marketing-item-link]:items-center [&_.marketing-item-link]:gap-2 [&_a:hover]:underline [&_a]:text-primary-text [&_a]:decoration-1 [&_a]:underline-offset-4 [&_h3]:max-w-[24ch] min-[801px]:data-ordered:[&_h3]:max-w-[20ch] [&_p]:mt-4"
-        data-columns={section.columns ?? 3}
-        data-ordered={section.ordered || undefined}
-      >
-        {section.items.map((item, index) => (
-          <article key={item.title}>
-            {section.ordered && (
-              <span className="marketing-step-index mb-[30px] block font-heading text-[42px] text-primary-text leading-none">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-            )}
-            {item.status && (
-              <MarketingStatus status={item.status}>
-                {item.statusLabel}
-              </MarketingStatus>
-            )}
-            <h3>{item.title}</h3>
-            <p>{item.body}</p>
-            {item.href && (
-              <Link className="marketing-item-link" href={item.href}>
-                {item.label ?? item.title}
-                <ArrowRightIcon className="size-4" />
-              </Link>
-            )}
-          </article>
-        ))}
-      </div>
-    )}
-    {section.rows && (
-      <dl className="marketing-rows border-[var(--rail-color)] border-b [&>div]:grid [&>div]:grid-cols-[minmax(140px,1fr)_2fr] [&>div]:gap-7 [&>div]:border-[var(--rail-color)] [&>div]:border-t [&>div]:px-7 [&>div]:py-6 max-sm:[&>div]:grid-cols-1 max-sm:[&>div]:gap-2 max-sm:[&>div]:px-4 [&_dd]:m-0 [&_dt]:font-medium [&_dt]:text-foreground-rich">
-        {section.rows.map((row) => (
-          <div key={row.label}>
-            <dt>{row.label}</dt>
-            <dd>
-              {row.value}
-              {row.detail && (
-                <p className="marketing-note text-(length:--text-sm) mt-6 text-foreground-dimmed">
-                  {row.detail}
-                </p>
-              )}
-            </dd>
-          </div>
-        ))}
-      </dl>
-    )}
-    {children}
-    {(section.note || section.links) && (
+}: MarketingSection.Props) => {
+  const paragraphs = section.paragraphs?.filter((paragraph) =>
+    paragraph.trim(),
+  );
+  const items = section.items?.filter(
+    (item) => item.title.trim() && (item.body.trim() || item.href?.trim()),
+  );
+  const rows = section.rows?.filter(
+    (row) => row.label.trim() && row.value.trim(),
+  );
+  const links = section.links?.filter(
+    (link) => link.label.trim() && link.href.trim(),
+  );
+  const hasContent = Boolean(
+    section.description?.trim() ||
+      paragraphs?.length ||
+      items?.length ||
+      rows?.length ||
+      section.note?.trim(),
+  );
+  const hadContent = Boolean(
+    section.description !== undefined ||
+      section.paragraphs?.length ||
+      section.items?.length ||
+      section.rows?.length ||
+      section.note !== undefined,
+  );
+
+  // Child-driven sections and deliberate link-only calls to action stay useful.
+  // A heading above facts that are all pending must not become an empty promise.
+  if (!hasContent && !children && (hadContent || !links?.length)) return null;
+
+  return (
+    <MarketingBand
+      id={section.id}
+      className={
+        section.field
+          ? "marketing-field bg-background [&>.marketing-rail]:bg-background-dimmed [&_.marketing-note]:text-foreground"
+          : undefined
+      }
+    >
       <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
-        {section.note && (
-          <p className="marketing-note text-(length:--text-sm) mt-6 text-foreground-dimmed">
-            {section.note}
+        {section.eyebrow && (
+          <MarketingEyebrow>{section.eyebrow}</MarketingEyebrow>
+        )}
+        {section.title && <h2>{section.title}</h2>}
+        {section.description && (
+          <p className="marketing-lead mt-7 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
+            {section.description}
           </p>
         )}
-        {section.links && <MarketingActions actions={section.links} />}
+        {paragraphs?.map((paragraph) => (
+          <p className="mt-6" key={paragraph}>
+            {paragraph}
+          </p>
+        ))}
       </div>
-    )}
-  </MarketingBand>
-);
+      {items && items.length > 0 && (
+        <div
+          className="marketing-grid grid grid-cols-3 border-[var(--rail-color)] border-b data-[columns=1]:grid-cols-1 data-[columns=2]:grid-cols-2 data-[columns=4]:grid-cols-4 data-[columns=5]:grid-cols-5 max-sm:grid-cols-1 max-sm:data-[columns]:grid-cols-1 max-[801px]:grid-cols-2 max-[801px]:data-[columns]:grid-cols-2 [&>*]:min-w-0 [&>*]:border-[var(--rail-color)] [&>*]:border-t [&>*]:border-r [&>*]:px-7 [&>*]:py-8 max-sm:[&>*]:border-r-0 max-sm:[&>*]:px-4 max-sm:[&>*]:py-7 min-[801px]:data-ordered:[&>article]:py-10 [&_.marketing-item-link]:mt-7 [&_.marketing-item-link]:inline-flex [&_.marketing-item-link]:items-center [&_.marketing-item-link]:gap-2 [&_a:hover]:underline [&_a]:text-primary-text [&_a]:decoration-1 [&_a]:underline-offset-4 [&_h3]:max-w-[24ch] min-[801px]:data-ordered:[&_h3]:max-w-[20ch] [&_p]:mt-4"
+          data-columns={Math.min(section.columns ?? 3, items.length)}
+          data-ordered={section.ordered || undefined}
+        >
+          {items.map((item, index) => (
+            <article key={item.title}>
+              {section.ordered && (
+                <span className="marketing-step-index mb-[30px] block font-heading text-[42px] text-primary-text leading-none">
+                  {String(index + 1).padStart(2, "0")}
+                </span>
+              )}
+              {item.status && (
+                <MarketingStatus status={item.status}>
+                  {item.statusLabel}
+                </MarketingStatus>
+              )}
+              <h3>{item.title}</h3>
+              {item.body && <p>{item.body}</p>}
+              {item.href && (
+                <Link className="marketing-item-link" href={item.href}>
+                  {item.label ?? item.title}
+                  <ArrowRightIcon className="size-4" />
+                </Link>
+              )}
+            </article>
+          ))}
+        </div>
+      )}
+      {rows && rows.length > 0 && (
+        <dl className="marketing-rows border-[var(--rail-color)] border-b [&>div]:grid [&>div]:grid-cols-[minmax(140px,1fr)_2fr] [&>div]:gap-7 [&>div]:border-[var(--rail-color)] [&>div]:border-t [&>div]:px-7 [&>div]:py-6 max-sm:[&>div]:grid-cols-1 max-sm:[&>div]:gap-2 max-sm:[&>div]:px-4 [&_dd]:m-0 [&_dt]:font-medium [&_dt]:text-foreground-rich">
+          {rows.map((row) => (
+            <div key={row.label}>
+              <dt>{row.label}</dt>
+              <dd>
+                {row.value}
+                {row.detail && (
+                  <p className="marketing-note text-(length:--text-sm) mt-6 text-foreground-dimmed">
+                    {row.detail}
+                  </p>
+                )}
+              </dd>
+            </div>
+          ))}
+        </dl>
+      )}
+      {children}
+      {(section.note || Boolean(links?.length)) && (
+        <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+          {section.note && (
+            <p className="marketing-note text-(length:--text-sm) mt-6 text-foreground-dimmed">
+              {section.note}
+            </p>
+          )}
+          {links && links.length > 0 && <MarketingActions actions={links} />}
+        </div>
+      )}
+    </MarketingBand>
+  );
+};
 
 export const MarketingPage = async ({
   content,
@@ -182,6 +222,7 @@ export const MarketingPage = async ({
 }: MarketingPage.Props) => {
   const locale = await getLocale();
   const { enterpriseChrome } = await getMessages();
+  const facts = content.facts?.filter((fact) => fact.trim());
   const breadcrumbs = [
     {
       "@type": "ListItem",
@@ -221,13 +262,13 @@ export const MarketingPage = async ({
       >
         {heroChildren}
       </MarketingHero>
-      {content.facts && (
+      {facts && facts.length > 0 && (
         <MarketingBand>
           <div
             className="marketing-grid grid grid-cols-3 border-[var(--rail-color)] border-b data-[columns=1]:grid-cols-1 data-[columns=2]:grid-cols-2 data-[columns=4]:grid-cols-4 data-[columns=5]:grid-cols-5 max-sm:grid-cols-1 max-sm:data-[columns]:grid-cols-1 max-[801px]:grid-cols-2 max-[801px]:data-[columns]:grid-cols-2 [&>*]:min-w-0 [&>*]:border-[var(--rail-color)] [&>*]:border-t [&>*]:border-r [&>*]:px-7 [&>*]:py-8 max-sm:[&>*]:border-r-0 max-sm:[&>*]:px-4 max-sm:[&>*]:py-7 min-[801px]:data-ordered:[&>article]:py-10 [&_.marketing-item-link]:mt-7 [&_.marketing-item-link]:inline-flex [&_.marketing-item-link]:items-center [&_.marketing-item-link]:gap-2 [&_a:hover]:underline [&_a]:text-primary-text [&_a]:decoration-1 [&_a]:underline-offset-4 [&_h3]:max-w-[24ch] min-[801px]:data-ordered:[&_h3]:max-w-[20ch] [&_p]:mt-4"
-            data-columns={content.facts.length}
+            data-columns={facts.length}
           >
-            {content.facts.map((fact) => (
+            {facts.map((fact) => (
               <p key={fact}>{fact}</p>
             ))}
           </div>

@@ -2,12 +2,12 @@
   "enterpriseHome": {
     "meta": {
       "title": "Optimización para compras con IA y checkout | ecentic",
-      "description": "Optimiza tu tienda para la IA con ecentic. Simula cómo elige productos, mejora las fichas y conecta el checkout para agentes en Shopify y WooCommerce."
+      "description": "La capa de comercio con IA: corrige los datos de producto que leen los asistentes, prepara el pago para que la IA pueda comprar y adáptate a sus reglas."
     },
     "hero": {
-      "eyebrow": "La plataforma de comercio con agentes",
-      "title": "Consigue la venta cuando compra la IA.",
-      "description": "La IA es una nueva forma de encontrar y comparar productos. ecentic ayuda a los tuyos a competir: mejora los datos que leen los asistentes, conecta el checkout para agentes en WooCommerce y repite la simulación cuando quieras volver a comprobarlo.",
+      "eyebrow": "La capa de comercio con IA",
+      "title": "Una capa entre tu catálogo y la IA que vende tus productos.",
+      "description": "Ya busquen en Google, compren en Amazon o pregunten a un chatbot, la IA responde con un producto, y cada asistente tiene sus propias reglas para elegirlo y comprarlo. ecentic es una capa entre tu catálogo y esos asistentes. Corrige los datos que leen, prepara tu proceso de pago para que puedan comprar y se adapta cuando cambian sus reglas.",
       "actions": [
         {
           "label": "Reserva una demo",
@@ -54,7 +54,7 @@
       "missingAsset": "{{TODO: logotipo oficial}}"
     },
     "businesses": {
-      "eyebrow": "01 · Para quién es",
+      "eyebrow": "02 · Para quién es",
       "title": "Distintas empresas. Un mismo comprador nuevo.",
       "description": "Empieza por cómo vendes y por las preguntas que necesita responder tu equipo.",
       "painLabel": "Los problemas habituales",
@@ -114,7 +114,7 @@
       ]
     },
     "loop": {
-      "eyebrow": "02 · Cómo funciona",
+      "eyebrow": "03 · Cómo funciona",
       "title": "Del feed de productos al checkout con IA.",
       "description": "Conecta, compara, mejora, vende y vuelve a comprobar. Tú eliges qué cambios publicar.",
       "steps": [
@@ -165,7 +165,7 @@
       ]
     },
     "film": {
-      "eyebrow": "03 · Mira cómo funciona",
+      "eyebrow": "04 · Mira cómo funciona",
       "title": "Descubre ecentic en un minuto.",
       "description": "Un vistazo al producto, desde una comparación hasta la siguiente decisión sobre tu catálogo.",
       "caption": "Vídeo de producto de ecentic",
@@ -174,7 +174,7 @@
       }
     },
     "channels": {
-      "eyebrow": "04 · Canales de IA",
+      "eyebrow": "05 · Canales de IA",
       "title": "Un catálogo. Los asistentes a los que preguntan tus clientes.",
       "description": "Cada asistente tiene sus propias fuentes de productos y reglas de compra. Consulta qué admite ecentic hoy y qué está previsto.",
       "checked": "Revisado el 10 de noviembre de 2026. Cada página de canal incluye fecha y enlaces a sus fuentes.",
@@ -234,7 +234,7 @@
       }
     },
     "integration": {
-      "eyebrow": "05 · Integraciones",
+      "eyebrow": "06 · Integraciones",
       "title": "Se conecta a las herramientas que ya usas.",
       "description": "Conexiones directas, feeds compatibles y las integraciones que estamos preparando. Cada elemento indica su estado actual.",
       "counter": {
@@ -254,7 +254,7 @@
       ]
     },
     "mechanisms": {
-      "eyebrow": "06 · Por dentro",
+      "eyebrow": "07 · Por dentro",
       "title": "Todo lo que hay entre «la IA nos ignoró» y «la IA nos compró».",
       "items": [
         {
@@ -308,8 +308,8 @@
       ]
     },
     "proof": {
-      "eyebrow": "07 · Lo que hemos observado",
-      "title": "Primeras cifras, explicadas con claridad.",
+      "eyebrow": "08 · Lo que hemos medido hasta ahora",
+      "title": "Lo que hemos medido hasta ahora.",
       "stats": [
         {
           "value": "36.797",
@@ -348,7 +348,7 @@
       "pipeline": "Pilotos en fase de definición con empresas de gran distribución, viajes y espacios de trabajo flexibles."
     },
     "procurement": {
-      "eyebrow": "08 · Grandes empresas",
+      "eyebrow": "09 · Grandes empresas",
       "title": "Lleva las preguntas adecuadas a la revisión de seguridad.",
       "items": [
         {
@@ -361,7 +361,7 @@
         },
         {
           "title": "Un tratamiento de datos que puedes revisar.",
-          "body": "Consulta la política de privacidad, solicita un DPA y revisa los subencargados identificados. Confirma con nosotros los requisitos operativos y de contratación."
+          "body": "Revisa la política de privacidad y los proveedores utilizados por el producto. Habla con nosotros sobre el acuerdo de tratamiento de datos y los requisitos de despliegue y contratación para tu piloto."
         },
         {
           "title": "Un fundador en tu cuenta.",
@@ -380,7 +380,7 @@
       ]
     },
     "pricing": {
-      "eyebrow": "09 · Precios",
+      "eyebrow": "10 · Precios",
       "title": "Empieza gratis. Crece cuando la IA empiece a comprar.",
       "description": "Elige un punto de partida que encaje con tu tienda y tu equipo.",
       "items": [
@@ -409,7 +409,7 @@
       }
     },
     "editorial": {
-      "eyebrow": "10 · Nuestro equipo",
+      "eyebrow": "11 · Nuestro equipo",
       "title": "Lo que estamos aprendiendo.",
       "description": "Notas de producto y guías prácticas, escritas por el equipo de ecentic.",
       "loading": "Cargando artículos",
@@ -427,7 +427,7 @@
       "items": [
         {
           "question": "¿Qué hace ecentic?",
-          "answer": "ecentic ayuda a las tiendas online a competir cuando compra la IA. Simula cómo ChatGPT, Claude y Gemini comparan productos, ayuda a mejorar los datos que leen y admite checkout para agentes en WooCommerce."
+          "answer": "ecentic es una capa entre tu catálogo y los asistentes de IA que venden sus productos. Simula cómo ChatGPT, Claude y Gemini comparan productos, ayuda a mejorar los datos que leen y permite el pago con agentes en WooCommerce."
         },
         {
           "question": "¿Qué asistentes de IA cubre?",
@@ -447,7 +447,7 @@
         },
         {
           "question": "¿Cómo se tratan nuestros datos?",
-          "answer": "La página de seguridad describe el acceso al catálogo, el seguimiento y el tratamiento por proveedores de IA. Puedes revisar la política de privacidad, solicitar un DPA y consultar los subencargados identificados. Confirma con nosotros los requisitos de despliegue y contratación antes del piloto."
+          "answer": "La página de seguridad describe el acceso actual al catálogo, el seguimiento y el uso de proveedores de IA. Revisa la política de privacidad y los proveedores del producto y confirma con nosotros los requisitos de tratamiento de datos, despliegue y contratación antes de un piloto."
         },
         {
           "question": "¿Esto es SEO?",
@@ -460,7 +460,7 @@
       ]
     },
     "closing": {
-      "title": "La IA ya está eligiendo productos en tu categoría.",
+      "title": "Consigue la venta cuando la IA hace la compra.",
       "description": "Descubre si está eligiendo los tuyos.",
       "actions": [
         {

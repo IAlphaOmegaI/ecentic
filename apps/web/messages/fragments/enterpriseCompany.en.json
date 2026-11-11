@@ -3,7 +3,7 @@
     "security": {
       "meta": {
         "title": "Security and trust at ecentic",
-        "description": "How ecentic handles your catalog, store access and shopper data. Review the safeguards, AI providers, DPA and sub-processors."
+        "description": "How ecentic handles catalog data, store access and shopper details. Review implemented controls and discuss your data protection requirements."
       },
       "eyebrow": "Security and trust",
       "title": "Security and trust",
@@ -11,8 +11,8 @@
       "facts": [
         "Read-only imports",
         "Public data first for pilots",
-        "DPA on request",
-        "Dated sub-processor list"
+        "Discuss DPA requirements",
+        "Documented provider purposes"
       ],
       "actions": [
         {
@@ -28,7 +28,7 @@
         {
           "id": "reviewed",
           "title": "Last updated 10 November 2026",
-          "description": "This page describes the controls in the current product. Deployment details still awaiting confirmation are marked below."
+          "description": "This page describes controls in the current product. Confirm the deployment, processing locations and contractual requirements for your account before sharing non-public data."
         },
         {
           "id": "store-access",
@@ -114,7 +114,7 @@
         {
           "id": "dpa",
           "title": "Data processing agreement",
-          "description": "A DPA is available on request. Ask for it as part of your pilot or security review.",
+          "description": "Tell us what your data processing agreement must cover as part of your pilot or security review. Confirm the agreement and signing arrangements before sharing personal data.",
           "note": "{{TODO: supply the approved DPA template and confirmed request contact}}",
           "links": [
             {
@@ -125,15 +125,15 @@
         },
         {
           "id": "sub-processors",
-          "title": "Sub-processors",
-          "description": "Provider purposes in the current product, reviewed 10 November 2026. Processing locations require confirmation for the accounts in use.",
+          "title": "Providers used by the product",
+          "description": "Providers and purposes identified in the product code, reviewed November 10, 2026. This is not a confirmed list of contracted sub-processors or processing locations; those depend on the accounts and agreements in use.",
           "note": "{{TODO: confirm the full contracted sub-processor list and processing locations before launch}}"
         },
         {
           "id": "compliance",
           "title": "Compliance roadmap",
           "paragraphs": [
-            "SOC 2 is on our roadmap, timed to prospect security reviews. No certification or completed audit is claimed here.",
+            "SOC 2 is not available today. We do not claim a certification or a completed audit. Discuss your security requirements before agreeing a pilot.",
             "{{TODO: confirm the security questionnaire process and available review materials}}"
           ]
         },
@@ -144,7 +144,7 @@
         }
       ],
       "subprocessors": {
-        "caption": "Sub-processors reviewed 10 November 2026",
+        "caption": "Product providers and purposes reviewed November 10, 2026",
         "headers": ["Provider", "Purpose", "Processing location"],
         "rows": [
           {
@@ -242,7 +242,7 @@
             },
             {
               "title": "We say what is built and what is coming.",
-              "body": "Every integration and AI channel is labelled, and our channel pages carry the date we last checked them.",
+              "body": "Every integration and AI channel is labeled, and our channel pages carry the date we last checked them.",
               "href": "/integrations",
               "label": "See integrations"
             },
@@ -280,7 +280,7 @@
         },
         {
           "id": "programs",
-          "title": "Programs we are part of"
+          "title": "Programs we’re part of"
         },
         {
           "id": "recognition",
@@ -359,11 +359,11 @@
       "programs": [
         {
           "name": "Plug and Play",
-          "description": "GOAL Silicon Valley programme"
+          "description": "GOAL Silicon Valley program"
         },
         {
           "name": "Microsoft for Startups",
-          "description": "Startup programme"
+          "description": "Startup program"
         },
         {
           "name": "Red Bull Basement",
@@ -371,7 +371,7 @@
         },
         {
           "name": "The Founder Games",
-          "description": "Startup programme"
+          "description": "Startup program"
         },
         {
           "name": "Fil Rouge Capital",
@@ -457,7 +457,7 @@
         },
         {
           "question": "Is there a fee to join?",
-          "answer": "{{TODO: confirm whether joining the partner programme is free}}"
+          "answer": "{{TODO: confirm whether joining the partner program is free}}"
         }
       ],
       "formTitle": "Partner application"
@@ -473,14 +473,14 @@
         {
           "id": "pilots",
           "title": "DUA Flavours",
-          "description": "A UK flavours brand. April to July 2026.",
+          "description": "A UK flavors brand. April to July 2026.",
           "paragraphs": [
             "12% more visits from AI assistants or direct traffic. Visits, not sales."
           ],
           "links": [
             {
               "label": "Read the pilot story",
-              "href": "/stories/dua-flavours"
+              "href": "/stories/dua-flavors"
             }
           ]
         }
@@ -489,11 +489,11 @@
     "duaFlavours": {
       "meta": {
         "title": "DUA Flavours pilot: 12% more AI and direct visits",
-        "description": "A UK flavours brand saw AI-assistant or direct visits rise 12% from April to July 2026. Read the pilot result and its limits."
+        "description": "A UK flavors brand saw AI-assistant or direct visits rise 12% from April to July 2026. Read the pilot result and its limits."
       },
       "eyebrow": "Pilot story",
       "title": "DUA Flavours: 12% more visits from AI assistants or direct traffic.",
-      "description": "A pilot with a UK flavours brand, published with permission. The result measures visits, not sales.",
+      "description": "A pilot with a UK flavors brand, published with permission. The result measures visits, not sales.",
       "sections": [
         {
           "id": "at-a-glance",
@@ -505,7 +505,7 @@
             },
             {
               "label": "Company",
-              "value": "UK flavours brand"
+              "value": "UK flavors brand"
             },
             {
               "label": "Period",
@@ -588,7 +588,7 @@
           "items": [
             {
               "title": "AI Agent Score",
-              "body": "A free scan of your top 10 products against competitors on ChatGPT, Claude and Gemini. About two minutes. An account is required.",
+              "body": "A free scan of your top 10 products against competitors on ChatGPT, Claude and Gemini. An account is required.",
               "href": "/sign-up",
               "label": "Check my store free"
             },
@@ -645,7 +645,7 @@
           "items": [
             {
               "title": "AI Agent Score",
-              "body": "A free scan of your top 10 products against competitors on ChatGPT, Claude and Gemini. About two minutes. An account is required.",
+              "body": "A free scan of your top 10 products against competitors on ChatGPT, Claude and Gemini. An account is required.",
               "href": "/sign-up",
               "label": "Check my store free"
             },
@@ -731,7 +731,7 @@
             {
               "title": "DUA Flavours",
               "body": "12% more visits from AI assistants or direct traffic, April to July 2026. Published with permission, with the measurement limits.",
-              "href": "/stories/dua-flavours",
+              "href": "/stories/dua-flavors",
               "label": "Read the pilot story"
             }
           ],
@@ -938,7 +938,7 @@
             },
             {
               "title": "Security",
-              "body": "Report a vulnerability. {{TODO: confirm security@ecentic.ai is monitored before activating the contact link}}",
+              "body": "Read about store access, implemented controls and data handling.",
               "href": "/security",
               "label": "Read about security"
             },
@@ -974,11 +974,11 @@
     },
     "changelog": {
       "meta": {
-        "title": "Changelog: what is new in ecentic",
-        "description": "Product updates in ecentic, newest first."
+        "title": "Changelog: what’s new in ecentic",
+        "description": "Product updates we’ve shipped in ecentic, newest first."
       },
       "title": "Changelog",
-      "description": "What we have shipped, newest first.",
+      "description": "What we’ve shipped, newest first.",
       "sections": [
         {
           "id": "updates",

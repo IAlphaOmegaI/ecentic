@@ -20,5 +20,6 @@ export default async ({ params }: { params: Promise<{ locale: string }> }) => {
   return createEnterpriseOgImage({
     title: content.title,
     description: content.description,
+    signoff: messages.enterpriseChrome.closing.title,
   });
 };

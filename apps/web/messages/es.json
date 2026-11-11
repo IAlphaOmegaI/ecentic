@@ -4239,8 +4239,8 @@
   },
   "enterprise": {
     "meta": {
-      "title": "Enterprise — comercio con agentes a escala",
-      "description": "Inteligencia de comercio con agentes para comerciantes enterprise: paneles multimarca, acceso API, SSO, cumplimiento SOC 2, firma UCP y un equipo CSM dedicado."
+      "title": "ecentic para empresas: gestiona la IA como un canal",
+      "description": "Pilotos para tiendas, marcas y empresas de viajes con datos públicos. Objetivos por escrito desde el primer día y un fundador a cargo."
     },
     "breadcrumb": {
       "home": "Inicio",
@@ -4249,15 +4249,15 @@
     "hero": {
       "eyebrow": "Enterprise",
       "title": {
-        "primary": "Infraestructura de comercio con agentes",
-        "accent": "a escala."
+        "primary": "La IA es un nuevo canal de ventas.",
+        "accent": "Gestiónalo como tal."
       },
-      "description": "Paneles multimarca, acceso API, firma UCP y soporte dedicado para equipos de comercio que gestionan cientos de SKU en varias plataformas.",
+      "description": "Para minoristas, marcas y empresas de viajes con muchas categorías, mercados o marcas. Empezamos con un mercado y una categoría, con datos públicos, y acordamos los objetivos por escrito el primer día.",
       "assurances": [
-        "Paneles multimarca",
-        "Acceso API personalizado",
-        "CSM dedicado",
-        "SOC 2 en curso"
+        "Primero, datos públicos. Sin accesos, código en tu web ni datos de clientes para la referencia inicial.",
+        "Objetivos acordados por escrito el primer día.",
+        "Un fundador en la cuenta, con contacto directo con ingeniería.",
+        "Límites del producto explicados"
       ],
       "art": {
         "alt": "Ilustración ASCII de una torre de oficinas"
@@ -4269,32 +4269,32 @@
     },
     "capabilities": {
       "number": "02",
-      "title": "Todo lo de Dominate, más la capa enterprise.",
-      "description": "La capa de seguridad, escala y soporte que los equipos enterprise necesitan para ejecutar la optimización de comercio con agentes en varias marcas.",
+      "title": "Preparado para crecer.",
+      "description": "Capacidades actuales y sus límites.",
       "items": [
         {
-          "title": "Agregados multimarca",
-          "description": "Un panel para cada marca y región. Agrega tasa de victoria, tráfico de agentes y mejora por optimización en una sola vista."
+          "title": "Tus tiendas en una cuenta",
+          "description": "Reúne las tiendas de un titular bajo un acceso. No incluye equipos delegados ni SSO."
         },
         {
-          "title": "Acceso API",
-          "description": "API de solo lectura para acceder de forma programática a resultados de escaneo, tráfico de agentes y perfiles UCP."
+          "title": "API REST",
+          "description": "Una interfaz pública con versiones, OpenAPI 3.1, respuestas de error tipadas y límites documentados."
         },
         {
-          "title": "SSO",
-          "description": "Compatible con Okta, Google Workspace y Azure AD. Provisiona puestos sin tocar ecentic directamente."
+          "title": "Servidor MCP y CLI",
+          "description": "Descubrimiento, planes, conexión e incorporación. Hoy no se exponen exportaciones de análisis ni visitas del panel."
         },
         {
-          "title": "SOC 2 Type II",
-          "description": "Auditoría en curso. Opciones de residencia de datos, procesamiento conforme al GDPR y DPA bajo solicitud."
+          "title": "Sincronización con Merchant Center",
+          "description": "Envía mejoras de fichas Shopify publicadas mediante una sincronización complementaria aparte."
         },
         {
-          "title": "Servicio de firma UCP",
-          "description": "ecentic gestiona la firma criptográfica de tu perfil UCP para que los agentes puedan verificar la identidad del comerciante."
+          "title": "Pago con agentes controlado",
+          "description": "Pago WooCommerce con listas de acceso, requisitos de firma y límites configurables. Tu pasarela procesa el pago."
         },
         {
-          "title": "CSM dedicado",
-          "description": "Un customer success manager asignado, revisiones trimestrales de negocio y escalado directo a ingeniería."
+          "title": "Publicamos lo que te pedimos que publiques.",
+          "description": "Nuestro llms.txt, catálogo API, perfil de pago y endpoint MCP son públicos."
         }
       ],
       "cta": {
@@ -4307,25 +4307,25 @@
       },
       "scoping": [
         {
-          "title": "Llamada breve de descubrimiento",
-          "description": "Tamaño del catálogo, plataformas y necesidades de cumplimiento."
+          "title": "Primera conversación",
+          "description": "Acuerda la categoría, el mercado y las preguntas."
         },
         {
-          "title": "Estimación de ROI personalizada",
-          "description": "Adaptada a tu número de SKU y tasas de victoria actuales."
+          "title": "Alcance por escrito",
+          "description": "Define la referencia, los cambios, los honorarios y el informe."
         },
         {
-          "title": "Cronograma de onboarding",
-          "description": "No hace falta un deck de procurement para empezar."
+          "title": "Revisión de seguridad",
+          "description": "Confirma el tratamiento de datos y el acceso antes de conectar sistemas."
         }
       ],
-      "paragraph": "Definimos el alcance de Enterprise según el tamaño del catálogo, las plataformas y las necesidades de cumplimiento, y compartimos una estimación de ROI personalizada antes de que nadie escriba un deck de procurement.",
+      "paragraph": "Los honorarios dependen del alcance y se acuerdan en la primera llamada. Son servicios; el informe del piloto sigue el método acordado con tu equipo.",
       "panelTitle": "Cómo funciona el alcance"
     },
     "compare": {
       "number": "03",
-      "title": "Dónde termina Dominate y empieza Enterprise.",
-      "description": "Dominate ejecuta el ciclo completo de optimización para una sola marca. Enterprise añade seguridad, escala y soporte para equipos de comercio multimarca.",
+      "title": "Un plan o un piloto definido contigo.",
+      "description": "Elige acceso al producto con un plan o un servicio con objetivos acordados.",
       "table": {
         "feature": "Función",
         "dominate": "Dominate",
@@ -4397,42 +4397,42 @@
       },
       "dominate": {
         "badge": "Dominate",
-        "title": "Ciclo completo para una marca.",
-        "description": "Simulaciones continuas, auto-optimización y generación UCP para un solo catálogo de hasta 1000 productos.",
+        "title": "Trabajo de catálogo con un plan.",
+        "description": "Simulaciones bajo demanda y acciones de publicación compatibles, dentro de los límites actuales del plan.",
         "strengths": [
-          "149 $/mes con simulaciones continuas de agentes",
-          "Auto-optimización y generación UCP incluidas",
-          "Ideal para una sola marca de hasta 1000 productos"
+          "Suscripción mensual sin comisión por rendimiento",
+          "Simulaciones cuando las solicitas",
+          "Precios y límites actuales en Precios"
         ]
       },
       "enterprise": {
         "badge": "Enterprise",
-        "title": "Plano de control para equipos multimarca.",
-        "description": "Todo lo de Dominate, más agregados multimarca, acceso API, SSO, firma UCP gestionada y un CSM dedicado.",
+        "title": "Un piloto definido con tu equipo.",
+        "description": "6 semanas, un mercado y una categoría. Referencia en la semana 0, cambios acordados y las mismas preguntas en la semana 6. Cualquier tarifa ligada a resultados y objetivo se acuerda antes.",
         "strengths": [
-          "Límites personalizados entre marcas y regiones",
-          "SSO, acceso API y servicio de firma UCP",
-          "CSM asignado con revisiones trimestrales"
+          "Un mercado y una categoría para empezar",
+          "Referencia acordada e informe en la semana 6",
+          "Un fundador a cargo de la cuenta"
         ]
       },
-      "paragraph": "Quédate en Dominate mientras una sola marca posee el ciclo. Pasa a Enterprise cuando el número de marcas, la revisión de seguridad o los requisitos de reporting necesitan una capa compartida.",
+      "paragraph": "El alcance del piloto define el trabajo y el acceso necesarios. No añade SSO, puestos de equipo ni exportaciones de resultados mediante API al producto actual.",
       "triggersTitle": "Cuándo Enterprise encaja con más claridad",
       "triggers": [
         {
-          "title": "Varias marcas o regiones",
-          "description": "Necesitas agregados entre tiendas en lugar de asientos Dominate separados."
+          "title": "Varias marcas o mercados",
+          "description": "Empieza con la categoría y el mercado que respondan una pregunta concreta del negocio."
         },
         {
-          "title": "SSO o DPA obligatorios",
-          "description": "Seguridad o legal bloquean un plan self-serve hasta cubrir identidad y contratos."
+          "title": "Una revisión de seguridad",
+          "description": "Confirma los requisitos operativos y contractuales antes del acceso."
         },
         {
-          "title": "Los datos deben salir de la UI",
-          "description": "Tu stack de analítica necesita acceso API a escaneos, tráfico de agentes y perfiles UCP."
+          "title": "Un método que tu equipo pueda evaluar",
+          "description": "Acuerda las preguntas, la referencia y el informe escrito."
         },
         {
-          "title": "Importa un propietario asignado",
-          "description": "Quieres un CSM, revisiones trimestrales y una ruta directa a ingeniería."
+          "title": "Un responsable asignado",
+          "description": "Trabaja con un fundador y con el equipo actual de tu tienda."
         }
       ]
     },
@@ -4444,20 +4444,20 @@
     "faq": {
       "items": [
         {
-          "question": "¿Cuándo debo elegir Enterprise en lugar de Dominate?",
-          "answer": "Elige Enterprise cuando gestionas cientos de SKU en varias marcas o regiones, necesitas SSO o un DPA, quieres que gestionemos la firma UCP por ti, o necesitas un CSM dedicado y acceso API personalizado. Dominate cubre el ciclo completo de optimización para una sola marca con hasta 1000 productos."
+          "question": "¿Cuándo debo hablar de un piloto Enterprise?",
+          "answer": "Cuando gestionas varias tiendas o marcas, tienes miles de productos, necesitas una revisión de seguridad o quieres un piloto con objetivos por escrito."
         },
         {
-          "question": "¿Cómo es el onboarding de Enterprise?",
-          "answer": "Empezamos con una llamada breve de descubrimiento, compartimos una estimación de ROI personalizada para el tamaño de tu catálogo y definimos un cronograma de onboarding. No hace falta un deck de procurement para iniciar la conversación."
+          "question": "¿Cómo empieza un piloto?",
+          "answer": "Empieza con un mercado y una categoría usando datos públicos. Acuerda el alcance, los honorarios y el método de recogida antes de comenzar."
         },
         {
           "question": "¿Está disponible SOC 2 hoy?",
-          "answer": "SOC 2 Type II está en curso. Las cuentas Enterprise pueden solicitar nuestro DPA, hablar de opciones de residencia de datos y revisar nuestra postura de seguridad durante el proceso de ventas."
+          "answer": "No. Hoy no está disponible una certificación ni una auditoría completada. Hablemos de tus requisitos de seguridad antes de acordar un piloto."
         },
         {
-          "question": "¿Puede Enterprise conectarse a nuestro stack de datos existente?",
-          "answer": "Sí. Enterprise incluye acceso API de solo lectura para resultados de escaneo, tráfico de agentes y perfiles UCP, para que puedas integrar los datos de ecentic en tus propias herramientas de analítica e informes."
+          "question": "¿Podemos exportar resultados del panel mediante la API?",
+          "answer": "Hoy no. La API REST pública, el servidor MCP y la CLI permiten descubrimiento, planes, conexión e incorporación."
         }
       ]
     },
@@ -4466,33 +4466,33 @@
         "primary": "Reservar una demo",
         "secondary": "Ver precios"
       },
-      "note": "SOC 2 en curso · DPA bajo solicitud"
+      "note": "Primero, datos públicos · Objetivos por escrito"
     },
     "why": {
       "number": "01",
-      "title": "Cuando un plan de una sola marca deja de bastar.",
-      "description": "Enterprise es para equipos que necesitan una capa de comercio con agentes compartida entre marcas, regiones y requisitos de seguridad, no otro asiento self-serve.",
+      "title": "Empieza con un mercado y una categoría.",
+      "description": "Los pilotos Enterprise se definen según tu catálogo, las preguntas del negocio y la revisión de seguridad.",
       "paragraphs": [
-        "Dominate ejecuta el ciclo completo de optimización para una marca. Enterprise añade el plano de control: agregados multimarca, SSO, acceso API, firma UCP gestionada y un CSM asignado que posee la relación.",
-        "La decisión suele aparecer cuando el tamaño del catálogo, el número de marcas o los requisitos de procurement superan un plan mensual fijo."
+        "Enterprise es un servicio con preguntas, cambios de datos e informe escrito acordados. Siguen aplicándose los límites actuales del producto.",
+        "Empieza con datos públicos. Acuerda el alcance, los objetivos y los requisitos de acceso antes de comenzar."
       ],
       "panelTitle": "Para quién encaja",
       "audiences": [
         {
-          "title": "Operadores multimarca",
-          "description": "Equipos con varias tiendas o regiones que necesitan una sola vista de tasa de victoria y tráfico de agentes."
+          "title": "Grupos minoristas y marketplaces",
+          "description": "Catálogos grandes, muchos proveedores y varios mercados."
         },
         {
-          "title": "Compradores de seguridad",
-          "description": "Organizaciones que necesitan SSO, un DPA y un camino claro hacia SOC 2 Type II."
+          "title": "Marcas de consumo",
+          "description": "Productos vendidos en tu tienda y a través de minoristas."
         },
         {
-          "title": "Equipos de plataforma / datos",
-          "description": "Grupos que quieren acceso API de solo lectura a escaneos, tráfico de agentes y perfiles UCP."
+          "title": "Viajes y experiencias",
+          "description": "Paquetes, entradas y estancias que se investigan con IA."
         },
         {
-          "title": "Liderazgo de comercio",
-          "description": "Líderes que quieren un CSM asignado, revisiones trimestrales y una ruta de escalado a ingeniería."
+          "title": "Agencias y partners",
+          "description": "Equipos de tienda que verifican y publican los cambios acordados."
         }
       ]
     }
@@ -8064,7 +8064,7 @@
       "quaternary": "Más información"
     },
     "closing": {
-      "title": "La IA ya está eligiendo productos en tu categoría.",
+      "title": "Consigue la venta cuando la IA hace la compra.",
       "description": "Descubre si está eligiendo los tuyos."
     },
     "status": {
@@ -8753,12 +8753,12 @@
   "enterpriseHome": {
     "meta": {
       "title": "Optimización para compras con IA y checkout | ecentic",
-      "description": "Optimiza tu tienda para la IA con ecentic. Simula cómo elige productos, mejora las fichas y conecta el checkout para agentes en Shopify y WooCommerce."
+      "description": "La capa de comercio con IA: corrige los datos de producto que leen los asistentes, prepara el pago para que la IA pueda comprar y adáptate a sus reglas."
     },
     "hero": {
-      "eyebrow": "La plataforma de comercio con agentes",
-      "title": "Consigue la venta cuando compra la IA.",
-      "description": "La IA es una nueva forma de encontrar y comparar productos. ecentic ayuda a los tuyos a competir: mejora los datos que leen los asistentes, conecta el checkout para agentes en WooCommerce y repite la simulación cuando quieras volver a comprobarlo.",
+      "eyebrow": "La capa de comercio con IA",
+      "title": "Una capa entre tu catálogo y la IA que vende tus productos.",
+      "description": "Ya busquen en Google, compren en Amazon o pregunten a un chatbot, la IA responde con un producto, y cada asistente tiene sus propias reglas para elegirlo y comprarlo. ecentic es una capa entre tu catálogo y esos asistentes. Corrige los datos que leen, prepara tu proceso de pago para que puedan comprar y se adapta cuando cambian sus reglas.",
       "actions": [
         {
           "label": "Reserva una demo",
@@ -8805,7 +8805,7 @@
       "missingAsset": "{{TODO: logotipo oficial}}"
     },
     "businesses": {
-      "eyebrow": "01 · Para quién es",
+      "eyebrow": "02 · Para quién es",
       "title": "Distintas empresas. Un mismo comprador nuevo.",
       "description": "Empieza por cómo vendes y por las preguntas que necesita responder tu equipo.",
       "painLabel": "Los problemas habituales",
@@ -8865,7 +8865,7 @@
       ]
     },
     "loop": {
-      "eyebrow": "02 · Cómo funciona",
+      "eyebrow": "03 · Cómo funciona",
       "title": "Del feed de productos al checkout con IA.",
       "description": "Conecta, compara, mejora, vende y vuelve a comprobar. Tú eliges qué cambios publicar.",
       "steps": [
@@ -8932,7 +8932,7 @@
       ]
     },
     "film": {
-      "eyebrow": "03 · Mira cómo funciona",
+      "eyebrow": "04 · Mira cómo funciona",
       "title": "Descubre ecentic en un minuto.",
       "description": "Un vistazo al producto, desde una comparación hasta la siguiente decisión sobre tu catálogo.",
       "caption": "Vídeo de producto de ecentic",
@@ -8941,7 +8941,7 @@
       }
     },
     "channels": {
-      "eyebrow": "04 · Canales de IA",
+      "eyebrow": "05 · Canales de IA",
       "title": "Un catálogo. Los asistentes a los que preguntan tus clientes.",
       "description": "Cada asistente tiene sus propias fuentes de productos y reglas de compra. Consulta qué admite ecentic hoy y qué está previsto.",
       "checked": "Revisado el 10 de noviembre de 2026. Cada página de canal incluye fecha y enlaces a sus fuentes.",
@@ -9001,7 +9001,7 @@
       }
     },
     "integration": {
-      "eyebrow": "05 · Integraciones",
+      "eyebrow": "06 · Integraciones",
       "title": "Se conecta a las herramientas que ya usas.",
       "description": "Conexiones directas, feeds compatibles y las integraciones que estamos preparando. Cada elemento indica su estado actual.",
       "counter": {
@@ -9021,7 +9021,7 @@
       ]
     },
     "mechanisms": {
-      "eyebrow": "06 · Por dentro",
+      "eyebrow": "07 · Por dentro",
       "title": "Todo lo que hay entre «la IA nos ignoró» y «la IA nos compró».",
       "items": [
         {
@@ -9099,8 +9099,8 @@
       ]
     },
     "proof": {
-      "eyebrow": "07 · Lo que hemos observado",
-      "title": "Primeras cifras, explicadas con claridad.",
+      "eyebrow": "08 · Lo que hemos medido hasta ahora",
+      "title": "Lo que hemos medido hasta ahora.",
       "stats": [
         {
           "value": "36.797",
@@ -9139,7 +9139,7 @@
       "pipeline": "Pilotos en fase de definición con empresas de gran distribución, viajes y espacios de trabajo flexibles."
     },
     "procurement": {
-      "eyebrow": "08 · Grandes empresas",
+      "eyebrow": "09 · Grandes empresas",
       "title": "Lleva las preguntas adecuadas a la revisión de seguridad.",
       "items": [
         {
@@ -9152,7 +9152,7 @@
         },
         {
           "title": "Un tratamiento de datos que puedes revisar.",
-          "body": "Consulta la política de privacidad, solicita un DPA y revisa los subencargados identificados. Confirma con nosotros los requisitos operativos y de contratación."
+          "body": "Revisa la política de privacidad y los proveedores utilizados por el producto. Habla con nosotros sobre el acuerdo de tratamiento de datos y los requisitos de despliegue y contratación para tu piloto."
         },
         {
           "title": "Un fundador en tu cuenta.",
@@ -9171,7 +9171,7 @@
       ]
     },
     "pricing": {
-      "eyebrow": "09 · Precios",
+      "eyebrow": "10 · Precios",
       "title": "Empieza gratis. Crece cuando la IA empiece a comprar.",
       "description": "Elige un punto de partida que encaje con tu tienda y tu equipo.",
       "items": [
@@ -9200,7 +9200,7 @@
       }
     },
     "editorial": {
-      "eyebrow": "10 · Nuestro equipo",
+      "eyebrow": "11 · Nuestro equipo",
       "title": "Lo que estamos aprendiendo.",
       "description": "Notas de producto y guías prácticas, escritas por el equipo de ecentic.",
       "loading": "Cargando artículos",
@@ -9218,7 +9218,7 @@
       "items": [
         {
           "question": "¿Qué hace ecentic?",
-          "answer": "ecentic ayuda a las tiendas online a competir cuando compra la IA. Simula cómo ChatGPT, Claude y Gemini comparan productos, ayuda a mejorar los datos que leen y admite checkout para agentes en WooCommerce."
+          "answer": "ecentic es una capa entre tu catálogo y los asistentes de IA que venden sus productos. Simula cómo ChatGPT, Claude y Gemini comparan productos, ayuda a mejorar los datos que leen y permite el pago con agentes en WooCommerce."
         },
         {
           "question": "¿Qué asistentes de IA cubre?",
@@ -9238,7 +9238,7 @@
         },
         {
           "question": "¿Cómo se tratan nuestros datos?",
-          "answer": "La página de seguridad describe el acceso al catálogo, el seguimiento y el tratamiento por proveedores de IA. Puedes revisar la política de privacidad, solicitar un DPA y consultar los subencargados identificados. Confirma con nosotros los requisitos de despliegue y contratación antes del piloto."
+          "answer": "La página de seguridad describe el acceso actual al catálogo, el seguimiento y el uso de proveedores de IA. Revisa la política de privacidad y los proveedores del producto y confirma con nosotros los requisitos de tratamiento de datos, despliegue y contratación antes de un piloto."
         },
         {
           "question": "¿Esto es SEO?",
@@ -9251,7 +9251,7 @@
       ]
     },
     "closing": {
-      "title": "La IA ya está eligiendo productos en tu categoría.",
+      "title": "Consigue la venta cuando la IA hace la compra.",
       "description": "Descubre si está eligiendo los tuyos.",
       "actions": [
         {
@@ -10273,7 +10273,7 @@
     "security": {
       "meta": {
         "title": "Seguridad y confianza en ecentic",
-        "description": "Cómo ecentic trata tu catálogo, el acceso a tu tienda y los datos de compradores. Consulta las medidas, proveedores de IA y el DPA."
+        "description": "Cómo ecentic trata los datos del catálogo, el acceso a la tienda y los datos del comprador. Revisa los controles y tus requisitos de protección de datos."
       },
       "eyebrow": "Seguridad y confianza",
       "title": "Seguridad y confianza",
@@ -10281,8 +10281,8 @@
       "facts": [
         "Importaciones de solo lectura",
         "Datos públicos primero para los pilotos",
-        "DPA bajo solicitud",
-        "Lista de subencargados con fecha"
+        "Consulta tus requisitos de DPA",
+        "Finalidades de proveedores documentadas"
       ],
       "actions": [
         {
@@ -10298,7 +10298,7 @@
         {
           "id": "reviewed",
           "title": "Última actualización: 10 de noviembre de 2026",
-          "description": "Esta página describe las medidas del producto actual. Los detalles del despliegue pendientes de confirmar están indicados abajo."
+          "description": "Esta página describe los controles del producto actual. Confirma el despliegue, las ubicaciones de tratamiento y los requisitos contractuales de tu cuenta antes de compartir datos no públicos."
         },
         {
           "id": "store-access",
@@ -10384,7 +10384,7 @@
         {
           "id": "dpa",
           "title": "Acuerdo de tratamiento de datos",
-          "description": "El DPA está disponible bajo solicitud. Pídelo como parte de tu piloto o revisión de seguridad.",
+          "description": "Cuéntanos qué debe cubrir tu acuerdo de tratamiento de datos durante el piloto o la revisión de seguridad. Confirma el acuerdo y las condiciones de firma antes de compartir datos personales.",
           "note": "{{TODO: proporcionar la plantilla de DPA aprobada y el contacto confirmado}}",
           "links": [
             {
@@ -10395,15 +10395,15 @@
         },
         {
           "id": "sub-processors",
-          "title": "Subencargados del tratamiento",
-          "description": "Finalidad de los proveedores del producto actual, revisada el 10 de noviembre de 2026. Las ubicaciones de tratamiento deben confirmarse para las cuentas en uso.",
+          "title": "Proveedores utilizados por el producto",
+          "description": "Proveedores y finalidades identificados en el código del producto, revisados el 10 de noviembre de 2026. No es una lista confirmada de subencargados contratados ni de ubicaciones; dependen de las cuentas y los acuerdos utilizados.",
           "note": "{{TODO: confirmar la lista completa de subencargados contratados y las ubicaciones de tratamiento antes del lanzamiento}}"
         },
         {
           "id": "compliance",
           "title": "Hoja de ruta de cumplimiento",
           "paragraphs": [
-            "SOC 2 está en nuestra hoja de ruta, según las revisiones de seguridad de las empresas que evalúan ecentic. Esta página no afirma que exista una certificación o auditoría completada.",
+            "SOC 2 no está disponible hoy. No afirmamos tener una certificación ni una auditoría completada. Hablemos de tus requisitos de seguridad antes de acordar un piloto.",
             "{{TODO: confirmar el proceso de cuestionarios de seguridad y los materiales disponibles}}"
           ]
         },
@@ -10414,7 +10414,7 @@
         }
       ],
       "subprocessors": {
-        "caption": "Subencargados revisados el 10 de noviembre de 2026",
+        "caption": "Proveedores y finalidades del producto revisados el 10 de noviembre de 2026",
         "headers": [
           "Proveedor",
           "Finalidad",
@@ -10554,7 +10554,7 @@
         },
         {
           "id": "programs",
-          "title": "Programas en los que participamos"
+          "title": "Programas de los que formamos parte"
         },
         {
           "id": "recognition",
@@ -10862,7 +10862,7 @@
           "items": [
             {
               "title": "AI Agent Score",
-              "body": "Un escaneo gratis de tus 10 productos principales frente a competidores con ChatGPT, Claude y Gemini. Unos dos minutos. Requiere una cuenta.",
+              "body": "Un escaneo gratuito de tus 10 productos principales frente a competidores con ChatGPT, Claude y Gemini. Se necesita una cuenta.",
               "href": "/sign-up",
               "label": "Comprueba mi tienda gratis"
             },
@@ -10919,7 +10919,7 @@
           "items": [
             {
               "title": "AI Agent Score",
-              "body": "Un escaneo gratis de tus 10 productos principales frente a competidores con ChatGPT, Claude y Gemini. Unos dos minutos. Requiere una cuenta.",
+              "body": "Un escaneo gratuito de tus 10 productos principales frente a competidores con ChatGPT, Claude y Gemini. Se necesita una cuenta.",
               "href": "/sign-up",
               "label": "Comprueba mi tienda gratis"
             },
@@ -11212,7 +11212,7 @@
             },
             {
               "title": "Seguridad",
-              "body": "Comunica una vulnerabilidad. {{TODO: confirmar que security@ecentic.ai se supervisa antes de activar el enlace de contacto}}",
+              "body": "Consulta el acceso a la tienda, los controles implementados y el tratamiento de datos.",
               "href": "/security",
               "label": "Lee sobre seguridad"
             },
@@ -11248,8 +11248,8 @@
     },
     "changelog": {
       "meta": {
-        "title": "Novedades: qué cambia en ecentic",
-        "description": "Actualizaciones del producto ecentic, de la más reciente a la más antigua."
+        "title": "Registro de cambios: novedades de ecentic",
+        "description": "Actualizaciones publicadas de ecentic, de la más reciente a la más antigua."
       },
       "title": "Novedades",
       "description": "Lo que hemos publicado, de lo más reciente a lo más antiguo.",
@@ -11474,7 +11474,7 @@
         "description": "Conecta tu catálogo, compara con IA, publica cambios que tú eliges, prueba el pago con agentes y mide referencias detectadas en Shopify."
       },
       "eyebrow": "Plataforma",
-      "title": "De tu catálogo al pago con agentes.",
+      "title": "Todo lo que una tienda necesita para vender a través de la IA.",
       "description": "Cinco pasos, en orden. Conecta tu catálogo, mira cómo lo comparan los modelos, mejora los datos, prueba el pago y mide lo que puedes observar. Tú eliges qué publicar y cuándo volver a analizar.",
       "sections": [
         {
@@ -11720,7 +11720,7 @@
         },
         {
           "id": "control",
-          "title": "Tú decides qué cambia.",
+          "title": "Lo que ecentic no hace.",
           "paragraphs": [
             "Importar datos no reescribe tus fichas. Publicar requiere una acción elegida. Los modelos deciden qué recomendar; una simulación no promete una venta futura."
           ]
@@ -11728,7 +11728,7 @@
         {
           "id": "developers",
           "title": "Publicamos lo que te pedimos publicar.",
-          "description": "Nuestro llms.txt, catálogo de API, descubrimiento OAuth, perfil de pago con agentes y endpoint MCP son públicos. La API REST tiene versiones y documentación OpenAPI 3.1. La CLI está disponible como @ecentic/cli.",
+          "description": "Los documentos llms.txt, catálogo de API, descubrimiento OAuth, perfil de pago para agentes y endpoint MCP de ecentic son públicos. La API REST tiene versiones y documentación OpenAPI 3.1, y la CLI se ejecuta con npx @ecentic/cli.",
           "note": "Las interfaces actuales permiten descubrimiento e incorporación, no exportar resultados del panel.",
           "links": [
             {
@@ -12890,13 +12890,13 @@
   "enterpriseSolutions": {
     "business": {
       "brands": {
-        "faqTitle": "Preguntas que nos hacen",
+        "faqTitle": "Preguntas de las marcas",
         "meta": {
-          "title": "ecentic para marcas: compite en compras con IA",
+          "title": "ecentic para marcas: sé el producto que la IA recomienda",
           "description": "Mira qué productos elige la IA frente a competidores. Mejora datos existentes y prueba el pago. Empieza con un análisis gratuito."
         },
         "eyebrow": "Para marcas",
-        "title": "Dale a la IA los datos de tu producto.",
+        "title": "Sé el producto que aparece en la respuesta.",
         "description": "Cuando alguien pide una opción de tu categoría, la IA compara productos. ecentic muestra cuáles elige en simulaciones, cuáles pierden frente a un competidor y qué datos necesitan trabajo. Tú eliges qué cambios publicar.",
         "actions": [
           {
@@ -12949,7 +12949,7 @@
               },
               {
                 "title": "Simulado",
-                "body": "Pregunta: «aceite de oliva virgen extra para ensaladas por menos de 25 $». Un rival gana 3 de 3 pruebas ilustrativas con datos más claros."
+                "body": "Pregunta: «mejor aceite de oliva virgen extra para ensaladas por menos de 25 $». Un competidor gana en 3 de 3 pruebas ilustrativas, con datos de origen más claros."
               },
               {
                 "title": "Mejorado",
@@ -13038,13 +13038,13 @@
         }
       },
       "retailers-and-marketplaces": {
-        "faqTitle": "Preguntas que nos hacen",
+        "faqTitle": "Preguntas de los minoristas",
         "meta": {
           "title": "ecentic para distribuidores y marketplaces",
           "description": "Detecta carencias en fichas de proveedores, compara productos y decide dónde mejorar tu catálogo. Empieza con una categoría."
         },
         "eyebrow": "Para distribuidores y marketplaces",
-        "title": "Miles de fichas. Un punto de partida más claro.",
+        "title": "Miles de productos. Una oportunidad ante el agente.",
         "description": "Los proveedores envían datos de muchas formas. ecentic comprueba campos compatibles y compara productos con competidores concretos. Usa los hallazgos para priorizar trabajo que tu equipo pueda verificar y elige qué cambios publicar.",
         "actions": [
           {
@@ -13097,7 +13097,7 @@
               },
               {
                 "title": "Simulado",
-                "body": "Pregunta: «silla ajustable para una persona alta por menos de 400 $». Un competidor gana 3 de 3 pruebas ilustrativas con especificaciones más claras."
+                "body": "Pregunta: «silla de oficina para una persona alta con dolor de espalda por menos de 400 $». Un competidor gana en 3 de 3 pruebas ilustrativas con especificaciones más claras."
               },
               {
                 "title": "Mejorado",
@@ -13171,7 +13171,7 @@
           },
           {
             "question": "¿Podemos empezar con una categoría?",
-            "answer": "Sí. El piloto propuesto empieza con un mercado y una categoría, con el alcance acordado antes de comenzar."
+            "answer": "Sí. Empieza con un mercado y una categoría, una referencia en la semana 0 y un informe en la semana 6. Acordamos el alcance antes de empezar."
           },
           {
             "question": "¿De quién son los datos y las mejoras?",
@@ -13185,14 +13185,14 @@
         }
       },
       "agencies-and-partners": {
-        "faqTitle": "Preguntas que nos hacen",
+        "faqTitle": "Preguntas de los partners",
         "meta": {
           "title": "ecentic para agencias y colaboradores",
           "description": "Añade comparaciones con IA y mejoras de fichas a tus servicios. Explora las opciones de agencia, tecnología y creadores con ecentic."
         },
         "eyebrow": "Para agencias y colaboradores",
         "title": "Añade comercio con IA a lo que ya ofreces.",
-        "description": "Tus clientes preguntan qué hacer con las compras por IA. ecentic te ofrece comparaciones, comprobaciones y controles de publicación para usar en esa relación. Acuerda las condiciones antes de prometer una reventa o comisión.",
+        "description": "Tus clientes preguntan qué hacer con ChatGPT. ecentic te ofrece comprobaciones de productos, mejoras de fichas y una vía de colaboración, dentro de la relación que ya tienes. Las condiciones comerciales se acuerdan antes de una reventa o recomendación.",
         "actions": [
           {
             "label": "Solicita colaborar",
@@ -13294,11 +13294,11 @@
         "faqTitle": "Preguntas que nos hacen",
         "meta": {
           "title": "ecentic para empresas: gestiona la IA como un canal",
-          "description": "Define un piloto con datos públicos para un mercado y categoría. Acuerda objetivos antes de empezar, con un fundador y DPA bajo solicitud."
+          "description": "Pilotos para tiendas, marcas y empresas de viajes con datos públicos. Objetivos por escrito desde el primer día y un fundador a cargo."
         },
         "eyebrow": "Para empresas",
         "title": "La IA es un nuevo canal de ventas. Gestiónalo como tal.",
-        "description": "Para distribuidores, marcas y empresas de viajes con varias categorías, mercados o marcas. Empieza con un mercado y una categoría, con datos públicos, y acuerda los objetivos por escrito antes de comenzar.",
+        "description": "Para minoristas, marcas y empresas de viajes con muchas categorías, mercados o marcas. Empezamos con un mercado y una categoría, con datos públicos, y acordamos los objetivos por escrito el primer día.",
         "actions": [
           {
             "label": "Habla con nosotros",
@@ -13311,13 +13311,13 @@
         ],
         "facts": [
           "Primero, datos públicos. Sin accesos, código en tu web ni datos de clientes para la referencia inicial.",
-          "Objetivos acordados por escrito antes de empezar.",
+          "Objetivos acordados por escrito el primer día.",
           "Un fundador en la cuenta, con contacto directo con ingeniería.",
-          "DPA bajo solicitud y lista fechada de subencargados."
+          "Revisamos los requisitos de datos y contratación antes de conceder acceso."
         ],
         "challenges": [
           {
-            "before": "Nadie es responsable del canal de IA. Cada equipo ve una parte.",
+            "before": "Nadie es responsable de la IA como canal. Los equipos de búsqueda, marketplaces y comercio electrónico ven solo una parte.",
             "after": "Acuerda un conjunto de preguntas y un informe para el equipo responsable de la categoría.",
             "href": "/platform/simulate"
           },
@@ -13363,7 +13363,7 @@
                 "body": "3 meses. Para cuestiones de pago o reserva que necesitan más que una lista de mejoras. El alcance puede incluir un prototipo con datos ficticios y un informe en el mes 3."
               }
             ],
-            "note": "Las tarifas dependen del alcance y se acuerdan en la primera llamada. Son servicios, no funciones automatizadas del producto."
+            "note": "Los honorarios dependen del alcance y se acuerdan en la primera llamada. Son servicios; el informe del piloto sigue el método acordado con tu equipo."
           },
           {
             "id": "pilot",
@@ -13381,7 +13381,7 @@
                 "body": "Trabaja en la categoría acordada y prueba el pago donde corresponda. El trabajo con datos públicos se entrega a tu equipo; los cambios directos requieren autorización."
               },
               {
-                "title": "Semana 6: repetir",
+                "title": "Semana 6 · Repetición",
                 "body": "Repite las preguntas con los mismos asistentes y número de ejecuciones. Documenta cambios de modelo o acceso."
               },
               {
@@ -13436,7 +13436,7 @@
           },
           {
             "id": "security",
-            "title": "Prepara la revisión de seguridad.",
+            "title": "Preparados para tu revisión de seguridad.",
             "eyebrow": "[06] Seguridad y confianza",
             "items": [
               {
@@ -13445,7 +13445,7 @@
               },
               {
                 "title": "Tus datos",
-                "body": "Consulta el tratamiento de datos, la solicitud de DPA y la lista fechada de subencargados. {{TODO: Confirmar seguridad operativa y entidad contratante antes del lanzamiento.}}"
+                "body": "Revisa el tratamiento de datos y habla con nosotros sobre el acuerdo y la información de proveedores que necesita tu equipo. {{TODO: Confirmar el DPA aprobado, los subencargados contratados, las ubicaciones y la entidad contratante.}}"
               },
               {
                 "title": "Respuestas claras",
@@ -13461,7 +13461,7 @@
           },
           {
             "id": "scale",
-            "title": "Basado en interfaces claras.",
+            "title": "Preparado para crecer.",
             "eyebrow": "[07] Capacidades de la plataforma",
             "columns": 3,
             "items": [
@@ -13486,7 +13486,7 @@
                 "body": "Pago WooCommerce con listas de acceso, requisitos de firma y límites configurables. Tu pasarela procesa el pago."
               },
               {
-                "title": "Descubrimiento público",
+                "title": "Publicamos lo que te pedimos que publiques.",
                 "body": "Nuestro llms.txt, catálogo API, perfil de pago y endpoint MCP son públicos.",
                 "href": "/resources",
                 "label": "Ver cómo funciona"
@@ -13495,7 +13495,7 @@
           },
           {
             "id": "checklist",
-            "title": "Tu lista de comprobación.",
+            "title": "Lista de comprobación del comprador.",
             "eyebrow": "[08] Antes del piloto",
             "rows": [
               {
@@ -13558,7 +13558,7 @@
         "faqs": [
           {
             "question": "¿Cuándo veremos resultados?",
-            "answer": "El piloto propuesto compara la semana 6 con la 0. Los asistentes cambian, así que el informe explica qué varió y los límites de la comparación. No se garantiza un resultado de ventas."
+            "answer": "Medimos en la semana 6 frente a la referencia de la semana 0. Los asistentes cambian sus respuestas con el tiempo, por lo que el informe muestra los cambios y los límites de la comparación. No se garantiza un resultado de ventas."
           },
           {
             "question": "¿Qué asistentes cubrís?",
@@ -14721,11 +14721,11 @@
     },
     "sectorIndex": {
       "meta": {
-        "title": "Sectores: datos para compras con IA",
+        "title": "Sectores: qué necesita la IA para vender tus productos",
         "description": "Explora qué comprobar en datos de alimentos, bebidas, belleza, electrónica, hogar, moda, bienestar, mascotas y viajes."
       },
       "eyebrow": "Sectores",
-      "title": "Qué necesita la IA para comparar tus productos.",
+      "title": "Lo que la IA necesita para vender tus productos.",
       "description": "Cada producto necesita datos distintos. Un sofá necesita medidas, un protector información probada y un viaje condiciones de cancelación. Empieza por tu categoría.",
       "sections": [
         {
@@ -14786,7 +14786,7 @@
         {
           "id": "other-sectors",
           "title": "¿No ves tu sector?",
-          "description": "Cuéntanos qué vendes y qué datos del catálogo son más difíciles de gestionar.",
+          "description": "Cuéntanos qué vendes.",
           "links": [
             {
               "label": "Habla con nosotros",
@@ -14798,8 +14798,8 @@
     },
     "index": {
       "meta": {
-        "title": "Soluciones para marcas, tiendas y empresas | ecentic",
-        "description": "Explora comercio con IA por negocio, equipo y sector. Compara productos, mejora datos verificados y prueba pagos compatibles."
+        "title": "Soluciones de ecentic para marcas, tiendas y empresas",
+        "description": "Cómo ecentic ayuda a marcas, tiendas, grandes empresas y agencias a vender a través de la IA, por negocio, equipo y sector."
       },
       "eyebrow": "Soluciones",
       "title": "Pensado para tu forma de vender.",
@@ -14812,13 +14812,13 @@
           "items": [
             {
               "title": "Para marcas",
-              "body": "Dale a la IA los datos de tu producto.",
+              "body": "Sé el producto que aparece en la respuesta.",
               "href": "/solutions/brands",
               "label": "Ver cómo funciona"
             },
             {
               "title": "Para distribuidores y marketplaces",
-              "body": "Miles de fichas. Un punto de partida más claro.",
+              "body": "Miles de productos. Una oportunidad ante el agente.",
               "href": "/solutions/retailers-and-marketplaces",
               "label": "Ver cómo funciona"
             },
@@ -15120,13 +15120,13 @@
         "capabilities": {
           "simulate": "ChatGPT compara los productos seleccionados con competidores en los análisis de tiendas.",
           "fix": "Las comprobaciones de fichas incluyen reglas del feed de OpenAI. Publica un título y una descripción nuevos, o datos estructurados mediante una acción separada, en una tienda conectada.",
-          "checkout": "La app de ecentic para ChatGPT está prevista y todavía no se ha publicado. Las herramientas de checkout actuales no constituyen una integración activa de la app.",
+          "checkout": "App de ecentic para ChatGPT: próximamente. Su publicación en el directorio no está confirmada. Las herramientas de pago actuales no establecen una integración activa con una app de ChatGPT.",
           "track": "Mide referencias de ChatGPT y visitas reconocidas de agentes en Shopify."
         },
         "faqs": [
           {
             "question": "¿Se puede comprar dentro de ChatGPT?",
-            "answer": "La documentación beta actual de OpenAI describe checkout dentro de ChatGPT para plugins aprobados. Otros enlaces llevan al comercio. Depende de la integración; la app de ecentic no está publicada."
+            "answer": "La documentación beta actual de OpenAI describe el pago dentro de ChatGPT para integraciones de plugins aprobadas. Otros enlaces llevan al comprador a la tienda. La disponibilidad depende de la integración; la publicación de la app de ecentic no está confirmada."
           },
           {
             "question": "Usamos Shopify. ¿ecentic nos incorpora a ChatGPT?",
@@ -15253,7 +15253,7 @@
       },
       "perplexity": {
         "meta": {
-          "title": "Vender a través de Perplexity",
+          "title": "Vender a través de las compras de Perplexity",
           "description": "Cómo muestra Perplexity los resultados de compra, dónde se documenta su programa para comercios y qué ofrece ecentic hoy."
         },
         "title": "Vender a través de Perplexity",
@@ -15535,7 +15535,7 @@
         "features": [
           "Todas las tiendas en una cuenta",
           "API, servidor MCP y CLI",
-          "DPA bajo petición",
+          "Revisión de requisitos de tratamiento de datos",
           "Un fundador en la cuenta",
           "Informe del piloto con objetivos acordados"
         ],
@@ -15598,7 +15598,7 @@
           "selfServe": true
         },
         {
-          "label": "DPA bajo petición",
+          "label": "Revisión de requisitos de tratamiento de datos",
           "selfServe": true
         },
         {
@@ -15656,7 +15656,7 @@
       },
       {
         "question": "¿Firmáis un DPA?",
-        "answer": "Sí, bajo petición. Contacta con nosotros para organizar el DPA y la revisión de seguridad de tu cuenta."
+        "answer": "Habla con nosotros sobre tus requisitos de DPA al definir el alcance. Confirma el acuerdo y las condiciones de firma antes de compartir datos personales."
       }
     ],
     "policyLinks": [
@@ -15814,7 +15814,7 @@
       },
       "eyebrow": "Desarrolladores / Instrucciones para IA",
       "title": "Dale al agente un punto de partida claro.",
-      "description": "ecentic ayuda a preparar datos de productos para las compras con IA. Usa estos límites y puntos de entrada para elegir el siguiente paso. ecentic no es una herramienta de SEO ni de GEO.",
+      "description": "ecentic es una capa entre el catálogo de una marca y los asistentes de IA que venden sus productos. Optimiza los datos que leen, prepara el proceso de pago para que puedan comprar y cambia con ellos cuando cambian sus reglas.",
       "actions": [
         {
           "label": "Leer la referencia de la API",
@@ -15840,7 +15840,7 @@
             },
             {
               "title": "Corregir con tu aprobación",
-              "body": "Prepara cambios en las fichas a partir de los resultados. Nada cambia en la tienda conectada hasta que haces clic en Aplicar. Publicar requiere un conector directo compatible.",
+              "body": "Aplicar genera y publica un título y una descripción a partir de los datos existentes del producto. Los datos estructurados y la sincronización con Merchant Center tienen controles separados. Al conectar Shopify también se instala el seguimiento de visitas. Para publicar se necesita un conector directo compatible.",
               "href": "/platform/fix",
               "label": "Explorar correcciones"
             },
@@ -15901,12 +15901,40 @@
     "og": {
       "home": {
         "title": "Consigue la venta cuando la IA hace la compra.",
-        "description": "La plataforma de comercio agéntico. Conecta, simula, corrige, vende y mide."
+        "description": "La capa de comercio con IA."
       },
       "docs": {
         "title": "Construye sobre la plataforma de comercio agéntico.",
         "description": "Referencia de la API, MCP, CLI y documentos públicos para desarrolladores."
       }
     }
+  },
+  "enterpriseLayer": {
+    "eyebrow": "01 · Cómo encaja",
+    "title": "Tu sistema a un lado. Los canales de IA al otro. ecentic en medio.",
+    "description": "Parte del catálogo que ya gestionas. Usa ecentic para prepararlo para los asistentes que usan tus clientes, con la disponibilidad actual de cada canal a la vista.",
+    "stack": "Tu sistema",
+    "channels": "Canales de IA",
+    "layer": "La capa de comercio con IA",
+    "stages": [
+      "Simular",
+      "Corregir",
+      "Vender",
+      "Medir"
+    ],
+    "inputs": [
+      "Shopify",
+      "WooCommerce",
+      "Feeds de productos / CSV",
+      "PIM",
+      "Google Merchant Center"
+    ],
+    "legend": "Líneas continuas: disponible hoy, incluidas las simulaciones. Líneas discontinuas: próximamente. La disponibilidad del canal no garantiza un pago integrado.",
+    "action": "Ver todos los canales de IA",
+    "diagram": "Tu sistema de comercio se conecta a ecentic, que prepara los datos de producto y el pago compatible para seis canales de IA.",
+    "google": "Google AI Mode / Gemini"
+  },
+  "enterpriseReview": {
+    "pending": "Pendiente de confirmar"
   }
 }

@@ -36,6 +36,7 @@ import {
 } from "@/lib/seo";
 import { IntegrationsPreview } from "./_components/enterprise/integrations-preview";
 import { Journey } from "./_components/enterprise/journey";
+import { CommerceLayer } from "./_components/enterprise/layer";
 import { Programs } from "./_components/enterprise/shared";
 import { HeroVideo } from "./_components/hero-video";
 import { SectionGutter } from "./dashboard/_components/grid";
@@ -97,6 +98,8 @@ export default async () => {
         </MarketingBand>
         <Journey copy={copy.loop} />
         <Programs copy={copy.programs} />
+        <SectionGutter />
+        <CommerceLayer />
         <SectionGutter />
         <MarketingBand className="enterprise-businesses" id="solutions">
           <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">

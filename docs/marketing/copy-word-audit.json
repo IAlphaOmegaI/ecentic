@@ -1,0 +1,3406 @@
+{
+  "catalogMatches": [
+    {
+      "file": "apps/web/messages/fragments/about.en.json",
+      "locale": "en",
+      "key": "about.does.items.1.body",
+      "matches": [
+        "visible"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/compare.en.json",
+      "locale": "en",
+      "key": "compare.meta.title",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/compare.en.json",
+      "locale": "en",
+      "key": "compare.guide.categories.4.description",
+      "matches": [
+        "visibility"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/compare.en.json",
+      "locale": "en",
+      "key": "compare.bottleneck.mappings.3.description",
+      "matches": [
+        "visibility"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/compare.en.json",
+      "locale": "en",
+      "key": "compare.faq.items.1.answer",
+      "matches": [
+        "visibility"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/compareTool.en.json",
+      "locale": "en",
+      "key": "compareTool.running.completeLog",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/compareTool.es.json",
+      "locale": "es",
+      "key": "compareTool.running.completeLog",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardAgentic.en.json",
+      "locale": "en",
+      "key": "dashboard.agentic.sections.scan",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardAgentic.en.json",
+      "locale": "en",
+      "key": "dashboard.agentic.sections.score",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardAgentic.en.json",
+      "locale": "en",
+      "key": "dashboard.agentic.sections.journey",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardAgentic.en.json",
+      "locale": "en",
+      "key": "dashboard.agentic.sections.competitors",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardAgentic.en.json",
+      "locale": "en",
+      "key": "dashboard.agentic.sections.checks",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardAgentic.en.json",
+      "locale": "en",
+      "key": "dashboard.agentic.sections.methodology",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardAgentic.en.json",
+      "locale": "en",
+      "key": "dashboard.agentic.score.publicOnly",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardAgentic.en.json",
+      "locale": "en",
+      "key": "dashboard.agentic.score.fixesNote",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardAgentic.en.json",
+      "locale": "en",
+      "key": "dashboard.agentic.score.publicOnlyUnscored",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardAgentic.en.json",
+      "locale": "en",
+      "key": "dashboard.agentic.journey.description",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardAgentic.es.json",
+      "locale": "es",
+      "key": "dashboard.agentic.sections.scan",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardAgentic.es.json",
+      "locale": "es",
+      "key": "dashboard.agentic.sections.score",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardAgentic.es.json",
+      "locale": "es",
+      "key": "dashboard.agentic.sections.journey",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardAgentic.es.json",
+      "locale": "es",
+      "key": "dashboard.agentic.sections.competitors",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardAgentic.es.json",
+      "locale": "es",
+      "key": "dashboard.agentic.sections.checks",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardAgentic.es.json",
+      "locale": "es",
+      "key": "dashboard.agentic.sections.methodology",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardAgentic.es.json",
+      "locale": "es",
+      "key": "dashboard.agentic.score.publicOnly",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardAgentic.es.json",
+      "locale": "es",
+      "key": "dashboard.agentic.score.fixesNote",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardAgentic.es.json",
+      "locale": "es",
+      "key": "dashboard.agentic.score.publicOnlyUnscored",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.nav.visibility",
+      "matches": [
+        "Visibility"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.hub.description",
+      "matches": [
+        "rank"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.overview.charts.kickers.performance",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.overview.charts.kickers.recentActivity",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.agentVisits.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.agentVisits.description",
+      "matches": [
+        "visible"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.optimize.categories.seo",
+      "matches": [
+        "SEO"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.optimize.diagnostics.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.optimize.diagnostics.description",
+      "matches": [
+        "SEO"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.optimize.queue.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.optimize.roadmap.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.visibility.eyebrow",
+      "matches": [
+        "Visibility"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.visibility.description",
+      "matches": [
+        "Rank"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.visibility.rankSection.title",
+      "matches": [
+        "Rank"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.visibility.rankChecker.action.primary",
+      "matches": [
+        "rank"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.visibility.rankChecker.toast.failed",
+      "matches": [
+        "Rank"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.discovery.statusPill",
+      "matches": [
+        "Visibility",
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.discovery.queries.description",
+      "matches": [
+        "rank"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.discovery.model.ranked",
+      "matches": [
+        "rank"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.ucp.protocolKicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.ucp.advancedValidator.chips.sseWarning",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.ucpComparison.statusPill",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.ucpComparison.sectionKicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.ucpPlaygroundDashboard.statusPill",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.reports.library.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.en.json",
+      "locale": "en",
+      "key": "dashboard.reports.automation.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.es.json",
+      "locale": "es",
+      "key": "dashboard.optimize.categories.seo",
+      "matches": [
+        "SEO"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.es.json",
+      "locale": "es",
+      "key": "dashboard.optimize.diagnostics.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.es.json",
+      "locale": "es",
+      "key": "dashboard.optimize.diagnostics.description",
+      "matches": [
+        "SEO"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.es.json",
+      "locale": "es",
+      "key": "dashboard.optimize.queue.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.es.json",
+      "locale": "es",
+      "key": "dashboard.optimize.roadmap.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.es.json",
+      "locale": "es",
+      "key": "dashboard.visibility.description",
+      "matches": [
+        "—",
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.es.json",
+      "locale": "es",
+      "key": "dashboard.visibility.audit.scoreDetail",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.es.json",
+      "locale": "es",
+      "key": "dashboard.discovery.statusPill",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.es.json",
+      "locale": "es",
+      "key": "dashboard.discovery.description",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.es.json",
+      "locale": "es",
+      "key": "dashboard.discovery.empty.description",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.es.json",
+      "locale": "es",
+      "key": "dashboard.discovery.model.ranked",
+      "matches": [
+        "rank"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.es.json",
+      "locale": "es",
+      "key": "dashboard.ucp.protocolKicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.es.json",
+      "locale": "es",
+      "key": "dashboard.ucp.advancedValidator.chips.sseWarning",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.es.json",
+      "locale": "es",
+      "key": "dashboard.ucpComparison.statusPill",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.es.json",
+      "locale": "es",
+      "key": "dashboard.ucpComparison.sectionKicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.es.json",
+      "locale": "es",
+      "key": "dashboard.ucpPlaygroundDashboard.statusPill",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.es.json",
+      "locale": "es",
+      "key": "dashboard.reports.library.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.es.json",
+      "locale": "es",
+      "key": "dashboard.reports.automation.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.es.json",
+      "locale": "es",
+      "key": "dashboard.overview.charts.kickers.performance",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.es.json",
+      "locale": "es",
+      "key": "dashboard.overview.charts.kickers.recentActivity",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardChrome.es.json",
+      "locale": "es",
+      "key": "dashboard.agentVisits.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardCompetitors.en.json",
+      "locale": "en",
+      "key": "dashboard.competitors.description",
+      "matches": [
+        "rank"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardCompetitors.en.json",
+      "locale": "en",
+      "key": "dashboard.competitors.landscape.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardCompetitors.en.json",
+      "locale": "en",
+      "key": "dashboard.competitors.table.kickerAll",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardCompetitors.en.json",
+      "locale": "en",
+      "key": "dashboard.competitors.insights.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardCompetitors.en.json",
+      "locale": "en",
+      "key": "dashboard.competitors.insights.scanCompleted",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardCompetitors.en.json",
+      "locale": "en",
+      "key": "dashboard.competitors.insights.scanInProgress",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardCompetitors.en.json",
+      "locale": "en",
+      "key": "dashboard.competitors.insights.headlines.outrankAll",
+      "matches": [
+        "rank"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardCompetitors.en.json",
+      "locale": "en",
+      "key": "dashboard.competitors.add.findKicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardCompetitors.en.json",
+      "locale": "en",
+      "key": "dashboard.competitors.add.rosterKicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardCompetitors.en.json",
+      "locale": "en",
+      "key": "dashboard.competitors.add.rosterSummary",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardCompetitors.es.json",
+      "locale": "es",
+      "key": "dashboard.competitors.landscape.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardCompetitors.es.json",
+      "locale": "es",
+      "key": "dashboard.competitors.table.kickerAll",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardCompetitors.es.json",
+      "locale": "es",
+      "key": "dashboard.competitors.insights.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardCompetitors.es.json",
+      "locale": "es",
+      "key": "dashboard.competitors.insights.scanCompleted",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardCompetitors.es.json",
+      "locale": "es",
+      "key": "dashboard.competitors.insights.scanInProgress",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardCompetitors.es.json",
+      "locale": "es",
+      "key": "dashboard.competitors.add.findKicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardCompetitors.es.json",
+      "locale": "es",
+      "key": "dashboard.competitors.add.rosterKicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardCompetitors.es.json",
+      "locale": "es",
+      "key": "dashboard.competitors.add.rosterSummary",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.en.json",
+      "locale": "en",
+      "key": "dashboard.optimize.categories.seo",
+      "matches": [
+        "SEO"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.en.json",
+      "locale": "en",
+      "key": "dashboard.optimize.diagnostics.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.en.json",
+      "locale": "en",
+      "key": "dashboard.optimize.diagnostics.description",
+      "matches": [
+        "SEO"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.en.json",
+      "locale": "en",
+      "key": "dashboard.optimize.queue.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.en.json",
+      "locale": "en",
+      "key": "dashboard.optimize.roadmap.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.en.json",
+      "locale": "en",
+      "key": "dashboard.visibility.eyebrow",
+      "matches": [
+        "Visibility"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.en.json",
+      "locale": "en",
+      "key": "dashboard.visibility.description",
+      "matches": [
+        "Rank"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.en.json",
+      "locale": "en",
+      "key": "dashboard.visibility.rankSection.title",
+      "matches": [
+        "Rank"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.en.json",
+      "locale": "en",
+      "key": "dashboard.visibility.rankChecker.action.primary",
+      "matches": [
+        "rank"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.en.json",
+      "locale": "en",
+      "key": "dashboard.visibility.rankChecker.toast.failed",
+      "matches": [
+        "Rank"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.en.json",
+      "locale": "en",
+      "key": "dashboard.discovery.statusPill",
+      "matches": [
+        "Visibility",
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.en.json",
+      "locale": "en",
+      "key": "dashboard.discovery.queries.description",
+      "matches": [
+        "rank"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.en.json",
+      "locale": "en",
+      "key": "dashboard.discovery.model.ranked",
+      "matches": [
+        "rank"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.en.json",
+      "locale": "en",
+      "key": "dashboard.ucp.protocolKicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.en.json",
+      "locale": "en",
+      "key": "dashboard.ucp.advancedValidator.chips.sseWarning",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.en.json",
+      "locale": "en",
+      "key": "dashboard.ucpComparison.statusPill",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.en.json",
+      "locale": "en",
+      "key": "dashboard.ucpComparison.sectionKicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.en.json",
+      "locale": "en",
+      "key": "dashboard.ucpPlaygroundDashboard.statusPill",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.en.json",
+      "locale": "en",
+      "key": "dashboard.reports.library.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.en.json",
+      "locale": "en",
+      "key": "dashboard.reports.automation.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.es.json",
+      "locale": "es",
+      "key": "dashboard.optimize.categories.seo",
+      "matches": [
+        "SEO"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.es.json",
+      "locale": "es",
+      "key": "dashboard.optimize.diagnostics.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.es.json",
+      "locale": "es",
+      "key": "dashboard.optimize.diagnostics.description",
+      "matches": [
+        "SEO"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.es.json",
+      "locale": "es",
+      "key": "dashboard.optimize.queue.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.es.json",
+      "locale": "es",
+      "key": "dashboard.optimize.roadmap.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.es.json",
+      "locale": "es",
+      "key": "dashboard.visibility.description",
+      "matches": [
+        "—",
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.es.json",
+      "locale": "es",
+      "key": "dashboard.visibility.audit.scoreDetail",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.es.json",
+      "locale": "es",
+      "key": "dashboard.discovery.statusPill",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.es.json",
+      "locale": "es",
+      "key": "dashboard.discovery.description",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.es.json",
+      "locale": "es",
+      "key": "dashboard.discovery.empty.description",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.es.json",
+      "locale": "es",
+      "key": "dashboard.discovery.model.ranked",
+      "matches": [
+        "rank"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.es.json",
+      "locale": "es",
+      "key": "dashboard.ucp.protocolKicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.es.json",
+      "locale": "es",
+      "key": "dashboard.ucp.advancedValidator.chips.sseWarning",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.es.json",
+      "locale": "es",
+      "key": "dashboard.ucpComparison.statusPill",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.es.json",
+      "locale": "es",
+      "key": "dashboard.ucpComparison.sectionKicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.es.json",
+      "locale": "es",
+      "key": "dashboard.ucpPlaygroundDashboard.statusPill",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.es.json",
+      "locale": "es",
+      "key": "dashboard.reports.library.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardFeatures.es.json",
+      "locale": "es",
+      "key": "dashboard.reports.automation.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.en.json",
+      "locale": "en",
+      "key": "dashboard.shared.status.liveUpdated",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.en.json",
+      "locale": "en",
+      "key": "dashboard.shared.status.liveLastScanned",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.en.json",
+      "locale": "en",
+      "key": "dashboard.shared.status.liveProductUpdated",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.en.json",
+      "locale": "en",
+      "key": "dashboard.shared.sections.performance",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.en.json",
+      "locale": "en",
+      "key": "dashboard.shared.sections.performanceHalf",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.en.json",
+      "locale": "en",
+      "key": "dashboard.shared.sections.catalog",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.en.json",
+      "locale": "en",
+      "key": "dashboard.shared.sections.competitiveLandscape",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.en.json",
+      "locale": "en",
+      "key": "dashboard.shared.sections.traffic",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.en.json",
+      "locale": "en",
+      "key": "dashboard.shared.sections.insights",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.en.json",
+      "locale": "en",
+      "key": "dashboard.shared.sections.agentTraffic",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.en.json",
+      "locale": "en",
+      "key": "dashboard.shared.activity.simulationComplete",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.en.json",
+      "locale": "en",
+      "key": "dashboard.shared.activity.simulationInProgress",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.en.json",
+      "locale": "en",
+      "key": "dashboard.shared.agentVisits.description",
+      "matches": [
+        "visible"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.en.json",
+      "locale": "en",
+      "key": "dashboard.shared.agentVisits.panelDescription",
+      "matches": [
+        "visible"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.en.json",
+      "locale": "en",
+      "key": "dashboard.overview.description",
+      "matches": [
+        "rank"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.es.json",
+      "locale": "es",
+      "key": "dashboard.shared.status.liveUpdated",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.es.json",
+      "locale": "es",
+      "key": "dashboard.shared.status.liveLastScanned",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.es.json",
+      "locale": "es",
+      "key": "dashboard.shared.status.liveProductUpdated",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.es.json",
+      "locale": "es",
+      "key": "dashboard.shared.sections.performance",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.es.json",
+      "locale": "es",
+      "key": "dashboard.shared.sections.performanceHalf",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.es.json",
+      "locale": "es",
+      "key": "dashboard.shared.sections.catalog",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.es.json",
+      "locale": "es",
+      "key": "dashboard.shared.sections.competitiveLandscape",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.es.json",
+      "locale": "es",
+      "key": "dashboard.shared.sections.traffic",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.es.json",
+      "locale": "es",
+      "key": "dashboard.shared.sections.insights",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.es.json",
+      "locale": "es",
+      "key": "dashboard.shared.sections.agentTraffic",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.es.json",
+      "locale": "es",
+      "key": "dashboard.shared.activity.simulationComplete",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardOverview.es.json",
+      "locale": "es",
+      "key": "dashboard.shared.activity.simulationInProgress",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardPaywall.en.json",
+      "locale": "en",
+      "key": "dashboard.paywall.title",
+      "matches": [
+        "unlock"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardPaywall.en.json",
+      "locale": "en",
+      "key": "dashboard.paywall.description",
+      "matches": [
+        "rank"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardProducts.en.json",
+      "locale": "en",
+      "key": "dashboard.products.quality.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardProducts.en.json",
+      "locale": "en",
+      "key": "dashboard.products.optimization.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardProducts.en.json",
+      "locale": "en",
+      "key": "dashboard.products.detail.battlecard.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardProducts.en.json",
+      "locale": "en",
+      "key": "dashboard.products.detail.optimizeTab.currentListing",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardProducts.en.json",
+      "locale": "en",
+      "key": "dashboard.products.detail.optimizeTab.listingAuditKicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardProducts.en.json",
+      "locale": "en",
+      "key": "dashboard.products.detail.optimizeTab.status.optimizedEmbedOff",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardProducts.es.json",
+      "locale": "es",
+      "key": "dashboard.products.quality.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardProducts.es.json",
+      "locale": "es",
+      "key": "dashboard.products.optimization.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardProducts.es.json",
+      "locale": "es",
+      "key": "dashboard.products.detail.battlecard.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardProducts.es.json",
+      "locale": "es",
+      "key": "dashboard.products.detail.optimizeTab.currentListing",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardProducts.es.json",
+      "locale": "es",
+      "key": "dashboard.products.detail.optimizeTab.listingAuditKicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardProducts.es.json",
+      "locale": "es",
+      "key": "dashboard.products.detail.optimizeTab.status.optimizedEmbedOff",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardSimulations.en.json",
+      "locale": "en",
+      "key": "dashboard.simulations.discovery.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardSimulations.en.json",
+      "locale": "en",
+      "key": "dashboard.simulations.setup.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardSimulations.en.json",
+      "locale": "en",
+      "key": "dashboard.simulations.run.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardSimulations.es.json",
+      "locale": "es",
+      "key": "dashboard.simulations.discovery.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardSimulations.es.json",
+      "locale": "es",
+      "key": "dashboard.simulations.setup.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/dashboardSimulations.es.json",
+      "locale": "es",
+      "key": "dashboard.simulations.run.kicker",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/demo.en.json",
+      "locale": "en",
+      "key": "demo.meta.title",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/demo.es.json",
+      "locale": "es",
+      "key": "demo.meta.title",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.en.json",
+      "locale": "en",
+      "key": "docs.authentication.body",
+      "matches": [
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.en.json",
+      "locale": "en",
+      "key": "docs.mcp.body",
+      "matches": [
+        "—",
+        "—",
+        "—",
+        "—",
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.en.json",
+      "locale": "en",
+      "key": "docs.webhooks.body",
+      "matches": [
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.en.json",
+      "locale": "en",
+      "key": "docs.cli.body",
+      "matches": [
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.en.json",
+      "locale": "en",
+      "key": "docs.errorsPage.shape.body",
+      "matches": [
+        "—",
+        "—",
+        "—",
+        "—",
+        "—",
+        "—",
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.en.json",
+      "locale": "en",
+      "key": "docs.rateLimitsPage.headers.body",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.en.json",
+      "locale": "en",
+      "key": "docs.rateLimitsPage.exceeded.body",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.en.json",
+      "locale": "en",
+      "key": "docs.versioningPage.strategy.body",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.en.json",
+      "locale": "en",
+      "key": "docs.versioningPage.support.body",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.en.json",
+      "locale": "en",
+      "key": "docs.mcpPage.connect.body",
+      "matches": [
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.en.json",
+      "locale": "en",
+      "key": "docs.mcpPage.handshake.body",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.en.json",
+      "locale": "en",
+      "key": "docs.mcpPage.errors.body",
+      "matches": [
+        "—",
+        "—",
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.en.json",
+      "locale": "en",
+      "key": "docs.authenticationPage.hero.description",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.en.json",
+      "locale": "en",
+      "key": "docs.authenticationPage.open.body",
+      "matches": [
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.en.json",
+      "locale": "en",
+      "key": "docs.authenticationPage.keys.body",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.en.json",
+      "locale": "en",
+      "key": "docs.authenticationPage.footer.note",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.es.json",
+      "locale": "es",
+      "key": "docs.authentication.body",
+      "matches": [
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.es.json",
+      "locale": "es",
+      "key": "docs.mcp.body",
+      "matches": [
+        "—",
+        "—",
+        "—",
+        "—",
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.es.json",
+      "locale": "es",
+      "key": "docs.webhooks.body",
+      "matches": [
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.es.json",
+      "locale": "es",
+      "key": "docs.cli.body",
+      "matches": [
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.es.json",
+      "locale": "es",
+      "key": "docs.errorsPage.shape.body",
+      "matches": [
+        "—",
+        "—",
+        "—",
+        "—",
+        "—",
+        "—",
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.es.json",
+      "locale": "es",
+      "key": "docs.rateLimitsPage.headers.body",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.es.json",
+      "locale": "es",
+      "key": "docs.rateLimitsPage.exceeded.body",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.es.json",
+      "locale": "es",
+      "key": "docs.versioningPage.strategy.body",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.es.json",
+      "locale": "es",
+      "key": "docs.versioningPage.support.body",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.es.json",
+      "locale": "es",
+      "key": "docs.mcpPage.connect.body",
+      "matches": [
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.es.json",
+      "locale": "es",
+      "key": "docs.mcpPage.errors.body",
+      "matches": [
+        "—",
+        "—",
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/docs.es.json",
+      "locale": "es",
+      "key": "docs.authenticationPage.open.body",
+      "matches": [
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/enterpriseHome.en.json",
+      "locale": "en",
+      "key": "enterpriseHome.faq.items.6.question",
+      "value": "Is this SEO?",
+      "matches": [
+        "SEO"
+      ],
+      "reason": "The homepage SEO FAQ is expressly allowed by the brief; Spanish localization preserves the same question.",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterpriseHome.es.json",
+      "locale": "es",
+      "key": "enterpriseHome.faq.items.6.question",
+      "value": "¿Esto es SEO?",
+      "matches": [
+        "SEO"
+      ],
+      "reason": "The homepage SEO FAQ is expressly allowed by the brief; Spanish localization preserves the same question.",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterpriseNav.en.json",
+      "locale": "en",
+      "key": "enterpriseNav.groups.0.columns.1.items.6.href",
+      "value": "/platform/simulate#brand-visibility",
+      "matches": [
+        "visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterpriseNav.en.json",
+      "locale": "en",
+      "key": "enterpriseNav.groups.0.columns.1.items.6.label",
+      "value": "Brand Visibility",
+      "matches": [
+        "Visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterpriseNav.es.json",
+      "locale": "es",
+      "key": "enterpriseNav.groups.0.columns.1.items.6.href",
+      "value": "/platform/simulate#brand-visibility",
+      "matches": [
+        "visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterpriseNav.es.json",
+      "locale": "es",
+      "key": "enterpriseNav.groups.0.columns.1.items.6.label",
+      "value": "Brand Visibility",
+      "matches": [
+        "Visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterprisePlatform.en.json",
+      "locale": "en",
+      "key": "enterprisePlatform.overview.sections.1.items.6.title",
+      "value": "Brand Visibility",
+      "matches": [
+        "Visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterprisePlatform.en.json",
+      "locale": "en",
+      "key": "enterprisePlatform.overview.sections.1.items.6.href",
+      "value": "/platform/simulate#brand-visibility",
+      "matches": [
+        "visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterprisePlatform.en.json",
+      "locale": "en",
+      "key": "enterprisePlatform.pages.simulate.sections.11.id",
+      "value": "brand-visibility",
+      "matches": [
+        "visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterprisePlatform.en.json",
+      "locale": "en",
+      "key": "enterprisePlatform.pages.simulate.sections.11.title",
+      "value": "Brand Visibility",
+      "matches": [
+        "Visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterprisePlatform.es.json",
+      "locale": "es",
+      "key": "enterprisePlatform.overview.sections.1.items.6.title",
+      "value": "Brand Visibility",
+      "matches": [
+        "Visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterprisePlatform.es.json",
+      "locale": "es",
+      "key": "enterprisePlatform.overview.sections.1.items.6.href",
+      "value": "/platform/simulate#brand-visibility",
+      "matches": [
+        "visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterprisePlatform.es.json",
+      "locale": "es",
+      "key": "enterprisePlatform.pages.simulate.sections.11.id",
+      "value": "brand-visibility",
+      "matches": [
+        "visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterprisePlatform.es.json",
+      "locale": "es",
+      "key": "enterprisePlatform.pages.simulate.sections.11.title",
+      "value": "Brand Visibility",
+      "matches": [
+        "Visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterpriseSolutions.en.json",
+      "locale": "en",
+      "key": "enterpriseSolutions.index.sections.2.description",
+      "value": "You own the brand and budget. Inspect recorded product comparisons and the ChatGPT Brand Visibility feature, then work on the verified product facts you control.",
+      "matches": [
+        "Visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterpriseSolutions.es.json",
+      "locale": "es",
+      "key": "enterpriseSolutions.index.sections.2.description",
+      "value": "Eres responsable de marca y presupuesto. Revisa comparaciones y la función Brand Visibility de ChatGPT, y trabaja en los datos verificados que controlas.",
+      "matches": [
+        "Visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/features.en.json",
+      "locale": "en",
+      "key": "features.meta.description",
+      "matches": [
+        "visibility"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/features.en.json",
+      "locale": "en",
+      "key": "features.loop.title",
+      "matches": [
+        "invisible"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/features.en.json",
+      "locale": "en",
+      "key": "features.loop.description",
+      "matches": [
+        "Visibility"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/features.es.json",
+      "locale": "es",
+      "key": "features.loop.title",
+      "matches": [
+        "invisible"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.en.json",
+      "locale": "en",
+      "key": "legal.privacyPolicy.meta.title",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.en.json",
+      "locale": "en",
+      "key": "legal.privacyPolicy.summary.0.description",
+      "matches": [
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.en.json",
+      "locale": "en",
+      "key": "legal.privacyPolicy.sections.01.content",
+      "matches": [
+        "—",
+        "écentic",
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.en.json",
+      "locale": "en",
+      "key": "legal.privacyPolicy.sections.03.content",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.en.json",
+      "locale": "en",
+      "key": "legal.privacyPolicy.sections.04.content",
+      "matches": [
+        "—",
+        "—",
+        "—",
+        "—",
+        "—",
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.en.json",
+      "locale": "en",
+      "key": "legal.privacyPolicy.sections.05.content",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.en.json",
+      "locale": "en",
+      "key": "legal.privacyPolicy.sections.07.content",
+      "matches": [
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.en.json",
+      "locale": "en",
+      "key": "legal.privacyPolicy.sections.08.content",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.en.json",
+      "locale": "en",
+      "key": "legal.termsAndConditions.meta.title",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.en.json",
+      "locale": "en",
+      "key": "legal.termsAndConditions.hero.description",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.en.json",
+      "locale": "en",
+      "key": "legal.termsAndConditions.sections.02.content",
+      "matches": [
+        "—",
+        "—",
+        "écentic"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.en.json",
+      "locale": "en",
+      "key": "legal.termsAndConditions.sections.06.content",
+      "matches": [
+        "—",
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.en.json",
+      "locale": "en",
+      "key": "legal.termsAndConditions.sections.07.content",
+      "matches": [
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.en.json",
+      "locale": "en",
+      "key": "legal.termsAndConditions.sections.09.content",
+      "matches": [
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.es.json",
+      "locale": "es",
+      "key": "legal.privacyPolicy.meta.title",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.es.json",
+      "locale": "es",
+      "key": "legal.privacyPolicy.summary.0.description",
+      "matches": [
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.es.json",
+      "locale": "es",
+      "key": "legal.privacyPolicy.sections.01.content",
+      "matches": [
+        "—",
+        "écentic",
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.es.json",
+      "locale": "es",
+      "key": "legal.privacyPolicy.sections.03.content",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.es.json",
+      "locale": "es",
+      "key": "legal.privacyPolicy.sections.04.content",
+      "matches": [
+        "—",
+        "—",
+        "—",
+        "—",
+        "—",
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.es.json",
+      "locale": "es",
+      "key": "legal.privacyPolicy.sections.05.content",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.es.json",
+      "locale": "es",
+      "key": "legal.privacyPolicy.sections.07.content",
+      "matches": [
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.es.json",
+      "locale": "es",
+      "key": "legal.privacyPolicy.sections.08.content",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.es.json",
+      "locale": "es",
+      "key": "legal.termsAndConditions.meta.title",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.es.json",
+      "locale": "es",
+      "key": "legal.termsAndConditions.hero.description",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.es.json",
+      "locale": "es",
+      "key": "legal.termsAndConditions.sections.02.content",
+      "matches": [
+        "—",
+        "—",
+        "écentic"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.es.json",
+      "locale": "es",
+      "key": "legal.termsAndConditions.sections.06.content",
+      "matches": [
+        "—",
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.es.json",
+      "locale": "es",
+      "key": "legal.termsAndConditions.sections.07.content",
+      "matches": [
+        "—",
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/legal.es.json",
+      "locale": "es",
+      "key": "legal.termsAndConditions.sections.09.content",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.en.json",
+      "locale": "en",
+      "key": "onboarding.connect.platforms.2.description",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.en.json",
+      "locale": "en",
+      "key": "onboarding.connect.shopify.steps.0",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.en.json",
+      "locale": "en",
+      "key": "onboarding.connect.shopify.errors.already_connected",
+      "matches": [
+        "écentic"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.en.json",
+      "locale": "en",
+      "key": "onboarding.connect.woocommerce.oneClick.description",
+      "matches": [
+        "écentic"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.en.json",
+      "locale": "en",
+      "key": "onboarding.connect.woocommerce.oneClick.installRequired.title",
+      "matches": [
+        "écentic"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.en.json",
+      "locale": "en",
+      "key": "onboarding.connect.woocommerce.oneClick.installRequired.steps.0",
+      "matches": [
+        "écentic"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.en.json",
+      "locale": "en",
+      "key": "onboarding.connect.csv.columns.required",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.en.json",
+      "locale": "en",
+      "key": "onboarding.connect.csv.columns.optional",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.en.json",
+      "locale": "en",
+      "key": "onboarding.connect.entry.running.description",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.en.json",
+      "locale": "en",
+      "key": "onboarding.competitors.offers.sellerLog",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.en.json",
+      "locale": "en",
+      "key": "onboarding.competitors.offers.categoryLog",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.en.json",
+      "locale": "en",
+      "key": "onboarding.competitors.merchant.description",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.en.json",
+      "locale": "en",
+      "key": "onboarding.competitors.merchant.reason.noData",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.en.json",
+      "locale": "en",
+      "key": "onboarding.competitors.merchant.validation.summary",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.en.json",
+      "locale": "en",
+      "key": "onboarding.competitors.action.skip",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.en.json",
+      "locale": "en",
+      "key": "onboarding.competitors.review.summary",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.es.json",
+      "locale": "es",
+      "key": "onboarding.connect.platforms.2.description",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.es.json",
+      "locale": "es",
+      "key": "onboarding.connect.shopify.errors.already_connected",
+      "matches": [
+        "écentic"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.es.json",
+      "locale": "es",
+      "key": "onboarding.connect.woocommerce.oneClick.description",
+      "matches": [
+        "écentic"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.es.json",
+      "locale": "es",
+      "key": "onboarding.connect.woocommerce.oneClick.installRequired.title",
+      "matches": [
+        "écentic"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.es.json",
+      "locale": "es",
+      "key": "onboarding.connect.woocommerce.oneClick.installRequired.steps.0",
+      "matches": [
+        "écentic"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.es.json",
+      "locale": "es",
+      "key": "onboarding.connect.csv.columns.required",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.es.json",
+      "locale": "es",
+      "key": "onboarding.connect.csv.columns.optional",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.es.json",
+      "locale": "es",
+      "key": "onboarding.competitors.offers.sellerLog",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.es.json",
+      "locale": "es",
+      "key": "onboarding.competitors.offers.categoryLog",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.es.json",
+      "locale": "es",
+      "key": "onboarding.competitors.action.skip",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/onboarding.es.json",
+      "locale": "es",
+      "key": "onboarding.competitors.review.summary",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/productListings.en.json",
+      "locale": "en",
+      "key": "productListings.meta.description",
+      "matches": [
+        "visibility"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/productListings.en.json",
+      "locale": "en",
+      "key": "productListings.nextSteps.items.3.title",
+      "matches": [
+        "visibility"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/shopify.en.json",
+      "locale": "en",
+      "key": "shopify.meta.title",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/shopify.en.json",
+      "locale": "en",
+      "key": "shopify.why.paragraphs.0",
+      "matches": [
+        "visibility"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/shopify.en.json",
+      "locale": "en",
+      "key": "shopify.workflow.outcomes.1.description",
+      "matches": [
+        "visibility"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/shopify.es.json",
+      "locale": "es",
+      "key": "shopify.meta.title",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/support.en.json",
+      "locale": "en",
+      "key": "support.meta.title",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/support.es.json",
+      "locale": "es",
+      "key": "support.meta.title",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/techstars.en.json",
+      "locale": "en",
+      "key": "techstars.meta.title",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/techstars.es.json",
+      "locale": "es",
+      "key": "techstars.meta.title",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/ucpValidator.en.json",
+      "locale": "en",
+      "key": "ucpValidator.form.services.customNote",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/ucpValidator.en.json",
+      "locale": "en",
+      "key": "ucpValidator.form.signingKeys.privateMaterial",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/ucpValidator.en.json",
+      "locale": "en",
+      "key": "ucpValidator.form.coreChecks.version.latest",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/ucpValidator.en.json",
+      "locale": "en",
+      "key": "ucpValidator.form.coreChecks.signingKeys.none",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/ucpValidator.en.json",
+      "locale": "en",
+      "key": "ucpValidator.form.panel.rootDomainNote",
+      "matches": [
+        "—"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/ucpValidator.es.json",
+      "locale": "es",
+      "key": "ucpValidator.checks.description",
+      "matches": [
+        "visible"
+      ],
+      "reason": "Internal dashboard or app terminology outside marketing copy ownership",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/webmcpScanner.en.json",
+      "locale": "en",
+      "key": "webmcpScanner.report.nextStep",
+      "matches": [
+        "visibility"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/woocommerce.en.json",
+      "locale": "en",
+      "key": "woocommerce.meta.title",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/woocommerce.en.json",
+      "locale": "en",
+      "key": "woocommerce.why.audiences.1.description",
+      "matches": [
+        "visibility"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/woocommerce.en.json",
+      "locale": "en",
+      "key": "woocommerce.agentCommerce.description.pluginName",
+      "matches": [
+        "écentic"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/woocommerce.en.json",
+      "locale": "en",
+      "key": "woocommerce.related.items.3.title",
+      "matches": [
+        "SEO"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/woocommerce.en.json",
+      "locale": "en",
+      "key": "woocommerce.faq.items.0.answer",
+      "matches": [
+        "écentic"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/woocommerce.en.json",
+      "locale": "en",
+      "key": "woocommerce.faq.items.2.answer",
+      "matches": [
+        "écentic"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/woocommerce.en.json",
+      "locale": "en",
+      "key": "woocommerce.faq.items.3.answer",
+      "matches": [
+        "visible"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/woocommerce.es.json",
+      "locale": "es",
+      "key": "woocommerce.meta.title",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/woocommerce.es.json",
+      "locale": "es",
+      "key": "woocommerce.agentCommerce.description.pluginName",
+      "matches": [
+        "écentic"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/woocommerce.es.json",
+      "locale": "es",
+      "key": "woocommerce.related.items.3.title",
+      "matches": [
+        "SEO"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/woocommerce.es.json",
+      "locale": "es",
+      "key": "woocommerce.faq.items.0.answer",
+      "matches": [
+        "écentic"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/woocommerce.es.json",
+      "locale": "es",
+      "key": "woocommerce.faq.items.2.answer",
+      "matches": [
+        "écentic"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/woocommerce.es.json",
+      "locale": "es",
+      "key": "woocommerce.faq.items.3.answer",
+      "matches": [
+        "visible"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/yc.en.json",
+      "locale": "en",
+      "key": "yc.meta.title",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    },
+    {
+      "file": "apps/web/messages/fragments/yc.es.json",
+      "locale": "es",
+      "key": "yc.meta.title",
+      "matches": [
+        "—"
+      ],
+      "reason": "Legacy or other feature catalog outside this agent’s existing-enterprise fragment ownership; retained for root review",
+      "existingEnterpriseOwned": false
+    }
+  ],
+  "contentMatches": [],
+  "existingEnterpriseMatches": [
+    {
+      "file": "apps/web/messages/fragments/enterpriseHome.en.json",
+      "locale": "en",
+      "key": "enterpriseHome.faq.items.6.question",
+      "value": "Is this SEO?",
+      "matches": [
+        "SEO"
+      ],
+      "reason": "The homepage SEO FAQ is expressly allowed by the brief; Spanish localization preserves the same question.",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterpriseHome.es.json",
+      "locale": "es",
+      "key": "enterpriseHome.faq.items.6.question",
+      "value": "¿Esto es SEO?",
+      "matches": [
+        "SEO"
+      ],
+      "reason": "The homepage SEO FAQ is expressly allowed by the brief; Spanish localization preserves the same question.",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterpriseNav.en.json",
+      "locale": "en",
+      "key": "enterpriseNav.groups.0.columns.1.items.6.href",
+      "value": "/platform/simulate#brand-visibility",
+      "matches": [
+        "visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterpriseNav.en.json",
+      "locale": "en",
+      "key": "enterpriseNav.groups.0.columns.1.items.6.label",
+      "value": "Brand Visibility",
+      "matches": [
+        "Visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterpriseNav.es.json",
+      "locale": "es",
+      "key": "enterpriseNav.groups.0.columns.1.items.6.href",
+      "value": "/platform/simulate#brand-visibility",
+      "matches": [
+        "visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterpriseNav.es.json",
+      "locale": "es",
+      "key": "enterpriseNav.groups.0.columns.1.items.6.label",
+      "value": "Brand Visibility",
+      "matches": [
+        "Visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterprisePlatform.en.json",
+      "locale": "en",
+      "key": "enterprisePlatform.overview.sections.1.items.6.title",
+      "value": "Brand Visibility",
+      "matches": [
+        "Visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterprisePlatform.en.json",
+      "locale": "en",
+      "key": "enterprisePlatform.overview.sections.1.items.6.href",
+      "value": "/platform/simulate#brand-visibility",
+      "matches": [
+        "visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterprisePlatform.en.json",
+      "locale": "en",
+      "key": "enterprisePlatform.pages.simulate.sections.11.id",
+      "value": "brand-visibility",
+      "matches": [
+        "visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterprisePlatform.en.json",
+      "locale": "en",
+      "key": "enterprisePlatform.pages.simulate.sections.11.title",
+      "value": "Brand Visibility",
+      "matches": [
+        "Visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterprisePlatform.es.json",
+      "locale": "es",
+      "key": "enterprisePlatform.overview.sections.1.items.6.title",
+      "value": "Brand Visibility",
+      "matches": [
+        "Visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterprisePlatform.es.json",
+      "locale": "es",
+      "key": "enterprisePlatform.overview.sections.1.items.6.href",
+      "value": "/platform/simulate#brand-visibility",
+      "matches": [
+        "visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterprisePlatform.es.json",
+      "locale": "es",
+      "key": "enterprisePlatform.pages.simulate.sections.11.id",
+      "value": "brand-visibility",
+      "matches": [
+        "visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterprisePlatform.es.json",
+      "locale": "es",
+      "key": "enterprisePlatform.pages.simulate.sections.11.title",
+      "value": "Brand Visibility",
+      "matches": [
+        "Visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterpriseSolutions.en.json",
+      "locale": "en",
+      "key": "enterpriseSolutions.index.sections.2.description",
+      "value": "You own the brand and budget. Inspect recorded product comparisons and the ChatGPT Brand Visibility feature, then work on the verified product facts you control.",
+      "matches": [
+        "Visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    },
+    {
+      "file": "apps/web/messages/fragments/enterpriseSolutions.es.json",
+      "locale": "es",
+      "key": "enterpriseSolutions.index.sections.2.description",
+      "value": "Eres responsable de marca y presupuesto. Revisa comparaciones y la función Brand Visibility de ChatGPT, y trabaja en los datos verificados que controlas.",
+      "matches": [
+        "Visibility"
+      ],
+      "reason": "Product feature name Brand Visibility or its stable internal anchor; explicitly allowed by brief",
+      "existingEnterpriseOwned": true
+    }
+  ]
+}

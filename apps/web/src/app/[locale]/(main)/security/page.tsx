@@ -19,6 +19,9 @@ export default async () => {
   const { enterpriseCompany } = await getMessages();
   const content = enterpriseCompany.security;
   const { subprocessors } = content;
+  const hasLocations = subprocessors.rows.some((processor) =>
+    processor.location.trim(),
+  );
 
   return (
     <MarketingPage
@@ -33,18 +36,21 @@ export default async () => {
               </TableCaption>
               <TableHeader>
                 <TableRow>
-                  {subprocessors.headers.map((heading, index) => (
-                    <TableHead
-                      key={heading}
-                      className={
-                        index === 0
-                          ? "w-1/4 whitespace-normal"
-                          : "whitespace-normal"
-                      }
-                    >
-                      {heading}
-                    </TableHead>
-                  ))}
+                  {subprocessors.headers.map(
+                    (heading, index) =>
+                      (index !== 2 || hasLocations) && (
+                        <TableHead
+                          key={heading}
+                          className={
+                            index === 0
+                              ? "w-1/4 whitespace-normal"
+                              : "whitespace-normal"
+                          }
+                        >
+                          {heading}
+                        </TableHead>
+                      ),
+                  )}
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -59,9 +65,11 @@ export default async () => {
                     <TableCell className="whitespace-normal align-top">
                       {processor.purpose}
                     </TableCell>
-                    <TableCell className="whitespace-normal align-top">
-                      {processor.location}
-                    </TableCell>
+                    {hasLocations && (
+                      <TableCell className="whitespace-normal align-top">
+                        {processor.location}
+                      </TableCell>
+                    )}
                   </TableRow>
                 ))}
               </TableBody>

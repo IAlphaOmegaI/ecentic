@@ -17,7 +17,7 @@
         "description": "Connect your catalog, compare products with AI models, publish changes you choose, test agent checkout and track detected Shopify referrals."
       },
       "eyebrow": "Platform",
-      "title": "From your catalog to agent checkout.",
+      "title": "Everything a store needs to sell through AI.",
       "description": "Five steps, in order. Connect your catalog, see how AI models compare it, improve the data they read, test the path to checkout and track what you can observe. You choose what to publish and when to rescan.",
       "sections": [
         {
@@ -263,7 +263,7 @@
         },
         {
           "id": "control",
-          "title": "You decide what changes.",
+          "title": "What ecentic won’t do.",
           "paragraphs": [
             "Importing product data does not rewrite your listings. Publishing requires a chosen action. Models decide what to recommend; a simulation cannot promise a future sale."
           ]
@@ -271,7 +271,7 @@
         {
           "id": "developers",
           "title": "We publish what we ask you to publish.",
-          "description": "Our llms.txt, API catalog, OAuth discovery, agent checkout profile and MCP endpoint are public. The REST API is versioned and documented in OpenAPI 3.1. The CLI is available as @ecentic/cli.",
+          "description": "ecentic’s own llms.txt, API catalog, OAuth discovery, agent checkout profile and MCP endpoint are public. The REST API is versioned and documented in OpenAPI 3.1, and the CLI runs with npx @ecentic/cli.",
           "note": "Current developer interfaces support discovery and onboarding, not dashboard results export.",
           "links": [
             {

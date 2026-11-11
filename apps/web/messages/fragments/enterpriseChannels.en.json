@@ -170,13 +170,13 @@
         "capabilities": {
           "simulate": "ChatGPT evaluates selected products against competitors in store scans.",
           "fix": "Listing checks include OpenAI feed rules. Publish a revised title and description, or structured data through its separate action, to a connected store.",
-          "checkout": "The ecentic ChatGPT app is coming soon and has not been published. Current checkout tools do not establish a live ChatGPT app integration.",
+          "checkout": "The ecentic ChatGPT app is coming soon; its directory publication has not been confirmed. Current checkout tools do not establish a live ChatGPT app integration.",
           "track": "Tracks ChatGPT referrals and recognized agent visits on Shopify."
         },
         "faqs": [
           {
             "question": "Can shoppers buy inside ChatGPT?",
-            "answer": "OpenAI’s current beta documentation describes checkout inside ChatGPT for approved plugin integrations. Other product links take shoppers to the merchant. Eligibility depends on the integration; ecentic’s app is not published."
+            "answer": "OpenAI’s current beta documentation describes checkout inside ChatGPT for approved plugin integrations. Other product links take shoppers to the merchant. Eligibility depends on the integration; publication of ecentic’s app has not been confirmed."
           },
           {
             "question": "We use Shopify. Does ecentic enroll our store in ChatGPT?",
@@ -303,7 +303,7 @@
       },
       "perplexity": {
         "meta": {
-          "title": "Selling through Perplexity",
+          "title": "Selling through Perplexity shopping",
           "description": "How Perplexity presents shopping results, where its merchant program is documented, and what ecentic supports today."
         },
         "title": "Selling through Perplexity",

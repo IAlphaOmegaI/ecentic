@@ -1,0 +1,27 @@
+{
+  "enterpriseLayer": {
+    "eyebrow": "01 · Cómo encaja",
+    "title": "Tu sistema a un lado. Los canales de IA al otro. ecentic en medio.",
+    "description": "Parte del catálogo que ya gestionas. Usa ecentic para prepararlo para los asistentes que usan tus clientes, con la disponibilidad actual de cada canal a la vista.",
+    "stack": "Tu sistema",
+    "channels": "Canales de IA",
+    "layer": "La capa de comercio con IA",
+    "stages": [
+      "Simular",
+      "Corregir",
+      "Vender",
+      "Medir"
+    ],
+    "inputs": [
+      "Shopify",
+      "WooCommerce",
+      "Feeds de productos / CSV",
+      "PIM",
+      "Google Merchant Center"
+    ],
+    "legend": "Líneas continuas: disponible hoy, incluidas las simulaciones. Líneas discontinuas: próximamente. La disponibilidad del canal no garantiza un pago integrado.",
+    "action": "Ver todos los canales de IA",
+    "diagram": "Tu sistema de comercio se conecta a ecentic, que prepara los datos de producto y el pago compatible para seis canales de IA.",
+    "google": "Google AI Mode / Gemini"
+  }
+}

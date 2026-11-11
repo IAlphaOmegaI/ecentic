@@ -12,7 +12,9 @@ export const seo = {
   name: "ecentic",
   title: "ecentic",
   description:
-    "The agentic commerce platform. Connect your catalog, simulate AI shopping decisions, fix product data, enable agent checkout, and track AI visits.",
+    "The AI commerce layer: fix the product data AI assistants read, get checkout ready for AI to buy, and keep up when their rules change.",
+  definition:
+    "ecentic is one layer between a brand's catalog and the AI assistants that sell it. It optimizes the data they read, gets checkout ready for them to buy, and changes with them when their rules change.",
   links: [
     "https://x.com/ecentic_ai",
     "https://www.linkedin.com/company/ecentic/posts/?feedView=all",
@@ -40,7 +42,7 @@ export const brandedTitle = (title: string) =>
 
 /**
  * Public brand and team. The operating legal name remains unconfirmed and is
- * deliberately absent; the visible company page carries the launch TODO.
+ * deliberately absent until the company details are confirmed.
  * The Tirana address is the published contact location, not a new registered
  * office claim. Unverified legal/privacy mailboxes are not machine contacts.
  */
@@ -48,6 +50,7 @@ export const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: seo.name,
+  description: seo.definition,
   url: seo.host,
   logo: { "@type": "ImageObject", url: absoluteUrl("/images/trademark.svg") },
   founder: [
@@ -103,7 +106,7 @@ export const softwareApplicationSchema = {
   name: seo.name,
   applicationCategory: "BusinessApplication",
   operatingSystem: "Web",
-  description: seo.description,
+  description: seo.definition,
   url: seo.host,
   offers: {
     "@type": "Offer",
@@ -147,7 +150,7 @@ export const websiteSchema = {
   "@type": "WebSite",
   name: seo.name,
   url: seo.host,
-  description: seo.description,
+  description: seo.definition,
   publisher: {
     "@type": "Organization",
     name: seo.name,

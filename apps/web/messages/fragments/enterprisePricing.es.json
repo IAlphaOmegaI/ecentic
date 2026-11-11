@@ -95,7 +95,7 @@
         "features": [
           "Todas las tiendas en una cuenta",
           "API, servidor MCP y CLI",
-          "DPA bajo petición",
+          "Revisión de requisitos de tratamiento de datos",
           "Un fundador en la cuenta",
           "Informe del piloto con objetivos acordados"
         ],
@@ -158,7 +158,7 @@
           "selfServe": true
         },
         {
-          "label": "DPA bajo petición",
+          "label": "Revisión de requisitos de tratamiento de datos",
           "selfServe": true
         },
         {
@@ -216,7 +216,7 @@
       },
       {
         "question": "¿Firmáis un DPA?",
-        "answer": "Sí, bajo petición. Contacta con nosotros para organizar el DPA y la revisión de seguridad de tu cuenta."
+        "answer": "Habla con nosotros sobre tus requisitos de DPA al definir el alcance. Confirma el acuerdo y las condiciones de firma antes de compartir datos personales."
       }
     ],
     "policyLinks": [

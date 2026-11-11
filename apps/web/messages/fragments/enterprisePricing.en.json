@@ -95,7 +95,7 @@
         "features": [
           "Every store in one account",
           "API, MCP server and CLI",
-          "DPA on request",
+          "Data processing requirements review",
           "A founder on the account",
           "Pilot readout with agreed targets"
         ],
@@ -158,7 +158,7 @@
           "selfServe": true
         },
         {
-          "label": "DPA on request",
+          "label": "Data processing requirements review",
           "selfServe": true
         },
         {
@@ -216,7 +216,7 @@
       },
       {
         "question": "Do you sign a DPA?",
-        "answer": "Yes, on request. Contact us to arrange a DPA and discuss the security review for your account."
+        "answer": "Discuss your DPA requirements with us during scoping. Confirm the agreement and signing arrangements before sharing personal data."
       }
     ],
     "policyLinks": [

@@ -2,13 +2,13 @@
   "enterpriseSolutions": {
     "business": {
       "brands": {
-        "faqTitle": "Questions we hear",
+        "faqTitle": "Questions brands ask",
         "meta": {
-          "title": "ecentic for brands: compete in AI shopping",
+          "title": "ecentic for brands: be the product AI names",
           "description": "See which products AI models pick against your competitors. Improve existing product data and test checkout. Start with a free store check."
         },
         "eyebrow": "For brands",
-        "title": "Give AI the facts about your product.",
+        "title": "Be the product the answer names.",
         "description": "When someone asks AI for an option in your category, it compares products. ecentic shows which of yours get picked in simulations, which lose to a competitor, and where your data needs work. You choose which listing changes to publish.",
         "actions": [
           {
@@ -61,7 +61,7 @@
               },
               {
                 "title": "Simulated",
-                "body": "Question: “extra virgin olive oil for salad dressing under $25”. A rival wins 3 of 3 illustrative runs, with clearer source facts."
+                "body": "Question: “best extra virgin olive oil for salad dressing under $25”. A rival wins 3 of 3 illustrative runs, with clearer source facts."
               },
               {
                 "title": "Fixed",
@@ -150,13 +150,13 @@
         }
       },
       "retailers-and-marketplaces": {
-        "faqTitle": "Questions we hear",
+        "faqTitle": "Questions retailers ask",
         "meta": {
           "title": "ecentic for retailers and marketplaces",
           "description": "Find gaps in supplier listings, compare products against competitors and choose where to improve your catalog. Start with one category."
         },
         "eyebrow": "For retailers and marketplaces",
-        "title": "Thousands of listings. A clearer place to start.",
+        "title": "Thousands of listings. One shot at the agent.",
         "description": "Supplier data arrives in every shape. ecentic checks supported listing fields and compares products with named competitors. Use the findings to prioritize the catalog work your team can verify, then choose which changes to publish.",
         "actions": [
           {
@@ -205,11 +205,11 @@
             "items": [
               {
                 "title": "Connected",
-                "body": "An office chair listing has three colour variants. The supplier’s description states the seat-height range and weight capacity, but the short title is vague."
+                "body": "An office chair listing has three color variants. The supplier’s description states the seat-height range and weight capacity, but the short title is vague."
               },
               {
                 "title": "Simulated",
-                "body": "Question: “adjustable office chair for a tall person under $400”. A competitor wins 3 of 3 illustrative tests with clearer specifications."
+                "body": "Question: “office chair for a tall person with back pain under $400”. A competitor wins 3 of 3 illustrative tests with clearer specifications."
               },
               {
                 "title": "Fixed",
@@ -283,7 +283,7 @@
           },
           {
             "question": "Can we start with one category?",
-            "answer": "Yes. The proposed pilot starts with one market and one category, with the scope agreed before work begins."
+            "answer": "Yes. Start with one market and one category, with a baseline at week 0 and a readout at week 6. Agree the scope before work begins."
           },
           {
             "question": "Who owns the data and fixes?",
@@ -297,14 +297,14 @@
         }
       },
       "agencies-and-partners": {
-        "faqTitle": "Questions we hear",
+        "faqTitle": "Questions partners ask",
         "meta": {
           "title": "ecentic for agencies and partners",
           "description": "Add AI product comparisons and listing work to your client services. Explore agency, technology and creator tracks with ecentic."
         },
         "eyebrow": "For agencies and partners",
         "title": "Add AI commerce to what you already sell.",
-        "description": "Your clients ask what to do about AI shopping. ecentic gives you product comparisons, listing checks and publishing controls to use within the relationship you already have. Discuss commercial terms before promising a resale or referral arrangement.",
+        "description": "Your clients are asking what to do about ChatGPT. ecentic gives you product checks, listing fixes and a partner track to discuss, inside the relationship you already have. Commercial terms are agreed before a resale or referral arrangement.",
         "actions": [
           {
             "label": "Become a partner",
@@ -406,11 +406,11 @@
         "faqTitle": "Questions we hear",
         "meta": {
           "title": "ecentic for enterprise: run AI as a sales channel",
-          "description": "Scope a public-data pilot for one market and category. Agree targets before work begins, with a founder on the account and DPA on request."
+          "description": "Pilots for retailers, brands and travel companies on public data first. Targets agreed in writing on day one, with a founder on the account."
         },
         "eyebrow": "For enterprise",
         "title": "AI is a new sales channel. Run it like one.",
-        "description": "For retailers, brands and travel companies with many categories, markets or brands. Start with one market and one category, on public data, and agree the targets in writing before the work begins.",
+        "description": "For retailers, brands and travel companies with many categories, markets or brands. We start with one market and one category, on public data, and agree the targets in writing on day one.",
         "actions": [
           {
             "label": "Talk to us",
@@ -423,13 +423,13 @@
         ],
         "facts": [
           "Public data first. No logins, code on your site or customer data for the baseline.",
-          "Targets agreed in writing before work begins.",
+          "Targets agreed in writing on day one.",
           "A founder on the account, with a direct line to engineering.",
-          "DPA on request and a dated sub-processor list."
+          "Data handling and contracting requirements reviewed before access."
         ],
         "challenges": [
           {
-            "before": "Nobody owns AI as a channel. Teams each see a piece.",
+            "before": "Nobody owns AI as a channel. Search, marketplace and e-commerce teams each see a piece of it.",
             "after": "Agree one question set and a readout owned by the team responsible for the category.",
             "href": "/platform/simulate"
           },
@@ -475,7 +475,7 @@
                 "body": "3 months. For checkout or booking questions that need more than a fix list. The agreed scope can include a prototype with dummy data and a month-3 readout."
               }
             ],
-            "note": "Fees depend on scope and are agreed on the first call. These are service engagements, not claims of automated product features."
+            "note": "Fees depend on scope and are agreed on the first call. These are service engagements; the pilot readout follows the method agreed with your team."
           },
           {
             "id": "pilot",
@@ -493,7 +493,7 @@
                 "body": "Work on the agreed category and test checkout where it applies. Public-data work is handed to your team; direct changes need explicit authorization."
               },
               {
-                "title": "Week 6: repeat",
+                "title": "Week 6 · Re-run",
                 "body": "Repeat the agreed questions with the same assistants and number of runs. Document model or access changes."
               },
               {
@@ -548,7 +548,7 @@
           },
           {
             "id": "security",
-            "title": "Prepare for the security review.",
+            "title": "Ready for your security review.",
             "eyebrow": "[06] Security and trust",
             "items": [
               {
@@ -557,7 +557,7 @@
               },
               {
                 "title": "Your data",
-                "body": "Review data handling, the DPA request route and the dated sub-processor list. {{TODO: Confirm operational security facts and contracting entity before launch.}}"
+                "body": "Review data handling and discuss the agreement and provider information your team requires. {{TODO: Confirm the approved DPA, contracted sub-processors, processing locations and contracting entity.}}"
               },
               {
                 "title": "Straight answers",
@@ -573,7 +573,7 @@
           },
           {
             "id": "scale",
-            "title": "Built around clear interfaces.",
+            "title": "Built for scale.",
             "eyebrow": "[07] Platform capabilities",
             "columns": 3,
             "items": [
@@ -598,7 +598,7 @@
                 "body": "WooCommerce checkout with configurable agent allow-lists, signature requirements and rate limits. Your gateway handles payment."
               },
               {
-                "title": "Public discovery",
+                "title": "We publish what we ask you to publish.",
                 "body": "Our llms.txt, API catalog, checkout profile and MCP endpoint are public.",
                 "href": "/resources",
                 "label": "See how it works"
@@ -607,7 +607,7 @@
           },
           {
             "id": "checklist",
-            "title": "Your buyer’s checklist.",
+            "title": "Buyer’s checklist.",
             "eyebrow": "[08] Before the pilot",
             "rows": [
               {
@@ -642,7 +642,7 @@
           },
           {
             "id": "who",
-            "title": "Who it is for.",
+            "title": "Who it’s for.",
             "eyebrow": "[09] Your business",
             "items": [
               {
@@ -670,7 +670,7 @@
         "faqs": [
           {
             "question": "How long until we see results?",
-            "answer": "The proposed pilot measures week 6 against week 0. Assistants change over time, so the readout explains what moved and the limits of the comparison. No sales outcome is guaranteed."
+            "answer": "We measure at week 6 against the baseline from week 0. Assistants change their answers over time, so the readout shows what moved and the limits of the comparison. No sales outcome is guaranteed."
           },
           {
             "question": "Which assistants do you cover?",
@@ -988,7 +988,7 @@
         "title": "Selling beauty when AI reads the ingredients.",
         "description": "People ask for products that suit their skin or avoid an ingredient. Put the full ingredient list and supported claims in readable text. Keep product descriptions consistent with the pack and the evidence behind each statement.",
         "questions": [
-          "Fragrance-free moisturiser for sensitive skin",
+          "Fragrance-free moisturizer for sensitive skin",
           "Mineral sunscreen SPF 50 that does not leave a white cast",
           "Vegan shampoo for curly hair"
         ],
@@ -1019,7 +1019,7 @@
             "title": "Start with a real buying question.",
             "items": [
               {
-                "title": "Fragrance-free moisturiser for sensitive skin",
+                "title": "Fragrance-free moisturizer for sensitive skin",
                 "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
               },
               {
@@ -1052,7 +1052,7 @@
               },
               {
                 "title": "Protection",
-                "body": "SPF and UVA protection stated exactly as tested and labelled."
+                "body": "SPF and UVA protection stated exactly as tested and labeled."
               },
               {
                 "title": "Size and price",
@@ -1125,7 +1125,7 @@
         "title": "Selling electronics when AI compares the spec sheet.",
         "description": "Electronics questions are often about battery life, compatibility or ports. Give each model and variant clear identifiers and source specifications so a comparison does not depend on a product name alone.",
         "questions": [
-          "Noise-cancelling earbuds with the longest battery under $200",
+          "noise-canceling earbuds with the longest battery under $200",
           "Laptop for video editing with 32 GB of RAM",
           "Robot vacuum that works with Google Home"
         ],
@@ -1156,7 +1156,7 @@
             "title": "Start with a real buying question.",
             "items": [
               {
-                "title": "Noise-cancelling earbuds with the longest battery under $200",
+                "title": "noise-canceling earbuds with the longest battery under $200",
                 "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
               },
               {
@@ -1193,7 +1193,7 @@
               },
               {
                 "title": "Warranty",
-                "body": "Warranty length, coverage and who honours it."
+                "body": "Warranty length, coverage and who honors it."
               },
               {
                 "title": "Condition",
@@ -1266,7 +1266,7 @@
         "title": "Selling furniture when AI has to measure the room.",
         "description": "People describe their room, budget and practical needs. A useful comparison needs dimensions, materials and delivery terms in readable text. Keep exact product measurements separate from illustrative photos.",
         "questions": [
-          "Sofa bed that fits a 2-metre wall",
+          "Sofa bed that fits a 2-meter wall",
           "Solid wood dining table for six under €1,000",
           "Rug that is safe for underfloor heating"
         ],
@@ -1281,7 +1281,7 @@
           },
           {
             "question": "We offer one sofa in 20 fabrics. How should it look?",
-            "answer": "Identify each variant’s fabric, colour, price and availability. Use correct dimensions if a variant changes them."
+            "answer": "Identify each variant’s fabric, color, price and availability. Use correct dimensions if a variant changes them."
           },
           {
             "question": "Can AI buy a sofa for someone?",
@@ -1297,7 +1297,7 @@
             "title": "Start with a real buying question.",
             "items": [
               {
-                "title": "Sofa bed that fits a 2-metre wall",
+                "title": "Sofa bed that fits a 2-meter wall",
                 "body": "Illustrative shopper question. Not a query volume or a recorded customer request."
               },
               {
@@ -1413,8 +1413,8 @@
             "answer": "Submit supported size fields and variants. Keep verified fit notes and measurements available as readable text; a generic importer does not preserve every custom size-chart format."
           },
           {
-            "question": "How should 30 colour and size variants appear?",
-            "answer": "Each variant should carry the correct colour, size, price and availability. Use its own identifier where one is assigned."
+            "question": "How should 30 color and size variants appear?",
+            "answer": "Each variant should carry the correct color, size, price and availability. Use its own identifier where one is assigned."
           },
           {
             "question": "Can we call a product sustainable?",
@@ -1459,7 +1459,7 @@
               },
               {
                 "title": "Materials",
-                "body": "Fibre composition with percentages."
+                "body": "Fiber composition with percentages."
               },
               {
                 "title": "Performance",
@@ -1474,8 +1474,8 @@
                 "body": "Washing and care instructions matching the label."
               },
               {
-                "title": "Colour and variants",
-                "body": "Each available colour and size, with its own price and stock where applicable."
+                "title": "Color and variants",
+                "body": "Each available color and size, with its own price and stock where applicable."
               }
             ],
             "columns": 3,
@@ -1487,8 +1487,8 @@
             "title": "Keep the rules with the product facts.",
             "paragraphs": [
               "Google’s size guidance requires size data for specified clothing and shoe listings, with requirements varying by destination and format. Check the exact apparel attributes for your market.",
-              "EU Regulation 1007/2011 requires fibre-composition information to be clearly available before an online purchase.",
-              "EU Directive 2024/825 calls for measures applying from 27 September 2026 that prohibit generic environmental claims without relevant recognised excellent environmental performance. Verify the national implementation before using a claim."
+              "EU Regulation 1007/2011 requires fiber-composition information to be clearly available before an online purchase.",
+              "EU Directive 2024/825 calls for measures applying from 27 September 2026 that prohibit generic environmental claims without relevant recognized excellent environmental performance. Verify the national implementation before using a claim."
             ],
             "note": "Sources checked 10 November 2026. Requirements can depend on the product, channel and country.",
             "links": [
@@ -1497,7 +1497,7 @@
                 "href": "https://support.google.com/merchants/answer/6324492?hl=en"
               },
               {
-                "label": "EU textile fibre information",
+                "label": "EU textile fiber information",
                 "href": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32011R1007"
               },
               {
@@ -1833,11 +1833,11 @@
     },
     "sectorIndex": {
       "meta": {
-        "title": "Sectors: product data for AI shopping",
+        "title": "Sectors: what AI needs to sell your products",
         "description": "Explore what to check in food, drink, beauty, electronics, home, fashion, wellness, pet and travel product data."
       },
       "eyebrow": "Sectors",
-      "title": "What AI needs to compare your products.",
+      "title": "What AI needs to sell your products.",
       "description": "Different products need different facts. A sofa needs dimensions, a sunscreen needs substantiated protection information, a trip needs cancellation terms. Start with your category.",
       "sections": [
         {
@@ -1860,19 +1860,19 @@
               "title": "Beauty and personal care",
               "body": "Selling beauty when AI reads the ingredients.",
               "href": "/solutions/sectors/beauty-and-personal-care",
-              "label": "Fragrance-free moisturiser for sensitive skin"
+              "label": "Fragrance-free moisturizer for sensitive skin"
             },
             {
               "title": "Consumer electronics",
               "body": "Selling electronics when AI compares the spec sheet.",
               "href": "/solutions/sectors/consumer-electronics",
-              "label": "Noise-cancelling earbuds with the longest battery under $200"
+              "label": "noise-canceling earbuds with the longest battery under $200"
             },
             {
               "title": "Home and furniture",
               "body": "Selling furniture when AI has to measure the room.",
               "href": "/solutions/sectors/home-and-furniture",
-              "label": "Sofa bed that fits a 2-metre wall"
+              "label": "Sofa bed that fits a 2-meter wall"
             },
             {
               "title": "Fashion and outdoor",
@@ -1897,8 +1897,8 @@
         },
         {
           "id": "other-sectors",
-          "title": "Do not see your sector?",
-          "description": "Tell us what you sell and which catalog facts are hardest to manage.",
+          "title": "Don’t see your sector?",
+          "description": "Tell us what you sell.",
           "links": [
             {
               "label": "Talk to us",
@@ -1910,8 +1910,8 @@
     },
     "index": {
       "meta": {
-        "title": "Solutions for brands, retailers and enterprise | ecentic",
-        "description": "Explore AI commerce by business, team and sector. Compare products, improve verified data and test supported checkout flows."
+        "title": "Solutions: ecentic for brands, retailers and enterprise",
+        "description": "How ecentic helps brands, retailers, enterprise teams and agencies sell through AI, by business, by team and by sector."
       },
       "eyebrow": "Solutions",
       "title": "Built for how you sell.",
@@ -1924,13 +1924,13 @@
           "items": [
             {
               "title": "For brands",
-              "body": "Give AI the facts about your product.",
+              "body": "Be the product the answer names.",
               "href": "/solutions/brands",
               "label": "See how it works"
             },
             {
               "title": "For retailers and marketplaces",
-              "body": "Thousands of listings. A clearer place to start.",
+              "body": "Thousands of listings. One shot at the agent.",
               "href": "/solutions/retailers-and-marketplaces",
               "label": "See how it works"
             },
@@ -2013,19 +2013,19 @@
               "title": "Beauty and personal care",
               "body": "Selling beauty when AI reads the ingredients.",
               "href": "/solutions/sectors/beauty-and-personal-care",
-              "label": "Fragrance-free moisturiser for sensitive skin"
+              "label": "Fragrance-free moisturizer for sensitive skin"
             },
             {
               "title": "Consumer electronics",
               "body": "Selling electronics when AI compares the spec sheet.",
               "href": "/solutions/sectors/consumer-electronics",
-              "label": "Noise-cancelling earbuds with the longest battery under $200"
+              "label": "noise-canceling earbuds with the longest battery under $200"
             },
             {
               "title": "Home and furniture",
               "body": "Selling furniture when AI has to measure the room.",
               "href": "/solutions/sectors/home-and-furniture",
-              "label": "Sofa bed that fits a 2-metre wall"
+              "label": "Sofa bed that fits a 2-meter wall"
             },
             {
               "title": "Fashion and outdoor",

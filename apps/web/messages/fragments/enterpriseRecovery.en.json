@@ -136,7 +136,7 @@
       },
       "eyebrow": "Developers / AI instructions",
       "title": "Give an agent a clear starting point.",
-      "description": "ecentic helps teams prepare product data for AI shopping. Use these boundaries and public entry points to choose the right next step. ecentic isn’t an SEO or GEO tool.",
+      "description": "ecentic is one layer between a brand's catalog and the AI assistants that sell it. It optimizes the data they read, gets checkout ready for them to buy, and changes with them when their rules change.",
       "actions": [
         {
           "label": "Read the API reference",
@@ -162,7 +162,7 @@
             },
             {
               "title": "Fix with your approval",
-              "body": "Use the findings to prepare listing changes. Nothing changes in the connected store until you click Apply. Publishing requires a supported direct connector.",
+              "body": "Apply generates and publishes a title and description using existing product facts. Structured data and Merchant Center sync have separate controls. Connecting Shopify also installs visit tracking. Publishing requires a supported direct connector.",
               "href": "/platform/fix",
               "label": "Explore listing fixes"
             },
@@ -222,8 +222,8 @@
     },
     "og": {
       "home": {
-        "title": "Get the sale when AI does the shopping.",
-        "description": "The agentic commerce platform. Connect, simulate, fix, sell and track."
+        "title": "Get the sale when AI does the buying.",
+        "description": "The AI commerce layer."
       },
       "docs": {
         "title": "Build on the agentic commerce platform.",

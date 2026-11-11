@@ -10,4 +10,7 @@ export const size = enterpriseOgSize;
 export const contentType = enterpriseOgContentType;
 
 export default () =>
-  createEnterpriseOgImage(messages.enterpriseRecovery.og.home);
+  createEnterpriseOgImage({
+    ...messages.enterpriseRecovery.og.home,
+    signoff: messages.enterpriseRecovery.og.home.title,
+  });
