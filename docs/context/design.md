@@ -74,7 +74,7 @@ one line with proportional sans numerals. Evidence charts keep a 0–100% scale,
 at 30–59%, error below 30%. For failure/missing-field rates, apply the thresholds to `100 − rate`
 so a high failure rate is error, not success. Keep actual values and labels visible.
 
-The navbar uses six masked progressive backdrop-blur layers with no bottom rule. Desktop menus
+The navbar uses six masked progressive backdrop-blur layers with no bottom rule. Its text and translucent fill respond to the section beneath the header, keeping light text over blue/charcoal and dark text over the off-white canvas. Desktop menus
 overlay the page; opening, switching and closing them preserve page geometry and the user's
 scroll position. The mobile sheet uses the same progressive blur, with its logo and close control
 above an independently scrolling menu. Every destination occupies its own grid cell, with shared row tracks and blue text
@@ -1558,3 +1558,15 @@ The approved import-flow composition is a useful reference across secondary page
 Platform heroes use distinct subject artwork: catalog records for Connect, a selection lens for Simulate, a product bag for Fix, a cart for Sell and a console for Track. Literal character grids are fit according to rendered glyph geometry (120 columns × 56 rows at approximately 0.61em advance); never resize the source into the raw character-grid aspect ratio. Hairline figures can fill more of their panel, but retain uncut hover geometry, 1px strokes and correct pointer targeting. The illustration remains decorative and the real product screenshots stay intact until their separate review.
 
 Compact store-entry forms sit directly on the hero surface with one primary submit action. Do not wrap them in gray calculator panels or duplicate the same CTA in a separate hero button row. Documentation rows use a prominent bare document icon consistently.
+
+## 28. Light, cutouts and connected providers
+
+The 11 November reference pass extends ecentic's existing language. Keep the off-white canvas as the baseline, then use a charcoal section for a concentrated product explanation. Local blue light can reveal a diagram or selected capability inside that section. Each gradient belongs to a specific card or relationship; do not tint every cell or apply a glow across ordinary prose. Preserve the existing copy, routes and product film.
+
+`MarketingFeatureBand` provides a full-width field with shallow angled cutouts at its upper and lower transitions. The filled background alone is clipped; text, links and focus outlines remain intact. Its centered rails continue the site's alignment, with one-pixel seams and crosses at real joins. Reserve this geometry for major changes of subject. Existing inset rounded blue heroes and closing banners remain valid; do not turn every section into a cutout.
+
+`ProviderArc` arranges official provider marks along a curved catalog pathway around ecentic. Marks remain unframed and keep their aspect ratio. On small screens the composition becomes a compact connected group rather than forcing a wide scrolling strip. Select the available live/feed entries from the canonical integration records; the arc never implies that planned providers are available or that a feed route is a direct integration. The detailed directory continues to show each status.
+
+The navbar reads explicit `data-nav-tone="light|dark"` surface markers, with a light fallback for ordinary bands. Tone changes affect the header's own colors and progressive blur without changing its size or the document's scroll position. Freeze the tone while a menu is open so it stays stable and legible. Do not use page-wide blend modes that also invert logos or primary controls.
+
+Decorative falling light and product-card reveals play once when their explanation enters view. Hover responds to the selected provider or card; it does not set the whole section in motion. Keep permanent content visible in the first server render, use approved Motion wrappers for transform/opacity transitions, and provide static reduced-motion states. These effects express focus and relationships rather than simulated measurements.

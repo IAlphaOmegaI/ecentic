@@ -6,6 +6,8 @@ import {
   MarketingBand,
   MarketingStatus,
 } from "@/components/marketing/primitives";
+import { ProviderArc } from "@/components/marketing/provider-arc";
+import { catalogConnections } from "@/content/integrations";
 import { SectionGutter } from "../dashboard/_components/grid";
 import {
   IntegrationDirectory,
@@ -32,6 +34,13 @@ export default async () => {
       heroIllustration={<PatchFigure label={hairlineIntegrations.label} />}
     >
       <SectionGutter />
+      <MarketingBand id="connected-providers">
+        <ProviderArc
+          items={catalogConnections}
+          label={copy.index.title}
+          className="border-t-0"
+        />
+      </MarketingBand>
       <IntegrationDirectory copy={copy} directory={directory} />
       <SectionGutter />
       <IntegrationImportFlow copy={copy} directory={directory} />

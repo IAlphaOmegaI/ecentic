@@ -30,6 +30,44 @@ export const MarketingBand = ({
   </section>
 );
 
+/** A section transition cut from the canvas; only its decorative fill is clipped. */
+export const MarketingFeatureBand = ({
+  children,
+  className,
+  tone = "dark",
+  ...props
+}: MarketingFeatureBand.Props) => (
+  <MarketingBand
+    {...props}
+    data-nav-tone="dark"
+    className={cn(
+      "marketing-feature-band border-0 text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_16%,transparent)] [--rail-cross:color-mix(in_oklab,var(--color-background-rich)_32%,transparent)] [&>.marketing-rail>.marketing-guides]:hidden [&>.marketing-rail]:border-x-0 [&>.marketing-rail]:py-12 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden [&_.marketing-eyebrow]:text-primary-rich [&_:is(h2,h3,h4)]:text-background-rich",
+      className,
+    )}
+  >
+    <div
+      aria-hidden="true"
+      className={cn(
+        "pointer-events-none absolute inset-y-0 left-1/2 -z-10 w-dvw -translate-x-1/2 [clip-path:polygon(0_24px,24px_24px,48px_0,calc(100%_-_48px)_0,calc(100%_-_24px)_24px,100%_24px,100%_calc(100%_-_24px),calc(100%_-_24px)_calc(100%_-_24px),calc(100%_-_48px)_100%,48px_100%,24px_calc(100%_-_24px),0_calc(100%_-_24px))]",
+        tone === "blue"
+          ? "bg-linear-to-br from-primary-dimmed via-primary-text to-primary"
+          : "bg-emphasis-dimmed",
+      )}
+    />
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-x-0 top-12 bottom-12 border-[var(--rail-color)] border-x"
+    />
+    {children}
+  </MarketingBand>
+);
+
+export namespace MarketingFeatureBand {
+  export type Props = MarketingBand.Props & {
+    tone?: "dark" | "blue";
+  };
+}
+
 export const MarketingEyebrow = ({ children }: MarketingEyebrow.Props) => (
   <p className="marketing-eyebrow mb-4 flex items-center gap-2 font-medium text-primary-text text-sm [&>span]:size-2 [&>span]:shrink-0 [&>span]:rounded-full [&>span]:bg-current">
     <span aria-hidden="true" />
@@ -119,6 +157,7 @@ export const MarketingHero = ({
   children,
 }: MarketingHero.Props) => (
   <MarketingBand
+    data-nav-tone={dark ? "dark" : "light"}
     className={cn(
       "marketing-hero marketing-content-hero",
       illustration &&
@@ -208,7 +247,10 @@ export const MarketingClosing = ({
   description,
   actions,
 }: MarketingClosing.Props) => (
-  <MarketingBand className="marketing-closing relative m-3 overflow-hidden rounded-xl border-0 bg-linear-to-br from-emphasis-dimmed via-emphasis to-primary-dimmed text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_20%,transparent)] [--rail-cross:transparent] max-sm:m-2 max-sm:rounded-lg [&>.marketing-rail]:border-y-0 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden [&_.marketing-guides_span]:before:hidden [&_.marketing-guides_span]:after:hidden">
+  <MarketingBand
+    data-nav-tone="dark"
+    className="marketing-closing relative m-3 overflow-hidden rounded-xl border-0 bg-linear-to-br from-emphasis-dimmed via-emphasis to-primary-dimmed text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_20%,transparent)] [--rail-cross:transparent] max-sm:m-2 max-sm:rounded-lg [&>.marketing-rail]:border-y-0 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden [&_.marketing-guides_span]:before:hidden [&_.marketing-guides_span]:after:hidden"
+  >
     <div
       aria-hidden="true"
       className="pointer-events-none absolute inset-y-0 left-1/2 w-[calc(100dvw-24px)] -translate-x-1/2 bg-radial-[at_bottom_left] from-primary/40 via-primary-dimmed/25 to-transparent max-sm:w-[calc(100dvw-16px)]"

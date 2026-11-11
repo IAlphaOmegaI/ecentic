@@ -11,6 +11,7 @@ import {
   organizationSchema,
   websiteSchema,
 } from "@/lib/seo";
+import { Capabilities } from "./_components/enterprise/capabilities";
 import {
   Findings,
   PricingPaths,
@@ -22,7 +23,6 @@ import { CommerceLayer } from "./_components/enterprise/layer";
 import { Overview } from "./_components/enterprise/overview";
 import {
   Businesses,
-  Capabilities,
   Channels,
   Integrations,
   ProductFilm,

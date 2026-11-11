@@ -306,6 +306,18 @@ export const integrations = [
   },
 ] as const;
 
+/** Providers with an available catalog route and official artwork. */
+export const catalogConnections = integrations
+  .filter(
+    (integration) =>
+      (integration.status === "live" || integration.status === "feed") &&
+      integration.artwork,
+  )
+  .map((integration) => ({
+    provider: integration.key,
+    href: integration.href,
+  }));
+
 export const integrationCounts = {
   live: integrations.filter((integration) => integration.status === "live")
     .length,

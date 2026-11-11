@@ -7,7 +7,10 @@ import {
 import { OverviewArtwork } from "./overview-artwork";
 
 export const Overview = ({ copy }: Overview.Props) => (
-  <MarketingBand className="enterprise-blue enterprise-journey mx-3 -mt-[68px] mb-3 min-h-dvh overflow-hidden rounded-xl border-0 bg-linear-to-r from-primary-text via-primary-text to-primary text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_22%,transparent)] [--rail-cross:transparent] max-sm:mx-2 max-sm:-mt-[72px] max-sm:mb-2 max-sm:rounded-lg [&>.marketing-rail]:flex [&>.marketing-rail]:min-h-dvh [&>.marketing-rail]:items-center [&>.marketing-rail]:border-x-background-rich/15 [&>.marketing-rail]:border-y-0 [&_.marketing-eyebrow]:text-background-rich">
+  <MarketingBand
+    data-nav-tone="dark"
+    className="enterprise-blue enterprise-journey mx-3 -mt-[68px] mb-3 min-h-dvh overflow-hidden rounded-xl border-0 bg-linear-to-r from-primary-text via-primary-text to-primary text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_22%,transparent)] [--rail-cross:transparent] max-sm:mx-2 max-sm:-mt-[72px] max-sm:mb-2 max-sm:rounded-lg [&>.marketing-rail]:flex [&>.marketing-rail]:min-h-dvh [&>.marketing-rail]:items-center [&>.marketing-rail]:border-x-background-rich/15 [&>.marketing-rail]:border-y-0 [&_.marketing-eyebrow]:text-background-rich"
+  >
     <OverviewArtwork />
     <div className="marketing-cell relative z-1 w-full min-w-0 px-7 pt-36 pb-24 max-sm:px-4 max-sm:pt-32 max-sm:pb-16">
       <div className="enterprise-copy relative max-w-[920px]">

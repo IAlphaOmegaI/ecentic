@@ -115,14 +115,33 @@ const NavigationCategoryIcon = ({
   return <Icon aria-hidden className="size-4 shrink-0" />;
 };
 
-const NavigationBlur = ({ className }: { className: string }) => (
+const NavigationBlur = ({
+  className,
+  dark,
+  expanded = false,
+}: {
+  className: string;
+  dark: boolean;
+  expanded?: boolean;
+}) => (
   <div
     aria-hidden="true"
-    className={cn(
-      "marketing-nav-blur pointer-events-none bg-linear-to-b from-background/90 via-40% via-background/70 to-transparent",
-      className,
-    )}
+    className={cn("marketing-nav-blur pointer-events-none", className)}
   >
+    <span
+      className={cn(
+        "absolute inset-0 bg-linear-to-b from-background/95 via-40% via-background/80 to-transparent transition-opacity duration-250 motion-reduce:transition-none",
+        dark ? "opacity-0" : "opacity-100",
+        expanded && "via-[calc(100%-48px)]",
+      )}
+    />
+    <span
+      className={cn(
+        "absolute inset-0 bg-linear-to-b from-emphasis-dimmed/95 via-40% via-emphasis-dimmed/85 to-transparent transition-opacity duration-250 motion-reduce:transition-none",
+        dark ? "opacity-100" : "opacity-0",
+        expanded && "via-[calc(100%-48px)]",
+      )}
+    />
     <span className="absolute inset-0 backdrop-blur-[24px] [mask-image:linear-gradient(to_bottom,black_0%,black_16%,transparent_40%)]" />
     <span className="absolute inset-0 backdrop-blur-[16px] [mask-image:linear-gradient(to_bottom,transparent_8%,black_20%,black_32%,transparent_52%)]" />
     <span className="absolute inset-0 backdrop-blur-[8px] [mask-image:linear-gradient(to_bottom,transparent_26%,black_38%,black_48%,transparent_68%)]" />
@@ -130,6 +149,34 @@ const NavigationBlur = ({ className }: { className: string }) => (
     <span className="absolute inset-0 backdrop-blur-[2px] [mask-image:linear-gradient(to_bottom,transparent_60%,black_72%,black_78%,transparent_94%)]" />
     <span className="absolute inset-0 backdrop-blur-[1px] [mask-image:linear-gradient(to_bottom,transparent_78%,black_88%,transparent_100%)]" />
   </div>
+);
+
+const NavigationWordmark = ({ dark }: { dark: boolean }) => (
+  <span className="relative block w-26 sm:w-35">
+    <Image
+      src="/images/trademark.svg"
+      width={1022}
+      height={257}
+      alt="ecentic"
+      className={cn(
+        "h-auto w-full transition-opacity duration-250 motion-reduce:transition-none",
+        dark ? "opacity-0" : "opacity-100",
+      )}
+      priority
+    />
+    <Image
+      src="/images/marketing/trademark-on-dark.svg"
+      width={1022}
+      height={257}
+      alt=""
+      aria-hidden="true"
+      className={cn(
+        "absolute inset-0 h-auto w-full transition-opacity duration-250 motion-reduce:transition-none",
+        dark ? "opacity-100" : "opacity-0",
+      )}
+      priority
+    />
+  </span>
 );
 
 export const Navbar = () => {
@@ -140,6 +187,29 @@ export const Navbar = () => {
   const [active, setActive] = useState<string | null>(null);
   const [mobile, setMobile] = useState(false);
   const navigationOpen = mobile || active !== null;
+  const [tone, setTone] = useState<"light" | "dark">("light");
+  const dark = tone === "dark";
+  const toneStyle = {
+    "--nav-surface": dark
+      ? "var(--color-emphasis-dimmed)"
+      : "var(--color-background)",
+    "--nav-tint": dark
+      ? "color-mix(in oklab, var(--color-background-rich) 6%, transparent)"
+      : "color-mix(in oklab, var(--color-background-dimmed) 20%, transparent)",
+    ...(dark && {
+      "--color-foreground": "var(--color-background)",
+      "--color-foreground-rich": "var(--color-background-rich)",
+      "--color-foreground-dimmed":
+        "color-mix(in oklab, var(--color-background-rich) 75%, transparent)",
+      "--color-primary-text": "var(--color-primary-rich)",
+      "--color-emphasis": "var(--color-background-rich)",
+      "--color-emphasis-rich": "var(--color-background-rich)",
+      "--color-accent-foreground":
+        "color-mix(in oklab, var(--color-background-rich) 15%, transparent)",
+      "--color-cross":
+        "color-mix(in oklab, var(--color-background-rich) 30%, transparent)",
+    }),
+  } as CSSProperties;
   useEffect(() => {
     if (!navigationOpen) return;
     const supportWindow = window as Window & {
@@ -170,6 +240,59 @@ export const Navbar = () => {
   const navigationRow = useRef<HTMLDivElement>(null);
   const menuSurface = useRef<HTMLDivElement>(null);
   const pendingFocus = useRef<string | null>(null);
+  const previousPathname = useRef(pathname);
+  useEffect(() => {
+    if (previousPathname.current === pathname) return;
+    previousPathname.current = pathname;
+    setActive(null);
+    setMobile(false);
+  }, [pathname]);
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Re-sample after client navigation even when the new route has the same geometry.
+  useEffect(() => {
+    if (navigationOpen) return;
+    const frame = { current: 0 };
+    const updateTone = () => {
+      frame.current = 0;
+      const bounds = header.current?.getBoundingClientRect();
+      if (!bounds) return;
+      const sampleY = Math.min(innerHeight - 1, bounds.top + bounds.height / 2);
+      const surface = document
+        .elementsFromPoint(innerWidth / 2, sampleY)
+        .filter((element) => !header.current?.contains(element))
+        .map((element) =>
+          element.closest<HTMLElement>(
+            "[data-nav-tone], .marketing-dark, .marketing-closing, .enterprise-blue",
+          ),
+        )
+        .find((element) => element !== null);
+      setTone(
+        surface?.getAttribute("data-nav-tone") === "dark" ||
+          (surface?.getAttribute("data-nav-tone") !== "light" &&
+            (surface?.classList.contains("marketing-dark") ||
+              surface?.classList.contains("marketing-closing") ||
+              surface?.classList.contains("enterprise-blue")))
+          ? "dark"
+          : "light",
+      );
+    };
+    const schedule = () => {
+      if (frame.current) return;
+      frame.current = requestAnimationFrame(updateTone);
+    };
+    updateTone();
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    const observer = new ResizeObserver(schedule);
+    observer.observe(document.body);
+    return () => {
+      cancelAnimationFrame(frame.current);
+      observer.disconnect();
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+    };
+  }, [navigationOpen, pathname]);
+
   const statusLabels = {
     live: chrome.status.live,
     feed: chrome.status.feed,
@@ -240,13 +363,18 @@ export const Navbar = () => {
   return (
     <header
       data-menu-open={active !== null}
+      data-surface-tone={tone}
+      style={toneStyle}
       className={cn(
         fonts,
-        "marketing-site marketing-nav marketing-grid-pattern sticky top-0 isolate z-60 shrink-0 bg-transparent font-body font-normal text-foreground [--rail-color:var(--color-accent-foreground)] [--rail-cross:var(--color-cross)]",
+        "marketing-site marketing-nav marketing-grid-pattern sticky top-0 isolate z-60 shrink-0 bg-transparent font-body font-normal text-foreground transition-colors duration-250 [--rail-color:var(--color-accent-foreground)] [--rail-cross:var(--color-cross)] motion-reduce:transition-none [&_.marketing-mega-description]:transition-colors [&_.marketing-mega-label]:transition-colors [&_a]:transition-colors [&_button]:transition-colors",
       )}
       ref={header}
     >
-      <NavigationBlur className="absolute inset-x-0 top-0 -bottom-12 -z-1 min-[1281px]:hidden" />
+      <NavigationBlur
+        dark={dark}
+        className="absolute inset-x-0 top-0 -bottom-12 -z-1 min-[1281px]:hidden"
+      />
       <div
         className="marketing-nav-inner mx-auto flex h-20 max-w-[1440px] items-center gap-3 px-4 sm:gap-5 sm:px-7"
         ref={navigationRow}
@@ -256,14 +384,7 @@ export const Navbar = () => {
           aria-label={navigation.home}
           className="marketing-nav-logo shrink-0"
         >
-          <Image
-            src="/images/trademark.svg"
-            width={1022}
-            height={257}
-            alt="ecentic"
-            className="h-auto w-26 sm:w-35"
-            priority
-          />
+          <NavigationWordmark dark={dark} />
         </Link>
         <NavigationMenu
           className="marketing-desktop-nav ml-auto hidden min-w-0 bg-transparent p-0 min-[1281px]:block"
@@ -372,7 +493,7 @@ export const Navbar = () => {
                           )}
                           key={column.title}
                         >
-                          <p className="marketing-desktop-nav-heading relative col-span-full flex items-center gap-2.5 border-accent-foreground border-b bg-background-dimmed/20 px-5 py-3 font-medium text-foreground-dimmed text-sm leading-snug">
+                          <p className="marketing-desktop-nav-heading relative col-span-full flex items-center gap-2.5 border-accent-foreground border-b bg-(--nav-tint) px-5 py-3 font-medium text-foreground-dimmed text-sm leading-snug">
                             <NavigationCategoryIcon
                               group={group.id}
                               column={columnIndex}
@@ -404,7 +525,17 @@ export const Navbar = () => {
                                 {provider && (
                                   <ProviderLogo
                                     provider={provider}
-                                    className="marketing-nav-provider mt-0.5 size-6 shrink-0 object-contain"
+                                    className={cn(
+                                      "marketing-nav-provider mt-0.5 size-6 shrink-0 object-contain",
+                                      dark &&
+                                        provider === "chatgpt" &&
+                                        "invert",
+                                      dark &&
+                                        ["perplexity", "amazon"].includes(
+                                          provider,
+                                        ) &&
+                                        "brightness-0 invert",
+                                    )}
                                   />
                                 )}
                                 <span>
@@ -445,7 +576,7 @@ export const Navbar = () => {
                       <NavigationMenuLink
                         render={<Link href={group.featured.href} />}
                         onClick={() => setActive(null)}
-                        className="marketing-desktop-nav-feature group/nav-cell relative col-span-full flex items-center justify-between gap-6 rounded-none bg-background-dimmed/20 px-5 xs:px-5 py-4 xs:py-4 text-sm leading-snug hover:bg-background-rich/20 hover:text-primary-text focus-visible:bg-background-rich/20 focus-visible:text-primary-text focus-visible:-outline-offset-4"
+                        className="marketing-desktop-nav-feature group/nav-cell relative col-span-full flex items-center justify-between gap-6 rounded-none bg-(--nav-tint) px-5 xs:px-5 py-4 xs:py-4 text-sm leading-snug hover:bg-background-rich/20 hover:text-primary-text focus-visible:bg-background-rich/20 focus-visible:text-primary-text focus-visible:-outline-offset-4"
                       >
                         <span
                           aria-hidden="true"
@@ -505,7 +636,7 @@ export const Navbar = () => {
           <div className="marketing-nav-login hidden min-[1281px]:block">
             <Button
               variant="soft"
-              color="emphasis"
+              color={dark ? "accent" : "emphasis"}
               render={<Link href="/sign-in" />}
             >
               {chrome.action.tertiary}
@@ -518,32 +649,42 @@ export const Navbar = () => {
         <div className="marketing-mobile-nav block min-[1281px]:hidden">
           <Sheet open={mobile} onOpenChange={setMobile}>
             <SheetTrigger
-              render={<Button variant="ghost" color="emphasis" size="icon" />}
+              render={
+                <Button
+                  variant="ghost"
+                  color={dark ? "accent" : "emphasis"}
+                  size="icon"
+                />
+              }
               aria-label={chrome.menu.open}
             >
               <MenuIcon className="size-4" />
             </SheetTrigger>
             <SheetPopup
+              data-surface-tone={tone}
+              style={toneStyle}
               className={cn(
                 fonts,
                 "marketing-site marketing-grid-pattern marketing-mobile-sheet isolate z-70 h-dvh w-screen max-w-none gap-0 overflow-hidden border-0 bg-transparent font-body font-normal text-foreground [--rail-color:var(--color-accent-foreground)] [--rail-cross:var(--color-cross)] motion-reduce:animate-none motion-reduce:transition-none sm:max-w-none motion-reduce:[&_*]:animate-none motion-reduce:[&_*]:transition-none",
               )}
               classList={{
-                backdrop:
-                  "z-65 bg-background/40 motion-reduce:animate-none motion-reduce:transition-none",
-                close: { root: "marketing-sheet-close" },
+                backdrop: cn(
+                  "z-65 motion-reduce:animate-none motion-reduce:transition-none",
+                  dark ? "bg-emphasis-dimmed/40" : "bg-background/40",
+                ),
+                close: {
+                  root: "marketing-sheet-close text-foreground-rich opacity-100",
+                },
               }}
             >
-              <NavigationBlur className="absolute inset-0 -z-1" />
+              <NavigationBlur
+                dark={dark}
+                expanded
+                className="absolute inset-0 -z-1"
+              />
               <SheetHeader className="shrink-0 items-start px-6 pt-7 pb-6 text-left">
                 <SheetTitle>
-                  <Image
-                    src="/images/trademark.svg"
-                    width={1022}
-                    height={257}
-                    alt="ecentic"
-                    className="h-auto w-35"
-                  />
+                  <NavigationWordmark dark={dark} />
                 </SheetTitle>
                 <SheetDescription className="sr-only">
                   {chrome.menu.title}
@@ -554,7 +695,7 @@ export const Navbar = () => {
                   <Accordion
                     multiple
                     data-connected
-                    className="marketing-mobile-menu-grid border border-accent-foreground border-b-0 bg-background"
+                    className="marketing-mobile-menu-grid border border-accent-foreground border-b-0 bg-(--nav-surface)"
                   >
                     {navigation.groups.map((group) => (
                       <AccordionItem
@@ -569,7 +710,7 @@ export const Navbar = () => {
                           <div className="marketing-mobile-nav-grid grid gap-px border-accent-foreground border-t bg-accent-foreground">
                             {group.columns.map((column, columnIndex) => (
                               <div className="grid gap-px" key={column.title}>
-                                <p className="marketing-nav-column-heading relative flex items-center gap-2.5 bg-background-dimmed px-4 py-3 font-medium text-foreground-dimmed text-sm">
+                                <p className="marketing-nav-column-heading relative flex items-center gap-2.5 bg-(--nav-tint) px-4 py-3 font-medium text-foreground-dimmed text-sm">
                                   <NavigationCategoryIcon
                                     group={group.id}
                                     column={columnIndex}
@@ -587,12 +728,19 @@ export const Navbar = () => {
                                       role="link"
                                       key={`${item.href}-${item.label}`}
                                       render={<Link href={item.href} />}
-                                      className="marketing-mobile-nav-cell group/nav-cell relative flex min-h-24 min-w-0 items-start gap-3 bg-background px-4 py-4 text-sm leading-snug hover:bg-background-rich hover:text-primary-text focus-visible:bg-background-rich focus-visible:text-primary-text focus-visible:-outline-offset-4 [&_.marketing-status]:mt-2 [&_.marketing-status]:text-xs"
+                                      className="marketing-mobile-nav-cell group/nav-cell relative flex min-h-24 min-w-0 items-start gap-3 bg-(--nav-surface) px-4 py-4 text-sm leading-snug hover:bg-(--nav-tint) hover:text-primary-text focus-visible:bg-(--nav-tint) focus-visible:text-primary-text focus-visible:-outline-offset-4 [&_.marketing-status]:mt-2 [&_.marketing-status]:text-xs"
                                     >
                                       {provider && (
                                         <ProviderLogo
                                           provider={provider}
-                                          className="marketing-nav-provider mt-0.5 size-6 shrink-0 object-contain"
+                                          className={cn(
+                                            "marketing-nav-provider mt-0.5 size-6 shrink-0 object-contain",
+                                            dark &&
+                                              ["perplexity", "amazon"].includes(
+                                                provider,
+                                              ) &&
+                                              "brightness-0 invert",
+                                          )}
                                         />
                                       )}
                                       <span>
@@ -617,7 +765,7 @@ export const Navbar = () => {
                               nativeButton={false}
                               role="link"
                               render={<Link href={group.featured.href} />}
-                              className="marketing-mobile-nav-cell group/nav-cell relative flex min-h-24 min-w-0 items-start justify-between gap-4 bg-background px-4 py-4 text-sm leading-snug hover:bg-background-rich hover:text-primary-text focus-visible:bg-background-rich focus-visible:text-primary-text focus-visible:-outline-offset-4"
+                              className="marketing-mobile-nav-cell group/nav-cell relative flex min-h-24 min-w-0 items-start justify-between gap-4 bg-(--nav-surface) px-4 py-4 text-sm leading-snug hover:bg-(--nav-tint) hover:text-primary-text focus-visible:bg-(--nav-tint) focus-visible:text-primary-text focus-visible:-outline-offset-4"
                             >
                               <span>
                                 <span className="block font-medium text-foreground-rich group-hover/nav-cell:text-primary-text group-focus-visible/nav-cell:text-primary-text">
@@ -643,14 +791,14 @@ export const Navbar = () => {
                     nativeButton={false}
                     role="link"
                     render={<Link href="/pricing" />}
-                    className="marketing-mobile-nav-cell relative col-span-full flex min-h-15 items-center bg-background px-4 py-4 font-medium text-base text-foreground-rich hover:bg-background-rich hover:text-primary-text focus-visible:text-primary-text"
+                    className="marketing-mobile-nav-cell relative col-span-full flex min-h-15 items-center bg-(--nav-surface) px-4 py-4 font-medium text-base text-foreground-rich hover:bg-(--nav-tint) hover:text-primary-text focus-visible:text-primary-text"
                   >
                     {navigation.pricing}
                   </SheetClose>
-                  <div className="bg-background p-4">
+                  <div className="bg-(--nav-surface) p-4">
                     <Button
                       variant="soft"
-                      color="emphasis"
+                      color={dark ? "accent" : "emphasis"}
                       className="w-full"
                       render={
                         <Link
@@ -662,7 +810,7 @@ export const Navbar = () => {
                       {chrome.action.tertiary}
                     </Button>
                   </div>
-                  <div className="bg-background p-4">
+                  <div className="bg-(--nav-surface) p-4">
                     <Button
                       className="w-full"
                       render={
@@ -675,7 +823,7 @@ export const Navbar = () => {
                       {chrome.action.secondary}
                     </Button>
                   </div>
-                  <div className="col-span-full bg-background p-4">
+                  <div className="col-span-full bg-(--nav-surface) p-4">
                     <LanguageSwitcher variant="mobile" />
                   </div>
                 </div>
@@ -688,7 +836,11 @@ export const Navbar = () => {
         ref={menuSurface}
         className="marketing-menu-surface absolute inset-x-0 top-full hidden min-[1281px]:block"
       >
-        <NavigationBlur className="absolute inset-x-0 -top-20 -bottom-12 -z-1" />
+        <NavigationBlur
+          dark={dark}
+          expanded={active !== null}
+          className="absolute inset-x-0 -top-20 -bottom-12 -z-1"
+        />
       </div>
     </header>
   );

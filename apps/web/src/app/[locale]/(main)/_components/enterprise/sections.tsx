@@ -1,13 +1,4 @@
-import {
-  ArrowRightIcon,
-  CommerceBasketShoppingIcon,
-  CommerceChartActivity_2Icon,
-  CommerceCode_3Icon,
-  CommerceFilePenIcon,
-  CommerceFileShieldIcon,
-  CommercePlug_3SparkleIcon,
-} from "@zenncore/icons";
-import { Button } from "@zenncore/web/components/button";
+import { ArrowRightIcon } from "@zenncore/icons";
 import type { AppConfig } from "next-intl";
 import {
   MarketingActions,
@@ -15,21 +6,14 @@ import {
   MarketingHeading,
   MarketingStatus,
 } from "@/components/marketing/primitives";
+import { ProviderArc } from "@/components/marketing/provider-arc";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { aiChannels } from "@/content/ai-channels";
+import { catalogConnections } from "@/content/integrations";
 import { Link } from "@/i18n/navigation";
 import { HeroVideo } from "../hero-video";
 import { BusinessTabs } from "./business-tabs";
 import { IntegrationsPreview } from "./integrations-preview";
-
-const mechanisms = [
-  { Icon: CommerceChartActivity_2Icon, signal: "primary" },
-  { Icon: CommerceFileShieldIcon, signal: "success" },
-  { Icon: CommerceFilePenIcon, signal: "secondary" },
-  { Icon: CommercePlug_3SparkleIcon, signal: "info" },
-  { Icon: CommerceBasketShoppingIcon, signal: "warning" },
-  { Icon: CommerceCode_3Icon, signal: "foreground" },
-] as const;
 
 export const Businesses = ({ copy }: Businesses.Props) => (
   <MarketingBand id="solutions">
@@ -110,51 +94,19 @@ export const Integrations = ({ copy, directory }: Integrations.Props) => (
       title={copy.title}
       description={copy.description}
     />
+    <ProviderArc
+      items={catalogConnections}
+      label={copy.title}
+      center={
+        <MarketingActions actions={copy.links.slice(0, 1)} className="mt-0" />
+      }
+    />
     <IntegrationsPreview copy={directory} />
     <div className="px-7 py-8 max-sm:px-4">
-      <MarketingActions actions={copy.links} className="mt-0 justify-start" />
-    </div>
-  </MarketingBand>
-);
-
-export const Capabilities = ({ copy }: Capabilities.Props) => (
-  <MarketingBand id="capabilities">
-    <MarketingHeading eyebrow={copy.eyebrow} title={copy.title} />
-    <div
-      className="marketing-grid marketing-section-grid grid grid-cols-3 max-sm:grid-cols-1 max-[801px]:grid-cols-2"
-      data-columns="3"
-    >
-      {copy.items.map((item, index) => {
-        const mechanism = mechanisms[index];
-        const Icon = mechanism?.Icon;
-        return (
-          <article
-            key={item.id}
-            data-signal={mechanism?.signal}
-            className="group relative flex min-w-0 flex-col gap-4 border-[var(--rail-color)] border-t border-r px-6 py-8 max-sm:border-r-0 max-sm:px-4"
-          >
-            {Icon && (
-              <Icon
-                aria-hidden
-                className="mb-2 size-8 text-primary group-data-[signal=foreground]:text-foreground group-data-[signal=info]:text-info group-data-[signal=secondary]:text-secondary group-data-[signal=success]:text-success group-data-[signal=warning]:text-warning"
-              />
-            )}
-            <h3>{item.title}</h3>
-            <p className="text-foreground-dimmed">{item.body}</p>
-            <ul className="flex flex-wrap gap-x-4 gap-y-2 pb-4 text-foreground-dimmed text-sm">
-              {item.tags.map((tag) => (
-                <li key={tag}>{tag}</li>
-              ))}
-            </ul>
-            <div className="mt-auto flex justify-start">
-              <Button render={<Link href={item.href} />}>
-                {item.label}
-                <ArrowRightIcon aria-hidden className="size-4" />
-              </Button>
-            </div>
-          </article>
-        );
-      })}
+      <MarketingActions
+        actions={copy.links.slice(1)}
+        className="mt-0 justify-start"
+      />
     </div>
   </MarketingBand>
 );
@@ -181,11 +133,5 @@ export namespace Integrations {
   export type Props = {
     copy: AppConfig["Messages"]["enterpriseHome"]["integration"];
     directory: AppConfig["Messages"]["enterpriseIntegrations"];
-  };
-}
-
-export namespace Capabilities {
-  export type Props = {
-    copy: AppConfig["Messages"]["enterpriseHome"]["mechanisms"];
   };
 }
