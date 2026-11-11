@@ -19,7 +19,8 @@ import {
 import { getLocale, getMessages } from "next-intl/server";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { MarketingActions } from "@/components/marketing/primitives";
-import { FeeWalkthrough } from "./fee-walkthrough";
+import { PLAN_CATALOG } from "@/lib/agent-api";
+import { FeeCalculator } from "./fee-calculator";
 import { PricingCTA } from "./pricing-cta";
 
 const planKeys = ["payg", "compete", "scale", "dominate"] as const;
@@ -222,9 +223,16 @@ export const EnterprisePlanLedger = async () => {
 };
 
 export const PerformanceFeeLedger = async () => {
-  const { enterprisePricing, pricing } = await getMessages();
+  const { enterprisePricing, pricing, interactiveFee } = await getMessages();
   const locale = await getLocale();
   const fee = enterprisePricing.fee;
+  const payg = PLAN_CATALOG.find((plan) => plan.key === "payg")?.performanceFee;
+  if (!payg) return null;
+  const plans = PLAN_CATALOG.flatMap((plan) =>
+    plan.price
+      ? [{ name: plan.name, amountCents: plan.price.amountCents }]
+      : [],
+  );
   const money = new Intl.NumberFormat(locale, {
     style: "currency",
     currency: "USD",
@@ -232,13 +240,11 @@ export const PerformanceFeeLedger = async () => {
   });
   return (
     <div className="marketing-section-grid border-accent-foreground border-t">
-      <FeeWalkthrough
-        fee={fee}
-        amounts={{
-          order: money.format(120),
-          fee: money.format(3.6),
-          cap: money.format(500),
-        }}
+      <FeeCalculator
+        copy={interactiveFee}
+        locale={locale}
+        {...payg}
+        plans={plans}
       />
       <div className="grid min-w-0 grid-cols-1 border-accent-foreground border-t lg:grid-cols-[1.1fr_1fr]">
         <div className="bg-primary-text px-7 py-8 text-background-rich max-sm:px-4">

@@ -1,0 +1,19 @@
+{
+  "interactiveFee": {
+    "eyebrow": "Cost estimate",
+    "title": "See what pay-as-you-go could cost.",
+    "orders": "AI-attributed orders per month",
+    "amount": "Average order value (USD)",
+    "invalidOrders": "Enter a whole number of orders, zero or more.",
+    "invalidAmount": "Enter a USD amount with up to two decimals.",
+    "invalid": "Enter valid, non-negative values to see an estimate.",
+    "privacy": "Nothing you type is saved.",
+    "result": "Estimated monthly fee",
+    "staticExample": "One {order} order gives a {fee} fee.",
+    "formula": "Each order is rounded to cents at {rate}%, then summed up to the {cap} calendar-month cap.",
+    "cheaper": "Lower monthly price:",
+    "tie": "Same monthly price:",
+    "noCheaper": "None of the standard flat plans has a lower monthly price at this estimate.",
+    "qualification": "This assumes every order equals your average value. Actual fees round each order separately; account terms can differ. This compares prices only, not plan limits or features."
+  }
+}
