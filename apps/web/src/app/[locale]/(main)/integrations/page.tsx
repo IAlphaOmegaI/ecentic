@@ -1,4 +1,4 @@
-import { getFormatter, getMessages, getTranslations } from "next-intl/server";
+import { getMessages } from "next-intl/server";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { MarketingLead } from "@/components/marketing/lead";
 import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
@@ -6,7 +6,6 @@ import {
   MarketingBand,
   MarketingStatus,
 } from "@/components/marketing/primitives";
-import { integrationCounts } from "@/content/integrations";
 import { SectionGutter } from "../dashboard/_components/grid";
 import {
   IntegrationDirectory,
@@ -19,45 +18,18 @@ export const generateMetadata = async () => {
 };
 
 export default async () => {
-  const { enterpriseIntegrations: copy } = await getMessages();
-  const translate = await getTranslations("enterpriseIntegrations");
-  const formatter = await getFormatter();
+  const { enterpriseIntegrations: copy, browserIntegrations: directory } =
+    await getMessages();
   return (
     <MarketingPage
       content={copy.index}
       path="/integrations"
       heroArtwork="console"
-      heroChildren={
-        <div className="mt-10 border-background-rich/25 border-t pt-6">
-          <p className="flex flex-wrap gap-x-6 gap-y-2 font-medium text-background-rich text-xl max-sm:text-base">
-            <span className="sr-only">
-              {translate("counter", {
-                live: formatter.number(integrationCounts.live),
-                feed: formatter.number(integrationCounts.feed),
-                soon: formatter.number(integrationCounts.soon),
-              })}
-            </span>
-            {(["live", "feed", "soon"] as const).map((status) => (
-              <span
-                key={status}
-                className="whitespace-nowrap"
-                aria-hidden="true"
-              >
-                {formatter.number(integrationCounts[status])}{" "}
-                {copy.statuses[status]}
-              </span>
-            ))}
-          </p>
-          <p className="mt-3 max-w-[68ch] text-background-rich/80 text-sm">
-            {copy.counterNote}
-          </p>
-        </div>
-      }
     >
       <SectionGutter />
-      <IntegrationDirectory copy={copy} />
+      <IntegrationDirectory copy={copy} directory={directory} />
       <SectionGutter />
-      <IntegrationImportFlow copy={copy} />
+      <IntegrationImportFlow copy={copy} directory={directory} />
       <SectionGutter />
       <MarketingBand
         id="labels"
@@ -135,7 +107,10 @@ export default async () => {
               />
             </div>
           </div>
-          <div className="relative min-h-72 overflow-hidden border-accent-foreground border-t text-primary/60 md:border-t-0 md:border-l">
+          <div
+            aria-hidden="true"
+            className="relative min-h-72 overflow-hidden border-accent-foreground border-t text-primary-text md:border-t-0 md:border-l"
+          >
             <div className="absolute inset-0">
               <EvolvingAscii artwork="bag" fit="cover" />
             </div>

@@ -159,42 +159,31 @@ export const IntegrationWall = ({ copy }: IntegrationWall.Props) => (
 );
 
 export const IntegrationLedger = ({ rows, copy }: IntegrationLedger.Props) => (
-  <>
-    <div className="divide-y divide-accent-foreground border-accent-foreground border-t sm:hidden">
-      {rows.map((row) => (
-        <article key={row.field} className="px-4 py-6">
-          <h3 className="text-xl">{row.field}</h3>
-          <dl className="mt-4 grid gap-4">
-            <div>
-              <dt className="font-medium text-foreground-rich text-sm">
-                {copy.read}
-              </dt>
-              <dd className="mt-2 text-foreground-dimmed leading-relaxed">
-                {row.read}
-              </dd>
-            </div>
-            <div>
-              <dt className="font-medium text-foreground-rich text-sm">
-                {copy.write}
-              </dt>
-              <dd className="mt-2 text-foreground-dimmed leading-relaxed">
-                {row.write}
-              </dd>
-            </div>
-          </dl>
-        </article>
-      ))}
-    </div>
-    <Table className="table-fixed border-b-0 bg-transparent max-sm:hidden">
-      <TableHeader>
+  <section
+    aria-label={`${copy.field}: ${copy.read}, ${copy.write}`}
+    // biome-ignore lint/a11y/noNoninteractiveTabindex: Keyboard users need focus on the horizontally scrollable table region.
+    tabIndex={0}
+    className="overflow-x-auto focus-visible:outline-2 focus-visible:outline-primary focus-visible:-outline-offset-2"
+  >
+    <Table className="min-w-[40rem] table-fixed border-t border-b-0 bg-background">
+      <TableHeader className="bg-background-dimmed">
         <TableRow>
-          <TableHead className="w-[24%] whitespace-normal px-3 py-5 text-sm normal-case tracking-normal sm:px-7">
+          <TableHead
+            scope="col"
+            className="w-[24%] whitespace-normal px-4 py-4 font-medium text-sm normal-case tracking-normal sm:px-7"
+          >
             {copy.field}
           </TableHead>
-          <TableHead className="w-[38%] whitespace-normal px-3 py-5 text-sm normal-case tracking-normal sm:px-7">
+          <TableHead
+            scope="col"
+            className="w-[38%] whitespace-normal px-4 py-4 font-medium text-sm normal-case tracking-normal sm:px-7"
+          >
             {copy.read}
           </TableHead>
-          <TableHead className="whitespace-normal px-3 py-5 text-sm normal-case tracking-normal sm:px-7">
+          <TableHead
+            scope="col"
+            className="whitespace-normal px-4 py-4 font-medium text-sm normal-case tracking-normal sm:px-7"
+          >
             {copy.write}
           </TableHead>
         </TableRow>
@@ -204,22 +193,33 @@ export const IntegrationLedger = ({ rows, copy }: IntegrationLedger.Props) => (
           <TableRow key={row.field}>
             <TableHead
               scope="row"
-              className="whitespace-normal break-words px-3 py-6 align-top text-foreground text-sm normal-case tracking-normal sm:px-7 sm:text-base"
+              className="whitespace-normal break-words px-4 py-6 align-top font-medium text-foreground text-sm normal-case tracking-normal sm:px-7 sm:text-base"
             >
-              {row.field}
+              <IntegrationTechnicalText text={row.field} />
             </TableHead>
-            <TableCell className="break-words px-3 py-6 align-top leading-relaxed sm:px-7 sm:text-base">
-              {row.read}
+            <TableCell className="break-words px-4 py-6 align-top leading-relaxed sm:px-7 sm:text-base">
+              <IntegrationTechnicalText text={row.read} />
             </TableCell>
-            <TableCell className="break-words px-3 py-6 align-top leading-relaxed sm:px-7 sm:text-base">
-              {row.write}
+            <TableCell className="break-words px-4 py-6 align-top leading-relaxed sm:px-7 sm:text-base">
+              <IntegrationTechnicalText text={row.write} />
             </TableCell>
           </TableRow>
         ))}
       </TableBody>
     </Table>
-  </>
+  </section>
 );
+
+export const IntegrationTechnicalText = ({ text }: { text: string }) =>
+  text.split(/(\b(?:read|write)_[a-z_]+\b)/g).map((part) =>
+    /^(?:read|write)_[a-z_]+$/.test(part) ? (
+      <code key={part} className="break-words font-mono text-[0.9em]">
+        {part}
+      </code>
+    ) : (
+      part
+    ),
+  );
 
 export const FeedExporters = ({ copy }: FeedExporters.Props) => (
   <div className="marketing-cell relative min-w-0 px-7 py-14 pt-0 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">

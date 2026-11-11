@@ -109,6 +109,8 @@ export const MarketingHero = ({
   actions = [],
   dark = false,
   artwork,
+  artworkFit = "contain",
+  artworkClassName,
   meta,
   actionsSlot,
   identity,
@@ -128,9 +130,10 @@ export const MarketingHero = ({
           dark
             ? "text-background-rich opacity-50 max-sm:opacity-25"
             : "text-primary opacity-20 max-sm:opacity-10",
+          artworkClassName,
         )}
       >
-        <EvolvingAscii artwork={artwork ?? "commerce"} />
+        <EvolvingAscii artwork={artwork ?? "commerce"} fit={artworkFit} />
       </div>
     )}
     <div
@@ -176,6 +179,8 @@ export namespace MarketingHero {
     actions?: readonly { label: string; href: string }[];
     dark?: boolean;
     artwork?: EvolvingAscii.Kind;
+    artworkFit?: "contain" | "cover";
+    artworkClassName?: string;
     meta?: ReactNode;
     actionsSlot?: ReactNode;
     identity?: ReactNode;

@@ -238,6 +238,8 @@ export const MarketingPage = async ({
   path,
   darkHero = true,
   heroArtwork,
+  heroArtworkFit,
+  heroArtworkClassName,
   heroMeta,
   heroIdentity,
   heroChildren,
@@ -284,6 +286,8 @@ export const MarketingPage = async ({
         }
         dark={darkHero}
         artwork={heroArtwork}
+        artworkFit={heroArtworkFit}
+        artworkClassName={heroArtworkClassName}
         meta={heroMeta}
         identity={heroIdentity}
       >
@@ -356,6 +360,8 @@ export namespace MarketingPage {
     path: string;
     darkHero?: boolean;
     heroArtwork?: EvolvingAscii.Kind;
+    heroArtworkFit?: "contain" | "cover";
+    heroArtworkClassName?: string;
     heroMeta?: ReactNode;
     heroIdentity?: ReactNode;
     heroChildren?: ReactNode;

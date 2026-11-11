@@ -86,6 +86,7 @@ export const EvolvingAscii = ({
   return (
     <Motion.Item
       ref={target}
+      role="img"
       aria-hidden="true"
       data-ascii-artwork={sequence[position]}
       data-ascii-frame={frame}

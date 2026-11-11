@@ -17573,5 +17573,77 @@
       "primary": "Read the policy",
       "secondary": "Back to contents"
     }
+  },
+  "browserShopify": {
+    "sections": {
+      "workflow": "Workflow",
+      "access": "Access",
+      "requirements": "Requirements",
+      "setup": "Setup"
+    }
+  },
+  "browserIntegrations": {
+    "entries": {
+      "shopify": "Connect with Shopify OAuth to import your catalog, publish selected listing fixes and track detected AI referrals. The free onboarding scan covers up to 10 products. Ongoing listing features require activated pay-as-you-go or an active Compete, Scale or Dominate subscription; each plan’s product and simulation allowances are listed on Pricing.",
+      "woocommerce": "Install the free plugin to connect your catalog and offer compatible agents product search, cart quotes and checkout through your own gateway. Try up to 10 products in the free onboarding scan. Ongoing ecentic listing features require activated pay-as-you-go or an active subscription; publishing also requires read/write access. AI visit tracking is not available for WooCommerce.",
+      "bigcommerce": "A native BigCommerce app is on the build list. It is not available to install today, and no launch date has been promised. Explore the supported product-data formats or register your interest in the direct connection.",
+      "adobe": "Export your Adobe Commerce catalog to CSV and map the fields to ecentic’s supported columns before uploading. Imported records can be compared with named competitors; this route does not publish changes back to Adobe Commerce or refresh automatically.",
+      "shopware": "Export products from Shopware, convert the file to comma-separated CSV and map the supported columns before uploading. Update the catalog in Shopware and re-import when it changes; a direct publishing connection is still planned.",
+      "wix": "Bring a physical-product CSV export from Wix Stores and map it to ecentic’s supported fields. Use the imported catalog for comparisons, then apply any edits in Wix and re-import. A native Wix app is planned.",
+      "prestashop": "Export a product CSV from PrestaShop and map its columns before importing. ecentic saves supported product records for comparisons; this export route does not write back to your store or keep the catalog refreshed automatically.",
+      "googleMerchant": "For connected Shopify stores, send published listing fixes to Google Merchant Center as a supplemental data source. You connect the Merchant Center account and run the sync separately. Google’s account and product requirements still apply; this does not enroll your store in native Google checkout.",
+      "productFeeds": "Import a supported XML or JSON feed to save product records in ecentic. Select up to 10 products for the free onboarding scan; ongoing dashboard listing features use your activated plan. Re-import when the source changes, because scheduled feed refresh and publishing back to the feed are not available.",
+      "csv": "Upload comma-separated product data using the supported column names, with one product per row. Check the mapping before selecting products for a scan. The upload saves records in ecentic and leaves your source file unchanged.",
+      "storeAddress": "Import an accessible public Shopify or WooCommerce catalog from its store address. This gives you a read-only starting point without platform credentials. Connect the verified Shopify app or WooCommerce integration later when you need to publish changes.",
+      "microsoftMerchant": "A dedicated merchant-feed connection for Microsoft Copilot is planned. It is not available today. The channel page explains current requirements and the Shopify referral-tracking surface that already works.",
+      "amazonShopDirect": "A catalog connection for Amazon’s US Shop Direct program is on the build list. There is no ecentic connection to enable today; program availability and merchant admission remain subject to Amazon’s requirements.",
+      "chatgptFeed": "A dedicated ChatGPT product-feed export is planned. Today, ecentic can simulate the ChatGPT model comparing your listing with a competitor’s; a simulation does not submit your catalog to ChatGPT or enroll your store in checkout.",
+      "perplexityFeed": "A merchant catalog-feed connection to Perplexity is planned. It is separate from the AI-referral tracking available on connected Shopify stores and is not currently a feed you can enable in ecentic.",
+      "google": "Use Gemini in store simulations to compare your products with named competitors. Google Merchant Center supplemental sync is a separate Shopify connection. ecentic’s native Google checkout onboarding is still planned.",
+      "chatgpt": "Compare your listing with a named competitor using the ChatGPT model in a simulated shopping decision. This shows model reasoning, not live shopper traffic. A dedicated ecentic ChatGPT app and product-feed export are planned separately.",
+      "claude": "Include Claude in simulated comparisons between your listing and a named competitor’s. Review the fields it considered and its explanation for the choice. This is model testing inside ecentic, not a merchant-feed or checkout connection to Claude.",
+      "copilot": "See detected Copilot referrals on connected Shopify stores today. The Microsoft Merchant Center feed connection is still planned, so this entry does not represent a live catalog submission or checkout enrollment.",
+      "perplexity": "See detected Perplexity referrals on connected Shopify stores today. Perplexity store scans and a dedicated merchant feed are on the build list; neither is currently a connection you can switch on.",
+      "amazon": "Explore the Amazon Shop Direct route and register interest in an ecentic catalog connection. The connector is planned, with no committed launch date; Amazon determines merchant eligibility and program availability.",
+      "paymentGateway": "With the WooCommerce plugin, compatible agents can create an order and send the buyer to your checkout link for payment. Your WooCommerce gateway takes the payment and you remain the seller. Optional server-side Stripe payments need separate configuration.",
+      "stripeAcs": "A dedicated Stripe Agentic Commerce Suite connection is planned. It is separate from the optional Stripe payment flow in the WooCommerce plugin and is not available to activate as an ecentic integration today.",
+      "plytix": "Export product data from Plytix as CSV and map it to ecentic’s supported columns. Import the records for comparisons and re-import after changes. This is an export route, without a direct PIM connection or automatic write-back.",
+      "akeneo": "A direct Akeneo connection is on the build list. There is no native synchronization or write-back available in ecentic today. Register your team’s interest and describe the catalog workflow you need.",
+      "salsify": "A direct Salsify connection is on the build list. There is no native synchronization or write-back available in ecentic today. Register your interest to share the product-data workflow your team needs."
+    },
+    "flow": {
+      "eyebrow": "Catalog import",
+      "title": "One catalog, three ways in",
+      "description": "Bring the product data you already maintain. Each supported import route saves records in ecentic for comparisons and listing checks.",
+      "sources": {
+        "productFeeds": "A supported XML or JSON product feed.",
+        "csv": "Mapped columns, one product per row.",
+        "storeAddress": "A public Shopify or WooCommerce catalog."
+      },
+      "catalog": {
+        "title": "Your ecentic catalog",
+        "description": "Review the imported fields, then select the products you want to compare.",
+        "fields": [
+          "Product title",
+          "Description",
+          "Price",
+          "Product URL"
+        ]
+      },
+      "outputs": {
+        "simulate": {
+          "title": "Simulate",
+          "description": "Compare selected products with named competitors using the store-scan models."
+        },
+        "audit": {
+          "title": "Audit",
+          "description": "Check listing quality and sampled storefront readiness to guide your team’s edits."
+        }
+      },
+      "note": "Imports leave the source feed, file and storefront unchanged. Re-import when the catalog changes. Publishing to a store requires a verified Shopify or WooCommerce connection; dashboard listing features use your activated plan.",
+      "action": {
+        "primary": "Explore product imports"
+      }
+    }
   }
 }

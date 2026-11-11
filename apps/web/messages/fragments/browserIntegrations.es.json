@@ -1,0 +1,66 @@
+{
+  "browserIntegrations": {
+    "entries": {
+      "shopify": "Conecta tu tienda mediante Shopify OAuth para importar el catálogo, publicar las mejoras que elijas y medir las referencias de IA detectadas. El análisis inicial gratuito incluye hasta 10 productos. Las funciones continuas de fichas requieren el pago por uso activado o una suscripción Compete, Scale o Dominate activa; consulta los límites de productos y simulaciones de cada plan en Precios.",
+      "woocommerce": "Instala el plugin gratuito para conectar tu catálogo y ofrecer a los agentes compatibles búsqueda de productos, presupuestos de carrito y compras mediante tu propia pasarela. Prueba hasta 10 productos en el análisis inicial gratuito. Las funciones continuas de fichas de ecentic requieren el pago por uso activado o una suscripción activa; publicar también requiere acceso de lectura y escritura. La medición de visitas de IA no está disponible para WooCommerce.",
+      "bigcommerce": "La app nativa de BigCommerce está en la lista de desarrollo. Todavía no se puede instalar y no tiene una fecha de lanzamiento prometida. Consulta los formatos de datos de producto compatibles o registra tu interés en la conexión directa.",
+      "adobe": "Exporta tu catálogo de Adobe Commerce a CSV y adapta los campos a las columnas compatibles con ecentic antes de subirlo. Puedes comparar los registros importados con competidores concretos; esta vía no publica cambios en Adobe Commerce ni se actualiza automáticamente.",
+      "shopware": "Exporta los productos de Shopware, convierte el archivo a CSV separado por comas y adapta las columnas compatibles antes de subirlo. Actualiza el catálogo en Shopware y vuelve a importarlo cuando cambie; la conexión de publicación directa sigue prevista.",
+      "wix": "Exporta tus productos físicos de Wix Stores a CSV y adapta el archivo a los campos compatibles con ecentic. Usa el catálogo importado para las comparaciones, aplica las mejoras en Wix y vuelve a importarlo. La app nativa de Wix está prevista.",
+      "prestashop": "Exporta un CSV de productos desde PrestaShop y adapta sus columnas antes de importarlo. ecentic guarda los registros compatibles para las comparaciones; esta vía de exportación no escribe en tu tienda ni mantiene el catálogo actualizado automáticamente.",
+      "googleMerchant": "Para tiendas Shopify conectadas, envía las mejoras de fichas ya publicadas a Google Merchant Center como fuente de datos complementaria. Conecta la cuenta de Merchant Center y ejecuta la sincronización por separado. Se siguen aplicando los requisitos de Google para cuentas y productos; esto no inscribe tu tienda en el checkout nativo de Google.",
+      "productFeeds": "Importa un feed XML o JSON compatible para guardar registros de producto en ecentic. Selecciona hasta 10 productos para el análisis inicial gratuito; las funciones continuas de fichas del panel usan tu plan activado. Vuelve a importar cuando cambie el origen, porque no hay actualización programada ni publicación de cambios en el feed.",
+      "csv": "Sube datos de producto separados por comas con los nombres de columna compatibles y un producto por fila. Revisa la correspondencia de campos antes de seleccionar productos para un análisis. La subida guarda registros en ecentic y deja tu archivo de origen sin cambios.",
+      "storeAddress": "Importa un catálogo público accesible de Shopify o WooCommerce desde la dirección de la tienda. Así puedes empezar en modo de solo lectura sin credenciales de la plataforma. Conecta después la app verificada de Shopify o la integración de WooCommerce cuando necesites publicar cambios.",
+      "microsoftMerchant": "La conexión de feed para Microsoft Copilot está prevista. Todavía no está disponible. La página del canal explica los requisitos actuales y la medición de referencias de Shopify que ya funciona.",
+      "amazonShopDirect": "La conexión de catálogo para el programa Shop Direct de Amazon en Estados Unidos está en la lista de desarrollo. Hoy no hay una conexión de ecentic que puedas activar; la disponibilidad y la admisión de comercios dependen de los requisitos de Amazon.",
+      "chatgptFeed": "La exportación de un feed de productos para ChatGPT está prevista. Hoy ecentic puede simular cómo el modelo de ChatGPT compara tu ficha con la de un competidor; una simulación no envía tu catálogo a ChatGPT ni inscribe tu tienda en su checkout.",
+      "perplexityFeed": "La conexión de feed de catálogo para Perplexity está prevista. Es independiente de la medición de referencias de IA disponible en las tiendas Shopify conectadas y todavía no es un feed que puedas activar en ecentic.",
+      "google": "Usa Gemini en las simulaciones de tienda para comparar tus productos con competidores concretos. La sincronización complementaria de Google Merchant Center es una conexión de Shopify independiente. La incorporación al checkout nativo de Google desde ecentic sigue prevista.",
+      "chatgpt": "Compara tu ficha con la de un competidor concreto mediante el modelo de ChatGPT en una decisión de compra simulada. Verás el razonamiento del modelo, no tráfico real de compradores. La app de ecentic para ChatGPT y la exportación de feed están previstas por separado.",
+      "claude": "Incluye Claude en comparaciones simuladas entre tu ficha y la de un competidor concreto. Revisa los campos que ha considerado y cómo explica su elección. Son pruebas del modelo dentro de ecentic, no una conexión de feed o checkout con Claude.",
+      "copilot": "Consulta hoy las referencias de Copilot detectadas en tus tiendas Shopify conectadas. La conexión de feed de Microsoft Merchant Center sigue prevista, por lo que esta entrada no representa un envío de catálogo activo ni una inscripción en checkout.",
+      "perplexity": "Consulta hoy las referencias de Perplexity detectadas en tus tiendas Shopify conectadas. Los análisis de tienda con Perplexity y el feed para comercios están en la lista de desarrollo; todavía no puedes activar ninguna de estas conexiones.",
+      "amazon": "Consulta la vía de Amazon Shop Direct y registra tu interés en una conexión de catálogo de ecentic. El conector está previsto, sin una fecha de lanzamiento comprometida; Amazon determina la elegibilidad de los comercios y la disponibilidad del programa.",
+      "paymentGateway": "Con el plugin de WooCommerce, los agentes compatibles pueden crear un pedido y enviar al comprador a tu enlace de checkout para pagar. Tu pasarela de WooCommerce procesa el pago y tú sigues siendo el vendedor. Los pagos opcionales con Stripe desde el servidor requieren configuración adicional.",
+      "stripeAcs": "La conexión con Stripe Agentic Commerce Suite está prevista. Es independiente del flujo de pago opcional con Stripe del plugin de WooCommerce y todavía no se puede activar como integración de ecentic.",
+      "plytix": "Exporta los datos de producto de Plytix a CSV y adapta el archivo a las columnas compatibles con ecentic. Importa los registros para las comparaciones y vuelve a importarlos cuando cambien. Es una vía de exportación, sin conexión directa al PIM ni escritura automática en el origen.",
+      "akeneo": "La conexión directa con Akeneo está en la lista de desarrollo. Hoy ecentic no ofrece sincronización nativa ni escritura en el origen. Registra el interés de tu equipo y describe el flujo de catálogo que necesitas.",
+      "salsify": "La conexión directa con Salsify está en la lista de desarrollo. Hoy ecentic no ofrece sincronización nativa ni escritura en el origen. Registra tu interés para compartir el flujo de datos de producto que necesita tu equipo."
+    },
+    "flow": {
+      "eyebrow": "Importación de catálogo",
+      "title": "Un catálogo, tres vías de entrada",
+      "description": "Trae los datos de producto que ya mantienes. Cada vía de importación compatible guarda registros en ecentic para comparar y revisar tus fichas.",
+      "sources": {
+        "productFeeds": "Un feed de productos XML o JSON compatible.",
+        "csv": "Columnas adaptadas y un producto por fila.",
+        "storeAddress": "Un catálogo público de Shopify o WooCommerce."
+      },
+      "catalog": {
+        "title": "Tu catálogo en ecentic",
+        "description": "Revisa los campos importados y selecciona los productos que quieres comparar.",
+        "fields": [
+          "Título del producto",
+          "Descripción",
+          "Precio",
+          "URL del producto"
+        ]
+      },
+      "outputs": {
+        "simulate": {
+          "title": "Simular",
+          "description": "Compara los productos seleccionados con competidores concretos mediante los modelos del análisis de tienda."
+        },
+        "audit": {
+          "title": "Auditar",
+          "description": "Revisa la calidad de las fichas y la preparación de las páginas muestreadas para orientar las mejoras de tu equipo."
+        }
+      },
+      "note": "Las importaciones dejan el feed, el archivo y la tienda de origen sin cambios. Vuelve a importar cuando cambie el catálogo. Para publicar en una tienda necesitas una conexión verificada de Shopify o WooCommerce; las funciones de fichas del panel usan tu plan activado.",
+      "action": {
+        "primary": "Explorar importaciones de productos"
+      }
+    }
+  }
+}

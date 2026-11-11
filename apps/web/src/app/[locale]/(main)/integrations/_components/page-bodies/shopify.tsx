@@ -1,13 +1,26 @@
 import { cn } from "@zenncore/utils";
+import { getMessages } from "next-intl/server";
 import type { MarketingBodyProps } from "@/components/marketing/body";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { MarketingSection } from "@/components/marketing/page";
 import {
   MarketingActions,
   MarketingBand,
+  MarketingEyebrow,
   MarketingStatus,
 } from "@/components/marketing/primitives";
+import { IntegrationTechnicalText } from "../integration-content";
 import { ShopifySetupJourney } from "./shopify-setup-journey";
+
+const ShopifyJunction = ({ className }: { className: string }) => (
+  <span
+    aria-hidden="true"
+    className={cn(
+      "pointer-events-none absolute z-2 size-4 text-foreground-dimmed before:absolute before:top-1/2 before:left-0 before:w-4 before:border-current before:border-t after:absolute after:top-0 after:left-1/2 after:h-4 after:border-current after:border-l",
+      className,
+    )}
+  />
+);
 
 const ShopifyWorkflow = ({ section, children }: MarketingSection.Props) => (
   <MarketingBand
@@ -19,6 +32,9 @@ const ShopifyWorkflow = ({ section, children }: MarketingSection.Props) => (
         <EvolvingAscii artwork="bag" fit="cover" />
       </div>
       <div className="relative z-1 min-w-0">
+        {section.eyebrow && (
+          <MarketingEyebrow>{section.eyebrow}</MarketingEyebrow>
+        )}
         <h2 className="max-w-[17ch]">{section.title}</h2>
         {section.description && (
           <p className="mt-4 max-w-[60ch] text-foreground-dimmed">
@@ -27,27 +43,36 @@ const ShopifyWorkflow = ({ section, children }: MarketingSection.Props) => (
         )}
       </div>
     </div>
-    <ol className="grid grid-cols-[1fr_1.2fr_1fr] border-accent-foreground border-t max-md:grid-cols-1">
+    <ol className="marketing-section-grid grid grid-cols-[1fr_1.2fr_1fr] border-accent-foreground border-t max-md:grid-cols-1">
       {section.items?.map((item, index) => (
         <li
           key={item.title}
-          className={cn(
-            "relative min-w-0 border-accent-foreground border-r px-7 py-8 last:border-r-0 max-sm:px-4 max-md:border-r-0 max-md:border-b max-md:last:border-b-0",
-            index === 1 && "bg-primary/5",
-          )}
+          className="relative min-w-0 border-accent-foreground border-r px-7 py-8 last:border-r-0 max-sm:px-4 max-md:border-r-0"
         >
+          {index < (section.items?.length ?? 0) - 1 && (
+            <span
+              aria-hidden="true"
+              className="pointer-events-none absolute bottom-0 left-1/2 w-dvw -translate-x-1/2 border-accent-foreground border-t md:hidden"
+            />
+          )}
+          <ShopifyJunction className="-top-2 -left-2" />
+          <ShopifyJunction
+            className={cn(
+              "-top-2 -right-2",
+              index < (section.items?.length ?? 0) - 1 && "md:hidden",
+            )}
+          />
+          {index > 0 && (
+            <ShopifyJunction className="-bottom-2 -left-2 max-md:hidden" />
+          )}
           <div className="mb-8 flex items-center gap-4 max-md:mb-5">
             <span className="font-heading text-4xl text-primary leading-none">
               {String(index + 1).padStart(2, "0")}
             </span>
             <span
               aria-hidden="true"
-              className="flex-1 overflow-hidden whitespace-nowrap text-primary/55"
-            >
-              {index === 2
-                ? "····································"
-                : "───────────────────────>"}
-            </span>
+              className="flex-1 border-accent-foreground border-t"
+            />
           </div>
           {item.status && (
             <MarketingStatus status={item.status}>
@@ -73,17 +98,18 @@ const ShopifyWorkflow = ({ section, children }: MarketingSection.Props) => (
 const ShopifyAccess = ({ section, children }: MarketingSection.Props) => (
   <MarketingBand
     id={section.id}
-    className="[&>.marketing-rail>.marketing-guides]:hidden [&>.marketing-rail]:bg-background-dimmed"
+    className="[&>.marketing-rail>.marketing-guides]:hidden"
   >
-    <div className="px-7 py-10 max-sm:px-4 max-sm:py-8">
+    <div className="bg-background-rich px-7 py-10 max-sm:px-4 max-sm:py-8">
+      {section.eyebrow && (
+        <MarketingEyebrow>{section.eyebrow}</MarketingEyebrow>
+      )}
       <h2 className="max-w-[22ch]">{section.title}</h2>
       <p className="mt-5 max-w-[78ch] text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">
         {section.description}
       </p>
     </div>
-    <div className="[&_article]:bg-background [&_tbody]:bg-background [&_thead]:bg-background-dimmed">
-      {children}
-    </div>
+    {children}
   </MarketingBand>
 );
 
@@ -94,6 +120,9 @@ const ShopifyRequirements = ({ section, children }: MarketingSection.Props) => (
   >
     <div className="grid grid-cols-[1fr_2fr] max-md:grid-cols-1">
       <div className="min-w-0 border-accent-foreground border-r px-7 py-10 max-sm:px-4 max-sm:py-8 max-md:border-r-0 max-md:border-b">
+        {section.eyebrow && (
+          <MarketingEyebrow>{section.eyebrow}</MarketingEyebrow>
+        )}
         <h2>{section.title}</h2>
         {section.links && <MarketingActions actions={section.links} />}
       </div>
@@ -107,7 +136,7 @@ const ShopifyRequirements = ({ section, children }: MarketingSection.Props) => (
               {String(index + 1).padStart(2, "0")}
             </span>
             <p className="text-foreground-dimmed leading-relaxed">
-              {paragraph}
+              <IntegrationTechnicalText text={paragraph} />
             </p>
           </div>
         ))}
@@ -123,6 +152,9 @@ const ShopifySetup = ({ section, children }: MarketingSection.Props) => (
     className="[&>.marketing-rail>.marketing-guides]:hidden"
   >
     <div className="px-7 py-10 max-sm:px-4 max-sm:py-8">
+      {section.eyebrow && (
+        <MarketingEyebrow>{section.eyebrow}</MarketingEyebrow>
+      )}
       <h2>{section.title}</h2>
     </div>
     {section.items && (
@@ -137,32 +169,44 @@ const ShopifySetup = ({ section, children }: MarketingSection.Props) => (
   </MarketingBand>
 );
 
-export const ShopifyBody = ({
+export const ShopifyBody = async ({
   sections,
   sectionChildren,
-}: MarketingBodyProps) => (
-  <>
-    {sections.map((section) => {
-      const Section = (() => {
-        switch (section.id) {
-          case "workflow":
-            return ShopifyWorkflow;
-          case "access":
-            return ShopifyAccess;
-          case "requirements":
-            return ShopifyRequirements;
-          case "setup":
-            return ShopifySetup;
-          default:
-            return MarketingSection;
-        }
-      })();
+}: MarketingBodyProps) => {
+  const { browserShopify } = await getMessages();
 
-      return (
-        <Section key={section.id} section={section}>
-          {sectionChildren?.[section.id]}
-        </Section>
-      );
-    })}
-  </>
-);
+  return (
+    <>
+      {sections.map((section) => {
+        const Section = (() => {
+          switch (section.id) {
+            case "workflow":
+              return ShopifyWorkflow;
+            case "access":
+              return ShopifyAccess;
+            case "requirements":
+              return ShopifyRequirements;
+            case "setup":
+              return ShopifySetup;
+            default:
+              return MarketingSection;
+          }
+        })();
+
+        return (
+          <Section
+            key={section.id}
+            section={{
+              ...section,
+              eyebrow: Object.entries(browserShopify.sections).find(
+                ([key]) => key === section.id,
+              )?.[1],
+            }}
+          >
+            {sectionChildren?.[section.id]}
+          </Section>
+        );
+      })}
+    </>
+  );
+};

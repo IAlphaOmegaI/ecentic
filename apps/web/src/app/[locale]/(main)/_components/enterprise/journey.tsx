@@ -7,15 +7,6 @@ import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
 import { JourneyArtwork } from "./journey-artwork";
 
-const numerals = [
-  [" ### ", "#   #", "#  ##", "# # #", "##  #", "#   #", " ### "],
-  ["  #  ", " ##  ", "  #  ", "  #  ", "  #  ", "  #  ", " ### "],
-  [" ### ", "#   #", "    #", "   # ", "  #  ", " #   ", "#####"],
-  ["#### ", "    #", "    #", " ### ", "    #", "    #", "#### "],
-  ["   # ", "  ## ", " # # ", "#  # ", "#####", "   # ", "   # "],
-  ["#####", "#    ", "#    ", "#### ", "    #", "    #", "#### "],
-] as const;
-
 export const Journey = ({ copy }: Journey.Props) => (
   <MarketingBand className="enterprise-journey-panel bg-background [&_.marketing-guides]:hidden">
     <header className="enterprise-stage-list border-accent-foreground border-b px-8 py-10 max-sm:px-4 max-sm:py-8">
@@ -53,16 +44,8 @@ export const Journey = ({ copy }: Journey.Props) => (
             )}
           >
             <h3 className="flex items-center gap-4 font-heading text-2xl text-foreground-rich leading-tight tracking-tight">
-              <span className="sr-only">
-                {String(index + 1).padStart(2, "0")}{" "}
-              </span>
-              <span
-                aria-hidden="true"
-                className="shrink-0 select-none whitespace-pre font-mono text-[5px] text-primary leading-[5px] tracking-[0.08em]"
-              >
-                {numerals[0]
-                  .map((line, row) => `${line}  ${numerals[index + 1]?.[row]}`)
-                  .join("\n")}
+              <span className="shrink-0 font-heading text-3xl text-primary tabular-nums leading-none">
+                {String(index + 1).padStart(2, "0")}
               </span>
               <span>{step.title}</span>
             </h3>

@@ -64,6 +64,7 @@ import {
   type ProviderKey,
   ProviderLogo,
 } from "@/components/marketing/provider-logo";
+import { Plus } from "@/components/plus";
 import { Link, usePathname } from "@/i18n/navigation";
 
 const navigationProviders: Record<string, ProviderKey> = {
@@ -336,7 +337,7 @@ export const Navbar = () => {
                     }}
                   >
                     <div
-                      className="marketing-nav-grid relative mx-auto grid max-w-[min(1384px,calc(100%-56px))] grid-cols-[repeat(var(--menu-columns),minmax(0,1fr))] gap-px border border-accent-foreground bg-accent-foreground [grid-template-rows:minmax(3rem,auto)_repeat(var(--menu-rows),minmax(6rem,auto))]"
+                      className="marketing-nav-grid relative mx-auto grid max-w-[min(1384px,calc(100%-56px))] grid-cols-[repeat(var(--menu-columns),minmax(0,1fr))] bg-transparent [grid-template-rows:minmax(3rem,auto)_repeat(var(--menu-rows),minmax(6rem,auto))]"
                       data-menu={group.id}
                       style={
                         {
@@ -364,13 +365,14 @@ export const Navbar = () => {
                       {group.columns.map((column, columnIndex) => (
                         <div
                           className={cn(
-                            "marketing-nav-column relative grid grid-rows-subgrid gap-px [grid-row:span_var(--menu-span)]",
-                            group.id === "channels" &&
-                              "col-span-3 grid-cols-subgrid",
+                            "marketing-desktop-nav-column relative grid grid-rows-subgrid [grid-row:span_var(--menu-span)]",
+                            group.id === "channels"
+                              ? "col-span-3 grid-cols-subgrid"
+                              : "border-accent-foreground border-l first:border-l-0",
                           )}
                           key={column.title}
                         >
-                          <p className="marketing-nav-column-heading relative col-span-full flex items-center gap-2.5 bg-background-dimmed px-5 py-3 font-medium text-foreground-dimmed text-sm leading-snug">
+                          <p className="marketing-desktop-nav-heading relative col-span-full flex items-center gap-2.5 border-accent-foreground border-b bg-background-dimmed/20 px-5 py-3 font-medium text-foreground-dimmed text-sm leading-snug">
                             <NavigationCategoryIcon
                               group={group.id}
                               column={columnIndex}
@@ -385,18 +387,20 @@ export const Navbar = () => {
                             return (
                               <NavigationMenuLink
                                 key={`${item.href}-${item.label}`}
-                                data-junction-left={
-                                  group.id === "channels"
-                                    ? itemIndex % 3 === 0
-                                    : columnIndex === 0 ||
-                                      itemIndex >=
-                                        (group.columns[columnIndex - 1]?.items
-                                          .length ?? 0)
-                                }
                                 render={<Link href={item.href} />}
                                 onClick={() => setActive(null)}
-                                className="marketing-nav-cell group/nav-cell relative flex min-w-0 items-start gap-3 rounded-none bg-background px-5 xs:px-5 py-4 xs:py-4 text-sm leading-snug hover:bg-background-rich hover:text-primary-text focus-visible:bg-background-rich focus-visible:text-primary-text focus-visible:-outline-offset-4 [&_.marketing-status]:mt-2 [&_.marketing-status]:text-xs"
+                                className={cn(
+                                  "marketing-desktop-nav-cell group/nav-cell relative flex min-w-0 items-start gap-3 rounded-none border-accent-foreground border-b bg-transparent px-5 xs:px-5 py-4 xs:py-4 text-sm leading-snug hover:bg-background-rich/20 hover:text-primary-text focus-visible:bg-background-rich/20 focus-visible:text-primary-text focus-visible:-outline-offset-4 [&_.marketing-status]:mt-2 [&_.marketing-status]:text-xs",
+                                  group.id === "channels" &&
+                                    itemIndex % 3 !== 0 &&
+                                    "border-l",
+                                )}
                               >
+                                {(group.id === "channels"
+                                  ? itemIndex % 3 !== 0
+                                  : columnIndex > 0) && (
+                                  <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+                                )}
                                 {provider && (
                                   <ProviderLogo
                                     provider={provider}
@@ -419,33 +423,49 @@ export const Navbar = () => {
                               </NavigationMenuLink>
                             );
                           })}
-                          {column.items.length <
-                            Math.max(
-                              ...group.columns.map(
-                                (entry) => entry.items.length,
-                              ),
-                            ) && (
-                            <div
-                              aria-hidden="true"
-                              className="marketing-nav-empty bg-background"
-                              style={{
-                                gridRow: `span ${
-                                  Math.max(
-                                    ...group.columns.map(
-                                      (entry) => entry.items.length,
-                                    ),
-                                  ) - column.items.length
-                                }`,
-                              }}
-                            />
-                          )}
+                          {[...group.columns]
+                            .sort(
+                              (first, second) =>
+                                second.items.length - first.items.length,
+                            )[0]
+                            ?.items.slice(column.items.length)
+                            .map((item) => (
+                              <div
+                                aria-hidden="true"
+                                key={`${column.title}-${item.href}`}
+                                className="relative border-accent-foreground border-b bg-transparent"
+                              >
+                                {columnIndex > 0 && (
+                                  <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+                                )}
+                              </div>
+                            ))}
                         </div>
                       ))}
                       <NavigationMenuLink
                         render={<Link href={group.featured.href} />}
                         onClick={() => setActive(null)}
-                        className="marketing-nav-feature-cell marketing-nav-cell group/nav-cell relative col-span-full flex items-center justify-between gap-6 rounded-none bg-background-dimmed px-5 xs:px-5 py-4 xs:py-4 text-sm leading-snug hover:bg-background-rich hover:text-primary-text focus-visible:bg-background-rich focus-visible:text-primary-text focus-visible:-outline-offset-4"
+                        className="marketing-desktop-nav-feature group/nav-cell relative col-span-full flex items-center justify-between gap-6 rounded-none bg-background-dimmed/20 px-5 xs:px-5 py-4 xs:py-4 text-sm leading-snug hover:bg-background-rich/20 hover:text-primary-text focus-visible:bg-background-rich/20 focus-visible:text-primary-text focus-visible:-outline-offset-4"
                       >
+                        <span
+                          aria-hidden="true"
+                          className="pointer-events-none absolute inset-x-0 top-0 grid grid-cols-[repeat(var(--menu-columns),minmax(0,1fr))]"
+                        >
+                          {(group.id === "channels"
+                            ? group.columns.flatMap((column) =>
+                                column.items
+                                  .slice(0, 3)
+                                  .map((item) => item.label),
+                              )
+                            : group.columns.map((column) => column.title)
+                          ).map((column, columnIndex) => (
+                            <span key={column} className="relative">
+                              {columnIndex > 0 && (
+                                <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+                              )}
+                            </span>
+                          ))}
+                        </span>
                         <span>
                           <span className="block font-medium text-foreground-rich group-hover/nav-cell:text-primary-text group-focus-visible/nav-cell:text-primary-text">
                             {group.featured.title}
