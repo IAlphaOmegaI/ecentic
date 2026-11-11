@@ -6,7 +6,12 @@ const artwork = {
     width: 89.0,
     height: 101.0,
   },
-  woocommerce: { name: "WooCommerce", src: null, width: 1, height: 1 },
+  woocommerce: {
+    name: "WooCommerce",
+    src: "/providers/woocommerce.svg",
+    width: 183.6,
+    height: 47.5,
+  },
   bigcommerce: {
     name: "BigCommerce",
     src: "/providers/bigcommerce.svg",

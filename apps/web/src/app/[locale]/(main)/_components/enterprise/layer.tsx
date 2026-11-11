@@ -1,4 +1,10 @@
-import { ArrowRightIcon } from "@zenncore/icons";
+import {
+  ArrowRightIcon,
+  CommerceCode_3Icon,
+  CommerceFilePenIcon,
+} from "@zenncore/icons";
+import { Button } from "@zenncore/web/components/button";
+import Image from "next/image";
 import { getMessages } from "next-intl/server";
 import {
   ChannelComparison,
@@ -6,13 +12,35 @@ import {
 } from "@/components/marketing/channels";
 import {
   MarketingBand,
-  MarketingEyebrow,
+  MarketingHeading,
   MarketingStatus,
 } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { aiChannels } from "@/content/ai-channels";
-import { providerLogos } from "@/content/provider-logos";
 import { Link } from "@/i18n/navigation";
+
+const StackMark = ({ index }: { index: number }) => {
+  switch (index) {
+    case 0:
+      return (
+        <ProviderLogo provider="shopify" className="h-8 w-10" decorative />
+      );
+    case 1:
+      return (
+        <ProviderLogo provider="woocommerce" className="h-8 w-16" decorative />
+      );
+    case 2:
+      return (
+        <CommerceFilePenIcon aria-hidden className="size-8 text-primary" />
+      );
+    case 3:
+      return <CommerceCode_3Icon aria-hidden className="size-8 text-primary" />;
+    default:
+      return (
+        <ProviderLogo provider="googleMerchant" className="size-8" decorative />
+      );
+  }
+};
 
 export const CommerceLayer = async () => {
   const { enterpriseLayer: copy, enterpriseChannels: channels } =
@@ -20,173 +48,98 @@ export const CommerceLayer = async () => {
   return (
     <>
       <MarketingBand id="how-it-fits" className="enterprise-layer">
-        <div className="marketing-cell relative min-w-0 px-7 py-24 max-sm:px-4 max-sm:py-14">
-          <MarketingEyebrow>{copy.eyebrow}</MarketingEyebrow>
-          <h2 className="max-w-[940px]">{copy.title}</h2>
-          <p className="mt-6 max-w-[720px] text-lg leading-relaxed">
-            {copy.description}
-          </p>
-          <figure className="mt-12">
+        <div className="marketing-cell relative min-w-0 px-7 py-16 max-sm:px-4 max-sm:py-12">
+          <MarketingHeading
+            className="p-0 max-sm:p-0"
+            eyebrow={copy.eyebrow}
+            title={copy.title}
+            description={copy.description}
+          />
+          <figure aria-label={copy.diagram} className="relative mt-12">
             <svg
-              aria-hidden="true"
-              viewBox="0 0 1128 460"
-              className="hidden w-full lg:block"
+              aria-hidden
+              viewBox="0 0 1128 440"
+              preserveAspectRatio="none"
+              className="pointer-events-none absolute inset-0 hidden h-full w-full lg:block"
             >
-              <text
-                x="0"
-                y="24"
-                className="fill-foreground-rich font-heading text-[22px]"
-              >
-                {copy.stack}
-              </text>
-              <text
-                x="800"
-                y="24"
-                className="fill-foreground-rich font-heading text-[22px]"
-              >
-                {copy.channels}
-              </text>
-              <path
-                d="M 320 236 H 430 M 670 236 H 710"
-                className="stroke-primary-text/35"
-              />
               {copy.inputs.map((input, index) => (
-                <g key={input}>
-                  <path
-                    d={`M 230 ${96 + index * 62} H 294 Q 320 ${96 + index * 62} 320 236`}
-                    fill="none"
-                    className="stroke-primary-text/35"
-                  />
-                  <circle
-                    cx="230"
-                    cy={96 + index * 62}
-                    r="3"
-                    className="fill-primary-text"
-                  />
-                  <text
-                    x="0"
-                    y={102 + index * 62}
-                    className="fill-foreground text-[18px]"
-                  >
-                    {input}
-                  </text>
-                </g>
-              ))}
-              <rect
-                x="430"
-                y="72"
-                width="240"
-                height="326"
-                className="fill-primary-text"
-              />
-              <image
-                href="/images/marketing/trademark-on-dark.svg"
-                x="462"
-                y="105"
-                width="150"
-                height="40"
-              />
-              <text
-                x="462"
-                y="177"
-                className="fill-background-rich/85 text-[14px]"
-              >
-                {copy.layer}
-              </text>
-              {copy.stages.map((stage, index) => (
-                <g key={stage}>
-                  <path
-                    d={`M 430 ${200 + index * 48} H 670`}
-                    className="stroke-background-rich/25"
-                  />
-                  <text
-                    x="462"
-                    y={232 + index * 48}
-                    className="fill-background-rich text-[19px]"
-                  >
-                    {stage}
-                  </text>
-                  <text
-                    x="620"
-                    y={232 + index * 48}
-                    className="fill-background-rich/70 text-[14px]"
-                  >
-                    {String(index + 1).padStart(2, "0")}
-                  </text>
-                </g>
+                <path
+                  key={input}
+                  d={`M 282 ${98 + index * 64} H 320 Q 352 ${98 + index * 64} 352 232 H 432`}
+                  fill="none"
+                  className="stroke-primary/25"
+                />
               ))}
               {aiChannels.map((channel, index) => (
-                <g key={channel.key}>
-                  <path
-                    d={`M 710 236 Q 752 236 752 ${84 + index * 62} H 784`}
-                    fill="none"
-                    strokeDasharray={
-                      channel.status === "soon" ? "4 5" : undefined
-                    }
-                    className="stroke-primary-text/45"
-                  />
-                  <circle
-                    cx="784"
-                    cy={84 + index * 62}
-                    r="3"
-                    className="fill-primary-text"
-                  />
-                  <image
-                    href={providerLogos[channel.key].src}
-                    x="800"
-                    y={68 + index * 62}
-                    width="28"
-                    height="28"
-                  />
-                  <text
-                    x="844"
-                    y={83 + index * 62}
-                    className="fill-foreground-rich text-[17px]"
-                  >
-                    {channel.key === "google"
-                      ? copy.google
-                      : channels.names[channel.key]}
-                  </text>
-                  <text
-                    x="844"
-                    y={104 + index * 62}
-                    className="fill-foreground-dimmed text-[13px]"
-                  >
-                    {channels.statuses[channel.status]}
-                  </text>
-                </g>
+                <path
+                  key={channel.key}
+                  d={`M 696 232 H 744 Q 776 232 776 ${80 + index * 64} H 806`}
+                  fill="none"
+                  strokeDasharray={
+                    channel.status === "soon" ? "4 6" : undefined
+                  }
+                  className="stroke-primary/30"
+                />
               ))}
             </svg>
-            <div className="grid gap-8 lg:sr-only">
-              <div>
-                <h3 className="mb-5 text-2xl">{copy.stack}</h3>
-                <ul className="grid gap-3 text-base">
-                  {copy.inputs.map((input) => (
-                    <li key={input}>{input}</li>
+            <div className="relative grid gap-10 lg:grid-cols-[1fr_1fr_1fr] lg:gap-12">
+              <div className="min-w-0 lg:py-4">
+                <h3 className="mb-8 font-heading text-2xl">{copy.stack}</h3>
+                <ul className="grid gap-6">
+                  {copy.inputs.map((input, index) => (
+                    <li
+                      key={input}
+                      className="flex min-h-10 items-center gap-4"
+                    >
+                      <span className="flex h-10 w-16 shrink-0 items-center">
+                        <StackMark index={index} />
+                      </span>
+                      <span className="text-base text-foreground">{input}</span>
+                    </li>
                   ))}
                 </ul>
               </div>
-              <div className="relative border-primary-text border-y bg-primary-text px-6 py-7 text-background-rich before:absolute before:-top-8 before:left-1/2 before:h-8 before:border-primary-text before:border-l after:absolute after:-bottom-8 after:left-1/2 after:h-8 after:border-primary-text after:border-l">
-                <p className="font-heading text-3xl">ecentic</p>
-                <p className="mt-2 text-sm">{copy.layer}</p>
-                <ol className="mt-6 grid grid-cols-2 gap-4 border-background-rich/30 border-t pt-5">
+              <div className="relative flex min-h-96 flex-col items-center justify-center px-8 py-10 text-center before:pointer-events-none before:absolute before:inset-x-0 before:inset-y-0 before:bg-linear-to-r before:from-transparent before:via-primary/20 before:to-transparent lg:min-h-[440px] lg:before:-inset-x-12 before:[mask-image:linear-gradient(180deg,transparent,black_18%,black_82%,transparent)]">
+                <Image
+                  src="/images/trademark.svg"
+                  alt="ecentic"
+                  width={180}
+                  height={46}
+                  className="relative h-auto w-44"
+                />
+                <p className="relative mt-4 text-primary-text text-sm">
+                  {copy.layer}
+                </p>
+                <ol className="relative mt-8 w-full max-w-48 divide-y divide-primary/15">
                   {copy.stages.map((stage) => (
-                    <li key={stage}>{stage}</li>
+                    <li
+                      key={stage}
+                      className="py-4 font-heading text-2xl text-foreground-rich"
+                    >
+                      {stage}
+                    </li>
                   ))}
                 </ol>
               </div>
-              <div>
-                <h3 className="mb-6 text-2xl">{copy.channels}</h3>
-                <ul className="grid gap-5">
+              <div className="min-w-0">
+                <h3 className="mb-6 font-heading text-2xl">{copy.channels}</h3>
+                <ul className="grid gap-4">
                   {aiChannels.map((channel) => (
-                    <li key={channel.key} className="flex items-center gap-4">
+                    <li
+                      key={channel.key}
+                      className="flex min-h-12 items-center gap-4"
+                    >
                       <ProviderLogo
                         provider={channel.key}
-                        className="size-7"
+                        className="size-8 shrink-0"
                         decorative
                       />
-                      <div className="flex flex-col gap-1">
-                        <span>{channels.names[channel.key]}</span>
+                      <div className="min-w-0 space-y-1">
+                        <p className="font-medium text-base text-foreground-rich">
+                          {channel.key === "google"
+                            ? copy.google
+                            : channels.names[channel.key]}
+                        </p>
                         <MarketingStatus status={channel.status}>
                           {channels.statuses[channel.status]}
                         </MarketingStatus>
@@ -196,26 +149,22 @@ export const CommerceLayer = async () => {
                 </ul>
               </div>
             </div>
-            <figcaption className="mt-8 max-w-[760px] text-foreground-dimmed text-sm leading-relaxed">
-              {copy.legend}
-            </figcaption>
           </figure>
-          <Link
-            href="/ai-channels"
-            className="mt-8 inline-flex items-center gap-3 text-primary-text underline underline-offset-4"
-          >
-            {copy.action}
-            <ArrowRightIcon aria-hidden className="size-4" />
-          </Link>
+          <div className="mt-10">
+            <Button render={<Link href="/ai-channels" />}>
+              {copy.action}
+              <ArrowRightIcon aria-hidden className="size-4" />
+            </Button>
+          </div>
         </div>
       </MarketingBand>
-      <MarketingBand>
-        <div className="marketing-cell relative min-w-0 px-7 py-24 max-sm:px-4 max-sm:py-14">
+      <MarketingBand className="enterprise-timeline [&>.marketing-rail>.marketing-guides]:[mask-image:linear-gradient(180deg,black,transparent_96px)]">
+        <div className="marketing-cell relative min-w-0 px-7 py-16 max-sm:px-4 max-sm:py-12">
           <CommerceTimeline />
         </div>
       </MarketingBand>
       <MarketingBand>
-        <div className="marketing-cell relative min-w-0 px-7 py-24 max-sm:px-4 max-sm:py-14">
+        <div className="marketing-cell relative min-w-0 px-7 py-16 max-sm:px-4 max-sm:py-12">
           <ChannelComparison />
         </div>
       </MarketingBand>

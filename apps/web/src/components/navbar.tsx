@@ -172,19 +172,23 @@ export const Navbar = () => {
   };
   return (
     <header
+      data-menu-open={active !== null}
       className={cn(
         fonts,
-        "marketing-site marketing-nav marketing-grid-pattern sticky top-0 isolate z-60 shrink-0 border-accent-foreground border-b bg-transparent font-body font-normal text-foreground [--rail-color:var(--color-accent-foreground)] [--rail-cross:var(--color-cross)]",
+        "marketing-site marketing-nav marketing-grid-pattern sticky top-0 isolate z-60 shrink-0 bg-transparent font-body font-normal text-foreground [--rail-color:var(--color-accent-foreground)] [--rail-cross:var(--color-cross)]",
       )}
       ref={header}
     >
       <div
         aria-hidden="true"
-        className="marketing-nav-blur pointer-events-none absolute inset-0 -z-1 bg-linear-to-b from-background/82 to-background/40"
+        className="marketing-nav-blur pointer-events-none absolute inset-x-0 top-0 -bottom-12 -z-1 bg-linear-to-b from-background/90 via-40% via-background/70 to-transparent"
       >
-        <span className="absolute inset-0 backdrop-blur-[3px]" />
-        <span className="mask-b-from-40% mask-b-to-100% absolute inset-0 backdrop-blur-[9px]" />
-        <span className="mask-b-from-0% mask-b-to-70% absolute inset-0 backdrop-blur-[18px]" />
+        <span className="absolute inset-0 backdrop-blur-[24px] [mask-image:linear-gradient(to_bottom,black_0%,black_16%,transparent_40%)]" />
+        <span className="absolute inset-0 backdrop-blur-[16px] [mask-image:linear-gradient(to_bottom,transparent_8%,black_20%,black_32%,transparent_52%)]" />
+        <span className="absolute inset-0 backdrop-blur-[8px] [mask-image:linear-gradient(to_bottom,transparent_26%,black_38%,black_48%,transparent_68%)]" />
+        <span className="absolute inset-0 backdrop-blur-[4px] [mask-image:linear-gradient(to_bottom,transparent_42%,black_56%,black_62%,transparent_80%)]" />
+        <span className="absolute inset-0 backdrop-blur-[2px] [mask-image:linear-gradient(to_bottom,transparent_60%,black_72%,black_78%,transparent_94%)]" />
+        <span className="absolute inset-0 backdrop-blur-[1px] [mask-image:linear-gradient(to_bottom,transparent_78%,black_88%,transparent_100%)]" />
       </div>
       <div
         className="marketing-nav-inner mx-auto flex h-20 max-w-[1440px] items-center gap-3 px-4 sm:gap-5 sm:px-7"
@@ -244,10 +248,13 @@ export const Navbar = () => {
                     }}
                   >
                     {group.label}
-                    <ChevronDownIcon className="size-4" />
+                    <ChevronDownIcon
+                      aria-hidden
+                      className="size-4 scale-75 opacity-70"
+                    />
                   </NavigationMenuTrigger>
                   <NavigationMenuContent
-                    className="marketing-mega-content max-h-[calc(100dvh-81px)] w-screen xs:w-screen min-w-0 xs:min-w-0 overflow-y-auto px-0 py-2"
+                    className="marketing-mega-content max-h-[calc(100dvh-80px)] w-screen xs:w-screen min-w-0 xs:min-w-0 overflow-y-auto px-0 py-2"
                     data-menu={group.id}
                     ref={(content) => {
                       if (!content || pendingFocus.current !== group.id) return;
@@ -357,26 +364,23 @@ export const Navbar = () => {
           <div className="marketing-desktop-locale hidden min-[1151px]:block">
             <LanguageSwitcher />
           </div>
-          <Link
-            className="marketing-nav-login hidden whitespace-nowrap text-sm min-[1151px]:block"
-            href="/sign-in"
-          >
-            {chrome.action.tertiary}
-          </Link>
-          <div className="marketing-actions m-0!">
+          <div className="marketing-nav-login hidden min-[1151px]:block">
             <Button
-              className="min-h-10 rounded-md bg-primary-text px-2.5 py-2 text-background-rich text-xs sm:px-3.5 sm:py-2.5 sm:text-sm"
-              variant="flat"
-              render={<Link href="/demo" />}
+              variant="outline"
+              color="emphasis"
+              render={<Link href="/sign-in" />}
             >
-              {chrome.action.primary}
+              {chrome.action.tertiary}
             </Button>
           </div>
+          <Button render={<Link href="/demo" />}>
+            {chrome.action.primary}
+          </Button>
         </div>
         <div className="marketing-mobile-nav block min-[1151px]:hidden">
           <Sheet open={mobile} onOpenChange={setMobile}>
             <SheetTrigger
-              render={<Button variant="ghost" size="icon" />}
+              render={<Button variant="ghost" color="emphasis" size="icon" />}
               aria-label={chrome.menu.open}
             >
               <MenuIcon className="size-4" />
@@ -446,18 +450,17 @@ export const Navbar = () => {
               >
                 {navigation.pricing}
               </SheetClose>
-              <SheetClose
-                nativeButton={false}
-                role="link"
-                render={<Link href="/sign-in" />}
-                className="marketing-mobile-link flex items-center justify-between py-2.5 text-base text-foreground-rich"
-              >
-                {chrome.action.tertiary}
-              </SheetClose>
-              <div className="marketing-actions m-0!">
+              <div className="flex flex-wrap items-center gap-4">
                 <Button
-                  className="min-h-[46px] rounded-md bg-primary-text px-[18px] py-2.5 text-[15px] text-background-rich"
-                  variant="flat"
+                  variant="outline"
+                  color="emphasis"
+                  render={
+                    <Link href="/sign-in" onClick={() => setMobile(false)} />
+                  }
+                >
+                  {chrome.action.tertiary}
+                </Button>
+                <Button
                   render={
                     <Link href="/sign-up" onClick={() => setMobile(false)} />
                   }

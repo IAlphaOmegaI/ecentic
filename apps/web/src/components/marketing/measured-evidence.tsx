@@ -1,3 +1,4 @@
+import { Button } from "@zenncore/web/components/button";
 import { getFormatter, getMessages, getTranslations } from "next-intl/server";
 import {
   catalogFindings,
@@ -7,6 +8,7 @@ import {
   simulationEvidence,
 } from "@/content/marketing-evidence";
 import { Link } from "@/i18n/navigation";
+import { EvidenceArtwork } from "./animated-ascii";
 import { EvidenceFrame } from "./evidence";
 import { canPublishEvidence, selectPublishedEvidence } from "./evidence-policy";
 import { EvidenceDatum, EvidenceMeter } from "./evidence-view";
@@ -14,7 +16,7 @@ import { EvidenceDatum, EvidenceMeter } from "./evidence-view";
 export const SimulationEvidence = async ({
   id = "assistant-disagreement",
 }: SimulationEvidence.Props) => {
-  const review = process.env["NEXT_PUBLIC_REVIEW"] === "1";
+  const review = process.env.NEXT_PUBLIC_REVIEW === "1";
   if (!canPublishEvidence(simulationEvidence.status, review)) return null;
 
   const [{ enterpriseEvidence: copy }, format, translate] = await Promise.all([
@@ -66,7 +68,11 @@ export const SimulationEvidence = async ({
       ]}
       rows={rows.map((row) => [row.label, row.value, row.count, row.total])}
     >
-      <div className="divide-y-2 divide-background">
+      <EvidenceArtwork
+        kind="commerce"
+        className="pointer-events-none mb-6 flex justify-center text-primary-text"
+      />
+      <div className="divide-y divide-accent-foreground">
         {rows.map((row) => (
           <EvidenceMeter
             key={row.id}
@@ -94,7 +100,7 @@ export namespace SimulationEvidence {
 export const CatalogFindings = async ({
   id = "catalog-findings",
 }: CatalogFindings.Props) => {
-  const review = process.env["NEXT_PUBLIC_REVIEW"] === "1";
+  const review = process.env.NEXT_PUBLIC_REVIEW === "1";
   const findings = selectPublishedEvidence(catalogFindings, review);
   if (findings.length === 0) return null;
 
@@ -163,7 +169,11 @@ export const CatalogFindings = async ({
         row.total,
       ])}
     >
-      <div className="divide-y-2 divide-background">
+      <EvidenceArtwork
+        kind="catalog"
+        className="pointer-events-none mb-6 flex justify-center text-primary-text"
+      />
+      <div className="divide-y divide-accent-foreground">
         {rows.map((row) => (
           <EvidenceMeter
             key={row.id}
@@ -221,6 +231,10 @@ export const DuaEvidence = async ({
       ]}
       rows={[[copy.dua.metric, figure, copy.dua.period, copy.dua.permission]]}
     >
+      <EvidenceArtwork
+        kind="commerce"
+        className="pointer-events-none absolute top-16 right-4 hidden text-primary/40 md:block"
+      />
       <EvidenceDatum
         detail={`${figure}. ${copy.dua.caption} ${copy.dua.note}`}
         source={`${source} ${copy.dua.confirmed}`}
@@ -235,12 +249,11 @@ export const DuaEvidence = async ({
           {copy.dua.period}
         </span>
       </EvidenceDatum>
-      <Link
-        href={duaEvidence.href}
-        className="mt-4 inline-block text-sm underline decoration-accent-foreground underline-offset-4 hover:text-primary-text"
-      >
-        {copy.dua.action.primary}
-      </Link>
+      <div className="mt-6">
+        <Button render={<Link href={duaEvidence.href} />}>
+          {copy.dua.action.primary}
+        </Button>
+      </div>
     </EvidenceFrame>
   );
 };
@@ -252,15 +265,27 @@ export namespace DuaEvidence {
 export const MarketEvidence = async ({
   id = "market-context-review",
 }: MarketEvidence.Props) => {
-  if (process.env["NEXT_PUBLIC_REVIEW"] !== "1") return null;
+  if (process.env.NEXT_PUBLIC_REVIEW !== "1") return null;
 
   const { enterpriseEvidence: copy } = await getMessages();
 
   return (
-    <section id={id} aria-labelledby={`${id}-title`} className="bg-background">
-      <h3 id={`${id}-title`}>{copy.market.title}</h3>
-      <p className="mt-3 max-w-[68ch]">{copy.market.description}</p>
-      <div className="mt-6 grid gap-6 md:grid-cols-3">
+    <section
+      id={id}
+      aria-labelledby={`${id}-title`}
+      className="relative mt-8 border-accent-foreground border-t bg-background-dimmed px-7 py-8 max-sm:px-4"
+    >
+      <EvidenceArtwork
+        kind="market"
+        className="pointer-events-none absolute top-4 right-0 hidden text-primary/30 lg:block"
+      />
+      <h3 id={`${id}-title`} className="relative">
+        {copy.market.title}
+      </h3>
+      <p className="relative mt-4 max-w-[60ch] text-foreground">
+        {copy.market.description}
+      </p>
+      <div className="relative mt-6 grid gap-6 md:grid-cols-3">
         {marketContext.map((item) => (
           <figure
             key={item.id}
@@ -269,10 +294,10 @@ export const MarketEvidence = async ({
             <p className="font-medium text-foreground-rich">
               {copy.market.rows[item.id]}
             </p>
-            <p className="mt-3 text-foreground-dimmed">
+            <p className="mt-3 text-foreground">
               {copy.presentation.dataPending}
             </p>
-            <figcaption className="mt-4 text-foreground-dimmed text-sm">
+            <figcaption className="mt-4 text-foreground text-sm">
               {copy.presentation.source}: {copy.sources[item.sourceKey]}
             </figcaption>
           </figure>

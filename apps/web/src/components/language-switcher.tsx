@@ -1,5 +1,6 @@
 "use client";
 
+import { ChevronDownIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import {
   Select,
@@ -103,10 +104,10 @@ export const LanguageSwitcher = ({
     <Select value={locale} onValueChange={switchLocale}>
       <SelectTrigger
         aria-label={translate("language.label")}
-        // Flag-only chrome so it sits on the menu SVG without a boxed select.
+        // Keep the transparent navbar chrome, with visible language and menu cues.
         classList={{ icon: { root: "hidden" } }}
         className={cn(
-          "h-9 min-w-0 gap-0 border-0 bg-transparent px-1.5 shadow-none",
+          "h-10 min-w-0 gap-2 border-0 bg-transparent px-2 shadow-none",
           "hover:bg-transparent focus-visible:border-0 active:bg-transparent",
           "data-popup-open:border-0 data-popup-open:bg-transparent",
           className,
@@ -115,10 +116,12 @@ export const LanguageSwitcher = ({
         <FlagImage
           src={active.flagSrc}
           alt={translate(active.labelKey)}
-          className="size-5 shrink-0"
+          className="size-4 shrink-0"
         />
-        {/* Keep a Value node for a11y/selection, but never paint locale codes. */}
-        <SelectValue className="sr-only">{() => null}</SelectValue>
+        <SelectValue className="font-medium text-sm">
+          {() => active.locale.toUpperCase()}
+        </SelectValue>
+        <ChevronDownIcon aria-hidden className="size-4 scale-75 opacity-70" />
       </SelectTrigger>
       <SelectPositioner align="end" side="bottom">
         <SelectPopup>

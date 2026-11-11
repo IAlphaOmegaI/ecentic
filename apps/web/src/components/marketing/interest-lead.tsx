@@ -1,6 +1,7 @@
 "use client";
 
 import { cn } from "@zenncore/utils";
+import { Button } from "@zenncore/web/components/button";
 import {
   Dialog,
   DialogClose,
@@ -35,9 +36,9 @@ export const InterestLead = ({
         if (open) setHasOpened(true);
       }}
     >
-      <DialogTrigger className="h-auto min-h-11 whitespace-normal rounded-xs py-2 text-left text-primary">
+      <Button render={<DialogTrigger />}>
         {triggerLabel ?? content.title}
-      </DialogTrigger>
+      </Button>
       <DialogPopup
         keepMounted={hasOpened}
         initialFocus={heading}

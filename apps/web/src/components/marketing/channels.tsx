@@ -1,3 +1,4 @@
+import { ScrollArea } from "@zenncore/web/components/scroll-area";
 import {
   Table,
   TableBody,
@@ -14,8 +15,7 @@ import {
 } from "@/content/marketing-evidence";
 import { Link } from "@/i18n/navigation";
 import { ChannelTimeline } from "./channel-timeline";
-import { EvidenceFrame } from "./evidence";
-import { MarketingStatus } from "./primitives";
+import { MarketingHeading, MarketingStatus } from "./primitives";
 import { ProviderLogo } from "./provider-logo";
 
 export const CommerceTimeline = async () => {
@@ -25,8 +25,6 @@ export const CommerceTimeline = async () => {
     getTranslations("enterpriseEvidence.timeline"),
   ]);
   const copy = messages.enterpriseEvidence.timeline;
-  // biome-ignore lint/complexity/useLiteralKeys: Environment keys have an index signature.
-  const review = process.env["NEXT_PUBLIC_REVIEW"] === "1";
   const checked = commerceTimeline.reduce<string>(
     (earliest, event) =>
       event.checkedAt < earliest ? event.checkedAt : earliest,
@@ -37,26 +35,16 @@ export const CommerceTimeline = async () => {
     timeZone: "UTC",
   });
   return (
-    <EvidenceFrame
-      id="commerce-timeline"
-      title={copy.title}
-      pending={review ? copy.pending : undefined}
-      description={translate("caption", {
-        date: date.format(new Date(`${checked}T12:00:00Z`)),
-      })}
-      columns={Object.values(copy.headers)}
-      rows={commerceTimeline.map((event) => [
-        date.format(new Date(`${event.date}T12:00:00Z`)),
-        copy.events[event.id].title,
-        copy.events[event.id].detail,
-        event.source.url,
-      ])}
-    >
+    <section id="commerce-timeline">
+      <MarketingHeading
+        className="p-0 max-sm:p-0"
+        title={copy.title}
+        description={translate("caption", {
+          date: date.format(new Date(`${checked}T12:00:00Z`)),
+        })}
+      />
       <ChannelTimeline events={copy.events} locale={locale} />
-      <p className="mt-6 max-w-[760px] text-base leading-relaxed">
-        {copy.takeaway}
-      </p>
-    </EvidenceFrame>
+    </section>
   );
 };
 
@@ -73,14 +61,17 @@ export const ChannelComparison = async () => {
     timeZone: "UTC",
   }).format(new Date(`${comparisonCheckedAt}T12:00:00Z`));
   return (
-    <section aria-labelledby="channel-comparison-title">
-      <h3 id="channel-comparison-title" className="font-heading text-3xl">
-        {copy.title}
-      </h3>
-      <p className="mt-4 max-w-[760px] text-base leading-relaxed">
-        {copy.description}
-      </p>
-      <div className="mt-8 overflow-x-auto">
+    <section id="channel-comparison">
+      <MarketingHeading
+        title={copy.title}
+        description={copy.description}
+        className="p-0 max-sm:p-0"
+      />
+      <ScrollArea
+        className="mt-8 min-w-0 max-w-full"
+        role="region"
+        aria-label={copy.title}
+      >
         <Table className="w-full min-w-[880px] table-fixed bg-background text-left text-sm">
           <TableHeader>
             <TableRow className="border-accent-foreground">
@@ -112,18 +103,18 @@ export const ChannelComparison = async () => {
                     <ProviderLogo
                       provider={channel.key}
                       decorative
-                      className="size-6"
+                      className="size-8"
                     />
                     {channels.names[channel.key]}
                   </Link>
                 </TableCell>
-                <TableCell className="whitespace-normal px-4 py-6 align-top font-normal leading-relaxed">
+                <TableCell className="whitespace-normal px-4 py-6 align-top font-normal text-foreground-dimmed leading-relaxed">
                   {copy.rows[channel.key].reads}
                 </TableCell>
-                <TableCell className="whitespace-normal px-4 py-6 align-top font-normal leading-relaxed">
+                <TableCell className="whitespace-normal px-4 py-6 align-top font-normal text-foreground-dimmed leading-relaxed">
                   {copy.rows[channel.key].buying}
                 </TableCell>
-                <TableCell className="whitespace-normal px-4 py-6 align-top font-normal leading-relaxed">
+                <TableCell className="whitespace-normal px-4 py-6 align-top font-normal text-foreground-dimmed leading-relaxed">
                   {copy.rows[channel.key].where}
                 </TableCell>
                 <TableCell className="whitespace-normal px-4 py-6 align-top font-normal">
@@ -135,7 +126,7 @@ export const ChannelComparison = async () => {
             ))}
           </TableBody>
         </Table>
-      </div>
+      </ScrollArea>
       <p className="mt-5 text-foreground-dimmed text-sm">
         {translate("caption", { date: checked })}
       </p>

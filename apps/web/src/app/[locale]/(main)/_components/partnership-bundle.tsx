@@ -61,7 +61,7 @@ export const PartnershipBundle = async ({
               <h2 className="font-medium text-3xl text-foreground md:text-4xl">
                 {translate("partnershipBundle.title")}
               </h2>
-              <p className="mt-3 font-body text-foreground text-lg">
+              <p className="mt-4 font-body text-foreground text-lg">
                 {translate("partnershipBundle.subtitle")}
               </p>
             </div>
@@ -78,7 +78,7 @@ export const PartnershipBundle = async ({
                 className="flex items-center justify-between gap-4 py-4"
               >
                 <div className="flex items-center gap-3">
-                  <CheckIcon className="size-5 shrink-0 text-primary-text" />
+                  <CheckIcon className="size-4 shrink-0 text-primary-text" />
                   <div>
                     <p className="font-medium text-foreground">{item.name}</p>
                     <p className="text-foreground text-sm">
@@ -146,9 +146,9 @@ export const PartnershipBundle = async ({
             </div>
 
             <Button
-              variant="flat"
+              variant="default"
               color="primary"
-              className="min-h-11 w-full rounded-md"
+              className="w-full"
               render={
                 <Link href={href} target="_blank" rel="noopener noreferrer" />
               }
@@ -159,7 +159,7 @@ export const PartnershipBundle = async ({
                 aria-hidden
                 width={24}
                 height={24}
-                className="size-5"
+                className="size-4"
               />
               {translate("partnershipBundle.action.primary")}
               <ArrowRightIcon className="size-4" />

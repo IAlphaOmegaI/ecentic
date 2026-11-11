@@ -111,8 +111,9 @@ tr {
   & .marketing-rail {
     --rail-top-cross: var(--rail-cross);
   }
-  /* The in-flow navigation already draws the first ordinary hero's top seam. */
-  & > .marketing-nav + main > .marketing-hero:first-of-type > .marketing-rail {
+  /* Section shells own the full-width seam; interior rails only draw verticals. */
+  & .marketing-band + .marketing-band,
+  &.marketing-site > main + .marketing-footer > .marketing-band:first-child {
     border-top: 0;
   }
   & .marketing-band + .marketing-band > .marketing-rail,
@@ -173,8 +174,60 @@ tr {
     }
   }
   & .enterprise-journey + .marketing-band > .marketing-rail {
-    border-top: 1px solid var(--rail-color);
     --rail-top-cross: var(--rail-cross);
+  }
+  & .enterprise-journey {
+    border-top: 0;
+    border-bottom: 0;
+  }
+  &
+    > .marketing-nav[data-menu-open="true"]
+    + main
+    > .enterprise-journey:first-of-type {
+    margin-top: calc(var(--spacing) * 3);
+  }
+  & .enterprise-journey + .marketing-band {
+    border-top: 1px solid var(--rail-color);
+  }
+  /* Extend major row seams only through the outside gutters. Interior rules
+     retain one owner, so the centered stroke never gets painted twice. */
+  & .marketing-section-grid,
+  & .enterprise-stage-list {
+    position: relative;
+  }
+  & .marketing-section-grid::before,
+  & .marketing-section-grid::after,
+  & .enterprise-stage-list::before,
+  & .enterprise-stage-list::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    z-index: 1;
+    width: max(0px, calc((100dvw - 100%) / 2));
+    height: 1px;
+    background: var(--rail-color);
+  }
+  & .marketing-section-grid::before,
+  & .marketing-section-grid::after {
+    top: 0;
+  }
+  & .marketing-section-grid.border-t::before,
+  & .marketing-section-grid.border-t::after {
+    top: -1px;
+  }
+  & .enterprise-stage-list::before,
+  & .enterprise-stage-list::after {
+    bottom: -1px;
+  }
+  & .marketing-section-grid::before,
+  & .enterprise-stage-list::before {
+    left: 0;
+    transform: translateX(-100%);
+  }
+  & .marketing-section-grid::after,
+  & .enterprise-stage-list::after {
+    right: 0;
+    transform: translateX(100%);
   }
   & .enterprise-journey .marketing-rail::before,
   & .enterprise-journey .marketing-rail::after {
@@ -1311,6 +1364,13 @@ tr {
   & :where(.marketing-footer-columns > nav:first-child) {
     --junction-top-left: transparent;
     --junction-bottom-left: transparent;
+  }
+  & .marketing-footer-columns > nav:nth-child(-n + 3),
+  & .marketing-footer-columns > nav:nth-child(5) {
+    --junction-bottom-left: transparent;
+  }
+  & .marketing-footer-columns > nav:last-child {
+    --junction-top-right: var(--rail-cross);
   }
   & main > .bg-grid-stripes {
     width: min(1186px, calc(100% - 56px));

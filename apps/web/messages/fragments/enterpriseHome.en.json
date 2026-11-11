@@ -70,7 +70,7 @@
             "You cannot see which products assistants skip."
           ],
           "href": "/solutions/brands",
-          "label": "See how it works for you"
+          "label": "Explore brands"
         },
         {
           "id": "retailers-and-marketplaces",
@@ -83,7 +83,7 @@
             "There is no way to check every product by hand."
           ],
           "href": "/solutions/retailers-and-marketplaces",
-          "label": "See how it works for you"
+          "label": "Explore retailers"
         },
         {
           "id": "enterprise",
@@ -96,7 +96,7 @@
             "Nobody owns AI as a sales channel."
           ],
           "href": "/solutions/enterprise",
-          "label": "See how it works for you"
+          "label": "Explore enterprise"
         },
         {
           "id": "agencies-and-partners",
@@ -109,7 +109,7 @@
             "You need a clear service for this new channel."
           ],
           "href": "/solutions/agencies-and-partners",
-          "label": "See how it works for you"
+          "label": "Explore agencies"
         }
       ]
     },
@@ -225,7 +225,7 @@
         }
       ],
       "link": {
-        "label": "See every AI channel",
+        "label": "See all",
         "href": "/ai-channels"
       }
     },

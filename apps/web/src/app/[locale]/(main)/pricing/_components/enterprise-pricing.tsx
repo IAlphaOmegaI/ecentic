@@ -1,3 +1,10 @@
+import {
+  CheckIcon,
+  CommerceBasketShoppingIcon,
+  CommerceChartActivity_2Icon,
+  CommerceFileShieldIcon,
+  CommercePlug_3SparkleIcon,
+} from "@zenncore/icons";
 import { ScrollArea } from "@zenncore/web/components/scroll-area";
 import {
   Table,
@@ -13,6 +20,12 @@ import { MarketingActions } from "@/components/marketing/primitives";
 import { PricingCTA } from "./pricing-cta";
 
 const planKeys = ["payg", "compete", "scale", "dominate"] as const;
+const planIcons = [
+  CommerceBasketShoppingIcon,
+  CommerceChartActivity_2Icon,
+  CommercePlug_3SparkleIcon,
+  CommerceFileShieldIcon,
+] as const;
 
 export const FreeStoreCheck = async () => {
   const { enterprisePricing, pricing } = await getMessages();
@@ -62,6 +75,7 @@ export const EnterprisePlanLedger = async () => {
       >
         {planKeys.map((key, index) => {
           const source = pricing.plans[key];
+          const Icon = planIcons[index];
           const copy = enterprisePricing.plans[key];
           const features = source.features.flatMap((feature, featureIndex) => {
             if (
@@ -80,24 +94,26 @@ export const EnterprisePlanLedger = async () => {
           return (
             <article
               key={key}
-              className="grid min-w-0 gap-6 border-accent-foreground border-t px-7 py-8 max-sm:px-4 sm:row-span-7 sm:grid-rows-subgrid sm:border-r sm:even:border-r-0"
+              className="grid min-w-0 gap-4 border-accent-foreground border-t px-7 py-8 max-sm:px-4 sm:row-span-7 sm:grid-rows-subgrid sm:border-r sm:even:border-r-0"
             >
-              <p className="text-primary-text text-sm">0{index + 1}</p>
+              {Icon && (
+                <Icon aria-hidden className="size-8 text-primary-text" />
+              )}
               <h3 className="text-[clamp(20px,2vw,26px)] tracking-[-0.035em]">
                 {source.name}
               </h3>
-              <p className="text-base leading-normal">
+              <p className="text-base text-foreground-dimmed leading-relaxed">
                 {"tagline" in copy ? copy.tagline : source.tagline}
               </p>
               <div className="flex min-h-[90px] flex-col gap-2">
                 <strong className="font-medium text-[clamp(28px,3vw,40px)] text-foreground-rich leading-[1.1] tracking-[-0.05em]">
                   {source.figure}
                 </strong>
-                <span className="text-[13px] leading-[1.6]">
+                <span className="text-foreground-dimmed text-sm leading-relaxed">
                   {source.suffix}
                 </span>
               </div>
-              <p className="text-[13px] leading-[1.6]">
+              <p className="text-foreground-dimmed text-sm leading-relaxed">
                 {"note" in copy ? copy.note : source.note}
               </p>
               <ul className="m-0 flex list-none flex-col gap-4 p-0 text-sm">
@@ -113,7 +129,7 @@ export const EnterprisePlanLedger = async () => {
               <PricingCTA
                 plan={key}
                 color="primary"
-                className="min-h-[46px] w-full self-end whitespace-normal p-2.5 text-center text-[13px]"
+                className="w-full self-end whitespace-normal"
               >
                 {copy.action.primary}
               </PricingCTA>
@@ -126,22 +142,29 @@ export const EnterprisePlanLedger = async () => {
         className="marketing-grid grid grid-cols-2 border-accent-foreground border-b bg-background max-sm:grid-cols-1"
       >
         <div className="flex min-w-0 flex-col gap-6 border-accent-foreground border-t px-7 py-8 max-sm:px-4 sm:border-r">
-          <p className="text-primary-text text-sm">05</p>
+          <CommerceFileShieldIcon
+            aria-hidden
+            className="size-8 text-primary-text"
+          />
           <h3 className="text-[clamp(20px,2vw,26px)] tracking-[-0.035em]">
             {enterprise.name}
           </h3>
-          <p className="text-base leading-normal">{enterprise.tagline}</p>
+          <p className="text-base text-foreground-dimmed leading-relaxed">
+            {enterprise.tagline}
+          </p>
           <strong className="font-medium text-[clamp(28px,3vw,40px)] text-foreground-rich leading-[1.1] tracking-[-0.05em]">
             {enterprise.figure}
           </strong>
-          <div className="mt-auto w-full [&>.marketing-actions]:mt-0 [&_.marketing-actions_a]:min-h-[46px] [&_.marketing-actions_a]:w-full [&_.marketing-actions_a]:whitespace-normal [&_.marketing-actions_a]:p-2.5 [&_.marketing-actions_a]:text-center [&_.marketing-actions_a]:text-[13px]">
+          <div className="mt-auto w-full [&>.marketing-actions]:mt-0 [&_.marketing-actions_a]:w-full [&_.marketing-actions_a]:whitespace-normal">
             <MarketingActions
               actions={[{ label: enterprise.action.primary, href: "/demo" }]}
             />
           </div>
         </div>
         <div className="flex min-w-0 flex-col justify-center gap-6 border-accent-foreground border-t px-7 py-8 max-sm:px-4">
-          <p className="text-[13px] leading-[1.6]">{enterprise.note}</p>
+          <p className="text-foreground-dimmed text-sm leading-relaxed">
+            {enterprise.note}
+          </p>
           <ul className="m-0 flex list-none flex-col gap-4 p-0 text-sm">
             {enterprise.features.map((feature) => (
               <li
@@ -227,21 +250,32 @@ export const EnterprisePlanComparison = async () => {
   const { enterprisePricing, pricing } = await getMessages();
   const comparison = enterprisePricing.comparison;
   const keys = ["scan", ...planKeys] as const;
-  const display = (value: string | boolean) =>
-    typeof value === "boolean"
-      ? value
-        ? comparison.yes
-        : comparison.no
-      : value;
+  const display = (value: string | boolean) => {
+    if (typeof value !== "boolean") return value;
+    return (
+      <span className="inline-flex items-center">
+        {value ? (
+          <CheckIcon aria-hidden className="size-4 text-success" />
+        ) : (
+          <span aria-hidden className="text-foreground-dimmed">
+            —
+          </span>
+        )}
+        <span className="sr-only">
+          {value ? comparison.yes : comparison.no}
+        </span>
+      </span>
+    );
+  };
   return (
     <>
       <ScrollArea
         className="overflow-x-auto border-accent-foreground border-t"
         aria-label={comparison.title}
       >
-        <Table className="m-0 min-w-[1060px] border-b-0 [&_td:last-child]:bg-background [&_td]:px-4 [&_td]:py-6 [&_td]:align-top [&_td]:text-sm [&_th:first-child]:w-[190px] [&_th:last-child]:bg-background [&_th]:whitespace-normal [&_th]:px-4 [&_th]:py-6 [&_th]:font-medium [&_th]:text-foreground-rich [&_th]:text-sm [&_th]:normal-case [&_th]:leading-normal [&_th]:tracking-normal">
+        <Table className="m-0 min-w-[1060px] border-b-0 [&_td:last-child]:bg-background [&_td]:px-4 [&_td]:py-4 [&_td]:align-top [&_td]:text-foreground-dimmed [&_td]:text-sm [&_th:first-child]:w-[190px] [&_th:last-child]:bg-background [&_th]:whitespace-normal [&_th]:px-4 [&_th]:py-4 [&_th]:font-medium [&_th]:text-foreground-rich [&_th]:text-sm [&_th]:normal-case [&_th]:leading-normal [&_th]:tracking-normal">
           <TableCaption className="sr-only">{comparison.title}</TableCaption>
-          <TableHeader>
+          <TableHeader className="bg-background-dimmed">
             <TableRow>
               <TableHead scope="col">{comparison.feature}</TableHead>
               {keys.map((key) => (

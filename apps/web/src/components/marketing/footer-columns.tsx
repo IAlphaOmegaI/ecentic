@@ -7,27 +7,31 @@ import {
 } from "@zenncore/web/components/accordion";
 import { Link } from "@/i18n/navigation";
 
-export const FooterColumns = ({
-  columns,
-}: {
-  columns: readonly {
-    title: string;
-    links: readonly { href: string; label: string }[];
-  }[];
-}) => (
-  <div className="marketing-footer-mobile block px-4 py-6 min-[801px]:hidden">
+export const FooterColumns = ({ columns }: FooterColumns.Props) => (
+  <div className="marketing-footer-mobile block min-[801px]:hidden">
     <Accordion multiple>
       {columns.map((column) => (
-        <AccordionItem value={column.title} key={column.title}>
-          <AccordionTrigger className="font-body">
+        <AccordionItem
+          value={column.title}
+          key={column.title}
+          className="border-accent-foreground last:border-b-0"
+        >
+          <AccordionTrigger
+            classList={{
+              trigger: {
+                root: "px-4 py-5 font-body text-foreground-rich hover:text-primary-text",
+                icon: "mr-0 size-4 text-primary-text group-data-panel-open:rotate-180",
+              },
+            }}
+          >
             {column.title}
           </AccordionTrigger>
           <AccordionPanel>
-            <ul>
+            <ul className="px-4 pb-6">
               {column.links.map((link) => (
                 <li key={link.href}>
                   <Link
-                    className="marketing-mobile-link flex items-center justify-between py-2.5 text-base text-foreground-rich"
+                    className="marketing-mobile-link flex py-3 text-base text-foreground-dimmed transition-colors hover:text-primary-text"
                     href={link.href}
                   >
                     {link.label}
@@ -41,3 +45,12 @@ export const FooterColumns = ({
     </Accordion>
   </div>
 );
+
+export namespace FooterColumns {
+  export type Props = {
+    columns: readonly {
+      title: string;
+      links: readonly { href: string; label: string }[];
+    }[];
+  };
+}

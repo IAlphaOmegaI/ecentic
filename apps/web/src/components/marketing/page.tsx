@@ -10,6 +10,7 @@ import { Navbar } from "@/components/navbar";
 import { localizePath } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
 import { absoluteUrl, createMetadata } from "@/lib/seo";
+import { MarketingQuestions } from "./faq";
 import {
   MarketingActions,
   MarketingBand,
@@ -35,7 +36,7 @@ export const MarketingShell = async ({ children }: MarketingShell.Props) => {
   return (
     <div
       className={cn(
-        "marketing-grid-pattern marketing-site text-(length:--text-base) bg-background font-body text-foreground leading-[1.6] [--rail-color:var(--color-accent-foreground)] [--rail-cross:var(--color-cross)] [color-scheme:light] [font-synthesis:none] motion-reduce:[&_*]:animate-none motion-reduce:[&_*]:scroll-auto motion-reduce:[&_*]:transition-none [&_:where(a,button).bg-primary]:rounded-md [&_:where(a,button).bg-primary]:bg-primary-text [&_:where(a,button).from-primary-rich]:rounded-md [&_:where(a,button,input,select,textarea):focus-visible]:outline-2 [&_:where(a,button,input,select,textarea):focus-visible]:outline-primary-text [&_:where(a,button,input,select,textarea):focus-visible]:outline-offset-4 [&_:where(button,[role=button])]:duration-160 [&_:where(button,[role=button])]:ease-[cubic-bezier(0.23,1,0.32,1)] [&_:where(div:has(>input),div:has(>textarea))]:rounded-xs [&_:where(input,textarea,select,[role=combobox])]:rounded-xs [&_p]:text-pretty [:where(&)_:where(h1)]:max-w-[1040px] [:where(&)_:where(h1)]:text-[clamp(2.75rem,5.5vw,5rem)] [:where(&)_:where(h1,h2,h3,h4)]:text-balance [:where(&)_:where(h1,h2,h3,h4)]:font-heading [:where(&)_:where(h1,h2,h3,h4)]:font-medium [:where(&)_:where(h1,h2,h3,h4)]:text-foreground-rich [:where(&)_:where(h1,h2,h3,h4)]:leading-[1.08] [:where(&)_:where(h1,h2,h3,h4)]:tracking-[-0.035em] [:where(&)_:where(h2)]:max-w-[900px] [:where(&)_:where(h2)]:text-[clamp(2rem,3.6vw,3.5rem)] [:where(&)_:where(h3)]:text-[clamp(1.4rem,2vw,1.85rem)]",
+        "marketing-grid-pattern marketing-site text-(length:--text-base) bg-background font-body text-foreground leading-[1.6] [--rail-color:var(--color-accent-foreground)] [--rail-cross:var(--color-cross)] [color-scheme:light] [font-synthesis:none] motion-reduce:[&_*]:animate-none motion-reduce:[&_*]:scroll-auto motion-reduce:[&_*]:transition-none [&_:where(a,button,input,select,textarea):focus-visible]:outline-2 [&_:where(a,button,input,select,textarea):focus-visible]:outline-primary-text [&_:where(a,button,input,select,textarea):focus-visible]:outline-offset-4 [&_:where(button,[role=button])]:duration-160 [&_:where(button,[role=button])]:ease-[cubic-bezier(0.23,1,0.32,1)] [&_:where(div:has(>input),div:has(>textarea))]:rounded-xs [&_:where(input,textarea,select,[role=combobox])]:rounded-xs [&_p]:text-pretty [:where(&)_:where(h1)]:max-w-[1040px] [:where(&)_:where(h1)]:text-[clamp(2.75rem,5.5vw,5rem)] [:where(&)_:where(h1,h2,h3,h4)]:text-balance [:where(&)_:where(h1,h2,h3,h4)]:font-heading [:where(&)_:where(h1,h2,h3,h4)]:font-medium [:where(&)_:where(h1,h2,h3,h4)]:text-foreground-rich [:where(&)_:where(h1,h2,h3,h4)]:leading-[1.08] [:where(&)_:where(h1,h2,h3,h4)]:tracking-[-0.035em] [:where(&)_:where(h2)]:max-w-[900px] [:where(&)_:where(h2)]:text-[clamp(2rem,3.6vw,3.5rem)] [:where(&)_:where(h3)]:text-[clamp(1.4rem,2vw,1.85rem)]",
         fonts,
       )}
     >
@@ -73,18 +74,11 @@ export const MarketingFaq = ({ title, items }: MarketingFaq.Props) => {
           },
         ]}
       />
-      <div className="marketing-faq grid grid-cols-[1fr_2fr] max-[801px]:grid-cols-1 [&>.marketing-cell]:border-[var(--rail-color)] [&>.marketing-cell]:border-r max-[801px]:[&>.marketing-cell]:border-r-0 max-[801px]:[&>.marketing-cell]:border-b [&_article:first-child]:pt-24 max-[801px]:[&_article:first-child]:pt-8 [&_article:last-child]:border-b-0 [&_article:last-child]:pb-24 max-sm:[&_article:last-child]:pb-14 [&_article]:border-[var(--rail-color)] [&_article]:border-b [&_article]:px-7 [&_article]:py-8 max-sm:[&_article]:px-4 max-sm:[&_article]:py-6 [&_h3]:text-[22px] [&_h3]:tracking-[-0.02em] [&_p]:mt-3">
-        <div className="marketing-cell relative min-w-0 px-7 py-24 max-sm:px-4 max-sm:pt-14 max-[801px]:pb-8 [&>p]:max-w-[70ch]">
+      <div className="marketing-faq grid grid-cols-[1fr_2fr] max-[801px]:grid-cols-1">
+        <div className="relative min-w-0 border-[var(--rail-color)] border-r px-7 py-16 max-sm:px-4 max-[801px]:border-r-0 max-[801px]:border-b max-[801px]:py-10">
           <h2>{title}</h2>
         </div>
-        <div>
-          {visibleItems.map((item) => (
-            <article key={item.question}>
-              <h3>{item.question}</h3>
-              <p>{item.answer}</p>
-            </article>
-          ))}
-        </div>
+        <MarketingQuestions items={visibleItems} />
       </div>
     </MarketingBand>
   );

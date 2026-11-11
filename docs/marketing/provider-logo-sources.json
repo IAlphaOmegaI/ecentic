@@ -200,5 +200,17 @@
     "note": "Official Akeneo APIs header wordmark, unchanged.",
     "width": 744.35,
     "height": 86.021
+  },
+  {
+    "key": "woocommerce",
+    "page": "https://woocommerce.com/brand/",
+    "url": "https://woocommerce.com/wp-content/uploads/2025/07/Woo_logo_color.svg",
+    "path": "apps/web/public/providers/woocommerce.svg",
+    "bytes": 1287,
+    "sha256": "255ce1923ee83470e9eb03fd9d6dac8f15a2acbbb97bc816f6b5e05331488dc1",
+    "checkedAt": "2026-11-10",
+    "width": 183.6,
+    "height": 47.5,
+    "note": "Official color wordmark for annotated comments20/44; trailing whitespace normalized only, geometry and colors unchanged."
   }
 ]

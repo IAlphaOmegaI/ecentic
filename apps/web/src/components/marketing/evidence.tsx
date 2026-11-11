@@ -20,16 +20,20 @@ export const EvidenceFrame = async ({
     <figure
       id={id}
       aria-labelledby={`${id}-title`}
-      className="min-w-0 bg-background"
+      className="relative min-w-0 bg-background p-7 max-sm:p-4"
     >
-      <header className="mb-5">
+      <header className="relative mb-6">
         <h3
           id={`${id}-title`}
           className="max-w-[28ch] font-heading text-[clamp(1.65rem,2.5vw,2.4rem)] leading-tight tracking-[-0.025em]"
         >
           {title}
         </h3>
-        {description && <p className="mt-3 max-w-[62ch]">{description}</p>}
+        {description && (
+          <p className="mt-4 max-w-[62ch] text-foreground-dimmed">
+            {description}
+          </p>
+        )}
       </header>
       <EvidenceView
         id={id}
@@ -46,7 +50,7 @@ export const EvidenceFrame = async ({
         </p>
       )}
       {(caption || source) && (
-        <figcaption className="mt-6 space-y-2 border-accent-foreground border-t pt-4 text-foreground-dimmed text-sm leading-relaxed">
+        <figcaption className="mt-6 space-y-2 text-foreground-dimmed text-xs leading-relaxed">
           {caption && <p>{caption}</p>}
           {source && (
             <p>
@@ -59,9 +63,7 @@ export const EvidenceFrame = async ({
         </figcaption>
       )}
       {pending && (
-        <p className="mt-4 border-accent-foreground border-l-2 pl-3 text-foreground-dimmed text-sm">
-          {pending}
-        </p>
+        <p className="mt-4 text-foreground-dimmed text-xs">{pending}</p>
       )}
     </figure>
   );

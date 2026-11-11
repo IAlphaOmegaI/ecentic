@@ -8821,7 +8821,7 @@
             "No sabes qué productos pasan por alto los asistentes."
           ],
           "href": "/solutions/brands",
-          "label": "Descubre cómo funciona para ti"
+          "label": "Para marcas"
         },
         {
           "id": "retailers-and-marketplaces",
@@ -8834,7 +8834,7 @@
             "No puedes revisar todos los productos a mano."
           ],
           "href": "/solutions/retailers-and-marketplaces",
-          "label": "Descubre cómo funciona para ti"
+          "label": "Para minoristas"
         },
         {
           "id": "enterprise",
@@ -8847,7 +8847,7 @@
             "Nadie se ocupa de la IA como canal de ventas."
           ],
           "href": "/solutions/enterprise",
-          "label": "Descubre cómo funciona para ti"
+          "label": "Para empresas"
         },
         {
           "id": "agencies-and-partners",
@@ -8860,7 +8860,7 @@
             "Necesitas un servicio concreto para este canal nuevo."
           ],
           "href": "/solutions/agencies-and-partners",
-          "label": "Descubre cómo funciona para ti"
+          "label": "Para agencias"
         }
       ]
     },
@@ -8996,7 +8996,7 @@
         }
       ],
       "link": {
-        "label": "Ver todos los canales de IA",
+        "label": "Ver todos",
         "href": "/ai-channels"
       }
     },
@@ -10075,6 +10075,9 @@
           }
         ]
       }
+    },
+    "action": {
+      "primary": "Avísame"
     }
   },
   "enterpriseLead": {

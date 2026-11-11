@@ -809,6 +809,9 @@
           }
         ]
       }
+    },
+    "action": {
+      "primary": "Notify me"
     }
   }
 }

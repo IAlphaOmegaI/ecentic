@@ -25,7 +25,7 @@ export const ProviderLogo = ({
       width={artwork.width}
       height={artwork.height}
       className={cn(
-        "h-10 w-auto max-w-full object-contain object-left",
+        "h-10 w-auto max-w-full rounded-md object-contain object-left",
         className,
       )}
       unoptimized

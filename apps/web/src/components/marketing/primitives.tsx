@@ -4,6 +4,7 @@ import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import type { HTMLAttributes, ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
+import { AnimatedAscii } from "./animated-ascii";
 import { AsciiClosingArtwork } from "./ascii-artwork";
 import { AsciiAtmosphere } from "./ascii-atmosphere";
 
@@ -12,8 +13,14 @@ export const MarketingBand = ({
   className,
   ...props
 }: MarketingBand.Props) => (
-  <section className={cn("marketing-band relative", className)} {...props}>
-    <div className="marketing-rail relative isolate mx-auto w-[min(1186px,calc(100%-56px))] border border-[var(--rail-color)] max-sm:w-[calc(100%-32px)] [.enterprise-journey>&]:w-auto [.enterprise-journey>&]:max-w-[1186px] max-sm:[.enterprise-journey>&]:mx-4 max-[1191px]:[.enterprise-journey>&]:mx-7">
+  <section
+    className={cn(
+      "marketing-band relative border-[var(--rail-color)] border-y",
+      className,
+    )}
+    {...props}
+  >
+    <div className="marketing-rail relative isolate mx-auto w-[min(1186px,calc(100%-56px))] border-[var(--rail-color)] border-x max-sm:w-[calc(100%-32px)] [.enterprise-journey>&]:w-auto [.enterprise-journey>&]:max-w-[1186px] max-sm:[.enterprise-journey>&]:mx-4 max-[1191px]:[.enterprise-journey>&]:mx-7">
       <div aria-hidden="true" className="marketing-guides">
         <span />
         <span />
@@ -25,25 +32,58 @@ export const MarketingBand = ({
 );
 
 export const MarketingEyebrow = ({ children }: MarketingEyebrow.Props) => (
-  <p className="marketing-eyebrow text-(length:--text-sm) mb-6 flex items-center gap-2.5 font-medium text-primary-text [&>span]:size-2 [&>span]:shrink-0 [&>span]:rounded-full [&>span]:bg-current">
+  <p className="marketing-eyebrow mb-4 flex items-center gap-2 font-medium text-primary-text text-sm [&>span]:size-2 [&>span]:shrink-0 [&>span]:rounded-full [&>span]:bg-current">
     <span aria-hidden="true" />
     {children}
   </p>
 );
 
-export const MarketingActions = ({ actions }: MarketingActions.Props) => (
-  <div className="marketing-actions mt-8 flex flex-wrap gap-3 max-sm:gap-2.5 [&>a+a]:border-accent-foreground [&>a+a]:bg-transparent [&>a+a]:text-primary-text [&>a:first-child]:rounded-md [&>a:first-child]:bg-primary-text [&>a:first-child]:text-background-rich [&>a]:min-h-[46px] [&>a]:rounded-xs [&>a]:px-[18px] [&>a]:py-2.5 [&>a]:text-[15px] max-sm:[&>a]:whitespace-normal max-sm:[&>a]:text-left">
+export const MarketingActions = ({
+  actions,
+  tone = "default",
+  className,
+}: MarketingActions.Props) => (
+  <div
+    className={cn(
+      "marketing-actions mt-6 flex flex-wrap items-center gap-4",
+      className,
+    )}
+  >
     {actions.map((action, index) => (
       <Button
         key={action.href}
-        variant={index === 0 ? "flat" : "outline"}
-        color="primary"
+        variant="default"
+        color={(index === 0) === (tone === "default") ? "primary" : "neutral"}
         render={<Link href={action.href} />}
       >
         {action.label}
         <ArrowRightIcon className="size-4" />
       </Button>
     ))}
+  </div>
+);
+
+export const MarketingHeading = ({
+  eyebrow,
+  title,
+  description,
+  action,
+  className,
+}: MarketingHeading.Props) => (
+  <div
+    className={cn(
+      "marketing-heading relative min-w-0 px-7 py-16 max-sm:px-4 max-sm:py-10",
+      className,
+    )}
+  >
+    {eyebrow && <MarketingEyebrow>{eyebrow}</MarketingEyebrow>}
+    <h2>{title}</h2>
+    {description && (
+      <p className="mt-4 max-w-[65ch] text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">
+        {description}
+      </p>
+    )}
+    {action && <MarketingActions actions={[action]} />}
   </div>
 );
 
@@ -72,7 +112,7 @@ export const MarketingHero = ({
     className={cn(
       "marketing-hero",
       dark &&
-        "marketing-dark text-background-rich/82 [--rail-color:color-mix(in_oklab,var(--color-background-rich)_30%,transparent)] [--rail-cross:color-mix(in_oklab,var(--color-background-rich)_55%,transparent)] [&>.marketing-rail]:bg-[linear-gradient(165deg,var(--color-band-start)_25%,var(--color-band-middle)_66%,var(--color-band-end))] [&_.marketing-actions>a+a]:border-background-rich/60 [&_.marketing-actions>a+a]:text-background-rich [&_.marketing-actions>a:first-child]:bg-background-rich [&_.marketing-actions>a:first-child]:text-foreground-rich [&_.marketing-eyebrow]:text-primary-rich [&_.marketing-screenshot_figcaption]:text-background-rich/82 [&_:is(h1,h2,h3)]:text-background-rich",
+        "marketing-dark enterprise-blue m-3 overflow-hidden rounded-xl border-0 bg-linear-to-br from-primary-text via-primary-text to-primary text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_20%,transparent)] [--rail-cross:transparent] [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden [&_.marketing-eyebrow]:text-background-rich [&_.marketing-guides_span]:before:hidden [&_.marketing-guides_span]:after:hidden [&_.marketing-screenshot_figcaption]:text-background-rich/85 [&_:is(h1,h2,h3)]:text-background-rich",
     )}
   >
     {dark && (
@@ -80,13 +120,18 @@ export const MarketingHero = ({
         <AsciiClosingArtwork />
       </AsciiAtmosphere>
     )}
-    <div className="marketing-cell relative min-w-0 px-7 py-24 max-sm:px-4 max-sm:py-14 [&>p]:max-w-[70ch]">
+    <div className="marketing-cell relative min-w-0 px-7 py-16 max-sm:px-4 max-sm:py-10 [&>p]:max-w-[70ch]">
       {eyebrow && <MarketingEyebrow>{eyebrow}</MarketingEyebrow>}
       <h1>{title}</h1>
-      <p className="marketing-lead mt-6 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
+      <p
+        className={cn(
+          "marketing-lead mt-4 max-w-[720px] text-lg leading-relaxed",
+          dark ? "text-background-rich/85" : "text-foreground-dimmed",
+        )}
+      >
         {description}
       </p>
-      <MarketingActions actions={actions} />
+      <MarketingActions actions={actions} tone={dark ? "inverse" : "default"} />
       {children}
     </div>
   </MarketingBand>
@@ -108,16 +153,16 @@ export const MarketingClosing = ({
   description,
   actions,
 }: MarketingClosing.Props) => (
-  <MarketingBand className="marketing-closing marketing-dark text-background-rich/82 [--rail-color:color-mix(in_oklab,var(--color-background-rich)_30%,transparent)] [--rail-cross:color-mix(in_oklab,var(--color-background-rich)_55%,transparent)] [&>.marketing-rail]:bg-[linear-gradient(165deg,var(--color-band-start)_25%,var(--color-band-middle)_66%,var(--color-band-end))] [&_.marketing-actions>a+a]:border-background-rich/60 [&_.marketing-actions>a+a]:text-background-rich [&_.marketing-actions>a:first-child]:bg-background-rich [&_.marketing-actions>a:first-child]:text-foreground-rich [&_.marketing-cell]:flex [&_.marketing-cell]:min-h-[460px] [&_.marketing-cell]:flex-col [&_.marketing-cell]:justify-center max-sm:[&_.marketing-cell]:min-h-[440px] [&_.marketing-eyebrow]:text-primary-rich [&_.marketing-screenshot_figcaption]:text-background-rich/82 [&_:is(h1,h2,h3)]:text-background-rich [&_h2]:max-w-[780px]">
-    <AsciiAtmosphere className="marketing-closing-art pointer-events-none absolute inset-0 text-background-rich opacity-20 [mask-image:linear-gradient(100deg,transparent,black)]">
+  <MarketingBand className="marketing-closing enterprise-blue relative m-3 overflow-hidden rounded-xl border-0 bg-linear-to-br from-primary-text via-primary-text to-primary text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_20%,transparent)] [--rail-cross:transparent] max-sm:m-2 max-sm:rounded-lg [&>.marketing-rail]:border-y-0 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden [&_.marketing-guides_span]:before:hidden [&_.marketing-guides_span]:after:hidden">
+    <AnimatedAscii className="pointer-events-none absolute inset-y-0 right-0 left-[30%] select-none text-background-rich opacity-40 [mask-image:linear-gradient(90deg,transparent,black_35%)] max-sm:inset-x-0 max-sm:opacity-20">
       <AsciiClosingArtwork />
-    </AsciiAtmosphere>
-    <div className="marketing-cell relative min-w-0 px-7 py-24 max-sm:px-4 max-sm:py-14 [&>p]:max-w-[70ch]">
-      <h2>{title}</h2>
-      <p className="marketing-lead mt-6 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
+    </AnimatedAscii>
+    <div className="marketing-cell relative flex min-h-[480px] flex-col justify-center px-7 py-16 max-sm:min-h-[460px] max-sm:px-4 max-sm:py-12">
+      <h2 className="relative max-w-[760px] text-background-rich">{title}</h2>
+      <p className="relative mt-4 max-w-[55ch] text-background-rich/85 text-lg leading-relaxed">
         {description}
       </p>
-      <MarketingActions actions={actions} />
+      <MarketingActions actions={actions} tone="inverse" className="relative" />
     </div>
   </MarketingBand>
 );
@@ -154,6 +199,18 @@ export namespace MarketingEyebrow {
 export namespace MarketingActions {
   export type Props = {
     actions: readonly { label: string; href: string }[];
+    tone?: "default" | "inverse";
+    className?: string;
+  };
+}
+
+export namespace MarketingHeading {
+  export type Props = {
+    eyebrow?: string;
+    title: string;
+    description?: string;
+    action?: { label: string; href: string };
+    className?: string;
   };
 }
 
