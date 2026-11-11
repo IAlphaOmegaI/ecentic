@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@zenncore/utils";
 import {
   field,
   type RefinedProps,
@@ -8,6 +9,7 @@ import { Textarea, TextareaInput } from "@zenncore/web/components/textarea";
 import type { getMessages } from "next-intl/server";
 import type { FocusEventHandler, Ref } from "react";
 import { z } from "zod";
+import { fonts } from "@/components/marketing/fonts";
 import {
   aiChannels,
   businessTypes,
@@ -20,7 +22,7 @@ export type LeadCopy = Awaited<
   ReturnType<typeof getMessages>
 >["enterpriseLead"];
 
-const LongResponse = ({
+export const LongResponse = ({
   value,
   onValueChange,
   name,
@@ -28,13 +30,7 @@ const LongResponse = ({
   placeholder,
   onBlur,
   ref,
-}: RefinedProps<string> & {
-  name?: string;
-  label?: string;
-  placeholder?: string;
-  onBlur?: FocusEventHandler<HTMLTextAreaElement>;
-  ref?: Ref<HTMLTextAreaElement>;
-}) => (
+}: LongResponse.Props) => (
   <Textarea value={value} onValueChange={onValueChange}>
     <TextareaInput
       ref={ref}
@@ -47,6 +43,16 @@ const LongResponse = ({
     />
   </Textarea>
 );
+
+export namespace LongResponse {
+  export type Props = RefinedProps<string> & {
+    name?: string;
+    label?: string;
+    placeholder?: string;
+    onBlur?: FocusEventHandler<HTMLTextAreaElement>;
+    ref?: Ref<HTMLTextAreaElement>;
+  };
+}
 
 export const createLeadFields = (copy: LeadCopy) => {
   const required = (maximum: number) =>
@@ -90,12 +96,42 @@ export const createLeadFields = (copy: LeadCopy) => {
       validator: z.enum(businessTypes, { error: copy.validation.choice }),
       ...copy.fields.businessType,
       items: copy.options.businessType,
+      classList: {
+        control: {
+          positioner: { portal: "relative z-130", positioner: "z-130" },
+          popup: {
+            root: cn(
+              fonts,
+              "rounded-xs bg-background-rich font-body text-foreground-rich",
+            ),
+            arrow: { arrow: "bg-background-rich" },
+          },
+          selectItem: {
+            item: "first-of-type:rounded-t-xs last-of-type:rounded-b-xs data-[selected]:not-data-highlighted:text-primary-text data-highlighted:text-background-rich data-highlighted:before:bg-primary-text",
+          },
+        },
+      },
     }),
     catalogSize: field({
       shape: "select",
       validator: z.enum(catalogSizes, { error: copy.validation.choice }),
       ...copy.fields.catalogSize,
       items: copy.options.catalogSize,
+      classList: {
+        control: {
+          positioner: { portal: "relative z-130", positioner: "z-130" },
+          popup: {
+            root: cn(
+              fonts,
+              "rounded-xs bg-background-rich font-body text-foreground-rich",
+            ),
+            arrow: { arrow: "bg-background-rich" },
+          },
+          selectItem: {
+            item: "first-of-type:rounded-t-xs last-of-type:rounded-b-xs data-[selected]:not-data-highlighted:text-primary-text data-highlighted:text-background-rich data-highlighted:before:bg-primary-text",
+          },
+        },
+      },
     }),
     markets: field({
       shape: "text",
@@ -115,7 +151,22 @@ export const createLeadFields = (copy: LeadCopy) => {
       validator: z.enum(aiChannels, { error: copy.validation.choice }),
       ...copy.fields.aiChannel,
       items: copy.options.aiChannel,
-      classList: { field: "md:col-span-2" },
+      classList: {
+        field: "md:col-span-2",
+        control: {
+          positioner: { portal: "relative z-130", positioner: "z-130" },
+          popup: {
+            root: cn(
+              fonts,
+              "rounded-xs bg-background-rich font-body text-foreground-rich",
+            ),
+            arrow: { arrow: "bg-background-rich" },
+          },
+          selectItem: {
+            item: "first-of-type:rounded-t-xs last-of-type:rounded-b-xs data-[selected]:not-data-highlighted:text-primary-text data-highlighted:text-background-rich data-highlighted:before:bg-primary-text",
+          },
+        },
+      },
     }),
     tool: field({
       shape: "text",
@@ -127,6 +178,21 @@ export const createLeadFields = (copy: LeadCopy) => {
       validator: z.enum(partnerTracks, { error: copy.validation.choice }),
       ...copy.fields.track,
       items: copy.options.track,
+      classList: {
+        control: {
+          positioner: { portal: "relative z-130", positioner: "z-130" },
+          popup: {
+            root: cn(
+              fonts,
+              "rounded-xs bg-background-rich font-body text-foreground-rich",
+            ),
+            arrow: { arrow: "bg-background-rich" },
+          },
+          selectItem: {
+            item: "first-of-type:rounded-t-xs last-of-type:rounded-b-xs data-[selected]:not-data-highlighted:text-primary-text data-highlighted:text-background-rich data-highlighted:before:bg-primary-text",
+          },
+        },
+      },
     }),
     stores: field({
       shape: "text",

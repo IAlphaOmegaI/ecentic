@@ -12,14 +12,18 @@ export const BusinessChallenges = ({
         className="grid border-accent-foreground border-t md:grid-cols-2"
       >
         <div className="border-accent-foreground p-4 sm:p-8 md:border-r">
-          <p className="marketing-note">{labels.before}</p>
+          <p className="marketing-note text-(length:--text-sm) mt-6 text-foreground-dimmed">
+            {labels.before}
+          </p>
           <h3 className="mt-4">{item.before}</h3>
         </div>
         <div className="p-4 sm:p-8">
-          <p className="marketing-note">{labels.after}</p>
+          <p className="marketing-note text-(length:--text-sm) mt-6 text-foreground-dimmed">
+            {labels.after}
+          </p>
           <p className="mt-4">{item.after}</p>
           <Link
-            className="marketing-text-link mt-6 inline-flex items-center gap-2"
+            className="marketing-text-link mt-6 inline-flex items-center gap-2 text-primary-text decoration-1 underline-offset-4 hover:underline"
             href={item.href}
           >
             {labels.link}

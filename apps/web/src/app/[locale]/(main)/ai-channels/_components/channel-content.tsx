@@ -20,13 +20,7 @@ import { Link } from "@/i18n/navigation";
 type Copy = Awaited<ReturnType<typeof getMessages>>["enterpriseChannels"];
 const capabilities = ["simulate", "fix", "checkout", "track"] as const;
 
-export const ChannelInterests = ({
-  channel,
-  copy,
-}: {
-  channel: AiChannel;
-  copy: Copy;
-}) => (
+export const ChannelInterests = ({ channel, copy }: ChannelInterests.Props) => (
   <div className="flex flex-wrap items-start gap-4">
     {channel.interests.map((topic) => (
       <MarketingLead
@@ -40,9 +34,9 @@ export const ChannelInterests = ({
   </div>
 );
 
-export const ChannelTiles = ({ copy }: { copy: Copy }) => (
+export const ChannelTiles = ({ copy }: ChannelTiles.Props) => (
   <MarketingBand>
-    <div className="marketing-grid">
+    <div className="marketing-grid grid grid-cols-3 border-[var(--rail-color)] border-b data-[columns=1]:grid-cols-1 data-[columns=2]:grid-cols-2 data-[columns=4]:grid-cols-4 data-[columns=5]:grid-cols-5 max-sm:grid-cols-1 max-sm:data-[columns]:grid-cols-1 max-[801px]:grid-cols-2 max-[801px]:data-[columns]:grid-cols-2 [&>*]:min-w-0 [&>*]:border-[var(--rail-color)] [&>*]:border-t [&>*]:border-r [&>*]:px-7 [&>*]:py-8 max-sm:[&>*]:border-r-0 max-sm:[&>*]:px-4 max-sm:[&>*]:py-7 min-[801px]:data-ordered:[&>article]:py-10 [&_.marketing-item-link]:mt-7 [&_.marketing-item-link]:inline-flex [&_.marketing-item-link]:items-center [&_.marketing-item-link]:gap-2 [&_a:hover]:underline [&_a]:text-primary-text [&_a]:decoration-1 [&_a]:underline-offset-4 [&_h3]:max-w-[24ch] min-[801px]:data-ordered:[&_h3]:max-w-[20ch] [&_p]:mt-4">
       {aiChannels.map((channel) => (
         <article
           key={channel.key}
@@ -80,10 +74,7 @@ export const ChannelTiles = ({ copy }: { copy: Copy }) => (
 export const ChannelCapabilities = ({
   channel,
   copy,
-}: {
-  channel: AiChannel;
-  copy: Copy;
-}) => (
+}: ChannelCapabilities.Props) => (
   <Table className="table-fixed border-b-0 bg-transparent [&_.marketing-status]:max-w-full [&_.marketing-status]:items-start [&_.marketing-status]:[overflow-wrap:anywhere]">
     <TableHeader>
       <TableRow>
@@ -121,15 +112,9 @@ export const ChannelCapabilities = ({
   </Table>
 );
 
-export const ChannelSources = ({
-  channel,
-  copy,
-}: {
-  channel: AiChannel;
-  copy: Copy;
-}) => (
+export const ChannelSources = ({ channel, copy }: ChannelSources.Props) => (
   <MarketingBand>
-    <div className="marketing-cell">
+    <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
       <h2>{copy.sourceTitle}</h2>
       <p>{copy.sourceNote}</p>
       <ul className="mt-8 divide-y divide-accent-foreground">
@@ -138,7 +123,10 @@ export const ChannelSources = ({
             key={source.key}
             className="flex flex-col justify-between gap-3 py-5 sm:flex-row sm:gap-8"
           >
-            <a href={source.url} className="marketing-text-link underline">
+            <a
+              href={source.url}
+              className="marketing-text-link text-primary-text underline decoration-1 underline-offset-4 hover:underline"
+            >
               {copy.sources[source.key]}
             </a>
             <span className="shrink-0 text-foreground-dimmed text-sm">
@@ -151,3 +139,19 @@ export const ChannelSources = ({
     </div>
   </MarketingBand>
 );
+
+export namespace ChannelInterests {
+  export type Props = { channel: AiChannel; copy: Copy };
+}
+
+export namespace ChannelCapabilities {
+  export type Props = { channel: AiChannel; copy: Copy };
+}
+
+export namespace ChannelSources {
+  export type Props = { channel: AiChannel; copy: Copy };
+}
+
+export namespace ChannelTiles {
+  export type Props = { copy: Copy };
+}

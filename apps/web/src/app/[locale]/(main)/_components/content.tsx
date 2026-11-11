@@ -5,6 +5,7 @@ import Image from "next/image";
 import type { ReactNode } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import { Footer } from "@/components/footer";
+import { fonts } from "@/components/marketing/fonts";
 import { Navbar } from "@/components/navbar";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
@@ -89,7 +90,9 @@ export const ContentPageLayout = async ({
   children,
   ...banner
 }: ContentPageLayout.Props) => (
-  <main className="marketing-content-shell flex min-h-screen flex-col">
+  <main
+    className={cn(fonts, "flex min-h-screen flex-col bg-background font-body")}
+  >
     <Navbar />
 
     <PageBanner {...banner} />
@@ -142,7 +145,7 @@ export const ContentPageSection = ({
       <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
       <div
         className={cn(
-          "relative flex flex-col bg-background-dimmed p-8",
+          "relative flex flex-col bg-background p-8",
           classList?.left,
         )}
       >
@@ -187,7 +190,7 @@ export const ContentPageCardGrid = ({
       <article
         key={item.href}
         className={cn(
-          "flex h-full flex-col gap-4 bg-background-dimmed p-6",
+          "flex h-full flex-col gap-4 bg-background p-6",
           classList?.item,
         )}
       >

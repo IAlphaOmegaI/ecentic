@@ -7,12 +7,7 @@ export const MarketingLead = async ({
   topic,
   title,
   triggerLabel,
-}: {
-  kind: "interest" | "integration" | "partner";
-  topic: string;
-  title?: string;
-  triggerLabel?: string;
-}) => {
+}: MarketingLead.Props) => {
   const locale = await getLocale();
   const { enterpriseLead } = await getMessages();
   if (kind === "interest") {
@@ -36,3 +31,12 @@ export const MarketingLead = async ({
     />
   );
 };
+
+export namespace MarketingLead {
+  export type Props = {
+    kind: "interest" | "integration" | "partner";
+    topic: string;
+    title?: string;
+    triggerLabel?: string;
+  };
+}

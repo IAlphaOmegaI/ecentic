@@ -61,27 +61,27 @@ export const HeroVideo = () => {
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-linear-to-t from-emphasis/70 via-transparent to-transparent"
         />
-        <span className="absolute right-4 bottom-4 left-4 flex items-end justify-between gap-4 text-white">
+        <span className="absolute right-4 bottom-4 left-4 flex items-end justify-between gap-4 text-background-rich">
           <span className="flex flex-col">
             <span className="font-body font-medium text-lg">
               {translate("heading")}
             </span>
-            <span className="font-body text-sm text-white/70">
+            <span className="font-body text-background-rich/70 text-sm">
               {translate("caption")}
             </span>
           </span>
-          <span className="rounded-md border border-white/30 bg-background/90 px-3.5 py-2 font-body font-medium text-foreground shadow-sm backdrop-blur-md">
+          <span className="rounded-md border border-background-rich/30 bg-background/90 px-3.5 py-2 font-body font-medium text-foreground shadow-sm backdrop-blur-md">
             {translate("action.primary")}
           </span>
         </span>
       </DialogTrigger>
 
       <DialogPopup
-        className="marketing-site enterprise-video-dialog"
+        className="marketing-site enterprise-video-dialog text-(length:--text-base) rounded-xs bg-background font-body text-foreground leading-[1.6] [--rail-color:var(--color-accent-foreground)] [--rail-cross:var(--color-cross)] [color-scheme:light] [font-synthesis:none] motion-reduce:[&_*]:animate-none motion-reduce:[&_*]:scroll-auto motion-reduce:[&_*]:transition-none [&_:where(a,button).bg-primary]:rounded-md [&_:where(a,button).bg-primary]:bg-primary-text [&_:where(a,button).from-primary-rich]:rounded-md [&_:where(a,button,input,select,textarea):focus-visible]:outline-2 [&_:where(a,button,input,select,textarea):focus-visible]:outline-primary-text [&_:where(a,button,input,select,textarea):focus-visible]:outline-offset-4 [&_:where(button,[role=button])]:duration-160 [&_:where(button,[role=button])]:ease-[cubic-bezier(0.23,1,0.32,1)] [&_:where(div:has(>input),div:has(>textarea))]:rounded-xs [&_:where(input,textarea,select,[role=combobox])]:rounded-xs [&_p]:text-pretty [:where(&)_:where(h1)]:max-w-[1040px] [:where(&)_:where(h1)]:text-[clamp(2.75rem,5.5vw,5rem)] [:where(&)_:where(h1,h2,h3,h4)]:text-balance [:where(&)_:where(h1,h2,h3,h4)]:font-heading [:where(&)_:where(h1,h2,h3,h4)]:font-medium [:where(&)_:where(h1,h2,h3,h4)]:text-foreground-rich [:where(&)_:where(h1,h2,h3,h4)]:leading-[1.08] [:where(&)_:where(h1,h2,h3,h4)]:tracking-[-0.035em] [:where(&)_:where(h2)]:max-w-[900px] [:where(&)_:where(h2)]:text-[clamp(2rem,3.6vw,3.5rem)] [:where(&)_:where(h3)]:text-[clamp(1.4rem,2vw,1.85rem)]"
         classList={{
           backdrop:
             "z-50 bg-emphasis/85 opacity-100 backdrop-blur-md duration-150",
-          root: "z-50 m-0 w-[min(94vw,1400px)] max-w-none overflow-hidden rounded-xl border-white/15 bg-emphasis p-0 shadow-2xl duration-150 data-ending-style:scale-95 data-starting-style:scale-95 motion-reduce:transition-none",
+          root: "z-50 m-0 w-[min(94vw,1400px)] max-w-none overflow-hidden rounded-xl border-background-rich/15 bg-emphasis p-0 shadow-2xl duration-150 data-ending-style:scale-95 data-starting-style:scale-95 motion-reduce:transition-none",
         }}
       >
         <DialogTitle className="sr-only">{translate("title")}</DialogTitle>
@@ -90,7 +90,7 @@ export const HeroVideo = () => {
         </DialogDescription>
         <DialogClose
           aria-label={translate("close")}
-          className="absolute top-3 right-3 z-10 size-10 rounded-full border-white/20 bg-emphasis/70 p-0 text-white shadow-md backdrop-blur-md hover:bg-emphasis"
+          className="absolute top-3 right-3 z-10 size-10 rounded-full border-background-rich/20 bg-emphasis/70 p-0 text-background-rich shadow-md backdrop-blur-md hover:bg-emphasis"
         >
           <XIcon aria-hidden className="size-5" />
         </DialogClose>

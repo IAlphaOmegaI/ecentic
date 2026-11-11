@@ -16,29 +16,31 @@ export const recoveryMetadata = async (locale: Locale): Promise<Metadata> => {
   };
 };
 
-export const NotFoundContent = async ({ locale }: { locale: Locale }) => {
+export const NotFoundContent = async ({ locale }: NotFoundContent.Props) => {
   const { enterpriseRecovery } = await getMessages({ locale });
   const content = enterpriseRecovery.notFound;
   return (
     <main id="main-content">
-      <section className="marketing-band marketing-hero">
-        <div className="marketing-rail">
-          <div className="marketing-cell">
+      <section className="marketing-band marketing-hero relative [&_.marketing-cell]:pt-[88px] [&_.marketing-cell]:pb-[72px] max-sm:[&_.marketing-cell]:py-[52px]">
+        <div className="marketing-rail relative isolate mx-auto max-w-[1186px] border border-[var(--rail-color)] max-sm:mx-4 max-[1191px]:mx-7">
+          <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
             <a
               href={localizePath("/", locale)}
               aria-label={content.home}
-              className="marketing-text-link"
+              className="marketing-text-link text-primary-text decoration-1 underline-offset-4 hover:underline"
             >
               ecentic
             </a>
             <p className="mt-16 mb-6 text-primary">404</p>
             <h1>{content.title}</h1>
-            <p className="marketing-lead">{content.description}</p>
+            <p className="marketing-lead mt-7 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
+              {content.description}
+            </p>
           </div>
         </div>
       </section>
-      <section className="marketing-band">
-        <div className="marketing-rail">
+      <section className="marketing-band relative">
+        <div className="marketing-rail relative isolate mx-auto max-w-[1186px] border border-[var(--rail-color)] max-sm:mx-4 max-[1191px]:mx-7">
           <nav
             aria-label={content.navigation}
             className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3"
@@ -55,9 +57,9 @@ export const NotFoundContent = async ({ locale }: { locale: Locale }) => {
           </nav>
         </div>
       </section>
-      <section className="marketing-band marketing-field">
-        <div className="marketing-rail">
-          <div className="marketing-cell">
+      <section className="marketing-band marketing-field relative bg-background [&>.marketing-rail]:bg-background-dimmed [&_.marketing-note]:text-foreground">
+        <div className="marketing-rail relative isolate mx-auto max-w-[1186px] border border-[var(--rail-color)] max-sm:mx-4 max-[1191px]:mx-7">
+          <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
             <h2>{content.machineTitle}</h2>
             <p>{content.machineDescription}</p>
             <nav aria-label={content.machineNavigation} className="mt-10">
@@ -70,7 +72,10 @@ export const NotFoundContent = async ({ locale }: { locale: Locale }) => {
                       key={link.href}
                       className="border-accent-foreground border-t py-5"
                     >
-                      <a className="marketing-text-link" href={link.href}>
+                      <a
+                        className="marketing-text-link text-primary-text decoration-1 underline-offset-4 hover:underline"
+                        href={link.href}
+                      >
                         {copy.label}
                       </a>
                       <p className="mt-2 text-sm">{copy.description}</p>
@@ -80,7 +85,10 @@ export const NotFoundContent = async ({ locale }: { locale: Locale }) => {
               </ul>
             </nav>
             <h3 className="mt-12">{content.markdownTitle}</h3>
-            <a className="marketing-text-link mt-4 inline-block" href="/404.md">
+            <a
+              className="marketing-text-link mt-4 inline-block text-primary-text decoration-1 underline-offset-4 hover:underline"
+              href="/404.md"
+            >
               {content.markdownAction}
             </a>
             <pre className="mt-6 overflow-x-auto whitespace-pre-wrap break-words font-mono text-xs leading-relaxed">
@@ -92,3 +100,7 @@ export const NotFoundContent = async ({ locale }: { locale: Locale }) => {
     </main>
   );
 };
+
+export namespace NotFoundContent {
+  export type Props = { locale: Locale };
+}

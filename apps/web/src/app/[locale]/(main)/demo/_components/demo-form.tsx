@@ -19,27 +19,13 @@ import {
   demoAboutSchema,
   demoGoalsSchema,
 } from "@/lib/marketing-lead";
-import "@/components/marketing/lead.css";
 
-type DemoCopy = Awaited<
-  ReturnType<typeof getMessages>
->["enterpriseDemo"]["form"];
-type Step = 0 | 1 | 2;
-
-export const DemoForm = ({
-  copy,
-  formCopy,
-  locale,
-}: {
-  copy: LeadCopy;
-  formCopy: DemoCopy;
-  locale: "en" | "es";
-}) => {
-  const [step, setStep] = useState<Step>(0);
+export const DemoForm = ({ copy, formCopy, locale }: DemoForm.Props) => {
+  const [step, setStep] = useState<DemoForm.Step>(0);
   const [about, setAbout] = useState<Partial<DemoAbout>>({});
   const [goals, setGoals] = useState<Partial<DemoGoals>>({});
   const heading = useRef<HTMLHeadingElement>(null);
-  const previousStep = useRef(step);
+  const previous = useRef(step);
   const state = useLeadSubmission(copy);
   const fields = createLeadFields(copy);
   const aboutConfig = {
@@ -52,12 +38,12 @@ export const DemoForm = ({
     markets: fields.markets,
   };
   const goalsConfig = { goals: fields.goals, aiChannel: fields.aiChannel };
-  const moveTo = (next: Step) => {
+  const moveTo = (next: DemoForm.Step) => {
     setStep(next);
   };
   useEffect(() => {
-    if (previousStep.current === step) return;
-    previousStep.current = step;
+    if (previous.current === step) return;
+    previous.current = step;
     heading.current?.focus();
   }, [step]);
 
@@ -109,8 +95,14 @@ export const DemoForm = ({
   ];
 
   return (
-    <div className="marketing-demo-layout" aria-busy={state.isPending}>
-      <nav aria-label={formCopy.progress} className="marketing-demo-progress">
+    <div
+      className="marketing-demo-layout grid grid-cols-[240px_minmax(0,1fr)] max-md:grid-cols-1"
+      aria-busy={state.isPending}
+    >
+      <nav
+        aria-label={formCopy.progress}
+        className="marketing-demo-progress max-md:[&_li>span]:text-(length:--text-2xl) border-[var(--rail-color)] border-r px-7 py-9 max-md:border-r-0 max-md:border-b max-md:px-5 max-md:py-4 [&_li>span]:font-heading [&_li>span]:text-[30px] max-md:[&_li>span]:block [&_li[aria-current=step]]:text-primary-text [&_li]:flex [&_li]:items-baseline [&_li]:gap-4 [&_li]:py-[18px] [&_li]:text-foreground-dimmed max-md:[&_li]:block max-md:[&_li]:py-1 max-md:[&_li]:text-[13px] max-md:[&_ol]:grid max-md:[&_ol]:grid-cols-3 max-md:[&_ol]:gap-3"
+      >
         <ol>
           {formCopy.steps.map((label, index) => (
             <li key={label} aria-current={step === index ? "step" : undefined}>
@@ -120,7 +112,7 @@ export const DemoForm = ({
           ))}
         </ol>
       </nav>
-      <div className="marketing-demo-body">
+      <div className="marketing-demo-body px-7 py-12 max-md:px-5 max-md:py-9">
         {state.sent ? (
           <div role="status">
             <h3>{copy.status.sentTitle}</h3>
@@ -149,7 +141,7 @@ export const DemoForm = ({
                   setAbout(data);
                   moveTo(1);
                 }}
-                className="marketing-lead-fields"
+                className="marketing-lead-fields grid gap-x-6 gap-y-5 md:grid-cols-2 [&>*]:my-0 [&>*]:min-w-0 [&_button[type=submit]]:justify-self-start"
               >
                 <Button
                   type="submit"
@@ -171,7 +163,7 @@ export const DemoForm = ({
                   setGoals(data);
                   moveTo(2);
                 }}
-                className="marketing-lead-fields"
+                className="marketing-lead-fields grid gap-x-6 gap-y-5 md:grid-cols-2 [&>*]:my-0 [&>*]:min-w-0 [&_button[type=submit]]:justify-self-start"
               >
                 <div className="flex flex-wrap gap-3 md:col-span-2">
                   <Button
@@ -197,7 +189,7 @@ export const DemoForm = ({
               <div>
                 <h4 className="text-2xl">{formCopy.reviewTitle}</h4>
                 <p className="mt-4">{formCopy.reviewDescription}</p>
-                <dl className="marketing-demo-review">
+                <dl className="marketing-demo-review [&_dd]:wrap-anywhere my-7 [&>div]:grid [&>div]:grid-cols-[180px_minmax(0,1fr)] [&>div]:gap-4 [&>div]:border-[var(--rail-color)] [&>div]:border-b [&>div]:py-4 max-md:[&>div]:grid-cols-1 max-md:[&>div]:gap-1 [&_dd]:whitespace-pre-wrap [&_dt]:text-foreground-dimmed">
                   {review.map((row) => (
                     <div key={row.label}>
                       <dt>{row.label}</dt>
@@ -232,7 +224,9 @@ export const DemoForm = ({
                     {state.isPending ? copy.pending : copy.action.primary}
                   </Button>
                 </div>
-                <p className="marketing-note mt-8">{formCopy.bookingNote}</p>
+                <p className="marketing-note text-(length:--text-sm) mt-6 mt-8 text-foreground-dimmed">
+                  {formCopy.bookingNote}
+                </p>
                 <MarketingActions
                   actions={[
                     {
@@ -249,3 +243,11 @@ export const DemoForm = ({
     </div>
   );
 };
+
+export namespace DemoForm {
+  export type Copy = Awaited<
+    ReturnType<typeof getMessages>
+  >["enterpriseDemo"]["form"];
+  export type Step = 0 | 1 | 2;
+  export type Props = { copy: LeadCopy; formCopy: Copy; locale: "en" | "es" };
+}

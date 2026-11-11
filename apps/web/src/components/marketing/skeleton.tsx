@@ -8,7 +8,7 @@ export const MarketingSkeleton = async () => {
     <MarketingShell>
       <MarketingBand>
         <div
-          className="marketing-cell"
+          className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]"
           role="status"
           aria-label={enterpriseChrome.loading}
         >

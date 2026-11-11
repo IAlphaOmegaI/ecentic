@@ -1,8 +1,10 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
+import Image from "next/image";
 import type { ReactNode } from "react";
 import { Footer } from "@/components/footer";
+import { fonts } from "@/components/marketing/fonts";
 import { Navbar } from "@/components/navbar";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
@@ -70,7 +72,9 @@ export const EditorialLayout = async ({
   description,
   children,
 }: EditorialLayout.Props) => (
-  <main className="marketing-content-shell flex min-h-screen flex-col">
+  <main
+    className={cn(fonts, "flex min-h-screen flex-col bg-background font-body")}
+  >
     <Navbar />
 
     <PageBanner
@@ -115,20 +119,23 @@ export const EditorialSplitSection = ({
           // min-w-0 lets the 5fr track shrink when the right rail has wide
           // <pre>/table content; without it the left column collapses to padding.
           "relative flex min-w-0 flex-col p-8",
-          thumbnail ? "overflow-hidden bg-neutral-900" : "bg-background-dimmed",
+          thumbnail ? "overflow-hidden bg-foreground-rich" : "bg-background",
           leftClassName,
         )}
-        style={
-          thumbnail
-            ? {
-                backgroundImage: `url(${thumbnail})`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-              }
-            : undefined
-        }
       >
-        {thumbnail && <div className="absolute inset-0 bg-black/60" />}
+        {thumbnail && (
+          <>
+            <Image
+              src={thumbnail}
+              alt=""
+              fill
+              sizes="(min-width: 768px) 38vw, 100vw"
+              unoptimized
+              className="object-cover"
+            />
+            <div className="absolute inset-0 bg-foreground-rich/60" />
+          </>
+        )}
         <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
         {/* Sticky keeps the section index readable while long tables/code scroll. */}
         <div className="relative z-10 md:sticky md:top-28">{left}</div>

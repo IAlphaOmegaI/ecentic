@@ -8,14 +8,12 @@ import { useRouter } from "@/i18n/navigation";
 import * as Payg from "@/server/app/billing/payg";
 import * as Subscription from "@/server/app/subscription";
 
-type Props = {
-  plan: "payg" | "compete" | "scale" | "dominate";
-  color?: Button.Props["color"];
-  className?: string;
-  children: React.ReactNode;
-};
-
-export const PricingCTA = ({ plan, color, className, children }: Props) => {
+export const PricingCTA = ({
+  plan,
+  color,
+  className,
+  children,
+}: PricingCTA.Props) => {
   const router = useRouter();
   const toast = useToastManager();
   const translate = useTranslations("pricing.error");
@@ -71,3 +69,12 @@ export const PricingCTA = ({ plan, color, className, children }: Props) => {
     </Button>
   );
 };
+
+export namespace PricingCTA {
+  export type Props = {
+    plan: "payg" | "compete" | "scale" | "dominate";
+    color?: Button.Props["color"];
+    className?: string;
+    children: React.ReactNode;
+  };
+}

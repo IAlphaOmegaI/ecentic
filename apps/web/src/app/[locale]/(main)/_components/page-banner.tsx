@@ -22,7 +22,7 @@ import type { ReactNode } from "react";
  * The rule constrains *text*. A translucent white plate behind a solid-white
  * label (see `bannerAction.secondary`) keeps the label at its full 4.36:1 while
  * letting the field read through — which is why the secondary action can be
- * frosted but its text can never be `text-white/70`.
+ * frosted but its text can never be `text-background-rich/70`.
  */
 export const PageBanner = ({
   title,
@@ -54,27 +54,29 @@ export const PageBanner = ({
           className="pointer-events-none absolute inset-y-0 right-0 hidden h-full w-auto max-w-[55%] select-none object-contain object-right opacity-40 brightness-0 invert [mask-image:linear-gradient(to_right,transparent,black_40%)] md:block"
         />
       )}
-      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col justify-end border-white/20 border-x px-8 pt-24 pb-16">
+      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col justify-end border-background-rich/20 border-x px-8 pt-24 pb-16">
         {badge && <div className="mb-6">{badge}</div>}
         {assurances && (
           // Quiet middot note above the title — same claims the landing hero
           // carries under its CTA, moved up so they frame the headline instead
           // of trailing the actions.
-          <p className="mb-4 max-w-2xl text-sm text-white">
+          <p className="mb-4 max-w-2xl text-background-rich text-sm">
             {assurances.join(" · ")}
           </p>
         )}
-        <h1 className="max-w-4xl font-semibold text-5xl text-white tracking-tight md:text-7xl">
+        <h1 className="max-w-4xl font-semibold text-5xl text-background-rich tracking-tight md:text-7xl">
           {title}
           {accent && (
-            <span className="font-medium font-superior text-white underline decoration-2 underline-offset-[0.18em]">
+            <span className="font-medium font-superior text-background-rich underline decoration-2 underline-offset-[0.18em]">
               {" "}
               {accent}
             </span>
           )}
         </h1>
-        {meta && <div className="mt-4 text-sm text-white">{meta}</div>}
-        <p className="mt-6 max-w-2xl text-base text-white leading-relaxed md:text-lg">
+        {meta && (
+          <div className="mt-4 text-background-rich text-sm">{meta}</div>
+        )}
+        <p className="mt-6 max-w-2xl text-background-rich text-base leading-relaxed md:text-lg">
           {description}
         </p>
         {actions && (
@@ -104,7 +106,7 @@ export const PageBanner = ({
 export const bannerAction = {
   lead: "w-full px-5 py-2.5 text-base sm:w-auto",
   secondary:
-    "w-full border-transparent bg-white/15 px-5 py-2.5 text-base text-white backdrop-blur-sm transition-colors hover:bg-white/25 sm:w-auto",
+    "w-full border-transparent bg-background-rich/15 px-5 py-2.5 text-base text-background-rich backdrop-blur-sm transition-colors hover:bg-background-rich/25 sm:w-auto",
 } as const;
 
 export namespace PageBanner {

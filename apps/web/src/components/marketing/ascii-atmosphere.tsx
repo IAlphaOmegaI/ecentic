@@ -8,10 +8,7 @@ import { Motion } from "@/components/motion";
 export const AsciiAtmosphere = ({
   className,
   children,
-}: {
-  className: string;
-  children: ReactNode;
-}) => {
+}: AsciiAtmosphere.Props) => {
   const reducedMotion = useReducedMotion();
   return (
     <Motion.Up
@@ -30,3 +27,10 @@ export const AsciiAtmosphere = ({
     </Motion.Up>
   );
 };
+
+export namespace AsciiAtmosphere {
+  export type Props = {
+    className: string;
+    children: ReactNode;
+  };
+}

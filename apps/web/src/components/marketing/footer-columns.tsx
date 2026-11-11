@@ -15,16 +15,21 @@ export const FooterColumns = ({
     links: readonly { href: string; label: string }[];
   }[];
 }) => (
-  <div className="marketing-footer-mobile">
+  <div className="marketing-footer-mobile block px-4 py-6 min-[801px]:hidden">
     <Accordion multiple>
       {columns.map((column) => (
         <AccordionItem value={column.title} key={column.title}>
-          <AccordionTrigger>{column.title}</AccordionTrigger>
+          <AccordionTrigger className="font-body">
+            {column.title}
+          </AccordionTrigger>
           <AccordionPanel>
             <ul>
               {column.links.map((link) => (
                 <li key={link.href}>
-                  <Link className="marketing-mobile-link" href={link.href}>
+                  <Link
+                    className="marketing-mobile-link flex items-center justify-between py-2.5 text-base text-foreground-rich"
+                    href={link.href}
+                  >
                     {link.label}
                   </Link>
                 </li>

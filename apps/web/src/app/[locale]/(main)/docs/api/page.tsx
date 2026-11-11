@@ -2,7 +2,6 @@ import { getMessages } from "next-intl/server";
 import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
 import { openApiDocument } from "@/lib/agent-discovery";
 import { ApiDefinition } from "./_components/api-definition";
-import "./_components/api-reference.css";
 
 const operations = Object.entries(openApiDocument.paths).flatMap(
   ([path, methods]) => [
@@ -31,7 +30,7 @@ export default async () => {
       content={content}
       path="/docs/api"
       heroChildren={
-        <dl className="api-reference-facts">
+        <dl className="[&_dd]:wrap-anywhere mt-12 flex flex-wrap gap-8 border-accent-foreground border-t pt-6 [&_dd]:mt-2 [&_dt]:text-[13px] [&_dt]:text-foreground-dimmed">
           <div>
             <dt>{content.version}</dt>
             <dd>{openApiDocument.info.version}</dd>
@@ -52,13 +51,14 @@ export default async () => {
         "api-reference": (
           <>
             <nav
-              className="api-reference-index"
+              className="grid grid-cols-1 min-[761px]:grid-cols-2"
               aria-label={content.navigation}
             >
               {operations.map(({ path, method, operation }) => (
                 <a
                   key={operation.operationId}
                   href={`#${operation.operationId}`}
+                  className="[&_code]:wrap-anywhere grid grid-cols-[68px_minmax(0,1fr)] gap-x-4 gap-y-2.5 border-accent-foreground border-t px-5 py-6 text-primary-text hover:bg-background-dimmed min-[761px]:px-7 min-[761px]:odd:border-r [&_code]:text-[13px] [&_span]:col-start-2 [&_span]:text-foreground [&_span]:text-sm"
                 >
                   <code>{method.toUpperCase()}</code>
                   <code>{path}</code>
@@ -70,15 +70,15 @@ export default async () => {
               <article
                 key={operation.operationId}
                 id={operation.operationId}
-                className="api-reference-operation"
+                className="scroll-mt-[100px] border-accent-foreground border-t"
               >
-                <div className="marketing-cell">
-                  <p className="api-reference-method">
+                <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+                  <p className="wrap-anywhere mb-6 flex gap-5 text-primary-text text-sm">
                     <code>{method.toUpperCase()}</code>
                     <code>{path}</code>
                   </p>
                   <h3>{content.operationNames[operation.operationId]}</h3>
-                  <p className="marketing-note">
+                  <p className="marketing-note text-(length:--text-sm) mt-6 text-foreground-dimmed">
                     {content.operation}: <code>{operation.operationId}</code>
                   </p>
                   <ApiDefinition label={content.definition} value={operation} />
@@ -88,15 +88,15 @@ export default async () => {
           </>
         ),
         "api-schemas": (
-          <div className="api-reference-schemas">
+          <div className="grid grid-cols-1 min-[761px]:grid-cols-2">
             {Object.entries(openApiDocument.components.schemas).map(
               ([name, schema]) => (
                 <article
                   key={name}
                   id={`schema-${name}`}
-                  className="marketing-cell"
+                  className="marketing-cell relative min-w-0 scroll-mt-[100px] border-accent-foreground border-t px-7 py-14 max-sm:px-4 max-sm:py-10 min-[761px]:odd:border-r [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]"
                 >
-                  <h3>
+                  <h3 className="wrap-anywhere text-xl">
                     <code>{name}</code>
                   </h3>
                   <ApiDefinition label={content.definition} value={schema} />
@@ -106,7 +106,7 @@ export default async () => {
           </div>
         ),
         "api-auth": (
-          <div className="marketing-cell">
+          <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
             <ApiDefinition
               label={content.definition}
               value={openApiDocument.components.securitySchemes}

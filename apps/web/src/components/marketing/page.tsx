@@ -1,9 +1,11 @@
 import { ArrowRightIcon } from "@zenncore/icons";
+import { cn } from "@zenncore/utils";
 import type { Metadata } from "next";
 import { getLocale, getMessages } from "next-intl/server";
-import type { CSSProperties, ReactNode } from "react";
+import type { ReactNode } from "react";
 import { Footer } from "@/components/footer";
 import { JsonLd } from "@/components/json-ld";
+import { fonts } from "@/components/marketing/fonts";
 import { Navbar } from "@/components/navbar";
 import { localizePath } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
@@ -28,25 +30,19 @@ export const marketingMetadata = async (
   return { ...metadata, title: { absolute: meta.title } };
 };
 
-export const MarketingShell = async ({ children }: { children: ReactNode }) => {
+export const MarketingShell = async ({ children }: MarketingShell.Props) => {
   const { enterpriseChrome } = await getMessages();
   return (
-    <div className="marketing-site">
-      <link
-        rel="preload"
-        href="/fonts/marketing/RedHatDisplay-Regular.woff2"
-        as="font"
-        type="font/woff2"
-        crossOrigin="anonymous"
-      />
-      <link
-        rel="preload"
-        href="/fonts/marketing/RedHatDisplay-Medium.woff2"
-        as="font"
-        type="font/woff2"
-        crossOrigin="anonymous"
-      />
-      <a className="marketing-skip" href="#main-content">
+    <div
+      className={cn(
+        "marketing-grid-pattern marketing-site text-(length:--text-base) bg-background font-body text-foreground leading-[1.6] [--rail-color:var(--color-accent-foreground)] [--rail-cross:var(--color-cross)] [color-scheme:light] [font-synthesis:none] motion-reduce:[&_*]:animate-none motion-reduce:[&_*]:scroll-auto motion-reduce:[&_*]:transition-none [&_:where(a,button).bg-primary]:rounded-md [&_:where(a,button).bg-primary]:bg-primary-text [&_:where(a,button).from-primary-rich]:rounded-md [&_:where(a,button,input,select,textarea):focus-visible]:outline-2 [&_:where(a,button,input,select,textarea):focus-visible]:outline-primary-text [&_:where(a,button,input,select,textarea):focus-visible]:outline-offset-4 [&_:where(button,[role=button])]:duration-160 [&_:where(button,[role=button])]:ease-[cubic-bezier(0.23,1,0.32,1)] [&_:where(div:has(>input),div:has(>textarea))]:rounded-xs [&_:where(input,textarea,select,[role=combobox])]:rounded-xs [&_p]:text-pretty [:where(&)_:where(h1)]:max-w-[1040px] [:where(&)_:where(h1)]:text-[clamp(2.75rem,5.5vw,5rem)] [:where(&)_:where(h1,h2,h3,h4)]:text-balance [:where(&)_:where(h1,h2,h3,h4)]:font-heading [:where(&)_:where(h1,h2,h3,h4)]:font-medium [:where(&)_:where(h1,h2,h3,h4)]:text-foreground-rich [:where(&)_:where(h1,h2,h3,h4)]:leading-[1.08] [:where(&)_:where(h1,h2,h3,h4)]:tracking-[-0.035em] [:where(&)_:where(h2)]:max-w-[900px] [:where(&)_:where(h2)]:text-[clamp(2rem,3.6vw,3.5rem)] [:where(&)_:where(h3)]:text-[clamp(1.4rem,2vw,1.85rem)]",
+        fonts,
+      )}
+    >
+      <a
+        className="marketing-skip fixed top-2 left-4 z-100 -translate-y-[200%] bg-background px-4 py-2 text-foreground-rich focus:translate-y-0"
+        href="#main-content"
+      >
         {enterpriseChrome.skip}
       </a>
       <Navbar />
@@ -56,13 +52,7 @@ export const MarketingShell = async ({ children }: { children: ReactNode }) => {
   );
 };
 
-export const MarketingFaq = ({
-  title,
-  items,
-}: {
-  title: string;
-  items: readonly { question: string; answer: string }[];
-}) => (
+export const MarketingFaq = ({ title, items }: MarketingFaq.Props) => (
   <MarketingBand>
     <JsonLd
       schemas={[
@@ -77,8 +67,8 @@ export const MarketingFaq = ({
         },
       ]}
     />
-    <div className="marketing-faq">
-      <div className="marketing-cell">
+    <div className="marketing-faq grid grid-cols-[1fr_2fr] max-[801px]:grid-cols-1 [&>.marketing-cell]:border-[var(--rail-color)] [&>.marketing-cell]:border-r max-[801px]:[&>.marketing-cell]:border-r-0 max-[801px]:[&>.marketing-cell]:border-b [&_article:last-child]:border-b-0 [&_article]:border-[var(--rail-color)] [&_article]:border-b [&_article]:p-7 max-sm:[&_article]:px-4 max-sm:[&_article]:py-6 [&_h3]:text-[22px] [&_h3]:tracking-[-0.02em] [&_p]:mt-3">
+      <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
         <h2>{title}</h2>
       </div>
       <div>
@@ -96,21 +86,24 @@ export const MarketingFaq = ({
 export const MarketingSection = ({
   section,
   children,
-}: {
-  section: MarketingPage.Section;
-  children?: ReactNode;
-}) => (
+}: MarketingSection.Props) => (
   <MarketingBand
     id={section.id}
-    className={section.field ? "marketing-field" : undefined}
+    className={
+      section.field
+        ? "marketing-field bg-background [&>.marketing-rail]:bg-background-dimmed [&_.marketing-note]:text-foreground"
+        : undefined
+    }
   >
-    <div className="marketing-cell">
+    <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
       {section.eyebrow && (
         <MarketingEyebrow>{section.eyebrow}</MarketingEyebrow>
       )}
       <h2>{section.title}</h2>
       {section.description && (
-        <p className="marketing-lead">{section.description}</p>
+        <p className="marketing-lead mt-7 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
+          {section.description}
+        </p>
       )}
       {section.paragraphs?.map((paragraph) => (
         <p className="mt-6" key={paragraph}>
@@ -120,15 +113,14 @@ export const MarketingSection = ({
     </div>
     {section.items && (
       <div
-        className="marketing-grid"
+        className="marketing-grid grid grid-cols-3 border-[var(--rail-color)] border-b data-[columns=1]:grid-cols-1 data-[columns=2]:grid-cols-2 data-[columns=4]:grid-cols-4 data-[columns=5]:grid-cols-5 max-sm:grid-cols-1 max-sm:data-[columns]:grid-cols-1 max-[801px]:grid-cols-2 max-[801px]:data-[columns]:grid-cols-2 [&>*]:min-w-0 [&>*]:border-[var(--rail-color)] [&>*]:border-t [&>*]:border-r [&>*]:px-7 [&>*]:py-8 max-sm:[&>*]:border-r-0 max-sm:[&>*]:px-4 max-sm:[&>*]:py-7 min-[801px]:data-ordered:[&>article]:py-10 [&_.marketing-item-link]:mt-7 [&_.marketing-item-link]:inline-flex [&_.marketing-item-link]:items-center [&_.marketing-item-link]:gap-2 [&_a:hover]:underline [&_a]:text-primary-text [&_a]:decoration-1 [&_a]:underline-offset-4 [&_h3]:max-w-[24ch] min-[801px]:data-ordered:[&_h3]:max-w-[20ch] [&_p]:mt-4"
         data-columns={section.columns ?? 3}
         data-ordered={section.ordered || undefined}
-        style={{ "--columns": section.columns ?? 3 } as CSSProperties}
       >
         {section.items.map((item, index) => (
           <article key={item.title}>
             {section.ordered && (
-              <span className="marketing-step-index">
+              <span className="marketing-step-index mb-[30px] block font-heading text-[42px] text-primary-text leading-none">
                 {String(index + 1).padStart(2, "0")}
               </span>
             )}
@@ -150,13 +142,17 @@ export const MarketingSection = ({
       </div>
     )}
     {section.rows && (
-      <dl className="marketing-rows">
+      <dl className="marketing-rows border-[var(--rail-color)] border-b [&>div]:grid [&>div]:grid-cols-[minmax(140px,1fr)_2fr] [&>div]:gap-7 [&>div]:border-[var(--rail-color)] [&>div]:border-t [&>div]:px-7 [&>div]:py-6 max-sm:[&>div]:grid-cols-1 max-sm:[&>div]:gap-2 max-sm:[&>div]:px-4 [&_dd]:m-0 [&_dt]:font-medium [&_dt]:text-foreground-rich">
         {section.rows.map((row) => (
           <div key={row.label}>
             <dt>{row.label}</dt>
             <dd>
               {row.value}
-              {row.detail && <p className="marketing-note">{row.detail}</p>}
+              {row.detail && (
+                <p className="marketing-note text-(length:--text-sm) mt-6 text-foreground-dimmed">
+                  {row.detail}
+                </p>
+              )}
             </dd>
           </div>
         ))}
@@ -164,8 +160,12 @@ export const MarketingSection = ({
     )}
     {children}
     {(section.note || section.links) && (
-      <div className="marketing-cell">
-        {section.note && <p className="marketing-note">{section.note}</p>}
+      <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+        {section.note && (
+          <p className="marketing-note text-(length:--text-sm) mt-6 text-foreground-dimmed">
+            {section.note}
+          </p>
+        )}
         {section.links && <MarketingActions actions={section.links} />}
       </div>
     )}
@@ -224,8 +224,8 @@ export const MarketingPage = async ({
       {content.facts && (
         <MarketingBand>
           <div
-            className="marketing-grid"
-            style={{ "--columns": content.facts.length } as CSSProperties}
+            className="marketing-grid grid grid-cols-3 border-[var(--rail-color)] border-b data-[columns=1]:grid-cols-1 data-[columns=2]:grid-cols-2 data-[columns=4]:grid-cols-4 data-[columns=5]:grid-cols-5 max-sm:grid-cols-1 max-sm:data-[columns]:grid-cols-1 max-[801px]:grid-cols-2 max-[801px]:data-[columns]:grid-cols-2 [&>*]:min-w-0 [&>*]:border-[var(--rail-color)] [&>*]:border-t [&>*]:border-r [&>*]:px-7 [&>*]:py-8 max-sm:[&>*]:border-r-0 max-sm:[&>*]:px-4 max-sm:[&>*]:py-7 min-[801px]:data-ordered:[&>article]:py-10 [&_.marketing-item-link]:mt-7 [&_.marketing-item-link]:inline-flex [&_.marketing-item-link]:items-center [&_.marketing-item-link]:gap-2 [&_a:hover]:underline [&_a]:text-primary-text [&_a]:decoration-1 [&_a]:underline-offset-4 [&_h3]:max-w-[24ch] min-[801px]:data-ordered:[&_h3]:max-w-[20ch] [&_p]:mt-4"
+            data-columns={content.facts.length}
           >
             {content.facts.map((fact) => (
               <p key={fact}>{fact}</p>
@@ -290,5 +290,23 @@ export namespace MarketingPage {
     heroChildren?: ReactNode;
     children?: ReactNode;
     sectionChildren?: Record<string, ReactNode>;
+  };
+}
+
+export namespace MarketingShell {
+  export type Props = { children: ReactNode };
+}
+
+export namespace MarketingFaq {
+  export type Props = {
+    title: string;
+    items: readonly { question: string; answer: string }[];
+  };
+}
+
+export namespace MarketingSection {
+  export type Props = {
+    section: MarketingPage.Section;
+    children?: ReactNode;
   };
 }

@@ -35,10 +35,12 @@ progress tracks, and truly elevated panels may be rounded. Do not soften the who
 
 ### Marketing refinements · 10 November 2026
 
-The approved enterprise rebuild uses an off-white page canvas (`#F8F9FA`). Reserve the existing
-gray (`#E7E7E7`) for supporting service surfaces such as EU Presence, partner tracks and enquiry
-panels, confined inside their rails. Ordinary product, editorial and pricing content stays on the
-canvas. These choices apply to marketing; they do not change dashboard or onboarding tokens.
+The approved enterprise rebuild uses the existing Tailwind `background` token for its off-white
+canvas (`#F5F5F5`). Reserve `background-dimmed` (`#E8E8E8`) for supporting service surfaces such as
+EU Presence, partner tracks and inquiry panels, confined inside their rails. Ordinary product,
+editorial and pricing content stays on the canvas. The latest instruction to use shared Tailwind
+variables supersedes the former marketing-only neutral values; do not override the shared palette.
+See [the token mapping](../marketing/tailwind-migration.md).
 
 Primary marketing buttons use the cookie banner's 6 px corners. Secondary actions, inputs and
 selectors use 2 px corners. The large blue hero may be subtly rounded, with equal 24 px margins

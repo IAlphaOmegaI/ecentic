@@ -5,10 +5,12 @@ import {
   ShoppingCartIcon,
   XCircleIcon,
 } from "@zenncore/icons";
+import { cn } from "@zenncore/utils";
 import type { Metadata } from "next";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { Footer } from "@/components/footer";
 import { JsonLd } from "@/components/json-ld";
+import { fonts } from "@/components/marketing/fonts";
 import { Navbar } from "@/components/navbar";
 import { localizePath } from "@/i18n/locale";
 import {
@@ -88,7 +90,12 @@ export default async () => {
   ];
 
   return (
-    <main className="marketing-content-shell flex min-h-screen flex-col">
+    <main
+      className={cn(
+        fonts,
+        "flex min-h-screen flex-col bg-background font-body",
+      )}
+    >
       <Navbar />
 
       <JsonLd schemas={structuredData} />

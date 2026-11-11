@@ -4,8 +4,12 @@ export const SpecificationMap = ({ items, labels }: SpecificationMap.Props) => (
   <div>
     <div className="hidden grid-cols-[72px_1fr_2fr] gap-8 border-accent-foreground border-t px-8 py-4 md:grid">
       <span aria-hidden="true" />
-      <p className="marketing-note">{labels.question}</p>
-      <p className="marketing-note">{labels.data}</p>
+      <p className="marketing-note text-(length:--text-sm) mt-6 text-foreground-dimmed">
+        {labels.question}
+      </p>
+      <p className="marketing-note text-(length:--text-sm) mt-6 text-foreground-dimmed">
+        {labels.data}
+      </p>
     </div>
     <ol>
       {items.map((item, index) => (

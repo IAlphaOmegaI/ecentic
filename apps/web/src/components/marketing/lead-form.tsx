@@ -8,10 +8,9 @@ import { Link } from "@/i18n/navigation";
 import type { MarketingLeadInput } from "@/lib/marketing-lead";
 import * as Leads from "@/server/app/marketing-lead";
 import { createLeadFields, type LeadCopy } from "./lead-fields";
-import "./lead.css";
 
-export const LeadPrivacy = ({ copy }: { copy: LeadCopy }) => (
-  <p className="marketing-note md:col-span-2">
+export const LeadPrivacy = ({ copy }: LeadPrivacy.Props) => (
+  <p className="marketing-note text-(length:--text-sm) mt-6 text-foreground-dimmed md:col-span-2">
     {copy.privacy.text}{" "}
     <Link href="/privacy-policy" className="underline underline-offset-4">
       {copy.privacy.link}
@@ -59,7 +58,7 @@ const InterestForm = ({
   children,
   locale,
   topic,
-}: FormProps) => {
+}: InterestForm.Props) => {
   const fields = createLeadFields(copy);
   const config = {
     name: fields.name,
@@ -70,7 +69,7 @@ const InterestForm = ({
   return (
     <InferredForm
       config={config}
-      className="marketing-lead-fields"
+      className="marketing-lead-fields grid gap-x-6 gap-y-5 md:grid-cols-2 [&>*]:my-0 [&>*]:min-w-0 [&_button[type=submit]]:justify-self-start"
       onSubmit={(data) =>
         onSubmit({ ...data, kind: "interest", locale, topic })
       }
@@ -85,7 +84,7 @@ const IntegrationForm = ({
   children,
   locale,
   topic,
-}: FormProps) => {
+}: IntegrationForm.Props) => {
   const fields = createLeadFields(copy);
   const config = {
     name: fields.name,
@@ -97,7 +96,7 @@ const IntegrationForm = ({
   return (
     <InferredForm
       config={config}
-      className="marketing-lead-fields"
+      className="marketing-lead-fields grid gap-x-6 gap-y-5 md:grid-cols-2 [&>*]:my-0 [&>*]:min-w-0 [&_button[type=submit]]:justify-self-start"
       onSubmit={(data) =>
         onSubmit({ ...data, kind: "integration", locale, topic })
       }
@@ -112,7 +111,7 @@ const PartnerForm = ({
   children,
   locale,
   topic,
-}: FormProps) => {
+}: PartnerForm.Props) => {
   const fields = createLeadFields(copy);
   const config = {
     name: fields.name,
@@ -127,7 +126,7 @@ const PartnerForm = ({
     <InferredForm
       config={config}
       defaultValues={{ note: "" }}
-      className="marketing-lead-fields"
+      className="marketing-lead-fields grid gap-x-6 gap-y-5 md:grid-cols-2 [&>*]:my-0 [&>*]:min-w-0 [&_button[type=submit]]:justify-self-start"
       onSubmit={(data) => onSubmit({ ...data, kind: "partner", locale, topic })}
     >
       {children}
@@ -142,14 +141,7 @@ export const LeadForm = ({
   locale,
   copy,
   onPendingChange,
-}: {
-  kind: "interest" | "integration" | "partner";
-  topic: string;
-  title?: string;
-  locale: "en" | "es";
-  copy: LeadCopy;
-  onPendingChange?: (pending: boolean) => void;
-}) => {
+}: LeadForm.Props) => {
   const state = useLeadSubmission(copy);
   useEffect(() => {
     onPendingChange?.(state.isPending);
@@ -166,7 +158,10 @@ export const LeadForm = ({
     }
   })();
   return (
-    <div className="marketing-lead" aria-busy={state.isPending}>
+    <div
+      className="marketing-lead mt-7 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]"
+      aria-busy={state.isPending}
+    >
       {state.sent ? (
         <div role="status">
           <h3>{copy.status.sentTitle}</h3>
@@ -207,3 +202,30 @@ export const LeadForm = ({
     </div>
   );
 };
+
+export namespace LeadPrivacy {
+  export type Props = { copy: LeadCopy };
+}
+
+namespace InterestForm {
+  export type Props = FormProps;
+}
+
+namespace IntegrationForm {
+  export type Props = FormProps;
+}
+
+namespace PartnerForm {
+  export type Props = FormProps;
+}
+
+export namespace LeadForm {
+  export type Props = {
+    kind: "interest" | "integration" | "partner";
+    topic: string;
+    title?: string;
+    locale: "en" | "es";
+    copy: LeadCopy;
+    onPendingChange?: (pending: boolean) => void;
+  };
+}

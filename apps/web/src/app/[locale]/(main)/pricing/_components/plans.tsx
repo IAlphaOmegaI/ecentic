@@ -21,15 +21,15 @@ export const Plans = async () => {
           <Plus className="bottom-0 left-0 hidden -translate-x-1/2 translate-y-1/2 md:flex" />
           <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:flex" />
           <div className="grid grid-cols-1 divide-y divide-accent-foreground md:grid-cols-[8fr_5fr] md:items-stretch md:divide-x md:divide-y-0">
-            <div className="flex h-full flex-col justify-between gap-8 bg-primary p-6 text-white md:p-10">
+            <div className="flex h-full flex-col justify-between gap-8 bg-primary p-6 text-background-rich md:p-10">
               <div className="flex flex-col gap-4">
-                <span className="w-fit rounded-full border border-white/20 bg-white/10 px-3 py-1 font-medium text-sm">
+                <span className="w-fit rounded-full border border-background-rich/20 bg-background-rich/10 px-3 py-1 font-medium text-sm">
                   {translate("scan.badge")}
                 </span>
                 <h2 className="max-w-lg font-body font-medium text-3xl leading-tight md:text-4xl">
                   {translate("scan.title")}
                 </h2>
-                <p className="max-w-lg font-light text-lg text-white">
+                <p className="max-w-lg font-light text-background-rich text-lg">
                   {translate("scan.description")}
                 </p>
               </div>
@@ -42,7 +42,9 @@ export const Plans = async () => {
                   {translate("scan.action.primary")}
                   <ArrowRightIcon className="size-4" />
                 </Button>
-                <p className="text-sm text-white">{translate("scan.proof")}</p>
+                <p className="text-background-rich text-sm">
+                  {translate("scan.proof")}
+                </p>
               </div>
             </div>
             <div className="relative flex h-full min-h-full flex-col justify-end overflow-hidden bg-background-rich p-6 md:p-10">

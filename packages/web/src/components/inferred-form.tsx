@@ -48,6 +48,14 @@ import {
 } from "./select";
 import { TextField, TextFieldInput, TextFieldMaskToggle } from "./text-field";
 
+type SelectControl = Omit<SelectTrigger.Props, "classList"> & {
+  classList?: SelectTrigger.Props["classList"] & {
+    positioner?: SelectPositioner.Props["classList"];
+    popup?: SelectPopup.Props["classList"];
+    selectItem?: SelectItem.Props["classList"];
+  };
+};
+
 type Interface = {
   text: InterfaceValue<z.ZodString, TextField.Props>;
   number: InterfaceValue<z.ZodNumber, NumberField.Props>;
@@ -58,7 +66,7 @@ type Interface = {
         {
           placeholder?: string;
           items?: Select.Props<unknown>["items"];
-        } & SelectTrigger.Props
+        } & SelectControl
       >
     | InterfaceValue<
         // biome-ignore lint/suspicious/noExplicitAny: no better way to describe it
@@ -67,7 +75,7 @@ type Interface = {
           multiple: true;
           placeholder?: string;
           items?: Select.Props<unknown>["items"];
-        } & SelectTrigger.Props
+        } & SelectControl
       >
     | InterfaceValue<
         // biome-ignore lint/suspicious/noExplicitAny: no better way to describe it
@@ -75,7 +83,7 @@ type Interface = {
         {
           placeholder?: string;
           items?: Select.Props<unknown>["items"];
-        } & SelectTrigger.Props
+        } & SelectControl
       >
     | InterfaceValue<
         // biome-ignore lint/suspicious/noExplicitAny: no better way to describe it
@@ -84,7 +92,7 @@ type Interface = {
           multiple: true;
           placeholder?: string;
           items?: Select.Props<unknown>["items"];
-        } & SelectTrigger.Props
+        } & SelectControl
       >;
   radio:
     | InterfaceValue<
@@ -330,8 +338,10 @@ export const InferredFormField = <Field extends GenericField>(
                       )}
                     </SelectValue>
                   </SelectTrigger>
-                  <SelectPositioner>
-                    <SelectPopup>
+                  <SelectPositioner
+                    classList={props.classList?.control?.positioner}
+                  >
+                    <SelectPopup classList={props.classList?.control?.popup}>
                       {options.map(({ value, label }) => (
                         <SelectItem
                           key={value}

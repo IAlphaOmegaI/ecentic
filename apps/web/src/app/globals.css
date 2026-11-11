@@ -3,7 +3,15 @@
 
 @theme inline {
   --font-body: var(--font-redhat-display);
+  --font-heading: var(--font-lt-superior);
   --font-superior: var(--font-lt-superior);
+}
+
+@theme {
+  --color-cross: #7d8590;
+  --color-band-start: #111111;
+  --color-band-middle: #092645;
+  --color-band-end: #005fd6;
 }
 
 html {
@@ -96,4 +104,1420 @@ tr {
   background-clip: text;
   -webkit-text-fill-color: transparent;
   animation: gold-shine 3s linear infinite;
+}
+
+/* Rail geometry: each shared boundary has one owner, including its cross. */
+@utility marketing-grid-pattern {
+  & .marketing-rail {
+    --rail-top-cross: var(--rail-cross);
+  }
+  & .marketing-band + .marketing-band > .marketing-rail,
+  &.marketing-site
+    > main
+    + .marketing-footer
+    > .marketing-band:first-child
+    > .marketing-rail {
+    border-top: 0;
+    --rail-top-cross: transparent;
+  }
+  & .marketing-rail::before,
+  & .marketing-rail::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    z-index: 2;
+    width: 16px;
+    height: calc(100% + 16px);
+    top: -8px;
+    background:
+      linear-gradient(0deg, var(--rail-top-cross), var(--rail-top-cross)) center
+      7.5px / 16px 1px no-repeat,
+      linear-gradient(0deg, var(--rail-top-cross), var(--rail-top-cross)) center
+      top / 1px 16px no-repeat,
+      linear-gradient(var(--rail-cross), var(--rail-cross)) center
+      calc(100% - 7.5px) / 16px 1px no-repeat,
+      linear-gradient(var(--rail-cross), var(--rail-cross)) center bottom / 1px
+      16px no-repeat;
+  }
+  & .marketing-rail::before {
+    left: -8px;
+  }
+  & .marketing-rail::after {
+    right: -8px;
+  }
+  & .marketing-rail > :is(.marketing-grid, .marketing-rows):last-child,
+  & .marketing-grid:has(+ .marketing-rows) {
+    border-bottom: 0;
+  }
+  @media (max-width: 1190px) {
+    & .marketing-rail {
+      --rail-top-cross: var(--rail-cross);
+    }
+  }
+  @media (max-width: 639px) {
+    & .marketing-rail {
+      --rail-top-cross: var(--rail-cross);
+    }
+  }
+  & .marketing-grid[data-columns="2"] > :nth-child(2n),
+  & .marketing-grid[data-columns="3"] > :nth-child(3n),
+  & .marketing-grid[data-columns="4"] > :nth-child(4n),
+  & .marketing-grid[data-columns="5"] > :nth-child(5n) {
+    border-right: 0;
+  }
+  @media (min-width: 640px) and (max-width: 800px) {
+    & .marketing-grid[data-columns] > :nth-child(odd) {
+      border-right: 1px solid var(--rail-color);
+    }
+    & .marketing-grid[data-columns] > :nth-child(even) {
+      border-right: 0;
+    }
+  }
+  & .enterprise-journey + .marketing-band > .marketing-rail {
+    border-top: 1px solid var(--rail-color);
+    --rail-top-cross: var(--rail-cross);
+  }
+  & .enterprise-journey .marketing-rail::before,
+  & .enterprise-journey .marketing-rail::after {
+    display: none;
+  }
+  & .enterprise-stage-tab + .enterprise-stage-tab::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    left: -8px;
+    top: -8px;
+    z-index: 2;
+    width: 16px;
+    height: calc(100% + 16px);
+    background:
+      linear-gradient(var(--rail-cross), var(--rail-cross)) center 7.5px / 16px
+      1px no-repeat,
+      linear-gradient(var(--rail-cross), var(--rail-cross)) center top / 1px
+      16px no-repeat,
+      linear-gradient(var(--rail-cross), var(--rail-cross)) center
+      calc(100% - 7.5px) / 16px 1px no-repeat,
+      linear-gradient(var(--rail-cross), var(--rail-cross)) center bottom / 1px
+      16px no-repeat;
+  }
+  & .enterprise-integration-row,
+  & .enterprise-pricing-paths > a,
+  & .enterprise-stage-note {
+    --junction-top-right: var(--rail-cross);
+  }
+  & .enterprise-integration-row:last-child,
+  & .enterprise-pricing-paths > a:last-child {
+    --junction-bottom-left: var(--rail-cross);
+    --junction-bottom-right: var(--rail-cross);
+  }
+  & .enterprise-integration-row > h3 {
+    --junction-top-left: transparent;
+  }
+  & .enterprise-stage-body::after {
+    content: "";
+    position: absolute;
+    left: -8px;
+    bottom: -8px;
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+    z-index: 2;
+    background:
+      linear-gradient(var(--rail-cross), var(--rail-cross)) center / 16px 1px
+      no-repeat,
+      linear-gradient(var(--rail-cross), var(--rail-cross)) center / 1px 16px
+      no-repeat;
+  }
+  @media (min-width: 1001px) {
+    &
+      .enterprise-integration-row
+      article:nth-child(n + 4):last-child:not(:nth-child(3n)) {
+      --junction-top-right: var(--rail-cross);
+    }
+    &
+      .enterprise-integration-row:last-child
+      article:nth-child(3n + 1):nth-last-child(-n + 3),
+    &
+      .enterprise-integration-row:last-child
+      article:nth-child(3n + 1):nth-last-child(-n + 3)
+      ~ article {
+      --junction-bottom-left: var(--rail-cross);
+    }
+  }
+  @media (max-width: 1000px) {
+    &
+      .enterprise-integration-row
+      article:nth-child(n + 3):last-child:not(:nth-child(2n)) {
+      --junction-top-right: var(--rail-cross);
+    }
+    &
+      .enterprise-integration-row:last-child
+      article:nth-child(2n + 1):nth-last-child(-n + 2),
+    &
+      .enterprise-integration-row:last-child
+      article:nth-child(2n + 1):nth-last-child(-n + 2)
+      ~ article {
+      --junction-bottom-left: var(--rail-cross);
+    }
+  }
+  & .enterprise-finding > h3 {
+    --junction-bottom-left: var(--rail-cross);
+  }
+  & .enterprise-finding > div {
+    --junction-top-right: var(--rail-cross);
+    --junction-bottom-left: var(--rail-cross);
+    --junction-bottom-right: var(--rail-cross);
+  }
+  & .enterprise-proof-grid > article:first-child,
+  & .enterprise-proof-grid > article:nth-child(2) {
+    --junction-bottom-left: transparent;
+  }
+  & .enterprise-proof-grid > article:last-child {
+    --junction-bottom-right: transparent;
+  }
+  @media (max-width: 639px) {
+    & .enterprise-stage-tab + .enterprise-stage-tab::after {
+      display: none;
+    }
+    & .enterprise-stage-body::after {
+      display: none;
+    }
+    & .enterprise-integration-row > h3 {
+      --junction-bottom-left: var(--rail-cross);
+      --junction-bottom-right: var(--rail-cross);
+    }
+    & .enterprise-integration-row article:first-child {
+      --junction-top-left: transparent;
+    }
+    & .enterprise-integration-row article:nth-child(2n + 2):not(:nth-child(2)) {
+      --junction-top-right: var(--rail-cross);
+    }
+    &
+      .enterprise-integration-row:last-child
+      article:nth-child(2n + 1):nth-last-child(-n + 2) {
+      --junction-bottom-left: transparent;
+    }
+    & .enterprise-finding > h3 {
+      --junction-top-right: var(--rail-cross);
+      --junction-bottom-left: transparent;
+    }
+    & .enterprise-finding > div {
+      --junction-top-left: transparent;
+      --junction-top-right: transparent;
+    }
+    & .enterprise-proof-grid > article:last-child {
+      --junction-bottom-left: transparent;
+    }
+  }
+  & .marketing-rail {
+    isolation: isolate;
+  }
+  & .marketing-guides {
+    position: absolute;
+    z-index: -1;
+    inset: 0;
+    pointer-events: none;
+    color: var(--rail-color);
+    opacity: 0.55;
+  }
+  & .marketing-guides span {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: currentColor;
+  }
+  & .marketing-guides span:nth-child(1) {
+    left: 25%;
+  }
+  & .marketing-guides span:nth-child(2) {
+    left: 50%;
+  }
+  & .marketing-guides span:nth-child(3) {
+    left: 75%;
+  }
+  & .marketing-guides span::before,
+  & .marketing-guides span::after {
+    content: "";
+    position: absolute;
+    width: 16px;
+    height: 16px;
+    left: -7.5px;
+    background:
+      linear-gradient(currentColor, currentColor) center / 16px 1px no-repeat,
+      linear-gradient(currentColor, currentColor) center / 1px 16px no-repeat;
+  }
+  & .marketing-guides span::before {
+    top: -8px;
+  }
+  & .marketing-guides span::after {
+    bottom: -8px;
+  }
+  & .marketing-dark .marketing-guides {
+    color: var(--color-background-rich);
+    opacity: 0.09;
+  }
+  & .enterprise-blue .marketing-guides {
+    color: var(--color-background-rich);
+    opacity: 0.08;
+  }
+  & .enterprise-journey .marketing-guides span::before,
+  & .enterprise-journey .marketing-guides span::after {
+    display: none;
+  }
+  &
+    .marketing-rail:has(
+      .marketing-grid,
+      .marketing-rows,
+      .marketing-faq,
+      .enterprise-stage-list,
+      .enterprise-business-grid,
+      .enterprise-channel-grid,
+      .enterprise-integration-row,
+      .enterprise-proof-grid,
+      .enterprise-pricing-paths,
+      .marketing-lead-columns,
+      .marketing-demo-layout,
+      .marketing-footer-columns
+    )
+    > .marketing-guides,
+  & .enterprise-programs .marketing-guides {
+    display: none;
+  }
+  &
+    .marketing-band:not(.enterprise-journey, .enterprise-programs):not(
+      :has(
+        .marketing-grid,
+        .marketing-rows,
+        .marketing-faq,
+        .enterprise-stage-list,
+        .enterprise-business-grid,
+        .enterprise-channel-grid,
+        .enterprise-integration-row,
+        .enterprise-proof-grid,
+        .enterprise-pricing-paths,
+        .marketing-lead-columns,
+        .marketing-demo-layout,
+        .marketing-footer-columns
+      )
+    )
+    + .marketing-band
+    > .marketing-rail
+    > .marketing-guides
+    span::before {
+    display: none;
+  }
+  &
+    :where(
+      .marketing-grid > *,
+      .marketing-rows > div,
+      .marketing-faq article,
+      .marketing-footer-columns > nav,
+      .enterprise-business-grid > article,
+      .enterprise-channel-grid > a,
+      .enterprise-proof-grid > article,
+      .enterprise-integration-row,
+      .enterprise-integration-row article,
+      .enterprise-integration-row > h3,
+      .enterprise-stage-note,
+      .enterprise-finding > h3,
+      .enterprise-finding > div,
+      .enterprise-pricing-paths > a
+    ) {
+    position: relative;
+    --junction-top-left: var(--rail-cross);
+    --junction-top-right: transparent;
+    --junction-bottom-left: transparent;
+    --junction-bottom-right: transparent;
+  }
+  &
+    :where(
+      .marketing-grid > *,
+      .marketing-rows > div,
+      .marketing-faq article,
+      .marketing-footer-columns > nav,
+      .enterprise-business-grid > article,
+      .enterprise-channel-grid > a,
+      .enterprise-proof-grid > article,
+      .enterprise-integration-row,
+      .enterprise-integration-row article,
+      .enterprise-integration-row > h3,
+      .enterprise-stage-note,
+      .enterprise-finding > h3,
+      .enterprise-finding > div,
+      .enterprise-pricing-paths > a
+    )::before,
+  &
+    :where(
+      .marketing-grid > *,
+      .marketing-rows > div,
+      .marketing-faq article,
+      .marketing-footer-columns > nav,
+      .enterprise-business-grid > article,
+      .enterprise-channel-grid > a,
+      .enterprise-proof-grid > article,
+      .enterprise-integration-row,
+      .enterprise-integration-row article,
+      .enterprise-integration-row > h3,
+      .enterprise-stage-note,
+      .enterprise-finding > h3,
+      .enterprise-finding > div,
+      .enterprise-pricing-paths > a
+    )::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    z-index: 2;
+    left: -8px;
+    width: calc(100% + 16px);
+    height: 16px;
+  }
+  &
+    :where(
+      .marketing-grid > *,
+      .marketing-rows > div,
+      .marketing-faq article,
+      .marketing-footer-columns > nav,
+      .enterprise-business-grid > article,
+      .enterprise-channel-grid > a,
+      .enterprise-proof-grid > article,
+      .enterprise-integration-row,
+      .enterprise-integration-row article,
+      .enterprise-integration-row > h3,
+      .enterprise-stage-note,
+      .enterprise-finding > h3,
+      .enterprise-finding > div,
+      .enterprise-pricing-paths > a
+    )::before {
+    top: -8px;
+    background:
+      linear-gradient(0deg, var(--junction-top-left), var(--junction-top-left))
+      left center / 16px 1px no-repeat,
+      linear-gradient(0deg, var(--junction-top-left), var(--junction-top-left))
+      7.5px center / 1px 16px no-repeat,
+      linear-gradient(
+        0deg,
+        var(--junction-top-right),
+        var(--junction-top-right)
+      )
+      right center / 16px 1px no-repeat,
+      linear-gradient(
+        0deg,
+        var(--junction-top-right),
+        var(--junction-top-right)
+      )
+      calc(100% - 7.5px) center / 1px 16px no-repeat;
+  }
+  &
+    :where(
+      .marketing-grid > *,
+      .marketing-rows > div,
+      .marketing-faq article,
+      .marketing-footer-columns > nav,
+      .enterprise-business-grid > article,
+      .enterprise-channel-grid > a,
+      .enterprise-proof-grid > article,
+      .enterprise-integration-row,
+      .enterprise-integration-row article,
+      .enterprise-integration-row > h3,
+      .enterprise-stage-note,
+      .enterprise-finding > h3,
+      .enterprise-finding > div,
+      .enterprise-pricing-paths > a
+    )::after {
+    bottom: -8px;
+    background:
+      linear-gradient(
+        0deg,
+        var(--junction-bottom-left),
+        var(--junction-bottom-left)
+      )
+      left center / 16px 1px no-repeat,
+      linear-gradient(
+        0deg,
+        var(--junction-bottom-left),
+        var(--junction-bottom-left)
+      )
+      7.5px center / 1px 16px no-repeat,
+      linear-gradient(
+        0deg,
+        var(--junction-bottom-right),
+        var(--junction-bottom-right)
+      )
+      right center / 16px 1px no-repeat,
+      linear-gradient(
+        0deg,
+        var(--junction-bottom-right),
+        var(--junction-bottom-right)
+      )
+      calc(100% - 7.5px) center / 1px 16px no-repeat;
+  }
+  @media (min-width: 801px) {
+    & .marketing-grid[data-columns="1"] > * {
+      border-right: 0;
+    }
+    & :where(.marketing-grid[data-columns="1"] > *) {
+      --junction-top-right: var(--rail-cross);
+    }
+    & :where(.marketing-grid[data-columns="1"] > :last-child) {
+      --junction-bottom-left: var(--rail-cross);
+      --junction-bottom-right: var(--rail-cross);
+    }
+    &
+      :where(
+        .marketing-rail > .marketing-guides + .marketing-grid[data-columns="1"]
+      )
+      > :first-child {
+      border-top: 0;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .marketing-grid[data-columns="1"]
+          > :first-child
+      ) {
+      --junction-top-left: transparent;
+      --junction-top-right: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-grid[data-columns="1"]:last-child
+          > :last-child
+      ) {
+      --junction-bottom-left: transparent;
+      --junction-bottom-right: transparent;
+    }
+    & :where(.marketing-grid[data-columns="2"] > :nth-child(2n)),
+    & :where(.marketing-grid[data-columns="2"] > :last-child) {
+      --junction-top-right: var(--rail-cross);
+    }
+    &
+      :where(
+        .marketing-grid[data-columns="2"]
+          > :nth-child(2n + 1):nth-last-child(-n + 2)
+      ),
+    &
+      :where(
+        .marketing-grid[data-columns="2"]
+          > :nth-child(2n + 1):nth-last-child(-n + 2)
+          ~ *
+      ) {
+      --junction-bottom-left: var(--rail-cross);
+    }
+    & :where(.marketing-grid[data-columns="2"] > :last-child) {
+      --junction-bottom-right: var(--rail-cross);
+    }
+    &
+      :where(
+        .marketing-rail > .marketing-guides + .marketing-grid[data-columns="2"]
+      )
+      > :nth-child(-n + 2) {
+      border-top: 0;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .marketing-grid[data-columns="2"]
+          > :first-child
+      ) {
+      --junction-top-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .marketing-grid[data-columns="2"]
+          > :nth-child(2)
+      ) {
+      --junction-top-right: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-grid[data-columns="2"]:last-child
+          > :nth-child(2n + 1):nth-last-child(-n + 2)
+      ) {
+      --junction-bottom-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-grid[data-columns="2"]:last-child
+          > :nth-child(2n)
+      ) {
+      --junction-bottom-right: transparent;
+    }
+    & :where(.marketing-grid[data-columns="3"] > :nth-child(3n)),
+    & :where(.marketing-grid[data-columns="3"] > :last-child) {
+      --junction-top-right: var(--rail-cross);
+    }
+    &
+      :where(
+        .marketing-grid[data-columns="3"]
+          > :nth-child(3n + 1):nth-last-child(-n + 3)
+      ),
+    &
+      :where(
+        .marketing-grid[data-columns="3"]
+          > :nth-child(3n + 1):nth-last-child(-n + 3)
+          ~ *
+      ) {
+      --junction-bottom-left: var(--rail-cross);
+    }
+    & :where(.marketing-grid[data-columns="3"] > :last-child) {
+      --junction-bottom-right: var(--rail-cross);
+    }
+    &
+      :where(
+        .marketing-rail > .marketing-guides + .marketing-grid[data-columns="3"]
+      )
+      > :nth-child(-n + 3) {
+      border-top: 0;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .marketing-grid[data-columns="3"]
+          > :first-child
+      ) {
+      --junction-top-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .marketing-grid[data-columns="3"]
+          > :nth-child(3)
+      ) {
+      --junction-top-right: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-grid[data-columns="3"]:last-child
+          > :nth-child(3n + 1):nth-last-child(-n + 3)
+      ) {
+      --junction-bottom-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-grid[data-columns="3"]:last-child
+          > :nth-child(3n)
+      ) {
+      --junction-bottom-right: transparent;
+    }
+    & :where(.marketing-grid[data-columns="4"] > :nth-child(4n)),
+    & :where(.marketing-grid[data-columns="4"] > :last-child) {
+      --junction-top-right: var(--rail-cross);
+    }
+    &
+      :where(
+        .marketing-grid[data-columns="4"]
+          > :nth-child(4n + 1):nth-last-child(-n + 4)
+      ),
+    &
+      :where(
+        .marketing-grid[data-columns="4"]
+          > :nth-child(4n + 1):nth-last-child(-n + 4)
+          ~ *
+      ) {
+      --junction-bottom-left: var(--rail-cross);
+    }
+    & :where(.marketing-grid[data-columns="4"] > :last-child) {
+      --junction-bottom-right: var(--rail-cross);
+    }
+    &
+      :where(
+        .marketing-rail > .marketing-guides + .marketing-grid[data-columns="4"]
+      )
+      > :nth-child(-n + 4) {
+      border-top: 0;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .marketing-grid[data-columns="4"]
+          > :first-child
+      ) {
+      --junction-top-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .marketing-grid[data-columns="4"]
+          > :nth-child(4)
+      ) {
+      --junction-top-right: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-grid[data-columns="4"]:last-child
+          > :nth-child(4n + 1):nth-last-child(-n + 4)
+      ) {
+      --junction-bottom-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-grid[data-columns="4"]:last-child
+          > :nth-child(4n)
+      ) {
+      --junction-bottom-right: transparent;
+    }
+    & :where(.marketing-grid[data-columns="5"] > :nth-child(5n)),
+    & :where(.marketing-grid[data-columns="5"] > :last-child) {
+      --junction-top-right: var(--rail-cross);
+    }
+    &
+      :where(
+        .marketing-grid[data-columns="5"]
+          > :nth-child(5n + 1):nth-last-child(-n + 5)
+      ),
+    &
+      :where(
+        .marketing-grid[data-columns="5"]
+          > :nth-child(5n + 1):nth-last-child(-n + 5)
+          ~ *
+      ) {
+      --junction-bottom-left: var(--rail-cross);
+    }
+    & :where(.marketing-grid[data-columns="5"] > :last-child) {
+      --junction-bottom-right: var(--rail-cross);
+    }
+    &
+      :where(
+        .marketing-rail > .marketing-guides + .marketing-grid[data-columns="5"]
+      )
+      > :nth-child(-n + 5) {
+      border-top: 0;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .marketing-grid[data-columns="5"]
+          > :first-child
+      ) {
+      --junction-top-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .marketing-grid[data-columns="5"]
+          > :nth-child(5)
+      ) {
+      --junction-top-right: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-grid[data-columns="5"]:last-child
+          > :nth-child(5n + 1):nth-last-child(-n + 5)
+      ) {
+      --junction-bottom-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-grid[data-columns="5"]:last-child
+          > :nth-child(5n)
+      ) {
+      --junction-bottom-right: transparent;
+    }
+    & :where(.marketing-grid:not([data-columns]) > :nth-child(3n)),
+    & :where(.marketing-grid:not([data-columns]) > :last-child) {
+      --junction-top-right: var(--rail-cross);
+    }
+    &
+      :where(
+        .marketing-grid:not([data-columns])
+          > :nth-child(3n + 1):nth-last-child(-n + 3)
+      ),
+    &
+      :where(
+        .marketing-grid:not([data-columns])
+          > :nth-child(3n + 1):nth-last-child(-n + 3)
+          ~ *
+      ) {
+      --junction-bottom-left: var(--rail-cross);
+    }
+    & :where(.marketing-grid:not([data-columns]) > :last-child) {
+      --junction-bottom-right: var(--rail-cross);
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .marketing-grid:not([data-columns])
+      )
+      > :nth-child(-n + 3) {
+      border-top: 0;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .marketing-grid:not([data-columns])
+          > :first-child
+      ) {
+      --junction-top-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .marketing-grid:not([data-columns])
+          > :nth-child(3)
+      ) {
+      --junction-top-right: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-grid:not([data-columns]):last-child
+          > :nth-child(3n + 1):nth-last-child(-n + 3)
+      ) {
+      --junction-bottom-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-grid:not([data-columns]):last-child
+          > :nth-child(3n)
+      ) {
+      --junction-bottom-right: transparent;
+    }
+  }
+  @media (min-width: 640px) and (max-width: 800px) {
+    & :where(.marketing-grid > :nth-child(2n)),
+    & :where(.marketing-grid > :last-child) {
+      --junction-top-right: var(--rail-cross);
+    }
+    & :where(.marketing-grid > :nth-child(2n + 1):nth-last-child(-n + 2)),
+    & :where(.marketing-grid > :nth-child(2n + 1):nth-last-child(-n + 2) ~ *) {
+      --junction-bottom-left: var(--rail-cross);
+    }
+    & :where(.marketing-grid > :last-child) {
+      --junction-bottom-right: var(--rail-cross);
+    }
+    &
+      :where(.marketing-rail > .marketing-guides + .marketing-grid)
+      > :nth-child(-n + 2) {
+      border-top: 0;
+    }
+    &
+      :where(
+        .marketing-rail > .marketing-guides + .marketing-grid > :first-child
+      ) {
+      --junction-top-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail > .marketing-guides + .marketing-grid > :nth-child(2)
+      ) {
+      --junction-top-right: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-grid:last-child
+          > :nth-child(2n + 1):nth-last-child(-n + 2)
+      ) {
+      --junction-bottom-left: transparent;
+    }
+    & :where(.marketing-rail > .marketing-grid:last-child > :nth-child(2n)) {
+      --junction-bottom-right: transparent;
+    }
+  }
+  @media (max-width: 639px) {
+    & :where(.marketing-grid > :nth-child(1n)),
+    & :where(.marketing-grid > :last-child) {
+      --junction-top-right: var(--rail-cross);
+    }
+    & :where(.marketing-grid > :nth-child(1n + 1):nth-last-child(-n + 1)),
+    & :where(.marketing-grid > :nth-child(1n + 1):nth-last-child(-n + 1) ~ *) {
+      --junction-bottom-left: var(--rail-cross);
+    }
+    & :where(.marketing-grid > :last-child) {
+      --junction-bottom-right: var(--rail-cross);
+    }
+    &
+      :where(.marketing-rail > .marketing-guides + .marketing-grid)
+      > :nth-child(-n + 1) {
+      border-top: 0;
+    }
+    &
+      :where(
+        .marketing-rail > .marketing-guides + .marketing-grid > :first-child
+      ) {
+      --junction-top-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail > .marketing-guides + .marketing-grid > :nth-child(1)
+      ) {
+      --junction-top-right: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-grid:last-child
+          > :nth-child(1n + 1):nth-last-child(-n + 1)
+      ) {
+      --junction-bottom-left: transparent;
+    }
+    & :where(.marketing-rail > .marketing-grid:last-child > :nth-child(1n)) {
+      --junction-bottom-right: transparent;
+    }
+    & .marketing-guides {
+      opacity: 0.35;
+    }
+    & .marketing-guides span:first-child,
+    & .marketing-guides span:last-child {
+      display: none;
+    }
+  }
+  @media (min-width: 1001px) {
+    & :where(.enterprise-business-grid > :nth-child(4n)),
+    & :where(.enterprise-business-grid > :last-child) {
+      --junction-top-right: var(--rail-cross);
+    }
+    &
+      :where(
+        .enterprise-business-grid > :nth-child(4n + 1):nth-last-child(-n + 4)
+      ),
+    &
+      :where(
+        .enterprise-business-grid
+          > :nth-child(4n + 1):nth-last-child(-n + 4)
+          ~ *
+      ) {
+      --junction-bottom-left: var(--rail-cross);
+    }
+    & :where(.enterprise-business-grid > :last-child) {
+      --junction-bottom-right: var(--rail-cross);
+    }
+    &
+      :where(.marketing-rail > .marketing-guides + .enterprise-business-grid)
+      > :nth-child(-n + 4) {
+      border-top: 0;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .enterprise-business-grid
+          > :first-child
+      ) {
+      --junction-top-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .enterprise-business-grid
+          > :nth-child(4)
+      ) {
+      --junction-top-right: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .enterprise-business-grid:last-child
+          > :nth-child(4n + 1):nth-last-child(-n + 4)
+      ) {
+      --junction-bottom-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail > .enterprise-business-grid:last-child > :nth-child(4n)
+      ) {
+      --junction-bottom-right: transparent;
+    }
+    & :where(.enterprise-channel-grid > :nth-child(3n)),
+    & :where(.enterprise-channel-grid > :last-child) {
+      --junction-top-right: var(--rail-cross);
+    }
+    &
+      :where(
+        .enterprise-channel-grid > :nth-child(3n + 1):nth-last-child(-n + 3)
+      ),
+    &
+      :where(
+        .enterprise-channel-grid > :nth-child(3n + 1):nth-last-child(-n + 3) ~ *
+      ) {
+      --junction-bottom-left: var(--rail-cross);
+    }
+    & :where(.enterprise-channel-grid > :last-child) {
+      --junction-bottom-right: var(--rail-cross);
+    }
+    &
+      :where(.marketing-rail > .marketing-guides + .enterprise-channel-grid)
+      > :nth-child(-n + 3) {
+      border-top: 0;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .enterprise-channel-grid
+          > :first-child
+      ) {
+      --junction-top-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .enterprise-channel-grid
+          > :nth-child(3)
+      ) {
+      --junction-top-right: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .enterprise-channel-grid:last-child
+          > :nth-child(3n + 1):nth-last-child(-n + 3)
+      ) {
+      --junction-bottom-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail > .enterprise-channel-grid:last-child > :nth-child(3n)
+      ) {
+      --junction-bottom-right: transparent;
+    }
+  }
+  @media (min-width: 640px) and (max-width: 1000px) {
+    & :where(.enterprise-business-grid > :nth-child(2n)),
+    & :where(.enterprise-business-grid > :last-child) {
+      --junction-top-right: var(--rail-cross);
+    }
+    &
+      :where(
+        .enterprise-business-grid > :nth-child(2n + 1):nth-last-child(-n + 2)
+      ),
+    &
+      :where(
+        .enterprise-business-grid
+          > :nth-child(2n + 1):nth-last-child(-n + 2)
+          ~ *
+      ) {
+      --junction-bottom-left: var(--rail-cross);
+    }
+    & :where(.enterprise-business-grid > :last-child) {
+      --junction-bottom-right: var(--rail-cross);
+    }
+    &
+      :where(.marketing-rail > .marketing-guides + .enterprise-business-grid)
+      > :nth-child(-n + 2) {
+      border-top: 0;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .enterprise-business-grid
+          > :first-child
+      ) {
+      --junction-top-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .enterprise-business-grid
+          > :nth-child(2)
+      ) {
+      --junction-top-right: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .enterprise-business-grid:last-child
+          > :nth-child(2n + 1):nth-last-child(-n + 2)
+      ) {
+      --junction-bottom-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail > .enterprise-business-grid:last-child > :nth-child(2n)
+      ) {
+      --junction-bottom-right: transparent;
+    }
+    & :where(.enterprise-channel-grid > :nth-child(2n)),
+    & :where(.enterprise-channel-grid > :last-child) {
+      --junction-top-right: var(--rail-cross);
+    }
+    &
+      :where(
+        .enterprise-channel-grid > :nth-child(2n + 1):nth-last-child(-n + 2)
+      ),
+    &
+      :where(
+        .enterprise-channel-grid > :nth-child(2n + 1):nth-last-child(-n + 2) ~ *
+      ) {
+      --junction-bottom-left: var(--rail-cross);
+    }
+    & :where(.enterprise-channel-grid > :last-child) {
+      --junction-bottom-right: var(--rail-cross);
+    }
+    &
+      :where(.marketing-rail > .marketing-guides + .enterprise-channel-grid)
+      > :nth-child(-n + 2) {
+      border-top: 0;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .enterprise-channel-grid
+          > :first-child
+      ) {
+      --junction-top-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .enterprise-channel-grid
+          > :nth-child(2)
+      ) {
+      --junction-top-right: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .enterprise-channel-grid:last-child
+          > :nth-child(2n + 1):nth-last-child(-n + 2)
+      ) {
+      --junction-bottom-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail > .enterprise-channel-grid:last-child > :nth-child(2n)
+      ) {
+      --junction-bottom-right: transparent;
+    }
+  }
+  @media (min-width: 640px) {
+    & :where(.enterprise-proof-grid > :nth-child(3n)),
+    & :where(.enterprise-proof-grid > :last-child) {
+      --junction-top-right: var(--rail-cross);
+    }
+    &
+      :where(
+        .enterprise-proof-grid > :nth-child(3n + 1):nth-last-child(-n + 3)
+      ),
+    &
+      :where(
+        .enterprise-proof-grid > :nth-child(3n + 1):nth-last-child(-n + 3) ~ *
+      ) {
+      --junction-bottom-left: var(--rail-cross);
+    }
+    & :where(.enterprise-proof-grid > :last-child) {
+      --junction-bottom-right: var(--rail-cross);
+    }
+    &
+      :where(.marketing-rail > .marketing-guides + .enterprise-proof-grid)
+      > :nth-child(-n + 3) {
+      border-top: 0;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .enterprise-proof-grid
+          > :first-child
+      ) {
+      --junction-top-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .enterprise-proof-grid
+          > :nth-child(3)
+      ) {
+      --junction-top-right: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .enterprise-proof-grid:last-child
+          > :nth-child(3n + 1):nth-last-child(-n + 3)
+      ) {
+      --junction-bottom-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail > .enterprise-proof-grid:last-child > :nth-child(3n)
+      ) {
+      --junction-bottom-right: transparent;
+    }
+  }
+  @media (max-width: 639px) {
+    & :where(.enterprise-business-grid > :nth-child(1n)),
+    & :where(.enterprise-business-grid > :last-child) {
+      --junction-top-right: var(--rail-cross);
+    }
+    &
+      :where(
+        .enterprise-business-grid > :nth-child(1n + 1):nth-last-child(-n + 1)
+      ),
+    &
+      :where(
+        .enterprise-business-grid
+          > :nth-child(1n + 1):nth-last-child(-n + 1)
+          ~ *
+      ) {
+      --junction-bottom-left: var(--rail-cross);
+    }
+    & :where(.enterprise-business-grid > :last-child) {
+      --junction-bottom-right: var(--rail-cross);
+    }
+    &
+      :where(.marketing-rail > .marketing-guides + .enterprise-business-grid)
+      > :nth-child(-n + 1) {
+      border-top: 0;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .enterprise-business-grid
+          > :first-child
+      ) {
+      --junction-top-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .enterprise-business-grid
+          > :nth-child(1)
+      ) {
+      --junction-top-right: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .enterprise-business-grid:last-child
+          > :nth-child(1n + 1):nth-last-child(-n + 1)
+      ) {
+      --junction-bottom-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail > .enterprise-business-grid:last-child > :nth-child(1n)
+      ) {
+      --junction-bottom-right: transparent;
+    }
+    & :where(.enterprise-channel-grid > :nth-child(1n)),
+    & :where(.enterprise-channel-grid > :last-child) {
+      --junction-top-right: var(--rail-cross);
+    }
+    &
+      :where(
+        .enterprise-channel-grid > :nth-child(1n + 1):nth-last-child(-n + 1)
+      ),
+    &
+      :where(
+        .enterprise-channel-grid > :nth-child(1n + 1):nth-last-child(-n + 1) ~ *
+      ) {
+      --junction-bottom-left: var(--rail-cross);
+    }
+    & :where(.enterprise-channel-grid > :last-child) {
+      --junction-bottom-right: var(--rail-cross);
+    }
+    &
+      :where(.marketing-rail > .marketing-guides + .enterprise-channel-grid)
+      > :nth-child(-n + 1) {
+      border-top: 0;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .enterprise-channel-grid
+          > :first-child
+      ) {
+      --junction-top-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .enterprise-channel-grid
+          > :nth-child(1)
+      ) {
+      --junction-top-right: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .enterprise-channel-grid:last-child
+          > :nth-child(1n + 1):nth-last-child(-n + 1)
+      ) {
+      --junction-bottom-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail > .enterprise-channel-grid:last-child > :nth-child(1n)
+      ) {
+      --junction-bottom-right: transparent;
+    }
+    & :where(.enterprise-proof-grid > :nth-child(1n)),
+    & :where(.enterprise-proof-grid > :last-child) {
+      --junction-top-right: var(--rail-cross);
+    }
+    &
+      :where(
+        .enterprise-proof-grid > :nth-child(1n + 1):nth-last-child(-n + 1)
+      ),
+    &
+      :where(
+        .enterprise-proof-grid > :nth-child(1n + 1):nth-last-child(-n + 1) ~ *
+      ) {
+      --junction-bottom-left: var(--rail-cross);
+    }
+    & :where(.enterprise-proof-grid > :last-child) {
+      --junction-bottom-right: var(--rail-cross);
+    }
+    &
+      :where(.marketing-rail > .marketing-guides + .enterprise-proof-grid)
+      > :nth-child(-n + 1) {
+      border-top: 0;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .enterprise-proof-grid
+          > :first-child
+      ) {
+      --junction-top-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .marketing-guides
+          + .enterprise-proof-grid
+          > :nth-child(1)
+      ) {
+      --junction-top-right: transparent;
+    }
+    &
+      :where(
+        .marketing-rail
+          > .enterprise-proof-grid:last-child
+          > :nth-child(1n + 1):nth-last-child(-n + 1)
+      ) {
+      --junction-bottom-left: transparent;
+    }
+    &
+      :where(
+        .marketing-rail > .enterprise-proof-grid:last-child > :nth-child(1n)
+      ) {
+      --junction-bottom-right: transparent;
+    }
+  }
+  & .marketing-rows > div {
+    --junction-top-right: var(--rail-cross);
+  }
+  & :where(.marketing-rows > div:last-child) {
+    --junction-bottom-left: var(--rail-cross);
+    --junction-bottom-right: var(--rail-cross);
+  }
+  & :where(.marketing-rail > .marketing-rows:last-child > div:last-child) {
+    --junction-bottom-left: transparent;
+    --junction-bottom-right: transparent;
+  }
+  &
+    :where(
+      .marketing-rail > .marketing-guides + .marketing-rows > div:first-child
+    ) {
+    --junction-top-left: transparent;
+    --junction-top-right: transparent;
+  }
+  & .marketing-faq article + article {
+    --junction-top-right: var(--rail-cross);
+  }
+  & :where(.marketing-faq article:last-child) {
+    --junction-bottom-left: var(--rail-cross);
+  }
+  @media (max-width: 800px) {
+    & :where(.marketing-faq article:first-child) {
+      --junction-top-right: var(--rail-cross);
+    }
+    & :where(.marketing-faq article:last-child) {
+      --junction-bottom-left: transparent;
+    }
+  }
+  & .marketing-footer-columns > nav {
+    --junction-bottom-left: var(--rail-cross);
+  }
+  & :where(.marketing-footer-columns > nav:first-child) {
+    --junction-top-left: transparent;
+    --junction-bottom-left: transparent;
+  }
+  & main > .bg-grid-stripes {
+    max-width: 1186px;
+    margin-inline: auto;
+    border-inline: 1px solid var(--rail-color);
+  }
+  @media (max-width: 1190px) {
+    & main > .bg-grid-stripes {
+      margin-inline: 28px;
+    }
+  }
+  @media (max-width: 639px) {
+    & main > .bg-grid-stripes {
+      margin-inline: 16px;
+    }
+  }
+
+  /* The menu's outside right edge and each column's left edge own crosses. */
+  & .marketing-mega-grid > div::before,
+  & .marketing-mega-grid > div::after,
+  & .marketing-mega-grid::before,
+  & .marketing-mega-grid::after {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    width: 16px;
+    height: 16px;
+    pointer-events: none;
+    background:
+      linear-gradient(var(--rail-cross), var(--rail-cross)) center / 16px 1px
+      no-repeat,
+      linear-gradient(var(--rail-cross), var(--rail-cross)) center / 1px 16px
+      no-repeat;
+  }
+  & .marketing-mega-grid > div::before,
+  & .marketing-mega-grid > div::after {
+    left: -8px;
+  }
+  & .marketing-mega-grid > div::before,
+  & .marketing-mega-grid::before {
+    top: -8px;
+  }
+  & .marketing-mega-grid > div::after,
+  & .marketing-mega-grid::after {
+    bottom: -8px;
+  }
+  & .marketing-mega-grid::before,
+  & .marketing-mega-grid::after {
+    right: -8px;
+  }
 }

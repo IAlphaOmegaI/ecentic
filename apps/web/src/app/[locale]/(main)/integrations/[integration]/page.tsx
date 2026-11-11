@@ -29,7 +29,7 @@ export const generateMetadata = async ({ params }: Props) => {
   );
 };
 
-export default async function IntegrationPage({ params }: Props) {
+export default async ({ params }: Props) => {
   const { integration: slug } = await params;
   const integration = integrationPages.find((entry) => entry.slug === slug);
   if (!integration) notFound();
@@ -62,4 +62,4 @@ export default async function IntegrationPage({ params }: Props) {
       <IntegrationSources pageKey={integration.key} copy={copy} />
     </MarketingPage>
   );
-}
+};

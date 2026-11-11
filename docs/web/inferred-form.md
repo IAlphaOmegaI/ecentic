@@ -64,6 +64,45 @@ field({
 });
 ```
 
+### Select control styling
+
+For `shape: "select"`, `classList.control` styles the trigger and the portaled
+parts of the same `@zenncore/web` select. Existing trigger keys remain valid.
+Optional nested keys are passed to each component's existing `classList` API:
+
+| Key | Component / supported keys |
+| --- | --- |
+| `control.trigger`, `control.icon` | `SelectTrigger` |
+| `control.positioner` | `SelectPositioner`: `portal`, `positioner` |
+| `control.popup` | `SelectPopup`: `root`, `arrow` (`arrow`, `up`, `down`) |
+| `control.selectItem` | `SelectItem`: `item`, `text`, `indicator` (`root`, `icon`) |
+
+```tsx
+field({
+  shape: "select",
+  validator: z.enum(["small", "large"]),
+  label: "Catalog size",
+  items: [
+    { value: "small", label: "Small" },
+    { value: "large", label: "Large" },
+  ],
+  classList: {
+    control: {
+      trigger: "rounded-xs",
+      positioner: { portal: "relative z-130" },
+      popup: { root: "rounded-xs bg-background-rich" },
+      selectItem: {
+        item: "data-highlighted:before:bg-primary-text",
+      },
+    },
+  },
+});
+```
+
+Use these slots when a popup needs local font classes or a dialog stacking level.
+No global portal selector is required. Omitting them preserves the shared
+components' default appearance and behavior.
+
 ---
 
 ## Field Type Mapping

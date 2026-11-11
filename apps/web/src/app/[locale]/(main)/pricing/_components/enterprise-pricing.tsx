@@ -11,29 +11,32 @@ import {
 import { getLocale, getMessages } from "next-intl/server";
 import { MarketingActions } from "@/components/marketing/primitives";
 import { PricingCTA } from "./pricing-cta";
-import "./enterprise-pricing.css";
 
 const planKeys = ["payg", "compete", "scale", "dominate"] as const;
 
 export const FreeStoreCheck = async () => {
   const { enterprisePricing, pricing } = await getMessages();
   return (
-    <div className="pricing-free-check">
-      <div className="marketing-cell">
-        <p className="pricing-sample-label">{enterprisePricing.sample.label}</p>
-        <div className="pricing-sample-score">
-          <span>72</span>
-          <span>
+    <div className="grid grid-cols-1 border-accent-foreground border-t bg-background sm:grid-cols-2">
+      <div className="marketing-cell relative min-w-0 border-accent-foreground border-b px-7 py-14 max-sm:px-4 max-sm:py-10 sm:border-r sm:border-b-0 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+        <p className="text-primary-text text-sm">
+          {enterprisePricing.sample.label}
+        </p>
+        <div className="mt-7 flex items-end gap-5">
+          <span className="text-[clamp(88px,12vw,144px)] text-primary leading-[0.9] tracking-[-0.08em]">
+            72
+          </span>
+          <span className="mb-2 text-[15px]">
             / 100
             <br />
             {pricing.scan.sample.scoreLabel}
           </span>
         </div>
-        <div className="pricing-score-track" aria-hidden="true">
-          <span />
+        <div className="mt-8 h-1 bg-accent-foreground" aria-hidden="true">
+          <span className="block h-full w-[72%] bg-primary" />
         </div>
       </div>
-      <div className="marketing-cell">
+      <div className="marketing-cell relative flex min-w-0 flex-col justify-center px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
         <p>{enterprisePricing.sample.caption}</p>
         <MarketingActions
           actions={[
@@ -53,7 +56,7 @@ export const EnterprisePlanLedger = async () => {
   const enterprise = enterprisePricing.plans.enterprise;
   return (
     <>
-      <div className="pricing-ledger">
+      <div className="grid grid-cols-1 border-accent-foreground border-t sm:grid-cols-2 lg:grid-cols-5">
         {planKeys.map((key, index) => {
           const source = pricing.plans[key];
           const copy = enterprisePricing.plans[key];
@@ -72,54 +75,81 @@ export const EnterprisePlanLedger = async () => {
             return [feature];
           });
           return (
-            <article key={key} className="pricing-ledger-plan">
-              <p className="pricing-plan-index">0{index + 1}</p>
-              <h3>{source.name}</h3>
-              <p className="pricing-plan-tagline">
+            <article
+              key={key}
+              className="grid min-w-0 gap-6 border-accent-foreground px-5 py-7 last:border-r-0 max-lg:border-b max-lg:even:border-r-0 sm:row-span-7 sm:grid-rows-subgrid sm:border-r"
+            >
+              <p className="text-primary-text text-sm">0{index + 1}</p>
+              <h3 className="text-[clamp(20px,2vw,26px)] tracking-[-0.035em]">
+                {source.name}
+              </h3>
+              <p className="text-base leading-normal">
                 {"tagline" in copy ? copy.tagline : source.tagline}
               </p>
-              <div className="pricing-plan-price">
-                <strong>{source.figure}</strong>
-                <span>{source.suffix}</span>
+              <div className="flex min-h-[90px] flex-col gap-2">
+                <strong className="font-medium text-[clamp(28px,3vw,40px)] text-foreground-rich leading-[1.1] tracking-[-0.05em]">
+                  {source.figure}
+                </strong>
+                <span className="text-[13px] leading-[1.6]">
+                  {source.suffix}
+                </span>
               </div>
-              <p className="pricing-plan-note">
+              <p className="text-[13px] leading-[1.6]">
                 {"note" in copy ? copy.note : source.note}
               </p>
-              <ul>
+              <ul className="m-0 flex list-none flex-col gap-4 p-0 text-sm">
                 {features.map((feature) => (
-                  <li key={feature}>{feature}</li>
+                  <li
+                    key={feature}
+                    className="relative pl-3.5 before:absolute before:top-[9px] before:left-0 before:size-1 before:bg-primary before:content-['']"
+                  >
+                    {feature}
+                  </li>
                 ))}
               </ul>
               <PricingCTA
                 plan={key}
                 color="primary"
-                className="pricing-plan-action"
+                className="min-h-[46px] w-full self-end whitespace-normal p-2.5 text-center text-[13px]"
               >
                 {copy.action.primary}
               </PricingCTA>
             </article>
           );
         })}
-        <article className="pricing-ledger-plan pricing-enterprise-plan">
-          <p className="pricing-plan-index">05</p>
-          <h3>{enterprise.name}</h3>
-          <p className="pricing-plan-tagline">{enterprise.tagline}</p>
-          <div className="pricing-plan-price">
-            <strong>{enterprise.figure}</strong>
+        <article className="grid min-w-0 gap-6 border-accent-foreground bg-background px-5 py-7 max-lg:col-span-full sm:row-span-7 sm:grid-rows-subgrid">
+          <p className="text-primary-text text-sm">05</p>
+          <h3 className="text-[clamp(20px,2vw,26px)] tracking-[-0.035em]">
+            {enterprise.name}
+          </h3>
+          <p className="text-base leading-normal">{enterprise.tagline}</p>
+          <div className="flex min-h-[90px] flex-col gap-2">
+            <strong className="font-medium text-[clamp(28px,3vw,40px)] text-foreground-rich leading-[1.1] tracking-[-0.05em]">
+              {enterprise.figure}
+            </strong>
           </div>
-          <p className="pricing-plan-note">{enterprise.note}</p>
-          <ul>
+          <p className="text-[13px] leading-[1.6]">{enterprise.note}</p>
+          <ul className="m-0 flex list-none flex-col gap-4 p-0 text-sm">
             {enterprise.features.map((feature) => (
-              <li key={feature}>{feature}</li>
+              <li
+                key={feature}
+                className="relative pl-3.5 before:absolute before:top-[9px] before:left-0 before:size-1 before:bg-primary before:content-['']"
+              >
+                {feature}
+              </li>
             ))}
           </ul>
-          <MarketingActions
-            actions={[{ label: enterprise.action.primary, href: "/demo" }]}
-          />
+          <div className="self-end [&>.marketing-actions]:mt-0 [&_.marketing-actions_a]:min-h-[46px] [&_.marketing-actions_a]:w-full [&_.marketing-actions_a]:whitespace-normal [&_.marketing-actions_a]:p-2.5 [&_.marketing-actions_a]:text-center [&_.marketing-actions_a]:text-[13px]">
+            <MarketingActions
+              actions={[{ label: enterprise.action.primary, href: "/demo" }]}
+            />
+          </div>
         </article>
       </div>
-      <div className="marketing-cell">
-        <p className="marketing-note">{enterprisePricing.availability}</p>
+      <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+        <p className="marketing-note text-(length:--text-sm) mt-6 text-foreground-dimmed">
+          {enterprisePricing.availability}
+        </p>
       </div>
     </>
   );
@@ -136,37 +166,48 @@ export const PerformanceFeeLedger = async () => {
   });
   return (
     <>
-      <ol className="pricing-fee-steps">
+      <ol className="m-0 list-none p-0">
         {fee.steps.map((step, index) => (
-          <li key={step.title}>
-            <span aria-hidden="true">0{index + 1}</span>
+          <li
+            key={step.title}
+            className="grid grid-cols-[42px_minmax(0,1fr)] gap-4 border-accent-foreground border-t px-5 py-8 sm:grid-cols-[80px_minmax(0,1fr)] sm:gap-6 sm:px-7"
+          >
+            <span aria-hidden="true" className="text-[32px] text-primary">
+              0{index + 1}
+            </span>
             <div>
               <h3>{step.title}</h3>
-              <p>{step.body}</p>
+              <p className="mt-4 max-w-[70ch]">{step.body}</p>
             </div>
           </li>
         ))}
       </ol>
-      <div className="pricing-worked-example">
-        <dl>
-          <div>
+      <div className="border-accent-foreground border-y bg-background px-7 py-10">
+        <dl className="grid grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-7">
+          <div className="flex items-baseline justify-between gap-5 sm:block">
             <dt>{fee.example.order}</dt>
-            <dd>{money.format(120)}</dd>
+            <dd className="text-[clamp(32px,5vw,64px)] text-primary tracking-[-0.05em] sm:mt-4">
+              {money.format(120)}
+            </dd>
           </div>
-          <div>
+          <div className="flex items-baseline justify-between gap-5 sm:block">
             <dt>{fee.example.rate}</dt>
-            <dd>3%</dd>
+            <dd className="text-[clamp(32px,5vw,64px)] text-primary tracking-[-0.05em] sm:mt-4">
+              3%
+            </dd>
           </div>
-          <div>
+          <div className="flex items-baseline justify-between gap-5 sm:block">
             <dt>{fee.example.fee}</dt>
-            <dd>{money.format(3.6)}</dd>
+            <dd className="text-[clamp(32px,5vw,64px)] text-primary tracking-[-0.05em] sm:mt-4">
+              {money.format(3.6)}
+            </dd>
           </div>
         </dl>
-        <p>
+        <p className="mt-7 text-sm">
           {fee.example.window} · {fee.example.cap}
         </p>
       </div>
-      <div className="marketing-cell">
+      <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
         <h3>{fee.billingTitle}</h3>
         <p>{fee.billingBody}</p>
       </div>
@@ -187,10 +228,10 @@ export const EnterprisePlanComparison = async () => {
   return (
     <>
       <ScrollArea
-        className="pricing-comparison-scroll"
+        className="overflow-x-auto border-accent-foreground border-t"
         aria-label={comparison.title}
       >
-        <Table className="pricing-comparison">
+        <Table className="m-0 min-w-[1060px] border-b-0 [&_td:last-child]:bg-background [&_td]:px-4 [&_td]:py-6 [&_td]:align-top [&_td]:text-sm [&_th:first-child]:w-[190px] [&_th:last-child]:bg-background [&_th]:whitespace-normal [&_th]:px-4 [&_th]:py-6 [&_th]:font-medium [&_th]:text-foreground-rich [&_th]:text-sm [&_th]:normal-case [&_th]:leading-normal [&_th]:tracking-normal">
           <TableCaption className="sr-only">{comparison.title}</TableCaption>
           <TableHeader>
             <TableRow>
@@ -244,8 +285,10 @@ export const EnterprisePlanComparison = async () => {
           </TableBody>
         </Table>
       </ScrollArea>
-      <div className="marketing-cell">
-        <p className="marketing-note">{comparison.enterpriseNote}</p>
+      <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+        <p className="marketing-note text-(length:--text-sm) mt-6 text-foreground-dimmed">
+          {comparison.enterpriseNote}
+        </p>
       </div>
     </>
   );

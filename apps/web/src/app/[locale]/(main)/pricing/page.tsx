@@ -35,7 +35,7 @@ export default async () => {
         "pay-as-you-go": <PerformanceFeeLedger />,
         compare: <EnterprisePlanComparison />,
         europe: (
-          <div className="pricing-partnership bg-background-dimmed">
+          <div className="bg-background-dimmed [&>#partnership>div]:max-w-none [&>#partnership>div]:border-x-0 [&>#partnership]:left-0 [&>#partnership]:w-auto">
             <PartnershipBundle
               description={enterprisePricing.bundle.description}
               productDetail={enterprisePricing.bundle.productDetail}
@@ -72,8 +72,8 @@ export default async () => {
           },
         ]}
       />
-      <div className="marketing-rail">
-        <div className="marketing-cell">
+      <div className="marketing-rail relative isolate mx-auto max-w-[1186px] border border-[var(--rail-color)] max-sm:mx-4 max-[1191px]:mx-7">
+        <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
           <MarketingActions actions={enterprisePricing.policyLinks} />
         </div>
       </div>

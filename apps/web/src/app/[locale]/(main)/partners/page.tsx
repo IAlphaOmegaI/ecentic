@@ -17,7 +17,7 @@ export default async () => {
       path="/partners"
       sectionChildren={{
         application: (
-          <div className="marketing-cell">
+          <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
             <MarketingLead
               kind="partner"
               topic="partnership"

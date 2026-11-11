@@ -40,13 +40,7 @@ const groupIcons = {
   pim: CommerceFilePenIcon,
 };
 
-const IntegrationTile = ({
-  integration,
-  copy,
-}: {
-  integration: Integration;
-  copy: Copy;
-}) => {
+const IntegrationTile = ({ integration, copy }: IntegrationTile.Props) => {
   const Icon = groupIcons[integration.group];
   const content = copy.entries[integration.key];
   return (
@@ -94,7 +88,7 @@ const IntegrationTile = ({
         {integration.source && (
           <a
             href={integration.source}
-            className="marketing-text-link text-sm underline"
+            className="marketing-text-link text-(length:--text-sm) text-primary-text underline decoration-1 underline-offset-4 hover:underline"
           >
             {copy.sourceLink}
           </a>
@@ -104,7 +98,7 @@ const IntegrationTile = ({
   );
 };
 
-export const IntegrationWall = ({ copy }: { copy: Copy }) => (
+export const IntegrationWall = ({ copy }: IntegrationWall.Props) => (
   <>
     {integrationGroups.map((group, index) => {
       const entries = integrations.filter(
@@ -118,7 +112,7 @@ export const IntegrationWall = ({ copy }: { copy: Copy }) => (
       );
       return (
         <MarketingBand key={group} id={group}>
-          <div className="marketing-cell grid gap-5 md:grid-cols-[96px_1fr]">
+          <div className="marketing-cell relative grid min-w-0 gap-5 px-7 py-14 max-sm:px-4 max-sm:py-10 md:grid-cols-[96px_1fr] [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
             <span className="text-3xl text-primary" aria-hidden="true">
               {String(index + 1).padStart(2, "0")}
             </span>
@@ -128,7 +122,7 @@ export const IntegrationWall = ({ copy }: { copy: Copy }) => (
             </div>
           </div>
           {live.length > 0 && (
-            <div className="marketing-grid md:!grid-cols-2">
+            <div className="marketing-grid md:!grid-cols-2 grid grid-cols-3 border-[var(--rail-color)] border-b data-[columns=1]:grid-cols-1 data-[columns=2]:grid-cols-2 data-[columns=4]:grid-cols-4 data-[columns=5]:grid-cols-5 max-sm:grid-cols-1 max-sm:data-[columns]:grid-cols-1 max-[801px]:grid-cols-2 max-[801px]:data-[columns]:grid-cols-2 [&>*]:min-w-0 [&>*]:border-[var(--rail-color)] [&>*]:border-t [&>*]:border-r [&>*]:px-7 [&>*]:py-8 max-sm:[&>*]:border-r-0 max-sm:[&>*]:px-4 max-sm:[&>*]:py-7 min-[801px]:data-ordered:[&>article]:py-10 [&_.marketing-item-link]:mt-7 [&_.marketing-item-link]:inline-flex [&_.marketing-item-link]:items-center [&_.marketing-item-link]:gap-2 [&_a:hover]:underline [&_a]:text-primary-text [&_a]:decoration-1 [&_a]:underline-offset-4 [&_h3]:max-w-[24ch] min-[801px]:data-ordered:[&_h3]:max-w-[20ch] [&_p]:mt-4">
               {live.map((integration) => (
                 <IntegrationTile
                   key={integration.key}
@@ -139,7 +133,7 @@ export const IntegrationWall = ({ copy }: { copy: Copy }) => (
             </div>
           )}
           {other.length > 0 && (
-            <div className="marketing-grid">
+            <div className="marketing-grid grid grid-cols-3 border-[var(--rail-color)] border-b data-[columns=1]:grid-cols-1 data-[columns=2]:grid-cols-2 data-[columns=4]:grid-cols-4 data-[columns=5]:grid-cols-5 max-sm:grid-cols-1 max-sm:data-[columns]:grid-cols-1 max-[801px]:grid-cols-2 max-[801px]:data-[columns]:grid-cols-2 [&>*]:min-w-0 [&>*]:border-[var(--rail-color)] [&>*]:border-t [&>*]:border-r [&>*]:px-7 [&>*]:py-8 max-sm:[&>*]:border-r-0 max-sm:[&>*]:px-4 max-sm:[&>*]:py-7 min-[801px]:data-ordered:[&>article]:py-10 [&_.marketing-item-link]:mt-7 [&_.marketing-item-link]:inline-flex [&_.marketing-item-link]:items-center [&_.marketing-item-link]:gap-2 [&_a:hover]:underline [&_a]:text-primary-text [&_a]:decoration-1 [&_a]:underline-offset-4 [&_h3]:max-w-[24ch] min-[801px]:data-ordered:[&_h3]:max-w-[20ch] [&_p]:mt-4">
               {other.map((integration) => (
                 <IntegrationTile
                   key={integration.key}
@@ -155,13 +149,7 @@ export const IntegrationWall = ({ copy }: { copy: Copy }) => (
   </>
 );
 
-export const IntegrationLedger = ({
-  rows,
-  copy,
-}: {
-  rows: readonly { field: string; read: string; write: string }[];
-  copy: Copy;
-}) => (
+export const IntegrationLedger = ({ rows, copy }: IntegrationLedger.Props) => (
   <Table className="table-fixed border-b-0 bg-transparent">
     <TableHeader>
       <TableRow>
@@ -197,8 +185,8 @@ export const IntegrationLedger = ({
   </Table>
 );
 
-export const FeedExporters = ({ copy }: { copy: Copy }) => (
-  <div className="marketing-cell pt-0">
+export const FeedExporters = ({ copy }: FeedExporters.Props) => (
+  <div className="marketing-cell relative min-w-0 px-7 py-14 pt-0 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
     <p>{copy.feedPlatformsNote}</p>
     <ul className="mt-8 divide-y divide-accent-foreground">
       {integrations
@@ -210,7 +198,7 @@ export const FeedExporters = ({ copy }: { copy: Copy }) => (
           >
             <a
               href={integration.source}
-              className="marketing-text-link flex flex-wrap items-center gap-4 underline"
+              className="marketing-text-link flex flex-wrap items-center gap-4 text-primary-text underline decoration-1 underline-offset-4 hover:underline"
             >
               <ProviderLogo
                 provider={integration.key}
@@ -233,15 +221,12 @@ export const FeedExporters = ({ copy }: { copy: Copy }) => (
 export const IntegrationSources = ({
   pageKey,
   copy,
-}: {
-  pageKey: keyof typeof integrationPageSources;
-  copy: Copy;
-}) => {
+}: IntegrationSources.Props) => {
   const sources = integrationPageSources[pageKey];
   if (sources.length === 0) return null;
   return (
     <MarketingBand>
-      <div className="marketing-cell">
+      <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
         <h2>{copy.sourceTitle}</h2>
         <ul className="mt-8 divide-y divide-accent-foreground">
           {sources.map((source) => (
@@ -249,7 +234,10 @@ export const IntegrationSources = ({
               key={source.key}
               className="flex flex-col justify-between gap-3 py-5 sm:flex-row sm:gap-8"
             >
-              <a href={source.url} className="marketing-text-link underline">
+              <a
+                href={source.url}
+                className="marketing-text-link text-primary-text underline decoration-1 underline-offset-4 hover:underline"
+              >
                 {copy.sources[source.key]}
               </a>
               <span className="shrink-0 text-foreground-dimmed text-sm">
@@ -263,3 +251,29 @@ export const IntegrationSources = ({
     </MarketingBand>
   );
 };
+
+namespace IntegrationTile {
+  export type Props = { integration: Integration; copy: Copy };
+}
+
+export namespace IntegrationLedger {
+  export type Props = {
+    rows: readonly { field: string; read: string; write: string }[];
+    copy: Copy;
+  };
+}
+
+export namespace IntegrationSources {
+  export type Props = {
+    pageKey: keyof typeof integrationPageSources;
+    copy: Copy;
+  };
+}
+
+export namespace IntegrationWall {
+  export type Props = { copy: Copy };
+}
+
+export namespace FeedExporters {
+  export type Props = { copy: Copy };
+}

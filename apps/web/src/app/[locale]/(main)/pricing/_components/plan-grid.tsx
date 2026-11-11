@@ -66,7 +66,7 @@ export const PlanCards = async () => {
           className={cn(
             "relative flex flex-col overflow-hidden p-6 md:min-h-108 md:p-8",
             plan.highlighted
-              ? "bg-primary text-white"
+              ? "bg-primary text-background-rich"
               : "bg-background-rich text-foreground",
           )}
         >
@@ -82,7 +82,9 @@ export const PlanCards = async () => {
             <p
               className={cn(
                 "font-medium text-sm",
-                plan.highlighted ? "text-white" : "text-foreground-dimmed",
+                plan.highlighted
+                  ? "text-background-rich"
+                  : "text-foreground-dimmed",
               )}
             >
               {plan.category}
@@ -94,7 +96,7 @@ export const PlanCards = async () => {
                   className={cn(
                     "rounded-full px-2.5 py-1 font-medium text-xs uppercase tracking-tight",
                     plan.highlighted
-                      ? "bg-white/15 text-white"
+                      ? "bg-background-rich/15 text-background-rich"
                       : "bg-primary/10 text-primary",
                   )}
                 >
@@ -105,7 +107,9 @@ export const PlanCards = async () => {
             <p
               className={cn(
                 "mt-1 font-body font-light text-lg",
-                plan.highlighted ? "text-white" : "text-foreground-dimmed",
+                plan.highlighted
+                  ? "text-background-rich"
+                  : "text-foreground-dimmed",
               )}
             >
               {plan.tagline}
@@ -123,7 +127,9 @@ export const PlanCards = async () => {
               <span
                 className={cn(
                   "font-light text-lg",
-                  plan.highlighted ? "text-white" : "text-foreground-dimmed",
+                  plan.highlighted
+                    ? "text-background-rich"
+                    : "text-foreground-dimmed",
                 )}
               >
                 {plan.suffix}
@@ -132,7 +138,9 @@ export const PlanCards = async () => {
             <p
               className={cn(
                 "mt-2 min-h-10 font-light text-sm",
-                plan.highlighted ? "text-white" : "text-foreground-dimmed",
+                plan.highlighted
+                  ? "text-background-rich"
+                  : "text-foreground-dimmed",
               )}
             >
               {plan.note}
@@ -142,7 +150,7 @@ export const PlanCards = async () => {
               className={cn(
                 "mt-6 flex flex-col gap-2.5 border-t pt-6",
                 plan.highlighted
-                  ? "border-white/20"
+                  ? "border-background-rich/20"
                   : "border-accent-foreground",
               )}
             >
@@ -151,14 +159,16 @@ export const PlanCards = async () => {
                   <CheckIcon
                     className={cn(
                       "mt-1 size-4 shrink-0",
-                      plan.highlighted ? "text-white/80" : "text-primary",
+                      plan.highlighted
+                        ? "text-background-rich/80"
+                        : "text-primary",
                     )}
                   />
                   <p
                     className={cn(
                       "font-body font-light",
                       plan.highlighted
-                        ? "text-white"
+                        ? "text-background-rich"
                         : "text-foreground-dimmed",
                     )}
                   >
