@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { getLocale, getMessages } from "next-intl/server";
 import { canPublishEvidence } from "@/components/marketing/evidence-policy";
 import { CheckoutRun } from "@/components/marketing/interactive/checkout-run";
+import { StoreCheck } from "@/components/marketing/interactive/store-check";
 import { SimulationEvidence } from "@/components/marketing/measured-evidence";
 import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
 import {
@@ -53,6 +54,7 @@ export default async ({ params }: Props) => {
   const Body = pageBodies[pillar];
   return (
     <MarketingPage
+      heroChildren={pillar === "connect" ? <StoreCheck /> : undefined}
       content={{ ...enterprisePlatform.pages[pillar], sections: [] }}
       path={`/platform/${pillar}`}
     >

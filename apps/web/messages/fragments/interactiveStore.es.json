@@ -1,0 +1,16 @@
+{
+  "interactiveStore": {
+    "label": "La dirección de tu tienda",
+    "action": {
+      "primary": "Comprueba mi tienda gratis"
+    },
+    "pending": "Comprobando tu tienda…",
+    "hint": "Tu dirección pasa al registro y al análisis gratuito existente. No necesitas datos de pago.",
+    "errors": {
+      "invalid": "Introduce un dominio de tienda válido o una dirección http/https.",
+      "limited": "Hay demasiadas comprobaciones. Espera un momento e inténtalo de nuevo.",
+      "unreachable": "No pudimos acceder a {host}. Revisa la dirección e inténtalo de nuevo.",
+      "failed": "No se pudo completar la comprobación. Inténtalo de nuevo."
+    }
+  }
+}

@@ -1,4 +1,5 @@
 import { getMessages } from "next-intl/server";
+import { StoreCheck } from "@/components/marketing/interactive/store-check";
 import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
 import { SectionGutter } from "../dashboard/_components/grid";
 import { ToolsDirectory } from "./_components/tools-directory";
@@ -14,6 +15,7 @@ export default async () => {
 
   return (
     <MarketingPage
+      heroChildren={<StoreCheck />}
       content={{ ...content, sections: [] }}
       path="/tools"
       heroArtwork="console"

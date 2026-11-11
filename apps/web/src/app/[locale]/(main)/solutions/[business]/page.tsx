@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getMessages } from "next-intl/server";
 import { CommerceTimeline } from "@/components/marketing/channels";
+import { StoreCheck } from "@/components/marketing/interactive/store-check";
 import { CatalogFindings } from "@/components/marketing/measured-evidence";
 import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
 import { MarketingBand } from "@/components/marketing/primitives";
@@ -46,6 +47,7 @@ export default async ({ params }: Props) => {
   const Body = pageBodies[business];
   return (
     <MarketingPage
+      heroChildren={business === "brands" ? <StoreCheck /> : undefined}
       content={{ ...content, sections: [] }}
       path={`/solutions/${business}`}
     >
