@@ -18735,5 +18735,8 @@
   },
   "hairlineEnterprise": {
     "label": "Illustration: stores connected to one hub; the link under the pointer turns solid."
+  },
+  "hairlineChannels": {
+    "label": "Illustration: a router whose antennas lean toward the pointer."
   }
 }

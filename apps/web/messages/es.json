@@ -18735,5 +18735,8 @@
   },
   "hairlineEnterprise": {
     "label": "Ilustración: tiendas conectadas a un centro; el enlace bajo el cursor se vuelve continuo."
+  },
+  "hairlineChannels": {
+    "label": "Ilustración: un router cuyas antenas se inclinan hacia el puntero."
   }
 }

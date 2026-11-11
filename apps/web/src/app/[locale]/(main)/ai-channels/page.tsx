@@ -9,6 +9,7 @@ import { MarketingBand } from "@/components/marketing/primitives";
 import { aiChannels } from "@/content/ai-channels";
 import { ChannelInterests } from "./_components/channel-content";
 import { IndexExplorer } from "./_components/index-explorer";
+import { RouterFigure } from "./_components/router-figure";
 
 const capabilities = ["simulate", "fix", "checkout", "track"] as const;
 
@@ -18,10 +19,17 @@ export const generateMetadata = async () => {
 };
 
 export default async () => {
-  const { enterpriseChannels: copy, indexAiChannels: explorer } =
-    await getMessages();
+  const {
+    hairlineChannels,
+    enterpriseChannels: copy,
+    indexAiChannels: explorer,
+  } = await getMessages();
   return (
-    <MarketingPage content={copy.index} path="/ai-channels">
+    <MarketingPage
+      content={copy.index}
+      path="/ai-channels"
+      heroIllustration={<RouterFigure label={hairlineChannels.label} />}
+    >
       <MarketingBand
         id="channel-explorer"
         className="[&>.marketing-rail>.marketing-guides]:hidden"
