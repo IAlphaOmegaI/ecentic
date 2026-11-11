@@ -1,6 +1,6 @@
 import { cn } from "@zenncore/utils";
+import { getMessages } from "next-intl/server";
 import type { MarketingBodyProps } from "@/components/marketing/body";
-import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { AgentReplay } from "@/components/marketing/interactive/agent-replay";
 import {
   type MarketingPage,
@@ -13,6 +13,7 @@ import {
   MarketingHeading,
 } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
+import { RiffleFigure } from "./riffle-figure";
 import { SimulateTracking } from "./simulate-tracking";
 
 const models = [
@@ -46,6 +47,11 @@ const SectionEnding = ({ section }: { section: MarketingPage.Section }) => (
   </>
 );
 
+const RiffleIllustration = async () => {
+  const { hairlineSimulate } = await getMessages();
+  return <RiffleFigure label={hairlineSimulate.label} />;
+};
+
 export const SimulateBody = ({
   sections,
   sectionChildren,
@@ -62,11 +68,17 @@ export const SimulateBody = ({
               className="[&>.marketing-rail>.marketing-guides]:hidden"
             >
               <div className="grid grid-cols-[1.1fr_1fr] max-md:grid-cols-1">
-                <MarketingHeading
-                  eyebrow={section.eyebrow}
-                  title={section.title}
-                  description={section.description}
-                />
+                <div className="min-w-0 bg-background">
+                  <MarketingHeading
+                    eyebrow={section.eyebrow}
+                    title={section.title}
+                    description={section.description}
+                    className="pb-8 max-sm:pb-6"
+                  />
+                  <div className="px-7 pb-10 max-sm:px-4 max-sm:pb-6">
+                    <RiffleIllustration />
+                  </div>
+                </div>
                 <div className="border-[var(--rail-color)] border-l bg-background-dimmed px-8 max-sm:px-4 max-md:border-t max-md:border-l-0">
                   {section.items?.map((item, index) => (
                     <article
@@ -155,11 +167,6 @@ export const SimulateBody = ({
                               <span className="text-sm">{model.name}</span>
                             </div>
                           ))}
-                        </div>
-                      )}
-                      {index === 2 && (
-                        <div className="mt-4 h-28 text-primary-text">
-                          <EvolvingAscii artwork="console" />
                         </div>
                       )}
                     </div>

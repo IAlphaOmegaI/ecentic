@@ -18723,5 +18723,8 @@
   },
   "hairlinePlatform": {
     "label": "Ilustración: una ventana de plataforma en capas que se separan al mover el puntero."
+  },
+  "hairlineSimulate": {
+    "label": "Ilustración: ocho tarjetas de producto; la tarjeta bajo el puntero se levanta."
   }
 }

@@ -18723,5 +18723,8 @@
   },
   "hairlinePlatform": {
     "label": "Illustration: a platform window in layers that open as you move the pointer."
+  },
+  "hairlineSimulate": {
+    "label": "Illustration: eight product cards; the card under your pointer stands up."
   }
 }
