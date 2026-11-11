@@ -12,7 +12,7 @@ export const EnterprisePilot = async () => {
     id: String(index),
     label: interactivePilot.stages[index] ?? item.title,
     content: (
-      <dl className="grid sm:grid-cols-2">
+      <dl key={item.title} className="grid sm:grid-cols-2">
         {[
           { label: interactivePilot.happens, value: item.body },
           // {{TODO: Xhurian confirms the customer people for each pilot stage.}}

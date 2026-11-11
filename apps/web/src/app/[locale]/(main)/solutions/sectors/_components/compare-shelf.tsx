@@ -25,7 +25,7 @@ export const CompareShelf = ({
   const scenario = scenarios[position];
   const content = copy.scenarios[position];
 
-  if (!ready || reduced || !scenario || !content)
+  if (!ready || !scenario || !content)
     return (
       <div data-compare-shelf={sector} data-shelf-mode="static">
         <p className="border-accent-foreground border-t px-4 py-4 text-foreground-dimmed text-sm md:px-6">
@@ -38,7 +38,7 @@ export const CompareShelf = ({
   const rows: ComparePanel.Row[] = attributes.map((attribute, index) => {
     const field = content.rows[index];
     const required = scenario.required.includes(index);
-    const missing = !fixed && scenario.missing.includes(index);
+    const missing = !reduced && !fixed && scenario.missing.includes(index);
 
     return {
       key: `${selected}-${index}`,
@@ -54,7 +54,33 @@ export const CompareShelf = ({
       },
     };
   });
-  const reason = fixed ? content.after : content.before;
+  const reason = reduced || fixed ? content.after : content.before;
+
+  if (reduced)
+    return (
+      <div
+        data-compare-shelf={sector}
+        data-shelf-mode="completed"
+        className="bg-background-dimmed"
+      >
+        <div className="border-accent-foreground border-t px-4 py-6 md:px-6">
+          <p className="font-medium text-foreground-rich">
+            {shared.exampleLabel}
+          </p>
+          <p className="mt-3 text-foreground">{questions[position]?.title}</p>
+          <p className="mt-3 text-foreground text-sm">{shared.afterLabel}</p>
+        </div>
+        <ComparePanel.Root
+          left={{ label: shared.leftLabel, title: content.leftTitle }}
+          right={{ label: shared.rightLabel, title: content.rightTitle }}
+          rows={rows}
+          labels={shared.labels}
+        />
+        <ComparePanel.Result label={shared.resultLabel}>
+          {reason}
+        </ComparePanel.Result>
+      </div>
+    );
 
   return (
     <div

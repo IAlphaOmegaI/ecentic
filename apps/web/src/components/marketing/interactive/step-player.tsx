@@ -169,7 +169,7 @@ export const StepPlayer = ({
             <TabsPanel
               key={step.id}
               value={step.id}
-              className="min-w-0 outline-none"
+              className="min-w-0 outline-none focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-primary focus-visible:-outline-offset-2"
             >
               {step.id === active.id
                 ? (currentFrame?.content ?? step.content)

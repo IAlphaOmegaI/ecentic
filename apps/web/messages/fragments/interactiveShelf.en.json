@@ -556,7 +556,7 @@
             "after": "Your listing now states the higher waterproof rating with taped seams. The declared rating determines this sample choice for wet-weather hiking."
           },
           {
-            "leftTitle": "Wide running shoe A",
+            "leftTitle": "Running shoe A",
             "rightTitle": "Wide running shoe B",
             "rows": [
               {
@@ -580,7 +580,7 @@
                 "right": "Hand clean; air dry"
               },
               {
-                "left": "Blue, EU 42 wide · $110 · in stock",
+                "left": "Blue, EU 42 · $110 · in stock",
                 "right": "Blue, EU 42 wide · $110 · in stock"
               }
             ],
