@@ -310,7 +310,7 @@ export const PlatformExplorer = ({
                       {item.href && (
                         <Link
                           href={item.href}
-                          className="mt-5 inline-flex min-h-10 items-center gap-2 text-primary-text underline-offset-4 hover:underline"
+                          className="mt-5 inline-flex min-h-10 items-center gap-2 text-primary-text underline underline-offset-4"
                         >
                           {item.label ?? item.title}
                           <ArrowRightIcon className="size-4" />

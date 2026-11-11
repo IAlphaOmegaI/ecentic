@@ -120,9 +120,7 @@ export const ResourcesDirectory = ({
   <>
     <MarketingBand className="[&>.marketing-rail>.marketing-guides]:hidden [&>.marketing-rail]:bg-background-dimmed">
       <nav aria-label={copy.navigationLabel} className="px-8 py-6 max-sm:px-4">
-        <p className="mb-4 text-foreground-dimmed text-sm">
-          {copy.navigationLabel}
-        </p>
+        <p className="mb-4 text-foreground text-sm">{copy.navigationLabel}</p>
         <div className="flex flex-wrap gap-x-8 gap-y-2">
           {sections.map((section) => (
             <Link

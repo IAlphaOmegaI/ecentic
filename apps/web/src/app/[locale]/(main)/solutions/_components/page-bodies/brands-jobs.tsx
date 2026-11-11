@@ -51,7 +51,11 @@ export const BrandsJobs = ({
           <TabsPanel key={job.id} value={job.id} keepMounted>
             <div className="relative grid border-accent-foreground border-t bg-background md:grid-cols-[5fr_7fr]">
               <Plus className="top-0 left-[41.666%] -translate-x-1/2 -translate-y-1/2 max-md:hidden" />
-              <div className="relative min-h-64 overflow-hidden border-accent-foreground bg-background-dimmed text-primary-text/75 max-md:border-b md:min-h-[380px] md:border-r">
+              <div
+                aria-hidden="true"
+                inert
+                className="relative min-h-64 overflow-hidden border-accent-foreground bg-background-dimmed text-primary-text/75 max-md:border-b md:min-h-[380px] md:border-r"
+              >
                 <EvolvingAscii
                   artwork={artwork[index]}
                   className="absolute inset-0"

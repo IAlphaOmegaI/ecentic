@@ -119,7 +119,11 @@ export const ConnectBody = ({
                   </ol>
                   <div className="min-w-0 border-[var(--rail-color)] border-t p-3 max-sm:p-2 lg:border-t-0 lg:border-l">
                     <div className="flex h-full min-h-72 flex-col justify-center overflow-hidden bg-primary text-background-rich">
-                      <div className="h-64 min-w-0 px-6 lg:h-80">
+                      <div
+                        aria-hidden="true"
+                        inert
+                        className="h-64 min-w-0 px-6 lg:h-80"
+                      >
                         <EvolvingAscii artwork="bag" />
                       </div>
                       <p className="mx-auto max-w-[26ch] px-6 pt-4 pb-10 text-center font-heading text-2xl leading-snug">

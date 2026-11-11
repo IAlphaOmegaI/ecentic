@@ -43,7 +43,11 @@ export const EnterpriseEngagements = ({
         <TabsPanel key={item.title} value={index} keepMounted>
           <div className="relative grid border-accent-foreground border-t lg:grid-cols-2">
             <div className="relative flex min-w-0 flex-col border-accent-foreground bg-background-dimmed max-lg:border-b lg:border-r">
-              <div className="relative min-h-64 flex-1 overflow-hidden text-primary-text/80 sm:min-h-80">
+              <div
+                aria-hidden="true"
+                inert
+                className="relative min-h-64 flex-1 overflow-hidden text-primary-text/80 sm:min-h-80"
+              >
                 <EvolvingAscii
                   artwork={artwork[index]}
                   className="absolute inset-0"

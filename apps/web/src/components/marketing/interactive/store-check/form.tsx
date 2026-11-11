@@ -54,6 +54,7 @@ export const StoreCheckForm = ({ copy, locale }: StoreCheckForm.Props) => {
       Component: AddressInput,
       label: copy.label,
       validator,
+      classList: { field: "min-w-0", description: "empty:hidden" },
     }),
   };
   return (
@@ -66,7 +67,7 @@ export const StoreCheckForm = ({ copy, locale }: StoreCheckForm.Props) => {
         <InferredForm
           config={config}
           defaultValues={{ url: "" }}
-          className="grid items-end gap-4 sm:grid-cols-[1fr_auto]"
+          className="grid items-end gap-4 space-y-0 sm:grid-cols-[1fr_auto]"
           onChange={(values) => {
             setAddress(values.url ?? "");
             setFailure("");

@@ -76,6 +76,7 @@ export default async () => {
             </div>
             <div
               aria-hidden="true"
+              inert
               className="relative min-h-[300px] text-background-rich/70 max-md:-mt-16 max-md:h-[300px] max-md:min-h-0"
             >
               <EvolvingAscii artwork="bag" cycle={["bag", "cart"]} />

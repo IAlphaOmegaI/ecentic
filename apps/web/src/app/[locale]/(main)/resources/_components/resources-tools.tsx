@@ -41,7 +41,11 @@ export const ResourcesTools = ({ section }: ResourcesTools.Props) => {
             <span className="mb-8 block text-3xl text-primary-text">01</span>
             <h2>{section.title}</h2>
           </div>
-          <div className="relative min-h-64 flex-1 text-primary max-md:h-56 max-md:min-h-0 max-md:flex-none">
+          <div
+            aria-hidden="true"
+            inert
+            className="relative min-h-64 flex-1 text-primary max-md:h-56 max-md:min-h-0 max-md:flex-none"
+          >
             <div className="absolute inset-4">
               <EvolvingAscii artwork={artwork[selected] ?? "commerce"} />
             </div>
