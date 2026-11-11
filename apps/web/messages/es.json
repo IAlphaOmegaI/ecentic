@@ -18729,5 +18729,8 @@
   },
   "hairlineFix": {
     "label": "Ilustración: las líneas torcidas de un archivo se enderezan al bajar el puntero."
+  },
+  "hairlineRecovery": {
+    "label": "Ilustración: un signo de interrogación que gira hacia el puntero."
   }
 }

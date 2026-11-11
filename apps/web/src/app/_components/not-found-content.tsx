@@ -3,11 +3,15 @@ import type { Metadata } from "next";
 import { getMessages } from "next-intl/server";
 import { AsciiClosingArtwork } from "@/components/marketing/ascii-artwork";
 import { AsciiAtmosphere } from "@/components/marketing/ascii-atmosphere";
-import { MarketingBand } from "@/components/marketing/primitives";
+import {
+  MarketingBand,
+  MarketingHero,
+} from "@/components/marketing/primitives";
 import { localizePath } from "@/i18n/locale";
 import type { Locale } from "@/i18n/routing";
 import { notFoundMarkdown, RECOVERY_LINKS } from "@/lib/not-found";
 import { seo } from "@/lib/seo";
+import { QueryFigure } from "./query-figure";
 
 export const recoveryMetadata = async (locale: Locale): Promise<Metadata> => {
   const { enterpriseRecovery } = await getMessages({ locale });
@@ -21,14 +25,16 @@ export const recoveryMetadata = async (locale: Locale): Promise<Metadata> => {
 };
 
 export const NotFoundContent = async ({ locale }: NotFoundContent.Props) => {
-  const { enterpriseRecovery, enterpriseChrome } = await getMessages({
-    locale,
-  });
+  const { enterpriseRecovery, enterpriseChrome, hairlineRecovery } =
+    await getMessages({ locale });
   const content = enterpriseRecovery.notFound;
   return (
     <main id="main-content">
-      <MarketingBand className="marketing-hero">
-        <div className="marketing-cell relative min-w-0 px-7 py-24 max-sm:px-4 max-sm:py-14">
+      <MarketingHero
+        eyebrow="404"
+        title={content.title}
+        description={content.description}
+        identity={
           <a
             href={localizePath("/", locale)}
             aria-label={content.home}
@@ -36,19 +42,9 @@ export const NotFoundContent = async ({ locale }: NotFoundContent.Props) => {
           >
             ecentic
           </a>
-          <p className="mt-16 mb-6 flex items-center gap-2.5 text-primary-text">
-            <span
-              aria-hidden="true"
-              className="size-2 rounded-full bg-current"
-            />
-            404
-          </p>
-          <h1>{content.title}</h1>
-          <p className="marketing-lead mt-6 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
-            {content.description}
-          </p>
-        </div>
-      </MarketingBand>
+        }
+        illustration={<QueryFigure label={hairlineRecovery.label} />}
+      />
       <MarketingBand>
         <nav
           aria-label={content.navigation}

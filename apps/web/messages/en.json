@@ -18729,5 +18729,8 @@
   },
   "hairlineFix": {
     "label": "Illustration: crooked lines in a file straighten as the pointer moves down."
+  },
+  "hairlineRecovery": {
+    "label": "Illustration: a question mark that turns toward the pointer."
   }
 }
