@@ -39,7 +39,7 @@ This pass applies the 27 annotations on `design-review-2026-11-10-v3/review.pdf`
 - Six masked blur layers form a progressive fade without a bottom border.
 - Destination links occupy individual, bounded grid cells with shared row tracks. Labels and supporting text turn blue on hover/focus.
 - Repetitive generic icons are removed. The AI channels group keeps actual provider logos consistently across its six options.
-- Login remains soft; primary action retains the shared blue gradient. Mobile actions occupy separate full-width cells on phones.
+- Login remains soft; primary action retains the shared blue gradient. Mobile actions occupy separate full-width cells on phones. The chat launcher is hidden while navigation is open so it cannot cover these actions.
 - Menus remain in document flow. Pointer opening, switching and closing must preserve `window.scrollY`; keyboard focus uses `preventScroll` and scrolls only the menu's own content region.
 
 ## Verification
@@ -48,7 +48,7 @@ This pass applies the 27 annotations on `design-review-2026-11-10-v3/review.pdf`
 - App TypeScript comparison returns the existing 298 diagnostics, with none introduced in the changed marketing files. The root monorepo command still stops on pre-existing shared-package errors.
 - English/Spanish desktop and mobile checks covered Journey state, audience keyboard selection, diagram centering, square provider tiles, article actions, the dark closing, footer and Cookie settings. No document horizontal overflow was found at the checked 390, 900 and 1440 px widths.
 - Animation checks covered evolving characters, offscreen/hidden-tab pause and reduced-motion still states. The original product video and measured-result values remain unchanged.
-- Final production build identity, navigation checks and eight screenshot captures are recorded in the v4 review pack's verification files.
+- Final production build identity, navigation checks and eight screenshot captures are recorded in the v4 review pack's verification files. Navigation views stitch the actual scrollable menu content so bottom actions are fully reviewable at the unchanged device viewport.
 
 ## Remaining visual review notes
 

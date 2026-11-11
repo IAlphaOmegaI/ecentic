@@ -35,6 +35,7 @@ import {
   type CSSProperties,
   Fragment,
   type KeyboardEvent,
+  useEffect,
   useRef,
   useState,
 } from "react";
@@ -63,6 +64,33 @@ export const Navbar = () => {
   const pathname = usePathname();
   const [active, setActive] = useState<string | null>(null);
   const [mobile, setMobile] = useState(false);
+  const navigationOpen = mobile || active !== null;
+  useEffect(() => {
+    if (!navigationOpen) return;
+    const supportWindow = window as Window & {
+      $chatwoot?: {
+        hasLoaded: boolean;
+        hideMessageBubble: boolean;
+        toggleBubbleVisibility: (visibility: "hide" | "show") => void;
+      };
+    };
+    const previousVisibility: { hidden?: boolean } = {};
+    const hideSupportBubble = () => {
+      const widget = supportWindow.$chatwoot;
+      if (!widget?.hasLoaded) return;
+      previousVisibility.hidden ??= widget.hideMessageBubble;
+      widget.toggleBubbleVisibility("hide");
+    };
+    window.addEventListener("chatwoot:ready", hideSupportBubble);
+    hideSupportBubble();
+    return () => {
+      window.removeEventListener("chatwoot:ready", hideSupportBubble);
+      if (previousVisibility.hidden === undefined) return;
+      supportWindow.$chatwoot?.toggleBubbleVisibility(
+        previousVisibility.hidden ? "hide" : "show",
+      );
+    };
+  }, [navigationOpen]);
   const header = useRef<HTMLElement>(null);
   const navigationRow = useRef<HTMLDivElement>(null);
   const menuSurface = useRef<HTMLDivElement>(null);
