@@ -6,7 +6,7 @@ This pass addresses the 13 comments on the v4 review PDF. V4 and all earlier wor
 | --- | --- |
 | 1 | Count metrics use proportional sans numerals, responsive sizing and no wrapping. |
 | 2 | Replaced character bars with Recharts bars on a consistent 0–100% axis. |
-| 3 | Unknown model rates and unsupported market placeholders are omitted, including in review mode. Known results retain their publication gates and compact source disclosures. The simulation title no longer implies three available results. |
+| 3 | Unknown model rates and unsupported market placeholders are omitted, including in review mode. Known results retain their publication gates and compact source disclosures. The simulation title no longer implies three available results. The two evidence figures stack so removing unknown rows cannot leave an empty stretched column. |
 | 4 | DUA's +12% uses the body sans with proportional numerals. The figure and original logo are unchanged. |
 | 5 | Closing ASCII fills the background with cover sizing and crops at the rounded banner boundary. |
 | 6 | Added a charcoal-to-brand-navy gradient with a restrained blue glow at the lower left. |
