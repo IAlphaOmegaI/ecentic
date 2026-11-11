@@ -1,6 +1,7 @@
 import {
   ArrowRightIcon,
   CommerceBasketShoppingIcon,
+  CommerceCode_3Icon,
   CommerceFilePenIcon,
   CommerceFileShieldIcon,
   CommerceGlobePointerIcon,
@@ -158,7 +159,20 @@ export const IntegrationWall = ({ copy }: IntegrationWall.Props) => (
   </>
 );
 
-export const IntegrationLedger = ({ rows, copy }: IntegrationLedger.Props) => (
+const ledgerIcons = [
+  CommerceFilePenIcon,
+  CommerceCode_3Icon,
+  CommerceBasketShoppingIcon,
+  CommercePlug_3SparkleIcon,
+  CommerceGlobePointerIcon,
+  CommerceFileShieldIcon,
+] as const;
+
+export const IntegrationLedger = ({
+  rows,
+  copy,
+  showIcons = false,
+}: IntegrationLedger.Props) => (
   <section
     aria-label={`${copy.field}: ${copy.read}, ${copy.write}`}
     // biome-ignore lint/a11y/noNoninteractiveTabindex: Keyboard users need focus on the horizontally scrollable table region.
@@ -189,37 +203,57 @@ export const IntegrationLedger = ({ rows, copy }: IntegrationLedger.Props) => (
         </TableRow>
       </TableHeader>
       <TableBody>
-        {rows.map((row) => (
-          <TableRow key={row.field}>
-            <TableHead
-              scope="row"
-              className="whitespace-normal break-words px-4 py-6 align-top font-medium text-foreground text-sm normal-case tracking-normal sm:px-7 sm:text-base"
-            >
-              <IntegrationTechnicalText text={row.field} />
-            </TableHead>
-            <TableCell className="break-words px-4 py-6 align-top leading-relaxed sm:px-7 sm:text-base">
-              <IntegrationTechnicalText text={row.read} />
-            </TableCell>
-            <TableCell className="break-words px-4 py-6 align-top leading-relaxed sm:px-7 sm:text-base">
-              <IntegrationTechnicalText text={row.write} />
-            </TableCell>
-          </TableRow>
-        ))}
+        {rows.map((row, index) => {
+          const Icon =
+            ledgerIcons[index % ledgerIcons.length] ?? CommerceFilePenIcon;
+          return (
+            <TableRow key={row.field}>
+              <TableHead
+                scope="row"
+                className="whitespace-normal break-words px-4 py-6 align-top font-medium text-foreground text-sm normal-case tracking-normal sm:px-7 sm:text-base"
+              >
+                <span className="flex items-start gap-4">
+                  {showIcons && (
+                    <Icon
+                      aria-hidden
+                      className="size-6 shrink-0 text-primary-text"
+                    />
+                  )}
+                  <span>
+                    <IntegrationTechnicalText text={row.field} />
+                  </span>
+                </span>
+              </TableHead>
+              <TableCell className="break-words px-4 py-6 align-top leading-relaxed sm:px-7 sm:text-base">
+                <IntegrationTechnicalText text={row.read} />
+              </TableCell>
+              <TableCell className="break-words px-4 py-6 align-top leading-relaxed sm:px-7 sm:text-base">
+                <IntegrationTechnicalText text={row.write} />
+              </TableCell>
+            </TableRow>
+          );
+        })}
       </TableBody>
     </Table>
   </section>
 );
 
 export const IntegrationTechnicalText = ({ text }: { text: string }) =>
-  text.split(/(\b(?:read|write)_[a-z_]+\b)/g).map((part) =>
-    /^(?:read|write)_[a-z_]+$/.test(part) ? (
-      <code key={part} className="break-words font-mono text-[0.9em]">
-        {part}
-      </code>
-    ) : (
-      part
-    ),
-  );
+  text
+    .split(
+      /(\b(?:(?:read|write)_[a-z_]+|(?:WordPress|WooCommerce|PHP)\s+\d+(?:\.\d+)*\+?))/g,
+    )
+    .map((part) =>
+      /^(?:(?:read|write)_[a-z_]+|(?:WordPress|WooCommerce|PHP)\s+\d+(?:\.\d+)*\+?)$/.test(
+        part,
+      ) ? (
+        <code key={part} className="break-words font-mono text-[0.9em]">
+          {part}
+        </code>
+      ) : (
+        part
+      ),
+    );
 
 export const FeedExporters = ({ copy }: FeedExporters.Props) => (
   <div className="marketing-cell relative min-w-0 px-7 py-14 pt-0 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
@@ -278,6 +312,7 @@ export namespace IntegrationLedger {
   export type Props = {
     rows: readonly { field: string; read: string; write: string }[];
     copy: Copy;
+    showIcons?: boolean;
   };
 }
 

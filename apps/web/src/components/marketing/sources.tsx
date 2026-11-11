@@ -35,7 +35,7 @@ export const MarketingSources = ({
             >
               <FileIcon
                 aria-hidden
-                className="size-4 shrink-0 text-primary-text max-sm:row-span-2"
+                className="size-8 shrink-0 text-primary-text max-sm:row-span-2"
               />
               <span className="min-w-0">
                 <span className="block break-words font-medium text-lg">

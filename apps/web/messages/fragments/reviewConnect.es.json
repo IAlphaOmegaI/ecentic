@@ -1,0 +1,17 @@
+{
+  "reviewConnect": {
+    "problem": {
+      "store": "Catálogo de la tienda",
+      "merchant": "Merchant Center",
+      "feed": "Feed de productos",
+      "note": "Un mismo producto puede tener registros distintos en cada fuente."
+    },
+    "flow": {
+      "sources": "Elige la fuente que quieres importar.",
+      "catalog": "Tu catálogo de trabajo",
+      "merchant": "Merchant Center se conecta por separado con Shopify.",
+      "selection": "Elige qué productos importados quieres comparar.",
+      "control": "Primero importa los campos de producto compatibles. Publicar los cambios sigue siendo una acción independiente."
+    }
+  }
+}

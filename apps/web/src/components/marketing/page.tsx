@@ -16,9 +16,11 @@ import {
   MarketingActions,
   MarketingBand,
   MarketingEyebrow,
+  MarketingHeading,
   MarketingHero,
   MarketingStatus,
 } from "./primitives";
+import { TrackingOverview } from "./tracking-overview";
 
 export const marketingMetadata = async (
   meta: { title: string; description: string },
@@ -89,6 +91,23 @@ export const MarketingSection = ({
   section,
   children,
 }: MarketingSection.Props) => {
+  if (section.id === "what-to-track" && section.items?.length)
+    return (
+      <MarketingBand id={section.id} className="[&_.marketing-guides]:hidden">
+        <MarketingHeading
+          eyebrow={section.eyebrow}
+          title={section.title}
+          description={section.description}
+        />
+        <TrackingOverview items={section.items} label={section.title} />
+        {children}
+        {section.note && (
+          <p className="border-accent-foreground border-t px-8 py-6 text-foreground-dimmed text-sm max-sm:px-4">
+            {section.note}
+          </p>
+        )}
+      </MarketingBand>
+    );
   const paragraphs = section.paragraphs?.filter((paragraph) =>
     paragraph.trim(),
   );

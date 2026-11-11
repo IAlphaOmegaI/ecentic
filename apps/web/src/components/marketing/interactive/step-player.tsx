@@ -9,6 +9,7 @@ import {
   type ReactNode,
   useCallback,
   useEffect,
+  useRef,
   useState,
 } from "react";
 import { useDocument } from "@/hooks/use-document";
@@ -19,6 +20,7 @@ export const StepPlayer = ({
   label,
   labels,
   playback = false,
+  autoPlay = false,
   interval = 2500,
   activateOnFocus = false,
   selected,
@@ -28,6 +30,8 @@ export const StepPlayer = ({
 }: StepPlayer.Props) => {
   const { ready, reduced } = useInteractive();
   const { document, window } = useDocument();
+  const container = useRef<HTMLDivElement>(null);
+  const started = useRef(false);
   const [selection, setSelection] = useState(steps[0]?.id ?? "");
   const [frame, setFrame] = useState({ id: "", index: 0 });
   const [playing, setPlaying] = useState(false);
@@ -63,6 +67,35 @@ export const StepPlayer = ({
   useEffect(() => {
     if (!enhanced) setPlaying(false);
   }, [enhanced]);
+
+  useEffect(() => {
+    if (
+      !autoPlay ||
+      !playback ||
+      !enhanced ||
+      !window ||
+      !document ||
+      !container.current
+    )
+      return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries.some(
+          (entry) => entry.isIntersecting && entry.intersectionRatio >= 0.3,
+        );
+        if (!visible) {
+          setPlaying(false);
+          return;
+        }
+        if (started.current || document.hidden) return;
+        started.current = true;
+        setPlaying(true);
+      },
+      { threshold: 0.3 },
+    );
+    observer.observe(container.current);
+    return () => observer.disconnect();
+  }, [autoPlay, playback, enhanced, window, document]);
 
   useEffect(() => {
     if (!document || !playing) return;
@@ -106,12 +139,38 @@ export const StepPlayer = ({
 
   return (
     <div
+      ref={container}
       className={cn("min-w-0", className)}
       data-step-player=""
       data-enhanced={enhanced}
       data-playing={playing}
       data-step={active.id}
       data-frame={current?.index ?? 0}
+      onPointerDownCapture={(event) => {
+        started.current = true;
+        if (
+          event.target instanceof Element &&
+          event.target.closest("[data-playback-toggle]")
+        )
+          return;
+        setPlaying(false);
+      }}
+      onKeyDownCapture={(event) => {
+        started.current = true;
+        if (
+          event.target instanceof Element &&
+          event.target.closest("[data-playback-toggle]") &&
+          (event.key === " " || event.key === "Enter")
+        )
+          return;
+        setPlaying(false);
+      }}
+      onFocusCapture={(event) => {
+        started.current = true;
+        // Pointer focus must not relabel Pause before its click is dispatched.
+        if (!event.target.matches(":focus-visible")) return;
+        setPlaying(false);
+      }}
     >
       {enhanced ? (
         <Tabs
@@ -179,6 +238,7 @@ export const StepPlayer = ({
           {playback && labels && (
             <div className="flex flex-wrap items-center gap-4 border-accent-foreground border-t px-4 py-6 md:px-6">
               <Button
+                data-playback-toggle=""
                 onClick={() => {
                   if (last) select(steps[0]?.id ?? active.id);
                   setPlaying(!playing);
@@ -250,6 +310,7 @@ export namespace StepPlayer {
     label: string;
     labels?: { play: string; pause: string; previous: string; next: string };
     playback?: boolean;
+    autoPlay?: boolean;
     interval?: number;
     activateOnFocus?: boolean;
     selected?: string;

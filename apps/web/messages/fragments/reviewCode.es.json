@@ -1,0 +1,94 @@
+{
+  "reviewCode": {
+    "recordNote": "Registro ilustrativo, no una petición a la API.",
+    "platform": {
+      "connect": [
+        {
+          "key": "title",
+          "note": "El título de origen se conserva durante la importación."
+        },
+        {
+          "key": "source",
+          "note": "El registro pasa de tu archivo al catálogo."
+        },
+        {
+          "key": "publish_access",
+          "note": "Importar un feed no concede permisos de escritura en una tienda."
+        }
+      ],
+      "simulate": [
+        {
+          "key": "question",
+          "note": "La petición del comprador aporta el contexto de la comparación."
+        },
+        {
+          "key": "decision",
+          "note": "Una simulación registra qué ficha se ha seleccionado."
+        },
+        {
+          "key": "reasoning",
+          "note": "El resultado señala un atributo declarado, no uno supuesto."
+        }
+      ],
+      "fix": [
+        {
+          "key": "title",
+          "note": "El título utiliza un dato que ya existe en el origen."
+        },
+        {
+          "key": "description",
+          "note": "Los mismos datos del producto se expresan con más claridad."
+        },
+        {
+          "key": "price_and_stock",
+          "note": "La acción sobre la ficha no modifica el precio ni el inventario."
+        }
+      ],
+      "track": [
+        {
+          "key": "referrer",
+          "note": "El dominio de origen permite clasificar la visita."
+        },
+        {
+          "key": "classification",
+          "note": "Una referencia detectada se convierte en un registro de seguimiento."
+        },
+        {
+          "key": "revenue",
+          "note": "Una visita por sí sola no demuestra un pedido ni ingresos atribuidos."
+        }
+      ]
+    },
+    "checkout": {
+      "filename": "checkout-example.json",
+      "label": "Requisitos del checkout",
+      "note": "Pseudocódigo de ejemplo. El teléfono deja de ser obligatorio; el pago sigue utilizando la pasarela de la tienda.",
+      "rows": [
+        {
+          "key": "phone_required",
+          "before": true,
+          "after": false,
+          "note": "El bloqueo es un teléfono obligatorio que el agente no tiene."
+        },
+        {
+          "key": "phone",
+          "before": null,
+          "after": null,
+          "note": "No se inventan datos de contacto para superar la comprobación."
+        },
+        {
+          "key": "contact_step",
+          "before": "blocked",
+          "after": "ready",
+          "note": "Al quitar este requisito, el ejemplo puede continuar al pago."
+        },
+        {
+          "key": "payment",
+          "before": "not_reached",
+          "after": "merchant_gateway",
+          "note": "La pasarela de la tienda gestiona el pago; puede ser necesaria la intervención del comprador."
+        }
+      ]
+    }
+  }
+}

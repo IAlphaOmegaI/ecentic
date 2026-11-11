@@ -1,22 +1,53 @@
 "use client";
 
-import { ArrowRightIcon } from "@zenncore/icons";
+import { ArrowRightIcon, CommerceGlobePointerIcon } from "@zenncore/icons";
 import { resultify } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { field, InferredForm } from "@zenncore/web/components/inferred-form";
+import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import type { AppConfig } from "next-intl";
 import { useState } from "react";
 import { z } from "zod";
 import { Link } from "@/i18n/navigation";
 import * as Entry from "@/server/app/entry";
-import { Calculator } from "../calculator";
-import { InteractiveInput } from "../text-input";
+import type { InteractiveInput } from "../text-input";
 import { useInteractive } from "../use-interactive";
 import { validStoreAddress } from "./address";
 
-const AddressInput = (props: InteractiveInput.Props) => (
-  <InteractiveInput {...props} inputMode="url" />
+const AddressInput = ({
+  value,
+  onValueChange,
+  label,
+  name,
+  onBlur,
+  ref,
+  disabled,
+}: InteractiveInput.Props) => (
+  <TextField
+    value={value ?? ""}
+    onValueChange={onValueChange}
+    disabled={disabled}
+    className="h-12 rounded-md border-accent-foreground bg-background text-foreground-rich"
+  >
+    <CommerceGlobePointerIcon
+      aria-hidden
+      className="ml-4 size-6 shrink-0 text-primary"
+    />
+    <TextFieldInput
+      ref={ref}
+      name={name}
+      onBlur={onBlur}
+      inputMode="url"
+      aria-label={label}
+      placeholder={label}
+      autoComplete="url"
+      autoCapitalize="off"
+      spellCheck={false}
+      maxLength={250}
+      className="px-3 text-base placeholder:text-foreground-dimmed"
+    />
+  </TextField>
 );
 
 export const StoreCheckForm = ({ copy, locale }: StoreCheckForm.Props) => {
@@ -54,20 +85,20 @@ export const StoreCheckForm = ({ copy, locale }: StoreCheckForm.Props) => {
       Component: AddressInput,
       label: copy.label,
       validator,
-      classList: { field: "min-w-0", description: "empty:hidden" },
+      classList: {
+        field: "min-w-0",
+        label: "sr-only",
+        description: "empty:hidden",
+      },
     }),
   };
   return (
-    <Calculator.Root
-      layout="inline"
-      data-interactive="store-check"
-      className="max-w-2xl border p-6 max-sm:p-4"
-    >
+    <div data-interactive="store-check" className="mt-8 w-full max-w-2xl">
       {ready ? (
         <InferredForm
           config={config}
           defaultValues={{ url: "" }}
-          className="grid items-end gap-4 space-y-0 sm:grid-cols-[1fr_auto]"
+          className="grid items-start gap-3 space-y-0 sm:grid-cols-[minmax(0,1fr)_auto] [&>button]:min-h-12"
           onChange={(values) => {
             setAddress(values.url ?? "");
             setFailure("");
@@ -90,11 +121,11 @@ export const StoreCheckForm = ({ copy, locale }: StoreCheckForm.Props) => {
       <p
         role="status"
         aria-live="polite"
-        className="mt-4 text-foreground text-sm"
+        className="mt-3 max-w-[65ch] text-current text-sm opacity-80"
       >
         {failure || (address && !valid ? copy.errors.invalid : copy.hint)}
       </p>
-    </Calculator.Root>
+    </div>
   );
 };
 export namespace StoreCheckForm {

@@ -6,7 +6,9 @@ import { useInView } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { Motion } from "@/components/motion";
 import { closingAscii, commerceAscii } from "@/content/ascii-artwork";
+import { catalogAscii } from "@/content/connect-ascii";
 import { originalAscii } from "@/content/original-ascii";
+import { selectionAscii } from "@/content/simulate-ascii";
 import { useDocument } from "@/hooks/use-document";
 
 const ramp = " -=+xX%#@";
@@ -25,6 +27,8 @@ const artwork = {
   ...originalAscii,
   commerce: normalize(commerceAscii),
   closing: normalize(closingAscii),
+  catalog: catalogAscii,
+  selection: selectionAscii,
 };
 
 const density = Object.fromEntries(

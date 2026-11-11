@@ -9,39 +9,72 @@ import {
   type CheckoutState,
   checkoutSteps,
 } from "@/content/examples/checkout-run";
+import { CodeRecord } from "./code-comparison";
 import { FlowDiagram } from "./flow-diagram";
 import { useInteractive } from "./use-interactive";
 
 type Copy = Awaited<ReturnType<typeof getMessages>>["interactiveCheckout"];
+type Code = Awaited<ReturnType<typeof getMessages>>["reviewCode"]["checkout"];
 
 const CheckoutTrace = ({
   state,
   copy,
+  code,
 }: {
   state: CheckoutState;
   copy: Copy;
+  code?: Code;
 }) => (
   <div data-checkout-trace={state}>
-    <FlowDiagram
-      label={copy.states[state]}
-      nodes={checkoutSteps.map((step) => ({
-        id: step.id,
-        label: copy.steps[step.id].label,
-        description:
-          step.id === "contact" || step.id === "payment"
-            ? copy.steps[step.id][state]
-            : undefined,
-        status: step[state],
-      }))}
-      statusLabels={copy.statuses}
-    />
+    <div className={code ? "grid min-w-0 lg:grid-cols-[3fr_2fr]" : undefined}>
+      {code && (
+        <CodeRecord
+          rows={code.rows}
+          state={state}
+          filename={code.filename}
+          label={code.label}
+        />
+      )}
+      <div
+        className={
+          code
+            ? "min-w-0 border-accent-foreground border-t lg:border-t-0 lg:border-l [&_[data-flow-node]>div>span:first-child]:left-10 [&_[data-flow-node]>div]:px-6 [&_[data-flow-node]>div]:py-3"
+            : undefined
+        }
+      >
+        <FlowDiagram
+          label={copy.states[state]}
+          nodes={checkoutSteps.map((step) => ({
+            id: step.id,
+            label: copy.steps[step.id].label,
+            description:
+              step.id === "contact" || step.id === "payment"
+                ? copy.steps[step.id][state]
+                : undefined,
+            status: step[state],
+          }))}
+          statusLabels={copy.statuses}
+        />
+      </div>
+    </div>
     <p className="border-accent-foreground border-t px-8 py-6 text-foreground-rich max-sm:px-4">
       {copy.outcomes[state]}
     </p>
+    {code && (
+      <p className="px-8 pb-6 text-foreground-dimmed text-sm max-sm:px-4">
+        {code.note}
+      </p>
+    )}
   </div>
 );
 
-export const CheckoutRunClient = ({ copy }: { copy: Copy }) => {
+export const CheckoutRunClient = ({
+  copy,
+  code,
+}: {
+  copy: Copy;
+  code?: Code;
+}) => {
   const { ready, reduced } = useInteractive();
   const [state, setState] = useState<CheckoutState>("before");
   const states = ["before", "after"] as const;
@@ -64,18 +97,26 @@ export const CheckoutRunClient = ({ copy }: { copy: Copy }) => {
       {!ready || reduced ? (
         <div
           data-checkout-static
-          className="grid border-accent-foreground border-t lg:grid-cols-2"
+          className={
+            code
+              ? "grid border-accent-foreground border-t"
+              : "grid border-accent-foreground border-t lg:grid-cols-2"
+          }
         >
           {states.map((outcome) => (
             <section
               key={outcome}
               aria-label={copy.states[outcome]}
-              className="min-w-0 border-accent-foreground last:border-t lg:last:border-t-0 lg:last:border-l"
+              className={
+                code
+                  ? "min-w-0 border-accent-foreground last:border-t"
+                  : "min-w-0 border-accent-foreground last:border-t lg:last:border-t-0 lg:last:border-l"
+              }
             >
               <h4 className="border-accent-foreground border-b px-8 py-4 font-medium text-foreground-rich text-lg max-sm:px-4">
                 {copy.states[outcome]}
               </h4>
-              <CheckoutTrace state={outcome} copy={copy} />
+              <CheckoutTrace state={outcome} copy={copy} code={code} />
             </section>
           ))}
         </div>
@@ -113,7 +154,7 @@ export const CheckoutRunClient = ({ copy }: { copy: Copy }) => {
               value={outcome}
               className="focus-visible:outline-2 focus-visible:outline-primary focus-visible:-outline-offset-2"
             >
-              <CheckoutTrace state={outcome} copy={copy} />
+              <CheckoutTrace state={outcome} copy={copy} code={code} />
             </TabsPanel>
           ))}
         </Tabs>

@@ -124,7 +124,7 @@ export const MarketingHero = ({
       illustration &&
         "[&>.marketing-rail>.marketing-guides]:hidden [&>.marketing-rail]:grid [&>.marketing-rail]:min-h-[calc(100dvh-68px)] [&>.marketing-rail]:grid-cols-2 max-md:[&>.marketing-rail]:grid-cols-1",
       dark &&
-        "marketing-dark enterprise-blue enterprise-journey mx-3 -mt-[68px] mb-3 min-h-dvh overflow-hidden rounded-xl border-0 bg-linear-to-r from-primary-text via-primary-text to-primary text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_22%,transparent)] [--rail-cross:transparent] max-sm:mx-2 max-sm:-mt-[72px] max-sm:mb-2 max-sm:rounded-lg [&>.marketing-rail]:flex [&>.marketing-rail]:min-h-dvh [&>.marketing-rail]:items-end [&>.marketing-rail]:border-x-background-rich/15 [&>.marketing-rail]:border-y-0 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden [&_.marketing-eyebrow]:text-background-rich [&_.marketing-guides_span]:before:hidden [&_.marketing-guides_span]:after:hidden [&_.marketing-screenshot_figcaption]:text-background-rich/85 [&_.marketing-status>span]:bg-background-rich [&_.marketing-status]:text-background-rich [&_:is(h1,h2,h3)]:text-background-rich",
+        "marketing-dark enterprise-blue enterprise-journey mx-3 -mt-[68px] mb-3 min-h-dvh overflow-hidden rounded-xl border-0 bg-linear-to-r from-primary-text via-primary-text to-primary text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_22%,transparent)] [--rail-cross:transparent] max-sm:mx-2 max-sm:-mt-[72px] max-sm:mb-2 max-sm:rounded-lg [&>.marketing-rail>.marketing-guides]:z-0 [&>.marketing-rail>.marketing-guides]:opacity-20 [&>.marketing-rail]:flex [&>.marketing-rail]:min-h-dvh [&>.marketing-rail]:items-end [&>.marketing-rail]:border-x-background-rich/15 [&>.marketing-rail]:border-y-0 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden [&_.marketing-eyebrow]:text-background-rich [&_.marketing-guides_span]:before:hidden [&_.marketing-guides_span]:after:hidden [&_.marketing-screenshot_figcaption]:text-background-rich/85 [&_.marketing-status>span]:bg-background-rich [&_.marketing-status]:text-background-rich [&_:is(h1,h2,h3)]:text-background-rich",
     )}
   >
     {!illustration && (dark || artwork) && (
@@ -175,7 +175,7 @@ export const MarketingHero = ({
       {children}
     </div>
     {illustration && (
-      <div className="relative flex min-w-0 items-center border-accent-foreground border-l px-4 py-10 max-sm:px-2 max-sm:py-4 max-md:border-t max-md:border-l-0">
+      <div className="relative flex min-w-0 items-center border-accent-foreground border-l py-6 max-sm:py-2 max-md:border-t max-md:border-l-0">
         <Plus className="top-0 left-0 size-4 -translate-x-1/2 -translate-y-1/2 [&>span]:bg-cross" />
         <Plus className="bottom-0 left-0 size-4 -translate-x-1/2 translate-y-1/2 max-md:hidden [&>span]:bg-cross" />
         <Plus className="top-0 right-0 size-4 translate-x-1/2 -translate-y-1/2 md:hidden [&>span]:bg-cross" />

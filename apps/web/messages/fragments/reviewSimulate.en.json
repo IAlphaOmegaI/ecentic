@@ -1,0 +1,16 @@
+{
+  "reviewSimulate": {
+    "roadmap": {
+      "title": "Inside a simulated decision",
+      "stages": [
+        "Compare the products",
+        "Follow the selection",
+        "Read the reasoning"
+      ],
+      "play": "Replay",
+      "pause": "Pause"
+    },
+    "assistant": "ecentic simulation",
+    "response": "Assistant response"
+  }
+}

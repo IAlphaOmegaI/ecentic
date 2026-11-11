@@ -10,7 +10,7 @@ export const RiffleFigure = ({ label }: RiffleFigure.Props) => (
     figure={Riffle}
     label={label}
     surface="background"
-    className="aspect-[5/3]"
+    className="aspect-[4/3] overflow-hidden focus-within:outline-2 focus-within:outline-primary focus-within:outline-solid focus-within:-outline-offset-4 [&>[data-hairline]]:-inset-[7.5%] [&>[data-hairline]]:size-[115%] [&_path]:[vector-effect:non-scaling-stroke]"
   />
 );
 

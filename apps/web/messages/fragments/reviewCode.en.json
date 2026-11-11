@@ -1,0 +1,94 @@
+{
+  "reviewCode": {
+    "recordNote": "Illustrative record, not an API request.",
+    "platform": {
+      "connect": [
+        {
+          "key": "title",
+          "note": "The source title is preserved during import."
+        },
+        {
+          "key": "source",
+          "note": "The record moves from your file into the catalog."
+        },
+        {
+          "key": "publish_access",
+          "note": "Importing a feed does not grant write access to a store."
+        }
+      ],
+      "simulate": [
+        {
+          "key": "question",
+          "note": "Keep the shopper’s request explicit so the comparison has context."
+        },
+        {
+          "key": "decision",
+          "note": "A simulated run records which listing was selected."
+        },
+        {
+          "key": "reasoning",
+          "note": "The result points to a stated attribute, not an assumed one."
+        }
+      ],
+      "fix": [
+        {
+          "key": "title",
+          "note": "The title uses a fact already present in the source."
+        },
+        {
+          "key": "description",
+          "note": "The same product facts are expressed more clearly."
+        },
+        {
+          "key": "price_and_stock",
+          "note": "The listing action leaves price and inventory alone."
+        }
+      ],
+      "track": [
+        {
+          "key": "referrer",
+          "note": "The originating domain is evidence for the visit classification."
+        },
+        {
+          "key": "classification",
+          "note": "A detected referral becomes a tracking record."
+        },
+        {
+          "key": "revenue",
+          "note": "A visit by itself does not establish an order or attributed revenue."
+        }
+      ]
+    },
+    "checkout": {
+      "filename": "checkout-example.json",
+      "label": "Checkout requirements",
+      "note": "Example pseudocode. The phone requirement is relaxed; payment still uses the merchant’s gateway.",
+      "rows": [
+        {
+          "key": "phone_required",
+          "before": true,
+          "after": false,
+          "note": "The blocker is the required phone number the agent does not have."
+        },
+        {
+          "key": "phone",
+          "before": null,
+          "after": null,
+          "note": "No contact information is invented to pass the check."
+        },
+        {
+          "key": "contact_step",
+          "before": "blocked",
+          "after": "ready",
+          "note": "Removing this requirement lets the sample continue to payment."
+        },
+        {
+          "key": "payment",
+          "before": "not_reached",
+          "after": "merchant_gateway",
+          "note": "The store’s payment gateway handles payment; a buyer handoff may still be needed."
+        }
+      ]
+    }
+  }
+}

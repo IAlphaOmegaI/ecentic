@@ -22,6 +22,8 @@ export const InterestLead = ({
   topic,
   title,
   triggerLabel,
+  triggerColor,
+  triggerVariant,
   locale,
   copy,
 }: InterestLead.Props) => {
@@ -36,7 +38,11 @@ export const InterestLead = ({
         if (open) setHasOpened(true);
       }}
     >
-      <Button render={<DialogTrigger />}>
+      <Button
+        color={triggerColor}
+        variant={triggerVariant}
+        render={<DialogTrigger />}
+      >
         {triggerLabel ?? content.title}
       </Button>
       <DialogPopup
@@ -89,6 +95,8 @@ export namespace InterestLead {
     topic: string;
     title?: string;
     triggerLabel?: string;
+    triggerColor?: Button.Props["color"];
+    triggerVariant?: Button.Props["variant"];
     locale: "en" | "es";
     copy: AppConfig["Messages"]["enterpriseLead"];
   };

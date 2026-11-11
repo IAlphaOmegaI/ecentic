@@ -1,6 +1,11 @@
 "use client";
 
 import {
+  CommerceCode_3Icon,
+  CommerceFilePenIcon,
+  CommerceGlobePointerIcon,
+} from "@zenncore/icons";
+import {
   Accordion,
   AccordionItem,
   AccordionPanel,
@@ -75,6 +80,24 @@ export const ConnectSources = ({
                   provider="googleMerchant"
                   decorative
                   className="h-8 w-8 shrink-0 rounded-none"
+                />
+              )}
+              {section.id === "product-feeds" && (
+                <CommerceCode_3Icon
+                  aria-hidden
+                  className="size-8 shrink-0 text-primary"
+                />
+              )}
+              {section.id === "csv" && (
+                <CommerceFilePenIcon
+                  aria-hidden
+                  className="size-8 shrink-0 text-primary"
+                />
+              )}
+              {section.id === "store-address" && (
+                <CommerceGlobePointerIcon
+                  aria-hidden
+                  className="size-8 shrink-0 text-primary"
                 />
               )}
               <span className="min-w-0 flex-1">{section.title}</span>

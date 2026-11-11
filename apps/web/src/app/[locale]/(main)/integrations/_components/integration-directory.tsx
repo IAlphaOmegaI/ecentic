@@ -109,19 +109,17 @@ const DirectoryEntry = ({
               {copy.sourceLink}
             </Button>
           )}
+          {integration.interests.map((topic) => (
+            <MarketingLead
+              key={topic}
+              kind="interest"
+              topic={topic}
+              title={copy.interests[topic]}
+              triggerColor="neutral"
+              triggerVariant="outline"
+            />
+          ))}
         </div>
-        {integration.interests.length > 0 && (
-          <div className="mt-6 flex flex-wrap items-center gap-4">
-            {integration.interests.map((topic) => (
-              <MarketingLead
-                key={topic}
-                kind="interest"
-                topic={topic}
-                title={copy.interests[topic]}
-              />
-            ))}
-          </div>
-        )}
       </div>
     </article>
   );
@@ -287,7 +285,7 @@ export const IntegrationImportFlow = ({
           <p className="mt-3 text-foreground-dimmed text-sm leading-relaxed">
             {directory.flow.catalog.description}
           </p>
-          <ul className="mt-6 grid grid-cols-2 gap-x-4 gap-y-3 border-accent-foreground border-t pt-4 text-foreground text-sm">
+          <ul className="mt-6 grid grid-cols-2 gap-x-4 gap-y-3 border-accent-foreground border-t pt-4 font-mono text-primary-text text-sm">
             {directory.flow.catalog.fields.map((field) => (
               <li key={field}>{field}</li>
             ))}

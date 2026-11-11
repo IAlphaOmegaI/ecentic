@@ -78,9 +78,17 @@ export default async ({ params }: Props) => {
       <Body
         sections={content.sections}
         sectionChildren={{
-          access: <IntegrationLedger rows={content.ledger} copy={copy} />,
+          access: (
+            <IntegrationLedger
+              rows={content.ledger}
+              copy={copy}
+              showIcons={integration.key === "woocommerce"}
+            />
+          ),
           "agent-checkout":
-            integration.key === "woocommerce" ? <CheckoutRun /> : undefined,
+            integration.key === "woocommerce" ? (
+              <CheckoutRun variant="code" />
+            ) : undefined,
           "export-platforms":
             integration.key === "productFeeds" ? (
               <FeedExporters copy={copy} />

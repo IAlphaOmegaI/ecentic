@@ -21,12 +21,13 @@ export const generateMetadata = async () => {
 export default async () => {
   const {
     hairlineIntegrations,
+    reviewIntegrations,
     enterpriseIntegrations: copy,
     browserIntegrations: directory,
   } = await getMessages();
   return (
     <MarketingPage
-      content={copy.index}
+      content={{ ...copy.index, eyebrow: reviewIntegrations.eyebrow }}
       path="/integrations"
       heroIllustration={<PatchFigure label={hairlineIntegrations.label} />}
     >

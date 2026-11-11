@@ -1,19 +1,23 @@
 import { notFound } from "next/navigation";
 import { getLocale, getMessages } from "next-intl/server";
-import { canPublishEvidence } from "@/components/marketing/evidence-policy";
 import { CheckoutRun } from "@/components/marketing/interactive/checkout-run";
 import { StoreCheck } from "@/components/marketing/interactive/store-check";
-import { SimulationEvidence } from "@/components/marketing/measured-evidence";
 import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
 import {
   MarketingBand,
   MarketingScreenshot,
 } from "@/components/marketing/primitives";
-import { simulationEvidence } from "@/content/marketing-evidence";
 import { pageBodies } from "../_components/page-bodies";
 import { ProductExample } from "../_components/product-example";
 
 const pillars = ["connect", "simulate", "fix", "sell", "track"] as const;
+const artwork = {
+  connect: "catalog",
+  simulate: "selection",
+  fix: "bag",
+  sell: "cart",
+  track: "console",
+} as const;
 
 const screenshots = {
   connect: { file: "enterprise-connect-sample", width: 1280, en: 673, es: 673 },
@@ -45,8 +49,6 @@ export const generateMetadata = async ({ params }: Props) => {
 
 export default async ({ params }: Props) => {
   const locale = await getLocale();
-  // biome-ignore lint/complexity/useLiteralKeys: Environment keys have an index signature.
-  const review = process.env["NEXT_PUBLIC_REVIEW"] === "1";
   const { pillar: requested } = await params;
   const pillar = pillars.find((value) => value === requested);
   if (!pillar) notFound();
@@ -54,8 +56,13 @@ export default async ({ params }: Props) => {
   const Body = pageBodies[pillar];
   return (
     <MarketingPage
+      heroArtwork={artwork[pillar]}
       heroChildren={pillar === "connect" ? <StoreCheck /> : undefined}
-      content={{ ...enterprisePlatform.pages[pillar], sections: [] }}
+      content={{
+        ...enterprisePlatform.pages[pillar],
+        ...(pillar === "connect" ? { actions: [] } : {}),
+        sections: [],
+      }}
       path={`/platform/${pillar}`}
     >
       <MarketingBand className="[&>.marketing-rail>.marketing-guides]:hidden [&>.marketing-rail]:bg-background-dimmed">
@@ -76,18 +83,13 @@ export default async ({ params }: Props) => {
             pillar === "sell" ? (
               <CheckoutRun />
             ) : (
-              <ProductExample content={enterprisePlatform.examples[pillar]} />
+              <ProductExample
+                kind={pillar}
+                content={enterprisePlatform.examples[pillar]}
+              />
             ),
         }}
       />
-      {pillar === "simulate" &&
-        canPublishEvidence(simulationEvidence.status, review) && (
-          <MarketingBand>
-            <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10">
-              <SimulationEvidence />
-            </div>
-          </MarketingBand>
-        )}
     </MarketingPage>
   );
 };

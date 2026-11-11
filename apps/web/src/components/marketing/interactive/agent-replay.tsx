@@ -1,3 +1,4 @@
+import { FileSearchIcon, UserIcon } from "@zenncore/icons";
 import { getLocale, getMessages } from "next-intl/server";
 import { MarketingBand } from "@/components/marketing/primitives";
 import { agentReplay } from "@/content/examples/agent-replay";
@@ -10,7 +11,7 @@ export const AgentReplay = async ({
   embedded?: boolean;
 }) => {
   const locale = await getLocale();
-  const { interactiveReplay: copy } = await getMessages();
+  const { interactiveReplay: copy, reviewSimulate } = await getMessages();
   const currency = new Intl.NumberFormat(locale, {
     style: "currency",
     currency: agentReplay.currency,
@@ -56,20 +57,37 @@ export const AgentReplay = async ({
     />
   );
   const note = (text: string) => (
-    <p className="max-w-[80ch] px-4 py-6 text-foreground text-sm leading-relaxed md:px-6">
-      {text}
-    </p>
+    <div className="flex items-start gap-4 px-4 py-6 md:px-8">
+      <FileSearchIcon
+        aria-hidden
+        className="mt-1 size-6 shrink-0 text-primary-text"
+      />
+      <p className="max-w-[76ch] text-foreground text-sm leading-relaxed">
+        {text}
+      </p>
+    </div>
   );
   const contents = {
     question: (
-      <div className="flex min-h-72 flex-col justify-center gap-6 px-4 py-8 md:px-6">
-        <p className="text-foreground-dimmed text-sm">{copy.questionLabel}</p>
-        <blockquote className="max-w-[28ch] font-heading text-2xl text-foreground-rich leading-snug md:text-3xl">
-          {copy.question}
-        </blockquote>
-        <p className="max-w-[68ch] text-foreground text-sm leading-relaxed">
-          {copy.questionNote}
-        </p>
+      <div className="flex min-h-80 flex-col justify-center gap-8 px-4 py-8 md:px-8">
+        <div className="ml-auto max-w-[76%] max-sm:max-w-full">
+          <p className="mb-4 flex items-center justify-end gap-2 text-foreground-dimmed text-sm">
+            <UserIcon aria-hidden className="size-4" />
+            {copy.questionLabel}
+          </p>
+          <blockquote className="rounded-2xl rounded-tr-sm border border-accent-foreground bg-background-dimmed px-6 py-6 font-heading text-2xl text-foreground-rich leading-snug max-sm:text-xl">
+            {copy.question}
+          </blockquote>
+        </div>
+        <div className="flex max-w-[76ch] items-start gap-4">
+          <FileSearchIcon
+            aria-hidden
+            className="size-6 shrink-0 text-primary-text"
+          />
+          <p className="text-foreground text-sm leading-relaxed">
+            {copy.questionNote}
+          </p>
+        </div>
       </div>
     ),
     listings: (
@@ -134,10 +152,14 @@ export const AgentReplay = async ({
   }));
   const content = (
     <div data-agent-replay="" className="min-w-0 bg-background">
-      <header className="px-4 py-8 md:px-6">
-        <p className="mb-4 font-medium text-primary-text text-sm">
-          {copy.sample}
+      <div className="flex flex-wrap items-center justify-between gap-4 border-accent-foreground border-y bg-linear-to-r from-primary/8 via-background to-background px-4 py-6 md:px-8">
+        <p className="flex items-center gap-4 font-medium text-foreground-rich">
+          <FileSearchIcon aria-hidden className="size-6 text-primary-text" />
+          {reviewSimulate.assistant}
         </p>
+        <p className="text-foreground-dimmed text-sm">{copy.sample}</p>
+      </div>
+      <header className="px-4 py-6 md:px-8">
         <h2 className="font-heading text-2xl text-foreground-rich md:text-3xl">
           {copy.title}
         </h2>
@@ -150,6 +172,7 @@ export const AgentReplay = async ({
         label={copy.rail}
         labels={copy.controls}
         playback
+        autoPlay
       />
     </div>
   );

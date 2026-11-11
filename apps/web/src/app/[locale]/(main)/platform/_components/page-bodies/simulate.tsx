@@ -14,6 +14,7 @@ import {
 } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { RiffleFigure } from "./riffle-figure";
+import { SimulateRoadmap } from "./simulate-roadmap";
 import { SimulateTracking } from "./simulate-tracking";
 
 const models = [
@@ -52,6 +53,15 @@ const RiffleIllustration = async () => {
   return <RiffleFigure label={hairlineSimulate.label} />;
 };
 
+const ProblemJourney = async ({
+  items,
+}: {
+  items: NonNullable<MarketingPage.Section["items"]>;
+}) => {
+  const { reviewSimulate } = await getMessages();
+  return <SimulateRoadmap items={items} labels={reviewSimulate.roadmap} />;
+};
+
 export const SimulateBody = ({
   sections,
   sectionChildren,
@@ -75,30 +85,12 @@ export const SimulateBody = ({
                     description={section.description}
                     className="pb-8 max-sm:pb-6"
                   />
-                  <div className="px-7 pb-10 max-sm:px-4 max-sm:pb-6">
+                  <div className="pb-4">
                     <RiffleIllustration />
                   </div>
                 </div>
-                <div className="border-[var(--rail-color)] border-l bg-background-dimmed px-8 max-sm:px-4 max-md:border-t max-md:border-l-0">
-                  {section.items?.map((item, index) => (
-                    <article
-                      key={item.title}
-                      className="grid grid-cols-[32px_1fr] gap-4 border-[var(--rail-color)] border-b py-8 last:border-b-0"
-                    >
-                      <span
-                        aria-hidden="true"
-                        className="font-heading text-3xl text-primary-text"
-                      >
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                      <div>
-                        <h3>{item.title}</h3>
-                        <p className="mt-2 text-foreground-dimmed">
-                          {item.body}
-                        </p>
-                      </div>
-                    </article>
-                  ))}
+                <div className="min-w-0 border-accent-foreground border-l max-md:border-t max-md:border-l-0">
+                  <ProblemJourney items={section.items ?? []} />
                 </div>
               </div>
               {children}

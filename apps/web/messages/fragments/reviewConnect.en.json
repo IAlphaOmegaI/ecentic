@@ -1,0 +1,17 @@
+{
+  "reviewConnect": {
+    "problem": {
+      "store": "Store catalog",
+      "merchant": "Merchant Center",
+      "feed": "Product feed",
+      "note": "One product can have different records in each source."
+    },
+    "flow": {
+      "sources": "Choose the source you want to bring in.",
+      "catalog": "Your working catalog",
+      "merchant": "Merchant Center is a separate Shopify connection.",
+      "selection": "Choose which imported products to compare.",
+      "control": "Import supported product fields first. Publishing changes remains a separate action."
+    }
+  }
+}

@@ -7,6 +7,7 @@ import {
   MarketingBand,
   MarketingHeading,
 } from "@/components/marketing/primitives";
+import { TrackingOverview } from "@/components/marketing/tracking-overview";
 import { TrackComparison } from "./track-comparison";
 
 const scopeIds = [
@@ -166,26 +167,15 @@ export const TrackBody = async ({
                 id={section.id}
                 className="[&_.marketing-guides]:hidden"
               >
-                <div className="grid min-w-0 lg:grid-cols-[5fr_7fr]">
-                  <MarketingHeading
-                    eyebrow={section.eyebrow}
-                    title={section.title}
-                    description={section.description}
-                  />
-                  <dl className="min-w-0 border-accent-foreground border-t bg-background-dimmed lg:border-t-0 lg:border-l">
-                    {section.items?.map((item) => (
-                      <div
-                        key={item.title}
-                        className="grid gap-2 border-accent-foreground border-b px-8 py-6 last:border-b-0 max-sm:px-4 sm:grid-cols-2 sm:gap-6"
-                      >
-                        <dt className="font-medium text-foreground-rich">
-                          {item.title}
-                        </dt>
-                        <dd className="text-foreground-dimmed">{item.body}</dd>
-                      </div>
-                    ))}
-                  </dl>
-                </div>
+                <MarketingHeading
+                  eyebrow={section.eyebrow}
+                  title={section.title}
+                  description={section.description}
+                />
+                <TrackingOverview
+                  items={section.items ?? []}
+                  label={section.title}
+                />
                 {sectionChildren?.[section.id]}
               </MarketingBand>
             );
