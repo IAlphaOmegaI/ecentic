@@ -1501,7 +1501,7 @@ official artwork, aspect ratios and readable contrast.
 
 Secondary page bodies may vary in layout while keeping the same semantic tokens, type hierarchy,
 primary/neutral gradient buttons, rail geometry, crosshairs and motion rules. The homepage
-roadmap remains schematic and tag-free, with ASCII numerals beside the stage titles; ASCII elsewhere must explain or reinforce the page's
+roadmap remains schematic and tag-free, with normal LT Superior or Red Hat numerals beside the stage titles; ASCII elsewhere must explain or reinforce the page's
 subject and respect reduced motion. Do not use a single repeating card layout as the default
 answer for every page.
 
@@ -1529,3 +1529,12 @@ Use these files as implementation references:
 
 These references show how the system is assembled. This document determines which patterns should be
 repeated and which should be corrected.
+
+
+## 25. Interactive explanations and latest review refinements
+
+Restore concise sentence-case eyebrows where they help identify a section. Technical scopes and URLs use monospace; section titles, stage numbers and ordinary labels use the normal heading/body fonts. Official source rows have a bare Nucleo document icon at the left and continuous separators. Desktop mega menus keep progressive blur with a transparent body, internal grid rules only, and lightly tinted header/footer strips. Menus overlay without moving page scroll.
+
+New marketing examples compose the shared StepPlayer, FlowDiagram, ComparePanel and Calculator. Their fields are square gray surfaces, active controls use a blue dot and ink text with an optional full outline, and inactive controls stay neutral. A tinted selected panel is not the active state. Each simulated example explicitly says “Example with sample data” in its locale. Real pricing and file viewers use canonical sources. First-render HTML contains a complete static explanation before progressive enhancement; reduced motion exposes every step or a complete final state. Replay starts only on Play and stops at the end. State transitions are 150–250 ms with no autonomous loops.
+
+Keep the original product film and real screenshots. Decorative figures and illustrations never imply measurements or outcomes. Security connector copy stays behind the server-side review gate until Alvi signs it off.

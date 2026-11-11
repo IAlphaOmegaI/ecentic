@@ -10,6 +10,7 @@ import {
 import { Button } from "@zenncore/web/components/button";
 import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { useInteractive } from "@/components/marketing/interactive/use-interactive";
 import type { MarketingPage } from "@/components/marketing/page";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
@@ -90,63 +91,91 @@ export namespace SolutionsAudience {
 export const SolutionsWorkflows = ({
   sections,
   label,
-}: SolutionsWorkflows.Props) => (
-  <Accordion
-    defaultValue={[sections[0]?.id]}
-    className="border-accent-foreground border-t"
-  >
-    {sections.map((section, index) => (
-      <AccordionItem
-        key={section.id}
-        id={section.id}
-        value={section.id}
-        className="relative scroll-mt-24 border-accent-foreground last:border-b-0 data-open:bg-background-dimmed"
-      >
-        <AccordionTrigger
-          className="items-center px-8 py-8 hover:bg-background-dimmed focus-visible:-outline-offset-4 max-sm:px-4 max-sm:py-6"
-          classList={{ trigger: { icon: "size-4 shrink-0 text-primary-text" } }}
-        >
-          <span className="flex items-start gap-6 max-sm:gap-4">
-            <span className="text-2xl text-primary-text leading-snug">
-              {String(index + 1).padStart(2, "0")}
-            </span>
-            <span className="font-heading text-2xl leading-snug">
+}: SolutionsWorkflows.Props) => {
+  const { ready, reduced } = useInteractive();
+  if (!ready || reduced)
+    return (
+      <div className="border-accent-foreground border-t">
+        {sections.map((section, index) => (
+          <section
+            key={section.id}
+            id={section.id}
+            className="scroll-mt-24 border-accent-foreground border-b bg-background-dimmed last:border-b-0"
+          >
+            <h3 className="flex items-start gap-6 px-8 py-8 font-heading text-2xl leading-snug max-sm:gap-4 max-sm:px-4 max-sm:py-6">
+              <span className="text-primary-text">
+                {String(index + 1).padStart(2, "0")}
+              </span>
               {section.title}
+            </h3>
+            <WorkflowBody section={section} label={label} />
+          </section>
+        ))}
+      </div>
+    );
+  return (
+    <Accordion
+      defaultValue={[sections[0]?.id]}
+      className="border-accent-foreground border-t"
+    >
+      {sections.map((section, index) => (
+        <AccordionItem
+          key={section.id}
+          id={section.id}
+          value={section.id}
+          className="relative scroll-mt-24 border-accent-foreground last:border-b-0 data-open:bg-background-dimmed"
+        >
+          <AccordionTrigger
+            className="items-center px-8 py-8 hover:bg-background-dimmed focus-visible:-outline-offset-4 max-sm:px-4 max-sm:py-6"
+            classList={{
+              trigger: { icon: "size-4 shrink-0 text-primary-text" },
+            }}
+          >
+            <span className="flex items-start gap-6 max-sm:gap-4">
+              <span className="text-2xl text-primary-text leading-snug">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <span className="font-heading text-2xl leading-snug">
+                {section.title}
+              </span>
             </span>
-          </span>
-        </AccordionTrigger>
-        <AccordionPanel keepMounted>
-          <div className="grid grid-cols-[7fr_5fr] max-md:grid-cols-1">
-            <p className="max-w-[60ch] px-8 pb-10 text-lg leading-relaxed max-sm:px-4 max-sm:pb-8 max-sm:text-base">
-              {section.description}
-            </p>
-            <div className="min-w-0 px-8 pb-10 max-sm:px-4 max-sm:pb-8">
-              <p className="mb-4 text-foreground-dimmed text-sm">{label}</p>
-              <div className="flex flex-wrap items-center gap-4">
-                {section.links?.map((link, position) => (
-                  <div key={link.href} className="flex items-center gap-4">
-                    {position > 0 && (
-                      <span
-                        aria-hidden
-                        className="w-6 border-accent-foreground border-t"
-                      />
-                    )}
-                    <Button
-                      color={position === 0 ? "primary" : "neutral"}
-                      render={<Link href={link.href} />}
-                    >
-                      {link.label}
-                      <ArrowRightIcon aria-hidden className="size-4" />
-                    </Button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
-        </AccordionPanel>
-      </AccordionItem>
-    ))}
-  </Accordion>
+          </AccordionTrigger>
+          <AccordionPanel keepMounted>
+            <WorkflowBody section={section} label={label} />
+          </AccordionPanel>
+        </AccordionItem>
+      ))}
+    </Accordion>
+  );
+};
+
+const WorkflowBody = ({
+  section,
+  label,
+}: {
+  section: MarketingPage.Section;
+  label: string;
+}) => (
+  <div className="grid grid-cols-[7fr_5fr] max-md:grid-cols-1">
+    <p className="max-w-[60ch] px-8 pb-10 text-foreground text-lg leading-relaxed max-sm:px-4 max-sm:pb-8 max-sm:text-base">
+      {section.description}
+    </p>
+    <div className="min-w-0 px-8 pb-10 max-sm:px-4 max-sm:pb-8">
+      <p className="mb-4 text-foreground text-sm">{label}</p>
+      <div className="flex flex-wrap items-center gap-4">
+        {section.links?.map((link, position) => (
+          <Button
+            key={link.href}
+            color={position === 0 ? "primary" : "neutral"}
+            render={<Link href={link.href} />}
+          >
+            {link.label}
+            <ArrowRightIcon aria-hidden className="size-4" />
+          </Button>
+        ))}
+      </div>
+    </div>
+  </div>
 );
 
 export namespace SolutionsWorkflows {
