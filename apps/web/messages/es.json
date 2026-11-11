@@ -18732,5 +18732,8 @@
   },
   "hairlineRecovery": {
     "label": "Ilustración: un signo de interrogación que gira hacia el puntero."
+  },
+  "hairlineEnterprise": {
+    "label": "Ilustración: tiendas conectadas a un centro; el enlace bajo el cursor se vuelve continuo."
   }
 }

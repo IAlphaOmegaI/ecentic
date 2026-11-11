@@ -1,3 +1,4 @@
+import { ArrowRightIcon } from "@zenncore/icons";
 import {
   Accordion,
   AccordionItem,
@@ -13,13 +14,16 @@ import {
   MarketingEyebrow,
 } from "@/components/marketing/primitives";
 import { Plus } from "@/components/plus";
+import { Link } from "@/i18n/navigation";
 import { EnterpriseEngagements } from "./enterprise-engagements";
+import { HubFigure } from "./hub-figure";
 
 export const EnterpriseBody = async ({
   sections,
   sectionChildren,
 }: MarketingBodyProps) => {
-  const { enterprisePage, enterpriseSolutions } = await getMessages();
+  const { enterprisePage, enterpriseSolutions, hairlineEnterprise } =
+    await getMessages();
   const security = sections.find((section) => section.id === "security");
 
   return (
@@ -191,6 +195,56 @@ export const EnterpriseBody = async ({
             );
           case "security":
             return null;
+          case "scale":
+            return (
+              <MarketingBand
+                key={section.id}
+                id={section.id}
+                className="[&>.marketing-rail>.marketing-guides]:hidden"
+              >
+                <div className="px-4 py-8 sm:px-8 sm:py-12">
+                  {section.eyebrow && (
+                    <MarketingEyebrow>{section.eyebrow}</MarketingEyebrow>
+                  )}
+                  <h2>{section.title}</h2>
+                </div>
+                <div className="relative border-accent-foreground border-t bg-background-dimmed px-4 sm:px-8">
+                  <HubFigure label={hairlineEnterprise.label} />
+                  <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+                  <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+                </div>
+                <div className="relative grid gap-px border-accent-foreground border-t bg-accent-foreground sm:grid-cols-2 lg:grid-cols-3">
+                  {section.items?.map((item) => (
+                    <article
+                      key={item.title}
+                      className="min-w-0 bg-background px-4 py-8 sm:px-8"
+                    >
+                      <h3 className="max-w-[24ch]">{item.title}</h3>
+                      {item.body && (
+                        <p className="mt-4 text-foreground-dimmed">
+                          {item.body}
+                        </p>
+                      )}
+                      {item.href && (
+                        <Link
+                          className="mt-6 inline-flex items-center gap-2 text-primary-text decoration-1 underline-offset-4 hover:underline"
+                          href={item.href}
+                        >
+                          {item.label ?? item.title}
+                          <ArrowRightIcon className="size-4" />
+                        </Link>
+                      )}
+                    </article>
+                  ))}
+                  <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+                  <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+                  <Plus className="top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 max-sm:hidden lg:hidden" />
+                  <Plus className="top-0 left-1/3 -translate-x-1/2 -translate-y-1/2 max-lg:hidden" />
+                  <Plus className="top-0 left-2/3 -translate-x-1/2 -translate-y-1/2 max-lg:hidden" />
+                </div>
+                {sectionChildren?.[section.id]}
+              </MarketingBand>
+            );
           case "checklist":
             return (
               <MarketingBand
