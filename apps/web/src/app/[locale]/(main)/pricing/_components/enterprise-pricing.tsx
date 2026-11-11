@@ -56,7 +56,10 @@ export const EnterprisePlanLedger = async () => {
   const enterprise = enterprisePricing.plans.enterprise;
   return (
     <>
-      <div className="grid grid-cols-1 border-accent-foreground border-t sm:grid-cols-2 lg:grid-cols-5">
+      <div
+        data-columns="2"
+        className="marketing-grid grid grid-cols-2 border-accent-foreground border-b max-sm:grid-cols-1"
+      >
         {planKeys.map((key, index) => {
           const source = pricing.plans[key];
           const copy = enterprisePricing.plans[key];
@@ -77,7 +80,7 @@ export const EnterprisePlanLedger = async () => {
           return (
             <article
               key={key}
-              className="grid min-w-0 gap-6 border-accent-foreground px-5 py-7 last:border-r-0 max-lg:border-b max-lg:even:border-r-0 sm:row-span-7 sm:grid-rows-subgrid sm:border-r"
+              className="grid min-w-0 gap-6 border-accent-foreground border-t px-7 py-8 max-sm:px-4 sm:row-span-7 sm:grid-rows-subgrid sm:border-r sm:even:border-r-0"
             >
               <p className="text-primary-text text-sm">0{index + 1}</p>
               <h3 className="text-[clamp(20px,2vw,26px)] tracking-[-0.035em]">
@@ -117,17 +120,27 @@ export const EnterprisePlanLedger = async () => {
             </article>
           );
         })}
-        <article className="grid min-w-0 gap-6 border-accent-foreground bg-background px-5 py-7 max-lg:col-span-full sm:row-span-7 sm:grid-rows-subgrid">
+      </div>
+      <article
+        data-columns="2"
+        className="marketing-grid grid grid-cols-2 border-accent-foreground border-b bg-background max-sm:grid-cols-1"
+      >
+        <div className="flex min-w-0 flex-col gap-6 border-accent-foreground border-t px-7 py-8 max-sm:px-4 sm:border-r">
           <p className="text-primary-text text-sm">05</p>
           <h3 className="text-[clamp(20px,2vw,26px)] tracking-[-0.035em]">
             {enterprise.name}
           </h3>
           <p className="text-base leading-normal">{enterprise.tagline}</p>
-          <div className="flex min-h-[90px] flex-col gap-2">
-            <strong className="font-medium text-[clamp(28px,3vw,40px)] text-foreground-rich leading-[1.1] tracking-[-0.05em]">
-              {enterprise.figure}
-            </strong>
+          <strong className="font-medium text-[clamp(28px,3vw,40px)] text-foreground-rich leading-[1.1] tracking-[-0.05em]">
+            {enterprise.figure}
+          </strong>
+          <div className="mt-auto w-full [&>.marketing-actions]:mt-0 [&_.marketing-actions_a]:min-h-[46px] [&_.marketing-actions_a]:w-full [&_.marketing-actions_a]:whitespace-normal [&_.marketing-actions_a]:p-2.5 [&_.marketing-actions_a]:text-center [&_.marketing-actions_a]:text-[13px]">
+            <MarketingActions
+              actions={[{ label: enterprise.action.primary, href: "/demo" }]}
+            />
           </div>
+        </div>
+        <div className="flex min-w-0 flex-col justify-center gap-6 border-accent-foreground border-t px-7 py-8 max-sm:px-4">
           <p className="text-[13px] leading-[1.6]">{enterprise.note}</p>
           <ul className="m-0 flex list-none flex-col gap-4 p-0 text-sm">
             {enterprise.features.map((feature) => (
@@ -139,13 +152,8 @@ export const EnterprisePlanLedger = async () => {
               </li>
             ))}
           </ul>
-          <div className="self-end [&>.marketing-actions]:mt-0 [&_.marketing-actions_a]:min-h-[46px] [&_.marketing-actions_a]:w-full [&_.marketing-actions_a]:whitespace-normal [&_.marketing-actions_a]:p-2.5 [&_.marketing-actions_a]:text-center [&_.marketing-actions_a]:text-[13px]">
-            <MarketingActions
-              actions={[{ label: enterprise.action.primary, href: "/demo" }]}
-            />
-          </div>
-        </article>
-      </div>
+        </div>
+      </article>
       <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
         <p className="marketing-note text-(length:--text-sm) mt-6 text-foreground-dimmed">
           {enterprisePricing.availability}

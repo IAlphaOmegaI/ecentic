@@ -1,4 +1,5 @@
 import { cn } from "@zenncore/utils";
+import { ScrollArea } from "@zenncore/web/components/scroll-area";
 import {
   Table,
   TableBody,
@@ -10,22 +11,28 @@ import {
 import type { ReactNode } from "react";
 
 /**
- * The primitives the four docs pages share. Everything a developer or an agent
- * reads here is server-rendered text — no client component sits between the
- * request and the reference, because the readers that matter most for this page
- * do not run JavaScript.
+ * Shared reference content remains server-rendered. ScrollArea adds keyboard
+ * scrolling after hydration without hiding code or table content from readers
+ * that do not run JavaScript.
  */
 
 export const DocsCode = ({ children, label }: DocsCode.Props) => (
-  <figure className="flex flex-col gap-2">
+  <figure className="flex min-w-0 flex-col gap-2">
     {label && (
       <figcaption className="font-mono text-foreground-dimmed text-xs">
         {label}
       </figcaption>
     )}
-    <pre className="overflow-x-auto border border-accent-foreground bg-background-dimmed p-4 font-mono text-foreground text-xs leading-relaxed">
-      <code>{children}</code>
-    </pre>
+    <ScrollArea
+      className="max-w-full border border-accent-foreground bg-background-dimmed"
+      classList={{
+        viewport: "focus-visible:outline-2 focus-visible:outline-primary-text",
+      }}
+    >
+      <pre className="w-max min-w-full p-4 font-mono text-foreground text-xs leading-relaxed">
+        <code>{children}</code>
+      </pre>
+    </ScrollArea>
   </figure>
 );
 
@@ -37,12 +44,22 @@ export namespace DocsCode {
 }
 
 export const DocsTable = ({ columns, rows }: DocsTable.Props) => (
-  <div className="overflow-x-auto">
-    <Table>
+  <ScrollArea
+    role="region"
+    aria-label={columns.join(", ")}
+    className="min-w-0 max-w-full"
+    classList={{
+      viewport: "focus-visible:outline-2 focus-visible:outline-primary-text",
+    }}
+  >
+    <Table className="min-w-160 border-b-0 bg-background">
       <TableHeader>
         <TableRow>
           {columns.map((column) => (
-            <TableHead key={column} className="whitespace-nowrap">
+            <TableHead
+              key={column}
+              className="whitespace-nowrap px-7 font-medium text-foreground text-sm normal-case tracking-normal max-sm:px-4"
+            >
               {column}
             </TableHead>
           ))}
@@ -56,7 +73,7 @@ export const DocsTable = ({ columns, rows }: DocsTable.Props) => (
                 // biome-ignore lint/suspicious/noArrayIndexKey: column order is fixed per table
                 key={index}
                 className={cn(
-                  "align-top",
+                  "px-7 align-top font-normal max-sm:px-4",
                   cell.mono && "whitespace-nowrap font-mono text-xs",
                 )}
               >
@@ -67,7 +84,7 @@ export const DocsTable = ({ columns, rows }: DocsTable.Props) => (
         ))}
       </TableBody>
     </Table>
-  </div>
+  </ScrollArea>
 );
 
 export namespace DocsTable {

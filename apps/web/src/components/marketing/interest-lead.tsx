@@ -50,7 +50,7 @@ export const InterestLead = ({
         <DialogTitle
           ref={heading}
           tabIndex={-1}
-          className="marketing-lead-dialog-title mb-4 text-[30px]"
+          className="marketing-lead-dialog-title mb-6 text-[30px]"
         >
           {title ?? content.title}
         </DialogTitle>

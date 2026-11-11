@@ -52,7 +52,7 @@ export const CommerceTimeline = async () => {
         event.source.url,
       ])}
     >
-      <ChannelTimeline copy={copy} locale={locale} />
+      <ChannelTimeline events={copy.events} locale={locale} />
       <p className="mt-6 max-w-[760px] text-base leading-relaxed">
         {copy.takeaway}
       </p>

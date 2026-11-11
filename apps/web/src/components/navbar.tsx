@@ -119,7 +119,7 @@ export const Navbar = () => {
         `.marketing-mega-content[data-menu="${menu}"] a[href]`,
       );
       if (!link) return;
-      link.focus();
+      link.focus({ preventScroll: true });
       if (document.activeElement === link) pendingFocus.current = null;
     });
   };
@@ -131,7 +131,7 @@ export const Navbar = () => {
       setActive(null);
       header.current
         ?.querySelector<HTMLButtonElement>(`[data-menu-trigger="${active}"]`)
-        ?.focus();
+        ?.focus({ preventScroll: true });
       return;
     }
     if (
@@ -161,7 +161,14 @@ export const Navbar = () => {
     if (!links[next]) return;
     event.preventDefault();
     event.stopPropagation();
-    links[next].focus();
+    links[next].focus({ preventScroll: true });
+    const bounds = event.currentTarget.getBoundingClientRect();
+    const target = links[next].getBoundingClientRect();
+    const offset =
+      Math.min(0, target.top - bounds.top) +
+      Math.max(0, target.bottom - bounds.bottom);
+    if (offset !== 0)
+      event.currentTarget.scrollBy({ top: offset, behavior: "instant" });
   };
   return (
     <header
@@ -240,13 +247,13 @@ export const Navbar = () => {
                     <ChevronDownIcon className="size-4" />
                   </NavigationMenuTrigger>
                   <NavigationMenuContent
-                    className="marketing-mega-content max-h-[calc(100dvh-80px)] w-screen xs:w-screen min-w-0 xs:min-w-0 overflow-y-auto px-0 py-2"
+                    className="marketing-mega-content max-h-[calc(100dvh-81px)] w-screen xs:w-screen min-w-0 xs:min-w-0 overflow-y-auto px-0 py-2"
                     data-menu={group.id}
                     ref={(content) => {
                       if (!content || pendingFocus.current !== group.id) return;
                       const link =
                         content.querySelector<HTMLAnchorElement>("a[href]");
-                      link?.focus();
+                      link?.focus({ preventScroll: true });
                       if (document.activeElement === link)
                         pendingFocus.current = null;
                     }}
@@ -254,16 +261,16 @@ export const Navbar = () => {
                   >
                     <div
                       className={cn(
-                        "marketing-mega-grid relative mx-auto grid max-w-[min(1384px,calc(100%-56px))] auto-cols-fr grid-flow-col border border-accent-foreground",
+                        "marketing-mega-grid relative mx-auto grid max-w-[min(1186px,calc(100%-56px))] auto-cols-fr grid-flow-col border border-accent-foreground",
                         group.id === "channels" &&
-                          "max-w-[1186px] grid-flow-row grid-cols-[2fr_1fr]",
+                          "grid-flow-row grid-cols-[2fr_1fr]",
                       )}
                       data-menu={group.id}
                     >
                       {group.columns.map((column) => (
                         <div
                           className={cn(
-                            "marketing-mega-column relative border-accent-foreground border-r px-4 py-7",
+                            "marketing-mega-column relative border-accent-foreground border-r px-7 py-8",
                             group.id === "channels" &&
                               "grid grid-cols-2 gap-x-7",
                           )}
@@ -311,7 +318,7 @@ export const Navbar = () => {
                           })}
                         </div>
                       ))}
-                      <div className="marketing-mega-feature relative bg-transparent px-5 py-7">
+                      <div className="marketing-mega-feature relative bg-background-dimmed px-7 py-8">
                         <p className="font-heading font-medium text-2xl text-foreground-rich leading-[1.15]">
                           {group.featured.title}
                         </p>

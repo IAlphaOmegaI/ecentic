@@ -134,7 +134,7 @@ export const EvidenceDatum = ({
           role="tooltip"
           className={cn(
             fonts,
-            "max-w-[min(360px,calc(100vw-32px))] gap-2 rounded-xs border-accent-foreground bg-background-rich px-4 py-3 font-body text-foreground text-sm leading-relaxed shadow-sm [font-synthesis:none]",
+            "max-w-[min(360px,calc(100vw-32px))] gap-2 rounded-xs border-accent-foreground bg-background-rich px-4 py-3 font-body text-foreground text-sm leading-relaxed shadow-none [font-synthesis:none]",
           )}
         >
           <p>{detail}</p>

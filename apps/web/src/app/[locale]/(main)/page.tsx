@@ -49,6 +49,15 @@ import { SectionGutter } from "./dashboard/_components/grid";
 import { EditorialArticles } from "./resources/_components/editorial-articles";
 import { EditorialArticlesSkeleton } from "./resources/_components/skeletons";
 
+const mechanismIcons = [
+  CommerceChartActivity_2Icon,
+  CommerceFileShieldIcon,
+  CommerceFilePenIcon,
+  CommercePlug_3SparkleIcon,
+  CommerceBasketShoppingIcon,
+  CommerceCode_3Icon,
+];
+
 export const generateMetadata = async () => {
   const { enterpriseHome } = await getMessages();
   return marketingMetadata(enterpriseHome.meta, "/");
@@ -61,14 +70,6 @@ export default async () => {
     enterpriseIntegrations,
     pricing,
   } = await getMessages();
-  const mechanismIcons = [
-    CommerceChartActivity_2Icon,
-    CommerceFileShieldIcon,
-    CommerceFilePenIcon,
-    CommercePlug_3SparkleIcon,
-    CommerceBasketShoppingIcon,
-    CommerceCode_3Icon,
-  ];
   return (
     <ClientMessages scope="home">
       <MarketingShell>
@@ -79,11 +80,11 @@ export default async () => {
             createSoftwareApplicationSchema(pricing.schema.plans),
           ]}
         />
-        <MarketingBand className="enterprise-blue enterprise-journey max-sm:[&_.marketing-eyebrow]:text-(length:--text-xs) m-6 overflow-hidden rounded-xl border-b-0 bg-[linear-gradient(100deg,var(--color-primary-text)_0%,var(--color-primary-text)_65%,var(--color-primary)_100%)] text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_28%,transparent)] [--rail-cross:color-mix(in_oklab,var(--color-background-rich)_62%,transparent)] max-sm:m-4 max-sm:rounded-lg max-[801px]:bg-none max-[801px]:bg-primary-text [&>.marketing-rail]:border-x-background-rich/15 [&>.marketing-rail]:border-y-0 [&_.marketing-actions>a+a]:border-background-rich/70 [&_.marketing-actions>a+a]:text-background-rich [&_.marketing-actions>a:first-child]:bg-background-rich [&_.marketing-actions>a:first-child]:text-primary-text max-sm:[&_.marketing-actions]:mt-[26px] max-sm:[&_.marketing-actions]:gap-3 max-sm:[&_.marketing-actions_a]:min-h-11 max-sm:[&_.marketing-actions_a]:px-3 max-sm:[&_.marketing-actions_a]:py-2.5 max-sm:[&_.marketing-actions_a]:text-[13px] [&_.marketing-cell]:flex [&_.marketing-cell]:min-h-[600px] [&_.marketing-cell]:items-center [&_.marketing-cell]:pt-[72px] [&_.marketing-cell]:pb-[60px] max-sm:[&_.marketing-cell]:min-h-0 max-sm:[&_.marketing-cell]:px-4 max-sm:[&_.marketing-cell]:pt-[46px] max-sm:[&_.marketing-cell]:pb-[38px] [&_.marketing-eyebrow]:text-background-rich max-sm:[&_.marketing-eyebrow]:mb-7 [&_h1]:max-w-[920px] [&_h1]:text-[clamp(3rem,5.2vw,4.8rem)] [&_h1]:text-background-rich [&_h1]:leading-[1.025] [&_h1]:tracking-[-0.043em] max-sm:[&_h1]:text-[43px] max-sm:[&_h1]:tracking-[-0.036em]">
+        <MarketingBand className="enterprise-blue enterprise-journey max-sm:[&_.marketing-eyebrow]:text-(length:--text-xs) m-6 overflow-hidden rounded-xl border-b-0 bg-[linear-gradient(100deg,var(--color-primary-text)_0%,var(--color-primary-text)_65%,var(--color-primary)_100%)] text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_28%,transparent)] [--rail-cross:color-mix(in_oklab,var(--color-background-rich)_62%,transparent)] max-sm:m-4 max-sm:rounded-lg max-[801px]:bg-none max-[801px]:bg-primary-text [&>.marketing-rail]:border-x-background-rich/15 [&>.marketing-rail]:border-y-0 [&_.marketing-actions>a+a]:border-background-rich/70 [&_.marketing-actions>a+a]:text-background-rich [&_.marketing-actions>a:first-child]:bg-background-rich [&_.marketing-actions>a:first-child]:text-primary-text max-sm:[&_.marketing-actions]:mt-[26px] max-sm:[&_.marketing-actions]:gap-3 max-sm:[&_.marketing-actions_a]:min-h-11 max-sm:[&_.marketing-actions_a]:px-3 max-sm:[&_.marketing-actions_a]:py-2.5 max-sm:[&_.marketing-actions_a]:text-[13px] [&_.marketing-cell]:flex [&_.marketing-cell]:min-h-[600px] [&_.marketing-cell]:items-center [&_.marketing-cell]:py-24 max-sm:[&_.marketing-cell]:min-h-0 max-sm:[&_.marketing-cell]:px-4 max-sm:[&_.marketing-cell]:py-14 [&_.marketing-eyebrow]:text-background-rich max-sm:[&_.marketing-eyebrow]:mb-7 [&_h1]:max-w-[920px] [&_h1]:text-[clamp(3rem,5.2vw,4.8rem)] [&_h1]:text-background-rich [&_h1]:leading-[1.025] [&_h1]:tracking-[-0.043em] max-sm:[&_h1]:text-[43px] max-sm:[&_h1]:tracking-[-0.036em]">
           <AsciiAtmosphere className="enterprise-art pointer-events-none absolute inset-y-0 -right-[60px] left-[24%] text-background-rich opacity-40 [mask-image:linear-gradient(100deg,transparent_22%,black_90%)] max-sm:top-[150px] max-sm:-right-4 max-sm:left-0 max-sm:opacity-16 max-sm:[mask-image:linear-gradient(180deg,transparent,black)]">
             <AsciiCommerceArtwork />
           </AsciiAtmosphere>
-          <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+          <div className="marketing-cell relative min-w-0 px-7 pt-24 pb-12 max-sm:px-4 max-sm:pt-14 max-sm:pb-8 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
             <div className="enterprise-copy relative z-1">
               <MarketingEyebrow>{copy.hero.eyebrow}</MarketingEyebrow>
               <h1>{copy.hero.title}</h1>
@@ -108,10 +109,10 @@ export default async () => {
         <CommerceLayer />
         <SectionGutter />
         <MarketingBand className="enterprise-businesses" id="solutions">
-          <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+          <div className="marketing-cell relative min-w-0 px-7 pt-24 pb-12 max-sm:px-4 max-sm:pt-14 max-sm:pb-8 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
             <MarketingEyebrow>{copy.businesses.eyebrow}</MarketingEyebrow>
             <h2>{copy.businesses.title}</h2>
-            <p className="marketing-lead mt-7 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
+            <p className="marketing-lead mt-6 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
               {copy.businesses.description}
             </p>
           </div>
@@ -143,10 +144,10 @@ export default async () => {
           </div>
         </MarketingBand>
         <MarketingBand id="product" className="enterprise-product">
-          <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+          <div className="marketing-cell relative min-w-0 px-7 py-24 max-sm:px-4 max-sm:py-14 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
             <MarketingEyebrow>{copy.loop.eyebrow}</MarketingEyebrow>
             <h2>{copy.loop.title}</h2>
-            <p className="marketing-lead mt-7 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
+            <p className="marketing-lead mt-6 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
               {copy.loop.description}
             </p>
             <MarketingScreenshot
@@ -157,26 +158,23 @@ export default async () => {
           </div>
         </MarketingBand>
         <SectionGutter />
-        <MarketingBand
-          id="film"
-          className="enterprise-film marketing-dark bg-band-start text-background-rich/82 [--rail-color:color-mix(in_oklab,var(--color-background-rich)_30%,transparent)] [--rail-cross:color-mix(in_oklab,var(--color-background-rich)_55%,transparent)] [&>.marketing-rail]:bg-[linear-gradient(165deg,var(--color-band-start)_25%,var(--color-band-middle)_66%,var(--color-band-end))] [&_.marketing-actions>a+a]:border-background-rich/60 [&_.marketing-actions>a+a]:text-background-rich [&_.marketing-actions>a:first-child]:bg-background-rich [&_.marketing-actions>a:first-child]:text-foreground-rich [&_.marketing-eyebrow]:text-primary-rich [&_.marketing-screenshot_figcaption]:text-background-rich/82 [&_:is(h1,h2,h3)]:text-background-rich"
-        >
-          <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+        <MarketingBand id="film" className="enterprise-film">
+          <div className="marketing-cell relative min-w-0 px-7 pt-24 pb-12 max-sm:px-4 max-sm:pt-14 max-sm:pb-8 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
             <MarketingEyebrow>{copy.film.eyebrow}</MarketingEyebrow>
             <h2>{copy.film.title}</h2>
-            <p className="marketing-lead mt-7 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
+            <p className="marketing-lead mt-6 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
               {copy.film.description}
             </p>
           </div>
-          <div className="enterprise-film-player px-7 pb-12 max-sm:px-4 max-sm:pb-7 [&>button]:rounded-xs [&>button]:shadow-none">
+          <div className="enterprise-film-player px-7 pb-24 max-sm:px-4 max-sm:pb-14 [&>button]:rounded-xs [&>button]:shadow-none">
             <HeroVideo />
           </div>
         </MarketingBand>
         <MarketingBand id="channels">
-          <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+          <div className="marketing-cell relative min-w-0 px-7 pt-24 pb-12 max-sm:px-4 max-sm:pt-14 max-sm:pb-8 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
             <MarketingEyebrow>{copy.channels.eyebrow}</MarketingEyebrow>
             <h2>{copy.channels.title}</h2>
-            <p className="marketing-lead mt-7 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
+            <p className="marketing-lead mt-6 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
               {copy.channels.description}
             </p>
           </div>
@@ -207,7 +205,7 @@ export default async () => {
               );
             })}
           </div>
-          <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+          <div className="marketing-cell relative min-w-0 px-7 pt-12 pb-24 max-sm:px-4 max-sm:pt-8 max-sm:pb-14 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
             <p className="marketing-note text-(length:--text-sm) mt-6 text-foreground-dimmed">
               {copy.channels.checked}
             </p>
@@ -215,10 +213,10 @@ export default async () => {
           </div>
         </MarketingBand>
         <MarketingBand id="integrations">
-          <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+          <div className="marketing-cell relative min-w-0 px-7 pt-24 pb-12 max-sm:px-4 max-sm:pt-14 max-sm:pb-8 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
             <MarketingEyebrow>{copy.integration.eyebrow}</MarketingEyebrow>
             <h2>{copy.integration.title}</h2>
-            <p className="marketing-lead mt-7 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
+            <p className="marketing-lead mt-6 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
               {copy.integration.description}
             </p>
             <p className="enterprise-integration-count text-(length:--text-xl) max-sm:text-(length:--text-base) mt-7 text-foreground-rich [&>span]:mx-3 [&>span]:text-cross max-sm:[&>span]:mx-1">
@@ -230,13 +228,13 @@ export default async () => {
             </p>
           </div>
           <IntegrationsPreview copy={enterpriseIntegrations} />
-          <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+          <div className="marketing-cell relative min-w-0 px-7 pt-12 pb-24 max-sm:px-4 max-sm:pt-8 max-sm:pb-14 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
             <MarketingActions actions={copy.integration.links} />
           </div>
         </MarketingBand>
         <SectionGutter />
         <MarketingBand id="capabilities">
-          <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+          <div className="marketing-cell relative min-w-0 px-7 pt-24 pb-12 max-sm:px-4 max-sm:pt-14 max-sm:pb-8 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
             <MarketingEyebrow>{copy.mechanisms.eyebrow}</MarketingEyebrow>
             <h2>{copy.mechanisms.title}</h2>
           </div>
@@ -268,11 +266,11 @@ export default async () => {
           </div>
         </MarketingBand>
         <MarketingBand id="proof" className="enterprise-proof">
-          <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+          <div className="marketing-cell relative min-w-0 px-7 pt-24 pb-12 max-sm:px-4 max-sm:pt-14 max-sm:pb-8 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
             <MarketingEyebrow>{copy.proof.eyebrow}</MarketingEyebrow>
             <h2>{copy.proof.title}</h2>
           </div>
-          <div className="marketing-cell relative min-w-0 px-7 pb-14 max-sm:px-4 max-sm:pb-10">
+          <div className="marketing-cell relative min-w-0 px-7 pb-24 max-sm:px-4 max-sm:pb-14">
             <div className="grid gap-x-14 gap-y-12 lg:grid-cols-2 [&:has(>:only-child)]:grid-cols-1">
               <SimulationEvidence />
               <CatalogFindings />
@@ -294,12 +292,9 @@ export default async () => {
         <SectionGutter />
         <MarketingBand
           id="enterprise"
-          className="marketing-dark enterprise-procurement text-background-rich/82 [--rail-color:color-mix(in_oklab,var(--color-background-rich)_30%,transparent)] [--rail-cross:color-mix(in_oklab,var(--color-background-rich)_55%,transparent)] [&>.marketing-rail]:bg-[linear-gradient(165deg,var(--color-band-start)_25%,var(--color-band-middle)_66%,var(--color-band-end))] [&>.marketing-rail]:bg-band-start [&>.marketing-rail]:bg-none [&_.marketing-actions>a+a]:border-background-rich/60 [&_.marketing-actions>a+a]:text-background-rich [&_.marketing-actions>a:first-child]:bg-background-rich [&_.marketing-actions>a:first-child]:text-foreground-rich [&_.marketing-eyebrow]:text-primary-rich [&_.marketing-grid]:relative [&_.marketing-screenshot_figcaption]:text-background-rich/82 [&_:is(h1,h2,h3)]:text-background-rich"
+          className="enterprise-procurement [&>.marketing-rail]:bg-background-dimmed"
         >
-          <AsciiAtmosphere className="enterprise-procurement-art pointer-events-none absolute inset-0 text-background-rich opacity-8 [mask-image:linear-gradient(100deg,transparent,black)] max-sm:opacity-[0.035]">
-            <AsciiCommerceArtwork />
-          </AsciiAtmosphere>
-          <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+          <div className="marketing-cell relative min-w-0 px-7 pt-24 pb-12 max-sm:px-4 max-sm:pt-14 max-sm:pb-8 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
             <MarketingEyebrow>{copy.procurement.eyebrow}</MarketingEyebrow>
             <h2>{copy.procurement.title}</h2>
           </div>
@@ -314,15 +309,15 @@ export default async () => {
               </article>
             ))}
           </div>
-          <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+          <div className="marketing-cell relative min-w-0 px-7 pt-12 pb-24 max-sm:px-4 max-sm:pt-8 max-sm:pb-14 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
             <MarketingActions actions={copy.procurement.links} />
           </div>
         </MarketingBand>
         <MarketingBand id="pricing">
-          <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+          <div className="marketing-cell relative min-w-0 px-7 pt-24 pb-12 max-sm:px-4 max-sm:pt-14 max-sm:pb-8 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
             <MarketingEyebrow>{copy.pricing.eyebrow}</MarketingEyebrow>
             <h2>{copy.pricing.title}</h2>
-            <p className="marketing-lead mt-7 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
+            <p className="marketing-lead mt-6 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
               {copy.pricing.description}
             </p>
           </div>
@@ -343,15 +338,15 @@ export default async () => {
               </Link>
             ))}
           </div>
-          <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+          <div className="marketing-cell relative min-w-0 px-7 pt-12 pb-24 max-sm:px-4 max-sm:pt-8 max-sm:pb-14 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
             <MarketingActions actions={[copy.pricing.action]} />
           </div>
         </MarketingBand>
         <MarketingBand id="resources">
-          <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+          <div className="marketing-cell relative min-w-0 px-7 pt-24 pb-12 max-sm:px-4 max-sm:pt-14 max-sm:pb-8 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
             <MarketingEyebrow>{copy.editorial.eyebrow}</MarketingEyebrow>
             <h2>{copy.editorial.title}</h2>
-            <p className="marketing-lead mt-7 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
+            <p className="marketing-lead mt-6 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
               {copy.editorial.description}
             </p>
           </div>
@@ -362,7 +357,7 @@ export default async () => {
           >
             <EditorialArticles />
           </Suspense>
-          <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+          <div className="marketing-cell relative min-w-0 px-7 pt-12 pb-24 max-sm:px-4 max-sm:pt-8 max-sm:pb-14 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
             <MarketingActions actions={copy.editorial.links} />
           </div>
         </MarketingBand>

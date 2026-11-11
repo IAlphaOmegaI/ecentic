@@ -71,7 +71,7 @@ export const ShoppingWorkflows = ({ report }: { report: Report }) => {
                     {translate(`workflows.${workflow.id}.purpose`)}
                   </span>
                   {workflow.tools.length > 0 && (
-                    <span className="break-all font-mono font-normal text-primary text-xs">
+                    <span className="break-all font-mono font-normal text-primary-text text-xs">
                       {workflow.tools.map((tool) => tool.name).join(", ")}
                     </span>
                   )}
@@ -93,7 +93,7 @@ export const ShoppingWorkflows = ({ report }: { report: Report }) => {
                               href={tool.sourceUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="break-all font-mono text-primary text-xs underline underline-offset-4"
+                              className="break-all font-mono text-primary-text text-xs underline underline-offset-4"
                             >
                               {tool.name}
                             </a>

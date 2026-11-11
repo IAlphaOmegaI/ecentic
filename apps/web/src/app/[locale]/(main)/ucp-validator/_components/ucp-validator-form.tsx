@@ -10,6 +10,7 @@ import {
 import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
+import { ScrollArea } from "@zenncore/web/components/scroll-area";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
@@ -80,14 +81,6 @@ const DomainCheckPreview = ({ domain }: DomainCheckPreview.Props) => {
 
   return (
     <div className="relative flex h-full min-h-48 flex-col justify-center overflow-hidden">
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-0 bg-radial-[at_0%_100%] from-primary/15 to-transparent"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute top-0 right-0 h-32 w-32 bg-radial-[at_100%_0%] from-primary/10 to-transparent"
-      />
       <div className="relative flex flex-col gap-5">
         <div className="flex items-center gap-3">
           <Image
@@ -104,13 +97,23 @@ const DomainCheckPreview = ({ domain }: DomainCheckPreview.Props) => {
             </p>
           </div>
         </div>
-        <pre className="overflow-x-auto rounded-md border border-accent-foreground bg-background-rich/80 p-4 font-mono text-foreground-dimmed text-xs leading-relaxed backdrop-blur-[2px] sm:text-sm">
-          {`GET /.well-known/ucp HTTP/1.1
+        <ScrollArea
+          role="region"
+          aria-label={translate("preview.liveFetch")}
+          className="max-w-full rounded-xs border border-accent-foreground bg-background"
+          classList={{
+            viewport:
+              "rounded-xs focus-visible:outline-2 focus-visible:outline-primary-text",
+          }}
+        >
+          <pre className="w-max min-w-full p-4 font-mono text-foreground-dimmed text-xs leading-relaxed sm:text-sm">
+            {`GET /.well-known/ucp HTTP/1.1
 Host: ${host}
 Accept: application/json
 UCP-Agent: profile="https://ucp.dev/..."`}
-        </pre>
-        <p className="font-light text-foreground-dimmed text-sm leading-relaxed">
+          </pre>
+        </ScrollArea>
+        <p className="text-foreground-dimmed text-sm leading-relaxed">
           {translate("preview.note")}
         </p>
       </div>
@@ -124,50 +127,13 @@ export namespace DomainCheckPreview {
   };
 }
 
-const validationManifestArt = `GET /.well-known/ucp HTTP/1.1
-Host: store.example.com
-Accept: application/json
-UCP-Agent: profile="https://ucp.dev/..."
-
-HTTP/1.1 200 OK
-Content-Type: application/json
-
-{
-  "ucp": {
-    "version": "2026-04-08",
-    "services": {
-      "dev.ucp.shopping": [ ... ]
-    },
-    "capabilities": {
-      "dev.ucp.shopping.cart": [ ... ],
-      "dev.ucp.shopping.checkout": [ ... ]
-    },
-    "signing_keys": [ { "kty": "EC", ... } ],
-    "payment_handlers": { ... }
-  }
-}`;
-
 const ValidationTargetsSection = () => {
   const translate = useTranslations("ucpValidator.form");
 
   return (
-    <div className="relative overflow-hidden border-accent-foreground border-t bg-primary/5">
-      <pre
-        aria-hidden
-        className="pointer-events-none absolute top-0 right-0 hidden h-40 max-w-lg select-none overflow-hidden whitespace-pre p-5 text-right font-mono text-primary-text/20 text-sm leading-snug md:block lg:h-48 lg:max-w-xl lg:text-base lg:text-primary-text/25"
-      >
-        {validationManifestArt}
-      </pre>
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-40 bg-radial-[at_100%_0%] from-primary/15 via-transparent to-transparent md:h-48"
-      />
-      <div
-        aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-transparent via-primary/30 to-transparent"
-      />
+    <div className="border-accent-foreground border-t bg-background">
       <div className="relative">
-        <div className="px-6 pt-6 pb-3 sm:px-8">
+        <div className="px-7 pt-6 pb-3 max-sm:px-4">
           <p className="font-medium text-primary-text text-sm">
             {translate("targets.title")}
           </p>
@@ -176,7 +142,7 @@ const ValidationTargetsSection = () => {
           {validationTargets.map((target) => (
             <RevealItem
               key={target.key}
-              className="flex flex-col gap-2 bg-background-rich/95 px-4 py-4 backdrop-blur-[2px] sm:px-5"
+              className="flex flex-col gap-2 bg-background px-7 py-4 max-sm:px-4"
             >
               <div className="flex items-center gap-2">
                 <CheckIcon className="size-3.5 shrink-0 text-primary" />
@@ -185,7 +151,7 @@ const ValidationTargetsSection = () => {
                 </p>
               </div>
               {"code" in target && target.code ? (
-                <p className="truncate font-mono text-primary text-xs">
+                <p className="truncate font-mono text-primary-text text-xs">
                   {target.code}
                 </p>
               ) : null}
@@ -1255,10 +1221,10 @@ export const UcpValidatorForm = ({
     <div className="flex flex-col">
       {hideIntro ? (
         <div className="grid grid-cols-1 gap-px bg-accent-foreground md:grid-cols-[5fr_8fr]">
-          <div className="bg-background-dimmed p-6 sm:p-8">
+          <div className="bg-background px-7 py-12 max-sm:px-4 max-sm:py-8">
             <DomainCheckPreview domain={domain} />
           </div>
-          <div className="flex flex-col justify-center bg-background-rich px-6 py-6 sm:px-8 sm:py-8">
+          <div className="flex flex-col justify-center bg-background px-7 py-12 max-sm:px-4 max-sm:py-8">
             <form onSubmit={handleSubmit}>
               <p className="font-medium text-primary-text text-sm">
                 {translate("panel.checkADomain")}

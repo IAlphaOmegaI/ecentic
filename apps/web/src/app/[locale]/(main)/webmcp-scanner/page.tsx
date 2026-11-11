@@ -64,7 +64,7 @@ export default async () => {
         id="scan"
         className="scroll-mt-8 border-accent-foreground border-b"
       >
-        <div className="mx-auto max-w-6xl border-accent-foreground border-x">
+        <div className="mx-auto w-[min(1186px,calc(100%-56px))] border-accent-foreground border-x max-sm:w-[calc(100%-32px)]">
           <Scanner />
         </div>
       </section>

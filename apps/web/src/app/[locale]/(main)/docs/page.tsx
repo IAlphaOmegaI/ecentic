@@ -119,7 +119,7 @@ export default async () => {
             {translate("quickstart.intro")}
           </p>
           {content.quickstart.steps.map((step, index) => (
-            <div key={step.title} className="flex flex-col gap-3">
+            <div key={step.title} className="flex flex-col gap-6">
               <h3 className="font-medium text-foreground text-xl">
                 {step.title}
               </h3>
@@ -149,13 +149,13 @@ export default async () => {
           <div className="flex flex-wrap gap-4">
             <Link
               href="/docs/authentication"
-              className="text-primary underline-offset-4 hover:underline"
+              className="text-primary-text underline-offset-4 hover:underline"
             >
               {translate("breadcrumb.authentication")}
             </Link>
             <a
               href="/auth.md"
-              className="text-primary underline-offset-4 hover:underline"
+              className="text-primary-text underline-offset-4 hover:underline"
             >
               {translate("authentication.linkLabel")}
             </a>
@@ -224,7 +224,7 @@ export default async () => {
                   content: (
                     <a
                       href={manifest}
-                      className="text-primary underline-offset-4 hover:underline"
+                      className="text-primary-text underline-offset-4 hover:underline"
                     >
                       {manifest}
                     </a>
@@ -254,11 +254,11 @@ export default async () => {
               | "/docs/versioning";
 
             return (
-              <div key={card.title} className="flex flex-col gap-3">
+              <div key={card.title} className="flex flex-col gap-6">
                 <h3 className="font-medium text-foreground text-xl">
                   <Link
                     href={href}
-                    className="text-primary underline-offset-4 hover:underline"
+                    className="text-primary-text underline-offset-4 hover:underline"
                   >
                     {card.title}
                   </Link>
@@ -285,7 +285,7 @@ export default async () => {
           </DocsCode>
           <Link
             href="/docs/mcp"
-            className="text-primary underline-offset-4 hover:underline"
+            className="text-primary-text underline-offset-4 hover:underline"
           >
             {translate("breadcrumb.mcp")}
           </Link>

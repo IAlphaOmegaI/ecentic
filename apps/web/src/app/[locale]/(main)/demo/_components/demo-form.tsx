@@ -101,7 +101,7 @@ export const DemoForm = ({ copy, formCopy, locale }: DemoForm.Props) => {
     >
       <nav
         aria-label={formCopy.progress}
-        className="marketing-demo-progress max-md:[&_li>span]:text-(length:--text-2xl) border-[var(--rail-color)] border-r px-7 py-9 max-md:border-r-0 max-md:border-b max-md:px-5 max-md:py-4 [&_li>span]:font-heading [&_li>span]:text-[30px] max-md:[&_li>span]:block [&_li[aria-current=step]]:text-primary-text [&_li]:flex [&_li]:items-baseline [&_li]:gap-4 [&_li]:py-[18px] [&_li]:text-foreground-dimmed max-md:[&_li]:block max-md:[&_li]:py-1 max-md:[&_li]:text-[13px] max-md:[&_ol]:grid max-md:[&_ol]:grid-cols-3 max-md:[&_ol]:gap-3"
+        className="marketing-demo-progress max-md:[&_li>span]:text-(length:--text-2xl) border-[var(--rail-color)] border-r px-7 py-8 max-md:border-r-0 max-md:border-b max-md:px-4 max-md:py-4 [&_li>span]:font-heading [&_li>span]:text-[30px] max-md:[&_li>span]:block [&_li[aria-current=step]]:text-primary-text [&_li]:flex [&_li]:items-baseline [&_li]:gap-4 [&_li]:py-4 [&_li]:text-foreground-dimmed max-md:[&_li]:block max-md:[&_li]:py-1 max-md:[&_li]:text-[13px] max-md:[&_ol]:grid max-md:[&_ol]:grid-cols-3 max-md:[&_ol]:gap-3"
       >
         <ol>
           {formCopy.steps.map((label, index) => (
@@ -112,11 +112,11 @@ export const DemoForm = ({ copy, formCopy, locale }: DemoForm.Props) => {
           ))}
         </ol>
       </nav>
-      <div className="marketing-demo-body px-7 py-12 max-md:px-5 max-md:py-9">
+      <div className="marketing-demo-body px-7 py-12 max-md:px-4 max-md:py-8">
         {state.sent ? (
           <div role="status">
             <h3>{copy.status.sentTitle}</h3>
-            <p className="mt-4">{formCopy.sentDescription}</p>
+            <p className="mt-6">{formCopy.sentDescription}</p>
             <MarketingActions
               actions={[
                 {
@@ -128,7 +128,7 @@ export const DemoForm = ({ copy, formCopy, locale }: DemoForm.Props) => {
           </div>
         ) : (
           <>
-            <h3 ref={heading} tabIndex={-1} className="mb-8">
+            <h3 ref={heading} tabIndex={-1} className="mb-6">
               {formCopy.steps[step]}
             </h3>
             {step === 0 && (
@@ -188,8 +188,8 @@ export const DemoForm = ({ copy, formCopy, locale }: DemoForm.Props) => {
             {step === 2 && (
               <div>
                 <h4 className="text-2xl">{formCopy.reviewTitle}</h4>
-                <p className="mt-4">{formCopy.reviewDescription}</p>
-                <dl className="marketing-demo-review [&_dd]:wrap-anywhere my-7 [&>div]:grid [&>div]:grid-cols-[180px_minmax(0,1fr)] [&>div]:gap-4 [&>div]:border-[var(--rail-color)] [&>div]:border-b [&>div]:py-4 max-md:[&>div]:grid-cols-1 max-md:[&>div]:gap-1 [&_dd]:whitespace-pre-wrap [&_dt]:text-foreground-dimmed">
+                <p className="mt-6">{formCopy.reviewDescription}</p>
+                <dl className="marketing-demo-review [&_dd]:wrap-anywhere my-8 [&>div]:grid [&>div]:grid-cols-[180px_minmax(0,1fr)] [&>div]:gap-4 [&>div]:border-[var(--rail-color)] [&>div]:border-b [&>div]:py-4 max-md:[&>div]:grid-cols-1 max-md:[&>div]:gap-1 [&_dd]:whitespace-pre-wrap [&_dt]:text-foreground-dimmed">
                   {review.map((row) => (
                     <div key={row.label}>
                       <dt>{row.label}</dt>
@@ -224,7 +224,7 @@ export const DemoForm = ({ copy, formCopy, locale }: DemoForm.Props) => {
                     {state.isPending ? copy.pending : copy.action.primary}
                   </Button>
                 </div>
-                <p className="marketing-note text-(length:--text-sm) mt-6 mt-8 text-foreground-dimmed">
+                <p className="marketing-note text-(length:--text-sm) mt-8 text-foreground-dimmed">
                   {formCopy.bookingNote}
                 </p>
                 <MarketingActions

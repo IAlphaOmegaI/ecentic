@@ -194,19 +194,18 @@ export default async () => {
         <EditorialSplitSection
           key={entry.slug}
           thumbnail={entry.thumbnailUrl ?? undefined}
+          leftClassName={
+            entry.thumbnailUrl ? "text-background-rich" : "text-foreground"
+          }
           left={
             <>
-              <span className="font-normal text-2xl text-white">
+              <span className="font-normal text-2xl">
                 {String(index + 1).padStart(2, "0")}
               </span>
               <div className="mt-auto flex flex-col gap-2">
-                <p className="font-medium text-sm text-white/70">
-                  {entry.category}
-                </p>
-                <p className="text-white">
-                  {formatBlogDate(entry.publishedAt, locale)}
-                </p>
-                <p className="text-sm text-white/60">{entry.readTime}</p>
+                <p className="font-medium text-sm">{entry.category}</p>
+                <p>{formatBlogDate(entry.publishedAt, locale)}</p>
+                <p className="text-sm">{entry.readTime}</p>
               </div>
             </>
           }
@@ -225,7 +224,7 @@ export default async () => {
                 {entry.tags.slice(0, 3).map((tag) => (
                   <span
                     key={tag}
-                    className="border border-accent-foreground bg-background-dimmed p-2 text-foreground-dimmed text-sm"
+                    className="border border-accent-foreground bg-background-dimmed p-2 text-foreground text-sm"
                   >
                     {tag}
                   </span>

@@ -7,22 +7,9 @@ import type { ReactNode } from "react";
  * slab with the page's ASCII motif bleeding off the right edge, content pinned
  * to the bottom.
  *
- * Contrast on `bg-primary` (#1572fa) is the whole point of this component, and
- * the numbers are unforgiving. The slab's luminance puts solid white at 4.36:1,
- * so no white-based text clears the 4.5:1 AA bar at body sizes — white is the
- * ceiling, not a safe default, and every tint below it falls away fast:
- * /80 = 3.34, /75 = 3.11, /70 = 2.90, /60 = 2.51. Text therefore stays *solid*
- * white and lets size, weight, and tracking carry the hierarchy that opacity
- * used to fake.
- *
- * The title accent is the exception: LT Superior in solid white with an
- * underline, so the trailing clause keeps the headline's color while shifting
- * voice through typeface and underline instead of a second fill weight.
- *
- * The rule constrains *text*. A translucent white plate behind a solid-white
- * label (see `bannerAction.secondary`) keeps the label at its full 4.36:1 while
- * letting the field read through — which is why the secondary action can be
- * frosted but its text can never be `text-background-rich/70`.
+ * The darker shared primary-text token keeps solid light body copy accessible.
+ * Headings use the local heading family; size and spacing carry hierarchy.
+ * Artwork stays masked away from the text column.
  */
 export const PageBanner = ({
   title,
@@ -35,7 +22,7 @@ export const PageBanner = ({
   art,
 }: PageBanner.Props) => (
   <section className="border-accent-foreground border-b p-4">
-    <div className="relative flex min-h-[calc(100dvh-2rem)] flex-col justify-end overflow-hidden rounded-lg bg-primary">
+    <div className="relative flex min-h-[calc(100dvh-2rem)] flex-col justify-end overflow-hidden rounded-lg bg-primary-text">
       {art && (
         // `brightness-0 invert` flattens the glyphs to white and keeps their
         // alpha; the left-edge mask stops the densest motifs from running under
@@ -54,7 +41,7 @@ export const PageBanner = ({
           className="pointer-events-none absolute inset-y-0 right-0 hidden h-full w-auto max-w-[55%] select-none object-contain object-right opacity-40 brightness-0 invert [mask-image:linear-gradient(to_right,transparent,black_40%)] md:block"
         />
       )}
-      <div className="relative z-10 mx-auto flex w-full max-w-6xl flex-1 flex-col justify-end border-background-rich/20 border-x px-8 pt-24 pb-16">
+      <div className="relative z-10 mx-auto flex w-[min(1186px,calc(100%-24px))] flex-1 flex-col justify-end border-background-rich/20 border-x px-7 pt-24 pb-16 max-sm:w-full max-sm:px-4">
         {badge && <div className="mb-6">{badge}</div>}
         {assurances && (
           // Quiet middot note above the title — same claims the landing hero
@@ -64,7 +51,7 @@ export const PageBanner = ({
             {assurances.join(" · ")}
           </p>
         )}
-        <h1 className="max-w-4xl font-semibold text-5xl text-background-rich tracking-tight md:text-7xl">
+        <h1 className="max-w-4xl font-heading font-medium text-5xl text-background-rich tracking-tight md:text-7xl">
           {title}
           {accent && (
             <span className="font-medium font-superior text-background-rich underline decoration-2 underline-offset-[0.18em]">

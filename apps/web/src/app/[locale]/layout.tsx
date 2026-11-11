@@ -222,7 +222,7 @@ export default async ({ children }: PropsWithChildren) => {
         <meta name="apple-mobile-web-app-title" content="ecentic" />
       </head>
       <body
-        className={`${redHatDisplay.variable} ${ltSuperior.variable} overflow-x-hidden bg-background font-body antialiased`}
+        className={`${redHatDisplay.variable} ${ltSuperior.variable} overflow-x-hidden bg-background font-body antialiased has-[.marketing-nav]:[overflow-anchor:none]`}
         // React Grab hydration errors
         suppressHydrationWarning={process.env.NODE_ENV === "development"}
       >

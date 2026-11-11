@@ -20,7 +20,7 @@ export const CommerceLayer = async () => {
   return (
     <>
       <MarketingBand id="how-it-fits" className="enterprise-layer">
-        <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10">
+        <div className="marketing-cell relative min-w-0 px-7 py-24 max-sm:px-4 max-sm:py-14">
           <MarketingEyebrow>{copy.eyebrow}</MarketingEyebrow>
           <h2 className="max-w-[940px]">{copy.title}</h2>
           <p className="mt-6 max-w-[720px] text-lg leading-relaxed">
@@ -210,12 +210,12 @@ export const CommerceLayer = async () => {
         </div>
       </MarketingBand>
       <MarketingBand>
-        <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10">
+        <div className="marketing-cell relative min-w-0 px-7 py-24 max-sm:px-4 max-sm:py-14">
           <CommerceTimeline />
         </div>
       </MarketingBand>
       <MarketingBand>
-        <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10">
+        <div className="marketing-cell relative min-w-0 px-7 py-24 max-sm:px-4 max-sm:py-14">
           <ChannelComparison />
         </div>
       </MarketingBand>

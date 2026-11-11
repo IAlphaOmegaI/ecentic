@@ -58,8 +58,8 @@ export const Scanner = ({ initialUrl = "", store }: Scanner.Props) => {
 
   return (
     <div className="bg-background-rich">
-      <div className="grid gap-8 p-6 sm:p-8 lg:grid-cols-[1fr_2fr]">
-        <div className="space-y-4">
+      <div className="grid gap-8 px-7 py-12 max-sm:px-4 max-sm:py-8 lg:grid-cols-[1fr_2fr]">
+        <div className="space-y-6">
           <SearchIcon className="size-4 text-primary" />
           <h2 className="font-medium text-2xl text-foreground">
             {translate("title")}
@@ -87,7 +87,9 @@ export const Scanner = ({ initialUrl = "", store }: Scanner.Props) => {
           </p>
           <div aria-live="polite" aria-atomic="true">
             {pending && (
-              <p className="text-primary text-sm">{translate("progress")}</p>
+              <p className="text-primary-text text-sm">
+                {translate("progress")}
+              </p>
             )}
             {failed && (
               <p role="alert" className="text-error text-sm">
@@ -111,7 +113,7 @@ export const Scanner = ({ initialUrl = "", store }: Scanner.Props) => {
       {outcome?.kind === "complete" && (
         <ScanReport key={run} report={outcome.report} />
       )}
-      <div className="flex flex-wrap gap-x-6 gap-y-2 border-accent-foreground border-t px-6 py-4 text-xs sm:px-8">
+      <div className="flex flex-wrap gap-x-6 gap-y-2 border-accent-foreground border-t px-7 py-4 text-xs max-sm:px-4">
         <span className="text-foreground-dimmed">
           {translate("sources.label")}
         </span>
@@ -119,7 +121,7 @@ export const Scanner = ({ initialUrl = "", store }: Scanner.Props) => {
           href="https://webmachinelearning.github.io/webmcp/"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-primary underline underline-offset-4"
+          className="text-primary-text underline underline-offset-4"
         >
           {translate("sources.specification")}
         </a>
@@ -127,7 +129,7 @@ export const Scanner = ({ initialUrl = "", store }: Scanner.Props) => {
           href="https://developer.chrome.com/docs/ai/webmcp"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-primary underline underline-offset-4"
+          className="text-primary-text underline underline-offset-4"
         >
           {translate("sources.chrome")}
         </a>

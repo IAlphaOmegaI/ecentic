@@ -159,20 +159,20 @@ export const LeadForm = ({
   })();
   return (
     <div
-      className="marketing-lead mt-7 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]"
+      className="marketing-lead mt-8 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]"
       aria-busy={state.isPending}
     >
       {state.sent ? (
         <div role="status">
           <h3>{copy.status.sentTitle}</h3>
-          <p className="mt-4">{copy.status.sentDescription}</p>
+          <p className="mt-6">{copy.status.sentDescription}</p>
         </div>
       ) : (
         <>
           {kind !== "interest" && (
             <>
               <h3>{title ?? content.title}</h3>
-              <p className="mt-4 mb-8">{content.description}</p>
+              <p className="mt-6 mb-8">{content.description}</p>
             </>
           )}
           <Form

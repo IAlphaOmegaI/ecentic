@@ -48,7 +48,7 @@ const IntegrationTile = ({ integration, copy }: IntegrationTile.Props) => {
       className="flex min-w-0 flex-col"
       data-display={integration.display}
     >
-      <div className="mb-7 flex items-center justify-between gap-4">
+      <div className="mb-8 flex items-center justify-between gap-4">
         {providerLogos[integration.key].src ? (
           <ProviderLogo
             provider={integration.key}
@@ -112,17 +112,17 @@ export const IntegrationWall = ({ copy }: IntegrationWall.Props) => (
       );
       return (
         <MarketingBand key={group} id={group}>
-          <div className="marketing-cell relative grid min-w-0 gap-5 px-7 py-14 max-sm:px-4 max-sm:py-10 md:grid-cols-[96px_1fr] [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+          <div className="marketing-cell relative grid min-w-0 gap-6 px-7 pt-24 pb-12 max-sm:px-4 max-sm:pt-14 max-sm:pb-8 md:grid-cols-[96px_1fr] [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
             <span className="text-3xl text-primary" aria-hidden="true">
               {String(index + 1).padStart(2, "0")}
             </span>
             <div>
               <h2>{copy.groups[group]}</h2>
-              <p className="mt-5 max-w-3xl">{copy.groupNotes[group]}</p>
+              <p className="mt-6 max-w-3xl">{copy.groupNotes[group]}</p>
             </div>
           </div>
           {live.length > 0 && (
-            <div className="marketing-grid md:!grid-cols-2 grid grid-cols-3 border-[var(--rail-color)] border-b data-[columns=1]:grid-cols-1 data-[columns=2]:grid-cols-2 data-[columns=4]:grid-cols-4 data-[columns=5]:grid-cols-5 max-sm:grid-cols-1 max-sm:data-[columns]:grid-cols-1 max-[801px]:grid-cols-2 max-[801px]:data-[columns]:grid-cols-2 [&>*]:min-w-0 [&>*]:border-[var(--rail-color)] [&>*]:border-t [&>*]:border-r [&>*]:px-7 [&>*]:py-8 max-sm:[&>*]:border-r-0 max-sm:[&>*]:px-4 max-sm:[&>*]:py-7 min-[801px]:data-ordered:[&>article]:py-10 [&_.marketing-item-link]:mt-7 [&_.marketing-item-link]:inline-flex [&_.marketing-item-link]:items-center [&_.marketing-item-link]:gap-2 [&_a:hover]:underline [&_a]:text-primary-text [&_a]:decoration-1 [&_a]:underline-offset-4 [&_h3]:max-w-[24ch] min-[801px]:data-ordered:[&_h3]:max-w-[20ch] [&_p]:mt-4">
+            <div className="marketing-grid md:!grid-cols-2 grid grid-cols-3 border-[var(--rail-color)] border-b data-[columns=1]:grid-cols-1 data-[columns=2]:grid-cols-2 data-[columns=4]:grid-cols-4 data-[columns=5]:grid-cols-5 max-sm:grid-cols-1 max-sm:data-[columns]:grid-cols-1 max-[801px]:grid-cols-2 max-[801px]:data-[columns]:grid-cols-2 [&>*]:min-w-0 [&>*]:border-[var(--rail-color)] [&>*]:border-t [&>*]:border-r [&>*]:px-7 [&>*]:py-8 max-sm:[&>*]:border-r-0 max-sm:[&>*]:px-4 max-sm:[&>*]:py-7 min-[801px]:data-ordered:[&>article]:py-10 [&_.marketing-item-link]:mt-7 [&_.marketing-item-link]:inline-flex [&_.marketing-item-link]:items-center [&_.marketing-item-link]:gap-2 [&_a:hover]:underline [&_a]:text-primary-text [&_a]:decoration-1 [&_a]:underline-offset-4 [&_h3+p]:mt-6 [&_h3]:max-w-[24ch] min-[801px]:data-ordered:[&_h3]:max-w-[20ch]">
               {live.map((integration) => (
                 <IntegrationTile
                   key={integration.key}
@@ -133,7 +133,7 @@ export const IntegrationWall = ({ copy }: IntegrationWall.Props) => (
             </div>
           )}
           {other.length > 0 && (
-            <div className="marketing-grid grid grid-cols-3 border-[var(--rail-color)] border-b data-[columns=1]:grid-cols-1 data-[columns=2]:grid-cols-2 data-[columns=4]:grid-cols-4 data-[columns=5]:grid-cols-5 max-sm:grid-cols-1 max-sm:data-[columns]:grid-cols-1 max-[801px]:grid-cols-2 max-[801px]:data-[columns]:grid-cols-2 [&>*]:min-w-0 [&>*]:border-[var(--rail-color)] [&>*]:border-t [&>*]:border-r [&>*]:px-7 [&>*]:py-8 max-sm:[&>*]:border-r-0 max-sm:[&>*]:px-4 max-sm:[&>*]:py-7 min-[801px]:data-ordered:[&>article]:py-10 [&_.marketing-item-link]:mt-7 [&_.marketing-item-link]:inline-flex [&_.marketing-item-link]:items-center [&_.marketing-item-link]:gap-2 [&_a:hover]:underline [&_a]:text-primary-text [&_a]:decoration-1 [&_a]:underline-offset-4 [&_h3]:max-w-[24ch] min-[801px]:data-ordered:[&_h3]:max-w-[20ch] [&_p]:mt-4">
+            <div className="marketing-grid grid grid-cols-3 border-[var(--rail-color)] border-b data-[columns=1]:grid-cols-1 data-[columns=2]:grid-cols-2 data-[columns=4]:grid-cols-4 data-[columns=5]:grid-cols-5 max-sm:grid-cols-1 max-sm:data-[columns]:grid-cols-1 max-[801px]:grid-cols-2 max-[801px]:data-[columns]:grid-cols-2 [&>*]:min-w-0 [&>*]:border-[var(--rail-color)] [&>*]:border-t [&>*]:border-r [&>*]:px-7 [&>*]:py-8 max-sm:[&>*]:border-r-0 max-sm:[&>*]:px-4 max-sm:[&>*]:py-7 min-[801px]:data-ordered:[&>article]:py-10 [&_.marketing-item-link]:mt-7 [&_.marketing-item-link]:inline-flex [&_.marketing-item-link]:items-center [&_.marketing-item-link]:gap-2 [&_a:hover]:underline [&_a]:text-primary-text [&_a]:decoration-1 [&_a]:underline-offset-4 [&_h3+p]:mt-6 [&_h3]:max-w-[24ch] min-[801px]:data-ordered:[&_h3]:max-w-[20ch]">
               {other.map((integration) => (
                 <IntegrationTile
                   key={integration.key}
@@ -186,7 +186,7 @@ export const IntegrationLedger = ({ rows, copy }: IntegrationLedger.Props) => (
 );
 
 export const FeedExporters = ({ copy }: FeedExporters.Props) => (
-  <div className="marketing-cell relative min-w-0 px-7 py-14 pt-0 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+  <div className="marketing-cell relative min-w-0 px-7 py-14 pt-0 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
     <p>{copy.feedPlatformsNote}</p>
     <ul className="mt-8 divide-y divide-accent-foreground">
       {integrations
@@ -226,7 +226,7 @@ export const IntegrationSources = ({
   if (sources.length === 0) return null;
   return (
     <MarketingBand>
-      <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+      <div className="marketing-cell relative min-w-0 px-7 py-24 max-sm:px-4 max-sm:py-14 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
         <h2>{copy.sourceTitle}</h2>
         <ul className="mt-8 divide-y divide-accent-foreground">
           {sources.map((source) => (

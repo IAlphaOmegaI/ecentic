@@ -50,7 +50,7 @@ export default async () => {
         }}
       />
       <MarketingBand id="standards">
-        <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+        <div className="marketing-cell relative min-w-0 px-7 pt-24 pb-12 max-sm:px-4 max-sm:pt-14 max-sm:pb-8 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
           <h2>{copy.standards.title}</h2>
           <p>{copy.standards.description}</p>
         </div>
@@ -67,9 +67,9 @@ export default async () => {
         id="request"
         className="marketing-field bg-background [&>.marketing-rail]:bg-background-dimmed [&_.marketing-note]:text-foreground"
       >
-        <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+        <div className="marketing-cell relative min-w-0 px-7 py-24 max-sm:px-4 max-sm:py-14 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
           <h2>{copy.request.title}</h2>
-          <p className="marketing-lead mt-7 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
+          <p className="marketing-lead mt-6 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
             {copy.request.description}
           </p>
           <div className="mt-8">

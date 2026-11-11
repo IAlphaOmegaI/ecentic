@@ -117,17 +117,17 @@ export default async () => {
     >
       <JsonLd schemas={structuredData} />
 
-      <section className="relative -left-[calc(50vw-50%)] w-screen">
-        <div className="relative mx-auto max-w-6xl border-accent-foreground border-x border-b">
+      <section className="relative w-full">
+        <div className="relative mx-auto w-[min(1186px,calc(100%-56px))] border-accent-foreground border-x border-b max-sm:w-[calc(100%-32px)]">
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <div className="relative border-accent-foreground p-6 md:p-12">
-            <h2 className="font-body text-3xl text-foreground md:text-5xl">
+          <div className="relative border-accent-foreground px-7 pt-24 pb-12 max-sm:px-4 max-sm:pt-14 max-sm:pb-8">
+            <h2 className="font-heading text-3xl text-foreground md:text-5xl">
               {demoTitleParts[0]}
               <br />
               {demoTitleParts[1]}
             </h2>
-            <p className="mt-4 max-w-xl font-light text-foreground-dimmed text-lg">
+            <p className="mt-6 max-w-xl font-normal text-foreground-dimmed text-lg">
               {translate("demo.description", { limit })}
             </p>
           </div>
@@ -139,7 +139,7 @@ export default async () => {
               {capabilities.map((capability) => (
                 <div
                   key={capability.title}
-                  className="flex flex-col bg-background-rich p-6 md:p-8"
+                  className="flex flex-col bg-background px-7 py-8 max-sm:px-4"
                 >
                   <p className="font-medium text-foreground">
                     {capability.title}
@@ -154,8 +154,8 @@ export default async () => {
         </div>
       </section>
 
-      <section className="relative -left-[calc(50vw-50%)] w-screen">
-        <div className="relative mx-auto flex h-[720px] max-w-6xl border-accent-foreground border-x border-b bg-background-rich">
+      <section className="relative w-full">
+        <div className="relative mx-auto flex h-[720px] w-[min(1186px,calc(100%-56px))] border-accent-foreground border-x border-b bg-background-rich max-sm:w-[calc(100%-32px)]">
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <Suspense fallback={<PlaygroundSkeleton />}>

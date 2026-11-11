@@ -12,6 +12,7 @@ import {
   isFaqSectionTitle,
   splitBlogHtmlByH2,
 } from "@/lib/blog-html";
+import { blogImage } from "@/lib/blog-image";
 import {
   absoluteUrl,
   brandedTitle,
@@ -28,7 +29,6 @@ import {
 } from "../_components/editorial-page";
 import { FaqSection } from "../_components/faq-section";
 import { HtmlArticleSections } from "../_components/html-article-sections";
-import "../blog-content.css";
 
 const normalize = (value: Date | string) => {
   if (value instanceof Date) return value;
@@ -149,6 +149,7 @@ export default async ({ params }: BlogPageProps) => {
   // Answers are stored in the row's own language, so a /es page falling back to
   // the English row publishes English answers — the same ones it renders.
   const faqSchema = post.faqs.length > 0 ? [createFaqSchema(post.faqs)] : [];
+  const thumbnail = post.thumbnailUrl ? blogImage(post.thumbnailUrl) : null;
 
   /**
    * BabyLoveGrowth also ships an article `jsonLd` graph, which we deliberately
@@ -169,13 +170,13 @@ export default async ({ params }: BlogPageProps) => {
     mainEntityOfPage: absoluteUrl(path),
     keywords: post.tags.join(", "),
     articleSection: post.category,
-    ...(post.thumbnailUrl
+    ...(thumbnail
       ? {
           image: {
             "@type": "ImageObject",
-            url: post.thumbnailUrl.startsWith("http")
-              ? post.thumbnailUrl
-              : absoluteUrl(post.thumbnailUrl),
+            url: thumbnail.startsWith("http")
+              ? thumbnail
+              : absoluteUrl(thumbnail),
           },
         }
       : {}),
@@ -229,7 +230,7 @@ export default async ({ params }: BlogPageProps) => {
           />
         )}
         <EditorialFooter
-          primary={{ href: "/sign-up", label: "Get started" }}
+          primary={{ href: "/sign-up", label: translate("action.tertiary") }}
           secondary={{ href: "/blog", label: translate("action.secondary") }}
           note={translate("description")}
         />
@@ -270,7 +271,7 @@ export default async ({ params }: BlogPageProps) => {
         }
         right={
           <div className="flex flex-col gap-5">
-            <h2 className="font-semibold text-2xl text-foreground leading-snug md:text-3xl">
+            <h2 className="font-medium text-2xl text-foreground leading-snug md:text-3xl">
               Key takeaways
             </h2>
             <ul className="flex flex-col gap-3">
@@ -303,7 +304,7 @@ export default async ({ params }: BlogPageProps) => {
           }
           right={
             <div className="flex flex-col gap-5">
-              <h2 className="font-semibold text-2xl text-foreground leading-snug md:text-3xl">
+              <h2 className="font-medium text-2xl text-foreground leading-snug md:text-3xl">
                 {section.title}
               </h2>
               <EditorialRichText content={section.content} />
@@ -321,7 +322,7 @@ export default async ({ params }: BlogPageProps) => {
       )}
 
       <EditorialFooter
-        primary={{ href: "/sign-up", label: "Get started" }}
+        primary={{ href: "/sign-up", label: translate("action.tertiary") }}
         secondary={{ href: "/blog", label: translate("action.secondary") }}
         note={translate("description")}
       />

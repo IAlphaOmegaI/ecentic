@@ -19,7 +19,7 @@ export const Source = ({ url }: { url: string }) => (
     href={url}
     target="_blank"
     rel="noopener noreferrer"
-    className="break-all font-mono text-primary text-xs underline underline-offset-4"
+    className="break-all font-mono text-primary-text text-xs underline underline-offset-4"
   >
     {url}
   </a>
@@ -39,7 +39,7 @@ export const Label = ({
         success: "bg-success/10 text-success",
         warning: "bg-warning/10 text-warning",
         error: "bg-error/10 text-error",
-        primary: "bg-primary/10 text-primary",
+        primary: "bg-primary/10 text-primary-text",
       }[tone],
     )}
   >
@@ -145,7 +145,7 @@ const Finding = ({ finding }: { finding: AuditFinding }) => {
               </p>
             </div>
             <div className="space-y-2">
-              <p className="font-medium text-primary text-sm">
+              <p className="font-medium text-primary-text text-sm">
                 {translate("fix")}
               </p>
               <p className="text-foreground text-sm leading-relaxed">

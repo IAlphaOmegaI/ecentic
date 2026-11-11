@@ -30,7 +30,7 @@ const renderLinksAndEmails = (
               rel="noopener noreferrer"
               className={
                 options.linkClassName ??
-                "text-primary underline-offset-2 hover:underline"
+                "text-primary-text underline underline-offset-2 hover:decoration-2"
               }
             >
               {link[1]}
@@ -49,7 +49,7 @@ const renderLinksAndEmails = (
               href={`mailto:${segment}`}
               className={
                 options.emailClassName ??
-                "text-primary underline-offset-2 hover:underline"
+                "text-primary-text underline underline-offset-2 hover:decoration-2"
               }
             >
               {segment}
@@ -112,7 +112,7 @@ export const renderInline = (
               key={`code-${state.offset}`}
               className={
                 options.codeClassName ??
-                "rounded-sm bg-background-dimmed px-1 font-mono text-[0.9em]"
+                "rounded-sm bg-background-dimmed px-1 font-mono text-[0.9em] text-foreground"
               }
             >
               {part.slice(1, -1)}

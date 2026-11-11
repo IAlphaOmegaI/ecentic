@@ -1,3 +1,4 @@
+import { type DefaultTreeAdapterMap, parseFragment, serialize } from "parse5";
 import { isLocale, type Locale, routing } from "@/i18n/routing";
 
 export type BlogHtmlSection = {
@@ -100,11 +101,32 @@ const stripTags = (value: string) =>
 const stripScripts = (html: string) =>
   html.replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, "").trim();
 
+const removePresentation = (node: DefaultTreeAdapterMap["node"]) => {
+  if ("attrs" in node)
+    node.attrs = node.attrs.filter((attribute) => attribute.name !== "style");
+
+  if ("childNodes" in node) {
+    node.childNodes = node.childNodes.filter(
+      (child) => !("tagName" in child) || child.tagName !== "style",
+    );
+    node.childNodes.forEach(removePresentation);
+  }
+
+  if ("content" in node) removePresentation(node.content);
+};
+
+/** Parse actual attributes so quoted punctuation and code examples stay intact. */
+const stripInlinePresentation = (html: string) => {
+  const fragment = parseFragment(html);
+  removePresentation(fragment);
+  return serialize(fragment);
+};
+
 /** Keep wide CMS tables inside the right rail without blowing out the 5fr/8fr grid. */
 const wrapScrollableTables = (html: string) =>
   html.replace(
     /<table\b[\s\S]*?<\/table>/gi,
-    (table) => `<div class="blog-table-scroll">${table}</div>`,
+    (table) => `<div class="blog-table-scroll" tabindex="0">${table}</div>`,
   );
 
 /**
@@ -123,7 +145,7 @@ export const splitBlogHtmlByH2 = (
     : STRUCTURE[routing.defaultLocale];
   const isTakeaways = (title: string) => structure.takeaways.test(title.trim());
 
-  const withoutScripts = stripScripts(html);
+  const withoutScripts = stripInlinePresentation(stripScripts(html));
   const withoutLeadingTitle = withoutScripts.replace(
     /^\s*<h1\b[^>]*>[\s\S]*?<\/h1>\s*/i,
     "",

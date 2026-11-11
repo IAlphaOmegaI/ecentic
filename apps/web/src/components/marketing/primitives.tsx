@@ -13,7 +13,7 @@ export const MarketingBand = ({
   ...props
 }: MarketingBand.Props) => (
   <section className={cn("marketing-band relative", className)} {...props}>
-    <div className="marketing-rail relative isolate mx-auto max-w-[1186px] border border-[var(--rail-color)] max-sm:mx-4 max-[1191px]:mx-7">
+    <div className="marketing-rail relative isolate mx-auto w-[min(1186px,calc(100%-56px))] border border-[var(--rail-color)] max-sm:w-[calc(100%-32px)] [.enterprise-journey>&]:w-auto [.enterprise-journey>&]:max-w-[1186px] max-sm:[.enterprise-journey>&]:mx-4 max-[1191px]:[.enterprise-journey>&]:mx-7">
       <div aria-hidden="true" className="marketing-guides">
         <span />
         <span />
@@ -70,7 +70,7 @@ export const MarketingHero = ({
 }: MarketingHero.Props) => (
   <MarketingBand
     className={cn(
-      "marketing-hero [&_.marketing-cell]:pt-[88px] [&_.marketing-cell]:pb-[72px] max-sm:[&_.marketing-cell]:py-[52px]",
+      "marketing-hero",
       dark &&
         "marketing-dark text-background-rich/82 [--rail-color:color-mix(in_oklab,var(--color-background-rich)_30%,transparent)] [--rail-cross:color-mix(in_oklab,var(--color-background-rich)_55%,transparent)] [&>.marketing-rail]:bg-[linear-gradient(165deg,var(--color-band-start)_25%,var(--color-band-middle)_66%,var(--color-band-end))] [&_.marketing-actions>a+a]:border-background-rich/60 [&_.marketing-actions>a+a]:text-background-rich [&_.marketing-actions>a:first-child]:bg-background-rich [&_.marketing-actions>a:first-child]:text-foreground-rich [&_.marketing-eyebrow]:text-primary-rich [&_.marketing-screenshot_figcaption]:text-background-rich/82 [&_:is(h1,h2,h3)]:text-background-rich",
     )}
@@ -80,10 +80,10 @@ export const MarketingHero = ({
         <AsciiClosingArtwork />
       </AsciiAtmosphere>
     )}
-    <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+    <div className="marketing-cell relative min-w-0 px-7 py-24 max-sm:px-4 max-sm:py-14 [&>p]:max-w-[70ch]">
       {eyebrow && <MarketingEyebrow>{eyebrow}</MarketingEyebrow>}
       <h1>{title}</h1>
-      <p className="marketing-lead mt-7 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
+      <p className="marketing-lead mt-6 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
         {description}
       </p>
       <MarketingActions actions={actions} />
@@ -112,9 +112,9 @@ export const MarketingClosing = ({
     <AsciiAtmosphere className="marketing-closing-art pointer-events-none absolute inset-0 text-background-rich opacity-20 [mask-image:linear-gradient(100deg,transparent,black)]">
       <AsciiClosingArtwork />
     </AsciiAtmosphere>
-    <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+    <div className="marketing-cell relative min-w-0 px-7 py-24 max-sm:px-4 max-sm:py-14 [&>p]:max-w-[70ch]">
       <h2>{title}</h2>
-      <p className="marketing-lead mt-7 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
+      <p className="marketing-lead mt-6 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
         {description}
       </p>
       <MarketingActions actions={actions} />

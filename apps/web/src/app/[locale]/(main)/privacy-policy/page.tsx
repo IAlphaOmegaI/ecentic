@@ -33,10 +33,6 @@ const summaryIcons = [
   ShieldCheckIcon,
 ] as const satisfies readonly Icon[];
 
-const inlineOptions = {
-  linkClassName: "text-primary underline-offset-2 hover:underline",
-} as const;
-
 const renderContent = (content: string): ReactNode => {
   const blocks = content.split(/\n\n+/);
 
@@ -50,7 +46,7 @@ const renderContent = (content: string): ReactNode => {
           return (
             // biome-ignore lint/suspicious/noArrayIndexKey: index is unique
             <p key={index} className="text-foreground-dimmed leading-relaxed">
-              {renderInline(lines.join(" "), inlineOptions)}
+              {renderInline(lines.join(" "))}
             </p>
           );
 
@@ -62,7 +58,7 @@ const renderContent = (content: string): ReactNode => {
           <div key={index} className="flex flex-col gap-2">
             {paragraphs.length > 0 && (
               <p className="text-foreground-dimmed leading-relaxed">
-                {renderInline(paragraphs.join(" "), inlineOptions)}
+                {renderInline(paragraphs.join(" "))}
               </p>
             )}
             <ul className="flex flex-col gap-2">
@@ -73,7 +69,7 @@ const renderContent = (content: string): ReactNode => {
                   className="flex gap-3 text-foreground-dimmed leading-relaxed"
                 >
                   <span className="mt-[0.45rem] size-1.5 shrink-0 rounded-full bg-primary" />
-                  <span>{renderInline(line.slice(2), inlineOptions)}</span>
+                  <span>{renderInline(line.slice(2))}</span>
                 </li>
               ))}
             </ul>
@@ -150,7 +146,7 @@ export default async () => {
     <main
       className={cn(
         fonts,
-        "flex min-h-screen flex-col bg-background font-body",
+        "flex min-h-screen flex-col bg-background font-body [font-synthesis:none] [:where(&)_:where(h1,h2,h3,h4)]:font-heading [:where(&)_:where(h1,h2,h3,h4)]:font-medium [:where(&)_:where(strong,b)]:font-semibold",
       )}
     >
       <Navbar />
@@ -161,7 +157,7 @@ export default async () => {
         eyebrow={translate("privacyPolicy.hero.eyebrow")}
         title={translate("privacyPolicy.hero.title.primary")}
         accent={translate("privacyPolicy.hero.title.accent")}
-        meta={`Last updated: ${lastUpdated.display}`}
+        meta={lastUpdated.display}
         description={translate("privacyPolicy.hero.description")}
         assurances={assurances}
         art={{
@@ -183,15 +179,15 @@ export default async () => {
             return (
               <div
                 key={item.title}
-                className="grid grid-cols-1 gap-2 bg-background px-6 py-5 md:grid-cols-[13rem_1fr] md:gap-8 md:px-8"
+                className="grid grid-cols-1 gap-2 bg-background px-7 py-6 max-sm:px-4 md:grid-cols-[13rem_1fr] md:gap-8"
               >
                 <div className="flex items-center gap-3">
                   <IconComponent className="size-5 shrink-0 text-primary" />
-                  <h3 className="font-body font-medium text-foreground text-lg">
+                  <h3 className="font-heading font-medium text-foreground text-lg">
                     {item.title}
                   </h3>
                 </div>
-                <p className="font-light text-foreground-dimmed leading-relaxed">
+                <p className="text-foreground-dimmed leading-relaxed">
                   {item.description}
                 </p>
               </div>

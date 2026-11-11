@@ -8,6 +8,7 @@ import { fonts } from "@/components/marketing/fonts";
 import { Navbar } from "@/components/navbar";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
+import { blogImage } from "@/lib/blog-image";
 import Art from "@/public/images/ascii/books.png";
 import { PageBanner } from "../../_components/page-banner";
 import { renderInline } from "../../_components/rich-text";
@@ -73,7 +74,10 @@ export const EditorialLayout = async ({
   children,
 }: EditorialLayout.Props) => (
   <main
-    className={cn(fonts, "flex min-h-screen flex-col bg-background font-body")}
+    className={cn(
+      fonts,
+      "flex min-h-screen flex-col bg-background font-body [:where(&)_:where(h1,h2,h3,h4)]:font-heading [:where(&)_:where(h1,h2,h3,h4)]:font-medium [:where(&)_:where(strong,b)]:font-semibold",
+    )}
   >
     <Navbar />
 
@@ -109,7 +113,7 @@ export const EditorialSplitSection = ({
   rightClassName,
 }: EditorialSplitSection.Props) => (
   <div className={cn("border-accent-foreground border-b", className)}>
-    <div className="relative mx-auto grid max-w-6xl grid-cols-1 gap-px border-accent-foreground border-x bg-accent-foreground md:grid-cols-[5fr_8fr]">
+    <div className="relative mx-auto grid w-[min(1186px,calc(100%-56px))] grid-cols-1 gap-px border-accent-foreground border-x bg-accent-foreground max-sm:w-[calc(100%-32px)] md:grid-cols-[5fr_8fr]">
       {/* Sections mark only their top corners — the bottom line is owned by
           the next block (a following section or the EditorialFooter). */}
       <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
@@ -118,7 +122,7 @@ export const EditorialSplitSection = ({
         className={cn(
           // min-w-0 lets the 5fr track shrink when the right rail has wide
           // <pre>/table content; without it the left column collapses to padding.
-          "relative flex min-w-0 flex-col p-8",
+          "relative flex min-w-0 flex-col px-7 py-24 max-sm:px-4 max-sm:py-14",
           thumbnail ? "overflow-hidden bg-foreground-rich" : "bg-background",
           leftClassName,
         )}
@@ -126,21 +130,26 @@ export const EditorialSplitSection = ({
         {thumbnail && (
           <>
             <Image
-              src={thumbnail}
+              src={blogImage(thumbnail)}
               alt=""
               fill
               sizes="(min-width: 768px) 38vw, 100vw"
               unoptimized
               className="object-cover"
             />
-            <div className="absolute inset-0 bg-foreground-rich/60" />
+            <div className="absolute inset-0 bg-foreground-rich/70" />
           </>
         )}
         <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
         {/* Sticky keeps the section index readable while long tables/code scroll. */}
         <div className="relative z-10 md:sticky md:top-28">{left}</div>
       </div>
-      <div className={cn("min-w-0 bg-background p-8", rightClassName)}>
+      <div
+        className={cn(
+          "min-w-0 bg-background px-7 py-24 max-sm:px-4 max-sm:py-14",
+          rightClassName,
+        )}
+      >
         {right}
       </div>
     </div>
@@ -164,7 +173,7 @@ export const EditorialFooter = ({
   secondary,
 }: EditorialFooter.Props) => (
   <div className="border-accent-foreground border-b">
-    <div className="relative mx-auto flex max-w-6xl flex-col gap-4 border-accent-foreground border-x px-8 py-8 md:flex-row md:items-center md:justify-between">
+    <div className="relative mx-auto flex w-[min(1186px,calc(100%-56px))] flex-col gap-4 border-accent-foreground border-x px-7 py-8 max-sm:w-[calc(100%-32px)] max-sm:px-4 md:flex-row md:items-center md:justify-between">
       <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
       <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
       <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />

@@ -27,10 +27,10 @@ type LogEntry = {
 };
 
 const modelBarColors: Record<string, string> = {
-  ChatGPT: "bg-blue-500",
-  Claude: "bg-orange-500",
-  Gemini: "bg-green-500",
-  Perplexity: "bg-teal-500",
+  ChatGPT: "bg-primary",
+  Claude: "bg-cross",
+  Gemini: "bg-primary-text",
+  Perplexity: "bg-foreground-dimmed",
 };
 
 const getLogo = (label: string) => {
@@ -195,8 +195,8 @@ export const CompareForm = () => {
           transition={{ duration: 0.2 }}
           className="flex flex-1 flex-col"
         >
-          <div className="flex-1 px-8">
-            <div className="grid h-full flex-1 grid-cols-1 gap-px border-accent-foreground border-x p-6 md:grid-cols-2">
+          <div className="flex-1">
+            <div className="grid h-full flex-1 grid-cols-1 gap-px bg-accent-foreground md:grid-cols-2">
               <ProductSide
                 label={translate("form.productA")}
                 url={urlA}
@@ -214,24 +214,25 @@ export const CompareForm = () => {
             </div>
           </div>
 
-          <div className="flex flex-col gap-4 border-accent-foreground border-t px-8">
-            <div className="border-accent-foreground border-x p-6">
-              <h3 className="font-medium text-2xl text-foreground">
+          <div className="flex flex-col border-accent-foreground border-t">
+            <div className="px-7 py-8 max-sm:px-4">
+              <h2 className="font-medium text-2xl text-foreground">
                 {translateForm("prompt.title")}
-              </h3>
-              <p className="mb-4 font-light text-foreground-dimmed text-lg">
+              </h2>
+              <p className="mt-6 mb-6 text-foreground-dimmed text-lg">
                 {translateForm("prompt.description")}
               </p>
               <Textarea value={prompt} onValueChange={setPrompt}>
                 <TextareaInput
                   rows={2}
+                  aria-label={translateForm("prompt.title")}
                   placeholder={translateForm("prompt.placeholder")}
                 />
               </Textarea>
             </div>
           </div>
-          <div className="border-accent-foreground border-t px-8">
-            <div className="flex w-full items-center justify-between border-accent-foreground border-x p-6">
+          <div className="border-accent-foreground border-t">
+            <div className="flex w-full flex-wrap items-center justify-between gap-4 px-7 py-8 max-sm:px-4">
               <p className="font-light text-foreground-dimmed text-sm">
                 {translateForm("footer")}
               </p>
@@ -411,11 +412,9 @@ const ProductSide = ({
   placeholder: string;
   hint: string;
 }) => (
-  <div className="flex flex-col items-center justify-center gap-4 bg-background p-8">
+  <div className="flex min-w-0 flex-col items-center justify-center gap-6 bg-background px-7 py-12 max-sm:px-4 max-sm:py-8">
     <div className="flex flex-col items-center gap-2">
-      <span className="font-medium text-2xl text-foreground uppercase tracking-widest">
-        {label}
-      </span>
+      <span className="font-medium text-2xl text-foreground-rich">{label}</span>
       <p className="text-center font-light text-foreground-dimmed text-lg">
         {hint}
       </p>
@@ -425,7 +424,7 @@ const ProductSide = ({
       onValueChange={onUrlChange}
       className="w-full max-w-md"
     >
-      <TextFieldInput placeholder={placeholder} />
+      <TextFieldInput aria-label={label} placeholder={placeholder} />
     </TextField>
   </div>
 );
@@ -637,7 +636,7 @@ const ResultProductCard = ({
     )}
     <div className="mt-auto flex items-center gap-2">
       {isWinner && (
-        <span className="bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs uppercase tracking-widest">
+        <span className="bg-primary/10 px-2 py-0.5 font-medium text-primary-text text-xs">
           {translateResults("winner")}
         </span>
       )}

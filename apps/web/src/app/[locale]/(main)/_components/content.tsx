@@ -72,7 +72,7 @@ export const ContentPageBadge = ({
   alt,
   label,
 }: ContentPageBadge.Props) => (
-  <span className="inline-flex items-center gap-2.5 rounded-full bg-background-rich px-4 py-2 shadow-sm ring-1 ring-foreground-rich/5">
+  <span className="inline-flex items-center gap-3">
     <Image src={logo} alt={alt} width={28} height={28} className="h-6 w-auto" />
     <span className="font-medium text-foreground text-sm">{label}</span>
   </span>
@@ -91,7 +91,10 @@ export const ContentPageLayout = async ({
   ...banner
 }: ContentPageLayout.Props) => (
   <main
-    className={cn(fonts, "flex min-h-screen flex-col bg-background font-body")}
+    className={cn(
+      fonts,
+      "flex min-h-screen flex-col bg-background font-body text-foreground [font-synthesis:none] [:where(&)_:where(h1,h2,h3,h4)]:font-heading [:where(&)_:where(h1,h2,h3,h4)]:font-medium [:where(&)_:where(strong,b)]:font-semibold",
+    )}
   >
     <Navbar />
 
@@ -128,38 +131,45 @@ export const ContentPageSection = ({
   <div className={cn("border-accent-foreground border-b", classList?.root)}>
     {gutter ? (
       <div className="border-accent-foreground border-b">
-        <div className="mx-auto max-w-6xl border-accent-foreground border-x">
+        <div className="mx-auto w-[min(1186px,calc(100%-56px))] border-accent-foreground border-x max-sm:w-[calc(100%-32px)]">
           <SectionGutter />
         </div>
       </div>
     ) : null}
     <div
       className={cn(
-        "relative mx-auto grid max-w-6xl grid-cols-1 gap-px border-accent-foreground border-x bg-accent-foreground md:grid-cols-[5fr_8fr]",
+        "relative mx-auto grid w-[min(1186px,calc(100%-56px))] grid-cols-1 gap-px border-accent-foreground border-x bg-accent-foreground max-sm:w-[calc(100%-32px)] md:grid-cols-[5fr_8fr]",
         classList?.grid,
       )}
     >
       {/* Sections mark only their top corners — the bottom line is owned by
           the next block (a following section or the ContentPageFooter). */}
-      <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
-      <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
+      <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
       <div
         className={cn(
-          "relative flex flex-col bg-background p-8",
+          "relative flex min-w-0 flex-col bg-background px-7 py-24 max-sm:px-4 max-sm:py-14",
           classList?.left,
         )}
       >
         <span className="mt-auto font-normal text-2xl text-primary">
           {number}
         </span>
-        <h2 className="text-4xl text-foreground leading-snug">{title}</h2>
+        <h2 className="text-4xl text-foreground-rich leading-snug">{title}</h2>
         {description && (
-          <p className="mt-4 max-w-sm text-foreground-dimmed leading-relaxed">
+          <p className="mt-6 max-w-sm text-foreground-dimmed leading-relaxed">
             {description}
           </p>
         )}
       </div>
-      <div className={cn("bg-background p-8", classList?.body)}>{children}</div>
+      <div
+        className={cn(
+          "min-w-0 bg-background px-7 py-24 max-sm:px-4 max-sm:py-14",
+          classList?.body,
+        )}
+      >
+        {children}
+      </div>
     </div>
   </div>
 );
@@ -190,17 +200,21 @@ export const ContentPageCardGrid = ({
       <article
         key={item.href}
         className={cn(
-          "flex h-full flex-col gap-4 bg-background p-6",
+          "flex h-full flex-col gap-6 bg-background px-7 py-6 max-sm:px-4",
           classList?.item,
         )}
       >
         {item.eyebrow && (
-          <p className="font-medium text-foreground text-sm uppercase tracking-[0.18em]">
+          <p className="flex items-center gap-2 font-medium text-primary-text text-sm">
+            <span
+              aria-hidden="true"
+              className="size-2 rounded-full bg-primary"
+            />
             {item.eyebrow}
           </p>
         )}
-        <div className="flex flex-1 flex-col gap-3">
-          <h3 className="text-2xl text-foreground leading-tight">
+        <div className="flex flex-1 flex-col gap-6">
+          <h3 className="text-2xl text-foreground-rich leading-tight">
             {item.title}
           </h3>
           <p className="text-foreground-dimmed leading-relaxed">
@@ -250,11 +264,11 @@ export const ContentPageFaqGrid = ({
       <article
         key={item.question}
         className={cn(
-          "flex flex-col gap-4 bg-background-rich p-6",
+          "flex flex-col gap-6 bg-background px-7 py-6 max-sm:px-4",
           classList?.item,
         )}
       >
-        <h3 className="text-2xl text-foreground leading-tight">
+        <h3 className="text-2xl text-foreground-rich leading-tight">
           {item.question}
         </h3>
         <p className="text-foreground-dimmed leading-relaxed">{item.answer}</p>
@@ -282,7 +296,7 @@ export const ContentPageFooter = ({
   note,
 }: ContentPageFooter.Props) => (
   <div className="border-accent-foreground border-b">
-    <div className="relative mx-auto flex max-w-6xl flex-col gap-4 border-accent-foreground border-x px-8 py-8 md:flex-row md:items-center md:justify-between">
+    <div className="relative mx-auto flex w-[min(1186px,calc(100%-56px))] flex-col gap-4 border-accent-foreground border-x px-7 py-8 max-sm:w-[calc(100%-32px)] max-sm:px-4 md:flex-row md:items-center md:justify-between">
       <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
       <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
       <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />

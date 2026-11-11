@@ -19,7 +19,7 @@ export const TagList = ({ keywords }: { keywords: readonly string[] }) => {
         <Link
           key={slug}
           href={`/blog/tag/${slug}`}
-          className="border border-accent-foreground bg-background-dimmed p-2 text-foreground-dimmed text-sm transition hover:text-foreground"
+          className="border border-accent-foreground bg-background-dimmed p-2 text-foreground text-sm transition hover:text-primary-text"
         >
           {label}
         </Link>

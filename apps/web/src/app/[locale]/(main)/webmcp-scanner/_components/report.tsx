@@ -469,7 +469,7 @@ export const ScanReport = ({ report }: { report: Report }) => {
       className="border-accent-foreground border-t"
     >
       <div className="space-y-4 bg-background-dimmed p-6 sm:p-8">
-        <p className="text-primary text-sm">{translate("label")}</p>
+        <p className="text-primary-text text-sm">{translate("label")}</p>
         <h2 className="font-medium text-2xl text-foreground">
           {translate("audit.title")}
         </h2>

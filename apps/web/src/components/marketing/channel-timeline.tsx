@@ -12,7 +12,7 @@ import { commerceTimeline } from "@/content/marketing-evidence";
 import { Link } from "@/i18n/navigation";
 import { fonts } from "./fonts";
 
-export const ChannelTimeline = ({ copy, locale }: ChannelTimeline.Props) => {
+export const ChannelTimeline = ({ events, locale }: ChannelTimeline.Props) => {
   const tooltip = useId();
   const date = new Intl.DateTimeFormat(locale, {
     day: "numeric",
@@ -69,7 +69,7 @@ export const ChannelTimeline = ({ copy, locale }: ChannelTimeline.Props) => {
                   {date.format(new Date(`${event.date}T12:00:00Z`))}
                 </time>
                 <span className="mt-3 block text-sm leading-snug underline decoration-accent-foreground underline-offset-4">
-                  {copy.events[event.id].title}
+                  {events[event.id].title}
                 </span>
               </TooltipTrigger>
               <TooltipPositioner keepMounted sideOffset={8} className="z-100">
@@ -80,10 +80,10 @@ export const ChannelTimeline = ({ copy, locale }: ChannelTimeline.Props) => {
                 >
                   <p>
                     {date.format(new Date(`${event.date}T12:00:00Z`))} 2026 ·{" "}
-                    {copy.events[event.id].detail}
+                    {events[event.id].detail}
                   </p>
                   <p className="mt-2 text-foreground-dimmed">
-                    {copy.events[event.id].source}
+                    {events[event.id].source}
                   </p>
                 </TooltipPopup>
               </TooltipPositioner>
@@ -97,7 +97,7 @@ export const ChannelTimeline = ({ copy, locale }: ChannelTimeline.Props) => {
 
 export namespace ChannelTimeline {
   export type Props = {
-    copy: AppConfig["Messages"]["enterpriseEvidence"]["timeline"];
+    events: AppConfig["Messages"]["enterpriseEvidence"]["timeline"]["events"];
     locale: string;
   };
 }

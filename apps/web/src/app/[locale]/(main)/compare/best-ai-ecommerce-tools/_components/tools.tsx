@@ -1,4 +1,13 @@
 import { cn } from "@zenncore/utils";
+import { ScrollArea } from "@zenncore/web/components/scroll-area";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@zenncore/web/components/table";
 import { getMessages, getTranslations } from "next-intl/server";
 import { Plus } from "@/components/plus";
 
@@ -17,22 +26,20 @@ export const Tools = async () => {
     },
   ] as const;
 
-  const cell = "px-6 py-5 align-top md:px-8";
-
   return (
     <section className="border-accent-foreground border-b">
-      <div className="relative mx-auto max-w-6xl border-accent-foreground border-x">
+      <div className="relative mx-auto w-[min(1186px,calc(100%-56px))] border-accent-foreground border-x max-sm:w-[calc(100%-32px)]">
         <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
         <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
 
-        <div className="p-6 md:p-12">
+        <div className="px-7 pt-24 pb-12 max-sm:px-4 max-sm:pt-14 max-sm:pb-8">
           <span className="font-normal text-3xl text-primary">
             {translate("tools.number")}
           </span>
-          <h2 className="mt-2 font-body font-medium text-4xl text-foreground md:text-6xl">
+          <h2 className="mt-2 font-heading font-medium text-4xl text-foreground md:text-6xl">
             {translate("tools.title")}
           </h2>
-          <p className="mt-4 max-w-2xl font-light text-foreground-dimmed text-xl">
+          <p className="mt-6 max-w-2xl font-normal text-foreground-dimmed text-xl">
             {translate("tools.description")}
           </p>
         </div>
@@ -41,40 +48,45 @@ export const Tools = async () => {
           <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
           <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
 
-          <p className="border-accent-foreground border-b bg-background-dimmed px-6 py-3 font-medium text-foreground-dimmed text-sm uppercase tracking-[0.18em] md:hidden">
+          <p className="border-accent-foreground border-b bg-background px-4 py-3 font-medium text-foreground text-sm md:hidden">
             {translate("tools.scrollHint")}
           </p>
 
-          <div className="overflow-x-auto">
-            <table className="w-full min-w-[56rem] border-collapse text-left">
-              <thead>
-                <tr className="border-accent-foreground border-b bg-background-dimmed">
+          <ScrollArea
+            role="region"
+            aria-label={translate("tools.title")}
+            className="max-w-full"
+            classList={{
+              viewport:
+                "focus-visible:outline-2 focus-visible:outline-primary-text",
+            }}
+          >
+            <Table className="min-w-[56rem] border-b-0 bg-background text-left">
+              <TableHeader>
+                <TableRow>
                   {columns.map((column) => (
-                    <th
+                    <TableHead
                       key={column.label}
                       scope="col"
                       className={cn(
-                        "px-6 py-4 font-medium text-foreground-dimmed text-sm uppercase tracking-[0.16em] md:px-8",
+                        "px-7 py-4 font-medium text-foreground text-sm normal-case tracking-normal max-sm:px-4",
                         column.className,
                       )}
                     >
                       {column.label}
-                    </th>
+                    </TableHead>
                   ))}
-                </tr>
-              </thead>
-              <tbody>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
                 {tools.map((tool) => (
-                  <tr
+                  <TableRow
                     key={tool.name}
-                    className="border-accent-foreground border-b bg-background-rich last:border-b-0"
+                    className="border-accent-foreground border-b bg-background last:border-b-0"
                   >
-                    <th
+                    <TableHead
                       scope="row"
-                      className={cn(
-                        cell,
-                        "font-body font-medium text-foreground text-xl",
-                      )}
+                      className="whitespace-normal px-7 py-6 align-top font-body font-medium text-foreground text-xl normal-case tracking-normal max-sm:px-4"
                     >
                       {tool.name}
                       {tool.us && (
@@ -82,31 +94,21 @@ export const Tools = async () => {
                           {translate("tools.usLabel")}
                         </span>
                       )}
-                    </th>
-                    <td className={cn(cell, "font-light text-foreground")}>
+                    </TableHead>
+                    <TableCell className="px-7 py-6 align-top font-normal text-foreground max-sm:px-4">
                       {tool.category}
-                    </td>
-                    <td
-                      className={cn(
-                        cell,
-                        "font-light text-foreground-dimmed leading-relaxed",
-                      )}
-                    >
+                    </TableCell>
+                    <TableCell className="px-7 py-6 align-top font-normal text-foreground-dimmed leading-relaxed max-sm:px-4">
                       {tool.bestAt}
-                    </td>
-                    <td
-                      className={cn(
-                        cell,
-                        "font-light text-foreground-dimmed leading-relaxed",
-                      )}
-                    >
+                    </TableCell>
+                    <TableCell className="px-7 py-6 align-top font-normal text-foreground-dimmed leading-relaxed max-sm:px-4">
                       {tool.wrongPick}
-                    </td>
-                  </tr>
+                    </TableCell>
+                  </TableRow>
                 ))}
-              </tbody>
-            </table>
-          </div>
+              </TableBody>
+            </Table>
+          </ScrollArea>
         </div>
       </div>
     </section>

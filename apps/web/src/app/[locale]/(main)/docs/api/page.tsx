@@ -58,7 +58,7 @@ export default async () => {
                 <a
                   key={operation.operationId}
                   href={`#${operation.operationId}`}
-                  className="[&_code]:wrap-anywhere grid grid-cols-[68px_minmax(0,1fr)] gap-x-4 gap-y-2.5 border-accent-foreground border-t px-5 py-6 text-primary-text hover:bg-background-dimmed min-[761px]:px-7 min-[761px]:odd:border-r [&_code]:text-[13px] [&_span]:col-start-2 [&_span]:text-foreground [&_span]:text-sm"
+                  className="[&_code]:wrap-anywhere grid grid-cols-[68px_minmax(0,1fr)] gap-x-4 gap-y-2 border-accent-foreground border-t px-5 py-6 text-primary-text hover:bg-background-dimmed min-[761px]:px-7 min-[761px]:odd:border-r [&_code]:text-[13px] [&_span]:col-start-2 [&_span]:text-foreground [&_span]:text-sm"
                 >
                   <code>{method.toUpperCase()}</code>
                   <code>{path}</code>
@@ -70,10 +70,10 @@ export default async () => {
               <article
                 key={operation.operationId}
                 id={operation.operationId}
-                className="scroll-mt-[100px] border-accent-foreground border-t"
+                className="scroll-mt-24 border-accent-foreground border-t"
               >
-                <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
-                  <p className="wrap-anywhere mb-6 flex gap-5 text-primary-text text-sm">
+                <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
+                  <p className="wrap-anywhere mb-6 flex gap-6 text-primary-text text-sm">
                     <code>{method.toUpperCase()}</code>
                     <code>{path}</code>
                   </p>
@@ -94,7 +94,7 @@ export default async () => {
                 <article
                   key={name}
                   id={`schema-${name}`}
-                  className="marketing-cell relative min-w-0 scroll-mt-[100px] border-accent-foreground border-t px-7 py-14 max-sm:px-4 max-sm:py-10 min-[761px]:odd:border-r [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]"
+                  className="marketing-cell relative min-w-0 scroll-mt-24 border-accent-foreground border-t px-7 py-14 max-sm:px-4 max-sm:py-10 min-[761px]:odd:border-r [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]"
                 >
                   <h3 className="wrap-anywhere text-xl">
                     <code>{name}</code>
@@ -106,7 +106,7 @@ export default async () => {
           </div>
         ),
         "api-auth": (
-          <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+          <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
             <ApiDefinition
               label={content.definition}
               value={openApiDocument.components.securitySchemes}

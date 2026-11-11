@@ -73,8 +73,8 @@ export const MarketingFaq = ({ title, items }: MarketingFaq.Props) => {
           },
         ]}
       />
-      <div className="marketing-faq grid grid-cols-[1fr_2fr] max-[801px]:grid-cols-1 [&>.marketing-cell]:border-[var(--rail-color)] [&>.marketing-cell]:border-r max-[801px]:[&>.marketing-cell]:border-r-0 max-[801px]:[&>.marketing-cell]:border-b [&_article:last-child]:border-b-0 [&_article]:border-[var(--rail-color)] [&_article]:border-b [&_article]:p-7 max-sm:[&_article]:px-4 max-sm:[&_article]:py-6 [&_h3]:text-[22px] [&_h3]:tracking-[-0.02em] [&_p]:mt-3">
-        <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+      <div className="marketing-faq grid grid-cols-[1fr_2fr] max-[801px]:grid-cols-1 [&>.marketing-cell]:border-[var(--rail-color)] [&>.marketing-cell]:border-r max-[801px]:[&>.marketing-cell]:border-r-0 max-[801px]:[&>.marketing-cell]:border-b [&_article:first-child]:pt-24 max-[801px]:[&_article:first-child]:pt-8 [&_article:last-child]:border-b-0 [&_article:last-child]:pb-24 max-sm:[&_article:last-child]:pb-14 [&_article]:border-[var(--rail-color)] [&_article]:border-b [&_article]:px-7 [&_article]:py-8 max-sm:[&_article]:px-4 max-sm:[&_article]:py-6 [&_h3]:text-[22px] [&_h3]:tracking-[-0.02em] [&_p]:mt-3">
+        <div className="marketing-cell relative min-w-0 px-7 py-24 max-sm:px-4 max-sm:pt-14 max-[801px]:pb-8 [&>p]:max-w-[70ch]">
           <h2>{title}</h2>
         </div>
         <div>
@@ -106,6 +106,8 @@ export const MarketingSection = ({
   const links = section.links?.filter(
     (link) => link.label.trim() && link.href.trim(),
   );
+  const blocks = Boolean(items?.length || rows?.length || children);
+  const ending = Boolean(section.note || links?.length);
   const hasContent = Boolean(
     section.description?.trim() ||
       paragraphs?.length ||
@@ -134,13 +136,18 @@ export const MarketingSection = ({
           : undefined
       }
     >
-      <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+      <div
+        className={cn(
+          "marketing-cell relative min-w-0 px-7 pt-24 max-sm:px-4 max-sm:pt-14 [&>p]:max-w-[70ch]",
+          blocks || ending ? "pb-12 max-sm:pb-8" : "pb-24 max-sm:pb-14",
+        )}
+      >
         {section.eyebrow && (
           <MarketingEyebrow>{section.eyebrow}</MarketingEyebrow>
         )}
         {section.title && <h2>{section.title}</h2>}
         {section.description && (
-          <p className="marketing-lead mt-7 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
+          <p className="marketing-lead mt-6 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
             {section.description}
           </p>
         )}
@@ -198,10 +205,15 @@ export const MarketingSection = ({
         </dl>
       )}
       {children}
-      {(section.note || Boolean(links?.length)) && (
-        <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+      {(blocks || ending) && (
+        <div
+          className={cn(
+            "marketing-cell relative min-w-0 px-7 pb-24 max-sm:px-4 max-sm:pb-14 [&>.marketing-actions:first-child]:mt-0 [&>p]:max-w-[70ch]",
+            ending && "pt-12 max-sm:pt-8",
+          )}
+        >
           {section.note && (
-            <p className="marketing-note text-(length:--text-sm) mt-6 text-foreground-dimmed">
+            <p className="marketing-note text-(length:--text-sm) text-foreground-dimmed">
               {section.note}
             </p>
           )}
