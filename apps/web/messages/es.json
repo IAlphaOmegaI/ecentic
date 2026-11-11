@@ -18670,5 +18670,22 @@
     "tie": "Mismo precio mensual:",
     "noCheaper": "Ningún plan fijo estándar tiene un precio mensual inferior con esta estimación.",
     "qualification": "Se supone que todos los pedidos tienen tu valor medio. Las comisiones reales redondean cada pedido por separado; las condiciones de tu cuenta pueden variar. Solo se comparan precios, no límites ni funciones."
+  },
+  "interactivePilot": {
+    "title": "Planificador del piloto",
+    "stages": [
+      "Referencia",
+      "Mejora",
+      "Nueva prueba",
+      "Resultados"
+    ],
+    "happens": "Qué ocurre",
+    "people": "Tu equipo",
+    "deliverable": "Qué recibes",
+    "duration": "Duración",
+    "pendingPeople": "{{TODO: Xhurian confirma quién participa en esta etapa.}}",
+    "pendingDeliverable": "{{TODO: Xhurian confirma qué se entrega en esta etapa.}}",
+    "pendingDuration": "{{TODO: Xhurian confirma la duración de esta etapa.}}",
+    "pending": "Por acordar con tu equipo."
   }
 }

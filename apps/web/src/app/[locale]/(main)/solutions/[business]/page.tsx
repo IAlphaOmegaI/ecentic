@@ -1,4 +1,3 @@
-import { pageBodies } from "../_components/page-bodies";
 import { notFound } from "next/navigation";
 import { getMessages } from "next-intl/server";
 import { CommerceTimeline } from "@/components/marketing/channels";
@@ -6,6 +5,8 @@ import { CatalogFindings } from "@/components/marketing/measured-evidence";
 import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
 import { MarketingBand } from "@/components/marketing/primitives";
 import { BusinessChallenges } from "../_components/business-challenges";
+import { pageBodies } from "../_components/page-bodies";
+import { EnterprisePilot } from "../_components/page-bodies/enterprise-pilot";
 import { ProductJourney } from "../_components/product-journey";
 
 const businesses = [
@@ -67,7 +68,14 @@ export default async ({ params }: Props) => {
               }
             : {}),
           ...(journey
-            ? { [journey.id]: <ProductJourney items={journey.items ?? []} /> }
+            ? {
+                [journey.id]:
+                  business === "enterprise" ? (
+                    <EnterprisePilot />
+                  ) : (
+                    <ProductJourney items={journey.items ?? []} />
+                  ),
+              }
             : {}),
         }}
       />

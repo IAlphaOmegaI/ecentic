@@ -1,0 +1,19 @@
+{
+  "interactivePilot": {
+    "title": "Planificador del piloto",
+    "stages": [
+      "Referencia",
+      "Mejora",
+      "Nueva prueba",
+      "Resultados"
+    ],
+    "happens": "Qué ocurre",
+    "people": "Tu equipo",
+    "deliverable": "Qué recibes",
+    "duration": "Duración",
+    "pendingPeople": "{{TODO: Xhurian confirma quién participa en esta etapa.}}",
+    "pendingDeliverable": "{{TODO: Xhurian confirma qué se entrega en esta etapa.}}",
+    "pendingDuration": "{{TODO: Xhurian confirma la duración de esta etapa.}}",
+    "pending": "Por acordar con tu equipo."
+  }
+}
