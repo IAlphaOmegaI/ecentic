@@ -1,4 +1,8 @@
 import { getMessages } from "next-intl/server";
+import {
+  ChannelComparison,
+  CommerceTimeline,
+} from "@/components/marketing/channels";
 import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
 import { MarketingBand } from "@/components/marketing/primitives";
 import { ChannelTiles } from "./_components/channel-content";
@@ -13,6 +17,16 @@ export default async () => {
   return (
     <MarketingPage content={copy.index} path="/ai-channels">
       <ChannelTiles copy={copy} />
+      <MarketingBand>
+        <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10">
+          <CommerceTimeline />
+        </div>
+      </MarketingBand>
+      <MarketingBand>
+        <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10">
+          <ChannelComparison />
+        </div>
+      </MarketingBand>
       <MarketingBand>
         <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
           <h2>{copy.method.title}</h2>

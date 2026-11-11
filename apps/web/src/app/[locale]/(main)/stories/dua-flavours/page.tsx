@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { getMessages } from "next-intl/server";
+import { DuaEvidence } from "@/components/marketing/measured-evidence";
 import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
 import DuaFlavours from "@/public/partners/dua-flavours.png";
 
@@ -17,6 +18,13 @@ export default async () => {
     <MarketingPage
       content={enterpriseCompany.duaFlavours}
       path="/stories/dua-flavours"
+      sectionChildren={{
+        result: (
+          <div className="mt-10">
+            <DuaEvidence />
+          </div>
+        ),
+      }}
       heroChildren={
         <Image
           src={DuaFlavours}

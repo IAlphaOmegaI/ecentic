@@ -1,0 +1,94 @@
+{
+  "verifiedTimeline": [
+    {
+      "id": "google-ads",
+      "url": "https://blog.google/products/ads-commerce/agentic-commerce-ai-tools-protocol-retailers-platforms/",
+      "finalUrl": "https://blog.google/products/ads-commerce/agentic-commerce-ai-tools-protocol-retailers-platforms/",
+      "httpStatus": 200,
+      "checkedAt": "2026-11-10",
+      "publishedAt": "2026-01-11",
+      "sha256": "e2ec3071d2034145414de37e9cdb632144cd9f75c01ab0d3d21f96909be4c251",
+      "summary": "Google announces UCP as an open commerce protocol."
+    },
+    {
+      "id": "amazon-assistant",
+      "url": "https://www.aboutamazon.com/news/retail/alexa-for-shopping-ai-assistant",
+      "finalUrl": "https://www.aboutamazon.com/news/retail/alexa-for-shopping-ai-assistant",
+      "httpStatus": 200,
+      "checkedAt": "2026-11-10",
+      "publishedAt": "2026-05-13",
+      "sha256": "d0edd54da6a259b3233be893c5bae0605d01bb231a6795293ccba0d520bf4157",
+      "summary": "Amazon combines Rufus and Alexa+ in Alexa for Shopping."
+    },
+    {
+      "id": "meta-muse",
+      "url": "https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/",
+      "finalUrl": "https://about.fb.com/news/2026/09/introducing-muse-personal-ai-agent/",
+      "httpStatus": 200,
+      "checkedAt": "2026-11-10",
+      "publishedAt": "2026-09-08",
+      "sha256": "d8ebf33cdb961664e1e368e68e7073595150b2803b3efbccc1672f3963024cb5",
+      "summary": "Muse can make purchases using Link after asking the user for approval."
+    },
+    {
+      "id": "google-cart",
+      "url": "https://blog.google/products-and-platforms/products/shopping/universal-cart-launch/",
+      "finalUrl": "https://blog.google/products-and-platforms/products/shopping/universal-cart-launch/",
+      "httpStatus": 200,
+      "checkedAt": "2026-11-10",
+      "publishedAt": "2026-10-15",
+      "sha256": "048fc711b93f7d61ca774112bb9f7b30689234872bae84cacc85f9044d45ff5b",
+      "summary": "Universal Cart rolls out in US Search and Gemini with eligible Google Pay purchases or merchant-cart handoff."
+    },
+    {
+      "id": "shopify-fall-developer",
+      "url": "https://www.shopify.com/news/fall-26-edition-developer",
+      "finalUrl": "https://www.shopify.com/news/fall-26-edition-developer",
+      "httpStatus": 200,
+      "checkedAt": "2026-11-10",
+      "publishedAt": "2026-10-28",
+      "sha256": "36b9130fa0aa5a4999cf02f19459efe9d15592ccb65e0b4669ed135966b1a7a3",
+      "summary": "Liquid and Hydrogen storefronts and checkout expose WebMCP tools; purchase completion requires buyer approval."
+    },
+    {
+      "id": "amazon-workspace",
+      "url": "https://www.aboutamazon.com/news/retail/amazon-shop-direct-merchant-workspace",
+      "finalUrl": "https://www.aboutamazon.com/news/retail/amazon-shop-direct-merchant-workspace",
+      "httpStatus": 200,
+      "checkedAt": "2026-11-10",
+      "publishedAt": "2026-11-04",
+      "sha256": "79a47756fedaef03f6909a8d04653b6d0d08110be2550ab0d1ad506d2465e471",
+      "summary": "The new Merchant Workspace lets eligible merchants register and share catalogs; Shop Direct predates it."
+    }
+  ],
+  "unverified": [
+    {
+      "id": "copilotLaunch",
+      "expectedDate": "2026-01-08",
+      "checkedAt": "2026-11-10",
+      "reason": "Microsoft primary article requests returned HTTP403; the Microsoft Ads candidate redirected to a generic blog."
+    },
+    {
+      "id": "openaiCheckoutChange",
+      "expectedDate": "2026-03-24",
+      "checkedAt": "2026-11-10",
+      "url": "https://openai.com/index/powering-product-discovery-in-chatgpt/",
+      "reason": "HTTP403; scope of the proposed termination claim not verified. Do not generalize to all approved app/plugin checkout."
+    },
+    {
+      "id": "commerceForecast",
+      "checkedAt": "2026-11-10",
+      "reason": "Candidate McKinsey primary pages timed out; figure and scope not verified."
+    },
+    {
+      "id": "retailAiTraffic",
+      "checkedAt": "2026-11-10",
+      "reason": "Adobe homepage/search/index redirects did not contain the figure; primary report not retrieved."
+    },
+    {
+      "id": "relativeConversion",
+      "checkedAt": "2026-11-10",
+      "reason": "Adobe primary figure, July period and comparison baseline not retrieved."
+    }
+  ]
+}

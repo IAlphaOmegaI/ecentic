@@ -1,0 +1,287 @@
+import { getFormatter, getMessages, getTranslations } from "next-intl/server";
+import {
+  catalogFindings,
+  duaEvidence,
+  evidenceSources,
+  marketContext,
+  simulationEvidence,
+} from "@/content/marketing-evidence";
+import { Link } from "@/i18n/navigation";
+import { EvidenceFrame } from "./evidence";
+import { canPublishEvidence, selectPublishedEvidence } from "./evidence-policy";
+import { EvidenceDatum, EvidenceMeter } from "./evidence-view";
+
+export const SimulationEvidence = async ({
+  id = "assistant-disagreement",
+}: SimulationEvidence.Props) => {
+  const review = process.env["NEXT_PUBLIC_REVIEW"] === "1";
+  if (!canPublishEvidence(simulationEvidence.status, review)) return null;
+
+  const [{ enterpriseEvidence: copy }, format, translate] = await Promise.all([
+    getMessages(),
+    getFormatter(),
+    getTranslations("enterpriseEvidence.simulations"),
+  ]);
+  const models = [...simulationEvidence.models].sort(
+    (first, second) => (second.rate ?? -1) - (first.rate ?? -1),
+  );
+  const source = copy.sources[simulationEvidence.sourceKey];
+  const rows = models.map((model) => ({
+    id: model.id,
+    label: copy.simulations.models[model.id],
+    percentage: model.rate,
+    value:
+      model.rate === null
+        ? copy.simulations.ratePending
+        : format.number(model.rate / 100, {
+            style: "percent",
+            maximumFractionDigits: 1,
+          }),
+    count:
+      model.count === null
+        ? copy.presentation.unknown
+        : format.number(model.count),
+    total:
+      model.total === null
+        ? copy.presentation.unknown
+        : format.number(model.total),
+  }));
+
+  return (
+    <EvidenceFrame
+      id={id}
+      title={copy.simulations.title}
+      description={copy.simulations.description}
+      note={copy.simulations.takeaway}
+      caption={translate("caption", {
+        sampleSize: format.number(simulationEvidence.sampleSize),
+      })}
+      source={source}
+      pending={review ? copy.simulations.pending : undefined}
+      columns={[
+        copy.simulations.headers.model,
+        copy.simulations.headers.rate,
+        copy.simulations.headers.count,
+        copy.simulations.headers.total,
+      ]}
+      rows={rows.map((row) => [row.label, row.value, row.count, row.total])}
+    >
+      <div className="divide-y-2 divide-background">
+        {rows.map((row) => (
+          <EvidenceMeter
+            key={row.id}
+            label={row.label}
+            value={row.value}
+            percentage={row.percentage}
+            detail={`${row.label}: ${row.value}. ${copy.simulations.countsPending} ${copy.simulations.methodPending}`}
+            source={source}
+            pending={
+              row.percentage === null
+                ? copy.presentation.dataPending
+                : undefined
+            }
+          />
+        ))}
+      </div>
+    </EvidenceFrame>
+  );
+};
+
+export namespace SimulationEvidence {
+  export type Props = { id?: string };
+}
+
+export const CatalogFindings = async ({
+  id = "catalog-findings",
+}: CatalogFindings.Props) => {
+  const review = process.env["NEXT_PUBLIC_REVIEW"] === "1";
+  const findings = selectPublishedEvidence(catalogFindings, review);
+  if (findings.length === 0) return null;
+
+  const [{ enterpriseEvidence: copy }, format, translate] = await Promise.all([
+    getMessages(),
+    getFormatter(),
+    getTranslations("enterpriseEvidence.findings"),
+  ]);
+  const rows = findings.map((finding) => {
+    const content = copy.findings.rows[finding.id];
+    const share = format.number(finding.percentage / 100, { style: "percent" });
+    const total = format.number(finding.total);
+    const count =
+      finding.failureCount === null
+        ? copy.presentation.unknown
+        : format.number(finding.failureCount);
+    const observed =
+      finding.failureCount === null
+        ? translate("roundedDetail", {
+            percentage: format.number(finding.percentage),
+            total,
+          })
+        : translate("count", { count, total });
+    const value = finding.failureCount === null ? share : observed;
+    const company = copy.findings.companies[finding.companyId];
+    const pending =
+      finding.approval === "pending"
+        ? copy.presentation.approvalPending
+        : undefined;
+
+    return {
+      id: finding.id,
+      label: content.label,
+      company,
+      percentage: finding.percentage,
+      share,
+      total,
+      count,
+      value,
+      detail: `${content.label}: ${observed}${observed.endsWith(".") ? "" : "."} ${content.detail}`,
+      source: copy.sources[finding.sourceKey],
+      pending,
+    };
+  });
+
+  return (
+    <EvidenceFrame
+      id={id}
+      title={copy.findings.title}
+      note={copy.findings.note}
+      caption={copy.findings.caption}
+      source={copy.sources.catalogAudits2026}
+      pending={review ? copy.presentation.pendingNote : undefined}
+      columns={[
+        copy.findings.headers.finding,
+        copy.findings.headers.company,
+        copy.findings.headers.share,
+        copy.findings.headers.count,
+        copy.findings.headers.total,
+      ]}
+      rows={rows.map((row) => [
+        row.pending ? `${row.label} (${row.pending})` : row.label,
+        row.company,
+        row.share,
+        row.count,
+        row.total,
+      ])}
+    >
+      <div className="divide-y-2 divide-background">
+        {rows.map((row) => (
+          <EvidenceMeter
+            key={row.id}
+            label={row.label}
+            value={row.value}
+            percentage={row.percentage}
+            detail={row.detail}
+            source={row.source}
+            meta={`${row.company} · ${copy.findings.headers.total}: ${row.total}`}
+            pending={row.pending}
+          />
+        ))}
+      </div>
+    </EvidenceFrame>
+  );
+};
+
+export namespace CatalogFindings {
+  export type Props = { id?: string };
+}
+
+export const DuaEvidence = async ({
+  id = "dua-pilot-evidence",
+}: DuaEvidence.Props) => {
+  if (!canPublishEvidence(duaEvidence.status)) return null;
+
+  const [{ enterpriseEvidence: copy }, translate] = await Promise.all([
+    getMessages(),
+    getTranslations("enterpriseEvidence.dua"),
+  ]);
+  const figure = translate("figure", {
+    percentage: String(duaEvidence.changePercent),
+  });
+  const source = copy.sources[duaEvidence.sourceKey];
+
+  return (
+    <EvidenceFrame
+      id={id}
+      title={copy.dua.title}
+      note={copy.dua.note}
+      caption={copy.dua.caption}
+      source={
+        <Link
+          href={evidenceSources.duaPilot.href}
+          className="underline decoration-accent-foreground underline-offset-4 hover:text-foreground"
+        >
+          {source}
+        </Link>
+      }
+      columns={[
+        copy.dua.headers.metric,
+        copy.dua.headers.change,
+        copy.dua.headers.period,
+        copy.dua.headers.permission,
+      ]}
+      rows={[[copy.dua.metric, figure, copy.dua.period, copy.dua.permission]]}
+    >
+      <EvidenceDatum
+        detail={`${figure}. ${copy.dua.caption} ${copy.dua.note}`}
+        source={`${source} ${copy.dua.confirmed}`}
+      >
+        <span className="block font-heading font-medium text-[clamp(4rem,10vw,7rem)] text-foreground-rich tabular-nums leading-none tracking-[-0.055em]">
+          {figure}
+        </span>
+        <span className="mt-4 block max-w-[45ch] text-lg">
+          {copy.dua.metric}
+        </span>
+        <span className="mt-2 block text-foreground-dimmed text-sm">
+          {copy.dua.period}
+        </span>
+      </EvidenceDatum>
+      <Link
+        href={duaEvidence.href}
+        className="mt-4 inline-block text-sm underline decoration-accent-foreground underline-offset-4 hover:text-primary-text"
+      >
+        {copy.dua.action.primary}
+      </Link>
+    </EvidenceFrame>
+  );
+};
+
+export namespace DuaEvidence {
+  export type Props = { id?: string };
+}
+
+export const MarketEvidence = async ({
+  id = "market-context-review",
+}: MarketEvidence.Props) => {
+  if (process.env["NEXT_PUBLIC_REVIEW"] !== "1") return null;
+
+  const { enterpriseEvidence: copy } = await getMessages();
+
+  return (
+    <section id={id} aria-labelledby={`${id}-title`} className="bg-background">
+      <h3 id={`${id}-title`}>{copy.market.title}</h3>
+      <p className="mt-3 max-w-[68ch]">{copy.market.description}</p>
+      <div className="mt-6 grid gap-6 md:grid-cols-3">
+        {marketContext.map((item) => (
+          <figure
+            key={item.id}
+            className="border-accent-foreground border-t pt-4"
+          >
+            <p className="font-medium text-foreground-rich">
+              {copy.market.rows[item.id]}
+            </p>
+            <p className="mt-3 text-foreground-dimmed">
+              {copy.presentation.dataPending}
+            </p>
+            <figcaption className="mt-4 text-foreground-dimmed text-sm">
+              {copy.presentation.source}: {copy.sources[item.sourceKey]}
+            </figcaption>
+          </figure>
+        ))}
+      </div>
+    </section>
+  );
+};
+
+export namespace MarketEvidence {
+  export type Props = { id?: string };
+}

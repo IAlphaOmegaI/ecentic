@@ -1,6 +1,9 @@
 import { notFound } from "next/navigation";
 import { getMessages } from "next-intl/server";
+import { CommerceTimeline } from "@/components/marketing/channels";
+import { CatalogFindings } from "@/components/marketing/measured-evidence";
 import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
+import { MarketingBand } from "@/components/marketing/primitives";
 import { BusinessChallenges } from "../_components/business-challenges";
 import { ProductJourney } from "../_components/product-journey";
 
@@ -50,10 +53,34 @@ export default async ({ params }: Props) => {
             labels={content.challengeLabels}
           />
         ),
+        ...(business === "enterprise"
+          ? {
+              measures: (
+                <div className="mt-12">
+                  <CatalogFindings />
+                </div>
+              ),
+            }
+          : {}),
         ...(journey
           ? { [journey.id]: <ProductJourney items={journey.items ?? []} /> }
           : {}),
       }}
-    />
+    >
+      {business === "retailers-and-marketplaces" && (
+        <MarketingBand>
+          <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10">
+            <CatalogFindings />
+          </div>
+        </MarketingBand>
+      )}
+      {business === "enterprise" && (
+        <MarketingBand>
+          <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10">
+            <CommerceTimeline />
+          </div>
+        </MarketingBand>
+      )}
+    </MarketingPage>
   );
 };

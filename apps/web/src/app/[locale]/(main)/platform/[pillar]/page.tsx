@@ -1,7 +1,13 @@
 import { notFound } from "next/navigation";
 import { getLocale, getMessages } from "next-intl/server";
+import { canPublishEvidence } from "@/components/marketing/evidence-policy";
+import { SimulationEvidence } from "@/components/marketing/measured-evidence";
 import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
-import { MarketingScreenshot } from "@/components/marketing/primitives";
+import {
+  MarketingBand,
+  MarketingScreenshot,
+} from "@/components/marketing/primitives";
+import { simulationEvidence } from "@/content/marketing-evidence";
 import { ProductExample } from "../_components/product-example";
 
 const pillars = ["connect", "simulate", "fix", "sell", "track"] as const;
@@ -36,6 +42,8 @@ export const generateMetadata = async ({ params }: Props) => {
 
 export default async ({ params }: Props) => {
   const locale = await getLocale();
+  // biome-ignore lint/complexity/useLiteralKeys: Environment keys have an index signature.
+  const review = process.env["NEXT_PUBLIC_REVIEW"] === "1";
   const { pillar: requested } = await params;
   const pillar = pillars.find((value) => value === requested);
   if (!pillar) notFound();
@@ -58,6 +66,15 @@ export default async ({ params }: Props) => {
           <ProductExample content={enterprisePlatform.examples[pillar]} />
         ),
       }}
-    />
+    >
+      {pillar === "simulate" &&
+        canPublishEvidence(simulationEvidence.status, review) && (
+          <MarketingBand>
+            <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10">
+              <SimulationEvidence />
+            </div>
+          </MarketingBand>
+        )}
+    </MarketingPage>
   );
 };

@@ -13,6 +13,12 @@ import { JsonLd } from "@/components/json-ld";
 import { AsciiCommerceArtwork } from "@/components/marketing/ascii-artwork";
 import { AsciiAtmosphere } from "@/components/marketing/ascii-atmosphere";
 import {
+  CatalogFindings,
+  DuaEvidence,
+  MarketEvidence,
+  SimulationEvidence,
+} from "@/components/marketing/measured-evidence";
+import {
   MarketingFaq,
   MarketingShell,
   marketingMetadata,
@@ -266,34 +272,23 @@ export default async () => {
             <MarketingEyebrow>{copy.proof.eyebrow}</MarketingEyebrow>
             <h2>{copy.proof.title}</h2>
           </div>
-          <div className="enterprise-proof-grid [&_h3]:text-(length:--text-2xl) grid grid-cols-3 border-[var(--rail-color)] border-t max-sm:grid-cols-1 max-sm:[&>article+article]:border-t [&>article:last-child]:border-r-0 [&>article]:relative [&>article]:border-[var(--rail-color)] [&>article]:border-r [&>article]:px-7 [&>article]:py-10 max-sm:[&>article]:border-r-0 max-sm:[&>article]:px-4 max-sm:[&>article]:py-7 [&_article>p:last-child]:mt-5">
-            {copy.proof.stats.map((stat) => (
-              <article key={stat.value}>
-                <p className="enterprise-stat [&_sup]:text-(length:--text-sm) mb-[38px] font-heading text-[clamp(3.25rem,5.4vw,5.5rem)] text-primary-text leading-none tracking-[-0.05em] max-sm:mb-7 max-sm:text-[68px] [&_sup]:relative [&_sup]:top-3 [&_sup]:ml-2 [&_sup]:align-top [&_sup]:font-body [&_sup]:tracking-normal">
-                  {stat.value}
-                  <sup>{stat.footnote}</sup>
-                </p>
-                <h3>{stat.title}</h3>
-                <p>{stat.body}</p>
-              </article>
-            ))}
-          </div>
-          <div className="enterprise-finding grid grid-cols-[1fr_2fr] border-[var(--rail-color)] border-y bg-background max-sm:grid-cols-1 [&>div>p:first-child]:text-[22px] [&>div>p:first-child]:leading-normal max-sm:[&>div>p:first-child]:text-[19px] [&>div]:px-7 [&>div]:py-8 max-sm:[&>div]:px-4 max-sm:[&>div]:py-7 [&>h3]:border-[var(--rail-color)] [&>h3]:border-r [&>h3]:px-7 [&>h3]:py-8 [&>h3]:text-[26px] max-sm:[&>h3]:border-r-0 max-sm:[&>h3]:px-4 max-sm:[&>h3]:pt-7 max-sm:[&>h3]:pb-0 [&_.marketing-note]:text-foreground">
-            <h3>{copy.proof.study.title}</h3>
-            <div>
-              <p>{copy.proof.study.body}</p>
-              <p className="marketing-note text-(length:--text-sm) mt-6 text-foreground-dimmed">
-                {copy.proof.study.note}
-              </p>
+          <div className="marketing-cell relative min-w-0 px-7 pb-14 max-sm:px-4 max-sm:pb-10">
+            <div className="grid gap-x-14 gap-y-12 lg:grid-cols-2 [&:has(>:only-child)]:grid-cols-1">
+              <SimulationEvidence />
+              <CatalogFindings />
             </div>
-          </div>
-          <div className="marketing-cell enterprise-footnotes relative min-w-0 px-7 py-14 py-7 text-[13px] max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch] [&_p+p]:mt-3">
-            {copy.proof.footnotes.map((note) => (
-              <p key={note.marker}>
-                <sup>{note.marker}</sup> {note.text}
-              </p>
-            ))}
-            <p>{copy.proof.pipeline}</p>
+            <div className="mt-16">
+              <DuaEvidence />
+            </div>
+            <MarketEvidence />
+            <div className="mt-12 space-y-3 text-foreground-dimmed text-sm">
+              {copy.proof.footnotes.map((note) => (
+                <p key={note.marker}>
+                  <sup>{note.marker}</sup> {note.text}
+                </p>
+              ))}
+              <p>{copy.proof.pipeline}</p>
+            </div>
           </div>
         </MarketingBand>
         <SectionGutter />
