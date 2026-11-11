@@ -8,7 +8,6 @@ import {
   CommercePlug_3SparkleIcon,
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
-import Image from "next/image";
 import type { ReactNode } from "react";
 import type { MarketingPage } from "@/components/marketing/page";
 import {
@@ -16,8 +15,8 @@ import {
   MarketingFeatureBand,
   MarketingHeading,
 } from "@/components/marketing/primitives";
-import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { Plus } from "@/components/plus";
+import { PlatformProviderStack } from "../provider-stack";
 import { PlatformLight } from "./platform-light";
 
 const pageIcons = {
@@ -50,7 +49,7 @@ const PlatformDiagram = ({ kind }: { kind: PlatformPrinciples.Kind }) => {
   return (
     <div
       aria-hidden
-      className="relative isolate flex h-64 items-center justify-center overflow-hidden px-8 max-sm:px-4"
+      className="relative isolate flex h-72 items-center justify-center overflow-hidden px-8 max-sm:px-4"
       data-platform-diagram={kind}
     >
       <div className="absolute inset-0 -z-1 bg-radial-[at_60%_50%] from-primary/20 via-primary/4 to-transparent" />
@@ -59,36 +58,18 @@ const PlatformDiagram = ({ kind }: { kind: PlatformPrinciples.Kind }) => {
       <div className="relative flex w-full max-w-md items-center gap-6 max-sm:gap-3">
         <div className="flex w-1/3 shrink-0 flex-col items-center gap-5">
           {kind === "connect" ? (
-            <>
-              <ProviderLogo
-                provider="shopify"
-                className="h-12 w-auto max-w-20 rounded-none"
-              />
-              <ProviderLogo
-                provider="woocommerce"
-                className="h-8 w-auto max-w-24 rounded-none"
+            <div className="flex flex-col items-center gap-5">
+              <PlatformProviderStack
+                providers={["shopify", "woocommerce"]}
+                className="max-sm:-space-x-5 [&>span]:size-14 max-sm:[&>span]:size-12 max-sm:[&>span]:p-2.5"
               />
               <CommerceCode_3Icon className="size-8 text-primary-rich" />
-            </>
+            </div>
           ) : kind === "simulate" ? (
-            <>
-              <ProviderLogo
-                provider="claude"
-                className="size-10 rounded-none"
-              />
-              <ProviderLogo
-                provider="gemini"
-                className="size-10 rounded-none"
-              />
-              <Image
-                src="/images/chatgpt.svg"
-                alt=""
-                width={40}
-                height={40}
-                className="size-10 brightness-0 invert"
-                unoptimized
-              />
-            </>
+            <PlatformProviderStack
+              providers={["chatgpt", "claude", "gemini"]}
+              className="flex-col space-x-0 -space-y-4 [&>span]:size-14"
+            />
           ) : (
             <div className="relative grid size-24 place-items-center rounded-xl border border-background-rich/15 bg-linear-to-br from-emphasis-rich to-emphasis-dimmed shadow-[0_12px_36px_-20px_var(--color-primary)]">
               <Icon className="size-12 text-primary-rich" />
@@ -106,7 +87,11 @@ const PlatformDiagram = ({ kind }: { kind: PlatformPrinciples.Kind }) => {
               ? ["product", "cart", "checkout"]
               : kind === "track"
                 ? ["referral", "order", "source"]
-                : ["title", "description", "source"]
+                : kind === "simulate"
+                  ? ["product", "competitor", "question"]
+                  : kind === "fix"
+                    ? ["title", "description", "published"]
+                    : ["title", "description", "source"]
             ).map((field, index) => (
               <div
                 key={field}

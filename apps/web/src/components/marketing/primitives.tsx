@@ -176,9 +176,9 @@ export const MarketingHero = ({
     {!illustration && (dark || artwork) && (
       <div
         className={cn(
-          "pointer-events-none absolute inset-y-0 right-0 left-[35%] select-none [mask-image:linear-gradient(105deg,transparent_10%,black_85%)] max-sm:inset-x-0",
+          "pointer-events-none absolute inset-y-0 right-0 left-[35%] select-none [mask-image:linear-gradient(105deg,transparent_10%,black_85%)] max-sm:inset-x-0 max-sm:[&_[data-artwork-mask]]:[mask-position:center_10%]",
           dark
-            ? "text-background-rich opacity-50 max-sm:opacity-25"
+            ? "text-background-rich opacity-70 max-sm:opacity-45"
             : "text-primary opacity-20 max-sm:opacity-10",
           artworkClassName,
         )}

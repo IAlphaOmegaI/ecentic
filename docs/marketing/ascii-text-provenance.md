@@ -1,4 +1,6 @@
-# Real ASCII artwork provenance
+# Marketing object artwork provenance
+
+The sections below preserve the earlier character-art history. The 11 November point-grid review supersedes that rendering for `EvolvingAscii`; see the latest delivery at the end.
 
 The user's final direction on 10 November 2026 was to use actual ASCII characters rather than a raster image that resembles dots. The final commerce and closing layers now render real text inside decorative `<pre>` elements. Their shape is formed by spaces and `/`, `\`, `-`, `=`, `+`, `x`, `%`, `#`, and `@` characters. No raster image or background URL is used by these components.
 
@@ -55,3 +57,12 @@ source links and labels remain semantic HTML alongside it in `channel-timeline.t
 `components/marketing/ascii-wordmark.tsx` assembles the footer's ecentic name from fixed character
 glyphs. It has a readable text alternative and does not depend on a raster logo. The rejected
 box-drawing scenes were removed from the homepage evidence and editorial cards.
+
+
+## 11 November · approved point-grid delivery
+
+`EvolvingAscii` now uses deterministic local variable-dot SVG masks. The approved `connect-catalog-halftone.svg` is retained exactly. Additional masks derive from the existing `public/images/ascii/{bag,cart,tower,robot,simulate-selection}.png` artwork. The console mask uses the existing server-tower source because the earlier console source was a less recognizable radial form. No source raster was replaced and no new product claims or generated measurements are introduced.
+
+The selection lens is resized to 192 columns with proportional height using Lanczos sampling. It uses luminance with a 7% background cutoff, radius `0.45 × density^0.65`, omitting radii below 0.09. The bag, cart, tower and robotic-hand sources use alpha, a 5-pixel maximum filter and radius-2 Gaussian blur to join the old glyph strokes into local tonal coverage. They are resampled to 120 columns with proportional height. Set `high` to the 92nd percentile of alpha values above 20 and normalize with `max(0, (alpha - 6) / (high - 6))`. Omit densities below 0.025; dot radius is `0.47 × min(1, density)^0.45`. This stronger coverage was selected after desktop/mobile visual comparison. The assets use a white fill as masks; the component supplies its inherited semantic foreground. `mask-size: contain` preserves geometry, while existing deliberate background crops can opt into cover. There is no runtime conversion or per-dot React tree.
+
+The server HTML contains a complete visible mask. An approved `Motion.Item` sweeps light through it once on entering view. It stops when offscreen or the document is hidden, with a static state under reduced motion. An optional subject sequence completes once rather than running a perpetual character timer. The decorative timeline road and readable footer wordmark retain their literal-character treatment.

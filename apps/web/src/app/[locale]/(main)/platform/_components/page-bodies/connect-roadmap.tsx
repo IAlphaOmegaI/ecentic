@@ -16,6 +16,7 @@ import { useInteractive } from "@/components/marketing/interactive/use-interacti
 import type { MarketingPage } from "@/components/marketing/page";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { Plus } from "@/components/plus";
+import { PlatformProviderStack } from "../provider-stack";
 
 const icons = [
   CommercePlug_3SparkleIcon,
@@ -31,22 +32,10 @@ const CatalogFlow = ({ stage, copy }: CatalogFlow.Props) => (
   >
     <div className="grid min-w-0 grid-cols-[1fr_32px_1fr] items-center gap-2">
       <div className="grid min-w-0 gap-6">
-        <div className="flex items-center -space-x-3">
-          {(["shopify", "woocommerce"] as const).map((provider, index) => (
-            <span
-              key={provider}
-              className={cn(
-                "relative grid size-14 shrink-0 place-items-center rounded-full border border-accent-foreground bg-background-rich p-3 sm:size-16",
-                index === 0 && "z-10",
-              )}
-            >
-              <ProviderLogo
-                provider={provider}
-                className="max-h-10 w-full rounded-none object-center"
-              />
-            </span>
-          ))}
-        </div>
+        <PlatformProviderStack
+          providers={["shopify", "woocommerce"]}
+          className="justify-start"
+        />
         <div className="flex items-center gap-3 text-primary">
           <CommerceCode_3Icon className="size-8 shrink-0" aria-hidden />
           <code className="text-sm">XML / JSON / CSV</code>

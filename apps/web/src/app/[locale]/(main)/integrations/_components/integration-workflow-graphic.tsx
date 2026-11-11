@@ -42,17 +42,29 @@ export const IntegrationWorkflowGraphic = ({
       <div className="pointer-events-none absolute inset-0 -z-1 bg-radial-[at_50%_100%] from-primary/15 via-transparent to-transparent" />
       {kind === "compare" ? (
         <div className="relative h-72 w-full max-w-96">
-          <div className="absolute inset-x-0 top-2 flex items-center justify-center gap-8">
-            <Image
-              src="/images/chatgpt.svg"
-              alt=""
-              width={36}
-              height={36}
-              className="size-9 brightness-0 invert"
-              unoptimized
-            />
-            <ProviderLogo provider="claude" decorative className="size-9" />
-            <ProviderLogo provider="gemini" decorative className="size-9" />
+          <div className="absolute inset-x-0 top-2 isolate flex items-center justify-center -space-x-3">
+            <div className="relative z-2 grid size-14 place-items-center rounded-xl border border-background-rich/40 bg-background-rich shadow-emphasis-dimmed/30 shadow-lg">
+              <Image
+                src="/images/chatgpt.svg"
+                alt=""
+                width={32}
+                height={32}
+                className="size-8"
+                unoptimized
+              />
+            </div>
+            {(["claude", "gemini"] as const).map((provider) => (
+              <div
+                key={provider}
+                className="relative grid size-14 place-items-center rounded-xl border border-background-rich/40 bg-background-rich shadow-emphasis-dimmed/30 shadow-lg first:z-1"
+              >
+                <ProviderLogo
+                  provider={provider}
+                  decorative
+                  className="size-8 rounded-none object-center"
+                />
+              </div>
+            ))}
           </div>
           <div className="absolute inset-x-14 top-12 bottom-4 bg-linear-to-b from-primary/5 via-primary/20 to-transparent [clip-path:polygon(38%_0,62%_0,100%_100%,0_100%)]" />
           {[-1, 0, 1].map((position) => (

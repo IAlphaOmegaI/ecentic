@@ -56,21 +56,23 @@ export const JourneyFigure = ({
         />
       )}
       {stage === 0 ? (
-        <div className="absolute inset-0 flex items-center justify-center gap-5 sm:gap-10">
-          <div className="flex flex-col gap-8">
-            <ProviderLogo
-              provider="shopify"
-              decorative
-              className="h-9 max-w-24 object-contain"
-            />
-            <ProviderLogo
-              provider="woocommerce"
-              decorative
-              className="h-8 max-w-24 object-contain"
-            />
+        <div className="absolute inset-0 flex items-center justify-center gap-4 sm:gap-8">
+          <div className="isolate flex -space-x-4">
+            {(["shopify", "woocommerce"] as const).map((provider) => (
+              <div
+                key={provider}
+                className="relative flex size-14 items-center justify-center rounded-xl border border-background-rich/60 bg-background-rich! p-2 shadow-emphasis-dimmed/20 shadow-lg first:z-1 sm:size-18 sm:p-3"
+              >
+                <ProviderLogo
+                  provider={provider}
+                  decorative
+                  className="h-8 w-full max-w-full rounded-none object-center sm:h-10"
+                />
+              </div>
+            ))}
           </div>
-          <div className="relative h-28 w-8 rounded-r-3xl border-primary-rich/40 border-y border-r" />
-          <div className="relative w-36 rounded-lg border border-primary-rich/50 bg-linear-to-br from-primary-dimmed to-emphasis-dimmed p-5 shadow-emphasis-dimmed/30 shadow-lg">
+          <div className="relative h-px w-6 bg-linear-to-r from-primary-rich/20 to-primary-rich/70 sm:w-10" />
+          <div className="relative w-28 rounded-lg border border-primary-rich/50 bg-linear-to-br from-primary-dimmed to-emphasis-dimmed p-4 shadow-emphasis-dimmed/30 shadow-lg sm:w-36 sm:p-6">
             <Icon className="size-7 text-primary-rich" />
             <div className="mt-5 h-px w-4/5 bg-background-rich/50" />
             <div className="mt-3 h-px w-full bg-background-rich/25" />

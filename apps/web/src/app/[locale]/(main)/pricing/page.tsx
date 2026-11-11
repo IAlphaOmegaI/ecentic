@@ -20,6 +20,7 @@ import {
   FreeStoreCheck,
   PerformanceFeeLedger,
 } from "./_components/enterprise-pricing";
+import { PricingFigure } from "./_components/pricing-figure";
 
 export const generateMetadata = async () => {
   const { enterprisePricing } = await getMessages();
@@ -49,16 +50,18 @@ export default async () => {
     <MarketingPage
       content={{ ...enterprisePricing, sections: [] }}
       path="/pricing"
-      heroArtwork="cart"
+      heroIllustration={
+        <PricingFigure label={enterprisePricing.sample.figureLabel} />
+      }
     >
       {enterprisePricing.sections.map((section) =>
         section.id === "pricing" ? (
-          <MarketingFeatureBand key={section.id} id={section.id} tone="light">
+          <MarketingFeatureBand key={section.id} id={section.id} tone="dark">
             <MarketingHeading
               eyebrow={section.eyebrow}
               title={section.title}
               description={section.description}
-              className="pb-12"
+              className="pb-12 [&>p:last-child]:text-background-rich/70"
             />
             <EnterprisePlanLedger />
           </MarketingFeatureBand>

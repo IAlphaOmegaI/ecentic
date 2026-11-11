@@ -31,7 +31,7 @@ const SetupGraphic = ({ stage }: { stage: number }) => (
   <div
     aria-hidden
     data-shopify-stage={stage}
-    className="relative flex min-h-48 min-w-0 items-center justify-center gap-7 overflow-hidden px-7 max-sm:gap-3 max-sm:px-0"
+    className="relative flex h-32 min-w-0 items-center justify-center gap-6 overflow-hidden px-4 max-sm:h-24 max-sm:gap-4 max-sm:px-0"
   >
     <div className="absolute inset-0 -z-1 bg-radial-[at_50%_100%] from-primary/10 via-transparent to-transparent" />
     {stage === 0 ? (
@@ -39,20 +39,20 @@ const SetupGraphic = ({ stage }: { stage: number }) => (
         <ProviderLogo
           provider="shopify"
           decorative
-          className="h-20 max-w-36 max-sm:h-14 max-sm:max-w-16"
+          className="h-14 max-w-28 max-sm:h-10 max-sm:max-w-16"
         />
         <div className="relative h-px w-20 bg-linear-to-r from-primary/20 via-primary/70 to-primary/20 max-sm:w-8">
           <ArrowRightIcon className="absolute top-1/2 left-1/2 size-5 -translate-x-1/2 -translate-y-1/2 text-primary-text" />
         </div>
-        <CommerceFileShieldIcon className="size-16 shrink-0 text-primary-text max-sm:size-12" />
+        <CommerceFileShieldIcon className="size-12 shrink-0 text-primary-text max-sm:size-10" />
       </>
     ) : stage === 1 ? (
-      <div className="relative flex h-40 w-full max-w-80 items-end justify-center gap-3">
+      <div className="relative flex h-28 w-full max-w-64 items-end justify-center gap-2">
         {[-1, 0, 1].map((position) => (
           <div
             key={position}
             className={cn(
-              "relative flex h-28 w-24 min-w-0 flex-col justify-between rounded-md border p-4",
+              "relative flex h-20 w-16 min-w-0 flex-col justify-between rounded-md border p-2",
               position === 0
                 ? "-translate-y-6 border-primary/50 bg-background-rich shadow-[0_0_40px_-20px_var(--color-primary)]"
                 : "border-accent-foreground bg-background",
@@ -60,7 +60,7 @@ const SetupGraphic = ({ stage }: { stage: number }) => (
           >
             <CommerceBasketShoppingIcon
               className={cn(
-                "size-9",
+                "size-8",
                 position === 0 ? "text-primary-text" : "text-foreground-dimmed",
               )}
             />
@@ -72,7 +72,7 @@ const SetupGraphic = ({ stage }: { stage: number }) => (
         ))}
       </div>
     ) : stage === 2 ? (
-      <div className="w-full max-w-80 rounded-md border border-accent-foreground bg-background-rich p-4 font-mono text-xs leading-8 sm:text-sm">
+      <div className="w-full max-w-64 rounded-md border border-accent-foreground bg-background-rich px-4 py-2 font-mono text-xs leading-6 sm:text-sm">
         <span className="text-foreground-dimmed">{"{"}</span>
         <p>
           <span className="text-primary-text">{'  "title"'}</span>
@@ -147,7 +147,7 @@ export const ShopifySetupJourney = ({
               </div>
               <div className="border-accent-foreground border-b group-last/stop:border-b-0">
                 <AccordionTrigger
-                  className="min-h-28 items-center py-7 pr-7 text-foreground-rich hover:text-primary-text focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-solid focus-visible:-outline-offset-4 max-sm:pr-4"
+                  className="min-h-24 items-center py-6 pr-7 text-foreground-rich hover:text-primary-text focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-solid focus-visible:-outline-offset-4 max-sm:pr-4"
                   classList={{ trigger: { icon: "mr-0 size-4 shrink-0" } }}
                 >
                   <span className="flex min-w-0 items-baseline gap-4">
@@ -160,8 +160,8 @@ export const ShopifySetupJourney = ({
                   </span>
                 </AccordionTrigger>
                 <AccordionPanel className="overflow-hidden">
-                  <div className="grid min-w-0 pr-7 pb-7 max-sm:pr-4 md:grid-cols-[1fr_1fr]">
-                    <div className="min-w-0 pb-4 md:pr-7">
+                  <div className="grid min-w-0 items-center gap-4 pr-7 pb-6 max-sm:pr-4 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
+                    <div className="min-w-0 md:pr-4">
                       <p className="max-w-[50ch] text-foreground-dimmed leading-relaxed">
                         {item.body}
                       </p>

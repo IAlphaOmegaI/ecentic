@@ -21,6 +21,7 @@ import { MarketingSources } from "@/components/marketing/sources";
 import { Plus } from "@/components/plus";
 import { type AiChannel, aiChannels } from "@/content/ai-channels";
 import { Link } from "@/i18n/navigation";
+import { CapabilityGraphic } from "./capability-graphic";
 
 type Copy = Awaited<ReturnType<typeof getMessages>>["enterpriseChannels"];
 const capabilities = ["simulate", "fix", "checkout", "track"] as const;
@@ -106,7 +107,7 @@ export const ChannelCapabilities = ({
 }: ChannelCapabilities.Props) => (
   <div
     data-channel-capabilities
-    className="relative grid gap-px border border-[var(--rail-color)] border-x-transparent bg-[var(--rail-color)] bg-clip-padding md:grid-cols-2"
+    className="relative grid gap-px border border-[var(--rail-color)] border-x-transparent bg-[var(--rail-color)] bg-clip-padding md:grid-cols-2 lg:grid-cols-3"
   >
     {capabilities.map((capability, index) => {
       const Icon = capabilityIcons[index];
@@ -116,7 +117,8 @@ export const ChannelCapabilities = ({
         <article
           key={capability}
           className={cn(
-            "relative isolate flex min-w-0 flex-col gap-6 bg-emphasis-dimmed px-7 py-9 max-sm:px-4",
+            "relative isolate flex min-w-0 flex-col bg-emphasis-dimmed",
+            (index === 0 || index === 3) && "lg:col-span-2",
             available &&
               "bg-linear-to-br from-primary-dimmed/65 to-emphasis-dimmed",
           )}
@@ -133,42 +135,29 @@ export const ChannelCapabilities = ({
           {index === 3 && (
             <Plus className="bottom-0 left-0 hidden -translate-x-1/2 translate-y-1/2 md:block [&>span]:bg-background-rich/35" />
           )}
-          <div className="flex min-h-20 items-center gap-5" aria-hidden>
-            {Icon && (
-              <Icon
-                className={cn(
-                  "size-12 shrink-0",
-                  available ? "text-primary-rich" : "text-background-rich/60",
-                )}
-              />
-            )}
-            <span className="h-px flex-1 bg-linear-to-r from-primary-rich/50 to-transparent" />
-            <span
-              className={cn(
-                "grid size-14 shrink-0 place-items-center rounded-md border border-background-rich/20 font-mono text-lg",
-                available ? "text-primary-rich" : "text-background-rich/60",
-              )}
-            >
-              {capability === "fix"
-                ? "{ }"
-                : capability === "checkout"
-                  ? "→"
-                  : capability === "track"
-                    ? "/_"
-                    : "↗"}
-            </span>
+          {index === 3 && (
+            <Plus className="top-0 left-1/2 hidden -translate-x-1/2 -translate-y-1/2 lg:block [&>span]:bg-background-rich/35" />
+          )}
+          <div className="px-7 pt-8 max-sm:px-4">
+            <div className="mb-6 flex items-center gap-4" aria-hidden>
+              {Icon && <Icon className="size-8 text-primary-rich" />}
+              <span className="h-px w-12 bg-linear-to-r from-primary-rich/60 to-transparent" />
+            </div>
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <h3>{copy.capabilityNames[capability]}</h3>
+              <span className="[&>.marketing-status]:text-background-rich/80">
+                <MarketingStatus status={status}>
+                  {copy.statuses[status]}
+                </MarketingStatus>
+              </span>
+            </div>
+            <p className="mt-4 max-w-[52ch] text-background-rich/75 leading-relaxed">
+              {copy.pages[channel.key].capabilities[capability]}
+            </p>
           </div>
-          <div className="flex flex-wrap items-start justify-between gap-4">
-            <h3>{copy.capabilityNames[capability]}</h3>
-            <span className="[&>.marketing-status]:text-background-rich/80">
-              <MarketingStatus status={status}>
-                {copy.statuses[status]}
-              </MarketingStatus>
-            </span>
+          <div className="mt-auto pt-6">
+            <CapabilityGraphic capability={capability} channel={channel.key} />
           </div>
-          <p className="max-w-[52ch] text-background-rich/75 leading-relaxed">
-            {copy.pages[channel.key].capabilities[capability]}
-          </p>
         </article>
       );
     })}

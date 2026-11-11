@@ -9,17 +9,9 @@ import {
   MarketingBand,
   MarketingScreenshot,
 } from "@/components/marketing/primitives";
+import { PlatformEndpointDirectory } from "./_components/endpoint-directory";
 import { ExplodedFigure } from "./_components/exploded-figure";
 import { PlatformExplorer } from "./_components/platform-explorer";
-
-const endpoints = [
-  "/llms.txt",
-  "/openapi.json",
-  "/.well-known/api-catalog",
-  "/.well-known/oauth-authorization-server",
-  "/ucp/agent-profile",
-  "/mcp",
-] as const;
 
 export const generateMetadata = async () => {
   const { enterprisePlatform } = await getMessages();
@@ -28,7 +20,8 @@ export const generateMetadata = async () => {
 
 export default async () => {
   const locale = await getLocale();
-  const { enterprisePlatform, hairlinePlatform } = await getMessages();
+  const { enterprisePlatform, hairlinePlatform, interactiveFiles } =
+    await getMessages();
   const content = enterprisePlatform.overview;
   const sections: readonly MarketingPage.Section[] = content.sections;
   const stages = sections.filter((section) => section.items?.length);
@@ -100,32 +93,10 @@ export default async () => {
               </p>
               <MarketingActions actions={developers.links ?? []} />
             </div>
-            <div className="flex min-w-0 flex-col justify-center border-accent-foreground border-l bg-background-dimmed px-7 py-14 max-sm:px-4 max-sm:py-10 max-md:border-t max-md:border-l-0">
-              <p className="text-foreground-rich text-xl">ecentic.ai</p>
-              <ul className="mt-6 ml-2 border-primary-text/25 border-l font-mono text-[13px] max-sm:text-xs">
-                {endpoints.map((endpoint) => (
-                  <li
-                    key={endpoint}
-                    className="relative py-2 pl-6 before:absolute before:top-5 before:left-0 before:w-4 before:border-primary-text/25 before:border-t"
-                  >
-                    <a
-                      href={endpoint}
-                      className="break-all text-primary-text decoration-primary-text/40 underline-offset-4 hover:underline"
-                    >
-                      {endpoint}
-                    </a>
-                  </li>
-                ))}
-              </ul>
-              <code className="mt-8 block border-accent-foreground border-t pt-6 font-mono text-[13px] text-foreground-rich">
-                npx @ecentic/cli
-              </code>
-              {developers.note && (
-                <p className="mt-4 max-w-[50ch] text-foreground-dimmed text-sm leading-relaxed">
-                  {developers.note}
-                </p>
-              )}
-            </div>
+            <PlatformEndpointDirectory
+              copy={interactiveFiles}
+              note={developers.note}
+            />
           </div>
           <PublishedFiles />
         </MarketingBand>

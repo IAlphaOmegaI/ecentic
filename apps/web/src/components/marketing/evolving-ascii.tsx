@@ -5,42 +5,19 @@ import { useMediaQuery } from "@zenncore/web/hooks";
 import { useInView } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 import { Motion } from "@/components/motion";
-import { closingAscii, commerceAscii } from "@/content/ascii-artwork";
-import { catalogAscii } from "@/content/connect-ascii";
-import { originalAscii } from "@/content/original-ascii";
-import { selectionAscii } from "@/content/simulate-ascii";
 import { useDocument } from "@/hooks/use-document";
 
-const ramp = " -=+xX%#@";
-const columns = 120;
-const rows = 56;
-
-const normalize = (source: string) => {
-  const lines = source.trimEnd().split("\n");
-  const offset = Math.floor((rows - lines.length) / 2);
-  return Array.from({ length: rows }, (_, row) =>
-    (lines[row - offset] ?? "").padEnd(columns).slice(0, columns),
-  ).join("\n");
-};
-
 const artwork = {
-  ...originalAscii,
-  commerce: normalize(commerceAscii),
-  closing: normalize(closingAscii),
-  catalog: catalogAscii,
-  selection: selectionAscii,
+  bag: "/images/ascii/bag-halftone.svg",
+  cart: "/images/ascii/cart-halftone.svg",
+  console: "/images/ascii/console-halftone.svg",
+  commerce: "/images/ascii/robot-halftone.svg",
+  closing: "/images/ascii/bag-halftone.svg",
+  catalog: "/images/ascii/connect-catalog-halftone.svg",
+  selection: "/images/ascii/simulate-selection-halftone.svg",
 };
 
-const density = Object.fromEntries(
-  Object.entries(artwork).map(([key, source]) => [
-    key,
-    [...source].map((character) =>
-      character === "\n" ? -1 : Math.max(0, ramp.indexOf(character)),
-    ),
-  ]),
-) as Record<keyof typeof artwork, number[]>;
-
-/** Low-frequency character changes preserve the original silhouettes and layout. */
+/** The character road retains its sampled path; object artwork uses dot masks. */
 export const useAsciiFrame = () => {
   const target = useRef<HTMLDivElement>(null);
   const visible = useInView(target, { margin: "120px" });
@@ -61,55 +38,85 @@ export const useAsciiFrame = () => {
   return { target, frame: active ? frame : 0, active };
 };
 
+/** A complete silhouette in the server HTML, revealed once by a moving light. */
 export const EvolvingAscii = ({
   artwork: kind = "cart",
   cycle,
   fit = "contain",
   className,
 }: EvolvingAscii.Props) => {
-  const { target, frame, active } = useAsciiFrame();
-  const sequence = cycle?.length ? cycle : [kind];
-  const position = Math.floor(frame / 40) % sequence.length;
-  const current = density[sequence[position] ?? kind];
-  const next = density[sequence[(position + 1) % sequence.length] ?? kind];
-  const progress = Math.max(0, (frame % 40) - 28) / 12;
-  const blend = progress * progress * (3 - 2 * progress);
-  const characters = current
-    .map((value, index) => {
-      if (value < 0) return "\n";
-      const mixed = value + ((next[index] ?? 0) - value) * blend;
-      if (mixed < 0.5) return " ";
-      const column = index % (columns + 1);
-      const row = Math.floor(index / (columns + 1));
-      const shimmer =
-        active && (column + row * 2 + frame * 3) % columns < 7 ? 1 : 0;
-      return ramp[Math.min(ramp.length - 1, Math.round(mixed) + shimmer)];
-    })
-    .join("");
+  const target = useRef<HTMLDivElement>(null);
+  const visible = useInView(target, { margin: "40px" });
+  const reduced = useMediaQuery("(prefers-reduced-motion: reduce)", {});
+  const { document, window } = useDocument();
+  const [documentVisible, setDocumentVisible] = useState(true);
+  const [position, setPosition] = useState(0);
+  const [complete, setComplete] = useState(false);
+  const sequence = [...new Set(cycle?.length ? cycle : [kind])];
+  const active = visible && documentVisible && !reduced && !complete;
+
+  useEffect(() => {
+    if (!document) return;
+    const updateVisibility = () =>
+      setDocumentVisible(document.visibilityState === "visible");
+    updateVisibility();
+    document.addEventListener("visibilitychange", updateVisibility);
+    return () =>
+      document.removeEventListener("visibilitychange", updateVisibility);
+  }, [document]);
+
+  useEffect(() => {
+    if (!active || !window) return;
+    const timer = window.setTimeout(() => {
+      if (position < sequence.length - 1) {
+        setPosition((current) => current + 1);
+        return;
+      }
+      setComplete(true);
+    }, 3400);
+    return () => window.clearTimeout(timer);
+  }, [active, position, sequence.length, window]);
 
   return (
     <Motion.Item
       ref={target}
-      role="img"
       aria-hidden="true"
-      data-ascii-artwork={sequence[position]}
-      data-ascii-frame={frame}
+      data-ascii-artwork={sequence[position] ?? kind}
+      data-artwork-renderer="halftone"
+      data-artwork-motion={
+        complete ? "complete" : active ? "revealing" : "rest"
+      }
       initial={false}
       className={cn(
-        "pointer-events-none grid size-full select-none grid-cols-1 grid-rows-1 place-items-center overflow-hidden text-inherit [container-type:size]",
+        "pointer-events-none relative size-full select-none overflow-hidden text-inherit",
         className,
       )}
     >
-      <pre
-        className={cn(
-          "m-0 w-[73.2em] overflow-visible whitespace-pre bg-transparent p-0 text-left font-medium font-mono text-inherit leading-none tracking-normal [font-variant-ligatures:none]",
-          fit === "cover"
-            ? "text-[max(calc(100cqw/73.2),calc(100cqh/56))]"
-            : "text-[min(calc(100cqw/73.2),calc(100cqh/56))]",
-        )}
-      >
-        {characters}
-      </pre>
+      {sequence.map((subject, index) => (
+        <Motion.Item
+          key={subject}
+          data-artwork-mask
+          initial={false}
+          animate={{ opacity: index === (reduced ? 0 : position) ? 1 : 0 }}
+          transition={{ duration: reduced ? 0 : 0.24 }}
+          className="absolute inset-0 overflow-hidden [mask-position:center] [mask-repeat:no-repeat]"
+          style={{ maskImage: `url('${artwork[subject]}')`, maskSize: fit }}
+        >
+          <div className="absolute inset-0 bg-current opacity-80" />
+          <Motion.Item
+            initial={false}
+            animate={{
+              x: active && index === position ? "120%" : "-120%",
+              opacity: active && index === position ? 0.65 : 0,
+            }}
+            transition={{
+              x: { duration: active ? 3.2 : 0, ease: "easeInOut" },
+              opacity: { duration: reduced ? 0 : 0.2 },
+            }}
+            className="absolute inset-0 bg-linear-to-r from-transparent via-current to-transparent"
+          />
+        </Motion.Item>
+      ))}
     </Motion.Item>
   );
 };

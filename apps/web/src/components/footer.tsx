@@ -117,7 +117,10 @@ export const Footer = async (_props: Footer.Props = {}) => {
           { href: "/sign-up", label: chrome.action.secondary },
         ]}
       />
-      <MarketingFeatureBand tone="light" className="marketing-footer-field">
+      <MarketingFeatureBand
+        tone="light"
+        className="marketing-footer-field [&>.marketing-rail>.w-dvw]:bg-linear-to-br [&>.marketing-rail>.w-dvw]:from-background-rich [&>.marketing-rail>.w-dvw]:via-primary/8 [&>.marketing-rail>.w-dvw]:to-primary/20"
+      >
         <Plus className="top-12 left-0 hidden -translate-x-1/2 -translate-y-1/2 min-[801px]:block" />
         <Plus className="top-12 right-0 hidden translate-x-1/2 -translate-y-1/2 min-[801px]:block" />
         <div className="marketing-footer-columns relative hidden grid-cols-4 border-accent-foreground border-t min-[801px]:grid">
@@ -149,7 +152,7 @@ export const Footer = async (_props: Footer.Props = {}) => {
               </ul>
             </nav>
           ))}
-          <div className="relative flex min-w-0 flex-col justify-between gap-8 bg-linear-to-br from-primary/7 via-transparent to-transparent px-7 py-8">
+          <div className="relative flex min-w-0 flex-col justify-between gap-8 bg-linear-to-br from-primary/18 via-background-rich/40 to-primary/6 px-7 py-8">
             <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
             <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
             <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
@@ -158,11 +161,11 @@ export const Footer = async (_props: Footer.Props = {}) => {
           </div>
         </div>
         <FooterColumns columns={columns} cookies={copy.cookies} />
-        <div className="flex flex-col gap-6 border-accent-foreground border-t bg-linear-to-br from-primary/6 via-transparent to-transparent px-4 py-8 min-[801px]:hidden">
+        <div className="flex flex-col gap-6 border-accent-foreground border-t bg-linear-to-br from-primary/18 via-background-rich/40 to-primary/6 px-4 py-8 min-[801px]:hidden">
           <FooterIdentity tagline={copy.tagline} />
           <FooterSocial />
         </div>
-        <div className="relative border-accent-foreground border-y bg-linear-to-b from-primary/4 via-transparent to-transparent">
+        <div className="relative border-accent-foreground border-y bg-linear-to-br from-primary/20 via-background-rich/60 to-primary/10">
           <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
           <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />

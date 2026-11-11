@@ -1,4 +1,4 @@
-import { ArrowRightIcon } from "@zenncore/icons";
+import { ArrowRightIcon, CommerceCode_3Icon } from "@zenncore/icons";
 import { getMessages } from "next-intl/server";
 import type { MarketingBodyProps } from "@/components/marketing/body";
 import { MarketingSection } from "@/components/marketing/page";
@@ -79,11 +79,16 @@ export const BrandsBody = async ({
                                 className="group grid min-h-52 grid-cols-[1fr_auto] gap-x-4 border-accent-foreground border-t px-4 py-8 hover:bg-background focus-visible:-outline-offset-4 sm:px-8"
                               >
                                 <div className="min-w-0">
-                                  {provider && (
+                                  {provider ? (
                                     <ProviderLogo
                                       provider={provider}
                                       decorative
                                       className="mb-6 h-10 max-w-44 rounded-none"
+                                    />
+                                  ) : (
+                                    <CommerceCode_3Icon
+                                      aria-hidden
+                                      className="mb-6 size-10 text-primary-text"
                                     />
                                   )}
                                   <h3 className="text-2xl! group-hover:text-primary-text">

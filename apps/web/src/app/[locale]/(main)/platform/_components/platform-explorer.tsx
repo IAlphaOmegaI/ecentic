@@ -14,7 +14,6 @@ import {
   TabsList,
   TabsPanel,
 } from "@zenncore/web/components/tabs";
-import Image from "next/image";
 import { useEffect, useState } from "react";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { MarketingEdgeCrosses } from "@/components/marketing/light-band";
@@ -27,12 +26,8 @@ import {
 import { Plus } from "@/components/plus";
 import { useDocument } from "@/hooks/use-document";
 import { Link } from "@/i18n/navigation";
-
-const connectionProviders = [
-  "shopify",
-  "woocommerce",
-  "googleMerchant",
-] as const;
+import { CatalogConnection } from "./catalog-connection";
+import { PlatformProviderStack } from "./provider-stack";
 
 const simulationProviders = ["chatgpt", "claude", "gemini"] as const;
 const referralProviders = [
@@ -49,25 +44,7 @@ const ProviderBranch = ({
   providers: readonly ProviderKey[];
 }) => (
   <div className="w-full">
-    <div className="flex items-center justify-around gap-6">
-      {providers.map((provider) => (
-        <div
-          key={provider}
-          className="flex h-14 min-w-0 flex-1 items-center justify-center"
-        >
-          <ProviderLogo
-            provider={provider}
-            decorative
-            className="h-9 max-w-[92px] rounded-none object-center"
-          />
-        </div>
-      ))}
-    </div>
-    <div className="mx-auto mt-2 flex w-2/3 justify-between border-primary-text/35 border-b">
-      {providers.map((provider) => (
-        <span key={provider} className="h-8 w-px bg-primary-text/35" />
-      ))}
-    </div>
+    <PlatformProviderStack providers={providers} />
     <div className="mx-auto h-8 w-px bg-primary-text/35" />
   </div>
 );
@@ -75,7 +52,7 @@ const ProviderBranch = ({
 const Record = ({ outlined = false }: { outlined?: boolean }) => (
   <div
     data-outlined={outlined || undefined}
-    className="relative flex h-28 w-22 flex-col gap-3 border border-primary-text/50 bg-primary-text px-4 pt-6 text-background-rich data-outlined:bg-transparent data-outlined:text-primary-text"
+    className="relative flex h-32 w-24 flex-col gap-3 rounded-lg border border-primary-text/25 bg-linear-to-br from-primary to-primary-text px-4 pt-6 text-background-rich shadow-[0_10px_24px_-18px_var(--color-primary)] data-outlined:from-background-rich data-outlined:to-background data-outlined:text-primary-text"
   >
     <span className="block w-8 border-current border-t-2" />
     <span className="block w-full border-current border-t opacity-50" />
@@ -89,29 +66,7 @@ const Diagram = ({ section }: { section: MarketingPage.Section }) => {
 
   switch (section.id) {
     case "connect":
-      return (
-        <div
-          aria-hidden="true"
-          className="flex min-h-[320px] flex-col items-center justify-center px-8 py-8"
-        >
-          <ProviderBranch providers={connectionProviders} />
-          <Image
-            src="/images/trademark.svg"
-            width={1022}
-            height={257}
-            alt=""
-            className="h-auto w-32"
-          />
-          <div className="h-8 w-px bg-primary-text/35" />
-          <div className="flex items-center gap-5 font-mono text-foreground-dimmed text-xs">
-            <span>XML / JSON</span>
-            <span className="h-4 w-px bg-primary-text/25" />
-            <span>CSV</span>
-            <span className="h-4 w-px bg-primary-text/25" />
-            <span>HTTPS</span>
-          </div>
-        </div>
-      );
+      return <CatalogConnection />;
     case "simulate":
       return (
         <div
@@ -151,18 +106,7 @@ const Diagram = ({ section }: { section: MarketingPage.Section }) => {
           </div>
           <div className="h-px w-1/2 bg-primary-text/35" />
           <div className="h-8 w-px bg-primary-text/35" />
-          <div className="flex items-center justify-center gap-10">
-            <ProviderLogo
-              provider="shopify"
-              decorative
-              className="h-9 rounded-none"
-            />
-            <ProviderLogo
-              provider="woocommerce"
-              decorative
-              className="h-7 rounded-none"
-            />
-          </div>
+          <PlatformProviderStack providers={["shopify", "woocommerce"]} />
         </div>
       );
     case "sell":
@@ -270,7 +214,11 @@ export const PlatformExplorer = ({
             <div className="relative flex min-w-0 flex-col border-accent-foreground border-r max-lg:border-r-0 lg:row-span-2 lg:grid lg:grid-rows-subgrid">
               <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 max-lg:hidden" />
               <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2 max-lg:hidden" />
-              <div className="px-7 pt-10 pb-8 max-sm:px-4 max-sm:pt-8">
+              <div className="relative isolate overflow-hidden px-7 pt-10 pb-8 max-sm:px-4 max-sm:pt-8">
+                <div
+                  aria-hidden
+                  className="pointer-events-none absolute inset-0 -z-1 bg-radial-[at_0%_0%] from-primary/10 via-background-rich/50 to-transparent"
+                />
                 <h2 className="text-[clamp(1.9rem,2.6vw,2.6rem)]">
                   {section.title}
                 </h2>

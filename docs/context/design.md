@@ -1055,7 +1055,7 @@ through sign-up into onboarding with their catalog already imported) or into a p
 - Use full-viewport major seams and visible single crosses; internal separators stay local.
 - Preserve valid provider identities, product facts and publication gates.
 - Use schematic diagrams throughout the roadmap, with no tab bar or bottom tag row.
-  Its stage titles include literal ASCII numerals. Confine each full-width row between
+  Its stage titles include normal heading-font numerals. Confine each full-width row between
   the outer rails and a center divider, with single crosses at row intersections. Copy and
   schematic are cells of that row, not independently outlined cards. Subtle side gradients
   sit within the gray row surface.
@@ -1075,7 +1075,7 @@ matches value delivered.
 
 1. **Primary hero** with low-contrast texture, headline, explanation, and assurance pills.
 2. **Free Scan** as an entry product and proof of immediate value.
-3. **Choose how you pay** with the shared 2×2 plan grid.
+3. **Choose how you pay** as a dark cutout: Compete, Scale and Dominate share one desktop row; pay-as-you-go and Enterprise share the next row. Each card includes its price and supported tier limits. Stack on narrow screens.
 4. **Fee explainer** with compact aligned content and restrained semantic emphasis.
 5. **Comparison** with one intentionally emphasized column.
 6. **Enterprise/partnership band** for needs outside standard plans.
@@ -1093,7 +1093,7 @@ specific historical tier.
 - plan titles, prices, descriptions, feature-list starts, and CTA baselines align across columns;
 - one plan receives strong emphasis;
 - other plans remain rich or neutral surfaces;
-- flat-plan cards remain 2×2; supporting enterprise inquiries use a separate dimmed surface;
+- the three flat subscription cards align in one desktop row; PAYG and Enterprise form a second two-column row;
 - explain performance fees before asking for commitment;
 - comparison tables scroll horizontally when they cannot collapse without losing meaning.
 
@@ -1588,6 +1588,17 @@ Mobile/tablet menus retain progressive blur but have transparent rows and no enc
 
 Cutouts are part of ecentic's section geometry, not a synonym for a black background. Use light cutout fields for the homepage journey, pricing and footer, and for suitable secondary-page directories, tools or related-content groups. Give each field an explicit light/dark navbar marker. White remains visible against the off-white page; gray belongs to a diagram, comparison or adjoining support panel inside that field. Do not fill every ordinary reading section with gray.
 
-Bento composition means arranging related content according to its role, not repeating an equal-card grid on every route. Pricing keeps its aligned 2×2 plan layout, with blue light localized to the emphasized plan and a separate comparison surface. The homepage journey keeps its central spine, paired explanations and diagrams, complete outer rails and crosshairs. The footer uses one continuous light cutout field for navigation, wordmark and legal content, rather than a separate decorative band for every row.
+Bento composition means arranging related content according to its role, not repeating an equal-card grid on every route. Pricing groups the three flat subscriptions in one desktop row and PAYG with Enterprise in the next; the dark cutout and localized blue light make that distinction clear. Its comparison stays on a separate surface. The homepage journey keeps its central spine, paired explanations and diagrams, complete outer rails and crosshairs. The footer uses one continuous light cutout field for navigation, wordmark and legal content, rather than a separate decorative band for every row.
 
 Apply this language across public page families through opt-in shared section templates. Keep subject-specific dark workbenches where they already explain the product well; use light fields to give the page rhythm. Documentation and legal prose retain a clear reading column. Preserve native controls, first-render content, locale parity and real product facts when changing the composition.
+
+
+## 31. Point-grid artwork and richer secondary explanations
+
+The latest review approves Connect’s variable-dot catalog illustration as the object-art treatment throughout the site. `EvolvingAscii` keeps its call-site API but now renders local SVG halftone masks, with source aspect ratios preserved. Catalog, selection lens, bag, cart, console and agent are distinct subjects. Keep the full silhouette legible; never stretch or fill a hero with unrecognizable character noise. A single three-second light pass reveals the points when the artwork enters view; optional subject sequences run once, with static first-render and reduced-motion states. The footer’s readable ecentic character wordmark and schematic text road remain separate motifs.
+
+Use the approved connected catalog graphic and Brands product journey as composition references. Subject-specific graphics, generous Hairline figures on neutral surfaces, contained gradients and asymmetric dark workbenches carry across platform, integration, solution and channel pages. Keep one visual relationship per graphic; do not invent sample measurements or add decoration to legal prose. Overlapping provider groups use compact rounded holders to separate the marks. Standalone provider logos remain unframed.
+
+Public file viewers use native icon selection tiles and a continuous code rail. JSON is pretty-printed with line numbers and semantic syntax colors; arbitrary source strings remain escaped React text. Preserve the source link, fetched time, request timeout and preview bounds. Keep native scrolling inside long code previews without creating page overflow.
+
+Pricing uses a prominent illustrative score, three subscription cards followed by PAYG and Enterprise, and a fee comparison calculated from canonical prices. All split rows share the same 50/50 seam. The user explicitly clarified that removing the $500 callout is a presentation change: preserve the enforced billing cap, estimate calculation, legal terms and existing customer agreements. Fee assumptions remain available in the calculator’s disclosure. The footer stays one light cutout field with stronger localized blue depth so it reads separately from the off-white page.

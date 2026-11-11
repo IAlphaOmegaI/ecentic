@@ -15505,7 +15505,14 @@
       "caption": "This sample score is not a result for your store. Run your own check to see the evidence behind each recommendation.",
       "action": {
         "primary": "Check my store free"
-      }
+      },
+      "figureLabel": "Illustration: a magnifying lens reveals the structure of a product record.",
+      "sampleTitle": "See the reasons behind the score.",
+      "signals": [
+        "Product comparisons",
+        "Competing listings",
+        "Listing fixes to review"
+      ]
     },
     "plans": {
       "payg": {
@@ -15679,7 +15686,17 @@
       "Monthly subscription for up to 100 products, with no performance fee.",
       "Monthly subscription for up to 1,000 products, with no performance fee.",
       "Monthly subscription including Scale, with no performance fee."
-    ]
+    ],
+    "calculator": {
+      "comparison": "Monthly price comparison",
+      "details": "How this estimate works",
+      "payg": "Pay-as-you-go",
+      "flat": "Flat monthly",
+      "lower": "Lower price",
+      "same": "Same price",
+      "orders": "Orders",
+      "rate": "Fee rate"
+    }
   },
   "enterpriseRecovery": {
     "api": {

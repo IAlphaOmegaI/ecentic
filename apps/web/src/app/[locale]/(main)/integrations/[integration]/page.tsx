@@ -43,11 +43,11 @@ export default async ({ params }: Props) => {
     <MarketingPage
       content={{ ...content, sections: [], faqs: undefined }}
       path={`/integrations/${integration.slug}`}
-      heroArtwork={integration.key === "shopify" ? "closing" : undefined}
-      heroArtworkFit={integration.key === "shopify" ? "cover" : undefined}
+      heroArtwork={integration.key === "shopify" ? "bag" : "catalog"}
+      heroArtworkFit="contain"
       heroArtworkClassName={
         integration.key === "shopify"
-          ? "inset-x-auto left-1/2 w-[calc(100dvw-24px)] -translate-x-1/2 opacity-60 [mask-image:linear-gradient(35deg,transparent_25%,black_85%)] max-sm:inset-x-auto max-sm:left-1/2 max-sm:w-[calc(100dvw-16px)] max-sm:opacity-35 max-sm:[mask-image:linear-gradient(to_bottom,black,transparent_75%)]"
+          ? "left-[38%] right-[-6%] opacity-90 [mask-image:linear-gradient(25deg,transparent_5%,black_55%)] max-sm:inset-x-0 max-sm:opacity-45"
           : undefined
       }
       heroIdentity={

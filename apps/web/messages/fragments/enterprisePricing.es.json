@@ -61,7 +61,14 @@
       "caption": "Esta puntuación de muestra no es un resultado de tu tienda. Ejecuta tu revisión para ver las pruebas de cada recomendación.",
       "action": {
         "primary": "Revisar mi tienda gratis"
-      }
+      },
+      "figureLabel": "Ilustración: una lupa revela la estructura de una ficha de producto.",
+      "sampleTitle": "Ve los motivos detrás de la puntuación.",
+      "signals": [
+        "Comparativas de productos",
+        "Fichas de la competencia",
+        "Mejoras de las fichas para revisar"
+      ]
     },
     "plans": {
       "payg": {
@@ -235,6 +242,16 @@
       "Suscripción mensual para hasta 100 productos, sin comisión por rendimiento.",
       "Suscripción mensual para hasta 1.000 productos, sin comisión por rendimiento.",
       "Suscripción mensual que incluye Scale, sin comisión por rendimiento."
-    ]
+    ],
+    "calculator": {
+      "comparison": "Comparación del precio mensual",
+      "details": "Cómo funciona esta estimación",
+      "payg": "Pago por uso",
+      "flat": "Precio mensual fijo",
+      "lower": "Precio inferior",
+      "same": "Mismo precio",
+      "orders": "Pedidos",
+      "rate": "Porcentaje de comisión"
+    }
   }
 }

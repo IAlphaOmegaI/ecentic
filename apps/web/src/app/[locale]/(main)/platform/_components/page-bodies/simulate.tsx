@@ -12,7 +12,7 @@ import {
   MarketingEyebrow,
   MarketingHeading,
 } from "@/components/marketing/primitives";
-import { ProviderLogo } from "@/components/marketing/provider-logo";
+import { PlatformProviderStack } from "../provider-stack";
 import { PlatformPrinciples } from "./platform-principles";
 import { RiffleFigure } from "./riffle-figure";
 import { SimulateRoadmap } from "./simulate-roadmap";
@@ -146,20 +146,13 @@ export const SimulateBody = ({
                         {item.body}
                       </p>
                       {index === 1 && (
-                        <div className="relative mt-10 grid grid-cols-3 gap-4 border-primary/30 border-t pt-8 before:absolute before:-top-4 before:left-1/2 before:h-4 before:border-primary/30 before:border-l">
-                          {models.map((model) => (
-                            <div
-                              key={model.provider}
-                              className="relative flex min-w-0 flex-col items-center gap-4 before:absolute before:-top-8 before:left-1/2 before:h-4 before:border-primary/30 before:border-l"
-                            >
-                              <ProviderLogo
-                                provider={model.provider}
-                                decorative
-                                className="size-10 rounded-none object-center"
-                              />
-                              <span className="text-sm">{model.name}</span>
-                            </div>
-                          ))}
+                        <div className="relative mt-10 border-primary/30 border-t pt-8 before:absolute before:-top-4 before:left-1/2 before:h-4 before:border-primary/30 before:border-l">
+                          <PlatformProviderStack
+                            providers={models.map((model) => model.provider)}
+                          />
+                          <p className="mt-5 text-center text-foreground-dimmed text-sm">
+                            {models.map((model) => model.name).join(" · ")}
+                          </p>
                         </div>
                       )}
                     </div>

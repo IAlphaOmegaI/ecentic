@@ -17,59 +17,105 @@ import {
   TableRow,
 } from "@zenncore/web/components/table";
 import { getLocale, getMessages } from "next-intl/server";
-import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { MarketingActions } from "@/components/marketing/primitives";
+import { ProviderLogo } from "@/components/marketing/provider-logo";
+import { Plus } from "@/components/plus";
 import { PLAN_CATALOG } from "@/lib/agent-api";
 import { FeeCalculator } from "./fee-calculator";
 import { PricingCTA } from "./pricing-cta";
 
 const planKeys = ["payg", "compete", "scale", "dominate"] as const;
-const planIcons = [
-  CommerceBasketShoppingIcon,
-  CommerceChartActivity_2Icon,
-  CommercePlug_3SparkleIcon,
-  CommerceFileShieldIcon,
-] as const;
+const planIcons = {
+  payg: CommerceBasketShoppingIcon,
+  compete: CommerceChartActivity_2Icon,
+  scale: CommercePlug_3SparkleIcon,
+  dominate: CommerceFileShieldIcon,
+} as const;
 
 export const FreeStoreCheck = async () => {
   const { enterprisePricing, pricing } = await getMessages();
   return (
-    <div className="marketing-section-grid grid grid-cols-1 border-accent-foreground border-t lg:grid-cols-[1.1fr_1fr]">
-      <div className="relative min-w-0 border-accent-foreground border-b bg-linear-to-br from-primary/8 via-background-rich to-background-rich lg:border-r lg:border-b-0">
-        <div className="px-7 py-8 max-sm:px-4">
-          <p className="text-foreground-dimmed text-sm">
-            {enterprisePricing.sample.label}
-          </p>
-          <div className="mt-8 flex items-end gap-4">
-            <span className="text-[clamp(88px,12vw,128px)] text-foreground-rich leading-[0.9] tracking-[-0.08em]">
-              72
-            </span>
-            <span className="mb-2 text-foreground-dimmed text-sm">
-              / 100
-              <br />
+    <div
+      data-pricing-split="free-check"
+      className="marketing-section-grid relative grid grid-cols-1 border-accent-foreground border-t lg:grid-cols-2"
+    >
+      <figure className="relative m-0 flex min-w-0 flex-col items-center border-accent-foreground border-b bg-linear-to-b from-primary/8 via-background-rich to-background-rich px-7 py-8 max-sm:px-4 lg:border-r lg:border-b-0">
+        <figcaption className="self-start text-primary-text text-sm">
+          {enterprisePricing.sample.label}
+        </figcaption>
+        <div className="relative my-3 aspect-square w-full max-w-80">
+          <svg
+            aria-hidden
+            viewBox="0 0 320 320"
+            className="absolute inset-0 size-full fill-none"
+          >
+            <circle
+              cx="160"
+              cy="160"
+              r="119"
+              className="stroke-accent-foreground"
+            />
+            {Array.from({ length: 100 }, (_, index) => index + 1).map(
+              (tick) => (
+                <line
+                  key={tick}
+                  x1="160"
+                  y1="13"
+                  x2="160"
+                  y2={tick % 5 === 0 ? "31" : "24"}
+                  transform={`rotate(${(tick - 1) * 3.6} 160 160)`}
+                  strokeWidth={tick <= 72 ? 2.5 : 1.5}
+                  className={
+                    tick <= 72 ? "stroke-primary" : "stroke-accent-foreground"
+                  }
+                />
+              ),
+            )}
+          </svg>
+          <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
+            <div className="flex items-baseline gap-2">
+              <strong className="font-heading font-medium text-[clamp(76px,8vw,112px)] text-foreground-rich leading-none tracking-[-0.075em]">
+                72
+              </strong>
+              <span className="text-foreground-dimmed">/ 100</span>
+            </div>
+            <p className="mt-3 max-w-40 text-foreground-dimmed text-sm">
               {pricing.scan.sample.scoreLabel}
-            </span>
-          </div>
-          <div
-            className="mt-8 h-2 rounded-md bg-accent-foreground"
-            aria-hidden="true"
-          >
-            <span className="block h-full w-[72%] rounded-md bg-success" />
-          </div>
-          <div
-            aria-hidden="true"
-            className="mt-2 flex justify-between text-foreground-dimmed text-sm"
-          >
-            <span>0</span>
-            <span>100</span>
+            </p>
           </div>
         </div>
-      </div>
-      <div className="relative flex min-w-0 flex-col justify-center px-7 py-8 max-sm:px-4">
-        <div className="mb-6 h-28 w-44 text-primary-text">
-          <EvolvingAscii artwork="console" />
+        <div className="flex w-full items-center justify-center gap-8 border-accent-foreground border-t pt-6">
+          {(["chatgpt", "claude", "gemini"] as const).map((provider) => (
+            <ProviderLogo
+              key={provider}
+              provider={provider}
+              className="h-9 max-w-20"
+            />
+          ))}
         </div>
-        <p className="max-w-[45ch] text-foreground-dimmed">
+      </figure>
+      <div className="relative flex min-w-0 flex-col justify-center px-7 py-10 max-sm:px-4">
+        <h3 className="max-w-[19ch] font-heading text-[clamp(24px,3vw,36px)] leading-tight tracking-[-0.035em]">
+          {enterprisePricing.sample.sampleTitle}
+        </h3>
+        <ul className="mt-8 flex list-none flex-col gap-5 p-0">
+          {enterprisePricing.sample.signals.map((signal, index) => {
+            const Icon = [
+              CommerceChartActivity_2Icon,
+              CommerceBasketShoppingIcon,
+              CommercePlug_3SparkleIcon,
+            ][index];
+            return (
+              <li key={signal} className="flex items-center gap-4">
+                {Icon && (
+                  <Icon aria-hidden className="size-7 shrink-0 text-primary" />
+                )}
+                <span>{signal}</span>
+              </li>
+            );
+          })}
+        </ul>
+        <p className="mt-8 max-w-[45ch] text-foreground-dimmed text-sm leading-relaxed">
           {enterprisePricing.sample.caption}
         </p>
         <MarketingActions
@@ -81,6 +127,8 @@ export const FreeStoreCheck = async () => {
           ]}
         />
       </div>
+      <Plus className="top-0 left-1/2 hidden -translate-x-1/2 -translate-y-1/2 lg:flex" />
+      <Plus className="bottom-0 left-1/2 hidden -translate-x-1/2 translate-y-1/2 lg:flex" />
     </div>
   );
 };
@@ -88,141 +136,138 @@ export const FreeStoreCheck = async () => {
 export const EnterprisePlanLedger = async () => {
   const { enterprisePricing, pricing } = await getMessages();
   const enterprise = enterprisePricing.plans.enterprise;
+  const renderPlan = (key: (typeof planKeys)[number]) => {
+    const source = pricing.plans[key];
+    const Icon = planIcons[key];
+    const copy = enterprisePricing.plans[key];
+    const features = source.features.flatMap((feature, featureIndex) => {
+      if (key === "dominate" && (featureIndex === 1 || featureIndex === 2))
+        return [];
+      if ((key === "compete" || key === "scale") && featureIndex === 1)
+        return [enterprisePricing.featureCorrections.onDemand];
+      if (key === "scale" && featureIndex === 2)
+        return [enterprisePricing.featureCorrections.reviewAndApply];
+      if (key === "payg" && featureIndex === 2)
+        return [enterprisePricing.featureCorrections.paygAttribution];
+      return [feature];
+    });
+    return (
+      <article
+        key={key}
+        data-pricing-plan={key}
+        className={cn(
+          "relative isolate grid min-w-0 gap-5 border-[var(--rail-color)] border-t bg-clip-padding px-7 py-9 text-background-rich max-sm:px-4",
+          key === "payg"
+            ? "bg-linear-to-br from-primary-dimmed/75 via-emphasis to-emphasis-dimmed md:row-span-7 md:grid-rows-subgrid md:border-r"
+            : "bg-emphasis/45 lg:row-span-7 lg:grid-rows-subgrid lg:border-r lg:last:border-r-0",
+        )}
+      >
+        <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+        {key !== "payg" && key !== "dominate" && (
+          <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 lg:flex" />
+        )}
+        <Icon aria-hidden className="size-9 text-primary-rich" />
+        <h3 className="font-heading text-[clamp(24px,2.5vw,32px)] tracking-[-0.035em]">
+          {source.name}
+        </h3>
+        <p className="text-background-rich/70 text-base leading-relaxed">
+          {"tagline" in copy ? copy.tagline : source.tagline}
+        </p>
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
+            <strong className="font-heading font-medium text-[clamp(38px,4vw,54px)] leading-none tracking-[-0.055em]">
+              {source.figure}
+            </strong>
+            <span className="text-background-rich/65 text-sm">
+              {source.suffix}
+            </span>
+          </div>
+        </div>
+        <p className="text-background-rich/65 text-sm leading-relaxed">
+          {"note" in copy ? copy.note : source.note}
+        </p>
+        <ul className="m-0 flex list-none flex-col gap-4 border-[var(--rail-color)] border-t pt-6 text-sm leading-relaxed">
+          {features.map((feature) => (
+            <li key={feature} className="flex items-start gap-3">
+              <CheckIcon
+                aria-hidden
+                className="mt-1 size-4 shrink-0 text-primary-rich"
+              />
+              <span>{feature}</span>
+            </li>
+          ))}
+        </ul>
+        <PricingCTA
+          plan={key}
+          color={key === "payg" ? "primary" : "neutral"}
+          className="w-full self-end whitespace-normal"
+        >
+          {copy.action.primary}
+        </PricingCTA>
+      </article>
+    );
+  };
   return (
     <>
       <div
-        data-columns="2"
         data-pricing-plan-grid
-        className="marketing-section-grid marketing-grid grid grid-cols-2 border-[var(--rail-color)] border-x border-x-transparent max-sm:grid-cols-1"
+        data-pricing-row="subscriptions"
+        className="marketing-section-grid relative grid grid-cols-1 lg:grid-cols-3"
       >
-        {planKeys.map((key, index) => {
-          const source = pricing.plans[key];
-          const Icon = planIcons[index];
-          const copy = enterprisePricing.plans[key];
-          const features = source.features.flatMap((feature, featureIndex) => {
-            if (
-              key === "dominate" &&
-              (featureIndex === 1 || featureIndex === 2)
-            )
-              return [];
-            if ((key === "compete" || key === "scale") && featureIndex === 1)
-              return [enterprisePricing.featureCorrections.onDemand];
-            if (key === "scale" && featureIndex === 2)
-              return [enterprisePricing.featureCorrections.reviewAndApply];
-            if (key === "payg" && featureIndex === 2)
-              return [enterprisePricing.featureCorrections.paygAttribution];
-            return [feature];
-          });
-          return (
-            <article
-              key={key}
-              data-pricing-plan={key}
-              className={cn(
-                "relative isolate grid min-w-0 gap-4 border-[var(--rail-color)] border-t px-7 py-8 text-foreground max-sm:px-4 sm:row-span-7 sm:grid-rows-subgrid sm:border-r sm:even:border-r-0",
-                key === "payg"
-                  ? "bg-linear-to-br from-primary/12 via-primary/3 to-background-rich"
-                  : "bg-background-rich",
-              )}
-            >
-              {key === "payg" && (
-                <span
-                  aria-hidden
-                  className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-primary/15 via-primary-rich to-primary/15"
-                />
-              )}
-              {Icon && (
-                <Icon
-                  aria-hidden
-                  className={cn(
-                    "size-8",
-                    index === 1
-                      ? "text-info-dimmed"
-                      : index === 2
-                        ? "text-secondary"
-                        : "text-primary-text",
-                  )}
-                />
-              )}
-              <h3 className="text-[clamp(20px,2vw,26px)] tracking-[-0.035em]">
-                {source.name}
-              </h3>
-              <p className="text-base text-foreground-dimmed leading-relaxed">
-                {"tagline" in copy ? copy.tagline : source.tagline}
-              </p>
-              <div className="flex min-h-[90px] flex-col gap-2">
-                <strong className="font-medium text-[clamp(28px,3vw,40px)] text-foreground-rich leading-[1.1] tracking-[-0.05em]">
-                  {source.figure}
-                </strong>
-                <span className="text-foreground-dimmed text-sm leading-relaxed">
-                  {source.suffix}
-                </span>
-              </div>
-              <p className="text-foreground-dimmed text-sm leading-relaxed">
-                {"note" in copy ? copy.note : source.note}
-              </p>
-              <ul className="m-0 flex list-none flex-col gap-4 p-0 text-sm">
-                {features.map((feature) => (
-                  <li
-                    key={feature}
-                    className="relative pl-3.5 before:absolute before:top-[9px] before:left-0 before:size-1 before:bg-primary before:content-['']"
-                  >
-                    {feature}
-                  </li>
-                ))}
-              </ul>
-              <PricingCTA
-                plan={key}
-                color="primary"
-                className="w-full self-end whitespace-normal"
-              >
-                {copy.action.primary}
-              </PricingCTA>
-            </article>
-          );
-        })}
+        {(["compete", "scale", "dominate"] as const).map(renderPlan)}
+        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
       </div>
-      <article
-        data-columns="2"
-        className="marketing-section-grid marketing-grid grid grid-cols-2 border-[var(--rail-color)] border-x border-x-transparent border-b bg-background-dimmed/55 max-sm:grid-cols-1"
+      <div
+        data-pricing-row="flexible"
+        className="marketing-section-grid relative grid grid-cols-1 border-[var(--rail-color)] border-b md:grid-cols-2"
       >
-        <div className="flex min-w-0 flex-col gap-6 border-[var(--rail-color)] border-t px-7 py-8 max-sm:px-4 sm:border-r">
+        {renderPlan("payg")}
+        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+        <article
+          data-pricing-plan="enterprise"
+          className="relative grid min-w-0 gap-5 border-[var(--rail-color)] border-t bg-emphasis/45 bg-clip-padding px-7 py-9 max-sm:px-4 md:row-span-7 md:grid-rows-subgrid"
+        >
+          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
           <CommerceFileShieldIcon
             aria-hidden
-            className="size-8 text-primary-rich"
+            className="size-9 text-primary-rich"
           />
-          <h3 className="text-[clamp(20px,2vw,26px)] tracking-[-0.035em]">
+          <h3 className="font-heading text-[clamp(24px,2.5vw,32px)] tracking-[-0.035em]">
             {enterprise.name}
           </h3>
-          <p className="text-base text-foreground-dimmed leading-relaxed">
+          <p className="text-background-rich/70 text-base leading-relaxed">
             {enterprise.tagline}
           </p>
-          <strong className="font-medium text-[clamp(28px,3vw,40px)] text-foreground-rich leading-[1.1] tracking-[-0.05em]">
+          <strong className="font-heading font-medium text-[clamp(30px,3vw,44px)] leading-none tracking-[-0.045em]">
             {enterprise.figure}
           </strong>
-          <div className="mt-auto w-full [&>.marketing-actions]:mt-0 [&_.marketing-actions_a]:w-full [&_.marketing-actions_a]:whitespace-normal">
-            <MarketingActions
-              actions={[{ label: enterprise.action.primary, href: "/demo" }]}
-            />
-          </div>
-        </div>
-        <div className="flex min-w-0 flex-col justify-center gap-6 border-[var(--rail-color)] border-t px-7 py-8 max-sm:px-4">
-          <p className="text-foreground-dimmed text-sm leading-relaxed">
+          <p className="text-background-rich/65 text-sm leading-relaxed">
             {enterprise.note}
           </p>
-          <ul className="m-0 flex list-none flex-col gap-4 p-0 text-sm">
+          <ul className="m-0 flex list-none flex-col gap-4 border-[var(--rail-color)] border-t pt-6 text-sm leading-relaxed">
             {enterprise.features.map((feature) => (
-              <li
-                key={feature}
-                className="relative pl-3.5 before:absolute before:top-[9px] before:left-0 before:size-1 before:bg-primary before:content-['']"
-              >
-                {feature}
+              <li key={feature} className="flex items-start gap-3">
+                <CheckIcon
+                  aria-hidden
+                  className="mt-1 size-4 shrink-0 text-primary-rich"
+                />
+                <span>{feature}</span>
               </li>
             ))}
           </ul>
-        </div>
-      </article>
-      <div className="marketing-cell relative min-w-0 px-7 py-10 max-sm:px-4 max-sm:py-8 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
-        <p className="marketing-note text-(length:--text-sm) text-foreground-dimmed">
+          <div className="w-full self-end [&>.marketing-actions]:mt-0 [&_.marketing-actions_a]:w-full [&_.marketing-actions_a]:whitespace-normal">
+            <MarketingActions
+              tone="inverse"
+              actions={[{ label: enterprise.action.primary, href: "/demo" }]}
+            />
+          </div>
+        </article>
+        <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+        <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+        <Plus className="bottom-0 left-1/2 hidden -translate-x-1/2 translate-y-1/2 md:flex" />
+      </div>
+      <div className="marketing-cell relative min-w-0 px-7 py-8 max-sm:px-4">
+        <p className="max-w-[80ch] text-background-rich/65 text-sm leading-relaxed">
           {enterprisePricing.availability}
         </p>
       </div>
@@ -250,11 +295,15 @@ export const PerformanceFeeLedger = async () => {
     <div className="marketing-section-grid border-accent-foreground border-t">
       <FeeCalculator
         copy={interactiveFee}
+        presentation={enterprisePricing.calculator}
         locale={locale}
         {...payg}
         plans={plans}
       />
-      <div className="grid min-w-0 grid-cols-1 border-accent-foreground border-t lg:grid-cols-[1.1fr_1fr]">
+      <div
+        data-pricing-split="worked-example"
+        className="relative grid min-w-0 grid-cols-1 border-accent-foreground border-t lg:grid-cols-2"
+      >
         <div className="bg-linear-to-br from-primary-dimmed via-primary-text to-primary px-7 py-8 text-background-rich max-sm:px-4">
           <dl>
             <div className="flex items-center justify-between gap-4 border-background-rich/25 border-b pb-5">
@@ -292,10 +341,10 @@ export const PerformanceFeeLedger = async () => {
             </div>
           </dl>
           <p className="mt-8 border-background-rich/25 border-t pt-5 text-background-rich/80 text-sm">
-            {fee.example.window} · {fee.example.cap}
+            {fee.example.window}
           </p>
         </div>
-        <div className="flex flex-col justify-center px-7 py-8 max-sm:px-4">
+        <div className="flex flex-col justify-center border-accent-foreground px-7 py-8 max-sm:px-4 lg:border-l">
           <h3>{fee.billingTitle}</h3>
           <p className="mt-4 text-foreground-dimmed text-sm leading-relaxed">
             {fee.billingBody}
@@ -306,9 +355,20 @@ export const PerformanceFeeLedger = async () => {
               .map((key) => (
                 <div
                   key={key}
-                  className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1"
+                  className="grid grid-cols-[32px_minmax(0,1fr)_auto] items-center gap-4 border-accent-foreground border-b py-4 last:border-b-0"
                 >
-                  <dt className="text-sm">{pricing.plans[key].name}</dt>
+                  <dt className="col-span-2 flex items-center gap-4 text-base">
+                    {(() => {
+                      const Icon = planIcons[key];
+                      return (
+                        <Icon
+                          aria-hidden
+                          className="size-8 shrink-0 text-primary"
+                        />
+                      );
+                    })()}
+                    {pricing.plans[key].name}
+                  </dt>
                   <dd className="text-right text-foreground-rich text-sm">
                     <span className="font-medium">
                       {pricing.plans[key].figure}
@@ -321,6 +381,8 @@ export const PerformanceFeeLedger = async () => {
               ))}
           </dl>
         </div>
+        <Plus className="top-0 left-1/2 hidden -translate-x-1/2 -translate-y-1/2 lg:flex" />
+        <Plus className="bottom-0 left-1/2 hidden -translate-x-1/2 translate-y-1/2 lg:flex" />
       </div>
     </div>
   );
