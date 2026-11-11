@@ -15,8 +15,14 @@ export default async () => {
 
   return (
     <MarketingPage
-      heroChildren={<StoreCheck />}
-      content={{ ...content, sections: [] }}
+      heroChildren={
+        <StoreCheck
+          secondaryAction={content.actions.find(
+            (action) => action.href !== "/sign-up",
+          )}
+        />
+      }
+      content={{ ...content, actions: [], sections: [] }}
       path="/tools"
       heroArtwork="console"
     >

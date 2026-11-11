@@ -2,7 +2,13 @@ const parts =
   /("(?:\\.|[^"\\])*"\s*:|"(?:\\.|[^"\\])*"|\b(?:true|false|null)\b|-?\b\d+(?:\.\d+)?\b)/g;
 
 /** Tokenize only presentation. Strings remain React text nodes, never HTML. */
-export const FormattedSource = ({ source }: { source: string }) => (
+export const FormattedSource = ({
+  source,
+  startLine = 1,
+}: {
+  source: string;
+  startLine?: number;
+}) => (
   <pre className="min-w-0 py-5 font-mono text-[13px] text-background-rich/80 leading-6 max-sm:text-xs">
     <code>
       {source.split("\n").map((line, index) => (
@@ -15,7 +21,7 @@ export const FormattedSource = ({ source }: { source: string }) => (
             aria-hidden
             className="select-none pr-4 text-right text-background-rich/45"
           >
-            {index + 1}
+            {index + startLine}
           </span>
           <span className="whitespace-pre-wrap break-words [overflow-wrap:anywhere]">
             {line.split(parts).map((part, position) => (

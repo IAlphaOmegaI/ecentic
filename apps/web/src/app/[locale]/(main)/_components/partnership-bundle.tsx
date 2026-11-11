@@ -34,141 +34,133 @@ export const PartnershipBundle = async ({
     <section
       id="partnership"
       aria-label={translate("partnershipBundle.ariaLabel")}
-      className="relative scroll-mt-[5.5rem] bg-background-dimmed"
+      className="relative scroll-mt-[5.5rem] bg-background-rich"
     >
-      <div
+      <header className="grid items-start gap-8 px-7 py-10 max-sm:px-4 max-sm:py-8 lg:grid-cols-2">
+        <div className="flex items-start gap-4">
+          <Link
+            href={partnerHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label={translate("partnershipBundle.partnerAriaLabel")}
+            className="flex size-16 shrink-0 items-center justify-center"
+          >
+            <Image
+              src="/partners/eu-presence.svg"
+              alt="EU Presence"
+              width={64}
+              height={64}
+              className="size-16"
+            />
+          </Link>
+          <div className="min-w-0">
+            <h2 className="font-medium text-3xl text-foreground md:text-4xl">
+              {translate("partnershipBundle.title")}
+            </h2>
+            <p className="mt-3 text-foreground-dimmed text-lg">
+              {translate("partnershipBundle.subtitle")}
+            </p>
+          </div>
+        </div>
+        <p className="max-w-2xl text-foreground-dimmed text-lg">
+          {description ?? translate("partnershipBundle.description")}
+        </p>
+      </header>
+
+      <ul
         data-columns="2"
-        className="marketing-grid grid grid-cols-2 border-[var(--rail-color)] border-b max-sm:grid-cols-1 [&>article]:min-w-0 [&>article]:border-[var(--rail-color)] [&>article]:border-t [&>article]:border-r max-sm:[&>article]:border-r-0"
+        className="marketing-grid grid grid-cols-2 max-sm:grid-cols-1"
       >
-        <article className="flex flex-col px-7 py-12 max-sm:px-4 max-sm:py-8">
-          <div className="flex items-start gap-4">
-            <Link
-              href={partnerHref}
-              target="_blank"
-              rel="noopener noreferrer"
-              aria-label={translate("partnershipBundle.partnerAriaLabel")}
-              className="flex size-12 shrink-0 items-center justify-center"
-            >
-              <Image
-                src="/partners/eu-presence.svg"
-                alt="EU Presence"
-                width={32}
-                height={32}
-                className="size-8"
-              />
-            </Link>
-            <div>
-              <h2 className="font-medium text-3xl text-foreground md:text-4xl">
-                {translate("partnershipBundle.title")}
-              </h2>
-              <p className="mt-4 font-body text-foreground text-lg">
-                {translate("partnershipBundle.subtitle")}
+        {items.map((item, index) => (
+          <li
+            key={item.name}
+            className="relative grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-6 border-[var(--rail-color)] border-t border-r bg-background-dimmed/60 px-7 py-8 max-sm:border-r-0 max-sm:px-4"
+          >
+            <div className="min-w-0">
+              <div className="flex items-start gap-3">
+                <CheckIcon className="mt-1 size-4 shrink-0 text-primary-text" />
+                <h3 className="font-medium text-foreground text-lg">
+                  {item.name}
+                </h3>
+              </div>
+              <p className="mt-3 text-foreground-dimmed text-sm">
+                {index === highlightedIndex
+                  ? (productDetail ?? item.detail)
+                  : item.detail}
               </p>
             </div>
-          </div>
+            <p className="font-heading text-3xl text-primary-text tabular-nums">
+              ${format(prices[index] ?? 0)}
+              <span className="mt-1 block text-right font-body text-foreground-dimmed text-sm">
+                {translate("partnershipBundle.pricing.suffix")}
+              </span>
+            </p>
+          </li>
+        ))}
+      </ul>
 
-          <p className="mt-6 max-w-lg text-foreground text-lg">
-            {description ?? translate("partnershipBundle.description")}
-          </p>
-
-          <ul className="mt-8 divide-y divide-accent-foreground border-accent-foreground border-y">
-            {items.map((item, index) => (
-              <li
-                key={item.name}
-                className="flex items-center justify-between gap-4 py-4"
-              >
-                <div className="flex items-center gap-3">
-                  <CheckIcon className="size-4 shrink-0 text-primary-text" />
-                  <div>
-                    <p className="font-medium text-foreground">{item.name}</p>
-                    <p className="text-foreground text-sm">
-                      {index === highlightedIndex
-                        ? (productDetail ?? item.detail)
-                        : item.detail}
-                    </p>
-                  </div>
-                </div>
-                <span className="shrink-0 font-medium text-foreground tabular-nums">
-                  ${format(prices[index] ?? 0)}
-                  <span className="text-foreground text-sm">
-                    {translate("partnershipBundle.pricing.suffix")}
-                  </span>
-                </span>
-              </li>
-            ))}
-          </ul>
-
-          <ul className="mt-6 flex flex-wrap gap-x-5 gap-y-3">
-            {guarantees.map((guarantee) => (
-              <li
-                key={guarantee}
-                className="flex items-center gap-2 text-foreground text-sm"
-              >
-                <ShieldCheckIcon className="size-4 text-primary-text" />
-                {guarantee}
-              </li>
-            ))}
-          </ul>
-        </article>
-
-        <article className="relative flex h-full min-h-full flex-col justify-end px-7 py-12 max-sm:px-4 max-sm:py-8">
-          <div className="mb-auto pb-10">
+      <div className="relative border-[var(--rail-color)] border-t bg-linear-to-r from-primary/8 via-background-rich to-background-rich px-7 py-8 max-sm:px-4">
+        <div className="flex flex-wrap items-center justify-between gap-x-10 gap-y-8">
+          <div className="flex min-w-0 flex-wrap items-center gap-x-8 gap-y-6">
             <Image
               src="/images/eu.svg"
               alt={translate("partnershipBundle.flagAlt")}
-              width={72}
-              height={48}
-              className="h-10 w-auto"
+              width={192}
+              height={128}
+              className="h-auto w-40 shrink-0 max-sm:w-28"
             />
+            <div className="min-w-0">
+              <p className="mb-3 font-medium text-foreground text-sm">
+                {translate("partnershipBundle.pricing.label")}
+              </p>
+              <div className="flex items-baseline gap-2">
+                <span className="font-heading font-medium text-6xl text-primary-text tabular-nums leading-none tracking-tight md:text-7xl">
+                  ${format(discounted)}
+                </span>
+                <span className="text-foreground-dimmed text-xl">
+                  {translate("partnershipBundle.pricing.suffix")}
+                </span>
+              </div>
+              <div className="mt-4 flex flex-wrap items-center gap-x-3 gap-y-2">
+                <span className="text-foreground-dimmed line-through">
+                  ${format(regular)}
+                  {translate("partnershipBundle.pricing.suffix")}
+                </span>
+                <span className="font-medium text-primary-text text-sm">
+                  {translate("partnershipBundle.pricing.save", {
+                    amount: `$${format(saved)}`,
+                  })}
+                </span>
+              </div>
+            </div>
           </div>
-          <div className="flex w-full flex-col gap-4">
-            <p className="font-medium text-foreground text-sm">
-              {translate("partnershipBundle.pricing.label")}
-            </p>
-            <div className="flex items-end gap-2">
-              <span className="font-heading font-medium text-6xl text-primary-text leading-none tracking-tight md:text-7xl">
-                ${format(discounted)}
-              </span>
-              <span className="mb-1.5 text-foreground text-xl">
-                {translate("partnershipBundle.pricing.suffix")}
-              </span>
-            </div>
-            <div className="flex flex-wrap items-center gap-2">
-              <span className="text-foreground line-through">
-                ${format(regular)}
-                {translate("partnershipBundle.pricing.suffix")}
-              </span>
-              <span className="font-medium text-primary-text text-sm">
-                {translate("partnershipBundle.pricing.save", {
-                  amount: `$${format(saved)}`,
-                })}
-              </span>
-            </div>
-
+          <div className="grid w-full gap-4 lg:max-w-72">
             <Button
               variant="default"
               color="primary"
-              className="w-full"
               render={
                 <Link href={href} target="_blank" rel="noopener noreferrer" />
               }
             >
-              <Image
-                src="/images/eu.svg"
-                alt=""
-                aria-hidden
-                width={24}
-                height={24}
-                className="size-4"
-              />
               {translate("partnershipBundle.action.primary")}
               <ArrowRightIcon className="size-4" />
             </Button>
-            <p className="text-foreground text-sm">
+            <p className="text-foreground-dimmed text-sm">
               {translate("partnershipBundle.pricing.footnote")}
             </p>
           </div>
-        </article>
+        </div>
+        <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-3">
+          {guarantees.map((guarantee) => (
+            <li
+              key={guarantee}
+              className="flex items-center gap-2 text-foreground-dimmed text-sm"
+            >
+              <ShieldCheckIcon className="size-4 shrink-0 text-primary-text" />
+              {guarantee}
+            </li>
+          ))}
+        </ul>
       </div>
     </section>
   );

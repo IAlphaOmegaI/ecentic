@@ -1,36 +1,22 @@
-const letters = {
-  e: ["00000", "00000", "01110", "11011", "11110", "11000", "01111"],
-  c: ["00000", "00000", "01111", "11000", "11000", "11000", "01111"],
-  n: ["00000", "00000", "11110", "11011", "11011", "11011", "11011"],
-  t: ["01100", "01100", "11111", "01100", "01100", "01101", "00110"],
-  i: ["00110", "00000", "01110", "00110", "00110", "00110", "01111"],
-} as const;
-
-const name = ["e", "c", "e", "n", "t", "i", "c"] as const;
-const characters = ["##", "@@", "%%"] as const;
-const wordmark = Array.from({ length: 7 }, (_, row) =>
-  name
-    .map((letter, column) =>
-      [...(letters[letter][row] ?? "")]
-        .map((pixel, position) =>
-          pixel === "1" ? characters[(row + column + position) % 3] : "  ",
-        )
-        .join(""),
-    )
-    .join("  "),
-).join("\n");
-
-export const AsciiWordmark = () => (
+export const FooterWordmark = () => (
   <div
     role="img"
-    aria-label="ecentic"
-    className="group relative flex justify-center overflow-hidden px-4 py-10 text-primary-text sm:px-7 sm:py-14"
+    aria-label="écentic"
+    data-footer-wordmark
+    className="relative isolate flex justify-center overflow-hidden px-4 pt-10 pb-12 text-emphasis-dimmed sm:px-7 sm:pt-14 sm:pb-16"
   >
-    <pre
+    <span
       aria-hidden
-      className="m-0 select-none whitespace-pre bg-transparent p-0 font-mono text-[clamp(6px,1.5vw,22px)] leading-none tracking-[-0.04em] transition-colors duration-200 [font-variant-ligatures:none] group-hover:text-foreground-rich"
+      className="select-none whitespace-nowrap font-heading font-normal text-[clamp(4.5rem,21vw,17rem)] leading-[0.95] tracking-[-0.075em]"
     >
-      {wordmark}
-    </pre>
+      écentic
+    </span>
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-x-7 bottom-5 h-px bg-linear-to-r from-transparent via-primary-text/35 to-transparent sm:inset-x-14 sm:bottom-8"
+    >
+      <span className="absolute top-1/2 left-1/3 size-1.5 -translate-y-1/2 rounded-full bg-primary-text/60" />
+      <span className="absolute top-1/2 right-1/4 size-1 -translate-y-1/2 rounded-full bg-background-rich/80" />
+    </div>
   </div>
 );

@@ -1,5 +1,8 @@
 import { getMessages } from "next-intl/server";
-import { AnnotatedCodeComparison } from "@/components/marketing/interactive/code-comparison";
+import {
+  AnnotatedCodeComparison,
+  type CodeRecord,
+} from "@/components/marketing/interactive/code-comparison";
 
 export const ProductExample = async ({
   content,
@@ -7,6 +10,42 @@ export const ProductExample = async ({
 }: ProductExample.Props) => {
   const { reviewCode } = await getMessages();
   const annotations = reviewCode.platform[kind];
+  const rows = content.rows.map((row, index) => ({
+    key: annotations[index]?.key ?? row.label,
+    before: row.before,
+    after: row.after,
+    note: annotations[index]?.note ?? row.label,
+  }));
+  const connectRows = rows.map((row, index): CodeRecord.Row => {
+    if (index === 0)
+      return {
+        ...row,
+        key: "product",
+        before: {
+          title: row.before,
+          description: null,
+          identifiers: { gtin: null },
+        },
+        after: {
+          title: row.after,
+          description: null,
+          identifiers: { gtin: null },
+        },
+      };
+    if (index === 1)
+      return {
+        ...row,
+        key: "source",
+        before: { format: "CSV", location: row.before, imported: false },
+        after: { format: "CSV", location: row.after, imported: true },
+      };
+    return {
+      ...row,
+      key: "write_access",
+      before: { connector: null, publish: false, store_listing_changed: false },
+      after: { connector: null, publish: false, store_listing_changed: false },
+    };
+  });
   return (
     <AnnotatedCodeComparison
       title={content.product}
@@ -15,12 +54,7 @@ export const ProductExample = async ({
       after={content.after}
       filename={`${kind}-example.json`}
       note={`${content.note} ${reviewCode.recordNote}`}
-      rows={content.rows.map((row, index) => ({
-        key: annotations[index]?.key ?? row.label,
-        before: row.before,
-        after: row.after,
-        note: annotations[index]?.note ?? row.label,
-      }))}
+      rows={kind === "connect" ? connectRows : rows}
     />
   );
 };

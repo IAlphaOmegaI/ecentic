@@ -41,35 +41,55 @@ export const IntegrationWorkflowGraphic = ({
     >
       <div className="pointer-events-none absolute inset-0 -z-1 bg-radial-[at_50%_100%] from-primary/15 via-transparent to-transparent" />
       {kind === "compare" ? (
-        <div className="relative h-72 w-full max-w-96">
-          <div className="absolute inset-x-0 top-2 isolate flex items-center justify-center -space-x-3">
-            <div className="relative z-2 grid size-14 place-items-center rounded-xl border border-background-rich/40 bg-background-rich shadow-emphasis-dimmed/30 shadow-lg">
-              <Image
-                src="/images/chatgpt.svg"
-                alt=""
-                width={32}
-                height={32}
-                className="size-8"
-                unoptimized
-              />
-            </div>
-            {(["claude", "gemini"] as const).map((provider) => (
-              <div
-                key={provider}
-                className="relative grid size-14 place-items-center rounded-xl border border-background-rich/40 bg-background-rich shadow-emphasis-dimmed/30 shadow-lg first:z-1"
-              >
-                <ProviderLogo
-                  provider={provider}
-                  decorative
-                  className="size-8 rounded-none object-center"
-                />
-              </div>
-            ))}
+        <div className="relative h-80 w-full max-w-96">
+          <div className="pointer-events-none absolute inset-x-10 top-6 h-20 rounded-[50%] border-primary-rich/25 border-t" />
+          <div
+            data-assistant-arc
+            className="absolute inset-x-2 top-2 isolate grid grid-cols-3 items-start justify-items-center gap-3 sm:inset-x-7"
+          >
+            {(["chatgpt", "claude", "gemini"] as const).map(
+              (provider, index) => (
+                <Motion.Item
+                  key={provider}
+                  initial={false}
+                  whileInView={ready && !reduced ? { y: [8, 0] } : { y: 0 }}
+                  viewport={{ once: true, amount: 0.5 }}
+                  transition={{
+                    duration: 0.6,
+                    delay: index * 0.06,
+                    ease: [0.23, 1, 0.32, 1],
+                  }}
+                  style={{ rotate: `${(index - 1) * 8}deg` }}
+                  className={cn(
+                    "relative grid size-12 place-items-center rounded-xl border border-background-rich/40 bg-background-rich shadow-emphasis-dimmed/30 shadow-lg sm:size-14",
+                    index !== 1 && "mt-5",
+                  )}
+                >
+                  {provider === "chatgpt" ? (
+                    <Image
+                      src="/images/chatgpt.svg"
+                      alt=""
+                      width={32}
+                      height={32}
+                      className="size-8"
+                      unoptimized
+                    />
+                  ) : (
+                    <ProviderLogo
+                      provider={provider}
+                      decorative
+                      className="size-8 rounded-none object-center"
+                    />
+                  )}
+                </Motion.Item>
+              ),
+            )}
           </div>
-          <div className="absolute inset-x-14 top-12 bottom-4 bg-linear-to-b from-primary/5 via-primary/20 to-transparent [clip-path:polygon(38%_0,62%_0,100%_100%,0_100%)]" />
+          <div className="absolute inset-x-10 top-20 bottom-0 bg-linear-to-b from-primary/5 via-primary/20 to-transparent [clip-path:polygon(30%_0,70%_0,100%_100%,0_100%)]" />
           {[-1, 0, 1].map((position) => (
             <Motion.Item
               key={position}
+              data-comparison-card
               initial={false}
               whileInView={
                 ready && !reduced && position === 0 ? { y: [12, 0] } : { y: 0 }
@@ -78,7 +98,7 @@ export const IntegrationWorkflowGraphic = ({
               transition={{ duration: 0.75, ease: [0.23, 1, 0.32, 1] }}
               style={{
                 left: `${35 + position * 28}%`,
-                top: position === 0 ? "30%" : "43%",
+                top: position === 0 ? "42%" : "49%",
                 rotate: `${position * 7}deg`,
               }}
               className={cn(

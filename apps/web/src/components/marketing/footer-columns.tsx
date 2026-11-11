@@ -35,7 +35,7 @@ export const FooterColumns = ({ columns, cookies }: FooterColumns.Props) => (
               {column.links.map((link) => (
                 <li key={link.href}>
                   <Link
-                    className="marketing-mobile-link flex py-3 text-base text-foreground-dimmed transition-colors hover:text-primary-text"
+                    className="marketing-mobile-link flex py-3 text-base text-foreground-rich transition-colors hover:text-primary-text"
                     href={link.href}
                   >
                     {link.label}

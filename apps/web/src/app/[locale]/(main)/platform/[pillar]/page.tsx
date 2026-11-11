@@ -62,7 +62,15 @@ export default async ({ params }: Props) => {
           ? "left-[42%] right-[-12%] opacity-100 [mask-image:none] max-sm:inset-x-0 max-sm:opacity-45"
           : undefined
       }
-      heroChildren={pillar === "connect" ? <StoreCheck /> : undefined}
+      heroChildren={
+        pillar === "connect" ? (
+          <StoreCheck
+            secondaryAction={enterprisePlatform.pages[pillar].actions.find(
+              (action) => action.href === "/demo",
+            )}
+          />
+        ) : undefined
+      }
       content={{
         ...enterprisePlatform.pages[pillar],
         ...(pillar === "connect" ? { actions: [] } : {}),

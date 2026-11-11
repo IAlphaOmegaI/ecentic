@@ -8,6 +8,7 @@ import {
   CommercePlug_3SparkleIcon,
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
+import Image from "next/image";
 import { useInteractive } from "@/components/marketing/interactive/use-interactive";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { Motion } from "@/components/motion";
@@ -41,8 +42,10 @@ export const JourneyFigure = ({
       )}
     >
       <div className="pointer-events-none absolute inset-0 -z-1 bg-radial-[at_50%_60%] from-primary/20 via-primary/5 to-transparent" />
-      <div className="absolute inset-x-[12%] top-1/2 h-px bg-linear-to-r from-transparent via-primary-rich/70 to-transparent" />
-      {animate && ready && !reduced && (
+      {stage !== 1 && (
+        <div className="absolute inset-x-[12%] top-1/2 h-px bg-linear-to-r from-transparent via-primary-rich/70 to-transparent" />
+      )}
+      {stage !== 1 && animate && ready && !reduced && (
         <Motion.Item
           initial={{ opacity: 0, x: "-45%" }}
           whileInView={{ opacity: [0, 0.7, 0], x: "145%" }}
@@ -80,14 +83,73 @@ export const JourneyFigure = ({
           </div>
         </div>
       ) : stage === 1 ? (
-        <div className="absolute inset-0 flex items-center justify-center gap-3">
+        <div className="absolute inset-0 mx-auto max-w-96">
+          <div className="absolute inset-x-12 top-6 h-16 rounded-[50%] border-primary-rich/25 border-t" />
+          <div
+            data-assistant-arc
+            className="absolute inset-x-8 top-0 grid grid-cols-3 items-start justify-items-center gap-4"
+          >
+            {(["chatgpt", "claude", "gemini"] as const).map(
+              (provider, index) => (
+                <Motion.Item
+                  key={provider}
+                  initial={false}
+                  whileInView={
+                    animate && ready && !reduced ? { y: [8, 0] } : { y: 0 }
+                  }
+                  viewport={{ once: true, amount: 0.5 }}
+                  transition={{
+                    duration: 0.6,
+                    delay: index * 0.06,
+                    ease: [0.23, 1, 0.32, 1],
+                  }}
+                  style={{ rotate: `${(index - 1) * 8}deg` }}
+                  className={cn(
+                    "grid size-10 place-items-center rounded-lg border border-background-rich/40 bg-background-rich! p-2 shadow-emphasis-dimmed/20 shadow-lg",
+                    large && "size-12 sm:size-14 sm:p-3",
+                    index !== 1 && "mt-4",
+                  )}
+                >
+                  {provider === "chatgpt" ? (
+                    <Image
+                      src="/images/chatgpt.svg"
+                      alt=""
+                      width={32}
+                      height={32}
+                      className="size-full"
+                      unoptimized
+                    />
+                  ) : (
+                    <ProviderLogo
+                      provider={provider}
+                      decorative
+                      className="size-full max-w-full rounded-none object-center"
+                    />
+                  )}
+                </Motion.Item>
+              ),
+            )}
+          </div>
+          <div className="absolute inset-x-10 top-[26%] bottom-0 bg-linear-to-b from-primary/5 via-primary/20 to-transparent [clip-path:polygon(30%_0,70%_0,100%_100%,0_100%)]" />
           {[0, 1, 2].map((position) => (
-            <div
+            <Motion.Item
               key={position}
+              initial={false}
+              whileInView={
+                animate && ready && !reduced && position === 1
+                  ? { y: [8, 0] }
+                  : { y: 0 }
+              }
+              viewport={{ once: true, amount: 0.5 }}
+              transition={{ duration: 0.6, ease: [0.23, 1, 0.32, 1] }}
+              style={{
+                left: `${7 + position * 29}%`,
+                rotate: `${(position - 1) * 6}deg`,
+              }}
               className={cn(
-                "flex h-28 w-20 flex-col items-center rounded-md border border-background-rich/20 bg-emphasis-dimmed p-3",
+                "absolute bottom-2 flex h-[44%] w-[28%] flex-col items-center rounded-md border border-background-rich/20 bg-emphasis-dimmed p-3",
                 position === 1 &&
-                  "-translate-y-5 border-primary-rich/60 bg-linear-to-b from-primary-dimmed to-emphasis-dimmed",
+                  "bottom-6 z-1 border-primary-rich/60 bg-linear-to-b from-primary-dimmed to-emphasis-dimmed",
               )}
             >
               <div className="flex size-10 items-center justify-center rounded border border-background-rich/35">
@@ -95,7 +157,7 @@ export const JourneyFigure = ({
               </div>
               <div className="mt-auto h-px w-full bg-background-rich/45" />
               <div className="mt-2 h-px w-2/3 self-start bg-background-rich/20" />
-            </div>
+            </Motion.Item>
           ))}
         </div>
       ) : stage === 2 ? (

@@ -2,11 +2,11 @@ import { getLocale, getMessages } from "next-intl/server";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { PublishedFiles } from "@/components/marketing/interactive/published-files";
-import { MarketingLightBand } from "@/components/marketing/light-band";
 import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
 import {
   MarketingActions,
   MarketingBand,
+  MarketingFeatureBand,
   MarketingScreenshot,
 } from "@/components/marketing/primitives";
 import { PlatformEndpointDirectory } from "./_components/endpoint-directory";
@@ -34,9 +34,9 @@ export default async () => {
       path="/platform"
       heroIllustration={<ExplodedFigure label={hairlinePlatform.label} />}
     >
-      <MarketingLightBand id="explore-platform">
+      <MarketingFeatureBand id="explore-platform">
         <PlatformExplorer sections={stages} label={content.eyebrow} />
-      </MarketingLightBand>
+      </MarketingFeatureBand>
       <SectionGutter />
       <MarketingBand className="[&>.marketing-rail>.marketing-guides]:hidden [&>.marketing-rail]:bg-background-dimmed">
         <div className="relative px-7 py-10 max-sm:px-4 max-sm:py-6 [&>.marketing-screenshot]:mt-0">

@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowRightIcon, CommerceGlobePointerIcon } from "@zenncore/icons";
-import { resultify } from "@zenncore/utils";
+import { cn, resultify } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { field, InferredForm } from "@zenncore/web/components/inferred-form";
@@ -50,7 +50,11 @@ const AddressInput = ({
   </TextField>
 );
 
-export const StoreCheckForm = ({ copy, locale }: StoreCheckForm.Props) => {
+export const StoreCheckForm = ({
+  copy,
+  locale,
+  secondaryAction,
+}: StoreCheckForm.Props) => {
   const { ready } = useInteractive();
   const [address, setAddress] = useState("");
   const [failure, setFailure] = useState("");
@@ -93,31 +97,47 @@ export const StoreCheckForm = ({ copy, locale }: StoreCheckForm.Props) => {
     }),
   };
   return (
-    <div data-interactive="store-check" className="mt-8 w-full max-w-2xl">
-      {ready ? (
-        <InferredForm
-          config={config}
-          defaultValues={{ url: "" }}
-          className="grid items-start gap-3 space-y-0 sm:grid-cols-[minmax(0,1fr)_auto] [&>button]:min-h-12"
-          onChange={(values) => {
-            setAddress(values.url ?? "");
-            setFailure("");
-          }}
-          onSubmit={(values) => {
-            if (!pending) void submit(values.url);
-          }}
-        >
-          <Button type="submit" disabled={!valid || pending}>
-            {pending ? copy.pending : copy.action.primary}
+    <div
+      data-interactive="store-check"
+      className={cn("mt-8 w-full", secondaryAction ? "max-w-4xl" : "max-w-2xl")}
+    >
+      <div
+        className={cn(
+          "grid items-start gap-3 [&>a]:min-h-12",
+          secondaryAction && "min-[900px]:grid-cols-[minmax(0,1fr)_auto]",
+        )}
+      >
+        {ready ? (
+          <InferredForm
+            config={config}
+            defaultValues={{ url: "" }}
+            className="grid items-start gap-3 space-y-0 sm:grid-cols-[minmax(0,1fr)_auto] [&>button]:min-h-12"
+            onChange={(values) => {
+              setAddress(values.url ?? "");
+              setFailure("");
+            }}
+            onSubmit={(values) => {
+              if (!pending) void submit(values.url);
+            }}
+          >
+            <Button type="submit" disabled={!valid || pending}>
+              {pending ? copy.pending : copy.action.primary}
+              <ArrowRightIcon aria-hidden className="size-4" />
+            </Button>
+          </InferredForm>
+        ) : (
+          <Button render={<Link href="/sign-up" />}>
+            {copy.action.primary}
             <ArrowRightIcon aria-hidden className="size-4" />
           </Button>
-        </InferredForm>
-      ) : (
-        <Button render={<Link href="/sign-up" />}>
-          {copy.action.primary}
-          <ArrowRightIcon aria-hidden className="size-4" />
-        </Button>
-      )}
+        )}
+        {secondaryAction && (
+          <Button color="neutral" render={<Link href={secondaryAction.href} />}>
+            {secondaryAction.label}
+            <ArrowRightIcon aria-hidden className="size-4" />
+          </Button>
+        )}
+      </div>
       <p
         role="status"
         aria-live="polite"
@@ -132,5 +152,6 @@ export namespace StoreCheckForm {
   export type Props = {
     copy: AppConfig["Messages"]["interactiveStore"];
     locale: string;
+    secondaryAction?: { label: string; href: string };
   };
 }

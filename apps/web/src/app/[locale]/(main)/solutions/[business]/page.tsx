@@ -38,6 +38,9 @@ export default async ({ params }: Props) => {
   if (!business) notFound();
   const { enterpriseSolutions } = await getMessages();
   const content = enterpriseSolutions.business[business];
+  const hasStoreCheck = content.actions.some(
+    (action) => action.href === "/sign-up",
+  );
   const journey: MarketingPage.Section | undefined = content.sections.find(
     (section) => section.id === "one-product" || section.id === "pilot",
   );
@@ -47,8 +50,20 @@ export default async ({ params }: Props) => {
   const Body = pageBodies[business];
   return (
     <MarketingPage
-      heroChildren={business === "brands" ? <StoreCheck /> : undefined}
-      content={{ ...content, sections: [] }}
+      heroChildren={
+        hasStoreCheck ? (
+          <StoreCheck
+            secondaryAction={content.actions.find(
+              (action) => action.href === "/demo",
+            )}
+          />
+        ) : undefined
+      }
+      content={{
+        ...content,
+        ...(hasStoreCheck ? { actions: [] } : {}),
+        sections: [],
+      }}
       path={`/solutions/${business}`}
     >
       <Body

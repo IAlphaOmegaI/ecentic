@@ -67,7 +67,7 @@ them hidden through the following source/footer area.
 Decorative ASCII uses literal text, or a variable-dot halftone where the shape reads more clearly. Character silhouettes evolve at a low frequency and pause
 under reduced motion, outside the viewport and in hidden tabs. The channel chronology is a
 continuous winding character path rather than isolated ASCII cards. The footer ends with a large,
-legible character-based ecentic wordmark. Evidence uses proper scaled charts; reserve character art
+legible typographic écentic wordmark with a restrained hairline accent. Evidence uses proper scaled charts; reserve character art
 for decoration outside the product roadmap. Omit unavailable metrics and render count labels on
 one line with proportional sans numerals. Evidence charts keep a 0–100% scale, neutral tracks and
 6 px rounded ends on both layers. Color the fill by outcome: success at 60% and above, warning
@@ -1024,7 +1024,8 @@ and crops at the edges. Use native primary and neutral gradient actions.
 Navigation follows in multiple connected rows, one column per category (including Legal).
 Use sentence-case labels, muted links and restrained blue/translation hover feedback. On mobile,
 use native category accordions. Preserve all useful destinations without squeezing them into one row.
-A large readable ASCII ecentic wordmark, the brand/social/locale area and legal text finish the footer.
+A large readable typographic écentic wordmark, the brand/social/locale area and legal text finish the footer.
+One continuous white-to-blue gradient spans navigation, wordmark and legal content; do not restart it inside individual cells.
 Do not invent a live system-status claim. Each seam and cross remains single-owned.
 
 ---
@@ -1561,7 +1562,7 @@ Compact store-entry forms sit directly on the hero surface with one primary subm
 
 ## 28. Light, cutouts and connected providers
 
-The 11 November reference pass extends ecentic's existing language. Keep the off-white canvas as the baseline, then use a charcoal section for a concentrated product explanation. Local blue light can reveal a diagram or selected capability inside that section. Each gradient belongs to a specific card or relationship; do not tint every cell or apply a glow across ordinary prose. Preserve the existing copy, routes and product film.
+The 11 November reference pass extends ecentic's existing language. Keep the off-white canvas as the baseline, then use a charcoal section for a concentrated product explanation. Local blue light can reveal a diagram or selected capability inside that section. Each gradient belongs to a specific card or relationship; do not tint every cell or apply a glow across ordinary prose. The shared footer is the deliberate exception: one continuous gradient defines that whole closing field. Preserve the existing copy, routes and product film.
 
 `MarketingFeatureBand` provides a full-width field with shallow angled cutouts at its upper and lower transitions. The geometry is independent of color: `light` uses the white `background-rich` surface, `muted` uses `background-dimmed`, and `dark` / `blue` remain available for concentrated explanations. The filled background alone is clipped; text, links and focus outlines remain intact. Wide-screen shoulders align with the content rail, with a shallower cut on small screens. Its centered rails continue the site's alignment, with one-pixel seams and crosses at real joins. Reserve this geometry for major changes of subject. Existing inset rounded blue heroes and closing banners remain valid; do not turn every section into a cutout.
 
@@ -1595,10 +1596,38 @@ Apply this language across public page families through opt-in shared section te
 
 ## 31. Point-grid artwork and richer secondary explanations
 
-The latest review approves Connect’s variable-dot catalog illustration as the object-art treatment throughout the site. `EvolvingAscii` keeps its call-site API but now renders local SVG halftone masks, with source aspect ratios preserved. Catalog, selection lens, bag, cart, console and agent are distinct subjects. Keep the full silhouette legible; never stretch or fill a hero with unrecognizable character noise. A single three-second light pass reveals the points when the artwork enters view; optional subject sequences run once, with static first-render and reduced-motion states. The footer’s readable ecentic character wordmark and schematic text road remain separate motifs.
+The latest review approves Connect’s variable-dot catalog illustration as the object-art treatment throughout the site. `EvolvingAscii` keeps its call-site API but now renders local SVG halftone masks, with source aspect ratios preserved. Catalog, selection lens, bag, cart, console and agent are distinct subjects. Keep the full silhouette legible; never stretch or fill a hero with unrecognizable character noise. A single three-second light pass reveals the points when the artwork enters view; optional subject sequences run once, with static first-render and reduced-motion states. The footer’s readable typographic écentic wordmark and schematic text road remain separate motifs.
 
 Use the approved connected catalog graphic and Brands product journey as composition references. Subject-specific graphics, generous Hairline figures on neutral surfaces, contained gradients and asymmetric dark workbenches carry across platform, integration, solution and channel pages. Keep one visual relationship per graphic; do not invent sample measurements or add decoration to legal prose. Overlapping provider groups use compact rounded holders to separate the marks. Standalone provider logos remain unframed.
 
 Public file viewers use native icon selection tiles and a continuous code rail. JSON is pretty-printed with line numbers and semantic syntax colors; arbitrary source strings remain escaped React text. Preserve the source link, fetched time, request timeout and preview bounds. Keep native scrolling inside long code previews without creating page overflow.
 
-Pricing uses a prominent illustrative score, three subscription cards followed by PAYG and Enterprise, and a fee comparison calculated from canonical prices. All split rows share the same 50/50 seam. The user explicitly clarified that removing the $500 callout is a presentation change: preserve the enforced billing cap, estimate calculation, legal terms and existing customer agreements. Fee assumptions remain available in the calculator’s disclosure. The footer stays one light cutout field with stronger localized blue depth so it reads separately from the off-white page.
+Pricing uses a prominent illustrative score, three subscription cards followed by PAYG and Enterprise, and a fee comparison calculated from canonical prices. All split rows share the same 50/50 seam. The user explicitly clarified that removing the $500 callout is a presentation change: preserve the enforced billing cap, estimate calculation, legal terms and existing customer agreements. Fee assumptions remain available in the calculator’s disclosure. The footer stays one light cutout field with a continuous white-to-blue gradient across its full extent so it reads separately from the off-white page. Child rows and cells remain transparent.
+
+
+## 32. Connected workbenches and compact conversion rows
+
+The Platform overview uses a charcoal bento workbench for its five stages. Each stage keeps its own
+purpose, graphic and native interactive selection, with the existing deep links and content available.
+Use the same dark surface and complete rail intersections as the approved Brands product journey;
+do not merely put a black fill behind an unchanged white tab strip.
+
+Before/after examples are real, selectable formatted code, with colored syntax, consecutive line
+numbers and annotations aligned to the relevant fields or groups. Include enough of the existing
+sample record to explain the transformation. Nested source, import and publishing information must
+remain faithful to the source facts; do not add invented product attributes or measurements. The
+code frame touches its section rails. Arbitrary values stay escaped React text.
+
+Connected provider marks sit centered in equally sized rounded holders with preserved image
+ratios. In comparison graphics, the assistant group sits above the product cards with breathing
+room and a deliberate arc or stagger. Motion moves each full object, not only its contents.
+
+A hero with a store-address form has one free-check submit action. Put its secondary destination,
+such as Book a demo, beside the form on wide screens and stack it on small screens. Do not repeat
+the free-check button in a separate row. Keep the native form validation, error messaging, locale
+behavior and static fallback. Apply this composition to related solution, platform and tool heroes.
+
+Small price-comparison bars do not need a second hairline baseline. Use the bar fill, label and
+actual price to explain the comparison. Separate the detailed plan table with a visible top gutter.
+Supporting service bundles place their service breakdown before a compact flag and price summary;
+avoid a tall, mostly empty price column. Commercial terms remain unchanged.

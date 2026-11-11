@@ -1,4 +1,6 @@
 import { getLocale, getMessages } from "next-intl/server";
+import { Fragment } from "react";
+import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import { JsonLd } from "@/components/json-ld";
 import {
   MarketingPage,
@@ -66,15 +68,25 @@ export default async () => {
             <EnterprisePlanLedger />
           </MarketingFeatureBand>
         ) : section.id === "compare" ? (
-          <MarketingFeatureBand key={section.id} id={section.id} tone="muted">
-            <MarketingHeading
-              eyebrow={section.eyebrow}
-              title={section.title}
-              description={section.description}
-              className="pb-12"
-            />
-            <EnterprisePlanComparison />
-          </MarketingFeatureBand>
+          <Fragment key={section.id}>
+            <MarketingBand
+              aria-hidden="true"
+              className="bg-background [&_.marketing-guides]:hidden"
+            >
+              <div className="py-4">
+                <SectionGutter />
+              </div>
+            </MarketingBand>
+            <MarketingFeatureBand id={section.id} tone="muted">
+              <MarketingHeading
+                eyebrow={section.eyebrow}
+                title={section.title}
+                description={section.description}
+                className="pb-12"
+              />
+              <EnterprisePlanComparison />
+            </MarketingFeatureBand>
+          </Fragment>
         ) : (
           <MarketingSection key={section.id} section={section}>
             {sectionChildren[section.id]}

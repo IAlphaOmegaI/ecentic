@@ -4,7 +4,7 @@ import Image from "next/image";
 import { getMessages } from "next-intl/server";
 import { CookieSettings } from "@/components/cookie-settings";
 import { LanguageSwitcher } from "@/components/language-switcher";
-import { AsciiWordmark } from "@/components/marketing/ascii-wordmark";
+import { FooterWordmark } from "@/components/marketing/ascii-wordmark";
 import { fonts } from "@/components/marketing/fonts";
 import { FooterColumns } from "@/components/marketing/footer-columns";
 import {
@@ -119,7 +119,7 @@ export const Footer = async (_props: Footer.Props = {}) => {
       />
       <MarketingFeatureBand
         tone="light"
-        className="marketing-footer-field [&>.marketing-rail>.w-dvw]:bg-linear-to-br [&>.marketing-rail>.w-dvw]:from-background-rich [&>.marketing-rail>.w-dvw]:via-primary/8 [&>.marketing-rail>.w-dvw]:to-primary/20"
+        className="marketing-footer-field [&>.marketing-rail>.w-dvw]:bg-linear-to-br [&>.marketing-rail>.w-dvw]:from-0% [&>.marketing-rail>.w-dvw]:from-background-rich [&>.marketing-rail>.w-dvw]:via-40% [&>.marketing-rail>.w-dvw]:via-primary/20 [&>.marketing-rail>.w-dvw]:to-100% [&>.marketing-rail>.w-dvw]:to-primary/65 [&_button]:text-foreground-rich [&_button]:hover:text-primary-text"
       >
         <Plus className="top-12 left-0 hidden -translate-x-1/2 -translate-y-1/2 min-[801px]:block" />
         <Plus className="top-12 right-0 hidden translate-x-1/2 -translate-y-1/2 min-[801px]:block" />
@@ -137,7 +137,7 @@ export const Footer = async (_props: Footer.Props = {}) => {
                 {column.links.map((link) => (
                   <li className="text-sm leading-relaxed" key={link.href}>
                     <Link
-                      className="inline-flex text-foreground-dimmed transition-[color,transform] duration-200 hover:translate-x-1 hover:text-primary-text hover:underline hover:underline-offset-4 motion-reduce:transform-none"
+                      className="inline-flex text-foreground-rich transition-[color,transform] duration-200 hover:translate-x-1 hover:text-primary-text hover:underline hover:underline-offset-4 motion-reduce:transform-none"
                       href={link.href}
                     >
                       {link.label}
@@ -152,7 +152,7 @@ export const Footer = async (_props: Footer.Props = {}) => {
               </ul>
             </nav>
           ))}
-          <div className="relative flex min-w-0 flex-col justify-between gap-8 bg-linear-to-br from-primary/18 via-background-rich/40 to-primary/6 px-7 py-8">
+          <div className="relative flex min-w-0 flex-col justify-between gap-8 px-7 py-8">
             <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
             <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
             <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
@@ -161,19 +161,19 @@ export const Footer = async (_props: Footer.Props = {}) => {
           </div>
         </div>
         <FooterColumns columns={columns} cookies={copy.cookies} />
-        <div className="flex flex-col gap-6 border-accent-foreground border-t bg-linear-to-br from-primary/18 via-background-rich/40 to-primary/6 px-4 py-8 min-[801px]:hidden">
+        <div className="flex flex-col gap-6 border-accent-foreground border-t px-4 py-8 min-[801px]:hidden">
           <FooterIdentity tagline={copy.tagline} />
           <FooterSocial />
         </div>
-        <div className="relative border-accent-foreground border-y bg-linear-to-br from-primary/20 via-background-rich/60 to-primary/10">
+        <div className="relative border-accent-foreground border-y">
           <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
           <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <AsciiWordmark />
+          <FooterWordmark />
         </div>
         <div className="marketing-footer-bottom grid items-start gap-6 px-7 py-7 max-sm:px-4 md:grid-cols-[1fr_auto]">
-          <div className="space-y-3 text-foreground-dimmed text-xs">
+          <div className="space-y-3 text-foreground-rich text-xs">
             <p className="marketing-footer-trademark max-w-[76ch] leading-relaxed">
               {copy.trademark}
             </p>
@@ -197,9 +197,7 @@ const FooterIdentity = ({ tagline }: { tagline: string }) => (
         height={257}
       />
     </Link>
-    <p className="mt-4 max-w-[40ch] text-foreground-dimmed text-sm">
-      {tagline}
-    </p>
+    <p className="mt-4 max-w-[40ch] text-foreground-rich text-sm">{tagline}</p>
   </div>
 );
 

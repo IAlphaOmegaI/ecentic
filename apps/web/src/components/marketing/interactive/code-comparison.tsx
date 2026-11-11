@@ -1,106 +1,118 @@
 "use client";
 
 import { CodeIcon } from "@zenncore/icons";
-import { cn } from "@zenncore/utils";
 import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import { useState } from "react";
 import { Plus } from "@/components/plus";
+import { FormattedSource } from "./published-files/formatted-source";
 import { useInteractive } from "./use-interactive";
 
-/** An illustrative record, paired line-for-line with a plain-language explanation. */
+/** Format a complete JSON property; each group keeps its explanatory annotation. */
+const propertySource = (
+  row: CodeRecord.Row,
+  state: CodeRecord.State,
+  final: boolean,
+) =>
+  JSON.stringify({ [row.key]: row[state] }, null, 2)
+    .split("\n")
+    .slice(1, -1)
+    .join("\n") + (final ? "" : ",");
+
 export const CodeRecord = ({
   rows,
   state,
   filename,
   label,
-}: CodeRecord.Props) => (
-  <section
-    aria-label={label}
-    data-code-record={state}
-    className="relative min-w-0 bg-background-rich"
-  >
-    <header className="flex min-h-14 items-center gap-4 border-accent-foreground border-b px-6 py-4 max-sm:px-4">
-      <CodeIcon aria-hidden className="size-6 shrink-0 text-primary-text" />
-      <span className="min-w-0 break-all font-mono text-foreground-rich text-sm">
-        {filename}
-      </span>
-    </header>
-    <div
-      aria-hidden
-      className="px-6 pt-6 pb-2 font-mono text-foreground-dimmed text-sm max-sm:px-4"
+}: CodeRecord.Props) => {
+  const groups = rows.map((row, index) => ({
+    ...row,
+    source: propertySource(row, state, index === rows.length - 1),
+    line:
+      2 +
+      rows
+        .slice(0, index)
+        .reduce(
+          (total, previous) =>
+            total + propertySource(previous, state, false).split("\n").length,
+          0,
+        ),
+  }));
+  const finalLine =
+    2 +
+    groups.reduce((total, group) => total + group.source.split("\n").length, 0);
+  return (
+    <section
+      aria-label={label}
+      data-code-record={state}
+      className="relative min-w-0 bg-background-rich"
     >
-      {"{"}
-    </div>
-    <ol className="m-0 list-none p-0">
-      {rows.map((row, index) => (
-        <li
-          key={row.key}
-          className="group relative grid min-w-0 grid-cols-[minmax(0,3fr)_minmax(0,2fr)] max-lg:grid-cols-1"
-        >
-          <div className="grid min-w-0 grid-cols-[2rem_minmax(0,1fr)] gap-2 px-6 py-4 max-sm:px-4">
-            <span
-              aria-hidden
-              className="pt-0.5 font-mono text-foreground-dimmed text-xs tabular-nums"
+      <header className="relative flex min-h-14 items-center gap-4 border-accent-foreground border-b px-6 py-4 max-sm:px-4">
+        <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+        <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+        <CodeIcon aria-hidden className="size-6 shrink-0 text-primary-text" />
+        <span className="min-w-0 break-all font-mono text-foreground-rich text-sm">
+          {filename}
+        </span>
+      </header>
+      <div className="relative min-w-0 bg-emphasis-dimmed bg-radial-[at_0%_0%] from-primary-dimmed/70 via-transparent to-transparent">
+        <div className="grid grid-cols-[minmax(0,3fr)_minmax(0,2fr)] max-lg:grid-cols-1">
+          <FormattedSource source="{" />
+          <div
+            aria-hidden
+            className="relative border-background-rich/15 border-l bg-background-rich/3 max-lg:hidden"
+          >
+            <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 [&>span]:bg-background-rich/35" />
+          </div>
+        </div>
+        <ol className="m-0 list-none p-0">
+          {groups.map((group) => (
+            <li
+              key={group.key}
+              data-code-property={group.key}
+              className="relative grid min-w-0 grid-cols-[minmax(0,3fr)_minmax(0,2fr)] max-lg:grid-cols-1"
             >
-              {String(index + 2).padStart(2, "0")}
-            </span>
-            <code className="min-w-0 whitespace-pre-wrap break-words font-mono text-sm leading-7">
-              <span
-                className={cn(
-                  index % 4 === 0
-                    ? "text-primary-text"
-                    : index % 4 === 1
-                      ? "text-secondary"
-                      : index % 4 === 2
-                        ? "text-success-dimmed"
-                        : "text-warning-foreground",
-                )}
-              >
-                {JSON.stringify(row.key)}
-              </span>
-              <span className="text-foreground-dimmed">{": "}</span>
-              <span
-                className={cn(
-                  "text-foreground-rich",
-                  state === "after" &&
-                    row.before !== row.after &&
-                    "text-success-text",
-                )}
-              >
-                {JSON.stringify(row[state])}
-              </span>
-              {index < rows.length - 1 && (
-                <span className="text-foreground-dimmed">,</span>
-              )}
-            </code>
+              <div className="min-w-0 [&>pre]:py-3">
+                <FormattedSource source={group.source} startLine={group.line} />
+              </div>
+              <div className="relative flex min-w-0 items-center border-background-rich/15 border-l bg-background-rich/3 px-7 py-5 max-sm:pr-4 max-sm:pl-12 max-lg:border-l-0 max-lg:bg-transparent max-lg:pt-0 max-lg:pl-16">
+                <span
+                  aria-hidden
+                  className="absolute top-1/2 left-0 h-px w-4 bg-primary-rich/50 max-lg:hidden"
+                />
+                <p className="max-w-[42ch] text-background-rich/75 text-sm leading-relaxed">
+                  {group.note}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
+        <div className="grid grid-cols-[minmax(0,3fr)_minmax(0,2fr)] max-lg:grid-cols-1">
+          <FormattedSource source="}" startLine={finalLine} />
+          <div
+            aria-hidden
+            className="relative border-background-rich/15 border-l bg-background-rich/3 max-lg:hidden"
+          >
+            <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2 [&>span]:bg-background-rich/35" />
           </div>
-          <div className="relative flex min-w-0 items-center border-accent-foreground border-l px-6 py-4 max-sm:ml-12 max-sm:px-4 max-lg:ml-16 max-lg:border-l-0 max-lg:pt-0">
-            <span
-              aria-hidden
-              className="absolute top-1/2 left-0 h-px w-4 bg-accent-foreground max-lg:hidden"
-            />
-            <p className="text-foreground-dimmed text-sm leading-relaxed">
-              {row.note}
-            </p>
-          </div>
-        </li>
-      ))}
-    </ol>
-    <div
-      aria-hidden
-      className="px-6 pt-2 pb-6 font-mono text-foreground-dimmed text-sm max-sm:px-4"
-    >
-      {"}"}
-    </div>
-  </section>
-);
+        </div>
+      </div>
+    </section>
+  );
+};
 
 export namespace CodeRecord {
   export type State = "before" | "after";
+  export type Value =
+    | string
+    | number
+    | boolean
+    | null
+    | readonly Value[]
+    | { readonly [key: string]: Value };
   export type Row = {
     key: string;
-    before: string | number | boolean | null;
-    after: string | number | boolean | null;
+    before: Value;
+    after: Value;
     note: string;
   };
   export type Props = {

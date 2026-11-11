@@ -61,7 +61,7 @@ const PlatformDiagram = ({ kind }: { kind: PlatformPrinciples.Kind }) => {
             <div className="flex flex-col items-center gap-5">
               <PlatformProviderStack
                 providers={["shopify", "woocommerce"]}
-                className="max-sm:-space-x-5 [&>span]:size-14 max-sm:[&>span]:size-12 max-sm:[&>span]:p-2.5"
+                className="-space-x-2 [&>span]:size-14 max-sm:[&>span]:size-12 max-sm:[&>span]:p-2.5"
               />
               <CommerceCode_3Icon className="size-8 text-primary-rich" />
             </div>

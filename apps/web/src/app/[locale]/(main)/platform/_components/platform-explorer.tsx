@@ -1,158 +1,93 @@
 "use client";
 
-import { ArrowRightIcon } from "@zenncore/icons";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionPanel,
-  AccordionTrigger,
-} from "@zenncore/web/components/accordion";
-import {
-  Tab,
-  Tabs,
-  TabsIndicator,
-  TabsList,
-  TabsPanel,
-} from "@zenncore/web/components/tabs";
+import { ArrowRightIcon, CommerceCode_3Icon } from "@zenncore/icons";
+import { cn } from "@zenncore/utils";
+import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import { useEffect, useState } from "react";
-import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
-import { MarketingEdgeCrosses } from "@/components/marketing/light-band";
 import type { MarketingPage } from "@/components/marketing/page";
 import { MarketingActions } from "@/components/marketing/primitives";
-import {
-  type ProviderKey,
-  ProviderLogo,
-} from "@/components/marketing/provider-logo";
 import { Plus } from "@/components/plus";
 import { useDocument } from "@/hooks/use-document";
 import { Link } from "@/i18n/navigation";
-import { CatalogConnection } from "./catalog-connection";
-import { PlatformProviderStack } from "./provider-stack";
+import { PlatformStageArtwork, platformStageIcons } from "./stage-artwork";
 
-const simulationProviders = ["chatgpt", "claude", "gemini"] as const;
-const referralProviders = [
-  "chatgpt",
-  "perplexity",
-  "claude",
-  "gemini",
-  "copilot",
-] as const;
-
-const ProviderBranch = ({
-  providers,
-}: {
-  providers: readonly ProviderKey[];
-}) => (
-  <div className="w-full">
-    <PlatformProviderStack providers={providers} />
-    <div className="mx-auto h-8 w-px bg-primary-text/35" />
+const StagePanel = ({ section }: { section: MarketingPage.Section }) => (
+  <div className="relative grid min-w-0 border-[var(--rail-color)] border-t lg:grid-cols-[2fr_3fr]">
+    <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+    <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+    <div className="relative flex min-w-0 flex-col bg-linear-to-br from-primary-dimmed/70 via-emphasis-dimmed to-emphasis-dimmed lg:border-[var(--rail-color)] lg:border-r">
+      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 max-lg:hidden" />
+      <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2 max-lg:hidden" />
+      <div className="px-7 pt-10 max-sm:px-5 max-sm:pt-8">
+        <p className="mb-4 text-primary-rich text-sm">{section.eyebrow}</p>
+        <h2 className="text-[clamp(1.9rem,2.6vw,2.6rem)] text-background-rich">
+          {section.title}
+        </h2>
+        <p className="mt-5 text-background-rich/75 leading-relaxed">
+          {section.description}
+        </p>
+        <MarketingActions actions={section.links ?? []} />
+      </div>
+      <div className="mt-auto pt-6">
+        <PlatformStageArtwork kind={section.id ?? "connect"} />
+      </div>
+    </div>
+    <div className="relative grid min-w-0 grid-cols-2 max-sm:grid-cols-1 max-lg:border-[var(--rail-color)] max-lg:border-t">
+      {section.items?.map((item, index, items) => (
+        <article
+          key={item.title}
+          className={cn(
+            "relative flex min-w-0 flex-col border-[var(--rail-color)] border-b bg-emphasis-dimmed p-7 max-sm:p-5 sm:odd:border-r",
+            index >= items.length - (items.length % 2 || 2) && "sm:border-b-0",
+            index === items.length - 1 && "border-b-0",
+            items.length % 2 === 1 &&
+              index === items.length - 1 &&
+              "sm:col-span-2 sm:border-r-0",
+          )}
+        >
+          <Plus
+            className={cn(
+              "top-0 left-0 -translate-x-1/2 -translate-y-1/2",
+              index === 0 && "lg:hidden",
+            )}
+          />
+          {(index % 2 === 1 || index === items.length - 1) && (
+            <Plus
+              className={cn(
+                "top-0 right-0 translate-x-1/2 -translate-y-1/2",
+                index === 1 && "lg:hidden",
+              )}
+            />
+          )}
+          {index % 2 === 0 && index !== items.length - 1 && (
+            <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 sm:hidden" />
+          )}
+          {items.length % 2 === 0 && index === items.length - 2 && (
+            <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2 max-sm:hidden" />
+          )}
+          {items.length % 2 === 1 && index === items.length - 1 && (
+            <Plus className="top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 max-sm:hidden" />
+          )}
+          <h3 className="text-background-rich text-xl leading-snug">
+            {item.title}
+          </h3>
+          <p className="mt-4 text-background-rich/70 text-sm leading-relaxed">
+            {item.body}
+          </p>
+          {item.href && (
+            <Link
+              href={item.href}
+              className="mt-auto flex min-h-12 items-center justify-between gap-3 pt-6 font-medium text-primary-rich text-sm transition-colors hover:text-background-rich focus-visible:outline-2 focus-visible:outline-primary-rich"
+            >
+              {item.label ?? item.title}
+              <ArrowRightIcon className="size-4 shrink-0" />
+            </Link>
+          )}
+        </article>
+      ))}
+    </div>
   </div>
 );
-
-const Record = ({ outlined = false }: { outlined?: boolean }) => (
-  <div
-    data-outlined={outlined || undefined}
-    className="relative flex h-32 w-24 flex-col gap-3 rounded-lg border border-primary-text/25 bg-linear-to-br from-primary to-primary-text px-4 pt-6 text-background-rich shadow-[0_10px_24px_-18px_var(--color-primary)] data-outlined:from-background-rich data-outlined:to-background data-outlined:text-primary-text"
-  >
-    <span className="block w-8 border-current border-t-2" />
-    <span className="block w-full border-current border-t opacity-50" />
-    <span className="block w-2/3 border-current border-t opacity-50" />
-    <span className="absolute right-3 bottom-2 font-mono text-xs">{"{}"}</span>
-  </div>
-);
-
-const Diagram = ({ section }: { section: MarketingPage.Section }) => {
-  const items = section.items ?? [];
-
-  switch (section.id) {
-    case "connect":
-      return <CatalogConnection />;
-    case "simulate":
-      return (
-        <div
-          aria-hidden="true"
-          className="flex min-h-[320px] flex-col items-center justify-center px-8 py-8"
-        >
-          <ProviderBranch providers={simulationProviders} />
-          <div className="flex items-center gap-6">
-            <Record />
-            <span className="text-3xl text-primary-text">×</span>
-            <Record outlined />
-          </div>
-          <p className="mt-6 max-w-[30ch] text-center text-foreground-dimmed text-sm">
-            {items[2]?.title}
-          </p>
-        </div>
-      );
-    case "fix":
-      return (
-        <div
-          aria-hidden="true"
-          className="flex min-h-[320px] flex-col items-center justify-center px-8 py-8"
-        >
-          <div className="grid w-full grid-cols-2 gap-6 text-center">
-            {[items[0], items[1]].map((item) => (
-              <div
-                key={item?.title}
-                className="flex min-w-0 flex-col items-center"
-              >
-                <Record outlined />
-                <p className="mt-4 text-foreground-rich text-sm">
-                  {item?.title}
-                </p>
-                <div className="mt-4 h-8 w-px bg-primary-text/35" />
-              </div>
-            ))}
-          </div>
-          <div className="h-px w-1/2 bg-primary-text/35" />
-          <div className="h-8 w-px bg-primary-text/35" />
-          <PlatformProviderStack providers={["shopify", "woocommerce"]} />
-        </div>
-      );
-    case "sell":
-      return (
-        <div
-          aria-hidden="true"
-          className="relative flex min-h-[320px] flex-col items-center justify-end overflow-hidden px-8 py-8"
-        >
-          <div className="absolute inset-x-0 top-0 h-[260px] text-primary-text/75">
-            <EvolvingAscii artwork="cart" />
-          </div>
-          <ProviderLogo
-            provider="woocommerce"
-            decorative
-            className="relative mt-[240px] h-7 rounded-none"
-          />
-        </div>
-      );
-    case "track":
-      return (
-        <div
-          aria-hidden="true"
-          className="flex min-h-[320px] flex-col items-center justify-center px-8 py-8"
-        >
-          <ProviderBranch providers={referralProviders} />
-          <ProviderLogo
-            provider="shopify"
-            decorative
-            className="h-12 rounded-none"
-          />
-          <div className="mt-6 flex w-full items-center gap-3 font-mono text-primary-text/60 text-xs">
-            <span className="h-px flex-1 bg-primary-text/25" />
-            <span>↳</span>
-            <span className="h-px flex-1 bg-primary-text/25" />
-            <span>↳</span>
-            <span className="h-px flex-1 bg-primary-text/25" />
-          </div>
-          <p className="mt-4 max-w-[30ch] text-center text-foreground-dimmed text-sm">
-            {items[0]?.title}
-          </p>
-        </div>
-      );
-    default:
-      return null;
-  }
-};
 
 export const PlatformExplorer = ({
   sections,
@@ -160,150 +95,109 @@ export const PlatformExplorer = ({
 }: PlatformExplorer.Props) => {
   const [selected, setSelected] = useState(sections[0]?.id ?? "connect");
   const { window } = useDocument();
-
   useEffect(() => {
     if (!window) return;
     const update = () => {
       const requested = window.location.hash.slice(1);
-      if (!sections.some((section) => section.id === requested)) return;
-      setSelected(requested);
+      if (sections.some((section) => section.id === requested))
+        setSelected(requested);
     };
     update();
     window.addEventListener("hashchange", update);
     return () => window.removeEventListener("hashchange", update);
   }, [sections, window]);
-
   return (
-    <Tabs
-      value={selected}
-      onValueChange={(value) => {
-        if (typeof value !== "string") return;
-        setSelected(value);
-        window?.history.replaceState(window.history.state, "", `#${value}`);
-      }}
-      data-platform-explorer
-    >
-      <div className="relative border-accent-foreground border-b px-7 py-6 max-sm:px-4 max-sm:py-4">
-        <MarketingEdgeCrosses edge="bottom" />
-        <TabsList aria-label={label} className="w-full">
-          {sections.map((section, index) => (
-            <Tab
-              key={section.id}
-              id={section.id}
-              value={section.id}
-              className="h-auto min-w-0 flex-1 scroll-mt-28 gap-3 px-3 py-4 text-base max-sm:flex-col max-sm:gap-1 max-sm:px-1 max-sm:py-3 max-sm:text-[13px]"
-            >
-              <span className="text-xs opacity-65">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <span>{section.eyebrow?.replace(/^\[\d+\]\s*/, "")}</span>
-            </Tab>
-          ))}
-          <TabsIndicator />
-        </TabsList>
-      </div>
-      {sections.map((section) => (
-        <TabsPanel
-          key={section.id}
-          value={section.id}
-          data-platform-panel={section.id}
-          keepMounted
-          className="data-[hidden]:hidden"
+    <>
+      <Tabs
+        value={selected}
+        onValueChange={(value) => {
+          if (typeof value !== "string") return;
+          setSelected(value);
+          window?.history.replaceState(window.history.state, "", `#${value}`);
+        }}
+        data-platform-explorer
+        className="relative border-[var(--rail-color)] border-y"
+      >
+        <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+        <TabsList
+          aria-label={label}
+          className="grid w-full grid-cols-5 overflow-visible rounded-none border-0 max-sm:grid-cols-2"
         >
-          <div className="grid grid-cols-[5fr_7fr] max-lg:grid-cols-1 lg:grid-rows-[auto_1fr]">
-            <div className="relative flex min-w-0 flex-col border-accent-foreground border-r max-lg:border-r-0 lg:row-span-2 lg:grid lg:grid-rows-subgrid">
-              <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 max-lg:hidden" />
-              <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2 max-lg:hidden" />
-              <div className="relative isolate overflow-hidden px-7 pt-10 pb-8 max-sm:px-4 max-sm:pt-8">
+          {sections.map((section, index) => {
+            const Icon =
+              platformStageIcons[
+                section.id as keyof typeof platformStageIcons
+              ] ?? CommerceCode_3Icon;
+            return (
+              <Tab
+                key={section.id}
+                id={section.id}
+                value={section.id}
+                className="group relative isolate h-auto min-h-52 min-w-0 scroll-mt-28 flex-col items-start justify-between gap-7 overflow-visible border-[var(--rail-color)] border-r bg-emphasis-dimmed p-6 text-left text-background-rich/75 transition-colors before:absolute hover:bg-emphasis hover:text-background-rich data-[active]:bg-linear-to-br data-[active]:from-primary-dimmed data-[active]:to-emphasis-dimmed data-[active]:text-background-rich max-sm:min-h-36 max-sm:gap-5 max-sm:border-b max-sm:p-5 max-sm:even:border-r-0 max-sm:last:col-span-2 max-sm:last:border-b-0 max-lg:min-h-40 max-lg:p-4"
+              >
+                <Plus
+                  className={cn(
+                    "top-0 right-0 translate-x-1/2 -translate-y-1/2",
+                    index === 1 && "max-sm:hidden",
+                    index === 4 && "sm:hidden",
+                  )}
+                />
+                {(index === 2 || index === 4) && (
+                  <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 sm:hidden" />
+                )}
+                {index === 4 && (
+                  <Plus className="top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 sm:hidden" />
+                )}
+                {[0, 2, 3].includes(index) && (
+                  <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2 max-sm:hidden" />
+                )}
+                {index === 1 && (
+                  <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 sm:max-lg:block" />
+                )}
                 <div
                   aria-hidden
-                  className="pointer-events-none absolute inset-0 -z-1 bg-radial-[at_0%_0%] from-primary/10 via-background-rich/50 to-transparent"
-                />
-                <h2 className="text-[clamp(1.9rem,2.6vw,2.6rem)]">
-                  {section.title}
-                </h2>
-                <p className="mt-5 text-foreground-dimmed leading-relaxed">
-                  {section.description}
-                </p>
-                <MarketingActions actions={section.links ?? []} />
-              </div>
-              <div
-                className="relative border-accent-foreground border-t bg-background-dimmed"
-                data-platform-diagram={section.id}
-              >
-                <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-                <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 lg:hidden" />
-                <Diagram section={section} />
-              </div>
-            </div>
-            <Accordion
-              defaultValue={[section.items?.[0]?.title ?? ""]}
-              className="relative min-w-0 justify-start max-lg:border-accent-foreground max-lg:border-t lg:row-span-2 lg:grid lg:grid-rows-subgrid lg:justify-stretch"
-            >
-              <MarketingEdgeCrosses className="lg:hidden" />
-              {[
-                section.items?.slice(
-                  0,
-                  Math.ceil((section.items?.length ?? 0) / 2),
-                ) ?? [],
-                section.items?.slice(
-                  Math.ceil((section.items?.length ?? 0) / 2),
-                ) ?? [],
-              ].map((items, groupIndex) => (
-                <div
-                  key={items[0]?.title ?? groupIndex}
-                  data-divider={groupIndex === 0 || undefined}
-                  className="relative min-w-0 border-accent-foreground data-divider:border-b"
+                  className="flex w-full items-start justify-between gap-3"
                 >
-                  {groupIndex === 0 && <MarketingEdgeCrosses edge="bottom" />}
-                  {items.map((item, index) => (
-                    <AccordionItem
-                      key={item.title}
-                      value={item.title}
-                      className="relative border-accent-foreground last:border-b-0"
-                    >
-                      {index < items.length - 1 && (
-                        <MarketingEdgeCrosses edge="bottom" />
-                      )}
-                      <AccordionTrigger
-                        classList={{
-                          root: "font-heading",
-                          trigger: {
-                            root: "items-center px-7 py-6 text-foreground-rich text-lg leading-snug hover:text-primary-text max-sm:px-4",
-                            icon: "mr-0 size-4 shrink-0 text-primary-text transition-transform duration-200 group-data-panel-open:rotate-180",
-                          },
-                        }}
-                      >
-                        {item.title}
-                      </AccordionTrigger>
-                      <AccordionPanel keepMounted>
-                        <div className="px-7 pb-6 max-sm:px-4">
-                          <p className="max-w-[58ch] text-foreground-dimmed leading-relaxed">
-                            {item.body}
-                          </p>
-                          {item.href && (
-                            <Link
-                              href={item.href}
-                              className="mt-5 inline-flex min-h-10 items-center gap-2 text-primary-text underline underline-offset-4"
-                            >
-                              {item.label ?? item.title}
-                              <ArrowRightIcon className="size-4" />
-                            </Link>
-                          )}
-                        </div>
-                      </AccordionPanel>
-                    </AccordionItem>
-                  ))}
+                  <span className="font-heading text-3xl text-background-rich/50 group-data-[active]:text-primary-rich">
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <Icon className="size-9 text-primary-rich/70 group-data-[active]:text-primary-rich" />
                 </div>
-              ))}
-            </Accordion>
-          </div>
-        </TabsPanel>
-      ))}
-    </Tabs>
+                <span className="flex w-full items-center justify-between gap-3 font-heading text-xl max-sm:text-lg max-lg:text-base">
+                  <span>{section.eyebrow?.replace(/^\[\d+\]\s*/, "")}</span>
+                  <ArrowRightIcon
+                    className="size-4 opacity-0 group-data-[active]:opacity-100 max-sm:block max-lg:hidden"
+                    aria-hidden
+                  />
+                </span>
+              </Tab>
+            );
+          })}
+        </TabsList>
+        {sections.map((section) => (
+          <TabsPanel
+            key={section.id}
+            value={section.id}
+            data-platform-panel={section.id}
+            className="min-w-0 focus-visible:outline-2 focus-visible:outline-primary-rich focus-visible:-outline-offset-2"
+          >
+            <StagePanel section={section} />
+          </TabsPanel>
+        ))}
+        <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+        <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+      </Tabs>
+      <noscript>
+        <div className="border-[var(--rail-color)] border-t">
+          {sections.slice(1).map((section) => (
+            <StagePanel key={section.id} section={section} />
+          ))}
+        </div>
+      </noscript>
+    </>
   );
 };
-
 export namespace PlatformExplorer {
   export type Props = {
     sections: readonly MarketingPage.Section[];

@@ -185,10 +185,7 @@ export const FeeCalculator = ({
                 >
                   {value === null ? "—" : format(value)}
                 </dd>
-                <div
-                  aria-hidden
-                  className="relative col-start-2 col-end-4 h-2 border-accent-foreground border-b"
-                >
+                <div aria-hidden className="relative col-start-2 col-end-4 h-2">
                   <span
                     className={cn(
                       "absolute inset-y-0 left-0 rounded-md",
