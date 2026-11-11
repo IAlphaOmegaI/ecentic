@@ -18,7 +18,7 @@ export const Overview = ({ copy }: Overview.Props) => (
         <p className="mt-8 max-w-[720px] text-background-rich/90 text-lg leading-relaxed max-sm:mt-6 max-sm:text-base">
           {copy.description}
         </p>
-        <MarketingActions actions={copy.actions} tone="inverse" />
+        <MarketingActions actions={copy.actions} />
         {copy.facts.map((fact) => (
           <p
             key={fact}

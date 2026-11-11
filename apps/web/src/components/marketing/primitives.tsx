@@ -4,9 +4,9 @@ import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import type { HTMLAttributes, ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
-import { AnimatedAscii } from "./animated-ascii";
 import { AsciiClosingArtwork } from "./ascii-artwork";
 import { AsciiAtmosphere } from "./ascii-atmosphere";
+import { EvolvingAscii } from "./evolving-ascii";
 
 export const MarketingBand = ({
   children,
@@ -131,7 +131,7 @@ export const MarketingHero = ({
       >
         {description}
       </p>
-      <MarketingActions actions={actions} tone={dark ? "inverse" : "default"} />
+      <MarketingActions actions={actions} />
       {children}
     </div>
   </MarketingBand>
@@ -153,16 +153,16 @@ export const MarketingClosing = ({
   description,
   actions,
 }: MarketingClosing.Props) => (
-  <MarketingBand className="marketing-closing enterprise-blue relative m-3 overflow-hidden rounded-xl border-0 bg-linear-to-br from-primary-text via-primary-text to-primary text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_20%,transparent)] [--rail-cross:transparent] max-sm:m-2 max-sm:rounded-lg [&>.marketing-rail]:border-y-0 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden [&_.marketing-guides_span]:before:hidden [&_.marketing-guides_span]:after:hidden">
-    <AnimatedAscii className="pointer-events-none absolute inset-y-0 right-0 left-[30%] select-none text-background-rich opacity-40 [mask-image:linear-gradient(90deg,transparent,black_35%)] max-sm:inset-x-0 max-sm:opacity-20">
-      <AsciiClosingArtwork />
-    </AnimatedAscii>
+  <MarketingBand className="marketing-closing relative m-3 overflow-hidden rounded-xl border-0 bg-linear-to-br from-emphasis-dimmed via-emphasis to-emphasis-rich text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_20%,transparent)] [--rail-cross:transparent] max-sm:m-2 max-sm:rounded-lg [&>.marketing-rail]:border-y-0 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden [&_.marketing-guides_span]:before:hidden [&_.marketing-guides_span]:after:hidden">
+    <div className="pointer-events-none absolute inset-y-0 right-0 left-[30%] select-none text-background-rich opacity-40 [mask-image:linear-gradient(90deg,transparent,black_35%)] max-sm:inset-x-0 max-sm:opacity-20">
+      <EvolvingAscii artwork="closing" className="size-full" />
+    </div>
     <div className="marketing-cell relative flex min-h-[480px] flex-col justify-center px-7 py-16 max-sm:min-h-[460px] max-sm:px-4 max-sm:py-12">
       <h2 className="relative max-w-[760px] text-background-rich">{title}</h2>
       <p className="relative mt-4 max-w-[55ch] text-background-rich/85 text-lg leading-relaxed">
         {description}
       </p>
-      <MarketingActions actions={actions} tone="inverse" className="relative" />
+      <MarketingActions actions={actions} className="relative" />
     </div>
   </MarketingBand>
 );

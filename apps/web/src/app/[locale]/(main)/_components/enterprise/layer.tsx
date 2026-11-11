@@ -18,6 +18,7 @@ import {
 import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { aiChannels } from "@/content/ai-channels";
 import { Link } from "@/i18n/navigation";
+import { CommerceDiagram } from "./commerce-diagram";
 
 const StackMark = ({ index }: { index: number }) => {
   switch (index) {
@@ -55,40 +56,15 @@ export const CommerceLayer = async () => {
             title={copy.title}
             description={copy.description}
           />
-          <figure aria-label={copy.diagram} className="relative mt-12">
-            <svg
-              aria-hidden
-              viewBox="0 0 1128 440"
-              preserveAspectRatio="none"
-              className="pointer-events-none absolute inset-0 hidden h-full w-full lg:block"
-            >
-              {copy.inputs.map((input, index) => (
-                <path
-                  key={input}
-                  d={`M 282 ${98 + index * 64} H 320 Q 352 ${98 + index * 64} 352 232 H 432`}
-                  fill="none"
-                  className="stroke-primary/25"
-                />
-              ))}
-              {aiChannels.map((channel, index) => (
-                <path
-                  key={channel.key}
-                  d={`M 696 232 H 744 Q 776 232 776 ${80 + index * 64} H 806`}
-                  fill="none"
-                  strokeDasharray={
-                    channel.status === "soon" ? "4 6" : undefined
-                  }
-                  className="stroke-primary/30"
-                />
-              ))}
-            </svg>
-            <div className="relative grid gap-10 lg:grid-cols-[1fr_1fr_1fr] lg:gap-12">
-              <div className="min-w-0 lg:py-4">
-                <h3 className="mb-8 font-heading text-2xl">{copy.stack}</h3>
-                <ul className="grid gap-6">
+          <CommerceDiagram label={copy.diagram}>
+            <div className="relative grid gap-10 lg:grid-cols-3 lg:items-center lg:gap-12">
+              <div className="min-w-0 lg:flex lg:flex-col lg:self-stretch">
+                <h3 className="mb-6 font-heading text-2xl">{copy.stack}</h3>
+                <ul className="grid gap-6 lg:flex-1 lg:content-center">
                   {copy.inputs.map((input, index) => (
                     <li
                       key={input}
+                      data-diagram-port="input"
                       className="flex min-h-10 items-center gap-4"
                     >
                       <span className="flex h-10 w-16 shrink-0 items-center">
@@ -99,7 +75,10 @@ export const CommerceLayer = async () => {
                   ))}
                 </ul>
               </div>
-              <div className="relative flex min-h-96 flex-col items-center justify-center px-8 py-10 text-center before:pointer-events-none before:absolute before:inset-x-0 before:inset-y-0 before:bg-linear-to-r before:from-transparent before:via-primary/20 before:to-transparent lg:min-h-[440px] lg:before:-inset-x-12 before:[mask-image:linear-gradient(180deg,transparent,black_18%,black_82%,transparent)]">
+              <div
+                data-diagram-hub
+                className="relative flex min-h-96 flex-col items-center justify-center px-8 py-10 text-center before:pointer-events-none before:absolute before:inset-x-0 before:inset-y-0 before:bg-linear-to-r before:from-transparent before:via-primary/20 before:to-transparent lg:min-h-[440px] lg:before:-inset-x-12 before:[mask-image:linear-gradient(180deg,transparent,black_18%,black_82%,transparent)]"
+              >
                 <Image
                   src="/images/trademark.svg"
                   alt="ecentic"
@@ -121,12 +100,14 @@ export const CommerceLayer = async () => {
                   ))}
                 </ol>
               </div>
-              <div className="min-w-0">
+              <div className="min-w-0 lg:flex lg:flex-col lg:self-stretch">
                 <h3 className="mb-6 font-heading text-2xl">{copy.channels}</h3>
-                <ul className="grid gap-4">
+                <ul className="grid gap-4 lg:flex-1 lg:content-center">
                   {aiChannels.map((channel) => (
                     <li
                       key={channel.key}
+                      data-diagram-port="output"
+                      data-pending={channel.status === "soon"}
                       className="flex min-h-12 items-center gap-4"
                     >
                       <ProviderLogo
@@ -149,7 +130,7 @@ export const CommerceLayer = async () => {
                 </ul>
               </div>
             </div>
-          </figure>
+          </CommerceDiagram>
           <div className="mt-10">
             <Button render={<Link href="/ai-channels" />}>
               {copy.action}
@@ -163,7 +144,7 @@ export const CommerceLayer = async () => {
           <CommerceTimeline />
         </div>
       </MarketingBand>
-      <MarketingBand>
+      <MarketingBand className="enterprise-comparison [&>.marketing-rail>.marketing-guides]:hidden">
         <div className="marketing-cell relative min-w-0 px-7 py-16 max-sm:px-4 max-sm:py-12">
           <ChannelComparison />
         </div>

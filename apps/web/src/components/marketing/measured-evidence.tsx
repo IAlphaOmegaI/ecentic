@@ -1,4 +1,6 @@
+import { ArrowRightIcon, CheckIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
+import Image from "next/image";
 import { getFormatter, getMessages, getTranslations } from "next-intl/server";
 import {
   catalogFindings,
@@ -8,15 +10,16 @@ import {
   simulationEvidence,
 } from "@/content/marketing-evidence";
 import { Link } from "@/i18n/navigation";
+import DuaLogo from "@/public/partners/dua-flavours.png";
 import { EvidenceArtwork } from "./animated-ascii";
 import { EvidenceFrame } from "./evidence";
 import { canPublishEvidence, selectPublishedEvidence } from "./evidence-policy";
-import { EvidenceDatum, EvidenceMeter } from "./evidence-view";
+import { EvidenceMeter } from "./evidence-view";
 
 export const SimulationEvidence = async ({
   id = "assistant-disagreement",
 }: SimulationEvidence.Props) => {
-  const review = process.env.NEXT_PUBLIC_REVIEW === "1";
+  const review = process.env["NEXT_PUBLIC_REVIEW"] === "1";
   if (!canPublishEvidence(simulationEvidence.status, review)) return null;
 
   const [{ enterpriseEvidence: copy }, format, translate] = await Promise.all([
@@ -68,10 +71,6 @@ export const SimulationEvidence = async ({
       ]}
       rows={rows.map((row) => [row.label, row.value, row.count, row.total])}
     >
-      <EvidenceArtwork
-        kind="commerce"
-        className="pointer-events-none mb-6 flex justify-center text-primary-text"
-      />
       <div className="divide-y divide-accent-foreground">
         {rows.map((row) => (
           <EvidenceMeter
@@ -100,7 +99,7 @@ export namespace SimulationEvidence {
 export const CatalogFindings = async ({
   id = "catalog-findings",
 }: CatalogFindings.Props) => {
-  const review = process.env.NEXT_PUBLIC_REVIEW === "1";
+  const review = process.env["NEXT_PUBLIC_REVIEW"] === "1";
   const findings = selectPublishedEvidence(catalogFindings, review);
   if (findings.length === 0) return null;
 
@@ -149,6 +148,7 @@ export const CatalogFindings = async ({
   return (
     <EvidenceFrame
       id={id}
+      compact
       title={copy.findings.title}
       note={copy.findings.note}
       caption={copy.findings.caption}
@@ -169,10 +169,6 @@ export const CatalogFindings = async ({
         row.total,
       ])}
     >
-      <EvidenceArtwork
-        kind="catalog"
-        className="pointer-events-none mb-6 flex justify-center text-primary-text"
-      />
       <div className="divide-y divide-accent-foreground">
         {rows.map((row) => (
           <EvidenceMeter
@@ -210,51 +206,52 @@ export const DuaEvidence = async ({
   const source = copy.sources[duaEvidence.sourceKey];
 
   return (
-    <EvidenceFrame
+    <section
       id={id}
-      title={copy.dua.title}
-      note={copy.dua.note}
-      caption={copy.dua.caption}
-      source={
+      aria-labelledby={`${id}-title`}
+      className="marketing-grid marketing-section-grid relative grid border-accent-foreground border-t md:grid-cols-2"
+      data-columns="2"
+    >
+      <div className="relative flex min-w-0 flex-col items-start gap-6 px-7 py-10 max-sm:px-4">
+        <Image
+          src={DuaLogo}
+          alt="DUA Flavours"
+          className="h-12 w-auto max-w-full object-contain object-left"
+        />
+        <h3 id={`${id}-title`}>{copy.dua.title}</h3>
+        <p className="max-w-[48ch] text-foreground-dimmed text-lg leading-relaxed">
+          {copy.dua.caption}
+        </p>
+        <p className="flex items-center gap-2 text-foreground-dimmed text-sm">
+          <CheckIcon aria-hidden className="size-4 shrink-0 text-success" />
+          {copy.dua.permission}
+        </p>
+        <div className="mt-auto pt-2">
+          <Button render={<Link href={duaEvidence.href} />}>
+            {copy.dua.action.primary}
+            <ArrowRightIcon aria-hidden className="size-4" />
+          </Button>
+        </div>
+      </div>
+      <div className="relative flex min-w-0 flex-col justify-center gap-4 border-accent-foreground border-t bg-background-dimmed px-7 py-10 max-sm:px-4 md:border-t-0 md:border-l">
+        <p className="font-heading font-medium text-[clamp(5rem,10vw,9rem)] text-primary tabular-nums leading-none tracking-[-0.06em]">
+          {figure}
+        </p>
+        <p className="max-w-[28ch] text-foreground text-xl leading-snug">
+          {copy.dua.metric}
+        </p>
+        <p className="text-foreground text-sm">{copy.dua.period}</p>
+        <p className="mt-4 max-w-[48ch] text-foreground text-sm leading-relaxed">
+          {copy.dua.note}
+        </p>
         <Link
           href={evidenceSources.duaPilot.href}
-          className="underline decoration-accent-foreground underline-offset-4 hover:text-foreground"
+          className="w-fit text-foreground text-xs underline decoration-accent-dimmed underline-offset-4 hover:text-primary-text"
         >
           {source}
         </Link>
-      }
-      columns={[
-        copy.dua.headers.metric,
-        copy.dua.headers.change,
-        copy.dua.headers.period,
-        copy.dua.headers.permission,
-      ]}
-      rows={[[copy.dua.metric, figure, copy.dua.period, copy.dua.permission]]}
-    >
-      <EvidenceArtwork
-        kind="commerce"
-        className="pointer-events-none absolute top-16 right-4 hidden text-primary/40 md:block"
-      />
-      <EvidenceDatum
-        detail={`${figure}. ${copy.dua.caption} ${copy.dua.note}`}
-        source={`${source} ${copy.dua.confirmed}`}
-      >
-        <span className="block font-heading font-medium text-[clamp(4rem,10vw,7rem)] text-foreground-rich tabular-nums leading-none tracking-[-0.055em]">
-          {figure}
-        </span>
-        <span className="mt-4 block max-w-[45ch] text-lg">
-          {copy.dua.metric}
-        </span>
-        <span className="mt-2 block text-foreground-dimmed text-sm">
-          {copy.dua.period}
-        </span>
-      </EvidenceDatum>
-      <div className="mt-6">
-        <Button render={<Link href={duaEvidence.href} />}>
-          {copy.dua.action.primary}
-        </Button>
       </div>
-    </EvidenceFrame>
+    </section>
   );
 };
 
@@ -265,7 +262,7 @@ export namespace DuaEvidence {
 export const MarketEvidence = async ({
   id = "market-context-review",
 }: MarketEvidence.Props) => {
-  if (process.env.NEXT_PUBLIC_REVIEW !== "1") return null;
+  if (process.env["NEXT_PUBLIC_REVIEW"] !== "1") return null;
 
   const { enterpriseEvidence: copy } = await getMessages();
 

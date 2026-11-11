@@ -33,15 +33,17 @@ export const EditorialArticles = async () => {
             <h3>{post.title}</h3>
             <p className="mt-4 text-foreground-dimmed">{post.description}</p>
           </div>
-          <Button
-            variant="flat"
-            color="primary"
-            className="w-full justify-between rounded-none px-7 py-4 max-sm:px-4"
-            render={<Link href={`/blog/${post.slug}`} />}
-          >
-            {copy.read}
-            <ArrowRightIcon className="size-4" />
-          </Button>
+          <div className="bg-background px-7 pb-8 max-sm:px-4">
+            <Button
+              variant="flat"
+              color="primary"
+              className="w-full justify-between rounded-none py-4"
+              render={<Link href={`/blog/${post.slug}`} />}
+            >
+              {copy.read}
+              <ArrowRightIcon className="size-4" />
+            </Button>
+          </div>
         </article>
       ))}
     </div>

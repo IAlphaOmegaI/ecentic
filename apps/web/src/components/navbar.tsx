@@ -1,19 +1,6 @@
 "use client";
 
-import {
-  ArrowRightIcon,
-  ChevronDownIcon,
-  CommerceBasketShoppingIcon,
-  CommerceBookOpenIcon,
-  CommerceChartActivity_2Icon,
-  CommerceCityBuildingIcon,
-  CommerceCode_3Icon,
-  CommerceFilePenIcon,
-  CommerceFileShieldIcon,
-  CommerceGlobePointerIcon,
-  CommercePlug_3SparkleIcon,
-  MenuIcon,
-} from "@zenncore/icons";
+import { ArrowRightIcon, ChevronDownIcon, MenuIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import {
   Accordion,
@@ -44,7 +31,13 @@ import {
 } from "@zenncore/web/components/sheet";
 import Image from "next/image";
 import { useMessages } from "next-intl";
-import { Fragment, type KeyboardEvent, useRef, useState } from "react";
+import {
+  type CSSProperties,
+  Fragment,
+  type KeyboardEvent,
+  useRef,
+  useState,
+} from "react";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { fonts } from "@/components/marketing/fonts";
 import { MarketingStatus } from "@/components/marketing/primitives";
@@ -61,35 +54,6 @@ const navigationProviders: Record<string, ProviderKey> = {
   "/ai-channels/microsoft-copilot": "copilot",
   "/ai-channels/perplexity": "perplexity",
   "/ai-channels/amazon": "amazon",
-  "/integrations/shopify": "shopify",
-  "/integrations/google-merchant-center": "googleMerchant",
-};
-
-const navigationIcon = (href: string) => {
-  switch (true) {
-    case href.startsWith("/platform/connect"):
-    case href.startsWith("/integrations"):
-      return CommercePlug_3SparkleIcon;
-    case href.startsWith("/platform/simulate"):
-      return CommerceChartActivity_2Icon;
-    case href.startsWith("/platform/fix"):
-      return CommerceFilePenIcon;
-    case href.startsWith("/platform/sell"):
-      return CommerceBasketShoppingIcon;
-    case href.startsWith("/platform/track"):
-    case href.startsWith("/ai-channels"):
-      return CommerceGlobePointerIcon;
-    case href.startsWith("/solutions"):
-    case href.startsWith("/about"):
-    case href.startsWith("/partners"):
-      return CommerceCityBuildingIcon;
-    case href.startsWith("/security"):
-      return CommerceFileShieldIcon;
-    case href.startsWith("/docs"):
-      return CommerceCode_3Icon;
-    default:
-      return CommerceBookOpenIcon;
-  }
 };
 
 export const Navbar = () => {
@@ -231,7 +195,7 @@ export const Navbar = () => {
                           }
                         />
                       }
-                      className="marketing-nav-trigger marketing-nav-pricing h-11 rounded-[2px] bg-transparent px-2 xs:px-2 py-3 text-sm"
+                      className="marketing-nav-trigger marketing-nav-pricing h-11 rounded-xs bg-transparent px-2 xs:px-2 py-3 text-sm hover:bg-transparent hover:text-primary-text focus-visible:text-primary-text"
                     >
                       {navigation.pricing}
                     </NavigationMenuLink>
@@ -239,8 +203,17 @@ export const Navbar = () => {
                 )}
                 <NavigationMenuItem key={group.id} value={group.id}>
                   <NavigationMenuTrigger
-                    className="marketing-nav-trigger h-11 rounded-[2px] bg-transparent px-2 xs:px-2 py-3 text-sm xs:text-sm"
+                    className="marketing-nav-trigger h-11 rounded-xs bg-transparent px-2 xs:px-2 py-3 text-sm xs:text-sm hover:bg-transparent hover:text-primary-text focus-visible:text-primary-text data-popup-open:bg-transparent data-popup-open:text-primary-text"
                     data-menu-trigger={group.id}
+                    onKeyDown={(event) => {
+                      if (!["ArrowDown", "Enter", " "].includes(event.key))
+                        return;
+                      event.preventDefault();
+                      event.preventBaseUIHandler();
+                      event.stopPropagation();
+                      setActive(group.id);
+                      focusMenu(group.id);
+                    }}
                     onClick={(event) => {
                       event.preventDefault();
                       setActive(group.id);
@@ -264,54 +237,80 @@ export const Navbar = () => {
                       if (document.activeElement === link)
                         pendingFocus.current = null;
                     }}
-                    onKeyDown={moveWithin}
+                    onKeyDown={(event) => {
+                      moveWithin(event);
+                      if (event.defaultPrevented) event.preventBaseUIHandler();
+                    }}
                   >
                     <div
-                      className={cn(
-                        "marketing-mega-grid relative mx-auto grid max-w-[min(1186px,calc(100%-56px))] auto-cols-fr grid-flow-col border border-accent-foreground",
-                        group.id === "channels" &&
-                          "grid-flow-row grid-cols-[2fr_1fr]",
-                      )}
+                      className="marketing-nav-grid relative mx-auto grid max-w-[min(1186px,calc(100%-56px))] grid-cols-[repeat(var(--menu-columns),minmax(0,1fr))] gap-px border border-accent-foreground bg-accent-foreground [grid-template-rows:minmax(3rem,auto)_repeat(var(--menu-rows),minmax(6rem,auto))]"
                       data-menu={group.id}
+                      style={
+                        {
+                          "--menu-columns":
+                            group.id === "channels" ? 3 : group.columns.length,
+                          "--menu-rows":
+                            group.id === "channels"
+                              ? 2
+                              : Math.max(
+                                  ...group.columns.map(
+                                    (column) => column.items.length,
+                                  ),
+                                ),
+                          "--menu-span":
+                            group.id === "channels"
+                              ? 3
+                              : Math.max(
+                                  ...group.columns.map(
+                                    (column) => column.items.length,
+                                  ),
+                                ) + 1,
+                        } as CSSProperties
+                      }
                     >
-                      {group.columns.map((column) => (
+                      {group.columns.map((column, columnIndex) => (
                         <div
                           className={cn(
-                            "marketing-mega-column relative border-accent-foreground border-r px-7 py-8",
+                            "marketing-nav-column relative grid grid-rows-subgrid gap-px [grid-row:span_var(--menu-span)]",
                             group.id === "channels" &&
-                              "grid grid-cols-2 gap-x-7",
+                              "col-span-3 grid-cols-subgrid",
                           )}
                           key={column.title}
                         >
-                          <p className="marketing-mega-heading col-span-full mb-4 font-medium text-[13px] text-foreground-dimmed">
+                          <p className="marketing-nav-column-heading relative col-span-full flex items-center bg-background-dimmed px-5 py-3 font-medium text-foreground-dimmed text-sm leading-snug">
                             {column.title}
                           </p>
-                          {column.items.map((item) => {
-                            const Icon = navigationIcon(item.href);
-                            const provider = navigationProviders[item.href];
+                          {column.items.map((item, itemIndex) => {
+                            const provider =
+                              group.id === "channels"
+                                ? navigationProviders[item.href]
+                                : undefined;
                             return (
                               <NavigationMenuLink
                                 key={`${item.href}-${item.label}`}
+                                data-junction-left={
+                                  group.id === "channels"
+                                    ? itemIndex % 3 === 0
+                                    : columnIndex === 0 ||
+                                      itemIndex >=
+                                        (group.columns[columnIndex - 1]?.items
+                                          .length ?? 0)
+                                }
                                 render={<Link href={item.href} />}
                                 onClick={() => setActive(null)}
-                                className="marketing-mega-link flex items-start gap-2 px-0 xs:px-0 py-2.5 xs:py-2.5 text-[13px] [&_.marketing-status]:mt-1 [&_.marketing-status]:text-[11px]"
+                                className="marketing-nav-cell group/nav-cell relative flex min-w-0 items-start gap-3 rounded-none bg-background px-5 xs:px-5 py-4 xs:py-4 text-sm leading-snug hover:bg-background-rich hover:text-primary-text focus-visible:bg-background-rich focus-visible:text-primary-text focus-visible:-outline-offset-4 [&_.marketing-status]:mt-2 [&_.marketing-status]:text-xs"
                               >
-                                {provider ? (
+                                {provider && (
                                   <ProviderLogo
                                     provider={provider}
-                                    className="marketing-nav-provider mt-0.5 size-5.5 shrink-0 object-contain"
-                                  />
-                                ) : (
-                                  <Icon
-                                    aria-hidden
-                                    className="mt-1 size-4 shrink-0 text-primary"
+                                    className="marketing-nav-provider mt-0.5 size-6 shrink-0 object-contain"
                                   />
                                 )}
                                 <span>
-                                  <span className="marketing-mega-label block font-medium text-foreground-rich">
+                                  <span className="marketing-mega-label block font-medium text-foreground-rich group-hover/nav-cell:text-primary-text group-focus-visible/nav-cell:text-primary-text">
                                     {item.label}
                                   </span>
-                                  <span className="marketing-mega-description mt-1 block text-foreground-dimmed text-xs leading-[1.45]">
+                                  <span className="marketing-mega-description mt-1.5 block text-foreground-dimmed text-xs leading-relaxed group-hover/nav-cell:text-primary-text group-focus-visible/nav-cell:text-primary-text">
                                     {item.description}
                                   </span>
                                   {item.status && (
@@ -323,24 +322,46 @@ export const Navbar = () => {
                               </NavigationMenuLink>
                             );
                           })}
+                          {column.items.length <
+                            Math.max(
+                              ...group.columns.map(
+                                (entry) => entry.items.length,
+                              ),
+                            ) && (
+                            <div
+                              aria-hidden="true"
+                              className="marketing-nav-empty bg-background"
+                              style={{
+                                gridRow: `span ${
+                                  Math.max(
+                                    ...group.columns.map(
+                                      (entry) => entry.items.length,
+                                    ),
+                                  ) - column.items.length
+                                }`,
+                              }}
+                            />
+                          )}
                         </div>
                       ))}
-                      <div className="marketing-mega-feature relative bg-background-dimmed px-7 py-8">
-                        <p className="font-heading font-medium text-2xl text-foreground-rich leading-[1.15]">
-                          {group.featured.title}
-                        </p>
-                        <p className="mt-5 text-sm">
-                          {group.featured.description}
-                        </p>
-                        <NavigationMenuLink
-                          render={<Link href={group.featured.href} />}
-                          onClick={() => setActive(null)}
-                          className="marketing-text-link mt-6 flex items-center gap-2 p-0 xs:p-0 text-primary-text"
-                        >
+                      <NavigationMenuLink
+                        render={<Link href={group.featured.href} />}
+                        onClick={() => setActive(null)}
+                        className="marketing-nav-feature-cell marketing-nav-cell group/nav-cell relative col-span-full flex items-center justify-between gap-6 rounded-none bg-background px-5 xs:px-5 py-4 xs:py-4 text-sm leading-snug hover:bg-background-rich hover:text-primary-text focus-visible:bg-background-rich focus-visible:text-primary-text focus-visible:-outline-offset-4"
+                      >
+                        <span>
+                          <span className="block font-medium text-foreground-rich group-hover/nav-cell:text-primary-text group-focus-visible/nav-cell:text-primary-text">
+                            {group.featured.title}
+                          </span>
+                          <span className="mt-1.5 block text-foreground-dimmed text-xs leading-relaxed group-hover/nav-cell:text-primary-text group-focus-visible/nav-cell:text-primary-text">
+                            {group.featured.description}
+                          </span>
+                        </span>
+                        <span className="flex shrink-0 items-center gap-2 font-medium text-primary-text">
                           {chrome.action.quaternary}
-                          <ArrowRightIcon className="size-4" />
-                        </NavigationMenuLink>
-                      </div>
+                          <ArrowRightIcon aria-hidden className="size-4" />
+                        </span>
+                      </NavigationMenuLink>
                     </div>
                   </NavigationMenuContent>
                 </NavigationMenuItem>
@@ -366,7 +387,7 @@ export const Navbar = () => {
           </div>
           <div className="marketing-nav-login hidden min-[1151px]:block">
             <Button
-              variant="outline"
+              variant="soft"
               color="emphasis"
               render={<Link href="/sign-in" />}
             >
@@ -388,7 +409,7 @@ export const Navbar = () => {
             <SheetPopup
               className={cn(
                 fonts,
-                "marketing-site marketing-mobile-sheet h-dvh w-screen max-w-none gap-6 overflow-y-auto border-0 bg-background px-6 py-7 font-body font-normal text-foreground sm:max-w-none",
+                "marketing-site marketing-grid-pattern marketing-mobile-sheet h-dvh w-screen max-w-none gap-6 overflow-y-auto border-0 bg-background px-6 py-7 font-body font-normal text-foreground [--rail-color:var(--color-accent-foreground)] [--rail-cross:var(--color-cross)] sm:max-w-none",
               )}
               classList={{ close: { root: "marketing-sheet-close" } }}
             >
@@ -405,70 +426,123 @@ export const Navbar = () => {
                 <SheetDescription>{chrome.menu.title}</SheetDescription>
               </SheetHeader>
               <nav aria-label={chrome.menu.title}>
-                <Accordion multiple>
+                <Accordion
+                  multiple
+                  className="marketing-mobile-menu-grid border border-accent-foreground bg-background"
+                >
                   {navigation.groups.map((group) => (
-                    <AccordionItem key={group.id} value={group.id}>
-                      <AccordionTrigger className="font-body">
+                    <AccordionItem
+                      key={group.id}
+                      value={group.id}
+                      className="border-accent-foreground last:border-b-0"
+                    >
+                      <AccordionTrigger className="marketing-mobile-nav-trigger min-h-15 items-center px-4 py-4 font-body text-base hover:text-primary-text focus-visible:text-primary-text focus-visible:-outline-offset-4">
                         {group.label}
                       </AccordionTrigger>
-                      <AccordionPanel>
-                        <div className="marketing-mobile-columns grid gap-6 py-4">
+                      <AccordionPanel className="data-open:overflow-visible">
+                        <div className="marketing-mobile-nav-grid grid gap-px border-accent-foreground border-t bg-accent-foreground">
                           {group.columns.map((column) => (
-                            <div key={column.title}>
-                              <p className="marketing-mega-heading mb-4 font-medium text-[13px] text-foreground-dimmed">
+                            <div className="grid gap-px" key={column.title}>
+                              <p className="marketing-nav-column-heading relative bg-background-dimmed px-4 py-3 font-medium text-foreground-dimmed text-sm">
                                 {column.title}
                               </p>
-                              {column.items.map((item) => (
-                                <SheetClose
-                                  nativeButton={false}
-                                  role="link"
-                                  key={`${item.href}-${item.label}`}
-                                  render={<Link href={item.href} />}
-                                  className="marketing-mobile-link flex items-center justify-between py-2.5 text-base text-foreground-rich"
-                                >
-                                  {item.label}
-                                  {item.status && (
-                                    <MarketingStatus status={item.status}>
-                                      {statusLabel(item.status)}
-                                    </MarketingStatus>
-                                  )}
-                                </SheetClose>
-                              ))}
+                              {column.items.map((item) => {
+                                const provider =
+                                  group.id === "channels"
+                                    ? navigationProviders[item.href]
+                                    : undefined;
+                                return (
+                                  <SheetClose
+                                    nativeButton={false}
+                                    role="link"
+                                    key={`${item.href}-${item.label}`}
+                                    render={<Link href={item.href} />}
+                                    className="marketing-mobile-nav-cell group/nav-cell relative flex min-h-24 min-w-0 items-start gap-3 bg-background px-4 py-4 text-sm leading-snug hover:bg-background-rich hover:text-primary-text focus-visible:bg-background-rich focus-visible:text-primary-text focus-visible:-outline-offset-4 [&_.marketing-status]:mt-2 [&_.marketing-status]:text-xs"
+                                  >
+                                    {provider && (
+                                      <ProviderLogo
+                                        provider={provider}
+                                        className="marketing-nav-provider mt-0.5 size-6 shrink-0 object-contain"
+                                      />
+                                    )}
+                                    <span>
+                                      <span className="block font-medium text-foreground-rich group-hover/nav-cell:text-primary-text group-focus-visible/nav-cell:text-primary-text">
+                                        {item.label}
+                                      </span>
+                                      <span className="mt-1.5 block text-foreground-dimmed text-xs leading-relaxed group-hover/nav-cell:text-primary-text group-focus-visible/nav-cell:text-primary-text">
+                                        {item.description}
+                                      </span>
+                                      {item.status && (
+                                        <MarketingStatus status={item.status}>
+                                          {statusLabel(item.status)}
+                                        </MarketingStatus>
+                                      )}
+                                    </span>
+                                  </SheetClose>
+                                );
+                              })}
                             </div>
                           ))}
+                          <SheetClose
+                            nativeButton={false}
+                            role="link"
+                            render={<Link href={group.featured.href} />}
+                            className="marketing-mobile-nav-cell group/nav-cell relative flex min-h-24 min-w-0 items-start justify-between gap-4 bg-background px-4 py-4 text-sm leading-snug hover:bg-background-rich hover:text-primary-text focus-visible:bg-background-rich focus-visible:text-primary-text focus-visible:-outline-offset-4"
+                          >
+                            <span>
+                              <span className="block font-medium text-foreground-rich group-hover/nav-cell:text-primary-text group-focus-visible/nav-cell:text-primary-text">
+                                {group.featured.title}
+                              </span>
+                              <span className="mt-1.5 block text-foreground-dimmed text-xs leading-relaxed group-hover/nav-cell:text-primary-text group-focus-visible/nav-cell:text-primary-text">
+                                {group.featured.description}
+                              </span>
+                            </span>
+                            <ArrowRightIcon
+                              aria-hidden
+                              className="mt-0.5 size-4 shrink-0 text-primary-text"
+                            />
+                          </SheetClose>
                         </div>
                       </AccordionPanel>
                     </AccordionItem>
                   ))}
                 </Accordion>
               </nav>
-              <SheetClose
-                nativeButton={false}
-                role="link"
-                render={<Link href="/pricing" />}
-                className="marketing-mobile-link flex items-center justify-between py-2.5 text-base text-foreground-rich"
-              >
-                {navigation.pricing}
-              </SheetClose>
-              <div className="flex flex-wrap items-center gap-4">
-                <Button
-                  variant="outline"
-                  color="emphasis"
-                  render={
-                    <Link href="/sign-in" onClick={() => setMobile(false)} />
-                  }
+              <div className="marketing-mobile-action-grid grid grid-cols-1 gap-px border border-accent-foreground bg-accent-foreground sm:grid-cols-2">
+                <SheetClose
+                  nativeButton={false}
+                  role="link"
+                  render={<Link href="/pricing" />}
+                  className="marketing-mobile-nav-cell relative col-span-full flex min-h-15 items-center bg-background px-4 py-4 font-medium text-base text-foreground-rich hover:bg-background-rich hover:text-primary-text focus-visible:text-primary-text"
                 >
-                  {chrome.action.tertiary}
-                </Button>
-                <Button
-                  render={
-                    <Link href="/sign-up" onClick={() => setMobile(false)} />
-                  }
-                >
-                  {chrome.action.secondary}
-                </Button>
+                  {navigation.pricing}
+                </SheetClose>
+                <div className="bg-background p-4">
+                  <Button
+                    variant="soft"
+                    color="emphasis"
+                    className="w-full"
+                    render={
+                      <Link href="/sign-in" onClick={() => setMobile(false)} />
+                    }
+                  >
+                    {chrome.action.tertiary}
+                  </Button>
+                </div>
+                <div className="bg-background p-4">
+                  <Button
+                    className="w-full"
+                    render={
+                      <Link href="/sign-up" onClick={() => setMobile(false)} />
+                    }
+                  >
+                    {chrome.action.secondary}
+                  </Button>
+                </div>
+                <div className="col-span-full bg-background p-4">
+                  <LanguageSwitcher />
+                </div>
               </div>
-              <LanguageSwitcher />
             </SheetPopup>
           </Sheet>
         </div>

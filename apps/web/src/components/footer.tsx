@@ -4,6 +4,7 @@ import Image from "next/image";
 import { getMessages } from "next-intl/server";
 import { CookieSettings } from "@/components/cookie-settings";
 import { LanguageSwitcher } from "@/components/language-switcher";
+import { AsciiWordmark } from "@/components/marketing/ascii-wordmark";
 import { fonts } from "@/components/marketing/fonts";
 import { FooterColumns } from "@/components/marketing/footer-columns";
 import {
@@ -137,16 +138,19 @@ export const Footer = async (_props: Footer.Props = {}) => {
                     </Link>
                   </li>
                 ))}
+                {column.title === copy.legal && (
+                  <li className="text-sm leading-relaxed">
+                    <CookieSettings label={copy.cookies} appearance="link" />
+                  </li>
+                )}
               </ul>
-              {column.title === copy.legal && (
-                <div className="mt-4 [&>button]:text-foreground-dimmed">
-                  <CookieSettings label={copy.cookies} />
-                </div>
-              )}
             </nav>
           ))}
         </div>
-        <FooterColumns columns={columns} />
+        <FooterColumns columns={columns} cookies={copy.cookies} />
+      </MarketingBand>
+      <MarketingBand className="bg-linear-to-b from-primary/6 to-background">
+        <AsciiWordmark />
       </MarketingBand>
       <MarketingBand>
         <div className="marketing-footer-bottom grid gap-8 px-7 py-10 max-sm:px-4 md:grid-cols-[1fr_auto] md:items-start">
@@ -187,9 +191,6 @@ export const Footer = async (_props: Footer.Props = {}) => {
             {copy.trademark}
           </p>
           {copy.copyright && <p>{copy.copyright}</p>}
-          <div className="block min-[801px]:hidden [&>button]:text-foreground-dimmed">
-            <CookieSettings label={copy.cookies} />
-          </div>
         </div>
       </MarketingBand>
     </footer>

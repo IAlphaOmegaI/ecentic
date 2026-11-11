@@ -26,11 +26,11 @@ const stageIcons = [
 export const Journey = ({ copy }: Journey.Props) => {
   const reduced = useMediaQuery("(prefers-reduced-motion: reduce)", {});
   return (
-    <MarketingBand className="enterprise-journey-panel bg-background-dimmed">
+    <MarketingBand className="enterprise-journey-panel bg-background">
       <Tabs defaultValue="connect">
         <TabsList
           aria-label={copy.title}
-          className="enterprise-stage-list grid w-full grid-cols-5 overflow-visible rounded-none border-0 border-[var(--rail-color)] border-b max-sm:grid-cols-[repeat(5,minmax(144px,1fr))] max-sm:overflow-x-auto"
+          className="enterprise-stage-list grid w-full grid-cols-5 overflow-visible rounded-none border-0 border-[var(--rail-color)] border-b bg-background-dimmed max-sm:grid-cols-[repeat(5,minmax(144px,1fr))] max-sm:overflow-x-auto"
         >
           {copy.steps.map((step, index) => {
             const Icon = stageIcons[index];
@@ -58,7 +58,7 @@ export const Journey = ({ copy }: Journey.Props) => {
               className="enterprise-stage-panel"
             >
               <Motion.Up
-                className="enterprise-stage-content grid grid-cols-[2fr_3fr] bg-background-dimmed max-sm:grid-cols-1"
+                className="enterprise-stage-content grid grid-cols-[2fr_3fr] bg-background-rich max-sm:grid-cols-1"
                 initial={false}
                 animate={
                   reduced

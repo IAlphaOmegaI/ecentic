@@ -1,5 +1,6 @@
 import { getMessages } from "next-intl/server";
 import type { ReactNode } from "react";
+import { EvidenceDetails } from "./evidence-details";
 import { EvidenceView } from "./evidence-view";
 
 export const EvidenceFrame = async ({
@@ -12,6 +13,7 @@ export const EvidenceFrame = async ({
   rows,
   source,
   pending,
+  compact = false,
   children,
 }: EvidenceFrame.Props) => {
   const { enterpriseEvidence } = await getMessages();
@@ -44,26 +46,37 @@ export const EvidenceFrame = async ({
       >
         {children}
       </EvidenceView>
-      {note && (
-        <p className="mt-4 max-w-[70ch] text-foreground-dimmed text-sm">
-          {note}
-        </p>
-      )}
-      {(caption || source) && (
-        <figcaption className="mt-6 space-y-2 text-foreground-dimmed text-xs leading-relaxed">
+      {compact ? (
+        <EvidenceDetails label={enterpriseEvidence.presentation.source}>
+          {note && <p>{note}</p>}
           {caption && <p>{caption}</p>}
-          {source && (
-            <p>
-              <span className="font-medium text-foreground">
-                {enterpriseEvidence.presentation.source}:{" "}
-              </span>
-              {source}
+          {source && <p>{source}</p>}
+          {pending && <p>{pending}</p>}
+        </EvidenceDetails>
+      ) : (
+        <>
+          {note && (
+            <p className="mt-4 max-w-[70ch] text-foreground-dimmed text-sm">
+              {note}
             </p>
           )}
-        </figcaption>
-      )}
-      {pending && (
-        <p className="mt-4 text-foreground-dimmed text-xs">{pending}</p>
+          {(caption || source) && (
+            <figcaption className="mt-6 space-y-2 text-foreground-dimmed text-xs leading-relaxed">
+              {caption && <p>{caption}</p>}
+              {source && (
+                <p>
+                  <span className="font-medium text-foreground">
+                    {enterpriseEvidence.presentation.source}:{" "}
+                  </span>
+                  {source}
+                </p>
+              )}
+            </figcaption>
+          )}
+          {pending && (
+            <p className="mt-4 text-foreground-dimmed text-xs">{pending}</p>
+          )}
+        </>
       )}
     </figure>
   );
@@ -80,6 +93,7 @@ export namespace EvidenceFrame {
     rows: readonly (readonly string[])[];
     source?: ReactNode;
     pending?: string;
+    compact?: boolean;
     children: ReactNode;
   };
 }

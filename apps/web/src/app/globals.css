@@ -215,6 +215,16 @@ tr {
   & .marketing-section-grid.border-t::after {
     top: -1px;
   }
+  & .marketing-section-grid.border-y::before,
+  & .marketing-section-grid.border-y::after {
+    top: -1px;
+    height: calc(100% + 2px);
+    background:
+      linear-gradient(var(--rail-color), var(--rail-color)) center top / 100%
+      1px no-repeat,
+      linear-gradient(var(--rail-color), var(--rail-color)) center bottom / 100%
+      1px no-repeat;
+  }
   & .enterprise-stage-list::before,
   & .enterprise-stage-list::after {
     bottom: -1px;
@@ -1372,6 +1382,121 @@ tr {
   & .marketing-footer-columns > nav:last-child {
     --junction-top-right: var(--rail-cross);
   }
+  /* Provider tiles use one, two, then four columns at their own breakpoints. */
+  & .enterprise-provider-grid.marketing-grid > article {
+    --junction-top-left: var(--rail-cross);
+    --junction-top-right: transparent;
+    --junction-bottom-left: transparent;
+    --junction-bottom-right: transparent;
+  }
+  @media (width >= 1024px) {
+    & .enterprise-provider-grid.marketing-grid > article:nth-child(4n),
+    & .enterprise-provider-grid.marketing-grid > article:last-child {
+      --junction-top-right: var(--rail-cross);
+    }
+    &
+      .enterprise-provider-grid.marketing-grid
+      > article:nth-child(4n + 1):nth-last-child(-n + 4),
+    &
+      .enterprise-provider-grid.marketing-grid
+      > article:nth-child(4n + 1):nth-last-child(-n + 4)
+      ~ article {
+      --junction-bottom-left: var(--rail-cross);
+    }
+  }
+  @media (640px <= width < 1024px) {
+    & .enterprise-provider-grid.marketing-grid > article:nth-child(odd) {
+      border-right: 1px solid var(--rail-color);
+    }
+    & .enterprise-provider-grid.marketing-grid > article:nth-child(even) {
+      border-right: 0;
+    }
+    & .enterprise-provider-grid.marketing-grid > article:nth-child(2n),
+    & .enterprise-provider-grid.marketing-grid > article:last-child {
+      --junction-top-right: var(--rail-cross);
+    }
+    &
+      .enterprise-provider-grid.marketing-grid
+      > article:nth-child(2n + 1):nth-last-child(-n + 2),
+    &
+      .enterprise-provider-grid.marketing-grid
+      > article:nth-child(2n + 1):nth-last-child(-n + 2)
+      ~ article {
+      --junction-bottom-left: var(--rail-cross);
+    }
+  }
+  @media (width < 640px) {
+    & .enterprise-provider-grid.marketing-grid > article {
+      border-right: 0;
+      --junction-top-right: var(--rail-cross);
+    }
+    & .enterprise-provider-grid.marketing-grid > article:last-child {
+      --junction-bottom-left: var(--rail-cross);
+    }
+  }
+  & .enterprise-provider-grid.marketing-grid > article:last-child {
+    --junction-bottom-right: var(--rail-cross);
+  }
+  /* Category headings and the wall own outside corners; tiles own internal ones. */
+  & .enterprise-provider-group > h3,
+  & .enterprise-integrations-wall {
+    position: relative;
+  }
+  & .enterprise-provider-group > h3::before,
+  & .enterprise-integrations-wall::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    z-index: 2;
+    left: -8px;
+    width: calc(100% + 16px);
+    height: 16px;
+    background:
+      linear-gradient(var(--rail-cross), var(--rail-cross)) left center / 16px
+      1px no-repeat,
+      linear-gradient(var(--rail-cross), var(--rail-cross)) 7.5px center / 1px
+      16px no-repeat,
+      linear-gradient(var(--rail-cross), var(--rail-cross)) right center / 16px
+      1px no-repeat,
+      linear-gradient(var(--rail-cross), var(--rail-cross)) calc(100% - 7.5px)
+      center / 1px 16px no-repeat;
+  }
+  & .enterprise-provider-group > h3::before {
+    top: -8px;
+  }
+  & .enterprise-integrations-wall::after {
+    bottom: -8px;
+  }
+  @media (width >= 1024px) {
+    &
+      .enterprise-provider-grid.marketing-grid
+      > article:nth-child(4n + 1):nth-last-child(-n + 4) {
+      --junction-bottom-left: transparent;
+    }
+    &
+      .enterprise-provider-grid.marketing-grid
+      > article:last-child:nth-child(4n) {
+      --junction-bottom-right: transparent;
+    }
+  }
+  @media (640px <= width < 1024px) {
+    &
+      .enterprise-provider-grid.marketing-grid
+      > article:nth-child(2n + 1):nth-last-child(-n + 2) {
+      --junction-bottom-left: transparent;
+    }
+    &
+      .enterprise-provider-grid.marketing-grid
+      > article:last-child:nth-child(2n) {
+      --junction-bottom-right: transparent;
+    }
+  }
+  @media (width < 640px) {
+    & .enterprise-provider-grid.marketing-grid > article:last-child {
+      --junction-bottom-left: transparent;
+      --junction-bottom-right: transparent;
+    }
+  }
   & main > .bg-grid-stripes {
     width: min(1186px, calc(100% - 56px));
     margin-inline: auto;
@@ -1383,14 +1508,81 @@ tr {
     }
   }
 
-  /* The menu's outside right edge and each column's left edge own crosses. */
-  & .marketing-mega-grid > div::before,
-  & .marketing-mega-grid > div::after,
-  & .marketing-mega-grid::before,
-  & .marketing-mega-grid::after {
+  /* The one-pixel grid gap owns seams. Each cell owns its upper-right
+     junction; only exposed left corners add a second cross. */
+  & .marketing-nav-column-heading,
+  & .marketing-nav-empty {
+    position: relative;
+  }
+  &
+    :is(
+      .marketing-nav-column-heading,
+      .marketing-nav-empty,
+      .marketing-nav-cell
+    ) {
+    --nav-junction-left: transparent;
+    --nav-junction-right: var(--rail-cross);
+  }
+  &
+    .marketing-nav-column:first-child
+    > :is(.marketing-nav-column-heading, .marketing-nav-empty),
+  & .marketing-nav-cell[data-junction-left="true"],
+  & .marketing-nav-feature-cell {
+    --nav-junction-left: var(--rail-cross);
+  }
+  & .marketing-nav-feature-cell {
+    --nav-junction-right: transparent;
+  }
+  &
+    :is(
+      .marketing-nav-column-heading,
+      .marketing-nav-empty,
+      .marketing-nav-cell
+    )::before,
+  & .marketing-nav-feature-cell::after {
+    content: "";
+    pointer-events: none;
+    position: absolute;
+    z-index: 2;
+    top: -8.5px;
+    left: -8.5px;
+    right: -8.5px;
+    height: 16px;
+    background:
+      linear-gradient(
+        to bottom,
+        var(--nav-junction-left),
+        var(--nav-junction-left)
+      )
+      left center / 16px 1px no-repeat,
+      linear-gradient(
+        to bottom,
+        var(--nav-junction-left),
+        var(--nav-junction-left)
+      )
+      7.5px center / 1px 16px no-repeat,
+      linear-gradient(
+        to bottom,
+        var(--nav-junction-right),
+        var(--nav-junction-right)
+      )
+      right center / 16px 1px no-repeat,
+      linear-gradient(
+        to bottom,
+        var(--nav-junction-right),
+        var(--nav-junction-right)
+      )
+      calc(100% - 7.5px) center / 1px 16px no-repeat;
+  }
+  & .marketing-nav-column::after,
+  &
+    .marketing-nav-grid[data-menu="channels"]
+    .marketing-nav-cell:nth-last-child(-n + 3)::after {
     content: "";
     position: absolute;
-    z-index: 1;
+    z-index: 2;
+    right: -8.5px;
+    bottom: -8.5px;
     width: 16px;
     height: 16px;
     pointer-events: none;
@@ -1400,20 +1592,54 @@ tr {
       linear-gradient(var(--rail-cross), var(--rail-cross)) center / 1px 16px
       no-repeat;
   }
-  & .marketing-mega-grid > div::before,
-  & .marketing-mega-grid > div::after {
+  & .marketing-nav-grid[data-menu="channels"] > .marketing-nav-column::after {
+    content: none;
+  }
+  & .marketing-nav-feature-cell::after {
+    --nav-junction-right: var(--rail-cross);
+    top: auto;
+    bottom: -8.5px;
+  }
+  & .marketing-mobile-menu-grid,
+  & .marketing-mobile-action-grid,
+  & .marketing-mobile-nav-trigger,
+  & .marketing-mobile-action-grid > div {
+    position: relative;
+  }
+  & .marketing-mobile-nav-grid .marketing-nav-column-heading {
+    --nav-junction-left: var(--rail-cross);
+  }
+  & .marketing-mobile-menu-grid::before,
+  & .marketing-mobile-menu-grid::after,
+  & .marketing-mobile-action-grid::before,
+  & .marketing-mobile-action-grid::after,
+  & .marketing-mobile-nav-grid .marketing-mobile-nav-cell::before,
+  &
+    .marketing-mobile-menu-grid
+    > :not(:first-child)
+    .marketing-mobile-nav-trigger::before,
+  & .marketing-mobile-action-grid > div::before {
+    content: "";
+    position: absolute;
+    z-index: 2;
+    pointer-events: none;
     left: -8px;
-  }
-  & .marketing-mega-grid > div::before,
-  & .marketing-mega-grid::before {
-    top: -8px;
-  }
-  & .marketing-mega-grid > div::after,
-  & .marketing-mega-grid::after {
-    bottom: -8px;
-  }
-  & .marketing-mega-grid::before,
-  & .marketing-mega-grid::after {
     right: -8px;
+    top: -8px;
+    height: 16px;
+    background:
+      linear-gradient(var(--rail-cross), var(--rail-cross)) left center / 16px
+      1px no-repeat,
+      linear-gradient(var(--rail-cross), var(--rail-cross)) 7.5px center / 1px
+      16px no-repeat,
+      linear-gradient(var(--rail-cross), var(--rail-cross)) right center / 16px
+      1px no-repeat,
+      linear-gradient(var(--rail-cross), var(--rail-cross)) calc(100% - 7.5px)
+      center / 1px 16px no-repeat;
+  }
+  & .marketing-mobile-menu-grid::after,
+  & .marketing-mobile-action-grid::after {
+    top: auto;
+    bottom: -8px;
   }
 }

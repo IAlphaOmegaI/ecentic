@@ -17,9 +17,9 @@ import {
 } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { aiChannels } from "@/content/ai-channels";
-import { integrationCounts } from "@/content/integrations";
 import { Link } from "@/i18n/navigation";
 import { HeroVideo } from "../hero-video";
+import { BusinessTabs } from "./business-tabs";
 import { IntegrationsPreview } from "./integrations-preview";
 
 const mechanisms = [
@@ -38,46 +38,15 @@ export const Businesses = ({ copy }: Businesses.Props) => (
       title={copy.title}
       description={copy.description}
     />
-    <div className="enterprise-business-grid marketing-section-grid grid grid-cols-4 border-[var(--rail-color)] border-t bg-background-dimmed max-sm:grid-cols-1 max-[1001px]:grid-cols-2">
-      {copy.items.map((item, index) => (
-        <article
-          key={item.id}
-          className="relative row-span-8 grid min-w-0 grid-rows-subgrid border-[var(--rail-color)] border-r px-6 py-8 last:border-r-0 max-sm:not-first:border-t max-sm:border-r-0 max-sm:px-4 max-[1001px]:nth-[n+3]:border-t max-[1001px]:nth-[2n]:border-r-0"
-        >
-          <div className="flex items-center gap-4 pb-6">
-            <span className="font-heading text-3xl text-primary-text leading-none">
-              {String(index + 1).padStart(2, "0")}
-            </span>
-            <p className="font-medium text-primary-text text-sm">
-              {item.eyebrow}
-            </p>
-          </div>
-          <h3 className="pb-4 text-[28px]">{item.title}</h3>
-          <p className="pb-6 text-foreground text-sm">{item.description}</p>
-          <h4 className="pb-4 font-body text-foreground text-sm tracking-normal">
-            {copy.painLabel}
-          </h4>
-          <ul className="row-span-3 grid grid-rows-subgrid text-[15px] text-foreground-dimmed leading-relaxed">
-            {item.pains.map((pain) => (
-              <li key={pain} className="pb-4">
-                {pain}
-              </li>
-            ))}
-          </ul>
-          <div className="flex items-end pt-4">
-            <Button render={<Link href={item.href} />}>
-              {item.label}
-              <ArrowRightIcon aria-hidden className="size-4" />
-            </Button>
-          </div>
-        </article>
-      ))}
-    </div>
+    <BusinessTabs copy={copy} />
   </MarketingBand>
 );
 
 export const ProductFilm = ({ copy }: ProductFilm.Props) => (
-  <MarketingBand id="film" className="enterprise-film">
+  <MarketingBand
+    id="film"
+    className="enterprise-film [&>.marketing-rail]:bg-background-dimmed"
+  >
     <MarketingHeading
       eyebrow={copy.eyebrow}
       title={copy.title}
@@ -141,26 +110,6 @@ export const Integrations = ({ copy, directory }: Integrations.Props) => (
       title={copy.title}
       description={copy.description}
     />
-    <p className="flex flex-wrap items-center gap-x-6 gap-y-2 px-7 pb-8 text-foreground-dimmed text-sm max-sm:px-4">
-      <span>
-        <strong className="font-medium text-foreground">
-          {integrationCounts.live}
-        </strong>{" "}
-        {copy.counter.live}
-      </span>
-      <span>
-        <strong className="font-medium text-foreground">
-          {integrationCounts.feed}
-        </strong>{" "}
-        {copy.counter.feed}
-      </span>
-      <span>
-        <strong className="font-medium text-foreground">
-          {integrationCounts.soon}
-        </strong>{" "}
-        {copy.counter.soon}
-      </span>
-    </p>
     <IntegrationsPreview copy={directory} />
     <div className="px-7 py-8 max-sm:px-4">
       <MarketingActions actions={copy.links} className="mt-0 justify-start" />

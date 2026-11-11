@@ -5,14 +5,13 @@ import {
   CommerceFilePenIcon,
   CommerceFileShieldIcon,
 } from "@zenncore/icons";
+import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import type { AppConfig } from "next-intl";
 import { Suspense } from "react";
-import { EvidenceArtwork } from "@/components/marketing/animated-ascii";
 import {
   CatalogFindings,
   DuaEvidence,
-  MarketEvidence,
   SimulationEvidence,
 } from "@/components/marketing/measured-evidence";
 import {
@@ -26,10 +25,10 @@ import { EditorialArticles } from "../../resources/_components/editorial-article
 import { EditorialArticlesSkeleton } from "../../resources/_components/skeletons";
 
 const safeguards = [
-  CommerceFilePenIcon,
-  CommerceCode_3Icon,
-  CommerceFileShieldIcon,
-  CommerceChartActivity_2Icon,
+  { icon: CommerceFilePenIcon, color: "text-primary-text" },
+  { icon: CommerceCode_3Icon, color: "text-secondary" },
+  { icon: CommerceFileShieldIcon, color: "text-success" },
+  { icon: CommerceChartActivity_2Icon, color: "text-warning" },
 ] as const;
 
 const paths = [
@@ -46,14 +45,6 @@ export const Findings = ({ copy }: Findings.Props) => (
       <CatalogFindings />
     </div>
     <DuaEvidence />
-    <MarketEvidence />
-    <div className="space-y-2 px-7 py-6 text-foreground-dimmed text-xs max-sm:px-4">
-      {copy.footnotes.map((note) => (
-        <p key={note.marker}>
-          <sup>{note.marker}</sup> {note.text}
-        </p>
-      ))}
-    </div>
   </MarketingBand>
 );
 
@@ -71,14 +62,18 @@ export const Procurement = ({ copy }: Procurement.Props) => (
       data-columns="2"
     >
       {copy.items.map((item, index) => {
-        const Icon = safeguards[index];
+        const safeguard = safeguards[index];
+        const Icon = safeguard?.icon;
         return (
           <article
             key={item.title}
             className="min-w-0 border-accent-foreground border-t border-r bg-background-dimmed px-7 py-8 even:border-r-0 max-sm:border-r-0 max-sm:px-4"
           >
             {Icon && (
-              <Icon aria-hidden className="mb-6 size-8 text-primary-text" />
+              <Icon
+                aria-hidden
+                className={cn("mb-6 size-8", safeguard.color)}
+              />
             )}
             <h3>{item.title}</h3>
             <p className="mt-4 max-w-[54ch] text-foreground">{item.body}</p>
@@ -99,7 +94,10 @@ export namespace Procurement {
 }
 
 export const PricingPaths = ({ copy }: PricingPaths.Props) => (
-  <MarketingBand id="pricing">
+  <MarketingBand
+    id="pricing"
+    className="bg-linear-to-br from-primary/10 via-background to-secondary/8 [&_.marketing-heading>p:last-child]:text-foreground"
+  >
     <MarketingHeading
       eyebrow={copy.eyebrow}
       title={copy.title}
@@ -112,7 +110,7 @@ export const PricingPaths = ({ copy }: PricingPaths.Props) => (
       {copy.items.map((item, index) => (
         <article
           key={item.title}
-          className="flex min-w-0 flex-col border-accent-foreground border-t border-r px-7 py-8 last:border-r-0 max-sm:border-r-0 max-sm:px-4"
+          className="relative flex min-w-0 flex-col border-accent-foreground border-t border-r bg-linear-to-b from-background-rich/60 to-transparent px-7 py-8 last:border-r-0 max-sm:border-r-0 max-sm:px-4"
         >
           <div aria-hidden className="mb-8 flex h-12 items-center -space-x-2">
             {paths[index]?.map((provider) => (
@@ -153,10 +151,6 @@ export namespace PricingPaths {
 
 export const Resources = ({ copy }: Resources.Props) => (
   <MarketingBand id="resources" className="relative overflow-hidden">
-    <EvidenceArtwork
-      kind="catalog"
-      className="pointer-events-none absolute -top-8 right-8 hidden text-primary/15 lg:block"
-    />
     <MarketingHeading
       eyebrow={copy.eyebrow}
       title={copy.title}

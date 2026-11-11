@@ -5,12 +5,13 @@ import {
   AccordionPanel,
   AccordionTrigger,
 } from "@zenncore/web/components/accordion";
+import { CookieSettings } from "@/components/cookie-settings";
 import { Link } from "@/i18n/navigation";
 
-export const FooterColumns = ({ columns }: FooterColumns.Props) => (
+export const FooterColumns = ({ columns, cookies }: FooterColumns.Props) => (
   <div className="marketing-footer-mobile block min-[801px]:hidden">
     <Accordion multiple>
-      {columns.map((column) => (
+      {columns.map((column, index) => (
         <AccordionItem
           value={column.title}
           key={column.title}
@@ -38,6 +39,11 @@ export const FooterColumns = ({ columns }: FooterColumns.Props) => (
                   </Link>
                 </li>
               ))}
+              {index === columns.length - 1 && (
+                <li>
+                  <CookieSettings label={cookies} appearance="link" />
+                </li>
+              )}
             </ul>
           </AccordionPanel>
         </AccordionItem>
@@ -48,6 +54,7 @@ export const FooterColumns = ({ columns }: FooterColumns.Props) => (
 
 export namespace FooterColumns {
   export type Props = {
+    cookies: string;
     columns: readonly {
       title: string;
       links: readonly { href: string; label: string }[];

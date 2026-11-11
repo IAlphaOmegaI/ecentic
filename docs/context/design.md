@@ -42,15 +42,34 @@ editorial and pricing content stays on the canvas. The latest instruction to use
 variables supersedes the former marketing-only neutral values; do not override the shared palette.
 See [the token mapping](../marketing/tailwind-migration.md).
 
-Primary marketing buttons use the cookie banner's 6 px corners. Secondary actions, inputs and
-selectors use 2 px corners. The large blue hero may be subtly rounded, with equal 24 px margins
-above and beside it (16 px on mobile), while its content remains centered on the standard rails.
-Only vertical guides pass through that blue surface. Each shared border and junction has one
-owner; use crosses at actual intersections without stacking duplicate lines or marks.
+Primary marketing buttons use the native `@zenncore/web` blue gradient with 6 px corners.
+Use the neutral gradient for a secondary action and the soft emphasis variant for navbar login.
+Square full-width actions remain appropriate inside editorial cards, with canvas padding at the
+sides. Inputs and selectors retain the shared 2 px corners; native tabs retain their own rounding.
+The large blue hero uses equal 12 px margins above and beside it (8 px on mobile), a 100dvh minimum
+height, and centered content rails. Its blue surface continues behind the closed navbar. The
+closing banner uses the same inset geometry with the dark `emphasis` surface. Only vertical guides
+pass through these surfaces. Each shared border and junction has one owner; use crosses at actual
+intersections without stacking duplicate lines or marks.
 
-Decorative ASCII is literal text, not dotted bitmap texture. The navbar uses progressive backdrop
-blur and participates in document flow; desktop menus push content down and restore its position
-when closed. See [the delivery record](../marketing/enterprise-rebuild.md) and
+Journey's outer gutters use `background`; its gray tab strip stays inside the rails and the selected
+tab and panel share `background-rich`. The audience section uses native tabs with distinct semantic
+accents and restrained gradients. Provider cards are outlined squares, using one column on small
+phones, two on tablets and four on desktop. The original product film remains intact inside a
+`background-dimmed` section. Fade vertical guides before uninterrupted comparison surfaces and keep
+them hidden through the following source/footer area.
+
+Decorative ASCII is literal text. Dense character silhouettes evolve at a low frequency and pause
+under reduced motion, outside the viewport and in hidden tabs. The channel chronology is a
+continuous winding character path rather than isolated ASCII cards. The footer ends with a large,
+legible character-based ecentic wordmark.
+
+The navbar uses six masked progressive backdrop-blur layers with no bottom rule. Desktop menus
+participate in document flow but opening, switching and closing them must preserve the user's
+scroll position. Every destination occupies its own grid cell, with shared row tracks and blue text
+on hover/focus. Remove repeated generic destination icons; retain actual provider logos only where
+all peers use them consistently. See [the current annotation record](../marketing/annotation-pass-v4.md),
+[the delivery record](../marketing/enterprise-rebuild.md) and
 [ASCII provenance](../marketing/ascii-text-provenance.md).
 
 ### The four-part philosophy

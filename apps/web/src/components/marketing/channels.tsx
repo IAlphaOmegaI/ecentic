@@ -62,11 +62,21 @@ export const ChannelComparison = async () => {
   }).format(new Date(`${comparisonCheckedAt}T12:00:00Z`));
   return (
     <section id="channel-comparison">
-      <MarketingHeading
-        title={copy.title}
-        description={copy.description}
-        className="p-0 max-sm:p-0"
-      />
+      <div className="relative isolate">
+        <div
+          aria-hidden
+          className="marketing-guide-fade pointer-events-none absolute -inset-x-7 inset-y-0 -z-1 opacity-55 [mask-image:linear-gradient(180deg,transparent,black_32px,black_calc(100%-80px),transparent)] max-sm:-inset-x-4 [&>span]:absolute [&>span]:inset-y-0 [&>span]:w-px [&>span]:bg-accent-foreground"
+        >
+          <span className="left-1/4 max-sm:hidden" />
+          <span className="left-1/2" />
+          <span className="left-3/4 max-sm:hidden" />
+        </div>
+        <MarketingHeading
+          title={copy.title}
+          description={copy.description}
+          className="p-0 max-sm:p-0"
+        />
+      </div>
       <ScrollArea
         className="mt-8 min-w-0 max-w-full"
         role="region"
