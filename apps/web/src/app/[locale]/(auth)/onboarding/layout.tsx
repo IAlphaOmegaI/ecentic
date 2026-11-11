@@ -1,16 +1,13 @@
 import { unwrapResult } from "@zenncore/utils";
 import { getLocale } from "next-intl/server";
+import { type PropsWithChildren, Suspense } from "react";
 import { AuthProvider } from "@/context/auth";
 import { redirect } from "@/i18n/navigation";
 import * as Authentication from "@/server/app/authentication";
 import { Environment } from "@/server/utils/environment";
 import { OnboardingLayout } from "./_components/onboarding-layout";
 
-type OnboardingLayoutProps = {
-  children: React.ReactNode;
-};
-
-export default async ({ children }: OnboardingLayoutProps) => {
+const AuthenticatedOnboarding = async ({ children }: PropsWithChildren) => {
   const user = await unwrapResult(
     Authentication.getCurrentUser(Environment.SERVER),
   );
@@ -24,3 +21,9 @@ export default async ({ children }: OnboardingLayoutProps) => {
     </AuthProvider>
   );
 };
+
+export default ({ children }: PropsWithChildren) => (
+  <Suspense>
+    <AuthenticatedOnboarding>{children}</AuthenticatedOnboarding>
+  </Suspense>
+);

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import {
   Crosshair,
   SectionKicker,
@@ -38,7 +39,9 @@ export default () => (
             </h2>
           </div>
           <div className="p-6">
-            <FreeForAllClient />
+            <Suspense>
+              <FreeForAllClient />
+            </Suspense>
           </div>
         </div>
       </div>

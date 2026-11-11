@@ -81,7 +81,9 @@ export default () => (
         <div className="relative mx-8 bg-background-rich">
           <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <DiscoveryClient />
+          <Suspense>
+            <DiscoveryClient />
+          </Suspense>
         </div>
       </div>
 
