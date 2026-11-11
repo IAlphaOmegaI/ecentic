@@ -18885,5 +18885,16 @@
     },
     "assistant": "ecentic simulation",
     "response": "Assistant response"
+  },
+  "commerceFigures": {
+    "catalog": "Illustration: a tray of product records. Point at a record, or use the arrow keys, to lift it.",
+    "document": "Illustration: a document terminal. Move the pointer through its rows to lift a line.",
+    "workflow": "Illustration: a connected path that branches and rejoins. Move the pointer along it to trace the connections.",
+    "checkout": "Illustration: a shopping basket. It turns toward the pointer and its handle follows.",
+    "inspection": "Illustration: three inspection sieves. Move the pointer vertically to separate a layer.",
+    "drawer": "Illustration: three catalog drawers. Move the pointer vertically to open a drawer.",
+    "format": "Illustration: a file with uneven rows. Move the pointer down the file to align them.",
+    "relay": "Illustration: a branching network. Point at a destination to illuminate the route.",
+    "hub": "Illustration: connected tiles around a central hub. Point at a tile to lift it and highlight its connection."
   }
 }

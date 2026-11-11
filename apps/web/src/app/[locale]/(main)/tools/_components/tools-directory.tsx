@@ -4,7 +4,7 @@ import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import type { AppConfig } from "next-intl";
-import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import {
   MarketingEdgeCrosses,
   MarketingLightBand,
@@ -14,11 +14,11 @@ import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
 
 const tools = [
-  { key: "score", artwork: "bag" },
-  { key: "validator", artwork: "commerce" },
-  { key: "playground", artwork: "cart" },
-  { key: "scanner", artwork: "console" },
-  { key: "compare", artwork: "bag" },
+  { key: "score", artwork: "catalog" },
+  { key: "validator", artwork: "inspection" },
+  { key: "playground", artwork: "checkout" },
+  { key: "scanner", artwork: "document" },
+  { key: "compare", artwork: "catalog" },
 ] as const;
 
 export const ToolsDirectory = ({ section, copy }: ToolsDirectory.Props) => (
@@ -115,9 +115,11 @@ export const ToolsDirectory = ({ section, copy }: ToolsDirectory.Props) => (
                 <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 md:hidden" />
                 <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2 max-md:hidden" />
                 <div className="relative min-h-64 flex-1 text-primary-text max-md:h-60 max-md:min-h-0 max-md:flex-none">
-                  <div className="absolute inset-6 max-sm:inset-4">
-                    <EvolvingAscii artwork={tool.artwork} />
-                  </div>
+                  <CommerceFigure
+                    kind={tool.artwork}
+                    surface="field"
+                    className="absolute inset-0 size-full"
+                  />
                 </div>
                 <ol className="relative grid grid-cols-3 border-accent-foreground border-t">
                   <MarketingEdgeCrosses />

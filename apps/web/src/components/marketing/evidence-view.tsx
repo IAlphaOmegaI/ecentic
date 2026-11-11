@@ -9,7 +9,7 @@ import {
 } from "@zenncore/web/components/tooltip";
 import { useFormatter } from "next-intl";
 import { type ReactNode, useId } from "react";
-import { Bar, BarChart, ResponsiveContainer, XAxis, YAxis } from "recharts";
+import { MeasurementRule } from "@/components/hairline/measurement-chart";
 import { fonts } from "./fonts";
 
 export const EvidenceView = ({ children }: EvidenceView.Props) => (
@@ -114,38 +114,17 @@ export const EvidenceMeter = ({
       <div
         role="img"
         aria-label={`${label}: ${share}. ${detail}`}
-        className="mt-4 h-16 w-full min-w-0 font-body"
+        className="mt-4 w-full min-w-0 font-body"
       >
-        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-          <BarChart
-            accessibilityLayer={false}
-            aria-hidden
-            data={[{ percentage }]}
-            layout="vertical"
-            margin={{ top: 0, right: 20, bottom: 0, left: 20 }}
-          >
-            <XAxis
-              type="number"
-              domain={[0, 100]}
-              ticks={[0, 50, 100]}
-              tickFormatter={(tick: number) =>
-                format.number(tick / 100, { style: "percent" })
-              }
-              tick={{ fill: "var(--color-foreground-dimmed)", fontSize: 11 }}
-              tickLine={false}
-              axisLine={false}
-            />
-            <YAxis type="category" hide />
-            <Bar
-              dataKey="percentage"
-              fill={`var(--color-${tone})`}
-              background={{ fill: "var(--color-accent-foreground)", radius: 6 }}
-              barSize={12}
-              radius={6}
-              isAnimationActive={false}
-            />
-          </BarChart>
-        </ResponsiveContainer>
+        <MeasurementRule
+          percentage={percentage}
+          tone={tone}
+          labels={[
+            format.number(0, { style: "percent" }),
+            format.number(0.5, { style: "percent" }),
+            format.number(1, { style: "percent" }),
+          ]}
+        />
       </div>
     </div>
   );

@@ -42,9 +42,7 @@ export const BrandsBody = async ({
                   jobs={brandsPage.jobs}
                   challenges={content.challenges}
                   link={content.challengeLabels.link}
-                >
-                  {sectionChildren?.[section.id]}
-                </BrandsJobs>
+                />
               </MarketingBand>
             );
           case "integrations":

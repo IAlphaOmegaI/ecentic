@@ -23,6 +23,29 @@ import {
 } from "./primitives";
 import { TrackingOverview } from "./tracking-overview";
 
+const heroSubjects: Record<string, MarketingHero.Props["figure"]> = {
+  "/partners": "hub",
+  "/solutions/brands": "catalog",
+  "/solutions/retailers-and-marketplaces": "checkout",
+  "/solutions/enterprise": "relay",
+  "/solutions/agencies-and-partners": "hub",
+  "/integrations/shopify": "checkout",
+  "/integrations/woocommerce": "workflow",
+  "/integrations/google-merchant-center": "relay",
+  "/integrations/product-feeds": "format",
+  "/platform/connect": "drawer",
+  "/platform/simulate": "inspection",
+  "/platform/fix": "format",
+  "/platform/sell": "checkout",
+  "/platform/track": "workflow",
+  "/stories": "catalog",
+  "/stories/dua-flavours": "catalog",
+  "/changelog": "document",
+  "/contact": "hub",
+  "/support": "document",
+  "/demo": "inspection",
+};
+
 export const marketingMetadata = async (
   meta: { title: string; description: string },
   path: string,
@@ -325,6 +348,7 @@ export const MarketingPage = async ({
         meta={heroMeta}
         identity={heroIdentity}
         illustration={heroIllustration}
+        figure={heroSubjects[path]}
       >
         {heroChildren}
       </MarketingHero>

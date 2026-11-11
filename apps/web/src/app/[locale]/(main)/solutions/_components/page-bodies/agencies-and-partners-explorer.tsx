@@ -1,16 +1,10 @@
 "use client";
 
 import { ArrowRightIcon } from "@zenncore/icons";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionPanel,
-  AccordionTrigger,
-} from "@zenncore/web/components/accordion";
 import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import type { ReactNode } from "react";
 import { Plus } from "@/components/plus";
-import { JourneyFigure } from "../journey-figure";
+import { SolutionRoadmap } from "../solution-roadmap";
 
 export const AgenciesChallenges = ({
   label,
@@ -18,83 +12,19 @@ export const AgenciesChallenges = ({
 }: {
   label: string;
   children: ReactNode;
-}) => (
-  <Accordion className="border-accent-foreground border-t">
-    <AccordionItem value="questions" className="border-b-0">
-      <AccordionTrigger
-        className="items-center bg-background-dimmed px-4 py-6 hover:bg-background-rich focus-visible:-outline-offset-4 sm:px-8"
-        classList={{ trigger: { icon: "size-4 shrink-0" } }}
-      >
-        {label}
-      </AccordionTrigger>
-      <AccordionPanel className="[&_.marketing-grid>div:nth-child(2)]:bg-background-dimmed [&_.marketing-grid>div:nth-child(2)]:bg-none">
-        {children}
-      </AccordionPanel>
-    </AccordionItem>
-  </Accordion>
-);
+}) => <section aria-label={label}>{children}</section>;
 
 export const AgenciesTracks = ({ items, labels }: AgenciesTracks.Props) => (
-  <Tabs
-    defaultValue={0}
-    orientation="vertical"
-    className="relative grid border-accent-foreground border-t lg:grid-cols-[3fr_7fr]"
-  >
-    <Plus className="top-0 left-[30%] -translate-x-1/2 -translate-y-1/2 max-lg:hidden" />
-    <div className="border-accent-foreground bg-background-dimmed p-4 max-lg:border-b lg:border-r">
-      <TabsList
-        aria-label={labels.label}
-        className="flex w-full flex-col gap-2 rounded-none border-0"
-      >
-        {items.map((item, index) => (
-          <Tab
-            key={item.title}
-            value={index}
-            className="h-auto min-h-16 w-full justify-start gap-4 rounded-md border-0 px-4 py-4 text-left text-base leading-snug before:hidden hover:bg-background-rich focus-visible:-outline-offset-4 data-[active]:bg-primary-text data-selected:bg-primary-text lg:min-h-20 lg:py-6"
-          >
-            <span aria-hidden className="shrink-0 text-sm opacity-70">
-              {String(index + 1).padStart(2, "0")}
-            </span>
-            <span>{item.title}</span>
-          </Tab>
-        ))}
-      </TabsList>
-    </div>
-    {items.map((item, index) => (
-      <TabsPanel
-        key={item.title}
-        value={index}
-        className="min-w-0 bg-background"
-      >
-        <div className="relative grid md:min-h-[380px] md:grid-cols-2">
-          <Plus className="top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 max-md:hidden" />
-          <Plus className="bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 max-md:hidden" />
-          <div className="flex min-w-0 flex-col justify-center px-4 py-8 sm:px-8">
-            <h3>{item.title}</h3>
-            <p className="mt-6 max-w-[38ch] text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">
-              {item.body}
-            </p>
-          </div>
-          <div className="relative min-h-60 overflow-hidden border-accent-foreground bg-background-dimmed text-primary-text/80 max-md:border-t md:border-l">
-            <JourneyFigure stage={index + 1} large />
-          </div>
-        </div>
-        <div className="border-accent-foreground border-t px-4 py-6 sm:px-8">
-          <p className="text-foreground-dimmed text-sm">{labels.pathLabel}</p>
-          <ol className="mt-4 grid gap-4 sm:grid-cols-3">
-            {labels.paths[index]?.map((step, position) => (
-              <li key={step} className="flex items-start gap-2 text-sm">
-                <span aria-hidden className="text-primary-text">
-                  {position + 1}.
-                </span>
-                <span>{step}</span>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </TabsPanel>
-    ))}
-  </Tabs>
+  <SolutionRoadmap
+    tone="dark"
+    label={labels.label}
+    items={items.map((item, index) => ({
+      title: item.title,
+      body: item.body,
+      path: labels.paths[index],
+      figure: index === 0 ? "hub" : index === 1 ? "workflow" : "relay",
+    }))}
+  />
 );
 
 export namespace AgenciesTracks {

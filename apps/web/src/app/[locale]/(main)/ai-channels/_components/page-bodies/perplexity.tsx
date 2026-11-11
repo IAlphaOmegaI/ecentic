@@ -11,7 +11,7 @@ import { getMessages } from "next-intl/server";
 import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
-import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import { MarketingSection } from "@/components/marketing/page";
 import {
   MarketingActions,
@@ -49,9 +49,11 @@ const ShoppingExplorer = ({ copy }: { copy: Copy["shopping"] }) => (
           className="size-10"
         />
       </div>
-      <div className="h-64 text-primary-text sm:h-80">
-        <EvolvingAscii artwork="bag" />
-      </div>
+      <CommerceFigure
+        kind="catalog"
+        surface="field"
+        className="aspect-auto h-64 w-full sm:h-80"
+      />
       <p className="px-7 pb-8 text-foreground-dimmed text-sm max-sm:px-4">
         {copy.caption}
       </p>

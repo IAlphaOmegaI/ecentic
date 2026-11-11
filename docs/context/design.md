@@ -66,8 +66,7 @@ them hidden through the following source/footer area.
 
 Decorative ASCII uses literal text, or a variable-dot halftone where the shape reads more clearly. Character silhouettes evolve at a low frequency and pause
 under reduced motion, outside the viewport and in hidden tabs. The channel chronology is a
-continuous winding character path rather than isolated ASCII cards. The footer ends with a large,
-legible typographic écentic wordmark with a restrained hairline accent. Evidence uses proper scaled charts; reserve character art
+continuous winding character path rather than isolated ASCII cards. The footer ends with a full-width, legible outlined écentic wordmark whose strokes draw into view; its static outline remains available without motion. Evidence uses proper scaled charts; reserve character art
 for decoration outside the product roadmap. Omit unavailable metrics and render count labels on
 one line with proportional sans numerals. Evidence charts keep a 0–100% scale, neutral tracks and
 6 px rounded ends on both layers. Color the fill by outcome: success at 60% and above, warning
@@ -1543,9 +1542,9 @@ Keep the original product film and real screenshots. Decorative figures and illu
 
 ## 26. Hairline illustrations
 
-Use one named Hairline figure per page for a decorative concept, on `bg-background` or `bg-background-dimmed` only. Hero placements use the neutral split hero; real product screenshots remain in their existing proof sections. Keep figures apart from replays and charts and remove competing decorative motion in the same section. Never add numbers, axes or data labels to a figure.
+Use one clear subject per Hairline figure and one dominant graphic per explanation. The 11 November evening review explicitly extends these drawings throughout the public pages, including meaningful body sections as well as heroes. Use the shared `CommerceFigure` vocabulary for catalog drawers and cards, inspection sieves, document terminals, checkout baskets and connected paths. Match the plate to the exact neutral or charcoal surface with `HairlineFigure.surface`; never leave an opaque mismatched square behind the figure. Keep real product screenshots in their proof sections. Decorative figures do not encode evidence or pricing data.
 
-`HairlineFigure` owns the shared 1px stroke, primary highlight and cross-gray edge through Tailwind properties referencing theme tokens. Match its `surface` to the containing field so occlusion plates disappear into the background. Page-only client islands lazy-load one named figure as the wrapper nears the viewport. `play` remains false. Reduced motion remounts the rest pose with zero intensity and blocks pointer and keyboard events; zero intensity alone still moves in version 0.5.1. Riffle retains its native keyboard controls and visible focus ring in normal motion. Decorative art does not replace the server-rendered explanation.
+`HairlineFigure` owns the shared 1px stroke, primary highlight and theme-aware edge through Tailwind properties referencing theme tokens. Match its `surface` to the containing field so occlusion plates disappear into the background. Client islands lazy-load each named figure as its wrapper nears the viewport. `play` remains false. Reduced motion remounts the rest pose with zero intensity and blocks pointer and keyboard events; zero intensity alone still moves in version 0.5.1. Riffle retains its native keyboard controls and visible focus ring in normal motion. Decorative art does not replace the server-rendered explanation.
 
 The pinned 0.5.1 Bun patch adds only PURE annotations to the library's React component factories. Without these, a named React import retains all 33 figures (about 53 KB gzip); with them, individual Priority 1 figure bundles measure about 9 KB with React external. Retest tree-shaking before upgrading or removing the patch. No runtime engine or visual behavior is patched. Phosphor and Slow are excluded because they run without interaction.
 
@@ -1596,13 +1595,13 @@ Apply this language across public page families through opt-in shared section te
 
 ## 31. Point-grid artwork and richer secondary explanations
 
-The latest review approves Connect’s variable-dot catalog illustration as the object-art treatment throughout the site. `EvolvingAscii` keeps its call-site API but now renders local SVG halftone masks, with source aspect ratios preserved. Catalog, selection lens, bag, cart, console and agent are distinct subjects. Keep the full silhouette legible; never stretch or fill a hero with unrecognizable character noise. A single three-second light pass reveals the points when the artwork enters view; optional subject sequences run once, with static first-render and reduced-motion states. The footer’s readable typographic écentic wordmark and schematic text road remain separate motifs.
+The earlier review approved Connect’s variable-dot catalog illustration; the later evening review prioritizes recognizable Hairline subjects in a dedicated art field over noisy or cropped hero silhouettes. `EvolvingAscii` keeps its call-site API but now renders local SVG halftone masks, with source aspect ratios preserved. Catalog, selection lens, bag, cart, console and agent are distinct subjects. Keep the full silhouette legible; never stretch or fill a hero with unrecognizable character noise. A single three-second light pass reveals the points when the artwork enters view; optional subject sequences run once, with static first-render and reduced-motion states. The footer’s readable drawn-outline écentic wordmark and schematic text road remain separate motifs.
 
 Use the approved connected catalog graphic and Brands product journey as composition references. Subject-specific graphics, generous Hairline figures on neutral surfaces, contained gradients and asymmetric dark workbenches carry across platform, integration, solution and channel pages. Keep one visual relationship per graphic; do not invent sample measurements or add decoration to legal prose. Overlapping provider groups use compact rounded holders to separate the marks. Standalone provider logos remain unframed.
 
 Public file viewers use native icon selection tiles and a continuous code rail. JSON is pretty-printed with line numbers and semantic syntax colors; arbitrary source strings remain escaped React text. Preserve the source link, fetched time, request timeout and preview bounds. Keep native scrolling inside long code previews without creating page overflow.
 
-Pricing uses a prominent illustrative score, three subscription cards followed by PAYG and Enterprise, and a fee comparison calculated from canonical prices. All split rows share the same 50/50 seam. The user explicitly clarified that removing the $500 callout is a presentation change: preserve the enforced billing cap, estimate calculation, legal terms and existing customer agreements. Fee assumptions remain available in the calculator’s disclosure. The footer stays one light cutout field with a continuous white-to-blue gradient across its full extent so it reads separately from the off-white page. Child rows and cells remain transparent.
+Pricing uses a prominent illustrative score, three subscription cards followed by PAYG and Enterprise, and a fee comparison calculated from canonical prices. Related split rows align their seams; a standalone calculator may allocate more width to its measured comparison. The user explicitly clarified that removing the $500 callout is a presentation change: preserve the enforced billing cap, estimate calculation, legal terms and existing customer agreements. Fee assumptions remain available in the calculator’s disclosure. The footer stays one light cutout field with a continuous white-to-blue gradient across its full extent so it reads separately from the off-white page. Child rows and cells remain transparent.
 
 
 ## 32. Connected workbenches and compact conversion rows
@@ -1631,3 +1630,35 @@ Small price-comparison bars do not need a second hairline baseline. Use the bar 
 actual price to explain the comparison. Separate the detailed plan table with a visible top gutter.
 Supporting service bundles place their service breakdown before a compact flag and price summary;
 avoid a tall, mostly empty price column. Commercial terms remain unchanged.
+
+
+## 33. Recognizable subjects, measured charts and visible journeys
+
+The 11 November evening review makes recognizability the first test. Homepage, partner, solution and
+integration headers give their subject drawing its own area, clear of the title and conversion row.
+A basket, catalog tray or connected hub must read at rest and at tablet width. Keep motion responsive
+to the pointer, preserve proportions, and do not crop away the features that identify the object.
+A page may repeat this visual language in a different, meaningful body explanation. It should not
+repeat the same illustration beside every paragraph.
+
+Pricing and evidence charts use the thin-stroke grammar in `MeasurementDial`, `MeasurementBars`
+and `MeasurementRule`. These are measured, accessible charts, not Hairline's decorative `Plot`:
+axes, tick positions and displayed values stay tied to the source data. Hover or keyboard focus
+may select a series or emphasize its stroke; it must not invent a measurement or move a bar away
+from its value. Animations settle, and reduced motion exposes the same complete chart immediately.
+The fee estimator remains a native input-driven calculation with canonical rates, rounding and cap.
+Table wrappers may scroll horizontally, but must allow ordinary vertical page scrolling to chain.
+
+Brands, other business audiences and WooCommerce setup expose every milestone in connected rows.
+The path and its drawing support the reading order; visitors do not need to click a tab to discover
+the next part of the explanation. Tools whose selection changes a genuine preview may retain native
+tabs. Resources and support are navigable directories with visible choices, official bare marks or
+meaningful icons, localized descriptions and aligned native actions. Their important explanations
+may use light cutouts or charcoal workbenches; long reference material remains readable and neutral.
+Developer quickstarts and public endpoint directories use document and network figures beside real
+code and paths, preserving copy actions and the actual API content.
+
+The footer retains one continuous white-to-blue field. Its full-width outline wordmark is legible
+before enhancement, draws once, and responds subtly to the pointer using the Hairline engine.
+Brand lettering is an explicit exception to the no-label rule for decorative figures. It is not a
+measurement. Reduced motion and JavaScript failure leave the complete static brand outline.

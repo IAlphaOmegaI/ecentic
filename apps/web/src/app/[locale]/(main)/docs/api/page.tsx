@@ -1,5 +1,5 @@
 import { getMessages } from "next-intl/server";
-import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
 import { openApiDocument } from "@/lib/agent-discovery";
 import { ApiDefinition } from "./_components/api-definition";
@@ -90,8 +90,12 @@ export default async () => {
             ]}
             rail={
               <div>
-                <div className="h-32 text-foreground-dimmed">
-                  <EvolvingAscii artwork="console" />
+                <div className="mx-auto aspect-[5/4] w-full max-w-72">
+                  <CommerceFigure
+                    kind="document"
+                    surface="field"
+                    className="h-full w-full"
+                  />
                 </div>
                 <p className="mt-4 text-foreground text-lg">
                   {copy.sourceTitle}

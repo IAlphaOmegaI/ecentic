@@ -9,7 +9,7 @@ import { getMessages } from "next-intl/server";
 import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
-import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import { MarketingSection } from "@/components/marketing/page";
 import { MarketingBand } from "@/components/marketing/primitives";
 import { ChannelWorkbench } from "../channel-content";
@@ -102,9 +102,6 @@ const ReadingExplorer = ({
         <TabsPanel key={record.id} value={record.id}>
           <div className="grid border-accent-foreground border-t md:grid-cols-[1.2fr_1fr]">
             <div className="relative isolate min-w-0 overflow-hidden border-accent-foreground bg-background-dimmed px-7 py-10 max-sm:px-4 max-md:border-b md:border-r">
-              <div className="pointer-events-none absolute -right-8 bottom-0 -z-10 h-52 w-64 text-foreground-dimmed opacity-30 max-sm:-right-16 max-sm:h-44 max-sm:w-56">
-                <EvolvingAscii artwork={index === 0 ? "bag" : "console"} />
-              </div>
               <pre
                 aria-hidden="true"
                 className="relative m-0 whitespace-pre font-mono text-[clamp(0.68rem,1.05vw,0.9rem)] text-foreground-rich leading-7 tracking-normal"
@@ -118,6 +115,17 @@ const ReadingExplorer = ({
                   <li key={field}>{field}</li>
                 ))}
               </ul>
+              <CommerceFigure
+                kind={
+                  record.id === "product"
+                    ? "drawer"
+                    : record.id === "seller"
+                      ? "document"
+                      : "checkout"
+                }
+                surface="field"
+                className="mt-4 aspect-auto h-64 w-full sm:h-72"
+              />
             </div>
             <div className="flex min-w-0 flex-col justify-between gap-8 px-7 py-10 max-sm:px-4">
               <div>

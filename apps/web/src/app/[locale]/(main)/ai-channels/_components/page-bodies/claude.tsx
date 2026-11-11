@@ -5,7 +5,7 @@ import { getMessages } from "next-intl/server";
 import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
-import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import { MarketingSection } from "@/components/marketing/page";
 import { MarketingBand } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
@@ -15,7 +15,7 @@ import { ChannelWorkbench } from "../channel-content";
 
 type Section = MarketingBodyProps["sections"][number];
 type Copy = Awaited<ReturnType<typeof getMessages>>["claudePage"];
-const artwork = ["bag", "commerce", "cart"] as const;
+const figures = ["catalog", "inspection", "checkout"] as const;
 
 const Heading = ({ section }: { section: Section }) => (
   <div className="px-8 pt-12 pb-8 max-sm:px-4 max-sm:pt-8">
@@ -62,9 +62,11 @@ const CommerceExplorer = ({ copy }: { copy: Copy["explorer"] }) => (
                 ))}
               </ul>
             </div>
-            <div className="h-60 w-full text-primary md:h-64">
-              <EvolvingAscii artwork={artwork[index] ?? "bag"} />
-            </div>
+            <CommerceFigure
+              kind={figures[index] ?? "catalog"}
+              surface="field"
+              className="mt-6 aspect-auto h-64 w-full md:h-80"
+            />
           </div>
           <div className="flex min-w-0 flex-col justify-center gap-8 bg-background px-8 py-10 max-sm:px-4">
             <ProviderLogo

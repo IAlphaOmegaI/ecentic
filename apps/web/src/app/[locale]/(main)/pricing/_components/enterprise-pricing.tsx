@@ -6,7 +6,7 @@ import {
   CommercePlug_3SparkleIcon,
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
-import { ScrollArea } from "@zenncore/web/components/scroll-area";
+import { ScrollArea, ScrollBar } from "@zenncore/web/components/scroll-area";
 import {
   Table,
   TableBody,
@@ -17,6 +17,7 @@ import {
   TableRow,
 } from "@zenncore/web/components/table";
 import { getLocale, getMessages } from "next-intl/server";
+import { MeasurementDial } from "@/components/hairline/measurement-chart";
 import { MarketingActions } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { Plus } from "@/components/plus";
@@ -43,47 +44,7 @@ export const FreeStoreCheck = async () => {
         <figcaption className="self-start text-primary-text text-sm">
           {enterprisePricing.sample.label}
         </figcaption>
-        <div className="relative my-3 aspect-square w-full max-w-80">
-          <svg
-            aria-hidden
-            viewBox="0 0 320 320"
-            className="absolute inset-0 size-full fill-none"
-          >
-            <circle
-              cx="160"
-              cy="160"
-              r="119"
-              className="stroke-accent-foreground"
-            />
-            {Array.from({ length: 100 }, (_, index) => index + 1).map(
-              (tick) => (
-                <line
-                  key={tick}
-                  x1="160"
-                  y1="13"
-                  x2="160"
-                  y2={tick % 5 === 0 ? "31" : "24"}
-                  transform={`rotate(${(tick - 1) * 3.6} 160 160)`}
-                  strokeWidth={tick <= 72 ? 2.5 : 1.5}
-                  className={
-                    tick <= 72 ? "stroke-primary" : "stroke-accent-foreground"
-                  }
-                />
-              ),
-            )}
-          </svg>
-          <div className="absolute inset-0 flex flex-col items-center justify-center text-center">
-            <div className="flex items-baseline gap-2">
-              <strong className="font-heading font-medium text-[clamp(76px,8vw,112px)] text-foreground-rich leading-none tracking-[-0.075em]">
-                72
-              </strong>
-              <span className="text-foreground-dimmed">/ 100</span>
-            </div>
-            <p className="mt-3 max-w-40 text-foreground-dimmed text-sm">
-              {pricing.scan.sample.scoreLabel}
-            </p>
-          </div>
-        </div>
+        <MeasurementDial value={72} label={pricing.scan.sample.scoreLabel} />
         <div className="flex w-full items-center justify-center gap-8 border-accent-foreground border-t pt-6">
           {(["chatgpt", "claude", "gemini"] as const).map((provider) => (
             <ProviderLogo
@@ -415,6 +376,7 @@ export const EnterprisePlanComparison = async () => {
         <ScrollArea
           className="relative min-w-0 overflow-hidden"
           aria-label={comparison.title}
+          classList={{ viewport: "overscroll-y-auto overscroll-x-contain" }}
         >
           <Table className="m-0 min-w-[1060px] border-b-0 bg-background-rich [&_td:last-child]:bg-background [&_td:nth-child(3)]:bg-primary/5 [&_td]:px-4 [&_td]:py-4 [&_td]:align-top [&_td]:text-foreground-dimmed [&_td]:text-sm [&_th:first-child]:w-[190px] [&_th:last-child]:bg-background [&_th:nth-child(3)]:bg-primary/8 [&_th]:whitespace-normal [&_th]:px-4 [&_th]:py-4 [&_th]:font-medium [&_th]:text-foreground-rich [&_th]:text-sm [&_th]:normal-case [&_th]:leading-normal [&_th]:tracking-normal">
             <TableCaption className="sr-only">{comparison.title}</TableCaption>
@@ -469,6 +431,10 @@ export const EnterprisePlanComparison = async () => {
               ))}
             </TableBody>
           </Table>
+          <ScrollBar
+            orientation="horizontal"
+            className="h-2 w-auto justify-start"
+          />
         </ScrollArea>
       </div>
       <div className="marketing-cell relative min-w-0 px-7 py-10 max-sm:px-4 max-sm:py-8 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">

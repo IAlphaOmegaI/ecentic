@@ -9,7 +9,7 @@ import {
 } from "@zenncore/web/components/table";
 import { getMessages } from "next-intl/server";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
-import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import { MarketingLightBand } from "@/components/marketing/light-band";
 import {
   MarketingPage,
@@ -184,9 +184,11 @@ export default async () => {
           <div className="grid md:grid-cols-[2fr_3fr]">
             <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-8 md:border-r md:border-b-0 md:px-8 md:py-12">
               <h2>{models.title}</h2>
-              <div className="mx-auto my-8 h-48 max-w-80 text-primary-text md:h-56">
-                <EvolvingAscii artwork="commerce" />
-              </div>
+              <CommerceFigure
+                kind="hub"
+                surface="field"
+                className="mx-auto my-4 max-w-80"
+              />
               <ol className="relative ml-2 border-accent-foreground border-l">
                 {[
                   labels.catalogLabel,

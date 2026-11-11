@@ -5,7 +5,7 @@ import { Button } from "@zenncore/web/components/button";
 import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import type { AppConfig } from "next-intl";
 import type { ReactNode } from "react";
-import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
 
 const endpoints = ["/api/v1", "/api/v1/discovery", "/api/v1/plans"] as const;
 
@@ -33,9 +33,7 @@ export const IndexQuickstart = ({
     </div>
     <div className="grid gap-px bg-accent-foreground md:grid-cols-[4fr_7fr]">
       <div className="flex min-w-0 flex-col justify-between gap-4 bg-background-dimmed p-8 max-sm:p-4">
-        <div className="h-44 text-primary">
-          <EvolvingAscii artwork="console" />
-        </div>
+        <CommerceFigure kind="document" surface="field" className="min-h-56" />
         <div className="flex flex-col gap-4">
           <p className="font-medium text-foreground">{copy.access}</p>
           <p className="text-foreground-dimmed text-sm leading-relaxed">

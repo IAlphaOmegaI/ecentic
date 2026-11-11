@@ -3,7 +3,7 @@ import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
-import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import { localizePath } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
 import { DOCUMENTED_MCP_TOOLS } from "@/lib/mcp-docs";
@@ -105,8 +105,12 @@ export default async () => {
               <p className="font-medium text-foreground">
                 {copy.transport.label}
               </p>
-              <div className="mt-4 h-44 text-primary">
-                <EvolvingAscii artwork="console" />
+              <div className="mx-auto mt-4 aspect-[5/4] w-full max-w-80">
+                <CommerceFigure
+                  kind="hub"
+                  surface="field"
+                  className="h-full w-full"
+                />
               </div>
             </div>
             <dl className="grid gap-6">

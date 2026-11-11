@@ -3,7 +3,7 @@ import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import type { AppConfig } from "next-intl";
 import type { ReactNode } from "react";
-import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import { MarketingLightBand } from "@/components/marketing/light-band";
 import { MarketingShell } from "@/components/marketing/page";
 import { Plus } from "@/components/plus";
@@ -105,10 +105,15 @@ export const ArticleLayout = ({
             </Button>
           </div>
         </div>
-        <div className="relative min-h-52 border-accent-foreground border-t text-primary md:border-t-0 md:border-l">
-          <div className="absolute inset-4">
-            <EvolvingAscii artwork="commerce" />
-          </div>
+        <div className="relative flex min-w-0 items-center border-accent-foreground border-t bg-background-rich md:border-t-0 md:border-l">
+          <CommerceFigure
+            kind="inspection"
+            surface="rich"
+            className="mx-auto max-w-80"
+          />
+          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 md:hidden" />
+          <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2 max-md:hidden" />
         </div>
       </div>
     </MarketingLightBand>

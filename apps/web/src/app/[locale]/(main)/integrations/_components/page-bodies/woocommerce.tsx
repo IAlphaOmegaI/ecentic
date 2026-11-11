@@ -3,6 +3,8 @@ import Image from "next/image";
 import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
+import { MarketingLightBand } from "@/components/marketing/light-band";
 import { MarketingSection } from "@/components/marketing/page";
 import {
   MarketingActions,
@@ -20,13 +22,13 @@ const Workflow = (props: MarketingSection.Props) => (
 );
 
 const Checkout = ({ section, children }: MarketingSection.Props) => (
-  <MarketingBand
+  <MarketingLightBand
     id={section.id}
     className="[&>.marketing-rail>.marketing-guides]:hidden"
   >
     <div className="grid md:grid-cols-2">
-      <div className="relative flex min-w-0 flex-col justify-between gap-12 px-7 py-10 max-sm:px-4">
-        <div>
+      <div className="relative flex min-w-0 flex-col bg-background-rich">
+        <div className="px-7 pt-10 max-sm:px-4">
           <CommerceFileShieldIcon
             aria-hidden
             className="mb-6 size-12 text-primary-text"
@@ -36,7 +38,12 @@ const Checkout = ({ section, children }: MarketingSection.Props) => (
             <p className="mt-4 text-foreground-dimmed">{section.description}</p>
           )}
         </div>
-        <div aria-hidden="true">
+        <CommerceFigure
+          kind="checkout"
+          surface="rich"
+          className="mx-auto max-w-lg"
+        />
+        <div aria-hidden="true" className="px-7 pb-8 max-sm:px-4">
           <div className="flex max-w-80 items-center justify-between gap-6">
             <Image
               src="/images/ucp.png"
@@ -73,7 +80,7 @@ const Checkout = ({ section, children }: MarketingSection.Props) => (
       </div>
     </div>
     {children}
-  </MarketingBand>
+  </MarketingLightBand>
 );
 
 const Requirements = ({ section, children }: MarketingSection.Props) => (

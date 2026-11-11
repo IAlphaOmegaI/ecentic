@@ -1,18 +1,11 @@
 "use client";
 
-import {
-  CommerceBasketShoppingIcon,
-  CommerceChartActivity_2Icon,
-  CommerceFileShieldIcon,
-  CommercePlug_3SparkleIcon,
-} from "@zenncore/icons";
-import { cn } from "@zenncore/utils";
 import { field, InferredForm } from "@zenncore/web/components/inferred-form";
 import type { AppConfig } from "next-intl";
 import { useState } from "react";
 import { z } from "zod";
+import { MeasurementBars } from "@/components/hairline/measurement-chart";
 import { EvidenceDisclosure } from "@/components/marketing/evidence-disclosure";
-import { Calculator } from "@/components/marketing/interactive/calculator";
 import { InteractiveInput } from "@/components/marketing/interactive/text-input";
 import { useInteractive } from "@/components/marketing/interactive/use-interactive";
 import { Plus } from "@/components/plus";
@@ -41,6 +34,11 @@ export const FeeCalculator = ({
     style: "currency",
     currency: "USD",
   });
+  const chartMoney = new Intl.NumberFormat(locale, {
+    style: "currency",
+    currency: "USD",
+    currencyDisplay: "narrowSymbol",
+  });
   const format = (cents: number) => money.format(cents / 100);
   const cheaper =
     amount === null ? [] : plans.filter((plan) => plan.amountCents < amount);
@@ -50,21 +48,18 @@ export const FeeCalculator = ({
     {
       name: presentation.payg,
       value: amount,
-      Icon: CommerceBasketShoppingIcon,
       payg: true,
     },
-    ...plans.map((plan, index) => ({
+    ...plans.map((plan) => ({
       name: plan.name,
       value: plan.amountCents,
-      Icon: [
-        CommerceChartActivity_2Icon,
-        CommercePlug_3SparkleIcon,
-        CommerceFileShieldIcon,
-      ][index],
       payg: false,
     })),
   ];
-  const maximum = Math.max(1, ...comparisons.map((entry) => entry.value ?? 0));
+  const maximum =
+    Math.ceil(
+      Math.max(100, ...comparisons.map((entry) => entry.value ?? 0)) / 5000,
+    ) * 5000;
   const config = {
     orders: field({
       shape: "custom",
@@ -82,22 +77,24 @@ export const FeeCalculator = ({
     }),
   };
   return (
-    <Calculator.Root
+    <div
       data-interactive="payg-calculator"
       data-pricing-split="calculator"
-      className="bg-background-rich"
+      className="relative min-w-0 bg-background-rich"
     >
-      <Calculator.Fields className="flex flex-col justify-center">
+      <div className="relative px-8 py-8 max-sm:px-4">
         <p className="mb-4 flex items-center gap-2 font-medium text-primary-text text-sm">
           <span aria-hidden className="size-2 rounded-full bg-current" />
           {copy.eyebrow}
         </p>
-        <h3>{copy.title}</h3>
+        <h3 className="max-w-[25ch] font-heading text-3xl leading-tight tracking-tight">
+          {copy.title}
+        </h3>
         {ready ? (
           <InferredForm
             config={config}
             defaultValues={{ orders: "1", amount: "120" }}
-            className="mt-6 grid gap-6"
+            className="mt-8 grid gap-6 sm:grid-cols-2"
             onChange={(value) =>
               setValues({
                 orders: value.orders ?? "",
@@ -106,7 +103,7 @@ export const FeeCalculator = ({
             }
           >
             {!parsed && (
-              <p className="text-error text-sm" role="status">
+              <p className="text-error text-sm sm:col-span-2" role="status">
                 {copy.invalid}
               </p>
             )}
@@ -126,102 +123,84 @@ export const FeeCalculator = ({
             )}
           </p>
         )}
-        <p className="mt-6 text-foreground-dimmed text-sm">{copy.privacy}</p>
-      </Calculator.Fields>
-      <Calculator.Result className="bg-linear-to-br from-primary/7 via-background-rich to-background-rich">
-        <div className="flex flex-wrap items-center justify-between gap-3 text-foreground-dimmed text-sm">
-          <p>{copy.result}</p>
-          <p>
-            {presentation.rate}{" "}
-            <span className="ml-1 font-medium text-primary-text">
-              {rateBps / 100}%
-            </span>
-          </p>
+        <p className="mt-4 text-foreground-dimmed text-sm">{copy.privacy}</p>
+      </div>
+      <div className="relative grid border-accent-foreground border-t min-[900px]:grid-cols-[2fr_3fr]">
+        <div className="relative isolate flex min-w-0 flex-col justify-center border-accent-foreground border-b bg-emphasis-dimmed px-8 py-10 text-background-rich max-sm:px-4 min-[900px]:border-r min-[900px]:border-b-0">
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 -z-1 bg-radial-[at_0%_100%] from-primary/35 via-primary/5 to-transparent"
+          />
+          <p className="text-background-rich/70 text-sm">{copy.result}</p>
+          <output
+            className="mt-6 block font-heading text-[clamp(56px,7vw,96px)] text-background-rich tabular-nums leading-none tracking-[-0.055em]"
+            aria-live="polite"
+            aria-atomic="true"
+          >
+            {amount === null ? "—" : format(amount)}
+          </output>
+          <div className="mt-10 flex items-end justify-between gap-4 border-background-rich/20 border-t pt-6">
+            <p className="text-background-rich/70 text-sm">
+              {presentation.rate}
+            </p>
+            <p className="font-heading text-5xl tabular-nums tracking-tight">
+              {rateBps / 100}
+              <span className="ml-1 text-2xl text-background-rich/60">%</span>
+            </p>
+          </div>
+          <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2 min-[900px]:hidden" />
+          <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2 min-[900px]:hidden" />
         </div>
-        <output
-          className="mt-5 block font-heading text-[clamp(48px,6vw,76px)] text-primary-text tabular-nums leading-none tracking-[-0.055em]"
-          aria-live="polite"
-          aria-atomic="true"
-        >
-          {amount === null ? "—" : format(amount)}
-        </output>
-        <figure className="mt-8 mb-0">
-          <figcaption className="mb-5 text-foreground-dimmed text-sm">
-            {presentation.comparison}
-          </figcaption>
-          <dl className="flex flex-col gap-5">
-            {comparisons.map(({ name, value, Icon, payg }) => (
-              <div
-                key={name}
-                className="grid grid-cols-[24px_minmax(0,1fr)_auto] items-center gap-x-3 gap-y-2"
-              >
-                {Icon && (
-                  <Icon
-                    aria-hidden
-                    className={cn(
-                      "size-6",
-                      payg ? "text-primary" : "text-foreground-dimmed",
-                    )}
-                  />
-                )}
-                <dt className="flex flex-wrap items-baseline gap-x-2 gap-y-1 text-sm">
-                  {name}
-                  {!payg &&
-                    amount !== null &&
-                    value !== null &&
-                    value <= amount && (
-                      <span className="text-success-foreground text-xs">
-                        {value === amount
-                          ? presentation.same
-                          : presentation.lower}
-                      </span>
-                    )}
-                </dt>
-                <dd
-                  className={cn(
-                    "text-sm tabular-nums",
-                    payg && "font-medium text-primary-text",
-                  )}
-                >
-                  {value === null ? "—" : format(value)}
-                </dd>
-                <div aria-hidden className="relative col-start-2 col-end-4 h-2">
-                  <span
-                    className={cn(
-                      "absolute inset-y-0 left-0 rounded-md",
-                      payg ? "bg-primary" : "bg-foreground-dimmed/40",
-                    )}
-                    style={{ width: `${((value ?? 0) / maximum) * 100}%` }}
-                  />
-                </div>
-              </div>
-            ))}
-          </dl>
-        </figure>
-        <div className="mt-8 border-accent-foreground border-t pt-3 [&_button]:font-medium [&_button]:text-sm [&_h3_button]:text-sm">
-          <EvidenceDisclosure id="fee-details" title={presentation.details}>
-            <div className="space-y-3 text-foreground-dimmed text-sm leading-relaxed">
-              <p>
-                {copy.formula
-                  .replace("{rate}", String(rateBps / 100))
-                  .replace("{cap}", format(capCents))}
-              </p>
-              <p>
-                {amount === null
-                  ? copy.invalid
-                  : cheaper.length
-                    ? `${copy.cheaper} ${cheaper.map((plan) => `${plan.name} (${format(plan.amountCents)})`).join(", ")}`
-                    : tied.length
-                      ? `${copy.tie} ${tied.map((plan) => plan.name).join(", ")}`
-                      : copy.noCheaper}
-              </p>
-              <p>{copy.qualification}</p>
-            </div>
-          </EvidenceDisclosure>
+        <div className="min-w-0 bg-linear-to-br from-background-rich via-background-rich to-primary/5 px-8 py-8 max-sm:px-4">
+          <MeasurementBars
+            label={presentation.comparison}
+            maximum={maximum}
+            ticks={[0, 0.5, 1].map((fraction) =>
+              chartMoney.format((maximum * fraction) / 100),
+            )}
+            entries={comparisons.map((entry) => ({
+              key: entry.name,
+              label: entry.name,
+              value: entry.value,
+              formatted:
+                entry.value === null
+                  ? "—"
+                  : chartMoney.format(entry.value / 100),
+              primary: entry.payg,
+            }))}
+          />
         </div>
-      </Calculator.Result>
-      <Plus className="top-0 left-1/2 hidden -translate-x-1/2 -translate-y-1/2 lg:flex" />
-    </Calculator.Root>
+        <Plus className="top-0 left-[40%] hidden -translate-x-1/2 -translate-y-1/2 min-[900px]:flex" />
+        <Plus className="bottom-0 left-[40%] hidden -translate-x-1/2 translate-y-1/2 min-[900px]:flex" />
+        <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+        <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+        <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+      </div>
+      <div className="border-accent-foreground border-t px-8 max-sm:px-4 [&_button]:font-medium [&_button]:text-sm [&_h3_button]:text-sm">
+        <EvidenceDisclosure id="fee-details" title={presentation.details}>
+          <div className="space-y-3 text-foreground-dimmed text-sm leading-relaxed">
+            <p>
+              {copy.formula
+                .replace("{rate}", String(rateBps / 100))
+                .replace("{cap}", format(capCents))}
+            </p>
+            <p>
+              {amount === null
+                ? copy.invalid
+                : cheaper.length
+                  ? `${copy.cheaper} ${cheaper.map((plan) => `${plan.name} (${format(plan.amountCents)})`).join(", ")}`
+                  : tied.length
+                    ? `${copy.tie} ${tied.map((plan) => plan.name).join(", ")}`
+                    : copy.noCheaper}
+            </p>
+            <p>{copy.qualification}</p>
+          </div>
+        </EvidenceDisclosure>
+      </div>
+      <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+    </div>
   );
 };
 export namespace FeeCalculator {

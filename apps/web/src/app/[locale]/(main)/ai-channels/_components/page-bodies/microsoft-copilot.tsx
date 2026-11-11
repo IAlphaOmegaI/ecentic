@@ -11,7 +11,7 @@ import { getMessages } from "next-intl/server";
 import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
-import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import { MarketingSection } from "@/components/marketing/page";
 import { MarketingBand } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
@@ -50,9 +50,11 @@ const ShoppingWorkbench = ({
             {copy.copilot}
           </p>
         </div>
-        <div className="h-64 text-primary-text sm:h-80 lg:min-h-80 lg:flex-1">
-          <EvolvingAscii artwork="commerce" />
-        </div>
+        <CommerceFigure
+          kind="workflow"
+          surface="field"
+          className="aspect-auto h-64 w-full sm:h-80 lg:flex-1"
+        />
         <div className="border-accent-foreground border-t px-8 py-6 max-sm:px-4">
           <p className="font-medium text-foreground-rich">{copy.merchant}</p>
           <p className="mt-2 text-foreground-dimmed text-sm">

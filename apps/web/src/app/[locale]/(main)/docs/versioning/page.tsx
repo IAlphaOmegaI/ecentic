@@ -3,7 +3,7 @@ import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
-import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import { localizePath } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
 import { API_VERSION, DEPRECATION_NOTICE_DAYS } from "@/lib/agent-api";
@@ -105,8 +105,12 @@ export default async () => {
             <p className="mt-4 text-7xl text-foreground-rich tracking-tight">
               v{API_VERSION}
             </p>
-            <div className="mt-6 h-32 text-foreground-dimmed max-md:hidden">
-              <EvolvingAscii artwork="console" />
+            <div className="mx-auto mt-6 aspect-[5/4] w-full max-w-64">
+              <CommerceFigure
+                kind="format"
+                surface="field"
+                className="h-full w-full"
+              />
             </div>
           </aside>
           <div className="flex min-w-0 flex-col justify-center gap-6 bg-background px-8 py-8 max-sm:px-4">

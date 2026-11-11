@@ -15,7 +15,11 @@ const StagePanel = ({ section }: { section: MarketingPage.Section }) => (
   <div className="relative grid min-w-0 border-[var(--rail-color)] border-t lg:grid-cols-[2fr_3fr]">
     <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
     <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-    <div className="relative flex min-w-0 flex-col bg-linear-to-br from-primary-dimmed/70 via-emphasis-dimmed to-emphasis-dimmed lg:border-[var(--rail-color)] lg:border-r">
+    <div className="relative isolate flex min-w-0 flex-col bg-linear-to-br from-primary-dimmed/70 via-emphasis-dimmed to-emphasis-dimmed lg:border-[var(--rail-color)] lg:border-r">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 -z-1 bg-radial-[ellipse_at_50%_78%] from-primary/15 via-transparent to-transparent"
+      />
       <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 max-lg:hidden" />
       <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2 max-lg:hidden" />
       <div className="px-7 pt-10 max-sm:px-5 max-sm:pt-8">

@@ -2,7 +2,7 @@ import { getMessages } from "next-intl/server";
 import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
-import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import { MarketingSection } from "@/components/marketing/page";
 import {
   MarketingActions,
@@ -42,9 +42,10 @@ export const RetailersAndMarketplacesBody = async ({
                         </p>
                       </div>
                       <div className="relative min-h-64 border-accent-foreground border-l text-primary-text/80 max-md:h-56 max-md:min-h-0 max-md:border-t max-md:border-l-0">
-                        <EvolvingAscii
-                          artwork="cart"
-                          className="absolute inset-0"
+                        <CommerceFigure
+                          kind="checkout"
+                          surface="field"
+                          className="h-full min-h-64 max-md:aspect-[5/3]"
                         />
                       </div>
                       <Plus className="top-0 left-[60%] -translate-x-1/2 -translate-y-1/2 max-md:hidden" />

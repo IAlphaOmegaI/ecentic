@@ -1,6 +1,6 @@
 import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import type { getMessages } from "next-intl/server";
-import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import type { MarketingSection } from "@/components/marketing/page";
 import { MarketingStatus } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
@@ -8,15 +8,15 @@ import { Link } from "@/i18n/navigation";
 
 type Copy = Awaited<ReturnType<typeof getMessages>>["googleMerchantDesign"];
 
-const artwork = ["bag", "commerce", "cart", "closing"] as const;
+const artwork = ["hub", "catalog", "inspection", "relay"] as const;
 
 const RoadmapDiagram = ({ stage, copy }: { stage: number; copy: Copy }) => (
   <div className="flex min-w-0 flex-col bg-background-dimmed">
     <div className="relative min-h-72 flex-1 overflow-hidden text-primary-text md:min-h-80">
-      <EvolvingAscii
-        artwork={artwork[stage] ?? "commerce"}
-        fit="cover"
-        className="absolute inset-0"
+      <CommerceFigure
+        kind={artwork[stage] ?? "hub"}
+        surface="field"
+        className="absolute inset-0 size-full"
       />
     </div>
     <div className="relative border-accent-foreground border-t px-8 py-6 max-sm:px-4">

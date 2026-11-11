@@ -10,7 +10,6 @@ import {
   CommercePlug_3SparkleIcon,
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
-import { PlatformLight } from "./page-bodies/platform-light";
 import { PlatformProviderStack } from "./provider-stack";
 
 export const platformStageIcons = {
@@ -48,8 +47,6 @@ export const PlatformStageArtwork = ({ kind }: { kind: string }) => (
     data-stage-artwork={kind}
     className="relative isolate flex min-h-80 flex-col items-center justify-center overflow-hidden px-7 py-10 max-sm:px-5"
   >
-    <div className="pointer-events-none absolute inset-0 -z-1 bg-radial-[at_50%_40%] from-primary/20 via-primary/4 to-transparent" />
-    <PlatformLight />
     {kind === "connect" && (
       <>
         <PlatformProviderStack

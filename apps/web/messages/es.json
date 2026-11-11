@@ -18885,5 +18885,16 @@
     },
     "assistant": "Simulación de ecentic",
     "response": "Respuesta del asistente"
+  },
+  "commerceFigures": {
+    "catalog": "Ilustración: una bandeja de fichas de productos. Señala una ficha, o usa las flechas, para levantarla.",
+    "document": "Ilustración: un terminal de documentos. Mueve el puntero por sus filas para levantar una línea.",
+    "workflow": "Ilustración: una ruta conectada que se bifurca y vuelve a unirse. Mueve el puntero para seguir las conexiones.",
+    "checkout": "Ilustración: una cesta de compra. Gira hacia el puntero y su asa la sigue.",
+    "inspection": "Ilustración: tres tamices de inspección. Mueve el puntero verticalmente para separar una capa.",
+    "drawer": "Ilustración: tres cajones de catálogo. Mueve el puntero verticalmente para abrir un cajón.",
+    "format": "Ilustración: un archivo con filas desalineadas. Baja el puntero por el archivo para alinearlas.",
+    "relay": "Ilustración: una red ramificada. Señala un destino para iluminar la ruta.",
+    "hub": "Ilustración: fichas conectadas a un centro. Señala una ficha para levantarla y resaltar su conexión."
   }
 }

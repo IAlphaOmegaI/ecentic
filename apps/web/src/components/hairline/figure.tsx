@@ -29,7 +29,7 @@ class ArtworkBoundary extends Component<
   }
 }
 
-/** Mount only near the viewport. Each page supplies one lazily imported figure. */
+/** Mount only near the viewport. Each explanation supplies a lazily imported subject figure. */
 export const HairlineFigure = ({
   figure: Figure,
   label,
@@ -62,9 +62,14 @@ export const HairlineFigure = ({
       data-hairline-surface={surface}
       className={cn(
         "relative isolate aspect-[5/4] w-full min-w-0 [--hairline-edge:var(--color-cross)] [--hairline-hi:var(--color-primary)] [--hairline-stroke:1]",
-        surface === "field"
-          ? "bg-background-dimmed [--hairline-plate:var(--color-background-dimmed)]"
-          : "bg-background [--hairline-plate:var(--color-background)]",
+        surface === "field" &&
+          "bg-background-dimmed [--hairline-plate:var(--color-background-dimmed)]",
+        surface === "background" &&
+          "bg-background [--hairline-plate:var(--color-background)]",
+        surface === "rich" &&
+          "bg-background-rich [--hairline-plate:var(--color-background-rich)]",
+        surface === "dark" &&
+          "bg-emphasis-dimmed [--hairline-edge:var(--color-background-rich)] [--hairline-hi:var(--color-primary-rich)] [--hairline-plate:var(--color-emphasis-dimmed)]",
         className,
       )}
     >
@@ -75,7 +80,7 @@ export const HairlineFigure = ({
               // Zero intensity still moves in Hairline. Reset to rest and prevent
               // both pointer and keyboard interaction when motion is reduced.
               key={reduced ? "rest" : "responsive"}
-              theme="light"
+              theme={surface === "dark" ? "dark" : "light"}
               label={label}
               play={false}
               intensity={reduced ? 0 : 0.5}
@@ -97,7 +102,7 @@ export namespace HairlineFigure {
   export type Props = {
     figure: ComponentType<HairlineProps>;
     label: string;
-    surface?: "background" | "field";
+    surface?: "background" | "field" | "rich" | "dark";
     className?: string;
   };
 }

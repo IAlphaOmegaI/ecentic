@@ -5,7 +5,9 @@ import Image from "next/image";
 import type { HTMLAttributes, ReactNode } from "react";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
+import type { CommerceFigure } from "./commerce-figure";
 import { EvolvingAscii } from "./evolving-ascii";
+import { HeroFigure } from "./hero-figure";
 
 export const MarketingBand = ({
   children,
@@ -161,6 +163,7 @@ export const MarketingHero = ({
   actionsSlot,
   identity,
   illustration,
+  figure,
   children,
 }: MarketingHero.Props) => (
   <MarketingBand
@@ -170,10 +173,10 @@ export const MarketingHero = ({
       illustration &&
         "[&>.marketing-rail>.marketing-guides]:hidden [&>.marketing-rail]:grid [&>.marketing-rail]:min-h-[calc(100dvh-68px)] [&>.marketing-rail]:grid-cols-2 max-md:[&>.marketing-rail]:grid-cols-1",
       dark &&
-        "marketing-dark enterprise-blue enterprise-journey mx-3 -mt-[68px] mb-3 min-h-dvh overflow-hidden rounded-xl border-0 bg-linear-to-r from-primary-text via-primary-text to-primary text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_22%,transparent)] [--rail-cross:transparent] max-sm:mx-2 max-sm:-mt-[72px] max-sm:mb-2 max-sm:rounded-lg [&>.marketing-rail>.marketing-guides]:z-0 [&>.marketing-rail>.marketing-guides]:opacity-20 [&>.marketing-rail]:flex [&>.marketing-rail]:min-h-dvh [&>.marketing-rail]:items-end [&>.marketing-rail]:border-x-background-rich/15 [&>.marketing-rail]:border-y-0 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden [&_.marketing-eyebrow]:text-background-rich [&_.marketing-guides_span]:before:hidden [&_.marketing-guides_span]:after:hidden [&_.marketing-screenshot_figcaption]:text-background-rich/85 [&_.marketing-status>span]:bg-background-rich [&_.marketing-status]:text-background-rich [&_:is(h1,h2,h3)]:text-background-rich",
+        "marketing-dark enterprise-blue enterprise-journey mx-3 -mt-[68px] mb-3 min-h-dvh overflow-hidden rounded-xl border-0 bg-primary-text text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_22%,transparent)] [--rail-cross:transparent] max-sm:mx-2 max-sm:-mt-[72px] max-sm:mb-2 max-sm:rounded-lg [&>.marketing-rail>.marketing-guides]:hidden [&>.marketing-rail]:grid [&>.marketing-rail]:min-h-dvh [&>.marketing-rail]:grid-cols-[1.15fr_1fr] [&>.marketing-rail]:border-x-background-rich/15 [&>.marketing-rail]:border-y-0 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden max-lg:[&>.marketing-rail]:grid-cols-1 [&_.marketing-eyebrow]:text-background-rich [&_.marketing-screenshot_figcaption]:text-background-rich/85 [&_.marketing-status>span]:bg-background-rich [&_.marketing-status]:text-background-rich [&_:is(h1,h2,h3)]:text-background-rich",
     )}
   >
-    {!illustration && (dark || artwork) && (
+    {!illustration && !dark && artwork && (
       <div
         className={cn(
           "pointer-events-none absolute inset-y-0 right-0 left-[35%] select-none [mask-image:linear-gradient(105deg,transparent_10%,black_85%)] max-sm:inset-x-0 max-sm:[&_[data-artwork-mask]]:[mask-position:center_10%]",
@@ -190,7 +193,7 @@ export const MarketingHero = ({
       className={cn(
         "marketing-cell relative min-w-0 px-7 max-sm:px-4 [&>p]:max-w-[70ch]",
         dark
-          ? "w-full pt-32 pb-16 max-sm:pt-28 max-sm:pb-10"
+          ? "flex w-full flex-col justify-center pt-32 pb-16 max-sm:pt-28 max-sm:pb-10"
           : illustration
             ? "flex min-h-[480px] flex-col justify-end py-16 max-sm:min-h-0 max-sm:py-12"
             : "flex min-h-[480px] flex-col justify-center py-16 max-sm:min-h-0 max-sm:py-12",
@@ -198,7 +201,12 @@ export const MarketingHero = ({
     >
       {identity && <div className="mb-8 max-sm:mb-6">{identity}</div>}
       {eyebrow && <MarketingEyebrow>{eyebrow}</MarketingEyebrow>}
-      <h1 className="max-w-[920px] text-[clamp(3rem,5.2vw,4.8rem)] leading-[1.025] tracking-[-0.043em] max-sm:text-[43px] max-sm:tracking-[-0.036em]">
+      <h1
+        className={cn(
+          "max-w-[920px] text-[clamp(3rem,5.2vw,4.8rem)] leading-[1.025] tracking-[-0.043em] max-sm:text-[43px] max-sm:tracking-[-0.036em]",
+          dark && "lg:text-[clamp(3rem,4.2vw,4.4rem)]",
+        )}
+      >
         {title}
       </h1>
       {meta && (
@@ -220,6 +228,22 @@ export const MarketingHero = ({
       )}
       {children}
     </div>
+    {dark && !illustration && (
+      <HeroFigure
+        kind={
+          figure ??
+          (artwork === "bag" || artwork === "cart" || artwork === "closing"
+            ? "checkout"
+            : artwork === "console"
+              ? "document"
+              : artwork === "catalog"
+                ? "drawer"
+                : artwork === "selection"
+                  ? "inspection"
+                  : "hub")
+        }
+      />
+    )}
     {illustration && (
       <div className="relative flex min-w-0 items-center border-accent-foreground border-l py-6 max-sm:py-2 max-md:border-t max-md:border-l-0">
         <Plus className="top-0 left-0 size-4 -translate-x-1/2 -translate-y-1/2 [&>span]:bg-cross" />
@@ -245,6 +269,7 @@ export namespace MarketingHero {
     actionsSlot?: ReactNode;
     identity?: ReactNode;
     illustration?: ReactNode;
+    figure?: CommerceFigure.Props["kind"];
     children?: ReactNode;
   };
 }

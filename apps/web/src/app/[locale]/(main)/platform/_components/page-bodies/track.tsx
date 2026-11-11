@@ -1,6 +1,7 @@
 import { getMessages } from "next-intl/server";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import { MarketingSection } from "@/components/marketing/page";
 import {
   MarketingActions,
@@ -40,11 +41,17 @@ export const TrackBody = async ({
                 className="[&_.marketing-guides]:hidden"
               >
                 <div className="grid min-w-0 lg:grid-cols-[7fr_5fr]">
-                  <MarketingHeading
-                    eyebrow={section.eyebrow}
-                    title={section.title}
-                    description={section.description}
-                  />
+                  <div className="min-w-0">
+                    <MarketingHeading
+                      eyebrow={section.eyebrow}
+                      title={section.title}
+                      description={section.description}
+                    />
+                    <CommerceFigure
+                      kind="relay"
+                      className="mx-auto aspect-[5/3] max-w-xl"
+                    />
+                  </div>
                   <div className="min-w-0 border-accent-foreground border-t bg-background-dimmed lg:border-t-0 lg:border-l">
                     {section.items?.map((item, index) => (
                       <article

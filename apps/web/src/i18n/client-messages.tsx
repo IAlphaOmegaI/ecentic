@@ -35,7 +35,7 @@ const CHROME = [
 ] as const;
 
 /** Chrome plus the shared section grid every content page's layout draws. */
-const MARKETING = [...CHROME, "dashboard.grid"] as const;
+const MARKETING = [...CHROME, "dashboard.grid", "commerceFigures"] as const;
 
 export const CLIENT_MESSAGES = {
   /** Root layout: only the cookie banner renders above the route groups. */
@@ -63,6 +63,7 @@ export const CLIENT_MESSAGES = {
   ],
   auth: [
     ...CHROME,
+    "commerceFigures",
     "authChrome",
     "compareTool",
     "completeProfile",

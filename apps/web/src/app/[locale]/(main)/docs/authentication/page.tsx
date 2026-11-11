@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { JsonLd } from "@/components/json-ld";
-import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import {
   MarketingEdgeCrosses,
   MarketingLightBand,
@@ -55,8 +55,12 @@ const AuthPath = ({
       <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2 max-md:hidden" />
       <div className="flex flex-1 flex-col items-center px-4 py-6">
         <p className="text-foreground-dimmed text-sm">{client}</p>
-        <div className="h-44 w-full max-w-72 text-foreground">
-          <EvolvingAscii artwork="console" />
+        <div className="my-4 aspect-[5/4] w-full max-w-80">
+          <CommerceFigure
+            kind="relay"
+            surface="field"
+            className="h-full w-full"
+          />
         </div>
         <div
           aria-hidden="true"

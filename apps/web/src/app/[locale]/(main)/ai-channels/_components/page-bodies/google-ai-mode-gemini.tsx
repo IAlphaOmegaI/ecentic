@@ -11,7 +11,7 @@ import { getMessages } from "next-intl/server";
 import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
-import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import { MarketingSection } from "@/components/marketing/page";
 import { MarketingBand } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
@@ -69,20 +69,17 @@ const ShoppingExplorer = ({ copy }: { copy: Copy["explorer"] }) => (
                 {stage.destination}
               </p>
             </div>
-            <div className="relative h-64 w-full text-primary-text max-sm:h-52">
-              <EvolvingAscii
-                artwork={(() => {
-                  switch (stage.id) {
-                    case "catalog":
-                      return "bag";
-                    case "assistant":
-                      return "console";
-                    default:
-                      return "cart";
-                  }
-                })()}
-              />
-            </div>
+            <CommerceFigure
+              kind={
+                stage.id === "catalog"
+                  ? "drawer"
+                  : stage.id === "assistant"
+                    ? "document"
+                    : "checkout"
+              }
+              surface="field"
+              className="my-auto aspect-auto h-64 w-full md:h-80"
+            />
           </div>
           <div className="flex min-h-96 min-w-0 flex-col px-8 py-8 max-sm:min-h-0 max-sm:px-4">
             <h3 className="max-w-[25ch]">{stage.title}</h3>

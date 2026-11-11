@@ -1,6 +1,7 @@
 import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import { MarketingSection } from "@/components/marketing/page";
 import {
   MarketingBand,
@@ -49,7 +50,7 @@ export const ProductFeedsBody = ({
                 className="[&>.marketing-rail>.marketing-guides]:hidden"
               >
                 <div className="grid lg:grid-cols-[1fr_2fr]">
-                  <div className="border-accent-foreground lg:border-r">
+                  <div className="flex flex-col border-accent-foreground lg:border-r">
                     <MarketingHeading
                       title={section.title}
                       description={section.description}
@@ -59,6 +60,7 @@ export const ProductFeedsBody = ({
                         {section.note}
                       </p>
                     )}
+                    <CommerceFigure kind="format" className="mt-auto" />
                   </div>
                   <ol className="divide-y divide-accent-foreground border-accent-foreground max-lg:border-t">
                     {section.items?.map((item, index) => (
