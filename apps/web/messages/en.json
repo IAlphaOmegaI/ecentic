@@ -18726,5 +18726,8 @@
   },
   "hairlineSimulate": {
     "label": "Illustration: eight product cards; the card under your pointer stands up."
+  },
+  "hairlineFix": {
+    "label": "Illustration: crooked lines in a file straighten as the pointer moves down."
   }
 }

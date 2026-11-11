@@ -18726,5 +18726,8 @@
   },
   "hairlineSimulate": {
     "label": "Ilustración: ocho tarjetas de producto; la tarjeta bajo el puntero se levanta."
+  },
+  "hairlineFix": {
+    "label": "Ilustración: las líneas torcidas de un archivo se enderezan al bajar el puntero."
   }
 }

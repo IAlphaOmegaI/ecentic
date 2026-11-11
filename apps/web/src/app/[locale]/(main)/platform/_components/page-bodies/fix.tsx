@@ -1,3 +1,4 @@
+import { getMessages } from "next-intl/server";
 import type { MarketingBodyProps } from "@/components/marketing/body";
 import {
   type MarketingPage,
@@ -9,6 +10,7 @@ import {
   MarketingEyebrow,
 } from "@/components/marketing/primitives";
 import { FixControls } from "./fix-controls";
+import { FormatFigure } from "./format-figure";
 
 const Introduction = ({ section }: { section: MarketingPage.Section }) => (
   <>
@@ -38,6 +40,11 @@ const Ending = ({ section }: { section: MarketingPage.Section }) => {
   );
 };
 
+const FormatIllustration = async () => {
+  const { hairlineFix } = await getMessages();
+  return <FormatFigure label={hairlineFix.label} />;
+};
+
 export const FixBody = ({ sections, sectionChildren }: MarketingBodyProps) => (
   <>
     {sections.map((section) => {
@@ -50,8 +57,13 @@ export const FixBody = ({ sections, sectionChildren }: MarketingBodyProps) => (
               className="[&>.marketing-rail>.marketing-guides]:hidden"
             >
               <div className="grid md:grid-cols-[1.1fr_1fr]">
-                <div className="px-8 py-12 max-sm:px-4 max-sm:py-8">
-                  <Introduction section={section} />
+                <div className="min-w-0">
+                  <div className="px-8 py-12 max-sm:px-4 max-sm:py-8">
+                    <Introduction section={section} />
+                  </div>
+                  <div className="border-accent-foreground border-t bg-background-dimmed px-8 py-4 max-sm:px-4">
+                    <FormatIllustration />
+                  </div>
                 </div>
                 <div className="border-accent-foreground border-t bg-background-dimmed md:border-t-0 md:border-l">
                   {section.items?.map((item, index) => (
