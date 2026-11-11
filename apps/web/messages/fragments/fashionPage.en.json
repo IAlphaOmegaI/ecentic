@@ -1,0 +1,20 @@
+{
+  "fashionPage": {
+    "trail": {
+      "title": "Activity. Fit. Material.",
+      "description": "Open a shopper question to see which product facts your team should verify.",
+      "label": "Shopper questions and product facts",
+      "contexts": [
+        "Activity and weather",
+        "Width and sizing",
+        "Fiber and care"
+      ],
+      "facts": "Product facts to verify"
+    },
+    "rules": [
+      "Size by destination",
+      "Fiber composition",
+      "Environmental claims"
+    ]
+  }
+}

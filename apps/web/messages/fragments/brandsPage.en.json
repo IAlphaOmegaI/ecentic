@@ -1,0 +1,44 @@
+{
+  "brandsPage": {
+    "jobs": {
+      "description": "Choose the part of the shopping journey your team needs to improve.",
+      "label": "Explore brand priorities",
+      "details": "See every challenge and capability",
+      "items": [
+        {
+          "id": "compare",
+          "label": "Compare competitors",
+          "scope": "Simulated decisions",
+          "path": ["Your product", "Named rivals", "Model decisions"]
+        },
+        {
+          "id": "listings",
+          "label": "Improve listings",
+          "scope": "Existing product facts",
+          "path": [
+            "Source facts",
+            "Title and description",
+            "Separate structured data"
+          ]
+        },
+        {
+          "id": "checkout",
+          "label": "Test checkout",
+          "scope": "Supported WooCommerce flows",
+          "path": ["Product discovery", "Cart pricing", "Payment handoff"]
+        },
+        {
+          "id": "referrals",
+          "label": "Identify referrals",
+          "scope": "Recognized Shopify referrals",
+          "path": ["AI assistant", "Store visit", "Referral reporting"]
+        }
+      ]
+    },
+    "sources": {
+      "description": "Start from your store or a supported feed. Merchant Center sync remains a separate action.",
+      "store": "Connect a store",
+      "catalog": "Other catalog paths"
+    }
+  }
+}

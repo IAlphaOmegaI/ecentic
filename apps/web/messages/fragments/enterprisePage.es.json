@@ -1,0 +1,41 @@
+{
+  "enterprisePage": {
+    "engagements": {
+      "description": "Elige la pregunta que necesitas responder. Acordamos el alcance y los honorarios antes de empezar.",
+      "label": "Explorar servicios para empresas",
+      "pilotAction": "Ver la secuencia del piloto",
+      "items": [
+        {
+          "duration": "4 semanas",
+          "question": "¿Por dónde empezamos?",
+          "path": [
+            "Acordar una categoría y las preguntas",
+            "Establecer la referencia inicial",
+            "Priorizar la lista de mejoras"
+          ]
+        },
+        {
+          "duration": "6 semanas",
+          "question": "¿Qué cambia al mejorar los datos?",
+          "path": [
+            "Un mercado, una categoría",
+            "Referencia inicial, mejoras y repetición",
+            "Informe escrito y siguiente decisión"
+          ]
+        },
+        {
+          "duration": "3 meses",
+          "question": "¿Cómo podría funcionar el pago o la reserva?",
+          "path": [
+            "Acordar la pregunta sobre pago o reserva",
+            "Valorar un prototipo con datos ficticios",
+            "Revisar los resultados en el mes 3"
+          ]
+        }
+      ]
+    },
+    "measures": {
+      "description": "Sigue la respuesta observada desde la mención del producto hasta una compra de prueba. Acordamos el objetivo y el método de recogida de cada medida."
+    }
+  }
+}

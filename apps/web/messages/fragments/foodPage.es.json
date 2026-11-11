@@ -1,0 +1,9 @@
+{
+  "foodPage": {
+    "description": "Elige una pregunta de compra para explorar los datos de origen que tu equipo debe revisar.",
+    "choose": "Elige una pregunta de compra",
+    "facts": "Datos que revisar",
+    "source": "Empieza por la información del envase.",
+    "allFacts": "Explora las seis comprobaciones de datos del producto"
+  }
+}

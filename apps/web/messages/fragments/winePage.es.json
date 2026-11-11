@@ -1,0 +1,50 @@
+{
+  "winePage": {
+    "explorer": {
+      "label": "Explora una pregunta de compra",
+      "question": "Un comprador podría preguntar",
+      "criteria": "Qué pide la pregunta",
+      "verify": "Datos que verificar",
+      "entries": [
+        {
+          "id": "gift",
+          "label": "Un regalo",
+          "criteria": [
+            { "label": "Estilo", "value": "Single malt ahumado" },
+            { "label": "Presupuesto", "value": "Menos de 80 $" },
+            { "label": "Ocasión", "value": "Un regalo" }
+          ],
+          "verification": "Comprueba los datos de barrica o estilo, el precio actual y la disponibilidad de envío en la ficha de origen."
+        },
+        {
+          "id": "ready",
+          "label": "Para beber ahora",
+          "criteria": [
+            { "label": "Vino", "value": "Barolo" },
+            { "label": "Momento", "value": "Listo para beber ahora" },
+            { "label": "Datos de la botella", "value": "Origen y añada" }
+          ],
+          "verification": "Comprueba la región y la denominación junto con la añada declarada. Verifica en la ficha de origen cualquier afirmación sobre su momento de consumo."
+        },
+        {
+          "id": "cocktails",
+          "label": "Para cócteles",
+          "criteria": [
+            { "label": "Licor", "value": "Ron" },
+            { "label": "Preferencia", "value": "Bajo en azúcar" },
+            { "label": "Ocasión", "value": "Cócteles" }
+          ],
+          "verification": "Vincula la afirmación de bajo contenido en azúcar a información de origen que tu equipo pueda verificar. No la deduzcas de las notas de cata."
+        }
+      ]
+    },
+    "attributes": {
+      "caption": "De la botella al registro de producto",
+      "description": "Ofrece el origen, el estilo y la disponibilidad como texto junto a la imagen de la botella."
+    },
+    "rules": {
+      "market": "Canal y país",
+      "age": "Verificación de edad"
+    }
+  }
+}

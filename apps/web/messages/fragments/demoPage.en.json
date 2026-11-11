@@ -1,0 +1,30 @@
+{
+  "demoPage": {
+    "agenda": {
+      "description": "Select a topic to preview the conversation.",
+      "bringLabel": "Bring to the conversation",
+      "exploreLabel": "We’ll explore",
+      "items": [
+        {
+          "bring": "One category and a competitor",
+          "explore": "One or two of your products, compared live."
+        },
+        {
+          "bring": "A product you want to understand",
+          "explore": "The assistant’s reasons and the information it used."
+        },
+        {
+          "bring": "Your catalog priorities",
+          "explore": "Listing changes to review with your team."
+        },
+        {
+          "bring": "The team and category in scope",
+          "explore": "A baseline and readout to agree together."
+        }
+      ],
+      "action": {
+        "primary": "Prepare your demo"
+      }
+    }
+  }
+}

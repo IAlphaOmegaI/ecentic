@@ -1,0 +1,44 @@
+{
+  "docsErrorsPage": {
+    "example": "Example response",
+    "fields": "Read the response",
+    "fieldItems": [
+      {
+        "name": "type",
+        "description": "The URI naming the problem, anchored in this reference."
+      },
+      {
+        "name": "code",
+        "description": "The stable identifier your client can branch on."
+      },
+      { "name": "title", "description": "A short human-readable summary." },
+      {
+        "name": "status",
+        "description": "The HTTP status, repeated in the body."
+      },
+      {
+        "name": "detail",
+        "description": "What went wrong on this particular request."
+      },
+      {
+        "name": "resolution",
+        "description": "The next step to resolve the failure."
+      },
+      {
+        "name": "documentation",
+        "description": "The reference page for the response."
+      },
+      {
+        "name": "instance",
+        "description": "The request path that produced it, when known."
+      }
+    ],
+    "catalogue": {
+      "label": "Published problem codes",
+      "description": "Open a code to read its resolution. Every code has a permanent link.",
+      "permalink": "Permanent link to",
+      "resolution": "How to resolve",
+      "action": { "primary": "Expand all", "secondary": "Collapse all" }
+    }
+  }
+}

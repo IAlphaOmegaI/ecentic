@@ -1,0 +1,9 @@
+{
+  "changelogPage": {
+    "archive": "Browse release history",
+    "action": {
+      "primary": "Show all updates",
+      "secondary": "Show latest month"
+    }
+  }
+}

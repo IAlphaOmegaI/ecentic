@@ -1,0 +1,39 @@
+{
+  "docsVersioningPage": {
+    "current": "Current API version",
+    "request": "Pinned request and response version",
+    "additive": "Add to the same version",
+    "breaking": "Start a new version path",
+    "notice": "Minimum notice",
+    "days": "days",
+    "example": "Deprecation header format",
+    "exampleHint": "Illustrative header values, not a retirement announcement.",
+    "apiContract": "ecentic API contract",
+    "protocolContract": "Discovery protocol contract",
+    "protocolVersion": "Read the version inside the document",
+    "lifecycle": {
+      "label": "Deprecation response signals",
+      "hint": "Select a header to see what it tells your client.",
+      "items": [
+        {
+          "header": "Deprecation",
+          "title": "A version is deprecated",
+          "description": "Every response from a deprecated version carries this header. It announces the deprecation using RFC 9745.",
+          "meaning": "Deprecation announced"
+        },
+        {
+          "header": "Sunset",
+          "title": "A removal date is fixed",
+          "description": "Responses also carry this header once a removal date is fixed. RFC 8594 defines the date when the version stops answering.",
+          "meaning": "Removal date announced"
+        },
+        {
+          "header": "Link",
+          "title": "The replacement is identified",
+          "description": "Alongside the removal date, a Link with rel=\"successor-version\" points your client to the replacement version.",
+          "meaning": "Replacement version linked"
+        }
+      ]
+    }
+  }
+}

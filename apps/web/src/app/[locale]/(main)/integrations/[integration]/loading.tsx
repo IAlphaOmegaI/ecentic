@@ -1,1 +1,1 @@
-export { MarketingSkeleton as default } from "@/components/marketing/skeleton";
+export { ProviderMarketingSkeleton as default } from "@/components/marketing/skeleton";

@@ -14,6 +14,7 @@ import {
   MarketingStatus,
 } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
+import { MarketingSources } from "@/components/marketing/sources";
 import { type AiChannel, aiChannels } from "@/content/ai-channels";
 import { Link } from "@/i18n/navigation";
 
@@ -113,31 +114,17 @@ export const ChannelCapabilities = ({
 );
 
 export const ChannelSources = ({ channel, copy }: ChannelSources.Props) => (
-  <MarketingBand>
-    <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
-      <h2>{copy.sourceTitle}</h2>
-      <p>{copy.sourceNote}</p>
-      <ul className="mt-8 divide-y divide-accent-foreground">
-        {channel.sources.map((source) => (
-          <li
-            key={source.key}
-            className="flex flex-col justify-between gap-3 py-5 sm:flex-row sm:gap-8"
-          >
-            <a
-              href={source.url}
-              className="marketing-text-link text-primary-text underline decoration-1 underline-offset-4 hover:underline"
-            >
-              {copy.sources[source.key]}
-            </a>
-            <span className="shrink-0 text-foreground-dimmed text-sm">
-              {copy.checked}:{" "}
-              <time dateTime={channel.checkedAt}>{copy.date}</time>
-            </span>
-          </li>
-        ))}
-      </ul>
-    </div>
-  </MarketingBand>
+  <MarketingSources
+    title={copy.sourceTitle}
+    description={copy.sourceNote}
+    checked={copy.checked}
+    date={copy.date}
+    dateTime={channel.checkedAt}
+    sources={channel.sources.map((source) => ({
+      label: copy.sources[source.key],
+      href: source.url,
+    }))}
+  />
 );
 
 export namespace ChannelInterests {

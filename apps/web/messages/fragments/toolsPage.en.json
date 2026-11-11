@@ -1,0 +1,45 @@
+{
+  "toolsPage": {
+    "description": "Start with the question you want to answer. Select a tool to see what it needs and what its result means.",
+    "inputLabel": "What you need",
+    "accessLabel": "Access",
+    "resultLabel": "How to read the result",
+    "tools": {
+      "score": {
+        "purpose": "Evaluate your catalog",
+        "input": "Your store, products and competitors",
+        "access": "Free scan · Account required",
+        "limit": "These are simulated product comparisons. They do not report live rankings inside AI shopping apps.",
+        "steps": ["Your products", "AI comparison", "Score & reasoning"]
+      },
+      "validator": {
+        "purpose": "Inspect a checkout profile",
+        "input": "Your store’s URL",
+        "access": "Free · No account required",
+        "limit": "A valid published profile does not confirm that a buyer can complete checkout. Use the playground to test store tools.",
+        "steps": ["Store URL", "Published profile", "Structure checks"]
+      },
+      "playground": {
+        "purpose": "Try a shopping journey",
+        "input": "A store exposing agent shopping tools",
+        "access": "10 free messages · No account required",
+        "limit": "The agent calls store tools. Use a staging store for checkout tests.",
+        "steps": ["Search", "Cart", "Checkout"]
+      },
+      "scanner": {
+        "purpose": "Find browser-tool evidence",
+        "input": "A public storefront URL",
+        "access": "Free · No account required",
+        "limit": "Inspects a small sample of pages and scripts. It does not run JavaScript, submit forms or verify that browser tools work.",
+        "steps": ["Storefront source", "Tools & forms", "Evidence & limits"]
+      },
+      "compare": {
+        "purpose": "Compare two listings",
+        "input": "Two product URLs",
+        "access": "Free product comparison",
+        "limit": "Each model makes a simulated choice using the compared listings. This is not a live shopping placement report.",
+        "steps": ["Two listings", "Four AI models", "Choice & reasoning"]
+      }
+    }
+  }
+}

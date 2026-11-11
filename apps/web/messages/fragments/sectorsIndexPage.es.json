@@ -1,0 +1,11 @@
+{
+  "sectorsIndexPage": {
+    "description": "Explora una pregunta de compra y los datos que tu catálogo debe dejar claros.",
+    "question": "Una persona podría preguntar",
+    "productData": "Datos que deben quedar claros",
+    "attributeHint": "Abre un campo para ver qué debe indicar.",
+    "action": {
+      "primary": "Explorar este sector"
+    }
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "docsLimitsPage": {
+    "requests": "solicitudes",
+    "window": "cada {seconds} segundos",
+    "publicScope": "Todos los endpoints de /api/v1",
+    "policySource": "Políticas aplicadas por la API",
+    "headerExample": "Ejemplos de encabezados de respuesta",
+    "headerHint": "Selecciona un encabezado para leer su significado. Estos valores ilustran una respuesta; no son un contador en tiempo real.",
+    "windowTitle": "Un límite temporal, dos lecturas",
+    "remaining": "Solicitudes restantes",
+    "reset": "Segundos hasta el reinicio",
+    "windowHint": "En este ejemplo, ambos formatos de encabezado describen la misma ventana.",
+    "responseExample": "Ejemplo: respuesta 429",
+    "retryTitle": "Espera y vuelve a intentarlo",
+    "retryLabel": "Segundos de espera en este ejemplo",
+    "retryHint": "Lee Retry-After en la respuesta real. Una solicitud enviada antes de ese momento se cuenta y se rechaza de nuevo."
+  }
+}

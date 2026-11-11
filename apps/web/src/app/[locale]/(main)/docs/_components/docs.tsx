@@ -8,7 +8,9 @@ import {
   TableHeader,
   TableRow,
 } from "@zenncore/web/components/table";
+import { getMessages } from "next-intl/server";
 import type { ReactNode } from "react";
+import { DocsCopy } from "./docs-copy";
 
 /**
  * Shared reference content remains server-rendered. ScrollArea adds keyboard
@@ -16,25 +18,31 @@ import type { ReactNode } from "react";
  * that do not run JavaScript.
  */
 
-export const DocsCode = ({ children, label }: DocsCode.Props) => (
-  <figure className="flex min-w-0 flex-col gap-2">
-    {label && (
-      <figcaption className="font-mono text-foreground-dimmed text-xs">
-        {label}
+export const DocsCode = async ({ children, label }: DocsCode.Props) => {
+  const { docsControls } = await getMessages();
+
+  return (
+    <figure className="min-w-0 overflow-hidden border border-accent-foreground bg-background-dimmed">
+      <figcaption className="flex flex-wrap items-center justify-between gap-4 border-accent-foreground border-b px-4 py-2">
+        <span className="wrap-anywhere text-foreground-dimmed text-sm">
+          {label ?? docsControls.snippet}
+        </span>
+        <DocsCopy source={children} copy={docsControls} />
       </figcaption>
-    )}
-    <ScrollArea
-      className="max-w-full border border-accent-foreground bg-background-dimmed"
-      classList={{
-        viewport: "focus-visible:outline-2 focus-visible:outline-primary-text",
-      }}
-    >
-      <pre className="w-max min-w-full p-4 font-mono text-foreground text-xs leading-relaxed">
-        <code>{children}</code>
-      </pre>
-    </ScrollArea>
-  </figure>
-);
+      <ScrollArea
+        className="max-w-full"
+        classList={{
+          viewport:
+            "focus-visible:outline-2 focus-visible:outline-primary-text",
+        }}
+      >
+        <pre className="w-max min-w-full p-4 font-mono text-foreground text-xs leading-relaxed">
+          <code>{children}</code>
+        </pre>
+      </ScrollArea>
+    </figure>
+  );
+};
 
 export namespace DocsCode {
   export type Props = {

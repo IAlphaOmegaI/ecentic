@@ -1,0 +1,12 @@
+{
+  "enterpriseSecurityDesign": {
+    "accessTitle": "Import and publish",
+    "permissionsTitle": "Connection permissions",
+    "trackingTitle": "Storefront visit measurement",
+    "checkoutTitle": "Agent checkout",
+    "routingTitle": "How model requests are routed",
+    "catalogLabel": "Connected store catalog",
+    "modelLabel": "AI providers",
+    "outputLabel": "Comparisons and listing fixes"
+  }
+}

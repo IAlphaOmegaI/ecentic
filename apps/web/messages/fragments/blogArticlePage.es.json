@@ -1,0 +1,12 @@
+{
+  "blogArticlePage": {
+    "contents": "En este artículo",
+    "introduction": "Introducción",
+    "takeaways": "Ideas clave",
+    "byline": "Por ecentic",
+    "topics": "Explora estos temas",
+    "action": {
+      "primary": "Volver arriba"
+    }
+  }
+}

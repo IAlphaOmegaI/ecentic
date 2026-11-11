@@ -75,31 +75,29 @@ const previewHost = (value: string) => {
   return trimmed.replace(/^https?:\/\//, "").replace(/\/.*$/, "");
 };
 
-const DomainCheckPreview = ({ domain }: DomainCheckPreview.Props) => {
+const DomainCheckPreview = ({ domain, label }: DomainCheckPreview.Props) => {
   const translate = useTranslations("ucpValidator.form");
   const host = previewHost(domain);
 
   return (
-    <div className="relative flex h-full min-h-48 flex-col justify-center overflow-hidden">
-      <div className="relative flex flex-col gap-5">
-        <div className="flex items-center gap-3">
+    <div className="relative flex h-full min-w-0 flex-col justify-center overflow-hidden">
+      <div className="relative flex flex-col gap-4">
+        <div className="flex items-center gap-4">
           <Image
             src={ucp}
             alt={translate("preview.logoAlt")}
-            className="size-10 object-contain"
+            className="size-12 object-contain"
           />
           <div>
-            <p className="font-medium text-foreground text-sm">
-              {translate("preview.liveFetch")}
-            </p>
-            <p className="mt-0.5 font-mono text-foreground-dimmed text-xs">
+            <p className="font-medium text-foreground text-sm">{label}</p>
+            <p className="mt-2 font-mono text-foreground-dimmed text-xs">
               HTTPS · spec {LATEST_UCP_VERSION}
             </p>
           </div>
         </div>
         <ScrollArea
           role="region"
-          aria-label={translate("preview.liveFetch")}
+          aria-label={label}
           className="max-w-full rounded-xs border border-accent-foreground bg-background"
           classList={{
             viewport:
@@ -109,8 +107,7 @@ const DomainCheckPreview = ({ domain }: DomainCheckPreview.Props) => {
           <pre className="w-max min-w-full p-4 font-mono text-foreground-dimmed text-xs leading-relaxed sm:text-sm">
             {`GET /.well-known/ucp HTTP/1.1
 Host: ${host}
-Accept: application/json
-UCP-Agent: profile="https://ucp.dev/..."`}
+Accept: application/json`}
           </pre>
         </ScrollArea>
         <p className="text-foreground-dimmed text-sm leading-relaxed">
@@ -124,6 +121,7 @@ UCP-Agent: profile="https://ucp.dev/..."`}
 export namespace DomainCheckPreview {
   export type Props = {
     domain: string;
+    label: string;
   };
 }
 
@@ -1189,6 +1187,7 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
 
 export const UcpValidatorForm = ({
   hideIntro = false,
+  previewLabel,
 }: UcpValidatorForm.Props) => {
   const translate = useTranslations("ucpValidator.form");
   const toast = useToastManager();
@@ -1220,18 +1219,15 @@ export const UcpValidatorForm = ({
   return (
     <div className="flex flex-col">
       {hideIntro ? (
-        <div className="grid grid-cols-1 gap-px bg-accent-foreground md:grid-cols-[5fr_8fr]">
-          <div className="bg-background px-7 py-12 max-sm:px-4 max-sm:py-8">
-            <DomainCheckPreview domain={domain} />
-          </div>
-          <div className="flex flex-col justify-center bg-background px-7 py-12 max-sm:px-4 max-sm:py-8">
+        <div className="grid grid-cols-1 gap-px bg-accent-foreground md:grid-cols-[8fr_5fr]">
+          <div className="flex min-w-0 flex-col justify-center bg-background px-7 py-8 max-sm:px-4">
             <form onSubmit={handleSubmit}>
               <p className="font-medium text-primary-text text-sm">
                 {translate("panel.checkADomain")}
               </p>
               <label
                 htmlFor="ucp-domain"
-                className="mt-3 block font-medium text-foreground text-sm"
+                className="mt-6 block font-medium text-foreground text-sm"
               >
                 {translate("panel.storefrontDomain")}
               </label>
@@ -1239,7 +1235,7 @@ export const UcpValidatorForm = ({
                 <TextField
                   value={domain}
                   onValueChange={setDomain}
-                  className="flex-1"
+                  className="min-w-0 flex-1"
                 >
                   <TextFieldInput
                     id="ucp-domain"
@@ -1250,14 +1246,14 @@ export const UcpValidatorForm = ({
                   type="submit"
                   color="primary"
                   disabled={isChecking || !domain.trim()}
-                  className={submitButtonClassName}
+                  className="w-full shrink-0 justify-center sm:w-auto sm:min-w-36"
                 >
                   {isChecking
                     ? translate("action.checking")
                     : translate("action.primary")}
                 </Button>
               </div>
-              <p className="mt-2 font-light text-foreground-dimmed text-sm">
+              <p className="mt-4 max-w-lg text-foreground-dimmed text-sm leading-relaxed">
                 {translate.rich("panel.rootDomainNote", {
                   code: (chunks) => (
                     <span className="font-mono text-foreground">{chunks}</span>
@@ -1265,6 +1261,12 @@ export const UcpValidatorForm = ({
                 })}
               </p>
             </form>
+          </div>
+          <div className="min-w-0 bg-background-dimmed px-7 py-8 max-sm:px-4">
+            <DomainCheckPreview
+              domain={domain}
+              label={previewLabel ?? translate("preview.liveFetch")}
+            />
           </div>
         </div>
       ) : (
@@ -1330,7 +1332,7 @@ export const UcpValidatorForm = ({
         </div>
       )}
 
-      <ValidationTargetsSection />
+      {!hideIntro && <ValidationTargetsSection />}
 
       <AnimatePresence mode="wait" initial={false}>
         {result && <Results key={run} result={result} />}
@@ -1342,5 +1344,6 @@ export const UcpValidatorForm = ({
 export namespace UcpValidatorForm {
   export type Props = {
     hideIntro?: boolean;
+    previewLabel?: string;
   };
 }

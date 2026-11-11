@@ -1,0 +1,26 @@
+{
+  "webmcpPage": {
+    "scope": {
+      "title": "A closer look at storefront source",
+      "description": "Follow the declarations, inspect their metadata, then review what the browser still needs to verify.",
+      "pages": "Public pages, at most",
+      "scripts": "External scripts or modules, at most",
+      "runtime": "Browser registration and execution remain unverified."
+    },
+    "checks": {
+      "title": "Know what each check tells you.",
+      "description": "Seven checks separate source findings, improvement opportunities, and the evidence that still needs a browser.",
+      "workflowsTitle": "Across the shopping journey",
+      "workflowsNote": "These eight workflows are useful review areas. A store does not need to expose every one through WebMCP.",
+      "items": {
+        "discovery": "Named declarations are recovered from HTML forms or registration code. An API reference alone leaves the available tool inventory unresolved.",
+        "metadata": "Review tool names, descriptions, and possible duplicate names on the same page. Short descriptions are a quality suggestion, not a protocol failure.",
+        "parameters": "Inspect recoverable input names, types, descriptions, and required state. A parameterless tool may omit its input schema; dynamic schemas can remain unresolved.",
+        "implementation": "The source can show a declared handler or form operation. The scanner does not run the handler, submit the form, or confirm its behavior.",
+        "forms": "Public forms can reveal adoption opportunities. Check existing tools first and preserve the form’s validation and consent; sensitive flows need manual review.",
+        "coverage": "The report keeps blocked resources, failures, and scan limits visible. Unvisited pages, authenticated flows, and runtime-generated code can fall outside the inspected source.",
+        "runtime": "This check remains unknown. Confirm native registration and behavior separately in a browser with WebMCP support; source findings cannot certify agent usage."
+      }
+    }
+  }
+}

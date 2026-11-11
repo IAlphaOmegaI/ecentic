@@ -18,7 +18,8 @@ import {
   ContentPageRichText,
   ContentPageSection,
 } from "../../_components/content";
-import { DocsAnchor, DocsCode, DocsTable } from "../_components/docs";
+import { DocsCode } from "../_components/docs";
+import { ErrorsExplorer } from "./_components/errors-explorer";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const locale = await getLocale();
@@ -57,6 +58,7 @@ export default async () => {
   const translateDocs = await getTranslations("docs");
   const messages = await getMessages();
   const content = messages.docs.errorsPage;
+  const copy = messages.docsErrorsPage;
 
   return (
     <ContentPageLayout
@@ -105,11 +107,43 @@ export default async () => {
         number={translate("shape.number")}
         title={translate("shape.title")}
         description={translate("shape.description")}
+        classList={{
+          grid: "md:grid-cols-1",
+          left: "py-10 max-sm:py-8",
+          body: "p-0 max-sm:p-0",
+        }}
       >
-        <div className="flex flex-col gap-6">
-          <ContentPageRichText content={translate("shape.body")} />
-          <DocsCode>{example}</DocsCode>
+        <div className="grid gap-px bg-accent-foreground lg:grid-cols-[4fr_8fr]">
+          <div className="flex flex-col gap-6 bg-background-dimmed p-8 max-sm:p-4">
+            <p className="font-mono text-primary-text text-sm">
+              application/problem+json
+            </p>
+            <ContentPageRichText
+              content={content.shape.body.split("\n\n")[0] ?? ""}
+            />
+          </div>
+          <div className="min-w-0 bg-background p-8 max-sm:p-4">
+            <DocsCode label={copy.example}>{example}</DocsCode>
+          </div>
         </div>
+        <div className="border-accent-foreground border-t px-8 py-4 max-sm:px-4">
+          <h3 className="text-base text-foreground">{copy.fields}</h3>
+        </div>
+        <dl className="grid grid-cols-2 gap-px bg-accent-foreground lg:grid-cols-4">
+          {copy.fieldItems.map((field) => (
+            <div
+              key={field.name}
+              className="flex flex-col gap-2 bg-background-dimmed px-8 py-6 max-sm:px-4"
+            >
+              <dt className="font-mono text-primary-text text-sm">
+                {field.name}
+              </dt>
+              <dd className="text-foreground-dimmed text-sm leading-relaxed">
+                {field.description}
+              </dd>
+            </div>
+          ))}
+        </dl>
       </ContentPageSection>
 
       <ContentPageSection
@@ -117,26 +151,17 @@ export default async () => {
         title={translate("catalogue.title")}
         description={translate("catalogue.description")}
         gutter
-        classList={{ body: "p-0" }}
+        classList={{
+          grid: "md:grid-cols-1",
+          left: "py-10 max-sm:py-8",
+          body: "p-0 max-sm:p-0",
+        }}
       >
-        <DocsTable
-          columns={[
-            translate("catalogue.columns.code"),
-            translate("catalogue.columns.status"),
-            translate("catalogue.columns.title"),
-            translate("catalogue.columns.resolution"),
-          ]}
-          rows={Object.entries(PROBLEMS).map(([code, problem]) => ({
-            key: code,
-            cells: [
-              {
-                content: <DocsAnchor id={code}>{code}</DocsAnchor>,
-                mono: true,
-              },
-              { content: String(problem.status), mono: true },
-              { content: problem.title },
-              { content: problem.resolution },
-            ],
+        <ErrorsExplorer
+          copy={copy.catalogue}
+          problems={Object.entries(PROBLEMS).map(([code, problem]) => ({
+            code,
+            ...problem,
           }))}
         />
       </ContentPageSection>

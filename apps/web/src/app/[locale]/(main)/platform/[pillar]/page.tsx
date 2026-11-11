@@ -8,6 +8,7 @@ import {
   MarketingScreenshot,
 } from "@/components/marketing/primitives";
 import { simulationEvidence } from "@/content/marketing-evidence";
+import { pageBodies } from "../_components/page-bodies";
 import { ProductExample } from "../_components/product-example";
 
 const pillars = ["connect", "simulate", "fix", "sell", "track"] as const;
@@ -48,25 +49,31 @@ export default async ({ params }: Props) => {
   const pillar = pillars.find((value) => value === requested);
   if (!pillar) notFound();
   const { enterprisePlatform } = await getMessages();
+  const Body = pageBodies[pillar];
   return (
     <MarketingPage
-      content={enterprisePlatform.pages[pillar]}
+      content={{ ...enterprisePlatform.pages[pillar], sections: [] }}
       path={`/platform/${pillar}`}
-      heroChildren={
-        <MarketingScreenshot
-          src={`/screenshots/${screenshots[pillar].file}${locale === "es" ? "-es" : ""}.png`}
-          width={screenshots[pillar].width}
-          height={screenshots[pillar][locale === "es" ? "es" : "en"]}
-          alt={enterprisePlatform.screenshots[pillar].alt}
-          caption={enterprisePlatform.screenshots[pillar].caption}
-        />
-      }
-      sectionChildren={{
-        example: (
-          <ProductExample content={enterprisePlatform.examples[pillar]} />
-        ),
-      }}
     >
+      <MarketingBand className="[&>.marketing-rail>.marketing-guides]:hidden [&>.marketing-rail]:bg-background-dimmed">
+        <div className="relative px-7 py-10 max-sm:px-4 max-sm:py-6 [&>.marketing-screenshot]:mt-0">
+          <MarketingScreenshot
+            src={`/screenshots/${screenshots[pillar].file}${locale === "es" ? "-es" : ""}.png`}
+            width={screenshots[pillar].width}
+            height={screenshots[pillar][locale === "es" ? "es" : "en"]}
+            alt={enterprisePlatform.screenshots[pillar].alt}
+            caption={enterprisePlatform.screenshots[pillar].caption}
+          />
+        </div>
+      </MarketingBand>
+      <Body
+        sections={enterprisePlatform.pages[pillar].sections}
+        sectionChildren={{
+          example: (
+            <ProductExample content={enterprisePlatform.examples[pillar]} />
+          ),
+        }}
+      />
       {pillar === "simulate" &&
         canPublishEvidence(simulationEvidence.status, review) && (
           <MarketingBand>

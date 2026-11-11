@@ -1,0 +1,21 @@
+{
+  "playgroundPage": {
+    "guide": {
+      "title": "From discovery to checkout",
+      "description": "Explore the calls behind a shopping session.",
+      "discovery": {
+        "title": "Discover the store",
+        "description": "Read the store's UCP profile, then select its shopping endpoint. The playground prefers MCP and falls back to REST."
+      },
+      "action": {
+        "primary": "Open the playground",
+        "secondary": "Check a UCP profile"
+      }
+    },
+    "session": {
+      "title": "Live shopping session",
+      "description": "Inspect tool calls and responses as the agent shops."
+    },
+    "faq": { "title": "Before you connect" }
+  }
+}

@@ -1,3 +1,4 @@
+import { pageBodies } from "../_components/page-bodies";
 import { notFound } from "next/navigation";
 import { getMessages } from "next-intl/server";
 import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
@@ -39,18 +40,23 @@ export default async ({ params }: Props) => {
   const sections = content.sections.map((section) =>
     section.id === "attributes" ? { ...section, items: undefined } : section,
   );
+  const Body = pageBodies[sector];
   return (
     <MarketingPage
-      content={{ ...content, sections }}
+      content={{ ...content, sections: [] }}
       path={`/solutions/sectors/${sector}`}
-      sectionChildren={{
-        attributes: (
-          <SpecificationMap
-            items={specification?.items ?? []}
-            labels={enterpriseSolutions.specificationLabels}
-          />
-        ),
-      }}
-    />
+    >
+      <Body
+        sections={sections}
+        sectionChildren={{
+          attributes: (
+            <SpecificationMap
+              items={specification?.items ?? []}
+              labels={enterpriseSolutions.specificationLabels}
+            />
+          ),
+        }}
+      />
+    </MarketingPage>
   );
 };

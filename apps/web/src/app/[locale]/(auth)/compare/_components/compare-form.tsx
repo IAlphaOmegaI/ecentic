@@ -4,6 +4,12 @@ import { readStreamableValue } from "@ai-sdk/rsc";
 import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
 import { cn, resultify, unwrapResult } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionPanel,
+  AccordionTrigger,
+} from "@zenncore/web/components/accordion";
 import { Button } from "@zenncore/web/components/button";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { Textarea, TextareaInput } from "@zenncore/web/components/textarea";
@@ -214,25 +220,40 @@ export const CompareForm = () => {
             </div>
           </div>
 
-          <div className="flex flex-col border-accent-foreground border-t">
-            <div className="px-7 py-8 max-sm:px-4">
-              <h2 className="font-medium text-2xl text-foreground">
+          <Accordion
+            defaultValue={["criteria"]}
+            className="border-accent-foreground border-t bg-background-dimmed"
+          >
+            <AccordionItem value="criteria" className="border-b-0">
+              <AccordionTrigger
+                className="px-8 py-6 text-lg max-sm:px-4"
+                classList={{
+                  trigger: { icon: "size-4 motion-reduce:transition-none" },
+                }}
+              >
                 {translateForm("prompt.title")}
-              </h2>
-              <p className="mt-6 mb-6 text-foreground-dimmed text-lg">
-                {translateForm("prompt.description")}
-              </p>
-              <Textarea value={prompt} onValueChange={setPrompt}>
-                <TextareaInput
-                  rows={2}
-                  aria-label={translateForm("prompt.title")}
-                  placeholder={translateForm("prompt.placeholder")}
-                />
-              </Textarea>
-            </div>
-          </div>
+              </AccordionTrigger>
+              <AccordionPanel
+                keepMounted
+                className="motion-reduce:transition-none"
+              >
+                <div className="grid gap-6 px-8 pb-6 max-sm:px-4 md:grid-cols-[1fr_1.4fr]">
+                  <p className="max-w-[40ch] text-base text-foreground-dimmed leading-relaxed">
+                    {translateForm("prompt.description")}
+                  </p>
+                  <Textarea value={prompt} onValueChange={setPrompt}>
+                    <TextareaInput
+                      rows={3}
+                      aria-label={translateForm("prompt.title")}
+                      placeholder={translateForm("prompt.placeholder")}
+                    />
+                  </Textarea>
+                </div>
+              </AccordionPanel>
+            </AccordionItem>
+          </Accordion>
           <div className="border-accent-foreground border-t">
-            <div className="flex w-full flex-wrap items-center justify-between gap-4 px-7 py-8 max-sm:px-4">
+            <div className="flex w-full flex-wrap items-center justify-between gap-4 px-8 py-6 max-sm:px-4">
               <p className="font-light text-foreground-dimmed text-sm">
                 {translateForm("footer")}
               </p>
@@ -412,18 +433,12 @@ const ProductSide = ({
   placeholder: string;
   hint: string;
 }) => (
-  <div className="flex min-w-0 flex-col items-center justify-center gap-6 bg-background px-7 py-12 max-sm:px-4 max-sm:py-8">
-    <div className="flex flex-col items-center gap-2">
-      <span className="font-medium text-2xl text-foreground-rich">{label}</span>
-      <p className="text-center font-light text-foreground-dimmed text-lg">
-        {hint}
-      </p>
+  <div className="flex min-w-0 flex-col gap-4 bg-background px-8 py-6 max-sm:px-4">
+    <div className="flex flex-col gap-2">
+      <h2 className="font-medium text-2xl text-foreground-rich">{label}</h2>
+      <p className="text-foreground-dimmed text-sm leading-relaxed">{hint}</p>
     </div>
-    <TextField
-      value={url}
-      onValueChange={onUrlChange}
-      className="w-full max-w-md"
-    >
+    <TextField value={url} onValueChange={onUrlChange} className="w-full">
       <TextFieldInput aria-label={label} placeholder={placeholder} />
     </TextField>
   </div>

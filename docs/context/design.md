@@ -55,9 +55,9 @@ intersections without stacking duplicate lines or marks.
 
 The five-stage product journey is a connected roadmap with all milestones visible. Alternate copy
 and diagrams around a central spine on wide screens; use a left spine and stacked content below
-1000 px. Use schematic
-connections, records, checkout and measurement diagrams; no ASCII artwork or bottom tag strips in
-this section. Do not recreate it as a segmented tab bar. The audience section uses native tabs with distinct semantic
+1000 px. Use schematic connections, records, checkout and measurement diagrams, with literal
+ASCII numerals beside each stage title. Each row shares the rail boundaries and center intersections; do not
+outline its copy as a separate inset card. Omit bottom tag strips and segmented tab bars. The audience section uses native tabs with distinct semantic
 accents and restrained gradients. Provider cards are outlined squares, using one column on small
 phones, two on tablets and four on desktop. Homepage integration categories use native accordions,
 with the commerce category open initially and the other categories available on demand. The original product film remains intact inside a
@@ -290,7 +290,7 @@ Use one neutral hue family. Elevation is a small lightness change, not a jump in
 - `text-foreground`: default headings and body content.
 - `text-foreground-dimmed`: explanations, metadata, captions, placeholders, and inactive states.
 - `text-primary`: links, selected values, active navigation, and strategic emphasis.
-- `text-white` with `/60`, `/70`, `/80`, or `/90`: hierarchy on primary or emphasis surfaces.
+- `text-background-rich` with `/60`, `/70`, `/80`, or `/90`: hierarchy on primary or emphasis surfaces.
 
 Do not use color to compensate for weak typography. Establish hierarchy with size, weight, spacing,
 and placement first.
@@ -626,12 +626,12 @@ banner or a separate short hero locally. Legal/reference pages may opt into a co
 
 Decorative character art must consist of actual text glyphs. Reuse `EvolvingAscii` where appropriate;
 keep its visibility/reduced-motion pause behavior, use a text-safe gradient mask, and crop cover-sized
-closing artwork at its background boundary. The five-stage product roadmap is the explicit exception:
-its visuals are schematic diagrams rather than character artwork. Existing content raster motifs
+closing artwork at its background boundary. The five-stage product roadmap uses schematic diagrams
+for its process visuals and character numerals for its milestones. Existing content raster motifs
 remain acceptable where they carry genuine page identity; do not introduce dot-only substitutes.
 
-Provider identities use `ProviderLogo` with actual local brand assets and consistent rounded marks.
-Do not replace available logos with names or invented monograms. Preserve attribution/provenance.
+Provider identities use `ProviderLogo` with actual local brand assets, unframed and in their original
+proportions. Do not replace available logos with names or invented monograms. Preserve attribution/provenance.
 
 ### 8.3 Onboarding artwork
 
@@ -1042,7 +1042,9 @@ through sign-up into onboarding with their catalog already imported) or into a p
 2. A connected five-stage roadmap with visible milestones and schematic product/process visuals.
 3. The original product film, retained as strong product evidence.
 4. Centered commerce connections, chronological provider milestones and audience-specific content.
-5. Integrations organized in native accordions, with actual logos and outlined square provider tiles.
+5. Integrations organized in native accordions, with actual unframed logos and outlined square entries.
+   The channel comparison expands with the document, using a desktop table and stacked labeled
+   channel records on mobile; it has no nested scroll container.
 6. Evidence charts with known values only, semantic color and compact source disclosures; the DUA case study.
 7. Clear pricing/partner/service paths, useful tool/content entries and native FAQs.
 8. The shared closing CTA and footer.
@@ -1052,7 +1054,11 @@ through sign-up into onboarding with their catalog already imported) or into a p
 - Keep the common off-white canvas; reserve gray for supporting surfaces confined within their rails.
 - Use full-viewport major seams and visible single crosses; internal separators stay local.
 - Preserve valid provider identities, product facts and publication gates.
-- Use schematic diagrams throughout the roadmap, with no tab bar, bottom tag row or ASCII in that section.
+- Use schematic diagrams throughout the roadmap, with no tab bar or bottom tag row.
+  Its stage titles include literal ASCII numerals. Confine each full-width row between
+  the outer rails and a center divider, with single crosses at row intersections. Copy and
+  schematic are cells of that row, not independently outlined cards. Subtle side gradients
+  sit within the gray row surface.
 - Preserve the original product video. Do not reintroduce sections removed in review.
 - Keep action and copy alignment deliberate rather than filling whitespace with extra labels or stats.
 
@@ -1475,7 +1481,33 @@ What survives first on a narrow screen, and where does navigation move?
 
 ---
 
-## 23. Canonical source map
+## 23. Secondary public pages and provider artwork
+
+The landing page is the design canon for all public secondary routes in both locales.
+A shared hero alone is not a complete adaptation: each integration, channel, platform stage,
+business, sector, directory, tool and editorial page needs a composition that explains its own job.
+Use connected process diagrams, product evidence, native accordions/tabs, literal ASCII and
+selected gray or blue regions to make relationships visible. Preserve useful reference prose,
+forms and legal reading order; do not add decorative dashboards or fabricated measurements.
+
+In channel and integration heroes, make the provider mark a prominent large identity above the title; keep meaningful status and verification text subordinate below. The Shopify hero omits its redundant Live badge. Product screenshots belong in a separate neutral/gray evidence band, never inside the blue hero.
+
+Secondary body layouts must not use inset blue copy banners wrapped in white padding. Prefer neutral/gray connected cells, meaningful interactive ASCII setup roadmaps, and full-container source rows with clear hover/focus feedback. Large blue hero/closing surfaces remain part of the system.
+
+Provider logos sit directly on their section surface. Do not put a separate filled tile, pill,
+white plate, border or shadow immediately behind a logo. A provider's whole directory entry may
+have the normal section surface and structural outline; the mark itself stays unframed. Keep
+official artwork, aspect ratios and readable contrast.
+
+Secondary page bodies may vary in layout while keeping the same semantic tokens, type hierarchy,
+primary/neutral gradient buttons, rail geometry, crosshairs and motion rules. The homepage
+roadmap remains schematic and tag-free, with ASCII numerals beside the stage titles; ASCII elsewhere must explain or reinforce the page's
+subject and respect reduced motion. Do not use a single repeating card layout as the default
+answer for every page.
+
+---
+
+## 24. Canonical source map
 
 Use these files as implementation references:
 

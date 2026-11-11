@@ -1,0 +1,47 @@
+{
+  "retailersPage": {
+    "challengeIntro": "Empieza por la ficha, compara la evidencia y decide qué trabajo del catálogo viene después.",
+    "catalogIntro": "Elige dónde están los datos de tus productos. Consulta qué permite cada conexión y qué decisiones corresponden a tu equipo.",
+    "catalog": {
+      "select": "La fuente de tu catálogo",
+      "capability": "Qué permite esta vía",
+      "dataLabel": "Datos del producto",
+      "decisionLabel": "Decisión de publicación",
+      "routes": [
+        {
+          "data": "Prepara un feed o CSV compatible con los campos y formatos admitidos.",
+          "decision": "La importación no crea un conector de escritura. Decide cómo devolver los cambios aprobados a tu fuente."
+        },
+        {
+          "data": "Revisa los diagnósticos de Merchant Center para tu catálogo de Shopify.",
+          "decision": "Ejecuta la sincronización complementaria por separado después de publicar los cambios. No corrige todas las diferencias de precio o stock."
+        },
+        {
+          "data": "Conecta una tienda de Shopify o WooCommerce compatible e importa sus productos.",
+          "decision": "Tu equipo elige qué cambios admitidos de las fichas se publican en la tienda conectada."
+        },
+        {
+          "data": "Usa un feed de productos compatible exportado desde tu PIM.",
+          "decision": "Consulta la disponibilidad de conectores específicos en el directorio de integraciones antes de planificar la escritura."
+        }
+      ]
+    },
+    "pilot": {
+      "label": "Acuerda primero el alcance del piloto",
+      "steps": [
+        {
+          "title": "Un mercado, una categoría",
+          "body": "Elige los productos que tu equipo pueda revisar."
+        },
+        {
+          "title": "Referencia en la semana 0",
+          "body": "Establece el punto de partida del piloto acordado."
+        },
+        {
+          "title": "Resultados en la semana 6",
+          "body": "Revisa los hallazgos antes de elegir la siguiente categoría."
+        }
+      ]
+    }
+  }
+}

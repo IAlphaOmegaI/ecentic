@@ -56,7 +56,7 @@ export const IntegrationsPreview = ({ copy }: IntegrationsPreview.Props) => (
               return (
                 <article
                   key={item.key}
-                  className="relative flex aspect-square min-h-0 min-w-0 flex-col items-start gap-4 border-[var(--rail-color)] border-r border-b bg-background p-6 max-sm:border-r-0 max-sm:last:border-b-0 sm:max-lg:even:border-r-0 sm:max-lg:[&:nth-child(2n+1):nth-last-child(-n+2)]:border-b-0 sm:max-lg:[&:nth-child(2n+1):nth-last-child(-n+2)~article]:border-b-0 lg:[&:nth-child(4n+1):nth-last-child(-n+4)]:border-b-0 lg:[&:nth-child(4n+1):nth-last-child(-n+4)~article]:border-b-0"
+                  className="relative grid aspect-square h-auto min-h-0 w-full min-w-0 grid-rows-[3rem_3.5rem_1.5rem_minmax(0,1fr)] items-start gap-4 border-[var(--rail-color)] border-r border-b bg-background p-6 max-sm:border-r-0 max-sm:last:border-b-0 sm:max-lg:even:border-r-0 lg:max-xl:gap-2 lg:max-xl:p-4 sm:max-lg:[&:nth-child(2n+1):nth-last-child(-n+2)]:border-b-0 sm:max-lg:[&:nth-child(2n+1):nth-last-child(-n+2)~article]:border-b-0 lg:[&:nth-child(4n+1):nth-last-child(-n+4)]:border-b-0 lg:[&:nth-child(4n+1):nth-last-child(-n+4)~article]:border-b-0"
                 >
                   <div className="enterprise-integration-mark flex h-12 shrink-0 items-center">
                     {Mark ? (
@@ -78,19 +78,17 @@ export const IntegrationsPreview = ({ copy }: IntegrationsPreview.Props) => (
                   <MarketingStatus status={item.status}>
                     {copy.statuses[item.status]}
                   </MarketingStatus>
-                  {item.interests.length > 0 && (
-                    <div className="mt-auto flex flex-wrap gap-2 pt-2">
-                      {item.interests.map((topic) => (
-                        <MarketingLead
-                          key={topic}
-                          kind="interest"
-                          topic={topic}
-                          title={copy.interests[topic]}
-                          triggerLabel={copy.action.primary}
-                        />
-                      ))}
-                    </div>
-                  )}
+                  <div className="flex min-h-12 flex-wrap gap-2 self-end pt-2">
+                    {item.interests.map((topic) => (
+                      <MarketingLead
+                        key={topic}
+                        kind="interest"
+                        topic={topic}
+                        title={copy.interests[topic]}
+                        triggerLabel={copy.action.primary}
+                      />
+                    ))}
+                  </div>
                 </article>
               );
             })}

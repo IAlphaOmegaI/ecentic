@@ -1,0 +1,44 @@
+{
+  "claudePage": {
+    "explorer": {
+      "label": "Explore a merchant-built commerce agent",
+      "scope": "Inside the retailer’s own experience",
+      "tools": "Tools supplied by the retailer",
+      "stages": [
+        {
+          "id": "catalog",
+          "title": "Catalog",
+          "headline": "Start with your product information",
+          "body": "The retailer supplies catalog and inventory tools for its Claude-powered agent to search products.",
+          "tools": ["Catalog", "Inventory"]
+        },
+        {
+          "id": "compare",
+          "title": "Compare",
+          "headline": "Give the comparison context",
+          "body": "The agent compares products using the information and tools the retailer supplies, including its catalog and store policies.",
+          "tools": ["Product information", "Store policies"]
+        },
+        {
+          "id": "cart",
+          "title": "Cart",
+          "headline": "Connect your own commerce tools",
+          "body": "Cart and checkout tools belong to the merchant-built experience. ecentic has no dedicated Claude checkout connection today.",
+          "tools": ["Retailer’s cart", "Retailer’s checkout"]
+        }
+      ]
+    },
+    "reading": {
+      "merchant": "Your commerce agent",
+      "simulation": "ecentic’s comparison"
+    },
+    "entry": {
+      "tools": "Retailer-supplied tools",
+      "experience": "Your own commerce experience"
+    },
+    "action": {
+      "primary": "Explore simulations",
+      "secondary": "Improve your listings"
+    }
+  }
+}

@@ -1,0 +1,43 @@
+{
+  "agenciesPage": {
+    "challenges": {
+      "description": "Turn the client question into a product check, a verified change and a clear comparison.",
+      "details": "Explore the client questions"
+    },
+    "tracks": {
+      "description": "Choose the work you bring to the relationship. Scope and commercial terms are agreed before resale or referral.",
+      "label": "Partner tracks",
+      "pathLabel": "What the collaboration involves",
+      "paths": [
+        ["Client catalog", "Product checks", "Verified changes"],
+        ["Your product", "Documented interfaces", "Discovery and onboarding"],
+        ["Your audience", "AI commerce education", "Partner conversation"]
+      ]
+    },
+    "access": {
+      "label": "Account ownership",
+      "single": "One owner, multiple stores",
+      "separate": "Separate client accounts",
+      "singleTitle": "One account holds its own stores.",
+      "singleDescription": "Stores can sit together when they belong to the same account owner.",
+      "separateTitle": "Each client controls its account.",
+      "separateDescription": "Separate owners keep separate accounts. Confirm the arrangement with each client before connecting.",
+      "owner": "Owner account",
+      "store": "Owned store",
+      "anotherStore": "Another owned store",
+      "firstClient": "Client A account",
+      "secondClient": "Client B account",
+      "firstStore": "Client A store",
+      "secondStore": "Client B store",
+      "boundary": "No delegated agency permissions or team seats"
+    },
+    "start": {
+      "description": "Bring your partner track, the client use case and the proposed account arrangement to the conversation.",
+      "items": [
+        "Choose your track",
+        "Confirm account ownership",
+        "Agree scope and terms"
+      ]
+    }
+  }
+}

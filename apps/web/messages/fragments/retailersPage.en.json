@@ -1,0 +1,47 @@
+{
+  "retailersPage": {
+    "challengeIntro": "Start with the listing, compare the evidence, and decide which catalog work comes next.",
+    "catalogIntro": "Choose where your product data lives. See what the connection supports and which decisions stay with your team.",
+    "catalog": {
+      "select": "Your catalog source",
+      "capability": "What this route supports",
+      "dataLabel": "Product data",
+      "decisionLabel": "Publishing decision",
+      "routes": [
+        {
+          "data": "Prepare a compatible feed or CSV using supported fields and formats.",
+          "decision": "An import does not create a write-back connector. Choose how approved changes return to your source."
+        },
+        {
+          "data": "Review Merchant Center diagnostics for your Shopify catalog.",
+          "decision": "Run supplemental sync separately after publishing listing changes. It does not fix every price or stock mismatch."
+        },
+        {
+          "data": "Connect a supported Shopify or WooCommerce store and import its products.",
+          "decision": "Your team chooses which supported listing changes to publish to the connected store."
+        },
+        {
+          "data": "Use a compatible product feed exported from your PIM.",
+          "decision": "Check dedicated connector availability on the integration wall before planning write-back."
+        }
+      ]
+    },
+    "pilot": {
+      "label": "Agree the pilot scope first",
+      "steps": [
+        {
+          "title": "One market, one category",
+          "body": "Choose the products your team can review."
+        },
+        {
+          "title": "Week 0 baseline",
+          "body": "Set the starting point for your scoped pilot."
+        },
+        {
+          "title": "Week 6 readout",
+          "body": "Review the findings before choosing the next category."
+        }
+      ]
+    }
+  }
+}

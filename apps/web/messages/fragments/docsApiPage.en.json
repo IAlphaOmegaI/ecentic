@@ -1,0 +1,25 @@
+{
+  "docsApiPage": {
+    "surfaces": "Browse by surface",
+    "all": "All endpoints",
+    "groups": {
+      "discovery": "Discovery",
+      "sandbox": "Sandbox",
+      "catalog": "Catalogs",
+      "mcp": "MCP",
+      "commerce": "Commerce"
+    },
+    "sourceTitle": "One source of truth.",
+    "sourceBody": "Open an endpoint to read the exact contract. Follow its schema links to inspect the shared data shapes.",
+    "operations": "Operations",
+    "schemas": "Shared schemas",
+    "responses": "Response codes",
+    "references": "Referenced schemas",
+    "schemaBody": "These definitions are shared across operations. Each name has a permanent link, and every definition can be copied as JSON.",
+    "permalink": "Link to this definition",
+    "navigation": "Reference sections",
+    "definition": "Source definition · JSON",
+    "securityTitle": "Declared per operation",
+    "securityBody": "Inspect the security field on each endpoint before choosing credentials. The available scheme is defined here."
+  }
+}

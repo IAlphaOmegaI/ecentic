@@ -1,0 +1,24 @@
+{
+  "docsAuthenticationPage": {
+    "paths": {
+      "title": "Choose a request path",
+      "description": "Explore the API first. Add a bearer key when your client acts on a merchant account.",
+      "label": "Request authentication",
+      "open": "Open discovery",
+      "authenticated": "Merchant account",
+      "client": "Your client",
+      "noCredential": "No credential required",
+      "bearer": "Bearer key required",
+      "publicDestination": "Discovery + sandbox",
+      "protectedDestination": "REST + MCP",
+      "details": "How this path works"
+    },
+    "keySteps": ["Create an account", "Mint a key", "Save it once"],
+    "recovery": {
+      "label": "Authentication discovery after a 401",
+      "response": "Missing or invalid credential",
+      "resource": "Protected resource metadata",
+      "authorization": "Authorization server metadata"
+    }
+  }
+}

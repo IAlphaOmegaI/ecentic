@@ -36,7 +36,7 @@ export const ItemCycle = ({ items }: { items: readonly ItemCycleItem[] }) => {
   const content = (
     <>
       {item.logo ? (
-        <div className="mb-1 flex size-12 items-center justify-center rounded-xs bg-background-rich p-2.5">
+        <div className="mb-1 flex size-12 items-center justify-center">
           <Image src={item.logo} alt="" className="size-full object-contain" />
         </div>
       ) : null}

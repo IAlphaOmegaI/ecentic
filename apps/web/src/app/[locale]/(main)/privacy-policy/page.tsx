@@ -1,15 +1,11 @@
-import type { Icon } from "@zenncore/icons";
-import {
-  CheckCircleIcon,
-  ShareIcon,
-  ShieldCheckIcon,
-  XCircleIcon,
-} from "@zenncore/icons";
+import { ArrowRightIcon } from "@zenncore/icons";
+import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { JsonLd } from "@/components/json-ld";
 import { MarketingShell } from "@/components/marketing/page";
+import { MarketingBand } from "@/components/marketing/primitives";
 import { localizePath } from "@/i18n/locale";
 import {
   absoluteUrl,
@@ -18,22 +14,14 @@ import {
   organizationSchema,
   seo,
 } from "@/lib/seo";
-import { ContentPageSection } from "../_components/content";
-import { PageBanner } from "../_components/page-banner";
 import { renderInline } from "../_components/rich-text";
-
-const summaryIcons = [
-  CheckCircleIcon,
-  XCircleIcon,
-  ShareIcon,
-  ShieldCheckIcon,
-] as const satisfies readonly Icon[];
+import { PrivacyContents } from "./_components/privacy-contents";
 
 const renderContent = (content: string): ReactNode => {
   const blocks = content.split(/\n\n+/);
 
   return (
-    <div className="flex flex-col gap-5">
+    <div className="flex max-w-[74ch] flex-col gap-6 text-foreground [overflow-wrap:anywhere]">
       {blocks.map((block, index) => {
         const lines = block.split("\n");
         const start = lines.findIndex((line) => line.startsWith("- "));
@@ -41,7 +29,7 @@ const renderContent = (content: string): ReactNode => {
         if (start === -1)
           return (
             // biome-ignore lint/suspicious/noArrayIndexKey: index is unique
-            <p key={index} className="text-foreground-dimmed leading-relaxed">
+            <p key={index} className="leading-7">
               {renderInline(lines.join(" "))}
             </p>
           );
@@ -51,21 +39,18 @@ const renderContent = (content: string): ReactNode => {
 
         return (
           // biome-ignore lint/suspicious/noArrayIndexKey: index is unique
-          <div key={index} className="flex flex-col gap-2">
+          <div key={index} className="flex flex-col gap-4">
             {paragraphs.length > 0 && (
-              <p className="text-foreground-dimmed leading-relaxed">
-                {renderInline(paragraphs.join(" "))}
-              </p>
+              <p className="leading-7">{renderInline(paragraphs.join(" "))}</p>
             )}
-            <ul className="flex flex-col gap-2">
+            <ul className="flex list-disc flex-col gap-2 pl-6 marker:text-foreground-dimmed">
               {lists.map((line, listIndex) => (
                 <li
                   // biome-ignore lint/suspicious/noArrayIndexKey: listIndex is unique
                   key={listIndex}
-                  className="flex gap-3 text-foreground-dimmed leading-relaxed"
+                  className="pl-2 leading-7"
                 >
-                  <span className="mt-[0.45rem] size-1.5 shrink-0 rounded-full bg-primary" />
-                  <span>{renderInline(line.slice(2))}</span>
+                  {renderInline(line.slice(2))}
                 </li>
               ))}
             </ul>
@@ -101,6 +86,12 @@ export default async () => {
   const sectionNumbers = Object.keys(sections).sort() as Array<
     keyof typeof sections
   >;
+  const controls = messages.privacyPage;
+  const contents = sectionNumbers.map((number) => ({
+    number,
+    title: sections[number].title,
+    href: `#privacy-${number}`,
+  }));
 
   const structuredData = [
     {
@@ -142,60 +133,110 @@ export default async () => {
     <MarketingShell>
       <JsonLd schemas={structuredData} />
 
-      <PageBanner
-        compact
-        eyebrow={translate("privacyPolicy.hero.eyebrow")}
-        title={translate("privacyPolicy.hero.title.primary")}
-        accent={translate("privacyPolicy.hero.title.accent")}
-        meta={lastUpdated.display}
-        description={translate("privacyPolicy.hero.description")}
-        assurances={assurances}
-      />
+      <MarketingBand className="[&_.marketing-guides]:hidden">
+        <header className="grid gap-8 px-8 py-12 max-sm:px-4 max-sm:py-10 lg:grid-cols-[4fr_7fr] lg:items-start lg:gap-16 lg:py-16">
+          <div>
+            <h1 className="text-[clamp(2.75rem,5.2vw,4.8rem)] leading-[1.025] tracking-[-0.043em]">
+              {translate("privacyPolicy.hero.title.primary")}{" "}
+              {translate("privacyPolicy.hero.title.accent")}
+            </h1>
+            <time
+              dateTime={lastUpdated.iso}
+              className="mt-6 block text-foreground-dimmed text-sm"
+            >
+              {lastUpdated.display}
+            </time>
+          </div>
+          <div>
+            <p className="max-w-[62ch] text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">
+              {translate("privacyPolicy.hero.description")}
+            </p>
+            <div className="mt-6">
+              <Button color="neutral" render={<a href="#privacy-01" />}>
+                {controls.action.primary}
+                <ArrowRightIcon className="size-4" />
+              </Button>
+            </div>
+          </div>
+        </header>
+        <ul className="grid grid-cols-3 border-accent-foreground border-t max-md:grid-cols-1">
+          {assurances.map((assurance) => (
+            <li
+              key={assurance}
+              className="border-accent-foreground px-8 py-4 text-foreground-dimmed text-sm max-sm:px-4 max-md:border-b max-md:last:border-b-0 md:border-r md:last:border-r-0"
+            >
+              {assurance}
+            </li>
+          ))}
+        </ul>
+      </MarketingBand>
 
-      <ContentPageSection
-        number={summarySection.number}
-        title={summarySection.title}
-        description={summarySection.description}
-        classList={{ body: "p-0" }}
-      >
-        <div className="flex flex-col gap-px bg-accent-foreground">
-          {summary.map((item, index) => {
-            const IconComponent = summaryIcons[index] ?? CheckCircleIcon;
-
-            return (
+      <MarketingBand className="[&_.marketing-guides]:hidden">
+        <div className="grid lg:grid-cols-[19rem_minmax(0,1fr)]">
+          <div className="border-accent-foreground border-b bg-background-dimmed px-8 py-8 max-sm:px-4 lg:border-r">
+            <span className="mb-4 block text-3xl text-primary">
+              {summarySection.number}
+            </span>
+            <h2 className="text-3xl">{summarySection.title}</h2>
+            <p className="mt-4 text-foreground-dimmed leading-relaxed">
+              {summarySection.description}
+            </p>
+          </div>
+          <div className="grid grid-cols-2 gap-px border-accent-foreground border-b bg-accent-foreground max-sm:grid-cols-1">
+            {summary.map((item) => (
               <div
                 key={item.title}
-                className="grid grid-cols-1 gap-2 bg-background px-7 py-6 max-sm:px-4 md:grid-cols-[13rem_1fr] md:gap-8"
+                className="bg-background-dimmed px-8 py-8 max-sm:px-4 max-sm:py-6"
               >
-                <div className="flex items-center gap-3">
-                  <IconComponent className="size-5 shrink-0 text-primary" />
-                  <h3 className="font-heading font-medium text-foreground text-lg">
-                    {item.title}
-                  </h3>
-                </div>
-                <p className="text-foreground-dimmed leading-relaxed">
+                <h3 className="text-xl leading-tight">{item.title}</h3>
+                <p className="mt-4 text-foreground-dimmed leading-relaxed">
                   {item.description}
                 </p>
               </div>
-            );
-          })}
-        </div>
-      </ContentPageSection>
-
-      {sectionNumbers.map((number) => {
-        const section = sections[number];
-        if (!section) return null;
-
-        return (
-          <ContentPageSection
-            key={number}
-            number={number}
-            title={section.title}
+            ))}
+          </div>
+          <aside
+            id="privacy-contents"
+            className="scroll-mt-28 border-accent-foreground border-b bg-background-dimmed lg:border-r lg:border-b-0"
           >
-            {renderContent(section.content)}
-          </ContentPageSection>
-        );
-      })}
+            <PrivacyContents label={controls.contents} items={contents} />
+          </aside>
+          <div className="min-w-0 px-8 max-sm:px-4 lg:px-12">
+            {sectionNumbers.map((number) => {
+              const section = sections[number];
+              if (!section) return null;
+
+              return (
+                <section
+                  key={number}
+                  id={`privacy-${number}`}
+                  aria-labelledby={`privacy-heading-${number}`}
+                  className="scroll-mt-28 border-accent-foreground border-b py-12 max-sm:py-8"
+                >
+                  <div className="mb-8 flex items-baseline gap-4">
+                    <span className="shrink-0 text-primary text-xl">
+                      {number}
+                    </span>
+                    <h2
+                      id={`privacy-heading-${number}`}
+                      className="text-[clamp(1.6rem,2.4vw,2.25rem)] leading-tight"
+                    >
+                      {section.title}
+                    </h2>
+                  </div>
+                  {renderContent(section.content)}
+                </section>
+              );
+            })}
+            <div className="py-8">
+              <Button color="neutral" render={<a href="#privacy-contents" />}>
+                <ArrowRightIcon className="size-4 -rotate-90" />
+                {controls.action.secondary}
+              </Button>
+            </div>
+          </div>
+        </div>
+      </MarketingBand>
     </MarketingShell>
   );
 };

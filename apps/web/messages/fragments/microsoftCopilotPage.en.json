@@ -1,0 +1,46 @@
+{
+  "microsoftCopilotPage": {
+    "journey": {
+      "title": "The conversation, the catalog, your business",
+      "copilot": "Product discovery and checkout",
+      "merchant": "You remain the seller of record",
+      "relationship": "Your fulfillment. Your customer relationship.",
+      "web": "Product data on the web",
+      "feeds": "Merchant product feeds",
+      "checkout": "Additional checkout attributes",
+      "dataLabel": "Explore the product data path"
+    },
+    "entry": {
+      "label": "Explore a merchant entry route",
+      "language": "Merchant language",
+      "languageValue": "English",
+      "buyers": "Buyers",
+      "buyersValue": "United States",
+      "currency": "Currency",
+      "currencyValue": "USD",
+      "microsoft": "Microsoft",
+      "shopify": "Shopify",
+      "stripe": "Stripe",
+      "routes": {
+        "microsoft": {
+          "title": "Microsoft Merchant Center",
+          "description": "Prepare product records and the additional checkout attributes in Microsoft’s onboarding guide. A feed setup step remains a pilot for selected merchants.",
+          "note": "This is Microsoft’s merchant route. ecentic’s feed connection is not live."
+        },
+        "shopify": {
+          "title": "Automatic Shopify enrollment",
+          "description": "Shopify is one of Microsoft’s documented enrollment routes. Microsoft’s eligibility and program requirements still apply.",
+          "note": "ecentic tracks Copilot referrals on connected Shopify stores today."
+        },
+        "stripe": {
+          "title": "Stripe Agentic Commerce Suite",
+          "description": "Stripe Agentic Commerce Suite is one of Microsoft’s documented entry routes. Microsoft’s eligibility and program requirements still apply.",
+          "note": "An entry route does not guarantee approval or product recommendations."
+        }
+      },
+      "action": {
+        "primary": "Read Microsoft’s onboarding guidance"
+      }
+    }
+  }
+}

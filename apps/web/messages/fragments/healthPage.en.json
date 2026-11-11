@@ -1,0 +1,28 @@
+{
+  "healthPage": {
+    "reader": {
+      "description": "Open a shopper question to review the product facts behind it.",
+      "label": "Shopper questions and product facts",
+      "facts": "Product facts for your team to verify",
+      "allFacts": "See every product attribute"
+    },
+    "relationship": {
+      "title": "Two checks, one product description.",
+      "label": "Manufacturer facts and product, channel and country conditions both inform a supported product description.",
+      "inputs": [
+        {
+          "title": "Manufacturer facts",
+          "description": "Ingredients, intended use and instructions."
+        },
+        {
+          "title": "Product, channel and country",
+          "description": "Evidence and eligibility conditions."
+        }
+      ],
+      "output": "Supported product information",
+      "description": "Keep the description tied to verified source facts."
+    },
+    "rules": ["Nutrition and health claims", "Channel eligibility"],
+    "role": "ecentic’s role"
+  }
+}

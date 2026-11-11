@@ -1,0 +1,56 @@
+{
+  "amazonPage": {
+    "journey": {
+      "label": "Explore the Shop Direct purchase paths",
+      "discovery": "Discovered on Amazon",
+      "surface": "Amazon search and Alexa for Shopping",
+      "destination": "Purchased on the merchant’s website",
+      "paths": [
+        {
+          "id": "visit",
+          "title": "Visit the merchant",
+          "actor": "The shopper visits your website",
+          "heading": "Discovery brings the shopper to you",
+          "description": "Shop Direct can link to products on your own site. The shopper visits your website to buy.",
+          "condition": "The merchant website is the purchase destination."
+        },
+        {
+          "id": "buy",
+          "title": "Buy for Me",
+          "actor": "Amazon’s agent completes the purchase",
+          "heading": "An agent buys on the merchant’s site",
+          "description": "For eligible Buy for Me offers, Amazon’s agent completes the purchase on the merchant’s website.",
+          "condition": "Buy for Me is available only for eligible offers."
+        }
+      ]
+    },
+    "catalog": {
+      "label": "The catalog supply path",
+      "source": "Your product catalog",
+      "route": "Solution provider or Selling Partner API",
+      "destination": "Shop Direct"
+    },
+    "access": {
+      "title": "Participation has its own requirements",
+      "market": "US customers",
+      "eligibility": "Eligible merchant websites",
+      "steps": [
+        {
+          "id": "register",
+          "title": "Register",
+          "description": "Manage participation through the free Shop Direct Merchant Workspace. An Amazon marketplace store is not required."
+        },
+        {
+          "id": "verify",
+          "title": "Verify your website",
+          "description": "Website verification is required. Eligible merchants can participate even if they also sell on Amazon."
+        },
+        {
+          "id": "share",
+          "title": "Share your catalog",
+          "description": "Supply catalog information through a solution provider or Amazon’s Selling Partner API."
+        }
+      ]
+    }
+  }
+}

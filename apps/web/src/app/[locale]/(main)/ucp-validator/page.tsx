@@ -1,6 +1,7 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
+import Image from "next/image";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
@@ -12,6 +13,7 @@ import {
   createMetadata,
   organizationSchema,
 } from "@/lib/seo";
+import ucp from "@/public/images/ucp.png";
 import {
   ContentPageFooter,
   ContentPageLayout,
@@ -80,6 +82,13 @@ export default async () => {
   return (
     <ContentPageLayout
       compact
+      identity={
+        <Image
+          src={ucp}
+          alt={translate("form.preview.logoAlt")}
+          className="size-20 object-contain"
+        />
+      }
       eyebrow={translate("hero.eyebrow")}
       title={translate("hero.title.primary")}
       accent={translate("hero.title.accent")}

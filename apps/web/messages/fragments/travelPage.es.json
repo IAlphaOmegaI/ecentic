@@ -1,0 +1,84 @@
+{
+  "travelPage": {
+    "questions": {
+      "caption": "Cada viaje es una oferta con condiciones.",
+      "description": "La pregunta cambia. Las fechas, la base del precio y las condiciones de reserva deben seguir siendo legibles."
+    },
+    "attributes": {
+      "description": "Reúne los datos que definen la oferta, desde las fechas disponibles hasta las condiciones para un cambio."
+    },
+    "roadmap": {
+      "label": "Explora el piloto de viajes",
+      "diagram": "La información y el recorrido que se revisarán",
+      "boundary": "Límite del alcance",
+      "stages": [
+        {
+          "id": "scope",
+          "label": "Acordar alcance",
+          "status": "Antes del piloto",
+          "title": "Un mercado. Un punto de partida acordado.",
+          "description": "Confirma el idioma y la cobertura de datos antes de empezar. Parte de las páginas públicas y los datos de producto acordados con tu equipo.",
+          "steps": [
+            {
+              "title": "Un mercado",
+              "body": "Confirma el idioma y la cobertura de datos."
+            },
+            {
+              "title": "Páginas públicas",
+              "body": "Acuerda qué ofertas revisar."
+            },
+            {
+              "title": "Alcance del piloto",
+              "body": "Define la cuestión sobre el paso a la reserva."
+            }
+          ],
+          "note": "El piloto empieza con un alcance acordado; este recorrido no indica una integración de reservas activa."
+        },
+        {
+          "id": "baseline",
+          "label": "Revisar ofertas",
+          "status": "Referencia con datos públicos",
+          "title": "Lee la oferta antes del proceso de reserva.",
+          "description": "Revisa la información de las páginas que controlas y los datos de producto acordados. Tu equipo verifica los atributos de viaje; ecentic no inventa datos que falten.",
+          "steps": [
+            {
+              "title": "Web pública",
+              "body": "Parte de las páginas de producto acordadas."
+            },
+            {
+              "title": "Feed compatible",
+              "body": "Usa los campos definidos del importador."
+            },
+            {
+              "title": "Datos de la oferta",
+              "body": "Verifica fechas, precios, inclusiones y condiciones."
+            }
+          ],
+          "note": "La referencia no necesita acceso al motor de reservas, datos de clientes ni código en tu web."
+        },
+        {
+          "id": "handoff",
+          "label": "Revisar recorrido",
+          "status": "Alcance acordado por separado",
+          "title": "Aclara el límite del proceso de reserva.",
+          "description": "Examina el recorrido acordado desde la información pública hasta la reserva. El acceso o la integración posterior requieren un alcance separado.",
+          "steps": [
+            {
+              "title": "Oferta pública",
+              "body": "Mantén claras las fechas, los precios y las condiciones."
+            },
+            {
+              "title": "Canal o proveedor",
+              "body": "La reserva depende del canal y del proceso."
+            },
+            {
+              "title": "Paso a la reserva",
+              "body": "Revisa el destino acordado y el siguiente paso."
+            }
+          ],
+          "note": "No se promete una integración de reservas automáticas, y un asistente puede enlazar a un portal en lugar de a tu web."
+        }
+      ]
+    }
+  }
+}

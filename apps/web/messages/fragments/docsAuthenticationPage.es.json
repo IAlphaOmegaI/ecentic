@@ -1,0 +1,24 @@
+{
+  "docsAuthenticationPage": {
+    "paths": {
+      "title": "Elige una ruta de petición",
+      "description": "Explora primero la API. Añade una clave bearer cuando tu cliente actúe sobre una cuenta de comercio.",
+      "label": "Autenticación de la petición",
+      "open": "Descubrimiento abierto",
+      "authenticated": "Cuenta de comercio",
+      "client": "Tu cliente",
+      "noCredential": "Sin credenciales",
+      "bearer": "Requiere clave bearer",
+      "publicDestination": "Descubrimiento + sandbox",
+      "protectedDestination": "REST + MCP",
+      "details": "Cómo funciona esta ruta"
+    },
+    "keySteps": ["Crea una cuenta", "Genera una clave", "Guárdala al verla"],
+    "recovery": {
+      "label": "Descubrimiento de autenticación tras un 401",
+      "response": "Credencial ausente o inválida",
+      "resource": "Metadatos del recurso protegido",
+      "authorization": "Metadatos del servidor de autorización"
+    }
+  }
+}

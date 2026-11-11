@@ -1,0 +1,9 @@
+{
+  "changelogPage": {
+    "archive": "Explora el historial de novedades",
+    "action": {
+      "primary": "Mostrar todas",
+      "secondary": "Mostrar el último mes"
+    }
+  }
+}

@@ -1,0 +1,49 @@
+{
+  "trackPage": {
+    "comparisonLabel": "Compara las señales",
+    "comparisonHint": "Elige una señal para ver de dónde procede y qué puede decirte.",
+    "meaningLabel": "Qué te indica",
+    "limitLabel": "Ten en cuenta",
+    "signals": [
+      {
+        "id": "visits",
+        "label": "Visitas observadas",
+        "title": "Una visita detectada tiene una fuente.",
+        "inputs": ["Referencia del asistente", "Señal del agente de usuario"],
+        "process": "Script de Shopify en el navegador",
+        "output": "Visita detectada",
+        "meaning": "Las fuentes de asistentes reconocidas se pueden agrupar en el desglose de visitas y en el resumen de su evolución.",
+        "limit": "El script necesita señales disponibles. No observa todos los rastreadores sin JavaScript, no recupera todas las visitas directas ni demuestra que el visitante comprara después."
+      },
+      {
+        "id": "simulations",
+        "label": "Decisiones simuladas",
+        "title": "Un nuevo análisis es una nueva comparación.",
+        "inputs": ["Tu producto", "Un competidor"],
+        "process": "Un análisis que solicitas",
+        "output": "Decisión simulada",
+        "meaning": "La tasa de éxito es el porcentaje de simulaciones en las que un agente elige tu producto frente a un competidor. Compara decisiones completadas tras publicar un cambio.",
+        "limit": "Las decisiones simuladas son distintas de las visitas y ventas observadas en la tienda. Los análisis programados no están activos hoy."
+      },
+      {
+        "id": "estimates",
+        "label": "Mejora estimada",
+        "title": "Una estimación acompaña a la mejora.",
+        "inputs": ["Ficha actual", "Cambio propuesto"],
+        "process": "Optimización de la ficha",
+        "output": "Mejora estimada",
+        "meaning": "La mejora estimada se registra junto con el cambio de la ficha. Permite distinguir el efecto esperado de las pruebas completadas posteriormente.",
+        "limit": "No son ingresos medidos ni un experimento completado tras publicar. Solicita otro análisis para comparar decisiones simuladas después del cambio."
+      }
+    ],
+    "attributionLabel": "La atribución tiene un límite",
+    "attributionFlow": [
+      "Etiqueta de atribución explícita, si existe",
+      "Si no, una referencia de IA reciente en esa tienda",
+      "Ventana configurada: siete días por defecto"
+    ],
+    "attributionNote": "Una coincidencia en toda la tienda no demuestra que el mismo comprador realizara el pedido.",
+    "referenceTitle": "El alcance del seguimiento hoy.",
+    "referenceDescription": "Consulta los límites de recogida, las definiciones de las estimaciones y el alcance de la cuenta antes de interpretar los resultados."
+  }
+}

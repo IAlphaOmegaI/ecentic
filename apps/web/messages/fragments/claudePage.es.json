@@ -1,0 +1,44 @@
+{
+  "claudePage": {
+    "explorer": {
+      "label": "Explora un agente de comercio propio",
+      "scope": "Dentro de la experiencia del comercio",
+      "tools": "Herramientas del propio comercio",
+      "stages": [
+        {
+          "id": "catalog",
+          "title": "Catálogo",
+          "headline": "Empieza por los datos de tus productos",
+          "body": "El comercio proporciona herramientas de catálogo y existencias para que su agente basado en Claude busque productos.",
+          "tools": ["Catálogo", "Existencias"]
+        },
+        {
+          "id": "compare",
+          "title": "Comparar",
+          "headline": "Da contexto a la comparación",
+          "body": "El agente compara productos con los datos y herramientas que facilita el comercio, incluidos su catálogo y sus políticas.",
+          "tools": ["Datos del producto", "Políticas de la tienda"]
+        },
+        {
+          "id": "cart",
+          "title": "Carrito",
+          "headline": "Conecta tus propias herramientas",
+          "body": "Las herramientas de carrito y checkout pertenecen a la experiencia creada por el comercio. ecentic no tiene una conexión de checkout específica para Claude hoy.",
+          "tools": ["Carrito del comercio", "Checkout del comercio"]
+        }
+      ]
+    },
+    "reading": {
+      "merchant": "Tu agente de comercio",
+      "simulation": "La comparación de ecentic"
+    },
+    "entry": {
+      "tools": "Herramientas del comercio",
+      "experience": "Tu propia experiencia de comercio"
+    },
+    "action": {
+      "primary": "Explora las simulaciones",
+      "secondary": "Mejora tus fichas"
+    }
+  }
+}

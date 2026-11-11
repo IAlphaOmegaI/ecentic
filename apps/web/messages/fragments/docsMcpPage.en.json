@@ -1,0 +1,37 @@
+{
+  "docsMcpPage": {
+    "transport": {
+      "label": "Connection reference",
+      "endpoint": "Primary endpoint",
+      "alias": "Same handler",
+      "details": [
+        "Endpoint paths",
+        "Requests and responses",
+        "Session behavior"
+      ]
+    },
+    "handshake": {
+      "label": "Explore the handshake",
+      "tabs": ["Initialize", "Notify"],
+      "request": "Client sends",
+      "response": "Server returns",
+      "result": [
+        "Negotiated protocol + server capabilities",
+        "Accepted with an empty body"
+      ],
+      "example": "Complete handshake example"
+    },
+    "authentication": {
+      "credential": "Send a bearer key",
+      "create": "Create your credential"
+    },
+    "errors": {
+      "labels": [
+        "JSON-RPC error",
+        "Transport error",
+        "Authentication exception"
+      ],
+      "formats": ["error.code", "application/problem+json", "WWW-Authenticate"]
+    }
+  }
+}

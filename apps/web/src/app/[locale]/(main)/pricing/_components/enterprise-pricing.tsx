@@ -17,7 +17,9 @@ import {
   TableRow,
 } from "@zenncore/web/components/table";
 import { getLocale, getMessages } from "next-intl/server";
+import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { MarketingActions } from "@/components/marketing/primitives";
+import { FeeWalkthrough } from "./fee-walkthrough";
 import { PricingCTA } from "./pricing-cta";
 
 const planKeys = ["payg", "compete", "scale", "dominate"] as const;
@@ -31,30 +33,44 @@ const planIcons = [
 export const FreeStoreCheck = async () => {
   const { enterprisePricing, pricing } = await getMessages();
   return (
-    <div
-      data-columns="2"
-      className="marketing-section-grid marketing-grid grid grid-cols-1 border-accent-foreground border-t bg-background sm:grid-cols-2"
-    >
-      <div className="marketing-cell relative min-w-0 border-accent-foreground border-b bg-linear-to-br from-primary/8 to-transparent px-7 py-10 max-sm:px-4 max-sm:py-8 sm:border-r sm:border-b-0 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
-        <p className="text-primary-text text-sm">
-          {enterprisePricing.sample.label}
-        </p>
-        <div className="mt-7 flex items-end gap-5">
-          <span className="text-[clamp(88px,12vw,144px)] text-primary leading-[0.9] tracking-[-0.08em]">
-            72
-          </span>
-          <span className="mb-2 text-[15px]">
-            / 100
-            <br />
-            {pricing.scan.sample.scoreLabel}
-          </span>
-        </div>
-        <div className="mt-8 h-1 bg-accent-foreground" aria-hidden="true">
-          <span className="block h-full w-[72%] bg-primary" />
+    <div className="marketing-section-grid grid grid-cols-1 border-accent-foreground border-t lg:grid-cols-[1.1fr_1fr]">
+      <div className="relative min-w-0 border-accent-foreground border-b bg-background-dimmed p-3 max-sm:p-2 lg:border-r lg:border-b-0">
+        <div className="bg-background px-7 py-8 max-sm:px-4">
+          <p className="text-foreground-dimmed text-sm">
+            {enterprisePricing.sample.label}
+          </p>
+          <div className="mt-8 flex items-end gap-4">
+            <span className="text-[clamp(88px,12vw,128px)] text-foreground-rich leading-[0.9] tracking-[-0.08em]">
+              72
+            </span>
+            <span className="mb-2 text-foreground-dimmed text-sm">
+              / 100
+              <br />
+              {pricing.scan.sample.scoreLabel}
+            </span>
+          </div>
+          <div
+            className="mt-8 h-2 rounded-md bg-accent-foreground"
+            aria-hidden="true"
+          >
+            <span className="block h-full w-[72%] rounded-md bg-success" />
+          </div>
+          <div
+            aria-hidden="true"
+            className="mt-2 flex justify-between text-foreground-dimmed text-sm"
+          >
+            <span>0</span>
+            <span>100</span>
+          </div>
         </div>
       </div>
-      <div className="marketing-cell relative flex min-w-0 flex-col justify-center px-7 py-10 max-sm:px-4 max-sm:py-8 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
-        <p>{enterprisePricing.sample.caption}</p>
+      <div className="relative flex min-w-0 flex-col justify-center px-7 py-8 max-sm:px-4">
+        <div className="mb-6 h-28 w-44 text-primary-text">
+          <EvolvingAscii artwork="console" />
+        </div>
+        <p className="max-w-[45ch] text-foreground-dimmed">
+          {enterprisePricing.sample.caption}
+        </p>
         <MarketingActions
           actions={[
             {
@@ -206,7 +222,7 @@ export const EnterprisePlanLedger = async () => {
 };
 
 export const PerformanceFeeLedger = async () => {
-  const { enterprisePricing } = await getMessages();
+  const { enterprisePricing, pricing } = await getMessages();
   const locale = await getLocale();
   const fee = enterprisePricing.fee;
   const money = new Intl.NumberFormat(locale, {
@@ -215,56 +231,84 @@ export const PerformanceFeeLedger = async () => {
     maximumFractionDigits: 2,
   });
   return (
-    <>
-      <ol
-        className="marketing-section-grid marketing-grid m-0 grid list-none grid-cols-1 p-0 sm:grid-cols-2"
-        data-columns="2"
-      >
-        {fee.steps.map((step, index) => (
-          <li
-            key={step.title}
-            className="grid grid-cols-[40px_minmax(0,1fr)] gap-4 border-accent-foreground border-t px-4 py-8 sm:px-7 sm:odd:border-r"
-          >
-            <span aria-hidden="true" className="text-[32px] text-primary">
-              0{index + 1}
-            </span>
-            <div>
-              <h3>{step.title}</h3>
-              <p className="mt-4 max-w-[70ch]">{step.body}</p>
+    <div className="marketing-section-grid border-accent-foreground border-t">
+      <FeeWalkthrough
+        fee={fee}
+        amounts={{
+          order: money.format(120),
+          fee: money.format(3.6),
+          cap: money.format(500),
+        }}
+      />
+      <div className="grid min-w-0 grid-cols-1 border-accent-foreground border-t lg:grid-cols-[1.1fr_1fr]">
+        <div className="bg-primary-text px-7 py-8 text-background-rich max-sm:px-4">
+          <dl>
+            <div className="flex items-center justify-between gap-4 border-background-rich/25 border-b pb-5">
+              <dt className="text-background-rich/80 text-sm">
+                {fee.example.order}
+              </dt>
+              <dd className="whitespace-nowrap text-[clamp(28px,4vw,44px)] leading-none tracking-[-0.04em]">
+                {money.format(120)}
+              </dd>
             </div>
-          </li>
-        ))}
-      </ol>
-      <div className="marketing-section-grid border-accent-foreground border-y bg-linear-to-r from-primary/6 to-background px-7 py-10 max-sm:px-4">
-        <dl className="grid grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-7">
-          <div className="flex items-baseline justify-between gap-5 sm:block">
-            <dt>{fee.example.order}</dt>
-            <dd className="text-[clamp(32px,5vw,64px)] text-primary tracking-[-0.05em] sm:mt-4">
-              {money.format(120)}
-            </dd>
-          </div>
-          <div className="flex items-baseline justify-between gap-5 sm:block">
-            <dt>{fee.example.rate}</dt>
-            <dd className="text-[clamp(32px,5vw,64px)] text-primary tracking-[-0.05em] sm:mt-4">
-              3%
-            </dd>
-          </div>
-          <div className="flex items-baseline justify-between gap-5 sm:block">
-            <dt>{fee.example.fee}</dt>
-            <dd className="text-[clamp(32px,5vw,64px)] text-primary tracking-[-0.05em] sm:mt-4">
-              {money.format(3.6)}
-            </dd>
-          </div>
-        </dl>
-        <p className="mt-7 text-sm">
-          {fee.example.window} · {fee.example.cap}
-        </p>
+            <div className="flex items-center justify-between gap-4 border-background-rich/25 border-b py-5">
+              <dt className="text-background-rich/80 text-sm">
+                {fee.example.rate}
+              </dt>
+              <dd className="flex items-center gap-4 text-[clamp(28px,4vw,44px)] leading-none tracking-[-0.04em]">
+                <span aria-hidden="true" className="text-background-rich/60">
+                  ×
+                </span>
+                3%
+              </dd>
+            </div>
+            <div className="pt-6">
+              <dt className="text-background-rich/80 text-sm">
+                {fee.example.fee}
+              </dt>
+              <dd className="mt-4 flex items-baseline gap-4 text-[clamp(52px,7vw,88px)] leading-none tracking-[-0.06em]">
+                <span
+                  aria-hidden="true"
+                  className="text-[0.6em] text-background-rich/60"
+                >
+                  =
+                </span>
+                {money.format(3.6)}
+              </dd>
+            </div>
+          </dl>
+          <p className="mt-8 border-background-rich/25 border-t pt-5 text-background-rich/80 text-sm">
+            {fee.example.window} · {fee.example.cap}
+          </p>
+        </div>
+        <div className="flex flex-col justify-center px-7 py-8 max-sm:px-4">
+          <h3>{fee.billingTitle}</h3>
+          <p className="mt-4 text-foreground-dimmed text-sm leading-relaxed">
+            {fee.billingBody}
+          </p>
+          <dl className="mt-6 flex flex-col gap-3">
+            {planKeys
+              .filter((key) => key !== "payg")
+              .map((key) => (
+                <div
+                  key={key}
+                  className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1"
+                >
+                  <dt className="text-sm">{pricing.plans[key].name}</dt>
+                  <dd className="text-right text-foreground-rich text-sm">
+                    <span className="font-medium">
+                      {pricing.plans[key].figure}
+                    </span>{" "}
+                    <span className="text-foreground-dimmed">
+                      {pricing.plans[key].suffix}
+                    </span>
+                  </dd>
+                </div>
+              ))}
+          </dl>
+        </div>
       </div>
-      <div className="marketing-cell relative min-w-0 px-7 py-10 max-sm:px-4 max-sm:py-8 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
-        <h3>{fee.billingTitle}</h3>
-        <p>{fee.billingBody}</p>
-      </div>
-    </>
+    </div>
   );
 };
 

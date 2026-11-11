@@ -1,0 +1,49 @@
+{
+  "trackPage": {
+    "comparisonLabel": "Compare the signals",
+    "comparisonHint": "Choose a signal to see where it comes from and what it can tell you.",
+    "meaningLabel": "What it tells you",
+    "limitLabel": "Keep in mind",
+    "signals": [
+      {
+        "id": "visits",
+        "label": "Observed visits",
+        "title": "A detected visit has a source.",
+        "inputs": ["Assistant referrer", "User-agent signal"],
+        "process": "Shopify browser script",
+        "output": "Detected visit",
+        "meaning": "Recognized assistant sources can be grouped in the visit breakdown and time-series summary.",
+        "limit": "The browser script needs available signals. It cannot observe every non-JavaScript crawler, recover every direct visit, or prove that a visitor later bought."
+      },
+      {
+        "id": "simulations",
+        "label": "Simulated decisions",
+        "title": "A new scan is a new comparison.",
+        "inputs": ["Your product", "A competitor"],
+        "process": "A scan you request",
+        "output": "Simulated decision",
+        "meaning": "Win rate is the percentage of simulations where an agent picks your product over a competitor. Compare completed decisions after publishing a change.",
+        "limit": "Simulated decisions are separate from observed storefront visits and sales. Scheduled rescans are not active today."
+      },
+      {
+        "id": "estimates",
+        "label": "Estimated lift",
+        "title": "An estimate accompanies the fix.",
+        "inputs": ["Current listing", "Proposed change"],
+        "process": "Listing optimization",
+        "output": "Estimated lift",
+        "meaning": "Lift is an estimate recorded with the listing change. It helps distinguish the expected effect of a fix from later completed tests.",
+        "limit": "It is not measured revenue or a completed post-publish experiment. Request a new scan to compare simulated decisions after a change."
+      }
+    ],
+    "attributionLabel": "Attribution has a boundary",
+    "attributionFlow": [
+      "Explicit attribution tag, if available",
+      "Otherwise, a recent AI referral in that store",
+      "Configured window: seven days by default"
+    ],
+    "attributionNote": "A store-wide match does not establish that the same shopper made the order.",
+    "referenceTitle": "The scope of tracking today.",
+    "referenceDescription": "Read the collection limits, estimate definitions and account boundaries before interpreting the results."
+  }
+}

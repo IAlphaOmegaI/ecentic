@@ -1,0 +1,88 @@
+{
+  "googleChannelPage": {
+    "explorer": {
+      "label": "Explore Google's shopping path",
+      "stages": [
+        {
+          "id": "catalog",
+          "label": "Catalog",
+          "title": "Start with the merchant's offer",
+          "description": "Merchant Center supplies the product data used by Google's shopping experiences.",
+          "details": [
+            "Price and availability",
+            "Shipping and return information"
+          ],
+          "destination": "Merchant Center",
+          "action": {
+            "primary": "Explore the product data"
+          }
+        },
+        {
+          "id": "assistant",
+          "label": "AI answers",
+          "title": "Bring product data into the conversation",
+          "description": "Google's AI answers shopping questions using merchant product data.",
+          "details": ["AI Mode in Search", "Gemini"],
+          "destination": "AI Mode and Gemini",
+          "action": {
+            "primary": "Review the merchant requirements"
+          }
+        },
+        {
+          "id": "checkout",
+          "label": "Checkout",
+          "title": "The purchase path depends on eligibility",
+          "description": "Shoppers can continue to a merchant's cart or use Google Pay where checkout is enabled. The merchant remains the seller of record.",
+          "details": [
+            "Continue to the merchant's cart",
+            "Google Pay where checkout is enabled"
+          ],
+          "destination": "Merchant checkout",
+          "action": {
+            "primary": "Review the merchant requirements"
+          }
+        }
+      ]
+    },
+    "reading": {
+      "label": "The offer, kept consistent",
+      "rows": [
+        {
+          "title": "Product data",
+          "detail": "Price and availability",
+          "field": "price / availability"
+        },
+        {
+          "title": "Product page",
+          "detail": "Accurate product information",
+          "field": "link"
+        },
+        {
+          "title": "Shipping and returns",
+          "detail": "Clear delivery and return information",
+          "field": "shipping / return policy"
+        },
+        {
+          "title": "Checkout eligibility",
+          "detail": "Eligibility is part of the offer",
+          "field": "checkout_eligibility"
+        }
+      ],
+      "action": {
+        "primary": "Explore Merchant Center"
+      }
+    },
+    "entry": {
+      "label": "Google merchant requirements",
+      "steps": [
+        "Eligible merchants and products",
+        "Integration hub rollout",
+        "Technical validation and approval"
+      ],
+      "note": "ecentic helps prepare and test data and settings. Application, validation and approval remain between your business and Google.",
+      "action": {
+        "primary": "Explore checkout readiness"
+      }
+    }
+  }
+}

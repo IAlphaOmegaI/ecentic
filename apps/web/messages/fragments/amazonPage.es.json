@@ -1,0 +1,56 @@
+{
+  "amazonPage": {
+    "journey": {
+      "label": "Explora las rutas de compra de Shop Direct",
+      "discovery": "Descubierto en Amazon",
+      "surface": "Búsqueda de Amazon y Alexa for Shopping",
+      "destination": "Comprado en la web del comercio",
+      "paths": [
+        {
+          "id": "visit",
+          "title": "Visitar el comercio",
+          "actor": "El comprador visita tu web",
+          "heading": "El descubrimiento lleva al comprador a tu web",
+          "description": "Shop Direct puede enlazar a los productos de tu propio sitio. El comprador visita tu web para comprar.",
+          "condition": "La web del comercio es el destino de la compra."
+        },
+        {
+          "id": "buy",
+          "title": "Buy for Me",
+          "actor": "El agente de Amazon completa la compra",
+          "heading": "Un agente compra en la web del comercio",
+          "description": "En ofertas elegibles de Buy for Me, el agente de Amazon completa la compra en la web del comercio.",
+          "condition": "Buy for Me solo está disponible para ofertas elegibles."
+        }
+      ]
+    },
+    "catalog": {
+      "label": "La ruta del catálogo",
+      "source": "Tu catálogo de productos",
+      "route": "Proveedor de soluciones o Selling Partner API",
+      "destination": "Shop Direct"
+    },
+    "access": {
+      "title": "Participar tiene sus propios requisitos",
+      "market": "Compradores de Estados Unidos",
+      "eligibility": "Webs de comercios elegibles",
+      "steps": [
+        {
+          "id": "register",
+          "title": "Regístrate",
+          "description": "Gestiona la participación desde el espacio gratuito Shop Direct Merchant Workspace. No necesitas una tienda en el marketplace de Amazon."
+        },
+        {
+          "id": "verify",
+          "title": "Verifica tu web",
+          "description": "La verificación de la web es obligatoria. Los comercios elegibles pueden participar aunque también vendan en Amazon."
+        },
+        {
+          "id": "share",
+          "title": "Comparte tu catálogo",
+          "description": "Envía la información del catálogo mediante un proveedor de soluciones o la Selling Partner API de Amazon."
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "docsVersioningPage": {
+    "current": "Versión actual de la API",
+    "request": "Petición fijada y versión de la respuesta",
+    "additive": "Ampliar la misma versión",
+    "breaking": "Crear una nueva ruta de versión",
+    "notice": "Aviso mínimo",
+    "days": "días",
+    "example": "Formato de las cabeceras de retirada",
+    "exampleHint": "Valores ilustrativos de las cabeceras; no son un anuncio de retirada.",
+    "apiContract": "Contrato de la API de ecentic",
+    "protocolContract": "Contrato del protocolo de descubrimiento",
+    "protocolVersion": "Lee la versión dentro del documento",
+    "lifecycle": {
+      "label": "Señales de obsolescencia en la respuesta",
+      "hint": "Selecciona una cabecera para ver qué le indica a tu cliente.",
+      "items": [
+        {
+          "header": "Deprecation",
+          "title": "Una versión queda obsoleta",
+          "description": "Todas las respuestas de una versión obsoleta llevan esta cabecera. Anuncia la obsolescencia según RFC 9745.",
+          "meaning": "Obsolescencia anunciada"
+        },
+        {
+          "header": "Sunset",
+          "title": "Se fija una fecha de retirada",
+          "description": "Las respuestas llevan además esta cabecera cuando se fija una fecha de retirada. RFC 8594 define la fecha en que la versión deja de responder.",
+          "meaning": "Fecha de retirada anunciada"
+        },
+        {
+          "header": "Link",
+          "title": "Se identifica el reemplazo",
+          "description": "Junto a la fecha de retirada, un Link con rel=\"successor-version\" dirige a tu cliente a la versión de reemplazo.",
+          "meaning": "Versión de reemplazo enlazada"
+        }
+      ]
+    }
+  }
+}

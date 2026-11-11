@@ -1,69 +1,57 @@
-import { CheckIcon } from "@zenncore/icons";
 import { getMessages, getTranslations } from "next-intl/server";
-import { UcpArt } from "@/app/[locale]/(main)/resources/_components/resource-art";
+import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { Plus } from "@/components/plus";
-import { Reveal, RevealItem } from "@/components/reveal";
+import { ValidatorCheckExplorer } from "./validator-check-explorer";
 
 export const Checks = async () => {
   const translate = await getTranslations("ucpValidator");
   const messages = await getMessages();
   const checks = messages.ucpValidator.checks.items;
+  const targets = messages.ucpValidator.form.targets;
+  const groups = [
+    [
+      { ...targets.https, code: "HTTPS" },
+      { ...targets.discovery, code: "/.well-known/ucp" },
+    ],
+    [
+      { ...targets.services, code: "REST · MCP · A2A" },
+      { ...targets.capabilities, code: "dev.ucp.shopping.*" },
+      { ...targets.paymentHandlers, code: "payment.handlers[]" },
+      { ...targets.signingKeys, code: "signing_keys" },
+      { ...targets.supportedVersions, code: "supported_versions[]" },
+    ],
+    [{ ...targets.agentAccess, code: "robots.txt" }],
+  ];
 
   return (
     <section className="border-accent-foreground border-b">
-      <div className="relative mx-auto w-[min(1186px,calc(100%-56px))] border-accent-foreground border-x max-sm:w-[calc(100%-32px)]">
-        <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-        <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+      <div className="relative mx-auto grid w-[min(1186px,calc(100%-56px))] gap-px border-accent-foreground border-x bg-accent-foreground max-sm:w-[calc(100%-32px)] md:grid-cols-[5fr_8fr]">
+        <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
 
-        <Reveal className="px-7 pt-24 pb-12 max-sm:px-4 max-sm:pt-14 max-sm:pb-8">
-          <RevealItem>
-            <span className="font-normal text-3xl text-primary">
+        <div className="flex min-w-0 flex-col bg-background-dimmed">
+          <div className="px-7 pt-10 max-sm:px-4 max-sm:pt-8">
+            <span className="text-3xl text-primary">
               {translate("checks.number")}
             </span>
-          </RevealItem>
-          <RevealItem>
-            <h2 className="mt-2 max-w-3xl text-balance font-heading font-medium text-4xl text-foreground md:text-6xl">
+            <h2 className="mt-4 text-foreground-rich">
               {translate("checks.title")}
             </h2>
-          </RevealItem>
-          <RevealItem>
-            <p className="mt-6 max-w-2xl font-normal text-foreground-dimmed text-xl">
+            <p className="mt-4 max-w-sm text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">
               {translate("checks.description")}
             </p>
-          </RevealItem>
-        </Reveal>
-
-        <div className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-2">
-          <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
-          <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
-
-          <div className="relative min-h-64 bg-background-dimmed md:min-h-72">
-            <RevealItem className="h-full w-full">
-              <UcpArt className="h-full min-h-64 w-full md:min-h-72" />
-            </RevealItem>
           </div>
-
-          <div className="flex flex-col gap-px bg-accent-foreground">
-            {checks.map((check) => (
-              <div
-                key={check.title}
-                className="flex flex-1 bg-background px-7 py-8 max-sm:px-4"
-              >
-                <RevealItem className="flex flex-col gap-6">
-                  <div className="flex items-center gap-2">
-                    <CheckIcon className="size-4 shrink-0 text-primary" />
-                    <h3 className="font-heading font-medium text-foreground text-xl">
-                      {check.title}
-                    </h3>
-                  </div>
-                  <p className="font-light text-foreground-dimmed leading-relaxed">
-                    {check.description}
-                  </p>
-                </RevealItem>
-              </div>
-            ))}
+          <div className="h-52 px-6 py-4 text-primary max-sm:h-40">
+            <EvolvingAscii artwork="commerce" />
           </div>
         </div>
+
+        <ValidatorCheckExplorer
+          checks={checks.map((check, index) => ({
+            ...check,
+            targets: groups[index] ?? [],
+          }))}
+        />
       </div>
     </section>
   );

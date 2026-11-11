@@ -1,0 +1,17 @@
+{
+  "comparisonGuidePage": {
+    "navigation": {
+      "label": "En esta guía",
+      "guide": "Categorías",
+      "tools": "Comparar herramientas",
+      "bottleneck": "Detectar el problema",
+      "related": "Seguir leyendo",
+      "faq": "Preguntas"
+    },
+    "views": {
+      "label": "Vista de comparación",
+      "table": "Comparar todas",
+      "tool": "Ver por herramienta"
+    }
+  }
+}

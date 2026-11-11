@@ -7,6 +7,7 @@ import { Navbar } from "@/components/navbar";
 import { localizePath } from "@/i18n/locale";
 import { createMetadata } from "@/lib/seo";
 import { CompareForm } from "./_components/compare-form";
+import { CompareSchematic } from "./_components/compare-schematic";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const locale = await getLocale();
@@ -24,6 +25,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
 
 export default async () => {
   const translate = await getTranslations("compareTool.page");
+  const translateForm = await getTranslations("compareTool.form");
 
   return (
     <div
@@ -34,13 +36,20 @@ export default async () => {
     >
       <Navbar />
       <div className="w-full border-accent-foreground border-b">
-        <div className="mx-auto flex w-[min(1186px,calc(100%-56px))] flex-col border-accent-foreground border-x px-7 py-24 max-sm:w-[calc(100%-32px)] max-sm:px-4 max-sm:py-14">
-          <h1 className="font-medium text-4xl text-foreground-rich">
-            {translate("title")}
-          </h1>
-          <p className="mt-6 text-foreground-dimmed text-xl">
-            {translate("description")}
-          </p>
+        <div className="mx-auto grid w-[min(1186px,calc(100%-56px))] min-w-0 grid-cols-1 border-accent-foreground border-x max-sm:w-[calc(100%-32px)] md:grid-cols-[1.15fr_1fr]">
+          <header className="flex min-w-0 flex-col justify-center px-8 py-12 max-sm:px-4 max-sm:py-8">
+            <h1 className="max-w-[12ch] text-[clamp(2.75rem,4.5vw,4.25rem)] text-foreground-rich leading-[1.05] tracking-[-0.04em]">
+              {translate("title")}
+            </h1>
+            <p className="mt-6 max-w-[34ch] text-foreground-dimmed text-lg leading-relaxed max-sm:mt-4 max-sm:text-base">
+              {translate("description")}
+            </p>
+          </header>
+          <CompareSchematic
+            productA={translateForm("productA")}
+            productB={translateForm("productB")}
+            caption={translateForm("footer")}
+          />
         </div>
       </div>
 

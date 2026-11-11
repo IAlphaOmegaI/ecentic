@@ -1,0 +1,21 @@
+{
+  "playgroundPage": {
+    "guide": {
+      "title": "Del descubrimiento al pago",
+      "description": "Explora las llamadas de una sesión de compra.",
+      "discovery": {
+        "title": "Descubre la tienda",
+        "description": "Lee el perfil UCP de la tienda y selecciona su endpoint de compras. El playground prioriza MCP y usa REST como alternativa."
+      },
+      "action": {
+        "primary": "Abrir el playground",
+        "secondary": "Comprobar un perfil UCP"
+      }
+    },
+    "session": {
+      "title": "Sesión de compra en vivo",
+      "description": "Inspecciona las llamadas y respuestas mientras compra el agente."
+    },
+    "faq": { "title": "Antes de conectar" }
+  }
+}

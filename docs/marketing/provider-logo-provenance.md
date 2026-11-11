@@ -8,7 +8,7 @@ The latest annotated review explicitly requests the WooCommerce mark as well as 
 
 20 distinct provider marks cover all branded integration records, plus Gemini. Repeated surfaces reuse their owner’s mark: Google Merchant Center uses Google, Microsoft Merchant Center uses Microsoft, Amazon Shop Direct uses Amazon, ChatGPT feed uses OpenAI/ChatGPT, and Perplexity feed uses Perplexity. Their separate status labels describe ecentic support; logos do not establish a partnership or distribution entitlement.
 
-The OpenAI developer-site icon identifies the ChatGPT/OpenAI surface; the Akeneo asset is its official APIs header wordmark. Both are used unmodified. Existing repository logos remain untouched; the new component uses the freshly sourced versions to avoid recoloring or uncertain provenance.
+The OpenAI developer-site icon identifies the ChatGPT/OpenAI surface; the Akeneo asset is its official APIs header wordmark. Both are used unmodified. Existing repository artwork remains unmodified. The November 10 v8 review replaces the opaque Amazon and Perplexity favicons with the transparent artwork already present in `public/images/amazon.svg` and `public/images/perplexity.svg`; their historical source URLs are not recorded. The old favicons remain on disk for provenance, but are no longer rendered by ProviderLogo. The monochrome ChatGPT and Perplexity hero marks are displayed in white through CSS for contrast on the blue surface; source files are unchanged.
 
 | Provider | Official source | Asset | Notes |
 | --- | --- | --- | --- |
@@ -36,3 +36,5 @@ The OpenAI developer-site icon identifies the ChatGPT/OpenAI surface; the Akeneo
 The adjacent JSON records exact URLs, check date, file dimensions, byte size and SHA-256 hashes. Wix and Salsify are official header SVGs extracted from HTML; Salsify’s HTML `viewbox` attribute was normalized to XML `viewBox` for standalone rendering. PrestaShop is its header data URI decoded unchanged. No artwork paths or color values were changed.
 
 Verification: the original 18 files parse as valid SVG or raster images and were inspected together at desktop size. The added WooCommerce SVG parses successfully and loads in the desktop/mobile diagram and integration checks. Index/leaf runtime checks and responsive screenshots are recorded in `output/enterprise-rebuild/provider-logos/`. No external forms were submitted.
+
+V8 provider-hero review: large marks are placed above the headline without plates. The ChatGPT hero uses the existing vector `public/images/chatgpt.svg` rendered in white through CSS on the blue surface for readable contrast; the SVG file is unchanged. Smaller provider listings retain the sourced favicon.

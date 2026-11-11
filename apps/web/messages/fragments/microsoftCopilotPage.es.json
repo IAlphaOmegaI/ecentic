@@ -1,0 +1,46 @@
+{
+  "microsoftCopilotPage": {
+    "journey": {
+      "title": "La conversación, el catálogo, tu negocio",
+      "copilot": "Descubrimiento de productos y compra",
+      "merchant": "Sigues siendo el vendedor oficial",
+      "relationship": "Tus envíos. Tu relación con el cliente.",
+      "web": "Datos de productos en la web",
+      "feeds": "Feeds de productos del comercio",
+      "checkout": "Atributos adicionales de compra",
+      "dataLabel": "Explora el recorrido de los datos del producto"
+    },
+    "entry": {
+      "label": "Explora una vía de acceso para comercios",
+      "language": "Idioma del comercio",
+      "languageValue": "Inglés",
+      "buyers": "Compradores",
+      "buyersValue": "Estados Unidos",
+      "currency": "Moneda",
+      "currencyValue": "USD",
+      "microsoft": "Microsoft",
+      "shopify": "Shopify",
+      "stripe": "Stripe",
+      "routes": {
+        "microsoft": {
+          "title": "Microsoft Merchant Center",
+          "description": "Prepara los registros de productos y los atributos adicionales de compra de la guía de incorporación de Microsoft. Un paso de configuración del feed sigue en fase piloto para comercios seleccionados.",
+          "note": "Esta es la vía de Microsoft para comercios. La conexión de feed de ecentic aún no está activa."
+        },
+        "shopify": {
+          "title": "Inscripción automática de Shopify",
+          "description": "Shopify es una de las vías de inscripción documentadas por Microsoft. Siguen aplicándose los criterios de elegibilidad y los requisitos del programa de Microsoft.",
+          "note": "ecentic ya rastrea las visitas referidas por Copilot en tiendas Shopify conectadas."
+        },
+        "stripe": {
+          "title": "Stripe Agentic Commerce Suite",
+          "description": "Stripe Agentic Commerce Suite es una de las vías de acceso documentadas por Microsoft. Siguen aplicándose los criterios de elegibilidad y los requisitos del programa de Microsoft.",
+          "note": "Una vía de acceso no garantiza la aprobación ni las recomendaciones de productos."
+        }
+      },
+      "action": {
+        "primary": "Leer la guía de incorporación de Microsoft"
+      }
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "electronicsPage": {
+    "selectorLabel": "Explora una pregunta de compra",
+    "scenarioLabels": ["Auriculares", "Portátiles", "Robots aspiradores"],
+    "sourceLabel": "Datos de origen que revisar",
+    "inspectLabel": "Sigue la pregunta hasta las especificaciones.",
+    "mapLabel": "Revisa los seis datos de origen",
+    "boundary": "Un punto de partida para revisar los datos de origen, no un resultado de compatibilidad."
+  }
+}

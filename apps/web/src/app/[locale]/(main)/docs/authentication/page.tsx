@@ -2,7 +2,10 @@ import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
+import type { ReactNode } from "react";
 import { JsonLd } from "@/components/json-ld";
+import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { Plus } from "@/components/plus";
 import { localizePath } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
 import {
@@ -18,6 +21,63 @@ import {
   ContentPageSection,
 } from "../../_components/content";
 import { DocsCode } from "../_components/docs";
+import {
+  AuthPathDetails,
+  AuthRequestPaths,
+} from "./_components/auth-request-paths";
+
+const AuthPath = ({
+  client,
+  credential,
+  destination,
+  title,
+  description,
+  details,
+  body,
+  children,
+}: {
+  client: string;
+  credential: string;
+  destination: string;
+  title: string;
+  description: string;
+  details: string;
+  body: string;
+  children: ReactNode;
+}) => (
+  <div className="grid min-w-0 gap-px bg-accent-foreground md:grid-cols-[4fr_8fr]">
+    <div className="flex min-w-0 flex-col bg-background-dimmed">
+      <div className="flex flex-1 flex-col items-center px-4 py-6">
+        <p className="text-foreground-dimmed text-sm">{client}</p>
+        <div className="h-44 w-full max-w-72 text-foreground">
+          <EvolvingAscii artwork="console" />
+        </div>
+        <div
+          aria-hidden="true"
+          className="h-8 border-accent-foreground border-l"
+        />
+        <p className="text-center font-medium text-foreground">{credential}</p>
+        <div
+          aria-hidden="true"
+          className="h-8 border-accent-foreground border-l"
+        />
+      </div>
+      <p className="border-accent-foreground border-t px-6 py-4 text-center text-foreground-rich text-lg">
+        {destination}
+      </p>
+    </div>
+    <div className="flex min-w-0 flex-col gap-6 bg-background px-8 py-8 max-sm:px-4">
+      <div>
+        <h3 className="text-2xl text-foreground-rich">{title}</h3>
+        <p className="mt-2 text-foreground-dimmed">{description}</p>
+      </div>
+      {children}
+      <AuthPathDetails label={details}>
+        <ContentPageRichText content={body} />
+      </AuthPathDetails>
+    </div>
+  </div>
+);
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const locale = await getLocale();
@@ -42,6 +102,7 @@ export default async () => {
   const translateDocs = await getTranslations("docs");
   const messages = await getMessages();
   const content = messages.docs.authenticationPage;
+  const copy = messages.docsAuthenticationPage;
 
   return (
     <ContentPageLayout
@@ -86,33 +147,88 @@ export default async () => {
         ]}
       />
 
-      <ContentPageSection
-        number={translate("open.number")}
-        title={translate("open.title")}
-        description={translate("open.description")}
+      <section
+        aria-labelledby="request-paths"
+        className="border-accent-foreground border-b"
       >
-        <div className="flex flex-col gap-6">
-          <DocsCode label="no credential required">
-            {`GET  https://ecentic.ai/api/v1
+        <div className="relative mx-auto w-[min(1186px,calc(100%-56px))] border-accent-foreground border-x max-sm:w-[calc(100%-32px)]">
+          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <div className="border-accent-foreground border-b px-8 py-12 max-sm:px-4 max-sm:py-10">
+            <span className="mb-4 block text-3xl text-primary">
+              {translate("open.number")}
+            </span>
+            <h2 id="request-paths" className="text-foreground-rich">
+              {copy.paths.title}
+            </h2>
+            <p className="mt-4 max-w-2xl text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">
+              {copy.paths.description}
+            </p>
+          </div>
+          <AuthRequestPaths
+            copy={copy.paths}
+            open={
+              <AuthPath
+                client={copy.paths.client}
+                credential={copy.paths.noCredential}
+                destination={copy.paths.publicDestination}
+                title={translate("open.title")}
+                description={translate("open.description")}
+                details={copy.paths.details}
+                body={translate("open.body")}
+              >
+                <DocsCode label={copy.paths.noCredential}>
+                  {`GET  https://ecentic.ai/api/v1
 GET  https://ecentic.ai/api/v1/plans
 GET  https://ecentic.ai/api/v1/onboarding
 POST https://ecentic.ai/api/v1/sandbox/simulation`}
-          </DocsCode>
-          <ContentPageRichText content={translate("open.body")} />
+                </DocsCode>
+              </AuthPath>
+            }
+            authenticated={
+              <AuthPath
+                client={copy.paths.client}
+                credential={copy.paths.bearer}
+                destination={copy.paths.protectedDestination}
+                title={translate("sending.title")}
+                description={translate("sending.description")}
+                details={copy.paths.details}
+                body={translate("sending.body")}
+              >
+                <DocsCode>
+                  {`Authorization: Bearer ecentic_sk_…
+Content-Type: application/json`}
+                </DocsCode>
+              </AuthPath>
+            }
+          />
         </div>
-      </ContentPageSection>
+      </section>
 
       <ContentPageSection
         number={translate("keys.number")}
         title={translate("keys.title")}
         description={translate("keys.description")}
         gutter
+        classList={{ body: "p-0", left: "bg-background-dimmed" }}
       >
-        <div className="flex flex-col gap-6">
+        <ol className="grid gap-px bg-accent-foreground sm:grid-cols-3">
+          {copy.keySteps.map((step, index) => (
+            <li
+              key={step}
+              className="flex items-center gap-4 bg-background-dimmed px-6 py-6 sm:flex-col sm:items-start"
+            >
+              <span aria-hidden="true" className="text-2xl text-primary">
+                {index + 1}
+              </span>
+              <span className="font-medium text-foreground">{step}</span>
+            </li>
+          ))}
+        </ol>
+        <div className="flex flex-col items-start gap-6 border-accent-foreground border-t px-8 py-8 max-sm:px-4">
           <ContentPageRichText content={translate("keys.body")} />
           <Button
-            color="accent"
-            className="w-fit"
+            color="neutral"
             render={<a href="/auth.md">{translate("keys.linkLabel")}</a>}
           />
         </div>
@@ -120,32 +236,55 @@ POST https://ecentic.ai/api/v1/sandbox/simulation`}
 
       <ContentPageSection
         number={translate("sending.number")}
-        title={translate("sending.title")}
-        description={translate("sending.description")}
-      >
-        <div className="flex flex-col gap-6">
-          <DocsCode>
-            {`Authorization: Bearer ecentic_sk_…
-Content-Type: application/json`}
-          </DocsCode>
-          <ContentPageRichText content={translate("sending.body")} />
-        </div>
-      </ContentPageSection>
-
-      <ContentPageSection
-        number={translate("failures.number")}
         title={translate("failures.title")}
         description={translate("failures.description")}
         gutter
+        classList={{
+          grid: "md:grid-cols-1",
+          left: "pb-8 max-sm:pb-6",
+          body: "p-0",
+        }}
       >
-        <div className="flex flex-col gap-6">
-          <DocsCode label="401">
-            {`WWW-Authenticate: Bearer resource_metadata="https://ecentic.ai/.well-known/oauth-protected-resource"
+        <ol
+          aria-label={copy.recovery.label}
+          className="grid gap-px bg-accent-foreground sm:grid-cols-3"
+        >
+          {[
+            { code: "HTTP 401", label: copy.recovery.response },
+            { code: "RFC 9728", label: copy.recovery.resource },
+            { code: "RFC 8414", label: copy.recovery.authorization },
+          ].map((step, index) => (
+            <li
+              key={step.code}
+              className="relative flex min-w-0 flex-col gap-2 bg-background-dimmed px-8 py-6 max-sm:px-4"
+            >
+              <span className="font-mono text-base text-foreground-rich">
+                {step.code}
+              </span>
+              <span className="text-foreground-dimmed">{step.label}</span>
+              {index < 2 && (
+                <span
+                  aria-hidden="true"
+                  className="absolute right-4 bottom-0 translate-y-1/2 text-foreground-dimmed sm:top-1/2 sm:right-0 sm:bottom-auto sm:translate-x-1/2 sm:-translate-y-1/2"
+                >
+                  <ArrowRightIcon className="size-4 rotate-90 sm:rotate-0" />
+                </span>
+              )}
+            </li>
+          ))}
+        </ol>
+        <div className="grid gap-px border-accent-foreground border-t bg-accent-foreground lg:grid-cols-[7fr_5fr]">
+          <div className="min-w-0 bg-background px-8 py-8 max-sm:px-4">
+            <DocsCode label="401">
+              {`WWW-Authenticate: Bearer resource_metadata="https://ecentic.ai/.well-known/oauth-protected-resource"
 Content-Type: application/problem+json
 
 {"type":"https://ecentic.ai/docs/errors#unauthenticated","code":"unauthenticated", ...}`}
-          </DocsCode>
-          <ContentPageRichText content={translate("failures.body")} />
+            </DocsCode>
+          </div>
+          <div className="bg-background px-8 py-8 max-sm:px-4">
+            <ContentPageRichText content={translate("failures.body")} />
+          </div>
         </div>
       </ContentPageSection>
 

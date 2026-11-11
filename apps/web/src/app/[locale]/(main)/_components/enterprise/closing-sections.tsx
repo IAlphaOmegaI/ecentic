@@ -112,11 +112,11 @@ export const PricingPaths = ({ copy }: PricingPaths.Props) => (
           key={item.title}
           className="relative flex min-w-0 flex-col border-accent-foreground border-t border-r bg-linear-to-b from-background-rich/60 to-transparent px-7 py-8 last:border-r-0 max-sm:border-r-0 max-sm:px-4"
         >
-          <div aria-hidden className="mb-8 flex h-12 items-center -space-x-2">
+          <div aria-hidden className="mb-8 flex h-12 items-center gap-4">
             {paths[index]?.map((provider) => (
               <div
                 key={provider}
-                className="relative flex size-12 items-center justify-center rounded-full border-2 border-background bg-background-rich px-2"
+                className="relative flex size-12 items-center justify-center"
               >
                 <ProviderLogo
                   provider={provider}

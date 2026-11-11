@@ -1,0 +1,16 @@
+{
+  "fashionPage": {
+    "trail": {
+      "title": "Actividad. Ajuste. Material.",
+      "description": "Abre una pregunta de compra para ver qué datos del producto debe verificar tu equipo.",
+      "label": "Preguntas de compra y datos del producto",
+      "contexts": ["Actividad y clima", "Anchura y tallas", "Fibra y cuidado"],
+      "facts": "Datos del producto que verificar"
+    },
+    "rules": [
+      "Tallas según el destino",
+      "Composición de fibras",
+      "Declaraciones medioambientales"
+    ]
+  }
+}

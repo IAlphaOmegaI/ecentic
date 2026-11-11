@@ -1,0 +1,11 @@
+{
+  "blogTagPage": {
+    "collection": "Reading collection",
+    "description": "Guides and research on {topic}, from the ecentic journal.",
+    "latestArticle": "Start with the latest",
+    "takeaways": "Inside this article",
+    "moreArticles": "Continue reading",
+    "relatedTopics": "Follow a related topic",
+    "relatedDescription": "Explore the subjects connected to this collection."
+  }
+}

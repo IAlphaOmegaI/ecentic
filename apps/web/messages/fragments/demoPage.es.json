@@ -1,0 +1,30 @@
+{
+  "demoPage": {
+    "agenda": {
+      "description": "Elige un tema para ver qué trataremos en la conversación.",
+      "bringLabel": "Trae a la conversación",
+      "exploreLabel": "Exploraremos",
+      "items": [
+        {
+          "bring": "Una categoría y un competidor",
+          "explore": "Uno o dos de tus productos, comparados en directo."
+        },
+        {
+          "bring": "Un producto que quieras entender",
+          "explore": "Las razones del asistente y la información que utilizó."
+        },
+        {
+          "bring": "Las prioridades de tu catálogo",
+          "explore": "Cambios en las fichas para revisar con tu equipo."
+        },
+        {
+          "bring": "El equipo y la categoría del piloto",
+          "explore": "Una referencia inicial y una evaluación que acordaremos juntos."
+        }
+      ],
+      "action": {
+        "primary": "Prepara tu demo"
+      }
+    }
+  }
+}

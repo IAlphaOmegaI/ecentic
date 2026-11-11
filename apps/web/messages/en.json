@@ -97,7 +97,8 @@
       "productListings": "Product Listings",
       "docs": "Developer docs",
       "apiReference": "API reference",
-      "webmcpScanner": "WebMCP scanner"
+      "webmcpScanner": "WebMCP scanner",
+      "about": "About"
     },
     "cta": {
       "eyebrow": "Get picked by AI",
@@ -7293,7 +7294,7 @@
       "number": "07",
       "title": "Webhooks",
       "description": "ecentic receives webhooks; it does not yet deliver them outbound.",
-      "body": "Inbound endpoints are signature-verified and reject anything that fails the check before any handler runs. Shopify compliance webhooks verify an HMAC, Stripe verifies its own signature header, and partner endpoints verify a bearer secret.\n\nOutbound webhooks — ecentic notifying your system when a scan finishes or a listing is republished — are not published yet. Poll the REST surface, or subscribe through the MCP session, until they are."
+      "body": "Inbound endpoints are signature-verified and reject anything that fails the check before any handler runs. Shopify compliance webhooks verify an HMAC, Stripe verifies its own signature header, and partner endpoints verify a bearer secret.\n\nOutbound webhooks — ecentic notifying your system when a scan finishes or a listing is republished — are not published yet. Use the published REST endpoints to check results. MCP requests are stateless; there is no subscription session."
     },
     "cli": {
       "number": "08",
@@ -16190,6 +16191,1387 @@
       "relativeConversionSource": {
         "question": "{{TODO: Xhurian supplies the primary Adobe source for the July 2026 60% relative conversion improvement, including its baseline.}}"
       }
+    }
+  },
+  "chatgptPage": {
+    "shopping": {
+      "feed": "Merchant product feed",
+      "discovery": "Product discovery",
+      "store": "Merchant store",
+      "checkout": "Approved checkout",
+      "link": "Product link",
+      "approval": "Separate app approval"
+    },
+    "reading": {
+      "label": "Explore what ChatGPT reads",
+      "caption": "A schematic of the information, not a feed submission template.",
+      "records": [
+        {
+          "id": "product",
+          "title": "Product record",
+          "record": "product / variant",
+          "fields": [
+            "Title + description",
+            "Images + product URL",
+            "Price + availability"
+          ]
+        },
+        {
+          "id": "seller",
+          "title": "Seller terms",
+          "record": "merchant",
+          "fields": [
+            "Seller identity",
+            "Shipping information",
+            "Return policy"
+          ]
+        },
+        {
+          "id": "checkout",
+          "title": "Checkout access",
+          "record": "checkout",
+          "fields": [
+            "Eligibility flag",
+            "Connected app",
+            "Integration approval"
+          ]
+        }
+      ]
+    },
+    "entry": {
+      "label": "Merchant entry requirements",
+      "steps": [
+        "Merchant onboarding",
+        "Product feed access",
+        "Checkout app approval"
+      ]
+    }
+  },
+  "googleMerchantDesign": {
+    "constraints": [
+      "Shopify connection",
+      "Account access",
+      "Offer matching",
+      "Explicit sync"
+    ],
+    "stages": [
+      "Authorize",
+      "Provision",
+      "Review",
+      "Sync"
+    ],
+    "diagram": {
+      "mainSource": "Main source",
+      "supplemental": "Supplemental source",
+      "published": "Published changes",
+      "diagnostics": "Diagnostics",
+      "processing": "Google processing",
+      "sync": "Run sync"
+    }
+  },
+  "indexAiChannels": {
+    "title": "Choose your next channel.",
+    "description": "Explore each assistant, then select a capability to see what ecentic supports today.",
+    "providersLabel": "AI assistants",
+    "capabilitiesLabel": "ecentic capabilities",
+    "interestTitle": "Help shape what comes next"
+  },
+  "trackPage": {
+    "comparisonLabel": "Compare the signals",
+    "comparisonHint": "Choose a signal to see where it comes from and what it can tell you.",
+    "meaningLabel": "What it tells you",
+    "limitLabel": "Keep in mind",
+    "signals": [
+      {
+        "id": "visits",
+        "label": "Observed visits",
+        "title": "A detected visit has a source.",
+        "inputs": [
+          "Assistant referrer",
+          "User-agent signal"
+        ],
+        "process": "Shopify browser script",
+        "output": "Detected visit",
+        "meaning": "Recognized assistant sources can be grouped in the visit breakdown and time-series summary.",
+        "limit": "The browser script needs available signals. It cannot observe every non-JavaScript crawler, recover every direct visit, or prove that a visitor later bought."
+      },
+      {
+        "id": "simulations",
+        "label": "Simulated decisions",
+        "title": "A new scan is a new comparison.",
+        "inputs": [
+          "Your product",
+          "A competitor"
+        ],
+        "process": "A scan you request",
+        "output": "Simulated decision",
+        "meaning": "Win rate is the percentage of simulations where an agent picks your product over a competitor. Compare completed decisions after publishing a change.",
+        "limit": "Simulated decisions are separate from observed storefront visits and sales. Scheduled rescans are not active today."
+      },
+      {
+        "id": "estimates",
+        "label": "Estimated lift",
+        "title": "An estimate accompanies the fix.",
+        "inputs": [
+          "Current listing",
+          "Proposed change"
+        ],
+        "process": "Listing optimization",
+        "output": "Estimated lift",
+        "meaning": "Lift is an estimate recorded with the listing change. It helps distinguish the expected effect of a fix from later completed tests.",
+        "limit": "It is not measured revenue or a completed post-publish experiment. Request a new scan to compare simulated decisions after a change."
+      }
+    ],
+    "attributionLabel": "Attribution has a boundary",
+    "attributionFlow": [
+      "Explicit attribution tag, if available",
+      "Otherwise, a recent AI referral in that store",
+      "Configured window: seven days by default"
+    ],
+    "attributionNote": "A store-wide match does not establish that the same shopper made the order.",
+    "referenceTitle": "The scope of tracking today.",
+    "referenceDescription": "Read the collection limits, estimate definitions and account boundaries before interpreting the results."
+  },
+  "googleChannelPage": {
+    "explorer": {
+      "label": "Explore Google's shopping path",
+      "stages": [
+        {
+          "id": "catalog",
+          "label": "Catalog",
+          "title": "Start with the merchant's offer",
+          "description": "Merchant Center supplies the product data used by Google's shopping experiences.",
+          "details": [
+            "Price and availability",
+            "Shipping and return information"
+          ],
+          "destination": "Merchant Center",
+          "action": {
+            "primary": "Explore the product data"
+          }
+        },
+        {
+          "id": "assistant",
+          "label": "AI answers",
+          "title": "Bring product data into the conversation",
+          "description": "Google's AI answers shopping questions using merchant product data.",
+          "details": [
+            "AI Mode in Search",
+            "Gemini"
+          ],
+          "destination": "AI Mode and Gemini",
+          "action": {
+            "primary": "Review the merchant requirements"
+          }
+        },
+        {
+          "id": "checkout",
+          "label": "Checkout",
+          "title": "The purchase path depends on eligibility",
+          "description": "Shoppers can continue to a merchant's cart or use Google Pay where checkout is enabled. The merchant remains the seller of record.",
+          "details": [
+            "Continue to the merchant's cart",
+            "Google Pay where checkout is enabled"
+          ],
+          "destination": "Merchant checkout",
+          "action": {
+            "primary": "Review the merchant requirements"
+          }
+        }
+      ]
+    },
+    "reading": {
+      "label": "The offer, kept consistent",
+      "rows": [
+        {
+          "title": "Product data",
+          "detail": "Price and availability",
+          "field": "price / availability"
+        },
+        {
+          "title": "Product page",
+          "detail": "Accurate product information",
+          "field": "link"
+        },
+        {
+          "title": "Shipping and returns",
+          "detail": "Clear delivery and return information",
+          "field": "shipping / return policy"
+        },
+        {
+          "title": "Checkout eligibility",
+          "detail": "Eligibility is part of the offer",
+          "field": "checkout_eligibility"
+        }
+      ],
+      "action": {
+        "primary": "Explore Merchant Center"
+      }
+    },
+    "entry": {
+      "label": "Google merchant requirements",
+      "steps": [
+        "Eligible merchants and products",
+        "Integration hub rollout",
+        "Technical validation and approval"
+      ],
+      "note": "ecentic helps prepare and test data and settings. Application, validation and approval remain between your business and Google.",
+      "action": {
+        "primary": "Explore checkout readiness"
+      }
+    }
+  },
+  "perplexityPage": {
+    "shopping": {
+      "label": "Explore the shopping destination",
+      "result": "Product card",
+      "destination": "Shopping destination",
+      "purchase": "Buy with Pro",
+      "store": "Merchant website",
+      "purchaseTitle": "An eligible purchase",
+      "purchaseDescription": "The announced Buy with Pro experience is for eligible products in the US.",
+      "storeTitle": "Continue at the merchant",
+      "storeDescription": "When that purchase option is unavailable, the shopper follows a link to the merchant’s website.",
+      "caption": "Explore the two paths described in Perplexity’s shopping announcement."
+    },
+    "reading": {
+      "merchant": "Merchant information",
+      "product": "Product details",
+      "price": "Price",
+      "website": "Merchant website",
+      "result": "Shopping results",
+      "caption": "A merchant program helps make product information more complete."
+    },
+    "entry": {
+      "label": "Explore merchant access requirements",
+      "steps": [
+        "The announced program",
+        "Current eligibility",
+        "What remains unverified"
+      ]
+    }
+  },
+  "claudePage": {
+    "explorer": {
+      "label": "Explore a merchant-built commerce agent",
+      "scope": "Inside the retailer’s own experience",
+      "tools": "Tools supplied by the retailer",
+      "stages": [
+        {
+          "id": "catalog",
+          "title": "Catalog",
+          "headline": "Start with your product information",
+          "body": "The retailer supplies catalog and inventory tools for its Claude-powered agent to search products.",
+          "tools": [
+            "Catalog",
+            "Inventory"
+          ]
+        },
+        {
+          "id": "compare",
+          "title": "Compare",
+          "headline": "Give the comparison context",
+          "body": "The agent compares products using the information and tools the retailer supplies, including its catalog and store policies.",
+          "tools": [
+            "Product information",
+            "Store policies"
+          ]
+        },
+        {
+          "id": "cart",
+          "title": "Cart",
+          "headline": "Connect your own commerce tools",
+          "body": "Cart and checkout tools belong to the merchant-built experience. ecentic has no dedicated Claude checkout connection today.",
+          "tools": [
+            "Retailer’s cart",
+            "Retailer’s checkout"
+          ]
+        }
+      ]
+    },
+    "reading": {
+      "merchant": "Your commerce agent",
+      "simulation": "ecentic’s comparison"
+    },
+    "entry": {
+      "tools": "Retailer-supplied tools",
+      "experience": "Your own commerce experience"
+    },
+    "action": {
+      "primary": "Explore simulations",
+      "secondary": "Improve your listings"
+    }
+  },
+  "microsoftCopilotPage": {
+    "journey": {
+      "title": "The conversation, the catalog, your business",
+      "copilot": "Product discovery and checkout",
+      "merchant": "You remain the seller of record",
+      "relationship": "Your fulfillment. Your customer relationship.",
+      "web": "Product data on the web",
+      "feeds": "Merchant product feeds",
+      "checkout": "Additional checkout attributes",
+      "dataLabel": "Explore the product data path"
+    },
+    "entry": {
+      "label": "Explore a merchant entry route",
+      "language": "Merchant language",
+      "languageValue": "English",
+      "buyers": "Buyers",
+      "buyersValue": "United States",
+      "currency": "Currency",
+      "currencyValue": "USD",
+      "microsoft": "Microsoft",
+      "shopify": "Shopify",
+      "stripe": "Stripe",
+      "routes": {
+        "microsoft": {
+          "title": "Microsoft Merchant Center",
+          "description": "Prepare product records and the additional checkout attributes in Microsoft’s onboarding guide. A feed setup step remains a pilot for selected merchants.",
+          "note": "This is Microsoft’s merchant route. ecentic’s feed connection is not live."
+        },
+        "shopify": {
+          "title": "Automatic Shopify enrollment",
+          "description": "Shopify is one of Microsoft’s documented enrollment routes. Microsoft’s eligibility and program requirements still apply.",
+          "note": "ecentic tracks Copilot referrals on connected Shopify stores today."
+        },
+        "stripe": {
+          "title": "Stripe Agentic Commerce Suite",
+          "description": "Stripe Agentic Commerce Suite is one of Microsoft’s documented entry routes. Microsoft’s eligibility and program requirements still apply.",
+          "note": "An entry route does not guarantee approval or product recommendations."
+        }
+      },
+      "action": {
+        "primary": "Read Microsoft’s onboarding guidance"
+      }
+    }
+  },
+  "amazonPage": {
+    "journey": {
+      "label": "Explore the Shop Direct purchase paths",
+      "discovery": "Discovered on Amazon",
+      "surface": "Amazon search and Alexa for Shopping",
+      "destination": "Purchased on the merchant’s website",
+      "paths": [
+        {
+          "id": "visit",
+          "title": "Visit the merchant",
+          "actor": "The shopper visits your website",
+          "heading": "Discovery brings the shopper to you",
+          "description": "Shop Direct can link to products on your own site. The shopper visits your website to buy.",
+          "condition": "The merchant website is the purchase destination."
+        },
+        {
+          "id": "buy",
+          "title": "Buy for Me",
+          "actor": "Amazon’s agent completes the purchase",
+          "heading": "An agent buys on the merchant’s site",
+          "description": "For eligible Buy for Me offers, Amazon’s agent completes the purchase on the merchant’s website.",
+          "condition": "Buy for Me is available only for eligible offers."
+        }
+      ]
+    },
+    "catalog": {
+      "label": "The catalog supply path",
+      "source": "Your product catalog",
+      "route": "Solution provider or Selling Partner API",
+      "destination": "Shop Direct"
+    },
+    "access": {
+      "title": "Participation has its own requirements",
+      "market": "US customers",
+      "eligibility": "Eligible merchant websites",
+      "steps": [
+        {
+          "id": "register",
+          "title": "Register",
+          "description": "Manage participation through the free Shop Direct Merchant Workspace. An Amazon marketplace store is not required."
+        },
+        {
+          "id": "verify",
+          "title": "Verify your website",
+          "description": "Website verification is required. Eligible merchants can participate even if they also sell on Amazon."
+        },
+        {
+          "id": "share",
+          "title": "Share your catalog",
+          "description": "Supply catalog information through a solution provider or Amazon’s Selling Partner API."
+        }
+      ]
+    }
+  },
+  "solutionsIndexPage": {
+    "businessDescription": "Choose your business to explore the catalog work, decisions and next steps that fit.",
+    "workflowsTitle": "Start with the work you own.",
+    "workflowsDescription": "Choose your team’s focus to find the relevant product workflow.",
+    "workflowLabel": "Explore the workflow",
+    "sectorsDescription": "Start with a shopper’s question. Explore the product facts your category needs to answer it."
+  },
+  "brandsPage": {
+    "jobs": {
+      "description": "Choose the part of the shopping journey your team needs to improve.",
+      "label": "Explore brand priorities",
+      "details": "See every challenge and capability",
+      "items": [
+        {
+          "id": "compare",
+          "label": "Compare competitors",
+          "scope": "Simulated decisions",
+          "path": [
+            "Your product",
+            "Named rivals",
+            "Model decisions"
+          ]
+        },
+        {
+          "id": "listings",
+          "label": "Improve listings",
+          "scope": "Existing product facts",
+          "path": [
+            "Source facts",
+            "Title and description",
+            "Separate structured data"
+          ]
+        },
+        {
+          "id": "checkout",
+          "label": "Test checkout",
+          "scope": "Supported WooCommerce flows",
+          "path": [
+            "Product discovery",
+            "Cart pricing",
+            "Payment handoff"
+          ]
+        },
+        {
+          "id": "referrals",
+          "label": "Identify referrals",
+          "scope": "Recognized Shopify referrals",
+          "path": [
+            "AI assistant",
+            "Store visit",
+            "Referral reporting"
+          ]
+        }
+      ]
+    },
+    "sources": {
+      "description": "Start from your store or a supported feed. Merchant Center sync remains a separate action.",
+      "store": "Connect a store",
+      "catalog": "Other catalog paths"
+    }
+  },
+  "retailersPage": {
+    "challengeIntro": "Start with the listing, compare the evidence, and decide which catalog work comes next.",
+    "catalogIntro": "Choose where your product data lives. See what the connection supports and which decisions stay with your team.",
+    "catalog": {
+      "select": "Your catalog source",
+      "capability": "What this route supports",
+      "dataLabel": "Product data",
+      "decisionLabel": "Publishing decision",
+      "routes": [
+        {
+          "data": "Prepare a compatible feed or CSV using supported fields and formats.",
+          "decision": "An import does not create a write-back connector. Choose how approved changes return to your source."
+        },
+        {
+          "data": "Review Merchant Center diagnostics for your Shopify catalog.",
+          "decision": "Run supplemental sync separately after publishing listing changes. It does not fix every price or stock mismatch."
+        },
+        {
+          "data": "Connect a supported Shopify or WooCommerce store and import its products.",
+          "decision": "Your team chooses which supported listing changes to publish to the connected store."
+        },
+        {
+          "data": "Use a compatible product feed exported from your PIM.",
+          "decision": "Check dedicated connector availability on the integration wall before planning write-back."
+        }
+      ]
+    },
+    "pilot": {
+      "label": "Agree the pilot scope first",
+      "steps": [
+        {
+          "title": "One market, one category",
+          "body": "Choose the products your team can review."
+        },
+        {
+          "title": "Week 0 baseline",
+          "body": "Set the starting point for your scoped pilot."
+        },
+        {
+          "title": "Week 6 readout",
+          "body": "Review the findings before choosing the next category."
+        }
+      ]
+    }
+  },
+  "enterprisePage": {
+    "engagements": {
+      "description": "Choose the question you need to answer. Agree the scope and fee before the work begins.",
+      "label": "Explore enterprise engagements",
+      "pilotAction": "See the pilot sequence",
+      "items": [
+        {
+          "duration": "4 weeks",
+          "question": "Where do we start?",
+          "path": [
+            "Agree one category and question set",
+            "Establish the baseline",
+            "Prioritize the fix list"
+          ]
+        },
+        {
+          "duration": "6 weeks",
+          "question": "What changes after we fix the data?",
+          "path": [
+            "One market, one category",
+            "Baseline, agreed changes, repeat",
+            "Written readout and next decision"
+          ]
+        },
+        {
+          "duration": "3 months",
+          "question": "How could checkout or booking work?",
+          "path": [
+            "Agree the checkout or booking question",
+            "Consider a prototype with dummy data",
+            "Review the findings at month 3"
+          ]
+        }
+      ]
+    },
+    "measures": {
+      "description": "Follow the sampled answer from product mention to a tested buying flow. Agree the target and collection method for each measure."
+    }
+  },
+  "agenciesPage": {
+    "challenges": {
+      "description": "Turn the client question into a product check, a verified change and a clear comparison.",
+      "details": "Explore the client questions"
+    },
+    "tracks": {
+      "description": "Choose the work you bring to the relationship. Scope and commercial terms are agreed before resale or referral.",
+      "label": "Partner tracks",
+      "pathLabel": "What the collaboration involves",
+      "paths": [
+        [
+          "Client catalog",
+          "Product checks",
+          "Verified changes"
+        ],
+        [
+          "Your product",
+          "Documented interfaces",
+          "Discovery and onboarding"
+        ],
+        [
+          "Your audience",
+          "AI commerce education",
+          "Partner conversation"
+        ]
+      ]
+    },
+    "access": {
+      "label": "Account ownership",
+      "single": "One owner, multiple stores",
+      "separate": "Separate client accounts",
+      "singleTitle": "One account holds its own stores.",
+      "singleDescription": "Stores can sit together when they belong to the same account owner.",
+      "separateTitle": "Each client controls its account.",
+      "separateDescription": "Separate owners keep separate accounts. Confirm the arrangement with each client before connecting.",
+      "owner": "Owner account",
+      "store": "Owned store",
+      "anotherStore": "Another owned store",
+      "firstClient": "Client A account",
+      "secondClient": "Client B account",
+      "firstStore": "Client A store",
+      "secondStore": "Client B store",
+      "boundary": "No delegated agency permissions or team seats"
+    },
+    "start": {
+      "description": "Bring your partner track, the client use case and the proposed account arrangement to the conversation.",
+      "items": [
+        "Choose your track",
+        "Confirm account ownership",
+        "Agree scope and terms"
+      ]
+    }
+  },
+  "sectorsIndexPage": {
+    "description": "Explore a buying question, then the facts your catalog needs to make clear.",
+    "question": "A shopper might ask",
+    "productData": "Facts to make explicit",
+    "attributeHint": "Open a field to see what it needs to say.",
+    "action": {
+      "primary": "Explore this sector"
+    }
+  },
+  "foodPage": {
+    "description": "Select a buying question to explore the source facts your team should inspect.",
+    "choose": "Choose a shopper question",
+    "facts": "Facts to inspect",
+    "source": "Start with the information on the pack.",
+    "allFacts": "Explore all six product-data checks"
+  },
+  "winePage": {
+    "explorer": {
+      "label": "Explore a buying question",
+      "question": "A shopper could ask",
+      "criteria": "What the question asks for",
+      "verify": "Facts to verify",
+      "entries": [
+        {
+          "id": "gift",
+          "label": "A gift",
+          "criteria": [
+            {
+              "label": "Style",
+              "value": "Smoky single malt"
+            },
+            {
+              "label": "Budget",
+              "value": "Under $80"
+            },
+            {
+              "label": "Occasion",
+              "value": "A gift"
+            }
+          ],
+          "verification": "Check cask or style details, the current price and shipping availability in the source listing."
+        },
+        {
+          "id": "ready",
+          "label": "Ready to drink",
+          "criteria": [
+            {
+              "label": "Wine",
+              "value": "Barolo"
+            },
+            {
+              "label": "Timing",
+              "value": "Ready to drink now"
+            },
+            {
+              "label": "Bottle facts",
+              "value": "Origin and vintage"
+            }
+          ],
+          "verification": "Check region and appellation alongside the stated vintage. Verify any drinking-window claim in the source listing."
+        },
+        {
+          "id": "cocktails",
+          "label": "For cocktails",
+          "criteria": [
+            {
+              "label": "Spirit",
+              "value": "Rum"
+            },
+            {
+              "label": "Preference",
+              "value": "Low sugar"
+            },
+            {
+              "label": "Occasion",
+              "value": "Cocktails"
+            }
+          ],
+          "verification": "Keep the low-sugar claim tied to source information your team can verify. Do not infer it from tasting prose."
+        }
+      ]
+    },
+    "attributes": {
+      "caption": "From bottle to product record",
+      "description": "Keep origin, style and availability readable alongside the bottle image."
+    },
+    "rules": {
+      "market": "Channel and country",
+      "age": "Age verification"
+    }
+  },
+  "beautyPage": {
+    "record": {
+      "label": "Explore a shopper question",
+      "tabs": [
+        "Moisturizer",
+        "Sun protection",
+        "Shampoo"
+      ],
+      "question": "The shopper’s brief",
+      "facts": "Product facts to review",
+      "claim": {
+        "title": "Finished-product claim",
+        "body": "Check the claim against evidence for the exact finished product."
+      }
+    },
+    "evidence": {
+      "label": "Keep the same facts from pack to listing",
+      "steps": [
+        "Product pack",
+        "Supporting evidence",
+        "Published description"
+      ],
+      "claims": "Claims and evidence",
+      "protection": "Tested protection"
+    }
+  },
+  "electronicsPage": {
+    "selectorLabel": "Explore a shopper question",
+    "scenarioLabels": [
+      "Earbuds",
+      "Laptops",
+      "Robot vacuums"
+    ],
+    "sourceLabel": "Source fields to inspect",
+    "inspectLabel": "Follow the question into the specifications.",
+    "mapLabel": "Review all six source fields",
+    "boundary": "A starting point for reviewing source facts, not a compatibility result."
+  },
+  "furniturePage": {
+    "introduction": "Connect the shopper’s space and practical needs to facts your team can verify.",
+    "widthLabel": "Width with units",
+    "depthLabel": "Depth with units",
+    "heightLabel": "Height with units",
+    "productLabel": "The exact product",
+    "diagramNote": "A relationship diagram, not a measured product or a fit result.",
+    "relationshipTitle": "A product has to fit more than a room.",
+    "relationships": [
+      {
+        "title": "Space and use",
+        "body": "Dimensions and capacity describe the product in readable, verifiable terms."
+      },
+      {
+        "title": "Material and finish",
+        "body": "Keep frame, upholstery and finish separate, including the selected variant."
+      },
+      {
+        "title": "Arrival and return",
+        "body": "Assembly, delivery and returns belong beside the product facts."
+      }
+    ],
+    "questionLabels": [
+      "Space and use",
+      "Material and capacity",
+      "Product suitability"
+    ],
+    "questionNotes": [
+      "Keep exact product measurements separate from illustrative photos.",
+      "Check the selected variant’s material, price and availability alongside its capacity.",
+      "Verify suitability for the exact product with the supplier. The illustration does not establish compatibility."
+    ],
+    "sourceLabel": "Verify at the source."
+  },
+  "fashionPage": {
+    "trail": {
+      "title": "Activity. Fit. Material.",
+      "description": "Open a shopper question to see which product facts your team should verify.",
+      "label": "Shopper questions and product facts",
+      "contexts": [
+        "Activity and weather",
+        "Width and sizing",
+        "Fiber and care"
+      ],
+      "facts": "Product facts to verify"
+    },
+    "rules": [
+      "Size by destination",
+      "Fiber composition",
+      "Environmental claims"
+    ]
+  },
+  "travelPage": {
+    "questions": {
+      "caption": "Every trip is an offer with conditions.",
+      "description": "The question changes. Dates, price basis and booking terms still need to be readable."
+    },
+    "attributes": {
+      "description": "Keep the facts that define the offer together, from available dates to the terms of a change."
+    },
+    "roadmap": {
+      "label": "Explore the travel pilot",
+      "diagram": "The information and handoff to review",
+      "boundary": "Scope boundary",
+      "stages": [
+        {
+          "id": "scope",
+          "label": "Agree scope",
+          "status": "Before the pilot",
+          "title": "One market. An agreed starting point.",
+          "description": "Confirm the language and data coverage before beginning. Start from the public pages and product data agreed with your team.",
+          "steps": [
+            {
+              "title": "One market",
+              "body": "Confirm language and data coverage."
+            },
+            {
+              "title": "Public pages",
+              "body": "Agree which offers to review."
+            },
+            {
+              "title": "Pilot scope",
+              "body": "Define the booking handoff question."
+            }
+          ],
+          "note": "A pilot begins with an agreed scope; this roadmap does not indicate a live booking integration."
+        },
+        {
+          "id": "baseline",
+          "label": "Review offers",
+          "status": "Public-data baseline",
+          "title": "Read the offer before the booking flow.",
+          "description": "Review the information on pages you control and agreed product data. Your team verifies travel attributes; ecentic does not invent missing facts.",
+          "steps": [
+            {
+              "title": "Public site",
+              "body": "Start from agreed product pages."
+            },
+            {
+              "title": "Supported feed",
+              "body": "Use the defined importer field mapping."
+            },
+            {
+              "title": "Offer facts",
+              "body": "Verify dates, prices, inclusions and terms."
+            }
+          ],
+          "note": "The baseline needs no booking-engine login, customer data or code on your site."
+        },
+        {
+          "id": "handoff",
+          "label": "Review handoff",
+          "status": "Separately agreed scope",
+          "title": "Keep the booking boundary explicit.",
+          "description": "Examine the agreed path from public information to a booking flow. Later access or integration work needs a separate scope.",
+          "steps": [
+            {
+              "title": "Public offer",
+              "body": "Keep dates, prices and terms clear."
+            },
+            {
+              "title": "Channel or provider",
+              "body": "Booking behavior depends on the channel and flow."
+            },
+            {
+              "title": "Booking handoff",
+              "body": "Review the agreed destination and next step."
+            }
+          ],
+          "note": "No automated booking integration is promised, and an assistant may link to a booking platform instead of your site."
+        }
+      ]
+    }
+  },
+  "healthPage": {
+    "reader": {
+      "description": "Open a shopper question to review the product facts behind it.",
+      "label": "Shopper questions and product facts",
+      "facts": "Product facts for your team to verify",
+      "allFacts": "See every product attribute"
+    },
+    "relationship": {
+      "title": "Two checks, one product description.",
+      "label": "Manufacturer facts and product, channel and country conditions both inform a supported product description.",
+      "inputs": [
+        {
+          "title": "Manufacturer facts",
+          "description": "Ingredients, intended use and instructions."
+        },
+        {
+          "title": "Product, channel and country",
+          "description": "Evidence and eligibility conditions."
+        }
+      ],
+      "output": "Supported product information",
+      "description": "Keep the description tied to verified source facts."
+    },
+    "rules": [
+      "Nutrition and health claims",
+      "Channel eligibility"
+    ],
+    "role": "ecentic’s role"
+  },
+  "resourcesPage": {
+    "navigationLabel": "Explore resources",
+    "publicEndpoints": "Public endpoints"
+  },
+  "partnersPage": {
+    "tracks": {
+      "description": "Bring your services, technology or audience to the stores you already work with."
+    },
+    "preparation": {
+      "title": "Prepare your application",
+      "description": "Have these details in mind before you fill in the form. Check them off as you go.",
+      "progress": [
+        "3 details to prepare",
+        "1 of 3 details ready",
+        "2 of 3 details ready",
+        "Ready to fill in the form"
+      ],
+      "items": [
+        {
+          "title": "Your company and website",
+          "description": "Bring your company name, website and the best work email for the conversation."
+        },
+        {
+          "title": "Your partnership track",
+          "description": "Choose agencies and resellers, technology partners, or creators and affiliates."
+        },
+        {
+          "title": "The stores you work with",
+          "description": "Have an idea of how many stores you serve and what you would like to do together."
+        }
+      ],
+      "action": {
+        "primary": "Go to the application"
+      },
+      "note": "This checklist is optional. Add your details in the form below."
+    }
+  },
+  "blogIndexPage": {
+    "featured": "Featured read",
+    "latest": "New in the journal",
+    "archive": "Find your next read",
+    "archiveDescription": "Browse practical guides and research for the next step in your commerce strategy.",
+    "topics": "Explore a topic",
+    "topicsDescription": "Follow the questions behind the articles.",
+    "collection": "Collection",
+    "order": "Reading order",
+    "all": "All articles",
+    "editorial": "Editorial guides",
+    "recommended": "Recommended",
+    "newest": "Newest first",
+    "articles": "Articles",
+    "page": "Page",
+    "empty": "No articles in this collection yet.",
+    "loading": "Loading articles",
+    "action": {
+      "primary": "Browse all articles",
+      "secondary": "Previous",
+      "tertiary": "Next",
+      "quaternary": "Explore resources"
+    }
+  },
+  "blogArticlePage": {
+    "contents": "In this article",
+    "introduction": "Introduction",
+    "takeaways": "Key takeaways",
+    "byline": "By ecentic",
+    "topics": "Explore these topics",
+    "action": {
+      "primary": "Back to top"
+    }
+  },
+  "blogTagPage": {
+    "collection": "Reading collection",
+    "description": "Guides and research on {topic}, from the ecentic journal.",
+    "latestArticle": "Start with the latest",
+    "takeaways": "Inside this article",
+    "moreArticles": "Continue reading",
+    "relatedTopics": "Follow a related topic",
+    "relatedDescription": "Explore the subjects connected to this collection."
+  },
+  "demoPage": {
+    "agenda": {
+      "description": "Select a topic to preview the conversation.",
+      "bringLabel": "Bring to the conversation",
+      "exploreLabel": "We’ll explore",
+      "items": [
+        {
+          "bring": "One category and a competitor",
+          "explore": "One or two of your products, compared live."
+        },
+        {
+          "bring": "A product you want to understand",
+          "explore": "The assistant’s reasons and the information it used."
+        },
+        {
+          "bring": "Your catalog priorities",
+          "explore": "Listing changes to review with your team."
+        },
+        {
+          "bring": "The team and category in scope",
+          "explore": "A baseline and readout to agree together."
+        }
+      ],
+      "action": {
+        "primary": "Prepare your demo"
+      }
+    }
+  },
+  "enterpriseSecurityDesign": {
+    "accessTitle": "Import and publish",
+    "permissionsTitle": "Connection permissions",
+    "trackingTitle": "Storefront visit measurement",
+    "checkoutTitle": "Agent checkout",
+    "routingTitle": "How model requests are routed",
+    "catalogLabel": "Connected store catalog",
+    "modelLabel": "AI providers",
+    "outputLabel": "Comparisons and listing fixes"
+  },
+  "toolsPage": {
+    "description": "Start with the question you want to answer. Select a tool to see what it needs and what its result means.",
+    "inputLabel": "What you need",
+    "accessLabel": "Access",
+    "resultLabel": "How to read the result",
+    "tools": {
+      "score": {
+        "purpose": "Evaluate your catalog",
+        "input": "Your store, products and competitors",
+        "access": "Free scan · Account required",
+        "limit": "These are simulated product comparisons. They do not report live rankings inside AI shopping apps.",
+        "steps": [
+          "Your products",
+          "AI comparison",
+          "Score & reasoning"
+        ]
+      },
+      "validator": {
+        "purpose": "Inspect a checkout profile",
+        "input": "Your store’s URL",
+        "access": "Free · No account required",
+        "limit": "A valid published profile does not confirm that a buyer can complete checkout. Use the playground to test store tools.",
+        "steps": [
+          "Store URL",
+          "Published profile",
+          "Structure checks"
+        ]
+      },
+      "playground": {
+        "purpose": "Try a shopping journey",
+        "input": "A store exposing agent shopping tools",
+        "access": "10 free messages · No account required",
+        "limit": "The agent calls store tools. Use a staging store for checkout tests.",
+        "steps": [
+          "Search",
+          "Cart",
+          "Checkout"
+        ]
+      },
+      "scanner": {
+        "purpose": "Find browser-tool evidence",
+        "input": "A public storefront URL",
+        "access": "Free · No account required",
+        "limit": "Inspects a small sample of pages and scripts. It does not run JavaScript, submit forms or verify that browser tools work.",
+        "steps": [
+          "Storefront source",
+          "Tools & forms",
+          "Evidence & limits"
+        ]
+      },
+      "compare": {
+        "purpose": "Compare two listings",
+        "input": "Two product URLs",
+        "access": "Free product comparison",
+        "limit": "Each model makes a simulated choice using the compared listings. This is not a live shopping placement report.",
+        "steps": [
+          "Two listings",
+          "Four AI models",
+          "Choice & reasoning"
+        ]
+      }
+    }
+  },
+  "docsControls": {
+    "snippet": "Code example",
+    "action": {
+      "primary": "Copy"
+    },
+    "copied": "Copied",
+    "failed": "Copy failed. Select the code to copy it."
+  },
+  "docsAuthenticationPage": {
+    "paths": {
+      "title": "Choose a request path",
+      "description": "Explore the API first. Add a bearer key when your client acts on a merchant account.",
+      "label": "Request authentication",
+      "open": "Open discovery",
+      "authenticated": "Merchant account",
+      "client": "Your client",
+      "noCredential": "No credential required",
+      "bearer": "Bearer key required",
+      "publicDestination": "Discovery + sandbox",
+      "protectedDestination": "REST + MCP",
+      "details": "How this path works"
+    },
+    "keySteps": [
+      "Create an account",
+      "Mint a key",
+      "Save it once"
+    ],
+    "recovery": {
+      "label": "Authentication discovery after a 401",
+      "response": "Missing or invalid credential",
+      "resource": "Protected resource metadata",
+      "authorization": "Authorization server metadata"
+    }
+  },
+  "docsIndexPage": {
+    "navigation": "Explore the documentation",
+    "quickstart": {
+      "label": "Choose a first request",
+      "tabs": [
+        "API",
+        "Protocols",
+        "Plans"
+      ],
+      "request": "Request",
+      "response": "Response",
+      "access": "No API key required",
+      "action": {
+        "primary": "Open JSON"
+      }
+    },
+    "contracts": [
+      "application/problem+json",
+      "RateLimit / Retry-After",
+      "Deprecation / Sunset"
+    ]
+  },
+  "docsApiPage": {
+    "surfaces": "Browse by surface",
+    "all": "All endpoints",
+    "groups": {
+      "discovery": "Discovery",
+      "sandbox": "Sandbox",
+      "catalog": "Catalogs",
+      "mcp": "MCP",
+      "commerce": "Commerce"
+    },
+    "sourceTitle": "One source of truth.",
+    "sourceBody": "Open an endpoint to read the exact contract. Follow its schema links to inspect the shared data shapes.",
+    "operations": "Operations",
+    "schemas": "Shared schemas",
+    "responses": "Response codes",
+    "references": "Referenced schemas",
+    "schemaBody": "These definitions are shared across operations. Each name has a permanent link, and every definition can be copied as JSON.",
+    "permalink": "Link to this definition",
+    "navigation": "Reference sections",
+    "definition": "Source definition · JSON",
+    "securityTitle": "Declared per operation",
+    "securityBody": "Inspect the security field on each endpoint before choosing credentials. The available scheme is defined here."
+  },
+  "docsErrorsPage": {
+    "example": "Example response",
+    "fields": "Read the response",
+    "fieldItems": [
+      {
+        "name": "type",
+        "description": "The URI naming the problem, anchored in this reference."
+      },
+      {
+        "name": "code",
+        "description": "The stable identifier your client can branch on."
+      },
+      {
+        "name": "title",
+        "description": "A short human-readable summary."
+      },
+      {
+        "name": "status",
+        "description": "The HTTP status, repeated in the body."
+      },
+      {
+        "name": "detail",
+        "description": "What went wrong on this particular request."
+      },
+      {
+        "name": "resolution",
+        "description": "The next step to resolve the failure."
+      },
+      {
+        "name": "documentation",
+        "description": "The reference page for the response."
+      },
+      {
+        "name": "instance",
+        "description": "The request path that produced it, when known."
+      }
+    ],
+    "catalogue": {
+      "label": "Published problem codes",
+      "description": "Open a code to read its resolution. Every code has a permanent link.",
+      "permalink": "Permanent link to",
+      "resolution": "How to resolve",
+      "action": {
+        "primary": "Expand all",
+        "secondary": "Collapse all"
+      }
+    }
+  },
+  "docsMcpPage": {
+    "transport": {
+      "label": "Connection reference",
+      "endpoint": "Primary endpoint",
+      "alias": "Same handler",
+      "details": [
+        "Endpoint paths",
+        "Requests and responses",
+        "Session behavior"
+      ]
+    },
+    "handshake": {
+      "label": "Explore the handshake",
+      "tabs": [
+        "Initialize",
+        "Notify"
+      ],
+      "request": "Client sends",
+      "response": "Server returns",
+      "result": [
+        "Negotiated protocol + server capabilities",
+        "Accepted with an empty body"
+      ],
+      "example": "Complete handshake example"
+    },
+    "authentication": {
+      "credential": "Send a bearer key",
+      "create": "Create your credential"
+    },
+    "errors": {
+      "labels": [
+        "JSON-RPC error",
+        "Transport error",
+        "Authentication exception"
+      ],
+      "formats": [
+        "error.code",
+        "application/problem+json",
+        "WWW-Authenticate"
+      ]
+    }
+  },
+  "docsLimitsPage": {
+    "requests": "requests",
+    "window": "per {seconds} seconds",
+    "publicScope": "Every /api/v1 endpoint",
+    "policySource": "Policies enforced by the API",
+    "headerExample": "Response header examples",
+    "headerHint": "Select a header to read its meaning. These values illustrate a response; they are not a live counter.",
+    "windowTitle": "One boundary, two readings",
+    "remaining": "Requests remaining",
+    "reset": "Seconds until reset",
+    "windowHint": "In this example, both header formats describe the same window.",
+    "responseExample": "Example: 429 response",
+    "retryTitle": "Wait, then retry",
+    "retryLabel": "Seconds to wait in this example",
+    "retryHint": "Read Retry-After on the actual response. A request made before that time is counted and rejected again."
+  },
+  "instructionsPage": {
+    "navigation": "On this page",
+    "source": "Read and copy the canonical English source"
+  },
+  "docsVersioningPage": {
+    "current": "Current API version",
+    "request": "Pinned request and response version",
+    "additive": "Add to the same version",
+    "breaking": "Start a new version path",
+    "notice": "Minimum notice",
+    "days": "days",
+    "example": "Deprecation header format",
+    "exampleHint": "Illustrative header values, not a retirement announcement.",
+    "apiContract": "ecentic API contract",
+    "protocolContract": "Discovery protocol contract",
+    "protocolVersion": "Read the version inside the document",
+    "lifecycle": {
+      "label": "Deprecation response signals",
+      "hint": "Select a header to see what it tells your client.",
+      "items": [
+        {
+          "header": "Deprecation",
+          "title": "A version is deprecated",
+          "description": "Every response from a deprecated version carries this header. It announces the deprecation using RFC 9745.",
+          "meaning": "Deprecation announced"
+        },
+        {
+          "header": "Sunset",
+          "title": "A removal date is fixed",
+          "description": "Responses also carry this header once a removal date is fixed. RFC 8594 defines the date when the version stops answering.",
+          "meaning": "Removal date announced"
+        },
+        {
+          "header": "Link",
+          "title": "The replacement is identified",
+          "description": "Alongside the removal date, a Link with rel=\"successor-version\" points your client to the replacement version.",
+          "meaning": "Replacement version linked"
+        }
+      ]
+    }
+  },
+  "webmcpPage": {
+    "scope": {
+      "title": "A closer look at storefront source",
+      "description": "Follow the declarations, inspect their metadata, then review what the browser still needs to verify.",
+      "pages": "Public pages, at most",
+      "scripts": "External scripts or modules, at most",
+      "runtime": "Browser registration and execution remain unverified."
+    },
+    "checks": {
+      "title": "Know what each check tells you.",
+      "description": "Seven checks separate source findings, improvement opportunities, and the evidence that still needs a browser.",
+      "workflowsTitle": "Across the shopping journey",
+      "workflowsNote": "These eight workflows are useful review areas. A store does not need to expose every one through WebMCP.",
+      "items": {
+        "discovery": "Named declarations are recovered from HTML forms or registration code. An API reference alone leaves the available tool inventory unresolved.",
+        "metadata": "Review tool names, descriptions, and possible duplicate names on the same page. Short descriptions are a quality suggestion, not a protocol failure.",
+        "parameters": "Inspect recoverable input names, types, descriptions, and required state. A parameterless tool may omit its input schema; dynamic schemas can remain unresolved.",
+        "implementation": "The source can show a declared handler or form operation. The scanner does not run the handler, submit the form, or confirm its behavior.",
+        "forms": "Public forms can reveal adoption opportunities. Check existing tools first and preserve the form’s validation and consent; sensitive flows need manual review.",
+        "coverage": "The report keeps blocked resources, failures, and scan limits visible. Unvisited pages, authenticated flows, and runtime-generated code can fall outside the inspected source.",
+        "runtime": "This check remains unknown. Confirm native registration and behavior separately in a browser with WebMCP support; source findings cannot certify agent usage."
+      }
+    }
+  },
+  "playgroundPage": {
+    "guide": {
+      "title": "From discovery to checkout",
+      "description": "Explore the calls behind a shopping session.",
+      "discovery": {
+        "title": "Discover the store",
+        "description": "Read the store's UCP profile, then select its shopping endpoint. The playground prefers MCP and falls back to REST."
+      },
+      "action": {
+        "primary": "Open the playground",
+        "secondary": "Check a UCP profile"
+      }
+    },
+    "session": {
+      "title": "Live shopping session",
+      "description": "Inspect tool calls and responses as the agent shops."
+    },
+    "faq": {
+      "title": "Before you connect"
+    }
+  },
+  "validatorPage": {
+    "discoveryRequest": "Documented discovery request"
+  },
+  "changelogPage": {
+    "archive": "Browse release history",
+    "action": {
+      "primary": "Show all updates",
+      "secondary": "Show latest month"
+    }
+  },
+  "comparisonGuidePage": {
+    "navigation": {
+      "label": "In this guide",
+      "guide": "Categories",
+      "tools": "Compare tools",
+      "bottleneck": "Find your bottleneck",
+      "related": "Further reading",
+      "faq": "Questions"
+    },
+    "views": {
+      "label": "Comparison view",
+      "table": "Compare all tools",
+      "tool": "Read by tool"
+    }
+  },
+  "privacyPage": {
+    "contents": "Contents",
+    "action": {
+      "primary": "Read the policy",
+      "secondary": "Back to contents"
     }
   }
 }

@@ -2,7 +2,7 @@ import { unwrapResult } from "@zenncore/utils";
 import { readingTimeMinutes } from "babylovegrowth-next-js-blog";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getLocale, getTranslations } from "next-intl/server";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
 import type { Locale } from "@/i18n/routing";
@@ -21,14 +21,9 @@ import {
   seo,
 } from "@/lib/seo";
 import * as Blog from "@/server/app/blog";
-import {
-  EditorialFooter,
-  EditorialLayout,
-  EditorialRichText,
-  EditorialSplitSection,
-} from "../_components/editorial-page";
-import { FaqSection } from "../_components/faq-section";
-import { HtmlArticleSections } from "../_components/html-article-sections";
+import { EditorialRichText } from "../_components/editorial-page";
+import { ArticleLayout } from "./_components/article-layout";
+import { ArticleHtml, ArticleSection } from "./_components/article-section";
 
 const normalize = (value: Date | string) => {
   if (value instanceof Date) return value;
@@ -44,10 +39,6 @@ const formatBlogDate = (value: Date | string, locale: Locale) =>
   }).format(normalize(value));
 
 const toBlogIsoDate = (value: Date | string) => normalize(value).toISOString();
-
-/** Left-rail index continuing a section list that may or may not open at `00`. */
-const nextSectionNumber = (sections: readonly { number: string }[]) =>
-  String(Number(sections.at(-1)?.number ?? "00") + 1).padStart(2, "0");
 
 const languageAlternates = (slug: string) => ({
   en: `/blog/${slug}`,
@@ -137,7 +128,10 @@ export default async ({ params }: BlogPageProps) => {
   const { slug } = await params;
   const locale = await getLocale();
 
-  const translate = await getTranslations("blog");
+  const [translate, { blogArticlePage }] = await Promise.all([
+    getTranslations("blog"),
+    getMessages(),
+  ]);
   // Static / ISR — locale rows are written by the BLG webhook (or editorial);
   // `revalidateTag("blog")` regenerates these pages. No live BLG here.
   const resolved = await unwrapResult(Blog.resolve({ slug, locale }));
@@ -198,6 +192,27 @@ export default async ({ params }: BlogPageProps) => {
   ]);
 
   const structuredData = [articleSchema, breadcrumbSchema, ...faqSchema];
+  const actions = {
+    primary: translate("action.tertiary"),
+    secondary: translate("action.secondary"),
+    note: translate("description"),
+  };
+  const faq = post.faqs.length > 0 && (
+    <ArticleSection id="article-faq" title={translate("faq.title")}>
+      <dl className="flex flex-col gap-8">
+        {post.faqs.map((entry) => (
+          <div key={entry.question} className="flex flex-col gap-4">
+            <dt className="font-medium text-foreground text-lg leading-snug">
+              {entry.question}
+            </dt>
+            <dd>
+              <EditorialRichText content={entry.answer} />
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </ArticleSection>
+  );
 
   if (post.contentHtml) {
     const minutes = Math.max(1, readingTimeMinutes(post.contentHtml));
@@ -209,9 +224,8 @@ export default async ({ params }: BlogPageProps) => {
     const showsFaq =
       post.faqs.length > 0 && !hasFaqSection(sections, post.locale);
     return (
-      <EditorialLayout
-        compact
-        eyebrow={post.category}
+      <ArticleLayout
+        category={post.category}
         title={post.title}
         meta={
           <p>
@@ -220,22 +234,30 @@ export default async ({ params }: BlogPageProps) => {
           </p>
         }
         description={post.description}
+        contents={[
+          ...sections.map((section, index) => ({
+            id: `article-section-${index}`,
+            title: section.title,
+          })),
+          ...(showsFaq
+            ? [{ id: "article-faq", title: translate("faq.title") }]
+            : []),
+        ]}
+        keywords={post.tags}
+        copy={blogArticlePage}
+        actions={actions}
       >
         <JsonLd schemas={structuredData} />
-        <HtmlArticleSections sections={sections} keywords={[...post.tags]} />
-        {showsFaq && (
-          <FaqSection
-            number={nextSectionNumber(sections)}
-            title={translate("faq.title")}
-            faqs={post.faqs}
-          />
-        )}
-        <EditorialFooter
-          primary={{ href: "/sign-up", label: translate("action.tertiary") }}
-          secondary={{ href: "/blog", label: translate("action.secondary") }}
-          note={translate("description")}
-        />
-      </EditorialLayout>
+        {sections.map((section, index) => (
+          <ArticleSection
+            id={`article-section-${index}`}
+            key={`${section.number}-${section.title}`}
+          >
+            <ArticleHtml html={section.html} />
+          </ArticleSection>
+        ))}
+        {showsFaq && faq}
+      </ArticleLayout>
     );
   }
 
@@ -248,9 +270,8 @@ export default async ({ params }: BlogPageProps) => {
   );
 
   return (
-    <EditorialLayout
-      compact
-      eyebrow={post.category}
+    <ArticleLayout
+      category={post.category}
       title={post.title}
       meta={
         <p>
@@ -258,76 +279,61 @@ export default async ({ params }: BlogPageProps) => {
           {post.readTime}
         </p>
       }
-      description={post.introduction}
+      description={post.description}
+      thumbnail={thumbnail}
+      contents={[
+        ...(post.introduction
+          ? [
+              {
+                id: "article-introduction",
+                title: blogArticlePage.introduction,
+              },
+            ]
+          : []),
+        ...(post.takeaways.length > 0
+          ? [{ id: "article-takeaways", title: blogArticlePage.takeaways }]
+          : []),
+        ...sections.map((section, index) => ({
+          id: `article-section-${index}`,
+          title: section.title,
+        })),
+        ...(post.faqs.length > 0
+          ? [{ id: "article-faq", title: translate("faq.title") }]
+          : []),
+      ]}
+      keywords={post.tags}
+      copy={blogArticlePage}
+      actions={actions}
     >
       <JsonLd schemas={structuredData} />
-
-      <EditorialSplitSection
-        left={
-          <>
-            <span className="font-normal text-2xl text-primary">00</span>
-            <h2 className="text-4xl text-foreground leading-snug">
-              Key takeaways
-            </h2>
-          </>
-        }
-        right={
-          <div className="flex flex-col gap-5">
-            <h2 className="font-medium text-2xl text-foreground leading-snug md:text-3xl">
-              Key takeaways
-            </h2>
-            <ul className="flex flex-col gap-3">
-              {post.takeaways.map((takeaway) => (
-                <li
-                  key={takeaway}
-                  className="flex gap-3 text-foreground-dimmed leading-relaxed"
-                >
-                  <span className="mt-[0.45rem] size-1.5 shrink-0 rounded-full bg-primary" />
-                  <span>{takeaway}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        }
-      />
-
-      {sections.map((section) => (
-        <EditorialSplitSection
-          key={section.number}
-          left={
-            <>
-              <span className="font-normal text-2xl text-primary">
-                {section.number}
-              </span>
-              <h2 className="text-4xl text-foreground leading-snug">
-                {section.title}
-              </h2>
-            </>
-          }
-          right={
-            <div className="flex flex-col gap-5">
-              <h2 className="font-medium text-2xl text-foreground leading-snug md:text-3xl">
-                {section.title}
-              </h2>
-              <EditorialRichText content={section.content} />
-            </div>
-          }
-        />
-      ))}
-
-      {post.faqs.length > 0 && (
-        <FaqSection
-          number={nextSectionNumber(sections)}
-          title={translate("faq.title")}
-          faqs={post.faqs}
-        />
+      {post.introduction && (
+        <ArticleSection id="article-introduction">
+          <EditorialRichText content={post.introduction} />
+        </ArticleSection>
       )}
-
-      <EditorialFooter
-        primary={{ href: "/sign-up", label: translate("action.tertiary") }}
-        secondary={{ href: "/blog", label: translate("action.secondary") }}
-        note={translate("description")}
-      />
-    </EditorialLayout>
+      {post.takeaways.length > 0 && (
+        <ArticleSection
+          id="article-takeaways"
+          title={blogArticlePage.takeaways}
+          summary
+        >
+          <ul className="flex list-disc flex-col gap-4 pl-4 marker:text-primary-text">
+            {post.takeaways.map((takeaway) => (
+              <li key={takeaway}>{takeaway}</li>
+            ))}
+          </ul>
+        </ArticleSection>
+      )}
+      {sections.map((section, index) => (
+        <ArticleSection
+          id={`article-section-${index}`}
+          key={section.number}
+          title={section.title}
+        >
+          <EditorialRichText content={section.content} />
+        </ArticleSection>
+      ))}
+      {faq}
+    </ArticleLayout>
   );
 };

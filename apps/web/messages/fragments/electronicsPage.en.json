@@ -1,0 +1,10 @@
+{
+  "electronicsPage": {
+    "selectorLabel": "Explore a shopper question",
+    "scenarioLabels": ["Earbuds", "Laptops", "Robot vacuums"],
+    "sourceLabel": "Source fields to inspect",
+    "inspectLabel": "Follow the question into the specifications.",
+    "mapLabel": "Review all six source fields",
+    "boundary": "A starting point for reviewing source facts, not a compatibility result."
+  }
+}

@@ -1,3 +1,4 @@
+import { FileIcon } from "@zenncore/icons";
 import { notFound } from "next/navigation";
 import { getMessages } from "next-intl/server";
 import {
@@ -13,6 +14,7 @@ import {
   IntegrationLedger,
   IntegrationSources,
 } from "../_components/integration-content";
+import { pageBodies } from "../_components/page-bodies";
 
 type Props = { params: Promise<{ integration: string }> };
 export const generateStaticParams = () =>
@@ -35,31 +37,46 @@ export default async ({ params }: Props) => {
   if (!integration) notFound();
   const { enterpriseIntegrations: copy } = await getMessages();
   const content = copy.pages[integration.key];
+  const Body = pageBodies[integration.key];
   return (
     <MarketingPage
-      content={{ ...content, faqs: undefined }}
+      content={{ ...content, sections: [], faqs: undefined }}
       path={`/integrations/${integration.slug}`}
-      heroMeta={
-        <div className="flex flex-wrap items-center gap-4">
-          <span className="inline-flex min-h-12 items-center rounded-md bg-background-rich px-4 py-2">
-            <ProviderLogo
-              provider={integration.key}
-              decorative
-              fallback="none"
-              className="h-8 max-w-32"
-            />
-          </span>
-          <MarketingStatus status="live">{copy.statuses.live}</MarketingStatus>
-        </div>
+      heroIdentity={
+        integration.key === "productFeeds" ? (
+          <FileIcon
+            aria-hidden
+            className="size-28 text-background-rich sm:size-36"
+          />
+        ) : (
+          <ProviderLogo
+            provider={integration.key}
+            decorative
+            fallback="none"
+            className="h-28 w-auto max-w-[min(70vw,400px)] rounded-none object-left sm:h-36"
+          />
+        )
       }
-      sectionChildren={{
-        access: <IntegrationLedger rows={content.ledger} copy={copy} />,
-        "export-platforms":
-          integration.key === "productFeeds" ? (
-            <FeedExporters copy={copy} />
-          ) : undefined,
-      }}
+      heroMeta={
+        integration.key === "shopify" ? undefined : (
+          <div className="flex flex-wrap items-center gap-4">
+            <MarketingStatus status="live">
+              {copy.statuses.live}
+            </MarketingStatus>
+          </div>
+        )
+      }
     >
+      <Body
+        sections={content.sections}
+        sectionChildren={{
+          access: <IntegrationLedger rows={content.ledger} copy={copy} />,
+          "export-platforms":
+            integration.key === "productFeeds" ? (
+              <FeedExporters copy={copy} />
+            ) : undefined,
+        }}
+      />
       <MarketingFaq title={copy.faqTitle} items={content.faqs} />
       <IntegrationSources pageKey={integration.key} copy={copy} />
     </MarketingPage>

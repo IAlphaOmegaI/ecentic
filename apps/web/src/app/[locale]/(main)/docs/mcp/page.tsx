@@ -3,6 +3,7 @@ import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
+import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { localizePath } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
 import { DOCUMENTED_MCP_TOOLS } from "@/lib/mcp-docs";
@@ -17,9 +18,11 @@ import {
   ContentPageFooter,
   ContentPageLayout,
   ContentPageRichText,
-  ContentPageSection,
 } from "../../_components/content";
 import { DocsCode, DocsTable } from "../_components/docs";
+import { McpHandshake } from "./_components/mcp-handshake";
+import { McpSection } from "./_components/mcp-section";
+import { McpTransport } from "./_components/mcp-transport";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const locale = await getLocale();
@@ -44,6 +47,7 @@ export default async () => {
   const translateDocs = await getTranslations("docs");
   const messages = await getMessages();
   const content = messages.docs.mcpPage;
+  const copy = messages.docsMcpPage;
 
   return (
     <ContentPageLayout
@@ -88,44 +92,93 @@ export default async () => {
         ]}
       />
 
-      <ContentPageSection
+      <McpSection
+        id="connect"
         number={translate("connect.number")}
         title={translate("connect.title")}
         description={translate("connect.description")}
       >
-        <div className="flex flex-col gap-6">
-          <DocsCode label="POST https://ecentic.ai/mcp">
-            {`Content-Type: application/json
+        <div className="grid gap-px bg-accent-foreground md:grid-cols-[4fr_7fr]">
+          <div className="flex min-w-0 flex-col justify-between gap-8 bg-background-dimmed p-8 max-sm:p-4">
+            <div>
+              <p className="font-medium text-foreground">
+                {copy.transport.label}
+              </p>
+              <div className="mt-4 h-44 text-primary">
+                <EvolvingAscii artwork="console" />
+              </div>
+            </div>
+            <dl className="grid gap-6">
+              <div>
+                <dt className="text-foreground-dimmed text-sm">
+                  {copy.transport.endpoint}
+                </dt>
+                <dd className="wrap-anywhere mt-2 font-mono text-foreground text-sm">
+                  POST https://ecentic.ai/mcp
+                </dd>
+              </div>
+              <div>
+                <dt className="text-foreground-dimmed text-sm">
+                  {copy.transport.alias}
+                </dt>
+                <dd className="wrap-anywhere mt-2 font-mono text-foreground text-sm">
+                  POST https://ecentic.ai/api/mcp
+                </dd>
+              </div>
+            </dl>
+          </div>
+          <div className="flex min-w-0 flex-col gap-6 bg-background p-8 max-sm:p-4">
+            <DocsCode label="POST https://ecentic.ai/mcp">
+              {`Content-Type: application/json
 Accept: application/json, text/event-stream
 
 {"jsonrpc":"2.0","id":1,"method":"tools/list"}`}
-          </DocsCode>
-          <ContentPageRichText content={translate("connect.body")} />
+            </DocsCode>
+            <McpTransport
+              labels={copy.transport.details}
+              details={content.connect.body
+                .split(/\n\n+/)
+                .map((paragraph) => (
+                  <ContentPageRichText key={paragraph} content={paragraph} />
+                ))}
+            />
+          </div>
         </div>
-      </ContentPageSection>
+      </McpSection>
 
-      <ContentPageSection
+      <McpSection
+        id="handshake"
         number={translate("handshake.number")}
         title={translate("handshake.title")}
         description={translate("handshake.description")}
         gutter
       >
-        <div className="flex flex-col gap-6">
-          <DocsCode label={translate("handshake.supported")}>
-            {Utils.protocol.supportedVersions.join(", ")}
-          </DocsCode>
-          <ContentPageRichText content={translate("handshake.body")} />
-          <DocsCode>
-            {`→ {"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"${Utils.protocol.version}"}}
+        <McpHandshake
+          copy={copy.handshake}
+          details={content.handshake.body
+            .split(/\n\n+/)
+            .map((paragraph) => (
+              <ContentPageRichText key={paragraph} content={paragraph} />
+            ))}
+          example={
+            <DocsCode label={copy.handshake.example}>
+              {`→ {"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"${Utils.protocol.version}"}}
 ← 200 {"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"${Utils.protocol.version}", ...}}
 
 → {"jsonrpc":"2.0","method":"notifications/initialized"}
 ← 202 (no body)`}
+            </DocsCode>
+          }
+        />
+        <div className="border-accent-foreground border-t p-8 max-sm:p-4">
+          <DocsCode label={translate("handshake.supported")}>
+            {Utils.protocol.supportedVersions.join(", ")}
           </DocsCode>
         </div>
-      </ContentPageSection>
+      </McpSection>
 
-      <ContentPageSection
+      <McpSection
+        id="tools"
         number={translate("tools.number")}
         title={translate("tools.title")}
         description={translate("tools.description")}
@@ -144,41 +197,78 @@ Accept: application/json, text/event-stream
                 content: tool.authenticated
                   ? translate("tools.bearer")
                   : translate("tools.none"),
-                mono: true,
               },
               { content: translate(`tools.items.${tool.summary}`) },
             ],
           }))}
         />
-      </ContentPageSection>
+      </McpSection>
 
-      <ContentPageSection
+      <McpSection
+        id="authentication"
         number={translate("authentication.number")}
         title={translate("authentication.title")}
         description={translate("authentication.description")}
         gutter
       >
-        <div className="flex flex-col gap-6">
-          <DocsCode>{"Authorization: Bearer ecentic_sk_…"}</DocsCode>
-          <ContentPageRichText content={translate("authentication.body")} />
-          <Button
-            color="accent"
-            className="w-fit"
-            render={<Link href="/docs/authentication" />}
-          >
-            {translate("authentication.linkLabel")}
-            <ArrowRightIcon className="size-4" />
-          </Button>
+        <div className="grid gap-px bg-accent-foreground md:grid-cols-2">
+          {content.authentication.body
+            .split(/\n\n+/)
+            .map((paragraph, index) => (
+              <div
+                key={paragraph}
+                className="flex min-w-0 flex-col gap-6 bg-background-dimmed p-8 last:bg-background max-sm:p-4"
+              >
+                <h3 className="text-xl">
+                  {index === 0
+                    ? copy.authentication.credential
+                    : copy.authentication.create}
+                </h3>
+                {index === 0 && (
+                  <DocsCode>{"Authorization: Bearer ecentic_sk_…"}</DocsCode>
+                )}
+                <ContentPageRichText content={paragraph} />
+                {index === 1 && (
+                  <div className="mt-auto">
+                    <Button
+                      color="neutral"
+                      render={<Link href="/docs/authentication" />}
+                    >
+                      {translate("authentication.linkLabel")}
+                      <ArrowRightIcon className="size-4" />
+                    </Button>
+                  </div>
+                )}
+              </div>
+            ))}
         </div>
-      </ContentPageSection>
+      </McpSection>
 
-      <ContentPageSection
+      <McpSection
+        id="errors"
         number={translate("errors.number")}
         title={translate("errors.title")}
         description={translate("errors.description")}
       >
-        <ContentPageRichText content={translate("errors.body")} />
-      </ContentPageSection>
+        <div className="grid gap-px bg-accent-foreground">
+          {content.errors.body.split(/\n\n+/).map((paragraph, index) => (
+            <div
+              key={paragraph}
+              className="grid gap-px bg-accent-foreground md:grid-cols-[4fr_7fr]"
+            >
+              <div className="min-w-0 bg-background-dimmed p-8 max-sm:p-4">
+                <h3 className="text-xl">{copy.errors.labels[index]}</h3>
+                <p className="wrap-anywhere mt-4 font-mono text-foreground-dimmed text-xs">
+                  {copy.errors.formats[index]}
+                </p>
+              </div>
+              <div className="min-w-0 bg-background p-8 max-sm:p-4">
+                <ContentPageRichText content={paragraph} />
+              </div>
+            </div>
+          ))}
+        </div>
+      </McpSection>
 
       <ContentPageFooter
         note={translate("footer.note")}

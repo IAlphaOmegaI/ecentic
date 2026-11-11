@@ -1,0 +1,36 @@
+{
+  "furniturePage": {
+    "introduction": "Connect the shopper’s space and practical needs to facts your team can verify.",
+    "widthLabel": "Width with units",
+    "depthLabel": "Depth with units",
+    "heightLabel": "Height with units",
+    "productLabel": "The exact product",
+    "diagramNote": "A relationship diagram, not a measured product or a fit result.",
+    "relationshipTitle": "A product has to fit more than a room.",
+    "relationships": [
+      {
+        "title": "Space and use",
+        "body": "Dimensions and capacity describe the product in readable, verifiable terms."
+      },
+      {
+        "title": "Material and finish",
+        "body": "Keep frame, upholstery and finish separate, including the selected variant."
+      },
+      {
+        "title": "Arrival and return",
+        "body": "Assembly, delivery and returns belong beside the product facts."
+      }
+    ],
+    "questionLabels": [
+      "Space and use",
+      "Material and capacity",
+      "Product suitability"
+    ],
+    "questionNotes": [
+      "Keep exact product measurements separate from illustrative photos.",
+      "Check the selected variant’s material, price and availability alongside its capacity.",
+      "Verify suitability for the exact product with the supplier. The illustration does not establish compatibility."
+    ],
+    "sourceLabel": "Verify at the source."
+  }
+}

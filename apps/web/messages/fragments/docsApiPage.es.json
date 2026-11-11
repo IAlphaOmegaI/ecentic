@@ -1,0 +1,25 @@
+{
+  "docsApiPage": {
+    "surfaces": "Explorar por interfaz",
+    "all": "Todos los endpoints",
+    "groups": {
+      "discovery": "Descubrimiento",
+      "sandbox": "Sandbox",
+      "catalog": "Catálogos",
+      "mcp": "MCP",
+      "commerce": "Comercio"
+    },
+    "sourceTitle": "Una única fuente.",
+    "sourceBody": "Abre un endpoint para leer el contrato exacto. Sigue sus enlaces de esquema para consultar las estructuras de datos compartidas.",
+    "operations": "Operaciones",
+    "schemas": "Esquemas compartidos",
+    "responses": "Códigos de respuesta",
+    "references": "Esquemas referenciados",
+    "schemaBody": "Estas definiciones se comparten entre operaciones. Cada nombre tiene un enlace permanente y cada definición se puede copiar como JSON.",
+    "permalink": "Enlace a esta definición",
+    "navigation": "Secciones de la referencia",
+    "definition": "Definición original · JSON",
+    "securityTitle": "Declarado por operación",
+    "securityBody": "Consulta el campo security de cada endpoint antes de elegir las credenciales. El esquema disponible se define aquí."
+  }
+}

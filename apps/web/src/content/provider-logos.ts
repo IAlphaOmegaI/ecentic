@@ -75,15 +75,15 @@ const artwork = {
   },
   perplexity: {
     name: "Perplexity",
-    src: "/providers/perplexity.svg",
-    width: 270.0,
-    height: 270.0,
+    src: "/images/perplexity.svg",
+    width: 24,
+    height: 24,
   },
   amazon: {
     name: "Amazon",
-    src: "/providers/amazon.png",
-    width: 180,
-    height: 180,
+    src: "/images/amazon.svg",
+    width: 384.246,
+    height: 119.917,
   },
   stripeAcs: {
     name: "Stripe",

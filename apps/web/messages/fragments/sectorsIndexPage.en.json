@@ -1,0 +1,11 @@
+{
+  "sectorsIndexPage": {
+    "description": "Explore a buying question, then the facts your catalog needs to make clear.",
+    "question": "A shopper might ask",
+    "productData": "Facts to make explicit",
+    "attributeHint": "Open a field to see what it needs to say.",
+    "action": {
+      "primary": "Explore this sector"
+    }
+  }
+}

@@ -1,13 +1,17 @@
 import { getFormatter, getMessages, getTranslations } from "next-intl/server";
+import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { MarketingLead } from "@/components/marketing/lead";
+import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
 import {
-  MarketingPage,
-  MarketingSection,
-  marketingMetadata,
-} from "@/components/marketing/page";
-import { MarketingBand } from "@/components/marketing/primitives";
+  MarketingBand,
+  MarketingStatus,
+} from "@/components/marketing/primitives";
 import { integrationCounts } from "@/content/integrations";
-import { IntegrationWall } from "./_components/integration-content";
+import { SectionGutter } from "../dashboard/_components/grid";
+import {
+  IntegrationDirectory,
+  IntegrationImportFlow,
+} from "./_components/integration-directory";
 
 export const generateMetadata = async () => {
   const { enterpriseIntegrations } = await getMessages();
@@ -22,62 +26,119 @@ export default async () => {
     <MarketingPage
       content={copy.index}
       path="/integrations"
+      heroArtwork="console"
       heroChildren={
-        <div className="mt-8">
-          <p className="font-medium text-primary text-xl">
-            {translate("counter", {
-              live: formatter.number(integrationCounts.live),
-              feed: formatter.number(integrationCounts.feed),
-              soon: formatter.number(integrationCounts.soon),
-            })}
+        <div className="mt-10 border-background-rich/25 border-t pt-6">
+          <p className="flex flex-wrap gap-x-6 gap-y-2 font-medium text-background-rich text-xl max-sm:text-base">
+            <span className="sr-only">
+              {translate("counter", {
+                live: formatter.number(integrationCounts.live),
+                feed: formatter.number(integrationCounts.feed),
+                soon: formatter.number(integrationCounts.soon),
+              })}
+            </span>
+            {(["live", "feed", "soon"] as const).map((status) => (
+              <span
+                key={status}
+                className="whitespace-nowrap"
+                aria-hidden="true"
+              >
+                {formatter.number(integrationCounts[status])}{" "}
+                {copy.statuses[status]}
+              </span>
+            ))}
           </p>
-          <p className="marketing-note text-(length:--text-sm) mt-6 text-foreground-dimmed">
-            {copy.labelNote}
-          </p>
-          <p className="mt-3 text-foreground-dimmed text-sm">
+          <p className="mt-3 max-w-[68ch] text-background-rich/80 text-sm">
             {copy.counterNote}
           </p>
         </div>
       }
     >
-      <IntegrationWall copy={copy} />
-      <MarketingSection
-        section={{
-          id: "labels",
-          title: copy.legend.title,
-          items: copy.legend.items,
-          columns: 2,
-        }}
-      />
-      <MarketingBand id="standards">
-        <div className="marketing-cell relative min-w-0 px-7 pt-24 pb-12 max-sm:px-4 max-sm:pt-14 max-sm:pb-8 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
-          <h2>{copy.standards.title}</h2>
-          <p>{copy.standards.description}</p>
+      <SectionGutter />
+      <IntegrationDirectory copy={copy} />
+      <SectionGutter />
+      <IntegrationImportFlow copy={copy} />
+      <SectionGutter />
+      <MarketingBand
+        id="labels"
+        className="[&>.marketing-rail>.marketing-guides]:hidden"
+      >
+        <div className="px-7 pt-14 pb-10 max-sm:px-4 max-sm:pt-10">
+          <h2>{copy.legend.title}</h2>
+          <p className="mt-4 max-w-[68ch] text-foreground-dimmed">
+            {copy.labelNote}
+          </p>
         </div>
-        <dl className="marketing-rows border-[var(--rail-color)] border-b [&>div]:grid [&>div]:grid-cols-[minmax(140px,1fr)_2fr] [&>div]:gap-7 [&>div]:border-[var(--rail-color)] [&>div]:border-t [&>div]:px-7 [&>div]:py-6 max-sm:[&>div]:grid-cols-1 max-sm:[&>div]:gap-2 max-sm:[&>div]:px-4 [&_dd]:m-0 [&_dt]:font-medium [&_dt]:text-foreground-rich">
-          {copy.standards.items.map((item) => (
-            <div key={item.title}>
-              <dt>{item.title}</dt>
-              <dd>{item.body}</dd>
+        <dl className="grid md:grid-cols-2">
+          {copy.legend.items.map((item, index) => (
+            <div
+              key={item.title}
+              className="border-accent-foreground border-t px-7 py-8 max-sm:px-4 md:odd:border-r"
+            >
+              <dt>
+                <MarketingStatus
+                  status={
+                    ["live", "feed", "simulated", "soon"][index] ?? "soon"
+                  }
+                >
+                  {item.title}
+                </MarketingStatus>
+              </dt>
+              <dd className="mt-4 max-w-[48ch] text-foreground-dimmed">
+                {item.body}
+              </dd>
             </div>
           ))}
         </dl>
       </MarketingBand>
+      <SectionGutter />
+      <MarketingBand
+        id="standards"
+        className="[&>.marketing-rail>.marketing-guides]:hidden"
+      >
+        <div className="px-7 pt-14 pb-10 max-sm:px-4 max-sm:pt-10">
+          <h2>{copy.standards.title}</h2>
+          <p className="mt-4 max-w-[66ch] text-foreground-dimmed">
+            {copy.standards.description}
+          </p>
+        </div>
+        <dl className="grid md:grid-cols-2">
+          {copy.standards.items.map((item) => (
+            <div
+              key={item.title}
+              className="border-accent-foreground border-t px-7 py-8 max-sm:px-4 md:odd:border-r"
+            >
+              <dt className="font-heading text-2xl text-primary-text tracking-tight">
+                {item.title}
+              </dt>
+              <dd className="mt-3 text-foreground-dimmed">{item.body}</dd>
+            </div>
+          ))}
+        </dl>
+      </MarketingBand>
+      <SectionGutter />
       <MarketingBand
         id="request"
-        className="marketing-field bg-background [&>.marketing-rail]:bg-background-dimmed [&_.marketing-note]:text-foreground"
+        className="[&>.marketing-rail>.marketing-guides]:hidden [&>.marketing-rail]:bg-background-dimmed [&_.marketing-note]:text-foreground"
       >
-        <div className="marketing-cell relative min-w-0 px-7 py-24 max-sm:px-4 max-sm:py-14 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
-          <h2>{copy.request.title}</h2>
-          <p className="marketing-lead mt-6 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
-            {copy.request.description}
-          </p>
-          <div className="mt-8">
-            <MarketingLead
-              kind="integration"
-              topic="integration-request"
-              title={copy.request.button}
-            />
+        <div className="grid md:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]">
+          <div className="relative min-w-0 px-7 py-16 max-sm:px-4 max-sm:py-10">
+            <h2>{copy.request.title}</h2>
+            <p className="mt-6 max-w-[48ch] text-lg leading-relaxed">
+              {copy.request.description}
+            </p>
+            <div className="mt-8">
+              <MarketingLead
+                kind="integration"
+                topic="integration-request"
+                title={copy.request.button}
+              />
+            </div>
+          </div>
+          <div className="relative min-h-72 overflow-hidden border-accent-foreground border-t text-primary/60 md:border-t-0 md:border-l">
+            <div className="absolute inset-0">
+              <EvolvingAscii artwork="bag" fit="cover" />
+            </div>
           </div>
         </div>
       </MarketingBand>

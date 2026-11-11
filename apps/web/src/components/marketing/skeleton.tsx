@@ -2,12 +2,22 @@ import { getMessages } from "next-intl/server";
 import { MarketingShell } from "./page";
 import { MarketingHero } from "./primitives";
 
-export const MarketingSkeleton = async () => {
+export const MarketingSkeleton = async ({
+  identity = false,
+}: MarketingSkeleton.Props = {}) => {
   const { enterpriseChrome } = await getMessages();
   return (
     <MarketingShell>
       <MarketingHero
         dark
+        identity={
+          identity ? (
+            <span
+              aria-hidden
+              className="block size-28 rounded-md bg-background-rich/20 sm:size-36"
+            />
+          ) : undefined
+        }
         title={
           <span role="status" aria-label={enterpriseChrome.loading}>
             <span
@@ -35,3 +45,9 @@ export const MarketingSkeleton = async () => {
     </MarketingShell>
   );
 };
+
+export const ProviderMarketingSkeleton = () => <MarketingSkeleton identity />;
+
+export namespace MarketingSkeleton {
+  export type Props = { identity?: boolean };
+}

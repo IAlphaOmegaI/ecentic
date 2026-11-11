@@ -1,0 +1,55 @@
+{
+  "agenciesPage": {
+    "challenges": {
+      "description": "Convierte la pregunta del cliente en una revisión de producto, un cambio verificado y una comparación clara.",
+      "details": "Explora las preguntas de los clientes"
+    },
+    "tracks": {
+      "description": "Elige lo que aportas a la relación. El alcance y las condiciones comerciales se acuerdan antes de una reventa o recomendación.",
+      "label": "Modalidades de colaboración",
+      "pathLabel": "Qué incluye la colaboración",
+      "paths": [
+        [
+          "Catálogo del cliente",
+          "Revisión de productos",
+          "Cambios verificados"
+        ],
+        [
+          "Tu producto",
+          "Interfaces documentadas",
+          "Descubrimiento e incorporación"
+        ],
+        [
+          "Tu audiencia",
+          "Divulgación del comercio con IA",
+          "Conversación de colaboración"
+        ]
+      ]
+    },
+    "access": {
+      "label": "Titularidad de la cuenta",
+      "single": "Un titular, varias tiendas",
+      "separate": "Cuentas de clientes separadas",
+      "singleTitle": "Una cuenta reúne sus propias tiendas.",
+      "singleDescription": "Las tiendas pueden agruparse cuando pertenecen al mismo titular de la cuenta.",
+      "separateTitle": "Cada cliente controla su cuenta.",
+      "separateDescription": "Los titulares distintos mantienen cuentas separadas. Confirma el acuerdo con cada cliente antes de conectar.",
+      "owner": "Cuenta del titular",
+      "store": "Tienda propia",
+      "anotherStore": "Otra tienda propia",
+      "firstClient": "Cuenta del cliente A",
+      "secondClient": "Cuenta del cliente B",
+      "firstStore": "Tienda del cliente A",
+      "secondStore": "Tienda del cliente B",
+      "boundary": "Sin permisos delegados para agencias ni puestos de equipo"
+    },
+    "start": {
+      "description": "Trae tu modalidad, el caso de uso del cliente y la propuesta de titularidad de las cuentas a la conversación.",
+      "items": [
+        "Elige tu modalidad",
+        "Confirma la titularidad",
+        "Acuerda alcance y condiciones"
+      ]
+    }
+  }
+}

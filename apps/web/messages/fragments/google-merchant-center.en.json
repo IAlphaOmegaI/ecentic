@@ -1,0 +1,19 @@
+{
+  "googleMerchantDesign": {
+    "constraints": [
+      "Shopify connection",
+      "Account access",
+      "Offer matching",
+      "Explicit sync"
+    ],
+    "stages": ["Authorize", "Provision", "Review", "Sync"],
+    "diagram": {
+      "mainSource": "Main source",
+      "supplemental": "Supplemental source",
+      "published": "Published changes",
+      "diagnostics": "Diagnostics",
+      "processing": "Google processing",
+      "sync": "Run sync"
+    }
+  }
+}

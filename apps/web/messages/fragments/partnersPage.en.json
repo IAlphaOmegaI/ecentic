@@ -1,0 +1,35 @@
+{
+  "partnersPage": {
+    "tracks": {
+      "description": "Bring your services, technology or audience to the stores you already work with."
+    },
+    "preparation": {
+      "title": "Prepare your application",
+      "description": "Have these details in mind before you fill in the form. Check them off as you go.",
+      "progress": [
+        "3 details to prepare",
+        "1 of 3 details ready",
+        "2 of 3 details ready",
+        "Ready to fill in the form"
+      ],
+      "items": [
+        {
+          "title": "Your company and website",
+          "description": "Bring your company name, website and the best work email for the conversation."
+        },
+        {
+          "title": "Your partnership track",
+          "description": "Choose agencies and resellers, technology partners, or creators and affiliates."
+        },
+        {
+          "title": "The stores you work with",
+          "description": "Have an idea of how many stores you serve and what you would like to do together."
+        }
+      ],
+      "action": {
+        "primary": "Go to the application"
+      },
+      "note": "This checklist is optional. Add your details in the form below."
+    }
+  }
+}

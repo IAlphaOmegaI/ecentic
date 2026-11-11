@@ -1,0 +1,84 @@
+{
+  "travelPage": {
+    "questions": {
+      "caption": "Every trip is an offer with conditions.",
+      "description": "The question changes. Dates, price basis and booking terms still need to be readable."
+    },
+    "attributes": {
+      "description": "Keep the facts that define the offer together, from available dates to the terms of a change."
+    },
+    "roadmap": {
+      "label": "Explore the travel pilot",
+      "diagram": "The information and handoff to review",
+      "boundary": "Scope boundary",
+      "stages": [
+        {
+          "id": "scope",
+          "label": "Agree scope",
+          "status": "Before the pilot",
+          "title": "One market. An agreed starting point.",
+          "description": "Confirm the language and data coverage before beginning. Start from the public pages and product data agreed with your team.",
+          "steps": [
+            {
+              "title": "One market",
+              "body": "Confirm language and data coverage."
+            },
+            {
+              "title": "Public pages",
+              "body": "Agree which offers to review."
+            },
+            {
+              "title": "Pilot scope",
+              "body": "Define the booking handoff question."
+            }
+          ],
+          "note": "A pilot begins with an agreed scope; this roadmap does not indicate a live booking integration."
+        },
+        {
+          "id": "baseline",
+          "label": "Review offers",
+          "status": "Public-data baseline",
+          "title": "Read the offer before the booking flow.",
+          "description": "Review the information on pages you control and agreed product data. Your team verifies travel attributes; ecentic does not invent missing facts.",
+          "steps": [
+            {
+              "title": "Public site",
+              "body": "Start from agreed product pages."
+            },
+            {
+              "title": "Supported feed",
+              "body": "Use the defined importer field mapping."
+            },
+            {
+              "title": "Offer facts",
+              "body": "Verify dates, prices, inclusions and terms."
+            }
+          ],
+          "note": "The baseline needs no booking-engine login, customer data or code on your site."
+        },
+        {
+          "id": "handoff",
+          "label": "Review handoff",
+          "status": "Separately agreed scope",
+          "title": "Keep the booking boundary explicit.",
+          "description": "Examine the agreed path from public information to a booking flow. Later access or integration work needs a separate scope.",
+          "steps": [
+            {
+              "title": "Public offer",
+              "body": "Keep dates, prices and terms clear."
+            },
+            {
+              "title": "Channel or provider",
+              "body": "Booking behavior depends on the channel and flow."
+            },
+            {
+              "title": "Booking handoff",
+              "body": "Review the agreed destination and next step."
+            }
+          ],
+          "note": "No automated booking integration is promised, and an assistant may link to a booking platform instead of your site."
+        }
+      ]
+    }
+  }
+}

@@ -113,7 +113,7 @@
       "number": "07",
       "title": "Webhooks",
       "description": "ecentic receives webhooks; it does not yet deliver them outbound.",
-      "body": "Inbound endpoints are signature-verified and reject anything that fails the check before any handler runs. Shopify compliance webhooks verify an HMAC, Stripe verifies its own signature header, and partner endpoints verify a bearer secret.\n\nOutbound webhooks — ecentic notifying your system when a scan finishes or a listing is republished — are not published yet. Poll the REST surface, or subscribe through the MCP session, until they are."
+      "body": "Inbound endpoints are signature-verified and reject anything that fails the check before any handler runs. Shopify compliance webhooks verify an HMAC, Stripe verifies its own signature header, and partner endpoints verify a bearer secret.\n\nOutbound webhooks — ecentic notifying your system when a scan finishes or a listing is republished — are not published yet. Use the published REST endpoints to check results. MCP requests are stateless; there is no subscription session."
     },
     "cli": {
       "number": "08",

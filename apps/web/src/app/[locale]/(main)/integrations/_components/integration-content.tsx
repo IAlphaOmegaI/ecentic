@@ -21,6 +21,7 @@ import {
   MarketingStatus,
 } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
+import { MarketingSources } from "@/components/marketing/sources";
 import {
   type Integration,
   integrationCheckedAt,
@@ -256,36 +257,18 @@ export const FeedExporters = ({ copy }: FeedExporters.Props) => (
 export const IntegrationSources = ({
   pageKey,
   copy,
-}: IntegrationSources.Props) => {
-  const sources = integrationPageSources[pageKey];
-  if (sources.length === 0) return null;
-  return (
-    <MarketingBand>
-      <div className="marketing-cell relative min-w-0 px-7 py-16 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
-        <h2>{copy.sourceTitle}</h2>
-        <ul className="mt-8 divide-y divide-accent-foreground">
-          {sources.map((source) => (
-            <li
-              key={source.key}
-              className="flex flex-col justify-between gap-3 py-5 sm:flex-row sm:gap-8"
-            >
-              <a
-                href={source.url}
-                className="marketing-text-link text-primary-text underline decoration-1 underline-offset-4 hover:underline"
-              >
-                {copy.sources[source.key]}
-              </a>
-              <span className="shrink-0 text-foreground-dimmed text-sm">
-                {copy.checked}:{" "}
-                <time dateTime={integrationCheckedAt}>{copy.date}</time>
-              </span>
-            </li>
-          ))}
-        </ul>
-      </div>
-    </MarketingBand>
-  );
-};
+}: IntegrationSources.Props) => (
+  <MarketingSources
+    title={copy.sourceTitle}
+    checked={copy.checked}
+    date={copy.date}
+    dateTime={integrationCheckedAt}
+    sources={integrationPageSources[pageKey].map((source) => ({
+      label: copy.sources[source.key],
+      href: source.url,
+    }))}
+  />
+);
 
 namespace IntegrationTile {
   export type Props = { integration: Integration; copy: Copy };

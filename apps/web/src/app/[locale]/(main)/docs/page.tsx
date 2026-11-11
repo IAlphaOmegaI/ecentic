@@ -2,6 +2,7 @@ import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
+import { Suspense } from "react";
 import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
@@ -20,6 +21,11 @@ import {
   ContentPageSection,
 } from "../_components/content";
 import { DocsCode, DocsTable } from "./_components/docs";
+import { IndexQuickstart } from "./_components/index-quickstart";
+import {
+  IndexQuickstartSkeleton,
+  IndexSection,
+} from "./_components/index-section";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const locale = await getLocale();
@@ -47,11 +53,26 @@ const QUICKSTART = [
   "curl -s https://ecentic.ai/api/v1/plans",
 ] as const;
 
+const Quickstart = async () => {
+  const { docs, docsIndexPage } = await getMessages();
+
+  return (
+    <IndexQuickstart
+      content={docs.quickstart}
+      copy={docsIndexPage.quickstart}
+      examples={QUICKSTART.map((snippet) => (
+        <DocsCode key={snippet}>{snippet}</DocsCode>
+      ))}
+    />
+  );
+};
+
 export default async () => {
   const locale = await getLocale();
   const translate = await getTranslations("docs");
   const messages = await getMessages();
   const content = messages.docs;
+  const copy = messages.docsIndexPage;
   const discovery = discoveryIndex();
 
   return (
@@ -99,28 +120,42 @@ export default async () => {
         ]}
       />
 
-      <ContentPageSection
+      <nav
+        aria-label={copy.navigation}
+        className="border-accent-foreground border-b"
+      >
+        <div className="mx-auto grid w-[min(1186px,calc(100%-56px))] grid-cols-2 gap-px border-accent-foreground border-x bg-accent-foreground max-sm:w-[calc(100%-32px)] md:grid-cols-4">
+          {[
+            ["#quickstart", content.quickstart.title],
+            ["#endpoints", content.endpoints.title],
+            ["#protocols", content.protocols.title],
+            ["#reliability", content.reliability.title],
+          ].map(([href, label]) => (
+            <a
+              key={href}
+              href={href}
+              className="group flex min-w-0 items-center justify-between gap-4 bg-background-dimmed px-6 py-6 text-foreground text-sm hover:text-primary-text focus-visible:text-primary-text max-sm:px-4"
+            >
+              <span>{label}</span>
+              <ArrowRightIcon
+                aria-hidden="true"
+                className="size-4 shrink-0 rotate-90 text-primary"
+              />
+            </a>
+          ))}
+        </div>
+      </nav>
+
+      <IndexSection
+        id="quickstart"
         number={translate("quickstart.number")}
         title={translate("quickstart.title")}
         description={translate("quickstart.description")}
       >
-        <div className="flex flex-col gap-6">
-          <p className="text-foreground-dimmed leading-relaxed">
-            {translate("quickstart.intro")}
-          </p>
-          {content.quickstart.steps.map((step, index) => (
-            <div key={step.title} className="flex flex-col gap-6">
-              <h3 className="font-medium text-foreground text-xl">
-                {step.title}
-              </h3>
-              <p className="text-foreground-dimmed leading-relaxed">
-                {step.description}
-              </p>
-              <DocsCode>{QUICKSTART[index] ?? QUICKSTART[0]}</DocsCode>
-            </div>
-          ))}
-        </div>
-      </ContentPageSection>
+        <Suspense fallback={<IndexQuickstartSkeleton />}>
+          <Quickstart />
+        </Suspense>
+      </IndexSection>
 
       <ContentPageSection
         number={translate("authentication.number")}
@@ -153,11 +188,11 @@ export default async () => {
         </div>
       </ContentPageSection>
 
-      <ContentPageSection
+      <IndexSection
+        id="endpoints"
         number={translate("endpoints.number")}
         title={translate("endpoints.title")}
         description={translate("endpoints.description")}
-        classList={{ body: "p-0" }}
       >
         <DocsTable
           columns={[
@@ -180,14 +215,14 @@ export default async () => {
             ],
           }))}
         />
-      </ContentPageSection>
+      </IndexSection>
 
-      <ContentPageSection
+      <IndexSection
+        id="protocols"
         number={translate("protocols.number")}
         title={translate("protocols.title")}
         description={translate("protocols.description")}
         gutter
-        classList={{ body: "p-0" }}
       >
         <DocsTable
           columns={[
@@ -225,14 +260,15 @@ export default async () => {
             };
           })}
         />
-      </ContentPageSection>
+      </IndexSection>
 
-      <ContentPageSection
+      <IndexSection
+        id="reliability"
         number={translate("reliability.number")}
         title={translate("reliability.title")}
         description={translate("reliability.description")}
       >
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="flex flex-col">
           {content.reliability.cards.map((card, index) => {
             const href = [
               "/docs/errors",
@@ -244,23 +280,31 @@ export default async () => {
               | "/docs/versioning";
 
             return (
-              <div key={card.title} className="flex flex-col gap-6">
-                <h3 className="font-medium text-foreground text-xl">
-                  <Link
-                    href={href}
-                    className="text-primary-text underline-offset-4 hover:underline"
-                  >
+              <Link
+                key={card.title}
+                href={href}
+                className="group grid min-w-0 grid-cols-[1fr_auto] items-center gap-x-8 gap-y-4 border-accent-foreground border-b bg-background-dimmed px-8 py-8 last:border-b-0 hover:bg-background focus-visible:bg-background max-sm:px-4 md:grid-cols-[3fr_5fr_auto]"
+              >
+                <div className="min-w-0">
+                  <h3 className="text-foreground group-hover:text-primary-text group-focus-visible:text-primary-text">
                     {card.title}
-                  </Link>
-                </h3>
-                <p className="text-foreground-dimmed leading-relaxed">
+                  </h3>
+                  <p className="mt-4 break-all font-mono text-foreground-dimmed text-xs">
+                    {copy.contracts[index]}
+                  </p>
+                </div>
+                <p className="col-start-1 text-foreground-dimmed leading-relaxed md:col-start-auto">
                   {card.description}
                 </p>
-              </div>
+                <ArrowRightIcon
+                  aria-hidden="true"
+                  className="col-start-2 row-start-1 size-4 text-primary md:col-start-auto md:row-start-auto"
+                />
+              </Link>
             );
           })}
         </div>
-      </ContentPageSection>
+      </IndexSection>
 
       <ContentPageSection
         number={translate("mcp.number")}

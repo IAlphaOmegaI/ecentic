@@ -1,4 +1,3 @@
-import { ScrollArea } from "@zenncore/web/components/scroll-area";
 import {
   Table,
   TableBody,
@@ -77,12 +76,8 @@ export const ChannelComparison = async () => {
           className="p-0 max-sm:p-0"
         />
       </div>
-      <ScrollArea
-        className="mt-8 min-w-0 max-w-full"
-        role="region"
-        aria-label={copy.title}
-      >
-        <Table className="w-full min-w-[880px] table-fixed bg-background text-left text-sm">
+      <div className="mt-8 min-w-0">
+        <Table className="hidden w-full table-fixed overflow-visible bg-background text-left text-sm min-[1000px]:table">
           <TableHeader>
             <TableRow className="border-accent-foreground">
               {Object.entries(copy.headers).map(([key, title]) => (
@@ -113,7 +108,7 @@ export const ChannelComparison = async () => {
                     <ProviderLogo
                       provider={channel.key}
                       decorative
-                      className="size-8"
+                      className="h-8 w-auto max-w-28 rounded-none"
                     />
                     {channels.names[channel.key]}
                   </Link>
@@ -136,7 +131,51 @@ export const ChannelComparison = async () => {
             ))}
           </TableBody>
         </Table>
-      </ScrollArea>
+        <div className="border-accent-foreground border-t min-[1000px]:hidden">
+          {channelComparisons.map((channel) => (
+            <article
+              key={channel.key}
+              className="border-accent-foreground border-b py-6"
+            >
+              <h3 className="font-heading text-foreground-rich text-xl">
+                <Link
+                  href={channel.href}
+                  className="flex flex-wrap items-center gap-4 underline decoration-accent-foreground underline-offset-4"
+                >
+                  <ProviderLogo
+                    provider={channel.key}
+                    decorative
+                    className="h-8 w-auto max-w-28 rounded-none"
+                  />
+                  {channels.names[channel.key]}
+                </Link>
+              </h3>
+              <dl className="mt-6 grid gap-4 text-sm">
+                {(["reads", "buying", "where"] as const).map((field) => (
+                  <div key={field}>
+                    <dt className="font-medium text-foreground">
+                      {copy.headers[field]}
+                    </dt>
+                    <dd className="mt-2 text-foreground-dimmed leading-relaxed">
+                      {copy.rows[channel.key][field]}
+                    </dd>
+                  </div>
+                ))}
+                <div>
+                  <dt className="font-medium text-foreground">
+                    {copy.headers.status}
+                  </dt>
+                  <dd className="mt-2">
+                    <MarketingStatus status={channel.status}>
+                      {channels.statuses[channel.status]}
+                    </MarketingStatus>
+                  </dd>
+                </div>
+              </dl>
+            </article>
+          ))}
+        </div>
+      </div>
       <p className="mt-5 text-foreground-dimmed text-sm">
         {translate("caption", { date: checked })}
       </p>

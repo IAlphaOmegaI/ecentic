@@ -1,8 +1,8 @@
 import { ArrowRightIcon, BarChartIcon, CircleBoltIcon } from "@zenncore/icons";
-import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import { getMessages, getTranslations } from "next-intl/server";
-import { Plus } from "@/components/plus";
+import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
+import { MarketingBand } from "@/components/marketing/primitives";
 import { Link } from "@/i18n/navigation";
 import shopify from "@/public/images/shopify.svg";
 import woocommerce from "@/public/images/woocommerce.svg";
@@ -20,63 +20,56 @@ export const RelatedPages = async () => {
   const links = messages.compare.related.links;
 
   return (
-    <section className="border-accent-foreground border-b">
-      <div className="relative mx-auto w-[min(1186px,calc(100%-56px))] border-accent-foreground border-x max-sm:w-[calc(100%-32px)]">
-        <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-        <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-
-        <div className="px-7 pt-16 pb-8 max-sm:px-4 max-sm:pt-10">
-          <span className="font-normal text-3xl text-primary">
-            {translate("related.number")}
-          </span>
-          <h2 className="mt-2 font-heading font-medium text-foreground-rich">
-            {translate("related.title")}
-          </h2>
-          <p className="mt-4 max-w-2xl text-foreground-dimmed text-lg max-sm:text-base">
-            {translate("related.description")}
-          </p>
-        </div>
-
-        <div className="relative grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground sm:grid-cols-2">
-          <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 sm:flex" />
-          <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 sm:flex" />
-          {links.map((entry) => {
-            const asset = linkAssets[entry.href];
-
-            return (
-              <article
-                key={entry.href}
-                className="flex h-full flex-col gap-4 bg-background p-6 md:p-8"
-              >
-                {"logo" in asset ? (
-                  <Image src={asset.logo} alt={entry.name} className="size-7" />
-                ) : (
-                  <asset.icon
-                    aria-label={entry.name}
-                    className="size-7 text-primary"
-                  />
-                )}
-                <div className="flex flex-1 flex-col gap-6">
-                  <h3 className="font-heading font-medium text-2xl text-foreground leading-tight">
-                    {entry.title}
-                  </h3>
-                  <p className="font-light text-foreground-dimmed leading-relaxed">
-                    {entry.description}
-                  </p>
-                </div>
-                <Button
-                  color={entry.color}
-                  className="w-fit"
-                  render={<Link href={entry.href} />}
-                >
-                  {entry.label}
-                  <ArrowRightIcon className="size-4" />
-                </Button>
-              </article>
-            );
-          })}
-        </div>
+    <MarketingBand id="related-guides" className="scroll-mt-24">
+      <SectionGutter />
+      <div className="relative bg-background px-7 py-12 max-sm:px-4 max-sm:py-10">
+        <span className="font-normal text-3xl text-primary">
+          {translate("related.number")}
+        </span>
+        <h2 className="mt-4 max-w-3xl text-balance text-foreground-rich">
+          {translate("related.title")}
+        </h2>
+        <p className="mt-4 max-w-2xl text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">
+          {translate("related.description")}
+        </p>
       </div>
-    </section>
+      <div className="relative border-accent-foreground border-t bg-background">
+        {links.map((entry) => {
+          const asset = linkAssets[entry.href];
+          return (
+            <Link
+              key={entry.href}
+              href={entry.href}
+              className="group grid items-start gap-4 border-accent-foreground border-b px-7 py-8 outline-offset-[-4px] last:border-b-0 hover:bg-background-dimmed focus-visible:outline-2 focus-visible:outline-primary max-sm:px-4 sm:grid-cols-[3rem_1fr] sm:gap-6 lg:grid-cols-[3rem_1fr_1fr]"
+            >
+              {"logo" in asset ? (
+                <Image
+                  src={asset.logo}
+                  alt={entry.name}
+                  className="size-10 object-contain"
+                />
+              ) : (
+                <asset.icon
+                  aria-hidden="true"
+                  className="size-8 text-primary"
+                />
+              )}
+              <div className="min-w-0">
+                <h3 className="max-w-lg font-medium text-2xl text-foreground-rich leading-tight group-hover:text-primary-text">
+                  {entry.title}
+                </h3>
+                <span className="mt-4 inline-flex items-center gap-2 font-medium text-primary-text text-sm">
+                  {entry.label}
+                  <ArrowRightIcon aria-hidden="true" className="size-4" />
+                </span>
+              </div>
+              <p className="max-w-xl text-foreground-dimmed leading-relaxed sm:col-start-2 lg:col-start-3">
+                {entry.description}
+              </p>
+            </Link>
+          );
+        })}
+      </div>
+    </MarketingBand>
   );
 };

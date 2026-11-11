@@ -1,0 +1,31 @@
+{
+  "healthPage": {
+    "reader": {
+      "description": "Abre una pregunta de compra para revisar los datos del producto que la sustentan.",
+      "label": "Preguntas de compra y datos del producto",
+      "facts": "Datos del producto que tu equipo debe verificar",
+      "allFacts": "Ver todos los atributos del producto"
+    },
+    "relationship": {
+      "title": "Dos comprobaciones, una descripción del producto.",
+      "label": "Los datos del fabricante y las condiciones del producto, canal y país fundamentan una descripción del producto respaldada.",
+      "inputs": [
+        {
+          "title": "Datos del fabricante",
+          "description": "Ingredientes, uso previsto e instrucciones."
+        },
+        {
+          "title": "Producto, canal y país",
+          "description": "Condiciones de evidencia y elegibilidad."
+        }
+      ],
+      "output": "Información del producto respaldada",
+      "description": "Vincula la descripción a los datos verificados de las fuentes."
+    },
+    "rules": [
+      "Declaraciones nutricionales y de salud",
+      "Elegibilidad en el canal"
+    ],
+    "role": "El papel de ecentic"
+  }
+}

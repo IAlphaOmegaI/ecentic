@@ -1,0 +1,35 @@
+{
+  "partnersPage": {
+    "tracks": {
+      "description": "Acerca tus servicios, tecnología o audiencia a las tiendas con las que ya trabajas."
+    },
+    "preparation": {
+      "title": "Prepara tu solicitud",
+      "description": "Ten estos datos a mano antes de rellenar el formulario. Márcalos a medida que los prepares.",
+      "progress": [
+        "3 datos por preparar",
+        "1 de 3 datos preparados",
+        "2 de 3 datos preparados",
+        "Todo listo para rellenar el formulario"
+      ],
+      "items": [
+        {
+          "title": "Tu empresa y sitio web",
+          "description": "Ten a mano el nombre de tu empresa, su web y el correo de trabajo más adecuado para contactar."
+        },
+        {
+          "title": "Tu modalidad de colaboración",
+          "description": "Elige entre agencias y distribuidores, socios tecnológicos o creadores y afiliados."
+        },
+        {
+          "title": "Las tiendas con las que trabajas",
+          "description": "Piensa en cuántas tiendas atiendes y en lo que te gustaría hacer en conjunto."
+        }
+      ],
+      "action": {
+        "primary": "Ir a la solicitud"
+      },
+      "note": "Esta lista es opcional. Añade tus datos en el formulario de abajo."
+    }
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "foodPage": {
+    "description": "Select a buying question to explore the source facts your team should inspect.",
+    "choose": "Choose a shopper question",
+    "facts": "Facts to inspect",
+    "source": "Start with the information on the pack.",
+    "allFacts": "Explore all six product-data checks"
+  }
+}

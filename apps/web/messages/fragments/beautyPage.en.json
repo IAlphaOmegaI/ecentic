@@ -1,0 +1,20 @@
+{
+  "beautyPage": {
+    "record": {
+      "label": "Explore a shopper question",
+      "tabs": ["Moisturizer", "Sun protection", "Shampoo"],
+      "question": "The shopper’s brief",
+      "facts": "Product facts to review",
+      "claim": {
+        "title": "Finished-product claim",
+        "body": "Check the claim against evidence for the exact finished product."
+      }
+    },
+    "evidence": {
+      "label": "Keep the same facts from pack to listing",
+      "steps": ["Product pack", "Supporting evidence", "Published description"],
+      "claims": "Claims and evidence",
+      "protection": "Tested protection"
+    }
+  }
+}

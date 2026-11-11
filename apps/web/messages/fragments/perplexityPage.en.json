@@ -1,0 +1,32 @@
+{
+  "perplexityPage": {
+    "shopping": {
+      "label": "Explore the shopping destination",
+      "result": "Product card",
+      "destination": "Shopping destination",
+      "purchase": "Buy with Pro",
+      "store": "Merchant website",
+      "purchaseTitle": "An eligible purchase",
+      "purchaseDescription": "The announced Buy with Pro experience is for eligible products in the US.",
+      "storeTitle": "Continue at the merchant",
+      "storeDescription": "When that purchase option is unavailable, the shopper follows a link to the merchant’s website.",
+      "caption": "Explore the two paths described in Perplexity’s shopping announcement."
+    },
+    "reading": {
+      "merchant": "Merchant information",
+      "product": "Product details",
+      "price": "Price",
+      "website": "Merchant website",
+      "result": "Shopping results",
+      "caption": "A merchant program helps make product information more complete."
+    },
+    "entry": {
+      "label": "Explore merchant access requirements",
+      "steps": [
+        "The announced program",
+        "Current eligibility",
+        "What remains unverified"
+      ]
+    }
+  }
+}

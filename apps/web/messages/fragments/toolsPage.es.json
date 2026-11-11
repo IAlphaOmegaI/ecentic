@@ -1,0 +1,53 @@
+{
+  "toolsPage": {
+    "description": "Empieza por la pregunta que quieres resolver. Elige una herramienta para ver qué necesita y qué significa su resultado.",
+    "inputLabel": "Qué necesitas",
+    "accessLabel": "Acceso",
+    "resultLabel": "Cómo interpretar el resultado",
+    "tools": {
+      "score": {
+        "purpose": "Evalúa tu catálogo",
+        "input": "Tu tienda, productos y competidores",
+        "access": "Escaneo gratis · Requiere cuenta",
+        "limit": "Son comparaciones simuladas de productos. No muestran posiciones en directo dentro de las aplicaciones de compra con IA.",
+        "steps": ["Tus productos", "Comparación con IA", "Puntuación y motivos"]
+      },
+      "validator": {
+        "purpose": "Revisa un perfil de pago",
+        "input": "La URL de tu tienda",
+        "access": "Gratis · Sin cuenta",
+        "limit": "Un perfil publicado válido no confirma que un comprador pueda completar el pago. Usa el playground para probar las herramientas de la tienda.",
+        "steps": [
+          "URL de la tienda",
+          "Perfil publicado",
+          "Revisión de estructura"
+        ]
+      },
+      "playground": {
+        "purpose": "Prueba un recorrido de compra",
+        "input": "Una tienda con herramientas de compra para agentes",
+        "access": "10 mensajes gratis · Sin cuenta",
+        "limit": "El agente llama a las herramientas de la tienda. Usa una tienda de pruebas para comprobar el pago.",
+        "steps": ["Búsqueda", "Carrito", "Pago"]
+      },
+      "scanner": {
+        "purpose": "Busca indicios de herramientas",
+        "input": "La URL pública de una tienda",
+        "access": "Gratis · Sin cuenta",
+        "limit": "Inspecciona una pequeña muestra de páginas y scripts. No ejecuta JavaScript, envía formularios ni comprueba que las herramientas funcionen en el navegador.",
+        "steps": [
+          "Código de la tienda",
+          "Herramientas y formularios",
+          "Indicios y límites"
+        ]
+      },
+      "compare": {
+        "purpose": "Compara dos fichas",
+        "input": "Dos URLs de producto",
+        "access": "Comparación de productos gratis",
+        "limit": "Cada modelo hace una elección simulada con las fichas comparadas. No es un informe de posiciones de compra en directo.",
+        "steps": ["Dos fichas", "Cuatro modelos de IA", "Elección y motivos"]
+      }
+    }
+  }
+}

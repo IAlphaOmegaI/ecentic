@@ -1,3 +1,4 @@
+import { pageBodies } from "../_components/page-bodies";
 import { notFound } from "next/navigation";
 import { getMessages } from "next-intl/server";
 import { CommerceTimeline } from "@/components/marketing/channels";
@@ -41,31 +42,35 @@ export default async ({ params }: Props) => {
   const sections = content.sections.map((section) =>
     section.id === journey?.id ? { ...section, items: undefined } : section,
   );
+  const Body = pageBodies[business];
   return (
     <MarketingPage
-      content={{ ...content, sections }}
+      content={{ ...content, sections: [] }}
       path={`/solutions/${business}`}
-      sectionChildren={{
-        challenges: (
-          <BusinessChallenges
-            items={content.challenges}
-            labels={content.challengeLabels}
-          />
-        ),
-        ...(business === "enterprise"
-          ? {
-              measures: (
-                <div className="border-accent-foreground border-t pt-8">
-                  <CatalogFindings />
-                </div>
-              ),
-            }
-          : {}),
-        ...(journey
-          ? { [journey.id]: <ProductJourney items={journey.items ?? []} /> }
-          : {}),
-      }}
     >
+      <Body
+        sections={sections}
+        sectionChildren={{
+          challenges: (
+            <BusinessChallenges
+              items={content.challenges}
+              labels={content.challengeLabels}
+            />
+          ),
+          ...(business === "enterprise"
+            ? {
+                measures: (
+                  <div className="border-accent-foreground border-t pt-8">
+                    <CatalogFindings />
+                  </div>
+                ),
+              }
+            : {}),
+          ...(journey
+            ? { [journey.id]: <ProductJourney items={journey.items ?? []} /> }
+            : {}),
+        }}
+      />
       {business === "retailers-and-marketplaces" && (
         <MarketingBand>
           <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10">

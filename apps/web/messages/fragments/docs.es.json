@@ -113,7 +113,7 @@
       "number": "07",
       "title": "Webhooks",
       "description": "ecentic recibe webhooks; todavía no los envía.",
-      "body": "Los endpoints entrantes verifican la firma y rechazan cualquier petición que no la supere antes de ejecutar ningún handler. Los webhooks de cumplimiento de Shopify verifican un HMAC, Stripe verifica su propia cabecera de firma y los endpoints de socios verifican un secreto bearer.\n\nLos webhooks salientes — ecentic notificando a tu sistema cuando termina un escaneo o se vuelve a publicar una ficha — aún no están disponibles. Hasta entonces, consulta la superficie REST o suscríbete a través de la sesión MCP."
+      "body": "Los endpoints entrantes verifican la firma y rechazan cualquier petición que no la supere antes de ejecutar ningún handler. Los webhooks de cumplimiento de Shopify verifican un HMAC, Stripe verifica su propia cabecera de firma y los endpoints de socios verifican un secreto bearer.\n\nLos webhooks salientes — ecentic notificando a tu sistema cuando termina un escaneo o se vuelve a publicar una ficha — aún no están disponibles. Consulta los endpoints REST publicados para comprobar los resultados. Las peticiones MCP no mantienen estado; no hay una sesión de suscripción."
     },
     "cli": {
       "number": "08",

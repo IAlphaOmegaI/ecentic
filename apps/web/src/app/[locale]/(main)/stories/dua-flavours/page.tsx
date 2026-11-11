@@ -1,8 +1,8 @@
 import Image from "next/image";
 import { getMessages } from "next-intl/server";
-import { DuaEvidence } from "@/components/marketing/measured-evidence";
 import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
 import DuaFlavours from "@/public/partners/dua-flavours.png";
+import { DuaStory } from "./_components/dua-story";
 
 export const generateMetadata = async () => {
   const { enterpriseCompany } = await getMessages();
@@ -14,24 +14,23 @@ export const generateMetadata = async () => {
 
 export default async () => {
   const { enterpriseCompany } = await getMessages();
+  const content = enterpriseCompany.duaFlavours;
+
   return (
     <MarketingPage
-      content={enterpriseCompany.duaFlavours}
+      content={{ ...content, sections: [] }}
       path="/stories/dua-flavours"
-      sectionChildren={{
-        result: (
-          <div className="mt-10">
-            <DuaEvidence />
-          </div>
-        ),
-      }}
-      heroChildren={
+      heroArtwork="bag"
+      heroIdentity={
         <Image
           src={DuaFlavours}
           alt="DUA Flavours"
-          className="mt-12 h-16 w-auto max-w-full object-contain object-left"
+          priority
+          className="h-32 w-auto max-w-full object-contain object-left max-sm:h-24"
         />
       }
-    />
+    >
+      <DuaStory sections={content.sections} />
+    </MarketingPage>
   );
 };

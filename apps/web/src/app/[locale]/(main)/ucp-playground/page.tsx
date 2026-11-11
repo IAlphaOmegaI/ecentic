@@ -1,12 +1,16 @@
+import { ArrowRightIcon } from "@zenncore/icons";
+import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
 import { headers } from "next/headers";
 import { connection } from "next/server";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { JsonLd } from "@/components/json-ld";
+import { MarketingQuestions } from "@/components/marketing/faq";
 import { Plus } from "@/components/plus";
 import { PlaygroundClient } from "@/components/ucp-playground/playground-client";
 import { localizePath } from "@/i18n/locale";
+import { Link } from "@/i18n/navigation";
 import { auth } from "@/lib/auth";
 import {
   absoluteUrl,
@@ -17,6 +21,7 @@ import {
 } from "@/lib/seo";
 import { ANONYMOUS_MESSAGE_LIMIT } from "@/server/app/intelligence/ucp/playground-limit";
 import { ContentPageLayout } from "../_components/content";
+import { PlaygroundGuide } from "./_components/playground-guide";
 
 export const generateMetadata = async (): Promise<Metadata> => {
   const locale = await getLocale();
@@ -41,9 +46,9 @@ export const generateMetadata = async (): Promise<Metadata> => {
 const PlaygroundSkeleton = () => (
   <div className="flex flex-1 items-center justify-center p-8">
     <div className="w-full max-w-md space-y-3">
-      <div className="mx-auto h-4 w-40 animate-pulse bg-accent-foreground/30" />
-      <div className="h-9 w-full animate-pulse bg-accent-foreground/20" />
-      <div className="h-9 w-full animate-pulse bg-accent-foreground/30" />
+      <div className="mx-auto h-4 w-40 animate-pulse bg-accent-foreground/30 motion-reduce:animate-none" />
+      <div className="h-9 w-full animate-pulse bg-accent-foreground/20 motion-reduce:animate-none" />
+      <div className="h-9 w-full animate-pulse bg-accent-foreground/30 motion-reduce:animate-none" />
     </div>
   </div>
 );
@@ -76,6 +81,7 @@ export default async () => {
     answer: item.answer.replaceAll("{limit}", limit),
   }));
   const capabilities = messages.ucpPlayground.capabilities;
+  const copy = messages.playgroundPage;
   const pagePath = localizePath("/ucp-playground", locale);
 
   const structuredData = [
@@ -104,8 +110,6 @@ export default async () => {
     createFaqSchema(faq),
   ];
 
-  const demoTitleParts = translate("demo.titleLineBreak").split("<br />");
-
   return (
     <ContentPageLayout
       compact
@@ -113,6 +117,12 @@ export default async () => {
       title={translate("hero.title.primary")}
       accent={translate("hero.title.accent")}
       description={description}
+      actions={
+        <Button color="primary" render={<Link href="#playground-session" />}>
+          {copy.guide.action.primary}
+          <ArrowRightIcon className="size-4" />
+        </Button>
+      }
     >
       <JsonLd schemas={structuredData} />
 
@@ -120,46 +130,49 @@ export default async () => {
         <div className="relative mx-auto w-[min(1186px,calc(100%-56px))] border-accent-foreground border-x max-sm:w-[calc(100%-32px)]">
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <div className="relative border-accent-foreground px-7 pt-16 pb-8 max-sm:px-4 max-sm:pt-10">
-            <h2 className="text-foreground-rich">
-              {demoTitleParts[0]}
-              <br />
-              {demoTitleParts[1]}
+          <div className="relative px-8 py-10 max-sm:px-4 max-sm:py-8">
+            <h2 className="max-w-2xl text-foreground-rich">
+              {translate("demo.title")}
             </h2>
-            <p className="mt-4 max-w-xl text-foreground-dimmed text-lg max-sm:text-base">
+            <p className="mt-4 max-w-2xl text-foreground-dimmed text-lg max-sm:text-base">
               {translate("demo.description", { limit })}
             </p>
-          </div>
-
-          <div className="relative border-accent-foreground border-t">
-            <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
-            <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
-            <div className="grid grid-cols-1 divide-y divide-accent-foreground md:grid-cols-3 md:divide-x md:divide-y-0">
-              {capabilities.map((capability) => (
-                <div
-                  key={capability.title}
-                  className="flex flex-col bg-background px-7 py-8 max-sm:px-4"
-                >
-                  <p className="font-medium text-foreground">
-                    {capability.title}
-                  </p>
-                  <p className="mt-2 font-light text-foreground-dimmed text-sm leading-relaxed">
-                    {capability.description}
-                  </p>
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </section>
 
       <section className="relative w-full border-accent-foreground border-b">
-        <div className="relative mx-auto flex h-[720px] w-[min(1186px,calc(100%-56px))] border-accent-foreground border-x bg-background-rich max-sm:w-[calc(100%-32px)]">
+        <div className="relative mx-auto grid w-[min(1186px,calc(100%-56px))] grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-px border-accent-foreground border-x bg-accent-foreground max-sm:w-[calc(100%-32px)] max-md:grid-cols-1">
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <Suspense fallback={<PlaygroundSkeleton />}>
-            <MeteredPlayground />
-          </Suspense>
+          <div
+            id="playground-session"
+            className="flex h-[760px] min-h-0 min-w-0 scroll-mt-24 flex-col bg-background-rich max-sm:h-[600px]"
+          >
+            <div className="shrink-0 border-accent-foreground border-b px-8 py-6 max-sm:px-4">
+              <h3 className="text-foreground-rich text-xl">
+                {copy.session.title}
+              </h3>
+              <p className="mt-2 text-foreground-dimmed text-sm">
+                {copy.session.description}
+              </p>
+            </div>
+            <div className="flex min-h-0 flex-1 overflow-hidden">
+              <Suspense fallback={<PlaygroundSkeleton />}>
+                <MeteredPlayground />
+              </Suspense>
+            </div>
+          </div>
+          <PlaygroundGuide copy={copy.guide} capabilities={capabilities} />
+        </div>
+      </section>
+
+      <section className="relative w-full border-accent-foreground border-b">
+        <div className="relative mx-auto grid w-[min(1186px,calc(100%-56px))] grid-cols-[1fr_2fr] border-accent-foreground border-x max-sm:w-[calc(100%-32px)] max-md:grid-cols-1">
+          <div className="border-accent-foreground border-r px-8 py-10 max-sm:px-4 max-sm:py-8 max-md:border-r-0 max-md:border-b">
+            <h2>{copy.faq.title}</h2>
+          </div>
+          <MarketingQuestions items={faq} />
         </div>
       </section>
     </ContentPageLayout>

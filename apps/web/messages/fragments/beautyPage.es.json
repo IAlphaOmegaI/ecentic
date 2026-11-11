@@ -1,0 +1,24 @@
+{
+  "beautyPage": {
+    "record": {
+      "label": "Explora una pregunta de compra",
+      "tabs": ["Hidratante", "Protección solar", "Champú"],
+      "question": "Lo que busca el comprador",
+      "facts": "Datos de producto que revisar",
+      "claim": {
+        "title": "Afirmación sobre el producto final",
+        "body": "Comprueba la afirmación con pruebas del producto terminado concreto."
+      }
+    },
+    "evidence": {
+      "label": "Mantén los mismos datos del envase a la ficha",
+      "steps": [
+        "Envase del producto",
+        "Pruebas de respaldo",
+        "Descripción publicada"
+      ],
+      "claims": "Afirmaciones y pruebas",
+      "protection": "Protección probada"
+    }
+  }
+}

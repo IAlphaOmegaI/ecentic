@@ -97,7 +97,8 @@
       "productListings": "Fichas de producto",
       "docs": "Documentación",
       "apiReference": "Referencia de la API",
-      "webmcpScanner": "Escáner WebMCP"
+      "webmcpScanner": "Escáner WebMCP",
+      "about": "Sobre ecentic"
     },
     "cta": {
       "eyebrow": "Que te elija la IA",
@@ -7293,7 +7294,7 @@
       "number": "07",
       "title": "Webhooks",
       "description": "ecentic recibe webhooks; todavía no los envía.",
-      "body": "Los endpoints entrantes verifican la firma y rechazan cualquier petición que no la supere antes de ejecutar ningún handler. Los webhooks de cumplimiento de Shopify verifican un HMAC, Stripe verifica su propia cabecera de firma y los endpoints de socios verifican un secreto bearer.\n\nLos webhooks salientes — ecentic notificando a tu sistema cuando termina un escaneo o se vuelve a publicar una ficha — aún no están disponibles. Hasta entonces, consulta la superficie REST o suscríbete a través de la sesión MCP."
+      "body": "Los endpoints entrantes verifican la firma y rechazan cualquier petición que no la supere antes de ejecutar ningún handler. Los webhooks de cumplimiento de Shopify verifican un HMAC, Stripe verifica su propia cabecera de firma y los endpoints de socios verifican un secreto bearer.\n\nLos webhooks salientes — ecentic notificando a tu sistema cuando termina un escaneo o se vuelve a publicar una ficha — aún no están disponibles. Consulta los endpoints REST publicados para comprobar los resultados. Las peticiones MCP no mantienen estado; no hay una sesión de suscripción."
     },
     "cli": {
       "number": "08",
@@ -16190,6 +16191,1387 @@
       "relativeConversionSource": {
         "question": "{{TODO: Xhurian facilita la fuente primaria de Adobe para la mejora relativa de conversión del 60 % de julio de 2026 y su base de comparación.}}"
       }
+    }
+  },
+  "chatgptPage": {
+    "shopping": {
+      "feed": "Feed de productos",
+      "discovery": "Descubrimiento de productos",
+      "store": "Tienda del comercio",
+      "checkout": "Checkout aprobado",
+      "link": "Enlace al producto",
+      "approval": "Aprobación de la app por separado"
+    },
+    "reading": {
+      "label": "Explora qué datos lee ChatGPT",
+      "caption": "Esquema de la información, no una plantilla para enviar un feed.",
+      "records": [
+        {
+          "id": "product",
+          "title": "Producto",
+          "record": "producto / variante",
+          "fields": [
+            "Título + descripción",
+            "Imágenes + URL del producto",
+            "Precio + disponibilidad"
+          ]
+        },
+        {
+          "id": "seller",
+          "title": "Vendedor",
+          "record": "comercio",
+          "fields": [
+            "Identidad del vendedor",
+            "Información de envío",
+            "Política de devoluciones"
+          ]
+        },
+        {
+          "id": "checkout",
+          "title": "Checkout",
+          "record": "checkout",
+          "fields": [
+            "Indicador de elegibilidad",
+            "App conectada",
+            "Aprobación de la integración"
+          ]
+        }
+      ]
+    },
+    "entry": {
+      "label": "Requisitos de acceso para comercios",
+      "steps": [
+        "Incorporación del comercio",
+        "Acceso al feed de productos",
+        "Aprobación de la app de checkout"
+      ]
+    }
+  },
+  "googleMerchantDesign": {
+    "constraints": [
+      "Conexión con Shopify",
+      "Acceso a la cuenta",
+      "Coincidencia de ofertas",
+      "Sincronización explícita"
+    ],
+    "stages": [
+      "Autorizar",
+      "Preparar",
+      "Revisar",
+      "Sincronizar"
+    ],
+    "diagram": {
+      "mainSource": "Fuente principal",
+      "supplemental": "Fuente complementaria",
+      "published": "Cambios publicados",
+      "diagnostics": "Diagnósticos",
+      "processing": "Proceso de Google",
+      "sync": "Sincronizar"
+    }
+  },
+  "indexAiChannels": {
+    "title": "Elige tu próximo canal.",
+    "description": "Explora cada asistente y selecciona una capacidad para ver qué ofrece ecentic hoy.",
+    "providersLabel": "Asistentes de IA",
+    "capabilitiesLabel": "Capacidades de ecentic",
+    "interestTitle": "Ayúdanos a definir lo que viene"
+  },
+  "trackPage": {
+    "comparisonLabel": "Compara las señales",
+    "comparisonHint": "Elige una señal para ver de dónde procede y qué puede decirte.",
+    "meaningLabel": "Qué te indica",
+    "limitLabel": "Ten en cuenta",
+    "signals": [
+      {
+        "id": "visits",
+        "label": "Visitas observadas",
+        "title": "Una visita detectada tiene una fuente.",
+        "inputs": [
+          "Referencia del asistente",
+          "Señal del agente de usuario"
+        ],
+        "process": "Script de Shopify en el navegador",
+        "output": "Visita detectada",
+        "meaning": "Las fuentes de asistentes reconocidas se pueden agrupar en el desglose de visitas y en el resumen de su evolución.",
+        "limit": "El script necesita señales disponibles. No observa todos los rastreadores sin JavaScript, no recupera todas las visitas directas ni demuestra que el visitante comprara después."
+      },
+      {
+        "id": "simulations",
+        "label": "Decisiones simuladas",
+        "title": "Un nuevo análisis es una nueva comparación.",
+        "inputs": [
+          "Tu producto",
+          "Un competidor"
+        ],
+        "process": "Un análisis que solicitas",
+        "output": "Decisión simulada",
+        "meaning": "La tasa de éxito es el porcentaje de simulaciones en las que un agente elige tu producto frente a un competidor. Compara decisiones completadas tras publicar un cambio.",
+        "limit": "Las decisiones simuladas son distintas de las visitas y ventas observadas en la tienda. Los análisis programados no están activos hoy."
+      },
+      {
+        "id": "estimates",
+        "label": "Mejora estimada",
+        "title": "Una estimación acompaña a la mejora.",
+        "inputs": [
+          "Ficha actual",
+          "Cambio propuesto"
+        ],
+        "process": "Optimización de la ficha",
+        "output": "Mejora estimada",
+        "meaning": "La mejora estimada se registra junto con el cambio de la ficha. Permite distinguir el efecto esperado de las pruebas completadas posteriormente.",
+        "limit": "No son ingresos medidos ni un experimento completado tras publicar. Solicita otro análisis para comparar decisiones simuladas después del cambio."
+      }
+    ],
+    "attributionLabel": "La atribución tiene un límite",
+    "attributionFlow": [
+      "Etiqueta de atribución explícita, si existe",
+      "Si no, una referencia de IA reciente en esa tienda",
+      "Ventana configurada: siete días por defecto"
+    ],
+    "attributionNote": "Una coincidencia en toda la tienda no demuestra que el mismo comprador realizara el pedido.",
+    "referenceTitle": "El alcance del seguimiento hoy.",
+    "referenceDescription": "Consulta los límites de recogida, las definiciones de las estimaciones y el alcance de la cuenta antes de interpretar los resultados."
+  },
+  "googleChannelPage": {
+    "explorer": {
+      "label": "Explora el recorrido de compra de Google",
+      "stages": [
+        {
+          "id": "catalog",
+          "label": "Catálogo",
+          "title": "Empieza por la oferta del comercio",
+          "description": "Merchant Center proporciona los datos de producto que utilizan las experiencias de compra de Google.",
+          "details": [
+            "Precio y disponibilidad",
+            "Información de envíos y devoluciones"
+          ],
+          "destination": "Merchant Center",
+          "action": {
+            "primary": "Explora los datos de producto"
+          }
+        },
+        {
+          "id": "assistant",
+          "label": "Respuestas IA",
+          "title": "Lleva los datos de producto a la conversación",
+          "description": "La IA de Google responde preguntas de compra utilizando los datos de producto de los comercios.",
+          "details": [
+            "AI Mode en la Búsqueda",
+            "Gemini"
+          ],
+          "destination": "AI Mode y Gemini",
+          "action": {
+            "primary": "Revisa los requisitos del comercio"
+          }
+        },
+        {
+          "id": "checkout",
+          "label": "Compra",
+          "title": "El recorrido de compra depende de la elegibilidad",
+          "description": "Los compradores pueden continuar al carrito del comercio o usar Google Pay cuando el checkout está habilitado. El comercio sigue siendo el vendedor legal.",
+          "details": [
+            "Continuar al carrito del comercio",
+            "Google Pay cuando el checkout está habilitado"
+          ],
+          "destination": "Checkout del comercio",
+          "action": {
+            "primary": "Revisa los requisitos del comercio"
+          }
+        }
+      ]
+    },
+    "reading": {
+      "label": "Una oferta coherente",
+      "rows": [
+        {
+          "title": "Datos de producto",
+          "detail": "Precio y disponibilidad",
+          "field": "price / availability"
+        },
+        {
+          "title": "Página de producto",
+          "detail": "Información de producto precisa",
+          "field": "link"
+        },
+        {
+          "title": "Envíos y devoluciones",
+          "detail": "Información clara de entrega y devoluciones",
+          "field": "shipping / return policy"
+        },
+        {
+          "title": "Elegibilidad de checkout",
+          "detail": "La elegibilidad forma parte de la oferta",
+          "field": "checkout_eligibility"
+        }
+      ],
+      "action": {
+        "primary": "Explora Merchant Center"
+      }
+    },
+    "entry": {
+      "label": "Requisitos de Google para comercios",
+      "steps": [
+        "Comercios y productos elegibles",
+        "Despliegue del centro de integraciones",
+        "Validación técnica y aprobación"
+      ],
+      "note": "ecentic ayuda a preparar y probar datos y ajustes. La solicitud, validación y aprobación siguen siendo entre tu negocio y Google.",
+      "action": {
+        "primary": "Explora la preparación del checkout"
+      }
+    }
+  },
+  "perplexityPage": {
+    "shopping": {
+      "label": "Explorar el destino de compra",
+      "result": "Tarjeta de producto",
+      "destination": "Destino de compra",
+      "purchase": "Buy with Pro",
+      "store": "Web del comercio",
+      "purchaseTitle": "Una compra elegible",
+      "purchaseDescription": "La experiencia Buy with Pro anunciada se aplica a productos elegibles en Estados Unidos.",
+      "storeTitle": "Continuar en el comercio",
+      "storeDescription": "Cuando esa opción de compra no está disponible, el comprador sigue un enlace a la web del comercio.",
+      "caption": "Explora las dos vías descritas en el anuncio de compras de Perplexity."
+    },
+    "reading": {
+      "merchant": "Información del comercio",
+      "product": "Detalles del producto",
+      "price": "Precio",
+      "website": "Web del comercio",
+      "result": "Resultados de compra",
+      "caption": "Un programa para comercios ayuda a completar la información de los productos."
+    },
+    "entry": {
+      "label": "Explorar los requisitos de acceso para comercios",
+      "steps": [
+        "El programa anunciado",
+        "Requisitos actuales",
+        "Lo que falta por verificar"
+      ]
+    }
+  },
+  "claudePage": {
+    "explorer": {
+      "label": "Explora un agente de comercio propio",
+      "scope": "Dentro de la experiencia del comercio",
+      "tools": "Herramientas del propio comercio",
+      "stages": [
+        {
+          "id": "catalog",
+          "title": "Catálogo",
+          "headline": "Empieza por los datos de tus productos",
+          "body": "El comercio proporciona herramientas de catálogo y existencias para que su agente basado en Claude busque productos.",
+          "tools": [
+            "Catálogo",
+            "Existencias"
+          ]
+        },
+        {
+          "id": "compare",
+          "title": "Comparar",
+          "headline": "Da contexto a la comparación",
+          "body": "El agente compara productos con los datos y herramientas que facilita el comercio, incluidos su catálogo y sus políticas.",
+          "tools": [
+            "Datos del producto",
+            "Políticas de la tienda"
+          ]
+        },
+        {
+          "id": "cart",
+          "title": "Carrito",
+          "headline": "Conecta tus propias herramientas",
+          "body": "Las herramientas de carrito y checkout pertenecen a la experiencia creada por el comercio. ecentic no tiene una conexión de checkout específica para Claude hoy.",
+          "tools": [
+            "Carrito del comercio",
+            "Checkout del comercio"
+          ]
+        }
+      ]
+    },
+    "reading": {
+      "merchant": "Tu agente de comercio",
+      "simulation": "La comparación de ecentic"
+    },
+    "entry": {
+      "tools": "Herramientas del comercio",
+      "experience": "Tu propia experiencia de comercio"
+    },
+    "action": {
+      "primary": "Explora las simulaciones",
+      "secondary": "Mejora tus fichas"
+    }
+  },
+  "microsoftCopilotPage": {
+    "journey": {
+      "title": "La conversación, el catálogo, tu negocio",
+      "copilot": "Descubrimiento de productos y compra",
+      "merchant": "Sigues siendo el vendedor oficial",
+      "relationship": "Tus envíos. Tu relación con el cliente.",
+      "web": "Datos de productos en la web",
+      "feeds": "Feeds de productos del comercio",
+      "checkout": "Atributos adicionales de compra",
+      "dataLabel": "Explora el recorrido de los datos del producto"
+    },
+    "entry": {
+      "label": "Explora una vía de acceso para comercios",
+      "language": "Idioma del comercio",
+      "languageValue": "Inglés",
+      "buyers": "Compradores",
+      "buyersValue": "Estados Unidos",
+      "currency": "Moneda",
+      "currencyValue": "USD",
+      "microsoft": "Microsoft",
+      "shopify": "Shopify",
+      "stripe": "Stripe",
+      "routes": {
+        "microsoft": {
+          "title": "Microsoft Merchant Center",
+          "description": "Prepara los registros de productos y los atributos adicionales de compra de la guía de incorporación de Microsoft. Un paso de configuración del feed sigue en fase piloto para comercios seleccionados.",
+          "note": "Esta es la vía de Microsoft para comercios. La conexión de feed de ecentic aún no está activa."
+        },
+        "shopify": {
+          "title": "Inscripción automática de Shopify",
+          "description": "Shopify es una de las vías de inscripción documentadas por Microsoft. Siguen aplicándose los criterios de elegibilidad y los requisitos del programa de Microsoft.",
+          "note": "ecentic ya rastrea las visitas referidas por Copilot en tiendas Shopify conectadas."
+        },
+        "stripe": {
+          "title": "Stripe Agentic Commerce Suite",
+          "description": "Stripe Agentic Commerce Suite es una de las vías de acceso documentadas por Microsoft. Siguen aplicándose los criterios de elegibilidad y los requisitos del programa de Microsoft.",
+          "note": "Una vía de acceso no garantiza la aprobación ni las recomendaciones de productos."
+        }
+      },
+      "action": {
+        "primary": "Leer la guía de incorporación de Microsoft"
+      }
+    }
+  },
+  "amazonPage": {
+    "journey": {
+      "label": "Explora las rutas de compra de Shop Direct",
+      "discovery": "Descubierto en Amazon",
+      "surface": "Búsqueda de Amazon y Alexa for Shopping",
+      "destination": "Comprado en la web del comercio",
+      "paths": [
+        {
+          "id": "visit",
+          "title": "Visitar el comercio",
+          "actor": "El comprador visita tu web",
+          "heading": "El descubrimiento lleva al comprador a tu web",
+          "description": "Shop Direct puede enlazar a los productos de tu propio sitio. El comprador visita tu web para comprar.",
+          "condition": "La web del comercio es el destino de la compra."
+        },
+        {
+          "id": "buy",
+          "title": "Buy for Me",
+          "actor": "El agente de Amazon completa la compra",
+          "heading": "Un agente compra en la web del comercio",
+          "description": "En ofertas elegibles de Buy for Me, el agente de Amazon completa la compra en la web del comercio.",
+          "condition": "Buy for Me solo está disponible para ofertas elegibles."
+        }
+      ]
+    },
+    "catalog": {
+      "label": "La ruta del catálogo",
+      "source": "Tu catálogo de productos",
+      "route": "Proveedor de soluciones o Selling Partner API",
+      "destination": "Shop Direct"
+    },
+    "access": {
+      "title": "Participar tiene sus propios requisitos",
+      "market": "Compradores de Estados Unidos",
+      "eligibility": "Webs de comercios elegibles",
+      "steps": [
+        {
+          "id": "register",
+          "title": "Regístrate",
+          "description": "Gestiona la participación desde el espacio gratuito Shop Direct Merchant Workspace. No necesitas una tienda en el marketplace de Amazon."
+        },
+        {
+          "id": "verify",
+          "title": "Verifica tu web",
+          "description": "La verificación de la web es obligatoria. Los comercios elegibles pueden participar aunque también vendan en Amazon."
+        },
+        {
+          "id": "share",
+          "title": "Comparte tu catálogo",
+          "description": "Envía la información del catálogo mediante un proveedor de soluciones o la Selling Partner API de Amazon."
+        }
+      ]
+    }
+  },
+  "solutionsIndexPage": {
+    "businessDescription": "Elige tu tipo de negocio para explorar el trabajo de catálogo, las decisiones y los próximos pasos que encajan contigo.",
+    "workflowsTitle": "Empieza por el trabajo que diriges.",
+    "workflowsDescription": "Elige el enfoque de tu equipo para encontrar el flujo de trabajo del producto que necesitas.",
+    "workflowLabel": "Explora el flujo de trabajo",
+    "sectorsDescription": "Empieza por una pregunta del comprador. Explora los datos del producto que tu categoría necesita para responderla."
+  },
+  "brandsPage": {
+    "jobs": {
+      "description": "Elige la parte del recorrido de compra que tu equipo necesita mejorar.",
+      "label": "Explora las prioridades de tu marca",
+      "details": "Ver todos los retos y capacidades",
+      "items": [
+        {
+          "id": "compare",
+          "label": "Compara competidores",
+          "scope": "Decisiones simuladas",
+          "path": [
+            "Tu producto",
+            "Rivales concretos",
+            "Decisiones del modelo"
+          ]
+        },
+        {
+          "id": "listings",
+          "label": "Mejora las fichas",
+          "scope": "Datos existentes del producto",
+          "path": [
+            "Datos de origen",
+            "Título y descripción",
+            "Datos estructurados por separado"
+          ]
+        },
+        {
+          "id": "checkout",
+          "label": "Prueba la compra",
+          "scope": "Flujos compatibles de WooCommerce",
+          "path": [
+            "Descubrimiento del producto",
+            "Precio del carrito",
+            "Paso a la pasarela de pago"
+          ]
+        },
+        {
+          "id": "referrals",
+          "label": "Identifica referencias",
+          "scope": "Referencias de IA reconocidas en Shopify",
+          "path": [
+            "Asistente de IA",
+            "Visita a la tienda",
+            "Informes de referencias"
+          ]
+        }
+      ]
+    },
+    "sources": {
+      "description": "Empieza con tu tienda o un feed compatible. La sincronización con Merchant Center sigue siendo una acción independiente.",
+      "store": "Conecta una tienda",
+      "catalog": "Otras vías para tu catálogo"
+    }
+  },
+  "retailersPage": {
+    "challengeIntro": "Empieza por la ficha, compara la evidencia y decide qué trabajo del catálogo viene después.",
+    "catalogIntro": "Elige dónde están los datos de tus productos. Consulta qué permite cada conexión y qué decisiones corresponden a tu equipo.",
+    "catalog": {
+      "select": "La fuente de tu catálogo",
+      "capability": "Qué permite esta vía",
+      "dataLabel": "Datos del producto",
+      "decisionLabel": "Decisión de publicación",
+      "routes": [
+        {
+          "data": "Prepara un feed o CSV compatible con los campos y formatos admitidos.",
+          "decision": "La importación no crea un conector de escritura. Decide cómo devolver los cambios aprobados a tu fuente."
+        },
+        {
+          "data": "Revisa los diagnósticos de Merchant Center para tu catálogo de Shopify.",
+          "decision": "Ejecuta la sincronización complementaria por separado después de publicar los cambios. No corrige todas las diferencias de precio o stock."
+        },
+        {
+          "data": "Conecta una tienda de Shopify o WooCommerce compatible e importa sus productos.",
+          "decision": "Tu equipo elige qué cambios admitidos de las fichas se publican en la tienda conectada."
+        },
+        {
+          "data": "Usa un feed de productos compatible exportado desde tu PIM.",
+          "decision": "Consulta la disponibilidad de conectores específicos en el directorio de integraciones antes de planificar la escritura."
+        }
+      ]
+    },
+    "pilot": {
+      "label": "Acuerda primero el alcance del piloto",
+      "steps": [
+        {
+          "title": "Un mercado, una categoría",
+          "body": "Elige los productos que tu equipo pueda revisar."
+        },
+        {
+          "title": "Referencia en la semana 0",
+          "body": "Establece el punto de partida del piloto acordado."
+        },
+        {
+          "title": "Resultados en la semana 6",
+          "body": "Revisa los hallazgos antes de elegir la siguiente categoría."
+        }
+      ]
+    }
+  },
+  "enterprisePage": {
+    "engagements": {
+      "description": "Elige la pregunta que necesitas responder. Acordamos el alcance y los honorarios antes de empezar.",
+      "label": "Explorar servicios para empresas",
+      "pilotAction": "Ver la secuencia del piloto",
+      "items": [
+        {
+          "duration": "4 semanas",
+          "question": "¿Por dónde empezamos?",
+          "path": [
+            "Acordar una categoría y las preguntas",
+            "Establecer la referencia inicial",
+            "Priorizar la lista de mejoras"
+          ]
+        },
+        {
+          "duration": "6 semanas",
+          "question": "¿Qué cambia al mejorar los datos?",
+          "path": [
+            "Un mercado, una categoría",
+            "Referencia inicial, mejoras y repetición",
+            "Informe escrito y siguiente decisión"
+          ]
+        },
+        {
+          "duration": "3 meses",
+          "question": "¿Cómo podría funcionar el pago o la reserva?",
+          "path": [
+            "Acordar la pregunta sobre pago o reserva",
+            "Valorar un prototipo con datos ficticios",
+            "Revisar los resultados en el mes 3"
+          ]
+        }
+      ]
+    },
+    "measures": {
+      "description": "Sigue la respuesta observada desde la mención del producto hasta una compra de prueba. Acordamos el objetivo y el método de recogida de cada medida."
+    }
+  },
+  "agenciesPage": {
+    "challenges": {
+      "description": "Convierte la pregunta del cliente en una revisión de producto, un cambio verificado y una comparación clara.",
+      "details": "Explora las preguntas de los clientes"
+    },
+    "tracks": {
+      "description": "Elige lo que aportas a la relación. El alcance y las condiciones comerciales se acuerdan antes de una reventa o recomendación.",
+      "label": "Modalidades de colaboración",
+      "pathLabel": "Qué incluye la colaboración",
+      "paths": [
+        [
+          "Catálogo del cliente",
+          "Revisión de productos",
+          "Cambios verificados"
+        ],
+        [
+          "Tu producto",
+          "Interfaces documentadas",
+          "Descubrimiento e incorporación"
+        ],
+        [
+          "Tu audiencia",
+          "Divulgación del comercio con IA",
+          "Conversación de colaboración"
+        ]
+      ]
+    },
+    "access": {
+      "label": "Titularidad de la cuenta",
+      "single": "Un titular, varias tiendas",
+      "separate": "Cuentas de clientes separadas",
+      "singleTitle": "Una cuenta reúne sus propias tiendas.",
+      "singleDescription": "Las tiendas pueden agruparse cuando pertenecen al mismo titular de la cuenta.",
+      "separateTitle": "Cada cliente controla su cuenta.",
+      "separateDescription": "Los titulares distintos mantienen cuentas separadas. Confirma el acuerdo con cada cliente antes de conectar.",
+      "owner": "Cuenta del titular",
+      "store": "Tienda propia",
+      "anotherStore": "Otra tienda propia",
+      "firstClient": "Cuenta del cliente A",
+      "secondClient": "Cuenta del cliente B",
+      "firstStore": "Tienda del cliente A",
+      "secondStore": "Tienda del cliente B",
+      "boundary": "Sin permisos delegados para agencias ni puestos de equipo"
+    },
+    "start": {
+      "description": "Trae tu modalidad, el caso de uso del cliente y la propuesta de titularidad de las cuentas a la conversación.",
+      "items": [
+        "Elige tu modalidad",
+        "Confirma la titularidad",
+        "Acuerda alcance y condiciones"
+      ]
+    }
+  },
+  "sectorsIndexPage": {
+    "description": "Explora una pregunta de compra y los datos que tu catálogo debe dejar claros.",
+    "question": "Una persona podría preguntar",
+    "productData": "Datos que deben quedar claros",
+    "attributeHint": "Abre un campo para ver qué debe indicar.",
+    "action": {
+      "primary": "Explorar este sector"
+    }
+  },
+  "foodPage": {
+    "description": "Elige una pregunta de compra para explorar los datos de origen que tu equipo debe revisar.",
+    "choose": "Elige una pregunta de compra",
+    "facts": "Datos que revisar",
+    "source": "Empieza por la información del envase.",
+    "allFacts": "Explora las seis comprobaciones de datos del producto"
+  },
+  "winePage": {
+    "explorer": {
+      "label": "Explora una pregunta de compra",
+      "question": "Un comprador podría preguntar",
+      "criteria": "Qué pide la pregunta",
+      "verify": "Datos que verificar",
+      "entries": [
+        {
+          "id": "gift",
+          "label": "Un regalo",
+          "criteria": [
+            {
+              "label": "Estilo",
+              "value": "Single malt ahumado"
+            },
+            {
+              "label": "Presupuesto",
+              "value": "Menos de 80 $"
+            },
+            {
+              "label": "Ocasión",
+              "value": "Un regalo"
+            }
+          ],
+          "verification": "Comprueba los datos de barrica o estilo, el precio actual y la disponibilidad de envío en la ficha de origen."
+        },
+        {
+          "id": "ready",
+          "label": "Para beber ahora",
+          "criteria": [
+            {
+              "label": "Vino",
+              "value": "Barolo"
+            },
+            {
+              "label": "Momento",
+              "value": "Listo para beber ahora"
+            },
+            {
+              "label": "Datos de la botella",
+              "value": "Origen y añada"
+            }
+          ],
+          "verification": "Comprueba la región y la denominación junto con la añada declarada. Verifica en la ficha de origen cualquier afirmación sobre su momento de consumo."
+        },
+        {
+          "id": "cocktails",
+          "label": "Para cócteles",
+          "criteria": [
+            {
+              "label": "Licor",
+              "value": "Ron"
+            },
+            {
+              "label": "Preferencia",
+              "value": "Bajo en azúcar"
+            },
+            {
+              "label": "Ocasión",
+              "value": "Cócteles"
+            }
+          ],
+          "verification": "Vincula la afirmación de bajo contenido en azúcar a información de origen que tu equipo pueda verificar. No la deduzcas de las notas de cata."
+        }
+      ]
+    },
+    "attributes": {
+      "caption": "De la botella al registro de producto",
+      "description": "Ofrece el origen, el estilo y la disponibilidad como texto junto a la imagen de la botella."
+    },
+    "rules": {
+      "market": "Canal y país",
+      "age": "Verificación de edad"
+    }
+  },
+  "beautyPage": {
+    "record": {
+      "label": "Explora una pregunta de compra",
+      "tabs": [
+        "Hidratante",
+        "Protección solar",
+        "Champú"
+      ],
+      "question": "Lo que busca el comprador",
+      "facts": "Datos de producto que revisar",
+      "claim": {
+        "title": "Afirmación sobre el producto final",
+        "body": "Comprueba la afirmación con pruebas del producto terminado concreto."
+      }
+    },
+    "evidence": {
+      "label": "Mantén los mismos datos del envase a la ficha",
+      "steps": [
+        "Envase del producto",
+        "Pruebas de respaldo",
+        "Descripción publicada"
+      ],
+      "claims": "Afirmaciones y pruebas",
+      "protection": "Protección probada"
+    }
+  },
+  "electronicsPage": {
+    "selectorLabel": "Explora una pregunta de compra",
+    "scenarioLabels": [
+      "Auriculares",
+      "Portátiles",
+      "Robots aspiradores"
+    ],
+    "sourceLabel": "Datos de origen que revisar",
+    "inspectLabel": "Sigue la pregunta hasta las especificaciones.",
+    "mapLabel": "Revisa los seis datos de origen",
+    "boundary": "Un punto de partida para revisar los datos de origen, no un resultado de compatibilidad."
+  },
+  "furniturePage": {
+    "introduction": "Relaciona el espacio y las necesidades prácticas del comprador con datos que tu equipo pueda verificar.",
+    "widthLabel": "Ancho con unidades",
+    "depthLabel": "Fondo con unidades",
+    "heightLabel": "Altura con unidades",
+    "productLabel": "El producto exacto",
+    "diagramNote": "Un diagrama de relaciones, no un producto medido ni una confirmación de que encaja.",
+    "relationshipTitle": "Un producto debe encajar en algo más que una habitación.",
+    "relationships": [
+      {
+        "title": "Espacio y uso",
+        "body": "Las dimensiones y la capacidad describen el producto con datos legibles y verificables."
+      },
+      {
+        "title": "Material y acabado",
+        "body": "Separa la estructura, el tapizado y el acabado, incluida la variante seleccionada."
+      },
+      {
+        "title": "Entrega y devolución",
+        "body": "El montaje, la entrega y las devoluciones deben figurar junto a los datos del producto."
+      }
+    ],
+    "questionLabels": [
+      "Espacio y uso",
+      "Material y capacidad",
+      "Idoneidad del producto"
+    ],
+    "questionNotes": [
+      "Mantén las medidas exactas del producto separadas de las fotos ilustrativas.",
+      "Comprueba el material, el precio y la disponibilidad de la variante seleccionada junto con su capacidad.",
+      "Verifica con el proveedor la idoneidad del producto exacto. La ilustración no confirma su compatibilidad."
+    ],
+    "sourceLabel": "Verifica en la fuente."
+  },
+  "fashionPage": {
+    "trail": {
+      "title": "Actividad. Ajuste. Material.",
+      "description": "Abre una pregunta de compra para ver qué datos del producto debe verificar tu equipo.",
+      "label": "Preguntas de compra y datos del producto",
+      "contexts": [
+        "Actividad y clima",
+        "Anchura y tallas",
+        "Fibra y cuidado"
+      ],
+      "facts": "Datos del producto que verificar"
+    },
+    "rules": [
+      "Tallas según el destino",
+      "Composición de fibras",
+      "Declaraciones medioambientales"
+    ]
+  },
+  "travelPage": {
+    "questions": {
+      "caption": "Cada viaje es una oferta con condiciones.",
+      "description": "La pregunta cambia. Las fechas, la base del precio y las condiciones de reserva deben seguir siendo legibles."
+    },
+    "attributes": {
+      "description": "Reúne los datos que definen la oferta, desde las fechas disponibles hasta las condiciones para un cambio."
+    },
+    "roadmap": {
+      "label": "Explora el piloto de viajes",
+      "diagram": "La información y el recorrido que se revisarán",
+      "boundary": "Límite del alcance",
+      "stages": [
+        {
+          "id": "scope",
+          "label": "Acordar alcance",
+          "status": "Antes del piloto",
+          "title": "Un mercado. Un punto de partida acordado.",
+          "description": "Confirma el idioma y la cobertura de datos antes de empezar. Parte de las páginas públicas y los datos de producto acordados con tu equipo.",
+          "steps": [
+            {
+              "title": "Un mercado",
+              "body": "Confirma el idioma y la cobertura de datos."
+            },
+            {
+              "title": "Páginas públicas",
+              "body": "Acuerda qué ofertas revisar."
+            },
+            {
+              "title": "Alcance del piloto",
+              "body": "Define la cuestión sobre el paso a la reserva."
+            }
+          ],
+          "note": "El piloto empieza con un alcance acordado; este recorrido no indica una integración de reservas activa."
+        },
+        {
+          "id": "baseline",
+          "label": "Revisar ofertas",
+          "status": "Referencia con datos públicos",
+          "title": "Lee la oferta antes del proceso de reserva.",
+          "description": "Revisa la información de las páginas que controlas y los datos de producto acordados. Tu equipo verifica los atributos de viaje; ecentic no inventa datos que falten.",
+          "steps": [
+            {
+              "title": "Web pública",
+              "body": "Parte de las páginas de producto acordadas."
+            },
+            {
+              "title": "Feed compatible",
+              "body": "Usa los campos definidos del importador."
+            },
+            {
+              "title": "Datos de la oferta",
+              "body": "Verifica fechas, precios, inclusiones y condiciones."
+            }
+          ],
+          "note": "La referencia no necesita acceso al motor de reservas, datos de clientes ni código en tu web."
+        },
+        {
+          "id": "handoff",
+          "label": "Revisar recorrido",
+          "status": "Alcance acordado por separado",
+          "title": "Aclara el límite del proceso de reserva.",
+          "description": "Examina el recorrido acordado desde la información pública hasta la reserva. El acceso o la integración posterior requieren un alcance separado.",
+          "steps": [
+            {
+              "title": "Oferta pública",
+              "body": "Mantén claras las fechas, los precios y las condiciones."
+            },
+            {
+              "title": "Canal o proveedor",
+              "body": "La reserva depende del canal y del proceso."
+            },
+            {
+              "title": "Paso a la reserva",
+              "body": "Revisa el destino acordado y el siguiente paso."
+            }
+          ],
+          "note": "No se promete una integración de reservas automáticas, y un asistente puede enlazar a un portal en lugar de a tu web."
+        }
+      ]
+    }
+  },
+  "healthPage": {
+    "reader": {
+      "description": "Abre una pregunta de compra para revisar los datos del producto que la sustentan.",
+      "label": "Preguntas de compra y datos del producto",
+      "facts": "Datos del producto que tu equipo debe verificar",
+      "allFacts": "Ver todos los atributos del producto"
+    },
+    "relationship": {
+      "title": "Dos comprobaciones, una descripción del producto.",
+      "label": "Los datos del fabricante y las condiciones del producto, canal y país fundamentan una descripción del producto respaldada.",
+      "inputs": [
+        {
+          "title": "Datos del fabricante",
+          "description": "Ingredientes, uso previsto e instrucciones."
+        },
+        {
+          "title": "Producto, canal y país",
+          "description": "Condiciones de evidencia y elegibilidad."
+        }
+      ],
+      "output": "Información del producto respaldada",
+      "description": "Vincula la descripción a los datos verificados de las fuentes."
+    },
+    "rules": [
+      "Declaraciones nutricionales y de salud",
+      "Elegibilidad en el canal"
+    ],
+    "role": "El papel de ecentic"
+  },
+  "resourcesPage": {
+    "navigationLabel": "Explora los recursos",
+    "publicEndpoints": "Endpoints públicos"
+  },
+  "partnersPage": {
+    "tracks": {
+      "description": "Acerca tus servicios, tecnología o audiencia a las tiendas con las que ya trabajas."
+    },
+    "preparation": {
+      "title": "Prepara tu solicitud",
+      "description": "Ten estos datos a mano antes de rellenar el formulario. Márcalos a medida que los prepares.",
+      "progress": [
+        "3 datos por preparar",
+        "1 de 3 datos preparados",
+        "2 de 3 datos preparados",
+        "Todo listo para rellenar el formulario"
+      ],
+      "items": [
+        {
+          "title": "Tu empresa y sitio web",
+          "description": "Ten a mano el nombre de tu empresa, su web y el correo de trabajo más adecuado para contactar."
+        },
+        {
+          "title": "Tu modalidad de colaboración",
+          "description": "Elige entre agencias y distribuidores, socios tecnológicos o creadores y afiliados."
+        },
+        {
+          "title": "Las tiendas con las que trabajas",
+          "description": "Piensa en cuántas tiendas atiendes y en lo que te gustaría hacer en conjunto."
+        }
+      ],
+      "action": {
+        "primary": "Ir a la solicitud"
+      },
+      "note": "Esta lista es opcional. Añade tus datos en el formulario de abajo."
+    }
+  },
+  "blogIndexPage": {
+    "featured": "Lectura destacada",
+    "latest": "Lo último en el blog",
+    "archive": "Encuentra tu próxima lectura",
+    "archiveDescription": "Explora guías prácticas e investigación para dar el siguiente paso en tu estrategia de comercio.",
+    "topics": "Explora un tema",
+    "topicsDescription": "Sigue las preguntas detrás de los artículos.",
+    "collection": "Colección",
+    "order": "Orden de lectura",
+    "all": "Todos los artículos",
+    "editorial": "Guías editoriales",
+    "recommended": "Recomendado",
+    "newest": "Más recientes",
+    "articles": "Artículos",
+    "page": "Página",
+    "empty": "Aún no hay artículos en esta colección.",
+    "loading": "Cargando artículos",
+    "action": {
+      "primary": "Ver todos los artículos",
+      "secondary": "Anterior",
+      "tertiary": "Siguiente",
+      "quaternary": "Explorar recursos"
+    }
+  },
+  "blogArticlePage": {
+    "contents": "En este artículo",
+    "introduction": "Introducción",
+    "takeaways": "Ideas clave",
+    "byline": "Por ecentic",
+    "topics": "Explora estos temas",
+    "action": {
+      "primary": "Volver arriba"
+    }
+  },
+  "blogTagPage": {
+    "collection": "Colección de lecturas",
+    "description": "Guías e investigación sobre {topic}, del blog de ecentic.",
+    "latestArticle": "Empieza por lo más reciente",
+    "takeaways": "En este artículo",
+    "moreArticles": "Sigue leyendo",
+    "relatedTopics": "Explora un tema relacionado",
+    "relatedDescription": "Descubre los temas conectados con esta colección."
+  },
+  "demoPage": {
+    "agenda": {
+      "description": "Elige un tema para ver qué trataremos en la conversación.",
+      "bringLabel": "Trae a la conversación",
+      "exploreLabel": "Exploraremos",
+      "items": [
+        {
+          "bring": "Una categoría y un competidor",
+          "explore": "Uno o dos de tus productos, comparados en directo."
+        },
+        {
+          "bring": "Un producto que quieras entender",
+          "explore": "Las razones del asistente y la información que utilizó."
+        },
+        {
+          "bring": "Las prioridades de tu catálogo",
+          "explore": "Cambios en las fichas para revisar con tu equipo."
+        },
+        {
+          "bring": "El equipo y la categoría del piloto",
+          "explore": "Una referencia inicial y una evaluación que acordaremos juntos."
+        }
+      ],
+      "action": {
+        "primary": "Prepara tu demo"
+      }
+    }
+  },
+  "enterpriseSecurityDesign": {
+    "accessTitle": "Importar y publicar",
+    "permissionsTitle": "Permisos de conexión",
+    "trackingTitle": "Medición de visitas a la tienda",
+    "checkoutTitle": "Pago por agentes",
+    "routingTitle": "Cómo se enrutan las peticiones a los modelos",
+    "catalogLabel": "Catálogo de la tienda conectada",
+    "modelLabel": "Proveedores de IA",
+    "outputLabel": "Comparaciones y correcciones de fichas"
+  },
+  "toolsPage": {
+    "description": "Empieza por la pregunta que quieres resolver. Elige una herramienta para ver qué necesita y qué significa su resultado.",
+    "inputLabel": "Qué necesitas",
+    "accessLabel": "Acceso",
+    "resultLabel": "Cómo interpretar el resultado",
+    "tools": {
+      "score": {
+        "purpose": "Evalúa tu catálogo",
+        "input": "Tu tienda, productos y competidores",
+        "access": "Escaneo gratis · Requiere cuenta",
+        "limit": "Son comparaciones simuladas de productos. No muestran posiciones en directo dentro de las aplicaciones de compra con IA.",
+        "steps": [
+          "Tus productos",
+          "Comparación con IA",
+          "Puntuación y motivos"
+        ]
+      },
+      "validator": {
+        "purpose": "Revisa un perfil de pago",
+        "input": "La URL de tu tienda",
+        "access": "Gratis · Sin cuenta",
+        "limit": "Un perfil publicado válido no confirma que un comprador pueda completar el pago. Usa el playground para probar las herramientas de la tienda.",
+        "steps": [
+          "URL de la tienda",
+          "Perfil publicado",
+          "Revisión de estructura"
+        ]
+      },
+      "playground": {
+        "purpose": "Prueba un recorrido de compra",
+        "input": "Una tienda con herramientas de compra para agentes",
+        "access": "10 mensajes gratis · Sin cuenta",
+        "limit": "El agente llama a las herramientas de la tienda. Usa una tienda de pruebas para comprobar el pago.",
+        "steps": [
+          "Búsqueda",
+          "Carrito",
+          "Pago"
+        ]
+      },
+      "scanner": {
+        "purpose": "Busca indicios de herramientas",
+        "input": "La URL pública de una tienda",
+        "access": "Gratis · Sin cuenta",
+        "limit": "Inspecciona una pequeña muestra de páginas y scripts. No ejecuta JavaScript, envía formularios ni comprueba que las herramientas funcionen en el navegador.",
+        "steps": [
+          "Código de la tienda",
+          "Herramientas y formularios",
+          "Indicios y límites"
+        ]
+      },
+      "compare": {
+        "purpose": "Compara dos fichas",
+        "input": "Dos URLs de producto",
+        "access": "Comparación de productos gratis",
+        "limit": "Cada modelo hace una elección simulada con las fichas comparadas. No es un informe de posiciones de compra en directo.",
+        "steps": [
+          "Dos fichas",
+          "Cuatro modelos de IA",
+          "Elección y motivos"
+        ]
+      }
+    }
+  },
+  "docsControls": {
+    "snippet": "Ejemplo de código",
+    "action": {
+      "primary": "Copiar"
+    },
+    "copied": "Copiado",
+    "failed": "No se pudo copiar. Selecciona el código para copiarlo."
+  },
+  "docsAuthenticationPage": {
+    "paths": {
+      "title": "Elige una ruta de petición",
+      "description": "Explora primero la API. Añade una clave bearer cuando tu cliente actúe sobre una cuenta de comercio.",
+      "label": "Autenticación de la petición",
+      "open": "Descubrimiento abierto",
+      "authenticated": "Cuenta de comercio",
+      "client": "Tu cliente",
+      "noCredential": "Sin credenciales",
+      "bearer": "Requiere clave bearer",
+      "publicDestination": "Descubrimiento + sandbox",
+      "protectedDestination": "REST + MCP",
+      "details": "Cómo funciona esta ruta"
+    },
+    "keySteps": [
+      "Crea una cuenta",
+      "Genera una clave",
+      "Guárdala al verla"
+    ],
+    "recovery": {
+      "label": "Descubrimiento de autenticación tras un 401",
+      "response": "Credencial ausente o inválida",
+      "resource": "Metadatos del recurso protegido",
+      "authorization": "Metadatos del servidor de autorización"
+    }
+  },
+  "docsIndexPage": {
+    "navigation": "Explora la documentación",
+    "quickstart": {
+      "label": "Elige una primera solicitud",
+      "tabs": [
+        "API",
+        "Protocolos",
+        "Planes"
+      ],
+      "request": "Solicitud",
+      "response": "Respuesta",
+      "access": "No necesitas una clave de API",
+      "action": {
+        "primary": "Abrir JSON"
+      }
+    },
+    "contracts": [
+      "application/problem+json",
+      "RateLimit / Retry-After",
+      "Deprecation / Sunset"
+    ]
+  },
+  "docsApiPage": {
+    "surfaces": "Explorar por interfaz",
+    "all": "Todos los endpoints",
+    "groups": {
+      "discovery": "Descubrimiento",
+      "sandbox": "Sandbox",
+      "catalog": "Catálogos",
+      "mcp": "MCP",
+      "commerce": "Comercio"
+    },
+    "sourceTitle": "Una única fuente.",
+    "sourceBody": "Abre un endpoint para leer el contrato exacto. Sigue sus enlaces de esquema para consultar las estructuras de datos compartidas.",
+    "operations": "Operaciones",
+    "schemas": "Esquemas compartidos",
+    "responses": "Códigos de respuesta",
+    "references": "Esquemas referenciados",
+    "schemaBody": "Estas definiciones se comparten entre operaciones. Cada nombre tiene un enlace permanente y cada definición se puede copiar como JSON.",
+    "permalink": "Enlace a esta definición",
+    "navigation": "Secciones de la referencia",
+    "definition": "Definición original · JSON",
+    "securityTitle": "Declarado por operación",
+    "securityBody": "Consulta el campo security de cada endpoint antes de elegir las credenciales. El esquema disponible se define aquí."
+  },
+  "docsErrorsPage": {
+    "example": "Ejemplo de respuesta",
+    "fields": "Leer la respuesta",
+    "fieldItems": [
+      {
+        "name": "type",
+        "description": "La URI que identifica el problema, anclada en esta referencia."
+      },
+      {
+        "name": "code",
+        "description": "El identificador estable sobre el que tu cliente puede tomar decisiones."
+      },
+      {
+        "name": "title",
+        "description": "Un resumen breve para personas."
+      },
+      {
+        "name": "status",
+        "description": "El estado HTTP, repetido en el cuerpo."
+      },
+      {
+        "name": "detail",
+        "description": "Qué falló en esta petición concreta."
+      },
+      {
+        "name": "resolution",
+        "description": "El siguiente paso para resolver el fallo."
+      },
+      {
+        "name": "documentation",
+        "description": "La página de referencia de la respuesta."
+      },
+      {
+        "name": "instance",
+        "description": "La ruta que produjo el fallo, cuando se conoce."
+      }
+    ],
+    "catalogue": {
+      "label": "Códigos de problema publicados",
+      "description": "Abre un código para leer su resolución. Cada código tiene un enlace permanente.",
+      "permalink": "Enlace permanente a",
+      "resolution": "Cómo resolverlo",
+      "action": {
+        "primary": "Expandir todos",
+        "secondary": "Contraer todos"
+      }
+    }
+  },
+  "docsMcpPage": {
+    "transport": {
+      "label": "Referencia de conexión",
+      "endpoint": "Endpoint principal",
+      "alias": "Mismo handler",
+      "details": [
+        "Rutas del endpoint",
+        "Peticiones y respuestas",
+        "Comportamiento de la sesión"
+      ]
+    },
+    "handshake": {
+      "label": "Explora el handshake",
+      "tabs": [
+        "Initialize",
+        "Notificar"
+      ],
+      "request": "El cliente envía",
+      "response": "El servidor devuelve",
+      "result": [
+        "Protocolo negociado + capacidades del servidor",
+        "Aceptado con el cuerpo vacío"
+      ],
+      "example": "Ejemplo completo de handshake"
+    },
+    "authentication": {
+      "credential": "Envía una clave bearer",
+      "create": "Crea tu credencial"
+    },
+    "errors": {
+      "labels": [
+        "Error JSON-RPC",
+        "Error de transporte",
+        "Excepción de autenticación"
+      ],
+      "formats": [
+        "error.code",
+        "application/problem+json",
+        "WWW-Authenticate"
+      ]
+    }
+  },
+  "docsLimitsPage": {
+    "requests": "solicitudes",
+    "window": "cada {seconds} segundos",
+    "publicScope": "Todos los endpoints de /api/v1",
+    "policySource": "Políticas aplicadas por la API",
+    "headerExample": "Ejemplos de encabezados de respuesta",
+    "headerHint": "Selecciona un encabezado para leer su significado. Estos valores ilustran una respuesta; no son un contador en tiempo real.",
+    "windowTitle": "Un límite temporal, dos lecturas",
+    "remaining": "Solicitudes restantes",
+    "reset": "Segundos hasta el reinicio",
+    "windowHint": "En este ejemplo, ambos formatos de encabezado describen la misma ventana.",
+    "responseExample": "Ejemplo: respuesta 429",
+    "retryTitle": "Espera y vuelve a intentarlo",
+    "retryLabel": "Segundos de espera en este ejemplo",
+    "retryHint": "Lee Retry-After en la respuesta real. Una solicitud enviada antes de ese momento se cuenta y se rechaza de nuevo."
+  },
+  "instructionsPage": {
+    "navigation": "En esta página",
+    "source": "Leer y copiar el documento canónico en inglés"
+  },
+  "docsVersioningPage": {
+    "current": "Versión actual de la API",
+    "request": "Petición fijada y versión de la respuesta",
+    "additive": "Ampliar la misma versión",
+    "breaking": "Crear una nueva ruta de versión",
+    "notice": "Aviso mínimo",
+    "days": "días",
+    "example": "Formato de las cabeceras de retirada",
+    "exampleHint": "Valores ilustrativos de las cabeceras; no son un anuncio de retirada.",
+    "apiContract": "Contrato de la API de ecentic",
+    "protocolContract": "Contrato del protocolo de descubrimiento",
+    "protocolVersion": "Lee la versión dentro del documento",
+    "lifecycle": {
+      "label": "Señales de obsolescencia en la respuesta",
+      "hint": "Selecciona una cabecera para ver qué le indica a tu cliente.",
+      "items": [
+        {
+          "header": "Deprecation",
+          "title": "Una versión queda obsoleta",
+          "description": "Todas las respuestas de una versión obsoleta llevan esta cabecera. Anuncia la obsolescencia según RFC 9745.",
+          "meaning": "Obsolescencia anunciada"
+        },
+        {
+          "header": "Sunset",
+          "title": "Se fija una fecha de retirada",
+          "description": "Las respuestas llevan además esta cabecera cuando se fija una fecha de retirada. RFC 8594 define la fecha en que la versión deja de responder.",
+          "meaning": "Fecha de retirada anunciada"
+        },
+        {
+          "header": "Link",
+          "title": "Se identifica el reemplazo",
+          "description": "Junto a la fecha de retirada, un Link con rel=\"successor-version\" dirige a tu cliente a la versión de reemplazo.",
+          "meaning": "Versión de reemplazo enlazada"
+        }
+      ]
+    }
+  },
+  "webmcpPage": {
+    "scope": {
+      "title": "Una mirada al código de la tienda",
+      "description": "Sigue las declaraciones, inspecciona sus metadatos y revisa qué debe verificarse todavía en el navegador.",
+      "pages": "Páginas públicas, como máximo",
+      "scripts": "Scripts o módulos externos, como máximo",
+      "runtime": "El registro y la ejecución en el navegador siguen sin verificarse."
+    },
+    "checks": {
+      "title": "Qué te dice cada comprobación.",
+      "description": "Siete comprobaciones distinguen hallazgos en el código, oportunidades de mejora y evidencias que todavía requieren un navegador.",
+      "workflowsTitle": "A lo largo de la compra",
+      "workflowsNote": "Estos ocho flujos son áreas útiles para revisar. Una tienda no necesita exponerlos todos mediante WebMCP.",
+      "items": {
+        "discovery": "Se recuperan declaraciones con nombre de formularios HTML o código de registro. Una referencia a la API por sí sola no permite resolver el inventario de herramientas disponibles.",
+        "metadata": "Revisa nombres, descripciones y posibles nombres duplicados en una misma página. Una descripción breve es una sugerencia de calidad, no un fallo del protocolo.",
+        "parameters": "Inspecciona nombres, tipos, descripciones y obligatoriedad de los parámetros recuperables. Una herramienta sin parámetros puede omitir su esquema; los esquemas dinámicos pueden quedar sin resolver.",
+        "implementation": "El código puede mostrar un controlador declarado o una operación de formulario. El escáner no ejecuta el controlador, no envía el formulario ni confirma su comportamiento.",
+        "forms": "Los formularios públicos pueden revelar oportunidades de adopción. Revisa primero las herramientas existentes y conserva la validación y el consentimiento; los flujos sensibles requieren revisión manual.",
+        "coverage": "El informe mantiene visibles los recursos bloqueados, los fallos y los límites del análisis. Las páginas no visitadas, los flujos autenticados y el código generado al ejecutarse pueden quedar fuera.",
+        "runtime": "Esta comprobación sigue siendo desconocida. Confirma por separado el registro nativo y el comportamiento en un navegador compatible con WebMCP; los hallazgos en el código no certifican el uso por agentes."
+      }
+    }
+  },
+  "playgroundPage": {
+    "guide": {
+      "title": "Del descubrimiento al pago",
+      "description": "Explora las llamadas de una sesión de compra.",
+      "discovery": {
+        "title": "Descubre la tienda",
+        "description": "Lee el perfil UCP de la tienda y selecciona su endpoint de compras. El playground prioriza MCP y usa REST como alternativa."
+      },
+      "action": {
+        "primary": "Abrir el playground",
+        "secondary": "Comprobar un perfil UCP"
+      }
+    },
+    "session": {
+      "title": "Sesión de compra en vivo",
+      "description": "Inspecciona las llamadas y respuestas mientras compra el agente."
+    },
+    "faq": {
+      "title": "Antes de conectar"
+    }
+  },
+  "validatorPage": {
+    "discoveryRequest": "Petición de descubrimiento documentada"
+  },
+  "changelogPage": {
+    "archive": "Explora el historial de novedades",
+    "action": {
+      "primary": "Mostrar todas",
+      "secondary": "Mostrar el último mes"
+    }
+  },
+  "comparisonGuidePage": {
+    "navigation": {
+      "label": "En esta guía",
+      "guide": "Categorías",
+      "tools": "Comparar herramientas",
+      "bottleneck": "Detectar el problema",
+      "related": "Seguir leyendo",
+      "faq": "Preguntas"
+    },
+    "views": {
+      "label": "Vista de comparación",
+      "table": "Comparar todas",
+      "tool": "Ver por herramienta"
+    }
+  },
+  "privacyPage": {
+    "contents": "Contenido",
+    "action": {
+      "primary": "Leer la política",
+      "secondary": "Volver al contenido"
     }
   }
 }

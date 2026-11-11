@@ -1,0 +1,44 @@
+{
+  "docsErrorsPage": {
+    "example": "Ejemplo de respuesta",
+    "fields": "Leer la respuesta",
+    "fieldItems": [
+      {
+        "name": "type",
+        "description": "La URI que identifica el problema, anclada en esta referencia."
+      },
+      {
+        "name": "code",
+        "description": "El identificador estable sobre el que tu cliente puede tomar decisiones."
+      },
+      { "name": "title", "description": "Un resumen breve para personas." },
+      {
+        "name": "status",
+        "description": "El estado HTTP, repetido en el cuerpo."
+      },
+      {
+        "name": "detail",
+        "description": "Qué falló en esta petición concreta."
+      },
+      {
+        "name": "resolution",
+        "description": "El siguiente paso para resolver el fallo."
+      },
+      {
+        "name": "documentation",
+        "description": "La página de referencia de la respuesta."
+      },
+      {
+        "name": "instance",
+        "description": "La ruta que produjo el fallo, cuando se conoce."
+      }
+    ],
+    "catalogue": {
+      "label": "Códigos de problema publicados",
+      "description": "Abre un código para leer su resolución. Cada código tiene un enlace permanente.",
+      "permalink": "Enlace permanente a",
+      "resolution": "Cómo resolverlo",
+      "action": { "primary": "Expandir todos", "secondary": "Contraer todos" }
+    }
+  }
+}

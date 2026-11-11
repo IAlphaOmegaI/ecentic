@@ -1,0 +1,18 @@
+{
+  "docsLimitsPage": {
+    "requests": "requests",
+    "window": "per {seconds} seconds",
+    "publicScope": "Every /api/v1 endpoint",
+    "policySource": "Policies enforced by the API",
+    "headerExample": "Response header examples",
+    "headerHint": "Select a header to read its meaning. These values illustrate a response; they are not a live counter.",
+    "windowTitle": "One boundary, two readings",
+    "remaining": "Requests remaining",
+    "reset": "Seconds until reset",
+    "windowHint": "In this example, both header formats describe the same window.",
+    "responseExample": "Example: 429 response",
+    "retryTitle": "Wait, then retry",
+    "retryLabel": "Seconds to wait in this example",
+    "retryHint": "Read Retry-After on the actual response. A request made before that time is counted and rejected again."
+  }
+}

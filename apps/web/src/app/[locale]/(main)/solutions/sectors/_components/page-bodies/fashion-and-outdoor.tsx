@@ -1,0 +1,161 @@
+import { ArrowRightIcon } from "@zenncore/icons";
+import { getMessages } from "next-intl/server";
+import { Fragment } from "react";
+import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
+import type { MarketingBodyProps } from "@/components/marketing/body";
+import { MarketingSection } from "@/components/marketing/page";
+import {
+  MarketingBand,
+  MarketingEyebrow,
+} from "@/components/marketing/primitives";
+import { Plus } from "@/components/plus";
+import { Link } from "@/i18n/navigation";
+import { FashionAndOutdoorTrail } from "./fashion-and-outdoor-trail";
+
+export const FashionAndOutdoorBody = async ({
+  sections,
+  sectionChildren,
+}: MarketingBodyProps) => {
+  const { enterpriseSolutions, fashionPage } = await getMessages();
+  const attributes =
+    enterpriseSolutions.sectors["fashion-and-outdoor"].sections.find(
+      (section) => section.id === "attributes",
+    )?.items ?? [];
+
+  return (
+    <>
+      {sections.map((section, index) => (
+        <Fragment key={section.id}>
+          {index > 0 && <SectionGutter />}
+          {(() => {
+            switch (section.id) {
+              case "questions":
+                return (
+                  <MarketingBand
+                    id={section.id}
+                    className="[&>.marketing-rail>.marketing-guides]:hidden"
+                  >
+                    <div className="px-4 py-8 sm:px-8 sm:py-12">
+                      {section.eyebrow && (
+                        <MarketingEyebrow>{section.eyebrow}</MarketingEyebrow>
+                      )}
+                      <h2>{section.title}</h2>
+                    </div>
+                    <FashionAndOutdoorTrail
+                      questions={section.items ?? []}
+                      attributes={attributes}
+                      copy={fashionPage.trail}
+                    />
+                    {sectionChildren?.[section.id]}
+                  </MarketingBand>
+                );
+              case "rules":
+                return (
+                  <MarketingBand
+                    id={section.id}
+                    className="[&>.marketing-rail>.marketing-guides]:hidden"
+                  >
+                    <div className="px-4 py-8 sm:px-8 sm:py-12">
+                      {section.eyebrow && (
+                        <MarketingEyebrow>{section.eyebrow}</MarketingEyebrow>
+                      )}
+                      <h2>{section.title}</h2>
+                    </div>
+                    {section.paragraphs?.map((paragraph, position) => {
+                      const link = section.links?.[position];
+
+                      return (
+                        <article
+                          key={paragraph}
+                          className="relative grid border-accent-foreground border-t md:grid-cols-[1fr_2fr]"
+                        >
+                          <Plus className="top-0 left-1/3 -translate-x-1/2 -translate-y-1/2 max-md:hidden" />
+                          <div className="min-w-0 border-accent-foreground bg-background-dimmed px-4 py-6 sm:px-8 md:border-r md:py-8">
+                            <h3 className="max-w-[20ch] text-2xl!">
+                              {fashionPage.rules[position]}
+                            </h3>
+                          </div>
+                          <div className="min-w-0 px-4 py-6 sm:px-8 md:py-8">
+                            <p className="max-w-[65ch] text-foreground-dimmed">
+                              {paragraph}
+                            </p>
+                          </div>
+                          {link && (
+                            <Link
+                              href={link.href}
+                              className="group flex min-h-16 items-center justify-between gap-6 border-accent-foreground border-t px-4 py-4 text-primary-text hover:bg-background-dimmed focus-visible:-outline-offset-4 sm:px-8 md:col-span-2"
+                            >
+                              <span className="group-hover:underline group-hover:underline-offset-4">
+                                {link.label}
+                              </span>
+                              <ArrowRightIcon
+                                aria-hidden
+                                className="size-4 shrink-0"
+                              />
+                            </Link>
+                          )}
+                        </article>
+                      );
+                    })}
+                    {sectionChildren?.[section.id]}
+                    {section.note && (
+                      <p className="border-accent-foreground border-t bg-background-dimmed px-4 py-6 text-foreground-dimmed text-sm sm:px-8">
+                        {section.note}
+                      </p>
+                    )}
+                  </MarketingBand>
+                );
+              case "business":
+                return (
+                  <MarketingBand
+                    id={section.id}
+                    className="[&>.marketing-rail>.marketing-guides]:hidden"
+                  >
+                    <div className="px-4 py-8 sm:px-8 sm:py-12">
+                      {section.eyebrow && (
+                        <MarketingEyebrow>{section.eyebrow}</MarketingEyebrow>
+                      )}
+                      <h2>{section.title}</h2>
+                    </div>
+                    <div className="grid border-accent-foreground border-t md:grid-cols-2">
+                      {section.items?.map((item, position) => (
+                        <Link
+                          key={item.title}
+                          href={item.href ?? "/solutions"}
+                          className="group relative flex min-w-0 flex-col border-accent-foreground px-4 py-8 hover:bg-background-dimmed focus-visible:-outline-offset-4 max-md:not-first:border-t sm:px-8 md:nth-[n+3]:border-t md:odd:border-r"
+                        >
+                          {position === 3 && (
+                            <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 max-md:hidden" />
+                          )}
+                          <h3 className="max-w-[24ch] text-2xl! group-hover:text-primary-text">
+                            {item.title}
+                          </h3>
+                          <p className="mt-4 max-w-[42ch] text-foreground-dimmed">
+                            {item.body}
+                          </p>
+                          <span className="mt-6 flex items-center justify-between gap-4 text-primary-text text-sm">
+                            {item.label}
+                            <ArrowRightIcon
+                              aria-hidden
+                              className="size-4 shrink-0"
+                            />
+                          </span>
+                        </Link>
+                      ))}
+                    </div>
+                    {sectionChildren?.[section.id]}
+                  </MarketingBand>
+                );
+              default:
+                return (
+                  <MarketingSection section={section}>
+                    {sectionChildren?.[section.id]}
+                  </MarketingSection>
+                );
+            }
+          })()}
+        </Fragment>
+      ))}
+    </>
+  );
+};

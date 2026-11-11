@@ -70,9 +70,9 @@ export const ContentPageBadge = ({
   alt,
   label,
 }: ContentPageBadge.Props) => (
-  <span className="inline-flex items-center gap-3 rounded-md bg-background-rich px-3 py-2 text-foreground">
+  <span className="inline-flex items-center gap-3 text-inherit">
     <Image src={logo} alt={alt} width={28} height={28} className="h-6 w-auto" />
-    <span className="font-medium text-foreground text-sm">{label}</span>
+    <span className="font-medium text-sm">{label}</span>
   </span>
 );
 

@@ -1,0 +1,41 @@
+{
+  "enterprisePage": {
+    "engagements": {
+      "description": "Choose the question you need to answer. Agree the scope and fee before the work begins.",
+      "label": "Explore enterprise engagements",
+      "pilotAction": "See the pilot sequence",
+      "items": [
+        {
+          "duration": "4 weeks",
+          "question": "Where do we start?",
+          "path": [
+            "Agree one category and question set",
+            "Establish the baseline",
+            "Prioritize the fix list"
+          ]
+        },
+        {
+          "duration": "6 weeks",
+          "question": "What changes after we fix the data?",
+          "path": [
+            "One market, one category",
+            "Baseline, agreed changes, repeat",
+            "Written readout and next decision"
+          ]
+        },
+        {
+          "duration": "3 months",
+          "question": "How could checkout or booking work?",
+          "path": [
+            "Agree the checkout or booking question",
+            "Consider a prototype with dummy data",
+            "Review the findings at month 3"
+          ]
+        }
+      ]
+    },
+    "measures": {
+      "description": "Follow the sampled answer from product mention to a tested buying flow. Agree the target and collection method for each measure."
+    }
+  }
+}

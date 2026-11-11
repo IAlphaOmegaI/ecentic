@@ -111,6 +111,7 @@ export const MarketingHero = ({
   artwork,
   meta,
   actionsSlot,
+  identity,
   children,
 }: MarketingHero.Props) => (
   <MarketingBand
@@ -140,6 +141,7 @@ export const MarketingHero = ({
           : "flex min-h-[480px] flex-col justify-center py-16 max-sm:min-h-0 max-sm:py-12",
       )}
     >
+      {identity && <div className="mb-8 max-sm:mb-6">{identity}</div>}
       {eyebrow && <MarketingEyebrow>{eyebrow}</MarketingEyebrow>}
       <h1 className="max-w-[920px] text-[clamp(3rem,5.2vw,4.8rem)] leading-[1.025] tracking-[-0.043em] max-sm:text-[43px] max-sm:tracking-[-0.036em]">
         {title}
@@ -176,6 +178,7 @@ export namespace MarketingHero {
     artwork?: EvolvingAscii.Kind;
     meta?: ReactNode;
     actionsSlot?: ReactNode;
+    identity?: ReactNode;
     children?: ReactNode;
   };
 }

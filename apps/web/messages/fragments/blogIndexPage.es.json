@@ -1,0 +1,26 @@
+{
+  "blogIndexPage": {
+    "featured": "Lectura destacada",
+    "latest": "Lo último en el blog",
+    "archive": "Encuentra tu próxima lectura",
+    "archiveDescription": "Explora guías prácticas e investigación para dar el siguiente paso en tu estrategia de comercio.",
+    "topics": "Explora un tema",
+    "topicsDescription": "Sigue las preguntas detrás de los artículos.",
+    "collection": "Colección",
+    "order": "Orden de lectura",
+    "all": "Todos los artículos",
+    "editorial": "Guías editoriales",
+    "recommended": "Recomendado",
+    "newest": "Más recientes",
+    "articles": "Artículos",
+    "page": "Página",
+    "empty": "Aún no hay artículos en esta colección.",
+    "loading": "Cargando artículos",
+    "action": {
+      "primary": "Ver todos los artículos",
+      "secondary": "Anterior",
+      "tertiary": "Siguiente",
+      "quaternary": "Explorar recursos"
+    }
+  }
+}

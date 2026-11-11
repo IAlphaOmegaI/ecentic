@@ -1,0 +1,32 @@
+{
+  "perplexityPage": {
+    "shopping": {
+      "label": "Explorar el destino de compra",
+      "result": "Tarjeta de producto",
+      "destination": "Destino de compra",
+      "purchase": "Buy with Pro",
+      "store": "Web del comercio",
+      "purchaseTitle": "Una compra elegible",
+      "purchaseDescription": "La experiencia Buy with Pro anunciada se aplica a productos elegibles en Estados Unidos.",
+      "storeTitle": "Continuar en el comercio",
+      "storeDescription": "Cuando esa opción de compra no está disponible, el comprador sigue un enlace a la web del comercio.",
+      "caption": "Explora las dos vías descritas en el anuncio de compras de Perplexity."
+    },
+    "reading": {
+      "merchant": "Información del comercio",
+      "product": "Detalles del producto",
+      "price": "Precio",
+      "website": "Web del comercio",
+      "result": "Resultados de compra",
+      "caption": "Un programa para comercios ayuda a completar la información de los productos."
+    },
+    "entry": {
+      "label": "Explorar los requisitos de acceso para comercios",
+      "steps": [
+        "El programa anunciado",
+        "Requisitos actuales",
+        "Lo que falta por verificar"
+      ]
+    }
+  }
+}

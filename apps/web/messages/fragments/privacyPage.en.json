@@ -1,0 +1,9 @@
+{
+  "privacyPage": {
+    "contents": "Contents",
+    "action": {
+      "primary": "Read the policy",
+      "secondary": "Back to contents"
+    }
+  }
+}

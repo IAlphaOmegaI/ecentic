@@ -1,0 +1,50 @@
+{
+  "winePage": {
+    "explorer": {
+      "label": "Explore a buying question",
+      "question": "A shopper could ask",
+      "criteria": "What the question asks for",
+      "verify": "Facts to verify",
+      "entries": [
+        {
+          "id": "gift",
+          "label": "A gift",
+          "criteria": [
+            { "label": "Style", "value": "Smoky single malt" },
+            { "label": "Budget", "value": "Under $80" },
+            { "label": "Occasion", "value": "A gift" }
+          ],
+          "verification": "Check cask or style details, the current price and shipping availability in the source listing."
+        },
+        {
+          "id": "ready",
+          "label": "Ready to drink",
+          "criteria": [
+            { "label": "Wine", "value": "Barolo" },
+            { "label": "Timing", "value": "Ready to drink now" },
+            { "label": "Bottle facts", "value": "Origin and vintage" }
+          ],
+          "verification": "Check region and appellation alongside the stated vintage. Verify any drinking-window claim in the source listing."
+        },
+        {
+          "id": "cocktails",
+          "label": "For cocktails",
+          "criteria": [
+            { "label": "Spirit", "value": "Rum" },
+            { "label": "Preference", "value": "Low sugar" },
+            { "label": "Occasion", "value": "Cocktails" }
+          ],
+          "verification": "Keep the low-sugar claim tied to source information your team can verify. Do not infer it from tasting prose."
+        }
+      ]
+    },
+    "attributes": {
+      "caption": "From bottle to product record",
+      "description": "Keep origin, style and availability readable alongside the bottle image."
+    },
+    "rules": {
+      "market": "Channel and country",
+      "age": "Age verification"
+    }
+  }
+}

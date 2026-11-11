@@ -1,0 +1,26 @@
+{
+  "blogIndexPage": {
+    "featured": "Featured read",
+    "latest": "New in the journal",
+    "archive": "Find your next read",
+    "archiveDescription": "Browse practical guides and research for the next step in your commerce strategy.",
+    "topics": "Explore a topic",
+    "topicsDescription": "Follow the questions behind the articles.",
+    "collection": "Collection",
+    "order": "Reading order",
+    "all": "All articles",
+    "editorial": "Editorial guides",
+    "recommended": "Recommended",
+    "newest": "Newest first",
+    "articles": "Articles",
+    "page": "Page",
+    "empty": "No articles in this collection yet.",
+    "loading": "Loading articles",
+    "action": {
+      "primary": "Browse all articles",
+      "secondary": "Previous",
+      "tertiary": "Next",
+      "quaternary": "Explore resources"
+    }
+  }
+}

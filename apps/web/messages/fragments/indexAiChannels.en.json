@@ -1,0 +1,9 @@
+{
+  "indexAiChannels": {
+    "title": "Choose your next channel.",
+    "description": "Explore each assistant, then select a capability to see what ecentic supports today.",
+    "providersLabel": "AI assistants",
+    "capabilitiesLabel": "ecentic capabilities",
+    "interestTitle": "Help shape what comes next"
+  }
+}

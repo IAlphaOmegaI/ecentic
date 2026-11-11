@@ -9,6 +9,7 @@ export const PageBanner = ({
   accent,
   description,
   badge,
+  identity,
   meta,
   actions,
   assurances,
@@ -20,6 +21,7 @@ export const PageBanner = ({
     description={description}
     dark={!compact}
     artwork={compact ? undefined : artwork}
+    identity={identity}
     meta={
       badge || meta ? (
         <>
@@ -60,6 +62,8 @@ export namespace PageBanner {
     /** Accepted for content compatibility; page titles establish the hierarchy. */
     eyebrow?: string;
     badge?: ReactNode;
+    /** Large unframed provider/program mark above the page title. */
+    identity?: ReactNode;
     meta?: ReactNode;
     actions?: ReactNode;
     assurances?: readonly string[];

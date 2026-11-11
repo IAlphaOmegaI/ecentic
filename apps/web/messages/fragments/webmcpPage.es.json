@@ -1,0 +1,26 @@
+{
+  "webmcpPage": {
+    "scope": {
+      "title": "Una mirada al código de la tienda",
+      "description": "Sigue las declaraciones, inspecciona sus metadatos y revisa qué debe verificarse todavía en el navegador.",
+      "pages": "Páginas públicas, como máximo",
+      "scripts": "Scripts o módulos externos, como máximo",
+      "runtime": "El registro y la ejecución en el navegador siguen sin verificarse."
+    },
+    "checks": {
+      "title": "Qué te dice cada comprobación.",
+      "description": "Siete comprobaciones distinguen hallazgos en el código, oportunidades de mejora y evidencias que todavía requieren un navegador.",
+      "workflowsTitle": "A lo largo de la compra",
+      "workflowsNote": "Estos ocho flujos son áreas útiles para revisar. Una tienda no necesita exponerlos todos mediante WebMCP.",
+      "items": {
+        "discovery": "Se recuperan declaraciones con nombre de formularios HTML o código de registro. Una referencia a la API por sí sola no permite resolver el inventario de herramientas disponibles.",
+        "metadata": "Revisa nombres, descripciones y posibles nombres duplicados en una misma página. Una descripción breve es una sugerencia de calidad, no un fallo del protocolo.",
+        "parameters": "Inspecciona nombres, tipos, descripciones y obligatoriedad de los parámetros recuperables. Una herramienta sin parámetros puede omitir su esquema; los esquemas dinámicos pueden quedar sin resolver.",
+        "implementation": "El código puede mostrar un controlador declarado o una operación de formulario. El escáner no ejecuta el controlador, no envía el formulario ni confirma su comportamiento.",
+        "forms": "Los formularios públicos pueden revelar oportunidades de adopción. Revisa primero las herramientas existentes y conserva la validación y el consentimiento; los flujos sensibles requieren revisión manual.",
+        "coverage": "El informe mantiene visibles los recursos bloqueados, los fallos y los límites del análisis. Las páginas no visitadas, los flujos autenticados y el código generado al ejecutarse pueden quedar fuera.",
+        "runtime": "Esta comprobación sigue siendo desconocida. Confirma por separado el registro nativo y el comportamiento en un navegador compatible con WebMCP; los hallazgos en el código no certifican el uso por agentes."
+      }
+    }
+  }
+}
