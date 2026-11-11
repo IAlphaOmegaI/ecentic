@@ -21,6 +21,7 @@ import {
 } from "@/components/marketing/primitives";
 import { SecurityDetails } from "./_components/security-details";
 import { SecurityFlow } from "./_components/security-flow";
+import { VaultFigure } from "./_components/vault-figure";
 
 export const generateMetadata = async () => {
   const { enterpriseCompany } = await getMessages();
@@ -53,8 +54,11 @@ const SecurityNote = ({ section }: { section: MarketingPage.Section }) => (
 );
 
 export default async () => {
-  const { enterpriseCompany, enterpriseSecurityDesign: labels } =
-    await getMessages();
+  const {
+    hairlineSecurity,
+    enterpriseCompany,
+    enterpriseSecurityDesign: labels,
+  } = await getMessages();
   const content = enterpriseCompany.security;
   const { subprocessors } = content;
   const findSection = (id: string): MarketingPage.Section | undefined =>
@@ -73,7 +77,11 @@ export default async () => {
   );
 
   return (
-    <MarketingPage content={{ ...content, sections: [] }} path="/security">
+    <MarketingPage
+      content={{ ...content, sections: [] }}
+      path="/security"
+      heroIllustration={<VaultFigure label={hairlineSecurity.label} />}
+    >
       {reviewed && (
         <MarketingBand
           id={reviewed.id}
