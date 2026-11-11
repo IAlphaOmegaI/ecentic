@@ -376,13 +376,13 @@ export const Navbar = () => {
         className="absolute inset-x-0 top-0 -bottom-12 -z-1 min-[1281px]:hidden"
       />
       <div
-        className="marketing-nav-inner mx-auto flex h-20 max-w-[1440px] items-center gap-3 px-4 sm:gap-5 sm:px-7"
+        className="marketing-nav-inner mx-auto flex h-20 min-w-0 max-w-[1440px] items-center gap-2 px-4 sm:gap-5 sm:px-7 min-[360px]:gap-3"
         ref={navigationRow}
       >
         <Link
           href="/"
           aria-label={navigation.home}
-          className="marketing-nav-logo shrink-0"
+          className="marketing-nav-logo shrink-0 max-[360px]:[&>span]:w-20"
         >
           <NavigationWordmark dark={dark} />
         </Link>
@@ -646,7 +646,7 @@ export const Navbar = () => {
             {chrome.action.primary}
           </Button>
         </div>
-        <div className="marketing-mobile-nav block min-[1281px]:hidden">
+        <div className="marketing-mobile-nav block shrink-0 min-[1281px]:hidden">
           <Sheet open={mobile} onOpenChange={setMobile}>
             <SheetTrigger
               render={

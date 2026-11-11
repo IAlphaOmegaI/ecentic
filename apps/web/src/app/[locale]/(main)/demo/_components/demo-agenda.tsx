@@ -5,18 +5,15 @@ import { Button } from "@zenncore/web/components/button";
 import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import type { getMessages } from "next-intl/server";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { MarketingLightBand } from "@/components/marketing/light-band";
 import type { MarketingPage } from "@/components/marketing/page";
-import { MarketingBand } from "@/components/marketing/primitives";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
 
 const artwork = ["bag", "console", "commerce", "cart"] as const;
 
 export const DemoAgenda = ({ section, copy }: DemoAgenda.Props) => (
-  <MarketingBand
-    id={section.id}
-    className="scroll-mt-24 [&>.marketing-rail>.marketing-guides]:hidden"
-  >
+  <MarketingLightBand id={section.id} className="scroll-mt-24">
     <div className="grid grid-cols-[1fr_2fr] border-accent-foreground border-b max-md:grid-cols-1">
       <div className="border-accent-foreground border-r px-8 py-10 max-sm:px-4 max-sm:pt-8 max-md:border-r-0 max-md:pb-0">
         <p className="text-primary-text">{section.eyebrow}</p>
@@ -102,7 +99,7 @@ export const DemoAgenda = ({ section, copy }: DemoAgenda.Props) => (
         </TabsPanel>
       ))}
     </Tabs>
-  </MarketingBand>
+  </MarketingLightBand>
 );
 
 export namespace DemoAgenda {

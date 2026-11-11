@@ -2,6 +2,7 @@ import { getMessages } from "next-intl/server";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { MarketingLead } from "@/components/marketing/lead";
+import { MarketingLightBand } from "@/components/marketing/light-band";
 import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
 import { MarketingBand } from "@/components/marketing/primitives";
 import { Plus } from "@/components/plus";
@@ -68,12 +69,9 @@ export default async () => {
         </div>
       </MarketingBand>
       <SectionGutter />
-      <MarketingBand
-        id="prepare"
-        className="[&>.marketing-rail>.marketing-guides]:hidden"
-      >
+      <MarketingLightBand id="prepare">
         <PartnersPreparation copy={partnersPage.preparation} />
-      </MarketingBand>
+      </MarketingLightBand>
       <SectionGutter />
       <MarketingBand
         id="application"

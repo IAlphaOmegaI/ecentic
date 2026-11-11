@@ -4,6 +4,10 @@ import { slugify } from "babylovegrowth-next-js-blog";
 import Image from "next/image";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
+import {
+  MarketingEdgeCrosses,
+  MarketingLightBand,
+} from "@/components/marketing/light-band";
 import { Plus } from "@/components/plus";
 import { localizePath } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
@@ -112,13 +116,8 @@ export const BlogIndexContent = async () => {
         dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
       />
       {featured ? (
-        <section
-          aria-labelledby="blog-featured"
-          className="border-accent-foreground border-b"
-        >
-          <div className="relative mx-auto grid w-[min(1186px,calc(100%-56px))] gap-px border-accent-foreground border-x bg-accent-foreground max-sm:w-[calc(100%-32px)] lg:grid-cols-[2fr_1fr]">
-            <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-            <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+        <MarketingLightBand aria-labelledby="blog-featured">
+          <div className="relative grid gap-px bg-accent-foreground lg:grid-cols-[2fr_1fr]">
             <article className="min-w-0 bg-background">
               <Link
                 href={`/blog/${featured.slug}`}
@@ -137,8 +136,12 @@ export const BlogIndexContent = async () => {
                     />
                   </div>
                 )}
-                <div className="p-4 sm:p-8">
-                  <p id="blog-featured" className="mb-4 text-primary text-sm">
+                <div className="relative p-4 sm:p-8">
+                  {featured.thumbnailUrl && <MarketingEdgeCrosses />}
+                  <p
+                    id="blog-featured"
+                    className="mb-4 text-primary-text text-sm"
+                  >
                     {copy.featured}
                   </p>
                   <h2 className="max-w-3xl text-3xl text-foreground leading-[1.1] tracking-[-0.035em] group-hover:text-primary-text group-focus-visible:text-primary-text sm:text-[42px]">
@@ -154,7 +157,7 @@ export const BlogIndexContent = async () => {
                       {formatBlogDate(featured.publishedAt, locale)}
                     </time>
                     <span>{featured.readTime}</span>
-                    <span className="ml-auto inline-flex items-center gap-2 text-primary">
+                    <span className="ml-auto inline-flex items-center gap-2 text-primary-text">
                       {translate("action.primary")}
                       <ArrowRightIcon aria-hidden="true" className="size-4" />
                     </span>
@@ -162,8 +165,12 @@ export const BlogIndexContent = async () => {
                 </div>
               </Link>
             </article>
-            <aside className="flex min-w-0 flex-col bg-background-dimmed">
-              <div className="border-accent-foreground border-b p-4 sm:p-8">
+            <aside className="relative flex min-w-0 flex-col bg-background-dimmed">
+              <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+              <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2 max-lg:hidden" />
+              <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 lg:hidden" />
+              <div className="relative border-accent-foreground border-b p-4 sm:p-8">
+                <MarketingEdgeCrosses edge="bottom" />
                 <h2 className="text-2xl text-foreground tracking-[-0.02em]">
                   {copy.latest}
                 </h2>
@@ -179,8 +186,9 @@ export const BlogIndexContent = async () => {
                   key={entry.slug}
                   href={`/blog/${entry.slug}`}
                   prefetch={true}
-                  className="group flex min-w-0 flex-1 flex-col gap-4 border-accent-foreground border-b p-4 outline-offset-[-2px] transition-colors duration-150 hover:bg-background focus-visible:bg-background focus-visible:outline-2 focus-visible:outline-primary motion-reduce:transition-none sm:p-8"
+                  className="group relative flex min-w-0 flex-1 flex-col gap-4 border-accent-foreground border-b p-4 outline-offset-[-2px] transition-colors duration-150 hover:bg-background focus-visible:bg-background focus-visible:outline-2 focus-visible:outline-primary motion-reduce:transition-none sm:p-8"
                 >
+                  <MarketingEdgeCrosses edge="bottom" />
                   <p className="flex flex-wrap gap-x-4 gap-y-2 text-foreground-dimmed text-sm">
                     <time dateTime={normalize(entry.publishedAt).toISOString()}>
                       {formatBlogDate(entry.publishedAt, locale)}
@@ -204,7 +212,7 @@ export const BlogIndexContent = async () => {
               </div>
             </aside>
           </div>
-        </section>
+        </MarketingLightBand>
       ) : (
         <div className="mx-auto w-[min(1186px,calc(100%-32px))] border-accent-foreground border-x p-8 text-foreground-dimmed">
           {translate("states.empty.primary")}

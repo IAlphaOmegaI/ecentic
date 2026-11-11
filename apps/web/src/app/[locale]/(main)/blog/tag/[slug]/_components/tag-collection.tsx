@@ -3,7 +3,7 @@ import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import type { getMessages } from "next-intl/server";
-import { Plus } from "@/components/plus";
+import { MarketingLightBand } from "@/components/marketing/light-band";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { blogImage } from "@/lib/blog-image";
@@ -48,16 +48,13 @@ export const TagCollection = ({
     featured.takeaways.length > 0 || relatedTopics.length > 0;
 
   return (
-    <section className="border-accent-foreground border-b">
+    <MarketingLightBand>
       <div
         className={cn(
-          "relative mx-auto grid w-[min(1186px,calc(100%-56px))] grid-cols-1 gap-px border-accent-foreground border-x bg-accent-foreground max-sm:w-[calc(100%-32px)]",
+          "relative grid grid-cols-1 gap-px bg-accent-foreground",
           hasReadingRail && "lg:grid-cols-[minmax(0,2fr)_minmax(0,1fr)]",
         )}
       >
-        <Plus className="top-0 left-0 hidden -translate-x-1/2 -translate-y-1/2 md:flex" />
-        <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
-
         <div className="min-w-0 bg-background">
           <article aria-labelledby="tag-featured-title">
             <div className="flex flex-wrap items-center justify-between gap-4 px-4 py-6 md:px-8">
@@ -201,7 +198,7 @@ export const TagCollection = ({
           </aside>
         )}
       </div>
-    </section>
+    </MarketingLightBand>
   );
 };
 

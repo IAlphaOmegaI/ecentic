@@ -53,14 +53,24 @@ export default async () => {
     >
       {enterprisePricing.sections.map((section) =>
         section.id === "pricing" ? (
-          <MarketingFeatureBand key={section.id} id={section.id}>
+          <MarketingFeatureBand key={section.id} id={section.id} tone="light">
             <MarketingHeading
               eyebrow={section.eyebrow}
               title={section.title}
               description={section.description}
-              className="[&>p]:text-background-rich/70"
+              className="pb-12"
             />
             <EnterprisePlanLedger />
+          </MarketingFeatureBand>
+        ) : section.id === "compare" ? (
+          <MarketingFeatureBand key={section.id} id={section.id} tone="muted">
+            <MarketingHeading
+              eyebrow={section.eyebrow}
+              title={section.title}
+              description={section.description}
+              className="pb-12"
+            />
+            <EnterprisePlanComparison />
           </MarketingFeatureBand>
         ) : (
           <MarketingSection key={section.id} section={section}>

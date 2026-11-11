@@ -1,4 +1,5 @@
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
+import { MarketingLightBand } from "@/components/marketing/light-band";
 import { DuaEvidence } from "@/components/marketing/measured-evidence";
 import {
   type MarketingPage,
@@ -29,10 +30,7 @@ export const DuaStory = ({ sections }: DuaStory.Props) => {
   return (
     <>
       {overview && rows && rows.length > 0 && (
-        <MarketingBand
-          id={overview.id}
-          className="[&>.marketing-rail>.marketing-guides]:hidden [&>.marketing-rail]:bg-background-dimmed"
-        >
+        <MarketingLightBand id={overview.id}>
           <div className="grid min-[801px]:grid-cols-[1fr_2fr]">
             <div className="relative min-w-0 border-accent-foreground px-7 py-10 max-sm:px-4 max-sm:py-8 max-[801px]:border-b min-[801px]:border-r">
               <h2>{overview.title}</h2>
@@ -61,7 +59,7 @@ export const DuaStory = ({ sections }: DuaStory.Props) => {
               ))}
             </dl>
           </div>
-        </MarketingBand>
+        </MarketingLightBand>
       )}
 
       {narrative.map((section) => (

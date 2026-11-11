@@ -1,6 +1,7 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import { getMessages } from "next-intl/server";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { MarketingLightBand } from "@/components/marketing/light-band";
 import {
   MarketingPage,
   MarketingSection,
@@ -122,10 +123,7 @@ export default async () => {
       )}
 
       {jobs && (
-        <MarketingBand
-          id={jobs.id}
-          className="scroll-mt-24 [&>.marketing-rail>.marketing-guides]:hidden"
-        >
+        <MarketingLightBand id={jobs.id}>
           <div className="grid grid-cols-[1fr_2fr] max-md:grid-cols-1">
             <div className="flex min-w-0 flex-col border-accent-foreground border-r bg-background-dimmed max-md:border-r-0 max-md:border-b">
               <h2 className="px-8 pt-12 max-sm:px-4 max-sm:pt-8">
@@ -137,7 +135,7 @@ export default async () => {
             </div>
             <InstructionsJobs items={jobs.items ?? []} />
           </div>
-        </MarketingBand>
+        </MarketingLightBand>
       )}
 
       {boundaries && (

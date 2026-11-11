@@ -62,7 +62,7 @@ export const PlaygroundGuide = ({
               className="border-accent-foreground last:border-b-0"
             >
               <AccordionTrigger
-                className="items-center gap-4 px-8 py-4 hover:bg-background/60 focus-visible:outline-primary focus-visible:-outline-offset-4 data-panel-open:text-primary max-sm:px-4"
+                className="items-center gap-4 px-8 py-4 hover:bg-background/60 focus-visible:outline-primary focus-visible:-outline-offset-4 data-panel-open:text-primary-text max-sm:px-4"
                 classList={{
                   trigger: {
                     icon: "size-4 shrink-0 motion-reduce:transition-none",

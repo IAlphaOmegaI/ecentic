@@ -147,6 +147,7 @@ export default async () => {
       </nav>
 
       <IndexSection
+        featureTone="light"
         id="quickstart"
         number={translate("quickstart.number")}
         title={translate("quickstart.title")}

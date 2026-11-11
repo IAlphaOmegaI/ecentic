@@ -8,9 +8,10 @@ import { AsciiWordmark } from "@/components/marketing/ascii-wordmark";
 import { fonts } from "@/components/marketing/fonts";
 import { FooterColumns } from "@/components/marketing/footer-columns";
 import {
-  MarketingBand,
   MarketingClosing,
+  MarketingFeatureBand,
 } from "@/components/marketing/primitives";
+import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
 
 export const Footer = async (_props: Footer.Props = {}) => {
@@ -116,8 +117,10 @@ export const Footer = async (_props: Footer.Props = {}) => {
           { href: "/sign-up", label: chrome.action.secondary },
         ]}
       />
-      <MarketingBand>
-        <div className="marketing-footer-columns hidden grid-cols-4 min-[801px]:grid">
+      <MarketingFeatureBand tone="light" className="marketing-footer-field">
+        <Plus className="top-12 left-0 hidden -translate-x-1/2 -translate-y-1/2 min-[801px]:block" />
+        <Plus className="top-12 right-0 hidden translate-x-1/2 -translate-y-1/2 min-[801px]:block" />
+        <div className="marketing-footer-columns relative hidden grid-cols-4 border-accent-foreground border-t min-[801px]:grid">
           {columns.map((column) => (
             <nav
               className="border-accent-foreground border-r nth-[4n]:border-r-0 border-b nth-[n+5]:border-b-0 px-7 py-8"
@@ -146,56 +149,76 @@ export const Footer = async (_props: Footer.Props = {}) => {
               </ul>
             </nav>
           ))}
+          <div className="relative flex min-w-0 flex-col justify-between gap-8 bg-linear-to-br from-primary/7 via-transparent to-transparent px-7 py-8">
+            <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+            <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+            <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+            <FooterIdentity tagline={copy.tagline} />
+            <FooterSocial />
+          </div>
         </div>
         <FooterColumns columns={columns} cookies={copy.cookies} />
-      </MarketingBand>
-      <MarketingBand className="bg-linear-to-b from-primary/6 to-background">
-        <AsciiWordmark />
-      </MarketingBand>
-      <MarketingBand>
-        <div className="marketing-footer-bottom grid gap-8 px-7 py-10 max-sm:px-4 md:grid-cols-[1fr_auto] md:items-start">
-          <div>
-            <Link href="/" className="inline-flex">
-              <Image
-                src="/images/trademark.svg"
-                alt="ecentic"
-                className="h-auto w-40"
-                width={1022}
-                height={257}
-              />
-            </Link>
-            <p className="mt-4 max-w-[40ch] text-foreground-dimmed text-sm">
-              {copy.tagline}
+        <div className="flex flex-col gap-6 border-accent-foreground border-t bg-linear-to-br from-primary/6 via-transparent to-transparent px-4 py-8 min-[801px]:hidden">
+          <FooterIdentity tagline={copy.tagline} />
+          <FooterSocial />
+        </div>
+        <div className="relative border-accent-foreground border-y bg-linear-to-b from-primary/4 via-transparent to-transparent">
+          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+          <AsciiWordmark />
+        </div>
+        <div className="marketing-footer-bottom grid items-start gap-6 px-7 py-7 max-sm:px-4 md:grid-cols-[1fr_auto]">
+          <div className="space-y-3 text-foreground-dimmed text-xs">
+            <p className="marketing-footer-trademark max-w-[76ch] leading-relaxed">
+              {copy.trademark}
             </p>
+            {copy.copyright && <p>{copy.copyright}</p>}
           </div>
-          <div className="flex items-center gap-6">
-            <a
-              href="https://www.linkedin.com/company/ecentic/"
-              aria-label="LinkedIn"
-              className="text-primary-text transition-transform duration-200 hover:-translate-y-1 motion-reduce:transform-none"
-            >
-              <LinkedinIcon className="size-4" />
-            </a>
-            <a
-              href="https://x.com/ecentic_ai"
-              aria-label="X"
-              className="text-primary-text transition-transform duration-200 hover:-translate-y-1 motion-reduce:transform-none"
-            >
-              <XTwitterIcon className="size-4" />
-            </a>
-            <LanguageSwitcher />
-          </div>
+          <LanguageSwitcher />
         </div>
-        <div className="flex flex-wrap items-start justify-between gap-4 border-accent-foreground border-t px-7 py-6 text-foreground-dimmed text-xs max-sm:px-4">
-          <p className="marketing-footer-trademark max-w-[76ch] leading-relaxed">
-            {copy.trademark}
-          </p>
-          {copy.copyright && <p>{copy.copyright}</p>}
-        </div>
-      </MarketingBand>
+      </MarketingFeatureBand>
     </footer>
   );
 };
+
+const FooterIdentity = ({ tagline }: { tagline: string }) => (
+  <div>
+    <Link href="/" className="inline-flex">
+      <Image
+        src="/images/trademark.svg"
+        alt="ecentic"
+        className="h-auto w-40"
+        width={1022}
+        height={257}
+      />
+    </Link>
+    <p className="mt-4 max-w-[40ch] text-foreground-dimmed text-sm">
+      {tagline}
+    </p>
+  </div>
+);
+
+const FooterSocial = () => (
+  <div className="flex items-center gap-6">
+    <a
+      href="https://www.linkedin.com/company/ecentic/"
+      aria-label="LinkedIn"
+      className="inline-grid size-10 place-items-center text-primary-text transition-transform duration-200 hover:-translate-y-1 motion-reduce:transform-none"
+    >
+      <LinkedinIcon className="size-6" />
+    </a>
+    <a
+      href="https://x.com/ecentic_ai"
+      aria-label="X"
+      className="inline-grid size-10 place-items-center text-primary-text transition-transform duration-200 hover:-translate-y-1 motion-reduce:transform-none"
+    >
+      <XTwitterIcon className="size-6" />
+    </a>
+  </div>
+);
+
 export namespace Footer {
   export type Props = { stacked?: boolean };
 }

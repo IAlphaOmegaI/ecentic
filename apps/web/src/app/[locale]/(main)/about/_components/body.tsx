@@ -4,11 +4,13 @@ import {
   CommerceGlobePointerIcon,
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
+import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import type { AppConfig } from "next-intl";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import type { MarketingPage } from "@/components/marketing/page";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
+import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
 import Microsoft from "@/public/partners/microsoft-for-startups.png";
 import PlugAndPlay from "@/public/partners/plug-and-play.webp";
@@ -44,15 +46,32 @@ export const AboutBody = {
   ),
 
   Principles: ({ sections }: SectionsProps) => (
-    <div className="border-accent-foreground border-t">
+    <div className="relative grid gap-px border-accent-foreground border-t bg-accent-foreground min-[801px]:grid-cols-2">
       {sections
         .find((section) => section.id === "how")
         ?.items?.map((item, index) => (
           <article
             key={item.title}
-            className="grid border-accent-foreground border-b last:border-b-0 min-[801px]:grid-cols-[1fr_2fr]"
+            className={cn(
+              "relative flex min-w-0 flex-col bg-background-rich",
+              index === 0 &&
+                "min-[801px]:col-span-2 min-[801px]:grid min-[801px]:grid-cols-[1fr_2fr]",
+            )}
           >
-            <div className="relative flex min-h-40 items-center justify-center overflow-hidden border-accent-foreground border-b px-8 py-8 max-sm:px-4 min-[801px]:border-r min-[801px]:border-b-0">
+            {index === 1 && (
+              <>
+                <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 max-[800px]:hidden" />
+                <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2 max-[800px]:hidden" />
+              </>
+            )}
+            <div
+              className={cn(
+                "relative flex min-h-52 items-center justify-center overflow-hidden px-8 py-8 max-sm:px-4",
+                index === 0
+                  ? "bg-radial-[at_top_left] from-primary/12 via-primary/3 to-transparent"
+                  : "bg-linear-to-b from-background-dimmed/60 to-transparent",
+              )}
+            >
               {index === 0 && (
                 <div className="w-full max-w-64 space-y-2 font-mono text-primary-text text-sm">
                   {["llms.txt", "API", "MCP"].map((endpoint) => (
@@ -95,22 +114,26 @@ export const AboutBody = {
                 </div>
               )}
             </div>
-            <div className="flex flex-col items-start px-8 py-8 max-sm:px-4">
+            <div
+              className={cn(
+                "flex min-w-0 flex-1 flex-col items-start px-8 py-8 max-sm:px-4",
+                index === 0 && "justify-center",
+              )}
+            >
               <h3 className="max-w-[32ch]">{item.title}</h3>
               <p className="mt-4 max-w-[60ch] text-foreground-dimmed">
                 {item.body}
               </p>
               {item.href && (
-                <Link
-                  href={item.href}
-                  className="mt-6 inline-flex items-center gap-2 text-primary-text decoration-1 underline-offset-4 hover:underline"
-                >
-                  {item.label ?? item.title}
-                  <ArrowRightIcon
-                    aria-hidden="true"
-                    className="size-4 shrink-0"
-                  />
-                </Link>
+                <div className="mt-6">
+                  <Button color="neutral" render={<Link href={item.href} />}>
+                    {item.label ?? item.title}
+                    <ArrowRightIcon
+                      aria-hidden="true"
+                      className="size-4 shrink-0"
+                    />
+                  </Button>
+                </div>
               )}
             </div>
           </article>

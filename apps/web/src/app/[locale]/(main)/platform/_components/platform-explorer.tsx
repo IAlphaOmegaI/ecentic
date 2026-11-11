@@ -17,12 +17,14 @@ import {
 import Image from "next/image";
 import { useEffect, useState } from "react";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { MarketingEdgeCrosses } from "@/components/marketing/light-band";
 import type { MarketingPage } from "@/components/marketing/page";
 import { MarketingActions } from "@/components/marketing/primitives";
 import {
   type ProviderKey,
   ProviderLogo,
 } from "@/components/marketing/provider-logo";
+import { Plus } from "@/components/plus";
 import { useDocument } from "@/hooks/use-document";
 import { Link } from "@/i18n/navigation";
 
@@ -238,6 +240,7 @@ export const PlatformExplorer = ({
       data-platform-explorer
     >
       <div className="relative border-accent-foreground border-b px-7 py-6 max-sm:px-4 max-sm:py-4">
+        <MarketingEdgeCrosses edge="bottom" />
         <TabsList aria-label={label} className="w-full">
           {sections.map((section, index) => (
             <Tab
@@ -263,8 +266,10 @@ export const PlatformExplorer = ({
           keepMounted
           className="data-[hidden]:hidden"
         >
-          <div className="grid grid-cols-[5fr_7fr] max-lg:grid-cols-1">
-            <div className="flex min-w-0 flex-col border-accent-foreground border-r max-lg:border-r-0">
+          <div className="grid grid-cols-[5fr_7fr] max-lg:grid-cols-1 lg:grid-rows-[auto_1fr]">
+            <div className="relative flex min-w-0 flex-col border-accent-foreground border-r max-lg:border-r-0 lg:row-span-2 lg:grid lg:grid-rows-subgrid">
+              <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 max-lg:hidden" />
+              <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2 max-lg:hidden" />
               <div className="px-7 pt-10 pb-8 max-sm:px-4 max-sm:pt-8">
                 <h2 className="text-[clamp(1.9rem,2.6vw,2.6rem)]">
                   {section.title}
@@ -275,50 +280,73 @@ export const PlatformExplorer = ({
                 <MarketingActions actions={section.links ?? []} />
               </div>
               <div
-                className="mt-auto border-accent-foreground border-t bg-background-dimmed"
+                className="relative border-accent-foreground border-t bg-background-dimmed"
                 data-platform-diagram={section.id}
               >
+                <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+                <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 lg:hidden" />
                 <Diagram section={section} />
               </div>
             </div>
             <Accordion
               defaultValue={[section.items?.[0]?.title ?? ""]}
-              className="min-w-0 justify-start max-lg:border-accent-foreground max-lg:border-t"
+              className="relative min-w-0 justify-start max-lg:border-accent-foreground max-lg:border-t lg:row-span-2 lg:grid lg:grid-rows-subgrid lg:justify-stretch"
             >
-              {section.items?.map((item) => (
-                <AccordionItem
-                  key={item.title}
-                  value={item.title}
-                  className="border-accent-foreground last:border-b-0"
+              <MarketingEdgeCrosses className="lg:hidden" />
+              {[
+                section.items?.slice(
+                  0,
+                  Math.ceil((section.items?.length ?? 0) / 2),
+                ) ?? [],
+                section.items?.slice(
+                  Math.ceil((section.items?.length ?? 0) / 2),
+                ) ?? [],
+              ].map((items, groupIndex) => (
+                <div
+                  key={items[0]?.title ?? groupIndex}
+                  data-divider={groupIndex === 0 || undefined}
+                  className="relative min-w-0 border-accent-foreground data-divider:border-b"
                 >
-                  <AccordionTrigger
-                    classList={{
-                      root: "font-heading",
-                      trigger: {
-                        root: "items-center px-7 py-6 text-foreground-rich text-lg leading-snug hover:text-primary-text max-sm:px-4",
-                        icon: "mr-0 size-4 shrink-0 text-primary-text transition-transform duration-200 group-data-panel-open:rotate-180",
-                      },
-                    }}
-                  >
-                    {item.title}
-                  </AccordionTrigger>
-                  <AccordionPanel keepMounted>
-                    <div className="px-7 pb-6 max-sm:px-4">
-                      <p className="max-w-[58ch] text-foreground-dimmed leading-relaxed">
-                        {item.body}
-                      </p>
-                      {item.href && (
-                        <Link
-                          href={item.href}
-                          className="mt-5 inline-flex min-h-10 items-center gap-2 text-primary-text underline underline-offset-4"
-                        >
-                          {item.label ?? item.title}
-                          <ArrowRightIcon className="size-4" />
-                        </Link>
+                  {groupIndex === 0 && <MarketingEdgeCrosses edge="bottom" />}
+                  {items.map((item, index) => (
+                    <AccordionItem
+                      key={item.title}
+                      value={item.title}
+                      className="relative border-accent-foreground last:border-b-0"
+                    >
+                      {index < items.length - 1 && (
+                        <MarketingEdgeCrosses edge="bottom" />
                       )}
-                    </div>
-                  </AccordionPanel>
-                </AccordionItem>
+                      <AccordionTrigger
+                        classList={{
+                          root: "font-heading",
+                          trigger: {
+                            root: "items-center px-7 py-6 text-foreground-rich text-lg leading-snug hover:text-primary-text max-sm:px-4",
+                            icon: "mr-0 size-4 shrink-0 text-primary-text transition-transform duration-200 group-data-panel-open:rotate-180",
+                          },
+                        }}
+                      >
+                        {item.title}
+                      </AccordionTrigger>
+                      <AccordionPanel keepMounted>
+                        <div className="px-7 pb-6 max-sm:px-4">
+                          <p className="max-w-[58ch] text-foreground-dimmed leading-relaxed">
+                            {item.body}
+                          </p>
+                          {item.href && (
+                            <Link
+                              href={item.href}
+                              className="mt-5 inline-flex min-h-10 items-center gap-2 text-primary-text underline underline-offset-4"
+                            >
+                              {item.label ?? item.title}
+                              <ArrowRightIcon className="size-4" />
+                            </Link>
+                          )}
+                        </div>
+                      </AccordionPanel>
+                    </AccordionItem>
+                  ))}
+                </div>
               ))}
             </Accordion>
           </div>

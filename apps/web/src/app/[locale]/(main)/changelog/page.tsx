@@ -1,7 +1,7 @@
 import { getLocale, getMessages } from "next-intl/server";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { MarketingLightBand } from "@/components/marketing/light-band";
 import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
-import { MarketingBand } from "@/components/marketing/primitives";
 import { SectionGutter } from "../dashboard/_components/grid";
 import { ChangelogArchive } from "./_components/changelog-archive";
 
@@ -46,10 +46,7 @@ export default async () => {
       heroArtwork="console"
     >
       <SectionGutter />
-      <MarketingBand
-        id="updates"
-        className="[&>.marketing-rail>.marketing-guides]:hidden"
-      >
+      <MarketingLightBand id="updates">
         <div className="grid min-w-0 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
           <aside className="relative min-w-0 border-accent-foreground border-b bg-background-dimmed md:border-r md:border-b-0">
             <div className="p-4 sm:p-8 md:sticky md:top-24">
@@ -64,7 +61,7 @@ export default async () => {
           </aside>
           <ChangelogArchive groups={groups} copy={changelogPage} />
         </div>
-      </MarketingBand>
+      </MarketingLightBand>
     </MarketingPage>
   );
 };

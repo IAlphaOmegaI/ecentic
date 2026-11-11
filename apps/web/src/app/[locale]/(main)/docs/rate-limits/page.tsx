@@ -109,6 +109,7 @@ export default async () => {
       />
 
       <LimitsSection
+        featureTone="light"
         number={translate("policy.number")}
         title={translate("policy.title")}
         description={translate("policy.description")}

@@ -1,8 +1,8 @@
 import Image from "next/image";
 import { getMessages, getTranslations } from "next-intl/server";
 import { canPublishEvidence } from "@/components/marketing/evidence-policy";
+import { MarketingLightBand } from "@/components/marketing/light-band";
 import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
-import { MarketingBand } from "@/components/marketing/primitives";
 import { duaEvidence } from "@/content/marketing-evidence";
 import DuaFlavours from "@/public/partners/dua-flavours.png";
 import { StoriesEvidence } from "./_components/stories-evidence";
@@ -42,10 +42,7 @@ export default async () => {
       heroArtwork="bag"
     >
       {published && pilot && (
-        <MarketingBand
-          id="pilots"
-          className="[&>.marketing-rail>.marketing-guides]:hidden"
-        >
+        <MarketingLightBand id="pilots">
           <div className="grid min-[1000px]:grid-cols-[1fr_2fr]">
             <header className="relative flex min-w-0 flex-col items-start border-accent-foreground px-8 py-12 max-sm:px-4 max-sm:py-8 max-[1000px]:border-b min-[1000px]:border-r">
               <Image
@@ -99,7 +96,7 @@ export default async () => {
               action={{ label: copy.action.primary, href: duaEvidence.href }}
             />
           </div>
-        </MarketingBand>
+        </MarketingLightBand>
       )}
     </MarketingPage>
   );

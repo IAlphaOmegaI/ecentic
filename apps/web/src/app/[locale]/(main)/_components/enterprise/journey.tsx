@@ -2,14 +2,16 @@ import { ArrowRightIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import type { AppConfig } from "next-intl";
-import { MarketingBand } from "@/components/marketing/primitives";
+import { MarketingFeatureBand } from "@/components/marketing/primitives";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
 import { JourneyArtwork } from "./journey-artwork";
 
 export const Journey = ({ copy }: Journey.Props) => (
-  <MarketingBand className="enterprise-journey-panel bg-background [&_.marketing-guides]:hidden">
-    <header className="enterprise-stage-list border-accent-foreground border-b px-8 py-10 max-sm:px-4 max-sm:py-8">
+  <MarketingFeatureBand tone="light" className="enterprise-journey-panel">
+    <header className="enterprise-stage-list relative border-accent-foreground border-y px-8 py-10 max-sm:px-4 max-sm:py-8">
+      <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
       <h2 className="max-w-[22ch] font-heading text-[clamp(1.75rem,3vw,2.75rem)] leading-[1.15] tracking-tight">
         {copy.title}
       </h2>
@@ -17,7 +19,7 @@ export const Journey = ({ copy }: Journey.Props) => (
         {copy.description}
       </p>
     </header>
-    <ol className="relative bg-background-dimmed">
+    <ol className="relative border-accent-foreground border-b">
       {copy.steps.map((step, index) => (
         <li
           key={step.id}
@@ -33,7 +35,11 @@ export const Journey = ({ copy }: Journey.Props) => (
           <Plus className="top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 max-[1000px]:left-8" />
           <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           {index === copy.steps.length - 1 && (
-            <Plus className="bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 max-[1000px]:left-8" />
+            <>
+              <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+              <Plus className="bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 max-[1000px]:left-8" />
+              <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+            </>
           )}
           <div
             className={cn(
@@ -61,7 +67,7 @@ export const Journey = ({ copy }: Journey.Props) => (
           </div>
           <div
             className={cn(
-              "relative row-start-1 flex min-w-0 items-center justify-center px-8 py-4 max-sm:px-0 max-[1000px]:col-start-2 max-[1000px]:row-start-2",
+              "relative row-start-1 flex min-w-0 items-center justify-center bg-background-dimmed px-8 py-4 max-sm:px-0 max-[1000px]:col-start-2 max-[1000px]:row-start-2",
               index % 2 === 0 ? "col-start-2" : "col-start-1",
             )}
           >
@@ -70,7 +76,7 @@ export const Journey = ({ copy }: Journey.Props) => (
         </li>
       ))}
     </ol>
-  </MarketingBand>
+  </MarketingFeatureBand>
 );
 
 export namespace Journey {

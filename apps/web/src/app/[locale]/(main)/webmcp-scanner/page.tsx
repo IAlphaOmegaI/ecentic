@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { MarketingLightBand } from "@/components/marketing/light-band";
 import { MarketingShell } from "@/components/marketing/page";
 import { MarketingBand } from "@/components/marketing/primitives";
 import { Plus } from "@/components/plus";
@@ -104,15 +105,12 @@ export default async () => {
           },
         ]}
       />
-      <MarketingBand
-        id="scan"
-        className="scroll-mt-24 border-t-0 [&>.marketing-rail>.marketing-guides]:hidden"
-      >
+      <MarketingLightBand id="scan">
         <Scanner />
         <p className="border-accent-foreground border-t bg-background-dimmed px-7 py-4 text-foreground-dimmed text-sm max-sm:px-4">
           {messages.webmcpPage.scope.runtime}
         </p>
-      </MarketingBand>
+      </MarketingLightBand>
       <MarketingBand className="[&>.marketing-rail>.marketing-guides]:hidden">
         <SectionGutter />
         <div className="grid grid-cols-[5fr_8fr] border-accent-foreground border-t max-md:grid-cols-1">

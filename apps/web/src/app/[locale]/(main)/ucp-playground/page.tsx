@@ -7,6 +7,7 @@ import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { JsonLd } from "@/components/json-ld";
 import { MarketingQuestions } from "@/components/marketing/faq";
+import { MarketingLightBand } from "@/components/marketing/light-band";
 import { Plus } from "@/components/plus";
 import { PlaygroundClient } from "@/components/ucp-playground/playground-client";
 import { localizePath } from "@/i18n/locale";
@@ -141,10 +142,8 @@ export default async () => {
         </div>
       </section>
 
-      <section className="relative w-full border-accent-foreground border-b">
-        <div className="relative mx-auto grid w-[min(1186px,calc(100%-56px))] grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-px border-accent-foreground border-x bg-accent-foreground max-sm:w-[calc(100%-32px)] max-md:grid-cols-1">
-          <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+      <MarketingLightBand>
+        <div className="relative grid min-w-0 grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-px bg-accent-foreground max-md:grid-cols-1">
           <div
             id="playground-session"
             className="flex h-[760px] min-h-0 min-w-0 scroll-mt-24 flex-col bg-background-rich max-sm:h-[600px]"
@@ -165,7 +164,7 @@ export default async () => {
           </div>
           <PlaygroundGuide copy={copy.guide} capabilities={capabilities} />
         </div>
-      </section>
+      </MarketingLightBand>
 
       <section className="relative w-full border-accent-foreground border-b">
         <div className="relative mx-auto grid w-[min(1186px,calc(100%-56px))] grid-cols-[1fr_2fr] border-accent-foreground border-x max-sm:w-[calc(100%-32px)] max-md:grid-cols-1">

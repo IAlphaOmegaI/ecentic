@@ -1,5 +1,5 @@
 import { getMessages, getTranslations } from "next-intl/server";
-import { Plus } from "@/components/plus";
+import { MarketingLightBand } from "@/components/marketing/light-band";
 import { UcpValidatorForm } from "./ucp-validator-form";
 
 export const ValidatorSection = async () => {
@@ -7,14 +7,8 @@ export const ValidatorSection = async () => {
   const messages = await getMessages();
 
   return (
-    <section
-      id="validate"
-      className="scroll-mt-24 border-accent-foreground border-b"
-    >
-      <div className="relative mx-auto w-[min(1186px,calc(100%-56px))] border-accent-foreground border-x max-sm:w-[calc(100%-32px)]">
-        <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-
+    <MarketingLightBand id="validate">
+      <div className="relative min-w-0">
         <div className="grid items-end gap-6 px-7 py-10 max-sm:px-4 max-sm:py-8 md:grid-cols-[5fr_8fr] md:gap-12">
           <div>
             <span className="text-3xl text-primary">
@@ -36,6 +30,6 @@ export const ValidatorSection = async () => {
           />
         </div>
       </div>
-    </section>
+    </MarketingLightBand>
   );
 };

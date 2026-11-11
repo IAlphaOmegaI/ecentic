@@ -4,6 +4,7 @@ import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
+import { MarketingLightBand } from "@/components/marketing/light-band";
 import { MarketingShell } from "@/components/marketing/page";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
@@ -109,6 +110,25 @@ export const splitGridClassList = {
   item: "border-0",
 } as const;
 
+const ContentSectionFrame = ({
+  tone,
+  children,
+  className,
+}: {
+  tone?: "light" | "muted";
+  children: ReactNode;
+  className?: string;
+}) =>
+  tone ? (
+    <MarketingLightBand tone={tone} className={className}>
+      {children}
+    </MarketingLightBand>
+  ) : (
+    <div className={cn("border-accent-foreground border-b", className)}>
+      {children}
+    </div>
+  );
+
 export const ContentPageSection = ({
   number,
   title,
@@ -116,9 +136,10 @@ export const ContentPageSection = ({
   children,
   gutter,
   classList,
+  featureTone,
 }: ContentPageSection.Props) => (
-  <div className={cn("border-accent-foreground border-b", classList?.root)}>
-    {gutter ? (
+  <ContentSectionFrame tone={featureTone} className={classList?.root}>
+    {gutter && !featureTone ? (
       <div className="border-accent-foreground border-b">
         <div className="mx-auto w-[min(1186px,calc(100%-56px))] border-accent-foreground border-x max-sm:w-[calc(100%-32px)]">
           <SectionGutter />
@@ -128,16 +149,23 @@ export const ContentPageSection = ({
     <div
       className={cn(
         "relative mx-auto grid w-[min(1186px,calc(100%-56px))] grid-cols-1 gap-px border-accent-foreground border-x bg-accent-foreground max-sm:w-[calc(100%-32px)] md:grid-cols-[5fr_8fr]",
+        featureTone && "w-full border-x-0 max-sm:w-full",
         classList?.grid,
       )}
     >
       {/* Sections mark only their top corners — the bottom line is owned by
           the next block (a following section or the ContentPageFooter). */}
-      <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+      {!featureTone && (
+        <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+      )}
+      {!featureTone && (
+        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+      )}
       <div
         className={cn(
           "relative flex min-w-0 flex-col bg-background px-7 py-16 max-sm:px-4 max-sm:py-10",
+          featureTone &&
+            "bg-background-rich bg-linear-to-br from-primary/8 via-transparent to-transparent",
           classList?.left,
         )}
       >
@@ -152,13 +180,14 @@ export const ContentPageSection = ({
       <div
         className={cn(
           "min-w-0 bg-background px-7 py-16 max-sm:px-4 max-sm:py-10",
+          featureTone && "bg-background-rich",
           classList?.body,
         )}
       >
         {children}
       </div>
     </div>
-  </div>
+  </ContentSectionFrame>
 );
 
 export namespace ContentPageSection {
@@ -169,6 +198,7 @@ export namespace ContentPageSection {
     description?: string;
     children: ReactNode;
     gutter?: boolean;
+    featureTone?: "light" | "muted";
     classList?: ClassList<ClassListKey>;
   };
 }

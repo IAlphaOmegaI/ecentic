@@ -4,6 +4,7 @@ import Image from "next/image";
 import type { AppConfig } from "next-intl";
 import type { ReactNode } from "react";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { MarketingLightBand } from "@/components/marketing/light-band";
 import { MarketingShell } from "@/components/marketing/page";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
@@ -87,10 +88,8 @@ export const ArticleLayout = ({
       </div>
     </div>
 
-    <div className="border-accent-foreground border-b">
-      <div className="relative mx-auto grid w-[min(1186px,calc(100%-56px))] border-accent-foreground border-x bg-background-dimmed max-sm:w-[calc(100%-32px)] md:grid-cols-[minmax(0,1fr)_320px]">
-        <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+    <MarketingLightBand>
+      <div className="relative grid min-w-0 bg-linear-to-br from-primary/6 via-transparent to-transparent md:grid-cols-[minmax(0,1fr)_320px]">
         <div className="px-8 py-12 max-sm:px-4 max-sm:py-8 lg:px-12">
           <h2 className="max-w-[600px] text-3xl leading-tight">
             {actions.note}
@@ -112,7 +111,7 @@ export const ArticleLayout = ({
           </div>
         </div>
       </div>
-    </div>
+    </MarketingLightBand>
   </MarketingShell>
 );
 

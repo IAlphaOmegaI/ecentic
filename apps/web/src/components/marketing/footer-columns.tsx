@@ -6,10 +6,13 @@ import {
   AccordionTrigger,
 } from "@zenncore/web/components/accordion";
 import { CookieSettings } from "@/components/cookie-settings";
+import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
 
 export const FooterColumns = ({ columns, cookies }: FooterColumns.Props) => (
-  <div className="marketing-footer-mobile block min-[801px]:hidden">
+  <div className="marketing-footer-mobile relative block border-accent-foreground border-t min-[801px]:hidden">
+    <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+    <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
     <Accordion multiple>
       {columns.map((column, index) => (
         <AccordionItem

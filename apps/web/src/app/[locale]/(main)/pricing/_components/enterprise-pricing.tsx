@@ -35,8 +35,8 @@ export const FreeStoreCheck = async () => {
   const { enterprisePricing, pricing } = await getMessages();
   return (
     <div className="marketing-section-grid grid grid-cols-1 border-accent-foreground border-t lg:grid-cols-[1.1fr_1fr]">
-      <div className="relative min-w-0 border-accent-foreground border-b bg-background-dimmed p-3 max-sm:p-2 lg:border-r lg:border-b-0">
-        <div className="bg-background px-7 py-8 max-sm:px-4">
+      <div className="relative min-w-0 border-accent-foreground border-b bg-linear-to-br from-primary/8 via-background-rich to-background-rich lg:border-r lg:border-b-0">
+        <div className="px-7 py-8 max-sm:px-4">
           <p className="text-foreground-dimmed text-sm">
             {enterprisePricing.sample.label}
           </p>
@@ -92,7 +92,8 @@ export const EnterprisePlanLedger = async () => {
     <>
       <div
         data-columns="2"
-        className="marketing-section-grid marketing-grid grid grid-cols-2 border-[var(--rail-color)] border-x border-x-transparent border-b max-sm:grid-cols-1"
+        data-pricing-plan-grid
+        className="marketing-section-grid marketing-grid grid grid-cols-2 border-[var(--rail-color)] border-x border-x-transparent max-sm:grid-cols-1"
       >
         {planKeys.map((key, index) => {
           const source = pricing.plans[key];
@@ -115,41 +116,48 @@ export const EnterprisePlanLedger = async () => {
           return (
             <article
               key={key}
+              data-pricing-plan={key}
               className={cn(
-                "grid min-w-0 gap-4 border-[var(--rail-color)] border-t px-7 py-8 text-background-rich max-sm:px-4 sm:row-span-7 sm:grid-rows-subgrid sm:border-r sm:even:border-r-0",
+                "relative isolate grid min-w-0 gap-4 border-[var(--rail-color)] border-t px-7 py-8 text-foreground max-sm:px-4 sm:row-span-7 sm:grid-rows-subgrid sm:border-r sm:even:border-r-0",
                 key === "payg"
-                  ? "bg-linear-to-br from-primary-dimmed/75 via-emphasis to-emphasis-dimmed"
-                  : "bg-emphasis-dimmed",
+                  ? "bg-linear-to-br from-primary/12 via-primary/3 to-background-rich"
+                  : "bg-background-rich",
               )}
             >
+              {key === "payg" && (
+                <span
+                  aria-hidden
+                  className="pointer-events-none absolute inset-x-0 top-0 h-px bg-linear-to-r from-primary/15 via-primary-rich to-primary/15"
+                />
+              )}
               {Icon && (
                 <Icon
                   aria-hidden
                   className={cn(
                     "size-8",
                     index === 1
-                      ? "text-info"
+                      ? "text-info-dimmed"
                       : index === 2
                         ? "text-secondary"
-                        : "text-primary-rich",
+                        : "text-primary-text",
                   )}
                 />
               )}
               <h3 className="text-[clamp(20px,2vw,26px)] tracking-[-0.035em]">
                 {source.name}
               </h3>
-              <p className="text-background-rich/70 text-base leading-relaxed">
+              <p className="text-base text-foreground-dimmed leading-relaxed">
                 {"tagline" in copy ? copy.tagline : source.tagline}
               </p>
               <div className="flex min-h-[90px] flex-col gap-2">
-                <strong className="font-medium text-[clamp(28px,3vw,40px)] text-background-rich leading-[1.1] tracking-[-0.05em]">
+                <strong className="font-medium text-[clamp(28px,3vw,40px)] text-foreground-rich leading-[1.1] tracking-[-0.05em]">
                   {source.figure}
                 </strong>
-                <span className="text-background-rich/70 text-sm leading-relaxed">
+                <span className="text-foreground-dimmed text-sm leading-relaxed">
                   {source.suffix}
                 </span>
               </div>
-              <p className="text-background-rich/70 text-sm leading-relaxed">
+              <p className="text-foreground-dimmed text-sm leading-relaxed">
                 {"note" in copy ? copy.note : source.note}
               </p>
               <ul className="m-0 flex list-none flex-col gap-4 p-0 text-sm">
@@ -175,7 +183,7 @@ export const EnterprisePlanLedger = async () => {
       </div>
       <article
         data-columns="2"
-        className="marketing-section-grid marketing-grid grid grid-cols-2 border-[var(--rail-color)] border-x border-x-transparent border-b bg-emphasis-rich/30 max-sm:grid-cols-1"
+        className="marketing-section-grid marketing-grid grid grid-cols-2 border-[var(--rail-color)] border-x border-x-transparent border-b bg-background-dimmed/55 max-sm:grid-cols-1"
       >
         <div className="flex min-w-0 flex-col gap-6 border-[var(--rail-color)] border-t px-7 py-8 max-sm:px-4 sm:border-r">
           <CommerceFileShieldIcon
@@ -185,10 +193,10 @@ export const EnterprisePlanLedger = async () => {
           <h3 className="text-[clamp(20px,2vw,26px)] tracking-[-0.035em]">
             {enterprise.name}
           </h3>
-          <p className="text-background-rich/70 text-base leading-relaxed">
+          <p className="text-base text-foreground-dimmed leading-relaxed">
             {enterprise.tagline}
           </p>
-          <strong className="font-medium text-[clamp(28px,3vw,40px)] text-background-rich leading-[1.1] tracking-[-0.05em]">
+          <strong className="font-medium text-[clamp(28px,3vw,40px)] text-foreground-rich leading-[1.1] tracking-[-0.05em]">
             {enterprise.figure}
           </strong>
           <div className="mt-auto w-full [&>.marketing-actions]:mt-0 [&_.marketing-actions_a]:w-full [&_.marketing-actions_a]:whitespace-normal">
@@ -198,7 +206,7 @@ export const EnterprisePlanLedger = async () => {
           </div>
         </div>
         <div className="flex min-w-0 flex-col justify-center gap-6 border-[var(--rail-color)] border-t px-7 py-8 max-sm:px-4">
-          <p className="text-background-rich/70 text-sm leading-relaxed">
+          <p className="text-foreground-dimmed text-sm leading-relaxed">
             {enterprise.note}
           </p>
           <ul className="m-0 flex list-none flex-col gap-4 p-0 text-sm">
@@ -214,7 +222,7 @@ export const EnterprisePlanLedger = async () => {
         </div>
       </article>
       <div className="marketing-cell relative min-w-0 px-7 py-10 max-sm:px-4 max-sm:py-8 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
-        <p className="marketing-note text-(length:--text-sm) text-background-rich/70">
+        <p className="marketing-note text-(length:--text-sm) text-foreground-dimmed">
           {enterprisePricing.availability}
         </p>
       </div>
@@ -247,7 +255,7 @@ export const PerformanceFeeLedger = async () => {
         plans={plans}
       />
       <div className="grid min-w-0 grid-cols-1 border-accent-foreground border-t lg:grid-cols-[1.1fr_1fr]">
-        <div className="bg-primary-text px-7 py-8 text-background-rich max-sm:px-4">
+        <div className="bg-linear-to-br from-primary-dimmed via-primary-text to-primary px-7 py-8 text-background-rich max-sm:px-4">
           <dl>
             <div className="flex items-center justify-between gap-4 border-background-rich/25 border-b pb-5">
               <dt className="text-background-rich/80 text-sm">
@@ -346,7 +354,7 @@ export const EnterprisePlanComparison = async () => {
           className="relative min-w-0 overflow-hidden"
           aria-label={comparison.title}
         >
-          <Table className="m-0 min-w-[1060px] border-b-0 [&_td:last-child]:bg-background [&_td]:px-4 [&_td]:py-4 [&_td]:align-top [&_td]:text-foreground-dimmed [&_td]:text-sm [&_th:first-child]:w-[190px] [&_th:last-child]:bg-background [&_th]:whitespace-normal [&_th]:px-4 [&_th]:py-4 [&_th]:font-medium [&_th]:text-foreground-rich [&_th]:text-sm [&_th]:normal-case [&_th]:leading-normal [&_th]:tracking-normal">
+          <Table className="m-0 min-w-[1060px] border-b-0 bg-background-rich [&_td:last-child]:bg-background [&_td:nth-child(3)]:bg-primary/5 [&_td]:px-4 [&_td]:py-4 [&_td]:align-top [&_td]:text-foreground-dimmed [&_td]:text-sm [&_th:first-child]:w-[190px] [&_th:last-child]:bg-background [&_th:nth-child(3)]:bg-primary/8 [&_th]:whitespace-normal [&_th]:px-4 [&_th]:py-4 [&_th]:font-medium [&_th]:text-foreground-rich [&_th]:text-sm [&_th]:normal-case [&_th]:leading-normal [&_th]:tracking-normal">
             <TableCaption className="sr-only">{comparison.title}</TableCaption>
             <TableHeader className="bg-background-dimmed">
               <TableRow>

@@ -10,6 +10,7 @@ import {
 import { getMessages } from "next-intl/server";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { MarketingLightBand } from "@/components/marketing/light-band";
 import {
   MarketingPage,
   MarketingSection,
@@ -179,7 +180,7 @@ export default async () => {
       )}
 
       {models && (
-        <MarketingBand id={models.id} className="[&_.marketing-guides]:hidden">
+        <MarketingLightBand id={models.id}>
           <div className="grid md:grid-cols-[2fr_3fr]">
             <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-8 md:border-r md:border-b-0 md:px-8 md:py-12">
               <h2>{models.title}</h2>
@@ -237,7 +238,7 @@ export default async () => {
                 ))}
             </div>
           </div>
-        </MarketingBand>
+        </MarketingLightBand>
       )}
 
       {privacy && (

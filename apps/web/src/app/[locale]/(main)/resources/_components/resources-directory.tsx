@@ -1,6 +1,7 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import { Fragment, type ReactNode } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
+import { MarketingLightBand } from "@/components/marketing/light-band";
 import {
   type MarketingPage,
   MarketingSection,
@@ -70,10 +71,7 @@ const ResourceSection = ({
 );
 
 const ResourceEndpoints = ({ section }: { section: MarketingPage.Section }) => (
-  <MarketingBand
-    id={section.id}
-    className="scroll-mt-24 [&>.marketing-rail>.marketing-guides]:hidden [&>.marketing-rail]:bg-background-dimmed"
-  >
+  <MarketingLightBand id={section.id}>
     <div className="grid grid-cols-[1fr_2fr] max-lg:grid-cols-1">
       <div className="relative min-w-0 border-accent-foreground border-r px-8 py-12 max-sm:px-4 max-sm:py-8 max-lg:border-r-0 max-lg:border-b">
         <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 max-lg:hidden" />
@@ -109,7 +107,7 @@ const ResourceEndpoints = ({ section }: { section: MarketingPage.Section }) => (
         ))}
       </div>
     </div>
-  </MarketingBand>
+  </MarketingLightBand>
 );
 
 export const ResourcesDirectory = ({

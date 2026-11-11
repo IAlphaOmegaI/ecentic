@@ -4,18 +4,15 @@ import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { MarketingLightBand } from "@/components/marketing/light-band";
 import type { MarketingPage } from "@/components/marketing/page";
-import { MarketingBand } from "@/components/marketing/primitives";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
 
 const artwork = ["console", "cart", "commerce", "console"] as const;
 
 export const SupportContact = ({ section }: SupportContact.Props) => (
-  <MarketingBand
-    id={section.id}
-    className="scroll-mt-24 [&>.marketing-rail>.marketing-guides]:hidden"
-  >
+  <MarketingLightBand id={section.id} className="scroll-mt-24">
     <div className="border-accent-foreground border-b px-8 py-12 max-sm:px-4 max-sm:py-8">
       <h2>{section.title}</h2>
     </div>
@@ -78,7 +75,7 @@ export const SupportContact = ({ section }: SupportContact.Props) => (
         </TabsPanel>
       ))}
     </Tabs>
-  </MarketingBand>
+  </MarketingLightBand>
 );
 
 export namespace SupportContact {

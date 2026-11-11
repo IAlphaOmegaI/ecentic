@@ -12,6 +12,7 @@ import { localizePath } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
 import { absoluteUrl, createMetadata } from "@/lib/seo";
 import { MarketingQuestions } from "./faq";
+import { MarketingLightBand } from "./light-band";
 import {
   MarketingActions,
   MarketingBand,
@@ -87,9 +88,20 @@ export const MarketingFaq = ({ title, items }: MarketingFaq.Props) => {
   );
 };
 
+const SectionBand = ({
+  tone,
+  ...props
+}: MarketingBand.Props & { tone?: "light" | "muted" }) =>
+  tone ? (
+    <MarketingLightBand {...props} tone={tone} />
+  ) : (
+    <MarketingBand {...props} />
+  );
+
 export const MarketingSection = ({
   section,
   children,
+  sectionTone,
 }: MarketingSection.Props) => {
   if (section.id === "what-to-track" && section.items?.length)
     return (
@@ -142,11 +154,12 @@ export const MarketingSection = ({
   if (!hasContent && !children && (hadContent || !links?.length)) return null;
 
   return (
-    <MarketingBand
+    <SectionBand
       id={section.id}
+      tone={sectionTone}
       className={cn(
         blocks && "[&>.marketing-rail>.marketing-guides]:hidden",
-        section.field
+        section.field && !sectionTone
           ? "marketing-field bg-background [&>.marketing-rail]:bg-background-dimmed [&_.marketing-note]:text-foreground"
           : undefined,
       )}
@@ -248,7 +261,7 @@ export const MarketingSection = ({
           {links && links.length > 0 && <MarketingActions actions={links} />}
         </div>
       )}
-    </MarketingBand>
+    </SectionBand>
   );
 };
 
@@ -265,6 +278,7 @@ export const MarketingPage = async ({
   heroChildren,
   children,
   sectionChildren,
+  sectionTones,
 }: MarketingPage.Props) => {
   const locale = await getLocale();
   const { enterpriseChrome } = await getMessages();
@@ -327,7 +341,11 @@ export const MarketingPage = async ({
         </MarketingBand>
       )}
       {content.sections.map((section) => (
-        <MarketingSection key={section.id} section={section}>
+        <MarketingSection
+          key={section.id}
+          section={section}
+          sectionTone={sectionTones?.[section.id]}
+        >
           {sectionChildren?.[section.id]}
         </MarketingSection>
       ))}
@@ -389,6 +407,7 @@ export namespace MarketingPage {
     heroChildren?: ReactNode;
     children?: ReactNode;
     sectionChildren?: Record<string, ReactNode>;
+    sectionTones?: Record<string, "light" | "muted">;
   };
 }
 
@@ -407,5 +426,6 @@ export namespace MarketingSection {
   export type Props = {
     section: MarketingPage.Section;
     children?: ReactNode;
+    sectionTone?: "light" | "muted";
   };
 }

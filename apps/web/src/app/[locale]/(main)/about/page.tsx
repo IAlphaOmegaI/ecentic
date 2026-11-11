@@ -27,6 +27,7 @@ export default async () => {
     <MarketingPage
       content={{ ...content, sections }}
       path="/about"
+      sectionTones={{ how: "light", programs: "muted" }}
       sectionChildren={{
         why: <AboutBody.Origin sections={content.sections} />,
         how: <AboutBody.Principles sections={content.sections} />,

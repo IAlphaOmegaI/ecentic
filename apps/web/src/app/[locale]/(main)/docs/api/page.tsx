@@ -42,6 +42,7 @@ export default async () => {
       darkHero={false}
       content={content}
       path="/docs/api"
+      sectionTones={{ "api-reference": "light" }}
       heroChildren={
         <>
           <dl className="[&_dd]:wrap-anywhere mt-10 grid grid-cols-2 gap-x-8 gap-y-6 border-accent-foreground border-t pt-6 lg:grid-cols-[1fr_1fr_2fr] [&_dd]:mt-2 [&_dt]:text-foreground-dimmed [&_dt]:text-sm">

@@ -9,8 +9,11 @@ import {
 } from "@zenncore/web/components/accordion";
 import { Button } from "@zenncore/web/components/button";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import {
+  MarketingEdgeCrosses,
+  MarketingLightBand,
+} from "@/components/marketing/light-band";
 import type { MarketingPage } from "@/components/marketing/page";
-import { MarketingBand } from "@/components/marketing/primitives";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
 
@@ -41,12 +44,10 @@ export const ContactRouting = ({ section }: ContactRouting.Props) => {
   if (!items?.length) return null;
 
   return (
-    <MarketingBand
-      id={section.id}
-      className="scroll-mt-24 [&>.marketing-rail>.marketing-guides]:hidden"
-    >
+    <MarketingLightBand id={section.id} className="scroll-mt-24">
       <div className="grid grid-cols-[1fr_2fr] max-md:grid-cols-1">
         <div className="relative flex min-w-0 flex-col border-accent-foreground border-r px-7 pt-12 pb-6 max-sm:px-4 max-md:border-r-0 max-md:border-b max-md:py-8">
+          <MarketingEdgeCrosses edge="bottom" className="md:hidden" />
           <h2>{section.title}</h2>
           <div className="relative mt-8 min-h-56 flex-1 text-primary max-md:hidden">
             <div className="absolute inset-0">
@@ -60,12 +61,15 @@ export const ContactRouting = ({ section }: ContactRouting.Props) => {
           defaultValue={[items[0]?.title]}
           className="min-w-0 justify-start"
         >
-          {items.map((item) => (
+          {items.map((item, index) => (
             <AccordionItem
               key={item.title}
               value={item.title}
-              className="border-accent-foreground transition-colors duration-160 last:border-b-0 data-open:bg-background-dimmed"
+              className="relative border-accent-foreground transition-colors duration-160 last:border-b-0 data-open:bg-background-dimmed"
             >
+              {index < items.length - 1 && (
+                <MarketingEdgeCrosses edge="bottom" />
+              )}
               <AccordionTrigger
                 className="px-7 py-7 font-heading text-[clamp(1.5rem,2.2vw,2rem)] text-foreground-rich leading-tight hover:bg-background-dimmed focus-visible:-outline-offset-4 max-sm:px-4 max-sm:py-6"
                 classList={{ trigger: { icon: "mr-0 size-4 shrink-0" } }}
@@ -93,7 +97,7 @@ export const ContactRouting = ({ section }: ContactRouting.Props) => {
           ))}
         </Accordion>
       </div>
-    </MarketingBand>
+    </MarketingLightBand>
   );
 };
 

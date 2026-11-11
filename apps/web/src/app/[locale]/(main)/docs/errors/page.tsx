@@ -104,6 +104,7 @@ export default async () => {
       />
 
       <ContentPageSection
+        featureTone="light"
         number={translate("shape.number")}
         title={translate("shape.title")}
         description={translate("shape.description")}

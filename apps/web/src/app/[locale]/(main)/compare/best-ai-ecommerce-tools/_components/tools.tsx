@@ -9,8 +9,7 @@ import {
   TableRow,
 } from "@zenncore/web/components/table";
 import { getMessages, getTranslations } from "next-intl/server";
-import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
-import { MarketingBand } from "@/components/marketing/primitives";
+import { MarketingLightBand } from "@/components/marketing/light-band";
 import { GuideToolExplorer } from "./guide-tool-explorer";
 
 export const Tools = async () => {
@@ -29,9 +28,8 @@ export const Tools = async () => {
   ] as const;
 
   return (
-    <MarketingBand id="tool-comparison" className="scroll-mt-24">
-      <SectionGutter />
-      <div className="relative bg-background px-7 py-12 max-sm:px-4 max-sm:py-10">
+    <MarketingLightBand id="tool-comparison" className="scroll-mt-24">
+      <div className="relative bg-linear-to-br from-primary/6 to-transparent px-7 py-12 max-sm:px-4 max-sm:py-10">
         <span className="font-normal text-3xl text-primary">
           {translate("tools.number")}
         </span>
@@ -117,6 +115,6 @@ export const Tools = async () => {
           }
         />
       </div>
-    </MarketingBand>
+    </MarketingLightBand>
   );
 };

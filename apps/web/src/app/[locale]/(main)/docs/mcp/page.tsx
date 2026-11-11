@@ -93,6 +93,7 @@ export default async () => {
       />
 
       <McpSection
+        featureTone="light"
         id="connect"
         number={translate("connect.number")}
         title={translate("connect.title")}

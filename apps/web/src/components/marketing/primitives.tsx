@@ -39,24 +39,31 @@ export const MarketingFeatureBand = ({
 }: MarketingFeatureBand.Props) => (
   <MarketingBand
     {...props}
-    data-nav-tone="dark"
+    data-nav-tone={tone === "light" || tone === "muted" ? "light" : "dark"}
+    data-feature-tone={tone}
     className={cn(
-      "marketing-feature-band border-0 text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_16%,transparent)] [--rail-cross:color-mix(in_oklab,var(--color-background-rich)_32%,transparent)] [&>.marketing-rail>.marketing-guides]:hidden [&>.marketing-rail]:border-x-0 [&>.marketing-rail]:py-12 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden [&_.marketing-eyebrow]:text-primary-rich [&_:is(h2,h3,h4)]:text-background-rich",
+      "marketing-feature-band border-0 [--cutout-depth:clamp(12px,2vw,24px)] [--cutout-shoulder:max(48px,calc((100dvw_-_1186px)/2))] [&>.marketing-rail>.marketing-guides]:hidden [&>.marketing-rail]:border-x-0 [&>.marketing-rail]:py-12 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden",
+      tone === "light" || tone === "muted"
+        ? "text-foreground [--rail-color:var(--color-accent-foreground)] [--rail-cross:var(--color-cross)] [&_.marketing-eyebrow]:text-primary-text [&_:is(h2,h3,h4)]:text-foreground-rich"
+        : "text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_16%,transparent)] [--rail-cross:color-mix(in_oklab,var(--color-background-rich)_32%,transparent)] [&_.marketing-eyebrow]:text-primary-rich [&_:is(h2,h3,h4)]:text-background-rich",
       className,
     )}
   >
     <div
       aria-hidden="true"
       className={cn(
-        "pointer-events-none absolute inset-y-0 left-1/2 -z-10 w-dvw -translate-x-1/2 [clip-path:polygon(0_24px,24px_24px,48px_0,calc(100%_-_48px)_0,calc(100%_-_24px)_24px,100%_24px,100%_calc(100%_-_24px),calc(100%_-_24px)_calc(100%_-_24px),calc(100%_-_48px)_100%,48px_100%,24px_calc(100%_-_24px),0_calc(100%_-_24px))]",
-        tone === "blue"
-          ? "bg-linear-to-br from-primary-dimmed via-primary-text to-primary"
-          : "bg-emphasis-dimmed",
+        "pointer-events-none absolute inset-y-0 left-1/2 -z-10 w-dvw -translate-x-1/2 [clip-path:polygon(0_var(--cutout-depth),calc(var(--cutout-shoulder)_-_var(--cutout-depth))_var(--cutout-depth),var(--cutout-shoulder)_0,calc(100%_-_var(--cutout-shoulder))_0,calc(100%_-_var(--cutout-shoulder)_+_var(--cutout-depth))_var(--cutout-depth),100%_var(--cutout-depth),100%_calc(100%_-_var(--cutout-depth)),calc(100%_-_var(--cutout-shoulder)_+_var(--cutout-depth))_calc(100%_-_var(--cutout-depth)),calc(100%_-_var(--cutout-shoulder))_100%,var(--cutout-shoulder)_100%,calc(var(--cutout-shoulder)_-_var(--cutout-depth))_calc(100%_-_var(--cutout-depth)),0_calc(100%_-_var(--cutout-depth)))]",
+        {
+          dark: "bg-emphasis-dimmed",
+          blue: "bg-linear-to-br from-primary-dimmed via-primary-text to-primary",
+          light: "bg-background-rich",
+          muted: "bg-background-dimmed",
+        }[tone],
       )}
     />
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-x-0 top-12 bottom-12 border-[var(--rail-color)] border-x"
+      className="pointer-events-none absolute inset-x-0 top-12 bottom-12 z-1 border-[var(--rail-color)] border-x"
     />
     {children}
   </MarketingBand>
@@ -64,7 +71,7 @@ export const MarketingFeatureBand = ({
 
 export namespace MarketingFeatureBand {
   export type Props = MarketingBand.Props & {
-    tone?: "dark" | "blue";
+    tone?: "dark" | "blue" | "light" | "muted";
   };
 }
 

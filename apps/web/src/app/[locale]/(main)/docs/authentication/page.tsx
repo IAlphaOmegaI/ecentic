@@ -5,6 +5,10 @@ import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
 import { JsonLd } from "@/components/json-ld";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import {
+  MarketingEdgeCrosses,
+  MarketingLightBand,
+} from "@/components/marketing/light-band";
 import { Plus } from "@/components/plus";
 import { localizePath } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
@@ -45,8 +49,10 @@ const AuthPath = ({
   body: string;
   children: ReactNode;
 }) => (
-  <div className="grid min-w-0 gap-px bg-accent-foreground md:grid-cols-[4fr_8fr]">
-    <div className="flex min-w-0 flex-col bg-background-dimmed">
+  <div className="relative grid min-w-0 gap-px bg-accent-foreground md:grid-cols-[4fr_8fr]">
+    <div className="relative flex min-w-0 flex-col bg-background-dimmed">
+      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 max-md:hidden" />
+      <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2 max-md:hidden" />
       <div className="flex flex-1 flex-col items-center px-4 py-6">
         <p className="text-foreground-dimmed text-sm">{client}</p>
         <div className="h-44 w-full max-w-72 text-foreground">
@@ -62,11 +68,15 @@ const AuthPath = ({
           className="h-8 border-accent-foreground border-l"
         />
       </div>
-      <p className="border-accent-foreground border-t px-6 py-4 text-center text-foreground-rich text-lg">
-        {destination}
-      </p>
+      <div className="relative border-accent-foreground border-t">
+        <MarketingEdgeCrosses />
+        <p className="px-6 py-4 text-center text-foreground-rich text-lg">
+          {destination}
+        </p>
+      </div>
     </div>
-    <div className="flex min-w-0 flex-col gap-6 bg-background px-8 py-8 max-sm:px-4">
+    <div className="relative flex min-w-0 flex-col gap-6 bg-background px-8 py-8 max-sm:px-4">
+      <MarketingEdgeCrosses className="md:hidden" />
       <div>
         <h3 className="text-2xl text-foreground-rich">{title}</h3>
         <p className="mt-2 text-foreground-dimmed">{description}</p>
@@ -147,13 +157,8 @@ export default async () => {
         ]}
       />
 
-      <section
-        aria-labelledby="request-paths"
-        className="border-accent-foreground border-b"
-      >
-        <div className="relative mx-auto w-[min(1186px,calc(100%-56px))] border-accent-foreground border-x max-sm:w-[calc(100%-32px)]">
-          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-          <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+      <MarketingLightBand aria-labelledby="request-paths">
+        <div className="relative min-w-0">
           <div className="border-accent-foreground border-b px-8 py-12 max-sm:px-4 max-sm:py-10">
             <span className="mb-4 block text-3xl text-primary">
               {translate("open.number")}
@@ -203,7 +208,7 @@ Content-Type: application/json`}
             }
           />
         </div>
-      </section>
+      </MarketingLightBand>
 
       <ContentPageSection
         number={translate("keys.number")}

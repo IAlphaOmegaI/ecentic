@@ -98,13 +98,10 @@ export default async () => {
       </ContentPageSection>
 
       <ContentPageSection
+        featureTone="light"
         number={translate("redeem.number")}
         title={translate("redeem.title")}
         description={translate("redeem.description")}
-        classList={{
-          left: "bg-background-dimmed",
-          body: "bg-background-dimmed",
-        }}
       >
         <YcRedemptionForm />
       </ContentPageSection>

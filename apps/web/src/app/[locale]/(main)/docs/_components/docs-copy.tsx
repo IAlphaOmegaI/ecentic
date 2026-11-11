@@ -23,13 +23,7 @@ export const DocsCopy = ({ source, copy }: DocsCopy.Props) => {
           {copy.failed}
         </span>
       )}
-      <Button
-        type="button"
-        color="neutral"
-        variant="soft"
-        disabled={pending}
-        onClick={write}
-      >
+      <Button type="button" color="neutral" disabled={pending} onClick={write}>
         {copied === source ? (
           <CheckIcon aria-hidden="true" className="size-4" />
         ) : (

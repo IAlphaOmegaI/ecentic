@@ -94,6 +94,7 @@ export default async () => {
       />
 
       <VersioningSection
+        featureTone="light"
         number={translate("strategy.number")}
         title={translate("strategy.title")}
         description={translate("strategy.description")}
