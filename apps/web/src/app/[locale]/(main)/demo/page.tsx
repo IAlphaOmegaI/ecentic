@@ -1,5 +1,6 @@
 import { getLocale, getMessages } from "next-intl/server";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { AgentReplay } from "@/components/marketing/interactive/agent-replay";
 import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
 import {
   MarketingActions,
@@ -43,6 +44,8 @@ export default async () => {
       heroArtwork="console"
     >
       {agenda && <DemoAgenda section={agenda} copy={demoPage.agenda} />}
+      <SectionGutter />
+      <AgentReplay />
       <SectionGutter />
       {request && (
         <MarketingBand

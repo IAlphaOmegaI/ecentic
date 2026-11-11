@@ -75,7 +75,7 @@ export const DemoAgenda = ({ section, copy }: DemoAgenda.Props) => (
               <h3>{item.title}</h3>
               <p className="text-foreground-dimmed">{item.body}</p>
             </div>
-            <div className="relative h-64 min-w-0 text-primary max-sm:h-52">
+            <div className="relative h-64 min-w-0 text-primary-text max-sm:h-52">
               <div className="absolute inset-4">
                 <EvolvingAscii artwork={artwork[index] ?? "bag"} />
               </div>

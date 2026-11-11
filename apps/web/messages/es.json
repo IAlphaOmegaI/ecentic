@@ -18595,5 +18595,63 @@
         ]
       }
     }
+  },
+  "interactiveReplay": {
+    "title": "Sigue una decisión simulada.",
+    "description": "Observa cómo un agente compara dos fichas de sillas de oficina, encuentra datos que faltan y repite la comparación.",
+    "sample": "Ejemplo con datos de muestra",
+    "rail": "Decisión de compra simulada",
+    "controls": {
+      "play": "Reproducir",
+      "pause": "Pausar",
+      "previous": "Atrás",
+      "next": "Siguiente"
+    },
+    "stages": {
+      "question": "La pregunta",
+      "listings": "Dos fichas",
+      "fields": "Qué lee",
+      "pick": "La elección",
+      "fix": "Añadir los datos",
+      "rerun": "La repetición"
+    },
+    "question": "¿Qué silla de oficina es adecuada para una persona alta por menos de 400 dólares?",
+    "questionLabel": "Una persona pregunta",
+    "questionNote": "Esta reproducción muestra una decisión de compra inventada. No mide tráfico real de IA.",
+    "listingNote": "El proveedor tiene el rango de altura del asiento y la capacidad de peso. Esos datos faltan en tu ficha comparada.",
+    "reading": "Leyendo",
+    "missingReading": "Tu ficha no indica este dato.",
+    "presentReading": "Ambas fichas indican este dato.",
+    "fieldsNote": "El agente comprueba los campos uno a uno. Un dato ausente sigue apareciendo como «No indicado».",
+    "pickLabel": "Elección de muestra: la ficha rival",
+    "pickReason": "La ficha rival indica el rango de altura del asiento y la capacidad de peso, por lo que el agente puede comprobar esos requisitos.",
+    "fixNote": "Añade las especificaciones existentes del proveedor a la ficha comparada. No se inventan especificaciones y este ejemplo no cambia nada en una tienda.",
+    "rerunLabel": "Repetición de muestra: tu ficha",
+    "rerunReason": "Con ambas especificaciones indicadas, este agente de muestra elige tu silla de menor precio entre las dos fichas.",
+    "outcomeNote": "El cambio de elección es ilustrativo. Una simulación real puede dar otro resultado.",
+    "listing": {
+      "own": "Tu ficha",
+      "rival": "La ficha rival",
+      "ownTitle": "Silla de oficina ergonómica",
+      "rivalTitle": "Silla de oficina ajustable"
+    },
+    "fields": {
+      "price": "Precio",
+      "seatHeight": "Rango de altura del asiento",
+      "capacity": "Capacidad de peso",
+      "variants": "Variantes de color"
+    },
+    "units": {
+      "centimeters": "cm",
+      "kilograms": "kg",
+      "variants": "colores"
+    },
+    "comparison": {
+      "present": "Indicado",
+      "missing": "No indicado",
+      "meets": "Cumple el requisito",
+      "doesNotMeet": "No lo cumple",
+      "required": "Se lee en este paso"
+    }
   }
 }

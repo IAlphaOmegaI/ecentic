@@ -1,6 +1,7 @@
 import { cn } from "@zenncore/utils";
 import type { MarketingBodyProps } from "@/components/marketing/body";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { AgentReplay } from "@/components/marketing/interactive/agent-replay";
 import {
   type MarketingPage,
   MarketingSection,
@@ -259,6 +260,7 @@ export const SimulateBody = ({
                   </div>
                 </div>
                 {children}
+                {section.id === "replay" && <AgentReplay embedded />}
                 <SectionEnding section={section} />
               </MarketingBand>
             );

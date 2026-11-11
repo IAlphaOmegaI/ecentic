@@ -18595,5 +18595,63 @@
         ]
       }
     }
+  },
+  "interactiveReplay": {
+    "title": "Follow one simulated decision.",
+    "description": "Watch an agent compare two office-chair listings, find missing facts, and try the comparison again.",
+    "sample": "Example with sample data",
+    "rail": "Simulated shopping decision",
+    "controls": {
+      "play": "Play",
+      "pause": "Pause",
+      "previous": "Back",
+      "next": "Next"
+    },
+    "stages": {
+      "question": "The question",
+      "listings": "Two listings",
+      "fields": "What it reads",
+      "pick": "The pick",
+      "fix": "Add the facts",
+      "rerun": "The re-run"
+    },
+    "question": "Which office chair suits a taller adult for less than $400?",
+    "questionLabel": "A shopper asks",
+    "questionNote": "This replay is one invented shopping decision. It does not measure live AI traffic.",
+    "listingNote": "The supplier has the seat-height range and weight capacity. Those facts are missing from your compared listing.",
+    "reading": "Reading",
+    "missingReading": "Your listing does not state this fact.",
+    "presentReading": "Both listings state this fact.",
+    "fieldsNote": "The agent checks the fields one at a time. A missing fact stays visible as “Not stated”.",
+    "pickLabel": "Sample pick: a rival’s listing",
+    "pickReason": "The rival states its seat-height range and weight capacity, so the agent can check those fit requirements.",
+    "fixNote": "Add the existing supplier specifications to the compared listing. No specifications are invented, and this example changes nothing in a store.",
+    "rerunLabel": "Sample re-run: your listing",
+    "rerunReason": "With both specifications stated, this sample agent chooses your lower-priced chair from the two listings.",
+    "outcomeNote": "This change in the pick is illustrative. A real simulation can reach a different result.",
+    "listing": {
+      "own": "Your listing",
+      "rival": "A rival’s listing",
+      "ownTitle": "Ergonomic office chair",
+      "rivalTitle": "Adjustable office chair"
+    },
+    "fields": {
+      "price": "Price",
+      "seatHeight": "Seat-height range",
+      "capacity": "Weight capacity",
+      "variants": "Color variants"
+    },
+    "units": {
+      "centimeters": "cm",
+      "kilograms": "kg",
+      "variants": "colors"
+    },
+    "comparison": {
+      "present": "Stated",
+      "missing": "Not stated",
+      "meets": "Meets the requirement",
+      "doesNotMeet": "Does not meet it",
+      "required": "Read at this step"
+    }
   }
 }
