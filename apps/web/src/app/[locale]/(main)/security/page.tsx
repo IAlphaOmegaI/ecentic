@@ -20,6 +20,7 @@ import {
   MarketingBand,
 } from "@/components/marketing/primitives";
 import { SecurityDetails } from "./_components/security-details";
+import { SecurityFlow } from "./_components/security-flow";
 
 export const generateMetadata = async () => {
   const { enterpriseCompany } = await getMessages();
@@ -82,7 +83,7 @@ export default async () => {
             <h2 className="text-lg! leading-snug! tracking-normal!">
               {reviewed.title}
             </h2>
-            <p className="max-w-[70ch] text-foreground-dimmed">
+            <p className="max-w-[70ch] text-foreground">
               {reviewed.description}
             </p>
           </div>
@@ -153,6 +154,7 @@ export default async () => {
         </MarketingBand>
       )}
 
+      <SecurityFlow />
       <SectionGutter />
       {infrastructure && (
         <MarketingBand

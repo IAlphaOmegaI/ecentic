@@ -17701,5 +17701,75 @@
         "after": "El ejemplo llega a un pedido de WooCommerce."
       }
     }
+  },
+  "interactiveSecurity": {
+    "reviewLabel": "Borrador para revisión de Alvi",
+    "title": "Por dónde pasan los datos de producto",
+    "description": "Selecciona una conexión para revisar los datos, el momento y el control propuestos. Alvi debe confirmar cada conexión antes de que se publique este diagrama.",
+    "details": {
+      "what": "Qué se envía",
+      "when": "Cuándo",
+      "control": "Control"
+    },
+    "nodes": {
+      "source": {
+        "label": "Tu tienda o feed",
+        "description": "Catálogo de productos"
+      },
+      "ecentic": {
+        "label": "ecentic",
+        "description": "Herramientas de comparación y publicación"
+      },
+      "providers": {
+        "label": "Proveedores de IA",
+        "description": "Simulaciones y reescrituras · lista de proveedores"
+      },
+      "store": {
+        "label": "Tienda conectada",
+        "description": "Shopify o WooCommerce"
+      },
+      "merchantCenter": {
+        "label": "Merchant Center",
+        "description": "Sincronización independiente para Shopify"
+      }
+    },
+    "connectors": {
+      "import": {
+        "label": "Importar catálogo",
+        "what": "Campos de producto de la tienda o del feed seleccionado. {{TODO: Alvi confirms}}",
+        "when": "Durante la importación o sincronización del catálogo. {{TODO: Alvi confirms}}",
+        "control": "Usa los permisos de la conexión o la fuente que eliges. La importación no publica cambios en las fichas. {{TODO: Alvi confirms}}"
+      },
+      "request": {
+        "label": "Enviar a la IA",
+        "what": "Datos de los productos y competidores seleccionados para comparar o generar fichas. {{TODO: Alvi confirms}}",
+        "when": "Cuando se ejecuta una simulación o una acción de generación de fichas. {{TODO: Alvi confirms}}",
+        "control": "Usa la ruta de proveedores configurada. Los datos de la cuenta conectada de Merchant Center se mantienen separados del catálogo que se usa para la IA. {{TODO: Alvi confirms}}"
+      },
+      "response": {
+        "label": "Devolver resultados",
+        "what": "Resultados de simulación o contenido generado para fichas y datos estructurados. {{TODO: Alvi confirms}}",
+        "when": "Cuando el modelo devuelve el resultado solicitado. {{TODO: Alvi confirms}}",
+        "control": "Aplicar puede generar y publicar en la misma acción; los datos estructurados tienen una acción de publicación independiente. {{TODO: Alvi confirms}}"
+      },
+      "apply": {
+        "label": "Aplicar ficha",
+        "what": "Un título y una descripción generados para los productos seleccionados. {{TODO: Alvi confirms}}",
+        "when": "Cuando eliges Aplicar o una acción explícita de publicación en bloque. {{TODO: Alvi confirms}}",
+        "control": "Requiere una tienda conectada directamente y tu acción explícita de publicación. {{TODO: Alvi confirms}}"
+      },
+      "structuredData": {
+        "label": "Publicar datos",
+        "what": "Datos Product JSON-LD generados en los metadatos de producto de la tienda. {{TODO: Alvi confirms}}",
+        "when": "Al usar la acción independiente Publicar datos estructurados. {{TODO: Alvi confirms}}",
+        "control": "La extensión del tema de Shopify o el plugin de WooCommerce debe mostrar los datos publicados. {{TODO: Alvi confirms}}"
+      },
+      "merchantCenter": {
+        "label": "Enviar a Google",
+        "what": "Cambios publicados de título y descripción, junto con los atributos de compra seleccionados. {{TODO: Alvi confirms}}",
+        "when": "Al ejecutar una sincronización explícita e independiente con Google para una tienda Shopify conectada. {{TODO: Alvi confirms}}",
+        "control": "Usa una fuente complementaria junto al feed principal. Aplicar una ficha no inicia esta sincronización automáticamente. {{TODO: Alvi confirms}}"
+      }
+    }
   }
 }

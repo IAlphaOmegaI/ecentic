@@ -17,6 +17,42 @@ const diagram = cva("m-0 grid list-none p-0", {
   defaultVariants: { orientation: "vertical" },
 });
 
+const ConnectorDetails = ({
+  connector,
+}: {
+  connector: FlowDiagram.Connector;
+}) => (
+  <>
+    {connector.description && (
+      <p className="mt-2 text-foreground-dimmed text-sm leading-relaxed">
+        {connector.description}
+      </p>
+    )}
+    {connector.control && (
+      <p className="mt-2 text-foreground-dimmed text-sm leading-relaxed">
+        {connector.control}
+      </p>
+    )}
+    {connector.details && (
+      <dl className="mt-4 grid gap-4">
+        {connector.details.map((detail) => (
+          <div
+            key={detail.label}
+            className="grid gap-2 md:grid-cols-[8rem_1fr] md:gap-4"
+          >
+            <dt className="font-medium text-foreground-rich text-sm">
+              {detail.label}
+            </dt>
+            <dd className="min-w-0 text-foreground-dimmed text-sm leading-relaxed">
+              {detail.value}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    )}
+  </>
+);
+
 export const FlowDiagram = ({
   label,
   nodes,
@@ -39,9 +75,19 @@ export const FlowDiagram = ({
             key={node.id}
             data-flow-node={node.id}
             data-status={node.status}
-            className="group/node relative min-w-0 border-accent-foreground border-b last:border-b-0"
+            className={cn(
+              "group/node relative min-w-0 border-accent-foreground border-b last:border-b-0",
+              orientation === "horizontal" &&
+                "md:border-r md:border-b-0 md:last:border-r-0",
+            )}
           >
-            <div className="relative grid min-h-18 grid-cols-[2rem_1fr_auto] items-start gap-4 px-8 py-4 max-sm:px-4">
+            <div
+              className={cn(
+                "relative grid min-h-18 grid-cols-[2rem_1fr_auto] items-start gap-4 px-8 py-4 max-sm:px-4",
+                orientation === "horizontal" &&
+                  "md:grid-cols-1 md:gap-2 md:px-4",
+              )}
+            >
               {orientation === "vertical" && (
                 <span
                   aria-hidden="true"
@@ -112,16 +158,18 @@ export const FlowDiagram = ({
                   key={connector.id}
                   data-flow-connector={connector.id}
                   data-flow-to={connector.to}
-                  className="relative border-accent-foreground border-t px-8 py-4 max-sm:px-4"
+                  data-active={
+                    connector.id === selectedConnector ? "" : undefined
+                  }
+                  className={cn(
+                    "relative border-accent-foreground border-t px-8 py-4 max-sm:px-4 data-[active]:[&_button]:border-primary data-[active]:[&_button]:bg-transparent data-[active]:[&_button]:text-foreground-rich",
+                    orientation === "horizontal" && "md:px-4",
+                  )}
                 >
                   {onConnectorSelect ? (
                     <Button
                       variant="outline"
-                      color={
-                        connector.id === selectedConnector
-                          ? "primary"
-                          : "neutral"
-                      }
+                      color="neutral"
                       aria-pressed={connector.id === selectedConnector}
                       aria-label={`${node.label} → ${nodes.find((target) => target.id === connector.to)?.label ?? connector.to}: ${connector.label}`}
                       aria-controls={`${identifier}-details`}
@@ -130,7 +178,7 @@ export const FlowDiagram = ({
                       {connector.id === selectedConnector ? (
                         <span
                           aria-hidden="true"
-                          className="size-2 shrink-0 rounded-full bg-current"
+                          className="size-2 shrink-0 rounded-full bg-primary"
                         />
                       ) : (
                         <ArrowRightIcon className="size-4" aria-hidden="true" />
@@ -143,18 +191,17 @@ export const FlowDiagram = ({
                         <ArrowRightIcon className="size-4" aria-hidden="true" />
                         {connector.label}
                       </p>
-                      {connector.description && (
-                        <p className="mt-2 text-foreground-dimmed text-sm">
-                          {connector.description}
-                        </p>
-                      )}
-                      {connector.control && (
-                        <p className="mt-2 text-foreground-dimmed text-sm">
-                          {connector.control}
-                        </p>
-                      )}
+                      <ConnectorDetails connector={connector} />
                     </Fragment>
                   )}
+                  <p className="mt-2 flex items-center gap-2 text-foreground-dimmed text-sm">
+                    <ArrowRightIcon
+                      className="size-4 shrink-0"
+                      aria-hidden="true"
+                    />
+                    {nodes.find((target) => target.id === connector.to)
+                      ?.label ?? connector.to}
+                  </p>
                 </div>
               ))}
           </li>
@@ -174,16 +221,7 @@ export const FlowDiagram = ({
               <p className="font-medium text-foreground-rich">
                 {selected.label}
               </p>
-              {selected.description && (
-                <p className="mt-2 text-foreground-dimmed">
-                  {selected.description}
-                </p>
-              )}
-              {selected.control && (
-                <p className="mt-2 text-foreground-dimmed">
-                  {selected.control}
-                </p>
-              )}
+              <ConnectorDetails connector={selected} />
             </>
           )}
         </div>
@@ -209,6 +247,7 @@ export namespace FlowDiagram {
     label: string;
     description?: string;
     control?: string;
+    details?: readonly { label: string; value: string }[];
   };
   export type Props = {
     label: string;

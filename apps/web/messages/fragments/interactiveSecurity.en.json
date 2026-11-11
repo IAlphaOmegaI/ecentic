@@ -1,0 +1,68 @@
+{
+  "interactiveSecurity": {
+    "reviewLabel": "Draft for Alvi’s review",
+    "title": "Where product data moves",
+    "description": "Select a connection to inspect the proposed data, timing and control. Every connection still needs Alvi’s confirmation before this diagram can be published.",
+    "details": { "what": "What is sent", "when": "When", "control": "Control" },
+    "nodes": {
+      "source": {
+        "label": "Your store or feed",
+        "description": "Product catalog"
+      },
+      "ecentic": {
+        "label": "ecentic",
+        "description": "Comparison and publishing tools"
+      },
+      "providers": {
+        "label": "AI providers",
+        "description": "Simulations and rewrites · provider list"
+      },
+      "store": {
+        "label": "Connected store",
+        "description": "Shopify or WooCommerce"
+      },
+      "merchantCenter": {
+        "label": "Merchant Center",
+        "description": "Separate Shopify sync"
+      }
+    },
+    "connectors": {
+      "import": {
+        "label": "Import catalog",
+        "what": "Product fields from the selected store or feed. {{TODO: Alvi confirms}}",
+        "when": "During catalog import or sync. {{TODO: Alvi confirms}}",
+        "control": "Uses the store connection permissions or the source you choose. Importing does not publish listing changes. {{TODO: Alvi confirms}}"
+      },
+      "request": {
+        "label": "Send to AI",
+        "what": "Selected product and competitor details for comparisons or listing generation. {{TODO: Alvi confirms}}",
+        "when": "When a simulation or listing-generation action runs. {{TODO: Alvi confirms}}",
+        "control": "Uses the configured provider route. Connected Merchant Center account data remains separate from the store catalog used for AI work. {{TODO: Alvi confirms}}"
+      },
+      "response": {
+        "label": "Return results",
+        "what": "Simulation results or generated listing and structured-data content. {{TODO: Alvi confirms}}",
+        "when": "When the requested model operation returns. {{TODO: Alvi confirms}}",
+        "control": "Apply can generate and publish within the same action; structured data uses its separate publish action. {{TODO: Alvi confirms}}"
+      },
+      "apply": {
+        "label": "Apply listing",
+        "what": "A generated title and description for selected products. {{TODO: Alvi confirms}}",
+        "when": "When you choose Apply or an explicit bulk publishing action. {{TODO: Alvi confirms}}",
+        "control": "Requires a directly connected store and your explicit publishing action. {{TODO: Alvi confirms}}"
+      },
+      "structuredData": {
+        "label": "Publish data",
+        "what": "Generated Product JSON-LD in the store’s product metadata. {{TODO: Alvi confirms}}",
+        "when": "On the separate Publish structured data action. {{TODO: Alvi confirms}}",
+        "control": "The Shopify theme app embed or WooCommerce plugin must render the published data. {{TODO: Alvi confirms}}"
+      },
+      "merchantCenter": {
+        "label": "Sync Google",
+        "what": "Published title and description overrides plus selected checkout attributes. {{TODO: Alvi confirms}}",
+        "when": "On a separate explicit Google sync for a connected Shopify store. {{TODO: Alvi confirms}}",
+        "control": "Uses a supplemental source alongside the main feed. Applying a listing does not automatically run this sync. {{TODO: Alvi confirms}}"
+      }
+    }
+  }
+}
