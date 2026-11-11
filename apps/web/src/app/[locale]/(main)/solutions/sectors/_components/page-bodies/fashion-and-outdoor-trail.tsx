@@ -32,7 +32,7 @@ export const FashionAndOutdoorTrail = ({
           {copy.description}
         </p>
       </div>
-      <div className="relative h-64 text-primary-text/80 max-md:h-44">
+      <div className="relative h-64 text-primary-text max-md:h-44">
         <EvolvingAscii artwork="bag" className="absolute inset-0" />
       </div>
     </div>

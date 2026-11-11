@@ -1,0 +1,826 @@
+{
+  "interactiveShelf": {
+    "shared": {
+      "exampleLabel": "Example with sample data",
+      "description": "A scripted comparison of invented products. The fix makes existing product facts explicit.",
+      "questionsLabel": "Choose a shopper question",
+      "leftLabel": "Your listing",
+      "rightLabel": "A rival’s listing",
+      "beforeLabel": "Before the fix",
+      "afterLabel": "After the fix",
+      "resultLabel": "Illustrative choice",
+      "labels": {
+        "present": "Has it",
+        "missing": "Not stated",
+        "meets": "Meets this requirement",
+        "doesNotMeet": "Does not meet this requirement",
+        "required": "Needed for this question"
+      },
+      "action": {
+        "primary": "After the fix"
+      }
+    },
+    "sectors": {
+      "wine-and-spirits": {
+        "scenarios": [
+          {
+            "leftTitle": "Single malt A",
+            "rightTitle": "Single malt B",
+            "rows": [
+              {
+                "left": "46% ABV",
+                "right": "40% ABV"
+              },
+              {
+                "left": "12 years",
+                "right": "10 years"
+              },
+              {
+                "left": "Islay, Scotland",
+                "right": "Highlands, Scotland"
+              },
+              {
+                "left": "Peated single malt; bourbon cask",
+                "right": "Smoky single malt; bourbon cask"
+              },
+              {
+                "left": "700 ml · $72",
+                "right": "700 ml · $76"
+              },
+              {
+                "left": "In stock; eligible delivery areas only",
+                "right": "In stock; eligible delivery areas only"
+              }
+            ],
+            "before": "A rival’s listing states the smoky style and a price under $80. Your listing leaves the style unstated.",
+            "after": "Your listing now states the smoky single-malt style. Both fit the question; the lower bottle price breaks the tie in this example."
+          },
+          {
+            "leftTitle": "Barolo A",
+            "rightTitle": "Barolo B",
+            "rows": [
+              {
+                "left": "14% ABV",
+                "right": "14.5% ABV"
+              },
+              {
+                "left": "2020 vintage",
+                "right": "2021 vintage"
+              },
+              {
+                "left": "Barolo DOCG, Piedmont",
+                "right": "Barolo DOCG, Piedmont"
+              },
+              {
+                "left": "Nebbiolo; stated drinking window 2026–2032",
+                "right": "Nebbiolo; stated drinking window 2026–2029"
+              },
+              {
+                "left": "750 ml · $52",
+                "right": "750 ml · $64"
+              },
+              {
+                "left": "In stock; eligible delivery areas only",
+                "right": "In stock; eligible delivery areas only"
+              }
+            ],
+            "before": "A rival’s listing gives a current drinking window. Your listing does not say when the producer recommends opening it.",
+            "after": "Your listing now includes the producer’s drinking window. Both are listed for drinking now; this example chooses the lower-priced bottle."
+          },
+          {
+            "leftTitle": "Cocktail rum A",
+            "rightTitle": "Cocktail rum B",
+            "rows": [
+              {
+                "left": "40% ABV",
+                "right": "40% ABV"
+              },
+              {
+                "left": "Unaged",
+                "right": "Unaged"
+              },
+              {
+                "left": "Caribbean blend",
+                "right": "Caribbean blend"
+              },
+              {
+                "left": "White rum; supplier-declared sugar 0 g/L",
+                "right": "White rum; supplier-declared sugar 2 g/L"
+              },
+              {
+                "left": "700 ml · $28",
+                "right": "700 ml · $30"
+              },
+              {
+                "left": "In stock; eligible delivery areas only",
+                "right": "In stock; eligible delivery areas only"
+              }
+            ],
+            "before": "A rival’s listing gives a sugar amount. Your listing says “smooth” but supplies no sugar figure to compare.",
+            "after": "Your listing now states the supplier’s sugar amount. This example picks its lower declared sugar content for the cocktail question."
+          }
+        ]
+      },
+      "food-and-beverage": {
+        "scenarios": [
+          {
+            "leftTitle": "Protein snack A",
+            "rightTitle": "Protein snack B",
+            "rows": [
+              {
+                "left": "Vegan",
+                "right": "Vegan"
+              },
+              {
+                "left": "Contains soy; may contain oats",
+                "right": "Contains soy; may contain milk"
+              },
+              {
+                "left": "Per 40 g: 140 kcal, 20 g protein, 2 g sugar",
+                "right": "Per 40 g: 145 kcal, 15 g protein, 3 g sugar"
+              },
+              {
+                "left": "6 × 40 g · $12",
+                "right": "6 × 40 g · $15"
+              },
+              {
+                "left": "Soy protein, oats, sunflower oil, salt",
+                "right": "Soy protein, rice flour, sunflower oil, salt"
+              },
+              {
+                "left": "Store dry; 6-month shelf life; domestic delivery",
+                "right": "Store dry; 6-month shelf life; domestic delivery"
+              }
+            ],
+            "before": "A rival’s listing states protein and calories per serving. Your listing cannot be checked against the 150-calorie limit.",
+            "after": "Your listing now states 20 g protein and 140 calories per serving. It provides more protein within the same calorie limit in this example."
+          },
+          {
+            "leftTitle": "Plain crackers A",
+            "rightTitle": "Plain crackers B",
+            "rows": [
+              {
+                "left": "Gluten-free, as stated on the pack",
+                "right": "Gluten-free, as stated on the pack"
+              },
+              {
+                "left": "No listed allergens; no may-contain statement supplied",
+                "right": "No listed allergens; no may-contain statement supplied"
+              },
+              {
+                "left": "Per 25 g: 110 kcal, 2 g protein, 1 g sugar",
+                "right": "Per 25 g: 112 kcal, 2 g protein, 1 g sugar"
+              },
+              {
+                "left": "200 g · $3.20",
+                "right": "200 g · $4.00"
+              },
+              {
+                "left": "Rice flour, potato starch, sunflower oil, salt",
+                "right": "Rice flour, potato starch, sunflower oil, salt"
+              },
+              {
+                "left": "Store dry; 8-month shelf life; domestic delivery",
+                "right": "Store dry; 8-month shelf life; domestic delivery"
+              }
+            ],
+            "before": "A rival’s listing explicitly states gluten-free. Your listing has an ingredient list, but the dietary claim is missing.",
+            "after": "Both listings now state the same gluten-free claim. The lower pack price breaks the tie in this example; a child’s taste preference is still unknown."
+          },
+          {
+            "leftTitle": "Pea protein A",
+            "rightTitle": "Pea protein B",
+            "rows": [
+              {
+                "left": "Vegan",
+                "right": "Vegan"
+              },
+              {
+                "left": "May contain soy",
+                "right": "May contain soy"
+              },
+              {
+                "left": "Per 30 g: 24 g protein, 118 kcal",
+                "right": "Per 30 g: 18 g protein, 120 kcal"
+              },
+              {
+                "left": "600 g · 20 servings · $24",
+                "right": "600 g · 20 servings · $24"
+              },
+              {
+                "left": "Pea protein isolate; no sweetener",
+                "right": "Pea protein, rice flour; no sweetener"
+              },
+              {
+                "left": "Store dry; 12-month shelf life; domestic delivery",
+                "right": "Store dry; 12-month shelf life; domestic delivery"
+              }
+            ],
+            "before": "A rival’s listing supplies ingredients that can be checked for stevia. Your listing leaves the ingredient list unstated.",
+            "after": "Your listing now shows no sweetener in the ingredients. Both fit the stated preferences; the higher protein per serving determines this sample pick."
+          }
+        ]
+      },
+      "beauty-and-personal-care": {
+        "scenarios": [
+          {
+            "leftTitle": "Moisturizer A",
+            "rightTitle": "Moisturizer B",
+            "rows": [
+              {
+                "left": "Manufacturer: suitable for sensitive skin",
+                "right": "Manufacturer: suitable for sensitive skin"
+              },
+              {
+                "left": "Aqua, Glycerin, Squalane",
+                "right": "Aqua, Glycerin, Squalane"
+              },
+              {
+                "left": "Fragrance-free label claim",
+                "right": "Fragrance-free label claim"
+              },
+              {
+                "left": "No SPF claimed",
+                "right": "No SPF claimed"
+              },
+              {
+                "left": "50 ml · $18",
+                "right": "50 ml · $24"
+              },
+              {
+                "left": "No certification claimed",
+                "right": "No certification claimed"
+              }
+            ],
+            "before": "A rival’s listing states sensitive-skin suitability and fragrance-free labeling. Your listing does not state either fact.",
+            "after": "Your listing now includes the same suitability and fragrance-free disclosures. The lower price for the same volume breaks the tie in this example."
+          },
+          {
+            "leftTitle": "Tinted mineral sunscreen A",
+            "rightTitle": "Tinted mineral sunscreen B",
+            "rows": [
+              {
+                "left": "Tinted finish; supplier claim: no white cast",
+                "right": "Tinted finish; supplier claim: no white cast"
+              },
+              {
+                "left": "Zinc Oxide, Aqua, Glycerin, Iron Oxides",
+                "right": "Zinc Oxide, Aqua, Glycerin, Iron Oxides"
+              },
+              {
+                "left": "Fragrance-free label claim",
+                "right": "Fragrance-free label claim"
+              },
+              {
+                "left": "Label: SPF 50, broad-spectrum UVA/UVB",
+                "right": "Label: SPF 50, broad-spectrum UVA/UVB"
+              },
+              {
+                "left": "50 ml · $22",
+                "right": "50 ml · $28"
+              },
+              {
+                "left": "No certification claimed",
+                "right": "No certification claimed"
+              }
+            ],
+            "before": "A rival’s listing states mineral ingredients, SPF 50 and the supplier’s finish claim. Your listing omits its protection label.",
+            "after": "Both listings now disclose SPF 50, mineral ingredients and the supplier’s finish claim. Price decides this example; the finish can still vary by skin tone."
+          },
+          {
+            "leftTitle": "Curl shampoo A",
+            "rightTitle": "Curl shampoo B",
+            "rows": [
+              {
+                "left": "Manufacturer: formulated for curly hair",
+                "right": "Manufacturer: formulated for curly hair"
+              },
+              {
+                "left": "Aqua, Decyl Glucoside, Glycerin, Citric Acid",
+                "right": "Aqua, Decyl Glucoside, Glycerin, Citric Acid"
+              },
+              {
+                "left": "Vegan; no animal-derived ingredients declared",
+                "right": "Vegan; no animal-derived ingredients declared"
+              },
+              {
+                "left": "No SPF claimed",
+                "right": "No SPF claimed"
+              },
+              {
+                "left": "300 ml · $15",
+                "right": "250 ml · $18"
+              },
+              {
+                "left": "No certification claimed",
+                "right": "No certification claimed"
+              }
+            ],
+            "before": "A rival’s listing states both curly-hair suitability and its vegan claim. Your listing does not state the vegan claim.",
+            "after": "Your listing now states the vegan claim alongside the hair-type guidance. Both match; its lower price per ml determines this sample pick."
+          }
+        ]
+      },
+      "consumer-electronics": {
+        "scenarios": [
+          {
+            "leftTitle": "Noise-canceling earbuds A",
+            "rightTitle": "Noise-canceling earbuds B",
+            "rows": [
+              {
+                "left": "Sample EB-A · ANC · $189",
+                "right": "Sample EB-B · ANC · $179"
+              },
+              {
+                "left": "12 hours, ANC on at 50% volume",
+                "right": "8 hours, ANC on at 50% volume"
+              },
+              {
+                "left": "Bluetooth audio on phones and laptops",
+                "right": "Bluetooth audio on phones and laptops"
+              },
+              {
+                "left": "Bluetooth 5.3; USB-C charging",
+                "right": "Bluetooth 5.3; USB-C charging"
+              },
+              {
+                "left": "2 years, manufacturer hardware cover",
+                "right": "2 years, manufacturer hardware cover"
+              },
+              {
+                "left": "New",
+                "right": "New"
+              }
+            ],
+            "before": "A rival’s listing states battery life with noise cancellation on. Your listing gives no comparable runtime.",
+            "after": "Your listing now states 12 hours under the same test conditions, versus 8 hours. Both are below $200, so the longer runtime determines the example pick."
+          },
+          {
+            "leftTitle": "Editing laptop A",
+            "rightTitle": "Editing laptop B",
+            "rows": [
+              {
+                "left": "Sample LP-A · 32 GB RAM · 1 TB SSD",
+                "right": "Sample LP-B · 32 GB RAM · 1 TB SSD"
+              },
+              {
+                "left": "10 hours in supplier video-playback test",
+                "right": "6 hours in the same video-playback test"
+              },
+              {
+                "left": "Supported by the shopper’s editing software",
+                "right": "Supported by the shopper’s editing software"
+              },
+              {
+                "left": "2 × USB-C; HDMI; Wi-Fi 6",
+                "right": "2 × USB-C; HDMI; Wi-Fi 6"
+              },
+              {
+                "left": "2 years, manufacturer hardware cover",
+                "right": "2 years, manufacturer hardware cover"
+              },
+              {
+                "left": "New",
+                "right": "New"
+              }
+            ],
+            "before": "A rival’s listing identifies the 32 GB variant. Your listing leaves the exact model and memory variant unstated.",
+            "after": "Your listing now identifies the 32 GB variant. Both satisfy that requirement; the longer stated playback battery life breaks the tie in this example, not an editing-performance claim."
+          },
+          {
+            "leftTitle": "Robot vacuum A",
+            "rightTitle": "Robot vacuum B",
+            "rows": [
+              {
+                "left": "Sample RV-A",
+                "right": "Sample RV-B"
+              },
+              {
+                "left": "120 minutes in standard cleaning mode",
+                "right": "120 minutes in standard cleaning mode"
+              },
+              {
+                "left": "Google Home: start, stop and dock",
+                "right": "Google Home: start, stop and dock"
+              },
+              {
+                "left": "2.4 GHz Wi-Fi",
+                "right": "2.4 GHz Wi-Fi"
+              },
+              {
+                "left": "2 years, manufacturer hardware cover",
+                "right": "1 year, seller hardware cover"
+              },
+              {
+                "left": "New",
+                "right": "Refurbished"
+              }
+            ],
+            "before": "A rival’s listing explicitly names Google Home and its supported commands. Your listing only has the general connectivity fields.",
+            "after": "Your listing now confirms the same Google Home commands. This example chooses its new condition and longer warranty as the tie-breaker."
+          }
+        ]
+      },
+      "home-and-furniture": {
+        "scenarios": [
+          {
+            "leftTitle": "Sofa bed A",
+            "rightTitle": "Sofa bed B",
+            "rows": [
+              {
+                "left": "192 × 90 × 84 cm; width 192 cm",
+                "right": "198 × 92 × 85 cm; width 198 cm"
+              },
+              {
+                "left": "Wood frame; polyester upholstery",
+                "right": "Wood frame; polyester upholstery"
+              },
+              {
+                "left": "3 seats; sleeping surface 140 × 190 cm",
+                "right": "3 seats; sleeping surface 140 × 190 cm"
+              },
+              {
+                "left": "Attach legs; tools and instructions included",
+                "right": "Attach legs; tools and instructions included"
+              },
+              {
+                "left": "7 days; doorstep delivery · €30",
+                "right": "7 days; doorstep delivery · €30"
+              },
+              {
+                "left": "30 days; unused; collection fee €30",
+                "right": "30 days; unused; collection fee €30"
+              }
+            ],
+            "before": "A rival’s listing states a width below 200 cm. Your listing has no dimensions to check against the wall.",
+            "after": "Your listing now states 192 cm, leaving more width clearance than 198 cm. That stated difference determines this example pick; room and access measurements still matter."
+          },
+          {
+            "leftTitle": "Dining table A · €899",
+            "rightTitle": "Dining table B · €979",
+            "rows": [
+              {
+                "left": "180 × 90 × 75 cm",
+                "right": "180 × 90 × 75 cm"
+              },
+              {
+                "left": "Solid oak top and legs; oil finish",
+                "right": "Solid pine top and legs; oil finish"
+              },
+              {
+                "left": "Seats 6",
+                "right": "Seats 6"
+              },
+              {
+                "left": "Attach legs; supplied wrench",
+                "right": "Attach legs; supplied wrench"
+              },
+              {
+                "left": "14 days; doorstep delivery included",
+                "right": "14 days; doorstep delivery included"
+              },
+              {
+                "left": "30 days; unused; buyer pays collection",
+                "right": "30 days; unused; buyer pays collection"
+              }
+            ],
+            "before": "A rival’s listing explicitly states solid wood and six seats. Your listing leaves the construction material unstated.",
+            "after": "Your listing now confirms solid wood and six seats. Both are below €1,000 including delivery; the lower total price determines this example pick."
+          },
+          {
+            "leftTitle": "Heating-compatible rug A",
+            "rightTitle": "Heating-compatible rug B",
+            "rows": [
+              {
+                "left": "160 × 230 cm; pile 6 mm",
+                "right": "160 × 230 cm; pile 6 mm"
+              },
+              {
+                "left": "Wool; supplier confirms underfloor heating up to 27°C",
+                "right": "Wool; supplier confirms underfloor heating up to 27°C"
+              },
+              {
+                "left": "Floor covering; no seating capacity",
+                "right": "Floor covering; no seating capacity"
+              },
+              {
+                "left": "No assembly; follow supplier placement guide",
+                "right": "No assembly; follow supplier placement guide"
+              },
+              {
+                "left": "5 days; delivery included",
+                "right": "5 days; delivery included"
+              },
+              {
+                "left": "30 days; unused; free return collection",
+                "right": "14 days; unused; buyer pays collection"
+              }
+            ],
+            "before": "A rival’s listing records supplier-approved heating compatibility and its limit. Your listing leaves the relevant material guidance unstated.",
+            "after": "Your listing now includes the same supplier compatibility limit. Both fit the stated requirement; this example uses the longer return window to break the tie."
+          }
+        ]
+      },
+      "fashion-and-outdoor": {
+        "scenarios": [
+          {
+            "leftTitle": "Hiking jacket A",
+            "rightTitle": "Hiking jacket B",
+            "rows": [
+              {
+                "left": "Unisex M; regular fit; chest 100–106 cm",
+                "right": "Unisex M; regular fit; chest 100–106 cm"
+              },
+              {
+                "left": "100% recycled polyester shell",
+                "right": "100% recycled polyester shell"
+              },
+              {
+                "left": "20,000 mm hydrostatic head; taped seams",
+                "right": "10,000 mm hydrostatic head; taped seams"
+              },
+              {
+                "left": "Hiking in wet conditions; layer for temperature",
+                "right": "Hiking in wet conditions; layer for temperature"
+              },
+              {
+                "left": "Machine wash 30°C; no fabric softener",
+                "right": "Machine wash 30°C; no fabric softener"
+              },
+              {
+                "left": "Navy, M · $160 · in stock",
+                "right": "Navy, M · $160 · in stock"
+              }
+            ],
+            "before": "A rival’s listing supplies a waterproof rating and seam construction. Your listing does not state its performance data.",
+            "after": "Your listing now states the higher waterproof rating with taped seams. The declared rating determines this sample choice for wet-weather hiking."
+          },
+          {
+            "leftTitle": "Wide running shoe A",
+            "rightTitle": "Wide running shoe B",
+            "rows": [
+              {
+                "left": "EU 42; wide 2E fit",
+                "right": "EU 42; wide 2E fit"
+              },
+              {
+                "left": "Mesh upper; rubber outsole",
+                "right": "Mesh upper; rubber outsole"
+              },
+              {
+                "left": "28 mm foam stack; 220 g per shoe in this size",
+                "right": "24 mm foam stack; 290 g per shoe in this size"
+              },
+              {
+                "left": "Road running; neutral support",
+                "right": "Road running; neutral support"
+              },
+              {
+                "left": "Hand clean; air dry",
+                "right": "Hand clean; air dry"
+              },
+              {
+                "left": "Blue, EU 42 wide · $110 · in stock",
+                "right": "Blue, EU 42 wide · $110 · in stock"
+              }
+            ],
+            "before": "A rival’s listing explicitly identifies the wide-fit variant and cushioning data. Your listing omits its width.",
+            "after": "Your listing now confirms the wide fit. This example chooses the lighter shoe with the thicker stated foam stack; fit and comfort remain individual."
+          },
+          {
+            "leftTitle": "Merino base layer A",
+            "rightTitle": "Merino base layer B",
+            "rows": [
+              {
+                "left": "Unisex M; close fit",
+                "right": "Unisex M; close fit"
+              },
+              {
+                "left": "100% merino; stated fiber diameter 17.5 microns",
+                "right": "100% merino; stated fiber diameter 19.5 microns"
+              },
+              {
+                "left": "150 g/m² fabric; no waterproof claim",
+                "right": "150 g/m² fabric; no waterproof claim"
+              },
+              {
+                "left": "Next-to-skin hiking base layer",
+                "right": "Next-to-skin hiking base layer"
+              },
+              {
+                "left": "Wool cycle 30°C; dry flat",
+                "right": "Wool cycle 30°C; dry flat"
+              },
+              {
+                "left": "Charcoal, M · $70 · in stock",
+                "right": "Charcoal, M · $70 · in stock"
+              }
+            ],
+            "before": "A rival’s listing supplies merino content and fiber diameter. Your listing leaves the material specification unstated.",
+            "after": "Your listing now gives the finer stated fiber diameter. That disclosure determines the sample choice; neither listing can guarantee that every wearer will find it itch-free."
+          }
+        ]
+      },
+      "health-wellness-and-pet": {
+        "scenarios": [
+          {
+            "leftTitle": "Senior dog food A",
+            "rightTitle": "Senior dog food B",
+            "rows": [
+              {
+                "left": "Manufacturer: dogs aged 7 years and over",
+                "right": "Manufacturer: dogs aged 7 years and over"
+              },
+              {
+                "left": "Turkey, potato, peas, oil, minerals; no grains listed",
+                "right": "Turkey, potato, peas, oil, minerals; no grains listed"
+              },
+              {
+                "left": "Weight-based feeding table; transition guidance on pack",
+                "right": "Weight-based feeding table; transition guidance on pack"
+              },
+              {
+                "left": "Supplier nutritional-adequacy statement provided",
+                "right": "Supplier nutritional-adequacy statement provided"
+              },
+              {
+                "left": "2 kg · $20",
+                "right": "2 kg · $25"
+              },
+              {
+                "left": "Supplier-positioned for senior dogs with sensitive digestion",
+                "right": "Supplier-positioned for senior dogs with sensitive digestion"
+              }
+            ],
+            "before": "A rival’s listing states the life stage and full ingredients. Your listing cannot be checked for the requested grain-free senior positioning.",
+            "after": "Your listing now provides the same life-stage and ingredient disclosures. The lower unit price breaks the example tie; these are product claims, not clinical outcomes."
+          },
+          {
+            "leftTitle": "Magnesium powder A",
+            "rightTitle": "Magnesium powder B",
+            "rows": [
+              {
+                "left": "Manufacturer: adults only",
+                "right": "Manufacturer: adults only"
+              },
+              {
+                "left": "Magnesium bisglycinate only; no added fillers",
+                "right": "Magnesium bisglycinate only; no added fillers"
+              },
+              {
+                "left": "Follow the supplied label; warnings included",
+                "right": "Follow the supplied label; warnings included"
+              },
+              {
+                "left": "No third-party testing claim",
+                "right": "No third-party testing claim"
+              },
+              {
+                "left": "60 labeled servings · $18",
+                "right": "60 labeled servings · $24"
+              },
+              {
+                "left": "Food supplement; no treatment claim",
+                "right": "Food supplement; no treatment claim"
+              }
+            ],
+            "before": "A rival’s listing provides an ingredient list without added fillers. Your listing does not supply the ingredients to check.",
+            "after": "Your listing now provides the same ingredient disclosure. The lower cost per labeled serving breaks the tie in this example; no health-effect comparison is made."
+          },
+          {
+            "leftTitle": "Low-dust cat litter A",
+            "rightTitle": "Low-dust cat litter B",
+            "rows": [
+              {
+                "left": "For adult cats",
+                "right": "For adult cats"
+              },
+              {
+                "left": "Unscented bentonite clay",
+                "right": "Unscented bentonite clay"
+              },
+              {
+                "left": "Fill to 7 cm; scoop daily; do not flush",
+                "right": "Fill to 7 cm; scoop daily; do not flush"
+              },
+              {
+                "left": "Sample laboratory method: dust mass 0.2%",
+                "right": "Same sample laboratory method: dust mass 0.5%"
+              },
+              {
+                "left": "10 L · $12",
+                "right": "10 L · $12"
+              },
+              {
+                "left": "Clumping litter; low-dust positioning",
+                "right": "Clumping litter; low-dust positioning"
+              }
+            ],
+            "before": "A rival’s listing supplies a dust-test result. Your listing says “low dust” without comparable testing information.",
+            "after": "Your listing now supplies a lower dust result using the same sample method. That comparable test value determines this illustrative choice."
+          }
+        ]
+      },
+      "travel-and-experiences": {
+        "scenarios": [
+          {
+            "leftTitle": "Lisbon stay A",
+            "rightTitle": "Lisbon stay B",
+            "rows": [
+              {
+                "left": "7–10 May 2027; three nights available",
+                "right": "14–17 May 2027; three nights available"
+              },
+              {
+                "left": "€480 total for two; mandatory fees and taxes included",
+                "right": "€540 total for two; mandatory fees and taxes included"
+              },
+              {
+                "left": "Room and breakfast; transfers excluded",
+                "right": "Room and breakfast; transfers excluded"
+              },
+              {
+                "left": "Free cancellation until 7 days before arrival",
+                "right": "Free cancellation until 7 days before arrival"
+              },
+              {
+                "left": "Lisbon city center; 300 m from a metro stop",
+                "right": "Lisbon city center; 300 m from a metro stop"
+              },
+              {
+                "left": "One room for two adults",
+                "right": "One room for two adults"
+              }
+            ],
+            "before": "A rival’s listing states an available long weekend in May. Your listing gives no readable dates to check.",
+            "after": "Your listing now gives a May long weekend and a complete total price. Both fit the sample request; the lower total price breaks the tie."
+          },
+          {
+            "leftTitle": "Mexico City food tour A",
+            "rightTitle": "Mexico City food tour B",
+            "rows": [
+              {
+                "left": "Sample date: 15 May 2027 at 12:00",
+                "right": "Sample date: 15 May 2027 at 12:00"
+              },
+              {
+                "left": "$90 total for two; fees and taxes included",
+                "right": "$110 total for two; fees and taxes included"
+              },
+              {
+                "left": "Guide and five tastings; transfers excluded",
+                "right": "Guide and five tastings; transfers excluded"
+              },
+              {
+                "left": "Free cancellation up to 48 hours before",
+                "right": "Free cancellation up to 48 hours before"
+              },
+              {
+                "left": "Example meeting point in Centro, Mexico City",
+                "right": "Example meeting point in Centro, Mexico City"
+              },
+              {
+                "left": "Two adult places available; maximum group 8",
+                "right": "Two adult places available; maximum group 8"
+              }
+            ],
+            "before": "A rival’s listing confirms two places on the stated tour. Your listing leaves the group size and capacity unstated.",
+            "after": "Your listing now confirms two places and the included tastings. Both fit the sample question; the lower total for two determines this choice."
+          },
+          {
+            "leftTitle": "Alpine chalet A",
+            "rightTitle": "Alpine chalet B",
+            "rows": [
+              {
+                "left": "Sample week: 6–13 February 2027",
+                "right": "Sample week: 6–13 February 2027"
+              },
+              {
+                "left": "€2,400 per week; fees and taxes included",
+                "right": "€2,800 per week; fees and taxes included"
+              },
+              {
+                "left": "Linen and final cleaning; ski passes excluded",
+                "right": "Linen and final cleaning; ski passes excluded"
+              },
+              {
+                "left": "Free cancellation until 30 days before arrival",
+                "right": "Free cancellation until 30 days before arrival"
+              },
+              {
+                "left": "Example Alpine resort; 400 m from ski lift",
+                "right": "Example Alpine resort; 900 m from ski lift"
+              },
+              {
+                "left": "Four bedrooms; maximum occupancy 8",
+                "right": "Four bedrooms; maximum occupancy 8"
+              }
+            ],
+            "before": "A rival’s listing confirms space for eight people. Your listing does not disclose its occupancy limit.",
+            "after": "Your listing now confirms eight-person occupancy. The shorter stated walk to the lift and lower complete price determine this example pick."
+          }
+        ]
+      }
+    }
+  }
+}

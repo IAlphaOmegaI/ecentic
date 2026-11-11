@@ -55,7 +55,7 @@ export const BeautyAndPersonalCareRecord = ({
                 {question.body}
               </p>
             </div>
-            <div className="relative min-h-56 text-primary-text/75 max-md:hidden">
+            <div className="relative min-h-56 text-primary-text max-md:hidden">
               <EvolvingAscii artwork="bag" className="absolute inset-0" />
             </div>
           </div>

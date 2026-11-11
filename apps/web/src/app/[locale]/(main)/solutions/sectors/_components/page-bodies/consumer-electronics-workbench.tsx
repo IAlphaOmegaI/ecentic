@@ -77,7 +77,7 @@ export const ElectronicsWorkbench = ({
               {copy.inspectLabel}
             </p>
           </div>
-          <div className="h-44 text-primary sm:h-64 lg:h-88">
+          <div className="h-44 text-primary-text sm:h-64 lg:h-88">
             <EvolvingAscii artwork="console" />
           </div>
           <p className="px-4 pb-6 text-foreground-dimmed text-sm sm:px-8">

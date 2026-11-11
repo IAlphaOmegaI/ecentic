@@ -42,7 +42,7 @@ export const TravelAndExperiencesBody = async ({
                     <div className="relative grid border-accent-foreground border-t md:grid-cols-[1fr_2fr]">
                       <Plus className="top-0 left-1/3 -translate-x-1/2 -translate-y-1/2 max-md:hidden" />
                       <figure className="m-0 flex min-w-0 flex-col justify-between bg-background-dimmed max-md:border-accent-foreground max-md:border-b md:border-accent-foreground md:border-r">
-                        <div className="relative h-64 min-h-64 flex-1 text-primary-text/80 sm:min-h-72">
+                        <div className="relative h-64 min-h-64 flex-1 text-primary-text sm:min-h-72">
                           <EvolvingAscii
                             artwork="bag"
                             className="absolute inset-0"

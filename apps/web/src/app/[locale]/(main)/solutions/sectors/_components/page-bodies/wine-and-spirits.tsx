@@ -62,7 +62,7 @@ export const WineAndSpiritsBody = async ({
                         </p>
                       </div>
                       <figure className="m-0 flex min-w-0 flex-col border-accent-foreground bg-background-dimmed max-md:border-t md:border-l">
-                        <div className="relative h-52 min-h-52 flex-1 text-primary-text/75 sm:min-h-64">
+                        <div className="relative h-52 min-h-52 flex-1 text-primary-text sm:min-h-64">
                           <EvolvingAscii
                             artwork="bag"
                             className="absolute inset-0"

@@ -17771,5 +17771,829 @@
         "control": "Usa una fuente complementaria junto al feed principal. Aplicar una ficha no inicia esta sincronización automáticamente. {{TODO: Alvi confirms}}"
       }
     }
+  },
+  "interactiveShelf": {
+    "shared": {
+      "exampleLabel": "Ejemplo con datos de muestra",
+      "description": "Una comparación preparada de productos inventados. La mejora hace explícitos datos que el producto ya tenía.",
+      "questionsLabel": "Elige una pregunta de compra",
+      "leftLabel": "Tu ficha",
+      "rightLabel": "La ficha de un rival",
+      "beforeLabel": "Antes de la mejora",
+      "afterLabel": "Después de la mejora",
+      "resultLabel": "Elección ilustrativa",
+      "labels": {
+        "present": "Lo indica",
+        "missing": "No indicado",
+        "meets": "Cumple este requisito",
+        "doesNotMeet": "No cumple este requisito",
+        "required": "Necesario para esta pregunta"
+      },
+      "action": {
+        "primary": "Después de la mejora"
+      }
+    },
+    "sectors": {
+      "wine-and-spirits": {
+        "scenarios": [
+          {
+            "leftTitle": "Single malt A",
+            "rightTitle": "Single malt B",
+            "rows": [
+              {
+                "left": "46 % vol.",
+                "right": "40 % vol."
+              },
+              {
+                "left": "12 años",
+                "right": "10 años"
+              },
+              {
+                "left": "Islay, Escocia",
+                "right": "Highlands, Escocia"
+              },
+              {
+                "left": "Single malt ahumado; barrica de bourbon",
+                "right": "Single malt ahumado; barrica de bourbon"
+              },
+              {
+                "left": "700 ml · 72 $",
+                "right": "700 ml · 76 $"
+              },
+              {
+                "left": "En stock; solo zonas de entrega autorizadas",
+                "right": "En stock; solo zonas de entrega autorizadas"
+              }
+            ],
+            "before": "La ficha rival indica el estilo ahumado y un precio inferior a 80 $. Tu ficha no declara el estilo.",
+            "after": "Tu ficha ya indica el estilo single malt ahumado. Ambas encajan; en este ejemplo decide el menor precio por botella."
+          },
+          {
+            "leftTitle": "Barolo A",
+            "rightTitle": "Barolo B",
+            "rows": [
+              {
+                "left": "14 % vol.",
+                "right": "14,5 % vol."
+              },
+              {
+                "left": "Añada 2020",
+                "right": "Añada 2021"
+              },
+              {
+                "left": "Barolo DOCG, Piamonte",
+                "right": "Barolo DOCG, Piamonte"
+              },
+              {
+                "left": "Nebbiolo; consumo indicado 2026–2032",
+                "right": "Nebbiolo; consumo indicado 2026–2029"
+              },
+              {
+                "left": "750 ml · 52 $",
+                "right": "750 ml · 64 $"
+              },
+              {
+                "left": "En stock; solo zonas de entrega autorizadas",
+                "right": "En stock; solo zonas de entrega autorizadas"
+              }
+            ],
+            "before": "La ficha rival indica un periodo de consumo actual. Tu ficha no dice cuándo recomienda abrirlo el productor.",
+            "after": "Tu ficha ya incluye el periodo de consumo del productor. Ambas se presentan para beber ahora; este ejemplo elige la botella de menor precio."
+          },
+          {
+            "leftTitle": "Ron para cócteles A",
+            "rightTitle": "Ron para cócteles B",
+            "rows": [
+              {
+                "left": "40 % vol.",
+                "right": "40 % vol."
+              },
+              {
+                "left": "Sin envejecimiento",
+                "right": "Sin envejecimiento"
+              },
+              {
+                "left": "Mezcla caribeña",
+                "right": "Mezcla caribeña"
+              },
+              {
+                "left": "Ron blanco; azúcar declarado: 0 g/L",
+                "right": "Ron blanco; azúcar declarado: 2 g/L"
+              },
+              {
+                "left": "700 ml · 28 $",
+                "right": "700 ml · 30 $"
+              },
+              {
+                "left": "En stock; solo zonas de entrega autorizadas",
+                "right": "En stock; solo zonas de entrega autorizadas"
+              }
+            ],
+            "before": "La ficha rival indica la cantidad de azúcar. Tu ficha dice «suave», pero no ofrece una cifra comparable.",
+            "after": "Tu ficha ya indica la cantidad de azúcar del proveedor. Este ejemplo elige su menor contenido declarado para la pregunta sobre cócteles."
+          }
+        ]
+      },
+      "food-and-beverage": {
+        "scenarios": [
+          {
+            "leftTitle": "Tentempié proteico A",
+            "rightTitle": "Tentempié proteico B",
+            "rows": [
+              {
+                "left": "Vegano",
+                "right": "Vegano"
+              },
+              {
+                "left": "Contiene soja; puede contener avena",
+                "right": "Contiene soja; puede contener leche"
+              },
+              {
+                "left": "Por 40 g: 140 kcal, 20 g proteína, 2 g azúcar",
+                "right": "Por 40 g: 145 kcal, 15 g proteína, 3 g azúcar"
+              },
+              {
+                "left": "6 × 40 g · 12 $",
+                "right": "6 × 40 g · 15 $"
+              },
+              {
+                "left": "Proteína de soja, avena, aceite de girasol, sal",
+                "right": "Proteína de soja, harina de arroz, aceite de girasol, sal"
+              },
+              {
+                "left": "Conservar seco; 6 meses; entrega nacional",
+                "right": "Conservar seco; 6 meses; entrega nacional"
+              }
+            ],
+            "before": "La ficha rival indica proteína y calorías por ración. Tu ficha no permite comprobar el límite de 150 calorías.",
+            "after": "Tu ficha ya indica 20 g de proteína y 140 calorías por ración. En este ejemplo aporta más proteína dentro del mismo límite de calorías."
+          },
+          {
+            "leftTitle": "Galletas saladas A",
+            "rightTitle": "Galletas saladas B",
+            "rows": [
+              {
+                "left": "Sin gluten, según el envase",
+                "right": "Sin gluten, según el envase"
+              },
+              {
+                "left": "Sin alérgenos declarados; no se aporta aviso de trazas",
+                "right": "Sin alérgenos declarados; no se aporta aviso de trazas"
+              },
+              {
+                "left": "Por 25 g: 110 kcal, 2 g proteína, 1 g azúcar",
+                "right": "Por 25 g: 112 kcal, 2 g proteína, 1 g azúcar"
+              },
+              {
+                "left": "200 g · 3,20 $",
+                "right": "200 g · 4,00 $"
+              },
+              {
+                "left": "Harina de arroz, fécula de patata, aceite de girasol, sal",
+                "right": "Harina de arroz, fécula de patata, aceite de girasol, sal"
+              },
+              {
+                "left": "Conservar seco; 8 meses; entrega nacional",
+                "right": "Conservar seco; 8 meses; entrega nacional"
+              }
+            ],
+            "before": "La ficha rival declara expresamente «sin gluten». Tu ficha tiene ingredientes, pero le falta esa declaración.",
+            "after": "Ambas fichas ya declaran «sin gluten». El menor precio decide en este ejemplo; los gustos del niño siguen siendo desconocidos."
+          },
+          {
+            "leftTitle": "Proteína de guisante A",
+            "rightTitle": "Proteína de guisante B",
+            "rows": [
+              {
+                "left": "Vegana",
+                "right": "Vegana"
+              },
+              {
+                "left": "Puede contener soja",
+                "right": "Puede contener soja"
+              },
+              {
+                "left": "Por 30 g: 24 g proteína, 118 kcal",
+                "right": "Por 30 g: 18 g proteína, 120 kcal"
+              },
+              {
+                "left": "600 g · 20 raciones · 24 $",
+                "right": "600 g · 20 raciones · 24 $"
+              },
+              {
+                "left": "Aislado de proteína de guisante; sin edulcorante",
+                "right": "Proteína de guisante, harina de arroz; sin edulcorante"
+              },
+              {
+                "left": "Conservar seco; 12 meses; entrega nacional",
+                "right": "Conservar seco; 12 meses; entrega nacional"
+              }
+            ],
+            "before": "La ficha rival aporta ingredientes que permiten comprobar la ausencia de estevia. Tu ficha no muestra la lista.",
+            "after": "Tu ficha ya muestra ingredientes sin edulcorantes. Ambas encajan con las preferencias; la mayor proteína por ración decide esta elección de ejemplo."
+          }
+        ]
+      },
+      "beauty-and-personal-care": {
+        "scenarios": [
+          {
+            "leftTitle": "Hidratante A",
+            "rightTitle": "Hidratante B",
+            "rows": [
+              {
+                "left": "Fabricante: apta para piel sensible",
+                "right": "Fabricante: apta para piel sensible"
+              },
+              {
+                "left": "Aqua, Glycerin, Squalane",
+                "right": "Aqua, Glycerin, Squalane"
+              },
+              {
+                "left": "Declaración del envase: sin perfume",
+                "right": "Declaración del envase: sin perfume"
+              },
+              {
+                "left": "Sin FPS declarado",
+                "right": "Sin FPS declarado"
+              },
+              {
+                "left": "50 ml · 18 $",
+                "right": "50 ml · 24 $"
+              },
+              {
+                "left": "Sin certificación declarada",
+                "right": "Sin certificación declarada"
+              }
+            ],
+            "before": "La ficha rival declara uso para piel sensible y ausencia de perfume. Tu ficha no indica ninguno de esos datos.",
+            "after": "Tu ficha ya incluye las mismas declaraciones de uso y ausencia de perfume. El menor precio para el mismo volumen decide en este ejemplo."
+          },
+          {
+            "leftTitle": "Protector mineral con color A",
+            "rightTitle": "Protector mineral con color B",
+            "rows": [
+              {
+                "left": "Acabado con color; proveedor: sin marcas blancas",
+                "right": "Acabado con color; proveedor: sin marcas blancas"
+              },
+              {
+                "left": "Zinc Oxide, Aqua, Glycerin, Iron Oxides",
+                "right": "Zinc Oxide, Aqua, Glycerin, Iron Oxides"
+              },
+              {
+                "left": "Declaración del envase: sin perfume",
+                "right": "Declaración del envase: sin perfume"
+              },
+              {
+                "left": "Envase: FPS 50, amplio espectro UVA/UVB",
+                "right": "Envase: FPS 50, amplio espectro UVA/UVB"
+              },
+              {
+                "left": "50 ml · 22 $",
+                "right": "50 ml · 28 $"
+              },
+              {
+                "left": "Sin certificación declarada",
+                "right": "Sin certificación declarada"
+              }
+            ],
+            "before": "La ficha rival indica ingredientes minerales, FPS 50 y la declaración de acabado del proveedor. Tu ficha omite la protección del envase.",
+            "after": "Ambas fichas ya indican FPS 50, ingredientes minerales y la declaración de acabado. Decide el precio; el acabado puede variar según el tono de piel."
+          },
+          {
+            "leftTitle": "Champú para rizos A",
+            "rightTitle": "Champú para rizos B",
+            "rows": [
+              {
+                "left": "Fabricante: formulado para pelo rizado",
+                "right": "Fabricante: formulado para pelo rizado"
+              },
+              {
+                "left": "Aqua, Decyl Glucoside, Glycerin, Citric Acid",
+                "right": "Aqua, Decyl Glucoside, Glycerin, Citric Acid"
+              },
+              {
+                "left": "Vegano; sin ingredientes de origen animal declarados",
+                "right": "Vegano; sin ingredientes de origen animal declarados"
+              },
+              {
+                "left": "Sin FPS declarado",
+                "right": "Sin FPS declarado"
+              },
+              {
+                "left": "300 ml · 15 $",
+                "right": "250 ml · 18 $"
+              },
+              {
+                "left": "Sin certificación declarada",
+                "right": "Sin certificación declarada"
+              }
+            ],
+            "before": "La ficha rival declara uso para pelo rizado y su condición vegana. Tu ficha no incluye la declaración vegana.",
+            "after": "Tu ficha ya declara que es vegano junto con el tipo de pelo. Ambas encajan; el menor precio por ml decide esta elección de ejemplo."
+          }
+        ]
+      },
+      "consumer-electronics": {
+        "scenarios": [
+          {
+            "leftTitle": "Auriculares con cancelación A",
+            "rightTitle": "Auriculares con cancelación B",
+            "rows": [
+              {
+                "left": "Ejemplo EB-A · ANC · 189 $",
+                "right": "Ejemplo EB-B · ANC · 179 $"
+              },
+              {
+                "left": "12 horas, ANC activo y volumen al 50 %",
+                "right": "8 horas, ANC activo y volumen al 50 %"
+              },
+              {
+                "left": "Audio Bluetooth en móviles y portátiles",
+                "right": "Audio Bluetooth en móviles y portátiles"
+              },
+              {
+                "left": "Bluetooth 5.3; carga USB-C",
+                "right": "Bluetooth 5.3; carga USB-C"
+              },
+              {
+                "left": "2 años, hardware cubierto por el fabricante",
+                "right": "2 años, hardware cubierto por el fabricante"
+              },
+              {
+                "left": "Nuevos",
+                "right": "Nuevos"
+              }
+            ],
+            "before": "La ficha rival indica autonomía con cancelación activa. Tu ficha no aporta una duración comparable.",
+            "after": "Tu ficha ya indica 12 horas en las mismas condiciones, frente a 8. Ambas cuestan menos de 200 $, así que decide la mayor autonomía."
+          },
+          {
+            "leftTitle": "Portátil de edición A",
+            "rightTitle": "Portátil de edición B",
+            "rows": [
+              {
+                "left": "Ejemplo LP-A · 32 GB RAM · SSD 1 TB",
+                "right": "Ejemplo LP-B · 32 GB RAM · SSD 1 TB"
+              },
+              {
+                "left": "10 horas en prueba de reproducción del proveedor",
+                "right": "6 horas en la misma prueba de reproducción"
+              },
+              {
+                "left": "Compatible con el programa de edición del comprador",
+                "right": "Compatible con el programa de edición del comprador"
+              },
+              {
+                "left": "2 × USB-C; HDMI; Wi-Fi 6",
+                "right": "2 × USB-C; HDMI; Wi-Fi 6"
+              },
+              {
+                "left": "2 años, hardware cubierto por el fabricante",
+                "right": "2 años, hardware cubierto por el fabricante"
+              },
+              {
+                "left": "Nuevo",
+                "right": "Nuevo"
+              }
+            ],
+            "before": "La ficha rival identifica la variante de 32 GB. Tu ficha no indica el modelo exacto ni su memoria.",
+            "after": "Tu ficha ya identifica la variante de 32 GB. Ambas cumplen; decide la mayor autonomía de reproducción indicada, sin afirmar mayor rendimiento de edición."
+          },
+          {
+            "leftTitle": "Robot aspirador A",
+            "rightTitle": "Robot aspirador B",
+            "rows": [
+              {
+                "left": "Ejemplo RV-A",
+                "right": "Ejemplo RV-B"
+              },
+              {
+                "left": "120 minutos en modo de limpieza estándar",
+                "right": "120 minutos en modo de limpieza estándar"
+              },
+              {
+                "left": "Google Home: iniciar, parar y volver a la base",
+                "right": "Google Home: iniciar, parar y volver a la base"
+              },
+              {
+                "left": "Wi-Fi de 2,4 GHz",
+                "right": "Wi-Fi de 2,4 GHz"
+              },
+              {
+                "left": "2 años, hardware cubierto por el fabricante",
+                "right": "1 año, hardware cubierto por el vendedor"
+              },
+              {
+                "left": "Nuevo",
+                "right": "Reacondicionado"
+              }
+            ],
+            "before": "La ficha rival nombra Google Home y los comandos compatibles. Tu ficha solo muestra la conectividad general.",
+            "after": "Tu ficha ya confirma los mismos comandos de Google Home. En este ejemplo deciden su estado nuevo y la garantía más larga."
+          }
+        ]
+      },
+      "home-and-furniture": {
+        "scenarios": [
+          {
+            "leftTitle": "Sofá cama A",
+            "rightTitle": "Sofá cama B",
+            "rows": [
+              {
+                "left": "192 × 90 × 84 cm; ancho 192 cm",
+                "right": "198 × 92 × 85 cm; ancho 198 cm"
+              },
+              {
+                "left": "Estructura de madera; tapizado de poliéster",
+                "right": "Estructura de madera; tapizado de poliéster"
+              },
+              {
+                "left": "3 plazas; cama de 140 × 190 cm",
+                "right": "3 plazas; cama de 140 × 190 cm"
+              },
+              {
+                "left": "Montar patas; herramientas e instrucciones incluidas",
+                "right": "Montar patas; herramientas e instrucciones incluidas"
+              },
+              {
+                "left": "7 días; entrega en la puerta · 30 €",
+                "right": "7 días; entrega en la puerta · 30 €"
+              },
+              {
+                "left": "30 días; sin usar; recogida 30 €",
+                "right": "30 días; sin usar; recogida 30 €"
+              }
+            ],
+            "before": "La ficha rival indica un ancho inferior a 200 cm. Tu ficha no tiene medidas para compararlas con la pared.",
+            "after": "Tu ficha ya indica 192 cm, con más margen que 198 cm. Esa diferencia decide el ejemplo; también importan las medidas de la habitación y el acceso."
+          },
+          {
+            "leftTitle": "Mesa de comedor A · 899 €",
+            "rightTitle": "Mesa de comedor B · 979 €",
+            "rows": [
+              {
+                "left": "180 × 90 × 75 cm",
+                "right": "180 × 90 × 75 cm"
+              },
+              {
+                "left": "Tablero y patas de roble macizo; acabado al aceite",
+                "right": "Tablero y patas de pino macizo; acabado al aceite"
+              },
+              {
+                "left": "6 plazas",
+                "right": "6 plazas"
+              },
+              {
+                "left": "Montar patas; llave incluida",
+                "right": "Montar patas; llave incluida"
+              },
+              {
+                "left": "14 días; entrega en la puerta incluida",
+                "right": "14 días; entrega en la puerta incluida"
+              },
+              {
+                "left": "30 días; sin usar; recogida a cargo del comprador",
+                "right": "30 días; sin usar; recogida a cargo del comprador"
+              }
+            ],
+            "before": "La ficha rival declara madera maciza y seis plazas. Tu ficha no indica el material de construcción.",
+            "after": "Tu ficha ya confirma madera maciza y seis plazas. Ambas cuestan menos de 1.000 € con entrega; decide el menor precio total."
+          },
+          {
+            "leftTitle": "Alfombra para suelo radiante A",
+            "rightTitle": "Alfombra para suelo radiante B",
+            "rows": [
+              {
+                "left": "160 × 230 cm; pelo de 6 mm",
+                "right": "160 × 230 cm; pelo de 6 mm"
+              },
+              {
+                "left": "Lana; proveedor confirma suelo radiante hasta 27 °C",
+                "right": "Lana; proveedor confirma suelo radiante hasta 27 °C"
+              },
+              {
+                "left": "Revestimiento de suelo; sin capacidad de asientos",
+                "right": "Revestimiento de suelo; sin capacidad de asientos"
+              },
+              {
+                "left": "Sin montaje; seguir la guía de colocación",
+                "right": "Sin montaje; seguir la guía de colocación"
+              },
+              {
+                "left": "5 días; entrega incluida",
+                "right": "5 días; entrega incluida"
+              },
+              {
+                "left": "30 días; sin usar; recogida gratuita",
+                "right": "14 días; sin usar; recogida a cargo del comprador"
+              }
+            ],
+            "before": "La ficha rival recoge la compatibilidad con calefacción confirmada por el proveedor y su límite. Tu ficha omite esa información.",
+            "after": "Tu ficha ya incluye el mismo límite del proveedor. Ambas cumplen lo indicado; este ejemplo desempata por el plazo de devolución más largo."
+          }
+        ]
+      },
+      "fashion-and-outdoor": {
+        "scenarios": [
+          {
+            "leftTitle": "Chaqueta de senderismo A",
+            "rightTitle": "Chaqueta de senderismo B",
+            "rows": [
+              {
+                "left": "Unisex M; corte normal; pecho 100–106 cm",
+                "right": "Unisex M; corte normal; pecho 100–106 cm"
+              },
+              {
+                "left": "Exterior de poliéster reciclado al 100 %",
+                "right": "Exterior de poliéster reciclado al 100 %"
+              },
+              {
+                "left": "Columna de agua de 20.000 mm; costuras selladas",
+                "right": "Columna de agua de 10.000 mm; costuras selladas"
+              },
+              {
+                "left": "Senderismo con lluvia; adaptar capas a la temperatura",
+                "right": "Senderismo con lluvia; adaptar capas a la temperatura"
+              },
+              {
+                "left": "Lavar a 30 °C; sin suavizante",
+                "right": "Lavar a 30 °C; sin suavizante"
+              },
+              {
+                "left": "Azul marino, M · 160 $ · en stock",
+                "right": "Azul marino, M · 160 $ · en stock"
+              }
+            ],
+            "before": "La ficha rival aporta una cifra de impermeabilidad y el acabado de las costuras. Tu ficha omite esos datos de rendimiento.",
+            "after": "Tu ficha ya indica una impermeabilidad mayor y costuras selladas. Esa cifra declarada decide este ejemplo para senderismo con lluvia."
+          },
+          {
+            "leftTitle": "Zapatilla ancha A",
+            "rightTitle": "Zapatilla ancha B",
+            "rows": [
+              {
+                "left": "EU 42; horma ancha 2E",
+                "right": "EU 42; horma ancha 2E"
+              },
+              {
+                "left": "Exterior de malla; suela de goma",
+                "right": "Exterior de malla; suela de goma"
+              },
+              {
+                "left": "Espuma de 28 mm; 220 g por zapatilla en esta talla",
+                "right": "Espuma de 24 mm; 290 g por zapatilla en esta talla"
+              },
+              {
+                "left": "Carrera en asfalto; apoyo neutro",
+                "right": "Carrera en asfalto; apoyo neutro"
+              },
+              {
+                "left": "Limpiar a mano; secar al aire",
+                "right": "Limpiar a mano; secar al aire"
+              },
+              {
+                "left": "Azul, EU 42 ancha · 110 $ · en stock",
+                "right": "Azul, EU 42 ancha · 110 $ · en stock"
+              }
+            ],
+            "before": "La ficha rival identifica la variante ancha y la amortiguación. Tu ficha no indica su anchura.",
+            "after": "Tu ficha ya confirma la horma ancha. El ejemplo elige la más ligera y con mayor grosor de espuma declarado; el ajuste y la comodidad son individuales."
+          },
+          {
+            "leftTitle": "Capa base de merino A",
+            "rightTitle": "Capa base de merino B",
+            "rows": [
+              {
+                "left": "Unisex M; ajuste ceñido",
+                "right": "Unisex M; ajuste ceñido"
+              },
+              {
+                "left": "Merino al 100 %; fibra declarada de 17,5 micras",
+                "right": "Merino al 100 %; fibra declarada de 19,5 micras"
+              },
+              {
+                "left": "Tejido de 150 g/m²; sin declaración impermeable",
+                "right": "Tejido de 150 g/m²; sin declaración impermeable"
+              },
+              {
+                "left": "Capa interior de senderismo en contacto con la piel",
+                "right": "Capa interior de senderismo en contacto con la piel"
+              },
+              {
+                "left": "Programa de lana a 30 °C; secar en horizontal",
+                "right": "Programa de lana a 30 °C; secar en horizontal"
+              },
+              {
+                "left": "Gris oscuro, M · 70 $ · en stock",
+                "right": "Gris oscuro, M · 70 $ · en stock"
+              }
+            ],
+            "before": "La ficha rival aporta la composición de merino y el diámetro de la fibra. Tu ficha omite la especificación del material.",
+            "after": "Tu ficha ya indica una fibra más fina. Ese dato decide el ejemplo; ninguna ficha puede garantizar que no pique a todas las personas."
+          }
+        ]
+      },
+      "health-wellness-and-pet": {
+        "scenarios": [
+          {
+            "leftTitle": "Alimento sénior para perros A",
+            "rightTitle": "Alimento sénior para perros B",
+            "rows": [
+              {
+                "left": "Fabricante: perros de 7 años o más",
+                "right": "Fabricante: perros de 7 años o más"
+              },
+              {
+                "left": "Pavo, patata, guisantes, aceite, minerales; sin cereales listados",
+                "right": "Pavo, patata, guisantes, aceite, minerales; sin cereales listados"
+              },
+              {
+                "left": "Tabla por peso; guía de transición en el envase",
+                "right": "Tabla por peso; guía de transición en el envase"
+              },
+              {
+                "left": "Declaración nutricional del proveedor incluida",
+                "right": "Declaración nutricional del proveedor incluida"
+              },
+              {
+                "left": "2 kg · 20 $",
+                "right": "2 kg · 25 $"
+              },
+              {
+                "left": "Proveedor: para perros mayores con digestión sensible",
+                "right": "Proveedor: para perros mayores con digestión sensible"
+              }
+            ],
+            "before": "La ficha rival indica la etapa de vida y los ingredientes completos. Tu ficha no permite comprobar el posicionamiento sénior sin cereales.",
+            "after": "Tu ficha ya aporta la misma etapa de vida e ingredientes. El menor precio por unidad decide; son declaraciones del producto, no resultados clínicos."
+          },
+          {
+            "leftTitle": "Magnesio en polvo A",
+            "rightTitle": "Magnesio en polvo B",
+            "rows": [
+              {
+                "left": "Fabricante: solo adultos",
+                "right": "Fabricante: solo adultos"
+              },
+              {
+                "left": "Solo bisglicinato de magnesio; sin rellenos añadidos",
+                "right": "Solo bisglicinato de magnesio; sin rellenos añadidos"
+              },
+              {
+                "left": "Seguir el envase suministrado; advertencias incluidas",
+                "right": "Seguir el envase suministrado; advertencias incluidas"
+              },
+              {
+                "left": "Sin pruebas de terceros declaradas",
+                "right": "Sin pruebas de terceros declaradas"
+              },
+              {
+                "left": "60 raciones según el envase · 18 $",
+                "right": "60 raciones según el envase · 24 $"
+              },
+              {
+                "left": "Complemento alimenticio; sin declaración de tratamiento",
+                "right": "Complemento alimenticio; sin declaración de tratamiento"
+              }
+            ],
+            "before": "La ficha rival aporta ingredientes sin rellenos añadidos. Tu ficha no muestra la lista que permite comprobarlo.",
+            "after": "Tu ficha ya aporta la misma declaración de ingredientes. Decide el menor coste por ración indicada; el ejemplo no compara efectos sobre la salud."
+          },
+          {
+            "leftTitle": "Arena de poco polvo A",
+            "rightTitle": "Arena de poco polvo B",
+            "rows": [
+              {
+                "left": "Para gatos adultos",
+                "right": "Para gatos adultos"
+              },
+              {
+                "left": "Arcilla bentonita sin perfume",
+                "right": "Arcilla bentonita sin perfume"
+              },
+              {
+                "left": "Llenar hasta 7 cm; retirar a diario; no tirar al inodoro",
+                "right": "Llenar hasta 7 cm; retirar a diario; no tirar al inodoro"
+              },
+              {
+                "left": "Método de laboratorio del ejemplo: polvo 0,2 % en masa",
+                "right": "Mismo método del ejemplo: polvo 0,5 % en masa"
+              },
+              {
+                "left": "10 L · 12 $",
+                "right": "10 L · 12 $"
+              },
+              {
+                "left": "Arena aglomerante; posicionamiento de poco polvo",
+                "right": "Arena aglomerante; posicionamiento de poco polvo"
+              }
+            ],
+            "before": "La ficha rival aporta un resultado de polvo. Tu ficha dice «poco polvo» sin información de prueba comparable.",
+            "after": "Tu ficha ya aporta un resultado menor con el mismo método del ejemplo. Esa cifra comparable decide esta elección ilustrativa."
+          }
+        ]
+      },
+      "travel-and-experiences": {
+        "scenarios": [
+          {
+            "leftTitle": "Estancia en Lisboa A",
+            "rightTitle": "Estancia en Lisboa B",
+            "rows": [
+              {
+                "left": "7–10 de mayo de 2027; tres noches disponibles",
+                "right": "14–17 de mayo de 2027; tres noches disponibles"
+              },
+              {
+                "left": "480 € total para dos; tasas e impuestos incluidos",
+                "right": "540 € total para dos; tasas e impuestos incluidos"
+              },
+              {
+                "left": "Habitación y desayuno; traslados no incluidos",
+                "right": "Habitación y desayuno; traslados no incluidos"
+              },
+              {
+                "left": "Cancelación gratuita hasta 7 días antes",
+                "right": "Cancelación gratuita hasta 7 días antes"
+              },
+              {
+                "left": "Centro de Lisboa; a 300 m del metro",
+                "right": "Centro de Lisboa; a 300 m del metro"
+              },
+              {
+                "left": "Una habitación para dos adultos",
+                "right": "Una habitación para dos adultos"
+              }
+            ],
+            "before": "La ficha rival indica un fin de semana largo disponible en mayo. Tu ficha no aporta fechas legibles para comprobarlo.",
+            "after": "Tu ficha ya indica un fin de semana largo de mayo y el precio total. Ambas encajan en el ejemplo; decide el menor total."
+          },
+          {
+            "leftTitle": "Tour gastronómico en Ciudad de México A",
+            "rightTitle": "Tour gastronómico en Ciudad de México B",
+            "rows": [
+              {
+                "left": "Fecha de ejemplo: 15 de mayo de 2027 a las 12:00",
+                "right": "Fecha de ejemplo: 15 de mayo de 2027 a las 12:00"
+              },
+              {
+                "left": "90 $ total para dos; tasas e impuestos incluidos",
+                "right": "110 $ total para dos; tasas e impuestos incluidos"
+              },
+              {
+                "left": "Guía y cinco degustaciones; traslados no incluidos",
+                "right": "Guía y cinco degustaciones; traslados no incluidos"
+              },
+              {
+                "left": "Cancelación gratuita hasta 48 horas antes",
+                "right": "Cancelación gratuita hasta 48 horas antes"
+              },
+              {
+                "left": "Punto de encuentro de ejemplo en Centro, Ciudad de México",
+                "right": "Punto de encuentro de ejemplo en Centro, Ciudad de México"
+              },
+              {
+                "left": "Dos plazas de adulto disponibles; máximo 8 personas",
+                "right": "Dos plazas de adulto disponibles; máximo 8 personas"
+              }
+            ],
+            "before": "La ficha rival confirma dos plazas en el tour indicado. Tu ficha no declara el tamaño del grupo ni la capacidad.",
+            "after": "Tu ficha ya confirma dos plazas y las degustaciones incluidas. Ambas encajan; el menor total para dos decide el ejemplo."
+          },
+          {
+            "leftTitle": "Chalet alpino A",
+            "rightTitle": "Chalet alpino B",
+            "rows": [
+              {
+                "left": "Semana de ejemplo: 6–13 de febrero de 2027",
+                "right": "Semana de ejemplo: 6–13 de febrero de 2027"
+              },
+              {
+                "left": "2.400 € por semana; tasas e impuestos incluidos",
+                "right": "2.800 € por semana; tasas e impuestos incluidos"
+              },
+              {
+                "left": "Ropa de cama y limpieza final; forfait no incluido",
+                "right": "Ropa de cama y limpieza final; forfait no incluido"
+              },
+              {
+                "left": "Cancelación gratuita hasta 30 días antes",
+                "right": "Cancelación gratuita hasta 30 días antes"
+              },
+              {
+                "left": "Estación alpina de ejemplo; a 400 m del remonte",
+                "right": "Estación alpina de ejemplo; a 900 m del remonte"
+              },
+              {
+                "left": "Cuatro dormitorios; ocupación máxima de 8",
+                "right": "Cuatro dormitorios; ocupación máxima de 8"
+              }
+            ],
+            "before": "La ficha rival confirma espacio para ocho personas. Tu ficha no indica su límite de ocupación.",
+            "after": "Tu ficha ya confirma una ocupación de ocho personas. La menor distancia al remonte y el precio total más bajo deciden el ejemplo."
+          }
+        ]
+      }
+    }
   }
 }

@@ -110,7 +110,10 @@ export const FoodAndBeverageFacts = ({
   label,
   children,
 }: FoodAndBeverageFacts.Props) => (
-  <Accordion className="border-accent-foreground border-t bg-background-dimmed">
+  <Accordion
+    defaultValue={["product-facts"]}
+    className="border-accent-foreground border-t bg-background-dimmed"
+  >
     <AccordionItem value="product-facts" className="border-b-0">
       <AccordionTrigger
         className="items-center px-4 py-6 outline-primary-text hover:bg-background-rich focus-visible:outline-2 focus-visible:-outline-offset-4 sm:px-8"

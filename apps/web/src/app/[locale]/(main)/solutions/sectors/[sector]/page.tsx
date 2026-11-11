@@ -1,8 +1,10 @@
-import { pageBodies } from "../_components/page-bodies";
 import { notFound } from "next/navigation";
 import { getMessages } from "next-intl/server";
 import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
+import { sectorShelves } from "@/content/sectors";
 import { SpecificationMap } from "../../_components/specification-map";
+import { CompareShelf } from "../_components/compare-shelf";
+import { pageBodies } from "../_components/page-bodies";
 
 const sectors = [
   "food-and-beverage",
@@ -33,10 +35,13 @@ export default async ({ params }: Props) => {
   const { sector: requested } = await params;
   const sector = sectors.find((value) => value === requested);
   if (!sector) notFound();
-  const { enterpriseSolutions } = await getMessages();
+  const { enterpriseSolutions, interactiveShelf } = await getMessages();
   const content = enterpriseSolutions.sectors[sector];
   const specification: MarketingPage.Section | undefined =
     content.sections.find((section) => section.id === "attributes");
+  const questions: MarketingPage.Section | undefined = content.sections.find(
+    (section) => section.id === "questions",
+  );
   const sections = content.sections.map((section) =>
     section.id === "attributes" ? { ...section, items: undefined } : section,
   );
@@ -50,9 +55,19 @@ export default async ({ params }: Props) => {
         sections={sections}
         sectionChildren={{
           attributes: (
-            <SpecificationMap
-              items={specification?.items ?? []}
-              labels={enterpriseSolutions.specificationLabels}
+            <CompareShelf
+              sector={sector}
+              scenarios={sectorShelves[sector]}
+              questions={questions?.items ?? []}
+              attributes={specification?.items ?? []}
+              copy={interactiveShelf.sectors[sector]}
+              shared={interactiveShelf.shared}
+              fallback={
+                <SpecificationMap
+                  items={specification?.items ?? []}
+                  labels={enterpriseSolutions.specificationLabels}
+                />
+              }
             />
           ),
         }}
