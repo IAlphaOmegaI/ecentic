@@ -180,12 +180,6 @@ tr {
     border-top: 0;
     border-bottom: 0;
   }
-  &
-    > .marketing-nav[data-menu-open="true"]
-    + main
-    > .enterprise-journey:first-of-type {
-    margin-top: calc(var(--spacing) * 3);
-  }
   & .enterprise-journey + .marketing-band {
     border-top: 1px solid var(--rail-color);
   }
@@ -243,25 +237,6 @@ tr {
   & .enterprise-journey .marketing-rail::after {
     display: none;
   }
-  & .enterprise-stage-tab + .enterprise-stage-tab::after {
-    content: "";
-    pointer-events: none;
-    position: absolute;
-    left: -8px;
-    top: -8px;
-    z-index: 2;
-    width: 16px;
-    height: calc(100% + 16px);
-    background:
-      linear-gradient(var(--rail-cross), var(--rail-cross)) center 7.5px / 16px
-      1px no-repeat,
-      linear-gradient(var(--rail-cross), var(--rail-cross)) center top / 1px
-      16px no-repeat,
-      linear-gradient(var(--rail-cross), var(--rail-cross)) center
-      calc(100% - 7.5px) / 16px 1px no-repeat,
-      linear-gradient(var(--rail-cross), var(--rail-cross)) center bottom / 1px
-      16px no-repeat;
-  }
   & .enterprise-integration-row,
   & .enterprise-pricing-paths > a,
   & .enterprise-stage-note {
@@ -275,6 +250,7 @@ tr {
   & .enterprise-integration-row > h3 {
     --junction-top-left: transparent;
   }
+  & .enterprise-stage-body::before,
   & .enterprise-stage-body::after {
     content: "";
     position: absolute;
@@ -289,6 +265,16 @@ tr {
       no-repeat,
       linear-gradient(var(--rail-cross), var(--rail-cross)) center / 1px 16px
       no-repeat;
+  }
+  & .enterprise-stage-body::before {
+    top: -8px;
+    bottom: auto;
+  }
+  @media (width < 802px) {
+    & .enterprise-stage-body::before,
+    & .enterprise-stage-body::after {
+      display: none;
+    }
   }
   @media (width >= 1001px) {
     &
@@ -323,12 +309,6 @@ tr {
     }
   }
   @media (width < 640px) {
-    & .enterprise-stage-tab + .enterprise-stage-tab::after {
-      display: none;
-    }
-    & .enterprise-stage-body::after {
-      display: none;
-    }
     & .enterprise-integration-row > h3 {
       --junction-bottom-left: var(--rail-cross);
       --junction-bottom-right: var(--rail-cross);
@@ -1380,12 +1360,13 @@ tr {
     --junction-top-left: transparent;
     --junction-bottom-left: transparent;
   }
-  & .marketing-footer-columns > nav:nth-child(-n + 3),
+  & .marketing-footer-columns > nav:nth-child(-n + 4),
   & .marketing-footer-columns > nav:nth-child(5) {
     --junction-bottom-left: transparent;
   }
   & .marketing-footer-columns > nav:last-child {
     --junction-top-right: var(--rail-cross);
+    --junction-bottom-right: var(--rail-cross);
   }
   /* Provider tiles use one, two, then four columns at their own breakpoints. */
   & .enterprise-provider-grid.marketing-grid > article {

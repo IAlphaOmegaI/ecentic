@@ -53,10 +53,12 @@ blue glow. Its character artwork uses cover sizing and crops at the rounded boun
 pass through these surfaces. Each shared border and junction has one owner; use crosses at actual
 intersections without stacking duplicate lines or marks.
 
-Journey's outer gutters use `background`; its gray tab strip stays inside the rails and the selected
-tab and panel share `background-rich`. The audience section uses native tabs with distinct semantic
+Journey's outer gutters use `background`; its compact native stage tabs sit inside a dimmed header,
+with a shared section heading and a distinct schematic for each stage. The selected tab and panel
+share `background-rich`. The audience section uses native tabs with distinct semantic
 accents and restrained gradients. Provider cards are outlined squares, using one column on small
-phones, two on tablets and four on desktop. The original product film remains intact inside a
+phones, two on tablets and four on desktop. Homepage integration categories use native accordions,
+with the commerce category open initially and the other categories available on demand. The original product film remains intact inside a
 `background-dimmed` section. Fade vertical guides before uninterrupted comparison surfaces and keep
 them hidden through the following source/footer area.
 
@@ -68,13 +70,14 @@ for decoration. Omit unavailable metrics and render count labels on one line wit
 sans numerals.
 
 The navbar uses six masked progressive backdrop-blur layers with no bottom rule. Desktop menus
-participate in document flow but opening, switching and closing them must preserve the user's
-scroll position. Every destination occupies its own grid cell, with shared row tracks and blue text
+overlay the page; opening, switching and closing them preserve page geometry and the user's
+scroll position. The mobile sheet uses the same progressive blur, with its logo and close control
+above an independently scrolling menu. Every destination occupies its own grid cell, with shared row tracks and blue text
 on hover/focus. Dropdown grids use the wider navbar datum; the featured row has a dimmed surface,
 and category headings may use distinct Nucleo icons. Mobile navigation and account actions join at
 one shared seam; the language selector is full width. Remove repeated generic destination icons;
 retain actual provider logos only where
-all peers use them consistently. See [the current annotation record](../marketing/annotation-pass-v5.md),
+all peers use them consistently. Footer navigation categories each occupy one column. See [the current annotation record](../marketing/browser-pass-v6.md),
 [the delivery record](../marketing/enterprise-rebuild.md) and
 [ASCII provenance](../marketing/ascii-text-provenance.md).
 

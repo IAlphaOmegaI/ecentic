@@ -11,6 +11,10 @@ import { MarketingStatus } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { integrationGroups, integrations } from "@/content/integrations";
 import { Link } from "@/i18n/navigation";
+import {
+  IntegrationAccordion,
+  IntegrationCategory,
+} from "./integration-accordion";
 
 const groups = {
   commerce: CommerceBasketShoppingIcon,
@@ -28,20 +32,18 @@ const symbols = {
 } as const;
 
 export const IntegrationsPreview = ({ copy }: IntegrationsPreview.Props) => (
-  <div className="enterprise-integrations-wall border-[var(--rail-color)] border-b">
+  <IntegrationAccordion>
     {integrationGroups.map((group) => {
       const entries = integrations.filter((item) => item.group === group);
       const Icon = groups[group];
       if (!entries.length) return null;
       return (
-        <div
+        <IntegrationCategory
           key={group}
-          className="enterprise-provider-group marketing-section-grid border-[var(--rail-color)] border-t"
+          value={group}
+          title={copy.groups[group]}
+          mark={<Icon aria-hidden className="size-10 shrink-0 text-primary" />}
         >
-          <h3 className="flex items-center gap-6 px-7 py-8 font-heading text-3xl leading-tight tracking-tight max-sm:gap-4 max-sm:px-4 max-sm:text-2xl">
-            <Icon aria-hidden className="size-12 shrink-0 text-primary" />
-            {copy.groups[group]}
-          </h3>
           <div
             className="enterprise-provider-grid marketing-grid marketing-section-grid grid grid-cols-1 border-[var(--rail-color)] border-t sm:grid-cols-2 lg:grid-cols-4"
             data-columns="4"
@@ -93,10 +95,10 @@ export const IntegrationsPreview = ({ copy }: IntegrationsPreview.Props) => (
               );
             })}
           </div>
-        </div>
+        </IntegrationCategory>
       );
     })}
-  </div>
+  </IntegrationAccordion>
 );
 
 export namespace IntegrationsPreview {

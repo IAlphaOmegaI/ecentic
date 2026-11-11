@@ -1,4 +1,5 @@
 "use client";
+
 import {
   ArrowRightIcon,
   CommerceBasketShoppingIcon,
@@ -12,92 +13,82 @@ import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import { useMediaQuery } from "@zenncore/web/hooks";
 import type { AppConfig } from "next-intl";
 import { MarketingBand } from "@/components/marketing/primitives";
-import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { Motion } from "@/components/motion";
 import { Link } from "@/i18n/navigation";
+import { JourneyArtwork } from "./journey-artwork";
 
-const stageIcons = [
+const stages = [
   CommercePlug_3SparkleIcon,
   CommerceChartActivity_2Icon,
   CommerceFilePenIcon,
   CommerceBasketShoppingIcon,
   CommerceGlobePointerIcon,
-];
+] as const;
+
 export const Journey = ({ copy }: Journey.Props) => {
   const reduced = useMediaQuery("(prefers-reduced-motion: reduce)", {});
+
   return (
     <MarketingBand className="enterprise-journey-panel bg-background">
       <Tabs defaultValue="connect">
-        <TabsList
-          aria-label={copy.title}
-          className="enterprise-stage-list grid w-full grid-cols-5 overflow-visible rounded-none border-0 border-[var(--rail-color)] border-b bg-background-dimmed max-sm:grid-cols-[repeat(5,minmax(144px,1fr))] max-sm:overflow-x-auto"
-        >
-          {copy.steps.map((step, index) => {
-            const Icon = stageIcons[index];
-            return (
-              <Tab
-                key={step.id}
-                value={step.id}
-                className="enterprise-stage-tab relative grid h-auto grid-cols-[1fr_auto] grid-rows-[auto_auto] items-center justify-start gap-x-4 gap-y-4 rounded-none border-[var(--rail-color)] border-r px-6 py-6 text-left text-foreground before:hidden last:border-r-0 focus-visible:outline-2 focus-visible:outline-primary-text focus-visible:-outline-offset-4 data-[active]:bg-background-rich data-selected:bg-background-rich data-[active]:text-primary-text data-selected:text-primary-text max-sm:px-4 [&>span:last-child]:col-span-full [&>span:last-child]:font-heading [&>span:last-child]:font-medium [&>span:last-child]:text-2xl max-sm:[&>span:last-child]:text-xl"
-              >
-                <span className="enterprise-stage-number font-heading text-4xl leading-none max-sm:text-3xl">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                {Icon && <Icon aria-hidden className="size-8" />}
-                <span>{step.title}</span>
-              </Tab>
-            );
-          })}
-        </TabsList>
-        {copy.steps.map((step, index) => {
-          const Icon = stageIcons[index];
-          return (
-            <TabsPanel
-              key={step.id}
-              value={step.id}
-              className="enterprise-stage-panel"
+        <div className="enterprise-stage-list flex flex-wrap items-center justify-between gap-6 border-accent-foreground border-b bg-background-dimmed px-8 py-6 max-sm:gap-4 max-sm:px-4 max-sm:py-4">
+          <h2 className="max-w-[22ch] font-heading text-2xl leading-tight tracking-tight max-sm:max-w-none max-sm:text-xl">
+            {copy.title}
+          </h2>
+          <TabsList
+            aria-label={copy.title}
+            className="grid grid-cols-5 gap-1 rounded-lg border-0 bg-background p-1 max-sm:w-full"
+          >
+            {copy.steps.map((step, index) => {
+              const Icon = stages[index];
+              return (
+                <Tab
+                  key={step.id}
+                  value={step.id}
+                  className="h-12 gap-2 rounded-md border-0 px-4 text-foreground text-sm before:hidden hover:text-primary-text focus-visible:outline-2 focus-visible:outline-primary focus-visible:-outline-offset-2 data-[active]:bg-background-rich data-selected:bg-background-rich data-[active]:text-primary-text data-selected:text-primary-text max-sm:h-14 max-sm:flex-col max-sm:gap-1 max-sm:px-1 max-sm:text-xs"
+                >
+                  {Icon && <Icon aria-hidden className="size-4 shrink-0" />}
+                  {step.title}
+                </Tab>
+              );
+            })}
+          </TabsList>
+        </div>
+        {copy.steps.map((step) => (
+          <TabsPanel key={step.id} value={step.id}>
+            <Motion.Up
+              className="grid min-h-[360px] grid-cols-[5fr_6fr] bg-background-rich max-[801px]:grid-cols-1"
+              initial={false}
+              animate={reduced ? { opacity: 1 } : { opacity: [0.5, 1] }}
+              transition={{ duration: reduced ? 0 : 0.18, ease: "easeOut" }}
             >
-              <Motion.Up
-                className="enterprise-stage-content grid grid-cols-[2fr_3fr] bg-background-rich max-sm:grid-cols-1"
-                initial={false}
-                animate={
-                  reduced
-                    ? { opacity: 1, y: 0 }
-                    : { opacity: [0.7, 1], y: [6, 0] }
-                }
-                transition={{ duration: 0.22, ease: [0.23, 1, 0.32, 1] }}
-              >
-                <div className="enterprise-stage-heading flex items-center gap-6 px-7 py-10 max-sm:gap-4 max-sm:px-4 max-sm:pt-8 max-sm:pb-0 [&_h2]:text-5xl max-sm:[&_h2]:text-4xl max-sm:[&_svg]:size-10">
-                  {Icon && (
-                    <Icon aria-hidden className="size-16 text-primary" />
-                  )}
-                  <div>
-                    <h2>{step.title}</h2>
-                    {step.id === "simulate" && (
-                      <div className="enterprise-stage-providers mt-6 flex items-center gap-4 [&_img]:size-8">
-                        <ProviderLogo provider="chatgpt" />
-                        <ProviderLogo provider="claude" />
-                        <ProviderLogo provider="gemini" />
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className="enterprise-stage-body relative border-[var(--rail-color)] border-l px-7 py-10 max-sm:border-0 max-sm:px-4 max-sm:pt-6 max-sm:pb-8 [&_p]:max-w-[60ch] [&_p]:text-lg [&_p]:leading-relaxed max-sm:[&_p]:text-base [&_ul]:mt-6 [&_ul]:mb-6 [&_ul]:flex [&_ul]:flex-wrap [&_ul]:gap-x-6 [&_ul]:gap-y-2 [&_ul]:text-foreground [&_ul]:text-sm">
-                  <p>{step.body}</p>
-                  <ul>
-                    {step.tags.map((tag) => (
-                      <li key={tag}>{tag}</li>
-                    ))}
-                  </ul>
-                  <Button render={<Link href={`/platform/${step.id}`} />}>
+              <div className="flex min-w-0 flex-col justify-center px-8 py-10 max-sm:px-4 max-sm:py-8">
+                <p className="max-w-[34ch] text-[clamp(1.125rem,1.8vw,1.5rem)] text-foreground leading-[1.5] max-sm:text-lg">
+                  {step.body}
+                </p>
+                <div className="mt-8 max-sm:mt-6">
+                  <Button render={<Link href={step.href} />}>
                     {step.label}
                     <ArrowRightIcon aria-hidden className="size-4" />
                   </Button>
                 </div>
-              </Motion.Up>
-            </TabsPanel>
-          );
-        })}
+              </div>
+              <div className="enterprise-stage-body relative flex min-w-0 flex-col justify-between border-accent-foreground border-l bg-linear-to-br from-primary/5 via-background-rich to-background-rich max-[801px]:border-t max-[801px]:border-l-0">
+                <JourneyArtwork stage={step.id} />
+                <ul className="grid grid-cols-3 border-accent-foreground border-t px-4 text-center text-foreground-dimmed text-xs leading-snug max-sm:px-2">
+                  {step.tags.map((tag) => (
+                    <li
+                      key={tag}
+                      className="flex min-h-16 items-center justify-center px-4 py-4 max-sm:px-2"
+                    >
+                      {tag}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </Motion.Up>
+          </TabsPanel>
+        ))}
       </Tabs>
     </MarketingBand>
   );

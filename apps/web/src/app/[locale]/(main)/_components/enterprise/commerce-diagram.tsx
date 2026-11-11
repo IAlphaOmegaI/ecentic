@@ -62,7 +62,7 @@ export const CommerceDiagram = ({ children, label }: CommerceDiagram.Props) => {
     <figure
       ref={container}
       aria-label={label}
-      className="enterprise-commerce-diagram relative mt-12"
+      className="enterprise-commerce-diagram relative mx-auto mt-12 max-w-5xl"
     >
       {geometry && (
         <svg

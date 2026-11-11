@@ -59,7 +59,7 @@ export const ChannelTimeline = ({ events, locale }: ChannelTimeline.Props) => {
                   <ProviderLogo
                     provider={event.provider}
                     decorative
-                    className="size-8 shrink-0 rounded-none object-center md:size-10"
+                    className="size-8 shrink-0 object-center md:size-10"
                   />
                   <time
                     dateTime={event.date}

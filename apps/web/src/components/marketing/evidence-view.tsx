@@ -126,9 +126,9 @@ export const EvidenceMeter = ({
             <Bar
               dataKey="percentage"
               fill="var(--color-primary)"
-              background={{ fill: "var(--color-accent-foreground)" }}
+              background={{ fill: "var(--color-accent-foreground)", radius: 6 }}
               barSize={12}
-              radius={2}
+              radius={6}
               isAnimationActive={false}
             />
           </BarChart>

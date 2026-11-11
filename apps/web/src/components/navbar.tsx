@@ -114,6 +114,23 @@ const NavigationCategoryIcon = ({
   return <Icon aria-hidden className="size-4 shrink-0" />;
 };
 
+const NavigationBlur = ({ className }: { className: string }) => (
+  <div
+    aria-hidden="true"
+    className={cn(
+      "marketing-nav-blur pointer-events-none bg-linear-to-b from-background/90 via-40% via-background/70 to-transparent",
+      className,
+    )}
+  >
+    <span className="absolute inset-0 backdrop-blur-[24px] [mask-image:linear-gradient(to_bottom,black_0%,black_16%,transparent_40%)]" />
+    <span className="absolute inset-0 backdrop-blur-[16px] [mask-image:linear-gradient(to_bottom,transparent_8%,black_20%,black_32%,transparent_52%)]" />
+    <span className="absolute inset-0 backdrop-blur-[8px] [mask-image:linear-gradient(to_bottom,transparent_26%,black_38%,black_48%,transparent_68%)]" />
+    <span className="absolute inset-0 backdrop-blur-[4px] [mask-image:linear-gradient(to_bottom,transparent_42%,black_56%,black_62%,transparent_80%)]" />
+    <span className="absolute inset-0 backdrop-blur-[2px] [mask-image:linear-gradient(to_bottom,transparent_60%,black_72%,black_78%,transparent_94%)]" />
+    <span className="absolute inset-0 backdrop-blur-[1px] [mask-image:linear-gradient(to_bottom,transparent_78%,black_88%,transparent_100%)]" />
+  </div>
+);
+
 export const Navbar = () => {
   const messages = useMessages();
   const chrome = messages.enterpriseChrome;
@@ -228,17 +245,7 @@ export const Navbar = () => {
       )}
       ref={header}
     >
-      <div
-        aria-hidden="true"
-        className="marketing-nav-blur pointer-events-none absolute inset-x-0 top-0 -bottom-12 -z-1 bg-linear-to-b from-background/90 via-40% via-background/70 to-transparent"
-      >
-        <span className="absolute inset-0 backdrop-blur-[24px] [mask-image:linear-gradient(to_bottom,black_0%,black_16%,transparent_40%)]" />
-        <span className="absolute inset-0 backdrop-blur-[16px] [mask-image:linear-gradient(to_bottom,transparent_8%,black_20%,black_32%,transparent_52%)]" />
-        <span className="absolute inset-0 backdrop-blur-[8px] [mask-image:linear-gradient(to_bottom,transparent_26%,black_38%,black_48%,transparent_68%)]" />
-        <span className="absolute inset-0 backdrop-blur-[4px] [mask-image:linear-gradient(to_bottom,transparent_42%,black_56%,black_62%,transparent_80%)]" />
-        <span className="absolute inset-0 backdrop-blur-[2px] [mask-image:linear-gradient(to_bottom,transparent_60%,black_72%,black_78%,transparent_94%)]" />
-        <span className="absolute inset-0 backdrop-blur-[1px] [mask-image:linear-gradient(to_bottom,transparent_78%,black_88%,transparent_100%)]" />
-      </div>
+      <NavigationBlur className="absolute inset-x-0 top-0 -bottom-12 -z-1 min-[1151px]:hidden" />
       <div
         className="marketing-nav-inner mx-auto flex h-20 max-w-[1440px] items-center gap-3 px-4 sm:gap-5 sm:px-7"
         ref={navigationRow}
@@ -301,6 +308,7 @@ export const Navbar = () => {
                     }}
                     onClick={(event) => {
                       event.preventDefault();
+                      event.preventBaseUIHandler();
                       setActive(group.id);
                       focusMenu(group.id);
                     }}
@@ -312,7 +320,7 @@ export const Navbar = () => {
                     />
                   </NavigationMenuTrigger>
                   <NavigationMenuContent
-                    className="marketing-mega-content max-h-[calc(100dvh-80px)] w-screen xs:w-screen min-w-0 xs:min-w-0 overflow-y-auto px-0 py-2"
+                    className="marketing-mega-content max-h-[calc(100dvh-80px)] w-screen xs:w-screen min-w-0 xs:min-w-0 overflow-y-auto overscroll-contain px-0 py-2"
                     data-menu={group.id}
                     ref={(content) => {
                       if (!content || pendingFocus.current !== group.id) return;
@@ -498,11 +506,15 @@ export const Navbar = () => {
             <SheetPopup
               className={cn(
                 fonts,
-                "marketing-site marketing-grid-pattern marketing-mobile-sheet h-dvh w-screen max-w-none gap-6 overflow-y-auto border-0 bg-background px-6 py-7 font-body font-normal text-foreground [--rail-color:var(--color-accent-foreground)] [--rail-cross:var(--color-cross)] sm:max-w-none",
+                "marketing-site marketing-grid-pattern marketing-mobile-sheet isolate z-70 h-dvh w-screen max-w-none gap-0 overflow-hidden border-0 bg-transparent font-body font-normal text-foreground [--rail-color:var(--color-accent-foreground)] [--rail-cross:var(--color-cross)] sm:max-w-none",
               )}
-              classList={{ close: { root: "marketing-sheet-close" } }}
+              classList={{
+                backdrop: "z-65 bg-background/40",
+                close: { root: "marketing-sheet-close" },
+              }}
             >
-              <SheetHeader className="items-start text-left">
+              <NavigationBlur className="absolute inset-0 -z-1" />
+              <SheetHeader className="shrink-0 items-start px-6 pt-7 pb-6 text-left">
                 <SheetTitle>
                   <Image
                     src="/images/trademark.svg"
@@ -516,7 +528,7 @@ export const Navbar = () => {
                   {chrome.menu.title}
                 </SheetDescription>
               </SheetHeader>
-              <div>
+              <div className="marketing-mobile-menu-scroll min-h-0 flex-1 overflow-y-auto overscroll-contain px-6 pb-7">
                 <nav aria-label={chrome.menu.title}>
                   <Accordion
                     multiple
@@ -653,8 +665,10 @@ export const Navbar = () => {
       </div>
       <div
         ref={menuSurface}
-        className="marketing-menu-surface hidden min-[1151px]:block"
-      />
+        className="marketing-menu-surface absolute inset-x-0 top-full hidden min-[1151px]:block"
+      >
+        <NavigationBlur className="absolute inset-x-0 -top-20 -bottom-12 -z-1" />
+      </div>
     </header>
   );
 };

@@ -57,8 +57,8 @@ export const CommerceLayer = async () => {
             description={copy.description}
           />
           <CommerceDiagram label={copy.diagram}>
-            <div className="relative grid gap-10 lg:grid-cols-3 lg:items-center lg:gap-12">
-              <div className="min-w-0 lg:flex lg:flex-col lg:self-stretch">
+            <div className="relative grid gap-10 lg:grid-cols-[minmax(0,1fr)_18rem_minmax(0,1fr)] lg:items-center lg:gap-12">
+              <div className="min-w-0 lg:flex lg:w-fit lg:max-w-full lg:flex-col lg:self-stretch lg:justify-self-center">
                 <h3 className="mb-6 font-heading text-2xl">{copy.stack}</h3>
                 <ul className="grid gap-6 lg:flex-1 lg:content-center">
                   {copy.inputs.map((input, index) => (
@@ -100,7 +100,7 @@ export const CommerceLayer = async () => {
                   ))}
                 </ol>
               </div>
-              <div className="min-w-0 lg:flex lg:flex-col lg:self-stretch">
+              <div className="min-w-0 lg:flex lg:w-fit lg:max-w-full lg:flex-col lg:self-stretch lg:justify-self-center">
                 <h3 className="mb-6 font-heading text-2xl">{copy.channels}</h3>
                 <ul className="grid gap-4 lg:flex-1 lg:content-center">
                   {aiChannels.map((channel) => (
@@ -110,11 +110,13 @@ export const CommerceLayer = async () => {
                       data-pending={channel.status === "soon"}
                       className="flex min-h-12 items-center gap-4"
                     >
-                      <ProviderLogo
-                        provider={channel.key}
-                        className="size-8 shrink-0"
-                        decorative
-                      />
+                      <span className="flex h-10 w-16 shrink-0 items-center">
+                        <ProviderLogo
+                          provider={channel.key}
+                          className="size-8"
+                          decorative
+                        />
+                      </span>
                       <div className="min-w-0 space-y-1">
                         <p className="font-medium text-base text-foreground-rich">
                           {channel.key === "google"

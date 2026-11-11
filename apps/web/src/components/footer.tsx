@@ -120,7 +120,7 @@ export const Footer = async (_props: Footer.Props = {}) => {
         <div className="marketing-footer-columns hidden grid-cols-4 min-[801px]:grid">
           {columns.map((column) => (
             <nav
-              className="border-accent-foreground border-r nth-[4n]:border-r-0 border-b nth-[n+5]:border-b-0 px-7 py-8 last:col-span-2 last:border-r-0"
+              className="border-accent-foreground border-r nth-[4n]:border-r-0 border-b nth-[n+5]:border-b-0 px-7 py-8"
               aria-label={column.title}
               key={column.title}
             >
