@@ -1,0 +1,21 @@
+{
+  "interactiveFiles": {
+    "title": "We publish what we ask you to publish.",
+    "description": "Inspect the files this site actually serves.",
+    "tabs": [
+      "llms.txt",
+      "API catalog",
+      "Agent checkout profile",
+      "MCP endpoint"
+    ],
+    "failed": "This file could not be fetched. Open the link above to inspect the endpoint.",
+    "loading": "Fetching the file…",
+    "fetched": "Fetched at",
+    "idle": "Open the file above, or load a preview.",
+    "action": {
+      "primary": "Load current file"
+    },
+    "preview": "File preview",
+    "limit": "Preview: first 30 lines, up to 64 KiB. This is a live response from the origin shown above."
+  }
+}

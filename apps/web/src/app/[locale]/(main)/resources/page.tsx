@@ -1,6 +1,8 @@
 import { getMessages } from "next-intl/server";
 import { Suspense } from "react";
+import { PublishedFiles } from "@/components/marketing/interactive/published-files";
 import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
+import { MarketingBand } from "@/components/marketing/primitives";
 import { EditorialArticles } from "./_components/editorial-articles";
 import { ResourcesDirectory } from "./_components/resources-directory";
 import { EditorialArticlesSkeleton } from "./_components/skeletons";
@@ -29,6 +31,9 @@ export default async () => {
           </Suspense>
         }
       />
+      <MarketingBand>
+        <PublishedFiles />
+      </MarketingBand>
     </MarketingPage>
   );
 };

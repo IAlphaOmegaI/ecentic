@@ -18687,5 +18687,24 @@
     "pendingDeliverable": "{{TODO: Xhurian confirma qué se entrega en esta etapa.}}",
     "pendingDuration": "{{TODO: Xhurian confirma la duración de esta etapa.}}",
     "pending": "Por acordar con tu equipo."
+  },
+  "interactiveFiles": {
+    "title": "Publicamos lo que te pedimos que publiques.",
+    "description": "Consulta los archivos que este sitio sirve realmente.",
+    "tabs": [
+      "llms.txt",
+      "Catálogo de API",
+      "Perfil de checkout para agentes",
+      "Endpoint MCP"
+    ],
+    "failed": "No se pudo obtener el archivo. Abre el enlace anterior para consultar el endpoint.",
+    "loading": "Obteniendo el archivo…",
+    "fetched": "Obtenido a las",
+    "idle": "Abre el archivo anterior o carga una vista previa.",
+    "action": {
+      "primary": "Cargar el archivo actual"
+    },
+    "preview": "Vista previa del archivo",
+    "limit": "Vista previa: las primeras 30 líneas, hasta 64 KiB. Es una respuesta real del origen indicado arriba."
   }
 }

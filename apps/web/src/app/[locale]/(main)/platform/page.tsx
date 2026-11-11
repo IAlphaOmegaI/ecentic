@@ -1,6 +1,7 @@
 import { getLocale, getMessages } from "next-intl/server";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { PublishedFiles } from "@/components/marketing/interactive/published-files";
 import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
 import {
   MarketingActions,
@@ -73,7 +74,10 @@ export default async () => {
                 </p>
               ))}
             </div>
-            <div className="relative min-h-[300px] text-background-rich/70 max-md:-mt-16 max-md:h-[300px] max-md:min-h-0">
+            <div
+              aria-hidden="true"
+              className="relative min-h-[300px] text-background-rich/70 max-md:-mt-16 max-md:h-[300px] max-md:min-h-0"
+            >
               <EvolvingAscii artwork="bag" cycle={["bag", "cart"]} />
             </div>
           </div>
@@ -120,6 +124,7 @@ export default async () => {
               )}
             </div>
           </div>
+          <PublishedFiles />
         </MarketingBand>
       )}
     </MarketingPage>
