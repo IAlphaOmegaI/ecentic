@@ -11,6 +11,7 @@ import {
   MarketingHeading,
 } from "@/components/marketing/primitives";
 import { Link } from "@/i18n/navigation";
+import { SolutionFeatureBand } from "../../../_components/feature-band";
 import {
   ElectronicsSpecification,
   ElectronicsWorkbench,
@@ -49,12 +50,11 @@ export const ConsumerElectronicsBody = async ({
             );
           case "attributes":
             return (
-              <MarketingBand
+              <SolutionFeatureBand
                 key={section.id}
                 id={section.id}
                 className="[&>.marketing-rail>.marketing-guides]:hidden"
               >
-                <SectionGutter />
                 <MarketingHeading
                   title={section.title}
                   description={section.description}
@@ -67,7 +67,7 @@ export const ConsumerElectronicsBody = async ({
                     {section.note}
                   </p>
                 )}
-              </MarketingBand>
+              </SolutionFeatureBand>
             );
           case "business":
             return (

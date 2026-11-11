@@ -1,11 +1,4 @@
-import {
-  ArrowRightIcon,
-  CommerceBasketShoppingIcon,
-  CommerceCode_3Icon,
-  CommerceFilePenIcon,
-  CommerceFileShieldIcon,
-  CommerceGlobePointerIcon,
-} from "@zenncore/icons";
+import { ArrowRightIcon, CommerceFileShieldIcon } from "@zenncore/icons";
 import Image from "next/image";
 import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
@@ -19,117 +12,11 @@ import {
 import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { Plus } from "@/components/plus";
 import { IntegrationTechnicalText } from "../integration-content";
+import { IntegrationWorkflow } from "../integration-workflow";
 import { WooSetupRoadmap } from "./woocommerce-setup";
 
-const workflowIcons = [
-  CommerceBasketShoppingIcon,
-  CommerceFilePenIcon,
-  CommerceGlobePointerIcon,
-] as const;
-
-const WorkflowGraphic = ({ index }: { index: number }) => {
-  switch (index) {
-    case 0:
-      return (
-        <div className="flex w-full max-w-80 items-center justify-between gap-6">
-          {(["chatgpt", "claude", "gemini"] as const).map((provider) => (
-            <ProviderLogo
-              key={provider}
-              provider={provider}
-              decorative
-              className="h-12 max-w-20 rounded-none"
-            />
-          ))}
-        </div>
-      );
-    case 1:
-      return (
-        <div className="flex w-full max-w-96 items-center justify-between gap-6">
-          <CommerceCode_3Icon className="size-12 shrink-0 text-primary-text" />
-          <code className="min-w-0 text-primary-text text-sm leading-7">
-            <span className="block text-foreground-dimmed">
-              WooCommerce REST API
-            </span>
-            <span className="block">{'"name": "...",'}</span>
-            <span className="block">{'"description": "..."'}</span>
-          </code>
-        </div>
-      );
-    default:
-      return (
-        <div className="w-full max-w-80">
-          <div className="flex items-center justify-between gap-6">
-            <ProviderLogo
-              provider="woocommerce"
-              decorative
-              className="h-12 max-w-32 rounded-none"
-            />
-            <ArrowRightIcon className="size-6 shrink-0 text-primary-text" />
-            <CommerceBasketShoppingIcon className="size-12 text-primary-text" />
-          </div>
-          <code className="mt-6 block text-center text-foreground-dimmed text-sm">
-            /.well-known/ucp
-          </code>
-        </div>
-      );
-  }
-};
-
-const Workflow = ({ section, children }: MarketingSection.Props) => (
-  <MarketingBand
-    id={section.id}
-    className="[&>.marketing-rail>.marketing-guides]:hidden"
-  >
-    <MarketingHeading title={section.title} description={section.description} />
-    <ol className="m-0 list-none p-0">
-      {section.items?.map((item, index) => {
-        const Icon = workflowIcons[index] ?? CommerceBasketShoppingIcon;
-        return (
-          <li
-            key={item.title}
-            className="relative grid border-accent-foreground border-t md:grid-cols-2"
-          >
-            <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-            <Plus className="top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 max-md:hidden" />
-            <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-            <div className="grid min-w-0 grid-cols-[32px_1fr] gap-6 px-7 py-8 max-sm:px-4">
-              <Icon className="mt-1 size-8 text-primary-text" aria-hidden />
-              <div className="min-w-0">
-                <h3>{item.title}</h3>
-                <p className="mt-4 max-w-[46ch] text-foreground-dimmed">
-                  {item.body}
-                </p>
-                {item.href && (
-                  <MarketingActions
-                    actions={[
-                      { label: item.label ?? item.title, href: item.href },
-                    ]}
-                  />
-                )}
-              </div>
-            </div>
-            <div
-              aria-hidden="true"
-              className="relative flex min-h-40 min-w-0 items-center justify-center border-accent-foreground bg-background-dimmed px-7 py-8 max-sm:px-4 md:border-l"
-            >
-              <WorkflowGraphic index={index} />
-            </div>
-          </li>
-        );
-      })}
-    </ol>
-    {children}
-    {section.note && (
-      <p className="px-7 py-8 text-foreground-dimmed text-sm max-sm:px-4">
-        {section.note}
-      </p>
-    )}
-    {section.links?.length && (
-      <div className="px-7 pb-8 max-sm:px-4">
-        <MarketingActions actions={section.links} />
-      </div>
-    )}
-  </MarketingBand>
+const Workflow = (props: MarketingSection.Props) => (
+  <IntegrationWorkflow {...props} integration="woocommerce" />
 );
 
 const Checkout = ({ section, children }: MarketingSection.Props) => (

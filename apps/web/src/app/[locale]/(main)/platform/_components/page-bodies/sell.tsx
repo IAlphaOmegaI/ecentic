@@ -7,6 +7,7 @@ import {
   MarketingActions,
   MarketingBand,
 } from "@/components/marketing/primitives";
+import { PlatformPrinciples } from "./platform-principles";
 import { SellJourney } from "./sell-journey";
 
 type Section = MarketingBodyProps["sections"][number];
@@ -67,35 +68,9 @@ const CheckoutRequirements = ({
 );
 
 const StoreOwnership = ({ section, children }: MarketingSection.Props) => (
-  <MarketingBand
-    id={section.id}
-    className="[&>.marketing-rail>.marketing-guides]:hidden"
-  >
-    <div className="grid min-[900px]:grid-cols-[1fr_1.5fr]">
-      <div className="marketing-cell relative px-8 py-12 max-sm:px-4 max-sm:py-8">
-        <SectionHeading section={section} />
-      </div>
-      <div className="relative border-accent-foreground min-[900px]:border-l">
-        {section.items?.map((item, index) => (
-          <article
-            key={item.title}
-            className="grid grid-cols-[2rem_1fr] gap-6 border-accent-foreground border-t px-8 py-8 first:border-t-0 max-sm:gap-4 max-sm:px-4"
-          >
-            <span aria-hidden="true" className="pt-1 text-primary-text">
-              {index === 0 ? "↳" : index === 1 ? "↔" : "↗"}
-            </span>
-            <div>
-              <h3>{item.title}</h3>
-              <p className="mt-4 max-w-[48ch] text-foreground-dimmed">
-                {item.body}
-              </p>
-            </div>
-          </article>
-        ))}
-      </div>
-    </div>
+  <PlatformPrinciples kind="sell" section={section}>
     {children}
-  </MarketingBand>
+  </PlatformPrinciples>
 );
 
 const CheckoutSurface = ({ section, children }: MarketingSection.Props) => (

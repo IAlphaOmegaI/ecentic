@@ -32,14 +32,20 @@ const CatalogFlow = ({ stage, copy }: CatalogFlow.Props) => (
     <div className="grid min-w-0 grid-cols-[1fr_32px_1fr] items-center gap-2">
       <div className="grid min-w-0 gap-6">
         <div className="flex items-center -space-x-3">
-          <ProviderLogo
-            provider="shopify"
-            className="relative z-10 h-14 w-12 shrink-0 rounded-none"
-          />
-          <ProviderLogo
-            provider="woocommerce"
-            className="h-10 w-24 shrink-0 rounded-none"
-          />
+          {(["shopify", "woocommerce"] as const).map((provider, index) => (
+            <span
+              key={provider}
+              className={cn(
+                "relative grid size-14 shrink-0 place-items-center rounded-full border border-accent-foreground bg-background-rich p-3 sm:size-16",
+                index === 0 && "z-10",
+              )}
+            >
+              <ProviderLogo
+                provider={provider}
+                className="max-h-10 w-full rounded-none object-center"
+              />
+            </span>
+          ))}
         </div>
         <div className="flex items-center gap-3 text-primary">
           <CommerceCode_3Icon className="size-8 shrink-0" aria-hidden />
@@ -66,18 +72,31 @@ const CatalogFlow = ({ stage, copy }: CatalogFlow.Props) => (
         <p className="mt-4 font-heading text-xl leading-tight">
           {copy.catalog}
         </p>
-        <div className="mt-5 grid gap-2 font-mono text-primary-text text-xs">
-          {["title", "description", "price", "image", "id"].map((field) => (
-            <div
-              key={field}
-              className="flex min-w-0 items-center justify-between gap-2"
-            >
-              <span>{field}</span>
-              {stage >= 1 && (
-                <CheckCircleIcon className="size-4 shrink-0" aria-hidden />
-              )}
-            </div>
-          ))}
+        <div className="mt-5 grid gap-2 font-mono text-xs">
+          {["title", "description", "price", "image", "id"].map(
+            (field, index) => (
+              <div
+                key={field}
+                className={cn(
+                  "flex min-w-0 items-center justify-between gap-2",
+                  index === 0
+                    ? "text-primary-text"
+                    : index === 1
+                      ? "text-secondary"
+                      : index === 2
+                        ? "text-success-dimmed"
+                        : index === 3
+                          ? "text-warning-foreground"
+                          : "text-foreground-dimmed",
+                )}
+              >
+                <span>{field}</span>
+                {stage >= 1 && (
+                  <CheckCircleIcon className="size-4 shrink-0" aria-hidden />
+                )}
+              </div>
+            ),
+          )}
         </div>
       </div>
     </div>

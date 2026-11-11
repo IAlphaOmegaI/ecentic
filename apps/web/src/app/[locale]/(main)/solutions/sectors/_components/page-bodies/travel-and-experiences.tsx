@@ -12,6 +12,7 @@ import {
 } from "@/components/marketing/primitives";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
+import { SolutionFeatureBand } from "../../../_components/feature-band";
 import { TravelAndExperiencesRoadmap } from "./travel-and-experiences-roadmap";
 
 export const TravelAndExperiencesBody = async ({
@@ -86,7 +87,7 @@ export const TravelAndExperiencesBody = async ({
                 );
               case "attributes":
                 return (
-                  <MarketingBand
+                  <SolutionFeatureBand
                     id={section.id}
                     className="[&>.marketing-rail>.marketing-guides]:hidden"
                   >
@@ -107,7 +108,7 @@ export const TravelAndExperiencesBody = async ({
                         {section.note}
                       </p>
                     )}
-                  </MarketingBand>
+                  </SolutionFeatureBand>
                 );
               case "rules":
                 return (

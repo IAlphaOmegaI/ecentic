@@ -10,6 +10,7 @@ import {
 } from "@/components/marketing/primitives";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
+import { SolutionFeatureBand } from "../../../_components/feature-band";
 import { HealthWellnessAndPetReader } from "./health-wellness-and-pet-reader";
 
 export const HealthWellnessAndPetBody = async ({
@@ -199,6 +200,28 @@ export const HealthWellnessAndPetBody = async ({
                     ))}
                     {sectionChildren?.[section.id]}
                   </MarketingBand>
+                );
+              case "attributes":
+                return (
+                  <SolutionFeatureBand id={section.id}>
+                    <div className="px-4 py-10 sm:px-8 sm:py-12">
+                      {section.eyebrow && (
+                        <MarketingEyebrow>{section.eyebrow}</MarketingEyebrow>
+                      )}
+                      <h2>{section.title}</h2>
+                      {section.description && (
+                        <p className="mt-4 max-w-[60ch] text-background-rich/75">
+                          {section.description}
+                        </p>
+                      )}
+                    </div>
+                    {sectionChildren?.[section.id]}
+                    {section.note && (
+                      <p className="border-background-rich/15 border-t px-4 py-6 text-background-rich/65 text-sm sm:px-8">
+                        {section.note}
+                      </p>
+                    )}
+                  </SolutionFeatureBand>
                 );
               default:
                 return (

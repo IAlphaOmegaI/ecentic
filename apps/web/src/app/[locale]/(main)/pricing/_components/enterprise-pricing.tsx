@@ -92,7 +92,7 @@ export const EnterprisePlanLedger = async () => {
     <>
       <div
         data-columns="2"
-        className="marketing-section-grid marketing-grid grid grid-cols-2 border-accent-foreground border-b max-sm:grid-cols-1"
+        className="marketing-section-grid marketing-grid grid grid-cols-2 border-[var(--rail-color)] border-x border-x-transparent border-b max-sm:grid-cols-1"
       >
         {planKeys.map((key, index) => {
           const source = pricing.plans[key];
@@ -116,10 +116,10 @@ export const EnterprisePlanLedger = async () => {
             <article
               key={key}
               className={cn(
-                "grid min-w-0 gap-4 border-accent-foreground border-t px-7 py-8 max-sm:px-4 sm:row-span-7 sm:grid-rows-subgrid sm:border-r sm:even:border-r-0",
+                "grid min-w-0 gap-4 border-[var(--rail-color)] border-t px-7 py-8 text-background-rich max-sm:px-4 sm:row-span-7 sm:grid-rows-subgrid sm:border-r sm:even:border-r-0",
                 key === "payg"
-                  ? "bg-linear-to-br from-primary/10 via-primary/3 to-background"
-                  : "bg-background",
+                  ? "bg-linear-to-br from-primary-dimmed/75 via-emphasis to-emphasis-dimmed"
+                  : "bg-emphasis-dimmed",
               )}
             >
               {Icon && (
@@ -131,25 +131,25 @@ export const EnterprisePlanLedger = async () => {
                       ? "text-info"
                       : index === 2
                         ? "text-secondary"
-                        : "text-primary-text",
+                        : "text-primary-rich",
                   )}
                 />
               )}
               <h3 className="text-[clamp(20px,2vw,26px)] tracking-[-0.035em]">
                 {source.name}
               </h3>
-              <p className="text-base text-foreground-dimmed leading-relaxed">
+              <p className="text-background-rich/70 text-base leading-relaxed">
                 {"tagline" in copy ? copy.tagline : source.tagline}
               </p>
               <div className="flex min-h-[90px] flex-col gap-2">
-                <strong className="font-medium text-[clamp(28px,3vw,40px)] text-foreground-rich leading-[1.1] tracking-[-0.05em]">
+                <strong className="font-medium text-[clamp(28px,3vw,40px)] text-background-rich leading-[1.1] tracking-[-0.05em]">
                   {source.figure}
                 </strong>
-                <span className="text-foreground-dimmed text-sm leading-relaxed">
+                <span className="text-background-rich/70 text-sm leading-relaxed">
                   {source.suffix}
                 </span>
               </div>
-              <p className="text-foreground-dimmed text-sm leading-relaxed">
+              <p className="text-background-rich/70 text-sm leading-relaxed">
                 {"note" in copy ? copy.note : source.note}
               </p>
               <ul className="m-0 flex list-none flex-col gap-4 p-0 text-sm">
@@ -175,20 +175,20 @@ export const EnterprisePlanLedger = async () => {
       </div>
       <article
         data-columns="2"
-        className="marketing-section-grid marketing-grid grid grid-cols-2 border-accent-foreground border-b bg-background-dimmed max-sm:grid-cols-1"
+        className="marketing-section-grid marketing-grid grid grid-cols-2 border-[var(--rail-color)] border-x border-x-transparent border-b bg-emphasis-rich/30 max-sm:grid-cols-1"
       >
-        <div className="flex min-w-0 flex-col gap-6 border-accent-foreground border-t px-7 py-8 max-sm:px-4 sm:border-r">
+        <div className="flex min-w-0 flex-col gap-6 border-[var(--rail-color)] border-t px-7 py-8 max-sm:px-4 sm:border-r">
           <CommerceFileShieldIcon
             aria-hidden
-            className="size-8 text-primary-text"
+            className="size-8 text-primary-rich"
           />
           <h3 className="text-[clamp(20px,2vw,26px)] tracking-[-0.035em]">
             {enterprise.name}
           </h3>
-          <p className="text-base text-foreground-dimmed leading-relaxed">
+          <p className="text-background-rich/70 text-base leading-relaxed">
             {enterprise.tagline}
           </p>
-          <strong className="font-medium text-[clamp(28px,3vw,40px)] text-foreground-rich leading-[1.1] tracking-[-0.05em]">
+          <strong className="font-medium text-[clamp(28px,3vw,40px)] text-background-rich leading-[1.1] tracking-[-0.05em]">
             {enterprise.figure}
           </strong>
           <div className="mt-auto w-full [&>.marketing-actions]:mt-0 [&_.marketing-actions_a]:w-full [&_.marketing-actions_a]:whitespace-normal">
@@ -197,8 +197,8 @@ export const EnterprisePlanLedger = async () => {
             />
           </div>
         </div>
-        <div className="flex min-w-0 flex-col justify-center gap-6 border-accent-foreground border-t px-7 py-8 max-sm:px-4">
-          <p className="text-foreground-dimmed text-sm leading-relaxed">
+        <div className="flex min-w-0 flex-col justify-center gap-6 border-[var(--rail-color)] border-t px-7 py-8 max-sm:px-4">
+          <p className="text-background-rich/70 text-sm leading-relaxed">
             {enterprise.note}
           </p>
           <ul className="m-0 flex list-none flex-col gap-4 p-0 text-sm">
@@ -214,7 +214,7 @@ export const EnterprisePlanLedger = async () => {
         </div>
       </article>
       <div className="marketing-cell relative min-w-0 px-7 py-10 max-sm:px-4 max-sm:py-8 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
-        <p className="marketing-note text-(length:--text-sm) text-foreground-dimmed">
+        <p className="marketing-note text-(length:--text-sm) text-background-rich/70">
           {enterprisePricing.availability}
         </p>
       </div>

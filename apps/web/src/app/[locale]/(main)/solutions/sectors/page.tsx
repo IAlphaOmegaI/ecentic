@@ -5,10 +5,8 @@ import {
   MarketingSection,
   marketingMetadata,
 } from "@/components/marketing/page";
-import {
-  MarketingBand,
-  MarketingHeading,
-} from "@/components/marketing/primitives";
+import { MarketingHeading } from "@/components/marketing/primitives";
+import { SolutionFeatureBand } from "../_components/feature-band";
 import { IndexExplorer } from "./_components/index-explorer";
 
 export const generateMetadata = async () => {
@@ -54,7 +52,7 @@ export default async () => {
       path="/solutions/sectors"
       heroArtwork="bag"
     >
-      <MarketingBand
+      <SolutionFeatureBand
         id="sectors"
         className="[&>.marketing-rail>.marketing-guides]:hidden"
       >
@@ -68,7 +66,7 @@ export default async () => {
           sectors={sectors}
           copy={sectorsIndexPage}
         />
-      </MarketingBand>
+      </SolutionFeatureBand>
       <SectionGutter />
       {content.sections
         .filter((section) => section.id !== "sectors")

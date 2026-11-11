@@ -1,23 +1,15 @@
-import {
-  Accordion,
-  AccordionItem,
-  AccordionPanel,
-  AccordionTrigger,
-} from "@zenncore/web/components/accordion";
 import { getMessages } from "next-intl/server";
 import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
-import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { MarketingSection } from "@/components/marketing/page";
 import {
   MarketingActions,
   MarketingBand,
   MarketingEyebrow,
-  MarketingStatus,
 } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
-import { Link } from "@/i18n/navigation";
+import { IntegrationWorkflow } from "../integration-workflow";
 import { GoogleMerchantCenterRoadmap } from "./google-merchant-center-roadmap";
 
 type Copy = Awaited<ReturnType<typeof getMessages>>["googleMerchantDesign"];
@@ -59,69 +51,8 @@ const SectionEnding = ({
   </>
 );
 
-const Workflow = ({ section, children }: MarketingSection.Props) => (
-  <MarketingBand
-    id={section.id}
-    className="[&>.marketing-rail>.marketing-guides]:hidden"
-  >
-    <div className="px-8 py-10 max-sm:px-4 max-sm:py-8">
-      <SectionHeading section={section} />
-    </div>
-    <div className="grid min-w-0 border-accent-foreground border-t md:grid-cols-[5fr_7fr]">
-      <div className="relative min-h-80 min-w-0 overflow-hidden bg-background-dimmed text-primary-text max-md:border-accent-foreground max-md:border-b md:border-accent-foreground md:border-r">
-        <EvolvingAscii
-          artwork="cart"
-          fit="cover"
-          className="absolute inset-0 scale-110"
-        />
-      </div>
-      <Accordion
-        multiple
-        defaultValue={section.items?.[0] ? [section.items[0].title] : []}
-        className="min-w-0 justify-start"
-      >
-        {section.items?.map((item) => (
-          <AccordionItem
-            key={item.title}
-            value={item.title}
-            className="border-accent-foreground last:border-b-0"
-          >
-            <AccordionTrigger
-              className="items-center px-8 py-6 text-xl leading-snug hover:text-primary-text max-sm:px-4"
-              classList={{
-                trigger: { icon: "size-4 shrink-0 transition-transform" },
-              }}
-            >
-              {item.title}
-            </AccordionTrigger>
-            <AccordionPanel>
-              <div className="px-8 pb-6 max-sm:px-4">
-                {item.status && (
-                  <MarketingStatus status={item.status}>
-                    {item.statusLabel}
-                  </MarketingStatus>
-                )}
-                <p className="max-w-[50ch] text-foreground-dimmed leading-relaxed">
-                  {item.body}
-                </p>
-                {item.href && (
-                  <Link
-                    href={item.href}
-                    className="mt-4 inline-block text-primary-text underline underline-offset-4"
-                  >
-                    {item.label ?? item.title}
-                  </Link>
-                )}
-              </div>
-            </AccordionPanel>
-          </AccordionItem>
-        ))}
-      </Accordion>
-    </div>
-    <SectionEnding section={section} showNote={false}>
-      {children}
-    </SectionEnding>
-  </MarketingBand>
+const Workflow = (props: MarketingSection.Props) => (
+  <IntegrationWorkflow {...props} integration="googleMerchant" />
 );
 
 const Access = ({ section, children }: MarketingSection.Props) => (

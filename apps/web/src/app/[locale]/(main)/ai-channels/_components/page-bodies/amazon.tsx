@@ -15,6 +15,7 @@ import { MarketingSection } from "@/components/marketing/page";
 import { MarketingBand } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { Plus } from "@/components/plus";
+import { ChannelWorkbench } from "../channel-content";
 
 type Section = MarketingBodyProps["sections"][number];
 type Copy = Awaited<ReturnType<typeof getMessages>>["amazonPage"];
@@ -201,14 +202,20 @@ export const AmazonBody = async ({
                     {sectionChildren?.[section.id]}
                   </MarketingBand>
                 );
-              default:
+              case "ecentic":
                 return (
                   <>
-                    {section.id === "ecentic" && <SectionGutter />}
-                    <MarketingSection section={section}>
+                    <SectionGutter />
+                    <ChannelWorkbench section={section}>
                       {sectionChildren?.[section.id]}
-                    </MarketingSection>
+                    </ChannelWorkbench>
                   </>
+                );
+              default:
+                return (
+                  <MarketingSection section={section}>
+                    {sectionChildren?.[section.id]}
+                  </MarketingSection>
                 );
             }
           })()}

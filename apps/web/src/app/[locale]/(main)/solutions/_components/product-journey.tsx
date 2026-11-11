@@ -1,30 +1,67 @@
-import { ArrowRightIcon } from "@zenncore/icons";
+import { cn } from "@zenncore/utils";
+import { Plus } from "@/components/plus";
+import { JourneyFigure } from "./journey-figure";
 
 export const ProductJourney = ({ items }: ProductJourney.Props) => (
-  <ol className="marketing-section-grid marketing-product-journey flex flex-col border-accent-foreground border-t bg-background min-[1001px]:flex-row">
+  <ol
+    data-product-bento
+    className="relative grid grid-cols-1 gap-px border border-background-rich/15 border-x-transparent bg-background-rich/15 bg-clip-padding sm:grid-cols-2 lg:grid-cols-6"
+  >
     {items.map((item, index) => (
       <li
         key={item.title}
-        className="grid min-w-0 flex-1 grid-cols-[48px_1fr] gap-5 border-accent-foreground border-b px-4 py-7 last:border-0 min-[1001px]:block min-[641px]:grid-cols-[80px_1fr] min-[641px]:gap-x-7 min-[1001px]:border-r min-[1001px]:border-b-0 min-[641px]:px-7"
+        className={cn(
+          "relative flex min-w-0 flex-col bg-emphasis-dimmed",
+          index === 0
+            ? "bg-linear-to-br from-primary-dimmed/70 via-emphasis-dimmed to-emphasis-dimmed sm:col-span-2 lg:col-span-4"
+            : index === 1
+              ? "sm:col-span-2 lg:col-span-2"
+              : index === 4
+                ? "sm:col-span-2 lg:col-span-2"
+                : "lg:col-span-2",
+        )}
       >
-        <div className="row-span-2 flex flex-col items-start justify-start gap-6 min-[1001px]:mb-6 min-[1001px]:flex-row min-[1001px]:items-center min-[1001px]:justify-between">
+        <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 [&>span]:bg-background-rich/35" />
+        {index > 0 && (
+          <Plus
+            className={cn(
+              "top-0 right-0 translate-x-1/2 -translate-y-1/2 [&>span]:bg-background-rich/35",
+              (index === 1 || index === 3) && "lg:hidden",
+              index === 2 && "sm:hidden",
+            )}
+          />
+        )}
+        {index === 4 && (
+          <Plus className="top-0 left-1/2 hidden -translate-x-1/2 -translate-y-1/2 sm:block lg:hidden [&>span]:bg-background-rich/35" />
+        )}
+        <div className="flex items-center justify-between gap-5 px-6 pt-7 sm:px-8">
           <span
-            aria-hidden="true"
-            className="font-medium font-superior text-[44px] text-primary leading-none tracking-[-0.06em] min-[641px]:text-[64px]"
+            aria-hidden
+            className="font-heading text-3xl text-primary-rich leading-none"
           >
             {String(index + 1).padStart(2, "0")}
           </span>
-          {index < items.length - 1 && (
-            <ArrowRightIcon
-              aria-hidden="true"
-              className="size-4 rotate-90 text-primary min-[1001px]:rotate-0"
-            />
-          )}
+          <span
+            aria-hidden
+            className="h-px w-10 bg-linear-to-r from-primary-rich/60 to-transparent"
+          />
         </div>
-        <h3 className="text-2xl">{item.title}</h3>
-        <p className="col-start-2 min-[1001px]:mt-5">{item.body}</p>
+        <div className="px-6 pt-6 sm:px-8">
+          <h3 className="text-background-rich">{item.title}</h3>
+          <p className="mt-4 max-w-[58ch] text-background-rich/75">
+            {item.body}
+          </p>
+        </div>
+        <div className="mt-auto pt-6">
+          <JourneyFigure stage={index} large={index === 0} animate />
+        </div>
       </li>
     ))}
+    <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 [&>span]:bg-background-rich/35" />
+    <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2 [&>span]:bg-background-rich/35" />
+    <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2 [&>span]:bg-background-rich/35" />
+    <Plus className="bottom-0 left-1/3 hidden -translate-x-1/2 translate-y-1/2 lg:block [&>span]:bg-background-rich/35" />
+    <Plus className="bottom-0 left-2/3 hidden -translate-x-1/2 translate-y-1/2 lg:block [&>span]:bg-background-rich/35" />
   </ol>
 );
 

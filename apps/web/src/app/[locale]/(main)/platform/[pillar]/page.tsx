@@ -57,6 +57,11 @@ export default async ({ params }: Props) => {
   return (
     <MarketingPage
       heroArtwork={artwork[pillar]}
+      heroArtworkClassName={
+        pillar === "connect"
+          ? "left-[42%] right-[-12%] opacity-85 bg-background-rich [mask-image:url('/images/ascii/connect-catalog-halftone.svg')] [mask-repeat:no-repeat] [mask-size:contain] [mask-position:center] max-sm:left-[8%] max-sm:right-[-16%] max-sm:opacity-25 [&>div]:hidden"
+          : undefined
+      }
       heroChildren={pillar === "connect" ? <StoreCheck /> : undefined}
       content={{
         ...enterprisePlatform.pages[pillar],

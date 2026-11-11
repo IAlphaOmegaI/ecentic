@@ -1,7 +1,15 @@
 import { getLocale, getMessages } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
-import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
-import { MarketingBand } from "@/components/marketing/primitives";
+import {
+  MarketingPage,
+  MarketingSection,
+  marketingMetadata,
+} from "@/components/marketing/page";
+import {
+  MarketingBand,
+  MarketingFeatureBand,
+  MarketingHeading,
+} from "@/components/marketing/primitives";
 import { localizePath } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
 import { absoluteUrl } from "@/lib/seo";
@@ -26,24 +34,40 @@ export default async () => {
   );
   const prices = offers.map((plan) => Number(plan.price));
   const url = absoluteUrl(localizePath("/pricing", locale));
+  const sectionChildren: Record<string, React.ReactNode> = {
+    "free-check": <FreeStoreCheck />,
+    "pay-as-you-go": <PerformanceFeeLedger />,
+    compare: <EnterprisePlanComparison />,
+    europe: (
+      <PartnershipBundle
+        description={enterprisePricing.bundle.description}
+        productDetail={enterprisePricing.bundle.productDetail}
+      />
+    ),
+  };
   return (
     <MarketingPage
-      content={enterprisePricing}
+      content={{ ...enterprisePricing, sections: [] }}
       path="/pricing"
       heroArtwork="cart"
-      sectionChildren={{
-        "free-check": <FreeStoreCheck />,
-        pricing: <EnterprisePlanLedger />,
-        "pay-as-you-go": <PerformanceFeeLedger />,
-        compare: <EnterprisePlanComparison />,
-        europe: (
-          <PartnershipBundle
-            description={enterprisePricing.bundle.description}
-            productDetail={enterprisePricing.bundle.productDetail}
-          />
-        ),
-      }}
     >
+      {enterprisePricing.sections.map((section) =>
+        section.id === "pricing" ? (
+          <MarketingFeatureBand key={section.id} id={section.id}>
+            <MarketingHeading
+              eyebrow={section.eyebrow}
+              title={section.title}
+              description={section.description}
+              className="[&>p]:text-background-rich/70"
+            />
+            <EnterprisePlanLedger />
+          </MarketingFeatureBand>
+        ) : (
+          <MarketingSection key={section.id} section={section}>
+            {sectionChildren[section.id]}
+          </MarketingSection>
+        ),
+      )}
       <MarketingBand>
         <JsonLd
           schemas={[

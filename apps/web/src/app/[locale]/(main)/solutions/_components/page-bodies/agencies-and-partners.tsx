@@ -7,6 +7,7 @@ import {
   MarketingBand,
 } from "@/components/marketing/primitives";
 import { Plus } from "@/components/plus";
+import { SolutionFeatureBand } from "../feature-band";
 import {
   AgenciesAccess,
   AgenciesChallenges,
@@ -43,12 +44,12 @@ export const AgenciesAndPartnersBody = async ({
             );
           case "tracks":
             return (
-              <MarketingBand
+              <SolutionFeatureBand
                 key={section.id}
                 id={section.id}
                 className="[&>.marketing-rail>.marketing-guides]:hidden"
               >
-                <div className="bg-background-dimmed px-4 py-10 sm:px-8 sm:py-12">
+                <div className="px-4 py-10 sm:px-8 sm:py-12">
                   <h2>{section.title}</h2>
                   <p className="mt-4 max-w-[60ch] text-foreground-dimmed text-lg max-sm:text-base">
                     {agenciesPage.tracks.description}
@@ -59,7 +60,7 @@ export const AgenciesAndPartnersBody = async ({
                   labels={agenciesPage.tracks}
                 />
                 {sectionChildren?.[section.id]}
-              </MarketingBand>
+              </SolutionFeatureBand>
             );
           case "access":
             return (

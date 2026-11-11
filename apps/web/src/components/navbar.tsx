@@ -695,7 +695,7 @@ export const Navbar = () => {
                   <Accordion
                     multiple
                     data-connected
-                    className="marketing-mobile-menu-grid border border-accent-foreground border-b-0 bg-(--nav-surface)"
+                    className="marketing-mobile-menu-grid border-0 bg-transparent before:hidden after:hidden"
                   >
                     {navigation.groups.map((group) => (
                       <AccordionItem
@@ -703,14 +703,17 @@ export const Navbar = () => {
                         value={group.id}
                         className="border-accent-foreground last:border-b-0"
                       >
-                        <AccordionTrigger className="marketing-mobile-nav-trigger min-h-15 items-center px-4 py-4 font-body text-base hover:text-primary-text focus-visible:text-primary-text focus-visible:-outline-offset-4">
+                        <AccordionTrigger className="marketing-mobile-nav-trigger min-h-15 items-center bg-transparent px-4 py-4 font-body text-base before:hidden hover:text-primary-text focus-visible:text-primary-text focus-visible:-outline-offset-4">
                           {group.label}
                         </AccordionTrigger>
                         <AccordionPanel className="data-open:overflow-visible">
-                          <div className="marketing-mobile-nav-grid grid gap-px border-accent-foreground border-t bg-accent-foreground">
+                          <div className="marketing-mobile-nav-grid grid border-accent-foreground border-t bg-transparent">
                             {group.columns.map((column, columnIndex) => (
-                              <div className="grid gap-px" key={column.title}>
-                                <p className="marketing-nav-column-heading relative flex items-center gap-2.5 bg-(--nav-tint) px-4 py-3 font-medium text-foreground-dimmed text-sm">
+                              <div
+                                className="grid border-accent-foreground border-b"
+                                key={column.title}
+                              >
+                                <p className="marketing-nav-column-heading relative flex items-center gap-2.5 bg-transparent px-4 py-3 font-medium text-foreground-dimmed text-sm before:hidden after:hidden">
                                   <NavigationCategoryIcon
                                     group={group.id}
                                     column={columnIndex}
@@ -728,7 +731,7 @@ export const Navbar = () => {
                                       role="link"
                                       key={`${item.href}-${item.label}`}
                                       render={<Link href={item.href} />}
-                                      className="marketing-mobile-nav-cell group/nav-cell relative flex min-h-24 min-w-0 items-start gap-3 bg-(--nav-surface) px-4 py-4 text-sm leading-snug hover:bg-(--nav-tint) hover:text-primary-text focus-visible:bg-(--nav-tint) focus-visible:text-primary-text focus-visible:-outline-offset-4 [&_.marketing-status]:mt-2 [&_.marketing-status]:text-xs"
+                                      className="marketing-mobile-nav-cell group/nav-cell relative flex min-h-24 min-w-0 items-start gap-3 border-accent-foreground border-t bg-transparent px-4 py-4 text-sm leading-snug before:hidden hover:bg-(--nav-tint) hover:text-primary-text focus-visible:bg-(--nav-tint) focus-visible:text-primary-text focus-visible:-outline-offset-4 [&_.marketing-status]:mt-2 [&_.marketing-status]:text-xs"
                                     >
                                       {provider && (
                                         <ProviderLogo
@@ -765,7 +768,7 @@ export const Navbar = () => {
                               nativeButton={false}
                               role="link"
                               render={<Link href={group.featured.href} />}
-                              className="marketing-mobile-nav-cell group/nav-cell relative flex min-h-24 min-w-0 items-start justify-between gap-4 bg-(--nav-surface) px-4 py-4 text-sm leading-snug hover:bg-(--nav-tint) hover:text-primary-text focus-visible:bg-(--nav-tint) focus-visible:text-primary-text focus-visible:-outline-offset-4"
+                              className="marketing-mobile-nav-cell group/nav-cell relative flex min-h-24 min-w-0 items-start justify-between gap-4 bg-transparent px-4 py-4 text-sm leading-snug before:hidden hover:bg-(--nav-tint) hover:text-primary-text focus-visible:bg-(--nav-tint) focus-visible:text-primary-text focus-visible:-outline-offset-4"
                             >
                               <span>
                                 <span className="block font-medium text-foreground-rich group-hover/nav-cell:text-primary-text group-focus-visible/nav-cell:text-primary-text">
@@ -786,16 +789,16 @@ export const Navbar = () => {
                     ))}
                   </Accordion>
                 </nav>
-                <div className="marketing-mobile-action-grid grid grid-cols-1 gap-px border border-accent-foreground bg-accent-foreground sm:grid-cols-2">
+                <div className="marketing-mobile-action-grid grid grid-cols-1 border-accent-foreground border-t bg-transparent before:hidden after:hidden sm:grid-cols-2">
                   <SheetClose
                     nativeButton={false}
                     role="link"
                     render={<Link href="/pricing" />}
-                    className="marketing-mobile-nav-cell relative col-span-full flex min-h-15 items-center bg-(--nav-surface) px-4 py-4 font-medium text-base text-foreground-rich hover:bg-(--nav-tint) hover:text-primary-text focus-visible:text-primary-text"
+                    className="marketing-mobile-nav-cell relative col-span-full flex min-h-15 items-center border-accent-foreground border-b bg-transparent px-4 py-4 font-medium text-base text-foreground-rich before:hidden hover:bg-(--nav-tint) hover:text-primary-text focus-visible:text-primary-text"
                   >
                     {navigation.pricing}
                   </SheetClose>
-                  <div className="bg-(--nav-surface) p-4">
+                  <div className="bg-transparent p-4 before:hidden">
                     <Button
                       variant="soft"
                       color={dark ? "accent" : "emphasis"}
@@ -810,7 +813,7 @@ export const Navbar = () => {
                       {chrome.action.tertiary}
                     </Button>
                   </div>
-                  <div className="bg-(--nav-surface) p-4">
+                  <div className="bg-transparent p-4 before:hidden">
                     <Button
                       className="w-full"
                       render={

@@ -12,19 +12,8 @@ import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import { useMediaQuery } from "@zenncore/web/hooks";
 import type { AppConfig } from "next-intl";
 import { Crosshair } from "@/app/[locale]/(main)/dashboard/_components/grid";
-import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { Link } from "@/i18n/navigation";
-
-const artwork = [
-  "bag",
-  "cart",
-  "bag",
-  "console",
-  "commerce",
-  "bag",
-  "cart",
-  "commerce",
-] as const;
+import { JourneyFigure } from "../../_components/journey-figure";
 
 export const IndexExplorer = ({
   title,
@@ -67,7 +56,7 @@ export const IndexExplorer = ({
           value={sector.href}
           className="col-start-2 row-start-1 min-w-0 data-ending-style:hidden max-lg:col-start-1 max-lg:row-start-2"
         >
-          <div className="relative grid grid-cols-[minmax(0,1fr)_192px] items-center gap-4 bg-background-dimmed/40 px-8 py-10 max-sm:grid-cols-1 max-sm:gap-0 max-sm:px-4 max-sm:py-6">
+          <div className="relative grid grid-cols-[minmax(0,1fr)_240px] items-center gap-4 bg-emphasis-dimmed px-8 py-10 max-sm:grid-cols-1 max-sm:gap-0 max-sm:px-4 max-sm:py-6">
             <div className="relative min-w-0">
               <p className="mb-4 font-medium text-foreground-dimmed text-sm">
                 {copy.question}
@@ -86,7 +75,7 @@ export const IndexExplorer = ({
               </div>
             </div>
             <div className="h-56 min-w-0 text-primary-text max-sm:mt-4 max-sm:h-40">
-              <EvolvingAscii artwork={artwork[index] ?? "bag"} />
+              <JourneyFigure stage={index % 5} />
             </div>
           </div>
           <div className="relative border-accent-foreground border-t px-8 pt-8 pb-4 max-sm:px-4 max-sm:pt-6">
@@ -109,7 +98,7 @@ export const IndexExplorer = ({
                   classList={{
                     root: "font-body text-base leading-normal tracking-normal",
                     trigger: {
-                      root: "items-center px-8 py-4 text-base text-foreground-rich hover:bg-background-dimmed/40 hover:text-primary-text max-sm:px-4",
+                      root: "items-center px-8 py-4 text-base text-foreground-rich hover:bg-emphasis-dimmed hover:text-primary-text max-sm:px-4",
                       icon: "mr-0 size-4 shrink-0 text-primary-text transition-transform duration-200 group-data-panel-open:rotate-180",
                     },
                   }}
@@ -124,7 +113,7 @@ export const IndexExplorer = ({
               </AccordionItem>
             ))}
           </Accordion>
-          <p className="border-accent-foreground border-t bg-background-dimmed/40 px-8 py-6 text-foreground-dimmed text-sm leading-relaxed max-sm:px-4">
+          <p className="border-accent-foreground border-t bg-emphasis-dimmed px-8 py-6 text-foreground-dimmed text-sm leading-relaxed max-sm:px-4">
             {sector.note}
           </p>
         </TabsPanel>

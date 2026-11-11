@@ -37,7 +37,7 @@ export const Capabilities = ({ copy }: Capabilities.Props) => (
     />
     <div
       data-capability-grid
-      className="relative grid grid-cols-1 gap-px border-[var(--rail-color)] border-y bg-[var(--rail-color)] sm:grid-cols-2 lg:grid-cols-6"
+      className="relative grid grid-cols-1 gap-px border border-[var(--rail-color)] border-x-transparent bg-[var(--rail-color)] bg-clip-padding sm:grid-cols-2 lg:grid-cols-6"
     >
       <Plus className="top-0 left-0 z-2 -translate-x-1/2 -translate-y-1/2 [&>span]:bg-background-rich/35" />
       <Plus className="top-0 right-0 z-2 translate-x-1/2 -translate-y-1/2 [&>span]:bg-background-rich/35" />

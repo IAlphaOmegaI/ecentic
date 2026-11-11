@@ -16,6 +16,7 @@ import { MarketingSection } from "@/components/marketing/page";
 import { MarketingBand } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { Link } from "@/i18n/navigation";
+import { ChannelWorkbench } from "../channel-content";
 
 type Section = MarketingBodyProps["sections"][number];
 type Copy = Awaited<ReturnType<typeof getMessages>>["microsoftCopilotPage"];
@@ -215,6 +216,10 @@ export const MicrosoftCopilotBody = async ({
           <SectionGutter />
           {section.id === "entry" ? (
             <MerchantEntry section={section} copy={copy.entry} />
+          ) : section.id === "ecentic" ? (
+            <ChannelWorkbench section={section}>
+              {sectionChildren?.[section.id]}
+            </ChannelWorkbench>
           ) : (
             <MarketingSection
               section={{ ...section, field: section.id === "next" }}

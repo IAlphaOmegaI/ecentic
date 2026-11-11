@@ -123,10 +123,10 @@ export const SolutionsWorkflows = ({
           key={section.id}
           id={section.id}
           value={section.id}
-          className="relative scroll-mt-24 border-accent-foreground last:border-b-0 data-open:bg-background-dimmed"
+          className="relative scroll-mt-24 border-accent-foreground last:border-b-0 data-open:bg-emphasis"
         >
           <AccordionTrigger
-            className="items-center px-8 py-8 hover:bg-background-dimmed focus-visible:-outline-offset-4 max-sm:px-4 max-sm:py-6"
+            className="items-center px-8 py-8 hover:bg-emphasis focus-visible:-outline-offset-4 max-sm:px-4 max-sm:py-6"
             classList={{
               trigger: { icon: "size-4 shrink-0 text-primary-text" },
             }}

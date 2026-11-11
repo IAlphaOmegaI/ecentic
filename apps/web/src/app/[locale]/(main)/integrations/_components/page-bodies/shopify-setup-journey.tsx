@@ -1,24 +1,106 @@
 "use client";
 
-import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
-import { useMediaQuery } from "@zenncore/web/hooks";
-import { useState } from "react";
-import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import {
+  ArrowRightIcon,
+  CommerceBasketShoppingIcon,
+  CommerceFilePenIcon,
+  CommerceFileShieldIcon,
+  CommercePlug_3SparkleIcon,
+} from "@zenncore/icons";
+import { cn } from "@zenncore/utils";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionPanel,
+  AccordionTrigger,
+} from "@zenncore/web/components/accordion";
+import { useInteractive } from "@/components/marketing/interactive/use-interactive";
 import type { MarketingPage } from "@/components/marketing/page";
 import { MarketingActions } from "@/components/marketing/primitives";
-import { useDocument } from "@/hooks/use-document";
+import { ProviderLogo } from "@/components/marketing/provider-logo";
+import { Plus } from "@/components/plus";
 
-const setupArtwork = ["bag", "commerce", "console", "cart"] as const;
+const icons = [
+  CommercePlug_3SparkleIcon,
+  CommerceBasketShoppingIcon,
+  CommerceFilePenIcon,
+  CommerceFileShieldIcon,
+] as const;
 
-const ShopifySetupArtwork = ({ stage }: { stage: number }) => (
+const SetupGraphic = ({ stage }: { stage: number }) => (
   <div
-    aria-hidden="true"
+    aria-hidden
     data-shopify-stage={stage}
-    className="relative aspect-[73.2/56] min-w-0 overflow-hidden text-primary-text"
+    className="relative flex min-h-48 min-w-0 items-center justify-center gap-7 overflow-hidden px-7 max-sm:gap-3 max-sm:px-0"
   >
-    <div className="absolute inset-0 [mask-image:linear-gradient(to_bottom,transparent,black_10%,black_90%,transparent)]">
-      <EvolvingAscii artwork={setupArtwork[stage] ?? "bag"} fit="cover" />
-    </div>
+    <div className="absolute inset-0 -z-1 bg-radial-[at_50%_100%] from-primary/10 via-transparent to-transparent" />
+    {stage === 0 ? (
+      <>
+        <ProviderLogo
+          provider="shopify"
+          decorative
+          className="h-20 max-w-36 max-sm:h-14 max-sm:max-w-16"
+        />
+        <div className="relative h-px w-20 bg-linear-to-r from-primary/20 via-primary/70 to-primary/20 max-sm:w-8">
+          <ArrowRightIcon className="absolute top-1/2 left-1/2 size-5 -translate-x-1/2 -translate-y-1/2 text-primary-text" />
+        </div>
+        <CommerceFileShieldIcon className="size-16 shrink-0 text-primary-text max-sm:size-12" />
+      </>
+    ) : stage === 1 ? (
+      <div className="relative flex h-40 w-full max-w-80 items-end justify-center gap-3">
+        {[-1, 0, 1].map((position) => (
+          <div
+            key={position}
+            className={cn(
+              "relative flex h-28 w-24 min-w-0 flex-col justify-between rounded-md border p-4",
+              position === 0
+                ? "-translate-y-6 border-primary/50 bg-background-rich shadow-[0_0_40px_-20px_var(--color-primary)]"
+                : "border-accent-foreground bg-background",
+            )}
+          >
+            <CommerceBasketShoppingIcon
+              className={cn(
+                "size-9",
+                position === 0 ? "text-primary-text" : "text-foreground-dimmed",
+              )}
+            />
+            <div className="space-y-2">
+              <span className="block h-px w-full bg-accent-foreground" />
+              <span className="block h-px w-2/3 bg-primary/40" />
+            </div>
+          </div>
+        ))}
+      </div>
+    ) : stage === 2 ? (
+      <div className="w-full max-w-80 rounded-md border border-accent-foreground bg-background-rich p-4 font-mono text-xs leading-8 sm:text-sm">
+        <span className="text-foreground-dimmed">{"{"}</span>
+        <p>
+          <span className="text-primary-text">{'  "title"'}</span>
+          <span className="text-foreground-dimmed">{': "…",'}</span>
+        </p>
+        <p>
+          <span className="text-success-text">{'  "description"'}</span>
+          <span className="text-foreground-dimmed">{': "…"'}</span>
+        </p>
+        <span className="text-foreground-dimmed">{"}"}</span>
+      </div>
+    ) : (
+      <>
+        <ProviderLogo
+          provider="shopify"
+          decorative
+          className="h-16 max-w-28 max-sm:h-12 max-sm:max-w-16"
+        />
+        <div className="relative h-20 w-20 shrink-0 rounded-tr-3xl rounded-bl-3xl border-primary/30 border-t border-r border-b max-sm:h-14 max-sm:w-8">
+          <ArrowRightIcon className="absolute right-0 bottom-0 size-5 translate-x-1/2 translate-y-1/2 text-primary-text" />
+        </div>
+        <ProviderLogo
+          provider="googleMerchant"
+          decorative
+          className="h-16 max-w-28 max-sm:h-12 max-sm:max-w-16"
+        />
+      </>
+    )}
   </div>
 );
 
@@ -26,102 +108,83 @@ export const ShopifySetupJourney = ({
   title,
   items,
 }: ShopifySetupJourney.Props) => {
-  const { window } = useDocument();
-  const reduced = useMediaQuery("(prefers-reduced-motion: reduce)", {});
-  const [stage, setStage] = useState(0);
-
-  if (!window || reduced)
-    return (
-      <ol
-        aria-label={title}
-        data-shopify-static-setup
-        className="divide-y divide-accent-foreground border-accent-foreground border-t"
-      >
-        {items.map((item, index) => (
-          <li
-            key={item.title}
-            className="grid grid-cols-[3rem_1fr] gap-6 px-7 py-8 max-sm:gap-4 max-sm:px-4"
-          >
-            <span className="font-heading text-3xl text-primary leading-none">
-              {String(index + 1).padStart(2, "0")}
-            </span>
-            <div>
-              <h3 className="text-foreground-rich">{item.title}</h3>
-              <p className="mt-4 max-w-[70ch] text-foreground-dimmed leading-relaxed">
-                {item.body}
-              </p>
-              {item.href && (
-                <MarketingActions
-                  actions={[
-                    { label: item.label ?? item.title, href: item.href },
-                  ]}
-                />
-              )}
-            </div>
-          </li>
-        ))}
-      </ol>
-    );
+  const { ready, reduced } = useInteractive();
+  const staticView = !ready || reduced;
 
   return (
-    <Tabs
-      value={stage}
-      onValueChange={(value) => {
-        if (typeof value === "number") setStage(value);
-      }}
-      className="border-accent-foreground border-t"
+    <div
+      className="relative border-accent-foreground border-t"
+      data-shopify-roadmap
     >
-      <p aria-live="polite" aria-atomic="true" className="sr-only">
-        {items[stage]?.title}
-      </p>
-      <TabsList
+      <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute top-14 bottom-14 left-12 w-px bg-linear-to-b from-primary/50 via-accent-foreground to-primary/20 max-sm:left-8"
+      />
+      <Accordion
+        key={staticView ? "static" : "interactive"}
         aria-label={title}
-        className="grid w-full grid-cols-4 overflow-visible rounded-none border-0 border-accent-foreground border-b max-sm:grid-cols-2"
+        multiple
+        defaultValue={
+          staticView ? items.map((item) => item.title) : [items[0]?.title ?? ""]
+        }
+        className="relative min-w-0"
       >
-        {items.map((item, index) => (
-          <Tab
-            key={item.title}
-            value={index}
-            className="group relative h-auto min-h-36 min-w-0 flex-col items-start justify-start gap-5 border-accent-foreground bg-background px-7 py-6 text-left text-foreground-dimmed outline-1 outline-transparent -outline-offset-1 transition-colors duration-200 ease-out focus-visible:outline-2 focus-visible:-outline-offset-2 focus-visible:before:outline-0 data-[active]:text-primary data-selected:text-primary data-[active]:outline-primary data-selected:outline-primary motion-reduce:transition-none max-sm:min-h-36 max-sm:px-4 max-sm:[&:nth-child(-n+2)]:border-b max-sm:[&:nth-child(2)]:border-r-0"
-          >
-            <span className="flex w-full items-center gap-4" aria-hidden="true">
-              <span className="font-heading text-3xl leading-none">
-                {String(index + 1).padStart(2, "0")}
-              </span>
-              <span className="flex-1 border-current border-t border-dashed opacity-35" />
-              <span className="size-2 shrink-0 rounded-full bg-foreground-dimmed group-data-[active]:bg-primary group-data-selected:bg-primary" />
-            </span>
-            <span className="max-w-[24ch] text-base leading-snug group-data-[active]:text-foreground-rich group-data-selected:text-foreground-rich">
-              {item.title}
-            </span>
-          </Tab>
-        ))}
-      </TabsList>
-      {items.map((item, index) => (
-        <TabsPanel
-          key={item.title}
-          value={index}
-          className="min-w-0 focus-visible:outline-primary-text focus-visible:-outline-offset-4"
-        >
-          <div className="grid min-h-[430px] grid-cols-[1.6fr_1fr] bg-background max-md:grid-cols-1">
-            <ShopifySetupArtwork stage={index} />
-            <div className="flex min-w-0 flex-col justify-center border-accent-foreground border-l px-7 py-10 max-sm:px-4 max-sm:py-8 max-md:border-t max-md:border-l-0">
-              <h3 className="text-foreground-rich">{item.title}</h3>
-              <p className="mt-5 max-w-[46ch] text-foreground-dimmed leading-relaxed">
-                {item.body}
-              </p>
-              {item.href && (
-                <MarketingActions
-                  actions={[
-                    { label: item.label ?? item.title, href: item.href },
-                  ]}
-                />
-              )}
-            </div>
-          </div>
-        </TabsPanel>
-      ))}
-    </Tabs>
+        {items.map((item, index) => {
+          const Icon = icons[index] ?? CommercePlug_3SparkleIcon;
+          return (
+            <AccordionItem
+              key={item.title}
+              value={item.title}
+              className="group/stop relative min-w-0 border-0 pl-24 max-sm:pl-16"
+            >
+              <div
+                aria-hidden
+                className="absolute top-8 left-7 grid size-10 place-items-center rounded-full border border-accent-foreground bg-background text-foreground-dimmed group-data-open/stop:border-primary/40 group-data-open/stop:bg-background-rich group-data-open/stop:text-primary-text max-sm:left-3"
+              >
+                <Icon className="size-6" />
+              </div>
+              <div className="border-accent-foreground border-b group-last/stop:border-b-0">
+                <AccordionTrigger
+                  className="min-h-28 items-center py-7 pr-7 text-foreground-rich hover:text-primary-text focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-solid focus-visible:-outline-offset-4 max-sm:pr-4"
+                  classList={{ trigger: { icon: "mr-0 size-4 shrink-0" } }}
+                >
+                  <span className="flex min-w-0 items-baseline gap-4">
+                    <span className="font-heading text-3xl text-primary-text tabular-nums max-sm:text-2xl">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+                    <span className="font-heading text-2xl leading-tight max-sm:text-xl">
+                      {item.title}
+                    </span>
+                  </span>
+                </AccordionTrigger>
+                <AccordionPanel className="overflow-hidden">
+                  <div className="grid min-w-0 pr-7 pb-7 max-sm:pr-4 md:grid-cols-[1fr_1fr]">
+                    <div className="min-w-0 pb-4 md:pr-7">
+                      <p className="max-w-[50ch] text-foreground-dimmed leading-relaxed">
+                        {item.body}
+                      </p>
+                      {item.href && (
+                        <MarketingActions
+                          actions={[
+                            {
+                              label: item.label ?? item.title,
+                              href: item.href,
+                            },
+                          ]}
+                        />
+                      )}
+                    </div>
+                    <SetupGraphic stage={index} />
+                  </div>
+                </AccordionPanel>
+              </div>
+            </AccordionItem>
+          );
+        })}
+      </Accordion>
+    </div>
   );
 };
 

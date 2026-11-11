@@ -16,6 +16,7 @@ import { EvidenceMeter } from "./evidence-view";
 
 export const SimulationEvidence = async ({
   id = "assistant-disagreement",
+  collapsible = false,
 }: SimulationEvidence.Props) => {
   const review = process.env["NEXT_PUBLIC_REVIEW"] === "1";
   if (!canPublishEvidence(simulationEvidence.status, review)) return null;
@@ -44,6 +45,7 @@ export const SimulationEvidence = async ({
   return (
     <EvidenceFrame
       id={id}
+      collapsible={collapsible}
       compact
       title={copy.simulations.title}
       description={copy.simulations.description}
@@ -70,11 +72,12 @@ export const SimulationEvidence = async ({
 };
 
 export namespace SimulationEvidence {
-  export type Props = { id?: string };
+  export type Props = { id?: string; collapsible?: boolean };
 }
 
 export const CatalogFindings = async ({
   id = "catalog-findings",
+  collapsible = false,
 }: CatalogFindings.Props) => {
   const review = process.env["NEXT_PUBLIC_REVIEW"] === "1";
   const findings = selectPublishedEvidence(catalogFindings, review);
@@ -116,6 +119,7 @@ export const CatalogFindings = async ({
   return (
     <EvidenceFrame
       id={id}
+      collapsible={collapsible}
       compact
       title={copy.findings.title}
       note={copy.findings.note}
@@ -142,7 +146,7 @@ export const CatalogFindings = async ({
 };
 
 export namespace CatalogFindings {
-  export type Props = { id?: string };
+  export type Props = { id?: string; collapsible?: boolean };
 }
 
 export const DuaEvidence = async ({

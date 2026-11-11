@@ -11,6 +11,7 @@ import {
 } from "@/components/marketing/primitives";
 import { FixControls } from "./fix-controls";
 import { FormatFigure } from "./format-figure";
+import { PlatformPrinciples } from "./platform-principles";
 
 const Introduction = ({ section }: { section: MarketingPage.Section }) => (
   <>
@@ -108,58 +109,9 @@ export const FixBody = ({ sections, sectionChildren }: MarketingBodyProps) => (
           );
         case "why-it-works":
           return (
-            <MarketingBand
-              key={section.id}
-              id={section.id}
-              className="[&>.marketing-rail>.marketing-guides]:hidden"
-            >
-              <div className="px-8 pt-12 pb-8 max-sm:px-4 max-sm:pt-8">
-                <Introduction section={section} />
-              </div>
-              <div className="px-8 pb-12 max-sm:px-4 max-sm:pb-8">
-                <div className="border border-accent-foreground bg-background-dimmed px-6 py-6 md:mx-auto md:max-w-[420px]">
-                  <p className="font-medium text-primary-text">
-                    {sections.find((item) => item.id === "publish")?.title}
-                  </p>
-                </div>
-                <div
-                  aria-hidden="true"
-                  className="mx-auto hidden h-8 w-px bg-accent-foreground md:block"
-                />
-                <div className="grid md:grid-cols-3">
-                  {section.items?.map((item, index) => (
-                    <article key={item.title} className="relative min-w-0">
-                      <div
-                        aria-hidden="true"
-                        className="relative hidden h-8 md:block"
-                      >
-                        <span className="absolute inset-y-0 left-1/2 w-px bg-accent-foreground" />
-                        <span
-                          className={
-                            index === 0
-                              ? "absolute top-0 right-0 left-1/2 h-px bg-accent-foreground"
-                              : index === (section.items?.length ?? 0) - 1
-                                ? "absolute top-0 right-1/2 left-0 h-px bg-accent-foreground"
-                                : "absolute inset-x-0 top-0 h-px bg-accent-foreground"
-                          }
-                        />
-                      </div>
-                      <div className="mt-8 border-primary-text border-t px-0 pt-6 md:mx-4 md:mt-0 md:px-2">
-                        <p className="mb-6 font-heading text-3xl text-primary-text leading-none">
-                          {String(index + 1).padStart(2, "0")}
-                        </p>
-                        <h3>{item.title}</h3>
-                        <p className="mt-4 text-foreground-dimmed">
-                          {item.body}
-                        </p>
-                      </div>
-                    </article>
-                  ))}
-                </div>
-              </div>
+            <PlatformPrinciples key={section.id} section={section} kind="fix">
               {sectionChildren?.[section.id]}
-              <Ending section={section} />
-            </MarketingBand>
+            </PlatformPrinciples>
           );
         default:
           return (

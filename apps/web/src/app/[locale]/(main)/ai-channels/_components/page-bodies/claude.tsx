@@ -11,6 +11,7 @@ import { MarketingBand } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
+import { ChannelWorkbench } from "../channel-content";
 
 type Section = MarketingBodyProps["sections"][number];
 type Copy = Awaited<ReturnType<typeof getMessages>>["claudePage"];
@@ -193,15 +194,9 @@ export const ClaudeBody = async ({
                 );
               case "ecentic":
                 return (
-                  <MarketingBand
-                    id={section.id}
-                    className="[&>.marketing-rail>.marketing-guides]:hidden"
-                  >
-                    <Heading section={section} />
-                    <div className="border-accent-foreground border-t bg-background-dimmed max-sm:[&_table]:block max-sm:[&_tbody]:block max-sm:[&_td]:block max-sm:[&_td]:w-full max-sm:[&_td]:px-4 max-sm:[&_td]:pt-0 max-sm:[&_td]:pb-4 max-sm:[&_th]:block max-sm:[&_th]:w-full max-sm:[&_th]:px-4 max-sm:[&_th]:pt-6 max-sm:[&_th]:pb-4 max-sm:[&_thead]:sr-only max-sm:[&_tr]:block">
-                      {sectionChildren?.[section.id]}
-                    </div>
-                  </MarketingBand>
+                  <ChannelWorkbench section={section}>
+                    {sectionChildren?.[section.id]}
+                  </ChannelWorkbench>
                 );
               case "next":
                 return (

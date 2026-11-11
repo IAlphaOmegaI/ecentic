@@ -8,6 +8,7 @@ import {
   MarketingHeading,
 } from "@/components/marketing/primitives";
 import { TrackingOverview } from "@/components/marketing/tracking-overview";
+import { PlatformPrinciples } from "./platform-principles";
 import { TrackComparison } from "./track-comparison";
 
 const scopeIds = [
@@ -109,56 +110,36 @@ export const TrackBody = async ({
             );
           case "why-it-works":
             return (
-              <MarketingBand
+              <PlatformPrinciples
                 key={section.id}
-                id={section.id}
-                className="[&_.marketing-guides]:hidden"
+                section={section}
+                kind="track"
               >
-                <MarketingHeading
-                  eyebrow={section.eyebrow}
-                  title={section.title}
-                  description={section.description}
-                  className="pb-8"
-                />
-                <div className="grid min-w-0 border-accent-foreground border-t lg:grid-cols-[5fr_7fr]">
-                  <div className="min-w-0 border-accent-foreground border-b bg-background-dimmed px-8 py-8 max-sm:px-4 lg:border-r lg:border-b-0">
-                    <h3>{trackPage.attributionLabel}</h3>
-                    <ol className="mt-8 list-none">
+                {sectionChildren?.[section.id]}
+                <div className="grid gap-8 border-[var(--rail-color)] border-b px-8 py-8 max-sm:px-5 lg:grid-cols-[1fr_2fr]">
+                  <h3>{trackPage.attributionLabel}</h3>
+                  <div>
+                    <ol className="grid gap-4 md:grid-cols-3">
                       {trackPage.attributionFlow.map((step, index) => (
                         <li
                           key={step}
-                          className="relative grid grid-cols-[24px_1fr] gap-4 pb-6 before:absolute before:top-6 before:bottom-0 before:left-2 before:border-accent-foreground before:border-l last:pb-0 last:before:hidden"
+                          className="relative min-w-0 border-primary-rich/40 border-l pl-4"
                         >
-                          <span
-                            aria-hidden="true"
-                            className="font-mono text-primary-text"
-                          >
-                            {index === 0 ? "●" : "↓"}
+                          <span className="mb-3 block text-primary-rich">
+                            {String(index + 1).padStart(2, "0")}
                           </span>
-                          <span className="min-w-0">{step}</span>
+                          <span className="text-background-rich/80">
+                            {step}
+                          </span>
                         </li>
                       ))}
                     </ol>
-                    <p className="mt-8 border-accent-foreground border-t pt-6 font-medium text-foreground-rich">
+                    <p className="mt-6 text-background-rich/75">
                       {trackPage.attributionNote}
                     </p>
                   </div>
-                  <div className="min-w-0">
-                    {section.items?.map((item) => (
-                      <article
-                        key={item.title}
-                        className="border-accent-foreground border-b px-8 py-8 last:border-b-0 max-sm:px-4"
-                      >
-                        <h3 className="text-xl">{item.title}</h3>
-                        <p className="mt-2 max-w-[58ch] text-foreground-dimmed">
-                          {item.body}
-                        </p>
-                      </article>
-                    ))}
-                  </div>
                 </div>
-                {sectionChildren?.[section.id]}
-              </MarketingBand>
+              </PlatformPrinciples>
             );
           case "what-to-track":
             return (

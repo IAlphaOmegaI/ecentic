@@ -63,7 +63,7 @@ export const Textarea = ({
     render,
     props: mergeProps<"div">(props, {
       className: cn(
-        "flex w-full overflow-hidden border border-accent-foreground transition-colors duration-200 focus-within:border-primary",
+        "flex w-full overflow-hidden rounded-md border border-accent-foreground transition-colors duration-200 focus-within:border-primary",
         disabled && "cursor-not-allowed opacity-50",
         resolveClassName(className, state),
       ),

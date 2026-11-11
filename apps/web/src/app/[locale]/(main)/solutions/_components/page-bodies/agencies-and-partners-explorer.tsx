@@ -9,10 +9,8 @@ import {
 } from "@zenncore/web/components/accordion";
 import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import type { ReactNode } from "react";
-import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { Plus } from "@/components/plus";
-
-const artwork = ["cart", "commerce", "bag"] as const;
+import { JourneyFigure } from "../journey-figure";
 
 export const AgenciesChallenges = ({
   label,
@@ -78,10 +76,7 @@ export const AgenciesTracks = ({ items, labels }: AgenciesTracks.Props) => (
             </p>
           </div>
           <div className="relative min-h-60 overflow-hidden border-accent-foreground bg-background-dimmed text-primary-text/80 max-md:border-t md:border-l">
-            <EvolvingAscii
-              artwork={artwork[index]}
-              className="absolute inset-0"
-            />
+            <JourneyFigure stage={index + 1} large />
           </div>
         </div>
         <div className="border-accent-foreground border-t px-4 py-6 sm:px-8">

@@ -7,6 +7,7 @@ import { type ReactNode, useId, useState } from "react";
 import { ComparePanel } from "@/components/marketing/interactive/compare-panel";
 import { useInteractive } from "@/components/marketing/interactive/use-interactive";
 import type { Sector, ShelfScenario } from "@/content/sectors";
+import { ShelfSignal } from "./shelf-signal";
 
 export const CompareShelf = ({
   sector,
@@ -31,6 +32,18 @@ export const CompareShelf = ({
         <p className="border-accent-foreground border-t px-4 py-4 text-foreground-dimmed text-sm md:px-6">
           {shared.exampleLabel}
         </p>
+        {content && (
+          <ShelfSignal
+            question={
+              questions[position]?.title ??
+              copy.scenarios[position]?.leftTitle ??
+              ""
+            }
+            titles={[content.leftTitle, content.rightTitle]}
+            fields={attributes.slice(0, 3).map((attribute) => attribute.title)}
+            fixed={false}
+          />
+        )}
         {fallback}
       </div>
     );
@@ -70,6 +83,12 @@ export const CompareShelf = ({
           <p className="mt-3 text-foreground">{questions[position]?.title}</p>
           <p className="mt-3 text-foreground text-sm">{shared.afterLabel}</p>
         </div>
+        <ShelfSignal
+          question={questions[position]?.title ?? content.leftTitle}
+          titles={[content.leftTitle, content.rightTitle]}
+          fields={attributes.slice(0, 3).map((attribute) => attribute.title)}
+          fixed
+        />
         <ComparePanel.Root
           left={{ label: shared.leftLabel, title: content.leftTitle }}
           right={{ label: shared.rightLabel, title: content.rightTitle }}
@@ -97,6 +116,12 @@ export const CompareShelf = ({
           {shared.description}
         </p>
       </div>
+      <ShelfSignal
+        question={questions[position]?.title ?? content.leftTitle}
+        titles={[content.leftTitle, content.rightTitle]}
+        fields={attributes.slice(0, 3).map((attribute) => attribute.title)}
+        fixed={fixed}
+      />
       <Tabs
         value={selected}
         onValueChange={(value) => {

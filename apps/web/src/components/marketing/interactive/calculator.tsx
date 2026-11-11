@@ -3,7 +3,7 @@ import type { HTMLAttributes } from "react";
 import { Plus } from "@/components/plus";
 
 const calculator = cva(
-  "relative min-w-0 border-accent-foreground bg-background-dimmed text-foreground-rich [&_div:has(>input)]:rounded-none [&_div:has(>input)]:bg-background-dimmed [&_input]:rounded-none [&_input]:text-base [&_input]:text-foreground-rich [&_label]:text-foreground-rich",
+  "relative min-w-0 border-accent-foreground bg-background-dimmed text-foreground-rich [&_div:has(>input)]:rounded-md [&_div:has(>input)]:bg-background-dimmed [&_input]:rounded-md [&_input]:text-base [&_input]:text-foreground-rich [&_label]:text-foreground-rich",
   {
     variants: { layout: { split: "grid lg:grid-cols-2", inline: "w-full" } },
     defaultVariants: { layout: "split" },

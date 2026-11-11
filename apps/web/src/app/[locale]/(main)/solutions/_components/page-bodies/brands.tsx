@@ -9,6 +9,7 @@ import {
 import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
+import { SolutionFeatureBand } from "../feature-band";
 import { BrandsJobs } from "./brands-jobs";
 
 const providers = ["shopify", "woocommerce", "google"] as const;
@@ -121,6 +122,18 @@ export const BrandsBody = async ({
                   {sectionChildren?.[section.id]}
                 </div>
               </MarketingBand>
+            );
+          case "one-product":
+            return (
+              <SolutionFeatureBand key={section.id} id={section.id}>
+                <div className="px-4 py-10 sm:px-8 sm:py-12">
+                  <p className="mb-4 text-primary-rich text-sm">
+                    {section.eyebrow}
+                  </p>
+                  <h2>{section.title}</h2>
+                </div>
+                {sectionChildren?.[section.id]}
+              </SolutionFeatureBand>
             );
           default:
             return (

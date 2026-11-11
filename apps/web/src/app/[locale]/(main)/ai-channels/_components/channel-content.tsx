@@ -1,20 +1,24 @@
-import { ArrowRightIcon } from "@zenncore/icons";
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@zenncore/web/components/table";
+  ArrowRightIcon,
+  CommerceBasketShoppingIcon,
+  CommerceChartActivity_2Icon,
+  CommerceFilePenIcon,
+  CommercePlug_3SparkleIcon,
+} from "@zenncore/icons";
+import { cn } from "@zenncore/utils";
 import type { getMessages } from "next-intl/server";
+import type { ReactNode } from "react";
+import type { MarketingBodyProps } from "@/components/marketing/body";
 import { MarketingLead } from "@/components/marketing/lead";
 import {
   MarketingBand,
+  MarketingFeatureBand,
+  MarketingHeading,
   MarketingStatus,
 } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { MarketingSources } from "@/components/marketing/sources";
+import { Plus } from "@/components/plus";
 import { type AiChannel, aiChannels } from "@/content/ai-channels";
 import { Link } from "@/i18n/navigation";
 
@@ -72,45 +76,106 @@ export const ChannelTiles = ({ copy }: ChannelTiles.Props) => (
   </MarketingBand>
 );
 
+const capabilityIcons = [
+  CommerceChartActivity_2Icon,
+  CommerceFilePenIcon,
+  CommerceBasketShoppingIcon,
+  CommercePlug_3SparkleIcon,
+];
+
+export const ChannelWorkbench = ({
+  section,
+  children,
+}: {
+  section: MarketingBodyProps["sections"][number];
+  children: ReactNode;
+}) => (
+  <MarketingFeatureBand id={section.id}>
+    <MarketingHeading
+      title={section.title}
+      description={section.description}
+      className="[&>p]:text-background-rich/70"
+    />
+    {children}
+  </MarketingFeatureBand>
+);
+
 export const ChannelCapabilities = ({
   channel,
   copy,
 }: ChannelCapabilities.Props) => (
-  <Table className="table-fixed border-b-0 bg-transparent [&_.marketing-status]:max-w-full [&_.marketing-status]:items-start [&_.marketing-status]:[overflow-wrap:anywhere]">
-    <TableHeader>
-      <TableRow>
-        <TableHead className="w-[24%] whitespace-normal px-4 py-5 text-sm normal-case tracking-normal sm:px-7">
-          {copy.feature}
-        </TableHead>
-        <TableHead className="w-[24%] whitespace-normal px-4 py-5 text-sm normal-case tracking-normal sm:px-7">
-          {copy.status}
-        </TableHead>
-        <TableHead className="whitespace-normal px-4 py-5 text-sm normal-case tracking-normal sm:px-7">
-          {copy.detail}
-        </TableHead>
-      </TableRow>
-    </TableHeader>
-    <TableBody>
-      {capabilities.map((capability) => (
-        <TableRow key={capability}>
-          <TableHead
-            scope="row"
-            className="whitespace-normal break-words px-4 py-6 align-top text-base text-foreground normal-case tracking-normal sm:px-7"
-          >
-            {copy.capabilityNames[capability]}
-          </TableHead>
-          <TableCell className="px-4 py-6 align-top sm:px-7">
-            <MarketingStatus status={channel.capabilities[capability]}>
-              {copy.statuses[channel.capabilities[capability]]}
-            </MarketingStatus>
-          </TableCell>
-          <TableCell className="break-words px-4 py-6 align-top text-base leading-relaxed sm:px-7">
+  <div
+    data-channel-capabilities
+    className="relative grid gap-px border border-[var(--rail-color)] border-x-transparent bg-[var(--rail-color)] bg-clip-padding md:grid-cols-2"
+  >
+    {capabilities.map((capability, index) => {
+      const Icon = capabilityIcons[index];
+      const status = channel.capabilities[capability];
+      const available = status === "live";
+      return (
+        <article
+          key={capability}
+          className={cn(
+            "relative isolate flex min-w-0 flex-col gap-6 bg-emphasis-dimmed px-7 py-9 max-sm:px-4",
+            available &&
+              "bg-linear-to-br from-primary-dimmed/65 to-emphasis-dimmed",
+          )}
+        >
+          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 [&>span]:bg-background-rich/35" />
+          {index > 0 && (
+            <Plus
+              className={cn(
+                "top-0 right-0 translate-x-1/2 -translate-y-1/2 [&>span]:bg-background-rich/35",
+                index === 1 || index === 2 ? "md:hidden" : "",
+              )}
+            />
+          )}
+          {index === 3 && (
+            <Plus className="bottom-0 left-0 hidden -translate-x-1/2 translate-y-1/2 md:block [&>span]:bg-background-rich/35" />
+          )}
+          <div className="flex min-h-20 items-center gap-5" aria-hidden>
+            {Icon && (
+              <Icon
+                className={cn(
+                  "size-12 shrink-0",
+                  available ? "text-primary-rich" : "text-background-rich/60",
+                )}
+              />
+            )}
+            <span className="h-px flex-1 bg-linear-to-r from-primary-rich/50 to-transparent" />
+            <span
+              className={cn(
+                "grid size-14 shrink-0 place-items-center rounded-md border border-background-rich/20 font-mono text-lg",
+                available ? "text-primary-rich" : "text-background-rich/60",
+              )}
+            >
+              {capability === "fix"
+                ? "{ }"
+                : capability === "checkout"
+                  ? "→"
+                  : capability === "track"
+                    ? "/_"
+                    : "↗"}
+            </span>
+          </div>
+          <div className="flex flex-wrap items-start justify-between gap-4">
+            <h3>{copy.capabilityNames[capability]}</h3>
+            <span className="[&>.marketing-status]:text-background-rich/80">
+              <MarketingStatus status={status}>
+                {copy.statuses[status]}
+              </MarketingStatus>
+            </span>
+          </div>
+          <p className="max-w-[52ch] text-background-rich/75 leading-relaxed">
             {copy.pages[channel.key].capabilities[capability]}
-          </TableCell>
-        </TableRow>
-      ))}
-    </TableBody>
-  </Table>
+          </p>
+        </article>
+      );
+    })}
+    <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 [&>span]:bg-background-rich/35" />
+    <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2 [&>span]:bg-background-rich/35" />
+    <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2 [&>span]:bg-background-rich/35" />
+  </div>
 );
 
 export const ChannelSources = ({ channel, copy }: ChannelSources.Props) => (

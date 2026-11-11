@@ -12,6 +12,7 @@ import type { MarketingBodyProps } from "@/components/marketing/body";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { MarketingSection } from "@/components/marketing/page";
 import { MarketingBand } from "@/components/marketing/primitives";
+import { ChannelWorkbench } from "../channel-content";
 
 type Section = MarketingBodyProps["sections"][number];
 type Copy = Awaited<ReturnType<typeof getMessages>>["chatgptPage"];
@@ -233,15 +234,9 @@ export const ChatgptBody = async ({
                 );
               case "ecentic":
                 return (
-                  <MarketingBand
-                    id={section.id}
-                    className="[&>.marketing-rail>.marketing-guides]:hidden"
-                  >
-                    <SectionHeading section={section} />
-                    <div className="border-accent-foreground border-t bg-background-dimmed [&_table]:border-0 max-sm:[&_table]:block max-sm:[&_tbody]:block max-sm:[&_td]:block max-sm:[&_td]:w-full max-sm:[&_td]:px-4 max-sm:[&_td]:pt-0 max-sm:[&_td]:pb-4 max-sm:[&_th]:block max-sm:[&_th]:w-full max-sm:[&_th]:px-4 max-sm:[&_th]:pt-6 max-sm:[&_th]:pb-3 max-sm:[&_th]:text-xl max-sm:[&_thead]:sr-only max-sm:[&_tr:last-child]:border-b-0 max-sm:[&_tr]:block max-sm:[&_tr]:border-accent-foreground max-sm:[&_tr]:border-b">
-                      {sectionChildren?.[section.id]}
-                    </div>
-                  </MarketingBand>
+                  <ChannelWorkbench section={section}>
+                    {sectionChildren?.[section.id]}
+                  </ChannelWorkbench>
                 );
               default:
                 return (

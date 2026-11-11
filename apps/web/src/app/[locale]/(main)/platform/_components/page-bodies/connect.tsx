@@ -19,6 +19,7 @@ import { Plus } from "@/components/plus";
 import { ConnectProblem } from "./connect-problem";
 import { ConnectRoadmap } from "./connect-roadmap";
 import { ConnectSources } from "./connect-sources";
+import { PlatformPrinciples } from "./platform-principles";
 
 const sourceIds = [
   "shopify",
@@ -34,7 +35,7 @@ const problemIcons = [
   CommerceGlobePointerIcon,
   CommercePlug_3SparkleIcon,
 ];
-const controlIcons = [
+const _controlIcons = [
   CommerceBasketShoppingIcon,
   CommerceFileShieldIcon,
   CommerceCityBuildingIcon,
@@ -117,40 +118,13 @@ export const ConnectBody = async ({
             );
           case "why-it-works":
             return (
-              <MarketingBand
+              <PlatformPrinciples
                 key={section.id}
-                id={section.id}
-                className="[&_.marketing-guides]:hidden"
+                section={section}
+                kind="connect"
               >
-                <MarketingHeading
-                  eyebrow={section.eyebrow}
-                  title={section.title}
-                  description={section.description}
-                  className="pb-8"
-                />
-                <div className="grid border-[var(--rail-color)] border-t md:grid-cols-3">
-                  {section.items?.map((item, index) => {
-                    const Icon =
-                      controlIcons[index] ?? CommerceBasketShoppingIcon;
-                    return (
-                      <article
-                        key={item.title}
-                        className="min-w-0 border-[var(--rail-color)] border-b px-8 py-8 last:border-b-0 max-sm:px-4 md:border-r md:border-b-0 md:last:border-r-0"
-                      >
-                        <Icon
-                          aria-hidden
-                          className="mb-6 size-10 text-primary"
-                        />
-                        <h3>{item.title}</h3>
-                        <p className="mt-4 text-foreground-dimmed">
-                          {item.body}
-                        </p>
-                      </article>
-                    );
-                  })}
-                </div>
                 {sectionChildren?.[section.id]}
-              </MarketingBand>
+              </PlatformPrinciples>
             );
           case "what-to-track":
             return (

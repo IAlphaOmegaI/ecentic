@@ -45,7 +45,17 @@ export const CodeRecord = ({
               {String(index + 2).padStart(2, "0")}
             </span>
             <code className="min-w-0 whitespace-pre-wrap break-words font-mono text-sm leading-7">
-              <span className="text-primary-text">
+              <span
+                className={cn(
+                  index % 4 === 0
+                    ? "text-primary-text"
+                    : index % 4 === 1
+                      ? "text-secondary"
+                      : index % 4 === 2
+                        ? "text-success-dimmed"
+                        : "text-warning-foreground",
+                )}
+              >
                 {JSON.stringify(row.key)}
               </span>
               <span className="text-foreground-dimmed">{": "}</span>

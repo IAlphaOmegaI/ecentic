@@ -6,6 +6,7 @@ import {
   MarketingBand,
   MarketingHeading,
 } from "@/components/marketing/primitives";
+import { IntegrationWorkflow } from "../integration-workflow";
 import { ProductFeedsFormats } from "./product-feeds-formats";
 
 export const ProductFeedsBody = ({
@@ -19,49 +20,9 @@ export const ProductFeedsBody = ({
         switch (section.id) {
           case "workflow":
             return (
-              <MarketingBand
-                id={section.id}
-                className="[&>.marketing-rail>.marketing-guides]:hidden"
-              >
-                <div className="grid lg:grid-cols-[1fr_2fr]">
-                  <MarketingHeading
-                    title={section.title}
-                    description={section.description}
-                    className="lg:border-accent-foreground lg:border-r"
-                  />
-                  <div className="grid sm:grid-cols-2">
-                    {section.items?.slice(0, 2).map((item, index) => (
-                      <article
-                        key={item.title}
-                        className="border-accent-foreground border-t px-7 py-10 max-sm:px-4 sm:even:border-l lg:border-t-0"
-                      >
-                        <span
-                          aria-hidden="true"
-                          className="mb-8 block text-3xl text-primary"
-                        >
-                          {String(index + 1).padStart(2, "0")}
-                        </span>
-                        <h3>{item.title}</h3>
-                        <p className="mt-4 text-foreground-dimmed">
-                          {item.body}
-                        </p>
-                      </article>
-                    ))}
-                  </div>
-                </div>
-                {section.items?.slice(2).map((item) => (
-                  <article
-                    key={item.title}
-                    className="grid gap-6 border-accent-foreground border-t bg-background-dimmed px-7 py-8 text-foreground max-sm:px-4 lg:grid-cols-[1fr_2fr] lg:gap-8"
-                  >
-                    <h3>{item.title}</h3>
-                    <p className="max-w-[64ch] text-foreground-dimmed">
-                      {item.body}
-                    </p>
-                  </article>
-                ))}
+              <IntegrationWorkflow section={section} integration="productFeeds">
                 {children}
-              </MarketingBand>
+              </IntegrationWorkflow>
             );
           case "formats":
             return (

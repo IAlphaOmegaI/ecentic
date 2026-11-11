@@ -102,7 +102,7 @@ export const createLeadFields = (copy: LeadCopy) => {
           popup: {
             root: cn(
               fonts,
-              "rounded-xs bg-background-rich font-body text-foreground-rich",
+              "rounded-md bg-background-rich font-body text-foreground-rich",
             ),
             arrow: { arrow: "bg-background-rich" },
           },
@@ -123,7 +123,7 @@ export const createLeadFields = (copy: LeadCopy) => {
           popup: {
             root: cn(
               fonts,
-              "rounded-xs bg-background-rich font-body text-foreground-rich",
+              "rounded-md bg-background-rich font-body text-foreground-rich",
             ),
             arrow: { arrow: "bg-background-rich" },
           },
@@ -158,7 +158,7 @@ export const createLeadFields = (copy: LeadCopy) => {
           popup: {
             root: cn(
               fonts,
-              "rounded-xs bg-background-rich font-body text-foreground-rich",
+              "rounded-md bg-background-rich font-body text-foreground-rich",
             ),
             arrow: { arrow: "bg-background-rich" },
           },
@@ -184,7 +184,7 @@ export const createLeadFields = (copy: LeadCopy) => {
           popup: {
             root: cn(
               fonts,
-              "rounded-xs bg-background-rich font-body text-foreground-rich",
+              "rounded-md bg-background-rich font-body text-foreground-rich",
             ),
             arrow: { arrow: "bg-background-rich" },
           },

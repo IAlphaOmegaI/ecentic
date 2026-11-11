@@ -15,6 +15,8 @@ import {
 } from "@/components/marketing/primitives";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
+import { SolutionFeatureBand } from "../feature-band";
+import { JourneyFigure } from "../journey-figure";
 import { EnterpriseEngagements } from "./enterprise-engagements";
 import { HubFigure } from "./hub-figure";
 
@@ -295,6 +297,24 @@ export const EnterpriseBody = async ({
                 </div>
                 {sectionChildren?.[section.id]}
               </MarketingBand>
+            );
+          case "pilot":
+            return (
+              <SolutionFeatureBand key={section.id} id={section.id}>
+                <div className="grid items-center border-background-rich/15 border-b md:grid-cols-[3fr_2fr]">
+                  <div className="px-4 py-10 sm:px-8 sm:py-12">
+                    <MarketingEyebrow>{section.eyebrow}</MarketingEyebrow>
+                    <h2>{section.title}</h2>
+                    {section.description && (
+                      <p className="mt-4 max-w-[55ch] text-background-rich/75">
+                        {section.description}
+                      </p>
+                    )}
+                  </div>
+                  <JourneyFigure stage={1} />
+                </div>
+                {sectionChildren?.[section.id]}
+              </SolutionFeatureBand>
             );
           default:
             return (

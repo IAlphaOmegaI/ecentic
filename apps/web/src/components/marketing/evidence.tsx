@@ -1,6 +1,7 @@
 import { getMessages } from "next-intl/server";
 import type { ReactNode } from "react";
 import { EvidenceDetails } from "./evidence-details";
+import { EvidenceDisclosure } from "./evidence-disclosure";
 import { EvidenceView } from "./evidence-view";
 
 export const EvidenceFrame = async ({
@@ -12,9 +13,39 @@ export const EvidenceFrame = async ({
   source,
   pending,
   compact = false,
+  collapsible = false,
   children,
 }: EvidenceFrame.Props) => {
   const { enterpriseEvidence } = await getMessages();
+
+  if (collapsible) {
+    return (
+      <figure
+        id={id}
+        aria-labelledby={`${id}-title`}
+        className="relative min-w-0 bg-background p-7 max-sm:p-4"
+      >
+        <EvidenceDisclosure id={id} title={title}>
+          {description && (
+            <p className="mb-6 max-w-[62ch] text-foreground-dimmed">
+              {description}
+            </p>
+          )}
+          <EvidenceView>{children}</EvidenceView>
+          <div className="mt-6 space-y-3 border-accent-foreground border-t pt-6 text-foreground-dimmed text-sm">
+            {note && <p>{note}</p>}
+            {caption && <p>{caption}</p>}
+            {source && (
+              <p>
+                {enterpriseEvidence.presentation.source}: {source}
+              </p>
+            )}
+            {pending && <p>{pending}</p>}
+          </div>
+        </EvidenceDisclosure>
+      </figure>
+    );
+  }
 
   return (
     <figure
@@ -82,6 +113,7 @@ export namespace EvidenceFrame {
     source?: ReactNode;
     pending?: string;
     compact?: boolean;
+    collapsible?: boolean;
     children: ReactNode;
   };
 }

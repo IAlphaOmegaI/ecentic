@@ -13,6 +13,7 @@ import {
   MarketingHeading,
 } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
+import { PlatformPrinciples } from "./platform-principles";
 import { RiffleFigure } from "./riffle-figure";
 import { SimulateRoadmap } from "./simulate-roadmap";
 import { SimulateTracking } from "./simulate-tracking";
@@ -171,50 +172,13 @@ export const SimulateBody = ({
           );
         case "why-it-works":
           return (
-            <MarketingBand
+            <PlatformPrinciples
               key={section.id}
-              id={section.id}
-              className="[&>.marketing-rail>.marketing-guides]:hidden"
+              section={section}
+              kind="simulate"
             >
-              <MarketingHeading
-                eyebrow={section.eyebrow}
-                title={section.title}
-                description={section.description}
-              />
-              <div className="grid grid-cols-[1fr_1.5fr] border-[var(--rail-color)] border-t max-md:grid-cols-1">
-                <div className="px-8 max-sm:px-4">
-                  {section.items?.slice(0, 2).map((item) => (
-                    <article
-                      key={item.title}
-                      className="border-[var(--rail-color)] border-b py-8 last:border-b-0"
-                    >
-                      <h3>{item.title}</h3>
-                      <p className="mt-4 text-foreground-dimmed">{item.body}</p>
-                    </article>
-                  ))}
-                </div>
-                {section.items?.slice(2).map((item) => (
-                  <article
-                    key={item.title}
-                    className="border-[var(--rail-color)] border-l bg-background-dimmed p-8 max-sm:p-4 max-md:border-t max-md:border-l-0"
-                  >
-                    <div className="mb-8 flex items-center gap-8">
-                      {models.map((model) => (
-                        <ProviderLogo
-                          key={model.provider}
-                          provider={model.provider}
-                          className="size-10 rounded-none"
-                        />
-                      ))}
-                    </div>
-                    <h3>{item.title}</h3>
-                    <p className="mt-4 text-foreground-dimmed">{item.body}</p>
-                  </article>
-                ))}
-              </div>
-              {children}
-              <SectionEnding section={section} />
-            </MarketingBand>
+              {sectionChildren?.[section.id]}
+            </PlatformPrinciples>
           );
         case "what-to-track":
           return (

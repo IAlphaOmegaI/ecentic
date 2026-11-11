@@ -9,6 +9,7 @@ import {
 } from "@/components/marketing/primitives";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
+import { SolutionFeatureBand } from "./_components/feature-band";
 import {
   SolutionsAudience,
   SolutionsWorkflows,
@@ -69,7 +70,7 @@ export default async () => {
         />
       </MarketingBand>
       <SectionGutter />
-      <MarketingBand className="[&>.marketing-rail>.marketing-guides]:hidden">
+      <SolutionFeatureBand id="workflows">
         <MarketingHeading
           title={solutionsIndexPage.workflowsTitle}
           description={solutionsIndexPage.workflowsDescription}
@@ -78,7 +79,7 @@ export default async () => {
           sections={workflows}
           label={solutionsIndexPage.workflowLabel}
         />
-      </MarketingBand>
+      </SolutionFeatureBand>
       <SectionGutter />
       {sectors && (
         <MarketingBand

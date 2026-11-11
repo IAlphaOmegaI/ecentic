@@ -15,9 +15,9 @@ import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { Motion } from "@/components/motion";
 
 const cardPositions = [
-  { left: "13%", top: "39%", rotation: -14 },
-  { left: "37%", top: "22%", rotation: -5 },
-  { left: "64%", top: "39%", rotation: 11 },
+  { left: "11%", top: "39%", rotation: -9 },
+  { left: "38%", top: "22%", rotation: 0 },
+  { left: "65%", top: "39%", rotation: 9 },
 ] as const;
 
 export const CapabilityIllustration = ({
@@ -78,12 +78,21 @@ export const CapabilityIllustration = ({
                 initial={false}
                 whileInView={
                   enhanced && index === 1
-                    ? { transform: ["translateY(15px)", "translateY(0px)"] }
-                    : { transform: "translateY(0px)" }
+                    ? {
+                        transform: [
+                          "translateY(15px) rotate(0deg)",
+                          "translateY(0px) rotate(0deg)",
+                        ],
+                      }
+                    : { transform: `rotate(${position.rotation}deg)` }
                 }
                 viewport={{ once: true, amount: 0.5 }}
                 transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
-                style={{ left: position.left, top: position.top }}
+                style={{
+                  left: position.left,
+                  top: position.top,
+                  transform: `rotate(${position.rotation}deg)`,
+                }}
                 className={cn(
                   "absolute h-36 w-[24%] max-w-36 rounded-lg border p-4 sm:h-40",
                   index === 1
@@ -91,13 +100,16 @@ export const CapabilityIllustration = ({
                     : "border-background-rich/15 bg-linear-to-br from-emphasis-rich to-emphasis-dimmed",
                 )}
               >
-                <div
-                  className="flex h-full flex-col justify-between"
-                  style={{ transform: `rotate(${position.rotation}deg)` }}
-                >
-                  <div className="relative mx-auto mt-1 h-14 w-12 border border-current text-background-rich/40 [clip-path:polygon(14%_0,86%_0,100%_16%,100%_100%,0_100%,0_16%)]">
-                    <span className="absolute inset-x-3 top-3 h-2 border border-current" />
-                    <span className="absolute inset-x-2 bottom-3 h-px bg-current" />
+                <div className="flex h-full flex-col justify-between">
+                  <div className="relative grid h-20 place-items-center rounded-md bg-background-rich/4">
+                    <CommerceBasketShoppingIcon
+                      className={cn(
+                        "size-10",
+                        index === 1
+                          ? "text-primary-rich"
+                          : "text-background-rich/45",
+                      )}
+                    />
                   </div>
                   <div className="space-y-2 pb-1">
                     <div className="h-px w-4/5 bg-background-rich/35" />
@@ -204,11 +216,6 @@ export const CapabilityIllustration = ({
           )}
         </div>
       )}
-      <ul className="absolute inset-x-0 bottom-0 z-3 flex flex-wrap justify-center gap-x-5 gap-y-2 px-5 py-5 text-background-rich/70 text-xs">
-        {tags.map((tag) => (
-          <li key={tag}>{tag}</li>
-        ))}
-      </ul>
     </div>
   );
 };

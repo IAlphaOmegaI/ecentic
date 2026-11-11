@@ -1,98 +1,17 @@
-import { cn } from "@zenncore/utils";
 import { getMessages } from "next-intl/server";
 import type { MarketingBodyProps } from "@/components/marketing/body";
-import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { MarketingSection } from "@/components/marketing/page";
 import {
   MarketingActions,
   MarketingBand,
   MarketingEyebrow,
-  MarketingStatus,
 } from "@/components/marketing/primitives";
 import { IntegrationTechnicalText } from "../integration-content";
+import { IntegrationWorkflow } from "../integration-workflow";
 import { ShopifySetupJourney } from "./shopify-setup-journey";
 
-const ShopifyJunction = ({ className }: { className: string }) => (
-  <span
-    aria-hidden="true"
-    className={cn(
-      "pointer-events-none absolute z-2 size-4 text-foreground-dimmed before:absolute before:top-1/2 before:left-0 before:w-4 before:border-current before:border-t after:absolute after:top-0 after:left-1/2 after:h-4 after:border-current after:border-l",
-      className,
-    )}
-  />
-);
-
-const ShopifyWorkflow = ({ section, children }: MarketingSection.Props) => (
-  <MarketingBand
-    id={section.id}
-    className="[&>.marketing-rail>.marketing-guides]:hidden"
-  >
-    <div className="relative flex min-h-80 min-w-0 items-center overflow-hidden px-7 py-12 max-sm:min-h-72 max-sm:px-4 max-sm:py-8">
-      <div className="absolute inset-y-0 right-0 w-3/5 text-primary/40 [mask-image:linear-gradient(to_right,transparent,black_35%)] max-sm:w-full max-sm:opacity-40">
-        <EvolvingAscii artwork="bag" fit="cover" />
-      </div>
-      <div className="relative z-1 min-w-0">
-        {section.eyebrow && (
-          <MarketingEyebrow>{section.eyebrow}</MarketingEyebrow>
-        )}
-        <h2 className="max-w-[17ch]">{section.title}</h2>
-        {section.description && (
-          <p className="mt-4 max-w-[60ch] text-foreground-dimmed">
-            {section.description}
-          </p>
-        )}
-      </div>
-    </div>
-    <ol className="marketing-section-grid grid grid-cols-[1fr_1.2fr_1fr] border-accent-foreground border-t max-md:grid-cols-1">
-      {section.items?.map((item, index) => (
-        <li
-          key={item.title}
-          className="relative min-w-0 border-accent-foreground border-r px-7 py-8 last:border-r-0 max-sm:px-4 max-md:border-r-0"
-        >
-          {index < (section.items?.length ?? 0) - 1 && (
-            <span
-              aria-hidden="true"
-              className="pointer-events-none absolute bottom-0 left-1/2 w-dvw -translate-x-1/2 border-accent-foreground border-t md:hidden"
-            />
-          )}
-          <ShopifyJunction className="-top-2 -left-2" />
-          <ShopifyJunction
-            className={cn(
-              "-top-2 -right-2",
-              index < (section.items?.length ?? 0) - 1 && "md:hidden",
-            )}
-          />
-          {index > 0 && (
-            <ShopifyJunction className="-bottom-2 -left-2 max-md:hidden" />
-          )}
-          <div className="mb-8 flex items-center gap-4 max-md:mb-5">
-            <span className="font-heading text-4xl text-primary leading-none">
-              {String(index + 1).padStart(2, "0")}
-            </span>
-            <span
-              aria-hidden="true"
-              className="flex-1 border-accent-foreground border-t"
-            />
-          </div>
-          {item.status && (
-            <MarketingStatus status={item.status}>
-              {item.statusLabel}
-            </MarketingStatus>
-          )}
-          <h3>{item.title}</h3>
-          <p className="mt-5 max-w-[40ch] text-foreground-dimmed leading-relaxed">
-            {item.body}
-          </p>
-          {item.href && (
-            <MarketingActions
-              actions={[{ label: item.label ?? item.title, href: item.href }]}
-            />
-          )}
-        </li>
-      ))}
-    </ol>
-    {children}
-  </MarketingBand>
+const ShopifyWorkflow = (props: MarketingSection.Props) => (
+  <IntegrationWorkflow {...props} integration="shopify" />
 );
 
 const ShopifyAccess = ({ section, children }: MarketingSection.Props) => (

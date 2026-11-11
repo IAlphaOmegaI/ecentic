@@ -9,6 +9,7 @@ import {
   MarketingEyebrow,
 } from "@/components/marketing/primitives";
 import { Link } from "@/i18n/navigation";
+import { SolutionFeatureBand } from "../../../_components/feature-band";
 import {
   FoodAndBeverageFacts,
   FoodAndBeverageQuestions,
@@ -52,7 +53,7 @@ export const FoodAndBeverageBody = async ({
             );
           case "attributes":
             return (
-              <MarketingBand
+              <SolutionFeatureBand
                 key={section.id}
                 id={section.id}
                 className="[&>.marketing-rail>.marketing-guides]:hidden"
@@ -67,7 +68,7 @@ export const FoodAndBeverageBody = async ({
                 <FoodAndBeverageFacts label={foodPage.allFacts}>
                   {sectionChildren?.[section.id]}
                 </FoodAndBeverageFacts>
-              </MarketingBand>
+              </SolutionFeatureBand>
             );
           case "rules":
             return (

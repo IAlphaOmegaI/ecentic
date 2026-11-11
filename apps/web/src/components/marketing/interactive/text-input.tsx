@@ -19,7 +19,7 @@ export const InteractiveInput = ({
     value={value ?? ""}
     onValueChange={onValueChange}
     disabled={disabled}
-    className="h-12 rounded-none bg-background-dimmed"
+    className="h-12 rounded-md bg-background-dimmed"
   >
     <TextFieldInput
       ref={ref}

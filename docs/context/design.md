@@ -45,7 +45,7 @@ See [the token mapping](../marketing/tailwind-migration.md).
 Primary marketing buttons use the native `@zenncore/web` blue gradient with 6 px corners.
 Use the neutral gradient for a secondary action and the soft emphasis variant for navbar login.
 Square full-width actions remain appropriate inside editorial cards, with canvas padding at the
-sides. Inputs and selectors retain the shared 2 px corners; native tabs retain their own rounding.
+sides. Inputs, textareas and selectors use shared 6 px corners; native tabs retain their own rounding.
 The large blue hero uses equal 12 px margins above and beside it (8 px on mobile), a 100dvh minimum
 height, and centered content rails. Its blue surface continues behind the closed navbar. The
 closing banner uses the same inset geometry with a charcoal-to-brand-navy gradient and a restrained
@@ -55,8 +55,8 @@ intersections without stacking duplicate lines or marks.
 
 The five-stage product journey is a connected roadmap with all milestones visible. Alternate copy
 and diagrams around a central spine on wide screens; use a left spine and stacked content below
-1000 px. Use schematic connections, records, checkout and measurement diagrams, with literal
-ASCII numerals beside each stage title. Each row shares the rail boundaries and center intersections; do not
+1000 px. Use schematic connections, records, checkout and measurement diagrams, with normal heading-font
+numerals beside each stage title. Each row shares the rail boundaries and center intersections; do not
 outline its copy as a separate inset card. Omit bottom tag strips and segmented tab bars. The audience section uses native tabs with distinct semantic
 accents and restrained gradients. Provider cards are outlined squares, using one column on small
 phones, two on tablets and four on desktop. Homepage integration categories use native accordions,
@@ -64,7 +64,7 @@ with the commerce category open initially and the other categories available on 
 `background-dimmed` section. Fade vertical guides before uninterrupted comparison surfaces and keep
 them hidden through the following source/footer area.
 
-Decorative ASCII is literal text. Dense character silhouettes evolve at a low frequency and pause
+Decorative ASCII uses literal text, or a variable-dot halftone where the shape reads more clearly. Character silhouettes evolve at a low frequency and pause
 under reduced motion, outside the viewport and in hidden tabs. The channel chronology is a
 continuous winding character path rather than isolated ASCII cards. The footer ends with a large,
 legible character-based ecentic wordmark. Evidence uses proper scaled charts; reserve character art
@@ -585,8 +585,8 @@ Sharp by default:
 
 Rounded where the object is interactive, transient, inset, or materially separate:
 
-- `rounded-xs` (2 px): inputs and selectors;
-- `rounded-md` (6 px): native gradient buttons, provider marks and small media;
+- `rounded-xs` (2 px): small technical marks only;
+- `rounded-md` (6 px): inputs, textareas, selectors, native gradient buttons and small media;
 - 6 px radius on both chart fills and background tracks;
 - native tab/popover rounding for their controls, not surrounding structural cells;
 - `rounded-xl` (mobile `rounded-lg`): the inset hero and closing campaign surface;
@@ -1494,8 +1494,8 @@ In channel and integration heroes, make the provider mark a prominent large iden
 
 Secondary body layouts must not use inset blue copy banners wrapped in white padding. Prefer neutral/gray connected cells, meaningful interactive ASCII setup roadmaps, and full-container source rows with clear hover/focus feedback. Large blue hero/closing surfaces remain part of the system.
 
-Provider logos sit directly on their section surface. Do not put a separate filled tile, pill,
-white plate, border or shadow immediately behind a logo. A provider's whole directory entry may
+Standalone provider logos sit directly on their section surface. Do not put a separate filled tile, pill,
+white plate, border or shadow immediately behind a standalone logo. The deliberate exception is an overlapping source stack: compact rounded holders keep those marks distinct, as approved in the latest review. A provider's whole directory entry may
 have the normal section surface and structural outline; the mark itself stays unframed. Keep
 official artwork, aspect ratios and readable contrast.
 
@@ -1535,7 +1535,7 @@ repeated and which should be corrected.
 
 Restore concise sentence-case eyebrows where they help identify a section. Technical scopes and URLs use monospace; section titles, stage numbers and ordinary labels use the normal heading/body fonts. Official source rows have a bare Nucleo document icon at the left and continuous separators. Desktop mega menus keep progressive blur with a transparent body, internal grid rules only, and lightly tinted header/footer strips. Menus overlay without moving page scroll.
 
-New marketing examples compose the shared StepPlayer, FlowDiagram, ComparePanel and Calculator. Their fields are square gray surfaces, active controls use a blue dot and ink text with an optional full outline, and inactive controls stay neutral. A tinted selected panel is not the active state. Each simulated example explicitly says “Example with sample data” in its locale. Real pricing and file viewers use canonical sources. First-render HTML contains a complete static explanation before progressive enhancement; reduced motion exposes every step or a complete final state. The assistant replay may advance once when it enters the viewport, as requested in the 11 November review. It stops at the end, on manual interaction or focus, when offscreen, when the document is hidden, and under reduced motion. Other players start on Play unless explicitly designed otherwise. State transitions are 150–250 ms with no autonomous loops.
+New marketing examples compose the shared StepPlayer, FlowDiagram, ComparePanel and Calculator. Their fields use the shared `rounded-md` radius and a localized gray surface, active controls use a blue dot and ink text with an optional full outline, and inactive controls stay neutral. A tinted selected panel is not the active state. Each simulated example explicitly says “Example with sample data” in its locale. Real pricing and file viewers use canonical sources. First-render HTML contains a complete static explanation before progressive enhancement; reduced motion exposes every step or a complete final state. The assistant replay may advance once when it enters the viewport, as requested in the 11 November review. It stops at the end, on manual interaction or focus, when offscreen, when the document is hidden, and under reduced motion. Other players start on Play unless explicitly designed otherwise. State transitions are 150–250 ms with no autonomous loops.
 
 Keep the original product film and real screenshots. Decorative figures and illustrations never imply measurements or outcomes. Security connector copy stays behind the server-side review gate until Alvi signs it off.
 
@@ -1553,7 +1553,7 @@ The pinned 0.5.1 Bun patch adds only PURE annotations to the library's React com
 
 Use the shared `AnnotatedCodeComparison` for before/after product examples. Render technical field keys and JSON values in monospace; pair each field with a short plain-language annotation on the same row. Keep the sample label explicit and distinguish illustrative records from real API requests. Never invent missing contact details or change the product facts to make the visual work. Without JavaScript or with reduced motion, both states remain readable.
 
-The approved import-flow composition is a useful reference across secondary pages: bare source logos/icons, a clearly bounded catalog record, and outputs connected by single-segment lines. Give each graphic one relationship to explain. Source logos may overlap as an identity stack, without backplates. Use `TrackingOverview` for “What to track” explanations throughout the platform pages: native accordions, prominent labels and icons, and small record graphics on restrained blue-to-background fields. Ordinary prose stays on the off-white canvas; gray is localized to a meaningful field rather than filling every section.
+The approved import-flow composition is a useful reference across secondary pages: bare source logos/icons, a clearly bounded catalog record, and outputs connected by single-segment lines. Give each graphic one relationship to explain. Source logos may overlap as an identity stack. In that stack only, use compact rounded holders to separate silhouettes; standalone marks and provider arcs remain unframed. Use `TrackingOverview` for “What to track” explanations throughout the platform pages: native accordions, prominent labels and icons, and small record graphics on restrained blue-to-background fields. Ordinary prose stays on the off-white canvas; gray is localized to a meaningful field rather than filling every section.
 
 Platform heroes use distinct subject artwork: catalog records for Connect, a selection lens for Simulate, a product bag for Fix, a cart for Sell and a console for Track. Literal character grids are fit according to rendered glyph geometry (120 columns × 56 rows at approximately 0.61em advance); never resize the source into the raw character-grid aspect ratio. Hairline figures can fill more of their panel, but retain uncut hover geometry, 1px strokes and correct pointer targeting. The illustration remains decorative and the real product screenshots stay intact until their separate review.
 
@@ -1570,3 +1570,16 @@ The 11 November reference pass extends ecentic's existing language. Keep the off
 The navbar reads explicit `data-nav-tone="light|dark"` surface markers, with a light fallback for ordinary bands. Tone changes affect the header's own colors and progressive blur without changing its size or the document's scroll position. Freeze the tone while a menu is open so it stays stable and legible. Do not use page-wide blend modes that also invert logos or primary controls.
 
 Decorative falling light and product-card reveals play once when their explanation enters view. Hover responds to the selected provider or card; it does not set the whole section in motion. Keep permanent content visible in the first server render, use approved Motion wrappers for transform/opacity transitions, and provide static reduced-motion states. These effects express focus and relationships rather than simulated measurements.
+
+
+## 29. Carrying the illuminated direction through secondary pages
+
+The approved charcoal workbench is a reusable composition, not a homepage-only feature. Give each platform, integration, channel and solution page one important explanation with the same contained light, connected cells and complete structural seams. Use the actual local workflow and existing content; do not repeat the homepage capability list. Keep long reference text, permissions, policy tables and ordinary reading sections on the neutral canvas. Brands’ five-stage product example is an asymmetric dark bento; other pages should express their own process rather than duplicate that exact arrangement.
+
+Inputs, textareas and selectors use the shared `rounded-md` radius across marketing forms and dialogs, consistent with the component package. Remove square shell overrides. Do not round the surrounding connected grid.
+
+Recognizability takes priority over a literal ASCII alphabet. A variable-dot halftone is valid for subject artwork when it communicates the shape more clearly. Preserve the artwork’s aspect ratio, complete silhouette and readable contrast; avoid stretched character noise. Keep technical records as real monospace text with distinct semantic syntax colors.
+
+Product-card illustrations should behave as whole objects: any tilt applies to the full card and its contents together. Omit decorative tag strips below capability graphics. Every dark card has a visible left edge, with a single owner for each shared seam.
+
+Mobile/tablet menus retain progressive blur but have transparent rows and no enclosing table border. Internal separators and blue hover/focus text provide structure. The menu stays over the page without moving the scroll position. Detailed homepage research charts sit behind named native accordions; their existing source notes and publication gates remain intact.

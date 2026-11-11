@@ -9,6 +9,7 @@ import {
 } from "@/components/marketing/primitives";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
+import { SolutionFeatureBand } from "../../../_components/feature-band";
 import { FurnitureQuestions } from "./home-and-furniture-questions";
 
 export const HomeAndFurnitureBody = async ({
@@ -46,12 +47,11 @@ export const HomeAndFurnitureBody = async ({
             );
           case "attributes":
             return (
-              <MarketingBand
+              <SolutionFeatureBand
                 key={section.id}
                 id={section.id}
                 className="[&>.marketing-rail>.marketing-guides]:hidden"
               >
-                <SectionGutter />
                 <MarketingHeading
                   title={section.title}
                   description={section.description}
@@ -70,7 +70,7 @@ export const HomeAndFurnitureBody = async ({
                   )}
                 </div>
                 {sectionChildren?.[section.id]}
-              </MarketingBand>
+              </SolutionFeatureBand>
             );
           case "business":
             return (

@@ -13,7 +13,7 @@ import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import type { MarketingPage } from "@/components/marketing/page";
 import {
   MarketingActions,
-  MarketingBand,
+  MarketingFeatureBand,
 } from "@/components/marketing/primitives";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
@@ -29,22 +29,22 @@ export const ResourcesTools = ({ section }: ResourcesTools.Props) => {
   );
 
   return (
-    <MarketingBand
+    <MarketingFeatureBand
       id={section.id}
-      className="scroll-mt-24 [&>.marketing-rail>.marketing-guides]:hidden"
+      className="scroll-mt-24 [&_.marketing-actions]:relative"
     >
-      <div className="grid grid-cols-[1fr_2fr] max-md:grid-cols-1">
-        <div className="relative flex min-w-0 flex-col border-accent-foreground border-r bg-background-dimmed max-md:border-r-0 max-md:border-b">
+      <div className="grid grid-cols-[1fr_2fr] border border-[var(--rail-color)] border-x-transparent max-md:grid-cols-1">
+        <div className="relative flex min-w-0 flex-col border-[var(--rail-color)] border-r bg-linear-to-b from-primary-dimmed/75 to-emphasis-dimmed max-md:border-r-0 max-md:border-b">
           <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 max-md:hidden" />
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2 max-md:hidden" />
           <div className="px-8 pt-12 max-sm:px-4 max-sm:pt-8">
-            <span className="mb-8 block text-3xl text-primary-text">01</span>
+            <span className="mb-8 block text-3xl text-primary-rich">01</span>
             <h2>{section.title}</h2>
           </div>
           <div
             aria-hidden="true"
             inert
-            className="relative min-h-64 flex-1 text-primary max-md:h-56 max-md:min-h-0 max-md:flex-none"
+            className="relative min-h-64 flex-1 text-primary-rich max-md:h-56 max-md:min-h-0 max-md:flex-none"
           >
             <div className="absolute inset-4">
               <EvolvingAscii artwork={artwork[selected] ?? "commerce"} />
@@ -67,14 +67,14 @@ export const ResourcesTools = ({ section }: ResourcesTools.Props) => {
             <AccordionItem
               value={item.title}
               key={item.title}
-              className="border-accent-foreground last:border-b-0 data-open:bg-background-dimmed/40"
+              className="border-[var(--rail-color)] last:border-b-0 data-open:bg-primary/8"
             >
               <AccordionTrigger
-                className="min-h-24 items-center px-8 py-6 font-heading text-2xl leading-tight hover:bg-background-dimmed/60 focus-visible:outline-offset-[-4px] max-sm:min-h-20 max-sm:px-4 max-sm:text-xl"
+                className="min-h-24 items-center px-8 py-6 font-heading text-2xl text-background-rich leading-tight hover:text-primary-rich focus-visible:outline-offset-[-4px] max-sm:min-h-20 max-sm:px-4 max-sm:text-xl"
                 classList={{ trigger: { icon: "mr-0 size-4 shrink-0" } }}
               >
                 <span className="flex items-baseline gap-4">
-                  <span className="text-primary-text text-sm tabular-nums">
+                  <span className="text-primary-rich text-sm tabular-nums">
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   <span>{item.title}</span>
@@ -82,7 +82,7 @@ export const ResourcesTools = ({ section }: ResourcesTools.Props) => {
               </AccordionTrigger>
               <AccordionPanel>
                 <div className="px-8 pb-8 max-sm:px-4">
-                  <p className="mb-6 max-w-[58ch] text-foreground-dimmed">
+                  <p className="mb-6 max-w-[58ch] text-background-rich/75">
                     {item.body}
                   </p>
                   {item.href && (
@@ -97,7 +97,7 @@ export const ResourcesTools = ({ section }: ResourcesTools.Props) => {
           ))}
         </Accordion>
       </div>
-    </MarketingBand>
+    </MarketingFeatureBand>
   );
 };
 
