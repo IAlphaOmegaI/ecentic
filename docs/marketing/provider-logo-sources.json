@@ -212,5 +212,16 @@
     "width": 183.6,
     "height": 47.5,
     "note": "Official color wordmark for annotated comments20/44; trailing whitespace normalized only, geometry and colors unchanged."
+  },
+  {
+    "key": "meta",
+    "page": "https://www.meta.com/about/",
+    "url": "https://static.xx.fbcdn.net/rsrc.php/yf/r/-7pQO6hUGK_.svg",
+    "path": "apps/web/public/providers/meta.svg",
+    "bytes": 8912,
+    "sha256": "9c354dc7d40f7862df2dfb34df05ae08c3e956d55a450379803d6cac6878a63e",
+    "checkedAt": "2026-11-10",
+    "width": 32,
+    "height": 32
   }
 ]

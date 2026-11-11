@@ -5,6 +5,7 @@ import {
   CommerceFileShieldIcon,
   CommercePlug_3SparkleIcon,
 } from "@zenncore/icons";
+import { cn } from "@zenncore/utils";
 import { ScrollArea } from "@zenncore/web/components/scroll-area";
 import {
   Table,
@@ -30,8 +31,11 @@ const planIcons = [
 export const FreeStoreCheck = async () => {
   const { enterprisePricing, pricing } = await getMessages();
   return (
-    <div className="grid grid-cols-1 border-accent-foreground border-t bg-background sm:grid-cols-2">
-      <div className="marketing-cell relative min-w-0 border-accent-foreground border-b px-7 py-14 max-sm:px-4 max-sm:py-10 sm:border-r sm:border-b-0 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+    <div
+      data-columns="2"
+      className="marketing-section-grid marketing-grid grid grid-cols-1 border-accent-foreground border-t bg-background sm:grid-cols-2"
+    >
+      <div className="marketing-cell relative min-w-0 border-accent-foreground border-b bg-linear-to-br from-primary/8 to-transparent px-7 py-10 max-sm:px-4 max-sm:py-8 sm:border-r sm:border-b-0 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
         <p className="text-primary-text text-sm">
           {enterprisePricing.sample.label}
         </p>
@@ -49,7 +53,7 @@ export const FreeStoreCheck = async () => {
           <span className="block h-full w-[72%] bg-primary" />
         </div>
       </div>
-      <div className="marketing-cell relative flex min-w-0 flex-col justify-center px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+      <div className="marketing-cell relative flex min-w-0 flex-col justify-center px-7 py-10 max-sm:px-4 max-sm:py-8 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
         <p>{enterprisePricing.sample.caption}</p>
         <MarketingActions
           actions={[
@@ -71,7 +75,7 @@ export const EnterprisePlanLedger = async () => {
     <>
       <div
         data-columns="2"
-        className="marketing-grid grid grid-cols-2 border-accent-foreground border-b max-sm:grid-cols-1"
+        className="marketing-section-grid marketing-grid grid grid-cols-2 border-accent-foreground border-b max-sm:grid-cols-1"
       >
         {planKeys.map((key, index) => {
           const source = pricing.plans[key];
@@ -94,10 +98,25 @@ export const EnterprisePlanLedger = async () => {
           return (
             <article
               key={key}
-              className="grid min-w-0 gap-4 border-accent-foreground border-t px-7 py-8 max-sm:px-4 sm:row-span-7 sm:grid-rows-subgrid sm:border-r sm:even:border-r-0"
+              className={cn(
+                "grid min-w-0 gap-4 border-accent-foreground border-t px-7 py-8 max-sm:px-4 sm:row-span-7 sm:grid-rows-subgrid sm:border-r sm:even:border-r-0",
+                key === "payg"
+                  ? "bg-linear-to-br from-primary/10 via-primary/3 to-background"
+                  : "bg-background",
+              )}
             >
               {Icon && (
-                <Icon aria-hidden className="size-8 text-primary-text" />
+                <Icon
+                  aria-hidden
+                  className={cn(
+                    "size-8",
+                    index === 1
+                      ? "text-info"
+                      : index === 2
+                        ? "text-secondary"
+                        : "text-primary-text",
+                  )}
+                />
               )}
               <h3 className="text-[clamp(20px,2vw,26px)] tracking-[-0.035em]">
                 {source.name}
@@ -139,7 +158,7 @@ export const EnterprisePlanLedger = async () => {
       </div>
       <article
         data-columns="2"
-        className="marketing-grid grid grid-cols-2 border-accent-foreground border-b bg-background max-sm:grid-cols-1"
+        className="marketing-section-grid marketing-grid grid grid-cols-2 border-accent-foreground border-b bg-background-dimmed max-sm:grid-cols-1"
       >
         <div className="flex min-w-0 flex-col gap-6 border-accent-foreground border-t px-7 py-8 max-sm:px-4 sm:border-r">
           <CommerceFileShieldIcon
@@ -177,8 +196,8 @@ export const EnterprisePlanLedger = async () => {
           </ul>
         </div>
       </article>
-      <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
-        <p className="marketing-note text-(length:--text-sm) mt-6 text-foreground-dimmed">
+      <div className="marketing-cell relative min-w-0 px-7 py-10 max-sm:px-4 max-sm:py-8 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+        <p className="marketing-note text-(length:--text-sm) text-foreground-dimmed">
           {enterprisePricing.availability}
         </p>
       </div>
@@ -197,11 +216,14 @@ export const PerformanceFeeLedger = async () => {
   });
   return (
     <>
-      <ol className="m-0 list-none p-0">
+      <ol
+        className="marketing-section-grid marketing-grid m-0 grid list-none grid-cols-1 p-0 sm:grid-cols-2"
+        data-columns="2"
+      >
         {fee.steps.map((step, index) => (
           <li
             key={step.title}
-            className="grid grid-cols-[42px_minmax(0,1fr)] gap-4 border-accent-foreground border-t px-5 py-8 sm:grid-cols-[80px_minmax(0,1fr)] sm:gap-6 sm:px-7"
+            className="grid grid-cols-[40px_minmax(0,1fr)] gap-4 border-accent-foreground border-t px-4 py-8 sm:px-7 sm:odd:border-r"
           >
             <span aria-hidden="true" className="text-[32px] text-primary">
               0{index + 1}
@@ -213,7 +235,7 @@ export const PerformanceFeeLedger = async () => {
           </li>
         ))}
       </ol>
-      <div className="border-accent-foreground border-y bg-background px-7 py-10">
+      <div className="marketing-section-grid border-accent-foreground border-y bg-linear-to-r from-primary/6 to-background px-7 py-10 max-sm:px-4">
         <dl className="grid grid-cols-1 gap-6 sm:grid-cols-3 sm:gap-7">
           <div className="flex items-baseline justify-between gap-5 sm:block">
             <dt>{fee.example.order}</dt>
@@ -238,7 +260,7 @@ export const PerformanceFeeLedger = async () => {
           {fee.example.window} · {fee.example.cap}
         </p>
       </div>
-      <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+      <div className="marketing-cell relative min-w-0 px-7 py-10 max-sm:px-4 max-sm:py-8 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
         <h3>{fee.billingTitle}</h3>
         <p>{fee.billingBody}</p>
       </div>
@@ -269,66 +291,68 @@ export const EnterprisePlanComparison = async () => {
   };
   return (
     <>
-      <ScrollArea
-        className="overflow-x-auto border-accent-foreground border-t"
-        aria-label={comparison.title}
-      >
-        <Table className="m-0 min-w-[1060px] border-b-0 [&_td:last-child]:bg-background [&_td]:px-4 [&_td]:py-4 [&_td]:align-top [&_td]:text-foreground-dimmed [&_td]:text-sm [&_th:first-child]:w-[190px] [&_th:last-child]:bg-background [&_th]:whitespace-normal [&_th]:px-4 [&_th]:py-4 [&_th]:font-medium [&_th]:text-foreground-rich [&_th]:text-sm [&_th]:normal-case [&_th]:leading-normal [&_th]:tracking-normal">
-          <TableCaption className="sr-only">{comparison.title}</TableCaption>
-          <TableHeader className="bg-background-dimmed">
-            <TableRow>
-              <TableHead scope="col">{comparison.feature}</TableHead>
-              {keys.map((key) => (
-                <TableHead key={key} scope="col">
-                  {key === "scan"
-                    ? pricing.schema.plans[0].name
-                    : pricing.plans[key].name}
-                </TableHead>
-              ))}
-              <TableHead scope="col">
-                {enterprisePricing.plans.enterprise.name}
-              </TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {pricing.compare.rows.slice(0, 8).map((row, rowIndex) => (
-              <TableRow key={row.label}>
-                <TableHead scope="row">
-                  {rowIndex === 7 ? comparison.publish : row.label}
-                </TableHead>
-                {keys.map((key) => {
-                  const value = row[key];
-                  const corrected =
-                    rowIndex === 3 && key !== "scan"
-                      ? comparison.onDemand
-                      : rowIndex === 6 && typeof value === "string"
-                        ? comparison.suggestions
-                        : display(value);
-                  return <TableCell key={key}>{corrected}</TableCell>;
-                })}
-                <TableCell>
-                  {rowIndex === 0
-                    ? enterprisePricing.plans.enterprise.figure
-                    : comparison.agreed}
-                </TableCell>
-              </TableRow>
-            ))}
-            {comparison.enterpriseRows.map((row, rowIndex) => (
-              <TableRow key={row.label}>
-                <TableHead scope="row">{row.label}</TableHead>
+      <div className="marketing-section-grid border-accent-foreground border-t">
+        <ScrollArea
+          className="relative min-w-0 overflow-hidden"
+          aria-label={comparison.title}
+        >
+          <Table className="m-0 min-w-[1060px] border-b-0 [&_td:last-child]:bg-background [&_td]:px-4 [&_td]:py-4 [&_td]:align-top [&_td]:text-foreground-dimmed [&_td]:text-sm [&_th:first-child]:w-[190px] [&_th:last-child]:bg-background [&_th]:whitespace-normal [&_th]:px-4 [&_th]:py-4 [&_th]:font-medium [&_th]:text-foreground-rich [&_th]:text-sm [&_th]:normal-case [&_th]:leading-normal [&_th]:tracking-normal">
+            <TableCaption className="sr-only">{comparison.title}</TableCaption>
+            <TableHeader className="bg-background-dimmed">
+              <TableRow>
+                <TableHead scope="col">{comparison.feature}</TableHead>
                 {keys.map((key) => (
-                  <TableCell key={key}>
-                    {display(key === "scan" ? rowIndex === 1 : row.selfServe)}
-                  </TableCell>
+                  <TableHead key={key} scope="col">
+                    {key === "scan"
+                      ? pricing.schema.plans[0].name
+                      : pricing.plans[key].name}
+                  </TableHead>
                 ))}
-                <TableCell>{comparison.yes}</TableCell>
+                <TableHead scope="col">
+                  {enterprisePricing.plans.enterprise.name}
+                </TableHead>
               </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </ScrollArea>
-      <div className="marketing-cell relative min-w-0 px-7 py-14 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
-        <p className="marketing-note text-(length:--text-sm) mt-6 text-foreground-dimmed">
+            </TableHeader>
+            <TableBody>
+              {pricing.compare.rows.slice(0, 8).map((row, rowIndex) => (
+                <TableRow key={row.label}>
+                  <TableHead scope="row">
+                    {rowIndex === 7 ? comparison.publish : row.label}
+                  </TableHead>
+                  {keys.map((key) => {
+                    const value = row[key];
+                    const corrected =
+                      rowIndex === 3 && key !== "scan"
+                        ? comparison.onDemand
+                        : rowIndex === 6 && typeof value === "string"
+                          ? comparison.suggestions
+                          : display(value);
+                    return <TableCell key={key}>{corrected}</TableCell>;
+                  })}
+                  <TableCell>
+                    {rowIndex === 0
+                      ? enterprisePricing.plans.enterprise.figure
+                      : comparison.agreed}
+                  </TableCell>
+                </TableRow>
+              ))}
+              {comparison.enterpriseRows.map((row, rowIndex) => (
+                <TableRow key={row.label}>
+                  <TableHead scope="row">{row.label}</TableHead>
+                  {keys.map((key) => (
+                    <TableCell key={key}>
+                      {display(key === "scan" ? rowIndex === 1 : row.selfServe)}
+                    </TableCell>
+                  ))}
+                  <TableCell>{comparison.yes}</TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </ScrollArea>
+      </div>
+      <div className="marketing-cell relative min-w-0 px-7 py-10 max-sm:px-4 max-sm:py-8 [&>h2+p]:mt-5 [&>h3+p]:mt-5 [&>p]:max-w-[70ch]">
+        <p className="marketing-note text-(length:--text-sm) text-foreground-dimmed">
           {comparison.enterpriseNote}
         </p>
       </div>

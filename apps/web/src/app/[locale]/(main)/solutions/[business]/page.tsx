@@ -56,7 +56,7 @@ export default async ({ params }: Props) => {
         ...(business === "enterprise"
           ? {
               measures: (
-                <div className="mt-12">
+                <div className="border-accent-foreground border-t pt-8">
                   <CatalogFindings />
                 </div>
               ),

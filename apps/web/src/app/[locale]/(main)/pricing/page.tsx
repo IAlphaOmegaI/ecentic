@@ -30,6 +30,7 @@ export default async () => {
     <MarketingPage
       content={enterprisePricing}
       path="/pricing"
+      heroArtwork="cart"
       sectionChildren={{
         "free-check": <FreeStoreCheck />,
         pricing: <EnterprisePlanLedger />,

@@ -13,7 +13,7 @@
       "pendingNote": "Esta revisión incluye evidencia incompleta. Los valores pendientes y los hallazgos sin aprobar no aparecen en el sitio normal."
     },
     "simulations": {
-      "title": "El mismo catálogo, tres respuestas distintas.",
+      "title": "Qué eligen los asistentes en una compra simulada.",
       "description": "Porcentaje de compras simuladas en las que cada asistente eligió el mismo producto.",
       "caption": "{sampleSize} compras simuladas con el mismo catálogo, 2026. Decisiones simuladas, no tráfico real.",
       "takeaway": "Los asistentes pueden elegir de forma distinta. Compara tus productos con los tres modelos de los escaneos de ecentic y mejora los datos verificados que leen.",

@@ -43,6 +43,12 @@ const artwork = {
     width: 128,
     height: 128,
   },
+  meta: {
+    name: "Meta",
+    src: "/providers/meta.svg",
+    width: 32,
+    height: 32,
+  },
   chatgpt: {
     name: "ChatGPT",
     src: "/providers/chatgpt.png",

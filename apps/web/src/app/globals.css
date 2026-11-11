@@ -439,6 +439,7 @@ tr {
   &
     :where(
       .marketing-grid > *,
+      .marketing-product-journey > li,
       .marketing-rows > div,
       .marketing-faq article,
       .marketing-footer-columns > nav,
@@ -459,6 +460,7 @@ tr {
   &
     :where(
       .marketing-grid > *,
+      .marketing-product-journey > li,
       .marketing-rows > div,
       .marketing-faq article,
       .marketing-footer-columns > nav,
@@ -473,6 +475,7 @@ tr {
   &
     :where(
       .marketing-grid > *,
+      .marketing-product-journey > li,
       .marketing-rows > div,
       .marketing-faq article,
       .marketing-footer-columns > nav,
@@ -495,6 +498,7 @@ tr {
   &
     :where(
       .marketing-grid > *,
+      .marketing-product-journey > li,
       .marketing-rows > div,
       .marketing-faq article,
       .marketing-footer-columns > nav,
@@ -528,6 +532,7 @@ tr {
   &
     :where(
       .marketing-grid > *,
+      .marketing-product-journey > li,
       .marketing-rows > div,
       .marketing-faq article,
       .marketing-footer-columns > nav,
@@ -1641,5 +1646,26 @@ tr {
   & .marketing-mobile-action-grid::after {
     top: auto;
     bottom: -8px;
+  }
+  & .marketing-mobile-menu-grid[data-connected]::after {
+    content: none;
+  }
+  & .marketing-product-journey > li {
+    --junction-top-right: var(--rail-cross);
+  }
+  & .marketing-product-journey:last-child > li:last-child {
+    --junction-bottom-left: var(--rail-cross);
+    --junction-bottom-right: var(--rail-cross);
+  }
+  @media (width >= 1001px) {
+    & .marketing-product-journey > li {
+      --junction-top-right: transparent;
+    }
+    & .marketing-product-journey > li:last-child {
+      --junction-top-right: var(--rail-cross);
+    }
+    & .marketing-product-journey:last-child > li {
+      --junction-bottom-left: var(--rail-cross);
+    }
   }
 }

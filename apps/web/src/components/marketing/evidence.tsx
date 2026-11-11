@@ -9,8 +9,6 @@ export const EvidenceFrame = async ({
   description,
   caption,
   note,
-  columns,
-  rows,
   source,
   pending,
   compact = false,
@@ -37,15 +35,7 @@ export const EvidenceFrame = async ({
           </p>
         )}
       </header>
-      <EvidenceView
-        id={id}
-        title={title}
-        columns={columns}
-        rows={rows}
-        action={enterpriseEvidence.presentation.action}
-      >
-        {children}
-      </EvidenceView>
+      <EvidenceView>{children}</EvidenceView>
       {compact ? (
         <EvidenceDetails label={enterpriseEvidence.presentation.source}>
           {note && <p>{note}</p>}
@@ -89,8 +79,6 @@ export namespace EvidenceFrame {
     description?: string;
     caption?: string;
     note?: string;
-    columns: readonly string[];
-    rows: readonly (readonly string[])[];
     source?: ReactNode;
     pending?: string;
     compact?: boolean;

@@ -1,6 +1,24 @@
 "use client";
 
-import { ArrowRightIcon, ChevronDownIcon, MenuIcon } from "@zenncore/icons";
+import {
+  ArrowRightIcon,
+  ChevronDownIcon,
+  CommerceBasketShoppingIcon,
+  CommerceBookOpenIcon,
+  CommerceChartActivity_2Icon,
+  CommerceCityBuildingIcon,
+  CommerceCode_3Icon,
+  CommerceFilePenIcon,
+  CommerceGlobePointerIcon,
+  CommercePlug_3SparkleIcon,
+  CreditCardIcon,
+  FileIcon,
+  HammerIcon,
+  MenuIcon,
+  RobotIcon,
+  ShoppingCartIcon,
+  UserIcon,
+} from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import {
   Accordion,
@@ -55,6 +73,45 @@ const navigationProviders: Record<string, ProviderKey> = {
   "/ai-channels/microsoft-copilot": "copilot",
   "/ai-channels/perplexity": "perplexity",
   "/ai-channels/amazon": "amazon",
+};
+
+const navigationCategoryIcons: Record<
+  string,
+  (typeof CommercePlug_3SparkleIcon)[]
+> = {
+  platform: [
+    CommercePlug_3SparkleIcon,
+    RobotIcon,
+    CommerceFilePenIcon,
+    CommerceBasketShoppingIcon,
+    CommerceChartActivity_2Icon,
+  ],
+  solutions: [CommerceCityBuildingIcon, UserIcon, ShoppingCartIcon],
+  channels: [CommerceGlobePointerIcon],
+  integrations: [
+    CommercePlug_3SparkleIcon,
+    FileIcon,
+    CommerceFilePenIcon,
+    CreditCardIcon,
+  ],
+  resources: [
+    CommerceBookOpenIcon,
+    HammerIcon,
+    CommerceCode_3Icon,
+    CommerceCityBuildingIcon,
+  ],
+};
+
+const NavigationCategoryIcon = ({
+  group,
+  column,
+}: {
+  group: string;
+  column: number;
+}) => {
+  const Icon = navigationCategoryIcons[group]?.[column];
+  if (!Icon) return null;
+  return <Icon aria-hidden className="size-4 shrink-0" />;
 };
 
 export const Navbar = () => {
@@ -271,7 +328,7 @@ export const Navbar = () => {
                     }}
                   >
                     <div
-                      className="marketing-nav-grid relative mx-auto grid max-w-[min(1186px,calc(100%-56px))] grid-cols-[repeat(var(--menu-columns),minmax(0,1fr))] gap-px border border-accent-foreground bg-accent-foreground [grid-template-rows:minmax(3rem,auto)_repeat(var(--menu-rows),minmax(6rem,auto))]"
+                      className="marketing-nav-grid relative mx-auto grid max-w-[min(1384px,calc(100%-56px))] grid-cols-[repeat(var(--menu-columns),minmax(0,1fr))] gap-px border border-accent-foreground bg-accent-foreground [grid-template-rows:minmax(3rem,auto)_repeat(var(--menu-rows),minmax(6rem,auto))]"
                       data-menu={group.id}
                       style={
                         {
@@ -305,7 +362,11 @@ export const Navbar = () => {
                           )}
                           key={column.title}
                         >
-                          <p className="marketing-nav-column-heading relative col-span-full flex items-center bg-background-dimmed px-5 py-3 font-medium text-foreground-dimmed text-sm leading-snug">
+                          <p className="marketing-nav-column-heading relative col-span-full flex items-center gap-2.5 bg-background-dimmed px-5 py-3 font-medium text-foreground-dimmed text-sm leading-snug">
+                            <NavigationCategoryIcon
+                              group={group.id}
+                              column={columnIndex}
+                            />
                             {column.title}
                           </p>
                           {column.items.map((item, itemIndex) => {
@@ -375,7 +436,7 @@ export const Navbar = () => {
                       <NavigationMenuLink
                         render={<Link href={group.featured.href} />}
                         onClick={() => setActive(null)}
-                        className="marketing-nav-feature-cell marketing-nav-cell group/nav-cell relative col-span-full flex items-center justify-between gap-6 rounded-none bg-background px-5 xs:px-5 py-4 xs:py-4 text-sm leading-snug hover:bg-background-rich hover:text-primary-text focus-visible:bg-background-rich focus-visible:text-primary-text focus-visible:-outline-offset-4"
+                        className="marketing-nav-feature-cell marketing-nav-cell group/nav-cell relative col-span-full flex items-center justify-between gap-6 rounded-none bg-background-dimmed px-5 xs:px-5 py-4 xs:py-4 text-sm leading-snug hover:bg-background-rich hover:text-primary-text focus-visible:bg-background-rich focus-visible:text-primary-text focus-visible:-outline-offset-4"
                       >
                         <span>
                           <span className="block font-medium text-foreground-rich group-hover/nav-cell:text-primary-text group-focus-visible/nav-cell:text-primary-text">
@@ -451,124 +512,139 @@ export const Navbar = () => {
                     className="h-auto w-35"
                   />
                 </SheetTitle>
-                <SheetDescription>{chrome.menu.title}</SheetDescription>
+                <SheetDescription className="sr-only">
+                  {chrome.menu.title}
+                </SheetDescription>
               </SheetHeader>
-              <nav aria-label={chrome.menu.title}>
-                <Accordion
-                  multiple
-                  className="marketing-mobile-menu-grid border border-accent-foreground bg-background"
-                >
-                  {navigation.groups.map((group) => (
-                    <AccordionItem
-                      key={group.id}
-                      value={group.id}
-                      className="border-accent-foreground last:border-b-0"
-                    >
-                      <AccordionTrigger className="marketing-mobile-nav-trigger min-h-15 items-center px-4 py-4 font-body text-base hover:text-primary-text focus-visible:text-primary-text focus-visible:-outline-offset-4">
-                        {group.label}
-                      </AccordionTrigger>
-                      <AccordionPanel className="data-open:overflow-visible">
-                        <div className="marketing-mobile-nav-grid grid gap-px border-accent-foreground border-t bg-accent-foreground">
-                          {group.columns.map((column) => (
-                            <div className="grid gap-px" key={column.title}>
-                              <p className="marketing-nav-column-heading relative bg-background-dimmed px-4 py-3 font-medium text-foreground-dimmed text-sm">
-                                {column.title}
-                              </p>
-                              {column.items.map((item) => {
-                                const provider =
-                                  group.id === "channels"
-                                    ? navigationProviders[item.href]
-                                    : undefined;
-                                return (
-                                  <SheetClose
-                                    nativeButton={false}
-                                    role="link"
-                                    key={`${item.href}-${item.label}`}
-                                    render={<Link href={item.href} />}
-                                    className="marketing-mobile-nav-cell group/nav-cell relative flex min-h-24 min-w-0 items-start gap-3 bg-background px-4 py-4 text-sm leading-snug hover:bg-background-rich hover:text-primary-text focus-visible:bg-background-rich focus-visible:text-primary-text focus-visible:-outline-offset-4 [&_.marketing-status]:mt-2 [&_.marketing-status]:text-xs"
-                                  >
-                                    {provider && (
-                                      <ProviderLogo
-                                        provider={provider}
-                                        className="marketing-nav-provider mt-0.5 size-6 shrink-0 object-contain"
-                                      />
-                                    )}
-                                    <span>
-                                      <span className="block font-medium text-foreground-rich group-hover/nav-cell:text-primary-text group-focus-visible/nav-cell:text-primary-text">
-                                        {item.label}
-                                      </span>
-                                      <span className="mt-1.5 block text-foreground-dimmed text-xs leading-relaxed group-hover/nav-cell:text-primary-text group-focus-visible/nav-cell:text-primary-text">
-                                        {item.description}
-                                      </span>
-                                      {item.status && (
-                                        <MarketingStatus status={item.status}>
-                                          {statusLabel(item.status)}
-                                        </MarketingStatus>
+              <div>
+                <nav aria-label={chrome.menu.title}>
+                  <Accordion
+                    multiple
+                    data-connected
+                    className="marketing-mobile-menu-grid border border-accent-foreground border-b-0 bg-background"
+                  >
+                    {navigation.groups.map((group) => (
+                      <AccordionItem
+                        key={group.id}
+                        value={group.id}
+                        className="border-accent-foreground last:border-b-0"
+                      >
+                        <AccordionTrigger className="marketing-mobile-nav-trigger min-h-15 items-center px-4 py-4 font-body text-base hover:text-primary-text focus-visible:text-primary-text focus-visible:-outline-offset-4">
+                          {group.label}
+                        </AccordionTrigger>
+                        <AccordionPanel className="data-open:overflow-visible">
+                          <div className="marketing-mobile-nav-grid grid gap-px border-accent-foreground border-t bg-accent-foreground">
+                            {group.columns.map((column, columnIndex) => (
+                              <div className="grid gap-px" key={column.title}>
+                                <p className="marketing-nav-column-heading relative flex items-center gap-2.5 bg-background-dimmed px-4 py-3 font-medium text-foreground-dimmed text-sm">
+                                  <NavigationCategoryIcon
+                                    group={group.id}
+                                    column={columnIndex}
+                                  />
+                                  {column.title}
+                                </p>
+                                {column.items.map((item) => {
+                                  const provider =
+                                    group.id === "channels"
+                                      ? navigationProviders[item.href]
+                                      : undefined;
+                                  return (
+                                    <SheetClose
+                                      nativeButton={false}
+                                      role="link"
+                                      key={`${item.href}-${item.label}`}
+                                      render={<Link href={item.href} />}
+                                      className="marketing-mobile-nav-cell group/nav-cell relative flex min-h-24 min-w-0 items-start gap-3 bg-background px-4 py-4 text-sm leading-snug hover:bg-background-rich hover:text-primary-text focus-visible:bg-background-rich focus-visible:text-primary-text focus-visible:-outline-offset-4 [&_.marketing-status]:mt-2 [&_.marketing-status]:text-xs"
+                                    >
+                                      {provider && (
+                                        <ProviderLogo
+                                          provider={provider}
+                                          className="marketing-nav-provider mt-0.5 size-6 shrink-0 object-contain"
+                                        />
                                       )}
-                                    </span>
-                                  </SheetClose>
-                                );
-                              })}
-                            </div>
-                          ))}
-                          <SheetClose
-                            nativeButton={false}
-                            role="link"
-                            render={<Link href={group.featured.href} />}
-                            className="marketing-mobile-nav-cell group/nav-cell relative flex min-h-24 min-w-0 items-start justify-between gap-4 bg-background px-4 py-4 text-sm leading-snug hover:bg-background-rich hover:text-primary-text focus-visible:bg-background-rich focus-visible:text-primary-text focus-visible:-outline-offset-4"
-                          >
-                            <span>
-                              <span className="block font-medium text-foreground-rich group-hover/nav-cell:text-primary-text group-focus-visible/nav-cell:text-primary-text">
-                                {group.featured.title}
+                                      <span>
+                                        <span className="block font-medium text-foreground-rich group-hover/nav-cell:text-primary-text group-focus-visible/nav-cell:text-primary-text">
+                                          {item.label}
+                                        </span>
+                                        <span className="mt-1.5 block text-foreground-dimmed text-xs leading-relaxed group-hover/nav-cell:text-primary-text group-focus-visible/nav-cell:text-primary-text">
+                                          {item.description}
+                                        </span>
+                                        {item.status && (
+                                          <MarketingStatus status={item.status}>
+                                            {statusLabel(item.status)}
+                                          </MarketingStatus>
+                                        )}
+                                      </span>
+                                    </SheetClose>
+                                  );
+                                })}
+                              </div>
+                            ))}
+                            <SheetClose
+                              nativeButton={false}
+                              role="link"
+                              render={<Link href={group.featured.href} />}
+                              className="marketing-mobile-nav-cell group/nav-cell relative flex min-h-24 min-w-0 items-start justify-between gap-4 bg-background px-4 py-4 text-sm leading-snug hover:bg-background-rich hover:text-primary-text focus-visible:bg-background-rich focus-visible:text-primary-text focus-visible:-outline-offset-4"
+                            >
+                              <span>
+                                <span className="block font-medium text-foreground-rich group-hover/nav-cell:text-primary-text group-focus-visible/nav-cell:text-primary-text">
+                                  {group.featured.title}
+                                </span>
+                                <span className="mt-1.5 block text-foreground-dimmed text-xs leading-relaxed group-hover/nav-cell:text-primary-text group-focus-visible/nav-cell:text-primary-text">
+                                  {group.featured.description}
+                                </span>
                               </span>
-                              <span className="mt-1.5 block text-foreground-dimmed text-xs leading-relaxed group-hover/nav-cell:text-primary-text group-focus-visible/nav-cell:text-primary-text">
-                                {group.featured.description}
-                              </span>
-                            </span>
-                            <ArrowRightIcon
-                              aria-hidden
-                              className="mt-0.5 size-4 shrink-0 text-primary-text"
-                            />
-                          </SheetClose>
-                        </div>
-                      </AccordionPanel>
-                    </AccordionItem>
-                  ))}
-                </Accordion>
-              </nav>
-              <div className="marketing-mobile-action-grid grid grid-cols-1 gap-px border border-accent-foreground bg-accent-foreground sm:grid-cols-2">
-                <SheetClose
-                  nativeButton={false}
-                  role="link"
-                  render={<Link href="/pricing" />}
-                  className="marketing-mobile-nav-cell relative col-span-full flex min-h-15 items-center bg-background px-4 py-4 font-medium text-base text-foreground-rich hover:bg-background-rich hover:text-primary-text focus-visible:text-primary-text"
-                >
-                  {navigation.pricing}
-                </SheetClose>
-                <div className="bg-background p-4">
-                  <Button
-                    variant="soft"
-                    color="emphasis"
-                    className="w-full"
-                    render={
-                      <Link href="/sign-in" onClick={() => setMobile(false)} />
-                    }
+                              <ArrowRightIcon
+                                aria-hidden
+                                className="mt-0.5 size-4 shrink-0 text-primary-text"
+                              />
+                            </SheetClose>
+                          </div>
+                        </AccordionPanel>
+                      </AccordionItem>
+                    ))}
+                  </Accordion>
+                </nav>
+                <div className="marketing-mobile-action-grid grid grid-cols-1 gap-px border border-accent-foreground bg-accent-foreground sm:grid-cols-2">
+                  <SheetClose
+                    nativeButton={false}
+                    role="link"
+                    render={<Link href="/pricing" />}
+                    className="marketing-mobile-nav-cell relative col-span-full flex min-h-15 items-center bg-background px-4 py-4 font-medium text-base text-foreground-rich hover:bg-background-rich hover:text-primary-text focus-visible:text-primary-text"
                   >
-                    {chrome.action.tertiary}
-                  </Button>
-                </div>
-                <div className="bg-background p-4">
-                  <Button
-                    className="w-full"
-                    render={
-                      <Link href="/sign-up" onClick={() => setMobile(false)} />
-                    }
-                  >
-                    {chrome.action.secondary}
-                  </Button>
-                </div>
-                <div className="col-span-full bg-background p-4">
-                  <LanguageSwitcher />
+                    {navigation.pricing}
+                  </SheetClose>
+                  <div className="bg-background p-4">
+                    <Button
+                      variant="soft"
+                      color="emphasis"
+                      className="w-full"
+                      render={
+                        <Link
+                          href="/sign-in"
+                          onClick={() => setMobile(false)}
+                        />
+                      }
+                    >
+                      {chrome.action.tertiary}
+                    </Button>
+                  </div>
+                  <div className="bg-background p-4">
+                    <Button
+                      className="w-full"
+                      render={
+                        <Link
+                          href="/sign-up"
+                          onClick={() => setMobile(false)}
+                        />
+                      }
+                    >
+                      {chrome.action.secondary}
+                    </Button>
+                  </div>
+                  <div className="col-span-full bg-background p-4">
+                    <LanguageSwitcher variant="mobile" />
+                  </div>
                 </div>
               </div>
             </SheetPopup>

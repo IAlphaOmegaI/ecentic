@@ -4,8 +4,6 @@ import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import type { HTMLAttributes, ReactNode } from "react";
 import { Link } from "@/i18n/navigation";
-import { AsciiClosingArtwork } from "./ascii-artwork";
-import { AsciiAtmosphere } from "./ascii-atmosphere";
 import { EvolvingAscii } from "./evolving-ascii";
 
 export const MarketingBand = ({
@@ -106,26 +104,46 @@ export const MarketingHero = ({
   description,
   actions = [],
   dark = false,
+  artwork,
   children,
 }: MarketingHero.Props) => (
   <MarketingBand
     className={cn(
       "marketing-hero",
       dark &&
-        "marketing-dark enterprise-blue m-3 overflow-hidden rounded-xl border-0 bg-linear-to-br from-primary-text via-primary-text to-primary text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_20%,transparent)] [--rail-cross:transparent] [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden [&_.marketing-eyebrow]:text-background-rich [&_.marketing-guides_span]:before:hidden [&_.marketing-guides_span]:after:hidden [&_.marketing-screenshot_figcaption]:text-background-rich/85 [&_:is(h1,h2,h3)]:text-background-rich",
+        "marketing-dark enterprise-blue enterprise-journey mx-3 -mt-[68px] mb-3 min-h-dvh overflow-hidden rounded-xl border-0 bg-linear-to-r from-primary-text via-primary-text to-primary text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_22%,transparent)] [--rail-cross:transparent] max-sm:mx-2 max-sm:-mt-[72px] max-sm:mb-2 max-sm:rounded-lg [&>.marketing-rail]:flex [&>.marketing-rail]:min-h-dvh [&>.marketing-rail]:items-center [&>.marketing-rail]:border-x-background-rich/15 [&>.marketing-rail]:border-y-0 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden [&_.marketing-eyebrow]:text-background-rich [&_.marketing-guides_span]:before:hidden [&_.marketing-guides_span]:after:hidden [&_.marketing-screenshot_figcaption]:text-background-rich/85 [&_:is(h1,h2,h3)]:text-background-rich",
     )}
   >
-    {dark && (
-      <AsciiAtmosphere className="marketing-closing-art pointer-events-none absolute inset-0 text-background-rich opacity-20 [mask-image:linear-gradient(100deg,transparent,black)]">
-        <AsciiClosingArtwork />
-      </AsciiAtmosphere>
+    {(dark || artwork) && (
+      <div
+        className={cn(
+          "pointer-events-none absolute inset-y-0 right-0 left-[35%] select-none [mask-image:linear-gradient(105deg,transparent_10%,black_85%)] max-sm:inset-x-0",
+          dark
+            ? "text-background-rich opacity-50 max-sm:opacity-25"
+            : "text-primary opacity-20 max-sm:opacity-10",
+        )}
+      >
+        <EvolvingAscii
+          artwork={artwork ?? "commerce"}
+          cycle={dark ? ["commerce", "console", "cart"] : undefined}
+        />
+      </div>
     )}
-    <div className="marketing-cell relative min-w-0 px-7 py-16 max-sm:px-4 max-sm:py-10 [&>p]:max-w-[70ch]">
+    <div
+      className={cn(
+        "marketing-cell relative min-w-0 px-7 max-sm:px-4 [&>p]:max-w-[70ch]",
+        dark
+          ? "w-full pt-36 pb-24 max-sm:pt-32 max-sm:pb-16"
+          : "flex min-h-[480px] flex-col justify-center py-16 max-sm:min-h-0 max-sm:py-12",
+      )}
+    >
       {eyebrow && <MarketingEyebrow>{eyebrow}</MarketingEyebrow>}
-      <h1>{title}</h1>
+      <h1 className="max-w-[920px] text-[clamp(3rem,5.2vw,4.8rem)] leading-[1.025] tracking-[-0.043em] max-sm:text-[43px] max-sm:tracking-[-0.036em]">
+        {title}
+      </h1>
       <p
         className={cn(
-          "marketing-lead mt-4 max-w-[720px] text-lg leading-relaxed",
+          "marketing-lead mt-6 max-w-[720px] text-lg leading-relaxed max-sm:text-base",
           dark ? "text-background-rich/85" : "text-foreground-dimmed",
         )}
       >
@@ -144,6 +162,7 @@ export namespace MarketingHero {
     description: string;
     actions?: readonly { label: string; href: string }[];
     dark?: boolean;
+    artwork?: EvolvingAscii.Kind;
     children?: ReactNode;
   };
 }
@@ -153,9 +172,13 @@ export const MarketingClosing = ({
   description,
   actions,
 }: MarketingClosing.Props) => (
-  <MarketingBand className="marketing-closing relative m-3 overflow-hidden rounded-xl border-0 bg-linear-to-br from-emphasis-dimmed via-emphasis to-emphasis-rich text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_20%,transparent)] [--rail-cross:transparent] max-sm:m-2 max-sm:rounded-lg [&>.marketing-rail]:border-y-0 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden [&_.marketing-guides_span]:before:hidden [&_.marketing-guides_span]:after:hidden">
-    <div className="pointer-events-none absolute inset-y-0 right-0 left-[30%] select-none text-background-rich opacity-40 [mask-image:linear-gradient(90deg,transparent,black_35%)] max-sm:inset-x-0 max-sm:opacity-20">
-      <EvolvingAscii artwork="closing" className="size-full" />
+  <MarketingBand className="marketing-closing relative m-3 overflow-hidden rounded-xl border-0 bg-linear-to-br from-emphasis-dimmed via-emphasis to-primary-dimmed text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_20%,transparent)] [--rail-cross:transparent] max-sm:m-2 max-sm:rounded-lg [&>.marketing-rail]:border-y-0 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden [&_.marketing-guides_span]:before:hidden [&_.marketing-guides_span]:after:hidden">
+    <div
+      aria-hidden="true"
+      className="pointer-events-none absolute inset-y-0 left-1/2 w-[calc(100dvw-24px)] -translate-x-1/2 bg-radial-[at_bottom_left] from-primary/40 via-primary-dimmed/25 to-transparent max-sm:w-[calc(100dvw-16px)]"
+    />
+    <div className="pointer-events-none absolute inset-y-0 left-1/2 w-[calc(100dvw-24px)] -translate-x-1/2 select-none text-background-rich opacity-40 [mask-image:linear-gradient(90deg,transparent,black_45%)] max-sm:w-[calc(100dvw-16px)] max-sm:opacity-15">
+      <EvolvingAscii artwork="closing" fit="cover" className="size-full" />
     </div>
     <div className="marketing-cell relative flex min-h-[480px] flex-col justify-center px-7 py-16 max-sm:min-h-[460px] max-sm:px-4 max-sm:py-12">
       <h2 className="relative max-w-[760px] text-background-rich">{title}</h2>

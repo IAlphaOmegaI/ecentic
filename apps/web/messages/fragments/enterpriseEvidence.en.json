@@ -13,7 +13,7 @@
       "pendingNote": "This review includes incomplete evidence. Pending values and unapproved findings are omitted from the normal site."
     },
     "simulations": {
-      "title": "The same catalog, three different answers.",
+      "title": "What assistants select in a simulated purchase.",
       "description": "Share of simulated purchases in which each assistant picked the same product.",
       "caption": "{sampleSize} simulated purchases on the same catalog, 2026. Simulated decisions, not live traffic.",
       "takeaway": "Assistants can choose differently. Compare your products across the three models in ecentic’s store scans, then improve the verified data they read.",

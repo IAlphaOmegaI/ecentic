@@ -6,12 +6,10 @@ import {
   catalogFindings,
   duaEvidence,
   evidenceSources,
-  marketContext,
   simulationEvidence,
 } from "@/content/marketing-evidence";
 import { Link } from "@/i18n/navigation";
 import DuaLogo from "@/public/partners/dua-flavours.png";
-import { EvidenceArtwork } from "./animated-ascii";
 import { EvidenceFrame } from "./evidence";
 import { canPublishEvidence, selectPublishedEvidence } from "./evidence-policy";
 import { EvidenceMeter } from "./evidence-view";
@@ -27,34 +25,26 @@ export const SimulationEvidence = async ({
     getFormatter(),
     getTranslations("enterpriseEvidence.simulations"),
   ]);
-  const models = [...simulationEvidence.models].sort(
-    (first, second) => (second.rate ?? -1) - (first.rate ?? -1),
-  );
+  const models = simulationEvidence.models
+    .filter((model) => model.rate !== null)
+    .sort((first, second) => second.rate - first.rate);
+  if (models.length === 0) return null;
+
   const source = copy.sources[simulationEvidence.sourceKey];
   const rows = models.map((model) => ({
     id: model.id,
     label: copy.simulations.models[model.id],
     percentage: model.rate,
-    value:
-      model.rate === null
-        ? copy.simulations.ratePending
-        : format.number(model.rate / 100, {
-            style: "percent",
-            maximumFractionDigits: 1,
-          }),
-    count:
-      model.count === null
-        ? copy.presentation.unknown
-        : format.number(model.count),
-    total:
-      model.total === null
-        ? copy.presentation.unknown
-        : format.number(model.total),
+    value: format.number(model.rate / 100, {
+      style: "percent",
+      maximumFractionDigits: 1,
+    }),
   }));
 
   return (
     <EvidenceFrame
       id={id}
+      compact
       title={copy.simulations.title}
       description={copy.simulations.description}
       note={copy.simulations.takeaway}
@@ -62,14 +52,6 @@ export const SimulationEvidence = async ({
         sampleSize: format.number(simulationEvidence.sampleSize),
       })}
       source={source}
-      pending={review ? copy.simulations.pending : undefined}
-      columns={[
-        copy.simulations.headers.model,
-        copy.simulations.headers.rate,
-        copy.simulations.headers.count,
-        copy.simulations.headers.total,
-      ]}
-      rows={rows.map((row) => [row.label, row.value, row.count, row.total])}
     >
       <div className="divide-y divide-accent-foreground">
         {rows.map((row) => (
@@ -78,13 +60,8 @@ export const SimulationEvidence = async ({
             label={row.label}
             value={row.value}
             percentage={row.percentage}
-            detail={`${row.label}: ${row.value}. ${copy.simulations.countsPending} ${copy.simulations.methodPending}`}
+            detail={`${row.label}: ${row.value}. ${copy.simulations.description}`}
             source={source}
-            pending={
-              row.percentage === null
-                ? copy.presentation.dataPending
-                : undefined
-            }
           />
         ))}
       </div>
@@ -112,36 +89,27 @@ export const CatalogFindings = async ({
     const content = copy.findings.rows[finding.id];
     const share = format.number(finding.percentage / 100, { style: "percent" });
     const total = format.number(finding.total);
-    const count =
-      finding.failureCount === null
-        ? copy.presentation.unknown
-        : format.number(finding.failureCount);
     const observed =
       finding.failureCount === null
         ? translate("roundedDetail", {
             percentage: format.number(finding.percentage),
             total,
           })
-        : translate("count", { count, total });
+        : translate("count", {
+            count: format.number(finding.failureCount),
+            total,
+          });
     const value = finding.failureCount === null ? share : observed;
     const company = copy.findings.companies[finding.companyId];
-    const pending =
-      finding.approval === "pending"
-        ? copy.presentation.approvalPending
-        : undefined;
-
     return {
       id: finding.id,
       label: content.label,
       company,
       percentage: finding.percentage,
-      share,
       total,
-      count,
       value,
       detail: `${content.label}: ${observed}${observed.endsWith(".") ? "" : "."} ${content.detail}`,
       source: copy.sources[finding.sourceKey],
-      pending,
     };
   });
 
@@ -154,20 +122,6 @@ export const CatalogFindings = async ({
       caption={copy.findings.caption}
       source={copy.sources.catalogAudits2026}
       pending={review ? copy.presentation.pendingNote : undefined}
-      columns={[
-        copy.findings.headers.finding,
-        copy.findings.headers.company,
-        copy.findings.headers.share,
-        copy.findings.headers.count,
-        copy.findings.headers.total,
-      ]}
-      rows={rows.map((row) => [
-        row.pending ? `${row.label} (${row.pending})` : row.label,
-        row.company,
-        row.share,
-        row.count,
-        row.total,
-      ])}
     >
       <div className="divide-y divide-accent-foreground">
         {rows.map((row) => (
@@ -179,7 +133,6 @@ export const CatalogFindings = async ({
             detail={row.detail}
             source={row.source}
             meta={`${row.company} · ${copy.findings.headers.total}: ${row.total}`}
-            pending={row.pending}
           />
         ))}
       </div>
@@ -234,7 +187,7 @@ export const DuaEvidence = async ({
         </div>
       </div>
       <div className="relative flex min-w-0 flex-col justify-center gap-4 border-accent-foreground border-t bg-background-dimmed px-7 py-10 max-sm:px-4 md:border-t-0 md:border-l">
-        <p className="font-heading font-medium text-[clamp(5rem,10vw,9rem)] text-primary tabular-nums leading-none tracking-[-0.06em]">
+        <p className="whitespace-nowrap font-body font-medium text-[clamp(5rem,10vw,9rem)] text-primary proportional-nums leading-none tracking-[-0.06em]">
           {figure}
         </p>
         <p className="max-w-[28ch] text-foreground text-xl leading-snug">
@@ -259,50 +212,8 @@ export namespace DuaEvidence {
   export type Props = { id?: string };
 }
 
-export const MarketEvidence = async ({
-  id = "market-context-review",
-}: MarketEvidence.Props) => {
-  if (process.env["NEXT_PUBLIC_REVIEW"] !== "1") return null;
-
-  const { enterpriseEvidence: copy } = await getMessages();
-
-  return (
-    <section
-      id={id}
-      aria-labelledby={`${id}-title`}
-      className="relative mt-8 border-accent-foreground border-t bg-background-dimmed px-7 py-8 max-sm:px-4"
-    >
-      <EvidenceArtwork
-        kind="market"
-        className="pointer-events-none absolute top-4 right-0 hidden text-primary/30 lg:block"
-      />
-      <h3 id={`${id}-title`} className="relative">
-        {copy.market.title}
-      </h3>
-      <p className="relative mt-4 max-w-[60ch] text-foreground">
-        {copy.market.description}
-      </p>
-      <div className="relative mt-6 grid gap-6 md:grid-cols-3">
-        {marketContext.map((item) => (
-          <figure
-            key={item.id}
-            className="border-accent-foreground border-t pt-4"
-          >
-            <p className="font-medium text-foreground-rich">
-              {copy.market.rows[item.id]}
-            </p>
-            <p className="mt-3 text-foreground">
-              {copy.presentation.dataPending}
-            </p>
-            <figcaption className="mt-4 text-foreground text-sm">
-              {copy.presentation.source}: {copy.sources[item.sourceKey]}
-            </figcaption>
-          </figure>
-        ))}
-      </div>
-    </section>
-  );
-};
+/** No primary market statistic is verified yet, including in review mode. */
+export const MarketEvidence = (_props: MarketEvidence.Props) => null;
 
 export namespace MarketEvidence {
   export type Props = { id?: string };

@@ -48,7 +48,8 @@ Square full-width actions remain appropriate inside editorial cards, with canvas
 sides. Inputs and selectors retain the shared 2 px corners; native tabs retain their own rounding.
 The large blue hero uses equal 12 px margins above and beside it (8 px on mobile), a 100dvh minimum
 height, and centered content rails. Its blue surface continues behind the closed navbar. The
-closing banner uses the same inset geometry with the dark `emphasis` surface. Only vertical guides
+closing banner uses the same inset geometry with a charcoal-to-brand-navy gradient and a restrained
+blue glow. Its character artwork uses cover sizing and crops at the rounded boundary. Only vertical guides
 pass through these surfaces. Each shared border and junction has one owner; use crosses at actual
 intersections without stacking duplicate lines or marks.
 
@@ -62,13 +63,18 @@ them hidden through the following source/footer area.
 Decorative ASCII is literal text. Dense character silhouettes evolve at a low frequency and pause
 under reduced motion, outside the viewport and in hidden tabs. The channel chronology is a
 continuous winding character path rather than isolated ASCII cards. The footer ends with a large,
-legible character-based ecentic wordmark.
+legible character-based ecentic wordmark. Evidence uses proper scaled charts; reserve character art
+for decoration. Omit unavailable metrics and render count labels on one line with proportional
+sans numerals.
 
 The navbar uses six masked progressive backdrop-blur layers with no bottom rule. Desktop menus
 participate in document flow but opening, switching and closing them must preserve the user's
 scroll position. Every destination occupies its own grid cell, with shared row tracks and blue text
-on hover/focus. Remove repeated generic destination icons; retain actual provider logos only where
-all peers use them consistently. See [the current annotation record](../marketing/annotation-pass-v4.md),
+on hover/focus. Dropdown grids use the wider navbar datum; the featured row has a dimmed surface,
+and category headings may use distinct Nucleo icons. Mobile navigation and account actions join at
+one shared seam; the language selector is full width. Remove repeated generic destination icons;
+retain actual provider logos only where
+all peers use them consistently. See [the current annotation record](../marketing/annotation-pass-v5.md),
 [the delivery record](../marketing/enterprise-rebuild.md) and
 [ASCII provenance](../marketing/ascii-text-provenance.md).
 

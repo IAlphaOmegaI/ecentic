@@ -5,6 +5,7 @@ import { getLocale, getMessages } from "next-intl/server";
 import type { ReactNode } from "react";
 import { Footer } from "@/components/footer";
 import { JsonLd } from "@/components/json-ld";
+import type { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { fonts } from "@/components/marketing/fonts";
 import { Navbar } from "@/components/navbar";
 import { localizePath } from "@/i18n/locale";
@@ -36,7 +37,7 @@ export const MarketingShell = async ({ children }: MarketingShell.Props) => {
   return (
     <div
       className={cn(
-        "marketing-grid-pattern marketing-site text-(length:--text-base) bg-background font-body text-foreground leading-[1.6] [--rail-color:var(--color-accent-foreground)] [--rail-cross:var(--color-cross)] [color-scheme:light] [overflow-anchor:none] [font-synthesis:none] motion-reduce:[&_*]:animate-none motion-reduce:[&_*]:scroll-auto motion-reduce:[&_*]:transition-none [&_:where(a,button,input,select,textarea):focus-visible]:outline-2 [&_:where(a,button,input,select,textarea):focus-visible]:outline-primary-text [&_:where(a,button,input,select,textarea):focus-visible]:outline-offset-4 [&_:where(button,[role=button])]:duration-160 [&_:where(button,[role=button])]:ease-[cubic-bezier(0.23,1,0.32,1)] [&_:where(div:has(>input),div:has(>textarea))]:rounded-xs [&_:where(input,textarea,select,[role=combobox])]:rounded-xs [&_p]:text-pretty [:where(&)_:where(h1)]:max-w-[1040px] [:where(&)_:where(h1)]:text-[clamp(2.75rem,5.5vw,5rem)] [:where(&)_:where(h1,h2,h3,h4)]:text-balance [:where(&)_:where(h1,h2,h3,h4)]:font-heading [:where(&)_:where(h1,h2,h3,h4)]:font-medium [:where(&)_:where(h1,h2,h3,h4)]:text-foreground-rich [:where(&)_:where(h1,h2,h3,h4)]:leading-[1.08] [:where(&)_:where(h1,h2,h3,h4)]:tracking-[-0.035em] [:where(&)_:where(h2)]:max-w-[900px] [:where(&)_:where(h2)]:text-[clamp(2rem,3.6vw,3.5rem)] [:where(&)_:where(h3)]:text-[clamp(1.4rem,2vw,1.85rem)]",
+        "marketing-grid-pattern marketing-site text-(length:--text-base) bg-background font-body text-foreground leading-[1.6] [--rail-color:var(--color-accent-foreground)] [--rail-cross:var(--color-cross)] [color-scheme:light] [font-synthesis:none] [overflow-anchor:none] motion-reduce:[&_*]:animate-none motion-reduce:[&_*]:scroll-auto motion-reduce:[&_*]:transition-none [&_:where(a,button,input,select,textarea):focus-visible]:outline-2 [&_:where(a,button,input,select,textarea):focus-visible]:outline-primary-text [&_:where(a,button,input,select,textarea):focus-visible]:outline-offset-4 [&_:where(button,[role=button])]:duration-160 [&_:where(button,[role=button])]:ease-[cubic-bezier(0.23,1,0.32,1)] [&_:where(div:has(>input),div:has(>textarea))]:rounded-xs [&_:where(input,textarea,select,[role=combobox])]:rounded-xs [&_p]:text-pretty [:where(&)_:where(h1)]:max-w-[1040px] [:where(&)_:where(h1)]:text-[clamp(2.75rem,5.5vw,5rem)] [:where(&)_:where(h1,h2,h3,h4)]:text-balance [:where(&)_:where(h1,h2,h3,h4)]:font-heading [:where(&)_:where(h1,h2,h3,h4)]:font-medium [:where(&)_:where(h1,h2,h3,h4)]:text-foreground-rich [:where(&)_:where(h1,h2,h3,h4)]:leading-[1.08] [:where(&)_:where(h1,h2,h3,h4)]:tracking-[-0.035em] [:where(&)_:where(h2)]:max-w-[900px] [:where(&)_:where(h2)]:text-[clamp(2rem,3.6vw,3.5rem)] [:where(&)_:where(h3)]:text-[clamp(1.4rem,2vw,1.85rem)]",
         fonts,
       )}
     >
@@ -124,16 +125,17 @@ export const MarketingSection = ({
   return (
     <MarketingBand
       id={section.id}
-      className={
+      className={cn(
+        blocks && "[&>.marketing-rail>.marketing-guides]:hidden",
         section.field
           ? "marketing-field bg-background [&>.marketing-rail]:bg-background-dimmed [&_.marketing-note]:text-foreground"
-          : undefined
-      }
+          : undefined,
+      )}
     >
       <div
         className={cn(
-          "marketing-cell relative min-w-0 px-7 pt-24 max-sm:px-4 max-sm:pt-14 [&>p]:max-w-[70ch]",
-          blocks || ending ? "pb-12 max-sm:pb-8" : "pb-24 max-sm:pb-14",
+          "marketing-cell relative min-w-0 px-7 pt-16 max-sm:px-4 max-sm:pt-10 [&>p]:max-w-[70ch]",
+          blocks || ending ? "pb-8" : "pb-16 max-sm:pb-10",
         )}
       >
         {section.eyebrow && (
@@ -153,12 +155,23 @@ export const MarketingSection = ({
       </div>
       {items && items.length > 0 && (
         <div
-          className="marketing-grid grid grid-cols-3 border-[var(--rail-color)] border-b data-[columns=1]:grid-cols-1 data-[columns=2]:grid-cols-2 data-[columns=4]:grid-cols-4 data-[columns=5]:grid-cols-5 max-sm:grid-cols-1 max-sm:data-[columns]:grid-cols-1 max-[801px]:grid-cols-2 max-[801px]:data-[columns]:grid-cols-2 [&>*]:min-w-0 [&>*]:border-[var(--rail-color)] [&>*]:border-t [&>*]:border-r [&>*]:px-7 [&>*]:py-8 max-sm:[&>*]:border-r-0 max-sm:[&>*]:px-4 max-sm:[&>*]:py-7 min-[801px]:data-ordered:[&>article]:py-10 [&_.marketing-item-link]:mt-7 [&_.marketing-item-link]:inline-flex [&_.marketing-item-link]:items-center [&_.marketing-item-link]:gap-2 [&_a:hover]:underline [&_a]:text-primary-text [&_a]:decoration-1 [&_a]:underline-offset-4 [&_h3]:max-w-[24ch] min-[801px]:data-ordered:[&_h3]:max-w-[20ch] [&_p]:mt-4"
+          className="marketing-section-grid marketing-grid grid grid-cols-3 border-[var(--rail-color)] border-b data-[columns=1]:grid-cols-1 data-[columns=2]:grid-cols-2 data-[columns=4]:grid-cols-4 data-[columns=5]:grid-cols-5 max-sm:grid-cols-1 max-sm:data-[columns]:grid-cols-1 max-[801px]:grid-cols-2 max-[801px]:data-[columns]:grid-cols-2 [&>*]:min-w-0 [&>*]:border-[var(--rail-color)] [&>*]:border-t [&>*]:border-r [&>*]:px-7 [&>*]:py-8 max-sm:[&>*]:border-r-0 max-sm:[&>*]:px-4 max-sm:[&>*]:py-7 min-[801px]:data-ordered:[&>article]:py-10 [&_.marketing-item-link]:mt-7 [&_.marketing-item-link]:inline-flex [&_.marketing-item-link]:items-center [&_.marketing-item-link]:gap-2 [&_a:hover]:underline [&_a]:text-primary-text [&_a]:decoration-1 [&_a]:underline-offset-4 [&_h3]:max-w-[24ch] min-[801px]:data-ordered:[&_h3]:max-w-[20ch] [&_p]:mt-4"
           data-columns={Math.min(section.columns ?? 3, items.length)}
           data-ordered={section.ordered || undefined}
         >
           {items.map((item, index) => (
-            <article key={item.title}>
+            <article
+              key={item.title}
+              className={cn(
+                section.field && "bg-linear-to-br to-transparent",
+                section.field &&
+                  (index === 0
+                    ? "from-primary/8 [&_h3]:text-primary-text"
+                    : index === 1
+                      ? "from-info/8 [&_h3]:text-info"
+                      : "from-secondary/8 [&_h3]:text-secondary"),
+              )}
+            >
               {section.ordered && (
                 <span className="marketing-step-index mb-[30px] block font-heading text-[42px] text-primary-text leading-none">
                   {String(index + 1).padStart(2, "0")}
@@ -182,7 +195,7 @@ export const MarketingSection = ({
         </div>
       )}
       {rows && rows.length > 0 && (
-        <dl className="marketing-rows border-[var(--rail-color)] border-b [&>div]:grid [&>div]:grid-cols-[minmax(140px,1fr)_2fr] [&>div]:gap-7 [&>div]:border-[var(--rail-color)] [&>div]:border-t [&>div]:px-7 [&>div]:py-6 max-sm:[&>div]:grid-cols-1 max-sm:[&>div]:gap-2 max-sm:[&>div]:px-4 [&_dd]:m-0 [&_dt]:font-medium [&_dt]:text-foreground-rich">
+        <dl className="marketing-section-grid marketing-rows border-[var(--rail-color)] border-b [&>div]:grid [&>div]:grid-cols-[minmax(140px,1fr)_2fr] [&>div]:gap-7 [&>div]:border-[var(--rail-color)] [&>div]:border-t [&>div]:px-7 [&>div]:py-6 max-sm:[&>div]:grid-cols-1 max-sm:[&>div]:gap-2 max-sm:[&>div]:px-4 [&_dd]:m-0 [&_dt]:font-medium [&_dt]:text-foreground-rich">
           {rows.map((row) => (
             <div key={row.label}>
               <dt>{row.label}</dt>
@@ -199,11 +212,10 @@ export const MarketingSection = ({
         </dl>
       )}
       {children}
-      {(blocks || ending) && (
+      {ending && (
         <div
           className={cn(
-            "marketing-cell relative min-w-0 px-7 pb-24 max-sm:px-4 max-sm:pb-14 [&>.marketing-actions:first-child]:mt-0 [&>p]:max-w-[70ch]",
-            ending && "pt-12 max-sm:pt-8",
+            "marketing-cell relative min-w-0 px-7 py-8 max-sm:px-4 [&>.marketing-actions:first-child]:mt-0 [&>p]:max-w-[70ch]",
           )}
         >
           {section.note && (
@@ -222,6 +234,7 @@ export const MarketingPage = async ({
   content,
   path,
   darkHero = false,
+  heroArtwork,
   heroChildren,
   children,
   sectionChildren,
@@ -265,13 +278,14 @@ export const MarketingPage = async ({
           ]
         }
         dark={darkHero}
+        artwork={heroArtwork}
       >
         {heroChildren}
       </MarketingHero>
       {facts && facts.length > 0 && (
         <MarketingBand>
           <div
-            className="marketing-grid grid grid-cols-3 border-[var(--rail-color)] border-b data-[columns=1]:grid-cols-1 data-[columns=2]:grid-cols-2 data-[columns=4]:grid-cols-4 data-[columns=5]:grid-cols-5 max-sm:grid-cols-1 max-sm:data-[columns]:grid-cols-1 max-[801px]:grid-cols-2 max-[801px]:data-[columns]:grid-cols-2 [&>*]:min-w-0 [&>*]:border-[var(--rail-color)] [&>*]:border-t [&>*]:border-r [&>*]:px-7 [&>*]:py-8 max-sm:[&>*]:border-r-0 max-sm:[&>*]:px-4 max-sm:[&>*]:py-7 min-[801px]:data-ordered:[&>article]:py-10 [&_.marketing-item-link]:mt-7 [&_.marketing-item-link]:inline-flex [&_.marketing-item-link]:items-center [&_.marketing-item-link]:gap-2 [&_a:hover]:underline [&_a]:text-primary-text [&_a]:decoration-1 [&_a]:underline-offset-4 [&_h3]:max-w-[24ch] min-[801px]:data-ordered:[&_h3]:max-w-[20ch] [&_p]:mt-4"
+            className="marketing-section-grid marketing-grid grid grid-cols-3 border-[var(--rail-color)] border-b data-[columns=1]:grid-cols-1 data-[columns=2]:grid-cols-2 data-[columns=4]:grid-cols-4 data-[columns=5]:grid-cols-5 max-sm:grid-cols-1 max-sm:data-[columns]:grid-cols-1 max-[801px]:grid-cols-2 max-[801px]:data-[columns]:grid-cols-2 [&>*]:min-w-0 [&>*]:border-[var(--rail-color)] [&>*]:border-t [&>*]:border-r [&>*]:px-7 [&>*]:py-8 max-sm:[&>*]:border-r-0 max-sm:[&>*]:px-4 max-sm:[&>*]:py-7 min-[801px]:data-ordered:[&>article]:py-10 [&_.marketing-item-link]:mt-7 [&_.marketing-item-link]:inline-flex [&_.marketing-item-link]:items-center [&_.marketing-item-link]:gap-2 [&_a:hover]:underline [&_a]:text-primary-text [&_a]:decoration-1 [&_a]:underline-offset-4 [&_h3]:max-w-[24ch] min-[801px]:data-ordered:[&_h3]:max-w-[20ch] [&_p]:mt-4"
             data-columns={facts.length}
           >
             {facts.map((fact) => (
@@ -334,6 +348,7 @@ export namespace MarketingPage {
     content: Content;
     path: string;
     darkHero?: boolean;
+    heroArtwork?: EvolvingAscii.Kind;
     heroChildren?: ReactNode;
     children?: ReactNode;
     sectionChildren?: Record<string, ReactNode>;

@@ -9,16 +9,17 @@ export const BusinessChallenges = ({
     {items.map((item) => (
       <article
         key={item.before}
-        className="grid border-accent-foreground border-t md:grid-cols-2"
+        data-columns="2"
+        className="marketing-section-grid marketing-grid grid border-accent-foreground border-t sm:grid-cols-2"
       >
-        <div className="border-accent-foreground p-4 sm:p-8 md:border-r">
-          <p className="marketing-note text-(length:--text-sm) mt-6 text-foreground-dimmed">
+        <div className="border-accent-foreground px-4 py-8 sm:border-r sm:px-7">
+          <p className="marketing-note text-(length:--text-sm) text-foreground-dimmed">
             {labels.before}
           </p>
           <h3 className="mt-4">{item.before}</h3>
         </div>
-        <div className="p-4 sm:p-8">
-          <p className="marketing-note text-(length:--text-sm) mt-6 text-foreground-dimmed">
+        <div className="bg-linear-to-br from-primary/5 to-transparent px-4 py-8 sm:px-7">
+          <p className="marketing-note text-(length:--text-sm) text-primary-text">
             {labels.after}
           </p>
           <p className="mt-4">{item.after}</p>

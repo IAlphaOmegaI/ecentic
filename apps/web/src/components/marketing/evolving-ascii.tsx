@@ -60,6 +60,7 @@ export const useAsciiFrame = () => {
 export const EvolvingAscii = ({
   artwork: kind = "cart",
   cycle,
+  fit = "contain",
   className,
 }: EvolvingAscii.Props) => {
   const { target, frame, active } = useAsciiFrame();
@@ -90,11 +91,18 @@ export const EvolvingAscii = ({
       data-ascii-frame={frame}
       initial={false}
       className={cn(
-        "pointer-events-none grid size-full select-none place-items-center overflow-hidden text-inherit [container-type:size]",
+        "pointer-events-none grid size-full grid-cols-1 grid-rows-1 select-none place-items-center overflow-hidden text-inherit [container-type:size]",
         className,
       )}
     >
-      <pre className="m-0 w-[73.2em] overflow-visible whitespace-pre bg-transparent p-0 text-left font-medium font-mono text-[min(calc(100cqw/73.2),calc(100cqh/56))] text-inherit leading-none tracking-normal [font-variant-ligatures:none]">
+      <pre
+        className={cn(
+          "m-0 w-[73.2em] overflow-visible whitespace-pre bg-transparent p-0 text-left font-medium font-mono text-inherit leading-none tracking-normal [font-variant-ligatures:none]",
+          fit === "cover"
+            ? "text-[max(calc(100cqw/73.2),calc(100cqh/56))]"
+            : "text-[min(calc(100cqw/73.2),calc(100cqh/56))]",
+        )}
+      >
         {characters}
       </pre>
     </Motion.Item>
@@ -106,6 +114,7 @@ export namespace EvolvingAscii {
   export type Props = {
     artwork?: Kind;
     cycle?: readonly Kind[];
+    fit?: "contain" | "cover";
     className?: string;
   };
 }

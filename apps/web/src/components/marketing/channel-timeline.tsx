@@ -14,6 +14,7 @@ import { commerceTimeline } from "@/content/marketing-evidence";
 import { Link } from "@/i18n/navigation";
 import { AsciiRoad } from "./ascii-road";
 import { fonts } from "./fonts";
+import { ProviderLogo } from "./provider-logo";
 
 const positions = [
   "md:col-start-1 md:row-start-1",
@@ -54,12 +55,19 @@ export const ChannelTimeline = ({ events, locale }: ChannelTimeline.Props) => {
                 render={<Link href={event.source.url} />}
                 className="group block h-auto w-full rounded-xs p-0 text-left text-foreground hover:bg-transparent focus-visible:outline-primary-text data-popup-open:bg-transparent md:text-center"
               >
-                <time
-                  dateTime={event.date}
-                  className="block font-heading text-4xl text-primary-text md:text-[48px] md:leading-none"
-                >
-                  {date.format(new Date(`${event.date}T12:00:00Z`))}
-                </time>
+                <span className="flex items-center gap-4 md:justify-center">
+                  <ProviderLogo
+                    provider={event.provider}
+                    decorative
+                    className="size-8 shrink-0 rounded-none object-center md:size-10"
+                  />
+                  <time
+                    dateTime={event.date}
+                    className="block font-heading text-4xl text-primary-text md:text-[48px] md:leading-none"
+                  >
+                    {date.format(new Date(`${event.date}T12:00:00Z`))}
+                  </time>
+                </span>
                 <span
                   aria-hidden
                   className="absolute top-12 left-6 size-4 rounded-full border-4 border-background bg-primary ring-1 ring-primary/30 md:relative md:top-auto md:left-auto md:mx-auto md:my-6 md:block md:size-3 md:border-0 md:ring-4 md:ring-background"

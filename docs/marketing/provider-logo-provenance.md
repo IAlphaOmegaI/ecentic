@@ -6,12 +6,13 @@ The latest annotated review explicitly requests the WooCommerce mark as well as 
 
 `ProviderLogo` is exported from `@/components/marketing/provider-logo`. Props: `provider: ProviderKey`, `className?`, `decorative?`, `fallback?: "text" | "none"` (default text), `label?`. `ProviderKey` and `providerLogos` are exported from `@/content/provider-logos`; the component module also re-exports the type. Use `decorative fallback="none"` beside a visible translated provider name. CSS sets maximum width and contains artwork without cropping.
 
-19 distinct provider marks cover all branded integration records, plus Gemini. Repeated surfaces reuse their owner’s mark: Google Merchant Center uses Google, Microsoft Merchant Center uses Microsoft, Amazon Shop Direct uses Amazon, ChatGPT feed uses OpenAI/ChatGPT, and Perplexity feed uses Perplexity. Their separate status labels describe ecentic support; logos do not establish a partnership or distribution entitlement.
+20 distinct provider marks cover all branded integration records, plus Gemini. Repeated surfaces reuse their owner’s mark: Google Merchant Center uses Google, Microsoft Merchant Center uses Microsoft, Amazon Shop Direct uses Amazon, ChatGPT feed uses OpenAI/ChatGPT, and Perplexity feed uses Perplexity. Their separate status labels describe ecentic support; logos do not establish a partnership or distribution entitlement.
 
 The OpenAI developer-site icon identifies the ChatGPT/OpenAI surface; the Akeneo asset is its official APIs header wordmark. Both are used unmodified. Existing repository logos remain untouched; the new component uses the freshly sourced versions to avoid recoloring or uncertain provenance.
 
 | Provider | Official source | Asset | Notes |
 | --- | --- | --- | --- |
+| meta | [Official page](https://www.meta.com/about/) | [Source asset](https://static.xx.fbcdn.net/rsrc.php/yf/r/-7pQO6hUGK_.svg) · `meta.svg` | Official Meta symbol from its site favicon, downloaded unchanged for the channel timeline. |
 | woocommerce | [Official brand page](https://woocommerce.com/brand/) | [Source asset](https://woocommerce.com/wp-content/uploads/2025/07/Woo_logo_color.svg) · `woocommerce.svg` | Trailing whitespace normalized only for annotated comments20/44; geometry/colors unchanged; viewBox183.6×47.5. |
 | shopify | [Official page](https://www.shopify.com/brand-assets) | [Source asset](https://cdn.shopify.com/shopifycloud/brochure/assets/brand-assets/shopify-logo-shopping-bag-full-color-66166b2e55d67988b56b4bd28b63c271e2b9713358cb723070a92bde17ad7d63.svg) · `shopify.svg` | Downloaded unchanged. |
 | bigcommerce | [Official page](https://www.bigcommerce.com/) | [Source asset](https://dam.bigcommerce.com/m/780d051412681442/original/BigCommerce-B-Mark-Black.svg) · `bigcommerce.svg` | Downloaded unchanged. |

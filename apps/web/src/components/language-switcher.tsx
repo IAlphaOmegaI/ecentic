@@ -2,6 +2,7 @@
 
 import { ChevronDownIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
+import { Button } from "@zenncore/web/components/button";
 import {
   Select,
   SelectItem,
@@ -104,7 +105,19 @@ export const LanguageSwitcher = ({
     <Select value={locale} onValueChange={switchLocale}>
       <SelectTrigger
         aria-label={translate("language.label")}
-        // Keep the transparent navbar chrome, with visible language and menu cues.
+        render={
+          variant === "mobile"
+            ? (props) => (
+                <Button
+                  {...props}
+                  variant="soft"
+                  color="emphasis"
+                  className={cn("w-full", className)}
+                />
+              )
+            : undefined
+        }
+        // The mobile render uses Button's native classes; desktop stays transparent.
         classList={{ icon: { root: "hidden" } }}
         className={cn(
           "h-10 min-w-0 gap-2 border-0 bg-transparent px-2 shadow-none",
@@ -116,14 +129,23 @@ export const LanguageSwitcher = ({
         <FlagImage
           src={active.flagSrc}
           alt={translate(active.labelKey)}
-          className="size-4 shrink-0"
+          className={cn("shrink-0", variant === "mobile" ? "size-5" : "size-4")}
         />
-        <SelectValue className="font-medium text-sm">
+        <SelectValue
+          className={cn(
+            "font-medium",
+            variant === "mobile" ? "text-base" : "text-sm",
+          )}
+        >
           {() => active.locale.toUpperCase()}
         </SelectValue>
         <ChevronDownIcon aria-hidden className="size-4 scale-75 opacity-70" />
       </SelectTrigger>
-      <SelectPositioner align="end" side="bottom">
+      <SelectPositioner
+        align="end"
+        side="bottom"
+        className={variant === "mobile" ? "z-70" : undefined}
+      >
         <SelectPopup>
           {OPTIONS.map(({ locale: option, flagSrc, labelKey }) => (
             <SelectItem key={option} value={option} label={translate(labelKey)}>
@@ -145,7 +167,7 @@ export const LanguageSwitcher = ({
 
 export namespace LanguageSwitcher {
   export type Props = {
-    variant?: "nav" | "inline";
+    variant?: "nav" | "mobile" | "inline";
     className?: string;
   };
 }
