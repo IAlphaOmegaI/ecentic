@@ -6,7 +6,6 @@ import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
 import { absoluteUrl, createMetadata } from "@/lib/seo";
-import Art from "@/public/images/ascii/console.png";
 import { ContentPageLayout, ContentPageSection } from "../_components/content";
 import { Faq } from "../pricing/_components/faq";
 import { Scanner } from "./_components/scanner";
@@ -34,11 +33,11 @@ export default async () => {
 
   return (
     <ContentPageLayout
+      compact
       title={`${translate("hero.title")} `}
       accent={translate("hero.accent")}
       description={translate("hero.description")}
       assurances={messages.webmcpScanner.hero.assurances}
-      art={{ source: Art, alt: translate("hero.art") }}
       actions={
         <Button color="accent" render={<Link href="#scan" />}>
           {translate("hero.action.primary")}

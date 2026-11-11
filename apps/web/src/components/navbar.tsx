@@ -245,7 +245,7 @@ export const Navbar = () => {
       )}
       ref={header}
     >
-      <NavigationBlur className="absolute inset-x-0 top-0 -bottom-12 -z-1 min-[1151px]:hidden" />
+      <NavigationBlur className="absolute inset-x-0 top-0 -bottom-12 -z-1 min-[1281px]:hidden" />
       <div
         className="marketing-nav-inner mx-auto flex h-20 max-w-[1440px] items-center gap-3 px-4 sm:gap-5 sm:px-7"
         ref={navigationRow}
@@ -265,7 +265,7 @@ export const Navbar = () => {
           />
         </Link>
         <NavigationMenu
-          className="marketing-desktop-nav ml-auto hidden min-w-0 bg-transparent p-0 min-[1151px]:block"
+          className="marketing-desktop-nav ml-auto hidden min-w-0 bg-transparent p-0 min-[1281px]:block"
           value={active}
           onValueChange={(value) =>
             setActive(typeof value === "string" ? value : null)
@@ -287,7 +287,7 @@ export const Navbar = () => {
                           }
                         />
                       }
-                      className="marketing-nav-trigger marketing-nav-pricing h-11 rounded-xs bg-transparent px-2 xs:px-2 py-3 text-sm hover:bg-transparent hover:text-primary-text focus-visible:text-primary-text"
+                      className="marketing-nav-trigger marketing-nav-pricing h-11 whitespace-nowrap rounded-xs bg-transparent px-2 xs:px-2 py-3 text-sm hover:bg-transparent hover:text-primary-text focus-visible:text-primary-text"
                     >
                       {navigation.pricing}
                     </NavigationMenuLink>
@@ -295,7 +295,7 @@ export const Navbar = () => {
                 )}
                 <NavigationMenuItem key={group.id} value={group.id}>
                   <NavigationMenuTrigger
-                    className="marketing-nav-trigger h-11 rounded-xs bg-transparent px-2 xs:px-2 py-3 text-sm xs:text-sm hover:bg-transparent hover:text-primary-text focus-visible:text-primary-text data-popup-open:bg-transparent data-popup-open:text-primary-text"
+                    className="marketing-nav-trigger h-11 whitespace-nowrap rounded-xs bg-transparent px-2 xs:px-2 py-3 text-sm xs:text-sm hover:bg-transparent hover:text-primary-text focus-visible:text-primary-text data-popup-open:bg-transparent data-popup-open:text-primary-text"
                     data-menu-trigger={group.id}
                     onKeyDown={(event) => {
                       if (!["ArrowDown", "Enter", " "].includes(event.key))
@@ -478,11 +478,11 @@ export const Navbar = () => {
             </NavigationMenuPopup>
           </NavigationMenuPositioner>
         </NavigationMenu>
-        <div className="marketing-nav-end ml-auto flex shrink-0 items-center gap-4 min-[1151px]:ml-0">
-          <div className="marketing-desktop-locale hidden min-[1151px]:block">
+        <div className="marketing-nav-end ml-auto flex shrink-0 items-center gap-4 min-[1281px]:ml-0">
+          <div className="marketing-desktop-locale hidden min-[1281px]:block">
             <LanguageSwitcher />
           </div>
-          <div className="marketing-nav-login hidden min-[1151px]:block">
+          <div className="marketing-nav-login hidden min-[1281px]:block">
             <Button
               variant="soft"
               color="emphasis"
@@ -495,7 +495,7 @@ export const Navbar = () => {
             {chrome.action.primary}
           </Button>
         </div>
-        <div className="marketing-mobile-nav block min-[1151px]:hidden">
+        <div className="marketing-mobile-nav block min-[1281px]:hidden">
           <Sheet open={mobile} onOpenChange={setMobile}>
             <SheetTrigger
               render={<Button variant="ghost" color="emphasis" size="icon" />}
@@ -506,10 +506,11 @@ export const Navbar = () => {
             <SheetPopup
               className={cn(
                 fonts,
-                "marketing-site marketing-grid-pattern marketing-mobile-sheet isolate z-70 h-dvh w-screen max-w-none gap-0 overflow-hidden border-0 bg-transparent font-body font-normal text-foreground [--rail-color:var(--color-accent-foreground)] [--rail-cross:var(--color-cross)] sm:max-w-none",
+                "marketing-site marketing-grid-pattern marketing-mobile-sheet isolate z-70 h-dvh w-screen max-w-none gap-0 overflow-hidden border-0 bg-transparent font-body font-normal text-foreground [--rail-color:var(--color-accent-foreground)] [--rail-cross:var(--color-cross)] motion-reduce:animate-none motion-reduce:transition-none sm:max-w-none motion-reduce:[&_*]:animate-none motion-reduce:[&_*]:transition-none",
               )}
               classList={{
-                backdrop: "z-65 bg-background/40",
+                backdrop:
+                  "z-65 bg-background/40 motion-reduce:animate-none motion-reduce:transition-none",
                 close: { root: "marketing-sheet-close" },
               }}
             >
@@ -665,7 +666,7 @@ export const Navbar = () => {
       </div>
       <div
         ref={menuSurface}
-        className="marketing-menu-surface absolute inset-x-0 top-full hidden min-[1151px]:block"
+        className="marketing-menu-surface absolute inset-x-0 top-full hidden min-[1281px]:block"
       >
         <NavigationBlur className="absolute inset-x-0 -top-20 -bottom-12 -z-1" />
       </div>

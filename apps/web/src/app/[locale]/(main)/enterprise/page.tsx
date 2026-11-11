@@ -13,13 +13,11 @@ import {
   createMetadata,
   organizationSchema,
 } from "@/lib/seo";
-import Art from "@/public/images/ascii/tower.png";
 import {
   ContentPageFooter,
   ContentPageLayout,
   ContentPageSection,
 } from "../_components/content";
-import { bannerAction } from "../_components/page-banner";
 import { Faq } from "../pricing/_components/faq";
 import { Capabilities } from "./_components/capabilities";
 import { Compare } from "./_components/compare";
@@ -77,18 +75,14 @@ export default async () => {
       accent={translate("hero.title.accent")}
       description={translate("hero.description")}
       assurances={assurances}
-      art={{ source: Art, alt: translate("hero.art.alt") }}
+      artwork="commerce"
       actions={
         <>
-          <BookCall color="accent" className={bannerAction.lead}>
+          <BookCall color="primary">
             {translate("hero.action.primary")}
             <ArrowRightIcon className="size-4" />
           </BookCall>
-          <Button
-            variant="outline"
-            className={bannerAction.secondary}
-            render={<Link href="/pricing" />}
-          >
+          <Button color="neutral" render={<Link href="/pricing" />}>
             {translate("hero.action.secondary")}
           </Button>
         </>

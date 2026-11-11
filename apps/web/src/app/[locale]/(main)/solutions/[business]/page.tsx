@@ -45,7 +45,6 @@ export default async ({ params }: Props) => {
     <MarketingPage
       content={{ ...content, sections }}
       path={`/solutions/${business}`}
-      darkHero={business === "enterprise"}
       sectionChildren={{
         challenges: (
           <BusinessChallenges

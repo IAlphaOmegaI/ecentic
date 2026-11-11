@@ -12,13 +12,11 @@ import {
   createMetadata,
   organizationSchema,
 } from "@/lib/seo";
-import Art from "@/public/images/ascii/shield.png";
 import {
   ContentPageFooter,
   ContentPageLayout,
   ContentPageSection,
 } from "../_components/content";
-import { bannerAction } from "../_components/page-banner";
 import { Faq } from "../pricing/_components/faq";
 import { Checks } from "./_components/checks";
 import { ValidatorSection } from "./_components/validator-section";
@@ -81,27 +79,19 @@ export default async () => {
 
   return (
     <ContentPageLayout
+      compact
       eyebrow={translate("hero.eyebrow")}
       title={translate("hero.title.primary")}
       accent={translate("hero.title.accent")}
       description={translate("hero.description")}
       assurances={assurances}
-      art={{ source: Art, alt: translate("hero.art.alt") }}
       actions={
         <>
-          <Button
-            color="accent"
-            className={bannerAction.lead}
-            render={<Link href="#validate" />}
-          >
+          <Button color="primary" render={<Link href="#validate" />}>
             {translate("hero.actions.validate")}
             <ArrowRightIcon className="size-4" />
           </Button>
-          <Button
-            variant="outline"
-            className={bannerAction.secondary}
-            render={<Link href="/ucp-playground" />}
-          >
+          <Button color="neutral" render={<Link href="/ucp-playground" />}>
             {translate("hero.actions.playground")}
           </Button>
         </>

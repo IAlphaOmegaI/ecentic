@@ -68,6 +68,7 @@ export default async ({ params }: TagPageProps) => {
 
   return (
     <EditorialLayout
+      compact
       eyebrow={translate("tag.eyebrow")}
       title={`#${slug}`}
       meta={<p>{translate("tag.count", { count: articles.length })}</p>}

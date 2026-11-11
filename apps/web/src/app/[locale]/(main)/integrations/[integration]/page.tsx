@@ -39,14 +39,16 @@ export default async ({ params }: Props) => {
     <MarketingPage
       content={{ ...content, faqs: undefined }}
       path={`/integrations/${integration.slug}`}
-      heroChildren={
-        <div className="mt-8 flex flex-wrap items-center gap-6">
-          <ProviderLogo
-            provider={integration.key}
-            decorative
-            fallback="none"
-            className="h-11 max-w-40"
-          />
+      heroMeta={
+        <div className="flex flex-wrap items-center gap-4">
+          <span className="inline-flex min-h-12 items-center rounded-md bg-background-rich px-4 py-2">
+            <ProviderLogo
+              provider={integration.key}
+              decorative
+              fallback="none"
+              className="h-8 max-w-32"
+            />
+          </span>
           <MarketingStatus status="live">{copy.statuses.live}</MarketingStatus>
         </div>
       }

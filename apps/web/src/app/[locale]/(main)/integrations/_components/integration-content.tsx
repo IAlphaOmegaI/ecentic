@@ -66,7 +66,7 @@ const IntegrationTile = ({ integration, copy }: IntegrationTile.Props) => {
       <h3>
         <Link href={integration.href}>{content.name}</Link>
       </h3>
-      <p className="mb-6">{content.description}</p>
+      <p className="mb-6 text-foreground-dimmed">{content.description}</p>
       {integration.status === "feed" && integration.interests.length > 0 && (
         <p className="!mt-0 mb-4 text-foreground-dimmed text-sm">
           {copy.directSoon}
@@ -112,17 +112,22 @@ export const IntegrationWall = ({ copy }: IntegrationWall.Props) => (
       );
       return (
         <MarketingBand key={group} id={group}>
-          <div className="marketing-cell relative grid min-w-0 gap-6 px-7 pt-24 pb-12 max-sm:px-4 max-sm:pt-14 max-sm:pb-8 md:grid-cols-[96px_1fr] [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
+          <div className="marketing-cell relative grid min-w-0 gap-6 px-7 pt-16 pb-8 max-sm:px-4 max-sm:pt-10 md:grid-cols-[96px_1fr] [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
             <span className="text-3xl text-primary" aria-hidden="true">
               {String(index + 1).padStart(2, "0")}
             </span>
             <div>
               <h2>{copy.groups[group]}</h2>
-              <p className="mt-6 max-w-3xl">{copy.groupNotes[group]}</p>
+              <p className="mt-4 max-w-3xl text-foreground-dimmed text-lg max-sm:text-base">
+                {copy.groupNotes[group]}
+              </p>
             </div>
           </div>
           {live.length > 0 && (
-            <div className="marketing-grid md:!grid-cols-2 grid grid-cols-3 border-[var(--rail-color)] border-b data-[columns=1]:grid-cols-1 data-[columns=2]:grid-cols-2 data-[columns=4]:grid-cols-4 data-[columns=5]:grid-cols-5 max-sm:grid-cols-1 max-sm:data-[columns]:grid-cols-1 max-[801px]:grid-cols-2 max-[801px]:data-[columns]:grid-cols-2 [&>*]:min-w-0 [&>*]:border-[var(--rail-color)] [&>*]:border-t [&>*]:border-r [&>*]:px-7 [&>*]:py-8 max-sm:[&>*]:border-r-0 max-sm:[&>*]:px-4 max-sm:[&>*]:py-7 min-[801px]:data-ordered:[&>article]:py-10 [&_.marketing-item-link]:mt-7 [&_.marketing-item-link]:inline-flex [&_.marketing-item-link]:items-center [&_.marketing-item-link]:gap-2 [&_a:hover]:underline [&_a]:text-primary-text [&_a]:decoration-1 [&_a]:underline-offset-4 [&_h3+p]:mt-6 [&_h3]:max-w-[24ch] min-[801px]:data-ordered:[&_h3]:max-w-[20ch]">
+            <div
+              data-columns={Math.min(2, live.length)}
+              className="marketing-grid grid grid-cols-3 border-[var(--rail-color)] border-b data-[columns=1]:grid-cols-1 data-[columns=2]:grid-cols-2 data-[columns=4]:grid-cols-4 data-[columns=5]:grid-cols-5 max-sm:grid-cols-1 max-sm:data-[columns]:grid-cols-1 max-[801px]:grid-cols-2 max-[801px]:data-[columns]:grid-cols-2 [&>*]:min-w-0 [&>*]:border-[var(--rail-color)] [&>*]:border-t [&>*]:border-r [&>*]:px-7 [&>*]:py-8 max-sm:[&>*]:border-r-0 max-sm:[&>*]:px-4 max-sm:[&>*]:py-7 min-[801px]:data-ordered:[&>article]:py-10 [&_.marketing-item-link]:mt-7 [&_.marketing-item-link]:inline-flex [&_.marketing-item-link]:items-center [&_.marketing-item-link]:gap-2 [&_a:hover]:underline [&_a]:text-primary-text [&_a]:decoration-1 [&_a]:underline-offset-4 [&_h3+p]:mt-6 [&_h3]:max-w-[24ch] min-[801px]:data-ordered:[&_h3]:max-w-[20ch]"
+            >
               {live.map((integration) => (
                 <IntegrationTile
                   key={integration.key}
@@ -133,7 +138,10 @@ export const IntegrationWall = ({ copy }: IntegrationWall.Props) => (
             </div>
           )}
           {other.length > 0 && (
-            <div className="marketing-grid grid grid-cols-3 border-[var(--rail-color)] border-b data-[columns=1]:grid-cols-1 data-[columns=2]:grid-cols-2 data-[columns=4]:grid-cols-4 data-[columns=5]:grid-cols-5 max-sm:grid-cols-1 max-sm:data-[columns]:grid-cols-1 max-[801px]:grid-cols-2 max-[801px]:data-[columns]:grid-cols-2 [&>*]:min-w-0 [&>*]:border-[var(--rail-color)] [&>*]:border-t [&>*]:border-r [&>*]:px-7 [&>*]:py-8 max-sm:[&>*]:border-r-0 max-sm:[&>*]:px-4 max-sm:[&>*]:py-7 min-[801px]:data-ordered:[&>article]:py-10 [&_.marketing-item-link]:mt-7 [&_.marketing-item-link]:inline-flex [&_.marketing-item-link]:items-center [&_.marketing-item-link]:gap-2 [&_a:hover]:underline [&_a]:text-primary-text [&_a]:decoration-1 [&_a]:underline-offset-4 [&_h3+p]:mt-6 [&_h3]:max-w-[24ch] min-[801px]:data-ordered:[&_h3]:max-w-[20ch]">
+            <div
+              data-columns={Math.min(3, other.length)}
+              className="marketing-grid grid grid-cols-3 border-[var(--rail-color)] border-b data-[columns=1]:grid-cols-1 data-[columns=2]:grid-cols-2 data-[columns=4]:grid-cols-4 data-[columns=5]:grid-cols-5 max-sm:grid-cols-1 max-sm:data-[columns]:grid-cols-1 max-[801px]:grid-cols-2 max-[801px]:data-[columns]:grid-cols-2 [&>*]:min-w-0 [&>*]:border-[var(--rail-color)] [&>*]:border-t [&>*]:border-r [&>*]:px-7 [&>*]:py-8 max-sm:[&>*]:border-r-0 max-sm:[&>*]:px-4 max-sm:[&>*]:py-7 min-[801px]:data-ordered:[&>article]:py-10 [&_.marketing-item-link]:mt-7 [&_.marketing-item-link]:inline-flex [&_.marketing-item-link]:items-center [&_.marketing-item-link]:gap-2 [&_a:hover]:underline [&_a]:text-primary-text [&_a]:decoration-1 [&_a]:underline-offset-4 [&_h3+p]:mt-6 [&_h3]:max-w-[24ch] min-[801px]:data-ordered:[&_h3]:max-w-[20ch]"
+            >
               {other.map((integration) => (
                 <IntegrationTile
                   key={integration.key}
@@ -150,39 +158,66 @@ export const IntegrationWall = ({ copy }: IntegrationWall.Props) => (
 );
 
 export const IntegrationLedger = ({ rows, copy }: IntegrationLedger.Props) => (
-  <Table className="table-fixed border-b-0 bg-transparent">
-    <TableHeader>
-      <TableRow>
-        <TableHead className="w-[24%] whitespace-normal px-3 py-5 text-sm normal-case tracking-normal sm:px-7">
-          {copy.field}
-        </TableHead>
-        <TableHead className="w-[38%] whitespace-normal px-3 py-5 text-sm normal-case tracking-normal sm:px-7">
-          {copy.read}
-        </TableHead>
-        <TableHead className="whitespace-normal px-3 py-5 text-sm normal-case tracking-normal sm:px-7">
-          {copy.write}
-        </TableHead>
-      </TableRow>
-    </TableHeader>
-    <TableBody>
+  <>
+    <div className="divide-y divide-accent-foreground border-accent-foreground border-t sm:hidden">
       {rows.map((row) => (
-        <TableRow key={row.field}>
-          <TableHead
-            scope="row"
-            className="whitespace-normal break-words px-3 py-6 align-top text-foreground text-sm normal-case tracking-normal sm:px-7 sm:text-base"
-          >
-            {row.field}
-          </TableHead>
-          <TableCell className="break-words px-3 py-6 align-top leading-relaxed sm:px-7 sm:text-base">
-            {row.read}
-          </TableCell>
-          <TableCell className="break-words px-3 py-6 align-top leading-relaxed sm:px-7 sm:text-base">
-            {row.write}
-          </TableCell>
-        </TableRow>
+        <article key={row.field} className="px-4 py-6">
+          <h3 className="text-xl">{row.field}</h3>
+          <dl className="mt-4 grid gap-4">
+            <div>
+              <dt className="font-medium text-foreground-rich text-sm">
+                {copy.read}
+              </dt>
+              <dd className="mt-2 text-foreground-dimmed leading-relaxed">
+                {row.read}
+              </dd>
+            </div>
+            <div>
+              <dt className="font-medium text-foreground-rich text-sm">
+                {copy.write}
+              </dt>
+              <dd className="mt-2 text-foreground-dimmed leading-relaxed">
+                {row.write}
+              </dd>
+            </div>
+          </dl>
+        </article>
       ))}
-    </TableBody>
-  </Table>
+    </div>
+    <Table className="table-fixed border-b-0 bg-transparent max-sm:hidden">
+      <TableHeader>
+        <TableRow>
+          <TableHead className="w-[24%] whitespace-normal px-3 py-5 text-sm normal-case tracking-normal sm:px-7">
+            {copy.field}
+          </TableHead>
+          <TableHead className="w-[38%] whitespace-normal px-3 py-5 text-sm normal-case tracking-normal sm:px-7">
+            {copy.read}
+          </TableHead>
+          <TableHead className="whitespace-normal px-3 py-5 text-sm normal-case tracking-normal sm:px-7">
+            {copy.write}
+          </TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        {rows.map((row) => (
+          <TableRow key={row.field}>
+            <TableHead
+              scope="row"
+              className="whitespace-normal break-words px-3 py-6 align-top text-foreground text-sm normal-case tracking-normal sm:px-7 sm:text-base"
+            >
+              {row.field}
+            </TableHead>
+            <TableCell className="break-words px-3 py-6 align-top leading-relaxed sm:px-7 sm:text-base">
+              {row.read}
+            </TableCell>
+            <TableCell className="break-words px-3 py-6 align-top leading-relaxed sm:px-7 sm:text-base">
+              {row.write}
+            </TableCell>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  </>
 );
 
 export const FeedExporters = ({ copy }: FeedExporters.Props) => (
@@ -226,7 +261,7 @@ export const IntegrationSources = ({
   if (sources.length === 0) return null;
   return (
     <MarketingBand>
-      <div className="marketing-cell relative min-w-0 px-7 py-24 max-sm:px-4 max-sm:py-14 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
+      <div className="marketing-cell relative min-w-0 px-7 py-16 max-sm:px-4 max-sm:py-10 [&>h2+p]:mt-6 [&>h3+p]:mt-6 [&>p]:max-w-[70ch]">
         <h2>{copy.sourceTitle}</h2>
         <ul className="mt-8 divide-y divide-accent-foreground">
           {sources.map((source) => (

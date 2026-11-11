@@ -39,24 +39,26 @@ export default async ({ params }: Props) => {
     <MarketingPage
       content={{ ...content, faqs: undefined }}
       path={channel.href}
-      heroChildren={
-        <div className="mt-8">
+      heroMeta={
+        <div className="w-full">
           <div className="flex flex-wrap items-center gap-x-8 gap-y-3">
-            <ProviderLogo
-              provider={channel.key}
-              decorative
-              fallback="none"
-              className="h-11 max-w-40"
-            />
+            <span className="inline-flex min-h-12 items-center rounded-md bg-background-rich px-4 py-2">
+              <ProviderLogo
+                provider={channel.key}
+                decorative
+                fallback="none"
+                className="h-8 max-w-32"
+              />
+            </span>
             <MarketingStatus status={channel.status}>
               {copy.statuses[channel.status]}
             </MarketingStatus>
-            <p className="text-foreground-dimmed text-sm">
+            <p className="text-background-rich/85 text-sm">
               {copy.checked}:{" "}
               <time dateTime={channel.checkedAt}>{copy.date}</time>
             </p>
           </div>
-          <p className="marketing-note text-(length:--text-sm) mt-6 text-foreground-dimmed">
+          <p className="marketing-note text-(length:--text-sm) mt-4 text-background-rich/85">
             {content.trademark}
           </p>
         </div>

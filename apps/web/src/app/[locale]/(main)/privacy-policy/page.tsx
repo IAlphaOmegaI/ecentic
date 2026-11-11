@@ -5,14 +5,11 @@ import {
   ShieldCheckIcon,
   XCircleIcon,
 } from "@zenncore/icons";
-import { cn } from "@zenncore/utils";
 import type { Metadata } from "next";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import type { ReactNode } from "react";
-import { Footer } from "@/components/footer";
 import { JsonLd } from "@/components/json-ld";
-import { fonts } from "@/components/marketing/fonts";
-import { Navbar } from "@/components/navbar";
+import { MarketingShell } from "@/components/marketing/page";
 import { localizePath } from "@/i18n/locale";
 import {
   absoluteUrl,
@@ -21,7 +18,6 @@ import {
   organizationSchema,
   seo,
 } from "@/lib/seo";
-import Art from "@/public/images/ascii/gavel.png";
 import { ContentPageSection } from "../_components/content";
 import { PageBanner } from "../_components/page-banner";
 import { renderInline } from "../_components/rich-text";
@@ -143,27 +139,17 @@ export default async () => {
   ];
 
   return (
-    <main
-      className={cn(
-        fonts,
-        "flex min-h-screen flex-col bg-background font-body [font-synthesis:none] [:where(&)_:where(h1,h2,h3,h4)]:font-heading [:where(&)_:where(h1,h2,h3,h4)]:font-medium [:where(&)_:where(strong,b)]:font-semibold",
-      )}
-    >
-      <Navbar />
-
+    <MarketingShell>
       <JsonLd schemas={structuredData} />
 
       <PageBanner
+        compact
         eyebrow={translate("privacyPolicy.hero.eyebrow")}
         title={translate("privacyPolicy.hero.title.primary")}
         accent={translate("privacyPolicy.hero.title.accent")}
         meta={lastUpdated.display}
         description={translate("privacyPolicy.hero.description")}
         assurances={assurances}
-        art={{
-          source: Art,
-          alt: translate("privacyPolicy.hero.art.alt"),
-        }}
       />
 
       <ContentPageSection
@@ -210,8 +196,6 @@ export default async () => {
           </ContentPageSection>
         );
       })}
-
-      <Footer stacked />
-    </main>
+    </MarketingShell>
   );
 };

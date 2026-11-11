@@ -1,6 +1,6 @@
 import { ArrowRightIcon, CheckIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
-import Image from "next/image";
+import Image, { type StaticImageData } from "next/image";
 import { getMessages } from "next-intl/server";
 import { BookCall } from "@/components/cal";
 import { Plus } from "@/components/plus";
@@ -8,12 +8,11 @@ import crown from "@/public/images/ascii/crown.png";
 import knight from "@/public/images/ascii/knight.png";
 import piggybank from "@/public/images/ascii/piggybank.png";
 import rocket from "@/public/images/ascii/rocket.png";
-import type { PageBanner } from "../../_components/page-banner";
 import { PricingCTA } from "./pricing-cta";
 
 type PlanId = "payg" | "compete" | "scale" | "dominate";
 
-const planArt: Record<PlanId, PageBanner.Art> = {
+const planArt: Record<PlanId, { source: StaticImageData; alt: string }> = {
   payg: { source: piggybank, alt: "" },
   compete: { source: knight, alt: "" },
   scale: { source: rocket, alt: "" },

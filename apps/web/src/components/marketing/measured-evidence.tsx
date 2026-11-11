@@ -132,6 +132,7 @@ export const CatalogFindings = async ({
             percentage={row.percentage}
             detail={row.detail}
             source={row.source}
+            direction="lower-is-better"
             meta={`${row.company} · ${copy.findings.headers.total}: ${row.total}`}
           />
         ))}

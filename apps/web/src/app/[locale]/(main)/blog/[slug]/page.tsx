@@ -210,6 +210,7 @@ export default async ({ params }: BlogPageProps) => {
       post.faqs.length > 0 && !hasFaqSection(sections, post.locale);
     return (
       <EditorialLayout
+        compact
         eyebrow={post.category}
         title={post.title}
         meta={
@@ -248,6 +249,7 @@ export default async ({ params }: BlogPageProps) => {
 
   return (
     <EditorialLayout
+      compact
       eyebrow={post.category}
       title={post.title}
       meta={

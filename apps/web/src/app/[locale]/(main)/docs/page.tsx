@@ -13,14 +13,12 @@ import {
   organizationSchema,
   seo,
 } from "@/lib/seo";
-import Art from "@/public/images/ascii/console.png";
 import {
   ContentPageFooter,
   ContentPageLayout,
   ContentPageRichText,
   ContentPageSection,
 } from "../_components/content";
-import { bannerAction } from "../_components/page-banner";
 import { DocsCode, DocsTable } from "./_components/docs";
 
 export const generateMetadata = async (): Promise<Metadata> => {
@@ -58,26 +56,18 @@ export default async () => {
 
   return (
     <ContentPageLayout
+      compact
       title={translate("hero.title")}
       accent={translate("hero.accent")}
       description={translate("hero.description")}
       assurances={content.hero.assurances}
-      art={{ source: Art, alt: translate("hero.art.alt") }}
       actions={
         <>
-          <Button
-            color="accent"
-            className={bannerAction.lead}
-            render={<a href="/openapi.json" />}
-          >
+          <Button color="primary" render={<a href="/openapi.json" />}>
             {translate("hero.action.primary")}
             <ArrowRightIcon className="size-4" />
           </Button>
-          <Button
-            variant="outline"
-            className={bannerAction.secondary}
-            render={<a href="/auth.md" />}
-          >
+          <Button color="neutral" render={<a href="/auth.md" />}>
             {translate("hero.action.secondary")}
           </Button>
         </>

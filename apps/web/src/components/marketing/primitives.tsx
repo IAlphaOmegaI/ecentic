@@ -18,7 +18,7 @@ export const MarketingBand = ({
     )}
     {...props}
   >
-    <div className="marketing-rail relative isolate mx-auto w-[min(1186px,calc(100%-56px))] border-[var(--rail-color)] border-x max-sm:w-[calc(100%-32px)] [.enterprise-journey>&]:w-auto [.enterprise-journey>&]:max-w-[1186px] max-sm:[.enterprise-journey>&]:mx-4 max-[1191px]:[.enterprise-journey>&]:mx-7">
+    <div className="marketing-rail relative isolate mx-auto w-[min(1186px,calc(100dvw-56px))] border-[var(--rail-color)] border-x max-sm:w-[calc(100dvw-32px)]">
       <div aria-hidden="true" className="marketing-guides">
         <span />
         <span />
@@ -40,26 +40,30 @@ export const MarketingActions = ({
   actions,
   tone = "default",
   className,
-}: MarketingActions.Props) => (
-  <div
-    className={cn(
-      "marketing-actions mt-6 flex flex-wrap items-center gap-4",
-      className,
-    )}
-  >
-    {actions.map((action, index) => (
-      <Button
-        key={action.href}
-        variant="default"
-        color={(index === 0) === (tone === "default") ? "primary" : "neutral"}
-        render={<Link href={action.href} />}
-      >
-        {action.label}
-        <ArrowRightIcon className="size-4" />
-      </Button>
-    ))}
-  </div>
-);
+}: MarketingActions.Props) => {
+  if (actions.length === 0) return null;
+
+  return (
+    <div
+      className={cn(
+        "marketing-actions mt-6 flex flex-wrap items-center gap-4",
+        className,
+      )}
+    >
+      {actions.map((action, index) => (
+        <Button
+          key={action.href}
+          variant="default"
+          color={(index === 0) === (tone === "default") ? "primary" : "neutral"}
+          render={<Link href={action.href} />}
+        >
+          {action.label}
+          <ArrowRightIcon className="size-4" />
+        </Button>
+      ))}
+    </div>
+  );
+};
 
 export const MarketingHeading = ({
   eyebrow,
@@ -105,13 +109,15 @@ export const MarketingHero = ({
   actions = [],
   dark = false,
   artwork,
+  meta,
+  actionsSlot,
   children,
 }: MarketingHero.Props) => (
   <MarketingBand
     className={cn(
-      "marketing-hero",
+      "marketing-hero marketing-content-hero",
       dark &&
-        "marketing-dark enterprise-blue enterprise-journey mx-3 -mt-[68px] mb-3 min-h-dvh overflow-hidden rounded-xl border-0 bg-linear-to-r from-primary-text via-primary-text to-primary text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_22%,transparent)] [--rail-cross:transparent] max-sm:mx-2 max-sm:-mt-[72px] max-sm:mb-2 max-sm:rounded-lg [&>.marketing-rail]:flex [&>.marketing-rail]:min-h-dvh [&>.marketing-rail]:items-center [&>.marketing-rail]:border-x-background-rich/15 [&>.marketing-rail]:border-y-0 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden [&_.marketing-eyebrow]:text-background-rich [&_.marketing-guides_span]:before:hidden [&_.marketing-guides_span]:after:hidden [&_.marketing-screenshot_figcaption]:text-background-rich/85 [&_:is(h1,h2,h3)]:text-background-rich",
+        "marketing-dark enterprise-blue enterprise-journey mx-3 -mt-[68px] mb-3 min-h-dvh overflow-hidden rounded-xl border-0 bg-linear-to-r from-primary-text via-primary-text to-primary text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_22%,transparent)] [--rail-cross:transparent] max-sm:mx-2 max-sm:-mt-[72px] max-sm:mb-2 max-sm:rounded-lg [&>.marketing-rail]:flex [&>.marketing-rail]:min-h-dvh [&>.marketing-rail]:items-end [&>.marketing-rail]:border-x-background-rich/15 [&>.marketing-rail]:border-y-0 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden [&_.marketing-eyebrow]:text-background-rich [&_.marketing-guides_span]:before:hidden [&_.marketing-guides_span]:after:hidden [&_.marketing-screenshot_figcaption]:text-background-rich/85 [&_.marketing-status>span]:bg-background-rich [&_.marketing-status]:text-background-rich [&_:is(h1,h2,h3)]:text-background-rich",
     )}
   >
     {(dark || artwork) && (
@@ -123,17 +129,14 @@ export const MarketingHero = ({
             : "text-primary opacity-20 max-sm:opacity-10",
         )}
       >
-        <EvolvingAscii
-          artwork={artwork ?? "commerce"}
-          cycle={dark ? ["commerce", "console", "cart"] : undefined}
-        />
+        <EvolvingAscii artwork={artwork ?? "commerce"} />
       </div>
     )}
     <div
       className={cn(
         "marketing-cell relative min-w-0 px-7 max-sm:px-4 [&>p]:max-w-[70ch]",
         dark
-          ? "w-full pt-36 pb-24 max-sm:pt-32 max-sm:pb-16"
+          ? "w-full pt-32 pb-16 max-sm:pt-28 max-sm:pb-10"
           : "flex min-h-[480px] flex-col justify-center py-16 max-sm:min-h-0 max-sm:py-12",
       )}
     >
@@ -141,15 +144,23 @@ export const MarketingHero = ({
       <h1 className="max-w-[920px] text-[clamp(3rem,5.2vw,4.8rem)] leading-[1.025] tracking-[-0.043em] max-sm:text-[43px] max-sm:tracking-[-0.036em]">
         {title}
       </h1>
+      {meta && (
+        <div className="mt-4 flex flex-wrap items-center gap-4">{meta}</div>
+      )}
       <p
         className={cn(
-          "marketing-lead mt-6 max-w-[720px] text-lg leading-relaxed max-sm:text-base",
+          "marketing-lead mt-4 max-w-[720px] text-lg leading-relaxed max-sm:text-base",
           dark ? "text-background-rich/85" : "text-foreground-dimmed",
         )}
       >
         {description}
       </p>
       <MarketingActions actions={actions} />
+      {actionsSlot && (
+        <div className="marketing-actions mt-6 flex flex-wrap items-center gap-4">
+          {actionsSlot}
+        </div>
+      )}
       {children}
     </div>
   </MarketingBand>
@@ -158,11 +169,13 @@ export const MarketingHero = ({
 export namespace MarketingHero {
   export type Props = {
     eyebrow?: string;
-    title: string;
-    description: string;
+    title: ReactNode;
+    description: ReactNode;
     actions?: readonly { label: string; href: string }[];
     dark?: boolean;
     artwork?: EvolvingAscii.Kind;
+    meta?: ReactNode;
+    actionsSlot?: ReactNode;
     children?: ReactNode;
   };
 }
@@ -198,7 +211,7 @@ export const MarketingScreenshot = ({
   width = 1280,
   height = 679,
 }: MarketingScreenshot.Props) => (
-  <figure className="marketing-screenshot mt-10 [&_figcaption]:mt-3 [&_figcaption]:text-[13px] [&_figcaption]:text-foreground-dimmed [&_img]:h-auto [&_img]:w-full [&_img]:object-contain">
+  <figure className="marketing-screenshot mt-8 [&_figcaption]:mt-3 [&_figcaption]:text-[13px] [&_figcaption]:text-foreground-dimmed [&_img]:h-auto [&_img]:w-full [&_img]:rounded-lg [&_img]:border [&_img]:border-accent-foreground [&_img]:object-contain">
     <Image
       src={src}
       alt={alt}

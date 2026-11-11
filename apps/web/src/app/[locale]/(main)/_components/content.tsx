@@ -4,9 +4,7 @@ import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import type { ReactNode } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
-import { Footer } from "@/components/footer";
-import { fonts } from "@/components/marketing/fonts";
-import { Navbar } from "@/components/navbar";
+import { MarketingShell } from "@/components/marketing/page";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
 import { PageBanner } from "./page-banner";
@@ -72,7 +70,7 @@ export const ContentPageBadge = ({
   alt,
   label,
 }: ContentPageBadge.Props) => (
-  <span className="inline-flex items-center gap-3">
+  <span className="inline-flex items-center gap-3 rounded-md bg-background-rich px-3 py-2 text-foreground">
     <Image src={logo} alt={alt} width={28} height={28} className="h-6 w-auto" />
     <span className="font-medium text-foreground text-sm">{label}</span>
   </span>
@@ -90,19 +88,10 @@ export const ContentPageLayout = async ({
   children,
   ...banner
 }: ContentPageLayout.Props) => (
-  <main
-    className={cn(
-      fonts,
-      "flex min-h-screen flex-col bg-background font-body text-foreground [font-synthesis:none] [:where(&)_:where(h1,h2,h3,h4)]:font-heading [:where(&)_:where(h1,h2,h3,h4)]:font-medium [:where(&)_:where(strong,b)]:font-semibold",
-    )}
-  >
-    <Navbar />
-
+  <MarketingShell>
     <PageBanner {...banner} />
-
     {children}
-    <Footer stacked />
-  </main>
+  </MarketingShell>
 );
 
 export namespace ContentPageLayout {
@@ -148,23 +137,21 @@ export const ContentPageSection = ({
       <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
       <div
         className={cn(
-          "relative flex min-w-0 flex-col bg-background px-7 py-24 max-sm:px-4 max-sm:py-14",
+          "relative flex min-w-0 flex-col bg-background px-7 py-16 max-sm:px-4 max-sm:py-10",
           classList?.left,
         )}
       >
-        <span className="mt-auto font-normal text-2xl text-primary">
-          {number}
-        </span>
-        <h2 className="text-4xl text-foreground-rich leading-snug">{title}</h2>
+        <span className="mb-4 font-normal text-3xl text-primary">{number}</span>
+        <h2 className="text-foreground-rich">{title}</h2>
         {description && (
-          <p className="mt-6 max-w-sm text-foreground-dimmed leading-relaxed">
+          <p className="mt-4 max-w-sm text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">
             {description}
           </p>
         )}
       </div>
       <div
         className={cn(
-          "min-w-0 bg-background px-7 py-24 max-sm:px-4 max-sm:py-14",
+          "min-w-0 bg-background px-7 py-16 max-sm:px-4 max-sm:py-10",
           classList?.body,
         )}
       >
@@ -299,8 +286,6 @@ export const ContentPageFooter = ({
     <div className="relative mx-auto flex w-[min(1186px,calc(100%-56px))] flex-col gap-4 border-accent-foreground border-x px-7 py-8 max-sm:w-[calc(100%-32px)] max-sm:px-4 md:flex-row md:items-center md:justify-between">
       <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
       <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-      <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-      <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
       <div className="flex flex-wrap items-center gap-4">
         {secondary && (
           <Button color="accent" render={<Link href={secondary.href} />}>

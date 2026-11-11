@@ -76,7 +76,7 @@ export const MarketingFaq = ({ title, items }: MarketingFaq.Props) => {
         ]}
       />
       <div className="marketing-faq grid grid-cols-[1fr_2fr] max-[801px]:grid-cols-1">
-        <div className="relative min-w-0 border-[var(--rail-color)] border-r px-7 py-16 max-sm:px-4 max-[801px]:border-r-0 max-[801px]:border-b max-[801px]:py-10">
+        <div className="relative min-w-0 border-[var(--rail-color)] border-r px-7 py-12 max-sm:px-4 max-[801px]:border-r-0 max-[801px]:border-b max-[801px]:py-8">
           <h2>{title}</h2>
         </div>
         <MarketingQuestions items={visibleItems} />
@@ -134,8 +134,8 @@ export const MarketingSection = ({
     >
       <div
         className={cn(
-          "marketing-cell relative min-w-0 px-7 pt-16 max-sm:px-4 max-sm:pt-10 [&>p]:max-w-[70ch]",
-          blocks || ending ? "pb-8" : "pb-16 max-sm:pb-10",
+          "marketing-cell relative min-w-0 px-7 pt-12 max-sm:px-4 max-sm:pt-8 [&>p]:max-w-[70ch]",
+          blocks || ending ? "pb-8" : "pb-12 max-sm:pb-8",
         )}
       >
         {section.eyebrow && (
@@ -143,12 +143,12 @@ export const MarketingSection = ({
         )}
         {section.title && <h2>{section.title}</h2>}
         {section.description && (
-          <p className="marketing-lead mt-6 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]">
+          <p className="marketing-lead mt-4 max-w-[65ch] text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">
             {section.description}
           </p>
         )}
         {paragraphs?.map((paragraph) => (
-          <p className="mt-6" key={paragraph}>
+          <p className="mt-4 text-foreground-dimmed" key={paragraph}>
             {paragraph}
           </p>
         ))}
@@ -156,7 +156,10 @@ export const MarketingSection = ({
       {items && items.length > 0 && (
         <div
           className="marketing-section-grid marketing-grid grid grid-cols-3 border-[var(--rail-color)] border-b data-[columns=1]:grid-cols-1 data-[columns=2]:grid-cols-2 data-[columns=4]:grid-cols-4 data-[columns=5]:grid-cols-5 max-sm:grid-cols-1 max-sm:data-[columns]:grid-cols-1 max-[801px]:grid-cols-2 max-[801px]:data-[columns]:grid-cols-2 [&>*]:min-w-0 [&>*]:border-[var(--rail-color)] [&>*]:border-t [&>*]:border-r [&>*]:px-7 [&>*]:py-8 max-sm:[&>*]:border-r-0 max-sm:[&>*]:px-4 max-sm:[&>*]:py-7 min-[801px]:data-ordered:[&>article]:py-10 [&_.marketing-item-link]:mt-7 [&_.marketing-item-link]:inline-flex [&_.marketing-item-link]:items-center [&_.marketing-item-link]:gap-2 [&_a:hover]:underline [&_a]:text-primary-text [&_a]:decoration-1 [&_a]:underline-offset-4 [&_h3]:max-w-[24ch] min-[801px]:data-ordered:[&_h3]:max-w-[20ch] [&_p]:mt-4"
-          data-columns={Math.min(section.columns ?? 3, items.length)}
+          data-columns={Math.min(
+            section.columns ?? (items.length === 4 ? 2 : 3),
+            items.length,
+          )}
           data-ordered={section.ordered || undefined}
         >
           {items.map((item, index) => (
@@ -173,7 +176,7 @@ export const MarketingSection = ({
               )}
             >
               {section.ordered && (
-                <span className="marketing-step-index mb-[30px] block font-heading text-[42px] text-primary-text leading-none">
+                <span className="marketing-step-index mb-6 block font-heading text-[42px] text-primary-text leading-none">
                   {String(index + 1).padStart(2, "0")}
                 </span>
               )}
@@ -202,7 +205,7 @@ export const MarketingSection = ({
               <dd>
                 {row.value}
                 {row.detail && (
-                  <p className="marketing-note text-(length:--text-sm) mt-6 text-foreground-dimmed">
+                  <p className="marketing-note text-(length:--text-sm) mt-2 text-foreground-dimmed">
                     {row.detail}
                   </p>
                 )}
@@ -233,8 +236,9 @@ export const MarketingSection = ({
 export const MarketingPage = async ({
   content,
   path,
-  darkHero = false,
+  darkHero = true,
   heroArtwork,
+  heroMeta,
   heroChildren,
   children,
   sectionChildren,
@@ -279,6 +283,7 @@ export const MarketingPage = async ({
         }
         dark={darkHero}
         artwork={heroArtwork}
+        meta={heroMeta}
       >
         {heroChildren}
       </MarketingHero>
@@ -349,6 +354,7 @@ export namespace MarketingPage {
     path: string;
     darkHero?: boolean;
     heroArtwork?: EvolvingAscii.Kind;
+    heroMeta?: ReactNode;
     heroChildren?: ReactNode;
     children?: ReactNode;
     sectionChildren?: Record<string, ReactNode>;

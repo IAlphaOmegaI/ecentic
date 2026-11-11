@@ -27,6 +27,7 @@ export default async () => {
   const content = enterpriseRecovery.api;
   return (
     <MarketingPage
+      darkHero={false}
       content={content}
       path="/docs/api"
       heroChildren={

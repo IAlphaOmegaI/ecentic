@@ -69,15 +69,28 @@ export const EvidenceMeter = ({
   detail,
   source,
   meta,
+  direction = "higher-is-better",
 }: EvidenceMeter.Props) => {
   const format = useFormatter();
+  const score =
+    direction === "higher-is-better" ? percentage : 100 - percentage;
+  const tone = (() => {
+    switch (true) {
+      case score >= 60:
+        return "success";
+      case score >= 30:
+        return "warning";
+      default:
+        return "error";
+    }
+  })();
   const share = format.number(percentage / 100, {
     style: "percent",
     maximumFractionDigits: 1,
   });
 
   return (
-    <div className="min-w-0 py-6">
+    <div className="min-w-0 py-6" data-evidence-tone={tone}>
       <EvidenceDatum detail={detail} source={source}>
         <span className="grid min-w-0 gap-4 sm:grid-cols-[max-content_minmax(0,1fr)] sm:items-start">
           <span
@@ -125,7 +138,7 @@ export const EvidenceMeter = ({
             <YAxis type="category" hide />
             <Bar
               dataKey="percentage"
-              fill="var(--color-primary)"
+              fill={`var(--color-${tone})`}
               background={{ fill: "var(--color-accent-foreground)", radius: 6 }}
               barSize={12}
               radius={6}
@@ -146,5 +159,6 @@ export namespace EvidenceMeter {
     detail: string;
     source: string;
     meta?: string;
+    direction?: "higher-is-better" | "lower-is-better";
   };
 }

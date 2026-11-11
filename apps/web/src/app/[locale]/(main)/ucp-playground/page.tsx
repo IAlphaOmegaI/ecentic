@@ -15,7 +15,6 @@ import {
   createMetadata,
   organizationSchema,
 } from "@/lib/seo";
-import Art from "@/public/images/ascii/robot.png";
 import { ANONYMOUS_MESSAGE_LIMIT } from "@/server/app/intelligence/ucp/playground-limit";
 import { ContentPageLayout } from "../_components/content";
 
@@ -109,25 +108,25 @@ export default async () => {
 
   return (
     <ContentPageLayout
+      compact
       eyebrow={translate("hero.eyebrow")}
       title={translate("hero.title.primary")}
       accent={translate("hero.title.accent")}
       description={description}
-      art={{ source: Art, alt: translate("hero.art.alt") }}
     >
       <JsonLd schemas={structuredData} />
 
-      <section className="relative w-full">
-        <div className="relative mx-auto w-[min(1186px,calc(100%-56px))] border-accent-foreground border-x border-b max-sm:w-[calc(100%-32px)]">
+      <section className="relative w-full border-accent-foreground border-b">
+        <div className="relative mx-auto w-[min(1186px,calc(100%-56px))] border-accent-foreground border-x max-sm:w-[calc(100%-32px)]">
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <div className="relative border-accent-foreground px-7 pt-24 pb-12 max-sm:px-4 max-sm:pt-14 max-sm:pb-8">
-            <h2 className="font-heading text-3xl text-foreground md:text-5xl">
+          <div className="relative border-accent-foreground px-7 pt-16 pb-8 max-sm:px-4 max-sm:pt-10">
+            <h2 className="text-foreground-rich">
               {demoTitleParts[0]}
               <br />
               {demoTitleParts[1]}
             </h2>
-            <p className="mt-6 max-w-xl font-normal text-foreground-dimmed text-lg">
+            <p className="mt-4 max-w-xl text-foreground-dimmed text-lg max-sm:text-base">
               {translate("demo.description", { limit })}
             </p>
           </div>
@@ -154,8 +153,8 @@ export default async () => {
         </div>
       </section>
 
-      <section className="relative w-full">
-        <div className="relative mx-auto flex h-[720px] w-[min(1186px,calc(100%-56px))] border-accent-foreground border-x border-b bg-background-rich max-sm:w-[calc(100%-32px)]">
+      <section className="relative w-full border-accent-foreground border-b">
+        <div className="relative mx-auto flex h-[720px] w-[min(1186px,calc(100%-56px))] border-accent-foreground border-x bg-background-rich max-sm:w-[calc(100%-32px)]">
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <Suspense fallback={<PlaygroundSkeleton />}>

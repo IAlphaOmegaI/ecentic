@@ -9,7 +9,6 @@ import {
   createMetadata,
   organizationSchema,
 } from "@/lib/seo";
-import Art from "@/public/images/ascii/handshake.png";
 import {
   ContentPageBadge,
   ContentPageFaqGrid,
@@ -78,7 +77,7 @@ export default async () => {
       eyebrow={translate("hero.eyebrow")}
       title={translate("hero.title.primary")}
       accent={translate("hero.title.accent")}
-      art={{ source: Art, alt: translate("hero.art.alt") }}
+      artwork="commerce"
       badge={
         <ContentPageBadge
           logo="/partners/techstars.svg"
@@ -102,6 +101,10 @@ export default async () => {
         number={translate("redeem.number")}
         title={translate("redeem.title")}
         description={translate("redeem.description")}
+        classList={{
+          left: "bg-background-dimmed",
+          body: "bg-background-dimmed",
+        }}
       >
         <TechstarsRedemptionForm />
       </ContentPageSection>

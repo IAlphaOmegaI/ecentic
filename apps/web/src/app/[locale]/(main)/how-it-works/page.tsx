@@ -9,7 +9,6 @@ import {
   createMetadata,
   organizationSchema,
 } from "@/lib/seo";
-import Art from "@/public/images/ascii/gears.png";
 import {
   ContentPageFooter,
   ContentPageLayout,
@@ -77,7 +76,7 @@ export default async () => {
       accent={translate("hero.title.accent")}
       description={translate("hero.description")}
       assurances={assurances}
-      art={{ source: Art, alt: translate("hero.art.alt") }}
+      artwork="commerce"
     >
       <JsonLd schemas={structuredData} />
 

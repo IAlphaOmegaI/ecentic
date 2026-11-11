@@ -5,13 +5,10 @@ import {
   ShoppingCartIcon,
   XCircleIcon,
 } from "@zenncore/icons";
-import { cn } from "@zenncore/utils";
 import type { Metadata } from "next";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
-import { Footer } from "@/components/footer";
 import { JsonLd } from "@/components/json-ld";
-import { fonts } from "@/components/marketing/fonts";
-import { Navbar } from "@/components/navbar";
+import { MarketingShell } from "@/components/marketing/page";
 import { localizePath } from "@/i18n/locale";
 import {
   absoluteUrl,
@@ -20,7 +17,6 @@ import {
   organizationSchema,
   seo,
 } from "@/lib/seo";
-import Art from "@/public/images/ascii/quill.png";
 import {
   ContentPageRichText,
   ContentPageSection,
@@ -90,27 +86,17 @@ export default async () => {
   ];
 
   return (
-    <main
-      className={cn(
-        fonts,
-        "flex min-h-screen flex-col bg-background font-body",
-      )}
-    >
-      <Navbar />
-
+    <MarketingShell>
       <JsonLd schemas={structuredData} />
 
       <PageBanner
+        compact
         eyebrow={translate("termsAndConditions.hero.eyebrow")}
         title={translate("termsAndConditions.hero.title.primary")}
         accent={translate("termsAndConditions.hero.title.accent")}
         meta={`Last updated: ${lastUpdated.display}`}
         description={translate("termsAndConditions.hero.description")}
         assurances={assurances}
-        art={{
-          source: Art,
-          alt: translate("termsAndConditions.hero.art.alt"),
-        }}
       />
 
       <ContentPageSection
@@ -157,8 +143,6 @@ export default async () => {
           </ContentPageSection>
         );
       })}
-
-      <Footer stacked />
-    </main>
+    </MarketingShell>
   );
 };

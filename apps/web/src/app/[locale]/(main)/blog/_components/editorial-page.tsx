@@ -3,13 +3,10 @@ import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import type { ReactNode } from "react";
-import { Footer } from "@/components/footer";
-import { fonts } from "@/components/marketing/fonts";
-import { Navbar } from "@/components/navbar";
+import { MarketingShell } from "@/components/marketing/page";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
 import { blogImage } from "@/lib/blog-image";
-import Art from "@/public/images/ascii/books.png";
 import { PageBanner } from "../../_components/page-banner";
 import { renderInline } from "../../_components/rich-text";
 
@@ -71,27 +68,19 @@ export const EditorialLayout = async ({
   title,
   meta,
   description,
+  compact = false,
   children,
 }: EditorialLayout.Props) => (
-  <main
-    className={cn(
-      fonts,
-      "flex min-h-screen flex-col bg-background font-body [:where(&)_:where(h1,h2,h3,h4)]:font-heading [:where(&)_:where(h1,h2,h3,h4)]:font-medium [:where(&)_:where(strong,b)]:font-semibold",
-    )}
-  >
-    <Navbar />
-
+  <MarketingShell>
     <PageBanner
       eyebrow={eyebrow}
       title={title}
       meta={meta}
       description={description}
-      art={{ source: Art, alt: "ASCII-art illustration of a stack of books" }}
+      compact={compact}
     />
-
     {children}
-    <Footer stacked />
-  </main>
+  </MarketingShell>
 );
 
 export namespace EditorialLayout {
@@ -100,6 +89,7 @@ export namespace EditorialLayout {
     title: string;
     meta?: ReactNode;
     description: string;
+    compact?: boolean;
     children: ReactNode;
   };
 }
@@ -122,7 +112,7 @@ export const EditorialSplitSection = ({
         className={cn(
           // min-w-0 lets the 5fr track shrink when the right rail has wide
           // <pre>/table content; without it the left column collapses to padding.
-          "relative flex min-w-0 flex-col px-7 py-24 max-sm:px-4 max-sm:py-14",
+          "relative flex min-w-0 flex-col px-7 py-16 max-sm:px-4 max-sm:py-10",
           thumbnail ? "overflow-hidden bg-foreground-rich" : "bg-background",
           leftClassName,
         )}
@@ -146,7 +136,7 @@ export const EditorialSplitSection = ({
       </div>
       <div
         className={cn(
-          "min-w-0 bg-background px-7 py-24 max-sm:px-4 max-sm:py-14",
+          "min-w-0 bg-background px-7 py-16 max-sm:px-4 max-sm:py-10",
           rightClassName,
         )}
       >
@@ -176,8 +166,6 @@ export const EditorialFooter = ({
     <div className="relative mx-auto flex w-[min(1186px,calc(100%-56px))] flex-col gap-4 border-accent-foreground border-x px-7 py-8 max-sm:w-[calc(100%-32px)] max-sm:px-4 md:flex-row md:items-center md:justify-between">
       <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
       <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-      <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-      <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
       <div className="flex flex-wrap items-center gap-4">
         {secondary && (
           <Button color="accent" render={<Link href={secondary.href} />}>

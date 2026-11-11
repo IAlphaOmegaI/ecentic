@@ -14,6 +14,7 @@ export default async () => {
   const { enterpriseRecovery } = await getMessages();
   return (
     <MarketingPage
+      darkHero={false}
       content={enterpriseRecovery.instructions}
       path="/ai-instructions"
       sectionChildren={{

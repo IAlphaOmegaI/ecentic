@@ -53,9 +53,11 @@ blue glow. Its character artwork uses cover sizing and crops at the rounded boun
 pass through these surfaces. Each shared border and junction has one owner; use crosses at actual
 intersections without stacking duplicate lines or marks.
 
-Journey's outer gutters use `background`; its compact native stage tabs sit inside a dimmed header,
-with a shared section heading and a distinct schematic for each stage. The selected tab and panel
-share `background-rich`. The audience section uses native tabs with distinct semantic
+The five-stage product journey is a connected roadmap with all milestones visible. Alternate copy
+and diagrams around a central spine on wide screens; use a left spine and stacked content below
+1000 px. Use schematic
+connections, records, checkout and measurement diagrams; no ASCII artwork or bottom tag strips in
+this section. Do not recreate it as a segmented tab bar. The audience section uses native tabs with distinct semantic
 accents and restrained gradients. Provider cards are outlined squares, using one column on small
 phones, two on tablets and four on desktop. Homepage integration categories use native accordions,
 with the commerce category open initially and the other categories available on demand. The original product film remains intact inside a
@@ -66,8 +68,11 @@ Decorative ASCII is literal text. Dense character silhouettes evolve at a low fr
 under reduced motion, outside the viewport and in hidden tabs. The channel chronology is a
 continuous winding character path rather than isolated ASCII cards. The footer ends with a large,
 legible character-based ecentic wordmark. Evidence uses proper scaled charts; reserve character art
-for decoration. Omit unavailable metrics and render count labels on one line with proportional
-sans numerals.
+for decoration outside the product roadmap. Omit unavailable metrics and render count labels on
+one line with proportional sans numerals. Evidence charts keep a 0–100% scale, neutral tracks and
+6 px rounded ends on both layers. Color the fill by outcome: success at 60% and above, warning
+at 30–59%, error below 30%. For failure/missing-field rates, apply the thresholds to `100 − rate`
+so a high failure rate is error, not success. Keep actual values and labels visible.
 
 The navbar uses six masked progressive backdrop-blur layers with no bottom rule. Desktop menus
 overlay the page; opening, switching and closing them preserve page geometry and the user's
@@ -77,9 +82,16 @@ on hover/focus. Dropdown grids use the wider navbar datum; the featured row has 
 and category headings may use distinct Nucleo icons. Mobile navigation and account actions join at
 one shared seam; the language selector is full width. Remove repeated generic destination icons;
 retain actual provider logos only where
-all peers use them consistently. Footer navigation categories each occupy one column. See [the current annotation record](../marketing/browser-pass-v6.md),
+all peers use them consistently. Footer navigation categories each occupy one column. See [the current annotation record](../marketing/browser-pass-v7.md),
 [the delivery record](../marketing/enterprise-rebuild.md) and
 [ASCII provenance](../marketing/ascii-text-provenance.md).
+
+These rules apply to every public route family, through the shared `MarketingShell`, `MarketingHero`,
+`MarketingSection`, `MarketingFaq` and footer. Product, integration, platform, AI-channel, solution and
+company pages inherit the inset blue hero; legal/reference pages may explicitly use a compact light
+hero. Dedicated tool and editorial layouts retain their functional content but share the canvas,
+heading hierarchy, actions, rails and chrome. Do not leave a second older visual system at `/integrations/*`
+or another nested path. Dashboard and onboarding retain their documented density and flow.
 
 ### The four-part philosophy
 
@@ -208,7 +220,7 @@ pricing, or a conversation.
 
 **Traits:**
 
-- centered `max-w-6xl` rail;
+- centered 1186 px marketing rail, shared by every public page;
 - selective full-bleed sections;
 - large display type;
 - long vertical rhythm;
@@ -326,8 +338,11 @@ It should not appear on every icon, every heading, and every border at once.
 
 ### 5.1 Typeface
 
-Use `font-body`, currently Red Hat Display through `--font-redhat-display`. It gives the system an
-engineered but human tone and supports both large editorial display and compact operational UI.
+Marketing uses the shared locally hosted font bundle: LT Superior through `font-heading` for
+headings and Red Hat Display through `font-body` for prose, controls and numeric evidence. Use
+`text-foreground-dimmed` for supporting copy. Dashboard and onboarding keep their established
+body font rules. Do not introduce a page-local font or use monospace for ordinary titles, labels
+or large marketing figures.
 
 Use `font-mono` only for:
 
@@ -353,10 +368,10 @@ Avoid the blunt regular/bold binary. Weight should reveal hierarchy before color
 
 Use this range, then adjust for line length and composition:
 
-- Primary hero: `text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight`.
-- Blue campaign or pricing hero: `text-5xl md:text-7xl font-semibold`.
-- Major section heading: `text-3xl md:text-5xl font-medium`; reserve `md:text-6xl` or
-  `md:text-[76px]` for one dominant statement, not every section.
+- Hero: shared responsive scale around 3–5rem, `font-heading font-medium`, balanced lines and tight tracking.
+- Major section heading: shared responsive scale around 2–3.5rem, `font-heading font-medium`.
+- Use one title/description structure from the shared component, with description near the heading;
+  do not repeat an eyebrow as a second giant title or leave a large empty title-to-copy gap.
 - Grid feature title: `text-2xl md:text-4xl font-medium`.
 - Lead description: `text-lg md:text-2xl font-light`.
 - Body description: `text-base` or `text-lg font-light`.
@@ -401,7 +416,8 @@ The title should describe the action, not the software area: “Connect your sto
 
 ### 5.6 Numbers
 
-Large numbers should use tabular figures when values update or align vertically. Pair a number with:
+Dashboard numbers use tabular figures when values update or align vertically. Marketing evidence
+and the DUA result use proportional body-font numerals and no wrapping. Pair a number with:
 
 - its unit;
 - its comparison period;
@@ -416,15 +432,20 @@ A number without context is decoration.
 
 ### 6.1 Marketing rail
 
-The default marketing shell is:
+Use `MarketingShell` for public pages and `MarketingBand` for major sections. The shell owns the
+shared navbar, skip link and footer. Each band spans the viewport while its inner rail is
+`w-[min(1186px,calc(100%-56px))]` (mobile: `calc(100% - 32px)`). Avoid nesting an older max-width
+page shell around these components.
 
-```tsx
-<main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-8 border-accent-foreground border-x md:gap-12">
-  {/* sections */}
-</main>
-```
+Major horizontal section seams continue to the viewport edges; internal table/accordion separators
+stay inside their own surfaces. Each line and intersection has one owner. Use the existing
+`marketing-section-grid`/rail cross renderer rather than layering another border over the same seam.
+Fade vertical guides into opaque content and keep them suppressed across consecutive uninterrupted
+surfaces. Inset blue/dark bands carry only vertical guides, clipped to their rounded background.
 
-Use `p-6 md:p-12` for major section interiors and `p-4` or `p-6` for grid cells.
+Use the shared compact heading spacing, `px-7` (`px-4` on mobile) at the content datum, and
+consistent gaps between heading, description and action. Supporting service backgrounds stay
+inside the rail rather than coloring the outside gutters.
 
 ### 6.2 Full-bleed breakout
 
@@ -564,10 +585,11 @@ Sharp by default:
 
 Rounded where the object is interactive, transient, inset, or materially separate:
 
-- `rounded-sm`: progress fills, key hints, compact tags;
-- `rounded-md`: buttons, inputs, small badges, avatars;
-- `rounded-lg`: search fields, tabs, log/code insets, popovers;
-- `rounded-xl`: a major elevated comparison or campaign panel;
+- `rounded-xs` (2 px): inputs and selectors;
+- `rounded-md` (6 px): native gradient buttons, provider marks and small media;
+- 6 px radius on both chart fills and background tracks;
+- native tab/popover rounding for their controls, not surrounding structural cells;
+- `rounded-xl` (mobile `rounded-lg`): the inset hero and closing campaign surface;
 - `rounded-2xl`: cinematic media only when the media needs a distinct frame;
 - `rounded-full`: status dots, pills, avatar circles, continuous progress tracks.
 
@@ -591,32 +613,25 @@ If a surface can be distinguished through spacing, border, and lightness, it doe
 
 ### 8.1 Landing background
 
-The landing hero uses the hands artwork from `public/images/background.webp` (two hands passing
-products between them):
+The approved landing hero is an inset blue surface: equal 12 px top/side margins (8 px on mobile),
+100dvh minimum height, and the blue surface behind the closed navbar. The text remains inside the
+centered rail. Existing evolving character artwork adds depth without covering the headline or CTA.
+`background.webp` is retained as a legacy light-hero asset; it is not the current landing recipe.
 
-- a frame sized to the headline-and-entry block, not the whole section, so the hands meet around
-  the store-URL field rather than drifting behind the product film;
-- `object-contain object-center`;
-- approximately `opacity-50` — the ASCII strokes are thin, so lower values read as noise rather
-  than hands;
-- `invert` over the light canvas;
-- keep it behind a restrained primary radial glow;
-- eager, high-priority loading — it is the page's LCP element.
+### 8.2 Content heroes and character artwork
 
-The hands imply an agent-mediated handoff — the visitor hands over their store — without resorting to
-robot imagery. Text and the entry field must remain the dominant layer; the field sits on a solid
-`bg-background` surface.
+Public product/integration/solution heroes use the same inset geometry, gradient, font hierarchy
+and native actions as the landing page. Use `MarketingHero`; do not recreate a plain square blue
+banner or a separate short hero locally. Legal/reference pages may opt into a compact light hero.
 
-### 8.2 Pricing and content hero texture
+Decorative character art must consist of actual text glyphs. Reuse `EvolvingAscii` where appropriate;
+keep its visibility/reduced-motion pause behavior, use a text-safe gradient mask, and crop cover-sized
+closing artwork at its background boundary. The five-stage product roadmap is the explicit exception:
+its visuals are schematic diagrams rather than character artwork. Existing content raster motifs
+remain acceptable where they carry genuine page identity; do not introduce dot-only substitutes.
 
-Blue content heroes may use `public/images/blog.png`:
-
-- low opacity;
-- `brightness-0 invert`;
-- biased to the right so it does not fight the headline;
-- clipped inside the blue hero.
-
-Use the texture to give a large primary surface depth, not to decorate every blue block.
+Provider identities use `ProviderLogo` with actual local brand assets and consistent rounded marks.
+Do not replace available logos with names or invented monograms. Preserve attribution/provenance.
 
 ### 8.3 Onboarding artwork
 
@@ -729,6 +744,8 @@ Respect `prefers-reduced-motion`:
 - keep progress understandable without animated interpolation;
 - do not autoplay expanded media with sound;
 - preserve focus and state feedback.
+- apply reduced-motion rules inside portalled sheets, dialogs and popovers too; a rule scoped only
+  to the page shell cannot reach those surfaces.
 
 ---
 
@@ -798,8 +815,9 @@ Use `Button` from `@zenncore/web/components/button`. For navigation:
 
 Rules:
 
-- primary action: flat primary;
-- secondary action: accent outline;
+- primary marketing action: native primary gradient;
+- secondary marketing action: native neutral gradient; navbar login uses the soft emphasis variant;
+- flat full-width actions may belong inside content cards, with a consistent inset;
 - tertiary action: ghost or text link;
 - destructive action: error color;
 - icon-only actions require an accessible label;
@@ -902,8 +920,9 @@ Charts should answer a named question. Every chart needs:
 - an empty state;
 - no 3D effects or decorative gradients.
 
-Lead aggregate data with primary blue. Use status colors only where the plotted meaning is positive,
-intermediate, or negative.
+Percentage evidence uses semantic outcome colors from §4.4 and the direction rule in §0.
+Use primary blue for neutral series where no success/failure meaning applies. Never mark a high
+failure or missing-data rate as positive just because its percentage is high.
 
 ### 11.9 Forms
 
@@ -964,15 +983,21 @@ machine reasoning.
 
 ### 12.1 Marketing navigation
 
-The marketing navbar is fixed and belongs to the centered rail. It contains:
+The shared navbar has an 80 px row and six masked progressive blur layers, with no solid bottom
+rule. Desktop dropdowns overlay the page and scroll internally; they must not change document height,
+hero position or scroll position when opening, switching or closing, including at scroll zero.
 
-- ecentic trademark/wordmark;
-- a concise desktop navigation;
-- one primary installation action;
-- a mobile sheet below the desktop breakpoint.
+Each destination is its own grid cell. Keep equal column tracks, a wider shared datum, blue hover/focus
+text and a distinct dimmed featured row. Use distinct category-header icons; omit repeated generic
+icons on destinations. The locale control clearly indicates its role. Native primary/soft buttons
+keep consistent height and radius.
 
-Decorative SVG rail pieces may frame it, but they must not obscure the active page, focus state, or
-tap targets. Navbar text uses `font-body`; do not depend on an undefined `font-header` utility.
+Use the mobile menu below 1281 px so Spanish desktop labels and account actions fit on a single
+line; keep top-level labels unwrapped. Change all visibility and blur/menu-surface breakpoints together.
+
+Mobile uses the same progressive blur behind a sheet, a pinned logo/close area and an internal scroll
+container. Pricing/account/locale controls directly join the navigation stack; the locale selector is
+full width. Preserve keyboard focus restoration and keep the support launcher behind open navigation.
 
 ### 12.2 Dashboard shell
 
@@ -992,25 +1017,15 @@ navigation; hiding the sidebar without a replacement is not acceptable.
 
 The shared footer closes the same rail system rather than becoming a separate visual world.
 
-It contains:
+The closing CTA spans nearly the viewport, with equal 12/8 px margins, rounded corners,
+a charcoal-to-brand-navy gradient and a restrained blue glow. Its evolving ASCII fills the background
+and crops at the edges. Use native primary and neutral gradient actions.
 
-1. a CTA band with a restrained primary radial glow;
-2. the wordmark and brand statement;
-3. a concise navigation grid;
-4. social links in square bordered controls;
-5. a live system-status line;
-6. legal/copyright information;
-7. crosshairs at major outer intersections.
-
-Footer rules:
-
-- use a full-bleed outer wrapper with a `max-w-6xl` inner rail;
-- keep link columns sharp and border-connected;
-- use sentence-case CTA language;
-- uppercase is acceptable for tiny navigational column labels;
-- retain strong vertical spacing;
-- do not turn the footer into an oversized link farm;
-- the `stacked` variant continues an existing bordered page shell.
+Navigation follows in multiple connected rows, one column per category (including Legal).
+Use sentence-case labels, muted links and restrained blue/translation hover feedback. On mobile,
+use native category accordions. Preserve all useful destinations without squeezing them into one row.
+A large readable ASCII ecentic wordmark, the brand/social/locale area and legal text finish the footer.
+Do not invent a live system-status claim. Each seam and cross remains single-owned.
 
 ---
 
@@ -1023,29 +1038,23 @@ through sign-up into onboarding with their catalog already imported) or into a p
 
 ### Composition
 
-1. **Fixed navbar** inside the centered rail.
-2. **Light hero** with hands artwork, restrained primary glow, direct value proposition, the
-   autofocused store-URL entry (single field + primary action, inline outcome line under it), trust
-   note, a quiet Shopify App Store link, and product film. The entry replaces the install buttons —
-   the platform is detected, never asked.
-3. **Proof** as a full-bleed statement plus connected metric grid.
-4. **Partner evidence** through a compact logo strip and partnership banner.
-5. **Three-step loop** inside one dominant primary block.
-6. **Feature system** in a sharp 2×2 seam grid.
-7. **Comparison** using the data-table language rather than decorative cards.
-8. **Case study** with narrative and measurable outcomes.
-9. **Testimonials** with restrained rating evidence.
-10. **Booking** as the high-intent conversion region.
-11. **Shared footer**.
+1. Shared progressive-blur navigation over the inset 100dvh blue hero.
+2. A connected five-stage roadmap with visible milestones and schematic product/process visuals.
+3. The original product film, retained as strong product evidence.
+4. Centered commerce connections, chronological provider milestones and audience-specific content.
+5. Integrations organized in native accordions, with actual logos and outlined square provider tiles.
+6. Evidence charts with known values only, semantic color and compact source disclosures; the DUA case study.
+7. Clear pricing/partner/service paths, useful tool/content entries and native FAQs.
+8. The shared closing CTA and footer.
 
 ### Design rules
 
-- Keep the hero light; reserve the large primary field for the process/steps section.
-- Use full bleed selectively for proof, process, or social evidence.
-- Do not reintroduce dormant sections merely because they exist in code.
-- Feature icons use `@zenncore/icons` and semantic tokens, not raw color utilities.
-- Maintain long-form breathing room with `gap-8 md:gap-12`.
-- Product video is the strongest elevated object and may receive the most depth.
+- Keep the common off-white canvas; reserve gray for supporting surfaces confined within their rails.
+- Use full-viewport major seams and visible single crosses; internal separators stay local.
+- Preserve valid provider identities, product facts and publication gates.
+- Use schematic diagrams throughout the roadmap, with no tab bar, bottom tag row or ASCII in that section.
+- Preserve the original product video. Do not reintroduce sections removed in review.
+- Keep action and copy alignment deliberate rather than filling whitespace with extra labels or stats.
 
 ---
 
@@ -1060,8 +1069,8 @@ matches value delivered.
 
 1. **Primary hero** with low-contrast texture, headline, explanation, and assurance pills.
 2. **Free Scan** as an entry product and proof of immediate value.
-3. **Choose how you pay** with a connected three-column plan grid.
-4. **Fee explainer** after a hatch gutter, using numbered steps.
+3. **Choose how you pay** with the shared 2×2 plan grid.
+4. **Fee explainer** with compact aligned content and restrained semantic emphasis.
 5. **Comparison** with one intentionally emphasized column.
 6. **Enterprise/partnership band** for needs outside standard plans.
 7. **FAQ** in the shared split content layout.
@@ -1078,7 +1087,7 @@ specific historical tier.
 - plan titles, prices, descriptions, feature-list starts, and CTA baselines align across columns;
 - one plan receives strong emphasis;
 - other plans remain rich or neutral surfaces;
-- enterprise uses a horizontal band instead of a fourth tower;
+- flat-plan cards remain 2×2; supporting enterprise inquiries use a separate dimmed surface;
 - explain performance fees before asking for commitment;
 - comparison tables scroll horizontally when they cannot collapse without losing meaning.
 

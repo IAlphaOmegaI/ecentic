@@ -8,7 +8,6 @@ import {
   createFaqSchema,
   createMetadata,
 } from "@/lib/seo";
-import Art from "@/public/images/ascii/cart.png";
 import {
   ContentPageBadge,
   ContentPageFooter,
@@ -79,7 +78,7 @@ export default async () => {
       accent={translate("hero.title.accent")}
       description={translate("hero.description")}
       assurances={assurances}
-      art={{ source: Art, alt: translate("hero.art.alt") }}
+      artwork="cart"
       badge={
         <ContentPageBadge
           logo="/images/woocommerce.svg"

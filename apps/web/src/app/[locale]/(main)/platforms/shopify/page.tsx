@@ -13,7 +13,6 @@ import {
   createMetadata,
   seo,
 } from "@/lib/seo";
-import Art from "@/public/images/ascii/bag.png";
 import shopify from "@/public/images/shopify.svg";
 import {
   ContentPageBadge,
@@ -21,7 +20,6 @@ import {
   ContentPageLayout,
   ContentPageSection,
 } from "../../_components/content";
-import { bannerAction } from "../../_components/page-banner";
 import { Faq } from "../../pricing/_components/faq";
 import { Compare } from "./_components/compare";
 import { RelatedPages } from "./_components/related";
@@ -85,7 +83,7 @@ export default async () => {
       accent={translate("hero.title.accent")}
       description={translate("hero.description")}
       assurances={assurances}
-      art={{ source: Art, alt: translate("hero.art.alt") }}
+      artwork="bag"
       badge={
         <ContentPageBadge
           logo="/images/shopify.svg"
@@ -95,19 +93,11 @@ export default async () => {
       }
       actions={
         <>
-          <Button
-            color="accent"
-            className={bannerAction.lead}
-            render={<Link href={seo.shopifyAppStore} />}
-          >
+          <Button color="primary" render={<Link href={seo.shopifyAppStore} />}>
             <Image src={shopify} alt="" className="size-5" />
             {translate("hero.action.primary")}
           </Button>
-          <Button
-            variant="outline"
-            className={bannerAction.secondary}
-            render={<Link href="/how-it-works" />}
-          >
+          <Button color="neutral" render={<Link href="/how-it-works" />}>
             {translate("hero.action.secondary")}
             <ArrowRightIcon className="size-4" />
           </Button>
