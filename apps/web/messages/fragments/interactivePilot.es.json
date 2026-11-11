@@ -1,12 +1,7 @@
 {
   "interactivePilot": {
     "title": "Planificador del piloto",
-    "stages": [
-      "Referencia",
-      "Mejora",
-      "Nueva prueba",
-      "Resultados"
-    ],
+    "stages": ["Referencia", "Mejora", "Nueva prueba", "Resultados"],
     "happens": "Qué ocurre",
     "people": "Tu equipo",
     "deliverable": "Qué recibes",

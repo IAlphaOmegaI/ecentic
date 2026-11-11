@@ -11,6 +11,7 @@ import {
   IntegrationDirectory,
   IntegrationImportFlow,
 } from "./_components/integration-directory";
+import { PatchFigure } from "./_components/patch-figure";
 
 export const generateMetadata = async () => {
   const { enterpriseIntegrations } = await getMessages();
@@ -18,13 +19,16 @@ export const generateMetadata = async () => {
 };
 
 export default async () => {
-  const { enterpriseIntegrations: copy, browserIntegrations: directory } =
-    await getMessages();
+  const {
+    hairlineIntegrations,
+    enterpriseIntegrations: copy,
+    browserIntegrations: directory,
+  } = await getMessages();
   return (
     <MarketingPage
       content={copy.index}
       path="/integrations"
-      heroArtwork="console"
+      heroIllustration={<PatchFigure label={hairlineIntegrations.label} />}
     >
       <SectionGutter />
       <IntegrationDirectory copy={copy} directory={directory} />

@@ -3,6 +3,7 @@ import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import type { HTMLAttributes, ReactNode } from "react";
+import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
 import { EvolvingAscii } from "./evolving-ascii";
 
@@ -175,6 +176,9 @@ export const MarketingHero = ({
     </div>
     {illustration && (
       <div className="relative flex min-w-0 items-center border-accent-foreground border-l px-4 py-10 max-sm:px-2 max-sm:py-4 max-md:border-t max-md:border-l-0">
+        <Plus className="top-0 left-0 size-4 -translate-x-1/2 -translate-y-1/2 [&>span]:bg-cross" />
+        <Plus className="bottom-0 left-0 size-4 -translate-x-1/2 translate-y-1/2 max-md:hidden [&>span]:bg-cross" />
+        <Plus className="top-0 right-0 size-4 translate-x-1/2 -translate-y-1/2 md:hidden [&>span]:bg-cross" />
         {illustration}
       </div>
     )}

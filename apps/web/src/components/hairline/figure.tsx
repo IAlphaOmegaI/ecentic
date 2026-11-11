@@ -3,13 +3,31 @@
 import type { HairlineProps } from "@lucasmarkes/hairline/react";
 import { cn } from "@zenncore/utils";
 import {
+  Component,
   type ComponentType,
+  type PropsWithChildren,
   Suspense,
   useEffect,
   useRef,
   useState,
 } from "react";
 import { useInteractive } from "@/components/marketing/interactive/use-interactive";
+
+// Optional artwork must not replace readable page content if its chunk fails.
+class ArtworkBoundary extends Component<
+  PropsWithChildren,
+  { failed: boolean }
+> {
+  override state = { failed: false };
+
+  static getDerivedStateFromError() {
+    return { failed: true };
+  }
+
+  override render() {
+    return this.state.failed ? null : this.props.children;
+  }
+}
 
 /** Mount only near the viewport. Each page supplies one lazily imported figure. */
 export const HairlineFigure = ({
@@ -51,23 +69,25 @@ export const HairlineFigure = ({
       )}
     >
       {ready && near && (
-        <Suspense fallback={null}>
-          <Figure
-            // Zero intensity still moves in Hairline. Reset to rest and prevent
-            // both pointer and keyboard interaction when motion is reduced.
-            key={reduced ? "rest" : "responsive"}
-            theme="light"
-            label={label}
-            play={false}
-            intensity={reduced ? 0 : 0.5}
-            inert={reduced}
-            tabIndex={reduced ? -1 : undefined}
-            className={cn(
-              "absolute inset-0 size-full focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-solid focus-visible:-outline-offset-4",
-              reduced && "pointer-events-none",
-            )}
-          />
-        </Suspense>
+        <ArtworkBoundary>
+          <Suspense fallback={null}>
+            <Figure
+              // Zero intensity still moves in Hairline. Reset to rest and prevent
+              // both pointer and keyboard interaction when motion is reduced.
+              key={reduced ? "rest" : "responsive"}
+              theme="light"
+              label={label}
+              play={false}
+              intensity={reduced ? 0 : 0.5}
+              inert={reduced}
+              tabIndex={reduced ? -1 : undefined}
+              className={cn(
+                "absolute inset-0 size-full focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-solid focus-visible:-outline-offset-4",
+                reduced && "pointer-events-none",
+              )}
+            />
+          </Suspense>
+        </ArtworkBoundary>
       )}
     </div>
   );

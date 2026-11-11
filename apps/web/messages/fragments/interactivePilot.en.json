@@ -1,12 +1,7 @@
 {
   "interactivePilot": {
     "title": "Pilot planner",
-    "stages": [
-      "Baseline",
-      "Fix",
-      "Re-run",
-      "Readout"
-    ],
+    "stages": ["Baseline", "Fix", "Re-run", "Readout"],
     "happens": "What happens",
     "people": "Your team",
     "deliverable": "What you receive",

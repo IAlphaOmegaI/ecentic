@@ -92,7 +92,7 @@ export const EvolvingAscii = ({
       data-ascii-frame={frame}
       initial={false}
       className={cn(
-        "pointer-events-none grid size-full grid-cols-1 grid-rows-1 select-none place-items-center overflow-hidden text-inherit [container-type:size]",
+        "pointer-events-none grid size-full select-none grid-cols-1 grid-rows-1 place-items-center overflow-hidden text-inherit [container-type:size]",
         className,
       )}
     >

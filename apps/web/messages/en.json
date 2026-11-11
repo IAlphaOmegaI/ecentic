@@ -18741,5 +18741,8 @@
   },
   "hairlineSecurity": {
     "label": "Illustration: a vault door whose dial and bolts respond to the pointer."
+  },
+  "hairlineIntegrations": {
+    "label": "Illustration: a patch panel whose cables lift under the pointer."
   }
 }
