@@ -5,6 +5,7 @@ import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 import { useInteractive } from "@/components/marketing/interactive/use-interactive";
 import { useDocument } from "@/hooks/use-document";
+import demoPlaneRest from "./rest/demo-plane.json";
 import documentStackRest from "./rest/document-stack.json";
 import headphonesRest from "./rest/headphones.json";
 import lipstickRest from "./rest/lipstick.json";
@@ -43,6 +44,7 @@ type FigureWindow = Window & {
   customHairline?: Partial<Record<FigureName, FigureDefinition>>;
 };
 const restPoses = {
+  "demo-plane": demoPlaneRest,
   "shopify-bag": shopifyBagRest,
   "woo-mark": wooMarkRest,
   "merchant-folio": merchantFolioRest,

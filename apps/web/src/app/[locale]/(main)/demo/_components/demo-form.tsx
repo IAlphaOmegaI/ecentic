@@ -1,5 +1,12 @@
 "use client";
 
+import {
+  CheckIcon,
+  CommerceChartActivity_2Icon,
+  CommerceFilePenIcon,
+  UserIcon,
+} from "@zenncore/icons";
+import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import { InferredForm } from "@zenncore/web/components/inferred-form";
 import type { getMessages } from "next-intl/server";
@@ -12,6 +19,7 @@ import {
   LeadPrivacy,
   useLeadSubmission,
 } from "@/components/marketing/lead-form";
+import { MarketingEdgeCrosses } from "@/components/marketing/light-band";
 import { MarketingActions } from "@/components/marketing/primitives";
 import {
   type DemoAbout,
@@ -20,7 +28,14 @@ import {
   demoGoalsSchema,
 } from "@/lib/marketing-lead";
 
-export const DemoForm = ({ copy, formCopy, locale }: DemoForm.Props) => {
+const stepIcons = [UserIcon, CommerceChartActivity_2Icon, CommerceFilePenIcon];
+
+export const DemoForm = ({
+  copy,
+  formCopy,
+  progressCopy,
+  locale,
+}: DemoForm.Props) => {
   const [step, setStep] = useState<DemoForm.Step>(0);
   const [about, setAbout] = useState<Partial<DemoAbout>>({});
   const [goals, setGoals] = useState<Partial<DemoGoals>>({});
@@ -95,24 +110,72 @@ export const DemoForm = ({ copy, formCopy, locale }: DemoForm.Props) => {
   ];
 
   return (
-    <div
-      className="marketing-demo-layout grid grid-cols-[240px_minmax(0,1fr)] max-md:grid-cols-1"
-      aria-busy={state.isPending}
-    >
+    <div className="marketing-demo-layout min-w-0" aria-busy={state.isPending}>
       <nav
         aria-label={formCopy.progress}
-        className="marketing-demo-progress max-md:[&_li>span]:text-(length:--text-2xl) border-[var(--rail-color)] border-r px-7 py-8 max-md:border-r-0 max-md:border-b max-md:px-4 max-md:py-4 [&_li>span]:font-heading [&_li>span]:text-[30px] max-md:[&_li>span]:block [&_li[aria-current=step]]:text-primary-text [&_li]:flex [&_li]:items-baseline [&_li]:gap-4 [&_li]:py-4 [&_li]:text-foreground-dimmed max-md:[&_li]:block max-md:[&_li]:py-1 max-md:[&_li]:text-[13px] max-md:[&_ol]:grid max-md:[&_ol]:grid-cols-3 max-md:[&_ol]:gap-3"
+        className="relative border-accent-foreground border-b bg-background-rich"
       >
-        <ol>
-          {formCopy.steps.map((label, index) => (
-            <li key={label} aria-current={step === index ? "step" : undefined}>
-              <span aria-hidden="true">0{index + 1}</span>
-              {label}
-            </li>
-          ))}
+        <MarketingEdgeCrosses />
+        <ol className="grid grid-cols-3">
+          {formCopy.steps.map((label, index) => {
+            const complete = index < step || state.sent;
+            const current = step === index && !state.sent;
+            const Icon = complete ? CheckIcon : (stepIcons[index] ?? UserIcon);
+            return (
+              <li
+                key={label}
+                aria-current={current ? "step" : undefined}
+                className="relative min-w-0 px-8 py-7 max-sm:px-3 max-sm:py-5"
+              >
+                <div
+                  aria-hidden="true"
+                  className={cn(
+                    "absolute top-[3.25rem] right-0 left-0 h-px max-sm:top-[2.75rem]",
+                    index === 0 && "left-8 max-sm:left-3",
+                    index === 2 &&
+                      "right-[calc(100%_-_2rem)] max-sm:right-[calc(100%_-_0.75rem)]",
+                    complete ? "bg-primary-text/50" : "bg-accent-foreground",
+                  )}
+                />
+                <span
+                  className={cn(
+                    "relative grid size-12 place-items-center rounded-lg border shadow-sm transition-colors motion-reduce:transition-none",
+                    current
+                      ? "border-primary-text bg-primary-text text-background-rich"
+                      : complete
+                        ? "border-primary-text/30 bg-primary-text/10 text-primary-text"
+                        : "border-accent-foreground bg-background-rich text-foreground-dimmed",
+                  )}
+                >
+                  <Icon aria-hidden="true" className="size-8" />
+                </span>
+                <p className="mt-4 flex items-baseline gap-2 font-heading text-xl leading-tight max-sm:text-base">
+                  <span
+                    aria-hidden="true"
+                    className="text-primary-text tabular-nums"
+                  >
+                    0{index + 1}
+                  </span>
+                  <span>{label}</span>
+                </p>
+                <p
+                  className={cn(
+                    "mt-2 text-sm",
+                    current ? "text-primary-text" : "text-foreground-dimmed",
+                  )}
+                >
+                  {complete
+                    ? progressCopy.completed
+                    : current
+                      ? progressCopy.current
+                      : progressCopy.upcoming}
+                </p>
+              </li>
+            );
+          })}
         </ol>
       </nav>
-      <div className="marketing-demo-body px-7 py-12 max-md:px-4 max-md:py-8">
+      <div className="marketing-demo-body px-8 py-10 max-md:px-4 max-md:py-8">
         {state.sent ? (
           <div role="status">
             <h3>{copy.status.sentTitle}</h3>
@@ -249,5 +312,12 @@ export namespace DemoForm {
     ReturnType<typeof getMessages>
   >["enterpriseDemo"]["form"];
   export type Step = 0 | 1 | 2;
-  export type Props = { copy: LeadCopy; formCopy: Copy; locale: "en" | "es" };
+  export type Props = {
+    copy: LeadCopy;
+    formCopy: Copy;
+    progressCopy: Awaited<
+      ReturnType<typeof getMessages>
+    >["demoPage"]["progress"];
+    locale: "en" | "es";
+  };
 }

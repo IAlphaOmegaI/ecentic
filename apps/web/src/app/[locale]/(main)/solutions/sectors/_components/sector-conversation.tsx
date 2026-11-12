@@ -58,7 +58,7 @@ export const SectorConversation = ({
       <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
       <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
       <div className="grid lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
-        <div className="min-w-0" data-conversation-transcript>
+        <div className="flex min-w-0 flex-col" data-conversation-transcript>
           <ShoppingConversation
             provider={
               sector === "travel-and-experiences" ||

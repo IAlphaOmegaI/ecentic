@@ -15,7 +15,11 @@ import {
 import type { Metadata } from "next";
 import Image from "next/image";
 import { getMessages } from "next-intl/server";
-import { MarketingBand } from "@/components/marketing/primitives";
+import { MarketingEdgeCrosses } from "@/components/marketing/light-band";
+import {
+  MarketingBand,
+  MarketingFeatureBand,
+} from "@/components/marketing/primitives";
 import { localizePath } from "@/i18n/locale";
 import type { Locale } from "@/i18n/routing";
 import { RECOVERY_LINKS } from "@/lib/not-found";
@@ -56,7 +60,7 @@ export const NotFoundContent = async ({ locale }: NotFoundContent.Props) => {
   const {
     enterpriseRecovery,
     reviewNotFound,
-    round14NotFound,
+    round18Recovery,
     hairlineRecovery,
   } = await getMessages({ locale });
   const content = enterpriseRecovery.notFound;
@@ -110,82 +114,126 @@ export const NotFoundContent = async ({ locale }: NotFoundContent.Props) => {
           </div>
         </div>
       </MarketingBand>
-      <MarketingBand>
-        <div id="explore" className="scroll-mt-6 px-8 py-8 max-sm:px-4">
-          <h2 className="text-[clamp(1.5rem,3vw,2.25rem)]">
-            {reviewNotFound.exploreTitle}
-          </h2>
-        </div>
-        <nav
-          aria-label={content.navigation}
-          data-columns="3"
-          className="marketing-grid marketing-section-grid grid grid-cols-3 border-accent-foreground border-t max-sm:grid-cols-1 max-[801px]:grid-cols-2"
-        >
-          {content.links.map((link, index) => {
-            const Icon = navigationIcons[index] ?? CommerceBasketShoppingIcon;
-            return (
+      <MarketingFeatureBand
+        id="explore"
+        tone="blue"
+        aria-labelledby="recovery-navigation-title"
+        className="scroll-mt-6"
+      >
+        <header className="relative border-background-rich/25 border-y px-8 py-10 max-sm:px-4 max-sm:py-8">
+          <MarketingEdgeCrosses />
+          <MarketingEdgeCrosses edge="bottom" />
+          <h2 id="recovery-navigation-title">{reviewNotFound.exploreTitle}</h2>
+        </header>
+        <nav aria-label={content.navigation} className="relative">
+          <MarketingEdgeCrosses edge="bottom" />
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3">
+            {content.links.map((link, index) => {
+              const Icon = navigationIcons[index] ?? CommerceBasketShoppingIcon;
+              return (
+                <a
+                  key={link.href}
+                  href={localizePath(link.href, locale)}
+                  className="group flex min-h-32 min-w-0 items-center gap-5 border-background-rich/25 border-b px-8 py-8 text-background-rich text-xl transition-colors hover:bg-background-rich/10 focus-visible:bg-background-rich/10 focus-visible:outline-background-rich! focus-visible:-outline-offset-4! motion-reduce:transition-none max-sm:min-h-24 max-sm:px-4 max-sm:py-6 sm:odd:border-r lg:border-r lg:[&:nth-child(3n)]:border-r-0"
+                >
+                  <Icon aria-hidden className="size-8 shrink-0" />
+                  <span>{link.label}</span>
+                  <ArrowRightIcon
+                    aria-hidden
+                    className="ml-auto size-4 shrink-0 opacity-70"
+                  />
+                </a>
+              );
+            })}
+          </div>
+        </nav>
+      </MarketingFeatureBand>
+      <MarketingFeatureBand
+        id="agent-recovery"
+        tone="dark"
+        aria-labelledby="agent-recovery-title"
+        className="mt-6"
+      >
+        <header className="relative grid items-end gap-6 border-background-rich/20 border-y px-8 py-10 max-sm:px-4 max-sm:py-8 md:grid-cols-[1fr_1fr]">
+          <MarketingEdgeCrosses />
+          <MarketingEdgeCrosses edge="bottom" />
+          <div>
+            <RobotIcon aria-hidden className="mb-6 size-8 text-primary-rich" />
+            <h2 id="agent-recovery-title">{round18Recovery.title}</h2>
+          </div>
+          <p className="max-w-[48ch] text-background-rich/75 leading-relaxed">
+            {round18Recovery.description}
+          </p>
+        </header>
+        <nav aria-label={content.machineNavigation}>
+          <div className="flex items-center gap-3 border-background-rich/20 border-b px-8 py-5 text-background-rich/70 text-sm max-sm:px-4">
+            <CommerceCode_3Icon
+              aria-hidden
+              className="size-4 shrink-0 text-primary-rich"
+            />
+            <p>{round18Recovery.indexTitle}</p>
+          </div>
+          <ul>
+            {RECOVERY_LINKS.map((link, index) => {
+              const copy = content.recoveryLinks[index];
+              if (!copy) return null;
+              const Icon = recoveryIcons[index] ?? FileIcon;
+              const href =
+                link.href === "/" || link.href === "/docs"
+                  ? localizePath(link.href, locale)
+                  : link.href;
+              return (
+                <li
+                  key={link.href}
+                  className="border-background-rich/15 border-b"
+                >
+                  <a
+                    className="group grid min-h-18 grid-cols-[24px_minmax(0,1fr)_16px] items-center gap-x-5 gap-y-1 px-8 py-5 text-background-rich transition-colors hover:bg-background-rich/5 focus-visible:bg-background-rich/5 focus-visible:outline-primary-rich! focus-visible:-outline-offset-4! motion-reduce:transition-none max-sm:gap-x-3 max-sm:px-4 md:grid-cols-[24px_minmax(0,1fr)_minmax(0,1fr)_16px]"
+                    href={href}
+                  >
+                    <Icon
+                      aria-hidden
+                      className="col-start-1 row-start-1 size-4 shrink-0 text-primary-rich"
+                    />
+                    <code className="wrap-anywhere col-start-2 row-start-1 min-w-0 font-mono text-primary-rich text-sm">
+                      {href}
+                    </code>
+                    <span className="col-start-2 row-start-2 text-background-rich/75 text-sm md:col-start-3 md:row-start-1">
+                      {copy.label}
+                    </span>
+                    <ArrowRightIcon
+                      aria-hidden
+                      className="col-start-3 row-start-1 size-4 opacity-60 md:col-start-4"
+                    />
+                  </a>
+                </li>
+              );
+            })}
+            <li className="relative border-background-rich/20 border-b">
+              <MarketingEdgeCrosses edge="bottom" />
               <a
-                key={link.href}
-                href={localizePath(link.href, locale)}
-                className="group flex min-h-28 items-center gap-4 border-accent-foreground border-r border-b px-8 py-8 text-foreground-rich text-xl hover:bg-background-dimmed hover:text-primary-text max-sm:min-h-24 max-sm:px-4 max-sm:py-6"
+                className="group grid min-h-18 grid-cols-[24px_minmax(0,1fr)_16px] items-center gap-x-5 gap-y-1 px-8 py-5 text-background-rich transition-colors hover:bg-background-rich/5 focus-visible:bg-background-rich/5 focus-visible:outline-primary-rich! focus-visible:-outline-offset-4! motion-reduce:transition-none max-sm:gap-x-3 max-sm:px-4 md:grid-cols-[24px_minmax(0,1fr)_minmax(0,1fr)_16px]"
+                href="/404.md"
               >
-                <Icon
+                <FileIcon
                   aria-hidden
-                  className="size-8 shrink-0 text-primary-text"
+                  className="col-start-1 row-start-1 size-4 text-primary-rich"
                 />
-                <span>{link.label}</span>
+                <code className="col-start-2 row-start-1 font-mono text-primary-rich text-sm">
+                  /404.md
+                </code>
+                <span className="col-start-2 row-start-2 text-background-rich/75 text-sm md:col-start-3 md:row-start-1">
+                  {content.markdownAction}
+                </span>
                 <ArrowRightIcon
                   aria-hidden
-                  className="ml-auto size-4 shrink-0 text-primary-text"
+                  className="col-start-3 row-start-1 size-4 opacity-60 md:col-start-4"
                 />
               </a>
-            );
-          })}
+            </li>
+          </ul>
         </nav>
-      </MarketingBand>
-      <MarketingBand className="[&>.marketing-rail>.marketing-guides]:hidden">
-        <div className="grid grid-cols-[1fr_2fr] gap-10 px-8 py-10 max-sm:px-4 max-md:grid-cols-1 max-md:gap-6">
-          <div>
-            <h2 className="text-2xl">{round14NotFound.machineTitle}</h2>
-            <p className="mt-4 max-w-[34ch] text-foreground-dimmed text-sm leading-relaxed">
-              {content.machineDescription}
-            </p>
-          </div>
-          <nav aria-label={content.machineNavigation}>
-            <ul className="grid grid-cols-2 gap-x-8 gap-y-2 max-sm:grid-cols-1">
-              {RECOVERY_LINKS.map((link, index) => {
-                const copy = content.recoveryLinks[index];
-                if (!copy) return null;
-                const Icon = recoveryIcons[index] ?? FileIcon;
-                const href =
-                  link.href === "/" || link.href === "/docs"
-                    ? localizePath(link.href, locale)
-                    : link.href;
-                return (
-                  <li key={link.href}>
-                    <a
-                      className="marketing-text-link flex min-h-14 items-center gap-4 text-primary-text text-sm hover:underline"
-                      href={href}
-                    >
-                      <Icon aria-hidden className="size-6 shrink-0" />
-                      {copy.label}
-                    </a>
-                  </li>
-                );
-              })}
-              <li>
-                <a
-                  className="marketing-text-link flex min-h-14 items-center gap-4 text-primary-text text-sm hover:underline"
-                  href="/404.md"
-                >
-                  <FileIcon aria-hidden className="size-6 shrink-0" />
-                  {content.markdownAction}
-                </a>
-              </li>
-            </ul>
-          </nav>
-        </div>
-      </MarketingBand>
+      </MarketingFeatureBand>
     </main>
   );
 };

@@ -5,7 +5,8 @@ It is historical evidence, not a second design specification or a replacement fo
 The archive through round 15 contains **21 saved Markdown files, 377 numbered comments, and one standalone inspiration brief**.
 The [shopping-reference transcript](review-16-shopping.md) adds **25 comments**, followed by
 **12 comments** in the [integrated-surface and editorial transcript](review-17-surfaces.md).
-The full review set now contains **414 numbered comments** across 23 Markdown sources.
+The [recovery and conversion review](review-18-recovery-demo.md) adds **11 comments**.
+The full review set now contains **425 numbered comments** across 24 Markdown sources.
 Within the external archive, twenty files contain numbered comments; its remaining file references five inspiration images but contains no numbered comments.
 Some numbered-comment files also contain unnumbered follow-up requests; those requests inform the synthesis without increasing the numbered count.
 No screenshots or image contents are reproduced here.
@@ -123,6 +124,20 @@ The no-new-stylesheet-file rule remains part of the implementation contract.
 - `R17 #9–12` rejects the nested conversation frame, undersized room images and repetitive
   evidence column. The conversation fills the column, Google has a faithful AI Mode composition,
   and inspection presents compact distinct source evidence. Actual product-result tiles remain useful.
+
+## Shared boundaries, recovery and conversion review
+
+`R18` refers to [review-18-recovery-demo.md](review-18-recovery-demo.md), the 11-comment follow-up
+after `R17`. SHA256: `78ac50ae4b6165c4e8f909efe4e52594dd9846ea9a89bb73b6c455a51febe093`.
+
+- `R18 #1–2` reinforces one consistent sector qualification surface and complete section seams.
+- `R18 #3–4` distinguishes the 404 recovery navigation as a blue cutout surface and the actual
+  agent discovery links as a compact charcoal code surface.
+- `R18 #5–8` brings tonal ASCII into the Partners application, keeps it in the Demo agenda,
+  replaces the agenda selector with visible content, and gives the form a connected progress
+  roadmap. A plane replaces the generic sieve hero.
+- `R18 #9–11` removes redundant padding around embedded shopping previews, adds meaningful
+  sector identity and requires the complete conversation/UCP excerpt to remain reachable by scrolling.
 
 ## Latest-choice supersession matrix
 

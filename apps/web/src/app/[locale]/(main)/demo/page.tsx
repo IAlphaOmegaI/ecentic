@@ -70,6 +70,7 @@ export default async () => {
           <DemoForm
             copy={enterpriseLead}
             formCopy={enterpriseDemo.form}
+            progressCopy={demoPage.progress}
             locale={locale}
           />
         </MarketingBand>

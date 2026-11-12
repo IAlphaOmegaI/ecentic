@@ -2,8 +2,9 @@
 
 The visual and interaction system for ecentic's public site, product workspace and onboarding.
 Consolidated from the complete 10–12 November 2026 review archive and the user's subsequent
-selections, through the [shopping-reference review](../marketing/review-16-shopping.md) and
-the subsequent [integrated-surface and editorial review](../marketing/review-17-surfaces.md).
+selections, through the [shopping-reference review](../marketing/review-16-shopping.md),
+the [integrated-surface and editorial review](../marketing/review-17-surfaces.md), and
+the latest [recovery and conversion review](../marketing/review-18-recovery-demo.md).
 
 This is the canonical guide. The repository-root `DESIGN.md` points to this file. It replaces the
 previous accumulation of review addenda: a later, specific decision is incorporated into the
@@ -344,6 +345,7 @@ and one meaningful pointer response. A renamed stock figure is not a custom draw
 | --- | --- |
 | Shopify | Custom shopping bag with handle/mark and catalog cards that lift toward the pointer |
 | Google Merchant Center | Catalog folio with supplemental product records that lift and part under the pointer |
+| Demo / pilot | Folded paper plane that banks and lifts toward the pointer |
 | AI selection | Custom shopping bot inspecting product cards |
 | Connect hero | Product document stack with folded corners and inspectable pages |
 | Fix | Repair tools; a recognizable fixing action |
@@ -495,8 +497,11 @@ Provider styling does not turn the illustration into an official or live provide
 
 The conversation fills its owning section column. Do not put a rounded, bordered chat shell
 inside a second padded or tinted panel. Internal message padding and actual product-result
-tiles are useful; redundant decorative shells are not. Give Google AI Mode its own query,
-answer and search-result composition instead of changing only the logo on a ChatGPT mockup.
+tiles are useful; redundant decorative shells are not. Embedded previews start directly at their
+structural divider; do not add another provider-logo pad or outer inset. Keep the complete answer
+and any following UCP excerpt reachable. A fixed-height clip must not hide the final content, and
+local horizontal overflow must not trap ordinary vertical page scrolling. Give Google AI Mode its
+own query, answer and search-result composition instead of changing only the logo on a ChatGPT mockup.
 Use small localized sample labeling without overwhelming the provider's interface hierarchy.
 
 Differentiate the adjacent record inspection with a coherent technical surface and compact
@@ -706,9 +711,12 @@ workflow and product facts rather than a stack of quoted shopper prompts.
 Every sector shares the conversation-and-inspection pattern, source-diff structure and title/
 subtitle system. Use the subject mapping in section 8, including a sofa, headphones and lipstick
 where requested. Do not reuse the generic connected hub for all sector hero identities.
+Sector previews in the Solutions directory also carry a relevant icon or tonal object by the heading.
 
 Place the attribute qualification strip **directly after the attribute heading**, with the same
-contrasting surface and placement across sectors. Keep the stated limits intact. Illustrate
+contrasting surface and placement across sectors, including Travel. Do not let the parent page
+theme change the notice into a different local design. Complete the lower rule beneath source-artwork
+notes, with the same seam treatment as the adjoining section. Keep the stated limits intact. Illustrate
 measurements or relevant attributes without implying an unverified exact fit.
 
 Rules sections explain how ecentic's actual product-data and workflow capabilities help, alongside
@@ -806,6 +814,13 @@ explanatory plane while the visitor works on desktop. Preserve mobile flow.
 
 Partners follows the same readable hero, explicit program choices and form hierarchy. A generic
 hub or barely recognizable ASCII texture is not sufficient identity for the page's purpose.
+The application pairs a readable native form with a meaningful tonal-ASCII subject in its explanatory
+plane, as on Contact. Do not hide program facts behind the artwork.
+
+Demo keeps the same form and validation semantics while showing progress as a connected roadmap.
+Its short agenda stays visible without a compulsory topic selector; tonal ASCII supports the agenda.
+Use a custom folded plane for the demo/pilot hero, with restrained pointer-responsive lift and bank,
+rather than a generic inspection sieve. Artwork is not a booking or submission control.
 
 ### Recovery / 404
 
@@ -813,6 +828,9 @@ Use a full-width first-screen composition with oversized **dimensional tonal-dot
 and a companion Hairline question mark. Keep recovery copy, actions and icon-led discovery links
 clear of dense dots. Preserve the actual 404 status, noindex behavior, locale and keyboard paths.
 The error illustration must not replace the useful way out of the page.
+The recovery destinations form a coherent blue cutout section. Agent recovery is a separate compact
+charcoal code surface that exposes the real discovery paths and their links; avoid vague explanatory
+prose, invented responses or another general-purpose card grid.
 
 ## 14. Shared navigation and footer
 

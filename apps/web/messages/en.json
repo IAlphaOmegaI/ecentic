@@ -17189,7 +17189,7 @@
   },
   "demoPage": {
     "agenda": {
-      "description": "Select a topic to preview the conversation.",
+      "description": "Start with a product, follow the decision, then agree what to improve. Here is the conversation we will work through together.",
       "bringLabel": "Bring to the conversation",
       "exploreLabel": "We’ll explore",
       "items": [
@@ -17213,6 +17213,11 @@
       "action": {
         "primary": "Prepare your demo"
       }
+    },
+    "progress": {
+      "completed": "Complete",
+      "current": "You are here",
+      "upcoming": "Up next"
     }
   },
   "enterpriseSecurityDesign": {
@@ -19083,7 +19088,8 @@
     "documentStack": "Three product documents that lift as the pointer selects a sheet",
     "openBook": "Illustration: an open book. Move the pointer over either page to fan the leaves open.",
     "wooMark": "The Woo mark as a dimensional line sculpture; point at a letter to lift it.",
-    "merchantFolio": "A catalog sleeve with product records; point at a sheet to lift it for inspection."
+    "merchantFolio": "A catalog sleeve with product records; point at a sheet to lift it for inspection.",
+    "demoPlane": "Illustration: a folded paper plane that banks and lifts toward the pointer."
   },
   "enterprisePilotPreview": {
     "label": "Illustrative pilot · sample brief",
@@ -19470,5 +19476,10 @@
       "health-wellness-and-pet": "These two listings give us some facts to compare. Check the ingredients and guidance, and confirm suitability with a qualified professional.",
       "travel-and-experiences": "Here are two options for your trip. Compare their dates, location and complete terms before choosing."
     }
+  },
+  "round18Recovery": {
+    "title": "Find an API or document.",
+    "description": "Lost a developer link? Start with these public entry points for site pages, API schemas and agent-readable guidance.",
+    "indexTitle": "Public entry points"
   }
 }

@@ -20,6 +20,7 @@ const figures = {
 } as const;
 
 const customFigures = {
+  demoPlane: "demo-plane",
   shopifyBag: "shopify-bag",
   wooMark: "woo-mark",
   merchantFolio: "merchant-folio",

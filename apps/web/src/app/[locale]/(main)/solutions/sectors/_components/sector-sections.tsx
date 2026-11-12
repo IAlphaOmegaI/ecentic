@@ -66,14 +66,14 @@ export const SectorAttributes = async ({
       />
       <aside
         data-sector-qualification
-        className="marketing-surface relative grid gap-4 border-accent-foreground border-y bg-background-rich px-4 py-6 sm:px-8 md:grid-cols-[1fr_2fr] md:gap-8"
+        className="marketing-surface relative grid gap-4 border-background-rich/15 border-y bg-emphasis-rich px-4 py-6 text-background-rich sm:px-8 md:grid-cols-[1fr_2fr] md:gap-8"
       >
         <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
         <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-        <h3 className="font-heading text-foreground-rich text-xl">
+        <h3 className="font-heading text-background-rich text-xl">
           {round14Sectors.qualification}
         </h3>
-        <p className="max-w-[70ch] text-foreground-dimmed text-sm leading-relaxed">
+        <p className="max-w-[70ch] text-background-rich/75 text-sm leading-relaxed">
           {section.note}
         </p>
       </aside>

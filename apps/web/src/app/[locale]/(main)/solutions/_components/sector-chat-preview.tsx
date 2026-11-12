@@ -19,7 +19,10 @@ export const SectorChatPreview = ({
   sector: Sector;
   provider: "chatgpt" | "gemini";
 }) => (
-  <div data-sector-chat className="mt-6 min-w-0">
+  <div
+    data-sector-chat
+    className="flex min-w-0 flex-1 flex-col border-accent-foreground border-t"
+  >
     <ShoppingConversation
       provider={provider}
       prompt={prompt}
@@ -36,7 +39,10 @@ export const SectorChatPreview = ({
       sample={copy.sample}
       note={example.limit}
     />
-    <div className="mt-3 rounded-xl bg-emphasis-dimmed px-5 py-4 text-background-rich">
+    <div
+      data-sector-discovery
+      className="border-background-rich/15 border-t bg-emphasis-dimmed px-5 py-5 text-background-rich sm:px-8"
+    >
       <div className="mb-2 flex items-center gap-2 text-background-rich/75 text-xs">
         <CommerceCode_3Icon aria-hidden className="size-4 text-primary-rich" />
         {copy.discovery}

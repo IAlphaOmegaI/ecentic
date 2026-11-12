@@ -51,7 +51,7 @@ const heroSubjects: Record<string, MarketingHero.Props["figure"]> = {
   "/changelog": "document",
   "/contact": "hub",
   "/support": "document",
-  "/demo": "inspection",
+  "/demo": "demoPlane",
 };
 
 export const marketingMetadata = async (

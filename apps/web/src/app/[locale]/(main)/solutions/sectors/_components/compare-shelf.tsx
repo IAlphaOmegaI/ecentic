@@ -117,7 +117,10 @@ export const CompareShelf = async ({
           <SectorRecordArtwork sector={sector} surface="dark" />
         </div>
       </div>
-      <p className="border-accent-foreground border-t px-4 py-6 text-foreground-dimmed text-sm leading-relaxed sm:px-8">
+      <p
+        data-sector-source-note
+        className="marketing-seam border-accent-foreground border-y px-4 py-6 text-foreground-dimmed text-sm leading-relaxed sm:px-8"
+      >
         {round14Sectors.comparisonIntro}
       </p>
       <CodeDiff

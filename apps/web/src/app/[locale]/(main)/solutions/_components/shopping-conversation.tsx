@@ -16,7 +16,7 @@ export const ShoppingConversation = ({
 }: ShoppingConversation.Props) => (
   <div
     data-shopping-conversation={provider}
-    className="relative flex h-full min-w-0 flex-col bg-background-rich text-foreground-rich"
+    className="relative flex min-w-0 flex-1 flex-col bg-background-rich text-foreground-rich"
   >
     {provider === "gemini" ? (
       <header className="border-accent-foreground border-b px-5 pt-6 sm:px-8">

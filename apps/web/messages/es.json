@@ -17189,7 +17189,7 @@
   },
   "demoPage": {
     "agenda": {
-      "description": "Elige un tema para ver qué trataremos en la conversación.",
+      "description": "Empezamos con un producto, seguimos la decisión y acordamos qué mejorar. Esta es la conversación que tendremos juntos.",
       "bringLabel": "Trae a la conversación",
       "exploreLabel": "Exploraremos",
       "items": [
@@ -17213,6 +17213,11 @@
       "action": {
         "primary": "Prepara tu demo"
       }
+    },
+    "progress": {
+      "completed": "Completado",
+      "current": "Estás aquí",
+      "upcoming": "A continuación"
     }
   },
   "enterpriseSecurityDesign": {
@@ -19083,7 +19088,8 @@
     "documentStack": "Tres documentos de producto que se elevan al seleccionar una hoja con el puntero",
     "openBook": "Ilustración: un libro abierto. Mueve el puntero sobre una página para desplegar las hojas.",
     "wooMark": "La marca Woo como escultura tridimensional de líneas; apunta a una letra para elevarla.",
-    "merchantFolio": "Una carpeta de catálogo con fichas de producto; señala una ficha para levantarla e inspeccionarla."
+    "merchantFolio": "Una carpeta de catálogo con fichas de producto; señala una ficha para levantarla e inspeccionarla.",
+    "demoPlane": "Ilustración: un avión de papel plegado que se inclina y se eleva hacia el cursor."
   },
   "enterprisePilotPreview": {
     "label": "Piloto ilustrativo · briefing de ejemplo",
@@ -19470,5 +19476,10 @@
       "health-wellness-and-pet": "Estas dos fichas ofrecen datos para comparar. Revisa los ingredientes y las indicaciones, y confirma su idoneidad con un profesional cualificado.",
       "travel-and-experiences": "Aquí tienes dos opciones para tu viaje. Compara las fechas, la ubicación y todas las condiciones antes de elegir."
     }
+  },
+  "round18Recovery": {
+    "title": "Encuentra una API o un documento.",
+    "description": "¿Has perdido un enlace para desarrolladores? Empieza por estas rutas públicas a páginas del sitio, esquemas de API y guías para agentes.",
+    "indexTitle": "Puntos de entrada públicos"
   }
 }

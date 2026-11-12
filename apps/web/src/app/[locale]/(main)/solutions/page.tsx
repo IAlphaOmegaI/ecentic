@@ -15,6 +15,7 @@ import {
   SolutionsWorkflows,
 } from "./_components/index-explorer";
 import { SectorChatPreview } from "./_components/sector-chat-preview";
+import { SectorIcon } from "./_components/sector-icon";
 import { shoppingSectors } from "./_components/shopping-products";
 
 const businesses = [
@@ -101,23 +102,28 @@ export default async () => {
               <Link
                 key={sector.href}
                 href={sector.href ?? "/solutions/sectors"}
-                className="group relative flex min-w-0 flex-col bg-background px-8 py-8 transition-colors duration-160 hover:bg-background-dimmed focus-visible:z-10 focus-visible:bg-background-dimmed focus-visible:-outline-offset-4 max-sm:px-4"
+                className="group relative flex min-w-0 flex-col bg-background transition-colors duration-160 hover:bg-background-dimmed focus-visible:z-10 focus-visible:bg-background-dimmed focus-visible:-outline-offset-4"
               >
                 {index % 2 === 0 && (
                   <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 max-md:hidden" />
                 )}
-                <div className="flex items-start justify-between gap-6">
-                  <h3 className="text-xl! leading-snug! group-hover:text-primary-text group-focus-visible:text-primary-text">
-                    {sector.title}
-                  </h3>
-                  <ArrowRightIcon
-                    aria-hidden
-                    className="mt-2 size-4 shrink-0 text-primary-text"
-                  />
+                <div className="px-8 py-8 max-sm:px-4">
+                  <div className="flex items-center gap-4">
+                    <SectorIcon
+                      sector={shoppingSectors[index] ?? "wine-and-spirits"}
+                    />
+                    <h3 className="min-w-0 flex-1 text-xl! leading-snug! group-hover:text-primary-text group-focus-visible:text-primary-text">
+                      {sector.title}
+                    </h3>
+                    <ArrowRightIcon
+                      aria-hidden
+                      className="size-4 shrink-0 text-primary-text"
+                    />
+                  </div>
+                  <p className="mt-3 text-foreground-dimmed text-sm leading-relaxed">
+                    {sector.body}
+                  </p>
                 </div>
-                <p className="mt-2 text-foreground-dimmed text-sm leading-relaxed">
-                  {sector.body}
-                </p>
                 {review.sectors[index] && (
                   <SectorChatPreview
                     sector={shoppingSectors[index] ?? "wine-and-spirits"}
