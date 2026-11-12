@@ -26,7 +26,7 @@ export const HealthWellnessAndPetReader = ({
   <Accordion
     multiple
     aria-label={copy.label}
-    defaultValue={["question-0"]}
+    defaultValue={questions.map((_, index) => `question-${index}`)}
     className="min-w-0 justify-start border-accent-foreground border-t"
   >
     {questions.map((question, index) => (

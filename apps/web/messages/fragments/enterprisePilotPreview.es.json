@@ -1,0 +1,41 @@
+{
+  "enterprisePilotPreview": {
+    "label": "Piloto ilustrativo · briefing de ejemplo",
+    "title": "Una categoría. Un mercado. Las mismas preguntas.",
+    "note": "Un ejemplo de planificación, no un resultado de cliente. El alcance, los roles y los entregables se acuerdan con tu equipo.",
+    "marketLabel": "Mercado",
+    "market": "España",
+    "categoryLabel": "Categoría",
+    "category": "Mochilas de viaje",
+    "sourceLabel": "Punto de partida",
+    "source": "Páginas públicas de producto",
+    "peopleLabel": "Equipo de ejemplo",
+    "deliverableLabel": "Entregable de ejemplo",
+    "stages": [
+      {
+        "people": "Responsable de categoría + analista de ecentic",
+        "deliverable": "Preguntas y documento de referencia inicial",
+        "exampleLabel": "Pregunta de ejemplo",
+        "example": "¿Qué mochila de cabina sirve para un viaje de una semana?"
+      },
+      {
+        "people": "Responsable de merchandising + editor del catálogo",
+        "deliverable": "Datos comprobados y lista de cambios aprobada",
+        "exampleLabel": "Comprobación de ejemplo",
+        "example": "Contrastar capacidad, dimensiones y material con las páginas de origen."
+      },
+      {
+        "people": "Analista de ecentic + responsable de categoría",
+        "deliverable": "Nueva ejecución comparable y registro de cambios",
+        "exampleLabel": "Comparación de ejemplo",
+        "example": "Ver juntas las respuestas iniciales y las repetidas. Documentar los cambios de modelo."
+      },
+      {
+        "people": "Responsable de negocio + responsable de ecentic",
+        "deliverable": "Resumen, limitaciones y siguiente decisión",
+        "exampleLabel": "Agenda de ejemplo",
+        "example": "Revisar menciones, posición, enlaces y el flujo de compra probado. Decidir qué probar después."
+      }
+    ]
+  }
+}

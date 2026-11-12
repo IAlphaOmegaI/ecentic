@@ -1,0 +1,41 @@
+{
+  "enterprisePilotPreview": {
+    "label": "Illustrative pilot · sample brief",
+    "title": "One category. One market. The same questions.",
+    "note": "A planning example, not a customer result. Scope, team roles and deliverables are agreed with your team.",
+    "marketLabel": "Market",
+    "market": "Spain",
+    "categoryLabel": "Category",
+    "category": "Outdoor backpacks",
+    "sourceLabel": "Starting point",
+    "source": "Public product pages",
+    "peopleLabel": "Example team",
+    "deliverableLabel": "Example deliverable",
+    "stages": [
+      {
+        "people": "Category lead + ecentic analyst",
+        "deliverable": "Question set and baseline workbook",
+        "exampleLabel": "Sample question",
+        "example": "Which carry-on backpack suits a week-long trip?"
+      },
+      {
+        "people": "Merchandising lead + catalog editor",
+        "deliverable": "Fact checks and an approved change list",
+        "exampleLabel": "Sample fact check",
+        "example": "Match capacity, dimensions and material to the source pages."
+      },
+      {
+        "people": "ecentic analyst + category lead",
+        "deliverable": "Matched re-run and change log",
+        "exampleLabel": "Sample comparison",
+        "example": "Keep the baseline and repeated answers side by side. Document any model changes."
+      },
+      {
+        "people": "Business owner + ecentic lead",
+        "deliverable": "Summary, limitations and next decision",
+        "exampleLabel": "Sample agenda",
+        "example": "Review mentions, position, links and the tested buying flow. Choose what to test next."
+      }
+    ]
+  }
+}

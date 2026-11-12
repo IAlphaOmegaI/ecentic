@@ -18896,5 +18896,128 @@
     "format": "Illustration: a file with uneven rows. Move the pointer down the file to align them.",
     "relay": "Illustration: a branching network. Point at a destination to illuminate the route.",
     "hub": "Illustration: connected tiles around a central hub. Point at a tile to lift it and highlight its connection."
+  },
+  "enterprisePilotPreview": {
+    "label": "Illustrative pilot · sample brief",
+    "title": "One category. One market. The same questions.",
+    "note": "A planning example, not a customer result. Scope, team roles and deliverables are agreed with your team.",
+    "marketLabel": "Market",
+    "market": "Spain",
+    "categoryLabel": "Category",
+    "category": "Outdoor backpacks",
+    "sourceLabel": "Starting point",
+    "source": "Public product pages",
+    "peopleLabel": "Example team",
+    "deliverableLabel": "Example deliverable",
+    "stages": [
+      {
+        "people": "Category lead + ecentic analyst",
+        "deliverable": "Question set and baseline workbook",
+        "exampleLabel": "Sample question",
+        "example": "Which carry-on backpack suits a week-long trip?"
+      },
+      {
+        "people": "Merchandising lead + catalog editor",
+        "deliverable": "Fact checks and an approved change list",
+        "exampleLabel": "Sample fact check",
+        "example": "Match capacity, dimensions and material to the source pages."
+      },
+      {
+        "people": "ecentic analyst + category lead",
+        "deliverable": "Matched re-run and change log",
+        "exampleLabel": "Sample comparison",
+        "example": "Keep the baseline and repeated answers side by side. Document any model changes."
+      },
+      {
+        "people": "Business owner + ecentic lead",
+        "deliverable": "Summary, limitations and next decision",
+        "exampleLabel": "Sample agenda",
+        "example": "Review mentions, position, links and the tested buying flow. Choose what to test next."
+      }
+    ]
+  },
+  "sectorReview": {
+    "code": {
+      "title": "The same products, easier to read.",
+      "description": "Two invented listings, represented as JSON. Restore an omitted fact to see what changes in this scripted comparison.",
+      "format": "Illustrative records, not an API submission format. null means the listing leaves a fact unstated.",
+      "questionNote": "The shopper’s question sets the criteria for this comparison.",
+      "yourNote": "Only facts already present in the sample source are restored.",
+      "rivalNote": "The rival record stays unchanged. These are sample products, not a named brand’s catalog.",
+      "question": "Shopper question",
+      "required": "Relevant fields",
+      "before": "Show the missing fact",
+      "after": "Restore the source fact",
+      "sampleNote": "The code below follows question 01. The missing field is restored from the sample source; the other listing remains unchanged."
+    },
+    "references": {
+      "label": "Familiar sector references",
+      "note": "Brand examples for orientation only. No customer relationship or endorsement is implied. The sample records below are invented and unrelated to these brands."
+    },
+    "questions": {
+      "subtitle": "See the question, the facts it needs and the check that still belongs to the merchant.",
+      "facts": "Facts to make explicit",
+      "verify": "Merchant review",
+      "sample": "Illustrative questions; not measured search demand."
+    },
+    "rules": {
+      "help": "How ecentic helps",
+      "source": "What still needs review",
+      "modelLabel": "Simulation scope",
+      "models": "Use ChatGPT, Claude and Gemini simulation perspectives to compare supported product facts. Perplexity currently supports Shopify referral tracking; its store simulations are coming soon. A simulation is not channel approval.",
+      "sectors": {
+        "wine-and-spirits": {
+          "subtitle": "Make bottle facts explicit, compare the listing, and scope a purchase flow around the channel and market that permit it.",
+          "help": "Use verified origin, style, strength, price and delivery information in the comparison. Review a proposed rewrite before publishing; product and destination restrictions still apply."
+        },
+        "food-and-beverage": {
+          "subtitle": "Turn verified label facts into clearer product information, then review every dietary and nutrition statement before publishing.",
+          "help": "Compare the ingredients, allergens, nutrition and serving information that the source actually supplies. ecentic can suggest clearer listing language; the merchant reviews claims and suitability before applying it."
+        },
+        "beauty-and-personal-care": {
+          "subtitle": "Make supported ingredients and product claims easier to compare, with the evidence still attached to the source.",
+          "help": "Compare existing ingredients, intended use, size and supported claims. Review proposed wording against the manufacturer’s evidence; ecentic does not test efficacy or certify protection."
+        },
+        "consumer-electronics": {
+          "subtitle": "Make model, compatibility and warranty information visible before a shopper reaches the store.",
+          "help": "Compare the exact model and source specifications, then review suggested listing changes. Compatibility, electrical and warranty claims still need the merchant’s evidence."
+        },
+        "home-and-furniture": {
+          "subtitle": "Give shoppers dimensions, materials and delivery terms they can check against their own space.",
+          "help": "Compare the measurements and conditions in the source record. ecentic can expose missing listing detail; it does not guarantee fit, access or a delivery date."
+        },
+        "fashion-and-outdoor": {
+          "subtitle": "Keep fit, fabric and performance descriptions tied to the product’s actual specifications.",
+          "help": "Compare verified sizing, materials, care and intended-use information. Review wording before publishing; ecentic does not certify technical performance or environmental claims."
+        },
+        "health-wellness-and-pet": {
+          "subtitle": "Make source facts clearer without turning a product comparison into health advice.",
+          "help": "Compare supplied ingredients, intended use, serving or feeding information and documented standards. ecentic does not diagnose, prescribe or certify safety or health claims."
+        },
+        "travel-and-experiences": {
+          "subtitle": "Make the offer’s dates, inclusions and cancellation terms explicit before the booking handoff.",
+          "help": "Compare the product information in the source. Live availability, final price and booking conditions must be confirmed with the merchant; the example is not a reservation."
+        }
+      },
+      "bespoke": {
+        "title": "A custom route for age-restricted purchases.",
+        "description": "Plan an agent-assisted purchase flow with ecentic around your existing controls. Scope comes before implementation; support depends on the product, country, channel and payment provider.",
+        "steps": [
+          {
+            "title": "Confirm the permitted route",
+            "body": "Check the product, destination and chosen channel’s rules before exposing a purchase path."
+          },
+          {
+            "title": "Keep the merchant’s age check",
+            "body": "Integrate the merchant’s existing age-verification process where required. Built-in ecentic age verification is not assumed."
+          },
+          {
+            "title": "Hand over for confirmation and payment",
+            "body": "The buyer completes the required checks and confirms payment in the merchant’s permitted checkout flow."
+          }
+        ],
+        "action": "Discuss a custom purchase flow"
+      }
+    }
   }
 }

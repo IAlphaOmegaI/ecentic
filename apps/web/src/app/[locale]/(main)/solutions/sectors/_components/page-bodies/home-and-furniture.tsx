@@ -10,6 +10,7 @@ import {
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
 import { SolutionFeatureBand } from "../../../_components/feature-band";
+import { SectorRules } from "../sector-rules";
 import { FurnitureQuestions } from "./home-and-furniture-questions";
 
 export const HomeAndFurnitureBody = async ({
@@ -26,6 +27,14 @@ export const HomeAndFurnitureBody = async ({
     <>
       {sections.map((section) => {
         switch (section.id) {
+          case "rules":
+            return (
+              <SectorRules
+                key={section.id}
+                section={section}
+                sector="home-and-furniture"
+              />
+            );
           case "questions":
             return (
               <MarketingBand

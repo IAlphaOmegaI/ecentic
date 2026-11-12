@@ -1662,3 +1662,29 @@ The footer retains one continuous white-to-blue field. Its full-width outline wo
 before enhancement, draws once, and responds subtly to the pointer using the Hairline engine.
 Brand lettering is an explicit exception to the no-label rule for decorative figures. It is not a
 measurement. Reduced motion and JavaScript failure leave the complete static brand outline.
+
+## 34. Visible comparisons and public tool workbenches
+
+Do not use text-only tabs to hide sequential explanations or shopper-question examples.
+Show the meaningful steps together with a connected path and a recognizable Hairline
+subject. Native tabs still fit genuine tool selections or alternate fetched responses.
+Before/after checkout examples may use two visible syntax-colored code panes with
+spacious state headings, consistent line numbering and the outcome beside its source.
+Keep the code honest and readable; added complexity is not a marketing device.
+
+Sector examples share a presentation system. Illustrative brand references belong in a
+separately labeled area, never on invented product facts, simulated results or customer
+claims. Explain the role of product data and the actual supported workflow alongside
+sector constraints. Bespoke checkout offerings do not imply that channel policies, age
+verification, payment confirmation or local eligibility requirements disappear.
+
+Public tools may use a charcoal workbench for the input or connection state, keeping
+native validation and a clear primary action. Their headers follow the shared marketing
+type hierarchy and use a dedicated, legible subject field. A supporting column's light
+or gradient should span its full extent, rather than stopping between its heading and
+the explanation below. Shared standalone sections such as published-file explorers use
+`MarketingHeading` so heading size and description spacing match the platform pages.
+
+Enterprise's filled pilot example is illustrative review content, not a confirmed
+engagement. The user's outstanding copy task is tracked in
+`docs/marketing/review-followups.md` and must remain visible to future editors.

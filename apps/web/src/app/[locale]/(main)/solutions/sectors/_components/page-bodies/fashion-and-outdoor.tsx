@@ -11,6 +11,7 @@ import {
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
 import { SolutionFeatureBand } from "../../../_components/feature-band";
+import { SectorRules } from "../sector-rules";
 import { FashionAndOutdoorTrail } from "./fashion-and-outdoor-trail";
 
 export const FashionAndOutdoorBody = async ({
@@ -52,59 +53,11 @@ export const FashionAndOutdoorBody = async ({
                 );
               case "rules":
                 return (
-                  <MarketingBand
-                    id={section.id}
-                    className="[&>.marketing-rail>.marketing-guides]:hidden"
-                  >
-                    <div className="px-4 py-8 sm:px-8 sm:py-12">
-                      {section.eyebrow && (
-                        <MarketingEyebrow>{section.eyebrow}</MarketingEyebrow>
-                      )}
-                      <h2>{section.title}</h2>
-                    </div>
-                    {section.paragraphs?.map((paragraph, position) => {
-                      const link = section.links?.[position];
-
-                      return (
-                        <article
-                          key={paragraph}
-                          className="relative grid border-accent-foreground border-t md:grid-cols-[1fr_2fr]"
-                        >
-                          <Plus className="top-0 left-1/3 -translate-x-1/2 -translate-y-1/2 max-md:hidden" />
-                          <div className="min-w-0 border-accent-foreground bg-background-dimmed px-4 py-6 sm:px-8 md:border-r md:py-8">
-                            <h3 className="max-w-[20ch] text-2xl!">
-                              {fashionPage.rules[position]}
-                            </h3>
-                          </div>
-                          <div className="min-w-0 px-4 py-6 sm:px-8 md:py-8">
-                            <p className="max-w-[65ch] text-foreground-dimmed">
-                              {paragraph}
-                            </p>
-                          </div>
-                          {link && (
-                            <Link
-                              href={link.href}
-                              className="group flex min-h-16 items-center justify-between gap-6 border-accent-foreground border-t px-4 py-4 text-primary-text hover:bg-background-dimmed focus-visible:-outline-offset-4 sm:px-8 md:col-span-2"
-                            >
-                              <span className="group-hover:underline group-hover:underline-offset-4">
-                                {link.label}
-                              </span>
-                              <ArrowRightIcon
-                                aria-hidden
-                                className="size-4 shrink-0"
-                              />
-                            </Link>
-                          )}
-                        </article>
-                      );
-                    })}
-                    {sectionChildren?.[section.id]}
-                    {section.note && (
-                      <p className="border-accent-foreground border-t bg-background-dimmed px-4 py-6 text-foreground-dimmed text-sm sm:px-8">
-                        {section.note}
-                      </p>
-                    )}
-                  </MarketingBand>
+                  <SectorRules
+                    key={section.id}
+                    section={section}
+                    sector="fashion-and-outdoor"
+                  />
                 );
               case "business":
                 return (

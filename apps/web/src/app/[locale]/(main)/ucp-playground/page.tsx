@@ -7,7 +7,8 @@ import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { JsonLd } from "@/components/json-ld";
 import { MarketingQuestions } from "@/components/marketing/faq";
-import { MarketingLightBand } from "@/components/marketing/light-band";
+import { MarketingEdgeCrosses } from "@/components/marketing/light-band";
+import { MarketingFeatureBand } from "@/components/marketing/primitives";
 import { Plus } from "@/components/plus";
 import { PlaygroundClient } from "@/components/ucp-playground/playground-client";
 import { localizePath } from "@/i18n/locale";
@@ -45,7 +46,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 
 const PlaygroundSkeleton = () => (
-  <div className="flex flex-1 items-center justify-center p-8">
+  <div className="flex min-h-[580px] flex-1 items-center justify-center p-8 max-sm:min-h-[520px]">
     <div className="w-full max-w-md space-y-3">
       <div className="mx-auto h-4 w-40 animate-pulse bg-accent-foreground/30 motion-reduce:animate-none" />
       <div className="h-9 w-full animate-pulse bg-accent-foreground/20 motion-reduce:animate-none" />
@@ -65,6 +66,7 @@ const MeteredPlayground = async () => {
 
   return (
     <PlaygroundClient
+      appearance="workbench"
       messageLimit={session ? undefined : ANONYMOUS_MESSAGE_LIMIT}
     />
   );
@@ -142,17 +144,22 @@ export default async () => {
         </div>
       </section>
 
-      <MarketingLightBand>
-        <div className="relative grid min-w-0 grid-cols-[minmax(0,2fr)_minmax(0,1fr)] gap-px bg-accent-foreground max-md:grid-cols-1">
+      <MarketingFeatureBand
+        tone="dark"
+        className="[&>.marketing-rail]:border-background-rich/15 [&>.marketing-rail]:border-x"
+      >
+        <div className="relative grid min-w-0 grid-cols-[minmax(0,2fr)_minmax(0,1fr)] border-background-rich/15 border-y max-md:grid-cols-1">
+          <MarketingEdgeCrosses />
+          <MarketingEdgeCrosses edge="bottom" />
           <div
             id="playground-session"
-            className="flex h-[760px] min-h-0 min-w-0 scroll-mt-24 flex-col bg-background-rich max-sm:h-[600px]"
+            className="flex min-h-0 min-w-0 scroll-mt-24 flex-col border-background-rich/15 border-r bg-emphasis-dimmed max-md:border-r-0 max-md:border-b"
           >
-            <div className="shrink-0 border-accent-foreground border-b px-8 py-6 max-sm:px-4">
-              <h3 className="text-foreground-rich text-xl">
+            <div className="shrink-0 border-background-rich/15 border-b bg-linear-to-r from-primary/15 to-transparent px-8 py-6 max-sm:px-4">
+              <h3 className="text-background-rich text-xl">
                 {copy.session.title}
               </h3>
-              <p className="mt-2 text-foreground-dimmed text-sm">
+              <p className="mt-2 text-background-rich/65 text-sm">
                 {copy.session.description}
               </p>
             </div>
@@ -164,7 +171,7 @@ export default async () => {
           </div>
           <PlaygroundGuide copy={copy.guide} capabilities={capabilities} />
         </div>
-      </MarketingLightBand>
+      </MarketingFeatureBand>
 
       <section className="relative w-full border-accent-foreground border-b">
         <div className="relative mx-auto grid w-[min(1186px,calc(100%-56px))] grid-cols-[1fr_2fr] border-accent-foreground border-x max-sm:w-[calc(100%-32px)] max-md:grid-cols-1">

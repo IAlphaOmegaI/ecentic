@@ -10,6 +10,7 @@ import {
 import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import type { AppConfig } from "next-intl";
 import { MarketingEdgeCrosses } from "@/components/marketing/light-band";
+import { MarketingHeading } from "@/components/marketing/primitives";
 import { Plus } from "@/components/plus";
 import { PublishedFilePreview } from "./preview";
 
@@ -38,12 +39,7 @@ export const PublishedFilesExplorer = ({
     className="relative border-accent-foreground border-t"
   >
     <MarketingEdgeCrosses />
-    <div className="px-8 py-10 max-sm:px-4 max-sm:py-8">
-      <h3>{copy.title}</h3>
-      <p className="mt-4 max-w-2xl text-foreground-dimmed">
-        {copy.description}
-      </p>
-    </div>
+    <MarketingHeading title={copy.title} description={copy.description} />
     <Tabs
       defaultValue={files[0].path}
       className="relative grid min-w-0 border-accent-foreground border-t lg:grid-cols-[1fr_2fr]"

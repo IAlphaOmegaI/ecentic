@@ -13,6 +13,7 @@ import {
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
 import { SolutionFeatureBand } from "../../../_components/feature-band";
+import { SectorRules } from "../sector-rules";
 import { TravelAndExperiencesRoadmap } from "./travel-and-experiences-roadmap";
 
 export const TravelAndExperiencesBody = async ({
@@ -112,46 +113,11 @@ export const TravelAndExperiencesBody = async ({
                 );
               case "rules":
                 return (
-                  <MarketingBand
-                    id={section.id}
-                    className="[&>.marketing-rail>.marketing-guides]:hidden"
-                  >
-                    <div className="px-4 py-8 sm:px-8 sm:py-12">
-                      {section.eyebrow && (
-                        <MarketingEyebrow>{section.eyebrow}</MarketingEyebrow>
-                      )}
-                      <h2>{section.title}</h2>
-                      {section.paragraphs?.map((paragraph) => (
-                        <p
-                          key={paragraph}
-                          className="mt-4 max-w-[72ch] text-foreground-dimmed"
-                        >
-                          {paragraph}
-                        </p>
-                      ))}
-                      {section.note && (
-                        <p className="mt-6 text-foreground-dimmed text-sm!">
-                          {section.note}
-                        </p>
-                      )}
-                    </div>
-                    {sectionChildren?.[section.id]}
-                    {section.links?.map((link) => (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        className="group flex min-h-16 items-center justify-between gap-8 border-accent-foreground border-t px-4 py-4 text-primary-text hover:bg-background-dimmed focus-visible:-outline-offset-4 sm:px-8"
-                      >
-                        <span className="group-hover:underline group-hover:underline-offset-4">
-                          {link.label}
-                        </span>
-                        <ArrowRightIcon
-                          aria-hidden
-                          className="size-4 shrink-0"
-                        />
-                      </Link>
-                    ))}
-                  </MarketingBand>
+                  <SectorRules
+                    key={section.id}
+                    section={section}
+                    sector="travel-and-experiences"
+                  />
                 );
               case "pilot":
                 return (

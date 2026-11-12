@@ -1,0 +1,57 @@
+{
+  "source": "Simple Icons",
+  "repository": "https://github.com/simple-icons/simple-icons",
+  "licenseUrl": "https://raw.githubusercontent.com/simple-icons/simple-icons/develop/LICENSE.md",
+  "retrieved": "2026-11-11",
+  "usage": "Familiar category reference marks only. No customer relationship, endorsement or ownership of sample product records is implied. Trademark rights remain with their respective owners.",
+  "assets": [
+    {
+      "file": "starbucks.svg",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/starbucks.svg"
+    },
+    {
+      "file": "mcdonalds.svg",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/mcdonalds.svg"
+    },
+    {
+      "file": "jameson.svg",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/jameson.svg"
+    },
+    {
+      "file": "dior.svg",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/dior.svg"
+    },
+    {
+      "file": "samsung.svg",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/samsung.svg"
+    },
+    {
+      "file": "sony.svg",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/sony.svg"
+    },
+    {
+      "file": "ikea.svg",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/ikea.svg"
+    },
+    {
+      "file": "nike.svg",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/nike.svg"
+    },
+    {
+      "file": "adidas.svg",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/adidas.svg"
+    },
+    {
+      "file": "fitbit.svg",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/fitbit.svg"
+    },
+    {
+      "file": "airbnb.svg",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/airbnb.svg"
+    },
+    {
+      "file": "hilton.svg",
+      "url": "https://raw.githubusercontent.com/simple-icons/simple-icons/develop/icons/hilton.svg"
+    }
+  ]
+}

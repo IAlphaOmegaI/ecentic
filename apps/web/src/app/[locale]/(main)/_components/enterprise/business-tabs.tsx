@@ -10,14 +10,14 @@ import {
 import { Button } from "@zenncore/web/components/button";
 import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import type { AppConfig } from "next-intl";
-import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import { Link } from "@/i18n/navigation";
 
 const audiences = [
-  { Icon: CommerceBasketShoppingIcon, tone: "primary", artwork: "bag" },
-  { Icon: CommerceCityBuildingIcon, tone: "success", artwork: "cart" },
-  { Icon: CommerceFileShieldIcon, tone: "secondary", artwork: "commerce" },
-  { Icon: CommercePlug_3SparkleIcon, tone: "warning", artwork: "console" },
+  { Icon: CommerceBasketShoppingIcon, tone: "primary", figure: "catalog" },
+  { Icon: CommerceCityBuildingIcon, tone: "success", figure: "drawer" },
+  { Icon: CommerceFileShieldIcon, tone: "secondary", figure: "hub" },
+  { Icon: CommercePlug_3SparkleIcon, tone: "warning", figure: "relay" },
 ] as const;
 
 export const BusinessTabs = ({ copy }: BusinessTabs.Props) => (
@@ -64,9 +64,6 @@ export const BusinessTabs = ({ copy }: BusinessTabs.Props) => (
               data-columns="2"
             >
               <div className="relative flex min-h-[460px] min-w-0 flex-col overflow-hidden border-accent-foreground border-r px-8 py-10 max-sm:min-h-[400px] max-sm:border-r-0 max-sm:px-4 max-sm:py-8">
-                <div className="pointer-events-none absolute right-0 bottom-0 h-[280px] w-[70%] select-none text-primary-text opacity-25 [mask-image:linear-gradient(135deg,transparent_5%,black_85%)] group-data-[tone=secondary]/audience:text-secondary group-data-[tone=success]/audience:text-success-foreground group-data-[tone=warning]/audience:text-warning-foreground max-sm:h-[240px]">
-                  <EvolvingAscii artwork={appearance.artwork} />
-                </div>
                 <Icon
                   aria-hidden
                   className="relative mb-8 size-10 text-primary-text group-data-[tone=secondary]/audience:text-secondary group-data-[tone=success]/audience:text-success-foreground group-data-[tone=warning]/audience:text-warning-foreground"
@@ -84,26 +81,33 @@ export const BusinessTabs = ({ copy }: BusinessTabs.Props) => (
                   </Button>
                 </div>
               </div>
-              <div className="relative flex min-w-0 flex-col justify-center px-8 py-10 max-sm:border-accent-foreground max-sm:border-t max-sm:px-4 max-sm:py-8">
-                <h4 className="mb-6 font-body font-medium text-foreground-rich text-lg tracking-normal">
-                  {copy.painLabel}
-                </h4>
-                <ul className="divide-y divide-accent-foreground">
-                  {item.pains.map((pain) => (
-                    <li
-                      key={pain}
-                      className="flex items-start gap-4 py-5 first:pt-0 last:pb-0"
-                    >
-                      <span
-                        aria-hidden
-                        className="mt-2.5 size-2 shrink-0 rounded-full bg-primary-text group-data-[tone=secondary]/audience:bg-secondary group-data-[tone=success]/audience:bg-success-foreground group-data-[tone=warning]/audience:bg-warning-foreground"
-                      />
-                      <p className="max-w-[40ch] text-foreground text-lg leading-relaxed max-sm:text-base">
-                        {pain}
-                      </p>
-                    </li>
-                  ))}
-                </ul>
+              <div className="relative flex min-w-0 flex-col bg-background-rich max-sm:border-accent-foreground max-sm:border-t">
+                <CommerceFigure
+                  kind={appearance.figure}
+                  surface="rich"
+                  className="mx-auto w-full max-w-72 group-data-[tone=secondary]/audience:[--hairline-hi:var(--color-secondary)] group-data-[tone=success]/audience:[--hairline-hi:var(--color-success-foreground)] group-data-[tone=warning]/audience:[--hairline-hi:var(--color-warning-foreground)]"
+                />
+                <div className="border-accent-foreground border-t px-8 py-8 max-sm:px-4">
+                  <h4 className="mb-6 font-body font-medium text-foreground-rich text-lg tracking-normal">
+                    {copy.painLabel}
+                  </h4>
+                  <ul className="divide-y divide-accent-foreground">
+                    {item.pains.map((pain) => (
+                      <li
+                        key={pain}
+                        className="flex items-start gap-4 py-5 first:pt-0 last:pb-0"
+                      >
+                        <span
+                          aria-hidden
+                          className="mt-2.5 size-2 shrink-0 rounded-full bg-primary-text group-data-[tone=secondary]/audience:bg-secondary group-data-[tone=success]/audience:bg-success-foreground group-data-[tone=warning]/audience:bg-warning-foreground"
+                        />
+                        <p className="max-w-[40ch] text-foreground text-lg leading-relaxed max-sm:text-base">
+                          {pain}
+                        </p>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </div>
           </div>

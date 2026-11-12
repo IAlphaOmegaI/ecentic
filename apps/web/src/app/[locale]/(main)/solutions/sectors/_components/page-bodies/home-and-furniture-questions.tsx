@@ -73,7 +73,8 @@ export const FurnitureQuestions = ({
       </div>
     </div>
     <Accordion
-      defaultValue={[questions[0]?.title ?? ""]}
+      multiple
+      defaultValue={questions.map((question) => question.title)}
       className="border-accent-foreground border-t"
     >
       {questions.map((question, index) => (

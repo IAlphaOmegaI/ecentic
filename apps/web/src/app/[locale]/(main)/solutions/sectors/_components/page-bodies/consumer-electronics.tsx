@@ -12,6 +12,7 @@ import {
 } from "@/components/marketing/primitives";
 import { Link } from "@/i18n/navigation";
 import { SolutionFeatureBand } from "../../../_components/feature-band";
+import { SectorRules } from "../sector-rules";
 import {
   ElectronicsSpecification,
   ElectronicsWorkbench,
@@ -32,6 +33,14 @@ export const ConsumerElectronicsBody = async ({
     <>
       {sections.map((section) => {
         switch (section.id) {
+          case "rules":
+            return (
+              <SectorRules
+                key={section.id}
+                section={section}
+                sector="consumer-electronics"
+              />
+            );
           case "questions":
             return (
               <MarketingBand

@@ -40,6 +40,7 @@ Central navigation for product context, agent rules, and package/component docum
 
 - [Design system + visual build guide](./context/design.md) — single source of truth for tokens, type, components, motifs, and page recipes
 - [Enterprise website rebuild delivery](./marketing/enterprise-rebuild.md) — decisions, claim/TODO audits, redirects, verification, screenshots and remaining launch facts
+- [Marketing review follow-ups](./marketing/review-followups.md) — content awaiting the user's final input, including the illustrative Enterprise pilot brief
 - [Web components index](./web/index.md)
 - [Shared packages index](./shared/index.md)
 

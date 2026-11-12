@@ -1,4 +1,9 @@
-import { ArrowRightIcon } from "@zenncore/icons";
+import {
+  ArrowRightIcon,
+  CommerceFilePenIcon,
+  CommerceFileShieldIcon,
+  ShieldCheckIcon,
+} from "@zenncore/icons";
 import {
   Accordion,
   AccordionItem,
@@ -16,9 +21,14 @@ import {
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
 import { SolutionFeatureBand } from "../feature-band";
-import { JourneyFigure } from "../journey-figure";
 import { EnterpriseEngagements } from "./enterprise-engagements";
 import { HubFigure } from "./hub-figure";
+
+const securityDetails = [
+  { Icon: CommerceFilePenIcon, tone: "primary" },
+  { Icon: CommerceFileShieldIcon, tone: "secondary" },
+  { Icon: ShieldCheckIcon, tone: "success" },
+] as const;
 
 export const EnterpriseBody = async ({
   sections,
@@ -169,24 +179,36 @@ export const EnterpriseBody = async ({
                         )}
                         <h2>{security.title}</h2>
                       </div>
-                      <div className="px-4 pb-8 sm:px-8 sm:pb-12">
+                      <div className="pb-8 sm:pb-12">
                         {security.items
                           ?.filter((item) => item.body.trim())
-                          .map((item) => (
-                            <article
-                              key={item.title}
-                              className="border-accent-foreground border-t py-6 last:pb-0"
-                            >
-                              <h3 className="text-xl!">{item.title}</h3>
-                              <p className="mt-4 max-w-[48ch] text-foreground-dimmed">
-                                {item.body}
-                              </p>
-                            </article>
-                          ))}
-                        <MarketingActions
-                          actions={security.links ?? []}
-                          tone="inverse"
-                        />
+                          .map((item, index) => {
+                            const detail =
+                              securityDetails[index] ?? securityDetails[0];
+                            const Icon = detail.Icon;
+                            return (
+                              <article
+                                key={item.title}
+                                data-tone={detail.tone}
+                                className="group/security grid grid-cols-[32px_1fr] gap-x-4 gap-y-3 border-accent-foreground border-t bg-linear-to-r from-primary/5 to-transparent px-4 py-6 data-[tone=secondary]:from-secondary/5 data-[tone=success]:from-success/5 sm:px-8"
+                              >
+                                <Icon
+                                  aria-hidden
+                                  className="row-span-2 size-8 text-primary-text group-data-[tone=secondary]/security:text-secondary group-data-[tone=success]/security:text-success-foreground"
+                                />
+                                <h3 className="text-xl!">{item.title}</h3>
+                                <p className="col-start-2 max-w-[48ch] text-foreground-dimmed">
+                                  {item.body}
+                                </p>
+                              </article>
+                            );
+                          })}
+                        <div className="px-4 sm:px-8">
+                          <MarketingActions
+                            actions={security.links ?? []}
+                            tone="inverse"
+                          />
+                        </div>
                       </div>
                       {sectionChildren?.[security.id]}
                     </section>
@@ -301,7 +323,7 @@ export const EnterpriseBody = async ({
           case "pilot":
             return (
               <SolutionFeatureBand key={section.id} id={section.id}>
-                <div className="grid items-center border-background-rich/15 border-b md:grid-cols-[3fr_2fr]">
+                <div className="border-background-rich/15 border-b">
                   <div className="px-4 py-10 sm:px-8 sm:py-12">
                     <MarketingEyebrow>{section.eyebrow}</MarketingEyebrow>
                     <h2>{section.title}</h2>
@@ -311,7 +333,6 @@ export const EnterpriseBody = async ({
                       </p>
                     )}
                   </div>
-                  <JourneyFigure stage={1} />
                 </div>
                 {sectionChildren?.[section.id]}
               </SolutionFeatureBand>

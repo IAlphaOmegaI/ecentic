@@ -35,7 +35,8 @@ export default async ({ params }: Props) => {
   const { sector: requested } = await params;
   const sector = sectors.find((value) => value === requested);
   if (!sector) notFound();
-  const { enterpriseSolutions, interactiveShelf } = await getMessages();
+  const { enterpriseSolutions, interactiveShelf, sectorReview } =
+    await getMessages();
   const content = enterpriseSolutions.sectors[sector];
   const specification: MarketingPage.Section | undefined =
     content.sections.find((section) => section.id === "attributes");
@@ -62,6 +63,8 @@ export default async ({ params }: Props) => {
               attributes={specification?.items ?? []}
               copy={interactiveShelf.sectors[sector]}
               shared={interactiveShelf.shared}
+              presentation={sectorReview.code}
+              referenceCopy={sectorReview.references}
               fallback={
                 <SpecificationMap
                   items={specification?.items ?? []}

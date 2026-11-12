@@ -1,7 +1,7 @@
 "use client";
 
 import { ArrowRightIcon, SearchIcon } from "@zenncore/icons";
-import { resultify } from "@zenncore/utils";
+import { cn, resultify } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import {
@@ -12,11 +12,16 @@ import {
 import { useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { z } from "zod";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import type { Outcome } from "@/lib/webmcp";
 import * as WebMcp from "@/server/app/webmcp";
 import { ScanReport } from "./report";
 
-export const Scanner = ({ initialUrl = "", store }: Scanner.Props) => {
+export const Scanner = ({
+  initialUrl = "",
+  store,
+  appearance = "default",
+}: Scanner.Props) => {
   const translate = useTranslations("webmcpScanner.form");
   const [outcome, setOutcome] = useState<Outcome | null>(null);
   const [failed, setFailed] = useState(false);
@@ -57,18 +62,49 @@ export const Scanner = ({ initialUrl = "", store }: Scanner.Props) => {
   );
 
   return (
-    <div className="bg-background-rich">
-      <div className="grid gap-8 px-7 py-12 max-sm:px-4 max-sm:py-8 lg:grid-cols-[1fr_2fr]">
-        <div className="space-y-6">
-          <SearchIcon className="size-4 text-primary" />
-          <h2 className="font-medium text-2xl text-foreground">
-            {translate("title")}
-          </h2>
-          <p className="text-foreground-dimmed text-sm leading-relaxed">
-            {translate("description")}
-          </p>
-        </div>
-        <div className="space-y-4">
+    <div
+      data-scanner-appearance={appearance}
+      className={cn(appearance === "default" && "bg-background-rich")}
+    >
+      <div
+        className={cn(
+          "grid gap-8 px-7 py-12 max-sm:px-4 max-sm:py-8 lg:grid-cols-[1fr_2fr]",
+          appearance === "workbench" &&
+            "relative items-center gap-0 p-0! lg:grid-cols-2",
+        )}
+      >
+        {appearance === "workbench" ? (
+          <div className="relative min-w-0 border-background-rich/15 border-r px-8 py-8 max-sm:px-4 max-lg:border-r-0 max-lg:border-b">
+            <CommerceFigure
+              kind="inspection"
+              surface="dark"
+              className="mx-auto aspect-[5/3] w-full max-w-[390px]"
+            />
+            <h2 className="mt-3 font-medium text-3xl! text-background-rich">
+              {translate("title")}
+            </h2>
+            <p className="mt-4 max-w-[45ch] text-background-rich/70 text-base leading-relaxed">
+              {translate("description")}
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            <SearchIcon className="size-4 text-primary" />
+            <h2 className="font-medium text-2xl text-foreground">
+              {translate("title")}
+            </h2>
+            <p className="text-foreground-dimmed text-sm leading-relaxed">
+              {translate("description")}
+            </p>
+          </div>
+        )}
+        <div
+          className={cn(
+            "space-y-4",
+            appearance === "workbench" &&
+              "h-full content-center bg-linear-to-br from-primary/15 to-transparent px-8 py-10 max-sm:px-4 [&_form_.text-foreground-dimmed]:text-background-rich/70 [&_form_div:has(>input)]:h-12 [&_form_div:has(>input)]:bg-background-rich [&_form_div:has(>input)]:px-3 [&_label]:text-background-rich",
+          )}
+        >
           <InferredForm
             config={config}
             defaultValues={{ url: initialUrl }}
@@ -82,12 +118,22 @@ export const Scanner = ({ initialUrl = "", store }: Scanner.Props) => {
               </Button>
             </div>
           </InferredForm>
-          <p className="text-foreground-dimmed text-xs leading-relaxed">
+          <p
+            className={cn(
+              "text-foreground-dimmed text-xs leading-relaxed",
+              appearance === "workbench" && "text-background-rich/65",
+            )}
+          >
             {translate("scope")}
           </p>
           <div aria-live="polite" aria-atomic="true">
             {pending && (
-              <p className="text-primary-text text-sm">
+              <p
+                className={cn(
+                  "text-primary-text text-sm",
+                  appearance === "workbench" && "text-primary-rich",
+                )}
+              >
                 {translate("progress")}
               </p>
             )}
@@ -110,11 +156,30 @@ export const Scanner = ({ initialUrl = "", store }: Scanner.Props) => {
           </div>
         </div>
       </div>
-      {outcome?.kind === "complete" && (
-        <ScanReport key={run} report={outcome.report} />
-      )}
-      <div className="flex flex-wrap gap-x-6 gap-y-2 border-accent-foreground border-t px-7 py-4 text-xs max-sm:px-4">
-        <span className="text-foreground-dimmed">
+      {outcome?.kind === "complete" &&
+        (appearance === "workbench" ? (
+          <div
+            data-nav-tone="light"
+            className="bg-background-rich text-foreground [&_:is(h2,h3,h4)]:text-foreground-rich!"
+          >
+            <ScanReport key={run} report={outcome.report} />
+          </div>
+        ) : (
+          <ScanReport key={run} report={outcome.report} />
+        ))}
+      <div
+        className={cn(
+          "flex flex-wrap gap-x-6 gap-y-2 border-accent-foreground border-t px-7 py-4 text-xs max-sm:px-4",
+          appearance === "workbench" &&
+            "border-background-rich/15 [&_a]:text-primary-rich",
+        )}
+      >
+        <span
+          className={cn(
+            "text-foreground-dimmed",
+            appearance === "workbench" && "text-background-rich/65",
+          )}
+        >
           {translate("sources.label")}
         </span>
         <a
@@ -139,5 +204,9 @@ export const Scanner = ({ initialUrl = "", store }: Scanner.Props) => {
 };
 
 export namespace Scanner {
-  export type Props = { initialUrl?: string; store?: string };
+  export type Props = {
+    initialUrl?: string;
+    store?: string;
+    appearance?: "default" | "workbench";
+  };
 }

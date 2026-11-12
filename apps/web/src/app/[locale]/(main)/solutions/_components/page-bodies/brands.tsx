@@ -116,7 +116,7 @@ export const BrandsBody = async ({
           case "start":
             return (
               <MarketingBand key={section.id} id={section.id}>
-                <div className="relative bg-background-dimmed px-4 py-10 sm:px-8 sm:py-12">
+                <div className="relative bg-linear-to-br from-primary/12 via-background-rich to-info/8 px-4 py-10 sm:px-8 sm:py-12">
                   <h2>{section.title}</h2>
                   <p className="mt-4 max-w-[60ch] text-foreground-dimmed text-lg max-sm:text-base">
                     {section.description}

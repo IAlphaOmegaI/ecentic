@@ -1,5 +1,6 @@
 "use client";
 
+import { CheckIcon, CircleMinusIcon, CodeIcon } from "@zenncore/icons";
 import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import type { getMessages } from "next-intl/server";
 import { useState } from "react";
@@ -11,10 +12,101 @@ import {
 } from "@/content/examples/checkout-run";
 import { CodeRecord } from "./code-comparison";
 import { FlowDiagram } from "./flow-diagram";
+import { FormattedSource } from "./published-files/formatted-source";
 import { useInteractive } from "./use-interactive";
 
 type Copy = Awaited<ReturnType<typeof getMessages>>["interactiveCheckout"];
 type Code = Awaited<ReturnType<typeof getMessages>>["reviewCode"]["checkout"];
+
+const CheckoutCodeComparison = ({ copy, code }: { copy: Copy; code: Code }) => (
+  <div
+    data-checkout-run
+    data-checkout-comparison="visible"
+    className="relative min-w-0 border-accent-foreground border-t bg-background"
+  >
+    <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+    <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+    <header className="px-8 py-10 max-sm:px-4">
+      <MarketingEyebrow>{copy.sampleLabel}</MarketingEyebrow>
+      <h3>{copy.title}</h3>
+      <p className="mt-4 max-w-[76ch] text-foreground-dimmed text-sm leading-relaxed">
+        {copy.description}
+      </p>
+    </header>
+    <div className="grid min-w-0 border-accent-foreground border-t md:grid-cols-2">
+      {(["before", "after"] as const).map((state) => {
+        const Icon = state === "after" ? CheckIcon : CircleMinusIcon;
+        return (
+          <section
+            key={state}
+            aria-label={copy.states[state]}
+            data-checkout-trace={state}
+            className="relative min-w-0 border-accent-foreground last:border-t md:last:border-t-0 md:last:border-l"
+          >
+            <header
+              className={`flex min-h-28 items-center gap-4 px-8 py-8 max-sm:px-4 ${state === "after" ? "bg-linear-to-br from-primary/12 to-background-rich" : "bg-background-rich"}`}
+            >
+              <Icon
+                aria-hidden
+                className={`size-8 shrink-0 ${state === "after" ? "text-primary-text" : "text-warning-foreground"}`}
+              />
+              <h4 className="font-heading text-2xl">{copy.states[state]}</h4>
+            </header>
+            <div
+              data-code-record={state}
+              className="border-accent-foreground border-y bg-emphasis-dimmed bg-radial-[at_0%_0%] from-primary-dimmed/60 via-transparent to-transparent"
+            >
+              <div className="flex min-h-14 items-center gap-3 border-background-rich/15 border-b px-6 py-4 max-sm:px-4">
+                <CodeIcon
+                  aria-hidden
+                  className="size-6 shrink-0 text-primary-rich"
+                />
+                <span className="min-w-0 break-all font-mono text-background-rich/75 text-xs">
+                  {code.filename}
+                </span>
+              </div>
+              <FormattedSource
+                source={JSON.stringify(
+                  Object.fromEntries(
+                    code.rows.map((row) => [row.key, row[state]]),
+                  ),
+                  null,
+                  2,
+                )}
+              />
+            </div>
+            <CheckoutTrace state={state} copy={copy} />
+            <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+            <Plus
+              className={`top-0 right-0 translate-x-1/2 -translate-y-1/2 ${state === "before" ? "md:hidden" : ""}`}
+            />
+          </section>
+        );
+      })}
+    </div>
+    <div className="relative border-accent-foreground border-t">
+      <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+      <div className="px-8 py-8 max-sm:px-4">
+        <h4 className="text-xl">{code.label}</h4>
+        <p className="mt-3 text-foreground-dimmed text-sm">{code.note}</p>
+      </div>
+      <dl className="grid border-accent-foreground border-t md:grid-cols-2">
+        {code.rows.map((row) => (
+          <div
+            key={row.key}
+            className="border-accent-foreground border-b px-8 py-6 last:border-b-0 max-sm:px-4 md:nth-last-2:border-b-0 md:odd:border-r"
+          >
+            <dt className="font-mono text-primary-text text-sm">{row.key}</dt>
+            <dd className="mt-3 max-w-[54ch] text-foreground-dimmed text-sm">
+              {row.note}
+            </dd>
+          </div>
+        ))}
+      </dl>
+    </div>
+  </div>
+);
 
 const CheckoutTrace = ({
   state,
@@ -78,6 +170,8 @@ export const CheckoutRunClient = ({
   const { ready, reduced } = useInteractive();
   const [state, setState] = useState<CheckoutState>("before");
   const states = ["before", "after"] as const;
+
+  if (code) return <CheckoutCodeComparison copy={copy} code={code} />;
 
   return (
     <div

@@ -18896,5 +18896,128 @@
     "format": "Ilustración: un archivo con filas desalineadas. Baja el puntero por el archivo para alinearlas.",
     "relay": "Ilustración: una red ramificada. Señala un destino para iluminar la ruta.",
     "hub": "Ilustración: fichas conectadas a un centro. Señala una ficha para levantarla y resaltar su conexión."
+  },
+  "enterprisePilotPreview": {
+    "label": "Piloto ilustrativo · briefing de ejemplo",
+    "title": "Una categoría. Un mercado. Las mismas preguntas.",
+    "note": "Un ejemplo de planificación, no un resultado de cliente. El alcance, los roles y los entregables se acuerdan con tu equipo.",
+    "marketLabel": "Mercado",
+    "market": "España",
+    "categoryLabel": "Categoría",
+    "category": "Mochilas de viaje",
+    "sourceLabel": "Punto de partida",
+    "source": "Páginas públicas de producto",
+    "peopleLabel": "Equipo de ejemplo",
+    "deliverableLabel": "Entregable de ejemplo",
+    "stages": [
+      {
+        "people": "Responsable de categoría + analista de ecentic",
+        "deliverable": "Preguntas y documento de referencia inicial",
+        "exampleLabel": "Pregunta de ejemplo",
+        "example": "¿Qué mochila de cabina sirve para un viaje de una semana?"
+      },
+      {
+        "people": "Responsable de merchandising + editor del catálogo",
+        "deliverable": "Datos comprobados y lista de cambios aprobada",
+        "exampleLabel": "Comprobación de ejemplo",
+        "example": "Contrastar capacidad, dimensiones y material con las páginas de origen."
+      },
+      {
+        "people": "Analista de ecentic + responsable de categoría",
+        "deliverable": "Nueva ejecución comparable y registro de cambios",
+        "exampleLabel": "Comparación de ejemplo",
+        "example": "Ver juntas las respuestas iniciales y las repetidas. Documentar los cambios de modelo."
+      },
+      {
+        "people": "Responsable de negocio + responsable de ecentic",
+        "deliverable": "Resumen, limitaciones y siguiente decisión",
+        "exampleLabel": "Agenda de ejemplo",
+        "example": "Revisar menciones, posición, enlaces y el flujo de compra probado. Decidir qué probar después."
+      }
+    ]
+  },
+  "sectorReview": {
+    "code": {
+      "title": "Los mismos productos, más fáciles de leer.",
+      "description": "Dos fichas inventadas representadas en JSON. Recupera un dato omitido para ver qué cambia en esta comparación programada.",
+      "format": "Registros ilustrativos, no un formato de envío a una API. null indica un dato que la ficha no declara.",
+      "questionNote": "La pregunta del comprador determina los criterios de esta comparación.",
+      "yourNote": "Solo se recuperan datos que ya existen en la fuente del ejemplo.",
+      "rivalNote": "La ficha rival no cambia. Son productos de ejemplo, no el catálogo de una marca concreta.",
+      "question": "Pregunta del comprador",
+      "required": "Campos relevantes",
+      "before": "Mostrar el dato omitido",
+      "after": "Recuperar el dato de origen",
+      "sampleNote": "El código de abajo sigue la pregunta 01. El dato omitido se recupera del origen de ejemplo; la otra ficha no cambia."
+    },
+    "references": {
+      "label": "Referencias conocidas del sector",
+      "note": "Marcas de referencia para orientarte. No implican una relación comercial ni un aval. Los registros de abajo son inventados y no están vinculados a estas marcas."
+    },
+    "questions": {
+      "subtitle": "Consulta la pregunta, los datos que necesita y la comprobación que sigue correspondiendo al comercio.",
+      "facts": "Datos que conviene explicitar",
+      "verify": "Revisión del comercio",
+      "sample": "Preguntas ilustrativas; no representan demanda de búsqueda medida."
+    },
+    "rules": {
+      "help": "Cómo ayuda ecentic",
+      "source": "Qué sigue necesitando revisión",
+      "modelLabel": "Alcance de la simulación",
+      "models": "Compara datos de producto compatibles desde las perspectivas de simulación de ChatGPT, Claude y Gemini. Perplexity permite hoy el seguimiento de referencias en Shopify; sus simulaciones llegarán más adelante. Una simulación no implica aprobación del canal.",
+      "sectors": {
+        "wine-and-spirits": {
+          "subtitle": "Explicita los datos de la botella, compara la ficha y define una compra en el canal y mercado que la permitan.",
+          "help": "Utiliza origen, estilo, graduación, precio y entrega verificados en la comparación. Revisa la propuesta antes de publicar; siguen aplicándose las restricciones del producto y destino."
+        },
+        "food-and-beverage": {
+          "subtitle": "Convierte los datos verificados de la etiqueta en información más clara y revisa cada declaración dietética y nutricional antes de publicarla.",
+          "help": "Compara los ingredientes, alérgenos, nutrición y raciones que aporta la fuente. ecentic puede proponer un texto más claro; el comercio revisa las declaraciones y la idoneidad antes de aplicarlo."
+        },
+        "beauty-and-personal-care": {
+          "subtitle": "Facilita la comparación de ingredientes y declaraciones respaldadas, manteniendo la evidencia en la fuente.",
+          "help": "Compara los ingredientes, uso previsto, tamaño y declaraciones existentes. Revisa el texto frente a la evidencia del fabricante; ecentic no prueba la eficacia ni certifica la protección."
+        },
+        "consumer-electronics": {
+          "subtitle": "Haz visibles el modelo, la compatibilidad y la garantía antes de que el comprador llegue a la tienda.",
+          "help": "Compara el modelo exacto y las especificaciones de origen, y revisa los cambios propuestos. Las afirmaciones de compatibilidad, electricidad y garantía requieren evidencia del comercio."
+        },
+        "home-and-furniture": {
+          "subtitle": "Ofrece dimensiones, materiales y condiciones de entrega que cada comprador pueda contrastar con su espacio.",
+          "help": "Compara las medidas y condiciones de la fuente. ecentic puede señalar información que falta en la ficha; no garantiza el encaje, el acceso ni una fecha de entrega."
+        },
+        "fashion-and-outdoor": {
+          "subtitle": "Vincula las descripciones de ajuste, tejido y prestaciones a las especificaciones reales del producto.",
+          "help": "Compara tallas, materiales, cuidado y uso previsto verificados. Revisa el texto antes de publicar; ecentic no certifica prestaciones técnicas ni declaraciones medioambientales."
+        },
+        "health-wellness-and-pet": {
+          "subtitle": "Aclara los datos de origen sin convertir la comparación de productos en asesoramiento sanitario.",
+          "help": "Compara ingredientes, uso previsto, raciones o alimentación y estándares documentados. ecentic no diagnostica, prescribe ni certifica seguridad o declaraciones de salud."
+        },
+        "travel-and-experiences": {
+          "subtitle": "Explicita las fechas, lo incluido y la cancelación antes de pasar a la reserva.",
+          "help": "Compara la información de la fuente. La disponibilidad, el precio final y las condiciones se confirman con el comercio; el ejemplo no constituye una reserva."
+        }
+      },
+      "bespoke": {
+        "title": "Una ruta a medida para compras con restricción de edad.",
+        "description": "Planifica con ecentic una compra asistida por agentes que respete tus controles actuales. Primero se define el alcance; la viabilidad depende del producto, país, canal y proveedor de pagos.",
+        "steps": [
+          {
+            "title": "Confirma la ruta permitida",
+            "body": "Revisa las reglas del producto, destino y canal elegido antes de habilitar una ruta de compra."
+          },
+          {
+            "title": "Mantén la verificación de edad del comercio",
+            "body": "Integra el proceso de verificación de edad que ya utiliza el comercio cuando sea necesario. No se presupone una verificación integrada en ecentic."
+          },
+          {
+            "title": "Pasa al comprador para confirmar y pagar",
+            "body": "El comprador completa las comprobaciones necesarias y confirma el pago en el checkout permitido del comercio."
+          }
+        ],
+        "action": "Consultar una compra a medida"
+      }
+    }
   }
 }

@@ -37,8 +37,9 @@ export const FashionAndOutdoorTrail = ({
       </div>
     </div>
     <Accordion
+      multiple
       aria-label={copy.label}
-      defaultValue={["question-0"]}
+      defaultValue={questions.map((_, index) => `question-${index}`)}
       className="min-w-0 justify-start"
     >
       {questions.map((question, index) => (

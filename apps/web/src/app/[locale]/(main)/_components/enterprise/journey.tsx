@@ -43,7 +43,7 @@ export const Journey = ({ copy }: Journey.Props) => (
           )}
           <div
             className={cn(
-              "relative row-start-1 flex min-w-0 flex-col justify-center py-12 max-sm:px-4 max-[1000px]:col-start-2 max-[1000px]:px-8 max-[1000px]:pt-8 max-[1000px]:pb-0",
+              "relative row-start-1 flex min-w-0 flex-col justify-center py-12 max-sm:px-4 max-[1000px]:col-start-2 max-[1000px]:px-8 max-[1000px]:pt-8 max-[1000px]:pb-8",
               index % 2 === 0
                 ? "col-start-1 bg-linear-to-r from-45% from-transparent to-primary/5 pr-16 pl-8"
                 : "col-start-2 bg-linear-to-l from-45% from-transparent to-primary/5 pr-8 pl-16",

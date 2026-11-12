@@ -1,15 +1,12 @@
 "use client";
 
 import {
-  ArrowRightIcon,
   CommerceBasketShoppingIcon,
-  CommerceCode_3Icon,
-  CommerceFilePenIcon,
-  CommerceFileShieldIcon,
   CommercePlug_3SparkleIcon,
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import Image from "next/image";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import { useInteractive } from "@/components/marketing/interactive/use-interactive";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { Motion } from "@/components/motion";
@@ -22,11 +19,30 @@ const cardPositions = [
 
 export const CapabilityIllustration = ({
   kind,
-  tags,
 }: CapabilityIllustration.Props) => {
   const { ready, reduced } = useInteractive();
   const enhanced = ready && !reduced;
   const tall = kind === "simulations";
+
+  if (kind === "readiness" || kind === "checkout" || kind === "developers")
+    return (
+      <div
+        data-capability-illustration={kind}
+        className="relative mt-8 flex justify-center bg-emphasis-dimmed"
+      >
+        <CommerceFigure
+          kind={
+            kind === "readiness"
+              ? "inspection"
+              : kind === "checkout"
+                ? "checkout"
+                : "document"
+          }
+          surface="dark"
+          className="w-full max-w-64"
+        />
+      </div>
+    );
 
   return (
     <div
@@ -36,7 +52,7 @@ export const CapabilityIllustration = ({
         tall ? "min-h-80 flex-1 sm:min-h-96" : "h-48",
       )}
     >
-      {(tall || kind === "catalog" || kind === "checkout") && (
+      {(tall || kind === "catalog") && (
         <div
           aria-hidden
           className="pointer-events-none absolute inset-0 bg-linear-to-b from-transparent via-primary/4 to-primary/10"
@@ -148,27 +164,6 @@ export const CapabilityIllustration = ({
         </>
       ) : (
         <div aria-hidden className="absolute inset-0 px-7">
-          {kind === "readiness" && (
-            <div className="relative mx-auto flex h-full max-w-96 items-center justify-between gap-5 pb-5">
-              <span className="absolute inset-x-4 top-[43%] h-px bg-linear-to-r from-transparent via-primary-rich/55 to-transparent" />
-              {tags.map((tag, index) => (
-                <div
-                  key={tag}
-                  className="relative flex min-w-0 flex-1 flex-col items-center gap-4"
-                >
-                  <span className="grid size-12 place-items-center bg-emphasis-dimmed text-primary-rich">
-                    {index === 0 ? (
-                      <CommerceFileShieldIcon className="size-9" />
-                    ) : index === 1 ? (
-                      <CommerceCode_3Icon className="size-9" />
-                    ) : (
-                      <CommerceFilePenIcon className="size-9" />
-                    )}
-                  </span>
-                </div>
-              ))}
-            </div>
-          )}
           {kind === "catalog" && (
             <div className="mx-auto mt-2 max-w-96 overflow-hidden rounded-lg border border-background-rich/15 bg-linear-to-br from-emphasis-rich/80 to-emphasis-dimmed px-5 py-4 font-mono text-xs leading-7">
               <p className="text-background-rich/40">{"{"}</p>
@@ -196,22 +191,6 @@ export const CapabilityIllustration = ({
                 provider="googleMerchant"
                 className="h-11 w-11 rounded-none object-center"
               />
-            </div>
-          )}
-          {kind === "checkout" && (
-            <div className="relative flex h-full items-center justify-center gap-5 pb-8">
-              <CommerceBasketShoppingIcon className="size-12 text-background-rich/70" />
-              <span className="h-px w-10 bg-primary-rich/40" />
-              <div className="grid size-16 place-items-center border border-primary-rich/40 bg-linear-to-br from-primary-dimmed/70 to-emphasis-dimmed text-primary-rich [clip-path:polygon(20%_0,100%_0,100%_80%,80%_100%,0_100%,0_20%)]">
-                <ArrowRightIcon className="size-7" />
-              </div>
-            </div>
-          )}
-          {kind === "developers" && (
-            <div className="relative mx-auto mt-5 grid max-w-72 grid-cols-3 divide-x divide-background-rich/10 border-background-rich/10 border-y py-5 font-mono text-primary-rich text-sm">
-              <span className="text-center">{"{ }"}</span>
-              <span className="text-center">{"< >"}</span>
-              <span className="text-center">{"$_"}</span>
             </div>
           )}
         </div>

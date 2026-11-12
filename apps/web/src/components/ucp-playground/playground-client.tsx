@@ -24,6 +24,7 @@ import {
   SectionKicker,
   StatusPill,
 } from "@/app/[locale]/(main)/dashboard/_components/grid";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import {
   Conversation,
   ConversationContent,
@@ -850,6 +851,8 @@ const transport = new DefaultChatTransport<PlaygroundUIMessage>({
 });
 
 type PlaygroundClientProps = {
+  /** Public marketing workbench; dashboard sessions retain their compact UI. */
+  appearance?: "default" | "workbench";
   /** Seeds the connect form — the store opened in the dashboard, if any. */
   defaultStoreUrl?: string;
   /** A store already resolved on the server, so the session starts connected. */
@@ -867,6 +870,7 @@ type PlaygroundClientProps = {
 };
 
 export const PlaygroundClient = ({
+  appearance = "default",
   defaultStoreUrl = "",
   initialConnection = null,
   messageLimit,
@@ -993,18 +997,57 @@ export const PlaygroundClient = ({
 
   if (!connection) {
     return (
-      <div className="flex flex-1 flex-col items-center justify-center p-8">
-        <div className="w-full max-w-md space-y-4">
-          <div className="space-y-1 text-center">
-            <h2 className="font-semibold text-foreground-rich text-lg">
+      <div
+        data-playground-connect={appearance}
+        className={cn(
+          "flex flex-1 flex-col items-center justify-center p-8",
+          appearance === "workbench" &&
+            "relative isolate justify-start overflow-hidden px-8 pt-6 pb-10 max-sm:px-4",
+        )}
+      >
+        {appearance === "workbench" && (
+          <CommerceFigure
+            kind="checkout"
+            surface="dark"
+            className="aspect-[5/3] w-full max-w-[440px] max-sm:max-w-[300px]"
+          />
+        )}
+        <div
+          className={cn(
+            "w-full max-w-md space-y-4",
+            appearance === "workbench" && "max-w-xl",
+          )}
+        >
+          <div
+            className={cn(
+              "space-y-1 text-center",
+              appearance === "workbench" && "space-y-3 text-left",
+            )}
+          >
+            <h2
+              className={cn(
+                "font-semibold text-foreground-rich text-lg",
+                appearance === "workbench" && "text-3xl! text-background-rich",
+              )}
+            >
               {translate("connect.title")}
             </h2>
-            <p className="text-foreground-dimmed text-sm">
+            <p
+              className={cn(
+                "text-foreground-dimmed text-sm",
+                appearance === "workbench" &&
+                  "max-w-[50ch] text-background-rich/70 text-base",
+              )}
+            >
               {translate("connect.description")}
             </p>
           </div>
           <InferredForm
-            className="flex flex-col gap-3"
+            className={cn(
+              "flex flex-col gap-3",
+              appearance === "workbench" &&
+                "pt-4 [&_div:has(>input)]:h-12 [&_div:has(>input)]:bg-background-rich [&_div:has(>input)]:px-3 [&_label]:text-background-rich",
+            )}
             config={connectFormConfig}
             defaultValues={{ storeUrl: defaultStoreUrl }}
             onSubmit={handleConnect}
@@ -1028,7 +1071,14 @@ export const PlaygroundClient = ({
   }
 
   return (
-    <div className="relative flex min-h-40 flex-1 flex-col divide-y divide-accent-foreground">
+    <div
+      data-nav-tone={appearance === "workbench" ? "light" : undefined}
+      className={cn(
+        "relative flex min-h-40 flex-1 flex-col divide-y divide-accent-foreground",
+        appearance === "workbench" &&
+          "h-[700px] min-h-0 bg-background-rich text-foreground max-sm:h-[600px] [&_:is(h2,h3,h4)]:text-foreground-rich!",
+      )}
+    >
       {/* Connected store + transport */}
       <div className="flex shrink-0 items-center justify-between gap-3 p-4">
         <SectionKicker>
