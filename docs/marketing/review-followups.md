@@ -1,16 +1,19 @@
 # Marketing review follow-ups
 
-## Enterprise pilot example — user copy still required
+The current launch register is [launch decisions](./launch-decisions-2026-11-12.md), with deployment checks in [launch release](./launch-release-2026-11-12.md). The original [questionnaire](./launch-questionnaire.md) is retained as history.
 
-The 11 November design review explicitly requested filled sample text so the
-Enterprise pilot could be judged visually. The user will supply the final copy.
-This remains an open content task; a completed design does not approve these
-sample details as an actual engagement or customer result.
+## Enterprise pilot example — approved as an illustration
+
+The 11 November design review requested filled sample text so the Enterprise
+pilot could be judged visually. In the 12 November launch answers, the owner
+chose to retain Spain, outdoor backpacks and public product pages as the
+deliberate illustration (Q08). It is complete for this launch. The real service
+durations, team and deliverables are separately approved under Q07.
 
 Current location: `/solutions/enterprise`, pilot section.
 Copy: `apps/web/messages/fragments/enterprisePilotPreview.{en,es}.json`.
 
-Before replacing the illustrative example with a real brief, confirm:
+If a future edit replaces the illustration with a real engagement, confirm:
 
 - The market and category (currently Spain and outdoor backpacks).
 - Starting data and access (currently public product pages).

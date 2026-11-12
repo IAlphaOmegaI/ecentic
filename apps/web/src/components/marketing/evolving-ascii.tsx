@@ -20,25 +20,25 @@ const artwork = {
   homeCart: "/images/ascii/tonal/shopping-cart.svg",
 };
 
-/** The character road retains its sampled path; object artwork uses dot masks. */
+/** A finite light pass for the procedural tonal path, with an intact static rest state. */
 export const useAsciiFrame = () => {
   const target = useRef<HTMLDivElement>(null);
   const visible = useInView(target, { margin: "120px" });
   const reduced = useMediaQuery("(prefers-reduced-motion: reduce)", {});
   const { document, window } = useDocument();
   const [frame, setFrame] = useState(0);
-  const active = visible && !reduced;
+  const active = visible && !reduced && frame < 20;
 
   useEffect(() => {
     if (!active || !window || !document) return;
     const timer = window.setInterval(() => {
       if (document.visibilityState !== "visible") return;
-      setFrame((current) => (current + 1) % 1200);
+      setFrame((current) => Math.min(current + 1, 20));
     }, 160);
     return () => window.clearInterval(timer);
   }, [active, document, window]);
 
-  return { target, frame: active ? frame : 0, active };
+  return { target, frame, active };
 };
 
 /** A complete silhouette in the server HTML, revealed once by a moving light. */

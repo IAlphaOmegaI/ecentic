@@ -4,8 +4,12 @@ The visual and interaction system for ecentic's public site, product workspace a
 Consolidated from the complete 10–12 November 2026 review archive and the user's subsequent
 selections, through the [shopping-reference review](../marketing/review-16-shopping.md),
 the [integrated-surface and editorial review](../marketing/review-17-surfaces.md),
-the [recovery and conversion review](../marketing/review-18-recovery-demo.md), and
-the latest [seam and conversation review](../marketing/review-19-seams-and-conversation.md).
+the [recovery and conversion review](../marketing/review-18-recovery-demo.md),
+the [seam and conversation review](../marketing/review-19-seams-and-conversation.md), and the
+1535 Enterprise comment. The 12 November full-history learn-taste pass covered 428 numbered
+comments across 26 source files; the user approved all 14 strengthened rules, the two remaining
+conflict resolutions and the focused skill extraction with “write all”. This records accepted
+rules, not a claim that the source violations found by the audit have been repaired.
 
 This is the canonical guide. The repository-root `DESIGN.md` points to this file. It replaces the
 previous accumulation of review addenda: a later, specific decision is incorporated into the
@@ -58,11 +62,20 @@ component can still be an example the user has rejected.
 
 Before drawing or coding:
 
-- Read the relevant product context and route-family recipe below.
+- Read the relevant product context and the [public route recipes](../../.agents/skills/ecentic-public-pages/SKILL.md) when composing a public page.
 - Identify the one decision or relationship the section must explain.
 - Choose the surface, heading hierarchy and visual medium for that job.
 - Find the shared primitive before building a page-local alternative.
-- Check siblings that use the same pattern. A shared correction must propagate to them.
+- Enumerate consumers of an accepted shared-pattern change and verify each relevant route family,
+  including compact desktop and mobile. Record the result per consumer; one homepage screenshot
+  cannot establish family-wide completion.
+
+**Keep current decisions in this canon once, remove contradictory retired wording, and route
+specialized implementation guidance through the linked project skills.** The verification
+contract and [C1–C6 checks](../marketing/design-checks.md) carry the shared rules into review.
+
+Why: “these changes for everything where this strucurre has been used”; the user repeatedly requested secondary-page coverage.
+<!-- 2026-11-12 learn-taste rule 14; exact user provenance: 0445.03: “and these changes for everything where this strucurre has been used”; 0517.33: “same for all of these pages”; CHAT-AUTONOMOUS-AUDIT: “Then go find violations of that taste across the site on your own, like the double lines on other sections and the Copilot chat that still doesn't fill its whole card.”. Approved with “write all” on 2026-11-12. -->
 
 A request to fix a card does not authorize discarding its approved surrounding composition.
 A request to extend the language across pages means checking the whole route family, not merely
@@ -159,10 +172,14 @@ workflow titles or large stage numbers. Use tabular numerals when aligned values
 | Supporting metadata | Usually 14px; enough contrast to read |
 | Main section/stage index | Normal heading/body numerals, prominently scaled, commonly 24–30px |
 
-Use `MarketingHeading` and the public shell's heading scale. A section begins with a concise
-sentence-case eyebrow when it helps identify the topic, followed by a title and a nearby
-supporting paragraph. Do not repeat the eyebrow as another giant title or insert a large void
-between the title and its explanation.
+**Equivalent public headings use `MarketingHeading` and the shared heading/subtitle hierarchy,
+with sentence-case eyebrows and ordinary heading/body faces.** Reserve `font-mono` for actual
+technical strings and version requirements. Match roles across pages, not every heading level's
+font size. A helpful eyebrow leads into the title and nearby supporting paragraph; do not repeat
+it as another giant title or separate the title from its explanation with a large void.
+
+Why: Eyebrows “mad ethe whole site clearer”; technical mono was requested to make the content look like code.
+<!-- 2026-11-12 learn-taste rule 10; exact user provenance: 1435-03: “different background color, and add those eyebrows back, they mad ethe whole site clearer”; 2255.21: “is this title like the others on the platform, all titles need to be the same across the platform”; 1435-06: “add an icon on the left here, for all official documentation sections everywher”; 1753-36: “mono font so it looks like code with a different color”. Approved with “write all” on 2026-11-12. -->
 
 Keep headings sentence case. Use existing `SectionKicker` conventions for operational indexes;
 do not scatter new tracked uppercase micro-labels through marketing or dashboard cards.
@@ -204,13 +221,17 @@ rows. Use `marketing-surface` only for a nested wrapper that spans the complete 
 `marketing-seam` for an explicit full-width boundary. These markers do **not** belong on a
 single card, code pane, table row or nested accordion item.
 
-Only one element owns a given stroke. If the band or `gap-px` grid already draws it, remove the
-redundant adjacent child border. Last accordion rows must not double the section boundary.
-An ordered roadmap ending a band also leaves its bottom border and outer crosses to the
-band; retain only the roadmap's interior column junctions at that edge.
-When decorative elements follow the last row, target the last row by type or index;
-`:last-child` will match the decoration instead of removing the row's extra border.
-Text may be padded inside a cell; padding on the separator-owning shell must not shorten its line.
+**Each physical structural seam and rail intersection has exactly one owner (C1).**
+`MarketingBand` owns exterior edges. A complete nested rail uses `marketing-surface` or
+`marketing-seam`; card, code and table dividers stay inside their container. When a band or
+`gap-px` grid already draws a stroke, the adjacent child does not add another border or cross.
+Last accordion/roadmap rows leave the exterior bottom stroke and crosses to the band, retaining
+only interior column junctions. If decoration follows the final row, select that row by type or
+index: `:last-child` would select the decoration. Text may be padded inside the cell, but padding
+on the separator owner must not shorten its line.
+
+Why (originally inferred; accepted via “write all”, 2026-11-12): One continuous grid should not become broken or heavier where reusable components meet.
+<!-- 2026-11-12 learn-taste rule 1; exact user provenance: r1-09: “horizontal lines should be full page width, they should go beyond the centered content, maybe figure out a formula margin-left calc(100dvw-idk something here but ther eexists a formula, figure it out in tailwind)”; r1-48: “for this internal lines not really needd to expand to edgeshorizontally”; 1511.01: “double lines here”. Approved with “write all” on 2026-11-12. -->
 
 ### Crosshairs
 
@@ -226,6 +247,11 @@ crosses on the same intersection because both a parent and child try to own it.
 Use `min-w-0` for grid/flex children and give shrinking text a real wrapping or truncation rule.
 Split wide compositions into a meaningful mobile reading order. Preserve the full-width section
 boundary after stacking; remove the obsolete desktop internal vertical divider where needed.
+Source maps and integration arcs retain visible connections after stacking: use a continuous
+vertical route and aligned branches rather than disconnected logo lists. A mobile roadmap axis
+must not create a second exterior rail. Its gradient covers both the text and illustration.
+Give the complete illustration enough height at compact widths; do not crop a product card to
+preserve a desktop aspect ratio.
 
 Side-by-side work areas stretch to their row's height. There should be no leftover gray strip
 under the shorter panel. Desktop sticky illustrations are bounded by their own section, clear
@@ -246,9 +272,13 @@ A padded blue rectangle inside a white rectangle is not a useful explanation by 
 
 ### Continuous light
 
-Place the gradient on the wrapper whose meaning it serves: the whole card, column, section or
-footer. Child backgrounds should not sever it midway. Stretch participating cells so the light
-reaches the intended edge without a gap.
+**A gradient or dark working surface covers the complete region it explains: heading, controls,
+figure and result (C5).** Child backgrounds must not cut the field in half. Stretch participating
+cells to its edge. A structural boundary may end the surface; an arbitrary inner rectangle may
+not. Inspect the owner and its children together rather than banning every internal color change.
+
+Why (originally inferred; accepted via “write all”, 2026-11-12): The region should read as one intentional composition instead of disconnected patches.
+<!-- 2026-11-12 learn-taste rule 3; exact user provenance: 2133-07: “why dies the gradient cut off like that”; 0517.28: “not half black half white, do this whole section in black, and would be really cool if the hairline thing animates with the other things changing”; 2032-10: “and i meant a gradient of the whole footer”. Approved with “write all” on 2026-11-12. -->
 
 For light around an isolated illustration, use `IllustrationGlow`. The radial field reaches
 transparency before its clipping edge. Avoid a small hard rectangle of gradient behind an
@@ -267,10 +297,21 @@ Use one coherent dark work area for a demonstration's title, controls, figure, t
 results. The Simulate problem section should not be half white and half black. Docs, API tools,
 UCP tools and source inspectors use the same principle.
 
-Flatten nested shells. A code document does not need a bordered box inside a padded bordered
-card inside another framed section. Keep one outer structure, local text padding and meaningful
-internal dividers. Buttons keep their native variant styles rather than inheriting a blanket
-workbench text color.
+**An embedded chat or code document fills its owning grid cell (C2): no second decorative outer
+frame, radius, tinted pad or spacer.** Its header and separators reach the cell edges. Keep
+padding inside messages and code lines, meaningful internal dividers, and real product-result
+cards. Stretch split work areas to the row height and keep the final answer reachable. Buttons
+retain their native variant styles rather than inheriting a blanket workbench text color.
+
+**No padded surfaces:** a code, chat or working document starts at the edges of its owning cell,
+not inside an extra padded wrapper. Full-rail examples use the shared exterior seams and crosses.
+Keep the readable gutter inside code lines, messages and prose; this rule removes padding between
+surfaces, not the spacing that makes their content readable. It applies to docs quickstarts,
+CLI/MCP examples and every equivalent shared consumer on mobile as well as desktop.
+<!-- 2026-11-12 responsive review #10–11: “do this the whole space, no paddding on the sides and give it the crosses on the edges”; “add to the list rules that we cannot have padded surfaces”. -->
+
+Why: The user explicitly rejected the nested framing: “you know we hate squares within square”.
+<!-- 2026-11-12 learn-taste rule 2; exact user provenance: 0517.41: “no squares within squares, should be a black section”; 0703.09: “i dont like how its padded inside, you know we hate squares within square can we do this the whole square, but how do we differentiate form the left side, which also looks kinda ass”; 1511.02: “expand this to the whole card”. Approved with “write all” on 2026-11-12. -->
 
 ### Cutouts, radius and depth
 
@@ -290,131 +331,19 @@ physical illustration. Heavy floating shadows are not the main way to separate s
 
 ## 7. Tonal ASCII
 
-### Selected treatment
-
-**Tonal dots** is the approved image-to-ASCII direction. Sample a recognizable source image into
-a regular dot field whose dot size/tone carries shape, shading and volume. Literal character
-ASCII remains appropriate for legible lettering or a meaningful path; dots do not ban characters.
-
-Do not replace ASCII throughout the site with Hairline. Improve unclear artwork by changing its
-subject, source or sampling. Retain a readable silhouette, defining features and enough negative
-space. The viewer should recognize a cart, bag, product or word without reading its caption.
-
-### Composition rules
-
-- Give a hero subject its own plane, clear of the title, copy and conversion row.
-- Background art may deliberately crop; a featured contained object must keep the features that
-  identify it. Cards and logos must not end with an accidental cut edge.
-- Preserve physical aspect ratio when sampling and displaying an image. A character grid's cell
-  width and height are not equal; do not squash the source into its raw row/column ratio.
-- Scale enough to read at desktop and tablet widths. Recheck dot density and contrast at 390px.
-- Do not repeat the same ambiguous texture across unrelated page heroes.
-- Keep texture subordinate where it shares a plane with essential information.
-
-The homepage hero, audience panel, integration arc and global closing CTA may use tonal artwork.
-The global closing subject is now a tonal shopping bag; it is not the former generic Hairline
-basket. The footer identity is a large **dimensional tonal-dot wordmark** with a drawing/reveal
-behavior. It remains readable before enhancement and under reduced motion.
-
-Blog can pair a line-drawn book with ASCII behind it. Sector artwork can pair a relevant sampled
-product with a separate line-drawn object when they explain different things. Do not place two
-versions of the same subject beside each other merely to include both media. Use one dominant
-foreground explanation rather than letting two animated objects compete.
-
-### Production
-
-Apply this method to every image-based ASCII binding, including secondary-page motifs and
-small audience illustrations. Do not sample an older glyph image to create a new one: start from
-a clean, recognizable source. Meaningful literal code and protocol trees are not image ASCII, but
-a text tree must not substitute for a requested product or merchant illustration.
-
-Keep source images, generated assets, sampling parameters and provenance reproducible. Relevant
-assets live under `apps/web/public/images/ascii/tonal/`. `EvolvingAscii` and `AsciiAtmosphere`
-provide shared rendering/composition; `FooterWordmark` owns the shared brand treatment.
-
-For new image generation on this Mac, use the configured Azure image command described in
-`AGENTS.md`. Do not introduce an unrelated image API or key requirement. Compare alternatives
-with the same source and context if the treatment itself needs review.
-
-Reveal and pointer response enhance an already legible rest state. Avoid frantic glyph
-substitution, unrequested perpetual loops or motion that prevents the shape from resolving.
+Use tonal dots from a clean recognizable source, preserving aspect ratio and scale (rule 4, C4).
+Keep the recognizable winding path but render it with dots; code and protocol text stay literal.
+ASCII coexists with Hairline and explanatory graphics. Before creating, converting or reviewing
+ASCII, read the complete [ecentic-art contract](../../.agents/skills/ecentic-art/SKILL.md#tonal-ascii),
+including accepted rationale, source provenance, production guidance and literal-text exceptions.
 
 ## 8. Hairline figures and commerce illustrations
 
-### Choose a subject, not a convenient preset
-
-Use the `hairline-create` workflow for a requested new figure. Start with the physical subject
-and one meaningful pointer response. A renamed stock figure is not a custom drawing.
-
-| Context | Current subject / reference |
-| --- | --- |
-| Shopify | Custom shopping bag with handle/mark and catalog cards that lift toward the pointer |
-| Google Merchant Center | Catalog folio with supplemental product records that lift and part under the pointer |
-| Demo / pilot | Folded paper plane that banks and lifts toward the pointer |
-| AI selection | Custom shopping bot inspecting product cards |
-| Connect hero | Product document stack with folded corners and inspectable pages |
-| Fix | Repair tools; a recognizable fixing action |
-| Sell / financial outcome | Money stack where the section calls for payment/value |
-| Readiness | Custom scanner inspecting a product record |
-| Connections | Actual connected plugs, hub or network relationship |
-| Blog | Custom open book, optionally over tonal artwork |
-| Contact / support | Communication, documents or repair objects appropriate to the task |
-| Sample replay product | Office chair or headphones matching the sample record |
-| Home and furniture | Sofa |
-| Consumer electronics | Headphones / recognizable electronics |
-| Beauty and personal care | Lipstick |
-| Wine and spirits | Bottle |
-| Food and beverage | Packaged food |
-| Fashion | Shoe |
-| Health and wellness | Relevant wellness container |
-| Travel and experiences | Luggage |
-
-Branded integration heroes place a modest genuine provider mark with the title and use a
-meaningful Hairline figure in the illustration plane. This includes Google Merchant Center:
-the large flat Google mark is superseded by compact identity plus a commerce figure.
-WooCommerce retains its dimensional custom Woo figure. Do not duplicate two oversized flat
-logos or use an enlarged logo as the entire explanatory graphic. Semantic mappings belong in
-`CommerceFigure` / the shared page configuration.
-
-A page can use several figures where they explain different things. There is no current
-one-figure-per-page cap. Keep one dominant graphic per explanation and avoid repeating the same
-object beside every paragraph. Existing figures remain useful where their meaning fits.
-
-### Construction and runtime contract
-
-- Work with the fixed Hairline engine and its documented projection, path and occlusion helpers.
-  Do not rewrite its kernel to make one drawing easier.
-- Keep the shared thin stroke, theme-aware edge and restrained primary highlight.
-- Preserve a strong recognizable rest pose and stable hit areas throughout the interaction.
-- The pointer inspects, lifts, opens, turns or connects something physically plausible.
-- Use matching occlusion surfaces; a visible white plate on charcoal is a defect.
-- Keep explanatory labels outside the drawing. Brand lettering is allowed where it identifies
-  the requested object. Remove visible developer-style figure names and state captions such as
-  “At rest” or “rest” across all public custom figures; preserve accessible descriptions. Do not
-  remove meaningful product labels, chart values or process status along with those captions.
-- Generate server-rendered rest geometry. JavaScript failure or lazy loading must not leave a
-  blank illustration plane.
-- Load interactive figure code near the viewport and sleep when inactive. Do not create an
-  independent always-running animation loop for each section.
-- Reduced motion exposes the complete rest state and disables motion-producing interaction.
-  Zero intensity alone is not sufficient for the pinned library's pointer behavior.
-
-`HairlineFigure`, `CustomHairlineFigure` and `CommerceFigure` own integration. Custom figure code
-lives in `apps/web/public/hairline/custom/`, with captured rest geometry in
-`apps/web/src/components/hairline/rest/`. Keep figure IDs, rest geometry, accessible labels and registry
-mappings coherent in both locales.
-
-The pinned library's PURE-annotation patch exists for tree-shaking. It does not change runtime
-behavior. Verify bundle behavior before changing or removing that patch. Do not introduce
-always-running stock figures as a shortcut around the shared lifecycle.
-
-### Figure acceptance
-
-Review the figure independently and inside its actual page. Inspect rest plus the eight
-standard pointer poses, motion, overlap/occlusion and a small roughly 240px presentation.
-A blind viewer should name the subject. Then check desktop, tablet, mobile, dark/light surfaces,
-keyboard alternatives where applicable and reduced motion. Screenshot review stays with the
-assigned subagent when the user requests screenshot isolation.
+Use meaningful custom subjects, complete recognizable silhouettes and no visible production/rest
+labels; preserve accessible descriptions (rule 5, C3/C5). Integration heroes pair compact genuine
+identity with a contextual figure (rule 6, X1). Before drawing or integrating a figure, read
+[ecentic-art](../../.agents/skills/ecentic-art/SKILL.md#hairline-figures-and-commerce-illustrations)
+for the subject map, fixed-engine contract, lifecycle, provenance and acceptance poses.
 
 ## 9. Explanatory graphics and measured charts
 
@@ -452,10 +381,19 @@ entered assumptions, not a fabricated forecast. Keep those distinctions visible.
 
 ### Connected journeys
 
-The approved Shopify and Connect steppers are the reference: a visible connected spine,
-well-scaled numbers/icons, clear stage titles and an adjacent explanation or object.
-Use `ConnectedJourney` for setup/reference stages. All milestone titles stay discoverable;
-accordion expansion can disclose supporting detail. Keep the first useful explanation visible.
+**Short ordered workflows use the shared connected journey/roadmap pattern (C6): a visible
+spine, legible square markers, adjacent titles, meaningful figures and visible milestones.**
+The approved Shopify and Connect steppers are the reference. Use `ConnectedJourney` for
+setup/reference stages; keep the first useful explanation visible and disclose supporting detail
+only where needed. A basic sequence must not depend on a text-only tab/button strip.
+
+Use its static companion `JourneySteps` when every step is required reading. Feed setup and the
+MCP handshake share that connected, icon-led sequence with all explanations visible. Keep
+protocol methods in technical type, let long methods occupy their own mobile row, and put the
+source document directly against the adjoining column's boundary.
+
+Why: “i dont wanna click stuff”; the user explicitly asked to reuse the approved steppers.
+<!-- 2026-11-12 learn-taste rule 7; exact user provenance: 2133-10: “can we do this like a roadmap or hairline or something, i dont wanna click stuff”; 0517.19: “pretty steppers. reuse this”; 0517.26: “youve done prettier stepers, use those”. Approved with “write all” on 2026-11-12. -->
 
 For a process that must be understood without clicking, expose its ordered story and use the
 shared `ItemCycle`, `StepPlayer` or sequence behavior as appropriate. Native Tabs can underlie a
@@ -471,9 +409,12 @@ capabilities equivalent. Compact the content and art together rather than adding
 
 ### Source changes: one Git-style diff
 
-The user selected a **Git diff** for before/after records. Use `CodeDiff` and the shared
-`AnnotatedCodeComparison` adapter. The default is one document showing unchanged context,
-removed lines and added lines together.
+**Before/after record examples use one visible shared Git-style diff (C1/C6).** Use `CodeDiff`
+and `AnnotatedCodeComparison`: unchanged context, removed lines and added lines remain together.
+The shared renderer owns header and annotation crosshairs so every consumer receives them.
+
+Why (originally inferred; accepted via “write all”, 2026-11-12): A single readable change set shows the edit and its context without making the visitor toggle between hidden states.
+<!-- 2026-11-12 learn-taste rule 9; exact user provenance: CHAT-DIFF: “can we make an git diff kinda thing, i think that would work best”; 0445.03: “and these changes for everything where this strucurre has been used”. Approved with “write all” on 2026-11-12. -->
 
 - Concise filename/header, sample identity and meaningful change counts.
 - Explicit `−` and `+` gutters as well as semantic color.
@@ -489,10 +430,14 @@ examples honest; do not add meaningless code complexity to make the product seem
 
 ### Conversation and inspection
 
-Use an actual conversation composition for sector questions and simulated decisions: a shopper
-message, a writing/assistant response, relevant product illustration and a visible record or
-inspection result. A quoted prompt, table of steps or transcript-shaped card grid alone does
-not satisfy this pattern.
+**Shopping examples use provider-appropriate query/message chrome, an assistant answer and
+real or tonal product imagery (C2/C5).** Google AI Mode uses its own answer/search-result
+composition. A quote block, table or workflow graphic alone is not a conversation. Adjacent
+inspection supplies distinct concise evidence rather than duplicating the same product content.
+Keep sample labeling and honest capability limits.
+
+Why: The examples must look like their referenced shopping interfaces; quote blocks “look so ai”.
+<!-- 2026-11-12 learn-taste rule 8; exact user provenance: 0626.12: “these examples should look like the chatgpt page or gemini page and with proper images of these products, can even be ascii products images but needs to look like proper gemini or chatgpt which i have attached the html off”; 0626.17: “no quotes, they look so ai”; 0703.11: “but make it look like ai mode proeply not this mockup, like ai mode”. Approved with “write all” on 2026-11-12. -->
 
 The supplied Google AI Mode and ChatGPT captures are layout references: recognizable provider chrome,
 a compact shopper message, a natural assistant response, actual product imagery and a coherent
@@ -559,15 +504,29 @@ progress. Field errors explain how to fix the input and stay associated with the
 
 ### Actions, icons and states
 
-Use the shared primary gradient button for the main action and appropriate secondary/soft/link
-variants for the rest. Keep related CTAs aligned with the content and with each other.
+**Use native shared primary/secondary/soft button variants with visible states on their actual
+surface (rule 11).** The main action uses the primary gradient. Align related CTAs and
+price/feature/action baselines; follow the [public pricing recipe](../../.agents/skills/ecentic-public-pages/SKILL.md#pricing)
+for the three-plans-then-PAYG/Enterprise composition. Inputs use `rounded-md`; product/blog
+thumbnails are modestly rounded squares while structural bands remain predominantly square.
+Do not duplicate a free-check CTA beside the same form.
+
+Why (originally inferred; accepted via “write all”, 2026-11-12): Actions should be recognizable and comparable, while slight rounding is reserved for objects and controls rather than another outer panel.
+<!-- 2026-11-12 learn-taste rule 11; exact user provenance: r1-05: “primary button, the one with the gradien”; 1844-01: “round the inputs off globally, its okay tonhave them a little round”; 1953-06: “the stable things need to be one row and thenpayg and the enterprise one row , and then the pricing needs to be here as well like what each tier offers”; 2032-09: “this buton is duplicated put the searchbar here and then the book a demo on the side of it”. Approved with “write all” on 2026-11-12. -->
+
 Integration “Explore” may be primary; availability notification is secondary and left-aligned
 on the same action row. A contact link remains a link, not a fake form submit.
 
-Use Nucleo icons through `@zenncore/icons`; keep the existing family, commonly duotone. Fetch and
-generate through the Nucleo/package workflow when a requested icon is absent. Do not approximate
+Use **Nucleo UI outline-duo** subject and action icons through `@zenncore/icons`. Do not mix filled
+duotone silhouettes with outline-duotone subjects in the same public system. Genuine provider
+marks keep their identity; small structural arrows, chevrons, crosses and status marks can retain
+their plain stroke where a second tone has no meaningful role. Fetch and generate through the
+Nucleo/package workflow when a requested icon is absent. Do not approximate
 icons with arbitrary inline SVG. Bare icons accompany source rows, contact routes, categories,
-fields and recovery links. Size them enough to read without inflating the row unnecessarily.
+fields and recovery links at consistent alignment. A bare number is not a substitute for the
+row's subject icon (rule 10). Size icons enough to read without inflating the row; do not add a
+decorative icon to every paragraph.
+<!-- 2026-11-12 responsive review #12: “can we commit to one maybe dutonoe outline? check every icon”. This supersedes the previous generic “commonly duotone” direction for public UI. -->
 
 Status pairs a word with a semantic icon/color. Active controls have readable ink, a clear
 marker and the appropriate full outline or component-selected treatment. They do not rely on
@@ -602,9 +561,14 @@ qualifications or use a dramatic graphic to blur simulation and observed traffic
 
 ### Purpose and implementation
 
-Motion either explains a state change or gives an object a meaningful physical response.
-A static result must still communicate the whole idea. “More animated” does not mean every
-section runs a separate loop.
+**Requested illustrative replays use the established finite sequence with synchronized marker,
+content and figure state (rule 13, C5).** Move the complete illustrated object when showing
+depth. Charts use thin-line interaction while preserving real measured geometry. Keep the rest
+and reduced-motion states and local scrolling; an illustration must never trigger a real action.
+A static result still communicates the whole idea; “More animated” does not mean a loop per section.
+
+Why (originally inferred; accepted via “write all”, 2026-11-12): Motion should explain a physical object, sequence or value rather than make unrelated pieces drift independently.
+<!-- 2026-11-12 learn-taste rule 13; exact user provenance: 1753-30: “and it should move each stepper on its own”; 1844-07: “okay these cards are kinda offensice, inly the content is rotated and its kinda wired, maybe rething the cards only? the whole thing is perfect”; 2133-05: “i love this chart but can we have all charts be hairline stuff so theyre also animated and such? interactable and all that plus we use hairline more which i dont feel is eing used enough”; 0517.27: “this should be proper squares, and maybe icons instead of buttons and they should change on their own”. Approved with “write all” on 2026-11-12. -->
 
 Use `Motion.Row`, `Motion.Up`, `Motion.Item` and `Motion.Stagger` for application animation.
 The fixed Hairline engine is the explicit figure-runtime exception. Reuse existing shared
@@ -643,206 +607,28 @@ No animation or lazy module is allowed to leave a blank primary section indefini
 
 ## 13. Public route recipes
 
-Each recipe supplies a composition, not a requirement to reuse identical content blocks.
-The public design audit includes every route family and both locales.
-
-### Homepage `/`
-
-A legible large tonal commerce subject supports the hero's category statement and conversion.
-The five-stage Connect → Simulate → Fix → Sell → Track story is a connected roadmap, with normal
-font numerals on one continuous dark section and an object that matches each stage. Use tools for fixing, money for the relevant
-selling/value story and a meaningful connection/network where the narrative asks for one.
-
-Audience sections combine their own copy with tonal artwork. The integrations arc can have
-ASCII atmosphere while genuine provider marks stay clear. Capability cards use complete
-illustrated objects; the simulation panel retains its product cards with the ecentic box mark
-above them. An arc of provider logos alone does not replace those cards. Remove heavy, misaligned
-tag strips and accidental edge clipping.
-Dense catalog findings belong behind supporting disclosure. Keep the original proof media.
-
-### Platform overview and stage pages
-
-The overview's five-stage explanation can be a dark connected workbench. Each stage has its own
-record, figure and outcome; avoid repeated `product.json` boxes with abrupt gradient edges.
-
-Connect uses document/source identity, a continuous problem gradient, an illustrated working
-catalog and the approved connected setup rhythm. Keep the principles' product example relevant.
-A bounded sticky introduction can accompany a long source explanation on desktop.
-
-Simulate uses a wholly dark problem field, synchronized square stage markers and figure behavior,
-visible product illustrations, a shared source diff and an actual scripted chat replay. Branding
-and available model claims come from product context, not the demonstration's animation.
-
-Fix uses repair/record-change imagery and the shared Git diff. Sell uses the actual supported
-checkout stages and distinguishes setup from a successful purchase. Track explains the metrics
-with measured charts and meaningful source/attribution qualifications. Reuse `TrackingOverview`
-for the after-scan explanation instead of another unrelated card/tab design.
-
-### Integrations
-
-Provider identity is prominent and correctly proportioned. Shopify has the custom bag; WooCommerce
-has a compact official identity and custom Hairline mark; Merchant Center has its genuine large
-mark. Use consistent status and availability
-language, larger readable directory logos and useful subscription explanations.
-
-Read/write field comparisons remain normal semantic tables when tabular comparison is the job.
-Use icons and monospace for scopes/technical fields. Installation and channel flow use approved
-connected journeys, not sparse text tabs. Distinguish readiness, permissions and publishing with
-different meaningful graphics. The same illustration should not stand for all three.
-
-The Woo checkout example is one readable diagnostic sequence: passed checks, a specific blocker,
-the relevant correction and the buyer/payment boundary. Do not show duplicate Before/After
-summary strips that both say “Complete”. Keep illustrative source changes in the shared diff
-vocabulary and retain the merchant/payment controls described by the product.
-
-Preserve import-versus-publish behavior, actual permissions, Merchant Center destination semantics
-and the merchant's checkout/payment responsibilities. A layout change must not modify a scope.
-
-### AI channels
-
-Use genuine identity, concise capability context and a connected explanation of what the channel
-reads or supports. Shared stage presentation applies across Google/Gemini, ChatGPT, Claude,
-Perplexity, Copilot and Amazon while their actual capabilities remain distinct.
-
-Shopping examples show a readable result/conversation and relevant product fields. Explain
-terms such as a merchant program or buying mode rather than presenting an unexplained tab.
-Keep live, simulated, experimental and unavailable statuses factual. The directory comparison
-can occupy a dark workbench with native filters and accessible results.
-
-### Solutions, audiences and sectors
-
-Make the primary audience-selector heading prominent and all action variants visible. Show
-workflow and product facts rather than a stack of quoted shopper prompts.
-
-Every sector shares the conversation-and-inspection pattern, source-diff structure and title/
-subtitle system. Use the subject mapping in section 8, including a sofa, headphones and lipstick
-where requested. Do not reuse the generic connected hub for all sector hero identities.
-Sector previews in the Solutions directory also carry a relevant icon or tonal object by the heading.
-
-Place the attribute qualification strip **directly after the attribute heading**, with the same
-contrasting surface and placement across sectors, including Travel. Do not let the parent page
-theme change the notice into a different local design. Complete the lower rule beneath source-artwork
-notes, with the same seam treatment as the adjoining section. Keep the stated limits intact. Illustrate
-measurements or relevant attributes without implying an unverified exact fit.
-
-Rules sections explain how ecentic's actual product-data and workflow capabilities help, alongside
-what remains the merchant's responsibility. Custom agentic checkout discussion does not imply
-that age verification, channel policy, payment consent or jurisdictional eligibility disappears.
-Reference brands, if used for context, are separate from invented sample products and results.
-
-The sector directory's hover/selected treatment belongs to the selectable row or action. Static
-detail headings must not look like small independently hovered buttons or acquire opaque patches
-from a parent link's hover styles.
-
-The Enterprise pilot can contain reviewable illustrative text because the user requested it.
-It is not a real customer engagement. The final-copy task remains in
-[review follow-ups](../marketing/review-followups.md). Icons, color and a visible pilot progression
-should make the draft assessable before final copy arrives.
-
-### Pricing
-
-Lead with a compelling, labeled AI Agent Score illustration and clear plan choices. Use the
-approved measured dial/chart language, not ornamental numeric output. Show value and included
-capabilities in the same card as the price.
-
-On desktop, **Compete, Scale and Dominate share one row**. **Pay-as-you-go and Enterprise share the
-next row**. Align plan titles, prices, feature groups and CTAs. Stack cleanly on small screens.
-This public-page decision does not redesign the dashboard paywall.
-
-The fee estimator keeps its useful native inputs and canonical calculation while using a clear
-visual comparison instead of line clutter and dense explanatory prose. Add a genuine section
-separation before the full plan table. Horizontal table overflow is contained; ordinary vertical
-page scrolling must chain through it.
-
-The user explicitly chose to **remove the $500 cap callout while preserving billing terms**.
-Do not remove the backend cap, alter calculator behavior or create an uncapped pricing claim.
-Rates, rounding, thresholds and plan amounts come from the canonical pricing source.
-The partnership bundle uses a coherent breakdown followed by its price/action; do not leave a
-sparse unrelated second column merely to preserve a grid.
-
-### Resources, docs, API and blog
-
-Use the same main-title system as Platform. Directories expose clear icon-led choices and useful
-metadata. Quickstart/navigation rows may form 2×2 or 1×4 grids depending on width, with controlled
-color or ASCII supporting the subject.
-
-Docs/API source workbenches are full dark regions. Flatten nested card shells and remove padding
-between a code document and its owning frame. Keep local code gutters, syntax, line numbering,
-copy actions and real fetched content readable. Failed fetches retain a usable source link.
-Do not convert real source previews into illustrative mock responses.
-
-Blog uses a custom book with optional tonal backdrop. Archive images are square with slight
-rounding and predictable cropping. Long editorial prose retains a comfortable reading measure,
-heading hierarchy and readable neutral surface.
-
-### Privacy and customer stories
-
-Privacy belongs to the same visual system, but the policy itself remains calm and readable.
-The short overview uses clear hierarchy, meaningful icons and a purposeful shared surface rather
-than an undifferentiated gray matrix. The contents navigation is a bounded sticky rail on desktop,
-with real section anchors, readable wrapped titles and an unobstructed mobile layout. Styling must
-not change legal wording, dates, links or data-practice claims.
-
-Customer stories expose the result, measurement context and publication permission together in
-an editorial composition. Avoid sparse text-only tabs that hide most of the evidence. Preserve
-genuine customer artwork and verified numbers. A +12% aggregate does not authorize an invented
-time series, revenue lift, causal explanation or testimonial. Existing publication gates and
-missing-information boundaries remain in place.
-
-### Public tools
-
-Compare, the WebMCP scanner, UCP validator, UCP playground and tool directory belong to the same
-public system. Avoid an unrelated gray side rail or a one-off title treatment.
-
-Input/session/source work areas can be complete charcoal bands with shared outer seams. The
-validator's checks remain visible and understandable instead of a maze of small nested cards.
-Use the selected tonal ASCII where a decorative subject is needed. Connection and result panes
-match heights and preserve loading, validation, empty and failure states.
-
-Real tool controls must still call the correct workflow. A polished disconnected state is not a
-simulated connection. Keep native input validation, server errors and actual results intact.
-
-### Security, Contact, Support and Partners
-
-Security emphasizes the public-data pilot option and makes store access/data flow inspectable.
-The approved gradient data-flow workbench is reusable: connected icon-led stages, a clear
-source/destination or phase explanation, one relevant figure and flat supporting details. A
-standalone arrow between labels adds little; use a continuous route with actual endpoints. This
-visual approval does not approve draft claims or remove the Alvi review gate.
-Use icons and meaningful infrastructure/provider graphics. The data-flow review's continuous
-gradient uses actual provider marks; its unapproved connector copy remains behind the existing
-review gate until approved. Styling approval is not content approval.
-
-Contact routes have relevant communication artwork and icons bound to the actual route identity,
-even if optional rows are filtered out. Company details begin with the structural line and crosses.
-Support uses a meaningful document/repair illustration, Nucleo route icons and a bounded sticky
-explanatory plane while the visitor works on desktop. Preserve mobile flow.
-
-Partners follows the same readable hero, explicit program choices and form hierarchy. A generic
-hub or barely recognizable ASCII texture is not sufficient identity for the page's purpose.
-The application pairs a readable native form with a meaningful tonal-ASCII subject in its explanatory
-plane, as on Contact. Do not hide program facts behind the artwork.
-
-Demo keeps the same form and validation semantics while showing progress as a connected roadmap.
-Its short agenda stays visible without a compulsory topic selector; tonal ASCII supports the agenda.
-Use a custom folded plane for the demo/pilot hero, with restrained pointer-responsive lift and bank,
-rather than a generic inspection sieve. Artwork is not a booking or submission control.
-
-### Recovery / 404
-
-Use a full-width first-screen composition with oversized **dimensional tonal-dot 404** numerals
-and a companion Hairline question mark. Keep recovery copy, actions and icon-led discovery links
-clear of dense dots. Preserve the actual 404 status, noindex behavior, locale and keyboard paths.
-The error illustration must not replace the useful way out of the page.
-The recovery destinations form a coherent blue cutout section. Agent recovery is a separate compact
-charcoal code surface that exposes the real discovery paths and their links; avoid vague explanatory
-prose, invented responses or another general-purpose card grid.
+Before composing or reviewing a public route, read [ecentic-public-pages](../../.agents/skills/ecentic-public-pages/SKILL.md)
+for its complete route-family recipe and scope limits. The recipes cover the homepage, platform,
+integrations, channels, sectors, pricing, resources, legal/evidence pages, tools, support and recovery.
+They preserve factual content and apply the shared canon; dashboard and onboarding remain below.
 
 ## 14. Shared navigation and footer
 
-Navigation overlays the page without changing its scroll position. Progressive multilayer blur
-fades without a hard bottom edge. The navigation foreground responds to the surface behind it,
-with reduced-motion support and stable legibility on light, blue and dark backgrounds.
+**Navigation keeps progressive blur and internal menu divisions without an opaque table-like
+outer frame (rule 12, C5).** Cutouts structure white, blue and dark section surfaces along the
+rails. The footer uses one continuous field across navigation, dimensional tonal wordmark and
+legal content; the treatment must not stop at one cell.
+
+Why (originally inferred; accepted via “write all”, 2026-11-12): The shell should feel continuous with the page, and cutout geometry should remain a recognizable part of ecentic beyond the navbar.
+<!-- 2026-11-12 learn-taste rule 12; exact user provenance: r1-02: “progressive blur, progressive multiple layers of blur without the line at the bottom at all, just a blur graidnet”; 1844-10: “and the outside borders”; 1911-01: “for example this whole section can be with the cutouts”; 2032-10: “and i meant a gradient of the whole footer”. Approved with “write all” on 2026-11-12. -->
+
+Navigation overlays the page without changing its scroll position. Blur fades without a hard
+bottom edge; foreground contrast responds to the surface behind it, with reduced-motion support
+and stable legibility on light, blue and dark backgrounds.
+Mobile and desktop menus enter with a short centered fade and subtle blur, not horizontal travel.
+Switching desktop menu groups also fades in place. Keep native focus trapping, Escape, focus
+return and scrolling behavior. Under reduced motion remove scale and blur and reveal immediately.
+<!-- 2026-11-12 responsive review #5: “fade in from the center or blur in, not slide from the right? same for the desktpp one ideally”. -->
 
 Desktop mega menus have transparent bodies, useful internal rules and no outside table box.
 Subtle header/footer tint is allowed. Mobile navigation preserves the same transparent/internal
@@ -968,6 +754,7 @@ states which patterns to repeat.
 | --- | --- |
 | Replacing unclear ASCII everywhere with line art | Tonal ASCII, custom Hairline and explanatory graphics coexist |
 | Dense noisy characters or squashed hands | Recognizable source and tonal-dot image sampling with correct proportions |
+| A mixed-character winding path exception | Keep the recognizable route; use tonal dots; actual code/protocol text stays literal |
 | One Hairline figure per page, only on light | Meaningful figures across sections; match each actual light/dark surface |
 | Generic drawers/baskets/hubs for every concept | Match the physical object to the flow, provider or sector |
 | Outline-only footer wordmark | Dimensional tonal-dot wordmark with a finite drawing reveal |
@@ -990,8 +777,17 @@ states which patterns to repeat.
 
 ## 18. Verification and delivery
 
-Verify the component and every page family affected by a shared change. A screenshot of one
-hero does not establish that its code panel, mobile controls and footer also work.
+Verify the component and every page family affected by a shared change (rule 14). Enumerate
+consumers first, then record the routes, widths, locales and states actually checked. A screenshot
+of one hero does not establish that its code panel, mobile controls and footer also work.
+
+Use [C1–C6 design checks](../marketing/design-checks.md) for scoped structural/embedded-surface
+checks, visible art labels, source/renderer bindings, named visual states and explanatory-process
+advisories. From `apps/web`, run `bun run design:source`, `bun run design:runtime`,
+`bun run design:review` and `bun run design:test` as applicable to the changed pattern. Automated
+checks do not manufacture a visual pass: C5 records reviewed/not-reviewed state and evidence.
+Existing flags remain findings until a verified source change resolves them. Record exact
+owners/routes and distinguish rule-writing delivery from source-fix delivery.
 
 **Visual and responsive:** inspect representative wide desktop (1440/1508), compact desktop or
 tablet (around 1135), and mobile (390), in English and Spanish. Check complete object silhouettes,

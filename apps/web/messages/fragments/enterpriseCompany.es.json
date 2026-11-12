@@ -27,7 +27,7 @@
       "sections": [
         {
           "id": "reviewed",
-          "title": "Última actualización: 10 de noviembre de 2026",
+          "title": "Actualizado el 12 de noviembre de 2026",
           "description": "Esta página describe los controles del producto actual. Confirma el despliegue, las ubicaciones de tratamiento y los requisitos contractuales de tu cuenta antes de compartir datos no públicos."
         },
         {
@@ -49,15 +49,15 @@
           "rows": [
             {
               "label": "Alojamiento de la aplicación",
-              "value": "Vercel. {{TODO: confirmar los servicios desplegados y las regiones de alojamiento}}"
+              "value": "Vercel: alojamiento de la aplicación, tareas programadas y enrutamiento de AI Gateway."
             },
             {
               "label": "Base de datos",
-              "value": "PostgreSQL. {{TODO: confirmar el proveedor de producción y la región}}"
+              "value": "Neon PostgreSQL en AWS us-east-1 (Norte de Virginia)."
             },
             {
               "label": "Cifrado",
-              "value": "{{TODO: confirmar la versión mínima de TLS desplegada y el cifrado en reposo}}"
+              "value": "Nuestros proveedores de alojamiento y base de datos cifran los datos en tránsito (TLS 1.2+) y en reposo (AES-256)."
             },
             {
               "label": "Contraseñas de las cuentas",
@@ -69,11 +69,11 @@
             },
             {
               "label": "Acceso a producción",
-              "value": "{{TODO: confirmar quién tiene acceso a producción y si se exige MFA}}"
+              "value": ""
             },
             {
               "label": "Copias y recuperación",
-              "value": "{{TODO: confirmar los objetivos documentados de copias de seguridad y recuperación}}"
+              "value": ""
             }
           ]
         },
@@ -84,7 +84,7 @@
             "El catálogo de productos que conectas se envía a proveedores de IA para comparar fichas y escribir correcciones. Los escaneos usan ChatGPT, Claude y Gemini. GPT también genera textos de fichas y datos estructurados. Perplexity se usa en las herramientas independientes de comparación y descubrimiento, no en los escaneos de tiendas.",
             "GPT se ejecuta a través de Azure OpenAI cuando hay un despliegue de Azure configurado. Las peticiones a Anthropic, Google y Perplexity pasan por Vercel AI Gateway; GPT también puede usar esa pasarela como alternativa.",
             "Los datos leídos de una cuenta de Google Merchant Center conectada se mantienen separados del catálogo de la tienda usado para tareas de IA, como explica la política de privacidad.",
-            "{{TODO: confirmar las condiciones de retención y entrenamiento de cada cuenta de proveedor antes de prometer que no se usan datos para entrenar modelos}}"
+            "Los proveedores aplican sus propias políticas de conservación a las solicitudes. Algunos conservan solicitudes para detectar abusos; no prometemos retención cero para todas las rutas de modelos."
           ]
         },
         {
@@ -93,7 +93,7 @@
           "rows": [
             {
               "label": "Empresa operadora",
-              "value": "{{TODO: nombre legal exacto de la empresa operadora polaca}}"
+              "value": "ecentic Inc · Delaware, Estados Unidos"
             },
             {
               "label": "Datos del pago por agentes",
@@ -101,7 +101,7 @@
             },
             {
               "label": "Solicitudes sobre datos",
-              "value": "{{TODO: confirmar que privacy@ecentic.ai recibe solicitudes antes de activar el enlace de contacto}}"
+              "value": "Solicita acceso, corrección o eliminación de datos a través de privacy@ecentic.ai. Respondemos en un mes."
             }
           ],
           "links": [
@@ -114,8 +114,8 @@
         {
           "id": "dpa",
           "title": "Acuerdo de tratamiento de datos",
-          "description": "Cuéntanos qué debe cubrir tu acuerdo de tratamiento de datos durante el piloto o la revisión de seguridad. Confirma el acuerdo y las condiciones de firma antes de compartir datos personales.",
-          "note": "{{TODO: proporcionar la plantilla de DPA aprobada y el contacto confirmado}}",
+          "description": "Acordamos el DPA a petición del cliente antes de tratar datos personales. Podemos firmar tu propio DPA; la entidad contratante y la persona firmante se confirman en el acuerdo.",
+          "note": "Firmamos un NDA mutuo antes de recibir datos no públicos. La fase inicial con datos públicos no lo necesita.",
           "links": [
             {
               "label": "Cuéntanos tus requisitos",
@@ -126,91 +126,131 @@
         {
           "id": "sub-processors",
           "title": "Proveedores utilizados por el producto",
-          "description": "Proveedores y finalidades identificados en el código del producto, revisados el 10 de noviembre de 2026. No es una lista confirmada de subencargados contratados ni de ubicaciones; dependen de las cuentas y los acuerdos utilizados.",
-          "note": "{{TODO: confirmar la lista completa de subencargados contratados y las ubicaciones de tratamiento antes del lanzamiento}}"
+          "description": "Proveedores y usos identificados en el código del producto, revisados el 12 de noviembre de 2026. La lista de encargados contratados y sus ubicaciones se confirma para el servicio y el acuerdo correspondientes.",
+          "note": ""
         },
         {
           "id": "compliance",
           "title": "Hoja de ruta de cumplimiento",
           "paragraphs": [
             "SOC 2 no está disponible hoy. No afirmamos tener una certificación ni una auditoría completada. Hablemos de tus requisitos de seguridad antes de acordar un piloto.",
-            "{{TODO: confirmar el proceso de cuestionarios de seguridad y los materiales disponibles}}"
+            "Alvi, nuestro director de tecnología, responde a los cuestionarios de seguridad tras firmar un NDA. No ofrecemos un paquete de seguridad preaprobado."
           ]
         },
         {
           "id": "report",
           "title": "Comunicar una vulnerabilidad",
-          "description": "{{TODO: confirmar que security@ecentic.ai se supervisa antes de publicar el contacto de seguridad}}"
+          "description": ""
         }
       ],
       "subprocessors": {
-        "caption": "Proveedores y finalidades del producto revisados el 10 de noviembre de 2026",
+        "caption": "Proveedores y usos del producto revisados el 12 de noviembre de 2026",
         "headers": ["Proveedor", "Finalidad", "Ubicación del tratamiento"],
         "rows": [
           {
             "name": "Azure OpenAI",
             "purpose": "Simulaciones GPT, textos de fichas y datos estructurados.",
-            "location": "{{TODO: confirmar la región de Azure}}"
+            "location": ""
           },
           {
             "name": "Anthropic",
             "purpose": "Comparaciones de fichas con Claude mediante Vercel AI Gateway.",
-            "location": "{{TODO: confirmar la ubicación de tratamiento}}"
+            "location": ""
           },
           {
             "name": "Google",
             "purpose": "Comparaciones de fichas con Gemini mediante Vercel AI Gateway.",
-            "location": "{{TODO: confirmar la ubicación de tratamiento}}"
+            "location": ""
           },
           {
             "name": "Perplexity",
             "purpose": "Herramientas independientes de comparación y descubrimiento mediante Vercel AI Gateway.",
-            "location": "{{TODO: confirmar la ubicación de tratamiento}}"
+            "location": ""
           },
           {
             "name": "Vercel",
             "purpose": "Alojamiento de la aplicación y enrutamiento de peticiones de IA.",
-            "location": "{{TODO: confirmar las ubicaciones de alojamiento y de la pasarela}}"
+            "location": ""
           },
           {
-            "name": "Proveedor de PostgreSQL",
+            "name": "Neon",
             "purpose": "Registros de la aplicación, datos del catálogo conectado y credenciales.",
-            "location": "{{TODO: confirmar el proveedor y la región de la base de datos}}"
+            "location": ""
           },
           {
             "name": "Upstash",
             "purpose": "Cachés Redis, datos de sesiones y contadores de límites de peticiones.",
-            "location": "{{TODO: confirmar la región de Redis}}"
+            "location": ""
           },
           {
             "name": "Sentry",
             "purpose": "Supervisión de errores y telemetría de la aplicación.",
-            "location": "{{TODO: confirmar la ubicación de tratamiento}}"
+            "location": ""
           },
           {
             "name": "PostHog",
             "purpose": "Analítica de producto tras aceptar las cookies de analítica.",
-            "location": "{{TODO: confirmar la ubicación de tratamiento}}"
+            "location": ""
           },
           {
             "name": "Google Analytics 4",
             "purpose": "Analítica web tras aceptar las cookies de analítica.",
-            "location": "{{TODO: confirmar la ubicación de tratamiento}}"
+            "location": ""
           },
           {
             "name": "Resend",
             "purpose": "Entrega de correos transaccionales.",
-            "location": "{{TODO: confirmar la ubicación de tratamiento}}"
+            "location": ""
           },
           {
             "name": "UploadThing",
             "purpose": "Almacenamiento de archivos subidos.",
-            "location": "{{TODO: confirmar la región de almacenamiento}}"
+            "location": ""
           },
           {
             "name": "Stripe",
             "purpose": "Facturación de planes y comisiones por rendimiento de ecentic.",
-            "location": "{{TODO: confirmar la ubicación de tratamiento}}"
+            "location": ""
+          },
+          {
+            "name": "SerpAPI",
+            "purpose": "Búsqueda de ofertas de productos.",
+            "location": ""
+          },
+          {
+            "name": "Chatwoot",
+            "purpose": "Chat de atención del sitio.",
+            "location": ""
+          },
+          {
+            "name": "BabyLoveGrowth",
+            "purpose": "Contenido editorial del blog.",
+            "location": ""
+          },
+          {
+            "name": "Clearbit",
+            "purpose": "Imágenes de logotipos de empresas.",
+            "location": ""
+          },
+          {
+            "name": "Google Merchant API",
+            "purpose": "Conexión opcional a Merchant Center.",
+            "location": ""
+          },
+          {
+            "name": "Shopify Catalog MCP",
+            "purpose": "Medición de productos en el catálogo de Shopify.",
+            "location": ""
+          },
+          {
+            "name": "x402",
+            "purpose": "Facilitador de pagos en rutas compatibles.",
+            "location": ""
+          },
+          {
+            "name": "ScrapeLLM",
+            "purpose": "Herramientas internas de captura; no es una función para clientes.",
+            "location": ""
           }
         ]
       }
@@ -258,7 +298,7 @@
           "id": "team",
           "title": "El equipo",
           "description": "Tres fundadores, con ingeniería y ventas trabajando en el mismo producto.",
-          "note": "{{TODO: proporcionar retratos aprobados de los fundadores}}"
+          "note": ""
         },
         {
           "id": "before",
@@ -306,19 +346,19 @@
           "rows": [
             {
               "label": "Empresa operadora",
-              "value": "{{TODO: nombre legal exacto y domicilio registrado de la empresa operadora polaca}}"
+              "value": "ecentic Inc · Delaware, Estados Unidos"
             },
             {
-              "label": "Empresa de Delaware",
-              "value": "{{TODO: nombre legal exacto y domicilio registrado de la empresa de Delaware}}"
+              "label": "Agente registrado — solo notificaciones judiciales",
+              "value": "LEGALINC CORPORATE SERVICES INC. · 131 Continental Drive, Suite 305, Newark, New Castle County, DE 19713, Estados Unidos"
             },
             {
-              "label": "Dirección de contacto en Tirana",
-              "value": "Pallatet Merkaj, Hyrja 1, Dera 12, Rruga Muhamed Deliu, Qesarakë, Tiranë, Albania"
+              "label": "Filial albanesa",
+              "value": "ECENTIC SH.P.K. · Pallatet Merkaj, Hyrja 1, Dera 12, Rruga Muhamed Deliu, Qesarakë, Tiranë, Albania"
             },
             {
               "label": "Teléfono",
-              "value": "{{TODO: confirmar el teléfono público de contacto +355}}"
+              "value": ""
             },
             {
               "label": "Soporte",
@@ -375,7 +415,7 @@
         },
         {
           "name": "Fil Rouge Capital",
-          "description": "Aceleradora. {{TODO: proporcionar el logotipo oficial de Fil Rouge Capital}}"
+          "description": "Aceleradora."
         }
       ]
     },
@@ -403,15 +443,15 @@
           "items": [
             {
               "title": "Agencias y distribuidores",
-              "body": "Gestionas tiendas Shopify, WooCommerce o marketplaces para clientes. Usa ecentic en ellas, aplica las correcciones y conserva la relación con el cliente. {{TODO: beneficios y condiciones aprobados para agencias y distribuidores}}"
+              "body": "Presenta clientes de Shopify, WooCommerce o marketplaces y acuerda una comisión por recomendación en la llamada. Unirse no tiene coste. ecentic contrata y factura directamente al cliente; la reventa requiere un acuerdo específico firmado."
             },
             {
               "title": "Socios tecnológicos",
-              "body": "Vendes algo diferente a las mismas tiendas: información de producto, pagos, checkout o datos. Desarrolla sobre la API REST y el servidor MCP, y vendamos juntos. {{TODO: beneficios y condiciones aprobados para socios tecnológicos}}"
+              "body": "Desarrolla con nuestra API REST y servidor MCP y vendamos juntos. No hay comisiones entre socios tecnológicos. Solo publicamos tu integración y logotipo con un acuerdo por escrito."
             },
             {
               "title": "Creadores y afiliados",
-              "body": "Enseñas a vender por internet. Comparte ecentic con tu audiencia. {{TODO: beneficios y condiciones aprobados para creadores y afiliados}}"
+              "body": "Comparte ecentic con tu audiencia y recibe una comisión por cada cliente de pago que traigas. Acordamos el importe cuando te unes."
             }
           ]
         },
@@ -427,22 +467,22 @@
             },
             {
               "title": "Habla con nosotros",
-              "body": "{{TODO: confirmar la conversación propuesta de 20 minutos}}"
+              "body": "Una llamada de 20 minutos para elegir el programa y acordar las condiciones."
             },
             {
               "title": "Recibe acceso y materiales",
-              "body": "{{TODO: confirmar el acceso, los materiales y la incorporación de colaboradores}}"
+              "body": "Recibe el acceso y los materiales acordados para empezar. Cada cliente es propietario de su cuenta."
             },
             {
               "title": "Trabajamos juntos",
-              "body": "{{TODO: confirmar el proceso de venta conjunta}}"
+              "body": "Presenta clientes o prepara una oportunidad conjunta. Puedes compartir informes con ese cliente manteniendo la marca ecentic."
             }
           ]
         },
         {
           "id": "application",
           "title": "Solicita colaborar",
-          "description": "Cuéntanos sobre tu empresa, tu modalidad y las tiendas con las que trabajas."
+          "description": "Cuéntanos sobre tu empresa, tu modalidad y las tiendas con las que trabajas. Las llamadas y el seguimiento son en inglés."
         }
       ],
       "faqTitle": "Preguntas sobre la colaboración",
@@ -457,7 +497,7 @@
         },
         {
           "question": "¿Hay una cuota para unirse?",
-          "answer": "{{TODO: confirmar si unirse al programa de colaboradores es gratis}}"
+          "answer": "No hay coste de incorporación. Acordamos la comisión por recomendación o afiliación al unirte; la reventa requiere un acuerdo específico firmado."
         }
       ],
       "formTitle": "Solicitud de colaboración"
@@ -501,7 +541,7 @@
           "rows": [
             {
               "label": "Sector",
-              "value": "Alimentación y bebidas"
+              "value": "Marca británica de sabores"
             },
             {
               "label": "Empresa",
@@ -513,7 +553,7 @@
             },
             {
               "label": "Qué cambió",
-              "value": "{{TODO: describir qué cambió ecentic para DUA Flavours}}"
+              "value": "Mejoras en los datos estructurados y el feed de productos."
             },
             {
               "label": "Resultado",
@@ -525,14 +565,14 @@
           "id": "starting-point",
           "title": "De dónde partían",
           "paragraphs": [
-            "{{TODO: situación inicial de DUA Flavours, proporcionada y aprobada por Xhurian}}"
+            "DUA Flavours es una marca británica de sabores en Shopify, con unos 28 productos. Se convirtió en el primer cliente de pago de ecentic el 20 de abril de 2026."
           ]
         },
         {
           "id": "changes",
           "title": "Qué cambiamos",
           "paragraphs": [
-            "{{TODO: indicar los productos y campos modificados y cuándo se hizo el trabajo}}"
+            "ecentic cerró carencias en sus datos estructurados y su feed de productos."
           ]
         },
         {
@@ -547,7 +587,7 @@
           "title": "Cómo lo medimos",
           "paragraphs": [
             "Qué se midió: visitas desde asistentes de IA o tráfico directo, de abril a julio de 2026. Qué no se midió: ventas. Otros cambios en ese periodo pueden haber contribuido.",
-            "{{TODO: explicar el inicio en abril y qué hizo ecentic antes del lanzamiento de la app de Shopify el 20 de mayo de 2026}}"
+            "El 12% es la medición agregada de DUA. ecentic no conserva la fuente de analítica; no publicamos un desglose por producto ni una serie temporal."
           ]
         },
         {
@@ -819,7 +859,7 @@
         "description": "Recibe ayuda con tu cuenta de ecentic, escaneos, correcciones y facturación. Escribe a soporte, reserva una llamada o lee la documentación."
       },
       "title": "Ayuda y soporte",
-      "description": "Recibe ayuda con tu cuenta, escaneos, correcciones y facturación. Elige el contacto que encaje con tu pregunta.",
+      "description": "Recibe ayuda con tu cuenta, escaneos, correcciones y facturación. Elige el contacto que encaje con tu pregunta. El soporte y las llamadas son en inglés.",
       "actions": [
         {
           "label": "Escribe a soporte",
@@ -838,13 +878,13 @@
           "items": [
             {
               "title": "Soporte por correo",
-              "body": "Envía tu pregunta y la URL de tu tienda a support@ecentic.ai.",
+              "body": "Envía tu pregunta y la URL de tu tienda a support@ecentic.ai. Respondemos en inglés.",
               "href": "mailto:support@ecentic.ai",
               "label": "Escribe a soporte"
             },
             {
               "title": "Recorrido en directo",
-              "body": "Reserva una llamada de 15 minutos para revisar tu tienda y el producto.",
+              "body": "Reserva una llamada de 15 minutos para revisar tu tienda y el producto. La llamada es en inglés.",
               "href": "https://cal.com/ecentic-ai/15min",
               "label": "Reserva la llamada de 15 minutos"
             },
@@ -907,7 +947,7 @@
         "description": "Habla con ventas, recibe soporte, solicita colaborar o consulta información sobre privacidad y seguridad en ecentic."
       },
       "title": "Contacta con ecentic",
-      "description": "Encuentra el lugar adecuado para tu pregunta.",
+      "description": "Encuentra el lugar adecuado para tu pregunta. El soporte y las llamadas son en inglés.",
       "sections": [
         {
           "id": "contacts",
@@ -934,7 +974,7 @@
             },
             {
               "title": "Prensa",
-              "body": "{{TODO: confirmar que press@ecentic.ai está activo antes de publicar el contacto de prensa}}"
+              "body": ""
             },
             {
               "title": "Seguridad",
@@ -944,7 +984,7 @@
             },
             {
               "title": "Privacidad",
-              "body": "Solicitudes sobre datos y preguntas sobre el DPA. {{TODO: confirmar que privacy@ecentic.ai está activo antes de activar el enlace}}",
+              "body": "Solicitudes de acceso, corrección o eliminación de datos y preguntas sobre el DPA: privacy@ecentic.ai.",
               "href": "/security#dpa",
               "label": "Lee sobre el DPA"
             }
@@ -956,11 +996,11 @@
           "rows": [
             {
               "label": "Empresa operadora",
-              "value": "{{TODO: nombre legal exacto y domicilio registrado de la empresa operadora polaca}}"
+              "value": "ecentic Inc · Delaware, Estados Unidos"
             },
             {
-              "label": "Empresa de Delaware",
-              "value": "{{TODO: nombre legal exacto y domicilio registrado de la empresa de Delaware}}"
+              "label": "Agente registrado — solo notificaciones judiciales",
+              "value": "LEGALINC CORPORATE SERVICES INC. · 131 Continental Drive, Suite 305, Newark, New Castle County, DE 19713, Estados Unidos"
             }
           ],
           "links": [

@@ -11,9 +11,9 @@ export const register = async () => {
     enableLogs: true,
     environment: process.env.NODE_ENV,
 
-    // Enable sending user PII (Personally Identifiable Information)
+    // Do not collect default personal data such as IP addresses and request headers
     // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/options/#sendDefaultPii
-    sendDefaultPii: true,
+    sendDefaultPii: false,
   });
 };
 

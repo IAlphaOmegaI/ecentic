@@ -1,0 +1,77 @@
+{
+  "home": {
+    "heroVideo": {
+      "sampleLabel": "Illustrative film with sample products, shopping screens and results. Not live results or guaranteed outcomes.",
+      "transcriptTitle": "Visual transcript",
+      "transcriptIntroduction": "On-screen text and visual action from the 58-second film. Scene times are approximate. This is a visual transcript, not a transcription of speech.",
+      "onScreenLabel": "On-screen text",
+      "transcript": [
+        {
+          "time": "0:00–0:03",
+          "onScreen": "Your next customer isn’t a person.",
+          "description": "Tonal-dot hands reach toward a floating pair of headphones."
+        },
+        {
+          "time": "0:03–0:05",
+          "onScreen": "It’s an Agent.",
+          "description": "The word Agent appears in blue."
+        },
+        {
+          "time": "0:05–0:09",
+          "onScreen": "best noise-cancelling earbuds under $50",
+          "description": "A shopper types this request into a ChatGPT-style conversation."
+        },
+        {
+          "time": "0:09–0:13",
+          "onScreen": "Shoppers ask AI. AI shares the links. Before shoppers buy, AI chooses which stores they see.",
+          "description": "The example response lists Soundcore P25i at $29.99, JLab Go Air Pop+ at $24.88 and TOZO T10 at $25.99, with retailer links. ChatGPT, Claude, Gemini and Perplexity logos appear."
+        },
+        {
+          "time": "0:13–0:17",
+          "onScreen": "Your store is Invisible. Agents can’t recommend what they can’t read. Outside the answer. Outside the sale.",
+          "description": "A card labelled Your Store sits outside the answer with a Product data missing warning. The word Invisible dissolves."
+        },
+        {
+          "time": "0:17–0:20",
+          "onScreen": "Enter écentic",
+          "description": "The ecentic box and wordmark draw into view, then fill with colour."
+        },
+        {
+          "time": "0:20–0:26",
+          "onScreen": "Fix what agents can’t read.",
+          "description": "A sample ecentic dashboard shows Diagnostics for low win rate and Listing Suggestions for Aura ANC Wireless Earbuds. The pointer selects Approve. The item moves from Pending to Published, and a message says Listing updated — Changes were published to your connected store."
+        },
+        {
+          "time": "0:26–0:30",
+          "onScreen": "Watch your visibility rise.",
+          "description": "The illustrative Overview dashboard animates a rising win-rate chart and a final overall win rate of 86%, alongside results for ChatGPT, Claude and Gemini."
+        },
+        {
+          "time": "0:30–0:34",
+          "onScreen": "Your store, shoppable in chat.",
+          "description": "An example Shopify product page for Aura ANC Wireless Earbuds, priced at $39.99, transforms into a product card in the chat’s shopping results."
+        },
+        {
+          "time": "0:34–0:41",
+          "onScreen": "Climb to the top of AI results. One catalog. Discovered across AI.",
+          "description": "An ecentic Optimize control is shown beside ChatGPT, Google AI Mode and Perplexity shopping mockups. Your Store moves from recommendation position #3 to #1 in each illustration, while a small car accelerates across the screen."
+        },
+        {
+          "time": "0:41–0:49",
+          "onScreen": "Turn discovery into sales.",
+          "description": "Product cards give way to a chat request: Show me the Aura earbuds. The response displays product photos, a $39.99 price and Buy now. The illustrated flow continues through Review your order, Complete purchase and Order confirmed — Your purchase is complete."
+        },
+        {
+          "time": "0:49–0:53",
+          "onScreen": "Turn discovery into sales.",
+          "description": "An illustrative Shopify Analytics chart rises to total sales of $48,920.00. This is a sample animation, not a reported customer result."
+        },
+        {
+          "time": "0:53–0:58",
+          "onScreen": "Win the sale when AI does the shopping. Install now on Shopify and WooCommerce. ecentic.ai",
+          "description": "The ecentic logo returns above the closing message, platform logos and website address."
+        }
+      ]
+    }
+  }
+}

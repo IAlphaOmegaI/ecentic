@@ -104,6 +104,7 @@ const SCOPES: ReadonlyArray<{
 
 /** Marketing routes with no scope of their own — they inherit `marketing`. */
 const INHERITS_MARKETING = [
+  "about",
   "blog",
   "compare",
   "demo",

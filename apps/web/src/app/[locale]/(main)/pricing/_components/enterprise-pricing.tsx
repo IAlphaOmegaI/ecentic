@@ -34,7 +34,7 @@ const planIcons = {
 } as const;
 
 export const FreeStoreCheck = async () => {
-  const { enterprisePricing, pricing } = await getMessages();
+  const { enterprisePricing, pricing, measurementChart } = await getMessages();
   return (
     <div
       data-pricing-split="free-check"
@@ -44,7 +44,11 @@ export const FreeStoreCheck = async () => {
         <figcaption className="self-start text-primary-text text-sm">
           {enterprisePricing.sample.label}
         </figcaption>
-        <MeasurementDial value={72} label={pricing.scan.sample.scoreLabel} />
+        <MeasurementDial
+          value={72}
+          label={pricing.scan.sample.scoreLabel}
+          remainingLabel={measurementChart.remainingLabel}
+        />
         <div className="flex w-full items-center justify-center gap-8 border-accent-foreground border-t pt-6">
           {(["chatgpt", "claude", "gemini"] as const).map((provider) => (
             <ProviderLogo
@@ -102,6 +106,7 @@ export const EnterprisePlanLedger = async () => {
     const Icon = planIcons[key];
     const copy = enterprisePricing.plans[key];
     const features = source.features.flatMap((feature, featureIndex) => {
+      if (key === "payg" && featureIndex === 3) return [];
       if (key === "dominate" && (featureIndex === 1 || featureIndex === 2))
         return [];
       if ((key === "compete" || key === "scale") && featureIndex === 1)

@@ -34,7 +34,7 @@ export default async () => {
       heroIllustration={<RouterFigure label={hairlineChannels.label} />}
     >
       <MarketingFeatureBand id="channel-explorer" tone="dark">
-        <div className="marketing-cell relative border-background-rich/15 border-b px-8 py-12 max-sm:px-4 max-sm:py-8">
+        <div className="marketing-cell relative px-8 py-12 max-sm:px-4 max-sm:py-8">
           <h2>{explorer.title}</h2>
           <p className="mt-4 max-w-[58ch] text-background-rich/70 text-lg leading-relaxed">
             {explorer.description}

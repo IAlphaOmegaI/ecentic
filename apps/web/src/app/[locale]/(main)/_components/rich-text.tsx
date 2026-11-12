@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Link } from "@/i18n/navigation";
 
 const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
 const segmentPattern =
@@ -19,22 +20,26 @@ const renderLinksAndEmails = (
       const link = segment.match(/^\[([^\]]+)\]\(([^)]+)\)$/);
 
       if (link) {
+        const href = link[2] ?? "#";
+        const internal = href.startsWith("/") && !href.startsWith("//");
+        const external = /^https?:\/\//i.test(href) || href.startsWith("//");
+        const LinkElement = internal ? Link : "a";
         return {
           offset: result.offset + segment.length,
           nodes: [
             ...result.nodes,
-            <a
+            <LinkElement
               key={`link-${result.offset}`}
-              href={link[2]}
-              target="_blank"
-              rel="noopener noreferrer"
+              href={href}
+              target={external ? "_blank" : undefined}
+              rel={external ? "noopener noreferrer" : undefined}
               className={
                 options.linkClassName ??
                 "text-primary-text underline underline-offset-2 hover:decoration-2"
               }
             >
               {link[1]}
-            </a>,
+            </LinkElement>,
           ],
         };
       }

@@ -2,6 +2,7 @@ import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
 import { CommerceFigure } from "@/components/marketing/commerce-figure";
+import { JourneySteps } from "@/components/marketing/connected-journey";
 import { MarketingSection } from "@/components/marketing/page";
 import {
   MarketingBand,
@@ -62,27 +63,19 @@ export const ProductFeedsBody = ({
                     )}
                     <CommerceFigure kind="format" className="mt-auto" />
                   </div>
-                  <ol className="divide-y divide-accent-foreground border-accent-foreground max-lg:border-t">
-                    {section.items?.map((item, index) => (
-                      <li
-                        key={item.title}
-                        className="grid grid-cols-[48px_1fr] gap-6 px-7 py-8 max-sm:grid-cols-[32px_1fr] max-sm:gap-4 max-sm:px-4"
-                      >
-                        <span
-                          aria-hidden="true"
-                          className="text-3xl text-primary"
-                        >
-                          {String(index + 1).padStart(2, "0")}
-                        </span>
-                        <div>
-                          <h3>{item.title}</h3>
-                          <p className="mt-4 max-w-[60ch] text-foreground-dimmed">
-                            {item.body}
-                          </p>
-                        </div>
-                      </li>
-                    ))}
-                  </ol>
+                  <JourneySteps
+                    label={section.title}
+                    className="border-accent-foreground max-lg:border-t"
+                    items={(section.items ?? []).map((item, index) => ({
+                      id: item.title,
+                      title: item.title,
+                      icon:
+                        (["website", "connect", "catalog", "compare"] as const)[
+                          index
+                        ] ?? "catalog",
+                      content: <p className="max-w-[60ch]">{item.body}</p>,
+                    }))}
+                  />
                 </div>
                 {children}
               </MarketingBand>

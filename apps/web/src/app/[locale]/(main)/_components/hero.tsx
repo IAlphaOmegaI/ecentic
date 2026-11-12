@@ -1,5 +1,5 @@
 import Image from "next/image";
-import { getTranslations } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { seo } from "@/lib/seo";
 import Background from "@/public/images/background.webp";
@@ -9,6 +9,7 @@ import { StoreEntry } from "./store-entry";
 export const Hero = async () => {
   const translate = await getTranslations("home");
   const translateGeneral = await getTranslations("general");
+  const messages = await getMessages();
 
   return (
     <section className="relative isolate flex flex-col items-center gap-6 px-4 py-20 text-center md:py-28">
@@ -80,7 +81,7 @@ export const Hero = async () => {
       </div>
 
       <div className="relative mt-6 w-full max-w-4xl">
-        <HeroVideo />
+        <HeroVideo transcript={messages.home.heroVideo.transcript} />
       </div>
     </section>
   );

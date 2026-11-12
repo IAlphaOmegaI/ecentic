@@ -22,7 +22,7 @@ const posts = [
     ],
     takeaways: [
       "ecentic offers exclusive deals for Y Combinator students (ecentic.ai/yc) and Techstars founders (ecentic.ai/techstars), each redeemable in about two minutes with no credit card.",
-      "The deal opens extended ecentic Dominate — continuous agent simulations across ChatGPT, Claude, Gemini, and Perplexity, auto-optimization, drift alerts, and UCP generation — plus 50% off for two years afterward.",
+      "The deal opens extended ecentic Dominate — on-demand simulations across ChatGPT, Claude and Gemini, competitor battlecards and publishing through Apply — plus 50% off for two years afterward.",
       "Timing is the real value: Salesforce attributed roughly $67 billion of Cyber Week 2025 spend to AI and agents, and becoming machine-readable costs least before agent traffic scales.",
       "Partnering with the two strongest startup networks is a repeatable way for us to reach merchants while their catalog and positioning decisions are still open.",
     ],
@@ -35,7 +35,7 @@ const posts = [
       {
         question: "What does the deal include?",
         answer:
-          "Extended access to ecentic Dominate — continuous simulations across ChatGPT, Claude, Gemini, and Perplexity, auto-optimization with one-click publish, drift alerts, and UCP generation — plus a 50% discount once the deal period ends. Standard [Dominate pricing](/pricing) is $149/mo.",
+          "Extended access to ecentic Dominate — on-demand simulations across ChatGPT, Claude and Gemini, competitor battlecards and publishing through Apply — plus a 50% discount once the deal period ends. Standard [Dominate pricing](/pricing) is $149/mo.",
       },
       {
         question: "How long does redemption take?",
@@ -65,10 +65,10 @@ Verification is the gate. A redemption whose company domain matches the program 
         title: "What's actually in the deal",
         content: `The deal opens the full ecentic Dominate platform, not a trimmed trial. Dominate shows a merchant how an AI shopping agent sees them — and then helps close the gap. Compared to standard [Dominate pricing](/pricing) at $149/mo, redeemers also keep 50% off for two years once the deal period ends.
 
-**Continuous simulations** show how ChatGPT, Claude, Gemini, and Perplexity rank your products against competitors, and why.
-**Auto-optimization** turns those findings into listing rewrites you approve with one click, with drift alerts when a model's behavior shifts.
-**UCP generation** exposes a Universal Commerce Protocol surface so agents can verify your catalog directly.
-**White-glove onboarding** helps you import and structure your catalog so the first simulation is meaningful.
+**On-demand simulations** compare selected products with named competitors through ChatGPT, Claude and Gemini.
+**Listing publication** uses Apply to generate and publish a revised title and description from existing listing facts. Structured data is published separately.
+**A new comparison** can be started after changes to inspect the simulated result. Scheduled rescans and autonomous publishing are not included.
+**Guided onboarding** helps you connect a supported catalog and choose the products for your first comparison.
 
 - Full platform access, not a capped demo
 - One-click publish keeps optimization from becoming a side project
@@ -208,14 +208,14 @@ So the artifacts EU Presence puts in place to keep you compliant double as input
         title: "What's in the Compliance + AI Visibility bundle",
         content: `The partnership ships as one bundle, so expansion is one decision and one invoice. It combines four services usually bought separately.
 
-EU Presence contributes the GDPR Representative for representation across all 27 member states, the GPSR Representative (Growth) as your responsible person for consumer products, and Privacy Center Plus — a hosted trust hub with data-subject-request intake and a policy library. ecentic contributes Dominate: continuous agent simulations, auto-optimization with one-click publish, drift alerts, and UCP generation.
+EU Presence contributes the GDPR Representative for representation across all 27 member states, the GPSR Representative (Growth) as your responsible person for consumer products, and Privacy Center Plus — a hosted trust hub with data-subject-request intake and a policy library. ecentic contributes Dominate: on-demand simulations, competitor battlecards and publishing through Apply.
 
 Bought individually, those total $430/mo. Bundled, they are $344.00/mo — a 20% discount that saves $86.00 every month. No minimums, no setup fees, and month-to-month billing, so the bundle starts and stops with your expansion plans instead of locking you into a contract.
 
 - GDPR Representative — Article 27 representative across all 27 member states ($127/mo)
 - GPSR Representative (Growth) — responsible person for your consumer products ($97/mo)
 - Privacy Center Plus — hosted trust hub, DSR intake, and policy library ($57/mo)
-- ecentic Dominate — continuous simulations, auto-optimization, drift alerts, and UCP generation ($149/mo)
+- ecentic Dominate — on-demand simulations, competitor battlecards and publishing through Apply ($149/mo)
 - Bundled at $344.00/mo instead of $430/mo — save $86.00/mo, one invoice, one team`,
       },
       {
@@ -223,7 +223,7 @@ Bought individually, those total $430/mo. Bundled, they are $344.00/mo — a 20%
         title: "What this means for ecentic customers",
         content: `If you already run ecentic and Europe is on your roadmap, the practical change is that you no longer have to source a compliance vendor before you can act. The bundle gives you a representative, a responsible person, and a privacy center alongside the optimization you already trust, on terms that match how ecommerce teams expand.
 
-If you are coming the other way — an EU Presence client who handled compliance but never thought about agent visibility — you are now a short step from being agent-ready in a fast-growing channel. The same catalog you registered for the EU can be scanned, diagnosed, and optimized for how ChatGPT, Claude, Gemini, and Perplexity compare you against competitors.
+If you are coming the other way — an EU Presence client who handled compliance but never thought about agent visibility — you are now a short step from being agent-ready in a fast-growing channel. The same catalog you registered for the EU can be scanned, diagnosed, and optimized for how ChatGPT, Claude and Gemini compare you against competitors.
 
 Either way, the goal is to collapse two timelines into one. Compliance and discoverability stop being sequential projects owned by different teams and become a single motion into the market.
 
@@ -1065,7 +1065,7 @@ Tie recurring audits to business events, not only technical schedules. A new sea
     description:
       "ecentic vs Profound: Profound tracks your brand's visibility in AI answers; ecentic wins the AI agent's product decision. Which one does your store need?",
     introduction:
-      "Profound and ecentic both help you succeed in the AI era, but they solve different halves of the problem. Profound is a leading AI-visibility platform: it tracks whether AI search engines like ChatGPT, Perplexity, and Google AI Overviews mention your brand, and it is built for brands measuring share of voice across answers.\n\necentic works one step further down the funnel. It simulates how AI shopping agents choose between your product and a specific competitor, diagnoses why you lose, and rewrites and republishes the listing to win the pick — across ChatGPT, Claude, Gemini, and Perplexity. Visibility gets you mentioned; ecentic is about getting bought.\n\nThis comparison lays out what each tool does well, where they differ, what they cost, and how to choose — including when Profound is the better fit.",
+      "Profound and ecentic both help you succeed in the AI era, but they solve different halves of the problem. Profound is a leading AI-visibility platform: it tracks whether AI search engines like ChatGPT, Perplexity, and Google AI Overviews mention your brand, and it is built for brands measuring share of voice across answers.\n\necentic works one step further down the funnel. It simulates how AI shopping agents choose between your product and a specific competitor, diagnoses why you lose, and rewrites and republishes the listing to win the pick — across ChatGPT, Claude and Gemini. Visibility gets you mentioned; ecentic is about getting bought.\n\nThis comparison lays out what each tool does well, where they differ, what they cost, and how to choose — including when Profound is the better fit.",
     publishedAt: "2026-07-01",
     updatedAt: "2026-07-01",
     readTime: "8 min",
@@ -1079,7 +1079,7 @@ Tie recurring audits to business events, not only technical schedules. A new sea
     ],
     takeaways: [
       "Profound is an AI-visibility platform: it measures whether AI search engines mention your brand and helps you improve that presence, mainly for larger brands.",
-      "ecentic is an agentic-commerce optimizer: it simulates how AI agents pick between your product and a named competitor, then auto-optimizes the listing to win the sale.",
+      "ecentic is an agentic-commerce optimizer: it simulates how AI agents pick between your product and a named competitor, then lets the merchant generate and publish a revised listing with Apply.",
       "The core difference is monitoring brand mentions vs. winning the product decision — visibility vs. the cart.",
       "Choose Profound for brand-level share-of-voice across AI answers; choose ecentic to raise per-product win rates and publish fixes to Shopify or WooCommerce.",
     ],
@@ -1131,15 +1131,15 @@ Its core strengths are measurement and coverage: prompt-level tracking of how of
       {
         number: "03",
         title: "Where ecentic is different",
-        content: `ecentic starts where visibility ends: the moment an agent compares two products and picks one. Instead of reporting whether you are mentioned, it runs the comparison itself — feeding your listing and a competitor's to ChatGPT, Claude, Gemini, and Perplexity acting as shopping agents, and recording who each model picks and why.
+        content: `ecentic compares selected products with named competitors through ChatGPT, Claude and Gemini. You start each store scan and inspect the simulated decisions, per-model win rates, agent replay and competitor battlecards. These are comparisons with sample shopper questions, not observed purchases.
 
-That produces three things a visibility tracker does not: a per-model **win rate** against a named competitor, an **agent replay** showing the reasoning that tipped each decision, and a **battlecard** of the exact attribute gaps that lost the sale. Then it closes the loop — generating an optimized title, description, and structured data and publishing the change back to Shopify or WooCommerce, with a follow-up simulation to measure the lift.
+Use the findings to decide which existing product facts need attention. Apply generates and publishes a revised title and description through a supported Shopify or WooCommerce connector. The rewrite uses the original listing and its win rate; it does not invent missing facts from a competitor's listing. Structured data is published separately.
 
-The distinction matters because agent selection is not the same as human ranking. Research from [Harvard Business Review](https://hbr.org/2026/05/research-traditional-marketing-doesnt-work-on-ai-shopping-agents) documents that AI shopping agents weigh factors like position and badges very differently from people. Knowing you are mentioned tells you little about whether you win the comparison.
+After making changes, start another comparison to see how the simulated result changes. Scans and publishing are user-triggered; there is no promise of scheduled rescans, autonomous publication or a guaranteed increase in sales.
 
-- Head-to-head product simulation with per-model win rates
-- Attribute-level battlecards explaining each loss
-- Auto-optimize and publish listings back to the store, then re-measure`,
+- Compare selected products with a named competitor
+- Inspect simulated choices, replay and attribute gaps
+- Publish with Apply, then start a new comparison`,
       },
       {
         number: "04",
@@ -1148,11 +1148,10 @@ The distinction matters because agent selection is not the same as human ranking
 
 - **Brand visibility in AI answers:** Profound yes · ecentic partial (it focuses on product selection, not brand share of voice)
 - **Product-vs-competitor purchase simulation:** ecentic yes · Profound no
-- **Per-model win rate (ChatGPT / Claude / Gemini / Perplexity):** ecentic yes · Profound no
+- **Per-model win rate (ChatGPT / Claude / Gemini):** ecentic yes · Profound no
 - **Attribute-gap battlecards:** ecentic yes · Profound no
-- **Auto-optimize and publish listings to Shopify/WooCommerce:** ecentic yes · Profound no
+- **User-triggered listing publication to Shopify/WooCommerce:** ecentic yes · Profound no
 - **Source and citation analysis for AI answers:** Profound yes · ecentic no
-- **UCP profile generation:** ecentic yes · Profound no (UCP is an open Shopify and Google standard either way)
 
 Read simply: Profound tells you how you appear in AI answers; ecentic changes how your products perform in AI decisions.`,
       },
@@ -1161,7 +1160,7 @@ Read simply: Profound tells you how you appear in AI answers; ecentic changes ho
         title: "Pricing compared",
         content: `Profound publishes tiered pricing — at the time of writing, a Starter plan around $99/mo and a Growth plan around $399/mo billed yearly, with Enterprise custom and the ChatGPT Shopping view reserved for enterprise. Check [Profound's site](https://www.tryprofound.com/) for current numbers, since AI-tooling pricing moves quickly.
 
-ecentic starts free: a one-time Scan of up to 10 products across three models. [Compete is $14.90/mo](/pricing) for up to 100 products with daily simulations and competitor battlecards; Scale is $44.90/mo for up to 1000 products with continuous simulations and auto-optimization with one-click publish; Dominate is $149/mo and adds drift alerts and UCP generation.
+ecentic starts with a one-time free Scan of up to 10 products across ChatGPT, Claude and Gemini. [Compete costs $14.90/mo](/pricing) for up to 100 products with on-demand simulations and competitor battlecards. Scale costs $44.90/mo for up to 1,000 products, with listing suggestions and publishing through Apply. Dominate costs $149/mo and includes Scale; it is the tier included in the Techstars offer. Flat subscriptions have no performance fee. Simulations run when you start them, and Apply generates and publishes the title and description. Structured data is published separately.
 
 The prices are not really comparable line for line, because the products do different jobs. The useful question is which job you are paying to solve: measuring AI presence, or winning AI purchase decisions.
 
@@ -1191,7 +1190,7 @@ Many teams will want both eventually: Profound to watch presence, ecentic to win
     description:
       "ecentic vs Ecomtent: Ecomtent generates AI-optimized listings (Amazon-first); ecentic wins the agent's product decision across models. How to choose.",
     introduction:
-      "Ecomtent and ecentic are the two names that come up most when merchants ask how to optimize product listings for AI. They are closer to each other than the brand-visibility trackers, but they still solve different problems. Ecomtent is a generative engine optimization tool that creates AI-ready listing content and imagery at scale, with a strong Amazon focus. ecentic simulates how AI shopping agents choose between your product and a competitor, then auto-optimizes and publishes the listing to win that pick.\n\nPut simply, Ecomtent helps you produce better listing content across marketplaces; ecentic tells you which changes actually flip an agent's decision and pushes them live. This guide covers what each does well, where they differ, pricing, and how to choose.",
+      "Ecomtent and ecentic are the two names that come up most when merchants ask how to optimize product listings for AI. They are closer to each other than the brand-visibility trackers, but they still solve different problems. Ecomtent is a generative engine optimization tool that creates AI-ready listing content and imagery at scale, with a strong Amazon focus. ecentic simulates how AI shopping agents choose between your product and a competitor, then lets the merchant generate and publish a revised title and description with Apply.\n\nPut simply, Ecomtent helps you produce better listing content across marketplaces; ecentic shows how the models compare your listings and lets you publish revisions with Apply. This guide covers what each does well, where they differ, pricing, and how to choose.",
     publishedAt: "2026-07-01",
     updatedAt: "2026-07-01",
     readTime: "8 min",
@@ -1205,8 +1204,8 @@ Many teams will want both eventually: Profound to watch presence, ecentic to win
     ],
     takeaways: [
       "Ecomtent is a generative engine optimization tool for product listings and imagery, built with a strong Amazon (Rufus/COSMO) focus, and it also supports Walmart, eBay, and Shopify.",
-      "ecentic simulates how AI agents pick between your product and a named competitor across ChatGPT, Claude, Gemini, and Perplexity, then diagnoses and publishes the fix.",
-      "The difference is content generation vs. competitive simulation: Ecomtent writes better listings; ecentic proves which changes win the agent's pick and republishes them.",
+      "ecentic simulates how AI agents pick between your product and a named competitor across ChatGPT, Claude and Gemini, then diagnoses and publishes the fix.",
+      "The difference is content generation vs. competitive simulation: Ecomtent writes better listings; ecentic compares listings and lets you publish revisions with Apply.",
       "Choose Ecomtent for Amazon-first listing content at scale; choose ecentic for cross-agent win-rate optimization on Shopify or WooCommerce.",
     ],
     faqs: [
@@ -1257,15 +1256,15 @@ That content-generation depth is real value. Rich, specification-forward listing
       {
         number: "03",
         title: "Where ecentic is different",
-        content: `ecentic is not primarily a content generator; it is a decision engine. Its starting question is not "what should this listing say" but "does this listing beat that competitor when an agent chooses — and if not, why." It runs your product and a named competitor through ChatGPT, Claude, Gemini, and Perplexity as shopping agents and records the winner, the reasoning, and a per-model win rate.
+        content: `ecentic compares selected products with named competitors through ChatGPT, Claude and Gemini. You start each store scan and inspect the simulated decisions, per-model win rates, agent replay and competitor battlecards. These are comparisons with sample shopper questions, not observed purchases.
 
-From there it works like Ecomtent in reverse. Instead of generating content and hoping it helps, it diagnoses the specific attribute gaps that lost the comparison, generates the fix, and publishes it to Shopify or WooCommerce — then re-simulates to confirm the win rate moved. Content generation is a step inside that loop, not the product.
+Use the findings to decide which existing product facts need attention. Apply generates and publishes a revised title and description through a supported Shopify or WooCommerce connector. The rewrite uses the original listing and its win rate; it does not invent missing facts from a competitor's listing. Structured data is published separately.
 
-The other difference is model coverage. Ecomtent optimizes largely for the Amazon surface; ecentic is cross-agent by design, because a listing that wins in ChatGPT can lose in Gemini. Measuring across all four models is the point.
+After making changes, start another comparison to see how the simulated result changes. Scans and publishing are user-triggered; there is no promise of scheduled rescans, autonomous publication or a guaranteed increase in sales.
 
-- Head-to-head simulation and per-model win rates, not just content output
-- Attribute-gap diagnosis tied to why a specific competitor won
-- Cross-agent coverage plus publish-and-re-measure on Shopify/WooCommerce`,
+- Compare selected products with a named competitor
+- Inspect simulated choices, replay and attribute gaps
+- Publish with Apply, then start a new comparison`,
       },
       {
         number: "04",
@@ -1273,10 +1272,9 @@ The other difference is model coverage. Ecomtent optimizes largely for the Amazo
         content: `- **AI-optimized listing copy generation:** Ecomtent yes · ecentic yes (as part of the fix loop)
 - **AI product imagery and infographics:** Ecomtent yes · ecentic no
 - **Product-vs-competitor purchase simulation:** ecentic yes · Ecomtent no
-- **Per-model win rate across ChatGPT/Claude/Gemini/Perplexity:** ecentic yes · Ecomtent no
+- **Per-model win rate across ChatGPT/Claude/Gemini:** ecentic yes · Ecomtent no
 - **Amazon Rufus/COSMO focus:** Ecomtent yes · ecentic no (cross-agent, Shopify/WooCommerce-first)
-- **Auto-publish to Shopify/WooCommerce and re-measure lift:** ecentic yes · Ecomtent partial (generates and pushes listing content, not a win-rate loop)
-- **UCP profile generation:** ecentic yes · Ecomtent no
+- **Publish with Apply, then start a new comparison:** ecentic yes · Ecomtent partial (generates and pushes listing content, not a win-rate loop)
 
 The pattern: Ecomtent is the stronger content and imagery factory; ecentic is the stronger competitive-decision engine.`,
       },
@@ -1285,7 +1283,7 @@ The pattern: Ecomtent is the stronger content and imagery factory; ecentic is th
         title: "Pricing compared",
         content: `Ecomtent publishes SKU-based tiers — at the time of writing, roughly Basic $165/mo, Pro $465/mo, and Agency $1,500/mo, scaling with catalog size. Confirm current pricing on [Ecomtent's site](https://www.ecomtent.ai/).
 
-ecentic starts with a free Scan of up to 10 products, then [Compete at $14.90/mo](/pricing) (100 products, daily simulations, battlecards), Scale at $44.90/mo (1000 products, continuous simulations, auto-optimization and one-click publish), and Dominate at $149/mo (adds drift alerts and UCP generation).
+ecentic starts with a one-time free Scan of up to 10 products across ChatGPT, Claude and Gemini. [Compete costs $14.90/mo](/pricing) for up to 100 products with on-demand simulations and competitor battlecards. Scale costs $44.90/mo for up to 1,000 products, with listing suggestions and publishing through Apply. Dominate costs $149/mo and includes Scale; it is the tier included in the Techstars offer. Flat subscriptions have no performance fee. Simulations run when you start them, and Apply generates and publishes the title and description. Structured data is published separately.
 
 If your catalog is large and Amazon-centric and you mostly need content produced, Ecomtent's per-SKU model may fit. If you want to know and improve win rates across AI models on Shopify or WooCommerce, ecentic prices around that outcome.
 
@@ -1329,7 +1327,7 @@ They can be complementary: generate strong baseline content with Ecomtent, then 
     ],
     takeaways: [
       "Alhena AI is commerce-native: it tracks SKU-level AI visibility tied to revenue and recommends AEO fixes, alongside its broader AI shopping-assistant and support products.",
-      "ecentic simulates how AI agents choose between your product and a named competitor across four models, then auto-optimizes and publishes the winning listing.",
+      "ecentic simulates how AI agents choose between your product and a named competitor across three models, then lets the merchant generate and publish a revised listing with Apply.",
       "The difference is SKU visibility tracking plus recommendations vs. head-to-head simulation plus a publish-and-re-measure loop.",
       "Choose Alhena for SKU-level visibility monitoring and recommendations; choose ecentic to raise per-competitor win rates and push fixes live to Shopify or WooCommerce.",
     ],
@@ -1381,27 +1379,26 @@ For a merchant who wants a clear read on SKU-level presence and a prioritized li
       {
         number: "03",
         title: "Where ecentic is different",
-        content: `ecentic's difference from Alhena is the simulation and the loop. Alhena tells you a SKU's visibility and what to improve; ecentic runs the actual comparison — your product versus a named competitor — through ChatGPT, Claude, Gemini, and Perplexity, and reports who wins, why, and by how much per model.
+        content: `ecentic compares selected products with named competitors through ChatGPT, Claude and Gemini. You start each store scan and inspect the simulated decisions, per-model win rates, agent replay and competitor battlecards. These are comparisons with sample shopper questions, not observed purchases.
 
-That yields a competitor-specific verdict rather than a visibility score: an agent replay of the reasoning, a battlecard of the attribute gaps that lost the pick, and a per-model win rate. Then ecentic generates the fix and publishes it to Shopify or WooCommerce, re-simulating afterward to confirm the win rate moved. Recommendations become a closed loop instead of a to-do list.
+Use the findings to decide which existing product facts need attention. Apply generates and publishes a revised title and description through a supported Shopify or WooCommerce connector. The rewrite uses the original listing and its win rate; it does not invent missing facts from a competitor's listing. Structured data is published separately.
 
-It is a genuine difference in kind: tracking and advising versus simulating and acting. Both are valuable, and they answer different questions.
+After making changes, start another comparison to see how the simulated result changes. Scans and publishing are user-triggered; there is no promise of scheduled rescans, autonomous publication or a guaranteed increase in sales.
 
-- Head-to-head simulation against a named competitor, per model
-- Battlecards explaining exactly why a comparison was lost
-- Auto-publish the fix and re-measure the lift, not just recommend it`,
+- Compare selected products with a named competitor
+- Inspect simulated choices, replay and attribute gaps
+- Publish with Apply, then start a new comparison`,
       },
       {
         number: "04",
         title: "Feature by feature",
         content: `- **SKU-level AI visibility tracking:** Alhena yes · ecentic partial (it measures win rate, not visibility share)
 - **Product-vs-competitor purchase simulation:** ecentic yes · Alhena no
-- **Per-model win rate (ChatGPT/Claude/Gemini/Perplexity):** ecentic yes · Alhena no
+- **Per-model win rate (ChatGPT/Claude/Gemini):** ecentic yes · Alhena no
 - **Attribute-gap battlecards:** ecentic yes · Alhena no
 - **AEO recommendations:** Alhena yes · ecentic yes (as diagnosed fixes)
-- **Auto-publish to Shopify/WooCommerce and re-measure:** ecentic yes · Alhena partial (recommendations and fixes, not a win-rate loop)
+- **Publish with Apply, then start a new comparison:** ecentic yes · Alhena partial (recommendations and fixes, not a win-rate loop)
 - **AI shopping assistant / support agents:** Alhena yes · ecentic no
-- **UCP profile generation:** ecentic yes · Alhena no
 
 In short: Alhena is broader across commerce AI; ecentic is deeper on the competitive product decision.`,
       },
@@ -1410,7 +1407,7 @@ In short: Alhena is broader across commerce AI; ecentic is deeper on the competi
         title: "Pricing compared",
         content: `Alhena does not publish standard pricing at the time of writing, so plan to request a quote; its scope spans visibility plus assistant and support products, which affects packaging. Check [Alhena's site](https://alhena.ai/) for current details.
 
-ecentic's pricing is public: a free Scan of up to 10 products, [Compete at $14.90/mo](/pricing) (100 products, daily simulations, battlecards), Scale at $44.90/mo (1000 products, continuous simulations, auto-optimization and one-click publish), and Dominate at $149/mo (adds drift alerts and UCP generation).
+ecentic starts with a one-time free Scan of up to 10 products across ChatGPT, Claude and Gemini. [Compete costs $14.90/mo](/pricing) for up to 100 products with on-demand simulations and competitor battlecards. Scale costs $44.90/mo for up to 1,000 products, with listing suggestions and publishing through Apply. Dominate costs $149/mo and includes Scale; it is the tier included in the Techstars offer. Flat subscriptions have no performance fee. Simulations run when you start them, and Apply generates and publishes the title and description. Structured data is published separately.
 
 Because Alhena's pricing is quote-based and its suite is broader, a like-for-like number is not available. Compare on the job to be done: SKU visibility tracking within a wider suite, versus competitive simulation with a publish loop.
 
@@ -1423,7 +1420,7 @@ Because Alhena's pricing is quote-based and its suite is broader, a like-for-lik
         title: "Which should you choose?",
         content: `Choose **Alhena** if you want SKU-level AI visibility tracking tied to revenue, prioritized AEO recommendations, and the option of a broader commerce-AI suite that includes a shopping assistant and support agents. For visibility monitoring at the product level, it is a strong, commerce-native choice.
 
-Choose **ecentic** if you want to know whether your products win specific competitor comparisons across AI models, and to publish the fixes to Shopify or WooCommerce automatically. If you think in win rates and want action rather than a recommendation list, ecentic is the closer fit.
+Choose **ecentic** if you want to know whether your products win specific competitor comparisons across AI models, and to generate and publish revisions to Shopify or WooCommerce with Apply. If you think in win rates and want action rather than a recommendation list, ecentic is the closer fit.
 
 They can complement each other — track visibility with Alhena, win the head-to-head with ecentic. The fastest way to see the difference is to run a [free ecentic Scan](/sign-up) and read your win rate against a real competitor, and to browse the wider field in our [roundup of AI shopping agent optimization tools](/blog/best-ai-shopping-agent-optimization-tools-2026).
 

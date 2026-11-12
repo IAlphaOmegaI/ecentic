@@ -23,7 +23,9 @@ export const submit = withContext(
       send: async (lead, idempotencyKey) => {
         const recipient = z
           .email()
-          .safeParse(process.env.MARKETING_LEAD_EMAIL ?? "support@ecentic.ai");
+          .safeParse(
+            process.env.MARKETING_LEAD_EMAIL ?? "enterprise@ecentic.ai",
+          );
         if (
           !process.env.RESEND_API_KEY ||
           !process.env.FROM_EMAIL ||

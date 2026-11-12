@@ -1,5 +1,6 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import type { AppConfig } from "next-intl";
+import { getMessages } from "next-intl/server";
 import {
   MarketingActions,
   MarketingBand,
@@ -26,26 +27,29 @@ export const Businesses = ({ copy }: Businesses.Props) => (
   </MarketingBand>
 );
 
-export const ProductFilm = ({ copy }: ProductFilm.Props) => (
-  <MarketingBand
-    id="film"
-    className="enterprise-film [&>.marketing-rail]:bg-background-dimmed"
-  >
-    <MarketingHeading
-      eyebrow={copy.eyebrow}
-      title={copy.title}
-      description={copy.description}
-    />
-    <div
-      className="marketing-grid marketing-section-grid grid grid-cols-1"
-      data-columns="1"
+export const ProductFilm = async ({ copy }: ProductFilm.Props) => {
+  const messages = await getMessages();
+  return (
+    <MarketingBand
+      id="film"
+      className="enterprise-film [&>.marketing-rail]:bg-background-dimmed"
     >
-      <div className="relative min-w-0 border-[var(--rail-color)] border-t p-6 max-sm:p-4">
-        <HeroVideo />
+      <MarketingHeading
+        eyebrow={copy.eyebrow}
+        title={copy.title}
+        description={copy.description}
+      />
+      <div
+        className="marketing-grid marketing-section-grid grid grid-cols-1"
+        data-columns="1"
+      >
+        <div className="relative min-w-0 border-[var(--rail-color)] border-t p-6 max-sm:p-4">
+          <HeroVideo transcript={messages.home.heroVideo.transcript} />
+        </div>
       </div>
-    </div>
-  </MarketingBand>
-);
+    </MarketingBand>
+  );
+};
 
 export const Channels = ({ copy }: Channels.Props) => (
   <MarketingBand id="channels">

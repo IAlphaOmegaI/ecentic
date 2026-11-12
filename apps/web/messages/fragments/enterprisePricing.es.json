@@ -73,7 +73,7 @@
     "plans": {
       "payg": {
         "tagline": "Paga solo después de recibir visitas de la IA",
-        "note": "Sin tarjeta para empezar. Las comisiones siguen las reglas de atribución de abajo y el tope mensual vigente.",
+        "note": "Sin tarjeta para empezar. Las comisiones siguen las reglas de atribución de abajo.",
         "action": {
           "primary": "Elegir pago por uso"
         }
@@ -215,7 +215,7 @@
       },
       {
         "question": "¿Qué ocurre con nuestros datos si nos vamos?",
-        "answer": "La Política de privacidad conserva los datos mientras la cuenta está activa. Desconectar una tienda elimina sus tokens de acceso de inmediato; los productos importados permanecen para el historial de simulaciones salvo que solicites su eliminación. Eliminar la cuenta borra permanentemente el perfil, credenciales, tiendas, tokens, productos importados, resultados de simulación, historial de optimización, informes, perfil UCP, pedidos de agentes con datos del comprador y registros de conexión de Google Merchant Center. El webhook shop/redact de Shopify elimina los datos, productos y registros de esa tienda. Cuando las normas fiscales o contables obligan a conservar registros de facturación, se guardan la referencia y el importe del pedido, no los datos de contacto ni la dirección del comprador. La política no especifica un plazo adicional de eliminación ni de purga de copias de seguridad."
+        "answer": "Solicita la eliminación a privacy@ecentic.ai. Respondemos en un mes y confirmamos cuando se han eliminado los datos de nuestros sistemas. Los registros de facturación se conservan cuando la ley lo exige; las copias de seguridad desaparecen cuando caducan. Consulta la política de privacidad para conocer el alcance y los controles de desconexión."
       },
       {
         "question": "¿Se factura algo que no hayamos solicitado?",
@@ -223,7 +223,7 @@
       },
       {
         "question": "¿Firmáis un DPA?",
-        "answer": "Habla con nosotros sobre tus requisitos de DPA al definir el alcance. Confirma el acuerdo y las condiciones de firma antes de compartir datos personales."
+        "answer": "Sí. Acordamos el DPA a petición del cliente antes de compartir datos personales y podemos firmar el tuyo. La entidad contratante y la persona firmante se confirman en el acuerdo."
       }
     ],
     "policyLinks": [

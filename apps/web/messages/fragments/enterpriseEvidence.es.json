@@ -59,7 +59,7 @@
         },
         "missingOfferFacts": {
           "label": "Páginas de producto donde un agente no encontró precio, stock ni valoración",
-          "detail": "Una muestra de páginas del mismo marketplace. La aprobación de publicación está pendiente."
+          "detail": "Muestra de páginas del mismo marketplace de bebidas espirituosas."
         },
         "storeNotNamed": {
           "label": "Respuestas que no nombraron la tienda para dos botellas que vende",
@@ -71,7 +71,7 @@
         },
         "paymentBlocked": {
           "label": "Países donde un agente no pudo llegar al pago por una configuración de envío",
-          "detail": "Una prueba del proceso de pago de una marca de cuidado de la piel. La aprobación de publicación está pendiente."
+          "detail": "Prueba del checkout de una marca de cuidado de la piel en seis países."
         }
       },
       "roundedDetail": "{percentage} % de un catálogo de {total} productos. El porcentaje está redondeado; no se ha facilitado el recuento exacto de productos con fallos."
@@ -217,13 +217,13 @@
         "question": "{{TODO: Alvi confirma si Perplexity tiene un porcentaje comparable de la misma investigación antes de añadir su barra.}}"
       },
       "missingOfferFactsApproval": {
-        "question": "{{TODO: Xhurian aprueba publicar el hallazgo de 45 de 45 páginas sin precio, stock ni valoración.}}"
+        "question": "Publicación aprobada en las respuestas de lanzamiento del 12 de noviembre de 2026."
       },
       "missingDescriptionsApproval": {
         "question": "{{TODO: Xhurian aprueba publicar el hallazgo de 167 de 167 fichas sin descripción.}}"
       },
       "paymentBlockedApproval": {
-        "question": "{{TODO: Xhurian aprueba publicar el hallazgo de 6 de 6 fallos de pago por configuración de envío.}}"
+        "question": "Publicación aprobada en las respuestas de lanzamiento del 12 de noviembre de 2026."
       },
       "copilotLaunchSource": {
         "question": "{{TODO: Xhurian facilita una fuente primaria legible que confirme el lanzamiento de Copilot Checkout del 8 de enero.}}"
@@ -232,7 +232,7 @@
         "question": "{{TODO: Xhurian facilita la redacción y el alcance de una fuente primaria legible sobre el cambio de pago de OpenAI del 24 de marzo.}}"
       },
       "duaStartingPoint": {
-        "question": "{{TODO: Xhurian facilita la situación inicial aprobada de DUA Flavours.}}"
+        "question": "Situación inicial aprobada en las respuestas de lanzamiento del 12 de noviembre de 2026."
       },
       "duaChanges": {
         "question": "{{TODO: Xhurian facilita los productos y campos modificados para DUA Flavours y las fechas del trabajo.}}"

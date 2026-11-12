@@ -1,4 +1,5 @@
 import { cn } from "@zenncore/utils";
+import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
@@ -119,7 +120,7 @@ const ToolSection = ({ section, children }: MarketingSection.Props) => (
 );
 
 export const SellBody = ({ sections, sectionChildren }: MarketingBodyProps) => (
-  <div className="[&_.marketing-band]:border-t-0">
+  <>
     {sections.map((section) => {
       const children = sectionChildren?.[section.id];
       switch (section.id) {
@@ -131,7 +132,7 @@ export const SellBody = ({ sections, sectionChildren }: MarketingBodyProps) => (
           );
         case "how-it-works":
           return (
-            <div key={section.id}>
+            <Fragment key={section.id}>
               <SectionGutter />
               <MarketingBand
                 id={section.id}
@@ -143,7 +144,7 @@ export const SellBody = ({ sections, sectionChildren }: MarketingBodyProps) => (
                 <SellJourney section={section} />
                 {children}
               </MarketingBand>
-            </div>
+            </Fragment>
           );
         case "why-it-works":
           return (
@@ -167,19 +168,20 @@ export const SellBody = ({ sections, sectionChildren }: MarketingBodyProps) => (
           );
         default:
           return (
-            <div
+            <MarketingSection
               key={section.id}
+              section={section}
               className={cn(
                 section.id === "example" &&
-                  "[&_.marketing-band>.marketing-rail>.marketing-cell]:pb-0 [&_.marketing-rows]:border-b-0",
+                  "[&>.marketing-rail>.marketing-cell]:pb-0 [&_.marketing-rows]:border-b-0",
                 section.id === "chatgpt" &&
-                  "[&_.marketing-band>.marketing-rail]:bg-background-dimmed [&_.marketing-band]:border-t-0",
+                  "[&>.marketing-rail]:bg-background-dimmed",
               )}
             >
-              <MarketingSection section={section}>{children}</MarketingSection>
-            </div>
+              {children}
+            </MarketingSection>
           );
       }
     })}
-  </div>
+  </>
 );

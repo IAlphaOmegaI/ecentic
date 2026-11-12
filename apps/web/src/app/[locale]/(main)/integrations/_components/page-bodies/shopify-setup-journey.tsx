@@ -35,7 +35,11 @@ const SetupGraphic = ({ stage }: { stage: number }) => (
     data-shopify-stage={stage}
     className={cn(
       "relative isolate flex min-w-0 items-center justify-center gap-6 overflow-hidden px-4 max-sm:gap-4 max-sm:px-0",
-      stage === 1 ? "h-56 max-sm:h-44" : "h-32 max-sm:h-24",
+      stage === 1
+        ? "h-56 max-sm:h-44"
+        : stage === 2
+          ? "min-h-40 py-4"
+          : "h-32 max-sm:h-24",
     )}
   >
     <IllustrationGlow />
@@ -57,7 +61,7 @@ const SetupGraphic = ({ stage }: { stage: number }) => (
         className="max-w-[260px] bg-transparent max-sm:max-w-[220px]"
       />
     ) : stage === 2 ? (
-      <div className="w-full max-w-64 rounded-md border border-accent-foreground bg-background-rich px-4 py-2 font-mono text-xs leading-6 sm:text-sm">
+      <div className="w-full min-w-0 max-w-64 rounded-md border border-accent-foreground bg-background-rich px-4 py-2 font-mono text-xs leading-6 sm:text-sm">
         <span className="text-foreground-dimmed">{"{"}</span>
         <p>
           <span className="text-primary-text">{'  "title"'}</span>
@@ -127,7 +131,7 @@ export const ShopifySetupJourney = ({
             >
               <div
                 aria-hidden
-                className="absolute top-8 left-7 grid size-10 place-items-center rounded-full border border-accent-foreground bg-background text-foreground-dimmed group-data-open/stop:border-primary/40 group-data-open/stop:bg-background-rich group-data-open/stop:text-primary-text max-sm:left-3"
+                className="absolute top-8 left-7 grid size-10 place-items-center rounded-md border border-accent-foreground bg-background text-foreground-dimmed group-data-open/stop:border-primary/40 group-data-open/stop:bg-background-rich group-data-open/stop:text-primary-text max-sm:left-3"
               >
                 <Icon className="size-6" />
               </div>

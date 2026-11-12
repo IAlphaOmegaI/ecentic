@@ -328,7 +328,7 @@
           },
           {
             "before": "La oferta comercial no está clara.",
-            "after": "Elige una modalidad y acuerda sus condiciones. {{TODO: Confirmar margen de agencia o condiciones de recomendación.}}",
+            "after": "Acuerda una comisión por recomendación. ecentic contrata y factura al cliente; la reventa necesita un acuerdo específico firmado.",
             "href": "/partners"
           },
           {
@@ -352,7 +352,7 @@
             "items": [
               {
                 "title": "Agencias y revendedores",
-                "body": "Analiza productos de clientes, aplica cambios verificados y mantén la relación. {{TODO: Confirmar acceso de reventa y condiciones comerciales.}}"
+                "body": "Recomienda ecentic a clientes y acuerda una comisión en la llamada. Unirse no tiene coste; cada cliente conserva su cuenta y ecentic le factura directamente."
               },
               {
                 "title": "Colaboradores tecnológicos",
@@ -360,7 +360,7 @@
               },
               {
                 "title": "Creadores y afiliados",
-                "body": "Ayuda a tu audiencia a entender el comercio con IA. {{TODO: Confirmar condiciones de pago para creadores y afiliados.}}"
+                "body": "Ayuda a tu audiencia a entender el comercio con IA. Recibe una comisión por cada cliente de pago que traigas; el importe se acuerda al unirte."
               }
             ]
           },
@@ -368,7 +368,7 @@
             "id": "access",
             "title": "Define claramente el acceso.",
             "description": "Una cuenta puede reunir sus propias tiendas. No es un espacio de agencia con acceso delegado ni puestos de equipo. Acuerda cómo conecta y controla cada cliente su tienda.",
-            "note": "{{TODO: Confirmar la configuración de cuentas para agencias y las condiciones para compartir informes.}}"
+            "note": "Cada cliente es propietario de su cuenta. Puedes compartir los informes de ecentic con ese cliente manteniendo la marca; no ofrecemos informes de marca blanca ni roles de agencia."
           },
           {
             "id": "start",
@@ -385,7 +385,7 @@
         "faqs": [
           {
             "question": "¿Hay un margen o comisión?",
-            "answer": "{{TODO: Confirmar las condiciones comerciales de cada modalidad.}}"
+            "answer": "La incorporación es gratuita. Agencias y afiliados acuerdan su comisión al unirse. Los socios tecnológicos colaboran sin comisiones entre ambas partes. La reventa requiere un acuerdo específico firmado."
           },
           {
             "question": "¿Los clientes necesitan su propia cuenta?",
@@ -393,7 +393,7 @@
           },
           {
             "question": "¿Podemos usar informes con los clientes?",
-            "answer": "{{TODO: Confirmar condiciones para compartir informes. No se afirma que haya informes de marca blanca.}}"
+            "answer": "Sí, con ese cliente y manteniendo la marca ecentic. El cliente es propietario de su cuenta; no ofrecemos informes de marca blanca."
           }
         ],
         "challengeLabels": {
@@ -424,7 +424,7 @@
         "facts": [
           "Primero, datos públicos. Sin accesos, código en tu web ni datos de clientes para la referencia inicial.",
           "Objetivos acordados por escrito el primer día.",
-          "Un fundador en la cuenta, con contacto directo con ingeniería.",
+          "Un fundador, Xhurian o Iseld, en cada cuenta, con Alvi a cargo de ingeniería.",
           "Revisamos los requisitos de datos y contratación antes de conceder acceso."
         ],
         "challenges": [
@@ -472,7 +472,7 @@
               },
               {
                 "title": "Estudio de diseño",
-                "body": "3 meses. Para cuestiones de pago o reserva que necesitan más que una lista de mejoras. El alcance puede incluir un prototipo con datos ficticios y un informe en el mes 3."
+                "body": "3 meses, ampliables hasta 6. Para preguntas de checkout o reservas que requieren más que una lista de correcciones. El alcance puede incluir un prototipo con datos ficticios y entregas acordadas."
               }
             ],
             "note": "Los honorarios dependen del alcance y se acuerdan en la primera llamada. Son servicios; el informe del piloto sigue el método acordado con tu equipo."
@@ -486,7 +486,7 @@
             "items": [
               {
                 "title": "Semana 0: referencia",
-                "body": "Acuerda preguntas y ejecuta la referencia antes de cambiar datos. {{TODO: Confirmar las 25 preguntas propuestas y tres ejecuciones por asistente.}}"
+                "body": "Acordamos las preguntas al inicio y ejecutamos cada una varias veces en cada asistente, antes de cambiar los datos."
               },
               {
                 "title": "Semanas 1 a 5: mejorar",
@@ -542,7 +542,7 @@
               },
               {
                 "label": "Tiempo de tu equipo",
-                "value": "{{TODO: Confirmar el tiempo semanal esperado del responsable.}}"
+                "value": "Una llamada inicial, una breve reunión semanal y la presentación final. La fase con datos públicos no requiere tiempo de ingeniería."
               }
             ]
           },
@@ -557,7 +557,7 @@
               },
               {
                 "title": "Tus datos",
-                "body": "Revisa el tratamiento de datos y habla con nosotros sobre el acuerdo y la información de proveedores que necesita tu equipo. {{TODO: Confirmar el DPA aprobado, los subencargados contratados, las ubicaciones y la entidad contratante.}}"
+                "body": "Acordamos el DPA a petición del cliente y podemos firmar el suyo. Confirma la entidad contratante, las ubicaciones y los proveedores antes de compartir datos personales."
               },
               {
                 "title": "Respuestas claras",
@@ -616,7 +616,7 @@
               },
               {
                 "label": "¿Cambiaréis nuestra web?",
-                "value": "Solo mediante acciones autorizadas tras conectar una tienda. Las recomendaciones públicas se entregan a tu equipo. {{TODO: Confirmar formatos de entrega.}}"
+                "value": "Solo mediante acciones que autorizas tras conectar una tienda. Las recomendaciones basadas en datos públicos se entregan a tu equipo, con una lista de cambios y resultados de las nuevas ejecuciones."
               },
               {
                 "label": "¿Tratáis datos personales de clientes?",
@@ -628,7 +628,7 @@
               },
               {
                 "label": "¿Qué recibimos?",
-                "value": "Un informe acordado con cifras, método, límites y siguientes pasos."
+                "value": "Un libro de referencia inicial, una lista de cambios, resultados de nuevas ejecuciones con registro de cambios y un informe escrito. Los datos y las correcciones son tuyos y puedes compartir el informe internamente."
               },
               {
                 "label": "¿Qué pasa después del piloto?",
@@ -636,7 +636,7 @@
               },
               {
                 "label": "¿Firmaréis nuestro NDA?",
-                "value": "{{TODO: Confirmar la política de NDA antes de compartir datos no públicos.}}"
+                "value": "Sí. Firmamos un NDA mutuo antes de recibir datos no públicos. La fase con datos públicos no lo necesita."
               }
             ]
           },
@@ -674,7 +674,7 @@
           },
           {
             "question": "¿Qué asistentes cubrís?",
-            "answer": "Los análisis de productos usan ChatGPT, Claude y Gemini. {{TODO: Confirmar asistentes y método para preguntas específicas del piloto.}}"
+            "answer": "Los escaneos de producto usan ChatGPT, Claude y Gemini. Para un piloto a medida, acordamos los asistentes, preguntas, versiones y método de recogida al inicio."
           },
           {
             "question": "¿Trabajáis en nuestros mercados e idiomas?",
@@ -686,7 +686,7 @@
           },
           {
             "question": "¿Disponéis de SOC 2?",
-            "answer": "Todavía no. {{TODO: Confirmar el plan de cumplimiento y los materiales de seguridad disponibles.}} No afirmamos tener una certificación ni un paquete de seguridad existente."
+            "answer": "Todavía no. No afirmamos tener una certificación ni un paquete de seguridad. Alvi responde a los cuestionarios de seguridad tras firmar un NDA."
           }
         ],
         "challengeLabels": {

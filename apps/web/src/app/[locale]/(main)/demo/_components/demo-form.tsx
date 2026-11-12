@@ -208,7 +208,7 @@ export const DemoForm = ({
               >
                 <Button
                   type="submit"
-                  variant="flat"
+                  variant="default"
                   color="primary"
                   className="min-h-12 md:col-span-2"
                 >
@@ -239,7 +239,7 @@ export const DemoForm = ({
                   </Button>
                   <Button
                     type="submit"
-                    variant="flat"
+                    variant="default"
                     color="primary"
                     className="min-h-12"
                   >
@@ -278,7 +278,7 @@ export const DemoForm = ({
                   </Button>
                   <Button
                     type="button"
-                    variant="flat"
+                    variant="default"
                     color="primary"
                     disabled={state.isPending}
                     onClick={submit}

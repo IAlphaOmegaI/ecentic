@@ -15,7 +15,7 @@ import { ErrorProtocol, isExpected } from "./error";
  * codes, tokens, and passwords must not be exfiltrated by observability.
  */
 const SENSITIVE_ARGUMENT_PATTERN =
-  /code|token|secret|password|credential|authorization|apikey|api_key/i;
+  /code|token|secret|password|credential|authorization|apikey|api_key|consumerkey/i;
 
 // Depth-capped and cycle-guarded: arguments can carry rich runtime objects
 // (Drizzle query nodes are circular — column → table → column), and telemetry
@@ -276,7 +276,7 @@ const createShell = (options: ShellOptions) => {
 
       return Sentry.withServerActionInstrumentation(
         name,
-        { recordResponse: true, headers: await headers() },
+        { recordResponse: false, headers: await headers() },
         run,
       );
     };

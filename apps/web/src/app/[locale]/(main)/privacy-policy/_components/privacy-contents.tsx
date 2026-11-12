@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  BanIcon,
   BookIcon,
   ClockIcon,
   CommerceBasketShoppingIcon,
@@ -11,6 +10,7 @@ import {
   EnvelopeIcon,
   EyeIcon,
   GearIcon,
+  type Icon,
   ShareIcon,
   UserIcon,
 } from "@zenncore/icons";
@@ -24,19 +24,22 @@ import {
 import { useEffect, useState } from "react";
 import { useDocument } from "@/hooks/use-document";
 
-const sectionIcons = {
+const sectionIcons: Readonly<Record<string, Icon>> = {
   "01": UserIcon,
-  "02": GearIcon,
-  "03": CommerceBasketShoppingIcon,
-  "04": CommerceGlobePointerIcon,
-  "05": ShareIcon,
-  "06": CommerceFileShieldIcon,
-  "07": BanIcon,
-  "08": EyeIcon,
-  "09": CommerceFilePenIcon,
-  "10": ClockIcon,
-  "11": EnvelopeIcon,
-} as const;
+  "02": CommerceFilePenIcon,
+  "03": GearIcon,
+  "04": CommerceBasketShoppingIcon,
+  "05": CommerceGlobePointerIcon,
+  "06": ShareIcon,
+  "07": CommerceGlobePointerIcon,
+  "08": CommerceFileShieldIcon,
+  "09": ClockIcon,
+  "10": EyeIcon,
+  "11": CommerceFilePenIcon,
+  "12": BookIcon,
+  "13": UserIcon,
+  "14": EnvelopeIcon,
+};
 
 const ContentsLinks = ({
   label,
@@ -50,7 +53,7 @@ const ContentsLinks = ({
   <nav aria-label={label}>
     <ol className="flex flex-col gap-1 px-4 pb-6 max-sm:px-2">
       {items.map((item) => {
-        const Icon = sectionIcons[item.number as keyof typeof sectionIcons];
+        const Icon = sectionIcons[item.number] ?? CommerceFileShieldIcon;
         return (
           <li key={item.number} className="relative min-w-0">
             <a

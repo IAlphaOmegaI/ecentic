@@ -16,29 +16,34 @@ export const IndexSection = ({
 }: IndexSection.Props) => {
   if (featureTone)
     return (
-      <MarketingFeatureBand
-        id={id}
-        tone={featureTone}
-        className={cn(
-          featureTone === "dark" &&
-            "[--color-accent-foreground:color-mix(in_oklab,var(--color-background-rich)_16%,transparent)] [--color-background-dimmed:var(--color-emphasis)] [--color-background:var(--color-emphasis-dimmed)] [--color-foreground-dimmed:color-mix(in_oklab,var(--color-background-rich)_70%,transparent)] [--color-foreground-rich:var(--color-background-rich)] [--color-foreground:var(--color-background-rich)] [--color-primary-text:var(--color-primary-rich)]",
-        )}
-      >
-        <div className="marketing-surface relative min-w-0 border-accent-foreground border-y">
-          <MarketingEdgeCrosses />
-          <MarketingEdgeCrosses edge="bottom" />
-          <header className="grid gap-6 border-accent-foreground border-b bg-linear-to-br from-primary/6 via-transparent to-transparent px-8 py-10 max-sm:px-4 max-sm:py-8 md:grid-cols-[1fr_2fr]">
-            <div>
-              <span className="mb-4 block text-3xl text-primary">{number}</span>
-              <h2>{title}</h2>
-            </div>
-            <p className="max-w-3xl self-end text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">
-              {description}
-            </p>
-          </header>
-          {children}
-        </div>
-      </MarketingFeatureBand>
+      <>
+        {gutter && <SectionGutter />}
+        <MarketingFeatureBand
+          id={id}
+          tone={featureTone}
+          className={cn(
+            featureTone === "dark" &&
+              "[--color-accent-foreground:color-mix(in_oklab,var(--color-background-rich)_16%,transparent)] [--color-background-dimmed:var(--color-emphasis)] [--color-background:var(--color-emphasis-dimmed)] [--color-foreground-dimmed:color-mix(in_oklab,var(--color-background-rich)_70%,transparent)] [--color-foreground-rich:var(--color-background-rich)] [--color-foreground:var(--color-background-rich)] [--color-primary-text:var(--color-primary-rich)]",
+          )}
+        >
+          <div className="marketing-surface relative min-w-0 border-accent-foreground border-y">
+            <MarketingEdgeCrosses />
+            <MarketingEdgeCrosses edge="bottom" />
+            <header className="grid gap-6 border-accent-foreground border-b bg-linear-to-br from-primary/6 via-transparent to-transparent px-8 py-10 max-sm:px-4 max-sm:py-8 md:grid-cols-[1fr_2fr]">
+              <div>
+                <span className="mb-4 block text-3xl text-primary">
+                  {number}
+                </span>
+                <h2>{title}</h2>
+              </div>
+              <p className="max-w-3xl self-end text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">
+                {description}
+              </p>
+            </header>
+            {children}
+          </div>
+        </MarketingFeatureBand>
+      </>
     );
   return (
     <section id={id} className="scroll-mt-24 border-accent-foreground border-b">
@@ -88,18 +93,20 @@ export const IndexQuickstartSkeleton = () => (
         {[0, 1, 2].map((index) => (
           <div
             key={index}
-            className="relative border-accent-foreground border-b py-8 pr-8 pl-24 last:border-b-0 max-sm:pr-4 max-sm:pl-16"
+            className="border-accent-foreground border-b last:border-b-0"
           >
-            <div className="absolute top-7 left-6 size-12 rounded-full bg-background-dimmed max-sm:left-2" />
-            <div className="h-10 w-2/3 bg-background-dimmed" />
-            {index === 0 && (
-              <div className="mt-8 flex flex-col gap-6">
-                <div className="h-20 bg-background-dimmed" />
-                <div className="h-28 bg-background-dimmed" />
-                <div className="h-16 bg-background-dimmed" />
-                <div className="h-10 w-40 bg-background-dimmed" />
-              </div>
-            )}
+            <div className="flex items-center gap-6 border-accent-foreground border-b px-6 py-8 max-sm:px-2">
+              <div className="size-12 shrink-0 rounded-md bg-background-dimmed" />
+              <div className="h-10 w-2/3 bg-background-dimmed" />
+            </div>
+            <div className="px-8 py-8 max-sm:px-4">
+              <div className="h-20 bg-background-dimmed" />
+            </div>
+            <div className="h-36 border-accent-foreground border-y bg-background-dimmed" />
+            <div className="flex flex-col gap-6 px-8 py-8 max-sm:px-4">
+              <div className="h-16 bg-background-dimmed" />
+              <div className="h-10 w-40 bg-background-dimmed" />
+            </div>
           </div>
         ))}
       </div>

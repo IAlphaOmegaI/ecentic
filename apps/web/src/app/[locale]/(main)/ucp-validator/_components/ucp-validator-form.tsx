@@ -97,12 +97,11 @@ const DomainCheckPreview = ({ domain, label }: DomainCheckPreview.Props) => {
           </div>
         </div>
         <ScrollArea
-          role="region"
-          aria-label={label}
+          viewportProps={{ role: "region", "aria-label": label }}
           className="max-w-full rounded-xs border border-accent-foreground bg-background"
           classList={{
             viewport:
-              "rounded-xs focus-visible:outline-2 focus-visible:outline-primary-text",
+              "overscroll-y-auto rounded-xs focus-visible:outline-2 focus-visible:outline-primary-text",
           }}
         >
           <pre className="w-max min-w-full p-4 font-mono text-foreground-dimmed text-xs leading-relaxed sm:text-sm">

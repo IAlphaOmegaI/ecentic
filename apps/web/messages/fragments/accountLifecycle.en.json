@@ -1,0 +1,38 @@
+{
+  "dashboard": {
+    "lifecycle": {
+      "action": {
+        "secondary": "Cancel",
+        "pending": "Working…"
+      },
+      "error": "We could not complete this request. Please try again or contact support.",
+      "disconnected": "Disconnected",
+      "disconnect": {
+        "title": "Disconnect this store?",
+        "description": "Remove the saved store credentials and stop access to {domain}. Your imported catalog and history stay in ecentic. This does not uninstall a plugin or revoke keys at the store; remove those at the provider as well. Sign in again first if your session is older than five minutes.",
+        "action": {
+          "primary": "Disconnect store"
+        }
+      },
+      "delete": {
+        "title": "Delete your account?",
+        "description": "This permanently deletes your profile, imported catalogs, scans and generated changes. Disconnect your store and Google integrations first. Enter your account email to confirm. You must have signed in within the last five minutes.",
+        "email": "Account email",
+        "validation": "Enter a valid email address.",
+        "assistance": "Accounts with billing or order records need assisted deletion so required records and billing are handled correctly. Contact",
+        "action": {
+          "primary": "Delete account"
+        }
+      },
+      "blocked": {
+        "reauthenticate": "Sign out and sign in again, then return here within five minutes.",
+        "confirmation": "Enter the email address of the account you are signed in to.",
+        "notFound": "This account or store is no longer available.",
+        "googleConnected": "Disconnect Google Shopping from its settings page first so the Google data source and grant can be removed correctly.",
+        "shopifyBilling": "Uninstall ecentic in Shopify first to end the Shopify billing agreement, then contact support if this connection remains.",
+        "billingRecords": "This account has billing or order records. Contact privacy@ecentic.ai for assisted deletion; we must settle billing and retain legally required records.",
+        "storeConnections": "Disconnect your stores and Google Shopping integrations in Settings before deleting the account."
+      }
+    }
+  }
+}

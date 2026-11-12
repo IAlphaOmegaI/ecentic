@@ -1,33 +1,63 @@
 import type { JSX } from "react";
 import type { IconProps } from "../types";
 
-export const CreditCardIcon = ({ title, ...props }: IconProps): JSX.Element => {
+// Nucleo UI · credit-card · outline-duo · 18px.
+// Adapted from CreditCardOutlineDuo18; original geometry and soft layers retained.
+export const CreditCardIcon = ({
+  title,
+  strokeWidth = 1.5,
+  duoOpacity = 0.3,
+  ...props
+}: IconProps & { duoOpacity?: number | string }): JSX.Element => {
   return (
     <svg
-      height="18"
-      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+      width={18}
+      height={18}
       viewBox="0 0 18 18"
-      strokeWidth="1.5"
       {...props}
     >
       {title && <title>{title}</title>}
       <path
-        d="M3.75 3C2.23079 3 1 4.23079 1 5.75V12.25C1 13.7692 2.23079 15 3.75 15H14.25C15.7692 15 17 13.7692 17 12.25V5.75C17 4.23079 15.7692 3 14.25 3H3.75Z"
-        fill="currentColor"
-        fillOpacity="0.4"
-      />
-      <path d="M17 6.5H1V8H17V6.5Z" fill="currentColor" />
-      <path
         fillRule="evenodd"
         clipRule="evenodd"
-        d="M3.5 11.25C3.5 10.8358 3.83579 10.5 4.25 10.5H7.25C7.66421 10.5 8 10.8358 8 11.25C8 11.6642 7.66421 12 7.25 12H4.25C3.83579 12 3.5 11.6642 3.5 11.25Z"
+        d="M14.25 14.25H3.75C2.64543 14.25 1.75 13.3546 1.75 12.25V7.25H16.25V12.25C16.25 13.3546 15.3546 14.25 14.25 14.25Z"
         fill="currentColor"
-      />
+        data-color="color-2"
+        data-stroke="none"
+        opacity={duoOpacity}
+      />{" "}
       <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M12 11.25C12 10.8358 12.3358 10.5 12.75 10.5H13.75C14.1642 10.5 14.5 10.8358 14.5 11.25C14.5 11.6642 14.1642 12 13.75 12H12.75C12.3358 12 12 11.6642 12 11.25Z"
-        fill="currentColor"
+        d="M1.75 7.25H16.25"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M3.75 14.25L14.25 14.25C15.3546 14.25 16.25 13.3546 16.25 12.25V5.75C16.25 4.64543 15.3546 3.75 14.25 3.75L3.75 3.75C2.64543 3.75 1.75 4.64543 1.75 5.75L1.75 12.25C1.75 13.3546 2.64543 14.25 3.75 14.25Z"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M4.25 11.25H7.25"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M12.75 11.25H13.75"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
       />
     </svg>
   );

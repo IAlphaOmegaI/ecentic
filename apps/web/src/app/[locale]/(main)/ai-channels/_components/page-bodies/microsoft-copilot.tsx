@@ -5,7 +5,7 @@ import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
 import { CommerceFigure } from "@/components/marketing/commerce-figure";
-import { ConnectedJourney } from "@/components/marketing/connected-journey";
+import { JourneySteps } from "@/components/marketing/connected-journey";
 import { MarketingSection } from "@/components/marketing/page";
 import { MarketingBand } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
@@ -56,7 +56,7 @@ const ShoppingWorkbench = ({
           </p>
         </div>
       </div>
-      <ConnectedJourney
+      <JourneySteps
         label={copy.dataLabel}
         className="border-t-0"
         items={sections.map((section) => ({
@@ -65,7 +65,7 @@ const ShoppingWorkbench = ({
           title: section.title,
           icon: section.id === "shops" ? "checkout" : "catalog",
           content: (
-            <div className="px-8 pb-8 max-sm:px-4">
+            <div>
               <p className="max-w-[48ch] text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">
                 {section.description}
               </p>
@@ -125,7 +125,8 @@ const MerchantEntry = ({
     <div className="px-8 py-8 max-sm:px-4 max-sm:py-6">
       <p className="text-foreground-dimmed text-sm">{copy.label}</p>
     </div>
-    <ConnectedJourney
+    <JourneySteps
+      layout="surface"
       label={copy.label}
       items={routes.map((route) => ({
         id: route.key,

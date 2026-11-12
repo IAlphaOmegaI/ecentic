@@ -10,6 +10,8 @@ import {
   useState,
 } from "react";
 
+import { updateAnalyticsConsent } from "@/lib/analytics-consent";
+
 const STORAGE_KEY = "ecentic-cookie-consent";
 
 const DECISIONS = ["granted", "denied"] as const;
@@ -21,17 +23,11 @@ const parse = (value: string | null) =>
     ? (value as ConsentDecision)
     : null;
 
-/**
- * Only `analytics_storage` ever moves. Ad signals stay denied permanently:
- * nothing here feeds an ad network, and the privacy policy commits to that in
- * writing — so granting them would make the page contradict the policy.
- */
-const signal = (decision: ConsentDecision) => ({
-  analytics_storage: decision,
-});
-
 const syncGoogleConsent = (decision: ConsentDecision) =>
-  window.gtag?.("consent", "update", signal(decision));
+  updateAnalyticsConsent(
+    decision === "granted",
+    process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID,
+  );
 
 export type ConsentContext = {
   /** `null` means undecided — the visitor has not answered the banner yet. */
@@ -63,18 +59,26 @@ export const ConsentProvider = ({ children }: PropsWithChildren) => {
   const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    const stored = parse(window.localStorage.getItem(STORAGE_KEY));
+    const stored = (() => {
+      try {
+        return parse(window.localStorage.getItem(STORAGE_KEY));
+      } catch {
+        return null;
+      }
+    })();
 
-    // Consent Mode defaults to denied on every load, so a stored "granted" has
-    // to be replayed here; a stored "denied" already matches the default.
-    if (stored === "granted") syncGoogleConsent(stored);
+    syncGoogleConsent(stored ?? "denied");
 
     setDecision(stored);
     setIsReady(true);
   }, []);
 
   const record = useCallback((next: ConsentDecision) => {
-    window.localStorage.setItem(STORAGE_KEY, next);
+    try {
+      window.localStorage.setItem(STORAGE_KEY, next);
+    } catch {
+      /* Consent still applies to this visit when storage is blocked. */
+    }
     syncGoogleConsent(next);
     setDecision(next);
   }, []);
@@ -83,7 +87,11 @@ export const ConsentProvider = ({ children }: PropsWithChildren) => {
   const reject = useCallback(() => record("denied"), [record]);
 
   const revisit = useCallback(() => {
-    window.localStorage.removeItem(STORAGE_KEY);
+    try {
+      window.localStorage.removeItem(STORAGE_KEY);
+    } catch {
+      /* Withdrawal must work even when storage is blocked. */
+    }
     syncGoogleConsent("denied");
     setDecision(null);
   }, []);

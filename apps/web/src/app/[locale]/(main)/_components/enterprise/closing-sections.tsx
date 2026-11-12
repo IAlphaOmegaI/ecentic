@@ -40,7 +40,7 @@ const paths = [
 export const Findings = ({ copy }: Findings.Props) => (
   <MarketingBand id="proof" className="enterprise-proof">
     <MarketingHeading eyebrow={copy.eyebrow} title={copy.title} />
-    <div className="marketing-section-grid grid gap-px border-accent-foreground border-y bg-accent-foreground">
+    <div className="marketing-section-grid grid gap-px border-accent-foreground border-t bg-accent-foreground">
       <SimulationEvidence collapsible />
       <CatalogFindings collapsible />
     </div>

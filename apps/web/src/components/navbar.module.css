@@ -1,0 +1,52 @@
+.surface {
+  translate: none;
+  transform-origin: center;
+  opacity: 1;
+  scale: 1;
+  filter: blur(0);
+  transition:
+    opacity 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    scale 200ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 200ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.surface[data-starting-style],
+.surface[data-ending-style] {
+  opacity: 0;
+  scale: 0.985;
+  filter: blur(2px);
+}
+
+.surface[data-ending-style] {
+  transition-duration: 140ms;
+}
+
+.content {
+  translate: none;
+  transform: none;
+  transition:
+    opacity 160ms cubic-bezier(0.22, 1, 0.36, 1),
+    filter 160ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.content[data-starting-style],
+.content[data-ending-style] {
+  filter: blur(2px);
+}
+
+.content[data-ending-style] {
+  transition-duration: 100ms;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .surface,
+  .content,
+  .surface[data-starting-style],
+  .surface[data-ending-style],
+  .content[data-starting-style],
+  .content[data-ending-style] {
+    scale: 1;
+    filter: none;
+    transition: none;
+  }
+}

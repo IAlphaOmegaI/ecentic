@@ -1,4 +1,5 @@
 import { getMessages } from "next-intl/server";
+import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
 import { MarketingSection } from "@/components/marketing/page";
@@ -64,7 +65,7 @@ export const AgenciesAndPartnersBody = async ({
             );
           case "access":
             return (
-              <div key={section.id}>
+              <Fragment key={section.id}>
                 <SectionGutter />
                 <MarketingBand
                   id={section.id}
@@ -84,7 +85,7 @@ export const AgenciesAndPartnersBody = async ({
                   )}
                   {sectionChildren?.[section.id]}
                 </MarketingBand>
-              </div>
+              </Fragment>
             );
           case "start":
             return (

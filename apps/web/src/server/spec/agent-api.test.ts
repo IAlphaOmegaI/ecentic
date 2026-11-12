@@ -19,6 +19,7 @@ import {
 } from "@/lib/agent-api";
 import { DOCUMENTED_MCP_TOOLS } from "@/lib/mcp-docs";
 import { Utils } from "@/server/app/mcp/utils";
+import { PLANS } from "@/server/utils/stripe";
 
 const HOST = "https://ecentic.ai";
 
@@ -109,6 +110,27 @@ describe("plan catalog", () => {
     const index = plansIndex();
     expect(index.checkout).toBe(`${HOST}/sign-up`);
     expect(index.documentation).toBe(`${HOST}/pricing`);
+  });
+
+  test("MCP accepts every billed subscription tier and rejects free modes", () => {
+    const subscriptions = PLAN_CATALOG.filter(
+      (plan) => plan.billing === "subscription",
+    ).map((plan) => plan.key);
+    const checkout = Utils.tools.find(
+      (tool) => tool.name === "create_checkout",
+    );
+    expect(Object.keys(PLANS)).toEqual(subscriptions);
+    expect(
+      checkout?.inputSchema.properties.plan.enum.map((key) => key),
+    ).toEqual(subscriptions);
+    for (const plan of subscriptions)
+      expect(Utils.schema.createCheckout.safeParse({ plan }).success).toBe(
+        true,
+      );
+    for (const plan of ["scan", "payg", "enterprise", "unknown"])
+      expect(Utils.schema.createCheckout.safeParse({ plan }).success).toBe(
+        false,
+      );
   });
 });
 

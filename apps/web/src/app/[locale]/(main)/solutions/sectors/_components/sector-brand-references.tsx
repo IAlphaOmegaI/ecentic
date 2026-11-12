@@ -35,7 +35,7 @@ export const SectorBrandReferences = ({
 }) => (
   <aside
     data-sector-references
-    className="grid min-w-0 gap-7 border-accent-foreground border-t px-4 py-8 sm:px-8 md:grid-cols-[1fr_2fr] md:items-center"
+    className="grid min-w-0 gap-7 px-4 py-8 sm:px-8 md:grid-cols-[1fr_2fr] md:items-center"
   >
     <div className="flex min-w-0 items-center gap-8">
       {brands[sector].map((brand) => (

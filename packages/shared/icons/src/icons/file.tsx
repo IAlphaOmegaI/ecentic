@@ -1,27 +1,48 @@
 import type { JSX } from "react";
 import type { IconProps } from "../types";
 
-export const FileIcon = ({ title, ...props }: IconProps): JSX.Element => {
+// Nucleo UI · file · outline-duo · 18px.
+// Adapted from FileOutlineDuo18; original geometry and soft layers retained.
+export const FileIcon = ({
+  title,
+  strokeWidth = 1.5,
+  duoOpacity = 0.3,
+  ...props
+}: IconProps & { duoOpacity?: number | string }): JSX.Element => {
   return (
     <svg
-      height="18"
-      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+      width={18}
+      height={18}
       viewBox="0 0 18 18"
-      strokeWidth="1.5"
       {...props}
     >
       {title && <title>{title}</title>}
-      <g fill="currentColor">
-        <path
-          d="M15.487 5.427L11.572 1.512C11.2442 1.1841 10.7996 1 10.336 1H4.75C3.2312 1 2 2.2312 2 3.75V14.25C2 15.7688 3.2312 17 4.75 17H13.25C14.7688 17 16 15.7688 16 14.25V6.6655C16 6.2009 15.8155 5.7553 15.487 5.427Z"
-          fill="currentColor"
-          fillOpacity=".4"
-        />
-        <path
-          d="M15.8691 6.00098H12C11.45 6.00098 11 5.55098 11 5.00098V1.13101C11.212 1.21806 11.4068 1.34677 11.572 1.512L15.487 5.427C15.6527 5.59266 15.7818 5.7882 15.8691 6.00098Z"
-          fill="currentColor"
-        />
-      </g>
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M10.75 1.83956C10.6212 1.78103 10.4801 1.75 10.336 1.75H4.75C3.645 1.75 2.75 2.645 2.75 3.75V14.25C2.75 15.355 3.645 16.25 4.75 16.25H13.25C14.355 16.25 15.25 15.355 15.25 14.25V6.664C15.25 6.51978 15.2189 6.37883 15.1603 6.24999H11.75C11.198 6.24999 10.75 5.80199 10.75 5.24999V1.83956Z"
+        fill="currentColor"
+        data-color="color-2"
+        data-stroke="none"
+        opacity={duoOpacity}
+      />{" "}
+      <path
+        d="M15.16 6.24999H11.75C11.198 6.24999 10.75 5.80199 10.75 5.24999V1.85199"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M2.75 14.25V3.75C2.75 2.645 3.645 1.75 4.75 1.75H10.336C10.601 1.75 10.856 1.855 11.043 2.043L14.957 5.957C15.145 6.145 15.25 6.399 15.25 6.664V14.25C15.25 15.355 14.355 16.25 13.25 16.25H4.75C3.645 16.25 2.75 15.355 2.75 14.25Z"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
     </svg>
   );
 };

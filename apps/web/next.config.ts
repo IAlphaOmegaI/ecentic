@@ -38,6 +38,11 @@ export default withSentryConfig(
     redirects: async () => [
       ...["", "/es"].flatMap((prefix) => [
         {
+          source: `${prefix}/stories/dua-flavors`,
+          destination: `${prefix}/stories/dua-flavours`,
+          statusCode: 301 as const,
+        },
+        {
           source: `${prefix}/features`,
           destination: `${prefix}/platform`,
           statusCode: 301 as const,

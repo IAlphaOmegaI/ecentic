@@ -5,7 +5,10 @@ import { cn } from "@zenncore/utils";
 import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import { useEffect, useState } from "react";
 import type { MarketingPage } from "@/components/marketing/page";
-import { MarketingActions } from "@/components/marketing/primitives";
+import {
+  MarketingActions,
+  MarketingHeading,
+} from "@/components/marketing/primitives";
 import { Plus } from "@/components/plus";
 import { useDocument } from "@/hooks/use-document";
 import { Link } from "@/i18n/navigation";
@@ -23,13 +26,12 @@ const StagePanel = ({ section }: { section: MarketingPage.Section }) => (
       <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 max-lg:hidden" />
       <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2 max-lg:hidden" />
       <div className="px-7 pt-10 max-sm:px-5 max-sm:pt-8">
-        <p className="mb-4 text-primary-rich text-sm">{section.eyebrow}</p>
-        <h2 className="text-[clamp(1.9rem,2.6vw,2.6rem)] text-background-rich">
-          {section.title}
-        </h2>
-        <p className="mt-5 text-background-rich/75 leading-relaxed">
-          {section.description}
-        </p>
+        <MarketingHeading
+          eyebrow={section.eyebrow}
+          title={section.title}
+          description={section.description}
+          className="p-0 max-sm:p-0 [&>p:not(.marketing-eyebrow)]:text-background-rich/75"
+        />
         <MarketingActions actions={section.links ?? []} />
       </div>
       <div className="mt-auto pt-6">

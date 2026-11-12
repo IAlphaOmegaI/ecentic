@@ -1,0 +1,265 @@
+{
+  "version": 1,
+  "sourceRoot": "apps/web/src",
+  "publicRoots": [
+    "apps/web/src/components/marketing/",
+    "apps/web/src/app/[locale]/(main)/",
+    "apps/web/src/app/_components/"
+  ],
+  "exclude": [
+    "apps/web/src/app/[locale]/(main)/dashboard/",
+    "apps/web/src/app/[locale]/(main)/dev/"
+  ],
+  "seams": [
+    "apps/web/src/app/[locale]/(main)/solutions/_components/solution-roadmap.tsx",
+    "apps/web/src/app/[locale]/(main)/integrations/_components/page-bodies/google-merchant-center-roadmap.tsx",
+    "apps/web/src/app/[locale]/(main)/integrations/_components/page-bodies/woocommerce-setup.tsx",
+    "apps/web/src/app/[locale]/(main)/platform/_components/page-bodies/connect-roadmap.tsx",
+    "apps/web/src/components/marketing/channel-timeline.tsx",
+    "apps/web/src/components/marketing/connected-journey.tsx"
+  ],
+  "processes": [
+    {
+      "id": "mcp-handshake",
+      "file": "apps/web/src/app/[locale]/(main)/docs/mcp/_components/mcp-handshake.tsx",
+      "component": "McpHandshake",
+      "role": "ordered-narrative",
+      "purpose": "Initialize and notifications/initialized are required successive handshake steps."
+    },
+    {
+      "id": "product-feed-setup",
+      "file": "apps/web/src/app/[locale]/(main)/integrations/_components/page-bodies/product-feeds.tsx",
+      "component": "ProductFeedsBody",
+      "case": "setup",
+      "role": "ordered-workflow",
+      "purpose": "The setup section explains four consecutive feed setup instructions."
+    },
+    {
+      "id": "solution-roadmap",
+      "file": "apps/web/src/app/[locale]/(main)/solutions/_components/solution-roadmap.tsx",
+      "component": "SolutionRoadmap",
+      "role": "connected-pattern",
+      "purpose": "The shared solution roadmap keeps milestones visible and connected."
+    },
+    {
+      "id": "woocommerce-setup",
+      "file": "apps/web/src/app/[locale]/(main)/integrations/_components/page-bodies/woocommerce-setup.tsx",
+      "component": "WooSetupRoadmap",
+      "role": "connected-pattern",
+      "purpose": "The established WooCommerce setup roadmap supplies the connected-stage vocabulary."
+    },
+    {
+      "id": "merchant-roadmap",
+      "file": "apps/web/src/app/[locale]/(main)/integrations/_components/page-bodies/google-merchant-center-roadmap.tsx",
+      "component": "GoogleMerchantCenterRoadmap",
+      "role": "connected-pattern",
+      "purpose": "A shared continuous guide connects Merchant Center setup milestones."
+    },
+    {
+      "id": "catalog-connect-roadmap",
+      "file": "apps/web/src/app/[locale]/(main)/platform/_components/page-bodies/connect-roadmap.tsx",
+      "component": "ConnectRoadmap",
+      "role": "connected-pattern",
+      "purpose": "Native Tabs support the catalog roadmap's visible connected step selector."
+    },
+    {
+      "id": "versioning-header-selector",
+      "file": "apps/web/src/app/[locale]/(main)/docs/versioning/_components/versioning-lifecycle.tsx",
+      "component": "VersioningLifecycle",
+      "role": "selector",
+      "purpose": "HTTP response headers are independent selectable reference entries.",
+      "selection": "the actual HTTP header being explained"
+    },
+    {
+      "id": "authentication-endpoint-selector",
+      "file": "apps/web/src/app/[locale]/(main)/docs/authentication/_components/auth-request-paths.tsx",
+      "role": "selector",
+      "purpose": "Authentication requirements differ for public and authenticated request paths.",
+      "selection": "the actual endpoint and authorization mode"
+    },
+    {
+      "id": "api-reference-selector",
+      "file": "apps/web/src/app/[locale]/(main)/docs/api/_components/api-reference.tsx",
+      "role": "selector",
+      "purpose": "The API reference selects independent endpoint surfaces.",
+      "selection": "the actual API endpoint"
+    },
+    {
+      "id": "feed-format-selector",
+      "file": "apps/web/src/app/[locale]/(main)/integrations/_components/page-bodies/product-feeds-formats.tsx",
+      "component": "ProductFeedsFormats",
+      "role": "selector",
+      "purpose": "XML, JSON and CSV are alternative feed formats.",
+      "selection": "the actual source format"
+    },
+    {
+      "id": "published-file-selector",
+      "file": "apps/web/src/components/marketing/interactive/published-files/selector.tsx",
+      "role": "selector",
+      "purpose": "Published file tabs select different actual files.",
+      "selection": "the actual published source file"
+    },
+    {
+      "id": "record-comparison",
+      "file": "apps/web/src/components/marketing/interactive/code-comparison.tsx",
+      "component": "AnnotatedCodeComparison",
+      "role": "record-comparison",
+      "purpose": "Record edits belong in one shared Git-style diff; choosing different input records is a genuine selector."
+    }
+  ],
+  "artwork": {
+    "assetPrefix": "/images/ascii/",
+    "provenance": [
+      "apps/web/public/images/ascii/tonal/provenance.json",
+      "apps/web/public/images/ascii/tonal/home.provenance.json",
+      "apps/web/public/images/ascii/tonal/not-found.provenance.json"
+    ],
+    "renderers": [
+      {
+        "id": "evolving-ascii",
+        "file": "apps/web/src/components/marketing/evolving-ascii.tsx",
+        "component": "EvolvingAscii",
+        "kind": "image",
+        "subject": "Commerce objects and product silhouettes from the registered clean source photographs/renders."
+      },
+      {
+        "id": "ascii-road",
+        "file": "apps/web/src/components/marketing/ascii-road.tsx",
+        "component": "AsciiRoad",
+        "kind": "procedural-path",
+        "subject": "A winding path follows the channel chronology; keep its shape and timeline markers.",
+        "source": {
+          "file": "apps/web/src/components/marketing/ascii-road.tsx",
+          "symbol": "path",
+          "description": "The retained horizontal/bend coordinates are sampled on a 192 × 72 grid; the compact sinusoidal route uses 12 × 144. Eight base tones control the size and opacity of circular non-scaling SVG point strokes. A finite light pass follows sample chronology; no mixed-character ramp is used."
+        }
+      },
+      {
+        "id": "footer-wordmark",
+        "file": "apps/web/src/components/marketing/ascii-wordmark.tsx",
+        "component": "FooterWordmark",
+        "kind": "typography",
+        "subject": "The dimensional ecentic wordmark comes from the retained canonical glyph outlines."
+      },
+      {
+        "id": "not-found-artwork",
+        "file": "apps/web/src/app/_components/not-found-artwork.tsx",
+        "kind": "typography",
+        "subject": "Dimensional 404 typography; semantic status remains separately rendered."
+      },
+      {
+        "id": "pricing-subjects",
+        "file": "apps/web/src/app/[locale]/(main)/pricing/_components/plan-grid.tsx",
+        "kind": "image",
+        "subject": "Piggybank, knight, rocket and crown identify the public plan illustrations."
+      },
+      {
+        "id": "integration-product",
+        "file": "apps/web/src/app/[locale]/(main)/integrations/_components/integration-workflow-graphic.tsx",
+        "kind": "image",
+        "subject": "A sampled headphone product silhouette illustrates catalog transport."
+      },
+      {
+        "id": "resources-console",
+        "file": "apps/web/src/app/[locale]/(main)/resources/_components/tools.tsx",
+        "kind": "image",
+        "subject": "The console source illustrates the public developer tools."
+      }
+    ],
+    "legacySources": [
+      {
+        "file": "apps/web/src/content/ascii-artwork.ts",
+        "subject": "Retired commerce and closing image character grids."
+      },
+      {
+        "file": "apps/web/src/content/original-ascii.ts",
+        "subject": "Retired bag, cart and console image character grids."
+      },
+      {
+        "file": "apps/web/src/content/connect-ascii.ts",
+        "subject": "Retired connect catalog character grid."
+      },
+      {
+        "file": "apps/web/src/content/simulate-ascii.ts",
+        "subject": "Retired simulation selection character grid."
+      }
+    ]
+  },
+  "visualContracts": [
+    {
+      "id": "feed-setup-hierarchy",
+      "file": "apps/web/src/app/[locale]/(main)/integrations/_components/page-bodies/product-feeds.tsx",
+      "component": "ProductFeedsBody",
+      "case": "setup",
+      "purpose": "The public feed setup introduction is a shared section heading, followed by ordinary milestone copy.",
+      "typography": {
+        "tags": ["h2", "h3", "p"]
+      },
+      "heading": {
+        "component": "MarketingHeading",
+        "tag": "h2"
+      }
+    },
+    {
+      "id": "resource-tools-hierarchy",
+      "file": "apps/web/src/app/[locale]/(main)/resources/_components/resources-tools.tsx",
+      "component": "ResourcesTools",
+      "purpose": "The resources tools band has a primary public section heading and ordinary tool descriptions.",
+      "typography": {
+        "tags": ["h2", "h3", "p"]
+      },
+      "heading": {
+        "component": "MarketingHeading",
+        "tag": "h2"
+      }
+    },
+    {
+      "id": "mcp-prose-type",
+      "file": "apps/web/src/app/[locale]/(main)/docs/mcp/_components/mcp-handshake.tsx",
+      "component": "McpHandshake",
+      "purpose": "Handshake explanations use ordinary prose; literal methods and numeric response codes remain technical text.",
+      "typography": {
+        "tags": ["h3", "p", "dt", "dd"],
+        "technicalExpressions": ["exchange.method", "exchange.response"]
+      }
+    },
+    {
+      "id": "versioning-prose-type",
+      "file": "apps/web/src/app/[locale]/(main)/docs/versioning/_components/versioning-lifecycle.tsx",
+      "component": "VersioningLifecycle",
+      "purpose": "Versioning explanations use heading/body faces; actual HTTP-header Tab controls are outside this prose role.",
+      "typography": {
+        "tags": ["h3", "p"],
+        "technicalExpressions": ["item.header"]
+      }
+    },
+    {
+      "id": "woo-milestone-icons",
+      "file": "apps/web/src/app/[locale]/(main)/integrations/_components/page-bodies/woocommerce-setup.tsx",
+      "component": "WooSetupRoadmap",
+      "purpose": "WooCommerce milestone rows pair each subject with a canonical icon and ordinary titles/body copy.",
+      "typography": {
+        "tags": ["h3", "p"]
+      },
+      "rowIcons": {
+        "containerTag": "ol",
+        "rowTag": "li",
+        "importSource": "@zenncore/icons"
+      }
+    },
+    {
+      "id": "support-contact-icons",
+      "file": "apps/web/src/app/[locale]/(main)/support/_components/support-contact.tsx",
+      "component": "SupportContact",
+      "purpose": "Contact directory entries identify distinct contact categories with canonical subject icons and ordinary descriptions.",
+      "typography": {
+        "tags": ["h3", "p"]
+      },
+      "rowIcons": {
+        "containerTag": "div",
+        "rowTag": "article",
+        "importSource": "@zenncore/icons"
+      }
+    }
+  ]
+}

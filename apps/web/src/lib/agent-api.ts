@@ -229,7 +229,7 @@ export const PLAN_CATALOG = [
     currency: "USD",
     performanceFee: null,
     summary:
-      "One-time free simulation of your top 10 products across ChatGPT, Claude, Gemini, and Perplexity.",
+      "One-time free simulation of your top 10 products across ChatGPT, Claude and Gemini.",
   },
   {
     key: "payg",
@@ -253,7 +253,7 @@ export const PLAN_CATALOG = [
     currency: "USD",
     performanceFee: null,
     summary:
-      "Up to 100 products, daily agent simulations, competitor battlecards, manual optimization suggestions.",
+      "Up to 100 products, on-demand agent simulations, competitor battlecards and optimization suggestions.",
   },
   {
     key: "scale",
@@ -262,7 +262,8 @@ export const PLAN_CATALOG = [
     price: { amountCents: 4490, interval: "month" },
     currency: "USD",
     performanceFee: null,
-    summary: "Automated listing optimization on top of the Compete loop.",
+    summary:
+      "Up to 1,000 products, on-demand simulations and listing suggestions. Apply generates and publishes changes through a supported store connector.",
   },
   {
     key: "dominate",
@@ -271,7 +272,8 @@ export const PLAN_CATALOG = [
     price: { amountCents: 14900, interval: "month" },
     currency: "USD",
     performanceFee: null,
-    summary: "Top tier — the full optimization loop across the whole catalog.",
+    summary:
+      "Includes Scale with on-demand simulations and publishing through Apply. This is the tier included in the Techstars offer.",
   },
 ] as const;
 

@@ -24,26 +24,33 @@ export const Journey = ({ copy }: Journey.Props) => (
         <li
           key={step.id}
           data-journey-stage={step.id}
-          className="relative grid grid-cols-2 border-[var(--rail-color)] border-b last:border-b-0 max-[1000px]:grid-cols-[64px_minmax(0,1fr)]"
+          className="relative grid grid-cols-2 border-[var(--rail-color)] border-b last:border-b-0 max-[1000px]:grid-cols-1"
         >
           <div
             aria-hidden="true"
+            className={cn(
+              "pointer-events-none absolute inset-0 hidden from-45% from-transparent to-primary/10 max-[1000px]:block",
+              index % 2 === 0 ? "bg-linear-to-r" : "bg-linear-to-l",
+            )}
+          />
+          <div
+            aria-hidden="true"
             data-journey-axis=""
-            className="absolute inset-y-0 left-1/2 z-1 w-px bg-[var(--rail-color)] max-[1000px]:left-8"
+            className="absolute inset-y-0 left-1/2 z-1 w-px bg-[var(--rail-color)] max-[1000px]:hidden"
           />
           <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-          <Plus className="top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 max-[1000px]:left-8" />
+          <Plus className="top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 max-[1000px]:hidden" />
           <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           {index === copy.steps.length - 1 && (
             <>
               <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-              <Plus className="bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 max-[1000px]:left-8" />
+              <Plus className="bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 max-[1000px]:hidden" />
               <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
             </>
           )}
           <div
             className={cn(
-              "relative row-start-1 flex min-w-0 flex-col justify-center py-12 max-sm:px-4 max-[1000px]:col-start-2 max-[1000px]:px-8 max-[1000px]:pt-8 max-[1000px]:pb-8",
+              "relative row-start-1 flex min-w-0 flex-col justify-center py-12 max-sm:px-4 max-[1000px]:col-start-1 max-[1000px]:bg-none max-[1000px]:px-8 max-[1000px]:pt-8 max-[1000px]:pb-8",
               index % 2 === 0
                 ? "col-start-1 bg-linear-to-r from-45% from-transparent to-primary/10 pr-16 pl-8"
                 : "col-start-2 bg-linear-to-l from-45% from-transparent to-primary/10 pr-8 pl-16",
@@ -67,7 +74,7 @@ export const Journey = ({ copy }: Journey.Props) => (
           </div>
           <div
             className={cn(
-              "relative row-start-1 flex min-w-0 items-center justify-center bg-emphasis-dimmed px-8 py-4 max-sm:px-0 max-[1000px]:col-start-2 max-[1000px]:row-start-2",
+              "relative row-start-1 flex min-w-0 items-center justify-center bg-emphasis-dimmed px-8 py-4 max-sm:px-0 max-[1000px]:col-start-1 max-[1000px]:row-start-2 max-[1000px]:bg-transparent",
               index % 2 === 0 ? "col-start-2" : "col-start-1",
             )}
           >

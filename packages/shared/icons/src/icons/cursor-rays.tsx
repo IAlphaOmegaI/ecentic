@@ -1,62 +1,85 @@
 import type { JSX } from "react";
 import type { IconProps } from "../types";
 
-export const CursorRaysIcon = ({ title, ...props }: IconProps): JSX.Element => {
+// Nucleo UI · cursor-rays · outline-duo · 18px.
+// Adapted from CursorRaysOutlineDuo18; original geometry and soft layers retained.
+export const CursorRaysIcon = ({
+  title,
+  strokeWidth = 1.5,
+  duoOpacity = 0.3,
+  ...props
+}: IconProps & { duoOpacity?: number | string }): JSX.Element => {
   return (
     <svg
-      height="18"
-      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+      width={18}
+      height={18}
       viewBox="0 0 18 18"
-      strokeWidth="1.5"
       {...props}
     >
       {title && <title>{title}</title>}
       <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M11.5007 11.5007C11.7936 11.2078 12.2684 11.2078 12.5613 11.5007L16.7733 15.7127C17.0662 16.0056 17.0662 16.4804 16.7733 16.7733C16.4804 17.0662 16.0056 17.0662 15.7127 16.7733L11.5007 12.5613C11.2078 12.2684 11.2078 11.7936 11.5007 11.5007Z"
+        d="M8.09499 7.77801L15.409 10.288C15.631 10.364 15.635 10.676 15.416 10.758L12.137 11.991C12.07 12.016 12.016 12.07 11.991 12.137L10.758 15.416C10.675 15.635 10.364 15.631 10.288 15.409L7.77799 8.09501C7.70999 7.89801 7.89899 7.71001 8.09599 7.77701L8.09499 7.77801Z"
         fill="currentColor"
-      />
+        data-color="color-2"
+        data-stroke="none"
+        opacity={duoOpacity}
+      />{" "}
       <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M7.06879 8.33887C6.79566 7.54551 7.55722 6.80157 8.33751 7.06696C8.35202 7.07189 8.36632 7.07725 8.38039 7.08301L15.6519 9.57843C16.5395 9.88278 16.5566 11.1308 15.68 11.46L12.6132 12.6132L11.4593 15.6818C11.1297 16.5516 9.88448 16.5445 9.57862 15.6524L7.06879 8.33887Z"
-        fill="currentColor"
-      />
+        d="M8.09499 7.77801L15.409 10.288C15.631 10.364 15.635 10.676 15.416 10.758L12.137 11.991C12.07 12.016 12.016 12.07 11.991 12.137L10.758 15.416C10.675 15.635 10.364 15.631 10.288 15.409L7.77799 8.09501C7.70999 7.89801 7.89899 7.71001 8.09599 7.77701L8.09499 7.77801Z"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
       <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M7.75 1C8.16421 1 8.5 1.33579 8.5 1.75V3.75C8.5 4.16421 8.16421 4.5 7.75 4.5C7.33579 4.5 7 4.16421 7 3.75V1.75C7 1.33579 7.33579 1 7.75 1Z"
-        fill="currentColor"
-        fillOpacity="0.4"
-      />
+        d="M12.031 12.031L16.243 16.243"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
       <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M12.5233 2.97666C12.8162 3.26955 12.8162 3.74442 12.5233 4.03732L11.1083 5.45233C10.8154 5.74522 10.3406 5.74522 10.0477 5.45233C9.75478 5.15944 9.75478 4.68456 10.0477 4.39167L11.4627 2.97666C11.7556 2.68377 12.2304 2.68376 12.5233 2.97666Z"
-        fill="currentColor"
-        fillOpacity="0.4"
-      />
+        d="M7.75 1.75V3.75"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
       <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M5.45234 10.0477C5.74523 10.3406 5.74523 10.8154 5.45234 11.1083L4.03735 12.5233C3.74446 12.8162 3.26959 12.8162 2.97669 12.5233C2.6838 12.2304 2.68379 11.7556 2.97669 11.4627L4.39168 10.0477C4.68457 9.75478 5.15944 9.75478 5.45234 10.0477Z"
-        fill="currentColor"
-        fillOpacity="0.4"
-      />
+        d="M11.993 3.507L10.578 4.922"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
       <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M1 7.75C1 7.33579 1.33579 7 1.75 7H3.75C4.16421 7 4.5 7.33579 4.5 7.75C4.5 8.16421 4.16421 8.5 3.75 8.5H1.75C1.33579 8.5 1 8.16421 1 7.75Z"
-        fill="currentColor"
-        fillOpacity="0.4"
-      />
+        d="M3.50699 11.993L4.92199 10.578"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
       <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M2.97669 2.97665C3.26959 2.68376 3.74446 2.68377 4.03735 2.97666L5.45234 4.39167C5.74523 4.68457 5.74523 5.15944 5.45234 5.45233C5.15944 5.74522 4.68457 5.74522 4.39168 5.45232L2.97669 4.03731C2.68379 3.74442 2.6838 3.26955 2.97669 2.97665Z"
-        fill="currentColor"
-        fillOpacity="0.4"
+        d="M1.75 7.75H3.75"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M3.50699 3.507L4.92199 4.922"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
       />
     </svg>
   );

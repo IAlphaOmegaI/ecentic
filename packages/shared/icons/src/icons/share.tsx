@@ -1,27 +1,46 @@
 import type { JSX } from "react";
 import type { IconProps } from "../types";
 
-export const ShareIcon = ({ title, ...props }: IconProps): JSX.Element => {
+// Nucleo UI · share-all-right · outline-duo · 18px.
+// Adapted from ShareAllRightOutlineDuo18; original geometry and soft layers retained.
+export const ShareIcon = ({
+  title,
+  strokeWidth = 1.5,
+  duoOpacity = 0.3,
+  ...props
+}: IconProps & { duoOpacity?: number | string }): JSX.Element => {
   return (
     <svg
-      height="18"
-      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+      width={18}
+      height={18}
       viewBox="0 0 18 18"
-      strokeWidth="1.5"
       {...props}
     >
       {title && <title>{title}</title>}
-      <g fill="currentColor">
-        <path
-          opacity=".4"
-          d="M11.0001 3.54297C11.0001 3.24797 11.1731 2.98001 11.4431 2.85901C11.7121 2.73801 12.0271 2.78603 12.2481 2.98303L17.7481 7.86804C17.9071 8.00904 17.9981 8.21097 18.0001 8.42297C18.0021 8.63497 17.9131 8.83905 17.7561 8.98205L12.2561 14.011C12.0371 14.213 11.7191 14.262 11.4481 14.144C11.1761 14.024 11.0001 13.457 11.0001 13.457V3.54297Z"
-          fill="currentColor"
-        />
-        <path
-          d="M7.00011 6.05102V3.54297C7.00011 3.24797 7.1731 2.98001 7.4431 2.85901C7.7121 2.73801 8.02709 2.78603 8.24809 2.98303L13.7481 7.86804C13.9071 8.00904 13.9981 8.21097 14.0001 8.42297C14.0021 8.63497 13.9131 8.83905 13.7561 8.98205L8.2561 14.011C8.0371 14.213 7.7191 14.262 7.4481 14.144C7.1761 14.024 7.00011 13.755 7.00011 13.457V11.007C3.39011 11.329 1.3661 13.887 1.3461 13.912C1.2011 14.101 0.979106 14.2061 0.750106 14.2061C0.667106 14.2061 0.584103 14.1919 0.504103 14.1639C0.198103 14.0579 -0.00489441 13.768 0.000105587 13.444C0.000105587 13.372 0.188106 6.52002 7.00011 6.05102Z"
-          fill="currentColor"
-        />
-      </g>
+      <path
+        d="M7.75 6.776V3.543L13.25 8.428L7.75 13.457V10.224C3.224 10.224 0.75 13.457 0.75 13.457C0.75 13.457 0.853 6.776 7.75 6.776Z"
+        fill="currentColor"
+        data-color="color-2"
+        data-stroke="none"
+        opacity={duoOpacity}
+      />{" "}
+      <path
+        d="M7.75 6.776V3.543L13.25 8.428L7.75 13.457V10.224C3.224 10.224 0.75 13.457 0.75 13.457C0.75 13.457 0.853 6.776 7.75 6.776Z"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M11.75 3.543L17.25 8.428L11.75 13.457"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
     </svg>
   );
 };

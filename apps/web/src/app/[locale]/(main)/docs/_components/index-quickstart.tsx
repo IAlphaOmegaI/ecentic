@@ -3,7 +3,7 @@ import { Button } from "@zenncore/web/components/button";
 import type { AppConfig } from "next-intl";
 import type { ReactNode } from "react";
 import { CommerceFigure } from "@/components/marketing/commerce-figure";
-import { ConnectedJourney } from "@/components/marketing/connected-journey";
+import { JourneySteps } from "@/components/marketing/connected-journey";
 
 const endpoints = ["/api/v1", "/api/v1/discovery", "/api/v1/plans"] as const;
 const icons = ["code", "connect", "access"] as const;
@@ -31,7 +31,8 @@ export const IndexQuickstart = ({
           </p>
         </div>
       </div>
-      <ConnectedJourney
+      <JourneySteps
+        layout="surface"
         label={copy.label}
         className="border-t-0"
         items={endpoints.map((endpoint, index) => ({
@@ -39,15 +40,15 @@ export const IndexQuickstart = ({
           title: copy.tabs[index] ?? endpoint,
           icon: icons[index],
           content: (
-            <div className="flex min-w-0 flex-col gap-6">
-              <div>
+            <div className="flex min-w-0 flex-col border-accent-foreground border-t">
+              <div className="px-8 py-8 max-sm:px-4">
                 <h3>{content.steps[index]?.title}</h3>
                 <p className="mt-4 text-foreground-dimmed leading-relaxed">
                   {content.steps[index]?.description}
                 </p>
               </div>
               {examples[index]}
-              <dl className="grid grid-cols-2 items-center gap-4 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
+              <dl className="grid grid-cols-2 items-center gap-4 px-8 py-8 max-sm:px-4 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)]">
                 <div className="min-w-0">
                   <dt className="text-foreground-dimmed text-sm">
                     {copy.request}
@@ -70,7 +71,7 @@ export const IndexQuickstart = ({
                   </dd>
                 </div>
               </dl>
-              <div>
+              <div className="px-8 pb-8 max-sm:px-4">
                 <Button color="primary" render={<a href={endpoint} />}>
                   {copy.action.primary}
                   <ArrowRightIcon className="size-4" />

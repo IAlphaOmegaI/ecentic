@@ -6,7 +6,7 @@
     },
     "eyebrow": "Book a demo",
     "title": "See how AI shops your catalog.",
-    "description": "A call with a founder. Bring one category, and we'll show you how ChatGPT, Claude and Gemini compare it with a competitor's, live.",
+    "description": "A call with a founder. Bring one category, and we'll show you how ChatGPT, Claude and Gemini compare it with a competitor's, live. The call is in English.",
     "sections": [
       {
         "id": "what-we-cover",
@@ -59,7 +59,7 @@
       "progress": "Demo request progress",
       "reviewTitle": "A brief for your demo.",
       "reviewDescription": "Check your details before sending. We will follow up by email to agree the next step.",
-      "bookingNote": "Prefer to choose a time now? The existing self-serve call is 15 minutes. Enterprise demo scope and duration are agreed with you.",
+      "bookingNote": "Prefer to choose a time now? The existing self-serve call is 15 minutes. Enterprise demo scope and duration are agreed with you. Calls are in English.",
       "sentDescription": "Your demo request has been sent. We will use your work email to arrange the next step."
     }
   }

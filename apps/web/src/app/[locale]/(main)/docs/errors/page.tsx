@@ -123,8 +123,10 @@ export default async () => {
               content={content.shape.body.split("\n\n")[0] ?? ""}
             />
           </div>
-          <div className="min-w-0 bg-background p-8 max-sm:p-4">
-            <DocsCode label={copy.example}>{example}</DocsCode>
+          <div className="flex min-w-0 bg-background">
+            <DocsCode edges="none" className="flex-1" label={copy.example}>
+              {example}
+            </DocsCode>
           </div>
         </div>
         <div className="border-accent-foreground border-t px-8 py-4 max-sm:px-4">

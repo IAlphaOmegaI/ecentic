@@ -1,0 +1,3 @@
+interface:
+  display_name: "ecentic Public Pages"
+  short_description: "Compose ecentic public pages by route family"

@@ -189,7 +189,7 @@ export const LeadForm = ({
             )}
             <Button
               type="submit"
-              variant="flat"
+              variant="default"
               color="primary"
               disabled={state.isPending}
               className="min-h-12 md:col-span-2"

@@ -1,27 +1,54 @@
 import type { JSX } from "react";
 import type { IconProps } from "../types";
 
-export const UploadIcon = ({ title, ...props }: IconProps): JSX.Element => {
+// Nucleo UI · upload · outline-duo · 18px.
+// Adapted from UploadOutlineDuo18; original geometry and soft layers retained.
+export const UploadIcon = ({
+  title,
+  strokeWidth = 1.5,
+  duoOpacity = 0.3,
+  ...props
+}: IconProps & { duoOpacity?: number | string }): JSX.Element => {
   return (
     <svg
-      height="18"
-      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+      width={18}
+      height={18}
       viewBox="0 0 18 18"
-      strokeWidth="1.5"
       {...props}
     >
       {title && <title>{title}</title>}
-      <g fill="currentColor">
-        <path
-          opacity=".4"
-          d="M14.146 5.82703C13.704 3.36403 11.535 1.5 9 1.5C6.105 1.5 3.75 3.855 3.75 6.75C3.75 6.878 3.755 7.00801 3.767 7.14001C2.163 7.57101 1 9.025 1 10.75C1 12.818 2.682 14.5 4.75 14.5H12.5C14.981 14.5 17 12.481 17 10C17 8.146 15.85 6.49703 14.146 5.82703Z"
-          fill="currentColor"
-        />
-        <path
-          d="M6.21969 11.0303C6.51269 11.3233 6.98729 11.3233 7.28019 11.0303L8.24989 10.0606V17.2501C8.24989 17.6642 8.58579 18.0001 8.99989 18.0001C9.41399 18.0001 9.74989 17.6642 9.74989 17.2501V10.0606L10.7196 11.0303C11.0126 11.3233 11.4872 11.3233 11.7801 11.0303C12.073 10.7373 12.0731 10.2627 11.7801 9.96979L9.5301 7.71979C9.3836 7.57329 9.19169 7.50012 8.99979 7.50012C8.80789 7.50012 8.61599 7.57329 8.46949 7.71979L6.21949 9.96979C5.92649 10.2628 5.92669 10.7374 6.21969 11.0303Z"
-          fill="currentColor"
-        />
-      </g>
+      <path
+        opacity={duoOpacity}
+        d="M11.648 8H12.286C13.181 8 13.958 8.60004 14.162 9.43994L14.949 12.71C15.231 13.88 14.313 14.9999 13.073 14.9999H4.927C3.687 14.9999 2.77 13.88 3.051 12.71L3.838 9.43994C4.041 8.59994 4.818 8 5.713 8H6.352"
+        fill="currentColor"
+        data-color="color-2"
+        data-stroke="none"
+      />{" "}
+      <path
+        d="M12 7.75H12.413C13.342 7.75 14.149 8.39005 14.361 9.30005L15.178 12.8C15.471 14.05 14.518 15.25 13.23 15.25H4.76999C3.48199 15.25 2.52999 14.05 2.82199 12.8L3.63899 9.30005C3.84999 8.39005 4.65699 7.75 5.58699 7.75H5.99999"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M6 4.75L9 1.75L12 4.75"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M9 2V12.5"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
     </svg>
   );
 };

@@ -8,6 +8,7 @@ import {
   AccordionTrigger,
 } from "@zenncore/web/components/accordion";
 import type { ReactNode } from "react";
+import { MarketingEdgeCrosses } from "@/components/marketing/light-band";
 import type { MarketingPage } from "@/components/marketing/page";
 import { Link } from "@/i18n/navigation";
 
@@ -77,7 +78,9 @@ export const InstructionsSource = ({
         {label}
       </AccordionTrigger>
       <AccordionPanel className="transition-none">
-        <div className="min-w-0 px-8 pb-8 max-sm:px-4 [&_figure>div]:h-120">
+        <div className="relative min-w-0 border-accent-foreground border-t [&_figure>div]:h-120 [&_figure]:border-0">
+          <MarketingEdgeCrosses />
+          <MarketingEdgeCrosses edge="bottom" />
           {children}
         </div>
       </AccordionPanel>

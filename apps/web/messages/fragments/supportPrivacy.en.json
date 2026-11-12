@@ -1,0 +1,9 @@
+{
+  "cookieConsent": {
+    "support": {
+      "action": { "primary": "Open support chat" },
+      "pending": "Opening support chat…",
+      "unavailable": "Chat is unavailable. Email support@ecentic.ai"
+    }
+  }
+}

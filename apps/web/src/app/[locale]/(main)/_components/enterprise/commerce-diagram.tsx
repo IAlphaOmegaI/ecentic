@@ -21,6 +21,53 @@ export const CommerceDiagram = ({ children, label }: CommerceDiagram.Props) => {
     const measure = () => {
       const bounds = figure.getBoundingClientRect();
       const center = hub.getBoundingClientRect();
+      const stacked = window.matchMedia("(width < 1024px)").matches;
+      if (stacked) {
+        const groups = ["input", "output"].flatMap((direction) => {
+          const members = ports.filter(
+            (port) => port.dataset["diagramPort"] === direction,
+          );
+          const first = members[0]?.getBoundingClientRect();
+          const last = members.at(-1)?.getBoundingClientRect();
+          if (!first || !last) return [];
+          const input = direction === "input";
+          const axis = first.left - bounds.left - 20;
+          const middle = center.left + center.width / 2 - bounds.left;
+          const junction =
+            (input ? center.top - 16 : center.bottom + 16) - bounds.top;
+          const endpoint =
+            (input
+              ? first.top + first.height / 2
+              : last.top + last.height / 2) - bounds.top;
+          const identity = hub.querySelector("img")?.getBoundingClientRect();
+          const stages = hub.querySelector("ol")?.getBoundingClientRect();
+          const connection =
+            (input
+              ? (identity?.top ?? center.top) - 8
+              : (stages?.bottom ?? center.bottom) + 8) - bounds.top;
+          return [
+            {
+              curve: `M ${axis} ${endpoint} V ${junction} H ${middle} V ${connection}`,
+              pending: false,
+            },
+            ...members.map((port) => {
+              const position = port.getBoundingClientRect();
+              const end = position.left - bounds.left - 6;
+              const vertical = position.top + position.height / 2 - bounds.top;
+              return {
+                curve: `M ${axis} ${vertical} H ${end}`,
+                pending: port.dataset["pending"] === "true",
+              };
+            }),
+          ];
+        });
+        setGeometry({
+          width: bounds.width,
+          height: bounds.height,
+          paths: groups,
+        });
+        return;
+      }
       const paths = ports.map((port) => {
         const position = port.getBoundingClientRect();
         const input = port.dataset["diagramPort"] === "input";
@@ -68,7 +115,7 @@ export const CommerceDiagram = ({ children, label }: CommerceDiagram.Props) => {
         <svg
           aria-hidden
           viewBox={`0 0 ${geometry.width} ${geometry.height}`}
-          className="pointer-events-none absolute inset-0 hidden size-full overflow-visible lg:block"
+          className="pointer-events-none absolute inset-0 size-full overflow-visible"
         >
           {geometry.paths.map((path) => (
             <path
@@ -76,7 +123,7 @@ export const CommerceDiagram = ({ children, label }: CommerceDiagram.Props) => {
               d={path.curve}
               fill="none"
               strokeDasharray={path.pending ? "4 6" : undefined}
-              className="stroke-primary/30"
+              className="stroke-primary/45"
             />
           ))}
         </svg>

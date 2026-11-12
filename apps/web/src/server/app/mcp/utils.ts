@@ -24,7 +24,7 @@ export const Utils = {
       .strict(),
     createCheckout: z
       .object({
-        plan: z.enum(["compete", "dominate"]),
+        plan: z.enum(["compete", "scale", "dominate"]),
       })
       .strict(),
     connectShopify: z
@@ -78,7 +78,7 @@ export const Utils = {
         properties: {
           plan: {
             type: "string",
-            enum: ["compete", "dominate"],
+            enum: ["compete", "scale", "dominate"],
             description: "Plan key to purchase.",
           },
         },

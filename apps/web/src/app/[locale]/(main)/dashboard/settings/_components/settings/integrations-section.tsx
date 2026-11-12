@@ -11,6 +11,8 @@ import { seo } from "@/lib/seo";
 import type * as GoogleMerchant from "@/server/app/integration/google-merchant";
 import * as Store from "@/server/app/store";
 
+import { StoreDisconnection } from "./lifecycle-controls";
+
 /** Compact Google Shopping state for the store row — management lives on the
  * dedicated /dashboard/{store}/google-shopping page. Takes the translator so the
  * label follows the active locale instead of being pinned to English. */
@@ -93,6 +95,7 @@ export const IntegrationsSection = ({
 }) => {
   const translate = useTranslations("dashboard.settings.integrations");
   const toast = useToastManager();
+  const lifecycle = useTranslations("dashboard.lifecycle");
 
   const [handleSync, isSyncing] = useAsyncAction(async (store: Store.Type) => {
     await toast
@@ -165,8 +168,8 @@ export const IntegrationsSection = ({
 
               return (
                 <div key={store.id} className="px-4 py-4">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-3">
+                  <div className="flex flex-wrap items-center justify-between gap-4">
+                    <div className="flex flex-wrap items-center gap-3">
                       <div
                         className={cn(
                           "flex size-9 items-center justify-center rounded-md font-bold text-sm",
@@ -195,19 +198,27 @@ export const IntegrationsSection = ({
                         )}
                       </div>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-3">
                       <span className="rounded-full bg-success/10 px-2 py-0.5 font-semibold text-[11px] text-success uppercase tracking-[0.05em]">
-                        {translate("connected")}
+                        {store.status === "disconnected"
+                          ? lifecycle("disconnected")
+                          : translate("connected")}
                       </span>
                       <Button
                         color="neutral"
-                        disabled={isSyncing}
+                        disabled={isSyncing || store.status === "disconnected"}
                         onClick={() => handleSync(store)}
                       >
                         {isSyncing
                           ? translate("action.syncing")
                           : translate("action.sync")}
                       </Button>
+                      {store.status !== "disconnected" && (
+                        <StoreDisconnection
+                          store={store.id}
+                          domain={store.domain}
+                        />
+                      )}
                     </div>
                   </div>
                   <div className="mt-3 flex flex-wrap items-center gap-3 border-accent-foreground border-t pt-3">

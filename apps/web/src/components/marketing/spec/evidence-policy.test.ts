@@ -5,22 +5,26 @@ import {
   marketContext,
   simulationEvidence,
 } from "@/content/marketing-evidence";
+import englishPlatform from "../../../../messages/fragments/enterprisePlatform.en.json";
+import spanishPlatform from "../../../../messages/fragments/enterprisePlatform.es.json";
 import {
   canPublishEvidence,
   selectPublishedEvidence,
 } from "../evidence-policy";
 
 describe("marketing evidence publication", () => {
-  test("normal output includes only the two approved audit rows", () => {
+  test("normal output includes the four approved audit rows", () => {
     const rows = selectPublishedEvidence(catalogFindings);
     expect(rows.map((row) => row.id)).toEqual([
       "catalogFaults",
+      "missingOfferFacts",
       "storeNotNamed",
+      "paymentBlocked",
     ]);
-    expect(rows.every((row) => row.companyId === "spiritsMarketplace")).toBe(
-      true,
+    expect(rows.some((row) => row.companyId === "workspaceNetwork")).toBe(
+      false,
     );
-    expect(rows.map((row) => row.total)).toEqual([9_699, 20]);
+    expect(rows.map((row) => row.total)).toEqual([9_699, 45, 20, 6]);
   });
 
   test("review includes pending findings without changing their approval", () => {
@@ -28,8 +32,8 @@ describe("marketing evidence publication", () => {
     expect(rows).toHaveLength(5);
     expect(
       rows.filter((row) => row.approval === "pending").map((row) => row.id),
-    ).toEqual(["missingOfferFacts", "missingDescriptions", "paymentBlocked"]);
-    expect(selectPublishedEvidence(rows)).toHaveLength(2);
+    ).toEqual(["missingDescriptions"]);
+    expect(selectPublishedEvidence(rows)).toHaveLength(4);
   });
 
   test("the rounded percentage never supplies an invented failure count", () => {
@@ -47,6 +51,16 @@ describe("marketing evidence publication", () => {
       marketContext.every((item) => !canPublishEvidence(item.status)),
     ).toBe(true);
     expect(marketContext.every((item) => item.value === null)).toBe(true);
+  });
+
+  test("public simulation copy does not bypass the unpublished study gate", () => {
+    for (const messages of [englishPlatform, spanishPlatform]) {
+      const copy = JSON.stringify(messages.enterprisePlatform.pages.simulate);
+      expect(copy).not.toMatch(/36[,.]?797|51[,.]6|18[,.]5/);
+      expect(copy).toContain("ChatGPT");
+      expect(copy).toContain("Claude");
+      expect(copy).toContain("Gemini");
+    }
   });
 
   test("aggregate decisions do not stand in for missing model denominators", () => {

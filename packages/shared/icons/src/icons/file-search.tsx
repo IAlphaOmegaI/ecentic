@@ -1,42 +1,79 @@
 import type { JSX } from "react";
 import type { IconProps } from "../types";
 
-export const FileSearchIcon = ({ title, ...props }: IconProps): JSX.Element => {
+// Nucleo UI · file-search · outline-duo · 18px.
+// Adapted from FileSearchOutlineDuo18; original geometry and soft layers retained.
+export const FileSearchIcon = ({
+  title,
+  strokeWidth = 1.5,
+  duoOpacity = 0.3,
+  ...props
+}: IconProps & { duoOpacity?: number | string }): JSX.Element => {
   return (
     <svg
-      height="18"
-      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+      width={18}
+      height={18}
       viewBox="0 0 18 18"
-      strokeWidth="1.5"
       {...props}
     >
       {title && <title>{title}</title>}
       <path
-        d="M11.572 1.512L15.487 5.427C15.8155 5.7553 16 6.2009 16 6.6655V9.96778C15.3975 9.66836 14.7184 9.5 14 9.5C11.5148 9.5 9.5 11.5148 9.5 14C9.5 15.1525 9.93329 16.2039 10.6459 17H4.75C3.2312 17 2 15.7688 2 14.25V3.75C2 2.2312 3.2312 1 4.75 1H10.336C10.7996 1 11.2442 1.1841 11.572 1.512Z"
-        fill="currentColor"
-        fillOpacity="0.4"
-      />
-      <path
-        d="M15.8691 6.00098H12C11.45 6.00098 11 5.55098 11 5.00098V1.13101C11.212 1.21806 11.4068 1.34677 11.572 1.512L15.487 5.427C15.6527 5.59266 15.7818 5.7882 15.8691 6.00098Z"
-        fill="currentColor"
-      />
-      <path
         fillRule="evenodd"
         clipRule="evenodd"
-        d="M5 6.75C5 6.33579 5.33579 6 5.75 6H7.75C8.16421 6 8.5 6.33579 8.5 6.75C8.5 7.16421 8.16421 7.5 7.75 7.5H5.75C5.33579 7.5 5 7.16421 5 6.75Z"
+        d="M10.75 1.83956C10.6212 1.78103 10.4801 1.75 10.336 1.75H4.75C3.645 1.75 2.75 2.645 2.75 3.75V14.25C2.75 15.355 3.645 16.25 4.75 16.25H9.46591C9.68798 16.25 10.0312 16.1345 9.93566 15.9341C9.65635 15.3481 9.5 14.6923 9.5 14C9.5 11.5147 11.5147 9.5 14 9.5C14.3578 9.5 14.7059 9.54176 15.0396 9.62068C15.1947 9.65736 15.25 9.41024 15.25 9.25085V6.664C15.25 6.51978 15.2189 6.37883 15.1603 6.24999H11.75C11.198 6.24999 10.75 5.80199 10.75 5.24999V1.83956Z"
         fill="currentColor"
-      />
+        data-color="color-2"
+        data-stroke="none"
+        opacity={duoOpacity}
+      />{" "}
       <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M5 9.75C5 9.33579 5.33579 9 5.75 9H10.25C10.6642 9 11 9.33579 11 9.75C11 10.1642 10.6642 10.5 10.25 10.5H5.75C5.33579 10.5 5 10.1642 5 9.75Z"
-        fill="currentColor"
-      />
+        d="M5.75 6.75H7.75"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
       <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M14 11C12.3428 11 11 12.3428 11 14C11 15.6572 12.3428 17 14 17C14.5565 17 15.0775 16.8486 15.5241 16.5847L16.7197 17.7803C17.0126 18.0732 17.4874 18.0732 17.7803 17.7803C18.0732 17.4874 18.0732 17.0126 17.7803 16.7197L16.5847 15.5241C16.8486 15.0775 17 14.5565 17 14C17 12.3428 15.6572 11 14 11ZM12.5 14C12.5 13.1712 13.1712 12.5 14 12.5C14.8288 12.5 15.5 13.1712 15.5 14C15.5 14.8288 14.8288 15.5 14 15.5C13.1712 15.5 12.5 14.8288 12.5 14Z"
-        fill="currentColor"
+        d="M5.75 9.75H10.25"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M15.16 6.24999H11.75C11.198 6.24999 10.75 5.80199 10.75 5.24999V1.85199"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M14 16.25C15.2426 16.25 16.25 15.2426 16.25 14C16.25 12.7574 15.2426 11.75 14 11.75C12.7574 11.75 11.75 12.7574 11.75 14C11.75 15.2426 12.7574 16.25 14 16.25Z"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M15.59 15.59L17.25 17.25"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M15.25 8.91701V6.66409C15.25 6.39899 15.145 6.14411 14.957 5.95711L11.043 2.043C10.855 1.855 10.601 1.75 10.336 1.75H4.75C3.645 1.75 2.75 2.646 2.75 3.75V14.25C2.75 15.354 3.645 16.25 4.75 16.25H9.2766"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
       />
     </svg>
   );

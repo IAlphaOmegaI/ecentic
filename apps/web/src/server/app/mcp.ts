@@ -3,6 +3,7 @@
 import { resultify } from "@zenncore/utils";
 import { eq } from "drizzle-orm";
 import type { z } from "zod";
+import { PLAN_CATALOG } from "@/lib/agent-api";
 import { resourceMetadataWwwAuthenticate } from "@/lib/agent-discovery";
 import * as Agent from "@/server/app/agent";
 import * as Authentication from "@/server/app/authentication";
@@ -196,15 +197,14 @@ const createText = (payload: unknown) => ({
 });
 
 const listPlans = () => {
-  const plans = Object.entries(PLANS).map(([key, plan]) => ({
-    key,
-    name: plan.name,
-    configured: Boolean(plan.priceId()),
-  }));
+  const plans = PLAN_CATALOG.flatMap((plan) => {
+    if (plan.billing !== "subscription") return [];
+    return [{ ...plan, configured: Boolean(PLANS[plan.key].priceId()) }];
+  });
 
   return createText({
     plans,
-    note: "Use create_checkout with plan = compete|dominate.",
+    note: "Use create_checkout with plan = compete|scale|dominate. Checkout requires an authenticated account and a configured Stripe price.",
   });
 };
 

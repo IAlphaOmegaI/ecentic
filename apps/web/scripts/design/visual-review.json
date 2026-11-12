@@ -1,0 +1,385 @@
+{
+  "schemaVersion": 1,
+  "checks": [
+    {
+      "id": "continuous-light",
+      "route": "/security#data-flow-review",
+      "sources": [
+        "apps/web/src/app/globals.css",
+        "apps/web/src/components/marketing/primitives.tsx",
+        "apps/web/src/components/marketing/fonts.ts",
+        "packages/shared/config/src/tailwind/globals.css",
+        "apps/web/src/app/[locale]/(main)/security/_components/security-flow-client.tsx",
+        "apps/web/src/components/marketing/illustration-glow.tsx",
+        "apps/web/src/components/marketing/page.tsx",
+        "apps/web/src/app/[locale]/(main)/security/page.tsx",
+        "apps/web/src/app/[locale]/(main)/security/_components/security-flow.tsx",
+        "apps/web/src/components/marketing/light-band.tsx",
+        "apps/web/messages/en.json",
+        "apps/web/messages/es.json"
+      ],
+      "evidenceIds": ["0141.12", "0517.45"],
+      "states": [
+        {
+          "id": "desktop",
+          "locale": "en",
+          "width": 1135,
+          "criterion": "With NEXT_PUBLIC_REVIEW=1 and the review section rendered, the gradient belongs to the full work area and fades without arbitrary interior clipping. If the section is hidden, leave this state notChecked."
+        },
+        {
+          "id": "mobile",
+          "locale": "es",
+          "width": 390,
+          "criterion": "With NEXT_PUBLIC_REVIEW=1 and the review section rendered, the stacked translated work area retains the continuous field and useful contrast. If the section is hidden, leave this state notChecked."
+        }
+      ]
+    },
+    {
+      "id": "semantic-figure",
+      "route": "/integrations/shopify",
+      "sources": [
+        "apps/web/src/app/globals.css",
+        "apps/web/src/components/marketing/primitives.tsx",
+        "apps/web/src/components/marketing/fonts.ts",
+        "packages/shared/config/src/tailwind/globals.css",
+        "apps/web/src/components/marketing/commerce-figure.tsx",
+        "apps/web/src/components/marketing/page.tsx",
+        "apps/web/src/app/[locale]/(main)/integrations/[integration]/page.tsx",
+        "apps/web/src/components/marketing/hero-figure.tsx",
+        "apps/web/src/components/hairline/custom-figure.tsx",
+        "apps/web/src/components/hairline/kernel-style.css",
+        "apps/web/public/hairline/kernel.js",
+        "apps/web/src/components/marketing/interactive/use-interactive.ts",
+        "apps/web/src/hooks/use-document.ts",
+        "apps/web/src/components/marketing/provider-logo.tsx",
+        "apps/web/src/content/provider-logos.ts",
+        "apps/web/public/hairline/custom/shopify-bag.js",
+        "apps/web/src/components/hairline/rest/shopify-bag.json",
+        "apps/web/messages/en.json",
+        "apps/web/messages/es.json"
+      ],
+      "evidenceIds": ["CHAT-CUSTOM-FIGURES", "0517.12"],
+      "states": [
+        {
+          "id": "rest",
+          "locale": "en",
+          "width": 1135,
+          "criterion": "The bag/catalog silhouette reads at rest, with no visible production caption."
+        },
+        {
+          "id": "pointer",
+          "locale": "en",
+          "width": 1135,
+          "criterion": "The complete illustrated object responds coherently, without clipping its defining shape."
+        },
+        {
+          "id": "compact",
+          "locale": "es",
+          "width": 390,
+          "criterion": "Identity and illustration remain distinct, readable and proportionate."
+        }
+      ]
+    },
+    {
+      "id": "shopping-composition",
+      "route": "/solutions/sectors/travel-and-experiences#questions",
+      "sources": [
+        "apps/web/src/app/globals.css",
+        "apps/web/src/components/marketing/primitives.tsx",
+        "apps/web/src/components/marketing/fonts.ts",
+        "packages/shared/config/src/tailwind/globals.css",
+        "apps/web/src/app/[locale]/(main)/solutions/_components/shopping-conversation.tsx",
+        "apps/web/src/app/[locale]/(main)/solutions/sectors/_components/sector-conversation.tsx",
+        "apps/web/src/components/marketing/page.tsx",
+        "apps/web/src/app/[locale]/(main)/solutions/sectors/_components/sector-sections.tsx",
+        "apps/web/src/app/[locale]/(main)/solutions/sectors/_components/page-bodies/travel-and-experiences.tsx",
+        "apps/web/src/app/[locale]/(main)/solutions/_components/shopping-products.ts",
+        "apps/web/src/app/[locale]/(main)/solutions/sectors/_components/sector-fields.ts",
+        "apps/web/src/components/marketing/interactive/published-files/formatted-source.tsx",
+        "apps/web/src/content/sectors/index.ts",
+        "apps/web/src/content/sectors/travel-and-experiences.ts",
+        "apps/web/src/components/marketing/provider-logo.tsx",
+        "apps/web/src/content/provider-logos.ts",
+        "apps/web/messages/en.json"
+      ],
+      "evidenceIds": ["0626.12", "0703.09", "0703.10", "0703.11"],
+      "states": [
+        {
+          "id": "desktop",
+          "locale": "en",
+          "width": 1135,
+          "criterion": "AI Mode has a query, answer and room-result composition; the column is flush and room photos fill their areas."
+        },
+        {
+          "id": "mobile",
+          "locale": "en",
+          "width": 390,
+          "criterion": "The complete conversation and source evidence remain reachable; room photos fill their areas after stacking."
+        }
+      ]
+    },
+    {
+      "id": "price-baselines",
+      "route": "/pricing#pricing",
+      "sources": [
+        "apps/web/src/app/globals.css",
+        "apps/web/src/components/marketing/primitives.tsx",
+        "apps/web/src/components/marketing/fonts.ts",
+        "packages/shared/config/src/tailwind/globals.css",
+        "apps/web/src/components/marketing/page.tsx",
+        "apps/web/src/app/[locale]/(main)/pricing/page.tsx",
+        "apps/web/src/app/[locale]/(main)/pricing/_components/enterprise-pricing.tsx",
+        "apps/web/src/app/[locale]/(main)/pricing/_components/pricing-cta.tsx",
+        "apps/web/messages/en.json",
+        "apps/web/messages/es.json"
+      ],
+      "evidenceIds": ["1953-04", "1953-06"],
+      "states": [
+        {
+          "id": "desktop",
+          "locale": "en",
+          "width": 1508,
+          "criterion": "Three flat plans precede PAYG/Enterprise; price, feature and CTA baselines align."
+        },
+        {
+          "id": "translated",
+          "locale": "es",
+          "width": 390,
+          "criterion": "Longer labels wrap without document overflow or detached price/action rows."
+        }
+      ]
+    },
+    {
+      "id": "measured-chart",
+      "route": "/pricing#free-check",
+      "sources": [
+        "apps/web/src/app/globals.css",
+        "apps/web/src/components/marketing/primitives.tsx",
+        "apps/web/src/components/marketing/fonts.ts",
+        "packages/shared/config/src/tailwind/globals.css",
+        "apps/web/src/components/hairline/measurement-chart.tsx",
+        "apps/web/src/components/marketing/page.tsx",
+        "apps/web/src/app/[locale]/(main)/pricing/page.tsx",
+        "apps/web/src/app/[locale]/(main)/pricing/_components/enterprise-pricing.tsx",
+        "apps/web/src/components/motion.tsx",
+        "apps/web/src/components/marketing/interactive/use-interactive.ts",
+        "apps/web/src/hooks/use-document.ts",
+        "apps/web/messages/en.json"
+      ],
+      "evidenceIds": ["1953-01", "2133-05"],
+      "states": [
+        {
+          "id": "values",
+          "locale": "en",
+          "width": 1135,
+          "criterion": "The FreeStoreCheck dial reads 72/100, and its rendered geometry and labels agree with the value supplied in enterprise-pricing.tsx; thin-line styling does not substitute decorative geometry."
+        },
+        {
+          "id": "interaction",
+          "locale": "en",
+          "width": 1135,
+          "criterion": "Pointer/keyboard interaction provides meaningful value information without hiding the underlying measure."
+        }
+      ]
+    },
+    {
+      "id": "finite-replay",
+      "route": "/platform/simulate#replay",
+      "sources": [
+        "apps/web/src/app/globals.css",
+        "apps/web/src/components/marketing/primitives.tsx",
+        "apps/web/src/components/marketing/fonts.ts",
+        "packages/shared/config/src/tailwind/globals.css",
+        "apps/web/src/components/marketing/interactive/use-sequence.ts",
+        "apps/web/src/components/marketing/interactive/replay-console.tsx",
+        "apps/web/src/components/marketing/page.tsx",
+        "apps/web/src/app/[locale]/(main)/platform/_components/page-bodies/simulate.tsx",
+        "apps/web/src/components/marketing/interactive/agent-replay.tsx",
+        "apps/web/src/components/marketing/interactive/replay-scene.tsx",
+        "apps/web/src/content/examples/agent-replay.ts",
+        "apps/web/src/components/motion.tsx",
+        "apps/web/src/components/marketing/commerce-figure.tsx",
+        "apps/web/src/components/hairline/custom-figure.tsx",
+        "apps/web/src/components/hairline/kernel-style.css",
+        "apps/web/public/hairline/kernel.js",
+        "apps/web/src/components/marketing/interactive/use-interactive.ts",
+        "apps/web/src/hooks/use-document.ts",
+        "apps/web/public/hairline/custom/office-chair.js",
+        "apps/web/src/components/hairline/rest/office-chair.json",
+        "apps/web/messages/en.json"
+      ],
+      "evidenceIds": ["1753-30", "0517.27", "0517.28"],
+      "states": [
+        {
+          "id": "sequence",
+          "locale": "en",
+          "width": 1135,
+          "criterion": "Markers, content and figure states advance together, finish and do not scroll the document."
+        },
+        {
+          "id": "reduced-motion",
+          "locale": "en",
+          "width": 390,
+          "criterion": "Reduced motion retains a meaningful static answer and usable controls."
+        }
+      ]
+    },
+    {
+      "id": "navigation-footer",
+      "route": "/",
+      "sources": [
+        "apps/web/src/app/globals.css",
+        "apps/web/src/components/marketing/primitives.tsx",
+        "apps/web/src/components/marketing/fonts.ts",
+        "packages/shared/config/src/tailwind/globals.css",
+        "apps/web/src/components/navbar.tsx",
+        "apps/web/src/components/footer.tsx",
+        "apps/web/src/components/marketing/page.tsx",
+        "apps/web/src/components/marketing/footer-columns.tsx",
+        "apps/web/src/components/language-switcher.tsx",
+        "apps/web/src/components/marketing/ascii-wordmark.tsx",
+        "apps/web/public/images/ascii/tonal/wordmark.svg",
+        "apps/web/public/images/ascii/tonal/wordmark-mobile.svg",
+        "apps/web/src/components/motion.tsx",
+        "apps/web/src/components/marketing/interactive/use-interactive.ts",
+        "apps/web/src/hooks/use-document.ts",
+        "apps/web/messages/en.json",
+        "apps/web/messages/es.json"
+      ],
+      "evidenceIds": ["r1-02", "1435-01", "2032-10", "0517.06"],
+      "states": [
+        {
+          "id": "navigation",
+          "locale": "en",
+          "width": 1135,
+          "criterion": "Progressive blur and internal menu rules have no opaque table-like exterior frame; opening does not move the document."
+        },
+        {
+          "id": "footer",
+          "locale": "en",
+          "width": 1135,
+          "criterion": "One continuous footer field spans links, tonal wordmark and legal content."
+        },
+        {
+          "id": "compact",
+          "locale": "es",
+          "width": 390,
+          "criterion": "Translated menus and footer stack without clipping controls, cutouts or the wordmark."
+        }
+      ]
+    },
+    {
+      "id": "enterprise-separation",
+      "route": "/solutions/enterprise#what-we-need",
+      "sources": [
+        "apps/web/src/app/globals.css",
+        "apps/web/src/components/marketing/primitives.tsx",
+        "apps/web/src/components/marketing/fonts.ts",
+        "packages/shared/config/src/tailwind/globals.css",
+        "apps/web/src/app/[locale]/(main)/solutions/_components/page-bodies/enterprise.tsx",
+        "apps/web/src/components/marketing/page.tsx",
+        "apps/web/messages/en.json"
+      ],
+      "evidenceIds": ["1535.01"],
+      "states": [
+        {
+          "id": "desktop",
+          "locale": "en",
+          "width": 1135,
+          "criterion": "Involvement and security have independent section identities and boundaries, as requested in the local redesign."
+        }
+      ]
+    },
+    {
+      "id": "heading-hierarchy-platform",
+      "route": "/platform",
+      "sources": [
+        "apps/web/src/app/globals.css",
+        "apps/web/src/components/marketing/primitives.tsx",
+        "apps/web/src/components/marketing/fonts.ts",
+        "packages/shared/config/src/tailwind/globals.css",
+        "apps/web/src/components/marketing/page.tsx",
+        "apps/web/messages/en.json",
+        "apps/web/messages/es.json",
+        "apps/web/src/app/[locale]/(main)/platform/page.tsx",
+        "apps/web/src/app/[locale]/(main)/platform/_components/platform-explorer.tsx"
+      ],
+      "evidenceIds": ["r1-25", "1435-03", "2255.21", "0445.05"],
+      "states": [
+        {
+          "id": "desktop",
+          "locale": "en",
+          "width": 1135,
+          "criterion": "The hero, visible stage heading and subsection headings use the shared MarketingHeading hierarchy and ordinary heading/body faces. Compare equivalent roles with /platform, /resources and /tools: title scale and weight are consistent, sentence-case eyebrows clarify the topic, supporting copy stays adjacent, and different heading levels remain distinct."
+        },
+        {
+          "id": "compact-spanish",
+          "locale": "es",
+          "width": 390,
+          "criterion": "The translated hero, visible stage heading and subsection headings retain the same hierarchy as their desktop counterparts and equivalent roles on /platform, /resources and /tools. Longer titles and supporting copy wrap without clipping, document overflow, isolated subtitles or collapsing the difference between heading levels."
+        }
+      ]
+    },
+    {
+      "id": "heading-hierarchy-resources",
+      "route": "/resources",
+      "sources": [
+        "apps/web/src/app/globals.css",
+        "apps/web/src/components/marketing/primitives.tsx",
+        "apps/web/src/components/marketing/fonts.ts",
+        "packages/shared/config/src/tailwind/globals.css",
+        "apps/web/src/components/marketing/page.tsx",
+        "apps/web/messages/en.json",
+        "apps/web/messages/es.json",
+        "apps/web/src/app/[locale]/(main)/resources/page.tsx",
+        "apps/web/src/app/[locale]/(main)/resources/_components/resources-directory.tsx",
+        "apps/web/src/components/marketing/light-band.tsx"
+      ],
+      "evidenceIds": ["r1-25", "1435-03", "2255.21", "0445.05"],
+      "states": [
+        {
+          "id": "desktop",
+          "locale": "en",
+          "width": 1135,
+          "criterion": "The hero, directory section headings and resource titles use the shared MarketingHeading hierarchy and ordinary heading/body faces. Compare equivalent roles with /platform, /resources and /tools: title scale and weight are consistent, sentence-case eyebrows clarify the topic, supporting copy stays adjacent, and different heading levels remain distinct."
+        },
+        {
+          "id": "compact-spanish",
+          "locale": "es",
+          "width": 390,
+          "criterion": "The translated hero, directory section headings and resource titles retain the same hierarchy as their desktop counterparts and equivalent roles on /platform, /resources and /tools. Longer titles and supporting copy wrap without clipping, document overflow, isolated subtitles or collapsing the difference between heading levels."
+        }
+      ]
+    },
+    {
+      "id": "heading-hierarchy-tools",
+      "route": "/tools",
+      "sources": [
+        "apps/web/src/app/globals.css",
+        "apps/web/src/components/marketing/primitives.tsx",
+        "apps/web/src/components/marketing/fonts.ts",
+        "packages/shared/config/src/tailwind/globals.css",
+        "apps/web/src/components/marketing/page.tsx",
+        "apps/web/messages/en.json",
+        "apps/web/messages/es.json",
+        "apps/web/src/app/[locale]/(main)/tools/page.tsx",
+        "apps/web/src/app/[locale]/(main)/tools/_components/tools-directory.tsx"
+      ],
+      "evidenceIds": ["r1-25", "1435-03", "2255.21", "0445.05"],
+      "states": [
+        {
+          "id": "desktop",
+          "locale": "en",
+          "width": 1135,
+          "criterion": "The hero, tool-directory section heading and selected tool heading use the shared MarketingHeading hierarchy and ordinary heading/body faces. Compare equivalent roles with /platform, /resources and /tools: title scale and weight are consistent, sentence-case eyebrows clarify the topic, supporting copy stays adjacent, and different heading levels remain distinct."
+        },
+        {
+          "id": "compact-spanish",
+          "locale": "es",
+          "width": 390,
+          "criterion": "The translated hero, tool-directory section heading and selected tool heading retain the same hierarchy as their desktop counterparts and equivalent roles on /platform, /resources and /tools. Longer titles and supporting copy wrap without clipping, document overflow, isolated subtitles or collapsing the difference between heading levels."
+        }
+      ]
+    }
+  ]
+}

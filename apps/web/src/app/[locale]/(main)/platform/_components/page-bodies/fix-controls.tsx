@@ -1,65 +1,29 @@
-"use client";
-
-import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
+import { JourneySteps } from "@/components/marketing/connected-journey";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import type { MarketingPage } from "@/components/marketing/page";
 
+const icons = ["catalog", "access", "code", "compare"] as const;
+
 export const FixControls = ({ section }: FixControls.Props) => (
-  <Tabs
-    defaultValue={0}
-    orientation="vertical"
-    className="grid border-accent-foreground border-t md:grid-cols-[1fr_1.1fr]"
-  >
-    <TabsList
-      aria-label={section.title}
-      className="w-full flex-col overflow-visible rounded-none border-0 bg-background-dimmed"
+  <div className="relative grid min-w-0 border-accent-foreground border-t bg-linear-to-br from-primary/10 via-background to-background lg:grid-cols-[1.2fr_1fr]">
+    <JourneySteps
+      label={section.title}
+      items={(section.items ?? []).map((item, index) => ({
+        id: String(index),
+        title: item.title,
+        icon: icons[index] ?? "catalog",
+        content: <p className="max-w-[56ch]">{item.body}</p>,
+      }))}
+    />
+    <div
+      aria-hidden
+      className="relative min-h-72 min-w-0 border-accent-foreground border-t lg:border-t-0 lg:border-l"
     >
-      {section.items?.map((item, index) => (
-        <Tab
-          key={item.title}
-          value={index}
-          className="h-auto min-h-24 w-full justify-start gap-6 border-accent-foreground border-r-0 border-b px-8 py-6 text-left data-active:bg-primary-text data-selected:bg-primary-text max-sm:px-4 md:last:border-b-0"
-        >
-          <span
-            aria-hidden="true"
-            className="font-heading text-3xl leading-none"
-          >
-            {String(index + 1).padStart(2, "0")}
-          </span>
-          <span className="flex-1 text-lg">{item.title}</span>
-          <span aria-hidden="true" className="text-2xl">
-            →
-          </span>
-        </Tab>
-      ))}
-    </TabsList>
-    <div className="min-w-0 p-3 max-sm:p-2">
-      {section.items?.map((item, index) => (
-        <TabsPanel
-          key={item.title}
-          value={index}
-          keepMounted
-          className="relative h-full min-h-[390px] overflow-hidden rounded-lg bg-primary-text text-background-rich max-sm:min-h-[380px]"
-        >
-          <div className="pointer-events-none absolute right-0 bottom-0 left-[20%] h-[240px] text-background-rich opacity-20 [mask-image:linear-gradient(transparent,black_40%)]">
-            <EvolvingAscii artwork="console" />
-          </div>
-          <div className="relative px-8 py-8 max-sm:px-6">
-            <p
-              aria-hidden="true"
-              className="mb-8 font-heading text-5xl leading-none"
-            >
-              {String(index + 1).padStart(2, "0")}
-            </p>
-            <h3 className="text-background-rich">{item.title}</h3>
-            <p className="mt-6 max-w-[42ch] text-background-rich/85 text-lg leading-relaxed max-sm:text-base">
-              {item.body}
-            </p>
-          </div>
-        </TabsPanel>
-      ))}
+      <div className="sticky top-28 aspect-square max-h-[600px] w-full overflow-hidden text-primary-text">
+        <EvolvingAscii artwork="console" />
+      </div>
     </div>
-  </Tabs>
+  </div>
 );
 
 export namespace FixControls {

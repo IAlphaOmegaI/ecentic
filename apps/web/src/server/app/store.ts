@@ -239,6 +239,14 @@ export const syncProducts = withAuthentication(
     if (!store.data || store.data.userId !== context.session.user.id)
       return { success: false, error: new NotFoundError("Store") };
 
+    if (store.data.status === "disconnected")
+      return {
+        success: false,
+        error: new ValidationError(
+          "Reconnect this store before syncing products",
+        ),
+      };
+
     switch (store.data.platform) {
       case "shopify":
         return Shopify.syncProducts({ store: id });

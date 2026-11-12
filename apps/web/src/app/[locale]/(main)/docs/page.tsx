@@ -70,7 +70,7 @@ const Quickstart = async () => {
         <DocsCode
           key={snippet}
           label={docs.quickstart.steps[index]?.title}
-          className="border-x-0 bg-transparent"
+          className="bg-transparent"
         >
           {snippet}
         </DocsCode>
@@ -180,6 +180,7 @@ export default async () => {
 
       <IndexSection
         featureTone="dark"
+        gutter
         id="quickstart"
         number={translate("quickstart.number")}
         title={translate("quickstart.title")}
@@ -195,16 +196,19 @@ export default async () => {
         title={translate("authentication.title")}
         description={translate("authentication.description")}
         gutter
+        classList={{ body: "p-0 max-sm:p-0" }}
       >
-        <div className="flex flex-col gap-6">
-          <ContentPageRichText content={translate("authentication.body")} />
+        <div className="flex min-w-0 flex-col">
+          <div className="px-7 py-8 max-sm:px-4">
+            <ContentPageRichText content={translate("authentication.body")} />
+          </div>
           <DocsCode label="POST https://ecentic.ai/api/mcp">
             {`curl -s https://ecentic.ai/api/mcp \\
   -H "Authorization: Bearer ecentic_sk_..." \\
   -H "Content-Type: application/json" \\
   -d '{"jsonrpc":"2.0","id":1,"method":"tools/list","params":{}}'`}
           </DocsCode>
-          <div className="flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-4 px-7 py-8 max-sm:px-4">
             <Link
               href="/docs/authentication"
               className="text-primary-text underline-offset-4 hover:underline"
@@ -350,10 +354,7 @@ export default async () => {
           <div className="px-7 py-8 max-sm:px-4">
             <ContentPageRichText content={translate("mcp.body")} />
           </div>
-          <DocsCode
-            className="border-x-0"
-            label="https://ecentic.ai/.well-known/mcp.json"
-          >
+          <DocsCode label="https://ecentic.ai/.well-known/mcp.json">
             {"curl -s https://ecentic.ai/.well-known/mcp.json | jq .transport"}
           </DocsCode>
           <Link
@@ -370,7 +371,9 @@ export default async () => {
         title={translate("webhooks.title")}
         description={translate("webhooks.description")}
       >
-        <ContentPageRichText content={translate("webhooks.body")} />
+        <div id="webhooks" className="scroll-mt-28">
+          <ContentPageRichText content={translate("webhooks.body")} />
+        </div>
       </ContentPageSection>
 
       <ContentPageSection
@@ -378,10 +381,13 @@ export default async () => {
         title={translate("cli.title")}
         description={translate("cli.description")}
         gutter
+        classList={{ body: "p-0 max-sm:p-0" }}
       >
-        <div className="flex flex-col gap-6">
-          <ContentPageRichText content={translate("cli.body")} />
-          <DocsCode>
+        <div id="cli" className="flex h-full min-w-0 scroll-mt-28 flex-col">
+          <div className="px-7 py-8 max-sm:px-4">
+            <ContentPageRichText content={translate("cli.body")} />
+          </div>
+          <DocsCode edges="top" className="flex-1">
             {`npx @ecentic/cli discovery
 npx @ecentic/cli plans
 ECENTIC_API_KEY=ecentic_sk_... npx @ecentic/cli mcp tools/list`}

@@ -113,12 +113,14 @@ export default async () => {
               />
             </div>
           </aside>
-          <div className="flex min-w-0 flex-col justify-center gap-6 bg-background px-8 py-8 max-sm:px-4">
-            <DocsCode label={copy.request}>
+          <div className="flex min-w-0 flex-col bg-background">
+            <DocsCode edges="bottom" className="flex-1" label={copy.request}>
               {`GET https://ecentic.ai/api/v${API_VERSION}/discovery
 API-Version: ${API_VERSION}`}
             </DocsCode>
-            <ContentPageRichText content={strategy[0] ?? ""} />
+            <div className="px-8 py-8 max-sm:px-4">
+              <ContentPageRichText content={strategy[0] ?? ""} />
+            </div>
           </div>
         </div>
         <div className="grid gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-2">
@@ -154,13 +156,13 @@ API-Version: ${API_VERSION}`}
             <VersioningLifecycle copy={copy.lifecycle} />
           </div>
         </div>
-        <div className="border-accent-foreground border-t px-8 py-8 max-sm:px-4">
+        <div>
           <DocsCode label={copy.example}>
             {`Deprecation: @1780272000
 Sunset: Sat, 01 Aug 2026 00:00:00 GMT
 Link: <https://ecentic.ai/api/v2>; rel="successor-version"`}
           </DocsCode>
-          <p className="mt-4 text-foreground-dimmed text-sm leading-relaxed">
+          <p className="px-8 py-6 text-foreground-dimmed text-sm leading-relaxed max-sm:px-4">
             {copy.exampleHint}
           </p>
         </div>

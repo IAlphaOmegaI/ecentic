@@ -20,13 +20,6 @@ export const normalizeStoreUrl = (url: string) => {
   return `https://${trimmed}`;
 };
 
-export const withQueryAuth = (url: string, key: string, secret: string) => {
-  const target = new URL(url);
-  target.searchParams.set("consumer_key", key);
-  target.searchParams.set("consumer_secret", secret);
-  return target.toString();
-};
-
 /**
  * Signs a request with OAuth 1.0a one-legged auth and returns the URL with the
  * `oauth_*` parameters (including the signature) appended to the query string.
@@ -84,10 +77,8 @@ export const withOAuthSignature = (
  * Performs an authenticated WooCommerce REST request.
  *
  * Over HTTPS, sends the consumer key/secret via HTTP Basic Auth — WooCommerce's
- * primary documented method. Many hosts (Apache + PHP-CGI/FastCGI on shared
- * hosting) strip the `Authorization` header, which surfaces as a `401 "Consumer
- * key is missing"` even for valid credentials, so on a 401 this retries once
- * with the credentials as query-string parameters.
+ * primary documented method. A host that strips Authorization must be fixed
+ * at the merchant host; credentials are never retried in a URL or server logs.
  *
  * Over plain HTTP, WooCommerce ignores key/secret auth altogether and requires
  * OAuth 1.0a one-legged signing, so those requests are signed instead. This is
@@ -109,17 +100,13 @@ export const authorizedRequest = async (
     return HTTP.request(signed, options);
   }
 
-  const primary = await HTTP.request(url, {
+  return HTTP.request(url, {
     ...options,
     headers: {
       ...options.headers,
       Authorization: basicCredentials(consumerKey, consumerSecret),
     },
   });
-
-  if (!primary.success || primary.data.status !== 401) return primary;
-
-  return HTTP.request(withQueryAuth(url, consumerKey, consumerSecret), options);
 };
 
 // ---------------------------------------------------------------------------

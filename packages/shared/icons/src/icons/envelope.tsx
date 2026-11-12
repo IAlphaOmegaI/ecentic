@@ -1,28 +1,47 @@
 import type { JSX } from "react";
 import type { IconProps } from "../types";
 
-export const EnvelopeIcon = ({ title, ...props }: IconProps): JSX.Element => {
+// Nucleo UI · envelope · outline-duo · 18px.
+// Adapted from EnvelopeOutlineDuo18; original geometry and soft layers retained.
+export const EnvelopeIcon = ({
+  title,
+  strokeWidth = 1.5,
+  duoOpacity = 0.3,
+  ...props
+}: IconProps & { duoOpacity?: number | string }): JSX.Element => {
   return (
     <svg
-      height="18"
-      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+      width={18}
+      height={18}
       viewBox="0 0 18 18"
-      strokeWidth="1.5"
       {...props}
     >
       {title && <title>{title}</title>}
       <path
         fillRule="evenodd"
         clipRule="evenodd"
-        d="M1 5.25C1 3.73079 2.23079 2.5 3.75 2.5H14.25C15.7692 2.5 17 3.73079 17 5.25V12.75C17 14.2692 15.7692 15.5 14.25 15.5H3.75C2.23079 15.5 1 14.2692 1 12.75V5.25Z"
+        d="M1.75 5.64296L8.565 9.54C8.84 9.673 9.16 9.673 9.434 9.54L16.25 5.64239V5.25C16.25 4.14543 15.3546 3.25 14.25 3.25H3.75C2.64543 3.25 1.75 4.14543 1.75 5.25V5.64296Z"
         fill="currentColor"
-        fillOpacity="0.4"
-      />
+        data-color="color-2"
+        data-stroke="none"
+        opacity={duoOpacity}
+      />{" "}
       <path
-        fillRule="evenodd"
-        clipRule="evenodd"
-        d="M3.75 2.5C2.23054 2.5 1 3.73203 1 5.25C1 5.52318 1.14853 5.77475 1.38773 5.9067L8.15473 9.6397C8.68119 9.93004 9.31874 9.93008 9.84519 9.63975L16.6123 5.9067C16.8515 5.77475 17 5.52318 17 5.25C17 3.73203 15.7695 2.5 14.25 2.5H3.75Z"
-        fill="currentColor"
+        d="M1.75 5.75L8.517 9.483C8.818 9.649 9.182 9.649 9.483 9.483L16.25 5.75"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M3.75 14.75L14.25 14.75C15.3546 14.75 16.25 13.8546 16.25 12.75V5.25C16.25 4.14543 15.3546 3.25 14.25 3.25L3.75 3.25C2.64543 3.25 1.75 4.14543 1.75 5.25L1.75 12.75C1.75 13.8546 2.64543 14.75 3.75 14.75Z"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
       />
     </svg>
   );

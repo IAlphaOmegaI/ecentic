@@ -38,7 +38,7 @@ export const PlaygroundGuide = ({
           {copy.description}
         </p>
       </div>
-      <div className="flex min-h-0 flex-col">
+      <div className="flex min-h-0 min-w-0 flex-col">
         <Accordion
           value={open}
           onValueChange={(value) =>
@@ -73,7 +73,7 @@ export const PlaygroundGuide = ({
                   <span className="flex-1">{content.title}</span>
                 </AccordionTrigger>
                 <AccordionPanel className="motion-reduce:transition-none">
-                  <div className="space-y-4 px-8 pb-6 max-sm:px-4">
+                  <div className="space-y-4 px-4 pb-6 lg:px-8">
                     <p className="text-background-rich/75 text-sm leading-relaxed">
                       {content.description}
                     </p>
@@ -86,7 +86,7 @@ export const PlaygroundGuide = ({
             );
           })}
         </Accordion>
-        <div className="mt-auto border-background-rich/15 border-t px-8 py-6 max-sm:px-4">
+        <div className="mt-auto min-w-0 border-background-rich/15 border-t px-4 py-6 lg:px-8 [&_a]:h-auto [&_a]:min-h-10 [&_a]:max-w-full [&_a]:whitespace-normal [&_a]:text-center">
           <Button color="neutral" render={<Link href="/ucp-validator" />}>
             {copy.action.secondary}
           </Button>

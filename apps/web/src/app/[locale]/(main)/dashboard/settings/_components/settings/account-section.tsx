@@ -18,6 +18,8 @@ import { useRouter } from "@/i18n/navigation";
 import * as Authentication from "@/server/app/authentication";
 import * as User from "@/server/app/user";
 
+import { AccountDeletion } from "./lifecycle-controls";
+
 const labelClassName = "font-medium text-sm text-foreground";
 
 export const AccountSection = ({ user }: { user: User.Type }) => {
@@ -304,9 +306,7 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
                   <p className="font-medium text-foreground text-sm">
                     {translate("danger.prompt")}
                   </p>
-                  <Button color="error">
-                    {translate("danger.action.primary")}
-                  </Button>
+                  <AccountDeletion />
                 </div>
               </div>
             </div>

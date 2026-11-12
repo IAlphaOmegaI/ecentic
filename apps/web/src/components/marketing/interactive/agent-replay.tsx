@@ -17,6 +17,7 @@ export const AgentReplay = async ({
       locale={locale}
       assistant={reviewSimulate.assistant}
       conversation={round15Platform.replay}
+      topEdge={embedded ? "content" : "section"}
     />
   );
   return embedded ? (

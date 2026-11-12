@@ -11,7 +11,7 @@ import { getMessages } from "next-intl/server";
 import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
-import { ConnectedJourney } from "@/components/marketing/connected-journey";
+import { JourneySteps } from "@/components/marketing/connected-journey";
 import { IllustrationGlow } from "@/components/marketing/illustration-glow";
 import { MarketingSection } from "@/components/marketing/page";
 import {
@@ -261,11 +261,12 @@ const MerchantEntry = ({
 
   return (
     <div className="grid min-w-0 lg:grid-cols-[1fr_1.6fr]">
-      <div className="border-accent-foreground px-7 py-12 max-sm:px-4 max-sm:py-8 max-lg:border-b lg:border-r">
+      <div className="border-accent-foreground px-7 py-12 max-sm:px-4 max-sm:py-8 lg:border-r">
         <h2>{section.title}</h2>
         {section.links && <MarketingActions actions={section.links} />}
       </div>
-      <ConnectedJourney
+      <JourneySteps
+        className="lg:border-t-0"
         label={copy.label}
         items={copy.steps.map((step, index) => ({
           id: `entry-${index}`,

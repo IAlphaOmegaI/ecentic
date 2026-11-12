@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowRightIcon } from "@zenncore/icons";
+import { ArrowRightIcon, CommerceGlobePointerIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import type { ReactNode } from "react";
@@ -51,7 +51,7 @@ export const IndexExplorer = ({ channels, labels }: IndexExplorer.Props) => (
               <ProviderLogo
                 provider={channel.key}
                 decorative
-                className="h-16 w-40 rounded-md bg-background-rich object-center p-3"
+                className="h-16 w-40 rounded-none object-left"
               />
               <MarketingStatus status={channel.status}>
                 {channel.statusLabel}
@@ -132,9 +132,20 @@ export const IndexExplorer = ({ channels, labels }: IndexExplorer.Props) => (
                 >
                   <a
                     href={source.href}
-                    className="flex items-center justify-between gap-6 px-4 py-4 text-primary-rich text-sm underline decoration-background-rich/30 underline-offset-4 hover:bg-emphasis focus-visible:outline-offset-[-4px] sm:px-8"
+                    className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 px-4 py-4 text-primary-rich text-sm hover:bg-emphasis focus-visible:outline-offset-[-4px] sm:px-8"
                   >
-                    {source.title}
+                    <CommerceGlobePointerIcon
+                      aria-hidden
+                      className="size-6 shrink-0"
+                    />
+                    <span className="min-w-0">
+                      <span className="block underline decoration-background-rich/30 underline-offset-4">
+                        {source.title}
+                      </span>
+                      <span className="mt-2 block truncate font-mono text-background-rich/65 text-xs">
+                        {new URL(source.href).hostname}
+                      </span>
+                    </span>
                     <ArrowRightIcon
                       className="size-4 shrink-0"
                       aria-hidden="true"

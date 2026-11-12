@@ -1,19 +1,31 @@
 import type { JSX } from "react";
 import type { IconProps } from "../types";
 
+// Nucleo UI · chevron-down · outline-duo · 18px.
+// Adapted from ChevronDownOutlineDuo18; original geometry and soft layers retained.
 export const ChevronDownIcon = ({
   title,
+  strokeWidth = 1.5,
+  duoOpacity = 0.3,
   ...props
-}: IconProps): JSX.Element => {
+}: IconProps & { duoOpacity?: number | string }): JSX.Element => {
   return (
-    <svg height="12" width="12" viewBox="0 0 12 12" strokeWidth="0" {...props}>
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      width={18}
+      height={18}
+      viewBox="0 0 18 18"
+      {...props}
+    >
       {title && <title>{title}</title>}
-      <g fill="currentColor">
-        <path
-          d="m6,9.25c-.192,0-.384-.073-.53-.22L1.22,4.78c-.293-.293-.293-.768,0-1.061s.768-.293,1.061,0l3.72,3.72,3.72-3.72c.293-.293.768-.293,1.061,0s.293.768,0,1.061l-4.25,4.25c-.146.146-.338.22-.53.22Z"
-          fill="currentColor"
-        />
-      </g>
+      <path
+        d="M15.25 6.5L9 12.75L2.75 6.5"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
     </svg>
   );
 };

@@ -601,7 +601,7 @@
               },
               {
                 "title": "Three perspectives",
-                "body": "Models can disagree. In the supplied 2026 research set of 36,797 simulated purchases, ChatGPT selected the same product 51.6% of the time versus about 18.5% for Claude and Gemini. Perplexity was in that research set, but is not in store scans."
+                "body": "Compare the recorded choices and explanations from ChatGPT, Claude and Gemini. Each model can weigh the same product facts differently."
               }
             ]
           },
@@ -1019,7 +1019,7 @@
             "paragraphs": [
               "Coming soon. Publication of the ecentic app in ChatGPT’s app directory has not been confirmed. Product simulations are available separately."
             ],
-            "note": "{{TODO: Confirm ChatGPT app-directory publication before marking this Live.}}",
+            "note": "The ecentic ChatGPT app is not published yet.",
             "links": [
               {
                 "label": "See the ChatGPT channel",

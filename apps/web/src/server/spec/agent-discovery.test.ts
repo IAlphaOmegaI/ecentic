@@ -1,6 +1,4 @@
 import { describe, expect, test } from "bun:test";
-import { readFileSync } from "node:fs";
-import { join } from "node:path";
 import {
   acpDiscoveryDocument,
   agentGuidance,
@@ -323,44 +321,15 @@ describe("agent guidance", () => {
 });
 
 describe("organization schema", () => {
-  test("names the three founders without an unconfirmed legal operator", () => {
+  test("names the three founders and the confirmed legal operator", () => {
     expect(organizationSchema.founder).toHaveLength(3);
     expect(organizationSchema).not.toHaveProperty("parentOrganization");
-    expect(organizationSchema).not.toHaveProperty("legalName");
+    expect(organizationSchema.legalName).toBe("ecentic Inc");
   });
 
-  test("carries both a contactPoint and an address", () => {
-    expect(organizationSchema.address["@type"]).toBe("PostalAddress");
-    expect(organizationSchema.address.addressCountry.length).toBe(2);
+  test("keeps contact channels without asserting an unconfirmed business address", () => {
+    expect(organizationSchema).not.toHaveProperty("address");
     expect(organizationSchema.contactPoint.length).toBeGreaterThanOrEqual(2);
-  });
-
-  /**
-   * Verification tooling scores a PostalAddress by how much of it resolves to a
-   * real place. Locality plus country alone reads as a jurisdiction claim, so
-   * the street line has to be there for the node to count as an address.
-   */
-  test("the postal address names a street, a locality, and a country", () => {
-    expect(organizationSchema.address.streetAddress.length).toBeGreaterThan(0);
-    expect(organizationSchema.address.addressLocality.length).toBeGreaterThan(
-      0,
-    );
-    expect(organizationSchema.address.addressCountry).toMatch(/^[A-Z]{2}$/);
-  });
-
-  /**
-   * Structured data is only worth as much as the page behind it: a verifier
-   * that finds an address in JSON-LD and nowhere in the rendered site scores it
-   * as an unbacked claim. The terms publish the same address, so the two must
-   * not be edited apart.
-   */
-  test("the schema address is also published in the terms", () => {
-    const catalog = readFileSync(
-      join(import.meta.dir, "../../../messages/en.json"),
-      "utf8",
-    );
-    expect(catalog).toContain(organizationSchema.address.streetAddress);
-    expect(catalog).toContain(organizationSchema.address.addressLocality);
   });
 
   test("every contact point declares a type and a reachable channel", () => {

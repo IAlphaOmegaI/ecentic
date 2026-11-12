@@ -7,6 +7,7 @@ import {
   CommercePlug_3SparkleIcon,
 } from "@zenncore/icons";
 import { getMessages } from "next-intl/server";
+import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
 import { MarketingSection } from "@/components/marketing/page";
@@ -147,7 +148,7 @@ export const ConnectBody = async ({
             );
           case "shopify":
             return (
-              <div key="sources">
+              <Fragment key="sources">
                 <SectionGutter />
                 <MarketingBand className="[&_.marketing-guides]:hidden">
                   <div className="grid min-w-0 lg:grid-cols-[5fr_7fr]">
@@ -168,7 +169,7 @@ export const ConnectBody = async ({
                     />
                   </div>
                 </MarketingBand>
-              </div>
+              </Fragment>
             );
           case "woocommerce":
           case "product-feeds":

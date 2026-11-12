@@ -74,7 +74,7 @@ export const TravelAndExperiencesBody = async ({
                     <TravelAndExperiencesRoadmap copy={travelPage.roadmap} />
                     {sectionChildren?.[section.id]}
                     {section.links && (
-                      <div className="border-background-rich/20 border-t px-4 py-6 sm:px-8">
+                      <div className="px-4 py-6 sm:px-8">
                         <MarketingActions
                           actions={section.links}
                           className="mt-0"

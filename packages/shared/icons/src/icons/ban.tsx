@@ -1,24 +1,45 @@
 import type { JSX } from "react";
 import type { IconProps } from "../types";
 
-export const BanIcon = ({ title, ...props }: IconProps): JSX.Element => {
+// Nucleo UI · ban · outline-duo · 18px.
+// Adapted from BanOutlineDuo18; original geometry and soft layers retained.
+export const BanIcon = ({
+  title,
+  strokeWidth = 1.5,
+  duoOpacity = 0.3,
+  ...props
+}: IconProps & { duoOpacity?: number | string }): JSX.Element => {
   return (
     <svg
-      height="18"
-      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+      width={18}
+      height={18}
       viewBox="0 0 18 18"
-      strokeWidth="1.5"
       {...props}
     >
       {title && <title>{title}</title>}
       <path
-        opacity="0.4"
-        d="M3.8731 14.877C3.6812 14.877 3.4893 14.8038 3.3428 14.6573C3.0498 14.3643 3.0498 13.8897 3.3428 13.5968L13.5879 3.35171C13.8809 3.05871 14.3555 3.05871 14.6484 3.35171C14.9413 3.64471 14.9414 4.11931 14.6484 4.41221L4.4033 14.6573C4.2568 14.8038 4.065 14.877 3.8731 14.877Z"
+        d="M9 16.25C13.0041 16.25 16.25 13.0041 16.25 9C16.25 4.99594 13.0041 1.75 9 1.75C4.99594 1.75 1.75 4.99594 1.75 9C1.75 13.0041 4.99594 16.25 9 16.25Z"
         fill="currentColor"
-      />
+        data-color="color-2"
+        data-stroke="none"
+        opacity={duoOpacity}
+      />{" "}
       <path
-        d="M9.00009 17C4.58899 17 1.00009 13.4111 1.00009 9C1.00009 4.5889 4.58899 1 9.00009 1C13.4112 1 17.0001 4.5889 17.0001 9C17.0001 13.4111 13.4112 17 9.00009 17ZM9.00009 2.5C5.41609 2.5 2.50009 5.416 2.50009 9C2.50009 12.584 5.41609 15.5 9.00009 15.5C12.5841 15.5 15.5001 12.584 15.5001 9C15.5001 5.416 12.5841 2.5 9.00009 2.5Z"
-        fill="currentColor"
+        d="M3.87299 14.127L14.118 3.88202"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M9 16.25C13.0041 16.25 16.25 13.0041 16.25 9C16.25 4.99594 13.0041 1.75 9 1.75C4.99594 1.75 1.75 4.99594 1.75 9C1.75 13.0041 4.99594 16.25 9 16.25Z"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
       />
     </svg>
   );

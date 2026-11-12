@@ -5,7 +5,7 @@ import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
 import { CommerceFigure } from "@/components/marketing/commerce-figure";
-import { ConnectedJourney } from "@/components/marketing/connected-journey";
+import { JourneySteps } from "@/components/marketing/connected-journey";
 import { MarketingSection } from "@/components/marketing/page";
 import { MarketingBand } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
@@ -33,7 +33,8 @@ const CommerceExplorer = ({ copy }: { copy: Copy["explorer"] }) => (
     <p className="px-8 pb-8 text-foreground-dimmed text-sm max-sm:px-4">
       {copy.scope}
     </p>
-    <ConnectedJourney
+    <JourneySteps
+      layout="surface"
       label={copy.label}
       items={copy.stages.map((stage, index) => ({
         id: stage.id,

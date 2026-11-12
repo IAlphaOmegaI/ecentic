@@ -55,12 +55,14 @@ export const Tools = async () => {
                 {translate("tools.scrollHint")}
               </p>
               <ScrollArea
-                role="region"
-                aria-label={translate("tools.title")}
+                viewportProps={{
+                  role: "region",
+                  "aria-label": translate("tools.title"),
+                }}
                 className="max-w-full"
                 classList={{
                   viewport:
-                    "focus-visible:outline-2 focus-visible:outline-primary-text",
+                    "overscroll-y-auto focus-visible:outline-2 focus-visible:outline-primary-text",
                 }}
               >
                 <Table className="min-w-[56rem] border-b-0 bg-background text-left">

@@ -2,7 +2,13 @@
 
 import { cn } from "@zenncore/utils";
 import Image from "next/image";
-import { type CSSProperties, type ReactNode, useState } from "react";
+import {
+  type CSSProperties,
+  type ReactNode,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import { Motion } from "@/components/motion";
 import { Plus } from "@/components/plus";
 import { providerLogos } from "@/content/provider-logos";
@@ -20,13 +26,65 @@ export const ProviderArc = ({
   artwork,
 }: ProviderArc.Props) => {
   const { ready, reduced } = useInteractive();
+  const container = useRef<HTMLDivElement>(null);
   const [active, setActive] = useState<ProviderKey | null>(null);
+  const [connections, setConnections] = useState<{
+    width: number;
+    height: number;
+    paths: string[];
+  } | null>(null);
   const split = Math.ceil(items.length / 2);
+
+  useEffect(() => {
+    const element = container.current;
+    const hub = element?.querySelector<HTMLElement>("[data-provider-hub]");
+    const ports = Array.from(
+      element?.querySelectorAll<HTMLElement>("[data-provider-port]") ?? [],
+    );
+    if (!element || !hub || !ports.length) return;
+    const measure = () => {
+      if (window.matchMedia("(width >= 1024px)").matches) return;
+      const bounds = element.getBoundingClientRect();
+      const center = hub.getBoundingClientRect();
+      const positions = ports.map((port) => port.getBoundingClientRect());
+      const rows = Array.from(
+        new Set(positions.map((position) => position.top)),
+      );
+      const axis = center.left + center.width / 2 - bounds.left;
+      const paths = rows.flatMap((top) => {
+        const row = positions.filter((position) => position.top === top);
+        const centers = row.map(
+          (position) => position.left + position.width / 2 - bounds.left,
+        );
+        const junction = top - bounds.top - 20;
+        return [
+          `M ${Math.min(axis, ...centers)} ${junction} H ${Math.max(axis, ...centers)}`,
+          ...centers.map(
+            (horizontal) =>
+              `M ${horizontal} ${junction} V ${top - bounds.top - 6}`,
+          ),
+        ];
+      });
+      setConnections({
+        width: bounds.width,
+        height: bounds.height,
+        paths: [
+          `M ${axis} ${center.bottom - bounds.top + 8} V ${Math.max(...rows) - bounds.top - 20}`,
+          ...paths,
+        ],
+      });
+    };
+    const observer = new ResizeObserver(measure);
+    for (const target of [element, hub, ...ports]) observer.observe(target);
+    measure();
+    return () => observer.disconnect();
+  }, []);
 
   if (!items.length) return null;
 
   return (
     <div
+      ref={container}
       data-provider-arc=""
       className={cn(
         "relative isolate min-w-0 border-accent-foreground border-t bg-background",
@@ -35,6 +93,22 @@ export const ProviderArc = ({
     >
       <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 [&>span]:bg-cross" />
       <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 [&>span]:bg-cross" />
+      {connections && (
+        <svg
+          aria-hidden
+          viewBox={`0 0 ${connections.width} ${connections.height}`}
+          className="pointer-events-none absolute inset-0 size-full overflow-visible lg:hidden"
+        >
+          {connections.paths.map((path) => (
+            <path
+              key={path}
+              d={path}
+              fill="none"
+              className="stroke-primary/45"
+            />
+          ))}
+        </svg>
+      )}
       <div
         aria-hidden
         className="pointer-events-none absolute inset-0 overflow-hidden bg-radial-[at_50%_100%] from-primary/7 via-primary/2 to-transparent"
@@ -58,7 +132,10 @@ export const ProviderArc = ({
           />
         </svg>
       </div>
-      <div className="relative z-1 flex flex-col items-center gap-5 px-4 pt-8 pb-7 lg:absolute lg:top-[224px] lg:left-1/2 lg:w-52 lg:-translate-x-1/2 lg:p-0">
+      <div
+        data-provider-hub
+        className="relative z-1 flex flex-col items-center gap-5 px-4 pt-8 lg:absolute lg:top-[224px] lg:left-1/2 lg:w-52 lg:-translate-x-1/2 lg:p-0"
+      >
         <Image
           src="/images/trademark.svg"
           alt="ecentic"
@@ -70,7 +147,7 @@ export const ProviderArc = ({
       </div>
       <ul
         aria-label={label}
-        className="relative m-0 grid list-none grid-cols-3 gap-x-1 gap-y-8 px-3 pt-4 pb-10 sm:px-5 lg:block lg:h-[360px] lg:p-0 min-[381px]:grid-cols-4"
+        className="relative m-0 grid list-none grid-cols-2 gap-x-1 gap-y-12 px-3 pt-12 pb-10 sm:px-5 lg:block lg:h-[360px] lg:p-0 min-[381px]:grid-cols-4"
       >
         {items.map((item, index) => {
           const position = (() => {
@@ -84,7 +161,6 @@ export const ProviderArc = ({
             return {
               horizontal,
               vertical: 66 + 780 * fraction * (1 - fraction) - 100,
-              mobile: index % 4 === 1 || index % 4 === 2 ? 14 : 0,
             };
           })();
           const name = item.label ?? providerLogos[item.provider].name;
@@ -93,13 +169,12 @@ export const ProviderArc = ({
           return (
             <li
               key={item.provider}
-              className="relative top-(--provider-mobile-small) min-w-0 lg:absolute lg:top-(--provider-top) lg:left-(--provider-left) lg:w-[104px] lg:-translate-x-1/2 min-[381px]:top-(--provider-mobile)"
+              data-provider-port
+              className="relative min-w-0 lg:absolute lg:top-(--provider-top) lg:left-(--provider-left) lg:w-[104px] lg:-translate-x-1/2"
               style={
                 {
                   "--provider-left": `${position.horizontal}%`,
                   "--provider-top": `${position.vertical}px`,
-                  "--provider-mobile": `${position.mobile}px`,
-                  "--provider-mobile-small": index % 3 === 1 ? "14px" : "0px",
                 } as CSSProperties
               }
             >
@@ -132,7 +207,7 @@ export const ProviderArc = ({
                         "h-auto max-h-10 max-w-[62px] shrink-0 rounded-none object-center sm:max-w-20 lg:max-h-11 lg:max-w-[92px]",
                         providerLogos[item.provider].width /
                           providerLogos[item.provider].height >
-                          6 && "min-w-24 lg:min-w-28",
+                          6 && "sm:min-w-24 lg:min-w-28",
                       )}
                     />
                   </span>

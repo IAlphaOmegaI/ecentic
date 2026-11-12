@@ -6,7 +6,7 @@
     },
     "eyebrow": "Reserva una demo",
     "title": "Descubre cómo compra la IA en tu catálogo.",
-    "description": "Una llamada con un fundador. Trae una categoría y te mostraremos en directo cómo ChatGPT, Claude y Gemini la comparan con la de un competidor.",
+    "description": "Una llamada con un fundador. Trae una categoría y te mostraremos en directo cómo ChatGPT, Claude y Gemini la comparan con la de un competidor. La llamada es en inglés.",
     "sections": [
       {
         "id": "what-we-cover",
@@ -59,7 +59,7 @@
       "progress": "Progreso de la solicitud de demo",
       "reviewTitle": "El punto de partida de tu demo.",
       "reviewDescription": "Revisa tus datos antes de enviarlos. Te contactaremos por correo para acordar el siguiente paso.",
-      "bookingNote": "¿Prefieres elegir una hora ahora? La llamada de reserva directa dura 15 minutos. Acordaremos contigo el alcance y la duración de la demo para empresas.",
+      "bookingNote": "¿Prefieres elegir una hora ahora? La llamada de reserva directa dura 15 minutos. Acordaremos contigo el alcance y la duración de la demo para empresas. Las llamadas son en inglés.",
       "sentDescription": "Hemos enviado tu solicitud de demo. Te escribiremos a tu correo de trabajo para acordar el siguiente paso."
     }
   }

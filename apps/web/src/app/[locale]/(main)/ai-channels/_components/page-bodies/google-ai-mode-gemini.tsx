@@ -5,7 +5,7 @@ import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
 import { CommerceFigure } from "@/components/marketing/commerce-figure";
-import { ConnectedJourney } from "@/components/marketing/connected-journey";
+import { JourneySteps } from "@/components/marketing/connected-journey";
 import { MarketingSection } from "@/components/marketing/page";
 import { MarketingBand } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
@@ -27,7 +27,8 @@ const SectionHeading = ({ section }: { section: Section }) => (
 );
 
 const ShoppingExplorer = ({ copy }: { copy: Copy["explorer"] }) => (
-  <ConnectedJourney
+  <JourneySteps
+    layout="surface"
     label={copy.label}
     items={copy.stages.map((stage) => ({
       id: stage.id,
@@ -158,7 +159,7 @@ const MerchantEntry = ({
       <div className="px-8 pt-12 pb-8 max-sm:px-4 max-sm:pt-8">
         <h2>{section.title}</h2>
       </div>
-      <ConnectedJourney
+      <JourneySteps
         label={copy.label}
         items={copy.steps.map((step, index) => ({
           id: `entry-${index}`,

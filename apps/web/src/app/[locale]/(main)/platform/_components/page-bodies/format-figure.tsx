@@ -7,6 +7,7 @@ const Format = lazy(() => import("./format-artwork"));
 
 export const FormatFigure = ({ label }: FormatFigure.Props) => (
   <HairlineFigure
+    name="format"
     figure={Format}
     label={label}
     surface="field"

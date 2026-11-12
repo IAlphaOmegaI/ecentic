@@ -22,12 +22,14 @@ export const ReplayConsole = ({
   locale,
   assistant,
   conversation,
+  topEdge,
 }: {
   copy: ReplayCopy;
   labels: ReplayLabels;
   locale: string;
   assistant: string;
   conversation: AppConfig["Messages"]["round15Platform"]["replay"];
+  topEdge: "section" | "content";
 }) => {
   const { container, active, enhanced, playing, pause, toggle } = useSequence({
     length: agentReplay.stages.length + 1,
@@ -101,9 +103,18 @@ export const ReplayConsole = ({
       }}
       className="marketing-surface min-w-0 bg-emphasis-dimmed text-background-rich [--rail-color:color-mix(in_srgb,var(--color-background-rich)_15%,transparent)]"
     >
-      <header className="marketing-seam relative flex flex-wrap items-center justify-between gap-4 border-[var(--rail-color)] border-y px-8 py-6 max-sm:px-4">
-        <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+      <header
+        className={cn(
+          "marketing-seam relative flex flex-wrap items-center justify-between gap-4 border-[var(--rail-color)] border-b px-8 py-6 max-sm:px-4",
+          topEdge === "content" && "border-t",
+        )}
+      >
+        {topEdge === "content" && (
+          <>
+            <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+            <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          </>
+        )}
         <p className="flex items-center gap-4 font-medium">
           <FileSearchIcon aria-hidden className="size-6 text-primary-rich" />
           {assistant}
@@ -192,7 +203,7 @@ export const ReplayConsole = ({
               );
             })}
           </ol>
-          <div className="mt-auto flex min-h-20 items-center justify-between gap-4 border-[var(--rail-color)] border-t px-8 py-4 max-sm:px-4">
+          <div className="mt-auto flex min-h-20 flex-wrap items-center justify-between gap-4 border-[var(--rail-color)] border-t px-8 py-4 max-sm:px-4 [&_button]:shrink-0">
             <p className="text-background-rich/50 text-xs" role="status">
               {typing
                 ? conversation.writing

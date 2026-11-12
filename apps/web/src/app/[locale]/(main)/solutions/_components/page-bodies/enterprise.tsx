@@ -1,8 +1,10 @@
 import {
   ArrowRightIcon,
+  ClockIcon,
   CommerceFilePenIcon,
   CommerceFileShieldIcon,
   ShieldCheckIcon,
+  UserIcon,
 } from "@zenncore/icons";
 import {
   Accordion,
@@ -11,18 +13,23 @@ import {
   AccordionTrigger,
 } from "@zenncore/web/components/accordion";
 import { getMessages } from "next-intl/server";
+import { Fragment } from "react";
+import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
 import { MarketingSection } from "@/components/marketing/page";
 import {
   MarketingActions,
   MarketingBand,
   MarketingEyebrow,
+  MarketingHeading,
 } from "@/components/marketing/primitives";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
 import { SolutionFeatureBand } from "../feature-band";
 import { EnterpriseEngagements } from "./enterprise-engagements";
 import { HubFigure } from "./hub-figure";
+
+const intakeIcons = [UserIcon, CommerceFileShieldIcon, ClockIcon] as const;
 
 const securityDetails = [
   { Icon: CommerceFilePenIcon, tone: "primary" },
@@ -36,7 +43,6 @@ export const EnterpriseBody = async ({
 }: MarketingBodyProps) => {
   const { enterprisePage, enterpriseSolutions, hairlineEnterprise } =
     await getMessages();
-  const security = sections.find((section) => section.id === "security");
 
   return (
     <>
@@ -128,97 +134,125 @@ export const EnterpriseBody = async ({
               <MarketingBand
                 key={section.id}
                 id={section.id}
-                className="[&>.marketing-rail>.marketing-guides]:hidden"
+                data-enterprise-intake
+                className="bg-linear-to-br from-background-rich via-background to-primary/5 [&>.marketing-rail>.marketing-guides]:hidden"
               >
-                <div className="relative grid gap-px bg-accent-foreground lg:grid-cols-2">
-                  <div className="min-w-0 bg-background">
-                    <div className="px-4 pt-8 pb-6 sm:px-8 sm:pt-12">
-                      {section.eyebrow && (
-                        <MarketingEyebrow>{section.eyebrow}</MarketingEyebrow>
-                      )}
-                      <h2>{section.title}</h2>
-                    </div>
-                    <dl className="px-4 pb-8 sm:px-8 sm:pb-12">
-                      {section.rows
-                        ?.filter((row) => row.value.trim())
-                        .map((row, index) => (
-                          <div
-                            key={row.label}
-                            className="relative border-accent-foreground border-t py-6 last:pb-0"
-                          >
-                            <dt className="flex items-baseline gap-4 font-medium text-foreground-rich text-xl tracking-tight">
-                              <span
-                                aria-hidden="true"
-                                className="text-primary-text text-sm tabular-nums"
-                              >
-                                {String(index + 1).padStart(2, "0")}
-                              </span>
-                              {row.label}
-                            </dt>
-                            <dd className="mt-4 ml-8 max-w-[46ch] text-foreground-dimmed">
-                              {row.value}
-                              {row.detail && (
-                                <p className="mt-2 text-sm">{row.detail}</p>
-                              )}
-                            </dd>
-                          </div>
-                        ))}
-                    </dl>
-                    {sectionChildren?.[section.id]}
-                  </div>
-                  {security && (
-                    <section
-                      id={security.id}
-                      className="min-w-0 scroll-mt-24 bg-background-dimmed"
-                    >
-                      <div className="px-4 pt-8 pb-6 sm:px-8 sm:pt-12">
-                        {security.eyebrow && (
-                          <MarketingEyebrow>
-                            {security.eyebrow}
-                          </MarketingEyebrow>
+                <MarketingHeading
+                  eyebrow={section.eyebrow}
+                  title={section.title}
+                />
+                <dl className="relative grid min-w-0 border-accent-foreground border-t md:grid-cols-3">
+                  {section.rows?.map((row, index) => {
+                    if (!row.value.trim()) return null;
+                    const Icon = intakeIcons[index] ?? UserIcon;
+                    return (
+                      <div
+                        key={row.label}
+                        className="relative min-w-0 border-accent-foreground px-4 py-8 max-md:border-t max-md:first:border-t-0 sm:px-8 sm:py-10 md:border-l md:first:border-l-0"
+                      >
+                        {index > 0 && (
+                          <>
+                            <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 md:hidden" />
+                            <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 md:hidden" />
+                          </>
                         )}
-                        <h2>{security.title}</h2>
-                      </div>
-                      <div className="pb-8 sm:pb-12">
-                        {security.items
-                          ?.filter((item) => item.body.trim())
-                          .map((item, index) => {
-                            const detail =
-                              securityDetails[index] ?? securityDetails[0];
-                            const Icon = detail.Icon;
-                            return (
-                              <article
-                                key={item.title}
-                                data-tone={detail.tone}
-                                className="group/security grid grid-cols-[32px_1fr] gap-x-4 gap-y-3 border-accent-foreground border-t bg-linear-to-r from-primary/5 to-transparent px-4 py-6 data-[tone=secondary]:from-secondary/5 data-[tone=success]:from-success/5 sm:px-8"
-                              >
-                                <Icon
-                                  aria-hidden
-                                  className="row-span-2 size-8 text-primary-text group-data-[tone=secondary]/security:text-secondary group-data-[tone=success]/security:text-success-foreground"
-                                />
-                                <h3 className="text-xl!">{item.title}</h3>
-                                <p className="col-start-2 max-w-[48ch] text-foreground-dimmed">
-                                  {item.body}
-                                </p>
-                              </article>
-                            );
-                          })}
-                        <div className="px-4 sm:px-8">
-                          <MarketingActions
-                            actions={security.links ?? []}
-                            tone="inverse"
-                          />
+                        <div className="mb-8 flex items-center justify-between gap-4 text-primary-text">
+                          <span
+                            aria-hidden
+                            className="font-heading text-3xl tabular-nums"
+                          >
+                            {String(index + 1).padStart(2, "0")}
+                          </span>
+                          <Icon aria-hidden className="size-8" />
                         </div>
+                        <dt className="font-heading font-medium text-2xl text-foreground-rich leading-tight tracking-tight">
+                          {row.label}
+                        </dt>
+                        <dd className="mt-4 max-w-[46ch] text-foreground-dimmed leading-relaxed">
+                          {row.value}
+                          {row.detail && (
+                            <p className="mt-2 text-sm">{row.detail}</p>
+                          )}
+                        </dd>
                       </div>
-                      {sectionChildren?.[security.id]}
-                    </section>
-                  )}
-                  <Plus className="top-0 left-1/2 -translate-x-1/2 -translate-y-1/2 max-lg:hidden" />
-                </div>
+                    );
+                  })}
+                  <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+                  <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+                  <Plus className="top-0 left-1/3 -translate-x-1/2 -translate-y-1/2 max-md:hidden" />
+                  <Plus className="top-0 left-2/3 -translate-x-1/2 -translate-y-1/2 max-md:hidden" />
+                  <Plus className="bottom-0 left-1/3 -translate-x-1/2 translate-y-1/2 max-md:hidden" />
+                  <Plus className="bottom-0 left-2/3 -translate-x-1/2 translate-y-1/2 max-md:hidden" />
+                </dl>
+                {sectionChildren?.[section.id]}
               </MarketingBand>
             );
           case "security":
-            return null;
+            return (
+              <Fragment key={section.id}>
+                <SectionGutter />
+                <MarketingBand
+                  id={section.id}
+                  data-nav-tone="dark"
+                  data-enterprise-security
+                  className="bg-emphasis-dimmed bg-radial-[at_top_right] from-primary/15 via-emphasis-dimmed to-emphasis-dimmed text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_16%,transparent)] [--rail-cross:color-mix(in_oklab,var(--color-background-rich)_32%,transparent)] [&>.marketing-rail>.marketing-guides]:hidden [&_.marketing-eyebrow]:text-primary-rich [&_:is(h2,h3)]:text-background-rich"
+                >
+                  <MarketingHeading
+                    eyebrow={section.eyebrow}
+                    title={section.title}
+                    className="max-w-[52rem]"
+                  />
+                  <div className="relative grid min-w-0 border-[var(--rail-color)] border-t md:grid-cols-3">
+                    {section.items?.map((item, index) => {
+                      if (!item.body.trim()) return null;
+                      const detail =
+                        securityDetails[index] ?? securityDetails[0];
+                      const Icon = detail.Icon;
+                      return (
+                        <article
+                          key={item.title}
+                          data-tone={detail.tone}
+                          className="group/security relative min-w-0 border-[var(--rail-color)] px-4 py-8 max-md:border-t max-md:first:border-t-0 sm:px-8 sm:py-10 md:border-l md:first:border-l-0"
+                        >
+                          {index > 0 && (
+                            <>
+                              <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 md:hidden" />
+                              <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 md:hidden" />
+                            </>
+                          )}
+                          <Icon
+                            aria-hidden
+                            className="mb-8 size-8 text-primary-rich group-data-[tone=secondary]/security:text-secondary-rich group-data-[tone=success]/security:text-success-rich"
+                          />
+                          <h3 className="text-2xl! leading-tight">
+                            {item.title}
+                          </h3>
+                          <p className="mt-4 max-w-[46ch] text-background-rich/75 leading-relaxed">
+                            {item.body}
+                          </p>
+                        </article>
+                      );
+                    })}
+                    <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+                    <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+                    <Plus className="top-0 left-1/3 -translate-x-1/2 -translate-y-1/2 max-md:hidden" />
+                    <Plus className="top-0 left-2/3 -translate-x-1/2 -translate-y-1/2 max-md:hidden" />
+                    <Plus className="bottom-0 left-1/3 -translate-x-1/2 translate-y-1/2 max-md:hidden" />
+                    <Plus className="bottom-0 left-2/3 -translate-x-1/2 translate-y-1/2 max-md:hidden" />
+                  </div>
+                  <div className="border-[var(--rail-color)] border-t px-4 py-8 sm:px-8">
+                    <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+                    <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+                    <MarketingActions
+                      actions={section.links ?? []}
+                      className="mt-0"
+                    />
+                  </div>
+                  {sectionChildren?.[section.id]}
+                </MarketingBand>
+                <SectionGutter />
+              </Fragment>
+            );
           case "scale":
             return (
               <MarketingBand

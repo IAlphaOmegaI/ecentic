@@ -1,44 +1,76 @@
 import type { JSX } from "react";
 import type { IconProps } from "../types";
 
-export const BarChartIcon = ({ title, ...props }: IconProps): JSX.Element => {
+// Nucleo UI · chart-bar-axis-x · outline-duo · 18px.
+// Adapted from ChartBarAxisXOutlineDuo18; original geometry and soft layers retained.
+export const BarChartIcon = ({
+  title,
+  strokeWidth = 1.5,
+  duoOpacity = 0.3,
+  ...props
+}: IconProps & { duoOpacity?: number | string }): JSX.Element => {
   return (
     <svg
-      height="18"
-      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+      width={18}
+      height={18}
       viewBox="0 0 18 18"
-      strokeWidth="1.5"
       {...props}
     >
       {title && <title>{title}</title>}
-      <g fill="currentColor">
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M1 15.25C1 14.8358 1.33579 14.5 1.75 14.5H16.25C16.6642 14.5 17 14.8358 17 15.25C17 15.6642 16.6642 16 16.25 16H1.75C1.33579 16 1 15.6642 1 15.25Z"
-          fill="currentColor"
-        />
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M7 3.75C7 2.78334 7.78393 2 8.75 2H9.25C10.2161 2 11 2.78334 11 3.75V11.25C11 12.2167 10.2161 13 9.25 13H8.75C7.78393 13 7 12.2167 7 11.25V3.75Z"
-          fill="currentColor"
-        />
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M1.5 6.75C1.5 5.78334 2.28393 5 3.25 5H3.75C4.71607 5 5.5 5.78334 5.5 6.75V11.25C5.5 12.2167 4.71607 13 3.75 13H3.25C2.28393 13 1.5 12.2167 1.5 11.25V6.75Z"
-          fill="currentColor"
-          fillOpacity=".4"
-        />
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M12.5 9.75C12.5 8.78334 13.2839 8 14.25 8H14.75C15.7161 8 16.5 8.78334 16.5 9.75V11.25C16.5 12.2167 15.7161 13 14.75 13H14.25C13.2839 13 12.5 12.2167 12.5 11.25V9.75Z"
-          fill="currentColor"
-          fillOpacity=".4"
-        />
-      </g>
+      <path
+        opacity={duoOpacity}
+        d="M9.25 2.75H8.75C8.198 2.75 7.75 3.1977 7.75 3.75V11.25C7.75 11.8023 8.198 12.25 8.75 12.25H9.25C9.802 12.25 10.25 11.8023 10.25 11.25V3.75C10.25 3.1977 9.802 2.75 9.25 2.75Z"
+        fill="currentColor"
+        data-color="color-2"
+        data-stroke="none"
+      />{" "}
+      <path
+        opacity={duoOpacity}
+        d="M3.75 5.75H3.25C2.698 5.75 2.25 6.1977 2.25 6.75V11.25C2.25 11.8023 2.698 12.25 3.25 12.25H3.75C4.302 12.25 4.75 11.8023 4.75 11.25V6.75C4.75 6.1977 4.302 5.75 3.75 5.75Z"
+        fill="currentColor"
+        data-color="color-2"
+        data-stroke="none"
+      />{" "}
+      <path
+        opacity={duoOpacity}
+        d="M14.75 8.75H14.25C13.698 8.75 13.25 9.1977 13.25 9.75V11.25C13.25 11.8023 13.698 12.25 14.25 12.25H14.75C15.302 12.25 15.75 11.8023 15.75 11.25V9.75C15.75 9.1977 15.302 8.75 14.75 8.75Z"
+        fill="currentColor"
+        data-color="color-2"
+        data-stroke="none"
+      />{" "}
+      <path
+        d="M1.75 15.25H16.25"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M9.25 2.75H8.75C8.198 2.75 7.75 3.1977 7.75 3.75V11.25C7.75 11.8023 8.198 12.25 8.75 12.25H9.25C9.802 12.25 10.25 11.8023 10.25 11.25V3.75C10.25 3.1977 9.802 2.75 9.25 2.75Z"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M3.75 5.75H3.25C2.698 5.75 2.25 6.1977 2.25 6.75V11.25C2.25 11.8023 2.698 12.25 3.25 12.25H3.75C4.302 12.25 4.75 11.8023 4.75 11.25V6.75C4.75 6.1977 4.302 5.75 3.75 5.75Z"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M14.75 8.75H14.25C13.698 8.75 13.25 9.1977 13.25 9.75V11.25C13.25 11.8023 13.698 12.25 14.25 12.25H14.75C15.302 12.25 15.75 11.8023 15.75 11.25V9.75C15.75 9.1977 15.302 8.75 14.75 8.75Z"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
     </svg>
   );
 };

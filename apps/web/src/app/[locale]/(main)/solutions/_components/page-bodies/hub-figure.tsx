@@ -7,6 +7,7 @@ const Hub = lazy(() => import("./hub-artwork"));
 
 export const HubFigure = ({ label }: HubFigure.Props) => (
   <HairlineFigure
+    name="hub"
     figure={Hub}
     label={label}
     surface="field"

@@ -54,9 +54,9 @@ Sentry.init({
   // Define how likely Replay events are sampled when an error occurs.
   replaysOnErrorSampleRate: 1.0,
 
-  // Enable sending user PII (Personally Identifiable Information)
+  // Do not collect default personal data such as IP addresses and request headers
   // https://docs.sentry.io/platforms/javascript/guides/nextjs/configuration/options/#sendDefaultPii
-  sendDefaultPii: true,
+  sendDefaultPii: false,
 });
 
 /**
@@ -73,14 +73,22 @@ Sentry.init({
  */
 const loadReplay = () => {
   Sentry.lazyLoadIntegration("replayIntegration")
-    .then((replayIntegration) => Sentry.addIntegration(replayIntegration()))
+    .then((replayIntegration) =>
+      Sentry.addIntegration(
+        replayIntegration({
+          maskAllText: true,
+          maskAllInputs: true,
+          blockAllMedia: true,
+        }),
+      ),
+    )
     // Offline, blocked by an extension, or the CDN is down. Replay is a
     // diagnostic; losing it must never surface to the person browsing.
     .catch(() => undefined);
 };
 
 if (typeof window !== "undefined") {
-  if ("requestIdleCallback" in window)
+  if (typeof window.requestIdleCallback === "function")
     window.requestIdleCallback(loadReplay, { timeout: 5000 });
   else window.addEventListener("load", loadReplay, { once: true });
 }

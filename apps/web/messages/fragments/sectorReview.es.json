@@ -31,7 +31,7 @@
       "sectors": {
         "wine-and-spirits": {
           "subtitle": "Explicita los datos de la botella, compara la ficha y define una compra en el canal y mercado que la permitan.",
-          "help": "Utiliza origen, estilo, graduación, precio y entrega verificados en la comparación. Revisa la propuesta antes de publicar; siguen aplicándose las restricciones del producto y destino."
+          "help": "Utiliza origen, estilo, graduación, precio y entrega verificados en la comparación. Verifica los datos de origen y las afirmaciones permitidas antes de elegir Aplicar, que genera y publica el título y la descripción. Siguen aplicándose las restricciones del producto y del destino."
         },
         "food-and-beverage": {
           "subtitle": "Convierte los datos verificados de la etiqueta en información más clara y revisa cada declaración dietética y nutricional antes de publicarla.",

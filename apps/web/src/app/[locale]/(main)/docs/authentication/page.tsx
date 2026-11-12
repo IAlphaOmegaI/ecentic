@@ -79,16 +79,18 @@ const AuthPath = ({
         </p>
       </div>
     </div>
-    <div className="relative flex min-w-0 flex-col gap-6 bg-background px-8 py-8 max-sm:px-4">
+    <div className="relative flex min-w-0 flex-col bg-background">
       <MarketingEdgeCrosses className="md:hidden" />
-      <div>
+      <div className="px-8 py-8 max-sm:px-4">
         <h3 className="text-2xl text-foreground-rich">{title}</h3>
         <p className="mt-2 text-foreground-dimmed">{description}</p>
       </div>
       {children}
-      <AuthPathDetails label={details}>
-        <ContentPageRichText content={body} />
-      </AuthPathDetails>
+      <div className="px-8 py-8 max-sm:px-4">
+        <AuthPathDetails label={details}>
+          <ContentPageRichText content={body} />
+        </AuthPathDetails>
+      </div>
     </div>
   </div>
 );
@@ -219,7 +221,7 @@ Content-Type: application/json`}
         title={translate("keys.title")}
         description={translate("keys.description")}
         gutter
-        classList={{ body: "p-0", left: "bg-background-dimmed" }}
+        classList={{ body: "p-0 max-sm:p-0", left: "bg-background-dimmed" }}
       >
         <ol className="grid gap-px bg-accent-foreground sm:grid-cols-3">
           {copy.keySteps.map((step, index) => (
@@ -251,7 +253,7 @@ Content-Type: application/json`}
         classList={{
           grid: "md:grid-cols-1",
           left: "pb-8 max-sm:pb-6",
-          body: "p-0",
+          body: "p-0 max-sm:p-0",
         }}
       >
         <ol
@@ -283,8 +285,8 @@ Content-Type: application/json`}
           ))}
         </ol>
         <div className="grid gap-px border-accent-foreground border-t bg-accent-foreground lg:grid-cols-[7fr_5fr]">
-          <div className="min-w-0 bg-background px-8 py-8 max-sm:px-4">
-            <DocsCode label="401">
+          <div className="flex min-w-0 bg-background">
+            <DocsCode edges="none" className="flex-1" label="401">
               {`WWW-Authenticate: Bearer resource_metadata="https://ecentic.ai/.well-known/oauth-protected-resource"
 Content-Type: application/problem+json
 

@@ -1,0 +1,304 @@
+{
+  "schemaVersion": 1,
+  "defaults": {
+    "routes": [
+      "/",
+      "/solutions/enterprise",
+      "/solutions",
+      "/solutions/brands",
+      "/solutions/retailers-and-marketplaces",
+      "/solutions/agencies-and-partners",
+      "/solutions/sectors",
+      "/solutions/sectors/wine-and-spirits",
+      "/solutions/sectors/food-and-beverage",
+      "/solutions/sectors/beauty-and-personal-care",
+      "/solutions/sectors/consumer-electronics",
+      "/solutions/sectors/home-and-furniture",
+      "/solutions/sectors/fashion-and-outdoor",
+      "/solutions/sectors/health-wellness-and-pet",
+      "/solutions/sectors/travel-and-experiences",
+      "/ai-channels",
+      "/ai-channels/microsoft-copilot",
+      "/ai-channels/chatgpt",
+      "/ai-channels/claude",
+      "/ai-channels/perplexity",
+      "/ai-channels/google-ai-mode-gemini",
+      "/ai-channels/amazon",
+      "/integrations",
+      "/integrations/shopify",
+      "/integrations/woocommerce",
+      "/integrations/google-merchant-center",
+      "/integrations/product-feeds",
+      "/platform",
+      "/platform/connect",
+      "/platform/simulate",
+      "/platform/fix",
+      "/platform/sell",
+      "/platform/track",
+      "/pricing",
+      "/resources",
+      "/docs",
+      "/docs/api",
+      "/blog",
+      "/security",
+      "/support",
+      "/contact",
+      "/partners",
+      "/demo",
+      "/privacy-policy",
+      "/stories",
+      "/tools",
+      "/ucp-validator",
+      "/ucp-playground",
+      "/webmcp-scanner"
+    ],
+    "locale": ["en"],
+    "width": [1135]
+  },
+  "additionalRoutes": ["/docs/mcp"],
+  "structural": [
+    {
+      "id": "roadmap-rows",
+      "selector": "[data-solution-roadmap] > li",
+      "source": "apps/web/src/app/[locale]/(main)/solutions/_components/solution-roadmap.tsx"
+    },
+    {
+      "id": "sector-conversation",
+      "selector": "[data-sector-conversation]",
+      "source": "apps/web/src/app/[locale]/(main)/solutions/sectors/_components/sector-conversation.tsx",
+      "routes": [
+        "/solutions/sectors/wine-and-spirits",
+        "/solutions/sectors/food-and-beverage",
+        "/solutions/sectors/beauty-and-personal-care",
+        "/solutions/sectors/consumer-electronics",
+        "/solutions/sectors/home-and-furniture",
+        "/solutions/sectors/fashion-and-outdoor",
+        "/solutions/sectors/health-wellness-and-pet",
+        "/solutions/sectors/travel-and-experiences"
+      ],
+      "required": true
+    },
+    {
+      "id": "sector-qualification",
+      "selector": "#attributes > .marketing-rail > aside",
+      "source": "apps/web/src/app/[locale]/(main)/solutions/sectors/_components/sector-sections.tsx",
+      "routes": [
+        "/solutions/sectors/wine-and-spirits",
+        "/solutions/sectors/food-and-beverage",
+        "/solutions/sectors/beauty-and-personal-care",
+        "/solutions/sectors/consumer-electronics",
+        "/solutions/sectors/home-and-furniture",
+        "/solutions/sectors/fashion-and-outdoor",
+        "/solutions/sectors/health-wellness-and-pet",
+        "/solutions/sectors/travel-and-experiences"
+      ],
+      "required": true
+    },
+    {
+      "id": "sector-references",
+      "selector": "[data-sector-references]",
+      "source": "apps/web/src/app/[locale]/(main)/solutions/sectors/_components/sector-brand-references.tsx",
+      "routes": [
+        "/solutions/sectors/wine-and-spirits",
+        "/solutions/sectors/food-and-beverage",
+        "/solutions/sectors/beauty-and-personal-care",
+        "/solutions/sectors/consumer-electronics",
+        "/solutions/sectors/home-and-furniture",
+        "/solutions/sectors/fashion-and-outdoor",
+        "/solutions/sectors/health-wellness-and-pet",
+        "/solutions/sectors/travel-and-experiences"
+      ],
+      "required": true
+    },
+    {
+      "id": "perplexity-entry",
+      "selector": "#entry [data-connected-journey]",
+      "source": "apps/web/src/app/[locale]/(main)/ai-channels/_components/page-bodies/perplexity.tsx",
+      "routes": ["/ai-channels/perplexity"],
+      "required": true
+    },
+    {
+      "id": "travel-pilot",
+      "selector": "#pilot > .marketing-rail > div:nth-child(5), #pilot > .marketing-rail > div:nth-child(6)",
+      "source": "apps/web/src/app/[locale]/(main)/solutions/sectors/_components/page-bodies/travel-and-experiences-roadmap.tsx",
+      "routes": ["/solutions/sectors/travel-and-experiences"],
+      "required": true
+    },
+    {
+      "id": "homepage-evidence",
+      "selector": "#proof > .marketing-rail > div:nth-child(3), #dua-pilot-evidence",
+      "source": "apps/web/src/app/[locale]/(main)/_components/enterprise/closing-sections.tsx",
+      "routes": ["/"],
+      "required": true
+    },
+    {
+      "id": "explorer-header",
+      "selector": "#channel-explorer > .marketing-rail > div:nth-child(4), #channel-explorer > .marketing-rail > div:nth-child(5)",
+      "source": "apps/web/src/app/[locale]/(main)/ai-channels/page.tsx",
+      "routes": ["/ai-channels"],
+      "required": true
+    },
+    {
+      "id": "partner-application",
+      "selector": "#application > .marketing-rail > div:nth-child(2)",
+      "source": "apps/web/src/app/[locale]/(main)/partners/page.tsx",
+      "routes": ["/partners"],
+      "required": true
+    },
+    {
+      "id": "replay-header",
+      "selector": "#main-content > section:nth-child(5) header:first-child",
+      "source": "apps/web/src/components/marketing/interactive/replay-console.tsx",
+      "routes": ["/demo"],
+      "required": true
+    },
+    {
+      "id": "band-shells",
+      "selector": ".marketing-band",
+      "source": "apps/web/src/components/marketing/primitives.tsx"
+    },
+    {
+      "id": "full-rail-rows",
+      "selector": ".marketing-seam, .marketing-section-grid, .enterprise-stage-list, .marketing-grid, .marketing-rows",
+      "source": "apps/web/src/components/marketing/primitives.tsx"
+    },
+    {
+      "id": "structural-surface-children",
+      "selector": ":is(.marketing-rail,.marketing-surface) > :is(.border-t,.border-b,.border-y):not(.absolute,.fixed)",
+      "source": "apps/web/src/app/globals.css"
+    }
+  ],
+  "embedded": [
+    {
+      "id": "mcp-handshake",
+      "routes": ["/docs/mcp"],
+      "selector": "[data-mcp-handshake-source] > figure",
+      "column": "[data-mcp-handshake-source]",
+      "wrapper": "[data-mcp-handshake-source]",
+      "source": "apps/web/src/app/[locale]/(main)/docs/mcp/_components/mcp-handshake.tsx",
+      "stretchFrom": 1024
+    },
+    {
+      "id": "perplexity-conversation",
+      "routes": ["/ai-channels/perplexity"],
+      "selector": "[data-perplexity-conversation]",
+      "column": "[data-perplexity-shopping-grid] > :first-child",
+      "wrapper": "[data-perplexity-shopping-grid] > :first-child",
+      "source": "apps/web/src/app/[locale]/(main)/ai-channels/_components/page-bodies/perplexity.tsx",
+      "stretchFrom": 768
+    },
+    {
+      "id": "sector-conversation",
+      "routes": [
+        "/solutions/sectors/wine-and-spirits",
+        "/solutions/sectors/food-and-beverage",
+        "/solutions/sectors/beauty-and-personal-care",
+        "/solutions/sectors/consumer-electronics",
+        "/solutions/sectors/home-and-furniture",
+        "/solutions/sectors/fashion-and-outdoor",
+        "/solutions/sectors/health-wellness-and-pet",
+        "/solutions/sectors/travel-and-experiences"
+      ],
+      "selector": "[data-shopping-conversation]",
+      "column": "[data-conversation-transcript]",
+      "wrapper": "[data-conversation-transcript]",
+      "source": "apps/web/src/app/[locale]/(main)/solutions/sectors/_components/sector-conversation.tsx",
+      "stretchFrom": 1024
+    },
+    {
+      "id": "sector-source-excerpt",
+      "routes": [
+        "/solutions/sectors/wine-and-spirits",
+        "/solutions/sectors/food-and-beverage",
+        "/solutions/sectors/beauty-and-personal-care",
+        "/solutions/sectors/consumer-electronics",
+        "/solutions/sectors/home-and-furniture",
+        "/solutions/sectors/fashion-and-outdoor",
+        "/solutions/sectors/health-wellness-and-pet",
+        "/solutions/sectors/travel-and-experiences"
+      ],
+      "selector": "[data-sector-inspection]",
+      "column": "[data-sector-conversation] > div.grid > aside",
+      "wrapper": "[data-sector-conversation] > div.grid > aside",
+      "source": "apps/web/src/app/[locale]/(main)/solutions/sectors/_components/sector-conversation.tsx",
+      "stretchFrom": 1024
+    },
+    {
+      "id": "copilot-conversation",
+      "routes": ["/ai-channels/microsoft-copilot"],
+      "selector": "[data-shopping-conversation]",
+      "column": "",
+      "wrapper": "",
+      "source": "apps/web/src/app/[locale]/(main)/ai-channels/_components/page-bodies/microsoft-copilot.tsx",
+      "notApplicable": "The registered Copilot composition contains a workflow illustration and no shopping conversation. Re-register if its composition changes."
+    }
+  ],
+  "artwork": [
+    {
+      "id": "custom-hairline-art",
+      "selector": "[data-hairline]",
+      "source": "apps/web/src/components/hairline/custom-figure.tsx"
+    },
+    {
+      "id": "public-hairline-art",
+      "selector": "[data-hairline-figure]",
+      "source": "apps/web/src/components/hairline/figure.tsx"
+    },
+    {
+      "id": "brand-art",
+      "selector": "[data-brand-figure]",
+      "source": "apps/web/src/components/marketing/commerce-figure.tsx"
+    }
+  ],
+  "figureNames": [
+    "catalog",
+    "document",
+    "workflow",
+    "checkout",
+    "inspection",
+    "drawer",
+    "format",
+    "relay",
+    "hub",
+    "demo-plane",
+    "shopify-bag",
+    "woo-mark",
+    "merchant-folio",
+    "shopping-bot",
+    "repair-tools",
+    "money-stack",
+    "readiness-scanner",
+    "office-chair",
+    "document-stack",
+    "open-book",
+    "sofa",
+    "headphones",
+    "lipstick",
+    "wellness-bottle",
+    "packaged-food",
+    "wine-bottle",
+    "sneaker",
+    "suitcase"
+  ],
+  "exclusions": "table,[role=\"table\"],[role=\"grid\"],button,a,input,select,textarea,[role=\"button\"],[role=\"tab\"],[role=\"progressbar\"],[data-hairline-figure],[data-brand-figure],[data-perplexity-product-card],svg,canvas",
+  "manual": [
+    {
+      "id": "seams.pseudo-gutter-reach",
+      "reason": "Computed pseudo-element styles are not paint geometry. Verify gutter extension and ancestor clipping at registered major seams manually; this run does not claim a pass.",
+      "source": "apps/web/src/app/globals.css"
+    },
+    {
+      "id": "seams.cross-ownership",
+      "reason": "Crosses are painted by multiple gradient layers and Plus elements. Their visible stroke ownership needs targeted visual inspection; zero duplicate element borders does not certify crosses.",
+      "source": "apps/web/src/components/plus.tsx"
+    },
+    {
+      "id": "captions.coverage",
+      "reason": "Only the registered public Hairline and brand artwork wrappers are inspected. Canvas pixels, generated raster text, unregistered art, and other interaction states require manual review.",
+      "source": "apps/web/scripts/design/routes.json"
+    }
+  ],
+  "sourceAdvisories": [
+    "apps/web/src/app/[locale]/(main)/solutions/_components/solution-roadmap.tsx"
+  ]
+}

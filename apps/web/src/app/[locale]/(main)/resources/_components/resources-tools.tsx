@@ -12,6 +12,7 @@ import type { MarketingPage } from "@/components/marketing/page";
 import {
   MarketingActions,
   MarketingFeatureBand,
+  MarketingHeading,
 } from "@/components/marketing/primitives";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
@@ -27,10 +28,12 @@ export const ResourcesTools = ({ section }: ResourcesTools.Props) => {
   const [featured, ...tools] = section.items ?? [];
   return (
     <MarketingFeatureBand id={section.id} className="scroll-mt-24">
-      <header className="px-8 py-10 max-sm:px-4">
-        <span className="mb-4 block text-3xl text-primary-rich">01</span>
-        <h2>{section.title}</h2>
-      </header>
+      <MarketingHeading
+        eyebrow="01"
+        title={section.title}
+        description={section.description}
+        className="py-10"
+      />
       {featured && (
         <div className="relative grid border-[var(--rail-color)] border-y md:grid-cols-2">
           <MarketingEdgeCrosses />

@@ -8,7 +8,7 @@ import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
 import { CommerceFigure } from "@/components/marketing/commerce-figure";
-import { ConnectedJourney } from "@/components/marketing/connected-journey";
+import { JourneySteps } from "@/components/marketing/connected-journey";
 import { MarketingSection } from "@/components/marketing/page";
 import { MarketingBand } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
@@ -88,7 +88,8 @@ const ReadingExplorer = ({
       <div className="px-8 pt-12 pb-8 max-sm:px-4 max-sm:pt-8">
         <h2>{section.title}</h2>
       </div>
-      <ConnectedJourney
+      <JourneySteps
+        layout="surface"
         label={copy.label}
         items={copy.records.map((record, index) => ({
           id: record.id,
@@ -100,8 +101,8 @@ const ReadingExplorer = ({
                 ? "access"
                 : "checkout",
           content: (
-            <div className="grid min-w-0 gap-8 lg:grid-cols-[1.2fr_1fr]">
-              <div className="relative min-w-0">
+            <div className="grid min-w-0 border-accent-foreground border-t lg:grid-cols-[1.2fr_1fr]">
+              <div className="relative min-w-0 border-accent-foreground max-lg:border-b lg:border-r">
                 <CommerceFigure
                   kind={
                     record.id === "product"
@@ -112,11 +113,11 @@ const ReadingExplorer = ({
                   }
                   className="mx-auto aspect-[5/3] w-full max-w-lg"
                 />
-                <ul className="grid grid-cols-1 border-accent-foreground border-y sm:grid-cols-2">
+                <ul className="grid grid-cols-1 border-accent-foreground border-t sm:grid-cols-2">
                   {record.fields.map((field) => (
                     <li
                       key={field}
-                      className="flex items-center gap-3 px-2 py-4 text-foreground-rich text-sm"
+                      className="flex items-center gap-4 px-4 py-4 text-foreground-rich text-sm sm:px-8"
                     >
                       <CheckIcon
                         aria-hidden
@@ -127,7 +128,7 @@ const ReadingExplorer = ({
                   ))}
                 </ul>
               </div>
-              <div className="flex min-w-0 flex-col justify-center gap-8">
+              <div className="flex min-w-0 flex-col justify-center gap-8 px-8 py-8 max-sm:px-4">
                 <div>
                   <h3>{record.title}</h3>
                   <p className="mt-4 max-w-[44ch] text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">
@@ -160,7 +161,7 @@ const MerchantEntry = ({
       <div className="px-7 pt-12 pb-8 max-sm:px-4 max-sm:pt-8">
         <h2>{section.title}</h2>
       </div>
-      <ConnectedJourney
+      <JourneySteps
         label={copy.label}
         items={copy.steps.map((step, index) => ({
           id: `entry-${index}`,

@@ -1,34 +1,46 @@
 import type { JSX } from "react";
 import type { IconProps } from "../types";
 
-export const CopyIcon = ({ title, ...props }: IconProps): JSX.Element => {
+// Nucleo UI · copy · outline-duo · 18px.
+// Adapted from CopyOutlineDuo18; original geometry and soft layers retained.
+export const CopyIcon = ({
+  title,
+  strokeWidth = 1.5,
+  duoOpacity = 0.3,
+  ...props
+}: IconProps & { duoOpacity?: number | string }): JSX.Element => {
   return (
     <svg
-      height="18"
-      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+      width={18}
+      height={18}
       viewBox="0 0 18 18"
-      strokeWidth="1.5"
       {...props}
     >
       {title && <title>{title}</title>}
-      <g fill="currentColor">
-        <rect
-          x="6.75"
-          y="6.75"
-          width="9.5"
-          height="9.5"
-          rx="1"
-          fill="currentColor"
-          opacity=".4"
-        />
-        <path
-          d="M4.25 11.25H3.75C2.645 11.25 1.75 10.355 1.75 9.25V3.75C1.75 2.645 2.645 1.75 3.75 1.75H9.25C10.355 1.75 11.25 2.645 11.25 3.75V4.25"
-          fill="none"
-          stroke="currentColor"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </g>
+      <path
+        d="M2.25 6.75V13.25C2.25 14.355 3.145 15.25 4.25 15.25H11.75"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        opacity={duoOpacity}
+        d="M7.25 12.25H13.75C14.8546 12.25 15.75 11.355 15.75 10.25V4.75C15.75 3.645 14.8546 2.75 13.75 2.75H7.25C6.1454 2.75 5.25 3.645 5.25 4.75V10.25C5.25 11.355 6.1454 12.25 7.25 12.25Z"
+        fill="currentColor"
+        data-color="color-2"
+        data-stroke="none"
+      />{" "}
+      <path
+        d="M7.25 12.25H13.75C14.8546 12.25 15.75 11.355 15.75 10.25V4.75C15.75 3.645 14.8546 2.75 13.75 2.75H7.25C6.1454 2.75 5.25 3.645 5.25 4.75V10.25C5.25 11.355 6.1454 12.25 7.25 12.25Z"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
     </svg>
   );
 };

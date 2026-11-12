@@ -1,0 +1,38 @@
+{
+  "dashboard": {
+    "lifecycle": {
+      "action": {
+        "secondary": "Cancelar",
+        "pending": "Procesando…"
+      },
+      "error": "No hemos podido completar la solicitud. Inténtalo de nuevo o contacta con soporte.",
+      "disconnected": "Desconectada",
+      "disconnect": {
+        "title": "¿Desconectar esta tienda?",
+        "description": "Se eliminarán las credenciales guardadas y se detendrá el acceso a {domain}. El catálogo importado y el historial permanecerán en ecentic. Esto no desinstala plugins ni revoca claves en la tienda; elimínalos también en el proveedor. Vuelve a iniciar sesión si han pasado más de cinco minutos.",
+        "action": {
+          "primary": "Desconectar tienda"
+        }
+      },
+      "delete": {
+        "title": "¿Eliminar tu cuenta?",
+        "description": "Se eliminarán permanentemente tu perfil, los catálogos importados, los análisis y los cambios generados. Desconecta primero la tienda y Google. Introduce el correo de tu cuenta para confirmar. Debes haber iniciado sesión en los últimos cinco minutos.",
+        "email": "Correo de la cuenta",
+        "validation": "Introduce un correo válido.",
+        "assistance": "Las cuentas con registros de facturación o pedidos requieren una eliminación asistida para gestionar correctamente esos registros y la facturación. Escribe a",
+        "action": {
+          "primary": "Eliminar cuenta"
+        }
+      },
+      "blocked": {
+        "reauthenticate": "Cierra sesión, vuelve a iniciarla y regresa aquí antes de que pasen cinco minutos.",
+        "confirmation": "Introduce el correo de la cuenta con la que has iniciado sesión.",
+        "notFound": "Esta cuenta o tienda ya no está disponible.",
+        "googleConnected": "Desconecta primero Google Shopping desde su página de ajustes para eliminar correctamente la fuente de datos y la autorización.",
+        "shopifyBilling": "Desinstala ecentic en Shopify para finalizar el acuerdo de facturación y contacta con soporte si la conexión permanece.",
+        "billingRecords": "Esta cuenta tiene registros de facturación o pedidos. Escribe a privacy@ecentic.ai para solicitar la eliminación asistida; debemos liquidar la facturación y conservar los registros exigidos por ley.",
+        "storeConnections": "Desconecta las tiendas y Google Shopping en Ajustes antes de eliminar la cuenta."
+      }
+    }
+  }
+}

@@ -1,34 +1,46 @@
 import type { JSX } from "react";
 import type { IconProps } from "../types";
 
+// Nucleo UI · shield-check · outline-duo · 18px.
+// Adapted from ShieldCheckOutlineDuo18; original geometry and soft layers retained.
 export const ShieldCheckIcon = ({
   title,
+  strokeWidth = 1.5,
+  duoOpacity = 0.3,
   ...props
-}: IconProps): JSX.Element => {
+}: IconProps & { duoOpacity?: number | string }): JSX.Element => {
   return (
     <svg
-      height="18"
-      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+      width={18}
+      height={18}
       viewBox="0 0 18 18"
-      strokeWidth="1.5"
       {...props}
     >
       {title && <title>{title}</title>}
-      <g fill="currentColor">
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M8.16963 1.22703C8.33372 1.16922 8.67031 1.05063 9.00028 1.05075C9.1795 1.05082 9.36084 1.079 9.53357 1.13368L14.7836 2.81368C15.5071 3.04612 16 3.71943 16 4.48V11C16 12.8725 14.6025 14.2314 13.2749 15.1143C12.1533 15.8602 10.9062 16.4082 9.63302 16.8379C9.57968 16.8559 9.49355 16.8849 9.40738 16.9058C9.09216 16.9819 8.76807 16.9684 8.46011 16.8683C7.80803 16.6572 6.25089 16.1022 4.84192 15.1909C3.47441 14.3064 2 12.9239 2 11V4.48C2 3.71932 2.49139 3.04506 3.21675 2.81358C4.86562 2.28594 6.53686 1.80232 8.16963 1.22703Z"
-          fill="currentColor"
-          fillOpacity=".4"
-        />
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M11.9549 6.15141C12.2855 6.40097 12.3512 6.87128 12.1016 7.20187L8.70461 11.7019C8.57662 11.8714 8.38274 11.9787 8.17111 11.9972C7.95949 12.0156 7.74997 11.9434 7.59459 11.7986L5.98559 10.2986C5.68261 10.0161 5.66598 9.54155 5.94843 9.23858C6.23088 8.9356 6.70546 8.91896 7.00843 9.20141L8.00877 10.134L10.9044 6.29813C11.154 5.96754 11.6243 5.90185 11.9549 6.15141Z"
-          fill="currentColor"
-        />
-      </g>
+      <path
+        d="M9.305 1.848L14.555 3.528C14.969 3.661 15.25 4.046 15.25 4.48V11C15.25 14.03 10.566 15.748 9.308 16.155C9.105 16.221 8.895 16.221 8.692 16.155C7.434 15.748 2.75 14.03 2.75 11V4.48C2.75 4.045 3.031 3.66 3.445 3.528L8.695 1.848C8.893 1.785 9.106 1.785 9.305 1.848Z"
+        fill="currentColor"
+        data-color="color-2"
+        data-stroke="none"
+        opacity={duoOpacity}
+      />{" "}
+      <path
+        d="M9.305 1.848L14.555 3.528C14.969 3.661 15.25 4.046 15.25 4.48V11C15.25 14.03 10.566 15.748 9.308 16.155C9.105 16.221 8.895 16.221 8.692 16.155C7.434 15.748 2.75 14.03 2.75 11V4.48C2.75 4.045 3.031 3.66 3.445 3.528L8.695 1.848C8.893 1.785 9.106 1.785 9.305 1.848Z"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M6.49701 9.75L8.10601 11.25L11.503 6.75"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
     </svg>
   );
 };

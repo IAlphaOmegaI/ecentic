@@ -1,40 +1,65 @@
 import type { JSX } from "react";
 import type { IconProps } from "../types";
 
+// Nucleo UI · chart-circular · outline-duo · 18px.
+// Adapted from ChartCircularOutlineDuo18; original geometry and soft layers retained.
 export const ChartCircularIcon = ({
   title,
+  strokeWidth = 1.5,
+  duoOpacity = 0.3,
   ...props
-}: IconProps): JSX.Element => {
+}: IconProps & { duoOpacity?: number | string }): JSX.Element => {
   return (
     <svg
-      height="18"
-      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+      width={18}
+      height={18}
       viewBox="0 0 18 18"
-      strokeWidth="1.5"
       {...props}
     >
       {title && <title>{title}</title>}
-      <g fill="currentColor">
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M8.25 1.75C8.25 1.33579 8.58579 1 9 1C13.4182 1 17 4.58179 17 9C17 13.4182 13.4182 17 9 17C4.58179 17 1 13.4182 1 9C1 7.37009 1.48896 5.85076 2.32671 4.58587C2.55543 4.24053 3.02079 4.14599 3.36613 4.37471C3.71147 4.60343 3.80601 5.06879 3.57729 5.41413C2.89704 6.44124 2.5 7.67391 2.5 9C2.5 12.5898 5.41021 15.5 9 15.5C12.5898 15.5 15.5 12.5898 15.5 9C15.5 5.41021 12.5898 2.5 9 2.5C8.58579 2.5 8.25 2.16421 8.25 1.75Z"
-          fill="currentColor"
-        />
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M8.25 4.75C8.25 4.33579 8.58579 4 9 4C11.7612 4 14 6.23879 14 9C14 11.7612 11.7612 14 9 14C6.23879 14 4 11.7612 4 9C4 8.58579 4.33579 8.25 4.75 8.25C5.16421 8.25 5.5 8.58579 5.5 9C5.5 10.9328 7.06721 12.5 9 12.5C10.9328 12.5 12.5 10.9328 12.5 9C12.5 7.06721 10.9328 5.5 9 5.5C8.58579 5.5 8.25 5.16421 8.25 4.75Z"
-          fill="currentColor"
-          fillOpacity=".4"
-        />
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M8.25 7.75C8.25 7.33579 8.58579 7 9 7C10.1042 7 11 7.89579 11 9C11 10.1042 10.1042 11 9 11C8.58579 11 8.25 10.6642 8.25 10.25C8.25 9.83579 8.58579 9.5 9 9.5C9.27579 9.5 9.5 9.27579 9.5 9C9.5 8.72421 9.27579 8.5 9 8.5C8.58579 8.5 8.25 8.16421 8.25 7.75Z"
-          fill="currentColor"
-        />
-      </g>
+      <circle
+        cx="9"
+        cy="9"
+        r="1.25"
+        fill="currentColor"
+        data-color="color-2"
+        data-stroke="none"
+        opacity={duoOpacity}
+      />{" "}
+      <path
+        fillRule="evenodd"
+        clipRule="evenodd"
+        d="M16.25 9C16.25 13.0041 13.0041 16.25 9 16.25C4.99594 16.25 1.75 13.0041 1.75 9C1.75 4.99594 4.99594 1.75 9 1.75C13.0041 1.75 16.25 4.99594 16.25 9ZM13.25 9C13.25 11.3472 11.3472 13.25 9 13.25C6.65279 13.25 4.75 11.3472 4.75 9C4.75 6.65279 6.65279 4.75 9 4.75C11.3472 4.75 13.25 6.65279 13.25 9Z"
+        fill="currentColor"
+        data-color="color-2"
+        data-stroke="none"
+        opacity={duoOpacity}
+      />{" "}
+      <path
+        d="M9 1.75C13.004 1.75 16.25 4.996 16.25 9C16.25 13.004 13.004 16.25 9 16.25C4.996 16.25 1.75 13.004 1.75 9C1.75 7.522 2.193 6.146 2.952 5"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M9 4.75C11.347 4.75 13.25 6.653 13.25 9C13.25 11.347 11.347 13.25 9 13.25C6.653 13.25 4.75 11.347 4.75 9"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M9 7.75C9.69 7.75 10.25 8.31 10.25 9C10.25 9.69 9.69 10.25 9 10.25"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
     </svg>
   );
 };

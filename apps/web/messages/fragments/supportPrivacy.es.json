@@ -1,0 +1,9 @@
+{
+  "cookieConsent": {
+    "support": {
+      "action": { "primary": "Abrir el chat de soporte" },
+      "pending": "Abriendo el chat de soporte…",
+      "unavailable": "El chat no está disponible. Escribe a support@ecentic.ai"
+    }
+  }
+}

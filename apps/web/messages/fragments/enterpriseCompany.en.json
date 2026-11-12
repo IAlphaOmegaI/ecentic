@@ -27,7 +27,7 @@
       "sections": [
         {
           "id": "reviewed",
-          "title": "Last updated 10 November 2026",
+          "title": "Last updated 12 November 2026",
           "description": "This page describes controls in the current product. Confirm the deployment, processing locations and contractual requirements for your account before sharing non-public data."
         },
         {
@@ -49,15 +49,15 @@
           "rows": [
             {
               "label": "Application hosting",
-              "value": "Vercel. {{TODO: confirm deployed services and hosting regions}}"
+              "value": "Vercel: application hosting, scheduled jobs and AI Gateway routing."
             },
             {
               "label": "Database",
-              "value": "PostgreSQL. {{TODO: confirm production provider and region}}"
+              "value": "Neon PostgreSQL on AWS us-east-1 (Northern Virginia)."
             },
             {
               "label": "Encryption",
-              "value": "{{TODO: confirm the deployed TLS minimum and encryption at rest}}"
+              "value": "Data is encrypted in transit (TLS 1.2+) and at rest (AES-256) by our hosting and database providers."
             },
             {
               "label": "Account passwords",
@@ -69,11 +69,11 @@
             },
             {
               "label": "Production access",
-              "value": "{{TODO: confirm who has production access and whether MFA is enforced}}"
+              "value": ""
             },
             {
               "label": "Backups and recovery",
-              "value": "{{TODO: confirm documented backup and recovery targets}}"
+              "value": ""
             }
           ]
         },
@@ -84,7 +84,7 @@
             "The product catalog you connect is sent to AI providers to compare listings and write fixes. Store scans use ChatGPT, Claude and Gemini. GPT also generates listing rewrites and structured data. Perplexity is used in the separate comparison and discovery tools, not store scans.",
             "GPT runs through Azure OpenAI when an Azure deployment is configured. Anthropic, Google and Perplexity requests use the Vercel AI Gateway; GPT can use that gateway as a fallback.",
             "Data read from a connected Google Merchant Center account is kept separate from the store catalog used for AI work, as described in the privacy policy.",
-            "{{TODO: confirm account-specific provider retention and model-training terms before publishing a no-training promise}}"
+            "Provider retention policies apply to requests. Some providers retain requests for abuse monitoring; we do not promise zero retention across every model route."
           ]
         },
         {
@@ -93,7 +93,7 @@
           "rows": [
             {
               "label": "Operating company",
-              "value": "{{TODO: exact legal name of the Polish operating company}}"
+              "value": "ecentic Inc · Delaware, United States"
             },
             {
               "label": "Agent checkout data",
@@ -101,7 +101,7 @@
             },
             {
               "label": "Data requests",
-              "value": "{{TODO: confirm privacy@ecentic.ai receives data requests before activating the contact link}}"
+              "value": "Request access, correction or deletion through privacy@ecentic.ai. We respond within one month."
             }
           ],
           "links": [
@@ -114,8 +114,8 @@
         {
           "id": "dpa",
           "title": "Data processing agreement",
-          "description": "Tell us what your data processing agreement must cover as part of your pilot or security review. Confirm the agreement and signing arrangements before sharing personal data.",
-          "note": "{{TODO: supply the approved DPA template and confirmed request contact}}",
+          "description": "A DPA is arranged on request before personal data is shared. We can sign your own DPA; the contracting entity and signatory are confirmed in the agreement.",
+          "note": "We sign a mutual NDA before receiving non-public data. The public-data first phase does not need one.",
           "links": [
             {
               "label": "Discuss your requirements",
@@ -126,91 +126,131 @@
         {
           "id": "sub-processors",
           "title": "Providers used by the product",
-          "description": "Providers and purposes identified in the product code, reviewed November 10, 2026. This is not a confirmed list of contracted sub-processors or processing locations; those depend on the accounts and agreements in use.",
-          "note": "{{TODO: confirm the full contracted sub-processor list and processing locations before launch}}"
+          "description": "Providers and purposes identified in the product code, reviewed November 12, 2026. Contracted processors and processing locations are confirmed for the relevant service and agreement.",
+          "note": ""
         },
         {
           "id": "compliance",
           "title": "Compliance roadmap",
           "paragraphs": [
             "SOC 2 is not available today. We do not claim a certification or a completed audit. Discuss your security requirements before agreeing a pilot.",
-            "{{TODO: confirm the security questionnaire process and available review materials}}"
+            "Alvi, our CTO, handles security questionnaires after an NDA. We do not offer a pre-approved security pack."
           ]
         },
         {
           "id": "report",
           "title": "Report a vulnerability",
-          "description": "{{TODO: confirm security@ecentic.ai is monitored before publishing the vulnerability contact}}"
+          "description": ""
         }
       ],
       "subprocessors": {
-        "caption": "Product providers and purposes reviewed November 10, 2026",
+        "caption": "Product providers and purposes reviewed November 12, 2026",
         "headers": ["Provider", "Purpose", "Processing location"],
         "rows": [
           {
             "name": "Azure OpenAI",
             "purpose": "GPT simulations, listing rewrites and structured data.",
-            "location": "{{TODO: confirm Azure region}}"
+            "location": ""
           },
           {
             "name": "Anthropic",
             "purpose": "Claude listing comparisons through Vercel AI Gateway.",
-            "location": "{{TODO: confirm processing location}}"
+            "location": ""
           },
           {
             "name": "Google",
             "purpose": "Gemini listing comparisons through Vercel AI Gateway.",
-            "location": "{{TODO: confirm processing location}}"
+            "location": ""
           },
           {
             "name": "Perplexity",
             "purpose": "Separate comparison and discovery tools through Vercel AI Gateway.",
-            "location": "{{TODO: confirm processing location}}"
+            "location": ""
           },
           {
             "name": "Vercel",
             "purpose": "Application hosting and AI Gateway request routing.",
-            "location": "{{TODO: confirm hosting and gateway locations}}"
+            "location": ""
           },
           {
-            "name": "PostgreSQL provider",
+            "name": "Neon",
             "purpose": "Application records, connected catalog data and credentials.",
-            "location": "{{TODO: confirm provider and database region}}"
+            "location": ""
           },
           {
             "name": "Upstash",
             "purpose": "Redis caches, session data and rate-limit counters.",
-            "location": "{{TODO: confirm Redis region}}"
+            "location": ""
           },
           {
             "name": "Sentry",
             "purpose": "Error monitoring and application telemetry.",
-            "location": "{{TODO: confirm processing location}}"
+            "location": ""
           },
           {
             "name": "PostHog",
             "purpose": "Product analytics after analytics consent.",
-            "location": "{{TODO: confirm processing location}}"
+            "location": ""
           },
           {
             "name": "Google Analytics 4",
             "purpose": "Website analytics after analytics consent.",
-            "location": "{{TODO: confirm processing location}}"
+            "location": ""
           },
           {
             "name": "Resend",
             "purpose": "Transactional email delivery.",
-            "location": "{{TODO: confirm processing location}}"
+            "location": ""
           },
           {
             "name": "UploadThing",
             "purpose": "Storage for uploaded files.",
-            "location": "{{TODO: confirm storage region}}"
+            "location": ""
           },
           {
             "name": "Stripe",
             "purpose": "ecentic plan and performance-fee billing.",
-            "location": "{{TODO: confirm processing location}}"
+            "location": ""
+          },
+          {
+            "name": "SerpAPI",
+            "purpose": "Product offer lookups.",
+            "location": ""
+          },
+          {
+            "name": "Chatwoot",
+            "purpose": "Website support chat.",
+            "location": ""
+          },
+          {
+            "name": "BabyLoveGrowth",
+            "purpose": "Editorial blog content.",
+            "location": ""
+          },
+          {
+            "name": "Clearbit",
+            "purpose": "Company logo images.",
+            "location": ""
+          },
+          {
+            "name": "Google Merchant API",
+            "purpose": "Optional Merchant Center connection.",
+            "location": ""
+          },
+          {
+            "name": "Shopify Catalog MCP",
+            "purpose": "Product measurement in Shopify’s catalog.",
+            "location": ""
+          },
+          {
+            "name": "x402",
+            "purpose": "Payment facilitator for supported routes.",
+            "location": ""
+          },
+          {
+            "name": "ScrapeLLM",
+            "purpose": "Internal capture tooling; not a customer feature.",
+            "location": ""
           }
         ]
       }
@@ -258,7 +298,7 @@
           "id": "team",
           "title": "The team",
           "description": "Three founders, with engineering and sales working on the same product.",
-          "note": "{{TODO: supply approved founder portraits}}"
+          "note": ""
         },
         {
           "id": "before",
@@ -306,19 +346,19 @@
           "rows": [
             {
               "label": "Operating company",
-              "value": "{{TODO: exact legal name and registered address of the Polish operating company}}"
+              "value": "ecentic Inc · Delaware, United States"
             },
             {
-              "label": "Delaware company",
-              "value": "{{TODO: exact legal name and registered address of the Delaware company}}"
+              "label": "Registered agent — legal service only",
+              "value": "LEGALINC CORPORATE SERVICES INC. · 131 Continental Drive, Suite 305, Newark, New Castle County, DE 19713, United States"
             },
             {
-              "label": "Tirana contact address",
-              "value": "Pallatet Merkaj, Hyrja 1, Dera 12, Rruga Muhamed Deliu, Qesarakë, Tiranë, Albania"
+              "label": "Albanian subsidiary",
+              "value": "ECENTIC SH.P.K. · Pallatet Merkaj, Hyrja 1, Dera 12, Rruga Muhamed Deliu, Qesarakë, Tiranë, Albania"
             },
             {
               "label": "Phone",
-              "value": "{{TODO: confirm the public +355 contact number}}"
+              "value": ""
             },
             {
               "label": "Support",
@@ -375,7 +415,7 @@
         },
         {
           "name": "Fil Rouge Capital",
-          "description": "Accelerator. {{TODO: supply the official Fil Rouge Capital logo}}"
+          "description": "Accelerator."
         }
       ]
     },
@@ -403,15 +443,15 @@
           "items": [
             {
               "title": "Agencies and resellers",
-              "body": "You run Shopify, WooCommerce or marketplace stores for clients. Run ecentic on them, ship the fixes and keep the client relationship. {{TODO: approved agency and reseller benefits and terms}}"
+              "body": "Refer Shopify, WooCommerce or marketplace clients and agree a referral fee on the call. There is no fee to join. ecentic contracts with and bills the client directly; resale requires a separate signed agreement."
             },
             {
               "title": "Technology partners",
-              "body": "You sell something different to the same stores: product information, payments, checkout or data. Build on the REST API and MCP server, and sell together. {{TODO: approved technology partner benefits and terms}}"
+              "body": "Build with our REST API and MCP server and sell together. Technology partners pay no fees to each other. We list your integration and logo only with a written agreement."
             },
             {
               "title": "Creators and affiliates",
-              "body": "You teach people to sell online. Share ecentic with them. {{TODO: approved creator and affiliate benefits and terms}}"
+              "body": "Share ecentic with your audience and receive a fee for each paying customer you bring. We agree the amount when you join."
             }
           ]
         },
@@ -427,22 +467,22 @@
             },
             {
               "title": "Talk with us",
-              "body": "{{TODO: confirm the proposed 20-minute partner conversation}}"
+              "body": "A 20-minute call to choose the track and agree the terms."
             },
             {
               "title": "Get access and materials",
-              "body": "{{TODO: confirm partner access, materials and onboarding}}"
+              "body": "Receive the agreed access and materials to get started. Each client owns their own account."
             },
             {
               "title": "Work together",
-              "body": "{{TODO: confirm the joint selling process}}"
+              "body": "Refer clients or work on a joint opportunity. You may share reports with that client while keeping ecentic branding."
             }
           ]
         },
         {
           "id": "application",
           "title": "Apply to work together",
-          "description": "Tell us about your company, your track and the stores you work with."
+          "description": "Tell us about your company, your track and the stores you work with. Calls and follow-up are in English."
         }
       ],
       "faqTitle": "Partner questions",
@@ -457,7 +497,7 @@
         },
         {
           "question": "Is there a fee to join?",
-          "answer": "{{TODO: confirm whether joining the partner program is free}}"
+          "answer": "There is no fee to join. Referral or affiliate fees are agreed when you join; resale requires a separate signed agreement."
         }
       ],
       "formTitle": "Partner application"
@@ -480,7 +520,7 @@
           "links": [
             {
               "label": "Read the pilot story",
-              "href": "/stories/dua-flavors"
+              "href": "/stories/dua-flavours"
             }
           ]
         }
@@ -501,7 +541,7 @@
           "rows": [
             {
               "label": "Sector",
-              "value": "Food and drink"
+              "value": "UK flavours brand"
             },
             {
               "label": "Company",
@@ -513,7 +553,7 @@
             },
             {
               "label": "What changed",
-              "value": "{{TODO: describe what ecentic changed for DUA Flavours}}"
+              "value": "Gaps closed in structured data and the product feed."
             },
             {
               "label": "Result",
@@ -525,14 +565,14 @@
           "id": "starting-point",
           "title": "Where they started",
           "paragraphs": [
-            "{{TODO: DUA Flavours’ starting position, supplied and approved by Xhurian}}"
+            "DUA Flavours is a UK flavours brand on Shopify with about 28 products. It became ecentic’s first paying customer on 20 April 2026."
           ]
         },
         {
           "id": "changes",
           "title": "What we changed",
           "paragraphs": [
-            "{{TODO: name the products and fields changed, and when the work happened}}"
+            "ecentic closed gaps in its structured data and product feed."
           ]
         },
         {
@@ -547,7 +587,7 @@
           "title": "How we measured this",
           "paragraphs": [
             "What was measured: visits from AI assistants or direct traffic, April to July 2026. What was not measured: sales. Other changes in that period may have contributed.",
-            "{{TODO: explain the April start and what ecentic did before the Shopify app launched on 20 May 2026}}"
+            "The 12% is DUA’s own aggregate measurement. ecentic does not hold the analytics source; we do not publish a product breakdown or a time series."
           ]
         },
         {
@@ -731,7 +771,7 @@
             {
               "title": "DUA Flavours",
               "body": "12% more visits from AI assistants or direct traffic, April to July 2026. Published with permission, with the measurement limits.",
-              "href": "/stories/dua-flavors",
+              "href": "/stories/dua-flavours",
               "label": "Read the pilot story"
             }
           ],
@@ -819,7 +859,7 @@
         "description": "Get help with your ecentic account, scans, fixes and billing. Email support, book a walkthrough or read the docs."
       },
       "title": "Help and support",
-      "description": "Get help with your account, scans, fixes and billing. Choose the contact that fits your question.",
+      "description": "Get help with your account, scans, fixes and billing. Choose the contact that fits your question. Support and calls are in English.",
       "actions": [
         {
           "label": "Email support",
@@ -838,13 +878,13 @@
           "items": [
             {
               "title": "Email support",
-              "body": "Send your question and store URL to support@ecentic.ai.",
+              "body": "Send your question and store URL to support@ecentic.ai. We reply in English.",
               "href": "mailto:support@ecentic.ai",
               "label": "Email support"
             },
             {
               "title": "Live walkthrough",
-              "body": "Book a 15-minute call to walk through your store and the product.",
+              "body": "Book a 15-minute call to walk through your store and the product. The call is in English.",
               "href": "https://cal.com/ecentic-ai/15min",
               "label": "Book the 15-minute call"
             },
@@ -907,7 +947,7 @@
         "description": "Talk to sales, get support, apply to collaborate or find information about privacy and security at ecentic."
       },
       "title": "Contact ecentic",
-      "description": "Find the right place for your question.",
+      "description": "Find the right place for your question. Support and calls are in English.",
       "sections": [
         {
           "id": "contacts",
@@ -934,7 +974,7 @@
             },
             {
               "title": "Press",
-              "body": "{{TODO: confirm press@ecentic.ai is active before publishing the press contact}}"
+              "body": ""
             },
             {
               "title": "Security",
@@ -944,7 +984,7 @@
             },
             {
               "title": "Privacy",
-              "body": "Data requests and DPA questions. {{TODO: confirm privacy@ecentic.ai is active before activating the contact link}}",
+              "body": "Data access, correction or deletion requests and DPA questions: privacy@ecentic.ai.",
               "href": "/security#dpa",
               "label": "Read about the DPA"
             }
@@ -956,11 +996,11 @@
           "rows": [
             {
               "label": "Operating company",
-              "value": "{{TODO: exact legal name and registered address of the Polish operating company}}"
+              "value": "ecentic Inc · Delaware, United States"
             },
             {
-              "label": "Delaware company",
-              "value": "{{TODO: exact legal name and registered address of the Delaware company}}"
+              "label": "Registered agent — legal service only",
+              "value": "LEGALINC CORPORATE SERVICES INC. · 131 Continental Drive, Suite 305, Newark, New Castle County, DE 19713, United States"
             }
           ],
           "links": [

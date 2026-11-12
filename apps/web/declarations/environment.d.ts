@@ -5,6 +5,12 @@ declare namespace NodeJS {
 
     readonly BETTER_AUTH_BASE_URL: string;
     readonly BETTER_AUTH_SECRET: string;
+    /** Independent 32-byte base64 key; provision before credential writes. */
+    readonly CREDENTIAL_ENCRYPTION_KEY?: string;
+    /** Comma-separated previous keys retained during rotation. */
+    readonly CREDENTIAL_ENCRYPTION_PREVIOUS_KEYS?: string;
+    /** Temporary migration mode only; remove after backfill returns zero pending. */
+    readonly CREDENTIAL_ENCRYPTION_ALLOW_LEGACY?: string;
 
     readonly NEXT_PUBLIC_SENTRY_DSN: string;
     readonly SENTRY_AUTH_TOKEN: string;

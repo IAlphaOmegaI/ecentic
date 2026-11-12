@@ -328,7 +328,7 @@
           },
           {
             "before": "The commercial offer is unclear.",
-            "after": "Choose a partner track and agree its terms. {{TODO: Confirm agency margin or referral terms.}}",
+            "after": "Agree a referral fee. ecentic contracts with and bills the client; resale needs a separate signed agreement.",
             "href": "/partners"
           },
           {
@@ -352,7 +352,7 @@
             "items": [
               {
                 "title": "Agencies and resellers",
-                "body": "Run product checks for clients, ship verified changes and keep the client relationship. {{TODO: Confirm resale access and commercial terms.}}"
+                "body": "Refer clients and agree a fee on the call. There is no fee to join; each client keeps their account and ecentic bills them directly."
               },
               {
                 "title": "Technology partners",
@@ -360,7 +360,7 @@
               },
               {
                 "title": "Creators and affiliates",
-                "body": "Help your audience understand AI commerce. {{TODO: Confirm creator and affiliate payment terms.}}"
+                "body": "Help your audience understand AI commerce. Receive a fee for each paying customer you bring; the amount is agreed when you join."
               }
             ]
           },
@@ -368,7 +368,7 @@
             "id": "access",
             "title": "Keep account access explicit.",
             "description": "One account can hold stores owned by that account. It is not a delegated agency workspace or a team-seat system. Agree how each client connects and controls its store.",
-            "note": "{{TODO: Confirm the supported agency account setup and client-report sharing terms.}}"
+            "note": "Each client owns their account. You may share ecentic reports with that client while keeping the branding; we do not offer white-label reports or agency roles."
           },
           {
             "id": "start",
@@ -385,7 +385,7 @@
         "faqs": [
           {
             "question": "Is there a margin or referral fee?",
-            "answer": "{{TODO: Confirm the commercial terms for each partner track.}}"
+            "answer": "Joining is free. Agencies and affiliates agree their fee when joining. Technology partners work together without fees between the parties. Resale requires a separate signed agreement."
           },
           {
             "question": "Do clients need their own account?",
@@ -393,7 +393,7 @@
           },
           {
             "question": "Can we use reports with clients?",
-            "answer": "{{TODO: Confirm client-report sharing terms. No white-label report capability is claimed.}}"
+            "answer": "Yes, with that client and with ecentic branding kept on the report. The client owns its account; we do not offer white-label reports."
           }
         ],
         "challengeLabels": {
@@ -424,7 +424,7 @@
         "facts": [
           "Public data first. No logins, code on your site or customer data for the baseline.",
           "Targets agreed in writing on day one.",
-          "A founder on the account, with a direct line to engineering.",
+          "A founder, Xhurian or Iseld, on every account, with Alvi on engineering.",
           "Data handling and contracting requirements reviewed before access."
         ],
         "challenges": [
@@ -472,7 +472,7 @@
               },
               {
                 "title": "Design study",
-                "body": "3 months. For checkout or booking questions that need more than a fix list. The agreed scope can include a prototype with dummy data and a month-3 readout."
+                "body": "3 months, with scopes that can run up to 6. For checkout or booking questions that need more than a fix list. The scope can include a prototype with dummy data and agreed readouts."
               }
             ],
             "note": "Fees depend on scope and are agreed on the first call. These are service engagements; the pilot readout follows the method agreed with your team."
@@ -486,7 +486,7 @@
             "items": [
               {
                 "title": "Week 0: baseline",
-                "body": "Agree the questions and run the baseline before changing data. {{TODO: Confirm the proposed 25 questions and three runs per assistant.}}"
+                "body": "We agree the questions at kickoff and run each one several times on every assistant, before changing data."
               },
               {
                 "title": "Weeks 1 to 5: fix",
@@ -542,7 +542,7 @@
               },
               {
                 "label": "Time from your team",
-                "value": "{{TODO: Confirm expected weekly time from the business owner.}}"
+                "value": "A kickoff call, a short weekly check-in and the readout. The public-data phase needs no engineering time."
               }
             ]
           },
@@ -557,7 +557,7 @@
               },
               {
                 "title": "Your data",
-                "body": "Review data handling and discuss the agreement and provider information your team requires. {{TODO: Confirm the approved DPA, contracted sub-processors, processing locations and contracting entity.}}"
+                "body": "A DPA is arranged on request, and we can sign yours. Confirm the contracting entity, processing locations and providers before sharing personal data."
               },
               {
                 "title": "Straight answers",
@@ -616,7 +616,7 @@
               },
               {
                 "label": "Will you change our site?",
-                "value": "Only through actions you authorize after connecting a store. Public-data recommendations go to your team. {{TODO: Confirm pilot delivery formats.}}"
+                "value": "Only through actions you authorize after connecting a store. Public-data recommendations go to your team, with a change list and re-run results."
               },
               {
                 "label": "Do you process customer personal data?",
@@ -628,7 +628,7 @@
               },
               {
                 "label": "What do we receive?",
-                "value": "An agreed written readout with the numbers, method, limits and next steps."
+                "value": "A baseline workbook, change list, re-run results with a change log and a written readout. You own the data and fixes and may share the readout internally."
               },
               {
                 "label": "What happens after the pilot?",
@@ -636,7 +636,7 @@
               },
               {
                 "label": "Will you sign our NDA?",
-                "value": "{{TODO: Confirm NDA policy before any non-public data is shared.}}"
+                "value": "Yes. We sign a mutual NDA before receiving non-public data. The public-data first phase does not need one."
               }
             ]
           },
@@ -674,7 +674,7 @@
           },
           {
             "question": "Which assistants do you cover?",
-            "answer": "Product scans run on ChatGPT, Claude and Gemini. {{TODO: Confirm the assistants and collection method for bespoke pilot questions.}}"
+            "answer": "Product scans use ChatGPT, Claude and Gemini. For a bespoke pilot, we agree the assistants, questions, versions and collection method at kickoff."
           },
           {
             "question": "Do you work in our markets and languages?",
@@ -686,7 +686,7 @@
           },
           {
             "question": "Is SOC 2 available?",
-            "answer": "Not yet. {{TODO: Confirm the compliance roadmap and available security materials.}} We do not claim a certification or an existing security pack."
+            "answer": "Not yet. We do not claim a certification or an existing security pack. Alvi handles security questionnaires after an NDA."
           }
         ],
         "challengeLabels": {

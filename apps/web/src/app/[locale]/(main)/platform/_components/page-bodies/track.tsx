@@ -1,7 +1,9 @@
 import { getMessages } from "next-intl/server";
+import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
 import { CommerceFigure } from "@/components/marketing/commerce-figure";
+import { JourneySteps } from "@/components/marketing/connected-journey";
 import { MarketingSection } from "@/components/marketing/page";
 import {
   MarketingActions,
@@ -79,7 +81,7 @@ export const TrackBody = async ({
             );
           case "how-it-works":
             return (
-              <div key={section.id}>
+              <Fragment key={section.id}>
                 <SectionGutter />
                 <MarketingBand
                   id={section.id}
@@ -92,28 +94,19 @@ export const TrackBody = async ({
                     className="pb-8"
                   />
                   <TrackComparison content={trackPage} />
-                  <ol className="grid list-none border-accent-foreground border-t md:grid-cols-2 lg:grid-cols-4">
-                    {section.items?.map((item, index) => (
-                      <li
-                        key={item.title}
-                        className="min-w-0 border-accent-foreground border-b px-8 py-8 last:border-b-0 max-sm:px-4 md:nth-last-2:border-b-0 md:odd:border-r lg:border-r lg:border-b-0 lg:last:border-r-0"
-                      >
-                        <span
-                          aria-hidden="true"
-                          className="font-heading text-3xl text-primary-text leading-none"
-                        >
-                          {String(index + 1).padStart(2, "0")}
-                        </span>
-                        <h3 className="mt-6 text-xl">{item.title}</h3>
-                        <p className="mt-4 text-foreground-dimmed">
-                          {item.body}
-                        </p>
-                      </li>
-                    ))}
-                  </ol>
+                  <JourneySteps
+                    label={section.title}
+                    className="border-accent-foreground border-t"
+                    items={(section.items ?? []).map((item, index) => ({
+                      id: String(index),
+                      title: item.title,
+                      icon: "compare",
+                      content: <p>{item.body}</p>,
+                    }))}
+                  />
                   {sectionChildren?.[section.id]}
                 </MarketingBand>
-              </div>
+              </Fragment>
             );
           case "why-it-works":
             return (
@@ -169,7 +162,7 @@ export const TrackBody = async ({
             );
           case "traffic":
             return (
-              <div key={section.id}>
+              <Fragment key={section.id}>
                 <SectionGutter />
                 <MarketingBand className="[&_.marketing-guides]:hidden">
                   <MarketingHeading
@@ -199,7 +192,7 @@ export const TrackBody = async ({
                     </section>
                   ))}
                 </MarketingBand>
-              </div>
+              </Fragment>
             );
           case "lift":
           case "rescans":

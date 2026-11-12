@@ -14,6 +14,7 @@ import {
 import type * as Agentic from "@/server/app/intelligence/agentic-contract";
 import type * as Brand from "@/server/app/intelligence/brand";
 import type * as Simulate from "@/server/app/intelligence/simulate";
+import { encryptedText } from "./encrypted-text";
 
 /**
  * Better-auth core schema (compatible with drizzleAdapter).
@@ -66,9 +67,9 @@ export const account = pgTable(
     // Synthetic issuers: `local:credential` for password accounts,
     // `local:oauth:<providerId>` for OAuth providers without their own issuer.
     issuer: text("issuer").notNull(),
-    accessToken: text("accessToken"),
-    refreshToken: text("refreshToken"),
-    idToken: text("idToken"),
+    accessToken: encryptedText("accessToken", "account.accessToken"),
+    refreshToken: encryptedText("refreshToken", "account.refreshToken"),
+    idToken: encryptedText("idToken", "account.idToken"),
     accessTokenExpiresAt: timestamp("accessTokenExpiresAt", { mode: "date" }),
     refreshTokenExpiresAt: timestamp("refreshTokenExpiresAt", { mode: "date" }),
     scope: text("scope"),
@@ -159,20 +160,23 @@ export const store_account = pgTable("store_account", {
     .unique()
     .references(() => store.id, { onDelete: "cascade" }),
   // OAuth 2.0 credentials (e.g. Shopify, BigCommerce)
-  accessToken: text("accessToken"),
+  accessToken: encryptedText("accessToken", "store_account.accessToken"),
   accessTokenExpiresAt: timestamp("accessTokenExpiresAt", { mode: "date" }),
-  refreshToken: text("refreshToken"),
+  refreshToken: encryptedText("refreshToken", "store_account.refreshToken"),
   refreshTokenExpiresAt: timestamp("refreshTokenExpiresAt", { mode: "date" }),
   scope: text("scope"),
   // API key/secret credentials (e.g. WooCommerce)
-  consumerKey: text("consumerKey"),
-  consumerSecret: text("consumerSecret"),
+  consumerKey: encryptedText("consumerKey", "store_account.consumerKey"),
+  consumerSecret: encryptedText(
+    "consumerSecret",
+    "store_account.consumerSecret",
+  ),
   /**
    * Shared secret minted at connect time for the hosted UCP bridge. The store
    * plugin authenticates its calls to ecentic (order events) with it, and
    * ecentic signs bridge calls back to the store with it.
    */
-  bridgeSecret: text("bridgeSecret"),
+  bridgeSecret: encryptedText("bridgeSecret", "store_account.bridgeSecret"),
   // General Store Account fields
   createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
   updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
@@ -193,9 +197,15 @@ export const googleMerchantAccount = pgTable("google_merchant_account", {
     .unique()
     .references(() => store.id, { onDelete: "cascade" }),
   // Merchant-consent OAuth (Google, scope https://www.googleapis.com/auth/content)
-  accessToken: text("accessToken"),
+  accessToken: encryptedText(
+    "accessToken",
+    "googleMerchantAccount.accessToken",
+  ),
   accessTokenExpiresAt: timestamp("accessTokenExpiresAt", { mode: "date" }),
-  refreshToken: text("refreshToken"),
+  refreshToken: encryptedText(
+    "refreshToken",
+    "googleMerchantAccount.refreshToken",
+  ),
   scope: text("scope"),
   /** Numeric Merchant Center account id, once detected via accounts.list. */
   googleAccountId: text("googleAccountId"),

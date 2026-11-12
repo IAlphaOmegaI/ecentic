@@ -153,8 +153,10 @@ export default async () => {
             <ContentPageRichText content={translate("policy.body")} />
           </div>
         </div>
-        <div className="border-accent-foreground border-t bg-background px-8 py-8 max-sm:px-4">
-          <DocsCode label={copy.policySource}>{policy}</DocsCode>
+        <div className="bg-background">
+          <DocsCode edges="top" label={copy.policySource}>
+            {policy}
+          </DocsCode>
         </div>
       </LimitsSection>
 
@@ -217,8 +219,12 @@ export default async () => {
           <ContentPageRichText content={translate("exceeded.body")} />
         </div>
         <div className="grid gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-[2fr_1fr]">
-          <div className="min-w-0 bg-background px-8 py-8 max-sm:px-4">
-            <DocsCode label={copy.responseExample}>
+          <div className="flex min-w-0 bg-background">
+            <DocsCode
+              edges="none"
+              className="flex-1"
+              label={copy.responseExample}
+            >
               {`HTTP/1.1 429 Too Many Requests
 Content-Type: application/problem+json; charset=utf-8
 RateLimit-Policy: "${PUBLIC_API_POLICY.name}";q=${PUBLIC_API_POLICY.limit};w=${PUBLIC_API_POLICY.window}

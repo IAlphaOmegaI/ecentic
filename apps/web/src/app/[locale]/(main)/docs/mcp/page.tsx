@@ -132,27 +132,30 @@ export default async () => {
               </div>
             </dl>
           </div>
-          <div className="flex min-w-0 flex-col gap-6 bg-background p-8 max-sm:p-4">
-            <DocsCode label="POST https://ecentic.ai/mcp">
+          <div className="flex min-w-0 flex-col bg-background">
+            <DocsCode edges="bottom" label="POST https://ecentic.ai/mcp">
               {`Content-Type: application/json
 Accept: application/json, text/event-stream
 
 {"jsonrpc":"2.0","id":1,"method":"tools/list"}`}
             </DocsCode>
-            <McpTransport
-              labels={copy.transport.details}
-              details={content.connect.body
-                .split(/\n\n+/)
-                .map((paragraph) => (
-                  <ContentPageRichText key={paragraph} content={paragraph} />
-                ))}
-            />
+            <div className="px-8 py-8 max-sm:px-4">
+              <McpTransport
+                labels={copy.transport.details}
+                details={content.connect.body
+                  .split(/\n\n+/)
+                  .map((paragraph) => (
+                    <ContentPageRichText key={paragraph} content={paragraph} />
+                  ))}
+              />
+            </div>
           </div>
         </div>
       </McpSection>
 
       <McpSection
         id="handshake"
+        featureTone="dark"
         number={translate("handshake.number")}
         title={translate("handshake.title")}
         description={translate("handshake.description")}
@@ -166,7 +169,12 @@ Accept: application/json, text/event-stream
               <ContentPageRichText key={paragraph} content={paragraph} />
             ))}
           example={
-            <DocsCode label={copy.handshake.example}>
+            <DocsCode
+              label={copy.handshake.example}
+              formatted
+              edges="none"
+              className="bg-transparent"
+            >
               {`→ {"jsonrpc":"2.0","id":1,"method":"initialize","params":{"protocolVersion":"${Utils.protocol.version}"}}
 ← 200 {"jsonrpc":"2.0","id":1,"result":{"protocolVersion":"${Utils.protocol.version}", ...}}
 
@@ -175,11 +183,13 @@ Accept: application/json, text/event-stream
             </DocsCode>
           }
         />
-        <div className="border-accent-foreground border-t p-8 max-sm:p-4">
-          <DocsCode label={translate("handshake.supported")}>
-            {Utils.protocol.supportedVersions.join(", ")}
-          </DocsCode>
-        </div>
+        <DocsCode
+          label={translate("handshake.supported")}
+          edges="top"
+          className="bg-transparent"
+        >
+          {Utils.protocol.supportedVersions.join(", ")}
+        </DocsCode>
       </McpSection>
 
       <McpSection
@@ -222,9 +232,9 @@ Accept: application/json, text/event-stream
             .map((paragraph, index) => (
               <div
                 key={paragraph}
-                className="flex min-w-0 flex-col gap-6 bg-background-dimmed p-8 last:bg-background max-sm:p-4"
+                className="flex min-w-0 flex-col bg-background-dimmed last:bg-background"
               >
-                <h3 className="text-xl">
+                <h3 className="px-8 py-8 text-xl max-sm:px-4">
                   {index === 0
                     ? copy.authentication.credential
                     : copy.authentication.create}
@@ -232,9 +242,11 @@ Accept: application/json, text/event-stream
                 {index === 0 && (
                   <DocsCode>{"Authorization: Bearer ecentic_sk_…"}</DocsCode>
                 )}
-                <ContentPageRichText content={paragraph} />
+                <div className="px-8 py-8 max-sm:px-4">
+                  <ContentPageRichText content={paragraph} />
+                </div>
                 {index === 1 && (
-                  <div className="mt-auto">
+                  <div className="mt-auto px-8 pb-8 max-sm:px-4">
                     <Button
                       color="neutral"
                       render={<Link href="/docs/authentication" />}
@@ -262,13 +274,17 @@ Accept: application/json, text/event-stream
               className="grid gap-px bg-accent-foreground md:grid-cols-[4fr_7fr]"
             >
               <div className="min-w-0 bg-background-dimmed p-8 max-sm:p-4">
-                <h3 className="text-xl">{copy.errors.labels[index]}</h3>
+                <h3 className="px-8 py-8 text-xl max-sm:px-4">
+                  {copy.errors.labels[index]}
+                </h3>
                 <p className="wrap-anywhere mt-4 font-mono text-foreground-dimmed text-xs">
                   {copy.errors.formats[index]}
                 </p>
               </div>
               <div className="min-w-0 bg-background p-8 max-sm:p-4">
-                <ContentPageRichText content={paragraph} />
+                <div className="px-8 py-8 max-sm:px-4">
+                  <ContentPageRichText content={paragraph} />
+                </div>
               </div>
             </div>
           ))}

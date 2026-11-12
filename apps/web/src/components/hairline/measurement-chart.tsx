@@ -2,7 +2,7 @@
 
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { useInteractive } from "@/components/marketing/interactive/use-interactive";
 import { Motion } from "@/components/motion";
 
@@ -11,16 +11,22 @@ export const MeasurementDial = ({
   value,
   maximum = 100,
   label,
+  remainingLabel,
 }: MeasurementDial.Props) => {
   const { reduced } = useInteractive();
+  const readoutId = useId();
   const [pointer, setPointer] = useState({ x: 0, y: 0 });
-  const [engaged, setEngaged] = useState(false);
+  const [hovered, setHovered] = useState(false);
+  const [focused, setFocused] = useState(false);
+  const engaged = hovered || focused;
   const percentage = Math.max(0, Math.min(100, (value / maximum) * 100));
   return (
     <Motion.Item
       data-measurement="dial"
       role="img"
       aria-label={`${label}: ${value} / ${maximum}`}
+      aria-describedby={readoutId}
+      data-measurement-engaged={engaged}
       tabIndex={0}
       initial={false}
       animate={{
@@ -37,13 +43,13 @@ export const MeasurementDial = ({
           y: -((event.clientY - bounds.top) / bounds.height - 0.5) * 8,
         });
       }}
-      onPointerEnter={() => setEngaged(true)}
+      onPointerEnter={() => setHovered(true)}
       onPointerLeave={() => {
         setPointer({ x: 0, y: 0 });
-        setEngaged(false);
+        setHovered(false);
       }}
-      onFocus={() => setEngaged(true)}
-      onBlur={() => setEngaged(false)}
+      onFocus={() => setFocused(true)}
+      onBlur={() => setFocused(false)}
       className="relative my-3 aspect-square w-full max-w-88 rounded-full outline-offset-8 focus-visible:outline-2 focus-visible:outline-primary"
     >
       <svg
@@ -104,11 +110,28 @@ export const MeasurementDial = ({
         </div>
         <p className="mt-3 max-w-40 text-foreground-dimmed text-sm">{label}</p>
       </div>
+      <Motion.Item
+        id={readoutId}
+        initial={false}
+        animate={{ opacity: engaged ? 1 : 0 }}
+        transition={{ duration: reduced ? 0 : 0.16 }}
+        className="absolute inset-x-0 top-[70%] flex flex-col items-center text-center text-primary-text"
+      >
+        <strong className="font-heading text-xl tabular-nums">
+          {Math.max(0, maximum - value)}
+        </strong>
+        <span className="mt-0.5 text-xs">{remainingLabel}</span>
+      </Motion.Item>
     </Motion.Item>
   );
 };
 export namespace MeasurementDial {
-  export type Props = { value: number; maximum?: number; label: string };
+  export type Props = {
+    value: number;
+    maximum?: number;
+    label: string;
+    remainingLabel: string;
+  };
 }
 
 export const MeasurementBars = ({

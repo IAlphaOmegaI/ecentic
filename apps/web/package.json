@@ -18,7 +18,11 @@
     "db:reset": "bun scripts/reset.ts",
     "db:seed": "bun scripts/seed.ts",
     "db:seed:demo": "bun scripts/seed-demo.ts",
-    "export:shopify": "bun scripts/export-shopify-csv.ts"
+    "export:shopify": "bun scripts/export-shopify-csv.ts",
+    "design:source": "bun scripts/design/check-source.ts",
+    "design:runtime": "bun scripts/design/check-runtime.ts",
+    "design:review": "bun scripts/design/check-review.ts",
+    "design:test": "bun test scripts/design"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^4.0.48",

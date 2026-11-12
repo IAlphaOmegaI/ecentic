@@ -1,27 +1,45 @@
 import type { JSX } from "react";
 import type { IconProps } from "../types";
 
+// Nucleo UI · circle-minus · outline-duo · 18px.
+// Adapted from CircleMinusOutlineDuo18; original geometry and soft layers retained.
 export const CircleMinusIcon = ({
   title,
+  strokeWidth = 1.5,
+  duoOpacity = 0.3,
   ...props
-}: IconProps): JSX.Element => {
+}: IconProps & { duoOpacity?: number | string }): JSX.Element => {
   return (
     <svg
-      height="18"
-      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+      width={18}
+      height={18}
       viewBox="0 0 18 18"
-      strokeWidth="1.5"
       {...props}
     >
       {title && <title>{title}</title>}
       <path
-        opacity="0.4"
-        d="M9.00012 17C13.4184 17 17.0001 13.4183 17.0001 9C17.0001 4.58172 13.4184 1 9.00012 1C4.58184 1 1.00012 4.58172 1.00012 9C1.00012 13.4183 4.58184 17 9.00012 17Z"
+        d="M9 16.25C13.0041 16.25 16.25 13.0041 16.25 9C16.25 4.99594 13.0041 1.75 9 1.75C4.99594 1.75 1.75 4.99594 1.75 9C1.75 13.0041 4.99594 16.25 9 16.25Z"
         fill="currentColor"
-      />
+        data-color="color-2"
+        data-stroke="none"
+        opacity={duoOpacity}
+      />{" "}
       <path
-        d="M12.2501 9.75H5.75012C5.33602 9.75 5.00012 9.4141 5.00012 9C5.00012 8.5859 5.33602 8.25 5.75012 8.25H12.2501C12.6642 8.25 13.0001 8.5859 13.0001 9C13.0001 9.4141 12.6642 9.75 12.2501 9.75Z"
-        fill="currentColor"
+        d="M9 16.25C13.0041 16.25 16.25 13.0041 16.25 9C16.25 4.99594 13.0041 1.75 9 1.75C4.99594 1.75 1.75 4.99594 1.75 9C1.75 13.0041 4.99594 16.25 9 16.25Z"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M5.75 9H12.25"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
       />
     </svg>
   );

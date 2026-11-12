@@ -3,7 +3,7 @@ import { getMessages } from "next-intl/server";
 import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
-import { ConnectedJourney } from "@/components/marketing/connected-journey";
+import { JourneySteps } from "@/components/marketing/connected-journey";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { MarketingSection } from "@/components/marketing/page";
 import { MarketingBand } from "@/components/marketing/primitives";
@@ -26,7 +26,8 @@ const Heading = ({ section }: { section: Section }) => (
 );
 
 const PurchasePaths = ({ copy }: { copy: Copy["journey"] }) => (
-  <ConnectedJourney
+  <JourneySteps
+    layout="surface"
     label={copy.label}
     items={copy.paths.map((path) => ({
       id: path.id,
@@ -110,7 +111,7 @@ const AccessRequirements = ({ copy }: { copy: Copy["access"] }) => (
         <li>{copy.eligibility}</li>
       </ul>
     </div>
-    <ConnectedJourney
+    <JourneySteps
       label={copy.title}
       className="border-t-0"
       items={copy.steps.map((step, index) => ({

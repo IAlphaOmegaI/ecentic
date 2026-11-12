@@ -2580,11 +2580,7 @@
         },
         "frequency": {
           "title": "Simulation Frequency",
-          "options": [
-            "Manual only",
-            "Daily",
-            "Weekly"
-          ]
+          "options": ["Manual only", "Daily", "Weekly"]
         },
         "persona": {
           "title": "Purchase Persona",
@@ -2896,6 +2892,40 @@
           "unsatisfied": "Not satisfied",
           "not_gradable": "Not gradable"
         }
+      }
+    },
+    "lifecycle": {
+      "action": {
+        "secondary": "Cancel",
+        "pending": "Working…"
+      },
+      "error": "We could not complete this request. Please try again or contact support.",
+      "disconnected": "Disconnected",
+      "disconnect": {
+        "title": "Disconnect this store?",
+        "description": "Remove the saved store credentials and stop access to {domain}. Your imported catalog and history stay in ecentic. This does not uninstall a plugin or revoke keys at the store; remove those at the provider as well. Sign in again first if your session is older than five minutes.",
+        "action": {
+          "primary": "Disconnect store"
+        }
+      },
+      "delete": {
+        "title": "Delete your account?",
+        "description": "This permanently deletes your profile, imported catalogs, scans and generated changes. Disconnect your store and Google integrations first. Enter your account email to confirm. You must have signed in within the last five minutes.",
+        "email": "Account email",
+        "validation": "Enter a valid email address.",
+        "assistance": "Accounts with billing or order records need assisted deletion so required records and billing are handled correctly. Contact",
+        "action": {
+          "primary": "Delete account"
+        }
+      },
+      "blocked": {
+        "reauthenticate": "Sign out and sign in again, then return here within five minutes.",
+        "confirmation": "Enter the email address of the account you are signed in to.",
+        "notFound": "This account or store is no longer available.",
+        "googleConnected": "Disconnect Google Shopping from its settings page first so the Google data source and grant can be removed correctly.",
+        "shopifyBilling": "Uninstall ecentic in Shopify first to end the Shopify billing agreement, then contact support if this connection remains.",
+        "billingRecords": "This account has billing or order records. Contact privacy@ecentic.ai for assisted deletion; we must settle billing and retain legally required records.",
+        "storeConnections": "Disconnect your stores and Google Shopping integrations in Settings before deleting the account."
       }
     }
   },
@@ -3343,7 +3373,78 @@
       "caption": "Watch the product film",
       "action": {
         "primary": "Play video"
-      }
+      },
+      "sampleLabel": "Illustrative film with sample products, shopping screens and results. Not live results or guaranteed outcomes.",
+      "transcriptTitle": "Visual transcript",
+      "transcriptIntroduction": "On-screen text and visual action from the 58-second film. Scene times are approximate. This is a visual transcript, not a transcription of speech.",
+      "onScreenLabel": "On-screen text",
+      "transcript": [
+        {
+          "time": "0:00–0:03",
+          "onScreen": "Your next customer isn’t a person.",
+          "description": "Tonal-dot hands reach toward a floating pair of headphones."
+        },
+        {
+          "time": "0:03–0:05",
+          "onScreen": "It’s an Agent.",
+          "description": "The word Agent appears in blue."
+        },
+        {
+          "time": "0:05–0:09",
+          "onScreen": "best noise-cancelling earbuds under $50",
+          "description": "A shopper types this request into a ChatGPT-style conversation."
+        },
+        {
+          "time": "0:09–0:13",
+          "onScreen": "Shoppers ask AI. AI shares the links. Before shoppers buy, AI chooses which stores they see.",
+          "description": "The example response lists Soundcore P25i at $29.99, JLab Go Air Pop+ at $24.88 and TOZO T10 at $25.99, with retailer links. ChatGPT, Claude, Gemini and Perplexity logos appear."
+        },
+        {
+          "time": "0:13–0:17",
+          "onScreen": "Your store is Invisible. Agents can’t recommend what they can’t read. Outside the answer. Outside the sale.",
+          "description": "A card labelled Your Store sits outside the answer with a Product data missing warning. The word Invisible dissolves."
+        },
+        {
+          "time": "0:17–0:20",
+          "onScreen": "Enter écentic",
+          "description": "The ecentic box and wordmark draw into view, then fill with colour."
+        },
+        {
+          "time": "0:20–0:26",
+          "onScreen": "Fix what agents can’t read.",
+          "description": "A sample ecentic dashboard shows Diagnostics for low win rate and Listing Suggestions for Aura ANC Wireless Earbuds. The pointer selects Approve. The item moves from Pending to Published, and a message says Listing updated — Changes were published to your connected store."
+        },
+        {
+          "time": "0:26–0:30",
+          "onScreen": "Watch your visibility rise.",
+          "description": "The illustrative Overview dashboard animates a rising win-rate chart and a final overall win rate of 86%, alongside results for ChatGPT, Claude and Gemini."
+        },
+        {
+          "time": "0:30–0:34",
+          "onScreen": "Your store, shoppable in chat.",
+          "description": "An example Shopify product page for Aura ANC Wireless Earbuds, priced at $39.99, transforms into a product card in the chat’s shopping results."
+        },
+        {
+          "time": "0:34–0:41",
+          "onScreen": "Climb to the top of AI results. One catalog. Discovered across AI.",
+          "description": "An ecentic Optimize control is shown beside ChatGPT, Google AI Mode and Perplexity shopping mockups. Your Store moves from recommendation position #3 to #1 in each illustration, while a small car accelerates across the screen."
+        },
+        {
+          "time": "0:41–0:49",
+          "onScreen": "Turn discovery into sales.",
+          "description": "Product cards give way to a chat request: Show me the Aura earbuds. The response displays product photos, a $39.99 price and Buy now. The illustrated flow continues through Review your order, Complete purchase and Order confirmed — Your purchase is complete."
+        },
+        {
+          "time": "0:49–0:53",
+          "onScreen": "Turn discovery into sales.",
+          "description": "An illustrative Shopify Analytics chart rises to total sales of $48,920.00. This is a sample animation, not a reported customer result."
+        },
+        {
+          "time": "0:53–0:58",
+          "onScreen": "Win the sale when AI does the shopping. Install now on Shopify and WooCommerce. ecentic.ai",
+          "description": "The ecentic logo returns above the closing message, platform logos and website address."
+        }
+      ]
     },
     "summary": {
       "label": "About ecentic"
@@ -3356,7 +3457,14 @@
       "primary": "Accept",
       "secondary": "Decline"
     },
-    "privacy": "Privacy policy"
+    "privacy": "Privacy policy",
+    "support": {
+      "action": {
+        "primary": "Open support chat"
+      },
+      "pending": "Opening support chat…",
+      "unavailable": "Chat is unavailable. Email support@ecentic.ai"
+    }
   },
   "pricing": {
     "meta": {
@@ -4688,15 +4796,15 @@
     "privacyPolicy": {
       "meta": {
         "title": "Privacy Policy — Your Data and Agent Commerce",
-        "description": "How ecentic collects, uses, and protects your data across scans, store integrations, and agent checkouts, plus your GDPR rights and how to exercise them."
+        "description": "How ecentic Inc uses account, catalog, integration and checkout data; our providers, retention, cookies and your privacy choices."
       },
       "breadcrumb": {
         "home": "Home",
         "privacyPolicy": "Privacy Policy"
       },
       "lastUpdated": {
-        "display": "August 5, 2026",
-        "iso": "2026-08-05"
+        "display": "November 12, 2026",
+        "iso": "2026-11-12"
       },
       "hero": {
         "eyebrow": "Legal",
@@ -4704,11 +4812,11 @@
           "primary": "Privacy",
           "accent": "Policy."
         },
-        "description": "ecentic (\"we\", \"us\", \"our\") is committed to protecting the privacy of merchants who use our e-commerce optimization platform. This policy explains what data we collect, how we use it, and your rights.",
+        "description": "ecentic Inc operates ecentic.ai. This notice explains how we handle information about visitors, merchants and business contacts, and how we process shopper information on a merchant’s behalf.",
         "assurances": [
-          "Agent commerce is opt-in",
-          "No advertising cookies",
-          "Encrypted in transit & at rest"
+          "You choose the integrations",
+          "Analytics require your consent",
+          "Privacy requests by email"
         ],
         "art": {
           "alt": "ASCII-art illustration of a gavel"
@@ -4721,66 +4829,78 @@
       },
       "summary": [
         {
-          "title": "What we store",
-          "description": "Account basics, the catalog you connect, and — only if you turn on agent commerce — the orders AI agents place."
+          "title": "Account and store data",
+          "description": "We use account details, connected catalog data and technical records to provide and secure the service."
         },
         {
-          "title": "What we never touch",
-          "description": "Card details, payment gateway secrets, and customer passwords. Scans alone use products-only scopes."
+          "title": "Shopper information",
+          "description": "For a merchant’s enabled agent checkout, we process order details on the merchant’s instructions. Card payments stay with the payment provider."
         },
         {
-          "title": "Where data goes",
-          "description": "To AI providers during simulations, and to the agent platform an order came from. Never sold for marketing."
+          "title": "Providers and locations",
+          "description": "Hosting, AI, billing and other service providers process the data needed for their role. Our production database is in the United States."
         },
         {
-          "title": "What you control",
-          "description": "Delete your account and everything goes with it. GDPR requests: privacy@ecentic.ai."
+          "title": "Your choices",
+          "description": "Choose integrations, control analytics consent and request access, correction or deletion at privacy@ecentic.ai."
         }
       ],
       "sections": {
         "10": {
-          "title": "Changes to This Policy",
-          "content": "We may update this privacy policy from time to time. Material changes will be communicated via email to the address associated with your account at least 30 days before taking effect. Continued use of ecentic after changes take effect constitutes acceptance of the updated policy."
+          "title": "Cookies, analytics and support chat",
+          "content": "Essential storage keeps you signed in, protects connection flows, remembers your consent choice and supports features you request. These technologies can operate without optional analytics consent.\n\nGoogle Analytics and PostHog are optional. Analytics collection and persistent analytics identifiers begin only after you accept analytics in the cookie banner. They help measure page views and feature use. Advertising-storage, advertising-user-data and personalization consent remain denied; we do not use these tools for ad targeting.\n\nUse **Cookie settings** in the footer to change or withdraw your choice. Withdrawal stops future optional analytics collection and clears the site’s analytics identifiers; it does not erase events previously collected while you consented. Browser settings can also remove or block cookies and local storage, although some necessary features may stop working.\n\nThe support chat service loads when you open chat. It processes the messages and contact information you provide and can use service storage to maintain that conversation. Opening chat is separate from accepting analytics. Booking a call opens the calendar provider’s service, which has its own storage and notice."
         },
         "11": {
-          "title": "Contact",
-          "content": "For questions about this privacy policy or our data practices:\n- Email: privacy@ecentic.ai\n- Company: [zennit](https://www.zennit.dev) (ecentic is a product of zennit)"
+          "title": "Your rights and how to request them",
+          "content": "Depending on the law that applies, you may request access to and a copy of your information, correction, deletion, portability, restriction, or an explanation of processing. You may object to processing based on legitimate interests and withdraw consent without affecting processing that was lawful before withdrawal. You can complain to the data protection authority in your country, place of work or the place of an alleged violation.\n\nEmail privacy@ecentic.ai from the account address where possible, describing the request and relevant store. We may ask for proportionate information to verify identity or authority; do not send an ID document unless we explain why it is needed. An authorized agent can contact us, and we may verify the authorization. We will not discriminate against you for exercising a protected right.\n\nWe aim to respond within one month and meet the deadline required by applicable law. We will explain any lawful extension, refusal or exception. Where a right to appeal applies, reply to our decision with “Privacy appeal”; we will review it and explain the outcome within the applicable period. Shopper requests concerning a merchant’s order are handled with that merchant as described in section 04."
+        },
+        "12": {
+          "title": "Additional information for US residents",
+          "content": "State privacy rights depend on where you live, the activity involved and whether the relevant law applies to ecentic. Where the California Consumer Privacy Act applies, rights may include knowing and accessing categories or specific pieces of personal information, correction, deletion, portability, opting out of sale or sharing, and limiting qualifying use or disclosure of sensitive personal information. Other applicable state laws may include an appeal right and an opt-out from targeted advertising or certain profiling.\n\nThe categories and sources we collect are in section 02, purposes in section 03, recipients in section 06 and retention criteria in section 09. Account credentials can be sensitive personal information. We use them to provide and secure the requested service, not to infer sensitive traits. We do not sell personal information, share it for cross-context behavioral advertising, or use it for targeted advertising. There is therefore no sale or advertising-sharing activity to opt out of through this site. We do not treat a browser opt-out signal as consent to optional analytics.\n\nUse privacy@ecentic.ai to exercise an applicable right or submit an appeal. Applicable law may exclude business contacts or processing we perform solely for a merchant; we will explain the scope in our response. Nothing in this notice limits a right the law gives you."
+        },
+        "13": {
+          "title": "Children and information we do not need",
+          "content": "ecentic accounts are for adults acting for a business. We do not knowingly invite children under 18 to create an account or submit enquiries, and we do not knowingly collect children’s information for our own marketing. If you believe a child supplied account information, contact privacy@ecentic.ai so we can investigate and delete it as appropriate.\n\nA merchant is responsible for the legal age, consent and product restrictions applicable to its own shoppers. Enabling an agent checkout does not waive age checks or make restricted goods eligible on an assistant, platform or payment provider."
+        },
+        "14": {
+          "title": "Changes and contact",
+          "content": "We may update this notice when the service or our data practices change. The date at the top identifies the current version. For a material change, we will give appropriate notice by email or in the service before it takes effect where required. We will request consent when the law or a platform policy requires new consent; continued use does not replace that consent.\n\nFor questions, requests or information about processing agreements, contact privacy@ecentic.ai. The controller and registered-agent details are in section 01."
         },
         "01": {
-          "title": "Information We Collect",
-          "content": "When you create an account, we collect your name, email address, and password (hashed, never stored in plain text).\n\nWhen you connect a Shopify, WooCommerce, or custom feed store, we access and store:\n- Product catalog data (titles, descriptions, prices, images, SKUs, handles, variant information)\n- Store domain and name\n- OAuth access tokens and API credentials required to read and write product data on your behalf\n\nIf you use only the scan and optimization product, that is the whole picture: we do not access or store customer personal data, order data, or payment information, and our Shopify integration requests only the \\`read_products\\` and \\`write_products\\` scopes.\n\n**Agent commerce (UCP).** If you additionally turn on agent commerce — by connecting a store through the écentic for WooCommerce plugin or our Shopify app, so that we serve the Universal Commerce Protocol surface on your behalf — we also receive:\n- Store policy needed to serve the protocol: currency, shipping options, tax configuration, legal page URLs, payment handler declarations, and your UCP settings\n- The orders AI shopping agents place in your store: line items, quantities, totals, and the shopper's name, email address, and shipping and billing address, all of which are required to create and fulfil the order in your store\n- Access tokens your store issues when one of your customers links their account to an AI assistant\n\nAgent commerce is off until you explicitly connect a store to it, and it stops the moment you revoke the credentials that store issued us.\n\n**Google Merchant Center.** If you also connect a Google Merchant Center account, we receive the Merchant Center data set out in section 04, which covers our handling of Google user data in full.\n\nWe never receive your payment gateway secrets or your customers' passwords, and shoppers' card details are never transmitted to or stored by ecentic — payments are charged by your own payment gateway, using credentials that stay on your own infrastructure."
+          "title": "Who we are and when this notice applies",
+          "content": "ecentic Inc, a Delaware corporation, operates ecentic.ai (\"ecentic\", \"we\", \"us\"). We are the controller of personal information we use to manage our website, accounts, billing, enquiries, security and our business relationship with you.\n\nContact privacy@ecentic.ai for privacy questions or requests. Xhurian Shaba coordinates requests. Our Delaware registered agent is LEGALINC CORPORATE SERVICES INC., 131 Continental Drive, Suite 305, Newark, New Castle County, DE 19713, United States. This is the registered-agent address for legal service, not a staffed ecentic office or support location. Please use email for privacy requests.\n\nFor shopper information processed to provide a merchant’s checkout, the merchant is the controller and ecentic acts as its processor or service provider. Section 04 explains that relationship. A signed data processing agreement may add requirements for that processing; it does not remove an individual’s statutory rights.\n\nThis notice covers ecentic’s services and public tools. A merchant’s storefront, an AI assistant, a commerce platform or a linked third-party site has its own privacy notice."
         },
         "02": {
-          "title": "How We Use Your Data",
-          "content": "Your product catalog data is used exclusively to:\n- Run AI agent simulations that evaluate how AI shopping models (ChatGPT, Claude, Gemini, Perplexity) compare your products against competitors\n- Generate optimization suggestions for product titles, descriptions, and structured data\n- Publish approved optimizations back to your connected store via the platform API\n- Generate your Universal Commerce Protocol (UCP) merchant profile\n- Display analytics, win rates, and reports within your dashboard\n\nWhere you have enabled agent commerce, store policy and order data are used exclusively to:\n- Serve the UCP protocol surface on your behalf: answer agent catalog searches, price carts against your live store, and run checkout sessions\n- Create the resulting order in your store and relay its status back to the agent platform that placed it\n- Attribute AI-agent referrals to orders, which is what your dashboard reports and, on pay-as-you-go, what your performance fee is calculated from\n\nWe never sell, rent, or share your product data, store policy, or order data with third parties for their own marketing or commercial purposes."
+          "title": "Information we collect and its sources",
+          "content": "We receive information from you, people you authorize, the store and service accounts you connect, public product pages, and the browsers or systems interacting with the service:\n\n- **Account and contact information:** name, email, business or store name, account preferences, messages, enquiries and support conversations. Passwords are hashed with scrypt, not stored as plain text. Optional sign-in providers supply the profile details authorized in their sign-in flow.\n- **Catalog and store information:** domain, titles, descriptions, images and image URLs, prices, stock, SKUs, identifiers, variants and other supported product fields. Public tools also read the public URLs you submit. Avoid including personal or confidential information in a public catalog or test prompt.\n- **Connection credentials:** OAuth tokens, API keys and related configuration needed to access a store or service you connect. These are distinct from the hashed ecentic agent API keys used to authenticate callers.\n- **Billing information:** plan, invoice references, amounts, payment status and attribution records. Stripe or the relevant commerce platform handles payment details for your ecentic bill.\n- **Technical and usage information:** request and event timestamps, page URL, referrer, browser/user-agent, device information, errors, security logs, and feature activity. Network providers necessarily receive connection information such as IP addresses. Optional analytics are controlled as explained in section 10.\n- **Agent checkout information, when enabled:** products, quantities, prices and totals; shopper name, email, shipping and billing address; checkout/order identifiers and status; required store policies; and any customer-linking tokens supplied by the enabled flow. We do not ask for shoppers’ passwords or receive their card numbers in the supported checkout flow.\n\nWe do not require health records, government identification or other unrelated sensitive personal information. Account credentials and some contact or order fields can nevertheless be sensitive under applicable law; we use them only for the service, security and the purposes described here."
         },
         "03": {
-          "title": "Shopper Data in Agent Checkouts",
-          "content": "This section applies only to merchants who have enabled agent commerce.\n\nWhen an AI shopping agent completes a checkout, the shopper's contact and address details pass through the UCP surface we serve on your behalf, and the order is created in your own store. For that data, **you are the data controller and ecentic is your processor**: we handle it only to carry out the checkout you have asked us to serve, on your documented instructions.\n\nConcretely, this means we:\n- Use shopper details solely to price, create, and relay the order, and to pass fulfilment status back to the agent platform the shopper used\n- Never use shopper details to market to them, never build shopper profiles across merchants, and never sell or rent that data\n- Do not receive card numbers or payment credentials at any point — the charge is made by your own payment gateway\n\nYou remain the seller and Merchant of Record, and your own store's privacy notice governs your relationship with the shopper. Requests from shoppers exercising their rights should be directed to you; we will assist you in responding to them, and you can reach us at privacy@ecentic.ai."
+          "title": "Why we use information",
+          "content": "We use information to:\n\n- Create and authenticate accounts, connect stores, import catalogs, provide the dashboard and respond to requests.\n- Compare products in simulations, explain results and generate listing fixes from the connected catalog. Store scans use ChatGPT, Claude and Gemini; separate tools may use other supported models.\n- Publish a generated title and description when you choose Apply on a supported direct connection. Structured data has a separate publish action. Apply is not a preview-only step.\n- Serve enabled discovery, catalog, cart and checkout functions; relay order status; measure referrals; calculate charges; and administer subscriptions.\n- Diagnose failures, prevent misuse, enforce service limits, maintain records, comply with legal duties and establish or defend claims.\n- Understand site and feature use with your analytics consent, and handle demo, partner and integration enquiries you submit.\n\nWhere the GDPR or UK GDPR applies, our bases are performing a contract with an individual or taking requested pre-contract steps; legitimate interests in operating and securing a business service and communicating with business representatives; compliance with legal duties; and consent for optional analytics or another activity for which we ask consent. We consider the impact on individuals when relying on legitimate interests. You can object as described in section 11.\n\nA merchant determines the lawful basis for shopper data we process on its instructions. Do not send shopper data to catalog simulations unless you are authorized to do so and the agreed service requires it. Simulations evaluate products; they are not intended to make solely automated decisions about individuals that have legal or similarly significant effects."
         },
         "04": {
-          "title": "Google User Data (Merchant Center)",
-          "content": "This section applies only to merchants who connect a Google Merchant Center account, and describes our handling of Google user data under the [Google API Services User Data Policy](https://developers.google.com/terms/api-services-user-data-policy).\n\n**The access we request.** One scope: https://www.googleapis.com/auth/content — the single scope the Google Merchant API offers for reading and managing Merchant Center data. No narrower scope exists for these operations. Separately, if you choose to sign in to ecentic with Google, that sign-in receives your name, email address, and profile picture, used only to create and identify your ecentic account.\n\n**What we read.** From the Merchant Center account you connect:\n- The Merchant Center accounts your Google login can reach — account id and name — and each account's registered homepage, which we use to match the correct account to your store\n- Your product offers: offer ids, feed labels, content languages, titles, descriptions, product types, custom attributes, and each offer's processing status, item-level issues, and approval or disapproval state\n- Account-level issues and diagnostics\n- Your data source configuration, including your primary feed's default rule\n- Your online return policies and customer-service contact details, read to audit your readiness for agentic checkout\n\n**What we write.** Only on stores where you have connected Google and asked us to optimize:\n- A supplemental data source named \"ecentic Optimizations\" on your account, and an update to your primary feed's default rule so that source is read first\n- Product attribute overrides — titles, descriptions, product types, custom labels, GTINs, and agentic-checkout attributes — pushed into that supplemental data source alone. We never write to your primary feed; your Google plugin keeps ownership of price, availability, images, and links\n- Return policies and customer-service contact details, only when you enter and save them in the ecentic dashboard\n- An account-management link between your Merchant Center account and ecentic's advanced account, proposed only after you confirm it in our dashboard\n\n**How we use it.** Google user data is used exclusively to deliver the features you connected Google for: identifying and linking the correct Merchant Center account, publishing the optimizations you approve, confirming those optimizations merged onto your live offers, and showing you diagnostics, disapprovals, and checkout readiness in your dashboard. We do not use it for advertising, lending, credit decisions, or any purpose unrelated to those features.\n\n**How we share it.** We do not sell, rent, or transfer Google user data to data brokers, advertisers, or any third party for their own purposes. It is handled by the infrastructure providers that run ecentic — our hosting and database provider and our error-monitoring provider — acting solely as our processors under contract, and by no one else.\n\n**AI and machine learning.** Data read from your Merchant Center account is never sent to AI model providers, and is never used to develop, improve, or train AI or machine-learning models, ours or anyone else's. Our optimization suggestions are generated from the product catalog you sync from your store platform, not from Google's APIs, and are shown to you for approval before anything is written back. ecentic's use of information received from Google APIs adheres to the Google API Services User Data Policy, including the Limited Use requirements.\n\n**How we protect it.** Google OAuth tokens are held in our PostgreSQL database with encryption at rest, transmitted only over TLS, never exposed to your browser, and never written to logs or error reports. The OAuth flow is protected by a short-lived, httpOnly, secure state cookie, and Merchant Center data is readable only by the authenticated ecentic user who owns the connected store.\n\n**How long we keep it, and how to remove it.** We hold your Google tokens and the Merchant Center data we cache for as long as your store stays connected. Disconnecting Google in the ecentic dashboard removes our supplemental data source from your account, restores your primary feed's default rule, ends the account-management link, and immediately deletes your tokens and our records of pushed offers. Deleting your ecentic account deletes all of it. You can also revoke ecentic's access at any time from your [Google Account permissions page](https://myaccount.google.com/permissions); revoking there stops all further access, and any leftover data source can be removed in Merchant Center."
+          "title": "Shopify, WooCommerce and agent checkout",
+          "content": "The Shopify app requests `read_products`, `write_products`, `read_script_tags` and `write_script_tags`. These permit catalog access and publishing, and installation of the visit-measurement script. The script sends page URL, referrer, user-agent, page type, detected assistant and an available product identifier. This merchant storefront measurement is separate from the cookie choice on ecentic.ai. The merchant is responsible for its storefront notice and any required consent.\n\nWooCommerce uses the credentials and permissions you issue. Read-only credentials can import products; publishing requires write access. Feed imports read the supported fields from the source you supply.\n\nAgent checkout is optional and requires a supported WooCommerce checkout connection. Shopify installation alone does not enable ecentic’s hosted checkout. The merchant remains the seller and merchant of record. We process shopper details on its documented instructions to price carts, create the order in its store, relay status to the assistant used by the shopper and support the enabled transaction. We do not use those details to advertise to shoppers or build profiles across merchants.\n\nCard charging is handled by the merchant’s own payment gateway, using its payment setup. Your gateway’s credentials and shoppers’ card numbers are not supplied to ecentic by this supported flow. The merchant’s own terms and privacy notice govern its relationship with the shopper.\n\nA shopper should normally make an access or deletion request to the merchant, which can ask us for assistance at privacy@ecentic.ai. We may direct a request to that merchant so the party responsible for the order can handle it."
         },
         "05": {
-          "title": "Third-Party Services",
-          "content": "We use the following third-party services to operate ecentic:\n- **AI Model Providers** (Azure OpenAI, Anthropic, Google, Perplexity): The product catalog you sync from your store platform is sent to AI models during simulations and optimization. Data read from a connected Google Merchant Center account is never sent to them (see section 04). Data is transmitted via encrypted API calls and is not retained by providers beyond the API request lifecycle per their data processing agreements.\n- **Sentry**: Error monitoring. May receive anonymized error context (no product data).\n- **PostHog**: Product analytics. Receives anonymized usage events (page views, feature interactions). No product catalog data is sent.\n- **Google Analytics 4**: Website analytics. Receives page views and traffic sources. No product catalog data, store credentials, or account identifiers are sent.\n- **Resend**: Transactional email delivery (verification codes, notifications). Receives only email addresses and message content.\n- **UploadThing**: File storage for uploaded assets. Stores only files you explicitly upload.\n- **Vercel**: Hosting infrastructure. Processes requests but does not independently store application data.\n- **Stripe**: Billing for your ecentic subscription or performance fee. Receives your billing details and the amounts owed. Shoppers' payment details never pass through this — a shopper's card is charged by your own store's gateway, not ours."
+          "title": "Google Merchant Center data",
+          "content": "This section applies when you connect Google Merchant Center. We request `https://www.googleapis.com/auth/content` for the Merchant API operations below. Google sign-in, if chosen separately, uses the authorized name, email and profile image to identify your ecentic account.\n\n**What we read:** the Merchant Center accounts available to your Google login, their names, IDs and registered homepages; product offers, offer IDs, feed labels, languages and supported attributes; processing and approval status, item and account issues; data source configuration and default rules; return policies and customer-service details used in checkout-readiness checks.\n\n**What we write when you authorize the relevant feature:** an “ecentic Optimizations” supplemental data source; the primary feed’s default rule so that it reads that source first; supported product overrides in that supplemental source; and return or service-contact details you enter and save. Your primary feed continues to own prices, availability, images and links. An account-management link with ecentic’s advanced account is proposed only after your confirmation in the dashboard.\n\nWe use this data to link the right account, publish the changes you request, check the merged offers and show diagnostics. We do not sell it or use it for advertising, lending, credit decisions or unrelated purposes. Service infrastructure may process it to provide these functions; it is not disclosed to data brokers or advertisers.\n\nMerchant Center API data is not sent to AI model providers and is not used to develop, improve or train generalized AI models. Listing generation uses the catalog connected from your store, not Google API data. Our use of information received from Google APIs adheres to the [Google API Services User Data Policy](https://developers.google.com/terms/api-services-user-data-policy), including its Limited Use requirements.\n\nGoogle credentials remain server-side; authenticated access checks the connected store’s ownership. The OAuth connection uses a short-lived state cookie. Disconnecting Google deletes local connection tokens and pushed-offer records and attempts to remove the supplemental source, restore the primary rule and end the management link. If a remote cleanup fails, it may need to be completed in Merchant Center. You can revoke access through [Google Account permissions](https://myaccount.google.com/permissions); that prevents further authorized API access but does not itself erase previously retained records. Section 09 covers deletion and backups."
         },
         "06": {
-          "title": "Data Storage & Security",
-          "content": "Your data is stored in a PostgreSQL database hosted on infrastructure with encryption at rest and in transit (TLS 1.2+).\n\nWe implement standard security practices including:\n- HTTPS-only communication\n- HMAC signature verification on all incoming Shopify webhooks\n- CSRF protection via state/nonce parameters on OAuth flows\n- Secure, httpOnly, sameSite cookies for session management\n- Password hashing via industry-standard algorithms (bcrypt/argon2)"
+          "title": "AI providers and other recipients",
+          "content": "We disclose information needed for the following roles:\n\n- **Vercel and Neon:** hosting, application execution, database storage and AI request routing.\n- **Azure OpenAI and models through Vercel AI Gateway:** product catalog, questions and relevant context for simulations and listing generation. ChatGPT uses Azure when the deployment is configured; other supported routes use AI Gateway. Provider retention and abuse-monitoring policies vary. We do not promise that every route has zero retention or the same training settings. See [Gateway retention policies](https://vercel.com/docs/ai-gateway/security-and-compliance/zdr) and [training controls](https://vercel.com/docs/ai-gateway/security-and-compliance/disallow-prompt-training).\n- **Sentry:** error and performance diagnostics. Default PII capture is disabled; any enabled replay masks text and media. Technical events can still contain information needed to diagnose a failure.\n- **PostHog and Google Analytics:** optional website/product analytics, subject to your consent.\n- **Upstash, UploadThing and Resend:** request limits/cache, uploaded-file storage, and transactional or enquiry emails.\n- **Stripe and connected commerce platforms:** billing, store integrations, orders and the actions you authorize.\n- **Chatwoot and Cal.com:** support conversations you open and calls you book. Their own notices also apply to their services.\n\nSpecific enabled tools may also use SerpAPI for public offer lookups, Shopify Catalog MCP, an x402 payment facilitator, or Clearbit for logo images. BabyLoveGrowth supplies editorial content, and internal tools can use ScrapeLLM. These roles do not imply that every provider receives every category of information.\n\nWe may also disclose relevant information to advisers, authorities or other parties when required by law, necessary to protect rights or safety, or as part of a business transfer subject to appropriate protection. We do not sell personal information, share it for cross-context behavioral advertising or disclose connected store data for another company’s own marketing. A list of providers and the applicable processing arrangements can be requested at privacy@ecentic.ai."
         },
         "07": {
-          "title": "Data Retention & Deletion",
-          "content": "We retain your data for as long as your account is active. When you disconnect a store, the associated access tokens are immediately deleted. Product data imported from that store is retained for your simulation history unless you explicitly request deletion.\n\nOrders placed through agent commerce are retained while your account is active, because they are what your reports and — on pay-as-you-go — your performance fee are calculated from. Where we are required to keep billing records for tax or accounting purposes, we keep the order reference and amount, not the shopper's contact and address details.\n\nWhen you delete your account, all associated data is permanently deleted, including:\n- Your user profile and authentication credentials\n- All connected store records and access tokens\n- All imported product data\n- All simulation results, optimization history, and reports\n- Your UCP merchant profile and any agent-placed order records, including shopper details\n- Your Google Merchant Center connection: OAuth tokens, the linked account reference, and our records of the offers we pushed\n\nWhen a Shopify merchant uninstalls the ecentic app, we receive a \\`shop/redact\\` webhook and automatically delete all store data, products, and associated records for that shop.\n\nFor GDPR data subject requests (access, rectification, erasure, portability), contact privacy@ecentic.ai."
+          "title": "Where information is processed",
+          "content": "ecentic Inc is in the United States. The production database is hosted by Neon on AWS in Northern Virginia (us-east-1). Our development team is in Albania, and service providers may process information in the United States and other countries according to the selected service and account configuration. A database location is not a guarantee that every request stays in that region.\n\nInternational transfers can be subject to additional requirements. Where applicable law requires a transfer mechanism, it must be covered by the relevant processing agreement and safeguards, such as an adequacy decision or approved contractual clauses. Contact privacy@ecentic.ai for the arrangements applicable to your service and to request details or copies of relevant safeguards. A country, adequacy status or provider certification is not assumed to cover every transfer merely because a provider operates there."
         },
         "08": {
-          "title": "Cookies",
-          "content": "We use essential and analytics cookies:\n- **Session cookies**: Maintain your authenticated session\n- **OAuth state cookies**: Short-lived (10 minutes) cookies used during Shopify OAuth flow to prevent CSRF attacks\n- **Analytics cookies**: Set by Google Analytics (\\`_ga\\`, \\`_ga_*\\`) and PostHog to measure page views and feature usage so we can improve the product. These are set **only after you accept** them in the cookie banner — decline and neither tool collects anything or stores a cookie.\n\nYou can change your answer at any time via **Cookie settings** in the footer. We do not use advertising cookies, and we do not use analytics data for ad targeting or share it with advertising networks."
+          "title": "Security",
+          "content": "Our hosting and database providers protect data in transit with TLS 1.2 or later and stored database data with AES-256 encryption. Application controls include ownership checks, OAuth state validation, HMAC verification for Shopify webhooks, secure httpOnly session cookies, scrypt password hashes and SHA-256 hashes for ecentic agent API keys.\n\nWe restrict credential handling to the server and avoid sending credentials in WooCommerce request URLs. Safeguards reduce risk but cannot guarantee that every transmission or system is completely secure. Keep your own credentials private, use the minimum platform permissions needed and tell support@ecentic.ai promptly about suspected unauthorized access. Do not send passwords, full payment details or secret keys in a support message."
         },
         "09": {
-          "title": "Your Rights",
-          "content": "Depending on your jurisdiction, you may have the right to:\n- Access the personal data we hold about you\n- Request correction of inaccurate data\n- Request deletion of your data\n- Export your data in a portable format\n- Object to or restrict certain processing\n- Withdraw consent where processing is consent-based\n\nTo exercise any of these rights, contact privacy@ecentic.ai."
+          "title": "Retention, disconnecting and deletion",
+          "content": "We keep account and connected catalog records while needed to provide the service. You can request deletion through privacy@ecentic.ai. Some accounts can use the account-deletion controls in settings; billing history or a connected provider agreement may require assisted deletion first. We respond within one month, subject to a lawful extension explained to you, and confirm the outcome.\n\nDeletion covers the account and related credentials, imported catalog, simulations and listing records except information needed for legal duties, security, disputes or outstanding transactions. Billing references and amounts are retained for the applicable accounting period; card details remain with the billing provider. A deletion request does not cancel amounts already due or authorize destruction of records we must keep.\n\nDisconnecting a Shopify or WooCommerce store removes its local connection credentials and disables the ecentic tracking key, while retaining catalog/history until deletion is requested. Some active billing or Google connections must be handled first. Revoke keys or uninstall the app in the originating platform to revoke that platform’s grant. Google’s additional cleanup is described in section 05. Shopify’s `shop/redact` webhook also removes the shop’s data when Shopify sends the request.\n\nDemo, partnership and integration enquiries are retained for up to 24 months after last contact and deleted sooner on request. Support, security and analytics records are retained only as needed for their purpose, subject to legal requirements and configured provider retention. The period can differ from the account’s lifetime.\n\nDeleted information can remain in restricted backup or restore history until those copies expire. We do not use those copies for ordinary operations. If a recovery restores deleted records, the deletion must be reapplied. Ask us for the retention arrangements relevant to an agreement; we do not promise a fixed recovery or backup-purge window that has not been agreed."
         }
       }
     },
@@ -4794,8 +4914,9 @@
         "terms": "Terms of Service"
       },
       "lastUpdated": {
-        "display": "July 12, 2026",
-        "iso": "2026-07-12"
+        "display": "November 12, 2026",
+        "iso": "2026-11-12",
+        "label": "Last updated: {date}"
       },
       "hero": {
         "eyebrow": "Legal",
@@ -4803,11 +4924,11 @@
           "primary": "Terms of",
           "accent": "Service."
         },
-        "description": "These terms govern your use of ecentic — the platform, the store integrations, and the hosted Universal Commerce Protocol surface that lets AI shopping agents discover and buy from your store.",
+        "description": "These terms form the agreement between you and ecentic Inc for ecentic.ai, its store integrations, public tools and enabled agent-commerce services.",
         "assurances": [
-          "Cancel any time",
-          "You stay Merchant of Record",
-          "Your data stays yours"
+          "Your catalog stays yours",
+          "You remain the seller",
+          "Plans have separate billing terms"
         ],
         "art": {
           "alt": "ASCII-art illustration of a quill and inkwell"
@@ -4821,7 +4942,7 @@
       "summary": [
         {
           "title": "What we do",
-          "description": "We make your catalog discoverable to AI shopping agents and serve the UCP protocol surface on your store's behalf."
+          "description": "We compare and improve connected product data and provide supported discovery and checkout tools. Simulations do not guarantee real sales."
         },
         {
           "title": "What you keep",
@@ -4829,7 +4950,7 @@
         },
         {
           "title": "How billing works",
-          "description": "A free scan, pay-as-you-go with a capped performance fee, or a flat subscription. No fee rides a subscription."
+          "description": "The free scan, pay-as-you-go and flat subscriptions are separate. A flat subscription has no performance fee."
         },
         {
           "title": "How it ends",
@@ -4838,44 +4959,52 @@
       ],
       "sections": {
         "10": {
-          "title": "Governing Law and Contact",
-          "content": "These Terms are governed by the laws of the Republic of Albania, without regard to conflict-of-law rules. The courts of Tirana have exclusive jurisdiction over any dispute arising out of or related to these Terms, subject to any mandatory consumer protections available to you locally.\n\nQuestions about these Terms:\n\n- Email: legal@ecentic.ai\n- Company: [zennit](https://www.zennit.dev) (ecentic is a product of zennit)\n- Address: Pallatet Merkaj, Hyrja 1, Dera 12, Rruga Muhamed Deliu, Qesarakë, Tiranë, Albania"
+          "title": "Disclaimers and liability",
+          "content": "To the extent permitted by law, the Service is provided “as is” and “as available”, without express or implied warranties, including merchantability, fitness for a particular purpose and non-infringement. AI-generated text, simulations, scores and readiness checks may be incomplete or wrong and do not guarantee revenue, visibility, legal compliance or an assistant’s behavior. You are responsible for verifying outputs before relying on them.\n\nTo the maximum extent permitted by law, ecentic Inc is not liable for indirect, incidental, special, consequential or punitive losses, or lost profits, revenue, opportunities or data arising from the Service. Our total aggregate liability relating to the Service is limited to the greater of the fees you paid us for the Service during the twelve months before the event giving rise to the claim or US$100.\n\nThese limits do not exclude or limit liability that cannot lawfully be excluded or limited, including fraud, willful misconduct or any mandatory statutory remedy. If a signed agreement expressly sets a different liability allocation, that allocation controls for its scope. Nothing requires a consumer to give up a protection that applicable law makes mandatory."
+        },
+        "11": {
+          "title": "Governing law and disputes",
+          "content": "Delaware law governs these Terms, without applying its conflict-of-law rules and subject to mandatory laws that apply to you. Unless a signed agreement specifies otherwise or mandatory law requires another forum, disputes are subject to the state or federal courts with jurisdiction in Delaware. These Terms do not impose mandatory arbitration or waive a statutory right to bring a claim in a competent forum.\n\nBefore starting proceedings, contact privacy@ecentic.ai so we can try to resolve the issue. This request does not prevent urgent relief, a regulatory complaint or a claim within a legal deadline."
+        },
+        "12": {
+          "title": "General terms and contact",
+          "content": "These Terms, the applicable billing confirmation and any signed agreements govern the Service relationship. If a provision is unenforceable, the remaining provisions remain effective. A delay in enforcing a right is not a waiver. You may not transfer this agreement without our written consent, except where the law permits it; we may transfer it as part of a reorganization or business transfer, subject to applicable data-protection duties and your statutory rights. Neither party is responsible for failure caused by events beyond its reasonable control, except payment already due.\n\nThe English version is the reference text where a translation differs, except where mandatory law requires otherwise. Translations are provided to help readers understand the terms.\n\nFor service or billing help, contact support@ecentic.ai. For these Terms, privacy or processing agreements, contact privacy@ecentic.ai. ecentic Inc’s registered-agent details are in section 01."
         },
         "01": {
-          "title": "Agreement to These Terms",
-          "content": "These Terms of Service (\"Terms\") govern your access to and use of ecentic (the \"Service\"), operated by [zennit](https://www.zennit.dev). By creating an account, connecting a store, or installing one of our plugins or apps, you agree to these Terms.\n\nIf you are agreeing on behalf of a company, you represent that you have authority to bind that company, and \"you\" refers to that company.\n\nWe may update these Terms. If a change is material, we will notify you by email or in the product before it takes effect. Continuing to use the Service after a change takes effect means you accept the revised Terms."
+          "title": "Agreement and operator",
+          "content": "These Terms of Service (\"Terms\") are an agreement between you and ecentic Inc, a Delaware corporation (\"ecentic\", \"we\", \"us\"), for access to ecentic.ai and the related apps, integrations, APIs and tools (the \"Service\"). By creating an account, installing an integration or using the Service, you agree to these Terms. If you act for a business, you confirm you have authority to bind it; “you” then means that business.\n\nYou must be at least 18 and able to enter this agreement. The Service is designed for business use. Mandatory rights that apply to you cannot be waived by these Terms.\n\nOur registered agent for legal service is LEGALINC CORPORATE SERVICES INC., 131 Continental Drive, Suite 305, Newark, New Castle County, DE 19713, United States. This is a registered-agent address, not a staffed ecentic office. Contact privacy@ecentic.ai for questions about these Terms and support@ecentic.ai for service help.\n\nA separately signed order, enterprise agreement or data processing agreement controls over these Terms only for the subject on which it expressly differs. Such an agreement identifies its actual contracting entity; no different entity is implied by your location or by a shared brand name."
         },
         "02": {
-          "title": "The Service",
-          "content": "ecentic helps merchants win in the AI agent economy. Depending on the plan and integrations you enable, the Service may:\n\n- Simulate how AI shopping assistants compare your products against competitors, and diagnose why a product wins or loses\n- Generate optimized product listings that you review and choose to publish back to your store\n- Serve the Universal Commerce Protocol (UCP) surface on your store's behalf — discovery, catalog search, cart and checkout sessions, payment handling, request signing, and order webhooks — so AI agents can transact with your store\n- Track visits and referrals from AI agents to your storefront\n\nOur UCP integrations (including the écentic for WooCommerce plugin and our Shopify app) connect your store to this hosted surface. What each integration reads and transmits is described in its own listing and in our [Privacy Policy](/privacy-policy).\n\nThe Service depends on third-party AI providers and agent platforms whose behavior we do not control. We do not guarantee that any agent will surface, recommend, or purchase your products, or that simulated outcomes will match real ones."
+          "title": "What the service does",
+          "content": "Depending on the plan, permissions and integrations you enable, ecentic can import catalog data, compare selected products with competitors in AI simulations, generate listing content, provide structured-data and discovery tools, measure agent referrals, and serve supported catalog/cart/checkout functions through the Universal Commerce Protocol (UCP).\n\nSimulations are controlled comparisons using the selected models and inputs. They are not a live census of every assistant, an endorsement by a model provider, or a promise that a product will be recommended or bought. Scores, win rates and illustrative examples must be read with their stated scope and sample.\n\nA supported WooCommerce connection can enable ecentic’s hosted agent checkout. Installing the Shopify app alone does not enable that checkout service. Third-party platform eligibility, geography, product policies and payment support still apply. A “Coming soon” feature is not a current service commitment.\n\nAI and commerce providers can change models, rules, interfaces or availability. We do not control those changes. Public tools may have limits or a narrower scope than a paid account. Integration documentation and the [Privacy Policy](/privacy-policy) explain the access and processing involved."
         },
         "03": {
-          "title": "Your Store, Your Data",
-          "content": "You retain all rights to your product catalog, your store content, and your customer and order data. Connecting a store grants us a limited licence to access and process that data solely to provide the Service to you.\n\nYou are responsible for:\n\n- Having the right to connect the store and share the data you connect\n- The accuracy of the catalog and store policy data you expose through the Service\n- Reviewing generated listing content before publishing it to your live store\n- Keeping your account credentials and API keys secure\n\nYou can revoke our access at any time by disconnecting the store or revoking the API credentials it issued us. Access ends immediately when you do."
+          "title": "Your account, catalog and publishing",
+          "content": "Keep account information accurate and credentials secure, authorize only people who should access the account, and notify us of suspected misuse. You must have the rights and permissions needed to connect a store, submit a URL or feed, supply content and instruct us to process it. Do not submit another merchant’s private credentials or confidential material without authority.\n\nYou retain your rights in your catalog, store content, customer data and other material you provide. You give us a limited right to host, copy, process and transmit it to operate and secure the features you request, including through the service providers described in the Privacy Policy. This does not give us a right to sell your private catalog or customer data.\n\nYou are responsible for the accuracy, legality, permissions and substantiation of product facts, claims, prices, stock, shipping, returns and other store policies. Generated content can contain errors. Review the source facts and choose carefully when to publish. **Apply generates and publishes a title and description on a supported direct connection; it is not a preview-only action.** Structured data is published through a separate action. Feed imports do not write changes back to the source feed.\n\nYou may use the listing fixes and reports provided for your business, subject to third-party rights. AI output may not be unique or eligible for exclusive intellectual-property protection. Nothing here transfers ownership of the platform, code, model or third-party materials to you."
         },
         "04": {
-          "title": "Agent Transactions and Merchant of Record",
-          "content": "When an AI agent places an order through the UCP surface, the order is created in your own store, through your own commerce platform, under your own terms of sale.\n\nYou remain the seller and the Merchant of Record for every such order. You are responsible for pricing, tax, fulfilment, returns, refunds, chargebacks, and customer support, exactly as you are for orders placed on your storefront. ecentic is not a party to the sale, does not take title to goods, and does not act as a payment processor or merchant of record.\n\nWhere you enable server-side payment processing, payments are charged through your own payment gateway using credentials that stay on your own infrastructure. Your relationship with that payment provider is governed by their terms, not ours."
+          "title": "Orders, payments and merchant responsibility",
+          "content": "For an order placed through an enabled agent checkout, you remain the seller and merchant of record. The order is created in your commerce platform under your store’s terms. You are responsible for product legality, age or other eligibility checks, taxes, pricing, availability, shipping, fulfilment, consumer notices, refunds, returns, chargebacks and customer service.\n\necentic does not take title to goods and is not a party to the sale between you and the shopper. It is not your acquiring bank or payment processor. The supported payment flow uses your own payment provider and its applicable agreement. Do not expose payment secrets or card data through product fields, prompts or support messages.\n\nYou must configure and test checkout, shipping, taxes and payments before enabling them for shoppers. Agent or network failures may require you to reconcile a checkout with the actual order and payment status. Do not treat a simulation or readiness result as authorization to sell a restricted product or as confirmation that a transaction settled."
         },
         "05": {
-          "title": "Acceptable Use",
-          "content": "You agree not to:\n\n- Use the Service to list, promote, or transact in goods you are not lawfully permitted to sell\n- Misrepresent your products, prices, availability, or business identity to AI agents or shoppers\n- Reverse engineer, resell, or provide the Service to third parties as your own\n- Attempt to gain unauthorized access to the Service, other merchants' data, or our infrastructure\n- Interfere with the Service, circumvent rate limits, or use it in a way that degrades it for others\n\nWe may suspend or terminate an account that violates these rules, or where we are required to do so by law or by a platform partner."
+          "title": "Permitted use and platform rights",
+          "content": "Subject to these Terms and any applicable payment, we permit you to use the Service for your business within its documented limits. Rights not expressly granted remain with us or the relevant licensors and rights holders. Third-party and open-source components retain their own licences; these Terms do not restrict rights their licences grant you.\n\nDo not:\n\n- Use the Service for unlawful, deceptive or infringing activity, prohibited goods, harassment or unauthorized processing of personal data.\n- Misrepresent products, prices, identity, credentials or the results of a simulation.\n- Access another account, bypass authentication, evade usage limits, interfere with the Service or probe systems without permission.\n- Resell, white-label or present the Service as your own without a separate written agreement. Approved referral arrangements do not grant a resale right.\n- Copy or reverse engineer protected parts of the Service except to the extent a law or applicable licence permits it despite this restriction.\n\nBrand names and logos of assistants, commerce platforms or customers remain their owners’ property. Their appearance does not imply endorsement or a partnership. Permission to use ecentic’s name in a public customer or partner listing is not implied by these Terms."
         },
         "06": {
-          "title": "Plans, Fees, and Billing",
-          "content": "We offer three separate products. Details and current prices are on the [pricing page](/pricing).\n\n- **Scan** — a free, one-time analysis. No card, no billing.\n- **Pay-as-you-go** — free to start, with no card required until a fee is actually due. You are billed only a performance fee on revenue we attribute to AI-agent referrals, within the attribution window and subject to a monthly cap.\n- **Subscription** — a flat monthly plan (Compete or Dominate). No performance fee ever applies to a subscription.\n\nThe performance fee never rides a subscription. Pay-as-you-go runs on calendar months. Where you installed through a commerce platform's own billing (for example Shopify), charges are made through that platform instead.\n\nFees are exclusive of taxes unless stated otherwise, and are non-refundable except where required by law. You may cancel at any time; cancellation takes effect at the end of the current billing period, and you keep access until then."
+          "title": "Plans, fees and renewal",
+          "content": "The [pricing page](/pricing) and the billing confirmation identify the plan, limits, price and any applicable terms before activation. There are three separate products:\n\n- **Scan:** a free, one-time analysis, without a billing row or card requirement.\n- **Pay-as-you-go:** free to start, with no card required until a fee is due. It is billed only through a performance fee on qualifying AI-attributed revenue. The standard settings are 3%, a seven-day referral attribution window and a US$500 cap per calendar month, unless different settings are expressly agreed for the account. Each qualifying order’s fee is rounded to cents before summing and applying the cap. Attribution is a measurement method, not proof that AI caused a sale.\n- **Flat subscription:** Compete, Scale or Dominate, with the recurring monthly charge and product limits you select. A performance fee does not apply while the account is on a flat subscription.\n\nFlat subscriptions renew automatically each month until cancelled. Stripe handles direct billing; eligible Shopify-installed stores use Shopify’s approved billing mechanism. Pay-as-you-go uses calendar months and separate usage charges or invoices, not a performance fee added to a flat plan. You authorize the payment provider to charge amounts you approve under the selected arrangement.\n\nPrices exclude applicable taxes unless stated otherwise. You are responsible for valid billing details and due charges. Fees are non-refundable except where the law or a written agreement requires otherwise. We will disclose a recurring price change before the renewal to which it applies, with an opportunity to cancel. Enterprise scope, targets, duration and any outcome-linked fee must be agreed in writing; an example or sales conversation is not an agreed guarantee."
         },
         "07": {
-          "title": "Availability and Support",
-          "content": "We work to keep the Service — including the hosted UCP endpoints that agents call — available and correct, but we do not promise uninterrupted or error-free operation. We may change, suspend, or discontinue parts of the Service, and we will give reasonable notice before removing functionality you depend on.\n\nPlanned maintenance, third-party outages, and changes made by AI platforms or commerce platforms can all affect availability. Support channels and response expectations are described on our [support page](/support)."
+          "title": "Cancellation, disconnecting and deletion",
+          "content": "You can cancel a flat subscription through the applicable billing controls or request help at support@ecentic.ai. Cancellation normally takes effect at the end of the paid billing period, with access continuing until then. Platform-billed subscriptions must also follow that platform’s cancellation mechanism. For pay-as-you-go, use the available billing controls or contact support to stop the arrangement; fees already incurred remain payable.\n\nDisconnecting a store, revoking a platform credential, cancelling billing and deleting an account are distinct actions. Do not assume one cancels the others. Revocation in the originating platform stops further access under that grant. Local disconnection retains imported history until deletion and may require active billing or Google connections to be handled first.\n\nYou can request account deletion at privacy@ecentic.ai or use the available settings control. Outstanding billing, provider cleanup, legal retention and backups can require an assisted process. The [Privacy Policy](/privacy-policy) explains what is deleted and retained. Export or retain records your business needs before closing the account.\n\nAfter termination, you must stop using the Service. Hosted functions and store access are disabled as part of closure, but an order or charge already created remains your responsibility. Payment obligations, ownership, confidentiality, disclaimers, liability limits and dispute provisions survive where their purpose requires it."
         },
         "08": {
-          "title": "Disclaimers and Limitation of Liability",
-          "content": "The Service is provided \"as is\" and \"as available\", without warranties of any kind, whether express or implied, including merchantability, fitness for a particular purpose, and non-infringement. Simulations, win-rate figures, and optimization suggestions are estimates, not guarantees of commercial outcomes.\n\nTo the maximum extent permitted by law, ecentic and zennit are not liable for any indirect, incidental, special, consequential, or punitive damages, or for any lost profits, lost revenue, lost sales, or lost data, arising out of or related to the Service.\n\nTo the maximum extent permitted by law, our total aggregate liability arising out of or related to the Service is limited to the greater of (a) the amount you paid us in the twelve months before the event giving rise to the claim, or (b) one hundred euros (€100).\n\nNothing in these Terms excludes liability that cannot lawfully be excluded, including liability for fraud, or for death or personal injury caused by negligence."
+          "title": "Data protection and confidential information",
+          "content": "The Privacy Policy describes our handling of personal information. Where we process shopper data on your behalf, you determine the purpose and lawful basis and remain responsible for notices, permissions and instructions. We act within the requested service and any signed data processing agreement. Contact privacy@ecentic.ai to arrange a DPA or provide your proposed agreement before sharing non-public data that requires it.\n\nEach party must use the other’s non-public business information only for this relationship, restrict access to people and service providers who need it, and protect it with reasonable care. This obligation does not cover information already lawfully known, independently developed, public without breach, or lawfully obtained from another source. Disclosure required by law is permitted, with notice where lawful and practical.\n\nA separately signed NDA or DPA may provide more specific protection. Neither a marketing page nor these Terms establishes an unverified certification, recovery target, data-residency guarantee or custom security commitment."
         },
         "09": {
-          "title": "Termination",
-          "content": "You may stop using the Service and delete your account at any time. Deleting your account deletes the data associated with it, as described in our [Privacy Policy](/privacy-policy).\n\nWe may suspend or terminate your access if you materially breach these Terms, if your use puts the Service or other merchants at risk, or if we are required to do so by law.\n\nOn termination, your stores are disconnected, your hosted UCP surface stops being served, and any fees already incurred remain payable. Sections that by their nature should survive termination — including data ownership, disclaimers, limitation of liability, and governing law — survive it."
+          "title": "Availability, changes and suspension",
+          "content": "We aim to operate a useful and reliable service, but do not promise uninterrupted or error-free availability or a support response time unless agreed in writing. Support and calls are provided in English at launch. Maintenance, third-party outages and changes to assistants or commerce platforms can affect functions.\n\nWe may change the Service and give reasonable notice before materially removing paid functionality you rely on, where practical. We may suspend access promptly to address a security risk, misuse, unpaid charges or a legal/platform requirement. Where circumstances permit, we will explain the reason and give an opportunity to remedy it. We may terminate for a material breach that is not remedied, or a breach or risk requiring immediate action.\n\nFor material changes to these Terms, we will give notice by email or in the Service before the change takes effect. Continuing to use the Service after the stated effective date accepts the revised Terms, except where law requires a different process. You can stop using and cancel the Service if you do not agree. A change does not retroactively alter an accrued claim."
         }
       }
     }
@@ -6819,13 +6948,7 @@
       },
       "selection": "{selected} of {limit} products selected",
       "table": {
-        "headers": [
-          "Product",
-          "Price",
-          "Currency",
-          "Status",
-          "Quality"
-        ]
+        "headers": ["Product", "Price", "Currency", "Status", "Quality"]
       },
       "states": {
         "active": "Active",
@@ -6935,12 +7058,7 @@
         "description": "Select the competitors you'd like to include in your AI agent simulations.",
         "summary": "{total} competitor products across {brands} brands — {selected} selected",
         "table": {
-          "headers": [
-            "Competitor",
-            "Price",
-            "Currency",
-            "Brand"
-          ]
+          "headers": ["Competitor", "Price", "Currency", "Brand"]
         },
         "action": {
           "back": "Back",
@@ -7294,7 +7412,7 @@
       "number": "07",
       "title": "Webhooks",
       "description": "ecentic receives webhooks; it does not yet deliver them outbound.",
-      "body": "Inbound endpoints are signature-verified and reject anything that fails the check before any handler runs. Shopify compliance webhooks verify an HMAC, Stripe verifies its own signature header, and partner endpoints verify a bearer secret.\n\nOutbound webhooks — ecentic notifying your system when a scan finishes or a listing is republished — are not published yet. Use the published REST endpoints to check results. MCP requests are stateless; there is no subscription session."
+      "body": "Inbound endpoints are signature-verified and reject anything that fails the check before any handler runs. Shopify compliance webhooks verify an HMAC, Stripe verifies its own signature header, and partner endpoints verify a bearer secret.\n\nOutbound webhooks — ecentic notifying your system when a scan finishes or a listing is republished — are not published yet. Read scan and listing results in the dashboard. The published REST API does not expose those dashboard results; use the API reference for the operations currently available. MCP requests are stateless; there is no subscription session."
     },
     "cli": {
       "number": "08",
@@ -7314,11 +7432,7 @@
         "title": "ecentic API",
         "accent": "errors.",
         "description": "Every failure on the ecentic API is a typed problem document, not an HTML page. The code is the contract: it is stable, machine-readable, and safe to branch on.",
-        "assurances": [
-          "RFC 9457",
-          "Stable codes",
-          "Resolution hints"
-        ],
+        "assurances": ["RFC 9457", "Stable codes", "Resolution hints"],
         "art": {
           "alt": "ASCII-art illustration of a shield"
         },
@@ -7353,11 +7467,7 @@
         "title": "ecentic API",
         "accent": "rate limits.",
         "description": "Every public response carries the live state of your window, so an agent can pace itself instead of discovering the limit by being rejected.",
-        "assurances": [
-          "Live headers",
-          "Retry-After on 429",
-          "Per-key windows"
-        ],
+        "assurances": ["Live headers", "Retry-After on 429", "Per-key windows"],
         "art": {
           "alt": "ASCII-art illustration of a balance scale"
         },
@@ -7458,11 +7568,7 @@
         "title": "ecentic MCP",
         "accent": "server.",
         "description": "Claude, ChatGPT, and any Model Context Protocol client can call ecentic natively over JSON-RPC 2.0. This page is the connection reference: the endpoint, the transport, the handshake, and every tool it exposes.",
-        "assurances": [
-          "Streamable HTTP",
-          "JSON-RPC 2.0",
-          "7 tools"
-        ],
+        "assurances": ["Streamable HTTP", "JSON-RPC 2.0", "7 tools"],
         "art": {
           "alt": "ASCII-art illustration of a robot"
         },
@@ -7531,11 +7637,7 @@
         "title": "ecentic API",
         "accent": "authentication.",
         "description": "Public discovery needs no credential at all. Anything that reads or changes a merchant account takes a bearer key you mint yourself — no sales call, no manual provisioning.",
-        "assurances": [
-          "Self-serve keys",
-          "Bearer tokens",
-          "OAuth metadata"
-        ],
+        "assurances": ["Self-serve keys", "Bearer tokens", "OAuth metadata"],
         "art": {
           "alt": "ASCII-art illustration of a shield"
         },
@@ -8084,7 +8186,7 @@
     },
     "footer": {
       "tagline": "Get the sale when AI does the buying.",
-      "copyright": "© 2026 {{TODO: legal name of the Polish operating company}}",
+      "copyright": "© 2026 ecentic Inc",
       "trademark": "Product names and logos are trademarks of their owners. Showing them doesn't mean they endorse or partner with ecentic.",
       "platform": "Platform",
       "solutions": "Solutions",
@@ -8803,7 +8905,7 @@
           "title": "Fil Rouge Capital"
         }
       ],
-      "missingAsset": "{{TODO: official logo}}"
+      "missingAsset": ""
     },
     "businesses": {
       "eyebrow": "02 · Who it's for",
@@ -8874,11 +8976,7 @@
           "id": "connect",
           "title": "Connect",
           "body": "Bring your catalog into one place through Shopify, WooCommerce, a supported XML or JSON feed, or a CSV.",
-          "tags": [
-            "Shopify",
-            "WooCommerce",
-            "Product feeds"
-          ],
+          "tags": ["Shopify", "WooCommerce", "Product feeds"],
           "href": "/platform/connect",
           "label": "Explore Connect"
         },
@@ -8886,11 +8984,7 @@
           "id": "simulate",
           "title": "Simulate",
           "body": "See which product ChatGPT, Claude and Gemini pick in a comparison, and read the reasoning behind each simulated choice.",
-          "tags": [
-            "Win rate",
-            "Battlecards",
-            "Readiness audit"
-          ],
+          "tags": ["Win rate", "Battlecards", "Readiness audit"],
           "href": "/platform/simulate",
           "label": "Explore Simulate"
         },
@@ -8898,11 +8992,7 @@
           "id": "fix",
           "title": "Fix",
           "body": "Apply generates and publishes titles and descriptions using existing product facts. Publish structured data and sync Merchant Center through separate controls.",
-          "tags": [
-            "Listings",
-            "Structured data",
-            "Merchant Center"
-          ],
+          "tags": ["Listings", "Structured data", "Merchant Center"],
           "href": "/platform/fix",
           "label": "Explore Fix"
         },
@@ -8910,11 +9000,7 @@
           "id": "sell",
           "title": "Sell",
           "body": "Connect agent checkout on WooCommerce, test the flow and keep your own payment provider. Platform eligibility and payment handoffs still apply.",
-          "tags": [
-            "Agent checkout",
-            "Checkout testing",
-            "Your payments"
-          ],
+          "tags": ["Agent checkout", "Checkout testing", "Your payments"],
           "href": "/platform/sell",
           "label": "Explore Sell"
         },
@@ -8922,11 +9008,7 @@
           "id": "track",
           "title": "Track",
           "body": "Follow detected AI referrals on Shopify, compare completed simulations and request a fresh scan when you want to check again.",
-          "tags": [
-            "AI traffic",
-            "Manual rescans",
-            "Multiple stores"
-          ],
+          "tags": ["AI traffic", "Manual rescans", "Multiple stores"],
           "href": "/platform/track",
           "label": "Explore Track"
         }
@@ -9029,11 +9111,7 @@
           "id": "simulations",
           "title": "Agent simulations",
           "body": "ChatGPT, Claude and Gemini choose between your product and a competitor's in a recorded simulation.",
-          "tags": [
-            "Win rate",
-            "Replay",
-            "Battlecards"
-          ],
+          "tags": ["Win rate", "Replay", "Battlecards"],
           "href": "/platform/simulate",
           "label": "See simulations"
         },
@@ -9041,11 +9119,7 @@
           "id": "readiness",
           "title": "Readiness audit",
           "body": "Check crawler rules, sampled page HTML, product identifiers and feed eligibility. Inaccessible pages are flagged for review.",
-          "tags": [
-            "Crawlers",
-            "Schema",
-            "GTIN"
-          ],
+          "tags": ["Crawlers", "Schema", "GTIN"],
           "href": "/platform/simulate#readiness",
           "label": "See the audit"
         },
@@ -9053,11 +9127,7 @@
           "id": "catalog",
           "title": "Catalog fixes",
           "body": "Generate and publish titles and descriptions from your existing product facts. Structured data has its own publish action.",
-          "tags": [
-            "Listings",
-            "Attributes",
-            "Publish"
-          ],
+          "tags": ["Listings", "Attributes", "Publish"],
           "href": "/platform/fix",
           "label": "See catalog fixes"
         },
@@ -9065,11 +9135,7 @@
           "id": "merchant-center",
           "title": "Merchant Center sync",
           "body": "Send published listing fixes and checkout attributes through a separate supplemental-feed sync for Shopify.",
-          "tags": [
-            "Supplemental feed",
-            "Diagnostics",
-            "Shopify"
-          ],
+          "tags": ["Supplemental feed", "Diagnostics", "Shopify"],
           "href": "/platform/fix#merchant-center",
           "label": "See the sync"
         },
@@ -9077,11 +9143,7 @@
           "id": "checkout",
           "title": "Agent checkout for WooCommerce",
           "body": "Give supported agent flows a route through your own store and payment provider, with checkout testing and configurable controls.",
-          "tags": [
-            "Setup",
-            "Testing",
-            "Validator"
-          ],
+          "tags": ["Setup", "Testing", "Validator"],
           "href": "/platform/sell",
           "label": "See agent checkout"
         },
@@ -9089,11 +9151,7 @@
           "id": "developers",
           "title": "API, MCP server and CLI",
           "body": "Use the published interfaces for discovery, plans, store connection and onboarding status.",
-          "tags": [
-            "REST",
-            "MCP",
-            "CLI"
-          ],
+          "tags": ["REST", "MCP", "CLI"],
           "href": "/docs",
           "label": "Open developer docs"
         }
@@ -10249,7 +10307,7 @@
       "tooLong": "Please shorten this response."
     },
     "privacy": {
-      "text": "We use these details to respond to your request.",
+      "text": "We use these details to respond in English. We retain the enquiry for up to 24 months after the last contact; you can request deletion sooner.",
       "link": "Privacy policy"
     },
     "action": {
@@ -10301,7 +10359,7 @@
       "sections": [
         {
           "id": "reviewed",
-          "title": "Last updated 10 November 2026",
+          "title": "Last updated 12 November 2026",
           "description": "This page describes controls in the current product. Confirm the deployment, processing locations and contractual requirements for your account before sharing non-public data."
         },
         {
@@ -10323,15 +10381,15 @@
           "rows": [
             {
               "label": "Application hosting",
-              "value": "Vercel. {{TODO: confirm deployed services and hosting regions}}"
+              "value": "Vercel: application hosting, scheduled jobs and AI Gateway routing."
             },
             {
               "label": "Database",
-              "value": "PostgreSQL. {{TODO: confirm production provider and region}}"
+              "value": "Neon PostgreSQL on AWS us-east-1 (Northern Virginia)."
             },
             {
               "label": "Encryption",
-              "value": "{{TODO: confirm the deployed TLS minimum and encryption at rest}}"
+              "value": "Data is encrypted in transit (TLS 1.2+) and at rest (AES-256) by our hosting and database providers."
             },
             {
               "label": "Account passwords",
@@ -10343,11 +10401,11 @@
             },
             {
               "label": "Production access",
-              "value": "{{TODO: confirm who has production access and whether MFA is enforced}}"
+              "value": ""
             },
             {
               "label": "Backups and recovery",
-              "value": "{{TODO: confirm documented backup and recovery targets}}"
+              "value": ""
             }
           ]
         },
@@ -10358,7 +10416,7 @@
             "The product catalog you connect is sent to AI providers to compare listings and write fixes. Store scans use ChatGPT, Claude and Gemini. GPT also generates listing rewrites and structured data. Perplexity is used in the separate comparison and discovery tools, not store scans.",
             "GPT runs through Azure OpenAI when an Azure deployment is configured. Anthropic, Google and Perplexity requests use the Vercel AI Gateway; GPT can use that gateway as a fallback.",
             "Data read from a connected Google Merchant Center account is kept separate from the store catalog used for AI work, as described in the privacy policy.",
-            "{{TODO: confirm account-specific provider retention and model-training terms before publishing a no-training promise}}"
+            "Provider retention policies apply to requests. Some providers retain requests for abuse monitoring; we do not promise zero retention across every model route."
           ]
         },
         {
@@ -10367,7 +10425,7 @@
           "rows": [
             {
               "label": "Operating company",
-              "value": "{{TODO: exact legal name of the Polish operating company}}"
+              "value": "ecentic Inc · Delaware, United States"
             },
             {
               "label": "Agent checkout data",
@@ -10375,7 +10433,7 @@
             },
             {
               "label": "Data requests",
-              "value": "{{TODO: confirm privacy@ecentic.ai receives data requests before activating the contact link}}"
+              "value": "Request access, correction or deletion through privacy@ecentic.ai. We respond within one month."
             }
           ],
           "links": [
@@ -10388,8 +10446,8 @@
         {
           "id": "dpa",
           "title": "Data processing agreement",
-          "description": "Tell us what your data processing agreement must cover as part of your pilot or security review. Confirm the agreement and signing arrangements before sharing personal data.",
-          "note": "{{TODO: supply the approved DPA template and confirmed request contact}}",
+          "description": "A DPA is arranged on request before personal data is shared. We can sign your own DPA; the contracting entity and signatory are confirmed in the agreement.",
+          "note": "We sign a mutual NDA before receiving non-public data. The public-data first phase does not need one.",
           "links": [
             {
               "label": "Discuss your requirements",
@@ -10400,95 +10458,131 @@
         {
           "id": "sub-processors",
           "title": "Providers used by the product",
-          "description": "Providers and purposes identified in the product code, reviewed November 10, 2026. This is not a confirmed list of contracted sub-processors or processing locations; those depend on the accounts and agreements in use.",
-          "note": "{{TODO: confirm the full contracted sub-processor list and processing locations before launch}}"
+          "description": "Providers and purposes identified in the product code, reviewed November 12, 2026. Contracted processors and processing locations are confirmed for the relevant service and agreement.",
+          "note": ""
         },
         {
           "id": "compliance",
           "title": "Compliance roadmap",
           "paragraphs": [
             "SOC 2 is not available today. We do not claim a certification or a completed audit. Discuss your security requirements before agreeing a pilot.",
-            "{{TODO: confirm the security questionnaire process and available review materials}}"
+            "Alvi, our CTO, handles security questionnaires after an NDA. We do not offer a pre-approved security pack."
           ]
         },
         {
           "id": "report",
           "title": "Report a vulnerability",
-          "description": "{{TODO: confirm security@ecentic.ai is monitored before publishing the vulnerability contact}}"
+          "description": ""
         }
       ],
       "subprocessors": {
-        "caption": "Product providers and purposes reviewed November 10, 2026",
-        "headers": [
-          "Provider",
-          "Purpose",
-          "Processing location"
-        ],
+        "caption": "Product providers and purposes reviewed November 12, 2026",
+        "headers": ["Provider", "Purpose", "Processing location"],
         "rows": [
           {
             "name": "Azure OpenAI",
             "purpose": "GPT simulations, listing rewrites and structured data.",
-            "location": "{{TODO: confirm Azure region}}"
+            "location": ""
           },
           {
             "name": "Anthropic",
             "purpose": "Claude listing comparisons through Vercel AI Gateway.",
-            "location": "{{TODO: confirm processing location}}"
+            "location": ""
           },
           {
             "name": "Google",
             "purpose": "Gemini listing comparisons through Vercel AI Gateway.",
-            "location": "{{TODO: confirm processing location}}"
+            "location": ""
           },
           {
             "name": "Perplexity",
             "purpose": "Separate comparison and discovery tools through Vercel AI Gateway.",
-            "location": "{{TODO: confirm processing location}}"
+            "location": ""
           },
           {
             "name": "Vercel",
             "purpose": "Application hosting and AI Gateway request routing.",
-            "location": "{{TODO: confirm hosting and gateway locations}}"
+            "location": ""
           },
           {
-            "name": "PostgreSQL provider",
+            "name": "Neon",
             "purpose": "Application records, connected catalog data and credentials.",
-            "location": "{{TODO: confirm provider and database region}}"
+            "location": ""
           },
           {
             "name": "Upstash",
             "purpose": "Redis caches, session data and rate-limit counters.",
-            "location": "{{TODO: confirm Redis region}}"
+            "location": ""
           },
           {
             "name": "Sentry",
             "purpose": "Error monitoring and application telemetry.",
-            "location": "{{TODO: confirm processing location}}"
+            "location": ""
           },
           {
             "name": "PostHog",
             "purpose": "Product analytics after analytics consent.",
-            "location": "{{TODO: confirm processing location}}"
+            "location": ""
           },
           {
             "name": "Google Analytics 4",
             "purpose": "Website analytics after analytics consent.",
-            "location": "{{TODO: confirm processing location}}"
+            "location": ""
           },
           {
             "name": "Resend",
             "purpose": "Transactional email delivery.",
-            "location": "{{TODO: confirm processing location}}"
+            "location": ""
           },
           {
             "name": "UploadThing",
             "purpose": "Storage for uploaded files.",
-            "location": "{{TODO: confirm storage region}}"
+            "location": ""
           },
           {
             "name": "Stripe",
             "purpose": "ecentic plan and performance-fee billing.",
-            "location": "{{TODO: confirm processing location}}"
+            "location": ""
+          },
+          {
+            "name": "SerpAPI",
+            "purpose": "Product offer lookups.",
+            "location": ""
+          },
+          {
+            "name": "Chatwoot",
+            "purpose": "Website support chat.",
+            "location": ""
+          },
+          {
+            "name": "BabyLoveGrowth",
+            "purpose": "Editorial blog content.",
+            "location": ""
+          },
+          {
+            "name": "Clearbit",
+            "purpose": "Company logo images.",
+            "location": ""
+          },
+          {
+            "name": "Google Merchant API",
+            "purpose": "Optional Merchant Center connection.",
+            "location": ""
+          },
+          {
+            "name": "Shopify Catalog MCP",
+            "purpose": "Product measurement in Shopify’s catalog.",
+            "location": ""
+          },
+          {
+            "name": "x402",
+            "purpose": "Payment facilitator for supported routes.",
+            "location": ""
+          },
+          {
+            "name": "ScrapeLLM",
+            "purpose": "Internal capture tooling; not a customer feature.",
+            "location": ""
           }
         ]
       }
@@ -10536,7 +10630,7 @@
           "id": "team",
           "title": "The team",
           "description": "Three founders, with engineering and sales working on the same product.",
-          "note": "{{TODO: supply approved founder portraits}}"
+          "note": ""
         },
         {
           "id": "before",
@@ -10584,19 +10678,19 @@
           "rows": [
             {
               "label": "Operating company",
-              "value": "{{TODO: exact legal name and registered address of the Polish operating company}}"
+              "value": "ecentic Inc · Delaware, United States"
             },
             {
-              "label": "Delaware company",
-              "value": "{{TODO: exact legal name and registered address of the Delaware company}}"
+              "label": "Registered agent — legal service only",
+              "value": "LEGALINC CORPORATE SERVICES INC. · 131 Continental Drive, Suite 305, Newark, New Castle County, DE 19713, United States"
             },
             {
-              "label": "Tirana contact address",
-              "value": "Pallatet Merkaj, Hyrja 1, Dera 12, Rruga Muhamed Deliu, Qesarakë, Tiranë, Albania"
+              "label": "Albanian subsidiary",
+              "value": "ECENTIC SH.P.K. · Pallatet Merkaj, Hyrja 1, Dera 12, Rruga Muhamed Deliu, Qesarakë, Tiranë, Albania"
             },
             {
               "label": "Phone",
-              "value": "{{TODO: confirm the public +355 contact number}}"
+              "value": ""
             },
             {
               "label": "Support",
@@ -10653,7 +10747,7 @@
         },
         {
           "name": "Fil Rouge Capital",
-          "description": "Accelerator. {{TODO: supply the official Fil Rouge Capital logo}}"
+          "description": "Accelerator."
         }
       ]
     },
@@ -10681,15 +10775,15 @@
           "items": [
             {
               "title": "Agencies and resellers",
-              "body": "You run Shopify, WooCommerce or marketplace stores for clients. Run ecentic on them, ship the fixes and keep the client relationship. {{TODO: approved agency and reseller benefits and terms}}"
+              "body": "Refer Shopify, WooCommerce or marketplace clients and agree a referral fee on the call. There is no fee to join. ecentic contracts with and bills the client directly; resale requires a separate signed agreement."
             },
             {
               "title": "Technology partners",
-              "body": "You sell something different to the same stores: product information, payments, checkout or data. Build on the REST API and MCP server, and sell together. {{TODO: approved technology partner benefits and terms}}"
+              "body": "Build with our REST API and MCP server and sell together. Technology partners pay no fees to each other. We list your integration and logo only with a written agreement."
             },
             {
               "title": "Creators and affiliates",
-              "body": "You teach people to sell online. Share ecentic with them. {{TODO: approved creator and affiliate benefits and terms}}"
+              "body": "Share ecentic with your audience and receive a fee for each paying customer you bring. We agree the amount when you join."
             }
           ]
         },
@@ -10705,22 +10799,22 @@
             },
             {
               "title": "Talk with us",
-              "body": "{{TODO: confirm the proposed 20-minute partner conversation}}"
+              "body": "A 20-minute call to choose the track and agree the terms."
             },
             {
               "title": "Get access and materials",
-              "body": "{{TODO: confirm partner access, materials and onboarding}}"
+              "body": "Receive the agreed access and materials to get started. Each client owns their own account."
             },
             {
               "title": "Work together",
-              "body": "{{TODO: confirm the joint selling process}}"
+              "body": "Refer clients or work on a joint opportunity. You may share reports with that client while keeping ecentic branding."
             }
           ]
         },
         {
           "id": "application",
           "title": "Apply to work together",
-          "description": "Tell us about your company, your track and the stores you work with."
+          "description": "Tell us about your company, your track and the stores you work with. Calls and follow-up are in English."
         }
       ],
       "faqTitle": "Partner questions",
@@ -10735,7 +10829,7 @@
         },
         {
           "question": "Is there a fee to join?",
-          "answer": "{{TODO: confirm whether joining the partner program is free}}"
+          "answer": "There is no fee to join. Referral or affiliate fees are agreed when you join; resale requires a separate signed agreement."
         }
       ],
       "formTitle": "Partner application"
@@ -10758,7 +10852,7 @@
           "links": [
             {
               "label": "Read the pilot story",
-              "href": "/stories/dua-flavors"
+              "href": "/stories/dua-flavours"
             }
           ]
         }
@@ -10779,7 +10873,7 @@
           "rows": [
             {
               "label": "Sector",
-              "value": "Food and drink"
+              "value": "UK flavours brand"
             },
             {
               "label": "Company",
@@ -10791,7 +10885,7 @@
             },
             {
               "label": "What changed",
-              "value": "{{TODO: describe what ecentic changed for DUA Flavours}}"
+              "value": "Gaps closed in structured data and the product feed."
             },
             {
               "label": "Result",
@@ -10803,14 +10897,14 @@
           "id": "starting-point",
           "title": "Where they started",
           "paragraphs": [
-            "{{TODO: DUA Flavours’ starting position, supplied and approved by Xhurian}}"
+            "DUA Flavours is a UK flavours brand on Shopify with about 28 products. It became ecentic’s first paying customer on 20 April 2026."
           ]
         },
         {
           "id": "changes",
           "title": "What we changed",
           "paragraphs": [
-            "{{TODO: name the products and fields changed, and when the work happened}}"
+            "ecentic closed gaps in its structured data and product feed."
           ]
         },
         {
@@ -10825,7 +10919,7 @@
           "title": "How we measured this",
           "paragraphs": [
             "What was measured: visits from AI assistants or direct traffic, April to July 2026. What was not measured: sales. Other changes in that period may have contributed.",
-            "{{TODO: explain the April start and what ecentic did before the Shopify app launched on 20 May 2026}}"
+            "The 12% is DUA’s own aggregate measurement. ecentic does not hold the analytics source; we do not publish a product breakdown or a time series."
           ]
         },
         {
@@ -11009,7 +11103,7 @@
             {
               "title": "DUA Flavours",
               "body": "12% more visits from AI assistants or direct traffic, April to July 2026. Published with permission, with the measurement limits.",
-              "href": "/stories/dua-flavors",
+              "href": "/stories/dua-flavours",
               "label": "Read the pilot story"
             }
           ],
@@ -11097,7 +11191,7 @@
         "description": "Get help with your ecentic account, scans, fixes and billing. Email support, book a walkthrough or read the docs."
       },
       "title": "Help and support",
-      "description": "Get help with your account, scans, fixes and billing. Choose the contact that fits your question.",
+      "description": "Get help with your account, scans, fixes and billing. Choose the contact that fits your question. Support and calls are in English.",
       "actions": [
         {
           "label": "Email support",
@@ -11116,13 +11210,13 @@
           "items": [
             {
               "title": "Email support",
-              "body": "Send your question and store URL to support@ecentic.ai.",
+              "body": "Send your question and store URL to support@ecentic.ai. We reply in English.",
               "href": "mailto:support@ecentic.ai",
               "label": "Email support"
             },
             {
               "title": "Live walkthrough",
-              "body": "Book a 15-minute call to walk through your store and the product.",
+              "body": "Book a 15-minute call to walk through your store and the product. The call is in English.",
               "href": "https://cal.com/ecentic-ai/15min",
               "label": "Book the 15-minute call"
             },
@@ -11185,7 +11279,7 @@
         "description": "Talk to sales, get support, apply to collaborate or find information about privacy and security at ecentic."
       },
       "title": "Contact ecentic",
-      "description": "Find the right place for your question.",
+      "description": "Find the right place for your question. Support and calls are in English.",
       "sections": [
         {
           "id": "contacts",
@@ -11212,7 +11306,7 @@
             },
             {
               "title": "Press",
-              "body": "{{TODO: confirm press@ecentic.ai is active before publishing the press contact}}"
+              "body": ""
             },
             {
               "title": "Security",
@@ -11222,7 +11316,7 @@
             },
             {
               "title": "Privacy",
-              "body": "Data requests and DPA questions. {{TODO: confirm privacy@ecentic.ai is active before activating the contact link}}",
+              "body": "Data access, correction or deletion requests and DPA questions: privacy@ecentic.ai.",
               "href": "/security#dpa",
               "label": "Read about the DPA"
             }
@@ -11234,11 +11328,11 @@
           "rows": [
             {
               "label": "Operating company",
-              "value": "{{TODO: exact legal name and registered address of the Polish operating company}}"
+              "value": "ecentic Inc · Delaware, United States"
             },
             {
-              "label": "Delaware company",
-              "value": "{{TODO: exact legal name and registered address of the Delaware company}}"
+              "label": "Registered agent — legal service only",
+              "value": "LEGALINC CORPORATE SERVICES INC. · 131 Continental Drive, Suite 305, Newark, New Castle County, DE 19713, United States"
             }
           ],
           "links": [
@@ -12062,7 +12156,7 @@
               },
               {
                 "title": "Three perspectives",
-                "body": "Models can disagree. In the supplied 2026 research set of 36,797 simulated purchases, ChatGPT selected the same product 51.6% of the time versus about 18.5% for Claude and Gemini. Perplexity was in that research set, but is not in store scans."
+                "body": "Compare the recorded choices and explanations from ChatGPT, Claude and Gemini. Each model can weigh the same product facts differently."
               }
             ]
           },
@@ -12480,7 +12574,7 @@
             "paragraphs": [
               "Coming soon. Publication of the ecentic app in ChatGPT’s app directory has not been confirmed. Product simulations are available separately."
             ],
-            "note": "{{TODO: Confirm ChatGPT app-directory publication before marking this Live.}}",
+            "note": "The ecentic ChatGPT app is not published yet.",
             "links": [
               {
                 "label": "See the ChatGPT channel",
@@ -13220,7 +13314,7 @@
           },
           {
             "before": "The commercial offer is unclear.",
-            "after": "Choose a partner track and agree its terms. {{TODO: Confirm agency margin or referral terms.}}",
+            "after": "Agree a referral fee. ecentic contracts with and bills the client; resale needs a separate signed agreement.",
             "href": "/partners"
           },
           {
@@ -13244,7 +13338,7 @@
             "items": [
               {
                 "title": "Agencies and resellers",
-                "body": "Run product checks for clients, ship verified changes and keep the client relationship. {{TODO: Confirm resale access and commercial terms.}}"
+                "body": "Refer clients and agree a fee on the call. There is no fee to join; each client keeps their account and ecentic bills them directly."
               },
               {
                 "title": "Technology partners",
@@ -13252,7 +13346,7 @@
               },
               {
                 "title": "Creators and affiliates",
-                "body": "Help your audience understand AI commerce. {{TODO: Confirm creator and affiliate payment terms.}}"
+                "body": "Help your audience understand AI commerce. Receive a fee for each paying customer you bring; the amount is agreed when you join."
               }
             ]
           },
@@ -13260,7 +13354,7 @@
             "id": "access",
             "title": "Keep account access explicit.",
             "description": "One account can hold stores owned by that account. It is not a delegated agency workspace or a team-seat system. Agree how each client connects and controls its store.",
-            "note": "{{TODO: Confirm the supported agency account setup and client-report sharing terms.}}"
+            "note": "Each client owns their account. You may share ecentic reports with that client while keeping the branding; we do not offer white-label reports or agency roles."
           },
           {
             "id": "start",
@@ -13277,7 +13371,7 @@
         "faqs": [
           {
             "question": "Is there a margin or referral fee?",
-            "answer": "{{TODO: Confirm the commercial terms for each partner track.}}"
+            "answer": "Joining is free. Agencies and affiliates agree their fee when joining. Technology partners work together without fees between the parties. Resale requires a separate signed agreement."
           },
           {
             "question": "Do clients need their own account?",
@@ -13285,7 +13379,7 @@
           },
           {
             "question": "Can we use reports with clients?",
-            "answer": "{{TODO: Confirm client-report sharing terms. No white-label report capability is claimed.}}"
+            "answer": "Yes, with that client and with ecentic branding kept on the report. The client owns its account; we do not offer white-label reports."
           }
         ],
         "challengeLabels": {
@@ -13316,7 +13410,7 @@
         "facts": [
           "Public data first. No logins, code on your site or customer data for the baseline.",
           "Targets agreed in writing on day one.",
-          "A founder on the account, with a direct line to engineering.",
+          "A founder, Xhurian or Iseld, on every account, with Alvi on engineering.",
           "Data handling and contracting requirements reviewed before access."
         ],
         "challenges": [
@@ -13364,7 +13458,7 @@
               },
               {
                 "title": "Design study",
-                "body": "3 months. For checkout or booking questions that need more than a fix list. The agreed scope can include a prototype with dummy data and a month-3 readout."
+                "body": "3 months, with scopes that can run up to 6. For checkout or booking questions that need more than a fix list. The scope can include a prototype with dummy data and agreed readouts."
               }
             ],
             "note": "Fees depend on scope and are agreed on the first call. These are service engagements; the pilot readout follows the method agreed with your team."
@@ -13378,7 +13472,7 @@
             "items": [
               {
                 "title": "Week 0: baseline",
-                "body": "Agree the questions and run the baseline before changing data. {{TODO: Confirm the proposed 25 questions and three runs per assistant.}}"
+                "body": "We agree the questions at kickoff and run each one several times on every assistant, before changing data."
               },
               {
                 "title": "Weeks 1 to 5: fix",
@@ -13434,7 +13528,7 @@
               },
               {
                 "label": "Time from your team",
-                "value": "{{TODO: Confirm expected weekly time from the business owner.}}"
+                "value": "A kickoff call, a short weekly check-in and the readout. The public-data phase needs no engineering time."
               }
             ]
           },
@@ -13449,7 +13543,7 @@
               },
               {
                 "title": "Your data",
-                "body": "Review data handling and discuss the agreement and provider information your team requires. {{TODO: Confirm the approved DPA, contracted sub-processors, processing locations and contracting entity.}}"
+                "body": "A DPA is arranged on request, and we can sign yours. Confirm the contracting entity, processing locations and providers before sharing personal data."
               },
               {
                 "title": "Straight answers",
@@ -13508,7 +13602,7 @@
               },
               {
                 "label": "Will you change our site?",
-                "value": "Only through actions you authorize after connecting a store. Public-data recommendations go to your team. {{TODO: Confirm pilot delivery formats.}}"
+                "value": "Only through actions you authorize after connecting a store. Public-data recommendations go to your team, with a change list and re-run results."
               },
               {
                 "label": "Do you process customer personal data?",
@@ -13520,7 +13614,7 @@
               },
               {
                 "label": "What do we receive?",
-                "value": "An agreed written readout with the numbers, method, limits and next steps."
+                "value": "A baseline workbook, change list, re-run results with a change log and a written readout. You own the data and fixes and may share the readout internally."
               },
               {
                 "label": "What happens after the pilot?",
@@ -13528,7 +13622,7 @@
               },
               {
                 "label": "Will you sign our NDA?",
-                "value": "{{TODO: Confirm NDA policy before any non-public data is shared.}}"
+                "value": "Yes. We sign a mutual NDA before receiving non-public data. The public-data first phase does not need one."
               }
             ]
           },
@@ -13566,7 +13660,7 @@
           },
           {
             "question": "Which assistants do you cover?",
-            "answer": "Product scans run on ChatGPT, Claude and Gemini. {{TODO: Confirm the assistants and collection method for bespoke pilot questions.}}"
+            "answer": "Product scans use ChatGPT, Claude and Gemini. For a bespoke pilot, we agree the assistants, questions, versions and collection method at kickoff."
           },
           {
             "question": "Do you work in our markets and languages?",
@@ -13578,7 +13672,7 @@
           },
           {
             "question": "Is SOC 2 available?",
-            "answer": "Not yet. {{TODO: Confirm the compliance roadmap and available security materials.}} We do not claim a certification or an existing security pack."
+            "answer": "Not yet. We do not claim a certification or an existing security pack. Alvi handles security questionnaires after an NDA."
           }
         ],
         "challengeLabels": {
@@ -15382,7 +15476,7 @@
     },
     "eyebrow": "Book a demo",
     "title": "See how AI shops your catalog.",
-    "description": "A call with a founder. Bring one category, and we'll show you how ChatGPT, Claude and Gemini compare it with a competitor's, live.",
+    "description": "A call with a founder. Bring one category, and we'll show you how ChatGPT, Claude and Gemini compare it with a competitor's, live. The call is in English.",
     "sections": [
       {
         "id": "what-we-cover",
@@ -15431,15 +15525,11 @@
       }
     ],
     "form": {
-      "steps": [
-        "About you",
-        "What you want",
-        "Review and send"
-      ],
+      "steps": ["About you", "What you want", "Review and send"],
       "progress": "Demo request progress",
       "reviewTitle": "A brief for your demo.",
       "reviewDescription": "Check your details before sending. We will follow up by email to agree the next step.",
-      "bookingNote": "Prefer to choose a time now? The existing self-serve call is 15 minutes. Enterprise demo scope and duration are agreed with you.",
+      "bookingNote": "Prefer to choose a time now? The existing self-serve call is 15 minutes. Enterprise demo scope and duration are agreed with you. Calls are in English.",
       "sentDescription": "Your demo request has been sent. We will use your work email to arrange the next step."
     }
   },
@@ -15517,7 +15607,7 @@
     "plans": {
       "payg": {
         "tagline": "Pay only after AI sends you visitors",
-        "note": "No card to start. Fees follow the attribution rules below, with the existing monthly cap.",
+        "note": "No card to start. Fees follow the attribution rules below.",
         "action": {
           "primary": "Choose pay-as-you-go"
         }
@@ -15659,7 +15749,7 @@
       },
       {
         "question": "What happens to our data if we leave?",
-        "answer": "The Privacy policy retains data while your account is active. Disconnecting a store deletes its access tokens immediately; imported products remain for simulation history unless you request deletion. Deleting your account permanently deletes the profile, credentials, stores, tokens, imported products, simulation results, optimization history, reports, UCP profile, agent orders including shopper details, and Google Merchant Center connection records. Shopify’s shop/redact webhook deletes that shop’s store data, products and associated records. Where tax or accounting rules require billing records, the order reference and amount are retained, not shopper contact or address details. The policy specifies no separate deletion turnaround or backup purge period."
+        "answer": "Request deletion at privacy@ecentic.ai. We respond within one month and confirm once data has been deleted from our systems. Billing records are retained where required by law; backup copies are removed when they expire. See the Privacy policy for scope and disconnect controls."
       },
       {
         "question": "Is anything billed that we did not ask for?",
@@ -15667,7 +15757,7 @@
       },
       {
         "question": "Do you sign a DPA?",
-        "answer": "Discuss your DPA requirements with us during scoping. Confirm the agreement and signing arrangements before sharing personal data."
+        "answer": "Yes. A DPA is arranged on request before personal data is shared, and we can sign yours. The contracting entity and signatory are confirmed in the agreement."
       }
     ],
     "policyLinks": [
@@ -15937,12 +16027,7 @@
     "stack": "Your stack",
     "channels": "AI channels",
     "layer": "The AI commerce layer",
-    "stages": [
-      "Simulate",
-      "Fix",
-      "Sell",
-      "Track"
-    ],
+    "stages": ["Simulate", "Fix", "Sell", "Track"],
     "inputs": [
       "Shopify",
       "WooCommerce",
@@ -16018,7 +16103,7 @@
         },
         "missingOfferFacts": {
           "label": "Product pages where an agent found no price, stock or rating",
-          "detail": "A page sample from the same spirits marketplace. Publication approval is pending."
+          "detail": "A page sample from the same spirits marketplace."
         },
         "storeNotNamed": {
           "label": "Answers that did not name the store for two bottles it stocks",
@@ -16030,7 +16115,7 @@
         },
         "paymentBlocked": {
           "label": "Countries where an agent could not reach payment because of one shipping setting",
-          "detail": "A test of a skincare brand’s checkout. Publication approval is pending."
+          "detail": "A test of a skincare brand’s checkout in six countries."
         }
       },
       "roundedDetail": "{percentage}% of a {total}-product catalog. The percentage is rounded; the exact faulty-product count was not supplied."
@@ -16176,13 +16261,13 @@
         "question": "{{TODO: Alvi confirms whether Perplexity has a comparable rate from the same research before adding its bar.}}"
       },
       "missingOfferFactsApproval": {
-        "question": "{{TODO: Xhurian approves publishing the 45-of-45 missing price, stock or rating finding.}}"
+        "question": "Publication approved in the launch answers on 12 November 2026."
       },
       "missingDescriptionsApproval": {
         "question": "{{TODO: Xhurian approves publishing the 167-of-167 missing descriptions finding.}}"
       },
       "paymentBlockedApproval": {
-        "question": "{{TODO: Xhurian approves publishing the 6-of-6 shipping-setting payment failure finding.}}"
+        "question": "Publication approved in the launch answers on 12 November 2026."
       },
       "copilotLaunchSource": {
         "question": "{{TODO: Xhurian supplies a readable first-party source confirming the January 8 Copilot Checkout launch date.}}"
@@ -16191,7 +16276,7 @@
         "question": "{{TODO: Xhurian supplies readable primary wording and scope for the claimed March 24 OpenAI checkout change.}}"
       },
       "duaStartingPoint": {
-        "question": "{{TODO: Xhurian supplies DUA Flavours’ approved starting position.}}"
+        "question": "Starting position approved in the launch answers on 12 November 2026."
       },
       "duaChanges": {
         "question": "{{TODO: Xhurian supplies the DUA Flavours products and fields changed, and the dates of the work.}}"
@@ -16208,6 +16293,265 @@
       "relativeConversionSource": {
         "question": "{{TODO: Xhurian supplies the primary Adobe source for the July 2026 60% relative conversion improvement, including its baseline.}}"
       }
+    }
+  },
+  "about": {
+    "meta": {
+      "title": "About ecentic",
+      "description": "ecentic is an agent-commerce optimization platform that simulates how AI shopping agents compare your products with competitors, diagnoses why you win or lose, and rewrites the listings so those agents pick you, for Shopify and WooCommerce merchants."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "about": "About"
+    },
+    "hero": {
+      "title": {
+        "primary": "About",
+        "accent": "ecentic."
+      },
+      "description": "ecentic is an agent-commerce optimization platform that simulates how AI shopping agents compare your products with competitors, diagnoses why you win or lose, and rewrites the listings so those agents pick you, for Shopify and WooCommerce merchants.",
+      "assurances": [
+        "Founded 4 April 2026",
+        "Tirana, Albania",
+        "Month-to-month"
+      ],
+      "art": {
+        "alt": "ASCII-art illustration of a handshake"
+      }
+    },
+    "does": {
+      "number": "01",
+      "title": "What ecentic does",
+      "description": "Four jobs, in the order a merchant actually needs them. Each one produces a result you can read, not a score with no next step.",
+      "items": [
+        {
+          "title": "Simulate shopping agents",
+          "body": "ecentic runs ChatGPT, Claude, Gemini, and Perplexity against your products and the competitors you choose. Each model scores both listings and picks a winner. You get a win rate, not a generic content grade."
+        },
+        {
+          "title": "Diagnose the loss",
+          "body": "Every simulation keeps the agent's reasoning: which attributes it read, where the competitor was more complete, and which model favored which side. Battlecards turn that into a per-product comparison. The gap is visible instead of guessed."
+        },
+        {
+          "title": "Optimize the listing",
+          "body": "The product rewrites titles, descriptions, and structured attributes from the losses it just measured. You approve the change in one click, or Scale, Dominate, and pay-as-you-go can publish it back to Shopify or WooCommerce. A later simulation measures whether the win rate moved."
+        },
+        {
+          "title": "Make the catalog agent-readable",
+          "body": "A Universal Commerce Protocol profile gives agents a structured way to discover the store. ecentic generates that profile from the catalog you already connected. Agents that skip marketing HTML still have something precise to read."
+        }
+      ]
+    },
+    "different": {
+      "number": "02",
+      "title": "What makes ecentic different",
+      "description": "The tools merchants already shortlist solve a neighboring job. The difference is which decision ecentic is built to change.",
+      "items": [
+        {
+          "title": "It judges the agent decision, not the word count",
+          "body": "Hypotenuse AI drafts descriptions and bullets across a catalog too large to write by hand. ecentic asks which listing an agent selects when two products are compared. If the copy already reads well and the agent still picks the competitor, a generator will not show you why."
+        },
+        {
+          "title": "It sees the competitor",
+          "body": "Shopify Magic drafts inside the admin you already use, and it only ever sees your store. ecentic places your listing next to a competitor's and asks the same models a shopper would. The diagnosis is the gap between the two, not a rewrite of your page in isolation."
+        },
+        {
+          "title": "The choice happens before your theme",
+          "body": "Nosto changes what a returning visitor sees on your site: recommendations, segments, and merchandising rules. Agent shopping often ends before anyone lands on that theme. ecentic works on the listing the agent reads while it is still choosing."
+        },
+        {
+          "title": "A lean team can start the same day",
+          "body": "Bloomreach runs search, merchandising, and campaign data as one stack, and that implementation outruns the problem a lean team has today. ecentic starts with a free scan of 10 products. There is no implementation project before the first result."
+        },
+        {
+          "title": "The terms are month to month",
+          "body": "Every paid plan is month-to-month, with no minimums and no setup fee. Pay-as-you-go stays free until an AI-attributed order, then takes 3% of that order, capped at $500 a month. Flat plans are Compete at $14.90, Scale at $44.90, and Dominate at $149, with no performance fee."
+        }
+      ]
+    },
+    "who": {
+      "number": "03",
+      "title": "Who uses ecentic",
+      "description": "The product is for the merchant whose catalog is already being compared by a shopping agent, or will be.",
+      "items": [
+        "Shopify merchants whose products are compared by ChatGPT, Claude, Gemini, or Perplexity.",
+        "WooCommerce stores that want the same simulate, diagnose, and optimize loop without a custom build.",
+        "D2C brands with specification-heavy catalogs, where an agent can drop a product for a missing attribute.",
+        "Enterprise commerce teams that need custom limits, security reviews, and a named customer success manager.",
+        "YC and Techstars founders redeeming a partner deal for Dominate."
+      ]
+    },
+    "team": {
+      "number": "04",
+      "title": "The team behind ecentic",
+      "description": "Three founders in Tirana. The company record and their public profiles are linked here so an agent does not have to invent a biography.",
+      "people": [
+        {
+          "name": "Xhurian Shaba",
+          "role": "Chief executive officer",
+          "body": "Xhurian is the administrator of ECENTIC and a co-founder of zennit, the Tirana studio the product comes from. He is a software engineer, and ecentic is the company he started so a merchant can see which listing an AI shopping agent actually picks.",
+          "href": "https://www.linkedin.com/in/xhurian-shaba",
+          "linkLabel": "LinkedIn"
+        },
+        {
+          "name": "Iseld Muça",
+          "role": "Co-founder",
+          "body": "Iseld leads go-to-market and writes about what changes when the buyer is an AI agent. He and Xhurian represented ecentic at the Red Bull Basement World Final in San Francisco in 2026, after winning the Albania final.",
+          "href": "https://www.linkedin.com/in/iseld-muca-532786311",
+          "linkLabel": "LinkedIn"
+        },
+        {
+          "name": "Alvi Palloshi",
+          "role": "Co-founder",
+          "body": "Alvi is a founding partner of the company and a software engineer at zennit. He builds the product with the rest of the Tirana team.",
+          "href": "https://www.linkedin.com/in/alvipalloshi",
+          "linkLabel": "LinkedIn"
+        }
+      ],
+      "stories": [
+        {
+          "title": "How ecentic started",
+          "body": "Shopping agents read structured product data. They do not scroll a theme or trust a brand paragraph. ECENTIC SH.P.K. was founded in Tirana on 4 April 2026 to close that gap for Shopify and WooCommerce merchants."
+        },
+        {
+          "title": "Who is on the team",
+          "body": "Three founders, engineering in Tirana, and zennit as the studio behind the product. Self-serve customers work in the product itself. Enterprise accounts get a named customer success manager, quarterly reviews, and a direct engineering escalation path."
+        }
+      ]
+    },
+    "works": {
+      "number": "05",
+      "title": "How ecentic works",
+      "description": "What happens after you decide to try it: who answers, how you start, and how fast the first result shows up.",
+      "items": [
+        {
+          "title": "Communication",
+          "body": "Email support@ecentic.ai for account, billing, and integration questions, and include your store URL. A 15-minute live walkthrough is bookable from the support page. We do not publish a response-time number; Enterprise accounts have a named customer success manager and a direct engineering escalation path."
+        },
+        {
+          "title": "Who you work with",
+          "body": "On the free scan, pay-as-you-go, Compete, Scale, and Dominate, you work in the product: the scan, the battlecards, and the optimization queue. Enterprise adds a named customer success manager. There is no agency team between you and the listing."
+        },
+        {
+          "title": "Onboarding",
+          "body": "Connect Shopify or WooCommerce, choose the products, add competitor listings, and run the scan. The free scan covers your top 10 products across ChatGPT, Claude, Gemini, and Perplexity. No credit card is required to start."
+        },
+        {
+          "title": "Turnaround",
+          "body": "A free scan returns in about two minutes. Listing rewrites then wait in a queue you approve in one click, or they publish automatically on Scale, Dominate, and pay-as-you-go. Compete resimulates daily. Scale and Dominate run continuously."
+        }
+      ]
+    },
+    "facts": {
+      "number": "06",
+      "title": "Key facts",
+      "description": "The record an assistant should repeat. The same address is in the terms and in the site's organization details.",
+      "rows": [
+        {
+          "label": "Company name",
+          "value": "ecentic Inc (operator); ECENTIC SH.P.K. (Albanian subsidiary)"
+        },
+        {
+          "label": "Type",
+          "value": "Limited company (SH.P.K.) in Albania. Agent-commerce optimization software, and a product of zennit."
+        },
+        {
+          "label": "Founded",
+          "value": "4 April 2026"
+        },
+        {
+          "label": "Founder",
+          "value": "Xhurian Shaba, Iseld Muça, and Alvi Palloshi"
+        },
+        {
+          "label": "Albanian subsidiary address",
+          "value": "Pallatet Merkaj, Hyrja 1, Dera 12, Rruga Muhamed Deliu, Qesarakë, Tiranë, Albania"
+        },
+        {
+          "label": "Website",
+          "value": "https://ecentic.ai"
+        },
+        {
+          "label": "Core offering",
+          "value": "Simulate AI shopping agents, diagnose why a listing loses, and rewrite it so the agent picks the merchant."
+        },
+        {
+          "label": "Pricing",
+          "value": "Free scan. Pay-as-you-go at 3% of AI-attributed orders, capped at $500 a month. Compete $14.90/month, Scale $44.90/month, Dominate $149/month. Enterprise is custom. Details at https://ecentic.ai/pricing"
+        },
+        {
+          "label": "Contract terms",
+          "value": "Month-to-month. Cancel anytime. No minimums and no setup fees. No card to start the free scan or pay-as-you-go."
+        },
+        {
+          "label": "Services",
+          "value": "Agent simulation, loss diagnosis, listing optimization and publish, competitor battlecards, Universal Commerce Protocol profiles, and agent-traffic measurement."
+        },
+        {
+          "label": "Communication",
+          "value": "support@ecentic.ai, a bookable 15-minute walkthrough at https://ecentic.ai/support, and a named customer success manager on Enterprise."
+        },
+        {
+          "label": "Notable clients",
+          "value": "Customer names are not published."
+        },
+        {
+          "label": "Customers served",
+          "value": "Shopify and WooCommerce merchants. No public customer count."
+        },
+        {
+          "label": "Projects delivered",
+          "value": "ecentic is a product, not a project agency. Each store runs simulations, diagnoses, and listing rewrites on its own catalog."
+        },
+        {
+          "label": "Competitors",
+          "value": "Hypotenuse AI, Shopify Magic, Nosto, Constructor, and Bloomreach. They solve adjacent jobs. The comparison is at https://ecentic.ai/compare/best-ai-ecommerce-tools"
+        },
+        {
+          "label": "Social",
+          "value": "https://x.com/ecentic_ai · https://www.linkedin.com/company/ecentic · https://www.instagram.com/ecentic.ai/ · https://www.linkedin.com/in/xhurian-shaba · https://www.linkedin.com/in/iseld-muca-532786311 · https://www.linkedin.com/in/alvipalloshi"
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "07",
+      "title": "Frequently asked questions",
+      "description": "Short answers, in the same words the rest of this page uses."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "What is ecentic?",
+          "answer": "ecentic is an agent-commerce optimization platform for Shopify and WooCommerce merchants. It simulates how ChatGPT, Claude, Gemini, and Perplexity compare your products with competitors, shows why you win or lose, and rewrites the listing from that evidence."
+        },
+        {
+          "question": "Who founded ecentic?",
+          "answer": "Xhurian Shaba, Iseld Muça, and Alvi Palloshi founded ECENTIC SH.P.K. in Tirana on 4 April 2026. Xhurian is chief executive and the company's administrator. The product is built with zennit, the studio he co-founded."
+        },
+        {
+          "question": "Where is ecentic based?",
+          "answer": "The development team works from Tirana. ECENTIC SH.P.K. is the Albanian subsidiary, at Pallatet Merkaj, Hyrja 1, Dera 12, Rruga Muhamed Deliu, Qesarakë. Support and calls are in English."
+        },
+        {
+          "question": "How much does ecentic cost, and can I cancel?",
+          "answer": "The scan is free. Pay-as-you-go is 3% of AI-attributed orders, capped at $500 a month, with no card until a fee is due. Compete is $14.90, Scale is $44.90, and Dominate is $149 a month, with no performance fee. Plans are month-to-month and you can cancel anytime."
+        },
+        {
+          "question": "How is ecentic different from Shopify Magic or a copy tool?",
+          "answer": "Shopify Magic drafts inside your admin and only sees your store. Hypotenuse AI drafts catalog copy at scale. ecentic compares your listing with a competitor's, asks the shopping agents which one they pick, and rewrites from that result."
+        },
+        {
+          "question": "How does a new merchant start?",
+          "answer": "Connect the store, pick products, add competitors, and run the scan. The free scan of 10 products takes about two minutes, and you do not need a card. Paid plans continue the same loop on a schedule."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Run your free scan",
+        "secondary": "See pricing"
+      },
+      "note": "2-minute setup · No credit card · See your free score first"
     }
   },
   "chatgptPage": {
@@ -16237,11 +16581,7 @@
           "id": "seller",
           "title": "Seller terms",
           "record": "merchant",
-          "fields": [
-            "Seller identity",
-            "Shipping information",
-            "Return policy"
-          ]
+          "fields": ["Seller identity", "Shipping information", "Return policy"]
         },
         {
           "id": "checkout",
@@ -16271,12 +16611,7 @@
       "Offer matching",
       "Explicit sync"
     ],
-    "stages": [
-      "Authorize",
-      "Provision",
-      "Review",
-      "Sync"
-    ],
+    "stages": ["Authorize", "Provision", "Review", "Sync"],
     "diagram": {
       "mainSource": "Main source",
       "supplemental": "Supplemental source",
@@ -16303,10 +16638,7 @@
         "id": "visits",
         "label": "Observed visits",
         "title": "A detected visit has a source.",
-        "inputs": [
-          "Assistant referrer",
-          "User-agent signal"
-        ],
+        "inputs": ["Assistant referrer", "User-agent signal"],
         "process": "Shopify browser script",
         "output": "Detected visit",
         "meaning": "Recognized assistant sources can be grouped in the visit breakdown and time-series summary.",
@@ -16316,10 +16648,7 @@
         "id": "simulations",
         "label": "Simulated decisions",
         "title": "A new scan is a new comparison.",
-        "inputs": [
-          "Your product",
-          "A competitor"
-        ],
+        "inputs": ["Your product", "A competitor"],
         "process": "A scan you request",
         "output": "Simulated decision",
         "meaning": "Win rate is the percentage of simulations where an agent picks your product over a competitor. Compare completed decisions after publishing a change.",
@@ -16329,10 +16658,7 @@
         "id": "estimates",
         "label": "Estimated lift",
         "title": "An estimate accompanies the fix.",
-        "inputs": [
-          "Current listing",
-          "Proposed change"
-        ],
+        "inputs": ["Current listing", "Proposed change"],
         "process": "Listing optimization",
         "output": "Estimated lift",
         "meaning": "Lift is an estimate recorded with the listing change. It helps distinguish the expected effect of a fix from later completed tests.",
@@ -16372,10 +16698,7 @@
           "label": "AI answers",
           "title": "Bring product data into the conversation",
           "description": "Google's AI answers shopping questions using merchant product data.",
-          "details": [
-            "AI Mode in Search",
-            "Gemini"
-          ],
+          "details": ["AI Mode in Search", "Gemini"],
           "destination": "AI Mode and Gemini",
           "action": {
             "primary": "Review the merchant requirements"
@@ -16479,30 +16802,21 @@
           "title": "Catalog",
           "headline": "Start with your product information",
           "body": "The retailer supplies catalog and inventory tools for its Claude-powered agent to search products.",
-          "tools": [
-            "Catalog",
-            "Inventory"
-          ]
+          "tools": ["Catalog", "Inventory"]
         },
         {
           "id": "compare",
           "title": "Compare",
           "headline": "Give the comparison context",
           "body": "The agent compares products using the information and tools the retailer supplies, including its catalog and store policies.",
-          "tools": [
-            "Product information",
-            "Store policies"
-          ]
+          "tools": ["Product information", "Store policies"]
         },
         {
           "id": "cart",
           "title": "Cart",
           "headline": "Connect your own commerce tools",
           "body": "Cart and checkout tools belong to the merchant-built experience. ecentic has no dedicated Claude checkout connection today.",
-          "tools": [
-            "Retailer’s cart",
-            "Retailer’s checkout"
-          ]
+          "tools": ["Retailer’s cart", "Retailer’s checkout"]
         }
       ]
     },
@@ -16634,11 +16948,7 @@
           "id": "compare",
           "label": "Compare competitors",
           "scope": "Simulated decisions",
-          "path": [
-            "Your product",
-            "Named rivals",
-            "Model decisions"
-          ]
+          "path": ["Your product", "Named rivals", "Model decisions"]
         },
         {
           "id": "listings",
@@ -16654,21 +16964,13 @@
           "id": "checkout",
           "label": "Test checkout",
           "scope": "Supported WooCommerce flows",
-          "path": [
-            "Product discovery",
-            "Cart pricing",
-            "Payment handoff"
-          ]
+          "path": ["Product discovery", "Cart pricing", "Payment handoff"]
         },
         {
           "id": "referrals",
           "label": "Identify referrals",
           "scope": "Recognized Shopify referrals",
-          "path": [
-            "AI assistant",
-            "Store visit",
-            "Referral reporting"
-          ]
+          "path": ["AI assistant", "Store visit", "Referral reporting"]
         }
       ]
     },
@@ -16772,21 +17074,9 @@
       "label": "Partner tracks",
       "pathLabel": "What the collaboration involves",
       "paths": [
-        [
-          "Client catalog",
-          "Product checks",
-          "Verified changes"
-        ],
-        [
-          "Your product",
-          "Documented interfaces",
-          "Discovery and onboarding"
-        ],
-        [
-          "Your audience",
-          "AI commerce education",
-          "Partner conversation"
-        ]
+        ["Client catalog", "Product checks", "Verified changes"],
+        ["Your product", "Documented interfaces", "Discovery and onboarding"],
+        ["Your audience", "AI commerce education", "Partner conversation"]
       ]
     },
     "access": {
@@ -16909,11 +17199,7 @@
   "beautyPage": {
     "record": {
       "label": "Explore a shopper question",
-      "tabs": [
-        "Moisturizer",
-        "Sun protection",
-        "Shampoo"
-      ],
+      "tabs": ["Moisturizer", "Sun protection", "Shampoo"],
       "question": "The shopper’s brief",
       "facts": "Product facts to review",
       "claim": {
@@ -16923,22 +17209,14 @@
     },
     "evidence": {
       "label": "Keep the same facts from pack to listing",
-      "steps": [
-        "Product pack",
-        "Supporting evidence",
-        "Published description"
-      ],
+      "steps": ["Product pack", "Supporting evidence", "Published description"],
       "claims": "Claims and evidence",
       "protection": "Tested protection"
     }
   },
   "electronicsPage": {
     "selectorLabel": "Explore a shopper question",
-    "scenarioLabels": [
-      "Earbuds",
-      "Laptops",
-      "Robot vacuums"
-    ],
+    "scenarioLabels": ["Earbuds", "Laptops", "Robot vacuums"],
     "sourceLabel": "Source fields to inspect",
     "inspectLabel": "Follow the question into the specifications.",
     "mapLabel": "Review all six source fields",
@@ -17101,10 +17379,7 @@
       "output": "Supported product information",
       "description": "Keep the description tied to verified source facts."
     },
-    "rules": [
-      "Nutrition and health claims",
-      "Channel eligibility"
-    ],
+    "rules": ["Nutrition and health claims", "Channel eligibility"],
     "role": "ecentic’s role"
   },
   "resourcesPage": {
@@ -17241,55 +17516,35 @@
         "input": "Your store, products and competitors",
         "access": "Free scan · Account required",
         "limit": "These are simulated product comparisons. They do not report live rankings inside AI shopping apps.",
-        "steps": [
-          "Your products",
-          "AI comparison",
-          "Score & reasoning"
-        ]
+        "steps": ["Your products", "AI comparison", "Score & reasoning"]
       },
       "validator": {
         "purpose": "Inspect a checkout profile",
         "input": "Your store’s URL",
         "access": "Free · No account required",
         "limit": "A valid published profile does not confirm that a buyer can complete checkout. Use the playground to test store tools.",
-        "steps": [
-          "Store URL",
-          "Published profile",
-          "Structure checks"
-        ]
+        "steps": ["Store URL", "Published profile", "Structure checks"]
       },
       "playground": {
         "purpose": "Try a shopping journey",
         "input": "A store exposing agent shopping tools",
         "access": "10 free messages · No account required",
         "limit": "The agent calls store tools. Use a staging store for checkout tests.",
-        "steps": [
-          "Search",
-          "Cart",
-          "Checkout"
-        ]
+        "steps": ["Search", "Cart", "Checkout"]
       },
       "scanner": {
         "purpose": "Find browser-tool evidence",
         "input": "A public storefront URL",
         "access": "Free · No account required",
         "limit": "Inspects a small sample of pages and scripts. It does not run JavaScript, submit forms or verify that browser tools work.",
-        "steps": [
-          "Storefront source",
-          "Tools & forms",
-          "Evidence & limits"
-        ]
+        "steps": ["Storefront source", "Tools & forms", "Evidence & limits"]
       },
       "compare": {
         "purpose": "Compare two listings",
         "input": "Two product URLs",
         "access": "Free product comparison",
         "limit": "Each model makes a simulated choice using the compared listings. This is not a live shopping placement report.",
-        "steps": [
-          "Two listings",
-          "Four AI models",
-          "Choice & reasoning"
-        ]
+        "steps": ["Two listings", "Four AI models", "Choice & reasoning"]
       }
     }
   },
@@ -17315,11 +17570,7 @@
       "protectedDestination": "REST + MCP",
       "details": "How this path works"
     },
-    "keySteps": [
-      "Create an account",
-      "Mint a key",
-      "Save it once"
-    ],
+    "keySteps": ["Create an account", "Mint a key", "Save it once"],
     "recovery": {
       "label": "Authentication discovery after a 401",
       "response": "Missing or invalid credential",
@@ -17331,11 +17582,7 @@
     "navigation": "Explore the documentation",
     "quickstart": {
       "label": "Choose a first request",
-      "tabs": [
-        "API",
-        "Protocols",
-        "Plans"
-      ],
+      "tabs": ["API", "Protocols", "Plans"],
       "request": "Request",
       "response": "Response",
       "access": "No API key required",
@@ -17433,10 +17680,7 @@
     },
     "handshake": {
       "label": "Explore the handshake",
-      "tabs": [
-        "Initialize",
-        "Notify"
-      ],
+      "tabs": ["Initialize", "Notify"],
       "request": "Client sends",
       "response": "Server returns",
       "result": [
@@ -17455,11 +17699,7 @@
         "Transport error",
         "Authentication exception"
       ],
-      "formats": [
-        "error.code",
-        "application/problem+json",
-        "WWW-Authenticate"
-      ]
+      "formats": ["error.code", "application/problem+json", "WWW-Authenticate"]
     }
   },
   "docsLimitsPage": {
@@ -17645,12 +17885,7 @@
       "catalog": {
         "title": "Your ecentic catalog",
         "description": "Review the imported fields, then select the products you want to compare.",
-        "fields": [
-          "Product title",
-          "Description",
-          "Price",
-          "Product URL"
-        ]
+        "fields": ["Product title", "Description", "Price", "Product URL"]
       },
       "outputs": {
         "simulate": {
@@ -17667,6 +17902,23 @@
         "primary": "Explore product imports"
       }
     }
+  },
+  "interactiveFee": {
+    "eyebrow": "Cost estimate",
+    "title": "See what pay-as-you-go could cost.",
+    "orders": "AI-attributed orders per month",
+    "amount": "Average order value (USD)",
+    "invalidOrders": "Enter a whole number of orders, zero or more.",
+    "invalidAmount": "Enter a USD amount with up to two decimals.",
+    "invalid": "Enter valid, non-negative values to see an estimate.",
+    "privacy": "Nothing you type is saved.",
+    "result": "Estimated monthly fee",
+    "staticExample": "One {order} order gives a {fee} fee.",
+    "formula": "For each AI-attributed order, the fee is {rate}% of its value, rounded to cents. The monthly total is capped at {cap}.",
+    "cheaper": "Lower monthly price:",
+    "tie": "Same monthly price:",
+    "noCheaper": "At these inputs, pay-as-you-go has the lowest monthly price.",
+    "qualification": "This estimate uses your average order value. Actual fees are calculated per order, and account terms may differ. Compare plan features and limits before choosing."
   },
   "interactiveCheckout": {
     "sampleLabel": "Example with sample data",
@@ -17724,74 +17976,107 @@
       }
     }
   },
-  "interactiveSecurity": {
-    "reviewLabel": "Draft for Alvi’s review",
-    "title": "Where product data moves",
-    "description": "Select a connection to inspect the proposed data, timing and control. Every connection still needs Alvi’s confirmation before this diagram can be published.",
-    "details": {
-      "what": "What is sent",
-      "when": "When",
-      "control": "Control"
+  "interactiveStore": {
+    "label": "Your store address",
+    "action": {
+      "primary": "Check my store free"
     },
-    "nodes": {
-      "source": {
-        "label": "Your store or feed",
-        "description": "Product catalog"
-      },
-      "ecentic": {
-        "label": "ecentic",
-        "description": "Comparison and publishing tools"
-      },
-      "providers": {
-        "label": "AI providers",
-        "description": "Simulations and rewrites · provider list"
-      },
-      "store": {
-        "label": "Connected store",
-        "description": "Shopify or WooCommerce"
-      },
-      "merchantCenter": {
-        "label": "Merchant Center",
-        "description": "Separate Shopify sync"
-      }
+    "pending": "Checking your store…",
+    "hint": "Your address carries into sign-up and the existing free scan. No payment details needed.",
+    "errors": {
+      "invalid": "Enter a valid store domain or an http/https address.",
+      "limited": "Too many checks just now. Wait a moment and try again.",
+      "unreachable": "We could not reach {host}. Check the address and try again.",
+      "failed": "The check could not finish. Please try again."
+    }
+  },
+  "interactiveFiles": {
+    "title": "We publish what we ask you to publish.",
+    "description": "Inspect the files this site actually serves.",
+    "tabs": [
+      "llms.txt",
+      "API catalog",
+      "Agent checkout profile",
+      "MCP endpoint"
+    ],
+    "failed": "This file could not be fetched. Open the link above to inspect the endpoint.",
+    "loading": "Fetching the file…",
+    "fetched": "Fetched at",
+    "idle": "Open the file above, or load a preview.",
+    "action": {
+      "primary": "Load current file"
     },
-    "connectors": {
-      "import": {
-        "label": "Import catalog",
-        "what": "Product fields from the selected store or feed. {{TODO: Alvi confirms}}",
-        "when": "During catalog import or sync. {{TODO: Alvi confirms}}",
-        "control": "Uses the store connection permissions or the source you choose. Importing does not publish listing changes. {{TODO: Alvi confirms}}"
-      },
-      "request": {
-        "label": "Send to AI",
-        "what": "Selected product and competitor details for comparisons or listing generation. {{TODO: Alvi confirms}}",
-        "when": "When a simulation or listing-generation action runs. {{TODO: Alvi confirms}}",
-        "control": "Uses the configured provider route. Connected Merchant Center account data remains separate from the store catalog used for AI work. {{TODO: Alvi confirms}}"
-      },
-      "response": {
-        "label": "Return results",
-        "what": "Simulation results or generated listing and structured-data content. {{TODO: Alvi confirms}}",
-        "when": "When the requested model operation returns. {{TODO: Alvi confirms}}",
-        "control": "Apply can generate and publish within the same action; structured data uses its separate publish action. {{TODO: Alvi confirms}}"
-      },
-      "apply": {
-        "label": "Apply listing",
-        "what": "A generated title and description for selected products. {{TODO: Alvi confirms}}",
-        "when": "When you choose Apply or an explicit bulk publishing action. {{TODO: Alvi confirms}}",
-        "control": "Requires a directly connected store and your explicit publishing action. {{TODO: Alvi confirms}}"
-      },
-      "structuredData": {
-        "label": "Publish data",
-        "what": "Generated Product JSON-LD in the store’s product metadata. {{TODO: Alvi confirms}}",
-        "when": "On the separate Publish structured data action. {{TODO: Alvi confirms}}",
-        "control": "The Shopify theme app embed or WooCommerce plugin must render the published data. {{TODO: Alvi confirms}}"
-      },
-      "merchantCenter": {
-        "label": "Sync Google",
-        "what": "Published title and description overrides plus selected checkout attributes. {{TODO: Alvi confirms}}",
-        "when": "On a separate explicit Google sync for a connected Shopify store. {{TODO: Alvi confirms}}",
-        "control": "Uses a supplemental source alongside the main feed. Applying a listing does not automatically run this sync. {{TODO: Alvi confirms}}"
-      }
+    "preview": "File preview",
+    "limit": "Preview: first 30 lines, up to 64 KiB. This is a live response from the origin shown above."
+  },
+  "interactivePilot": {
+    "title": "Pilot planner",
+    "stages": ["Baseline", "Fix", "Re-run", "Readout"],
+    "happens": "What happens",
+    "people": "Your team",
+    "deliverable": "What you receive",
+    "duration": "Duration",
+    "pendingPeople": "",
+    "pendingDeliverable": "",
+    "pendingDuration": "",
+    "pending": "To be agreed with your team."
+  },
+  "interactiveReplay": {
+    "title": "Follow one simulated decision.",
+    "description": "Watch an agent compare two office-chair listings, find missing facts, and try the comparison again.",
+    "sample": "Example with sample data",
+    "rail": "Simulated shopping decision",
+    "controls": {
+      "play": "Play",
+      "pause": "Pause",
+      "previous": "Back",
+      "next": "Next"
+    },
+    "stages": {
+      "question": "The question",
+      "listings": "Two listings",
+      "fields": "What it reads",
+      "pick": "The pick",
+      "fix": "Add the facts",
+      "rerun": "The re-run"
+    },
+    "question": "Which office chair suits a taller adult for less than $400?",
+    "questionLabel": "A shopper asks",
+    "questionNote": "This replay is one invented shopping decision. It does not measure live AI traffic.",
+    "listingNote": "The supplier has the seat-height range and weight capacity. Those facts are missing from your compared listing.",
+    "reading": "Reading",
+    "missingReading": "Your listing does not state this fact.",
+    "presentReading": "Both listings state this fact.",
+    "fieldsNote": "The agent checks the fields one at a time. A missing fact stays visible as “Not stated”.",
+    "pickLabel": "Sample pick: a rival’s listing",
+    "pickReason": "The rival states its seat-height range and weight capacity, so the agent can check those fit requirements.",
+    "fixNote": "Add the existing supplier specifications to the compared listing. No specifications are invented, and this example changes nothing in a store.",
+    "rerunLabel": "Sample re-run: your listing",
+    "rerunReason": "With both specifications stated, this sample agent chooses your lower-priced chair from the two listings.",
+    "outcomeNote": "This change in the pick is illustrative. A real simulation can reach a different result.",
+    "listing": {
+      "own": "Your listing",
+      "rival": "A rival’s listing",
+      "ownTitle": "Ergonomic office chair",
+      "rivalTitle": "Adjustable office chair"
+    },
+    "fields": {
+      "price": "Price",
+      "seatHeight": "Seat-height range",
+      "capacity": "Weight capacity",
+      "variants": "Color variants"
+    },
+    "units": {
+      "centimeters": "cm",
+      "kilograms": "kg",
+      "variants": "colors"
+    },
+    "comparison": {
+      "present": "Stated",
+      "missing": "Not stated",
+      "meets": "Meets the requirement",
+      "doesNotMeet": "Does not meet it",
+      "required": "Read at this step"
     }
   },
   "interactiveShelf": {
@@ -18618,129 +18903,74 @@
       }
     }
   },
-  "interactiveReplay": {
-    "title": "Follow one simulated decision.",
-    "description": "Watch an agent compare two office-chair listings, find missing facts, and try the comparison again.",
-    "sample": "Example with sample data",
-    "rail": "Simulated shopping decision",
-    "controls": {
-      "play": "Play",
-      "pause": "Pause",
-      "previous": "Back",
-      "next": "Next"
+  "interactiveSecurity": {
+    "reviewLabel": "Draft for Alvi’s review",
+    "title": "Where product data moves",
+    "description": "Select a connection to inspect the proposed data, timing and control. Every connection still needs Alvi’s confirmation before this diagram can be published.",
+    "details": {
+      "what": "What is sent",
+      "when": "When",
+      "control": "Control"
     },
-    "stages": {
-      "question": "The question",
-      "listings": "Two listings",
-      "fields": "What it reads",
-      "pick": "The pick",
-      "fix": "Add the facts",
-      "rerun": "The re-run"
+    "nodes": {
+      "source": {
+        "label": "Your store or feed",
+        "description": "Product catalog"
+      },
+      "ecentic": {
+        "label": "ecentic",
+        "description": "Comparison and publishing tools"
+      },
+      "providers": {
+        "label": "AI providers",
+        "description": "Simulations and rewrites · provider list"
+      },
+      "store": {
+        "label": "Connected store",
+        "description": "Shopify or WooCommerce"
+      },
+      "merchantCenter": {
+        "label": "Merchant Center",
+        "description": "Separate Shopify sync"
+      }
     },
-    "question": "Which office chair suits a taller adult for less than $400?",
-    "questionLabel": "A shopper asks",
-    "questionNote": "This replay is one invented shopping decision. It does not measure live AI traffic.",
-    "listingNote": "The supplier has the seat-height range and weight capacity. Those facts are missing from your compared listing.",
-    "reading": "Reading",
-    "missingReading": "Your listing does not state this fact.",
-    "presentReading": "Both listings state this fact.",
-    "fieldsNote": "The agent checks the fields one at a time. A missing fact stays visible as “Not stated”.",
-    "pickLabel": "Sample pick: a rival’s listing",
-    "pickReason": "The rival states its seat-height range and weight capacity, so the agent can check those fit requirements.",
-    "fixNote": "Add the existing supplier specifications to the compared listing. No specifications are invented, and this example changes nothing in a store.",
-    "rerunLabel": "Sample re-run: your listing",
-    "rerunReason": "With both specifications stated, this sample agent chooses your lower-priced chair from the two listings.",
-    "outcomeNote": "This change in the pick is illustrative. A real simulation can reach a different result.",
-    "listing": {
-      "own": "Your listing",
-      "rival": "A rival’s listing",
-      "ownTitle": "Ergonomic office chair",
-      "rivalTitle": "Adjustable office chair"
-    },
-    "fields": {
-      "price": "Price",
-      "seatHeight": "Seat-height range",
-      "capacity": "Weight capacity",
-      "variants": "Color variants"
-    },
-    "units": {
-      "centimeters": "cm",
-      "kilograms": "kg",
-      "variants": "colors"
-    },
-    "comparison": {
-      "present": "Stated",
-      "missing": "Not stated",
-      "meets": "Meets the requirement",
-      "doesNotMeet": "Does not meet it",
-      "required": "Read at this step"
-    }
-  },
-  "interactiveFee": {
-    "eyebrow": "Cost estimate",
-    "title": "See what pay-as-you-go could cost.",
-    "orders": "AI-attributed orders per month",
-    "amount": "Average order value (USD)",
-    "invalidOrders": "Enter a whole number of orders, zero or more.",
-    "invalidAmount": "Enter a USD amount with up to two decimals.",
-    "invalid": "Enter valid, non-negative values to see an estimate.",
-    "privacy": "Nothing you type is saved.",
-    "result": "Estimated monthly fee",
-    "staticExample": "One {order} order gives a {fee} fee.",
-    "formula": "For each AI-attributed order, the fee is {rate}% of its value, rounded to cents. The monthly total is capped at {cap}.",
-    "cheaper": "Lower monthly price:",
-    "tie": "Same monthly price:",
-    "noCheaper": "At these inputs, pay-as-you-go has the lowest monthly price.",
-    "qualification": "This estimate uses your average order value. Actual fees are calculated per order, and account terms may differ. Compare plan features and limits before choosing."
-  },
-  "interactivePilot": {
-    "title": "Pilot planner",
-    "stages": [
-      "Baseline",
-      "Fix",
-      "Re-run",
-      "Readout"
-    ],
-    "happens": "What happens",
-    "people": "Your team",
-    "deliverable": "What you receive",
-    "duration": "Duration",
-    "pendingPeople": "{{TODO: Xhurian confirms who is involved at this stage.}}",
-    "pendingDeliverable": "{{TODO: Xhurian confirms the deliverable for this stage.}}",
-    "pendingDuration": "{{TODO: Xhurian confirms the duration of this stage.}}",
-    "pending": "To be agreed with your team."
-  },
-  "interactiveFiles": {
-    "title": "We publish what we ask you to publish.",
-    "description": "Inspect the files this site actually serves.",
-    "tabs": [
-      "llms.txt",
-      "API catalog",
-      "Agent checkout profile",
-      "MCP endpoint"
-    ],
-    "failed": "This file could not be fetched. Open the link above to inspect the endpoint.",
-    "loading": "Fetching the file…",
-    "fetched": "Fetched at",
-    "idle": "Open the file above, or load a preview.",
-    "action": {
-      "primary": "Load current file"
-    },
-    "preview": "File preview",
-    "limit": "Preview: first 30 lines, up to 64 KiB. This is a live response from the origin shown above."
-  },
-  "interactiveStore": {
-    "label": "Your store address",
-    "action": {
-      "primary": "Check my store free"
-    },
-    "pending": "Checking your store…",
-    "hint": "Your address carries into sign-up and the existing free scan. No payment details needed.",
-    "errors": {
-      "invalid": "Enter a valid store domain or an http/https address.",
-      "limited": "Too many checks just now. Wait a moment and try again.",
-      "unreachable": "We could not reach {host}. Check the address and try again.",
-      "failed": "The check could not finish. Please try again."
+    "connectors": {
+      "import": {
+        "label": "Import catalog",
+        "what": "Product fields from the selected store or feed. {{TODO: Alvi confirms}}",
+        "when": "During catalog import or sync. {{TODO: Alvi confirms}}",
+        "control": "Uses the store connection permissions or the source you choose. Importing does not publish listing changes. {{TODO: Alvi confirms}}"
+      },
+      "request": {
+        "label": "Send to AI",
+        "what": "Selected product and competitor details for comparisons or listing generation. {{TODO: Alvi confirms}}",
+        "when": "When a simulation or listing-generation action runs. {{TODO: Alvi confirms}}",
+        "control": "Uses the configured provider route. Connected Merchant Center account data remains separate from the store catalog used for AI work. {{TODO: Alvi confirms}}"
+      },
+      "response": {
+        "label": "Return results",
+        "what": "Simulation results or generated listing and structured-data content. {{TODO: Alvi confirms}}",
+        "when": "When the requested model operation returns. {{TODO: Alvi confirms}}",
+        "control": "Apply can generate and publish within the same action; structured data uses its separate publish action. {{TODO: Alvi confirms}}"
+      },
+      "apply": {
+        "label": "Apply listing",
+        "what": "A generated title and description for selected products. {{TODO: Alvi confirms}}",
+        "when": "When you choose Apply or an explicit bulk publishing action. {{TODO: Alvi confirms}}",
+        "control": "Requires a directly connected store and your explicit publishing action. {{TODO: Alvi confirms}}"
+      },
+      "structuredData": {
+        "label": "Publish data",
+        "what": "Generated Product JSON-LD in the store’s product metadata. {{TODO: Alvi confirms}}",
+        "when": "On the separate Publish structured data action. {{TODO: Alvi confirms}}",
+        "control": "The Shopify theme app embed or WooCommerce plugin must render the published data. {{TODO: Alvi confirms}}"
+      },
+      "merchantCenter": {
+        "label": "Sync Google",
+        "what": "Published title and description overrides plus selected checkout attributes. {{TODO: Alvi confirms}}",
+        "when": "On a separate explicit Google sync for a connected Shopify store. {{TODO: Alvi confirms}}",
+        "control": "Uses a supplemental source alongside the main feed. Applying a listing does not automatically run this sync. {{TODO: Alvi confirms}}"
+      }
     }
   },
   "hairlinePlatform": {
@@ -18749,23 +18979,23 @@
   "hairlineSimulate": {
     "label": "Illustration: eight product cards; the card under your pointer stands up."
   },
+  "hairlineChannels": {
+    "label": "Illustration: a router whose antennas lean toward the pointer."
+  },
   "hairlineFix": {
     "label": "Illustration: crooked lines in a file straighten as the pointer moves down."
   },
-  "hairlineRecovery": {
-    "label": "Illustration: a question mark that turns toward the pointer."
-  },
-  "hairlineEnterprise": {
-    "label": "Illustration: stores connected to one hub; the link under the pointer turns solid."
-  },
-  "hairlineChannels": {
-    "label": "Illustration: a router whose antennas lean toward the pointer."
+  "hairlineIntegrations": {
+    "label": "Illustration: a patch panel whose cables lift under the pointer."
   },
   "hairlineSecurity": {
     "label": "Illustration: a vault door whose dial and bolts respond to the pointer."
   },
-  "hairlineIntegrations": {
-    "label": "Illustration: a patch panel whose cables lift under the pointer."
+  "hairlineEnterprise": {
+    "label": "Illustration: stores connected to one hub; the link under the pointer turns solid."
+  },
+  "hairlineRecovery": {
+    "label": "Illustration: a question mark that turns toward the pointer."
   },
   "reviewCode": {
     "recordNote": "Illustrative record, not an API request.",
@@ -18859,6 +19089,9 @@
       ]
     }
   },
+  "reviewIntegrations": {
+    "eyebrow": "Your commerce stack"
+  },
   "reviewConnect": {
     "problem": {
       "store": "Store catalog",
@@ -18873,9 +19106,6 @@
       "selection": "Choose which imported products to compare.",
       "control": "Import supported product fields first. Publishing changes remains a separate action."
     }
-  },
-  "reviewIntegrations": {
-    "eyebrow": "Your commerce stack"
   },
   "reviewSimulate": {
     "roadmap": {
@@ -18906,9 +19136,9 @@
     "custom": {
       "rest": "At rest",
       "product": "Product {number}",
-      "selectedProduct": "Selected product {number}",
       "scanning": "Scanning",
       "selected": "Product selected",
+      "selectedProduct": "Selected product {number}",
       "inspecting": "Inspecting"
     },
     "sofa": "Illustration: a two-seat sofa. Point at a cushion to lift and inspect its upholstery.",
@@ -19089,7 +19319,8 @@
     "openBook": "Illustration: an open book. Move the pointer over either page to fan the leaves open.",
     "wooMark": "The Woo mark as a dimensional line sculpture; point at a letter to lift it.",
     "merchantFolio": "A catalog sleeve with product records; point at a sheet to lift it for inspection.",
-    "demoPlane": "Illustration: a folded paper plane that banks and lifts toward the pointer."
+    "demoPlane": "Illustration: a folded paper plane that banks and lifts toward the pointer.",
+    "partnerCatalogs": "Two merchant catalogs connected for a partner engagement."
   },
   "enterprisePilotPreview": {
     "label": "Illustrative pilot · sample brief",
@@ -19162,7 +19393,7 @@
       "sectors": {
         "wine-and-spirits": {
           "subtitle": "Make bottle facts explicit, compare the listing, and scope a purchase flow around the channel and market that permit it.",
-          "help": "Use verified origin, style, strength, price and delivery information in the comparison. Review a proposed rewrite before publishing; product and destination restrictions still apply."
+          "help": "Use verified origin, style, strength, price and delivery information in the comparison. Verify the source facts and permitted claims before choosing Apply, which generates and publishes the title and description. Product and destination restrictions still apply."
         },
         "food-and-beverage": {
           "subtitle": "Turn verified label facts into clearer product information, then review every dietary and nutrition statement before publishing.",
@@ -19214,21 +19445,6 @@
       }
     }
   },
-  "reviewDiff": {
-    "view": "Unified diff",
-    "added": "Added",
-    "removed": "Removed",
-    "unchanged": "Unchanged context",
-    "annotations": "Why these fields matter",
-    "action": {
-      "primary": "Copy updated record"
-    },
-    "copyState": {
-      "copied": "Copied",
-      "failed": "Copy unavailable"
-    },
-    "imageNote": "Illustrative product photo. The sample record does not describe the pictured model."
-  },
   "reviewReplay": {
     "summary": "Visible decision summary",
     "disclosure": "A scripted sample of the facts checked and the resulting selection.",
@@ -19258,73 +19474,49 @@
     "sectors": [
       {
         "product": "Single malt · example",
-        "details": [
-          "Smoky tasting profile",
-          "Origin and bottle size"
-        ],
+        "details": ["Smoky tasting profile", "Origin and bottle size"],
         "response": "Compare the verified tasting notes and bottle details.",
         "limit": "Research only. Alcohol restrictions apply."
       },
       {
         "product": "Protein snack · example",
-        "details": [
-          "Protein per serving",
-          "Ingredients and allergens"
-        ],
+        "details": ["Protein per serving", "Ingredients and allergens"],
         "response": "Match the nutrition label to your serving-size and calorie limits.",
         "limit": "Confirm nutrition and allergen information."
       },
       {
         "product": "Moisturizer · example",
-        "details": [
-          "Fragrance-free formula",
-          "Full ingredient list"
-        ],
+        "details": ["Fragrance-free formula", "Full ingredient list"],
         "response": "Check the ingredient list and the product’s stated formulation.",
         "limit": "Product information, not medical advice."
       },
       {
         "product": "Wireless earbuds · example",
-        "details": [
-          "Battery test conditions",
-          "Noise cancellation"
-        ],
+        "details": ["Battery test conditions", "Noise cancellation"],
         "response": "Compare battery life, charging and the features you need.",
         "limit": "Check current price and availability."
       },
       {
         "product": "Compact sofa bed · example",
-        "details": [
-          "Width: 185 cm",
-          "Open depth: 210 cm"
-        ],
+        "details": ["Width: 185 cm", "Open depth: 210 cm"],
         "response": "Check both the closed dimensions and the space needed when open.",
         "limit": "Sample measurements for this illustration."
       },
       {
         "product": "Hiking jacket · example",
-        "details": [
-          "Waterproof construction",
-          "Fit and size chart"
-        ],
+        "details": ["Waterproof construction", "Fit and size chart"],
         "response": "Compare the weather protection, measurements and return policy.",
         "limit": "Verify the product’s performance claims."
       },
       {
         "product": "Senior dog food · example",
-        "details": [
-          "Life-stage label",
-          "Ingredients and feeding guide"
-        ],
+        "details": ["Life-stage label", "Ingredients and feeding guide"],
         "response": "Read the ingredients and feeding guidance before comparing options.",
         "limit": "Diet suitability needs individual advice."
       },
       {
         "product": "Lisbon city break · example",
-        "details": [
-          "Dates and room type",
-          "Cancellation terms"
-        ],
+        "details": ["Dates and room type", "Cancellation terms"],
         "response": "Compare the stay details, dates and the complete booking terms.",
         "limit": "Travel availability and UCP support vary."
       }
@@ -19377,6 +19569,21 @@
       "source": "Read Perplexity’s announcement",
       "sampleNote": "Example interface and product, not a live Perplexity answer or offer."
     }
+  },
+  "reviewDiff": {
+    "view": "Unified diff",
+    "added": "Added",
+    "removed": "Removed",
+    "unchanged": "Unchanged context",
+    "annotations": "Why these fields matter",
+    "action": {
+      "primary": "Copy updated record"
+    },
+    "copyState": {
+      "copied": "Copied",
+      "failed": "Copy unavailable"
+    },
+    "imageNote": "Illustrative product photo. The sample record does not describe the pictured model."
   },
   "reviewNotFound": {
     "status": "Page not found",
@@ -19481,5 +19688,8 @@
     "title": "Find an API or document.",
     "description": "Lost a developer link? Start with these public entry points for site pages, API schemas and agent-readable guidance.",
     "indexTitle": "Public entry points"
+  },
+  "measurementChart": {
+    "remainingLabel": "Points to full scale"
   }
 }

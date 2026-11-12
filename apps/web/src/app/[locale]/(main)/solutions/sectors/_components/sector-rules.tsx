@@ -1,4 +1,8 @@
-import { ArrowRightIcon, CommerceFileShieldIcon } from "@zenncore/icons";
+import {
+  ArrowRightIcon,
+  CommerceFileShieldIcon,
+  CommerceGlobePointerIcon,
+} from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { getMessages } from "next-intl/server";
 import { CommerceFigure } from "@/components/marketing/commerce-figure";
@@ -158,9 +162,18 @@ export const SectorRules = async ({
             <li key={link.href}>
               <Link
                 href={link.href}
-                className="inline-flex items-center gap-3 text-primary-text text-sm underline-offset-4 hover:underline"
+                className="grid grid-cols-[auto_minmax(0,1fr)_auto] items-center gap-4 text-primary-text text-sm underline-offset-4 hover:underline"
               >
-                {link.label}
+                <CommerceGlobePointerIcon
+                  aria-hidden
+                  className="size-6 shrink-0"
+                />
+                <span className="min-w-0">
+                  <span className="block">{link.label}</span>
+                  <span className="mt-2 block truncate font-mono text-foreground-dimmed text-xs">
+                    {new URL(link.href, "https://ecentic.ai").hostname}
+                  </span>
+                </span>
                 <ArrowRightIcon className="size-4 shrink-0" aria-hidden />
               </Link>
             </li>

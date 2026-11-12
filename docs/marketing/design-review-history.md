@@ -7,8 +7,12 @@ The [shopping-reference transcript](review-16-shopping.md) adds **25 comments**,
 **12 comments** in the [integrated-surface and editorial transcript](review-17-surfaces.md).
 The [recovery and conversion review](review-18-recovery-demo.md) adds **11 comments**.
 The [seam and conversation review](review-19-seams-and-conversation.md) adds **2 comments**.
-The full review set now contains **427 numbered comments** across 25 Markdown sources.
-Within the external archive, twenty files contain numbered comments; its remaining file references five inspiration images but contains no numbered comments.
+The latest `1535` Enterprise comment adds **1 comment**. The full review set now contains
+**428 numbered comments across 26 archived Markdown sources**: 25 numbered-comment files and
+one standalone inspiration brief. The four repository transcripts above preserve the `0626`,
+`0703`, `0728` and `1511` rounds as readable companion transcriptions; they are not four additional
+unique review rounds. The original 21-file archive covered 20 numbered-comment files plus the
+inspiration brief; the current inventory includes the five later archived files.
 Some numbered-comment files also contain unnumbered follow-up requests; those requests inform the synthesis without increasing the numbered count.
 No screenshots or image contents are reproduced here.
 
@@ -30,7 +34,8 @@ All filenames below are relative to this local archive root:
 ```
 
 Aliases are stable citation keys: `0517 #22` means User Comment 22 in that row's file; `I #9` means initial annotation 09.
-Rows follow review order. Four-digit aliases through `2255` are 11 November; `0141`, `0445`, and `0517` are 12 November.
+Rows follow review order. Four-digit aliases through `2255` are 11 November; the following `0141`, `0445`, `0517`,
+`0626`, `0703`, `0728`, `1511` and `1535` rows are 12 November.
 SHA256 covers each complete saved file's raw bytes, including any unnumbered request text.
 
 | Alias | Saved filename | Numbered comments | SHA256 |
@@ -56,16 +61,24 @@ SHA256 covers each complete saved file's raw bytes, including any unnumbered req
 | `0141` | `later-rounds/round-11-12-0141-33-comments/comments.md` | 33 | `7a0e5732c71fdf613a17403dc3ef359bb19aee1041a849021655ae03c645e35e` |
 | `0445` | `later-rounds/round-11-12-0445-17-comments/comments.md` | 17 | `41811d27eb7a05eedcfd7a81d82019052ad3a031d87562c42c4f58cccda4ba6f` |
 | `0517` | `later-rounds/round-11-12-0517-51-comments/comments.md` | 51 | `4015fd1d32e80a0cd9aabdfe6da3ac07b33c9e84e9b94ce27eb8536a00e6a693` |
+| `0626` | `later-rounds/round-11-12-0626-25-comments/comments.md` | 25 | `60779817dbd73a2e95f9b490fbc3d1beb6aa00956f901b38df8ed00040204c29` |
+| `0703` | `later-rounds/round-11-12-0703-12-comments/comments.md` | 12 | `6969f6a42c0f0e27c2a6db7a8bee1e704ce8d515d22deb7d3e9dc0ad24efd358` |
+| `0728` | `later-rounds/round-11-12-0728-11-comments/comments.md` | 11 | `f9c01e7cf9f69b5eb78d857c758a910f86c64ff5da1c2ac00cff6b819c14d223` |
+| `1511` | `later-rounds/round-11-12-1511-2-comments/comments.md` | 2 | `911762f725b4c713b978e43168ca81a973dd0c428e3959837bd89fbff727c25e` |
+| `1535` | `later-rounds/round-11-12-1535-1-comments/comments.md` | 1 | `df68fc95646286654ecf07ccdfa16b4d93ef5f80f66862201942bbb0d6e5fbfc` |
 
 `1823` is the standalone reference brief: one request and five image references, **not five comments** despite its folder suffix.
 The early/middle/late synthesis coverage reconciles as **145 + 110 + 122 = 377** numbered comments.
+The later rounds reconcile as **377 + 25 + 12 + 11 + 2 + 1 = 428**. Full-archive learn-taste coverage
+and the inventory were reconciled on 12 November; the paired transcript hashes differ from their
+archived source hashes because their saved representation differs.
 All numbered sets are sequential from 1 through their listed count; image-caption repetitions are not additional comments.
 
 ## Subsequent shopping-reference review
 
 `R16` refers to [review-16-shopping.md](review-16-shopping.md), a text-only transcription of the
-25-comment chat round after `0517`. It is stored in the repository rather than under the external
-archive root. SHA256: `18ec177e8c5a231fe3c92340fd965205c4ef3a2f85fa84f63f9dcc08c6d02e76`. Two supplied HTML files are listed and hashed in that transcript;
+25-comment chat round after `0517`, also archived as `0626` above. The companion transcript is
+stored in the repository. SHA256: `18ec177e8c5a231fe3c92340fd965205c4ef3a2f85fa84f63f9dcc08c6d02e76`. Two supplied HTML files are listed and hashed in that transcript;
 they are visual evidence, not executable dependencies or product claims.
 
 - `R16 #1–4`: the homepage roadmap becomes wholly dark; retain simulation product cards and place
@@ -93,6 +106,10 @@ They resolve an option or ambiguity; no invented archive comment number is assig
 | `CHAT-DIFF` | **Git diff** | Use the shared Git-style diff presentation for the before/after comparison direction that was being selected. Keep useful code content and consistent rails/crosses; avoid recreating separate before/after tab shells. |
 | `CHAT-FIGURES` | **Both custom Shopify + bot** | Both custom figures were approved: the Shopify bag and the shopping bot. Do not treat the choice as selecting one and discarding the other. Page-specific mappings still determine where each belongs. |
 | `CHAT-CAP` | **Remove the pricing cap callout only; preserve billing** | Resolve `1953 #2` as a presentation change. Do not remove or alter the billing cap, calculation, configuration, enforcement, or underlying policy. |
+| `CHAT-ASCII-COEXISTENCE` | “loook i didnt ask you to cill the ascii, that is also part of our design language” | Keep ASCII, custom Hairline and explanatory graphics as complementary media. |
+| `CHAT-CUSTOM-FIGURES` | “i want you to create custom ones through [$hairline-create](/Users/xhurianshaba/.agents/skills/hairline-create/SKILL.md) that fit our thngs better and not just premade ones” | Match requested figures to their commerce or sector meaning; a renamed preset is not a custom drawing. |
+| `CHAT-AUTONOMOUS-AUDIT` | “Then go find violations of that taste across the site on your own, like the double lines on other sections and the Copilot chat that still doesn't fill its whole card.” | Inspect whole component families and report actual evidence. The later audit found no Copilot chat; the example in the request is not proof that one exists. |
+| `CHAT-LEARN-TASTE-WRITE` | “write all” — 12 November 2026 | Approves proposals 1–14, their disclosed inferred rationales, recommended X1/X2 resolutions, C1–C6 checks and focused skill extraction. It does not authorize source fixes or turn local Enterprise feedback into a global rule. |
 
 The recorded choices above come from the direct conversation, not from interpreting screenshots or guessing what a region-only comment meant.
 
@@ -112,7 +129,7 @@ The no-new-stylesheet-file rule remains part of the implementation contract.
 ## Integrated-surface and editorial review
 
 `R17` refers to [review-17-surfaces.md](review-17-surfaces.md), the 12-comment follow-up after
-`R16`. It is stored in the repository. SHA256: `3783a4c4130184feaec70aef61710b131b3bfad9b9eb3ced8e0339bc94974a09`.
+`R16`, archived as `0703` above. Its companion transcript is stored in the repository. SHA256: `3783a4c4130184feaec70aef61710b131b3bfad9b9eb3ced8e0339bc94974a09`.
 
 - `R17 #1` supersedes the large flat Google hero mark: compact genuine identity accompanies
   the title, while the illustration plane uses a meaningful Hairline figure.
@@ -129,7 +146,7 @@ The no-new-stylesheet-file rule remains part of the implementation contract.
 ## Shared boundaries, recovery and conversion review
 
 `R18` refers to [review-18-recovery-demo.md](review-18-recovery-demo.md), the 11-comment follow-up
-after `R17`. SHA256: `78ac50ae4b6165c4e8f909efe4e52594dd9846ea9a89bb73b6c455a51febe093`.
+after `R17`, archived as `0728` above. Companion-transcript SHA256: `78ac50ae4b6165c4e8f909efe4e52594dd9846ea9a89bb73b6c455a51febe093`.
 
 - `R18 #1–2` reinforces one consistent sector qualification surface and complete section seams.
 - `R18 #3–4` distinguishes the 404 recovery navigation as a blue cutout surface and the actual
@@ -143,12 +160,49 @@ after `R17`. SHA256: `78ac50ae4b6165c4e8f909efe4e52594dd9846ea9a89bb73b6c455a51f
 ## Seam ownership and full-column conversation review
 
 `R19` refers to [review-19-seams-and-conversation.md](review-19-seams-and-conversation.md),
-the two-comment follow-up after `R18`. SHA256: `59c6c038c7d5be189ff3c33f48328af08bd42dd6350c4c5febaa9e5d3f1e02e4`.
+the two-comment follow-up after `R18`, archived as `1511` above. Companion-transcript SHA256: `59c6c038c7d5be189ff3c33f48328af08bd42dd6350c4c5febaa9e5d3f1e02e4`.
 
 - `R19 #1` removes the doubled setup-to-FAQ rule in Google Merchant Center. The band owns
   its final border and outer crosses; roadmap junctions remain at interior column boundaries.
 - `R19 #2` makes the Perplexity shopping conversation fill its owning column, removing the
   redundant inset shell while retaining the product tile, message bubble and sample qualifications.
+
+## Latest Enterprise composition request
+
+`1535 #1` is the final numbered comment in this pass: **“seperate and redesign”**, targeting the
+Enterprise page's adjacent AI agent team and pilot composition. The original saved source is in
+the inventory above (`round-11-12-1535-1-comments/comments.md`, line 4). Its screenshot was reviewed
+privately during the full-archive audit; no image is copied here. This is a local redesign request
+with no stated reusable rationale. It remains the concrete A11 composition proposal, not a ban on
+all split sections, a claim that the redesign shipped, or permission to invent Enterprise results.
+
+## 12 November full-history learn-taste approval
+
+The user approved the [full-history report](../../output/learn-taste-2026-11-12/report.md) with
+**“write all”**. The pass read and reconciled all 428 numbered comments, the inspiration brief,
+earlier implementation briefs and direct chat choices. Exact correction text, context and source
+lines remain in [all-corrections.json](../../output/learn-taste-2026-11-12/all-corrections.json);
+the [archive manifest](../../output/learn-taste-2026-11-12/archive-manifest.json) records the 26
+source paths and hashes. This is completed review coverage, not proof that prior source edits
+satisfied every annotation.
+
+The approval writes the 14 proposed strengthenings into their existing canonical sections,
+resolves X1 as compact integration identity plus contextual Hairline, and resolves X2 as a
+recognizable winding path rendered with tonal dots. Literal code and protocol text remain literal.
+Rationales originally inferred are explicitly marked as accepted via this approval; they are not
+presented as historical user quotations. Exact source quotes are preserved beside each rule.
+
+The full ASCII/Hairline guidance now lives in [ecentic-art](../../.agents/skills/ecentic-art/SKILL.md),
+and all public route recipes in [ecentic-public-pages](../../.agents/skills/ecentic-public-pages/SKILL.md).
+The root `DESIGN.md` remains a symlink to the canonical guide; the canon supplies summaries and
+links rather than a second copy of the specialist content. [C1–C6 design checks](design-checks.md)
+provide scoped enforcement and explicitly distinguish automated findings from visual review.
+
+No component fixes, artwork generation or billing changes are implied by this rule-writing
+approval. Existing audit findings, including the legacy `AsciiRoad` renderer and the scoped
+Enterprise composition, remain unresolved until their separately scoped source work is completed.
+Historical report files describe the proposal-stage state and remain provenance artifacts;
+this dated entry records the later approval.
 
 ## Latest-choice supersession matrix
 
@@ -169,6 +223,7 @@ The final column summarizes the resolved intent for the cited topic; engineering
 | Whole-footer gradient | `1953 #8` proposes a more distinct footer. | `2032 #10` clarifies that the gradient covers the whole footer. | Treat the gradient as one footer field; a small isolated gradient component does not satisfy the scope. |
 | Legible ASCII | `R2 #2, #7, #23`; `0740 #5` reject weak/crude ASCII while requesting relevant objects. | `1844 #2`; `1953 #15, #19`; `CHAT-TONAL`; `0517 #1–3, #11, #39`. | Prefer recognizable tonal-dot objects and purposeful backgrounds. Merely having ASCII texture is insufficient. |
 | ASCII and Hairline coexistence | `2133 #5, #8`; `2255 #1–2` request more Hairline. | `0445 #17`; `0517 #1–3, #36, #39`; `CHAT-FIGURES` preserve both media and both approved custom figures. | Use semantic Hairline foreground objects with relevant tonal ASCII where requested; do not replace one medium globally with the other. |
+| Literal path renderer | The canon permitted character ASCII for a meaningful path; `AsciiRoad` used a mixed-character ramp. | `0626 #4` requests the new ASCII method for all ASCII; “write all” accepts X2 on 12 November. | Preserve the winding route's meaning and convert its artwork renderer to tonal dots in scoped source work. Actual code/protocol text remains literal. |
 | Footer wordmark | `R2 #27` asks for large legible ASCII; `2133 #2` tries a wide Hairline-drawn wordmark. | `0517 #6` explicitly asks for dimensional ASCII drawn/revealed; `CHAT-TONAL` resolves the renderer. | The latest wordmark direction is dimensional tonal dots with a reveal, while Hairline remains available elsewhere. |
 | Semantic figure choice | `1435 #10`; `1753 #12, #24`; `2133 #1, #3, #9` reject repeated or unreadable subjects. | `0445 #8, #12, #15`; `0517 #4, #7–10, #16, #20, #24, #36, #46, #49`. | Match objects to the meaning: repair tools, money, connected documents/network, sector products, book, contact/support subject. Reuse the language, not an unrelated generic basket everywhere. |
 | Figure captions and brands | `0707 #1–2, #4` makes genuine provider identity prominent; `0740 #3` removes Shopify's Live badge. | `0517 #12, #14, #23, #45` removes the Shopify figure name and requests Woo/Google/security logos. | Preserve genuine brand identity and accessibility names; remove the specifically rejected visible caption/status clutter. Avoid duplicate oversized logos. |
@@ -180,7 +235,7 @@ The final column summarizes the resolved intent for the cited topic; engineering
 | Table scrolling | `R3 #10` asks to verify a wider scrolling table on desktop/mobile. | `0658 #2` disables scrolling on the homepage channel table; `2133 #4` flags a separate pricing scroll defect. | Keep the homepage channel comparison readable without awkward scrolling; retain correct scrolling where a true wide data table requires it. |
 | Artwork scale and clipping | `R3 #5`; `0740 #4` enlarge decorative art to fill a background. | `1753 #2`; `1953 #18` reduce excess height; `0517 #5` fixes the cut-off simulation graphic. | Background cropping is deliberate and contextual; featured objects and functional content must remain complete. Larger is not always better. |
 | Forms and CTA composition | `1753 #11` rejects a particular inline store-address arrangement. | `1844 #1`; `2032 #9` request rounded inputs and a store-address action alongside Book a demo. | Improve composition and remove duplicate actions; do not infer a global prohibition on store-address inputs. |
-| Public pricing layout | `I #54` tentatively offers 2×2. | `1953 #6` groups subscriptions in one row and PAYG/Enterprise in the next. | Public Compete/Scale/Dominate form row one; PAYG/Enterprise form row two. Align offers, prices, and actions; dashboard paywall scope is separate. |
+| Public pricing layout | Earlier public 2×2 experiment. `I #54` concerns an evidence/security CTA composition and is not provenance for a universal pricing layout. | `1953 #6` groups subscriptions in one row and PAYG/Enterprise in the next. | Public Compete/Scale/Dominate form row one; PAYG/Enterprise form row two. Align offers, prices, and actions; dashboard paywall scope is separate. |
 | Pricing cap copy | `1953 #2` ambiguously says to remove the cap. | `CHAT-CAP` explicitly limits the change to the callout. | Remove that presentation only; preserve the billing policy and all enforcement/calculation behavior. |
 | Security flow treatment | `0141 #6` asks for a black draft work area. | `0517 #45` asks for a whole-flow gradient with real provider logos. | Use the later region-specific gradient direction. Visual review does not authorize draft operational claims or removal of the review gate. |
 | Blog and supporting pages | Earlier generic graphics/text layouts. | `0517 #36–37, #43, #46–51` names a book, square rounded thumbnails, icon-led docs navigation, meaningful contact/support graphics, and Nucleo for the indicated icon. | Apply the named page-specific objects and geometry. A contained desktop sticky support figure is an implementation of “fixed”; mobile content must remain unobstructed. |
@@ -224,3 +279,42 @@ These are explicitly approved directions, not evidence that every page should co
 - SHA256 identifies the exact saved text reviewed. If an archive file is amended, recalculate its hash and document the amendment rather than silently treating it as the same source.
 - The detailed temporary syntheses are `output/review-round15/history-early.md`, `history-middle.md`, and `history-late.md`; this ledger is their compact durable provenance layer.
 - Add future decisions as new dated evidence. Update the [canonical design system](../context/design.md) to express the accepted current behavior, and retain this ledger's supersession trail.
+
+## Authorized remediation — 12 November 2026
+
+After approving the canon and checks with “write all”, the user authorized source repairs with
+“yes fix everytghing]”. This is implementation evidence, not a new set of inferred taste rules.
+
+- Removed the 33 doubled structural joins found in the original audit, assigning each stroke
+  to its section, grid or content owner while keeping useful internal separators.
+- Split Enterprise intake and security into distinct light and dark sections, following the
+  local `1535.01` request. This does not prohibit other two-column layouts.
+- Replaced MCP narrative tabs and disconnected feed setup rows with the shared `JourneySteps`.
+  MCP's code now occupies the complete adjoining cell; public docs code and table regions let
+  ordinary vertical scrolling return to the document.
+- Replaced `AsciiRoad`'s retired character ramp with circular tonal layers and a finite reveal.
+  Preserved the winding route and complete static/reduced-motion state.
+- Unified public hero/section heading scales, corrected WooCommerce's comparison icon, and
+  removed the remaining public PAYG cap callout without changing billing terms or calculations.
+- Added a pointer/focus readout to the measured score dial. The displayed 72/100 sample remains
+  fixed; the secondary value describes its remaining distance to the full scale.
+
+The registered 23 visual states passed private subagent review with source-bound receipts.
+The full desktop-English and mobile-Spanish route checks, focused checks, exact observations
+and known typecheck baseline are recorded locally in
+`output/design-remediation-2026-11-12/`. Screenshots remain in those delegated evidence folders;
+they are not embedded in the main conversation. The registries are bounded checks, not proof
+that every future page state or visual judgment is automatically covered.
+
+## Responsive follow-up — 12 November 2026
+
+The subsequent [12-comment responsive review](review-20-responsive.md) adds explicit mobile
+construction, centered navigation fade, current production film, edge-to-edge docs surfaces and
+Nucleo outline-duotone icon direction. This companion text is additional to the historical
+428-comment archive census above. Its current rules are merged into the canon and public-page
+recipe rather than appended as competing alternatives.
+
+The implementation record and bounded verification are in
+`output/mobile-review-2026-11-12/`; private visual inspection stays in the delegated evidence
+folders. This follow-up does not mark the unrelated launch-content or prior design audit
+backlogs complete.

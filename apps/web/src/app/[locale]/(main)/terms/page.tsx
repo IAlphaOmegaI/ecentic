@@ -94,7 +94,9 @@ export default async () => {
         eyebrow={translate("termsAndConditions.hero.eyebrow")}
         title={translate("termsAndConditions.hero.title.primary")}
         accent={translate("termsAndConditions.hero.title.accent")}
-        meta={`Last updated: ${lastUpdated.display}`}
+        meta={translate("termsAndConditions.lastUpdated.label", {
+          date: lastUpdated.display,
+        })}
         description={translate("termsAndConditions.hero.description")}
         assurances={assurances}
       />

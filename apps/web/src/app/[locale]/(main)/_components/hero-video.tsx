@@ -9,17 +9,20 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@zenncore/web/components/dialog";
-import { useTranslations } from "next-intl";
-import { useEffect, useRef, useState } from "react";
+import { type AppConfig, useTranslations } from "next-intl";
+import { useEffect, useId, useRef, useState } from "react";
 
-const source = "/videos/banner.mp4";
+// Versioned assets match the approved film currently published on ecentic.ai.
+const source = "/videos/ecentic-launch-20261008.mp4";
+const poster = "/videos/ecentic-launch-poster-20261008.webp";
 
-// Keep the existing silent preview and full film. Autoplay overrides preload,
-// so attach the preview source only as the film approaches the viewport.
-const loop = "/videos/banner-loop.mp4";
+// Autoplay overrides preload, so attach the short silent preview only as the
+// film approaches the viewport. The full film remains behind the dialog.
+const loop = "/videos/ecentic-launch-preview-20261008.mp4";
 
-export const HeroVideo = () => {
+export const HeroVideo = ({ transcript }: HeroVideo.Props) => {
   const translate = useTranslations("home.heroVideo");
+  const descriptionId = useId();
   const trigger = useRef<HTMLButtonElement>(null);
   const [previewVisible, setPreviewVisible] = useState(false);
 
@@ -53,8 +56,14 @@ export const HeroVideo = () => {
           muted
           playsInline
           preload="none"
+          width={960}
+          height={540}
           src={previewVisible ? loop : undefined}
-          poster={previewVisible ? "/images/hero-poster.webp" : undefined}
+          poster={
+            previewVisible
+              ? "/videos/ecentic-launch-poster-20261008-960.webp"
+              : undefined
+          }
           className="aspect-video w-full object-cover transition-transform duration-150 group-hover:scale-[1.01] motion-reduce:transition-none"
         />
         <span
@@ -76,12 +85,16 @@ export const HeroVideo = () => {
         </span>
       </DialogTrigger>
 
+      <p className="mt-4 text-foreground-dimmed text-sm leading-relaxed">
+        {translate("sampleLabel")}
+      </p>
+
       <DialogPopup
         className="marketing-site enterprise-video-dialog text-(length:--text-base) rounded-xs bg-background font-body text-foreground leading-[1.6] [--rail-color:var(--color-accent-foreground)] [--rail-cross:var(--color-cross)] [color-scheme:light] [font-synthesis:none] motion-reduce:[&_*]:animate-none motion-reduce:[&_*]:scroll-auto motion-reduce:[&_*]:transition-none [&_:where(a,button).bg-primary]:rounded-md [&_:where(a,button).bg-primary]:bg-primary-text [&_:where(a,button).from-primary-rich]:rounded-md [&_:where(a,button,input,select,textarea):focus-visible]:outline-2 [&_:where(a,button,input,select,textarea):focus-visible]:outline-primary-text [&_:where(a,button,input,select,textarea):focus-visible]:outline-offset-4 [&_:where(button,[role=button])]:duration-160 [&_:where(button,[role=button])]:ease-[cubic-bezier(0.23,1,0.32,1)] [&_:where(div:has(>input),div:has(>textarea))]:rounded-md [&_:where(input,textarea,select,[role=combobox])]:rounded-md [&_p]:text-pretty [:where(&)_:where(h1)]:max-w-[1040px] [:where(&)_:where(h1)]:text-[clamp(2.75rem,5.5vw,5rem)] [:where(&)_:where(h1,h2,h3,h4)]:text-balance [:where(&)_:where(h1,h2,h3,h4)]:font-heading [:where(&)_:where(h1,h2,h3,h4)]:font-medium [:where(&)_:where(h1,h2,h3,h4)]:text-foreground-rich [:where(&)_:where(h1,h2,h3,h4)]:leading-[1.08] [:where(&)_:where(h1,h2,h3,h4)]:tracking-[-0.035em] [:where(&)_:where(h2)]:max-w-[900px] [:where(&)_:where(h2)]:text-[clamp(2rem,3.6vw,3.5rem)] [:where(&)_:where(h3)]:text-[clamp(1.4rem,2vw,1.85rem)]"
         classList={{
           backdrop:
             "z-50 bg-emphasis/85 opacity-100 backdrop-blur-md duration-150",
-          root: "z-50 m-0 w-[min(94vw,1400px)] max-w-none overflow-hidden rounded-xl border-background-rich/15 bg-emphasis p-0 shadow-2xl duration-150 data-ending-style:scale-95 data-starting-style:scale-95 motion-reduce:transition-none",
+          root: "z-50 m-0 max-h-[90dvh] w-[min(94vw,1400px)] max-w-none overflow-y-auto rounded-xl border-background-rich/15 bg-emphasis p-0 shadow-2xl duration-150 data-ending-style:scale-95 data-starting-style:scale-95 motion-reduce:transition-none",
         }}
       >
         <DialogTitle className="sr-only">{translate("title")}</DialogTitle>
@@ -94,18 +107,66 @@ export const HeroVideo = () => {
         >
           <XIcon aria-hidden className="size-5" />
         </DialogClose>
-        {/* biome-ignore lint/a11y/useMediaCaption: Preserve the existing film; a caption track requires a verified transcript. */}
+        {/* biome-ignore lint/a11y/useMediaCaption: A verified visual transcript is provided immediately below; no spoken caption track has been verified. */}
         <video
+          aria-label={translate("title")}
+          aria-describedby={descriptionId}
           autoPlay
           controls
           playsInline
           preload="auto"
+          width={1920}
+          height={1080}
+          poster={poster}
           className="aspect-video w-full bg-emphasis object-contain"
         >
           <source src={source} type="video/mp4" />
           {translate("fallback")}
         </video>
+        <section className="border-accent-foreground border-t bg-background">
+          <div className="px-7 py-7 max-sm:px-4">
+            <h2>{translate("transcriptTitle")}</h2>
+            <p
+              id={descriptionId}
+              className="mt-4 max-w-4xl text-foreground-dimmed"
+            >
+              {translate("sampleLabel")}
+            </p>
+            <p className="mt-3 max-w-4xl text-foreground-dimmed text-sm">
+              {translate("transcriptIntroduction")}
+            </p>
+          </div>
+          <ol>
+            {transcript.map((scene) => (
+              <li
+                key={scene.time}
+                className="grid grid-cols-[7rem_1fr] gap-6 border-accent-foreground border-t px-7 py-6 max-sm:grid-cols-1 max-sm:gap-3 max-sm:px-4"
+              >
+                <span className="text-primary-text tabular-nums">
+                  {scene.time}
+                </span>
+                <div className="min-w-0">
+                  <p lang="en" className="font-medium text-foreground-rich">
+                    <span className="sr-only">
+                      {translate("onScreenLabel")}:{" "}
+                    </span>
+                    {scene.onScreen}
+                  </p>
+                  <p className="mt-3 text-foreground-dimmed leading-relaxed">
+                    {scene.description}
+                  </p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </section>
       </DialogPopup>
     </Dialog>
   );
 };
+
+export namespace HeroVideo {
+  export type Props = {
+    transcript: AppConfig["Messages"]["home"]["heroVideo"]["transcript"];
+  };
+}

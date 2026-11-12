@@ -73,7 +73,7 @@
     "plans": {
       "payg": {
         "tagline": "Pay only after AI sends you visitors",
-        "note": "No card to start. Fees follow the attribution rules below, with the existing monthly cap.",
+        "note": "No card to start. Fees follow the attribution rules below.",
         "action": {
           "primary": "Choose pay-as-you-go"
         }
@@ -215,7 +215,7 @@
       },
       {
         "question": "What happens to our data if we leave?",
-        "answer": "The Privacy policy retains data while your account is active. Disconnecting a store deletes its access tokens immediately; imported products remain for simulation history unless you request deletion. Deleting your account permanently deletes the profile, credentials, stores, tokens, imported products, simulation results, optimization history, reports, UCP profile, agent orders including shopper details, and Google Merchant Center connection records. Shopify’s shop/redact webhook deletes that shop’s store data, products and associated records. Where tax or accounting rules require billing records, the order reference and amount are retained, not shopper contact or address details. The policy specifies no separate deletion turnaround or backup purge period."
+        "answer": "Request deletion at privacy@ecentic.ai. We respond within one month and confirm once data has been deleted from our systems. Billing records are retained where required by law; backup copies are removed when they expire. See the Privacy policy for scope and disconnect controls."
       },
       {
         "question": "Is anything billed that we did not ask for?",
@@ -223,7 +223,7 @@
       },
       {
         "question": "Do you sign a DPA?",
-        "answer": "Discuss your DPA requirements with us during scoping. Confirm the agreement and signing arrangements before sharing personal data."
+        "answer": "Yes. A DPA is arranged on request before personal data is shared, and we can sign yours. The contracting entity and signatory are confirmed in the agreement."
       }
     ],
     "policyLinks": [

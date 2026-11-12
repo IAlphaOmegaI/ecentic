@@ -81,8 +81,7 @@ export default async () => {
         id="application"
         className="scroll-mt-24 [&>.marketing-rail>.marketing-guides]:hidden"
       >
-        <div className="relative grid border-accent-foreground border-t lg:grid-cols-[2fr_3fr]">
-          <MarketingEdgeCrosses />
+        <div className="relative grid lg:grid-cols-[2fr_3fr]">
           <Plus className="top-0 left-2/5 -translate-x-1/2 -translate-y-1/2 max-lg:hidden" />
           <div className="min-w-0 border-accent-foreground bg-linear-to-br from-primary/10 via-background-rich to-background-rich max-lg:border-b lg:border-r">
             <div className="px-4 pt-10 pb-8 sm:px-8 sm:pt-12 lg:sticky lg:top-24">

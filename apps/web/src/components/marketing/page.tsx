@@ -24,7 +24,7 @@ import {
 import { TrackingOverview } from "./tracking-overview";
 
 const heroSubjects: Record<string, MarketingHero.Props["figure"]> = {
-  "/partners": "hub",
+  "/partners": "partnerCatalogs",
   "/solutions/brands": "catalog",
   "/solutions/retailers-and-marketplaces": "checkout",
   "/solutions/enterprise": "relay",
@@ -133,10 +133,14 @@ export const MarketingSection = ({
   section,
   children,
   sectionTone,
+  className,
 }: MarketingSection.Props) => {
   if (section.id === "what-to-track" && section.items?.length)
     return (
-      <MarketingBand id={section.id} className="[&_.marketing-guides]:hidden">
+      <MarketingBand
+        id={section.id}
+        className={cn("[&_.marketing-guides]:hidden", className)}
+      >
         <MarketingHeading
           eyebrow={section.eyebrow}
           title={section.title}
@@ -193,6 +197,7 @@ export const MarketingSection = ({
         section.field && !sectionTone
           ? "marketing-field bg-background [&>.marketing-rail]:bg-background-dimmed [&_.marketing-note]:text-foreground"
           : undefined,
+        className,
       )}
     >
       <div
@@ -459,5 +464,6 @@ export namespace MarketingSection {
     section: MarketingPage.Section;
     children?: ReactNode;
     sectionTone?: "light" | "muted";
+    className?: string;
   };
 }

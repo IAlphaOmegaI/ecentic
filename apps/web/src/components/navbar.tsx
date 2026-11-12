@@ -66,6 +66,7 @@ import {
 } from "@/components/marketing/provider-logo";
 import { Plus } from "@/components/plus";
 import { Link, usePathname } from "@/i18n/navigation";
+import styles from "./navbar.module.css";
 
 const navigationProviders: Record<string, ProviderKey> = {
   "/ai-channels/google-ai-mode-gemini": "google",
@@ -180,6 +181,7 @@ const NavigationWordmark = ({ dark }: { dark: boolean }) => (
 );
 
 export const Navbar = () => {
+  const { content: contentClassName, surface: surfaceClassName } = styles;
   const messages = useMessages();
   const chrome = messages.enterpriseChrome;
   const navigation = messages.enterpriseNav;
@@ -442,7 +444,10 @@ export const Navbar = () => {
                     />
                   </NavigationMenuTrigger>
                   <NavigationMenuContent
-                    className="marketing-mega-content max-h-[calc(100dvh-80px)] w-screen xs:w-screen min-w-0 xs:min-w-0 overflow-y-auto overscroll-contain px-0 py-2"
+                    className={cn(
+                      "marketing-mega-content max-h-[calc(100dvh-80px)] w-screen xs:w-screen min-w-0 xs:min-w-0 overflow-y-auto overscroll-contain px-0 py-2",
+                      contentClassName,
+                    )}
                     data-menu={group.id}
                     ref={(content) => {
                       if (!content || pendingFocus.current !== group.id) return;
@@ -624,7 +629,12 @@ export const Navbar = () => {
             align="center"
             collisionPadding={0}
           >
-            <NavigationMenuPopup className="marketing-mega-popup w-screen xs:w-screen transform-none overflow-visible rounded-none border-0 bg-transparent shadow-none transition-opacity duration-150 data-ending-style:scale-100 data-starting-style:scale-100 min-[500px]:w-screen">
+            <NavigationMenuPopup
+              className={cn(
+                "marketing-mega-popup w-screen xs:w-screen transform-none overflow-visible rounded-none border-0 bg-transparent shadow-none min-[500px]:w-screen",
+                surfaceClassName,
+              )}
+            >
               <NavigationMenuViewport />
             </NavigationMenuPopup>
           </NavigationMenuPositioner>
@@ -665,6 +675,7 @@ export const Navbar = () => {
               style={toneStyle}
               className={cn(
                 fonts,
+                surfaceClassName,
                 "marketing-site marketing-grid-pattern marketing-mobile-sheet isolate z-70 h-dvh w-screen max-w-none gap-0 overflow-hidden border-0 bg-transparent font-body font-normal text-foreground [--rail-color:var(--color-accent-foreground)] [--rail-cross:var(--color-cross)] motion-reduce:animate-none motion-reduce:transition-none sm:max-w-none motion-reduce:[&_*]:animate-none motion-reduce:[&_*]:transition-none",
               )}
               classList={{

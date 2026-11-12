@@ -1,29 +1,50 @@
 import type { JSX } from "react";
 import type { IconProps } from "../types";
 
-export const CircleBoltIcon = ({ title, ...props }: IconProps): JSX.Element => {
+// Nucleo UI · circle-bolt · outline-duo · 18px.
+// Adapted from CircleBoltOutlineDuo18; original geometry and soft layers retained.
+export const CircleBoltIcon = ({
+  title,
+  strokeWidth = 1.5,
+  duoOpacity = 0.3,
+  ...props
+}: IconProps & { duoOpacity?: number | string }): JSX.Element => {
   return (
     <svg
-      height="18"
-      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+      width={18}
+      height={18}
       viewBox="0 0 18 18"
-      strokeWidth="1.5"
       {...props}
     >
       {title && <title>{title}</title>}
-      <g fill="currentColor">
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M1 9C1 4.58168 4.58179 1 9 1C13.4182 1 17 4.58168 17 9C17 13.4183 13.4182 17 9 17C4.58179 17 1 13.4183 1 9Z"
-          fill="currentColor"
-          fillOpacity=".4"
-        />
-        <path
-          d="M13.844 7.55499C13.65 7.21299 13.283 6.99999 12.89 6.99999H9.86902L10.596 2.09199C10.665 1.63899 10.412 1.21499 9.98101 1.06099C9.54901 0.905988 9.08402 1.07399 8.85002 1.46799L4.16701 9.34299C3.96601 9.68099 3.96201 10.104 4.15601 10.446C4.35001 10.788 4.71701 11.001 5.11001 11.001H8.13101L7.40401 15.909C7.33501 16.362 7.58801 16.786 8.01901 16.94C8.12601 16.979 8.23701 16.997 8.34401 16.997C8.66801 16.997 8.97401 16.829 9.15001 16.533L13.833 8.65799C14.034 8.31999 14.038 7.89699 13.844 7.55499Z"
-          fill="currentColor"
-        />
-      </g>
+      <circle
+        cx="9"
+        cy="9"
+        r="7.25"
+        fill="currentColor"
+        opacity={duoOpacity}
+        strokeWidth={0}
+        data-color="color-2"
+      />
+      <path
+        d="m8.437,13.5l3.2659-4.75h-2.9525l.8128-4.25-3.266,4.75h2.9527l-.8128,4.25Z"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={strokeWidth}
+        fill="currentColor"
+      />
+      <circle
+        cx="9"
+        cy="9"
+        r="7.25"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={strokeWidth}
+      />
     </svg>
   );
 };

@@ -10,6 +10,8 @@ import {
 } from "@zenncore/web/components/table";
 import { getMessages } from "next-intl/server";
 import type { ReactNode } from "react";
+import { FormattedSource } from "@/components/marketing/interactive/published-files/formatted-source";
+import { MarketingEdgeCrosses } from "@/components/marketing/light-band";
 import { DocsCopy } from "./docs-copy";
 
 /**
@@ -22,16 +24,25 @@ export const DocsCode = async ({
   children,
   label,
   className,
+  formatted = false,
+  edges = "both",
 }: DocsCode.Props) => {
   const { docsControls } = await getMessages();
 
   return (
     <figure
+      data-docs-source
       className={cn(
-        "min-w-0 overflow-hidden border border-accent-foreground bg-background-dimmed",
+        "relative flex min-w-0 flex-col border-accent-foreground bg-background-dimmed",
+        (edges === "both" || edges === "top") && "border-t",
+        (edges === "both" || edges === "bottom") && "border-b",
         className,
       )}
     >
+      {(edges === "both" || edges === "top") && <MarketingEdgeCrosses />}
+      {(edges === "both" || edges === "bottom") && (
+        <MarketingEdgeCrosses edge="bottom" />
+      )}
       <figcaption className="flex flex-wrap items-center justify-between gap-4 border-accent-foreground border-b px-4 py-2">
         <span className="wrap-anywhere text-foreground-dimmed text-sm">
           {label ?? docsControls.snippet}
@@ -39,7 +50,7 @@ export const DocsCode = async ({
         <DocsCopy source={children} copy={docsControls} />
       </figcaption>
       <ScrollArea
-        className="max-w-full"
+        className="min-h-0 max-w-full flex-1"
         viewportProps={{
           role: "region",
           tabIndex: 0,
@@ -47,12 +58,16 @@ export const DocsCode = async ({
         }}
         classList={{
           viewport:
-            "focus-visible:outline-2 focus-visible:outline-primary-text",
+            "overscroll-y-auto focus-visible:outline-2 focus-visible:outline-primary-text",
         }}
       >
-        <pre className="w-max min-w-full p-4 font-mono text-foreground text-xs leading-relaxed">
-          <code>{children}</code>
-        </pre>
+        {formatted ? (
+          <FormattedSource source={children} />
+        ) : (
+          <pre className="w-max min-w-full p-4 font-mono text-foreground text-xs leading-relaxed">
+            <code>{children}</code>
+          </pre>
+        )}
       </ScrollArea>
     </figure>
   );
@@ -63,6 +78,10 @@ export namespace DocsCode {
     children: string;
     label?: string;
     className?: string;
+    /** Line-numbered syntax treatment for full dark source workbenches. */
+    formatted?: boolean;
+    /** Only draw boundaries owned by this document, never the surrounding cell. */
+    edges?: "both" | "top" | "bottom" | "none";
   };
 }
 
@@ -75,7 +94,8 @@ export const DocsTable = ({ columns, rows }: DocsTable.Props) => (
       "aria-label": columns.join(", "),
     }}
     classList={{
-      viewport: "focus-visible:outline-2 focus-visible:outline-primary-text",
+      viewport:
+        "overscroll-y-auto focus-visible:outline-2 focus-visible:outline-primary-text",
     }}
   >
     <Table className="min-w-160 border-b-0 bg-background">

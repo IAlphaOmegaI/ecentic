@@ -1,31 +1,46 @@
 import type { JSX } from "react";
 import type { IconProps } from "../types";
 
-export const SearchIcon = ({ title, ...props }: IconProps): JSX.Element => {
+// Nucleo UI · magnifier-2 · outline-duo · 18px.
+// Adapted from Magnifier2OutlineDuo18; original geometry and soft layers retained.
+export const SearchIcon = ({
+  title,
+  strokeWidth = 1.5,
+  duoOpacity = 0.3,
+  ...props
+}: IconProps & { duoOpacity?: number | string }): JSX.Element => {
   return (
     <svg
-      height="18"
-      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+      width={18}
+      height={18}
       viewBox="0 0 18 18"
-      strokeWidth="1.5"
       {...props}
     >
       {title && <title>{title}</title>}
-      <g fill="currentColor">
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M1.5 7.25C1.5 4.07442 4.07442 1.5 7.25 1.5C10.4256 1.5 13 4.07442 13 7.25C13 10.4256 10.4256 13 7.25 13C4.07442 13 1.5 10.4256 1.5 7.25Z"
-          fill="currentColor"
-          fillOpacity=".4"
-        />
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M12.3732 12.3732C12.6661 12.0803 13.1409 12.0803 13.4338 12.3732L16.2803 15.2197C16.5732 15.5126 16.5732 15.9874 16.2803 16.2803C15.9874 16.5732 15.5126 16.5732 15.2197 16.2803L12.3732 13.4338C12.0803 13.1409 12.0803 12.6661 12.3732 12.3732Z"
-          fill="currentColor"
-        />
-      </g>
+      <path
+        d="M7.25 12.25C10.0114 12.25 12.25 10.0114 12.25 7.25C12.25 4.4886 10.0114 2.25 7.25 2.25C4.4886 2.25 2.25 4.4886 2.25 7.25C2.25 10.0114 4.4886 12.25 7.25 12.25Z"
+        fill="currentColor"
+        data-color="color-2"
+        data-stroke="none"
+        opacity={duoOpacity}
+      />{" "}
+      <path
+        d="M15.75 15.75L12.9035 12.9035"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M7.25 12.25C10.0114 12.25 12.25 10.0114 12.25 7.25C12.25 4.4886 10.0114 2.25 7.25 2.25C4.4886 2.25 2.25 4.4886 2.25 7.25C2.25 10.0114 4.4886 12.25 7.25 12.25Z"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
     </svg>
   );
 };

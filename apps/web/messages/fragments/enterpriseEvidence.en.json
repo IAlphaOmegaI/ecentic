@@ -59,7 +59,7 @@
         },
         "missingOfferFacts": {
           "label": "Product pages where an agent found no price, stock or rating",
-          "detail": "A page sample from the same spirits marketplace. Publication approval is pending."
+          "detail": "A page sample from the same spirits marketplace."
         },
         "storeNotNamed": {
           "label": "Answers that did not name the store for two bottles it stocks",
@@ -71,7 +71,7 @@
         },
         "paymentBlocked": {
           "label": "Countries where an agent could not reach payment because of one shipping setting",
-          "detail": "A test of a skincare brand’s checkout. Publication approval is pending."
+          "detail": "A test of a skincare brand’s checkout in six countries."
         }
       },
       "roundedDetail": "{percentage}% of a {total}-product catalog. The percentage is rounded; the exact faulty-product count was not supplied."
@@ -217,13 +217,13 @@
         "question": "{{TODO: Alvi confirms whether Perplexity has a comparable rate from the same research before adding its bar.}}"
       },
       "missingOfferFactsApproval": {
-        "question": "{{TODO: Xhurian approves publishing the 45-of-45 missing price, stock or rating finding.}}"
+        "question": "Publication approved in the launch answers on 12 November 2026."
       },
       "missingDescriptionsApproval": {
         "question": "{{TODO: Xhurian approves publishing the 167-of-167 missing descriptions finding.}}"
       },
       "paymentBlockedApproval": {
-        "question": "{{TODO: Xhurian approves publishing the 6-of-6 shipping-setting payment failure finding.}}"
+        "question": "Publication approved in the launch answers on 12 November 2026."
       },
       "copilotLaunchSource": {
         "question": "{{TODO: Xhurian supplies a readable first-party source confirming the January 8 Copilot Checkout launch date.}}"
@@ -232,7 +232,7 @@
         "question": "{{TODO: Xhurian supplies readable primary wording and scope for the claimed March 24 OpenAI checkout change.}}"
       },
       "duaStartingPoint": {
-        "question": "{{TODO: Xhurian supplies DUA Flavours’ approved starting position.}}"
+        "question": "Starting position approved in the launch answers on 12 November 2026."
       },
       "duaChanges": {
         "question": "{{TODO: Xhurian supplies the DUA Flavours products and fields changed, and the dates of the work.}}"

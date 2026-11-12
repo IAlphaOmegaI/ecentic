@@ -1,0 +1,9 @@
+/* The lazy package injects unlayered display/position rules. Keep its live
+   stage and our rest stage in the same fixed frame after that injection. */
+[data-stock-hairline-figure] > [data-hairline] {
+  position: absolute;
+}
+
+[data-stock-hairline-figure] > [data-hairline-rest][hidden] {
+  display: none;
+}

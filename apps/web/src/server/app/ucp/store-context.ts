@@ -65,7 +65,8 @@ export const resolveStoreContext = async (
   if (!stores.success) return null;
 
   const store = stores.data[0];
-  if (store?.platform !== "woocommerce") return null;
+  if (store?.platform !== "woocommerce" || store.status !== "connected")
+    return null;
 
   const accounts = await StoreAccount.find(Environment.SERVER, {
     where: eq(schema.store_account.storeId, store.id),

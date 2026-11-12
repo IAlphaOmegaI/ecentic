@@ -1,5 +1,5 @@
 import {
-  CommerceBasketShoppingIcon,
+  BarChartIcon,
   CommerceFileShieldIcon,
   CommerceGlobePointerIcon,
   CommercePlug_3SparkleIcon,
@@ -13,7 +13,7 @@ import { Plus } from "@/components/plus";
 const icons = [
   CommercePlug_3SparkleIcon,
   CommerceFileShieldIcon,
-  CommerceBasketShoppingIcon,
+  BarChartIcon,
   CommerceGlobePointerIcon,
 ] as const;
 const labels = [

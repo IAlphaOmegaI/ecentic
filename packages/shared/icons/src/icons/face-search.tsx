@@ -1,43 +1,72 @@
 import type { JSX } from "react";
 import type { IconProps } from "../types";
 
-export const FaceSearchIcon = ({ title, ...props }: IconProps): JSX.Element => {
+// Nucleo UI · face-search · outline-duo · 18px.
+// Adapted from FaceSearchOutlineDuo18; original geometry and soft layers retained.
+export const FaceSearchIcon = ({
+  title,
+  strokeWidth = 1.5,
+  duoOpacity = 0.3,
+  ...props
+}: IconProps & { duoOpacity?: number | string }): JSX.Element => {
   return (
     <svg
-      height="18"
-      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+      width={18}
+      height={18}
       viewBox="0 0 18 18"
-      strokeWidth="1.5"
       {...props}
     >
       {title && <title>{title}</title>}
-      <g fill="currentColor">
-        <path
-          d="M16.973 8.473C16.478 8.412 16.017 8.2 15.659 7.841L15.159 7.342C14.78 7.446 14.389 7.5 13.999 7.5C11.518 7.5 9.499 5.481 9.499 3C9.499 2.304 9.671 1.652 9.955 1.063C9.641 1.025 9.323 1 8.999 1C4.589 1 1 4.589 1 9C1 13.411 4.589 17 9 17C13.411 17 17 13.411 17 9C17 8.822 16.985 8.648 16.973 8.473Z"
-          fill="currentColor"
-          fillOpacity=".4"
-        />
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M6.35001 11.1242C6.70004 10.9027 7.16334 11.007 7.38481 11.357C7.72557 11.8956 8.32359 12.25 9.00101 12.25C9.67843 12.25 10.2764 11.8956 10.6172 11.357C10.8387 11.007 11.302 10.9027 11.652 11.1242C12.002 11.3457 12.1063 11.809 11.8848 12.159C11.2816 13.1124 10.2156 13.75 9.00101 13.75C7.78643 13.75 6.72045 13.1124 6.11722 12.159C5.89575 11.809 5.99997 11.3457 6.35001 11.1242Z"
-          fill="currentColor"
-        />
-        <path
-          d="M6.00101 10C6.55301 10 7.00101 9.5523 7.00101 9C7.00101 8.4477 6.55301 8 6.00101 8C5.44901 8 5.00101 8.4477 5.00101 9C5.00101 9.5523 5.44901 10 6.00101 10Z"
-          fill="currentColor"
-        />
-        <path
-          d="M12.001 10C12.553 10 13.001 9.5523 13.001 9C13.001 8.4477 12.553 8 12.001 8C11.449 8 11.001 8.4477 11.001 9C11.001 9.5523 11.449 10 12.001 10Z"
-          fill="currentColor"
-        />
-        <path
-          fillRule="evenodd"
-          clipRule="evenodd"
-          d="M14.001 0C12.3437 0 11.001 1.34327 11.001 3C11.001 4.65673 12.3437 6 14.001 6C14.5575 6 15.0784 5.84857 15.525 5.58469L16.7207 6.78033C17.0136 7.07323 17.4884 7.07323 17.7813 6.78033C18.0742 6.48744 18.0742 6.01257 17.7813 5.71968L16.5857 4.52402C16.8496 4.07736 17.001 3.55635 17.001 3C17.001 1.34327 15.6583 0 14.001 0ZM12.501 3C12.501 2.17153 13.1723 1.5 14.001 1.5C14.8297 1.5 15.501 2.17153 15.501 3C15.501 3.82847 14.8297 4.5 14.001 4.5C13.1723 4.5 12.501 3.82847 12.501 3Z"
-          fill="currentColor"
-        />
-      </g>
+      <path
+        d="M9.62833 1.9286C9.54447 2.27197 9.5 2.6308 9.5 3C9.5 5.48528 11.5147 7.5 14 7.5C14.4031 7.5 14.7938 7.447 15.1656 7.34758L15.659 7.84099C15.9036 8.08562 16.1906 8.26214 16.4963 8.37055C16.438 8.57709 16.25 8.7942 16.25 9C16.25 13.0041 13.0041 16.25 9 16.25C4.99594 16.25 1.75 13.0041 1.75 9C1.75 4.99594 4.99594 1.75 9 1.75C9.05226 1.75 9.11467 1.74226 9.17959 1.73421C9.39893 1.707 9.64686 1.67625 9.62833 1.9286Z"
+        fill="currentColor"
+        data-color="color-2"
+        data-stroke="none"
+        opacity={duoOpacity}
+      />{" "}
+      <path
+        d="M11.25 11.758C10.778 12.504 9.946 13 9 13C8.054 13 7.222 12.504 6.75 11.758"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M6 10C6.55228 10 7 9.55228 7 9C7 8.44772 6.55228 8 6 8C5.44772 8 5 8.44772 5 9C5 9.55228 5.44772 10 6 10Z"
+        fill="currentColor"
+        data-stroke="none"
+      />{" "}
+      <path
+        d="M12 10C12.5523 10 13 9.55228 13 9C13 8.44772 12.5523 8 12 8C11.4477 8 11 8.44772 11 9C11 9.55228 11.4477 10 12 10Z"
+        fill="currentColor"
+        data-stroke="none"
+      />{" "}
+      <path
+        d="M14 5.25C15.2426 5.25 16.25 4.24264 16.25 3C16.25 1.75736 15.2426 0.75 14 0.75C12.7574 0.75 11.75 1.75736 11.75 3C11.75 4.24264 12.7574 5.25 14 5.25Z"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M15.59 4.59L17.25 6.25"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M8.9014 1.7507C4.9433 1.804 1.75101 5.0293 1.75101 9C1.75101 13.004 4.99701 16.25 9.00101 16.25C12.9787 16.25 16.2083 13.0465 16.2506 9.0789"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
     </svg>
   );
 };

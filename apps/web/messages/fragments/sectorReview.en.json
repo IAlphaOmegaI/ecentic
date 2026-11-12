@@ -31,7 +31,7 @@
       "sectors": {
         "wine-and-spirits": {
           "subtitle": "Make bottle facts explicit, compare the listing, and scope a purchase flow around the channel and market that permit it.",
-          "help": "Use verified origin, style, strength, price and delivery information in the comparison. Review a proposed rewrite before publishing; product and destination restrictions still apply."
+          "help": "Use verified origin, style, strength, price and delivery information in the comparison. Verify the source facts and permitted claims before choosing Apply, which generates and publishes the title and description. Product and destination restrictions still apply."
         },
         "food-and-beverage": {
           "subtitle": "Turn verified label facts into clearer product information, then review every dietary and nutrition statement before publishing.",

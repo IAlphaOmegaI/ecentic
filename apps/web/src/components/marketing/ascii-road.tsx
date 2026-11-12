@@ -4,7 +4,6 @@ import { cn } from "@zenncore/utils";
 import { Motion } from "@/components/motion";
 import { useAsciiFrame } from "./evolving-ascii";
 
-const ramp = " -=+xX%#@";
 const horizontal = (height: number, reverse = false) =>
   Array.from({ length: 96 }, (_, index) => {
     const x = 0.25 + (reverse ? 1 - index / 95 : index / 95) * 0.5;
@@ -30,42 +29,60 @@ const desktop = Array.from({ length: 72 }, (_, row) =>
   Array.from({ length: 192 }, (_, column) => {
     const x = column / 191;
     const y = row / 71;
-    const distance = path.reduce(
-      (nearest, point) =>
-        Math.min(nearest, (x - point.x) ** 2 + ((y - point.y) * 0.75) ** 2),
-      1,
+    const nearest = path.reduce(
+      (nearest, point, index) => {
+        const distance = (x - point.x) ** 2 + ((y - point.y) * 0.75) ** 2;
+        return distance < nearest.distance ? { distance, index } : nearest;
+      },
+      { distance: 1, index: 0 },
     );
-    return distance > 0.00045
-      ? 0
-      : Math.max(1, Math.round(Math.exp(-distance / 0.000055) * 8));
+    return {
+      x: column,
+      y: row,
+      tone:
+        nearest.distance > 0.00045
+          ? 0
+          : Math.max(1, Math.round(Math.exp(-nearest.distance / 0.000055) * 8)),
+      progress: nearest.index / (path.length - 1),
+    };
   }),
-);
+)
+  .flat()
+  .filter((point) => point.tone > 0);
 const mobile = Array.from({ length: 144 }, (_, row) =>
   Array.from({ length: 12 }, (_, column) => {
     const center = 5.5 + Math.sin((row / 143) * Math.PI * 6) * 2;
     const distance = Math.abs(column - center);
-    return distance > 2.1
-      ? 0
-      : Math.max(1, Math.round((1 - distance / 2.2) * 8));
+    return {
+      x: column,
+      y: row,
+      tone:
+        distance > 2.1 ? 0 : Math.max(1, Math.round((1 - distance / 2.2) * 8)),
+      progress: row / 143,
+    };
   }),
-);
+)
+  .flat()
+  .filter((point) => point.tone > 0);
 
-/** A sampled continuous route, with a brighter wave following its chronology. */
+/** Sample the retained route into circular tonal dots; a single light follows its chronology. */
 export const AsciiRoad = ({ compact = false }: AsciiRoad.Props) => {
   const { target, frame, active } = useAsciiFrame();
   const field = compact ? mobile : desktop;
-  const characters = field
-    .map((row, rowIndex) =>
-      row
-        .map((value, column) => {
-          if (value === 0) return " ";
+  const layers = Array.from({ length: 10 }, (_, index) => {
+    const tone = index + 1;
+    return {
+      tone,
+      points: field
+        .filter((point) => {
           const glint =
-            active && (column + rowIndex + frame * 2) % 32 < 4 ? 1 : 0;
-          return ramp[Math.min(ramp.length - 1, value + glint)];
+            active && Math.abs(point.progress - frame / 20) < 0.06 ? 2 : 0;
+          return point.tone + glint === tone;
         })
+        .map((point) => `M${point.x} ${point.y}h.0001`)
         .join(""),
-    )
-    .join("\n");
+    };
+  });
 
   return (
     <Motion.Item
@@ -74,21 +91,33 @@ export const AsciiRoad = ({ compact = false }: AsciiRoad.Props) => {
       initial={false}
       data-ascii-road={compact ? "mobile" : "desktop"}
       data-ascii-frame={frame}
+      data-artwork-renderer="tonal-dots"
+      data-artwork-motion={
+        active ? "revealing" : frame >= 20 ? "complete" : "rest"
+      }
       className={cn(
-        "pointer-events-none absolute select-none overflow-hidden text-primary/45 [container-type:size]",
+        "pointer-events-none absolute select-none overflow-hidden text-primary/70",
         compact ? "inset-y-0 left-0 w-16 md:hidden" : "inset-0 hidden md:block",
       )}
     >
-      <pre
-        className={cn(
-          "m-0 whitespace-pre bg-transparent p-0 font-medium font-mono tracking-normal [font-variant-ligatures:none]",
-          compact
-            ? "text-[calc(100cqw/7.32)] leading-[calc(100cqh/144)]"
-            : "text-[calc(100cqw/117.12)] leading-[calc(100cqh/72)]",
-        )}
+      <svg
+        aria-hidden="true"
+        focusable="false"
+        viewBox={compact ? "0 0 12 144" : "0 0 192 72"}
+        preserveAspectRatio="none"
+        className="block size-full overflow-visible fill-none stroke-current"
       >
-        {characters}
-      </pre>
+        {layers.map(({ tone, points }) => (
+          <path
+            key={tone}
+            d={points}
+            strokeWidth={0.7 + tone * 0.36}
+            strokeOpacity={0.3 + tone * 0.07}
+            strokeLinecap="round"
+            vectorEffect="non-scaling-stroke"
+          />
+        ))}
+      </svg>
     </Motion.Item>
   );
 };

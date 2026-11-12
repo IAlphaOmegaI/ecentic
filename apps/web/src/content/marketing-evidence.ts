@@ -22,7 +22,7 @@ export const simulationEvidence = {
   ],
 } as const;
 
-/** The first and third rows were already approved in the original brief. */
+/** Publication approvals include the owner's 12 November launch answers. */
 export const catalogFindings = [
   {
     id: "catalogFaults",
@@ -42,9 +42,9 @@ export const catalogFindings = [
     failureCount: 45,
     percentage: 100,
     rounded: false,
-    approval: "pending",
+    approval: "approved",
     sourceKey: "catalogAudits2026",
-    pendingIds: ["missingOfferFactsApproval"],
+    pendingIds: [],
   },
   {
     id: "storeNotNamed",
@@ -75,9 +75,9 @@ export const catalogFindings = [
     failureCount: 6,
     percentage: 100,
     rounded: false,
-    approval: "pending",
+    approval: "approved",
     sourceKey: "catalogAudits2026",
-    pendingIds: ["paymentBlockedApproval"],
+    pendingIds: [],
   },
 ] as const;
 
@@ -165,7 +165,7 @@ export const duaEvidence = {
   confirmed: "2026-09-03",
   sourceKey: "duaPilot",
   href: "/stories/dua-flavours",
-  pendingIds: ["duaStartingPoint", "duaChanges", "duaAprilStart"],
+  pendingIds: ["duaChanges", "duaAprilStart"],
 } as const;
 
 /** Optional context remains unpublished until the primary statistics are verified. */
@@ -215,12 +215,9 @@ export const evidencePending = [
   { id: "simulationDenominators", owner: "Alvi", chart: "C1" },
   { id: "simulationMethod", owner: "Alvi", chart: "C1" },
   { id: "perplexityComparableRate", owner: "Alvi", chart: "C1" },
-  { id: "missingOfferFactsApproval", owner: "Xhurian", chart: "C2" },
   { id: "missingDescriptionsApproval", owner: "Xhurian", chart: "C2" },
-  { id: "paymentBlockedApproval", owner: "Xhurian", chart: "C2" },
   { id: "copilotLaunchSource", owner: "Xhurian", chart: "C3" },
   { id: "openaiCheckoutChangeSource", owner: "Xhurian", chart: "C3" },
-  { id: "duaStartingPoint", owner: "Xhurian", chart: "C5" },
   { id: "duaChanges", owner: "Xhurian", chart: "C5" },
   { id: "duaAprilStart", owner: "Xhurian", chart: "C5" },
   { id: "commerceForecastSource", owner: "Xhurian", chart: "C6" },

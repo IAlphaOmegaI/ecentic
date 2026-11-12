@@ -1,4 +1,3 @@
-import { GoogleAnalytics } from "@next/third-parties/google";
 import { ToastProvider } from "@zenncore/web/components/toast";
 import type { Metadata } from "next";
 import { Red_Hat_Display } from "next/font/google";
@@ -8,7 +7,9 @@ import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import type { PropsWithChildren } from "react";
 import "../globals.css";
 import { CookieConsent } from "@/components/cookie-consent";
+import { SupportChat } from "@/components/support-chat";
 import { ToastList } from "@/components/ui/toast";
+import { ConsentedAnalytics } from "@/context/analytics";
 import { ConsentProvider } from "@/context/consent";
 import { MotionProvider } from "@/context/motion";
 // Imported directly rather than through `next/dynamic`. The provider is already
@@ -151,74 +152,7 @@ export default async ({ children }: PropsWithChildren) => {
           // biome-ignore lint/security/noDangerouslySetInnerHtml: must be inline to run before paint
           dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }}
         />
-        <link rel="preconnect" href="https://eu.i.posthog.com" />
-        <link
-          rel="preconnect"
-          href="https://eu-assets.i.posthog.com"
-          crossOrigin="anonymous"
-        />
-        <link rel="preconnect" href="https://www.googletagmanager.com" />
-        {/* {process.env.NODE_ENV === "development" && (
-          <Script
-            src="//unpkg.com/react-grab/dist/index.global.js"
-            crossOrigin="anonymous"
-            strategy="beforeInteractive"
-          />
-        )} */}
-        {/* `lazyOnload`, not `afterInteractive`: the widget pulls ~508KB
-            (including a 148KB stylesheet and its own copy of Vue) for a support
-            bubble almost nobody opens. Idle time is the right budget for that,
-            not the critical path. */}
-        {process.env.NEXT_PUBLIC_CHATWOOT_BASE_URL &&
-          process.env.NEXT_PUBLIC_CHATWOOT_WEBSITE_TOKEN && (
-            <Script id="chatwoot-widget" strategy="lazyOnload">
-              {`
-            (function(d,t) {
-              var BASE_URL="${process.env.NEXT_PUBLIC_CHATWOOT_BASE_URL}";
-              var g=d.createElement(t),s=d.getElementsByTagName(t)[0];
-              g.src=BASE_URL+"/packs/js/sdk.js";
-              g.async = true;
-              s.parentNode.insertBefore(g,s);
-              g.onload=function(){
-                window.chatwootSDK.run({
-                  websiteToken: "${process.env.NEXT_PUBLIC_CHATWOOT_WEBSITE_TOKEN}",
-                  baseUrl: BASE_URL
-                })
-              }
-          })(document,"script");
-            `}
-            </Script>
-          )}
         <Script src="/webmcp.js" strategy="afterInteractive" />
-        {/* GA4 runs alongside PostHog — the two are independent. Pageviews on
-            client-side navigations come from GA4's enhanced measurement
-            ("page changes based on browser history events"), which reads the
-            App Router's pushState calls, so there is no manual pageview hook
-            here to double-count against. */}
-        {process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID && (
-          <>
-            {/* Consent Mode v2 defaults. This MUST execute before gtag.js, so
-                it is beforeInteractive while <GoogleAnalytics> stays on the
-                default afterInteractive — if gtag.js won the race it would set
-                cookies before hearing that storage is denied. Ad signals are
-                hard-coded denied and never updated; only analytics_storage is
-                flipped, by ConsentProvider. */}
-            <Script id="google-consent-default" strategy="beforeInteractive">
-              {`
-              window.dataLayer = window.dataLayer || [];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('consent', 'default', {
-                ad_storage: 'denied',
-                ad_user_data: 'denied',
-                ad_personalization: 'denied',
-                analytics_storage: 'denied',
-                wait_for_update: 500
-              });
-            `}
-            </Script>
-            <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID} />
-          </>
-        )}
         <meta name="apple-mobile-web-app-title" content="ecentic" />
       </head>
       <body
@@ -230,6 +164,7 @@ export default async ({ children }: PropsWithChildren) => {
             streamed replacements require JavaScript to reveal their HTML.
             Request-dependent regions own their local boundaries. */}
         <ConsentProvider>
+          <ConsentedAnalytics />
           <PostHogProvider>
             <ThemeProvider>
               <MotionProvider>
@@ -243,6 +178,7 @@ export default async ({ children }: PropsWithChildren) => {
                     {/* Must sit under a message provider — `useTranslations`
                           / locale `Link` need the client provider. */}
                     <CookieConsent />
+                    <SupportChat />
                   </ClientMessages>
                   <ToastList types={["error", "success", "info", "loading"]} />
                 </ToastProvider>

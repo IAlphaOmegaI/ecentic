@@ -41,15 +41,16 @@ export const brandedTitle = (title: string) =>
     : title;
 
 /**
- * Public brand and team. The operating legal name remains unconfirmed and is
- * deliberately absent until the company details are confirmed.
- * The Tirana address is the published contact location, not a new registered
- * office claim. Unverified legal/privacy mailboxes are not machine contacts.
+ * Public brand, confirmed operating entity and team. A registered-agent address
+ * is not an operating office, so it is identified explicitly on the legal and
+ * company pages rather than emitted as the Organization's general address.
+ * The Albanian subsidiary address belongs only to About.
  */
 export const organizationSchema = {
   "@context": "https://schema.org",
   "@type": "Organization",
   name: seo.name,
+  legalName: "ecentic Inc",
   description: seo.definition,
   url: seo.host,
   logo: { "@type": "ImageObject", url: absoluteUrl("/images/trademark.svg") },
@@ -73,25 +74,18 @@ export const organizationSchema = {
       sameAs: "https://www.linkedin.com/in/iseld-muca-532786311",
     },
   ],
-  address: {
-    "@type": "PostalAddress",
-    streetAddress:
-      "Pallatet Merkaj, Hyrja 1, Dera 12, Rruga Muhamed Deliu, Qesarakë",
-    addressLocality: "Tiranë",
-    addressCountry: "AL",
-  },
   contactPoint: [
     {
       "@type": "ContactPoint",
       contactType: "customer support",
       url: absoluteUrl("/support"),
-      availableLanguage: ["en", "es"],
+      availableLanguage: ["en"],
     },
     {
       "@type": "ContactPoint",
       contactType: "sales",
       url: absoluteUrl("/demo"),
-      availableLanguage: ["en", "es"],
+      availableLanguage: ["en"],
     },
   ],
   sameAs: [

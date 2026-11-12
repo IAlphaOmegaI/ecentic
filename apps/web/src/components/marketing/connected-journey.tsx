@@ -15,6 +15,7 @@ import {
   AccordionTrigger,
 } from "@zenncore/web/components/accordion";
 import type { ReactNode } from "react";
+import { MarketingEdgeCrosses } from "./light-band";
 
 const icons = {
   connect: CommercePlug_3SparkleIcon,
@@ -25,6 +26,97 @@ const icons = {
   website: CommerceGlobePointerIcon,
   code: CommerceCode_3Icon,
 } as const;
+
+/** Required stages stay visible; the same connected stations need no disclosure. */
+export const JourneySteps = ({
+  label,
+  items,
+  className,
+  layout = "inline",
+}: JourneySteps.Props) => (
+  <ol
+    aria-label={label}
+    data-journey-steps
+    data-layout={layout}
+    className={cn(
+      "relative m-0 min-w-0 list-none p-0",
+      layout === "surface" && "border-accent-foreground border-t",
+      className,
+    )}
+  >
+    {items.map((item, index) => {
+      const Icon = icons[item.icon ?? "catalog"];
+      return (
+        <li
+          key={item.id}
+          id={item.anchor}
+          className={cn(
+            "relative grid min-w-0 scroll-mt-28 grid-cols-[6rem_minmax(0,1fr)] max-sm:grid-cols-[4rem_minmax(0,1fr)]",
+            layout === "surface" &&
+              "border-accent-foreground not-first:border-t",
+          )}
+        >
+          <div aria-hidden className="relative flex justify-center pt-8">
+            {(layout === "surface" || index < items.length - 1) && (
+              <span
+                className={cn(
+                  "absolute top-20 -bottom-8 w-px bg-linear-to-b from-primary/50 to-accent-foreground",
+                  layout === "surface" && "bottom-0",
+                )}
+              />
+            )}
+            <span className="relative grid size-12 place-items-center rounded-md border border-accent-foreground bg-background text-primary-text">
+              <Icon className="size-6" />
+            </span>
+          </div>
+          <div
+            className={cn(
+              "min-w-0 py-8 pr-8 max-sm:pr-4",
+              layout === "inline" &&
+                index < items.length - 1 &&
+                "border-accent-foreground border-b",
+            )}
+          >
+            <div
+              className={cn(
+                "flex items-baseline gap-4",
+                layout === "inline" && "mb-4",
+              )}
+            >
+              <span className="font-heading text-2xl text-primary-text tabular-nums">
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <h3 className="font-heading text-2xl leading-tight max-sm:text-xl">
+                {item.title}
+              </h3>
+            </div>
+            {layout === "inline" && (
+              <div className="min-w-0 text-foreground-dimmed leading-relaxed">
+                {item.content}
+              </div>
+            )}
+          </div>
+          {layout === "surface" && (
+            <div className="relative col-span-2 min-w-0" data-journey-surface>
+              <MarketingEdgeCrosses />
+              {item.content}
+            </div>
+          )}
+        </li>
+      );
+    })}
+  </ol>
+);
+
+export namespace JourneySteps {
+  export type Props = {
+    label: string;
+    items: readonly ConnectedJourney.Item[];
+    className?: string;
+    /** Complete demonstrations span both the station and explanation columns. */
+    layout?: "inline" | "surface";
+  };
+}
 
 /** Connected stages share the Shopify setup journey's reading order and controls. */
 export const ConnectedJourney = ({
@@ -61,7 +153,7 @@ export const ConnectedJourney = ({
           >
             <div
               aria-hidden
-              className="absolute top-7 left-6 grid size-12 place-items-center rounded-full border border-accent-foreground bg-background text-foreground-dimmed group-data-open/journey:border-primary/40 group-data-open/journey:text-primary-text max-sm:left-2"
+              className="absolute top-7 left-6 grid size-12 place-items-center rounded-md border border-accent-foreground bg-background text-foreground-dimmed group-data-open/journey:border-primary/40 group-data-open/journey:text-primary-text max-sm:left-2"
             >
               <Icon className="size-6" />
             </div>

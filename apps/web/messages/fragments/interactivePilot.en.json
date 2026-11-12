@@ -6,9 +6,9 @@
     "people": "Your team",
     "deliverable": "What you receive",
     "duration": "Duration",
-    "pendingPeople": "{{TODO: Xhurian confirms who is involved at this stage.}}",
-    "pendingDeliverable": "{{TODO: Xhurian confirms the deliverable for this stage.}}",
-    "pendingDuration": "{{TODO: Xhurian confirms the duration of this stage.}}",
+    "pendingPeople": "",
+    "pendingDeliverable": "",
+    "pendingDuration": "",
     "pending": "To be agreed with your team."
   }
 }

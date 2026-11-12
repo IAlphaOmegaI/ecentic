@@ -37,8 +37,10 @@ export const JourneyFigure = ({
   return (
     <div
       aria-hidden
+      data-journey-figure={stage}
       className={cn(
         "relative isolate h-52 overflow-hidden",
+        stage === 1 && "h-72 sm:h-80 lg:h-52",
         large && "h-64 sm:h-80",
       )}
     >
@@ -84,7 +86,7 @@ export const JourneyFigure = ({
           </div>
         </div>
       ) : stage === 1 ? (
-        <div className="absolute inset-0 mx-auto max-w-96">
+        <div className="absolute inset-x-0 top-4 bottom-8 mx-auto max-w-96">
           <div className="absolute inset-x-12 top-6 h-16 rounded-[50%] border-primary-rich/25 border-t" />
           <div
             data-assistant-arc
@@ -106,8 +108,8 @@ export const JourneyFigure = ({
                   }}
                   style={{ rotate: `${(index - 1) * 8}deg` }}
                   className={cn(
-                    "grid size-10 place-items-center rounded-lg border border-background-rich/40 bg-background-rich! p-2 shadow-emphasis-dimmed/20 shadow-lg",
-                    large && "size-12 sm:size-14 sm:p-3",
+                    "grid size-10 place-items-center",
+                    large && "size-12 sm:size-14",
                     index !== 1 && "mt-4",
                   )}
                 >

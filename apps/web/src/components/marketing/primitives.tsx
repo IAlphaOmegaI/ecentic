@@ -201,12 +201,7 @@ export const MarketingHero = ({
     >
       {identity && <div className="mb-8 max-sm:mb-6">{identity}</div>}
       {eyebrow && <MarketingEyebrow>{eyebrow}</MarketingEyebrow>}
-      <h1
-        className={cn(
-          "max-w-[920px] text-[clamp(3rem,5.2vw,4.8rem)] leading-[1.025] tracking-[-0.043em] max-sm:text-[43px] max-sm:tracking-[-0.036em]",
-          dark && "lg:text-[clamp(3rem,4.2vw,4.4rem)]",
-        )}
-      >
+      <h1 className="max-w-[920px] text-[clamp(3rem,5.2vw,4.8rem)] leading-[1.025] tracking-[-0.043em] max-sm:text-[43px] max-sm:tracking-[-0.036em]">
         {title}
       </h1>
       {meta && (

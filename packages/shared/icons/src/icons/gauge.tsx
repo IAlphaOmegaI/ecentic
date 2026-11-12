@@ -1,35 +1,62 @@
 import type { JSX } from "react";
 import type { IconProps } from "../types";
 
-export const GaugeIcon = ({ title, ...props }: IconProps): JSX.Element => {
+// Nucleo UI · gauge · outline-duo · 18px.
+// Adapted from GaugeOutlineDuo18; original geometry and soft layers retained.
+export const GaugeIcon = ({
+  title,
+  strokeWidth = 1.5,
+  duoOpacity = 0.3,
+  ...props
+}: IconProps & { duoOpacity?: number | string }): JSX.Element => {
   return (
     <svg
-      height="18"
-      width="18"
+      xmlns="http://www.w3.org/2000/svg"
+      width={18}
+      height={18}
       viewBox="0 0 18 18"
-      strokeWidth="1.5"
       {...props}
     >
       {title && <title>{title}</title>}
-      <g fill="currentColor">
-        <path
-          opacity=".4"
-          d="M9.00012 2C4.58902 2 1.00012 5.5889 1.00012 10C1.00012 12.2075 1.88492 14.2651 3.49182 15.7935C3.63142 15.9263 3.81651 16 4.00891 16H13.9913C14.1837 16 14.3687 15.9263 14.5084 15.7935C16.1153 14.2652 17.0001 12.2076 17.0001 10C17.0001 5.5889 13.4112 2 9.00012 2Z"
-          fill="currentColor"
-        />
-        <path
-          d="M13.1173 14C12.9537 14 12.7887 13.9468 12.651 13.8369C12.3268 13.5791 12.2731 13.1069 12.5309 12.7832C13.1652 11.9863 13.5001 11.0239 13.5001 10C13.5001 7.5186 11.4815 5.5 9.00011 5.5C8.56411 5.5 8.13241 5.5625 7.71691 5.686C7.32091 5.8061 6.9029 5.57859 6.7843 5.18109C6.6661 4.78409 6.8922 4.3662 7.2892 4.2485C7.8439 4.0835 8.41911 4 9.00011 4C12.3087 4 15.0001 6.6914 15.0001 10C15.0001 11.3667 14.5523 12.6523 13.7047 13.7168C13.5568 13.9033 13.338 14 13.1173 14Z"
-          fill="currentColor"
-        />
-        <path
-          d="M4.88292 14C4.66222 14 4.44342 13.9033 4.29552 13.7173C3.44782 12.6524 3.00012 11.3667 3.00012 9.99999C3.00012 9.41889 3.08361 8.84379 3.24861 8.28909C3.36631 7.89209 3.78471 7.6646 4.18121 7.7842C4.57821 7.9019 4.80421 8.31979 4.68611 8.71679C4.56261 9.13229 4.50012 9.56399 4.50012 9.99999C4.50012 11.0239 4.83511 11.9863 5.46931 12.7827C5.72711 13.1069 5.67342 13.5791 5.34972 13.8369C5.21152 13.9468 5.04652 14 4.88292 14Z"
-          fill="currentColor"
-        />
-        <path
-          d="M9.00011 8.24999C8.79501 8.24999 8.6009 8.292 8.4178 8.3572L5.67439 5.61379C5.38139 5.32079 4.90681 5.32079 4.61391 5.61379C4.32101 5.90679 4.32091 6.38138 4.61391 6.67428L7.3573 9.41769C7.2921 9.60079 7.25011 9.79489 7.25011 9.99999C7.25011 10.9648 8.03531 11.75 9.00011 11.75C9.96491 11.75 10.7501 10.9648 10.7501 9.99999C10.7501 9.03519 9.96491 8.24999 9.00011 8.24999Z"
-          fill="currentColor"
-        />
-      </g>
+      <path
+        opacity={duoOpacity}
+        d="M4.009 15.25H13.991C15.38 13.929 16.25 12.068 16.25 10C16.25 5.996 13.004 2.75 9 2.75C4.996 2.75 1.75 5.996 1.75 10C1.75 12.068 2.62 13.929 4.009 15.25Z"
+        fill="currentColor"
+        data-color="color-2"
+        data-stroke="none"
+      />{" "}
+      <path
+        d="M4.009 15.25H13.991C15.38 13.929 16.25 12.068 16.25 10C16.25 5.996 13.004 2.75 9 2.75C4.996 2.75 1.75 5.996 1.75 10C1.75 12.068 2.62 13.929 4.009 15.25Z"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M9.00005 10L5.89404 6.89401"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M4.75 10C4.75 10.81 4.975 11.581 5.398 12.25"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />{" "}
+      <path
+        d="M12.603 12.25C13.025 11.581 13.25 10.81 13.25 10C13.25 7.657 11.343 5.75 9 5.75"
+        stroke="currentColor"
+        strokeWidth={strokeWidth}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        fill="none"
+      />
     </svg>
   );
 };
