@@ -1,7 +1,5 @@
-"use client";
-
-import { ArrowRightIcon } from "@zenncore/icons";
 import type { AppConfig } from "next-intl";
+import { getMessages } from "next-intl/server";
 import type { ReactNode } from "react";
 import {
   CodeDiff,
@@ -9,77 +7,12 @@ import {
 } from "@/components/marketing/interactive/code-comparison";
 import { Plus } from "@/components/plus";
 import type { Sector, ShelfScenario } from "@/content/sectors";
+import { SectorRecordArtwork } from "./record-artwork";
 import { SectorBrandReferences } from "./sector-brand-references";
-
-const fieldKeys = {
-  "wine-and-spirits": [
-    "strength",
-    "age",
-    "origin",
-    "style",
-    "size_and_price",
-    "availability",
-  ],
-  "food-and-beverage": [
-    "diet",
-    "allergens",
-    "nutrition",
-    "size_and_value",
-    "ingredients",
-    "freshness_and_delivery",
-  ],
-  "beauty-and-personal-care": [
-    "skin_or_hair_type",
-    "ingredients",
-    "free_from",
-    "protection",
-    "size_and_price",
-    "certifications",
-  ],
-  "consumer-electronics": [
-    "model",
-    "battery_and_power",
-    "compatibility",
-    "connectivity",
-    "warranty",
-    "condition",
-  ],
-  "home-and-furniture": [
-    "dimensions",
-    "materials",
-    "capacity",
-    "assembly",
-    "delivery",
-    "returns",
-  ],
-  "fashion-and-outdoor": [
-    "size_and_fit",
-    "materials",
-    "performance",
-    "use",
-    "care",
-    "variants",
-  ],
-  "health-wellness-and-pet": [
-    "intended_user",
-    "ingredients",
-    "use_guidance",
-    "standards_and_testing",
-    "size_and_servings",
-    "purpose",
-  ],
-  "travel-and-experiences": [
-    "availability",
-    "price",
-    "inclusions",
-    "cancellation",
-    "location_and_access",
-    "suitability",
-  ],
-} as const;
+import { sectorFields } from "./sector-fields";
 
 /** Sample records preserve the source facts; null only represents an omitted field. */
-export const CompareShelf = ({
+export const CompareShelf = async ({
   sector,
   scenarios,
   questions,
@@ -90,6 +23,7 @@ export const CompareShelf = ({
   referenceCopy,
   fallback,
 }: CompareShelf.Props) => {
+  const { round14Sectors } = await getMessages();
   const position = 0;
   const scenario = scenarios[position];
   const content = copy.scenarios[position];
@@ -99,7 +33,7 @@ export const CompareShelf = ({
     product: side === "left" ? content.leftTitle : content.rightTitle,
     ...Object.fromEntries(
       attributes.map((attribute, index) => [
-        fieldKeys[sector][index] ?? attribute.title,
+        sectorFields[sector][index] ?? attribute.title,
         side === "left" && !restored && scenario.missing.includes(index)
           ? null
           : (content.rows[index]?.[side] ?? null),
@@ -150,47 +84,41 @@ export const CompareShelf = ({
           {presentation.description}
         </p>
       </header>
-      <ol
-        data-sector-question-paths
-        className="relative grid border-accent-foreground border-t md:grid-cols-3"
+      <div
+        className="relative grid border-accent-foreground border-t md:grid-cols-[5fr_7fr]"
+        data-sector-before-fix
       >
-        {scenarios.map((entry, index) => (
-          <li
-            key={entry.key}
-            className="relative flex min-w-0 flex-col border-accent-foreground not-first:border-t px-4 py-6 sm:px-8 md:not-first:border-t-0 md:not-first:border-l"
-          >
-            <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-            <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 md:hidden" />
-            <span className="mb-4 font-heading text-3xl text-primary-text">
-              {String(index + 1).padStart(2, "0")}
-            </span>
-            <p className="max-w-[32ch] font-medium text-foreground-rich leading-relaxed">
-              {questions[index]?.title}
-            </p>
-            <div className="mt-auto flex flex-col pt-5">
-              <ArrowRightIcon
-                className="mb-4 size-5 rotate-90 text-primary-text"
-                aria-hidden
-              />
-              <p className="text-foreground-dimmed text-sm">
-                {presentation.required}
-              </p>
-              <ul className="mt-3 flex flex-wrap gap-2">
-                {entry.required.map((field) => (
-                  <li
-                    key={field}
-                    className="rounded border border-primary/30 bg-primary/10 px-2 py-1 font-mono text-primary-text text-xs"
-                  >
-                    {fieldKeys[sector][field] ?? attributes[field]?.title}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          </li>
-        ))}
-      </ol>
-      <p className="border-accent-foreground border-t px-4 py-5 text-foreground-dimmed text-sm sm:px-8">
-        {presentation.sampleNote}
+        <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+        <div className="min-w-0 px-4 py-8 sm:px-8">
+          <p className="text-primary-text text-sm">
+            {round14Sectors.sourceHeading}
+          </p>
+          <h4 className="mt-3 font-heading text-2xl text-foreground-rich">
+            {content.leftTitle}
+          </h4>
+          <p className="mt-4 max-w-[48ch] text-foreground-dimmed leading-relaxed">
+            {question}
+          </p>
+          <dl className="mt-6 space-y-6">
+            {scenario.missing.map((index) => (
+              <div key={index} className="border-primary/30 border-l pl-4">
+                <dt className="mb-2 text-primary-text text-sm">
+                  {attributes[index]?.title}
+                </dt>
+                <dd className="text-foreground-rich leading-relaxed">
+                  {content.rows[index]?.left}
+                </dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+        <div className="flex min-w-0 items-center border-accent-foreground border-t px-4 py-8 sm:px-8 md:border-t-0 md:border-l">
+          <SectorRecordArtwork sector={sector} surface="dark" />
+        </div>
+      </div>
+      <p className="border-accent-foreground border-t px-4 py-6 text-foreground-dimmed text-sm leading-relaxed sm:px-8">
+        {round14Sectors.comparisonIntro}
       </p>
       <CodeDiff
         rows={rows}
@@ -212,9 +140,11 @@ export const CompareShelf = ({
           </section>
         ))}
       </div>
-      <p className="border-accent-foreground border-t px-4 py-6 text-foreground-dimmed text-sm sm:px-8">
+      <p className="relative border-accent-foreground border-t px-4 py-6 text-foreground-dimmed text-sm sm:px-8">
         {presentation.format}
       </p>
+      <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+      <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
     </div>
   );
 };

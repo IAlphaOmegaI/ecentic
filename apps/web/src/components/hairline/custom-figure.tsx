@@ -6,11 +6,19 @@ import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useInteractive } from "@/components/marketing/interactive/use-interactive";
 import { useDocument } from "@/hooks/use-document";
+import headphonesRest from "./rest/headphones.json";
+import lipstickRest from "./rest/lipstick.json";
+import packagedFoodRest from "./rest/packaged-food.json";
 import shopifyBagRest from "./rest/shopify-bag.json";
 import shoppingBotRest from "./rest/shopping-bot.json";
+import sneakerRest from "./rest/sneaker.json";
+import sofaRest from "./rest/sofa.json";
+import suitcaseRest from "./rest/suitcase.json";
+import wellnessBottleRest from "./rest/wellness-bottle.json";
+import wineBottleRest from "./rest/wine-bottle.json";
 import "./kernel-style.css";
 
-type FigureName = "shopify-bag" | "shopping-bot";
+type FigureName = keyof typeof restPoses;
 type FigureDefinition = {
   name: FigureName;
   range: [number, number, number];
@@ -30,12 +38,21 @@ type FigureWindow = Window & {
 const restPoses = {
   "shopify-bag": shopifyBagRest,
   "shopping-bot": shoppingBotRest,
+  sofa: sofaRest,
+  headphones: headphonesRest,
+  lipstick: lipstickRest,
+  "wellness-bottle": wellnessBottleRest,
+  "packaged-food": packagedFoodRest,
+  "wine-bottle": wineBottleRest,
+  sneaker: sneakerRest,
+  suitcase: suitcaseRest,
 };
 
 /** Validated rest geometry is present in HTML; the fixed kernel enhances it in view. */
 export const CustomHairlineFigure = ({
   name,
   label,
+  readouts,
   surface = "background",
   className,
 }: CustomHairlineFigure.Props) => {
@@ -117,6 +134,9 @@ export const CustomHairlineFigure = ({
 
   const caption = (() => {
     if (reduced || readout === "rest") return translate("custom.rest");
+    const inspectedPart = readouts?.find((part) => part.value === readout);
+    if (inspectedPart) return inspectedPart.label;
+    if (readouts) return translate("custom.inspecting");
     const product = /product (\d+)/.exec(readout)?.[1];
     if (product)
       return translate(
@@ -192,6 +212,7 @@ export namespace CustomHairlineFigure {
   export type Props = {
     name: FigureName;
     label: string;
+    readouts?: readonly { value: string; label: string }[];
     surface?: "background" | "field" | "rich" | "dark";
     className?: string;
   };

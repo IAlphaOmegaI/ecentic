@@ -1,0 +1,31 @@
+{
+  "round14Sectors": {
+    "introduction": "See how a buying question connects to the facts in a product record.",
+    "sample": "Illustrative conversation with sample products.",
+    "questions": "Explore a shopper question",
+    "conversation": "Example conversation",
+    "shopper": "Shopper",
+    "assistant": "Shopping assistant",
+    "assistantIntro": "I can compare the request with the information stated in these listings. The relevant facts are:",
+    "followUp": "What can you establish from the listing?",
+    "inspection": "Inspect the sample records",
+    "yourListing": "Your listing",
+    "comparisonListing": "Comparison listing",
+    "sourceFact": "Already in the sample source",
+    "missing": "Not stated in the listing",
+    "available": "Stated in the listing",
+    "required": "Relevant to this question",
+    "qualification": "Verify these attributes at the source",
+    "attributesIntro": "Make the product facts explicit, then review the change in the shared source record.",
+    "comparisonIntro": "This example follows the first shopper question. The visual shows the existing source facts before the code change below.",
+    "sourceHeading": "The source fact behind the fix",
+    "dimensions": {
+      "title": "Check the complete footprint.",
+      "width": "Width",
+      "depth": "Depth",
+      "height": "Height",
+      "note": "Schematic, not to scale. Use the exact product, room and access measurements to verify fit."
+    },
+    "assistantFinding": "The listing for {product} does not state {fields}. I can’t verify those requirements from that listing. The sample source shows the facts that need to be made explicit."
+  }
+}

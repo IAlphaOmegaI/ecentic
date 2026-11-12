@@ -18903,8 +18903,115 @@
       "product": "Product {number}",
       "selectedProduct": "Selected product {number}",
       "scanning": "Scanning",
-      "selected": "Product selected"
-    }
+      "selected": "Product selected",
+      "inspecting": "Inspecting"
+    },
+    "sofa": "Illustration: a two-seat sofa. Point at a cushion to lift and inspect its upholstery.",
+    "headphones": "Illustration: over-ear headphones. Point at an ear cup to lift and inspect its padding.",
+    "lipstick": "Illustration: an uncapped lipstick. Point at the lipstick or cap to lift and inspect it.",
+    "partReadouts": {
+      "sofa": [
+        {
+          "value": "cushion 1",
+          "label": "Left cushion"
+        },
+        {
+          "value": "cushion 2",
+          "label": "Right cushion"
+        }
+      ],
+      "headphones": [
+        {
+          "value": "left cup",
+          "label": "Left ear cup"
+        },
+        {
+          "value": "right cup",
+          "label": "Right ear cup"
+        }
+      ],
+      "lipstick": [
+        {
+          "value": "lipstick",
+          "label": "Lipstick bullet"
+        },
+        {
+          "value": "cap",
+          "label": "Lipstick cap"
+        }
+      ],
+      "wellnessBottle": [
+        {
+          "value": "cap",
+          "label": "Bottle cap"
+        },
+        {
+          "value": "capsule",
+          "label": "Capsule"
+        }
+      ],
+      "wineBottle": [
+        {
+          "value": "cork",
+          "label": "Cork"
+        },
+        {
+          "value": "bottle",
+          "label": "Wine bottle"
+        },
+        {
+          "value": "label",
+          "label": "Bottle label"
+        }
+      ],
+      "packagedFood": [
+        {
+          "value": "seal",
+          "label": "Package seal"
+        },
+        {
+          "value": "pouch",
+          "label": "Food pouch"
+        },
+        {
+          "value": "window",
+          "label": "Ingredient window"
+        }
+      ],
+      "sneaker": [
+        {
+          "value": "sole",
+          "label": "Sole"
+        },
+        {
+          "value": "upper",
+          "label": "Upper"
+        },
+        {
+          "value": "laces",
+          "label": "Laces"
+        }
+      ],
+      "suitcase": [
+        {
+          "value": "handle",
+          "label": "Handle"
+        },
+        {
+          "value": "shell",
+          "label": "Shell"
+        },
+        {
+          "value": "wheels",
+          "label": "Wheels"
+        }
+      ]
+    },
+    "wellnessBottle": "Illustration: a wellness bottle and capsule. Point at the cap or capsule to lift and inspect it.",
+    "wineBottle": "Illustration: a wine bottle with a cork and label. Point at a part to lift and inspect it.",
+    "packagedFood": "Illustration: a food pouch with a seal and ingredient window. Point at a part to lift and inspect it.",
+    "sneaker": "Illustration: a sneaker with a rounded sole, upper and laces. Point at a part to lift and inspect it.",
+    "suitcase": "Illustration: a wheeled suitcase with an extendable handle. Point at a part to lift and inspect it."
   },
   "enterprisePilotPreview": {
     "label": "Illustrative pilot · sample brief",
@@ -19205,5 +19312,37 @@
   },
   "reviewTonalAscii": {
     "imageNote": "Illustrative product artwork. The sample record does not describe the pictured model."
+  },
+  "round14NotFound": {
+    "machineTitle": "Ready for agents."
+  },
+  "round14Sectors": {
+    "introduction": "See how a buying question connects to the facts in a product record.",
+    "sample": "Illustrative conversation with sample products.",
+    "questions": "Explore a shopper question",
+    "conversation": "Example conversation",
+    "shopper": "Shopper",
+    "assistant": "Shopping assistant",
+    "assistantIntro": "I can compare the request with the information stated in these listings. The relevant facts are:",
+    "followUp": "What can you establish from the listing?",
+    "inspection": "Inspect the sample records",
+    "yourListing": "Your listing",
+    "comparisonListing": "Comparison listing",
+    "sourceFact": "Already in the sample source",
+    "missing": "Not stated in the listing",
+    "available": "Stated in the listing",
+    "required": "Relevant to this question",
+    "qualification": "Verify these attributes at the source",
+    "attributesIntro": "Make the product facts explicit, then review the change in the shared source record.",
+    "comparisonIntro": "This example follows the first shopper question. The visual shows the existing source facts before the code change below.",
+    "sourceHeading": "The source fact behind the fix",
+    "dimensions": {
+      "title": "Check the complete footprint.",
+      "width": "Width",
+      "depth": "Depth",
+      "height": "Height",
+      "note": "Schematic, not to scale. Use the exact product, room and access measurements to verify fit."
+    },
+    "assistantFinding": "The listing for {product} does not state {fields}. I can’t verify those requirements from that listing. The sample source shows the facts that need to be made explicit."
   }
 }

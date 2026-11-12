@@ -1,5 +1,17 @@
-import { ArrowRightIcon } from "@zenncore/icons";
-import { Button } from "@zenncore/web/components/button";
+import {
+  ArrowRightIcon,
+  CommerceBasketShoppingIcon,
+  CommerceBookOpenIcon,
+  CommerceCode_3Icon,
+  CommercePlug_3SparkleIcon,
+  CreditCardIcon,
+  EnvelopeIcon,
+  FileIcon,
+  FileSearchIcon,
+  GlobeSearchIcon,
+  HomeIcon,
+  RobotIcon,
+} from "@zenncore/icons";
 import type { Metadata } from "next";
 import Image from "next/image";
 import { getMessages } from "next-intl/server";
@@ -9,6 +21,8 @@ import type { Locale } from "@/i18n/routing";
 import { RECOVERY_LINKS } from "@/lib/not-found";
 import { seo } from "@/lib/seo";
 import { NotFoundActions } from "./not-found-actions";
+import { NotFoundArtwork } from "./not-found-artwork";
+import { QueryFigure } from "./query-figure";
 
 export const recoveryMetadata = async (locale: Locale): Promise<Metadata> => {
   const { enterpriseRecovery } = await getMessages({ locale });
@@ -21,47 +35,38 @@ export const recoveryMetadata = async (locale: Locale): Promise<Metadata> => {
   };
 };
 
-const NotFoundAscii = () => (
-  <div
-    aria-hidden="true"
-    data-not-found-ascii
-    className="relative isolate flex h-full min-h-[480px] min-w-0 flex-col justify-between overflow-hidden bg-emphasis-dimmed px-7 py-8 text-background-rich [clip-path:polygon(20px_0,100%_0,100%_calc(100%_-_20px),calc(100%_-_20px)_100%,0_100%,0_20px)] max-sm:px-4 max-sm:py-5 max-md:min-h-[290px]"
-  >
-    <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_70%_110%,color-mix(in_oklab,var(--color-primary)_34%,transparent),transparent_65%)]" />
-    <div className="flex items-center justify-between border-background-rich/20 border-b pb-4 font-mono text-background-rich/65 text-xs">
-      <span>HTTP / 404</span>
-      <span>ecentic.ai</span>
-    </div>
-    <div className="relative my-8 w-full [container-type:inline-size] max-md:my-5">
-      <pre className="m-0 select-none whitespace-pre bg-linear-to-b from-background-rich via-background-rich/85 to-primary bg-clip-text p-0 text-center font-medium font-mono text-[min(5cqw,29px)] text-transparent leading-[1.15] tracking-normal [font-variant-ligatures:none]">
-        {[
-          "    44       000000       44    ",
-          "   444      00    00     444    ",
-          "  4444      00    00    4444    ",
-          " 44 44      00    00   44 44    ",
-          "44  44      00    00  44  44    ",
-          "444444444   00    00  444444444 ",
-          "    44      00    00      44    ",
-          "    44      00    00      44    ",
-          "    44       000000       44    ",
-        ].join("\n")}
-      </pre>
-    </div>
-    <div className="flex items-center justify-between border-background-rich/20 border-t pt-4 font-mono text-background-rich/65 text-xs">
-      <span>./</span>
-      <span>+ — — — +</span>
-      <span>∅</span>
-    </div>
-  </div>
-);
+const navigationIcons = [
+  CommerceBasketShoppingIcon,
+  CommercePlug_3SparkleIcon,
+  RobotIcon,
+  CreditCardIcon,
+  CommerceBookOpenIcon,
+  EnvelopeIcon,
+];
+const recoveryIcons = [
+  HomeIcon,
+  CommerceBookOpenIcon,
+  GlobeSearchIcon,
+  RobotIcon,
+  FileSearchIcon,
+  CommerceCode_3Icon,
+];
 
 export const NotFoundContent = async ({ locale }: NotFoundContent.Props) => {
-  const { enterpriseRecovery, reviewNotFound } = await getMessages({ locale });
+  const {
+    enterpriseRecovery,
+    reviewNotFound,
+    round14NotFound,
+    hairlineRecovery,
+  } = await getMessages({ locale });
   const content = enterpriseRecovery.notFound;
   return (
     <main id="main-content">
-      <MarketingBand className="[&>.marketing-rail>.marketing-guides]:hidden">
-        <header className="flex min-h-20 items-center justify-between gap-4 px-7 py-5 max-sm:min-h-18 max-sm:px-4">
+      <MarketingBand
+        data-not-found-hero
+        className="min-h-dvh [&>.marketing-rail>.marketing-guides]:hidden [&>.marketing-rail]:flex [&>.marketing-rail]:min-h-[calc(100dvh-2px)] [&>.marketing-rail]:flex-col"
+      >
+        <header className="flex min-h-20 items-center justify-between gap-4 px-8 py-4 max-sm:min-h-18 max-sm:px-4">
           <a
             href={localizePath("/", locale)}
             aria-label={content.home}
@@ -79,39 +84,34 @@ export const NotFoundContent = async ({ locale }: NotFoundContent.Props) => {
             {reviewNotFound.status}
           </p>
         </header>
-      </MarketingBand>
-      <MarketingBand className="[&>.marketing-rail>.marketing-guides]:hidden">
-        <div className="grid grid-cols-2 max-md:grid-cols-1">
-          <div className="flex min-w-0 flex-col items-start justify-center px-7 py-14 max-sm:px-4 max-sm:py-9">
-            <h1 className="max-w-[9ch] text-[clamp(2.75rem,5.4vw,4.75rem)]">
+        <div className="relative flex flex-1 flex-col items-center justify-center">
+          <NotFoundArtwork />
+        </div>
+        <div className="grid grid-cols-[minmax(0,1fr)_260px] items-end gap-x-10 gap-y-6 px-8 pt-4 pb-10 max-sm:grid-cols-[minmax(0,1fr)_148px] max-sm:gap-x-4 max-sm:gap-y-4 max-sm:px-4 max-sm:pb-6 max-[360px]:grid-cols-[minmax(0,1fr)_96px] max-[360px]:gap-x-2">
+          <div className="col-start-1 max-sm:col-span-2">
+            <h1 className="text-[clamp(2.5rem,4.5vw,4rem)]">
               <span className="sr-only">404. </span>
               {content.title}
             </h1>
-            <p className="mt-6 max-w-[39ch] text-lg leading-relaxed max-sm:mt-4 max-sm:text-base">
+            <p className="mt-4 max-w-[58ch] text-lg leading-relaxed max-sm:text-base">
               {reviewNotFound.description}
             </p>
+          </div>
+          <div className="col-start-1">
             <NotFoundActions
               homeHref={localizePath("/", locale)}
               homeLabel={reviewNotFound.action.primary}
               backLabel={reviewNotFound.action.secondary}
+              exploreLabel={reviewNotFound.action.tertiary}
             />
-            <Button
-              variant="ghost"
-              color="primary"
-              render={<a href="#explore" />}
-              className="mt-5 min-h-11 px-0 text-primary-text hover:bg-transparent hover:underline focus-visible:outline-solid"
-            >
-              {reviewNotFound.action.tertiary}
-              <ArrowRightIcon className="size-4" />
-            </Button>
           </div>
-          <div className="min-w-0 border-accent-foreground border-l p-5 max-md:order-first max-md:border-l-0 max-md:p-4">
-            <NotFoundAscii />
+          <div className="col-start-2 row-span-2 row-start-1 self-center max-sm:row-span-1 max-sm:row-start-2">
+            <QueryFigure label={hairlineRecovery.label} />
           </div>
         </div>
       </MarketingBand>
       <MarketingBand>
-        <div id="explore" className="scroll-mt-6 px-7 py-8 max-sm:px-4">
+        <div id="explore" className="scroll-mt-6 px-8 py-8 max-sm:px-4">
           <h2 className="text-[clamp(1.5rem,3vw,2.25rem)]">
             {reviewNotFound.exploreTitle}
           </h2>
@@ -121,23 +121,33 @@ export const NotFoundContent = async ({ locale }: NotFoundContent.Props) => {
           data-columns="3"
           className="marketing-grid marketing-section-grid grid grid-cols-3 border-accent-foreground border-t max-sm:grid-cols-1 max-[801px]:grid-cols-2"
         >
-          {content.links.map((link) => (
-            <a
-              key={link.href}
-              href={localizePath(link.href, locale)}
-              className="group flex min-h-22 items-center justify-between gap-4 border-accent-foreground border-r border-b px-7 py-6 text-foreground-rich text-xl hover:bg-background-dimmed hover:text-primary-text max-sm:min-h-18 max-sm:px-4"
-            >
-              {link.label}
-              <ArrowRightIcon className="size-5 shrink-0 text-primary-text" />
-            </a>
-          ))}
+          {content.links.map((link, index) => {
+            const Icon = navigationIcons[index] ?? CommerceBasketShoppingIcon;
+            return (
+              <a
+                key={link.href}
+                href={localizePath(link.href, locale)}
+                className="group flex min-h-28 items-center gap-4 border-accent-foreground border-r border-b px-8 py-8 text-foreground-rich text-xl hover:bg-background-dimmed hover:text-primary-text max-sm:min-h-24 max-sm:px-4 max-sm:py-6"
+              >
+                <Icon
+                  aria-hidden
+                  className="size-8 shrink-0 text-primary-text"
+                />
+                <span>{link.label}</span>
+                <ArrowRightIcon
+                  aria-hidden
+                  className="ml-auto size-4 shrink-0 text-primary-text"
+                />
+              </a>
+            );
+          })}
         </nav>
       </MarketingBand>
       <MarketingBand className="[&>.marketing-rail>.marketing-guides]:hidden">
-        <div className="grid grid-cols-[1fr_2fr] gap-10 px-7 py-10 max-sm:px-4 max-md:grid-cols-1 max-md:gap-6">
+        <div className="grid grid-cols-[1fr_2fr] gap-10 px-8 py-10 max-sm:px-4 max-md:grid-cols-1 max-md:gap-6">
           <div>
-            <h2 className="text-xl">{content.machineTitle}</h2>
-            <p className="mt-3 max-w-[34ch] text-foreground-dimmed text-sm leading-relaxed">
+            <h2 className="text-2xl">{round14NotFound.machineTitle}</h2>
+            <p className="mt-4 max-w-[34ch] text-foreground-dimmed text-sm leading-relaxed">
               {content.machineDescription}
             </p>
           </div>
@@ -146,6 +156,7 @@ export const NotFoundContent = async ({ locale }: NotFoundContent.Props) => {
               {RECOVERY_LINKS.map((link, index) => {
                 const copy = content.recoveryLinks[index];
                 if (!copy) return null;
+                const Icon = recoveryIcons[index] ?? FileIcon;
                 const href =
                   link.href === "/" || link.href === "/docs"
                     ? localizePath(link.href, locale)
@@ -153,9 +164,10 @@ export const NotFoundContent = async ({ locale }: NotFoundContent.Props) => {
                 return (
                   <li key={link.href}>
                     <a
-                      className="marketing-text-link inline-flex min-h-11 items-center text-primary-text text-sm underline decoration-accent-foreground underline-offset-4 hover:decoration-current"
+                      className="marketing-text-link flex min-h-14 items-center gap-4 text-primary-text text-sm hover:underline"
                       href={href}
                     >
+                      <Icon aria-hidden className="size-6 shrink-0" />
                       {copy.label}
                     </a>
                   </li>
@@ -163,9 +175,10 @@ export const NotFoundContent = async ({ locale }: NotFoundContent.Props) => {
               })}
               <li>
                 <a
-                  className="marketing-text-link inline-flex min-h-11 items-center text-primary-text text-sm underline decoration-accent-foreground underline-offset-4 hover:decoration-current"
+                  className="marketing-text-link flex min-h-14 items-center gap-4 text-primary-text text-sm hover:underline"
                   href="/404.md"
                 >
+                  <FileIcon aria-hidden className="size-6 shrink-0" />
                   {content.markdownAction}
                 </a>
               </li>

@@ -1,34 +1,19 @@
 import { ArrowRightIcon } from "@zenncore/icons";
-import { getMessages } from "next-intl/server";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
-import {
-  type MarketingPage,
-  MarketingSection,
-} from "@/components/marketing/page";
+import { MarketingSection } from "@/components/marketing/page";
 import {
   MarketingBand,
   MarketingHeading,
 } from "@/components/marketing/primitives";
 import { Link } from "@/i18n/navigation";
-import { SolutionFeatureBand } from "../../../_components/feature-band";
 import { SectorRules } from "../sector-rules";
-import {
-  ElectronicsSpecification,
-  ElectronicsWorkbench,
-} from "./consumer-electronics-workbench";
+import { SectorAttributes, SectorQuestions } from "../sector-sections";
 
 export const ConsumerElectronicsBody = async ({
   sections,
   sectionChildren,
 }: MarketingBodyProps) => {
-  const { electronicsPage, enterpriseSolutions } = await getMessages();
-  const attributes: MarketingPage.Section | undefined =
-    enterpriseSolutions.sectors["consumer-electronics"].sections.find(
-      (section) => section.id === "attributes",
-    );
-  const specifications = attributes?.items ?? [];
-
   return (
     <>
       {sections.map((section) => {
@@ -43,40 +28,23 @@ export const ConsumerElectronicsBody = async ({
             );
           case "questions":
             return (
-              <MarketingBand
+              <SectorQuestions
                 key={section.id}
-                id={section.id}
-                className="[&>.marketing-rail>.marketing-guides]:hidden"
+                section={section}
+                sector="consumer-electronics"
               >
-                <MarketingHeading title={section.title} />
-                <ElectronicsWorkbench
-                  questions={section.items ?? []}
-                  specifications={specifications}
-                  copy={electronicsPage}
-                />
                 {sectionChildren?.[section.id]}
-              </MarketingBand>
+              </SectorQuestions>
             );
           case "attributes":
             return (
-              <SolutionFeatureBand
+              <SectorAttributes
                 key={section.id}
-                id={section.id}
-                className="[&>.marketing-rail>.marketing-guides]:hidden"
+                section={section}
+                sector="consumer-electronics"
               >
-                <MarketingHeading
-                  title={section.title}
-                  description={section.description}
-                />
-                <ElectronicsSpecification label={electronicsPage.mapLabel}>
-                  {sectionChildren?.[section.id]}
-                </ElectronicsSpecification>
-                {section.note && (
-                  <p className="border-accent-foreground border-t bg-background-dimmed px-4 py-6 text-foreground-dimmed text-sm sm:px-8">
-                    {section.note}
-                  </p>
-                )}
-              </SolutionFeatureBand>
+                {sectionChildren?.[section.id]}
+              </SectorAttributes>
             );
           case "business":
             return (

@@ -1,0 +1,113 @@
+{
+  "commerceFigures": {
+    "sofa": "Illustration: a two-seat sofa. Point at a cushion to lift and inspect its upholstery.",
+    "headphones": "Illustration: over-ear headphones. Point at an ear cup to lift and inspect its padding.",
+    "lipstick": "Illustration: an uncapped lipstick. Point at the lipstick or cap to lift and inspect it.",
+    "custom": {
+      "inspecting": "Inspecting"
+    },
+    "partReadouts": {
+      "sofa": [
+        {
+          "value": "cushion 1",
+          "label": "Left cushion"
+        },
+        {
+          "value": "cushion 2",
+          "label": "Right cushion"
+        }
+      ],
+      "headphones": [
+        {
+          "value": "left cup",
+          "label": "Left ear cup"
+        },
+        {
+          "value": "right cup",
+          "label": "Right ear cup"
+        }
+      ],
+      "lipstick": [
+        {
+          "value": "lipstick",
+          "label": "Lipstick bullet"
+        },
+        {
+          "value": "cap",
+          "label": "Lipstick cap"
+        }
+      ],
+      "wellnessBottle": [
+        {
+          "value": "cap",
+          "label": "Bottle cap"
+        },
+        {
+          "value": "capsule",
+          "label": "Capsule"
+        }
+      ],
+      "wineBottle": [
+        {
+          "value": "cork",
+          "label": "Cork"
+        },
+        {
+          "value": "bottle",
+          "label": "Wine bottle"
+        },
+        {
+          "value": "label",
+          "label": "Bottle label"
+        }
+      ],
+      "packagedFood": [
+        {
+          "value": "seal",
+          "label": "Package seal"
+        },
+        {
+          "value": "pouch",
+          "label": "Food pouch"
+        },
+        {
+          "value": "window",
+          "label": "Ingredient window"
+        }
+      ],
+      "sneaker": [
+        {
+          "value": "sole",
+          "label": "Sole"
+        },
+        {
+          "value": "upper",
+          "label": "Upper"
+        },
+        {
+          "value": "laces",
+          "label": "Laces"
+        }
+      ],
+      "suitcase": [
+        {
+          "value": "handle",
+          "label": "Handle"
+        },
+        {
+          "value": "shell",
+          "label": "Shell"
+        },
+        {
+          "value": "wheels",
+          "label": "Wheels"
+        }
+      ]
+    },
+    "wellnessBottle": "Illustration: a wellness bottle and capsule. Point at the cap or capsule to lift and inspect it.",
+    "wineBottle": "Illustration: a wine bottle with a cork and label. Point at a part to lift and inspect it.",
+    "packagedFood": "Illustration: a food pouch with a seal and ingredient window. Point at a part to lift and inspect it.",
+    "sneaker": "Illustration: a sneaker with a rounded sole, upper and laces. Point at a part to lift and inspect it.",
+    "suitcase": "Illustration: a wheeled suitcase with an extendable handle. Point at a part to lift and inspect it."
+  }
+}

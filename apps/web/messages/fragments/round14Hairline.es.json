@@ -1,0 +1,113 @@
+{
+  "commerceFigures": {
+    "sofa": "Ilustración: un sofá de dos plazas. Acerca el puntero a un cojín para levantarlo e inspeccionar la tapicería.",
+    "headphones": "Ilustración: auriculares de diadema. Acerca el puntero a una copa para levantarla e inspeccionar el acolchado.",
+    "lipstick": "Ilustración: una barra de labios destapada. Acerca el puntero a la barra o la tapa para levantarla e inspeccionarla.",
+    "custom": {
+      "inspecting": "Inspeccionando"
+    },
+    "partReadouts": {
+      "sofa": [
+        {
+          "value": "cushion 1",
+          "label": "Cojín izquierdo"
+        },
+        {
+          "value": "cushion 2",
+          "label": "Cojín derecho"
+        }
+      ],
+      "headphones": [
+        {
+          "value": "left cup",
+          "label": "Copa izquierda"
+        },
+        {
+          "value": "right cup",
+          "label": "Copa derecha"
+        }
+      ],
+      "lipstick": [
+        {
+          "value": "lipstick",
+          "label": "Barra de labios"
+        },
+        {
+          "value": "cap",
+          "label": "Tapa de la barra"
+        }
+      ],
+      "wellnessBottle": [
+        {
+          "value": "cap",
+          "label": "Tapa del frasco"
+        },
+        {
+          "value": "capsule",
+          "label": "Cápsula"
+        }
+      ],
+      "wineBottle": [
+        {
+          "value": "cork",
+          "label": "Corcho"
+        },
+        {
+          "value": "bottle",
+          "label": "Botella de vino"
+        },
+        {
+          "value": "label",
+          "label": "Etiqueta de la botella"
+        }
+      ],
+      "packagedFood": [
+        {
+          "value": "seal",
+          "label": "Cierre del envase"
+        },
+        {
+          "value": "pouch",
+          "label": "Bolsa de alimentos"
+        },
+        {
+          "value": "window",
+          "label": "Ventana de ingredientes"
+        }
+      ],
+      "sneaker": [
+        {
+          "value": "sole",
+          "label": "Suela"
+        },
+        {
+          "value": "upper",
+          "label": "Empeine"
+        },
+        {
+          "value": "laces",
+          "label": "Cordones"
+        }
+      ],
+      "suitcase": [
+        {
+          "value": "handle",
+          "label": "Asa"
+        },
+        {
+          "value": "shell",
+          "label": "Carcasa"
+        },
+        {
+          "value": "wheels",
+          "label": "Ruedas"
+        }
+      ]
+    },
+    "wellnessBottle": "Ilustración: un frasco de bienestar y una cápsula. Acerca el puntero a la tapa o la cápsula para levantarla e inspeccionarla.",
+    "wineBottle": "Ilustración: una botella de vino con corcho y etiqueta. Acerca el puntero a una pieza para levantarla e inspeccionarla.",
+    "packagedFood": "Ilustración: una bolsa de alimentos con cierre y ventana de ingredientes. Acerca el puntero a una pieza para levantarla e inspeccionarla.",
+    "sneaker": "Ilustración: una zapatilla con suela redondeada, empeine y cordones. Acerca el puntero a una pieza para levantarla e inspeccionarla.",
+    "suitcase": "Ilustración: una maleta con ruedas y asa extensible. Acerca el puntero a una pieza para levantarla e inspeccionarla."
+  }
+}

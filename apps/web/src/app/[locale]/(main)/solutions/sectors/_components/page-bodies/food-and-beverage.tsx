@@ -1,5 +1,4 @@
 import { ArrowRightIcon } from "@zenncore/icons";
-import { getMessages } from "next-intl/server";
 import type { MarketingBodyProps } from "@/components/marketing/body";
 import { MarketingSection } from "@/components/marketing/page";
 import {
@@ -7,67 +6,36 @@ import {
   MarketingEyebrow,
 } from "@/components/marketing/primitives";
 import { Link } from "@/i18n/navigation";
-import { SolutionFeatureBand } from "../../../_components/feature-band";
 import { SectorRules } from "../sector-rules";
-import {
-  FoodAndBeverageFacts,
-  FoodAndBeverageQuestions,
-} from "./food-and-beverage-explorer";
+import { SectorAttributes, SectorQuestions } from "../sector-sections";
 
 export const FoodAndBeverageBody = async ({
   sections,
   sectionChildren,
 }: MarketingBodyProps) => {
-  const { foodPage, enterpriseSolutions, sectorReview } = await getMessages();
-  const facts =
-    enterpriseSolutions.sectors["food-and-beverage"].sections.find(
-      (section) => section.id === "attributes",
-    )?.items ?? [];
-
   return (
     <>
       {sections.map((section) => {
         switch (section.id) {
           case "questions":
             return (
-              <MarketingBand
+              <SectorQuestions
                 key={section.id}
-                id={section.id}
-                className="[&>.marketing-rail>.marketing-guides]:hidden"
+                section={section}
+                sector="food-and-beverage"
               >
-                <div className="px-4 py-10 sm:px-8 sm:py-12">
-                  <MarketingEyebrow>{section.eyebrow}</MarketingEyebrow>
-                  <h2>{section.title}</h2>
-                  <p className="mt-4 max-w-[62ch] text-foreground-dimmed text-lg max-sm:text-base">
-                    {sectorReview.questions.subtitle}
-                  </p>
-                </div>
-                <FoodAndBeverageQuestions
-                  questions={section.items ?? []}
-                  facts={facts}
-                  labels={foodPage}
-                />
                 {sectionChildren?.[section.id]}
-              </MarketingBand>
+              </SectorQuestions>
             );
           case "attributes":
             return (
-              <SolutionFeatureBand
+              <SectorAttributes
                 key={section.id}
-                id={section.id}
-                className="[&>.marketing-rail>.marketing-guides]:hidden"
+                section={section}
+                sector="food-and-beverage"
               >
-                <div className="px-4 py-10 sm:px-8 sm:py-12">
-                  <MarketingEyebrow>{section.eyebrow}</MarketingEyebrow>
-                  <h2>{section.title}</h2>
-                  <p className="mt-4 max-w-[70ch] text-foreground-dimmed">
-                    {section.note}
-                  </p>
-                </div>
-                <FoodAndBeverageFacts label={foodPage.allFacts}>
-                  {sectionChildren?.[section.id]}
-                </FoodAndBeverageFacts>
-              </SolutionFeatureBand>
+                {sectionChildren?.[section.id]}
+              </SectorAttributes>
             );
           case "rules":
             return (

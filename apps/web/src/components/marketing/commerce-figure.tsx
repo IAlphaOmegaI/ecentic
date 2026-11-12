@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@zenncore/utils";
-import { useTranslations } from "next-intl";
+import { useMessages, useTranslations } from "next-intl";
 import { lazy } from "react";
 import { CustomHairlineFigure } from "@/components/hairline/custom-figure";
 import { HairlineFigure } from "@/components/hairline/figure";
@@ -18,6 +18,23 @@ const figures = {
   hub: lazy(() => import("./figures/hub")),
 } as const;
 
+const customFigures = {
+  shopifyBag: "shopify-bag",
+  shoppingBot: "shopping-bot",
+  sofa: "sofa",
+  headphones: "headphones",
+  lipstick: "lipstick",
+  wellnessBottle: "wellness-bottle",
+  packagedFood: "packaged-food",
+  wineBottle: "wine-bottle",
+  sneaker: "sneaker",
+  suitcase: "suitcase",
+} as const;
+
+const isCustomFigure = (
+  kind: CommerceFigure.Props["kind"],
+): kind is keyof typeof customFigures => kind in customFigures;
+
 /** Subject drawings accompany the explanation; they never stand in for live data. */
 export const CommerceFigure = ({
   kind,
@@ -26,12 +43,18 @@ export const CommerceFigure = ({
   className,
 }: CommerceFigure.Props) => {
   const translate = useTranslations("commerceFigures");
-  if (kind === "shopifyBag" || kind === "shoppingBot") {
+  const messages = useMessages();
+  const copy = messages.commerceFigures;
+  if (isCustomFigure(kind)) {
+    const readouts = Object.entries(copy.partReadouts).find(
+      ([key]) => key === kind,
+    )?.[1];
     return (
       <CustomHairlineFigure
         key={kind}
-        name={kind === "shopifyBag" ? "shopify-bag" : "shopping-bot"}
+        name={customFigures[kind]}
         label={label ?? translate(kind)}
+        readouts={readouts}
         surface={surface}
         className={className}
       />
@@ -52,7 +75,7 @@ export const CommerceFigure = ({
 
 export namespace CommerceFigure {
   export type Props = {
-    kind: keyof typeof figures | "shopifyBag" | "shoppingBot";
+    kind: keyof typeof figures | keyof typeof customFigures;
     label?: string;
     surface?: "background" | "field" | "rich" | "dark";
     className?: string;

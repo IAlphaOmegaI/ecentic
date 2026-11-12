@@ -1765,3 +1765,40 @@ scanner toward product cards. Use them in the Shopify connection and simulated
 selection contexts respectively. Both include server-rendered rest geometry,
 localized readouts and an in-view enhancement using the unchanged Hairline
 kernel; failure to load the interactive code must leave the drawing visible.
+
+## 37. Sector conversations, category subjects and recovery pages
+
+Sector questions share a conversation-and-inspection composition. Put the
+shopper's request and a concise assistant response beside the product record
+being inspected. Different example questions can change that record, but the
+first useful conversation and its evidence are visible immediately. Avoid
+quotation-only cards, text tabs that conceal the explanation, and decorative
+arrows with no meaningful destination. Keep the examples explicitly illustrative;
+show supplied record facts and omissions rather than suggesting access to an
+AI provider's hidden reasoning.
+
+The comparison introduction follows the same eyebrow, heading and supporting
+paragraph hierarchy as other marketing sections. Source-diff headers and the
+last explanatory row carry crosses at both outer rail intersections. Apply
+these marks inside the shared component so platform, integration and sector
+examples agree. Do not double an intersection already drawn by a parent.
+
+Attribute qualifications have one position across all eight sectors, directly
+after the attribute heading, and one contrasting strip treatment. Their factual
+limitations remain intact. Dimensional illustrations use the actual supplied
+units and attributes; schematic proportions do not assert a measured fit.
+
+Category heroes use recognizable custom Hairline objects: a sofa for home,
+headphones for electronics, lipstick for beauty, a bottle for wine, packaged
+food, a shoe for fashion, a wellness container, and luggage for travel. Preserve
+the object's defining features at rest; the pointer inspects or lifts a part.
+Keep the fixed Hairline kernel, stable hit areas, matching occlusion surface,
+localized captions and complete reduced-motion rest geometry. Do not substitute
+the generic connected hub for all sector identities.
+
+The 404 composition occupies the full width of its first screen. Oversized,
+dimensional tonal-dot numerals carry the artwork, with the Hairline question mark
+as a companion. Keep the recovery copy and primary actions clear of the dots.
+Navigation and machine-readable discovery links use consistent package icons.
+Preserve the real 404 response, noindex metadata, localized recovery paths and
+keyboard behavior.

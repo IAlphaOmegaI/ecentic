@@ -1,5 +1,4 @@
 import { ArrowRightIcon } from "@zenncore/icons";
-import { getMessages } from "next-intl/server";
 import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
@@ -9,20 +8,13 @@ import {
   MarketingEyebrow,
 } from "@/components/marketing/primitives";
 import { Link } from "@/i18n/navigation";
-import { SolutionFeatureBand } from "../../../_components/feature-band";
 import { SectorRules } from "../sector-rules";
-import { HealthWellnessAndPetReader } from "./health-wellness-and-pet-reader";
+import { SectorAttributes, SectorQuestions } from "../sector-sections";
 
 export const HealthWellnessAndPetBody = async ({
   sections,
   sectionChildren,
 }: MarketingBodyProps) => {
-  const { enterpriseSolutions, healthPage } = await getMessages();
-  const attributes =
-    enterpriseSolutions.sectors["health-wellness-and-pet"].sections.find(
-      (section) => section.id === "attributes",
-    )?.items ?? [];
-
   return (
     <>
       {sections.map((section, index) => (
@@ -32,26 +24,13 @@ export const HealthWellnessAndPetBody = async ({
             switch (section.id) {
               case "questions":
                 return (
-                  <MarketingBand
-                    id={section.id}
-                    className="[&>.marketing-rail>.marketing-guides]:hidden"
+                  <SectorQuestions
+                    key={section.id}
+                    section={section}
+                    sector="health-wellness-and-pet"
                   >
-                    <div className="px-4 py-8 sm:px-8 sm:py-12">
-                      {section.eyebrow && (
-                        <MarketingEyebrow>{section.eyebrow}</MarketingEyebrow>
-                      )}
-                      <h2>{section.title}</h2>
-                      <p className="mt-4 max-w-[60ch] text-foreground-dimmed">
-                        {healthPage.reader.description}
-                      </p>
-                    </div>
-                    <HealthWellnessAndPetReader
-                      questions={section.items ?? []}
-                      attributes={attributes}
-                      copy={healthPage.reader}
-                    />
                     {sectionChildren?.[section.id]}
-                  </MarketingBand>
+                  </SectorQuestions>
                 );
               case "rules":
                 return (
@@ -99,25 +78,13 @@ export const HealthWellnessAndPetBody = async ({
                 );
               case "attributes":
                 return (
-                  <SolutionFeatureBand id={section.id}>
-                    <div className="px-4 py-10 sm:px-8 sm:py-12">
-                      {section.eyebrow && (
-                        <MarketingEyebrow>{section.eyebrow}</MarketingEyebrow>
-                      )}
-                      <h2>{section.title}</h2>
-                      {section.description && (
-                        <p className="mt-4 max-w-[60ch] text-background-rich/75">
-                          {section.description}
-                        </p>
-                      )}
-                    </div>
+                  <SectorAttributes
+                    key={section.id}
+                    section={section}
+                    sector="health-wellness-and-pet"
+                  >
                     {sectionChildren?.[section.id]}
-                    {section.note && (
-                      <p className="border-background-rich/15 border-t px-4 py-6 text-background-rich/65 text-sm sm:px-8">
-                        {section.note}
-                      </p>
-                    )}
-                  </SolutionFeatureBand>
+                  </SectorAttributes>
                 );
               default:
                 return (

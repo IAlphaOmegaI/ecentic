@@ -1,0 +1,36 @@
+{
+  "method": "Tonal dots from dimensional typography",
+  "generator": "apps/web/scripts/not-found-tonal.py",
+  "font": "fonts/LTSuperior/LTSuperior-SemiBold.woff2",
+  "fontSha256": "433acc63f25f29db0b4fb35b1f43bef4adb8e1841855a230a9a2d1f649cb492b",
+  "text": "404",
+  "extrusion": [
+    80,
+    41.6
+  ],
+  "projection": [
+    1,
+    0.12,
+    -26,
+    -0.055,
+    1,
+    40
+  ],
+  "source": "/images/ascii/tonal/not-found-source.png",
+  "sourceSha256": "6087b432a81156a549c38f7a5ce8803ca1f7e949adc9a326644dfd43a0ae5ff5",
+  "asset": "/images/ascii/tonal/not-found.svg",
+  "assetSha256": "ffc022e496b5f42edfeabaa9939f558a36640e90febce13ee9b877af5d83701c",
+  "grid": [
+    220,
+    105
+  ],
+  "marks": 12790,
+  "dotRadiusContrast": 2.4,
+  "mobileAsset": "/images/ascii/tonal/not-found-mobile.svg",
+  "mobileGrid": [
+    132,
+    63
+  ],
+  "mobileMarks": 4679,
+  "note": "Decorative typography only. Semantic 404 status is rendered separately in the page heading."
+}

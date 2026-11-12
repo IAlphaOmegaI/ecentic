@@ -8,10 +8,11 @@ export const NotFoundActions = ({
   homeHref,
   homeLabel,
   backLabel,
+  exploreLabel,
 }: NotFoundActions.Props) => {
   const { document, window } = useDocument();
   return (
-    <div className="mt-8 flex flex-wrap gap-3 max-sm:mt-6">
+    <div className="flex flex-wrap items-center gap-3">
       <Button
         variant="default"
         color="primary"
@@ -42,6 +43,15 @@ export const NotFoundActions = ({
         <ArrowLeftIcon className="size-4" />
         {backLabel}
       </Button>
+      <Button
+        variant="ghost"
+        color="primary"
+        render={<a href="#explore" />}
+        className="min-h-12 px-0 text-primary-text hover:bg-transparent hover:underline focus-visible:outline-solid"
+      >
+        {exploreLabel}
+        <ArrowRightIcon className="size-4" />
+      </Button>
     </div>
   );
 };
@@ -51,5 +61,6 @@ export namespace NotFoundActions {
     homeHref: string;
     homeLabel: string;
     backLabel: string;
+    exploreLabel: string;
   };
 }

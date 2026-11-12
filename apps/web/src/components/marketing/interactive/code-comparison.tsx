@@ -43,6 +43,10 @@ export const CodeDiff = ({
       data-code-diff=""
       className="relative min-w-0 bg-emphasis-dimmed text-background-rich"
     >
+      <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+      <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+      <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
       <header className="flex flex-wrap items-center justify-between gap-4 border-background-rich/15 border-b px-8 py-6 max-sm:px-4">
         <div className="min-w-0">
           <p className="flex min-w-0 items-center gap-4 font-mono text-sm">

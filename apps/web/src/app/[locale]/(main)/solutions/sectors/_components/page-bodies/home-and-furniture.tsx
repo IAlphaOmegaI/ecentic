@@ -1,5 +1,4 @@
 import { ArrowRightIcon } from "@zenncore/icons";
-import { getMessages } from "next-intl/server";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
 import { MarketingSection } from "@/components/marketing/page";
@@ -7,22 +6,14 @@ import {
   MarketingBand,
   MarketingHeading,
 } from "@/components/marketing/primitives";
-import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
-import { SolutionFeatureBand } from "../../../_components/feature-band";
 import { SectorRules } from "../sector-rules";
-import { FurnitureQuestions } from "./home-and-furniture-questions";
+import { SectorAttributes, SectorQuestions } from "../sector-sections";
 
 export const HomeAndFurnitureBody = async ({
   sections,
   sectionChildren,
 }: MarketingBodyProps) => {
-  const { furniturePage, enterpriseSolutions } = await getMessages();
-  const specifications =
-    enterpriseSolutions.sectors["home-and-furniture"].sections.find(
-      (section) => section.id === "attributes",
-    )?.items ?? [];
-
   return (
     <>
       {sections.map((section) => {
@@ -37,49 +28,23 @@ export const HomeAndFurnitureBody = async ({
             );
           case "questions":
             return (
-              <MarketingBand
+              <SectorQuestions
                 key={section.id}
-                id={section.id}
-                className="[&>.marketing-rail>.marketing-guides]:hidden"
+                section={section}
+                sector="home-and-furniture"
               >
-                <MarketingHeading
-                  title={section.title}
-                  description={furniturePage.introduction}
-                />
-                <FurnitureQuestions
-                  questions={section.items ?? []}
-                  specifications={specifications}
-                  copy={furniturePage}
-                />
                 {sectionChildren?.[section.id]}
-              </MarketingBand>
+              </SectorQuestions>
             );
           case "attributes":
             return (
-              <SolutionFeatureBand
+              <SectorAttributes
                 key={section.id}
-                id={section.id}
-                className="[&>.marketing-rail>.marketing-guides]:hidden"
+                section={section}
+                sector="home-and-furniture"
               >
-                <MarketingHeading
-                  title={section.title}
-                  description={section.description}
-                />
-                <div className="relative grid border-accent-foreground border-t bg-background-dimmed md:grid-cols-[1fr_2fr]">
-                  <div className="relative flex items-center border-accent-foreground border-b px-4 py-6 sm:px-8 md:border-r md:border-b-0">
-                    <p className="text-foreground-rich text-xl">
-                      {furniturePage.sourceLabel}
-                    </p>
-                    <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 md:block" />
-                  </div>
-                  {section.note && (
-                    <p className="max-w-[70ch] px-4 py-6 text-foreground-dimmed sm:px-8">
-                      {section.note}
-                    </p>
-                  )}
-                </div>
                 {sectionChildren?.[section.id]}
-              </SolutionFeatureBand>
+              </SectorAttributes>
             );
           case "business":
             return (

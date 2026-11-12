@@ -1,0 +1,31 @@
+{
+  "round14Sectors": {
+    "introduction": "Mira cómo una pregunta de compra se relaciona con los datos de una ficha de producto.",
+    "sample": "Conversación ilustrativa con productos de ejemplo.",
+    "questions": "Explora una pregunta de compra",
+    "conversation": "Conversación de ejemplo",
+    "shopper": "Comprador",
+    "assistant": "Asistente de compras",
+    "assistantIntro": "Puedo comparar la petición con la información que aparece en estas fichas. Los datos relevantes son:",
+    "followUp": "¿Qué puedes comprobar en la ficha?",
+    "inspection": "Inspecciona las fichas de muestra",
+    "yourListing": "Tu ficha",
+    "comparisonListing": "Ficha de comparación",
+    "sourceFact": "Ya consta en la fuente de muestra",
+    "missing": "No consta en la ficha",
+    "available": "Consta en la ficha",
+    "required": "Relevante para esta pregunta",
+    "qualification": "Verifica estos atributos en la fuente",
+    "attributesIntro": "Haz explícitos los datos del producto y revisa el cambio en la ficha de origen compartida.",
+    "comparisonIntro": "Este ejemplo sigue la primera pregunta de compra. El gráfico muestra los datos existentes en la fuente antes del cambio de código que aparece debajo.",
+    "sourceHeading": "El dato de origen que sustenta la mejora",
+    "dimensions": {
+      "title": "Comprueba todas las dimensiones.",
+      "width": "Ancho",
+      "depth": "Fondo",
+      "height": "Alto",
+      "note": "Esquema sin escala. Verifica el encaje con las medidas exactas del producto, la habitación y los accesos."
+    },
+    "assistantFinding": "La ficha de {product} no indica {fields}. No puedo comprobar esos requisitos con esa ficha. La fuente de muestra contiene los datos que deben hacerse explícitos."
+  }
+}
