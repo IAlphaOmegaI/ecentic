@@ -109,6 +109,7 @@ export const ShopifySetupJourney = ({
       />
       <Accordion
         key={staticView ? "static" : "interactive"}
+        role="group"
         aria-label={title}
         multiple
         defaultValue={

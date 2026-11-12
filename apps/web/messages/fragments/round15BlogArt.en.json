@@ -1,0 +1,17 @@
+{
+  "commerceFigures": {
+    "openBook": "Illustration: an open book. Move the pointer over either page to fan the leaves open.",
+    "partReadouts": {
+      "openBook": [
+        {
+          "value": "left pages",
+          "label": "Left pages"
+        },
+        {
+          "value": "right pages",
+          "label": "Right pages"
+        }
+      ]
+    }
+  }
+}

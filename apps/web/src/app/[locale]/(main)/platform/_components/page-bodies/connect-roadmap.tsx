@@ -2,7 +2,6 @@
 
 import {
   ArrowRightIcon,
-  CheckCircleIcon,
   CommerceBasketShoppingIcon,
   CommerceCode_3Icon,
   CommerceGlobePointerIcon,
@@ -11,8 +10,8 @@ import {
 import { cn } from "@zenncore/utils";
 import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import type { AppConfig } from "next-intl";
-import { useState } from "react";
-import { useInteractive } from "@/components/marketing/interactive/use-interactive";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
+import { useSequence } from "@/components/marketing/interactive/use-sequence";
 import type { MarketingPage } from "@/components/marketing/page";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { Plus } from "@/components/plus";
@@ -51,43 +50,16 @@ const CatalogFlow = ({ stage, copy }: CatalogFlow.Props) => (
         <span className="absolute inset-x-0 top-1/2 border-primary/40 border-t" />
         <ArrowRightIcon className="absolute top-1/2 -right-1 size-4 -translate-y-1/2 text-primary" />
       </div>
-      <div className="relative min-w-0 border border-accent-foreground bg-background px-4 py-6">
-        <Plus className="top-0 left-0 size-4 -translate-x-1/2 -translate-y-1/2" />
-        <Plus className="right-0 bottom-0 size-4 translate-x-1/2 translate-y-1/2" />
-        <CommerceBasketShoppingIcon
-          className="size-10 text-primary"
-          aria-hidden
+      <figure className="relative m-0 min-w-0" data-working-catalog>
+        <CommerceFigure
+          kind="catalog"
+          surface="field"
+          className="mx-auto max-w-80"
         />
-        <p className="mt-4 font-heading text-xl leading-tight">
+        <figcaption className="mt-2 text-center font-heading text-xl leading-tight">
           {copy.catalog}
-        </p>
-        <div className="mt-5 grid gap-2 font-mono text-xs">
-          {["title", "description", "price", "image", "id"].map(
-            (field, index) => (
-              <div
-                key={field}
-                className={cn(
-                  "flex min-w-0 items-center justify-between gap-2",
-                  index === 0
-                    ? "text-primary-text"
-                    : index === 1
-                      ? "text-secondary"
-                      : index === 2
-                        ? "text-success-dimmed"
-                        : index === 3
-                          ? "text-warning-foreground"
-                          : "text-foreground-dimmed",
-                )}
-              >
-                <span>{field}</span>
-                {stage >= 1 && (
-                  <CheckCircleIcon className="size-4 shrink-0" aria-hidden />
-                )}
-              </div>
-            ),
-          )}
-        </div>
-      </div>
+        </figcaption>
+      </figure>
     </div>
     <div className="grid gap-4 border-accent-foreground border-t pt-6 sm:grid-cols-2">
       <div
@@ -159,9 +131,11 @@ export const ConnectRoadmap = ({
   label,
   copy,
 }: ConnectRoadmap.Props) => {
-  const [active, setActive] = useState(0);
-  const { ready, reduced } = useInteractive();
-  if (!ready || reduced)
+  const { container, active, enhanced, pause, select } = useSequence({
+    length: items.length,
+    delay: 4200,
+  });
+  if (!enhanced)
     return (
       <div
         className="grid min-w-0 border-accent-foreground border-t lg:grid-cols-2"
@@ -180,50 +154,57 @@ export const ConnectRoadmap = ({
       </div>
     );
   return (
-    <Tabs
-      value={active}
-      onValueChange={(value) => {
-        if (typeof value === "number") setActive(value);
-      }}
-      orientation="vertical"
-      className="grid min-w-0 border-accent-foreground border-t lg:grid-cols-2"
-      data-connect-roadmap="interactive"
+    <div
+      ref={container}
+      className="marketing-surface"
+      onPointerDownCapture={pause}
+      onFocusCapture={pause}
     >
-      <TabsList
-        aria-label={label}
-        className="relative grid w-full overflow-visible rounded-none border-0 bg-background before:absolute before:top-12 before:bottom-12 before:left-14 before:border-accent-foreground before:border-l max-sm:before:left-10"
+      <Tabs
+        value={active}
+        onValueChange={(value) => {
+          if (typeof value === "number") select(value);
+        }}
+        orientation="vertical"
+        className="grid min-w-0 border-accent-foreground border-t lg:grid-cols-2"
+        data-connect-roadmap="interactive"
       >
-        {items.map((item, index) => (
-          <Tab
-            key={item.title}
-            value={index}
-            className="relative h-auto justify-start whitespace-normal rounded-none border-accent-foreground border-r-0 border-b px-8 py-6 text-left text-foreground-rich before:hidden last:border-b-0 hover:text-primary-text focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-solid focus-visible:-outline-offset-2 data-[active]:text-foreground-rich data-selected:text-foreground-rich max-sm:px-4"
-          >
-            <RoadmapItem
-              item={item}
-              index={index}
-              active={index === active}
-              compact
-            />
-          </Tab>
-        ))}
-      </TabsList>
-      <div className="relative min-w-0 border-accent-foreground border-t bg-background-dimmed lg:border-t-0 lg:border-l">
-        <Plus className="top-0 left-0 size-4 -translate-x-1/2 -translate-y-1/2" />
-        {items.map((item, index) => (
-          <TabsPanel
-            key={item.title}
-            value={index}
-            className="outline-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-solid focus-visible:-outline-offset-2"
-          >
-            <p className="border-accent-foreground border-b px-8 py-6 text-foreground-dimmed leading-relaxed max-sm:px-4">
-              {item.body}
-            </p>
-            <CatalogFlow stage={index} copy={copy} />
-          </TabsPanel>
-        ))}
-      </div>
-    </Tabs>
+        <TabsList
+          aria-label={label}
+          className="relative grid w-full overflow-visible rounded-none border-0 bg-background before:absolute before:top-12 before:bottom-12 before:left-14 before:border-accent-foreground before:border-l max-sm:before:left-10"
+        >
+          {items.map((item, index) => (
+            <Tab
+              key={item.title}
+              value={index}
+              className="relative h-auto justify-start whitespace-normal rounded-none border-accent-foreground border-r-0 border-b px-8 py-6 text-left text-foreground-rich before:hidden last:border-b-0 hover:text-primary-text focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-solid focus-visible:-outline-offset-2 data-[active]:text-foreground-rich data-selected:text-foreground-rich max-sm:px-4"
+            >
+              <RoadmapItem
+                item={item}
+                index={index}
+                active={index === active}
+                compact
+              />
+            </Tab>
+          ))}
+        </TabsList>
+        <div className="relative min-w-0 border-accent-foreground border-t bg-background-dimmed lg:border-t-0 lg:border-l">
+          <Plus className="top-0 left-0 size-4 -translate-x-1/2 -translate-y-1/2" />
+          {items.map((item, index) => (
+            <TabsPanel
+              key={item.title}
+              value={index}
+              className="outline-none focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-solid focus-visible:-outline-offset-2"
+            >
+              <p className="min-h-32 border-accent-foreground border-b px-8 py-6 text-foreground-dimmed leading-relaxed max-sm:min-h-48 max-sm:px-4">
+                {item.body}
+              </p>
+              <CatalogFlow stage={index} copy={copy} />
+            </TabsPanel>
+          ))}
+        </div>
+      </Tabs>
+    </div>
   );
 };
 

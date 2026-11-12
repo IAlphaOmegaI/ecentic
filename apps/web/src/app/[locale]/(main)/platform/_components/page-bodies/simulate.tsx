@@ -18,10 +18,10 @@ import {
   MarketingActions,
   MarketingBand,
   MarketingEyebrow,
+  MarketingFeatureBand,
   MarketingHeading,
 } from "@/components/marketing/primitives";
 import { PlatformPrinciples } from "./platform-principles";
-import { RiffleFigure } from "./riffle-figure";
 import { SimulateRoadmap } from "./simulate-roadmap";
 import { SimulateTracking } from "./simulate-tracking";
 import { SimulationProcess } from "./simulation-process";
@@ -51,18 +51,19 @@ const SectionEnding = ({ section }: { section: MarketingPage.Section }) => (
   </>
 );
 
-const RiffleIllustration = async () => {
-  const { hairlineSimulate } = await getMessages();
-  return <RiffleFigure label={hairlineSimulate.label} />;
-};
-
 const ProblemJourney = async ({
-  items,
+  section,
 }: {
-  items: NonNullable<MarketingPage.Section["items"]>;
+  section: MarketingPage.Section;
 }) => {
-  const { reviewSimulate } = await getMessages();
-  return <SimulateRoadmap items={items} labels={reviewSimulate.roadmap} />;
+  const { reviewSimulate, hairlineSimulate } = await getMessages();
+  return (
+    <SimulateRoadmap
+      section={section}
+      labels={reviewSimulate.roadmap}
+      figureLabel={hairlineSimulate.label}
+    />
+  );
 };
 
 const ProcessJourney = async ({
@@ -98,30 +99,15 @@ export const SimulateBody = ({
       switch (section.id) {
         case "problem":
           return (
-            <MarketingBand
+            <MarketingFeatureBand
               key={section.id}
               id={section.id}
               className="[&>.marketing-rail>.marketing-guides]:hidden"
             >
-              <div className="grid grid-cols-[1.1fr_1fr] max-md:grid-cols-1">
-                <div className="min-w-0 bg-background">
-                  <MarketingHeading
-                    eyebrow={section.eyebrow}
-                    title={section.title}
-                    description={section.description}
-                    className="pb-8 max-sm:pb-6"
-                  />
-                  <div className="pb-4">
-                    <RiffleIllustration />
-                  </div>
-                </div>
-                <div className="min-w-0 border-accent-foreground border-l max-md:border-t max-md:border-l-0">
-                  <ProblemJourney items={section.items ?? []} />
-                </div>
-              </div>
+              <ProblemJourney section={section} />
               {children}
               <SectionEnding section={section} />
-            </MarketingBand>
+            </MarketingFeatureBand>
           );
         case "how-it-works":
           return (

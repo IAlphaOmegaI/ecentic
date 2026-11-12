@@ -86,6 +86,7 @@ const DomainCheckPreview = ({ domain, label }: DomainCheckPreview.Props) => {
           <Image
             src={ucp}
             alt={translate("preview.logoAlt")}
+            data-ucp-preview-mark
             className="size-12 object-contain"
           />
           <div>
@@ -1239,6 +1240,7 @@ export const UcpValidatorForm = ({
                 >
                   <TextFieldInput
                     id="ucp-domain"
+                    className="placeholder:text-foreground-dimmed"
                     placeholder={translate("panel.placeholder")}
                   />
                 </TextField>
@@ -1306,6 +1308,7 @@ export const UcpValidatorForm = ({
                 >
                   <TextFieldInput
                     id="ucp-domain"
+                    className="placeholder:text-foreground-dimmed"
                     placeholder={translate("panel.placeholder")}
                   />
                 </TextField>

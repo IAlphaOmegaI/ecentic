@@ -1,4 +1,10 @@
-import { ArrowRightIcon } from "@zenncore/icons";
+import {
+  ArrowRightIcon,
+  CommerceBookOpenIcon,
+  CommerceCode_3Icon,
+  CommerceFileShieldIcon,
+  CommercePlug_3SparkleIcon,
+} from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import type { Metadata } from "next";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
@@ -60,8 +66,14 @@ const Quickstart = async () => {
     <IndexQuickstart
       content={docs.quickstart}
       copy={docsIndexPage.quickstart}
-      examples={QUICKSTART.map((snippet) => (
-        <DocsCode key={snippet}>{snippet}</DocsCode>
+      examples={QUICKSTART.map((snippet, index) => (
+        <DocsCode
+          key={snippet}
+          label={docs.quickstart.steps[index]?.title}
+          className="border-x-0 bg-transparent"
+        >
+          {snippet}
+        </DocsCode>
       ))}
     />
   );
@@ -126,17 +138,37 @@ export default async () => {
       >
         <div className="mx-auto grid w-[min(1186px,calc(100%-56px))] grid-cols-2 gap-px border-accent-foreground border-x bg-accent-foreground max-sm:w-[calc(100%-32px)] md:grid-cols-4">
           {[
-            ["#quickstart", content.quickstart.title],
-            ["#endpoints", content.endpoints.title],
-            ["#protocols", content.protocols.title],
-            ["#reliability", content.reliability.title],
-          ].map(([href, label]) => (
+            {
+              href: "#quickstart",
+              label: content.quickstart.title,
+              Icon: CommerceBookOpenIcon,
+            },
+            {
+              href: "#endpoints",
+              label: content.endpoints.title,
+              Icon: CommerceCode_3Icon,
+            },
+            {
+              href: "#protocols",
+              label: content.protocols.title,
+              Icon: CommercePlug_3SparkleIcon,
+            },
+            {
+              href: "#reliability",
+              label: content.reliability.title,
+              Icon: CommerceFileShieldIcon,
+            },
+          ].map(({ href, label, Icon }) => (
             <a
               key={href}
               href={href}
-              className="group flex min-w-0 items-center justify-between gap-4 bg-background-dimmed px-6 py-6 text-foreground text-sm hover:text-primary-text focus-visible:text-primary-text max-sm:px-4"
+              className="group grid min-w-0 grid-cols-[1fr_auto] grid-rows-[2.5rem_1fr] items-end gap-x-4 gap-y-6 bg-background-rich bg-linear-to-br from-primary/12 via-primary/4 to-transparent px-6 py-8 text-foreground hover:from-primary/20 hover:text-primary-text focus-visible:text-primary-text focus-visible:-outline-offset-4 max-sm:px-4"
             >
-              <span>{label}</span>
+              <Icon
+                aria-hidden
+                className="col-span-2 size-10 text-primary-text"
+              />
+              <span className="font-heading text-xl leading-snug">{label}</span>
               <ArrowRightIcon
                 aria-hidden="true"
                 className="size-4 shrink-0 rotate-90 text-primary"
@@ -147,7 +179,7 @@ export default async () => {
       </nav>
 
       <IndexSection
-        featureTone="light"
+        featureTone="dark"
         id="quickstart"
         number={translate("quickstart.number")}
         title={translate("quickstart.title")}
@@ -312,15 +344,21 @@ export default async () => {
         title={translate("mcp.title")}
         description={translate("mcp.description")}
         gutter
+        classList={{ body: "p-0 max-sm:p-0" }}
       >
-        <div className="flex flex-col gap-6">
-          <ContentPageRichText content={translate("mcp.body")} />
-          <DocsCode label="https://ecentic.ai/.well-known/mcp.json">
+        <div className="flex flex-col">
+          <div className="px-7 py-8 max-sm:px-4">
+            <ContentPageRichText content={translate("mcp.body")} />
+          </div>
+          <DocsCode
+            className="border-x-0"
+            label="https://ecentic.ai/.well-known/mcp.json"
+          >
             {"curl -s https://ecentic.ai/.well-known/mcp.json | jq .transport"}
           </DocsCode>
           <Link
             href="/docs/mcp"
-            className="text-primary-text underline-offset-4 hover:underline"
+            className="px-7 py-8 text-primary-text underline-offset-4 hover:underline max-sm:px-4"
           >
             {translate("breadcrumb.mcp")}
           </Link>

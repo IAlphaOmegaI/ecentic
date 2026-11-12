@@ -27,7 +27,10 @@ const sources = [
 
 export const ConnectProblem = ({ copy }: ConnectProblem.Props) => (
   <figure className="relative m-0" data-connect-records>
-    <CommerceFigure kind="drawer" className="mx-auto aspect-[5/3] max-w-xl" />
+    <CommerceFigure
+      kind="drawer"
+      className="mx-auto aspect-[5/3] max-w-xl bg-transparent!"
+    />
     <div className="grid min-w-0 grid-cols-3 border-accent-foreground border-y">
       {sources.map(({ key, icon: Icon, fields }) => (
         <div

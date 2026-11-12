@@ -1,11 +1,11 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
-import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import { getMessages } from "next-intl/server";
 import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
 import { CommerceFigure } from "@/components/marketing/commerce-figure";
+import { ConnectedJourney } from "@/components/marketing/connected-journey";
 import { MarketingSection } from "@/components/marketing/page";
 import { MarketingBand } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
@@ -29,62 +29,57 @@ const Heading = ({ section }: { section: Section }) => (
 );
 
 const CommerceExplorer = ({ copy }: { copy: Copy["explorer"] }) => (
-  <Tabs defaultValue="catalog" className="min-w-0">
-    <div className="flex flex-wrap items-center justify-between gap-4 px-8 pb-8 max-sm:px-4">
-      <TabsList aria-label={copy.label} className="max-w-full">
-        {copy.stages.map((stage) => (
-          <Tab
-            key={stage.id}
-            value={stage.id}
-            className="h-auto min-h-12 px-4 py-2 text-base data-active:bg-primary data-selected:bg-primary max-sm:text-sm"
-          >
-            {stage.title}
-          </Tab>
-        ))}
-      </TabsList>
-      <p className="text-foreground-dimmed text-sm">{copy.scope}</p>
-    </div>
-    {copy.stages.map((stage, index) => (
-      <TabsPanel key={stage.id} value={stage.id}>
-        <div className="grid gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-[1fr_1.15fr]">
-          <div className="relative flex min-w-0 flex-col justify-between bg-background-dimmed px-8 py-8 max-sm:px-4">
-            <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 max-md:hidden" />
-            <div>
-              <p className="text-foreground-dimmed text-sm">{copy.tools}</p>
-              <ul className="mt-4 grid grid-cols-2 gap-4 text-foreground">
-                {stage.tools.map((tool) => (
-                  <li
-                    key={tool}
-                    className="border-accent-foreground border-l pl-4"
-                  >
-                    {tool}
-                  </li>
-                ))}
-              </ul>
+  <>
+    <p className="px-8 pb-8 text-foreground-dimmed text-sm max-sm:px-4">
+      {copy.scope}
+    </p>
+    <ConnectedJourney
+      label={copy.label}
+      items={copy.stages.map((stage, index) => ({
+        id: stage.id,
+        title: stage.title,
+        icon: index === 0 ? "catalog" : index === 1 ? "compare" : "checkout",
+        content: (
+          <div className="grid gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-[1fr_1.15fr]">
+            <div className="relative flex min-w-0 flex-col justify-between bg-background-dimmed px-8 py-8 max-sm:px-4">
+              <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 max-md:hidden" />
+              <div>
+                <p className="text-foreground-dimmed text-sm">{copy.tools}</p>
+                <ul className="mt-4 grid grid-cols-2 gap-4 text-foreground">
+                  {stage.tools.map((tool) => (
+                    <li
+                      key={tool}
+                      className="border-accent-foreground border-l pl-4"
+                    >
+                      {tool}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <CommerceFigure
+                kind={figures[index] ?? "catalog"}
+                surface="field"
+                className="mt-6 aspect-auto h-64 w-full md:h-80"
+              />
             </div>
-            <CommerceFigure
-              kind={figures[index] ?? "catalog"}
-              surface="field"
-              className="mt-6 aspect-auto h-64 w-full md:h-80"
-            />
-          </div>
-          <div className="flex min-w-0 flex-col justify-center gap-8 bg-background px-8 py-10 max-sm:px-4">
-            <ProviderLogo
-              provider="claude"
-              decorative
-              className="size-16 rounded-none"
-            />
-            <div>
-              <h3>{stage.headline}</h3>
-              <p className="mt-4 max-w-[48ch] text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">
-                {stage.body}
-              </p>
+            <div className="flex min-w-0 flex-col justify-center gap-8 bg-background px-8 py-10 max-sm:px-4">
+              <ProviderLogo
+                provider="claude"
+                decorative
+                className="size-16 rounded-none"
+              />
+              <div>
+                <h3>{stage.headline}</h3>
+                <p className="mt-4 max-w-[48ch] text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">
+                  {stage.body}
+                </p>
+              </div>
             </div>
           </div>
-        </div>
-      </TabsPanel>
-    ))}
-  </Tabs>
+        ),
+      }))}
+    />
+  </>
 );
 
 const ReadingBoundary = ({

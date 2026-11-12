@@ -1,15 +1,9 @@
-import {
-  Accordion,
-  AccordionItem,
-  AccordionPanel,
-  AccordionTrigger,
-} from "@zenncore/web/components/accordion";
-import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import { getMessages } from "next-intl/server";
 import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
 import { CommerceFigure } from "@/components/marketing/commerce-figure";
+import { ConnectedJourney } from "@/components/marketing/connected-journey";
 import { MarketingSection } from "@/components/marketing/page";
 import { MarketingBand } from "@/components/marketing/primitives";
 import { ChannelWorkbench } from "../channel-content";
@@ -78,70 +72,66 @@ const ReadingExplorer = ({
   copy: Copy["reading"];
 }) => {
   const paragraphs = section.description?.split(/(?<=[.!?])\s+/u) ?? [];
-
   return (
-    <Tabs defaultValue="product" className="min-w-0">
-      <div className="px-7 pt-12 pb-8 max-sm:px-4 max-sm:pt-8">
+    <>
+      <div className="px-8 pt-12 pb-8 max-sm:px-4 max-sm:pt-8">
         <h2>{section.title}</h2>
-        <TabsList
-          aria-label={copy.label}
-          className="mt-6 grid w-fit max-w-full grid-cols-3 max-sm:w-full"
-        >
-          {copy.records.map((record) => (
-            <Tab
-              key={record.id}
-              value={record.id}
-              className="h-auto min-h-12 px-5 py-3 text-base data-active:bg-foreground-rich data-selected:bg-foreground-rich data-active:text-background-rich data-selected:text-background-rich max-sm:px-2 max-sm:text-sm"
-            >
-              {record.title}
-            </Tab>
-          ))}
-        </TabsList>
       </div>
-      {copy.records.map((record, index) => (
-        <TabsPanel key={record.id} value={record.id}>
-          <div className="grid border-accent-foreground border-t md:grid-cols-[1.2fr_1fr]">
-            <div className="relative isolate min-w-0 overflow-hidden border-accent-foreground bg-background-dimmed px-7 py-10 max-sm:px-4 max-md:border-b md:border-r">
-              <pre
-                aria-hidden="true"
-                className="relative m-0 whitespace-pre font-mono text-[clamp(0.68rem,1.05vw,0.9rem)] text-foreground-rich leading-7 tracking-normal"
-              >
-                {`+-- ${record.record}\n|\n${record.fields
-                  .map((field) => `+-- ${field}\n|`)
-                  .join("\n")}\n+--------------------------------`}
-              </pre>
-              <ul className="sr-only">
-                {record.fields.map((field) => (
-                  <li key={field}>{field}</li>
-                ))}
-              </ul>
-              <CommerceFigure
-                kind={
-                  record.id === "product"
-                    ? "drawer"
-                    : record.id === "seller"
-                      ? "document"
-                      : "checkout"
-                }
-                surface="field"
-                className="mt-4 aspect-auto h-64 w-full sm:h-72"
-              />
-            </div>
-            <div className="flex min-w-0 flex-col justify-between gap-8 px-7 py-10 max-sm:px-4">
-              <div>
-                <h3>{record.title}</h3>
-                <p className="mt-4 max-w-[44ch] text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">
-                  {paragraphs[index]}
+      <ConnectedJourney
+        label={copy.label}
+        items={copy.records.map((record, index) => ({
+          id: record.id,
+          title: record.title,
+          icon:
+            record.id === "product"
+              ? "catalog"
+              : record.id === "seller"
+                ? "access"
+                : "checkout",
+          content: (
+            <div className="grid border-accent-foreground border-t md:grid-cols-[1.2fr_1fr]">
+              <div className="relative isolate min-w-0 overflow-hidden border-accent-foreground bg-background-dimmed px-7 py-10 max-sm:px-4 max-md:border-b md:border-r">
+                <pre
+                  aria-hidden="true"
+                  className="relative m-0 whitespace-pre font-mono text-[clamp(0.68rem,1.05vw,0.9rem)] text-foreground-rich leading-7 tracking-normal"
+                >
+                  {`+-- ${record.record}\n|\n${record.fields
+                    .map((field) => `+-- ${field}\n|`)
+                    .join("\n")}\n+--------------------------------`}
+                </pre>
+                <ul className="sr-only">
+                  {record.fields.map((field) => (
+                    <li key={field}>{field}</li>
+                  ))}
+                </ul>
+                <CommerceFigure
+                  kind={
+                    record.id === "product"
+                      ? "drawer"
+                      : record.id === "seller"
+                        ? "document"
+                        : "checkout"
+                  }
+                  surface="field"
+                  className="mt-4 aspect-auto h-64 w-full sm:h-72"
+                />
+              </div>
+              <div className="flex min-w-0 flex-col justify-between gap-8 px-7 py-10 max-sm:px-4">
+                <div>
+                  <h3>{record.title}</h3>
+                  <p className="mt-4 max-w-[44ch] text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">
+                    {paragraphs[index]}
+                  </p>
+                </div>
+                <p className="max-w-[44ch] text-foreground-dimmed text-sm">
+                  {copy.caption}
                 </p>
               </div>
-              <p className="max-w-[44ch] text-foreground-dimmed text-sm">
-                {copy.caption}
-              </p>
             </div>
-          </div>
-        </TabsPanel>
-      ))}
-    </Tabs>
+          ),
+        }))}
+      />
+    </>
   );
 };
 
@@ -159,39 +149,19 @@ const MerchantEntry = ({
       <div className="px-7 pt-12 pb-8 max-sm:px-4 max-sm:pt-8">
         <h2>{section.title}</h2>
       </div>
-      <Accordion
-        aria-label={copy.label}
-        defaultValue={["entry-0"]}
-        className="border-accent-foreground border-t"
-      >
-        {copy.steps.map((step, index) => (
-          <AccordionItem
-            key={step}
-            value={`entry-${index}`}
-            className="border-accent-foreground bg-background last:border-b-0 data-open:bg-background-dimmed"
-          >
-            <AccordionTrigger
-              className="items-center px-7 py-6 text-xl max-sm:px-4 max-sm:text-lg"
-              classList={{ trigger: { icon: "size-4 shrink-0" } }}
-            >
-              <span className="flex items-center gap-6 max-sm:gap-4">
-                <span
-                  aria-hidden="true"
-                  className="w-10 shrink-0 font-heading text-3xl text-primary-text leading-none"
-                >
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                {step}
-              </span>
-            </AccordionTrigger>
-            <AccordionPanel className="transition-none">
-              <p className="max-w-[78ch] pr-7 pb-8 pl-[92px] text-foreground-dimmed text-lg leading-relaxed max-sm:pr-4 max-sm:pl-[72px] max-sm:text-base">
-                {paragraphs[index]}
-              </p>
-            </AccordionPanel>
-          </AccordionItem>
-        ))}
-      </Accordion>
+      <ConnectedJourney
+        label={copy.label}
+        items={copy.steps.map((step, index) => ({
+          id: `entry-${index}`,
+          title: step,
+          icon: index === 0 ? "access" : index === 1 ? "catalog" : "checkout",
+          content: (
+            <p className="max-w-[65ch] text-foreground-dimmed leading-relaxed">
+              {paragraphs[index]}
+            </p>
+          ),
+        }))}
+      />
     </>
   );
 };

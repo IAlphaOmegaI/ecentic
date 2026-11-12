@@ -243,7 +243,7 @@ tr {
      only for a wrapper spanning the rail, never a card, table or code pane. */
   &
     :where(.marketing-rail, .marketing-surface)
-    > :is(.border-t, .border-y):not(
+    > :is(.border-t, .border-b, .border-y):not(
       .marketing-section-grid,
       .enterprise-stage-list,
       .absolute,
@@ -254,7 +254,7 @@ tr {
   }
   &
     :where(.marketing-rail, .marketing-surface)
-    > :is(.border-t, .border-y):not(
+    > :is(.border-t, .border-b, .border-y):not(
       .marketing-section-grid,
       .enterprise-stage-list,
       .absolute,
@@ -262,7 +262,7 @@ tr {
     )::before,
   &
     :where(.marketing-rail, .marketing-surface)
-    > :is(.border-t, .border-y):not(
+    > :is(.border-t, .border-b, .border-y):not(
       .marketing-section-grid,
       .enterprise-stage-list,
       .absolute,
@@ -281,7 +281,7 @@ tr {
   }
   &
     :where(.marketing-rail, .marketing-surface)
-    > .border-y:not(
+    > :is(.border-y, .border-t.border-b):not(
       .marketing-section-grid,
       .enterprise-stage-list,
       .absolute,
@@ -289,14 +289,14 @@ tr {
     )::before,
   &
     :where(.marketing-rail, .marketing-surface)
-    > .border-y:not(
+    > :is(.border-y, .border-t.border-b):not(
       .marketing-section-grid,
       .enterprise-stage-list,
       .absolute,
       .fixed
     )::after,
-  & .marketing-seam.border-y::before,
-  & .marketing-seam.border-y::after {
+  & .marketing-seam:is(.border-y, .border-t.border-b)::before,
+  & .marketing-seam:is(.border-y, .border-t.border-b)::after {
     height: calc(100% + 2px);
     background:
       linear-gradient(var(--rail-color), var(--rail-color)) center top / 100%
@@ -306,7 +306,7 @@ tr {
   }
   &
     :where(.marketing-rail, .marketing-surface)
-    > :is(.border-t, .border-y):not(
+    > :is(.border-t, .border-b, .border-y):not(
       .marketing-section-grid,
       .enterprise-stage-list,
       .absolute,
@@ -317,7 +317,7 @@ tr {
   }
   &
     :where(.marketing-rail, .marketing-surface)
-    > :is(.border-t, .border-y):not(
+    > :is(.border-t, .border-b, .border-y):not(
       .marketing-section-grid,
       .enterprise-stage-list,
       .absolute,
@@ -325,6 +325,31 @@ tr {
     )::after,
   & .marketing-seam::after {
     left: 100%;
+  }
+  &
+    :where(.marketing-rail, .marketing-surface)
+    > .border-b:not(
+      .border-t,
+      .border-y,
+      .marketing-section-grid,
+      .enterprise-stage-list,
+      .absolute,
+      .fixed
+    )::before,
+  &
+    :where(.marketing-rail, .marketing-surface)
+    > .border-b:not(
+      .border-t,
+      .border-y,
+      .marketing-section-grid,
+      .enterprise-stage-list,
+      .absolute,
+      .fixed
+    )::after,
+  & .marketing-seam.border-b:not(.border-t, .border-y)::before,
+  & .marketing-seam.border-b:not(.border-t, .border-y)::after {
+    top: auto;
+    bottom: -1px;
   }
   & .enterprise-journey .marketing-rail::before,
   & .enterprise-journey .marketing-rail::after {
@@ -1742,4 +1767,39 @@ tr {
       --junction-bottom-left: var(--rail-cross);
     }
   }
+}
+
+.marketing-validator-workbench {
+  --color-background: var(--color-emphasis-dimmed);
+  --color-background-dimmed: var(--color-emphasis-dimmed);
+  --color-foreground: color-mix(
+    in srgb,
+    var(--color-background-rich) 85%,
+    transparent
+  );
+  --color-foreground-rich: var(--color-background-rich);
+  --color-foreground-dimmed: color-mix(
+    in srgb,
+    var(--color-background-rich) 65%,
+    transparent
+  );
+  --color-accent-foreground: color-mix(
+    in srgb,
+    var(--color-background-rich) 16%,
+    transparent
+  );
+  --color-primary-text: var(--color-primary-rich);
+  --color-success: var(--color-success-rich);
+  --color-error: var(--color-error-rich);
+  --color-warning: var(--color-warning-rich);
+  color-scheme: dark;
+}
+
+/* The white text token remains intact for native button variants. */
+.marketing-validator-workbench [class~="bg-background-rich"] {
+  background-color: var(--color-emphasis);
+}
+
+.marketing-validator-workbench [data-ucp-preview-mark] {
+  filter: invert(1);
 }

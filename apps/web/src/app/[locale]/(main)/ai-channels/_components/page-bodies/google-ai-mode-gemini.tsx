@@ -1,17 +1,11 @@
 import { ArrowRightIcon } from "@zenncore/icons";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionPanel,
-  AccordionTrigger,
-} from "@zenncore/web/components/accordion";
 import { Button } from "@zenncore/web/components/button";
-import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import { getMessages } from "next-intl/server";
 import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
 import { CommerceFigure } from "@/components/marketing/commerce-figure";
+import { ConnectedJourney } from "@/components/marketing/connected-journey";
 import { MarketingSection } from "@/components/marketing/page";
 import { MarketingBand } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
@@ -33,28 +27,18 @@ const SectionHeading = ({ section }: { section: Section }) => (
 );
 
 const ShoppingExplorer = ({ copy }: { copy: Copy["explorer"] }) => (
-  <Tabs defaultValue="catalog" className="min-w-0">
-    <div className="px-8 pb-8 max-sm:px-4">
-      <TabsList
-        aria-label={copy.label}
-        className="grid w-full grid-cols-3 sm:w-fit"
-      >
-        {copy.stages.map((stage, index) => (
-          <Tab
-            key={stage.id}
-            value={stage.id}
-            className="h-auto min-h-12 gap-2 px-6 py-4 text-base data-active:bg-primary data-selected:bg-primary max-sm:px-2 max-sm:py-4 max-sm:text-sm"
-          >
-            <span aria-hidden="true" className="max-sm:hidden">
-              {String(index + 1).padStart(2, "0")}
-            </span>
-            {stage.label}
-          </Tab>
-        ))}
-      </TabsList>
-    </div>
-    {copy.stages.map((stage) => (
-      <TabsPanel key={stage.id} value={stage.id}>
+  <ConnectedJourney
+    label={copy.label}
+    items={copy.stages.map((stage) => ({
+      id: stage.id,
+      title: stage.label,
+      icon:
+        stage.id === "catalog"
+          ? "catalog"
+          : stage.id === "assistant"
+            ? "compare"
+            : "checkout",
+      content: (
         <div className="grid border-accent-foreground border-t bg-background-dimmed md:grid-cols-[0.85fr_1.15fr]">
           <div className="relative flex min-h-80 min-w-0 flex-col overflow-hidden border-accent-foreground max-md:border-b md:border-r">
             <div className="flex items-center gap-4 px-8 pt-8 max-sm:px-4">
@@ -113,9 +97,9 @@ const ShoppingExplorer = ({ copy }: { copy: Copy["explorer"] }) => (
             </div>
           </div>
         </div>
-      </TabsPanel>
-    ))}
-  </Tabs>
+      ),
+    }))}
+  />
 );
 
 const ProductData = ({ copy }: { copy: Copy["reading"] }) => (
@@ -174,43 +158,19 @@ const MerchantEntry = ({
       <div className="px-8 pt-12 pb-8 max-sm:px-4 max-sm:pt-8">
         <h2>{section.title}</h2>
       </div>
-      <Accordion
-        aria-label={copy.label}
-        defaultValue={["google-entry-0"]}
-        className="border-accent-foreground border-t"
-      >
-        {copy.steps.map((step, index) => (
-          <AccordionItem
-            key={step}
-            value={`google-entry-${index}`}
-            className="border-accent-foreground bg-background last:border-b-0 data-open:bg-background-dimmed"
-          >
-            <AccordionTrigger
-              className="items-center px-8 py-6 text-xl max-sm:px-4 max-sm:text-lg"
-              classList={{
-                trigger: {
-                  icon: "size-4 shrink-0 motion-reduce:transition-none",
-                },
-              }}
-            >
-              <span className="flex items-center gap-6 max-sm:gap-4">
-                <span
-                  aria-hidden="true"
-                  className="w-10 shrink-0 font-heading text-3xl text-primary-text leading-none"
-                >
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                {step}
-              </span>
-            </AccordionTrigger>
-            <AccordionPanel className="transition-none">
-              <p className="max-w-[80ch] pr-8 pb-8 pl-24 text-foreground-dimmed text-lg leading-relaxed max-sm:pr-4 max-sm:pl-[72px] max-sm:text-base">
-                {paragraphs[index]}
-              </p>
-            </AccordionPanel>
-          </AccordionItem>
-        ))}
-      </Accordion>
+      <ConnectedJourney
+        label={copy.label}
+        items={copy.steps.map((step, index) => ({
+          id: `entry-${index}`,
+          title: step,
+          icon: index === 0 ? "access" : index === 1 ? "catalog" : "checkout",
+          content: (
+            <p className="max-w-[65ch] text-foreground-dimmed leading-relaxed">
+              {paragraphs[index]}
+            </p>
+          ),
+        }))}
+      />
       <div className="flex flex-wrap items-center justify-between gap-8 border-accent-foreground border-t bg-background-dimmed px-8 py-8 max-sm:px-4">
         <p className="max-w-[65ch] text-foreground-dimmed leading-relaxed">
           {copy.note}

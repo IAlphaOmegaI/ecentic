@@ -1,0 +1,26 @@
+{
+  "round15Platform": {
+    "replay": {
+      "shopper": "Comprador",
+      "assistant": "Asistente de ejemplo",
+      "writing": "Escribiendo…",
+      "complete": "Conversación de ejemplo completada",
+      "replay": "Repetir conversación",
+      "conversation": "Conversación de compra de ejemplo",
+      "turns": {
+        "listings": "Compararé estas dos fichas de ejemplo con tu presupuesto y tus necesidades de ajuste.",
+        "fields": "Ambas cuestan menos de 400 $. Tu ficha no indica la altura del asiento ni el peso máximo. La de la competencia indica 44–54 cm y 120 kg.",
+        "fix": "Añade a mi ficha el rango de altura del asiento y el peso máximo que ya facilita el proveedor. Después, compara de nuevo las mismas dos sillas."
+      }
+    }
+  },
+  "commerceFigures": {
+    "officeChair": "Silla de oficina con respaldo acolchado, reposabrazos y base de cinco ruedas",
+    "partReadouts": {
+      "officeChair": [
+        { "value": "backrest", "label": "Respaldo" },
+        { "value": "seat", "label": "Asiento" }
+      ]
+    }
+  }
+}

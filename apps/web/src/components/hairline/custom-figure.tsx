@@ -6,9 +6,15 @@ import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useInteractive } from "@/components/marketing/interactive/use-interactive";
 import { useDocument } from "@/hooks/use-document";
+import documentStackRest from "./rest/document-stack.json";
 import headphonesRest from "./rest/headphones.json";
 import lipstickRest from "./rest/lipstick.json";
+import moneyStackRest from "./rest/money-stack.json";
+import officeChairRest from "./rest/office-chair.json";
+import openBookRest from "./rest/open-book.json";
 import packagedFoodRest from "./rest/packaged-food.json";
+import readinessScannerRest from "./rest/readiness-scanner.json";
+import repairToolsRest from "./rest/repair-tools.json";
 import shopifyBagRest from "./rest/shopify-bag.json";
 import shoppingBotRest from "./rest/shopping-bot.json";
 import sneakerRest from "./rest/sneaker.json";
@@ -38,6 +44,12 @@ type FigureWindow = Window & {
 const restPoses = {
   "shopify-bag": shopifyBagRest,
   "shopping-bot": shoppingBotRest,
+  "repair-tools": repairToolsRest,
+  "money-stack": moneyStackRest,
+  "readiness-scanner": readinessScannerRest,
+  "office-chair": officeChairRest,
+  "document-stack": documentStackRest,
+  "open-book": openBookRest,
   sofa: sofaRest,
   headphones: headphonesRest,
   lipstick: lipstickRest,
@@ -197,12 +209,14 @@ export const CustomHairlineFigure = ({
           // biome-ignore lint/security/noDangerouslySetInnerHtml: Local geometry exported from the validated, fixed Hairline bench.
           dangerouslySetInnerHTML={{ __html: rest }}
         />
-        <span
-          aria-hidden
-          className="pointer-events-none absolute right-4 bottom-3 text-[color:var(--hairline-hi)] text-xs"
-        >
-          {caption}
-        </span>
+        {name !== "shopify-bag" && (
+          <span
+            aria-hidden
+            className="pointer-events-none absolute right-4 bottom-3 text-[color:var(--hairline-hi)] text-xs"
+          >
+            {caption}
+          </span>
+        )}
       </div>
     </>
   );

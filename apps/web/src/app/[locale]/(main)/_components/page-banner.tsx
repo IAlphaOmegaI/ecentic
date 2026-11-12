@@ -14,6 +14,7 @@ export const PageBanner = ({
   actions,
   assurances,
   artwork,
+  illustration,
   compact = false,
 }: PageBanner.Props) => (
   <MarketingHero
@@ -22,6 +23,7 @@ export const PageBanner = ({
     dark={!compact}
     artwork={compact ? undefined : artwork}
     identity={identity}
+    illustration={illustration}
     meta={
       badge || meta ? (
         <>
@@ -68,6 +70,7 @@ export namespace PageBanner {
     actions?: ReactNode;
     assurances?: readonly string[];
     artwork?: EvolvingAscii.Kind;
+    illustration?: ReactNode;
     /** Reference, legal, and tool pages lead directly into their reading surface. */
     compact?: boolean;
   };

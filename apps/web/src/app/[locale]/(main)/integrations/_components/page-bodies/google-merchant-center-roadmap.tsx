@@ -1,6 +1,7 @@
-import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
+import { ArrowRightIcon } from "@zenncore/icons";
 import type { getMessages } from "next-intl/server";
 import { CommerceFigure } from "@/components/marketing/commerce-figure";
+import { ConnectedJourney } from "@/components/marketing/connected-journey";
 import type { MarketingSection } from "@/components/marketing/page";
 import { MarketingStatus } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
@@ -29,15 +30,10 @@ const RoadmapDiagram = ({ stage, copy }: { stage: number; copy: Copy }) => (
                   provider="shopify"
                   className="h-10 rounded-none"
                 />
-                <div className="flex flex-1 flex-col items-center gap-2">
-                  <code className="font-mono text-primary-text text-xs">
-                    /auth/content
-                  </code>
-                  <span
-                    aria-hidden="true"
-                    className="w-full border-accent-foreground border-t"
-                  />
-                </div>
+                <ArrowRightIcon
+                  aria-hidden
+                  className="size-6 shrink-0 text-primary-text"
+                />
                 <ProviderLogo
                   provider="googleMerchant"
                   className="h-10 rounded-none"
@@ -93,52 +89,43 @@ export const GoogleMerchantCenterRoadmap = ({
   section,
   copy,
 }: MarketingSection.Props & { copy: Copy }) => (
-  <Tabs defaultValue={0} className="min-w-0">
-    <TabsList
-      activateOnFocus
-      aria-label={section.title}
-      className="grid w-full grid-cols-2 rounded-none border-accent-foreground border-x-0 md:grid-cols-4"
-    >
-      {section.items?.map((item, index) => (
-        <Tab
-          key={item.title}
-          value={index}
-          className="group h-auto min-w-0 items-start justify-start gap-4 border-accent-foreground px-8 py-6 text-left text-foreground-dimmed data-[active]:bg-primary/8 data-selected:bg-primary/8 data-[active]:text-primary-text data-selected:text-primary-text max-sm:px-4 max-md:border-b"
-        >
-          <span className="font-heading text-2xl leading-none">
-            {String(index + 1).padStart(2, "0")}
-          </span>
-          <span className="text-sm leading-relaxed">{copy.stages[index]}</span>
-        </Tab>
-      ))}
-    </TabsList>
-    {section.items?.map((item, index) => (
-      <TabsPanel
-        key={item.title}
-        value={index}
-        className="grid min-w-0 md:grid-cols-[7fr_5fr] [&[inert]]:hidden"
-      >
-        <RoadmapDiagram stage={index} copy={copy} />
-        <div className="flex min-w-0 flex-col justify-center px-8 py-10 max-sm:px-4 max-sm:py-8 md:border-accent-foreground md:border-l">
-          {item.status && (
-            <MarketingStatus status={item.status}>
-              {item.statusLabel}
-            </MarketingStatus>
-          )}
-          <h3 className="max-w-[22ch]">{item.title}</h3>
-          <p className="mt-6 max-w-[42ch] text-foreground-dimmed leading-relaxed">
-            {item.body}
-          </p>
-          {item.href && (
-            <Link
-              href={item.href}
-              className="mt-6 text-primary-text underline underline-offset-4"
-            >
-              {item.label ?? item.title}
-            </Link>
-          )}
+  <ConnectedJourney
+    label={section.title}
+    items={(section.items ?? []).map((item, index) => ({
+      id: `merchant-${index}`,
+      title: copy.stages[index] ?? item.title,
+      icon:
+        index === 0
+          ? "access"
+          : index === 1
+            ? "catalog"
+            : index === 2
+              ? "compare"
+              : "connect",
+      content: (
+        <div className="grid min-w-0 bg-background-dimmed md:grid-cols-[1fr_1fr]">
+          <RoadmapDiagram stage={index} copy={copy} />
+          <div className="flex min-w-0 flex-col justify-center px-8 py-10 max-sm:px-4 max-sm:py-8 md:border-accent-foreground md:border-l">
+            {item.status && (
+              <MarketingStatus status={item.status}>
+                {item.statusLabel}
+              </MarketingStatus>
+            )}
+            <h3 className="max-w-[22ch]">{item.title}</h3>
+            <p className="mt-6 max-w-[42ch] text-foreground-dimmed leading-relaxed">
+              {item.body}
+            </p>
+            {item.href && (
+              <Link
+                href={item.href}
+                className="mt-6 text-primary-text underline underline-offset-4"
+              >
+                {item.label ?? item.title}
+              </Link>
+            )}
+          </div>
         </div>
-      </TabsPanel>
-    ))}
-  </Tabs>
+      ),
+    }))}
+  />
 );

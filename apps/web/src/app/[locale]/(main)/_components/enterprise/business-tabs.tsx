@@ -11,6 +11,7 @@ import { Button } from "@zenncore/web/components/button";
 import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import type { AppConfig } from "next-intl";
 import { CommerceFigure } from "@/components/marketing/commerce-figure";
+import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { Link } from "@/i18n/navigation";
 
 const audiences = [
@@ -74,6 +75,22 @@ export const BusinessTabs = ({ copy }: BusinessTabs.Props) => (
                 <p className="relative mt-6 mb-10 max-w-[40ch] text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">
                   {item.description}
                 </p>
+                <div
+                  aria-hidden
+                  className="relative -mt-8 mb-4 h-52 w-full shrink-0 text-primary-text/70 group-data-[tone=secondary]/audience:text-secondary/60 group-data-[tone=success]/audience:text-success-foreground/60 group-data-[tone=warning]/audience:text-warning-foreground/60"
+                >
+                  <EvolvingAscii
+                    artwork={
+                      index === 0
+                        ? "headphones"
+                        : index === 1
+                          ? "homeCart"
+                          : index === 2
+                            ? "catalog"
+                            : "homeBag"
+                    }
+                  />
+                </div>
                 <div className="relative mt-auto">
                   <Button render={<Link href={item.href} />}>
                     {item.label}

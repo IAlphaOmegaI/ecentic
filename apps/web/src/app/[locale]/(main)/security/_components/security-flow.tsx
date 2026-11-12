@@ -13,7 +13,7 @@ export const SecurityFlow = async () => {
 
   const { interactiveSecurity: copy } = await getMessages();
   return (
-    <MarketingFeatureBand id="data-flow-review" tone="dark">
+    <MarketingFeatureBand id="data-flow-review" tone="blue">
       <div
         data-security-flow
         className="marketing-section-grid relative border-background-rich/15 border-y"

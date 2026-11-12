@@ -30,6 +30,7 @@ export * from "./icons/commerce-code-3";
 export * from "./icons/commerce-file-pen";
 export * from "./icons/commerce-file-shield";
 export * from "./icons/commerce-globe-pointer";
+export * from "./icons/commerce-phone";
 export * from "./icons/commerce-plug-3-sparkle";
 export * from "./icons/copy";
 export * from "./icons/credit-card";

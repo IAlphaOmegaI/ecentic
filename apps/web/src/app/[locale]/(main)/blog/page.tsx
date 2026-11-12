@@ -3,6 +3,7 @@ import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { localizePath } from "@/i18n/locale";
 import { createMetadata } from "@/lib/seo";
+import { BlogArtwork } from "./_components/blog-artwork";
 import {
   BlogIndexContent,
   BlogIndexSkeleton,
@@ -43,6 +44,7 @@ export default async () => {
       eyebrow={translate("title")}
       title={translate("title")}
       description={translate("description")}
+      illustration={<BlogArtwork />}
     >
       <Suspense
         fallback={<BlogIndexSkeleton label={messages.blogIndexPage.loading} />}

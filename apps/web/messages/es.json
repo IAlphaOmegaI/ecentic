@@ -19005,13 +19005,83 @@
           "value": "wheels",
           "label": "Ruedas"
         }
+      ],
+      "repairTools": [
+        {
+          "value": "wrench",
+          "label": "Llave"
+        },
+        {
+          "value": "screwdriver",
+          "label": "Destornillador"
+        }
+      ],
+      "moneyStack": [
+        {
+          "value": "banknotes",
+          "label": "Billetes"
+        },
+        {
+          "value": "coins",
+          "label": "Monedas"
+        }
+      ],
+      "readinessScanner": [
+        {
+          "value": "scanner lid",
+          "label": "Tapa del escáner"
+        },
+        {
+          "value": "document",
+          "label": "Documento"
+        }
+      ],
+      "officeChair": [
+        {
+          "value": "backrest",
+          "label": "Respaldo"
+        },
+        {
+          "value": "seat",
+          "label": "Asiento"
+        }
+      ],
+      "documentStack": [
+        {
+          "value": "document 1",
+          "label": "Documento 1"
+        },
+        {
+          "value": "document 2",
+          "label": "Documento 2"
+        },
+        {
+          "value": "document 3",
+          "label": "Documento 3"
+        }
+      ],
+      "openBook": [
+        {
+          "value": "left pages",
+          "label": "Páginas izquierdas"
+        },
+        {
+          "value": "right pages",
+          "label": "Páginas derechas"
+        }
       ]
     },
     "wellnessBottle": "Ilustración: un frasco de bienestar y una cápsula. Acerca el puntero a la tapa o la cápsula para levantarla e inspeccionarla.",
     "wineBottle": "Ilustración: una botella de vino con corcho y etiqueta. Acerca el puntero a una pieza para levantarla e inspeccionarla.",
     "packagedFood": "Ilustración: una bolsa de alimentos con cierre y ventana de ingredientes. Acerca el puntero a una pieza para levantarla e inspeccionarla.",
     "sneaker": "Ilustración: una zapatilla con suela redondeada, empeine y cordones. Acerca el puntero a una pieza para levantarla e inspeccionarla.",
-    "suitcase": "Ilustración: una maleta con ruedas y asa extensible. Acerca el puntero a una pieza para levantarla e inspeccionarla."
+    "suitcase": "Ilustración: una maleta con ruedas y asa extensible. Acerca el puntero a una pieza para levantarla e inspeccionarla.",
+    "repairTools": "Ilustración: una llave y un destornillador. Mueve el puntero sobre una herramienta para levantarla e inspeccionarla.",
+    "moneyStack": "Ilustración: billetes y monedas. Mueve el puntero sobre una pila para inspeccionarla.",
+    "readinessScanner": "Ilustración: un escáner de documentos abierto. Mueve el puntero sobre la tapa o la página para inspeccionarla.",
+    "officeChair": "Silla de oficina con respaldo acolchado, reposabrazos y base de cinco ruedas",
+    "documentStack": "Tres documentos de producto que se elevan al seleccionar una hoja con el puntero",
+    "openBook": "Ilustración: un libro abierto. Mueve el puntero sobre una página para desplegar las hojas."
   },
   "enterprisePilotPreview": {
     "label": "Piloto ilustrativo · briefing de ejemplo",
@@ -19344,5 +19414,20 @@
       "note": "Esquema sin escala. Verifica el encaje con las medidas exactas del producto, la habitación y los accesos."
     },
     "assistantFinding": "La ficha de {product} no indica {fields}. No puedo comprobar esos requisitos con esa ficha. La fuente de muestra contiene los datos que deben hacerse explícitos."
+  },
+  "round15Platform": {
+    "replay": {
+      "shopper": "Comprador",
+      "assistant": "Asistente de ejemplo",
+      "writing": "Escribiendo…",
+      "complete": "Conversación de ejemplo completada",
+      "replay": "Repetir conversación",
+      "conversation": "Conversación de compra de ejemplo",
+      "turns": {
+        "listings": "Compararé estas dos fichas de ejemplo con tu presupuesto y tus necesidades de ajuste.",
+        "fields": "Ambas cuestan menos de 400 $. Tu ficha no indica la altura del asiento ni el peso máximo. La de la competencia indica 44–54 cm y 120 kg.",
+        "fix": "Añade a mi ficha el rango de altura del asiento y el peso máximo que ya facilita el proveedor. Después, compara de nuevo las mismas dos sillas."
+      }
+    }
   }
 }

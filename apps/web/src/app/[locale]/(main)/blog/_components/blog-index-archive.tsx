@@ -154,7 +154,7 @@ const Archive = ({ entries, copy }: BlogIndexArchive.Props) => {
               prefetch={true}
               className="group grid min-w-0 grid-cols-[80px_minmax(0,1fr)] gap-4 p-4 outline-offset-[-2px] transition-colors duration-150 hover:bg-background-dimmed focus-visible:bg-background-dimmed focus-visible:outline-2 focus-visible:outline-primary motion-reduce:transition-none sm:grid-cols-[120px_minmax(0,1fr)_16px] sm:gap-6 sm:p-6"
             >
-              <div className="relative aspect-square overflow-hidden bg-background-dimmed sm:aspect-[5/4]">
+              <div className="relative aspect-square overflow-hidden rounded-md bg-background-dimmed">
                 {entry.thumbnailUrl && (
                   <Image
                     src={blogImage(entry.thumbnailUrl)}

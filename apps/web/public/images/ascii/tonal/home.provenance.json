@@ -1,0 +1,52 @@
+{
+  "method": "Tonal dots",
+  "generatedWith": "Configured Azure image CLI, gpt-image-2.5-sunburst",
+  "subjects": [
+    {
+      "subject": "home-bag",
+      "source": "apps/web/public/images/ascii/tonal/home-bag-source.png",
+      "asset": "apps/web/public/images/ascii/tonal/home-bag.svg",
+      "sourceSha256": "0d6133a08b7261d1b2caafcb3145d28530469d5f3a835f13a5737b873d83c4ae",
+      "assetSha256": "bfd56f547e31dec54e503037f2bc772b07d15f22758b10106a34fa278b62bc8c",
+      "method": "Variable-radius Tonal dots, 160 columns, exposure .75, white-background feather .08",
+      "marks": 6188,
+      "grid": [
+        160,
+        107
+      ]
+    },
+    {
+      "subject": "home-cart",
+      "source": "apps/web/public/images/ascii/tonal/home-cart-source.png",
+      "asset": "apps/web/public/images/ascii/tonal/home-cart.svg",
+      "sourceSha256": "d400c4315c049030b564ccba0e5c61216889e3e54940ccd72811ea21d23ac8c0",
+      "assetSha256": "75bfbe8828d1dacaa849e409e720f4a80125d5bc332329d33946cdd4e199fea8",
+      "method": "Variable-radius Tonal dots, 160 columns, exposure .75, white-background feather .08",
+      "marks": 4329,
+      "grid": [
+        160,
+        107
+      ]
+    }
+  ],
+  "prompts": [
+    {
+      "subject": "cart",
+      "prompt": "Use case: stylized-concept. Asset type: source for a tonal-dot illustration in an e-commerce platform hero. Scene: pure white seamless background, no floor line, no cast shadow. Subject: one elegant small shopping cart viewed in a three-quarter isometric angle. Complete cart visible with generous empty margin all around. Recognizable deep basket, open top, single rear handle, undercarriage and four wheels. Broad rounded wire basket ribs spaced widely enough to remain clear at small scale. Materials: matte medium graphite-gray powder coated metal with softly shaded surfaces, controlled bright highlights on upper edges and deeper gray sides. Clean premium product render, strong readable silhouette, centered composition. Constraints: no lettering, no symbols, no logo, no ASCII characters, no dots, no extra objects, no crop. Output is the clean shaded 3D source image for a later deterministic dot conversion."
+    },
+    {
+      "subject": "bag",
+      "prompt": "Use case: stylized-concept. Asset type: source for a tonal-dot illustration in an e-commerce platform closing banner. Scene: pure white seamless background, no floor line, no cast shadow. Subject: one substantial premium shopping bag viewed in a three-quarter isometric angle, with a broad front face, folded side gusset, softly opened top and two rounded loop handles. Complete object visible with generous empty margin all around. Materials: matte medium graphite-gray paper with softly shaded broad faces, controlled bright highlights on upper edges and deeper gray side. Clean premium product render, strong readable silhouette, centered composition. Constraints: no lettering, no symbols, no logo, no ASCII characters, no dots, no extra objects, no crop. Output is the clean shaded 3D source image for a later deterministic dot conversion."
+    }
+  ],
+  "wordmark": {
+    "source": "apps/web/src/components/marketing/wordmark-paths.json",
+    "sourceSha256": "71588011b71fe788ae4c848ce4c47648679691b446be6351e04f2dc3a6a3c34b",
+    "method": "Existing glyph outlines extruded 22 steps along a diagonal, then variable-radius circles sampled at 2.5px desktop and 5px mobile. External SVG masks keep dot geometry out of the React tree.",
+    "assets": [
+      "/images/ascii/tonal/wordmark.svg",
+      "/images/ascii/tonal/wordmark-mobile.svg"
+    ]
+  },
+  "usage": "Decorative artwork only. No generated source provides product attributes or performance claims."
+}

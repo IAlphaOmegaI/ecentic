@@ -42,7 +42,7 @@ const pageIcons = {
 } as const;
 
 const figures = {
-  connect: "drawer",
+  connect: "headphones",
   simulate: "catalog",
   fix: "format",
   sell: "checkout",

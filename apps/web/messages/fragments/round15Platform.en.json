@@ -1,0 +1,26 @@
+{
+  "round15Platform": {
+    "replay": {
+      "shopper": "Shopper",
+      "assistant": "Sample assistant",
+      "writing": "Writing…",
+      "complete": "Sample conversation complete",
+      "replay": "Replay conversation",
+      "conversation": "Sample shopping conversation",
+      "turns": {
+        "listings": "I’ll compare these two sample listings with your budget and fit requirements.",
+        "fields": "Both are under $400. Your listing does not state seat height or weight capacity. The rival states 44–54 cm and 120 kg.",
+        "fix": "Add the supplier’s existing seat-height range and weight capacity to my listing, then compare the same two chairs again."
+      }
+    }
+  },
+  "commerceFigures": {
+    "officeChair": "Office chair with a padded back, armrests and a five-wheel base",
+    "partReadouts": {
+      "officeChair": [
+        { "value": "backrest", "label": "Backrest" },
+        { "value": "seat", "label": "Seat" }
+      ]
+    }
+  }
+}

@@ -38,7 +38,8 @@ Central navigation for product context, agent rules, and package/component docum
 
 ### If you are building UI
 
-- [Design system + visual build guide](./context/design.md) — single source of truth for tokens, type, components, motifs, and page recipes
+- [DESIGN.md — complete design system](./context/design.md) — canonical guide, also available at the repository root; tokens, composition, ASCII, custom Hairline, interactions and route recipes
+- [Design review history](./marketing/design-review-history.md) — complete source ledger and decisions that supersede earlier experiments
 - [Enterprise website rebuild delivery](./marketing/enterprise-rebuild.md) — decisions, claim/TODO audits, redirects, verification, screenshots and remaining launch facts
 - [Marketing review follow-ups](./marketing/review-followups.md) — content awaiting the user's final input, including the illustrative Enterprise pilot brief
 - [Web components index](./web/index.md)

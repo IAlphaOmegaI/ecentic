@@ -7,6 +7,7 @@ export const ScrollArea = ({
   children,
   className,
   classList,
+  viewportProps,
   ...props
 }: ScrollArea.Props): JSX.Element => {
   return (
@@ -15,6 +16,7 @@ export const ScrollArea = ({
       {...props}
     >
       <ScrollAreaPrimitive.Viewport
+        {...viewportProps}
         className={createClassName(
           "size-full overscroll-contain -outline-offset-1",
           classList?.viewport,
@@ -35,6 +37,10 @@ export namespace ScrollArea {
     | { scrollBar: ScrollBar.ClassListKey };
   export type Props = {
     classList?: ClassList<ClassListKey>;
+    viewportProps?: Omit<
+      ComponentProps<typeof ScrollAreaPrimitive.Viewport>,
+      "children" | "className"
+    >;
   } & ComponentProps<typeof ScrollAreaPrimitive.Root>;
   export type State = ScrollAreaPrimitive.Root.State;
 }

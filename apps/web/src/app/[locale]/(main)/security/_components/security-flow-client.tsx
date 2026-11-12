@@ -9,10 +9,12 @@ import {
   ShoppingCartIcon,
   UploadIcon,
 } from "@zenncore/icons";
+import { cn } from "@zenncore/utils";
 import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import type { getMessages } from "next-intl/server";
 import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import { MarketingEdgeCrosses } from "@/components/marketing/light-band";
+import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { Link } from "@/i18n/navigation";
 
 const connectors = [
@@ -61,6 +63,14 @@ const connectors = [
 ] as const;
 
 type Copy = Awaited<ReturnType<typeof getMessages>>["interactiveSecurity"];
+
+const nodeLogos = {
+  source: [],
+  ecentic: [],
+  providers: ["chatgpt", "claude", "gemini", "perplexity"],
+  store: ["shopify", "woocommerce"],
+  merchantCenter: ["google"],
+} as const;
 
 export const SecurityFlowClient = ({ copy }: { copy: Copy }) => (
   <Tabs
@@ -117,6 +127,24 @@ export const SecurityFlowClient = ({ copy }: { copy: Copy }) => (
                       aria-hidden
                     />
                   )}
+                  {nodeLogos[node].length > 0 && (
+                    <div className="mb-4 flex flex-wrap items-center gap-4">
+                      {nodeLogos[node].map((provider) => (
+                        <ProviderLogo
+                          key={provider}
+                          provider={provider}
+                          decorative
+                          className={cn(
+                            "h-8 w-auto max-w-24 rounded-none object-contain",
+                            (provider === "woocommerce" ||
+                              provider === "chatgpt" ||
+                              provider === "perplexity") &&
+                              "brightness-0 invert",
+                          )}
+                        />
+                      ))}
+                    </div>
+                  )}
                   <p className="font-medium text-background-rich">
                     {node === "providers" ? (
                       <Link
@@ -136,7 +164,7 @@ export const SecurityFlowClient = ({ copy }: { copy: Copy }) => (
               ))}
             </div>
           </div>
-          <div className="relative flex items-center justify-center border-background-rich/15 border-t bg-linear-to-br from-primary/12 to-transparent sm:border-t-0 sm:border-l">
+          <div className="relative flex items-center justify-center border-background-rich/15 border-t sm:border-t-0 sm:border-l">
             <CommerceFigure
               kind={connector.figure}
               surface="dark"

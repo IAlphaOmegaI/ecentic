@@ -1,99 +1,56 @@
 "use client";
 
-import Script from "next/script";
+import { useInView } from "motion/react";
 import { useEffect, useRef, useState } from "react";
-import {
-  mountWordmark,
-  type WordmarkKernel,
-} from "@/components/hairline/wordmark-figure";
+import { Motion } from "@/components/motion";
 import { useDocument } from "@/hooks/use-document";
 import { useInteractive } from "./interactive/use-interactive";
-import wordmark from "./wordmark-paths.json";
 
-/** Complete SVG lettering is server-rendered; Hairline enhances it when in view. */
+/** A complete dotted extrusion is present at rest; a single sweep draws it in. */
 export const FooterWordmark = () => {
   const stage = useRef<HTMLDivElement>(null);
-  const [near, setNear] = useState(false);
-  const [loaded, setLoaded] = useState(false);
+  const visible = useInView(stage, { amount: 0.3 });
   const { ready, reduced } = useInteractive();
-  const { window } = useDocument();
+  const [complete, setComplete] = useState(false);
+  const [documentVisible, setDocumentVisible] = useState(true);
+  const { document } = useDocument();
   useEffect(() => {
-    const element = stage.current;
-    if (!element) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        if (!entries.some((entry) => entry.isIntersecting)) return;
-        setNear(true);
-        observer.disconnect();
-      },
-      { rootMargin: "120px" },
-    );
-    observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
-  useEffect(() => {
-    const element = stage.current;
-    const kernel = (window as (Window & { HL?: WordmarkKernel }) | null)?.HL;
-    if (!element || !loaded || !kernel || !ready || reduced) return;
-    return mountWordmark(
-      element,
-      [...element.querySelectorAll<SVGPathElement>("[data-wordmark-stroke]")],
-      kernel,
-    );
-  }, [loaded, ready, reduced, window]);
+    if (!document) return;
+    const update = () =>
+      setDocumentVisible(document.visibilityState === "visible");
+    update();
+    document.addEventListener("visibilitychange", update);
+    return () => document.removeEventListener("visibilitychange", update);
+  }, [document]);
+  const drawing = ready && !reduced && visible && documentVisible && !complete;
+
   return (
-    <>
-      {near && !reduced && (
-        <Script
-          src="/hairline/kernel.js"
-          strategy="afterInteractive"
-          onReady={() => setLoaded(true)}
-        />
-      )}
-      <div
-        ref={stage}
-        role="img"
-        aria-label="écentic"
-        tabIndex={ready && !reduced ? 0 : undefined}
-        data-footer-wordmark
-        data-wordmark-motion="static"
-        className="relative isolate w-full overflow-hidden px-2 py-10 text-emphasis-dimmed outline-offset-[-4px] focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-solid sm:px-4 sm:py-14"
-      >
-        <svg
+    <div
+      ref={stage}
+      role="img"
+      aria-label="écentic"
+      data-footer-wordmark
+      data-artwork-renderer="tonal-dots"
+      data-wordmark-motion={drawing ? "drawing" : "static"}
+      className="relative isolate w-full overflow-hidden px-2 py-7 text-primary-text sm:px-4 sm:py-10"
+    >
+      <div className="relative aspect-[880/272] w-full [mask-image:url('/images/ascii/tonal/wordmark.svg')] [mask-position:center] [mask-repeat:no-repeat] [mask-size:contain] max-sm:[mask-image:url('/images/ascii/tonal/wordmark-mobile.svg')]">
+        <div aria-hidden className="absolute inset-0 bg-current opacity-25" />
+        <Motion.Item
           aria-hidden
-          viewBox="0 108 400 114"
-          className="block h-auto w-full overflow-visible"
-          fill="none"
-          stroke="currentColor"
-          strokeWidth="1.25"
-          strokeLinejoin="round"
-          strokeLinecap="round"
-        >
-          <g transform={`translate(0 95) scale(${400 / wordmark.width})`}>
-            {wordmark.glyphs.map((glyph) => (
-              <g key={glyph.path}>
-                <path
-                  d={glyph.path}
-                  vectorEffect="non-scaling-stroke"
-                  className="text-primary-text/25"
-                />
-                <path
-                  data-wordmark-stroke
-                  data-center={
-                    (((glyph.bounds[0] ?? 0) + (glyph.bounds[2] ?? 0)) /
-                      2 /
-                      wordmark.width) *
-                    400
-                  }
-                  d={glyph.path}
-                  vectorEffect="non-scaling-stroke"
-                  className="data-[active=true]:text-primary-text"
-                />
-              </g>
-            ))}
-          </g>
-        </svg>
+          initial={false}
+          animate={{
+            clipPath: drawing
+              ? ["inset(0 100% 0 0)", "inset(0 0% 0 0)"]
+              : "inset(0 0% 0 0)",
+          }}
+          transition={{ duration: drawing ? 1.8 : 0, ease: [0.22, 1, 0.36, 1] }}
+          onAnimationComplete={() => {
+            if (drawing) setComplete(true);
+          }}
+          className="absolute inset-0 bg-current"
+        />
       </div>
-    </>
+    </div>
   );
 };

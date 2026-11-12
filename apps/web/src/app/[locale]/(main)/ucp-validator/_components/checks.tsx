@@ -41,8 +41,8 @@ export const Checks = async () => {
               {translate("checks.description")}
             </p>
           </div>
-          <div className="h-52 px-6 py-4 text-primary max-sm:h-40">
-            <EvolvingAscii artwork="commerce" />
+          <div className="mt-auto h-64 px-6 py-6 text-primary max-sm:h-52">
+            <EvolvingAscii artwork="catalog" fit="contain" />
           </div>
         </div>
 

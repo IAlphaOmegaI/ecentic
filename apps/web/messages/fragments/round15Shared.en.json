@@ -1,0 +1,21 @@
+{
+  "commerceFigures": {
+    "documentStack": "Three product documents that lift as the pointer selects a sheet",
+    "partReadouts": {
+      "documentStack": [
+        {
+          "value": "document 1",
+          "label": "Document 1"
+        },
+        {
+          "value": "document 2",
+          "label": "Document 2"
+        },
+        {
+          "value": "document 3",
+          "label": "Document 3"
+        }
+      ]
+    }
+  }
+}

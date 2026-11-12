@@ -95,6 +95,7 @@ export const Integrations = ({ copy, directory }: Integrations.Props) => (
       description={copy.description}
     />
     <ProviderArc
+      artwork="catalog"
       items={catalogConnections}
       label={copy.title}
       center={

@@ -7,6 +7,7 @@ import { Motion } from "@/components/motion";
 import { Plus } from "@/components/plus";
 import { providerLogos } from "@/content/provider-logos";
 import { Link } from "@/i18n/navigation";
+import { EvolvingAscii } from "./evolving-ascii";
 import { useInteractive } from "./interactive/use-interactive";
 import { type ProviderKey, ProviderLogo } from "./provider-logo";
 
@@ -16,6 +17,7 @@ export const ProviderArc = ({
   label,
   center,
   className,
+  artwork,
 }: ProviderArc.Props) => {
   const { ready, reduced } = useInteractive();
   const [active, setActive] = useState<ProviderKey | null>(null);
@@ -37,6 +39,11 @@ export const ProviderArc = ({
         aria-hidden
         className="pointer-events-none absolute inset-0 overflow-hidden bg-radial-[at_50%_100%] from-primary/7 via-primary/2 to-transparent"
       >
+        {artwork && (
+          <div className="absolute inset-x-[17%] -top-20 bottom-4 text-primary/25 [mask-image:linear-gradient(180deg,black_30%,transparent_100%)] max-lg:inset-0 max-lg:opacity-50">
+            <EvolvingAscii artwork={artwork} fit="contain" />
+          </div>
+        )}
         <svg
           viewBox="0 0 1200 360"
           preserveAspectRatio="none"
@@ -158,6 +165,7 @@ export namespace ProviderArc {
     }[];
     label: string;
     center?: ReactNode;
+    artwork?: EvolvingAscii.Kind;
     className?: string;
   };
 }

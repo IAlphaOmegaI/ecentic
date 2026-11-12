@@ -8,7 +8,7 @@ export const AgentReplay = async ({
   embedded?: boolean;
 }) => {
   const locale = await getLocale();
-  const { interactiveReplay, reviewReplay, reviewSimulate } =
+  const { interactiveReplay, reviewReplay, reviewSimulate, round15Platform } =
     await getMessages();
   const content = (
     <ReplayConsole
@@ -16,6 +16,7 @@ export const AgentReplay = async ({
       labels={reviewReplay}
       locale={locale}
       assistant={reviewSimulate.assistant}
+      conversation={round15Platform.replay}
     />
   );
   return embedded ? (

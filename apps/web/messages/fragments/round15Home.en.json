@@ -1,0 +1,21 @@
+{
+  "commerceFigures": {
+    "repairTools": "Illustration: a wrench and screwdriver. Move the pointer over a tool to lift it for inspection.",
+    "moneyStack": "Illustration: banknotes and coins. Move the pointer over a stack to inspect it.",
+    "readinessScanner": "Illustration: an open document scanner. Move the pointer over the lid or page to inspect it.",
+    "partReadouts": {
+      "repairTools": [
+        { "value": "wrench", "label": "Wrench" },
+        { "value": "screwdriver", "label": "Screwdriver" }
+      ],
+      "moneyStack": [
+        { "value": "banknotes", "label": "Banknotes" },
+        { "value": "coins", "label": "Coins" }
+      ],
+      "readinessScanner": [
+        { "value": "scanner lid", "label": "Scanner lid" },
+        { "value": "document", "label": "Document" }
+      ]
+    }
+  }
+}

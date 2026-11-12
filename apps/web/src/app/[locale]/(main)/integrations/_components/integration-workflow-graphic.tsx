@@ -8,6 +8,7 @@ import {
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import Image from "next/image";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import { useInteractive } from "@/components/marketing/interactive/use-interactive";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { Motion } from "@/components/motion";
@@ -149,7 +150,13 @@ export const IntegrationWorkflowGraphic = ({
             />
           ))}
         </div>
-      ) : kind === "audit" || kind === "readiness" ? (
+      ) : kind === "readiness" ? (
+        <CommerceFigure
+          kind="hub"
+          surface="dark"
+          className="aspect-auto h-44 w-full max-w-80"
+        />
+      ) : kind === "audit" ? (
         <div className="flex w-full max-w-80 items-center gap-8">
           <CommerceFileShieldIcon className="size-20 shrink-0 text-primary-rich" />
           <div className="flex-1 space-y-4">

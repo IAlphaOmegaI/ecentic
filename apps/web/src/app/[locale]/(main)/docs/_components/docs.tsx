@@ -18,11 +18,20 @@ import { DocsCopy } from "./docs-copy";
  * that do not run JavaScript.
  */
 
-export const DocsCode = async ({ children, label }: DocsCode.Props) => {
+export const DocsCode = async ({
+  children,
+  label,
+  className,
+}: DocsCode.Props) => {
   const { docsControls } = await getMessages();
 
   return (
-    <figure className="min-w-0 overflow-hidden border border-accent-foreground bg-background-dimmed">
+    <figure
+      className={cn(
+        "min-w-0 overflow-hidden border border-accent-foreground bg-background-dimmed",
+        className,
+      )}
+    >
       <figcaption className="flex flex-wrap items-center justify-between gap-4 border-accent-foreground border-b px-4 py-2">
         <span className="wrap-anywhere text-foreground-dimmed text-sm">
           {label ?? docsControls.snippet}
@@ -31,6 +40,11 @@ export const DocsCode = async ({ children, label }: DocsCode.Props) => {
       </figcaption>
       <ScrollArea
         className="max-w-full"
+        viewportProps={{
+          role: "region",
+          tabIndex: 0,
+          "aria-label": label ?? docsControls.snippet,
+        }}
         classList={{
           viewport:
             "focus-visible:outline-2 focus-visible:outline-primary-text",
@@ -48,14 +62,18 @@ export namespace DocsCode {
   export type Props = {
     children: string;
     label?: string;
+    className?: string;
   };
 }
 
 export const DocsTable = ({ columns, rows }: DocsTable.Props) => (
   <ScrollArea
-    role="region"
-    aria-label={columns.join(", ")}
     className="min-w-0 max-w-full"
+    viewportProps={{
+      role: "region",
+      tabIndex: 0,
+      "aria-label": columns.join(", "),
+    }}
     classList={{
       viewport: "focus-visible:outline-2 focus-visible:outline-primary-text",
     }}

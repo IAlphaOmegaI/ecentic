@@ -1,12 +1,11 @@
-"use client";
-
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 
+/** Tonal cart artwork fills the hero without competing with its copy. */
 export const OverviewArtwork = () => (
   <div
-    aria-hidden="true"
-    className="enterprise-art pointer-events-none absolute inset-y-0 right-0 left-[30%] text-background-rich opacity-60 [mask-image:linear-gradient(105deg,transparent_10%,black_80%)] max-sm:top-40 max-sm:-right-24 max-sm:left-0 max-sm:opacity-22 max-sm:[mask-image:linear-gradient(180deg,transparent_4%,black_70%,transparent)]"
+    data-home-hero-artwork
+    className="relative aspect-square w-full min-w-0 self-center overflow-hidden text-background-rich max-lg:mx-auto max-lg:max-w-[520px] lg:aspect-[4/5]"
   >
-    <EvolvingAscii cycle={["cart", "commerce", "bag"]} />
+    <EvolvingAscii artwork="homeCart" className="opacity-90" />
   </div>
 );

@@ -39,9 +39,9 @@ const artwork = {
   },
   google: {
     name: "Google",
-    src: "/providers/google.png",
-    width: 128,
-    height: 128,
+    src: "/images/google.svg",
+    width: 24,
+    height: 24,
   },
   meta: {
     name: "Meta",

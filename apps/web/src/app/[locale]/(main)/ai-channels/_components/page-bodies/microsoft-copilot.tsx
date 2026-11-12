@@ -1,17 +1,11 @@
 import { ArrowRightIcon } from "@zenncore/icons";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionPanel,
-  AccordionTrigger,
-} from "@zenncore/web/components/accordion";
 import { Button } from "@zenncore/web/components/button";
-import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import { getMessages } from "next-intl/server";
 import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
 import { CommerceFigure } from "@/components/marketing/commerce-figure";
+import { ConnectedJourney } from "@/components/marketing/connected-journey";
 import { MarketingSection } from "@/components/marketing/page";
 import { MarketingBand } from "@/components/marketing/primitives";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
@@ -62,50 +56,38 @@ const ShoppingWorkbench = ({
           </p>
         </div>
       </div>
-      <Accordion
-        aria-label={copy.dataLabel}
-        multiple
-        defaultValue={["shops", "reads"]}
-        className="justify-start"
-      >
-        {sections.map((section) => (
-          <AccordionItem
-            key={section.id}
-            id={section.id}
-            value={section.id}
-            className="border-accent-foreground last:border-b-0"
-          >
-            <AccordionTrigger
-              className="items-center px-8 py-8 text-xl leading-snug max-sm:px-4"
-              classList={{ trigger: { icon: "size-4 shrink-0" } }}
-            >
-              {section.title}
-            </AccordionTrigger>
-            <AccordionPanel className="transition-none">
-              <div className="px-8 pb-8 max-sm:px-4">
-                <p className="max-w-[48ch] text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">
-                  {section.description}
-                </p>
-                {section.id === "reads" && (
-                  <div className="mt-8 border-accent-foreground border-t">
-                    <div className="grid grid-cols-2 divide-x divide-accent-foreground">
-                      <p className="py-4 pr-4 text-sm">{copy.web}</p>
-                      <p className="py-4 pl-4 text-sm">{copy.feeds}</p>
-                    </div>
-                    <div className="flex items-center gap-4 border-accent-foreground border-t pt-4 text-primary-text">
-                      <ArrowRightIcon
-                        className="size-4 shrink-0 rotate-90"
-                        aria-hidden="true"
-                      />
-                      <p className="text-sm">{copy.checkout}</p>
-                    </div>
+      <ConnectedJourney
+        label={copy.dataLabel}
+        className="border-t-0"
+        items={sections.map((section) => ({
+          id: section.id,
+          anchor: section.id,
+          title: section.title,
+          icon: section.id === "shops" ? "checkout" : "catalog",
+          content: (
+            <div className="px-8 pb-8 max-sm:px-4">
+              <p className="max-w-[48ch] text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">
+                {section.description}
+              </p>
+              {section.id === "reads" && (
+                <div className="mt-8 border-accent-foreground border-t">
+                  <div className="grid grid-cols-2 divide-x divide-accent-foreground">
+                    <p className="py-4 pr-4 text-sm">{copy.web}</p>
+                    <p className="py-4 pl-4 text-sm">{copy.feeds}</p>
                   </div>
-                )}
-              </div>
-            </AccordionPanel>
-          </AccordionItem>
-        ))}
-      </Accordion>
+                  <div className="flex items-center gap-4 border-accent-foreground border-t pt-4 text-primary-text">
+                    <ArrowRightIcon
+                      className="size-4 shrink-0 rotate-90"
+                      aria-hidden="true"
+                    />
+                    <p className="text-sm">{copy.checkout}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          ),
+        }))}
+      />
     </div>
   </MarketingBand>
 );
@@ -140,29 +122,21 @@ const MerchantEntry = ({
         </div>
       ))}
     </dl>
-    <Tabs
-      defaultValue="microsoft"
-      className="min-w-0 border-accent-foreground border-t"
-    >
-      <div className="px-8 py-8 max-sm:px-4 max-sm:py-6">
-        <p className="mb-4 text-foreground-dimmed text-sm">{copy.label}</p>
-        <TabsList
-          aria-label={copy.label}
-          className="grid w-full grid-cols-3 sm:w-fit"
-        >
-          {routes.map((route) => (
-            <Tab
-              key={route.key}
-              value={route.key}
-              className="h-auto min-h-12 px-8 py-4 text-base data-active:bg-primary-text data-selected:bg-primary-text data-active:text-background-rich data-selected:text-background-rich max-sm:px-4 max-sm:text-sm"
-            >
-              {copy[route.key]}
-            </Tab>
-          ))}
-        </TabsList>
-      </div>
-      {routes.map((route) => (
-        <TabsPanel key={route.key} value={route.key} className="min-w-0">
+    <div className="px-8 py-8 max-sm:px-4 max-sm:py-6">
+      <p className="text-foreground-dimmed text-sm">{copy.label}</p>
+    </div>
+    <ConnectedJourney
+      label={copy.label}
+      items={routes.map((route) => ({
+        id: route.key,
+        title: copy[route.key],
+        icon:
+          route.key === "microsoft"
+            ? "website"
+            : route.key === "shopify"
+              ? "catalog"
+              : "checkout",
+        content: (
           <div className="grid min-w-0 border-accent-foreground border-t bg-background-dimmed md:grid-cols-[0.9fr_1.1fr]">
             <div className="flex min-w-0 flex-col justify-between gap-8 border-accent-foreground px-8 py-8 max-sm:px-4 max-md:border-b md:border-r">
               <ProviderLogo
@@ -181,20 +155,20 @@ const MerchantEntry = ({
               </p>
             </div>
           </div>
-        </TabsPanel>
-      ))}
-      <div className="border-accent-foreground border-t px-8 py-6 max-sm:px-4 [&_a]:max-w-full [&_a]:whitespace-normal [&_a]:text-left [&_button]:max-w-full">
-        <Button
-          color="neutral"
-          render={
-            <Link href="https://about.ads.microsoft.com/en/solutions/technology/agentic-commerce" />
-          }
-        >
-          {copy.action.primary}
-          <ArrowRightIcon className="size-4 shrink-0" aria-hidden="true" />
-        </Button>
-      </div>
-    </Tabs>
+        ),
+      }))}
+    />
+    <div className="border-accent-foreground border-t px-8 py-6 max-sm:px-4 [&_a]:max-w-full [&_a]:whitespace-normal [&_a]:text-left [&_button]:max-w-full">
+      <Button
+        color="neutral"
+        render={
+          <Link href="https://about.ads.microsoft.com/en/solutions/technology/agentic-commerce" />
+        }
+      >
+        {copy.action.primary}
+        <ArrowRightIcon className="size-4 shrink-0" aria-hidden="true" />
+      </Button>
+    </div>
   </MarketingBand>
 );
 

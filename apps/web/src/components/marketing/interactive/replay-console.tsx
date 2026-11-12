@@ -1,13 +1,12 @@
 "use client";
 
-import {
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  CheckIcon,
-  FileSearchIcon,
-} from "@zenncore/icons";
+import { FileSearchIcon, UserIcon } from "@zenncore/icons";
+import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
+import type { AppConfig } from "next-intl";
 import { useEffect, useRef, useState } from "react";
+import { Motion } from "@/components/motion";
+import { Plus } from "@/components/plus";
 import { agentReplay } from "@/content/examples/agent-replay";
 import { useDocument } from "@/hooks/use-document";
 import {
@@ -15,232 +14,213 @@ import {
   type ReplayLabels,
   ReplayScene,
 } from "./replay-scene";
-import { useInteractive } from "./use-interactive";
-
-const timeline = agentReplay.stages.flatMap((stage) =>
-  Array.from(
-    { length: stage === "fields" ? agentReplay.fields.length : 1 },
-    (_, field) => ({ stage, field }),
-  ),
-);
+import { useSequence } from "./use-sequence";
 
 export const ReplayConsole = ({
   copy,
   labels,
   locale,
   assistant,
+  conversation,
 }: {
   copy: ReplayCopy;
   labels: ReplayLabels;
   locale: string;
   assistant: string;
+  conversation: AppConfig["Messages"]["round15Platform"]["replay"];
 }) => {
-  const { ready, reduced } = useInteractive();
-  const { window, document } = useDocument();
-  const container = useRef<HTMLDivElement>(null);
-  const started = useRef(false);
-  const [position, setPosition] = useState(0);
-  const [playing, setPlaying] = useState(false);
-  const enhanced = ready && !reduced;
-  const current = timeline[position] ?? timeline[0];
+  const { container, active, enhanced, playing, pause, toggle } = useSequence({
+    length: agentReplay.stages.length + 1,
+    delay: 5800,
+  });
+  const { window } = useDocument();
+  const log = useRef<HTMLOListElement>(null);
+  const [writing, setWriting] = useState({ turn: -1, characters: 0 });
+  const position = enhanced
+    ? Math.min(active, agentReplay.stages.length - 1)
+    : agentReplay.stages.length - 1;
+  const current = agentReplay.stages[position] ?? "rerun";
+  const turns = [
+    copy.question,
+    conversation.turns.listings,
+    conversation.turns.fields,
+    copy.pickReason,
+    conversation.turns.fix,
+    copy.rerunReason,
+  ];
+  const text = turns[position] ?? "";
+  const characters = writing.turn === position ? writing.characters : 0;
+  const typing = enhanced && playing && characters < text.length;
+
   useEffect(() => {
-    if (!enhanced) setPlaying(false);
-  }, [enhanced]);
-  useEffect(() => {
-    if (!enhanced || !document || !container.current) return;
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const visible = entries.some(
-          (entry) => entry.isIntersecting && entry.intersectionRatio >= 0.3,
-        );
-        if (!visible) {
-          setPlaying(false);
-          return;
-        }
-        if (started.current || document.hidden) return;
-        started.current = true;
-        setPlaying(true);
-      },
-      { threshold: 0.3 },
+    if (!playing || !window || characters >= text.length) return;
+    const timer = window.setTimeout(
+      () =>
+        setWriting((value) => ({
+          turn: position,
+          characters: Math.min(
+            text.length,
+            value.turn === position ? value.characters + 3 : 3,
+          ),
+        })),
+      24,
     );
-    observer.observe(container.current);
-    return () => observer.disconnect();
-  }, [enhanced, document]);
-  useEffect(() => {
-    if (!document) return;
-    const pause = () => {
-      if (document.hidden) setPlaying(false);
-    };
-    document.addEventListener("visibilitychange", pause);
-    return () => document.removeEventListener("visibilitychange", pause);
-  }, [document]);
-  useEffect(() => {
-    if (!enhanced || !playing || !window) return;
-    if (position >= timeline.length - 1) {
-      setPlaying(false);
-      return;
-    }
-    const timer = window.setTimeout(() => setPosition(position + 1), 2600);
     return () => window.clearTimeout(timer);
-  }, [enhanced, playing, position, window]);
-  const select = (next: number) => {
-    started.current = true;
-    setPlaying(false);
-    setPosition(next);
-  };
-  if (!current) return null;
+  }, [playing, position, characters, text.length, window]);
+
+  useEffect(() => {
+    if (!playing || !log.current || (position === 0 && characters === 0))
+      return;
+    log.current.scrollTo({
+      top: log.current.scrollHeight,
+      behavior: "instant",
+    });
+  }, [playing, position, characters]);
+
   return (
     <div
       ref={container}
-      data-agent-replay=""
+      data-agent-replay
       data-playing={playing}
-      data-step={current.stage}
-      data-frame={current.field}
+      data-step={current}
       data-enhanced={enhanced}
       data-nav-tone="dark"
       onPointerDownCapture={(event) => {
-        started.current = true;
         if (
           event.target instanceof Element &&
-          event.target.closest("[data-playback-toggle]")
+          !event.target.closest("[data-playback-toggle]")
         )
-          return;
-        setPlaying(false);
-      }}
-      onKeyDownCapture={(event) => {
-        started.current = true;
-        if (
-          event.target instanceof Element &&
-          event.target.closest("[data-playback-toggle]") &&
-          (event.key === " " || event.key === "Enter")
-        )
-          return;
-        setPlaying(false);
+          pause();
       }}
       onFocusCapture={(event) => {
-        started.current = true;
-        if (event.target.matches(":focus-visible")) setPlaying(false);
+        if (
+          event.target instanceof Element &&
+          !event.target.closest("[data-playback-toggle]")
+        )
+          pause();
       }}
-      className="min-w-0 bg-emphasis-dimmed text-background-rich"
+      className="marketing-surface min-w-0 bg-emphasis-dimmed text-background-rich [--rail-color:color-mix(in_srgb,var(--color-background-rich)_15%,transparent)]"
     >
-      <header className="flex flex-wrap items-center justify-between gap-4 border-background-rich/15 border-y px-8 py-6 max-sm:px-4">
+      <header className="marketing-seam relative flex flex-wrap items-center justify-between gap-4 border-[var(--rail-color)] border-y px-8 py-6 max-sm:px-4">
+        <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+        <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
         <p className="flex items-center gap-4 font-medium">
           <FileSearchIcon aria-hidden className="size-6 text-primary-rich" />
           {assistant}
         </p>
         <p className="text-background-rich/55 text-sm">{copy.sample}</p>
       </header>
-      <div className="grid min-w-0 grid-cols-[minmax(220px,1fr)_minmax(0,2.5fr)] max-md:grid-cols-1">
-        <aside className="min-w-0 border-background-rich/15 border-r px-8 py-8 max-sm:px-4 max-md:border-r-0 max-md:border-b">
-          <h2 className="font-heading text-2xl text-background-rich">
-            {copy.title}
-          </h2>
-          <p className="mt-4 text-background-rich/60 text-sm leading-relaxed">
-            {copy.description}
-          </p>
-          <p className="mt-4 text-background-rich/40 text-xs leading-relaxed">
-            {labels.disclosure}
-          </p>
-          {enhanced && (
-            <ol
-              aria-label={copy.rail}
-              className="mt-8 flex flex-col gap-4 max-md:grid max-md:grid-cols-2"
-            >
-              {agentReplay.stages.map((stage, index) => (
-                <li key={stage}>
-                  <Button
-                    color={current.stage === stage ? "primary" : "emphasis"}
-                    aria-pressed={current.stage === stage}
-                    onClick={() =>
-                      select(timeline.findIndex((item) => item.stage === stage))
-                    }
-                  >
-                    {agentReplay.stages.indexOf(current.stage) > index ? (
-                      <CheckIcon aria-hidden className="size-4" />
-                    ) : (
-                      <span>{String(index + 1).padStart(2, "0")}</span>
-                    )}
-                    {copy.stages[stage]}
-                  </Button>
-                </li>
-              ))}
-            </ol>
-          )}
-        </aside>
-        <div className="min-w-0">
-          {enhanced ? (
-            <ReplayScene
-              key={current.stage}
-              stage={current.stage}
-              field={current.field}
-              copy={copy}
-              labels={labels}
-              locale={locale}
-              animated
-            />
-          ) : (
-            <ol aria-label={copy.rail}>
-              {agentReplay.stages.map((stage, index) => (
+      <div className="grid min-w-0 lg:grid-cols-[1fr_1.1fr]">
+        <div className="flex min-w-0 flex-col border-[var(--rail-color)] border-b lg:border-r lg:border-b-0">
+          <div className="px-8 py-6 max-sm:px-4">
+            <h3 className="font-heading text-2xl text-background-rich">
+              {copy.title}
+            </h3>
+            <p className="mt-3 max-w-[50ch] text-background-rich/55 text-xs leading-relaxed">
+              {labels.disclosure}
+            </p>
+          </div>
+          <ol
+            ref={log}
+            // biome-ignore lint/a11y/noNoninteractiveTabindex: A scrollable transcript needs keyboard focus for scrolling its history.
+            tabIndex={0}
+            aria-label={conversation.conversation}
+            data-chat-log
+            className="flex h-[540px] min-h-0 flex-col gap-6 overflow-y-auto px-8 py-6 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-solid focus-visible:-outline-offset-2 max-sm:px-4"
+            onWheel={pause}
+            onTouchStart={pause}
+          >
+            {turns.map((turn, index) => {
+              if (enhanced && index > position) return null;
+              const shopper = index === 0 || index === 4;
+              const Icon = shopper ? UserIcon : FileSearchIcon;
+              const visible =
+                index === position && enhanced && active < turns.length
+                  ? turn.slice(0, characters)
+                  : turn;
+              return (
                 <li
-                  key={stage}
-                  data-static-step={stage}
-                  className="border-background-rich/15 border-b last:border-b-0"
+                  key={agentReplay.stages[index]}
+                  data-chat-turn={agentReplay.stages[index]}
+                  className={cn("flex gap-3", shopper && "flex-row-reverse")}
                 >
-                  <h3 className="px-8 pt-8 font-heading text-background-rich text-xl max-sm:px-4">
-                    <span className="mr-4 text-primary-rich">
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    {copy.stages[stage]}
-                  </h3>
-                  <ReplayScene
-                    stage={stage}
-                    copy={copy}
-                    labels={labels}
-                    locale={locale}
-                  />
+                  <span
+                    aria-hidden
+                    className={cn(
+                      "grid size-8 shrink-0 place-items-center rounded-full border",
+                      shopper
+                        ? "border-background-rich/20 text-background-rich/70"
+                        : "border-primary-rich/30 text-primary-rich",
+                    )}
+                  >
+                    <Icon className="size-4" />
+                  </span>
+                  <div className="min-w-0 max-w-[90%]">
+                    <p
+                      className={cn(
+                        "mb-2 text-background-rich/50 text-xs",
+                        shopper && "text-right",
+                      )}
+                    >
+                      {shopper ? conversation.shopper : conversation.assistant}
+                    </p>
+                    <Motion.Item
+                      initial={false}
+                      animate={{ opacity: 1 }}
+                      className={cn(
+                        "rounded-xl px-4 py-3 text-sm leading-relaxed",
+                        shopper
+                          ? "rounded-tr-sm bg-background-rich/8 text-background-rich"
+                          : "rounded-tl-sm text-background-rich/80",
+                      )}
+                    >
+                      <p>
+                        {visible ||
+                          (typing && index === position
+                            ? conversation.writing
+                            : turn)}
+                        {typing && index === position && visible && (
+                          <span
+                            aria-hidden
+                            className="ml-1 inline-block h-4 w-px translate-y-0.5 bg-primary-rich"
+                          />
+                        )}
+                      </p>
+                    </Motion.Item>
+                  </div>
                 </li>
-              ))}
-            </ol>
-          )}
-          {enhanced && (
-            <div className="flex flex-wrap items-center justify-between gap-4 border-background-rich/15 border-t px-8 py-6 max-sm:px-4">
-              <Button
-                data-playback-toggle=""
-                onClick={() => {
-                  started.current = true;
-                  if (position === timeline.length - 1) setPosition(0);
-                  setPlaying(!playing);
-                }}
-              >
-                {playing ? copy.controls.pause : copy.controls.play}
+              );
+            })}
+          </ol>
+          <div className="mt-auto flex min-h-20 items-center justify-between gap-4 border-[var(--rail-color)] border-t px-8 py-4 max-sm:px-4">
+            <p className="text-background-rich/50 text-xs" role="status">
+              {typing
+                ? conversation.writing
+                : active >= turns.length || !enhanced
+                  ? conversation.complete
+                  : copy.stages[current]}
+            </p>
+            {enhanced && (
+              <Button color="emphasis" data-playback-toggle onClick={toggle}>
+                {playing
+                  ? copy.controls.pause
+                  : active >= turns.length
+                    ? conversation.replay
+                    : copy.controls.play}
               </Button>
-              <div className="flex items-center gap-2">
-                <Button
-                  color="emphasis"
-                  disabled={position === 0}
-                  onClick={() => select(position - 1)}
-                >
-                  <ArrowLeftIcon aria-hidden className="size-4" />
-                  {copy.controls.previous}
-                </Button>
-                <Button
-                  color="emphasis"
-                  disabled={position === timeline.length - 1}
-                  onClick={() => select(position + 1)}
-                >
-                  {copy.controls.next}
-                  <ArrowRightIcon aria-hidden className="size-4" />
-                </Button>
-              </div>
-            </div>
-          )}
+            )}
+          </div>
+        </div>
+        <div className="min-w-0 px-6 py-8 max-sm:px-4">
+          <p className="mb-6 text-background-rich/55 text-sm">
+            {labels.evidence}
+          </p>
+          <ReplayScene stage={current} copy={copy} locale={locale} />
+          <p className="mt-6 text-background-rich/50 text-xs leading-relaxed">
+            {copy.outcomeNote}
+          </p>
         </div>
       </div>
-      <p aria-live="polite" aria-atomic="true" className="sr-only">
-        {enhanced
-          ? `${copy.stages[current.stage]}. ${current.stage === "fields" ? copy.fields[agentReplay.fields[current.field] ?? "price"] : current.stage === "pick" ? copy.pickReason : current.stage === "rerun" ? copy.rerunReason : ""}`
-          : ""}
-      </p>
     </div>
   );
 };

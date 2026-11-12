@@ -1,7 +1,6 @@
 import { FileIcon } from "@zenncore/icons";
 import { notFound } from "next/navigation";
 import { getMessages } from "next-intl/server";
-import { CheckoutRun } from "@/components/marketing/interactive/checkout-run";
 import {
   MarketingFaq,
   MarketingPage,
@@ -16,6 +15,7 @@ import {
   IntegrationSources,
 } from "../_components/integration-content";
 import { pageBodies } from "../_components/page-bodies";
+import { WooCheckoutJourney } from "../_components/page-bodies/woocommerce-checkout";
 
 type Props = { params: Promise<{ integration: string }> };
 export const generateStaticParams = () =>
@@ -87,7 +87,7 @@ export default async ({ params }: Props) => {
           ),
           "agent-checkout":
             integration.key === "woocommerce" ? (
-              <CheckoutRun variant="code" />
+              <WooCheckoutJourney />
             ) : undefined,
           "export-platforms":
             integration.key === "productFeeds" ? (

@@ -68,6 +68,7 @@ export const EditorialLayout = async ({
   title,
   meta,
   description,
+  illustration,
   compact = false,
   children,
 }: EditorialLayout.Props) => (
@@ -77,6 +78,7 @@ export const EditorialLayout = async ({
       title={title}
       meta={meta}
       description={description}
+      illustration={illustration}
       compact={compact}
     />
     {children}
@@ -89,6 +91,7 @@ export namespace EditorialLayout {
     title: string;
     meta?: ReactNode;
     description: string;
+    illustration?: ReactNode;
     compact?: boolean;
     children: ReactNode;
   };

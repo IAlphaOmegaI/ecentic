@@ -1,0 +1,21 @@
+{
+  "commerceFigures": {
+    "repairTools": "Ilustración: una llave y un destornillador. Mueve el puntero sobre una herramienta para levantarla e inspeccionarla.",
+    "moneyStack": "Ilustración: billetes y monedas. Mueve el puntero sobre una pila para inspeccionarla.",
+    "readinessScanner": "Ilustración: un escáner de documentos abierto. Mueve el puntero sobre la tapa o la página para inspeccionarla.",
+    "partReadouts": {
+      "repairTools": [
+        { "value": "wrench", "label": "Llave" },
+        { "value": "screwdriver", "label": "Destornillador" }
+      ],
+      "moneyStack": [
+        { "value": "banknotes", "label": "Billetes" },
+        { "value": "coins", "label": "Monedas" }
+      ],
+      "readinessScanner": [
+        { "value": "scanner lid", "label": "Tapa del escáner" },
+        { "value": "document", "label": "Documento" }
+      ]
+    }
+  }
+}

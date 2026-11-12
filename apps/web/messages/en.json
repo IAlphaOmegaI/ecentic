@@ -19005,13 +19005,83 @@
           "value": "wheels",
           "label": "Wheels"
         }
+      ],
+      "repairTools": [
+        {
+          "value": "wrench",
+          "label": "Wrench"
+        },
+        {
+          "value": "screwdriver",
+          "label": "Screwdriver"
+        }
+      ],
+      "moneyStack": [
+        {
+          "value": "banknotes",
+          "label": "Banknotes"
+        },
+        {
+          "value": "coins",
+          "label": "Coins"
+        }
+      ],
+      "readinessScanner": [
+        {
+          "value": "scanner lid",
+          "label": "Scanner lid"
+        },
+        {
+          "value": "document",
+          "label": "Document"
+        }
+      ],
+      "officeChair": [
+        {
+          "value": "backrest",
+          "label": "Backrest"
+        },
+        {
+          "value": "seat",
+          "label": "Seat"
+        }
+      ],
+      "documentStack": [
+        {
+          "value": "document 1",
+          "label": "Document 1"
+        },
+        {
+          "value": "document 2",
+          "label": "Document 2"
+        },
+        {
+          "value": "document 3",
+          "label": "Document 3"
+        }
+      ],
+      "openBook": [
+        {
+          "value": "left pages",
+          "label": "Left pages"
+        },
+        {
+          "value": "right pages",
+          "label": "Right pages"
+        }
       ]
     },
     "wellnessBottle": "Illustration: a wellness bottle and capsule. Point at the cap or capsule to lift and inspect it.",
     "wineBottle": "Illustration: a wine bottle with a cork and label. Point at a part to lift and inspect it.",
     "packagedFood": "Illustration: a food pouch with a seal and ingredient window. Point at a part to lift and inspect it.",
     "sneaker": "Illustration: a sneaker with a rounded sole, upper and laces. Point at a part to lift and inspect it.",
-    "suitcase": "Illustration: a wheeled suitcase with an extendable handle. Point at a part to lift and inspect it."
+    "suitcase": "Illustration: a wheeled suitcase with an extendable handle. Point at a part to lift and inspect it.",
+    "repairTools": "Illustration: a wrench and screwdriver. Move the pointer over a tool to lift it for inspection.",
+    "moneyStack": "Illustration: banknotes and coins. Move the pointer over a stack to inspect it.",
+    "readinessScanner": "Illustration: an open document scanner. Move the pointer over the lid or page to inspect it.",
+    "officeChair": "Office chair with a padded back, armrests and a five-wheel base",
+    "documentStack": "Three product documents that lift as the pointer selects a sheet",
+    "openBook": "Illustration: an open book. Move the pointer over either page to fan the leaves open."
   },
   "enterprisePilotPreview": {
     "label": "Illustrative pilot · sample brief",
@@ -19344,5 +19414,20 @@
       "note": "Schematic, not to scale. Use the exact product, room and access measurements to verify fit."
     },
     "assistantFinding": "The listing for {product} does not state {fields}. I can’t verify those requirements from that listing. The sample source shows the facts that need to be made explicit."
+  },
+  "round15Platform": {
+    "replay": {
+      "shopper": "Shopper",
+      "assistant": "Sample assistant",
+      "writing": "Writing…",
+      "complete": "Sample conversation complete",
+      "replay": "Replay conversation",
+      "conversation": "Sample shopping conversation",
+      "turns": {
+        "listings": "I’ll compare these two sample listings with your budget and fit requirements.",
+        "fields": "Both are under $400. Your listing does not state seat height or weight capacity. The rival states 44–54 cm and 120 kg.",
+        "fix": "Add the supplier’s existing seat-height range and weight capacity to my listing, then compare the same two chairs again."
+      }
+    }
   }
 }

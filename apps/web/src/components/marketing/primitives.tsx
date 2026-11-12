@@ -5,7 +5,7 @@ import Image from "next/image";
 import type { HTMLAttributes, ReactNode } from "react";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
-import { CommerceFigure } from "./commerce-figure";
+import type { CommerceFigure } from "./commerce-figure";
 import { EvolvingAscii } from "./evolving-ascii";
 import { HeroFigure } from "./hero-figure";
 
@@ -296,14 +296,10 @@ export const MarketingClosing = ({
         <MarketingActions actions={actions} className="relative" />
       </div>
       <div
-        data-closing-subject="shopping-basket"
-        className="relative min-w-0 px-4 max-md:mx-auto max-md:w-full max-md:max-w-96"
+        data-closing-subject="tonal-shopping-bag"
+        className="relative aspect-square min-w-0 text-background-rich max-md:mx-auto max-md:w-full max-md:max-w-96"
       >
-        <CommerceFigure
-          kind="checkout"
-          surface="dark"
-          className="aspect-square bg-transparent [--hairline-plate:var(--color-emphasis-dimmed)] [&>[data-hairline]]:bg-transparent"
-        />
+        <EvolvingAscii artwork="homeBag" className="opacity-90" />
       </div>
     </div>
   </MarketingBand>

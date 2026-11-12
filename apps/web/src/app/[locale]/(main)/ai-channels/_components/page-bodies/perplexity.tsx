@@ -5,18 +5,13 @@ import {
   CommerceFileShieldIcon,
   CommerceGlobePointerIcon,
 } from "@zenncore/icons";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionPanel,
-  AccordionTrigger,
-} from "@zenncore/web/components/accordion";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import { getMessages } from "next-intl/server";
 import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
+import { ConnectedJourney } from "@/components/marketing/connected-journey";
 import { IllustrationGlow } from "@/components/marketing/illustration-glow";
 import { MarketingSection } from "@/components/marketing/page";
 import {
@@ -266,36 +261,19 @@ const MerchantEntry = ({
         <h2>{section.title}</h2>
         {section.links && <MarketingActions actions={section.links} />}
       </div>
-      <Accordion
-        aria-label={copy.label}
-        defaultValue={["access-0"]}
-        className="justify-start bg-background-dimmed"
-      >
-        {copy.steps.map((step, index) => (
-          <AccordionItem
-            key={step}
-            value={`access-${index}`}
-            className="border-accent-foreground last:border-b-0"
-          >
-            <AccordionTrigger
-              className="items-center px-7 py-6 text-lg max-sm:px-4"
-              classList={{ trigger: { icon: "size-4 shrink-0" } }}
-            >
-              <span className="flex items-center gap-6 max-sm:gap-4">
-                <span aria-hidden="true" className="text-3xl text-primary-text">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                {step}
-              </span>
-            </AccordionTrigger>
-            <AccordionPanel className="transition-none">
-              <p className="px-7 pb-8 text-foreground-dimmed leading-relaxed max-sm:px-4">
-                {paragraphs[index]}
-              </p>
-            </AccordionPanel>
-          </AccordionItem>
-        ))}
-      </Accordion>
+      <ConnectedJourney
+        label={copy.label}
+        items={copy.steps.map((step, index) => ({
+          id: `entry-${index}`,
+          title: step,
+          icon: index === 0 ? "access" : index === 1 ? "catalog" : "checkout",
+          content: (
+            <p className="max-w-[65ch] text-foreground-dimmed leading-relaxed">
+              {paragraphs[index]}
+            </p>
+          ),
+        }))}
+      />
     </div>
   );
 };

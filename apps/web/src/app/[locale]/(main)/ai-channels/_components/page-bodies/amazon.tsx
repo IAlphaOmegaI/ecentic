@@ -1,15 +1,9 @@
 import { ArrowRightIcon } from "@zenncore/icons";
-import {
-  Accordion,
-  AccordionItem,
-  AccordionPanel,
-  AccordionTrigger,
-} from "@zenncore/web/components/accordion";
-import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import { getMessages } from "next-intl/server";
 import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import type { MarketingBodyProps } from "@/components/marketing/body";
+import { ConnectedJourney } from "@/components/marketing/connected-journey";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { MarketingSection } from "@/components/marketing/page";
 import { MarketingBand } from "@/components/marketing/primitives";
@@ -32,22 +26,13 @@ const Heading = ({ section }: { section: Section }) => (
 );
 
 const PurchasePaths = ({ copy }: { copy: Copy["journey"] }) => (
-  <Tabs defaultValue="visit" data-amazon-purchase-paths>
-    <div className="border-accent-foreground border-t px-8 py-6 max-sm:px-4">
-      <TabsList aria-label={copy.label}>
-        {copy.paths.map((path) => (
-          <Tab
-            key={path.id}
-            value={path.id}
-            className="h-auto min-h-12 px-4 py-2 text-base data-active:bg-primary data-selected:bg-primary max-sm:text-sm"
-          >
-            {path.title}
-          </Tab>
-        ))}
-      </TabsList>
-    </div>
-    {copy.paths.map((path) => (
-      <TabsPanel key={path.id} value={path.id}>
+  <ConnectedJourney
+    label={copy.label}
+    items={copy.paths.map((path) => ({
+      id: path.id,
+      title: path.title,
+      icon: path.id === "visit" ? "website" : "checkout",
+      content: (
         <div className="grid gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-2">
           <div className="relative flex min-w-0 flex-col bg-background-dimmed px-8 pt-8 pb-6 max-sm:px-4">
             <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 max-md:hidden" />
@@ -88,9 +73,9 @@ const PurchasePaths = ({ copy }: { copy: Copy["journey"] }) => (
             <p className="text-foreground-dimmed text-sm">{path.condition}</p>
           </div>
         </div>
-      </TabsPanel>
-    ))}
-  </Tabs>
+      ),
+    }))}
+  />
 );
 
 const CatalogPath = ({ copy }: { copy: Copy["catalog"] }) => (
@@ -125,31 +110,20 @@ const AccessRequirements = ({ copy }: { copy: Copy["access"] }) => (
         <li>{copy.eligibility}</li>
       </ul>
     </div>
-    <Accordion
-      defaultValue={["register"]}
-      className="min-w-0 justify-start bg-background px-8 max-sm:px-4"
-      data-amazon-access
-    >
-      {copy.steps.map((step) => (
-        <AccordionItem
-          key={step.id}
-          value={step.id}
-          className="border-accent-foreground last:border-b-0"
-        >
-          <AccordionTrigger
-            className="min-h-20 py-6 text-xl leading-snug hover:text-primary-text"
-            classList={{ trigger: { icon: "size-4 shrink-0" } }}
-          >
-            {step.title}
-          </AccordionTrigger>
-          <AccordionPanel className="transition-none">
-            <p className="max-w-[58ch] pb-8 text-foreground-dimmed leading-relaxed">
-              {step.description}
-            </p>
-          </AccordionPanel>
-        </AccordionItem>
-      ))}
-    </Accordion>
+    <ConnectedJourney
+      label={copy.title}
+      className="border-t-0"
+      items={copy.steps.map((step, index) => ({
+        id: step.id,
+        title: step.title,
+        icon: index === 0 ? "access" : index === 1 ? "catalog" : "checkout",
+        content: (
+          <p className="max-w-[58ch] text-foreground-dimmed leading-relaxed">
+            {step.description}
+          </p>
+        ),
+      }))}
+    />
   </div>
 );
 

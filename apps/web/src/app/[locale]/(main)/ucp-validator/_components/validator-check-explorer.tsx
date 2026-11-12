@@ -1,5 +1,6 @@
 "use client";
 
+import { CheckIcon } from "@zenncore/icons";
 import {
   Accordion,
   AccordionItem,
@@ -36,16 +37,25 @@ export const ValidatorCheckExplorer = ({
             <p className="max-w-xl text-foreground-dimmed leading-relaxed">
               {check.description}
             </p>
-            <dl className="mt-6 divide-y divide-accent-foreground border-accent-foreground border-y bg-background-dimmed">
+            <dl className="mt-6 grid gap-6" data-validator-targets>
               {check.targets.map((target) => (
-                <div key={target.code} className="px-4 py-4">
-                  <dt className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 text-foreground text-sm">
-                    <span className="font-medium">{target.label}</span>
-                    <code className="break-all font-mono text-primary-text text-xs">
-                      {target.code}
-                    </code>
+                <div
+                  key={target.code}
+                  className="grid min-w-0 gap-2 sm:grid-cols-[minmax(0,1fr)_minmax(0,1.2fr)] sm:gap-6"
+                >
+                  <dt className="flex min-w-0 gap-4 text-foreground text-sm">
+                    <CheckIcon
+                      aria-hidden
+                      className="mt-1 size-4 shrink-0 text-primary-text"
+                    />
+                    <div className="min-w-0">
+                      <span className="block font-medium">{target.label}</span>
+                      <code className="mt-2 block break-all font-mono text-primary-text text-xs">
+                        {target.code}
+                      </code>
+                    </div>
                   </dt>
-                  <dd className="mt-2 text-foreground-dimmed text-sm leading-relaxed">
+                  <dd className="pl-8 text-foreground-dimmed text-sm leading-relaxed sm:pl-0">
                     {target.detail}
                   </dd>
                 </div>

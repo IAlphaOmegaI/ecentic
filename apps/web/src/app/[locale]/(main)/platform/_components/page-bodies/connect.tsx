@@ -60,7 +60,7 @@ export const ConnectBody = async ({
               <MarketingBand
                 key={section.id}
                 id={section.id}
-                className="[&_.marketing-guides]:hidden"
+                className="bg-linear-to-br from-primary/12 via-background to-secondary/10 [&_.marketing-guides]:hidden"
               >
                 <div className="grid min-w-0 lg:grid-cols-2">
                   <div className="min-w-0">
@@ -152,10 +152,15 @@ export const ConnectBody = async ({
                 <MarketingBand className="[&_.marketing-guides]:hidden">
                   <div className="grid min-w-0 lg:grid-cols-[5fr_7fr]">
                     <div className="min-w-0 px-8 py-12 max-sm:px-4 max-sm:py-8">
-                      <h2>{workflow?.items?.[0]?.title}</h2>
-                      <p className="mt-4 max-w-[36ch] text-foreground-dimmed">
-                        {workflow?.items?.[0]?.body}
-                      </p>
+                      <div
+                        className="lg:sticky lg:top-28"
+                        data-connect-source-intro
+                      >
+                        <h2>{workflow?.items?.[0]?.title}</h2>
+                        <p className="mt-4 max-w-[36ch] text-foreground-dimmed">
+                          {workflow?.items?.[0]?.body}
+                        </p>
+                      </div>
                     </div>
                     <ConnectSources
                       sections={sources}

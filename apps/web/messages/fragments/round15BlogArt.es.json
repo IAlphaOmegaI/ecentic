@@ -1,0 +1,17 @@
+{
+  "commerceFigures": {
+    "openBook": "Ilustración: un libro abierto. Mueve el puntero sobre una página para desplegar las hojas.",
+    "partReadouts": {
+      "openBook": [
+        {
+          "value": "left pages",
+          "label": "Páginas izquierdas"
+        },
+        {
+          "value": "right pages",
+          "label": "Páginas derechas"
+        }
+      ]
+    }
+  }
+}

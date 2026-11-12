@@ -10,6 +10,8 @@ import { useDocument } from "@/hooks/use-document";
 const tonalArtwork = {
   catalog: "/images/ascii/tonal/catalog.svg",
   headphones: "/images/ascii/tonal/headphones.svg",
+  homeBag: "/images/ascii/tonal/home-bag.svg",
+  homeCart: "/images/ascii/tonal/home-cart.svg",
 };
 
 const artwork = {

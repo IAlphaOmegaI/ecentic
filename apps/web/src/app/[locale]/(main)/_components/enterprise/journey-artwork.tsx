@@ -1,10 +1,10 @@
 import { CommerceFigure } from "@/components/marketing/commerce-figure";
 
 const subjects: Record<string, CommerceFigure.Props["kind"]> = {
-  connect: "drawer",
-  simulate: "inspection",
-  fix: "format",
-  sell: "checkout",
+  connect: "relay",
+  simulate: "hub",
+  fix: "repairTools",
+  sell: "moneyStack",
   track: "workflow",
 };
 

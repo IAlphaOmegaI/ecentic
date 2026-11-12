@@ -32,6 +32,7 @@ Main container with viewport.
 |------|------|-------------|
 | `className` | `string` | Root container class |
 | `classList` | `ClassList` | Style `root`, `viewport`, `scrollBar` |
+| `viewportProps` | Native viewport props, excluding `children` and `className` | Forward accessibility attributes, focus behavior, and event handlers to the element that scrolls. Use `classList.viewport` for its styles. |
 
 ### ScrollBar
 
@@ -80,3 +81,4 @@ Custom scrollbar with thumb.
 - Built on `@base-ui/react/scroll-area`
 - Custom styled scrollbars
 - Supports both horizontal and vertical scrolling
+- For code or tables that scroll without containing interactive controls, pass `viewportProps={{ role: 'region', tabIndex: 0, 'aria-label': label }}`. This puts the labeled viewport in the Tab order so arrow keys can scroll it. The optional prop does not change existing callers' defaults.

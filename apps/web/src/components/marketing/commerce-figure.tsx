@@ -5,6 +5,7 @@ import { useMessages, useTranslations } from "next-intl";
 import { lazy } from "react";
 import { CustomHairlineFigure } from "@/components/hairline/custom-figure";
 import { HairlineFigure } from "@/components/hairline/figure";
+import { ProviderLogo } from "./provider-logo";
 
 const figures = {
   catalog: lazy(() => import("./figures/catalog")),
@@ -21,6 +22,12 @@ const figures = {
 const customFigures = {
   shopifyBag: "shopify-bag",
   shoppingBot: "shopping-bot",
+  repairTools: "repair-tools",
+  moneyStack: "money-stack",
+  readinessScanner: "readiness-scanner",
+  officeChair: "office-chair",
+  documentStack: "document-stack",
+  openBook: "open-book",
   sofa: "sofa",
   headphones: "headphones",
   lipstick: "lipstick",
@@ -35,6 +42,15 @@ const isCustomFigure = (
   kind: CommerceFigure.Props["kind"],
 ): kind is keyof typeof customFigures => kind in customFigures;
 
+const brandFigures = {
+  wooLogo: "woocommerce",
+  googleLogo: "google",
+} as const;
+
+const isBrandFigure = (
+  kind: CommerceFigure.Props["kind"],
+): kind is keyof typeof brandFigures => kind in brandFigures;
+
 /** Subject drawings accompany the explanation; they never stand in for live data. */
 export const CommerceFigure = ({
   kind,
@@ -45,6 +61,25 @@ export const CommerceFigure = ({
   const translate = useTranslations("commerceFigures");
   const messages = useMessages();
   const copy = messages.commerceFigures;
+  if (isBrandFigure(kind))
+    return (
+      <div
+        data-brand-figure={brandFigures[kind]}
+        className={cn(
+          "relative flex aspect-[5/4] w-full min-w-0 items-center justify-center p-8",
+          className,
+        )}
+      >
+        <ProviderLogo
+          provider={brandFigures[kind]}
+          label={label}
+          className={cn(
+            "h-auto max-h-[65%] w-[80%] rounded-none object-center",
+            kind === "wooLogo" && "brightness-0 invert",
+          )}
+        />
+      </div>
+    );
   if (isCustomFigure(kind)) {
     const readouts = Object.entries(copy.partReadouts).find(
       ([key]) => key === kind,
@@ -75,7 +110,10 @@ export const CommerceFigure = ({
 
 export namespace CommerceFigure {
   export type Props = {
-    kind: keyof typeof figures | keyof typeof customFigures;
+    kind:
+      | keyof typeof figures
+      | keyof typeof customFigures
+      | keyof typeof brandFigures;
     label?: string;
     surface?: "background" | "field" | "rich" | "dark";
     className?: string;

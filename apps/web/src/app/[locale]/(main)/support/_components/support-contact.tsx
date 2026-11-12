@@ -2,8 +2,8 @@ import {
   ArrowRightIcon,
   CommerceCityBuildingIcon,
   CommerceCode_3Icon,
+  CommercePhoneIcon,
   EnvelopeIcon,
-  PhoneIcon,
 } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { CommerceFigure } from "@/components/marketing/commerce-figure";
@@ -17,7 +17,7 @@ import { Link } from "@/i18n/navigation";
 
 const icons = [
   EnvelopeIcon,
-  PhoneIcon,
+  CommercePhoneIcon,
   CommerceCityBuildingIcon,
   CommerceCode_3Icon,
 ] as const;
@@ -33,7 +33,7 @@ export const SupportContact = ({ section }: SupportContact.Props) => (
           <h2>{section.title}</h2>
         </div>
         <CommerceFigure
-          kind="hub"
+          kind="repairTools"
           surface="field"
           className="mx-auto mt-auto max-w-lg"
         />
