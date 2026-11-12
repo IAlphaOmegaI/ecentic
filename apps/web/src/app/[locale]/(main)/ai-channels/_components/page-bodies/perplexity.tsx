@@ -79,31 +79,35 @@ const ProductCard = ({ copy }: { copy: ReviewCopy }) => (
 
 const ShoppingExplorer = ({ copy }: { copy: ReviewCopy }) => (
   <div className="border-background-rich/15 border-t">
-    <div className="grid min-w-0 md:grid-cols-[1fr_1.2fr]">
-      <div className="relative isolate min-w-0 border-background-rich/15 p-7 max-sm:p-4 max-md:border-b md:border-r">
+    <div
+      data-perplexity-shopping-grid
+      className="grid min-w-0 md:grid-cols-[1fr_1.2fr]"
+    >
+      <div
+        data-perplexity-conversation
+        className="relative isolate flex min-w-0 flex-col border-background-rich/15 bg-emphasis max-md:border-b md:border-r"
+      >
         <IllustrationGlow />
-        <div className="mx-auto w-full max-w-88 rounded-xl border border-background-rich/15 bg-emphasis p-4">
-          <div className="mb-5 flex items-center justify-between gap-4">
-            <Image
-              src="/images/perplexity.svg"
-              alt="Perplexity"
-              width={24}
-              height={24}
-              className="size-6"
-            />
-            <span className="text-background-rich/55 text-xs">
-              {copy.sample}
-            </span>
-          </div>
-          <p className="ml-6 rounded-lg rounded-tr-sm border border-background-rich/10 bg-emphasis-rich px-4 py-3 text-background-rich text-sm leading-relaxed">
+        <header className="flex items-center justify-between gap-4 border-background-rich/15 border-b px-7 py-6 max-sm:px-4">
+          <Image
+            src="/images/perplexity.svg"
+            alt="Perplexity"
+            width={24}
+            height={24}
+            className="size-6"
+          />
+          <span className="text-background-rich/55 text-xs">{copy.sample}</span>
+        </header>
+        <div className="min-w-0 px-7 py-6 max-sm:px-4">
+          <p className="ml-auto w-fit max-w-[88%] rounded-lg rounded-tr-sm border border-background-rich/10 bg-emphasis-rich px-4 py-3 text-background-rich text-sm leading-relaxed">
             {copy.question}
           </p>
-          <p className="my-4 text-background-rich/75 text-sm leading-relaxed">
+          <p className="my-6 text-background-rich/75 text-sm leading-relaxed">
             {copy.answer}
           </p>
           <ProductCard copy={copy} />
         </div>
-        <p className="mx-auto mt-4 max-w-88 text-background-rich/50 text-xs leading-relaxed">
+        <p className="mt-auto border-background-rich/15 border-t px-7 py-5 text-background-rich/50 text-xs leading-relaxed max-sm:px-4">
           {copy.sampleNote}
         </p>
       </div>

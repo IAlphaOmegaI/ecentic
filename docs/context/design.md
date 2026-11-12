@@ -3,8 +3,9 @@
 The visual and interaction system for ecentic's public site, product workspace and onboarding.
 Consolidated from the complete 10–12 November 2026 review archive and the user's subsequent
 selections, through the [shopping-reference review](../marketing/review-16-shopping.md),
-the [integrated-surface and editorial review](../marketing/review-17-surfaces.md), and
-the latest [recovery and conversion review](../marketing/review-18-recovery-demo.md).
+the [integrated-surface and editorial review](../marketing/review-17-surfaces.md),
+the [recovery and conversion review](../marketing/review-18-recovery-demo.md), and
+the latest [seam and conversation review](../marketing/review-19-seams-and-conversation.md).
 
 This is the canonical guide. The repository-root `DESIGN.md` points to this file. It replaces the
 previous accumulation of review addenda: a later, specific decision is incorporated into the
@@ -205,6 +206,10 @@ single card, code pane, table row or nested accordion item.
 
 Only one element owns a given stroke. If the band or `gap-px` grid already draws it, remove the
 redundant adjacent child border. Last accordion rows must not double the section boundary.
+An ordered roadmap ending a band also leaves its bottom border and outer crosses to the
+band; retain only the roadmap's interior column junctions at that edge.
+When decorative elements follow the last row, target the last row by type or index;
+`:last-child` will match the decoration instead of removing the row's extra border.
 Text may be padded inside a cell; padding on the separator-owning shell must not shorten its line.
 
 ### Crosshairs
@@ -498,8 +503,9 @@ Provider styling does not turn the illustration into an official or live provide
 The conversation fills its owning section column. Do not put a rounded, bordered chat shell
 inside a second padded or tinted panel. Internal message padding and actual product-result
 tiles are useful; redundant decorative shells are not. Embedded previews start directly at their
-structural divider; do not add another provider-logo pad or outer inset. Keep the complete answer
-and any following UCP excerpt reachable. A fixed-height clip must not hide the final content, and
+structural divider; do not add another provider-logo pad or outer inset. Provider headers and
+sample-note separators meet the column edges. Keep the complete answer and any following UCP
+excerpt reachable. A fixed-height clip must not hide the final content, and
 local horizontal overflow must not trap ordinary vertical page scrolling. Give Google AI Mode its
 own query, answer and search-result composition instead of changing only the logo on a ChatGPT mockup.
 Use small localized sample labeling without overwhelming the provider's interface hierarchy.

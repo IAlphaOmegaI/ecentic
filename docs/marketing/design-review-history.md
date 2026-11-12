@@ -6,7 +6,8 @@ The archive through round 15 contains **21 saved Markdown files, 377 numbered co
 The [shopping-reference transcript](review-16-shopping.md) adds **25 comments**, followed by
 **12 comments** in the [integrated-surface and editorial transcript](review-17-surfaces.md).
 The [recovery and conversion review](review-18-recovery-demo.md) adds **11 comments**.
-The full review set now contains **425 numbered comments** across 24 Markdown sources.
+The [seam and conversation review](review-19-seams-and-conversation.md) adds **2 comments**.
+The full review set now contains **427 numbered comments** across 25 Markdown sources.
 Within the external archive, twenty files contain numbered comments; its remaining file references five inspiration images but contains no numbered comments.
 Some numbered-comment files also contain unnumbered follow-up requests; those requests inform the synthesis without increasing the numbered count.
 No screenshots or image contents are reproduced here.
@@ -138,6 +139,16 @@ after `R17`. SHA256: `78ac50ae4b6165c4e8f909efe4e52594dd9846ea9a89bb73b6c455a51f
   roadmap. A plane replaces the generic sieve hero.
 - `R18 #9–11` removes redundant padding around embedded shopping previews, adds meaningful
   sector identity and requires the complete conversation/UCP excerpt to remain reachable by scrolling.
+
+## Seam ownership and full-column conversation review
+
+`R19` refers to [review-19-seams-and-conversation.md](review-19-seams-and-conversation.md),
+the two-comment follow-up after `R18`. SHA256: `59c6c038c7d5be189ff3c33f48328af08bd42dd6350c4c5febaa9e5d3f1e02e4`.
+
+- `R19 #1` removes the doubled setup-to-FAQ rule in Google Merchant Center. The band owns
+  its final border and outer crosses; roadmap junctions remain at interior column boundaries.
+- `R19 #2` makes the Perplexity shopping conversation fill its owning column, removing the
+  redundant inset shell while retaining the product tile, message bubble and sample qualifications.
 
 ## Latest-choice supersession matrix
 

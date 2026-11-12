@@ -17,25 +17,29 @@ const icons = [
   CommerceChartActivity_2Icon,
 ] as const;
 
-/** Setup is an ordered reading surface: all four steps remain visible. */
+/** All steps stay visible; the section shell owns the final seam and outer crosses. */
 export const GoogleMerchantCenterRoadmap = ({
   section,
 }: MarketingSection.Props) => (
   <ol
     aria-label={section.title}
     data-merchant-roadmap
-    className="relative m-0 grid list-none border-accent-foreground border-y lg:grid-cols-4"
+    className="relative m-0 grid list-none border-accent-foreground border-t lg:grid-cols-4"
   >
     {section.items?.map((item, index) => {
       const Icon = icons[index] ?? CommerceFilePenIcon;
       return (
         <li
           key={item.title}
-          className="relative min-w-0 border-accent-foreground border-b bg-linear-to-b from-primary/5 to-background last:border-b-0 lg:border-r lg:border-b-0 lg:last:border-r-0"
+          className="relative min-w-0 border-accent-foreground border-b bg-linear-to-b from-primary/5 to-background last-of-type:border-b-0 lg:border-r lg:border-b-0 lg:last-of-type:border-r-0"
         >
           <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-          <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 lg:hidden" />
-          <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          {index > 0 && (
+            <>
+              <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 lg:hidden" />
+              <Plus className="bottom-0 left-0 hidden -translate-x-1/2 translate-y-1/2 lg:block" />
+            </>
+          )}
           <div className="relative grid h-full grid-cols-[48px_1fr] gap-5 px-8 py-8 max-sm:gap-4 max-sm:px-4 lg:flex lg:flex-col lg:gap-0 lg:px-6">
             <div
               aria-hidden
@@ -78,6 +82,5 @@ export const GoogleMerchantCenterRoadmap = ({
       );
     })}
     <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-    <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
   </ol>
 );
