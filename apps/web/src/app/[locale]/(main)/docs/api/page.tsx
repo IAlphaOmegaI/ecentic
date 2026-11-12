@@ -42,7 +42,6 @@ export default async () => {
       darkHero={false}
       content={content}
       path="/docs/api"
-      sectionTones={{ "api-reference": "light" }}
       heroChildren={
         <>
           <dl className="[&_dd]:wrap-anywhere mt-10 grid grid-cols-2 gap-x-8 gap-y-6 border-accent-foreground border-t pt-6 lg:grid-cols-[1fr_1fr_2fr] [&_dd]:mt-2 [&_dt]:text-foreground-dimmed [&_dt]:text-sm">
@@ -93,17 +92,17 @@ export default async () => {
                 <div className="mx-auto aspect-[5/4] w-full max-w-72">
                   <CommerceFigure
                     kind="document"
-                    surface="field"
+                    surface="dark"
                     className="h-full w-full"
                   />
                 </div>
-                <p className="mt-4 text-foreground text-lg">
+                <p className="mt-4 text-background-rich text-lg">
                   {copy.sourceTitle}
                 </p>
-                <p className="mt-4 text-foreground-dimmed text-sm leading-relaxed">
+                <p className="mt-4 text-background-rich/65 text-sm leading-relaxed">
                   {copy.sourceBody}
                 </p>
-                <p className="mt-6 break-words font-mono text-foreground-dimmed text-xs leading-loose">
+                <p className="mt-6 break-words font-mono text-background-rich/55 text-xs leading-loose">
                   operationId → parameters
                   <br />
                   requestBody → responses
@@ -175,7 +174,7 @@ export default async () => {
                 {copy.securityBody}
               </p>
             </div>
-            <div className="min-w-0 p-6 max-sm:p-4">
+            <div className="min-w-0">
               <ApiDefinition
                 label={copy.definition}
                 value={openApiDocument.components.securitySchemes}

@@ -29,8 +29,8 @@ export const PlaygroundGuide = ({
   const descriptions = [copy.discovery, ...capabilities];
 
   return (
-    <aside className="flex min-w-0 flex-col bg-linear-to-br from-primary/15 via-transparent to-transparent">
-      <div className="px-8 py-8 max-sm:px-4 max-sm:py-6">
+    <aside className="flex min-w-0 flex-col bg-linear-to-br from-primary/15 via-transparent to-transparent md:row-span-2 md:grid md:grid-rows-subgrid">
+      <div className="border-background-rich/15 border-b px-8 py-6 max-sm:px-4">
         <h3 className="text-background-rich text-xl leading-snug">
           {copy.title}
         </h3>
@@ -38,57 +38,59 @@ export const PlaygroundGuide = ({
           {copy.description}
         </p>
       </div>
-      <Accordion
-        value={open}
-        onValueChange={(value) =>
-          setOpen(value.filter((entry) => typeof entry === "string"))
-        }
-        className="border-background-rich/15 border-t"
-      >
-        {stages.map((stage, index) => {
-          const content = descriptions[index];
-          if (!content) return null;
+      <div className="flex min-h-0 flex-col">
+        <Accordion
+          value={open}
+          onValueChange={(value) =>
+            setOpen(value.filter((entry) => typeof entry === "string"))
+          }
+          className="border-background-rich/15"
+        >
+          {stages.map((stage, index) => {
+            const content = descriptions[index];
+            if (!content) return null;
 
-          return (
-            <AccordionItem
-              key={stage.value}
-              value={stage.value}
-              className="border-background-rich/15 last:border-b-0"
-            >
-              <AccordionTrigger
-                className="items-center gap-4 px-8 py-5 text-background-rich hover:bg-background-rich/5 focus-visible:outline-primary-rich focus-visible:-outline-offset-4 data-panel-open:text-primary-rich max-sm:px-4"
-                classList={{
-                  trigger: {
-                    icon: "size-4 shrink-0 motion-reduce:transition-none",
-                  },
-                }}
+            return (
+              <AccordionItem
+                key={stage.value}
+                value={stage.value}
+                className="border-background-rich/15 last:border-b-0"
               >
-                <span
-                  className="font-heading text-2xl text-primary-rich tabular-nums"
-                  aria-hidden="true"
+                <AccordionTrigger
+                  className="items-center gap-4 px-8 py-5 text-background-rich hover:bg-background-rich/5 focus-visible:outline-primary-rich focus-visible:-outline-offset-4 data-panel-open:text-primary-rich max-sm:px-4"
+                  classList={{
+                    trigger: {
+                      icon: "size-4 shrink-0 motion-reduce:transition-none",
+                    },
+                  }}
                 >
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <span className="flex-1">{content.title}</span>
-              </AccordionTrigger>
-              <AccordionPanel className="motion-reduce:transition-none">
-                <div className="space-y-4 px-8 pb-6 max-sm:px-4">
-                  <p className="text-background-rich/75 text-sm leading-relaxed">
-                    {content.description}
-                  </p>
-                  <p className="break-words font-mono text-primary-rich text-xs leading-relaxed">
-                    {stage.record}
-                  </p>
-                </div>
-              </AccordionPanel>
-            </AccordionItem>
-          );
-        })}
-      </Accordion>
-      <div className="mt-auto border-background-rich/15 border-t px-8 py-6 max-sm:px-4">
-        <Button color="neutral" render={<Link href="/ucp-validator" />}>
-          {copy.action.secondary}
-        </Button>
+                  <span
+                    className="font-heading text-2xl text-primary-rich tabular-nums"
+                    aria-hidden="true"
+                  >
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <span className="flex-1">{content.title}</span>
+                </AccordionTrigger>
+                <AccordionPanel className="motion-reduce:transition-none">
+                  <div className="space-y-4 px-8 pb-6 max-sm:px-4">
+                    <p className="text-background-rich/75 text-sm leading-relaxed">
+                      {content.description}
+                    </p>
+                    <p className="break-words font-mono text-primary-rich text-xs leading-relaxed">
+                      {stage.record}
+                    </p>
+                  </div>
+                </AccordionPanel>
+              </AccordionItem>
+            );
+          })}
+        </Accordion>
+        <div className="mt-auto border-background-rich/15 border-t px-8 py-6 max-sm:px-4">
+          <Button color="neutral" render={<Link href="/ucp-validator" />}>
+            {copy.action.secondary}
+          </Button>
+        </div>
       </div>
     </aside>
   );

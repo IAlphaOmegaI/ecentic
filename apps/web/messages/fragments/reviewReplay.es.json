@@ -1,0 +1,20 @@
+{
+  "reviewReplay": {
+    "summary": "Resumen visible de la decisión",
+    "disclosure": "Un ejemplo preparado de los datos comprobados y la selección resultante.",
+    "inspection": "Inspección de fichas",
+    "budget": "Presupuesto del comprador",
+    "criteria": "Requisitos de ajuste",
+    "evidence": "Datos de la ficha",
+    "matched": "Disponible en la ficha",
+    "missing": "Falta en la ficha",
+    "complete": "Comparación completada",
+    "sampleId": "Ejemplo 001",
+    "process": {
+      "matchup": "Producto + competidor",
+      "compare": "Tres perspectivas de modelos",
+      "diagnose": "Decisión registrada + datos declarados",
+      "improve": "Revisar → mejorar → comparar de nuevo"
+    }
+  }
+}

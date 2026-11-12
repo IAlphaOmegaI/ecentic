@@ -1,0 +1,12 @@
+{
+  "reviewDiff": {
+    "view": "Diff unificado",
+    "added": "Añadido",
+    "removed": "Eliminado",
+    "unchanged": "Contexto sin cambios",
+    "annotations": "Por qué importan estos campos",
+    "action": { "primary": "Copiar registro actualizado" },
+    "copyState": { "copied": "Copiado", "failed": "No se pudo copiar" },
+    "imageNote": "Foto ilustrativa de producto. El registro de ejemplo no describe el modelo de la imagen."
+  }
+}

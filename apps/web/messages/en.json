@@ -18895,7 +18895,16 @@
     "drawer": "Illustration: three catalog drawers. Move the pointer vertically to open a drawer.",
     "format": "Illustration: a file with uneven rows. Move the pointer down the file to align them.",
     "relay": "Illustration: a branching network. Point at a destination to illuminate the route.",
-    "hub": "Illustration: connected tiles around a central hub. Point at a tile to lift it and highlight its connection."
+    "hub": "Illustration: connected tiles around a central hub. Point at a tile to lift it and highlight its connection.",
+    "shopifyBag": "Shopify shopping bag with catalog cards that lift toward the pointer",
+    "shoppingBot": "AI shopping bot whose scanner follows a product card",
+    "custom": {
+      "rest": "At rest",
+      "product": "Product {number}",
+      "selectedProduct": "Selected product {number}",
+      "scanning": "Scanning",
+      "selected": "Product selected"
+    }
   },
   "enterprisePilotPreview": {
     "label": "Illustrative pilot · sample brief",
@@ -19019,5 +19028,182 @@
         "action": "Discuss a custom purchase flow"
       }
     }
+  },
+  "reviewDiff": {
+    "view": "Unified diff",
+    "added": "Added",
+    "removed": "Removed",
+    "unchanged": "Unchanged context",
+    "annotations": "Why these fields matter",
+    "action": {
+      "primary": "Copy updated record"
+    },
+    "copyState": {
+      "copied": "Copied",
+      "failed": "Copy unavailable"
+    },
+    "imageNote": "Illustrative product photo. The sample record does not describe the pictured model."
+  },
+  "reviewReplay": {
+    "summary": "Visible decision summary",
+    "disclosure": "A scripted sample of the facts checked and the resulting selection.",
+    "inspection": "Listing inspection",
+    "budget": "Shopper budget",
+    "criteria": "Fit requirements",
+    "evidence": "Listing evidence",
+    "matched": "Available in the listing",
+    "missing": "Missing from the listing",
+    "complete": "Comparison complete",
+    "sampleId": "Sample 001",
+    "process": {
+      "matchup": "Product + competitor",
+      "compare": "Three model perspectives",
+      "diagnose": "Recorded decision + stated facts",
+      "improve": "Review → improve → compare again"
+    }
+  },
+  "reviewSolutionsChannels": {
+    "sample": "Illustrative example",
+    "assistant": "Shopping assistant",
+    "discovery": "UCP discovery excerpt",
+    "discoveryNote": "Profile discovery does not establish product or checkout eligibility.",
+    "previewNote": "Illustrative conversations and partial UCP responses, not live assistant answers. Product cards follow the discovery patterns documented by Google and OpenAI; ChatGPT’s commerce integration is separate from UCP.",
+    "googleSource": "Google shopping and UCP",
+    "openaiSource": "ChatGPT shopping results",
+    "sectors": [
+      {
+        "product": "Single malt · example",
+        "details": [
+          "Smoky tasting profile",
+          "Origin and bottle size"
+        ],
+        "response": "Compare the verified tasting notes and bottle details.",
+        "limit": "Research only. Alcohol restrictions apply."
+      },
+      {
+        "product": "Protein snack · example",
+        "details": [
+          "Protein per serving",
+          "Ingredients and allergens"
+        ],
+        "response": "Match the nutrition label to your serving-size and calorie limits.",
+        "limit": "Confirm nutrition and allergen information."
+      },
+      {
+        "product": "Moisturizer · example",
+        "details": [
+          "Fragrance-free formula",
+          "Full ingredient list"
+        ],
+        "response": "Check the ingredient list and the product’s stated formulation.",
+        "limit": "Product information, not medical advice."
+      },
+      {
+        "product": "Wireless earbuds · example",
+        "details": [
+          "Battery test conditions",
+          "Noise cancellation"
+        ],
+        "response": "Compare battery life, charging and the features you need.",
+        "limit": "Check current price and availability."
+      },
+      {
+        "product": "Compact sofa bed · example",
+        "details": [
+          "Width: 185 cm",
+          "Open depth: 210 cm"
+        ],
+        "response": "Check both the closed dimensions and the space needed when open.",
+        "limit": "Sample measurements for this illustration."
+      },
+      {
+        "product": "Hiking jacket · example",
+        "details": [
+          "Waterproof construction",
+          "Fit and size chart"
+        ],
+        "response": "Compare the weather protection, measurements and return policy.",
+        "limit": "Verify the product’s performance claims."
+      },
+      {
+        "product": "Senior dog food · example",
+        "details": [
+          "Life-stage label",
+          "Ingredients and feeding guide"
+        ],
+        "response": "Read the ingredients and feeding guidance before comparing options.",
+        "limit": "Diet suitability needs individual advice."
+      },
+      {
+        "product": "Lisbon city break · example",
+        "details": [
+          "Dates and room type",
+          "Cancellation terms"
+        ],
+        "response": "Compare the stay details, dates and the complete booking terms.",
+        "limit": "Travel availability and UCP support vary."
+      }
+    ],
+    "catalog": {
+      "sample": "Example imported records",
+      "products": [
+        "Wireless headphones",
+        "Noise-canceling headphones",
+        "Wireless earbuds"
+      ],
+      "ready": "Fields to review"
+    },
+    "perplexity": {
+      "sample": "Illustrative shopping journey",
+      "question": "Which headphones would work well for a long flight?",
+      "answer": "Compare noise cancellation, battery life and comfort.",
+      "product": "Wireless headphones",
+      "details": "Noise cancellation · over-ear",
+      "price": "Price supplied by the merchant",
+      "website": "Merchant product page",
+      "record": "Example merchant record",
+      "attributes": [
+        {
+          "title": "Product details",
+          "value": "Title, image and specifications"
+        },
+        {
+          "title": "Price and availability",
+          "value": "Current merchant information"
+        },
+        {
+          "title": "Product URL",
+          "value": "The page where the shopper continues"
+        }
+      ],
+      "productCard": "Product card in the answer",
+      "merchantData": "From product information to a shopping card",
+      "merchantNote": "Perplexity describes using merchant information to enrich product cards. More complete data does not guarantee a recommendation.",
+      "pathsTitle": "Where the shopper goes next",
+      "pathsDescription": "Two paths from a product card, as described in Perplexity’s shopping announcement.",
+      "purchaseTitle": "Buy with Pro",
+      "purchaseBody": "The November 2024 announcement limits this to Pro users in the US and select products from select merchants. Check Perplexity for current access.",
+      "purchaseBadge": "Selected purchases",
+      "storeTitle": "Continue on the merchant website",
+      "storeBody": "When Buy with Pro is unavailable, the shopper follows the product link to the merchant’s site.",
+      "storeBadge": "Merchant handoff",
+      "trackingTitle": "Where ecentic fits",
+      "trackingBody": "ecentic can recognize Perplexity referrals on Shopify. Perplexity store scans and a dedicated merchant feed are coming soon; there is no ecentic Perplexity checkout connection.",
+      "source": "Read Perplexity’s announcement",
+      "sampleNote": "Example interface and product, not a live Perplexity answer or offer."
+    }
+  },
+  "reviewNotFound": {
+    "status": "Page not found",
+    "description": "We couldn't find a page at this address. Head home, go back, or explore the paths below.",
+    "exploreTitle": "A few good places to go.",
+    "action": {
+      "primary": "Back home",
+      "secondary": "Go back",
+      "tertiary": "Explore ecentic"
+    }
+  },
+  "reviewTonalAscii": {
+    "imageNote": "Illustrative product artwork. The sample record does not describe the pictured model."
   }
 }

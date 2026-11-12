@@ -73,7 +73,7 @@ export const PlatformPrinciples = ({
       description={section.description}
       className="pb-10 [&>.marketing-eyebrow]:text-primary-rich [&>p]:text-background-rich/75"
     />
-    <div className="relative grid gap-px border border-[var(--rail-color)] border-x-transparent bg-[var(--rail-color)] bg-clip-padding md:grid-cols-2">
+    <div className="marketing-seam relative grid gap-px border border-[var(--rail-color)] border-x-transparent border-y bg-[var(--rail-color)] bg-clip-padding md:grid-cols-2">
       <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 [&>span]:bg-background-rich/35" />
       <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 [&>span]:bg-background-rich/35" />
       {section.items?.map((item, index) => {

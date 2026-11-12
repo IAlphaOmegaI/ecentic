@@ -1,11 +1,12 @@
 "use client";
 
 import { ArrowRightIcon } from "@zenncore/icons";
-import { Toggle } from "@zenncore/web/components/toggle";
 import type { AppConfig } from "next-intl";
-import { type ReactNode, useState } from "react";
-import { CodeRecord } from "@/components/marketing/interactive/code-comparison";
-import { useInteractive } from "@/components/marketing/interactive/use-interactive";
+import type { ReactNode } from "react";
+import {
+  CodeDiff,
+  type CodeRecord,
+} from "@/components/marketing/interactive/code-comparison";
 import { Plus } from "@/components/plus";
 import type { Sector, ShelfScenario } from "@/content/sectors";
 import { SectorBrandReferences } from "./sector-brand-references";
@@ -89,8 +90,6 @@ export const CompareShelf = ({
   referenceCopy,
   fallback,
 }: CompareShelf.Props) => {
-  const { ready, reduced } = useInteractive();
-  const [fixed, setFixed] = useState(false);
   const position = 0;
   const scenario = scenarios[position];
   const content = copy.scenarios[position];
@@ -131,13 +130,12 @@ export const CompareShelf = ({
       note: presentation.rivalNote,
     },
   ];
-  const state = fixed ? "after" : "before";
   const labels = { before: shared.beforeLabel, after: shared.afterLabel };
 
   return (
     <div
       data-compare-shelf={sector}
-      data-shelf-mode={ready && !reduced ? "interactive" : "static"}
+      data-shelf-mode="diff"
       className="relative min-w-0 bg-emphasis-dimmed"
     >
       <SectorBrandReferences sector={sector} copy={referenceCopy} />
@@ -194,62 +192,26 @@ export const CompareShelf = ({
       <p className="border-accent-foreground border-t px-4 py-5 text-foreground-dimmed text-sm sm:px-8">
         {presentation.sampleNote}
       </p>
-      {ready && !reduced ? (
-        <>
-          <div className="flex flex-wrap items-center justify-between gap-4 border-accent-foreground border-b px-4 py-5 sm:px-8">
-            <p
-              className="font-medium text-foreground-rich text-sm"
-              aria-live="polite"
-            >
-              {labels[state]}
-            </p>
-            <Toggle
-              pressed={fixed}
-              onPressedChange={setFixed}
-              className="h-auto min-h-11 w-auto shrink-0 gap-3 whitespace-nowrap rounded-md border border-accent-foreground px-4 py-3 text-sm data-pressed:border-primary data-pressed:text-primary-text"
-            >
-              {fixed ? presentation.before : presentation.after}
-            </Toggle>
-          </div>
-          <CodeRecord
-            rows={rows}
-            state={state}
-            filename={`${sector}-comparison.json`}
-            label={`${shared.exampleLabel} — ${labels[state]}`}
-          />
-          <div
-            className="border-accent-foreground border-t px-4 py-6 sm:px-8"
-            aria-live="polite"
-            aria-atomic="true"
+      <CodeDiff
+        rows={rows}
+        filename={`${sector}-comparison.json`}
+        label={shared.exampleLabel}
+        before={labels.before}
+        after={labels.after}
+      />
+      <div className="grid border-accent-foreground border-t md:grid-cols-2">
+        {(["before", "after"] as const).map((value) => (
+          <section
+            key={value}
+            className="min-w-0 border-accent-foreground px-4 py-6 last:border-t sm:px-8 md:last:border-t-0 md:last:border-l"
           >
-            <p className="font-medium text-foreground-rich text-sm">
-              {shared.resultLabel}
+            <h4 className="text-foreground-rich text-lg">{labels[value]}</h4>
+            <p className="mt-4 max-w-[65ch] text-foreground-dimmed text-sm leading-relaxed">
+              {content[value]}
             </p>
-            <p className="mt-3 max-w-[75ch] text-foreground-dimmed">
-              {fixed ? content.after : content.before}
-            </p>
-          </div>
-        </>
-      ) : (
-        <div data-code-static>
-          {(["before", "after"] as const).map((value) => (
-            <div key={value} className="border-accent-foreground border-t">
-              <h4 className="px-4 py-5 text-foreground-rich sm:px-8">
-                {labels[value]}
-              </h4>
-              <CodeRecord
-                rows={rows}
-                state={value}
-                filename={`${sector}-comparison.json`}
-                label={`${shared.exampleLabel} — ${labels[value]}`}
-              />
-              <p className="px-4 py-6 text-foreground-dimmed sm:px-8">
-                {content[value]}
-              </p>
-            </div>
-          ))}
-        </div>
-      )}
+          </section>
+        ))}
+      </div>
       <p className="border-accent-foreground border-t px-4 py-6 text-foreground-dimmed text-sm sm:px-8">
         {presentation.format}
       </p>

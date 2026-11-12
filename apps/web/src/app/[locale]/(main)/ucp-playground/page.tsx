@@ -148,12 +148,12 @@ export default async () => {
         tone="dark"
         className="[&>.marketing-rail]:border-background-rich/15 [&>.marketing-rail]:border-x"
       >
-        <div className="relative grid min-w-0 grid-cols-[minmax(0,2fr)_minmax(0,1fr)] border-background-rich/15 border-y max-md:grid-cols-1">
+        <div className="relative grid min-w-0 grid-cols-[minmax(0,2fr)_minmax(0,1fr)] border-background-rich/15 border-y max-md:grid-cols-1 md:grid-rows-[auto_1fr]">
           <MarketingEdgeCrosses />
           <MarketingEdgeCrosses edge="bottom" />
           <div
             id="playground-session"
-            className="flex min-h-0 min-w-0 scroll-mt-24 flex-col border-background-rich/15 border-r bg-emphasis-dimmed max-md:border-r-0 max-md:border-b"
+            className="flex min-h-0 min-w-0 scroll-mt-24 flex-col border-background-rich/15 border-r bg-emphasis-dimmed max-md:border-r-0 max-md:border-b md:row-span-2 md:grid md:grid-rows-subgrid"
           >
             <div className="shrink-0 border-background-rich/15 border-b bg-linear-to-r from-primary/15 to-transparent px-8 py-6 max-sm:px-4">
               <h3 className="text-background-rich text-xl">

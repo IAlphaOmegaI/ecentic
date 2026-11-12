@@ -8,7 +8,7 @@ export const ProductExample = async ({
   content,
   kind,
 }: ProductExample.Props) => {
-  const { reviewCode } = await getMessages();
+  const { reviewCode, reviewTonalAscii } = await getMessages();
   const annotations = reviewCode.platform[kind];
   const rows = content.rows.map((row, index) => ({
     key: annotations[index]?.key ?? row.label,
@@ -49,6 +49,11 @@ export const ProductExample = async ({
   return (
     <AnnotatedCodeComparison
       title={content.product}
+      image={{
+        src: "/images/products/sony-wh-1000xm5.webp",
+        caption: reviewTonalAscii.imageNote,
+        artwork: "headphones",
+      }}
       sampleLabel={content.label}
       before={content.before}
       after={content.after}

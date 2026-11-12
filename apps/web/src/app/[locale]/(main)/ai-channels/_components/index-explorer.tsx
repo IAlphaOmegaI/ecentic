@@ -13,20 +13,21 @@ export const IndexExplorer = ({ channels, labels }: IndexExplorer.Props) => (
   <Tabs
     defaultValue="google"
     orientation="vertical"
-    className="grid min-w-0 min-[1000px]:grid-cols-[1fr_2fr]"
+    data-channel-explorer
+    className="grid min-w-0 border-background-rich/15 border-t min-[1000px]:grid-cols-[1fr_2fr] [&_.marketing-status>span]:bg-primary-rich [&_.marketing-status]:text-background-rich/85"
   >
-    <div className="min-w-0 bg-background-dimmed min-[1000px]:border-accent-foreground min-[1000px]:border-r">
+    <div className="min-w-0 bg-emphasis min-[1000px]:border-background-rich/15 min-[1000px]:border-r">
       <TabsList
         aria-label={labels.providersLabel}
-        className="grid w-full grid-cols-2 overflow-visible rounded-none border-0 min-[1000px]:grid-cols-1"
+        className="grid w-full grid-cols-2 gap-0 overflow-visible rounded-none border-0 bg-emphasis-dimmed p-0 min-[1000px]:grid-cols-1"
       >
         {channels.map((channel) => (
           <Tab
             key={channel.key}
             value={channel.key}
-            className="h-auto min-h-24 min-w-0 flex-col items-start justify-center gap-2 whitespace-normal border-accent-foreground border-r border-b px-4 py-4 text-left text-foreground-rich last:border-r-0 even:border-r-0 focus-visible:z-10 focus-visible:outline-offset-[-4px] data-[active]:bg-background data-selected:bg-background data-[active]:text-primary-text data-selected:text-primary-text sm:px-8 min-[1000px]:min-h-28 min-[1000px]:border-r-0 min-[1000px]:last:border-b-0"
+            className="h-auto min-h-24 min-w-0 flex-col items-start justify-center gap-2 whitespace-normal border-background-rich/15 border-r border-b px-4 py-4 text-left text-background-rich last:border-r-0 even:border-r-0 focus-visible:z-10 focus-visible:outline-offset-[-4px] data-[active]:bg-primary-dimmed data-selected:bg-primary-dimmed data-[active]:text-primary-rich data-selected:text-primary-rich sm:px-8 min-[1000px]:min-h-28 min-[1000px]:border-r-0 min-[1000px]:last:border-b-0"
           >
-            <span className="flex w-full items-center justify-between gap-4 text-base">
+            <span className="flex w-full items-center justify-between gap-4 font-heading text-lg leading-tight">
               {channel.name}
               <ArrowRightIcon className="size-4 shrink-0" aria-hidden="true" />
             </span>
@@ -37,7 +38,7 @@ export const IndexExplorer = ({ channels, labels }: IndexExplorer.Props) => (
         ))}
       </TabsList>
     </div>
-    <div className="min-w-0 bg-background">
+    <div className="min-w-0 bg-emphasis-dimmed">
       {channels.map((channel) => (
         <TabsPanel
           key={channel.key}
@@ -45,12 +46,12 @@ export const IndexExplorer = ({ channels, labels }: IndexExplorer.Props) => (
           keepMounted
           className="min-w-0 data-[hidden]:hidden"
         >
-          <div className="grid gap-8 px-4 py-8 sm:px-8 sm:py-12">
+          <div className="grid gap-8 bg-linear-to-br from-primary-dimmed/25 via-emphasis-dimmed to-emphasis-dimmed px-4 py-8 sm:px-8 sm:py-12">
             <div className="flex min-h-20 items-center justify-between gap-8">
               <ProviderLogo
                 provider={channel.key}
                 decorative
-                className="h-20 w-auto max-w-56 rounded-none"
+                className="h-16 w-40 rounded-md bg-background-rich object-center p-3"
               />
               <MarketingStatus status={channel.status}>
                 {channel.statusLabel}
@@ -60,7 +61,7 @@ export const IndexExplorer = ({ channels, labels }: IndexExplorer.Props) => (
               <h3 className="!text-[clamp(1.75rem,3vw,2.75rem)]">
                 {channel.name}
               </h3>
-              <p className="mt-4 max-w-[52ch] text-foreground-dimmed text-lg leading-relaxed">
+              <p className="mt-4 max-w-[52ch] text-background-rich/65 text-lg leading-relaxed">
                 {channel.summary}
               </p>
             </div>
@@ -71,20 +72,20 @@ export const IndexExplorer = ({ channels, labels }: IndexExplorer.Props) => (
               </Button>
             </div>
           </div>
-          <div className="border-accent-foreground border-t bg-background-dimmed px-4 py-8 sm:px-8">
-            <p className="mb-4 font-medium text-foreground-rich">
+          <div className="border-background-rich/15 border-t bg-emphasis px-4 py-8 sm:px-8">
+            <p className="mb-4 font-medium text-background-rich">
               {labels.capabilitiesLabel}
             </p>
             <Tabs defaultValue="simulate">
               <TabsList
                 aria-label={`${channel.name}: ${labels.capabilitiesLabel}`}
-                className="grid w-full grid-cols-4 bg-background"
+                className="grid w-full grid-cols-2 border-background-rich/15 bg-emphasis-dimmed p-1 sm:grid-cols-4"
               >
                 {channel.capabilities.map((capability) => (
                   <Tab
                     key={capability.key}
                     value={capability.key}
-                    className="h-auto min-h-12 min-w-0 whitespace-normal px-2 py-2 text-sm data-[active]:bg-primary data-selected:bg-primary"
+                    className="h-auto min-h-12 min-w-0 whitespace-normal px-2 py-2 text-background-rich/75 text-sm data-[active]:bg-primary data-selected:bg-primary data-[active]:text-background-rich data-selected:text-background-rich"
                   >
                     {capability.title}
                   </Tab>
@@ -100,7 +101,7 @@ export const IndexExplorer = ({ channels, labels }: IndexExplorer.Props) => (
                   <MarketingStatus status={capability.status}>
                     {capability.statusLabel}
                   </MarketingStatus>
-                  <p className="mt-4 max-w-[58ch] text-foreground-dimmed leading-relaxed">
+                  <p className="mt-4 max-w-[58ch] text-background-rich/65 leading-relaxed">
                     {capability.detail}
                   </p>
                 </TabsPanel>
@@ -108,17 +109,17 @@ export const IndexExplorer = ({ channels, labels }: IndexExplorer.Props) => (
             </Tabs>
           </div>
           {channel.interests && (
-            <div className="border-accent-foreground border-t px-4 py-8 sm:px-8">
-              <p className="mb-4 font-medium text-foreground-rich">
+            <div className="border-background-rich/15 border-t px-4 py-8 sm:px-8">
+              <p className="mb-4 font-medium text-background-rich">
                 {labels.interestTitle}
               </p>
               {channel.interests}
             </div>
           )}
-          <div className="border-accent-foreground border-t">
+          <div className="border-background-rich/15 border-t">
             <div className="flex flex-wrap items-center justify-between gap-4 px-4 py-6 sm:px-8">
               <h4 className="!text-lg">{labels.sourceTitle}</h4>
-              <p className="text-foreground-dimmed text-sm">
+              <p className="text-background-rich/65 text-sm">
                 {labels.checked}:{" "}
                 <time dateTime={channel.checkedAt}>{labels.date}</time>
               </p>
@@ -127,11 +128,11 @@ export const IndexExplorer = ({ channels, labels }: IndexExplorer.Props) => (
               {channel.sources.map((source) => (
                 <li
                   key={source.href}
-                  className="border-accent-foreground border-t"
+                  className="border-background-rich/15 border-t"
                 >
                   <a
                     href={source.href}
-                    className="flex items-center justify-between gap-6 px-4 py-4 text-primary-text text-sm underline decoration-accent-foreground underline-offset-4 hover:bg-background-dimmed focus-visible:outline-offset-[-4px] sm:px-8"
+                    className="flex items-center justify-between gap-6 px-4 py-4 text-primary-rich text-sm underline decoration-background-rich/30 underline-offset-4 hover:bg-emphasis focus-visible:outline-offset-[-4px] sm:px-8"
                   >
                     {source.title}
                     <ArrowRightIcon

@@ -1,0 +1,13 @@
+{
+  "commerceFigures": {
+    "shopifyBag": "Shopify shopping bag with catalog cards that lift toward the pointer",
+    "shoppingBot": "AI shopping bot whose scanner follows a product card",
+    "custom": {
+      "rest": "At rest",
+      "product": "Product {number}",
+      "selectedProduct": "Selected product {number}",
+      "scanning": "Scanning",
+      "selected": "Product selected"
+    }
+  }
+}

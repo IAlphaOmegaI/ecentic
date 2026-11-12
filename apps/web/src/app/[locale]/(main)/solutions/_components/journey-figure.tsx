@@ -9,6 +9,7 @@ import {
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import Image from "next/image";
+import { IllustrationGlow } from "@/components/marketing/illustration-glow";
 import { useInteractive } from "@/components/marketing/interactive/use-interactive";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { Motion } from "@/components/motion";
@@ -41,7 +42,7 @@ export const JourneyFigure = ({
         large && "h-64 sm:h-80",
       )}
     >
-      <div className="pointer-events-none absolute inset-0 -z-1 bg-radial-[at_50%_60%] from-primary/20 via-primary/5 to-transparent" />
+      <IllustrationGlow />
       {stage !== 1 && (
         <div className="absolute inset-x-[12%] top-1/2 h-px bg-linear-to-r from-transparent via-primary-rich/70 to-transparent" />
       )}

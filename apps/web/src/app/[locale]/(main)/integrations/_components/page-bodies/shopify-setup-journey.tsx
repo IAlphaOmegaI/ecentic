@@ -14,6 +14,8 @@ import {
   AccordionPanel,
   AccordionTrigger,
 } from "@zenncore/web/components/accordion";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
+import { IllustrationGlow } from "@/components/marketing/illustration-glow";
 import { useInteractive } from "@/components/marketing/interactive/use-interactive";
 import type { MarketingPage } from "@/components/marketing/page";
 import { MarketingActions } from "@/components/marketing/primitives";
@@ -31,9 +33,12 @@ const SetupGraphic = ({ stage }: { stage: number }) => (
   <div
     aria-hidden
     data-shopify-stage={stage}
-    className="relative flex h-32 min-w-0 items-center justify-center gap-6 overflow-hidden px-4 max-sm:h-24 max-sm:gap-4 max-sm:px-0"
+    className={cn(
+      "relative isolate flex min-w-0 items-center justify-center gap-6 overflow-hidden px-4 max-sm:gap-4 max-sm:px-0",
+      stage === 1 ? "h-56 max-sm:h-44" : "h-32 max-sm:h-24",
+    )}
   >
-    <div className="absolute inset-0 -z-1 bg-radial-[at_50%_100%] from-primary/10 via-transparent to-transparent" />
+    <IllustrationGlow />
     {stage === 0 ? (
       <>
         <ProviderLogo
@@ -47,30 +52,10 @@ const SetupGraphic = ({ stage }: { stage: number }) => (
         <CommerceFileShieldIcon className="size-12 shrink-0 text-primary-text max-sm:size-10" />
       </>
     ) : stage === 1 ? (
-      <div className="relative flex h-28 w-full max-w-64 items-end justify-center gap-2">
-        {[-1, 0, 1].map((position) => (
-          <div
-            key={position}
-            className={cn(
-              "relative flex h-20 w-16 min-w-0 flex-col justify-between rounded-md border p-2",
-              position === 0
-                ? "-translate-y-6 border-primary/50 bg-background-rich shadow-[0_0_40px_-20px_var(--color-primary)]"
-                : "border-accent-foreground bg-background",
-            )}
-          >
-            <CommerceBasketShoppingIcon
-              className={cn(
-                "size-8",
-                position === 0 ? "text-primary-text" : "text-foreground-dimmed",
-              )}
-            />
-            <div className="space-y-2">
-              <span className="block h-px w-full bg-accent-foreground" />
-              <span className="block h-px w-2/3 bg-primary/40" />
-            </div>
-          </div>
-        ))}
-      </div>
+      <CommerceFigure
+        kind="shopifyBag"
+        className="max-w-[260px] bg-transparent max-sm:max-w-[220px]"
+      />
     ) : stage === 2 ? (
       <div className="w-full max-w-64 rounded-md border border-accent-foreground bg-background-rich px-4 py-2 font-mono text-xs leading-6 sm:text-sm">
         <span className="text-foreground-dimmed">{"{"}</span>

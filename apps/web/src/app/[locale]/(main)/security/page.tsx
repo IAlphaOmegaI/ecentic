@@ -1,4 +1,10 @@
 import {
+  CommerceFileShieldIcon,
+  DownloadIcon,
+  GlobeIcon,
+  ShieldCheckIcon,
+} from "@zenncore/icons";
+import {
   Table,
   TableBody,
   TableCaption,
@@ -10,7 +16,10 @@ import {
 import { getMessages } from "next-intl/server";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import { CommerceFigure } from "@/components/marketing/commerce-figure";
-import { MarketingLightBand } from "@/components/marketing/light-band";
+import {
+  MarketingEdgeCrosses,
+  MarketingLightBand,
+} from "@/components/marketing/light-band";
 import {
   MarketingPage,
   MarketingSection,
@@ -22,6 +31,7 @@ import {
 } from "@/components/marketing/primitives";
 import { SecurityDetails } from "./_components/security-details";
 import { SecurityFlow } from "./_components/security-flow";
+import { StoreAccess } from "./_components/store-access";
 import { VaultFigure } from "./_components/vault-figure";
 
 export const generateMetadata = async () => {
@@ -79,10 +89,35 @@ export default async () => {
 
   return (
     <MarketingPage
-      content={{ ...content, sections: [] }}
+      content={{ ...content, facts: [], sections: [] }}
       path="/security"
       heroIllustration={<VaultFigure label={hairlineSecurity.label} />}
     >
+      <MarketingBand className="[&_.marketing-guides]:hidden">
+        <ul className="grid sm:grid-cols-2 md:grid-cols-4">
+          {content.facts.map((fact, index) => {
+            const Icon =
+              [
+                DownloadIcon,
+                GlobeIcon,
+                ShieldCheckIcon,
+                CommerceFileShieldIcon,
+              ][index] ?? ShieldCheckIcon;
+            return (
+              <li
+                key={fact}
+                className="flex min-w-0 items-center gap-4 border-accent-foreground px-4 py-6 max-sm:border-b max-sm:last:border-b-0 sm:border-r sm:even:border-r-0 md:px-8 md:even:border-r md:last:border-r-0"
+              >
+                <Icon
+                  className="size-6 shrink-0 text-primary-text"
+                  aria-hidden
+                />
+                <span className="text-sm leading-snug">{fact}</span>
+              </li>
+            );
+          })}
+        </ul>
+      </MarketingBand>
       {reviewed && (
         <MarketingBand
           id={reviewed.id}
@@ -100,66 +135,18 @@ export default async () => {
       )}
 
       {access && (
-        <MarketingBand
-          id={access.id}
-          className="[&>.marketing-rail]:bg-background-dimmed [&_.marketing-guides]:hidden"
-        >
+        <MarketingBand id={access.id} className="[&_.marketing-guides]:hidden">
           <div className="px-4 py-8 md:px-8 md:py-12">
             <h2>{access.title}</h2>
           </div>
-          <div className="grid border-accent-foreground border-t md:grid-cols-2">
-            {[
-              { title: labels.accessTitle, paragraph: access.paragraphs?.[0] },
-              {
-                title: labels.permissionsTitle,
-                paragraph: access.paragraphs?.[4],
-              },
-            ].map((item) => (
-              <article
-                key={item.title}
-                className="min-w-0 px-4 py-8 first:border-accent-foreground first:border-b md:px-8 md:first:border-r md:first:border-b-0"
-              >
-                <h3>{item.title}</h3>
-                <p className="mt-4 max-w-[60ch] text-foreground-dimmed">
-                  {item.paragraph}
-                </p>
-              </article>
-            ))}
+          <StoreAccess section={access} labels={labels} />
+          <div className="marketing-section-grid relative grid gap-6 border-accent-foreground border-t bg-linear-to-r from-primary/12 to-transparent px-4 py-8 md:grid-cols-[auto_1fr] md:items-center md:px-8 md:py-10">
+            <MarketingEdgeCrosses />
+            <GlobeIcon className="size-8 text-primary-text" aria-hidden />
+            <p className="max-w-[68ch] font-heading text-foreground-rich text-xl leading-snug md:text-2xl">
+              {access.paragraphs?.[6]}
+            </p>
           </div>
-          <SecurityDetails
-            items={[
-              {
-                id: "tracking",
-                title: labels.trackingTitle,
-                paragraphs: access.paragraphs?.slice(2, 4) ?? [],
-              },
-            ]}
-          />
-          <div className="grid border-accent-foreground border-t md:grid-cols-2">
-            {[
-              {
-                title: "Google Merchant Center",
-                paragraph: access.paragraphs?.[1],
-              },
-              {
-                title: labels.checkoutTitle,
-                paragraph: access.paragraphs?.[5],
-              },
-            ].map((item) => (
-              <article
-                key={item.title}
-                className="min-w-0 px-4 py-8 first:border-accent-foreground first:border-b md:px-8 md:first:border-r md:first:border-b-0"
-              >
-                <h3>{item.title}</h3>
-                <p className="mt-4 max-w-[60ch] text-foreground-dimmed">
-                  {item.paragraph}
-                </p>
-              </article>
-            ))}
-          </div>
-          <p className="border-accent-foreground border-t px-4 py-6 font-medium text-foreground-rich md:px-8">
-            {access.paragraphs?.[6]}
-          </p>
         </MarketingBand>
       )}
 
@@ -171,8 +158,13 @@ export default async () => {
           className="[&_.marketing-guides]:hidden"
         >
           <div className="grid md:grid-cols-[2fr_3fr]">
-            <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-8 md:border-r md:border-b-0 md:px-8 md:py-12">
+            <div className="flex flex-col border-accent-foreground border-b bg-background-dimmed px-4 py-8 md:border-r md:border-b-0 md:px-8 md:py-12">
               <h2>{infrastructure.title}</h2>
+              <CommerceFigure
+                kind="relay"
+                surface="field"
+                className="mx-auto my-auto max-w-96"
+              />
             </div>
             <SecurityRows section={infrastructure} />
           </div>
@@ -182,12 +174,12 @@ export default async () => {
       {models && (
         <MarketingLightBand id={models.id}>
           <div className="grid md:grid-cols-[2fr_3fr]">
-            <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-8 md:border-r md:border-b-0 md:px-8 md:py-12">
+            <div className="border-accent-foreground border-b bg-linear-to-b from-primary/14 via-background-rich to-background-rich px-4 py-8 md:border-r md:border-b-0 md:px-8 md:py-12">
               <h2>{models.title}</h2>
               <CommerceFigure
                 kind="hub"
-                surface="field"
-                className="mx-auto my-4 max-w-80"
+                surface="rich"
+                className="mx-auto my-4 max-w-80 bg-transparent"
               />
               <ol className="relative ml-2 border-accent-foreground border-l">
                 {[

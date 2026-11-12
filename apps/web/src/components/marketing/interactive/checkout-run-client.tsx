@@ -1,162 +1,43 @@
 "use client";
 
-import { CheckIcon, CircleMinusIcon, CodeIcon } from "@zenncore/icons";
-import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
+import { CheckIcon, CircleMinusIcon } from "@zenncore/icons";
 import type { getMessages } from "next-intl/server";
-import { useState } from "react";
 import { MarketingEyebrow } from "@/components/marketing/primitives";
 import { Plus } from "@/components/plus";
 import {
   type CheckoutState,
   checkoutSteps,
 } from "@/content/examples/checkout-run";
-import { CodeRecord } from "./code-comparison";
+import { CodeDiff } from "./code-comparison";
 import { FlowDiagram } from "./flow-diagram";
-import { FormattedSource } from "./published-files/formatted-source";
-import { useInteractive } from "./use-interactive";
 
 type Copy = Awaited<ReturnType<typeof getMessages>>["interactiveCheckout"];
 type Code = Awaited<ReturnType<typeof getMessages>>["reviewCode"]["checkout"];
 
-const CheckoutCodeComparison = ({ copy, code }: { copy: Copy; code: Code }) => (
-  <div
-    data-checkout-run
-    data-checkout-comparison="visible"
-    className="relative min-w-0 border-accent-foreground border-t bg-background"
-  >
-    <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-    <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-    <header className="px-8 py-10 max-sm:px-4">
-      <MarketingEyebrow>{copy.sampleLabel}</MarketingEyebrow>
-      <h3>{copy.title}</h3>
-      <p className="mt-4 max-w-[76ch] text-foreground-dimmed text-sm leading-relaxed">
-        {copy.description}
-      </p>
-    </header>
-    <div className="grid min-w-0 border-accent-foreground border-t md:grid-cols-2">
-      {(["before", "after"] as const).map((state) => {
-        const Icon = state === "after" ? CheckIcon : CircleMinusIcon;
-        return (
-          <section
-            key={state}
-            aria-label={copy.states[state]}
-            data-checkout-trace={state}
-            className="relative min-w-0 border-accent-foreground last:border-t md:last:border-t-0 md:last:border-l"
-          >
-            <header
-              className={`flex min-h-28 items-center gap-4 px-8 py-8 max-sm:px-4 ${state === "after" ? "bg-linear-to-br from-primary/12 to-background-rich" : "bg-background-rich"}`}
-            >
-              <Icon
-                aria-hidden
-                className={`size-8 shrink-0 ${state === "after" ? "text-primary-text" : "text-warning-foreground"}`}
-              />
-              <h4 className="font-heading text-2xl">{copy.states[state]}</h4>
-            </header>
-            <div
-              data-code-record={state}
-              className="border-accent-foreground border-y bg-emphasis-dimmed bg-radial-[at_0%_0%] from-primary-dimmed/60 via-transparent to-transparent"
-            >
-              <div className="flex min-h-14 items-center gap-3 border-background-rich/15 border-b px-6 py-4 max-sm:px-4">
-                <CodeIcon
-                  aria-hidden
-                  className="size-6 shrink-0 text-primary-rich"
-                />
-                <span className="min-w-0 break-all font-mono text-background-rich/75 text-xs">
-                  {code.filename}
-                </span>
-              </div>
-              <FormattedSource
-                source={JSON.stringify(
-                  Object.fromEntries(
-                    code.rows.map((row) => [row.key, row[state]]),
-                  ),
-                  null,
-                  2,
-                )}
-              />
-            </div>
-            <CheckoutTrace state={state} copy={copy} />
-            <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-            <Plus
-              className={`top-0 right-0 translate-x-1/2 -translate-y-1/2 ${state === "before" ? "md:hidden" : ""}`}
-            />
-          </section>
-        );
-      })}
-    </div>
-    <div className="relative border-accent-foreground border-t">
-      <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-      <div className="px-8 py-8 max-sm:px-4">
-        <h4 className="text-xl">{code.label}</h4>
-        <p className="mt-3 text-foreground-dimmed text-sm">{code.note}</p>
-      </div>
-      <dl className="grid border-accent-foreground border-t md:grid-cols-2">
-        {code.rows.map((row) => (
-          <div
-            key={row.key}
-            className="border-accent-foreground border-b px-8 py-6 last:border-b-0 max-sm:px-4 md:nth-last-2:border-b-0 md:odd:border-r"
-          >
-            <dt className="font-mono text-primary-text text-sm">{row.key}</dt>
-            <dd className="mt-3 max-w-[54ch] text-foreground-dimmed text-sm">
-              {row.note}
-            </dd>
-          </div>
-        ))}
-      </dl>
-    </div>
-  </div>
-);
-
 const CheckoutTrace = ({
   state,
   copy,
-  code,
 }: {
   state: CheckoutState;
   copy: Copy;
-  code?: Code;
 }) => (
   <div data-checkout-trace={state}>
-    <div className={code ? "grid min-w-0 lg:grid-cols-[3fr_2fr]" : undefined}>
-      {code && (
-        <CodeRecord
-          rows={code.rows}
-          state={state}
-          filename={code.filename}
-          label={code.label}
-        />
-      )}
-      <div
-        className={
-          code
-            ? "min-w-0 border-accent-foreground border-t lg:border-t-0 lg:border-l [&_[data-flow-node]>div>span:first-child]:left-10 [&_[data-flow-node]>div]:px-6 [&_[data-flow-node]>div]:py-3"
-            : undefined
-        }
-      >
-        <FlowDiagram
-          label={copy.states[state]}
-          nodes={checkoutSteps.map((step) => ({
-            id: step.id,
-            label: copy.steps[step.id].label,
-            description:
-              step.id === "contact" || step.id === "payment"
-                ? copy.steps[step.id][state]
-                : undefined,
-            status: step[state],
-          }))}
-          statusLabels={copy.statuses}
-        />
-      </div>
-    </div>
+    <FlowDiagram
+      label={copy.states[state]}
+      nodes={checkoutSteps.map((step) => ({
+        id: step.id,
+        label: copy.steps[step.id].label,
+        description:
+          step.id === "contact" || step.id === "payment"
+            ? copy.steps[step.id][state]
+            : undefined,
+        status: step[state],
+      }))}
+      statusLabels={copy.statuses}
+    />
     <p className="border-accent-foreground border-t px-8 py-6 text-foreground-rich max-sm:px-4">
       {copy.outcomes[state]}
     </p>
-    {code && (
-      <p className="px-8 pb-6 text-foreground-dimmed text-sm max-sm:px-4">
-        {code.note}
-      </p>
-    )}
   </div>
 );
 
@@ -166,93 +47,55 @@ export const CheckoutRunClient = ({
 }: {
   copy: Copy;
   code?: Code;
-}) => {
-  const { ready, reduced } = useInteractive();
-  const [state, setState] = useState<CheckoutState>("before");
-  const states = ["before", "after"] as const;
-
-  if (code) return <CheckoutCodeComparison copy={copy} code={code} />;
-
-  return (
-    <div
-      data-checkout-run
-      data-interactive={ready && !reduced}
-      className="relative border-accent-foreground border-t bg-background"
-    >
-      <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-      <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-      <div className="px-8 py-6 max-sm:px-4">
-        <MarketingEyebrow>{copy.sampleLabel}</MarketingEyebrow>
-        <h3>{copy.title}</h3>
-        <p className="mt-4 max-w-[76ch] text-foreground-dimmed text-sm leading-relaxed">
-          {copy.description}
+}) => (
+  <div
+    data-checkout-run
+    data-checkout-comparison="visible"
+    className="relative min-w-0 border-accent-foreground border-t bg-background"
+  >
+    <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+    <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+    <header className="px-8 py-8 max-sm:px-4">
+      <MarketingEyebrow>{copy.sampleLabel}</MarketingEyebrow>
+      <h3>{copy.title}</h3>
+      <p className="mt-4 max-w-[76ch] text-foreground-dimmed text-sm leading-relaxed">
+        {copy.description}
+      </p>
+    </header>
+    {code && (
+      <>
+        <CodeDiff
+          rows={code.rows}
+          filename={code.filename}
+          label={code.label}
+          before={copy.states.before}
+          after={copy.states.after}
+        />
+        <p className="border-accent-foreground border-t px-8 py-6 text-foreground-dimmed text-sm max-sm:px-4">
+          {code.note}
         </p>
-      </div>
-      {!ready || reduced ? (
-        <div
-          data-checkout-static
-          className={
-            code
-              ? "grid border-accent-foreground border-t"
-              : "grid border-accent-foreground border-t lg:grid-cols-2"
-          }
-        >
-          {states.map((outcome) => (
-            <section
-              key={outcome}
-              aria-label={copy.states[outcome]}
-              className={
-                code
-                  ? "min-w-0 border-accent-foreground last:border-t"
-                  : "min-w-0 border-accent-foreground last:border-t lg:last:border-t-0 lg:last:border-l"
-              }
-            >
-              <h4 className="border-accent-foreground border-b px-8 py-4 font-medium text-foreground-rich text-lg max-sm:px-4">
-                {copy.states[outcome]}
-              </h4>
-              <CheckoutTrace state={outcome} copy={copy} code={code} />
-            </section>
-          ))}
-        </div>
-      ) : (
-        <Tabs
-          value={state}
-          onValueChange={(value) => {
-            if (value === "before" || value === "after") setState(value);
-          }}
-        >
-          <TabsList
-            aria-label={copy.controlsLabel}
-            className="grid w-full grid-cols-2 overflow-visible rounded-none border-x-0 bg-background"
+      </>
+    )}
+    <div className="grid min-w-0 border-accent-foreground border-t md:grid-cols-2">
+      {(["before", "after"] as const).map((state) => {
+        const Icon = state === "after" ? CheckIcon : CircleMinusIcon;
+        return (
+          <section
+            key={state}
+            aria-label={copy.states[state]}
+            className="relative min-w-0 border-accent-foreground last:border-t md:last:border-t-0 md:last:border-l"
           >
-            {states.map((outcome) => (
-              <Tab
-                key={outcome}
-                value={outcome}
-                className="group min-h-14 gap-2 px-8 text-base outline-1 outline-transparent -outline-offset-1 transition-colors duration-200 ease-out focus-visible:outline-2 focus-visible:outline-primary focus-visible:-outline-offset-2 focus-visible:before:outline-0 data-[active]:text-foreground-rich data-selected:text-foreground-rich data-[active]:outline-primary data-selected:outline-primary max-sm:px-4"
-              >
-                <span
-                  aria-hidden="true"
-                  className="size-2 shrink-0 rounded-full bg-foreground-dimmed group-data-[active]:bg-primary group-data-selected:bg-primary"
-                />
-                {copy.states[outcome]}
-              </Tab>
-            ))}
-          </TabsList>
-          <p className="sr-only" aria-live="polite" aria-atomic="true">
-            {copy.outcomes[state]}
-          </p>
-          {states.map((outcome) => (
-            <TabsPanel
-              key={outcome}
-              value={outcome}
-              className="focus-visible:outline-2 focus-visible:outline-primary focus-visible:-outline-offset-2"
-            >
-              <CheckoutTrace state={outcome} copy={copy} code={code} />
-            </TabsPanel>
-          ))}
-        </Tabs>
-      )}
+            <header className="flex min-h-24 items-center gap-4 border-accent-foreground border-b px-8 py-6 max-sm:px-4">
+              <Icon
+                aria-hidden
+                className={`size-8 shrink-0 ${state === "after" ? "text-primary-text" : "text-warning-foreground"}`}
+              />
+              <h4 className="font-heading text-2xl">{copy.states[state]}</h4>
+            </header>
+            <CheckoutTrace state={state} copy={copy} />
+          </section>
+        );
+      })}
     </div>
-  );
-};
+  </div>
+);

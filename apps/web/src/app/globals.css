@@ -239,6 +239,93 @@ tr {
     right: 0;
     transform: translateX(100%);
   }
+  /* Full-rail section rows inherit gutter continuations. A surface marker is
+     only for a wrapper spanning the rail, never a card, table or code pane. */
+  &
+    :where(.marketing-rail, .marketing-surface)
+    > :is(.border-t, .border-y):not(
+      .marketing-section-grid,
+      .enterprise-stage-list,
+      .absolute,
+      .fixed
+    ),
+  & .marketing-seam {
+    position: relative;
+  }
+  &
+    :where(.marketing-rail, .marketing-surface)
+    > :is(.border-t, .border-y):not(
+      .marketing-section-grid,
+      .enterprise-stage-list,
+      .absolute,
+      .fixed
+    )::before,
+  &
+    :where(.marketing-rail, .marketing-surface)
+    > :is(.border-t, .border-y):not(
+      .marketing-section-grid,
+      .enterprise-stage-list,
+      .absolute,
+      .fixed
+    )::after,
+  & .marketing-seam::before,
+  & .marketing-seam::after {
+    content: "";
+    position: absolute;
+    pointer-events: none;
+    z-index: 1;
+    top: -1px;
+    width: max(0px, calc((100dvw - 100%) / 2));
+    height: 1px;
+    background: var(--rail-color);
+  }
+  &
+    :where(.marketing-rail, .marketing-surface)
+    > .border-y:not(
+      .marketing-section-grid,
+      .enterprise-stage-list,
+      .absolute,
+      .fixed
+    )::before,
+  &
+    :where(.marketing-rail, .marketing-surface)
+    > .border-y:not(
+      .marketing-section-grid,
+      .enterprise-stage-list,
+      .absolute,
+      .fixed
+    )::after,
+  & .marketing-seam.border-y::before,
+  & .marketing-seam.border-y::after {
+    height: calc(100% + 2px);
+    background:
+      linear-gradient(var(--rail-color), var(--rail-color)) center top / 100%
+      1px no-repeat,
+      linear-gradient(var(--rail-color), var(--rail-color)) center bottom / 100%
+      1px no-repeat;
+  }
+  &
+    :where(.marketing-rail, .marketing-surface)
+    > :is(.border-t, .border-y):not(
+      .marketing-section-grid,
+      .enterprise-stage-list,
+      .absolute,
+      .fixed
+    )::before,
+  & .marketing-seam::before {
+    right: 100%;
+  }
+  &
+    :where(.marketing-rail, .marketing-surface)
+    > :is(.border-t, .border-y):not(
+      .marketing-section-grid,
+      .enterprise-stage-list,
+      .absolute,
+      .fixed
+    )::after,
+  & .marketing-seam::after {
+    left: 100%;
+  }
   & .enterprise-journey .marketing-rail::before,
   & .enterprise-journey .marketing-rail::after {
     display: none;

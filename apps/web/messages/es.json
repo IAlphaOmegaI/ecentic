@@ -18895,7 +18895,16 @@
     "drawer": "Ilustración: tres cajones de catálogo. Mueve el puntero verticalmente para abrir un cajón.",
     "format": "Ilustración: un archivo con filas desalineadas. Baja el puntero por el archivo para alinearlas.",
     "relay": "Ilustración: una red ramificada. Señala un destino para iluminar la ruta.",
-    "hub": "Ilustración: fichas conectadas a un centro. Señala una ficha para levantarla y resaltar su conexión."
+    "hub": "Ilustración: fichas conectadas a un centro. Señala una ficha para levantarla y resaltar su conexión.",
+    "shopifyBag": "Bolsa de Shopify con fichas de catálogo que se elevan hacia el puntero",
+    "shoppingBot": "Robot de compras con IA cuyo escáner sigue una ficha de producto",
+    "custom": {
+      "rest": "En reposo",
+      "product": "Producto {number}",
+      "selectedProduct": "Producto seleccionado {number}",
+      "scanning": "Escaneando",
+      "selected": "Producto seleccionado"
+    }
   },
   "enterprisePilotPreview": {
     "label": "Piloto ilustrativo · briefing de ejemplo",
@@ -19019,5 +19028,182 @@
         "action": "Consultar una compra a medida"
       }
     }
+  },
+  "reviewDiff": {
+    "view": "Diff unificado",
+    "added": "Añadido",
+    "removed": "Eliminado",
+    "unchanged": "Contexto sin cambios",
+    "annotations": "Por qué importan estos campos",
+    "action": {
+      "primary": "Copiar registro actualizado"
+    },
+    "copyState": {
+      "copied": "Copiado",
+      "failed": "No se pudo copiar"
+    },
+    "imageNote": "Foto ilustrativa de producto. El registro de ejemplo no describe el modelo de la imagen."
+  },
+  "reviewReplay": {
+    "summary": "Resumen visible de la decisión",
+    "disclosure": "Un ejemplo preparado de los datos comprobados y la selección resultante.",
+    "inspection": "Inspección de fichas",
+    "budget": "Presupuesto del comprador",
+    "criteria": "Requisitos de ajuste",
+    "evidence": "Datos de la ficha",
+    "matched": "Disponible en la ficha",
+    "missing": "Falta en la ficha",
+    "complete": "Comparación completada",
+    "sampleId": "Ejemplo 001",
+    "process": {
+      "matchup": "Producto + competidor",
+      "compare": "Tres perspectivas de modelos",
+      "diagnose": "Decisión registrada + datos declarados",
+      "improve": "Revisar → mejorar → comparar de nuevo"
+    }
+  },
+  "reviewSolutionsChannels": {
+    "sample": "Ejemplo ilustrativo",
+    "assistant": "Asistente de compras",
+    "discovery": "Extracto de descubrimiento UCP",
+    "discoveryNote": "Descubrir un perfil no confirma la elegibilidad de un producto ni de su compra.",
+    "previewNote": "Conversaciones ilustrativas y respuestas UCP parciales, no respuestas reales de asistentes. Las tarjetas siguen los patrones de descubrimiento documentados por Google y OpenAI; la integración comercial de ChatGPT es independiente de UCP.",
+    "googleSource": "Compras de Google y UCP",
+    "openaiSource": "Resultados de compras de ChatGPT",
+    "sectors": [
+      {
+        "product": "Whisky de malta · ejemplo",
+        "details": [
+          "Perfil de sabor ahumado",
+          "Origen y tamaño de la botella"
+        ],
+        "response": "Compara las notas de cata y los datos verificados de la botella.",
+        "limit": "Solo investigación. Se aplican restricciones al alcohol."
+      },
+      {
+        "product": "Snack proteico · ejemplo",
+        "details": [
+          "Proteína por ración",
+          "Ingredientes y alérgenos"
+        ],
+        "response": "Contrasta la etiqueta nutricional con tus límites de ración y calorías.",
+        "limit": "Confirma la información nutricional y los alérgenos."
+      },
+      {
+        "product": "Hidratante · ejemplo",
+        "details": [
+          "Fórmula sin perfume",
+          "Lista completa de ingredientes"
+        ],
+        "response": "Revisa los ingredientes y la formulación declarada del producto.",
+        "limit": "Información del producto, no consejo médico."
+      },
+      {
+        "product": "Auriculares inalámbricos · ejemplo",
+        "details": [
+          "Condiciones de prueba de batería",
+          "Cancelación de ruido"
+        ],
+        "response": "Compara la autonomía, la carga y las funciones que necesitas.",
+        "limit": "Comprueba el precio y la disponibilidad actuales."
+      },
+      {
+        "product": "Sofá cama compacto · ejemplo",
+        "details": [
+          "Ancho: 185 cm",
+          "Fondo abierto: 210 cm"
+        ],
+        "response": "Comprueba las dimensiones cerrado y el espacio necesario al abrirlo.",
+        "limit": "Medidas de ejemplo para esta ilustración."
+      },
+      {
+        "product": "Chaqueta de senderismo · ejemplo",
+        "details": [
+          "Construcción impermeable",
+          "Corte y guía de tallas"
+        ],
+        "response": "Compara la protección climática, las medidas y las devoluciones.",
+        "limit": "Verifica las prestaciones declaradas del producto."
+      },
+      {
+        "product": "Comida para perros mayores · ejemplo",
+        "details": [
+          "Etapa de vida indicada",
+          "Ingredientes y guía de alimentación"
+        ],
+        "response": "Lee los ingredientes y la guía de alimentación antes de comparar.",
+        "limit": "La idoneidad de la dieta requiere asesoramiento individual."
+      },
+      {
+        "product": "Escapada a Lisboa · ejemplo",
+        "details": [
+          "Fechas y tipo de habitación",
+          "Condiciones de cancelación"
+        ],
+        "response": "Compara la estancia, las fechas y las condiciones completas de reserva.",
+        "limit": "La disponibilidad y el soporte UCP para viajes varían."
+      }
+    ],
+    "catalog": {
+      "sample": "Registros importados de ejemplo",
+      "products": [
+        "Auriculares inalámbricos",
+        "Auriculares con cancelación de ruido",
+        "Auriculares de botón"
+      ],
+      "ready": "Campos para revisar"
+    },
+    "perplexity": {
+      "sample": "Recorrido de compra ilustrativo",
+      "question": "¿Qué auriculares van bien para un vuelo largo?",
+      "answer": "Compara la cancelación de ruido, la autonomía y la comodidad.",
+      "product": "Auriculares inalámbricos",
+      "details": "Cancelación de ruido · de diadema",
+      "price": "Precio facilitado por el comercio",
+      "website": "Página del producto del comercio",
+      "record": "Registro del comercio de ejemplo",
+      "attributes": [
+        {
+          "title": "Detalles del producto",
+          "value": "Título, imagen y especificaciones"
+        },
+        {
+          "title": "Precio y disponibilidad",
+          "value": "Información actual del comercio"
+        },
+        {
+          "title": "URL del producto",
+          "value": "La página donde continúa el comprador"
+        }
+      ],
+      "productCard": "Tarjeta de producto en la respuesta",
+      "merchantData": "De la información del producto a una tarjeta de compra",
+      "merchantNote": "Perplexity describe el uso de datos del comercio para enriquecer las tarjetas. Una información más completa no garantiza una recomendación.",
+      "pathsTitle": "Dónde continúa el comprador",
+      "pathsDescription": "Dos recorridos desde una tarjeta de producto, según el anuncio de compras de Perplexity.",
+      "purchaseTitle": "Buy with Pro",
+      "purchaseBody": "El anuncio de noviembre de 2024 lo limita a usuarios Pro de EE. UU. y a ciertos productos y comercios. Consulta el acceso actual con Perplexity.",
+      "purchaseBadge": "Compras seleccionadas",
+      "storeTitle": "Continuar en la web del comercio",
+      "storeBody": "Cuando Buy with Pro no está disponible, el comprador sigue el enlace del producto a la web del comercio.",
+      "storeBadge": "Paso al comercio",
+      "trackingTitle": "Dónde interviene ecentic",
+      "trackingBody": "ecentic puede reconocer visitas procedentes de Perplexity en Shopify. Los escaneos y un feed específico para Perplexity están previstos; ecentic no tiene una conexión de pago con Perplexity.",
+      "source": "Leer el anuncio de Perplexity",
+      "sampleNote": "Interfaz y producto de ejemplo, no una respuesta ni una oferta real de Perplexity."
+    }
+  },
+  "reviewNotFound": {
+    "status": "Página no encontrada",
+    "description": "No encontramos ninguna página en esta dirección. Vuelve al inicio, regresa a la página anterior o explora las opciones de abajo.",
+    "exploreTitle": "Un buen lugar para seguir.",
+    "action": {
+      "primary": "Ir al inicio",
+      "secondary": "Volver atrás",
+      "tertiary": "Explorar ecentic"
+    }
+  },
+  "reviewTonalAscii": {
+    "imageNote": "Ilustración de producto. El registro de ejemplo no describe el modelo mostrado."
   }
 }

@@ -4,9 +4,11 @@ import {
   CommerceTimeline,
 } from "@/components/marketing/channels";
 import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
-import { MarketingLightBand } from "@/components/marketing/light-band";
 import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
-import { MarketingBand } from "@/components/marketing/primitives";
+import {
+  MarketingBand,
+  MarketingFeatureBand,
+} from "@/components/marketing/primitives";
 import { aiChannels } from "@/content/ai-channels";
 import { ChannelInterests } from "./_components/channel-content";
 import { IndexExplorer } from "./_components/index-explorer";
@@ -31,10 +33,10 @@ export default async () => {
       path="/ai-channels"
       heroIllustration={<RouterFigure label={hairlineChannels.label} />}
     >
-      <MarketingLightBand id="channel-explorer">
-        <div className="marketing-cell relative border-accent-foreground border-b px-8 py-12 max-sm:px-4 max-sm:py-8">
+      <MarketingFeatureBand id="channel-explorer" tone="dark">
+        <div className="marketing-cell relative border-background-rich/15 border-b px-8 py-12 max-sm:px-4 max-sm:py-8">
           <h2>{explorer.title}</h2>
-          <p className="mt-4 max-w-[58ch] text-foreground-dimmed text-lg leading-relaxed">
+          <p className="mt-4 max-w-[58ch] text-background-rich/70 text-lg leading-relaxed">
             {explorer.description}
           </p>
         </div>
@@ -70,7 +72,7 @@ export default async () => {
             })),
           }))}
         />
-      </MarketingLightBand>
+      </MarketingFeatureBand>
       <MarketingBand className="[&>.marketing-rail>.marketing-guides]:hidden [&>.marketing-rail]:bg-background-dimmed">
         <div className="marketing-cell relative min-w-0 px-8 py-16 max-sm:px-4 max-sm:py-12">
           <CommerceTimeline />

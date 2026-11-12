@@ -35,7 +35,12 @@ const CHROME = [
 ] as const;
 
 /** Chrome plus the shared section grid every content page's layout draws. */
-const MARKETING = [...CHROME, "dashboard.grid", "commerceFigures"] as const;
+const MARKETING = [
+  ...CHROME,
+  "dashboard.grid",
+  "commerceFigures",
+  "reviewDiff",
+] as const;
 
 export const CLIENT_MESSAGES = {
   /** Root layout: only the cookie banner renders above the route groups. */

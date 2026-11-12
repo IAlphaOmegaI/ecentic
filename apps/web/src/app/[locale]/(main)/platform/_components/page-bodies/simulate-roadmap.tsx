@@ -4,6 +4,7 @@ import { CursorRaysIcon, FileSearchIcon, QuoteIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import { useEffect, useRef, useState } from "react";
+import { IllustrationGlow } from "@/components/marketing/illustration-glow";
 import { useInteractive } from "@/components/marketing/interactive/use-interactive";
 import type { MarketingPage } from "@/components/marketing/page";
 import { Motion } from "@/components/motion";
@@ -71,18 +72,19 @@ export const SimulateRoadmap = ({ items, labels }: SimulateRoadmap.Props) => {
     <div
       ref={container}
       data-simulate-roadmap=""
+      data-nav-tone="dark"
       data-playing={enhanced && playing}
       data-current={current}
-      className="relative flex h-full flex-col bg-linear-to-br from-primary/6 via-background to-background"
+      className="relative isolate flex h-full flex-col bg-emphasis-dimmed text-background-rich"
     >
-      <div className="flex items-center justify-between gap-4 border-accent-foreground border-b px-8 py-6 max-sm:px-4">
-        <p className="font-medium text-foreground-rich text-sm">
+      <IllustrationGlow />
+      <div className="flex items-center justify-between gap-4 border-background-rich/15 border-b px-8 py-6 max-sm:px-4">
+        <p className="font-medium text-background-rich text-sm">
           {labels.title}
         </p>
         {enhanced && (
           <Button
-            variant="ghost"
-            color="neutral"
+            color="emphasis"
             onClick={() => {
               started.current = true;
               if (current === items.length - 1) setCurrent(0);
@@ -100,13 +102,13 @@ export const SimulateRoadmap = ({ items, labels }: SimulateRoadmap.Props) => {
           return (
             <li
               key={item.title}
-              className="relative grid flex-1 grid-cols-[72px_1fr] border-accent-foreground border-b last:border-b-0 max-sm:grid-cols-[56px_1fr]"
+              className="relative grid flex-1 grid-cols-[72px_1fr] border-background-rich/15 border-b last:border-b-0 max-sm:grid-cols-[56px_1fr]"
             >
-              <div className="relative flex justify-center border-accent-foreground border-r pt-8 before:absolute before:inset-y-0 before:left-1/2 before:border-accent-foreground before:border-l">
-                <span className="relative z-1 h-fit bg-background py-2">
+              <div className="relative flex justify-center border-background-rich/15 border-r pt-8 before:absolute before:inset-y-0 before:left-1/2 before:border-background-rich/15 before:border-l">
+                <span className="relative z-1 h-fit py-2">
                   {enhanced ? (
                     <Button
-                      color={active ? "primary" : "neutral"}
+                      color={active ? "primary" : "emphasis"}
                       aria-label={`${labels.stages[index]}: ${item.title}`}
                       aria-pressed={active}
                       onClick={() => {
@@ -118,7 +120,7 @@ export const SimulateRoadmap = ({ items, labels }: SimulateRoadmap.Props) => {
                       {String(index + 1).padStart(2, "0")}
                     </Button>
                   ) : (
-                    <span className="px-2 font-heading text-2xl text-primary-text">
+                    <span className="px-2 font-heading text-2xl text-primary-rich">
                       {String(index + 1).padStart(2, "0")}
                     </span>
                   )}
@@ -136,16 +138,21 @@ export const SimulateRoadmap = ({ items, labels }: SimulateRoadmap.Props) => {
                   }}
                   transition={{ duration: enhanced ? 0.2 : 0 }}
                 >
-                  <div className="mb-4 flex items-center gap-4 text-primary-text">
+                  <div className="mb-4 flex items-center gap-4 text-primary-rich">
                     <Icon aria-hidden className="size-6" />
                     <span className="font-medium text-sm">
                       {labels.stages[index]}
                     </span>
                   </div>
-                  <h3 className={cn("text-xl", active && "text-primary-text")}>
+                  <h3
+                    className={cn(
+                      "text-background-rich text-xl",
+                      active && "text-primary-rich",
+                    )}
+                  >
                     {item.title}
                   </h3>
-                  <p className="mt-4 max-w-[34ch] text-foreground-dimmed leading-relaxed">
+                  <p className="mt-4 max-w-[34ch] text-background-rich/65 leading-relaxed">
                     {item.body}
                   </p>
                 </Motion.Item>

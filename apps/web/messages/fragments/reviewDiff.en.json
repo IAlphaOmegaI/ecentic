@@ -1,0 +1,12 @@
+{
+  "reviewDiff": {
+    "view": "Unified diff",
+    "added": "Added",
+    "removed": "Removed",
+    "unchanged": "Unchanged context",
+    "annotations": "Why these fields matter",
+    "action": { "primary": "Copy updated record" },
+    "copyState": { "copied": "Copied", "failed": "Copy unavailable" },
+    "imageNote": "Illustrative product photo. The sample record does not describe the pictured model."
+  }
+}

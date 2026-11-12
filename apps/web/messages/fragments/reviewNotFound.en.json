@@ -1,0 +1,12 @@
+{
+  "reviewNotFound": {
+    "status": "Page not found",
+    "description": "We couldn't find a page at this address. Head home, go back, or explore the paths below.",
+    "exploreTitle": "A few good places to go.",
+    "action": {
+      "primary": "Back home",
+      "secondary": "Go back",
+      "tertiary": "Explore ecentic"
+    }
+  }
+}

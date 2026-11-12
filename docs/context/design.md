@@ -1668,8 +1668,8 @@ measurement. Reduced motion and JavaScript failure leave the complete static bra
 Do not use text-only tabs to hide sequential explanations or shopper-question examples.
 Show the meaningful steps together with a connected path and a recognizable Hairline
 subject. Native tabs still fit genuine tool selections or alternate fetched responses.
-Before/after checkout examples may use two visible syntax-colored code panes with
-spacious state headings, consistent line numbering and the outcome beside its source.
+Before/after examples use one visible syntax-colored Git-style diff with
+consistent line numbering and the outcome beside its source.
 Keep the code honest and readable; added complexity is not a marketing device.
 
 Sector examples share a presentation system. Illustrative brand references belong in a
@@ -1688,3 +1688,80 @@ the explanation below. Shared standalone sections such as published-file explore
 Enterprise's filled pilot example is illustrative review content, not a confirmed
 engagement. The user's outstanding copy task is tracked in
 `docs/marketing/review-followups.md` and must remain visible to future editors.
+
+## 35. Continuous light, shared seams and source diffs
+
+Major full-rail rows continue through the page gutters. The shared rail renderer
+extends direct `border-t` and `border-y` rows automatically. Use
+`marketing-surface` only on a nested wrapper that spans the complete rail, or
+`marketing-seam` with the row's existing top/y border for an explicit full-width
+boundary. Existing `marketing-section-grid` and stage-list renderers retain their
+own continuations. Never put these markers on individual cards, code panes or
+internal table/accordion rows. Draw only the outside extensions so the central
+stroke is not doubled; keep the crosses at the rail intersections.
+
+Light inside an illustration should reach transparency before its clipping
+edge. Reuse `IllustrationGlow` for a bounded radial field rather than placing a
+hard-edged gradient rectangle behind the object. Keep the Hairline occlusion
+plate matched to the actual surface. The closing CTA uses a recognizable checkout
+basket; the readable footer wordmark remains a separate brand element.
+
+Dark workbenches can contain source explorers, channel comparisons and tool
+selectors. Preserve native controls, complete keyboard access and the controls'
+own color variants; do not globally recolor button labels through a section's
+text selector. Supporting copy and active states must remain legible.
+
+Shopping previews are explicitly illustrative. Keep an assistant's product-card
+presentation distinct from a partial UCP discovery response, and distinguish
+channel capability from ecentic integration. A simulated replay shows a scripted
+decision summary and source facts, not a claim to expose a model's private
+reasoning. Explanatory animation settles, respects pause/focus/visibility and
+reduced motion, and never withholds the underlying content.
+
+The user selected a Git-style diff for the shared before/after pattern. Present
+one code document with unchanged context, removed lines and added lines visible
+together. Use explicit minus/plus gutters as well as semantic color, retain
+syntax highlighting and meaningful line numbers, and give the file a concise
+header with its sample identity. Visitors should not need to switch Before and
+After tabs to understand a change. Keep genuine tool or scenario selectors where
+they change the underlying data. Reuse this pattern across platform, integration
+and sector examples; preserve their actual source records and accessible copy
+actions. On narrow screens, contain long code inside the document without
+introducing page overflow. Remove the review-only exploration once promoted.
+
+## 36. ASCII and custom Hairline figures coexist
+
+ASCII remains a core part of ecentic's visual language. Improve an unclear
+subject or its rendering; do not remove ASCII as a category or replace every
+instance with line drawings. Image-sampled characters and dot fields can occupy
+their own planes in heroes and body sections, alongside Hairline objects and
+measured graphics. Preserve the identifying silhouette, aspect ratio and enough
+negative space to read the object at tablet width. Keep lettering legible and
+never place dense character texture behind essential copy.
+
+The selected image-to-ASCII treatment is **Tonal dots**: sample the source image's
+tone into a regular field of dots whose size preserves shading and volume. Keep
+the subject complete and use a source with recognizable defining features.
+Reserve text-based ASCII for places where its lettering or path is meaningful;
+choosing dots for image subjects does not remove that part of the language.
+Shared sector journeys and relevant product examples may pair these sampled
+images with a Hairline object in separate, balanced planes. Retain reproducible
+generation and source provenance with the assets. Future alternatives belong on
+an isolated prototype route using the same source and context, then are promoted
+only after a selection.
+
+Hairline subjects should increasingly be designed for ecentic's actual flows:
+store catalogs, product selection and shopping agents. Build recognizable,
+purposeful objects through `hairline-create`, with a strong rest pose and a
+pointer response that makes sense for that object. A renamed stock figure does
+not count as a custom drawing. Validate both the standalone figure and its site
+integration; keep the fixed engine intact and preserve static reduced-motion
+states. A specifically requested brand mark may be part of the object's geometry,
+but explanatory labels belong outside the drawing.
+
+The custom Shopify bag has a recognizable bag, handle and brand mark, with
+catalog cards that rise toward the pointer. The custom shopping bot turns its
+scanner toward product cards. Use them in the Shopify connection and simulated
+selection contexts respectively. Both include server-rendered rest geometry,
+localized readouts and an in-view enhancement using the unchanged Hairline
+kernel; failure to load the interactive code must leave the drawing visible.

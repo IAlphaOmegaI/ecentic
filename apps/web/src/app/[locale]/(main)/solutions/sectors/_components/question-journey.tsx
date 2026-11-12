@@ -1,4 +1,5 @@
 import { CommerceFigure } from "@/components/marketing/commerce-figure";
+import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { Plus } from "@/components/plus";
 
 /** Questions and their evidence stay visible; the path supports the reading order. */
@@ -38,11 +39,28 @@ export const SectorQuestionJourney = ({
                 {entry.description}
               </p>
             )}
-            <CommerceFigure
-              kind={entry.figure}
-              surface="background"
-              className="mx-auto mt-6 aspect-[5/3] max-w-md"
-            />
+            <div
+              className={
+                index === 0
+                  ? "mt-6 grid min-w-0 grid-cols-[minmax(0,1fr)_128px] items-center gap-4 lg:grid-cols-[minmax(0,1fr)_160px]"
+                  : "mt-6"
+              }
+            >
+              <CommerceFigure
+                kind={entry.figure}
+                surface="background"
+                className="mx-auto aspect-[5/3] w-full max-w-md"
+              />
+              {index === 0 && (
+                <div
+                  aria-hidden="true"
+                  data-sector-ascii-companion
+                  className="relative aspect-square w-32 overflow-hidden rounded-lg bg-emphasis-dimmed p-2 text-primary-rich lg:w-40"
+                >
+                  <EvolvingAscii artwork="catalog" fit="contain" />
+                </div>
+              )}
+            </div>
           </div>
           <div className="relative min-w-0 border-accent-foreground border-t bg-background-dimmed md:border-t-0 md:border-l">
             <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2 md:hidden" />

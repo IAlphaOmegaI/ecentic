@@ -1,6 +1,7 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
 import { getMessages } from "next-intl/server";
+import { MarketingEdgeCrosses } from "@/components/marketing/light-band";
 import { MarketingPage, marketingMetadata } from "@/components/marketing/page";
 import { MarketingBand } from "@/components/marketing/primitives";
 import { Link } from "@/i18n/navigation";
@@ -36,7 +37,8 @@ export default async () => {
           id={company.id}
           className="[&>.marketing-rail>.marketing-guides]:hidden [&>.marketing-rail]:bg-background-dimmed"
         >
-          <div className="flex flex-wrap items-center justify-between gap-6 px-7 py-10 max-sm:px-4 max-sm:py-8">
+          <div className="marketing-section-grid relative flex flex-wrap items-center justify-between gap-6 border-accent-foreground border-t px-8 py-10 max-sm:px-4 max-sm:py-8">
+            <MarketingEdgeCrosses />
             <h2>{company.title}</h2>
             <div className="flex flex-wrap gap-4">
               {company.links?.map((link) => (

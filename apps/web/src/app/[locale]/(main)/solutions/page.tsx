@@ -14,6 +14,7 @@ import {
   SolutionsAudience,
   SolutionsWorkflows,
 } from "./_components/index-explorer";
+import { SectorChatPreview } from "./_components/sector-chat-preview";
 
 const businesses = [
   "brands",
@@ -28,7 +29,11 @@ export const generateMetadata = async () => {
 };
 
 export default async () => {
-  const { enterpriseSolutions, solutionsIndexPage } = await getMessages();
+  const {
+    enterpriseSolutions,
+    solutionsIndexPage,
+    reviewSolutionsChannels: review,
+  } = await getMessages();
   const content = enterpriseSolutions.index;
   const sections: readonly MarketingPage.Section[] = content.sections;
   const business = sections.find((section) => section.id === "business");
@@ -112,13 +117,34 @@ export default async () => {
                 <p className="mt-2 text-foreground-dimmed text-sm leading-relaxed">
                   {sector.body}
                 </p>
-                <p className="mt-6 max-w-[40ch] border-accent-foreground border-l-2 pl-4 text-foreground-rich text-lg leading-snug">
-                  “{sector.label}”
-                </p>
+                {review.sectors[index] && (
+                  <SectorChatPreview
+                    prompt={sector.label ?? sector.title}
+                    example={review.sectors[index]}
+                    copy={review}
+                  />
+                )}
               </Link>
             ))}
           </div>
           <div className="border-accent-foreground border-t px-8 py-8 max-sm:px-4 [&>.marketing-actions]:mt-0">
+            <p className="mb-4 max-w-[86ch] text-foreground-dimmed text-sm leading-relaxed">
+              {review.previewNote}
+            </p>
+            <p className="mb-6 flex flex-wrap gap-x-6 gap-y-2 text-primary-text text-sm">
+              <a
+                href="https://blog.google/products/ads-commerce/agentic-commerce-ai-tools-protocol-retailers-platforms/"
+                className="underline underline-offset-4"
+              >
+                {review.googleSource}
+              </a>
+              <a
+                href="https://help.openai.com/en/articles/11128490-improved-shopping-results-from-chatgpt-search"
+                className="underline underline-offset-4"
+              >
+                {review.openaiSource}
+              </a>
+            </p>
             <MarketingActions actions={sectors.links ?? []} />
           </div>
         </MarketingBand>

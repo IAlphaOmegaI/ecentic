@@ -22,6 +22,7 @@ export const generateMetadata = async () => {
 
 export default async () => {
   const {
+    reviewSolutionsChannels,
     hairlineIntegrations,
     reviewIntegrations,
     enterpriseIntegrations: copy,
@@ -43,7 +44,11 @@ export default async () => {
       </MarketingBand>
       <IntegrationDirectory copy={copy} directory={directory} />
       <SectionGutter />
-      <IntegrationImportFlow copy={copy} directory={directory} />
+      <IntegrationImportFlow
+        copy={copy}
+        directory={directory}
+        preview={reviewSolutionsChannels.catalog}
+      />
       <SectionGutter />
       <MarketingBand
         id="labels"

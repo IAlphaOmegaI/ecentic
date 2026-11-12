@@ -1,0 +1,12 @@
+{
+  "reviewNotFound": {
+    "status": "Página no encontrada",
+    "description": "No encontramos ninguna página en esta dirección. Vuelve al inicio, regresa a la página anterior o explora las opciones de abajo.",
+    "exploreTitle": "Un buen lugar para seguir.",
+    "action": {
+      "primary": "Ir al inicio",
+      "secondary": "Volver atrás",
+      "tertiary": "Explorar ecentic"
+    }
+  }
+}

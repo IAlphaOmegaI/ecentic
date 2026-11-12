@@ -7,14 +7,19 @@ import { useEffect, useRef, useState } from "react";
 import { Motion } from "@/components/motion";
 import { useDocument } from "@/hooks/use-document";
 
+const tonalArtwork = {
+  catalog: "/images/ascii/tonal/catalog.svg",
+  headphones: "/images/ascii/tonal/headphones.svg",
+};
+
 const artwork = {
   bag: "/images/ascii/bag-halftone.svg",
   cart: "/images/ascii/cart-halftone.svg",
   console: "/images/ascii/console-halftone.svg",
   commerce: "/images/ascii/robot-halftone.svg",
   closing: "/images/ascii/bag-halftone.svg",
-  catalog: "/images/ascii/connect-catalog-halftone.svg",
   selection: "/images/ascii/simulate-selection-halftone.svg",
+  ...tonalArtwork,
 };
 
 /** The character road retains its sampled path; object artwork uses dot masks. */
@@ -82,7 +87,9 @@ export const EvolvingAscii = ({
       ref={target}
       aria-hidden="true"
       data-ascii-artwork={sequence[position] ?? kind}
-      data-artwork-renderer="halftone"
+      data-artwork-renderer={
+        (sequence[position] ?? kind) in tonalArtwork ? "tonal-dots" : "halftone"
+      }
       data-artwork-motion={
         complete ? "complete" : active ? "revealing" : "rest"
       }
@@ -102,7 +109,12 @@ export const EvolvingAscii = ({
           className="absolute inset-0 overflow-hidden [mask-position:center] [mask-repeat:no-repeat]"
           style={{ maskImage: `url('${artwork[subject]}')`, maskSize: fit }}
         >
-          <div className="absolute inset-0 bg-current opacity-80" />
+          <div
+            className={cn(
+              "absolute inset-0 bg-current",
+              subject in tonalArtwork ? "opacity-100" : "opacity-80",
+            )}
+          />
           <Motion.Item
             initial={false}
             animate={{

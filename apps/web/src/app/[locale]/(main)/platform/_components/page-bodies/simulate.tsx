@@ -1,4 +1,12 @@
-import { cn } from "@zenncore/utils";
+import {
+  BarChartIcon,
+  BullseyeIcon,
+  CheckBadgeIcon,
+  EyeIcon,
+  FileSearchIcon,
+  QuoteIcon,
+  SquareChartIcon,
+} from "@zenncore/icons";
 import { getMessages } from "next-intl/server";
 import type { MarketingBodyProps } from "@/components/marketing/body";
 import { AgentReplay } from "@/components/marketing/interactive/agent-replay";
@@ -12,17 +20,11 @@ import {
   MarketingEyebrow,
   MarketingHeading,
 } from "@/components/marketing/primitives";
-import { PlatformProviderStack } from "../provider-stack";
 import { PlatformPrinciples } from "./platform-principles";
 import { RiffleFigure } from "./riffle-figure";
 import { SimulateRoadmap } from "./simulate-roadmap";
 import { SimulateTracking } from "./simulate-tracking";
-
-const models = [
-  { provider: "chatgpt", name: "ChatGPT" },
-  { provider: "claude", name: "Claude" },
-  { provider: "gemini", name: "Gemini" },
-] as const;
+import { SimulationProcess } from "./simulation-process";
 
 const references = [
   "simulations",
@@ -61,6 +63,29 @@ const ProblemJourney = async ({
 }) => {
   const { reviewSimulate } = await getMessages();
   return <SimulateRoadmap items={items} labels={reviewSimulate.roadmap} />;
+};
+
+const ProcessJourney = async ({
+  items,
+}: {
+  items: NonNullable<MarketingPage.Section["items"]>;
+}) => {
+  const { reviewReplay } = await getMessages();
+  return <SimulationProcess items={items} labels={reviewReplay.process} />;
+};
+
+const ReferenceIcon = ({ id }: { id: string }) => {
+  const icons = {
+    simulations: BullseyeIcon,
+    "win-rate": BarChartIcon,
+    battlecards: SquareChartIcon,
+    replay: QuoteIcon,
+    readiness: CheckBadgeIcon,
+    "listing-quality": FileSearchIcon,
+    "brand-visibility": EyeIcon,
+  };
+  const Icon = icons[id as keyof typeof icons] ?? FileSearchIcon;
+  return <Icon aria-hidden className="mb-4 size-8 text-primary-text" />;
 };
 
 export const SimulateBody = ({
@@ -110,55 +135,7 @@ export const SimulateBody = ({
                 title={section.title}
                 description={section.description}
               />
-              <ol className="grid grid-cols-[1fr_1.5fr_1fr] border-[var(--rail-color)] border-t max-md:grid-cols-1">
-                {section.items?.map((item, index) => (
-                  <li
-                    key={item.title}
-                    className={cn(
-                      "relative min-w-0 p-8 max-sm:p-4",
-                      index === 0 && "bg-background-dimmed",
-                      index === 1 &&
-                        "border-[var(--rail-color)] border-x max-md:border-x-0 max-md:border-y",
-                      index === 2 && "bg-background-dimmed",
-                      index === 3 &&
-                        "col-span-full grid grid-cols-[40px_1fr] gap-4 border-accent-foreground border-t bg-background-dimmed text-foreground",
-                    )}
-                  >
-                    <span
-                      aria-hidden="true"
-                      className={cn(
-                        "mb-4 block font-heading text-3xl",
-                        index === 3 ? "text-primary-text" : "text-primary-text",
-                      )}
-                    >
-                      {String(index + 1).padStart(2, "0")}
-                    </span>
-                    <div>
-                      <h3>{item.title}</h3>
-                      <p
-                        className={cn(
-                          "mt-4",
-                          index === 3
-                            ? "max-w-[72ch] text-foreground-dimmed"
-                            : "text-foreground-dimmed",
-                        )}
-                      >
-                        {item.body}
-                      </p>
-                      {index === 1 && (
-                        <div className="relative mt-10 border-primary/30 border-t pt-8 before:absolute before:-top-4 before:left-1/2 before:h-4 before:border-primary/30 before:border-l">
-                          <PlatformProviderStack
-                            providers={models.map((model) => model.provider)}
-                          />
-                          <p className="mt-5 text-center text-foreground-dimmed text-sm">
-                            {models.map((model) => model.name).join(" · ")}
-                          </p>
-                        </div>
-                      )}
-                    </div>
-                  </li>
-                ))}
-              </ol>
+              <ProcessJourney items={section.items ?? []} />
               {children}
               <SectionEnding section={section} />
             </MarketingBand>
@@ -203,6 +180,7 @@ export const SimulateBody = ({
               >
                 <div className="grid grid-cols-[1fr_2fr] gap-8 px-8 py-8 max-sm:px-4 max-md:grid-cols-1 max-md:gap-4">
                   <div>
+                    <ReferenceIcon id={section.id} />
                     {section.eyebrow && (
                       <MarketingEyebrow>{section.eyebrow}</MarketingEyebrow>
                     )}

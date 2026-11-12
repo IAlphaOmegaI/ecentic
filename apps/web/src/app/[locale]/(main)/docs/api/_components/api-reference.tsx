@@ -1,6 +1,14 @@
 "use client";
 
 import {
+  CodeIcon,
+  CommerceCode_3Icon,
+  CommerceGlobePointerIcon,
+  DownloadIcon,
+  RobotIcon,
+  ShoppingCartIcon,
+} from "@zenncore/icons";
+import {
   Accordion,
   AccordionItem,
   AccordionPanel,
@@ -91,7 +99,7 @@ export const ApiReference = ({
             </span>
           </AccordionTrigger>
           <AccordionPanel keepMounted className="transition-none">
-            <div className="min-w-0 space-y-6 px-6 pb-6 max-sm:px-4">
+            <div className="min-w-0 space-y-6 pb-6 [&>:not([data-api-definition])]:mx-6 max-sm:[&>:not([data-api-definition])]:mx-4">
               {entry.detail}
               <a
                 href={`#${entry.id}`}
@@ -125,30 +133,53 @@ export const ApiReference = ({
       orientation="vertical"
       className="grid min-w-0 grid-cols-1 border-accent-foreground border-t lg:grid-cols-[260px_minmax(0,1fr)]"
     >
-      <aside className="min-w-0 border-accent-foreground border-b bg-background-dimmed lg:border-r lg:border-b-0">
+      <aside
+        data-nav-tone="dark"
+        className="min-w-0 border-background-rich/15 border-b bg-emphasis-dimmed text-background-rich lg:border-r lg:border-b-0"
+      >
         <div className="p-6 max-sm:p-4 lg:sticky lg:top-24">
-          <p className="mb-4 text-foreground-dimmed text-sm">{copy.surfaces}</p>
+          <p className="mb-6 font-heading text-background-rich text-xl">
+            {copy.surfaces}
+          </p>
           <TabsList
             aria-label={copy.surfaces}
-            className="grid w-full grid-cols-2 gap-px rounded-none border-0 bg-accent-foreground lg:grid-cols-1"
+            className="grid w-full grid-cols-2 gap-2 overflow-visible rounded-none border-0 bg-transparent lg:grid-cols-1"
           >
-            {groups.map((group) => (
-              <Tab
-                key={group.id}
-                value={group.id}
-                className="h-auto min-h-12 justify-between gap-2 border-0 bg-background-dimmed px-4 py-2 text-left text-sm data-[active]:bg-primary data-selected:bg-primary data-[active]:text-background-rich data-selected:text-background-rich"
-              >
-                <span>{group.label}</span>
-                <span className="tabular-nums">
-                  {
-                    entries.filter(
-                      (entry) =>
-                        group.id === "all" || entry.groups?.includes(group.id),
-                    ).length
-                  }
-                </span>
-              </Tab>
-            ))}
+            {groups.map((group, index) => {
+              const Icon =
+                [
+                  CodeIcon,
+                  CommerceGlobePointerIcon,
+                  RobotIcon,
+                  DownloadIcon,
+                  CommerceCode_3Icon,
+                  ShoppingCartIcon,
+                ][index] ?? CommerceCode_3Icon;
+              return (
+                <Tab
+                  key={group.id}
+                  value={group.id}
+                  className="group relative grid h-auto min-h-24 grid-cols-[1fr_auto] justify-start gap-x-2 gap-y-4 rounded-md border border-transparent bg-transparent px-4 py-4 text-left text-background-rich/65 text-sm before:absolute hover:bg-background-rich/5 hover:text-background-rich focus-visible:before:rounded-md focus-visible:before:outline-primary-rich data-[active]:border-background-rich/20 data-[active]:bg-linear-to-br data-[active]:from-background-rich/10 data-[active]:to-primary/10 data-[active]:text-background-rich data-[active]:shadow-[inset_0_1px_0_color-mix(in_oklab,var(--color-background-rich)_15%,transparent)] lg:flex lg:min-h-14 lg:gap-4"
+                >
+                  <Icon
+                    className="size-4 shrink-0 text-primary-rich"
+                    aria-hidden
+                  />
+                  <span className="order-3 col-span-2 min-w-0 flex-1 lg:order-none">
+                    {group.label}
+                  </span>
+                  <span className="order-2 text-right text-background-rich/65 tabular-nums group-data-[active]:text-background-rich lg:order-none">
+                    {
+                      entries.filter(
+                        (entry) =>
+                          group.id === "all" ||
+                          entry.groups?.includes(group.id),
+                      ).length
+                    }
+                  </span>
+                </Tab>
+              );
+            })}
           </TabsList>
           <div className="mt-8 hidden lg:block">{rail}</div>
         </div>

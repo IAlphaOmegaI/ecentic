@@ -102,7 +102,7 @@ export const SolutionsWorkflows = ({
             id={section.id}
             className="scroll-mt-24 border-accent-foreground border-b bg-background-dimmed last:border-b-0"
           >
-            <h3 className="flex items-start gap-6 px-8 py-8 font-heading text-2xl leading-snug max-sm:gap-4 max-sm:px-4 max-sm:py-6">
+            <h3 className="flex items-start gap-6 px-8 py-8 font-heading text-[clamp(1.75rem,3.5vw,3rem)] leading-tight max-sm:gap-4 max-sm:px-4 max-sm:py-6">
               <span className="text-primary-text">
                 {String(index + 1).padStart(2, "0")}
               </span>
@@ -131,11 +131,11 @@ export const SolutionsWorkflows = ({
               trigger: { icon: "size-4 shrink-0 text-primary-text" },
             }}
           >
-            <span className="flex items-start gap-6 max-sm:gap-4">
-              <span className="text-2xl text-primary-text leading-snug">
+            <span className="flex items-baseline gap-8 max-sm:gap-4">
+              <span className="font-heading text-[clamp(2rem,4vw,3.5rem)] text-primary-text leading-none">
                 {String(index + 1).padStart(2, "0")}
               </span>
-              <span className="font-heading text-2xl leading-snug">
+              <span className="font-heading text-[clamp(1.75rem,3.5vw,3rem)] text-background-rich leading-tight tracking-tight">
                 {section.title}
               </span>
             </span>

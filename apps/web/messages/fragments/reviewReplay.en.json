@@ -1,0 +1,20 @@
+{
+  "reviewReplay": {
+    "summary": "Visible decision summary",
+    "disclosure": "A scripted sample of the facts checked and the resulting selection.",
+    "inspection": "Listing inspection",
+    "budget": "Shopper budget",
+    "criteria": "Fit requirements",
+    "evidence": "Listing evidence",
+    "matched": "Available in the listing",
+    "missing": "Missing from the listing",
+    "complete": "Comparison complete",
+    "sampleId": "Sample 001",
+    "process": {
+      "matchup": "Product + competitor",
+      "compare": "Three model perspectives",
+      "diagnose": "Recorded decision + stated facts",
+      "improve": "Review → improve → compare again"
+    }
+  }
+}

@@ -19,7 +19,7 @@ export const SecurityDetails = ({ items }: SecurityDetails.Props) => (
           classList={{
             root: "font-heading",
             trigger: {
-              root: "items-center px-4 py-6 text-foreground-rich text-xl leading-snug hover:text-primary-text md:px-8",
+              root: "items-center px-4 py-6 text-2xl! text-foreground-rich leading-snug! hover:text-primary-text md:px-8",
               icon: "mr-0 size-4 shrink-0 text-primary-text transition-none group-data-panel-open:rotate-180",
             },
           }}

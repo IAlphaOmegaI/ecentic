@@ -5,7 +5,7 @@ import Image from "next/image";
 import type { HTMLAttributes, ReactNode } from "react";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
-import type { CommerceFigure } from "./commerce-figure";
+import { CommerceFigure } from "./commerce-figure";
 import { EvolvingAscii } from "./evolving-ascii";
 import { HeroFigure } from "./hero-figure";
 
@@ -281,21 +281,30 @@ export const MarketingClosing = ({
 }: MarketingClosing.Props) => (
   <MarketingBand
     data-nav-tone="dark"
-    className="marketing-closing relative m-3 overflow-hidden rounded-xl border-0 bg-linear-to-br from-emphasis-dimmed via-emphasis to-primary-dimmed text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_20%,transparent)] [--rail-cross:transparent] max-sm:m-2 max-sm:rounded-lg [&>.marketing-rail]:border-y-0 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden [&_.marketing-guides_span]:before:hidden [&_.marketing-guides_span]:after:hidden"
+    className="marketing-closing relative m-3 overflow-hidden rounded-xl border-0 bg-emphasis-dimmed text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_20%,transparent)] [--rail-cross:transparent] max-sm:m-2 max-sm:rounded-lg [&>.marketing-rail]:border-y-0 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden [&_.marketing-guides_span]:before:hidden [&_.marketing-guides_span]:after:hidden"
   >
     <div
       aria-hidden="true"
-      className="pointer-events-none absolute inset-y-0 left-1/2 w-[calc(100dvw-24px)] -translate-x-1/2 bg-radial-[at_bottom_left] from-primary/40 via-primary-dimmed/25 to-transparent max-sm:w-[calc(100dvw-16px)]"
+      className="pointer-events-none absolute inset-y-0 left-1/2 w-[calc(100dvw-24px)] -translate-x-1/2 bg-radial-[at_bottom_left] from-primary/30 via-primary-dimmed/10 to-transparent max-sm:w-[calc(100dvw-16px)]"
     />
-    <div className="pointer-events-none absolute inset-y-0 left-1/2 w-[calc(100dvw-24px)] -translate-x-1/2 select-none text-background-rich opacity-40 [mask-image:linear-gradient(90deg,transparent,black_45%)] max-sm:w-[calc(100dvw-16px)] max-sm:opacity-15">
-      <EvolvingAscii artwork="closing" fit="cover" className="size-full" />
-    </div>
-    <div className="marketing-cell relative flex min-h-[480px] flex-col justify-center px-7 py-16 max-sm:min-h-[460px] max-sm:px-4 max-sm:py-12">
-      <h2 className="relative max-w-[760px] text-background-rich">{title}</h2>
-      <p className="relative mt-4 max-w-[55ch] text-background-rich/85 text-lg leading-relaxed">
-        {description}
-      </p>
-      <MarketingActions actions={actions} className="relative" />
+    <div className="relative grid min-w-0 items-center md:grid-cols-[7fr_5fr]">
+      <div className="marketing-cell relative flex min-h-[420px] flex-col justify-center px-7 py-16 max-sm:min-h-0 max-sm:px-4 max-sm:pt-12 max-sm:pb-4">
+        <h2 className="relative max-w-[18ch] text-background-rich">{title}</h2>
+        <p className="relative mt-4 max-w-[45ch] text-background-rich/85 text-lg leading-relaxed">
+          {description}
+        </p>
+        <MarketingActions actions={actions} className="relative" />
+      </div>
+      <div
+        data-closing-subject="shopping-basket"
+        className="relative min-w-0 px-4 max-md:mx-auto max-md:w-full max-md:max-w-96"
+      >
+        <CommerceFigure
+          kind="checkout"
+          surface="dark"
+          className="aspect-square bg-transparent [--hairline-plate:var(--color-emphasis-dimmed)] [&>[data-hairline]]:bg-transparent"
+        />
+      </div>
     </div>
   </MarketingBand>
 );

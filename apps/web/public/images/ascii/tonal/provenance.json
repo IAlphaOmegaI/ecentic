@@ -1,0 +1,37 @@
+{
+  "method": "Tonal dots",
+  "selected": "2026-11-11",
+  "generator": "apps/web/scripts/tonal-ascii.py",
+  "description": "Variable-radius circles sampled from source luminance and white-background coverage; complete source aspect ratio retained.",
+  "usage": "Illustrative artwork only. The photographs and rendered artwork do not supply product record attributes.",
+  "subjects": [
+    {
+      "subject": "headphones",
+      "source": "/images/products/sony-wh-1000xm5.webp",
+      "sourceSha256": "7353a74f7ca1561618d6a838c482b8fb97f155b7e49ec3da7bf328584516931e",
+      "asset": "/images/ascii/tonal/headphones.svg",
+      "assetSha256": "faba407eb762e3bdf64ea961cb3904f697bc5ec802ad91b9b4eec548b56fab35",
+      "grid": [
+        120,
+        120
+      ],
+      "exposure": 0.46,
+      "backgroundFeather": 0.15,
+      "marks": 5467
+    },
+    {
+      "subject": "catalog",
+      "source": "/images/ascii/connect-catalog.png",
+      "sourceSha256": "f0d390ef76a492829c7e4778e683c1c7da0fcec97bff89a7965f2e1cc424ee5e",
+      "asset": "/images/ascii/tonal/catalog.svg",
+      "assetSha256": "51002d625a05f6178535d3397d4f966d965d7c319dcf54fac43574d6b966ea70",
+      "grid": [
+        120,
+        80
+      ],
+      "exposure": 0.95,
+      "backgroundFeather": 0.03,
+      "marks": 3346
+    }
+  ]
+}

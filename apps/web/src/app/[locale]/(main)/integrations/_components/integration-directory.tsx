@@ -13,6 +13,7 @@ import {
   AccordionTrigger,
 } from "@zenncore/web/components/accordion";
 import { Button } from "@zenncore/web/components/button";
+import Image from "next/image";
 import type { getMessages } from "next-intl/server";
 import { MarketingLead } from "@/components/marketing/lead";
 import {
@@ -234,6 +235,7 @@ const importOutputs = [
 export const IntegrationImportFlow = ({
   copy,
   directory,
+  preview,
 }: IntegrationImportFlow.Props) => (
   <MarketingBand
     id="import-flow"
@@ -274,20 +276,59 @@ export const IntegrationImportFlow = ({
         </div>
         <ImportConnector branch="inputs" />
         <div
-          className="self-center border border-accent-foreground bg-background px-6 py-8"
+          className="relative isolate self-center rounded-xl border border-background-rich/20 bg-emphasis-dimmed px-4 py-6 text-background-rich shadow-emphasis/10 shadow-xl"
           data-import-node="catalog"
         >
-          <CommerceBasketShoppingIcon
-            className="size-12 text-primary"
-            aria-hidden="true"
-          />
-          <h3 className="mt-6 text-2xl">{directory.flow.catalog.title}</h3>
-          <p className="mt-3 text-foreground-dimmed text-sm leading-relaxed">
+          <p className="mb-4 text-background-rich/65 text-xs">
+            {preview.sample}
+          </p>
+          <div className="relative grid gap-2">
+            {[
+              "/images/products/sony-wh-1000xm5.webp",
+              "/images/products/bose-qc-ultra.jpg",
+              "/images/products/apple-airpods-pro.jpg",
+            ].map((src, index) => (
+              <div
+                key={src}
+                className="relative flex min-w-0 items-center gap-3 rounded-md border border-background-rich/50 bg-background-rich p-3 text-foreground-rich"
+              >
+                <Image
+                  src={src}
+                  alt=""
+                  width={48}
+                  height={48}
+                  className="size-12 shrink-0 rounded-md bg-background object-contain p-1"
+                />
+                <div className="min-w-0">
+                  <p className="text-sm leading-snug">
+                    {preview.products[index]}
+                  </p>
+                  <div aria-hidden className="mt-2 flex gap-2">
+                    <span className="h-1 w-12 rounded-full bg-primary/35" />
+                    <span className="h-1 w-8 rounded-full bg-accent-foreground" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <h3 className="mt-6 text-2xl text-background-rich!">
+            {directory.flow.catalog.title}
+          </h3>
+          <p className="mt-3 text-background-rich/70 text-sm leading-relaxed">
             {directory.flow.catalog.description}
           </p>
-          <ul className="mt-6 grid grid-cols-2 gap-x-4 gap-y-3 border-accent-foreground border-t pt-4 font-mono text-primary-text text-sm">
+          <p className="mt-6 border-background-rich/15 border-t pt-4 text-background-rich/60 text-xs">
+            {preview.ready}
+          </p>
+          <ul className="mt-3 grid grid-cols-2 gap-x-4 gap-y-3 text-background-rich/85 text-xs">
             {directory.flow.catalog.fields.map((field) => (
-              <li key={field}>{field}</li>
+              <li key={field} className="flex items-center gap-2">
+                <span
+                  aria-hidden
+                  className="size-1 rounded-full bg-primary-rich"
+                />
+                {field}
+              </li>
             ))}
           </ul>
         </div>
@@ -349,5 +390,11 @@ export namespace IntegrationDirectory {
 }
 
 export namespace IntegrationImportFlow {
-  export type Props = { copy: Copy; directory: DirectoryCopy };
+  export type Props = {
+    copy: Copy;
+    directory: DirectoryCopy;
+    preview: Awaited<
+      ReturnType<typeof getMessages>
+    >["reviewSolutionsChannels"]["catalog"];
+  };
 }

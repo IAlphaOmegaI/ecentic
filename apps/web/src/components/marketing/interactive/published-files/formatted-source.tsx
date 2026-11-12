@@ -24,31 +24,38 @@ export const FormattedSource = ({
             {index + startLine}
           </span>
           <span className="whitespace-pre-wrap break-words [overflow-wrap:anywhere]">
-            {line.split(parts).map((part, position) => (
-              <span
-                // biome-ignore lint/suspicious/noArrayIndexKey: token positions are deterministic within the source line.
-                key={position}
-                className={
-                  /^".*"\s*:$/.test(part)
-                    ? "text-primary-rich"
-                    : /^"/.test(part)
-                      ? "text-info-foreground"
-                      : /^(true|false)$/.test(part)
-                        ? "text-success-rich"
-                        : part === "null"
-                          ? "text-secondary-rich"
-                          : /^-?\d/.test(part)
-                            ? "text-warning-rich"
-                            : undefined
-                }
-              >
-                {part}
-              </span>
-            ))}
-            {line.length === 0 && " "}
+            <FormattedSourceTokens source={line} />
           </span>
         </span>
       ))}
     </code>
   </pre>
+);
+
+/** Shared escaped syntax tokens for ordinary source and unified diff lines. */
+export const FormattedSourceTokens = ({ source }: { source: string }) => (
+  <>
+    {source.split(parts).map((part, position) => (
+      <span
+        // biome-ignore lint/suspicious/noArrayIndexKey: token positions are deterministic within the source line.
+        key={position}
+        className={
+          /^".*"\s*:$/.test(part)
+            ? "text-primary-rich"
+            : /^"/.test(part)
+              ? "text-info-foreground"
+              : /^(true|false)$/.test(part)
+                ? "text-success-rich"
+                : part === "null"
+                  ? "text-secondary-rich"
+                  : /^-?\d/.test(part)
+                    ? "text-warning-rich"
+                    : undefined
+        }
+      >
+        {part}
+      </span>
+    ))}
+    {source.length === 0 && " "}
+  </>
 );

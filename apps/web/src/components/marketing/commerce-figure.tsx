@@ -3,6 +3,7 @@
 import { cn } from "@zenncore/utils";
 import { useTranslations } from "next-intl";
 import { lazy } from "react";
+import { CustomHairlineFigure } from "@/components/hairline/custom-figure";
 import { HairlineFigure } from "@/components/hairline/figure";
 
 const figures = {
@@ -25,6 +26,17 @@ export const CommerceFigure = ({
   className,
 }: CommerceFigure.Props) => {
   const translate = useTranslations("commerceFigures");
+  if (kind === "shopifyBag" || kind === "shoppingBot") {
+    return (
+      <CustomHairlineFigure
+        key={kind}
+        name={kind === "shopifyBag" ? "shopify-bag" : "shopping-bot"}
+        label={label ?? translate(kind)}
+        surface={surface}
+        className={className}
+      />
+    );
+  }
   return (
     <HairlineFigure
       figure={figures[kind]}
@@ -40,7 +52,7 @@ export const CommerceFigure = ({
 
 export namespace CommerceFigure {
   export type Props = {
-    kind: keyof typeof figures;
+    kind: keyof typeof figures | "shopifyBag" | "shoppingBot";
     label?: string;
     surface?: "background" | "field" | "rich" | "dark";
     className?: string;
