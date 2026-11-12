@@ -22,6 +22,7 @@ const figures = {
 const customFigures = {
   shopifyBag: "shopify-bag",
   wooMark: "woo-mark",
+  merchantFolio: "merchant-folio",
   shoppingBot: "shopping-bot",
   repairTools: "repair-tools",
   moneyStack: "money-stack",

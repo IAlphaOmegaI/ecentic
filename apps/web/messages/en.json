@@ -19082,7 +19082,8 @@
     "officeChair": "Office chair with a padded back, armrests and a five-wheel base",
     "documentStack": "Three product documents that lift as the pointer selects a sheet",
     "openBook": "Illustration: an open book. Move the pointer over either page to fan the leaves open.",
-    "wooMark": "The Woo mark as a dimensional line sculpture; point at a letter to lift it."
+    "wooMark": "The Woo mark as a dimensional line sculpture; point at a letter to lift it.",
+    "merchantFolio": "A catalog sleeve with product records; point at a sheet to lift it for inspection."
   },
   "enterprisePilotPreview": {
     "label": "Illustrative pilot · sample brief",
@@ -19449,5 +19450,25 @@
     "blocker": "The blocker",
     "change": "The change in this example",
     "continues": "After the requirement is corrected"
+  },
+  "round17Shopping": {
+    "sample": "Illustrative shopping results",
+    "followUps": "Explore another question",
+    "evidence": "What the listing leaves out",
+    "source": "Source facts",
+    "missing": "Missing from listing",
+    "present": "Already in listing",
+    "evidenceNote": "Highlighted facts already exist in the sample source. Make them explicit in the listing before comparing again.",
+    "qualification": "Sample source data. Verify it before publishing.",
+    "responses": {
+      "wine-and-spirits": "Here are two bottles to compare. Check the tasting notes, origin and bottle details against what you have in mind.",
+      "food-and-beverage": "These two options are worth comparing. The serving size and ingredient details will help narrow it down.",
+      "beauty-and-personal-care": "Here are two options to look at. I’d check the formulation and the product’s stated suitability against your requirements.",
+      "consumer-electronics": "I’d compare these two options on the specifications that matter for your use. Here’s what their listings provide.",
+      "home-and-furniture": "These two options give us a starting point. Check the measurements and materials before deciding which fits your space.",
+      "fashion-and-outdoor": "Here are two options to compare. Look at their fit, materials and stated performance for your intended use.",
+      "health-wellness-and-pet": "These two listings give us some facts to compare. Check the ingredients and guidance, and confirm suitability with a qualified professional.",
+      "travel-and-experiences": "Here are two options for your trip. Compare their dates, location and complete terms before choosing."
+    }
   }
 }

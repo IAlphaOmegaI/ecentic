@@ -1,4 +1,4 @@
-import { getMessages, getTranslations } from "next-intl/server";
+import { getMessages } from "next-intl/server";
 import type { ReactNode } from "react";
 import type { MarketingPage } from "@/components/marketing/page";
 import {
@@ -19,9 +19,8 @@ export const SectorQuestions = async ({
     enterpriseSolutions,
     interactiveShelf,
     round14Sectors,
-    round16Shopping,
+    round17Shopping,
   } = await getMessages();
-  const translate = await getTranslations("round14Sectors");
   const attributes =
     enterpriseSolutions.sectors[sector].sections.find(
       (entry) => entry.id === "attributes",
@@ -42,19 +41,8 @@ export const SectorQuestions = async ({
         attributes={attributes}
         scenarios={sectorShelves[sector]}
         records={interactiveShelf.sectors[sector].scenarios}
-        responses={sectorShelves[sector].map((scenario, index) =>
-          translate("assistantFinding", {
-            product:
-              interactiveShelf.sectors[sector].scenarios[index]?.leftTitle ??
-              "",
-            fields: scenario.missing
-              .map((position) => attributes[position]?.title)
-              .filter(Boolean)
-              .join(" · "),
-          }),
-        )}
         copy={round14Sectors}
-        language={round16Shopping}
+        language={round17Shopping}
       />
       {children}
     </MarketingBand>

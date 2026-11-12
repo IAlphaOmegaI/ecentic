@@ -1,11 +1,11 @@
 "use client";
 
-import { CheckIcon, CommerceFilePenIcon, SearchIcon } from "@zenncore/icons";
+import { CodeIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
-import Image from "next/image";
 import type { AppConfig } from "next-intl";
 import { useState } from "react";
+import { FormattedSourceTokens } from "@/components/marketing/interactive/published-files/formatted-source";
 import { Plus } from "@/components/plus";
 import type { Sector, ShelfScenario } from "@/content/sectors";
 import {
@@ -20,7 +20,6 @@ export const SectorConversation = ({
   questions,
   scenarios,
   records,
-  responses,
   attributes,
   copy,
   language,
@@ -33,10 +32,12 @@ export const SectorConversation = ({
   const fields = scenario.required.flatMap((index) => {
     const attribute = attributes[index];
     const values = record.rows[index];
-    return attribute && values
+    const key = sectorFields[sector][index];
+    return attribute && values && key
       ? [
           {
             index,
+            key,
             label: attribute.title,
             values,
             missing: scenario.missing.includes(index),
@@ -44,7 +45,11 @@ export const SectorConversation = ({
         ]
       : [];
   });
-  const image = shoppingProductImage(sector, selected);
+  const missing = fields.filter((field) => field.missing);
+  const order = [
+    ...new Set([...scenario.required, ...record.rows.map((_, index) => index)]),
+  ];
+  const imageFit = sector === "travel-and-experiences" ? "cover" : "contain";
   return (
     <div
       data-sector-conversation={sector}
@@ -52,11 +57,8 @@ export const SectorConversation = ({
     >
       <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
       <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-      <div className="grid lg:grid-cols-2">
-        <div
-          className="min-w-0 bg-linear-to-br from-primary/6 via-background to-background px-4 py-8 sm:px-8"
-          data-conversation-transcript
-        >
+      <div className="grid lg:grid-cols-[minmax(0,1.2fr)_minmax(0,1fr)]">
+        <div className="min-w-0" data-conversation-transcript>
           <ShoppingConversation
             provider={
               sector === "travel-and-experiences" ||
@@ -65,29 +67,33 @@ export const SectorConversation = ({
                 : "chatgpt"
             }
             prompt={question.title}
-            response={language.response}
+            response={language.responses[sector]}
             products={[
               {
                 name: record.leftTitle,
                 label: copy.yourListing,
-                image,
-                details: fields
-                  .slice(0, 2)
-                  .map((field) =>
-                    field.missing
-                      ? `${field.label} · ${language.needsDetail}`
-                      : field.values.left,
+                image: shoppingProductImage(sector, selected),
+                imageFit,
+                details: order
+                  .filter((index) => !scenario.missing.includes(index))
+                  .slice(0, 3)
+                  .flatMap((index) =>
+                    record.rows[index] ? [record.rows[index].left] : [],
                   ),
               },
               {
                 name: record.rightTitle,
                 label: copy.comparisonListing,
                 image: shoppingProductImage(sector, selected, true),
-                details: fields.slice(0, 2).map((field) => field.values.right),
+                imageFit,
+                details: order
+                  .slice(0, 3)
+                  .flatMap((index) =>
+                    record.rows[index] ? [record.rows[index].right] : [],
+                  ),
               },
             ]}
-            sample={copy.sample}
-            note={responses[selected]}
+            sample={language.sample}
           >
             <p className="mb-3 text-foreground-dimmed text-xs">
               {language.followUps}
@@ -100,6 +106,7 @@ export const SectorConversation = ({
                       key={entry.title}
                       variant="ghost"
                       color="neutral"
+                      className="h-auto max-w-full py-2"
                       onClick={() => setSelected(index)}
                     >
                       <ShoppingFollowUp>{entry.title}</ShoppingFollowUp>
@@ -109,109 +116,107 @@ export const SectorConversation = ({
             </div>
           </ShoppingConversation>
         </div>
-        <div
+        <aside
           data-sector-inspection
-          className="relative min-w-0 border-accent-foreground border-t bg-background-rich lg:border-t-0 lg:border-l"
+          className="relative flex min-w-0 flex-col border-background-rich/15 border-t bg-emphasis-dimmed text-background-rich lg:border-t-0 lg:border-l"
         >
-          <div className="flex items-center justify-between gap-4 border-accent-foreground border-b px-4 py-5 sm:px-8">
-            <div className="flex items-center gap-3">
-              <SearchIcon aria-hidden className="size-4 text-primary-text" />
-              <h3 className="font-heading text-lg!">{language.inspection}</h3>
-            </div>
-            <span className="font-mono text-foreground-dimmed text-xs">
+          <header className="flex items-center justify-between gap-4 border-background-rich/15 border-b px-5 py-6 sm:px-8">
+            <p className="flex items-center gap-3 font-mono text-background-rich/80 text-sm">
+              <CodeIcon
+                aria-hidden
+                className="size-4 shrink-0 text-primary-rich"
+              />
+              source.json
+            </p>
+            <span className="font-mono text-background-rich/55 text-xs">
               {String(selected + 1).padStart(2, "0")} / 03
             </span>
-          </div>
-          <div className="grid grid-cols-[128px_1fr] items-center gap-4 px-4 py-8 sm:grid-cols-[160px_1fr] sm:px-8">
-            <div className="relative aspect-square">
-              <Image
-                src={image}
-                alt={record.leftTitle}
-                fill
-                sizes="160px"
-                className="object-contain"
-              />
-            </div>
-            <div className="min-w-0">
-              <p className="text-foreground-dimmed text-xs">
-                {copy.yourListing}
-              </p>
-              <h4 className="mt-2 font-heading text-xl! leading-snug!">
-                {record.leftTitle}
-              </h4>
-              <p className="mt-4 flex items-center gap-2 text-primary-text text-xs">
-                <CommerceFilePenIcon aria-hidden className="size-4 shrink-0" />
-                {language.sourceRecord}
-              </p>
-            </div>
-          </div>
-          <div className="border-accent-foreground border-t px-4 py-5 sm:px-8">
-            <p className="font-medium text-foreground-rich text-sm">
-              {language.evidenceHeading}
+          </header>
+          <div className="px-5 py-7 sm:px-8">
+            <p className="text-background-rich/60 text-sm">
+              {record.leftTitle}
             </p>
-            <p className="mt-2 max-w-[46ch] text-foreground-dimmed text-sm leading-relaxed">
-              {language.evidenceBody}
+            <h3 className="mt-3 max-w-[22ch] font-heading text-2xl! text-background-rich leading-snug!">
+              {language.evidence}
+            </h3>
+            <p className="mt-4 flex flex-wrap gap-x-3 gap-y-1 text-sm text-warning-rich">
+              {missing.map((field) => field.label).join(" · ")}
             </p>
           </div>
-          <dl className="px-4 sm:px-8">
-            {fields.map((field) => (
-              <div
-                key={field.index}
-                data-record-field={sectorFields[sector][field.index]}
-                data-record-state={field.missing ? "missing" : "present"}
-                className="border-accent-foreground border-t py-5"
-              >
-                <dt className="relative flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 pl-9">
+          <div className="border-background-rich/15 border-y">
+            <div className="flex flex-wrap items-center justify-between gap-3 border-background-rich/10 border-b px-5 py-3 text-xs sm:px-8">
+              <span className="text-background-rich/65">{language.source}</span>
+              <span className="flex items-center gap-2 text-warning-rich">
+                <span
+                  aria-hidden
+                  className="size-1.5 rounded-full bg-current"
+                />
+                {language.missing}
+              </span>
+            </div>
+            <pre className="min-w-0 py-5 font-mono text-[13px] leading-7 max-sm:text-xs">
+              <code>
+                <span className="grid grid-cols-[2.5rem_1fr] px-3 text-background-rich/75">
                   <span
                     aria-hidden
-                    className={cn(
-                      "absolute top-0.5 left-0 flex size-5 items-center justify-center rounded-full",
-                      field.missing
-                        ? "bg-warning/15 text-warning-text"
-                        : "bg-success/15 text-success-text",
-                    )}
+                    className="select-none text-background-rich/35"
                   >
-                    {field.missing ? (
-                      <span className="size-1.5 rounded-full bg-current" />
-                    ) : (
-                      <CheckIcon className="size-3" />
-                    )}
+                    1
                   </span>
-                  <span className="font-medium text-foreground-rich text-sm">
-                    {field.label}
-                  </span>
+                  {"{"}
+                </span>
+                {fields.map((field, index) => (
                   <span
+                    key={field.key}
+                    data-record-field={field.key}
+                    data-record-state={field.missing ? "missing" : "present"}
                     className={cn(
-                      "text-xs",
-                      field.missing ? "text-warning-text" : "text-success-text",
+                      "grid min-w-0 grid-cols-[2.5rem_minmax(0,1fr)] px-3",
+                      field.missing && "bg-warning/8",
                     )}
                   >
-                    {field.missing ? language.needsDetail : language.stated}
+                    <span
+                      aria-hidden
+                      className={cn(
+                        "select-none border-transparent border-l pl-2 text-background-rich/35",
+                        field.missing &&
+                          "border-warning-rich text-warning-rich",
+                      )}
+                    >
+                      {index + 2}
+                    </span>
+                    <span className="whitespace-pre-wrap break-words pr-3 text-background-rich/80 [overflow-wrap:anywhere]">
+                      <span className="sr-only">
+                        {field.missing ? language.missing : language.present}:{" "}
+                      </span>
+                      <FormattedSourceTokens
+                        source={`  ${JSON.stringify(field.key)}: ${JSON.stringify(field.values.left)}${index < fields.length - 1 ? "," : ""}`}
+                      />
+                    </span>
                   </span>
-                </dt>
-                <dd className="mt-3 pl-9">
-                  <p className="text-foreground text-sm leading-relaxed">
-                    {field.values.left}
-                  </p>
-                  {field.missing && (
-                    <p className="mt-2 text-foreground-dimmed text-xs leading-relaxed">
-                      {language.sourceHint}
-                    </p>
-                  )}
-                </dd>
-              </div>
-            ))}
-          </dl>
-          <div className="border-accent-foreground border-t bg-primary/5 px-4 py-5 sm:px-8">
-            <p className="text-foreground-dimmed text-xs leading-relaxed">
-              {language.inspectionNote}
-            </p>
+                ))}
+                <span className="grid grid-cols-[2.5rem_1fr] px-3 text-background-rich/75">
+                  <span
+                    aria-hidden
+                    className="select-none text-background-rich/35"
+                  >
+                    {fields.length + 2}
+                  </span>
+                  {"}"}
+                </span>
+              </code>
+            </pre>
           </div>
-        </div>
+          <p className="max-w-[52ch] px-5 py-6 text-background-rich/75 text-sm leading-relaxed sm:px-8">
+            {language.evidenceNote}
+          </p>
+          <p className="mt-auto border-background-rich/15 border-t px-5 py-5 text-background-rich/55 text-xs leading-relaxed sm:px-8">
+            {language.qualification}
+          </p>
+        </aside>
       </div>
       <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
       <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-      <Plus className="bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 max-lg:hidden" />
     </div>
   );
 };
@@ -223,8 +228,7 @@ export namespace SectorConversation {
     attributes: readonly { title: string; body: string }[];
     scenarios: readonly ShelfScenario[];
     records: AppConfig["Messages"]["interactiveShelf"]["sectors"][Sector]["scenarios"];
-    responses: readonly string[];
     copy: AppConfig["Messages"]["round14Sectors"];
-    language: AppConfig["Messages"]["round16Shopping"];
+    language: AppConfig["Messages"]["round17Shopping"];
   };
 }

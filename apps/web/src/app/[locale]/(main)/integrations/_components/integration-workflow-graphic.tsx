@@ -38,6 +38,7 @@ export const IntegrationWorkflowGraphic = ({
       className={cn(
         "relative isolate mt-6 flex min-w-0 items-center justify-center overflow-hidden px-7",
         large ? "min-h-80 flex-1" : "h-44",
+        kind === "audit" && integration === "googleMerchant" && "h-72",
       )}
     >
       <div className="pointer-events-none absolute inset-0 -z-1 bg-radial-[at_50%_100%] from-primary/15 via-transparent to-transparent" />
@@ -156,6 +157,74 @@ export const IntegrationWorkflowGraphic = ({
           surface="dark"
           className="aspect-auto h-44 w-full max-w-80"
         />
+      ) : kind === "audit" && integration === "googleMerchant" ? (
+        <div
+          className="relative h-60 w-full max-w-88 [perspective:900px]"
+          data-merchant-product-card
+        >
+          <div className="absolute inset-x-10 top-10 h-40 rounded-lg border border-background-rich/20 bg-emphasis-rich [transform:rotateY(-16deg)_rotateX(8deg)_rotate(-8deg)]" />
+          <div className="absolute inset-x-8 top-9 h-40 rounded-lg border border-background-rich/20 bg-emphasis [transform:rotateY(-16deg)_rotateX(8deg)_rotate(-4deg)]" />
+          <Motion.Item
+            initial={false}
+            whileInView={
+              ready && !reduced
+                ? {
+                    transform: [
+                      "translateY(10px) rotateY(-16deg) rotateX(8deg) rotate(-2deg)",
+                      "translateY(0px) rotateY(-16deg) rotateX(8deg) rotate(-2deg)",
+                    ],
+                  }
+                : { transform: "rotateY(-16deg) rotateX(8deg) rotate(-2deg)" }
+            }
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
+            className="absolute inset-x-4 top-7 overflow-hidden rounded-lg border border-primary-rich/45 bg-linear-to-br from-emphasis-rich to-emphasis-dimmed shadow-[0_20px_45px_-25px_var(--color-primary)] [transform:rotateY(-16deg)_rotateX(8deg)_rotate(-2deg)]"
+          >
+            <div className="flex items-center gap-2 border-background-rich/15 border-b px-4 py-3 font-mono text-background-rich/75 text-xs">
+              <span className="size-1.5 rounded-full bg-primary-rich" />
+              product.json
+            </div>
+            <div className="grid grid-cols-[2fr_3fr] items-center gap-3 px-4 py-5">
+              <Image
+                src="/images/ascii/tonal/headphones.svg"
+                alt=""
+                width={320}
+                height={320}
+                className="aspect-square h-auto w-full object-contain brightness-125"
+                unoptimized
+              />
+              <div className="space-y-3 font-mono text-xs">
+                {[
+                  {
+                    field: "title",
+                    color: "text-primary-rich",
+                    width: "w-4/5",
+                  },
+                  {
+                    field: "description",
+                    color: "text-warning",
+                    width: "w-full",
+                  },
+                  {
+                    field: "product_url",
+                    color: "text-success-rich",
+                    width: "w-3/5",
+                  },
+                ].map(({ field, color, width }) => (
+                  <div key={field}>
+                    <span className={color}>{field}</span>
+                    <span
+                      className={cn(
+                        "mt-2 block h-px bg-background-rich/25",
+                        width,
+                      )}
+                    />
+                  </div>
+                ))}
+              </div>
+            </div>
+          </Motion.Item>
+        </div>
       ) : kind === "audit" ? (
         <div className="flex w-full max-w-80 items-center gap-8">
           <CommerceFileShieldIcon className="size-20 shrink-0 text-primary-rich" />

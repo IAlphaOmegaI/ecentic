@@ -135,11 +135,7 @@ const Requirements = ({
   </MarketingBand>
 );
 
-const Setup = ({
-  section,
-  children,
-  copy,
-}: MarketingSection.Props & { copy: Copy }) => (
+const Setup = ({ section, children }: MarketingSection.Props) => (
   <MarketingBand
     id={section.id}
     className="[&>.marketing-rail>.marketing-guides]:hidden"
@@ -147,7 +143,7 @@ const Setup = ({
     <div className="px-8 py-10 max-sm:px-4 max-sm:py-8">
       <SectionHeading section={section} />
     </div>
-    <GoogleMerchantCenterRoadmap section={section} copy={copy} />
+    <GoogleMerchantCenterRoadmap section={section} />
     <SectionEnding section={section} showNote={false}>
       {children}
     </SectionEnding>
@@ -178,11 +174,7 @@ export const GoogleMerchantCenterBody = async ({
                   </Requirements>
                 );
               case "setup":
-                return (
-                  <Setup section={section} copy={copy}>
-                    {children}
-                  </Setup>
-                );
+                return <Setup section={section}>{children}</Setup>;
               default:
                 return (
                   <MarketingSection section={section}>

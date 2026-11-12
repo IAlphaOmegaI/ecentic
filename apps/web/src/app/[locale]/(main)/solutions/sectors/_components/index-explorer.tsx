@@ -143,7 +143,7 @@ export const IndexExplorer = ({
                   classList={{
                     root: "font-body text-base leading-normal tracking-normal",
                     trigger: {
-                      root: "items-center px-8 py-4 text-base text-foreground-rich hover:bg-primary/10 hover:text-foreground-rich max-sm:px-4",
+                      root: "items-center px-8 py-4 text-base text-foreground-rich hover:bg-transparent! hover:text-primary-rich! focus-visible:-outline-offset-4! max-sm:px-4",
                       icon: "mr-0 size-4 shrink-0 text-primary-text transition-transform duration-200 group-data-panel-open:rotate-180",
                     },
                   }}

@@ -1,0 +1,22 @@
+{
+  "round17Shopping": {
+    "sample": "Resultados de compra ilustrativos",
+    "followUps": "Explora otra pregunta",
+    "evidence": "Lo que falta en la ficha",
+    "source": "Datos de origen",
+    "missing": "Falta en la ficha",
+    "present": "Ya está en la ficha",
+    "evidenceNote": "Los datos destacados ya existen en la fuente de ejemplo. Inclúyelos de forma explícita en la ficha antes de volver a comparar.",
+    "qualification": "Datos de ejemplo. Verifícalos antes de publicar.",
+    "responses": {
+      "wine-and-spirits": "Estas son dos botellas para comparar. Revisa las notas de cata, el origen y los detalles de cada botella según lo que buscas.",
+      "food-and-beverage": "Vale la pena comparar estas dos opciones. El tamaño de la ración y los ingredientes ayudarán a elegir.",
+      "beauty-and-personal-care": "Aquí tienes dos opciones. Revisaría la fórmula y la idoneidad que declara cada producto según tus necesidades.",
+      "consumer-electronics": "Compararía estas dos opciones según las especificaciones que importan para tu uso. Esto es lo que indican sus fichas.",
+      "home-and-furniture": "Estas dos opciones son un punto de partida. Revisa las medidas y los materiales antes de decidir cuál encaja en tu espacio.",
+      "fashion-and-outdoor": "Aquí tienes dos opciones para comparar. Revisa el ajuste, los materiales y las prestaciones declaradas para el uso que buscas.",
+      "health-wellness-and-pet": "Estas dos fichas ofrecen datos para comparar. Revisa los ingredientes y las indicaciones, y confirma su idoneidad con un profesional cualificado.",
+      "travel-and-experiences": "Aquí tienes dos opciones para tu viaje. Compara las fechas, la ubicación y todas las condiciones antes de elegir."
+    }
+  }
+}

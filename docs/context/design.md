@@ -2,7 +2,8 @@
 
 The visual and interaction system for ecentic's public site, product workspace and onboarding.
 Consolidated from the complete 10–12 November 2026 review archive and the user's subsequent
-selections, through the subsequent [25-comment shopping-reference review](../marketing/review-16-shopping.md).
+selections, through the [shopping-reference review](../marketing/review-16-shopping.md) and
+the subsequent [integrated-surface and editorial review](../marketing/review-17-surfaces.md).
 
 This is the canonical guide. The repository-root `DESIGN.md` points to this file. It replaces the
 previous accumulation of review addenda: a later, specific decision is incorporated into the
@@ -342,6 +343,7 @@ and one meaningful pointer response. A renamed stock figure is not a custom draw
 | Context | Current subject / reference |
 | --- | --- |
 | Shopify | Custom shopping bag with handle/mark and catalog cards that lift toward the pointer |
+| Google Merchant Center | Catalog folio with supplemental product records that lift and part under the pointer |
 | AI selection | Custom shopping bot inspecting product cards |
 | Connect hero | Product document stack with folded corners and inspectable pages |
 | Fix | Repair tools; a recognizable fixing action |
@@ -360,10 +362,12 @@ and one meaningful pointer response. A renamed stock figure is not a custom draw
 | Health and wellness | Relevant wellness container |
 | Travel and experiences | Luggage |
 
-WooCommerce combines a modest genuine provider mark beside the title with a dimensional custom
-Hairline Woo figure in the illustration plane. Google Merchant Center uses a large genuine mark.
-Distinguish a compact identity from an expressive figure; do not duplicate two oversized flat
-logos. Semantic mappings belong in `CommerceFigure` / the shared page configuration.
+Branded integration heroes place a modest genuine provider mark with the title and use a
+meaningful Hairline figure in the illustration plane. This includes Google Merchant Center:
+the large flat Google mark is superseded by compact identity plus a commerce figure.
+WooCommerce retains its dimensional custom Woo figure. Do not duplicate two oversized flat
+logos or use an enlarged logo as the entire explanatory graphic. Semantic mappings belong in
+`CommerceFigure` / the shared page configuration.
 
 A page can use several figures where they explain different things. There is no current
 one-figure-per-page cap. Keep one dominant graphic per explanation and avoid repeating the same
@@ -483,11 +487,24 @@ message, a writing/assistant response, relevant product illustration and a visib
 inspection result. A quoted prompt, table of steps or transcript-shaped card grid alone does
 not satisfy this pattern.
 
-The supplied Gemini and ChatGPT captures are layout references: recognizable provider chrome,
+The supplied Google AI Mode and ChatGPT captures are layout references: recognizable provider chrome,
 a compact shopper message, a natural assistant response, actual product imagery and a coherent
 shopping-result area. Use local sample imagery or clear tonal product images instead of generic
 basket icons. Do not reproduce embedded scripts, ads, tracking or personal data from HTML captures.
 Provider styling does not turn the illustration into an official or live provider session.
+
+The conversation fills its owning section column. Do not put a rounded, bordered chat shell
+inside a second padded or tinted panel. Internal message padding and actual product-result
+tiles are useful; redundant decorative shells are not. Give Google AI Mode its own query,
+answer and search-result composition instead of changing only the logo on a ChatGPT mockup.
+Use small localized sample labeling without overwhelming the provider's interface hierarchy.
+
+Differentiate the adjacent record inspection with a coherent technical surface and compact
+source evidence. Do not repeat the same product thumbnail, full facts and explanation in both
+columns. The shopper-facing answer and the source check must each contribute different information.
+Travel and environmental photographs fill their image area with a deliberate crop; object product
+photography may use contain when keeping the complete object is the purpose. Avoid inset white
+padding around a room photo or letterboxing that wastes the result tile.
 
 Inspection results should explain the evidence with a product/record and concise labeled facts.
 Avoid long repeated rows of `null`, “Your listing” and “Comparison listing”, and avoid quote blocks
@@ -513,6 +530,9 @@ file/surface selection, tool previews, FAQs and dense supporting research detail
 Keep primary explanation visible. Use accordions for supporting evidence and long technical
 reference material. There is no global ban on tabs or buttons: the rejected pattern is making a
 simple sequential story dependent on a row of unlabeled or text-only clicks.
+For integration setup, prefer a visible connected roadmap when every step is short and necessary.
+Its content panels have deliberate confining rules and intersections; an unbounded gray expansion
+beneath an accordion does not provide enough structure.
 
 ### Forms and conversion
 
@@ -696,6 +716,10 @@ what remains the merchant's responsibility. Custom agentic checkout discussion d
 that age verification, channel policy, payment consent or jurisdictional eligibility disappears.
 Reference brands, if used for context, are separate from invented sample products and results.
 
+The sector directory's hover/selected treatment belongs to the selectable row or action. Static
+detail headings must not look like small independently hovered buttons or acquire opaque patches
+from a parent link's hover styles.
+
 The Enterprise pilot can contain reviewable illustrative text because the user requested it.
 It is not a real customer engagement. The final-copy task remains in
 [review follow-ups](../marketing/review-followups.md). Icons, color and a visible pilot progression
@@ -736,6 +760,20 @@ Do not convert real source previews into illustrative mock responses.
 Blog uses a custom book with optional tonal backdrop. Archive images are square with slight
 rounding and predictable cropping. Long editorial prose retains a comfortable reading measure,
 heading hierarchy and readable neutral surface.
+
+### Privacy and customer stories
+
+Privacy belongs to the same visual system, but the policy itself remains calm and readable.
+The short overview uses clear hierarchy, meaningful icons and a purposeful shared surface rather
+than an undifferentiated gray matrix. The contents navigation is a bounded sticky rail on desktop,
+with real section anchors, readable wrapped titles and an unobstructed mobile layout. Styling must
+not change legal wording, dates, links or data-practice claims.
+
+Customer stories expose the result, measurement context and publication permission together in
+an editorial composition. Avoid sparse text-only tabs that hide most of the evidence. Preserve
+genuine customer artwork and verified numbers. A +12% aggregate does not authorize an invented
+time series, revenue lift, causal explanation or testimonial. Existing publication gates and
+missing-information boundaries remain in place.
 
 ### Public tools
 
@@ -896,6 +934,8 @@ states which patterns to repeat.
 | Public source/document links | `apps/web/src/components/marketing/sources.tsx` |
 | After-scan explanation | `apps/web/src/components/marketing/tracking-overview.tsx` |
 | Evidence and disclosures | `apps/web/src/components/marketing/evidence*.tsx` |
+| Privacy overview and contents | `apps/web/src/app/[locale]/(main)/privacy-policy/_components/privacy-overview.tsx`, `apps/web/src/app/[locale]/(main)/privacy-policy/_components/privacy-contents.tsx` |
+| Customer story evidence | `apps/web/src/app/[locale]/(main)/stories/_components/stories-evidence.tsx` |
 | Current Enterprise review copy task | `docs/marketing/review-followups.md` |
 
 ## 17. Settled decisions and retired alternatives
@@ -910,6 +950,8 @@ states which patterns to repeat.
 | White-only or black-only use of cutouts | Cutouts work on white, blue and dark surfaces |
 | Gradient behind one footer subsection | One continuous footer field |
 | Repeated small padded blue/black boxes | Coherent section or workbench with meaningful internal structure |
+| Chat card padded inside another panel | Conversation fills the column; distinct compact source inspection beside it |
+| Flat logo filling the integration hero | Compact genuine identity and a semantic Hairline illustration |
 | Bare Before/After tabs or wipe controls | One visible Git-style source diff |
 | Text tabs / buttons concealing a simple sequence | Connected stages; visible story; native selection only where useful |
 | Quoted prompts or a replay formatted as a table | Shopper/assistant conversation plus visible product inspection |

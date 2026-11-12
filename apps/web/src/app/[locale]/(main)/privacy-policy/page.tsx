@@ -16,6 +16,7 @@ import {
 } from "@/lib/seo";
 import { renderInline } from "../_components/rich-text";
 import { PrivacyContents } from "./_components/privacy-contents";
+import { PrivacyOverview } from "./_components/privacy-overview";
 
 const renderContent = (content: string): ReactNode => {
   const blocks = content.split(/\n\n+/);
@@ -171,33 +172,13 @@ export default async () => {
         </ul>
       </MarketingBand>
 
-      <MarketingBand className="[&_.marketing-guides]:hidden">
+      <PrivacyOverview heading={summarySection} items={summary} />
+
+      <MarketingBand className="bg-background-rich [&_.marketing-guides]:hidden">
         <div className="grid lg:grid-cols-[19rem_minmax(0,1fr)]">
-          <div className="border-accent-foreground border-b bg-background-dimmed px-8 py-8 max-sm:px-4 lg:border-r">
-            <span className="mb-4 block text-3xl text-primary">
-              {summarySection.number}
-            </span>
-            <h2 className="text-3xl">{summarySection.title}</h2>
-            <p className="mt-4 text-foreground-dimmed leading-relaxed">
-              {summarySection.description}
-            </p>
-          </div>
-          <div className="grid grid-cols-2 gap-px border-accent-foreground border-b bg-accent-foreground max-sm:grid-cols-1">
-            {summary.map((item) => (
-              <div
-                key={item.title}
-                className="bg-background-dimmed px-8 py-8 max-sm:px-4 max-sm:py-6"
-              >
-                <h3 className="text-xl leading-tight">{item.title}</h3>
-                <p className="mt-4 text-foreground-dimmed leading-relaxed">
-                  {item.description}
-                </p>
-              </div>
-            ))}
-          </div>
           <aside
             id="privacy-contents"
-            className="scroll-mt-28 border-accent-foreground border-b bg-background-dimmed lg:border-r lg:border-b-0"
+            className="relative scroll-mt-28 border-accent-foreground border-b bg-linear-to-b from-primary/5 via-background-rich to-background-rich lg:border-r lg:border-b-0"
           >
             <PrivacyContents label={controls.contents} items={contents} />
           </aside>
@@ -211,6 +192,7 @@ export default async () => {
                   key={number}
                   id={`privacy-${number}`}
                   aria-labelledby={`privacy-heading-${number}`}
+                  tabIndex={-1}
                   className="scroll-mt-28 border-accent-foreground border-b py-12 max-sm:py-8"
                 >
                   <div className="mb-8 flex items-baseline gap-4">

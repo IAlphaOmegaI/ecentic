@@ -3,7 +3,9 @@
 This ledger explains the provenance of the [canonical design system](../context/design.md).
 It is historical evidence, not a second design specification or a replacement for current product rules.
 The archive through round 15 contains **21 saved Markdown files, 377 numbered comments, and one standalone inspiration brief**.
-The subsequent [shopping-reference transcript](review-16-shopping.md) adds **25 comments**, bringing the full review set to **402 numbered comments** across 22 Markdown sources.
+The [shopping-reference transcript](review-16-shopping.md) adds **25 comments**, followed by
+**12 comments** in the [integrated-surface and editorial transcript](review-17-surfaces.md).
+The full review set now contains **414 numbered comments** across 23 Markdown sources.
 Within the external archive, twenty files contain numbered comments; its remaining file references five inspiration images but contains no numbered comments.
 Some numbered-comment files also contain unnumbered follow-up requests; those requests inform the synthesis without increasing the numbered count.
 No screenshots or image contents are reproduced here.
@@ -104,6 +106,23 @@ The no-new-stylesheet-file rule remains part of the implementation contract.
 | --- | --- | --- |
 | Interactive elements brief | `/Users/xhurianshaba/.codex/attachments/41f37276-c295-4634-9fef-54fb0e14ef41/Pasted text.txt` | `ac07c3d284c0b7e59bfec2ef41a86ee75810d531f766f8afc9c62d174c3e08e0` |
 | Hairline figures brief | `/Users/xhurianshaba/.codex/attachments/9db76ce8-8cd6-4ae5-b96a-ff6f59e409cb/Pasted text.txt` | `6e88c6888f364deb5f36189bf346acfea1e94751d9da6243ccc6a8379a1c438a` |
+
+## Integrated-surface and editorial review
+
+`R17` refers to [review-17-surfaces.md](review-17-surfaces.md), the 12-comment follow-up after
+`R16`. It is stored in the repository. SHA256: `3783a4c4130184feaec70aef61710b131b3bfad9b9eb3ced8e0339bc94974a09`.
+
+- `R17 #1` supersedes the large flat Google hero mark: compact genuine identity accompanies
+  the title, while the illustration plane uses a meaningful Hairline figure.
+- `R17 #2–4` replaces unbounded setup expansions with a visibly framed sequence and calls for
+  dimensional document/product artwork rather than another oversized field icon.
+- `R17 #5` clarifies that hover emphasis belongs to actual interactive targets, not static
+  headings in their detail panel.
+- `R17 #6–8` extends the established system to the Privacy overview/contents and Stories evidence,
+  while retaining the legal text and verified customer facts.
+- `R17 #9–12` rejects the nested conversation frame, undersized room images and repetitive
+  evidence column. The conversation fills the column, Google has a faithful AI Mode composition,
+  and inspection presents compact distinct source evidence. Actual product-result tiles remain useful.
 
 ## Latest-choice supersession matrix
 

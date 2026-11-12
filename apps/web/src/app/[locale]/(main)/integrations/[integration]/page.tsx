@@ -61,7 +61,11 @@ export default async ({ params }: Props) => {
             provider={integration.key}
             decorative
             fallback="none"
-            className="h-28 w-auto max-w-[min(70vw,400px)] rounded-none object-left sm:h-36"
+            className={
+              integration.key === "googleMerchant"
+                ? "h-16 w-16 rounded-none object-left sm:h-20 sm:w-20"
+                : "h-28 w-auto max-w-[min(70vw,400px)] rounded-none object-left sm:h-36"
+            }
           />
         )
       }

@@ -8,6 +8,7 @@ import { useDocument } from "@/hooks/use-document";
 import documentStackRest from "./rest/document-stack.json";
 import headphonesRest from "./rest/headphones.json";
 import lipstickRest from "./rest/lipstick.json";
+import merchantFolioRest from "./rest/merchant-folio.json";
 import moneyStackRest from "./rest/money-stack.json";
 import officeChairRest from "./rest/office-chair.json";
 import openBookRest from "./rest/open-book.json";
@@ -44,6 +45,7 @@ type FigureWindow = Window & {
 const restPoses = {
   "shopify-bag": shopifyBagRest,
   "woo-mark": wooMarkRest,
+  "merchant-folio": merchantFolioRest,
   "shopping-bot": shoppingBotRest,
   "repair-tools": repairToolsRest,
   "money-stack": moneyStackRest,

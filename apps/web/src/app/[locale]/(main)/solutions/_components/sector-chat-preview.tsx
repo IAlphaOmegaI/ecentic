@@ -29,6 +29,7 @@ export const SectorChatPreview = ({
           name: example.product,
           label: copy.sample,
           image: shoppingProductImage(sector),
+          imageFit: sector === "travel-and-experiences" ? "cover" : "contain",
           details: example.details,
         },
       ]}

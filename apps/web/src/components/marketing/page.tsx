@@ -39,7 +39,7 @@ const heroSubjects: Record<string, MarketingHero.Props["figure"]> = {
   "/solutions/sectors/travel-and-experiences": "suitcase",
   "/integrations/shopify": "shopifyBag",
   "/integrations/woocommerce": "wooMark",
-  "/integrations/google-merchant-center": "googleLogo",
+  "/integrations/google-merchant-center": "merchantFolio",
   "/integrations/product-feeds": "format",
   "/platform/connect": "documentStack",
   "/platform/simulate": "shoppingBot",
@@ -354,9 +354,7 @@ export const MarketingPage = async ({
         artworkFit={heroArtworkFit}
         artworkClassName={heroArtworkClassName}
         meta={heroMeta}
-        identity={
-          heroSubjects[path] === "googleLogo" ? undefined : heroIdentity
-        }
+        identity={heroIdentity}
         illustration={heroIllustration}
         figure={heroSubjects[path]}
       >

@@ -43,24 +43,23 @@ export default async () => {
     >
       {published && pilot && (
         <MarketingLightBand id="pilots">
-          <div className="grid min-[1000px]:grid-cols-[1fr_2fr]">
-            <header className="relative flex min-w-0 flex-col items-start border-accent-foreground px-8 py-12 max-sm:px-4 max-sm:py-8 max-[1000px]:border-b min-[1000px]:border-r">
+          <div>
+            <header className="relative grid min-w-0 items-center gap-8 px-8 py-10 max-sm:px-4 max-sm:py-8 md:grid-cols-[160px_1fr] lg:grid-cols-[180px_1.2fr_1fr]">
               <Image
                 src={DuaFlavours}
                 alt="DUA Flavours"
-                className="mb-10 h-32 w-auto max-w-full object-contain object-left max-sm:mb-8 max-sm:h-28"
+                className="h-28 w-auto max-w-full object-contain object-left"
               />
-              <h2>{pilot.title}</h2>
-              <p className="mt-4 max-w-[32ch] text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">
-                {pilot.description}
-              </p>
+              <div>
+                <h2>{pilot.title}</h2>
+                <p className="mt-4 max-w-[38ch] text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">
+                  {pilot.description}
+                </p>
+              </div>
               {overview && (
-                <dl className="mt-auto w-full pt-12">
+                <dl className="grid gap-6 max-lg:md:col-span-2 max-lg:md:grid-cols-2 lg:border-accent-foreground lg:border-l lg:pl-8">
                   {overview.rows?.slice(0, 2).map((row) => (
-                    <div
-                      key={row.label}
-                      className="border-accent-foreground border-t py-4"
-                    >
+                    <div key={row.label}>
                       <dt className="text-foreground-dimmed text-sm">
                         {row.label}
                       </dt>
