@@ -8,6 +8,7 @@ import {
   MarketingActions,
   MarketingBand,
   MarketingEyebrow,
+  MarketingFeatureBand,
 } from "@/components/marketing/primitives";
 import { Link } from "@/i18n/navigation";
 import { SectorRules } from "../sector-rules";
@@ -57,14 +58,15 @@ export const TravelAndExperiencesBody = async ({
                 );
               case "pilot":
                 return (
-                  <MarketingBand
+                  <MarketingFeatureBand
+                    tone="blue"
                     id={section.id}
                     className="[&>.marketing-rail>.marketing-guides]:hidden"
                   >
                     <div className="px-4 py-8 sm:px-8 sm:py-12">
                       <h2>{section.title}</h2>
                       {section.description && (
-                        <p className="mt-4 max-w-[64ch] text-foreground-dimmed text-lg max-sm:text-base">
+                        <p className="mt-4 max-w-[64ch] text-background-rich/85 text-lg max-sm:text-base">
                           {section.description}
                         </p>
                       )}
@@ -72,14 +74,14 @@ export const TravelAndExperiencesBody = async ({
                     <TravelAndExperiencesRoadmap copy={travelPage.roadmap} />
                     {sectionChildren?.[section.id]}
                     {section.links && (
-                      <div className="border-accent-foreground border-t px-4 py-6 sm:px-8">
+                      <div className="border-background-rich/20 border-t px-4 py-6 sm:px-8">
                         <MarketingActions
                           actions={section.links}
                           className="mt-0"
                         />
                       </div>
                     )}
-                  </MarketingBand>
+                  </MarketingFeatureBand>
                 );
               case "business":
                 return (

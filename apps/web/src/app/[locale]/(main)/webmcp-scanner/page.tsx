@@ -45,7 +45,7 @@ export default async () => {
     <MarketingShell>
       <MarketingHero
         dark
-        figure="document"
+        figure="readinessScanner"
         title={`${translate("hero.title")} ${translate("hero.accent")}`}
         description={translate("hero.description")}
         actionsSlot={
@@ -55,31 +55,9 @@ export default async () => {
           </Button>
         }
       >
-        <p className="mt-6 text-background-rich/75 text-sm">
+        <p className="mt-6 text-background-rich/90 text-sm">
           {messages.webmcpScanner.hero.assurances.join(" · ")}
         </p>
-        <div className="mt-8 border-background-rich/20 border-t pt-6">
-          <p className="font-medium text-background-rich">
-            {messages.webmcpPage.scope.title}
-          </p>
-          <p className="mt-2 max-w-[50ch] text-background-rich/70 text-sm leading-relaxed">
-            {messages.webmcpPage.scope.description}
-          </p>
-          <dl className="mt-6 grid grid-cols-2 gap-6">
-            <div className="flex items-baseline gap-3">
-              <dt className="order-2 text-background-rich/75 text-sm">
-                {messages.webmcpPage.scope.pages}
-              </dt>
-              <dd className="font-heading text-3xl text-background-rich">3</dd>
-            </div>
-            <div className="flex items-baseline gap-3">
-              <dt className="order-2 text-background-rich/75 text-sm">
-                {messages.webmcpPage.scope.scripts}
-              </dt>
-              <dd className="font-heading text-3xl text-background-rich">12</dd>
-            </div>
-          </dl>
-        </div>
       </MarketingHero>
       <JsonLd
         schemas={[
@@ -100,9 +78,22 @@ export default async () => {
           <MarketingEdgeCrosses />
           <MarketingEdgeCrosses edge="bottom" />
           <Scanner appearance="workbench" />
-          <p className="border-background-rich/15 border-t px-7 py-4 text-background-rich/65 text-sm max-sm:px-4">
-            {messages.webmcpPage.scope.runtime}
-          </p>
+          <div className="flex flex-wrap items-center justify-between gap-x-8 gap-y-4 border-background-rich/15 border-t px-8 py-6 text-background-rich/75 text-sm max-sm:px-4">
+            <p>{messages.webmcpPage.scope.runtime}</p>
+            <dl className="flex flex-wrap gap-x-8 gap-y-4">
+              {(
+                [
+                  ["3", messages.webmcpPage.scope.pages],
+                  ["12", messages.webmcpPage.scope.scripts],
+                ] as const
+              ).map(([value, label]) => (
+                <div key={value} className="flex items-baseline gap-2">
+                  <dt className="order-2">{label}</dt>
+                  <dd className="text-background-rich tabular-nums">{value}</dd>
+                </div>
+              ))}
+            </dl>
+          </div>
         </div>
       </MarketingFeatureBand>
       <MarketingBand className="[&>.marketing-rail>.marketing-guides]:hidden">

@@ -1,6 +1,16 @@
 import { CommerceFigure } from "@/components/marketing/commerce-figure";
-import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import type { Sector } from "@/content/sectors";
+
+const figures = {
+  "wine-and-spirits": "wineBottle",
+  "food-and-beverage": "packagedFood",
+  "beauty-and-personal-care": "lipstick",
+  "consumer-electronics": "headphones",
+  "home-and-furniture": "sofa",
+  "fashion-and-outdoor": "sneaker",
+  "health-wellness-and-pet": "wellnessBottle",
+  "travel-and-experiences": "suitcase",
+} as const;
 
 export const SectorRecordArtwork = ({
   sector,
@@ -9,19 +19,11 @@ export const SectorRecordArtwork = ({
   sector: Sector;
   surface?: "field" | "dark";
 }) => (
-  <div
-    className="grid w-full min-w-0 grid-cols-[minmax(0,1fr)_112px] items-center gap-4 sm:grid-cols-[minmax(0,1fr)_144px]"
-    data-sector-record-artwork
-  >
+  <div className="w-full min-w-0" data-sector-record-artwork>
     <CommerceFigure
-      kind="catalog"
+      kind={figures[sector]}
       surface={surface}
-      className="mx-auto max-w-[320px]"
+      className="mx-auto aspect-[4/3] max-w-[440px]"
     />
-    <div aria-hidden className="relative aspect-square text-primary-text">
-      <EvolvingAscii
-        artwork={sector === "consumer-electronics" ? "headphones" : "catalog"}
-      />
-    </div>
   </div>
 );

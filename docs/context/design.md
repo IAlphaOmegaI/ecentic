@@ -2,7 +2,7 @@
 
 The visual and interaction system for ecentic's public site, product workspace and onboarding.
 Consolidated from the complete 10–12 November 2026 review archive and the user's subsequent
-selections, through the 51-comment review at `round-11-12-0517-51-comments`.
+selections, through the subsequent [25-comment shopping-reference review](../marketing/review-16-shopping.md).
 
 This is the canonical guide. The repository-root `DESIGN.md` points to this file. It replaces the
 previous accumulation of review addenda: a later, specific decision is incorporated into the
@@ -310,10 +310,16 @@ basket. The footer identity is a large **dimensional tonal-dot wordmark** with a
 behavior. It remains readable before enhancement and under reduced motion.
 
 Blog can pair a line-drawn book with ASCII behind it. Sector artwork can pair a relevant sampled
-product with a separate line-drawn object. Use one dominant foreground explanation rather than
-letting two animated objects compete.
+product with a separate line-drawn object when they explain different things. Do not place two
+versions of the same subject beside each other merely to include both media. Use one dominant
+foreground explanation rather than letting two animated objects compete.
 
 ### Production
+
+Apply this method to every image-based ASCII binding, including secondary-page motifs and
+small audience illustrations. Do not sample an older glyph image to create a new one: start from
+a clean, recognizable source. Meaningful literal code and protocol trees are not image ASCII, but
+a text tree must not substitute for a requested product or merchant illustration.
 
 Keep source images, generated assets, sampling parameters and provenance reproducible. Relevant
 assets live under `apps/web/public/images/ascii/tonal/`. `EvolvingAscii` and `AsciiAtmosphere`
@@ -354,9 +360,10 @@ and one meaningful pointer response. A renamed stock figure is not a custom draw
 | Health and wellness | Relevant wellness container |
 | Travel and experiences | Luggage |
 
-WooCommerce and Google Merchant Center currently use large genuine brand marks in their hero
-illustration planes. Do not duplicate the same large identity beside the title. Semantic mappings
-belong in `CommerceFigure` / the shared page configuration, not scattered route-level substitutions.
+WooCommerce combines a modest genuine provider mark beside the title with a dimensional custom
+Hairline Woo figure in the illustration plane. Google Merchant Center uses a large genuine mark.
+Distinguish a compact identity from an expressive figure; do not duplicate two oversized flat
+logos. Semantic mappings belong in `CommerceFigure` / the shared page configuration.
 
 A page can use several figures where they explain different things. There is no current
 one-figure-per-page cap. Keep one dominant graphic per explanation and avoid repeating the same
@@ -371,8 +378,9 @@ object beside every paragraph. Existing figures remain useful where their meanin
 - The pointer inspects, lifts, opens, turns or connects something physically plausible.
 - Use matching occlusion surfaces; a visible white plate on charcoal is a defect.
 - Keep explanatory labels outside the drawing. Brand lettering is allowed where it identifies
-  the requested object. The Shopify drawing's debug-like visible name is removed; its accessible
-  name remains.
+  the requested object. Remove visible developer-style figure names and state captions such as
+  “At rest” or “rest” across all public custom figures; preserve accessible descriptions. Do not
+  remove meaningful product labels, chart values or process status along with those captions.
 - Generate server-rendered rest geometry. JavaScript failure or lazy loading must not leave a
   blank illustration plane.
 - Load interactive figure code near the viewport and sleep when inactive. Do not create an
@@ -382,7 +390,7 @@ object beside every paragraph. Existing figures remain useful where their meanin
 
 `HairlineFigure`, `CustomHairlineFigure` and `CommerceFigure` own integration. Custom figure code
 lives in `apps/web/public/hairline/custom/`, with captured rest geometry in
-`apps/web/src/components/hairline/rest/`. Keep figure IDs, rest geometry, readouts and registry
+`apps/web/src/components/hairline/rest/`. Keep figure IDs, rest geometry, accessible labels and registry
 mappings coherent in both locales.
 
 The pinned library's PURE-annotation patch exists for tree-shaking. It does not change runtime
@@ -474,6 +482,17 @@ Use an actual conversation composition for sector questions and simulated decisi
 message, a writing/assistant response, relevant product illustration and a visible record or
 inspection result. A quoted prompt, table of steps or transcript-shaped card grid alone does
 not satisfy this pattern.
+
+The supplied Gemini and ChatGPT captures are layout references: recognizable provider chrome,
+a compact shopper message, a natural assistant response, actual product imagery and a coherent
+shopping-result area. Use local sample imagery or clear tonal product images instead of generic
+basket icons. Do not reproduce embedded scripts, ads, tracking or personal data from HTML captures.
+Provider styling does not turn the illustration into an official or live provider session.
+
+Inspection results should explain the evidence with a product/record and concise labeled facts.
+Avoid long repeated rows of `null`, “Your listing” and “Comparison listing”, and avoid quote blocks
+for ordinary product attributes. Keep a useful dark UCP excerpt as a distinct technical layer
+below the shopping example; discovery does not establish checkout eligibility.
 
 The first useful conversation and its evidence are visible at rest. Additional questions can
 change the example, but the basic explanation must not require repeated clicking. The shared
@@ -600,12 +619,14 @@ The public design audit includes every route family and both locales.
 
 A legible large tonal commerce subject supports the hero's category statement and conversion.
 The five-stage Connect → Simulate → Fix → Sell → Track story is a connected roadmap, with normal
-font numerals and an object that matches each stage. Use tools for fixing, money for the relevant
+font numerals on one continuous dark section and an object that matches each stage. Use tools for fixing, money for the relevant
 selling/value story and a meaningful connection/network where the narrative asks for one.
 
 Audience sections combine their own copy with tonal artwork. The integrations arc can have
 ASCII atmosphere while genuine provider marks stay clear. Capability cards use complete
-illustrated objects; remove heavy, misaligned tag strips and accidental edge clipping.
+illustrated objects; the simulation panel retains its product cards with the ecentic box mark
+above them. An arc of provider logos alone does not replace those cards. Remove heavy, misaligned
+tag strips and accidental edge clipping.
 Dense catalog findings belong behind supporting disclosure. Keep the original proof media.
 
 ### Platform overview and stage pages
@@ -628,14 +649,20 @@ for the after-scan explanation instead of another unrelated card/tab design.
 
 ### Integrations
 
-Provider identity is prominent, unique and correctly proportioned. Shopify has the custom bag;
-WooCommerce and Merchant Center have genuine large marks. Use consistent status and availability
+Provider identity is prominent and correctly proportioned. Shopify has the custom bag; WooCommerce
+has a compact official identity and custom Hairline mark; Merchant Center has its genuine large
+mark. Use consistent status and availability
 language, larger readable directory logos and useful subscription explanations.
 
 Read/write field comparisons remain normal semantic tables when tabular comparison is the job.
 Use icons and monospace for scopes/technical fields. Installation and channel flow use approved
 connected journeys, not sparse text tabs. Distinguish readiness, permissions and publishing with
 different meaningful graphics. The same illustration should not stand for all three.
+
+The Woo checkout example is one readable diagnostic sequence: passed checks, a specific blocker,
+the relevant correction and the buyer/payment boundary. Do not show duplicate Before/After
+summary strips that both say “Complete”. Keep illustrative source changes in the shared diff
+vocabulary and retain the merchant/payment controls described by the product.
 
 Preserve import-versus-publish behavior, actual permissions, Merchant Center destination semantics
 and the merchant's checkout/payment responsibilities. A layout change must not modify a scope.
@@ -726,6 +753,10 @@ simulated connection. Keep native input validation, server errors and actual res
 ### Security, Contact, Support and Partners
 
 Security emphasizes the public-data pilot option and makes store access/data flow inspectable.
+The approved gradient data-flow workbench is reusable: connected icon-led stages, a clear
+source/destination or phase explanation, one relevant figure and flat supporting details. A
+standalone arrow between labels adds little; use a continuous route with actual endpoints. This
+visual approval does not approve draft claims or remove the Alvi review gate.
 Use icons and meaningful infrastructure/provider graphics. The data-flow review's continuous
 gradient uses actual provider marks; its unapproved connector copy remains behind the existing
 review gate until approved. Styling approval is not content approval.
@@ -859,6 +890,7 @@ states which patterns to repeat.
 | Connected setup stages | `apps/web/src/components/marketing/connected-journey.tsx` |
 | Shared explanatory interactions | `apps/web/src/components/marketing/interactive/` |
 | Unified diff | `apps/web/src/components/marketing/interactive/code-comparison.tsx`, `apps/web/src/components/marketing/interactive/source-diff.ts` |
+| Shopping mockups and sample imagery | `apps/web/src/app/[locale]/(main)/solutions/_components/shopping-conversation.tsx`, `apps/web/src/app/[locale]/(main)/solutions/_components/shopping-products.ts` |
 | Conversation replay | `apps/web/src/components/marketing/interactive/agent-replay.tsx`, `apps/web/src/components/marketing/interactive/replay-console.tsx`, `apps/web/src/components/marketing/interactive/replay-scene.tsx` |
 | Finite sequence lifecycle | `apps/web/src/components/marketing/interactive/use-sequence.ts` |
 | Public source/document links | `apps/web/src/components/marketing/sources.tsx` |

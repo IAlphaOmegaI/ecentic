@@ -7,21 +7,17 @@ import { useEffect, useRef, useState } from "react";
 import { Motion } from "@/components/motion";
 import { useDocument } from "@/hooks/use-document";
 
-const tonalArtwork = {
+const artwork = {
+  bag: "/images/ascii/tonal/home-bag.svg",
+  cart: "/images/ascii/tonal/shopping-cart.svg",
+  console: "/images/ascii/tonal/console.svg",
+  commerce: "/images/ascii/tonal/shopping-bot.svg",
+  closing: "/images/ascii/tonal/home-bag.svg",
+  selection: "/images/ascii/tonal/selection.svg",
   catalog: "/images/ascii/tonal/catalog.svg",
   headphones: "/images/ascii/tonal/headphones.svg",
   homeBag: "/images/ascii/tonal/home-bag.svg",
-  homeCart: "/images/ascii/tonal/home-cart.svg",
-};
-
-const artwork = {
-  bag: "/images/ascii/bag-halftone.svg",
-  cart: "/images/ascii/cart-halftone.svg",
-  console: "/images/ascii/console-halftone.svg",
-  commerce: "/images/ascii/robot-halftone.svg",
-  closing: "/images/ascii/bag-halftone.svg",
-  selection: "/images/ascii/simulate-selection-halftone.svg",
-  ...tonalArtwork,
+  homeCart: "/images/ascii/tonal/shopping-cart.svg",
 };
 
 /** The character road retains its sampled path; object artwork uses dot masks. */
@@ -89,9 +85,7 @@ export const EvolvingAscii = ({
       ref={target}
       aria-hidden="true"
       data-ascii-artwork={sequence[position] ?? kind}
-      data-artwork-renderer={
-        (sequence[position] ?? kind) in tonalArtwork ? "tonal-dots" : "halftone"
-      }
+      data-artwork-renderer="tonal-dots"
       data-artwork-motion={
         complete ? "complete" : active ? "revealing" : "rest"
       }
@@ -111,12 +105,7 @@ export const EvolvingAscii = ({
           className="absolute inset-0 overflow-hidden [mask-position:center] [mask-repeat:no-repeat]"
           style={{ maskImage: `url('${artwork[subject]}')`, maskSize: fit }}
         >
-          <div
-            className={cn(
-              "absolute inset-0 bg-current",
-              subject in tonalArtwork ? "opacity-100" : "opacity-80",
-            )}
-          />
+          <div className="absolute inset-0 bg-current" />
           <Motion.Item
             initial={false}
             animate={{

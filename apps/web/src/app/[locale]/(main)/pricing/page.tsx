@@ -124,16 +124,19 @@ export default async () => {
         />
         <div className="marketing-cell relative flex min-w-0 flex-wrap gap-6 px-7 py-8 max-sm:px-4">
           {enterprisePricing.policyLinks.map((action) => (
-            <Link
+            <Button
               key={action.href}
-              href={action.href}
-              className="text-primary-text underline decoration-1 underline-offset-4"
+              variant="outline"
+              color="emphasis"
+              render={<Link href={action.href} />}
             >
               {action.label}
-            </Link>
+            </Button>
           ))}
         </div>
       </MarketingBand>
     </MarketingPage>
   );
 };
+
+import { Button } from "@zenncore/web/components/button";

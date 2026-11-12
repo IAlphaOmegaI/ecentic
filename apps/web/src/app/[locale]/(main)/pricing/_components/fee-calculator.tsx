@@ -177,10 +177,14 @@ export const FeeCalculator = ({
         <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
         <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
       </div>
-      <div className="border-accent-foreground border-t px-8 max-sm:px-4 [&_button]:font-medium [&_button]:text-sm [&_h3_button]:text-sm">
-        <EvidenceDisclosure id="fee-details" title={presentation.details}>
-          <div className="space-y-3 text-foreground-dimmed text-sm leading-relaxed">
-            <p>
+      <div className="border-accent-foreground border-t px-8 max-sm:px-4">
+        <EvidenceDisclosure
+          id="fee-details"
+          title={presentation.details}
+          compact
+        >
+          <div className="max-w-[72ch] space-y-4 text-base leading-relaxed">
+            <p className="text-foreground-rich">
               {copy.formula
                 .replace("{rate}", String(rateBps / 100))
                 .replace("{cap}", format(capCents))}
@@ -194,7 +198,9 @@ export const FeeCalculator = ({
                     ? `${copy.tie} ${tied.map((plan) => plan.name).join(", ")}`
                     : copy.noCheaper}
             </p>
-            <p>{copy.qualification}</p>
+            <p className="text-foreground-dimmed text-sm">
+              {copy.qualification}
+            </p>
           </div>
         </EvidenceDisclosure>
       </div>

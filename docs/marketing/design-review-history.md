@@ -2,8 +2,9 @@
 
 This ledger explains the provenance of the [canonical design system](../context/design.md).
 It is historical evidence, not a second design specification or a replacement for current product rules.
-The source set was reconciled after round 15: **21 saved Markdown files, 377 numbered comments, and one standalone inspiration brief**.
-Twenty files contain numbered comments; the remaining file references five inspiration images but contains no numbered comments.
+The archive through round 15 contains **21 saved Markdown files, 377 numbered comments, and one standalone inspiration brief**.
+The subsequent [shopping-reference transcript](review-16-shopping.md) adds **25 comments**, bringing the full review set to **402 numbered comments** across 22 Markdown sources.
+Within the external archive, twenty files contain numbered comments; its remaining file references five inspiration images but contains no numbered comments.
 Some numbered-comment files also contain unnumbered follow-up requests; those requests inform the synthesis without increasing the numbered count.
 No screenshots or image contents are reproduced here.
 
@@ -55,6 +56,27 @@ SHA256 covers each complete saved file's raw bytes, including any unnumbered req
 `1823` is the standalone reference brief: one request and five image references, **not five comments** despite its folder suffix.
 The early/middle/late synthesis coverage reconciles as **145 + 110 + 122 = 377** numbered comments.
 All numbered sets are sequential from 1 through their listed count; image-caption repetitions are not additional comments.
+
+## Subsequent shopping-reference review
+
+`R16` refers to [review-16-shopping.md](review-16-shopping.md), a text-only transcription of the
+25-comment chat round after `0517`. It is stored in the repository rather than under the external
+archive root. SHA256: `18ec177e8c5a231fe3c92340fd965205c4ef3a2f85fa84f63f9dcc08c6d02e76`. Two supplied HTML files are listed and hashed in that transcript;
+they are visual evidence, not executable dependencies or product claims.
+
+- `R16 #1–4`: the homepage roadmap becomes wholly dark; retain simulation product cards and place
+  the ecentic box above them; complete the clean-source tonal ASCII conversion.
+- `R16 #5–6, #12–17`: provider-style shopping interfaces with product imagery replace generic
+  transcripts, nested gray shells and repeated null-field comparisons. Preserve the approved
+  dark UCP excerpt. Use one dominant illustration and factual labels instead of quote styling.
+- `R16 #7–9`: one meaningful Woo diagnostic trace replaces identical before/after summaries;
+  restore the compact official identity and draw the separate large Woo figure with Hairline.
+- `R16 #10–11`: readable estimator disclosure and shared policy-link buttons. Billing remains
+  governed by `CHAT-CAP` below; no enforcement or calculation change is authorized here.
+- `R16 #18–23`: remove visible figure-state captions globally, simplify the scanner hero, repair
+  sector directory borders/hover/icons, and replace the weak travel workflow composition.
+- `R16 #24–25`: the complete gradient Security workbench is an approved reusable reference;
+  eliminate isolated transformation arrows. Its draft content still requires confirmation.
 
 ## Direct chat decisions — not archive claims
 

@@ -1,0 +1,14 @@
+{
+  "round16Shopping": {
+    "response": "I’d compare these two options against your requirements. Here’s what the listings tell us.",
+    "followUps": "Try another shopping question",
+    "inspection": "Inside the product record",
+    "sourceRecord": "Existing source facts",
+    "evidenceHeading": "What the question needs",
+    "evidenceBody": "Compare the request with the facts supplied for this sample product.",
+    "needsDetail": "Missing from listing",
+    "stated": "In the listing",
+    "sourceHint": "Present in the sample source; make it explicit in the listing.",
+    "inspectionNote": "Illustrative product imagery and records. This shows an evidence check, not a live recommendation or a model’s private reasoning."
+  }
+}

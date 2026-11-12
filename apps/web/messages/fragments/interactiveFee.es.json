@@ -10,10 +10,10 @@
     "privacy": "No se guarda nada de lo que escribes.",
     "result": "Comisión mensual estimada",
     "staticExample": "Un pedido de {order} genera una comisión de {fee}.",
-    "formula": "Cada pedido se redondea a céntimos al {rate}% y después se suma hasta el límite de {cap} por mes natural.",
+    "formula": "La comisión por cada pedido atribuido a IA es el {rate}% de su valor, redondeado a céntimos. El total mensual tiene un límite de {cap}.",
     "cheaper": "Precio mensual inferior:",
     "tie": "Mismo precio mensual:",
-    "noCheaper": "Ningún plan fijo estándar tiene un precio mensual inferior con esta estimación.",
-    "qualification": "Se supone que todos los pedidos tienen tu valor medio. Las comisiones reales redondean cada pedido por separado; las condiciones de tu cuenta pueden variar. Solo se comparan precios, no límites ni funciones."
+    "noCheaper": "Con estos valores, el pago por uso tiene el precio mensual más bajo.",
+    "qualification": "Esta estimación usa tu valor medio por pedido. Las comisiones reales se calculan por pedido y las condiciones de cada cuenta pueden variar. Compara las funciones y los límites de cada plan antes de elegir."
   }
 }

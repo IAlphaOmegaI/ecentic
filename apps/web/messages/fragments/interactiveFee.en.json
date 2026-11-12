@@ -10,10 +10,10 @@
     "privacy": "Nothing you type is saved.",
     "result": "Estimated monthly fee",
     "staticExample": "One {order} order gives a {fee} fee.",
-    "formula": "Each order is rounded to cents at {rate}%, then summed up to the {cap} calendar-month cap.",
+    "formula": "For each AI-attributed order, the fee is {rate}% of its value, rounded to cents. The monthly total is capped at {cap}.",
     "cheaper": "Lower monthly price:",
     "tie": "Same monthly price:",
-    "noCheaper": "None of the standard flat plans has a lower monthly price at this estimate.",
-    "qualification": "This assumes every order equals your average value. Actual fees round each order separately; account terms can differ. This compares prices only, not plan limits or features."
+    "noCheaper": "At these inputs, pay-as-you-go has the lowest monthly price.",
+    "qualification": "This estimate uses your average order value. Actual fees are calculated per order, and account terms may differ. Compare plan features and limits before choosing."
   }
 }

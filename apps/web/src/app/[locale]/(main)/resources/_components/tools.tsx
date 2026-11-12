@@ -6,7 +6,6 @@ import { getMessages, getTranslations } from "next-intl/server";
 import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
 import { Link } from "@/i18n/navigation";
-import WebMcpArt from "@/public/images/ascii/console.png";
 import { ANONYMOUS_MESSAGE_LIMIT } from "@/server/app/intelligence/ucp/playground-limit";
 import type enMessages from "../../../../../../messages/en.json";
 import { PlaygroundArt, ScanArt, UcpArt } from "./resource-art";
@@ -44,7 +43,9 @@ const ToolArt = ({
     case "webmcp":
       return (
         <Image
-          src={WebMcpArt}
+          src="/images/ascii/tonal/console.svg"
+          width={1024}
+          height={1024}
           alt=""
           className={cn("object-contain p-8", className)}
         />

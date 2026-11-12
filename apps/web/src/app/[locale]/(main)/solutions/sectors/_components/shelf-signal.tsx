@@ -22,9 +22,9 @@ export const ShelfSignal = ({
         aria-hidden
         className="size-8 text-primary-rich"
       />
-      <blockquote className="max-w-[32ch] font-heading text-2xl text-background-rich leading-snug tracking-tight sm:text-3xl">
-        “{question}”
-      </blockquote>
+      <p className="max-w-[32ch] font-heading text-2xl text-background-rich leading-snug tracking-tight sm:text-3xl">
+        {question}
+      </p>
       <ul className="grid gap-3 text-background-rich/65 text-sm">
         {fields.map((field) => (
           <li key={field} className="flex items-start gap-3">

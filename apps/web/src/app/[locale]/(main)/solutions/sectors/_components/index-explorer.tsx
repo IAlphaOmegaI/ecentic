@@ -1,6 +1,16 @@
 "use client";
 
-import { ArrowRightIcon } from "@zenncore/icons";
+import {
+  ArrowRightIcon,
+  CommerceBottleWineIcon,
+  CommerceBowlFoodIcon,
+  CommerceHeadphonesIcon,
+  CommerceLipstickIcon,
+  CommercePawIcon,
+  CommerceShirtIcon,
+  CommerceSofaIcon,
+  GlobeIcon,
+} from "@zenncore/icons";
 import {
   Accordion,
   AccordionItem,
@@ -12,8 +22,30 @@ import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
 import { useMediaQuery } from "@zenncore/web/hooks";
 import type { AppConfig } from "next-intl";
 import { Crosshair } from "@/app/[locale]/(main)/dashboard/_components/grid";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import { Link } from "@/i18n/navigation";
-import { JourneyFigure } from "../../_components/journey-figure";
+
+const sectorFigures = [
+  "wineBottle",
+  "packagedFood",
+  "lipstick",
+  "headphones",
+  "sofa",
+  "sneaker",
+  "wellnessBottle",
+  "suitcase",
+] as const;
+
+const sectorIcons = [
+  CommerceBottleWineIcon,
+  CommerceBowlFoodIcon,
+  CommerceLipstickIcon,
+  CommerceHeadphonesIcon,
+  CommerceSofaIcon,
+  CommerceShirtIcon,
+  CommercePawIcon,
+  GlobeIcon,
+] as const;
 
 export const IndexExplorer = ({
   title,
@@ -26,28 +58,37 @@ export const IndexExplorer = ({
     <Tabs
       defaultValue={sectors[0]?.href}
       orientation={desktop ? "vertical" : "horizontal"}
-      className="marketing-section-grid relative grid grid-cols-[minmax(0,1fr)_minmax(0,2fr)] border-accent-foreground border-t max-lg:grid-cols-1"
+      className="marketing-section-grid relative grid grid-cols-[minmax(0,1fr)_minmax(0,2fr)] border-accent-foreground border-y max-lg:grid-cols-1"
     >
       <div className="relative min-w-0 border-accent-foreground border-r bg-background-dimmed max-lg:border-r-0 max-lg:border-b">
         <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2 max-lg:hidden" />
         <TabsList
           activateOnFocus
           aria-label={title}
-          className="grid w-full grid-cols-1 gap-2 rounded-none border-0 p-4 max-sm:gap-2 max-sm:p-2 max-lg:grid-cols-2"
+          className="grid w-full grid-cols-1 gap-0 rounded-none border-0 p-0 max-lg:grid-cols-2"
         >
-          {sectors.map((sector) => (
-            <Tab
-              key={sector.href}
-              value={sector.href}
-              className="group/sector h-auto min-h-16 justify-between gap-4 rounded-md border-0 px-4 py-4 text-left text-base leading-snug before:hidden hover:bg-background hover:text-primary-text focus-visible:-outline-offset-4! data-[active]:bg-primary-text data-selected:bg-primary-text data-[active]:text-background-rich data-selected:text-background-rich max-sm:min-h-16 max-sm:px-2 max-sm:text-sm"
-            >
-              <span>{sector.title}</span>
-              <ArrowRightIcon
-                aria-hidden
-                className="size-4 shrink-0 opacity-0 group-data-[active]/sector:opacity-100 group-data-selected/sector:opacity-100 max-sm:hidden"
-              />
-            </Tab>
-          ))}
+          {sectors.map((sector, index) => {
+            const Icon = sectorIcons[index] ?? GlobeIcon;
+            return (
+              <Tab
+                key={sector.href}
+                value={sector.href}
+                className="group/sector h-auto min-h-18 justify-start gap-4 rounded-none border-0 border-accent-foreground border-b px-6 py-5 text-left text-base leading-snug before:hidden hover:bg-primary/10 hover:text-foreground-rich focus-visible:-outline-offset-4! data-[active]:bg-primary/15 data-selected:bg-primary/15 data-[active]:text-foreground-rich data-selected:text-foreground-rich max-sm:min-h-18 max-sm:gap-2 max-sm:px-3 max-sm:text-sm"
+              >
+                <Icon
+                  aria-hidden
+                  className="size-5 shrink-0 text-primary-text"
+                />
+                <span className="min-w-0 flex-1 whitespace-normal">
+                  {sector.title}
+                </span>
+                <ArrowRightIcon
+                  aria-hidden
+                  className="size-4 shrink-0 opacity-0 group-data-[active]/sector:opacity-100 group-data-selected/sector:opacity-100 max-sm:hidden"
+                />
+              </Tab>
+            );
+          })}
         </TabsList>
       </div>
       {sectors.map((sector, index) => (
@@ -62,7 +103,7 @@ export const IndexExplorer = ({
                 {copy.question}
               </p>
               <h3 className="max-w-[24ch] text-[clamp(1.75rem,3vw,2.5rem)] leading-[1.12]">
-                “{sector.question}”
+                {sector.question}
               </h3>
               <p className="mt-6 max-w-[42ch] text-foreground-dimmed">
                 {sector.description}
@@ -75,7 +116,11 @@ export const IndexExplorer = ({
               </div>
             </div>
             <div className="h-56 min-w-0 text-primary-text max-sm:mt-4 max-sm:h-40">
-              <JourneyFigure stage={index % 5} />
+              <CommerceFigure
+                kind={sectorFigures[index] ?? "suitcase"}
+                surface="dark"
+                className="aspect-auto h-full w-full"
+              />
             </div>
           </div>
           <div className="relative border-accent-foreground border-t px-8 pt-8 pb-4 max-sm:px-4 max-sm:pt-6">
@@ -98,7 +143,7 @@ export const IndexExplorer = ({
                   classList={{
                     root: "font-body text-base leading-normal tracking-normal",
                     trigger: {
-                      root: "items-center px-8 py-4 text-base text-foreground-rich hover:bg-emphasis-dimmed hover:text-primary-text max-sm:px-4",
+                      root: "items-center px-8 py-4 text-base text-foreground-rich hover:bg-primary/10 hover:text-foreground-rich max-sm:px-4",
                       icon: "mr-0 size-4 shrink-0 text-primary-text transition-transform duration-200 group-data-panel-open:rotate-180",
                     },
                   }}

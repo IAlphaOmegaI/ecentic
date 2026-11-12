@@ -1,5 +1,6 @@
 "use client";
 
+import { cn } from "@zenncore/utils";
 import {
   Accordion,
   AccordionItem,
@@ -14,6 +15,7 @@ export const EvidenceDisclosure = ({
   id,
   title,
   children,
+  compact = false,
 }: EvidenceDisclosure.Props) => {
   const { ready } = useInteractive();
   const [value, setValue] = useState<string[]>([]);
@@ -28,13 +30,18 @@ export const EvidenceDisclosure = ({
       <AccordionItem value={id} className="border-0">
         <AccordionTrigger
           id={`${id}-title`}
-          className="items-center gap-6 bg-transparent py-2 font-heading text-[clamp(1.65rem,2.5vw,2.4rem)] leading-tight tracking-[-0.025em] hover:text-primary-text"
+          className={cn(
+            "items-center gap-6 bg-transparent font-heading leading-tight tracking-[-0.025em] hover:text-primary-text",
+            compact
+              ? "py-6 text-xl"
+              : "py-2 text-[clamp(1.65rem,2.5vw,2.4rem)]",
+          )}
           classList={{ trigger: { icon: "mr-0 size-5 shrink-0" } }}
         >
           {title}
         </AccordionTrigger>
         <AccordionPanel keepMounted className="motion-reduce:transition-none">
-          <div className="pt-6">{children}</div>
+          <div className={compact ? "pb-8" : "pt-6"}>{children}</div>
         </AccordionPanel>
       </AccordionItem>
     </Accordion>
@@ -42,5 +49,10 @@ export const EvidenceDisclosure = ({
 };
 
 export namespace EvidenceDisclosure {
-  export type Props = { id: string; title: string; children: ReactNode };
+  export type Props = {
+    id: string;
+    title: string;
+    children: ReactNode;
+    compact?: boolean;
+  };
 }

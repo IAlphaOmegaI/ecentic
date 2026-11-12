@@ -1,14 +1,27 @@
 "use client";
 
-import { CommercePlug_3SparkleIcon } from "@zenncore/icons";
+import {
+  CommerceBasketShoppingIcon,
+  CommercePlug_3SparkleIcon,
+} from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import Image from "next/image";
 import { CommerceFigure } from "@/components/marketing/commerce-figure";
+import { useInteractive } from "@/components/marketing/interactive/use-interactive";
 import { ProviderLogo } from "@/components/marketing/provider-logo";
+import { Motion } from "@/components/motion";
+
+const cardPositions = [
+  { left: "11%", top: "48%", rotation: -9 },
+  { left: "38%", top: "37%", rotation: 0 },
+  { left: "65%", top: "48%", rotation: 9 },
+] as const;
 
 export const CapabilityIllustration = ({
   kind,
 }: CapabilityIllustration.Props) => {
+  const { ready, reduced } = useInteractive();
+  const enhanced = ready && !reduced;
   const tall = kind === "simulations";
 
   if (kind === "readiness" || kind === "checkout" || kind === "developers")
@@ -36,7 +49,7 @@ export const CapabilityIllustration = ({
       data-capability-illustration={kind}
       className={cn(
         "relative isolate mt-8 overflow-hidden",
-        tall ? "min-h-[460px] shrink-0" : "h-48",
+        tall ? "h-[440px] shrink-0 sm:h-[460px]" : "h-48",
       )}
     >
       {(tall || kind === "catalog") && (
@@ -46,40 +59,98 @@ export const CapabilityIllustration = ({
         />
       )}
       {tall ? (
-        <div className="relative flex min-h-96 flex-1 flex-col items-center justify-center gap-10 px-8 py-12 max-sm:min-h-80">
-          <div className="flex w-full max-w-64 items-center justify-between gap-8">
-            {(["chatgpt", "claude", "gemini"] as const).map((provider) =>
-              provider === "chatgpt" ? (
-                <Image
-                  key={provider}
-                  src="/images/chatgpt.svg"
-                  width={40}
-                  height={40}
-                  alt="ChatGPT"
-                  className="size-10 brightness-0 invert"
-                  unoptimized
-                />
-              ) : (
-                <ProviderLogo
-                  key={provider}
-                  provider={provider}
-                  className="h-10 w-10 rounded-none object-center"
-                />
-              ),
-            )}
+        <>
+          <div className="relative z-1 flex justify-center pt-4">
+            <Image
+              src="/images/logo.svg"
+              width={1225}
+              height={1107}
+              alt="ecentic"
+              className="h-28 w-32 object-contain"
+            />
           </div>
           <div
             aria-hidden
-            className="relative h-14 w-full max-w-64 rounded-b-[50%] border-primary-rich/30 border-x border-b before:absolute before:top-full before:left-1/2 before:h-10 before:w-px before:bg-primary-rich/45"
+            className="pointer-events-none absolute inset-x-[18%] top-24 bottom-12 bg-linear-to-b from-primary-rich/10 via-primary/15 to-transparent [clip-path:polygon(34%_0,66%_0,100%_100%,0_100%)]"
           />
-          <Image
-            src="/images/logo.svg"
-            width={1225}
-            height={1107}
-            alt="ecentic"
-            className="relative mt-3 h-auto w-full max-w-52 object-contain max-sm:max-w-40"
+          <div aria-hidden className="pointer-events-none absolute inset-0">
+            <div className="absolute inset-x-12 bottom-16 h-24 rounded-[50%] border border-background-rich/10 [transform:rotate(-8deg)]" />
+            <div className="absolute inset-x-20 bottom-20 h-14 rounded-[50%] border border-primary-rich/20 [transform:rotate(-8deg)]" />
+            {cardPositions.map((position, index) => (
+              <Motion.Item
+                key={position.left}
+                data-simulation-card={index}
+                initial={false}
+                whileInView={
+                  enhanced && index === 1
+                    ? {
+                        transform: [
+                          "translateY(15px) rotate(0deg)",
+                          "translateY(0px) rotate(0deg)",
+                        ],
+                      }
+                    : { transform: `rotate(${position.rotation}deg)` }
+                }
+                viewport={{ once: true, amount: 0.5 }}
+                transition={{ duration: 0.8, ease: [0.23, 1, 0.32, 1] }}
+                style={{
+                  left: position.left,
+                  top: position.top,
+                  transform: `rotate(${position.rotation}deg)`,
+                }}
+                className={cn(
+                  "absolute h-36 w-[24%] max-w-36 rounded-lg border p-4 sm:h-40",
+                  index === 1
+                    ? "z-1 border-primary-rich/70 bg-linear-to-br from-primary-dimmed via-emphasis to-emphasis-dimmed shadow-[0_0_48px_-18px_var(--color-primary)]"
+                    : "border-background-rich/15 bg-linear-to-br from-emphasis-rich to-emphasis-dimmed",
+                )}
+              >
+                <div className="flex h-full flex-col justify-between">
+                  <div className="relative grid h-20 place-items-center rounded-md bg-background-rich/4">
+                    <CommerceBasketShoppingIcon
+                      className={cn(
+                        "size-10",
+                        index === 1
+                          ? "text-primary-rich"
+                          : "text-background-rich/45",
+                      )}
+                    />
+                  </div>
+                  <div className="space-y-2 pb-1">
+                    <div className="h-px w-4/5 bg-background-rich/35" />
+                    <div className="h-px w-3/5 bg-background-rich/20" />
+                    <div className="h-px w-2/5 bg-primary-rich/50" />
+                  </div>
+                </div>
+              </Motion.Item>
+            ))}
+          </div>
+          <Motion.Item
+            aria-hidden
+            data-falling-light
+            initial={false}
+            style={{ opacity: 0 }}
+            whileInView={
+              enhanced
+                ? {
+                    transform: [
+                      "translateY(-110%)",
+                      "translateY(40%)",
+                      "translateY(360%)",
+                    ],
+                    opacity: [0, 0.75, 0],
+                  }
+                : { opacity: 0 }
+            }
+            viewport={{ once: true, amount: 0.5 }}
+            transition={{
+              duration: 2.2,
+              times: [0, 0.3, 1],
+              ease: "easeInOut",
+            }}
+            className="pointer-events-none absolute top-24 left-1/2 z-2 h-28 w-44 -translate-x-1/2 bg-linear-to-b from-transparent to-primary-rich/30 [mask-image:linear-gradient(90deg,transparent,black,transparent)] after:absolute after:inset-x-0 after:bottom-0 after:h-px after:bg-primary-rich"
           />
-        </div>
+        </>
       ) : (
         <div aria-hidden className="absolute inset-0 px-7">
           {kind === "catalog" && (

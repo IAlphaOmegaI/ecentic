@@ -1,0 +1,53 @@
+{
+  "generatedWith": "Configured Azure image CLI, gpt-image-2.5-sunburst",
+  "size": "1024x1024",
+  "quality": "high",
+  "method": "Clean source renders converted by apps/web/scripts/tonal-ascii.py. No product attributes are derived from illustrations.",
+  "subjects": [
+    {
+      "subject": "catalog",
+      "prompt": "Use case: stylized-concept. Asset type: clean source for deterministic tonal-dot artwork on an e-commerce website. Scene: pure white seamless background, no floor line and no cast shadow. Composition: single complete subject centered, three-quarter isometric view with generous white margin on all sides. Subject: One open desktop card-file tray with five staggered upright product record sheets. Each sheet has a small blank image rectangle and two broad recessed horizontal lines, no text. The front page sits slightly forward and the others fan gently behind it. Make the tray lip and page edges clearly readable. Material and lighting: matte medium graphite-gray material; clear broad light and dark shaded faces, bright but not white highlights, defined dark side planes. Elegant premium 3D product render with simple readable volume. Constraints: no text, lettering, numbers, logos, ASCII characters, dots, decorative pattern, crop or secondary subject. The render will be converted into dots later; render clean smooth surfaces only.",
+      "source": "apps/web/public/images/ascii/tonal/catalog-source.png"
+    },
+    {
+      "subject": "console",
+      "prompt": "Use case: stylized-concept. Asset type: clean source for deterministic tonal-dot artwork on an e-commerce website. Scene: pure white seamless background, no floor line and no cast shadow. Composition: single complete subject centered, three-quarter isometric view with generous white margin on all sides. Subject: One open laptop with a large blank recessed screen and a clean keyboard deck with broad keys. The whole laptop, both hinge edges and trackpad are visible. No extra screen windows or details. Material and lighting: matte medium graphite-gray material; clear broad light and dark shaded faces, bright but not white highlights, defined dark side planes. Elegant premium 3D product render with simple readable volume. Constraints: no text, lettering, numbers, logos, ASCII characters, dots, decorative pattern, crop or secondary subject. The render will be converted into dots later; render clean smooth surfaces only.",
+      "source": "apps/web/public/images/ascii/tonal/console-source.png"
+    },
+    {
+      "subject": "shopping-bot",
+      "prompt": "Use case: stylized-concept. Asset type: clean source for deterministic tonal-dot artwork on an e-commerce website. Scene: pure white seamless background, no floor line and no cast shadow. Composition: single complete subject centered, three-quarter isometric view with generous white margin on all sides. Subject: One friendly compact shopping robot with a wide rounded rectangular head, two simple recessed round eyes, short neck and small substantial rounded torso. Its two short articulated arms gently hold one blank product card with a recessed image panel. No human face. Material and lighting: matte medium graphite-gray material; clear broad light and dark shaded faces, bright but not white highlights, defined dark side planes. Elegant premium 3D product render with simple readable volume. Constraints: no text, lettering, numbers, logos, ASCII characters, dots, decorative pattern, crop or secondary subject. The render will be converted into dots later; render clean smooth surfaces only.",
+      "source": "apps/web/public/images/ascii/tonal/shopping-bot-source.png"
+    },
+    {
+      "subject": "selection",
+      "prompt": "Use case: stylized-concept. Asset type: clean source for deterministic tonal-dot artwork on an e-commerce website. Scene: pure white seamless background, no floor line and no cast shadow. Composition: single complete subject centered, three-quarter isometric view with generous white margin on all sides. Subject: Three substantial product cards arranged in a shallow fan, with the center card lifted slightly higher than the others. Each card has a simple recessed rounded product-image panel and two clean short horizontal grooves below, no text. The cards have visible thickness and soft rounded corners. Material and lighting: matte medium graphite-gray material; clear broad light and dark shaded faces, bright but not white highlights, defined dark side planes. Elegant premium 3D product render with simple readable volume. Constraints: no text, lettering, numbers, logos, ASCII characters, dots, decorative pattern, crop or secondary subject. The render will be converted into dots later; render clean smooth surfaces only.",
+      "source": "apps/web/public/images/ascii/tonal/selection-source.png"
+    },
+    {
+      "subject": "piggybank",
+      "prompt": "Use case: stylized-concept. Asset type: clean source for deterministic tonal-dot artwork on an e-commerce website. Scene: pure white seamless background, no floor line and no cast shadow. Composition: single complete subject centered, three-quarter isometric view with generous white margin on all sides. Subject: One classic ceramic piggy bank, with four short feet, distinct snout, two small ears, a coin slot across the top and a curled tail. No coin or other objects. Material and lighting: matte medium graphite-gray material; clear broad light and dark shaded faces, bright but not white highlights, defined dark side planes. Elegant premium 3D product render with simple readable volume. Constraints: no text, lettering, numbers, logos, ASCII characters, dots, decorative pattern, crop or secondary subject. The render will be converted into dots later; render clean smooth surfaces only.",
+      "source": "apps/web/public/images/ascii/tonal/piggybank-source.png"
+    },
+    {
+      "subject": "knight",
+      "prompt": "Use case: stylized-concept. Asset type: clean source for deterministic tonal-dot artwork on an e-commerce website. Scene: pure white seamless background, no floor line and no cast shadow. Composition: single complete subject centered, three-quarter isometric view with generous white margin on all sides. Subject: One substantial classic chess knight with a horse head, carved mane, pointed ears and a broad circular tiered pedestal. A single piece, full silhouette visible. Material and lighting: matte medium graphite-gray material; clear broad light and dark shaded faces, bright but not white highlights, defined dark side planes. Elegant premium 3D product render with simple readable volume. Constraints: no text, lettering, numbers, logos, ASCII characters, dots, decorative pattern, crop or secondary subject. The render will be converted into dots later; render clean smooth surfaces only.",
+      "source": "apps/web/public/images/ascii/tonal/knight-source.png"
+    },
+    {
+      "subject": "rocket",
+      "prompt": "Use case: stylized-concept. Asset type: clean source for deterministic tonal-dot artwork on an e-commerce website. Scene: pure white seamless background, no floor line and no cast shadow. Composition: single complete subject centered, three-quarter isometric view with generous white margin on all sides. Subject: One small retro rocket angled gently upward, with broad tapered body, one circular porthole, three chunky fins and a short nozzle. No flame, smoke or background elements. Material and lighting: matte medium graphite-gray material; clear broad light and dark shaded faces, bright but not white highlights, defined dark side planes. Elegant premium 3D product render with simple readable volume. Constraints: no text, lettering, numbers, logos, ASCII characters, dots, decorative pattern, crop or secondary subject. The render will be converted into dots later; render clean smooth surfaces only.",
+      "source": "apps/web/public/images/ascii/tonal/rocket-source.png"
+    },
+    {
+      "subject": "crown",
+      "prompt": "Use case: stylized-concept. Asset type: clean source for deterministic tonal-dot artwork on an e-commerce website. Scene: pure white seamless background, no floor line and no cast shadow. Composition: single complete subject centered, three-quarter isometric view with generous white margin on all sides. Subject: One substantial royal crown with five tall broad points, rounded tips and a thick oval band. Shallow recessed gem forms in the band, no colored gemstones. Open inside, full silhouette visible. Material and lighting: matte medium graphite-gray material; clear broad light and dark shaded faces, bright but not white highlights, defined dark side planes. Elegant premium 3D product render with simple readable volume. Constraints: no text, lettering, numbers, logos, ASCII characters, dots, decorative pattern, crop or secondary subject. The render will be converted into dots later; render clean smooth surfaces only.",
+      "source": "apps/web/public/images/ascii/tonal/crown-source.png"
+    },
+    {
+      "subject": "shopping-cart",
+      "prompt": "Use case: stylized-concept. Asset type: clean source for deterministic tonal-dot artwork on an e-commerce website. Scene: pure white seamless background, no floor line or cast shadow. Subject: one complete modern shopping cart, substantial deep rectangular basket with thick wide-spaced vertical ribs, a broad top rim and two softly shaded basket sides, single clearly visible rear handle and four chunky wheels. Three-quarter isometric view. Prioritize the basket silhouette, handle and wheels over mesh detail; the basket must not be fine wire mesh. Complete object centered with generous white margin. Materials: matte medium graphite gray; controlled highlights and distinctly darker side planes that show volume. Premium product render with simple readable forms. Constraints: no text, logos, ASCII, dots, crop, people or additional objects. This will be converted into dots later; render clean smooth surfaces only.",
+      "source": "apps/web/public/images/ascii/tonal/shopping-cart-source.png"
+    }
+  ]
+}

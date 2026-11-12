@@ -1,3 +1,8 @@
+import {
+  CheckIcon,
+  CommerceFileShieldIcon,
+  CommerceGlobePointerIcon,
+} from "@zenncore/icons";
 import { getMessages } from "next-intl/server";
 import { Fragment } from "react";
 import { SectionGutter } from "@/app/[locale]/(main)/dashboard/_components/grid";
@@ -6,6 +11,7 @@ import { CommerceFigure } from "@/components/marketing/commerce-figure";
 import { ConnectedJourney } from "@/components/marketing/connected-journey";
 import { MarketingSection } from "@/components/marketing/page";
 import { MarketingBand } from "@/components/marketing/primitives";
+import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { ChannelWorkbench } from "../channel-content";
 
 type Section = MarketingBodyProps["sections"][number];
@@ -23,42 +29,47 @@ const SectionHeading = ({ section }: { section: Section }) => (
 );
 
 const ShoppingPath = ({ copy }: { copy: Copy["shopping"] }) => (
-  <div className="grid border-accent-foreground border-t bg-background-dimmed lg:grid-cols-[1fr_1fr_1.25fr]">
-    <div className="relative flex min-h-36 flex-col justify-center border-accent-foreground px-7 py-8 max-sm:px-4 max-lg:border-b lg:border-r">
-      <p className="text-foreground-dimmed text-sm">{copy.feed}</p>
-      <pre
-        aria-hidden="true"
-        className="mt-4 font-mono text-foreground text-sm leading-5"
-      >
-        {
-          "+-----+  +-----+  +-----+\n| {...}  | {...}  | {...}\n+-----+  +-----+  +-----+"
-        }
-      </pre>
-      <span
-        aria-hidden="true"
-        className="absolute top-1/2 -right-3 z-10 bg-background-dimmed font-mono text-xl max-lg:hidden"
-      >
-        {"-->"}
-      </span>
+  <div className="relative grid border-accent-foreground border-t bg-linear-to-br from-primary/8 via-background-rich to-background lg:grid-cols-[1fr_1fr_1.25fr]">
+    <div className="relative flex min-w-0 flex-col border-accent-foreground px-4 py-8 max-lg:border-b sm:px-8 lg:border-r">
+      <p className="font-medium text-foreground-rich">{copy.feed}</p>
+      <CommerceFigure
+        kind="documentStack"
+        className="mx-auto aspect-[5/3] w-full"
+      />
     </div>
-    <div className="relative flex min-h-36 flex-col justify-center border-accent-foreground px-7 py-8 max-sm:px-4 max-lg:border-b lg:border-r">
-      <p className="font-heading text-3xl text-foreground-rich">ChatGPT</p>
-      <p className="mt-2 text-foreground-dimmed text-sm">{copy.discovery}</p>
-      <span
-        aria-hidden="true"
-        className="absolute top-1/2 -right-3 z-10 bg-background-dimmed font-mono text-xl max-lg:hidden"
-      >
-        {"-->"}
-      </span>
+    <div className="relative flex min-h-64 flex-col items-center justify-center border-accent-foreground px-4 py-8 max-lg:border-b sm:px-8 lg:border-r">
+      <ProviderLogo
+        provider="chatgpt"
+        decorative
+        className="size-16 rounded-none object-center"
+      />
+      <p className="mt-6 font-heading text-3xl text-foreground-rich">ChatGPT</p>
+      <p className="mt-3 max-w-[24ch] text-center text-foreground-dimmed text-sm">
+        {copy.discovery}
+      </p>
     </div>
     <div className="grid grid-rows-2">
-      <div className="border-accent-foreground border-b px-7 py-6 max-sm:px-4">
-        <p className="text-foreground-dimmed text-sm">{copy.link}</p>
-        <p className="mt-2 font-medium text-foreground-rich">{copy.store}</p>
+      <div className="flex items-start gap-4 border-accent-foreground border-b px-4 py-8 sm:px-8">
+        <CommerceGlobePointerIcon
+          aria-hidden
+          className="mt-1 size-6 shrink-0 text-primary-text"
+        />
+        <div>
+          <p className="text-foreground-dimmed text-sm">{copy.link}</p>
+          <p className="mt-3 font-medium text-foreground-rich">{copy.store}</p>
+        </div>
       </div>
-      <div className="px-7 py-6 max-sm:px-4">
-        <p className="text-foreground-dimmed text-sm">{copy.approval}</p>
-        <p className="mt-2 font-medium text-foreground-rich">{copy.checkout}</p>
+      <div className="flex items-start gap-4 px-4 py-8 sm:px-8">
+        <CommerceFileShieldIcon
+          aria-hidden
+          className="mt-1 size-6 shrink-0 text-primary-text"
+        />
+        <div>
+          <p className="text-foreground-dimmed text-sm">{copy.approval}</p>
+          <p className="mt-3 font-medium text-foreground-rich">
+            {copy.checkout}
+          </p>
+        </div>
       </div>
     </div>
   </div>
@@ -89,34 +100,34 @@ const ReadingExplorer = ({
                 ? "access"
                 : "checkout",
           content: (
-            <div className="grid border-accent-foreground border-t md:grid-cols-[1.2fr_1fr]">
-              <div className="relative isolate min-w-0 overflow-hidden border-accent-foreground bg-background-dimmed px-7 py-10 max-sm:px-4 max-md:border-b md:border-r">
-                <pre
-                  aria-hidden="true"
-                  className="relative m-0 whitespace-pre font-mono text-[clamp(0.68rem,1.05vw,0.9rem)] text-foreground-rich leading-7 tracking-normal"
-                >
-                  {`+-- ${record.record}\n|\n${record.fields
-                    .map((field) => `+-- ${field}\n|`)
-                    .join("\n")}\n+--------------------------------`}
-                </pre>
-                <ul className="sr-only">
-                  {record.fields.map((field) => (
-                    <li key={field}>{field}</li>
-                  ))}
-                </ul>
+            <div className="grid min-w-0 gap-8 lg:grid-cols-[1.2fr_1fr]">
+              <div className="relative min-w-0">
                 <CommerceFigure
                   kind={
                     record.id === "product"
-                      ? "drawer"
+                      ? "documentStack"
                       : record.id === "seller"
                         ? "document"
-                        : "checkout"
+                        : "moneyStack"
                   }
-                  surface="field"
-                  className="mt-4 aspect-auto h-64 w-full sm:h-72"
+                  className="mx-auto aspect-[5/3] w-full max-w-lg"
                 />
+                <ul className="grid grid-cols-1 border-accent-foreground border-y sm:grid-cols-2">
+                  {record.fields.map((field) => (
+                    <li
+                      key={field}
+                      className="flex items-center gap-3 px-2 py-4 text-foreground-rich text-sm"
+                    >
+                      <CheckIcon
+                        aria-hidden
+                        className="size-4 shrink-0 text-primary-text"
+                      />
+                      {field}
+                    </li>
+                  ))}
+                </ul>
               </div>
-              <div className="flex min-w-0 flex-col justify-between gap-8 px-7 py-10 max-sm:px-4">
+              <div className="flex min-w-0 flex-col justify-center gap-8">
                 <div>
                   <h3>{record.title}</h3>
                   <p className="mt-4 max-w-[44ch] text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">

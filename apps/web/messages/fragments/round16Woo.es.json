@@ -1,0 +1,12 @@
+{
+  "round16Woo": {
+    "title": "Encuentra el paso que detiene la compra.",
+    "passed": "El producto llega al proceso de compra",
+    "blocker": "El bloqueo",
+    "change": "El cambio de este ejemplo",
+    "continues": "Una vez corregido el requisito"
+  },
+  "commerceFigures": {
+    "wooMark": "La marca Woo como escultura tridimensional de líneas; apunta a una letra para elevarla."
+  }
+}

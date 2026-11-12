@@ -1,0 +1,14 @@
+{
+  "round16Shopping": {
+    "response": "Compararía estas dos opciones con lo que necesitas. Esto es lo que indican sus fichas.",
+    "followUps": "Prueba otra pregunta de compra",
+    "inspection": "Dentro de la ficha del producto",
+    "sourceRecord": "Datos existentes en la fuente",
+    "evidenceHeading": "Lo que necesita la pregunta",
+    "evidenceBody": "Compara la petición con los datos proporcionados para este producto de ejemplo.",
+    "needsDetail": "Falta en la ficha",
+    "stated": "Está en la ficha",
+    "sourceHint": "Está en la fuente de ejemplo; inclúyelo de forma explícita en la ficha.",
+    "inspectionNote": "Imágenes y fichas ilustrativas. Se muestra una revisión de datos, no una recomendación en directo ni el razonamiento privado de un modelo."
+  }
+}

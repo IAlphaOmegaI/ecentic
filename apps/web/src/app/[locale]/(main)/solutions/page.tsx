@@ -15,6 +15,7 @@ import {
   SolutionsWorkflows,
 } from "./_components/index-explorer";
 import { SectorChatPreview } from "./_components/sector-chat-preview";
+import { shoppingSectors } from "./_components/shopping-products";
 
 const businesses = [
   "brands",
@@ -119,6 +120,8 @@ export default async () => {
                 </p>
                 {review.sectors[index] && (
                   <SectorChatPreview
+                    sector={shoppingSectors[index] ?? "wine-and-spirits"}
+                    provider={index % 2 === 0 ? "gemini" : "chatgpt"}
                     prompt={sector.label ?? sector.title}
                     example={review.sectors[index]}
                     copy={review}

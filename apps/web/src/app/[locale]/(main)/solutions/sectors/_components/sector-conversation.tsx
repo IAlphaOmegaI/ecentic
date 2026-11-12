@@ -1,14 +1,18 @@
 "use client";
 
+import { CheckIcon, CommerceFilePenIcon, SearchIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
+import Image from "next/image";
 import type { AppConfig } from "next-intl";
 import { useState } from "react";
-import { ProviderLogo } from "@/components/marketing/provider-logo";
 import { Plus } from "@/components/plus";
 import type { Sector, ShelfScenario } from "@/content/sectors";
-import { FurnitureFootprint } from "./furniture-footprint";
-import { SectorRecordArtwork } from "./record-artwork";
+import {
+  ShoppingConversation,
+  ShoppingFollowUp,
+} from "../../_components/shopping-conversation";
+import { shoppingProductImage } from "../../_components/shopping-products";
 import { sectorFields } from "./sector-fields";
 
 export const SectorConversation = ({
@@ -19,6 +23,7 @@ export const SectorConversation = ({
   responses,
   attributes,
   copy,
+  language,
 }: SectorConversation.Props) => {
   const [selected, setSelected] = useState(0);
   const scenario = scenarios[selected];
@@ -39,142 +44,141 @@ export const SectorConversation = ({
         ]
       : [];
   });
+  const image = shoppingProductImage(sector, selected);
   return (
     <div
       data-sector-conversation={sector}
-      className="relative min-w-0 border-accent-foreground border-t"
+      className="relative min-w-0 border-accent-foreground border-y"
     >
       <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
       <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-      <p className="px-4 py-6 text-foreground-dimmed text-sm sm:px-8">
-        {copy.sample}
-      </p>
-      <div className="grid border-accent-foreground border-t lg:grid-cols-[5fr_7fr]">
-        <div className="relative min-w-0 px-4 py-8 sm:px-8">
-          <h3 className="font-heading text-2xl text-foreground-rich">
-            {copy.conversation}
-          </h3>
-          <div className="mt-8 space-y-8" data-conversation-transcript>
-            <div className="ml-8 rounded-xl rounded-br-sm bg-background-dimmed px-4 py-5">
-              <p className="mb-3 text-foreground-dimmed text-xs">
-                {copy.shopper}
-              </p>
-              <p className="font-medium text-foreground-rich leading-relaxed">
-                {question.title}
-              </p>
-            </div>
-            <div className="grid grid-cols-[28px_1fr] gap-4">
-              <ProviderLogo
-                provider="chatgpt"
-                decorative
-                className="mt-1 size-7"
-              />
-              <div>
-                <p className="mb-3 font-medium text-foreground-rich text-sm">
-                  {copy.assistant}
-                </p>
-                <p className="text-foreground-dimmed leading-relaxed">
-                  {copy.assistantIntro}
-                </p>
-                <ul className="mt-4 space-y-2">
-                  {fields.map((field) => (
-                    <li
-                      key={field.index}
-                      className="flex gap-3 text-foreground-rich text-sm"
-                    >
-                      <span
-                        aria-hidden
-                        className="mt-2 size-1 shrink-0 rounded-full bg-primary"
-                      />
-                      {field.label}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            </div>
-            <div className="ml-8 rounded-xl rounded-br-sm bg-background-dimmed px-4 py-5">
-              <p className="text-foreground-rich">{copy.followUp}</p>
-            </div>
-            <div className="grid grid-cols-[28px_1fr] gap-4">
-              <ProviderLogo
-                provider="chatgpt"
-                decorative
-                className="mt-1 size-7"
-              />
-              <p className="text-foreground-dimmed leading-relaxed">
-                {responses[selected]}
-              </p>
-            </div>
-          </div>
-          <div className="mt-10 border-accent-foreground border-t pt-6">
-            <p className="mb-4 font-medium text-foreground-rich text-sm">
-              {copy.questions}
+      <div className="grid lg:grid-cols-2">
+        <div
+          className="min-w-0 bg-linear-to-br from-primary/6 via-background to-background px-4 py-8 sm:px-8"
+          data-conversation-transcript
+        >
+          <ShoppingConversation
+            provider={
+              sector === "travel-and-experiences" ||
+              sector === "home-and-furniture"
+                ? "gemini"
+                : "chatgpt"
+            }
+            prompt={question.title}
+            response={language.response}
+            products={[
+              {
+                name: record.leftTitle,
+                label: copy.yourListing,
+                image,
+                details: fields
+                  .slice(0, 2)
+                  .map((field) =>
+                    field.missing
+                      ? `${field.label} · ${language.needsDetail}`
+                      : field.values.left,
+                  ),
+              },
+              {
+                name: record.rightTitle,
+                label: copy.comparisonListing,
+                image: shoppingProductImage(sector, selected, true),
+                details: fields.slice(0, 2).map((field) => field.values.right),
+              },
+            ]}
+            sample={copy.sample}
+            note={responses[selected]}
+          >
+            <p className="mb-3 text-foreground-dimmed text-xs">
+              {language.followUps}
             </p>
-            <ol className="grid gap-3">
-              {questions.map((entry, index) => (
-                <li key={entry.title}>
-                  <Button
-                    variant={index === selected ? "soft" : "ghost"}
-                    color={index === selected ? "primary" : "neutral"}
-                    aria-pressed={index === selected}
-                    onClick={() => setSelected(index)}
-                  >
-                    <span className="flex items-start gap-3 whitespace-normal py-1 text-left">
-                      <span className="shrink-0 tabular-nums">
-                        {String(index + 1).padStart(2, "0")}
-                      </span>
-                      <span>{entry.title}</span>
-                    </span>
-                  </Button>
-                </li>
-              ))}
-            </ol>
-          </div>
+            <div className="flex flex-col items-start gap-2">
+              {questions.map(
+                (entry, index) =>
+                  index !== selected && (
+                    <Button
+                      key={entry.title}
+                      variant="ghost"
+                      color="neutral"
+                      onClick={() => setSelected(index)}
+                    >
+                      <ShoppingFollowUp>{entry.title}</ShoppingFollowUp>
+                    </Button>
+                  ),
+              )}
+            </div>
+          </ShoppingConversation>
         </div>
         <div
-          className="relative min-w-0 border-accent-foreground border-t bg-background-dimmed lg:border-t-0 lg:border-l"
           data-sector-inspection
+          className="relative min-w-0 border-accent-foreground border-t bg-background-rich lg:border-t-0 lg:border-l"
         >
-          <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-          <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 lg:hidden" />
-          <div className="px-4 py-8 sm:px-8">
-            <p className="text-primary-text text-sm">{copy.inspection}</p>
-            <h3 className="mt-3 font-heading text-2xl text-foreground-rich">
-              {record.leftTitle}
-            </h3>
-            <p className="mt-3 font-mono text-foreground-dimmed text-xs">
-              {scenario.key}.json
-            </p>
-            {sector === "home-and-furniture" && selected === 0 ? (
-              <FurnitureFootprint
-                copy={copy.dimensions}
-                source={record.rows[0]?.left ?? ""}
-              />
-            ) : (
-              <div className="mt-4">
-                <SectorRecordArtwork sector={sector} />
-              </div>
-            )}
+          <div className="flex items-center justify-between gap-4 border-accent-foreground border-b px-4 py-5 sm:px-8">
+            <div className="flex items-center gap-3">
+              <SearchIcon aria-hidden className="size-4 text-primary-text" />
+              <h3 className="font-heading text-lg!">{language.inspection}</h3>
+            </div>
+            <span className="font-mono text-foreground-dimmed text-xs">
+              {String(selected + 1).padStart(2, "0")} / 03
+            </span>
           </div>
-          <dl>
+          <div className="grid grid-cols-[128px_1fr] items-center gap-4 px-4 py-8 sm:grid-cols-[160px_1fr] sm:px-8">
+            <div className="relative aspect-square">
+              <Image
+                src={image}
+                alt={record.leftTitle}
+                fill
+                sizes="160px"
+                className="object-contain"
+              />
+            </div>
+            <div className="min-w-0">
+              <p className="text-foreground-dimmed text-xs">
+                {copy.yourListing}
+              </p>
+              <h4 className="mt-2 font-heading text-xl! leading-snug!">
+                {record.leftTitle}
+              </h4>
+              <p className="mt-4 flex items-center gap-2 text-primary-text text-xs">
+                <CommerceFilePenIcon aria-hidden className="size-4 shrink-0" />
+                {language.sourceRecord}
+              </p>
+            </div>
+          </div>
+          <div className="border-accent-foreground border-t px-4 py-5 sm:px-8">
+            <p className="font-medium text-foreground-rich text-sm">
+              {language.evidenceHeading}
+            </p>
+            <p className="mt-2 max-w-[46ch] text-foreground-dimmed text-sm leading-relaxed">
+              {language.evidenceBody}
+            </p>
+          </div>
+          <dl className="px-4 sm:px-8">
             {fields.map((field) => (
               <div
                 key={field.index}
                 data-record-field={sectorFields[sector][field.index]}
                 data-record-state={field.missing ? "missing" : "present"}
-                className={cn(
-                  "border-accent-foreground border-t px-4 py-6 sm:px-8",
-                  field.missing && "bg-warning/5",
-                )}
+                className="border-accent-foreground border-t py-5"
               >
-                <dt className="flex flex-wrap items-center justify-between gap-3">
-                  <span>
-                    <span className="block font-medium text-foreground-rich">
-                      {field.label}
-                    </span>
-                    <code className="mt-2 block text-primary-text text-xs">
-                      {sectorFields[sector][field.index]}
-                    </code>
+                <dt className="relative flex flex-wrap items-baseline justify-between gap-x-4 gap-y-2 pl-9">
+                  <span
+                    aria-hidden
+                    className={cn(
+                      "absolute top-0.5 left-0 flex size-5 items-center justify-center rounded-full",
+                      field.missing
+                        ? "bg-warning/15 text-warning-text"
+                        : "bg-success/15 text-success-text",
+                    )}
+                  >
+                    {field.missing ? (
+                      <span className="size-1.5 rounded-full bg-current" />
+                    ) : (
+                      <CheckIcon className="size-3" />
+                    )}
+                  </span>
+                  <span className="font-medium text-foreground-rich text-sm">
+                    {field.label}
                   </span>
                   <span
                     className={cn(
@@ -182,60 +186,32 @@ export const SectorConversation = ({
                       field.missing ? "text-warning-text" : "text-success-text",
                     )}
                   >
-                    {field.missing ? copy.missing : copy.available}
+                    {field.missing ? language.needsDetail : language.stated}
                   </span>
                 </dt>
-                <dd className="mt-4 grid gap-5 sm:grid-cols-2">
-                  <div>
-                    <p className="mb-2 text-foreground-dimmed text-xs">
-                      {copy.yourListing}
-                    </p>
-                    <p
-                      className={cn(
-                        "text-sm leading-relaxed",
-                        field.missing
-                          ? "text-warning-text"
-                          : "text-foreground-rich",
-                      )}
-                    >
-                      <code className="whitespace-pre-wrap break-words font-mono text-xs">
-                        {field.missing
-                          ? "null"
-                          : JSON.stringify(field.values.left)}
-                      </code>
-                    </p>
-                  </div>
-                  <div>
-                    <p className="mb-2 text-foreground-dimmed text-xs">
-                      {copy.comparisonListing}
-                    </p>
-                    <p className="text-foreground-rich text-sm leading-relaxed">
-                      <code className="whitespace-pre-wrap break-words font-mono text-xs">
-                        {JSON.stringify(field.values.right)}
-                      </code>
-                    </p>
-                  </div>
+                <dd className="mt-3 pl-9">
+                  <p className="text-foreground text-sm leading-relaxed">
+                    {field.values.left}
+                  </p>
                   {field.missing && (
-                    <div className="border-primary/30 border-l pl-4 sm:col-span-2">
-                      <p className="mb-2 text-primary-text text-xs">
-                        {copy.sourceFact}
-                      </p>
-                      <p className="text-foreground-rich text-sm leading-relaxed">
-                        <code className="whitespace-pre-wrap break-words font-mono text-xs">
-                          {JSON.stringify(field.values.left)}
-                        </code>
-                      </p>
-                    </div>
+                    <p className="mt-2 text-foreground-dimmed text-xs leading-relaxed">
+                      {language.sourceHint}
+                    </p>
                   )}
                 </dd>
               </div>
             ))}
           </dl>
+          <div className="border-accent-foreground border-t bg-primary/5 px-4 py-5 sm:px-8">
+            <p className="text-foreground-dimmed text-xs leading-relaxed">
+              {language.inspectionNote}
+            </p>
+          </div>
         </div>
       </div>
       <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
       <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-      <Plus className="bottom-0 left-[41.666%] -translate-x-1/2 translate-y-1/2 max-lg:hidden" />
+      <Plus className="bottom-0 left-1/2 -translate-x-1/2 translate-y-1/2 max-lg:hidden" />
     </div>
   );
 };
@@ -249,5 +225,6 @@ export namespace SectorConversation {
     records: AppConfig["Messages"]["interactiveShelf"]["sectors"][Sector]["scenarios"];
     responses: readonly string[];
     copy: AppConfig["Messages"]["round14Sectors"];
+    language: AppConfig["Messages"]["round16Shopping"];
   };
 }

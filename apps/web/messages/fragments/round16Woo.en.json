@@ -1,0 +1,12 @@
+{
+  "round16Woo": {
+    "title": "Find the step that stops checkout.",
+    "passed": "The product reaches checkout",
+    "blocker": "The blocker",
+    "change": "The change in this example",
+    "continues": "After the requirement is corrected"
+  },
+  "commerceFigures": {
+    "wooMark": "The Woo mark as a dimensional line sculpture; point at a letter to lift it."
+  }
+}

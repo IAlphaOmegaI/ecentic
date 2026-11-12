@@ -100,13 +100,13 @@ export const CompareShelf = async ({
           <p className="mt-4 max-w-[48ch] text-foreground-dimmed leading-relaxed">
             {question}
           </p>
-          <dl className="mt-6 space-y-6">
+          <dl className="mt-6 divide-y divide-accent-foreground border-accent-foreground border-y">
             {scenario.missing.map((index) => (
-              <div key={index} className="border-primary/30 border-l pl-4">
+              <div key={index} className="grid gap-2 py-4">
                 <dt className="mb-2 text-primary-text text-sm">
                   {attributes[index]?.title}
                 </dt>
-                <dd className="text-foreground-rich leading-relaxed">
+                <dd className="text-foreground-rich text-sm leading-relaxed">
                   {content.rows[index]?.left}
                 </dd>
               </div>

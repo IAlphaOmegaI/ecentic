@@ -4,6 +4,7 @@
 Run from any directory with Python 3 + Pillow:
     python3 apps/web/scripts/tonal-ascii.py
 
+Each source is a clean product photo or 3D render, never a rasterized glyph grid.
 Each source retains its aspect ratio. White-background coverage removes the
 backdrop, luminance controls dot radius, and an exposure value retains shading
 in dark products. The headphones settings are the selected prototype settings.
@@ -19,7 +20,17 @@ WEB = Path(__file__).resolve().parents[1]
 DESTINATION = WEB / "public/images/ascii/tonal"
 SUBJECTS = (
     ("headphones", "images/products/sony-wh-1000xm5.webp", 120, 0.46, 0.15),
-    ("catalog", "images/ascii/connect-catalog.png", 120, 0.95, 0.03),
+    ("catalog", "images/ascii/tonal/catalog-source.png", 160, 0.75, 0.08),
+    ("console", "images/ascii/tonal/console-source.png", 160, 0.75, 0.08),
+    ("shopping-bot", "images/ascii/tonal/shopping-bot-source.png", 160, 0.75, 0.08),
+    ("shopping-cart", "images/ascii/tonal/shopping-cart-source.png", 160, 0.75, 0.08),
+    ("selection", "images/ascii/tonal/selection-source.png", 160, 0.75, 0.08),
+    ("piggybank", "images/ascii/tonal/piggybank-source.png", 160, 0.75, 0.08),
+    ("knight", "images/ascii/tonal/knight-source.png", 160, 0.75, 0.08),
+    ("rocket", "images/ascii/tonal/rocket-source.png", 160, 0.75, 0.08),
+    ("crown", "images/ascii/tonal/crown-source.png", 160, 0.75, 0.08),
+    ("home-bag", "images/ascii/tonal/home-bag-source.png", 160, 0.75, 0.08),
+    ("home-cart", "images/ascii/tonal/home-cart-source.png", 160, 0.75, 0.08),
 )
 
 

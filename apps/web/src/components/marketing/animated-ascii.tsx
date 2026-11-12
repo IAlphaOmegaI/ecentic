@@ -4,6 +4,7 @@ import { useMediaQuery } from "@zenncore/web/hooks";
 import { useInView } from "motion/react";
 import { type ReactNode, useRef } from "react";
 import { Motion } from "@/components/motion";
+import { EvolvingAscii } from "./evolving-ascii";
 
 export const AnimatedAscii = ({ children, className }: AnimatedAscii.Props) => {
   const target = useRef<HTMLDivElement>(null);
@@ -43,52 +44,13 @@ export namespace AnimatedAscii {
 }
 
 const illustrations = {
-  catalog: String.raw`
-             +--------------------+
-            /  / / / / / / / /   /|
-           +--------------------+ |
-           |  +----+   +----+  | |
-           |  | ## |   | ## |  | |
-       ____|__+----+___+----+__|_|____
-      /_____________________________/|
-     |  [###]  [###]  [###]  [###] | |
-     |_____________________________|/
-          \       /       \      /
-           +-----+         +----+
-`,
-  commerce: `
-                 ______________
-                /  __________ /|
-               /  /_________/  |
-              +--------------+ |
-              |  +--------+  | |
-              |  |  >>>>  |  | |
-              |  +--------+  | /
-              +--------------+/
-           ___/              /___
-          /_____________________/
-             (__)         (__)
-`,
-  market: `
-              +       +       +
-          +---|-------|-------|---+
-         /    |       |       |  /|
-        +-----+-------+-------+--+ |
-        |  []   []    []   []   | |
-        |    +-----------+     | |
-        |    |  / / / /  |     | /
-        +----+-----------+-----+/
-             |  |     |  |
-             +--+     +--+
-`,
+  catalog: "catalog",
+  commerce: "commerce",
+  market: "cart",
 } as const;
 
 export const EvidenceArtwork = ({ kind, className }: EvidenceArtwork.Props) => (
-  <AnimatedAscii className={className}>
-    <pre className="m-0 select-none overflow-visible whitespace-pre bg-transparent p-0 font-mono text-[10px] leading-[1.1] [font-variant-ligatures:none] sm:text-xs">
-      {illustrations[kind]}
-    </pre>
-  </AnimatedAscii>
+  <EvolvingAscii artwork={illustrations[kind]} className={className} />
 );
 
 export namespace EvidenceArtwork {

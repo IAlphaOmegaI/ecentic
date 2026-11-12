@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@zenncore/utils";
-import { useMessages, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { lazy } from "react";
 import { CustomHairlineFigure } from "@/components/hairline/custom-figure";
 import { HairlineFigure } from "@/components/hairline/figure";
@@ -21,6 +21,7 @@ const figures = {
 
 const customFigures = {
   shopifyBag: "shopify-bag",
+  wooMark: "woo-mark",
   shoppingBot: "shopping-bot",
   repairTools: "repair-tools",
   moneyStack: "money-stack",
@@ -59,8 +60,6 @@ export const CommerceFigure = ({
   className,
 }: CommerceFigure.Props) => {
   const translate = useTranslations("commerceFigures");
-  const messages = useMessages();
-  const copy = messages.commerceFigures;
   if (isBrandFigure(kind))
     return (
       <div
@@ -81,15 +80,11 @@ export const CommerceFigure = ({
       </div>
     );
   if (isCustomFigure(kind)) {
-    const readouts = Object.entries(copy.partReadouts).find(
-      ([key]) => key === kind,
-    )?.[1];
     return (
       <CustomHairlineFigure
         key={kind}
         name={customFigures[kind]}
         label={label ?? translate(kind)}
-        readouts={readouts}
         surface={surface}
         className={className}
       />

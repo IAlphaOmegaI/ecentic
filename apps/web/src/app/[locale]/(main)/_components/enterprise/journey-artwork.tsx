@@ -14,7 +14,7 @@ export const JourneyArtwork = ({ stage }: JourneyArtwork.Props) => (
     data-journey-artwork={stage}
     className="mx-auto w-full max-w-96 py-4 max-sm:max-w-80"
   >
-    <CommerceFigure kind={subjects[stage] ?? "catalog"} surface="field" />
+    <CommerceFigure kind={subjects[stage] ?? "catalog"} surface="dark" />
   </div>
 );
 

@@ -1,22 +1,18 @@
 import { ArrowRightIcon, CheckIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
-import Image, { type StaticImageData } from "next/image";
+import Image from "next/image";
 import { getMessages } from "next-intl/server";
 import { BookCall } from "@/components/cal";
 import { Plus } from "@/components/plus";
-import crown from "@/public/images/ascii/crown.png";
-import knight from "@/public/images/ascii/knight.png";
-import piggybank from "@/public/images/ascii/piggybank.png";
-import rocket from "@/public/images/ascii/rocket.png";
 import { PricingCTA } from "./pricing-cta";
 
 type PlanId = "payg" | "compete" | "scale" | "dominate";
 
-const planArt: Record<PlanId, { source: StaticImageData; alt: string }> = {
-  payg: { source: piggybank, alt: "" },
-  compete: { source: knight, alt: "" },
-  scale: { source: rocket, alt: "" },
-  dominate: { source: crown, alt: "" },
+const planArt: Record<PlanId, { source: string; alt: string }> = {
+  payg: { source: "/images/ascii/tonal/piggybank.svg", alt: "" },
+  compete: { source: "/images/ascii/tonal/knight.svg", alt: "" },
+  scale: { source: "/images/ascii/tonal/rocket.svg", alt: "" },
+  dominate: { source: "/images/ascii/tonal/crown.svg", alt: "" },
 };
 
 const planIds: readonly PlanId[] = [
@@ -71,6 +67,8 @@ export const PlanCards = async () => {
         >
           <Image
             src={plan.art.source}
+            width={1024}
+            height={1024}
             alt={plan.art.alt}
             className={cn(
               "pointer-events-none absolute -right-3 -bottom-3 h-[46%] w-[92%] max-w-none select-none object-contain object-right-bottom brightness-0 [mask-image:linear-gradient(to_bottom,transparent,black_35%)]",

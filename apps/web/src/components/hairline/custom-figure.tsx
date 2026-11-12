@@ -2,7 +2,6 @@
 
 import { cn } from "@zenncore/utils";
 import Script from "next/script";
-import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useInteractive } from "@/components/marketing/interactive/use-interactive";
 import { useDocument } from "@/hooks/use-document";
@@ -22,6 +21,7 @@ import sofaRest from "./rest/sofa.json";
 import suitcaseRest from "./rest/suitcase.json";
 import wellnessBottleRest from "./rest/wellness-bottle.json";
 import wineBottleRest from "./rest/wine-bottle.json";
+import wooMarkRest from "./rest/woo-mark.json";
 import "./kernel-style.css";
 
 type FigureName = keyof typeof restPoses;
@@ -43,6 +43,7 @@ type FigureWindow = Window & {
 };
 const restPoses = {
   "shopify-bag": shopifyBagRest,
+  "woo-mark": wooMarkRest,
   "shopping-bot": shoppingBotRest,
   "repair-tools": repairToolsRest,
   "money-stack": moneyStackRest,
@@ -64,7 +65,6 @@ const restPoses = {
 export const CustomHairlineFigure = ({
   name,
   label,
-  readouts,
   surface = "background",
   className,
 }: CustomHairlineFigure.Props) => {
@@ -74,10 +74,8 @@ export const CustomHairlineFigure = ({
   const [kernelReady, setKernelReady] = useState(false);
   const [registryReady, setRegistryReady] = useState(false);
   const [figureReady, setFigureReady] = useState(false);
-  const [readout, setReadout] = useState("rest");
   const { ready, reduced } = useInteractive();
   const { window } = useDocument();
-  const translate = useTranslations("commerceFigures");
   const rest = restPoses[name];
 
   useEffect(() => {
@@ -112,16 +110,7 @@ export const CustomHairlineFigure = ({
     const definition = (window as FigureWindow | null)?.customHairline?.[name];
     if (!element || !svg || !definition || !figureReady || !ready || reduced)
       return;
-    const state = { text: "rest" };
-    const read = {
-      get textContent() {
-        return state.text;
-      },
-      set textContent(value: string) {
-        state.text = value;
-        setReadout(value);
-      },
-    };
+    const read = { textContent: "rest" };
     svg.replaceChildren();
     const handle = (() => {
       try {
@@ -143,24 +132,6 @@ export const CustomHairlineFigure = ({
       element.setAttribute("data-custom-motion", "rest");
     };
   }, [name, figureReady, ready, reduced, rest, window]);
-
-  const caption = (() => {
-    if (reduced || readout === "rest") return translate("custom.rest");
-    const inspectedPart = readouts?.find((part) => part.value === readout);
-    if (inspectedPart) return inspectedPart.label;
-    if (readouts) return translate("custom.inspecting");
-    const product = /product (\d+)/.exec(readout)?.[1];
-    if (product)
-      return translate(
-        readout.startsWith("selected")
-          ? "custom.selectedProduct"
-          : "custom.product",
-        { number: product },
-      );
-    return translate(
-      readout.startsWith("selected") ? "custom.selected" : "custom.scanning",
-    );
-  })();
 
   return (
     <>
@@ -209,14 +180,6 @@ export const CustomHairlineFigure = ({
           // biome-ignore lint/security/noDangerouslySetInnerHtml: Local geometry exported from the validated, fixed Hairline bench.
           dangerouslySetInnerHTML={{ __html: rest }}
         />
-        {name !== "shopify-bag" && (
-          <span
-            aria-hidden
-            className="pointer-events-none absolute right-4 bottom-3 text-[color:var(--hairline-hi)] text-xs"
-          >
-            {caption}
-          </span>
-        )}
       </div>
     </>
   );
@@ -226,7 +189,6 @@ export namespace CustomHairlineFigure {
   export type Props = {
     name: FigureName;
     label: string;
-    readouts?: readonly { value: string; label: string }[];
     surface?: "background" | "field" | "rich" | "dark";
     className?: string;
   };

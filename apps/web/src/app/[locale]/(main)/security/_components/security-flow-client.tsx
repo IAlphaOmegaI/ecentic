@@ -1,7 +1,6 @@
 "use client";
 
 import {
-  ArrowRightIcon,
   CommerceCode_3Icon,
   CommerceGlobePointerIcon,
   DownloadIcon,
@@ -118,15 +117,13 @@ export const SecurityFlowClient = ({ copy }: { copy: Copy }) => (
             <p className="font-heading text-2xl text-background-rich">
               {copy.connectors[connector.id].label}
             </p>
-            <div className="mt-6 space-y-4">
-              {[connector.from, connector.to].map((node, index) => (
-                <div key={node}>
-                  {index === 1 && (
-                    <ArrowRightIcon
-                      className="mb-4 size-4 text-primary-rich"
-                      aria-hidden
-                    />
-                  )}
+            <div className="relative mt-8 space-y-8 before:absolute before:inset-y-2 before:left-1 before:w-px before:bg-background-rich/25">
+              {[connector.from, connector.to].map((node) => (
+                <div key={node} className="relative pl-8">
+                  <span
+                    aria-hidden
+                    className="absolute top-2 left-0 size-2 rounded-full bg-primary-rich ring-4 ring-primary-text"
+                  />
                   {nodeLogos[node].length > 0 && (
                     <div className="mb-4 flex flex-wrap items-center gap-4">
                       {nodeLogos[node].map((provider) => (
@@ -137,7 +134,6 @@ export const SecurityFlowClient = ({ copy }: { copy: Copy }) => (
                           className={cn(
                             "h-8 w-auto max-w-24 rounded-none object-contain",
                             (provider === "woocommerce" ||
-                              provider === "chatgpt" ||
                               provider === "perplexity") &&
                               "brightness-0 invert",
                           )}
@@ -149,7 +145,7 @@ export const SecurityFlowClient = ({ copy }: { copy: Copy }) => (
                     {node === "providers" ? (
                       <Link
                         href="/security#sub-processors"
-                        className="text-primary-rich underline underline-offset-4"
+                        className="text-background-rich underline underline-offset-4"
                       >
                         {copy.nodes[node].label}
                       </Link>

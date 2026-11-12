@@ -21,17 +21,157 @@
     },
     {
       "subject": "catalog",
-      "source": "/images/ascii/connect-catalog.png",
-      "sourceSha256": "f0d390ef76a492829c7e4778e683c1c7da0fcec97bff89a7965f2e1cc424ee5e",
+      "source": "/images/ascii/tonal/catalog-source.png",
+      "sourceSha256": "044640947c8b7fd92e057b37c7c34ce8282b28b001bf5234d309fcb8f1959136",
       "asset": "/images/ascii/tonal/catalog.svg",
-      "assetSha256": "51002d625a05f6178535d3397d4f966d965d7c319dcf54fac43574d6b966ea70",
+      "assetSha256": "64aed71fe425c9a551363179b6600a438b0456dbc7c4c7d01d460c78f1a0ff36",
       "grid": [
-        120,
-        80
+        160,
+        160
       ],
-      "exposure": 0.95,
-      "backgroundFeather": 0.03,
-      "marks": 3346
+      "exposure": 0.75,
+      "backgroundFeather": 0.08,
+      "marks": 11907
+    },
+    {
+      "subject": "console",
+      "source": "/images/ascii/tonal/console-source.png",
+      "sourceSha256": "aee89c7b5ec87320a9c8241e284e2afdd45264868aa46f53d48a497f13c3fdbe",
+      "asset": "/images/ascii/tonal/console.svg",
+      "assetSha256": "ed87d7208d9ba3ef4211048479e8f53566e3bb540dd795ad251ab3e6ffcbacdc",
+      "grid": [
+        160,
+        160
+      ],
+      "exposure": 0.75,
+      "backgroundFeather": 0.08,
+      "marks": 12184
+    },
+    {
+      "subject": "shopping-bot",
+      "source": "/images/ascii/tonal/shopping-bot-source.png",
+      "sourceSha256": "51464f654b8e2fa1f52a966892c75ea0e6fad5d1f8727b44ea02fbca2dabde48",
+      "asset": "/images/ascii/tonal/shopping-bot.svg",
+      "assetSha256": "464723915774809936093c9ef7a028bf0c01f77a875a887be0e31a043765a20a",
+      "grid": [
+        160,
+        160
+      ],
+      "exposure": 0.75,
+      "backgroundFeather": 0.08,
+      "marks": 8928
+    },
+    {
+      "subject": "shopping-cart",
+      "source": "/images/ascii/tonal/shopping-cart-source.png",
+      "sourceSha256": "35e5c1bc1838d449125a32003919ec6cfd145bd211e7268882bdc8b83da6fac3",
+      "asset": "/images/ascii/tonal/shopping-cart.svg",
+      "assetSha256": "682114330487fde6a16e5cb1a304d7da872002ad8ed15f3cbdf0e9a81f32bf23",
+      "grid": [
+        160,
+        160
+      ],
+      "exposure": 0.75,
+      "backgroundFeather": 0.08,
+      "marks": 11364
+    },
+    {
+      "subject": "selection",
+      "source": "/images/ascii/tonal/selection-source.png",
+      "sourceSha256": "bd4f95c4db5206fd33ec7e82af90e4d26c87fe519f0739149498add5328e6ed1",
+      "asset": "/images/ascii/tonal/selection.svg",
+      "assetSha256": "5f59e6d0fd3ea932517af54cc51156139d7494c9f5f36ab300107ceeaf2331bb",
+      "grid": [
+        160,
+        160
+      ],
+      "exposure": 0.75,
+      "backgroundFeather": 0.08,
+      "marks": 9136
+    },
+    {
+      "subject": "piggybank",
+      "source": "/images/ascii/tonal/piggybank-source.png",
+      "sourceSha256": "f43b238b61d9d9dba4e85dbf4a255812cd464ebe688b80a1f4f1fedc511362f2",
+      "asset": "/images/ascii/tonal/piggybank.svg",
+      "assetSha256": "c63b79635895a20ad76a1f0462891af3d02997090d507389d84e117fceacf3e9",
+      "grid": [
+        160,
+        160
+      ],
+      "exposure": 0.75,
+      "backgroundFeather": 0.08,
+      "marks": 11622
+    },
+    {
+      "subject": "knight",
+      "source": "/images/ascii/tonal/knight-source.png",
+      "sourceSha256": "4ac58ed93387855a59f987f8cf3743bc9930380235c4da178f133c2fae8afdac",
+      "asset": "/images/ascii/tonal/knight.svg",
+      "assetSha256": "a9000709d15bf93ca62d9f7ddc2f47d7e1c2b47398936fc60b44a6ad1834d17d",
+      "grid": [
+        160,
+        160
+      ],
+      "exposure": 0.75,
+      "backgroundFeather": 0.08,
+      "marks": 7388
+    },
+    {
+      "subject": "rocket",
+      "source": "/images/ascii/tonal/rocket-source.png",
+      "sourceSha256": "f6b9d41070b9aede6c200752d78790b0da10e9da581ce8a97a094e395d7a4640",
+      "asset": "/images/ascii/tonal/rocket.svg",
+      "assetSha256": "244f0f804912d28f16345845b2ef4fceb68a0450038d0ef50de45f18a854b1e2",
+      "grid": [
+        160,
+        160
+      ],
+      "exposure": 0.75,
+      "backgroundFeather": 0.08,
+      "marks": 5847
+    },
+    {
+      "subject": "crown",
+      "source": "/images/ascii/tonal/crown-source.png",
+      "sourceSha256": "91253b515b0eb52687d76d397a57d6f3c41e30a97584c9f51ff7554dcdec3a88",
+      "asset": "/images/ascii/tonal/crown.svg",
+      "assetSha256": "d4cb498f5316063b6c54a7cc71cf1553f5793ee4cdea950dfee33893a596964a",
+      "grid": [
+        160,
+        160
+      ],
+      "exposure": 0.75,
+      "backgroundFeather": 0.08,
+      "marks": 10344
+    },
+    {
+      "subject": "home-bag",
+      "source": "/images/ascii/tonal/home-bag-source.png",
+      "sourceSha256": "0d6133a08b7261d1b2caafcb3145d28530469d5f3a835f13a5737b873d83c4ae",
+      "asset": "/images/ascii/tonal/home-bag.svg",
+      "assetSha256": "bfd56f547e31dec54e503037f2bc772b07d15f22758b10106a34fa278b62bc8c",
+      "grid": [
+        160,
+        107
+      ],
+      "exposure": 0.75,
+      "backgroundFeather": 0.08,
+      "marks": 6188
+    },
+    {
+      "subject": "home-cart",
+      "source": "/images/ascii/tonal/home-cart-source.png",
+      "sourceSha256": "d400c4315c049030b564ccba0e5c61216889e3e54940ccd72811ea21d23ac8c0",
+      "asset": "/images/ascii/tonal/home-cart.svg",
+      "assetSha256": "75bfbe8828d1dacaa849e409e720f4a80125d5bc332329d33946cdd4e199fea8",
+      "grid": [
+        160,
+        107
+      ],
+      "exposure": 0.75,
+      "backgroundFeather": 0.08,
+      "marks": 4329
     }
   ]
 }

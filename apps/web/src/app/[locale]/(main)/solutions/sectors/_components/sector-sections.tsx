@@ -15,8 +15,12 @@ export const SectorQuestions = async ({
   sector,
   children,
 }: SectorSections.Props) => {
-  const { enterpriseSolutions, interactiveShelf, round14Sectors } =
-    await getMessages();
+  const {
+    enterpriseSolutions,
+    interactiveShelf,
+    round14Sectors,
+    round16Shopping,
+  } = await getMessages();
   const translate = await getTranslations("round14Sectors");
   const attributes =
     enterpriseSolutions.sectors[sector].sections.find(
@@ -50,6 +54,7 @@ export const SectorQuestions = async ({
           }),
         )}
         copy={round14Sectors}
+        language={round16Shopping}
       />
       {children}
     </MarketingBand>
