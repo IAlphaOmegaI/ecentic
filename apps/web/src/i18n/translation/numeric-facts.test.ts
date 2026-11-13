@@ -302,3 +302,19 @@ test("hyphenated duration ranges do not invent a negative upper endpoint", () =>
   ).toBeGreaterThan(0);
   expect(findings("Balance: -60", "Saldo: 60", "it").length).toBeGreaterThan(0);
 });
+
+test("hyphenated year modifiers do not turn dates into negative quantities", () => {
+  expect(
+    findings("Under 0.2% in mid-2025", "Unter 0,2 % Mitte 2025", "de"),
+  ).toEqual([]);
+  expect(
+    findings("Early-2026 to late-2027", "2026年初から2027年末まで", "ja"),
+  ).toEqual([]);
+  expect(findings("mid-2025", "Mitte 2026", "de").length).toBeGreaterThan(0);
+  expect(
+    findings("Balance: -2025", "Saldo: 2025", "de").length,
+  ).toBeGreaterThan(0);
+  expect(findings("`mid-2025`", "`Mitte 2025`", "de").length).toBeGreaterThan(
+    0,
+  );
+});
