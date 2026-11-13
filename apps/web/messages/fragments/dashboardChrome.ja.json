@@ -41,36 +41,61 @@
     "hub": {
       "workspace": "ワークスペース",
       "title": "ストア一覧",
-      "description": "ストアを選択すると、AIショッピングエージェントがそのカタログをどのようにランク付けしているかを確認できます。別のストアを接続することもできます。",
+      "description": "カタログ、比較結果、次に行うことをまとめて確認できます。",
       "action": {
-        "primary": "ストアを接続"
+        "primary": "ストアを接続",
+        "secondary": "CSVをインポート"
       },
       "aggregates": {
         "stores": "ストア",
-        "products": "商品",
-        "avgWinRate": "平均勝率",
-        "agentVisits30d": "エージェントの訪問数・30日"
+        "products": "カタログ内の商品",
+        "avgWinRate": "シミュレーション勝率",
+        "agentVisits30d": "AIからの訪問数・30日間"
       },
       "storeCard": {
-        "winRate": "勝率",
+        "winRate": "シミュレーション勝率",
         "products": "商品",
-        "agents30d": "エージェントの訪問数・30日",
+        "agents30d": "AIからの訪問数・30日間",
         "synced": "{time}に同期",
         "notSyncedYet": "未同期",
         "openDashboard": "ダッシュボードを開く",
         "status": {
-          "connected": "接続済み"
-        }
+          "connected": "接続済み",
+          "disconnected": "未接続",
+          "pending": "接続待ち",
+          "error": "確認が必要です",
+          "syncing": "商品をインポート中"
+        },
+        "noSimulations": "比較はまだありません"
       },
       "platforms": {
         "shopify": "Shopify",
         "woocommerce": "WooCommerce",
         "feed": "商品フィード",
-        "csv": "CSVインポート"
+        "csv": "CSVインポート",
+        "other": "カタログ"
       },
       "empty": {
         "title": "最初のストアを接続",
-        "description": "ストアを連携して商品をインポートし、AIショッピングエージェントが自社商品を競合商品と比較した際の動向追跡を開始します。"
+        "description": "カタログを取り込み、商品をいくつか選んで、AIが競合商品とどう比較するか確認しましょう。",
+        "figureLabel": "ワークスペースに取り込める商品データ。",
+        "methods": "Shopify、WooCommerce、商品フィード、CSVに対応。",
+        "artCaption": "商品をひとつにまとめましょう。"
+      },
+      "setup": {
+        "title": "カタログから最初の比較まで",
+        "connect": {
+          "title": "カタログを接続",
+          "description": "ストアやファイルから商品を取り込みます。"
+        },
+        "products": {
+          "title": "商品を選択",
+          "description": "比較する商品と競合を選びます。"
+        },
+        "scan": {
+          "title": "最初の比較を実行",
+          "description": "AIの選択と、重視する情報を確認します。"
+        }
       }
     },
     "commandPalette": {

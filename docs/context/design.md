@@ -660,6 +660,25 @@ turn the wordmark into a replacement for navigation.
 
 ## 15. Dashboard and onboarding recipes
 
+### Store hub
+
+`/dashboard` is the entry to the merchant's stores. Keep its logo, language and account
+controls in the fixed header, with the working area scrolling below. The page heading and
+rails remain in the server-rendered shell while store data streams in.
+
+For an empty account, use one continuous split plane: a blue cutout with a recognizable
+tonal catalog illustration, alongside the connection task. Provide one main connection
+action and a distinct CSV-import option, followed by a short connected setup roadmap.
+On mobile the task precedes the artwork. Avoid a dashed placeholder box or duplicated CTAs.
+
+Connected stores use full-width entries with genuine platform identity, a readable name and
+domain, connection state, metrics and an obvious dashboard link. A lone store owns its
+metrics once; show cross-store aggregates only when there are multiple stores. Label
+simulated win rate explicitly, retain the AI-visit time window and distinguish an unmeasured
+rate from zero. Keep statuses and numbers localized. On narrow screens use readable
+label/value rows; larger layouts align the metric values across columns even when labels wrap.
+Each shared seam has one border owner.
+
 ### Dashboard shell and overview
 
 Keep a persistent store switcher and grouped navigation. Use the established inner rails,

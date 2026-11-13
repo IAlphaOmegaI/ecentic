@@ -1,29 +1,22 @@
 "use client";
 
-import { PlusIcon } from "@zenncore/icons";
-import { Button } from "@zenncore/web/components/button";
 import { useTranslations } from "next-intl";
-import { Link } from "@/i18n/navigation";
-import { StatusPill } from "./grid";
+import { Crosshair } from "./grid";
 
+/** The heading stays in the initial shell; the resolved state owns its action. */
 export const HubShellCopy = () => {
   const translate = useTranslations("dashboard.hub");
 
   return (
-    <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-      <div>
-        <StatusPill tone="neutral">{translate("workspace")}</StatusPill>
-        <h1 className="mt-3 font-bold text-3xl text-foreground-rich tracking-[-0.02em]">
-          {translate("title")}
-        </h1>
-        <p className="mt-1 text-foreground-dimmed text-sm">
-          {translate("description")}
-        </p>
-      </div>
-      <Button color="primary" render={<Link href="/onboarding/connect" />}>
-        <PlusIcon className="size-4" />
-        {translate("action.primary")}
-      </Button>
+    <div className="relative border-accent-foreground border-b bg-background-rich px-5 py-7 sm:px-8 sm:py-9">
+      <h1 className="font-heading font-medium text-3xl text-foreground-rich tracking-tight sm:text-4xl">
+        {translate("title")}
+      </h1>
+      <p className="mt-2 max-w-2xl text-foreground-dimmed text-sm leading-relaxed sm:text-base">
+        {translate("description")}
+      </p>
+      <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+      <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
     </div>
   );
 };

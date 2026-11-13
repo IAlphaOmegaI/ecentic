@@ -484,36 +484,61 @@
     "hub": {
       "workspace": "Arbeitsbereich",
       "title": "Ihre Shops",
-      "description": "Wählen Sie einen Shop aus, um zu sehen, wie KI-Einkaufsagenten dessen Katalog bewerten, oder verbinden Sie einen weiteren.",
+      "description": "Ihre Kataloge, Vergleiche und nächsten Schritte an einem Ort.",
       "action": {
-        "primary": "Shop verbinden"
+        "primary": "Shop verbinden",
+        "secondary": "CSV importieren"
       },
       "aggregates": {
         "stores": "Shops",
-        "products": "Produkte",
-        "avgWinRate": "Durchschn. Gewinnquote",
-        "agentVisits30d": "Agentenbesuche · 30 T."
+        "products": "Katalogprodukte",
+        "avgWinRate": "Gewinnquote in Simulationen",
+        "agentVisits30d": "KI-Besuche · 30 Tage"
       },
       "storeCard": {
-        "winRate": "Gewinnquote",
+        "winRate": "Gewinnquote in Simulationen",
         "products": "Produkte",
-        "agents30d": "Agenten 30 T.",
+        "agents30d": "KI-Besuche · 30 Tage",
         "synced": "Synchronisiert {time}",
         "notSyncedYet": "Noch nicht synchronisiert",
         "openDashboard": "Dashboard öffnen",
         "status": {
-          "connected": "verbunden"
-        }
+          "connected": "Verbunden",
+          "disconnected": "Nicht verbunden",
+          "pending": "Verbindung ausstehend",
+          "error": "Handlungsbedarf",
+          "syncing": "Produkte werden importiert"
+        },
+        "noSimulations": "Noch keine Vergleiche"
       },
       "platforms": {
         "shopify": "Shopify",
         "woocommerce": "WooCommerce",
-        "feed": "Produkt-Feed",
-        "csv": "CSV-Import"
+        "feed": "Produktfeed",
+        "csv": "CSV-Import",
+        "other": "Katalog"
       },
       "empty": {
         "title": "Verbinden Sie Ihren ersten Shop",
-        "description": "Verbinden Sie einen Shop, um Produkte zu importieren und nachzuverfolgen, wie KI-Einkaufsagenten sie mit Wettbewerbern vergleichen."
+        "description": "Importieren Sie Ihren Katalog, wählen Sie einige Produkte aus und sehen Sie, wie die KI sie mit der Konkurrenz vergleicht.",
+        "figureLabel": "Produktdatensätze, die Sie in Ihren Arbeitsbereich übernehmen können.",
+        "methods": "Shopify, WooCommerce, Produktfeeds oder CSV.",
+        "artCaption": "Bringen Sie Ihre Produkte zusammen."
+      },
+      "setup": {
+        "title": "Vom Katalog zum ersten Vergleich",
+        "connect": {
+          "title": "Katalog verbinden",
+          "description": "Importieren Sie Produkte aus Ihrem Shop oder einer Datei."
+        },
+        "products": {
+          "title": "Produkte auswählen",
+          "description": "Wählen Sie die Produkte und Wettbewerber für den Vergleich aus."
+        },
+        "scan": {
+          "title": "Ersten Vergleich starten",
+          "description": "Sehen Sie, was die KI auswählt und welche Details zählen."
+        }
       }
     },
     "commandPalette": {

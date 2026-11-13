@@ -41,36 +41,61 @@
     "hub": {
       "workspace": "Espace de travail",
       "title": "Vos boutiques",
-      "description": "Sélectionnez une boutique pour voir comment les agents d’achat IA classent son catalogue, ou connectez-en une autre.",
+      "description": "Vos catalogues, comparaisons et prochaines étapes, au même endroit.",
       "action": {
-        "primary": "Connecter une boutique"
+        "primary": "Connecter une boutique",
+        "secondary": "Importer un CSV"
       },
       "aggregates": {
         "stores": "Boutiques",
-        "products": "Produits",
-        "avgWinRate": "Taux de victoire moyen",
-        "agentVisits30d": "Visites des agents · 30 j"
+        "products": "Produits du catalogue",
+        "avgWinRate": "Taux de victoire en simulation",
+        "agentVisits30d": "Visites IA · 30 jours"
       },
       "storeCard": {
-        "winRate": "Taux de victoire",
+        "winRate": "Taux de victoire en simulation",
         "products": "Produits",
-        "agents30d": "Agents · 30 j",
+        "agents30d": "Visites IA · 30 jours",
         "synced": "Synchronisé {time}",
         "notSyncedYet": "Pas encore synchronisé",
         "openDashboard": "Ouvrir le tableau de bord",
         "status": {
-          "connected": "connecté"
-        }
+          "connected": "Connectée",
+          "disconnected": "Déconnectée",
+          "pending": "Connexion en attente",
+          "error": "À vérifier",
+          "syncing": "Importation des produits"
+        },
+        "noSimulations": "Aucune comparaison pour le moment"
       },
       "platforms": {
         "shopify": "Shopify",
         "woocommerce": "WooCommerce",
-        "feed": "Flux produit",
-        "csv": "Import CSV"
+        "feed": "Flux de produits",
+        "csv": "Import CSV",
+        "other": "Catalogue"
       },
       "empty": {
         "title": "Connectez votre première boutique",
-        "description": "Connectez une boutique pour importer ses produits et commencer à suivre comment les agents d’achat IA les comparent à ceux des concurrents."
+        "description": "Importez votre catalogue, choisissez quelques produits et découvrez comment l’IA les compare à ceux de la concurrence.",
+        "figureLabel": "Des fiches produit prêtes à rejoindre votre espace de travail.",
+        "methods": "Shopify, WooCommerce, flux de produits ou CSV.",
+        "artCaption": "Rassemblez vos produits."
+      },
+      "setup": {
+        "title": "Du catalogue à la première comparaison",
+        "connect": {
+          "title": "Connectez votre catalogue",
+          "description": "Importez des produits depuis votre boutique ou un fichier."
+        },
+        "products": {
+          "title": "Choisissez vos produits",
+          "description": "Choisissez les produits et les concurrents à comparer."
+        },
+        "scan": {
+          "title": "Lancez votre première comparaison",
+          "description": "Découvrez les choix de l’IA et les détails qui comptent."
+        }
       }
     },
     "commandPalette": {

@@ -41,36 +41,61 @@
     "hub": {
       "workspace": "Workspace",
       "title": "Your stores",
-      "description": "Select a store to view how AI shopping agents rank its catalog, or connect another.",
+      "description": "Your catalogs, comparisons and next steps, in one place.",
       "action": {
-        "primary": "Connect a store"
+        "primary": "Connect a store",
+        "secondary": "Import a CSV"
       },
       "aggregates": {
         "stores": "Stores",
-        "products": "Products",
-        "avgWinRate": "Avg Win Rate",
-        "agentVisits30d": "Agent Visits · 30d"
+        "products": "Catalog products",
+        "avgWinRate": "Simulated win rate",
+        "agentVisits30d": "AI visits · 30 days"
       },
       "storeCard": {
-        "winRate": "Win Rate",
+        "winRate": "Simulated win rate",
         "products": "Products",
-        "agents30d": "Agents 30d",
+        "agents30d": "AI visits · 30 days",
         "synced": "Synced {time}",
         "notSyncedYet": "Not synced yet",
         "openDashboard": "Open dashboard",
         "status": {
-          "connected": "connected"
-        }
+          "connected": "Connected",
+          "disconnected": "Disconnected",
+          "pending": "Connection pending",
+          "error": "Needs attention",
+          "syncing": "Importing products"
+        },
+        "noSimulations": "No comparisons yet"
       },
       "platforms": {
         "shopify": "Shopify",
         "woocommerce": "WooCommerce",
-        "feed": "Product Feed",
-        "csv": "CSV Import"
+        "feed": "Product feed",
+        "csv": "CSV import",
+        "other": "Catalog"
       },
       "empty": {
         "title": "Connect your first store",
-        "description": "Link a store to import its products and start tracking how AI shopping agents compare them against competitors."
+        "description": "Bring in your catalog, choose a few products and see how AI compares them with the competition.",
+        "figureLabel": "Product records ready to join your workspace.",
+        "methods": "Shopify, WooCommerce, product feeds or CSV.",
+        "artCaption": "Bring your products together."
+      },
+      "setup": {
+        "title": "From catalog to first comparison",
+        "connect": {
+          "title": "Connect your catalog",
+          "description": "Bring in products from your store or a file."
+        },
+        "products": {
+          "title": "Choose your products",
+          "description": "Pick the products and competitors to compare."
+        },
+        "scan": {
+          "title": "Run your first comparison",
+          "description": "See what AI selects and which details matter."
+        }
       }
     },
     "commandPalette": {

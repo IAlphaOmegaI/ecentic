@@ -484,36 +484,61 @@
     "hub": {
       "workspace": "工作区",
       "title": "您的店铺",
-      "description": "选择一个店铺，查看 AI 购物智能体如何对其商品目录进行排名，或连接其他店铺。",
+      "description": "在一处查看商品目录、比较结果和下一步操作。",
       "action": {
-        "primary": "连接店铺"
+        "primary": "连接店铺",
+        "secondary": "导入 CSV"
       },
       "aggregates": {
         "stores": "店铺",
-        "products": "商品",
-        "avgWinRate": "平均胜率",
-        "agentVisits30d": "智能体访问 · 30天"
+        "products": "目录商品",
+        "avgWinRate": "模拟胜率",
+        "agentVisits30d": "AI 访问 · 30 天"
       },
       "storeCard": {
-        "winRate": "胜率",
+        "winRate": "模拟胜率",
         "products": "商品",
-        "agents30d": "30天智能体访问",
+        "agents30d": "AI 访问 · 30 天",
         "synced": "已同步 {time}",
         "notSyncedYet": "尚未同步",
         "openDashboard": "打开控制台",
         "status": {
-          "connected": "已连接"
-        }
+          "connected": "已连接",
+          "disconnected": "未连接",
+          "pending": "等待连接",
+          "error": "需要处理",
+          "syncing": "正在导入商品"
+        },
+        "noSimulations": "暂无比较结果"
       },
       "platforms": {
         "shopify": "Shopify",
         "woocommerce": "WooCommerce",
         "feed": "商品数据源",
-        "csv": "CSV 导入"
+        "csv": "CSV 导入",
+        "other": "商品目录"
       },
       "empty": {
         "title": "连接您的第一个店铺",
-        "description": "连接店铺以导入商品，并开始跟踪 AI 购物智能体如何将它们与竞品进行比较。"
+        "description": "导入商品目录，选择几款商品，看看 AI 如何将它们与竞品进行比较。",
+        "figureLabel": "可导入工作区的商品记录。",
+        "methods": "Shopify、WooCommerce、商品数据源或 CSV。",
+        "artCaption": "将您的商品汇集到一起。"
+      },
+      "setup": {
+        "title": "从商品目录到首次比较",
+        "connect": {
+          "title": "连接商品目录",
+          "description": "从店铺或文件中导入商品。"
+        },
+        "products": {
+          "title": "选择商品",
+          "description": "选择要比较的商品和竞争对手。"
+        },
+        "scan": {
+          "title": "开始首次比较",
+          "description": "了解 AI 的选择，以及它看重哪些信息。"
+        }
       }
     },
     "commandPalette": {
