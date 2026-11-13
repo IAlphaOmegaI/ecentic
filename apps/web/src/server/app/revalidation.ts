@@ -1,4 +1,4 @@
-import { revalidateTag } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { withCron } from "../utils/cron";
 
 // Keep in sync with `BLOG_CACHE_TAG` in `./blog` and `./babylovegrowth`.
@@ -19,6 +19,7 @@ export const revalidateBlog = withCron(async () => {
   // stale-while-revalidate, so a publish — or a takedown — is visible on the
   // very next request rather than one request later.
   revalidateTag(BLOG_CACHE_TAG, { expire: 0 });
+  revalidatePath("/sitemap.xml");
 
   return { success: true as const, data: { revalidated: BLOG_CACHE_TAG } };
 }, "Revalidation.revalidateBlog");

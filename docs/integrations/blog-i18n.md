@@ -26,7 +26,7 @@ Public blog pages, index, topics, Open Graph images and sitemap read published P
 - `blog-html.ts` recognizes FAQ, takeaway and navigation headings in every supported language. FAQ pairs produce target-language JSON-LD; a body that already contains the FAQ does not receive a duplicate visible block.
 - OG rendering receives locale for the correct Japanese/Simplified Chinese font.
 
-`BLOG_CACHE_TAG` is `blog`. Published writes purge that tag, including the sitemap's own tagged cache entry. CLI publishing happens outside a Next request; purge `blog` or deploy after the backfill so cached indexes and sitemap refresh.
+`BLOG_CACHE_TAG` is `blog`. Published writes purge that tag and explicitly revalidate `/sitemap.xml`, so the static metadata route refreshes on its next request alongside article/index data. CLI publishing happens outside a Next request; call the authenticated `POST /api/revalidate/blog` after the backfill to invalidate both caches. A CDN purge alone does not replace this application-cache invalidation.
 
 ## Write rail: durable translation jobs
 

@@ -8,7 +8,7 @@ import { join } from "node:path";
 import * as Sentry from "@sentry/nextjs";
 import { resultify } from "@zenncore/utils";
 import { and, eq, inArray, or } from "drizzle-orm";
-import { cacheLife, cacheTag, revalidateTag } from "next/cache";
+import { cacheLife, cacheTag, revalidatePath, revalidateTag } from "next/cache";
 import { after } from "next/server";
 import { z } from "zod";
 import { isPublishedLocale, type Locale } from "@/i18n/locales";
@@ -49,6 +49,7 @@ const purgeBlogCache = () => {
   try {
     after(() => {
       revalidateTag(BLOG_CACHE_TAG, { expire: 0 });
+      revalidatePath("/sitemap.xml");
     });
   } catch {
     // non-request context
