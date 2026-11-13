@@ -8,12 +8,10 @@ import {
   ShoppingCartIcon,
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
-import { AnimatePresence, motion } from "motion/react";
 import { useMessages, useTranslations } from "next-intl";
 import { Onboarding } from "@/components/onboarding";
 import { Plus } from "@/components/plus";
 import { usePathname } from "@/i18n/navigation";
-import { Spring } from "@/lib/animations";
 
 const stepPaths = [
   {
@@ -87,123 +85,94 @@ export const OnboardingLayout = ({
   );
 
   return (
-    <div className="flex h-screen bg-primary">
+    <div className="flex h-dvh min-h-0 bg-background-rich">
       <Onboarding
         identifier={pathname}
         headline={headline}
         points={sidebarContent.points}
       />
-
-      <main className="flex h-full flex-1 flex-col overflow-hidden bg-background">
-        <div className="flex items-center justify-center border-accent-foreground border-b px-8">
-          <div className="relative mx-auto flex w-full items-center justify-center gap-0 border-accent-foreground border-x py-2">
-            <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-            <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-            <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+      <main className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-background-rich">
+        <nav
+          aria-label={translate("stepProgress", {
+            current: String(current + 1),
+            total: String(steps.length),
+          })}
+          className="relative shrink-0 border-accent-foreground border-b px-6 py-6 sm:px-8"
+        >
+          <ol className="hidden items-center md:flex">
             {steps.map((step, index) => {
               const isCompleted = index < current;
               const isCurrent = index === current;
-              const StepIcon = step.icon;
-
+              const StepIcon = isCompleted ? CheckIcon : step.icon;
               return (
-                <div
+                <li
                   key={step.path}
-                  className={cn(
-                    "hidden items-center gap-1.5 sm:flex",
-                    index !== 0 && "ml-1.5",
-                  )}
+                  aria-current={isCurrent ? "step" : undefined}
+                  className="flex min-w-0 flex-1 items-center last:flex-none"
                 >
-                  <div className="relative flex items-center gap-2 px-3 py-1.5">
-                    {isCurrent && (
-                      <motion.div
-                        layoutId="step-active-bg"
-                        className="absolute inset-0 bg-primary"
-                        transition={Spring.Gentle}
-                      />
+                  <div
+                    className={cn(
+                      "flex items-center gap-2 text-sm",
+                      isCurrent
+                        ? "font-medium text-foreground-rich"
+                        : "text-foreground-dimmed",
                     )}
-
-                    <AnimatePresence mode="wait" initial={false}>
-                      {isCompleted ? (
-                        <motion.span
-                          key="check"
-                          className={`relative z-10 transition-colors ${isCurrent ? "text-white" : "text-primary"}`}
-                          initial={{ scale: 0, opacity: 0 }}
-                          animate={{ scale: 1, opacity: 1 }}
-                          exit={{ scale: 0, opacity: 0 }}
-                          transition={Spring.Snappy}
-                        >
-                          <CheckIcon className="size-4" />
-                        </motion.span>
-                      ) : (
-                        <motion.span
-                          key="icon"
-                          className={`relative z-10 transition-colors ${isCurrent ? "text-white" : "text-foreground-dimmed/40"}`}
-                          initial={{ scale: 0, opacity: 0 }}
-                          animate={{ scale: 1, opacity: 1 }}
-                          exit={{ scale: 0, opacity: 0 }}
-                          transition={Spring.Snappy}
-                        >
-                          <StepIcon className="size-4" />
-                        </motion.span>
-                      )}
-                    </AnimatePresence>
-
+                  >
                     <span
-                      className={`relative z-10 whitespace-nowrap font-medium text-sm transition-colors ${
+                      className={cn(
+                        "flex size-8 shrink-0 items-center justify-center rounded-md border",
                         isCurrent
-                          ? "text-white"
+                          ? "border-primary bg-primary/10 text-primary-text"
                           : isCompleted
-                            ? "text-primary"
-                            : "text-foreground-dimmed/40"
-                      }`}
+                            ? "border-primary/20 bg-primary/5 text-primary-text"
+                            : "border-accent-foreground",
+                      )}
                     >
-                      {step.label}
+                      <StepIcon aria-hidden="true" className="size-4" />
                     </span>
+                    <span>{step.label}</span>
                   </div>
-
                   {index < steps.length - 1 && (
-                    <div className="h-px w-5 overflow-hidden rounded-full bg-accent-foreground">
-                      <motion.div
-                        className="h-full bg-primary"
-                        initial={{ width: "0%" }}
-                        animate={{ width: isCompleted ? "100%" : "0%" }}
-                        transition={{ ...Spring.Gentle, delay: 0.05 }}
-                      />
-                    </div>
+                    <span
+                      aria-hidden="true"
+                      className={cn(
+                        "mx-4 h-px min-w-2 flex-1",
+                        isCompleted ? "bg-primary" : "bg-accent-foreground",
+                      )}
+                    />
                   )}
-                </div>
+                </li>
               );
             })}
-          </div>
-
-          <div className="flex items-center gap-2 sm:hidden">
-            <div className="flex gap-1">
-              {steps.map((_, index) => (
-                <motion.div
-                  // biome-ignore lint/suspicious/noArrayIndexKey: false positive
-                  key={index}
-                  className="h-2 rounded-full"
-                  animate={{
-                    width: index === current ? 42 : 16,
-                    backgroundColor:
-                      index <= current
-                        ? "var(--color-primary)"
-                        : "var(--color-accent-foreground)",
-                  }}
-                  transition={Spring.Gentle}
+          </ol>
+          <div className="flex items-center justify-between gap-4 md:hidden">
+            <div className="min-w-0">
+              <p className="font-medium text-foreground-rich">
+                {steps[current]?.label}
+              </p>
+              <p className="mt-1 text-foreground-dimmed text-sm">
+                {translate("stepProgress", {
+                  current: String(current + 1),
+                  total: String(steps.length),
+                })}
+              </p>
+            </div>
+            <div className="flex gap-2" aria-hidden="true">
+              {steps.map((step, index) => (
+                <span
+                  key={step.path}
+                  className={cn(
+                    "size-2 rounded-full",
+                    index <= current ? "bg-primary" : "bg-accent-foreground",
+                    index === current && "ring-4 ring-primary/10",
+                  )}
                 />
               ))}
             </div>
-            <span className="whitespace-nowrap font-light text-foreground-dimmed text-sm">
-              {translate("stepProgress", {
-                current: String(current + 1),
-                total: String(steps.length),
-              })}
-            </span>
           </div>
-        </div>
-
+          <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+        </nav>
         {children}
       </main>
     </div>

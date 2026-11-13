@@ -15,13 +15,16 @@ import { useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { z } from "zod";
+import { useOnboardingError } from "@/app/[locale]/(auth)/onboarding/_components/use-onboarding-error";
 import { useCurrentUser } from "@/context/auth";
 import { useRouter } from "@/i18n/navigation";
+import { callOnboardingAction } from "@/lib/onboarding-errors";
 import * as Shopify from "@/server/app/integration/shopify";
 
 export const ShopifyForm = () => {
   const router = useRouter();
   const toast = useToastManager();
+  const formatError = useOnboardingError();
   const user = useCurrentUser();
   const translate = useTranslations("onboarding.connect");
   const searchParameters = useSearchParams();
@@ -49,7 +52,8 @@ export const ShopifyForm = () => {
         shop: field({
           shape: "text",
           validator: z
-            .string()
+            .string({ error: translate("shopify.fields.shop.validation") })
+            .trim()
             .min(1, translate("shopify.fields.shop.validation")),
           label: translate("shopify.fields.shop.label"),
           placeholder: translate("shopify.fields.shop.placeholder"),
@@ -83,14 +87,16 @@ export const ShopifyForm = () => {
         return;
       }
 
-      const result = await Shopify.connectPublic({
-        domain: data.shop.trim(),
-      });
+      const result = await callOnboardingAction(() =>
+        Shopify.connectPublic({
+          domain: data.shop.trim(),
+        }),
+      );
 
       if (!result.success) {
         toast.add({
           title: translate("shopify.toast.connectionFailed"),
-          description: result.error.message,
+          description: formatError(result.error),
           type: "error",
         });
         return;

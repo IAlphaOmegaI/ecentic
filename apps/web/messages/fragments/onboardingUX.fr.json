@@ -1,0 +1,49 @@
+{
+  "onboarding": {
+    "experience": {
+      "footer": "Votre première comparaison commence avec votre catalogue.",
+      "settingsHint": "Vous pourrez gérer vos connexions dans les paramètres.",
+      "fileRequired": "Choisissez un fichier CSV à importer.",
+      "storeAddress": "Adresse de la boutique",
+      "selectProduct": "Sélectionner {product}",
+      "selectedProduct": "Votre produit a été choisi",
+      "selectedCompetitor": "Le produit concurrent a été choisi",
+      "wins": "Victoires",
+      "losses": "Défaites",
+      "errors": {
+        "session": "Votre session a expiré. Reconnectez-vous pour continuer.",
+        "permissions": "Nous n’avons pas pu accéder à votre boutique. Vérifiez sa connexion et les autorisations accordées.",
+        "rateLimited": "Trop de demandes à la fois. Patientez un instant, puis réessayez.",
+        "timeout": "Cette opération prend plus de temps que prévu. Réessayez dans un instant.",
+        "service": "Nous n’avons pas pu lire la réponse du service de comparaison. Réessayez. Si le problème persiste, contactez l’assistance.",
+        "validation": "Vérifiez les informations saisies, puis réessayez.",
+        "tooLarge": "Ce fichier est trop volumineux pour être importé. Utilisez un fichier plus petit ou répartissez-le en plusieurs imports.",
+        "emptyCatalog": "Nous n’avons trouvé aucun produit à importer. Vérifiez que le fichier ou le flux contient des fiches produits.",
+        "conflict": "Cette boutique est déjà connectée à un autre compte. Connectez-vous avec ce compte ou contactez l’assistance.",
+        "plan": "Choisissez une offre pour utiliser cette fonctionnalité.",
+        "unavailable": "Nous n’avons pas pu terminer cette étape. Réessayez. Si le problème persiste, contactez l’assistance.",
+        "sourceUnavailable": "Nous n’avons pas pu lire ces pages produit. Essayez la fiche produit sur le site de la boutique ou ajoutez des concurrents avec la recherche.",
+        "noCompetitors": "Aucun concurrent ne correspond à cette recherche. Essayez une marque ou une catégorie de produits plus large.",
+        "feedUnavailable": "Nous n’avons pas pu lire ce flux. Vérifiez que l’adresse ouvre un flux XML ou JSON public, puis réessayez."
+      },
+      "progress": {
+        "reading": "Lecture de {count, plural, one {# produit} many {# produits} other {# produits}} de votre catalogue",
+        "searching": "Recherche de concurrents avec l’IA",
+        "sellers": "Recherche d’autres vendeurs pour {product}"
+      },
+      "removeCompetitor": "Supprimer {competitor}"
+    },
+    "connect": {
+      "feed": {
+        "formats": {
+          "googleShopping": {
+            "description": "Un flux RSS ou Atom avec des champs produit tels que g:title, g:price et g:image_link dans chaque <item>."
+          },
+          "json": {
+            "description": "Une liste de produits contenant les champs title, price, image et url. Cette liste peut aussi se trouver sous une clé products ou items."
+          }
+        }
+      }
+    }
+  }
+}

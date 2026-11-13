@@ -14,13 +14,16 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { z } from "zod";
+import { useOnboardingError } from "@/app/[locale]/(auth)/onboarding/_components/use-onboarding-error";
 import { useRouter } from "@/i18n/navigation";
+import { callOnboardingAction } from "@/lib/onboarding-errors";
 import * as FeedIntegration from "@/server/app/integration/feed";
 import * as Store from "@/server/app/store";
 
 export const FeedForm = () => {
   const router = useRouter();
   const toast = useToastManager();
+  const formatError = useOnboardingError();
   const translate = useTranslations("onboarding.connect");
 
   const config = useMemo(
@@ -28,8 +31,10 @@ export const FeedForm = () => {
       ({
         feedUrl: field({
           shape: "text",
+          inputMode: "url",
           validator: z
-            .string()
+            .string({ error: translate("feed.fields.feedUrl.validation") })
+            .trim()
             .url(translate("feed.fields.feedUrl.validation")),
           label: translate("feed.fields.feedUrl.label"),
           placeholder: translate("feed.fields.feedUrl.placeholder"),
@@ -50,12 +55,26 @@ export const FeedForm = () => {
 
   const [handleSubmit, isPending] = useAsyncAction(
     async (data: FormEntries<typeof config>) => {
-      const result = await FeedIntegration.connect(data);
+      const result = await callOnboardingAction(() =>
+        FeedIntegration.connect(data),
+      );
 
       if (!result.success) {
         toast.add({
           title: translate("feed.toast.connectionFailed"),
-          description: result.error.message,
+          description: formatError(result.error),
+          type: "error",
+        });
+        return;
+      }
+
+      const sync = await callOnboardingAction(() =>
+        Store.syncProducts({ store: result.data.id }),
+      );
+      if (!sync.success) {
+        toast.add({
+          title: translate("feed.toast.connectionFailed"),
+          description: formatError(sync.error),
           type: "error",
         });
         return;
@@ -66,9 +85,6 @@ export const FeedForm = () => {
         description: translate("feed.toast.connected.description"),
         type: "success",
       });
-      void (async () => {
-        await Store.syncProducts({ store: result.data.id });
-      })();
 
       router.push("/onboarding/products");
     },

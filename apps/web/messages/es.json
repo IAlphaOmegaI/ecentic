@@ -6856,11 +6856,11 @@
           "title": "Formatos compatibles",
           "googleShopping": {
             "label": "XML de Google Shopping",
-            "description": "es el formato más común. Si usas Google Merchant Center, ya tienes uno. Es un feed RSS/Atom donde cada <item> contiene g:title, g:price, g:image_link, etc."
+            "description": "Un feed RSS o Atom con campos como g:title, g:price y g:image_link dentro de cada <item>."
           },
           "json": {
             "label": "JSON",
-            "description": "es un array simple de objetos producto. Buscamos title, price, image y url. Anidado bajo products o items también vale."
+            "description": "Una lista de productos con los campos title, price, image y url. La lista también puede estar dentro de una clave products o items."
           }
         },
         "fields": {
@@ -7255,6 +7255,39 @@
           "noCompetitors": "Selecciona al menos un competidor antes de ejecutar simulaciones."
         }
       }
+    },
+    "experience": {
+      "footer": "Tu primera comparación empieza por tu catálogo.",
+      "settingsHint": "Puedes gestionar tus conexiones más adelante en Ajustes.",
+      "fileRequired": "Elige un archivo CSV para importarlo.",
+      "storeAddress": "Dirección de la tienda",
+      "selectProduct": "Seleccionar {product}",
+      "selectedProduct": "Ha elegido tu producto",
+      "selectedCompetitor": "Ha elegido el producto rival",
+      "wins": "Victorias",
+      "losses": "Derrotas",
+      "errors": {
+        "session": "Tu sesión ha caducado. Vuelve a iniciar sesión para continuar.",
+        "permissions": "No hemos podido acceder a tu tienda. Revisa la conexión y los permisos que has concedido.",
+        "rateLimited": "Hay demasiadas solicitudes a la vez. Espera un momento y vuelve a intentarlo.",
+        "timeout": "Está tardando más de lo previsto. Vuelve a intentarlo en un momento.",
+        "service": "No hemos podido leer la respuesta del servicio de comparación. Vuelve a intentarlo. Si el problema se repite, contacta con soporte.",
+        "validation": "Revisa los datos que has introducido y vuelve a intentarlo.",
+        "tooLarge": "El archivo es demasiado grande para importarlo. Usa uno más pequeño o divídelo en varias importaciones.",
+        "emptyCatalog": "No hemos encontrado productos que importar. Comprueba que el archivo o feed contiene registros de productos.",
+        "conflict": "Esta tienda ya está conectada a otra cuenta. Inicia sesión con esa cuenta o contacta con soporte.",
+        "plan": "Elige un plan para usar esta función.",
+        "unavailable": "No hemos podido completar este paso. Vuelve a intentarlo. Si el problema continúa, contacta con soporte.",
+        "sourceUnavailable": "No hemos podido leer esas páginas de producto. Prueba con la ficha del producto en la web de la tienda o añade competidores mediante la búsqueda.",
+        "noCompetitors": "No hemos encontrado competidores para esa búsqueda. Prueba con una marca o categoría de producto más amplia.",
+        "feedUnavailable": "No hemos podido leer ese feed. Comprueba que la dirección abre un feed XML o JSON público y vuelve a intentarlo."
+      },
+      "progress": {
+        "reading": "Leyendo {count, plural, one {# producto} many {# productos} other {# productos}} de tu catálogo",
+        "searching": "Buscando competidores con IA",
+        "sellers": "Buscando otros vendedores de {product}"
+      },
+      "removeCompetitor": "Eliminar {competitor}"
     }
   },
   "share": {
@@ -20173,5 +20206,58 @@
       "fixes": "{count, plural, one {# corrección aplicada} many {# correcciones aplicadas} other {# correcciones aplicadas}}"
     },
     "outputLanguage": "El contenido de la tienda y los diagnósticos del proveedor permanecen en su idioma original."
+  },
+  "authUX": {
+    "home": "Volver a ecentic",
+    "sidebar": {
+      "eyebrow": "Tu espacio de comercio con IA",
+      "title": "Descubre cómo ve la IA tus productos.",
+      "description": "Conecta tu catálogo, compara productos y decide qué mejorar.",
+      "points": [
+        "Tu catálogo en un solo lugar",
+        "Comparaciones entre modelos de IA",
+        "Revisas los cambios antes de publicarlos"
+      ],
+      "catalogs": "Fuentes del catálogo",
+      "channels": "Canales de IA"
+    },
+    "signUp": {
+      "description": "Conecta tu tienda y realiza tu primera comparación de productos."
+    },
+    "completeProfile": {
+      "description": "Añade tu empresa y tu cargo antes de conectar la tienda."
+    },
+    "password": {
+      "show": "Mostrar contraseña",
+      "hide": "Ocultar contraseña"
+    },
+    "validation": {
+      "email": "Introduce una dirección de correo válida.",
+      "password": "Introduce tu contraseña.",
+      "passwordLength": "Usa al menos 8 caracteres.",
+      "confirmation": "Vuelve a introducir la nueva contraseña.",
+      "fullName": "Introduce tu nombre.",
+      "company": "Introduce el nombre de tu empresa o marca.",
+      "role": "Selecciona tu cargo.",
+      "source": "Selecciona una opción de la lista."
+    },
+    "errors": {
+      "title": "No hemos podido completar este paso",
+      "invalidCredentials": "El correo y la contraseña no coinciden. Comprueba ambos o restablece la contraseña.",
+      "emailAlreadyUsed": "Ya hay una cuenta con este correo. Inicia sesión o restablece la contraseña.",
+      "emailUnverified": "Verifica tu correo antes de iniciar sesión. Abre el mensaje de verificación y sigue el enlace.",
+      "invalidEmail": "Introduce una dirección de correo válida e inténtalo de nuevo.",
+      "passwordTooShort": "Usa al menos 8 caracteres para la contraseña.",
+      "shopifyStoreNotFound": "No hemos encontrado esa tienda de Shopify. Introduce su dirección pública o su dominio myshopify.com.",
+      "google": "No hemos podido iniciar el acceso con Google. Inténtalo de nuevo o continúa con tu correo.",
+      "shopify": "No hemos podido iniciar el acceso con Shopify. Comprueba la dirección de la tienda e inténtalo de nuevo.",
+      "rateLimited": "Demasiados intentos. Espera un momento y vuelve a intentarlo.",
+      "unavailable": "No hemos podido conectar. Inténtalo de nuevo en un momento. Si el problema persiste, contacta con soporte.",
+      "signIn": "No hemos podido iniciar la sesión. Inténtalo de nuevo o restablece la contraseña.",
+      "signUp": "No hemos podido crear tu cuenta. Comprueba los datos e inténtalo de nuevo.",
+      "forgotPassword": "No hemos podido enviar el enlace para restablecer la contraseña. Inténtalo de nuevo en un momento.",
+      "resetPassword": "Este enlace ya no es válido. Solicita uno nuevo y vuelve a intentarlo.",
+      "completeProfile": "No hemos podido guardar tu perfil. Inténtalo de nuevo. Si el problema persiste, contacta con soporte."
+    }
   }
 }

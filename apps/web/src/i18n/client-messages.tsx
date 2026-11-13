@@ -74,6 +74,7 @@ export const CLIENT_MESSAGES = {
     ...CHROME,
     "commerceFigures",
     "authChrome",
+    "authUX",
     "compareTool",
     "completeProfile",
     "forgotPassword",

@@ -2,13 +2,11 @@
 
 import { ArrowLeftIcon, ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
-import { motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { Motion } from "@/components/motion";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
-import { Spring } from "@/lib/animations";
 
 export namespace PrePhase {
   export type Props = {
@@ -28,22 +26,16 @@ export const PrePhase = ({
   const translate = useTranslations("onboarding.scan");
 
   return (
-    <motion.div
+    <Motion.Stagger
       key="pre"
-      className="flex flex-1 flex-col overflow-y-auto"
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -16 }}
-      transition={Spring.Gentle}
+      className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
     >
-      {children}
-
-      <div className="min-h-0 flex-1 px-8">
-        <div className="h-full border-accent-foreground border-x" />
+      <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
+        {children}
       </div>
 
-      <Motion.Item className="px-8">
-        <div className="relative flex items-center justify-between border-accent-foreground border-x p-6">
+      <Motion.Item className="relative shrink-0 border-accent-foreground border-t bg-background-rich">
+        <div className="relative flex flex-wrap items-center justify-between gap-3 px-6 py-4 sm:px-8">
           <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
           <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           <Button
@@ -69,6 +61,6 @@ export const PrePhase = ({
           </Button>
         </div>
       </Motion.Item>
-    </motion.div>
+    </Motion.Stagger>
   );
 };

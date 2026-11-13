@@ -52,14 +52,14 @@ export const CompetitorReview = ({
   return (
     <Motion.Stagger
       stagger={0.05}
-      className="flex h-full flex-col overflow-hidden"
+      className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
     >
-      <Motion.Item className="border-accent-foreground border-b px-8">
-        <div className="relative border-accent-foreground border-x p-6">
+      <Motion.Item className="shrink-0 border-accent-foreground border-b bg-linear-to-br from-primary/10 via-background-rich to-background-rich">
+        <div className="relative px-6 py-7 sm:px-8">
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           {children}
-          <div className="mt-4 w-fit border border-primary/20 bg-primary/5 px-4 py-2.5 text-primary text-sm">
+          <div className="mt-4 text-primary-text text-sm">
             {translate("summary", {
               total: String(competitors.length),
               brands: String(brands.size),
@@ -69,7 +69,7 @@ export const CompetitorReview = ({
         </div>
       </Motion.Item>
 
-      <Motion.Item className="min-h-0 flex-1 px-8">
+      <Motion.Item className="min-h-0 min-w-0 flex-1 overflow-hidden">
         <CompetitorList
           competitors={competitors}
           onToggle={handleToggle}
@@ -77,8 +77,8 @@ export const CompetitorReview = ({
         />
       </Motion.Item>
 
-      <Motion.Item className="border-accent-foreground border-t px-8">
-        <div className="relative flex w-full items-center justify-between border-accent-foreground border-x p-6">
+      <Motion.Item className="shrink-0 border-accent-foreground border-t bg-background-rich">
+        <div className="relative flex w-full flex-wrap items-center justify-between gap-3 px-6 py-4 sm:px-8">
           <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
           <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />

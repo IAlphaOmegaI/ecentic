@@ -9,6 +9,7 @@ import { render } from "react-email";
 import { Resend } from "resend";
 import { localizePath } from "@/i18n/locale";
 import { defaultLocale, isPublishedLocale, type Locale } from "@/i18n/locales";
+import { authErrorKey } from "@/lib/auth-errors";
 import { ENTRY_COOKIE, sanitizeRedirect } from "@/lib/redirect";
 import { ResetPasswordEmail } from "@/public/templates/reset-password";
 import { VerifyEmail } from "@/public/templates/verify";
@@ -105,14 +106,24 @@ export const signInWithShopify = withContext(
 );
 
 export const signInWithGoogle = withContext(
-  async (context, { callbackURL }: { callbackURL: string }) => {
+  async (
+    context,
+    {
+      callbackURL,
+      locale = defaultLocale,
+    }: { callbackURL: string; locale?: Locale },
+  ) => {
+    const resolvedLocale = isPublishedLocale(locale) ? locale : defaultLocale;
     const result = await resultify(
       async () =>
         await context.auth.signInSocial({
           body: {
             provider: "google",
             callbackURL: sanitizeRedirect(callbackURL, "/dashboard"),
-            newUserCallbackURL: "/complete-profile",
+            newUserCallbackURL: localizePath(
+              "/complete-profile",
+              resolvedLocale,
+            ),
             disableRedirect: false,
           },
         }),
@@ -154,9 +165,12 @@ export const signIn = withContext(
     if (!result.success) {
       return {
         success: false,
-        error: new InvalidCredentialsError("Invalid credentials provided", {
-          cause: result.error,
-        }),
+        error: new InvalidCredentialsError(
+          `auth:${authErrorKey(result.error, "signIn")}`,
+          {
+            cause: result.error,
+          },
+        ),
       };
     }
 
@@ -352,7 +366,7 @@ export const signUp = withContext(
       return {
         success: false,
         error: new InvalidCredentialsError(
-          result.error?.message ?? "Sign up failed",
+          `auth:${authErrorKey(result.error, "signUp")}`,
           { cause: result.error },
         ),
       };

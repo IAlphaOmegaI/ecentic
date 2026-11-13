@@ -1,0 +1,55 @@
+{
+  "authUX": {
+    "home": "Back to ecentic",
+    "sidebar": {
+      "eyebrow": "Your AI commerce workspace",
+      "title": "See your products through AI’s eyes.",
+      "description": "Connect your catalog, compare products and decide what to improve.",
+      "points": [
+        "Your catalog in one place",
+        "Product comparisons across AI models",
+        "Changes you review before publishing"
+      ],
+      "catalogs": "Catalog sources",
+      "channels": "AI channels"
+    },
+    "signUp": {
+      "description": "Connect your store and run your first product comparison."
+    },
+    "completeProfile": {
+      "description": "Add your company and role before connecting your store."
+    },
+    "password": {
+      "show": "Show password",
+      "hide": "Hide password"
+    },
+    "validation": {
+      "email": "Enter a valid email address.",
+      "password": "Enter your password.",
+      "passwordLength": "Use at least 8 characters.",
+      "confirmation": "Enter your new password again.",
+      "fullName": "Enter your name.",
+      "company": "Enter your company or brand name.",
+      "role": "Choose your role.",
+      "source": "Choose an option from the list."
+    },
+    "errors": {
+      "title": "We couldn’t complete that step",
+      "invalidCredentials": "The email and password didn’t match. Check both, or reset your password.",
+      "emailAlreadyUsed": "An account already uses this email. Sign in or reset your password.",
+      "emailUnverified": "Verify your email before signing in. Open your verification email and follow the link.",
+      "invalidEmail": "Enter a valid email address and try again.",
+      "passwordTooShort": "Use at least 8 characters for your password.",
+      "shopifyStoreNotFound": "We couldn’t find that Shopify store. Enter its public store address or its myshopify.com domain.",
+      "google": "Google sign-in couldn’t start. Try again or continue with email.",
+      "shopify": "Shopify sign-in couldn’t start. Check the store address and try again.",
+      "rateLimited": "Too many attempts. Wait a moment, then try again.",
+      "unavailable": "We couldn’t connect just now. Try again in a moment. If the problem continues, contact support.",
+      "signIn": "We couldn’t sign you in. Try again or reset your password.",
+      "signUp": "We couldn’t create your account. Check the details and try again.",
+      "forgotPassword": "We couldn’t send the reset link. Try again in a moment.",
+      "resetPassword": "This reset link is no longer valid. Request a new link, then try again.",
+      "completeProfile": "We couldn’t save your profile. Try again. If the problem continues, contact support."
+    }
+  }
+}

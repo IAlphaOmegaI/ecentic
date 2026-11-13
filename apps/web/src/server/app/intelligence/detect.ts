@@ -24,7 +24,8 @@ const candidate = z.object({
 // is persisted immediately and pushed as a `competitor` event, so the UI fills
 // in live instead of waiting for the whole batch.
 export type DetectionEvent =
-  | { kind: "status"; message: string }
+  | { kind: "status"; stage: "catalog"; count: number; message: string }
+  | { kind: "status"; stage: "search"; message: string }
   | { kind: "competitor"; competitor: Competitor.Type }
   | { kind: "done"; total: number }
   | { kind: "error"; message: string };
@@ -71,6 +72,8 @@ export const stream = ({
 
     update({
       kind: "status",
+      stage: "catalog",
+      count: selected.length,
       message: `Reading ${selected.length} product${selected.length === 1 ? "" : "s"} from your catalog`,
     });
 
@@ -85,6 +88,7 @@ export const stream = ({
 
     update({
       kind: "status",
+      stage: "search",
       message: "Querying the intelligence model for competitors…",
     });
 

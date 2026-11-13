@@ -10,6 +10,7 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
+import { useOnboardingError } from "@/app/[locale]/(auth)/onboarding/_components/use-onboarding-error";
 import { useRouter } from "@/i18n/navigation";
 import { formatElapsed } from "@/lib/date";
 import * as Competitor from "@/server/app/competitor";
@@ -83,6 +84,8 @@ export const AutoDetectTab = ({
   const locale = useLocale();
 
   const toast = useToastManager();
+  const formatError = useOnboardingError();
+  const progress = useTranslations("onboarding.experience.progress");
   const router = useRouter();
   const translate = useTranslations("onboarding.competitors.autoDetect");
   const [logs, setLogs] = useState<LogEntry[]>([]);
@@ -143,7 +146,13 @@ export const AutoDetectTab = ({
 
         switch (event.kind) {
           case "status":
-            addLog({ text: event.message, type: "info" });
+            addLog({
+              text:
+                event.stage === "catalog"
+                  ? progress("reading", { count: event.count })
+                  : progress("searching"),
+              type: "info",
+            });
             break;
           case "competitor":
             collected.push(event.competitor);
@@ -170,7 +179,7 @@ export const AutoDetectTab = ({
       addLog({ text: translate("errors.failed"), type: "error" });
       toast.add({
         title: translate("toast.failed"),
-        description: detection.error.message,
+        description: formatError(detection.error),
         type: "error",
       });
       return;

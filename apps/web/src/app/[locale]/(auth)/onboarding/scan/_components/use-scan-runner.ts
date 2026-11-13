@@ -1,9 +1,11 @@
 "use client";
 
 import * as Sentry from "@sentry/nextjs";
+import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import * as Simulate from "@/server/app/intelligence/simulate";
 import * as Scan from "@/server/app/scan";
+import { useOnboardingError } from "../../_components/use-onboarding-error";
 
 type ScanPhase = "pre" | "running" | "complete";
 type ModelStatus = "queued" | "running" | "complete";
@@ -224,6 +226,8 @@ type ScanRunnerOptions = {
 
 export const useScanRunner = (options: ScanRunnerOptions) => {
   const { store, errorMessages: errorMessagesOption } = options;
+  const translate = useTranslations("onboarding.experience");
+  const formatError = useOnboardingError();
   const errorMessages = {
     transport: errorMessagesOption?.transport ?? DEFAULT_TRANSPORT_MESSAGE,
     enqueueTransport:
@@ -298,36 +302,37 @@ export const useScanRunner = (options: ScanRunnerOptions) => {
     misses.current = 0;
   }, [stopTimers]);
 
-  const ingest = useCallback((progress: Scan.Progress) => {
-    const derived = derive(progress);
-    setStats(derived.stats);
-    setStatuses(derived.statuses);
-    setModelStats(derived.modelStats);
-    setWinRates(derived.winRates);
-    setCount(derived.count);
-    setTopFinding(derived.topFinding);
+  const ingest = useCallback(
+    (progress: Scan.Progress) => {
+      const derived = derive(progress);
+      setStats(derived.stats);
+      setStatuses(derived.statuses);
+      setModelStats(derived.modelStats);
+      setWinRates(derived.winRates);
+      setCount(derived.count);
+      setTopFinding(derived.topFinding);
 
-    if (progress.completed <= shown.current) return;
+      if (progress.completed <= shown.current) return;
 
-    const fresh = progress.recent.slice(
-      Math.max(
-        0,
-        progress.recent.length - (progress.completed - shown.current),
-      ),
-    );
-    setLogs((previous) => [
-      ...previous,
-      ...fresh.map((row, index) => ({
-        id: previous.length + index + 1,
-        model: labelFor(row.model),
-        message: `picked ${
-          row.winner === "product" ? "your product" : "the competitor"
-        }${row.reasoning ? ` — ${row.reasoning.slice(0, 80)}` : ""}`,
-        elapsed: Date.now() - start.current,
-      })),
-    ]);
-    shown.current = progress.completed;
-  }, []);
+      const fresh = progress.recent.slice(
+        Math.max(
+          0,
+          progress.recent.length - (progress.completed - shown.current),
+        ),
+      );
+      setLogs((previous) => [
+        ...previous,
+        ...fresh.map((row, index) => ({
+          id: previous.length + index + 1,
+          model: labelFor(row.model),
+          message: `${translate(row.winner === "product" ? "selectedProduct" : "selectedCompetitor")}${row.reasoning ? ` — ${row.reasoning.slice(0, 80)}` : ""}`,
+          elapsed: Date.now() - start.current,
+        })),
+      ]);
+      shown.current = progress.completed;
+    },
+    [translate],
+  );
 
   const poll = useCallback(
     (id: string) => {
@@ -373,7 +378,11 @@ export const useScanRunner = (options: ScanRunnerOptions) => {
           if (progress.error instanceof TransportError) {
             Sentry.captureException(progress.error);
           }
-          onError.current?.(progress.error.message);
+          onError.current?.(
+            progress.error instanceof TransportError
+              ? errorMessages.transport
+              : formatError(progress.error),
+          );
           return;
         }
 
@@ -410,6 +419,7 @@ export const useScanRunner = (options: ScanRunnerOptions) => {
       stopTimers,
       errorMessages.transport,
       errorMessages.simulationFailed,
+      formatError,
     ],
   );
 
@@ -444,7 +454,11 @@ export const useScanRunner = (options: ScanRunnerOptions) => {
         if (enqueue.error instanceof TransportError) {
           Sentry.captureException(enqueue.error);
         }
-        onError.current?.(enqueue.error.message);
+        onError.current?.(
+          enqueue.error instanceof TransportError
+            ? errorMessages.enqueueTransport
+            : formatError(enqueue.error),
+        );
         return;
       }
 
@@ -468,6 +482,7 @@ export const useScanRunner = (options: ScanRunnerOptions) => {
       store,
       errorMessages.enqueueTransport,
       errorMessages.noStore,
+      formatError,
     ],
   );
 

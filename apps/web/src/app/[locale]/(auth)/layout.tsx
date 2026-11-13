@@ -22,8 +22,8 @@ export const metadata: Metadata = {
 // the public pages).
 export default ({ children }: PropsWithChildren) => (
   <ClientMessages scope="auth">
-    <main className="h-screen min-h-screen">
+    <div className="min-h-dvh">
       <Suspense>{children}</Suspense>
-    </main>
+    </div>
   </ClientMessages>
 );

@@ -6856,11 +6856,11 @@
           "title": "Supported formats",
           "googleShopping": {
             "label": "Google Shopping XML",
-            "description": "is the most common format. If you use Google Merchant Center, you already have one. It's an RSS/Atom feed where each <item> contains g:title, g:price, g:image_link, etc."
+            "description": "An RSS or Atom feed with product fields such as g:title, g:price and g:image_link inside each <item>."
           },
           "json": {
             "label": "JSON",
-            "description": "is a simple array of product objects. We look for title, price, image, and url fields. Nested under a products or items key is fine too."
+            "description": "A list of product records containing title, price, image and url. The list can sit inside a products or items key."
           }
         },
         "fields": {
@@ -7255,6 +7255,39 @@
           "noCompetitors": "Select at least one competitor before running simulations."
         }
       }
+    },
+    "experience": {
+      "footer": "Your first comparison starts with your catalog.",
+      "settingsHint": "You can manage your connections later in Settings.",
+      "fileRequired": "Choose a CSV file to import.",
+      "storeAddress": "Store address",
+      "selectProduct": "Select {product}",
+      "selectedProduct": "Selected your product",
+      "selectedCompetitor": "Selected the competitor",
+      "wins": "Wins",
+      "losses": "Losses",
+      "errors": {
+        "session": "Your session has expired. Sign in again to continue.",
+        "permissions": "We couldn’t access your store. Check its connection and the permissions you granted.",
+        "rateLimited": "Too many requests at once. Wait a moment, then try again.",
+        "timeout": "This is taking longer than expected. Try again in a moment.",
+        "service": "We couldn’t read the response from the comparison service. Try again. If it keeps happening, contact support.",
+        "validation": "Check the information you entered and try again.",
+        "tooLarge": "This file is too large to import. Use a smaller file or split it into separate imports.",
+        "emptyCatalog": "We couldn’t find any products to import. Check that the file or feed includes product records.",
+        "conflict": "This store is already connected to another account. Sign in with that account or contact support.",
+        "plan": "Choose a plan to use this feature.",
+        "unavailable": "We couldn’t complete this step. Try again. If the problem continues, contact support.",
+        "sourceUnavailable": "We couldn’t read those product pages. Try the product’s own store page, or add competitors with Search.",
+        "noCompetitors": "No competitors matched that search. Try a broader brand or product category.",
+        "feedUnavailable": "We couldn’t read that feed. Check that the address opens a public XML or JSON feed, then try again."
+      },
+      "progress": {
+        "reading": "Reading {count, plural, one {# product} other {# products}} from your catalog",
+        "searching": "Looking for competitors with AI",
+        "sellers": "Looking for other sellers of {product}"
+      },
+      "removeCompetitor": "Remove {competitor}"
     }
   },
   "share": {
@@ -20173,5 +20206,58 @@
       "fixes": "{count, plural, one {# fix applied} other {# fixes applied}}"
     },
     "outputLanguage": "Store content and provider diagnostics remain in their original language."
+  },
+  "authUX": {
+    "home": "Back to ecentic",
+    "sidebar": {
+      "eyebrow": "Your AI commerce workspace",
+      "title": "See your products through AI’s eyes.",
+      "description": "Connect your catalog, compare products and decide what to improve.",
+      "points": [
+        "Your catalog in one place",
+        "Product comparisons across AI models",
+        "Changes you review before publishing"
+      ],
+      "catalogs": "Catalog sources",
+      "channels": "AI channels"
+    },
+    "signUp": {
+      "description": "Connect your store and run your first product comparison."
+    },
+    "completeProfile": {
+      "description": "Add your company and role before connecting your store."
+    },
+    "password": {
+      "show": "Show password",
+      "hide": "Hide password"
+    },
+    "validation": {
+      "email": "Enter a valid email address.",
+      "password": "Enter your password.",
+      "passwordLength": "Use at least 8 characters.",
+      "confirmation": "Enter your new password again.",
+      "fullName": "Enter your name.",
+      "company": "Enter your company or brand name.",
+      "role": "Choose your role.",
+      "source": "Choose an option from the list."
+    },
+    "errors": {
+      "title": "We couldn’t complete that step",
+      "invalidCredentials": "The email and password didn’t match. Check both, or reset your password.",
+      "emailAlreadyUsed": "An account already uses this email. Sign in or reset your password.",
+      "emailUnverified": "Verify your email before signing in. Open your verification email and follow the link.",
+      "invalidEmail": "Enter a valid email address and try again.",
+      "passwordTooShort": "Use at least 8 characters for your password.",
+      "shopifyStoreNotFound": "We couldn’t find that Shopify store. Enter its public store address or its myshopify.com domain.",
+      "google": "Google sign-in couldn’t start. Try again or continue with email.",
+      "shopify": "Shopify sign-in couldn’t start. Check the store address and try again.",
+      "rateLimited": "Too many attempts. Wait a moment, then try again.",
+      "unavailable": "We couldn’t connect just now. Try again in a moment. If the problem continues, contact support.",
+      "signIn": "We couldn’t sign you in. Try again or reset your password.",
+      "signUp": "We couldn’t create your account. Check the details and try again.",
+      "forgotPassword": "We couldn’t send the reset link. Try again in a moment.",
+      "resetPassword": "This reset link is no longer valid. Request a new link, then try again.",
+      "completeProfile": "We couldn’t save your profile. Try again. If the problem continues, contact support."
+    }
   }
 }

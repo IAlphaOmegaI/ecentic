@@ -2,10 +2,11 @@
 
 import { CheckIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
-import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import { Spring, Stagger } from "@/lib/animations";
+import { Motion } from "@/components/motion";
+import { Link } from "@/i18n/navigation";
 
 export namespace Onboarding {
   export type Props = {
@@ -15,9 +16,7 @@ export namespace Onboarding {
     image?: string;
     footer?: string;
     imageAlt?: string;
-    classList?: {
-      image?: string;
-    };
+    classList?: { image?: string };
   };
 }
 
@@ -25,87 +24,96 @@ export const Onboarding = ({
   identifier = "onboarding",
   headline,
   points,
-  image = "/images/onboarding.png",
-  footer = "Free to start. No credit card required.",
-  imageAlt = "onboarding background",
+  image = "/images/ascii/tonal/home-bag.svg",
+  footer,
   classList = {},
-}: Onboarding.Props) => (
-  <motion.aside
-    className="sticky top-0 hidden h-screen overflow-hidden lg:flex lg:w-[55%]"
-    initial={{ x: -30, opacity: 0 }}
-    animate={{ x: 0, opacity: 1 }}
-    transition={Spring.Gentle}
-  >
-    <div className="absolute inset-0 bg-primary">
-      <Image
-        src={image}
-        alt={imageAlt}
-        fill
-        sizes="(max-width: 1023px) 0vw, (min-width: 2330px) 1280px, 55vw"
-        className={cn(
-          "object-contain object-bottom opacity-60 brightness-0 invert",
-          classList.image,
-        )}
-        loading="eager"
-        aria-hidden="true"
-      />
-    </div>
-    <div className="relative z-10 flex h-full w-full flex-col justify-between p-8">
-      <motion.div
-        initial={{ opacity: 0, y: -8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ ...Spring.Gentle, delay: 0.15 }}
-      >
+}: Onboarding.Props) => {
+  const translate = useTranslations("onboarding.experience");
+  return (
+    <aside className="relative hidden h-full max-w-xl shrink-0 overflow-hidden bg-linear-to-br from-primary via-primary to-primary-text [clip-path:polygon(0_0,calc(100%_-_20px)_0,100%_20px,100%_calc(100%_-_20px),calc(100%_-_20px)_100%,0_100%)] lg:flex lg:w-[32%] xl:w-[36%]">
+      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
         <Image
-          src="/images/wordmark.svg"
-          alt="ecentic"
-          width={120}
-          height={32}
-          className="h-auto w-28 brightness-0 invert"
+          src={image}
+          alt=""
+          fill
+          sizes="36vw"
+          className={cn(
+            "object-contain object-center opacity-15 brightness-0 invert",
+            classList.image,
+          )}
         />
-      </motion.div>
-
-      <div className="flex flex-1 items-end pb-2">
-        <AnimatePresence mode="wait">
-          <motion.h2
-            key={identifier}
-            className="mb-6 font-medium text-6xl text-white leading-none"
-            initial={{ opacity: 0, y: 16 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -16 }}
-            transition={Spring.Gentle}
-          >
-            {headline}
-          </motion.h2>
-        </AnimatePresence>
+        <div className="absolute inset-x-8 inset-y-0 border-background-rich/15 border-x" />
       </div>
-
-      <div className="flex flex-col gap-4">
-        <AnimatePresence mode="wait">
-          <motion.div
-            key={`${identifier}-points`}
-            className="flex flex-col gap-3"
-            variants={Stagger.Container(0.08)}
-            initial="hidden"
-            animate="visible"
-            exit={{ opacity: 0, transition: { duration: 0.15 } }}
-          >
+      <div className="relative flex w-full flex-col px-8 py-8 xl:px-12">
+        <Link
+          href="/"
+          aria-label="ecentic"
+          className="w-fit rounded-md focus-visible:outline-2 focus-visible:outline-background-rich focus-visible:outline-offset-8"
+        >
+          <Image
+            src="/images/wordmark.svg"
+            alt="ecentic"
+            width={140}
+            height={40}
+            className="h-auto w-36 brightness-0 invert"
+          />
+        </Link>
+        <Motion.Stagger
+          key={identifier}
+          stagger={0.06}
+          className="my-auto py-8"
+        >
+          <Motion.Item>
+            <h2 className="max-w-md font-heading text-3xl text-background-rich leading-[1.08] tracking-tight xl:text-5xl">
+              {headline}
+            </h2>
+          </Motion.Item>
+          <div className="mt-8 space-y-5">
             {points.map((point) => (
-              <motion.div
+              <Motion.Item
                 key={point}
-                className="flex items-center gap-3"
-                variants={Stagger.Item}
+                className="flex items-start gap-4 text-background-rich/90"
               >
-                <div className="mt-0.5 flex size-5 shrink-0 items-center justify-center rounded-full bg-white/20">
-                  <CheckIcon className="size-3 text-white" />
-                </div>
-                <p className="font-light text-sm text-white/90">{point}</p>
-              </motion.div>
+                <CheckIcon
+                  aria-hidden="true"
+                  className="mt-1 size-4 shrink-0"
+                />
+                <p className="text-base leading-relaxed">{point}</p>
+              </Motion.Item>
             ))}
-          </motion.div>
-        </AnimatePresence>
-        <p className="font-light text-sm text-white/50">{footer}</p>
+          </div>
+        </Motion.Stagger>
+        <div
+          className="relative mb-7 flex items-center justify-between gap-5 px-2"
+          aria-hidden="true"
+        >
+          <div className="absolute inset-x-6 top-1/2 h-px bg-background-rich/35" />
+          {[
+            { name: "chatgpt", offset: "-rotate-6" },
+            { name: "claude", offset: "-translate-y-3" },
+            { name: "gemini", offset: "rotate-6" },
+          ].map(({ name, offset }) => (
+            <div
+              key={name}
+              className={cn(
+                "relative grid size-14 place-items-center rounded-lg border border-background-rich/60 bg-background-rich shadow-lg shadow-primary-text/15",
+                offset,
+              )}
+            >
+              <Image
+                src={`/images/${name}.svg`}
+                alt=""
+                width={28}
+                height={28}
+                className="size-7 object-contain"
+              />
+            </div>
+          ))}
+        </div>
+        <p className="border-background-rich/25 border-t pt-6 text-background-rich/80 text-sm leading-relaxed">
+          {footer ?? translate("footer")}
+        </p>
       </div>
-    </div>
-  </motion.aside>
-);
+    </aside>
+  );
+};

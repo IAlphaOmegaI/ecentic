@@ -9,6 +9,8 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { useOnboardingError } from "@/app/[locale]/(auth)/onboarding/_components/use-onboarding-error";
+import { callOnboardingAction } from "@/lib/onboarding-errors";
 import type * as Competitor from "@/server/app/competitor";
 import * as Scrape from "@/server/app/intelligence/scrape";
 import { CompetitorResults, ErrorNotice } from "./competitor-results";
@@ -23,6 +25,7 @@ export namespace UrlTab {
 
 export const UrlTab = ({ className, onSuccess, store }: UrlTab.Props) => {
   const toast = useToastManager();
+  const formatError = useOnboardingError();
   const translate = useTranslations("onboarding.competitors.url");
   const [url, setUrl] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -39,15 +42,17 @@ export const UrlTab = ({ className, onSuccess, store }: UrlTab.Props) => {
 
     setError(null);
 
-    const result = await Scrape.scrapeUrls({ urls, store });
+    const result = await callOnboardingAction(() =>
+      Scrape.scrapeUrls({ urls, store }),
+    );
 
     if (!result.success) {
       // Also inline: a toast is easy to miss, and the reason an extraction
       // failed (bot wall, category page) is what tells the user what to try next.
-      setError(result.error.message);
+      setError(formatError(result.error));
       toast.add({
         title: translate("toast.failed"),
-        description: result.error.message,
+        description: formatError(result.error),
         type: "error",
       });
       return;

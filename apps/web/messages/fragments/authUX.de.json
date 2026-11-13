@@ -1,0 +1,55 @@
+{
+  "authUX": {
+    "home": "Zurück zu ecentic",
+    "sidebar": {
+      "eyebrow": "Ihr Arbeitsbereich für KI-Commerce",
+      "title": "So sieht KI Ihre Produkte.",
+      "description": "Verbinden Sie Ihren Katalog, vergleichen Sie Produkte und entscheiden Sie, was Sie verbessern möchten.",
+      "points": [
+        "Ihr Katalog an einem Ort",
+        "Produktvergleiche mit verschiedenen KI-Modellen",
+        "Änderungen vor der Veröffentlichung prüfen"
+      ],
+      "catalogs": "Katalogquellen",
+      "channels": "KI-Kanäle"
+    },
+    "signUp": {
+      "description": "Verbinden Sie Ihren Shop und starten Sie Ihren ersten Produktvergleich."
+    },
+    "completeProfile": {
+      "description": "Geben Sie Ihr Unternehmen und Ihre Position an, bevor Sie Ihren Shop verbinden."
+    },
+    "password": {
+      "show": "Passwort anzeigen",
+      "hide": "Passwort verbergen"
+    },
+    "validation": {
+      "email": "Geben Sie eine gültige E-Mail-Adresse ein.",
+      "password": "Geben Sie Ihr Passwort ein.",
+      "passwordLength": "Verwenden Sie mindestens 8 Zeichen.",
+      "confirmation": "Geben Sie das neue Passwort erneut ein.",
+      "fullName": "Geben Sie Ihren Namen ein.",
+      "company": "Geben Sie den Namen Ihres Unternehmens oder Ihrer Marke ein.",
+      "role": "Wählen Sie Ihre Position aus.",
+      "source": "Wählen Sie einen Eintrag aus der Liste."
+    },
+    "errors": {
+      "title": "Dieser Schritt konnte nicht abgeschlossen werden",
+      "invalidCredentials": "E-Mail-Adresse und Passwort stimmen nicht überein. Prüfen Sie beide Angaben oder setzen Sie Ihr Passwort zurück.",
+      "emailAlreadyUsed": "Für diese E-Mail-Adresse gibt es bereits ein Konto. Melden Sie sich an oder setzen Sie Ihr Passwort zurück.",
+      "emailUnverified": "Bestätigen Sie Ihre E-Mail-Adresse, bevor Sie sich anmelden. Öffnen Sie dazu den Link in der Bestätigungs-E-Mail.",
+      "invalidEmail": "Geben Sie eine gültige E-Mail-Adresse ein und versuchen Sie es erneut.",
+      "passwordTooShort": "Verwenden Sie mindestens 8 Zeichen für Ihr Passwort.",
+      "shopifyStoreNotFound": "Dieser Shopify-Shop wurde nicht gefunden. Geben Sie seine öffentliche Adresse oder seine myshopify.com-Domain ein.",
+      "google": "Die Anmeldung mit Google konnte nicht gestartet werden. Versuchen Sie es erneut oder fahren Sie mit Ihrer E-Mail-Adresse fort.",
+      "shopify": "Die Anmeldung mit Shopify konnte nicht gestartet werden. Prüfen Sie die Shop-Adresse und versuchen Sie es erneut.",
+      "rateLimited": "Zu viele Versuche. Warten Sie einen Moment und versuchen Sie es erneut.",
+      "unavailable": "Die Verbindung ist gerade nicht möglich. Versuchen Sie es gleich noch einmal. Wenn das Problem bestehen bleibt, wenden Sie sich an den Support.",
+      "signIn": "Die Anmeldung ist fehlgeschlagen. Versuchen Sie es erneut oder setzen Sie Ihr Passwort zurück.",
+      "signUp": "Ihr Konto konnte nicht erstellt werden. Prüfen Sie Ihre Angaben und versuchen Sie es erneut.",
+      "forgotPassword": "Der Link zum Zurücksetzen konnte nicht gesendet werden. Versuchen Sie es gleich noch einmal.",
+      "resetPassword": "Dieser Link zum Zurücksetzen ist nicht mehr gültig. Fordern Sie einen neuen Link an und versuchen Sie es erneut.",
+      "completeProfile": "Ihr Profil konnte nicht gespeichert werden. Versuchen Sie es erneut. Wenn das Problem bestehen bleibt, wenden Sie sich an den Support."
+    }
+  }
+}

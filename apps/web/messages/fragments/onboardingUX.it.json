@@ -1,0 +1,49 @@
+{
+  "onboarding": {
+    "experience": {
+      "footer": "Il tuo primo confronto parte dal catalogo.",
+      "settingsHint": "Potrai gestire le connessioni in seguito nelle Impostazioni.",
+      "fileRequired": "Scegli un file CSV da importare.",
+      "storeAddress": "Indirizzo del negozio",
+      "selectProduct": "Seleziona {product}",
+      "selectedProduct": "È stato scelto il tuo prodotto",
+      "selectedCompetitor": "È stato scelto il prodotto concorrente",
+      "wins": "Vittorie",
+      "losses": "Sconfitte",
+      "errors": {
+        "session": "La sessione è scaduta. Accedi di nuovo per continuare.",
+        "permissions": "Non siamo riusciti ad accedere al negozio. Controlla la connessione e le autorizzazioni concesse.",
+        "rateLimited": "Troppe richieste contemporanee. Attendi un momento e riprova.",
+        "timeout": "L’operazione sta richiedendo più tempo del previsto. Riprova tra un momento.",
+        "service": "Non siamo riusciti a leggere la risposta del servizio di confronto. Riprova. Se il problema si ripete, contatta l’assistenza.",
+        "validation": "Controlla i dati inseriti e riprova.",
+        "tooLarge": "Il file è troppo grande per essere importato. Usa un file più piccolo o suddividilo in più importazioni.",
+        "emptyCatalog": "Non abbiamo trovato prodotti da importare. Verifica che il file o il feed contenga schede prodotto.",
+        "conflict": "Questo negozio è già collegato a un altro account. Accedi con quell’account o contatta l’assistenza.",
+        "plan": "Scegli un piano per usare questa funzione.",
+        "unavailable": "Non siamo riusciti a completare questo passaggio. Riprova. Se il problema persiste, contatta l’assistenza.",
+        "sourceUnavailable": "Non siamo riusciti a leggere quelle pagine prodotto. Prova la pagina del prodotto sul sito del negozio oppure aggiungi concorrenti tramite la ricerca.",
+        "noCompetitors": "Nessun concorrente corrisponde alla ricerca. Prova con un marchio o una categoria di prodotti più generica.",
+        "feedUnavailable": "Non siamo riusciti a leggere il feed. Verifica che l’indirizzo apra un feed XML o JSON pubblico, poi riprova."
+      },
+      "progress": {
+        "reading": "Lettura di {count, plural, one {# prodotto} many {# prodotti} other {# prodotti}} dal tuo catalogo",
+        "searching": "Ricerca di concorrenti con l’IA",
+        "sellers": "Ricerca di altri venditori di {product}"
+      },
+      "removeCompetitor": "Rimuovi {competitor}"
+    },
+    "connect": {
+      "feed": {
+        "formats": {
+          "googleShopping": {
+            "description": "Un feed RSS o Atom con campi prodotto come g:title, g:price e g:image_link all’interno di ogni <item>."
+          },
+          "json": {
+            "description": "Un elenco di prodotti con i campi title, price, image e url. L’elenco può anche trovarsi all’interno di una chiave products o items."
+          }
+        }
+      }
+    }
+  }
+}

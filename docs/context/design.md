@@ -694,6 +694,17 @@ and scan phases describe real work; no decorative success can get ahead of the r
 a useful next step on failure or empty import. Footer navigation remains visible without
 covering content. Logs scroll internally and do not pull the page or its ancestors.
 
+Auth and onboarding retain the public visual language: full-plane blue gradients, clipped
+cutout corners, a single owner for each hairline, and genuine store/model marks. The narrative
+side can be expressive; the task surface remains direct. Distinguish sign-in methods from
+illustrative AI providers: a model logo must not suggest another authentication option.
+Keep form controls and step labels readable at narrow widths and with longer translations.
+
+Errors explain the failed task and the recovery action in the current locale. Map stable server
+error identities to controlled copy; never show raw provider/schema/SQL messages. An AI response
+schema failure is a service problem, not a merchant input mistake. Required-field errors,
+password visibility labels, pending states and streamed progress are part of localization too.
+
 Do not introduce a marketing workbench simply to make onboarding look more elaborate. Clarity,
 predictable progress and a meaningful first result are the design goal.
 

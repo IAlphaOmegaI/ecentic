@@ -16,8 +16,10 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
+import { useOnboardingError } from "@/app/[locale]/(auth)/onboarding/_components/use-onboarding-error";
 import { Link } from "@/i18n/navigation";
 import { Spring } from "@/lib/animations";
+import { callOnboardingAction } from "@/lib/onboarding-errors";
 import type * as Competitor from "@/server/app/competitor";
 import * as GoogleMerchant from "@/server/app/integration/google-merchant";
 import * as Merchant from "@/server/app/intelligence/merchant";
@@ -63,6 +65,7 @@ export const MerchantTab = ({
   className,
 }: MerchantTab.Props) => {
   const toast = useToastManager();
+  const formatError = useOnboardingError();
   const translate = useTranslations("onboarding.competitors.merchant");
 
   const [report, setReport] =
@@ -99,11 +102,13 @@ export const MerchantTab = ({
       setIsLoading(true);
       setError(null);
 
-      const result = await GoogleMerchant.getCompetitiveVisibility({
-        store,
-        categoryId: overrides?.categoryId,
-        trafficSource: overrides?.trafficSource,
-      });
+      const result = await callOnboardingAction(() =>
+        GoogleMerchant.getCompetitiveVisibility({
+          store,
+          categoryId: overrides?.categoryId,
+          trafficSource: overrides?.trafficSource,
+        }),
+      );
 
       if (request !== latestRequest.current) return;
 
@@ -111,7 +116,7 @@ export const MerchantTab = ({
       setIsLoading(false);
 
       if (!result.success) {
-        setError(result.error.message);
+        setError(formatError(result.error));
         return;
       }
 
@@ -121,7 +126,7 @@ export const MerchantTab = ({
       // screen would attribute it to the new ones.
       setValidation(null);
     },
-    [store],
+    [store, formatError],
   );
 
   // Runs once for the tab's lifetime — the panel is `keepMounted`, so this does
@@ -134,18 +139,20 @@ export const MerchantTab = ({
   const [handleAdd, isAdding] = useAsyncAction(async () => {
     if (selected.length === 0) return;
 
-    const result = await Merchant.importMeasuredCompetitors({
-      store,
-      domains: selected,
-      categoryId: report?.categoryId ?? undefined,
-      trafficSource: report?.trafficSource,
-    });
+    const result = await callOnboardingAction(() =>
+      Merchant.importMeasuredCompetitors({
+        store,
+        domains: selected,
+        categoryId: report?.categoryId ?? undefined,
+        trafficSource: report?.trafficSource,
+      }),
+    );
 
     if (!result.success) {
-      setError(result.error.message);
+      setError(formatError(result.error));
       toast.add({
         title: translate("toast.failed"),
-        description: result.error.message,
+        description: formatError(result.error),
         type: "error",
       });
       return;
@@ -163,14 +170,16 @@ export const MerchantTab = ({
   });
 
   const [handleValidate, isValidating] = useAsyncAction(async () => {
-    const result = await Merchant.validateAgainstGoogle({
-      store,
-      categoryId: report?.categoryId ?? undefined,
-      trafficSource: report?.trafficSource,
-    });
+    const result = await callOnboardingAction(() =>
+      Merchant.validateAgainstGoogle({
+        store,
+        categoryId: report?.categoryId ?? undefined,
+        trafficSource: report?.trafficSource,
+      }),
+    );
 
     if (!result.success) {
-      setError(result.error.message);
+      setError(formatError(result.error));
       return;
     }
 
@@ -403,8 +412,8 @@ export const MerchantTab = ({
             {validation && (
               <div className="border-accent-foreground border-t bg-primary/5 px-4 py-2 text-foreground-dimmed text-xs">
                 {translate("validation.summary", {
-                  confirmed: validation.confirmed,
-                  total: validation.total,
+                  confirmed: String(validation.confirmed),
+                  total: String(validation.total),
                 })}
               </div>
             )}

@@ -1,0 +1,49 @@
+{
+  "onboarding": {
+    "experience": {
+      "footer": "Tu primera comparación empieza por tu catálogo.",
+      "settingsHint": "Puedes gestionar tus conexiones más adelante en Ajustes.",
+      "fileRequired": "Elige un archivo CSV para importarlo.",
+      "storeAddress": "Dirección de la tienda",
+      "selectProduct": "Seleccionar {product}",
+      "selectedProduct": "Ha elegido tu producto",
+      "selectedCompetitor": "Ha elegido el producto rival",
+      "wins": "Victorias",
+      "losses": "Derrotas",
+      "errors": {
+        "session": "Tu sesión ha caducado. Vuelve a iniciar sesión para continuar.",
+        "permissions": "No hemos podido acceder a tu tienda. Revisa la conexión y los permisos que has concedido.",
+        "rateLimited": "Hay demasiadas solicitudes a la vez. Espera un momento y vuelve a intentarlo.",
+        "timeout": "Está tardando más de lo previsto. Vuelve a intentarlo en un momento.",
+        "service": "No hemos podido leer la respuesta del servicio de comparación. Vuelve a intentarlo. Si el problema se repite, contacta con soporte.",
+        "validation": "Revisa los datos que has introducido y vuelve a intentarlo.",
+        "tooLarge": "El archivo es demasiado grande para importarlo. Usa uno más pequeño o divídelo en varias importaciones.",
+        "emptyCatalog": "No hemos encontrado productos que importar. Comprueba que el archivo o feed contiene registros de productos.",
+        "conflict": "Esta tienda ya está conectada a otra cuenta. Inicia sesión con esa cuenta o contacta con soporte.",
+        "plan": "Elige un plan para usar esta función.",
+        "unavailable": "No hemos podido completar este paso. Vuelve a intentarlo. Si el problema continúa, contacta con soporte.",
+        "sourceUnavailable": "No hemos podido leer esas páginas de producto. Prueba con la ficha del producto en la web de la tienda o añade competidores mediante la búsqueda.",
+        "noCompetitors": "No hemos encontrado competidores para esa búsqueda. Prueba con una marca o categoría de producto más amplia.",
+        "feedUnavailable": "No hemos podido leer ese feed. Comprueba que la dirección abre un feed XML o JSON público y vuelve a intentarlo."
+      },
+      "progress": {
+        "reading": "Leyendo {count, plural, one {# producto} many {# productos} other {# productos}} de tu catálogo",
+        "searching": "Buscando competidores con IA",
+        "sellers": "Buscando otros vendedores de {product}"
+      },
+      "removeCompetitor": "Eliminar {competitor}"
+    },
+    "connect": {
+      "feed": {
+        "formats": {
+          "googleShopping": {
+            "description": "Un feed RSS o Atom con campos como g:title, g:price y g:image_link dentro de cada <item>."
+          },
+          "json": {
+            "description": "Una lista de productos con los campos title, price, image y url. La lista también puede estar dentro de una clave products o items."
+          }
+        }
+      }
+    }
+  }
+}

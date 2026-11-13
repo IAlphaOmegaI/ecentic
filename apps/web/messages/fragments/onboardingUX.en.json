@@ -1,0 +1,49 @@
+{
+  "onboarding": {
+    "experience": {
+      "footer": "Your first comparison starts with your catalog.",
+      "settingsHint": "You can manage your connections later in Settings.",
+      "fileRequired": "Choose a CSV file to import.",
+      "storeAddress": "Store address",
+      "selectProduct": "Select {product}",
+      "selectedProduct": "Selected your product",
+      "selectedCompetitor": "Selected the competitor",
+      "wins": "Wins",
+      "losses": "Losses",
+      "errors": {
+        "session": "Your session has expired. Sign in again to continue.",
+        "permissions": "We couldn’t access your store. Check its connection and the permissions you granted.",
+        "rateLimited": "Too many requests at once. Wait a moment, then try again.",
+        "timeout": "This is taking longer than expected. Try again in a moment.",
+        "service": "We couldn’t read the response from the comparison service. Try again. If it keeps happening, contact support.",
+        "validation": "Check the information you entered and try again.",
+        "tooLarge": "This file is too large to import. Use a smaller file or split it into separate imports.",
+        "emptyCatalog": "We couldn’t find any products to import. Check that the file or feed includes product records.",
+        "conflict": "This store is already connected to another account. Sign in with that account or contact support.",
+        "plan": "Choose a plan to use this feature.",
+        "unavailable": "We couldn’t complete this step. Try again. If the problem continues, contact support.",
+        "sourceUnavailable": "We couldn’t read those product pages. Try the product’s own store page, or add competitors with Search.",
+        "noCompetitors": "No competitors matched that search. Try a broader brand or product category.",
+        "feedUnavailable": "We couldn’t read that feed. Check that the address opens a public XML or JSON feed, then try again."
+      },
+      "progress": {
+        "reading": "Reading {count, plural, one {# product} other {# products}} from your catalog",
+        "searching": "Looking for competitors with AI",
+        "sellers": "Looking for other sellers of {product}"
+      },
+      "removeCompetitor": "Remove {competitor}"
+    },
+    "connect": {
+      "feed": {
+        "formats": {
+          "googleShopping": {
+            "description": "An RSS or Atom feed with product fields such as g:title, g:price and g:image_link inside each <item>."
+          },
+          "json": {
+            "description": "A list of product records containing title, price, image and url. The list can sit inside a products or items key."
+          }
+        }
+      }
+    }
+  }
+}

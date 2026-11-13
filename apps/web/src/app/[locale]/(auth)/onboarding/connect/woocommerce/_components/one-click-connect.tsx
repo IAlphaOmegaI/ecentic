@@ -2,12 +2,22 @@
 
 import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
+import {
+  field,
+  type GenericForm,
+  InferredForm,
+} from "@zenncore/web/components/inferred-form";
 import { useSearchParams } from "next/navigation";
 import { useMessages, useTranslations } from "next-intl";
+import { useMemo } from "react";
+import { z } from "zod";
+import { useOnboardingError } from "../../../_components/use-onboarding-error";
 
 export const OneClickConnect = () => {
   const translate = useTranslations("onboarding.connect");
   const messages = useMessages();
+  const experience = useTranslations("onboarding.experience");
+  const formatError = useOnboardingError();
   const searchParameters = useSearchParams();
   const error = searchParameters.get("error");
   const installRequired = searchParameters.get("status") === "install_required";
@@ -23,9 +33,28 @@ export const OneClickConnect = () => {
       case "token_exchange":
         return translate(`woocommerce.oneClick.errors.${error}`);
       default:
-        return null;
+        return formatError({ name: "request-error" });
     }
   })();
+
+  const config = useMemo(
+    () =>
+      ({
+        storeUrl: field({
+          shape: "text",
+          inputMode: "url",
+          label: experience("storeAddress"),
+          placeholder: translate("woocommerce.oneClick.placeholder"),
+          validator: z
+            .string({
+              error: translate("woocommerce.fields.domain.validation"),
+            })
+            .trim()
+            .url(translate("woocommerce.fields.domain.validation")),
+        }),
+      }) satisfies GenericForm,
+    [experience, translate],
+  );
 
   const installSteps =
     messages.onboarding.connect.woocommerce.oneClick.installRequired.steps;
@@ -73,26 +102,23 @@ export const OneClickConnect = () => {
         </div>
       )}
 
-      <form
-        action="/api/integrations/woo/start"
-        method="GET"
-        className="flex flex-col gap-3 sm:flex-row"
+      <InferredForm
+        config={config}
+        defaultValues={{ storeUrl }}
+        onSubmit={({ storeUrl: address }) => {
+          window.location.assign(
+            `/api/integrations/woo/start?${new URLSearchParams({ store_url: address })}`,
+          );
+        }}
+        className="flex flex-col gap-4"
       >
-        <input
-          name="store_url"
-          type="url"
-          required
-          defaultValue={storeUrl}
-          placeholder={translate("woocommerce.oneClick.placeholder")}
-          className="flex-1 rounded-md border border-accent-foreground bg-background px-3 py-2 text-foreground outline-none placeholder:text-foreground-dimmed focus:border-primary"
-        />
-        <Button type="submit" color="primary">
+        <Button type="submit" color="primary" className="w-full">
           {installRequired
             ? translate("woocommerce.oneClick.action.tryAgain")
             : translate("woocommerce.oneClick.action.connect")}
           <ArrowRightIcon className="size-4" />
         </Button>
-      </form>
+      </InferredForm>
     </div>
   );
 };

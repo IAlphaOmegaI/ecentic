@@ -1,6 +1,7 @@
 "use client";
 
 import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
+import { resultify } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import {
@@ -13,14 +14,18 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { z } from "zod";
+import { useOnboardingError } from "@/app/[locale]/(auth)/onboarding/_components/use-onboarding-error";
 import { useRouter } from "@/i18n/navigation";
 import { parseCsvProducts } from "@/lib/csv";
+import { callOnboardingAction } from "@/lib/onboarding-errors";
 import * as CsvIntegration from "@/server/app/integration/csv";
 
 export const CsvForm = () => {
   const router = useRouter();
   const toast = useToastManager();
+  const formatError = useOnboardingError();
   const translate = useTranslations("onboarding.connect");
+  const experience = useTranslations("onboarding.experience");
 
   const config = useMemo(
     () =>
@@ -31,7 +36,7 @@ export const CsvForm = () => {
           accept: [".csv"],
           label: translate("csv.fields.file.label"),
           description: translate("csv.fields.file.description"),
-          validator: z.file(),
+          validator: z.file({ error: experience("fileRequired") }),
           classList: {
             control: {
               input: "h-auto p-10",
@@ -39,7 +44,7 @@ export const CsvForm = () => {
           },
         }),
       }) satisfies GenericForm,
-    [translate],
+    [translate, experience],
   );
 
   const [handleSubmit, isPending] = useAsyncAction(
@@ -55,8 +60,16 @@ export const CsvForm = () => {
         return;
       }
 
-      const text = await file.text();
-      const products = parseCsvProducts(text);
+      const contents = await resultify(() => file.text());
+      if (!contents.success) {
+        toast.add({
+          title: translate("csv.toast.importFailed"),
+          description: formatError(contents.error),
+          type: "error",
+        });
+        return;
+      }
+      const products = parseCsvProducts(contents.data);
 
       if (products.length === 0) {
         toast.add({
@@ -67,29 +80,33 @@ export const CsvForm = () => {
         return;
       }
 
-      const result = await CsvIntegration.connect({
-        products,
-        filename: file.name,
-      });
+      const result = await callOnboardingAction(() =>
+        CsvIntegration.connect({
+          products,
+          filename: file.name,
+        }),
+      );
 
       if (!result.success) {
         toast.add({
           title: translate("csv.toast.importFailed"),
-          description: result.error.message,
+          description: formatError(result.error),
           type: "error",
         });
         return;
       }
 
-      const sync = await CsvIntegration.syncProducts({
-        store: result.data.id,
-        products,
-      });
+      const sync = await callOnboardingAction(() =>
+        CsvIntegration.syncProducts({
+          store: result.data.id,
+          products,
+        }),
+      );
 
       if (!sync.success) {
         toast.add({
           title: translate("csv.toast.importFailed"),
-          description: sync.error.message,
+          description: formatError(sync.error),
           type: "error",
         });
         return;
@@ -109,10 +126,6 @@ export const CsvForm = () => {
     <InferredForm
       config={config}
       onSubmit={handleSubmit}
-      onChange={(values) => {
-        const file = (values as { file: File | null }).file;
-        if (!file) return;
-      }}
       className="flex flex-col gap-4"
     >
       <Button

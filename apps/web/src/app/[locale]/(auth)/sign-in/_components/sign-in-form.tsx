@@ -3,6 +3,10 @@
 import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
+import {
+  Collapsible,
+  CollapsiblePanel,
+} from "@zenncore/web/components/collapsible";
 import { FieldLabel } from "@zenncore/web/components/form";
 import {
   type FormEntries,
@@ -10,8 +14,6 @@ import {
   type GenericForm,
   InferredForm,
 } from "@zenncore/web/components/inferred-form";
-import { useToastManager } from "@zenncore/web/components/toast";
-import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
 import { useLocale, useTranslations } from "next-intl";
@@ -20,17 +22,18 @@ import { z } from "zod";
 import { Motion } from "@/components/motion";
 import { localizePath } from "@/i18n/locale";
 import { Link, useRouter } from "@/i18n/navigation";
-import { Spring } from "@/lib/animations";
 import { sanitizeRedirect } from "@/lib/redirect";
 import * as Authentication from "@/server/app/authentication";
+import { AuthFeedback, useAuthFeedback } from "../../_components/auth-feedback";
 
 export const SignInForm = () => {
   const locale = useLocale();
   const router = useRouter();
-  const toast = useToastManager();
   const searchParameters = useSearchParams();
   const translate = useTranslations("signIn");
   const translateAuthChrome = useTranslations("authChrome");
+  const translateAuth = useTranslations("authUX");
+  const feedback = useAuthFeedback();
   const [provider, setProvider] = useState<"credential" | "google" | "shopify">(
     "credential",
   );
@@ -40,21 +43,31 @@ export const SignInForm = () => {
       ({
         email: field({
           shape: "text",
-          validator: z.string().email(),
+          type: "email",
+          validator: z
+            .string({ error: translateAuth("validation.email") })
+            .trim()
+            .email(translateAuth("validation.email")),
           label: translate("fields.email.label"),
           placeholder: translate("fields.email.placeholder"),
         }),
         password: field({
           shape: "text",
           type: "password",
-          validator: z.string().min(1),
+          maskToggleLabels: {
+            show: translateAuth("password.show"),
+            hide: translateAuth("password.hide"),
+          },
+          validator: z
+            .string({ error: translateAuth("validation.password") })
+            .min(1, translateAuth("validation.password")),
           // @ts-expect-error - label is a function
           label: () => (
             <div className="flex items-center justify-between">
               <FieldLabel>{translate("fields.password.label")}</FieldLabel>
               <Link
                 href="/forgot-password"
-                className="self-end font-light text-primary text-sm hover:underline"
+                className="self-end text-primary-text text-sm hover:underline"
               >
                 {translate("action.tertiary")}
               </Link>
@@ -63,7 +76,7 @@ export const SignInForm = () => {
           placeholder: translate("fields.password.placeholder"),
         }),
       }) satisfies GenericForm,
-    [translate],
+    [translate, translateAuth],
   );
 
   const shopifyFormConfig = useMemo(
@@ -71,7 +84,9 @@ export const SignInForm = () => {
       ({
         shop: field({
           shape: "text",
-          validator: z.string().min(1, translate("fields.shop.validation")),
+          validator: z
+            .string({ error: translate("fields.shop.validation") })
+            .min(1, translate("fields.shop.validation")),
           label: translate("fields.shop.label"),
           placeholder: translate("fields.shop.placeholder"),
         }),
@@ -90,68 +105,65 @@ export const SignInForm = () => {
         | { type: "google" }
         | { type: "shopify"; data: FormEntries<typeof shopifyFormConfig> },
     ) => {
-      setProvider(data.type);
+      try {
+        feedback.clear();
+        setProvider(data.type);
 
-      if (data.type === "google") {
-        // Existing users land on the dashboard (its empty state routes
-        // store-less accounts to onboarding); first-time Google users are
-        // routed to /complete-profile via `newUserCallbackURL` server-side.
-        const result = await Authentication.signInWithGoogle({
-          callbackURL: sanitizeRedirect(
-            requestedRedirect,
-            localizePath("/dashboard", locale),
-          ),
-        });
-
-        if (!result.success) {
-          toast.add({
-            title: translateAuthChrome("toast.error.title"),
-            description: result.error.message,
-            type: "error",
+        if (data.type === "google") {
+          // Existing users land on the dashboard (its empty state routes
+          // store-less accounts to onboarding); first-time Google users are
+          // routed to /complete-profile via `newUserCallbackURL` server-side.
+          const result = await Authentication.signInWithGoogle({
+            locale,
+            callbackURL: sanitizeRedirect(
+              requestedRedirect,
+              localizePath("/dashboard", locale),
+            ),
           });
 
+          if (!result.success) {
+            feedback.report(result.error, "google");
+
+            return;
+          }
+
+          window.location.href = result.data.url;
           return;
         }
 
-        window.location.href = result.data.url;
-        return;
-      }
-
-      if (data.type === "shopify") {
-        const result = await Authentication.signInWithShopify({
-          shop: data.data.shop,
-          callbackURL: sanitizeRedirect(
-            requestedRedirect,
-            localizePath("/dashboard", locale),
-          ),
-        });
-
-        if (!result.success) {
-          toast.add({
-            title: translateAuthChrome("toast.error.title"),
-            description: result.error.message,
-            type: "error",
+        if (data.type === "shopify") {
+          const result = await Authentication.signInWithShopify({
+            shop: data.data.shop,
+            callbackURL: sanitizeRedirect(
+              requestedRedirect,
+              localizePath("/dashboard", locale),
+            ),
           });
 
+          if (!result.success) {
+            feedback.report(result.error, "shopify");
+
+            return;
+          }
+
+          window.location.href = result.data.url;
           return;
         }
 
-        window.location.href = result.data.url;
-        return;
+        const result = await Authentication.signIn(data.data);
+
+        if (!result.success) {
+          feedback.report(result.error, "signIn");
+          return;
+        }
+
+        router.push(sanitizeRedirect(requestedRedirect, "/onboarding/connect"));
+      } catch (error) {
+        feedback.report(
+          error,
+          data.type === "credential" ? "signIn" : data.type,
+        );
       }
-
-      const result = await Authentication.signIn(data.data);
-
-      if (!result.success) {
-        toast.add({
-          title: translateAuthChrome("toast.error.title"),
-          description: result.error.message,
-          type: "error",
-        });
-        return;
-      }
-
-      router.push(sanitizeRedirect(requestedRedirect, "/onboarding/connect"));
     },
   );
 
@@ -168,24 +180,21 @@ export const SignInForm = () => {
   })();
 
   return (
-    <Motion.Stagger stagger={0.07} delay={0.18}>
+    <Motion.Stagger stagger={0.04}>
+      <AuthFeedback error={feedback.error} />
       <Motion.Item className="mb-4 flex flex-col gap-2">
         <Button
           variant="soft"
           color="emphasis"
           className="w-full"
           type="button"
+          disabled={isPending}
           onClick={() => handleSubmit({ type: "google" })}
         >
           {provider === "google" && isPending ? (
             <LoaderIcon className="size-4 animate-spin" />
           ) : (
-            <Image
-              src="/images/google.svg"
-              alt="Google"
-              width={16}
-              height={16}
-            />
+            <Image src="/images/google.svg" alt="" width={16} height={16} />
           )}
           {translate("action.google")}
         </Button>
@@ -194,6 +203,9 @@ export const SignInForm = () => {
           color="emphasis"
           className="w-full"
           type="button"
+          disabled={isPending}
+          aria-expanded={provider === "shopify"}
+          aria-controls="auth-shopify-fields"
           onClick={() =>
             setProvider((previous) =>
               previous === "shopify" ? "credential" : "shopify",
@@ -205,7 +217,7 @@ export const SignInForm = () => {
           ) : (
             <Image
               src="/images/shopify.svg"
-              alt="Shopify"
+              alt=""
               width={16}
               height={16}
               className="size-[16px]"
@@ -213,38 +225,29 @@ export const SignInForm = () => {
           )}
           {translate("action.shopify")}
         </Button>
-        <AnimatePresence initial={false}>
-          {provider === "shopify" && (
-            <motion.div
-              key="shopify-form"
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={Spring.Snappy}
-              style={{ overflow: "hidden" }}
+        <Collapsible open={provider === "shopify"} className="w-full">
+          <CollapsiblePanel id="auth-shopify-fields" className="bg-transparent">
+            <InferredForm
+              config={shopifyFormConfig}
+              onSubmit={(data) => handleSubmit({ data, type: "shopify" })}
+              className="flex flex-col gap-2 pt-1"
             >
-              <InferredForm
-                config={shopifyFormConfig}
-                onSubmit={(data) => handleSubmit({ data, type: "shopify" })}
-                className="flex flex-col gap-2 pt-1"
+              <Button
+                type="submit"
+                color="primary"
+                disabled={isPending}
+                className="w-full"
               >
-                <Button
-                  type="submit"
-                  color="primary"
-                  disabled={isPending}
-                  className="w-full"
-                >
-                  {isPending ? (
-                    <LoaderIcon className="size-4 animate-spin" />
-                  ) : (
-                    <ArrowRightIcon className="size-4" />
-                  )}
-                  {translate("action.connectShopify")}
-                </Button>
-              </InferredForm>
-            </motion.div>
-          )}
-        </AnimatePresence>
+                {isPending ? (
+                  <LoaderIcon className="size-4 animate-spin" />
+                ) : (
+                  <ArrowRightIcon className="size-4" />
+                )}
+                {translate("action.connectShopify")}
+              </Button>
+            </InferredForm>
+          </CollapsiblePanel>
+        </Collapsible>
         <div className="relative mt-4 flex items-center gap-3">
           <div className="h-px flex-1 bg-accent-foreground" />
           <span className="font-light text-foreground-dimmed">

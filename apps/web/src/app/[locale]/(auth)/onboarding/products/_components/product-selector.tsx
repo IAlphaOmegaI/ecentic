@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  ArrowLeftIcon,
-  ArrowRightIcon,
-  CheckIcon,
-  LoaderIcon,
-} from "@zenncore/icons";
+import { ArrowLeftIcon, ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
 import { cn, resultify, unique } from "@zenncore/utils";
 import {
   Avatar,
@@ -13,6 +8,7 @@ import {
   AvatarImage,
 } from "@zenncore/web/components/avatar";
 import { Button } from "@zenncore/web/components/button";
+import { Checkbox } from "@zenncore/web/components/checkbox";
 import { ScrollArea } from "@zenncore/web/components/scroll-area";
 import {
   Table,
@@ -22,7 +18,6 @@ import {
   TableHeader,
   TableRow,
 } from "@zenncore/web/components/table";
-import { motion } from "motion/react";
 import Image from "next/image";
 import { useLinkStatus } from "next/link";
 import { useMessages, useTranslations } from "next-intl";
@@ -30,7 +25,6 @@ import { type ReactNode, useState, useTransition } from "react";
 import { Motion } from "@/components/motion";
 import { Plus } from "@/components/plus";
 import { Link, useRouter } from "@/i18n/navigation";
-import { Stagger, Table as TableAnimations } from "@/lib/animations";
 import { getCurrencySymbol, normalizePrice } from "@/lib/currency";
 import type * as Product from "@/server/app/product";
 
@@ -111,6 +105,7 @@ export const ProductSelector = ({
   const router = useRouter();
   const translate = useTranslations("onboarding.products");
   const messages = useMessages();
+  const experience = useTranslations("onboarding.experience");
   const tableHeaders = messages.onboarding.products.table.headers;
   const [selected, setSelected] = useState(new Set<string>());
 
@@ -146,13 +141,13 @@ export const ProductSelector = ({
   };
 
   return (
-    <Motion.Stagger className="flex flex-1 flex-col overflow-hidden">
-      <Motion.Item className="px-8">
-        <div className="relative border-accent-foreground border-x p-6">
+    <Motion.Stagger className="flex min-h-0 flex-1 flex-col overflow-hidden">
+      <Motion.Item className="shrink-0">
+        <div className="relative border-accent-foreground border-b px-6 py-7 sm:px-8">
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           {children}
-          <div className="mt-4 inline-flex items-center border border-primary/20 bg-primary/5 px-3 py-1.5 text-primary text-sm">
+          <div className="mt-4 text-primary text-sm">
             {translate("selection", {
               selected: String(selected.size),
               limit: String(limit),
@@ -161,30 +156,34 @@ export const ProductSelector = ({
         </div>
       </Motion.Item>
 
-      <Motion.Item className="flex-1 overflow-hidden border-accent-foreground border-y px-8">
-        <div className="relative h-full border-accent-foreground border-x">
+      <Motion.Item className="min-h-0 flex-1 overflow-hidden">
+        <div className="relative h-full min-h-0">
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <ScrollArea className="h-full">
+          <ScrollArea
+            className="h-full"
+            viewportProps={{
+              tabIndex: 0,
+              role: "region",
+              "aria-label": translate("page.title"),
+            }}
+          >
             <div className="bg-background-rich">
-              <Table className="overflow-visible">
+              <Table className="min-w-160 table-fixed overflow-visible">
                 <TableHeader className="sticky top-0 z-10 [&_th]:bg-background-rich [&_th]:shadow-[inset_0_-1px_0_0_var(--color-accent-foreground)]">
                   <TableRow className="border-b-0">
                     <TableHead className="w-10 px-4 py-2" />
-                    {tableHeaders.map((header) => (
-                      <TableHead key={header}>{header}</TableHead>
+                    {tableHeaders.map((header, index) => (
+                      <TableHead
+                        key={header}
+                        className={index === 0 ? "w-auto" : "w-24"}
+                      >
+                        {header}
+                      </TableHead>
                     ))}
                   </TableRow>
                 </TableHeader>
-                <TableBody
-                  render={
-                    <motion.tbody
-                      variants={Stagger.Container(0.04)}
-                      initial="hidden"
-                      animate="visible"
-                    />
-                  }
-                >
+                <TableBody>
                   {products.map((product) => {
                     const isSelected = selected.has(product.id);
                     const isDisabled = !isSelected && selected.size >= limit;
@@ -194,7 +193,6 @@ export const ProductSelector = ({
                     return (
                       <TableRow
                         key={product.id}
-                        render={<motion.tr variants={TableAnimations.Row} />}
                         onClick={() => !isDisabled && toggleProduct(product.id)}
                         className={cn(
                           "cursor-pointer last:border-b-0",
@@ -206,25 +204,19 @@ export const ProductSelector = ({
                         )}
                       >
                         <TableCell className="w-10">
-                          <div
-                            className={cn(
-                              "flex size-4 items-center justify-center border transition-colors duration-150",
-                              isSelected
-                                ? "border-primary bg-primary"
-                                : "border-accent-foreground bg-background-rich",
-                            )}
-                          >
-                            <CheckIcon
-                              className={cn(
-                                "size-2.5 text-white transition-opacity duration-150",
-                                isSelected ? "opacity-100" : "opacity-0",
-                              )}
-                            />
-                          </div>
+                          <Checkbox
+                            checked={isSelected}
+                            disabled={isDisabled}
+                            onClick={(event) => event.stopPropagation()}
+                            onCheckedChange={() => toggleProduct(product.id)}
+                            aria-label={experience("selectProduct", {
+                              product: product.title,
+                            })}
+                          />
                         </TableCell>
                         <TableCell>
-                          <div className="flex items-center gap-3">
-                            <Avatar className="size-9 min-w-9 rounded-none bg-primary/10">
+                          <div className="flex min-w-0 items-center gap-3">
+                            <Avatar className="size-10 min-w-10 rounded-md bg-primary/10">
                               <AvatarImage
                                 src={images[0] ?? "/images/fallback.png"}
                                 alt={product.title}
@@ -233,12 +225,15 @@ export const ProductSelector = ({
                                 <Image src="/images/fallback.png" alt="" fill />
                               </AvatarFallback>
                             </Avatar>
-                            <div>
-                              <p className="font-medium text-foreground text-sm">
+                            <div className="min-w-0">
+                              <p
+                                className="truncate font-medium text-foreground text-sm"
+                                title={product.title}
+                              >
                                 {product.title}
                               </p>
                               {product.sku && (
-                                <p className="text-foreground-dimmed text-xs">
+                                <p className="truncate text-foreground-dimmed text-xs">
                                   {product.sku}
                                 </p>
                               )}
@@ -282,8 +277,8 @@ export const ProductSelector = ({
         </div>
       </Motion.Item>
 
-      <Motion.Item className="px-8">
-        <div className="relative flex w-full items-center justify-between border-accent-foreground border-x p-6">
+      <Motion.Item className="shrink-0">
+        <div className="relative flex w-full flex-wrap items-center justify-between gap-3 border-accent-foreground border-t px-6 py-5 sm:px-8">
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <Button
@@ -297,7 +292,7 @@ export const ProductSelector = ({
             color="primary"
             type="button"
             onClick={handleNext}
-            disabled={selected.size === 0}
+            disabled={selected.size === 0 || isPending}
             className="px-6 py-2"
           >
             {translate("action.next")}

@@ -1,20 +1,13 @@
 "use client";
 
 import { cn } from "@zenncore/utils";
-import { AnimatePresence, motion } from "motion/react";
+import { Progress } from "@zenncore/web/components/progress";
 import Image from "next/image";
-import { useLocale, useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { Motion } from "@/components/motion";
 import { Plus } from "@/components/plus";
-import { Spring, Stagger } from "@/lib/animations";
 import { formatElapsed } from "@/lib/date";
-
-const modelColors: Record<string, string> = {
-  ChatGPT: "text-blue-500",
-  Claude: "text-orange-500",
-  Gemini: "text-green-500",
-};
 
 const models = [
   { model: "ChatGPT", logo: "/images/chatgpt.svg" },
@@ -28,7 +21,12 @@ export namespace RunningPhase {
     progress: number;
     statuses: Record<string, "queued" | "running" | "complete">;
     modelStats: Record<string, { wins: number; losses: number }>;
-    logs: Array<{ id: number; model: string; message: string }>;
+    logs: Array<{
+      id: number;
+      model: string;
+      message: string;
+      elapsed: number;
+    }>;
   };
 }
 
@@ -40,212 +38,155 @@ export const RunningPhase = ({
   logs,
 }: RunningPhase.Props) => {
   const translate = useTranslations("onboarding.scan");
+  const experience = useTranslations("onboarding.experience");
+  const format = useFormatter();
   const locale = useLocale();
-  const ref = useRef<HTMLDivElement>(null);
+  const logContainer = useRef<HTMLDivElement>(null);
+  const followLatest = useRef(true);
 
-  // biome-ignore lint/correctness/useExhaustiveDependencies: logEntries triggers scroll-to-bottom on new entries
+  // Follow new events only while the reader is already near the bottom.
+  // Scrolling this element never moves the page or a surrounding workspace.
   useEffect(() => {
-    ref.current?.scrollIntoView({ behavior: "smooth" });
-  }, [logs]);
+    const container = logContainer.current;
+    if (!container || !followLatest.current || logs.length === 0) return;
+    container.scrollTo({ top: container.scrollHeight, behavior: "instant" });
+  }, [logs.length]);
 
   return (
-    <motion.div
+    <Motion.Stagger
       key="running"
-      className="flex h-full flex-1 flex-col overflow-hidden"
-      initial={{ opacity: 0, y: 16 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -16 }}
-      transition={Spring.Gentle}
+      stagger={0.04}
+      className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
     >
-      <Motion.Stagger
-        stagger={0.05}
-        className="flex h-full flex-col overflow-hidden"
-      >
-        <Motion.Item className="border-accent-foreground border-b px-8">
-          <div className="relative border-accent-foreground border-x p-6">
-            <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <h1 className="font-medium text-4xl text-foreground">
-              {translate("running.title")}
-            </h1>
-            <p className="font-light text-2xl text-foreground-dimmed">
-              {translate("running.description")}
-            </p>
-          </div>
-        </Motion.Item>
+      <Motion.Item className="relative shrink-0 border-accent-foreground border-b bg-linear-to-br from-primary/10 via-background-rich to-background-rich px-6 py-5 sm:px-8 sm:py-7">
+        <h1 className="font-heading text-3xl text-foreground-rich tracking-tight sm:text-4xl">
+          {translate("running.title")}
+        </h1>
+        <p className="mt-3 max-w-2xl text-base text-foreground-dimmed leading-relaxed">
+          {translate("running.description")}
+        </p>
+        <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+        <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+      </Motion.Item>
 
-        <Motion.Item className="border-accent-foreground border-b px-8">
-          <motion.div
-            className="relative grid grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-x"
-            variants={Stagger.Container(0.06)}
-            initial="hidden"
-            animate="visible"
-          >
-            <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            {models.map(({ model, logo }) => {
-              const status = statuses[model];
-              const stats = modelStats[model];
-              return (
-                <motion.div
-                  key={model}
-                  className="flex aspect-square flex-col bg-background-dimmed p-4"
-                  variants={Stagger.Item}
-                >
-                  <Image
-                    src={logo}
-                    alt={model}
-                    width={48}
-                    height={48}
-                    className="mb-4"
-                  />
-                  <span className="mt-auto text-foreground text-lg">
-                    {model}
-                  </span>
-                  <div className="flex items-center gap-2">
-                    <motion.span
-                      key={stats?.wins}
-                      className="font-light text-sm text-success leading-tight"
-                      initial={{ opacity: 0.6, y: -2 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      {stats?.wins ?? 0} W
-                    </motion.span>
-                    <span className="text-foreground-dimmed/30 text-sm leading-tight">
-                      —
-                    </span>
-                    <motion.span
-                      key={`l-${stats?.losses}`}
-                      className="font-light text-error text-sm leading-tight"
-                      initial={{ opacity: 0.6, y: -2 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ duration: 0.2 }}
-                    >
-                      {stats?.losses ?? 0} L
-                    </motion.span>
-                  </div>
-                  <AnimatePresence mode="wait">
-                    <motion.span
-                      key={status}
-                      className={cn(
-                        "font-light",
-                        status === "complete" && "text-success",
-                        status === "running" && "text-primary",
-                        status === "queued" && "text-foreground-dimmed/50",
-                      )}
-                      initial={{ opacity: 0, y: 3 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -3 }}
-                      transition={{ duration: 0.15 }}
-                    >
-                      {status === "complete" &&
-                        translate("running.status.done")}
-                      {status === "running" &&
-                        translate("running.status.running")}
-                      {status === "queued" &&
-                        translate("running.status.queued")}
-                    </motion.span>
-                  </AnimatePresence>
-                </motion.div>
-              );
-            })}
-          </motion.div>
-        </Motion.Item>
-
-        <Motion.Item className="flex min-h-0 flex-1 flex-col border-accent-foreground border-b px-8">
-          <div className="relative flex h-full w-full flex-col border-accent-foreground border-x bg-background-rich">
-            <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <div className="flex items-center justify-between border-accent-foreground p-4">
-              <div className="flex items-center gap-2">
-                <motion.span
-                  animate={{ opacity: [1, 0.2, 1] }}
-                  transition={{
-                    duration: 1.4,
-                    repeat: Number.POSITIVE_INFINITY,
-                    ease: "easeInOut",
-                  }}
-                  className="inline-block size-1.5 rounded-full bg-primary"
-                />
-                <span className="font-medium text-foreground uppercase tracking-widest">
-                  {translate("running.liveScan")}
-                </span>
-              </div>
-              <span className="font-mono text-primary tabular-nums">
-                {Math.floor(progress)}%
-              </span>
-            </div>
-            <div className="h-0.5 w-full bg-primary/30">
-              <motion.div
-                className="h-full bg-primary"
-                initial={{ width: 0 }}
-                animate={{ width: `${progress}%` }}
-                transition={{ duration: 0.3 }}
+      <Motion.Item className="grid shrink-0 grid-cols-3 divide-x divide-accent-foreground border-accent-foreground border-b bg-linear-to-b from-background-rich to-primary/5">
+        {models.map(({ model, logo }) => {
+          const status = statuses[model] ?? "queued";
+          const stats = modelStats[model];
+          return (
+            <div
+              key={model}
+              className="flex min-w-0 flex-col px-3 py-4 sm:px-6 sm:py-5"
+            >
+              <Image
+                src={logo}
+                alt=""
+                width={32}
+                height={32}
+                className="mb-3 size-8 object-contain"
               />
+              <h2 className="font-medium text-foreground-rich text-sm sm:text-base">
+                {model}
+              </h2>
+              <p
+                className={cn(
+                  "mt-1 text-xs sm:text-sm",
+                  status === "complete"
+                    ? "text-success"
+                    : status === "running"
+                      ? "text-primary-text"
+                      : "text-foreground-dimmed",
+                )}
+              >
+                {status === "complete"
+                  ? translate("running.status.done")
+                  : status === "running"
+                    ? translate("running.status.running")
+                    : translate("running.status.queued")}
+              </p>
+              <dl className="mt-3 space-y-1 text-xs tabular-nums">
+                <div className="flex flex-wrap justify-between gap-x-2">
+                  <dt className="text-foreground-dimmed">
+                    {experience("wins")}
+                  </dt>
+                  <dd className="text-success">
+                    {format.number(stats?.wins ?? 0)}
+                  </dd>
+                </div>
+                <div className="flex flex-wrap justify-between gap-x-2">
+                  <dt className="text-foreground-dimmed">
+                    {experience("losses")}
+                  </dt>
+                  <dd className="text-foreground">
+                    {format.number(stats?.losses ?? 0)}
+                  </dd>
+                </div>
+              </dl>
             </div>
+          );
+        })}
+      </Motion.Item>
 
-            <div className="flex-1 space-y-1 overflow-y-auto scroll-smooth p-4">
-              {logs.map((entry, index) => {
-                const age = logs.length - 1 - index;
-                const opacity = Math.max(0.2, 1 - age * 0.1);
-                return (
-                  <motion.div
-                    key={entry.id}
-                    className="flex items-baseline gap-3"
-                    initial={{ opacity: 0, x: -6 }}
-                    animate={{ opacity, x: 0 }}
-                    transition={{ duration: 0.25, ease: "easeOut" }}
-                  >
-                    <span className="shrink-0 font-mono text-foreground-dimmed/50 tabular-nums">
-                      {formatElapsed(index * 400, locale)}
-                    </span>
-                    <span
-                      className={cn(
-                        "shrink-0 font-medium",
-                        modelColors[entry.model] ?? "text-foreground-dimmed",
-                      )}
-                    >
-                      [{entry.model}]
-                    </span>
-                    <span className="text-foreground-dimmed leading-relaxed">
-                      {entry.message}
-                    </span>
-                  </motion.div>
-                );
-              })}
-              {logs.length === 0 && (
-                <p className="text-foreground-dimmed/50">
-                  {translate("running.initializing")}
-                </p>
-              )}
-              <div ref={ref} />
-            </div>
-
-            <div className="flex items-center gap-1.5 border-accent-foreground border-t px-5 py-3">
-              {[0, 0.2, 0.4].map((delay) => (
-                <motion.span
-                  key={delay}
-                  animate={{ opacity: [0.2, 1, 0.2] }}
-                  transition={{
-                    duration: 1,
-                    repeat: Number.POSITIVE_INFINITY,
-                    delay,
-                    ease: "easeInOut",
-                  }}
-                  className="inline-block size-1 rounded-full bg-primary"
-                />
-              ))}
-              <span className="ml-1.5 font-light text-foreground-dimmed">
-                {translate("running.progress", { count: String(simulations) })}
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden bg-background-rich">
+        <div className="flex shrink-0 items-center justify-between gap-3 px-6 py-3 sm:px-8">
+          <h2
+            id="scan-live-log"
+            className="font-medium text-foreground-rich text-sm"
+          >
+            {translate("running.liveScan")}
+          </h2>
+          <span className="text-primary-text text-sm tabular-nums">
+            {format.number(Math.floor(progress))}%
+          </span>
+        </div>
+        <Progress
+          value={progress}
+          aria-label={translate("running.liveScan")}
+          className="shrink-0"
+          classList={{ indicator: "motion-reduce:transition-none" }}
+        />
+        <div
+          ref={logContainer}
+          role="log"
+          // biome-ignore lint/a11y/noNoninteractiveTabindex: The log viewport must be keyboard-scrollable.
+          tabIndex={0}
+          aria-labelledby="scan-live-log"
+          onScroll={(event) => {
+            const container = event.currentTarget;
+            followLatest.current =
+              container.scrollHeight -
+                container.scrollTop -
+                container.clientHeight <
+              64;
+          }}
+          className="min-h-0 min-w-0 flex-1 space-y-3 overflow-y-auto overscroll-contain px-6 py-4 outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset sm:px-8"
+        >
+          {logs.map((entry) => (
+            <div
+              key={entry.id}
+              className="flex min-w-0 flex-wrap items-baseline gap-x-3 gap-y-1 text-sm"
+            >
+              <span className="shrink-0 font-mono text-foreground-dimmed text-xs tabular-nums">
+                {formatElapsed(entry.elapsed, locale)}
               </span>
+              <span className="shrink-0 font-medium text-primary-text">
+                {entry.model}
+              </span>
+              <p className="wrap-anywhere min-w-0 flex-1 basis-48 text-foreground leading-relaxed">
+                {entry.message}
+              </p>
             </div>
-          </div>
-        </Motion.Item>
-        <Motion.Item className="border-accent-foreground border-b px-8">
-          <div className="size-full h-8 border-accent-foreground border-x" />
-        </Motion.Item>
-      </Motion.Stagger>
-    </motion.div>
+          ))}
+          {logs.length === 0 && (
+            <p className="text-foreground-dimmed text-sm">
+              {translate("running.initializing")}
+            </p>
+          )}
+        </div>
+        <p className="shrink-0 border-accent-foreground border-t px-6 py-3 text-foreground-dimmed text-sm sm:px-8">
+          {translate("running.progress", { count: format.number(simulations) })}
+        </p>
+      </div>
+    </Motion.Stagger>
   );
 };

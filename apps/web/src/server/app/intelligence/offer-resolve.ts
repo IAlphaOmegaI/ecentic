@@ -660,7 +660,7 @@ export const searchOffers = async ({
  * component and a mental model.
  */
 export type DiscoveryEvent =
-  | { kind: "status"; message: string }
+  | { kind: "status"; title: string; message: string }
   | { kind: "competitor"; competitor: Competitor.Type }
   | {
       kind: "product";
@@ -730,6 +730,7 @@ export const discoverOffers = ({
     for (const product of products.data) {
       update({
         kind: "status",
+        title: product.title,
         message: `Looking up who else sells ${product.title}`,
       });
 

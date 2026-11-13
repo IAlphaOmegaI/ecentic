@@ -9,20 +9,18 @@ import {
   type GenericForm,
   InferredForm,
 } from "@zenncore/web/components/inferred-form";
-import { useToastManager } from "@zenncore/web/components/toast";
-import { AnimatePresence, motion } from "motion/react";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { z } from "zod";
 import { Motion } from "@/components/motion";
-import { Spring } from "@/lib/animations";
 import * as Authentication from "@/server/app/authentication";
+import { AuthFeedback, useAuthFeedback } from "../../_components/auth-feedback";
 
 export const ForgotPasswordForm = () => {
   const locale = useLocale();
-  const toast = useToastManager();
   const translate = useTranslations("forgotPassword");
-  const translateAuthChrome = useTranslations("authChrome");
+  const translateAuth = useTranslations("authUX");
+  const feedback = useAuthFeedback();
   // Holds the address the link went to, and doubles as the "sent" flag.
   const [recipient, setRecipient] = useState<string | null>(null);
 
@@ -31,46 +29,44 @@ export const ForgotPasswordForm = () => {
       ({
         email: field({
           shape: "text",
-          validator: z.string().email(),
+          type: "email",
+          validator: z
+            .string({ error: translateAuth("validation.email") })
+            .trim()
+            .email(translateAuth("validation.email")),
           label: translate("fields.email.label"),
           placeholder: translate("fields.email.placeholder"),
           description: translate("fields.email.description"),
         }),
       }) satisfies GenericForm,
-    [translate],
+    [translate, translateAuth],
   );
 
   const [handleSubmit, isPending] = useAsyncAction(
     async ({ email }: FormEntries<typeof config>) => {
-      const result = await Authentication.forgotPassword({ email, locale });
+      try {
+        feedback.clear();
+        const result = await Authentication.forgotPassword({ email, locale });
 
-      if (!result.success) {
-        toast.add({
-          title: translateAuthChrome("toast.error.title"),
-          description: result.error.message,
-          type: "error",
-        });
+        if (!result.success) {
+          feedback.report(result.error, "forgotPassword");
 
-        return;
+          return;
+        }
+
+        // Deliberately unconditional: the action succeeds for an address that
+        // has no account too, and saying so here would leak who has one.
+        setRecipient(email);
+      } catch (error) {
+        feedback.report(error, "forgotPassword");
       }
-
-      // Deliberately unconditional: the action succeeds for an address that
-      // has no account too, and saying so here would leak who has one.
-      setRecipient(email);
     },
   );
 
   return (
-    <AnimatePresence mode="wait" initial={false}>
+    <>
       {recipient ? (
-        <motion.div
-          key="sent"
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={Spring.Snappy}
-          className="flex flex-col items-center gap-6 py-8 text-center"
-        >
+        <div className="flex flex-col items-center gap-6 py-8 text-center">
           <CheckCircleIcon className="size-16 text-primary" />
           <div className="flex flex-col gap-2">
             <p className="font-medium text-2xl text-foreground">
@@ -93,16 +89,11 @@ export const ForgotPasswordForm = () => {
           >
             {translate("action.tertiary")}
           </Button>
-        </motion.div>
+        </div>
       ) : (
-        <motion.div
-          key="request"
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          exit={{ opacity: 0, y: -8 }}
-          transition={Spring.Snappy}
-        >
-          <Motion.Stagger stagger={0.07} delay={0.18}>
+        <div>
+          <Motion.Stagger stagger={0.04}>
+            <AuthFeedback error={feedback.error} />
             <Motion.Item>
               <InferredForm
                 config={config}
@@ -127,8 +118,8 @@ export const ForgotPasswordForm = () => {
               </InferredForm>
             </Motion.Item>
           </Motion.Stagger>
-        </motion.div>
+        </div>
       )}
-    </AnimatePresence>
+    </>
   );
 };

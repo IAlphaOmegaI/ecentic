@@ -1,0 +1,55 @@
+{
+  "authUX": {
+    "home": "Volver a ecentic",
+    "sidebar": {
+      "eyebrow": "Tu espacio de comercio con IA",
+      "title": "Descubre cómo ve la IA tus productos.",
+      "description": "Conecta tu catálogo, compara productos y decide qué mejorar.",
+      "points": [
+        "Tu catálogo en un solo lugar",
+        "Comparaciones entre modelos de IA",
+        "Revisas los cambios antes de publicarlos"
+      ],
+      "catalogs": "Fuentes del catálogo",
+      "channels": "Canales de IA"
+    },
+    "signUp": {
+      "description": "Conecta tu tienda y realiza tu primera comparación de productos."
+    },
+    "completeProfile": {
+      "description": "Añade tu empresa y tu cargo antes de conectar la tienda."
+    },
+    "password": {
+      "show": "Mostrar contraseña",
+      "hide": "Ocultar contraseña"
+    },
+    "validation": {
+      "email": "Introduce una dirección de correo válida.",
+      "password": "Introduce tu contraseña.",
+      "passwordLength": "Usa al menos 8 caracteres.",
+      "confirmation": "Vuelve a introducir la nueva contraseña.",
+      "fullName": "Introduce tu nombre.",
+      "company": "Introduce el nombre de tu empresa o marca.",
+      "role": "Selecciona tu cargo.",
+      "source": "Selecciona una opción de la lista."
+    },
+    "errors": {
+      "title": "No hemos podido completar este paso",
+      "invalidCredentials": "El correo y la contraseña no coinciden. Comprueba ambos o restablece la contraseña.",
+      "emailAlreadyUsed": "Ya hay una cuenta con este correo. Inicia sesión o restablece la contraseña.",
+      "emailUnverified": "Verifica tu correo antes de iniciar sesión. Abre el mensaje de verificación y sigue el enlace.",
+      "invalidEmail": "Introduce una dirección de correo válida e inténtalo de nuevo.",
+      "passwordTooShort": "Usa al menos 8 caracteres para la contraseña.",
+      "shopifyStoreNotFound": "No hemos encontrado esa tienda de Shopify. Introduce su dirección pública o su dominio myshopify.com.",
+      "google": "No hemos podido iniciar el acceso con Google. Inténtalo de nuevo o continúa con tu correo.",
+      "shopify": "No hemos podido iniciar el acceso con Shopify. Comprueba la dirección de la tienda e inténtalo de nuevo.",
+      "rateLimited": "Demasiados intentos. Espera un momento y vuelve a intentarlo.",
+      "unavailable": "No hemos podido conectar. Inténtalo de nuevo en un momento. Si el problema persiste, contacta con soporte.",
+      "signIn": "No hemos podido iniciar la sesión. Inténtalo de nuevo o restablece la contraseña.",
+      "signUp": "No hemos podido crear tu cuenta. Comprueba los datos e inténtalo de nuevo.",
+      "forgotPassword": "No hemos podido enviar el enlace para restablecer la contraseña. Inténtalo de nuevo en un momento.",
+      "resetPassword": "Este enlace ya no es válido. Solicita uno nuevo y vuelve a intentarlo.",
+      "completeProfile": "No hemos podido guardar tu perfil. Inténtalo de nuevo. Si el problema persiste, contacta con soporte."
+    }
+  }
+}

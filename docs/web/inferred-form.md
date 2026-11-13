@@ -190,3 +190,18 @@ const schema = z.object({
 - Supports custom field configurations
 - Integrates with react-hook-form
 - Maps Zod validation errors to field errors
+
+### Localized account fields
+
+Use localized Zod constructor errors as well as refinement messages: an untouched
+field arrives as `undefined`, so `.min(1, message)` alone still exposes Zod's
+English type error. For example, use
+`z.string({ error: t("validation.email") }).email(t("validation.email"))`.
+
+Text descriptors accept `maskToggleLabels: { show, hide }` for localized password
+visibility controls, and `autoComplete` / `inputMode` for the native input. Their
+absence preserves the shared input defaults. Use `autoComplete: "new-password"`
+for account creation and password reset. An address field that accepts a bare
+host can use `inputMode: "url"` without native `type="url"` rejecting it first.
+The direct `TextFieldMaskToggle` component accepts the same pair as `labels`;
+an explicit `aria-label` still takes precedence.

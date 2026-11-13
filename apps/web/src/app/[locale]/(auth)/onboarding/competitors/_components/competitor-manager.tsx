@@ -39,11 +39,13 @@ export const CompetitorManager = ({
   const translate = useTranslations("onboarding.competitors");
 
   return (
-    <Motion.Stagger className="flex h-full flex-1 flex-col overflow-hidden">
-      <div className="border-accent-foreground border-b px-8">{children}</div>
+    <Motion.Stagger className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+      <div className="shrink-0 border-accent-foreground border-b bg-linear-to-br from-primary/10 via-background-rich to-background-rich">
+        {children}
+      </div>
 
-      <Motion.Item className="h-full min-h-0 flex-1 px-8">
-        <div className="relative h-full border-accent-foreground border-x">
+      <Motion.Item className="min-h-0 min-w-0 flex-1 overflow-hidden">
+        <div className="relative flex h-full min-h-0 flex-col">
           <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
           <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
@@ -52,47 +54,70 @@ export const CompetitorManager = ({
               whose rivals and prices were observed rather than recalled. The
               model-driven tabs stay because a private-label catalog has no
               competing offers to find — they are the fallback, not the default. */}
-          <Tabs defaultValue="offers" className="h-full">
-            <TabsList className={"w-full rounded-none border-x-0 border-t-0"}>
-              <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
-              <Tab value="offers" className={"flex-1"}>
-                {translate("tabs.offers")}
-              </Tab>
-              <Tab value="auto" className={"flex-1"}>
-                {translate("tabs.auto")}
-              </Tab>
-              <Tab value="url" className={"flex-1"}>
-                {translate("tabs.url")}
-              </Tab>
-              <Tab value="search" className={"flex-1"}>
-                {translate("tabs.search")}
-              </Tab>
-              <Tab value="merchant" className={"flex-1"}>
-                {translate("tabs.merchant")}
-              </Tab>
-            </TabsList>
+          <Tabs
+            defaultValue="offers"
+            className="flex min-h-0 flex-1 flex-col overflow-hidden"
+          >
+            <div className="shrink-0 overflow-x-auto overscroll-x-contain border-accent-foreground border-b">
+              <TabsList
+                aria-label={translate("page.title")}
+                className="w-max min-w-full rounded-none border-0"
+              >
+                <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
+                <Tab
+                  value="offers"
+                  className="h-auto min-h-12 flex-1 shrink-0 whitespace-nowrap px-4 py-3"
+                >
+                  {translate("tabs.offers")}
+                </Tab>
+                <Tab
+                  value="auto"
+                  className="h-auto min-h-12 flex-1 shrink-0 whitespace-nowrap px-4 py-3"
+                >
+                  {translate("tabs.auto")}
+                </Tab>
+                <Tab
+                  value="url"
+                  className="h-auto min-h-12 flex-1 shrink-0 whitespace-nowrap px-4 py-3"
+                >
+                  {translate("tabs.url")}
+                </Tab>
+                <Tab
+                  value="search"
+                  className="h-auto min-h-12 flex-1 shrink-0 whitespace-nowrap px-4 py-3"
+                >
+                  {translate("tabs.search")}
+                </Tab>
+                <Tab
+                  value="merchant"
+                  className="h-auto min-h-12 flex-1 shrink-0 whitespace-nowrap px-4 py-3"
+                >
+                  {translate("tabs.merchant")}
+                </Tab>
+              </TabsList>
+            </div>
 
             <TabsPanel
               value="offers"
               keepMounted
-              className={"h-[calc(100%-(var(--spacing)*9))] flex-1 border-0"}
+              className="min-h-0 min-w-0 flex-1 overflow-hidden border-0"
             >
               <OffersTab
                 products={products}
                 store={store}
-                className={"h-full flex-1 border-accent-foreground border-b"}
+                className="h-full min-h-0 min-w-0 flex-1 border-0"
               />
             </TabsPanel>
 
             <TabsPanel
               value="auto"
               keepMounted
-              className={"h-[calc(100%-(var(--spacing)*9))] flex-1 border-0"}
+              className="min-h-0 min-w-0 flex-1 overflow-hidden border-0"
             >
               <AutoDetectTab
                 products={products}
                 store={store}
-                className={"h-full flex-1 border-accent-foreground border-b"}
+                className="h-full min-h-0 min-w-0 flex-1 border-0"
               />
             </TabsPanel>
 
@@ -101,23 +126,23 @@ export const CompetitorManager = ({
             <TabsPanel
               value="url"
               keepMounted
-              className={"h-[calc(100%-(var(--spacing)*9))] flex-1 border-0"}
+              className="min-h-0 min-w-0 flex-1 overflow-hidden border-0"
             >
               <UrlTab
                 store={store}
-                className={"flex-1 border-accent-foreground border-b"}
+                className="h-full min-h-0 min-w-0 flex-1 border-0"
               />
             </TabsPanel>
 
             <TabsPanel
               value="search"
               keepMounted
-              className={"h-[calc(100%-(var(--spacing)*9))] flex-1 border-0"}
+              className="min-h-0 min-w-0 flex-1 overflow-hidden border-0"
             >
               <SearchTab
                 productNames={productNames}
                 store={store}
-                className={"h-full flex-1 border-accent-foreground border-b"}
+                className="h-full min-h-0 min-w-0 flex-1 border-0"
               />
             </TabsPanel>
 
@@ -128,19 +153,19 @@ export const CompetitorManager = ({
             <TabsPanel
               value="merchant"
               keepMounted
-              className={"h-[calc(100%-(var(--spacing)*9))] flex-1 border-0"}
+              className="min-h-0 min-w-0 flex-1 overflow-hidden border-0"
             >
               <MerchantTab
                 store={store}
-                className={"h-full flex-1 border-accent-foreground border-b"}
+                className="h-full min-h-0 min-w-0 flex-1 border-0"
               />
             </TabsPanel>
           </Tabs>
         </div>
       </Motion.Item>
 
-      <Motion.Item className="flex items-center justify-between border-accent-foreground border-accent-foreground border-t px-8">
-        <div className="relative flex w-full items-center justify-between border-accent-foreground border-x border-b px-6 py-6">
+      <Motion.Item className="relative shrink-0 border-accent-foreground border-t bg-background-rich">
+        <div className="relative flex w-full flex-wrap items-center justify-between gap-3 px-6 py-4 sm:px-8">
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <Button
@@ -150,7 +175,7 @@ export const CompetitorManager = ({
           >
             <Back />
           </Button>
-          <div className="flex items-center gap-4">
+          <div className="flex flex-wrap items-center gap-2">
             <Button
               color="accent"
               type="button"

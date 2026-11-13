@@ -10,6 +10,8 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { useOnboardingError } from "@/app/[locale]/(auth)/onboarding/_components/use-onboarding-error";
+import { callOnboardingAction } from "@/lib/onboarding-errors";
 import type * as Competitor from "@/server/app/competitor";
 import * as Search from "@/server/app/intelligence/search";
 import { CompetitorResults, ErrorNotice } from "./competitor-results";
@@ -30,6 +32,7 @@ export const SearchTab = ({
   className,
 }: SearchTab.Props) => {
   const toast = useToastManager();
+  const formatError = useOnboardingError();
   const translate = useTranslations("onboarding.competitors.search");
   const [query, setQuery] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -42,15 +45,17 @@ export const SearchTab = ({
 
       setError(null);
 
-      const result = await Search.searchCompetitors({ query: term, store });
+      const result = await callOnboardingAction(() =>
+        Search.searchCompetitors({ query: term, store }),
+      );
 
       if (!result.success) {
         // Inline as well as in a toast — a search that returns nothing is the
         // one case where the user needs the reason to change their query.
-        setError(result.error.message);
+        setError(formatError(result.error));
         toast.add({
           title: translate("toast.failed"),
-          description: result.error.message,
+          description: formatError(result.error),
           type: "error",
         });
         return;

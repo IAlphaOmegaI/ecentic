@@ -1,0 +1,55 @@
+{
+  "authUX": {
+    "home": "Retour à ecentic",
+    "sidebar": {
+      "eyebrow": "Votre espace de commerce avec l’IA",
+      "title": "Découvrez comment l’IA voit vos produits.",
+      "description": "Connectez votre catalogue, comparez les produits et choisissez les améliorations à apporter.",
+      "points": [
+        "Votre catalogue au même endroit",
+        "Des comparaisons entre modèles d’IA",
+        "Des modifications à vérifier avant publication"
+      ],
+      "catalogs": "Sources du catalogue",
+      "channels": "Canaux d’IA"
+    },
+    "signUp": {
+      "description": "Connectez votre boutique et lancez votre première comparaison de produits."
+    },
+    "completeProfile": {
+      "description": "Indiquez votre entreprise et votre fonction avant de connecter votre boutique."
+    },
+    "password": {
+      "show": "Afficher le mot de passe",
+      "hide": "Masquer le mot de passe"
+    },
+    "validation": {
+      "email": "Saisissez une adresse e-mail valide.",
+      "password": "Saisissez votre mot de passe.",
+      "passwordLength": "Utilisez au moins 8 caractères.",
+      "confirmation": "Saisissez à nouveau le nouveau mot de passe.",
+      "fullName": "Saisissez votre nom.",
+      "company": "Saisissez le nom de votre entreprise ou de votre marque.",
+      "role": "Sélectionnez votre fonction.",
+      "source": "Sélectionnez une option dans la liste."
+    },
+    "errors": {
+      "title": "Cette étape n’a pas pu être terminée",
+      "invalidCredentials": "L’adresse e-mail et le mot de passe ne correspondent pas. Vérifiez-les ou réinitialisez votre mot de passe.",
+      "emailAlreadyUsed": "Un compte utilise déjà cette adresse e-mail. Connectez-vous ou réinitialisez votre mot de passe.",
+      "emailUnverified": "Vérifiez votre adresse e-mail avant de vous connecter. Ouvrez l’e-mail de vérification et suivez le lien.",
+      "invalidEmail": "Saisissez une adresse e-mail valide et réessayez.",
+      "passwordTooShort": "Utilisez au moins 8 caractères pour votre mot de passe.",
+      "shopifyStoreNotFound": "Cette boutique Shopify est introuvable. Saisissez son adresse publique ou son domaine myshopify.com.",
+      "google": "La connexion avec Google n’a pas pu démarrer. Réessayez ou continuez avec votre adresse e-mail.",
+      "shopify": "La connexion avec Shopify n’a pas pu démarrer. Vérifiez l’adresse de la boutique et réessayez.",
+      "rateLimited": "Trop de tentatives. Patientez un instant, puis réessayez.",
+      "unavailable": "La connexion est momentanément impossible. Réessayez dans un instant. Si le problème persiste, contactez l’assistance.",
+      "signIn": "La connexion a échoué. Réessayez ou réinitialisez votre mot de passe.",
+      "signUp": "Votre compte n’a pas pu être créé. Vérifiez les informations et réessayez.",
+      "forgotPassword": "Le lien de réinitialisation n’a pas pu être envoyé. Réessayez dans un instant.",
+      "resetPassword": "Ce lien de réinitialisation n’est plus valide. Demandez-en un nouveau, puis réessayez.",
+      "completeProfile": "Votre profil n’a pas pu être enregistré. Réessayez. Si le problème persiste, contactez l’assistance."
+    }
+  }
+}

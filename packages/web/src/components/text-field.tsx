@@ -275,7 +275,6 @@ export const TextFieldInput = ({
       type: type === "password" ? (masked ? "password" : "text") : type,
       value: value === null ? "" : value,
       disabled,
-      "aria-roledescription": "Text field",
       //TODO className: (inputState)=> resolveClassName(className,{...state,...inputState})
       className: cn(
         "h-full min-w-0 flex-1 border-0 bg-transparent text-foreground placeholder:text-foreground-dimmed/40 focus-visible:outline-0",
@@ -314,6 +313,7 @@ export const TextFieldMaskToggle = ({
   children,
   disabled: inheritedDisabled = false,
   "aria-label": ariaLabel,
+  labels,
   className,
   classList,
   ...props
@@ -347,7 +347,13 @@ export const TextFieldMaskToggle = ({
       type,
       disabled,
       "aria-controls": id,
-      "aria-label": ariaLabel ?? `${masked ? "Show" : "Hide"} password`,
+      "aria-label":
+        ariaLabel ??
+        (labels
+          ? masked
+            ? labels.show
+            : labels.hide
+          : `${masked ? "Show" : "Hide"} password`),
       "aria-pressed": masked,
       className: cn(
         resolveClassName(className, state),
@@ -412,6 +418,7 @@ export const TextFieldMaskToggle = ({
 export namespace TextFieldMaskToggle {
   export type ClassListKey = "root" | "icon";
   export type Props = {
+    labels?: { show: string; hide: string };
     classList?: ClassList<ClassListKey>;
   } & RenderComponentProps<"button", TextField.State>;
   export type State = TextField.State;

@@ -57,7 +57,14 @@ type SelectControl = Omit<SelectTrigger.Props, "classList"> & {
 };
 
 type Interface = {
-  text: InterfaceValue<z.ZodString, TextField.Props>;
+  text: InterfaceValue<
+    z.ZodString,
+    TextField.Props & {
+      maskToggleLabels?: TextFieldMaskToggle.Props["labels"];
+      autoComplete?: TextFieldInput.Props["autoComplete"];
+      inputMode?: TextFieldInput.Props["inputMode"];
+    }
+  >;
   number: InterfaceValue<z.ZodNumber, NumberField.Props>;
   select:
     | InterfaceValue<
@@ -219,17 +226,29 @@ export const InferredFormField = <Field extends GenericField>(
               );
             }
             case "text": {
+              const {
+                maskToggleLabels,
+                autoComplete,
+                inputMode,
+                ...textProps
+              } = inputProps;
               return (
                 <TextField
                   {...field}
-                  {...inputProps}
+                  {...textProps}
                   className={cn(
                     "border border-accent-foreground group-data-invalid:border-error group-data-invalid:placeholder:text-error",
                     className,
                   )}
                 >
-                  <TextFieldInput />
-                  {props.type === "password" && <TextFieldMaskToggle />}
+                  <TextFieldInput
+                    placeholder={props.placeholder}
+                    {...(autoComplete === undefined ? {} : { autoComplete })}
+                    {...(inputMode === undefined ? {} : { inputMode })}
+                  />
+                  {props.type === "password" && (
+                    <TextFieldMaskToggle labels={maskToggleLabels} />
+                  )}
                 </TextField>
               );
             }

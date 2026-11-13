@@ -17,6 +17,7 @@ import { z } from "zod";
 import { Motion } from "@/components/motion";
 import { Link, useRouter } from "@/i18n/navigation";
 import * as Authentication from "@/server/app/authentication";
+import { AuthFeedback, useAuthFeedback } from "../../_components/auth-feedback";
 
 const InvalidLink = ({
   title,
@@ -48,7 +49,8 @@ export const ResetPasswordForm = () => {
   const toast = useToastManager();
   const searchParameters = useSearchParams();
   const translate = useTranslations("resetPassword");
-  const translateAuthChrome = useTranslations("authChrome");
+  const translateAuth = useTranslations("authUX");
+  const feedback = useAuthFeedback();
 
   const config = useMemo(
     () =>
@@ -56,19 +58,33 @@ export const ResetPasswordForm = () => {
         password: field({
           shape: "text",
           type: "password",
-          validator: z.string().min(8),
+          autoComplete: "new-password",
+          maskToggleLabels: {
+            show: translateAuth("password.show"),
+            hide: translateAuth("password.hide"),
+          },
+          validator: z
+            .string({ error: translateAuth("validation.password") })
+            .min(8, translateAuth("validation.passwordLength")),
           label: translate("fields.password.label"),
           placeholder: translate("fields.password.placeholder"),
         }),
         confirmation: field({
           shape: "text",
           type: "password",
-          validator: z.string().min(1),
+          autoComplete: "new-password",
+          maskToggleLabels: {
+            show: translateAuth("password.show"),
+            hide: translateAuth("password.hide"),
+          },
+          validator: z
+            .string({ error: translateAuth("validation.confirmation") })
+            .min(1, translateAuth("validation.confirmation")),
           label: translate("fields.confirmation.label"),
           placeholder: translate("fields.confirmation.placeholder"),
         }),
       }) satisfies GenericForm,
-    [translate],
+    [translate, translateAuth],
   );
 
   // Better Auth's `/reset-password/:token` endpoint checks the token before it
@@ -79,27 +95,28 @@ export const ResetPasswordForm = () => {
 
   const [handleSubmit, isPending] = useAsyncAction(
     async ({ password }: FormEntries<typeof config>) => {
-      if (!token) return;
+      try {
+        if (!token) return;
 
-      const result = await Authentication.resetPassword({ token, password });
+        feedback.clear();
+        const result = await Authentication.resetPassword({ token, password });
 
-      if (!result.success) {
+        if (!result.success) {
+          feedback.report(result.error, "resetPassword");
+
+          return;
+        }
+
         toast.add({
-          title: translateAuthChrome("toast.error.title"),
-          description: result.error.message,
-          type: "error",
+          title: translate("toast.success.title"),
+          description: translate("toast.success.description"),
+          type: "success",
         });
 
-        return;
+        router.push("/sign-in");
+      } catch (error) {
+        feedback.report(error, "resetPassword");
       }
-
-      toast.add({
-        title: translate("toast.success.title"),
-        description: translate("toast.success.description"),
-        type: "success",
-      });
-
-      router.push("/sign-in");
     },
   );
 
@@ -122,7 +139,8 @@ export const ResetPasswordForm = () => {
     );
 
   return (
-    <Motion.Stagger stagger={0.07} delay={0.18}>
+    <Motion.Stagger stagger={0.04}>
+      <AuthFeedback error={feedback.error} />
       <Motion.Item>
         <InferredForm
           config={config}

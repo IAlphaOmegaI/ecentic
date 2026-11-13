@@ -14,13 +14,17 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import { useTranslations } from "next-intl";
 import { useMemo } from "react";
 import { z } from "zod";
+import { useOnboardingError } from "@/app/[locale]/(auth)/onboarding/_components/use-onboarding-error";
 import { useRouter } from "@/i18n/navigation";
+import { callOnboardingAction } from "@/lib/onboarding-errors";
 import * as WooCommerce from "@/server/app/integration/woocommerce";
 
 export const WooCommerceForm = () => {
   const router = useRouter();
   const toast = useToastManager();
+  const formatError = useOnboardingError();
   const translate = useTranslations("onboarding.connect");
+  const password = useTranslations("authUX.password");
 
   const config = useMemo(
     () =>
@@ -28,7 +32,10 @@ export const WooCommerceForm = () => {
         domain: field({
           shape: "text",
           validator: z
-            .string()
+            .string({
+              error: translate("woocommerce.fields.domain.validation"),
+            })
+            .trim()
             .min(1, translate("woocommerce.fields.domain.validation")),
           label: translate("woocommerce.fields.domain.label"),
           placeholder: translate("woocommerce.fields.domain.placeholder"),
@@ -46,7 +53,10 @@ export const WooCommerceForm = () => {
         consumerKey: field({
           shape: "text",
           validator: z
-            .string()
+            .string({
+              error: translate("woocommerce.fields.consumerKey.validation"),
+            })
+            .trim()
             .min(1, translate("woocommerce.fields.consumerKey.validation")),
           label: translate("woocommerce.fields.consumerKey.label"),
           placeholder: translate("woocommerce.fields.consumerKey.placeholder"),
@@ -60,8 +70,12 @@ export const WooCommerceForm = () => {
         consumerSecret: field({
           shape: "text",
           type: "password",
+          maskToggleLabels: { show: password("show"), hide: password("hide") },
           validator: z
-            .string()
+            .string({
+              error: translate("woocommerce.fields.consumerSecret.validation"),
+            })
+            .trim()
             .min(1, translate("woocommerce.fields.consumerSecret.validation")),
           label: translate("woocommerce.fields.consumerSecret.label"),
           placeholder: translate(
@@ -75,17 +89,19 @@ export const WooCommerceForm = () => {
           ),
         }),
       }) satisfies GenericForm,
-    [translate],
+    [translate, password],
   );
 
   const [handleSubmit, isPending] = useAsyncAction(
     async (data: FormEntries<typeof config>) => {
-      const result = await WooCommerce.connect(data);
+      const result = await callOnboardingAction(() =>
+        WooCommerce.connect(data),
+      );
 
       if (!result.success) {
         toast.add({
           title: translate("woocommerce.toast.connectionFailed"),
-          description: result.error.message,
+          description: formatError(result.error),
           type: "error",
         });
         return;

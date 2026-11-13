@@ -1,0 +1,49 @@
+{
+  "onboarding": {
+    "experience": {
+      "footer": "首次商品比较，从连接商品目录开始。",
+      "settingsHint": "你可以稍后在设置中管理连接。",
+      "fileRequired": "请选择要导入的 CSV 文件。",
+      "storeAddress": "店铺地址",
+      "selectProduct": "选择{product}",
+      "selectedProduct": "已选择你的商品",
+      "selectedCompetitor": "已选择竞品",
+      "wins": "胜出",
+      "losses": "落败",
+      "errors": {
+        "session": "登录已过期，请重新登录后继续。",
+        "permissions": "无法访问你的店铺。请检查连接状态和已授予的权限。",
+        "rateLimited": "请求过于频繁，请稍等片刻后重试。",
+        "timeout": "处理时间比预期更长，请稍后重试。",
+        "service": "无法读取比较服务返回的结果。请重试；如果问题持续出现，请联系支持团队。",
+        "validation": "请检查填写的信息后重试。",
+        "tooLarge": "文件太大，无法导入。请使用较小的文件，或拆分后分次导入。",
+        "emptyCatalog": "未找到可导入的商品。请确认文件或数据源中包含商品记录。",
+        "conflict": "此店铺已连接到另一个账号。请使用该账号登录，或联系支持团队。",
+        "plan": "请选择一个套餐以使用此功能。",
+        "unavailable": "无法完成此步骤。请重试；如果问题持续出现，请联系支持团队。",
+        "sourceUnavailable": "无法读取这些商品页面。请尝试店铺中的商品详情页，或通过搜索添加竞品。",
+        "noCompetitors": "未找到与搜索条件匹配的竞品。请尝试范围更广的品牌或商品类别。",
+        "feedUnavailable": "无法读取此数据源。请确认该地址可以打开公开的 XML 或 JSON 数据源，然后重试。"
+      },
+      "progress": {
+        "reading": "{count, plural, other {正在读取目录中的 # 件商品}}",
+        "searching": "正在通过 AI 查找竞品",
+        "sellers": "正在查找 {product} 的其他卖家"
+      },
+      "removeCompetitor": "移除 {competitor}"
+    },
+    "connect": {
+      "feed": {
+        "formats": {
+          "googleShopping": {
+            "description": "RSS 或 Atom 格式的数据源，每个 <item> 中包含 g:title、g:price 和 g:image_link 等商品字段。"
+          },
+          "json": {
+            "description": "包含 title、price、image 和 url 字段的商品记录列表。列表也可以位于 products 或 items 键下。"
+          }
+        }
+      }
+    }
+  }
+}

@@ -9,6 +9,7 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
 import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
+import { useOnboardingError } from "@/app/[locale]/(auth)/onboarding/_components/use-onboarding-error";
 import { useRouter } from "@/i18n/navigation";
 import { formatElapsed } from "@/lib/date";
 import type * as Competitor from "@/server/app/competitor";
@@ -95,6 +96,8 @@ export const OffersTab = ({
   const locale = useLocale();
 
   const toast = useToastManager();
+  const formatError = useOnboardingError();
+  const progress = useTranslations("onboarding.experience.progress");
   const router = useRouter();
   const translate = useTranslations("onboarding.competitors.offers");
   const [logs, setLogs] = useState<LogEntry[]>([]);
@@ -153,7 +156,10 @@ export const OffersTab = ({
 
         switch (event.kind) {
           case "status":
-            addLog({ text: event.message, type: "info" });
+            addLog({
+              text: progress("sellers", { product: event.title }),
+              type: "info",
+            });
             break;
           case "competitor":
             collected.push(event.competitor);
@@ -210,7 +216,7 @@ export const OffersTab = ({
       addLog({ text: translate("errors.failed"), type: "error" });
       toast.add({
         title: translate("toast.failed"),
-        description: discovery.error.message,
+        description: formatError(discovery.error),
         type: "error",
       });
       return;

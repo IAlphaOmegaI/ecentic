@@ -41,23 +41,27 @@ export default async () => {
     <Motion.Stagger
       stagger={0.08}
       delay={0.1}
-      className="flex flex-1 flex-col overflow-hidden"
+      className="flex min-h-0 flex-1 flex-col overflow-hidden"
     >
-      <Motion.Item className="w-full border-accent-foreground border-b px-8">
-        <div className="relative flex flex-col border-accent-foreground border-x p-6">
+      <Motion.Item className="relative isolate shrink-0 border-accent-foreground border-b">
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 -z-10 bg-linear-to-br from-primary/10 to-background-rich [clip-path:polygon(0_0,100%_0,100%_calc(100%_-_16px),calc(100%_-_16px)_100%,16px_100%,0_calc(100%_-_16px))]"
+        />
+        <div className="flex flex-col gap-3 px-6 py-7 sm:px-8 sm:py-9">
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <h2 className="font-medium text-4xl text-foreground">
+          <h1 className="font-heading text-3xl text-foreground sm:text-4xl">
             {translate("page.title")}
-          </h2>
-          <p className="font-light text-2xl text-foreground-dimmed">
+          </h1>
+          <p className="max-w-2xl text-base text-foreground-dimmed leading-relaxed">
             {translate("page.description")}
           </p>
         </div>
       </Motion.Item>
 
-      <Motion.Item className="min-h-0 w-full flex-1 overflow-y-auto border-accent-foreground border-b px-8">
-        <div className="relative h-full border-accent-foreground border-x">
+      <Motion.Item className="min-h-0 w-full flex-1 overflow-y-auto">
+        <div className="relative min-h-full">
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <Suspense fallback={<CatalogSkeleton />}>
@@ -66,8 +70,8 @@ export default async () => {
         </div>
       </Motion.Item>
 
-      <Motion.Item className="flex items-center justify-between border-accent-foreground px-8">
-        <div className="relative flex w-full items-center justify-between border-accent-foreground border-x px-6 py-6">
+      <Motion.Item className="relative shrink-0 border-accent-foreground border-t">
+        <div className="flex w-full flex-wrap items-center justify-between gap-4 px-6 py-5 sm:px-8">
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <Suspense fallback={<FooterSkeleton />}>

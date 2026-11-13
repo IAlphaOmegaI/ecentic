@@ -1,0 +1,55 @@
+{
+  "authUX": {
+    "home": "Torna a ecentic",
+    "sidebar": {
+      "eyebrow": "Il tuo spazio per il commercio con l’AI",
+      "title": "Scopri come l’AI vede i tuoi prodotti.",
+      "description": "Collega il catalogo, confronta i prodotti e decidi cosa migliorare.",
+      "points": [
+        "Il tuo catalogo in un unico posto",
+        "Confronti tra diversi modelli AI",
+        "Modifiche da verificare prima della pubblicazione"
+      ],
+      "catalogs": "Fonti del catalogo",
+      "channels": "Canali AI"
+    },
+    "signUp": {
+      "description": "Collega il tuo negozio e avvia il primo confronto tra prodotti."
+    },
+    "completeProfile": {
+      "description": "Indica la tua azienda e il tuo ruolo prima di collegare il negozio."
+    },
+    "password": {
+      "show": "Mostra password",
+      "hide": "Nascondi password"
+    },
+    "validation": {
+      "email": "Inserisci un indirizzo email valido.",
+      "password": "Inserisci la password.",
+      "passwordLength": "Usa almeno 8 caratteri.",
+      "confirmation": "Inserisci di nuovo la nuova password.",
+      "fullName": "Inserisci il tuo nome.",
+      "company": "Inserisci il nome dell’azienda o del marchio.",
+      "role": "Seleziona il tuo ruolo.",
+      "source": "Seleziona un’opzione dall’elenco."
+    },
+    "errors": {
+      "title": "Non è stato possibile completare questo passaggio",
+      "invalidCredentials": "L’email e la password non corrispondono. Controllale o reimposta la password.",
+      "emailAlreadyUsed": "Esiste già un account con questa email. Accedi o reimposta la password.",
+      "emailUnverified": "Verifica il tuo indirizzo email prima di accedere. Apri l’email di verifica e segui il link.",
+      "invalidEmail": "Inserisci un indirizzo email valido e riprova.",
+      "passwordTooShort": "Usa almeno 8 caratteri per la password.",
+      "shopifyStoreNotFound": "Non abbiamo trovato questo negozio Shopify. Inserisci il suo indirizzo pubblico o il dominio myshopify.com.",
+      "google": "Non è stato possibile avviare l’accesso con Google. Riprova o continua con l’email.",
+      "shopify": "Non è stato possibile avviare l’accesso con Shopify. Controlla l’indirizzo del negozio e riprova.",
+      "rateLimited": "Troppi tentativi. Attendi un momento e riprova.",
+      "unavailable": "Al momento non è possibile connettersi. Riprova tra poco. Se il problema persiste, contatta l’assistenza.",
+      "signIn": "Non è stato possibile accedere. Riprova o reimposta la password.",
+      "signUp": "Non è stato possibile creare il tuo account. Controlla i dati e riprova.",
+      "forgotPassword": "Non è stato possibile inviare il link per reimpostare la password. Riprova tra poco.",
+      "resetPassword": "Questo link non è più valido. Richiedine uno nuovo e riprova.",
+      "completeProfile": "Non è stato possibile salvare il profilo. Riprova. Se il problema persiste, contatta l’assistenza."
+    }
+  }
+}

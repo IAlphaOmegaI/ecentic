@@ -6856,11 +6856,11 @@
           "title": "Unterstützte Formate",
           "googleShopping": {
             "label": "Google Shopping XML",
-            "description": "ist das gängigste Format. Wenn Sie Google Merchant Center verwenden, haben Sie bereits einen solchen Feed. Es handelt sich um einen RSS-/Atom-Feed, bei dem jedes <item> g:title, g:price, g:image_link usw. enthält."
+            "description": "Ein RSS- oder Atom-Feed mit Produktfeldern wie g:title, g:price und g:image_link in jedem <item>."
           },
           "json": {
             "label": "JSON",
-            "description": "ist ein einfaches Array aus Produktobjekten. Wir suchen nach den Feldern title, price, image und url. Auch eine Verschachtelung unter einem products- oder items-Schlüssel wird unterstützt."
+            "description": "Eine Liste von Produktdatensätzen mit den Feldern title, price, image und url. Die Liste kann auch unter einem Schlüssel namens products oder items liegen."
           }
         },
         "fields": {
@@ -7255,6 +7255,39 @@
           "noCompetitors": "Wählen Sie mindestens einen Wettbewerber aus, bevor Sie Simulationen ausführen."
         }
       }
+    },
+    "experience": {
+      "footer": "Ihr erster Vergleich beginnt mit Ihrem Katalog.",
+      "settingsHint": "Sie können Ihre Verbindungen später in den Einstellungen verwalten.",
+      "fileRequired": "Wählen Sie eine CSV-Datei zum Importieren.",
+      "storeAddress": "Shop-Adresse",
+      "selectProduct": "{product} auswählen",
+      "selectedProduct": "Ihr Produkt wurde gewählt",
+      "selectedCompetitor": "Das Konkurrenzprodukt wurde gewählt",
+      "wins": "Gewonnen",
+      "losses": "Verloren",
+      "errors": {
+        "session": "Ihre Sitzung ist abgelaufen. Melden Sie sich erneut an, um fortzufahren.",
+        "permissions": "Wir konnten nicht auf Ihren Shop zugreifen. Prüfen Sie die Verbindung und die erteilten Berechtigungen.",
+        "rateLimited": "Zu viele Anfragen auf einmal. Warten Sie einen Moment und versuchen Sie es erneut.",
+        "timeout": "Das dauert länger als erwartet. Versuchen Sie es in einem Moment erneut.",
+        "service": "Die Antwort des Vergleichsdienstes konnte nicht gelesen werden. Versuchen Sie es erneut. Falls das Problem weiterhin auftritt, wenden Sie sich an den Support.",
+        "validation": "Prüfen Sie Ihre Angaben und versuchen Sie es erneut.",
+        "tooLarge": "Diese Datei ist für den Import zu groß. Verwenden Sie eine kleinere Datei oder teilen Sie sie auf mehrere Importe auf.",
+        "emptyCatalog": "Es wurden keine Produkte zum Importieren gefunden. Prüfen Sie, ob die Datei oder der Feed Produktdatensätze enthält.",
+        "conflict": "Dieser Shop ist bereits mit einem anderen Konto verbunden. Melden Sie sich mit diesem Konto an oder wenden Sie sich an den Support.",
+        "plan": "Wählen Sie einen Tarif, um diese Funktion zu nutzen.",
+        "unavailable": "Dieser Schritt konnte nicht abgeschlossen werden. Versuchen Sie es erneut. Falls das Problem weiterhin auftritt, wenden Sie sich an den Support.",
+        "sourceUnavailable": "Diese Produktseiten konnten nicht gelesen werden. Versuchen Sie es mit der direkten Produktseite im Shop oder fügen Sie Konkurrenzprodukte über die Suche hinzu.",
+        "noCompetitors": "Keine Konkurrenzprodukte für diese Suche gefunden. Versuchen Sie eine allgemeinere Marke oder Produktkategorie.",
+        "feedUnavailable": "Dieser Feed konnte nicht gelesen werden. Prüfen Sie, ob die Adresse einen öffentlich zugänglichen XML- oder JSON-Feed öffnet, und versuchen Sie es erneut."
+      },
+      "progress": {
+        "reading": "{count, plural, one {# Produkt wird} other {# Produkte werden}} aus Ihrem Katalog gelesen",
+        "searching": "Konkurrenzprodukte werden mit KI gesucht",
+        "sellers": "Weitere Anbieter für {product} werden gesucht"
+      },
+      "removeCompetitor": "{competitor} entfernen"
     }
   },
   "share": {
@@ -20173,5 +20206,58 @@
       "fixes": "{count, plural, one {# Korrektur angewendet} other {# Korrekturen angewendet}}"
     },
     "outputLanguage": "Shop-Inhalte und Diagnosen der Anbieter bleiben in ihrer Originalsprache."
+  },
+  "authUX": {
+    "home": "Zurück zu ecentic",
+    "sidebar": {
+      "eyebrow": "Ihr Arbeitsbereich für KI-Commerce",
+      "title": "So sieht KI Ihre Produkte.",
+      "description": "Verbinden Sie Ihren Katalog, vergleichen Sie Produkte und entscheiden Sie, was Sie verbessern möchten.",
+      "points": [
+        "Ihr Katalog an einem Ort",
+        "Produktvergleiche mit verschiedenen KI-Modellen",
+        "Änderungen vor der Veröffentlichung prüfen"
+      ],
+      "catalogs": "Katalogquellen",
+      "channels": "KI-Kanäle"
+    },
+    "signUp": {
+      "description": "Verbinden Sie Ihren Shop und starten Sie Ihren ersten Produktvergleich."
+    },
+    "completeProfile": {
+      "description": "Geben Sie Ihr Unternehmen und Ihre Position an, bevor Sie Ihren Shop verbinden."
+    },
+    "password": {
+      "show": "Passwort anzeigen",
+      "hide": "Passwort verbergen"
+    },
+    "validation": {
+      "email": "Geben Sie eine gültige E-Mail-Adresse ein.",
+      "password": "Geben Sie Ihr Passwort ein.",
+      "passwordLength": "Verwenden Sie mindestens 8 Zeichen.",
+      "confirmation": "Geben Sie das neue Passwort erneut ein.",
+      "fullName": "Geben Sie Ihren Namen ein.",
+      "company": "Geben Sie den Namen Ihres Unternehmens oder Ihrer Marke ein.",
+      "role": "Wählen Sie Ihre Position aus.",
+      "source": "Wählen Sie einen Eintrag aus der Liste."
+    },
+    "errors": {
+      "title": "Dieser Schritt konnte nicht abgeschlossen werden",
+      "invalidCredentials": "E-Mail-Adresse und Passwort stimmen nicht überein. Prüfen Sie beide Angaben oder setzen Sie Ihr Passwort zurück.",
+      "emailAlreadyUsed": "Für diese E-Mail-Adresse gibt es bereits ein Konto. Melden Sie sich an oder setzen Sie Ihr Passwort zurück.",
+      "emailUnverified": "Bestätigen Sie Ihre E-Mail-Adresse, bevor Sie sich anmelden. Öffnen Sie dazu den Link in der Bestätigungs-E-Mail.",
+      "invalidEmail": "Geben Sie eine gültige E-Mail-Adresse ein und versuchen Sie es erneut.",
+      "passwordTooShort": "Verwenden Sie mindestens 8 Zeichen für Ihr Passwort.",
+      "shopifyStoreNotFound": "Dieser Shopify-Shop wurde nicht gefunden. Geben Sie seine öffentliche Adresse oder seine myshopify.com-Domain ein.",
+      "google": "Die Anmeldung mit Google konnte nicht gestartet werden. Versuchen Sie es erneut oder fahren Sie mit Ihrer E-Mail-Adresse fort.",
+      "shopify": "Die Anmeldung mit Shopify konnte nicht gestartet werden. Prüfen Sie die Shop-Adresse und versuchen Sie es erneut.",
+      "rateLimited": "Zu viele Versuche. Warten Sie einen Moment und versuchen Sie es erneut.",
+      "unavailable": "Die Verbindung ist gerade nicht möglich. Versuchen Sie es gleich noch einmal. Wenn das Problem bestehen bleibt, wenden Sie sich an den Support.",
+      "signIn": "Die Anmeldung ist fehlgeschlagen. Versuchen Sie es erneut oder setzen Sie Ihr Passwort zurück.",
+      "signUp": "Ihr Konto konnte nicht erstellt werden. Prüfen Sie Ihre Angaben und versuchen Sie es erneut.",
+      "forgotPassword": "Der Link zum Zurücksetzen konnte nicht gesendet werden. Versuchen Sie es gleich noch einmal.",
+      "resetPassword": "Dieser Link zum Zurücksetzen ist nicht mehr gültig. Fordern Sie einen neuen Link an und versuchen Sie es erneut.",
+      "completeProfile": "Ihr Profil konnte nicht gespeichert werden. Versuchen Sie es erneut. Wenn das Problem bestehen bleibt, wenden Sie sich an den Support."
+    }
   }
 }

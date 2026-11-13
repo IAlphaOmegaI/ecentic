@@ -1,0 +1,55 @@
+{
+  "authUX": {
+    "home": "返回 ecentic",
+    "sidebar": {
+      "eyebrow": "AI 电商工作空间",
+      "title": "了解 AI 如何看待你的商品。",
+      "description": "连接商品目录、比较商品，决定下一步改进。",
+      "points": [
+        "集中管理商品目录",
+        "通过多个 AI 模型比较商品",
+        "确认修改后再发布"
+      ],
+      "catalogs": "商品目录来源",
+      "channels": "AI 渠道"
+    },
+    "signUp": {
+      "description": "连接店铺，开始第一次商品比较。"
+    },
+    "completeProfile": {
+      "description": "连接店铺前，请填写公司名称和职位。"
+    },
+    "password": {
+      "show": "显示密码",
+      "hide": "隐藏密码"
+    },
+    "validation": {
+      "email": "请输入有效的电子邮箱地址。",
+      "password": "请输入密码。",
+      "passwordLength": "请使用至少 8 个字符。",
+      "confirmation": "请再次输入新密码。",
+      "fullName": "请输入姓名。",
+      "company": "请输入公司或品牌名称。",
+      "role": "请选择职位。",
+      "source": "请从列表中选择一项。"
+    },
+    "errors": {
+      "title": "未能完成此步骤",
+      "invalidCredentials": "邮箱和密码不匹配。请检查输入内容，或重设密码。",
+      "emailAlreadyUsed": "此邮箱已注册账户。请登录或重设密码。",
+      "emailUnverified": "请先验证邮箱再登录。打开验证邮件，点击其中的链接。",
+      "invalidEmail": "请输入有效的电子邮箱地址，然后重试。",
+      "passwordTooShort": "密码至少需要 8 个字符。",
+      "shopifyStoreNotFound": "未找到此 Shopify 店铺。请输入店铺的公开网址或 myshopify.com 域名。",
+      "google": "未能启动 Google 登录。请重试，或使用邮箱继续。",
+      "shopify": "未能启动 Shopify 登录。请检查店铺网址后重试。",
+      "rateLimited": "尝试次数过多。请稍等片刻后重试。",
+      "unavailable": "暂时无法连接。请稍后重试。如问题持续，请联系支持团队。",
+      "signIn": "未能登录。请重试或重设密码。",
+      "signUp": "未能创建账户。请检查填写的信息后重试。",
+      "forgotPassword": "未能发送密码重设链接。请稍后重试。",
+      "resetPassword": "此密码重设链接已失效。请申请新链接后重试。",
+      "completeProfile": "未能保存个人资料。请重试。如问题持续，请联系支持团队。"
+    }
+  }
+}

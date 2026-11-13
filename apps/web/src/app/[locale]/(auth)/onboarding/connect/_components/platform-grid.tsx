@@ -1,6 +1,6 @@
 "use client";
 
-import { UploadIcon } from "@zenncore/icons";
+import { ArrowRightIcon, UploadIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import Image from "next/image";
 import { useMessages, useTranslations } from "next-intl";
@@ -45,66 +45,76 @@ export const PlatformGrid = () => {
   const platforms = messages.onboarding.connect.platforms;
 
   return (
-    <div className="grid grid-cols-2 gap-px bg-accent-foreground sm:grid-cols-3">
-      {platforms.map((platform) => {
-        const meta = platformMeta[platform.id as keyof typeof platformMeta];
-        const badge = translate(`badges.${meta.badge}`);
-        const disabled = meta.href === null;
-
-        const inner = (
-          <>
-            {meta.image ? (
-              <Image
-                src={meta.image}
-                alt={platform.name}
-                width={40}
-                height={40}
-                className="mb-4 size-14 shrink-0"
-              />
-            ) : (
-              <div className="mb-4 flex size-14 items-center justify-center">
-                <UploadIcon className="size-14 text-foreground-dimmed transition-colors group-hover:text-primary" />
-              </div>
-            )}
-            <p className="font-medium text-foreground text-xl">
-              {platform.name}
-            </p>
-            <p className="font-light text-foreground-dimmed text-sm">
-              {platform.description}
-            </p>
-            <span
-              className={cn(
-                "mt-2 self-start px-1.5 py-0.5 text-sm capitalize",
-                meta.badge === "comingSoon" || meta.badge === "linkNow"
-                  ? "bg-foreground-dimmed/10 text-foreground-dimmed"
-                  : "bg-primary/10 text-primary",
-              )}
-            >
-              {badge}
-            </span>
-          </>
-        );
-
-        if (disabled)
-          return (
-            <div
+    <div>
+      <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2">
+        {platforms
+          .filter(
+            (platform) =>
+              platformMeta[platform.id as keyof typeof platformMeta].href !==
+              null,
+          )
+          .map((platform) => {
+            const meta = platformMeta[platform.id as keyof typeof platformMeta];
+            if (!meta.href) return null;
+            return (
+              <Link
+                key={platform.id}
+                href={meta.href}
+                className="group relative flex min-h-52 min-w-0 flex-col gap-3 bg-background-rich px-6 py-6 transition-colors hover:bg-primary/5 focus-visible:z-10 focus-visible:outline-2 focus-visible:outline-primary sm:px-8"
+              >
+                <div className="flex h-10 items-center justify-between gap-4">
+                  {meta.image ? (
+                    <Image
+                      src={meta.image}
+                      alt=""
+                      width={100}
+                      height={40}
+                      className="h-9 w-auto max-w-28 object-contain object-left"
+                    />
+                  ) : (
+                    <UploadIcon className="size-8 text-primary" />
+                  )}
+                  <ArrowRightIcon className="size-4 shrink-0 text-foreground-dimmed transition-transform group-hover:translate-x-1" />
+                </div>
+                <h2 className="mt-2 font-heading text-foreground text-xl">
+                  {platform.name}
+                </h2>
+                <p className="text-foreground-dimmed text-sm leading-relaxed">
+                  {platform.description}
+                </p>
+                <span
+                  className={cn(
+                    "mt-auto pt-2 text-sm",
+                    meta.badge === "recommended"
+                      ? "text-primary"
+                      : "text-foreground-dimmed",
+                  )}
+                >
+                  {translate(`badges.${meta.badge}`)}
+                </span>
+              </Link>
+            );
+          })}
+      </div>
+      <div className="grid gap-4 border-accent-foreground border-t bg-background px-6 py-5 sm:grid-cols-2 sm:px-8">
+        {platforms
+          .filter(
+            (platform) =>
+              platformMeta[platform.id as keyof typeof platformMeta].href ===
+              null,
+          )
+          .map((platform) => (
+            <p
               key={platform.id}
-              className="flex aspect-square cursor-not-allowed flex-col justify-between bg-background-dimmed p-5 opacity-50"
+              className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm"
             >
-              {inner}
-            </div>
-          );
-
-        return (
-          <Link
-            key={platform.id}
-            href={meta.href}
-            className="group flex aspect-square flex-col justify-between bg-background-dimmed p-5 transition-colors hover:bg-background"
-          >
-            {inner}
-          </Link>
-        );
-      })}
+              <span className="text-foreground">{platform.name}</span>
+              <span className="text-foreground-dimmed">
+                {translate("badges.comingSoon")}
+              </span>
+            </p>
+          ))}
+      </div>
     </div>
   );
 };
