@@ -1,7 +1,7 @@
 {
   "ucpPlayground": {
     "meta": {
-      "title": "ショッピングエージェント向けUCP Playground",
+      "title": "UCP Playground：AIショッピングエージェントと購入手続きをテスト",
       "description": "UCPストアフロントに対して、カタログ検索、カート、購入手続きをテストできます。MCPまたはREST経由のリクエストとレスポンスを確認できます。"
     },
     "breadcrumb": {

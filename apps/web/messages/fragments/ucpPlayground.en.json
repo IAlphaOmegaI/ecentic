@@ -1,7 +1,7 @@
 {
   "ucpPlayground": {
     "meta": {
-      "title": "UCP Playground for shopping agents",
+      "title": "UCP Playground: Test AI Shopping Agents & Checkout",
       "description": "Test catalog search, cart and checkout against a UCP storefront. Inspect requests and responses over MCP or REST."
     },
     "breadcrumb": {

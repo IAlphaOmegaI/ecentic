@@ -6106,7 +6106,7 @@
   },
   "ucpPlayground": {
     "meta": {
-      "title": "UCP Playground für Shopping-Agenten",
+      "title": "UCP Playground: KI-Shopping-Agenten und Checkout testen",
       "description": "Testen Sie Katalogsuche, Warenkorb und Kaufabschluss mit einem UCP-Storefront. Prüfen Sie Anfragen und Antworten über MCP oder REST."
     },
     "breadcrumb": {
@@ -6165,7 +6165,7 @@
   },
   "ucpValidator": {
     "meta": {
-      "title": "UCP Validator für Storefronts",
+      "title": "UCP-Validator: Shopprofile und Agentenzugriff prüfen",
       "description": "Prüfen Sie mit dem kostenlosen UCP-Validator das Profil des Universal Commerce Protocol, die Erkennungsdaten, das Schema und den robots.txt-Zugriff eines Onlineshops."
     },
     "breadcrumb": {
@@ -9831,7 +9831,7 @@
       "woocommerce": {
         "meta": {
           "title": "ecentic für WooCommerce: über KI-Assistenten verkaufen",
-          "description": "Das kostenlose ecentic-Plugin für WooCommerce: Produkte vergleichen, Änderungen an Produktangeboten veröffentlichen und unterstützten Agenten den Checkout über Ihren Shop ermöglichen."
+          "description": "Installieren Sie das kostenlose ecentic-Plugin für WooCommerce, um Produkte mit Konkurrenzprodukten zu vergleichen, aktualisierte Produktangebote zu veröffentlichen und kompatiblen KI-Agenten den Checkout in Ihrem Shop zu ermöglichen."
         },
         "title": "ecentic für WooCommerce",
         "description": "Installieren Sie das kostenlose Plugin, vergleichen Sie Ihre Produkte mit Wettbewerbern, veröffentlichen Sie ausgewählte Korrekturen und ermöglichen Sie unterstützten KI-Agenten den Checkout über Ihren eigenen Shop.",
@@ -11129,8 +11129,8 @@
     },
     "resources": {
       "meta": {
-        "title": "Ressourcen: Guides, Forschung und kostenlose Tools",
-        "description": "Guides und kostenlose Tools für den Verkauf über KI-Assistenten, Pilotberichte und öffentliche Entwicklerendpunkte von ecentic."
+        "title": "KI-Commerce-Ressourcen: Ratgeber, Forschung & kostenlose Tools",
+        "description": "Bereiten Sie Ihren Shop auf KI-gestütztes Einkaufen vor: mit kostenlosen KI-Commerce-Tools, E-Commerce-Ratgebern, Pilotberichten und der Entwicklerdokumentation von ecentic."
       },
       "title": "Ressourcen",
       "description": "Guides, Pilotberichte und kostenlose Tools für den Verkauf, wenn KI den Einkauf übernimmt.",
@@ -11703,7 +11703,7 @@
       ],
       "faqTitle": "Fragen zur Plattform",
       "meta": {
-        "title": "Die ecentic Plattform: verbinden, simulieren, korrigieren, verkaufen und Ergebnisse verfolgen",
+        "title": "KI-Commerce-Plattform: Verbinden, simulieren, korrigieren, verkaufen und verfolgen",
         "description": "Verbinden Sie Ihren Katalog, vergleichen Sie Produkte mit KI-Modellen, veröffentlichen Sie selbst gewählte Änderungen, testen Sie den Bestellabschluss durch Agenten und verfolgen Sie erfasste Verweiszugriffe auf Shopify."
       },
       "eyebrow": "Plattform",
@@ -15611,7 +15611,7 @@
   },
   "enterpriseDemo": {
     "meta": {
-      "title": "Demo von ecentic buchen",
+      "title": "KI-Shopping-Demo für Ihren Produktkatalog buchen",
       "description": "Sehen Sie live mit einem Gründer, wie ChatGPT, Claude und Gemini Ihre Produkte mit denen eines Wettbewerbers vergleichen. Bringen Sie eine Kategorie mit."
     },
     "eyebrow": "Demo buchen",
@@ -17673,6 +17673,9 @@
     "topics": "Diese Themen entdecken",
     "action": {
       "primary": "Nach oben"
+    },
+    "meta": {
+      "platformsTitle": "KI-E-Commerce-Plattformen: Mehr Sichtbarkeit bei Shopping-Agenten 2026"
     }
   },
   "blogTagPage": {

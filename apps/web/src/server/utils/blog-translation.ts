@@ -16,7 +16,7 @@ import {
   type TranslationUnit,
   TranslationValidationError,
   translateTextUnits,
-  translationPolicyVersion,
+  translationPolicyVersionFor,
   validateTranslationUnit,
 } from "@/i18n/translation/runner";
 import { blogReadingMinutes } from "@/lib/blog-locale";
@@ -27,6 +27,11 @@ import {
   createBlogTranslation,
   nextBlogTranslationBatch,
 } from "@/lib/blog-translation-content";
+import {
+  absentBlogTranslationTarget,
+  blogTranslationTargetHash,
+  blogTranslationTargetMatches,
+} from "@/lib/blog-translation-target";
 import { db, schema } from "@/server/database";
 import {
   blogBlockedReviewVersion,
@@ -77,14 +82,10 @@ export const enqueueBlogTranslationSources = async (
   const slugs = sources.map((source) => source.slug);
   const [published, tracked] = await Promise.all([
     db
-      .select({ slug: posts.slug, locale: posts.locale })
+      .select()
       .from(posts)
       .where(
-        and(
-          inArray(posts.slug, slugs),
-          inArray(posts.locale, [...targets]),
-          eq(posts.status, "published"),
-        ),
+        and(inArray(posts.slug, slugs), inArray(posts.locale, [...targets])),
       ),
     db
       .select({ slug: jobs.slug, locale: jobs.locale })
@@ -94,11 +95,17 @@ export const enqueueBlogTranslationSources = async (
       ),
   ]);
   const key = (slug: string, locale: string) => JSON.stringify([slug, locale]);
-  const existing = new Set(published.map((row) => key(row.slug, row.locale)));
+  const existing = new Set(
+    published
+      .filter((row) => row.status === "published")
+      .map((row) => key(row.slug, row.locale)),
+  );
+  const targetSnapshots = new Map(
+    published.map((row) => [key(row.slug, row.locale), row]),
+  );
   const known = new Set(tracked.map((row) => key(row.slug, row.locale)));
   const values = sources.flatMap((source) => {
     const content = toBlogTranslationSource(source);
-    const sourceHash = blogSourceHash(content, translationPolicyVersion);
     const totalUnits = createBlogTranslation(content).units.length;
     return targets
       .filter(
@@ -110,8 +117,14 @@ export const enqueueBlogTranslationSources = async (
       .map((locale) => ({
         slug: source.slug,
         locale,
-        sourceHash,
-        policyVersion: translationPolicyVersion,
+        sourceHash: blogSourceHash(
+          content,
+          translationPolicyVersionFor(locale),
+        ),
+        targetSnapshotHash: blogTranslationTargetHash(
+          targetSnapshots.get(key(source.slug, locale)) ?? null,
+        ),
+        policyVersion: translationPolicyVersionFor(locale),
         totalUnits,
       }));
   });
@@ -126,6 +139,7 @@ export const enqueueBlogTranslationSources = async (
         target: [jobs.slug, jobs.locale],
         set: {
           sourceHash: sql`excluded."sourceHash"`,
+          targetSnapshotHash: sql`excluded."targetSnapshotHash"`,
           policyVersion: sql`excluded."policyVersion"`,
           totalUnits: sql`excluded."totalUnits"`,
           status: "pending",
@@ -210,11 +224,16 @@ const claim = async (
     return claimed ?? null;
   });
 
-const reset = (source: typeof posts.$inferSelect) => {
+const reset = (
+  source: typeof posts.$inferSelect,
+  target: typeof posts.$inferSelect | null,
+  locale: string,
+) => {
   const content = toBlogTranslationSource(source);
   return {
-    sourceHash: blogSourceHash(content, translationPolicyVersion),
-    policyVersion: translationPolicyVersion,
+    sourceHash: blogSourceHash(content, translationPolicyVersionFor(locale)),
+    targetSnapshotHash: blogTranslationTargetHash(target),
+    policyVersion: translationPolicyVersionFor(locale),
     totalUnits: createBlogTranslation(content).units.length,
     completedUnits: {},
     blockedUnits: {},
@@ -267,15 +286,42 @@ const finish = async (
       return "blocked" as const;
     }
     const content = toBlogTranslationSource(source);
-    if (blogSourceHash(content, translationPolicyVersion) !== job.sourceHash) {
+    const [target] = await transaction
+      .select()
+      .from(posts)
+      .where(and(eq(posts.slug, job.slug), eq(posts.locale, job.locale)))
+      .limit(1)
+      .for("update");
+    if (
+      blogSourceHash(content, translationPolicyVersionFor(job.locale)) !==
+      job.sourceHash
+    ) {
       await transaction
         .update(jobs)
-        .set(reset(source))
+        .set(reset(source, target ?? null, job.locale))
         .where(eq(jobs.id, job.id));
       return "source-changed" as const;
     }
     if (!isLocale(job.locale) || job.locale === "en")
       throw new Error("Invalid translation target locale");
+    const targetChanged = async () => {
+      await transaction
+        .update(jobs)
+        .set({
+          status: "blocked",
+          completedUnits: completed,
+          blockedUnits: {},
+          error:
+            "Published target changed after translation began; reviewed work retained",
+          lease: null,
+          lockedUntil: null,
+          updatedAt: new Date(),
+        })
+        .where(eq(jobs.id, job.id));
+      return "target-changed" as const;
+    };
+    if (!blogTranslationTargetMatches(owned.targetSnapshotHash, target ?? null))
+      return targetChanged();
     const translated = createBlogTranslation(content).apply(
       new Map(Object.entries(completed)),
     );
@@ -287,10 +333,29 @@ const finish = async (
       readTime: `${blogReadingMinutes(translated.contentHtml ?? translated.sections.map((section) => section.content).join("\n"), job.locale)} min`,
       updatedAt: new Date(),
     };
-    await transaction
-      .insert(posts)
-      .values(payload)
-      .onConflictDoUpdate({ target: [posts.slug, posts.locale], set: payload });
+    if (owned.targetSnapshotHash === absentBlogTranslationTarget) {
+      // A row can be inserted after an absent-target read. Never upsert over it.
+      const inserted = await transaction
+        .insert(posts)
+        .values(payload)
+        .onConflictDoNothing({ target: [posts.slug, posts.locale] })
+        .returning({ id: posts.id });
+      if (!inserted.length) return targetChanged();
+    } else if (target && owned.targetSnapshotHash !== null) {
+      await transaction
+        .update(posts)
+        .set(payload)
+        .where(eq(posts.id, target.id));
+    } else {
+      // Completed legacy jobs predate target snapshots; preserve their behavior.
+      await transaction
+        .insert(posts)
+        .values(payload)
+        .onConflictDoUpdate({
+          target: [posts.slug, posts.locale],
+          set: payload,
+        });
+    }
     await transaction
       .update(jobs)
       .set({
@@ -352,10 +417,18 @@ export const drainBlogTranslationBatch = async ({
       .limit(1);
     if (!source) throw new Error("English source is not published");
     const content = toBlogTranslationSource(source);
-    if (blogSourceHash(content, translationPolicyVersion) !== job.sourceHash) {
+    if (
+      blogSourceHash(content, translationPolicyVersionFor(job.locale)) !==
+      job.sourceHash
+    ) {
+      const [target] = await db
+        .select()
+        .from(posts)
+        .where(and(eq(posts.slug, job.slug), eq(posts.locale, job.locale)))
+        .limit(1);
       await db
         .update(jobs)
-        .set(reset(source))
+        .set(reset(source, target ?? null, job.locale))
         .where(and(eq(jobs.id, job.id), eq(jobs.lease, job.lease ?? "")));
       return "source-changed" as const;
     }
@@ -585,8 +658,8 @@ export const applyBlogTranslationReview = async (input: unknown) => {
     throw new Error("Invalid target locale");
   const locale = patch.locale;
   if (
-    patch.policyVersion !== translationPolicyVersion ||
-    patch.review.policyVersion !== translationPolicyVersion ||
+    patch.policyVersion !== translationPolicyVersionFor(locale) ||
+    patch.review.policyVersion !== translationPolicyVersionFor(locale) ||
     patch.review.targetLocale !== locale ||
     patch.review.findings.length ||
     !translationReviewPasses.every((pass) => patch.review.passes.includes(pass))
@@ -626,7 +699,7 @@ export const applyBlogTranslationReview = async (input: unknown) => {
       !source ||
       blogSourceHash(
         toBlogTranslationSource(source),
-        translationPolicyVersion,
+        translationPolicyVersionFor(locale),
       ) !== patch.sourceHash
     )
       throw new Error("English source changed after this review");
@@ -740,7 +813,7 @@ export const exportBlockedBlogUnits = async (
           source &&
             blogSourceHash(
               toBlogTranslationSource(source),
-              translationPolicyVersion,
+              translationPolicyVersionFor(job.locale),
             ) === job.sourceHash,
         ),
         documentContext: article?.documentContext ?? "",

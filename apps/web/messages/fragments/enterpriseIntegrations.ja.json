@@ -375,7 +375,7 @@
       "woocommerce": {
         "meta": {
           "title": "ecentic for WooCommerce: AIアシスタント経由で販売",
-          "description": "WooCommerce向け無料ecenticプラグイン。商品比較、商品情報変更の公開、対応エージェントによるストア経由の購入手続きに対応しています。"
+          "description": "無料のecentic WooCommerceプラグインをインストールして、商品を競合商品と比較し、商品情報の更新を公開できます。対応するAIエージェントがストア内で購入手続きを完了できるようにします。"
         },
         "title": "ecentic for WooCommerce",
         "description": "無料プラグインをインストールし、自社商品を競合商品と比較して、選択した修正を公開できます。対応するAIエージェントは自社ストア経由で購入手続きを行えます。",

@@ -4,10 +4,10 @@ import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
 import type { HTMLAttributes, ReactNode } from "react";
 import { Plus } from "@/components/plus";
-import { Link } from "@/i18n/navigation";
 import type { CommerceFigure } from "./commerce-figure";
 import { EvolvingAscii } from "./evolving-ascii";
 import { HeroFigure } from "./hero-figure";
+import { IntentLink } from "./intent-link";
 
 export const MarketingBand = ({
   children,
@@ -103,7 +103,7 @@ export const MarketingActions = ({
           key={action.href}
           variant="default"
           color={(index === 0) === (tone === "default") ? "primary" : "neutral"}
-          render={<Link href={action.href} />}
+          render={<IntentLink href={action.href} />}
         >
           {action.label}
           <ArrowRightIcon className="size-4" />

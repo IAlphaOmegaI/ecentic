@@ -55,9 +55,6 @@ const BLOG_TITLE_TAGS: Record<string, Record<string, string>> = {
   // and often never say the phrase the slug targets, so the title tag names
   // the search term first. Each one describes what the article actually is
   // (most are guides, not ranked lists), from its own headings.
-  "best-ecommerce-ai-platforms": {
-    en: "AI ecommerce platforms in 2026: how to choose",
-  },
   "best-agentic-seo-tools": {
     en: "Agentic SEO for Shopify and WooCommerce stores",
   },
@@ -152,11 +149,16 @@ export const generateMetadata = async ({
 
   const post = resolved.post;
   const path = localizePath(`/blog/${post.slug}`, locale);
+  const { blogArticlePage } = await getMessages();
+  const title =
+    post.slug === "best-ecommerce-ai-platforms"
+      ? brandedTitle(blogArticlePage.meta.platformsTitle)
+      : blogTitleTag(post);
 
   return {
     // `absolute` so the locale layout's `"%s | ecentic"` cannot re-append a
     // suffix `brandedTitle` may have deliberately dropped.
-    title: { absolute: blogTitleTag(post) },
+    title: { absolute: title },
     description: post.description,
     keywords: leadingTags(post.tags),
     alternates: {

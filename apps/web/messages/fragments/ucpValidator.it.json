@@ -1,7 +1,7 @@
 {
   "ucpValidator": {
     "meta": {
-      "title": "UCP Validator per vetrine online",
+      "title": "Validatore UCP: verifica profili degli store e accesso degli agenti",
       "description": "Controlla il profilo Universal Commerce Protocol, i dati di discovery, lo schema e l’accesso tramite robots.txt di una vetrina online con il validator UCP gratuito."
     },
     "breadcrumb": {

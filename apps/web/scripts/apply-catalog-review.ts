@@ -5,7 +5,7 @@ import { resolve } from "node:path";
 import { parseArgs } from "node:util";
 import { isLocale } from "../src/i18n/locales";
 import {
-  translationPolicyVersion,
+  translationPolicyVersionFor,
   validateTranslationUnit,
 } from "../src/i18n/translation/runner";
 import {
@@ -66,7 +66,7 @@ for (const { locale, units } of patches) {
     `${locale}.checkpoint.json`,
   );
   const checkpoint = JSON.parse(readFileSync(checkpointPath, "utf8"));
-  if (checkpoint.policy !== translationPolicyVersion)
+  if (checkpoint.policy !== translationPolicyVersionFor(locale))
     throw new Error(`Stale checkpoint policy: ${locale}`);
   const checked = units.map((entry) => {
     if (

@@ -6106,7 +6106,7 @@
   },
   "ucpPlayground": {
     "meta": {
-      "title": "面向购物智能体的 UCP 试验区",
+      "title": "UCP 试验区：测试 AI 购物智能体与结账流程",
       "description": "针对 UCP 店铺测试商品目录搜索、购物车和结账流程。可通过 MCP 或 REST 检查请求与响应。"
     },
     "breadcrumb": {
@@ -6165,7 +6165,7 @@
   },
   "ucpValidator": {
     "meta": {
-      "title": "面向店铺的 UCP 验证器",
+      "title": "UCP 验证器：检查店铺配置文件与智能体访问",
       "description": "使用免费的 UCP 验证器检查店铺的 Universal Commerce Protocol 配置、发现数据、Schema 和 robots.txt 访问权限。"
     },
     "breadcrumb": {
@@ -9831,7 +9831,7 @@
       "woocommerce": {
         "meta": {
           "title": "ecentic for WooCommerce：通过 AI 助手销售商品",
-          "description": "适用于 WooCommerce 的免费 ecentic 插件：对比商品、发布商品信息变更，并让受支持的智能体通过您的店铺完成结账。"
+          "description": "安装免费的 ecentic WooCommerce 插件，将商品与竞品进行对比，发布商品信息更新，并让兼容的 AI 智能体在您的店铺中完成结账。"
         },
         "title": "适用于 WooCommerce 的 ecentic",
         "description": "安装免费插件，将您的商品与竞品进行对比，发布选定修复，并让受支持的 AI 智能体通过您自己的店铺完成结账。",
@@ -11129,8 +11129,8 @@
     },
     "resources": {
       "meta": {
-        "title": "资源：指南、研究与免费工具",
-        "description": "关于通过 AI 助手销售的指南与免费工具、试点案例，以及 ecentic 的公开开发者端点。"
+        "title": "AI 商务资源：指南、研究与免费工具",
+        "description": "探索免费的 AI 商务工具、电商指南、试点案例和 ecentic 开发者文档，为店铺迎接 AI 辅助购物做好准备。"
       },
       "title": "资源",
       "description": "当 AI 开始负责购物时，帮助您销售商品的指南、试点案例与免费工具。",
@@ -11703,7 +11703,7 @@
       ],
       "faqTitle": "关于平台的常见问题",
       "meta": {
-        "title": "ecentic 平台：连接、模拟、修复、销售、追踪",
+        "title": "AI 商务平台：连接、模拟、修复、销售与追踪",
         "description": "连接商品目录，通过 AI 模型比较商品，发布所选更改，测试智能体结账，并追踪检测到的 Shopify 引荐流量。"
       },
       "eyebrow": "平台",
@@ -15611,7 +15611,7 @@
   },
   "enterpriseDemo": {
     "meta": {
-      "title": "预约 ecentic 演示",
+      "title": "预约商品目录的 AI 购物演示",
       "description": "与创始人一起实时查看 ChatGPT、Claude 和 Gemini 如何将您的商品与竞品进行对比。带上一个商品类目即可。"
     },
     "eyebrow": "预约演示",
@@ -17673,6 +17673,9 @@
     "topics": "探索相关主题",
     "action": {
       "primary": "返回顶部"
+    },
+    "meta": {
+      "platformsTitle": "AI 电商平台：2026 年如何提升商品在购物智能体中的可见性"
     }
   },
   "blogTagPage": {

@@ -6106,7 +6106,7 @@
   },
   "ucpPlayground": {
     "meta": {
-      "title": "ショッピングエージェント向けUCP Playground",
+      "title": "UCP Playground：AIショッピングエージェントと購入手続きをテスト",
       "description": "UCPストアフロントに対して、カタログ検索、カート、購入手続きをテストできます。MCPまたはREST経由のリクエストとレスポンスを確認できます。"
     },
     "breadcrumb": {
@@ -6165,7 +6165,7 @@
   },
   "ucpValidator": {
     "meta": {
-      "title": "ストアフロント向けUCP Validator",
+      "title": "UCP検証ツール：ストアのプロファイルとエージェントのアクセスを確認",
       "description": "無料のUCP Validatorで、ストアフロントのUniversal Commerce Protocolプロファイル、検出データ、スキーマ、robots.txtアクセスを確認できます。"
     },
     "breadcrumb": {
@@ -9831,7 +9831,7 @@
       "woocommerce": {
         "meta": {
           "title": "ecentic for WooCommerce: AIアシスタント経由で販売",
-          "description": "WooCommerce向け無料ecenticプラグイン。商品比較、商品情報変更の公開、対応エージェントによるストア経由の購入手続きに対応しています。"
+          "description": "無料のecentic WooCommerceプラグインをインストールして、商品を競合商品と比較し、商品情報の更新を公開できます。対応するAIエージェントがストア内で購入手続きを完了できるようにします。"
         },
         "title": "ecentic for WooCommerce",
         "description": "無料プラグインをインストールし、自社商品を競合商品と比較して、選択した修正を公開できます。対応するAIエージェントは自社ストア経由で購入手続きを行えます。",
@@ -11129,8 +11129,8 @@
     },
     "resources": {
       "meta": {
-        "title": "リソース：ガイド、調査、無料ツール",
-        "description": "AIアシスタント経由で販売するためのガイドと無料ツール、パイロット事例、ecenticの公開開発者エンドポイントを提供しています。"
+        "title": "AIコマースのリソース：ガイド・調査・無料ツール",
+        "description": "無料のAIコマースツール、ECガイド、パイロット事例、ecenticの開発者向けドキュメントで、AIアシスタントによるショッピングにストアを備えましょう。"
       },
       "title": "リソース",
       "description": "AIが買い物を行う環境での販売に向けたガイド、パイロット事例、無料ツール。",
@@ -11703,7 +11703,7 @@
       ],
       "faqTitle": "プラットフォームに関する質問",
       "meta": {
-        "title": "ecenticプラットフォーム：接続、シミュレーション、修正、販売、追跡",
+        "title": "AIコマースプラットフォーム：接続・シミュレーション・修正・販売・追跡",
         "description": "カタログを接続し、AIモデルによる商品比較を確認し、選択した変更を公開し、エージェントの購入手続きをテストして、検出されたShopify経由の流入を追跡します。"
       },
       "eyebrow": "プラットフォーム",
@@ -15611,7 +15611,7 @@
   },
   "enterpriseDemo": {
     "meta": {
-      "title": "ecenticのデモを予約",
+      "title": "商品カタログでAIショッピングのデモを予約",
       "description": "創業者とのライブデモで、ChatGPT、Claude、Geminiが自社商品を競合商品とどう比較するかを確認できます。1つのカテゴリをご用意ください。"
     },
     "eyebrow": "デモを予約",
@@ -17673,6 +17673,9 @@
     "topics": "関連トピックを確認",
     "action": {
       "primary": "ページ上部へ"
+    },
+    "meta": {
+      "platformsTitle": "AI対応ECプラットフォーム：2026年、ショッピングエージェントに見つけてもらうには"
     }
   },
   "blogTagPage": {

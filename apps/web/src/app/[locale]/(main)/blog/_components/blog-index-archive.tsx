@@ -17,6 +17,7 @@ import { NuqsAdapter } from "nuqs/adapters/next/app";
 import { useRef } from "react";
 import { Link } from "@/i18n/navigation";
 import { blogImage } from "@/lib/blog-image";
+import { isOptimizable } from "@/lib/image-hosts";
 
 const pageSize = 10;
 const collections = ["all", "editorial"] as const;
@@ -161,7 +162,7 @@ const Archive = ({ entries, copy }: BlogIndexArchive.Props) => {
                     alt=""
                     fill
                     sizes="(min-width: 640px) 120px, 80px"
-                    unoptimized
+                    unoptimized={!isOptimizable(blogImage(entry.thumbnailUrl))}
                     className="object-cover"
                   />
                 )}

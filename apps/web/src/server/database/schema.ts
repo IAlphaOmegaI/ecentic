@@ -1102,6 +1102,8 @@ export const blogTranslation = pgTable(
     slug: text("slug").notNull(),
     locale: text("locale").notNull(),
     sourceHash: text("sourceHash").notNull(),
+    /** Published target baseline; null means an older job did not record one. */
+    targetSnapshotHash: text("targetSnapshotHash"),
     policyVersion: text("policyVersion").notNull(),
     status: text("status").notNull().default("pending"),
     completedUnits: jsonb("completedUnits")

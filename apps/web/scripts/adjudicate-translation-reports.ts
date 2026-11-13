@@ -15,7 +15,7 @@ import { translationReviewPasses } from "../src/i18n/translation/policy";
 import {
   adjudicateTranslationReport,
   type TranslationReviewReport,
-  translationPolicyVersion,
+  translationPolicyVersionFor,
 } from "../src/i18n/translation/runner";
 import {
   type CatalogValue,
@@ -70,7 +70,7 @@ const jobs = readdirSync(directory)
     const original = readFileSync(join(directory, name), "utf8");
     const raw = JSON.parse(original);
     if (
-      raw.policyVersion !== translationPolicyVersion ||
+      raw.policyVersion !== translationPolicyVersionFor(raw.targetLocale) ||
       raw.stage !== "corrected" ||
       !selected.includes(raw.targetLocale)
     )
@@ -87,7 +87,8 @@ const jobs = readdirSync(directory)
   .filter(
     ({ report }) =>
       report.stage === "corrected" &&
-      report.policyVersion === translationPolicyVersion &&
+      report.policyVersion ===
+        translationPolicyVersionFor(report.targetLocale) &&
       report.findings.length > 0 &&
       selected.includes(report.targetLocale),
   )
@@ -189,7 +190,9 @@ const worker = async () => {
           entries: Record<string, { sourceHash: string; text: string }>;
           failures: Record<string, { ids: string[]; reason: string }>;
         };
-        if (checkpoint.policy !== translationPolicyVersion)
+        if (
+          checkpoint.policy !== translationPolicyVersionFor(report.targetLocale)
+        )
           throw new Error("Checkpoint policy mismatch");
         for (const unit of cleared) {
           const current = checkpoint.entries[unit.id];

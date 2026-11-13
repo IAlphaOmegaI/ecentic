@@ -1,7 +1,7 @@
 {
   "ucpPlayground": {
     "meta": {
-      "title": "面向购物智能体的 UCP 试验区",
+      "title": "UCP 试验区：测试 AI 购物智能体与结账流程",
       "description": "针对 UCP 店铺测试商品目录搜索、购物车和结账流程。可通过 MCP 或 REST 检查请求与响应。"
     },
     "breadcrumb": {

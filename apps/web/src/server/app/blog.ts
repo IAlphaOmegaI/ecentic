@@ -13,7 +13,7 @@ import { after } from "next/server";
 import { z } from "zod";
 import { isPublishedLocale, type Locale } from "@/i18n/locales";
 import { createAzureTranslationGenerator } from "@/i18n/translation/azure";
-import { translationPolicyVersion } from "@/i18n/translation/runner";
+import { translationPolicyVersionFor } from "@/i18n/translation/runner";
 import { blogReadingMinutes, blogTopicSlug } from "@/lib/blog-locale";
 import { RETIRED_BLOG_POSTS } from "@/lib/blog-redirects";
 import { blogSourceHash } from "@/lib/blog-translation-content";
@@ -563,11 +563,11 @@ export const reconcileCatalog = async ({
       stored.data.map((post) => `${post.slug}:${post.locale}`),
     );
     const candidates = english.filter((post) => {
-      const hash = blogSourceHash(
-        toBlogTranslationSource(post),
-        translationPolicyVersion,
-      );
       return blogTargetLocales.some((locale) => {
+        const hash = blogSourceHash(
+          toBlogTranslationSource(post),
+          translationPolicyVersionFor(locale),
+        );
         const job = byKey.get(`${post.slug}:${locale}`);
         return job
           ? job.sourceHash !== hash

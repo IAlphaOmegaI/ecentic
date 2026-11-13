@@ -6106,7 +6106,7 @@
   },
   "ucpPlayground": {
     "meta": {
-      "title": "UCP Playground for shopping agents",
+      "title": "UCP Playground: Test AI Shopping Agents & Checkout",
       "description": "Test catalog search, cart and checkout against a UCP storefront. Inspect requests and responses over MCP or REST."
     },
     "breadcrumb": {
@@ -6165,7 +6165,7 @@
   },
   "ucpValidator": {
     "meta": {
-      "title": "UCP Validator for storefronts",
+      "title": "UCP Validator: Check Storefront Profiles & Agent Access",
       "description": "Check a storefront’s Universal Commerce Protocol profile, discovery data, schema and robots.txt access with the free UCP validator."
     },
     "breadcrumb": {
@@ -9831,7 +9831,7 @@
       "woocommerce": {
         "meta": {
           "title": "ecentic for WooCommerce: sell through AI assistants",
-          "description": "The free ecentic plugin for WooCommerce: compare products, publish listing changes and let supported agents check out through your store."
+          "description": "Install the free ecentic WooCommerce plugin to compare products with competitors, publish listing updates, and let compatible AI agents check out in your store."
         },
         "title": "ecentic for WooCommerce",
         "description": "Install the free plugin, compare your products with competitors, publish selected fixes and let supported AI agents check out through your own store.",
@@ -11129,8 +11129,8 @@
     },
     "resources": {
       "meta": {
-        "title": "Resources: guides, research and free tools",
-        "description": "Guides and free tools for selling through AI assistants, pilot stories and ecentic’s public developer endpoints."
+        "title": "AI Commerce Resources: Guides, Research & Free Tools",
+        "description": "Explore free AI commerce tools, ecommerce guides, pilot stories, and ecentic developer docs to prepare your store for AI-assisted shopping."
       },
       "title": "Resources",
       "description": "Guides, pilot stories and free tools for selling when AI does the shopping.",
@@ -11703,7 +11703,7 @@
       ],
       "faqTitle": "Questions about the platform",
       "meta": {
-        "title": "The ecentic platform: connect, simulate, fix, sell, track",
+        "title": "AI Commerce Platform: Connect, Simulate, Fix, Sell & Track",
         "description": "Connect your catalog, compare products with AI models, publish changes you choose, test agent checkout and track detected Shopify referrals."
       },
       "eyebrow": "Platform",
@@ -15611,7 +15611,7 @@
   },
   "enterpriseDemo": {
     "meta": {
-      "title": "Book a demo of ecentic",
+      "title": "Book an AI Shopping Demo for Your Product Catalog",
       "description": "See how ChatGPT, Claude and Gemini compare your products with a competitor's, live, with a founder. Bring one category."
     },
     "eyebrow": "Book a demo",
@@ -17673,6 +17673,9 @@
     "topics": "Explore these topics",
     "action": {
       "primary": "Back to top"
+    },
+    "meta": {
+      "platformsTitle": "AI Ecommerce Platforms: Boost Shopping Agent Visibility in 2026"
     }
   },
   "blogTagPage": {

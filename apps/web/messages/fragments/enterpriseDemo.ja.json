@@ -1,7 +1,7 @@
 {
   "enterpriseDemo": {
     "meta": {
-      "title": "ecenticのデモを予約",
+      "title": "商品カタログでAIショッピングのデモを予約",
       "description": "創業者とのライブデモで、ChatGPT、Claude、Geminiが自社商品を競合商品とどう比較するかを確認できます。1つのカテゴリをご用意ください。"
     },
     "eyebrow": "デモを予約",

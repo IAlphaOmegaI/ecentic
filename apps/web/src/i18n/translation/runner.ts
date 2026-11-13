@@ -3,7 +3,7 @@ import type { Locale } from "../locales";
 import {
   reviewInstructions,
   translationInstructions,
-  translationPolicyVersion,
+  translationPolicyVersionFor,
   translationReviewPasses,
 } from "./policy";
 import {
@@ -12,7 +12,10 @@ import {
   validateTranslationUnit,
 } from "./validation";
 
-export { translationPolicyVersion } from "./policy";
+export {
+  translationPolicyVersion,
+  translationPolicyVersionFor,
+} from "./policy";
 export {
   type TranslationFinding,
   type TranslationUnit,
@@ -195,7 +198,7 @@ export const adjudicateTranslationReport = async ({
   documentContext?: string;
 }): Promise<TranslationReviewReport> => {
   if (
-    report.policyVersion !== translationPolicyVersion ||
+    report.policyVersion !== translationPolicyVersionFor(report.targetLocale) ||
     report.stage !== "corrected"
   )
     throw new Error(
@@ -406,7 +409,7 @@ export const translateTextUnits = async ({
         []),
     ]);
     const report: TranslationReviewReport = {
-      policyVersion: translationPolicyVersion,
+      policyVersion: translationPolicyVersionFor(targetLocale),
       targetLocale,
       stage,
       documentContext,

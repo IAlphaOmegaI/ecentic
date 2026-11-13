@@ -1,7 +1,7 @@
 {
   "ucpPlayground": {
     "meta": {
-      "title": "UCP Playground pour les agents d’achat IA",
+      "title": "UCP Playground : testez les agents d’achat IA et la finalisation des achats",
       "description": "Testez la recherche dans le catalogue, le panier et le paiement sur une vitrine UCP. Inspectez les requêtes et les réponses via MCP ou REST."
     },
     "breadcrumb": {

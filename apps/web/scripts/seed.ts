@@ -12,7 +12,7 @@ const posts = [
     publishedAt: "2026-06-30",
     updatedAt: "2026-07-01",
     readTime: "6 min",
-    thumbnailUrl: "/images/blog/yc-techstars-deals.jpg",
+    thumbnailUrl: "/images/blog/yc-techstars-deals.webp",
     tags: [
       "Y Combinator deal",
       "Techstars deal",
@@ -391,7 +391,7 @@ Finally, measure agent influence before it shows up cleanly in standard analytic
     publishedAt: "2026-07-09",
     updatedAt: "2026-07-09",
     readTime: "11 min",
-    thumbnailUrl: "/images/blog/ai-economy-commerce.jpg",
+    thumbnailUrl: "/images/blog/ai-economy-commerce.webp",
     tags: [
       "AI economy",
       "agentic commerce",

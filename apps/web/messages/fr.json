@@ -3043,7 +3043,7 @@
       "stats": {
         "cyberWeek": {
           "value": "20%",
-          "label": "des commandes de la Cyber Week 2025 ont été influencées par l’IA (67 Md$)",
+          "label": "des commandes de la Cyber Week 2025 ont été influencées par l’IA (67 milliards $)",
           "source": "Salesforce"
         },
         "conversion": {
@@ -6106,7 +6106,7 @@
   },
   "ucpPlayground": {
     "meta": {
-      "title": "UCP Playground pour les agents d’achat IA",
+      "title": "UCP Playground : testez les agents d’achat IA et la finalisation des achats",
       "description": "Testez la recherche dans le catalogue, le panier et le paiement sur une vitrine UCP. Inspectez les requêtes et les réponses via MCP ou REST."
     },
     "breadcrumb": {
@@ -6165,7 +6165,7 @@
   },
   "ucpValidator": {
     "meta": {
-      "title": "UCP Validator pour vitrines e-commerce",
+      "title": "Validateur UCP : vérifiez les profils de boutique et l’accès des agents",
       "description": "Vérifiez le profil Universal Commerce Protocol d’une boutique, les données de découverte, le schéma et les règles d’accès de robots.txt avec le validateur UCP gratuit."
     },
     "breadcrumb": {
@@ -9831,7 +9831,7 @@
       "woocommerce": {
         "meta": {
           "title": "ecentic pour WooCommerce : vendre via les assistants IA",
-          "description": "Le plugin ecentic gratuit pour WooCommerce : comparez des produits, publiez des modifications de fiches produit et laissez les agents compatibles effectuer le paiement via votre boutique."
+          "description": "Installez le plugin gratuit ecentic pour WooCommerce pour comparer vos produits à ceux de vos concurrents, publier les mises à jour des fiches et permettre aux agents IA compatibles de finaliser leurs achats dans votre boutique."
         },
         "title": "ecentic pour WooCommerce",
         "description": "Installez le plugin gratuit, comparez vos produits avec ceux de concurrents, publiez les corrections sélectionnées et laissez les agents IA compatibles effectuer le paiement via votre propre boutique.",
@@ -11129,8 +11129,8 @@
     },
     "resources": {
       "meta": {
-        "title": "Ressources : guides, recherches et outils gratuits",
-        "description": "Guides et outils gratuits pour vendre via des assistants IA, retours d’expérience pilotes et points d’accès publics pour développeurs d’ecentic."
+        "title": "Ressources pour le commerce IA : guides, recherches et outils gratuits",
+        "description": "Préparez votre boutique aux achats assistés par IA : outils gratuits de commerce IA, guides e-commerce, retours de projets pilotes et documentation développeur d’ecentic."
       },
       "title": "Ressources",
       "description": "Guides, retours d’expérience pilotes et outils gratuits pour vendre quand l’IA fait les achats.",
@@ -11703,7 +11703,7 @@
       ],
       "faqTitle": "Questions sur la plateforme",
       "meta": {
-        "title": "La plateforme ecentic : connexion, simulation, correction, vente et suivi",
+        "title": "Plateforme de commerce IA : connecter, simuler, corriger, vendre et suivre",
         "description": "Connectez votre catalogue, comparez vos produits avec des modèles d’IA, publiez les modifications de votre choix, testez le paiement via des agents IA et suivez les références Shopify détectées."
       },
       "eyebrow": "Plateforme",
@@ -15611,7 +15611,7 @@
   },
   "enterpriseDemo": {
     "meta": {
-      "title": "Réserver une démo d’ecentic",
+      "title": "Réservez une démo d’achat par IA pour votre catalogue",
       "description": "Découvrez en direct, avec un fondateur, comment ChatGPT, Claude et Gemini comparent vos produits à ceux d’un concurrent. Apportez une catégorie."
     },
     "eyebrow": "Réserver une démo",
@@ -17673,6 +17673,9 @@
     "topics": "Sujets à explorer",
     "action": {
       "primary": "Retour en haut"
+    },
+    "meta": {
+      "platformsTitle": "Plateformes IA e-commerce : améliorez votre visibilité auprès des agents d’achat en 2026"
     }
   },
   "blogTagPage": {

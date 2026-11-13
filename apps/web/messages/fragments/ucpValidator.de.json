@@ -1,7 +1,7 @@
 {
   "ucpValidator": {
     "meta": {
-      "title": "UCP Validator für Storefronts",
+      "title": "UCP-Validator: Shopprofile und Agentenzugriff prüfen",
       "description": "Prüfen Sie mit dem kostenlosen UCP-Validator das Profil des Universal Commerce Protocol, die Erkennungsdaten, das Schema und den robots.txt-Zugriff eines Onlineshops."
     },
     "breadcrumb": {

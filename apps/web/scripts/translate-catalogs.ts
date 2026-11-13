@@ -15,7 +15,7 @@ import {
   type TranslationUnit,
   TranslationValidationError,
   translateTextUnits,
-  translationPolicyVersion,
+  translationPolicyVersionFor,
 } from "../src/i18n/translation/runner";
 import {
   type CatalogValue,
@@ -104,9 +104,14 @@ const states = targets.map((locale) => {
     ? (JSON.parse(readFileSync(path, "utf8")) as Checkpoint)
     : null;
   const checkpoint: Checkpoint =
-    existing?.policy === translationPolicyVersion
+    existing?.policy === translationPolicyVersionFor(locale)
       ? existing
-      : { locale, policy: translationPolicyVersion, entries: {}, failures: {} };
+      : {
+          locale,
+          policy: translationPolicyVersionFor(locale),
+          entries: {},
+          failures: {},
+        };
   for (const unit of allUnits.filter((unit) => unit.invariant)) {
     checkpoint.entries[unit.id] = {
       sourceHash: hash(unit.text),

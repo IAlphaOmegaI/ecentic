@@ -2,8 +2,8 @@
 
 import { Button } from "@zenncore/web/components/button";
 import { useTranslations } from "next-intl";
+import { IntentLink } from "@/components/marketing/intent-link";
 import { useConsent } from "@/context/consent";
-import { Link } from "@/i18n/navigation";
 import { Plus } from "./plus";
 
 export const CookieConsent = () => {
@@ -34,12 +34,12 @@ export const CookieConsent = () => {
             </h2>
             <p className="text-foreground-dimmed text-sm">
               {translate("message")}{" "}
-              <Link
+              <IntentLink
                 href="/privacy-policy"
                 className="text-primary-text underline underline-offset-2"
               >
                 {translate("privacy")}
-              </Link>
+              </IntentLink>
               .
             </p>
           </div>

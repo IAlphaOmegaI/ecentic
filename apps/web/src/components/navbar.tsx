@@ -59,13 +59,14 @@ import {
 } from "react";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { fonts } from "@/components/marketing/fonts";
+import { IntentLink as Link } from "@/components/marketing/intent-link";
 import { MarketingStatus } from "@/components/marketing/primitives";
 import {
   type ProviderKey,
   ProviderLogo,
 } from "@/components/marketing/provider-logo";
 import { Plus } from "@/components/plus";
-import { Link, usePathname } from "@/i18n/navigation";
+import { usePathname } from "@/i18n/navigation";
 import styles from "./navbar.module.css";
 
 const navigationProviders: Record<string, ProviderKey> = {

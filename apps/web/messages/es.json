@@ -6106,7 +6106,7 @@
   },
   "ucpPlayground": {
     "meta": {
-      "title": "Playground UCP para agentes de compra",
+      "title": "UCP Playground: prueba agentes de compra con IA y el proceso de compra",
       "description": "Prueba búsquedas de catálogo, carrito y checkout en una tienda UCP. Consulta solicitudes y respuestas por MCP o REST."
     },
     "breadcrumb": {
@@ -6165,7 +6165,7 @@
   },
   "ucpValidator": {
     "meta": {
-      "title": "Validador UCP para tiendas",
+      "title": "Validador UCP: comprueba perfiles de tiendas y acceso de agentes",
       "description": "Comprueba el perfil UCP de una tienda, sus datos de descubrimiento, esquema y acceso en robots.txt con el validador gratuito."
     },
     "breadcrumb": {
@@ -9831,7 +9831,7 @@
       "woocommerce": {
         "meta": {
           "title": "ecentic para WooCommerce: vende con asistentes de IA",
-          "description": "El plugin gratuito de ecentic para WooCommerce: compara productos, publica cambios y permite que agentes compatibles compren en tu tienda."
+          "description": "Instala el plugin gratuito de ecentic para WooCommerce para comparar tus productos con los de la competencia, publicar actualizaciones de fichas y permitir que los agentes de IA compatibles completen la compra en tu tienda."
         },
         "title": "ecentic para WooCommerce",
         "description": "Instala el plugin gratuito, compara tus productos con la competencia, publica correcciones y permite que agentes de IA compatibles compren en tu propia tienda.",
@@ -11129,8 +11129,8 @@
     },
     "resources": {
       "meta": {
-        "title": "Recursos: guías y herramientas gratuitas",
-        "description": "Guías y herramientas gratis para vender a través de asistentes de IA, historias de pilotos y endpoints públicos para desarrolladores."
+        "title": "Recursos de comercio con IA: guías, investigación y herramientas gratis",
+        "description": "Prepara tu tienda para las compras con IA con herramientas gratuitas de comercio con IA, guías de ecommerce, casos piloto y documentación de ecentic para desarrolladores."
       },
       "title": "Recursos",
       "description": "Guías, historias de pilotos y herramientas gratis para vender cuando compra la IA.",
@@ -11703,7 +11703,7 @@
       ],
       "faqTitle": "Preguntas sobre la plataforma",
       "meta": {
-        "title": "La plataforma ecentic: conecta, simula, mejora y vende",
+        "title": "Plataforma de comercio con IA: conecta, simula, corrige, vende y haz seguimiento",
         "description": "Conecta tu catálogo, compara con IA, publica cambios que tú eliges, prueba el pago con agentes y mide referencias detectadas en Shopify."
       },
       "eyebrow": "Plataforma",
@@ -15611,7 +15611,7 @@
   },
   "enterpriseDemo": {
     "meta": {
-      "title": "Reserva una demo de ecentic",
+      "title": "Reserva una demo de compras con IA para tu catálogo",
       "description": "Descubre con un fundador cómo ChatGPT, Claude y Gemini comparan tus productos con los de un competidor. Trae una categoría."
     },
     "eyebrow": "Reserva una demo",
@@ -17673,6 +17673,9 @@
     "topics": "Explora estos temas",
     "action": {
       "primary": "Volver arriba"
+    },
+    "meta": {
+      "platformsTitle": "Plataformas de IA para ecommerce: mejora tu visibilidad ante agentes de compra en 2026"
     }
   },
   "blogTagPage": {

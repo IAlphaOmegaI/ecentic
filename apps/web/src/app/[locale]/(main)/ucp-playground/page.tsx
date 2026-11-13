@@ -29,7 +29,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
   const locale = await getLocale();
   const translate = await getTranslations("ucpPlayground");
 
-  return createMetadata({
+  const metadata = createMetadata({
     title: translate("meta.title"),
     description: translate("meta.description"),
     path: localizePath("/ucp-playground", locale),
@@ -43,6 +43,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
       "free UCP tool",
     ],
   });
+  return { ...metadata, title: { absolute: translate("meta.title") } };
 };
 
 const PlaygroundSkeleton = () => (

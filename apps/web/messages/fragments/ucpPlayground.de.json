@@ -1,7 +1,7 @@
 {
   "ucpPlayground": {
     "meta": {
-      "title": "UCP Playground für Shopping-Agenten",
+      "title": "UCP Playground: KI-Shopping-Agenten und Checkout testen",
       "description": "Testen Sie Katalogsuche, Warenkorb und Kaufabschluss mit einem UCP-Storefront. Prüfen Sie Anfragen und Antworten über MCP oder REST."
     },
     "breadcrumb": {

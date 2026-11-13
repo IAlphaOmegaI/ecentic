@@ -1,7 +1,7 @@
 {
   "ucpValidator": {
     "meta": {
-      "title": "ストアフロント向けUCP Validator",
+      "title": "UCP検証ツール：ストアのプロファイルとエージェントのアクセスを確認",
       "description": "無料のUCP Validatorで、ストアフロントのUniversal Commerce Protocolプロファイル、検出データ、スキーマ、robots.txtアクセスを確認できます。"
     },
     "breadcrumb": {
