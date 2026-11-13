@@ -39,7 +39,7 @@ export default async ({ searchParams }: SearchParamsProps<"products">) => {
       store={store}
     >
       <Motion.Item className="px-6 py-7 sm:px-8">
-        <h1 className="font-heading text-3xl text-foreground-rich tracking-tight sm:text-4xl">
+        <h1 className="font-heading font-medium text-3xl text-foreground-rich tracking-tight sm:text-4xl">
           {translate("title")}
         </h1>
         <p className="mt-3 max-w-2xl text-base text-foreground-dimmed leading-relaxed">

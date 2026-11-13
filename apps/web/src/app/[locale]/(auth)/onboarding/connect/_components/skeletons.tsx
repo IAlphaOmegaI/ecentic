@@ -3,23 +3,30 @@
  * so neither the grid nor the import panel shifts the layout when it lands.
  */
 export const CatalogSkeleton = () => (
-  <div
-    aria-hidden
-    className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2"
-  >
-    {Array.from({ length: 4 }, (_, index) => (
-      <div
-        // biome-ignore lint/suspicious/noArrayIndexKey: static placeholder tiles
-        key={index}
-        className="flex min-h-52 flex-col justify-between bg-background-rich px-6 py-6 sm:px-8"
-      >
-        <div className="h-9 w-24 animate-pulse rounded-md bg-accent-foreground/60" />
-        <div className="flex flex-col gap-2">
-          <div className="h-5 w-2/3 animate-pulse rounded bg-accent-foreground/60" />
-          <div className="h-4 w-full animate-pulse rounded bg-accent-foreground/40" />
+  <div aria-hidden>
+    <div className="space-y-4 border-accent-foreground border-b px-6 py-6 sm:px-8">
+      <div className="h-4 w-40 animate-pulse rounded bg-accent-foreground/60" />
+      <div className="h-10 w-full animate-pulse rounded-md bg-accent-foreground/40" />
+      <div className="h-4 w-24 animate-pulse rounded bg-accent-foreground/40" />
+    </div>
+    <div className="border-accent-foreground border-b bg-background px-6 py-4 sm:px-8">
+      <div className="h-6 w-40 animate-pulse rounded bg-accent-foreground/60" />
+    </div>
+    <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2">
+      {Array.from({ length: 4 }, (_, index) => (
+        <div
+          // biome-ignore lint/suspicious/noArrayIndexKey: static placeholder tiles
+          key={index}
+          className="flex min-h-48 flex-col justify-between bg-background-rich px-6 py-6 sm:px-8"
+        >
+          <div className="h-8 w-24 animate-pulse rounded-md bg-accent-foreground/60" />
+          <div className="flex flex-col gap-2">
+            <div className="h-6 w-2/3 animate-pulse rounded bg-accent-foreground/60" />
+            <div className="h-4 w-full animate-pulse rounded bg-accent-foreground/40" />
+          </div>
         </div>
-      </div>
-    ))}
+      ))}
+    </div>
   </div>
 );
 

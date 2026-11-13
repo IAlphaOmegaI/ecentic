@@ -44,7 +44,19 @@ The root provider component.
 
 ### FileUploadInput
 
-The drop zone and file picker.
+The drop zone and file picker. Single-file selections can be replaced by opening
+it again or dropping another file.
+
+Optional composition props:
+
+- `inputLabel`: accessible name for the picker button.
+- `emptyContent`: localized React content for the empty drop zone.
+- `selectedContent(file)`: localized selected-file content and replacement affordance.
+- `classList.root` / `classList.input`: style the outer drop receiver and picker surface.
+- The picker exposes `data-dragging` while a file is dragged over it, so custom surfaces can retain clear drop-target feedback.
+
+The `file` shape in `InferredForm` forwards these same props. Use them to localize
+picker copy and compose a single surface without nesting an extra upload card.
 
 ### FileUploadPreview
 

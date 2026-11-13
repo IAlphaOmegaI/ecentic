@@ -1,0 +1,94 @@
+{
+  "onboardingDirectory": {
+    "search": {
+      "label": "Trova la tua piattaforma",
+      "placeholder": "Cerca una piattaforma o un metodo di importazione",
+      "count": "{count, plural, one {# opzione} many {# opzioni} other {# opzioni}}"
+    },
+    "groups": {
+      "direct": {
+        "title": "Scegli come importare"
+      },
+      "exports": {
+        "title": "Usa un file esportato o un feed di prodotti",
+        "description": "Importa un feed XML/JSON compatibile o un file CSV. Queste opzioni non si collegano all’API della piattaforma."
+      },
+      "planned": {
+        "title": "Collegamenti nativi in programma",
+        "description": "Questi collegamenti nativi non sono ancora disponibili. Puoi usare un’esportazione di prodotti compatibile."
+      }
+    },
+    "modes": {
+      "native": "Collegamento diretto",
+      "feed": "Feed XML / JSON",
+      "csv": "Importazione CSV",
+      "export": "Esportazione prodotti",
+      "planned": "In arrivo"
+    },
+    "providers": {
+      "shopify": {
+        "name": "Shopify",
+        "description": "Importa il tuo catalogo Shopify."
+      },
+      "woocommerce": {
+        "name": "WooCommerce",
+        "description": "Collega il negozio con le credenziali della sua API REST."
+      },
+      "feed": {
+        "name": "Feed di prodotti",
+        "description": "Importa prodotti da un URL XML o JSON compatibile."
+      },
+      "csv": {
+        "name": "Importazione CSV",
+        "description": "Carica un foglio di calcolo dei prodotti esportato in formato CSV."
+      },
+      "adobe": {
+        "name": "Adobe Commerce",
+        "description": "Usa un feed di prodotti compatibile esportato dal tuo negozio."
+      },
+      "shopware": {
+        "name": "Shopware",
+        "description": "Usa un feed di prodotti compatibile esportato dal tuo negozio."
+      },
+      "wix": {
+        "name": "Wix",
+        "description": "Importa il catalogo con un’esportazione di prodotti in CSV."
+      },
+      "prestashop": {
+        "name": "PrestaShop",
+        "description": "Usa un feed di prodotti compatibile esportato dal tuo negozio."
+      },
+      "plytix": {
+        "name": "Plytix",
+        "description": "Usa un feed di catalogo compatibile dal tuo PIM."
+      },
+      "akeneo": {
+        "name": "Akeneo",
+        "description": "Importa un’esportazione di prodotti in CSV dal tuo PIM."
+      },
+      "salsify": {
+        "name": "Salsify",
+        "description": "Usa un feed di catalogo compatibile dal tuo PIM."
+      },
+      "google": {
+        "name": "Google Merchant Center",
+        "description": "Usa il feed di prodotti che invii già a Google."
+      },
+      "bigcommerce": {
+        "name": "BigCommerce",
+        "description": "È previsto un collegamento nativo a BigCommerce."
+      },
+      "amazon": {
+        "name": "Amazon Seller Central",
+        "description": "È previsto un collegamento nativo ad Amazon Seller."
+      }
+    },
+    "empty": {
+      "title": "Nessuna piattaforma corrispondente",
+      "description": "Puoi importare un CSV senza un’integrazione nativa. Controlla le colonne supportate, poi carica il catalogo.",
+      "action": {
+        "primary": "Importa un CSV"
+      }
+    }
+  }
+}

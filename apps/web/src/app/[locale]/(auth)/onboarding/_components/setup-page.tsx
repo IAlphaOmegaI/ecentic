@@ -23,9 +23,12 @@ export const SetupPage = ({
   children: ReactNode;
   guidance: ReactNode;
 }) => (
-  <div className="flex min-h-0 flex-1 flex-col">
-    <div className="min-h-0 flex-1 overflow-y-auto">
-      <Motion.Stagger stagger={0.04} className="flex min-h-full flex-col">
+  <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+    <div className="min-h-0 min-w-0 flex-1 overflow-y-auto overflow-x-hidden">
+      <Motion.Stagger
+        stagger={0.04}
+        className="flex min-h-full min-w-0 flex-col"
+      >
         <Motion.Item className="relative isolate shrink-0 border-accent-foreground border-b px-6 py-8 sm:px-8">
           <div
             aria-hidden="true"
@@ -38,7 +41,7 @@ export const SetupPage = ({
             height={48}
             className="mb-6 h-10 w-20 object-contain object-left"
           />
-          <h1 className="font-heading text-3xl text-foreground-rich tracking-tight sm:text-4xl">
+          <h1 className="font-heading font-medium text-3xl text-foreground-rich tracking-tight sm:text-4xl">
             {title}
           </h1>
           <p className="mt-4 max-w-2xl text-base text-foreground-dimmed leading-relaxed sm:text-lg">
@@ -68,11 +71,16 @@ export const SetupSteps = ({
   title: string;
   steps: readonly string[];
 }) => (
-  <section>
-    <h2 className="mb-6 font-medium text-foreground-rich text-lg">{title}</h2>
-    <ol>
+  <section className="min-w-0">
+    <h2 className="mb-6 font-heading font-medium text-foreground-rich text-xl">
+      {title}
+    </h2>
+    <ol className="min-w-0">
       {steps.map((step, index) => (
-        <li key={step} className="relative flex gap-4 pb-6 last:pb-0">
+        <li
+          key={step}
+          className="relative grid min-w-0 grid-cols-[2rem_minmax(0,1fr)] gap-4 pb-6 last:pb-0"
+        >
           {index < steps.length - 1 && (
             <span
               aria-hidden="true"
@@ -85,7 +93,9 @@ export const SetupSteps = ({
           >
             {index + 1}
           </span>
-          <p className="pt-1 text-foreground text-sm leading-relaxed">{step}</p>
+          <p className="min-w-0 pt-1 text-foreground text-sm leading-relaxed [overflow-wrap:anywhere]">
+            {step}
+          </p>
         </li>
       ))}
     </ol>

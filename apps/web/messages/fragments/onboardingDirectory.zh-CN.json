@@ -1,0 +1,94 @@
+{
+  "onboardingDirectory": {
+    "search": {
+      "label": "查找平台",
+      "placeholder": "搜索平台或导入方式",
+      "count": "{count, plural, other {# 个选项}}"
+    },
+    "groups": {
+      "direct": {
+        "title": "选择导入方式"
+      },
+      "exports": {
+        "title": "使用导出文件或商品数据源",
+        "description": "导入支持的 XML/JSON 数据源或 CSV 文件。这些方式不会连接平台的 API。"
+      },
+      "planned": {
+        "title": "计划支持的原生连接",
+        "description": "这些原生连接尚未开放，仍可使用兼容的商品导出文件。"
+      }
+    },
+    "modes": {
+      "native": "直接连接",
+      "feed": "XML / JSON 数据源",
+      "csv": "CSV 导入",
+      "export": "商品导出文件",
+      "planned": "即将推出"
+    },
+    "providers": {
+      "shopify": {
+        "name": "Shopify",
+        "description": "导入 Shopify 商品目录。"
+      },
+      "woocommerce": {
+        "name": "WooCommerce",
+        "description": "使用店铺的 REST API 凭据连接。"
+      },
+      "feed": {
+        "name": "商品数据源",
+        "description": "通过支持的 XML 或 JSON 地址导入商品。"
+      },
+      "csv": {
+        "name": "CSV 导入",
+        "description": "上传以 CSV 格式导出的商品表格。"
+      },
+      "adobe": {
+        "name": "Adobe Commerce",
+        "description": "使用从店铺导出的兼容商品数据源。"
+      },
+      "shopware": {
+        "name": "Shopware",
+        "description": "使用从店铺导出的兼容商品数据源。"
+      },
+      "wix": {
+        "name": "Wix",
+        "description": "通过 CSV 商品导出文件导入目录。"
+      },
+      "prestashop": {
+        "name": "PrestaShop",
+        "description": "使用从店铺导出的兼容商品数据源。"
+      },
+      "plytix": {
+        "name": "Plytix",
+        "description": "使用 PIM 提供的兼容商品目录数据源。"
+      },
+      "akeneo": {
+        "name": "Akeneo",
+        "description": "导入从 PIM 导出的 CSV 商品文件。"
+      },
+      "salsify": {
+        "name": "Salsify",
+        "description": "使用 PIM 提供的兼容商品目录数据源。"
+      },
+      "google": {
+        "name": "Google Merchant Center",
+        "description": "使用已向 Google 提交的原始商品数据源。"
+      },
+      "bigcommerce": {
+        "name": "BigCommerce",
+        "description": "计划支持 BigCommerce 原生连接。"
+      },
+      "amazon": {
+        "name": "Amazon Seller Central",
+        "description": "计划支持 Amazon Seller 原生连接。"
+      }
+    },
+    "empty": {
+      "title": "未找到匹配的平台",
+      "description": "无需原生集成也能导入 CSV。请先查看支持的列，再上传商品目录。",
+      "action": {
+        "primary": "导入 CSV"
+      }
+    }
+  }
+}

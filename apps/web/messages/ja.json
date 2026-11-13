@@ -20259,5 +20259,123 @@
       "resetPassword": "この再設定リンクは無効です。新しいリンクをリクエストして、もう一度お試しください。",
       "completeProfile": "プロフィールを保存できませんでした。もう一度お試しください。問題が続く場合はサポートにお問い合わせください。"
     }
+  },
+  "onboardingDirectory": {
+    "search": {
+      "label": "プラットフォームを探す",
+      "placeholder": "プラットフォームやインポート方法を検索",
+      "count": "{count, plural, other {#件の候補}}"
+    },
+    "groups": {
+      "direct": {
+        "title": "インポート方法を選択"
+      },
+      "exports": {
+        "title": "エクスポートファイル・商品フィードを使用",
+        "description": "対応するXML/JSONフィードまたはCSVファイルをインポートします。これらの方法では、プラットフォームのAPIには接続しません。"
+      },
+      "planned": {
+        "title": "今後対応予定の直接接続",
+        "description": "これらの直接接続はまだ利用できません。対応形式でエクスポートした商品データはインポートできます。"
+      }
+    },
+    "modes": {
+      "native": "直接接続",
+      "feed": "XML / JSONフィード",
+      "csv": "CSVインポート",
+      "export": "商品データのエクスポート",
+      "planned": "近日対応予定"
+    },
+    "providers": {
+      "shopify": {
+        "name": "Shopify",
+        "description": "Shopifyのカタログをインポートします。"
+      },
+      "woocommerce": {
+        "name": "WooCommerce",
+        "description": "ストアのREST API認証情報を使って接続します。"
+      },
+      "feed": {
+        "name": "商品フィード",
+        "description": "対応するXMLまたはJSONのURLから商品をインポートします。"
+      },
+      "csv": {
+        "name": "CSVインポート",
+        "description": "CSV形式でエクスポートした商品一覧をアップロードします。"
+      },
+      "adobe": {
+        "name": "Adobe Commerce",
+        "description": "ストアからエクスポートした対応形式の商品フィードを使用します。"
+      },
+      "shopware": {
+        "name": "Shopware",
+        "description": "ストアからエクスポートした対応形式の商品フィードを使用します。"
+      },
+      "wix": {
+        "name": "Wix",
+        "description": "CSV形式の商品データでカタログをインポートします。"
+      },
+      "prestashop": {
+        "name": "PrestaShop",
+        "description": "ストアからエクスポートした対応形式の商品フィードを使用します。"
+      },
+      "plytix": {
+        "name": "Plytix",
+        "description": "PIMから出力した対応形式のカタログフィードを使用します。"
+      },
+      "akeneo": {
+        "name": "Akeneo",
+        "description": "PIMからエクスポートしたCSV形式の商品データをインポートします。"
+      },
+      "salsify": {
+        "name": "Salsify",
+        "description": "PIMから出力した対応形式のカタログフィードを使用します。"
+      },
+      "google": {
+        "name": "Google Merchant Center",
+        "description": "Googleに送信している元の商品フィードを使用します。"
+      },
+      "bigcommerce": {
+        "name": "BigCommerce",
+        "description": "BigCommerceとの直接接続を予定しています。"
+      },
+      "amazon": {
+        "name": "Amazon Seller Central",
+        "description": "Amazon Sellerとの直接接続を予定しています。"
+      }
+    },
+    "empty": {
+      "title": "該当するプラットフォームがありません",
+      "description": "直接接続に対応していなくても、CSVをインポートできます。対応する列を確認してから、カタログをアップロードしてください。",
+      "action": {
+        "primary": "CSVをインポート"
+      }
+    }
+  },
+  "onboardingRecovery": {
+    "upload": {
+      "choose": "CSVファイルを選択",
+      "drop": "エクスポートしたカタログをここにドロップするか、端末から選択してください。",
+      "browse": "ファイルを参照",
+      "selected": "インポートするファイルを選択済み",
+      "replace": "別のCSVを選択"
+    },
+    "empty": {
+      "status": "商品はまだインポートされていません",
+      "title": "まずはカタログを取り込みましょう。",
+      "description": "ストアを接続するか、エクスポートしたファイルをインポートしてください。その後、比較する商品を選びます。",
+      "store": {
+        "title": "ストアを接続",
+        "description": "Shopify、WooCommerce、商品フィードからカタログを取り込めます。"
+      },
+      "csv": {
+        "title": "エクスポートしたカタログを使用",
+        "description": "表計算ファイルがあれば、お使いのECプラットフォームから書き出したCSVをインポートできます。"
+      },
+      "action": {
+        "primary": "ストアを接続",
+        "secondary": "CSVをインポート"
+      }
+    }
   }
 }

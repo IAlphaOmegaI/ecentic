@@ -20259,5 +20259,123 @@
       "resetPassword": "Ce lien de réinitialisation n’est plus valide. Demandez-en un nouveau, puis réessayez.",
       "completeProfile": "Votre profil n’a pas pu être enregistré. Réessayez. Si le problème persiste, contactez l’assistance."
     }
+  },
+  "onboardingDirectory": {
+    "search": {
+      "label": "Trouvez votre plateforme",
+      "placeholder": "Rechercher une plateforme ou un mode d’import",
+      "count": "{count, plural, one {# option} many {# options} other {# options}}"
+    },
+    "groups": {
+      "direct": {
+        "title": "Choisissez un mode d’import"
+      },
+      "exports": {
+        "title": "Importer un fichier ou un flux de produits",
+        "description": "Importez un flux XML/JSON compatible ou un fichier CSV. Ces options ne se connectent pas à l’API de la plateforme."
+      },
+      "planned": {
+        "title": "Connexions natives à venir",
+        "description": "Ces connexions natives ne sont pas encore disponibles. Vous pouvez utiliser un export de produits compatible."
+      }
+    },
+    "modes": {
+      "native": "Connexion directe",
+      "feed": "Flux XML / JSON",
+      "csv": "Import CSV",
+      "export": "Export de produits",
+      "planned": "À venir"
+    },
+    "providers": {
+      "shopify": {
+        "name": "Shopify",
+        "description": "Importez votre catalogue Shopify."
+      },
+      "woocommerce": {
+        "name": "WooCommerce",
+        "description": "Connectez votre boutique avec les identifiants de son API REST."
+      },
+      "feed": {
+        "name": "Flux de produits",
+        "description": "Importez des produits depuis une URL XML ou JSON compatible."
+      },
+      "csv": {
+        "name": "Import CSV",
+        "description": "Importez un tableau de produits exporté au format CSV."
+      },
+      "adobe": {
+        "name": "Adobe Commerce",
+        "description": "Utilisez un flux de produits compatible exporté depuis votre boutique."
+      },
+      "shopware": {
+        "name": "Shopware",
+        "description": "Utilisez un flux de produits compatible exporté depuis votre boutique."
+      },
+      "wix": {
+        "name": "Wix",
+        "description": "Importez votre catalogue avec un export de produits CSV."
+      },
+      "prestashop": {
+        "name": "PrestaShop",
+        "description": "Utilisez un flux de produits compatible exporté depuis votre boutique."
+      },
+      "plytix": {
+        "name": "Plytix",
+        "description": "Utilisez un flux de catalogue compatible issu de votre PIM."
+      },
+      "akeneo": {
+        "name": "Akeneo",
+        "description": "Importez un fichier de produits CSV exporté depuis votre PIM."
+      },
+      "salsify": {
+        "name": "Salsify",
+        "description": "Utilisez un flux de catalogue compatible issu de votre PIM."
+      },
+      "google": {
+        "name": "Google Merchant Center",
+        "description": "Utilisez le flux de produits que vous envoyez déjà à Google."
+      },
+      "bigcommerce": {
+        "name": "BigCommerce",
+        "description": "Une connexion native à BigCommerce est prévue."
+      },
+      "amazon": {
+        "name": "Amazon Seller Central",
+        "description": "Une connexion native à Amazon Seller est prévue."
+      }
+    },
+    "empty": {
+      "title": "Aucune plateforme ne correspond",
+      "description": "Un export CSV ne nécessite pas d’intégration native. Consultez les colonnes prises en charge, puis importez votre catalogue.",
+      "action": {
+        "primary": "Importer un CSV"
+      }
+    }
+  },
+  "onboardingRecovery": {
+    "upload": {
+      "choose": "Choisissez votre fichier CSV",
+      "drop": "Déposez votre catalogue exporté ici ou sélectionnez-le sur votre appareil.",
+      "browse": "Parcourir les fichiers",
+      "selected": "Fichier prêt à importer",
+      "replace": "Choisir un autre CSV"
+    },
+    "empty": {
+      "status": "Aucun produit importé pour le moment",
+      "title": "Commencez par votre catalogue.",
+      "description": "Connectez une boutique ou importez un fichier exporté. Choisissez ensuite les produits à comparer.",
+      "store": {
+        "title": "Connectez votre boutique",
+        "description": "Importez votre catalogue depuis Shopify, WooCommerce ou un flux de produits."
+      },
+      "csv": {
+        "title": "Utilisez un catalogue exporté",
+        "description": "Votre feuille de calcul est prête ? Importez un CSV depuis n’importe quelle plateforme de commerce."
+      },
+      "action": {
+        "primary": "Connecter une boutique",
+        "secondary": "Importer un CSV"
+      }
+    }
   }
 }

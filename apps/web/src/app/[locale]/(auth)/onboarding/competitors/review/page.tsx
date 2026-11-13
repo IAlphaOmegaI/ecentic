@@ -29,7 +29,7 @@ export default async ({ searchParams }: SearchParamsProps<"store">) => {
 
   return (
     <CompetitorReview existing={competitors}>
-      <h1 className="font-heading text-3xl text-foreground-rich tracking-tight sm:text-4xl">
+      <h1 className="font-heading font-medium text-3xl text-foreground-rich tracking-tight sm:text-4xl">
         {translate("title")}
       </h1>
 

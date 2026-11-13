@@ -64,7 +64,7 @@ export const Onboarding = ({
           className="my-auto py-8"
         >
           <Motion.Item>
-            <h2 className="max-w-md font-heading text-3xl text-background-rich leading-[1.08] tracking-tight xl:text-5xl">
+            <h2 className="max-w-md font-heading font-medium text-3xl text-background-rich leading-[1.08] tracking-tight xl:text-5xl">
               {headline}
             </h2>
           </Motion.Item>

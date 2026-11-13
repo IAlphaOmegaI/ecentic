@@ -40,6 +40,12 @@ Context provider for toasts.
 
 Container for toast notifications.
 
+The shared viewport is centered at the top of the screen, respects the mobile safe
+area and expands stacked toasts downward. Toasts dismiss upward or sideways and skip
+transitions when reduced motion is requested. Keep one viewport for each distinct toast
+set; the app's `ToastList` supplies the dark surface, semantic status icons and localized
+dismiss label.
+
 **Props:**
 | Prop | Type | Description |
 |------|------|-------------|

@@ -1,0 +1,28 @@
+{
+  "onboardingRecovery": {
+    "upload": {
+      "choose": "CSV-Datei auswählen",
+      "drop": "Ziehen Sie Ihren Katalogexport hierher oder wählen Sie eine Datei auf Ihrem Gerät.",
+      "browse": "Datei auswählen",
+      "selected": "Datei bereit zum Import",
+      "replace": "Andere CSV-Datei wählen"
+    },
+    "empty": {
+      "status": "Noch keine Produkte importiert",
+      "title": "Beginnen Sie mit Ihrem Katalog.",
+      "description": "Verbinden Sie einen Shop oder importieren Sie eine Exportdatei. Wählen Sie dann die Produkte für den Vergleich aus.",
+      "store": {
+        "title": "Shop verbinden",
+        "description": "Importieren Sie Ihren Katalog über Shopify, WooCommerce oder einen Produktfeed."
+      },
+      "csv": {
+        "title": "Katalogexport verwenden",
+        "description": "Liegt Ihr Katalog als Tabelle vor? Importieren Sie eine CSV-Datei von einer beliebigen Commerce-Plattform."
+      },
+      "action": {
+        "primary": "Shop verbinden",
+        "secondary": "CSV importieren"
+      }
+    }
+  }
+}

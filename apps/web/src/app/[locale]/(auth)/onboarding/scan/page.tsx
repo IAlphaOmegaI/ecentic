@@ -102,7 +102,7 @@ export default async () => {
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 -z-10 bg-linear-to-br from-primary/15 via-primary/5 to-background-rich [clip-path:polygon(0_0,100%_0,100%_calc(100%_-_12px),calc(100%_-_12px)_100%,12px_100%,0_calc(100%_-_12px))]"
           />
-          <h1 className="font-heading text-3xl text-foreground-rich tracking-tight sm:text-4xl">
+          <h1 className="font-heading font-medium text-3xl text-foreground-rich tracking-tight sm:text-4xl">
             {translate("page.title")}
           </h1>
           <p className="mt-3 max-w-2xl text-base text-foreground-dimmed leading-relaxed">

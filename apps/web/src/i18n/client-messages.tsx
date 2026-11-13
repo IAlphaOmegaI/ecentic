@@ -79,6 +79,8 @@ export const CLIENT_MESSAGES = {
     "completeProfile",
     "forgotPassword",
     "onboarding",
+    "onboardingDirectory",
+    "onboardingRecovery",
     "resetPassword",
     "signUp",
     "verifyEmail",

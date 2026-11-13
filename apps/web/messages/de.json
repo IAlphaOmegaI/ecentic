@@ -20259,5 +20259,123 @@
       "resetPassword": "Dieser Link zum Zurücksetzen ist nicht mehr gültig. Fordern Sie einen neuen Link an und versuchen Sie es erneut.",
       "completeProfile": "Ihr Profil konnte nicht gespeichert werden. Versuchen Sie es erneut. Wenn das Problem bestehen bleibt, wenden Sie sich an den Support."
     }
+  },
+  "onboardingDirectory": {
+    "search": {
+      "label": "Plattform finden",
+      "placeholder": "Plattform oder Importmethode suchen",
+      "count": "{count, plural, one {# Option} other {# Optionen}}"
+    },
+    "groups": {
+      "direct": {
+        "title": "Importmethode wählen"
+      },
+      "exports": {
+        "title": "Export oder Produktfeed verwenden",
+        "description": "Importieren Sie einen unterstützten XML/JSON-Feed oder eine CSV-Datei. Dabei wird keine Verbindung zur Plattform-API hergestellt."
+      },
+      "planned": {
+        "title": "Geplante native Anbindungen",
+        "description": "Diese nativen Anbindungen sind noch nicht verfügbar. Sie können einen unterstützten Produktexport verwenden."
+      }
+    },
+    "modes": {
+      "native": "Direkte Anbindung",
+      "feed": "XML-/JSON-Feed",
+      "csv": "CSV-Import",
+      "export": "Produktexport",
+      "planned": "Demnächst"
+    },
+    "providers": {
+      "shopify": {
+        "name": "Shopify",
+        "description": "Importieren Sie Ihren Shopify-Katalog."
+      },
+      "woocommerce": {
+        "name": "WooCommerce",
+        "description": "Verbinden Sie Ihren Shop mit den Zugangsdaten seiner REST-API."
+      },
+      "feed": {
+        "name": "Produktfeed",
+        "description": "Importieren Sie Produkte über eine unterstützte XML- oder JSON-URL."
+      },
+      "csv": {
+        "name": "CSV-Import",
+        "description": "Laden Sie eine als CSV exportierte Produkttabelle hoch."
+      },
+      "adobe": {
+        "name": "Adobe Commerce",
+        "description": "Verwenden Sie einen unterstützten Produktfeed aus Ihrem Shop."
+      },
+      "shopware": {
+        "name": "Shopware",
+        "description": "Verwenden Sie einen unterstützten Produktfeed aus Ihrem Shop."
+      },
+      "wix": {
+        "name": "Wix",
+        "description": "Importieren Sie Ihren Katalog als CSV-Produktexport."
+      },
+      "prestashop": {
+        "name": "PrestaShop",
+        "description": "Verwenden Sie einen unterstützten Produktfeed aus Ihrem Shop."
+      },
+      "plytix": {
+        "name": "Plytix",
+        "description": "Verwenden Sie einen unterstützten Katalogfeed aus Ihrem PIM."
+      },
+      "akeneo": {
+        "name": "Akeneo",
+        "description": "Importieren Sie einen CSV-Produktexport aus Ihrem PIM."
+      },
+      "salsify": {
+        "name": "Salsify",
+        "description": "Verwenden Sie einen unterstützten Katalogfeed aus Ihrem PIM."
+      },
+      "google": {
+        "name": "Google Merchant Center",
+        "description": "Verwenden Sie den Produktfeed, den Sie bereits an Google senden."
+      },
+      "bigcommerce": {
+        "name": "BigCommerce",
+        "description": "Eine native BigCommerce-Anbindung ist geplant."
+      },
+      "amazon": {
+        "name": "Amazon Seller Central",
+        "description": "Eine native Amazon-Seller-Anbindung ist geplant."
+      }
+    },
+    "empty": {
+      "title": "Keine passende Plattform gefunden",
+      "description": "Eine CSV-Datei lässt sich auch ohne native Anbindung importieren. Prüfen Sie die unterstützten Spalten und laden Sie Ihren Katalog hoch.",
+      "action": {
+        "primary": "CSV importieren"
+      }
+    }
+  },
+  "onboardingRecovery": {
+    "upload": {
+      "choose": "CSV-Datei auswählen",
+      "drop": "Ziehen Sie Ihren Katalogexport hierher oder wählen Sie eine Datei auf Ihrem Gerät.",
+      "browse": "Datei auswählen",
+      "selected": "Datei bereit zum Import",
+      "replace": "Andere CSV-Datei wählen"
+    },
+    "empty": {
+      "status": "Noch keine Produkte importiert",
+      "title": "Beginnen Sie mit Ihrem Katalog.",
+      "description": "Verbinden Sie einen Shop oder importieren Sie eine Exportdatei. Wählen Sie dann die Produkte für den Vergleich aus.",
+      "store": {
+        "title": "Shop verbinden",
+        "description": "Importieren Sie Ihren Katalog über Shopify, WooCommerce oder einen Produktfeed."
+      },
+      "csv": {
+        "title": "Katalogexport verwenden",
+        "description": "Liegt Ihr Katalog als Tabelle vor? Importieren Sie eine CSV-Datei von einer beliebigen Commerce-Plattform."
+      },
+      "action": {
+        "primary": "Shop verbinden",
+        "secondary": "CSV importieren"
+      }
+    }
   }
 }

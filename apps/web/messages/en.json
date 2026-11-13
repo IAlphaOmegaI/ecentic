@@ -20259,5 +20259,123 @@
       "resetPassword": "This reset link is no longer valid. Request a new link, then try again.",
       "completeProfile": "We couldn’t save your profile. Try again. If the problem continues, contact support."
     }
+  },
+  "onboardingDirectory": {
+    "search": {
+      "label": "Find your platform",
+      "placeholder": "Search platforms or import methods",
+      "count": "{count, plural, one {# option} other {# options}}"
+    },
+    "groups": {
+      "direct": {
+        "title": "Choose an import method"
+      },
+      "exports": {
+        "title": "Use an export or product feed",
+        "description": "Import a supported XML/JSON feed or CSV export. These routes do not connect to the platform’s API."
+      },
+      "planned": {
+        "title": "Native connections on the roadmap",
+        "description": "These native connections are not available yet. You can still use a supported product export."
+      }
+    },
+    "modes": {
+      "native": "Direct connection",
+      "feed": "XML / JSON feed",
+      "csv": "CSV import",
+      "export": "Product export",
+      "planned": "Coming soon"
+    },
+    "providers": {
+      "shopify": {
+        "name": "Shopify",
+        "description": "Import your Shopify catalog."
+      },
+      "woocommerce": {
+        "name": "WooCommerce",
+        "description": "Connect your store with its REST API credentials."
+      },
+      "feed": {
+        "name": "Product feed",
+        "description": "Import products from a supported XML or JSON URL."
+      },
+      "csv": {
+        "name": "CSV upload",
+        "description": "Upload a product spreadsheet exported as CSV."
+      },
+      "adobe": {
+        "name": "Adobe Commerce",
+        "description": "Use a supported product feed exported from your store."
+      },
+      "shopware": {
+        "name": "Shopware",
+        "description": "Use a supported product feed exported from your store."
+      },
+      "wix": {
+        "name": "Wix",
+        "description": "Import your catalog with a CSV product export."
+      },
+      "prestashop": {
+        "name": "PrestaShop",
+        "description": "Use a supported product feed exported from your store."
+      },
+      "plytix": {
+        "name": "Plytix",
+        "description": "Use a supported catalog feed from your PIM."
+      },
+      "akeneo": {
+        "name": "Akeneo",
+        "description": "Import a CSV product export from your PIM."
+      },
+      "salsify": {
+        "name": "Salsify",
+        "description": "Use a supported catalog feed from your PIM."
+      },
+      "google": {
+        "name": "Google Merchant Center",
+        "description": "Use the source product feed you already send to Google."
+      },
+      "bigcommerce": {
+        "name": "BigCommerce",
+        "description": "A native BigCommerce connection is planned."
+      },
+      "amazon": {
+        "name": "Amazon Seller Central",
+        "description": "A native Amazon Seller connection is planned."
+      }
+    },
+    "empty": {
+      "title": "No matching platform",
+      "description": "A CSV export works without a native integration. Check the supported columns, then upload your catalog.",
+      "action": {
+        "primary": "Import a CSV"
+      }
+    }
+  },
+  "onboardingRecovery": {
+    "upload": {
+      "choose": "Choose your CSV file",
+      "drop": "Drop a catalog export here, or select it from your device.",
+      "browse": "Browse files",
+      "selected": "File ready to import",
+      "replace": "Choose another CSV"
+    },
+    "empty": {
+      "status": "No products imported yet",
+      "title": "Bring your catalog into view.",
+      "description": "Connect a store or import an export file. Then choose the products you want to compare.",
+      "store": {
+        "title": "Connect your store",
+        "description": "Bring in your catalog through Shopify, WooCommerce or a product feed."
+      },
+      "csv": {
+        "title": "Use a catalog export",
+        "description": "Have a spreadsheet ready? Import a CSV from any commerce platform."
+      },
+      "action": {
+        "primary": "Connect a store",
+        "secondary": "Import a CSV"
+      }
+    }
   }
 }

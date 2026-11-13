@@ -51,7 +51,7 @@ export default async () => {
         <div className="flex flex-col gap-3 px-6 py-7 sm:px-8 sm:py-9">
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <h1 className="font-heading text-3xl text-foreground sm:text-4xl">
+          <h1 className="font-heading font-medium text-3xl text-foreground-rich sm:text-4xl">
             {translate("page.title")}
           </h1>
           <p className="max-w-2xl text-base text-foreground-dimmed leading-relaxed">
@@ -60,7 +60,7 @@ export default async () => {
         </div>
       </Motion.Item>
 
-      <Motion.Item className="min-h-0 w-full flex-1 overflow-y-auto">
+      <Motion.Item className="min-h-0 w-full flex-1 overflow-y-auto overflow-x-hidden">
         <div className="relative min-h-full">
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
@@ -77,7 +77,7 @@ export default async () => {
           <Suspense fallback={<FooterSkeleton />}>
             <Footer />
           </Suspense>
-          <p className="font-light text-foreground-dimmed text-sm">
+          <p className="text-foreground-dimmed text-sm">
             {translate("footer.settingsHint")}
           </p>
         </div>

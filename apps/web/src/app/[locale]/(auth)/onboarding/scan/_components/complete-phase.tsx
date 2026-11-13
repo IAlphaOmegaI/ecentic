@@ -100,7 +100,7 @@ export const CompletePhase = ({
     >
       <div className="min-h-0 flex-1 overflow-y-auto overscroll-contain">
         <Motion.Item className="border-accent-foreground border-b bg-linear-to-br from-primary/10 via-background-rich to-background-rich px-6 py-7 sm:px-8">
-          <h1 className="font-heading text-3xl text-foreground-rich tracking-tight sm:text-4xl">
+          <h1 className="font-heading font-medium text-3xl text-foreground-rich tracking-tight sm:text-4xl">
             {translate("complete.title")}
           </h1>
           <p className="mt-3 max-w-2xl text-base text-foreground-dimmed leading-relaxed">

@@ -1,0 +1,28 @@
+{
+  "onboardingRecovery": {
+    "upload": {
+      "choose": "Scegli il file CSV",
+      "drop": "Trascina qui il catalogo esportato o selezionalo dal tuo dispositivo.",
+      "browse": "Sfoglia i file",
+      "selected": "File pronto per l’importazione",
+      "replace": "Scegli un altro CSV"
+    },
+    "empty": {
+      "status": "Nessun prodotto ancora importato",
+      "title": "Parti dal tuo catalogo.",
+      "description": "Collega un negozio o importa un file esportato. Poi scegli i prodotti da confrontare.",
+      "store": {
+        "title": "Collega il tuo negozio",
+        "description": "Importa il catalogo da Shopify, WooCommerce o da un feed di prodotti."
+      },
+      "csv": {
+        "title": "Usa un catalogo esportato",
+        "description": "Hai già un foglio di calcolo? Importa un CSV da qualsiasi piattaforma di e-commerce."
+      },
+      "action": {
+        "primary": "Collega un negozio",
+        "secondary": "Importa un CSV"
+      }
+    }
+  }
+}

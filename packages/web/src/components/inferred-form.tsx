@@ -123,12 +123,18 @@ type Interface = {
         z.ZodFile,
         Extract<FileUpload.Props, { mode: "single" }> & {
           classList?: FileUploadInput.Props["classList"];
+          emptyContent?: FileUploadInput.Props["emptyContent"];
+          selectedContent?: FileUploadInput.Props["selectedContent"];
+          inputLabel?: string;
         }
       >
     | InterfaceValue<
         z.ZodArray<z.ZodFile>,
         Extract<FileUpload.Props, { mode: "multiple" }> & {
           classList?: FileUploadInput.Props["classList"];
+          emptyContent?: FileUploadInput.Props["emptyContent"];
+          selectedContent?: FileUploadInput.Props["selectedContent"];
+          inputLabel?: string;
         }
       >;
   checkbox: InterfaceValue<z.ZodBoolean, Checkbox.Props>;
@@ -427,6 +433,9 @@ export const InferredFormField = <Field extends GenericField>(
               return (
                 <FileUpload {...field} {...props}>
                   <FileUploadInput
+                    emptyContent={props.emptyContent}
+                    selectedContent={props.selectedContent}
+                    inputLabel={props.inputLabel}
                     classList={{
                       input: cn(
                         "group-data-invalid:border-error",

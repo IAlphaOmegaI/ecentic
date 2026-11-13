@@ -1,6 +1,11 @@
 "use client";
 
-import { ArrowRightIcon, LoaderIcon } from "@zenncore/icons";
+import {
+  ArrowRightIcon,
+  FileIcon,
+  LoaderIcon,
+  UploadIcon,
+} from "@zenncore/icons";
 import { resultify } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
@@ -26,6 +31,7 @@ export const CsvForm = () => {
   const formatError = useOnboardingError();
   const translate = useTranslations("onboarding.connect");
   const experience = useTranslations("onboarding.experience");
+  const recovery = useTranslations("onboardingRecovery.upload");
 
   const config = useMemo(
     () =>
@@ -37,14 +43,56 @@ export const CsvForm = () => {
           label: translate("csv.fields.file.label"),
           description: translate("csv.fields.file.description"),
           validator: z.file({ error: experience("fileRequired") }),
+          inputLabel: recovery("choose"),
+          emptyContent: (
+            <span className="relative z-10 flex w-full min-w-0 flex-col items-start gap-6">
+              <span className="flex w-full items-center justify-between gap-4">
+                <FileIcon className="size-10 text-primary-rich" aria-hidden />
+                <span className="rounded-md border border-background-rich/20 px-2 py-1 text-background-rich/80 text-xs">
+                  CSV
+                </span>
+              </span>
+              <span className="flex min-w-0 flex-col gap-2">
+                <span className="font-heading font-medium text-background-rich text-xl">
+                  {recovery("choose")}
+                </span>
+                <span className="text-background-rich/75 text-sm leading-relaxed">
+                  {recovery("drop")}
+                </span>
+              </span>
+              <span className="flex items-center gap-2 font-medium text-background-rich text-sm">
+                <UploadIcon className="size-4" aria-hidden />
+                {recovery("browse")}
+              </span>
+            </span>
+          ),
+          selectedContent: (file: File) => (
+            <span className="relative z-10 flex w-full min-w-0 flex-col items-start gap-6">
+              <FileIcon className="size-10 text-primary-rich" aria-hidden />
+              <span className="flex min-w-0 flex-col gap-2">
+                <span className="font-medium text-background-rich/75 text-sm">
+                  {recovery("selected")}
+                </span>
+                <span className="w-full break-all font-heading font-medium text-background-rich text-xl">
+                  {file.name}
+                </span>
+              </span>
+              <span className="flex items-center gap-2 font-medium text-background-rich text-sm">
+                <UploadIcon className="size-4" aria-hidden />
+                {recovery("replace")}
+              </span>
+            </span>
+          ),
           classList: {
             control: {
-              input: "h-auto p-10",
+              root: "min-w-0 border-0 p-0",
+              input:
+                "flex h-auto min-h-64 min-w-0 overflow-hidden rounded-xl border-0 bg-linear-to-br from-emphasis-dimmed via-emphasis to-primary-text/90 p-6 text-left data-dragging:ring-2 data-dragging:ring-primary-rich data-dragging:ring-inset focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4 sm:p-8",
             },
           },
         }),
       }) satisfies GenericForm,
-    [translate, experience],
+    [translate, experience, recovery],
   );
 
   const [handleSubmit, isPending] = useAsyncAction(

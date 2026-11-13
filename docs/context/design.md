@@ -700,6 +700,23 @@ side can be expressive; the task surface remains direct. Distinguish sign-in met
 illustrative AI providers: a model logo must not suggest another authentication option.
 Keep form controls and step labels readable at narrow widths and with longer translations.
 
+On desktop, the auth narrative panel fills the viewport while the form pane scrolls
+independently beneath its header. Use the genuine negative trademark on the blue plane,
+not a CSS filter that erases the box artwork. Keep the existing fonts and use medium
+headings and stronger local labels to establish hierarchy. At narrow widths, return to
+ordinary document flow rather than squeezing both panes together.
+
+Onboarding progress uses four numbered cells on desktop and compact progress on mobile.
+The platform directory is searchable and distinguishes direct connections, supported
+feed/CSV import routes and planned integrations. A provider mark does not imply a live
+native connection. Uploads use one continuous surface, localized picker copy and an
+obvious way to replace the selected file. Empty product states pair a relevant illustration
+with working store-connection and CSV-import actions.
+
+Notifications appear at the top center, clear of the support launcher, with a dark opaque
+surface, readable title/body contrast, a status icon and a visible dismiss control. Stacks
+expand downward; motion respects reduced-motion preferences and mobile safe areas.
+
 Errors explain the failed task and the recovery action in the current locale. Map stable server
 error identities to controlled copy; never show raw provider/schema/SQL messages. An AI response
 schema failure is a service problem, not a merchant input mistake. Required-field errors,

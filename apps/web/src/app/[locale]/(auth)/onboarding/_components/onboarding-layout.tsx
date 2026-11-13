@@ -97,9 +97,9 @@ export const OnboardingLayout = ({
             current: String(current + 1),
             total: String(steps.length),
           })}
-          className="relative shrink-0 border-accent-foreground border-b px-6 py-6 sm:px-8"
+          className="relative shrink-0 border-accent-foreground border-b"
         >
-          <ol className="hidden items-center md:flex">
+          <ol className="hidden grid-cols-4 md:grid">
             {steps.map((step, index) => {
               const isCompleted = index < current;
               const isCurrent = index === current;
@@ -108,46 +108,62 @@ export const OnboardingLayout = ({
                 <li
                   key={step.path}
                   aria-current={isCurrent ? "step" : undefined}
-                  className="flex min-w-0 flex-1 items-center last:flex-none"
+                  className={cn(
+                    "relative flex min-h-24 min-w-0 items-center gap-4 border-accent-foreground border-r px-4 py-4 last:border-r-0 xl:px-6",
+                    isCurrent &&
+                      "bg-linear-to-br from-primary/12 to-background-rich",
+                  )}
                 >
-                  <div
+                  <span
+                    aria-hidden="true"
                     className={cn(
-                      "flex items-center gap-2 text-sm",
-                      isCurrent
-                        ? "font-medium text-foreground-rich"
-                        : "text-foreground-dimmed",
+                      "shrink-0 font-heading font-medium text-2xl tabular-nums",
+                      isCurrent || isCompleted
+                        ? "text-primary-text"
+                        : "text-foreground-dimmed/60",
                     )}
                   >
-                    <span
-                      className={cn(
-                        "flex size-8 shrink-0 items-center justify-center rounded-md border",
-                        isCurrent
-                          ? "border-primary bg-primary/10 text-primary-text"
-                          : isCompleted
-                            ? "border-primary/20 bg-primary/5 text-primary-text"
-                            : "border-accent-foreground",
-                      )}
-                    >
-                      <StepIcon aria-hidden="true" className="size-4" />
-                    </span>
-                    <span>{step.label}</span>
-                  </div>
-                  {index < steps.length - 1 && (
-                    <span
+                    {String(index + 1).padStart(2, "0")}
+                  </span>
+                  <div className="flex min-w-0 flex-col gap-2">
+                    <StepIcon
                       aria-hidden="true"
                       className={cn(
-                        "mx-4 h-px min-w-2 flex-1",
-                        isCompleted ? "bg-primary" : "bg-accent-foreground",
+                        "size-4",
+                        isCurrent || isCompleted
+                          ? "text-primary-text"
+                          : "text-foreground-dimmed",
                       )}
                     />
-                  )}
+                    <span
+                      className={cn(
+                        "text-sm leading-snug",
+                        isCurrent
+                          ? "font-semibold text-foreground-rich"
+                          : "font-medium text-foreground-dimmed",
+                      )}
+                    >
+                      {step.label}
+                    </span>
+                  </div>
+                  <span
+                    aria-hidden="true"
+                    className={cn(
+                      "absolute inset-x-0 bottom-0 h-0.5",
+                      isCurrent
+                        ? "bg-primary"
+                        : isCompleted
+                          ? "bg-primary/40"
+                          : "bg-transparent",
+                    )}
+                  />
                 </li>
               );
             })}
           </ol>
-          <div className="flex items-center justify-between gap-4 md:hidden">
+          <div className="flex items-center justify-between gap-4 px-6 py-4 md:hidden">
             <div className="min-w-0">
-              <p className="font-medium text-foreground-rich">
+              <p className="font-semibold text-foreground-rich">
                 {steps[current]?.label}
               </p>
               <p className="mt-1 text-foreground-dimmed text-sm">

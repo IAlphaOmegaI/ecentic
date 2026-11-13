@@ -59,7 +59,7 @@ export const RunningPhase = ({
       className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden"
     >
       <Motion.Item className="relative shrink-0 border-accent-foreground border-b bg-linear-to-br from-primary/10 via-background-rich to-background-rich px-6 py-5 sm:px-8 sm:py-7">
-        <h1 className="font-heading text-3xl text-foreground-rich tracking-tight sm:text-4xl">
+        <h1 className="font-heading font-medium text-3xl text-foreground-rich tracking-tight sm:text-4xl">
           {translate("running.title")}
         </h1>
         <p className="mt-3 max-w-2xl text-base text-foreground-dimmed leading-relaxed">

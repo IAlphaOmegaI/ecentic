@@ -1,0 +1,28 @@
+{
+  "onboardingRecovery": {
+    "upload": {
+      "choose": "选择 CSV 文件",
+      "drop": "将导出的商品目录拖到此处，或从设备中选择文件。",
+      "browse": "浏览文件",
+      "selected": "文件已就绪，可以导入",
+      "replace": "选择其他 CSV"
+    },
+    "empty": {
+      "status": "尚未导入商品",
+      "title": "从导入商品目录开始。",
+      "description": "连接店铺或导入已导出的文件，然后选择要对比的商品。",
+      "store": {
+        "title": "连接店铺",
+        "description": "通过 Shopify、WooCommerce 或商品数据源导入目录。"
+      },
+      "csv": {
+        "title": "使用导出的商品目录",
+        "description": "已有电子表格？可以导入任意电商平台导出的 CSV。"
+      },
+      "action": {
+        "primary": "连接店铺",
+        "secondary": "导入 CSV"
+      }
+    }
+  }
+}

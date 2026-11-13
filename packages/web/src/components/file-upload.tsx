@@ -76,13 +76,10 @@ export const FileUpload = (props: FileUpload.Props): JSX.Element => {
 
   const disabled =
     (props.disabled ?? false) ||
-    (props.mode === "single" && (value as File | null) !== null) ||
     (props.mode === "multiple" &&
       (value as File[] | null)?.length === props.max);
 
   const handleValueChange = useStableCallback((updatedValue: File | File[]) => {
-    console.log("setting value to ", updatedValue);
-
     setValue(updatedValue);
     // @ts-expect-error - updatedValue type is correctly handled by discriminated union at runtime
     props.onValueChange?.(updatedValue);
@@ -129,6 +126,9 @@ export const FileUploadInput = ({
   // render,
   className,
   classList,
+  emptyContent,
+  selectedContent,
+  inputLabel,
   // ...props
 }: FileUploadInput.Props): JSX.Element => {
   const { mode, value, setValue, accept, disabled } = useFileUpload();
@@ -241,7 +241,13 @@ export const FileUploadInput = ({
       />
       <button
         type="button"
-        disabled={disabled && !selectedFile}
+        disabled={disabled}
+        data-dragging={isDragging || undefined}
+        aria-label={
+          inputLabel && selectedFile
+            ? `${inputLabel}: ${selectedFile.name}`
+            : inputLabel
+        }
         className={cn(
           "h-32 w-full origin-center flex-col items-center justify-center border border-dashed transition-all duration-300 disabled:cursor-not-allowed disabled:opacity-50",
           isDragging
@@ -249,28 +255,30 @@ export const FileUploadInput = ({
             : "border-accent-foreground",
           classList?.input,
         )}
-        onClick={() => !selectedFile && ref.current?.click()}
+        onClick={() => ref.current?.click()}
       >
-        {selectedFile ? (
-          <span className="flex flex-col items-center gap-2">
-            <FileIcon className="size-12 text-foreground-dimmed" />
-            <span className="max-w-[90%] truncate text-foreground text-sm">
-              {selectedFile.name}
-            </span>
-          </span>
-        ) : (
-          <span
-            className={cn(
-              "flex flex-col items-center gap-2 transition-colors duration-300",
-              isDragging ? "text-primary" : "text-foreground-dimmed",
-            )}
-          >
-            <UploadIcon className="size-12" />
-            <span className="text-sm leading-4">
-              Select files <br /> or drag and drop
-            </span>
-          </span>
-        )}
+        {selectedFile
+          ? (selectedContent?.(selectedFile) ?? (
+              <span className="flex flex-col items-center gap-2">
+                <FileIcon className="size-12 text-foreground-dimmed" />
+                <span className="max-w-[90%] truncate text-foreground text-sm">
+                  {selectedFile.name}
+                </span>
+              </span>
+            ))
+          : (emptyContent ?? (
+              <span
+                className={cn(
+                  "flex flex-col items-center gap-2 transition-colors duration-300",
+                  isDragging ? "text-primary" : "text-foreground-dimmed",
+                )}
+              >
+                <UploadIcon className="size-12" />
+                <span className="text-sm leading-4">
+                  Select files <br /> or drag and drop
+                </span>
+              </span>
+            ))}
       </button>
     </div>
   );
@@ -282,6 +290,9 @@ export namespace FileUploadInput {
     EmptyObject,
     {
       classList?: ClassList<ClassListKey>;
+      emptyContent?: ReactNode;
+      selectedContent?: (file: File) => ReactNode;
+      inputLabel?: string;
     }
   >;
 }
