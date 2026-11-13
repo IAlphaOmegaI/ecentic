@@ -21,9 +21,18 @@ Central navigation for product context, agent rules, and package/component docum
 - [Website and blog localization](./integrations/blog-i18n.md) — seven locales, reviewed translation jobs, publication and backfill
 - [Translation workflow and quality](./integrations/translation-quality.md) — locale register, protected content, catalog generation and targeted review
 
+### If you are writing or publishing a blog post
+
+- [Blog post format](../apps/web/content/blog/README.md) — one markdown file per post in `apps/web/content/blog`, frontmatter, body rules, `bun run blog:check`
+- [Blog voice](./context/seo/blog-voice.md) — how posts are written; the same text as Okara's article settings
+
 ### If you are planning billing or Shopify App Store pricing
 
 - [Pricing + Shopify Billing API](./tasks/shopify-billing-pricing.md) — how Partner Dashboard plans, Billing API charges, and ecentic entitlements should align
+
+### If you are working on social link previews
+
+- [Social preview images](./tasks/social-preview-images.md) — image routing, metadata defaults, and crawler checks
 
 ### If you are working on AI-surface scraping / capture
 

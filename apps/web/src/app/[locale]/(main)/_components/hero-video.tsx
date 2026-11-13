@@ -11,6 +11,7 @@ import {
 } from "@zenncore/web/components/dialog";
 import { type AppConfig, useLocale, useTranslations } from "next-intl";
 import { useEffect, useId, useRef, useState } from "react";
+import { useDocument } from "@/hooks/use-document";
 
 // Versioned assets match the approved film currently published on ecentic.ai.
 const source = "/videos/ecentic-launch-20261008.mp4";
@@ -26,25 +27,62 @@ export const HeroVideo = ({ transcript }: HeroVideo.Props) => {
   const translate = useTranslations("home.heroVideo");
   const descriptionId = useId();
   const trigger = useRef<HTMLButtonElement>(null);
+  const video = useRef<HTMLVideoElement>(null);
+  const { document, window } = useDocument();
+  const [open, setOpen] = useState(false);
   const [previewVisible, setPreviewVisible] = useState(false);
+  const [preview, setPreview] = useState(false);
+  const [reduced, setReduced] = useState(true);
 
   useEffect(() => {
     const element = trigger.current;
-    if (!element) return;
+    if (!element || !window || !document) return;
+    const motion = window.matchMedia("(prefers-reduced-motion: reduce)");
+    const connection = (
+      window.navigator as Navigator & {
+        connection?: EventTarget & { saveData?: boolean };
+      }
+    ).connection;
+    const viewport = { visible: false };
+    const update = () => {
+      setReduced(motion.matches);
+      setPreview(
+        viewport.visible &&
+          !document.hidden &&
+          !open &&
+          !motion.matches &&
+          !connection?.saveData,
+      );
+    };
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (!entry?.isIntersecting) return;
-        setPreviewVisible(true);
-        observer.disconnect();
+        viewport.visible = entry?.isIntersecting ?? false;
+        if (viewport.visible) setPreviewVisible(true);
+        update();
       },
       { rootMargin: "240px" },
     );
+    update();
     observer.observe(element);
-    return () => observer.disconnect();
-  }, []);
+    motion.addEventListener("change", update);
+    connection?.addEventListener("change", update);
+    document.addEventListener("visibilitychange", update);
+    return () => {
+      observer.disconnect();
+      motion.removeEventListener("change", update);
+      connection?.removeEventListener("change", update);
+      document.removeEventListener("visibilitychange", update);
+    };
+  }, [document, window, open]);
+
+  useEffect(() => {
+    if (preview) return;
+    video.current?.pause();
+    video.current?.load();
+  }, [preview]);
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={setOpen}>
       {/* No `aria-label`: the name derives from the visible text below, which is
         what a voice-control user would say out loud. */}
       <DialogTrigger
@@ -52,15 +90,16 @@ export const HeroVideo = ({ transcript }: HeroVideo.Props) => {
         className="group relative h-auto w-full overflow-hidden rounded-2xl border border-accent-foreground bg-emphasis p-0 text-left shadow-2xl shadow-primary/10 outline-offset-4"
       >
         <video
+          ref={video}
           aria-hidden
-          autoPlay
+          autoPlay={preview}
           loop
           muted
           playsInline
           preload="none"
           width={960}
           height={540}
-          src={previewVisible ? loop : undefined}
+          src={preview ? loop : undefined}
           poster={
             previewVisible
               ? "/videos/ecentic-launch-poster-20261008-960.webp"
@@ -109,22 +148,24 @@ export const HeroVideo = ({ transcript }: HeroVideo.Props) => {
         >
           <XIcon aria-hidden className="size-5" />
         </DialogClose>
-        {/* biome-ignore lint/a11y/useMediaCaption: A verified visual transcript is provided immediately below; no spoken caption track has been verified. */}
-        <video
-          aria-label={translate("title")}
-          aria-describedby={descriptionId}
-          autoPlay
-          controls
-          playsInline
-          preload="auto"
-          width={1920}
-          height={1080}
-          poster={poster}
-          className="aspect-video w-full bg-emphasis object-contain"
-        >
-          <source src={source} type="video/mp4" />
-          {translate("fallback")}
-        </video>
+        {open && (
+          // biome-ignore lint/a11y/useMediaCaption: A verified visual transcript is provided immediately below; no spoken caption track has been verified.
+          <video
+            aria-label={translate("title")}
+            aria-describedby={descriptionId}
+            autoPlay={!reduced}
+            controls
+            playsInline
+            preload="none"
+            width={1920}
+            height={1080}
+            poster={poster}
+            className="aspect-video w-full bg-emphasis object-contain"
+          >
+            <source src={source} type="video/mp4" />
+            {translate("fallback")}
+          </video>
+        )}
         <section className="border-accent-foreground border-t bg-background">
           <div className="px-7 py-7 max-sm:px-4">
             <h2>{translate("transcriptTitle")}</h2>
@@ -135,7 +176,8 @@ export const HeroVideo = ({ transcript }: HeroVideo.Props) => {
               {translate("sampleLabel")}
             </p>
             <p className="mt-3 max-w-4xl text-foreground-dimmed text-sm">
-              {translate("transcriptIntroduction")} {translateMedia("videoEnglish")}
+              {translate("transcriptIntroduction")}{" "}
+              {translateMedia("videoEnglish")}
             </p>
           </div>
           <ol>

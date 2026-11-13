@@ -9,8 +9,9 @@
  *   determine retention; agent traffic still early but growing fast.
  * - `docs/context/agent-visibility.md` — ChatGPT/Perplexity/Google ingest via
  *   Shopify Catalog, Merchant Center feeds, and crawls (days–weeks to reindex).
- * - `docs/context/wip/landing-page-redesign-plan.md` — DUA Flavours: +15%
- *   AI-agent visits and +12% sales in ~30 days (customer-confirmed).
+ * - DUA Flavours (customer-confirmed, 3 Sep 2026): visits from AI assistants
+ *   and direct traffic +12% between April and July 2026. A visits figure; no
+ *   sales figure or 30-day window was confirmed.
  * - `docs/tasks/audit-optimization-engine-rewrite.md` — win-rate threshold 55%,
  *   14-day cooldown, simulation-derived lift today.
  *

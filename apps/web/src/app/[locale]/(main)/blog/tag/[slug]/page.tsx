@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { localizePath } from "@/i18n/locale";
-import { locales } from "@/i18n/locales";
+import { publishedLocales as locales } from "@/i18n/locales";
 import { blogTopicSlug } from "@/lib/blog-locale";
 import { createMetadata } from "@/lib/seo";
 import * as Blog from "@/server/app/blog";
@@ -36,6 +36,11 @@ export const generateMetadata = async ({
       description: translate("metaDescription", { slug }),
       path,
     }),
+    robots: {
+      index: false,
+      follow: true,
+      googleBot: { index: false, follow: true },
+    },
     alternates: {
       canonical: path,
       languages: Object.fromEntries(

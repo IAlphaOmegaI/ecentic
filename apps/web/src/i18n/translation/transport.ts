@@ -50,7 +50,8 @@ export const compactTranslationTransport = (request: TranslationGeneration) => {
       return;
     }
     if (!value || typeof value !== "object") return;
-    if (typeof value.id === "string") originalIds.add(value.id);
+    const { id } = value;
+    if (typeof id === "string") originalIds.add(id);
     for (const entry of Object.values(value)) collect(entry);
   };
   collect(payload);

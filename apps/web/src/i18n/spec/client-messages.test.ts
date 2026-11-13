@@ -106,7 +106,6 @@ const SCOPES: ReadonlyArray<{
 const INHERITS_MARKETING = [
   "about",
   "blog",
-  "compare",
   "demo",
   "docs",
   "enterprise",

@@ -2,6 +2,7 @@ import { LinkedinIcon, XTwitterIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import Image from "next/image";
 import { getMessages } from "next-intl/server";
+import { Suspense } from "react";
 import { CookieSettings } from "@/components/cookie-settings";
 import { LanguageSwitcher } from "@/components/language-switcher";
 import { FooterWordmark } from "@/components/marketing/ascii-wordmark";
@@ -179,7 +180,11 @@ export const Footer = async (_props: Footer.Props = {}) => {
             </p>
             {copy.copyright && <p>{copy.copyright}</p>}
           </div>
-          <LanguageSwitcher />
+          <Suspense
+            fallback={<div aria-hidden className="h-10 w-24 shrink-0" />}
+          >
+            <LanguageSwitcher />
+          </Suspense>
         </div>
       </MarketingFeatureBand>
     </footer>

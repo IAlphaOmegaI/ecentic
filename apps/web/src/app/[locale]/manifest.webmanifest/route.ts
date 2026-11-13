@@ -1,4 +1,4 @@
-import { isLocale } from "@/i18n/locales";
+import { isPublishedLocale } from "@/i18n/locales";
 import { createWebManifest } from "@/lib/web-manifest";
 
 export const GET = async (
@@ -6,7 +6,7 @@ export const GET = async (
   { params }: { params: Promise<{ locale: string }> },
 ) => {
   const { locale } = await params;
-  if (!isLocale(locale)) return new Response(null, { status: 404 });
+  if (!isPublishedLocale(locale)) return new Response(null, { status: 404 });
   const messages = (await import(`../../../../messages/${locale}.json`))
     .default;
   return Response.json(

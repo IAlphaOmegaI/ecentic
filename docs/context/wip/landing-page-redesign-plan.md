@@ -1,5 +1,7 @@
 # Landing Page Redesign — Implementation Plan
 
+> **Correction (20 Oct 2026):** the DUA Flavours figures below are wrong. DUA confirmed in writing on 3 Sep 2026 that visits arriving from AI assistants or direct traffic rose 12% between April and July 2026, after ecentic closed gaps in their structured data and product feed. That is a visits number. There is no confirmed sales figure and no confirmed 30-day window. Do not reuse the `+15%` visits, `+12%` sales or "in 30 days" lines from this plan.
+
 **Goal:** Make the homepage simpler, faster to understand, and more "American" (benefit-first, punchy, one clear action). Feedback said the current page is *too technical and hard to understand*. Inspiration: [tolt.com](https://tolt.com) — one clear headline, one obvious CTA, real proof, no jargon.
 
 **The headline change:** a clean **banner hero** with (1) a plain-English benefit headline, (2) a real customer result — *DUA Flavours grew AI-agent visits +15% and sales +12% in 30 days* (confirmed, with written permission to publish), and (3) an **"Install now"** action that installs on **Shopify** or **WooCommerce**.

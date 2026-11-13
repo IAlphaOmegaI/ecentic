@@ -41,6 +41,45 @@ export const brandedTitle = (title: string) =>
     : title;
 
 /**
+ * The three founders, in the order the About page lists them. `url` is each
+ * one's profile anchor on /about, so the page, the Organization schema and the
+ * blog byline agree.
+ */
+export const founders = [
+  {
+    id: "xhurian-shaba",
+    name: "Xhurian Shaba",
+    url: absoluteUrl("/about#xhurian-shaba"),
+    linkedin: "https://www.linkedin.com/in/xhuri",
+  },
+  {
+    id: "alvi-palloshi",
+    name: "Alvi Palloshi",
+    url: absoluteUrl("/about#alvi-palloshi"),
+    linkedin: "https://www.linkedin.com/in/alvipalloshi",
+  },
+  {
+    id: "iseld-muca",
+    name: "Iseld Muça",
+    url: absoluteUrl("/about#iseld-muca"),
+    linkedin: "https://www.linkedin.com/in/iseld-muca-532786311",
+  },
+] as const;
+
+/** The CEO, who is the named author of the blog. */
+export const founder = founders[0];
+
+/** Schema.org `Person` for the founder; `jobTitle` is the page's language. */
+export const createFounderSchema = (jobTitle: string) => ({
+  "@type": "Person",
+  name: founder.name,
+  jobTitle,
+  url: founder.url,
+  sameAs: [founder.linkedin],
+  worksFor: { "@type": "Organization", name: seo.name, url: seo.host },
+});
+
+/**
  * Public brand, confirmed operating entity and team. A registered-agent address
  * is not an operating office, so it is identified explicitly on the legal and
  * company pages rather than emitted as the Organization's general address.
@@ -116,28 +155,65 @@ export const softwareApplicationSchema = {
 } as const;
 
 export const createSoftwareApplicationSchema = (
-  plans: readonly { name: string; price: string }[],
+  input:
+    | createSoftwareApplicationSchema.Props
+    | readonly createSoftwareApplicationSchema.Plan[],
 ) => {
-  const offers = plans.filter((plan) => Number.isFinite(Number(plan.price)));
-  const prices = offers.map((plan) => Number(plan.price));
+  const {
+    plans,
+    description = seo.definition,
+    url = seo.host,
+  } = "plans" in input ? input : { plans: input };
+  const priced = plans.filter((plan) => Number.isFinite(Number(plan.price)));
+  const byPrice = [...priced].sort(
+    (left, right) => Number(left.price) - Number(right.price),
+  );
+
   return {
-    ...softwareApplicationSchema,
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: seo.name,
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    description,
+    url,
     offers: {
       "@type": "AggregateOffer",
       priceCurrency: "USD",
-      lowPrice: String(Math.min(...prices)),
-      highPrice: String(Math.max(...prices)),
-      offerCount: offers.length,
-      offers: offers.map((plan) => ({
+      lowPrice: byPrice[0]?.price,
+      highPrice: byPrice.at(-1)?.price,
+      offerCount: plans.length,
+      offers: priced.map((plan) => ({
         "@type": "Offer",
         name: plan.name,
         price: plan.price,
         priceCurrency: "USD",
-        url: absoluteUrl("/pricing"),
+        description: plan.description,
+        url,
       })),
+    },
+    publisher: {
+      "@type": "Organization",
+      name: seo.name,
+      url: seo.host,
     },
   };
 };
+
+export namespace createSoftwareApplicationSchema {
+  export type Plan = {
+    name: string;
+    /** A number as a string ("14.90"), or a word ("Custom") for unpriced. */
+    price: string;
+    description?: string;
+  };
+
+  export type Props = {
+    plans: readonly Plan[];
+    description?: string;
+    url?: string;
+  };
+}
 
 export const websiteSchema = {
   "@context": "https://schema.org",
@@ -155,6 +231,8 @@ export const websiteSchema = {
 export const createMetadata = ({
   title,
   description,
+  socialTitle = title,
+  image,
   path,
   keywords = [],
   type = "website",
@@ -194,7 +272,7 @@ export const createMetadata = ({
       ? "/opengraph-image"
       : `/${imageLocale}${imageSection}/opengraph-image-${imageSuffix}`;
   const socialImage = {
-    url: absoluteUrl(imagePath),
+    url: absoluteUrl(typeof image === "string" ? image : imagePath),
     width: 1200,
     height: 630,
     alt: title,
@@ -218,16 +296,16 @@ export const createMetadata = ({
     },
     openGraph: {
       type,
-      images: [socialImage],
+      ...(image === false ? {} : { images: [socialImage] }),
       url: absoluteUrl(path),
       siteName: seo.name,
-      title: `${title} | ${seo.name}`,
+      title: `${socialTitle} | ${seo.name}`,
       description,
     },
     twitter: {
       card: "summary_large_image",
-      images: [socialImage],
-      title: `${title} | ${seo.name}`,
+      ...(image === false ? {} : { images: [socialImage] }),
+      title: `${socialTitle} | ${seo.name}`,
       description,
     },
   };
@@ -240,6 +318,8 @@ export namespace createMetadata {
     path: string;
     keywords?: readonly string[];
     type?: "article" | "website";
+    socialTitle?: string;
+    image?: string | false;
   };
 }
 

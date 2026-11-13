@@ -1023,12 +1023,20 @@ export const blogPost = pgTable(
     slug: text("slug").notNull(),
     /** Supported UI/content locale. Same slug may exist per locale. */
     locale: text("locale").notNull().default("en"),
-    /** Origin of the row: editorial seed (`local`) or BabyLoveGrowth (`blg`). */
+    /**
+     * Origin of the row: editorial seed (`local`), BabyLoveGrowth (`blg`), or a
+     * markdown file in `apps/web/content/blog` (`repo`). Plain text, so a new
+     * origin needs no migration.
+     */
     source: text("source")
       .$type<"local" | "blg" | "repo">()
       .notNull()
       .default("local"),
-    /** BabyLoveGrowth article id when `source = 'blg'`. */
+    /**
+     * BabyLoveGrowth article id when `source = 'blg'`; for `repo`, the file
+     * path and the hash of the content it was ingested from
+     * (`content/blog/<slug>.md#<sha256>`).
+     */
     externalId: text("externalId"),
     status: text("status").notNull().default("published"),
     category: text("category").notNull(),

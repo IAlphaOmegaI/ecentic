@@ -200,13 +200,8 @@
       "Bash(command -v claude)",
       "Bash(claude --version)",
       "Bash(claude plugin *)",
-      "Bash(grep -iA3 claude-seo)",
-      "mcp__codex__codex",
-      "mcp__codex__codex-reply"
+      "Bash(grep -iA3 claude-seo)"
     ]
   },
-  "enabledMcpjsonServers": [
-    "codex"
-  ],
   "enableAllProjectMcpServers": true
 }

@@ -8,6 +8,7 @@ import { MarketingLightBand } from "@/components/marketing/light-band";
 import { MarketingShell } from "@/components/marketing/page";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
+import { founder } from "@/lib/seo";
 import { TagList } from "../../_components/tag-list";
 import { ArticleContents } from "./article-contents";
 
@@ -47,6 +48,12 @@ export const ArticleLayout = ({
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-foreground-dimmed text-sm">
           <span className="font-medium text-foreground">{copy.byline}</span>
+          <Link
+            href="/about#xhurian-shaba"
+            className="underline underline-offset-4"
+          >
+            {founder.name}
+          </Link>
           {meta}
         </div>
         <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />

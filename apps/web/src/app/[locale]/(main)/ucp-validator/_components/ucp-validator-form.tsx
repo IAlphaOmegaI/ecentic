@@ -3,6 +3,7 @@
 import {
   CheckCircleIcon,
   CheckIcon,
+  CircleMinusIcon,
   CodeIcon,
   ShieldCheckIcon,
   XCircleIcon,
@@ -20,6 +21,7 @@ import { type SubmitEvent, useState } from "react";
 import { StatusPill } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import { Reveal, RevealItem } from "@/components/reveal";
 import { Fade } from "@/lib/animations";
+import { LATEST_UCP_VERSION, UCP_REVISIONS } from "@/lib/ucp";
 import ucp from "@/public/images/ucp.png";
 import * as UcpCheck from "@/server/app/intelligence/ucp/check";
 
@@ -33,8 +35,6 @@ type Tone = "success" | "danger" | "warning" | "neutral";
 /** Every sub-component here reads the same namespace; hoisting the type keeps
  * the helpers that take a translator honest about which namespace they need. */
 type Translate = ReturnType<typeof useTranslations<"ucpValidator.form">>;
-
-const LATEST_UCP_VERSION = "2026-04-08";
 
 const issueCategoryLabel = (
   category: UcpCheck.SpecIssueCategory,
@@ -61,7 +61,7 @@ const validationTargets = [
   { key: "services", code: "REST · MCP · A2A" },
   { key: "capabilities", code: "dev.ucp.shopping.*" },
   { key: "paymentHandlers", code: "payment.handlers[]" },
-  { key: "signingKeys", code: "signing_keys · RFC 9421" },
+  { key: "signingKeys", code: "keys[] · RFC 9421" },
   { key: "supportedVersions", code: "supported_versions[]" },
   { key: "agentAccess", code: "robots.txt" },
 ] as const;
@@ -275,14 +275,36 @@ const SummaryCard = ({
 const CheckRow = ({
   label,
   passed,
+  skipped = false,
   detail,
 }: {
   label: string;
   passed: boolean;
+  /** The check was not run, which is neither a pass nor a fail. */
+  skipped?: boolean;
   detail?: string | null;
 }) => {
   const translate = useTranslations("ucpValidator.form");
-  const tone: Tone = passed ? "success" : "danger";
+  const tone: Tone = (() => {
+    switch (true) {
+      case skipped:
+        return "neutral";
+      case passed:
+        return "success";
+      default:
+        return "danger";
+    }
+  })();
+  const Icon = (() => {
+    switch (true) {
+      case skipped:
+        return CircleMinusIcon;
+      case passed:
+        return CheckCircleIcon;
+      default:
+        return XCircleIcon;
+    }
+  })();
 
   return (
     <div className="grid gap-4 bg-background px-4 py-4 md:grid-cols-[minmax(0,220px)_minmax(0,1fr)_auto] md:items-center">
@@ -293,11 +315,7 @@ const CheckRow = ({
             toneClassList[tone],
           )}
         >
-          {passed ? (
-            <CheckCircleIcon className="size-4" />
-          ) : (
-            <XCircleIcon className="size-4" />
-          )}
+          <Icon className="size-4" />
         </span>
         <p className="font-medium text-foreground text-sm">{label}</p>
       </div>
@@ -307,7 +325,16 @@ const CheckRow = ({
       </p>
 
       <ValidationBadge
-        label={passed ? translate("badge.pass") : translate("badge.fail")}
+        label={(() => {
+          switch (true) {
+            case skipped:
+              return translate("badge.notValidated");
+            case passed:
+              return translate("badge.pass");
+            default:
+              return translate("badge.fail");
+          }
+        })()}
         tone={tone}
       />
     </div>
@@ -647,9 +674,14 @@ const PaymentHandlersSection = ({
 const SigningKeysSection = ({
   signingKeys,
   advertised,
+  judged,
+  flagged,
 }: {
   signingKeys: UcpCheck.ParsedSigningKey[];
   advertised: boolean;
+  judged: boolean;
+  /** Positions of the keys the validator reported an error on. */
+  flagged: ReadonlySet<number>;
 }) => {
   const translate = useTranslations("ucpValidator.form");
 
@@ -683,6 +715,7 @@ const SigningKeysSection = ({
         <div className="divide-y divide-accent-foreground">
           {signingKeys.map((key, index) => {
             const hasIssue =
+              flagged.has(index) ||
               !key.kid ||
               !key.kty ||
               (key.kty === "EC" && !key.crv) ||
@@ -741,14 +774,16 @@ const SigningKeysSection = ({
                   )}
                 </div>
 
-                <ValidationBadge
-                  label={
-                    hasIssue
-                      ? translate("badge.issues")
-                      : translate("badge.valid")
-                  }
-                  tone={hasIssue ? "danger" : "success"}
-                />
+                {judged && (
+                  <ValidationBadge
+                    label={
+                      hasIssue
+                        ? translate("badge.issues")
+                        : translate("badge.valid")
+                    }
+                    tone={hasIssue ? "danger" : "success"}
+                  />
+                )}
               </div>
             );
           })}
@@ -808,7 +843,13 @@ const SupportedVersionsSection = ({
   );
 };
 
-const SpecIssuesSection = ({ issues }: { issues: UcpCheck.SpecIssue[] }) => {
+const SpecIssuesSection = ({
+  issues,
+  judged,
+}: {
+  issues: UcpCheck.SpecIssue[];
+  judged: boolean;
+}) => {
   const translate = useTranslations("ucpValidator.form");
   const errorCount = issues.filter(
     (issue) => issue.severity === "error",
@@ -836,11 +877,17 @@ const SpecIssuesSection = ({ issues }: { issues: UcpCheck.SpecIssue[] }) => {
       {issues.length === 0 ? (
         <div className="bg-background px-4 py-5">
           <ValidationBadge
-            label={translate("badge.noIssuesFound")}
-            tone="success"
+            label={
+              judged
+                ? translate("badge.noIssuesFound")
+                : translate("badge.notValidated")
+            }
+            tone={judged ? "success" : "neutral"}
           />
           <p className="mt-3 max-w-2xl font-light text-foreground-dimmed text-sm">
-            {translate("spec.noIssuesBody")}
+            {judged
+              ? translate("spec.noIssuesBody")
+              : translate("spec.noProfileBody")}
           </p>
         </div>
       ) : (
@@ -893,10 +940,24 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
   const recognizedCapabilities = result.capabilities.filter(
     (capability) => capability.recognized,
   ).length;
+  // The profile was read against a revision this validator implements. When
+  // it was not, zero spec errors means nothing was checked — not a pass.
+  const judged = result.validatedAgainst !== null;
+  const unchecked = !judged && errorCount === 0;
+  const unvalidated = result.found && unchecked;
+  const flaggedKeys = new Set(
+    result.specIssues.flatMap((issue) => {
+      if (issue.category !== "signing_keys") return [];
+      if (issue.severity !== "error") return [];
+      const position = issue.field.match(/\[(\d+)\]/)?.[1];
+      return position === undefined ? [] : [Number(position)];
+    }),
+  );
   const overallPass =
     result.https &&
     result.found &&
     result.valid &&
+    judged &&
     errorCount === 0 &&
     allowedBotCount === result.robots.length;
 
@@ -922,14 +983,31 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
           <div className="flex shrink-0 flex-wrap items-center gap-2">
             {result.ucpVersion && (
               <StatusPill
-                tone={result.isLatestVersion ? "success" : "warning"}
+                tone={(() => {
+                  switch (true) {
+                    case unvalidated:
+                      return "neutral";
+                    case result.isLatestVersion:
+                      return "success";
+                    default:
+                      return "warning";
+                  }
+                })()}
                 className="font-mono normal-case tracking-normal"
               >
                 v{result.ucpVersion}
-                {!result.isLatestVersion &&
-                  translate("badge.latestSuffix", {
-                    version: LATEST_UCP_VERSION,
-                  })}
+                {(() => {
+                  switch (true) {
+                    case unvalidated:
+                      return translate("badge.notValidatedSuffix");
+                    case result.isLatestVersion:
+                      return null;
+                    default:
+                      return translate("badge.latestSuffix", {
+                        version: LATEST_UCP_VERSION,
+                      });
+                  }
+                })()}
               </StatusPill>
             )}
             {result.envelopeKind && (
@@ -946,12 +1024,26 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
               </StatusPill>
             )}
             <ValidationBadge
-              label={
-                overallPass
-                  ? translate("badge.ucpReady")
-                  : translate("badge.needsFixes")
-              }
-              tone={overallPass ? "success" : "danger"}
+              label={(() => {
+                switch (true) {
+                  case overallPass:
+                    return translate("badge.ucpReady");
+                  case unvalidated:
+                    return translate("badge.notValidated");
+                  default:
+                    return translate("badge.needsFixes");
+                }
+              })()}
+              tone={(() => {
+                switch (true) {
+                  case overallPass:
+                    return "success";
+                  case unvalidated:
+                    return "warning";
+                  default:
+                    return "danger";
+                }
+              })()}
             />
           </div>
         </div>
@@ -996,13 +1088,29 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
 
         <SummaryCard
           label={translate("summary.specErrors.label")}
-          value={String(errorCount)}
-          detail={
-            errorCount === 0
-              ? translate("summary.specErrors.noneDetail")
-              : translate("summary.specErrors.someDetail")
-          }
-          tone={errorCount > 0 ? "danger" : "success"}
+          value={unchecked ? "—" : String(errorCount)}
+          detail={(() => {
+            switch (true) {
+              case unvalidated:
+                return translate("summary.specErrors.notValidatedDetail");
+              case unchecked:
+                return translate("summary.specErrors.noProfileDetail");
+              case errorCount === 0:
+                return translate("summary.specErrors.noneDetail");
+              default:
+                return translate("summary.specErrors.someDetail");
+            }
+          })()}
+          tone={(() => {
+            switch (true) {
+              case unchecked:
+                return "neutral";
+              case errorCount > 0:
+                return "danger";
+              default:
+                return "success";
+            }
+          })()}
         />
 
         <SummaryCard
@@ -1094,18 +1202,27 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
           <CheckRow
             label={translate("coreChecks.version.label")}
             passed={result.isLatestVersion}
-            detail={
-              result.ucpVersion
-                ? result.isLatestVersion
-                  ? translate("coreChecks.version.latest", {
-                      version: result.ucpVersion,
-                    })
-                  : translate("coreChecks.version.outdated", {
-                      version: result.ucpVersion,
-                      latest: LATEST_UCP_VERSION,
-                    })
-                : translate("coreChecks.version.none")
-            }
+            skipped={unvalidated}
+            detail={(() => {
+              switch (true) {
+                case !result.ucpVersion:
+                  return translate("coreChecks.version.none");
+                case unvalidated:
+                  return translate("coreChecks.version.notValidated", {
+                    version: result.ucpVersion ?? "",
+                    revisions: UCP_REVISIONS.join(", "),
+                  });
+                case result.isLatestVersion:
+                  return translate("coreChecks.version.latest", {
+                    version: result.ucpVersion ?? "",
+                  });
+                default:
+                  return translate("coreChecks.version.outdated", {
+                    version: result.ucpVersion ?? "",
+                    latest: LATEST_UCP_VERSION,
+                  });
+              }
+            })()}
           />
           <CheckRow
             label={translate("coreChecks.signingKeys.label")}
@@ -1129,6 +1246,8 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
       <SigningKeysSection
         signingKeys={result.signingKeys}
         advertised={result.signingKeysAdvertised}
+        judged={judged}
+        flagged={flaggedKeys}
       />
       <SupportedVersionsSection supportedVersions={result.supportedVersions} />
 
@@ -1170,7 +1289,7 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
         </div>
       </div>
 
-      <SpecIssuesSection issues={result.specIssues} />
+      <SpecIssuesSection issues={result.specIssues} judged={judged} />
 
       {result.valid && result.data !== null && (
         <div className="border-accent-foreground border-t">

@@ -1,5 +1,8 @@
 import { type DefaultTreeAdapterMap, parseFragment, serialize } from "parse5";
 import { isLocale, type Locale, routing } from "@/i18n/routing";
+import { RETIRED_BLOG_POSTS } from "@/lib/blog-redirects";
+import { isOptimizable, optimizedUrl } from "@/lib/image-hosts";
+import { seo } from "@/lib/seo";
 
 export type BlogHtmlSection = {
   number: string;
@@ -112,10 +115,16 @@ const structureFor = (locale: string) =>
 export const hasFaqSection = (
   sections: readonly BlogHtmlSection[],
   locale: string = routing.defaultLocale,
-) =>
-  sections.some((section) =>
-    structureFor(locale).faq.test(section.title.trim()),
-  );
+) => sections.some((section) => isFaqHeading(section.title, locale));
+
+/**
+ * The heading test behind `hasFaqSection`, shared with the repo-post renderer
+ * so the FAQ it extracts into `faqs` is the same block the page later hides.
+ */
+export const isFaqHeading = (
+  title: string,
+  locale: string = routing.defaultLocale,
+) => structureFor(locale).faq.test(title.trim());
 
 /**
  * The same question for an editorial post's own `sections`, where FAQ prose used
@@ -167,6 +176,103 @@ const stripInlinePresentation = (html: string) => {
   removePresentation(fragment);
   return serialize(fragment);
 };
+const isExternal = (href: string) =>
+  /^https?:\/\//i.test(href) &&
+  URL.canParse(href) &&
+  new URL(href).hostname.replace(/^www\./, "") !== new URL(seo.host).hostname;
+
+/**
+ * CMS bodies decide per link whether it is followed, and the ones left followed
+ * include the vendor's own partner placements. Qualify every outbound link the
+ * same way, so no article passes ranking credit on someone else's behalf.
+ */
+const qualifyExternalLinks = (html: string) =>
+  html.replace(/<a\b[^>]*>/gi, (anchor) => {
+    const href = anchor.match(/\bhref\s*=\s*(["'])(.*?)\1/i)?.[2];
+    if (!href || !isExternal(href)) return anchor;
+    return anchor
+      .replace(/\s+rel\s*=\s*(["']).*?\1/i, "")
+      .replace(/\s*>$/, ' rel="nofollow noopener noreferrer">');
+  });
+
+/**
+ * Widths `/_next/image` serves for an article image — Next's default
+ * `deviceSizes`; any other `w` is a 400. The article rail is ~720px wide on a
+ * desktop, so 1200 covers it at a high density and the rest cover phones.
+ */
+const ARTICLE_IMAGE_WIDTHS = [640, 828, 1080, 1200] as const;
+
+// Escaped for an HTML attribute: this lands in a raw HTML string.
+const optimizerUrl = (source: string, width: number) =>
+  optimizedUrl(source, width).replaceAll("&", "&amp;");
+
+/**
+ * CMS bodies carry bare `<img src>` tags at the uploaded size — ~140KB title
+ * cards and diagrams, none lazy — so every image in an article downloaded with
+ * its first screen. Each image is made lazy and async-decoded, and one the
+ * optimizer can fetch is re-pointed at `/_next/image` with a `srcset`, which
+ * sizes it to the rail and serves AVIF or WebP. A tag that brings its own
+ * `srcset` keeps it.
+ */
+const optimizeImages = (html: string) =>
+  html.replace(/<img\b([^>]*?)\s*\/?>/gi, (_tag, attributes: string) => {
+    const hints = [
+      /\sloading\s*=/i.test(attributes) ? "" : ' loading="lazy"',
+      /\sdecoding\s*=/i.test(attributes) ? "" : ' decoding="async"',
+    ].join("");
+    const source = attributes
+      .match(/\ssrc\s*=\s*(["'])(.*?)\1/i)?.[2]
+      ?.replaceAll("&amp;", "&");
+
+    if (!source || /\ssrcset\s*=/i.test(attributes) || !isOptimizable(source))
+      return `<img${attributes}${hints}>`;
+
+    const srcset = ARTICLE_IMAGE_WIDTHS.map(
+      (width) => `${optimizerUrl(source, width)} ${width}w`,
+    ).join(", ");
+    const optimized = attributes.replace(
+      /\ssrc\s*=\s*(["']).*?\1/i,
+      () =>
+        ` src="${optimizerUrl(source, 1080)}" srcset="${srcset}" sizes="(max-width: 768px) 100vw, 720px"`,
+    );
+
+    return `<img${optimized}${hints}>`;
+  });
+
+/** The replacement for a link to a retired post, or `null` for any other link. */
+const retiredPostHref = (href: string) => {
+  if (!URL.canParse(href, seo.host)) return null;
+  const url = new URL(href, seo.host);
+  if (url.hostname.replace(/^www\./, "") !== new URL(seo.host).hostname)
+    return null;
+  const slug = url.pathname.match(
+    /^(?:\/(?:es|fr|de|it|ja|zh-CN))?\/blog\/([^/]+)\/?$/,
+  )?.[1];
+  const target = slug && RETIRED_BLOG_POSTS.get(slug);
+  if (!target) return null;
+  return href.replace(`/blog/${slug}`, `/blog/${target}`);
+};
+
+/**
+ * A retired post keeps a permanent redirect, but a CMS link that still names it
+ * costs every reader a hop and keeps telling crawlers the old URL is live. Point
+ * it at the post that replaced it — same host form, locale prefix, query and
+ * fragment.
+ */
+const retargetRetiredLinks = (html: string) =>
+  html.replace(/<a\b[^>]*>/gi, (anchor) => {
+    const href = anchor.match(/\bhref\s*=\s*(["'])(.*?)\1/i)?.[2];
+    const target = href ? retiredPostHref(href) : null;
+    if (!href || !target) return anchor;
+    return anchor.replace(href, () => target);
+  });
+
+/**
+ * A CMS post arrives with a dozen or more near-identical search phrases as its
+ * tags. Printed in full — as chips, `keywords` meta and JSON-LD — that is a
+ * keyword list, not navigation; the first few are the ones the article is about.
+ */
+export const leadingTags = (tags: readonly string[]) => tags.slice(0, 3);
 
 /** Keep wide CMS tables inside the right rail without blowing out the 5fr/8fr grid. */
 const wrapScrollableTables = (html: string) =>
@@ -191,7 +297,11 @@ export const splitBlogHtmlByH2 = (
     : STRUCTURE[routing.defaultLocale];
   const isTakeaways = (title: string) => structure.takeaways.test(title.trim());
 
-  const withoutScripts = stripInlinePresentation(stripScripts(html));
+  const withoutScripts = optimizeImages(
+    qualifyExternalLinks(
+      retargetRetiredLinks(stripInlinePresentation(stripScripts(html))),
+    ),
+  );
   const withoutLeadingTitle = withoutScripts.replace(
     /^\s*<h1\b[^>]*>[\s\S]*?<\/h1>\s*/i,
     "",

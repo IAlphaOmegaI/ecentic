@@ -12,7 +12,10 @@ import { routing } from "./routing";
  */
 export default getRequestConfig(async ({ locale: localeOverride }) => {
   const locale = await (async () => {
-    if (localeOverride) return localeOverride;
+    if (localeOverride) {
+      if (hasLocale(routing.locales, localeOverride)) return localeOverride;
+      notFound();
+    }
 
     const paramValue = await rootParams.locale();
     if (hasLocale(routing.locales, paramValue)) return paramValue;

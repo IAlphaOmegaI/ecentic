@@ -2,7 +2,7 @@
   "docs": {
     "meta": {
       "title": "Documentación de la API de ecentic",
-      "description": "Documentación para desarrolladores de ecentic: API REST, servidor MCP, autenticación, errores tipados, límites de uso, versionado, webhooks y la CLI de ecentic."
+      "description": "Documentación de la API REST, servidor MCP, CLI, autenticación, errores, límites de solicitudes y versiones."
     },
     "breadcrumb": {
       "home": "Inicio",
@@ -127,13 +127,17 @@
     "errorsPage": {
       "meta": {
         "title": "Errores de la API de ecentic",
-        "description": "Cada código de error de la API de ecentic, su estado HTTP, qué significa y cómo lo resuelve un agente. Los errores son application/problem+json según RFC 9457."
+        "description": "Consulta códigos de error, estados HTTP y pistas para resolver problemas. Las respuestas siguen el formato RFC 9457."
       },
       "hero": {
         "title": "Errores de la API",
         "accent": "de ecentic.",
         "description": "Cada fallo de la API de ecentic es un documento de problema tipado, no una página HTML. El código es el contrato: es estable, legible por máquinas y seguro para tomar decisiones.",
-        "assurances": ["RFC 9457", "Códigos estables", "Pistas de resolución"],
+        "assurances": [
+          "RFC 9457",
+          "Códigos estables",
+          "Pistas de resolución"
+        ],
         "art": {
           "alt": "Ilustración en ASCII de un escudo"
         },
@@ -226,8 +230,8 @@
     },
     "versioningPage": {
       "meta": {
-        "title": "Versionado de la API de ecentic",
-        "description": "Cómo se versiona la API de ecentic, cómo se señalan las obsolescencias con las cabeceras Deprecation y Sunset, y durante cuánto tiempo se mantiene una versión."
+        "title": "Versiones de la API de ecentic",
+        "description": "Consulta cómo ecentic versiona su API y anuncia retiradas mediante las cabeceras Deprecation y Sunset."
       },
       "hero": {
         "title": "Versionado de",
@@ -267,13 +271,17 @@
     "mcpPage": {
       "meta": {
         "title": "Servidor MCP de ecentic",
-        "description": "Cómo conectar un cliente MCP al servidor MCP de ecentic: transporte Streamable HTTP, el handshake, el catálogo de herramientas, la autenticación y los errores que devuelve."
+        "description": "Conecta un cliente MCP a ecentic. Consulta transporte, inicio de conexión, herramientas, autenticación y gestión de errores."
       },
       "hero": {
         "title": "Servidor MCP",
         "accent": "de ecentic.",
         "description": "Claude, ChatGPT y cualquier cliente del Model Context Protocol pueden llamar a ecentic de forma nativa por JSON-RPC 2.0. Esta página es la referencia de conexión: el endpoint, el transporte, el handshake y todas las herramientas que expone.",
-        "assurances": ["Streamable HTTP", "JSON-RPC 2.0", "7 herramientas"],
+        "assurances": [
+          "Streamable HTTP",
+          "JSON-RPC 2.0",
+          "7 herramientas"
+        ],
         "art": {
           "alt": "Ilustración ASCII de un robot"
         },
@@ -335,8 +343,8 @@
     },
     "authenticationPage": {
       "meta": {
-        "title": "Autenticación de la API de ecentic",
-        "description": "Cómo autenticarse en la API de ecentic: qué superficies son públicas, cómo generar una clave de agente, cómo se envían los tokens bearer y qué te dice un 401."
+        "title": "Autenticación en la API de ecentic",
+        "description": "Descubre qué interfaces son públicas, cómo obtener una clave de API, enviar tokens bearer y resolver errores de autenticación."
       },
       "hero": {
         "title": "Autenticación de la",

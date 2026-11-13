@@ -8,6 +8,7 @@ import { localeMetadata } from "@/i18n/locales";
 import {
   hasFaqSection,
   isFaqSectionTitle,
+  leadingTags,
   splitBlogHtmlByH2,
 } from "@/lib/blog-html";
 import { blogImage } from "@/lib/blog-image";
@@ -17,6 +18,7 @@ import {
   brandedTitle,
   createBreadcrumbSchema,
   createFaqSchema,
+  founder,
   seo,
 } from "@/lib/seo";
 import * as Blog from "@/server/app/blog";
@@ -46,7 +48,72 @@ const languageAlternates = async (slug: string) =>
  */
 const BLOG_TITLE_TAGS: Record<string, Record<string, string>> = {
   "ecentic-eu-presence-partnership-compliance-ai-visibility-bundle": {
-    en: "EU Presence Bundle: Compliance + AI Visibility",
+    en: "EU Presence Bundle: Compliance + AI Shopping",
+  },
+  // BLG headlines lead with a promise ("Get AI Citations in 30–90 Days…")
+  // and often never say the phrase the slug targets, so the title tag names
+  // the search term first. Each one describes what the article actually is
+  // (most are guides, not ranked lists), from its own headings.
+  "best-ecommerce-ai-platforms": {
+    en: "AI ecommerce platforms in 2026: how to choose",
+  },
+  "best-agentic-seo-tools": {
+    en: "Agentic SEO for Shopify and WooCommerce stores",
+  },
+  "best-ecommerce-competitor-tools": {
+    en: "Best ecommerce competitor analysis tools by category",
+  },
+  "best-llm-search-tools": {
+    en: "LLM search tools for ecommerce: what to check",
+  },
+  "best-chatgpt-seo-tools": {
+    en: "ChatGPT SEO tools for ecommerce: what they should do",
+  },
+  "best-gemini-seo-tools": {
+    en: "Gemini SEO tools for ecommerce: how to choose",
+  },
+  "best-ecommerce-ai-seo": {
+    en: "Ecommerce AI SEO in 2026: how AI finds products",
+  },
+  "best-ecommerce-content-tools": {
+    en: "Best ecommerce content tools for AI search (2026)",
+  },
+  "best-product-listing-optimization": {
+    en: "Product listing optimization for AI shopping agents",
+  },
+  "best-ecommerce-ai-analytics": {
+    en: "Ecommerce AI analytics tools: how to evaluate them",
+  },
+  "best-shopify-on-page-seo-tools": {
+    en: "Shopify on-page SEO tools: app, manual or platform?",
+  },
+  "woocommerce-ai-seo": {
+    en: "WooCommerce AI SEO: technical checklist and tools",
+  },
+  // Kept apart from the AI-shopping-agent pillar
+  // (`best-ai-shopping-agent-optimization-tools-2026`, see
+  // `lib/blog-redirects.ts`): each tag names the narrower search its post
+  // answers instead of repeating "AI shopping agents".
+  "rank-in-chatgpt": {
+    en: "How to rank your products in ChatGPT Shopping",
+  },
+  "future-of-ai-shopping": {
+    en: "The future of AI shopping: 3 levers for retailers",
+  },
+  "data-sources-ai-shopping": {
+    en: "AI shopping data sources: feeds, schema and reviews",
+  },
+  // The BLG headline runs 69 characters, so Google clipped its tail.
+  "40rty-alternatives": {
+    en: "40rty alternatives for Shopify and WooCommerce stores",
+  },
+  // Repo posts whose headline is the full question they answer (65 and 66
+  // characters); the tag keeps the question's words inside the limit.
+  "peec-ai-alternatives": {
+    en: "Peec AI alternatives for Shopify product optimization",
+  },
+  "vizby-alternatives": {
+    en: "Is Vizby worth it for Shopify? Alternatives compared",
   },
 };
 
@@ -90,9 +157,10 @@ export const generateMetadata = async ({
     // suffix `brandedTitle` may have deliberately dropped.
     title: { absolute: blogTitleTag(post) },
     description: post.description,
-    keywords: [...post.tags],
+    keywords: leadingTags(post.tags),
     alternates: {
       canonical: path,
+      types: { "application/rss+xml": "/rss.xml" },
       languages: await languageAlternates(post.slug),
     },
     openGraph: {
@@ -103,9 +171,9 @@ export const generateMetadata = async ({
       description: post.description,
       publishedTime: toBlogIsoDate(post.publishedAt),
       modifiedTime: toBlogIsoDate(post.updatedAt),
-      authors: ["ecentic"],
+      authors: [founder.name],
       section: post.category,
-      tags: [...post.tags],
+      tags: leadingTags(post.tags),
     },
     twitter: {
       card: "summary_large_image",
@@ -152,7 +220,7 @@ export default async ({ params }: BlogPageProps) => {
     inLanguage: locale,
     url: absoluteUrl(path),
     mainEntityOfPage: absoluteUrl(path),
-    keywords: post.tags.join(", "),
+    keywords: leadingTags(post.tags).join(", "),
     articleSection: post.category,
     ...(thumbnail
       ? {
@@ -164,7 +232,11 @@ export default async ({ params }: BlogPageProps) => {
           },
         }
       : {}),
-    author: { "@type": "Organization", name: "ecentic", url: seo.host },
+    author: {
+      "@type": "Person",
+      name: founder.name,
+      url: absoluteUrl("/about#xhurian-shaba"),
+    },
     publisher: {
       "@type": "Organization",
       name: "ecentic",
@@ -232,7 +304,7 @@ export default async ({ params }: BlogPageProps) => {
             ? [{ id: "article-faq", title: translate("faq.title") }]
             : []),
         ]}
-        keywords={post.tags}
+        keywords={leadingTags(post.tags)}
         copy={blogArticlePage}
         actions={actions}
       >
@@ -297,7 +369,7 @@ export default async ({ params }: BlogPageProps) => {
           ? [{ id: "article-faq", title: translate("faq.title") }]
           : []),
       ]}
-      keywords={post.tags}
+      keywords={leadingTags(post.tags)}
       copy={blogArticlePage}
       actions={actions}
     >

@@ -31,10 +31,7 @@ const meaningful = (value: string) => /\p{L}/u.test(value);
 /** Only replace source-located text/accessible attribute values. All other HTML bytes survive. */
 export const createBlogHtmlTranslation = (html: string) => {
   const slots: Slot[] = [];
-  const blocks = new Map<
-    string,
-    { tag: string; start: number; end: number }
-  >();
+  const blocks = new Map<string, { tag: string; start: number; end: number }>();
   const fragment = parseFragment(html, { sourceCodeLocationInfo: true });
   const visit = (
     node: DefaultTreeAdapterMap["node"],
@@ -140,9 +137,7 @@ export const createBlogHtmlTranslation = (html: string) => {
           "blockquote",
           "figcaption",
         ].includes(node.tagName);
-      const surrounding = block
-        ? `Article ${node.tagName} text`
-        : context;
+      const surrounding = block ? `Article ${node.tagName} text` : context;
       if (block && node.sourceCodeLocation)
         blocks.set(path, {
           tag: node.tagName,

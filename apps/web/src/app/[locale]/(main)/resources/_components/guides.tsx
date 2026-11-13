@@ -17,7 +17,7 @@ import woocommerce from "@/public/images/woocommerce.svg";
 const agentLogos = [chatgpt, claude, gemini, perplexity] as const;
 
 const guideMeta = [
-  { icon: SquareChartIcon, href: "/compare/best-ai-ecommerce-tools" },
+  { icon: SquareChartIcon, href: "/blog/best-ecommerce-ai-platforms" },
   { icon: FileIcon, href: "/blog" },
   {
     logo: shopify,

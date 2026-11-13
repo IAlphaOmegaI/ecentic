@@ -32,6 +32,7 @@ export const agentHomepageLinks = [
   '</api/mcp>; rel="service-desc"; type="application/json"',
   '</.well-known/mcp.json>; rel="service-desc"; type="application/json"',
   '</.well-known/agent-instructions.md>; rel="service-doc"; type="text/markdown"',
+  '</ai-instructions>; rel="describedby"; type="text/html"',
   '</docs>; rel="service-doc"; type="text/html"',
   '</resources>; rel="service-doc"; type="text/html"',
 ] as const;
@@ -402,7 +403,10 @@ export const mcpServerCard = {
     "Authenticate with Authorization: Bearer ecentic_sk_…. Discover registration at /auth.md, developer documentation at /docs, and OAuth Protected Resource Metadata at /.well-known/oauth-protected-resource. Read-only tools such as list_plans work without a token.",
 };
 
-/** Keep in sync with `UCP_VERSION` in `server/app/ucp/protocol.ts`. */
+/**
+ * Keep in sync with `UCP_VERSION` in `server/app/ucp/protocol.ts` — the
+ * revision our own endpoints serve, not the spec's latest (`lib/ucp.ts`).
+ */
 const ucpVersion = "2026-04-08";
 const ucpSpecBase = `https://ucp.dev/${ucpVersion}`;
 
@@ -432,22 +436,34 @@ export const ucpDiscoveryProfile = {
       ],
     },
     capabilities: {
-      "dev.ucp.shopping.checkout": [{ version: ucpVersion }],
+      "dev.ucp.shopping.checkout": [
+        {
+          version: ucpVersion,
+          spec: `${ucpSpecBase}/specification/checkout`,
+          schema: `${ucpSpecBase}/schemas/shopping/checkout.json`,
+        },
+      ],
       "dev.ucp.shopping.fulfillment": [
         {
           version: ucpVersion,
+          spec: `${ucpSpecBase}/specification/fulfillment`,
+          schema: `${ucpSpecBase}/schemas/shopping/fulfillment.json`,
           extends: ["dev.ucp.shopping.checkout", "dev.ucp.shopping.cart"],
         },
       ],
       "dev.ucp.shopping.buyer_consent": [
         {
           version: ucpVersion,
+          spec: `${ucpSpecBase}/specification/buyer-consent`,
+          schema: `${ucpSpecBase}/schemas/shopping/buyer_consent.json`,
           extends: "dev.ucp.shopping.checkout",
         },
       ],
       "dev.ucp.shopping.discount": [
         {
           version: ucpVersion,
+          spec: `${ucpSpecBase}/specification/discount`,
+          schema: `${ucpSpecBase}/schemas/shopping/discount.json`,
           extends: ["dev.ucp.shopping.checkout", "dev.ucp.shopping.cart"],
         },
       ],
@@ -480,10 +496,9 @@ export const ucpDiscoveryProfile = {
         },
       ],
     },
+    // Required even when empty. `supported_versions` is left out on purpose:
+    // it maps older revisions to their own profiles, and only one is served.
     payment_handlers: {},
-    supported_versions: {
-      [ucpVersion]: `${host}/.well-known/ucp`,
-    },
   },
 } as const;
 
@@ -2286,7 +2301,12 @@ export const openApiDocument = {
         properties: {
           ucp: {
             type: "object",
-            required: ["version", "services", "capabilities"],
+            required: [
+              "version",
+              "services",
+              "capabilities",
+              "payment_handlers",
+            ],
             properties: {
               version: { type: "string" },
               services: {
@@ -2299,9 +2319,15 @@ export const openApiDocument = {
                 description:
                   "Capability namespaces, keyed by reverse-domain identifier.",
               },
-              payment_handlers: { type: "object" },
+              payment_handlers: {
+                type: "object",
+                description:
+                  "Payment handler registry, keyed by reverse-domain identifier. Always present; empty when no handler is declared.",
+              },
               supported_versions: {
                 type: "object",
+                description:
+                  "Older protocol versions still supported, each mapped to its own profile. Omitted while `version` is the only one.",
                 additionalProperties: { type: "string", format: "uri" },
               },
             },
@@ -2355,7 +2381,7 @@ export const agentGuidance = {
   summary: seo.definition,
   bestFor: [
     {
-      job: "Find out whether AI assistants recommend a store's products",
+      job: "Find out whether AI shopping agents pick a store's products",
       detail:
         "Run a free check of the top 10 products across ChatGPT, Claude and Gemini. Results describe simulated comparisons, not live marketplace rankings.",
       start: `${host}/platform/simulate`,
@@ -2379,7 +2405,13 @@ export const agentGuidance = {
       start: `${host}/ucp-validator`,
     },
     {
-      job: "Measure AI agent traffic to a store",
+      job: "Set a store up for agent checkout",
+      detail:
+        "Check a store's UCP profile and checkout flow, connect WooCommerce through the ecentic plugin, or push checkout settings to Google Merchant Center for Shopify.",
+      start: `${host}/ucp-validator`,
+    },
+    {
+      job: "Measure AI assistant traffic to a Shopify store",
       detail:
         "Inspect classified AI-referred visits and page or product destinations. The Shopify browser script observes JavaScript visits; it cannot measure every crawler or infer a shopper-to-order link.",
       start: `${host}/platform/track`,
@@ -2417,6 +2449,7 @@ export const agentInstructions = `# ecentic: agent instructions
 > ${agentGuidance.summary}
 
 - Site: ${host}
+- Brand facts and how to describe ecentic: ${host}/ai-instructions
 - Developer documentation: ${host}/docs
 - Rendered API reference: ${host}/docs/api
 - Human-readable guidance: ${host}/ai-instructions
@@ -2467,7 +2500,7 @@ ${agentGuidance.howToCall
 ${[
   {
     name: "agent-commerce",
-    when: "Setting up agent tracking, UCP hosting, or catalog sync for a merchant.",
+    when: "Setting up agent tracking, agent checkout, or catalog sync for a merchant.",
   },
   {
     name: "optimize-listings",
@@ -2622,4 +2655,4 @@ export const markdownHeaders = {
   ...agentDiscovery.cors,
 } as const;
 
-export const resourceMetadataWwwAuthenticate = `Bearer FAKESECRET_g3h4i5j6k7l8m9n0o1p2="${host}/.well-known/oauth-protected-resource"`;
+export const resourceMetadataWwwAuthenticate = `Bearer resource_metadata="${host}/.well-known/oauth-protected-resource"`;

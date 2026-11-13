@@ -1,3 +1,4 @@
+import { publishedLocales } from "@/i18n/locales";
 import { agentGuidance } from "@/lib/agent-discovery";
 import { marketingRoutes } from "@/lib/marketing-routes";
 import { seo } from "@/lib/seo";
@@ -30,8 +31,10 @@ export const GET = async (request: Request) => {
   const sections = [
     ...categories.map((category) => ({
       title: category,
-      description:
-        "Current public pages in English; each page is also available under /es.",
+      description: `Current public pages in English; translated pages are available under ${publishedLocales
+        .filter((locale) => locale !== "en")
+        .map((locale) => `/${locale}`)
+        .join(", ")}.`,
       links: marketingRoutes
         .filter(
           (route) => route.category === category && route.path !== "/blog",

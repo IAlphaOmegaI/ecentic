@@ -98,3 +98,11 @@ A targeted review patch has `{slug, locale, sourceHash, policyVersion, units:[{i
 Focused tests: `src/lib/spec/blog-translation-content.test.ts`, `src/lib/spec/blog-html.test.ts`, and translation-engine specs. They cover protected HTML/code/URL/accessibility bytes, incomplete output, policy/source invalidation, CJK topics and reading time, localized FAQ detection, and continuing independent units after a rejection.
 
 Before release, check representative articles in every language, then inspect live locale counts, blocked jobs, canonical/hreflang, sitemap, OG glyphs and mobile text overflow. Translation QA and runtime UI review are separate gates.
+
+## Repository article publication
+
+Main also supports reviewed Markdown under `apps/web/content/blog/*.md`, validated through `server/utils/blog-content.ts` and `bun run blog:check`. The cron reads deployed files (traced by Next), validates frontmatter, Markdown, house voice and retired/private slugs, and renders through the sanitizer. Draft/invalid files are never published. Deleted files remain listed as orphaned for an explicit editorial decision.
+
+A repo file owns its slug: BabyLoveGrowth webhook and reconcile skip any slug already owned by `source=repo`. The file path/content hash in `externalId` detects English source changes. Missing or incomplete translations are handled by the durable queue, rather than rewriting the English source on every tick. Both ingestion sources use the same English-first queue rail and preserve explicit FAQ ownership. Repo HTML is sanitized before extraction; translations escape text into those exact source positions, preserving the sanitized structure.
+
+The freshness cron alternates source priority using `lastWriter` and keeps the existing bounded per-tick ingestion budget. The separate minute translation cron performs language work. Retired slugs remain redirect targets but are excluded from public blog listings and sitemap pairs; outbound article links are qualified and image optimization remains active.

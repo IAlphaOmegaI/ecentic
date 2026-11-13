@@ -229,13 +229,19 @@ test("source layouts preserve inline code, links, entities and omitted batch sib
   const article = createBlogHtmlTranslation(
     '<p>A <a href="/catalog?a=1&amp;b=2">catalog</a> uses <code>data.a</code> &amp; <strong>verified facts</strong>.</p>',
   );
-  const context = blogBatchContext(article.units, [article.units[0]!], "Guide");
+  const context = blogBatchContext(
+    article.units,
+    article.units.slice(0, 1),
+    "Guide",
+  );
   expect(context.documentContext).toContain('href=\\"/catalog?a=1&amp;b=2\\"');
   expect(context.documentContext).toContain("<code>data.a</code>");
   expect(context.documentContext).toContain('"text":"catalog"');
-  expect(context.documentContext).toContain('"text":"&"');
+  expect(context.documentContext).toContain("&amp;");
   expect(context.documentContext).toContain("verified facts");
-  expect(article.apply(new Map(article.units.map((unit) => [unit.id, unit.text])))).toBe(
+  expect(
+    article.apply(new Map(article.units.map((unit) => [unit.id, unit.text]))),
+  ).toBe(
     '<p>A <a href="/catalog?a=1&amp;b=2">catalog</a> uses <code>data.a</code> &amp; <strong>verified facts</strong>.</p>',
   );
 });

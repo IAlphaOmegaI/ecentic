@@ -11,6 +11,9 @@ export const CookieConsent = () => {
   const translate = useTranslations("cookieConsent");
 
   if (!isReady || decision) return null;
+  // The room screens run unattended on a big display. `isReady` means this is the
+  // browser, and a pathname hook here would break prerendering in the root layout.
+  if (/\/agents\/(stage|board)/.test(window.location.pathname)) return null;
 
   return (
     <aside

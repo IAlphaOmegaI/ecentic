@@ -2,6 +2,8 @@ import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 import { defaultLocale, publishedLocales as locales } from "./src/i18n/locales";
+import { RETIRED_BLOG_POSTS } from "./src/lib/blog-redirects";
+import { REMOTE_IMAGES } from "./src/lib/image-hosts";
 
 // Keep in sync with `agentHomepageLinkHeader` in `src/lib/agent-discovery.ts`.
 // next.config cannot import that module (path aliases / Node resolution).
@@ -28,6 +30,12 @@ export default withSentryConfig(
     cacheComponents: true,
     partialPrefetching: true,
     serverExternalPackages: ["@sentry/server-utils"],
+    // The blog cron publishes `content/blog/*.md` from its own bundle (see
+    // `Blog.reconcileRepoPosts`); nothing imports those files, so they have to
+    // be traced in by hand or the deployed route finds an empty folder.
+    outputFileTracingIncludes: {
+      "/api/cron/blog": ["./content/blog/*.md"],
+    },
     experimental: {
       // Required so `app/global-not-found.tsx` works without a pass-through
       // `app/layout.tsx` (locale segment is the root layout for root-params).
@@ -40,6 +48,16 @@ export default withSentryConfig(
       ...locales
         .map((locale) => (locale === defaultLocale ? "" : `/${locale}`))
         .flatMap((prefix) => [
+          {
+            source: `${prefix}/compare/best-ai-ecommerce-tools`,
+            destination: `${prefix}/blog/best-ecommerce-ai-platforms`,
+            permanent: true,
+          },
+          ...[...RETIRED_BLOG_POSTS].map(([slug, target]) => ({
+            source: `${prefix}/blog/${slug}`,
+            destination: `${prefix}/blog/${target}`,
+            permanent: true,
+          })),
           {
             source: `${prefix}/stories/dua-flavors`,
             destination: `${prefix}/stories/dua-flavours`,
@@ -123,21 +141,36 @@ export default withSentryConfig(
     // Required to support PostHog trailing slash API requests
     skipTrailingSlashRedirect: true,
     images: {
-      remotePatterns: [
-        {
-          protocol: "https",
-          hostname: "d2qswj4ah2.ufs.sh",
-        },
-        {
-          protocol: "https",
-          hostname: "csuxjmfbwmkxiegfpljm.supabase.co",
-          pathname: "/storage/v1/object/public/blog-images/**",
-        },
-      ],
+      // AVIF first: the hero texture is the homepage's LCP element, and at the
+      // 640w a phone fetches it is 58KB as WebP q75 but 22KB as AVIF q50
+      // (measured with sharp, Oct 2026). Browsers without AVIF still negotiate
+      // WebP through `Accept`.
+      formats: ["image/avif", "image/webp"],
+      // 50 is for decorative art that sits behind an opacity or blend, where
+      // the loss is invisible and the bytes are not (the hero texture).
+      qualities: [50, 75],
+      // Shared with the blog, which skips the optimizer for any other origin
+      // instead of rendering a 400 (see `src/lib/image-hosts.ts`).
+      remotePatterns: REMOTE_IMAGES.map((image) => ({
+        protocol: "https" as const,
+        hostname: image.hostname,
+        pathname: `${image.prefix}**`,
+      })),
     },
     // Markdown-for-Agents negotiates on Accept; CDN must vary HTML vs markdown.
     // Homepage also advertises agent discovery Links (RFC 8288 / RFC 9727).
     headers: async () => [
+      {
+        source: "/:path*",
+        headers: [
+          { key: "X-Content-Type-Options", value: "nosniff" },
+          { key: "Referrer-Policy", value: "strict-origin-when-cross-origin" },
+          {
+            key: "Permissions-Policy",
+            value: "camera=(), microphone=(), geolocation=()",
+          },
+        ],
+      },
       ...locales.map((locale) => ({
         source: locale === defaultLocale ? "/" : `/${locale}`,
         headers: [

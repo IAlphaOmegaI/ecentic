@@ -10,7 +10,8 @@ describe("blog presentation normalization", () => {
     expect(html).toContain("<h2>A heading</h2>");
     expect(html).toContain('<code>style="color:red"</code>');
     expect(html).toContain('<a href="/sign-up">Get started</a>');
-    expect(html).toContain('<img src="/sample.png" alt="A product">');
+    expect(html).toContain('src="/_next/image?url=%2Fsample.png&amp;w=1080');
+    expect(html).toContain('alt="A product" loading="lazy" decoding="async"');
     expect(html).not.toContain("font-weight:700");
   });
 
@@ -46,7 +47,7 @@ describe("blog presentation normalization", () => {
     );
     expect(section?.html).toContain("Read A &gt; B</a>");
     expect(section?.html).toContain(
-      '<img alt="A < B" src="/product.png?size=small&amp;format=webp">',
+      '<img alt="A < B" src="/_next/image?url=%2Fproduct.png%3Fsize%3Dsmall%26format%3Dwebp&amp;w=1080',
     );
     expect(section?.html).not.toMatch(/\sstyle=/i);
   });

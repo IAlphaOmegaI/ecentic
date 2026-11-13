@@ -674,6 +674,13 @@ export const listProducts = async (
   return { success: true, data: all };
 };
 
+/**
+ * One processed product. `name` is the resource name {@link listProducts}
+ * returned (`accounts/{account}/products/{product}`), never reconstructed.
+ */
+export const getProduct = (accessToken: string, name: string) =>
+  api<MerchantProduct>(accessToken, `/products/v1/${name}`);
+
 export type ProductInputAttributes = {
   title?: string;
   description?: string;

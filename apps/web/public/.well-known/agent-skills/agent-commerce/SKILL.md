@@ -6,13 +6,13 @@ when_to_use: Use when connecting a Shopify, WooCommerce, or feed-backed store to
 
 # Agent Commerce with ecentic
 
-ecentic helps merchants win AI-agent-driven carts: connect the catalog, simulate agent decisions, optimize listings, publish a UCP profile, and measure agent visits.
+ecentic helps merchants sell when AI agents do the shopping: connect the catalog, simulate agent decisions, fix listings, set the store up for agent checkout, and measure AI-referred visits on Shopify.
 
 ## When to use
 
 - Onboarding a Shopify or WooCommerce store for AI agent commerce
-- Publishing or hosting a Universal Commerce Protocol profile
-- Measuring which AI agents visit the storefront
+- Setting a store up for agent checkout: hosted UCP through the ecentic plugin on WooCommerce, Google Merchant Center sync and checkout settings on Shopify
+- Measuring which AI assistants send visitors to a Shopify storefront
 - Evaluating MCP tools exposed at https://ecentic.ai/api/mcp
 
 ## When not to use
@@ -25,10 +25,10 @@ ecentic helps merchants win AI-agent-driven carts: connect the catalog, simulate
 ## Workflow
 
 1. Create an account at https://ecentic.ai/sign-up
-2. Connect the store (Shopify OAuth or WooCommerce REST keys) during onboarding
+2. Connect the store during onboarding: the Shopify app, the WooCommerce plugin or REST keys, or a product feed
 3. Confirm catalog import completed (products appear in the dashboard)
 4. Run simulations and listing optimizations on priority SKUs
-5. Enable UCP / agent tracking as documented in the dashboard
+5. On Shopify, visit tracking installs with the app and Google Merchant Center connects from the dashboard; on WooCommerce, the ecentic plugin serves `/.well-known/ucp` for agent checkout
 6. Use https://ecentic.ai/resources for free validators and developer surfaces
 
 ## Machine-readable surfaces

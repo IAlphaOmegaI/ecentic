@@ -9,6 +9,5 @@
       "Bash(find /c/Users/35568/Desktop/ecentic -name tailwind* -type f)"
     ],
     "additionalDirectories": ["c:\\Users\\35568\\Desktop\\ecentic\\docs"]
-  },
-  "enabledMcpjsonServers": ["codex"]
+  }
 }

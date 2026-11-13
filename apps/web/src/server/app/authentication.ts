@@ -8,7 +8,7 @@ import { type AppConfig, createTranslator } from "next-intl";
 import { render } from "react-email";
 import { Resend } from "resend";
 import { localizePath } from "@/i18n/locale";
-import { defaultLocale, isLocale, type Locale } from "@/i18n/locales";
+import { defaultLocale, isPublishedLocale, type Locale } from "@/i18n/locales";
 import { ENTRY_COOKIE, sanitizeRedirect } from "@/lib/redirect";
 import { ResetPasswordEmail } from "@/public/templates/reset-password";
 import { VerifyEmail } from "@/public/templates/verify";
@@ -236,7 +236,7 @@ export const forgotPassword = withContext(
     context,
     { email, locale = defaultLocale }: { email: string; locale?: Locale },
   ) => {
-    const resolvedLocale = isLocale(locale) ? locale : defaultLocale;
+    const resolvedLocale = isPublishedLocale(locale) ? locale : defaultLocale;
     // Better Auth mails a link to its own `/reset-password/:token` endpoint.
     // That endpoint validates the token and then bounces to `redirectTo`,
     // carrying the token in the query string — so this has to name the page
@@ -327,7 +327,7 @@ export const signUp = withContext(
   ) => {
     const { name, surname } = parseName(payload.fullName);
     const locale =
-      payload.locale && isLocale(payload.locale)
+      payload.locale && isPublishedLocale(payload.locale)
         ? payload.locale
         : defaultLocale;
 

@@ -7,6 +7,7 @@ import { MarketingShell } from "@/components/marketing/page";
 import { Plus } from "@/components/plus";
 import { Link } from "@/i18n/navigation";
 import { blogImage } from "@/lib/blog-image";
+import { isOptimizable, optimizedUrl } from "@/lib/image-hosts";
 import { PageBanner } from "../../_components/page-banner";
 import { renderInline } from "../../_components/rich-text";
 
@@ -66,6 +67,7 @@ export namespace EditorialRichText {
 export const EditorialLayout = async ({
   eyebrow,
   title,
+  accent,
   meta,
   description,
   illustration,
@@ -76,6 +78,7 @@ export const EditorialLayout = async ({
     <PageBanner
       eyebrow={eyebrow}
       title={title}
+      accent={accent}
       meta={meta}
       description={description}
       illustration={illustration}
@@ -89,6 +92,7 @@ export namespace EditorialLayout {
   export type Props = {
     eyebrow: string;
     title: string;
+    accent?: string;
     meta?: ReactNode;
     description: string;
     illustration?: ReactNode;
@@ -123,7 +127,11 @@ export const EditorialSplitSection = ({
         {thumbnail && (
           <>
             <Image
-              src={blogImage(thumbnail)}
+              src={
+                isOptimizable(thumbnail)
+                  ? optimizedUrl(thumbnail, 828)
+                  : blogImage(thumbnail)
+              }
               alt=""
               fill
               sizes="(min-width: 768px) 38vw, 100vw"

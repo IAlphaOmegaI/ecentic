@@ -426,7 +426,7 @@
           "generateWithAi": "Generar con IA",
           "generating": "Generando…",
           "generatingAll": "Generando...",
-          "save": "Guardar",
+          "save": "Guardar perfil",
           "saveProfile": "Guardar perfil",
           "saving": "Guardando…",
           "copy": "Copiar",
@@ -852,7 +852,11 @@
         },
         "frequency": {
           "title": "Frecuencia de simulación",
-          "options": ["Solo manual", "Diaria", "Semanal"]
+          "options": [
+            "Solo manual",
+            "Diaria",
+            "Semanal"
+          ]
         },
         "persona": {
           "title": "Persona de compra",

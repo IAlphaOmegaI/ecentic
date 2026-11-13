@@ -4,8 +4,10 @@
 // `BLOG_CACHE_TAG` / `parsePublishPayload` emptied the module's export surface
 // under Turbopack (PR #15 consolidate) and broke the production build.
 
+import { join } from "node:path";
+import * as Sentry from "@sentry/nextjs";
 import { resultify } from "@zenncore/utils";
-import { and, eq } from "drizzle-orm";
+import { and, eq, inArray, or } from "drizzle-orm";
 import { cacheLife, cacheTag, revalidateTag } from "next/cache";
 import { after } from "next/server";
 import { z } from "zod";
@@ -13,8 +15,10 @@ import { isPublishedLocale, type Locale } from "@/i18n/locales";
 import { createAzureTranslationGenerator } from "@/i18n/translation/azure";
 import { translationPolicyVersion } from "@/i18n/translation/runner";
 import { blogReadingMinutes, blogTopicSlug } from "@/lib/blog-locale";
+import { RETIRED_BLOG_POSTS } from "@/lib/blog-redirects";
 import { blogSourceHash } from "@/lib/blog-translation-content";
 import { schema } from "../database";
+import * as BlogContent from "../utils/blog-content";
 import {
   blogTargetLocales,
   blogTranslationProgress,
@@ -52,6 +56,7 @@ const purgeBlogCache = () => {
 };
 
 const published = eq(schema.blogPost.status, "published");
+const isListed = (row: { slug: string }) => !RETIRED_BLOG_POSTS.has(row.slug);
 
 /**
  * Public blog reads use `"use cache"`. Repository helpers go through
@@ -71,7 +76,7 @@ export const listPublished = async (locale: Locale = "en") => {
     ],
   });
   if (!rows.success) throw rows.error;
-  return rows.data;
+  return rows.data.filter(isListed);
 };
 
 /**
@@ -232,7 +237,7 @@ export const listCatalogSlugs = async () => {
     where: and(eq(schema.blogPost.locale, "en"), published),
   });
   if (!englishRows.success) throw englishRows.error;
-  return englishRows.data.map((row) => row.slug);
+  return englishRows.data.filter(isListed).map((row) => row.slug);
 };
 
 /** Only real published locale/slug pairs may be indexed or advertised as alternates. */
@@ -250,11 +255,13 @@ export const listPublishedLocales = async (slug: string) => {
 export const listPublishedPaths = async () => {
   const rows = await find(Environment.SERVER, { where: published });
   if (!rows.success) throw rows.error;
-  return rows.data.flatMap((row) =>
-    isPublishedLocale(row.locale)
-      ? [{ locale: row.locale, slug: row.slug }]
-      : [],
-  );
+  return rows.data
+    .filter(isListed)
+    .flatMap((row) =>
+      isPublishedLocale(row.locale)
+        ? [{ locale: row.locale, slug: row.slug }]
+        : [],
+    );
 };
 
 /** Published posts whose category/tags map to the localized topic slug. */
@@ -372,45 +379,68 @@ export const parsePublishPayload = (body: unknown) => {
   return { success: true as const, data: parsed.data };
 };
 
-/**
- * Persist the English source and durable target-locale jobs. Only completed,
- * reviewed translations become published rows; failures never roll English back.
- */
-const ingestPublishCore = async (payload: PublishPayload) => {
-  if (payload.languageCode && payload.languageCode !== "en")
-    return {
-      success: true as const,
-      data: { skipped: true as const, reason: "non-english" as const },
-    };
+type Article = {
+  slug: string;
+  source: Type["source"];
+  externalId: string;
+  title: string;
+  description: string;
+  publishedAt: string;
+  category: string;
+  tags: readonly string[];
+  thumbnailUrl: string | null;
+  contentHtml: string;
+  /** Same contract as `LocaleRowValues.faqs`: `undefined` keeps what is stored. */
+  faqs?: readonly Faq[];
+};
 
-  const publishedAt = (payload.createdAt ?? new Date().toISOString()).slice(
-    0,
-    10,
-  );
-  const category = payload.seedKeyword ?? "Guide";
-  const tags = payload.keywords ?? [];
-  const description = payload.metaDescription;
-  const thumbnailUrl = payload.heroImageUrl ?? null;
-  const externalId = String(payload.id);
-
-  const english = await upsertLocaleRow({
-    slug: payload.slug,
-    locale: "en",
-    source: "blg",
-    externalId,
-    category,
-    title: payload.title,
-    description,
-    introduction: description,
-    publishedAt,
-    readTime: estimateReadTime(payload.content_html),
-    thumbnailUrl,
-    tags,
-    takeaways: [],
-    contentHtml: payload.content_html,
-    faqs: payload.faqs,
+/** Whether a markdown file in `content/blog` has claimed this slug. */
+const claimedByRepo = async (slug: string) => {
+  const rows = await find(Environment.SERVER, {
+    where: and(
+      eq(schema.blogPost.slug, slug),
+      eq(schema.blogPost.source, "repo"),
+    ),
+    limit: 1,
   });
+  if (!rows.success) throw rows.error;
+  return rows.data.length > 0;
+};
 
+const skipRepoOwned = (slug: string, id?: string | number) => {
+  Sentry.captureMessage(
+    "BLG publish skipped: slug is published from the repo",
+    {
+      level: "info",
+      tags: { integration: "babylovegrowth" },
+      extra: { slug, id },
+    },
+  );
+  return {
+    success: true as const,
+    data: { skipped: true as const, reason: "repo-owned" as const },
+  };
+};
+
+/** Persist English first, then enqueue source-guarded reviewed translations. */
+const ingestArticleCore = async (article: Article) => {
+  const english = await upsertLocaleRow({
+    slug: article.slug,
+    locale: "en",
+    source: article.source,
+    externalId: article.externalId,
+    category: article.category,
+    title: article.title,
+    description: article.description,
+    introduction: article.description,
+    publishedAt: article.publishedAt,
+    readTime: estimateReadTime(article.contentHtml),
+    thumbnailUrl: article.thumbnailUrl,
+    tags: article.tags,
+    takeaways: [],
+    contentHtml: article.contentHtml,
+    faqs: article.faqs,
+  });
   if (!english) throw new Error("English article was not persisted");
   const queued = await enqueueBlogTranslations(english, undefined, {
     replacePublished: true,
@@ -424,6 +454,48 @@ const ingestPublishCore = async (payload: PublishPayload) => {
       queued,
     },
   };
+};
+
+const findStoredRows = async (slugs: readonly string[]) => {
+  const repo = eq(schema.blogPost.source, "repo");
+  const rows = await find(Environment.SERVER, {
+    where:
+      slugs.length > 0
+        ? or(inArray(schema.blogPost.slug, [...slugs]), repo)
+        : repo,
+  });
+  if (!rows.success) throw rows.error;
+  return rows.data;
+};
+
+/**
+ * Persist a BLG publish through `ingestArticleCore`. A slug published from the
+ * repo is the repo's: the file in `content/blog` replaced the BLG article on
+ * purpose, and neither the webhook nor the reconcile may write it back.
+ */
+const ingestPublishCore = async (payload: PublishPayload) => {
+  if (payload.languageCode && payload.languageCode !== "en")
+    return {
+      success: true as const,
+      data: { skipped: true as const, reason: "non-english" as const },
+    };
+
+  if (await claimedByRepo(payload.slug))
+    return skipRepoOwned(payload.slug, payload.id);
+
+  return await ingestArticleCore({
+    slug: payload.slug,
+    source: "blg",
+    externalId: String(payload.id),
+    title: payload.title,
+    description: payload.metaDescription,
+    publishedAt: (payload.createdAt ?? new Date().toISOString()).slice(0, 10),
+    category: payload.seedKeyword ?? "Guide",
+    tags: payload.keywords ?? [],
+    thumbnailUrl: payload.heroImageUrl ?? null,
+    contentHtml: payload.content_html,
+    faqs: payload.faqs,
+  });
 };
 
 export const ingestPublish = withContext(
@@ -442,11 +514,17 @@ export const reconcileCatalog = async ({
     if (!stored.success) throw stored.error;
     const english = stored.data.filter((row) => row.locale === "en");
     const present = new Set(english.map((row) => row.slug));
+    const repoRows = await find(Environment.SERVER, {
+      where: eq(schema.blogPost.source, "repo"),
+    });
+    if (!repoRows.success) throw repoRows.error;
+    const repoOwned = new Set(repoRows.data.map((row) => row.slug));
     const catalog = await BabyLoveGrowth.listArticlesFresh();
     const missing = catalog.filter(
       (article) =>
         (!article.languageCode || article.languageCode === "en") &&
-        !present.has(article.slug),
+        !present.has(article.slug) &&
+        !repoOwned.has(article.slug),
     );
     const ingested: string[] = [];
     const failed: { slug: string; error: string }[] = [];
@@ -486,6 +564,7 @@ export const reconcileCatalog = async ({
       missingEnglish: missing.length,
       queuedSources: candidates.slice(0, limit).map((post) => post.slug),
       ingested,
+      partial: [] as { slug: string; esError: string }[],
       failed,
     };
   });
@@ -502,3 +581,119 @@ export const drainTranslations = async () =>
     if (result.status === "published") purgeBlogCache();
     return result;
   });
+
+export const reconcileRepoPosts = async ({
+  limit = 1,
+  // `turbopackIgnore`: a `process.cwd()` path is otherwise read as "any file",
+  // and Turbopack traces the whole project into every route importing this
+  // module. The folder reaches the cron through `outputFileTracingIncludes`.
+  directory = join(
+    /*turbopackIgnore: true*/ process.cwd(),
+    BlogContent.CONTENT_DIRECTORY,
+  ),
+}: {
+  limit?: number;
+  directory?: string;
+} = {}) =>
+  await resultify(async () => {
+    const files = await BlogContent.read(directory);
+    const reports = BlogContent.validate(files);
+    const posts = reports.flatMap((report) => report.post ?? []);
+    const rows = await findStoredRows(reports.map((report) => report.slug));
+
+    const { pending: planned, orphaned } = BlogContent.plan({
+      posts,
+      slugs: new Set(reports.map((report) => report.slug)),
+      rows,
+    });
+
+    // Locale completion is handled by durable jobs; only source changes need a new ingest.
+    const pending = planned.filter(
+      (post) =>
+        !rows.some(
+          (row) =>
+            row.slug === post.slug &&
+            row.locale === "en" &&
+            row.source === "repo" &&
+            row.externalId === post.externalId &&
+            row.status === "published",
+        ),
+    );
+    const ingested: string[] = [];
+    const partial: { slug: string; esError: string }[] = [];
+    const failed: { slug: string; error: string }[] = [];
+
+    for (const post of pending.slice(0, limit)) {
+      // A tick cut off at `maxDuration` mid-translation reports nothing else.
+      console.info("[blog] ingesting", post.path);
+      const result = await resultify(() =>
+        ingestArticleCore({
+          slug: post.slug,
+          source: "repo",
+          externalId: post.externalId,
+          title: post.title,
+          description: post.description,
+          publishedAt: post.publishedAt,
+          category: post.category,
+          tags: post.tags,
+          thumbnailUrl: post.thumbnailUrl,
+          contentHtml: post.contentHtml,
+          // Always explicit: the file is the whole truth, so a takeover of a
+          // BLG slug must clear that article's pairs when the file has none.
+          faqs: post.faqs,
+        }),
+      );
+
+      if (!result.success) {
+        failed.push({
+          slug: post.slug,
+          error:
+            result.error instanceof Error
+              ? result.error.message
+              : String(result.error),
+        });
+        continue;
+      }
+
+      ingested.push(post.slug);
+    }
+
+    const live = new Set(
+      rows.filter((row) => row.source === "repo").map((row) => row.slug),
+    );
+
+    return {
+      files: files.length,
+      candidates: pending.length,
+      ingested,
+      partial,
+      failed,
+      invalid: reports
+        .filter((report) => report.errors.length > 0)
+        .map((report) => ({
+          path: report.path,
+          errors: report.errors.map(
+            (issue) => `line ${issue.line}: ${issue.message}`,
+          ),
+        })),
+      drafts: posts
+        .filter((post) => post.draft)
+        .map((post) => ({ slug: post.slug, live: live.has(post.slug) })),
+      orphaned,
+    };
+  });
+
+/**
+ * Which automatic source wrote a post most recently. The blog cron runs the
+ * other one first, so neither rail can hold every tick: one that just spent a
+ * tick ingesting yields the next one.
+ */
+export const lastWriter = async () => {
+  const latest = await find(Environment.SERVER, {
+    where: inArray(schema.blogPost.source, ["blg", "repo"]),
+    orderBy: [{ column: schema.blogPost.updatedAt, direction: "desc" }],
+    limit: 1,
+  });
+  if (!latest.success) throw latest.error;
+  return latest.data[0]?.source ?? null;
+};

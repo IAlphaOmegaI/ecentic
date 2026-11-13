@@ -96,6 +96,21 @@ export const proxy = async (request: Request) => {
     authenticationRoute ||
     matches(pathnameWithoutLocale, PROTECTED);
 
+  // Next.js emits image URLs with an explicit locale. Keep it: stripping /en
+  // from the homepage image sends its hashed name to an unrelated root route.
+  // Unprefixed nested image URLs still need the normal locale rewrite below.
+  const imageLocale = routing.locales.find((locale) =>
+    pathname.startsWith(`/${locale}/`),
+  );
+  const imagePath = imageLocale ? pathname.slice(imageLocale.length + 1) : null;
+  if (
+    imagePath &&
+    !matches(imagePath, PROTECTED) &&
+    !matches(imagePath, STAFF_ONLY) &&
+    /\/(?:opengraph-image|twitter-image)(?:-[^/]+)?$/.test(imagePath)
+  )
+    return Response.next();
+
   // Locale negotiation / rewrite first so downstream pages see `/[locale]/…`.
   const internationalized = handleI18nRouting(request);
 
@@ -188,6 +203,8 @@ export const proxy = async (request: Request) => {
 // production. The list is an allowlist of what should be publicly served — a
 // `public/` file with an extension outside it stays unreachable, which is the
 // intent for `templates/*.tsx` and `stubs/*.csv` (local artifacts, not assets).
+// `html` is listed for ownership-verification files a third party fetches from
+// the root (`/zoho-domain-verification.html`); no page route carries the suffix.
 //
 // Anchored with `$` so a slug that merely *contains* a dotted word — say
 // `/es/blog/why-node.js-wins` — still gets its locale rewrite.
@@ -200,6 +217,6 @@ export const proxy = async (request: Request) => {
 // `/ucp-playground` and `/ucp-comparison` pages still route through next-intl.
 export const config = {
   matcher: [
-    "/((?!monitoring|_next/static|_next/image|api|\\.well-known(?:/.*)?$|ucp(?:/.*)?$|mcp(?:/.*)?$|opengraph-image(?:-[^/]+)?$|twitter-image(?:-[^/]+)?$|.*\\.(?:js|mjs|css|txt|md|xml|json|webmanifest|ico|png|jpg|jpeg|gif|webp|avif|svg|mp4|webm|woff|woff2|ttf|otf)$).*)",
+    "/((?!monitoring|_next/static|_next/image|api|\\.well-known(?:/.*)?$|ucp(?:/.*)?$|mcp(?:/.*)?$|opengraph-image(?:-[^/]+)?$|twitter-image(?:-[^/]+)?$|.*\\.(?:js|mjs|css|txt|md|xml|json|html|webmanifest|ico|png|jpg|jpeg|gif|webp|avif|svg|mp4|webm|woff|woff2|ttf|otf)$).*)",
   ],
 } satisfies ProxyConfig;

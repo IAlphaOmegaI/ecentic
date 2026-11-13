@@ -14,7 +14,7 @@
         "primary": "UCP",
         "accent": "validieren"
       },
-      "description": "Prüfen Sie, ob ein Onlineshop unter /.well-known/ucp ein gültiges Universal Commerce Profile veröffentlicht und ob Einkaufsagenten problemlos darauf zugreifen können.",
+      "description": "Prüfen Sie, ob ein Shop unter /.well-known/ucp ein gültiges Universal Commerce Protocol-Profil veröffentlicht und ob Einkaufsagenten es problemlos lesen können.",
       "assurances": [
         "Kostenlos nutzbar",
         "Kein Konto erforderlich",
@@ -64,12 +64,12 @@
           "answer": "Er ruft die öffentliche HTTPS-Domain ab, bestätigt die Antwort von /.well-known/ucp, verarbeitet den Inhalt als JSON und meldet Fehler sowie Warnungen der UCP-Spezifikation, damit Sie wissen, dass das Profil korrekt aufgebaut ist."
         },
         {
-          "question": "Wo sollte ein Universal Commerce Profile veröffentlicht werden?",
+          "question": "Wo sollte ein Universal Commerce Protocol-Profil veröffentlicht werden?",
           "answer": "Unter /.well-known/ucp auf der öffentlichen HTTPS-Domain Ihrer Storefront. Der Validator ruft genau diesen Pfad ab und zeigt an, ob er erreichbar ist."
         },
         {
           "question": "Prüft der Validator, ob KI-Einkaufsagenten meinen Shop lesen können?",
-          "answer": "Ja. Der Validator prüft robots.txt, damit Sie sehen können, ob große Shopping- und Indexierungs-Bots problemlos auf Ihr Universal Commerce Profile zugreifen dürfen."
+          "answer": "Ja. Der Validator prüft anhand von robots.txt, ob die wichtigsten Einkaufs- und Indexierungsbots auf Ihr Universal Commerce Protocol-Profil zugreifen dürfen."
         }
       ]
     },
@@ -156,8 +156,8 @@
         "ucpReady": "UCP-bereit",
         "needsFixes": "Korrekturen erforderlich",
         "noIssuesFound": "Keine Probleme gefunden",
-        "signingKeysNotAdvertised": "signing_keys nicht angekündigt",
-        "signingKeysEmpty": "signing_keys ist leer",
+        "signingKeysNotAdvertised": "Keine Signaturschlüssel veröffentlicht",
+        "signingKeysEmpty": "Das Array der Signaturschlüssel ist leer",
         "missingKid": "(kid fehlt)",
         "transport": "Transport · {value}",
         "version": "Version · {value}",
@@ -168,7 +168,9 @@
         "crv": "crv · {value}",
         "latestSuffix": " · aktuellste Version {version}",
         "envelope": "envelope: {kind}",
-        "envelopeFlatKind": "flat"
+        "envelopeFlatKind": "flat",
+        "notValidated": "Nicht validiert",
+        "notValidatedSuffix": " · nicht validiert"
       },
       "services": {
         "title": "Services & Transportprotokolle",
@@ -200,7 +202,8 @@
       "spec": {
         "title": "Spezifikationsvalidierung",
         "description": "{errors, plural, one {# Fehler} other {# Fehler}}, {warnings, plural, one {# Warnung} other {# Warnungen}} gruppiert nach Spezifikationsbereich.",
-        "noIssuesBody": "Das aktuelle Profil hat den Validator ohne Schemafehler oder Warnungen bestanden."
+        "noIssuesBody": "Das aktuelle Profil hat den Validator ohne Schemafehler oder Warnungen bestanden.",
+        "noProfileBody": "Es wurde kein Profil gelesen. Daher gab es nichts zu validieren."
       },
       "results": {
         "responseHealth": "Antwortstatus",
@@ -217,7 +220,9 @@
         "specErrors": {
           "label": "Spezifikationsfehler",
           "noneDetail": "Keine blockierenden Probleme im Schema gefunden.",
-          "someDetail": "Blockierende Probleme, die zuerst behoben werden sollten."
+          "someDetail": "Blockierende Probleme, die zuerst behoben werden sollten.",
+          "notValidatedDetail": "Nicht anhand dieser Revision validiert.",
+          "noProfileDetail": "Es wurde kein Profil gelesen. Daher wurde nichts geprüft."
         },
         "capabilities": {
           "label": "Funktionen",
@@ -258,12 +263,13 @@
           "label": "Neueste Protokollversion",
           "latest": "Das Profil deklariert {version} — die neueste veröffentlichte UCP-Version.",
           "outdated": "Das Profil deklariert {version}; die neueste Version ist {latest}.",
-          "none": "Keine Version im Profil-Root deklariert."
+          "none": "Keine Version im Profil-Root deklariert.",
+          "notValidated": "Das Profil gibt {version} an. Diese Revision wird von diesem Validator nicht unterstützt ({revisions}). Das Profil wurde nicht anhand dieser Revision validiert."
         },
         "signingKeys": {
           "label": "Signaturschlüssel angekündigt",
           "published": "{count, plural, one {# JWK} other {# JWKs}} für RFC 9421-Verifizierung veröffentlicht.",
-          "none": "Keine signing_keys angekündigt — Verifizierung ohne vorherigen Berechtigungsaustausch nicht möglich."
+          "none": "Keine Signaturschlüssel veröffentlicht — eine Verifizierung ohne vorherige Genehmigung ist nicht möglich."
         }
       },
       "robots": {
@@ -291,7 +297,7 @@
       "intro": {
         "eyebrow": "Live-Validierung",
         "title": "Live-Validierung ausführen",
-        "description": "Fügen Sie eine Domain ein und wir rufen das Live-Dokument <code>/.well-known/ucp</code> ab, analysieren jeden Service, jede Funktion, jeden Zahlungs-Handler und jeden Signaturschlüssel und validieren alles anschließend gegen die Spezifikation <code>{version}</code>."
+        "description": "Fügen Sie eine Domain ein. Wir rufen das aktuelle <code>/.well-known/ucp</code>-Dokument ab, analysieren jeden Dienst, jede Funktion, jeden Zahlungs-Handler und jeden Signaturschlüssel und validieren es anhand der angegebenen Spezifikationsrevision, bis einschließlich <code>{version}</code>."
       }
     }
   }

@@ -14,7 +14,7 @@
     "sign-up": "/sign-up",
     "sign-in": "/sign-in",
     blog: "/blog",
-    compare: "/compare/best-ai-ecommerce-tools",
+    compare: "/blog/best-ecommerce-ai-platforms",
   };
 
   const navigate = (path) => {

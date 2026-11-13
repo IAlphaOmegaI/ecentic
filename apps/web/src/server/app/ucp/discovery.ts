@@ -10,19 +10,14 @@ import {
   UCP_VERSION,
 } from "./protocol";
 import { platformSigningKey } from "./signatures";
-import {
-  type StorefrontInfo,
-  storefrontOrigin,
-  ucpEndpointUrl,
-} from "./store-context";
+import { type StorefrontInfo, ucpEndpointUrl } from "./store-context";
 
 export const buildDiscoveryProfile = (
-  store: {
-    id: string;
-    domain: string;
-  },
+  store: { id: string },
   storefront?: StorefrontInfo | null,
 ): Record<string, unknown> => {
+  // No `supported_versions`: it maps *older* revisions to their own leaf
+  // profiles, and this service speaks UCP_VERSION alone.
   const ucp: Record<string, unknown> = {
     version: UCP_VERSION,
     services: {
@@ -37,20 +32,12 @@ export const buildDiscoveryProfile = (
       ],
     },
     capabilities: discoveryCapabilityDeclarations(),
-    // Version-specific profile URIs. The store's own well-known URL is the
-    // canonical one agents discover.
-    supported_versions: {
-      [UCP_VERSION]: `${storefrontOrigin(store.domain)}/.well-known/ucp`,
-    },
+    // Payment handlers the store declared (via its plugin settings) — shared
+    // with the checkout `payment.handlers` field so the processing specs a
+    // platform discovers here match what checkout returns. The registry is
+    // required, so a store with none declared publishes it empty.
+    payment_handlers: storefront?.paymentHandlers ?? {},
   };
-
-  // Payment handlers the store declared (via its plugin settings) — shared
-  // with the checkout `payment.handlers` field so the processing specs a
-  // platform discovers here match what checkout returns.
-  const handlers = storefront?.paymentHandlers ?? {};
-  if (Object.keys(handlers).length > 0) {
-    ucp.payment_handlers = handlers;
-  }
 
   // Identity linking: the store hosts its own OAuth 2.0 authorization server
   // (RFC 8414 metadata at {store}/.well-known/oauth-authorization-server);
@@ -71,11 +58,11 @@ export const buildDiscoveryProfile = (
   }
 
   // Publish the EC P-256 public signing key (JWK, RFC 7517) so platforms can
-  // verify our RFC 9421 signatures. crv drives the algorithm (ES256).
+  // verify our RFC 9421 signatures. crv drives the algorithm (ES256). The
+  // array sits at the top level of the profile, beside `ucp` — the one place
+  // a verifier looks.
   const signingKey = platformSigningKey();
-  if (signingKey) {
-    ucp.signing_keys = [signingKey.publicJwk];
-  }
+  if (!signingKey) return { ucp };
 
-  return { ucp };
+  return { ucp, signing_keys: [signingKey.publicJwk] };
 };

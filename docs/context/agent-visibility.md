@@ -34,9 +34,16 @@ barcode) never enter the cross-retailer comparison.
   `apps/web/` (the CLI-linked app config is `apps/web/shopify.app.toml`);
   merchants enable the app embed once in the theme editor.
 - `server/app/intelligence/agent-readiness.ts` — `auditStore` action: robots.txt
-  per-crawler allowance, rendered JSON-LD sampling, GTIN coverage, content
-  depth, feed readiness, plus manual checklist items (Agentic Storefront,
-  GMC, Perplexity enrollment).
+  per-crawler allowance, bot-wall access to sampled product pages, rendered
+  JSON-LD sampling, GTIN coverage, content depth, feed readiness, plus manual
+  checklist items (Agentic Storefront, GMC, Perplexity enrollment). A sampled
+  page that answers with a bot challenge (`intelligence/bot-challenge.ts`:
+  vendor signatures, or a bare 403/429) fails the access check and is left out
+  of the JSON-LD tally — a challenge page carries no product, so counting it
+  as "no markup" would send the merchant to fix the wrong thing. Bot walls key
+  on IP reputation and TLS fingerprint more than user agent, and hosted
+  shopping agents mostly fetch from datacenter IPs, so the cloud-run audit is
+  a fair proxy for what they hit.
 - `server/app/intelligence/catalog-rank.ts` — `measureCatalogRank` action:
   queries the Shopify **Global Catalog MCP** (the same retrieval index agent
   surfaces use for Shopify products) for a buyer query with locale signals and

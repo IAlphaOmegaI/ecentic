@@ -1,7 +1,7 @@
 {
   "demoPage": {
     "agenda": {
-      "description": "Select a topic to preview the conversation.",
+      "description": "Start with a product, follow the decision, then agree what to improve. Here is the conversation we will work through together.",
       "bringLabel": "Bring to the conversation",
       "exploreLabel": "We’ll explore",
       "items": [

@@ -28,7 +28,7 @@ const spec = {
     },
     "/.well-known/ucp": {
       get: {
-        summary: "ecentic Universal Commerce Profile",
+        summary: "ecentic Universal Commerce Protocol profile",
         operationId: "getWellKnownUcp",
         responses: {
           "200": {

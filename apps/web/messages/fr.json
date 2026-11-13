@@ -6178,7 +6178,7 @@
         "primary": "UCP",
         "accent": ": validateur"
       },
-      "description": "Vérifiez si une vitrine publie un Universal Commerce Profile valide sur /.well-known/ucp et si les agents d’achat peuvent le lire sans friction.",
+      "description": "Vérifiez si une boutique publie un profil Universal Commerce Protocol valide à l’adresse /.well-known/ucp et si les agents d’achat peuvent le lire sans difficulté.",
       "assurances": [
         "Utilisation gratuite",
         "Aucun compte requis",
@@ -6228,12 +6228,12 @@
           "answer": "Il interroge le domaine HTTPS public, confirme que /.well-known/ucp répond, analyse le contenu comme du JSON et signale les erreurs et avertissements liés à la spécification UCP afin de vérifier que le profil est correctement formé."
         },
         {
-          "question": "Où publier un Universal Commerce Profile ?",
+          "question": "Où faut-il publier un profil Universal Commerce Protocol ?",
           "answer": "Sur /.well-known/ucp du domaine HTTPS public de votre vitrine. Le validateur récupère ce chemin exact et indique s’il est accessible."
         },
         {
           "question": "Vérifie-t-il si les agents d’achat IA peuvent lire ma boutique ?",
-          "answer": "Oui. Le validateur analyse robots.txt afin de montrer si les principaux bots d’achat et d’indexation sont autorisés à accéder à votre Universal Commerce Profile sans friction."
+          "answer": "Oui. Le validateur examine robots.txt pour vérifier si les principaux robots d’achat et d’indexation sont autorisés à accéder à votre profil Universal Commerce Protocol sans difficulté."
         }
       ]
     },
@@ -6320,8 +6320,8 @@
         "ucpReady": "Compatible UCP",
         "needsFixes": "Corrections nécessaires",
         "noIssuesFound": "Aucun problème détecté",
-        "signingKeysNotAdvertised": "signing_keys non publié",
-        "signingKeysEmpty": "Le champ signing_keys est vide",
+        "signingKeysNotAdvertised": "Aucune clé de signature annoncée",
+        "signingKeysEmpty": "Le tableau des clés de signature est vide",
         "missingKid": "(kid manquant)",
         "transport": "Transport · {value}",
         "version": "Version · {value}",
@@ -6332,7 +6332,9 @@
         "crv": "crv · {value}",
         "latestSuffix": " · dernière version {version}",
         "envelope": "enveloppe : {kind}",
-        "envelopeFlatKind": "flat"
+        "envelopeFlatKind": "flat",
+        "notValidated": "Non validé",
+        "notValidatedSuffix": " · non validé"
       },
       "services": {
         "title": "Services et transports",
@@ -6364,7 +6366,8 @@
       "spec": {
         "title": "Validation de la spécification",
         "description": "{errors, plural, one {# erreur} many {# erreurs} other {# erreurs}}, {warnings, plural, one {# avertissement} many {# avertissements} other {# avertissements}} regroupés par section de la spécification.",
-        "noIssuesBody": "Le profil actuel a passé la validation sans erreur ni avertissement de schéma."
+        "noIssuesBody": "Le profil actuel a passé la validation sans erreur ni avertissement de schéma.",
+        "noProfileBody": "Aucun profil n’a été lu ; il n’y avait donc rien à valider."
       },
       "results": {
         "responseHealth": "État de la réponse",
@@ -6381,7 +6384,9 @@
         "specErrors": {
           "label": "Erreurs de spécification",
           "noneDetail": "Aucun problème de schéma bloquant détecté.",
-          "someDetail": "Problèmes bloquants à corriger en priorité."
+          "someDetail": "Problèmes bloquants à corriger en priorité.",
+          "notValidatedDetail": "Non validé selon cette révision.",
+          "noProfileDetail": "Aucun profil n’a été lu ; aucune vérification n’a donc été effectuée."
         },
         "capabilities": {
           "label": "Capacités",
@@ -6422,12 +6427,13 @@
           "label": "Dernière version du protocole",
           "latest": "Le profil déclare {version} — la dernière version UCP publiée.",
           "outdated": "Le profil déclare {version} ; la dernière version est {latest}.",
-          "none": "Aucune version déclarée à la racine du profil."
+          "none": "Aucune version déclarée à la racine du profil.",
+          "notValidated": "Le profil déclare {version}, une révision que ce validateur ne prend pas en charge ({revisions}). Il n’a pas été validé selon cette révision."
         },
         "signingKeys": {
           "label": "Clés de signature annoncées",
           "published": "{count, plural, one {# JWK} many {# JWKs} other {# JWKs}} publiés pour la vérification RFC 9421.",
-          "none": "Aucune clé signing_keys publiée — vérification sans autorisation préalable impossible."
+          "none": "Aucune clé de signature annoncée — la vérification sans autorisation préalable est impossible."
         }
       },
       "robots": {
@@ -6455,7 +6461,7 @@
       "intro": {
         "eyebrow": "Validation en direct",
         "title": "Lancer une validation en direct",
-        "description": "Collez un domaine et nous récupérerons en direct le document <code>/.well-known/ucp</code>, analyserons chaque service, capacité, gestionnaire de paiement et clé de signature, puis le validerons selon la spécification <code>{version}</code>."
+        "description": "Collez un domaine : nous récupérerons le document <code>/.well-known/ucp</code> en ligne, analyserons chaque service, fonctionnalité, gestionnaire de paiement et clé de signature, puis le validerons selon la révision de la spécification qu’il déclare, jusqu’à <code>{version}</code>."
       }
     }
   },
