@@ -28,7 +28,7 @@ export const POST = async (request: NextRequest) => {
   if (!payload.success)
     return Response.json({ error: payload.error.message }, { status: 400 });
 
-  // BLG expects HTTP 200 within ~5s — translate on Azure after acknowledging.
+  // Acknowledge quickly; persist source + durable translation jobs after the response.
   after(async () => {
     const result = await Blog.ingestPublish(Environment.SERVER, payload.data);
     if (!result.success) {
@@ -37,22 +37,6 @@ export const POST = async (request: NextRequest) => {
         extra: { slug: payload.data.slug, id: payload.data.id },
       });
       return;
-    }
-
-    if (
-      result.data &&
-      "action" in result.data &&
-      result.data.action === "upserted-en-only"
-    ) {
-      Sentry.captureMessage("BLG webhook saved EN but ES translate failed", {
-        level: "warning",
-        tags: { integration: "babylovegrowth-webhook" },
-        extra: {
-          slug: payload.data.slug,
-          id: payload.data.id,
-          esError: result.data.esError,
-        },
-      });
     }
   });
 

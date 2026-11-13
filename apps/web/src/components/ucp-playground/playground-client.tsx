@@ -17,7 +17,7 @@ import {
   isToolUIPart,
   type ToolUIPart,
 } from "ai";
-import { useMessages, useTranslations } from "next-intl";
+import { useLocale, useMessages, useTranslations } from "next-intl";
 import { useCallback, useMemo, useState } from "react";
 import { z } from "zod";
 import {
@@ -108,12 +108,12 @@ const getProducts = (output: CatalogOutput | undefined): UcpProduct[] => {
 };
 
 // UCP money amounts are minor units (e.g. 24750 = $247.50).
-const formatMoney = (money: UcpMoney): string => {
+const formatMoney = (money: UcpMoney, locale: string): string => {
   const { amount, currency } = money;
   const value = amount / 100;
 
   try {
-    return new Intl.NumberFormat(undefined, {
+    return new Intl.NumberFormat(locale, {
       style: "currency",
       currency,
     }).format(value);
@@ -122,9 +122,9 @@ const formatMoney = (money: UcpMoney): string => {
   }
 };
 
-const priceLabel = (product: UcpProduct): string | null => {
-  const min = formatMoney(product.price_range?.min);
-  const max = formatMoney(product.price_range?.max);
+const priceLabel = (product: UcpProduct, locale: string): string | null => {
+  const min = formatMoney(product.price_range?.min, locale);
+  const max = formatMoney(product.price_range?.max, locale);
 
   if (!min) return null;
   return max && max !== min ? `${min} – ${max}` : min;
@@ -226,43 +226,46 @@ const VariantList = ({
 }: {
   variants: UcpVariant[];
   translate: PlaygroundTranslate;
-}) => (
-  <ul className="mt-2 space-y-1 border-accent-foreground border-t pt-2">
-    {variants.map((variant, index) => {
-      const { label, tone } = variantAvailability(variant, translate);
-      return (
-        <li
-          className="flex items-center justify-between gap-2 text-[11px] leading-tight"
-          key={variant.id ?? index}
-        >
-          <span className="min-w-0 flex-1 truncate text-foreground-dimmed">
-            {variant.title}
-          </span>
-          <span className="flex shrink-0 items-center gap-1.5">
-            {variant.rating && (
-              <span className="flex items-center gap-0.5 text-foreground-dimmed tabular-nums">
-                <span className="text-warning">★</span>
-                {formatRatingValue(variant.rating.value)}
+}) => {
+  const locale = useLocale();
+  return (
+    <ul className="mt-2 space-y-1 border-accent-foreground border-t pt-2">
+      {variants.map((variant, index) => {
+        const { label, tone } = variantAvailability(variant, translate);
+        return (
+          <li
+            className="flex items-center justify-between gap-2 text-[11px] leading-tight"
+            key={variant.id ?? index}
+          >
+            <span className="min-w-0 flex-1 truncate text-foreground-dimmed">
+              {variant.title}
+            </span>
+            <span className="flex shrink-0 items-center gap-1.5">
+              {variant.rating && (
+                <span className="flex items-center gap-0.5 text-foreground-dimmed tabular-nums">
+                  <span className="text-warning">★</span>
+                  {formatRatingValue(variant.rating.value)}
+                </span>
+              )}
+              <span className="font-mono text-foreground/80">
+                {formatMoney(variant.price, locale)}
               </span>
-            )}
-            <span className="font-mono text-foreground/80">
-              {formatMoney(variant.price)}
+              <span className="flex items-center gap-1">
+                <span
+                  className={cn(
+                    "size-1.5 shrink-0 rounded-full",
+                    availabilityDotClass[tone],
+                  )}
+                />
+                <span className={availabilityTextClass[tone]}>{label}</span>
+              </span>
             </span>
-            <span className="flex items-center gap-1">
-              <span
-                className={cn(
-                  "size-1.5 shrink-0 rounded-full",
-                  availabilityDotClass[tone],
-                )}
-              />
-              <span className={availabilityTextClass[tone]}>{label}</span>
-            </span>
-          </span>
-        </li>
-      );
-    })}
-  </ul>
-);
+          </li>
+        );
+      })}
+    </ul>
+  );
+};
 
 // A tool message part narrowed by its `tool-<name>` type literal, so part.output
 // carries that tool's zod-validated result instead of `unknown`.
@@ -328,15 +331,17 @@ const ProductCard = ({
   product: UcpProduct;
   translate: PlaygroundTranslate;
 }) => {
+  const locale = useLocale();
+
   const image = productImage(product);
-  const price = priceLabel(product);
+  const price = priceLabel(product, locale);
   // On sale only when the compare-at (list) price is actually higher than the
   // current price — stores send list_price_range { amount: 0 } to mean "none".
   const listMin = product.list_price_range?.min;
   const priceMin = product.price_range?.min;
   const listPrice =
     listMin && priceMin && listMin.amount > priceMin.amount
-      ? formatMoney(listMin)
+      ? formatMoney(listMin, locale)
       : null;
   const onSale = listPrice !== null;
   const variantCount = product.variants?.length ?? 0;
@@ -526,6 +531,8 @@ const CartView = ({
   cart: UcpCart;
   translate: PlaygroundTranslate;
 }) => {
+  const locale = useLocale();
+
   const currency = cart.currency ?? "USD";
   const lineItems = cart.line_items ?? [];
   const totalRow =
@@ -549,7 +556,7 @@ const CartView = ({
         </div>
         {totalRow?.amount && (
           <span className="font-semibold text-primary text-sm">
-            {formatMoney({ amount: totalRow.amount, currency })}
+            {formatMoney({ amount: totalRow.amount, currency }, locale)}
           </span>
         )}
       </div>
@@ -582,7 +589,7 @@ const CartView = ({
               </div>
               {line.item?.price && (
                 <span className="shrink-0 font-mono text-foreground text-sm">
-                  {formatMoney({ amount: line.item.price, currency })}
+                  {formatMoney({ amount: line.item.price, currency }, locale)}
                 </span>
               )}
             </li>
@@ -607,7 +614,7 @@ const CartView = ({
                 <span>{total.display_text ?? total.type}</span>
                 {total.amount && (
                   <span className="font-mono">
-                    {formatMoney({ amount: total.amount, currency })}
+                    {formatMoney({ amount: total.amount, currency }, locale)}
                   </span>
                 )}
               </div>
@@ -623,7 +630,7 @@ const CartView = ({
           rel="noopener noreferrer"
           target="_blank"
         >
-          Open cart ↗
+          {translate("cart.action.primary")} ↗
         </a>
       )}
     </div>

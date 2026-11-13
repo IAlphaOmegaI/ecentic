@@ -1,0 +1,12 @@
+{
+  "reviewNotFound": {
+    "status": "Page introuvable",
+    "description": "Nous n’avons trouvé aucune page à cette adresse. Revenez à l’accueil, retournez en arrière ou explorez les options ci-dessous.",
+    "exploreTitle": "Quelques destinations utiles.",
+    "action": {
+      "primary": "Retour à l’accueil",
+      "secondary": "Retour",
+      "tertiary": "Découvrir ecentic"
+    }
+  }
+}

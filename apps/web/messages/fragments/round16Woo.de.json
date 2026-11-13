@@ -1,0 +1,12 @@
+{
+  "round16Woo": {
+    "title": "Finden Sie den Schritt, der den Kaufabschluss verhindert.",
+    "passed": "Das Produkt erreicht den Kaufabschluss",
+    "blocker": "Die Hürde",
+    "change": "Die Änderung in diesem Beispiel",
+    "continues": "Nachdem die Anforderung korrigiert wurde"
+  },
+  "commerceFigures": {
+    "wooMark": "Das Woo-Logo als räumliche Linienskulptur; zeigen Sie auf einen Buchstaben, um ihn anzuheben."
+  }
+}

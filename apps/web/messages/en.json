@@ -31,7 +31,12 @@
     "language": {
       "label": "Language",
       "english": "English",
-      "spanish": "Spanish"
+      "spanish": "Spanish",
+      "french": "French",
+      "german": "German",
+      "italian": "Italian",
+      "japanese": "Japanese",
+      "simplifiedChinese": "Simplified Chinese"
     },
     "states": {
       "pending": {
@@ -49,6 +54,19 @@
       "action": {
         "primary": "Try again"
       }
+    },
+    "media": {
+      "interfaceEnglish": "Product interface shown in English.",
+      "videoEnglish": "English-language film with a transcript in your selected language."
+    },
+    "fileUpload": {
+      "label": "Upload files"
+    },
+    "dismiss": {
+      "label": "Close"
+    },
+    "notifications": {
+      "label": "Notifications"
     }
   },
   "nav": {
@@ -2406,6 +2424,9 @@
           "loading": "Loading cart…",
           "updating": "Updating cart…",
           "failed": "Cart operation failed"
+        },
+        "action": {
+          "primary": "Open cart"
         }
       },
       "catalog": {
@@ -2580,7 +2601,11 @@
         },
         "frequency": {
           "title": "Simulation Frequency",
-          "options": ["Manual only", "Daily", "Weekly"]
+          "options": [
+            "Manual only",
+            "Daily",
+            "Weekly"
+          ]
         },
         "persona": {
           "title": "Purchase Persona",
@@ -4082,7 +4107,8 @@
         "secondary": "View pricing"
       },
       "note": "No credit card required · Results in about two minutes"
-    }
+    },
+    "mcpArtTitle": "JSON-RPC tools"
   },
   "howItWorks": {
     "meta": {
@@ -6948,7 +6974,13 @@
       },
       "selection": "{selected} of {limit} products selected",
       "table": {
-        "headers": ["Product", "Price", "Currency", "Status", "Quality"]
+        "headers": [
+          "Product",
+          "Price",
+          "Currency",
+          "Status",
+          "Quality"
+        ]
       },
       "states": {
         "active": "Active",
@@ -7058,7 +7090,12 @@
         "description": "Select the competitors you'd like to include in your AI agent simulations.",
         "summary": "{total} competitor products across {brands} brands — {selected} selected",
         "table": {
-          "headers": ["Competitor", "Price", "Currency", "Brand"]
+          "headers": [
+            "Competitor",
+            "Price",
+            "Currency",
+            "Brand"
+          ]
         },
         "action": {
           "back": "Back",
@@ -7432,7 +7469,11 @@
         "title": "ecentic API",
         "accent": "errors.",
         "description": "Every failure on the ecentic API is a typed problem document, not an HTML page. The code is the contract: it is stable, machine-readable, and safe to branch on.",
-        "assurances": ["RFC 9457", "Stable codes", "Resolution hints"],
+        "assurances": [
+          "RFC 9457",
+          "Stable codes",
+          "Resolution hints"
+        ],
         "art": {
           "alt": "ASCII-art illustration of a shield"
         },
@@ -7467,7 +7508,11 @@
         "title": "ecentic API",
         "accent": "rate limits.",
         "description": "Every public response carries the live state of your window, so an agent can pace itself instead of discovering the limit by being rejected.",
-        "assurances": ["Live headers", "Retry-After on 429", "Per-key windows"],
+        "assurances": [
+          "Live headers",
+          "Retry-After on 429",
+          "Per-key windows"
+        ],
         "art": {
           "alt": "ASCII-art illustration of a balance scale"
         },
@@ -7568,7 +7613,11 @@
         "title": "ecentic MCP",
         "accent": "server.",
         "description": "Claude, ChatGPT, and any Model Context Protocol client can call ecentic natively over JSON-RPC 2.0. This page is the connection reference: the endpoint, the transport, the handshake, and every tool it exposes.",
-        "assurances": ["Streamable HTTP", "JSON-RPC 2.0", "7 tools"],
+        "assurances": [
+          "Streamable HTTP",
+          "JSON-RPC 2.0",
+          "7 tools"
+        ],
         "art": {
           "alt": "ASCII-art illustration of a robot"
         },
@@ -7637,7 +7686,11 @@
         "title": "ecentic API",
         "accent": "authentication.",
         "description": "Public discovery needs no credential at all. Anything that reads or changes a merchant account takes a bearer key you mint yourself — no sales call, no manual provisioning.",
-        "assurances": ["Self-serve keys", "Bearer tokens", "OAuth metadata"],
+        "assurances": [
+          "Self-serve keys",
+          "Bearer tokens",
+          "OAuth metadata"
+        ],
         "art": {
           "alt": "ASCII-art illustration of a shield"
         },
@@ -8976,7 +9029,11 @@
           "id": "connect",
           "title": "Connect",
           "body": "Bring your catalog into one place through Shopify, WooCommerce, a supported XML or JSON feed, or a CSV.",
-          "tags": ["Shopify", "WooCommerce", "Product feeds"],
+          "tags": [
+            "Shopify",
+            "WooCommerce",
+            "Product feeds"
+          ],
           "href": "/platform/connect",
           "label": "Explore Connect"
         },
@@ -8984,7 +9041,11 @@
           "id": "simulate",
           "title": "Simulate",
           "body": "See which product ChatGPT, Claude and Gemini pick in a comparison, and read the reasoning behind each simulated choice.",
-          "tags": ["Win rate", "Battlecards", "Readiness audit"],
+          "tags": [
+            "Win rate",
+            "Battlecards",
+            "Readiness audit"
+          ],
           "href": "/platform/simulate",
           "label": "Explore Simulate"
         },
@@ -8992,7 +9053,11 @@
           "id": "fix",
           "title": "Fix",
           "body": "Apply generates and publishes titles and descriptions using existing product facts. Publish structured data and sync Merchant Center through separate controls.",
-          "tags": ["Listings", "Structured data", "Merchant Center"],
+          "tags": [
+            "Listings",
+            "Structured data",
+            "Merchant Center"
+          ],
           "href": "/platform/fix",
           "label": "Explore Fix"
         },
@@ -9000,7 +9065,11 @@
           "id": "sell",
           "title": "Sell",
           "body": "Connect agent checkout on WooCommerce, test the flow and keep your own payment provider. Platform eligibility and payment handoffs still apply.",
-          "tags": ["Agent checkout", "Checkout testing", "Your payments"],
+          "tags": [
+            "Agent checkout",
+            "Checkout testing",
+            "Your payments"
+          ],
           "href": "/platform/sell",
           "label": "Explore Sell"
         },
@@ -9008,7 +9077,11 @@
           "id": "track",
           "title": "Track",
           "body": "Follow detected AI referrals on Shopify, compare completed simulations and request a fresh scan when you want to check again.",
-          "tags": ["AI traffic", "Manual rescans", "Multiple stores"],
+          "tags": [
+            "AI traffic",
+            "Manual rescans",
+            "Multiple stores"
+          ],
           "href": "/platform/track",
           "label": "Explore Track"
         }
@@ -9111,7 +9184,11 @@
           "id": "simulations",
           "title": "Agent simulations",
           "body": "ChatGPT, Claude and Gemini choose between your product and a competitor's in a recorded simulation.",
-          "tags": ["Win rate", "Replay", "Battlecards"],
+          "tags": [
+            "Win rate",
+            "Replay",
+            "Battlecards"
+          ],
           "href": "/platform/simulate",
           "label": "See simulations"
         },
@@ -9119,7 +9196,11 @@
           "id": "readiness",
           "title": "Readiness audit",
           "body": "Check crawler rules, sampled page HTML, product identifiers and feed eligibility. Inaccessible pages are flagged for review.",
-          "tags": ["Crawlers", "Schema", "GTIN"],
+          "tags": [
+            "Crawlers",
+            "Schema",
+            "GTIN"
+          ],
           "href": "/platform/simulate#readiness",
           "label": "See the audit"
         },
@@ -9127,7 +9208,11 @@
           "id": "catalog",
           "title": "Catalog fixes",
           "body": "Generate and publish titles and descriptions from your existing product facts. Structured data has its own publish action.",
-          "tags": ["Listings", "Attributes", "Publish"],
+          "tags": [
+            "Listings",
+            "Attributes",
+            "Publish"
+          ],
           "href": "/platform/fix",
           "label": "See catalog fixes"
         },
@@ -9135,7 +9220,11 @@
           "id": "merchant-center",
           "title": "Merchant Center sync",
           "body": "Send published listing fixes and checkout attributes through a separate supplemental-feed sync for Shopify.",
-          "tags": ["Supplemental feed", "Diagnostics", "Shopify"],
+          "tags": [
+            "Supplemental feed",
+            "Diagnostics",
+            "Shopify"
+          ],
           "href": "/platform/fix#merchant-center",
           "label": "See the sync"
         },
@@ -9143,7 +9232,11 @@
           "id": "checkout",
           "title": "Agent checkout for WooCommerce",
           "body": "Give supported agent flows a route through your own store and payment provider, with checkout testing and configurable controls.",
-          "tags": ["Setup", "Testing", "Validator"],
+          "tags": [
+            "Setup",
+            "Testing",
+            "Validator"
+          ],
           "href": "/platform/sell",
           "label": "See agent checkout"
         },
@@ -9151,7 +9244,11 @@
           "id": "developers",
           "title": "API, MCP server and CLI",
           "body": "Use the published interfaces for discovery, plans, store connection and onboarding status.",
-          "tags": ["REST", "MCP", "CLI"],
+          "tags": [
+            "REST",
+            "MCP",
+            "CLI"
+          ],
           "href": "/docs",
           "label": "Open developer docs"
         }
@@ -10477,7 +10574,11 @@
       ],
       "subprocessors": {
         "caption": "Product providers and purposes reviewed November 12, 2026",
-        "headers": ["Provider", "Purpose", "Processing location"],
+        "headers": [
+          "Provider",
+          "Purpose",
+          "Processing location"
+        ],
         "rows": [
           {
             "name": "Azure OpenAI",
@@ -12983,6 +13084,11 @@
         "alt": "ecentic agent-visits chart with illustrative sample data",
         "caption": "Product UI · illustrative sample visits, not a customer result."
       }
+    },
+    "artworkStages": {
+      "product": "Product",
+      "cart": "Cart",
+      "checkout": "Checkout"
     }
   },
   "enterpriseSolutions": {
@@ -15525,7 +15631,11 @@
       }
     ],
     "form": {
-      "steps": ["About you", "What you want", "Review and send"],
+      "steps": [
+        "About you",
+        "What you want",
+        "Review and send"
+      ],
       "progress": "Demo request progress",
       "reviewTitle": "A brief for your demo.",
       "reviewDescription": "Check your details before sending. We will follow up by email to agree the next step.",
@@ -16027,7 +16137,12 @@
     "stack": "Your stack",
     "channels": "AI channels",
     "layer": "The AI commerce layer",
-    "stages": ["Simulate", "Fix", "Sell", "Track"],
+    "stages": [
+      "Simulate",
+      "Fix",
+      "Sell",
+      "Track"
+    ],
     "inputs": [
       "Shopify",
       "WooCommerce",
@@ -16581,7 +16696,11 @@
           "id": "seller",
           "title": "Seller terms",
           "record": "merchant",
-          "fields": ["Seller identity", "Shipping information", "Return policy"]
+          "fields": [
+            "Seller identity",
+            "Shipping information",
+            "Return policy"
+          ]
         },
         {
           "id": "checkout",
@@ -16611,7 +16730,12 @@
       "Offer matching",
       "Explicit sync"
     ],
-    "stages": ["Authorize", "Provision", "Review", "Sync"],
+    "stages": [
+      "Authorize",
+      "Provision",
+      "Review",
+      "Sync"
+    ],
     "diagram": {
       "mainSource": "Main source",
       "supplemental": "Supplemental source",
@@ -16638,7 +16762,10 @@
         "id": "visits",
         "label": "Observed visits",
         "title": "A detected visit has a source.",
-        "inputs": ["Assistant referrer", "User-agent signal"],
+        "inputs": [
+          "Assistant referrer",
+          "User-agent signal"
+        ],
         "process": "Shopify browser script",
         "output": "Detected visit",
         "meaning": "Recognized assistant sources can be grouped in the visit breakdown and time-series summary.",
@@ -16648,7 +16775,10 @@
         "id": "simulations",
         "label": "Simulated decisions",
         "title": "A new scan is a new comparison.",
-        "inputs": ["Your product", "A competitor"],
+        "inputs": [
+          "Your product",
+          "A competitor"
+        ],
         "process": "A scan you request",
         "output": "Simulated decision",
         "meaning": "Win rate is the percentage of simulations where an agent picks your product over a competitor. Compare completed decisions after publishing a change.",
@@ -16658,7 +16788,10 @@
         "id": "estimates",
         "label": "Estimated lift",
         "title": "An estimate accompanies the fix.",
-        "inputs": ["Current listing", "Proposed change"],
+        "inputs": [
+          "Current listing",
+          "Proposed change"
+        ],
         "process": "Listing optimization",
         "output": "Estimated lift",
         "meaning": "Lift is an estimate recorded with the listing change. It helps distinguish the expected effect of a fix from later completed tests.",
@@ -16698,7 +16831,10 @@
           "label": "AI answers",
           "title": "Bring product data into the conversation",
           "description": "Google's AI answers shopping questions using merchant product data.",
-          "details": ["AI Mode in Search", "Gemini"],
+          "details": [
+            "AI Mode in Search",
+            "Gemini"
+          ],
           "destination": "AI Mode and Gemini",
           "action": {
             "primary": "Review the merchant requirements"
@@ -16802,21 +16938,30 @@
           "title": "Catalog",
           "headline": "Start with your product information",
           "body": "The retailer supplies catalog and inventory tools for its Claude-powered agent to search products.",
-          "tools": ["Catalog", "Inventory"]
+          "tools": [
+            "Catalog",
+            "Inventory"
+          ]
         },
         {
           "id": "compare",
           "title": "Compare",
           "headline": "Give the comparison context",
           "body": "The agent compares products using the information and tools the retailer supplies, including its catalog and store policies.",
-          "tools": ["Product information", "Store policies"]
+          "tools": [
+            "Product information",
+            "Store policies"
+          ]
         },
         {
           "id": "cart",
           "title": "Cart",
           "headline": "Connect your own commerce tools",
           "body": "Cart and checkout tools belong to the merchant-built experience. ecentic has no dedicated Claude checkout connection today.",
-          "tools": ["Retailer’s cart", "Retailer’s checkout"]
+          "tools": [
+            "Retailer’s cart",
+            "Retailer’s checkout"
+          ]
         }
       ]
     },
@@ -16948,7 +17093,11 @@
           "id": "compare",
           "label": "Compare competitors",
           "scope": "Simulated decisions",
-          "path": ["Your product", "Named rivals", "Model decisions"]
+          "path": [
+            "Your product",
+            "Named rivals",
+            "Model decisions"
+          ]
         },
         {
           "id": "listings",
@@ -16964,13 +17113,21 @@
           "id": "checkout",
           "label": "Test checkout",
           "scope": "Supported WooCommerce flows",
-          "path": ["Product discovery", "Cart pricing", "Payment handoff"]
+          "path": [
+            "Product discovery",
+            "Cart pricing",
+            "Payment handoff"
+          ]
         },
         {
           "id": "referrals",
           "label": "Identify referrals",
           "scope": "Recognized Shopify referrals",
-          "path": ["AI assistant", "Store visit", "Referral reporting"]
+          "path": [
+            "AI assistant",
+            "Store visit",
+            "Referral reporting"
+          ]
         }
       ]
     },
@@ -17074,9 +17231,21 @@
       "label": "Partner tracks",
       "pathLabel": "What the collaboration involves",
       "paths": [
-        ["Client catalog", "Product checks", "Verified changes"],
-        ["Your product", "Documented interfaces", "Discovery and onboarding"],
-        ["Your audience", "AI commerce education", "Partner conversation"]
+        [
+          "Client catalog",
+          "Product checks",
+          "Verified changes"
+        ],
+        [
+          "Your product",
+          "Documented interfaces",
+          "Discovery and onboarding"
+        ],
+        [
+          "Your audience",
+          "AI commerce education",
+          "Partner conversation"
+        ]
       ]
     },
     "access": {
@@ -17199,7 +17368,11 @@
   "beautyPage": {
     "record": {
       "label": "Explore a shopper question",
-      "tabs": ["Moisturizer", "Sun protection", "Shampoo"],
+      "tabs": [
+        "Moisturizer",
+        "Sun protection",
+        "Shampoo"
+      ],
       "question": "The shopper’s brief",
       "facts": "Product facts to review",
       "claim": {
@@ -17209,14 +17382,22 @@
     },
     "evidence": {
       "label": "Keep the same facts from pack to listing",
-      "steps": ["Product pack", "Supporting evidence", "Published description"],
+      "steps": [
+        "Product pack",
+        "Supporting evidence",
+        "Published description"
+      ],
       "claims": "Claims and evidence",
       "protection": "Tested protection"
     }
   },
   "electronicsPage": {
     "selectorLabel": "Explore a shopper question",
-    "scenarioLabels": ["Earbuds", "Laptops", "Robot vacuums"],
+    "scenarioLabels": [
+      "Earbuds",
+      "Laptops",
+      "Robot vacuums"
+    ],
     "sourceLabel": "Source fields to inspect",
     "inspectLabel": "Follow the question into the specifications.",
     "mapLabel": "Review all six source fields",
@@ -17379,7 +17560,10 @@
       "output": "Supported product information",
       "description": "Keep the description tied to verified source facts."
     },
-    "rules": ["Nutrition and health claims", "Channel eligibility"],
+    "rules": [
+      "Nutrition and health claims",
+      "Channel eligibility"
+    ],
     "role": "ecentic’s role"
   },
   "resourcesPage": {
@@ -17516,35 +17700,55 @@
         "input": "Your store, products and competitors",
         "access": "Free scan · Account required",
         "limit": "These are simulated product comparisons. They do not report live rankings inside AI shopping apps.",
-        "steps": ["Your products", "AI comparison", "Score & reasoning"]
+        "steps": [
+          "Your products",
+          "AI comparison",
+          "Score & reasoning"
+        ]
       },
       "validator": {
         "purpose": "Inspect a checkout profile",
         "input": "Your store’s URL",
         "access": "Free · No account required",
         "limit": "A valid published profile does not confirm that a buyer can complete checkout. Use the playground to test store tools.",
-        "steps": ["Store URL", "Published profile", "Structure checks"]
+        "steps": [
+          "Store URL",
+          "Published profile",
+          "Structure checks"
+        ]
       },
       "playground": {
         "purpose": "Try a shopping journey",
         "input": "A store exposing agent shopping tools",
         "access": "10 free messages · No account required",
         "limit": "The agent calls store tools. Use a staging store for checkout tests.",
-        "steps": ["Search", "Cart", "Checkout"]
+        "steps": [
+          "Search",
+          "Cart",
+          "Checkout"
+        ]
       },
       "scanner": {
         "purpose": "Find browser-tool evidence",
         "input": "A public storefront URL",
         "access": "Free · No account required",
         "limit": "Inspects a small sample of pages and scripts. It does not run JavaScript, submit forms or verify that browser tools work.",
-        "steps": ["Storefront source", "Tools & forms", "Evidence & limits"]
+        "steps": [
+          "Storefront source",
+          "Tools & forms",
+          "Evidence & limits"
+        ]
       },
       "compare": {
         "purpose": "Compare two listings",
         "input": "Two product URLs",
         "access": "Free product comparison",
         "limit": "Each model makes a simulated choice using the compared listings. This is not a live shopping placement report.",
-        "steps": ["Two listings", "Four AI models", "Choice & reasoning"]
+        "steps": [
+          "Two listings",
+          "Four AI models",
+          "Choice & reasoning"
+        ]
       }
     }
   },
@@ -17570,7 +17774,11 @@
       "protectedDestination": "REST + MCP",
       "details": "How this path works"
     },
-    "keySteps": ["Create an account", "Mint a key", "Save it once"],
+    "keySteps": [
+      "Create an account",
+      "Mint a key",
+      "Save it once"
+    ],
     "recovery": {
       "label": "Authentication discovery after a 401",
       "response": "Missing or invalid credential",
@@ -17582,7 +17790,11 @@
     "navigation": "Explore the documentation",
     "quickstart": {
       "label": "Choose a first request",
-      "tabs": ["API", "Protocols", "Plans"],
+      "tabs": [
+        "API",
+        "Protocols",
+        "Plans"
+      ],
       "request": "Request",
       "response": "Response",
       "access": "No API key required",
@@ -17680,7 +17892,10 @@
     },
     "handshake": {
       "label": "Explore the handshake",
-      "tabs": ["Initialize", "Notify"],
+      "tabs": [
+        "Initialize",
+        "Notify"
+      ],
       "request": "Client sends",
       "response": "Server returns",
       "result": [
@@ -17699,7 +17914,11 @@
         "Transport error",
         "Authentication exception"
       ],
-      "formats": ["error.code", "application/problem+json", "WWW-Authenticate"]
+      "formats": [
+        "error.code",
+        "application/problem+json",
+        "WWW-Authenticate"
+      ]
     }
   },
   "docsLimitsPage": {
@@ -17885,7 +18104,12 @@
       "catalog": {
         "title": "Your ecentic catalog",
         "description": "Review the imported fields, then select the products you want to compare.",
-        "fields": ["Product title", "Description", "Price", "Product URL"]
+        "fields": [
+          "Product title",
+          "Description",
+          "Price",
+          "Product URL"
+        ]
       },
       "outputs": {
         "simulate": {
@@ -18011,7 +18235,12 @@
   },
   "interactivePilot": {
     "title": "Pilot planner",
-    "stages": ["Baseline", "Fix", "Re-run", "Readout"],
+    "stages": [
+      "Baseline",
+      "Fix",
+      "Re-run",
+      "Readout"
+    ],
     "happens": "What happens",
     "people": "Your team",
     "deliverable": "What you receive",
@@ -19474,49 +19703,73 @@
     "sectors": [
       {
         "product": "Single malt · example",
-        "details": ["Smoky tasting profile", "Origin and bottle size"],
+        "details": [
+          "Smoky tasting profile",
+          "Origin and bottle size"
+        ],
         "response": "Compare the verified tasting notes and bottle details.",
         "limit": "Research only. Alcohol restrictions apply."
       },
       {
         "product": "Protein snack · example",
-        "details": ["Protein per serving", "Ingredients and allergens"],
+        "details": [
+          "Protein per serving",
+          "Ingredients and allergens"
+        ],
         "response": "Match the nutrition label to your serving-size and calorie limits.",
         "limit": "Confirm nutrition and allergen information."
       },
       {
         "product": "Moisturizer · example",
-        "details": ["Fragrance-free formula", "Full ingredient list"],
+        "details": [
+          "Fragrance-free formula",
+          "Full ingredient list"
+        ],
         "response": "Check the ingredient list and the product’s stated formulation.",
         "limit": "Product information, not medical advice."
       },
       {
         "product": "Wireless earbuds · example",
-        "details": ["Battery test conditions", "Noise cancellation"],
+        "details": [
+          "Battery test conditions",
+          "Noise cancellation"
+        ],
         "response": "Compare battery life, charging and the features you need.",
         "limit": "Check current price and availability."
       },
       {
         "product": "Compact sofa bed · example",
-        "details": ["Width: 185 cm", "Open depth: 210 cm"],
+        "details": [
+          "Width: 185 cm",
+          "Open depth: 210 cm"
+        ],
         "response": "Check both the closed dimensions and the space needed when open.",
         "limit": "Sample measurements for this illustration."
       },
       {
         "product": "Hiking jacket · example",
-        "details": ["Waterproof construction", "Fit and size chart"],
+        "details": [
+          "Waterproof construction",
+          "Fit and size chart"
+        ],
         "response": "Compare the weather protection, measurements and return policy.",
         "limit": "Verify the product’s performance claims."
       },
       {
         "product": "Senior dog food · example",
-        "details": ["Life-stage label", "Ingredients and feeding guide"],
+        "details": [
+          "Life-stage label",
+          "Ingredients and feeding guide"
+        ],
         "response": "Read the ingredients and feeding guidance before comparing options.",
         "limit": "Diet suitability needs individual advice."
       },
       {
         "product": "Lisbon city break · example",
-        "details": ["Dates and room type", "Cancellation terms"],
+        "details": [
+          "Dates and room type",
+          "Cancellation terms"
+        ],
         "response": "Compare the stay details, dates and the complete booking terms.",
         "limit": "Travel availability and UCP support vary."
       }
@@ -19691,5 +19944,53 @@
   },
   "measurementChart": {
     "remainingLabel": "Points to full scale"
+  },
+  "authenticationEmail": {
+    "verify": {
+      "subject": "Verify your email address",
+      "preview": "Verify your email to start using ecentic",
+      "title": "Verify your email",
+      "description": "Start optimizing your listings for AI shopping agents.",
+      "body": "Thanks for creating your ecentic account. Select the button below to verify your email address.",
+      "requestedFor": "This verification was requested for {email}.",
+      "action": {
+        "primary": "Verify email address"
+      },
+      "ignored": "If you did not create an account on ecentic, you can safely ignore this email.",
+      "linkFallback": "Or copy and paste this link into your browser:",
+      "footer": "ecentic — The AI commerce layer."
+    },
+    "reset": {
+      "subject": "Reset your password",
+      "preview": "Reset your ecentic password",
+      "title": "Reset your password",
+      "description": "Choose a new password and get back to your listings.",
+      "body": "We received a request to reset the password on your ecentic account. Select the button below to choose a new one.",
+      "requestedFor": "This password reset was requested for {email}.",
+      "action": {
+        "primary": "Choose a new password"
+      },
+      "ignored": "If you did not request a password reset, you can safely ignore this email. Your current password stays active.",
+      "linkFallback": "Or copy and paste this link into your browser:",
+      "footer": "ecentic — The AI commerce layer."
+    }
+  },
+  "promptInput": {
+    "placeholder": "What would you like to know?",
+    "attachments": {
+      "label": "Add photos or files"
+    },
+    "screenshot": {
+      "label": "Take screenshot"
+    },
+    "action": {
+      "primary": "Send message",
+      "secondary": "Stop"
+    },
+    "errors": {
+      "acceptedTypes": "No files match the accepted types.",
+      "maximumSize": "All files exceed the maximum size.",
+      "maximumCount": "Too many files. Some were not added."
+    }
   }
 }

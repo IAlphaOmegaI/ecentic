@@ -13,21 +13,14 @@ import {
 } from "@zenncore/web/components/select";
 import Image from "next/image";
 import { hasLocale, useLocale, useTranslations } from "next-intl";
-import { usePathname, useRouter } from "@/i18n/navigation";
+import { localeMetadata, publishedLocales } from "@/i18n/locales";
+import { getPathname, usePathname } from "@/i18n/navigation";
 import { routing } from "@/i18n/routing";
 
-const OPTIONS = [
-  {
-    locale: "en" as const,
-    flagSrc: "/images/united-states-flag.svg",
-    labelKey: "language.english" as const,
-  },
-  {
-    locale: "es" as const,
-    flagSrc: "/images/spain-flag.svg",
-    labelKey: "language.spanish" as const,
-  },
-] as const;
+const OPTIONS = publishedLocales.map((locale) => ({
+  locale,
+  ...localeMetadata[locale],
+}));
 
 const FlagImage = ({
   src,
@@ -54,22 +47,32 @@ export const LanguageSwitcher = ({
 }: LanguageSwitcher.Props = {}) => {
   const locale = useLocale();
   const pathname = usePathname();
-  const router = useRouter();
   const translate = useTranslations("general");
 
   const switchLocale = (next: string | null) => {
     if (!next || next === locale) return;
     if (!hasLocale(routing.locales, next)) return;
-    router.replace(pathname, { locale: next });
+    // Let locale middleware update its cookie before following the canonical
+    // route. A document navigation also preserves the fragment when the
+    // default locale redirects from /en/... to its unprefixed URL.
+    window.location.assign(
+      getPathname({
+        href: `${pathname}${window.location.search}${window.location.hash}`,
+        locale: next,
+        forcePrefix: true,
+      }),
+    );
   };
 
-  const active =
-    OPTIONS.find((option) => option.locale === locale) ?? OPTIONS[0];
+  const active = localeMetadata[locale];
 
   if (variant === "inline") {
     return (
       <fieldset
-        className={cn("m-0 flex items-center gap-2 border-0 p-0", className)}
+        className={cn(
+          "m-0 flex flex-wrap items-center gap-2 border-0 p-0",
+          className,
+        )}
       >
         <legend className="sr-only">{translate("language.label")}</legend>
         {OPTIONS.map(({ locale: option, flagSrc, labelKey }) => {
@@ -137,7 +140,7 @@ export const LanguageSwitcher = ({
             variant === "mobile" ? "text-base" : "text-sm",
           )}
         >
-          {() => active.locale.toUpperCase()}
+          {() => active.shortLabel}
         </SelectValue>
         <ChevronDownIcon aria-hidden className="size-4 scale-75 opacity-70" />
       </SelectTrigger>
@@ -147,7 +150,7 @@ export const LanguageSwitcher = ({
         className={variant === "mobile" ? "z-70" : undefined}
       >
         <SelectPopup>
-          {OPTIONS.map(({ locale: option, flagSrc, labelKey }) => (
+          {OPTIONS.map(({ locale: option, flagSrc, labelKey, nativeName }) => (
             <SelectItem key={option} value={option} label={translate(labelKey)}>
               <span className="flex items-center gap-2">
                 <FlagImage
@@ -155,7 +158,7 @@ export const LanguageSwitcher = ({
                   alt={translate(labelKey)}
                   className="size-5 shrink-0"
                 />
-                <span>{translate(labelKey)}</span>
+                <span lang={option}>{nativeName}</span>
               </span>
             </SelectItem>
           ))}

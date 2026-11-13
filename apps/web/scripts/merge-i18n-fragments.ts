@@ -1,13 +1,16 @@
-import { readdirSync, readFileSync, writeFileSync } from "node:fs";
+import { existsSync, readdirSync, readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
+import { locales } from "../src/i18n/locales";
 
 const messagesDir = join(import.meta.dir, "../messages");
 const fragmentDir = join(messagesDir, "fragments");
 
-const locales = ["en", "es"] as const;
-
 for (const locale of locales) {
   const basePath = join(messagesDir, `${locale}.json`);
+  if (!existsSync(basePath)) {
+    console.log(`Skipping ${locale}: no completed catalog yet.`);
+    continue;
+  }
   const base = JSON.parse(readFileSync(basePath, "utf8")) as Record<
     string,
     unknown

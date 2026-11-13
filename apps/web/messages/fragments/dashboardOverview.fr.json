@@ -1,0 +1,120 @@
+{
+  "dashboard": {
+    "shared": {
+      "status": {
+        "liveUpdated": "En direct — mis à jour {time}",
+        "liveLastScanned": "En direct — dernier scan effectué {time}",
+        "liveProductUpdated": "En direct — mis à jour {time}",
+        "lastSimulation": "Dernière simulation {time}",
+        "noScansYet": "Aucun scan effectué pour le moment",
+        "noSimulationsYet": "Aucune simulation effectuée pour le moment"
+      },
+      "stats": {
+        "noDataYet": "Aucune donnée pour le moment",
+        "overallWinRate": "Taux de victoire global",
+        "productsScanned": "Produits scannés",
+        "topPerformer": "Meilleur produit",
+        "biggestOpportunity": "Plus grande opportunité",
+        "vsLastScan": "par rapport au dernier scan",
+        "acrossProducts": "sur {count, plural, one {# produit} many {# produits} other {# produits}}",
+        "slotsRemaining": "{count} emplacements restants",
+        "viewDetails": "Voir les détails",
+        "optimizeNow": "Optimiser maintenant"
+      },
+      "sections": {
+        "performance": "01 — Performance",
+        "performanceHalf": "01.5 — Activité récente",
+        "catalog": "02 — Catalogue",
+        "competitiveLandscape": "03 — Paysage concurrentiel",
+        "traffic": "03 — Trafic",
+        "insights": "04 — Analyses",
+        "agentTraffic": "04 — Trafic des agents"
+      },
+      "performance": {
+        "winRateByModel": "Taux de victoire par modèle",
+        "winRateTrend": "Évolution du taux de victoire",
+        "noModelData": "Lancez une simulation pour voir les performances par modèle.",
+        "notEnoughTrendData": "Données insuffisantes pour afficher une tendance.",
+        "runSimulationHint": "Commencez par lancer une simulation.",
+        "runMoreSimulationsHint": "Lancez davantage de simulations pour voir l’historique."
+      },
+      "activity": {
+        "simulationComplete": "Simulation terminée — {wins} victoires, {losses} défaites",
+        "simulationInProgress": "Simulation en cours — {completed}/{total}",
+        "noActivityTitle": "Aucune activité pour le moment. Lancez votre",
+        "noActivityHint": "première simulation pour voir les résultats ici."
+      },
+      "action": {
+        "optimizations": "Optimisations",
+        "viewAllProducts": "Voir tous les produits",
+        "viewAll": "Voir tout",
+        "runSimulation": "Lancer une simulation",
+        "ucpManager": "Gestionnaire UCP"
+      },
+      "table": {
+        "product": "Produit",
+        "price": "Prix",
+        "winRate": "Taux de victoire",
+        "quality": "Qualité",
+        "lastScan": "Dernier scan",
+        "brand": "Marque",
+        "simulations": "Simulations",
+        "lastUpdated": "Dernière mise à jour",
+        "competitor": "Concurrent",
+        "wins": "Victoires",
+        "losses": "Pertes",
+        "total": "Total",
+        "productWinRates": "Taux de victoire des produits",
+        "productCatalog": "Catalogue de produits",
+        "competitorBrands": "Marques concurrentes",
+        "topCompetitors": "Principaux concurrents"
+      },
+      "empty": {
+        "noProducts": "Aucun produit trouvé",
+        "noProductsHint": "Importez des produits et lancez une simulation pour voir les taux de victoire ici.",
+        "noCompetitors": "Aucun concurrent suivi pour le moment",
+        "noCompetitorsHint": "Ajoutez des concurrents pour commencer à analyser votre environnement concurrentiel."
+      },
+      "count": {
+        "products": "{count, plural, one {# produit} many {# produits} other {# produits}}",
+        "competitors": "{count, plural, one {# concurrent} many {# concurrents} other {# concurrents}}",
+        "productSingular": "produit",
+        "productsPlural": "produits",
+        "competitorSingular": "concurrent",
+        "competitorsPlural": "concurrents",
+        "totalSimulations": "{count} simulations au total",
+        "last30d": "30 derniers jours"
+      },
+      "agentVisits": {
+        "title": "Visites d’agents IA sur les pages produit",
+        "description": "Signaux IA et de provenance du trafic visibles dans le navigateur, recueillis par votre outil de suivi ScriptTag.",
+        "panelTitle": "Visites par agent (30 derniers jours)",
+        "panelDescription": "Uniquement les signaux IA et de provenance du trafic visibles dans le navigateur, recueillis par votre outil de suivi ScriptTag.",
+        "total": "total",
+        "empty": "Aucune visite d’agent IA enregistrée pour le moment. Le trafic apparaît lorsque des acheteurs arrivent via des référents IA ou des user-agents reconnus par votre tracker.",
+        "emptyOverview": "Aucune visite d’agent IA enregistrée pour le moment. Le trafic apparaît lorsque des acheteurs arrivent depuis des sources IA ou avec des user-agents reconnus par votre outil de suivi, ou lorsque le mode de sondage est activé."
+      },
+      "present": "Présent",
+      "missing": "Manquant",
+      "cancel": "Annuler",
+      "sku": "SKU : {sku}",
+      "pagination": {
+        "navigation": "Pagination",
+        "page": "Page {page, number} sur {pages, number}",
+        "first": "Première page",
+        "previous": "Page précédente",
+        "next": "Page suivante",
+        "last": "Dernière page"
+      }
+    },
+    "overview": {
+      "title": "Vue d’ensemble",
+      "description": "Comment les agents d’achat IA classent votre catalogue face à la concurrence.",
+      "tabs": {
+        "topProducts": "Meilleurs produits",
+        "competitors": "Concurrents",
+        "agentVisits": "Visites des agents"
+      }
+    }
+  }
+}

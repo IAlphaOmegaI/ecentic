@@ -1,0 +1,826 @@
+{
+  "interactiveShelf": {
+    "shared": {
+      "exampleLabel": "Beispiel mit Beispieldaten",
+      "description": "Ein geskripteter Vergleich erfundener Produkte. Die Anpassung macht vorhandene Produktangaben ausdrücklich sichtbar.",
+      "questionsLabel": "Frage einer Käuferin oder eines Käufers auswählen",
+      "leftLabel": "Ihr Produktangebot",
+      "rightLabel": "Produktangebot eines Wettbewerbers",
+      "beforeLabel": "Vor der Anpassung",
+      "afterLabel": "Nach der Anpassung",
+      "resultLabel": "Beispielhafte Auswahl",
+      "labels": {
+        "present": "Enthält die Angabe",
+        "missing": "Nicht angegeben",
+        "meets": "Erfüllt diese Anforderung",
+        "doesNotMeet": "Erfüllt diese Anforderung nicht",
+        "required": "Für diese Frage erforderlich"
+      },
+      "action": {
+        "primary": "Nach der Anpassung"
+      }
+    },
+    "sectors": {
+      "wine-and-spirits": {
+        "scenarios": [
+          {
+            "leftTitle": "Single Malt A",
+            "rightTitle": "Single Malt B",
+            "rows": [
+              {
+                "left": "46 % vol.",
+                "right": "40 % vol."
+              },
+              {
+                "left": "12 Jahre",
+                "right": "10 Jahre"
+              },
+              {
+                "left": "Islay, Schottland",
+                "right": "Highlands, Schottland"
+              },
+              {
+                "left": "Torfrauchiger Single Malt; Bourbonfass",
+                "right": "Rauchiger Single Malt; Bourbonfass"
+              },
+              {
+                "left": "700 ml · $72",
+                "right": "700 ml · $76"
+              },
+              {
+                "left": "Auf Lager; Lieferung nur in zulässige Liefergebiete",
+                "right": "Auf Lager; Lieferung nur in zulässige Liefergebiete"
+              }
+            ],
+            "before": "Das Produktangebot eines Wettbewerbers nennt den rauchigen Stil und einen Preis unter $80. In Ihrem Produktangebot wird der Stil nicht angegeben.",
+            "after": "Ihr Produktangebot nennt jetzt den rauchigen Single-Malt-Stil. Beide passen zur Frage; in diesem Beispiel entscheidet der niedrigere Flaschenpreis."
+          },
+          {
+            "leftTitle": "Barolo A",
+            "rightTitle": "Barolo B",
+            "rows": [
+              {
+                "left": "14 % vol.",
+                "right": "14,5 % vol."
+              },
+              {
+                "left": "Jahrgang 2020",
+                "right": "Jahrgang 2021"
+              },
+              {
+                "left": "Barolo DOCG, Piemont",
+                "right": "Barolo DOCG, Piemont"
+              },
+              {
+                "left": "Nebbiolo; angegebenes Trinkfenster 2026–2032",
+                "right": "Nebbiolo; angegebenes Trinkfenster 2026–2029"
+              },
+              {
+                "left": "750 ml · $52",
+                "right": "750 ml · $64"
+              },
+              {
+                "left": "Auf Lager; Lieferung nur in zulässige Liefergebiete",
+                "right": "Auf Lager; Lieferung nur in zulässige Liefergebiete"
+              }
+            ],
+            "before": "Das Produktangebot eines Wettbewerbers enthält ein aktuelles Trinkfenster. In Ihrem Produktangebot fehlt die Empfehlung des Herstellers, wann der Wein geöffnet werden sollte.",
+            "after": "Ihr Produktangebot enthält jetzt das Trinkfenster des Herstellers. Beide sind zum sofortigen Genuss gelistet; in diesem Beispiel wird die günstigere Flasche ausgewählt."
+          },
+          {
+            "leftTitle": "Cocktail-Rum A",
+            "rightTitle": "Cocktail-Rum B",
+            "rows": [
+              {
+                "left": "40 % vol.",
+                "right": "40 % vol."
+              },
+              {
+                "left": "Ungelagert",
+                "right": "Ungelagert"
+              },
+              {
+                "left": "Karibische Mischung",
+                "right": "Karibische Mischung"
+              },
+              {
+                "left": "Weißer Rum; vom Lieferanten angegebener Zuckergehalt 0 g/L",
+                "right": "Weißer Rum; vom Lieferanten angegebener Zuckergehalt 2 g/L"
+              },
+              {
+                "left": "700 ml · $28",
+                "right": "700 ml · $30"
+              },
+              {
+                "left": "Auf Lager; Lieferung nur in zulässige Liefergebiete",
+                "right": "Auf Lager; Lieferung nur in zulässige Liefergebiete"
+              }
+            ],
+            "before": "Das Produktangebot eines Wettbewerbers nennt einen Zuckergehalt. Ihr Produktangebot beschreibt den Rum als „mild“, enthält aber keinen vergleichbaren Zuckerwert.",
+            "after": "Ihr Produktangebot nennt jetzt den vom Lieferanten angegebenen Zuckergehalt. In diesem Beispiel wird für die Cocktailfrage der niedrigere angegebene Zuckergehalt gewählt."
+          }
+        ]
+      },
+      "food-and-beverage": {
+        "scenarios": [
+          {
+            "leftTitle": "Protein-Snack A",
+            "rightTitle": "Protein-Snack B",
+            "rows": [
+              {
+                "left": "Vegan",
+                "right": "Vegan"
+              },
+              {
+                "left": "Enthält Soja; kann Hafer enthalten",
+                "right": "Enthält Soja; kann Milch enthalten"
+              },
+              {
+                "left": "Pro 40 g: 140 kcal, 20 g Protein, 2 g Zucker",
+                "right": "Pro 40 g: 145 kcal, 15 g Protein, 3 g Zucker"
+              },
+              {
+                "left": "6 × 40 g · $12",
+                "right": "6 × 40 g · $15"
+              },
+              {
+                "left": "Sojaprotein, Hafer, Sonnenblumenöl, Salz",
+                "right": "Sojaprotein, Reismehl, Sonnenblumenöl, Salz"
+              },
+              {
+                "left": "Trocken lagern; 6 Monate haltbar; Inlandslieferung",
+                "right": "Trocken lagern; 6 Monate haltbar; Inlandslieferung"
+              }
+            ],
+            "before": "Das Produktangebot eines Wettbewerbers nennt Protein- und Kalorienwerte pro Portion. Ihr Produktangebot lässt sich nicht gegen das Limit von 150 Kalorien prüfen.",
+            "after": "Ihr Produktangebot nennt jetzt 20 g Protein und 140 Kalorien pro Portion. In diesem Beispiel bietet es mehr Protein innerhalb derselben Kaloriengrenze."
+          },
+          {
+            "leftTitle": "Einfache Cracker A",
+            "rightTitle": "Einfache Cracker B",
+            "rows": [
+              {
+                "left": "Glutenfrei, laut Angabe auf der Verpackung",
+                "right": "Glutenfrei, laut Angabe auf der Verpackung"
+              },
+              {
+                "left": "Keine Allergene aufgeführt; keine Angabe zu möglichen Spuren übermittelt",
+                "right": "Keine Allergene aufgeführt; keine Angabe zu möglichen Spuren übermittelt"
+              },
+              {
+                "left": "Pro 25 g: 110 kcal, 2 g Protein, 1 g Zucker",
+                "right": "Pro 25 g: 112 kcal, 2 g Protein, 1 g Zucker"
+              },
+              {
+                "left": "200 g · $3.20",
+                "right": "200 g · $4.00"
+              },
+              {
+                "left": "Reismehl, Kartoffelstärke, Sonnenblumenöl, Salz",
+                "right": "Reismehl, Kartoffelstärke, Sonnenblumenöl, Salz"
+              },
+              {
+                "left": "Trocken lagern; 8 Monate haltbar; Inlandslieferung",
+                "right": "Trocken lagern; 8 Monate haltbar; Inlandslieferung"
+              }
+            ],
+            "before": "Das Produktangebot eines Wettbewerbers weist ausdrücklich auf Glutenfreiheit hin. Ihr Produktangebot enthält eine Zutatenliste, aber der entsprechende Hinweis fehlt.",
+            "after": "Beide Produktangebote enthalten jetzt denselben Glutenfrei-Hinweis. In diesem Beispiel entscheidet der niedrigere Packungspreis; die Geschmackspräferenz eines Kindes bleibt unbekannt."
+          },
+          {
+            "leftTitle": "Erbsenprotein A",
+            "rightTitle": "Erbsenprotein B",
+            "rows": [
+              {
+                "left": "Vegan",
+                "right": "Vegan"
+              },
+              {
+                "left": "Kann Soja enthalten",
+                "right": "Kann Soja enthalten"
+              },
+              {
+                "left": "Pro 30 g: 24 g Protein, 118 kcal",
+                "right": "Pro 30 g: 18 g Protein, 120 kcal"
+              },
+              {
+                "left": "600 g · 20 Portionen · $24",
+                "right": "600 g · 20 Portionen · $24"
+              },
+              {
+                "left": "Erbsenproteinisolat; kein Süßungsmittel",
+                "right": "Erbsenprotein, Reismehl; kein Süßungsmittel"
+              },
+              {
+                "left": "Trocken lagern; 12 Monate haltbar; Inlandslieferung",
+                "right": "Trocken lagern; 12 Monate haltbar; Inlandslieferung"
+              }
+            ],
+            "before": "Das Produktangebot eines Wettbewerbers enthält Zutaten, die sich auf Stevia prüfen lassen. In Ihrem Produktangebot fehlt die Zutatenliste.",
+            "after": "Ihr Produktangebot weist jetzt keine Süßungsmittel in den Zutaten aus. Beide entsprechen den angegebenen Vorlieben; in diesem Beispiel entscheidet der höhere Proteingehalt pro Portion."
+          }
+        ]
+      },
+      "beauty-and-personal-care": {
+        "scenarios": [
+          {
+            "leftTitle": "Feuchtigkeitscreme A",
+            "rightTitle": "Feuchtigkeitscreme B",
+            "rows": [
+              {
+                "left": "Herstellerangabe: für empfindliche Haut geeignet",
+                "right": "Herstellerangabe: für empfindliche Haut geeignet"
+              },
+              {
+                "left": "Aqua, Glycerin, Squalane",
+                "right": "Aqua, Glycerin, Squalane"
+              },
+              {
+                "left": "Kennzeichnung: parfumfrei",
+                "right": "Kennzeichnung: parfumfrei"
+              },
+              {
+                "left": "Kein SPF angegeben",
+                "right": "Kein SPF angegeben"
+              },
+              {
+                "left": "50 ml · $18",
+                "right": "50 ml · $24"
+              },
+              {
+                "left": "Keine Zertifizierung angegeben",
+                "right": "Keine Zertifizierung angegeben"
+              }
+            ],
+            "before": "Das Produktangebot eines Wettbewerbers nennt die Eignung für empfindliche Haut und eine parfumfreie Kennzeichnung. In Ihrem Produktangebot fehlen beide Angaben.",
+            "after": "Ihr Produktangebot enthält jetzt dieselben Angaben zur Eignung und zur parfumfreien Kennzeichnung. In diesem Beispiel entscheidet der niedrigere Preis bei gleichem Volumen."
+          },
+          {
+            "leftTitle": "Getönter mineralischer Sonnenschutz A",
+            "rightTitle": "Getönter mineralischer Sonnenschutz B",
+            "rows": [
+              {
+                "left": "Getöntes Finish; Lieferantenangabe: kein Weißschleier",
+                "right": "Getöntes Finish; Lieferantenangabe: kein Weißschleier"
+              },
+              {
+                "left": "Zinc Oxide, Aqua, Glycerin, Iron Oxides",
+                "right": "Zinc Oxide, Aqua, Glycerin, Iron Oxides"
+              },
+              {
+                "left": "Kennzeichnung: parfumfrei",
+                "right": "Kennzeichnung: parfumfrei"
+              },
+              {
+                "left": "Kennzeichnung: SPF 50, Breitbandschutz gegen UVA/UVB",
+                "right": "Kennzeichnung: SPF 50, Breitbandschutz gegen UVA/UVB"
+              },
+              {
+                "left": "50 ml · $22",
+                "right": "50 ml · $28"
+              },
+              {
+                "left": "Keine Zertifizierung angegeben",
+                "right": "Keine Zertifizierung angegeben"
+              }
+            ],
+            "before": "Das Produktangebot eines Wettbewerbers nennt mineralische Inhaltsstoffe, SPF 50 und das Finish laut Hersteller. In Ihrem Produktangebot fehlt der Hinweis auf den Schutzfaktor.",
+            "after": "Beide Produktangebote nennen jetzt SPF 50, mineralische Inhaltsstoffe und das Finish laut Hersteller. In diesem Beispiel entscheidet der Preis; das Finish kann je nach Hautton weiterhin unterschiedlich ausfallen."
+          },
+          {
+            "leftTitle": "Lockenshampoo A",
+            "rightTitle": "Lockenshampoo B",
+            "rows": [
+              {
+                "left": "Hersteller: formuliert für lockiges Haar",
+                "right": "Hersteller: formuliert für lockiges Haar"
+              },
+              {
+                "left": "Aqua, Decyl Glucoside, Glycerin, Citric Acid",
+                "right": "Aqua, Decyl Glucoside, Glycerin, Citric Acid"
+              },
+              {
+                "left": "Vegan; keine tierischen Inhaltsstoffe angegeben",
+                "right": "Vegan; keine tierischen Inhaltsstoffe angegeben"
+              },
+              {
+                "left": "Kein SPF angegeben",
+                "right": "Kein SPF angegeben"
+              },
+              {
+                "left": "300 ml · $15",
+                "right": "250 ml · $18"
+              },
+              {
+                "left": "Keine Zertifizierung angegeben",
+                "right": "Keine Zertifizierung angegeben"
+              }
+            ],
+            "before": "Das Produktangebot eines Wettbewerbers nennt sowohl die Eignung für lockiges Haar als auch den Vegan-Hinweis. In Ihrem Produktangebot fehlt der Vegan-Hinweis.",
+            "after": "Ihr Produktangebot nennt jetzt den Vegan-Hinweis zusammen mit der Empfehlung für den Haartyp. Beide stimmen überein; in diesem Beispiel entscheidet der niedrigere Preis pro ml."
+          }
+        ]
+      },
+      "consumer-electronics": {
+        "scenarios": [
+          {
+            "leftTitle": "Noise-Cancelling-Earbuds A",
+            "rightTitle": "Noise-Cancelling-Earbuds B",
+            "rows": [
+              {
+                "left": "Beispiel EB-A · ANC · $189",
+                "right": "Beispiel EB-B · ANC · $179"
+              },
+              {
+                "left": "12 Stunden, ANC aktiviert bei 50 % Lautstärke",
+                "right": "8 Stunden, ANC aktiviert bei 50 % Lautstärke"
+              },
+              {
+                "left": "Bluetooth-Audio auf Smartphones und Laptops",
+                "right": "Bluetooth-Audio auf Smartphones und Laptops"
+              },
+              {
+                "left": "Bluetooth 5.3; USB-C-Laden",
+                "right": "Bluetooth 5.3; USB-C-Laden"
+              },
+              {
+                "left": "2 Jahre Hardware-Abdeckung durch den Hersteller",
+                "right": "2 Jahre Hardware-Abdeckung durch den Hersteller"
+              },
+              {
+                "left": "Neu",
+                "right": "Neu"
+              }
+            ],
+            "before": "Das Produktangebot eines Wettbewerbers nennt die Akkulaufzeit bei aktivierter Geräuschunterdrückung. In Ihrem Produktangebot fehlt eine vergleichbare Laufzeitangabe.",
+            "after": "Ihr Produktangebot nennt jetzt 12 Stunden unter denselben Testbedingungen gegenüber 8 Stunden. Beide liegen unter $200, daher entscheidet in diesem Beispiel die längere Laufzeit."
+          },
+          {
+            "leftTitle": "Editing-Laptop A",
+            "rightTitle": "Editing-Laptop B",
+            "rows": [
+              {
+                "left": "Beispiel LP-A · 32 GB RAM · 1 TB SSD",
+                "right": "Beispiel LP-B · 32 GB RAM · 1 TB SSD"
+              },
+              {
+                "left": "10 Stunden im Video-Playback-Test des Herstellers",
+                "right": "6 Stunden im selben Video-Playback-Test"
+              },
+              {
+                "left": "Unterstützt von der Bearbeitungssoftware des Käufers",
+                "right": "Unterstützt von der Bearbeitungssoftware des Käufers"
+              },
+              {
+                "left": "2 × USB-C; HDMI; Wi‑Fi 6",
+                "right": "2 × USB-C; HDMI; Wi‑Fi 6"
+              },
+              {
+                "left": "2 Jahre Hardware-Abdeckung durch den Hersteller",
+                "right": "2 Jahre Hardware-Abdeckung durch den Hersteller"
+              },
+              {
+                "left": "Neu",
+                "right": "Neu"
+              }
+            ],
+            "before": "Das Produktangebot eines Wettbewerbers nennt ausdrücklich die 32-GB-Variante. In Ihrem Produktangebot fehlen genaue Angaben zu Modell und Speichervariante.",
+            "after": "Ihr Produktangebot nennt jetzt die 32-GB-Variante. Beide erfüllen diese Anforderung; in diesem Beispiel entscheidet die längere angegebene Akkulaufzeit bei der Videowiedergabe, nicht eine Aussage zur Bearbeitungsleistung."
+          },
+          {
+            "leftTitle": "Saugroboter A",
+            "rightTitle": "Saugroboter B",
+            "rows": [
+              {
+                "left": "Beispiel RV-A",
+                "right": "Beispiel RV-B"
+              },
+              {
+                "left": "120 Minuten im Standard-Reinigungsmodus",
+                "right": "120 Minuten im Standard-Reinigungsmodus"
+              },
+              {
+                "left": "Google Home: Starten, Stoppen und Andocken",
+                "right": "Google Home: Starten, Stoppen und Andocken"
+              },
+              {
+                "left": "2.4 GHz Wi‑Fi",
+                "right": "2.4 GHz Wi‑Fi"
+              },
+              {
+                "left": "2 Jahre Hardware-Abdeckung durch den Hersteller",
+                "right": "1 Jahr Hardware-Abdeckung durch den Händler"
+              },
+              {
+                "left": "Neu",
+                "right": "Generalüberholt"
+              }
+            ],
+            "before": "Das Produktangebot eines Wettbewerbers nennt ausdrücklich Google Home und die unterstützten Befehle. In Ihrem Produktangebot stehen nur allgemeine Angaben zur Konnektivität.",
+            "after": "Ihr Produktangebot bestätigt jetzt dieselben Google-Home-Befehle. In diesem Beispiel entscheiden der neue Zustand und die längere Garantie bei Gleichstand."
+          }
+        ]
+      },
+      "home-and-furniture": {
+        "scenarios": [
+          {
+            "leftTitle": "Schlafsofa A",
+            "rightTitle": "Schlafsofa B",
+            "rows": [
+              {
+                "left": "192 × 90 × 84 cm; Breite 192 cm",
+                "right": "198 × 92 × 85 cm; Breite 198 cm"
+              },
+              {
+                "left": "Holzrahmen; Polyesterbezug",
+                "right": "Holzrahmen; Polyesterbezug"
+              },
+              {
+                "left": "3 Sitzplätze; Liegefläche 140 × 190 cm",
+                "right": "3 Sitzplätze; Liegefläche 140 × 190 cm"
+              },
+              {
+                "left": "Beine montieren; Werkzeug und Anleitung enthalten",
+                "right": "Beine montieren; Werkzeug und Anleitung enthalten"
+              },
+              {
+                "left": "7 Tage; Lieferung bis zur Haustür · 30 €",
+                "right": "7 Tage; Lieferung bis zur Haustür · 30 €"
+              },
+              {
+                "left": "30 Tage; unbenutzt; Abholgebühr 30 €",
+                "right": "30 Tage; unbenutzt; Abholgebühr 30 €"
+              }
+            ],
+            "before": "Das Produktangebot eines Wettbewerbers nennt ausdrücklich eine Breite unter 200 cm. In Ihrem Produktangebot fehlen Maße zum Abgleich mit der Wand.",
+            "after": "Ihr Produktangebot nennt jetzt 192 cm und bietet damit mehr Spielraum als 198 cm. Dieser angegebene Unterschied entscheidet in diesem Beispiel; Raum- und Zugangsmaße bleiben weiterhin relevant."
+          },
+          {
+            "leftTitle": "Esstisch A · €899",
+            "rightTitle": "Esstisch B · €979",
+            "rows": [
+              {
+                "left": "180 × 90 × 75 cm",
+                "right": "180 × 90 × 75 cm"
+              },
+              {
+                "left": "Massive Eichenplatte und -beine; Ölfinish",
+                "right": "Massive Kiefernplatte und -beine; Ölfinish"
+              },
+              {
+                "left": "6 Sitzplätze",
+                "right": "6 Sitzplätze"
+              },
+              {
+                "left": "Beine montieren; mitgelieferter Schraubenschlüssel",
+                "right": "Beine montieren; mitgelieferter Schraubenschlüssel"
+              },
+              {
+                "left": "14 Tage; Lieferung bis zur Haustür inklusive",
+                "right": "14 Tage; Lieferung bis zur Haustür inklusive"
+              },
+              {
+                "left": "30 Tage; unbenutzt; Käufer zahlt Abholung",
+                "right": "30 Tage; unbenutzt; Käufer zahlt Abholung"
+              }
+            ],
+            "before": "Das Produktangebot eines Wettbewerbers nennt ausdrücklich Massivholz und sechs Sitzplätze. In Ihrem Produktangebot fehlt die Angabe zum Material.",
+            "after": "Ihr Produktangebot bestätigt jetzt Massivholz und sechs Sitzplätze. Beide liegen inklusive Lieferung unter €1.000; in diesem Beispiel entscheidet der niedrigere Gesamtpreis."
+          },
+          {
+            "leftTitle": "Für Fußbodenheizung geeigneter Teppich A",
+            "rightTitle": "Für Fußbodenheizung geeigneter Teppich B",
+            "rows": [
+              {
+                "left": "160 × 230 cm; Florhöhe 6 mm",
+                "right": "160 × 230 cm; Florhöhe 6 mm"
+              },
+              {
+                "left": "Wolle; Lieferant bestätigt Eignung für Fußbodenheizung bis 27 °C",
+                "right": "Wolle; Lieferant bestätigt Eignung für Fußbodenheizung bis 27 °C"
+              },
+              {
+                "left": "Bodenbelag; keine Sitzplätze",
+                "right": "Bodenbelag; keine Sitzplätze"
+              },
+              {
+                "left": "Keine Montage; Hinweise des Lieferanten zur Platzierung beachten",
+                "right": "Keine Montage; Hinweise des Lieferanten zur Platzierung beachten"
+              },
+              {
+                "left": "5 Tage; Lieferung inklusive",
+                "right": "5 Tage; Lieferung inklusive"
+              },
+              {
+                "left": "30 Tage; unbenutzt; kostenlose Abholung bei Rücksendung",
+                "right": "14 Tage; unbenutzt; Käufer zahlt Abholung"
+              }
+            ],
+            "before": "Das Produktangebot eines Wettbewerbers nennt die vom Hersteller bestätigte Eignung für Fußbodenheizung inklusive Grenzwert. In Ihrem Produktangebot fehlt die relevante Materialangabe.",
+            "after": "Ihr Produktangebot enthält jetzt denselben vom Hersteller bestätigten Grenzwert. Beide erfüllen die genannte Anforderung; in diesem Beispiel entscheidet das längere Rückgabefenster."
+          }
+        ]
+      },
+      "fashion-and-outdoor": {
+        "scenarios": [
+          {
+            "leftTitle": "Wanderjacke A",
+            "rightTitle": "Wanderjacke B",
+            "rows": [
+              {
+                "left": "Unisex M; normale Passform; Brustumfang 100–106 cm",
+                "right": "Unisex M; normale Passform; Brustumfang 100–106 cm"
+              },
+              {
+                "left": "Außenmaterial aus 100 % recyceltem Polyester",
+                "right": "Außenmaterial aus 100 % recyceltem Polyester"
+              },
+              {
+                "left": "20.000 mm Wassersäule; versiegelte Nähte",
+                "right": "10.000 mm Wassersäule; versiegelte Nähte"
+              },
+              {
+                "left": "Wandern bei Nässe; Layering für Temperaturregulierung",
+                "right": "Wandern bei Nässe; Layering für Temperaturregulierung"
+              },
+              {
+                "left": "Maschinenwäsche bei 30 °C; kein Weichspüler",
+                "right": "Maschinenwäsche bei 30 °C; kein Weichspüler"
+              },
+              {
+                "left": "Marineblau, M · $160 · auf Lager",
+                "right": "Marineblau, M · $160 · auf Lager"
+              }
+            ],
+            "before": "Das Produktangebot eines Wettbewerbers enthält Angaben zur Wasserdichtigkeit und zur Nahtkonstruktion. In Ihrem Produktangebot fehlen Leistungsdaten.",
+            "after": "Ihr Produktangebot enthält jetzt die höhere Wassersäule mit versiegelten Nähten. Die angegebene Wassersäule bestimmt diese Beispielauswahl für Wanderungen bei nassem Wetter."
+          },
+          {
+            "leftTitle": "Laufschuh A",
+            "rightTitle": "Breiter Laufschuh B",
+            "rows": [
+              {
+                "left": "EU 42; breite 2E-Passform",
+                "right": "EU 42; breite 2E-Passform"
+              },
+              {
+                "left": "Mesh-Obermaterial; Gummilaufsohle",
+                "right": "Mesh-Obermaterial; Gummilaufsohle"
+              },
+              {
+                "left": "28 mm Dämpfungshöhe; 220 g pro Schuh in dieser Größe",
+                "right": "24 mm Dämpfungshöhe; 290 g pro Schuh in dieser Größe"
+              },
+              {
+                "left": "Straßenlauf; neutrale Pronationsstütze",
+                "right": "Straßenlauf; neutrale Pronationsstütze"
+              },
+              {
+                "left": "Von Hand reinigen; an der Luft trocknen",
+                "right": "Von Hand reinigen; an der Luft trocknen"
+              },
+              {
+                "left": "Blau, EU 42 · $110 · auf Lager",
+                "right": "Blau, EU 42 breit · $110 · auf Lager"
+              }
+            ],
+            "before": "Das Produktangebot eines Wettbewerbers kennzeichnet die Variante mit breiter Passform und enthält Angaben zur Dämpfung. In Ihrem Produktangebot fehlt die Breitenangabe.",
+            "after": "Ihr Produktangebot bestätigt jetzt die breite Passform. In diesem Beispiel wird der leichtere Schuh mit der höheren angegebenen Dämpfung gewählt; Passform und Komfort bleiben individuell."
+          },
+          {
+            "leftTitle": "Merino-Baselayer A",
+            "rightTitle": "Merino-Baselayer B",
+            "rows": [
+              {
+                "left": "Unisex M; körpernahe Passform",
+                "right": "Unisex M; körpernahe Passform"
+              },
+              {
+                "left": "100 % Merino; angegebener Faserdurchmesser 17,5 Mikron",
+                "right": "100 % Merino; angegebener Faserdurchmesser 19,5 Mikron"
+              },
+              {
+                "left": "150 g/m² Stoff; keine Wasserdichtigkeitsangabe",
+                "right": "150 g/m² Stoff; keine Wasserdichtigkeitsangabe"
+              },
+              {
+                "left": "Baselayer zum Wandern direkt auf der Haut",
+                "right": "Baselayer zum Wandern direkt auf der Haut"
+              },
+              {
+                "left": "Wollwaschgang bei 30 °C; liegend trocknen",
+                "right": "Wollwaschgang bei 30 °C; liegend trocknen"
+              },
+              {
+                "left": "Anthrazit, M · $70 · auf Lager",
+                "right": "Anthrazit, M · $70 · auf Lager"
+              }
+            ],
+            "before": "Das Produktangebot eines Wettbewerbers enthält Angaben zum Merinoanteil und zum Faserdurchmesser. In Ihrem Produktangebot fehlt die Materialangabe.",
+            "after": "Ihr Produktangebot enthält jetzt den feineren angegebenen Faserdurchmesser. Diese Angabe bestimmt die Beispielauswahl; keines der Produktangebote kann garantieren, dass jede Person das Material als kratzfrei empfindet."
+          }
+        ]
+      },
+      "health-wellness-and-pet": {
+        "scenarios": [
+          {
+            "leftTitle": "Senior-Hundefutter A",
+            "rightTitle": "Senior-Hundefutter B",
+            "rows": [
+              {
+                "left": "Herstellerangabe: Hunde ab 7 Jahren",
+                "right": "Herstellerangabe: Hunde ab 7 Jahren"
+              },
+              {
+                "left": "Truthahn, Kartoffel, Erbsen, Öl, Mineralstoffe; kein Getreide aufgeführt",
+                "right": "Truthahn, Kartoffel, Erbsen, Öl, Mineralstoffe; kein Getreide aufgeführt"
+              },
+              {
+                "left": "Fütterungstabelle nach Gewicht; Hinweise zur Umstellung auf der Verpackung",
+                "right": "Fütterungstabelle nach Gewicht; Hinweise zur Umstellung auf der Verpackung"
+              },
+              {
+                "left": "Erklärung des Lieferanten zur ernährungsphysiologischen Eignung vorhanden",
+                "right": "Erklärung des Lieferanten zur ernährungsphysiologischen Eignung vorhanden"
+              },
+              {
+                "left": "2 kg · $20",
+                "right": "2 kg · $25"
+              },
+              {
+                "left": "Vom Lieferanten positioniert für Seniorhunde mit empfindlicher Verdauung",
+                "right": "Vom Lieferanten positioniert für Seniorhunde mit empfindlicher Verdauung"
+              }
+            ],
+            "before": "Das Produktangebot eines Wettbewerbers enthält Angaben zur Lebensphase und vollständige Inhaltsstoffe. Ihr Produktangebot kann nicht auf die gewünschte getreidefreie Positionierung für Seniorhunde geprüft werden.",
+            "after": "Ihr Produktangebot enthält jetzt dieselben Angaben zur Lebensphase und zu den Inhaltsstoffen. Der niedrigere Stückpreis entscheidet das Beispiel bei Gleichstand; dies sind Produktangaben, keine klinischen Ergebnisse."
+          },
+          {
+            "leftTitle": "Magnesiumpulver A",
+            "rightTitle": "Magnesiumpulver B",
+            "rows": [
+              {
+                "left": "Herstellerangabe: nur für Erwachsene",
+                "right": "Herstellerangabe: nur für Erwachsene"
+              },
+              {
+                "left": "Nur Magnesiumbisglycinat; keine zugesetzten Füllstoffe",
+                "right": "Nur Magnesiumbisglycinat; keine zugesetzten Füllstoffe"
+              },
+              {
+                "left": "Etikett beachten; Warnhinweise enthalten",
+                "right": "Etikett beachten; Warnhinweise enthalten"
+              },
+              {
+                "left": "Keine Angabe zu Tests durch Dritte",
+                "right": "Keine Angabe zu Tests durch Dritte"
+              },
+              {
+                "left": "60 angegebene Portionen · $18",
+                "right": "60 angegebene Portionen · $24"
+              },
+              {
+                "left": "Nahrungsergänzungsmittel; kein Behandlungsversprechen",
+                "right": "Nahrungsergänzungsmittel; kein Behandlungsversprechen"
+              }
+            ],
+            "before": "Das Produktangebot eines Wettbewerbers enthält eine Zutatenliste ohne zugesetzte Füllstoffe. In Ihrem Produktangebot fehlen die Zutatenangaben zur Prüfung.",
+            "after": "Ihr Produktangebot enthält jetzt dieselben Zutatenangaben. Die niedrigeren Kosten pro angegebener Portion entscheiden den Gleichstand in diesem Beispiel; es wird kein Vergleich gesundheitlicher Wirkungen vorgenommen."
+          },
+          {
+            "leftTitle": "Staubarme Katzenstreu A",
+            "rightTitle": "Staubarme Katzenstreu B",
+            "rows": [
+              {
+                "left": "Für ausgewachsene Katzen",
+                "right": "Für ausgewachsene Katzen"
+              },
+              {
+                "left": "Duftfreie Bentonit-Tonerde",
+                "right": "Duftfreie Bentonit-Tonerde"
+              },
+              {
+                "left": "Bis 7 cm auffüllen; täglich reinigen; nicht herunterspülen",
+                "right": "Bis 7 cm auffüllen; täglich reinigen; nicht herunterspülen"
+              },
+              {
+                "left": "Beispiel-Labormethode: Staubanteil 0,2 %",
+                "right": "Gleiche Beispiel-Labormethode: Staubanteil 0,5 %"
+              },
+              {
+                "left": "10 L · $12",
+                "right": "10 L · $12"
+              },
+              {
+                "left": "Klumpende Streu; Positionierung als staubarm",
+                "right": "Klumpende Streu; Positionierung als staubarm"
+              }
+            ],
+            "before": "Das Produktangebot eines Wettbewerbers enthält ein Ergebnis eines Staubtests. Ihr Produktangebot beschreibt das Produkt als „staubarm“, ohne vergleichbare Testinformationen.",
+            "after": "Ihr Produktangebot enthält jetzt einen niedrigeren Staubwert mit derselben Beispielmethode. Dieser vergleichbare Testwert bestimmt diese beispielhafte Auswahl."
+          }
+        ]
+      },
+      "travel-and-experiences": {
+        "scenarios": [
+          {
+            "leftTitle": "Lissabon-Aufenthalt A",
+            "rightTitle": "Lissabon-Aufenthalt B",
+            "rows": [
+              {
+                "left": "7.–10. Mai 2027; drei Nächte verfügbar",
+                "right": "14.–17. Mai 2027; drei Nächte verfügbar"
+              },
+              {
+                "left": "€480 gesamt für zwei Personen; verpflichtende Gebühren und Steuern enthalten",
+                "right": "€540 gesamt für zwei Personen; verpflichtende Gebühren und Steuern enthalten"
+              },
+              {
+                "left": "Zimmer und Frühstück; Transfers nicht enthalten",
+                "right": "Zimmer und Frühstück; Transfers nicht enthalten"
+              },
+              {
+                "left": "Kostenlose Stornierung bis 7 Tage vor Anreise",
+                "right": "Kostenlose Stornierung bis 7 Tage vor Anreise"
+              },
+              {
+                "left": "Stadtzentrum von Lissabon; 300 m von einer Metrostation entfernt",
+                "right": "Stadtzentrum von Lissabon; 300 m von einer Metrostation entfernt"
+              },
+              {
+                "left": "Ein Zimmer für zwei Erwachsene",
+                "right": "Ein Zimmer für zwei Erwachsene"
+              }
+            ],
+            "before": "Das Produktangebot eines Wettbewerbers enthält ein verfügbares langes Wochenende im Mai. In Ihrem Produktangebot fehlen lesbare Datumsangaben zur Prüfung.",
+            "after": "Ihr Produktangebot enthält jetzt ein langes Wochenende im Mai und einen vollständigen Gesamtpreis. Beide entsprechen der Beispielanfrage; der niedrigere Gesamtpreis entscheidet den Gleichstand."
+          },
+          {
+            "leftTitle": "Food-Tour in Mexiko-Stadt A",
+            "rightTitle": "Food-Tour in Mexiko-Stadt B",
+            "rows": [
+              {
+                "left": "Beispieldatum: 15. Mai 2027 um 12:00 Uhr",
+                "right": "Beispieldatum: 15. Mai 2027 um 12:00 Uhr"
+              },
+              {
+                "left": "$90 gesamt für zwei Personen; Gebühren und Steuern enthalten",
+                "right": "$110 gesamt für zwei Personen; Gebühren und Steuern enthalten"
+              },
+              {
+                "left": "Guide und fünf Verkostungen; Transfers nicht enthalten",
+                "right": "Guide und fünf Verkostungen; Transfers nicht enthalten"
+              },
+              {
+                "left": "Kostenlose Stornierung bis 48 Stunden vorher",
+                "right": "Kostenlose Stornierung bis 48 Stunden vorher"
+              },
+              {
+                "left": "Beispielhafter Treffpunkt im Centro von Mexiko-Stadt",
+                "right": "Beispielhafter Treffpunkt in Centro, Mexiko-Stadt"
+              },
+              {
+                "left": "Zwei Plätze für Erwachsene verfügbar; maximale Gruppengröße 8",
+                "right": "Zwei Plätze für Erwachsene verfügbar; maximale Gruppengröße 8"
+              }
+            ],
+            "before": "Das Produktangebot eines Wettbewerbers bestätigt zwei Plätze für die angegebene Tour. In Ihrem Produktangebot fehlen Angaben zu Gruppengröße und Kapazität.",
+            "after": "Ihr Produktangebot bestätigt jetzt zwei Plätze und die enthaltenen Verkostungen. Beide passen zur Beispielfrage; der niedrigere Gesamtpreis für zwei Personen entscheidet diese Auswahl."
+          },
+          {
+            "leftTitle": "Alpenchalet A",
+            "rightTitle": "Alpenchalet B",
+            "rows": [
+              {
+                "left": "Beispielwoche: 6.–13. Februar 2027",
+                "right": "Beispielwoche: 6.–13. Februar 2027"
+              },
+              {
+                "left": "2.400 € pro Woche; Gebühren und Steuern inklusive",
+                "right": "2.800 € pro Woche; Gebühren und Steuern inklusive"
+              },
+              {
+                "left": "Bettwäsche und Endreinigung; Skipässe nicht inbegriffen",
+                "right": "Bettwäsche und Endreinigung; Skipässe nicht inbegriffen"
+              },
+              {
+                "left": "Kostenlose Stornierung bis 30 Tage vor Anreise",
+                "right": "Kostenlose Stornierung bis 30 Tage vor Anreise"
+              },
+              {
+                "left": "Beispielhaftes Alpenresort; 400 m vom Skilift entfernt",
+                "right": "Beispielhaftes Alpenresort; 900 m vom Skilift entfernt"
+              },
+              {
+                "left": "Vier Schlafzimmer; maximale Belegung 8 Personen",
+                "right": "Vier Schlafzimmer; maximale Belegung 8 Personen"
+              }
+            ],
+            "before": "Das Produktangebot eines Wettbewerbers bestätigt Platz für acht Personen. Ihr Produktangebot nennt keine maximale Belegung.",
+            "after": "Ihr Produktangebot bestätigt jetzt eine Belegung für acht Personen. Der kürzere angegebene Weg zum Lift und der niedrigere Gesamtpreis entscheiden diese Beispielauswahl."
+          }
+        ]
+      }
+    }
+  }
+}

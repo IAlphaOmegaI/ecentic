@@ -1,0 +1,41 @@
+{
+  "enterprisePilotPreview": {
+    "label": "Pilote illustratif · exemple de brief",
+    "title": "Une catégorie. Un marché. Les mêmes questions.",
+    "note": "Exemple de planification, et non un résultat client. Le périmètre, les rôles de l’équipe et les livrables sont définis avec votre équipe.",
+    "marketLabel": "Marché",
+    "market": "Espagne",
+    "categoryLabel": "Catégorie",
+    "category": "Sacs à dos de randonnée",
+    "sourceLabel": "Point de départ",
+    "source": "Pages produit publiques",
+    "peopleLabel": "Exemple d’équipe",
+    "deliverableLabel": "Exemple de livrable",
+    "stages": [
+      {
+        "people": "Responsable de catégorie + analyste ecentic",
+        "deliverable": "Jeu de questions et classeur de référence",
+        "exampleLabel": "Exemple de question",
+        "example": "Quel sac à dos cabine convient pour un voyage d’une semaine ?"
+      },
+      {
+        "people": "Responsable merchandising + éditeur de catalogue",
+        "deliverable": "Vérification des faits et liste de modifications approuvée",
+        "exampleLabel": "Exemple de vérification factuelle",
+        "example": "Faire correspondre la capacité, les dimensions et le matériau avec les pages source."
+      },
+      {
+        "people": "Analyste ecentic + responsable de catégorie",
+        "deliverable": "Nouvelle exécution comparée et journal des modifications",
+        "exampleLabel": "Exemple de comparaison",
+        "example": "Conserver côte à côte les réponses de référence et les réponses répétées. Documenter toute modification du modèle."
+      },
+      {
+        "people": "Responsable métier + responsable ecentic",
+        "deliverable": "Synthèse, limites et prochaine décision",
+        "exampleLabel": "Exemple d’ordre du jour",
+        "example": "Examiner les mentions, le positionnement, les liens et le parcours d’achat testé. Choisir ce qu’il faut tester ensuite."
+      }
+    ]
+  }
+}

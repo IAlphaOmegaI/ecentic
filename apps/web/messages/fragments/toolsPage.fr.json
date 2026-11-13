@@ -1,0 +1,65 @@
+{
+  "toolsPage": {
+    "description": "Commencez par la question à laquelle vous voulez répondre. Sélectionnez un outil pour voir ce dont il a besoin et ce que signifie son résultat.",
+    "inputLabel": "Ce dont vous avez besoin",
+    "accessLabel": "Accès",
+    "resultLabel": "Comment interpréter le résultat",
+    "tools": {
+      "score": {
+        "purpose": "Évaluer votre catalogue",
+        "input": "Votre boutique, vos produits et vos concurrents",
+        "access": "Scan gratuit · Compte requis",
+        "limit": "Il s’agit de comparaisons de produits simulées. Elles ne reflètent pas les classements en temps réel dans les applications d’achat IA.",
+        "steps": [
+          "Vos produits",
+          "Comparaison IA",
+          "Score et justification"
+        ]
+      },
+      "validator": {
+        "purpose": "Inspecter un profil de paiement",
+        "input": "L’URL de votre boutique",
+        "access": "Gratuit · Aucun compte requis",
+        "limit": "Un profil publié valide ne confirme pas qu’un acheteur peut finaliser sa commande. Utilisez l’espace d’expérimentation pour tester les outils de la boutique.",
+        "steps": [
+          "URL de la boutique",
+          "Profil publié",
+          "Vérifications de structure"
+        ]
+      },
+      "playground": {
+        "purpose": "Tester un parcours d’achat",
+        "input": "Une boutique exposant des outils d’achat pour agents IA",
+        "access": "10 messages gratuits · Aucun compte requis",
+        "limit": "L’agent appelle les outils de la boutique. Utilisez une boutique de préproduction pour les tests de passage de commande.",
+        "steps": [
+          "Recherche",
+          "Panier",
+          "Paiement"
+        ]
+      },
+      "scanner": {
+        "purpose": "Trouver des indices de présence d’outils dans le navigateur",
+        "input": "L’URL publique d’une vitrine",
+        "access": "Gratuit · Aucun compte requis",
+        "limit": "Inspecte un petit échantillon de pages et de scripts. Cet outil n’exécute pas JavaScript, n’envoie pas de formulaires et ne vérifie pas le fonctionnement des outils du navigateur.",
+        "steps": [
+          "Source de la vitrine",
+          "Outils et formulaires",
+          "Preuves et limites"
+        ]
+      },
+      "compare": {
+        "purpose": "Comparer deux fiches produit",
+        "input": "Deux URL produit",
+        "access": "Comparaison de produits gratuite",
+        "limit": "Chaque modèle effectue un choix simulé à partir des fiches produit comparées. Il ne s’agit pas d’un rapport de positionnement d’achat en temps réel.",
+        "steps": [
+          "Deux fiches produit",
+          "Quatre modèles IA",
+          "Choix et justification"
+        ]
+      }
+    }
+  }
+}

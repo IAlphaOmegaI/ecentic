@@ -11,6 +11,7 @@ export const contentType = enterpriseOgContentType;
 
 export default () =>
   createEnterpriseOgImage({
+    locale: "en",
     ...messages.enterpriseRecovery.og.home,
     signoff: messages.enterpriseRecovery.og.home.title,
   });

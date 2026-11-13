@@ -236,7 +236,11 @@ Retry-After: 42
           <aside className="bg-background-dimmed px-8 py-8 max-sm:px-4">
             <h3 className="text-2xl text-foreground-rich">{copy.retryTitle}</h3>
             <p className="mt-6 font-medium text-5xl text-foreground-rich tabular-nums tracking-tight">
-              42<span className="ml-2 text-2xl text-foreground-dimmed">s</span>
+              {new Intl.NumberFormat(locale, {
+                style: "unit",
+                unit: "second",
+                unitDisplay: "short",
+              }).format(42)}
             </p>
             <p className="mt-2 text-foreground-dimmed text-sm">
               {copy.retryLabel}

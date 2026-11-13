@@ -1,0 +1,17 @@
+{
+  "commerceFigures": {
+    "openBook": "Illustration : un livre ouvert. Déplacez le pointeur sur l’une des pages pour déployer les feuilles en éventail.",
+    "partReadouts": {
+      "openBook": [
+        {
+          "value": "pages de gauche",
+          "label": "Pages de gauche"
+        },
+        {
+          "value": "pages de droite",
+          "label": "Pages de droite"
+        }
+      ]
+    }
+  }
+}

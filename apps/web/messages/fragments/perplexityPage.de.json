@@ -1,0 +1,32 @@
+{
+  "perplexityPage": {
+    "shopping": {
+      "label": "Shopping-Ziel entdecken",
+      "result": "Produktkarte",
+      "destination": "Shopping-Ziel",
+      "purchase": "Mit Pro kaufen",
+      "store": "Website des Händlers",
+      "purchaseTitle": "Kauf bei erfüllten Voraussetzungen",
+      "purchaseDescription": "Die angekündigte Funktion „Buy with Pro“ gilt für Produkte in den USA, die die Voraussetzungen erfüllen.",
+      "storeTitle": "Beim Händler fortfahren",
+      "storeDescription": "Wenn diese Kaufoption nicht verfügbar ist, folgt der Käufer einem Link zur Website des Händlers.",
+      "caption": "Entdecken Sie die zwei Wege aus der Shopping-Ankündigung von Perplexity."
+    },
+    "reading": {
+      "merchant": "Händlerinformationen",
+      "product": "Produktdetails",
+      "price": "Preis",
+      "website": "Website des Händlers",
+      "result": "Shopping-Ergebnisse",
+      "caption": "Ein Händlerprogramm trägt dazu bei, Produktinformationen vollständiger zu machen."
+    },
+    "entry": {
+      "label": "Anforderungen für den Händlerzugang entdecken",
+      "steps": [
+        "Das angekündigte Programm",
+        "Aktuelle Teilnahmevoraussetzungen",
+        "Was noch nicht verifiziert ist"
+      ]
+    }
+  }
+}

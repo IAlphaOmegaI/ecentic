@@ -1,0 +1,18 @@
+{
+  "docsLimitsPage": {
+    "requests": "requêtes",
+    "window": "par {seconds} secondes",
+    "publicScope": "Tous les points de terminaison /api/v1",
+    "policySource": "Politiques appliquées par l’API",
+    "headerExample": "Exemples d’en-têtes de réponse",
+    "headerHint": "Sélectionnez un en-tête pour en comprendre la signification. Ces valeurs illustrent une réponse ; elles ne correspondent pas à un compteur en temps réel.",
+    "windowTitle": "Une limite, deux lectures",
+    "remaining": "Requêtes restantes",
+    "reset": "Secondes avant réinitialisation",
+    "windowHint": "Dans cet exemple, les deux formats d’en-tête décrivent la même période.",
+    "responseExample": "Exemple : réponse 429",
+    "retryTitle": "Attendez, puis réessayez",
+    "retryLabel": "Secondes d’attente dans cet exemple",
+    "retryHint": "Consultez Retry-After dans la réponse réelle. Toute requête effectuée avant ce délai est comptabilisée et à nouveau rejetée."
+  }
+}

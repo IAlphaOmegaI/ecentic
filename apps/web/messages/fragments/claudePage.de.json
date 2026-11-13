@@ -1,0 +1,53 @@
+{
+  "claudePage": {
+    "explorer": {
+      "label": "Einen vom Händler entwickelten KI-Einkaufsagenten entdecken",
+      "scope": "Innerhalb des eigenen Einkaufserlebnisses des Händlers",
+      "tools": "Vom Händler bereitgestellte Tools",
+      "stages": [
+        {
+          "id": "catalog",
+          "title": "Katalog",
+          "headline": "Starten Sie mit Ihren Produktinformationen",
+          "body": "Der Händler stellt Katalog- und Inventar-Tools bereit, mit denen sein Claude-gestützter Agent nach Produkten sucht.",
+          "tools": [
+            "Katalog",
+            "Bestand"
+          ]
+        },
+        {
+          "id": "compare",
+          "title": "Vergleichen",
+          "headline": "Den Vergleichskontext bereitstellen",
+          "body": "Der Agent vergleicht Produkte anhand der Informationen und Tools, die der Händler bereitstellt, darunter sein Katalog und seine Shop-Richtlinien.",
+          "tools": [
+            "Produktinformationen",
+            "Shop-Richtlinien"
+          ]
+        },
+        {
+          "id": "cart",
+          "title": "Warenkorb",
+          "headline": "Eigene Commerce-Tools verbinden",
+          "body": "Warenkorb- und Checkout-Tools sind Teil des vom Händler entwickelten Einkaufsablaufs. ecentic bietet derzeit keine dedizierte Claude-Checkout-Anbindung.",
+          "tools": [
+            "Warenkorb des Händlers",
+            "Checkout des Händlers"
+          ]
+        }
+      ]
+    },
+    "reading": {
+      "merchant": "Ihr Commerce-Agent",
+      "simulation": "Vergleich von ecentic"
+    },
+    "entry": {
+      "tools": "Vom Händler bereitgestellte Tools",
+      "experience": "Ihr eigenes Einkaufserlebnis"
+    },
+    "action": {
+      "primary": "Simulationen erkunden",
+      "secondary": "Ihre Produktangebote verbessern"
+    }
+  }
+}

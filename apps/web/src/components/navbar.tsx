@@ -671,6 +671,7 @@ export const Navbar = () => {
               <MenuIcon className="size-4" />
             </SheetTrigger>
             <SheetPopup
+              closeLabel={chrome.menu.close}
               data-surface-tone={tone}
               style={toneStyle}
               className={cn(

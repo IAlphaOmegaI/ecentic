@@ -4,6 +4,7 @@ import { resultify } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import { InferredForm } from "@zenncore/web/components/inferred-form";
 import { type ReactNode, useEffect, useState, useTransition } from "react";
+import type { Locale } from "@/i18n/locales";
 import { Link } from "@/i18n/navigation";
 import type { MarketingLeadInput } from "@/lib/marketing-lead";
 import * as Leads from "@/server/app/marketing-lead";
@@ -48,7 +49,7 @@ type FormProps = {
   copy: LeadCopy;
   onSubmit: (data: MarketingLeadInput) => void;
   children: ReactNode;
-  locale: "en" | "es";
+  locale: Locale;
   topic: string;
 };
 
@@ -224,7 +225,7 @@ export namespace LeadForm {
     kind: "interest" | "integration" | "partner";
     topic: string;
     title?: string;
-    locale: "en" | "es";
+    locale: Locale;
     copy: LeadCopy;
     onPendingChange?: (pending: boolean) => void;
   };

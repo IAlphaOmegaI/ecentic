@@ -32,6 +32,7 @@ export const SheetPopup = ({
   container,
   keepMounted,
   side = "right",
+  closeLabel = "Close",
   className,
   classList,
   ...props
@@ -68,7 +69,7 @@ export const SheetPopup = ({
           )}
         >
           <XIcon className={cn("size-4", classList?.close?.icon)} />
-          <span className="sr-only">Close</span>
+          <span className="sr-only">{closeLabel}</span>
         </SheetPrimitive.Close>
       </SheetPrimitive.Popup>
     </SheetPrimitive.Portal>
@@ -78,6 +79,7 @@ export namespace SheetPopup {
   export type ClassListKey = "root" | "backdrop" | { close: "root" | "icon" };
   export type Props = {
     side?: "top" | "right" | "bottom" | "left";
+    closeLabel?: string;
     classList?: ClassList<ClassListKey>;
   } & ComponentProps<typeof SheetPrimitive.Popup> &
     ComponentProps<typeof SheetPrimitive.Portal>;

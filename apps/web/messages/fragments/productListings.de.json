@@ -1,0 +1,190 @@
+{
+  "productListings": {
+    "meta": {
+      "title": "KI-Optimierung von Produktangeboten für Händler",
+      "description": "KI-Optimierung von Produktangeboten für Titel, Beschreibungen und strukturierte Produktdaten. Erfahren Sie, wie ecentic Händlern hilft, ihre Sichtbarkeit bei KI-Agenten zu verbessern."
+    },
+    "breadcrumb": {
+      "home": "Startseite",
+      "features": "Funktionen",
+      "productListings": "Produktangebote"
+    },
+    "hero": {
+      "eyebrow": "Produktangebote",
+      "title": {
+        "primary": "KI-Optimierung für Produktangebote",
+        "accent": "für Produktseiten, die ausgewählt werden."
+      },
+      "description": "KI-Shopping-Systeme vergleichen Ihre Produktdaten in Sekunden. ecentic macht aus unterlegenen Produktseiten klarere Kaufgrundlagen – für Agenten und für die kaufbereiten Besucher, die sie an Sie weiterleiten.",
+      "assurances": [
+        "Titel, Beschreibungen & strukturierte Daten",
+        "Freigabefertige Überarbeitungen",
+        "Veröffentlicht zurück in Shopify & WooCommerce"
+      ],
+      "art": {
+        "alt": "ASCII-Grafik einer Karte für ein Produktangebot"
+      }
+    },
+    "whyListingsLose": {
+      "number": "01",
+      "title": "Warum Produktangebote bei KI-gestützten Käufen verlieren.",
+      "description": "Die meisten Probleme im Katalog haben dieselbe Ursache: Produktdaten, die für Menschen zum Durchstöbern erstellt wurden, nicht für den Vergleich durch KI-Systeme.",
+      "paragraphs": [
+        "KI-Shopping-Systeme durchsuchen eine Seite nicht wie Menschen. Sie vergleichen Titel, Beschreibungen, strukturierte Attribute, Preiskontext, Kompatibilitätsdetails und Vertrauenssignale in einem stark komprimierten Entscheidungsfenster. Wenn ein Produktangebot klarer, vollständiger und leichter vergleichbar ist, gewinnt es, bevor Käufer überhaupt verstehen, warum.",
+        "Die Lösung ist nicht, eine Seite mit Keywords zu überladen. Entscheidend ist, Produktinformationen leichter auffindbar, bewertbar und vertrauenswürdig zu machen."
+      ],
+      "principlesTitle": "Was erfolgreiche Produktangebote auszeichnet",
+      "principles": [
+        {
+          "title": "Klar benennen, was das Produkt ist",
+          "description": "Und für wen es gedacht ist – in einer Sprache, die Käufer und Modelle schnell erfassen."
+        },
+        {
+          "title": "Vergleichsrelevante Attribute sichtbar machen",
+          "description": "Die kategorietypischen Felder, die Käufer und Agenten am häufigsten bewerten."
+        },
+        {
+          "title": "Beschreibungen präzise halten",
+          "description": "Fokussiert auf die konkrete Kaufentscheidung statt auf Fülltexte, die wichtige Details verdecken."
+        },
+        {
+          "title": "Überall konsistent bleiben",
+          "description": "Strukturierte Daten, Angebotsdaten und Seitentexte erzählen dieselbe Geschichte."
+        }
+      ]
+    },
+    "layers": {
+      "number": "02",
+      "title": "Vier Ebenen, gemeinsam verbessert.",
+      "description": "Das Umschreiben von Beschreibungen ist nur ein Teil der Aufgabe. Eine wirkungsvolle Optimierung von Produktangeboten verbindet Texte, Datenqualität und Vertrauen in einem einzigen Durchlauf.",
+      "items": [
+        {
+          "title": "Produktidentität",
+          "description": "Der Titel vermittelt relevanten Kaufkontext ohne Ballast: Produkttyp, Unterscheidungsmerkmal sowie die entscheidende Variante oder Kompatibilitätsangabe."
+        },
+        {
+          "title": "Produkterklärung",
+          "description": "Die Beschreibung erleichtert den Vergleich, indem sie die wichtigsten Faktoren erklärt, die Eignung für den Anwendungsfall verdeutlicht und potenzielle Zweifel ausräumt."
+        },
+        {
+          "title": "Vollständige Attribute",
+          "description": "Fehlende Maße, Materialien, Kompatibilitätsfelder, Garantieangaben oder Stückzahlen schwächen ein Produkt in wettbewerbsintensiven Kategorien oft unbemerkt."
+        },
+        {
+          "title": "Vertrauen in den Händler",
+          "description": "Links zu Richtlinien, ausreichende Bewertungen, korrekte Verfügbarkeiten und klar erkennbare Supportinformationen stärken das Angebot rund um das Produkt."
+        }
+      ]
+    },
+    "workflow": {
+      "number": "03",
+      "title": "Ein geschlossener Kreislauf statt einer einmaligen Überarbeitung.",
+      "description": "Der Workflow führt von der Simulation über die Diagnose bis zur freigabefertigen Aktualisierung des Produktangebots – ohne Ihren Katalog komplett neu aufzubauen.",
+      "paragraph": "Simulieren Sie, wer gewinnt, analysieren Sie die Lücken und veröffentlichen Sie die Verbesserungen direkt im Shop. Derselbe Ablauf funktioniert sowohl für einige priorisierte SKUs als auch für kontinuierliche Katalogprozesse.",
+      "panelTitle": "Simulieren, analysieren, veröffentlichen",
+      "audiences": [
+        {
+          "title": "Bessere Auffindbarkeit ohne Komplettüberarbeitung",
+          "description": "Verbessern Sie die Auffindbarkeit Ihrer Produkte, ohne den gesamten Katalog auf einmal neu zu schreiben."
+        },
+        {
+          "title": "Große, uneinheitliche Kataloge",
+          "description": "Hunderte oder Tausende von SKUs, bei denen die Datenqualität je nach Kategorie und Alter variiert."
+        },
+        {
+          "title": "Spezifikationsgetriebene Kategorien",
+          "description": "Produkte, die über Spezifikationen, Kompatibilität und Vertrauenssignale des Händlers ausgewählt werden."
+        },
+        {
+          "title": "Skalierbare Content-Prozesse",
+          "description": "Teams, die einen skalierbaren Prozess für Produktinhalte benötigen statt einzelner manueller Änderungen."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Simulieren",
+          "description": "KI-Shopping-Auswertungen laufen über Ihre Produkte und die Produktangebote von Wettbewerbern, damit das Team sieht, wer gewinnt und warum."
+        },
+        {
+          "title": "Analysieren",
+          "description": "Prüfen Sie Attributlücken und die Gründe hinter jeder Auswahl: fehlende Daten, schwache Positionierung oder unvollständiger Produktkontext."
+        },
+        {
+          "title": "Veröffentlichen",
+          "description": "Freigegebene Titel, Beschreibungen und Produktdaten werden direkt zurück in unterstützte Plattformen übertragen statt manuell kopiert."
+        }
+      ]
+    },
+    "nextSteps": {
+      "number": "04",
+      "title": "So geht es nach dieser Seite weiter.",
+      "description": "Wechseln Sie vom Workflow für Produktangebote zu Plattform- oder Rechercheinhalten, die zu Ihrem nächsten Schritt passen.",
+      "items": [
+        {
+          "href": "/platforms/shopify",
+          "name": "Shopify",
+          "title": "Workflow für Shopify-Kataloge ansehen",
+          "description": "Produkte verbinden, Wettbewerber vergleichen und freigegebene Aktualisierungen von Produktangeboten zurück in Shopify veröffentlichen.",
+          "label": "Shopify-Seite öffnen",
+          "color": "primary"
+        },
+        {
+          "href": "/platforms/woocommerce",
+          "name": "WooCommerce",
+          "title": "Denselben Ablauf für WooCommerce-Produkte nutzen",
+          "description": "Nutzen Sie den WooCommerce-Weg, wenn Ihr Team Produktangebote verbessern möchte, ohne die Plattform zu wechseln.",
+          "label": "WooCommerce-Seite öffnen",
+          "color": "accent"
+        },
+        {
+          "href": "/compare/best-ai-ecommerce-tools",
+          "name": "Vergleich",
+          "title": "KI-Ecommerce-Kategorien vor dem Kauf vergleichen",
+          "description": "Nutzen Sie den Leitfaden, um Content-Generatoren von Tools zur Optimierung für Agent-Commerce zu unterscheiden.",
+          "label": "Vergleichsleitfaden lesen",
+          "color": "accent"
+        },
+        {
+          "href": "/blog",
+          "name": "Blog",
+          "title": "Mehr zu strukturierten Daten, KI-Traffic und Katalogsichtbarkeit",
+          "description": "Der Blog macht aus der Optimierung von Produktangeboten wiederholbare Checklisten für den Arbeitsalltag von Händlern und Teams.",
+          "label": "Zum Blog",
+          "color": "accent"
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "05",
+      "title": "Häufig gestellte Fragen",
+      "description": "Häufige Fragen von Händlern zur Optimierung von Produktangeboten mit KI."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Was ist KI-gestützte Optimierung von Produktangeboten?",
+          "answer": "Die KI-gestützte Optimierung von Produktangeboten verbessert Titel, Beschreibungen, Attribute und ergänzenden Produktkontext, damit KI-Shopping-Systeme und kaufbereite Käufer das Angebot mit mehr Vertrauen vergleichen können."
+        },
+        {
+          "question": "Verändert die Optimierung von Produktangeboten nur Texte?",
+          "answer": "Nein. Bessere Texte helfen, aber zur Optimierung von Produktangeboten gehören auch strukturierte Produktdaten, klarere Spezifikationen, Kategoriekontext, Vertrauensinformationen und weitere unterstützende Angaben, die einem System helfen, das Angebot zu bewerten."
+        },
+        {
+          "question": "Was ist der Unterschied zwischen KI-Produktbeschreibungen und vollständiger Optimierung von Produktangeboten?",
+          "answer": "KI-Produktbeschreibungen konzentrieren sich darauf, Texte schneller umzuschreiben. Die vollständige Optimierung von Produktangeboten verbessert Titel, Beschreibungen, strukturierte Attribute und Vertrauenssignale des Händlers gemeinsam, damit Käufer und KI-Shopping-Systeme das Angebot leichter bewerten können."
+        },
+        {
+          "question": "Wie unterstützt ecentic bei der Optimierung von Produktangeboten?",
+          "answer": "ecentic simuliert, wie KI-Shopping-Agenten Produkte vergleichen, zeigt, warum ein Wettbewerber gewinnt, und wandelt diese Erkenntnisse in verbesserte Titel, Beschreibungen und Aktualisierungen von Produktangeboten um, die Händler freigeben und veröffentlichen können."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Produktangebote optimieren",
+        "secondary": "Zurück zu den Funktionen"
+      },
+      "note": "Einrichtung in 2 Minuten · Keine Kreditkarte · Zuerst kostenlosen Score ansehen"
+    }
+  }
+}

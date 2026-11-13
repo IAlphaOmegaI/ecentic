@@ -1,6 +1,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
+import type { Locale } from "@/i18n/locales";
+import { cjkOgFont } from "./og-fonts";
 
 const background = `data:image/png;base64,${readFileSync(
   join(process.cwd(), "public/images/background.png"),
@@ -24,7 +26,11 @@ export const ogImageContentType = "image/png" as const;
 // horizontal rules, so its height is the full canvas minus those two hairlines.
 const columnHeight = ogImageSize.height - 2;
 
-export const createOgImage = ({ title, description }: createOgImage.Params) => {
+export const createOgImage = ({
+  title,
+  description,
+  locale,
+}: createOgImage.Params) => {
   const displayTitle = truncate(title || "ecentic", 110);
   const displayDescription = truncate(
     description || "Infrastructure for the agent economy",
@@ -42,7 +48,7 @@ export const createOgImage = ({ title, description }: createOgImage.Params) => {
         padding: "44px 0",
         backgroundColor: "#1572fa",
         color: "#0a0a0a",
-        fontFamily: "LTSuperior",
+        fontFamily: "LTSuperior, NotoSansCJK",
         position: "relative",
       }}
     >
@@ -153,7 +159,7 @@ export const createOgImage = ({ title, description }: createOgImage.Params) => {
             }}
           >
             <span>ecentic.ai</span>
-            <span>Win every AI agent's cart</span>
+            <span>ecentic</span>
           </div>
         </section>
       </section>
@@ -161,6 +167,7 @@ export const createOgImage = ({ title, description }: createOgImage.Params) => {
     {
       ...ogImageSize,
       fonts: [
+        ...cjkOgFont(`${title} ${description}`, locale),
         {
           name: "LTSuperior",
           data: medium,
@@ -182,5 +189,6 @@ export namespace createOgImage {
   export type Params = {
     title: string;
     description: string;
+    locale?: Locale;
   };
 }

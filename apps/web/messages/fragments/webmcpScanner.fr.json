@@ -1,0 +1,493 @@
+{
+  "webmcpScanner": {
+    "meta": {
+      "name": "Audit WebMCP du parcours d’achat",
+      "title": "Audit WebMCP gratuit pour les boutiques en ligne",
+      "description": "Auditez la prise en charge WebMCP de votre vitrine pour la recherche produit, les variantes, les paniers, le paiement, les politiques et les commandes. Obtenez des preuves du parcours d’achat et des correctifs concrets."
+    },
+    "hero": {
+      "title": "Auditez les outils d’achat de votre boutique",
+      "accent": "de la recherche au passage de commande.",
+      "description": "Identifiez les opérations d’achat que votre boutique expose via WebMCP. Analysez la recherche dans le catalogue, les choix de produits, les paniers et les étapes vers le paiement, avec les preuves source et des correctifs adaptés aux marchands.",
+      "assurances": [
+        "Utilisation gratuite",
+        "Aucun compte requis",
+        "Inspection des sources uniquement"
+      ],
+      "art": "Une console affichée en caractères ASCII",
+      "action": {
+        "primary": "Auditer une boutique"
+      }
+    },
+    "form": {
+      "title": "Auditez votre boutique",
+      "description": "Commencez par une page produit ou une page de collection publique pour obtenir le contexte d’achat le plus clair. Le rapport associe les preuves source aux opérations de la boutique et indique les éléments à vérifier ensuite.",
+      "fields": {
+        "url": {
+          "label": "URL de la boutique",
+          "placeholder": "example.com/products/votre-produit",
+          "description": "URL d’une boutique ou d’une page publique. Vous pouvez inclure le chemin de la page.",
+          "storeDescription": "Votre boutique connectée est préremplie. Vous pouvez analyser une autre page de ce même domaine.",
+          "required": "Saisissez un domaine de boutique ou une URL de page.",
+          "invalid": "Saisissez une URL publique de boutique valide."
+        }
+      },
+      "action": {
+        "primary": "Lancer l’audit WebMCP"
+      },
+      "pending": "Audit de la source…",
+      "progress": "Lecture des pages publiques, scripts et modules référencés. Cela peut prendre quelques instants.",
+      "complete": "Audit terminé. Consultez les résultats ci-dessous.",
+      "scope": "Lit la page saisie et jusqu’à 2 pages d’achat liées, en donnant la priorité aux pages produit et aux pages de collection, ainsi qu’à 12 scripts ou modules externes au maximum. Suit les références et imports explicites sans exécuter JavaScript, modifier un panier ou passer une commande.",
+      "errors": {
+        "failed": "L’analyse n’a pas pu aboutir. Veuillez réessayer.",
+        "invalid": "Saisissez une URL HTTPS publique de boutique. Les analyses depuis le tableau de bord doivent utiliser le domaine de la boutique connectée.",
+        "unreachable": "Impossible de lire cette page. Vérifiez l’URL et que la boutique est accessible publiquement.",
+        "tooLarge": "Cette page est trop volumineuse pour être traitée par l’analyseur. Essayez une page produit ou une page de collection de la même boutique.",
+        "limited": "Vous avez atteint la limite d’analyses. Veuillez attendre avant de réessayer.",
+        "retryAfter": "Réessayez dans {seconds, number} secondes."
+      },
+      "sources": {
+        "label": "En savoir plus :",
+        "specification": "Spécification WebMCP",
+        "chrome": "Guide WebMCP pour Chrome"
+      }
+    },
+    "report": {
+      "label": "Audit WebMCP du parcours d’achat",
+      "scannedAt": "Analysé le {date}",
+      "status": {
+        "markupFound": {
+          "title": "Déclarations WebMCP trouvées ; noms non résolus",
+          "description": "Nous avons trouvé des déclarations WebMCP, mais n’avons pas pu résoudre leurs noms d’outils à partir de la source inspectée. L’inventaire des outils est incomplet ; cela ne signifie pas que la boutique ne dispose d’aucun outil."
+        },
+        "scriptSignals": {
+          "title": "Preuves WebMCP trouvées ; outils non résolus",
+          "description": "Le code inspecté fait référence aux API WebMCP, mais l’inventaire des outils n’a pas pu être résolu à partir de la source. Des outils peuvent tout de même être disponibles dans un navigateur. Les références API seules peuvent aussi correspondre à des vérifications de fonctionnalités ou à du code jamais exécuté."
+        },
+        "noEvidence": {
+          "title": "Aucune preuve WebMCP dans cette analyse",
+          "description": "Nous n’avons trouvé ni déclarations WebMCP ni signaux API dans les sources inspectées. Cela ne prouve pas l’absence de WebMCP : d’autres pages, des scripts chargés plus tard ou des outils derrière une connexion peuvent l’exposer."
+        },
+        "toolsFound": {
+          "title": "Outils WebMCP nommés trouvés dans les sources",
+          "description": "Nous avons extrait des définitions d’outils WebMCP nommés à partir des sources inspectées. Le nombre couvre ces définitions ; leur enregistrement et leur disponibilité dans un navigateur restent non vérifiés."
+        }
+      },
+      "counts": {
+        "tools": "Définitions d’outils nommées",
+        "signals": "Signaux API",
+        "pages": "Pages lues",
+        "scripts": "Scripts lus",
+        "notResolved": "Non résolu"
+      },
+      "tools": {
+        "title": "Définitions d’outils",
+        "description": "Définitions extraites des sources, y compris les métadonnées de paramètres et les déclarations d’exécution. Il ne s’agit pas d’enregistrements confirmés dans un navigateur.",
+        "unnamed": "Définition sans nom",
+        "empty": "Aucune définition d’outil n’a pu être extraite des sources inspectées.",
+        "noDescription": "Aucune description littérale n’a pu être lue dans cette définition.",
+        "page": "Page",
+        "source": "Source",
+        "inputs": "Noms d’entrée trouvés",
+        "noInputs": "Aucun nom d’entrée n’a pu être lu depuis les sources.",
+        "kind": {
+          "declarative": "Déclaration de formulaire HTML",
+          "imperative": "Définition JavaScript"
+        },
+        "unresolved": "Des preuves WebMCP ont été détectées, mais aucun nom d’outil n’a pu être résolu à partir des sources inspectées. L’inventaire est incomplet ; il ne s’agit pas d’un total de zéro outil disponible.",
+        "partiallyResolved": "Certaines définitions ont des noms non résolus. Le nombre inclut uniquement les définitions nommées extraites des sources ; d’autres outils peuvent être disponibles dans le navigateur.",
+        "parametersTitle": "Paramètres d’entrée de premier niveau",
+        "schemaLabel": "Schéma d’entrée",
+        "executionLabel": "Exécution",
+        "schema": {
+          "absent": "Aucun schéma déclaré ; un schéma est facultatif.",
+          "resolved": "Métadonnées du schéma résolues depuis les sources.",
+          "unresolved": "Le schéma n’a pas pu être résolu depuis les sources.",
+          "notApplicable": "Les entrées sont décrites par le formulaire HTML."
+        },
+        "execution": {
+          "declared": "Gestionnaire déclaré dans les sources ; non exécuté.",
+          "missing": "Aucun gestionnaire identifié dans cette définition.",
+          "unresolved": "Le gestionnaire n’a pas pu être résolu depuis les sources.",
+          "form": "Soumission déclarative du formulaire ; non soumise."
+        },
+        "typeUnknown": "Type non résolu",
+        "required": "Obligatoire",
+        "optional": "Facultatif",
+        "requirementUnknown": "Exigence non résolue",
+        "parameterDescriptionMissing": "Aucune description de paramètre trouvée dans les sources."
+      },
+      "issues": {
+        "missingName": "Impossible de lire le nom d’un outil dans cette définition.",
+        "missingDescription": "Impossible de lire la description d’un outil dans cette définition.",
+        "missingSchema": "Aucun schéma d’entrée littéral n’a pu être lu. Les schémas d’entrée sont facultatifs dans le brouillon actuel.",
+        "autoSubmit": "Ce formulaire déclare une soumission automatique. Vérifiez si ce comportement est adapté à l’action.",
+        "unresolvedDefinition": "Une partie de cette définition est dynamique ou indirecte et n’a pas pu être résolue depuis les sources."
+      },
+      "signals": {
+        "title": "Preuves API",
+        "description": "Les références trouvées dans les sources constituent des indices de la présence de code d’intégration, pas une preuve de l’enregistrement d’un outil.",
+        "contextApi": "Référence à l’API modelContext",
+        "registerTool": "Appel registerTool",
+        "provideContext": "Appel provideContext"
+      },
+      "coverage": {
+        "title": "Couverture de l’analyse",
+        "scanned": "Sources lues",
+        "unavailable": "Indisponible",
+        "skipped": "{scripts, number} scripts ou modules externes ignorés · {resources, number} ressources n’ont pas pu être lues",
+        "totals": "{pages, number} pages lues · {scripts, number} scripts ou modules lus"
+      },
+      "limitations": {
+        "title": "Ce que cette analyse peut vous indiquer",
+        "staticOnly": "Il s’agit d’une analyse des sources. Elle n’exécute jamais de JavaScript distant, ne soumet pas de formulaires et n’invoque aucun outil. L’enregistrement et l’exécution au runtime restent non vérifiés.",
+        "pageLimit": "Davantage de pages liées ont été trouvées que cette analyse ne peut couvrir. Analysez une URL de produit, de catalogue ou de recherche spécifique pour l’inspecter directement.",
+        "scriptLimit": "Certains scripts externes ou modules référencés dépassaient la limite d’analyse. Leurs outils peuvent manquer dans ces résultats.",
+        "resourceFailures": "Certaines pages ou certains scripts n’ont pas pu être lus. Les résultats couvrent uniquement les ressources accessibles.",
+        "parseFailures": "Certaines sources n’ont pas pu être entièrement analysées. Des définitions dynamiques ou non prises en charge peuvent manquer."
+      },
+      "nextStep": "Confirmez les résultats dans un navigateur compatible avec WebMCP et inspectez les outils enregistrés. WebMCP évolue encore ; ces résultats ne constituent ni une certification ni un score de visibilité auprès des agents.",
+      "tabs": {
+        "label": "Sections du rapport WebMCP",
+        "audit": "Résultats de l’audit",
+        "tools": "Outils",
+        "forms": "Formulaires",
+        "coverage": "Couverture"
+      },
+      "audit": {
+        "title": "Examinez les outils d’achat de votre boutique",
+        "description": "Les preuves du parcours d’achat en priorité, suivies des constats d’implémentation. Les correspondances dans les sources ne confirment ni la disponibilité dans le navigateur, ni les résultats des outils, ni des achats finalisés.",
+        "summary": {
+          "high": "Priorité élevée",
+          "improvements": "Améliorations",
+          "opportunities": "Opportunités de formulaires",
+          "tools": "Outils nommés trouvés"
+        },
+        "checksTitle": "Contrôles techniques des sources",
+        "checksDescription": "Réussi signifie que ce contrôle des sources n’a détecté aucun problème. Inconnu signifie que les preuves sont insuffisantes. Ces contrôles ne constituent pas une certification d’exécution.",
+        "checkStatus": {
+          "pass": "Réussi",
+          "attention": "Attention",
+          "unknown": "Inconnu"
+        },
+        "checks": {
+          "discovery": {
+            "title": "Découverte des outils",
+            "description": "Définitions nommées ou preuves API trouvées dans les sources inspectées."
+          },
+          "metadata": {
+            "title": "Noms et descriptions",
+            "description": "Noms d’outils lisibles et descriptions utiles."
+          },
+          "parameters": {
+            "title": "Métadonnées des entrées",
+            "description": "Détails et descriptions des paramètres résolus, lorsqu’ils sont fournis."
+          },
+          "implementation": {
+            "title": "Déclaration d’exécution",
+            "description": "Un gestionnaire identifiable ou une opération de formulaire déclarative."
+          },
+          "forms": {
+            "title": "Opportunités liées aux formulaires",
+            "description": "Annotations et liens possibles vers des outils existants, sous réserve de vérification."
+          },
+          "coverage": {
+            "title": "Couverture des sources",
+            "description": "Indique si l’analyse limitée a pu lire et interpréter les ressources cibles."
+          },
+          "runtime": {
+            "title": "Vérification dans le navigateur",
+            "description": "Enregistrement, exécution des outils et comportement dans un navigateur pris en charge."
+          }
+        },
+        "findingsTitle": "Résultats de l’implémentation",
+        "findingsDescription": "Examinez les problèmes source liés à ces opérations d’achat. Commencez par les correctifs prioritaires ; les intégrations possibles de formulaires nécessitent de vérifier le parcours existant de la boutique.",
+        "priority": {
+          "high": "Haute priorité",
+          "medium": "Amélioration",
+          "low": "Suggestion",
+          "opportunity": "Opportunité",
+          "info": "Vérification"
+        },
+        "why": "Pourquoi c’est important",
+        "fix": "Correctif suggéré",
+        "evidence": "Preuves issues de la source",
+        "relatedTools": "Outils potentiellement liés",
+        "page": "Page",
+        "source": "Source",
+        "snippet": "Code suggéré",
+        "snippetNote": "Attributs provisoires uniquement. Vérifiez que le nom et la description de l’outil correspondent à l’opération réelle du formulaire avant l’intégration. Conservez son action, ses contrôles, sa validation et le consentement, et examinez d’abord les outils existants.",
+        "copied": "Copié",
+        "copyFailed": "Impossible de copier. Sélectionnez le code et copiez-le manuellement.",
+        "action": {
+          "secondary": "Copier le code"
+        },
+        "empty": "Aucun problème source exploitable n’a été identifié. La vérification dans le navigateur et les limites de couverture de l’analyse s’appliquent toujours.",
+        "findings": {
+          "missingToolName": {
+            "title": "Donnez un nom clair à cet outil",
+            "why": "Impossible de lire un nom d’outil dans la définition. Les agents ont besoin d’un identifiant stable pour sélectionner l’opération prévue.",
+            "fix": "Vérifiez la définition complète et ajoutez un nom unique et descriptif s’il manque. Confirmez que ce même nom apparaît dans les outils enregistrés du navigateur."
+          },
+          "missingToolDescription": {
+            "title": "Décrivez ce que fait cet outil",
+            "why": "Impossible de lire une description dans cette définition. Sans métadonnées claires, un agent peut ne pas savoir quand utiliser l’outil ni ce qu’il renvoie.",
+            "fix": "Ajoutez une description expliquant l’opération, le résultat attendu et les contraintes pertinentes. Si la description est générée, confirmez sa valeur finale dans le navigateur."
+          },
+          "missingHandler": {
+            "title": "Vérifiez le gestionnaire d’exécution de l’outil",
+            "why": "La définition JavaScript inspectée ne comporte aucun gestionnaire d’exécution identifiable. Les métadonnées seules n’implémentent pas l’opération.",
+            "fix": "Reliez la définition au callback execute prévu, ou vérifiez un gestionnaire importé existant. Conservez l’authentification, la validation et la confirmation de l’utilisateur dans le parcours d’exécution."
+          },
+          "unresolvedDefinition": {
+            "title": "Résolvez cette définition d’outil",
+            "why": "Une partie de la définition est dynamique, indirecte ou située hors de la source inspectée. Ses métadonnées ou son implémentation ne peuvent pas être confirmées par cette analyse.",
+            "fix": "Suivez les variables et modules référencés, puis inspectez la définition finale enregistrée dans un navigateur compatible WebMCP. Vérifiez le nom, la description, les entrées et le gestionnaire à cet endroit."
+          },
+          "briefDescription": {
+            "title": "Rendez la description de l’outil plus utile",
+            "why": "La description fait moins de 40 caractères et peut ne pas expliquer suffisamment l’opération pour qu’un agent la choisisse. Ce seuil est un indicateur de clarté, pas une exigence de la spécification WebMCP.",
+            "fix": "Expliquez quand utiliser l’outil, ce qu’il renvoie et ses éventuelles limitations importantes. Pour une recherche dans le catalogue, décrivez les critères de recherche pris en charge et les détails des résultats."
+          },
+          "missingParameterDescriptions": {
+            "title": "Expliquez les entrées de l’outil",
+            "why": "Certaines propriétés d’entrée de premier niveau n’ont pas de description dans le schéma inspecté. Les descriptions aident les agents à fournir les bonnes valeurs ; elles ne sont pas obligatoires pour chaque propriété.",
+            "fix": "Décrivez la signification commerciale de chaque paramètre pertinent : requête et filtres, identifiants de produit ou de variante, identifiants de ligne du panier, quantité absolue ou modifiée, devise ou code postal. Gardez les entrées requises alignées avec le gestionnaire et fournissez des exemples utiles."
+          },
+          "duplicateToolName": {
+            "title": "Vérifiez les noms d’outils qui se chevauchent",
+            "why": "Différentes définitions source partagent un même nom d’outil. Elles peuvent entrer en conflit si elles sont enregistrées dans le même contexte de page ; une réutilisation sur des pages distinctes n’est pas nécessairement problématique.",
+            "fix": "Vérifiez où chaque définition est enregistrée. Si les deux outils coexistent, attribuez des noms distincts aux opérations distinctes. Sinon, assurez-vous que la définition prévue est bien celle exposée au navigateur."
+          },
+          "automaticSubmission": {
+            "title": "Vérifiez la soumission automatique du formulaire",
+            "why": "Ce formulaire déclare une soumission automatique. Selon l’opération, cela peut contourner une étape attendue de vérification ou de confirmation.",
+            "fix": "Confirmez que la soumission automatique est intentionnelle et appropriée. Conservez la validation et le consentement, et supprimez l’attribut de soumission automatique lorsque l’action doit attendre une vérification utilisateur."
+          },
+          "unnamedFields": {
+            "title": "Vérifiez les champs de formulaire sans nom",
+            "why": "Certains contrôles du formulaire n’ont pas de nom dans le balisage inspecté. Ces contrôles peuvent ne pas correspondre à des entrées d’outil pertinentes.",
+            "fix": "Ajoutez des noms descriptifs aux contrôles qui doivent être soumis et exposés comme entrées. Conservez les libellés et la validation, et excluez les identifiants, jetons et champs internes des métadonnées de l’outil."
+          },
+          "formOpportunity": {
+            "title": "Examinez ce parcours de boutique pour les agents",
+            "why": "Ce formulaire public ne comporte aucune annotation de formulaire WebMCP dans le balisage inspecté, et aucun outil nommé clairement lié n’a été identifié. Un outil JavaScript existant peut toutefois déjà couvrir ce parcours.",
+            "fix": "Examinez d’abord les outils existants. Si ce parcours peut aider les agents, intégrez toolname et tooldescription dans le formulaire existant. Conservez son action, ses contrôles, sa validation et le consentement ; ne remplacez pas le formulaire et n’activez pas la soumission automatique par défaut."
+          },
+          "formReview": {
+            "title": "Examinez ce formulaire avant d’ajouter un outil",
+            "why": "Le formulaire peut correspondre à un outil existant ou contenir des champs sensibles. L’inspection de la source seule ne permet pas de déterminer si un autre outil est nécessaire ou approprié.",
+            "fix": "Inspectez les éventuels outils associés et confirmez la manière dont le formulaire gère l’authentification, les entrées sensibles et le consentement. Réutilisez une opération existante lorsque c’est pertinent et gardez les actions sensibles sous les contrôles utilisateur prévus."
+          },
+          "incompleteCoverage": {
+            "title": "Vérifiez les éléments hors du périmètre de cette analyse",
+            "why": "Certaines pages, scripts ou définitions n’ont pas pu être inspectés complètement. Les résultats et le nombre d’outils couvrent uniquement les sources qui ont pu être résolues.",
+            "fix": "Consultez l’onglet Couverture, analysez directement les pages produit ou de recherche pertinentes et inspectez les imports restants ou les flux protégés dans votre navigateur. Relancez l’analyse une fois les ressources inaccessibles disponibles."
+          },
+          "noToolEvidence": {
+            "title": "Confirmez si cette boutique expose WebMCP",
+            "why": "Aucune définition d’outil ni aucun élément d’API n’a été trouvé dans la source inspectée. Cela ne prouve pas que la boutique ne possède aucun outil WebMCP.",
+            "fix": "Inspectez les outils enregistrés du site dans un navigateur pris en charge et essayez une page produit ou de recherche pertinente. Si aucun outil n’existe, commencez par un parcours utile et bien défini, comme la recherche dans le catalogue."
+          },
+          "runtimeUnverified": {
+            "title": "Vérifiez l’enregistrement et le comportement dans un navigateur",
+            "why": "L’inspection de la source ne permet pas de confirmer qu’un navigateur enregistre un outil ni que son gestionnaire fonctionne. Cet audit n’exécute pas les scripts, ne soumet pas les formulaires et n’invoque pas les outils.",
+            "fix": "Utilisez un navigateur compatible WebMCP pour inspecter les métadonnées enregistrées et tester une opération sûre en lecture seule. Vérifiez les entrées, les sorties et la gestion des erreurs, et conservez les confirmations prévues pour les actions qui modifient l’état de la boutique."
+          }
+        },
+        "occurrences": "Trouvé à {count, number} emplacements"
+      },
+      "forms": {
+        "title": "Formulaires trouvés dans la source",
+        "description": "Examinez les formulaires dans le contexte des opérations réelles de la boutique. Les libellés sont déduits des métadonnées source. Vérifiez les outils existants avant d’ajouter une prise en charge ; les formulaires inconnus et les parcours d’achat ou de gestion de compte sensibles nécessitent une vérification manuelle.",
+        "declared": "Annotations de formulaire WebMCP détectées",
+        "unannotated": "Aucune annotation de formulaire WebMCP dans ce balisage",
+        "selector": "Sélecteur",
+        "page": "Page",
+        "action": "Action du formulaire",
+        "method": "Méthode",
+        "currentPage": "Page actuelle",
+        "toolName": "Nom d’outil déclaré",
+        "relatedTools": "Outils potentiellement liés",
+        "relatedNote": "Ces noms d’outils ont été trouvés quelque part dans cette analyse. Leur disponibilité sur cette page et leur lien avec ce formulaire ne sont pas vérifiés ; confirmez les deux avant d’ajouter une autre intégration.",
+        "sensitive": "Des champs sensibles ont été détectés. Vérifiez l’authentification, la confidentialité et le consentement avant d’exposer ce parcours à un agent.",
+        "fields": "Champs du formulaire",
+        "unnamedField": "Champ sans nom",
+        "required": "Obligatoire",
+        "optional": "Optionnel",
+        "noFields": "Aucune métadonnée de champ n’a pu être lue à partir de ce formulaire.",
+        "empty": "Aucun formulaire public n’a été trouvé dans le HTML inspecté. Des formulaires créés par JavaScript ou derrière une connexion peuvent toutefois exister.",
+        "intent": {
+          "search": "Formulaire de recherche",
+          "cart": "Formulaire de panier",
+          "newsletter": "Inscription à la newsletter",
+          "contact": "Formulaire de contact",
+          "account": "Formulaire de compte",
+          "other": "Formulaire de boutique",
+          "product": "Formulaire produit",
+          "variant": "Sélection de variante",
+          "coupon": "Formulaire de code promo",
+          "shipping": "Estimation des frais de livraison",
+          "checkout": "Parcours de paiement",
+          "orderTracking": "Suivi de commande",
+          "returns": "Parcours de retour"
+        },
+        "autoSubmit": "Ce formulaire déclare une soumission automatique. Vérifiez la confirmation utilisateur et la validation prévues avant de modifier son intégration WebMCP.",
+        "guidance": {
+          "search": {
+            "why": "La source suggère un formulaire de recherche dans le catalogue. Un outil JavaScript peut déjà couvrir ce parcours ; le balisage du formulaire seul ne prouve pas l’absence d’intégration.",
+            "fix": "Examinez d’abord les outils de recherche existants. Vérifiez le champ de requête, les filtres du catalogue, la pagination et les identifiants de résultats. Si une nouvelle intégration est pertinente, décrivez les véritables entrées de recherche et conservez la validation et le comportement du formulaire."
+          },
+          "product": {
+            "why": "Cela semble être un parcours produit. Les agents ont besoin d’une identité produit stable et d’informations d’achat à jour plutôt que d’une soumission générique de formulaire.",
+            "fix": "Confirmez l’identifiant du produit ou du SKU ainsi que l’objectif de l’opération. Pour les lectures produit, décrivez les métadonnées de prix, devise, stock et URL canonique ; si le formulaire modifie un panier, examinez plutôt le comportement du panier et des variantes."
+          },
+          "variant": {
+            "why": "Ce formulaire semble sélectionner des options produit ou une variante. Un libellé sélectionné seul peut ne pas identifier l’article achetable ni sa disponibilité actuelle.",
+            "fix": "Vérifiez les identifiants produit et variante, les valeurs d’option autorisées, le stock et le prix de la variante. Conservez la validation des options et distinguez la sélection d’une variante de son ajout au panier."
+          },
+          "cart": {
+            "why": "Cela semble modifier le contenu du panier. Un conteneur de formulaire générique peut masquer quel article est modifié ou ce que signifie une valeur de quantité.",
+            "fix": "Vérifiez l’identifiant de la variante ou de la ligne du panier et si la quantité est absolue ou incrémentale. Validez le stock, renvoyez les totaux mis à jour avec la devise et évitez les doublons involontaires lorsque les requêtes sont répétées. Réutilisez un outil de panier existant lorsqu’il couvre cette opération."
+          },
+          "coupon": {
+            "why": "Cela semble appliquer ou supprimer une réduction. La validité du code promo et le prix résultant dépendent du panier actuel et des règles de la boutique.",
+            "fix": "Validez les codes côté serveur par rapport au bon panier. Expliquez les acceptations et les rejets, renvoyez les réductions et totaux mis à jour avec la devise et conservez les restrictions existantes de la boutique sur les codes promo."
+          },
+          "shipping": {
+            "why": "Cela semble collecter des informations de livraison ou demander une estimation. Une estimation est différente d’une confirmation des détails de livraison ou du passage d’une commande.",
+            "fix": "Utilisez uniquement les données de pays ou de code postal nécessaires à une estimation. Décrivez les méthodes renvoyées, les coûts, la devise et les limites de l’estimation. Conservez la validation d’adresse et le consentement du paiement ; n’exposez pas inutilement les données client."
+          },
+          "checkout": {
+            "why": "Ce formulaire semble correspondre à l’entrée dans le paiement ou à la confirmation d’achat. L’exposer comme un outil générique de soumission pourrait masquer une étape importante.",
+            "fix": "Examinez ce flux manuellement. Distinguez la navigation vers le paiement du passage d’une commande, conservez l’état du panier et la validation, et maintenez l’authentification, la transmission au paiement et la confirmation explicite d’achat prévues."
+          },
+          "orderTracking": {
+            "why": "Cela semble concerner une commande existante. La seule navigation dans l’historique des commandes ne signifie pas qu’un agent peut lire des données de commande autorisées.",
+            "fix": "Examinez ce parcours manuellement. Exigez les vérifications appropriées d’authentification et de propriété avant de renvoyer un statut, un suivi ou des données client. Limitez les identifiants à l’acheteur actuel et préservez toute transmission sécurisée vers l’utilisateur."
+          },
+          "returns": {
+            "why": "Cela semble concerner un retour ou une autre opération après achat. Consulter une politique de retour et créer un retour sont deux capacités différentes.",
+            "fix": "Examinez ce parcours manuellement. Vérifiez la propriété de la commande, l’éligibilité des articles et la politique du magasin, limitez les données personnelles et exigez la confirmation prévue avant d’initier un retour, un remboursement ou une modification de commande."
+          },
+          "newsletter": {
+            "why": "Cela semble être un formulaire d’abonnement marketing, et non une opération centrale de recherche produit ou de panier. Il peut déjà disposer d’une intégration distincte.",
+            "fix": "Gardez le consentement marketing explicite et distinct des actions d’achat. Vérifiez les intégrations existantes avant d’envisager un outil pour agent ; n’inscrivez pas un acheteur comme effet secondaire d’une recherche, d’une mise à jour du panier ou du paiement."
+          },
+          "contact": {
+            "why": "Cela semble être un formulaire de contact ou d’assistance. Sa présence ne justifie pas à elle seule un nouvel outil d’achat.",
+            "fix": "Confirmez le cas d’usage d’assistance et les intégrations existantes. Préservez la validation, la protection contre le spam et le consentement, et n’exposez pas une opération d’envoi générique sans objectif marchand clair."
+          },
+          "account": {
+            "why": "Cela semble gérer l’accès au compte ou les informations client. L’authentification ne doit pas être remplacée par un outil de formulaire générique.",
+            "fix": "Examinez ce parcours manuellement. Conservez les vérifications d’authentification et de propriété du compte dans le parcours sécurisé existant, protégez les mots de passe et les jetons, et utilisez une transmission explicite vers l’utilisateur lorsqu’une connexion est requise."
+          },
+          "other": {
+            "why": "La source n’a pas établi d’objectif d’achat spécifique pour ce formulaire. Une annotation manquante ne suffit pas à recommander un nouvel outil.",
+            "fix": "Identifiez le parcours marchand et examinez les outils existants avant toute modification. Cette analyse seule ne recommande ni d’encapsuler un formulaire inconnu ni d’automatiser son envoi."
+          }
+        }
+      },
+      "commerce": {
+        "title": "Parcours d’achat",
+        "description": "Éléments source disponibles pour huit opérations du magasin. Développez un parcours pour afficher les liens source et les vérifications du marchand. Cet audit n’appelle pas les outils et ne teste pas leurs résultats.",
+        "unconfirmed": {
+          "title": "Contexte de la vitrine non confirmé",
+          "description": "Cette page n’a pas fourni suffisamment d’éléments concernant les produits, le catalogue, le panier ou les outils de commerce. Essayez une URL publique de produit ou de collection. Les parcours ci-dessous servent de guide d’inspection, pas de liste des fonctionnalités manquantes du magasin."
+        },
+        "status": {
+          "toolFound": "Indices de présence d’un outil trouvés",
+          "formOnly": "Indices de formulaire uniquement",
+          "notObserved": "Non observé",
+          "review": "Vérifier la correspondance"
+        },
+        "toolEvidence": "Noms d’outils trouvés dans la source",
+        "formEvidence": "{count, number} formulaires associés dans la source",
+        "guidance": "Points à vérifier pour votre magasin",
+        "notObserved": "Non observé signifie qu’aucun élément correspondant n’a été trouvé dans cette analyse. Cela ne constitue ni un défaut ni une preuve de l’absence d’une capacité d’achat.",
+        "evidenceNote": "Les correspondances sont déduites à partir des noms, descriptions, champs et URL de la source. Un outil associé peut être enregistré sur une autre page ; sa disponibilité, ses résultats et sa connexion à ces formulaires restent non vérifiés.",
+        "workflows": {
+          "catalogSearch": {
+            "title": "Recherche dans le catalogue",
+            "purpose": "Trouver des produits pertinents à partir d’une requête et de filtres d’achat.",
+            "guidance": "Examinez les entrées de requête, de catégorie, de prix, de disponibilité et de pagination. Les résultats de recherche doivent identifier chaque produit et indiquer clairement son prix, sa devise et sa disponibilité."
+          },
+          "productDetails": {
+            "title": "Détails produit",
+            "purpose": "Lire les informations dont un agent a besoin pour comparer un produit.",
+            "guidance": "Vérifiez les identifiants produit, les URL canoniques, les descriptions, les prix actuels, la devise et les métadonnées de stock. Un lien vers une page produit ne prouve pas qu’un outil renvoie ces informations."
+          },
+          "variants": {
+            "title": "Sélection de variante",
+            "purpose": "Associer la taille, la couleur et les autres options à une variante achetable.",
+            "guidance": "Vérifiez les identifiants produit et variante, les valeurs d’option autorisées, le stock actuel et les prix des variantes. Confirmez comment les combinaisons invalides ou indisponibles sont signalées avant de modifier un panier."
+          },
+          "cartRead": {
+            "title": "Contenu du panier",
+            "purpose": "Inspecter les articles et les totaux actuels de l’acheteur.",
+            "guidance": "Vérifiez si l’opération renvoie les identifiants du panier et des lignes, les variantes sélectionnées, les quantités, les remises, les totaux et la devise. Ouvrir la page du panier ne démontre pas que ces valeurs peuvent être lues."
+          },
+          "cartUpdate": {
+            "title": "Modifications du panier",
+            "purpose": "Ajouter, supprimer ou mettre à jour des articles sans doublons involontaires.",
+            "guidance": "Vérifiez si la quantité correspond à une valeur absolue ou à une modification. Validez les identifiants de variante et de ligne, le stock, les codes promo, les totaux recalculés et la devise ; confirmez également le traitement des requêtes répétées."
+          },
+          "checkout": {
+            "title": "Transmission vers le paiement",
+            "purpose": "Diriger l’acheteur vers le parcours de paiement et de confirmation prévu.",
+            "guidance": "Distinguez l’ouverture du paiement de la validation d’une commande. Vérifiez la continuité du panier, la validation, l’authentification lorsque nécessaire et la transmission manuelle pour le paiement et la confirmation d’achat."
+          },
+          "policies": {
+            "title": "Politiques de livraison et de retour",
+            "purpose": "Expliquer la livraison, les retours et les conditions qui influencent un achat.",
+            "guidance": "Examinez les conditions de livraison et de retour accessibles. Les estimations de livraison nécessitent les entrées appropriées de pays ou de code postal, les coûts et la devise ; une simple page de politique ne prouve pas la disponibilité de devis en temps réel."
+          },
+          "orders": {
+            "title": "Commandes et suivi après achat",
+            "purpose": "Prendre en charge les questions autorisées sur les commandes et les demandes après achat.",
+            "guidance": "Ouvrir l’historique des commandes n’est pas équivalent à lire les données de commande. Vérifiez l’authentification et la propriété pour le suivi ou les retours, limitez les données personnelles et préservez la confirmation avant d’initier un retour ou de modifier une commande."
+          }
+        }
+      }
+    },
+    "dashboard": {
+      "label": "Outil gratuit pour les boutiques",
+      "title": "Audit WebMCP",
+      "description": "Examinez comment votre magasin expose les opérations d’achat aux agents de navigateur, de la recherche produit et de la sélection de variantes jusqu’aux paniers et au paiement. Obtenez des preuves source et des correctifs sans abonnement payant.",
+      "store": "Magasin connecté : {name}"
+    },
+    "faq": {
+      "title": "Comprendre votre audit.",
+      "description": "Un audit de magasin relie les résultats source de WebMCP au parcours d’achat. La vérification dans le navigateur confirme si les outils exposent les données et comportements attendus.",
+      "items": [
+        {
+          "question": "Que permet WebMCP pour un magasin ?",
+          "answer": "WebMCP permet à un site web de décrire des outils pour les agents de navigateur, comme la recherche produit ou les actions sur le panier. Le projet de spécification inclut l’enregistrement JavaScript et les déclarations de formulaires HTML. Un outil n’est disponible que si le site web et le navigateur l’exposent correctement."
+        },
+        {
+          "question": "Comment le scanner détecte-t-il WebMCP ?",
+          "answer": "Il lit la page publique saisie, jusqu’à deux pages liées de catalogue, de produit ou de recherche, et au maximum douze scripts ou modules externes, y compris les ressources CDN. Il suit les références et imports explicites de scripts, y compris les URL de modules dynamiques. Il recherche des attributs de formulaire comme toolname et tooldescription, ainsi que des références JavaScript à document.modelContext ou à l’ancienne API navigator.modelContext. Il n’exécute pas le code."
+        },
+        {
+          "question": "Une détection signifie-t-elle qu’un agent peut utiliser l’outil ?",
+          "answer": "Non. La source peut contenir du code désactivé, des vérifications de fonctionnalité ou des définitions qui échouent à l’exécution. Ce scanner n’exécute pas JavaScript et n’appelle aucun outil. Confirmez l’enregistrement dans un navigateur prenant en charge l’API."
+        },
+        {
+          "question": "Que faire si rien n’est détecté ?",
+          "answer": "Essayez directement une page de produit, de catalogue ou de recherche. Les outils peuvent être enregistrés après l’exécution de JavaScript, chargés par d’autres scripts ou exposés uniquement après connexion. L’absence d’éléments dans cette analyse ne prouve pas que votre boutique ne prend pas en charge WebMCP."
+        }
+      ]
+    }
+  },
+  "dashboard": {
+    "nav": {
+      "webmcp": "WebMCP"
+    }
+  },
+  "footer": {
+    "links": {
+      "webmcpScanner": "Scanner WebMCP"
+    }
+  }
+}

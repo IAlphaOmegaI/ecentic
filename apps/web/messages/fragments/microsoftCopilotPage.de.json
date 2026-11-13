@@ -1,0 +1,46 @@
+{
+  "microsoftCopilotPage": {
+    "journey": {
+      "title": "Die Konversation, der Katalog, Ihr Geschäft",
+      "copilot": "Produktfindung und Checkout",
+      "merchant": "Sie bleiben der rechtlich verantwortliche Verkäufer",
+      "relationship": "Ihre Auftragsabwicklung. Ihre Kundenbeziehung.",
+      "web": "Produktdaten im Web",
+      "feeds": "Produkt-Feeds von Händlern",
+      "checkout": "Zusätzliche Checkout-Attribute",
+      "dataLabel": "Den Weg der Produktdaten erkunden"
+    },
+    "entry": {
+      "label": "Einen Händler-Einstiegspfad erkunden",
+      "language": "Sprache des Händlers",
+      "languageValue": "Englisch",
+      "buyers": "Käufer",
+      "buyersValue": "Vereinigte Staaten",
+      "currency": "Währung",
+      "currencyValue": "USD",
+      "microsoft": "Microsoft",
+      "shopify": "Shopify",
+      "stripe": "Stripe",
+      "routes": {
+        "microsoft": {
+          "title": "Microsoft Merchant Center",
+          "description": "Bereiten Sie Produktdatensätze und die zusätzlichen Checkout-Attribute gemäß dem Onboarding-Leitfaden von Microsoft vor. Ein Schritt zur Feed-Einrichtung bleibt ein Pilotprogramm für ausgewählte Händler.",
+          "note": "Dies ist der Händlerpfad von Microsoft. Die Feed-Anbindung von ecentic ist noch nicht live."
+        },
+        "shopify": {
+          "title": "Automatische Shopify-Registrierung",
+          "description": "Shopify ist einer der von Microsoft dokumentierten Registrierungswege. Die Anforderungen von Microsoft an Teilnahmeberechtigung und Programm gelten weiterhin.",
+          "note": "ecentic erfasst heute Zugriffe über Copilot in verbundenen Shopify-Shops."
+        },
+        "stripe": {
+          "title": "Stripe Agentic Commerce Suite",
+          "description": "Stripe Agentic Commerce Suite ist einer der von Microsoft dokumentierten Einstiegspfade. Die Anforderungen von Microsoft an Teilnahmeberechtigung und Programm gelten weiterhin.",
+          "note": "Ein Einstiegspfad garantiert weder eine Freigabe noch Produktempfehlungen."
+        }
+      },
+      "action": {
+        "primary": "Onboarding-Leitfaden von Microsoft lesen"
+      }
+    }
+  }
+}

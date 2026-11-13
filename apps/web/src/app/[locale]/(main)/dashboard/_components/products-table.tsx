@@ -26,7 +26,7 @@ import {
 } from "@zenncore/web/components/dropdown-menu";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { usePaginationChangeHandler } from "@/hooks/pagination";
 import { Link } from "@/i18n/navigation";
@@ -85,6 +85,7 @@ const QualityBar = ({ score }: { score: number }) => {
 };
 
 const buildColumns = (
+  locale: string,
   store: string,
   fields: {
     product: string;
@@ -184,7 +185,7 @@ const buildColumns = (
     meta: { className: "w-32" },
     cell: ({ row }) => (
       <span className="whitespace-nowrap text-foreground-dimmed">
-        {formatRelativeTime(row.original.updatedAt)}
+        {formatRelativeTime(row.original.updatedAt, locale)}
       </span>
     ),
   },
@@ -257,12 +258,14 @@ export const ProductsTable = ({
   pageCount,
   ...props
 }: ProductsTable.Props) => {
+  const locale = useLocale();
+
   const { store } = useParams<{ store: string }>();
   const translate = useTranslations("dashboard.products.table");
   const pagination = useTranslations("dashboard.shared.pagination");
   const handlePaginationChange = usePaginationChangeHandler();
 
-  const columns = buildColumns(store, {
+  const columns = buildColumns(locale, store, {
     product: translate("fields.product"),
     price: translate("fields.price"),
     winRate: translate("fields.winRate"),

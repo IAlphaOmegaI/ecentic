@@ -1,0 +1,16 @@
+{
+  "reviewSimulate": {
+    "roadmap": {
+      "title": "Dans une décision simulée",
+      "stages": [
+        "Comparer les produits",
+        "Suivre la sélection",
+        "Lire le raisonnement"
+      ],
+      "play": "Rejouer",
+      "pause": "Pause"
+    },
+    "assistant": "Simulation ecentic",
+    "response": "Réponse de l’assistant"
+  }
+}

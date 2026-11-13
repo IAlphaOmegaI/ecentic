@@ -1,0 +1,17 @@
+{
+  "reviewDiff": {
+    "view": "Einheitlicher Diff",
+    "added": "Hinzugefügt",
+    "removed": "Entfernt",
+    "unchanged": "Unveränderter Kontext",
+    "annotations": "Warum diese Felder wichtig sind",
+    "action": {
+      "primary": "Aktualisierten Datensatz kopieren"
+    },
+    "copyState": {
+      "copied": "Kopiert",
+      "failed": "Kopieren nicht verfügbar"
+    },
+    "imageNote": "Illustratives Produktfoto. Der Beispieldatensatz beschreibt nicht das abgebildete Modell."
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "demoPage": {
+    "agenda": {
+      "description": "Beginnen Sie mit einem Produkt, verfolgen Sie die Entscheidung und legen Sie anschließend gemeinsam fest, was verbessert werden soll. So gehen wir im Gespräch gemeinsam vor.",
+      "bringLabel": "In das Gespräch mitbringen",
+      "exploreLabel": "Wir schauen uns an",
+      "items": [
+        {
+          "bring": "Eine Kategorie und einen Wettbewerber",
+          "explore": "Ein oder zwei Ihrer Produkte im Live-Vergleich."
+        },
+        {
+          "bring": "Ein Produkt, das Sie besser verstehen möchten",
+          "explore": "Die Gründe des Assistenten und die verwendeten Informationen."
+        },
+        {
+          "bring": "Ihre Prioritäten im Katalog",
+          "explore": "Änderungen an Produktangeboten zur Abstimmung mit Ihrem Team."
+        },
+        {
+          "bring": "Das zuständige Team und die relevante Kategorie",
+          "explore": "Eine Ausgangsbasis und eine Ergebnisbesprechung, die wir gemeinsam vereinbaren."
+        }
+      ],
+      "action": {
+        "primary": "Demo vorbereiten"
+      }
+    }
+  }
+}

@@ -1,0 +1,13 @@
+{
+  "commerceFigures": {
+    "shopifyBag": "Sac d’achat Shopify avec des fiches catalogue qui se soulèvent vers le pointeur",
+    "shoppingBot": "Bot d’achat IA dont le scanner suit une fiche produit",
+    "custom": {
+      "rest": "Au repos",
+      "product": "Produit {number}",
+      "selectedProduct": "Produit sélectionné {number}",
+      "scanning": "Analyse en cours",
+      "selected": "Produit sélectionné"
+    }
+  }
+}

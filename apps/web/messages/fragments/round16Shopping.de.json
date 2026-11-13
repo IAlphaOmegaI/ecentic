@@ -1,0 +1,14 @@
+{
+  "round16Shopping": {
+    "response": "Ich würde diese beiden Optionen mit Ihren Anforderungen vergleichen. Das sagen uns die Produktangebote.",
+    "followUps": "Weitere Einkaufsfrage ausprobieren",
+    "inspection": "Im Produktdatensatz",
+    "sourceRecord": "Vorhandene Quelldaten",
+    "evidenceHeading": "Was die Frage erfordert",
+    "evidenceBody": "Vergleichen Sie die Anfrage mit den Angaben für dieses Beispielprodukt.",
+    "needsDetail": "Fehlt im Produktangebot",
+    "stated": "Im Produktangebot",
+    "sourceHint": "In den Beispiel-Quelldaten vorhanden; machen Sie die Angabe im Produktangebot explizit.",
+    "inspectionNote": "Beispielhafte Produktbilder und Datensätze. Gezeigt wird eine Prüfung der Belege, keine Live-Empfehlung und kein Einblick in die internen Denkprozesse eines Modells."
+  }
+}

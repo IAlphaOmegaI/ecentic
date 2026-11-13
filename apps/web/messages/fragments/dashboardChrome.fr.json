@@ -1,0 +1,1235 @@
+{
+  "dashboard": {
+    "nav": {
+      "overview": "Vue d’ensemble",
+      "products": "Produits",
+      "competitors": "Concurrents",
+      "simulations": "Simulations",
+      "optimize": "Optimiser",
+      "visibility": "Visibilité",
+      "agentic": "Score des agents IA",
+      "googleShopping": "Google Shopping",
+      "quality": "Qualité des données",
+      "brand": "Marque",
+      "discovery": "Découverte",
+      "ucp": "UCP",
+      "ucpPlayground": "UCP Playground",
+      "ucpComparison": "Comparaison UCP",
+      "reports": "Rapports",
+      "settings": "Paramètres",
+      "billing": "Facturation",
+      "integrations": "Intégrations",
+      "stores": "Boutiques",
+      "groups": {
+        "catalog": "Catalogue",
+        "intelligence": "Intelligence",
+        "channels": "Canaux"
+      }
+    },
+    "sidebar": {
+      "allStores": "Toutes les boutiques"
+    },
+    "stores": {
+      "empty": "Aucune boutique pour le moment",
+      "select": "Sélectionner une boutique",
+      "selectStore": "Sélectionner une boutique",
+      "allStores": "Toutes les boutiques",
+      "action": {
+        "primary": "Connecter une boutique"
+      }
+    },
+    "hub": {
+      "workspace": "Espace de travail",
+      "title": "Vos boutiques",
+      "description": "Sélectionnez une boutique pour voir comment les agents d’achat IA classent son catalogue, ou connectez-en une autre.",
+      "action": {
+        "primary": "Connecter une boutique"
+      },
+      "aggregates": {
+        "stores": "Boutiques",
+        "products": "Produits",
+        "avgWinRate": "Taux de victoire moyen",
+        "agentVisits30d": "Visites des agents · 30 j"
+      },
+      "storeCard": {
+        "winRate": "Taux de victoire",
+        "products": "Produits",
+        "agents30d": "Agents · 30 j",
+        "synced": "Synchronisé {time}",
+        "notSyncedYet": "Pas encore synchronisé",
+        "openDashboard": "Ouvrir le tableau de bord",
+        "status": {
+          "connected": "connecté"
+        }
+      },
+      "platforms": {
+        "shopify": "Shopify",
+        "woocommerce": "WooCommerce",
+        "feed": "Flux produit",
+        "csv": "Import CSV"
+      },
+      "empty": {
+        "title": "Connectez votre première boutique",
+        "description": "Connectez une boutique pour importer ses produits et commencer à suivre comment les agents d’achat IA les comparent à ceux des concurrents."
+      }
+    },
+    "commandPalette": {
+      "trigger": "Rechercher des produits, des concurrents…",
+      "placeholder": "Rechercher des produits, des concurrents, des pages…",
+      "keyboardShortcut": "⌘K",
+      "keyboardEscape": "esc",
+      "states": {
+        "searching": "Recherche…",
+        "empty": "Aucun résultat",
+        "emptyForQuery": "Aucun résultat pour « {query} »"
+      },
+      "sections": {
+        "products": "Produits",
+        "competitors": "Concurrents",
+        "pages": "Pages"
+      },
+      "hints": {
+        "open": "pour ouvrir",
+        "close": "pour fermer"
+      },
+      "nav": {
+        "overview": "Vue d’ensemble",
+        "products": "Produits",
+        "competitors": "Concurrents",
+        "simulations": "Simulations",
+        "ucpStructuredData": "UCP et données structurées",
+        "optimize": "Optimiser",
+        "settings": "Paramètres"
+      }
+    },
+    "notifications": {
+      "title": "Notifications",
+      "ariaLabel": "Notifications",
+      "states": {
+        "empty": {
+          "primary": "Aucune notification",
+          "secondary": "Vous êtes à jour. Nous vous informerons lorsqu’une action sera nécessaire."
+        }
+      }
+    },
+    "subscription": {
+      "payAsYouGo": "Paiement à l’usage",
+      "noPlan": "Aucun forfait",
+      "status": {
+        "trial": "Essai",
+        "pastDue": "Paiement en retard",
+        "unpaid": "Impayé",
+        "paused": "En pause"
+      }
+    },
+    "trial": {
+      "badge": "Essai gratuit",
+      "daysLeft": "{days} j restants",
+      "endsOn": "Gratuit jusqu’au {date}",
+      "upgradeHint": "Ajoutez une carte avant la fin de l’essai",
+      "modal": {
+        "endingIn": "L’essai se termine le {date}",
+        "title": "Conserver {plan}",
+        "description": "Conservez l’accès complet aux simulations, aux résultats d’analyse et à la veille concurrentielle.",
+        "progress": "Progression de l’essai",
+        "daysUsed": "{used}/{total} jours utilisés",
+        "featuresHeading": "Tout ce qui est inclus dans {plan}",
+        "pricePerMonth": "/month",
+        "action": {
+          "primary": "Accéder à la facturation",
+          "secondary": "Peut-être plus tard ({days} jours restants)"
+        }
+      },
+      "features": [
+        "Simulations IA illimitées",
+        "Le point de vue de chacun des 4 modèles",
+        "Détection automatique des concurrents",
+        "Export des données structurées UCP",
+        "Support prioritaire"
+      ]
+    },
+    "simulation": {
+      "action": {
+        "primary": "Lancer la simulation",
+        "secondary": "Relancer",
+        "tertiary": "Voir le tableau de bord"
+      },
+      "title": {
+        "pre": "Lancer la simulation",
+        "running": "Simulation en cours",
+        "complete": "Simulation terminée"
+      },
+      "states": {
+        "live": "En direct",
+        "done": "Terminé",
+        "running": "En cours",
+        "queued": "En file d’attente",
+        "initializing": "Initialisation du moteur de simulation..."
+      },
+      "pre": {
+        "heading": "Simulation d’achat par IA",
+        "description": "Simulez comment ChatGPT, Claude et Gemini comparent vos produits à ceux de vos concurrents et voyez lesquels ils choisissent.",
+        "addCompetitors": "Ajouter des concurrents",
+        "noCompetitors": "Cette boutique n’a pas encore de concurrents. Ajoutez-en pour que les modèles aient des produits à comparer."
+      },
+      "running": {
+        "heading": "Analyse en direct",
+        "comparisons": "Exécution des simulations sur {count} comparaisons"
+      },
+      "complete": {
+        "overallWinRate": "Taux de victoire global",
+        "completedIn": "Terminé en {elapsed}",
+        "winRateByModel": "Taux de victoire par modèle",
+        "stats": {
+          "wins": "Victoires",
+          "losses": "Défaites",
+          "products": "Produits"
+        },
+        "results": {
+          "low": "Les agents d’achat IA choisissent le plus souvent vos concurrents. Corrigeons cela.",
+          "medium": "Vous êtes compétitif, mais il reste une marge importante pour gagner davantage.",
+          "high": "Vous devancez la plupart des concurrents. Assurons-nous que cela dure."
+        },
+        "topFinding": "{name} perd sur {attributes}. {impact} Cela entraîne une défaite dans {lossPercentage}% des simulations."
+      },
+      "providers": {
+        "gpt4": {
+          "description": "Évaluation axée sur les spécifications"
+        },
+        "claude": {
+          "description": "Analyse de la proposition de valeur"
+        },
+        "gemini": {
+          "description": "Rapport entre le prix et les fonctionnalités"
+        }
+      },
+      "toast": {
+        "failed": {
+          "title": "Échec de la simulation"
+        }
+      }
+    },
+    "overview": {
+      "action": {
+        "primary": "Lancer une simulation"
+      },
+      "tabs": {
+        "products": "Meilleurs produits",
+        "competitors": "Concurrents",
+        "agents": "Visites des agents"
+      },
+      "charts": {
+        "kickers": {
+          "performance": "01 — Performance",
+          "recentActivity": "01.5 — Activité récente"
+        },
+        "winRateByModel": "Taux de victoire par modèle",
+        "winRateTrend": "Évolution du taux de victoire",
+        "states": {
+          "noModels": "Lancez une simulation pour voir les performances par modèle.",
+          "noTrend": "Données insuffisantes pour afficher une tendance.",
+          "noTrendHint": "Commencez par lancer une simulation.",
+          "noActivity": "Aucune activité pour le moment. Lancez votre première simulation pour voir les résultats ici."
+        },
+        "action": {
+          "primary": "Voir tous les produits",
+          "secondary": "Optimisations"
+        }
+      }
+    },
+    "agentVisits": {
+      "kicker": "04 — Trafic des agents",
+      "title": "Visites par agent (30 derniers jours)",
+      "description": "Uniquement à partir de votre tracker ScriptTag, des signaux IA visibles dans le navigateur et des signaux de provenance.",
+      "total": "total",
+      "states": {
+        "empty": "Aucune visite d’agent IA enregistrée pour le moment. Le trafic apparaît lorsque des acheteurs arrivent depuis des sources IA ou avec des user-agents reconnus par votre outil de suivi, ou lorsque le mode de sondage est activé."
+      }
+    },
+    "products": {
+      "action": {
+        "primary": "Ajouter un produit"
+      },
+      "table": {
+        "title": "Catalogue de produits",
+        "fields": {
+          "product": "Produit",
+          "price": "Prix",
+          "winRate": "Taux de victoire",
+          "quality": "Qualité",
+          "lastScan": "Dernier scan"
+        },
+        "states": {
+          "empty": {
+            "primary": "Aucun produit trouvé",
+            "secondary": "Importez des produits et lancez une simulation pour voir les taux de victoire ici."
+          }
+        }
+      }
+    },
+    "competitors": {
+      "action": {
+        "primary": "Ajouter un concurrent"
+      },
+      "table": {
+        "title": "Marques concurrentes",
+        "fields": {
+          "brand": "Marque",
+          "price": "Prix observé",
+          "measured": "Mesuré",
+          "unmeasured": "Non mesuré",
+          "winRate": "Taux de victoire",
+          "simulations": "Simulations",
+          "lastUpdated": "Dernière mise à jour"
+        },
+        "productCount": "{count, plural, one {# produit} many {# produits} other {# produits}}",
+        "states": {
+          "empty": {
+            "primary": "Aucun concurrent suivi pour le moment",
+            "secondary": "Ajoutez des concurrents pour commencer à analyser votre environnement concurrentiel."
+          }
+        }
+      }
+    },
+    "grid": {
+      "topFinding": "Point clé",
+      "winRateBadge": "Taux de victoire de {rate}%"
+    },
+    "optimize": {
+      "statusPill": "{count, plural, one {# suggestion en attente} many {# suggestions en attente} other {# suggestions en attente}}",
+      "title": "Centre d’optimisation",
+      "description": "Approuvez des fiches produit améliorées par l’IA et envoyez-les directement vers votre boutique.",
+      "action": {
+        "optimizeStore": "Optimiser {store} pour les agents IA",
+        "preview": "Aperçu",
+        "primary": "Approuver",
+        "approveAll": "Tout approuver ({count})",
+        "reconsider": "Réexaminer",
+        "viewProduct": "Voir le produit"
+      },
+      "stats": {
+        "lowWinRate": {
+          "label": "Produits à faible taux de victoire",
+          "detail": "Perdent la majorité des comparaisons simulées face aux produits concurrents."
+        },
+        "publishable": {
+          "label": "Publication automatique possible",
+          "detail": "Corrigible en réécrivant la fiche produit. Approuvez pour publier."
+        },
+        "manualFix": {
+          "label": "Correction manuelle uniquement",
+          "detail": "Nécessite des modifications manuelles de la plateforme ou des données."
+        }
+      },
+      "categories": {
+        "seo": "SEO",
+        "content": "Contenu",
+        "structured_data": "Données structurées",
+        "platform": "Plateforme"
+      },
+      "severity": {
+        "high": "Élevée",
+        "medium": "Moyenne",
+        "low": "Faible"
+      },
+      "listingType": "Titre + description",
+      "unknownProduct": "Produit inconnu",
+      "publishedAt": "Publié le {date}",
+      "winRateChange": "Taux de victoire estimé : {before}% → {after}%",
+      "dismissAriaLabel": "Ignorer la suggestion",
+      "diagnostics": {
+        "kicker": "{index} — Diagnostics",
+        "title": "Diagnostic des faibles taux de victoire",
+        "description": "Ces recommandations couvrent les problèmes de SEO, de qualité des données et de plateforme, en plus des optimisations du texte des fiches produit."
+      },
+      "queue": {
+        "kicker": "{index} — File d’attente des optimisations",
+        "title": "Suggestions de fiches produit",
+        "description": "L’action Approuver génère une fiche produit améliorée par l’IA et la publie dans votre boutique (Shopify ou WooCommerce)."
+      },
+      "tabs": {
+        "pending": "En attente",
+        "published": "Publiées",
+        "dismissed": "Ignorées"
+      },
+      "states": {
+        "pendingEmpty": {
+          "title": "Aucune optimisation en attente",
+          "description": "Les produits Shopify ou WooCommerce avec un taux de victoire en simulation inférieur à 55 % apparaissent ici. Effectuez un scan, puis approuvez les modifications pour publier des titres et descriptions améliorés par IA sur votre boutique."
+        },
+        "publishedEmpty": {
+          "title": "Aucune optimisation publiée pour le moment",
+          "description": "Les modifications approuvées sont enregistrées ici avec leur impact estimé sur le taux de victoire."
+        },
+        "dismissedEmpty": {
+          "title": "Aucun élément ignoré",
+          "description": "Les suggestions que vous ignorez apparaissent ici et peuvent être restaurées à tout moment."
+        }
+      },
+      "roadmap": {
+        "kicker": "01 — À quoi s’attendre",
+        "title": "Perspectives d’optimisation",
+        "description": "Évolution typique du taux de victoire des agents sur six mois : premier gain après publication en 24–48 h, trafic vers la boutique autour du jour {trafficDays}, puis progression à l’échelle du catalogue.",
+        "phaseLabel": "Phase {title}",
+        "current": "En cours",
+        "liftPoints": "+{points} pts",
+        "metrics": {
+          "ceiling": {
+            "label": "Plafond projeté",
+            "detail": "Depuis {baseline}% aujourd’hui · potentiel de +{delta} pts"
+          },
+          "simulationLift": {
+            "label": "Premier gain en simulation",
+            "detail": "Un nouveau scan après publication montre généralement une évolution du taux de victoire sous 48 heures."
+          },
+          "trafficSignals": {
+            "label": "Premiers signaux de trafic",
+            "detail": "Les visites d’agents et les ventes attribuées apparaissent généralement autour du premier mois."
+          }
+        },
+        "chart": {
+          "title": "Taux de victoire projeté",
+          "coverage": "Personnalisé à partir de votre catalogue · signal de couverture à {coverage}%",
+          "today": "Aujourd’hui",
+          "weekZero": "Semaine 0",
+          "week": "Semaine {week}",
+          "winRate": "Taux de victoire (%)",
+          "listingsOptimized": "Fiches produit optimisées",
+          "surfacesLive": "Canaux agents actifs",
+          "signalIntensity": "Intensité du signal"
+        },
+        "phases": {
+          "foundation": {
+            "title": "Fondation",
+            "window": "Jours 0–14",
+            "summary": "Scannez, réécrivez les fiches produit faibles et déployez des données structurées pour que les agents puissent vous lire. Le taux de victoire en simulation évolue en premier, généralement dans les 24–48 heures suivant la publication.",
+            "outcomes": [
+              "Approuver les réécritures de fiches produit en attente (titre + description)",
+              "Publier des attributs JSON-LD / compatibles avec les flux sur les SKU clés",
+              "Le nouveau scan confirme un premier gain de taux de victoire face aux concurrents"
+            ]
+          },
+          "traction": {
+            "title": "Traction",
+            "window": "Semaines 2–6",
+            "summary": "Les services utilisés par les agents récupèrent à nouveau votre catalogue (Shopify Catalog, Merchant Center, robots d’exploration). Les premiers signaux réels de visites et de trafic provenant de ces services apparaissent généralement vers le jour 30.",
+            "outcomes": [
+              "ChatGPT / Claude / Gemini / Perplexity réévaluent les fiches produit mises à jour",
+              "Les balises de visite des agents et les clics référents commencent à produire un effet cumulatif",
+              "Tendance observée chez les clients : hausse mesurable des visites et des ventes autour de 30 jours"
+            ]
+          },
+          "compound": {
+            "title": "Effet cumulatif",
+            "window": "Mois 2–6",
+            "summary": "Couverture à l’échelle du catalogue, boucles de réponse concurrentielle et réoptimisation liée à l’évolution des modèles. Le taux de victoire se rapproche de votre plafond estimé à mesure que davantage de SKU restent prêts pour les agents.",
+            "outcomes": [
+              "Des balayages continus détectent les dérives lors des mises à jour des modèles",
+              "Les modifications des fiches produit concurrentes déclenchent la création de nouvelles fiches de comparaison.",
+              "Le trafic généré par les agents et les revenus attribués augmentent avec la couverture"
+            ]
+          }
+        }
+      },
+      "toast": {
+        "publishFailed": "Échec de la publication",
+        "listingUpdated": "Fiche produit mise à jour",
+        "listingUpdatedDescription": "Les modifications ont été envoyées vers votre boutique connectée.",
+        "dismissFailed": "Impossible d’ignorer la suggestion",
+        "restoreFailed": "Impossible de restaurer",
+        "someFailed": "Certaines mises à jour ont échoué",
+        "allUpdated": "Toutes les fiches produit en attente ont été mises à jour",
+        "allUpdatedDescription": "{count} produit(s) publié(s) sur votre boutique.",
+        "optimizationFailed": "Échec de l’optimisation",
+        "storeOptimized": "Boutique optimisée pour les agents IA",
+        "storeOptimizedDescription": "{published}/{total} produits publiés, {rewritten} fiches produit réécrites{metafields}."
+      }
+    },
+    "visibility": {
+      "eyebrow": "Visibilité des agents IA",
+      "title": "Où les agents d’achat IA voient réellement cette boutique",
+      "description": "Les contrôles de préparation portent sur les sources réellement utilisées pour l’ingestion : robots.txt, code HTML rendu de la boutique, identité des offres et flux produits. Le classement est mesuré en direct dans le Shopify Global Catalog interrogé par ChatGPT, Perplexity et Copilot.",
+      "rankSection": {
+        "eyebrow": "Position en rayon en direct",
+        "title": "Mesurer le classement de cette boutique dans le Global Catalog pour une requête d’acheteur"
+      },
+      "audit": {
+        "scoreDetail": "préparation du catalogue pour les agents IA, évaluée par des contrôles automatisés sur ce que les services IA lisent réellement, plutôt que sur les propres données d’ecentic",
+        "checkStatus": {
+          "pass": "Réussi",
+          "warn": "Avertissement",
+          "fail": "Échec",
+          "manual": "Manuel"
+        },
+        "feed": {
+          "title": "Flux produits ({count} articles{skipped})",
+          "skipped": ", dont {count} ignorés",
+          "description": "Une seule URL pour Google Merchant Center et le Perplexity Merchant Program."
+        }
+      },
+      "feedUrl": {
+        "action": {
+          "primary": "Copier l’URL du flux"
+        },
+        "toast": {
+          "title": "URL du flux copiée",
+          "description": "Collez-la dans Google Merchant Center (récupération planifiée) et le Perplexity Merchant Program."
+        }
+      },
+      "rankChecker": {
+        "fields": {
+          "query": {
+            "label": "Requête d’acheteur",
+            "placeholder": "ex. chaussures de trail imperméables",
+            "validation": "Saisissez une requête d’acheteur"
+          },
+          "country": {
+            "label": "Marché"
+          }
+        },
+        "action": {
+          "primary": "Vérifier le classement"
+        },
+        "credentialsMissing": {
+          "title": "Identifiants du Global Catalog manquants",
+          "description": "Définissez SHOPIFY_CATALOG_CLIENT_ID et SHOPIFY_CATALOG_CLIENT_SECRET (Dev Dashboard → Catalogs → Get an API key) pour mesurer le classement de cette boutique dans l’index de récupération interrogé par les agents d’achat IA."
+        },
+        "notFound": "Introuvable",
+        "resultNotFound": "cette boutique n’est pas apparue dans les {total} premiers résultats en direct pour « {query} »",
+        "resultFound": "sur {total} résultats en direct pour « {query} »",
+        "you": "Vous",
+        "toast": {
+          "failed": "Échec de la vérification du classement"
+        }
+      }
+    },
+    "discovery": {
+      "statusPill": "Visibilité IA — Découverte de boutiques",
+      "title": "Découverte IA",
+      "description": "Voyez quelles boutiques les agents d’achat IA recommandent pour une requête, pourquoi votre boutique a été retenue ou non, et à quelle position elle apparaît.",
+      "targetStore": {
+        "label": "Boutique cible",
+        "placeholder": "your-store.example.com",
+        "yourStore": "Votre boutique",
+        "description": "La boutique que nous recherchons dans les recommandations de chaque agent d’achat IA."
+      },
+      "queries": {
+        "label": "Requêtes d’achat",
+        "placeholders": [
+          "baskets bleues à moins de $80",
+          "chaussures de randonnée imperméables",
+          "cadeaux pour coureurs"
+        ],
+        "anotherPlaceholder": "autre requête d’achat",
+        "add": "Ajouter une requête",
+        "removeAriaLabel": "Supprimer la requête {index}",
+        "description": "Chaque requête est envoyée à ChatGPT, Claude, Gemini et Perplexity, puis nous classons les boutiques que chacun recommande."
+      },
+      "action": {
+        "primary": "Lancer la découverte",
+        "running": "Interrogation des IA…"
+      },
+      "hint": {
+        "ready": "Interrogez 4 modèles d’IA sur {count, plural, one {# requête} many {# requêtes} other {# requêtes}}.",
+        "notReady": "Saisissez une boutique cible et au moins une requête pour lancer la découverte."
+      },
+      "errors": {
+        "targetRequired": "Saisissez le domaine de la boutique cible.",
+        "queryRequired": "Saisissez au moins une requête d’achat.",
+        "generic": "Une erreur s’est produite."
+      },
+      "loading": "Interrogation de ChatGPT, Claude, Gemini et Perplexity…",
+      "empty": {
+        "status": "Aucune exécution pour le moment",
+        "description": "Ajoutez une ou plusieurs requêtes d’achat ci-dessus, puis lancez la découverte pour voir quelles boutiques les agents d’achat IA recommandent et comment votre boutique se compare."
+      },
+      "results": {
+        "targetStore": "Boutique cible"
+      },
+      "model": {
+        "failed": "Échec",
+        "notSuggested": "Non recommandée",
+        "ranked": "Classée #{rank} sur {total}",
+        "whyRanked": "Pourquoi votre boutique est classée ici",
+        "whyLeftOut": "Pourquoi votre boutique n’a pas été retenue",
+        "noExplanation": "Aucune explication fournie.",
+        "noStores": "Aucune boutique renvoyée.",
+        "unreachable": "Impossible de joindre ce modèle."
+      }
+    },
+    "ucp": {
+      "statusPill": "Universal Commerce Protocol",
+      "title": "UCP et données structurées",
+      "description": "Votre identité de marchand pour les agents d’achat IA.",
+      "protocolKicker": "01 — Protocole",
+      "structuredDataTitle": "Données structurées",
+      "manager": {
+        "tabs": {
+          "profile": "Profil marchand",
+          "products": "JSON-LD des produits",
+          "validator": "Validateur avancé"
+        },
+        "fields": {
+          "merchantName": {
+            "label": "Nom du marchand",
+            "placeholder": "Acme Store"
+          },
+          "description": {
+            "label": "Description",
+            "placeholder": "Équipements audio haut de gamme pour les intérieurs modernes"
+          },
+          "logoUrl": {
+            "label": "URL du logo",
+            "placeholder": "https://acme.store/logo.png"
+          },
+          "paymentMethods": {
+            "label": "Moyens de paiement",
+            "placeholder": "Visa, Mastercard, PayPal, Apple Pay"
+          },
+          "shippingPolicy": {
+            "label": "Politique de livraison",
+            "placeholder": "Gratuite dès $50 · 3 à 5 jours ouvrés"
+          },
+          "returnPolicy": {
+            "label": "Politique de retour",
+            "placeholder": "Retours gratuits sous 30 jours"
+          },
+          "contactEmail": {
+            "label": "E-mail de contact",
+            "placeholder": "support@acme.store"
+          },
+          "sustainability": {
+            "label": "Développement durable",
+            "placeholder": "Livraison neutre en carbone · emballages recyclés"
+          },
+          "certifications": {
+            "label": "Certifications",
+            "placeholder": "B-Corp, ISO 9001"
+          }
+        },
+        "action": {
+          "generate": "Générer le JSON",
+          "generateWithAi": "Générer avec l’IA",
+          "generating": "Génération…",
+          "generatingAll": "Génération…",
+          "save": "Enregistrer",
+          "saveProfile": "Enregistrer le profil",
+          "saving": "Enregistrement…",
+          "copy": "Copier",
+          "copied": "Copié",
+          "reset": "Réinitialiser",
+          "publishShopify": "Publier sur Shopify",
+          "pushTo": "Envoyer vers {store}",
+          "pushing": "Envoi…",
+          "generateAll": "Tout générer",
+          "generateOne": "Générer",
+          "regenerate": "Régénérer"
+        },
+        "products": {
+          "tab": "Données produit",
+          "validateTab": "Valider",
+          "coverage": "{covered} produits couverts sur {total}",
+          "columnProduct": "Produit",
+          "columnStatus": "Statut",
+          "statusComplete": "Complet",
+          "statusMissing": "Manquant",
+          "empty": "Aucun produit trouvé. Connectez une boutique et synchronisez d’abord les produits."
+        },
+        "profile": {
+          "fieldsTitle": "Champs du profil",
+          "jsonPreview": "Aperçu JSON",
+          "aiEnhanced": "Amélioré par l’IA",
+          "jsonPreviewDescription": "Aperçu en direct de votre document /.well-known/ucp."
+        },
+        "toast": {
+          "pushProfileFailed": "Impossible d’envoyer le profil UCP vers Shopify",
+          "pushProfileSuccess": "Profil UCP envoyé vers Shopify",
+          "pushProfileSuccessDescription": "{written} métachamp(s) écrits dans {store} sous l’espace de noms \"ucp\".",
+          "pushProductsFailed": "Impossible d’envoyer les métachamps produit",
+          "pushProductsSuccess": "Données structurées des produits envoyées",
+          "pushProductsSuccessDescription": "{pushed} produits sur {total} mis à jour dans {store}."
+        },
+        "install": {
+          "title": "Installer",
+          "description": "Rendez ce JSON accessible à l’adresse /.well-known/ucp afin que les agents IA puissent découvrir votre profil marchand."
+        }
+      },
+      "advancedValidator": {
+        "kicker": "Tests avancés",
+        "title": "Tests des endpoints et du cycle de vie",
+        "description": "Teste tous les points d’accès aux services déclarés dans le profil et simule le cycle complet du passage de commande par un agent IA : Create → Update → Complete → Cancel.",
+        "fields": {
+          "domain": {
+            "label": "Domaine",
+            "placeholder": "votredomaine.com"
+          }
+        },
+        "action": {
+          "primary": "Lancer les tests avancés",
+          "running": "Test en cours…"
+        },
+        "hint": "Effectue des requêtes HTTP en direct vers le serveur marchand. Les entrées de test peuvent créer des paniers de test.",
+        "toast": {
+          "failed": "Échec de la vérification avancée"
+        },
+        "grades": {
+          "A": {
+            "description": "Prêt pour les agents"
+          },
+          "B": {
+            "description": "Majoritairement prêt"
+          },
+          "C": {
+            "description": "Nécessite des ajustements"
+          },
+          "F": {
+            "description": "Problèmes critiques"
+          }
+        },
+        "transport": {
+          "rest": "REST",
+          "mcp": "MCP",
+          "a2a": "A2A",
+          "embedded": "Intégré",
+          "streamableHttp": "Streamable HTTP",
+          "sse": "SSE",
+          "unknown": "Inconnu"
+        },
+        "chips": {
+          "noResponse": "Aucune réponse",
+          "corsOk": "CORS ✓",
+          "noCors": "Pas de CORS",
+          "skipped": "Ignoré",
+          "pass": "Réussi",
+          "fail": "Échec",
+          "missing": "Manquant",
+          "search": "Recherche",
+          "checkout": "Paiement",
+          "failing": "{count} en échec",
+          "ok": "{total} OK",
+          "toolsDeclared": "{count, plural, one {# outil déclaré} many {# outils déclarés} other {# outils déclarés}}",
+          "sseWarning": "SSE — les appels d’outils nécessitent un client capable de lire les réponses en continu",
+          "agentCardFound": "Fiche agent trouvée",
+          "noAgentCard": "Aucune fiche agent",
+          "ucpExtension": "Extension UCP",
+          "noUcpExtension": "Aucune extension UCP"
+        },
+        "headers": {
+          "service": "Service",
+          "endpoint": "Endpoint",
+          "status": "Statut",
+          "latency": "Latence",
+          "cors": "CORS",
+          "tool": "Outil",
+          "result": "Résultat",
+          "note": "Note"
+        },
+        "sections": {
+          "endpoints": {
+            "title": "Tests des endpoints de service",
+            "description": "Requête HEAD en direct vers chaque endpoint de service déclaré dans le profil UCP. La latence est mesurée depuis ce serveur."
+          },
+          "mcp": {
+            "title": "Endpoints MCP",
+            "description": "Teste les endpoints de service MCP via JSON-RPC initialize + tools/list. Affiche la version du protocole, l’identité du serveur et chaque outil que l’agent peut appeler."
+          },
+          "a2a": {
+            "title": "Endpoints A2A",
+            "description": "Teste les endpoints de service Agent-to-Agent. Vérifie l’accessibilité, la présence de la fiche agent à l’adresse /.well-known/agent-card.json et l’en-tête d’extension UCP."
+          },
+          "checkout": {
+            "title": "Cycle de vie du paiement",
+            "description": "Simule le flux panier → session de paiement selon la spécification REST UCP : POST /carts → PUT /carts/{id} → POST /checkout-sessions → complete → cancel. Les réponses 400/422 sont attendues pour les entrées de test."
+          }
+        },
+        "emptyEndpoints": "Aucun point d’accès de service avec une URL n’a été trouvé dans le profil UCP. Ajoutez des champs ",
+        "emptyEndpointsSuffix": " à vos services pour activer les tests en direct.",
+        "emptyEndpointsField": "endpoint"
+      }
+    },
+    "ucpComparison": {
+      "statusPill": "Sandbox — Comparaison multi-boutiques",
+      "title": "Comparaison de boutiques UCP",
+      "description": "Ajoutez votre boutique et celles de vos concurrents, lancez la même recherche dans le catalogue sur chacune et voyez comment vos fiches produit se positionnent dans un parcours d’achat piloté par des agents.",
+      "sectionKicker": "01 — Comparaison",
+      "sectionTitle": "Recherche dans le catalogue côte à côte",
+      "sourceStore": {
+        "label": "Votre boutique",
+        "placeholder": "your-store.example.com",
+        "description": "Le catalogue marchand que vous souhaitez évaluer face à vos concurrents."
+      },
+      "buyerRequest": {
+        "label": "Demande de l’acheteur",
+        "placeholder": "p. ex. « souris sans fil à moins de 200 ALL »",
+        "description": "La requête est analysée une seule fois pour en extraire les paramètres de recherche, qui sont ensuite utilisés à l’identique pour chaque boutique."
+      },
+      "competitors": {
+        "label": "Boutiques concurrentes",
+        "placeholder": "competitor-{index}.example.com",
+        "add": "Ajouter un concurrent",
+        "removeAriaLabel": "Supprimer le concurrent {index}",
+        "description": "Chaque profil /.well-known/ucp est résolu, puis search_catalog s’exécute avec les mêmes paramètres dérivés que pour votre boutique."
+      },
+      "action": {
+        "primary": "Comparer les boutiques",
+        "running": "Comparaison…"
+      },
+      "hint": {
+        "ready": "Une même recherche pilotée par un agent sur {count} boutiques.",
+        "notReady": "Ajoutez votre boutique et au moins une boutique concurrente pour lancer une comparaison."
+      },
+      "searchParams": {
+        "title": "Paramètres de recherche dérivés",
+        "description": "Analysés une seule fois à partir de la demande de l’acheteur et appliqués à chaque boutique.",
+        "showRaw": "Afficher le JSON brut",
+        "hideRaw": "Masquer le JSON brut"
+      },
+      "results": {
+        "title": "Résultats côte à côte",
+        "description": "Produits renvoyés par chaque boutique pour la même recherche, dans l’ordre où l’agent les a reçus.",
+        "yourStore": "Votre boutique",
+        "competitor": "Concurrent",
+        "noProducts": "Aucun produit renvoyé pour cette recherche.",
+        "moreHidden": "+{count} autres résultats renvoyés mais non affichés."
+      },
+      "summary": {
+        "title": "Résumé de la comparaison",
+        "generating": "Génération"
+      },
+      "eventLog": {
+        "title": "Journal des événements",
+        "live": "En direct",
+        "done": "Terminé",
+        "error": "Erreur",
+        "events": "{count, plural, one {# événement} many {# événements} other {# événements}}",
+        "clear": "Effacer",
+        "complete": "✓ comparaison terminée"
+      },
+      "storeStatus": {
+        "idle": "En file d’attente",
+        "discovering": "Résolution du profil",
+        "searching": "Recherche en cours",
+        "done": "Terminé",
+        "error": "Erreur"
+      }
+    },
+    "ucpPlaygroundDashboard": {
+      "statusPill": "Sandbox — Test des flux UCP",
+      "title": "UCP Playground",
+      "description": "Testez les opérations de recherche dans le catalogue, de consultation produit, de panier et de paiement sur n’importe quelle boutique compatible UCP.",
+      "connect": {
+        "title": "Connecter une boutique UCP",
+        "description": "Saisissez le domaine d’une boutique pour résoudre son profil UCP et démarrer une session.",
+        "fields": {
+          "storeUrl": {
+            "label": "Domaine de la boutique",
+            "placeholder": "store.example.com",
+            "validation": "Saisissez un domaine de boutique"
+          }
+        },
+        "action": {
+          "primary": "Connecter",
+          "connecting": "Connexion…"
+        }
+      },
+      "session": {
+        "changeStore": "Changer de boutique",
+        "emptyTitle": "Que doit faire l’agent ?",
+        "emptyDescription": "Vous êtes connecté à {host}. L’agent exécute des appels UCP en direct : rechercher dans le catalogue, consulter une fiche produit, créer un panier ou démarrer un paiement.",
+        "suggestions": [
+          "Afficher les détails du premier produit",
+          "Ajouter le premier produit à un nouveau panier",
+          "Démarrer un paiement pour le panier"
+        ]
+      },
+      "product": {
+        "noImage": "Aucune image",
+        "untitled": "Produit sans titre",
+        "variants": "{count} variantes"
+      },
+      "tool": {
+        "failed": "Échec",
+        "running": "En cours",
+        "done": "Terminé",
+        "error": "Erreur",
+        "arguments": "Arguments",
+        "result": "Résultat",
+        "rawJson": "JSON brut"
+      },
+      "cart": {
+        "title": "Panier",
+        "items": "{count, plural, one {# article} many {# articles} other {# articles}}",
+        "states": {
+          "creating": "Création du panier…",
+          "loading": "Chargement du panier…",
+          "updating": "Mise à jour du panier…",
+          "failed": "Échec de l’opération sur le panier"
+        }
+      },
+      "catalog": {
+        "searching": "Recherche dans le catalogue…",
+        "failed": "Échec de la requête du catalogue",
+        "productCount": "{count, plural, one {# produit} many {# produits} other {# produits}}"
+      },
+      "composer": {
+        "placeholder": "Demandez à l’agent de faire des achats sur {host}…",
+        "hint": "Entrée pour envoyer · Maj + Entrée pour une nouvelle ligne",
+        "remaining": "Il reste {remaining} des {limit} {limit, plural, one {message gratuite} many {messages gratuites} other {messages gratuites}} dans cet espace de test."
+      },
+      "quota": {
+        "title": "Vous avez utilisé les {limit} messages gratuits de l’espace d’expérimentation",
+        "description": "Créez un compte pour continuer à exécuter des flux UCP sur votre propre boutique, sans limite de messages.",
+        "action": {
+          "primary": "Créer un compte gratuit"
+        }
+      },
+      "availability": {
+        "inStock": "En stock",
+        "backorder": "Sur commande",
+        "preorder": "Précommande",
+        "available": "Disponible",
+        "outOfStock": "Rupture de stock",
+        "discontinued": "Produit arrêté",
+        "unavailable": "Indisponible",
+        "quantityLeft": " · plus que {count} en stock"
+      },
+      "errors": {
+        "generic": "Une erreur s’est produite"
+      }
+    },
+    "settings": {
+      "statusPill": "Compte et espace de travail",
+      "title": "Paramètres",
+      "description": "Gérez votre compte, vos intégrations et vos préférences.",
+      "tabs": {
+        "account": "Compte",
+        "integrations": "Intégrations",
+        "notifications": "Notifications",
+        "simulation": "Simulation",
+        "billing": "Facturation"
+      },
+      "account": {
+        "language": {
+          "title": "Langue",
+          "description": "Choisissez la langue de l’interface ecentic."
+        },
+        "profile": {
+          "title": "Profil",
+          "description": "Mettez à jour les informations de votre profil.",
+          "fields": {
+            "name": {
+              "label": "Prénom",
+              "validation": "Obligatoire"
+            },
+            "surname": {
+              "label": "Nom",
+              "validation": "Obligatoire"
+            },
+            "email": {
+              "label": "E-mail",
+              "validation": "E-mail invalide"
+            },
+            "role": {
+              "label": "Fonction"
+            }
+          },
+          "roles": [
+            "Fondateur / CEO",
+            "Responsable marketing",
+            "Responsable e-commerce",
+            "Agence",
+            "Développeur",
+            "Autre"
+          ],
+          "action": {
+            "primary": "Enregistrer les modifications",
+            "saving": "Enregistrement..."
+          }
+        },
+        "password": {
+          "title": "Changer le mot de passe",
+          "description": "Utilisez un mot de passe fort que vous ne réutilisez pas sur d’autres sites.",
+          "fields": {
+            "current": {
+              "label": "Mot de passe actuel",
+              "validation": "Obligatoire"
+            },
+            "new": {
+              "label": "Nouveau mot de passe",
+              "validation": "Minimum 8 caractères"
+            },
+            "confirm": {
+              "label": "Confirmer le nouveau mot de passe",
+              "validation": "Minimum 8 caractères"
+            }
+          },
+          "action": {
+            "primary": "Mettre à jour le mot de passe",
+            "updating": "Mise à jour..."
+          },
+          "toast": {
+            "mismatch": "Les mots de passe ne correspondent pas"
+          }
+        },
+        "session": {
+          "title": "Session",
+          "description": "Déconnectez-vous de cet appareil. Vous devrez vous reconnecter pour accéder à votre tableau de bord.",
+          "action": {
+            "primary": "Se déconnecter",
+            "signingOut": "Déconnexion..."
+          }
+        },
+        "danger": {
+          "title": "Zone de danger",
+          "description": "Supprimez définitivement votre compte et toutes les données associées. Cette action est irréversible.",
+          "prompt": "Supprimer ce compte et toutes ses données.",
+          "action": {
+            "primary": "Supprimer le compte"
+          }
+        },
+        "toast": {
+          "error": "Erreur",
+          "profileSaved": "Profil enregistré",
+          "passwordUpdated": "Mot de passe mis à jour",
+          "signOutFailed": "Impossible de se déconnecter"
+        }
+      },
+      "notifications": {
+        "title": "Notifications par e-mail",
+        "items": {
+          "winRateDrop": {
+            "label": "Baisse du taux de victoire",
+            "description": "Alerter lorsque le taux de victoire d’un produit baisse de plus de 5 %"
+          },
+          "simulationComplete": {
+            "label": "Simulation terminée",
+            "description": "Lorsqu’un lot de simulations est terminé"
+          },
+          "optimizationReady": {
+            "label": "Optimisation prête",
+            "description": "Nouvelles suggestions d’optimisation disponibles"
+          },
+          "autoPub": {
+            "label": "Publication automatique",
+            "description": "Lorsque l’auto-optimisation publie des modifications"
+          },
+          "modelDrift": {
+            "label": "Dérive du modèle détectée",
+            "description": "Lorsqu’un modèle d’IA met à jour son comportement"
+          },
+          "competitorUpdate": {
+            "label": "Mises à jour des concurrents",
+            "description": "Lorsque les fiches produits concurrentes suivies changent"
+          },
+          "newCompetitor": {
+            "label": "Nouveaux concurrents",
+            "description": "Lorsqu’un nouveau concurrent est détecté"
+          },
+          "weeklyDigest": {
+            "label": "Résumé hebdomadaire",
+            "description": "Résumé des performances de la semaine"
+          }
+        }
+      },
+      "simulation": {
+        "models": {
+          "title": "Modèles d’IA",
+          "dominateBadge": "Dominate+"
+        },
+        "frequency": {
+          "title": "Fréquence des simulations",
+          "options": [
+            "Manuel uniquement",
+            "Quotidienne",
+            "Hebdomadaire"
+          ]
+        },
+        "persona": {
+          "title": "Persona d’achat",
+          "options": [
+            "Acheteur attentif au budget",
+            "Acheteur premium",
+            "Acheteur faisant des recherches techniques",
+            "Achat cadeau",
+            "Personnalisé..."
+          ]
+        }
+      },
+      "integrations": {
+        "title": "Boutiques connectées",
+        "empty": "Aucune boutique connectée pour le moment.",
+        "connected": "Connecté",
+        "action": {
+          "sync": "Synchroniser maintenant",
+          "syncing": "Synchronisation…",
+          "connectAnother": "Connecter une autre boutique"
+        },
+        "toast": {
+          "syncing": "Synchronisation des produits…",
+          "synced": "Produits synchronisés",
+          "reconnectRequired": "Reconnexion requise",
+          "syncFailed": "Échec de la synchronisation",
+          "reconnectAction": "Reconnecter",
+          "genericError": "Une erreur s’est produite"
+        },
+        "google": {
+          "comingSoon": "Bientôt disponible",
+          "notConnected": "Non connecté",
+          "active": "Actif · {count, number} en ligne",
+          "linked": "Lié",
+          "setupInProgress": "Configuration en cours",
+          "manage": "Gérer →"
+        }
+      },
+      "billing": {
+        "currentPlan": "Forfait actuel",
+        "invoiceHistory": "Historique des factures",
+        "noInvoices": "Aucune facture pour le moment.",
+        "download": "Télécharger",
+        "loading": "Chargement…",
+        "monthly": "Mensuel",
+        "perMonth": "/mo",
+        "billingCycle": "Cycle de facturation",
+        "endsOn": "Se termine le",
+        "nextBillingDate": "Prochaine date de facturation",
+        "cancelNotice": "Votre forfait sera annulé à la fin de la période en cours.",
+        "manageBilling": "Gérer la facturation",
+        "upgradeTo": "Passer à {plan}",
+        "noActivePlan": "Aucun forfait actif",
+        "payAsYouGo": {
+          "title": "Paiement à l’usage",
+          "description": "Gratuit pour commencer · vous ne payez que lorsque des agents IA génèrent des ventes.",
+          "active": "Actif",
+          "fee": "Frais",
+          "feeDetail": "{rate}% sur les commandes attribuées à l’IA",
+          "monthlyCap": "Plafond mensuel",
+          "switchHint": "Vous préférez une facturation prévisible ? Passez à un forfait mensuel fixe (sans frais de performance) :"
+        },
+        "choosePlan": {
+          "title": "Choisissez votre mode de paiement",
+          "description": "Commencez gratuitement avec le paiement à l’usage, ou choisissez un abonnement mensuel fixe sans frais de performance.",
+          "startPayg": "Commencer le paiement à l’usage (gratuit, sans carte)"
+        },
+        "performanceFee": {
+          "title": "Frais de performance",
+          "description": "{rate}% sur les commandes attribuées à l’IA · plafonné à {cap}/mois. Gratuit pour commencer. Vous ne payez que lorsqu’un agent achète grâce à une optimisation que nous avons effectuée, jamais sur vos autres ventes.",
+          "actionNeeded": "Action requise",
+          "active": "Actif",
+          "off": "Désactivé",
+          "due": "{amount} à régler",
+          "dueHint": "Ajoutez un moyen de paiement pour régler les frais de cette période.",
+          "addPayment": "Ajouter un moyen de paiement",
+          "ofCap": "sur un plafond de {cap} pour cette période",
+          "billedSoFar": "{amount} facturés à ce jour",
+          "resets": "Réinitialisation le {date}",
+          "attributedOrders": "Commandes attribuées",
+          "order": "Commande {id}"
+        },
+        "plans": {
+          "compete": "Compete",
+          "scale": "Scale",
+          "dominate": "Dominate",
+          "competeLabel": "Forfait Compete",
+          "scaleLabel": "Forfait Scale",
+          "dominateLabel": "Forfait Dominate"
+        },
+        "status": {
+          "active": "Actif",
+          "trialing": "Essai",
+          "pastDue": "Paiement en retard",
+          "unpaid": "Impayé",
+          "canceled": "Annulé",
+          "incomplete": "Incomplet",
+          "expired": "Expiré",
+          "paused": "En pause"
+        },
+        "toast": {
+          "portalFailed": "Impossible d’ouvrir le portail de facturation",
+          "paygFailed": "Impossible d’activer le paiement à l’usage",
+          "paymentSetupFailed": "Impossible d’ouvrir la configuration du paiement",
+          "checkoutFailed": "Impossible de lancer le paiement"
+        }
+      },
+      "team": {
+        "title": "Membres de l’équipe",
+        "inviteMember": "Inviter un membre",
+        "inviteByEmail": "Inviter par e-mail",
+        "sendInvite": "Envoyer l’invitation",
+        "remove": "Retirer",
+        "roles": {
+          "owner": "Propriétaire",
+          "admin": "Administrateur",
+          "editor": "Éditeur",
+          "viewer": "Observateur"
+        },
+        "fields": {
+          "email": {
+            "label": "Adresse e-mail",
+            "placeholder": "colleague@company.com",
+            "validation": "Adresse e-mail invalide"
+          },
+          "role": {
+            "label": "Rôle"
+          }
+        },
+        "toast": {
+          "inviteSent": {
+            "title": "Invitation envoyée",
+            "description": "L’invitation du membre de l’équipe a été envoyée."
+          }
+        }
+      }
+    },
+    "reports": {
+      "dataStatus": {
+        "asOf": "Données au {time}",
+        "noScans": "Aucun scan terminé pour le moment"
+      },
+      "title": "Rapports et exports",
+      "description": "Téléchargez ou planifiez des rapports automatisés sur vos performances auprès des agents d’achat IA.",
+      "shareable": {
+        "title": "Rapport de taux de victoire partageable",
+        "description": "Générez une URL publique pour votre rapport de taux de victoire, optimisée pour le partage sur Twitter, LinkedIn ou avec votre équipe.",
+        "action": {
+          "primary": "Générer un rapport partageable"
+        },
+        "runScanFirst": "Lancez d’abord un scan"
+      },
+      "library": {
+        "kicker": "01 — Bibliothèque",
+        "title": "Rapports disponibles"
+      },
+      "automation": {
+        "kicker": "02 — Automatisation",
+        "title": "Rapports planifiés",
+        "comingSoon": "Les rapports planifiés et le récapitulatif hebdomadaire arrivent bientôt."
+      },
+      "items": {
+        "winRateSummary": {
+          "title": "Résumé du taux de victoire",
+          "description": "Performance globale sur l’ensemble des produits et des modèles"
+        },
+        "productPerformance": {
+          "title": "Performance des produits",
+          "description": "Rapport détaillé par produit avec tendances et comparaison avec les concurrents"
+        },
+        "competitorAnalysis": {
+          "title": "Analyse concurrentielle",
+          "description": "Vue complète du paysage concurrentiel avec fiches concurrentielles pour toutes les marques suivies"
+        },
+        "optimizationImpact": {
+          "title": "Impact des optimisations",
+          "description": "Analyse avant/après de toutes les optimisations publiées"
+        }
+      },
+      "tiers": {
+        "all": "Tous les forfaits",
+        "compete": "Compete+",
+        "dominate": "Dominate+"
+      },
+      "action": {
+        "downloadCsv": "CSV"
+      }
+    }
+  }
+}

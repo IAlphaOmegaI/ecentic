@@ -1,0 +1,185 @@
+{
+  "enterprise": {
+    "meta": {
+      "title": "ecentic für Enterprise: KI als Vertriebskanal nutzen",
+      "description": "Pilotprojekte für Händler, Marken und Reiseunternehmen – zunächst auf Basis öffentlicher Daten. Ziele werden am ersten Tag schriftlich festgehalten, mit einem Gründer als Ansprechpartner."
+    },
+    "breadcrumb": {
+      "home": "Startseite",
+      "enterprise": "Enterprise"
+    },
+    "hero": {
+      "eyebrow": "Enterprise",
+      "title": {
+        "primary": "KI ist ein neuer Vertriebskanal.",
+        "accent": "Steuern Sie ihn entsprechend."
+      },
+      "description": "Für Händler, Marken und Reiseunternehmen mit vielen Kategorien, Märkten oder Marken. Wir starten mit einem Markt und einer Kategorie auf Basis öffentlicher Daten und legen die Ziele am ersten Tag schriftlich fest.",
+      "assurances": [
+        "Zunächst öffentliche Daten. Für die Ausgangsbasis sind keine Logins, kein Code auf Ihrer Website und keine Kundendaten erforderlich.",
+        "Ziele werden am ersten Tag schriftlich vereinbart.",
+        "Ein Gründer als direkter Ansprechpartner mit direktem Draht zum Engineering.",
+        "Produktgrenzen transparent erklärt"
+      ],
+      "art": {
+        "alt": "ASCII-Art-Illustration eines Büroturms"
+      },
+      "action": {
+        "primary": "Sales kontaktieren",
+        "secondary": "Preise ansehen"
+      }
+    },
+    "why": {
+      "number": "01",
+      "title": "Starten Sie mit einem Markt und einer Kategorie.",
+      "description": "Enterprise-Pilotprojekte werden auf Ihren Katalog, Ihre Geschäftsfragen und Ihre Sicherheitsprüfung abgestimmt.",
+      "paragraphs": [
+        "Enterprise ist ein Service-Projekt mit abgestimmten Fragestellungen, Datenänderungen und einer schriftlichen Auswertung. Die aktuellen Produktgrenzen gelten weiterhin.",
+        "Starten Sie auf Basis öffentlicher Daten. Umfang, Ziele und Zugriffsanforderungen werden vor Beginn der Arbeit vereinbart."
+      ],
+      "panelTitle": "Für wen das passt",
+      "audiences": [
+        {
+          "title": "Handelsgruppen und Marktplätze",
+          "description": "Große Kataloge, viele Lieferanten und mehrere Märkte."
+        },
+        {
+          "title": "Verbrauchermarken",
+          "description": "Produkte, die über Ihre Website und über Händler verkauft werden."
+        },
+        {
+          "title": "Reisen und Erlebnisse",
+          "description": "Pakete, Tickets und Aufenthalte, nach denen Menschen mit KI recherchieren."
+        },
+        {
+          "title": "Agenturen und Partner",
+          "description": "Shop-Teams, die die abgestimmten Änderungen prüfen und veröffentlichen."
+        }
+      ]
+    },
+    "capabilities": {
+      "number": "02",
+      "title": "Für Skalierung entwickelt.",
+      "description": "Aktuelle Funktionen und ihre Grenzen.",
+      "items": [
+        {
+          "title": "Ihre Shops in einem Account",
+          "description": "Alle Shops, die zu einem Account gehören, unter einem Login bündeln. Delegierte Teams oder SSO sind nicht enthalten."
+        },
+        {
+          "title": "REST API",
+          "description": "Eine versionierte öffentliche Schnittstelle mit OpenAPI 3.1, typisierten Problemantworten und dokumentierten Rate Limits."
+        },
+        {
+          "title": "MCP-Server und CLI",
+          "description": "Abläufe für die Erkennung, Tarife, Verbindungen und Einrichtung. Dashboard-Scans und Traffic-Exporte sind derzeit nicht über diese Schnittstelle verfügbar."
+        },
+        {
+          "title": "Merchant Center-Synchronisierung",
+          "description": "Senden Sie veröffentlichte Korrekturen an Shopify-Produktangeboten über eine separate Synchronisierung ergänzender Daten."
+        },
+        {
+          "title": "Kontrollierter Agent-Checkout",
+          "description": "WooCommerce-Checkout mit konfigurierbaren Allow-Lists für Agenten, Signaturanforderungen und Rate Limits. Ihr Zahlungsanbieter verarbeitet die Zahlung."
+        },
+        {
+          "title": "Wir veröffentlichen, was wir auch von Ihnen verlangen.",
+          "description": "Unsere llms.txt, der API-Katalog, das Checkout-Profil und der MCP-Endpunkt sind öffentlich."
+        }
+      ],
+      "paragraph": "Die Gebühren richten sich nach dem Umfang und werden im ersten Gespräch vereinbart. Dabei handelt es sich um Service-Projekte; die Auswertung des Pilotprojekts erfolgt nach der mit Ihrem Team abgestimmten Methode.",
+      "panelTitle": "So funktioniert die Projektdefinition",
+      "scoping": [
+        {
+          "title": "Erstes Gespräch",
+          "description": "Kategorie, Markt und Fragestellungen festlegen."
+        },
+        {
+          "title": "Schriftlich definierter Umfang",
+          "description": "Ausgangsbasis, Änderungen, Gebühren und Auswertung definieren."
+        },
+        {
+          "title": "Sicherheitsprüfung",
+          "description": "Datenverarbeitung und Zugriffe vor der Systemanbindung abstimmen."
+        }
+      ]
+    },
+    "compare": {
+      "number": "03",
+      "title": "Ein Tarif oder ein definiertes Pilotprojekt.",
+      "description": "Wählen Sie zwischen Self-Service-Zugang zum Produkt oder einem Service-Projekt mit vereinbarten Zielen.",
+      "dominate": {
+        "badge": "Dominate",
+        "title": "Self-Service für die Katalogarbeit.",
+        "description": "Simulationen auf Abruf und unterstützte Veröffentlichungsaktionen innerhalb der aktuellen Tarifgrenzen.",
+        "strengths": [
+          "Monatliches Abonnement ohne erfolgsabhängige Gebühren",
+          "Simulationen laufen auf Anfrage",
+          "Aktuelle Preise und Produktlimits unter „Pricing“"
+        ]
+      },
+      "enterprise": {
+        "badge": "Enterprise",
+        "title": "Ein gemeinsam mit Ihrem Team definiertes Pilotprojekt.",
+        "description": "6 Wochen, ein Markt, eine Kategorie. Ausgangsbasis in Woche 0, abgestimmte Datenänderungen und dieselben Fragestellungen in Woche 6. Erfolgsabhängige Gebühren und Ziele werden vorab vereinbart.",
+        "strengths": [
+          "Zum Start ein Markt und eine Kategorie",
+          "Vereinbarte Ausgangsbasis und Auswertung in Woche 6",
+          "Ein Gründer als Ansprechpartner"
+        ]
+      },
+      "paragraph": "Der Umfang des Pilotprojekts definiert die erforderliche Arbeit und die benötigten Zugriffe. SSO, Team-Sitze oder API-Exporte von Dashboard-Ergebnissen sind dadurch nicht Teil des aktuellen Produkts.",
+      "triggersTitle": "Wann Enterprise die passendere Wahl wird",
+      "triggers": [
+        {
+          "title": "Mehrere Marken oder Märkte",
+          "description": "Starten Sie mit der Kategorie und dem Markt, die eine konkrete Geschäftsfrage beantworten."
+        },
+        {
+          "title": "Eine Sicherheitsprüfung",
+          "description": "Betriebliche und vertragliche Anforderungen vor dem Zugriff abstimmen."
+        },
+        {
+          "title": "Eine Methode, die Ihr Team bewerten kann",
+          "description": "Fragenset, Ausgangsbasis und schriftliche Auswertung abstimmen."
+        },
+        {
+          "title": "Ein benannter Ansprechpartner",
+          "description": "Arbeiten Sie mit einem Gründer und Ihrem bestehenden Shop-Team zusammen."
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "04",
+      "title": "Enterprise-FAQ",
+      "description": "Häufige Fragen zu Enterprise-Tarifen, Sicherheit und Onboarding."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Wann sollte ich über ein Enterprise-Pilotprojekt sprechen?",
+          "answer": "Wenn Sie mehrere Shops oder Marken betreiben, Tausende Produkte verwalten, eine Sicherheitsprüfung benötigen oder ein Pilotprojekt mit schriftlich vereinbarten Zielen wünschen."
+        },
+        {
+          "question": "Wie startet ein Pilotprojekt?",
+          "answer": "Starten Sie mit einem Markt und einer Kategorie auf Basis öffentlicher Daten. Umfang, Gebühren und Vorgehensweise werden vor Beginn der Arbeit vereinbart."
+        },
+        {
+          "question": "Ist SOC 2 heute verfügbar?",
+          "answer": "Nein. Eine Zertifizierung oder abgeschlossene Prüfung liegt derzeit nicht vor. Besprechen Sie Ihre Sicherheitsanforderungen, bevor Sie einem Pilotprojekt zustimmen."
+        },
+        {
+          "question": "Können wir Dashboard-Ergebnisse über die API exportieren?",
+          "answer": "Derzeit nicht. Die öffentliche REST API, der MCP-Server und die CLI unterstützen Workflows für Discovery, Tarife, Verbindungen und Onboarding."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Demo buchen",
+        "secondary": "Preise ansehen"
+      },
+      "note": "Zunächst öffentliche Daten · Ziele schriftlich vereinbart"
+    }
+  }
+}

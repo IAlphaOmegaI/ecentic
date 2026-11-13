@@ -1,0 +1,24 @@
+{
+  "googleMerchantDesign": {
+    "constraints": [
+      "Shopify-Verbindung",
+      "Kontozugriff",
+      "Angebotsabgleich",
+      "Explizite Synchronisierung"
+    ],
+    "stages": [
+      "Autorisieren",
+      "Einrichten",
+      "Prüfen",
+      "Synchronisieren"
+    ],
+    "diagram": {
+      "mainSource": "Hauptquelle",
+      "supplemental": "Ergänzende Quelle",
+      "published": "Veröffentlichte Änderungen",
+      "diagnostics": "Diagnoseinformationen",
+      "processing": "Google-Verarbeitung",
+      "sync": "Synchronisierung starten"
+    }
+  }
+}

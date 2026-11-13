@@ -1,0 +1,21 @@
+{
+  "commerceFigures": {
+    "documentStack": "Trois documents produit qui se soulèvent lorsque le pointeur sélectionne une feuille",
+    "partReadouts": {
+      "documentStack": [
+        {
+          "value": "document 1",
+          "label": "Document 1"
+        },
+        {
+          "value": "document 2",
+          "label": "Document 2"
+        },
+        {
+          "value": "document 3",
+          "label": "Document 3"
+        }
+      ]
+    }
+  }
+}

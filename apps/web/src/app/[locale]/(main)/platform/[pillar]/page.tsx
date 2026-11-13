@@ -40,7 +40,8 @@ export const generateMetadata = async ({ params }: Props) => {
   const { pillar: requested } = await params;
   const pillar = pillars.find((value) => value === requested);
   if (!pillar) notFound();
-  const { enterprisePlatform } = await getMessages();
+  const messages = await getMessages();
+  const { enterprisePlatform } = messages;
   return marketingMetadata(
     enterprisePlatform.pages[pillar].meta,
     `/platform/${pillar}`,
@@ -52,7 +53,8 @@ export default async ({ params }: Props) => {
   const { pillar: requested } = await params;
   const pillar = pillars.find((value) => value === requested);
   if (!pillar) notFound();
-  const { enterprisePlatform } = await getMessages();
+  const messages = await getMessages();
+  const { enterprisePlatform } = messages;
   const Body = pageBodies[pillar];
   return (
     <MarketingPage
@@ -85,7 +87,11 @@ export default async ({ params }: Props) => {
             width={screenshots[pillar].width}
             height={screenshots[pillar][locale === "es" ? "es" : "en"]}
             alt={enterprisePlatform.screenshots[pillar].alt}
-            caption={enterprisePlatform.screenshots[pillar].caption}
+            caption={
+              locale === "en" || locale === "es"
+                ? enterprisePlatform.screenshots[pillar].caption
+                : `${enterprisePlatform.screenshots[pillar].caption} ${messages.general.media.interfaceEnglish}`
+            }
           />
         </div>
       </MarketingBand>

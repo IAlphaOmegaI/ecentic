@@ -1,0 +1,77 @@
+{
+  "winePage": {
+    "explorer": {
+      "label": "Explorer une question d’achat",
+      "question": "Un acheteur pourrait demander",
+      "criteria": "Les critères demandés",
+      "verify": "Informations à vérifier",
+      "entries": [
+        {
+          "id": "gift",
+          "label": "Un cadeau",
+          "criteria": [
+            {
+              "label": "Style",
+              "value": "Single malt fumé"
+            },
+            {
+              "label": "Budget",
+              "value": "Moins de 80 $"
+            },
+            {
+              "label": "Occasion",
+              "value": "Un cadeau"
+            }
+          ],
+          "verification": "Vérifiez les détails du fût ou du style, le prix actuel et la disponibilité de livraison dans la fiche produit source."
+        },
+        {
+          "id": "ready",
+          "label": "Prêt à boire",
+          "criteria": [
+            {
+              "label": "Vin",
+              "value": "Barolo"
+            },
+            {
+              "label": "Moment de dégustation",
+              "value": "Prêt à boire dès maintenant"
+            },
+            {
+              "label": "Informations sur la bouteille",
+              "value": "Origine et millésime"
+            }
+          ],
+          "verification": "Vérifiez la région et l’appellation avec le millésime indiqué. Vérifiez toute indication sur la période de dégustation dans la fiche source."
+        },
+        {
+          "id": "cocktails",
+          "label": "Pour les cocktails",
+          "criteria": [
+            {
+              "label": "Spiritueux",
+              "value": "Rhum"
+            },
+            {
+              "label": "Préférence",
+              "value": "Faible teneur en sucre"
+            },
+            {
+              "label": "Occasion",
+              "value": "Cocktails"
+            }
+          ],
+          "verification": "Associez l’allégation « faible teneur en sucre » uniquement à des informations source que votre équipe peut vérifier. Ne la déduisez pas du descriptif de dégustation."
+        }
+      ]
+    },
+    "attributes": {
+      "caption": "De la bouteille à la fiche produit",
+      "description": "Affichez clairement l’origine, le style et la disponibilité à côté de l’image de la bouteille."
+    },
+    "rules": {
+      "market": "Canal et pays",
+      "age": "Vérification de l’âge"
+    }
+  }
+}

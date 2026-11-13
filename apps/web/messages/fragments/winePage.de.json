@@ -1,0 +1,77 @@
+{
+  "winePage": {
+    "explorer": {
+      "label": "Kauffrage entdecken",
+      "question": "Ein Käufer könnte fragen",
+      "criteria": "Was der Käufer sucht",
+      "verify": "Zu prüfende Fakten",
+      "entries": [
+        {
+          "id": "gift",
+          "label": "Ein Geschenk",
+          "criteria": [
+            {
+              "label": "Stil",
+              "value": "Rauchiger Single Malt"
+            },
+            {
+              "label": "Budget",
+              "value": "Unter $80"
+            },
+            {
+              "label": "Anlass",
+              "value": "Ein Geschenk"
+            }
+          ],
+          "verification": "Prüfen Sie Fass- oder Stilangaben, den aktuellen Preis und die Versandverfügbarkeit im ursprünglichen Produktangebot."
+        },
+        {
+          "id": "ready",
+          "label": "Trinkreif",
+          "criteria": [
+            {
+              "label": "Wein",
+              "value": "Barolo"
+            },
+            {
+              "label": "Trinkzeitpunkt",
+              "value": "Jetzt trinkreif"
+            },
+            {
+              "label": "Flaschenangaben",
+              "value": "Herkunft und Jahrgang"
+            }
+          ],
+          "verification": "Prüfen Sie Region und Appellation zusammen mit dem angegebenen Jahrgang. Prüfen Sie Aussagen zum Trinkfenster anhand des ursprünglichen Produktangebots."
+        },
+        {
+          "id": "cocktails",
+          "label": "Für Cocktails",
+          "criteria": [
+            {
+              "label": "Spirituose",
+              "value": "Rum"
+            },
+            {
+              "label": "Präferenz",
+              "value": "Wenig Zucker"
+            },
+            {
+              "label": "Anlass",
+              "value": "Cocktails"
+            }
+          ],
+          "verification": "Verwenden Sie die Angabe „wenig Zucker“ nur mit Informationen aus Quellen, die Ihr Team prüfen kann. Leiten Sie sie nicht aus Verkostungsbeschreibungen ab."
+        }
+      ]
+    },
+    "attributes": {
+      "caption": "Von der Flasche zum Produktdatensatz",
+      "description": "Halten Sie Herkunft, Stil und Verfügbarkeit zusammen mit dem Flaschenbild gut lesbar."
+    },
+    "rules": {
+      "market": "Kanal und Land",
+      "age": "Altersprüfung"
+    }
+  }
+}

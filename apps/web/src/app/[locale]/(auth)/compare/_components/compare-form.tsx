@@ -16,7 +16,7 @@ import { Textarea, TextareaInput } from "@zenncore/web/components/textarea";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useRef, useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { Spring } from "@/lib/animations";
@@ -55,6 +55,8 @@ const getLogo = (label: string) => {
 };
 
 export const CompareForm = () => {
+  const locale = useLocale();
+
   const toast = useToastManager();
   const translate = useTranslations("compareTool");
   const translateForm = useTranslations("compareTool.form");
@@ -312,7 +314,7 @@ export const CompareForm = () => {
                 })}
               </span>
               <span className="font-mono text-foreground-dimmed tabular-nums">
-                {formatElapsed(elapsed)}
+                {formatElapsed(elapsed, locale)}
               </span>
             </div>
           </div>
@@ -356,7 +358,7 @@ export const CompareForm = () => {
                   className="flex items-baseline gap-2"
                 >
                   <span className="shrink-0 font-mono text-foreground-dimmed/50 tabular-nums">
-                    {formatElapsed(log.elapsed)}
+                    {formatElapsed(log.elapsed, locale)}
                   </span>
                   <span
                     className={
@@ -495,6 +497,8 @@ const CompareResults = ({
   translateForm: ReturnType<typeof useTranslations<"compareTool.form">>;
   translateResults: ReturnType<typeof useTranslations<"compareTool.results">>;
 }) => {
+  const locale = useLocale();
+
   const winsA = results.filter((record) => record.winner === "a").length;
   const winsB = results.filter((record) => record.winner === "b").length;
   const totalModels = results.length;
@@ -585,7 +589,9 @@ const CompareResults = ({
 
       <div className="flex items-center justify-between border-accent-foreground bg-background-dimmed p-4">
         <span className="font-light text-foreground-dimmed text-sm">
-          {translateResults("finishedIn", { elapsed: formatElapsed(elapsed) })}
+          {translateResults("finishedIn", {
+            elapsed: formatElapsed(elapsed, locale),
+          })}
         </span>
         <div className="flex items-center gap-3">
           <Button color="accent" onClick={onReset}>

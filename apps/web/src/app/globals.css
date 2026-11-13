@@ -2,9 +2,28 @@
 @import "@zenncore/web/config/tailwind";
 
 @theme inline {
-  --font-body: var(--font-redhat-display);
-  --font-heading: var(--font-lt-superior);
-  --font-superior: var(--font-lt-superior);
+  --font-body: var(--font-redhat-display), var(--font-cjk-fallback, sans-serif);
+  --font-heading: var(--font-lt-superior), var(--font-cjk-fallback, sans-serif);
+  --font-superior: var(--font-lt-superior), var(--font-cjk-fallback, sans-serif);
+}
+
+/* Keep Latin brand typography; native CJK fonts supply the missing glyphs
+   without sending multi-megabyte font files to every browser. */
+html:lang(ja) {
+  --font-cjk-fallback: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic",
+    "Meiryo", "Noto Sans CJK JP", "Noto Sans JP", sans-serif;
+}
+
+html:lang(zh-CN) {
+  --font-cjk-fallback: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC",
+    "Noto Sans SC", sans-serif;
+}
+
+html:is(:lang(ja), :lang(zh-CN)) :is(h1, h2, h3, h4),
+html:is(:lang(ja), :lang(zh-CN)) .marketing-site :is(h1, h2, h3, h4) {
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  overflow-wrap: anywhere;
 }
 
 @theme {

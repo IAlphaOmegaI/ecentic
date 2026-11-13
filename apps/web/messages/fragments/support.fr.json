@@ -1,0 +1,104 @@
+{
+  "support": {
+    "meta": {
+      "title": "Support — aide pour les scans, la facturation et les agents",
+      "description": "Obtenez de l’aide avec ecentic : support par e-mail, présentation en direct de vos résultats de scan ou circuit d’escalade dédié pour les comptes Enterprise et les comptes liés au commerce par agents."
+    },
+    "breadcrumb": {
+      "home": "Accueil",
+      "support": "Support"
+    },
+    "hero": {
+      "eyebrow": "Support",
+      "title": {
+        "primary": "Nous sommes là",
+        "accent": "pour vous aider."
+      },
+      "description": "Questions sur vos résultats de scan, une intégration, la facturation ou autre : choisissez le canal qui vous convient et nous prenons le relais.",
+      "assurances": [
+        "De vraies personnes vous répondent",
+        "Présentation gratuite des scans",
+        "Circuit d’escalade Enterprise"
+      ],
+      "art": {
+        "alt": "Illustration ASCII d’un casque de support"
+      }
+    },
+    "channels": {
+      "number": "01",
+      "title": "Choisissez votre canal.",
+      "description": "L’e-mail pour la plupart des demandes, un appel en direct si vous souhaitez une explication des résultats, et un accès direct pour les équipes Enterprise.",
+      "items": [
+        {
+          "id": "email",
+          "title": "Support par e-mail",
+          "description": "Le moyen le plus rapide de nous joindre pour des questions liées au compte, à la facturation ou aux intégrations. Ajoutez l’URL de votre boutique afin que nous puissions vérifier les informations avant de répondre.",
+          "highlighted": true,
+          "action": {
+            "primary": "support@ecentic.ai"
+          }
+        },
+        {
+          "id": "walkthrough",
+          "title": "Présentation en direct",
+          "description": "Un appel de 15 minutes pendant lequel nous soumettons vos produits, en direct, aux modèles IA utilisés pour les achats et expliquons les résultats en termes simples.",
+          "highlighted": false,
+          "action": {
+            "primary": "Réserver un appel"
+          }
+        },
+        {
+          "id": "enterprise",
+          "title": "Escalade Enterprise",
+          "description": "Les comptes Enterprise bénéficient d’un CSM dédié, de revues trimestrielles et d’un circuit d’escalade direct vers l’ingénierie.",
+          "highlighted": false,
+          "action": {
+            "primary": "Voir Enterprise"
+          }
+        }
+      ]
+    },
+    "selfServe": {
+      "number": "02",
+      "title": "Trouvez la réponse plus vite par vous-même.",
+      "description": "La plupart des questions trouvent déjà leur réponse sur ces pages.",
+      "items": [
+        {
+          "href": "/how-it-works",
+          "name": "Fonctionnement",
+          "title": "Comprendre la boucle simulation, diagnostic, optimisation",
+          "description": "L’explication complète de ce qui se passe après la connexion de votre boutique, étape par étape.",
+          "label": "Voir le fonctionnement"
+        },
+        {
+          "href": "/features",
+          "name": "Fonctionnalités",
+          "title": "Voir tous les outils de la plateforme",
+          "description": "Scores de taux de victoire, analyse des écarts avec les concurrents, réécriture des fiches produit, trafic des agents, profils UCP et nouveaux scans.",
+          "label": "Ouvrir la page des fonctionnalités"
+        },
+        {
+          "href": "/pricing",
+          "name": "Tarifs",
+          "title": "Comparer les offres, à partir du scan gratuit",
+          "description": "Le Scan gratuit, le paiement à l’usage et les abonnements Compete et Dominate expliqués côte à côte.",
+          "label": "Voir les tarifs"
+        },
+        {
+          "href": "/privacy-policy",
+          "name": "Confidentialité",
+          "title": "Vérifiez quelles données nous stockons — et ne stockons jamais",
+          "description": "Accès limité aux produits, aucune donnée personnelle des acheteurs, cookies essentiels uniquement et fonctionnement de la suppression des données.",
+          "label": "Lire la politique"
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Lancer votre scan gratuit",
+        "secondary": "Retour à l’accueil"
+      },
+      "note": "Configuration en 2 minutes · Sans carte bancaire · Consultez d’abord votre score gratuit"
+    }
+  }
+}

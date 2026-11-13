@@ -1,0 +1,40 @@
+{
+  "share": {
+    "sidebar": {
+      "headline": {
+        "line1": "Vos résultats",
+        "line2": "sont prêts."
+      },
+      "points": [
+        "ChatGPT, Claude, Gemini et Perplexity ont simulé de vraies comparaisons d’achat",
+        "Chaque produit a été évalué face aux concurrents",
+        "Ce rapport montre où vos produits gagnent et où ils perdent"
+      ]
+    },
+    "page": {
+      "title": "Comment votre boutique se positionne-t-elle ?",
+      "description": "Découvrez en détail comment votre boutique se compare à la concurrence."
+    },
+    "score": {
+      "label": "Score des agents IA",
+      "simulations": "{count} simulations",
+      "wins": "Victoires",
+      "losses": "Défaites",
+      "messages": {
+        "high": "En avance sur la plupart des concurrents.",
+        "medium": "Compétitif, avec une marge de progression.",
+        "low": "Les agents IA choisissent des concurrents."
+      }
+    },
+    "finding": {
+      "impact": "Impact",
+      "simsLost": "des simulations perdues",
+      "missingAttributes": "Attributs manquants"
+    },
+    "cta": {
+      "title": "Prêt à faire choisir vos produits par chaque agent d’achat IA ?",
+      "description": "ecentic optimise automatiquement vos fiches produit. Gratuit pour commencer.",
+      "action": "Commencer gratuitement"
+    }
+  }
+}

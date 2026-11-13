@@ -10,7 +10,7 @@ import {
 import { cn, unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import { connection } from "next/server";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { Link } from "@/i18n/navigation";
 import { formatRelativeTime } from "@/lib/date";
@@ -76,6 +76,8 @@ export default ({ params }: PageProps<"/dashboard/[store]">) => (
 );
 
 const LastUpdated = async ({ params }: { params: StoreParams }) => {
+  const locale = await getLocale();
+
   await connection();
   const { store } = await params;
   const translate = await getTranslations("dashboard.shared.status");
@@ -87,7 +89,7 @@ const LastUpdated = async ({ params }: { params: StoreParams }) => {
     <StatusPill tone={data.scan?.updatedAt ? "success" : "neutral"}>
       {data.scan?.updatedAt
         ? translate("liveUpdated", {
-            time: formatRelativeTime(data.scan.updatedAt),
+            time: formatRelativeTime(data.scan.updatedAt, locale),
           })
         : translate("noScansYet")}
     </StatusPill>

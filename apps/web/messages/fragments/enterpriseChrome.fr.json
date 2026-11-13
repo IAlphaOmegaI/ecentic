@@ -1,0 +1,54 @@
+{
+  "enterpriseChrome": {
+    "skip": "Aller au contenu",
+    "faq": "Vos questions, nos réponses.",
+    "action": {
+      "primary": "Réserver une démo",
+      "secondary": "Analyser ma boutique gratuitement",
+      "tertiary": "Se connecter",
+      "quaternary": "En savoir plus"
+    },
+    "closing": {
+      "title": "Concluez la vente quand l’IA fait les achats.",
+      "description": "Découvrez si elle choisit vos produits."
+    },
+    "status": {
+      "live": "En ligne",
+      "feed": "Via le flux produit",
+      "simulated": "Simulé",
+      "soon": "Bientôt disponible",
+      "notYet": "Pas encore"
+    },
+    "sample": "Exemple avec des données d’exemple",
+    "screenshot": "Capture d’écran du produit · données d’exemple",
+    "menu": {
+      "title": "Découvrir ecentic",
+      "open": "Ouvrir le menu",
+      "close": "Fermer le menu"
+    },
+    "footer": {
+      "tagline": "Concluez la vente quand l’IA fait les achats.",
+      "copyright": "© 2026 ecentic Inc",
+      "trademark": "Les noms de produits et les logos sont des marques appartenant à leurs propriétaires respectifs. Leur affichage n’implique aucun soutien ni partenariat avec ecentic.",
+      "platform": "Plateforme",
+      "solutions": "Solutions",
+      "channels": "Canaux IA",
+      "integrations": "Intégrations",
+      "resources": "Ressources",
+      "company": "Entreprise",
+      "legal": "Mentions légales",
+      "allSectors": "Tous les secteurs",
+      "allChannels": "Tous les canaux",
+      "allIntegrations": "Toutes les intégrations",
+      "requestIntegration": "Demander une intégration",
+      "terms": "Conditions d’utilisation",
+      "privacy": "Confidentialité",
+      "dpa": "DPA",
+      "subProcessors": "Sous-traitants",
+      "cookies": "Paramètres des cookies",
+      "aiInstructions": "Instructions IA",
+      "tools": "Outils gratuits"
+    },
+    "loading": "Chargement de la page"
+  }
+}

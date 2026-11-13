@@ -1,0 +1,9 @@
+{
+  "privacyPage": {
+    "contents": "Sommaire",
+    "action": {
+      "primary": "Lire la politique",
+      "secondary": "Retour au sommaire"
+    }
+  }
+}

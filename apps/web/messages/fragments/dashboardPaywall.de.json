@@ -1,0 +1,12 @@
+{
+  "dashboard": {
+    "paywall": {
+      "kicker": "Tarif erforderlich",
+      "title": "Wählen Sie einen Tarif, um Ihr Dashboard freizuschalten",
+      "description": "Ihr kostenloser Scan ist abgeschlossen. Wählen Sie eine nutzungsabhängige Abrechnung oder einen festen Monatstarif, um weiter zu simulieren, zu analysieren und zu verbessern, wie KI-Agenten Ihre Produkte einordnen.",
+      "compare": "Tarife im Detail vergleichen",
+      "manage": "Bereits abonniert oder ein Problem mit der Abrechnung?",
+      "manageAction": "Abrechnung verwalten"
+    }
+  }
+}

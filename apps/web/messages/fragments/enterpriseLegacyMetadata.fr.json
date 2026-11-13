@@ -1,0 +1,38 @@
+{
+  "compare": {
+    "meta": {
+      "title": "Outils IA pour l’e-commerce : guide des catégories",
+      "description": "Comparez les outils e-commerce pour le contenu produit, la personnalisation, la recherche, l’analytique et le commerce piloté par des agents, organisés par catégorie."
+    }
+  },
+  "docs": {
+    "meta": {
+      "title": "Documentation de l’API ecentic",
+      "description": "Documentation développeur pour l’API REST, le serveur MCP, la CLI, l’authentification, les erreurs, les limites de débit et le versioning."
+    },
+    "mcpPage": {
+      "meta": {
+        "title": "Serveur MCP ecentic",
+        "description": "Connectez un client MCP à ecentic. Consultez la référence du transport, de la négociation initiale, des outils pris en charge, de l’authentification et de la gestion des erreurs."
+      }
+    },
+    "authenticationPage": {
+      "meta": {
+        "title": "Authentification de l’API ecentic",
+        "description": "Découvrez quelles surfaces API sont publiques, comment obtenir une clé API pour agent, envoyer des jetons bearer et gérer les erreurs d’authentification."
+      }
+    },
+    "errorsPage": {
+      "meta": {
+        "title": "Erreurs API ecentic",
+        "description": "Consultez les codes d’erreur API, les valeurs de statut HTTP et les indications de résolution. Les réponses utilisent le format de problème RFC 9457."
+      }
+    },
+    "versioningPage": {
+      "meta": {
+        "title": "Versionnement de l’API ecentic",
+        "description": "Découvrez comment ecentic versionne son API et annonce les dépréciations via les en-têtes Deprecation et Sunset."
+      }
+    }
+  }
+}

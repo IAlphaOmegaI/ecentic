@@ -13,7 +13,7 @@ import { Button } from "@zenncore/web/components/button";
 import { motion } from "motion/react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import {
   Area,
   AreaChart,
@@ -201,10 +201,14 @@ export const OverviewCharts = ({
   trend,
   activity,
 }: OverviewCharts.Props) => {
+  const locale = useLocale();
+
   const { store } = useParams<{ store: string }>();
   const translate = useTranslations("dashboard.overview.charts");
   const data = trend.map((point) => point.winRate);
-  const labels = trend.map((point) => formatRelativeTime(new Date(point.date)));
+  const labels = trend.map((point) =>
+    formatRelativeTime(new Date(point.date), locale),
+  );
 
   const change = (() => {
     if (data.length < 2) return 0;
@@ -342,7 +346,7 @@ export const OverviewCharts = ({
                         </p>
                       )}
                       <p className="mt-2 text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-                        {formatRelativeTime(new Date(entry.timestamp))}
+                        {formatRelativeTime(new Date(entry.timestamp), locale)}
                       </p>
                     </div>
                   </div>

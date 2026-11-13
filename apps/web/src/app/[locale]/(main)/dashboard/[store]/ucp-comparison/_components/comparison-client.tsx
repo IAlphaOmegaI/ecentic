@@ -6,7 +6,7 @@ import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import {
   type Dispatch,
   type SetStateAction,
@@ -54,11 +54,14 @@ const summarise = (value: unknown, maxLen = 120): string => {
 };
 
 // UCP money amounts are ISO 4217 minor units (e.g. 24750 = $247.50).
-const formatMoney = (money: z.infer<typeof priceSchema>): string => {
+const formatMoney = (
+  money: z.infer<typeof priceSchema>,
+  locale: string,
+): string => {
   const value = money.amount / 100;
 
   try {
-    return new Intl.NumberFormat(undefined, {
+    return new Intl.NumberFormat(locale, {
       style: "currency",
       currency: money.currency,
     }).format(value);
@@ -67,9 +70,12 @@ const formatMoney = (money: z.infer<typeof priceSchema>): string => {
   }
 };
 
-const productPrice = (product: z.infer<typeof productSchema>): string => {
+const productPrice = (
+  product: z.infer<typeof productSchema>,
+  locale: string,
+): string => {
   const money = product.variants[0]?.price ?? product.price_range.min;
-  return formatMoney(money);
+  return formatMoney(money, locale);
 };
 
 const flushText = (
@@ -134,6 +140,8 @@ const storeStatusTone: Record<
 // One column in the side-by-side gap-px grid — the source store leads with a
 // primary-tinted header so "your" column reads at a glance.
 const StoreCard = ({ store }: { store: StoreState }) => {
+  const locale = useLocale();
+
   const translate = useTranslations("dashboard.ucpComparison");
   const isLoading =
     store.status === "discovering" || store.status === "searching";
@@ -222,7 +230,7 @@ const StoreCard = ({ store }: { store: StoreState }) => {
                   {product.title}
                 </p>
                 <span className="shrink-0 font-mono text-foreground-dimmed text-xs tabular-nums">
-                  {productPrice(product)}
+                  {productPrice(product, locale)}
                 </span>
               </li>
             ))}

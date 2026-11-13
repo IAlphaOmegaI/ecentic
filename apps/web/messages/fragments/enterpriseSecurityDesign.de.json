@@ -1,0 +1,12 @@
+{
+  "enterpriseSecurityDesign": {
+    "accessTitle": "Importieren und veröffentlichen",
+    "permissionsTitle": "Verbindungsberechtigungen",
+    "trackingTitle": "Messung von Besuchen im Onlineshop",
+    "checkoutTitle": "Checkout durch KI-Einkaufsagenten",
+    "routingTitle": "So werden Modellanfragen weitergeleitet",
+    "catalogLabel": "Verbundener Shop-Katalog",
+    "modelLabel": "AI-Anbieter",
+    "outputLabel": "Vergleiche und Korrekturen an Produktangeboten"
+  }
+}

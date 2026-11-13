@@ -14,7 +14,8 @@ export const CookieConsent = () => {
 
   return (
     <aside
-      aria-label="Cookie consent"
+      data-cookie-consent
+      aria-label={translate("title")}
       className="fixed inset-x-0 bottom-0 z-100 flex justify-center p-4 sm:p-6"
     >
       <div className="relative w-full max-w-2xl border border-accent-foreground bg-background p-5 shadow-lg sm:p-6">
@@ -41,7 +42,11 @@ export const CookieConsent = () => {
           </div>
 
           <div className="flex shrink-0 gap-2">
-            <Button color="accent" onClick={reject}>
+            <Button
+              color="accent"
+              onClick={reject}
+              data-consent-action="reject"
+            >
               {translate("action.secondary")}
             </Button>
             <Button color="primary" onClick={accept}>

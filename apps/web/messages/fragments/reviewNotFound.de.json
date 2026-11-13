@@ -1,0 +1,12 @@
+{
+  "reviewNotFound": {
+    "status": "Seite nicht gefunden",
+    "description": "Unter dieser Adresse konnten wir keine Seite finden. Gehen Sie zur Startseite zurück, kehren Sie zur vorherigen Seite zurück oder entdecken Sie die folgenden Bereiche.",
+    "exploreTitle": "Ein paar gute Ziele.",
+    "action": {
+      "primary": "Zur Startseite",
+      "secondary": "Zurück",
+      "tertiary": "ecentic entdecken"
+    }
+  }
+}

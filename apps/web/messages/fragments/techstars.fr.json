@@ -1,0 +1,78 @@
+{
+  "techstars": {
+    "meta": {
+      "title": "ecentic pour Techstars — activez votre offre fondateur",
+      "description": "Une offre ecentic exclusive pour les fondateurs Techstars : accès prolongé à Dominate, accompagnement dédié à l’intégration et tarif fondateur. Activez-la en moins de deux minutes."
+    },
+    "breadcrumb": {
+      "home": "Accueil",
+      "page": "Techstars"
+    },
+    "hero": {
+      "eyebrow": "Techstars",
+      "title": {
+        "primary": "Votre offre ecentic,",
+        "accent": "prête à être activée."
+      },
+      "description": "Une offre ecentic exclusive pour les fondateurs Techstars : accès prolongé à Dominate, accompagnement dédié à l’intégration et tarif fondateur. Activez-la en moins de deux minutes.",
+      "art": {
+        "alt": "Illustration ASCII d’une poignée de main"
+      },
+      "badge": {
+        "alt": "Techstars",
+        "label": "Offre partenaire exclusive"
+      }
+    },
+    "deal": {
+      "number": "01",
+      "title": "Ce que comprend l’offre",
+      "description": "Conçu pour les fondateurs Techstars qui préfèrent faire recommander leurs produits par les agents d’achat IA plutôt que gérer un tableur de fiches produit.",
+      "content": "ecentic vous montre comment les agents d’achat IA comparent vos produits à ceux de vos concurrents, identifie pourquoi vous gagnez ou perdez, puis réécrit vos fiches produit pour combler l’écart. L’offre Techstars donne accès à l’ensemble de la plateforme :\n\n- Accès prolongé à ecentic Dominate, avec des simulations continues sur ChatGPT, Claude, Gemini et Perplexity\n- Optimisation automatique avec publication en un clic et alertes de dérive des modèles\n- Génération UCP pour permettre aux agents de vérifier directement votre catalogue\n- Accompagnement dédié à l’intégration de votre catalogue et tarif fondateur après la période de l’offre\n\nActivez l’offre ci-dessous : nous vérifierons votre cohorte puis vous enverrons votre lien d’activation sous un jour ouvré."
+    },
+    "redeem": {
+      "number": "02",
+      "title": "Activer votre offre",
+      "description": "Dites-nous qui vous êtes et quels résultats vous souhaitez obtenir. Nous vérifions votre cohorte Techstars et activons votre offre. Aucune carte bancaire requise."
+    },
+    "howItWorks": {
+      "number": "03",
+      "title": "Comment fonctionne l’activation",
+      "description": "Trois étapes entre le formulaire et l’activation de l’offre. La plupart des fondateurs lancent leur première simulation le jour même.",
+      "content": "Ici, pas de démarches d’achat compliquées. L’objectif est de vous permettre de lancer des simulations rapidement.\n\n- Envoyez le formulaire avec votre entreprise, votre cohorte et les résultats que vous souhaitez obtenir avec l’aide d’ecentic\n- Nous vérifions votre cohorte dans le portefeuille Techstars, généralement le jour même\n- Vous recevez un lien d’activation et un accompagnement dédié pour importer votre catalogue\n\nUne fois votre catalogue importé, ecentic le teste avec les principaux modèles IA utilisés pour les achats, vous montre pourquoi les produits concurrents sont choisis et transforme ces analyses en modifications de fiches produit que vous pouvez approuver en un clic."
+    },
+    "faqSection": {
+      "number": "04",
+      "title": "FAQ sur l’activation",
+      "description": "Éligibilité, contenu de l’offre et délai d’activation."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Qui peut bénéficier de cette offre ?",
+          "answer": "Toute entreprise ayant participé à un programme Techstars actuel ou passé. Nous vérifions votre cohorte dans le portefeuille Techstars après l’envoi du formulaire ; utilisez donc l’adresse e-mail et le nom d’entreprise enregistrés chez Techstars pour accélérer le processus."
+        },
+        {
+          "question": "Que comprend exactement l’offre ?",
+          "answer": "Un accès prolongé à ecentic Dominate : simulations continues d’agents IA sur ChatGPT, Claude, Gemini et Perplexity, optimisation automatique avec publication en un clic, alertes de dérive et génération UCP. L’offre inclut également un accompagnement dédié à l’intégration de votre catalogue et un tarif fondateur à la fin de la période promotionnelle."
+        },
+        {
+          "question": "Ai-je besoin d’un compte au préalable ?",
+          "answer": "Non. Activez l’offre ici et nous vous enverrons les détails d’activation par e-mail sous un jour ouvré. Vous pouvez créer votre compte maintenant ou attendre le lien d’activation : les deux mènent au même résultat."
+        },
+        {
+          "question": "Combien de temps prend l’activation ?",
+          "answer": "Le formulaire prend environ deux minutes. La vérification est généralement effectuée le jour même et jamais au-delà d’un jour ouvré. Vous recevrez un e-mail dès que votre offre sera active."
+        }
+      ]
+    },
+    "footer": {
+      "primary": "Créer votre compte",
+      "secondary": "Réserver une démo",
+      "note": "Réservé aux fondateurs Techstars. Nous vérifions votre cohorte avant d’activer l’offre."
+    },
+    "structuredData": {
+      "offerName": "Offre fondateur ecentic Techstars",
+      "eligibleCustomerType": "Entreprises du portefeuille Techstars"
+    }
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "general": {
+    "media": {
+      "interfaceEnglish": "La interfaz del producto se muestra en inglés.",
+      "videoEnglish": "Vídeo en inglés con una transcripción en el idioma seleccionado."
+    },
+    "fileUpload": {
+      "label": "Subir archivos"
+    },
+    "dismiss": {
+      "label": "Cerrar"
+    },
+    "notifications": {
+      "label": "Notificaciones"
+    }
+  },
+  "resources": {
+    "mcpArtTitle": "Herramientas JSON-RPC"
+  },
+  "enterprisePlatform": {
+    "artworkStages": {
+      "product": "Producto",
+      "cart": "Carrito",
+      "checkout": "Pago"
+    }
+  },
+  "dashboard": {
+    "ucpPlaygroundDashboard": {
+      "cart": {
+        "action": {
+          "primary": "Abrir carrito"
+        }
+      }
+    }
+  },
+  "promptInput": {
+    "placeholder": "¿Qué te gustaría saber?",
+    "attachments": {
+      "label": "Añadir fotos o archivos"
+    },
+    "screenshot": {
+      "label": "Hacer una captura de pantalla"
+    },
+    "action": {
+      "primary": "Enviar mensaje",
+      "secondary": "Detener"
+    },
+    "errors": {
+      "acceptedTypes": "Ningún archivo tiene un formato admitido.",
+      "maximumSize": "Todos los archivos superan el tamaño máximo.",
+      "maximumCount": "Hay demasiados archivos. Algunos no se han añadido."
+    }
+  }
+}

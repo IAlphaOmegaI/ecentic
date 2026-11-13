@@ -1,0 +1,41 @@
+{
+  "enterprisePage": {
+    "engagements": {
+      "description": "Wählen Sie die Frage, die Sie beantworten müssen. Umfang und Gebühren werden vor Beginn der Arbeit vereinbart.",
+      "label": "Enterprise-Projekte ansehen",
+      "pilotAction": "Pilotablauf ansehen",
+      "items": [
+        {
+          "duration": "4 Wochen",
+          "question": "Wo beginnen wir?",
+          "path": [
+            "Eine Kategorie und einen Fragenkatalog abstimmen",
+            "Baseline festlegen",
+            "Fixliste priorisieren"
+          ]
+        },
+        {
+          "duration": "6 Wochen",
+          "question": "Was verändert sich, nachdem wir die Daten korrigiert haben?",
+          "path": [
+            "Ein Markt, eine Kategorie",
+            "Baseline, abgestimmte Änderungen, Wiederholung",
+            "Schriftliche Auswertung und nächste Entscheidung"
+          ]
+        },
+        {
+          "duration": "3 Monate",
+          "question": "Wie könnte der Kaufabschluss oder die Buchung funktionieren?",
+          "path": [
+            "Die Frage zum Kaufabschluss oder zur Buchung abstimmen",
+            "Einen Prototypen mit Dummy-Daten prüfen",
+            "Die Ergebnisse nach 3 Monaten prüfen"
+          ]
+        }
+      ]
+    },
+    "measures": {
+      "description": "Verfolgen Sie die Antwort aus der Stichprobe von der Produkterwähnung bis zu einem getesteten Kaufablauf. Vereinbaren Sie Ziel und Erhebungsmethode für jede Kennzahl."
+    }
+  }
+}

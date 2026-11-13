@@ -40,11 +40,12 @@ const MARKETING = [
   "dashboard.grid",
   "commerceFigures",
   "reviewDiff",
+  "enterprisePlatform.artworkStages",
 ] as const;
 
 export const CLIENT_MESSAGES = {
   /** Root layout: only the cookie banner renders above the route groups. */
-  root: ["cookieConsent"],
+  root: ["cookieConsent", "general.dismiss", "general.notifications"],
   marketing: MARKETING,
   home: [...MARKETING, "home.heroVideo"],
   features: [...MARKETING, "productListings"],
@@ -54,7 +55,7 @@ export const CLIENT_MESSAGES = {
   webmcpScanner: [...MARKETING, "webmcpScanner"],
   // The playground client reads its catalog through `useMessages()`, which
   // walks the object directly — the whole `dashboard` sub-tree has to be there.
-  ucpPlayground: [...MARKETING, "dashboard"],
+  ucpPlayground: [...MARKETING, "dashboard", "promptInput"],
   /** Partner deal pages (`/yc`, `/techstars`) share one redemption form. */
   deals: [...MARKETING, "dealRedemption"],
   dev: [...MARKETING, "dashboard"],
@@ -65,6 +66,7 @@ export const CLIENT_MESSAGES = {
     "pricing",
     "ucpValidator",
     "webmcpScanner",
+    "promptInput",
   ],
   auth: [
     ...CHROME,

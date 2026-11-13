@@ -27,7 +27,7 @@ import {
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
 import { useParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import type { ReactNode } from "react";
 import { useState } from "react";
 import { Link, useRouter } from "@/i18n/navigation";
@@ -57,9 +57,9 @@ const SEVERITY_CLASSES = {
   low: "rounded bg-success/10 px-1.5 py-0.5 font-semibold text-[10px] text-success uppercase tracking-[0.06em]",
 } as const;
 
-const formatPublished = (date: string | Date | null) => {
+const formatPublished = (date: string | Date | null, locale: string) => {
   if (!date) return "";
-  return new Date(date).toLocaleString(undefined, {
+  return new Date(date).toLocaleString(locale, {
     dateStyle: "medium",
     timeStyle: "short",
   });
@@ -256,6 +256,8 @@ const PublishedCard = ({
   record: Type;
   productTitle: string;
 }) => {
+  const locale = useLocale();
+
   const translate = useTranslations("dashboard.optimize");
 
   return (
@@ -267,7 +269,7 @@ const PublishedCard = ({
           </p>
           <p className="mt-1 text-foreground-dimmed text-xs">
             {translate("publishedAt", {
-              date: formatPublished(record.publishedAt),
+              date: formatPublished(record.publishedAt, locale),
             })}
           </p>
           {record.winRateBefore !== null && record.winRateAfter !== null && (

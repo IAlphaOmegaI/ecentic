@@ -1,3 +1,4 @@
+import { localeMetadata } from "./locales";
 import type { Locale } from "./routing";
 import { routing } from "./routing";
 
@@ -30,15 +31,5 @@ export const localizePath = (pathname: string, locale: Locale) => {
   return `/${locale}${path}`;
 };
 
-export const openGraphLocale = (locale: Locale) => {
-  switch (locale) {
-    case "es":
-      return "es_ES";
-    case "en":
-      return "en_US";
-    default: {
-      const exhaustive: never = locale;
-      return exhaustive;
-    }
-  }
-};
+export const openGraphLocale = (locale: Locale) =>
+  localeMetadata[locale].openGraphLocale;

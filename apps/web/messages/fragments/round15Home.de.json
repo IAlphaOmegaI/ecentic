@@ -1,0 +1,39 @@
+{
+  "commerceFigures": {
+    "repairTools": "Illustration: ein Schraubenschlüssel und ein Schraubendreher. Bewegen Sie den Mauszeiger über ein Werkzeug, um es zur Betrachtung anzuheben.",
+    "moneyStack": "Illustration: Banknoten und Münzen. Bewegen Sie den Mauszeiger über einen Stapel, um ihn zu betrachten.",
+    "readinessScanner": "Illustration: ein geöffneter Dokumentenscanner. Bewegen Sie den Mauszeiger über den Deckel oder die Seite, um das Element zu betrachten.",
+    "partReadouts": {
+      "repairTools": [
+        {
+          "value": "Schraubenschlüssel",
+          "label": "Schraubenschlüssel"
+        },
+        {
+          "value": "Schraubendreher",
+          "label": "Schraubendreher"
+        }
+      ],
+      "moneyStack": [
+        {
+          "value": "Banknoten",
+          "label": "Banknoten"
+        },
+        {
+          "value": "Münzen",
+          "label": "Münzen"
+        }
+      ],
+      "readinessScanner": [
+        {
+          "value": "Scannerdeckel",
+          "label": "Scannerdeckel"
+        },
+        {
+          "value": "Dokument",
+          "label": "Dokument"
+        }
+      ]
+    }
+  }
+}

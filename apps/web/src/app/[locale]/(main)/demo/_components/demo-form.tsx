@@ -21,6 +21,7 @@ import {
 } from "@/components/marketing/lead-form";
 import { MarketingEdgeCrosses } from "@/components/marketing/light-band";
 import { MarketingActions } from "@/components/marketing/primitives";
+import type { Locale } from "@/i18n/locales";
 import {
   type DemoAbout,
   type DemoGoals,
@@ -318,6 +319,6 @@ export namespace DemoForm {
     progressCopy: Awaited<
       ReturnType<typeof getMessages>
     >["demoPage"]["progress"];
-    locale: "en" | "es";
+    locale: Locale;
   };
 }

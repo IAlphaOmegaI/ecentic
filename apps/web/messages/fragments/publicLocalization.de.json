@@ -1,0 +1,54 @@
+{
+  "general": {
+    "media": {
+      "interfaceEnglish": "Die Produktoberfläche wird auf Englisch gezeigt.",
+      "videoEnglish": "Video auf Englisch mit einem Transkript in der ausgewählten Sprache."
+    },
+    "fileUpload": {
+      "label": "Dateien hochladen"
+    },
+    "dismiss": {
+      "label": "Schließen"
+    },
+    "notifications": {
+      "label": "Benachrichtigungen"
+    }
+  },
+  "resources": {
+    "mcpArtTitle": "JSON-RPC-Werkzeuge"
+  },
+  "enterprisePlatform": {
+    "artworkStages": {
+      "product": "Produkt",
+      "cart": "Warenkorb",
+      "checkout": "Bestellabschluss"
+    }
+  },
+  "dashboard": {
+    "ucpPlaygroundDashboard": {
+      "cart": {
+        "action": {
+          "primary": "Warenkorb öffnen"
+        }
+      }
+    }
+  },
+  "promptInput": {
+    "placeholder": "Was möchten Sie wissen?",
+    "attachments": {
+      "label": "Fotos oder Dateien hinzufügen"
+    },
+    "screenshot": {
+      "label": "Screenshot aufnehmen"
+    },
+    "action": {
+      "primary": "Nachricht senden",
+      "secondary": "Stoppen"
+    },
+    "errors": {
+      "acceptedTypes": "Keine der Dateien hat ein zulässiges Format.",
+      "maximumSize": "Alle Dateien überschreiten die maximale Größe.",
+      "maximumCount": "Zu viele Dateien. Einige wurden nicht hinzugefügt."
+    }
+  }
+}

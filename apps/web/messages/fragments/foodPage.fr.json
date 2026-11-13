@@ -1,0 +1,9 @@
+{
+  "foodPage": {
+    "description": "Sélectionnez une question d’achat pour explorer les informations source que votre équipe devrait examiner.",
+    "choose": "Choisir une question d’acheteur",
+    "facts": "Informations à examiner",
+    "source": "Commencez par les informations figurant sur l’emballage.",
+    "allFacts": "Explorer les six vérifications des données produit"
+  }
+}

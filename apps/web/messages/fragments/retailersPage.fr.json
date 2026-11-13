@@ -1,0 +1,47 @@
+{
+  "retailersPage": {
+    "challengeIntro": "Commencez par la fiche produit, comparez les éléments de preuve, puis décidez des prochaines actions à mener sur le catalogue.",
+    "catalogIntro": "Choisissez où résident vos données produit. Découvrez ce que permet chaque connexion et quelles décisions restent du ressort de votre équipe.",
+    "catalog": {
+      "select": "La source de votre catalogue",
+      "capability": "Ce que permet ce mode de connexion",
+      "dataLabel": "Données produit",
+      "decisionLabel": "Décision de publication",
+      "routes": [
+        {
+          "data": "Préparez un flux compatible ou un fichier CSV à l’aide des champs et formats pris en charge.",
+          "decision": "L’importation ne crée pas de connexion pour renvoyer les modifications vers la source. Choisissez comment les modifications approuvées y seront répercutées."
+        },
+        {
+          "data": "Consultez les diagnostics Merchant Center pour votre catalogue Shopify.",
+          "decision": "Exécutez la synchronisation complémentaire séparément après la publication des modifications de fiches produit. Elle ne corrige pas tous les écarts de prix ou de stock."
+        },
+        {
+          "data": "Connectez une boutique Shopify ou WooCommerce prise en charge et importez ses produits.",
+          "decision": "Votre équipe choisit quelles modifications de fiches produit prises en charge publier dans la boutique connectée."
+        },
+        {
+          "data": "Utilisez un flux produit compatible exporté depuis votre PIM.",
+          "decision": "Vérifiez la disponibilité d’un connecteur dédié dans la galerie d’intégrations avant de prévoir l’envoi des modifications vers la source."
+        }
+      ]
+    },
+    "pilot": {
+      "label": "Définir d’abord le périmètre du pilote",
+      "steps": [
+        {
+          "title": "Un marché, une catégorie",
+          "body": "Choisissez les produits que votre équipe peut examiner."
+        },
+        {
+          "title": "Référence de la semaine 0",
+          "body": "Définissez le point de départ de votre pilote dont le périmètre est défini."
+        },
+        {
+          "title": "Bilan de la semaine 6",
+          "body": "Examinez les résultats avant de choisir la catégorie suivante."
+        }
+      ]
+    }
+  }
+}

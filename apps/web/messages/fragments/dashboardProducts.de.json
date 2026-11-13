@@ -1,0 +1,227 @@
+{
+  "dashboard": {
+    "products": {
+      "title": "Produkte",
+      "description": "Wie jedes Produkt in Ihrem Katalog bei KI-Einkaufsagenten abschneidet.",
+      "action": {
+        "primary": "Produkt hinzufügen",
+        "addProducts": "Produkte hinzufügen"
+      },
+      "stats": {
+        "totalProducts": "Produkte insgesamt",
+        "averageWinRate": "Durchschnittliche Gewinnquote",
+        "highPerformers": "Top-Performer",
+        "needsAttention": "Benötigt Aufmerksamkeit",
+        "highPerformersHint": "Produkte mit ≥60 % Gewinnquote",
+        "needsAttentionHint": "Produkte unter 30 % Gewinnquote"
+      },
+      "embedBanner": {
+        "title": "Strukturierte Daten erreichen Ihre Produktseiten nicht",
+        "description": "Das App-Embed „Agentic structured data“ ist deaktiviert. Dadurch sehen KI-Agenten keine maschinenlesbaren Daten zu Ihren Produkten. Aktivieren Sie es einmal, damit jedes Produkt in diesem Shop strukturierte Daten erhält.",
+        "action": "App-Embed aktivieren"
+      },
+      "quality": {
+        "good": "Gut (≥75 %)",
+        "fair": "Mittel (50-74%)",
+        "poor": "Schlecht (<50 %)",
+        "distribution": "Qualitätsverteilung",
+        "avgQuality": "Durchschn. Qualität",
+        "kicker": "01.1 — Qualität"
+      },
+      "optimization": {
+        "readiness": "KI-Bereitschaft des Produkts",
+        "optimized": "Optimiert",
+        "pending": "Ausstehend",
+        "unoptimized": "Nicht optimiert",
+        "kicker": "01.2 — Optimierung"
+      },
+      "detail": {
+        "backToProducts": "Zurück zu den Produkten",
+        "optimize": "Optimieren",
+        "noSimulationsYet": "Noch keine Simulationen ausgeführt",
+        "winRate": "Gewinnquote",
+        "dataQuality": "Datenqualität",
+        "simulationsRun": "Anzahl Simulationen",
+        "bestModel": "Bestes Modell",
+        "winsSimulations": "{wins} Siege · {simulations} Simulationen",
+        "listingCompleteness": "Vollständigkeitsbewertung des Produktangebots",
+        "acrossCompetitors": "über {count, plural, one {# Wettbewerber} other {# Wettbewerber}} hinweg",
+        "modelWinRate": "Gewinnquote von {model}",
+        "tabs": {
+          "winRate": "Gewinnquote",
+          "agentReplay": "Agent Replay",
+          "battlecard": "Battlecard",
+          "optimize": "Optimieren"
+        },
+        "overview": {
+          "winRateVsCompetitor": "Gewinnquote im Vergleich zu jedem Wettbewerber",
+          "viewAll": "Alle anzeigen",
+          "noCompetitors": "Noch keine Wettbewerber erfasst.",
+          "wLTotal": "{wins} W · {losses} L",
+          "totalCount": "{count} insgesamt"
+        },
+        "replay": {
+          "empty": "Noch keine Simulationen. Führen Sie einen Scan aus, um Entscheidungs-Replays der Agenten zu sehen.",
+          "decisionReplay": "Entscheidungs-Replay von {model}",
+          "simulationCount": "{count, plural, one {# Simulation} other {# Simulationen}}",
+          "vsCompetitor": "vs. {title}",
+          "won": "Gewonnen",
+          "lost": "Verloren",
+          "reasoning": "Begründung von {model}",
+          "noReasoning": "Keine Begründung gespeichert. Entscheidung anhand der Bewertung getroffen ({productScore} vs. {competitorScore})."
+        },
+        "fields": {
+          "title": "Titel",
+          "description": "Beschreibung",
+          "price": "Preis",
+          "sku": "SKU",
+          "structuredData": "Strukturierte Daten",
+          "images": "Bilder"
+        },
+        "publish": {
+          "applyFix": "Korrektur auf Store anwenden",
+          "connectStore": "Shopify oder WooCommerce verbinden",
+          "dialogTitle": "Optimiertes Produktangebot veröffentlichen?",
+          "dialogDescription": "ecentic erstellt einen KI-optimierten Titel und eine KI-optimierte Beschreibung für „{title}“ und schreibt diese direkt in Ihren verbundenen Shop. Das bestehende Live-Produktangebot wird dabei ersetzt. Die aktuelle Gewinnquote beträgt {winRate}%.",
+          "publishing": "Wird veröffentlicht…",
+          "publishToStore": "Im Shop veröffentlichen",
+          "failed": "Veröffentlichung fehlgeschlagen",
+          "successTitle": "Produktangebot veröffentlicht",
+          "successDescription": "Ein KI-optimiertes Produktangebot wurde in Ihren Shop übertragen."
+        },
+        "applyOptimization": {
+          "title": "Die Lücke automatisch schließen",
+          "description": "ecentic überarbeitet dieses Produktangebot anhand der Stärken der erfolgreichen Wettbewerber und veröffentlicht es direkt in Ihrem Shop — ganz ohne manuelle Bearbeitung.",
+          "reviewQueue": "Prüfwarteschlange",
+          "optimizePublish": "Optimieren & veröffentlichen"
+        },
+        "shelf": {
+          "kicker": "Beobachtete Anbieter",
+          "title": "Wer dieses Produkt noch verkauft",
+          "description": "Anbieter, bei denen wir dieses Produkt gesehen haben, sortiert nach dem günstigsten Preis zuerst, einschließlich aller Preisänderungen seit der letzten Prüfung.",
+          "position": "Nr. {position} bei Google",
+          "observed": "{count, plural, one {Einmal gesehen, {when}} other {# Mal gesehen, zuletzt {when}}}",
+          "total": "{total} inklusive Versand",
+          "down": "↓ {amount} seit der letzten Prüfung",
+          "up": "↑ {amount} seit der letzten Prüfung"
+        },
+        "findOffers": {
+          "action": "Weitere Anbieter finden",
+          "finding": "Anbieter werden geprüft…",
+          "toast": {
+            "failed": "Angebote konnten nicht abgerufen werden",
+            "found": {
+              "title": "Wettbewerbsangebote gefunden",
+              "description": "{count, plural, one {# Anbieter führt dieses Produkt} other {# Anbieter führen dieses Produkt}}"
+            },
+            "none": {
+              "title": "Keine Wettbewerbsangebote",
+              "exclusive": "Kein anderer Anbieter scheint dieses Produkt zu führen.",
+              "budget": "Sie haben die Angebotsabfragen dieses Monats aufgebraucht.",
+              "unconfigured": "Die Angebotsabfrage ist in dieser Umgebung nicht aktiviert."
+            }
+          }
+        },
+        "battlecard": {
+          "empty": "Keine Wettbewerbsdaten verfügbar. Führen Sie einen Scan aus, um Battlecards zu erstellen.",
+          "headToHead": "Direkte Vergleichsergebnisse",
+          "vsProduct": "vs. {title}",
+          "won": "Gewonnen",
+          "lost": "Verloren",
+          "noWins": "Keine Siege erfasst",
+          "noLosses": "Keine Niederlagen erfasst",
+          "kicker": "01 — Battlecards"
+        },
+        "audit": {
+          "aiContentQuality": "Qualität der Inhalte für KI",
+          "brandPositioning": "Markenpositionierung",
+          "positioning": "Positionierung"
+        },
+        "optimizeTab": {
+          "title": "Produktangebot optimieren",
+          "description": "Kategoriespezifische Bewertungen der Content-Qualität für die Felder, die KI-Agenten lesen, sowie die Positionierung dieses Produktangebots für seine Zielgruppe.",
+          "completeness": "Vollständigkeit:",
+          "currentListing": "02 — Aktuelles Produktangebot",
+          "characters": "{count} Zeichen",
+          "noDescription": "Keine Beschreibung gefunden",
+          "liveOnStore": "Live im Shop",
+          "whatAgentsRead": "was KI-Agenten tatsächlich lesen",
+          "enableAppEmbed": "App-Embed aktivieren",
+          "structuredDataHelp": "Das App-Embed rendert bereits standardmäßig strukturierte Daten aus den Live-Produktinhalten. Beim Veröffentlichen wird diese KI-optimierte Version in das Metafeld {metafield} geschrieben, und das Embed rendert sie anstelle der Standarddaten.",
+          "publishStructuredData": "Optimierte strukturierte Daten veröffentlichen",
+          "publishing": "Wird veröffentlicht…",
+          "noStructuredDataYet": "Noch keine optimierten strukturierten Daten vorhanden. Das App-Embed rendert das Standard-Markup aus den Live-Produktinhalten. Erstellen Sie eine KI-optimierte Version, um diese zu überschreiben.",
+          "generateJsonLd": "Optimiertes JSON-LD generieren",
+          "generating": "Wird generiert…",
+          "generationFailed": "Generierung fehlgeschlagen",
+          "structuredDataPublished": "Optimierte strukturierte Daten veröffentlicht",
+          "structuredDataPublishedDescription": "In das Metafeld ecentic.structured_data geschrieben. Das App-Embed rendert diese Daten jetzt anstelle des Standard-Markups des Produkts. Wenn das Embed deaktiviert ist, aktivieren Sie es im Theme-Editor und klicken Sie auf „Speichern“.",
+          "openThemeEditor": "Theme-Editor öffnen",
+          "listingAuditKicker": "01 — KI-Listing-Audit",
+          "status": {
+            "optimizedByEcentic": "Optimiert von ecentic",
+            "ecenticStandard": "ecentic-Standard",
+            "storeDefault": "Shop-Standard",
+            "optimizedEmbedOff": "Optimiert — Embed deaktiviert",
+            "noStructuredData": "Keine strukturierten Daten",
+            "pageUnreachable": "Seite nicht erreichbar"
+          },
+          "embedNotice": {
+            "embedOffTitle": "App-Embed ist deaktiviert",
+            "embedOffText": "Für dieses Produkt werden optimierte strukturierte Daten veröffentlicht, aber das App-Embed „Agentic structured data“ ist deaktiviert. Deshalb erreicht kein ecentic-Markup die Seite. Wenn Sie es einmal aktivieren, gilt das für alle Produkte im Shop.",
+            "missingTitle": "Keine strukturierten Daten auf der Seite",
+            "missingText": "KI-Agenten sehen keine maschinenlesbaren Produktdaten. Aktivieren Sie das App-Embed „Agentic structured data“. Mit diesem einen Schalter werden strukturierte Daten für alle Produkte im Shop hinzugefügt.",
+            "storeDefaultTitle": "Standard-Markup des Shops",
+            "storeDefaultText": "Es ist nur das Markup des Themes aktiv, und das ist meist sehr knapp: keine GTIN, nur ein Angebot, keine Variantendetails. Aktivieren Sie das ecentic-App-Embed, das für alle Produkte gilt, und veröffentlichen Sie anschließend unten optimierte strukturierte Daten für dieses Produkt.",
+            "standardTitle": "ecentic-Standard-Markup aktiv",
+            "standardText": "Das App-Embed rendert standardmäßige strukturierte Daten aus den Live-Produktinhalten. Veröffentlichen Sie unten die KI-optimierte Version, damit Agenten für dieses Produkt umfangreicheres und wettbewerbsfähigeres Markup erhalten."
+          }
+        }
+      },
+      "add": {
+        "title": "Produkte hinzufügen",
+        "description": "Importieren Sie weitere Produkte aus der Plattform, mit der dieser Shop verbunden ist. Alles, was Sie hier hinzufügen, gehört nur zu diesem Shop.",
+        "backToProducts": "Zurück zu Produkten",
+        "catalogNeverSynced": "nie synchronisiert",
+        "catalogSynced": "synchronisiert {time}",
+        "platformSync": {
+          "pullFrom": "Von {platform} abrufen",
+          "description": "Liest {domain} erneut aus und fügt jedes Produkt hinzu, das noch nicht in diesem Shop vorhanden ist. Bereits vorhandene Produkte werden aktualisiert, sodass ihre Scans und Optimierungen erhalten bleiben.",
+          "syncing": "Synchronisierung läuft…",
+          "syncNow": "Jetzt synchronisieren",
+          "toastLoading": "Produkte werden synchronisiert…",
+          "toastSuccess": "Katalog synchronisiert",
+          "reconnectRequired": "Erneute Verbindung erforderlich",
+          "syncFailed": "Synchronisierung fehlgeschlagen",
+          "reconnect": "Neu verbinden"
+        },
+        "csv": {
+          "title": "CSV hochladen",
+          "description": "Dieser Shop wurde aus einer Datei statt aus einer verbundenen Plattform erstellt. Deshalb gibt es keine vorgelagerte Quelle zum Abrufen. Laden Sie eine weitere CSV hoch, um Produkte hinzuzufügen.",
+          "fieldLabel": "Produkt-CSV",
+          "importing": "Import läuft…",
+          "importCsv": "CSV importieren",
+          "noFileTitle": "Keine Datei ausgewählt",
+          "noFileDescription": "Laden Sie zuerst eine CSV-Datei hoch.",
+          "noProductsTitle": "Keine Produkte gefunden",
+          "noProductsDescription": "Prüfen Sie, ob Ihre CSV eine Kopfzeile mit einer Titel- oder Namensspalte enthält.",
+          "importFailed": "Import fehlgeschlagen",
+          "importSuccess": "{count, plural, one {# Produkt importiert} other {# Produkte importiert}}"
+        },
+        "platforms": {
+          "feed": "Ihr Produkt-Feed"
+        }
+      },
+      "insights": {
+        "scanResults": "Scan-Ergebnisse",
+        "simulationsCount": "{count} Simulationen",
+        "impact": "Auswirkung",
+        "simsLost": "der verlorenen Simulationen",
+        "missingAttributes": "Fehlende Attribute",
+        "noFindingTitle": "Für diesen Scan wurde kein Ergebnis erfasst.",
+        "noFindingHint": "Führen Sie den Scan erneut aus, um Erkenntnisse zu sehen.",
+        "fixThis": "Das beheben"
+      }
+    }
+  }
+}

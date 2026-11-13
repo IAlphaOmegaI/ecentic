@@ -1,0 +1,190 @@
+{
+  "productListings": {
+    "meta": {
+      "title": "Optimisation des fiches produit par IA pour les marchands",
+      "description": "Optimisation des fiches produit par IA pour les titres, descriptions et données structurées. Découvrez comment ecentic aide les marchands à améliorer leur visibilité auprès des agents IA."
+    },
+    "breadcrumb": {
+      "home": "Accueil",
+      "features": "Fonctionnalités",
+      "productListings": "Fiches produit"
+    },
+    "hero": {
+      "eyebrow": "Fiches produit",
+      "title": {
+        "primary": "Optimisation des fiches produit par IA",
+        "accent": "pour des pages qui sont choisies."
+      },
+      "description": "Les systèmes d’achat IA comparent vos données produit en quelques secondes. ecentic transforme les pages produit qui perdent les comparaisons en informations d’achat plus claires, pour les agents comme pour les acheteurs ayant une forte intention d’achat qu’ils vous envoient.",
+      "assurances": [
+        "Titres, descriptions et données structurées",
+        "Réécritures prêtes à être validées",
+        "Publication vers Shopify et WooCommerce"
+      ],
+      "art": {
+        "alt": "Illustration ASCII d’une fiche produit"
+      }
+    },
+    "whyListingsLose": {
+      "number": "01",
+      "title": "Pourquoi les fiches produit peinent dans les achats pilotés par l’IA.",
+      "description": "La plupart des problèmes de catalogue viennent du même écart : des données produit conçues pour être parcourues par des humains, pas comparées par des systèmes d’IA.",
+      "paragraphs": [
+        "Les systèmes d’achat IA ne parcourent pas une page comme le ferait un humain. Ils comparent les titres, descriptions, attributs structurés, contexte de prix, détails de compatibilité et signaux de confiance dans une fenêtre de décision très courte. Si une fiche est plus claire, plus complète et plus facile à comparer, elle l’emporte avant même que l’acheteur ne comprenne pourquoi.",
+        "La solution n’est pas de remplir une page de mots-clés. Il s’agit de rendre les informations produit plus faciles à retrouver et à évaluer, et leur fiabilité plus évidente."
+      ],
+      "principlesTitle": "Ce que font les fiches qui gagnent",
+      "principles": [
+        {
+          "title": "Indiquer clairement ce qu’est le produit",
+          "description": "Et à qui il s’adresse, dans un langage que les acheteurs comme les modèles interprètent rapidement."
+        },
+        {
+          "title": "Mettre en avant les attributs comparés",
+          "description": "Les champs propres à chaque catégorie que les acheteurs et agents évaluent le plus souvent."
+        },
+        {
+          "title": "Rendre les descriptions décisives",
+          "description": "Axées sur la décision d’achat plutôt que sur du remplissage qui masque les informations utiles."
+        },
+        {
+          "title": "Rester cohérent partout",
+          "description": "Des données structurées, des données d’offre et un contenu de page qui racontent la même histoire."
+        }
+      ]
+    },
+    "layers": {
+      "number": "02",
+      "title": "Quatre couches améliorées ensemble.",
+      "description": "Réécrire les descriptions n’est qu’une partie du travail. Une optimisation performante des fiches produit relie contenu, qualité des données et confiance dans une même démarche.",
+      "items": [
+        {
+          "title": "Identité produit",
+          "description": "Le titre apporte un contexte d’achat utile sans surcharge : type de produit, élément différenciant et variante ou détail de compatibilité qui compte vraiment."
+        },
+        {
+          "title": "Présentation du produit",
+          "description": "La description facilite la comparaison en expliquant les points essentiels, l’adéquation au cas d’usage et ce qui pourrait autrement créer un doute."
+        },
+        {
+          "title": "Exhaustivité des attributs",
+          "description": "Des dimensions, matériaux, champs de compatibilité, détails de garantie ou quantités manquants affaiblissent discrètement un produit dans les catégories concurrentielles."
+        },
+        {
+          "title": "Confiance envers le marchand",
+          "description": "Liens vers les politiques, couverture des avis, exactitude des disponibilités et contexte d’assistance clair renforcent l’offre au-delà du produit lui-même."
+        }
+      ]
+    },
+    "workflow": {
+      "number": "03",
+      "title": "Une boucle continue, pas une réécriture ponctuelle.",
+      "description": "Le workflow va de la simulation au diagnostic puis à la mise à jour de fiche prête à être validée, sans reconstruire votre catalogue depuis zéro.",
+      "paragraph": "Simulez quels produits sont choisis, identifiez les écarts, puis republiez les corrections dans la boutique. La même boucle fonctionne aussi bien pour quelques SKU prioritaires que pour des opérations catalogue continues.",
+      "panelTitle": "Simuler, diagnostiquer, publier",
+      "audiences": [
+        {
+          "title": "Découverte sans réécriture complète",
+          "description": "Améliorez la découverte des produits sans réécrire tout le catalogue d’un seul coup."
+        },
+        {
+          "title": "Catalogues vastes et hétérogènes",
+          "description": "Des centaines ou des milliers de SKU dont la qualité des données varie selon les catégories et l’ancienneté."
+        },
+        {
+          "title": "Catégories guidées par les spécifications",
+          "description": "Des produits choisis en fonction des spécifications, de la compatibilité et des signaux de confiance du marchand."
+        },
+        {
+          "title": "Opérations de contenu reproductibles",
+          "description": "Des équipes qui ont besoin d’un processus de contenu produit à grande échelle, pas de modifications ponctuelles."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Simuler",
+          "description": "Des évaluations d’achat IA sont exécutées sur vos produits et les fiches concurrentes afin que l’équipe voie quels produits sont choisis et pourquoi."
+        },
+        {
+          "title": "Diagnostiquer",
+          "description": "Analysez les attributs manquants et les raisons derrière chaque sélection : données absentes, positionnement faible ou contexte produit incomplet."
+        },
+        {
+          "title": "Publier",
+          "description": "Les titres, descriptions et données produit validés sont renvoyés directement vers les plateformes prises en charge au lieu d’être copiés manuellement."
+        }
+      ]
+    },
+    "nextSteps": {
+      "number": "04",
+      "title": "Où aller après cette page.",
+      "description": "Passez du workflow de fiche produit au contenu de plateforme ou de recherche adapté à votre prochaine étape.",
+      "items": [
+        {
+          "href": "/platforms/shopify",
+          "name": "Shopify",
+          "title": "Voir le workflow pour les catalogues Shopify",
+          "description": "Connectez vos produits, comparez les concurrents et republiez les mises à jour validées des fiches dans Shopify.",
+          "label": "Ouvrir la page Shopify",
+          "color": "primary"
+        },
+        {
+          "href": "/platforms/woocommerce",
+          "name": "WooCommerce",
+          "title": "Appliquer la même boucle aux produits WooCommerce",
+          "description": "Utilisez le parcours WooCommerce si votre équipe veut améliorer les produits sans changer de plateforme.",
+          "label": "Ouvrir la page WooCommerce",
+          "color": "accent"
+        },
+        {
+          "href": "/compare/best-ai-ecommerce-tools",
+          "name": "Comparaison",
+          "title": "Comparer les catégories d’outils IA pour l’e-commerce avant d’acheter",
+          "description": "Utilisez ce guide pour distinguer les générateurs de contenu des outils d’optimisation pour le commerce piloté par agents.",
+          "label": "Lire le guide comparatif",
+          "color": "accent"
+        },
+        {
+          "href": "/blog",
+          "name": "Blog",
+          "title": "Approfondir les données structurées, le trafic IA et la visibilité du catalogue",
+          "description": "Le blog transforme l’optimisation des fiches produit en listes de contrôle opérationnelles reproductibles pour les marchands et les équipes.",
+          "label": "Visiter le blog",
+          "color": "accent"
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "05",
+      "title": "Questions fréquentes",
+      "description": "Questions courantes de marchands qui étudient l’optimisation IA des fiches produit."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Qu’est-ce que l’optimisation IA des fiches produit ?",
+          "answer": "L’optimisation IA des fiches produit consiste à améliorer les titres, descriptions, attributs et le contexte produit associé afin que les systèmes d’achat IA et les acheteurs à forte intention puissent comparer la fiche avec davantage de confiance."
+        },
+        {
+          "question": "L’optimisation des fiches change-t-elle uniquement le contenu rédactionnel ?",
+          "answer": "Non. Un meilleur contenu aide, mais l’optimisation des fiches produit inclut aussi les données produit structurées, des spécifications plus claires, le contexte de catégorie, les éléments de confiance et les informations complémentaires qui aident un système à évaluer l’offre."
+        },
+        {
+          "question": "Quelle différence entre des descriptions produit IA et une optimisation complète des fiches ?",
+          "answer": "Les descriptions produit IA se concentrent sur une réécriture plus rapide du texte. Une optimisation complète des fiches améliore ensemble les titres, descriptions, attributs structurés et signaux de confiance du marchand afin que la fiche soit plus facile à évaluer pour les acheteurs comme pour les systèmes d’achat IA."
+        },
+        {
+          "question": "Comment ecentic aide-t-il à optimiser les fiches produit ?",
+          "answer": "ecentic simule la manière dont les agents d’achat IA comparent les produits, montre pourquoi le produit d’un concurrent est choisi, puis transforme ces constats en titres, descriptions et mises à jour de fiches améliorés que les marchands peuvent valider et publier."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Commencer l’optimisation des fiches",
+        "secondary": "Retour aux fonctionnalités"
+      },
+      "note": "Configuration en 2 minutes · Sans carte bancaire · Consultez d’abord votre score gratuit"
+    }
+  }
+}

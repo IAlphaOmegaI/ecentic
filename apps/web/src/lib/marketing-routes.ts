@@ -428,3 +428,22 @@ export const marketingRoutes = [
     changeFrequency: "weekly",
   },
 ] as const;
+
+/** Keep unknown finite detail slugs out of a streaming page shell. */
+export const isUnknownMarketingDetailPath = (pathname: string) => {
+  const decoded = (() => {
+    try {
+      return decodeURI(pathname);
+    } catch {
+      return pathname;
+    }
+  })();
+  const path = decoded.replace(/\/$/, "");
+  const isFiniteDetail =
+    /^\/(?:platform|integrations|ai-channels)\/[^/]+$/.test(path) ||
+    /^\/solutions\/(?:sectors\/)?[^/]+$/.test(path);
+
+  return (
+    isFiniteDetail && !marketingRoutes.some((route) => route.path === path)
+  );
+};

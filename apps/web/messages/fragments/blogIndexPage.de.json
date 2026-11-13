@@ -1,0 +1,26 @@
+{
+  "blogIndexPage": {
+    "featured": "Empfohlener Artikel",
+    "latest": "Neu im Journal",
+    "archive": "Nächsten Artikel finden",
+    "archiveDescription": "Entdecken Sie praxisnahe Leitfäden und Research für den nächsten Schritt Ihrer Commerce-Strategie.",
+    "topics": "Thema entdecken",
+    "topicsDescription": "Folgen Sie den Fragen hinter den Artikeln.",
+    "collection": "Sammlung",
+    "order": "Lesereihenfolge",
+    "all": "Alle Artikel",
+    "editorial": "Redaktionelle Leitfäden",
+    "recommended": "Empfohlen",
+    "newest": "Neueste zuerst",
+    "articles": "Artikel",
+    "page": "Seite",
+    "empty": "In dieser Sammlung gibt es noch keine Artikel.",
+    "loading": "Artikel werden geladen",
+    "action": {
+      "primary": "Alle Artikel durchsuchen",
+      "secondary": "Zurück",
+      "tertiary": "Weiter",
+      "quaternary": "Ressourcen entdecken"
+    }
+  }
+}

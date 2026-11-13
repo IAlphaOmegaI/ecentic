@@ -1,0 +1,224 @@
+{
+  "shopify": {
+    "meta": {
+      "title": "IA pour Shopify — optimisation des fiches produit et du catalogue",
+      "description": "IA pour les boutiques Shopify qui ont besoin de fiches produit plus performantes, d’une analyse concurrentielle plus claire et de mises à jour validées renvoyées directement dans l’interface d’administration Shopify."
+    },
+    "breadcrumb": {
+      "home": "Accueil",
+      "shopify": "IA pour les boutiques Shopify"
+    },
+    "hero": {
+      "eyebrow": "Shopify",
+      "title": {
+        "primary": "L’IA pour les boutiques Shopify qui ont besoin",
+        "accent": "de plus qu’une génération de texte automatisée."
+      },
+      "description": "Connectez votre catalogue, comprenez pourquoi les agents d’achat IA choisissent vos concurrents plutôt que vous et republiez directement dans Shopify les mises à jour validées des titres et descriptions.",
+      "assurances": [
+        "Installation en 2 minutes, sans développeur",
+        "Les mises à jour validées sont écrites dans la boutique via l’Admin API",
+        "Consultez d’abord votre score gratuit"
+      ],
+      "art": {
+        "alt": "Illustration ASCII d’un sac de shopping"
+      },
+      "badge": {
+        "alt": "Shopify",
+        "label": "Conçu pour Shopify"
+      },
+      "action": {
+        "primary": "Installer sur Shopify",
+        "secondary": "Voir le fonctionnement"
+      }
+    },
+    "why": {
+      "number": "01",
+      "title": "Pourquoi les marchands Shopify dépassent les capacités de l’IA native.",
+      "description": "La plupart des marchands Shopify finissent par atteindre les limites des outils de génération natifs. Voici ce qui vient ensuite.",
+      "paragraphs": [
+        "La plupart des équipes Shopify disposent déjà des bases : une vitrine, un catalogue et un workflow de merchandising. Le véritable défi est que la visibilité des produits dépend désormais de bien plus que du design du thème ou des performances publicitaires. Les titres, descriptions, attributs et le contexte concurrentiel influencent tous la facilité avec laquelle un produit peut être recommandé.",
+        "Le workflow IA le plus utile pour les boutiques Shopify va au-delà de la simple génération. Les marchands doivent savoir quels produits sous-performent, quelle fiche concurrente l’emporte systématiquement et quelles modifications méritent d’être déployées en priorité."
+      ],
+      "panelTitle": "À qui correspond cette étape de décision",
+      "audiences": [
+        {
+          "title": "Évaluer la catégorie",
+          "description": "Équipes qui étudient les solutions d’IA pour les boutiques Shopify et décident des outils à intégrer à leur environnement technique."
+        },
+        {
+          "title": "Compléter Shopify Magic",
+          "description": "Marchands à la recherche d’une alternative ou d’un complément à la génération de contenu native."
+        },
+        {
+          "title": "Relier les changements aux résultats",
+          "description": "Opérationnels qui veulent relier les améliorations des fiches produit à des résultats concurrentiels mesurables."
+        },
+        {
+          "title": "Boucler le cycle de publication",
+          "description": "Boutiques qui ont besoin d’un lien plus direct entre les analyses du catalogue et ce qui est réellement publié."
+        }
+      ]
+    },
+    "workflow": {
+      "number": "02",
+      "title": "Le workflow Shopify dans ecentic.",
+      "description": "Le workflow connecte le catalogue, met en évidence les écarts concurrentiels et permet de republier les améliorations dans Shopify au lieu de créer un document supplémentaire déconnecté.",
+      "paragraph": "Connectez la boutique, sélectionnez les produits qui comptent, comparez-les à ceux des concurrents, puis validez les mises à jour via l’Admin API. Vous restez dans le workflow du catalogue Shopify.",
+      "panelTitle": "Connecter, diagnostiquer, publier",
+      "outcomes": [
+        {
+          "title": "Prioriser les bons SKU",
+          "description": "Une méthode plus claire pour décider quels produits nécessitent une attention prioritaire."
+        },
+        {
+          "title": "Comprendre pourquoi des pages produit perdent face à la concurrence",
+          "description": "Une meilleure visibilité sur les raisons pour lesquelles des pages produit perdent face à des concurrents précis."
+        },
+        {
+          "title": "Vérifier avant publication",
+          "description": "Validation plus rapide des mises à jour de fiches produit avant leur mise en ligne sur la boutique."
+        },
+        {
+          "title": "Rester dans Shopify",
+          "description": "Un processus de publication adapté au workflow existant du catalogue Shopify."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Connecter et importer",
+          "description": "Installez l’application depuis le Shopify App Store et votre catalogue est importé pendant l’onboarding, sans modification du thème."
+        },
+        {
+          "title": "Choisir les produits",
+          "description": "Sélectionnez les produits qui entrent dans la boucle d’optimisation et de simulation, d’un produit phare à l’ensemble du catalogue."
+        },
+        {
+          "title": "Comparer et diagnostiquer",
+          "description": "Les produits sélectionnés sont comparés à ceux des concurrents afin d’identifier où les systèmes d’IA préfèrent une autre option, et pourquoi."
+        },
+        {
+          "title": "Valider et renvoyer",
+          "description": "Examinez la version améliorée de chaque fiche produit et republiez les modifications validées dans Shopify via l’Admin API."
+        }
+      ]
+    },
+    "compare": {
+      "number": "03",
+      "title": "Comment cela s’intègre avec Shopify Magic.",
+      "description": "La génération native aide les marchands à produire du contenu. ecentic aide à évaluer, prioriser et améliorer les fiches produit avec un lien direct vers les résultats concurrentiels.",
+      "shopifyMagic": {
+        "badge": "Shopify Magic",
+        "title": "Idéal pour rédiger plus vite.",
+        "description": "Les outils d’IA natifs font gagner du temps lorsque l’objectif est de produire du contenu, en particulier pour les premières étapes du merchandising.",
+        "strengths": [
+          "Génération de contenu native dans l’interface d’administration Shopify",
+          "Brouillons rapides de descriptions pour les premières tâches de merchandising",
+          "Variantes de texte rapides lorsque la vitesse est le seul objectif"
+        ]
+      },
+      "ecentic": {
+        "badge": "ecentic au-dessus de Shopify",
+        "title": "Conçu pour remporter la comparaison.",
+        "description": "Réécrire le texte est la partie facile. La partie utile consiste à savoir si votre page est facile à évaluer pour un système d’achat IA et si la modification proposée améliore vos chances d’être sélectionné.",
+        "strengths": [
+          "Simule la manière dont les agents d’achat IA comparent vos produits",
+          "Compare les fiches produit aux concurrents qui l’emportent régulièrement",
+          "Diagnostique pourquoi une page perd : données manquantes, positionnement faible, contexte peu clair",
+          "Transforme les résultats en mises à jour prêtes à être validées et republiées dans Shopify"
+        ]
+      },
+      "paragraph": "La génération seule suffit lorsque la vitesse est le seul objectif. La différence devient importante lorsque le catalogue, les concurrents ou le processus de validation commencent à ralentir les choses.",
+      "triggersTitle": "Quand cette différence devient importante",
+      "triggers": [
+        {
+          "title": "Taille du catalogue",
+          "description": "Le catalogue est suffisamment vaste pour que les validations manuelles ralentissent chaque mise à jour."
+        },
+        {
+          "title": "Justifier les changements",
+          "description": "L’équipe doit expliquer pourquoi une modification de fiche produit est importante avant de la publier."
+        },
+        {
+          "title": "La clarté avant le prix",
+          "description": "Les concurrents l’emportent régulièrement grâce à la clarté produit plutôt qu’au seul prix."
+        },
+        {
+          "title": "Boucles répétables",
+          "description": "Les responsables merchandising veulent un processus plutôt que des modifications ponctuelles isolées."
+        }
+      ]
+    },
+    "related": {
+      "number": "04",
+      "title": "Continuez à explorer les ressources Shopify.",
+      "description": "Poursuivez avec l’optimisation des fiches produit, la comparaison des plateformes ou les contenus du blog pour approfondir le sujet.",
+      "items": [
+        {
+          "href": "/features/product-listings",
+          "name": "Workflow",
+          "title": "Commencer par l’optimisation IA des fiches produit",
+          "description": "Découvrez comment le workflow des fiches produit améliore les titres, descriptions et données structurées produit avant publication.",
+          "label": "Voir le workflow des fiches produit",
+          "color": "primary"
+        },
+        {
+          "href": "/compare/best-ai-ecommerce-tools",
+          "name": "Comparaison",
+          "title": "Comparer les catégories d’outils IA pour le commerce en ligne avant de vous engager",
+          "description": "Utilisez le guide pour comprendre quand la génération native Shopify suffit et quand une boucle d’optimisation plus large apporte davantage de valeur.",
+          "label": "Lire le guide de comparaison",
+          "color": "accent"
+        },
+        {
+          "href": "/blog",
+          "name": "Blog",
+          "title": "Lire les guides sur le trafic IA et les données structurées",
+          "description": "Utilisez le blog pour les détails opérationnels qui renforcent durablement les améliorations de vos pages produit Shopify.",
+          "label": "Visiter le blog",
+          "color": "accent"
+        },
+        {
+          "href": "/features",
+          "name": "Fonctionnalités",
+          "title": "Explorer l’ensemble des outils IA pour le commerce en ligne",
+          "description": "Revenez à la page principale des fonctionnalités si votre équipe évalue le workflow complet plutôt qu’une seule plateforme.",
+          "label": "Ouvrir la page des fonctionnalités",
+          "color": "accent"
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "05",
+      "title": "Questions fréquentes",
+      "description": "Questions fréquentes des marchands Shopify qui évaluent des workflows d’optimisation IA."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Que signifie concrètement l’IA pour les boutiques Shopify ?",
+          "answer": "Pour les marchands Shopify, cela signifie connecter le catalogue, comprendre comment les produits se comportent dans des comparaisons réalisées avec l’IA et transformer ces résultats en mises à jour validées des fiches produit pouvant être répercutées dans Shopify."
+        },
+        {
+          "question": "Quelle est la différence avec Shopify Magic seul ?",
+          "answer": "Shopify Magic aide à générer du contenu de manière native. ecentic ajoute la simulation, la comparaison concurrentielle, le diagnostic et des workflows d’optimisation prêts à être validés afin que les marchands comprennent pourquoi leurs produits perdent et quoi corriger ensuite."
+        },
+        {
+          "question": "Les marchands Shopify peuvent-ils republier les changements dans la boutique ?",
+          "answer": "Oui. Le workflow documenté inclut l’envoi des mises à jour validées des titres et descriptions via la Shopify Admin API pour les marchands qui souhaitent conserver une boucle d’optimisation connectée au catalogue en ligne."
+        },
+        {
+          "question": "Quand les équipes Shopify doivent-elles aller au-delà des outils IA natifs ?",
+          "answer": "Lorsque l’équipe doit comprendre pourquoi un concurrent précis l’emporte régulièrement, quels attributs des fiches produit comptent le plus et comment prioriser les améliorations du catalogue sur un grand nombre de SKU. C’est à ce moment qu’un workflow d’optimisation dédié apporte plus de valeur qu’une simple génération intégrée."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Connecter votre boutique Shopify",
+        "secondary": "Retour aux fonctionnalités"
+      },
+      "note": "Installation en 2 minutes · Sans carte bancaire · Consultez d’abord votre score gratuit"
+    }
+  }
+}

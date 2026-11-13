@@ -1,0 +1,120 @@
+{
+  "dashboard": {
+    "shared": {
+      "status": {
+        "liveUpdated": "Live — aktualisiert {time}",
+        "liveLastScanned": "Live — zuletzt gescannt {time}",
+        "liveProductUpdated": "Live — aktualisiert {time}",
+        "lastSimulation": "Letzte Simulation {time}",
+        "noScansYet": "Noch keine Scans ausgeführt",
+        "noSimulationsYet": "Noch keine Simulationen ausgeführt"
+      },
+      "stats": {
+        "noDataYet": "Noch keine Daten vorhanden",
+        "overallWinRate": "Gesamte Gewinnquote",
+        "productsScanned": "Gescannte Produkte",
+        "topPerformer": "Top-Performer",
+        "biggestOpportunity": "Größte Chance",
+        "vsLastScan": "vs. letzter Scan",
+        "acrossProducts": "über {count, plural, one {# Produkt} other {# Produkte}}",
+        "slotsRemaining": "{count} Plätze frei",
+        "viewDetails": "Details anzeigen",
+        "optimizeNow": "Jetzt optimieren"
+      },
+      "sections": {
+        "performance": "01 — Performance",
+        "performanceHalf": "01.5 — Letzte Aktivitäten",
+        "catalog": "02 — Katalog",
+        "competitiveLandscape": "03 — Wettbewerbsumfeld",
+        "traffic": "03 — Besuche",
+        "insights": "04 — Erkenntnisse",
+        "agentTraffic": "04 — Besuche von Agenten"
+      },
+      "performance": {
+        "winRateByModel": "Gewinnquote nach Modell",
+        "winRateTrend": "Trend der Gewinnquote",
+        "noModelData": "Führen Sie eine Simulation aus, um die Performance pro Modell zu sehen.",
+        "notEnoughTrendData": "Nicht genügend Daten für einen Trend vorhanden.",
+        "runSimulationHint": "Starten Sie mit einer Simulation.",
+        "runMoreSimulationsHint": "Führen Sie weitere Simulationen aus, um den Verlauf zu sehen."
+      },
+      "activity": {
+        "simulationComplete": "Simulation abgeschlossen — {wins} Siege, {losses} Niederlagen",
+        "simulationInProgress": "Simulation läuft — {completed}/{total}",
+        "noActivityTitle": "Noch keine Aktivität. Führen Sie Ihre",
+        "noActivityHint": "erste Simulation aus, um hier Ergebnisse zu sehen."
+      },
+      "action": {
+        "optimizations": "Optimierungen",
+        "viewAllProducts": "Alle Produkte anzeigen",
+        "viewAll": "Alle anzeigen",
+        "runSimulation": "Simulation ausführen",
+        "ucpManager": "UCP Manager"
+      },
+      "table": {
+        "product": "Produkt",
+        "price": "Preis",
+        "winRate": "Gewinnquote",
+        "quality": "Qualität",
+        "lastScan": "Letzter Scan",
+        "brand": "Marke",
+        "simulations": "Simulationen",
+        "lastUpdated": "Zuletzt aktualisiert",
+        "competitor": "Wettbewerber",
+        "wins": "Siege",
+        "losses": "Verlorene Vergleiche",
+        "total": "Gesamt",
+        "productWinRates": "Produkt-Gewinnquoten",
+        "productCatalog": "Produktkatalog",
+        "competitorBrands": "Wettbewerbermarken",
+        "topCompetitors": "Top-Wettbewerber"
+      },
+      "empty": {
+        "noProducts": "Keine Produkte gefunden",
+        "noProductsHint": "Importieren Sie Produkte und führen Sie eine Simulation aus, um hier Gewinnquoten zu sehen.",
+        "noCompetitors": "Noch keine Wettbewerber erfasst",
+        "noCompetitorsHint": "Fügen Sie Wettbewerber hinzu, um Ihre Wettbewerbssituation zu analysieren."
+      },
+      "count": {
+        "products": "{count, plural, one {# Produkt} other {# Produkte}}",
+        "competitors": "{count, plural, one {# Wettbewerber} other {# Wettbewerber}}",
+        "productSingular": "Produkt",
+        "productsPlural": "Produkte",
+        "competitorSingular": "Wettbewerber",
+        "competitorsPlural": "Wettbewerber",
+        "totalSimulations": "{count} Simulationen insgesamt",
+        "last30d": "letzte 30 Tage"
+      },
+      "agentVisits": {
+        "title": "Besuche von KI-Agenten auf Produktseiten",
+        "description": "Im Browser sichtbare KI- und Referral-Signale aus Ihrem ScriptTag-Tracker.",
+        "panelTitle": "Besuche nach Agenten (letzte 30 Tage)",
+        "panelDescription": "Nur im Browser sichtbare KI- und Referral-Signale aus Ihrem ScriptTag-Tracker.",
+        "total": "gesamt",
+        "empty": "Noch keine Besuche von KI-Agenten erfasst. Traffic wird angezeigt, wenn Käufer über KI-Referrer oder von Ihrem Tracker erkannte User-Agents kommen.",
+        "emptyOverview": "Noch keine Besuche von KI-Agenten erfasst. Traffic wird angezeigt, wenn Käufer über KI-Referrer oder von Ihrem Tracker erkannte User-Agents kommen oder wenn der Probe-Modus aktiviert ist."
+      },
+      "present": "Vorhanden",
+      "missing": "Fehlt",
+      "cancel": "Abbrechen",
+      "sku": "SKU: {sku}",
+      "pagination": {
+        "navigation": "Seitennavigation",
+        "page": "Seite {page, number} von {pages, number}",
+        "first": "Erste Seite",
+        "previous": "Vorherige Seite",
+        "next": "Nächste Seite",
+        "last": "Letzte Seite"
+      }
+    },
+    "overview": {
+      "title": "Übersicht",
+      "description": "Wie KI-Einkaufsagenten Ihren Katalog im Vergleich zu Wettbewerbern bewerten.",
+      "tabs": {
+        "topProducts": "Top-Produkte",
+        "competitors": "Wettbewerber",
+        "agentVisits": "Agentenbesuche"
+      }
+    }
+  }
+}

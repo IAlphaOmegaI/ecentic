@@ -8,7 +8,7 @@ import {
 import { unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import { connection } from "next/server";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { type ReactNode, Suspense } from "react";
 import { Link } from "@/i18n/navigation";
 import { formatRelativeTime } from "@/lib/date";
@@ -171,7 +171,7 @@ type HubTranslate = Awaited<
   ReturnType<typeof getTranslations<"dashboard.hub">>
 >;
 
-const StoreCard = ({
+const StoreCard = async ({
   store,
   translate,
   platformLabel,
@@ -179,70 +179,73 @@ const StoreCard = ({
   store: Store.Overview;
   translate: HubTranslate;
   platformLabel: string;
-}) => (
-  <Link
-    href={`/dashboard/${store.id}`}
-    className="group relative flex flex-col border border-accent-foreground bg-background-rich transition-colors hover:border-primary/40"
-  >
-    <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-    <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-    <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-    <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+}) => {
+  const locale = await getLocale();
+  return (
+    <Link
+      href={`/dashboard/${store.id}`}
+      className="group relative flex flex-col border border-accent-foreground bg-background-rich transition-colors hover:border-primary/40"
+    >
+      <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+      <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+      <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+      <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
 
-    <div className="flex items-start justify-between gap-3 border-accent-foreground border-b p-5">
-      <div className="flex min-w-0 items-center gap-3">
-        <div className="flex size-11 shrink-0 items-center justify-center border border-accent-foreground bg-background-dimmed">
-          <ShoppingCartIcon className="size-5 text-foreground-dimmed" />
+      <div className="flex items-start justify-between gap-3 border-accent-foreground border-b p-5">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="flex size-11 shrink-0 items-center justify-center border border-accent-foreground bg-background-dimmed">
+            <ShoppingCartIcon className="size-5 text-foreground-dimmed" />
+          </div>
+          <div className="min-w-0">
+            <p className="truncate font-semibold text-foreground-rich text-lg transition-colors group-hover:text-primary-text">
+              {store.name}
+            </p>
+            <p className="truncate text-foreground-dimmed text-sm">
+              {platformLabel} · {store.domain}
+            </p>
+          </div>
         </div>
-        <div className="min-w-0">
-          <p className="truncate font-semibold text-foreground-rich text-lg transition-colors group-hover:text-primary-text">
-            {store.name}
-          </p>
-          <p className="truncate text-foreground-dimmed text-sm">
-            {platformLabel} · {store.domain}
-          </p>
-        </div>
+        <StatusPill tone={store.status === "connected" ? "success" : "neutral"}>
+          {store.status === "connected"
+            ? translate("storeCard.status.connected")
+            : store.status}
+        </StatusPill>
       </div>
-      <StatusPill tone={store.status === "connected" ? "success" : "neutral"}>
-        {store.status === "connected"
-          ? translate("storeCard.status.connected")
-          : store.status}
-      </StatusPill>
-    </div>
 
-    <div className="grid grid-cols-3 divide-x divide-accent-foreground">
-      <Metric
-        icon={<GaugeIcon className="size-4 text-primary" />}
-        label={translate("storeCard.winRate")}
-        value={`${store.winRate}%`}
-      />
-      <Metric
-        icon={<CopyIcon className="size-4 text-warning" />}
-        label={translate("storeCard.products")}
-        value={`${store.productCount}`}
-      />
-      <Metric
-        icon={<RadarIcon className="size-4 text-success" />}
-        label={translate("storeCard.agents30d")}
-        value={`${store.agentVisits}`}
-      />
-    </div>
+      <div className="grid grid-cols-3 divide-x divide-accent-foreground">
+        <Metric
+          icon={<GaugeIcon className="size-4 text-primary" />}
+          label={translate("storeCard.winRate")}
+          value={`${store.winRate}%`}
+        />
+        <Metric
+          icon={<CopyIcon className="size-4 text-warning" />}
+          label={translate("storeCard.products")}
+          value={`${store.productCount}`}
+        />
+        <Metric
+          icon={<RadarIcon className="size-4 text-success" />}
+          label={translate("storeCard.agents30d")}
+          value={`${store.agentVisits}`}
+        />
+      </div>
 
-    <div className="mt-auto flex items-center justify-between border-accent-foreground border-t p-4">
-      <span className="text-foreground-dimmed text-xs">
-        {store.lastSyncedAt
-          ? translate("storeCard.synced", {
-              time: formatRelativeTime(store.lastSyncedAt),
-            })
-          : translate("storeCard.notSyncedYet")}
-      </span>
-      <span className="inline-flex items-center gap-1 font-medium text-primary-text text-sm transition-colors group-hover:text-primary-rich">
-        {translate("storeCard.openDashboard")}
-        <ArrowRightIcon className="size-4 transition-transform group-hover:translate-x-0.5" />
-      </span>
-    </div>
-  </Link>
-);
+      <div className="mt-auto flex items-center justify-between border-accent-foreground border-t p-4">
+        <span className="text-foreground-dimmed text-xs">
+          {store.lastSyncedAt
+            ? translate("storeCard.synced", {
+                time: formatRelativeTime(store.lastSyncedAt, locale),
+              })
+            : translate("storeCard.notSyncedYet")}
+        </span>
+        <span className="inline-flex items-center gap-1 font-medium text-primary-text text-sm transition-colors group-hover:text-primary-rich">
+          {translate("storeCard.openDashboard")}
+          <ArrowRightIcon className="size-4 transition-transform group-hover:translate-x-0.5" />
+        </span>
+      </div>
+    </Link>
+  );
+};
 
 const Metric = ({
   icon,

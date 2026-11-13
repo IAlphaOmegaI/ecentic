@@ -1,0 +1,185 @@
+{
+  "enterprise": {
+    "meta": {
+      "title": "ecentic pour les entreprises : exploitez l’IA comme un canal de vente",
+      "description": "Pilotes pour les distributeurs, marques et entreprises du voyage, d’abord sur des données publiques. Objectifs convenus par écrit dès le premier jour, avec un fondateur en charge du compte."
+    },
+    "breadcrumb": {
+      "home": "Accueil",
+      "enterprise": "Enterprise"
+    },
+    "hero": {
+      "eyebrow": "Enterprise",
+      "title": {
+        "primary": "L’IA est un nouveau canal de vente.",
+        "accent": "Exploitez-le comme tel."
+      },
+      "description": "Pour les distributeurs, marques et entreprises du voyage avec de nombreuses catégories, marchés ou marques. Nous commençons avec un marché et une catégorie, sur des données publiques, et convenons des objectifs par écrit dès le premier jour.",
+      "assurances": [
+        "D’abord les données publiques. Aucun identifiant de connexion, aucun code sur votre site ni aucune donnée client pour établir la mesure de référence.",
+        "Objectifs convenus par écrit dès le premier jour.",
+        "Un fondateur en charge du compte, avec un accès direct à l’ingénierie.",
+        "Limites produit expliquées"
+      ],
+      "art": {
+        "alt": "Illustration ASCII d’une tour de bureaux"
+      },
+      "action": {
+        "primary": "Contacter l’équipe commerciale",
+        "secondary": "Voir les tarifs"
+      }
+    },
+    "why": {
+      "number": "01",
+      "title": "Commencez avec un marché et une catégorie.",
+      "description": "Les pilotes Enterprise sont cadrés autour de votre catalogue, de vos questions métier et de votre revue de sécurité.",
+      "paragraphs": [
+        "Enterprise est une prestation avec des questions convenues, des changements de données et un compte rendu écrit. Les limites actuelles du produit restent applicables.",
+        "Commencez sur des données publiques. Convenez du périmètre, des objectifs et des exigences d’accès avant le début du projet."
+      ],
+      "panelTitle": "Pour qui",
+      "audiences": [
+        {
+          "title": "Groupes de distribution et marketplaces",
+          "description": "Grands catalogues, nombreux fournisseurs et plusieurs marchés."
+        },
+        {
+          "title": "Marques grand public",
+          "description": "Produits vendus sur votre site et via des distributeurs."
+        },
+        {
+          "title": "Voyage et expériences",
+          "description": "Forfaits, billets et séjours que les utilisateurs recherchent avec l’IA."
+        },
+        {
+          "title": "Agences et partenaires",
+          "description": "Équipes boutique qui vérifient et déploient les changements convenus."
+        }
+      ]
+    },
+    "capabilities": {
+      "number": "02",
+      "title": "Conçu pour passer à l’échelle.",
+      "description": "Capacités actuelles et leurs limites.",
+      "items": [
+        {
+          "title": "Vos boutiques dans un seul compte",
+          "description": "Regroupez toutes les boutiques détenues par un même compte avec un seul identifiant de connexion. Cela n’inclut pas les équipes déléguées ni le SSO."
+        },
+        {
+          "title": "API REST",
+          "description": "Une interface publique versionnée avec OpenAPI 3.1, des réponses d’erreur typées et des limites de débit documentées."
+        },
+        {
+          "title": "Serveur MCP et CLI",
+          "description": "Workflows de découverte, de plans, de connexion et d’onboarding. Les scans du tableau de bord et les exports de trafic ne sont pas exposés aujourd’hui."
+        },
+        {
+          "title": "Synchronisation Merchant Center",
+          "description": "Envoyez les corrections publiées des fiches produit Shopify via une synchronisation distincte des données complémentaires."
+        },
+        {
+          "title": "Passage de commande par les agents IA, sous contrôle",
+          "description": "Paiement WooCommerce avec listes d’autorisation d’agents configurables, exigences de signature et limites de débit. Votre passerelle de paiement gère le paiement."
+        },
+        {
+          "title": "Nous publions ce que nous vous demandons de publier.",
+          "description": "Nos llms.txt, catalogue API, profil de paiement et endpoint MCP sont publics."
+        }
+      ],
+      "paragraph": "Les frais dépendent du périmètre et sont convenus lors du premier appel. Il s’agit de prestations de service ; le compte rendu du pilote suit la méthode convenue avec votre équipe.",
+      "panelTitle": "Fonctionnement du cadrage",
+      "scoping": [
+        {
+          "title": "Premier échange",
+          "description": "Définir la catégorie, le marché et les questions."
+        },
+        {
+          "title": "Périmètre écrit",
+          "description": "Définir la référence, les changements, les frais et le compte rendu."
+        },
+        {
+          "title": "Revue de sécurité",
+          "description": "Confirmer la gestion des données et les accès avant de connecter les systèmes."
+        }
+      ]
+    },
+    "compare": {
+      "number": "03",
+      "title": "Un plan ou un pilote cadré.",
+      "description": "Choisissez un accès produit en libre-service ou une prestation avec des objectifs convenus.",
+      "dominate": {
+        "badge": "Dominate",
+        "title": "Travail sur catalogue en libre-service.",
+        "description": "Simulations à la demande et actions de publication prises en charge, dans les limites actuelles du plan.",
+        "strengths": [
+          "Abonnement mensuel sans commission sur la performance",
+          "Les simulations s’exécutent à votre demande",
+          "Prix actuels et limites produit disponibles sur la page Tarifs"
+        ]
+      },
+      "enterprise": {
+        "badge": "Enterprise",
+        "title": "Un pilote cadré avec votre équipe.",
+        "description": "6 semaines, un marché, une catégorie. Référence en semaine 0, changements de données convenus et mêmes questions en semaine 6. Tout frais lié aux résultats et tout objectif sont convenus à l’avance.",
+        "strengths": [
+          "Un marché et une catégorie pour commencer",
+          "Référence convenue et compte rendu à la semaine 6",
+          "Un fondateur en charge du compte"
+        ]
+      },
+      "paragraph": "Le périmètre du pilote définit le travail et les accès requis. Il n’ajoute pas le SSO, les sièges d’équipe ni les exports API des résultats du tableau de bord au produit actuel.",
+      "triggersTitle": "Quand Enterprise devient le choix le plus évident",
+      "triggers": [
+        {
+          "title": "Plusieurs marques ou marchés",
+          "description": "Commencez par la catégorie et le marché qui répondent à une question métier claire."
+        },
+        {
+          "title": "Une revue de sécurité",
+          "description": "Confirmez les exigences opérationnelles et contractuelles avant l’accès."
+        },
+        {
+          "title": "Une méthode que votre équipe peut évaluer",
+          "description": "Convenez du jeu de questions, de la référence et du compte rendu écrit."
+        },
+        {
+          "title": "Un responsable identifié",
+          "description": "Travaillez avec un fondateur et votre équipe boutique existante."
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "04",
+      "title": "FAQ Enterprise",
+      "description": "Questions fréquentes sur les plans Enterprise, la sécurité et l’onboarding."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Quand devrais-je envisager un pilote grands comptes ?",
+          "answer": "Lorsque vous gérez plusieurs boutiques ou marques, disposez de milliers de produits, avez besoin d’une revue de sécurité ou souhaitez un pilote avec des objectifs convenus par écrit."
+        },
+        {
+          "question": "Comment un pilote démarre-t-il ?",
+          "answer": "Commencez avec un marché et une catégorie sur des données publiques. Convenez du périmètre, des frais et de la méthode d’encaissement avant le début du projet."
+        },
+        {
+          "question": "SOC 2 est-il disponible aujourd’hui ?",
+          "answer": "Non. Aucune certification ni audit finalisé n’est disponible aujourd’hui. Discutez de vos exigences de sécurité avant de convenir d’un pilote."
+        },
+        {
+          "question": "Pouvons-nous exporter les résultats du tableau de bord via l’API ?",
+          "answer": "Pas aujourd’hui. L’API REST publique, le serveur MCP et la CLI prennent en charge les workflows de découverte, de plans, de connexion et d’onboarding."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Réserver une démo",
+        "secondary": "Voir les tarifs"
+      },
+      "note": "D’abord les données publiques · Objectifs convenus par écrit"
+    }
+  }
+}

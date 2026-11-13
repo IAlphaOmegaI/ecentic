@@ -1,0 +1,194 @@
+{
+  "enterpriseLead": {
+    "kinds": {
+      "interest": {
+        "title": "Prévenez-moi quand ce sera en ligne",
+        "description": "Laissez vos coordonnées et nous vous contacterons au sujet de cette intégration.",
+        "action": {
+          "primary": "M’avertir"
+        }
+      },
+      "integration": {
+        "title": "Demander une intégration",
+        "description": "Indiquez ce que vous souhaitez connecter et la taille de votre catalogue.",
+        "action": {
+          "primary": "Envoyer la demande"
+        }
+      },
+      "partner": {
+        "title": "Créez quelque chose avec ecentic.",
+        "description": "Dites-nous avec qui vous travaillez et ce que vous avez en tête.",
+        "action": {
+          "primary": "Envoyer la candidature"
+        }
+      }
+    },
+    "fields": {
+      "name": {
+        "label": "Nom",
+        "placeholder": "Votre nom"
+      },
+      "email": {
+        "label": "E-mail professionnel",
+        "placeholder": "you@company.com"
+      },
+      "company": {
+        "label": "Entreprise",
+        "placeholder": "Nom de l’entreprise"
+      },
+      "website": {
+        "label": "Site web",
+        "placeholder": "yourstore.com"
+      },
+      "businessType": {
+        "label": "Type d’entreprise",
+        "placeholder": "Choisissez un type d’entreprise"
+      },
+      "catalogSize": {
+        "label": "Taille du catalogue",
+        "placeholder": "Choisissez une taille de catalogue"
+      },
+      "markets": {
+        "label": "Marchés",
+        "placeholder": "Pays ou régions où vous vendez"
+      },
+      "goals": {
+        "label": "Sur quoi souhaitez-vous travailler ?",
+        "placeholder": "Parlez-nous de votre catégorie, de vos objectifs ou de vos questions."
+      },
+      "aiChannel": {
+        "label": "Quel assistant IA est le plus important pour vous ?",
+        "placeholder": "Choisissez un assistant"
+      },
+      "tool": {
+        "label": "Quel outil ou quelle intégration ?",
+        "placeholder": "Indiquez l’outil que vous souhaitez connecter"
+      },
+      "track": {
+        "label": "Parcours partenaire",
+        "placeholder": "Choisissez un parcours"
+      },
+      "stores": {
+        "label": "Avec combien de boutiques travaillez-vous ?",
+        "placeholder": "Par exemple, 12 boutiques clientes"
+      },
+      "note": {
+        "label": "Une courte note (facultative)",
+        "placeholder": "Expliquez-nous ce que vous aimeriez construire ensemble."
+      }
+    },
+    "options": {
+      "businessType": [
+        {
+          "value": "brand",
+          "label": "Marque"
+        },
+        {
+          "value": "retailer",
+          "label": "Commerçant ou place de marché"
+        },
+        {
+          "value": "enterprise",
+          "label": "Grande entreprise"
+        },
+        {
+          "value": "agency",
+          "label": "Agence"
+        }
+      ],
+      "catalogSize": [
+        {
+          "value": "under-1000",
+          "label": "Moins de 1 000 produits"
+        },
+        {
+          "value": "1000-10000",
+          "label": "1 000 à 10 000 produits"
+        },
+        {
+          "value": "10000-100000",
+          "label": "10 000 à 100 000 produits"
+        },
+        {
+          "value": "over-100000",
+          "label": "Plus de 100 000 produits"
+        }
+      ],
+      "aiChannel": [
+        {
+          "value": "chatgpt",
+          "label": "ChatGPT"
+        },
+        {
+          "value": "claude",
+          "label": "Claude"
+        },
+        {
+          "value": "gemini",
+          "label": "Gemini"
+        },
+        {
+          "value": "copilot",
+          "label": "Microsoft Copilot"
+        },
+        {
+          "value": "perplexity",
+          "label": "Perplexity"
+        },
+        {
+          "value": "amazon",
+          "label": "Amazon"
+        },
+        {
+          "value": "unsure",
+          "label": "Je ne sais pas encore"
+        }
+      ],
+      "track": [
+        {
+          "value": "agency",
+          "label": "Agence"
+        },
+        {
+          "value": "technology",
+          "label": "Partenaire technologique"
+        },
+        {
+          "value": "creator",
+          "label": "Créateur"
+        }
+      ]
+    },
+    "validation": {
+      "required": "Veuillez remplir ce champ.",
+      "email": "Saisissez une adresse e-mail valide.",
+      "website": "Saisissez un site web valide, par exemple votresite.com.",
+      "choice": "Choisissez une option.",
+      "tooLong": "Veuillez raccourcir cette réponse."
+    },
+    "privacy": {
+      "text": "Nous utilisons ces informations pour vous répondre en anglais. Nous conservons votre demande jusqu’à 24 mois après le dernier contact ; vous pouvez demander sa suppression plus tôt.",
+      "link": "Politique de confidentialité"
+    },
+    "action": {
+      "primary": "Envoyer la demande de démo",
+      "secondary": "Retour",
+      "tertiary": "Continuer",
+      "quaternary": "Réserver l’appel de 15 minutes"
+    },
+    "pending": "Envoi…",
+    "status": {
+      "sentTitle": "Votre demande a bien été reçue.",
+      "sentDescription": "Nous utiliserons l’adresse e-mail fournie pour vous recontacter. Vous pouvez fermer cette page.",
+      "invalid": "Vérifiez vos informations et réessayez.",
+      "limited": "Trop de demandes. Veuillez réessayer dans 10 minutes.",
+      "unavailable": "Nous n’avons pas pu envoyer votre demande. Vos informations sont toujours enregistrées ici. Réessayez ou contactez support@ecentic.ai."
+    },
+    "dialog": {
+      "loading": "Chargement du formulaire…",
+      "action": {
+        "primary": "Fermer"
+      }
+    }
+  }
+}

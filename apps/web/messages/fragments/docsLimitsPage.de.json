@@ -1,0 +1,18 @@
+{
+  "docsLimitsPage": {
+    "requests": "Anfragen",
+    "window": "pro {seconds} Sekunden",
+    "publicScope": "Alle /api/v1-Endpunkte",
+    "policySource": "Von der API durchgesetzte Richtlinien",
+    "headerExample": "Beispiele für Antwort-Header",
+    "headerHint": "Wählen Sie einen Header aus, um seine Bedeutung zu lesen. Diese Werte veranschaulichen eine Antwort; sie sind kein Live-Zähler.",
+    "windowTitle": "Eine Grenze, zwei Darstellungen",
+    "remaining": "Verbleibende Anfragen",
+    "reset": "Sekunden bis zum Reset",
+    "windowHint": "In diesem Beispiel beschreiben beide Header-Formate dasselbe Zeitfenster.",
+    "responseExample": "Beispiel: 429-Antwort",
+    "retryTitle": "Warten, dann erneut versuchen",
+    "retryLabel": "Sekunden Wartezeit in diesem Beispiel",
+    "retryHint": "Lesen Sie Retry-After in der tatsächlichen Antwort. Eine Anfrage vor Ablauf dieser Zeit wird gezählt und erneut abgelehnt."
+  }
+}

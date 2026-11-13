@@ -1,0 +1,94 @@
+{
+  "reviewCode": {
+    "recordNote": "Enregistrement illustratif, pas une requête API.",
+    "platform": {
+      "connect": [
+        {
+          "key": "title",
+          "note": "Le titre source est conservé pendant l’import."
+        },
+        {
+          "key": "source",
+          "note": "L’enregistrement est déplacé de votre fichier vers le catalogue."
+        },
+        {
+          "key": "publish_access",
+          "note": "L’import d’un flux n’accorde pas d’accès en écriture à une boutique."
+        }
+      ],
+      "simulate": [
+        {
+          "key": "question",
+          "note": "Gardez la demande de l’acheteur explicite afin de donner un contexte à la comparaison."
+        },
+        {
+          "key": "decision",
+          "note": "Une simulation enregistre quelle fiche produit a été sélectionnée."
+        },
+        {
+          "key": "reasoning",
+          "note": "Le résultat renvoie à un attribut déclaré, pas à un attribut supposé."
+        }
+      ],
+      "fix": [
+        {
+          "key": "title",
+          "note": "Le titre utilise un fait déjà présent dans la source."
+        },
+        {
+          "key": "description",
+          "note": "Les mêmes informations produit sont exprimées plus clairement."
+        },
+        {
+          "key": "price_and_stock",
+          "note": "L’action sur la fiche produit ne modifie ni le prix ni le stock."
+        }
+      ],
+      "track": [
+        {
+          "key": "referrer",
+          "note": "Le domaine d’origine sert de preuve pour la classification de la visite."
+        },
+        {
+          "key": "classification",
+          "note": "Une visite dont l’origine est identifiée devient un enregistrement de suivi."
+        },
+        {
+          "key": "revenue",
+          "note": "Une visite seule ne suffit pas à établir une commande ou un chiffre d’affaires attribué."
+        }
+      ]
+    },
+    "checkout": {
+      "filename": "checkout-example.json",
+      "label": "Exigences de finalisation d’achat",
+      "note": "Exemple de pseudocode. L’exigence du numéro de téléphone est assouplie ; le paiement utilise toujours la passerelle du marchand.",
+      "rows": [
+        {
+          "key": "phone_required",
+          "before": true,
+          "after": false,
+          "note": "Le blocage vient du numéro de téléphone obligatoire que l’agent ne possède pas."
+        },
+        {
+          "key": "phone",
+          "before": null,
+          "after": null,
+          "note": "Aucune information de contact n’est inventée pour passer la vérification."
+        },
+        {
+          "key": "contact_step",
+          "before": "bloqué",
+          "after": "prêt",
+          "note": "La suppression de cette exigence permet à l’exemple de poursuivre jusqu’au paiement."
+        },
+        {
+          "key": "payment",
+          "before": "not_reached",
+          "after": "merchant_gateway",
+          "note": "La passerelle de paiement de la boutique gère le paiement ; un transfert vers l’acheteur peut encore être nécessaire."
+        }
+      ]
+    }
+  }
+}

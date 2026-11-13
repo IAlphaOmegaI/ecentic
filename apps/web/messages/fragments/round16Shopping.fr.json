@@ -1,0 +1,14 @@
+{
+  "round16Shopping": {
+    "response": "Je comparerais ces deux options en fonction de vos exigences. Voici ce que les fiches produit nous indiquent.",
+    "followUps": "Essayer une autre question d’achat",
+    "inspection": "À l’intérieur de la fiche produit",
+    "sourceRecord": "Informations existantes dans la source",
+    "evidenceHeading": "Ce que la question exige",
+    "evidenceBody": "Comparez la demande avec les informations fournies pour ce produit d’exemple.",
+    "needsDetail": "Absent de la fiche produit",
+    "stated": "Dans la fiche produit",
+    "sourceHint": "Présent dans la source d’exemple ; rendez-le explicite dans la fiche produit.",
+    "inspectionNote": "Images et données produit fournies à titre illustratif. Ceci montre une vérification des éléments de preuve, pas une recommandation en direct ni le raisonnement privé d’un modèle."
+  }
+}

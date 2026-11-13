@@ -1,0 +1,78 @@
+{
+  "yc": {
+    "meta": {
+      "title": "ecentic für Y Combinator — Angebot einlösen",
+      "description": "Ein exklusives ecentic-Angebot für Studierende bei Y Combinator: verlängerter Zugriff auf jeden Tarif, persönlich begleitete Einrichtung und Preise für Studierende. In weniger als zwei Minuten einlösen."
+    },
+    "breadcrumb": {
+      "home": "Startseite",
+      "page": "Y Combinator"
+    },
+    "hero": {
+      "eyebrow": "Y Combinator",
+      "title": {
+        "primary": "Ihr ecentic-Angebot,",
+        "accent": "bereit zum Einlösen."
+      },
+      "description": "Ein exklusives ecentic-Angebot für Studierende bei Y Combinator: verlängerter Zugriff auf jeden Tarif, persönlich begleitete Einrichtung und Preise für Studierende. In weniger als zwei Minuten einlösen.",
+      "art": {
+        "alt": "ASCII-Art-Illustration eines Handschlags"
+      },
+      "badge": {
+        "alt": "Y Combinator",
+        "label": "Exklusives Partnerangebot"
+      }
+    },
+    "deal": {
+      "number": "01",
+      "title": "Das ist im Angebot enthalten",
+      "description": "Entwickelt für YC-Studierende, die lieber Empfehlungen von KI-Einkaufsagenten gewinnen als Tabellen mit Produktangeboten manuell zu pflegen.",
+      "content": "ecentic zeigt Ihnen, wie KI-Einkaufsagenten Ihre Produkte mit Wettbewerbern vergleichen, analysiert, warum Sie gewinnen oder verlieren, und überarbeitet Ihre Produktangebote, um die Lücke zu schließen. Ihr YC-Rabatt gilt für den Plan, der zu Ihnen passt: Compete, Scale oder Dominate.\n\n- Agentensimulationen über ChatGPT, Claude, Gemini und Perplexity in jedem Plan\n- Kontinuierliche Simulationen und automatische Optimierung mit Veröffentlichung per Klick ab Scale\n- Modell-Drift-Warnungen und UCP-Generierung in Dominate, damit Agenten Ihren Katalog direkt verifizieren können\n- White-Glove-Onboarding für Ihren Katalog und Studentenpreise nach Ablauf des Angebotszeitraums\n\nLösen Sie das Angebot unten ein. Wir verifizieren anschließend Ihren Batch und senden Ihnen innerhalb eines Werktags Ihren Aktivierungslink per E-Mail."
+    },
+    "redeem": {
+      "number": "02",
+      "title": "Angebot einlösen",
+      "description": "Sagen Sie uns, wer Sie sind und wobei Sie gewinnen möchten. Wir verifizieren Ihren YC-Batch und aktivieren Ihr Angebot. Keine Kreditkarte erforderlich."
+    },
+    "howItWorks": {
+      "number": "03",
+      "title": "So funktioniert die Einlösung",
+      "description": "Drei Schritte vom Formular bis zum aktiven Angebot. Die meisten Studierenden führen noch am selben Tag ihre erste Simulation aus.",
+      "content": "Hier gibt es keine komplizierten Beschaffungsprozesse. Der ganze Punkt ist, dass Sie schnell mit Simulationen starten können.\n\n- Senden Sie das Formular mit Ihrem Unternehmen, Ihrem Batch und dem Ziel ein, bei dem Sie mit ecentic gewinnen möchten\n- Wir verifizieren Ihren Batch anhand des YC-Verzeichnisses, meist noch am selben Tag\n- Sie erhalten einen Aktivierungslink und White-Glove-Unterstützung beim Import Ihres Katalogs\n\nSobald Ihr Katalog importiert ist, prüft ecentic ihn mit den wichtigsten KI-Shopping-Modellen, zeigt Ihnen, warum Wettbewerber ausgewählt werden, und wandelt die Erkenntnisse in Änderungen an Ihren Produktangeboten um, die Sie mit einem Klick freigeben können."
+    },
+    "faqSection": {
+      "number": "04",
+      "title": "FAQ zur Einlösung",
+      "description": "Teilnahmeberechtigung, enthaltene Leistungen und wie schnell Ihr Angebot aktiv ist."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Wer qualifiziert sich für dieses Angebot?",
+          "answer": "Jedes Unternehmen aus einem aktuellen oder früheren Jahrgang von Y Combinator. Wir verifizieren Ihren Jahrgang nach dem Absenden anhand des YC-Verzeichnisses. Verwenden Sie daher die E-Mail-Adresse und den Unternehmensnamen, die bei YC hinterlegt sind, um den Prozess zu beschleunigen."
+        },
+        {
+          "question": "Was genau bekomme ich?",
+          "answer": "Ihren Studentenrabatt auf den ecentic-Tarif Ihrer Wahl: Compete, Scale oder Dominate. Jeder Tarif führt KI-Agentensimulationen über ChatGPT, Claude, Gemini und Perplexity aus; Scale ergänzt kontinuierliche Simulationen und automatische Optimierung mit Veröffentlichung per Klick; Dominate ergänzt Modell-Drift-Warnungen und UCP-Generierung. Alle Tarife enthalten White-Glove-Onboarding für Ihren Katalog und Studentenpreise nach Ende des Angebotszeitraums."
+        },
+        {
+          "question": "Brauche ich zuerst ein Konto?",
+          "answer": "Nein. Lösen Sie das Angebot hier ein und wir senden Ihnen innerhalb eines Werktags die Aktivierungsdetails per E-Mail. Sie können Ihr Konto jetzt erstellen oder auf den Aktivierungslink warten; beides führt zum gleichen Ergebnis."
+        },
+        {
+          "question": "Wie lange dauert die Einlösung?",
+          "answer": "Das Formular dauert etwa zwei Minuten. Die Verifizierung erfolgt normalerweise noch am selben Tag und nie später als innerhalb eines Werktags. Sie erhalten eine E-Mail, sobald Ihr Angebot aktiv ist."
+        }
+      ]
+    },
+    "footer": {
+      "primary": "Konto erstellen",
+      "secondary": "Demo buchen",
+      "note": "Nur für YC-Studierende. Wir verifizieren Ihren Batch, bevor wir das Angebot aktivieren."
+    },
+    "structuredData": {
+      "offerName": "ecentic Y Combinator Studentenangebot",
+      "eligibleCustomerType": "Studierende bei Y Combinator"
+    }
+  }
+}

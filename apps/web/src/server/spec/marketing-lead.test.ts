@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+import { locales } from "@/i18n/locales";
 import { marketingLeadSchema } from "@/lib/marketing-lead";
 import {
   deliverMarketingLead,
@@ -22,6 +23,15 @@ const demo = {
 };
 
 describe("marketing lead delivery", () => {
+  test.each([...locales])(
+    "accepts a complete lead submitted in %s",
+    (locale) => {
+      expect(marketingLeadSchema.parse({ ...demo, locale }).locale).toBe(
+        locale,
+      );
+    },
+  );
+
   test("rejects incomplete or invalid submissions before delivery", async () => {
     const sends: unknown[] = [];
     const dependencies = {

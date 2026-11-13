@@ -1,0 +1,40 @@
+{
+  "share": {
+    "sidebar": {
+      "headline": {
+        "line1": "Ihre Ergebnisse",
+        "line2": "sind da."
+      },
+      "points": [
+        "ChatGPT, Claude, Gemini & Perplexity haben reale Produktvergleiche simuliert",
+        "Jedes Produkt wurde direkt mit Wettbewerbern verglichen und bewertet",
+        "Dieser Bericht zeigt, wo Sie gewinnen und wo Sie verlieren"
+      ]
+    },
+    "page": {
+      "title": "Wie schlägt sich Ihr Shop?",
+      "description": "Erhalten Sie detaillierte Einblicke, wie Ihr Shop im Vergleich zum Wettbewerb abschneidet."
+    },
+    "score": {
+      "label": "KI-Agenten-Score",
+      "simulations": "{count} Simulationen",
+      "wins": "Siege",
+      "losses": "Niederlagen",
+      "messages": {
+        "high": "Vor den meisten Wettbewerbern.",
+        "medium": "Wettbewerbsfähig, aber mit Wachstumspotenzial.",
+        "low": "KI-Agenten wählen Wettbewerber aus."
+      }
+    },
+    "finding": {
+      "impact": "Auswirkung",
+      "simsLost": "der Simulationen verloren",
+      "missingAttributes": "Fehlende Attribute"
+    },
+    "cta": {
+      "title": "Bereit, dass jeder KI-Einkaufsagent Ihre Produkte auswählt?",
+      "description": "ecentic optimiert Ihre Produktangebote automatisch. Kostenloser Einstieg.",
+      "action": "Kostenlos starten"
+    }
+  }
+}

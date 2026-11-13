@@ -1,0 +1,11 @@
+{
+  "cookieConsent": {
+    "support": {
+      "action": {
+        "primary": "Ouvrir le chat d’assistance"
+      },
+      "pending": "Ouverture du chat d’assistance…",
+      "unavailable": "Le chat est indisponible. Envoyez un e-mail à support@ecentic.ai"
+    }
+  }
+}

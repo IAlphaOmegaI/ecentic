@@ -1,0 +1,53 @@
+{
+  "claudePage": {
+    "explorer": {
+      "label": "Explorer un agent d’achat conçu par un marchand",
+      "scope": "Au sein de l’expérience propre au distributeur",
+      "tools": "Outils fournis par le distributeur",
+      "stages": [
+        {
+          "id": "catalog",
+          "title": "Catalogue",
+          "headline": "Commencez avec vos informations produit",
+          "body": "Le distributeur fournit des outils de catalogue et d’inventaire afin que son agent basé sur Claude puisse rechercher des produits.",
+          "tools": [
+            "Catalogue",
+            "Inventaire"
+          ]
+        },
+        {
+          "id": "compare",
+          "title": "Comparer",
+          "headline": "Fournissez le contexte de comparaison",
+          "body": "L’agent compare les produits à l’aide des informations et des outils fournis par le distributeur, y compris son catalogue et les politiques de sa boutique.",
+          "tools": [
+            "Informations produit",
+            "Politiques de la boutique"
+          ]
+        },
+        {
+          "id": "cart",
+          "title": "Panier",
+          "headline": "Connectez vos propres outils e-commerce",
+          "body": "Les outils de panier et de paiement font partie de l’expérience conçue par le marchand. ecentic ne propose actuellement aucune connexion dédiée au paiement avec Claude.",
+          "tools": [
+            "Panier du distributeur",
+            "Paiement du distributeur"
+          ]
+        }
+      ]
+    },
+    "reading": {
+      "merchant": "Votre agent e-commerce",
+      "simulation": "Comparaison d’ecentic"
+    },
+    "entry": {
+      "tools": "Outils fournis par le distributeur",
+      "experience": "Votre propre expérience e-commerce"
+    },
+    "action": {
+      "primary": "Explorer les simulations",
+      "secondary": "Améliorer vos fiches produit"
+    }
+  }
+}

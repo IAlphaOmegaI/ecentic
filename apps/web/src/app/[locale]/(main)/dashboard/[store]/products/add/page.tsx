@@ -3,7 +3,7 @@ import { unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { Link } from "@/i18n/navigation";
 import { formatRelativeTime } from "@/lib/date";
@@ -41,6 +41,8 @@ export default ({ params }: PageProps<"/dashboard/[store]/products/add">) => (
 );
 
 const CatalogStatus = async ({ params }: { params: StoreParams }) => {
+  const locale = await getLocale();
+
   await connection();
   const { store } = await params;
   const translate = await getTranslations("dashboard.products.add");
@@ -55,7 +57,7 @@ const CatalogStatus = async ({ params }: { params: StoreParams }) => {
       {`${shared("count.products", { count: total })} · `}
       {resolved.lastSyncedAt
         ? translate("catalogSynced", {
-            time: formatRelativeTime(resolved.lastSyncedAt),
+            time: formatRelativeTime(resolved.lastSyncedAt, locale),
           })
         : translate("catalogNeverSynced")}
     </StatusPill>

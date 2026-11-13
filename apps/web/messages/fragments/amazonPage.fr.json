@@ -1,0 +1,56 @@
+{
+  "amazonPage": {
+    "journey": {
+      "label": "Explorer les parcours d’achat Shop Direct",
+      "discovery": "Découvert sur Amazon",
+      "surface": "Recherche Amazon et Alexa for Shopping",
+      "destination": "Acheté sur le site web du marchand",
+      "paths": [
+        {
+          "id": "visit",
+          "title": "Visiter le marchand",
+          "actor": "L’acheteur visite votre site web",
+          "heading": "La découverte amène l’acheteur vers vous",
+          "description": "Shop Direct peut créer des liens vers les produits de votre propre site. L’acheteur se rend sur votre site web pour acheter.",
+          "condition": "Le site marchand est la destination d’achat."
+        },
+        {
+          "id": "buy",
+          "title": "Buy for Me",
+          "actor": "L’agent d’Amazon finalise l’achat",
+          "heading": "Un agent achète sur le site du marchand",
+          "description": "Pour les offres Buy for Me éligibles, l’agent d’Amazon finalise l’achat sur le site web du marchand.",
+          "condition": "Buy for Me est disponible uniquement pour les offres éligibles."
+        }
+      ]
+    },
+    "catalog": {
+      "label": "Comment le catalogue est alimenté",
+      "source": "Votre catalogue de produits",
+      "route": "Fournisseur de solutions ou Selling Partner API",
+      "destination": "Shop Direct"
+    },
+    "access": {
+      "title": "La participation a ses propres exigences",
+      "market": "Clients aux États-Unis",
+      "eligibility": "Sites marchands éligibles",
+      "steps": [
+        {
+          "id": "register",
+          "title": "S’inscrire",
+          "description": "Gérez votre participation via l’espace gratuit Shop Direct Merchant Workspace. Une boutique sur la marketplace Amazon n’est pas requise."
+        },
+        {
+          "id": "verify",
+          "title": "Vérifier votre site web",
+          "description": "La vérification du site web est obligatoire. Les marchands éligibles peuvent participer même s’ils vendent aussi sur Amazon."
+        },
+        {
+          "id": "share",
+          "title": "Partager votre catalogue",
+          "description": "Fournissez les informations du catalogue via un fournisseur de solutions ou l’API Selling Partner d’Amazon."
+        }
+      ]
+    }
+  }
+}

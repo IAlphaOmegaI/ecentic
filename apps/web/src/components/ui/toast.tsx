@@ -9,6 +9,7 @@ import {
   ToastViewport,
   useToastManager,
 } from "@zenncore/web/components/toast";
+import { useTranslations } from "next-intl";
 
 type ToastType = "success" | "error" | "info" | "loading";
 
@@ -25,9 +26,11 @@ export namespace ToastList {
 
 export const ToastList = ({ types }: ToastList.Props) => {
   const { toasts } = useToastManager();
+  const dismiss = useTranslations("general.dismiss");
+  const notifications = useTranslations("general.notifications");
 
   return (
-    <ToastViewport>
+    <ToastViewport aria-label={notifications("label")}>
       {toasts
         .filter((toast) => types.includes(toast.type as ToastType))
         .map((toast) => {
@@ -54,7 +57,7 @@ export const ToastList = ({ types }: ToastList.Props) => {
                   {actionLabel}
                 </ToastAction>
               )}
-              <ToastClose aria-label="Close">
+              <ToastClose aria-label={dismiss("label")}>
                 <XIcon className="size-4" />
               </ToastClose>
             </Toast>

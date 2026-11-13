@@ -1,167 +1,100 @@
-# Blog i18n (English + Spanish)
+# Website locales and blog translation
 
-ecentic serves the UI in **English** (default, no URL prefix) and **Spanish** (`/es/...`) via `next-intl`.
+The website supports English (`en`, no prefix), Spanish (`es`), French (`fr`), German (`de`), Italian (`it`), Japanese (`ja`) and Simplified Chinese (`zh-CN`). `apps/web/src/i18n/locales.ts` is the shared locale contract; `routing.ts` wraps it for next-intl. French/German/Italian use their standard European locale, Japanese uses Japan, and Chinese uses mainland `zh-CN` conventions after the owner selected Simplified Chinese.
 
-Locale for Server Components is resolved with `next/root-params` in `apps/web/src/i18n/request.ts`. The root layout is `app/[locale]/layout.tsx` (no `app/layout.tsx`). Do not call `setRequestLocale`.
+Use `next/root-params` through `i18n/request.ts` for RSC locale resolution. Do not add `setRequestLocale`. Server Actions and Route Handlers pass an explicit locale to next-intl APIs. Static UI uses the catalogs and fragments under `apps/web/messages`; database article bodies are a separate content rail.
 
-Because root params reach any depth of the tree, pages and components **do not take `locale`**:
+## Authoritative source and quality policy
 
-- Read it with `getLocale()` (from `next-intl/server`) only where a value is actually needed — `localizePath`, JSON-LD, `Intl.*` formatting.
-- Use the namespace form `getTranslations("pricing")`. The `getTranslations({ locale, namespace })` override exists for **Server Actions and Route Handlers only**, where `next/root-params` throws.
-- Do not re-validate the segment per page. `request.ts` calls `notFound()` on an unknown locale, so a page-level `hasLocale` guard is dead code.
-- `params` stays only for a page's *own* dynamic segments (`blog/[slug]` destructures `slug`, not `locale`).
+Published English `blog_post` rows are the source for translation, including launch corrections already applied to those rows. Do not backfill by fetching old CMS text over a corrected English row. Existing reviewed Spanish rows are preserved unless an explicit correction workflow replaces them.
 
-Metadata route files (`opengraph-image.tsx`) compile to Route Handlers, so they still read `locale` from `params`.
+The translation policy lives under `src/i18n/translation/`. It implements the supplied translating-web, translating-core, reviewing-translations and locale skill guidance: idiomatic authored-language copy, consistent merchant terminology, unchanged facts and qualifications, protected brand/product names, numbers, URLs, syntax and code. Every batch gets a separate six-pass review; a failed unit receives at most one correction/recheck. Remaining editorial findings receive one fresh evidence-only adjudication request: it quotes the exact source and target and classifies each finding as material, not material or uncertain. It never rewrites copy. Deterministic checks, invalid evidence, material defects and uncertainty remain blocking; normal inflection and findings attached to the wrong unit can be dismissed with recorded evidence. The adjudication version is recorded separately from the translation policy. A machine review does not claim a native or human review, and language review does not imply browser verification.
 
-## Locales
+The policy version participates in each source hash. Changes to source or policy invalidate old checkpoints. Review records retain target/source pairs and separate human/runtime review provenance.
 
-| Locale | URL prefix | Content source |
-|--------|------------|----------------|
-| `en` | none (`/blog/foo`) | `blog_post` `locale=en` (BabyLoveGrowth webhook or editorial). |
-| `es` | `/es` (`/es/blog/foo`) | `blog_post` `locale=es` (same slug). Fall back to EN row until Spanish is written. |
+## Read rail: database only
 
-Same slug is shared across locales. Spanish copies are **not** published back into BabyLoveGrowth.
+Public blog pages, index, topics, Open Graph images and sitemap read published Postgres rows. Rendering never calls BabyLoveGrowth or a translation model.
 
-Index, tags, sitemap, `llms.txt`, OG images, and `generateStaticParams` / `Blog.resolve` read **Postgres only** — never live BabyLoveGrowth during prerender (multi-worker SSG would 429 their 2 req/s cap). Pages are fully static for every slug × locale; the webhook (or editorial write) purges `revalidateTag("blog")` so ISR regenerates from stored rows.
+- `Blog.getPublishedBySlug` and `Blog.resolve` return the requested locale only. Missing translations are not published as English under a localized URL.
+- `generateStaticParams` uses real published locale/slug pairs. New completed rows become available through ISR.
+- Canonical URLs, article language and reciprocal alternate links refer to actual published locale rows. Sitemap contains only real localized articles.
+- The localized blog index and topic pages show that locale's published rows; they do not hide English bodies behind translated navigation.
+- Slugs remain shared for each article. Topic labels translate, and `blogTopicSlug` supports non-Latin topic URLs.
+- `blogDate` uses the configured locale. Reading time uses `Intl.Segmenter`, so Japanese/Chinese are not counted as a single word.
+- `blog-html.ts` recognizes FAQ, takeaway and navigation headings in every supported language. FAQ pairs produce target-language JSON-LD; a body that already contains the FAQ does not receive a duplicate visible block.
+- OG rendering receives locale for the correct Japanese/Simplified Chinese font.
 
-## Database
+`BLOG_CACHE_TAG` is `blog`. Published writes purge that tag, including the sitemap's own tagged cache entry. CLI publishing happens outside a Next request; purge `blog` or deploy after the backfill so cached indexes and sitemap refresh.
 
-`blog_post` columns:
+## Write rail: durable translation jobs
 
-- `locale` — `en` | `es`
-- `source` — `local` | `blg`
-- `externalId` — BabyLoveGrowth article id when `source=blg`
-- `contentHtml` — HTML body for BLG-sourced / translated articles
-- `faqs` — `{ question, answer }[]` in the row's own locale
+`blog_post.locale` is a text column with unique `(slug, locale)`. Source values include `blg`, editorial `local`, and corrected repository content `repo`. No locale enum migration is needed.
 
-Unique on `(slug, locale)`.
+The dedicated `blog_translation` table stores one job per `(slug, locale)`:
 
-## FAQs
+- source hash and policy version;
+- reviewed completed units;
+- rejected units with target text and findings;
+- total unit count, state, retry availability and attempt count;
+- lease token/expiry and timestamps.
 
-Every post carries Q&A pairs in `blog_post.faqs`, in the row's own language.
-They are always emitted as `FAQPage` JSON-LD (`createFaqSchema`, which strips the
-`**bold**` / `[label](href)` markup the editorial renderer accepts). Answers may
-use that markup; structured data gets the prose alone.
+Migration: `apps/web/drizzle/20261112180000_blog_translation/migration.sql`. Apply the migration before deploying code that enqueues or drains jobs.
 
-Where they come from:
+`src/server/utils/blog-translation.ts` is the standalone shared write rail for cron and CLI. It uses explicit transactions because claiming and publishing span atomic database operations that ordinary CRUD delegates cannot provide. It has no Next request, RSC or Sentry dependency.
 
-- **BabyLoveGrowth** ships `faqJsonLd` on its newer articles and writes the same
-  block into `content_html`. `publishPayloadSchema` normalizes it; an absent
-  block parses to `undefined`, and `upsertLocaleRow` treats `undefined` as *keep
-  what is stored* (`[]` clears). Without that, the 15-minute reconcile would wipe
-  the hand-written pairs on the older BLG posts every time it re-ingested one.
-- **Editorial posts** own theirs in `scripts/seed.ts`, next to `takeaways`.
-- **Spanish** is translated with the rest of the metadata in `translateMetaCore`,
-  count- and order-aligned to English like `tags` and `takeaways`.
+Claims use `FOR UPDATE SKIP LOCKED` and a ten-minute lease, renewed with a token-guarded update after each reviewed stage. Checkpoints and publication require the current lease token. Final publication locks both the job and English source, checks the hash again, and upserts the target article in the same transaction as completing the job. An old worker cannot publish a stale source version.
 
-The page renders a visible FAQ block only when the body has none of its own —
-`hasFaqSection` (in `lib/blog-html.ts`) checks the split section titles per
-locale, anchored so an ordinary heading that merely mentions FAQs is not mistaken
-for the block. A heading it misses costs a duplicated block on screen, never
-missing structured data.
+A cron batch contains up to 48 text units / approximately 4,500 source characters; CLI backfill defaults to 96 units / 10,000 characters. Contiguous inline slots from the same paragraph and editorial question/answer pairs stay together, and every request receives the headline, description, section outline, selected paragraph context and up to three intact neighboring paragraphs. The complete source remains available in the guarded job and review export; it is not redundantly sent in every model request. A single longer source paragraph remains intact rather than being truncated. Enqueue reads locale coverage in two queries and upserts job groups of 100, avoiding per-locale network roundtrips. Completed reviewed batches persist immediately. Failed semantic units stay in `blockedUnits`; independent units continue without retrying those failed units. A whole target article becomes published only after every required unit passes. Transient generation failures back off and stop after three attempts. Azure capacity/rate limits instead defer work for two minutes without consuming that failure budget; the CLI stops claiming new work after a rate limit so it does not compete with other translation runs. Resume after capacity is available.
 
-Editorial posts always render the block, and their own `sections` are filtered
-through `isFaqSectionTitle` first: FAQ prose used to live there, and rows written
-before the column existed still carry it. That filter is what makes a `faqs`
-write safe to land ahead of the code that reads it — both versions of the page
-show exactly one FAQ.
+## HTML and editorial content preservation
 
-`scripts/backfill-blog-faqs.ts` filled the column for rows written before it
-existed; it is re-runnable and standalone (importing `server/app/blog` from a Bun
-script pulls `server/utils/ai`, whose `@ai-sdk/rsc` and Sentry imports only
-resolve inside Next).
+`src/lib/blog-translation-content.ts` extracts visible text and meaningful `alt`, `title`, `aria-label` and `placeholder` values using parse5 source locations. Returned text is escaped and inserted into its original source positions. It never asks the model to regenerate HTML.
 
-## Server module
+Tags, attribute syntax, URLs, IDs, classes, `data-*`, comments, image/link counts, heading order and code remain intact. Script/style/pre/code/SVG/Math/template regions and `translate="no"` regions are protected. Decorative empty alt text stays empty. CMS scripts are preserved in storage and removed by the article presentation renderer, while article/FAQ structured data is rebuilt from localized fields.
 
-All blog server logic lives in `apps/web/src/server/app/blog.ts`:
+Metadata, category/tags, introductions, takeaways, FAQ pairs, and editorial section headings/bodies are explicit units. Editorial Markdown syntax and destinations are protected. Missing output throws; no English fallback repairs incomplete arrays or FAQs. Section numbers, dates, thumbnails and source identity remain unchanged.
 
-- `"use cache"` reads for public list/get via repository `find` (tagged `blog` for ISR)
-- plain `resolve` / `listCatalogSlugs` for RSC / `generateStaticParams` (no `withContext` / `headers()`)
-- `generateStaticParams` prerenders **every slug × en/es** (Cache Components — do not set `dynamicParams`)
-- Public pages use `resolve` only — no Azure on the render path
-- `Blog.ingestPublish` (webhook) upserts **EN + ES** and purges the `blog` tag
+## Webhook and schedules
 
-BabyLoveGrowth CMS client stays in `babylovegrowth.ts` for optional admin/CMS reads. Public blog routes do not call it — catalog and bodies come from Postgres after the webhook writes.
+`POST /api/webhooks/babylovegrowth` authenticates Bearer credentials, accepts the documented camelCase/snake_case payload aliases, acknowledges quickly, and persists English plus durable target-locale jobs in `after()`. The webhook does not run six whole-article translations inside one request. A new source publication regenerates legacy target rows too; only reconciliation and bulk backfill preserve untracked reviewed translations. An absent CMS FAQ field preserves existing authored English pairs.
 
-### Locale switcher
+Two authenticated product crons have separate responsibilities:
 
-Navbar language select calls `router.replace(pathname, { locale })` (next-intl). Same path, other locale — `/blog/foo` ↔ `/es/blog/foo`. Cookie `NEXT_LOCALE` then keeps that choice on bare `/blog/...` URLs.
+- `/api/cron/blog`, every 15 minutes: fetch missing English CMS posts and enqueue missing/stale locale coverage from stored English rows. It does not overwrite corrected existing English just to fill a missing translation.
+- `/api/cron/blog-translations`, every minute: drain two independent reviewed batches. The route has a 300-second budget; model requests have a 50-second limit and one transport retry. At most five bounded model requests per batch include final evidence adjudication, keeping each worker within the route budget. Review failures are counted without logging article bodies or credentials.
 
-## Auto-translate (Azure)
+Both use the existing `CRON_SECRET` authorization wrapper. The write rail uses the configured Azure deployment through `src/i18n/translation/azure.ts`; no new provider keys are required.
 
-When BabyLoveGrowth publishes an English article, configure their **Webhook** integration:
+## Backfill and targeted review
 
-1. Settings → Publishing → Webhook → Connect
-2. URL: `https://<your-host>/api/webhooks/babylovegrowth` — **apex host, no `www`**.
-   `www.ecentic.ai` answers `POST` with a `307` to the apex; a sender that does
-   not follow redirects on `POST` drops the delivery silently and the post never
-   reaches Postgres. (Same failure the deals-redemption webhook hit.)
-3. Bearer token: value of `BABYLOVEGROWTH_WEBHOOK_SECRET`
-4. Enable automatic publish
+Run from `apps/web`:
 
-The payload is BabyLoveGrowth's published-article shape, which is **snake_case**
-for `meta_description`, `hero_image_url` and `created_at` (camelCase for
-`seedKeyword` / `keywords` / `languageCode`). `publishPayloadSchema` accepts both
-spellings and normalizes them; reading only camelCase still parsed — those fields
-are optional — and silently stored an empty description, no hero image, and
-today's date as `publishedAt`.
+```sh
+# Read-only inventory, default behavior even without --dry-run.
+bun --env-file=.env.local scripts/backfill-blog-translations.ts --dry-run --locales fr,de,it,ja,zh-CN
 
-The handler acknowledges immediately (200), then `Blog.ingestPublish`:
+# First article sample. Explicit --write is necessary for any database mutation.
+bun --env-file=.env.local scripts/backfill-blog-translations.ts --write --limit 1 --locales fr --max-batches 30 --concurrency 1
 
-1. Upserts `blog_post` `locale=en` from the payload (same slug) — **always**, even if step 2 fails
-2. Translates meta in one Azure call, then HTML in chunks (script/style blocks preserved; Markdown forbidden) so long posts are not truncated
-3. Upserts `blog_post` `locale=es` when translate succeeds (EN-only is still a success; ES failure is logged)
-4. Purges the `blog` cache tag so EN/ES static pages regenerate (ISR)
+# Resume the requested catalog; reviewed checkpoints survive interrupted runs.
+bun --env-file=.env.local scripts/backfill-blog-translations.ts --write --locales fr,de,it,ja,zh-CN --max-batches 1000 --concurrency 2
 
-Local / editorial posts: write both `en` and `es` rows when you publish (same slug). Editorial Spanish should use translated `sections` (same shape as EN); BLG Spanish uses `contentHtml`.
+# Export unresolved units without database writes; choose a fresh output path.
+bun --env-file=.env.local scripts/backfill-blog-translations.ts --dry-run --export-blocked /tmp/blog-blocked-review.json
 
-### Reconcile cron (webhook backstop)
-
-The webhook is the only write path for BLG posts, so one dropped delivery leaves
-a post permanently absent from Postgres — a 404 with nothing to notice it.
-`/api/cron/blog` (every 15 min, `Cron.reconcileBlogCatalog` → `Blog.reconcileCatalog`)
-diffs BLG's published catalog against stored rows and ingests whatever is missing
-either locale, through the same `ingestPublishCore` the webhook uses.
-
-- Reads BLG through `listArticlesFresh` / `getArticleFresh` — uncached, because
-  the `"use cache"` readers hold for days and would hide the very publish this
-  job exists to catch.
-- `limit: 1` per tick: one ingest Azure-translates a whole article. Posts with no
-  rows at all sort ahead of posts missing only ES, so a failing translation
-  cannot starve a brand-new post out of the site.
-- Handoff via `after()`, like `/api/cron/drain`, so the tick returns inside the
-  scheduler's window while the ingest runs under `maxDuration`.
-
-## Env
-
-```
-BABYLOVEGROWTH_BLOG_API_KEY=
-BABYLOVEGROWTH_BLOG_API_URL=          # optional
-BABYLOVEGROWTH_WEBHOOK_SECRET=
-# Azure gpt seat — same as the rest of the app
-AZURE_RESOURCE_NAME=
-AZURE_API_KEY=
-AZURE_DEPLOYMENT_GPT=                 # or legacy AZURE_DEPLOYMENT_GPT4O
+# Apply a reviewed targeted correction; this does not retranslate unaffected units.
+bun --env-file=.env.local scripts/backfill-blog-translations.ts --write --apply-review /tmp/blog-reviewed-patch.json
 ```
 
-## UI messages
+Options include `--batch-chars` (default 10000, up to 18000), `--batch-units` (default 96, up to 160), `--slug`, `--limit` (English article count), `--locales`, `--concurrency` (CLI maximum eight; cron remains two), `--max-batches`, and `--report-dir`. All workers share one generator's token reservation limit (`--tokens-per-minute`, default 180000); account for any concurrent catalog process before increasing it. `--request-timeout-ms` defaults to 180000 and includes local capacity waits; cron requests remain limited to 50 seconds. Send `SIGUSR1` to finish current claims and stop before safely changing worker or batch settings. Review files use unique names and are not overwritten. Inspect the reported `blocked` and `completed` counts; a successful process exit is not proof the whole catalog is finished when a batch limit was supplied.
 
-Catalogs live in `apps/web/messages/{en,es}.json`. Public chrome and marketing pages are wired through `next-intl` (`nav`, `footer`, `home`, `pricing`, `resources`, `howItWorks`, `features`, `productListings`, `enterprise`, `shopify`, `woocommerce`, `demo`, `support`, `legal`, `blog`, auth, dashboard shell, cookie consent, plus compare/UCP/partner landing shells). Optional fragment files under `apps/web/messages/fragments/` can be merged with `bun run` of `apps/web/scripts/merge-i18n-fragments.ts` when present.
+Blocked exports include the full source article, completed neighboring translations and a `sourceStillCurrent` check. Review each failed span alongside its paragraph and repeated FAQ/term group; do not rerun the same failed drafting prompt. A stale export must be refreshed before correction.
 
-### TypeScript (next-intl AppConfig)
+A targeted review patch has `{slug, locale, sourceHash, policyVersion, units:[{id,text}], review}`. `review` must cover the exact source/target pairs with the current policy, all six passes, and no unresolved findings. The writer verifies those fields, checks protected syntax/facts with the shared deterministic validator, confirms the source hash still matches, and only changes listed blocked units. A subsequent drain publishes only when the full article is complete. Review must be genuine; do not manufacture a clean review record to bypass a finding.
 
-`apps/web/global.ts` augments `next-intl` `AppConfig` with `Locale` and `Messages` from `messages/en.json`. The plugin’s `experimental.createMessagesDeclaration` regenerates `messages/en.d.json.ts` on `next typegen` / `next dev` (gitignored) so ICU argument literals stay precise.
+## Verification
 
-- String copy: `getTranslations` / `useTranslations` + `translate("key")` (typed keys).
-- Structured arrays/objects: `getMessages()` / `useMessages()` and read `messages.<namespace>.…` — **do not use `t.raw()`** for this (it stays `any` in next-intl even with AppConfig).
+Focused tests: `src/lib/spec/blog-translation-content.test.ts`, `src/lib/spec/blog-html.test.ts`, and translation-engine specs. They cover protected HTML/code/URL/accessibility bytes, incomplete output, policy/source invalidation, CJK topics and reading time, localized FAQ detection, and continuing independent units after a rejection.
 
-### Translation key conventions
-
-1. **camelCase + dots** — All key segments are camelCase; hierarchy uses dots (`signIn.fields.email.label`). Top-level namespaces are camelCase (`nav`, `signIn`, `cookieConsent`), not PascalCase.
-2. **Namespace per route/feature** — e.g. `signIn`, `forgotPassword`, `home`, `blog`, `dashboard`, `general` (shared chrome only).
-3. **Actions are role-based** — Prefer `action.primary` / `action.secondary` / `action.tertiary` / `action.quaternary` over verb keys (`submit`, `cancel`, `installNow`). Use `quaternary` for the fourth / paired slot (e.g. close when primary is open, back when primary is continue) — never `primaryInverse`.
-4. **States** — Group under `states` (`states.pending.primary`, `states.success.primary`, `states.empty.primary`). Errors under `{feature}.error.*`.
-5. **Fields** — `{feature}.fields.{name}.label` (and related field keys as needed).
-6. **Legal / long-form** — When extracted, use `legal.termsAndConditions.sections.{n}.title|content` (numeric section ids) so the UI can loop over sections.
-
-Examples: `nav.action.primary`, `nav.menu.action.quaternary`, `cookieConsent.action.secondary`, `blog.states.empty.primary`, `signIn.fields.email.label`, `dashboard.nav.overview`.
+Before release, check representative articles in every language, then inspect live locale counts, blocked jobs, canonical/hreflang, sitemap, OG glyphs and mobile text overflow. Translation QA and runtime UI review are separate gates.

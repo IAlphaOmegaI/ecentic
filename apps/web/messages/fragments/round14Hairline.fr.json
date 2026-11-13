@@ -1,0 +1,113 @@
+{
+  "commerceFigures": {
+    "sofa": "Illustration : un canapé deux places. Pointez un coussin pour le soulever et inspecter son revêtement.",
+    "headphones": "Illustration : un casque audio circum-aural. Pointez un écouteur pour le soulever et inspecter son rembourrage.",
+    "lipstick": "Illustration : un rouge à lèvres sans capuchon. Pointez le rouge à lèvres ou le capuchon pour le soulever et l’inspecter.",
+    "custom": {
+      "inspecting": "Inspection en cours"
+    },
+    "partReadouts": {
+      "sofa": [
+        {
+          "value": "coussin 1",
+          "label": "Coussin gauche"
+        },
+        {
+          "value": "coussin 2",
+          "label": "Coussin droit"
+        }
+      ],
+      "headphones": [
+        {
+          "value": "écouteur gauche",
+          "label": "Écouteur gauche"
+        },
+        {
+          "value": "écouteur droit",
+          "label": "Écouteur droit"
+        }
+      ],
+      "lipstick": [
+        {
+          "value": "rouge à lèvres",
+          "label": "Bâton de rouge à lèvres"
+        },
+        {
+          "value": "capuchon",
+          "label": "Capuchon du rouge à lèvres"
+        }
+      ],
+      "wellnessBottle": [
+        {
+          "value": "bouchon",
+          "label": "Bouchon de la bouteille"
+        },
+        {
+          "value": "gélule",
+          "label": "Gélule"
+        }
+      ],
+      "wineBottle": [
+        {
+          "value": "bouchon",
+          "label": "Bouchon"
+        },
+        {
+          "value": "bouteille",
+          "label": "Bouteille de vin"
+        },
+        {
+          "value": "étiquette",
+          "label": "Étiquette de la bouteille"
+        }
+      ],
+      "packagedFood": [
+        {
+          "value": "opercule",
+          "label": "Scellé de l’emballage"
+        },
+        {
+          "value": "sachet",
+          "label": "Sachet alimentaire"
+        },
+        {
+          "value": "fenêtre",
+          "label": "Fenêtre sur les ingrédients"
+        }
+      ],
+      "sneaker": [
+        {
+          "value": "semelle",
+          "label": "Semelle"
+        },
+        {
+          "value": "tige",
+          "label": "Tige"
+        },
+        {
+          "value": "lacets",
+          "label": "Lacets"
+        }
+      ],
+      "suitcase": [
+        {
+          "value": "poignée",
+          "label": "Poignée"
+        },
+        {
+          "value": "coque",
+          "label": "Coque"
+        },
+        {
+          "value": "roues",
+          "label": "Roues"
+        }
+      ]
+    },
+    "wellnessBottle": "Illustration : une bouteille bien-être et une gélule. Pointez le bouchon ou la gélule pour les soulever et les examiner.",
+    "wineBottle": "Illustration : une bouteille de vin avec un bouchon et une étiquette. Pointez une partie pour la soulever et l’examiner.",
+    "packagedFood": "Illustration : un sachet alimentaire avec un scellé et une fenêtre sur les ingrédients. Pointez une partie pour la soulever et l’examiner.",
+    "sneaker": "Illustration : une sneaker avec une semelle arrondie, une tige et des lacets. Pointez une partie pour la soulever et l’examiner.",
+    "suitcase": "Illustration : une valise à roulettes avec une poignée extensible. Pointez une partie pour la soulever et l’examiner."
+  }
+}

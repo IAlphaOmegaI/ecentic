@@ -1,0 +1,66 @@
+{
+  "browserIntegrations": {
+    "entries": {
+      "shopify": "Verbinden Sie sich per Shopify OAuth, um Ihren Katalog zu importieren, ausgewählte Korrekturen an Produktangeboten zu veröffentlichen und erkannte AI-Referrals nachzuverfolgen. Der kostenlose Onboarding-Scan umfasst bis zu 10 Produkte. Laufende Funktionen für Produktangebote erfordern aktiviertes Pay-as-you-go oder ein aktives Compete-, Scale- oder Dominate-Abonnement; die Produkt- und Simulationslimits der einzelnen Pläne finden Sie auf der Preisseite.",
+      "woocommerce": "Installieren Sie das kostenlose Plugin, um Ihren Katalog zu verbinden und kompatiblen Agenten Produktsuche, Preisberechnungen für Warenkörbe und Kaufabschluss über Ihr eigenes Gateway anzubieten. Testen Sie bis zu 10 Produkte im kostenlosen Onboarding-Scan. Laufende Funktionen für ecentic-Produktangebote erfordern eine aktivierte nutzungsabhängige Abrechnung oder ein aktives Abonnement; zum Veröffentlichen ist zusätzlich Lese-/Schreibzugriff erforderlich. Die Nachverfolgung von KI-Besuchen ist für WooCommerce nicht verfügbar.",
+      "bigcommerce": "Eine native BigCommerce-App steht auf der Entwicklungsliste. Sie kann heute noch nicht installiert werden, und es wurde kein Starttermin zugesagt. Entdecken Sie die unterstützten Produktdatenformate oder registrieren Sie Ihr Interesse an der direkten Verbindung.",
+      "adobe": "Exportieren Sie Ihren Adobe Commerce-Katalog als CSV und ordnen Sie die Felder den von ecentic unterstützten Spalten zu, bevor Sie ihn hochladen. Importierte Datensätze können mit benannten Wettbewerbern verglichen werden; über diesen Weg werden keine Änderungen zurück an Adobe Commerce veröffentlicht und keine automatische Aktualisierung durchgeführt.",
+      "shopware": "Exportieren Sie Produkte aus Shopware, konvertieren Sie die Datei in CSV mit Komma-Trennung und ordnen Sie die unterstützten Spalten vor dem Upload zu. Aktualisieren Sie den Katalog in Shopware und importieren Sie ihn erneut, wenn sich etwas ändert; eine direkte Veröffentlichungsverbindung ist weiterhin geplant.",
+      "wix": "Importieren Sie einen CSV-Export physischer Produkte aus Wix Stores und ordnen Sie ihn den von ecentic unterstützten Feldern zu. Nutzen Sie den importierten Katalog für Vergleiche und übernehmen Sie Änderungen anschließend in Wix, bevor Sie erneut importieren. Eine native Wix-App ist geplant.",
+      "prestashop": "Exportieren Sie eine Produkt-CSV aus PrestaShop und ordnen Sie die Spalten vor dem Import zu. ecentic speichert unterstützte Produktdatensätze für Vergleiche; über diesen Exportweg werden keine Daten in Ihren Shop zurückgeschrieben und der Katalog nicht automatisch aktualisiert.",
+      "googleMerchant": "Senden Sie bei verbundenen Shopify-Shops veröffentlichte Korrekturen an Produktangeboten als ergänzende Datenquelle an Google Merchant Center. Sie verbinden das Merchant Center-Konto und führen die Synchronisierung separat aus. Die Konto- und Produktanforderungen von Google gelten weiterhin; Ihr Shop wird dadurch nicht für den nativen Google-Kaufabschluss registriert.",
+      "productFeeds": "Importieren Sie einen unterstützten XML- oder JSON-Feed, um Produktdatensätze in ecentic zu speichern. Wählen Sie bis zu 10 Produkte für den kostenlosen Onboarding-Scan aus; laufende Dashboard-Funktionen für Produktangebote nutzen Ihren aktivierten Tarif. Importieren Sie erneut, wenn sich die Quelle ändert, da geplante Feed-Aktualisierungen und das Zurückschreiben in den Feed nicht verfügbar sind.",
+      "csv": "Laden Sie kommagetrennte Produktdaten mit den unterstützten Spaltennamen und einem Produkt pro Zeile hoch. Prüfen Sie die Zuordnung, bevor Sie Produkte für einen Scan auswählen. Der Upload speichert Datensätze in ecentic und lässt Ihre Quelldatei unverändert.",
+      "storeAddress": "Importieren Sie einen öffentlich zugänglichen Shopify- oder WooCommerce-Katalog über die Shop-Adresse. So erhalten Sie einen schreibgeschützten Einstiegspunkt ohne Plattform-Zugangsdaten. Verbinden Sie später die verifizierte Shopify-App oder die WooCommerce-Integration, wenn Sie Änderungen veröffentlichen möchten.",
+      "microsoftMerchant": "Eine dedizierte Merchant-Feed-Verbindung für Microsoft Copilot ist geplant. Sie ist heute noch nicht verfügbar. Die Kanalseite erläutert die aktuellen Anforderungen sowie die Shopify-Oberfläche zur Referral-Nachverfolgung, die bereits funktioniert.",
+      "amazonShopDirect": "Eine Katalogverbindung für Amazons US Shop Direct-Programm steht auf der Entwicklungsliste. Es gibt heute keine ecentic-Verbindung zum Aktivieren; Programmverfügbarkeit und Händlerzulassung unterliegen weiterhin den Anforderungen von Amazon.",
+      "chatgptFeed": "Ein dedizierter ChatGPT-Produktfeed-Export ist geplant. Heute kann ecentic simulieren, wie das ChatGPT-Modell Ihr Produktangebot mit dem eines Wettbewerbers vergleicht; eine Simulation übermittelt Ihren Katalog nicht an ChatGPT und registriert Ihren Shop nicht für den Kaufabschluss.",
+      "perplexityFeed": "Eine Merchant-Katalogfeed-Verbindung zu Perplexity ist geplant. Sie ist getrennt von der AI-Referral-Nachverfolgung für verbundene Shopify-Shops und derzeit kein Feed, den Sie in ecentic aktivieren können.",
+      "google": "Nutzen Sie Gemini in Shop-Simulationen, um Ihre Produkte mit benannten Wettbewerbern zu vergleichen. Die ergänzende Synchronisierung mit Google Merchant Center ist eine separate Shopify-Verbindung. Das native Google-Checkout-Onboarding von ecentic ist weiterhin geplant.",
+      "chatgpt": "Vergleichen Sie Ihr Produktangebot in einer simulierten Kaufentscheidung mit einem benannten Wettbewerber mithilfe des ChatGPT-Modells. Dies zeigt die Modellbegründung, nicht echten Käufer-Traffic. Eine dedizierte ecentic ChatGPT-App und ein Produktfeed-Export sind separat geplant.",
+      "claude": "Beziehen Sie Claude in simulierte Vergleiche zwischen Ihrem Produktangebot und dem eines benannten Wettbewerbers ein. Prüfen Sie die berücksichtigten Felder und die Begründung für die Auswahl. Dies ist Modellprüfung innerhalb von ecentic, keine Merchant-Feed- oder Checkout-Verbindung zu Claude.",
+      "copilot": "Sehen Sie heute erkannte Copilot-Referrals in verbundenen Shopify-Shops. Die Verbindung zum Microsoft Merchant Center-Feed ist weiterhin geplant; dieser Eintrag stellt daher keine aktive Katalogübermittlung oder Registrierung für den Kaufabschluss dar.",
+      "perplexity": "Sehen Sie heute erkannte Perplexity-Referrals in verbundenen Shopify-Shops. Perplexity-Shop-Scans und ein dedizierter Merchant-Feed stehen auf der Entwicklungsliste; derzeit können Sie keine der beiden Verbindungen aktivieren.",
+      "amazon": "Informieren Sie sich über den Amazon Shop Direct-Weg und registrieren Sie Ihr Interesse an einer ecentic-Katalogverbindung. Der Connector ist geplant, ohne zugesagten Starttermin; Amazon entscheidet über Händlerberechtigung und Programmverfügbarkeit.",
+      "paymentGateway": "Mit dem WooCommerce-Plugin können kompatible Agenten eine Bestellung erstellen und den Käufer zur Zahlung an Ihren Checkout-Link weiterleiten. Die Zahlung wird über Ihr WooCommerce-Gateway abgewickelt, und Sie bleiben der Verkäufer. Optionale serverseitige Stripe-Zahlungen erfordern eine separate Konfiguration.",
+      "stripeAcs": "Eine dedizierte Verbindung zur Stripe Agentic Commerce Suite ist geplant. Sie ist getrennt vom optionalen Stripe-Zahlungsablauf im WooCommerce-Plugin und kann heute nicht als ecentic-Integration aktiviert werden.",
+      "plytix": "Exportieren Sie Produktdaten aus Plytix als CSV und ordnen Sie sie den von ecentic unterstützten Spalten zu. Importieren Sie die Datensätze für Vergleiche und importieren Sie sie nach Änderungen erneut. Dies ist ein Exportweg ohne direkte PIM-Verbindung oder automatisches Zurückschreiben.",
+      "akeneo": "Eine direkte Akeneo-Verbindung steht auf der Entwicklungsliste. Native Synchronisierung oder Zurückschreiben sind heute in ecentic nicht verfügbar. Registrieren Sie das Interesse Ihres Teams und beschreiben Sie den benötigten Katalog-Workflow.",
+      "salsify": "Eine direkte Salsify-Verbindung steht auf der Entwicklungsliste. Native Synchronisierung oder Zurückschreiben sind heute in ecentic nicht verfügbar. Registrieren Sie Ihr Interesse und teilen Sie den Produktdaten-Workflow mit, den Ihr Team benötigt."
+    },
+    "flow": {
+      "eyebrow": "Katalogimport",
+      "title": "Ein Katalog, drei Importwege",
+      "description": "Nutzen Sie die Produktdaten, die Sie bereits pflegen. Jeder unterstützte Importweg speichert Datensätze in ecentic für Vergleiche und Prüfungen von Produktangeboten.",
+      "sources": {
+        "productFeeds": "Ein unterstützter XML- oder JSON-Produktfeed.",
+        "csv": "Zugeordnete Spalten, ein Produkt pro Zeile.",
+        "storeAddress": "Ein öffentlicher Shopify- oder WooCommerce-Katalog."
+      },
+      "catalog": {
+        "title": "Ihr ecentic-Katalog",
+        "description": "Prüfen Sie die importierten Felder und wählen Sie dann die Produkte aus, die Sie vergleichen möchten.",
+        "fields": [
+          "Produkttitel",
+          "Beschreibung",
+          "Preis",
+          "Produkt-URL"
+        ]
+      },
+      "outputs": {
+        "simulate": {
+          "title": "Simulieren",
+          "description": "Vergleichen Sie ausgewählte Produkte mit benannten Wettbewerbern mithilfe der Store-Scan-Modelle."
+        },
+        "audit": {
+          "title": "Prüfen",
+          "description": "Prüfen Sie die Qualität der Produktangebote und stichprobenartig, wie gut der Onlineshop für Agenten vorbereitet ist. Nutzen Sie die Ergebnisse als Orientierung für die Änderungen Ihres Teams."
+        }
+      },
+      "note": "Importe lassen den ursprünglichen Feed, die Datei und die Storefront unverändert. Importieren Sie erneut, wenn sich der Katalog ändert. Das Veröffentlichen in einem Store erfordert eine verifizierte Shopify- oder WooCommerce-Verbindung; Dashboard-Funktionen für Produktangebote nutzen Ihren aktivierten Plan.",
+      "action": {
+        "primary": "Produktimporte ansehen"
+      }
+    }
+  }
+}

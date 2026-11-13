@@ -1,0 +1,55 @@
+{
+  "agenciesPage": {
+    "challenges": {
+      "description": "Machen Sie aus der Kundenfrage eine Produktprüfung, eine verifizierte Änderung und einen klaren Vergleich.",
+      "details": "Kundenfragen ansehen"
+    },
+    "tracks": {
+      "description": "Wählen Sie die Leistungen aus, die Sie in die Zusammenarbeit einbringen. Umfang und kommerzielle Bedingungen werden vor Weiterverkauf oder Vermittlung vereinbart.",
+      "label": "Partnermodelle",
+      "pathLabel": "Was die Zusammenarbeit umfasst",
+      "paths": [
+        [
+          "Kundenkatalog",
+          "Produktprüfungen",
+          "Verifizierte Änderungen"
+        ],
+        [
+          "Ihr Produkt",
+          "Dokumentierte Schnittstellen",
+          "Erkennung und Einrichtung"
+        ],
+        [
+          "Ihre Zielgruppe",
+          "Weiterbildung zu KI-Commerce",
+          "Partnergespräch"
+        ]
+      ]
+    },
+    "access": {
+      "label": "Kontoinhaberschaft",
+      "single": "Ein Inhaber, mehrere Shops",
+      "separate": "Separate Kundenkonten",
+      "singleTitle": "Ein Konto verwaltet eigene Shops.",
+      "singleDescription": "Shops können gemeinsam geführt werden, wenn sie demselben Kontoinhaber gehören.",
+      "separateTitle": "Jeder Kunde verwaltet sein eigenes Konto.",
+      "separateDescription": "Getrennte Inhaber behalten getrennte Konten. Bestätigen Sie die Vereinbarung mit jedem Kunden, bevor Sie die Verbindung herstellen.",
+      "owner": "Inhaberkonto",
+      "store": "Eigener Shop",
+      "anotherStore": "Weiterer eigener Shop",
+      "firstClient": "Konto von Kunde A",
+      "secondClient": "Konto von Kunde B",
+      "firstStore": "Shop von Kunde A",
+      "secondStore": "Shop von Kunde B",
+      "boundary": "Keine delegierten Agenturberechtigungen oder Teamzugänge"
+    },
+    "start": {
+      "description": "Bringen Sie Ihren Partnerschaftsmodell, den Anwendungsfall des Kunden und die vorgeschlagene Kontostruktur in das Gespräch ein.",
+      "items": [
+        "Partnerschaftsmodell auswählen",
+        "Kontoinhaberschaft bestätigen",
+        "Umfang und Bedingungen abstimmen"
+      ]
+    }
+  }
+}

@@ -1,0 +1,79 @@
+{
+  "dashboard": {
+    "competitors": {
+      "title": "Wettbewerber",
+      "description": "Wie KI-Einkaufsagenten Sie im Vergleich zu den von Ihnen beobachteten Marken einstufen.",
+      "action": {
+        "primary": "Wettbewerber hinzufügen",
+        "addCompetitor": "Wettbewerber hinzufügen",
+        "addCompetitors": "Wettbewerber hinzufügen"
+      },
+      "stats": {
+        "brandsTracked": "Beobachtete Marken",
+        "winningAgainst": "Vorn gegen",
+        "mostDangerous": "Stärkster Wettbewerber",
+        "totalSimulations": "Simulationen insgesamt",
+        "productsMonitored": "{count, plural, one {# Produkt} other {# Produkte}} überwacht",
+        "sinceLastScan": "seit dem letzten Scan",
+        "averageWinRate": "{rate}% durchschnittliche Gewinnquote",
+        "winRateAgainstThem": "Ihre Gewinnquote gegen diese Wettbewerber",
+        "acrossCompetitors": "über {count, plural, one {# Wettbewerber} other {# Wettbewerber}} hinweg"
+      },
+      "landscape": {
+        "kicker": "01 — Wettbewerbsumfeld",
+        "winRateByCompetitor": "Gewinnquote nach Wettbewerber",
+        "distribution": "Verteilung",
+        "winRateTiers": "Gewinnquoten-Stufen",
+        "simAbbrev": "{count} Sim.",
+        "tiers": {
+          "dominating": "Dominierend (≥75%)",
+          "competitive": "Wettbewerbsfähig (50–74%)",
+          "atRisk": "Gefährdet (30–49%)",
+          "losing": "Unterlegen (<30%)"
+        }
+      },
+      "table": {
+        "kickerAll": "02 — Alle Wettbewerber"
+      },
+      "insights": {
+        "kicker": "03 — Erkenntnisse",
+        "summary": "Wettbewerbsübersicht",
+        "keyInsight": "Wichtigste Erkenntnis",
+        "optimizeLosing": "Unterlegene Produktangebote optimieren",
+        "recentScanActivity": "Letzte Scan-Aktivitäten",
+        "scanCompleted": "Scan abgeschlossen — {wins}W / {losses}L",
+        "scanInProgress": "Scan läuft — {completed}/{total}",
+        "completedScans": "{count, plural, one {# abgeschlossener Scan} other {# abgeschlossene Scans}}",
+        "viewAllActivity": "Alle Aktivitäten anzeigen",
+        "headlines": {
+          "outrankAll": "Sie liegen vor allen {count} simulierten Wettbewerber{plural} (durchschn. {overall}% Gewinnquote).",
+          "slimmestLead": "Ihr knappster Vorsprung besteht gegenüber {brand} mit {rate}%. Halten Sie Ihre Produktangebote optimiert, um ihn zu verteidigen.",
+          "biggestOpportunity": "{brand} gewinnt {lossRate}% der Agentenvergleiche gegen Sie. Das ist Ihre größte Chance.",
+          "holdMajority": "Sie liegen gegen {winning} von {total} Wettbewerber{plural} vorn (durchschn. {overall}%). Die größte Wirkung erzielen Sie, wenn Sie die Produkte optimieren, bei denen Sie gegen {brand} verlieren.",
+          "defaultHeadline": "Sie liegen gegen {winning} von {total} Wettbewerber{plural} vorn (durchschn. {overall}% Gewinnquote).",
+          "focusOptimization": "Konzentrieren Sie die Optimierung Ihrer Produktangebote auf die Produkte, bei denen {brand} Sie schlägt.",
+          "toughestRival": "{toughest} ist mit {toughestRate}% Ihr stärkster Rivale; gegen {strongest} führen Sie mit {strongestRate}%."
+        }
+      },
+      "add": {
+        "title": "Wettbewerber zu diesem Store hinzufügen",
+        "shellTitle": "Wettbewerber hinzufügen",
+        "shellDescription": "Die Marken, mit denen der Katalog dieses Stores verglichen wird. Wettbewerber gehören jeweils zu einem Store und werden daher nie mit Ihren anderen Stores vermischt.",
+        "description": "Erkennen Sie sie in Ihrem Katalog, fügen Sie Produkt-URLs ein oder suchen Sie nach einer Marke. Alles, was Sie hinzufügen, wird nur diesem Store zugeordnet.",
+        "findKicker": "01 — Finden",
+        "rosterKicker": "02 — Liste",
+        "trackedTitle": "In diesem Store erfasst",
+        "trackedDescription": "Nur ausgewählte Wettbewerber werden bewertet, wenn ein Scan ohne explizite Liste ausgeführt wird.",
+        "rosterSummary": "{total} aus {brands, plural, one {# Marke} other {# Marken}} — {selected} ausgewählt",
+        "emptyRoster": "Noch keine Wettbewerber erfasst. Fügen Sie oben welche hinzu, dann erscheinen sie hier.",
+        "tabs": {
+          "liveOffers": "Live-Angebote",
+          "autoDetect": "Automatisch erkennen",
+          "pasteUrls": "URLs einfügen",
+          "searchBrand": "Marke suchen",
+          "googleMerchant": "Google"
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "googleChannelPage": {
+    "explorer": {
+      "label": "Den Shopping-Pfad von Google erkunden",
+      "stages": [
+        {
+          "id": "catalog",
+          "label": "Katalog",
+          "title": "Mit dem Produktangebot des Händlers beginnen",
+          "description": "Merchant Center stellt die Produktdaten bereit, die in den Einkaufsfunktionen von Google verwendet werden.",
+          "details": [
+            "Preis und Verfügbarkeit",
+            "Versand- und Rückgabeinformationen"
+          ],
+          "destination": "Merchant Center",
+          "action": {
+            "primary": "Produktdaten erkunden"
+          }
+        },
+        {
+          "id": "assistant",
+          "label": "KI-Antworten",
+          "title": "Produktdaten in die Unterhaltung einbringen",
+          "description": "Die KI von Google beantwortet Shopping-Fragen mithilfe von Produktdaten von Händlern.",
+          "details": [
+            "AI Mode in der Suche",
+            "Gemini"
+          ],
+          "destination": "AI Mode und Gemini",
+          "action": {
+            "primary": "Anforderungen für Händler prüfen"
+          }
+        },
+        {
+          "id": "checkout",
+          "label": "Kaufabschluss",
+          "title": "Der Kaufprozess hängt davon ab, ob die Voraussetzungen erfüllt sind",
+          "description": "Käufer können zum Warenkorb des Händlers weitergehen oder Google Pay nutzen, sofern der Checkout verfügbar ist. Der Händler bleibt der rechtlich verantwortliche Verkäufer.",
+          "details": [
+            "Zum Warenkorb des Händlers weitergehen",
+            "Google Pay, sofern der Checkout verfügbar ist"
+          ],
+          "destination": "Checkout des Händlers",
+          "action": {
+            "primary": "Händleranforderungen prüfen"
+          }
+        }
+      ]
+    },
+    "reading": {
+      "label": "Ein durchgängig einheitliches Produktangebot",
+      "rows": [
+        {
+          "title": "Produktdaten",
+          "detail": "Preis und Verfügbarkeit",
+          "field": "Preis / Verfügbarkeit"
+        },
+        {
+          "title": "Produktseite",
+          "detail": "Präzise Produktinformationen",
+          "field": "Link"
+        },
+        {
+          "title": "Versand und Rücksendungen",
+          "detail": "Klare Informationen zu Lieferung und Rücksendung",
+          "field": "Versand / Rückgabebedingungen"
+        },
+        {
+          "title": "Voraussetzungen für den Checkout",
+          "detail": "Ob die Voraussetzungen erfüllt sind, ist Teil des Produktangebots",
+          "field": "checkout_eligibility"
+        }
+      ],
+      "action": {
+        "primary": "Merchant Center entdecken"
+      }
+    },
+    "entry": {
+      "label": "Google-Anforderungen für Händler",
+      "steps": [
+        "Händler und Produkte, die die Voraussetzungen erfüllen",
+        "Rollout des Integrationshubs",
+        "Technische Validierung und Freigabe"
+      ],
+      "note": "ecentic unterstützt bei der Vorbereitung und Prüfung von Daten und Einstellungen. Antrag, Validierung und Freigabe erfolgen weiterhin zwischen Ihrem Unternehmen und Google.",
+      "action": {
+        "primary": "Checkout-Bereitschaft prüfen"
+      }
+    }
+  }
+}

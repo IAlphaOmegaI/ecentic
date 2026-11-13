@@ -1,0 +1,24 @@
+{
+  "docsIndexPage": {
+    "navigation": "Dokumentation durchsuchen",
+    "quickstart": {
+      "label": "Erste Anfrage auswählen",
+      "tabs": [
+        "API",
+        "Protokolle",
+        "Tarife"
+      ],
+      "request": "Anfrage",
+      "response": "Antwort",
+      "access": "Kein API-Schlüssel erforderlich",
+      "action": {
+        "primary": "JSON öffnen"
+      }
+    },
+    "contracts": [
+      "application/problem+json",
+      "RateLimit / Retry-After",
+      "Deprecation / Sunset"
+    ]
+  }
+}

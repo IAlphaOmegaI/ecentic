@@ -1,0 +1,11 @@
+{
+  "blogTagPage": {
+    "collection": "Lesesammlung",
+    "description": "Leitfäden und Analysen zu {topic} aus dem ecentic Journal.",
+    "latestArticle": "Mit dem neuesten Artikel beginnen",
+    "takeaways": "In diesem Artikel",
+    "moreArticles": "Weiterlesen",
+    "relatedTopics": "Verwandtes Thema entdecken",
+    "relatedDescription": "Entdecken Sie die Themen, die mit dieser Sammlung verbunden sind."
+  }
+}

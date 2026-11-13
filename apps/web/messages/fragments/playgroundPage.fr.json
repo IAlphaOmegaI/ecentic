@@ -1,0 +1,23 @@
+{
+  "playgroundPage": {
+    "guide": {
+      "title": "De la découverte au paiement",
+      "description": "Explorez les appels derrière une session d’achat.",
+      "discovery": {
+        "title": "Découvrir la boutique",
+        "description": "Consultez le profil UCP de la boutique, puis sélectionnez son point d’accès d’achat. L’aire de démonstration privilégie MCP et bascule sur REST en secours."
+      },
+      "action": {
+        "primary": "Ouvrir l’aire de démonstration",
+        "secondary": "Vérifier un profil UCP"
+      }
+    },
+    "session": {
+      "title": "Session d’achat en direct",
+      "description": "Inspectez les appels d’outils et les réponses pendant que l’agent effectue des achats."
+    },
+    "faq": {
+      "title": "Avant de vous connecter"
+    }
+  }
+}

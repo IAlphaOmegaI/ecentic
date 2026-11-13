@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { locales } from "@/i18n/locales";
 
 export const businessTypes = [
   "brand",
@@ -47,7 +48,7 @@ const contact = {
   company: z.string().trim().min(1).max(180),
 };
 const context = {
-  locale: z.enum(["en", "es"]),
+  locale: z.enum(locales),
   topic: z.string().trim().min(1).max(180),
 };
 

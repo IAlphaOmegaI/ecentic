@@ -1,0 +1,38 @@
+{
+  "dashboard": {
+    "lifecycle": {
+      "action": {
+        "secondary": "Annuler",
+        "pending": "Traitement…"
+      },
+      "error": "Impossible de traiter cette demande. Réessayez ou contactez le support.",
+      "disconnected": "Déconnecté",
+      "disconnect": {
+        "title": "Déconnecter cette boutique ?",
+        "description": "Supprime les identifiants enregistrés de la boutique et met fin à l’accès à {domain}. Votre catalogue importé et votre historique restent dans ecentic. Cela ne désinstalle pas un plugin et ne révoque pas les clés côté boutique ; supprimez-les également chez le fournisseur. Reconnectez-vous d’abord si votre session date de plus de cinq minutes.",
+        "action": {
+          "primary": "Déconnecter la boutique"
+        }
+      },
+      "delete": {
+        "title": "Supprimer votre compte ?",
+        "description": "Cette action supprime définitivement votre profil, les catalogues importés, les analyses et les modifications générées. Déconnectez d’abord votre boutique et vos intégrations Google. Saisissez l’adresse e-mail de votre compte pour confirmer. Vous devez vous être connecté au cours des cinq dernières minutes.",
+        "email": "E-mail du compte",
+        "validation": "Saisissez une adresse e-mail valide.",
+        "assistance": "Les comptes avec des données de facturation ou des commandes nécessitent une suppression assistée afin de gérer correctement la facturation et les enregistrements obligatoires. Contactez",
+        "action": {
+          "primary": "Supprimer le compte"
+        }
+      },
+      "blocked": {
+        "reauthenticate": "Déconnectez-vous puis reconnectez-vous, puis revenez ici dans les cinq minutes.",
+        "confirmation": "Saisissez l’adresse e-mail du compte auquel vous êtes connecté.",
+        "notFound": "Ce compte ou cette boutique n’est plus disponible.",
+        "googleConnected": "Déconnectez d’abord Google Shopping depuis sa page de paramètres afin que la source de données Google et l’autorisation puissent être supprimées correctement.",
+        "shopifyBilling": "Désinstallez d’abord ecentic dans Shopify pour mettre fin à l’accord de facturation Shopify, puis contactez le support si cette connexion est toujours active.",
+        "billingRecords": "Ce compte contient des données de facturation ou des commandes. Contactez privacy@ecentic.ai pour une suppression assistée ; nous devons régler la facturation et conserver les enregistrements légalement requis.",
+        "storeConnections": "Déconnectez vos boutiques et vos intégrations Google Shopping dans les paramètres avant de supprimer le compte."
+      }
+    }
+  }
+}

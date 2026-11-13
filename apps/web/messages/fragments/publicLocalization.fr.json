@@ -1,0 +1,54 @@
+{
+  "general": {
+    "media": {
+      "interfaceEnglish": "Interface du produit présentée en anglais.",
+      "videoEnglish": "Vidéo en anglais, avec une transcription dans la langue sélectionnée."
+    },
+    "fileUpload": {
+      "label": "Importer des fichiers"
+    },
+    "dismiss": {
+      "label": "Fermer"
+    },
+    "notifications": {
+      "label": "Notifications"
+    }
+  },
+  "resources": {
+    "mcpArtTitle": "Outils JSON-RPC"
+  },
+  "enterprisePlatform": {
+    "artworkStages": {
+      "product": "Produit",
+      "cart": "Panier",
+      "checkout": "Passage de commande"
+    }
+  },
+  "dashboard": {
+    "ucpPlaygroundDashboard": {
+      "cart": {
+        "action": {
+          "primary": "Ouvrir le panier"
+        }
+      }
+    }
+  },
+  "promptInput": {
+    "placeholder": "Que souhaitez-vous savoir ?",
+    "attachments": {
+      "label": "Ajouter des photos ou des fichiers"
+    },
+    "screenshot": {
+      "label": "Faire une capture d’écran"
+    },
+    "action": {
+      "primary": "Envoyer le message",
+      "secondary": "Arrêter"
+    },
+    "errors": {
+      "acceptedTypes": "Aucun fichier ne correspond aux formats acceptés.",
+      "maximumSize": "Tous les fichiers dépassent la taille maximale.",
+      "maximumCount": "Trop de fichiers. Certains n’ont pas été ajoutés."
+    }
+  }
+}

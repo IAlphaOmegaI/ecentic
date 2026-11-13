@@ -1,0 +1,224 @@
+{
+  "shopify": {
+    "meta": {
+      "title": "KI für Shopify — Optimierung von Produktangeboten und Katalogen",
+      "description": "KI für Shopify-Shops, die stärkere Produktangebote, klarere Wettbewerbsanalysen und freigegebene Updates direkt zurück in den Shopify-Adminbereich benötigen."
+    },
+    "breadcrumb": {
+      "home": "Startseite",
+      "shopify": "KI für Shopify-Shops"
+    },
+    "hero": {
+      "eyebrow": "Shopify",
+      "title": {
+        "primary": "KI für Shopify-Shops, die",
+        "accent": "mehr als automatisierte Texte brauchen."
+      },
+      "description": "Verbinden Sie Ihren Katalog, sehen Sie, warum KI-Einkaufsagenten Wettbewerber statt Ihrer Produkte auswählen, und veröffentlichen Sie freigegebene Titel- und Beschreibungsupdates direkt zurück in Shopify.",
+      "assurances": [
+        "Installation in 2 Minuten, kein Entwickler nötig",
+        "Freigegebene Updates werden über die Admin API zurückgeschrieben",
+        "Zuerst kostenlosen Score ansehen"
+      ],
+      "art": {
+        "alt": "ASCII-Art-Illustration einer Einkaufstasche"
+      },
+      "badge": {
+        "alt": "Shopify",
+        "label": "Built for Shopify"
+      },
+      "action": {
+        "primary": "In Shopify installieren",
+        "secondary": "So funktioniert es"
+      }
+    },
+    "why": {
+      "number": "01",
+      "title": "Warum Shopify-Händler aus nativen KI-Tools herauswachsen.",
+      "description": "Die meisten Shopify-Händler stoßen mit nativen Generierungstools irgendwann an Grenzen. Hier beginnt der nächste Schritt.",
+      "paragraphs": [
+        "Die meisten Shopify-Teams haben die Grundlagen bereits aufgebaut: einen Onlineshop, einen Katalog und einen Merchandising-Workflow. Die eigentliche Herausforderung ist, dass Produktsichtbarkeit heute von mehr abhängt als von Theme-Design oder Anzeigenperformance. Titel, Beschreibungen, Attribute und der Wettbewerbsvergleich beeinflussen, ob ein Produkt leicht empfohlen werden kann.",
+        "Der nützlichste KI-Workflow für Shopify-Shops geht über reine Generierung hinaus. Händler müssen wissen, welche Produkte unterdurchschnittlich performen, welches Wettbewerbsangebot immer wieder gewinnt und welche Änderungen sich zuerst lohnen."
+      ],
+      "panelTitle": "Für wen diese Entscheidung relevant ist",
+      "audiences": [
+        {
+          "title": "Die Kategorie bewerten",
+          "description": "Teams, die KI für Shopify-Shops evaluieren und entscheiden, was in ihren Stack gehört."
+        },
+        {
+          "title": "Shopify Magic ergänzen",
+          "description": "Händler, die eine Alternative oder Ergänzung zur nativen Content-Generierung suchen."
+        },
+        {
+          "title": "Änderungen mit Ergebnissen verknüpfen",
+          "description": "Verantwortliche, die Verbesserungen von Produktangeboten an messbare Wettbewerbsergebnisse koppeln möchten."
+        },
+        {
+          "title": "Den Veröffentlichungsprozess schließen",
+          "description": "Shops, die eine engere Verbindung zwischen Kataloganalysen und veröffentlichten Änderungen brauchen."
+        }
+      ]
+    },
+    "workflow": {
+      "number": "02",
+      "title": "Der Shopify-Workflow in ecentic.",
+      "description": "Der Workflow verbindet den Katalog, macht Wettbewerbsdefizite sichtbar und ermöglicht die Veröffentlichung von Verbesserungen zurück in Shopify statt in einem weiteren isolierten Dokument.",
+      "paragraph": "Verbinden Sie den Shop, wählen Sie die wichtigen Produkte aus, vergleichen Sie sie mit Wettbewerbern und geben Sie anschließend Rückschreibungen über die Admin API frei. Sie bleiben dabei vollständig im Shopify-Katalogworkflow.",
+      "panelTitle": "Verbinden, analysieren, veröffentlichen",
+      "outcomes": [
+        {
+          "title": "Die richtigen SKUs priorisieren",
+          "description": "Ein klarerer Weg, um zu entscheiden, welche Produkte zuerst Aufmerksamkeit brauchen."
+        },
+        {
+          "title": "Verstehen, warum Seiten verlieren",
+          "description": "Mehr Transparenz darüber, warum Produktseiten gegen bestimmte Wettbewerber verlieren."
+        },
+        {
+          "title": "Vor dem Go-live prüfen",
+          "description": "Schnellere Prüfung von Produktangebots-Updates, bevor sie im Shop live gehen."
+        },
+        {
+          "title": "In Shopify bleiben",
+          "description": "Ein Veröffentlichungsprozess, der zum bestehenden Shopify-Katalogworkflow passt."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Verbinden & importieren",
+          "description": "Installieren Sie die App aus dem Shopify App Store und Ihr Katalog wird während des Onboardings importiert — ohne Änderungen am Theme."
+        },
+        {
+          "title": "Produkte auswählen",
+          "description": "Bestimmen Sie, welche Produkte in den Optimierungs- und Simulationsprozess aufgenommen werden — vom einzelnen Hero-Produkt bis zum gesamten Katalog."
+        },
+        {
+          "title": "Vergleichen & analysieren",
+          "description": "Ausgewählte Produkte werden mit Wettbewerbern verglichen, damit Sie sehen, wo KI-Systeme eine andere Option bevorzugen — und warum."
+        },
+        {
+          "title": "Freigeben & zurückschreiben",
+          "description": "Prüfen Sie die stärkere Version jedes Produktangebots und veröffentlichen Sie freigegebene Änderungen über die Admin API zurück in Shopify."
+        }
+      ]
+    },
+    "compare": {
+      "number": "03",
+      "title": "Wie sich das neben Shopify Magic einordnet.",
+      "description": "Native Generierung hilft Händlern dabei, Texte zu erstellen. ecentic unterstützt Händler dabei, Produktangebote zu bewerten, zu priorisieren und zu verbessern — mit direktem Bezug zu Wettbewerbsergebnissen.",
+      "shopifyMagic": {
+        "badge": "Shopify Magic",
+        "title": "Ideal für schnellere Entwürfe.",
+        "description": "Native KI-Tools sparen Zeit, wenn es vor allem um die Erstellung von Texten geht — besonders bei frühem Merchandising.",
+        "strengths": [
+          "Native Content-Generierung direkt im Shopify-Admin",
+          "Schnelle Beschreibungsentwürfe für frühe Merchandising-Arbeit",
+          "Schnelle Textvarianten, wenn Geschwindigkeit das einzige Ziel ist"
+        ]
+      },
+      "ecentic": {
+        "badge": "ecentic zusätzlich zu Shopify",
+        "title": "Entwickelt, um den Vergleich zu gewinnen.",
+        "description": "Texte umzuschreiben ist der einfache Teil. Entscheidend ist zu wissen, ob Ihre Seite für ein KI-Shoppingsystem leicht bewertbar ist und ob die vorgeschlagene Änderung Ihre Chance verbessert, ausgewählt zu werden.",
+        "strengths": [
+          "Simuliert, wie KI-Einkaufsagenten Ihre Produkte vergleichen",
+          "Vergleicht Produktangebote mit den Wettbewerbern, die immer wieder gewinnen",
+          "Analysiert, warum eine Seite verliert: fehlende Daten, schwache Positionierung, unklarer Kontext",
+          "Macht aus Erkenntnissen freigabebereite Updates, die zurück nach Shopify veröffentlicht werden"
+        ]
+      },
+      "paragraph": "Reine Generierung reicht aus, wenn Geschwindigkeit das einzige Ziel ist. Der Unterschied wird relevant, sobald der Katalog, die Wettbewerber oder der Prüfprozess zum Engpass werden.",
+      "triggersTitle": "Wann der Unterschied relevant wird",
+      "triggers": [
+        {
+          "title": "Kataloggröße",
+          "description": "Der Katalog ist groß genug, dass manuelle Prüfungen jedes Update verlangsamen."
+        },
+        {
+          "title": "Änderungen begründen",
+          "description": "Das Team muss erklären können, warum eine Änderung am Produktangebot wichtig ist, bevor sie veröffentlicht wird."
+        },
+        {
+          "title": "Klarheit vor Preis",
+          "description": "Wettbewerber gewinnen immer wieder durch klarere Produktinformationen statt nur über den Preis."
+        },
+        {
+          "title": "Wiederholbare Prozesse",
+          "description": "Merchandising-Verantwortliche möchten einen Prozess statt isolierter Einzeländerungen."
+        }
+      ]
+    },
+    "related": {
+      "number": "04",
+      "title": "Entdecken Sie weitere Inhalte rund um Shopify.",
+      "description": "Vertiefen Sie sich in Produktangebots-Optimierung, Plattformvergleiche oder Blog-Inhalte, um mehr Kontext aufzubauen.",
+      "items": [
+        {
+          "href": "/features/product-listings",
+          "name": "Workflow",
+          "title": "Mit KI-Optimierung für Produktangebote starten",
+          "description": "Sehen Sie, wie der Workflow Titel, Beschreibungen und strukturierten Produktkontext verbessert, bevor Sie veröffentlichen.",
+          "label": "Produktangebots-Workflow ansehen",
+          "color": "primary"
+        },
+        {
+          "href": "/compare/best-ai-ecommerce-tools",
+          "name": "Vergleich",
+          "title": "KI-Toolkategorien für Ecommerce vergleichen, bevor Sie sich festlegen",
+          "description": "Nutzen Sie den Leitfaden, um zu verstehen, wann Shopify-native Generierung ausreicht und wann ein umfassenderer Optimierungsprozess zusätzlichen Nutzen bringt.",
+          "label": "Vergleichsleitfaden lesen",
+          "color": "accent"
+        },
+        {
+          "href": "/blog",
+          "name": "Blog",
+          "title": "Leitfäden zu KI-Traffic und strukturierten Daten lesen",
+          "description": "Nutzen Sie den Blog für operative Details, die Ihre Verbesserungen an Shopify-Produktseiten langfristig stärken.",
+          "label": "Zum Blog",
+          "color": "accent"
+        },
+        {
+          "href": "/features",
+          "name": "Funktionen",
+          "title": "Den umfassenderen KI-Ecommerce-Toolstack prüfen",
+          "description": "Gehen Sie zurück zur Hauptseite der Funktionen, wenn Ihr Team den gesamten Workflow statt nur einer Plattform bewertet.",
+          "label": "Funktionsseite öffnen",
+          "color": "accent"
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "05",
+      "title": "Häufig gestellte Fragen",
+      "description": "Häufige Fragen von Shopify-Händlern, die KI-Optimierungsworkflows evaluieren."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Was bedeutet KI für Shopify-Shops in der Praxis?",
+          "answer": "Für Shopify-Händler bedeutet das, den Katalog zu verbinden, zu verstehen, wie Produkte in KI-gestützten Vergleichen abschneiden, und diese Erkenntnisse in freigegebene Updates für Produktangebote umzusetzen, die zurück in Shopify geschrieben werden können."
+        },
+        {
+          "question": "Worin unterscheidet sich das von Shopify Magic allein?",
+          "answer": "Shopify Magic unterstützt bei der nativen Content-Generierung. ecentic ergänzt Simulationen, Wettbewerbsvergleiche, Analysen und freigabebereite Optimierungsworkflows, damit Händler sehen, warum Produkte verlieren und was als Nächstes verbessert werden sollte."
+        },
+        {
+          "question": "Können Shopify-Händler Änderungen zurück in den Shop veröffentlichen?",
+          "answer": "Ja. Der dokumentierte Workflow umfasst das Zurückspielen freigegebener Titel- und Beschreibungsupdates über die Shopify Admin API für Händler, die ihren Optimierungsprozess mit dem Live-Katalog verbunden halten möchten."
+        },
+        {
+          "question": "Wann sollten Shopify-Teams über native KI-Tools hinausgehen?",
+          "answer": "Wenn das Team verstehen muss, warum ein bestimmter Wettbewerber immer wieder gewinnt, welche Attribute eines Produktangebots am wichtigsten sind und wie sich Katalogverbesserungen über eine große Anzahl von SKUs priorisieren lassen. Dann bietet ein dedizierter Optimierungsworkflow mehr Nutzen als integrierte Generierung allein."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Shopify-Shop verbinden",
+        "secondary": "Zurück zu den Funktionen"
+      },
+      "note": "Installation in 2 Minuten · Keine Kreditkarte · Zuerst kostenlosen Score ansehen"
+    }
+  }
+}

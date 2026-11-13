@@ -1,0 +1,30 @@
+{
+  "demoPage": {
+    "agenda": {
+      "description": "Partez d’un produit, suivez la décision, puis définissez ensemble ce qu’il faut améliorer. Voici la conversation que nous mènerons ensemble.",
+      "bringLabel": "À apporter à la conversation",
+      "exploreLabel": "Nous explorerons",
+      "items": [
+        {
+          "bring": "Une catégorie et un concurrent",
+          "explore": "Un ou deux de vos produits, comparés en direct."
+        },
+        {
+          "bring": "Un produit que vous souhaitez analyser",
+          "explore": "Les raisons de l’assistant et les informations utilisées."
+        },
+        {
+          "bring": "Les priorités de votre catalogue",
+          "explore": "Les modifications de fiches produit à examiner avec votre équipe."
+        },
+        {
+          "bring": "L’équipe et la catégorie concernées",
+          "explore": "Une mesure de référence et un bilan à convenir ensemble."
+        }
+      ],
+      "action": {
+        "primary": "Préparer votre démo"
+      }
+    }
+  }
+}

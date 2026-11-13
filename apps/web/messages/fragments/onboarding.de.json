@@ -1,0 +1,668 @@
+{
+  "onboarding": {
+    "layout": {
+      "steps": {
+        "catalog": "Katalog",
+        "products": "Produkte auswählen",
+        "competitors": "Wettbewerber",
+        "scan": "Scan starten"
+      },
+      "stepProgress": "Schritt {current} von {total}",
+      "sidebar": {
+        "connect": {
+          "headline": {
+            "line1": "Verbinden Sie Ihren",
+            "line2": "Katalog."
+          },
+          "points": [
+            "Fügen Sie Ihre Shop-URL ein, und wir synchronisieren Ihre Produkte sofort",
+            "Funktioniert mit Shopify, WooCommerce und benutzerdefinierten Feeds",
+            "Ihr Katalog bleibt verfügbar und immer aktuell"
+          ]
+        },
+        "shopify": {
+          "headline": {
+            "line1": "Shopify",
+            "line2": "OAuth."
+          },
+          "points": [
+            "Autorisierung mit einem Klick, und wir sehen niemals Ihr Passwort",
+            "Nur-Lesezugriff auf Ihren Produktkatalog",
+            "Produkte bleiben automatisch synchronisiert"
+          ]
+        },
+        "woocommerce": {
+          "headline": {
+            "line1": "WooCommerce",
+            "line2": "API-Schlüssel."
+          },
+          "points": [
+            "Erstellen Sie einen REST API-Schlüssel in WooCommerce (Lese-/Schreibzugriff, um Produktangebots-Updates aus ecentic zu veröffentlichen, oder schreibgeschützt nur für die Synchronisierung)",
+            "Fügen Sie drei Felder ein, und wir übernehmen den Rest",
+            "Ihre Zugangsdaten werden verschlüsselt und sicher gespeichert"
+          ]
+        },
+        "feed": {
+          "headline": {
+            "line1": "Produkt-",
+            "line2": "Feed."
+          },
+          "points": [
+            "Funktioniert mit Google Shopping XML- und JSON-Feeds",
+            "Wir erkennen das Format automatisch und verarbeiten jedes Produkt",
+            "Jederzeit erneut synchronisieren, um Änderungen zu übernehmen"
+          ]
+        },
+        "products": {
+          "headline": {
+            "line1": "Wählen Sie Ihre",
+            "line2": "besten Produkte."
+          },
+          "points": [
+            "Wählen Sie aus, welche Produkte durch Simulationen mit KI-Einkaufsagenten laufen sollen",
+            "Konzentrieren Sie sich auf Ihre Bestseller oder wettbewerbsstärksten SKUs",
+            "Sie können jederzeit weitere Produkte hinzufügen"
+          ]
+        },
+        "competitors": {
+          "headline": {
+            "line1": "Kennen Sie Ihre",
+            "line2": "Wettbewerber."
+          },
+          "points": [
+            "Fügen Sie Wettbewerber hinzu, damit wir Sie direkt mit ihnen vergleichen",
+            "Sehen Sie genau, welche Produkte KI-Einkaufsagenten statt Ihrer auswählen und warum",
+            "Verfolgen Sie den Abstand und schließen Sie ihn schneller"
+          ]
+        },
+        "scan": {
+          "headline": {
+            "line1": "Sehen Sie, wer",
+            "line2": "gewinnt."
+          },
+          "points": [
+            "ChatGPT, Claude, Gemini & Perplexity simulieren echte Shopping-Anfragen",
+            "Wir bewerten jedes Produkt im Vergleich zu Ihren Wettbewerbern",
+            "Sie wissen genau, was Sie verbessern müssen, bevor Sie diese Seite verlassen"
+          ]
+        }
+      }
+    },
+    "connect": {
+      "page": {
+        "title": "Shop verbinden",
+        "description": "In 2 Minuten dafür sorgen, dass KI-Einkaufsagenten Ihre Produkte auswählen."
+      },
+      "footer": {
+        "settingsHint": "Sie können später in den Einstellungen weitere Shops verbinden.",
+        "backToPlatforms": "Zurück zu den Plattformen"
+      },
+      "action": {
+        "skip": "Vorerst überspringen"
+      },
+      "badges": {
+        "recommended": "Empfohlen",
+        "linkNow": "Jetzt verbinden",
+        "comingSoon": "Demnächst verfügbar"
+      },
+      "platforms": [
+        {
+          "id": "shopify",
+          "name": "Shopify",
+          "description": "Per OAuth verbinden"
+        },
+        {
+          "id": "woocommerce",
+          "name": "WooCommerce",
+          "description": "Verbindung per API-Schlüssel"
+        },
+        {
+          "id": "bigcommerce",
+          "name": "BigCommerce",
+          "description": "OAuth — vollständige Synchronisierung"
+        },
+        {
+          "id": "amazon",
+          "name": "Amazon Seller",
+          "description": "SP-API OAuth"
+        },
+        {
+          "id": "feed",
+          "name": "Custom Feed",
+          "description": "XML- oder JSON-Feed-URL"
+        },
+        {
+          "id": "csv",
+          "name": "CSV-Upload",
+          "description": "Drag-and-drop oder Datei auswählen"
+        }
+      ],
+      "shopify": {
+        "title": "Shopify verbinden",
+        "description": "OAuth-Verbindung. Wir sehen niemals Ihr Shopify-Passwort.",
+        "howItWorks": "Wie funktioniert das?",
+        "steps": [
+          "Geben Sie unten Ihre Shop-Domain ein — die URL, die Kunden sehen (yourbrand.com) oder yourstore.myshopify.com.",
+          "Sie werden zu Shopify weitergeleitet, um Lesezugriff auf Ihren Produktkatalog zu autorisieren. Wir fordern nur Produkt-Berechtigungen an, niemals Bestellungen oder Kundendaten.",
+          "Nach Ihrer Zustimmung erlaubt Shopify ecentic, die Produktdaten Ihres Shops zu lesen und zu schreiben."
+        ],
+        "fields": {
+          "shop": {
+            "label": "Shop-Domain",
+            "placeholder": "yourbrand.com",
+            "validation": "Shop-Domain ist erforderlich",
+            "description": {
+              "beforeExample": "Ihre öffentliche Shop-URL oder Shopify-Admin-Domain. Beispiele:",
+              "exampleAdmin": "yourbrand.com",
+              "middle": ",",
+              "exampleHandle": "acmestore",
+              "orFull": "oder",
+              "exampleDomain": "acmestore.myshopify.com"
+            }
+          }
+        },
+        "action": {
+          "primary": "Mit Shopify verbinden",
+          "connecting": "Verbindung wird hergestellt..."
+        },
+        "errors": {
+          "generic": "Die Verbindung zu Ihrem Shopify-Store konnte nicht abgeschlossen werden. Bitte versuchen Sie es erneut.",
+          "missing_parameters": "In der Antwort von Shopify fehlten erforderliche Parameter. Starten Sie die Verbindung erneut.",
+          "invalid_state": "Der Verbindungsversuch ist abgelaufen oder wurde bereits verwendet. Starten Sie ihn erneut.",
+          "invalid_hmac": "Die Antwort von Shopify konnte nicht verifiziert werden. Starten Sie die Verbindung erneut.",
+          "already_connected": "Dieser Store ist bereits mit einem anderen écentic-Konto verbunden. Melden Sie sich mit diesem Konto an oder kontaktieren Sie den Support, um ihn zu übertragen.",
+          "invalidShop": "Unter dieser Domain konnten wir keinen Shopify-Store finden. Versuchen Sie es mit der URL, die Kunden sehen (yourbrand.com) oder yourstore.myshopify.com."
+        },
+        "toast": {
+          "invalidDomain": {
+            "title": "Dieser Shopify-Store konnte nicht gefunden werden",
+            "description": "Versuchen Sie es mit der URL, die Kunden sehen (yourbrand.com) oder yourstore.myshopify.com."
+          },
+          "connectionFailed": "Verbindung fehlgeschlagen",
+          "connected": {
+            "title": "Shop verbunden",
+            "description": "Ihr Katalog ist synchronisiert und bereit."
+          }
+        }
+      },
+      "woocommerce": {
+        "title": "WooCommerce verbinden",
+        "description": "Mit einem Klick über das ecentic-Plugin oder manuell mit API-Schlüsseln.",
+        "oneClick": {
+          "title": "Verbindung mit einem Klick",
+          "recommended": "(empfohlen)",
+          "description": "Geben Sie Ihre Store-URL ein und bestätigen Sie die Verbindung in Ihrem WordPress-Adminbereich. Sie müssen keine API-Schlüssel kopieren. Dafür muss das kostenlose Plugin écentic for WooCommerce bereits installiert und aktiviert sein; falls noch nicht, zeigen wir Ihnen, wie Sie es hinzufügen. Dadurch wird auch gehostetes UCP aktiviert, wodurch Ihr Store für KI-Shopping-Agenten transaktionsfähig wird.",
+          "placeholder": "https://yourstore.com",
+          "action": {
+            "connect": "Per Plugin verbinden",
+            "tryAgain": "Erneut versuchen"
+          },
+          "installRequired": {
+            "title": "Wir konnten das écentic-Plugin auf {store} nicht finden.",
+            "thatStore": "diesem Store",
+            "steps": [
+              "Installieren Sie écentic for WooCommerce in Ihrem WordPress-Adminbereich und aktivieren Sie es.",
+              "Kehren Sie entweder hierher zurück und klicken Sie erneut auf „Verbinden“ oder öffnen Sie WooCommerce → UCP (AI Agents) in wp-admin und klicken Sie auf „Connect to ecentic.ai“."
+            ],
+            "openPluginScreen": "Plugin-Seite öffnen"
+          },
+          "errors": {
+            "missing_store_url": "Geben Sie die URL Ihres Shops ein, um die Verbindung zu starten.",
+            "bad_store_url": "Das scheint keine erreichbare öffentliche Shop-URL zu sein. Prüfen Sie die URL und versuchen Sie es erneut.",
+            "invalid_state": "Der Verbindungsversuch ist abgelaufen oder wurde bereits verwendet. Starten Sie ihn erneut.",
+            "token_exchange": "Der Shop hat die Verbindung bestätigt, aber der Schlüsselaustausch ist fehlgeschlagen. Versuchen Sie die Verbindung erneut über die Einstellungsseite des Plugins."
+          }
+        },
+        "manual": {
+          "title": "Oder manuell verbinden: Hier finden Sie Ihre API-Schlüssel",
+          "steps": [
+            "Melden Sie sich in Ihrem WordPress-Adminbereich an und gehen Sie zu WooCommerce → Einstellungen → Erweitert → REST API.",
+            "Klicken Sie auf „Schlüssel hinzufügen“. Geben Sie eine Beschreibung wie „ecentic“ ein, setzen Sie die Berechtigungen auf „Lesen/Schreiben“, wenn ecentic Änderungen an Produktangeboten übertragen soll, oder auf „Lesen“ nur für die Synchronisierung, und klicken Sie dann auf „Generieren“.",
+            "Kopieren Sie den Consumer key (beginnt mit ck_) und den Consumer secret (beginnt mit cs_). Das Secret wird danach nicht mehr angezeigt, fügen Sie es daher sofort hier ein."
+          ]
+        },
+        "fields": {
+          "domain": {
+            "label": "Shop-URL",
+            "placeholder": "https://yourstore.com",
+            "validation": "Shop-URL ist erforderlich",
+            "description": {
+              "before": "Die öffentliche URL Ihres WooCommerce-Stores, zum Beispiel",
+              "example": "https://acmestore.com",
+              "after": ". Dies ist die Startseite, nicht die WordPress-Admin-URL."
+            }
+          },
+          "consumerKey": {
+            "label": "Consumer Key",
+            "placeholder": "ck_...",
+            "validation": "Consumer key ist erforderlich",
+            "description": "Der von WooCommerce generierte Schlüssel. Er beginnt immer mit ck_, gefolgt von einer langen alphanumerischen Zeichenfolge. Wir verwenden ihn zur Authentifizierung von API-Anfragen (die Katalogsynchronisierung benötigt Leserechte; das Veröffentlichen optimierter Produktangebote aus dem Dashboard benötigt Lese-/Schreibrechte für den Schlüssel)."
+          },
+          "consumerSecret": {
+            "label": "Consumer Secret",
+            "placeholder": "cs_...",
+            "validation": "Consumer secret ist erforderlich",
+            "description": "Das Secret, das zum Schlüssel gehört und mit cs_ beginnt. WooCommerce zeigt es nur einmal bei der Generierung des Schlüssels an, daher sollten Sie es kopieren, bevor Sie die Seite verlassen."
+          }
+        },
+        "action": {
+          "primary": "WooCommerce verbinden",
+          "connecting": "Verbindung wird hergestellt..."
+        },
+        "toast": {
+          "connectionFailed": "Verbindung fehlgeschlagen",
+          "connected": {
+            "title": "Shop verbunden",
+            "description": "Ihr Katalog ist synchronisiert und bereit."
+          }
+        }
+      },
+      "feed": {
+        "title": "Produkt-Feed verbinden",
+        "description": "Wir rufen Ihren Feed automatisch ab und verarbeiten ihn.",
+        "formats": {
+          "title": "Unterstützte Formate",
+          "googleShopping": {
+            "label": "Google Shopping XML",
+            "description": "ist das gängigste Format. Wenn Sie Google Merchant Center verwenden, haben Sie bereits einen solchen Feed. Es handelt sich um einen RSS-/Atom-Feed, bei dem jedes <item> g:title, g:price, g:image_link usw. enthält."
+          },
+          "json": {
+            "label": "JSON",
+            "description": "ist ein einfaches Array aus Produktobjekten. Wir suchen nach den Feldern title, price, image und url. Auch eine Verschachtelung unter einem products- oder items-Schlüssel wird unterstützt."
+          }
+        },
+        "fields": {
+          "feedUrl": {
+            "label": "Feed-URL",
+            "placeholder": "https://yourstore.com/products.xml",
+            "validation": "Geben Sie eine gültige URL ein",
+            "description": {
+              "before": "Die öffentlich erreichbare URL Ihres Produkt-Feeds. Zum Beispiel:",
+              "example": "https://yourstore.com/feed/products.xml",
+              "after": "Die URL muss über das Internet erreichbar sein, daher funktionieren localhost- und URLs aus privaten Netzwerken nicht. Wir erkennen anhand des Inhalts automatisch, ob es sich um XML oder JSON handelt."
+            }
+          }
+        },
+        "action": {
+          "primary": "Feed importieren",
+          "importing": "Import wird durchgeführt..."
+        },
+        "toast": {
+          "connectionFailed": "Verbindung fehlgeschlagen",
+          "connected": {
+            "title": "Feed verbunden",
+            "description": "Produkte werden importiert. Das kann einen Moment dauern."
+          }
+        }
+      },
+      "csv": {
+        "title": "CSV importieren",
+        "description": "Laden Sie einen Tabellenexport aus einer beliebigen Plattform hoch.",
+        "columns": {
+          "title": "Erwartete Spalten",
+          "required": "title oder name — erforderlich",
+          "optional": "description, price, sku, image, url, id — optional",
+          "hint": "Groß- und Kleinschreibung bei Spaltennamen wird ignoriert. Zusätzliche Spalten werden übersprungen."
+        },
+        "fields": {
+          "file": {
+            "label": "CSV-Datei hochladen",
+            "description": "Laden Sie eine CSV-Datei hoch, um Ihre Produkte zu importieren."
+          }
+        },
+        "action": {
+          "primary": "CSV importieren",
+          "importing": "Import wird durchgeführt..."
+        },
+        "toast": {
+          "noFile": {
+            "title": "Keine Datei ausgewählt",
+            "description": "Laden Sie zuerst eine CSV-Datei hoch."
+          },
+          "noProducts": {
+            "title": "Keine Produkte gefunden",
+            "description": "Prüfen Sie, ob Ihre CSV eine Kopfzeile mit einer Spalte title oder name enthält."
+          },
+          "importFailed": "Import fehlgeschlagen",
+          "imported": {
+            "title": "{count, plural, one {# Produkt importiert} other {# Produkte importiert}}",
+            "description": "Ihr Katalog ist bereit."
+          }
+        }
+      },
+      "entry": {
+        "running": {
+          "title": "{host} wird importiert",
+          "description": "Wir importieren Ihre Produkte aus dem öffentlichen Katalog des Shops — kein Shop-Login erforderlich."
+        },
+        "steps": {
+          "reached": "{host} erreicht",
+          "detected": "{platform}-Shop erkannt",
+          "products": "{count, plural, one {# Produkt} other {# Produkte}} im öffentlichen Katalog",
+          "importing": "Ihr Katalog wird importiert…",
+          "slow": "Der Import großer Kataloge kann bis zu einer Minute dauern."
+        },
+        "busy": "Dieser Import läuft bereits in einem anderen Tab…",
+        "failed": {
+          "title": "{host} konnte gerade nicht importiert werden",
+          "description": "Der Shop hat zu lange für eine Antwort gebraucht. Versuchen Sie es erneut oder verbinden Sie ihn unten auf eine andere Weise."
+        },
+        "claimed": {
+          "title": "{host} ist bereits mit einem anderen ecentic-Konto verbunden",
+          "description": "Wenn es Ihr Shop ist, verbinden Sie ihn mit verifiziertem Zugriff, um ihn mit diesem Konto zu verknüpfen."
+        },
+        "locked": {
+          "shopify": {
+            "title": "{host} ist passwortgeschützt",
+            "description": "Der Katalog ist noch nicht öffentlich. Installieren Sie die Shopify-App, um ihn zu importieren."
+          },
+          "woocommerce": {
+            "title": "{host} schützt seine Produkt-API vor öffentlichem Zugriff",
+            "description": "Verbinden Sie den Shop mit dem ecentic-Plugin oder REST-API-Schlüsseln, um den Katalog zu importieren."
+          }
+        },
+        "unsupported": {
+          "title": "Unter {host} wurde kein Shopify- oder WooCommerce-Katalog gefunden",
+          "description": "Jeder Shop kann trotzdem über einen Produkt-Feed oder eine CSV unten verbunden werden."
+        },
+        "action": {
+          "primary": "Erneut versuchen",
+          "secondary": "Andere Methode wählen"
+        },
+        "verified": {
+          "shopify": "Shopify-App installieren",
+          "woocommerce": "Mit dem Plugin verbinden"
+        }
+      }
+    },
+    "products": {
+      "empty": {
+        "title": "Keine Produkte gefunden",
+        "description": "Verbinden Sie einen Shop und synchronisieren Sie Ihre Produkte, um loszulegen.",
+        "action": "Shop verbinden und Produkte synchronisieren"
+      },
+      "page": {
+        "title": "Produkte zum Scannen auswählen",
+        "freeLimit": "Kostenlos: 10 Produkte",
+        "description": "Wählen Sie die Produkte aus, die Sie gegen KI-Einkaufsagenten testen möchten. Wir empfehlen, mit Ihren Bestsellern zu beginnen."
+      },
+      "selection": "{selected} von {limit} Produkten ausgewählt",
+      "table": {
+        "headers": [
+          "Produkt",
+          "Preis",
+          "Währung",
+          "Status",
+          "Qualität"
+        ]
+      },
+      "states": {
+        "active": "Aktiv",
+        "draft": "Entwurf"
+      },
+      "quality": {
+        "good": "Gut",
+        "partial": "Teilweise vollständig",
+        "poor": "Schlecht"
+      },
+      "action": {
+        "back": "Zurück",
+        "next": "Weiter: Wettbewerber hinzufügen"
+      }
+    },
+    "competitors": {
+      "page": {
+        "title": "Wer sind Ihre Wettbewerber?",
+        "description": "Wir testen Ihre Produkte in KI-Agenten-Simulationen direkt gegen diese Wettbewerber."
+      },
+      "tabs": {
+        "offers": "Live-Angebote",
+        "auto": "Automatisch erkennen",
+        "url": "URLs einfügen",
+        "search": "Marke suchen",
+        "merchant": "Google"
+      },
+      "offers": {
+        "title": "Wer Ihre Produkte noch verkauft",
+        "description": "Wir prüfen jedes Ihrer Produkte und erfassen die Händler, die es aktuell anbieten – inklusive ihrer tatsächlichen Preise.",
+        "action": "Live-Angebote finden",
+        "measuring": "Wird gemessen",
+        "complete": "Abgeschlossen",
+        "checking": "Händler werden geprüft",
+        "runAgain": "Erneut ausführen",
+        "finishedIn": "Abgeschlossen in {elapsed}",
+        "sellerLog": "{seller} — {price}",
+        "exclusiveLog": "Kein anderer Händler bietet {title} an",
+        "categoryLog": "{title}: keine Händler für genau dieses Produkt — {count, plural, one {# Wettbewerber aus derselben Kategorie} other {# Wettbewerber aus derselben Kategorie}} aus Shopping",
+        "budgetLog": "Angebotskontingent vorerst ausgeschöpft",
+        "measured": "{count, plural, one {# konkurrierendes Angebot gemessen} other {# konkurrierende Angebote gemessen}}",
+        "errors": {
+          "failed": "Angebote konnten nicht abgefragt werden",
+          "noneFound": "Keine konkurrierenden Angebote für diese Produkte gefunden"
+        },
+        "toast": {
+          "failed": "Angebote konnten nicht abgefragt werden",
+          "found": {
+            "title": "Konkurrierende Angebote hinzugefügt",
+            "description": "{count, plural, one {# Konkurrenzangebot mit tatsächlichem Preis} other {# Konkurrenzangebote mit tatsächlichen Preisen}}"
+          },
+          "noneFound": {
+            "title": "Keine konkurrierenden Angebote",
+            "description": "Offenbar verkauft niemand sonst diese Produkte, und wir konnten auch keine Wettbewerber in dieser Kategorie finden. Versuchen Sie einen anderen Tab, um Wettbewerber per Marke oder URL hinzuzufügen."
+          }
+        }
+      },
+      "merchant": {
+        "label": "Von Google gemessene Wettbewerber",
+        "description": "Wettbewerber, die Google neben Ihren eigenen Produkten in Shopping-Ergebnissen ausgespielt hat — beobachtet, nicht vorgeschlagen.",
+        "loading": "Ihr Google-Shopping-Report wird geladen…",
+        "categoryPlaceholder": "Kategorie auswählen",
+        "country": "Markt: {country}",
+        "measured": "{count, plural, one {# Wettbewerber gemessen} other {# Wettbewerber gemessen}}",
+        "overlap": "{value} gemeinsame Ergebnisseiten",
+        "higher": "{value} vor Ihnen platziert",
+        "traffic": {
+          "organic": "Kostenlose Einträge",
+          "ads": "Shopping-Anzeigen"
+        },
+        "reason": {
+          "unsupported": "Google-Shopping-Daten sind derzeit für Shopify-Shops verfügbar. Weitere Plattformen folgen in Kürze.",
+          "unlinked": "Verbinden Sie Ihr Google Merchant Center-Konto, um die Wettbewerber zu sehen, die Google mit Ihrem Shop verglichen hat.",
+          "unknownCategory": "Wir konnten nicht erkennen, zu welcher Kategorie Ihr Katalog gehört. Wählen Sie oben eine aus, dann laden wir das Google-Ranking dafür.",
+          "noData": "Google hat noch nicht genügend Shopping-Impressionen für diesen Shop. Das füllt sich, sobald Ihre Produkte einige Wochen in Shopping-Ergebnissen ausgeliefert wurden — nutzen Sie in der Zwischenzeit die anderen Tabs."
+        },
+        "validation": {
+          "summary": "Google bestätigt {confirmed} der {total} Wettbewerber in Ihrer Liste — die übrigen wurden in dieser Kategorie nicht zusammen mit Ihren Produkten ausgespielt."
+        },
+        "action": {
+          "connect": "Google Merchant Center verbinden",
+          "add": "{count, plural, =0 {Ausgewählte hinzufügen} one {# Wettbewerber hinzufügen} other {# Wettbewerber hinzufügen}}",
+          "adding": "Wird hinzugefügt…",
+          "validate": "Meine Liste prüfen",
+          "validating": "Wird geprüft…"
+        },
+        "toast": {
+          "failed": "Der Wettbewerberbericht von Google konnte nicht geladen werden",
+          "added": {
+            "title": "Wettbewerber hinzugefügt",
+            "description": "{count} gemessene Wettbewerber wurden Ihrer Liste hinzugefügt."
+          }
+        }
+      },
+      "action": {
+        "back": "Zurück",
+        "skip": "Überspringen — automatisch zuordnen",
+        "nextReview": "Weiter: Prüfen"
+      },
+      "autoDetect": {
+        "title": "Wettbewerber automatisch erkennen",
+        "description": "Wir analysieren Ihre Produkte und nutzen KI, um die relevantesten Wettbewerber in Ihrem Markt zu finden.",
+        "action": "Wettbewerber automatisch erkennen",
+        "scanning": "Live-Intelligence-Scan",
+        "complete": "Scan abgeschlossen",
+        "initializing": "Intelligence-Scan wird initialisiert...",
+        "analyzing": "Marktsignale werden analysiert",
+        "finishedIn": "Abgeschlossen nach {elapsed}",
+        "runAgain": "Erneut ausführen",
+        "foundLog": "Gefunden · {title}",
+        "identified": "{count, plural, one {# Wettbewerber identifiziert} other {# Wettbewerber identifiziert}}",
+        "errors": {
+          "failed": "Erkennung fehlgeschlagen. Bitte versuchen Sie es erneut.",
+          "noneFound": "Keine neuen Wettbewerber gefunden. Bitte versuchen Sie es erneut."
+        },
+        "toast": {
+          "failed": "Erkennung fehlgeschlagen",
+          "noneFound": {
+            "title": "Keine Wettbewerber gefunden",
+            "description": "Es konnten keine neuen Wettbewerber identifiziert werden. Bitte versuchen Sie es erneut."
+          },
+          "found": {
+            "title": "Wettbewerber gefunden",
+            "description": "{count, plural, one {# Produkt eines Wettbewerbers gefunden.} other {# Produkte von Wettbewerbern gefunden.}}"
+          }
+        }
+      },
+      "search": {
+        "label": "Nach Marke oder Kategorie suchen",
+        "placeholder": "z. B. SoundMax, kabellose Ohrhörer unter $150...",
+        "clearAria": "Suche löschen",
+        "action": {
+          "search": "Suchen",
+          "searching": "Suche läuft..."
+        },
+        "productHint": "Oder suchen Sie nach einem Ihrer Produkte.",
+        "empty": "Suchen Sie oben nach einer Marke oder einem Produkt, um Wettbewerber zu finden",
+        "loading": "Wettbewerbsumfeld wird durchsucht...",
+        "toast": {
+          "failed": "Suche fehlgeschlagen",
+          "found": {
+            "title": "Produkte gefunden",
+            "description": "{count} Produkte von Wettbewerbern gefunden."
+          }
+        }
+      },
+      "url": {
+        "label": "Produkt-URLs von Wettbewerbern einfügen (eine pro Zeile)",
+        "placeholder": "https://amazon.com/dp/B0XXXXX\nhttps://competitorstore.com/products/example\nhttps://amazon.com/dp/B0YYYYY",
+        "placeholderMore": "Weitere URLs zum Extrahieren einfügen...",
+        "action": {
+          "extract": "Produktdaten extrahieren",
+          "extracting": "Produktdaten werden extrahiert...",
+          "extractShort": "Extrahieren",
+          "extractingShort": "Wird extrahiert..."
+        },
+        "toast": {
+          "failed": "Extraktion fehlgeschlagen",
+          "success": {
+            "title": "Produkte extrahiert",
+            "description": "{count} Produkte aus URLs extrahiert."
+          }
+        }
+      },
+      "results": {
+        "countCompetitorFound": "{count, plural, one {# Wettbewerber gefunden} other {# Wettbewerber gefunden}}",
+        "countProductExtracted": "{count, plural, one {# Produkt extrahiert} other {# Produkte extrahiert}}",
+        "clear": "Leeren",
+        "measured": "Gemessen",
+        "verified": "Verifizierter Preis"
+      },
+      "review": {
+        "title": "Ihre Wettbewerber prüfen",
+        "description": "Wählen Sie die Wettbewerber aus, die Sie in Ihre KI-Agenten-Simulationen einbeziehen möchten.",
+        "summary": "{total} Produkte von Wettbewerbern aus {brands} Marken — {selected} ausgewählt",
+        "table": {
+          "headers": [
+            "Wettbewerber",
+            "Preis",
+            "Währung",
+            "Marke"
+          ]
+        },
+        "action": {
+          "back": "Zurück",
+          "next": "Weiter: Scan starten"
+        }
+      }
+    },
+    "scan": {
+      "page": {
+        "title": "Sehen Sie, wer gewinnt.",
+        "description": "ChatGPT, Claude & Gemini simulieren echte Shopping-Anfragen für Ihre Produkte und Wettbewerber."
+      },
+      "models": [
+        {
+          "model": "ChatGPT",
+          "description": "Fokus auf Spezifikationen"
+        },
+        {
+          "model": "Claude",
+          "description": "Kontextbezogene Analyse"
+        },
+        {
+          "model": "Gemini",
+          "description": "Preis-Leistungs-Verhältnis"
+        }
+      ],
+      "stats": {
+        "products": "Produkte",
+        "competitorsMatched": "Zugeordnete Wettbewerber",
+        "simulations": "Auszuführende Simulationen",
+        "estimatedTime": "Geschätzte Dauer"
+      },
+      "pre": {
+        "action": {
+          "back": "Zurück",
+          "run": "Simulation starten"
+        }
+      },
+      "running": {
+        "title": "Simulation wird ausgeführt.",
+        "description": "ChatGPT, Claude & Gemini vergleichen Ihre Produkte gerade mit denen Ihrer Wettbewerber.",
+        "liveScan": "Live-Intelligence-Scan",
+        "initializing": "Simulations-Engine wird initialisiert...",
+        "progress": "Simulationen für {count} Vergleiche werden ausgeführt",
+        "status": {
+          "done": "Fertig",
+          "running": "Läuft",
+          "queued": "In Warteschlange"
+        }
+      },
+      "complete": {
+        "title": "Scan abgeschlossen.",
+        "messages": {
+          "low": "KI-Agenten wählen meist Ihre Wettbewerber aus. Das können wir ändern.",
+          "medium": "Sie sind wettbewerbsfähig, aber es gibt deutliches Potenzial, häufiger ausgewählt zu werden. Sehen wir uns an, wo.",
+          "high": "Sie liegen vor den meisten Wettbewerbern. Sorgen wir dafür, dass das so bleibt."
+        },
+        "topFinding": "Wichtigste Erkenntnis",
+        "topFindingBody": "{name} verliert bei {attributes}. {impact} Das führt in {percentage}% der Simulationen zu einer Niederlage.",
+        "stats": {
+          "winRate": "Gewinnquote",
+          "products": "Produkte",
+          "wins": "Siege",
+          "losses": "Niederlagen"
+        },
+        "action": {
+          "back": "Zurück zum Scan",
+          "share": "Teilen",
+          "startFree": "Kostenlos starten"
+        },
+        "toast": {
+          "paygFailed": "Pay-as-you-go konnte nicht gestartet werden"
+        }
+      },
+      "toast": {
+        "failed": "Scan fehlgeschlagen",
+        "transport": "Verbindung zum Server verloren. Laden Sie die Seite neu, um den Scan fortzusetzen.",
+        "enqueueTransport": "Der Server konnte zum Starten des Scans nicht erreicht werden. Prüfen Sie Ihre Verbindung und versuchen Sie es erneut.",
+        "simulationFailed": "Simulation fehlgeschlagen. Bitte versuchen Sie es erneut.",
+        "noStore": "Verbinden Sie einen Shop, bevor Sie Simulationen ausführen.",
+        "missingData": {
+          "title": "Fehlende Daten",
+          "noProducts": "Fügen Sie Produkte hinzu, bevor Sie Simulationen ausführen.",
+          "noCompetitors": "Wählen Sie mindestens einen Wettbewerber aus, bevor Sie Simulationen ausführen."
+        }
+      }
+    }
+  }
+}

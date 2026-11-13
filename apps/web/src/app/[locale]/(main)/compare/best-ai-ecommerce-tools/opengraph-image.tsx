@@ -1,12 +1,16 @@
+import { notFound } from "next/navigation";
+import { hasLocale } from "next-intl";
+import { getMessages } from "next-intl/server";
+import { routing } from "@/i18n/routing";
 import { createOgImage, ogImageContentType, ogImageSize } from "@/lib/og";
 
-export const alt = "Best AI Tools for Ecommerce 2026 — ecentic";
+export const alt = "ecentic";
 export const size = ogImageSize;
 export const contentType = ogImageContentType;
 
-export default () =>
-  createOgImage({
-    title: "Best AI Tools for Ecommerce 2026",
-    description:
-      "Best AI tools for ecommerce in 2026, organized by category so merchants can compare content, personalization, search, analytics, and agent-commerce workflows.",
-  });
+export default async ({ params }: { params: Promise<{ locale: string }> }) => {
+  const { locale } = await params;
+  if (!hasLocale(routing.locales, locale)) notFound();
+  const messages = await getMessages({ locale });
+  return createOgImage({ locale, ...messages.compare.meta });
+};

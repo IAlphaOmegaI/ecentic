@@ -1,0 +1,22 @@
+{
+  "round17Shopping": {
+    "sample": "Résultats d’achat illustratifs",
+    "followUps": "Explorer une autre question",
+    "evidence": "Ce que la fiche produit omet",
+    "source": "Données source",
+    "missing": "Absent de la fiche produit",
+    "present": "Déjà présent dans la fiche produit",
+    "evidenceNote": "Les informations mises en évidence existent déjà dans la source d’exemple. Rendez-les explicites dans la fiche produit avant de relancer la comparaison.",
+    "qualification": "Données source d’exemple. Vérifiez-les avant de publier.",
+    "responses": {
+      "wine-and-spirits": "Voici deux bouteilles à comparer. Vérifiez les notes de dégustation, l’origine et les détails de la bouteille par rapport à ce que vous avez en tête.",
+      "food-and-beverage": "Ces deux options méritent d’être comparées. Les détails sur la portion et les ingrédients aideront à affiner le choix.",
+      "beauty-and-personal-care": "Voici deux options à examiner. Je comparerais la formulation et l’adéquation indiquée du produit avec vos critères.",
+      "consumer-electronics": "Je comparerais ces deux options selon les caractéristiques importantes pour votre usage. Voici ce que leurs fiches produit indiquent.",
+      "home-and-furniture": "Ces deux options constituent un bon point de départ. Vérifiez les dimensions et les matériaux avant de décider laquelle convient à votre espace.",
+      "fashion-and-outdoor": "Voici deux options à comparer. Examinez la coupe, les matériaux et les performances indiquées pour votre usage prévu.",
+      "health-wellness-and-pet": "Ces deux fiches produit nous donnent des éléments à comparer. Vérifiez les ingrédients et les indications, et confirmez l’adéquation avec un professionnel qualifié.",
+      "travel-and-experiences": "Voici deux options pour votre voyage. Comparez les dates, le lieu et les conditions complètes avant de choisir."
+    }
+  }
+}

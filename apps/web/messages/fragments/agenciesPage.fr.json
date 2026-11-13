@@ -1,0 +1,55 @@
+{
+  "agenciesPage": {
+    "challenges": {
+      "description": "Transformez la question du client en une vérification du produit, une modification vérifiée et une comparaison claire.",
+      "details": "Explorer les questions des clients"
+    },
+    "tracks": {
+      "description": "Choisissez le travail que vous apportez à la relation. Le périmètre et les conditions commerciales sont définis avant toute revente ou recommandation.",
+      "label": "Parcours partenaires",
+      "pathLabel": "Ce que comprend la collaboration",
+      "paths": [
+        [
+          "Catalogue client",
+          "Contrôles produit",
+          "Modifications vérifiées"
+        ],
+        [
+          "Votre produit",
+          "Interfaces documentées",
+          "Découverte et configuration"
+        ],
+        [
+          "Votre audience",
+          "Formation à l’IA appliquée au commerce",
+          "Échange avec le partenaire"
+        ]
+      ]
+    },
+    "access": {
+      "label": "Propriété du compte",
+      "single": "Un propriétaire, plusieurs boutiques",
+      "separate": "Comptes clients distincts",
+      "singleTitle": "Un compte regroupe ses propres boutiques.",
+      "singleDescription": "Les boutiques peuvent être regroupées lorsqu’elles appartiennent au même propriétaire de compte.",
+      "separateTitle": "Chaque client contrôle son compte.",
+      "separateDescription": "Des propriétaires distincts conservent des comptes distincts. Confirmez l’organisation avec chaque client avant toute connexion.",
+      "owner": "Compte propriétaire",
+      "store": "Boutique du propriétaire",
+      "anotherStore": "Autre boutique du propriétaire",
+      "firstClient": "Compte du client A",
+      "secondClient": "Compte du client B",
+      "firstStore": "Boutique du client A",
+      "secondStore": "Boutique du client B",
+      "boundary": "Aucune autorisation déléguée pour les agences ni aucun accès individuel pour les membres d’une équipe"
+    },
+    "start": {
+      "description": "Présentez votre parcours partenaire, le cas d’usage client et l’organisation de compte proposée lors de l’échange.",
+      "items": [
+        "Choisir votre parcours",
+        "Confirmer la propriété du compte",
+        "Convenir du périmètre et des conditions"
+      ]
+    }
+  }
+}

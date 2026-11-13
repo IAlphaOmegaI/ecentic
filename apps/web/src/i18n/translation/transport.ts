@@ -1,0 +1,82 @@
+import type { TranslationGeneration } from "./runner";
+
+type JsonValue =
+  | string
+  | number
+  | boolean
+  | null
+  | JsonValue[]
+  | { [key: string]: JsonValue };
+
+/** Only envelope identifiers change. Prose, code, contexts and group boundaries do not. */
+const mapIdentifiers = (
+  value: JsonValue,
+  identifiers: ReadonlyMap<string, string>,
+  field = "",
+): JsonValue => {
+  if (typeof value === "string") {
+    return ["id", "reviewedIds", "requestedIds"].includes(field)
+      ? (identifiers.get(value) ?? value)
+      : value;
+  }
+  if (Array.isArray(value))
+    return value.map((entry) => mapIdentifiers(entry, identifiers, field));
+  if (value && typeof value === "object")
+    return Object.fromEntries(
+      Object.entries(value).map(([key, entry]) => [
+        key,
+        mapIdentifiers(entry, identifiers, key),
+      ]),
+    );
+  return value;
+};
+
+/** Long resource keys need not consume the model's generated text budget. */
+export const compactTranslationTransport = (request: TranslationGeneration) => {
+  const boundary = request.prompt.lastIndexOf("\n") + 1;
+  const payload = (() => {
+    try {
+      return JSON.parse(request.prompt.slice(boundary)) as JsonValue;
+    } catch {
+      return null;
+    }
+  })();
+  if (!payload) return { request, decode: (value: unknown) => value };
+
+  const originalIds = new Set<string>();
+  const collect = (value: JsonValue): void => {
+    if (Array.isArray(value)) {
+      for (const entry of value) collect(entry);
+      return;
+    }
+    if (!value || typeof value !== "object") return;
+    if (typeof value.id === "string") originalIds.add(value.id);
+    for (const entry of Object.values(value)) collect(entry);
+  };
+  collect(payload);
+  const prefix = (() => {
+    const candidates = Array.from(
+      { length: originalIds.size + 1 },
+      (_, index) => `${"_".repeat(index + 1)}t`,
+    );
+    return (
+      candidates.find(
+        (candidate) => ![...originalIds].some((id) => id.startsWith(candidate)),
+      ) ?? "_translation"
+    );
+  })();
+  const aliases = new Map(
+    [...originalIds].map((id, index) => [id, `${prefix}${index}`]),
+  );
+  const originals = new Map(
+    [...aliases].map(([original, alias]) => [alias, original]),
+  );
+  return {
+    request: {
+      ...request,
+      prompt: `${request.prompt.slice(0, boundary)}${JSON.stringify(mapIdentifiers(payload, aliases))}`,
+    },
+    // Unknown IDs remain unknown, so the runner's exact-coverage gate rejects them.
+    decode: (value: unknown) => mapIdentifiers(value as JsonValue, originals),
+  };
+};

@@ -1,0 +1,17 @@
+{
+  "comparisonGuidePage": {
+    "navigation": {
+      "label": "Dans ce guide",
+      "guide": "Catégories",
+      "tools": "Comparer les outils",
+      "bottleneck": "Identifier votre goulot d’étranglement",
+      "related": "Pour aller plus loin",
+      "faq": "Questions"
+    },
+    "views": {
+      "label": "Vue comparative",
+      "table": "Comparer tous les outils",
+      "tool": "Lire par outil"
+    }
+  }
+}

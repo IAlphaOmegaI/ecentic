@@ -1,8 +1,9 @@
-import { slugify } from "babylovegrowth-next-js-blog";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { localizePath } from "@/i18n/locale";
+import { locales } from "@/i18n/locales";
+import { blogTopicSlug } from "@/lib/blog-locale";
 import { createMetadata } from "@/lib/seo";
 import * as Blog from "@/server/app/blog";
 import {
@@ -22,11 +23,31 @@ export const generateMetadata = async ({
   const locale = await getLocale();
   const translate = await getTranslations({ locale, namespace: "blog.tag" });
 
-  return createMetadata({
-    title: translate("metaTitle", { slug }),
-    description: translate("metaDescription", { slug }),
-    path: localizePath(`/blog/tag/${slug}`, locale),
-  });
+  const path = localizePath(`/blog/tag/${slug}`, locale);
+  const available = await Promise.all(
+    locales.map(async (target) => ({
+      locale: target,
+      count: (await Blog.listPublishedByTag(slug, target)).length,
+    })),
+  );
+  return {
+    ...createMetadata({
+      title: translate("metaTitle", { slug }),
+      description: translate("metaDescription", { slug }),
+      path,
+    }),
+    alternates: {
+      canonical: path,
+      languages: Object.fromEntries(
+        available
+          .filter((entry) => entry.count > 0)
+          .map((entry) => [
+            entry.locale,
+            localizePath(`/blog/tag/${slug}`, entry.locale),
+          ]),
+      ),
+    },
+  };
 };
 
 export default async ({ params }: TagPageProps) => {
@@ -36,35 +57,19 @@ export default async ({ params }: TagPageProps) => {
   const collectionTranslate = await getTranslations("blogTagPage");
   const { blogTagPage } = await getMessages();
 
-  // Slugs are shared across locales, so the Spanish row is the same article in
-  // Spanish. Fall back to English whenever a translation has not landed yet —
-  // an English card beats an empty tag page.
-  const [englishPosts, spanishPosts] = await Promise.all([
-    Blog.listPublishedByTag(slug, "en"),
-    locale === "es" ? Blog.listPublishedByTag(slug, "es") : Promise.resolve([]),
-  ]);
-
-  const spanishBySlug = new Map(
-    spanishPosts.map((post) => [post.slug, post] as const),
-  );
-
-  const articles = englishPosts.map(
-    (post) => (locale === "es" && spanishBySlug.get(post.slug)) || post,
-  );
+  const articles = await Blog.listPublishedByTag(slug, locale);
 
   if (articles.length === 0) notFound();
 
-  const keywords = englishPosts.flatMap((post) => [
-    post.category,
-    ...post.tags,
-  ]);
-  const topic = keywords.find((keyword) => slugify(keyword) === slug) ?? slug;
+  const keywords = articles.flatMap((post) => [post.category, ...post.tags]);
+  const topic =
+    keywords.find((keyword) => blogTopicSlug(keyword) === slug) ?? slug;
   const relatedTopics = Array.from(
     new Map(
       keywords
         .map((keyword) => keyword.trim())
         .filter(Boolean)
-        .map((keyword) => [slugify(keyword), keyword] as const),
+        .map((keyword) => [blogTopicSlug(keyword), keyword] as const),
     ),
   )
     .filter(([topicSlug]) => topicSlug && topicSlug !== slug)

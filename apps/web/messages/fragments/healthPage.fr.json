@@ -1,0 +1,31 @@
+{
+  "healthPage": {
+    "reader": {
+      "description": "Ouvrez une question d’acheteur pour consulter les informations produit qui la sous-tendent.",
+      "label": "Questions des acheteurs et informations produit",
+      "facts": "Informations produit à vérifier par votre équipe",
+      "allFacts": "Voir tous les attributs produit"
+    },
+    "relationship": {
+      "title": "Deux contrôles, une seule description produit.",
+      "label": "Les informations du fabricant ainsi que les conditions liées au produit, au canal et au pays contribuent à une description produit étayée.",
+      "inputs": [
+        {
+          "title": "Informations du fabricant",
+          "description": "Ingrédients, usage prévu et instructions."
+        },
+        {
+          "title": "Produit, canal et pays",
+          "description": "Éléments justificatifs et conditions d’éligibilité."
+        }
+      ],
+      "output": "Informations produit étayées",
+      "description": "Veillez à ce que la description reste liée à des faits source vérifiés."
+    },
+    "rules": [
+      "Allégations nutritionnelles et de santé",
+      "Éligibilité du canal"
+    ],
+    "role": "Rôle d’ecentic"
+  }
+}

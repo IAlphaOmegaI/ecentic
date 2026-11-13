@@ -1,0 +1,58 @@
+{
+  "interactiveCheckout": {
+    "sampleLabel": "Exemple avec des données fictives",
+    "title": "Un parcours de paiement, avant et après",
+    "description": "Exemple de passage de commande WooCommerce pour une lampe de bureau réglable. L’étape de paiement redonne la main à l’acheteur via la passerelle de la boutique ; cet exemple ne crée aucune commande réelle.",
+    "controlsLabel": "Choisissez un résultat du parcours de paiement",
+    "states": {
+      "before": "Avant correction",
+      "after": "Après correction"
+    },
+    "statuses": {
+      "complete": "Terminé",
+      "stopped": "Interrompu",
+      "pending": "Non atteint"
+    },
+    "outcomes": {
+      "before": "Le parcours s’arrête aux coordonnées de contact. Le paiement et la validation de la commande ne sont pas atteints.",
+      "after": "L’exemple atteint la validation de la commande après correction de l’exigence du numéro de téléphone et finalisation du paiement par l’acheteur."
+    },
+    "steps": {
+      "find": {
+        "label": "Trouver le produit",
+        "before": "Lampe de bureau réglable",
+        "after": "Lampe de bureau réglable"
+      },
+      "availability": {
+        "label": "Consulter le prix et le stock",
+        "before": "Le prix et la disponibilité sont présents.",
+        "after": "Le prix et la disponibilité sont présents."
+      },
+      "cart": {
+        "label": "Ajouter au panier",
+        "before": "L’article d’exemple est ajouté au panier.",
+        "after": "L’article d’exemple est ajouté au panier."
+      },
+      "shipping": {
+        "label": "Choisir la livraison",
+        "before": "Une option de livraison est disponible.",
+        "after": "Une option de livraison est disponible."
+      },
+      "contact": {
+        "label": "Coordonnées",
+        "before": "Le paiement demande un numéro de téléphone que l’agent ne possède pas.",
+        "after": "Le téléphone est facultatif dans cet exemple ; les coordonnées requises sont présentes."
+      },
+      "payment": {
+        "label": "Paiement",
+        "before": "En attente des coordonnées.",
+        "after": "L’acheteur finalise le paiement via la passerelle de la boutique."
+      },
+      "order": {
+        "label": "Commande passée",
+        "before": "L’exécution bloquée ne crée aucune commande.",
+        "after": "L’exemple aboutit à une commande WooCommerce."
+      }
+    }
+  }
+}

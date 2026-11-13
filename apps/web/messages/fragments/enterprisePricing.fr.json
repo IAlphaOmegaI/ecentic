@@ -1,0 +1,257 @@
+{
+  "enterprisePricing": {
+    "meta": {
+      "title": "Tarifs : analyse gratuite de boutique, plans et pilotes Enterprise",
+      "description": "Commencez avec une analyse gratuite de votre boutique. Paiement mensuel ou sur les commandes attribuées à l’IA, plafonné à $500 par mois. Pilotes Enterprise définis avec votre équipe."
+    },
+    "eyebrow": "Analyse gratuite de boutique · Sans carte pour commencer · Sans engagement",
+    "title": "Commencez gratuitement. Passez à l’échelle quand l’IA commence à sélectionner des produits.",
+    "description": "Analysez gratuitement votre boutique, puis choisissez un plan mensuel ou un paiement basé sur les commandes attribuées à l’IA. Vous gérez plusieurs boutiques ou marques ? Parlez-nous de votre projet pilote.",
+    "actions": [
+      {
+        "label": "Analyser ma boutique gratuitement",
+        "href": "/sign-up"
+      },
+      {
+        "label": "Nous contacter",
+        "href": "/demo"
+      }
+    ],
+    "sections": [
+      {
+        "id": "free-check",
+        "eyebrow": "01 / Analyse gratuite de boutique",
+        "title": "Découvrez comment l’IA compare vos produits.",
+        "description": "Une analyse gratuite de vos 10 meilleurs produits sur ChatGPT, Claude et Gemini. Découvrez ce qui l’emporte, ce qui perd face aux concurrents, et quels détails de fiche produit corriger en priorité."
+      },
+      {
+        "id": "pricing",
+        "eyebrow": "02 / Plans",
+        "title": "Choisissez votre mode de paiement.",
+        "description": "Commencez avec un plan en libre-service ou définissez un pilote adapté à vos boutiques, votre catalogue et votre processus de validation."
+      },
+      {
+        "id": "pay-as-you-go",
+        "eyebrow": "03 / Paiement à l’usage",
+        "title": "Des frais après une commande attribuée.",
+        "description": "Le paiement à l’usage est gratuit à activer. Les frais de performance s’appliquent à une commande comportant un signal explicite d’attribution à l’IA, ou à une commande passée dans les 7 jours suivant une visite de votre boutique référée par l’IA. La fenêtre s’applique au niveau de la boutique, pas à un lien entre un visiteur individuel et une commande."
+      },
+      {
+        "id": "compare",
+        "eyebrow": "04 / Comparer les plans",
+        "title": "Les détails, côte à côte.",
+        "description": "Les prix et limites de produits proviennent du catalogue de plans existant. Les simulations s’exécutent lorsque vous les lancez. Vous examinez les modifications de fiches produit et choisissez quand les publier."
+      },
+      {
+        "id": "never-billed",
+        "eyebrow": "05 / Jamais facturé",
+        "title": "L’analyse. Les outils. Les commandes non attribuées.",
+        "paragraphs": [
+          "Le contrôle gratuit de votre boutique et les outils publics sont sans frais. En paiement à l’usage, une commande sans signal explicite d’attribution à l’IA n’est pas facturée si votre boutique n’a reçu aucune visite référée par une IA au cours des 7 jours précédents. Les visites elles-mêmes ne sont jamais facturées. Les abonnements fixes ne comportent aucun frais à la performance."
+        ]
+      },
+      {
+        "id": "europe",
+        "eyebrow": "06 / Offre groupée EU Presence",
+        "title": "Représentation et gestion du catalogue, réunies."
+      }
+    ],
+    "sample": {
+      "label": "Exemple avec des données fictives",
+      "caption": "Cet exemple de score n’est pas un résultat pour votre boutique. Lancez votre propre contrôle pour voir les éléments à l’origine de chaque recommandation.",
+      "action": {
+        "primary": "Contrôler ma boutique gratuitement"
+      },
+      "figureLabel": "Illustration : une loupe révèle la structure d’une fiche produit.",
+      "sampleTitle": "Comprendre les raisons du score.",
+      "signals": [
+        "Comparaisons de produits",
+        "Fiches concurrentes",
+        "Corrections de fiches à vérifier"
+      ]
+    },
+    "plans": {
+      "payg": {
+        "tagline": "Payez seulement après qu’une IA vous a envoyé des visiteurs",
+        "note": "Aucune carte nécessaire pour commencer. Les frais suivent les règles d’attribution ci-dessous.",
+        "action": {
+          "primary": "Choisir le paiement à l’usage"
+        }
+      },
+      "compete": {
+        "action": {
+          "primary": "Choisir Compete"
+        }
+      },
+      "scale": {
+        "tagline": "Corriger à grande échelle",
+        "action": {
+          "primary": "Choisir Scale"
+        }
+      },
+      "dominate": {
+        "action": {
+          "primary": "Choisir Dominate"
+        }
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "tagline": "Défini avec votre équipe, à partir de données publiques",
+        "figure": "Pilote personnalisé",
+        "note": "Définissez le périmètre, le processus de validation et les objectifs avant de commencer.",
+        "features": [
+          "Toutes les boutiques dans un seul compte",
+          "API, serveur MCP et CLI",
+          "Examen des exigences de traitement des données",
+          "Un fondateur dédié au compte",
+          "Bilan du pilote avec objectifs convenus"
+        ],
+        "action": {
+          "primary": "Nous contacter"
+        }
+      }
+    },
+    "featureCorrections": {
+      "onDemand": "Simulations d’agents à la demande",
+      "reviewAndApply": "Vérifier les suggestions et publier avec Apply",
+      "paygAttribution": "Frais sur les commandes attribuées à l’IA selon les règles ci-dessous"
+    },
+    "availability": "Les simulations sont lancées à la demande. Vous examinez les suggestions et choisissez quand appliquer les modifications. La publication nécessite un connecteur direct pris en charge et votre approbation.",
+    "fee": {
+      "steps": [
+        {
+          "title": "Un assistant IA vous envoie un visiteur",
+          "body": "Votre boutique enregistre une visite référée par un assistant IA. Cela démarre la fenêtre d’attribution de 7 jours pour la boutique."
+        },
+        {
+          "title": "Ils achètent : une commande de $120",
+          "body": "Une commande est éligible lorsqu’elle comporte un signal explicite d’attribution à l’IA ou lorsqu’elle intervient pendant la fenêtre d’attribution active de 7 jours de la boutique."
+        },
+        {
+          "title": "Les frais sont de $3.60",
+          "body": "Au tarif standard de 3 %, une commande attribuée de $120 génère des frais de $3.60. Une visite seule n’entraîne aucun frais."
+        },
+        {
+          "title": "Les frais sont plafonnés à $500 par mois",
+          "body": "Le plafond mensuel standard est de $500. Aucune carte n’est nécessaire pour commencer ; un moyen de paiement est demandé lorsqu’un frais est dû."
+        }
+      ],
+      "example": {
+        "order": "Commande attribuée",
+        "rate": "Tarif standard",
+        "fee": "Commission à la performance",
+        "window": "Fenêtre de 7 jours au niveau de la boutique",
+        "cap": "Plafond mensuel de $500"
+      },
+      "billingTitle": "Vous préférez une facture mensuelle fixe ?",
+      "billingBody": "Compete, Scale et Dominate n’incluent aucun frais à la performance. Leurs tarifs mensuels sont indiqués ci-dessus."
+    },
+    "comparison": {
+      "title": "Comparaison des offres",
+      "feature": "Fonctionnalité",
+      "yes": "Inclus",
+      "no": "Non inclus",
+      "agreed": "Défini dans le pilote",
+      "onDemand": "À la demande",
+      "suggestions": "Vérification avant application",
+      "publish": "Publication avec Apply",
+      "enterpriseRows": [
+        {
+          "label": "Toutes les boutiques dans un seul compte",
+          "selfServe": true
+        },
+        {
+          "label": "API, serveur MCP et CLI",
+          "selfServe": true
+        },
+        {
+          "label": "Examen des exigences de traitement des données",
+          "selfServe": true
+        },
+        {
+          "label": "Un fondateur dédié au compte",
+          "selfServe": false
+        },
+        {
+          "label": "Bilan du pilote avec objectifs convenus",
+          "selfServe": false
+        }
+      ],
+      "enterpriseNote": "Les conditions Enterprise, les limites produit et les éventuels frais sont définis dans le périmètre du pilote. La découverte de l’API publique ainsi que la documentation MCP et CLI sont disponibles sans offre payante."
+    },
+    "bundle": {
+      "description": "EU Presence gère la représentation et la conformité dans les 27 États membres. L’offre groupée associe ses services existants à l’offre ecentic Dominate, selon les conditions commerciales existantes ci-dessous.",
+      "productDetail": "Simulations de produits, comparaisons avec les concurrents et suggestions de fiches à vérifier avant publication"
+    },
+    "faqTitle": "Questions sur les tarifs",
+    "faqs": [
+      {
+        "question": "Existe-t-il vraiment une offre gratuite ?",
+        "answer": "Oui. Le contrôle gratuit de votre boutique exécute une simulation unique de vos 10 principaux produits sur ChatGPT, Claude et Gemini, puis génère un rapport de taux de victoire. Aucune carte bancaire n’est requise."
+      },
+      {
+        "question": "Quelle est la différence entre Compete, Scale et Dominate ?",
+        "answer": "Compete couvre jusqu’à 100 produits avec des comparaisons concurrentielles et des suggestions d’optimisation manuelles. Scale couvre jusqu’à 1 000 produits avec des suggestions de fiches que vous pouvez vérifier et publier via Apply. Dominate inclut Scale et correspond à l’offre liée à Techstars. L’offre Y Combinator peut s’appliquer à tout abonnement fixe. Les simulations sont lancées à la demande ; le produit ne garantit aucune fréquence planifiée."
+      },
+      {
+        "question": "Quelle est la différence entre le paiement à l’usage et un abonnement ?",
+        "answer": "Le paiement à l’usage ne comporte aucun frais initial et applique une commission standard de 3 %, plafonnée à $500 par mois, selon les règles d’attribution ci-dessous. Compete, Scale et Dominate appliquent un tarif mensuel fixe sans commission à la performance. Choisissez le modèle de facturation adapté à votre équipe."
+      },
+      {
+        "question": "Comment fonctionne la commission à la performance du paiement à l’usage ?",
+        "answer": "Une commande est comptabilisée si elle comporte un signal explicite d’attribution à l’IA, ou si une visite référée par une IA a atteint votre boutique au cours des 7 jours précédents. Il s’agit d’une fenêtre au niveau de la boutique, et non d’une attribution à un acheteur individuel. Les frais standard correspondent à 3 % des commandes éligibles, plafonnés à $500 par mois calendaire. Les visites ne génèrent aucun frais. Un moyen de paiement est demandé uniquement lorsqu’un frais est dû. Le contrôle gratuit et les abonnements fixes ne comportent aucun frais à la performance."
+      },
+      {
+        "question": "Puis-je changer d’offre ou annuler plus tard ?",
+        "answer": "Oui. Commencez avec le contrôle gratuit, activez le paiement à l’usage ou choisissez un abonnement fixe. Les offres sont mensuelles et vous pouvez annuler. Contactez-nous pour définir un pilote Enterprise avant d’en valider les conditions."
+      },
+      {
+        "question": "Quand faut-il contacter l’équipe commerciale plutôt que de tout faire soi-même ?",
+        "answer": "Lorsque vous gérez plusieurs boutiques ou marques, disposez de milliers de produits, avez besoin d’un audit de sécurité ou souhaitez un pilote avec des objectifs convenus par écrit."
+      },
+      {
+        "question": "Qu’est-ce que l’offre groupée EU Presence ?",
+        "answer": "L’offre regroupe le représentant RGPD d’EU Presence, le responsable GPSR et Privacy Center Plus avec ecentic Dominate. L’offre groupée existante inclut une remise de 20 %, sans minimum ni frais de mise en place. Utilisez le lien d’appel de l’offre groupée pour en discuter."
+      },
+      {
+        "question": "Que deviennent nos données si nous partons ?",
+        "answer": "Demandez la suppression à privacy@ecentic.ai. Nous répondons sous un mois et confirmons une fois les données supprimées de nos systèmes. Les données de facturation sont conservées lorsque la loi l’exige ; les copies de sauvegarde sont supprimées à expiration. Consultez la politique de confidentialité pour le périmètre et les contrôles de déconnexion."
+      },
+      {
+        "question": "Y a-t-il des frais pour des éléments que nous n’avons pas demandés ?",
+        "answer": "Aucune offre n’est facturée sans activation. Les offres sont mensuelles. Selon les conditions standard du paiement à l’usage, des frais de 3 % s’appliquent à une commande comportant un signal explicite d’attribution à l’IA ou à une commande passée dans les 7 jours suivant une visite de votre boutique provenant de l’IA, dans la limite de $500 par mois calendaire. La fenêtre d’attribution couvre la boutique, et non un acheteur identifié. Les abonnements fixes ne comportent aucun frais à la performance."
+      },
+      {
+        "question": "Signez-vous un DPA ?",
+        "answer": "Oui. Un DPA est mis en place sur demande avant tout partage de données personnelles, et nous pouvons signer le vôtre. L’entité contractante et le signataire sont confirmés dans l’accord."
+      }
+    ],
+    "policyLinks": [
+      {
+        "label": "Lire la politique de confidentialité",
+        "href": "/privacy-policy"
+      },
+      {
+        "label": "Consulter la protection des données",
+        "href": "/security#dpa"
+      }
+    ],
+    "offerDescriptions": [
+      "Contrôle gratuit unique de votre boutique. Aucune carte bancaire requise.",
+      "Aucun frais initial. Commission standard de 3 % sur les commandes éligibles attribuées à l’IA, plafonnée à $500 par mois.",
+      "Abonnement mensuel couvrant jusqu’à 100 produits, sans commission à la performance.",
+      "Abonnement mensuel couvrant jusqu’à 1 000 produits, sans commission à la performance.",
+      "Abonnement mensuel incluant Scale, sans frais à la performance."
+    ],
+    "calculator": {
+      "comparison": "Comparaison des tarifs mensuels",
+      "details": "Fonctionnement de cette estimation",
+      "payg": "Paiement à l’usage",
+      "flat": "Mensuel fixe",
+      "lower": "Prix inférieur",
+      "same": "Même prix",
+      "orders": "Commandes",
+      "rate": "Taux de commission"
+    }
+  }
+}

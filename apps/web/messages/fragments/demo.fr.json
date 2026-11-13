@@ -1,0 +1,119 @@
+{
+  "demo": {
+    "meta": {
+      "title": "Réservez une démo — voyez votre taux de victoire IA en direct",
+      "description": "Réservez une démo ecentic de 15 minutes. Nous faisons passer vos meilleurs produits dans ChatGPT, Claude, Gemini et Perplexity en direct et identifions les corrections de fiches produit les plus impactantes."
+    },
+    "breadcrumb": {
+      "home": "Accueil",
+      "demo": "Réserver une démo"
+    },
+    "hero": {
+      "eyebrow": "Réserver une démo",
+      "title": {
+        "primary": "Voyez votre taux de victoire IA,",
+        "accent": "en direct en 15 minutes."
+      },
+      "description": "Nous faisons passer vos meilleurs produits dans ChatGPT, Claude, Gemini et Perplexity pendant que vous regardez, vous montrons pourquoi vous gagnez ou perdez, puis identifions les corrections de fiches produit les plus impactantes. Choisissez un créneau ci-dessous.",
+      "assurances": [
+        "15 minutes, pas un diaporama",
+        "Aucun compte ni connexion au catalogue requis",
+        "Aucune présentation au service des achats requise"
+      ],
+      "art": {
+        "alt": "Illustration ASCII d’un calendrier de bureau"
+      }
+    },
+    "whatWeCover": {
+      "number": "01",
+      "title": "Ce que nous allons couvrir.",
+      "description": "Une session de travail ciblée de 15 minutes. Vous repartez avec des actions concrètes.",
+      "body": [
+        "L’appel reste court et concret. Apportez l’URL de votre boutique ou quelques liens produits importants pour vous, nous faisons le reste en direct. Aucune obligation de poursuivre ensuite."
+      ],
+      "label": "L’ordre du jour",
+      "agentStripLabel": "Simulation en direct pendant l’appel",
+      "items": [
+        {
+          "title": "Lancer la simulation en direct",
+          "description": "Vos meilleurs produits passent dans les principaux modèles d’IA pour les achats pendant que vous regardez."
+        },
+        {
+          "title": "Comprendre pourquoi vous gagnez ou perdez",
+          "description": "Attribut par attribut, face aux concurrents que les agents choisissent réellement."
+        },
+        {
+          "title": "Repartir avec des corrections",
+          "description": "Les changements de fiches produit à effectuer en priorité pour maximiser l’impact."
+        },
+        {
+          "title": "Esquisser la boucle",
+          "description": "À quoi ressemblerait une boucle d’optimisation continue pour votre catalogue."
+        }
+      ]
+    },
+    "whoShouldBook": {
+      "number": "02",
+      "title": "À qui s’adresse cette démo.",
+      "description": "L’appel est particulièrement utile si vous avez un vrai catalogue à analyser et une raison d’agir sur les résultats.",
+      "body": [
+        "Une démo est la voie la plus rapide si vous voulez un regard extérieur sur les résultats plutôt que lire le rapport seul.",
+        "Vous préférez voir vos chiffres d’abord ? Le Scan gratuit exécute la même simulation sur vos 10 meilleurs produits en environ deux minutes."
+      ],
+      "label": "L’appel est particulièrement utile si vous",
+      "action": {
+        "primary": "Lancer le scan gratuit"
+      },
+      "items": [
+        {
+          "title": "Gestion de catalogues concurrentiels",
+          "description": "Catégories très larges ou concurrentielles où des attributs manquants font écarter les produits sans qu’on le remarque."
+        },
+        {
+          "title": "Comparaison de catégories d’outils",
+          "description": "Vous comparez l’optimisation du commerce par agents aux générateurs de contenu ou aux outils d’analyse."
+        },
+        {
+          "title": "Gestion de plusieurs boutiques",
+          "description": "Vous envisagez une configuration Enterprise personnalisée pour plusieurs marques."
+        },
+        {
+          "title": "Peu de temps disponible",
+          "description": "Vous voulez une explication claire du diagnostic, pas un rapport supplémentaire à lire."
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "03",
+      "title": "Questions fréquentes",
+      "description": "Questions fréquentes sur l’appel de démonstration."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Que se passe-t-il pendant l’appel ?",
+          "answer": "Nous faisons passer vos meilleurs produits dans les principaux modèles d’IA pour les achats pendant que vous regardez, expliquons pourquoi les agents choisissent vos produits ou ceux d’un concurrent, puis vous laissons avec les changements de fiches produit les plus impactants à effectuer en priorité."
+        },
+        {
+          "question": "Combien de temps dure la démo ?",
+          "answer": "Quinze minutes. C’est une session de travail ciblée, pas un diaporama. Si votre équipe a ensuite besoin d’un échange plus approfondi sur un périmètre Enterprise, nous programmerons un autre appel séparément."
+        },
+        {
+          "question": "Dois-je préparer quelque chose ?",
+          "answer": "Seulement l’URL de votre boutique ou quelques liens produits importants pour vous. Vous n’avez pas besoin de connecter votre catalogue ni de créer un compte avant l’appel."
+        },
+        {
+          "question": "Puis-je éviter l’appel et commencer directement ?",
+          "answer": "Oui. L’offre gratuite Scan exécute la même simulation sur vos 10 meilleurs produits en environ deux minutes, sans carte bancaire. Réservez un appel si vous préférez que nous analysions les résultats avec vous."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Commencer gratuitement",
+        "secondary": "Voir les tarifs"
+      },
+      "note": "Vous préférez l’autonomie ? Lancez votre premier scan sans carte bancaire."
+    }
+  }
+}

@@ -48,6 +48,7 @@ import {
   TooltipTrigger,
 } from "@zenncore/web/components/tooltip";
 import type { ChatStatus, FileUIPart, SourceDocumentUIPart } from "ai";
+import { useTranslations } from "next-intl";
 import type {
   ChangeEvent,
   ChangeEventHandler,
@@ -490,9 +491,10 @@ export type PromptInputActionAddAttachmentsProps = ComponentProps<
 };
 
 export const PromptInputActionAddAttachments = ({
-  label = "Add photos or files",
+  label,
   ...props
 }: PromptInputActionAddAttachmentsProps) => {
+  const translate = useTranslations("promptInput");
   const attachments = usePromptInputAttachments();
 
   const handleClick = useCallback(() => {
@@ -501,7 +503,8 @@ export const PromptInputActionAddAttachments = ({
 
   return (
     <DropdownMenuItem {...props} onClick={handleClick}>
-      <PhotoIcon className="mr-2 size-4" /> {label}
+      <PhotoIcon className="mr-2 size-4" />{" "}
+      {label ?? translate("attachments.label")}
     </DropdownMenuItem>
   );
 };
@@ -513,10 +516,11 @@ export type PromptInputActionAddScreenshotProps = ComponentProps<
 };
 
 export const PromptInputActionAddScreenshot = ({
-  label = "Take screenshot",
+  label,
   onClick,
   ...props
 }: PromptInputActionAddScreenshotProps) => {
+  const translate = useTranslations("promptInput");
   const attachments = usePromptInputAttachments();
 
   const handleClick = useCallback(
@@ -551,7 +555,7 @@ export const PromptInputActionAddScreenshot = ({
   return (
     <DropdownMenuItem {...props} onClick={handleClick}>
       <PhotoIcon className="mr-2 size-4" />
-      {label}
+      {label ?? translate("screenshot.label")}
     </DropdownMenuItem>
   );
 };
@@ -599,6 +603,8 @@ export const PromptInput = ({
   children,
   ...props
 }: PromptInputProps) => {
+  const translate = useTranslations("promptInput");
+  const translateUpload = useTranslations("general.fileUpload");
   // Try to use a provider controller if present
   const controller = useOptionalPromptInputController();
   const usingProvider = !!controller;
@@ -657,7 +663,7 @@ export const PromptInput = ({
       if (incoming.length && accepted.length === 0) {
         onError?.({
           code: "accept",
-          message: "No files match the accepted types.",
+          message: translate("errors.acceptedTypes"),
         });
         return;
       }
@@ -667,7 +673,7 @@ export const PromptInput = ({
       if (accepted.length > 0 && sized.length === 0) {
         onError?.({
           code: "max_file_size",
-          message: "All files exceed the maximum size.",
+          message: translate("errors.maximumSize"),
         });
         return;
       }
@@ -682,7 +688,7 @@ export const PromptInput = ({
         if (typeof capacity === "number" && sized.length > capacity) {
           onError?.({
             code: "max_files",
-            message: "Too many files. Some were not added.",
+            message: translate("errors.maximumCount"),
           });
         }
         const next: (FileUIPart & { id: string })[] = [];
@@ -698,7 +704,7 @@ export const PromptInput = ({
         return [...prev, ...next];
       });
     },
-    [matchesAccept, maxFiles, maxFileSize, onError],
+    [matchesAccept, maxFiles, maxFileSize, onError, translate],
   );
 
   const removeLocal = useCallback(
@@ -721,7 +727,7 @@ export const PromptInput = ({
       if (incoming.length && accepted.length === 0) {
         onError?.({
           code: "accept",
-          message: "No files match the accepted types.",
+          message: translate("errors.acceptedTypes"),
         });
         return;
       }
@@ -731,7 +737,7 @@ export const PromptInput = ({
       if (accepted.length > 0 && sized.length === 0) {
         onError?.({
           code: "max_file_size",
-          message: "All files exceed the maximum size.",
+          message: translate("errors.maximumSize"),
         });
         return;
       }
@@ -746,7 +752,7 @@ export const PromptInput = ({
       if (typeof capacity === "number" && sized.length > capacity) {
         onError?.({
           code: "max_files",
-          message: "Too many files. Some were not added.",
+          message: translate("errors.maximumCount"),
         });
       }
 
@@ -754,7 +760,15 @@ export const PromptInput = ({
         controller?.attachments.add(capped);
       }
     },
-    [matchesAccept, maxFileSize, maxFiles, onError, files.length, controller],
+    [
+      matchesAccept,
+      maxFileSize,
+      maxFiles,
+      onError,
+      files.length,
+      controller,
+      translate,
+    ],
   );
 
   const clearAttachments = useCallback(
@@ -982,12 +996,12 @@ export const PromptInput = ({
     <>
       <input
         accept={accept}
-        aria-label="Upload files"
+        aria-label={translateUpload("label")}
         className="hidden"
         multiple={multiple}
         onChange={handleChange}
         ref={inputRef}
-        title="Upload files"
+        title={translateUpload("label")}
         type="file"
       />
       <form
@@ -1029,11 +1043,12 @@ export type PromptInputTextareaProps = ComponentProps<
 >;
 
 export const PromptInputTextarea = ({
-  placeholder = "What would you like to know?",
+  placeholder,
   onChange,
   onKeyDown,
   ...props
 }: PromptInputTextareaProps) => {
+  const translate = useTranslations("promptInput");
   const controller = useOptionalPromptInputController();
   const attachments = usePromptInputAttachments();
   const [isComposing, setIsComposing] = useState(false);
@@ -1132,7 +1147,7 @@ export const PromptInputTextarea = ({
       name="message"
       onKeyDown={handleKeyDown}
       onPaste={handlePaste}
-      placeholder={placeholder}
+      placeholder={placeholder ?? translate("placeholder")}
       onCompositionEnd={handleCompositionEnd}
       onCompositionStart={handleCompositionStart}
       {...props}
@@ -1302,6 +1317,7 @@ export const PromptInputSubmit = ({
   children,
   ...props
 }: PromptInputSubmitProps) => {
+  const translate = useTranslations("promptInput");
   const isGenerating = status === "submitted" || status === "streaming";
 
   let Icon = <ArrowRightIcon className="size-4" />;
@@ -1328,7 +1344,9 @@ export const PromptInputSubmit = ({
 
   return (
     <InputGroupButton
-      aria-label={isGenerating ? "Stop" : "Submit"}
+      aria-label={translate(
+        isGenerating ? "action.secondary" : "action.primary",
+      )}
       className={cn(className)}
       onClick={handleClick}
       size={size}

@@ -1,0 +1,17 @@
+{
+  "comparisonGuidePage": {
+    "navigation": {
+      "label": "In diesem Leitfaden",
+      "guide": "Kategorien",
+      "tools": "Tools vergleichen",
+      "bottleneck": "Ihren Engpass finden",
+      "related": "Weiterführende Inhalte",
+      "faq": "Fragen"
+    },
+    "views": {
+      "label": "Vergleichsansicht",
+      "table": "Alle Tools vergleichen",
+      "tool": "Nach Tool lesen"
+    }
+  }
+}

@@ -94,7 +94,7 @@ const capture = async ({
       const context = await browsers[mode].newContext({
         ...devices[mode],
         reducedMotion: "reduce",
-        locale: route.startsWith("/es") ? "es-ES" : "en-US",
+        locale: Routes.browserLocale(route),
       });
       const page = await context.newPage();
       page.setDefaultTimeout(20000);

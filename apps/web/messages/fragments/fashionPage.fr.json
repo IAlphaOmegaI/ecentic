@@ -1,0 +1,20 @@
+{
+  "fashionPage": {
+    "trail": {
+      "title": "Activité. Coupe. Matière.",
+      "description": "Ouvrez une question d’acheteur pour voir quelles informations produit votre équipe doit vérifier.",
+      "label": "Questions des acheteurs et informations produit",
+      "contexts": [
+        "Activité et météo",
+        "Largeur et tailles",
+        "Fibres et entretien"
+      ],
+      "facts": "Informations produit à vérifier"
+    },
+    "rules": [
+      "Tailles selon la destination",
+      "Composition des fibres",
+      "Allégations environnementales"
+    ]
+  }
+}

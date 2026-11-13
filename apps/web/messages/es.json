@@ -31,7 +31,12 @@
     "language": {
       "label": "Idioma",
       "english": "Inglés",
-      "spanish": "Español"
+      "spanish": "Español",
+      "french": "Francés",
+      "german": "Alemán",
+      "italian": "Italiano",
+      "japanese": "Japonés",
+      "simplifiedChinese": "Chino simplificado"
     },
     "states": {
       "pending": {
@@ -49,6 +54,19 @@
       "action": {
         "primary": "Intentar de nuevo"
       }
+    },
+    "media": {
+      "interfaceEnglish": "La interfaz del producto se muestra en inglés.",
+      "videoEnglish": "Vídeo en inglés con una transcripción en el idioma seleccionado."
+    },
+    "fileUpload": {
+      "label": "Subir archivos"
+    },
+    "dismiss": {
+      "label": "Cerrar"
+    },
+    "notifications": {
+      "label": "Notificaciones"
     }
   },
   "nav": {
@@ -2037,6 +2055,9 @@
           "loading": "Cargando carrito…",
           "updating": "Actualizando carrito…",
           "failed": "La operación del carrito falló"
+        },
+        "action": {
+          "primary": "Abrir carrito"
         }
       },
       "catalog": {
@@ -2211,7 +2232,11 @@
         },
         "frequency": {
           "title": "Frecuencia de simulación",
-          "options": ["Solo manual", "Diaria", "Semanal"]
+          "options": [
+            "Solo manual",
+            "Diaria",
+            "Semanal"
+          ]
         },
         "persona": {
           "title": "Persona de compra",
@@ -3381,67 +3406,67 @@
       "transcript": [
         {
           "time": "0:00–0:03",
-          "onScreen": "Your next customer isn’t a person.",
+          "onScreen": "Tu próximo cliente no es una persona.",
           "description": "Unas manos formadas por puntos se acercan a unos auriculares suspendidos."
         },
         {
           "time": "0:03–0:05",
-          "onScreen": "It’s an Agent.",
+          "onScreen": "Es un agente.",
           "description": "La palabra Agent aparece en azul."
         },
         {
           "time": "0:05–0:09",
-          "onScreen": "best noise-cancelling earbuds under $50",
+          "onScreen": "los mejores auriculares con cancelación de ruido por menos de 50 $",
           "description": "Una persona escribe esta petición en una conversación con el aspecto de ChatGPT."
         },
         {
           "time": "0:09–0:13",
-          "onScreen": "Shoppers ask AI. AI shares the links. Before shoppers buy, AI chooses which stores they see.",
+          "onScreen": "Los compradores preguntan a la IA. La IA comparte los enlaces. Antes de que compren, la IA elige qué tiendas ven.",
           "description": "La respuesta de ejemplo muestra Soundcore P25i por 29,99 $, JLab Go Air Pop+ por 24,88 $ y TOZO T10 por 25,99 $, con enlaces a tiendas. Aparecen los logotipos de ChatGPT, Claude, Gemini y Perplexity."
         },
         {
           "time": "0:13–0:17",
-          "onScreen": "Your store is Invisible. Agents can’t recommend what they can’t read. Outside the answer. Outside the sale.",
+          "onScreen": "Tu tienda es invisible. Los agentes no pueden recomendar lo que no pueden leer. Fuera de la respuesta. Fuera de la venta.",
           "description": "Una tarjeta con la etiqueta Your Store queda fuera de la respuesta y muestra el aviso Product data missing. La palabra Invisible se desvanece."
         },
         {
           "time": "0:17–0:20",
-          "onScreen": "Enter écentic",
+          "onScreen": "Llega écentic",
           "description": "La caja y el nombre de ecentic se dibujan y después se llenan de color."
         },
         {
           "time": "0:20–0:26",
-          "onScreen": "Fix what agents can’t read.",
+          "onScreen": "Corrige lo que los agentes no pueden leer.",
           "description": "Un panel de ejemplo de ecentic muestra Diagnostics for low win rate y Listing Suggestions para Aura ANC Wireless Earbuds. El cursor selecciona Approve. El artículo pasa de Pending a Published y aparece Listing updated — Changes were published to your connected store."
         },
         {
           "time": "0:26–0:30",
-          "onScreen": "Watch your visibility rise.",
+          "onScreen": "Mira cómo crece tu visibilidad.",
           "description": "El panel ilustrativo Overview anima un gráfico ascendente de victorias y termina con una tasa general del 86 %, junto a resultados de ChatGPT, Claude y Gemini."
         },
         {
           "time": "0:30–0:34",
-          "onScreen": "Your store, shoppable in chat.",
+          "onScreen": "Tu tienda, lista para comprar desde el chat.",
           "description": "Una página de producto de Shopify de ejemplo para Aura ANC Wireless Earbuds, con un precio de 39,99 $, se transforma en una tarjeta de producto dentro de los resultados de compra del chat."
         },
         {
           "time": "0:34–0:41",
-          "onScreen": "Climb to the top of AI results. One catalog. Discovered across AI.",
+          "onScreen": "Sube a los primeros puestos de los resultados de IA. Un catálogo. Visible en los distintos canales de IA.",
           "description": "Un control Optimize de ecentic aparece junto a representaciones de compra de ChatGPT, Google AI Mode y Perplexity. Your Store pasa de la posición de recomendación #3 a la #1 en cada ilustración, mientras un pequeño coche acelera por la pantalla."
         },
         {
           "time": "0:41–0:49",
-          "onScreen": "Turn discovery into sales.",
+          "onScreen": "Convierte la visibilidad en ventas.",
           "description": "Las tarjetas de producto dan paso a una petición en el chat: Show me the Aura earbuds. La respuesta muestra fotos, un precio de 39,99 $ y Buy now. El recorrido ilustrativo continúa con Review your order, Complete purchase y Order confirmed — Your purchase is complete."
         },
         {
           "time": "0:49–0:53",
-          "onScreen": "Turn discovery into sales.",
+          "onScreen": "Convierte la visibilidad en ventas.",
           "description": "Un gráfico ilustrativo de Shopify Analytics asciende hasta unas ventas totales de 48.920,00 $. Es una animación con datos de ejemplo, no un resultado comunicado por un cliente."
         },
         {
           "time": "0:53–0:58",
-          "onScreen": "Win the sale when AI does the shopping. Install now on Shopify and WooCommerce. ecentic.ai",
+          "onScreen": "Consigue la venta cuando la IA hace la compra. Instala ecentic en Shopify y WooCommerce. ecentic.ai",
           "description": "El logotipo de ecentic vuelve a aparecer sobre el mensaje final, los logotipos de las plataformas y la dirección web."
         }
       ]
@@ -4082,7 +4107,8 @@
         "secondary": "Ver precios"
       },
       "note": "Sin tarjeta de crédito · Resultados en unos dos minutos"
-    }
+    },
+    "mcpArtTitle": "Herramientas JSON-RPC"
   },
   "howItWorks": {
     "meta": {
@@ -6948,7 +6974,13 @@
       },
       "selection": "{selected} de {limit} productos seleccionados",
       "table": {
-        "headers": ["Producto", "Precio", "Moneda", "Estado", "Calidad"]
+        "headers": [
+          "Producto",
+          "Precio",
+          "Moneda",
+          "Estado",
+          "Calidad"
+        ]
       },
       "states": {
         "active": "Activo",
@@ -7058,7 +7090,12 @@
         "description": "Selecciona los competidores que quieres incluir en tus simulaciones de agentes de IA.",
         "summary": "{total} productos competidores en {brands} marcas — {selected} seleccionados",
         "table": {
-          "headers": ["Competidor", "Precio", "Moneda", "Marca"]
+          "headers": [
+            "Competidor",
+            "Precio",
+            "Moneda",
+            "Marca"
+          ]
         },
         "action": {
           "back": "Atrás",
@@ -7432,7 +7469,11 @@
         "title": "Errores de la API",
         "accent": "de ecentic.",
         "description": "Cada fallo de la API de ecentic es un documento de problema tipado, no una página HTML. El código es el contrato: es estable, legible por máquinas y seguro para tomar decisiones.",
-        "assurances": ["RFC 9457", "Códigos estables", "Pistas de resolución"],
+        "assurances": [
+          "RFC 9457",
+          "Códigos estables",
+          "Pistas de resolución"
+        ],
         "art": {
           "alt": "Ilustración en ASCII de un escudo"
         },
@@ -7572,7 +7613,11 @@
         "title": "Servidor MCP",
         "accent": "de ecentic.",
         "description": "Claude, ChatGPT y cualquier cliente del Model Context Protocol pueden llamar a ecentic de forma nativa por JSON-RPC 2.0. Esta página es la referencia de conexión: el endpoint, el transporte, el handshake y todas las herramientas que expone.",
-        "assurances": ["Streamable HTTP", "JSON-RPC 2.0", "7 herramientas"],
+        "assurances": [
+          "Streamable HTTP",
+          "JSON-RPC 2.0",
+          "7 herramientas"
+        ],
         "art": {
           "alt": "Ilustración ASCII de un robot"
         },
@@ -7694,7 +7739,11 @@
       "title": "Audita las herramientas de compra",
       "accent": "de la búsqueda al pago.",
       "description": "Descubre qué operaciones expone tu tienda mediante WebMCP. Revisa búsquedas, opciones de producto, carritos y acceso al pago, con fuentes y mejoras orientadas al comerciante.",
-      "assurances": ["Gratis", "Sin cuenta", "Solo inspección del código"],
+      "assurances": [
+        "Gratis",
+        "Sin cuenta",
+        "Solo inspección del código"
+      ],
       "art": "Una consola representada con caracteres ASCII",
       "action": {
         "primary": "Auditar una tienda"
@@ -8980,7 +9029,11 @@
           "id": "connect",
           "title": "Conecta",
           "body": "Reúne tu catálogo mediante Shopify, WooCommerce, un feed XML o JSON compatible, o un CSV.",
-          "tags": ["Shopify", "WooCommerce", "Feeds de productos"],
+          "tags": [
+            "Shopify",
+            "WooCommerce",
+            "Feeds de productos"
+          ],
           "href": "/platform/connect",
           "label": "Explora Conecta"
         },
@@ -8988,7 +9041,11 @@
           "id": "simulate",
           "title": "Simula",
           "body": "Descubre qué producto eligen ChatGPT, Claude y Gemini en una comparación y lee los motivos de cada elección simulada.",
-          "tags": ["Tasa de éxito", "Comparativas", "Auditoría de preparación"],
+          "tags": [
+            "Tasa de éxito",
+            "Comparativas",
+            "Auditoría de preparación"
+          ],
           "href": "/platform/simulate",
           "label": "Explora Simula"
         },
@@ -8996,7 +9053,11 @@
           "id": "fix",
           "title": "Mejora",
           "body": "Aplicar genera y publica títulos y descripciones a partir de los datos existentes. Publica datos estructurados y sincroniza Merchant Center con controles separados.",
-          "tags": ["Fichas", "Datos estructurados", "Merchant Center"],
+          "tags": [
+            "Fichas",
+            "Datos estructurados",
+            "Merchant Center"
+          ],
           "href": "/platform/fix",
           "label": "Explora Mejora"
         },
@@ -9004,7 +9065,11 @@
           "id": "sell",
           "title": "Vende",
           "body": "Conecta el checkout para agentes en WooCommerce, prueba el proceso y conserva tu proveedor de pagos. Se aplican los requisitos de cada plataforma y los pasos de pago necesarios.",
-          "tags": ["Checkout para agentes", "Pruebas de checkout", "Tus pagos"],
+          "tags": [
+            "Checkout para agentes",
+            "Pruebas de checkout",
+            "Tus pagos"
+          ],
           "href": "/platform/sell",
           "label": "Explora Vende"
         },
@@ -9119,7 +9184,11 @@
           "id": "simulations",
           "title": "Simulaciones de agentes",
           "body": "ChatGPT, Claude y Gemini eligen entre tu producto y el de un competidor en una simulación registrada.",
-          "tags": ["Tasa de éxito", "Replay", "Comparativas"],
+          "tags": [
+            "Tasa de éxito",
+            "Replay",
+            "Comparativas"
+          ],
           "href": "/platform/simulate",
           "label": "Ver simulaciones"
         },
@@ -9127,7 +9196,11 @@
           "id": "readiness",
           "title": "Auditoría de preparación",
           "body": "Comprueba reglas de rastreo, una muestra del HTML de las páginas, identificadores de productos y requisitos del feed. Las páginas inaccesibles se señalan para su revisión.",
-          "tags": ["Rastreadores", "Schema", "GTIN"],
+          "tags": [
+            "Rastreadores",
+            "Schema",
+            "GTIN"
+          ],
           "href": "/platform/simulate#readiness",
           "label": "Ver la auditoría"
         },
@@ -9135,7 +9208,11 @@
           "id": "catalog",
           "title": "Mejoras del catálogo",
           "body": "Genera y publica títulos y descripciones a partir de los datos existentes. Los datos estructurados se publican con una acción propia.",
-          "tags": ["Fichas", "Atributos", "Publicación"],
+          "tags": [
+            "Fichas",
+            "Atributos",
+            "Publicación"
+          ],
           "href": "/platform/fix",
           "label": "Ver las mejoras"
         },
@@ -9143,7 +9220,11 @@
           "id": "merchant-center",
           "title": "Sincronización de Merchant Center",
           "body": "Envía las mejoras de fichas publicadas y los atributos de checkout mediante una sincronización independiente del feed complementario para Shopify.",
-          "tags": ["Feed complementario", "Diagnósticos", "Shopify"],
+          "tags": [
+            "Feed complementario",
+            "Diagnósticos",
+            "Shopify"
+          ],
           "href": "/platform/fix#merchant-center",
           "label": "Ver la sincronización"
         },
@@ -9151,7 +9232,11 @@
           "id": "checkout",
           "title": "Checkout para agentes en WooCommerce",
           "body": "Ofrece a los flujos de agentes compatibles una vía a través de tu tienda y proveedor de pagos, con pruebas de checkout y controles configurables.",
-          "tags": ["Configuración", "Pruebas", "Validador"],
+          "tags": [
+            "Configuración",
+            "Pruebas",
+            "Validador"
+          ],
           "href": "/platform/sell",
           "label": "Ver el checkout para agentes"
         },
@@ -9159,7 +9244,11 @@
           "id": "developers",
           "title": "API, servidor MCP y CLI",
           "body": "Usa las interfaces publicadas para descubrir funciones, consultar planes, conectar tiendas y comprobar el estado del onboarding.",
-          "tags": ["REST", "MCP", "CLI"],
+          "tags": [
+            "REST",
+            "MCP",
+            "CLI"
+          ],
           "href": "/docs",
           "label": "Abrir la documentación"
         }
@@ -10485,7 +10574,11 @@
       ],
       "subprocessors": {
         "caption": "Proveedores y usos del producto revisados el 12 de noviembre de 2026",
-        "headers": ["Proveedor", "Finalidad", "Ubicación del tratamiento"],
+        "headers": [
+          "Proveedor",
+          "Finalidad",
+          "Ubicación del tratamiento"
+        ],
         "rows": [
           {
             "name": "Azure OpenAI",
@@ -12991,6 +13084,11 @@
         "alt": "Gráfico de visitas de agentes de ecentic con datos de muestra ilustrativos",
         "caption": "Interfaz del producto · visitas de muestra ilustrativas, no resultados de un cliente."
       }
+    },
+    "artworkStages": {
+      "product": "Producto",
+      "cart": "Carrito",
+      "checkout": "Pago"
     }
   },
   "enterpriseSolutions": {
@@ -15533,7 +15631,11 @@
       }
     ],
     "form": {
-      "steps": ["Sobre ti", "Tus objetivos", "Revisar y enviar"],
+      "steps": [
+        "Sobre ti",
+        "Tus objetivos",
+        "Revisar y enviar"
+      ],
       "progress": "Progreso de la solicitud de demo",
       "reviewTitle": "El punto de partida de tu demo.",
       "reviewDescription": "Revisa tus datos antes de enviarlos. Te contactaremos por correo para acordar el siguiente paso.",
@@ -16035,7 +16137,12 @@
     "stack": "Tu sistema",
     "channels": "Canales de IA",
     "layer": "La capa de comercio con IA",
-    "stages": ["Simular", "Corregir", "Vender", "Medir"],
+    "stages": [
+      "Simular",
+      "Corregir",
+      "Vender",
+      "Medir"
+    ],
     "inputs": [
       "Shopify",
       "WooCommerce",
@@ -16623,7 +16730,12 @@
       "Coincidencia de ofertas",
       "Sincronización explícita"
     ],
-    "stages": ["Autorizar", "Preparar", "Revisar", "Sincronizar"],
+    "stages": [
+      "Autorizar",
+      "Preparar",
+      "Revisar",
+      "Sincronizar"
+    ],
     "diagram": {
       "mainSource": "Fuente principal",
       "supplemental": "Fuente complementaria",
@@ -16650,7 +16762,10 @@
         "id": "visits",
         "label": "Visitas observadas",
         "title": "Una visita detectada tiene una fuente.",
-        "inputs": ["Referencia del asistente", "Señal del agente de usuario"],
+        "inputs": [
+          "Referencia del asistente",
+          "Señal del agente de usuario"
+        ],
         "process": "Script de Shopify en el navegador",
         "output": "Visita detectada",
         "meaning": "Las fuentes de asistentes reconocidas se pueden agrupar en el desglose de visitas y en el resumen de su evolución.",
@@ -16660,7 +16775,10 @@
         "id": "simulations",
         "label": "Decisiones simuladas",
         "title": "Un nuevo análisis es una nueva comparación.",
-        "inputs": ["Tu producto", "Un competidor"],
+        "inputs": [
+          "Tu producto",
+          "Un competidor"
+        ],
         "process": "Un análisis que solicitas",
         "output": "Decisión simulada",
         "meaning": "La tasa de éxito es el porcentaje de simulaciones en las que un agente elige tu producto frente a un competidor. Compara decisiones completadas tras publicar un cambio.",
@@ -16670,7 +16788,10 @@
         "id": "estimates",
         "label": "Mejora estimada",
         "title": "Una estimación acompaña a la mejora.",
-        "inputs": ["Ficha actual", "Cambio propuesto"],
+        "inputs": [
+          "Ficha actual",
+          "Cambio propuesto"
+        ],
         "process": "Optimización de la ficha",
         "output": "Mejora estimada",
         "meaning": "La mejora estimada se registra junto con el cambio de la ficha. Permite distinguir el efecto esperado de las pruebas completadas posteriormente.",
@@ -16710,7 +16831,10 @@
           "label": "Respuestas IA",
           "title": "Lleva los datos de producto a la conversación",
           "description": "La IA de Google responde preguntas de compra utilizando los datos de producto de los comercios.",
-          "details": ["AI Mode en la Búsqueda", "Gemini"],
+          "details": [
+            "AI Mode en la Búsqueda",
+            "Gemini"
+          ],
           "destination": "AI Mode y Gemini",
           "action": {
             "primary": "Revisa los requisitos del comercio"
@@ -16814,21 +16938,30 @@
           "title": "Catálogo",
           "headline": "Empieza por los datos de tus productos",
           "body": "El comercio proporciona herramientas de catálogo y existencias para que su agente basado en Claude busque productos.",
-          "tools": ["Catálogo", "Existencias"]
+          "tools": [
+            "Catálogo",
+            "Existencias"
+          ]
         },
         {
           "id": "compare",
           "title": "Comparar",
           "headline": "Da contexto a la comparación",
           "body": "El agente compara productos con los datos y herramientas que facilita el comercio, incluidos su catálogo y sus políticas.",
-          "tools": ["Datos del producto", "Políticas de la tienda"]
+          "tools": [
+            "Datos del producto",
+            "Políticas de la tienda"
+          ]
         },
         {
           "id": "cart",
           "title": "Carrito",
           "headline": "Conecta tus propias herramientas",
           "body": "Las herramientas de carrito y checkout pertenecen a la experiencia creada por el comercio. ecentic no tiene una conexión de checkout específica para Claude hoy.",
-          "tools": ["Carrito del comercio", "Checkout del comercio"]
+          "tools": [
+            "Carrito del comercio",
+            "Checkout del comercio"
+          ]
         }
       ]
     },
@@ -16960,7 +17093,11 @@
           "id": "compare",
           "label": "Compara competidores",
           "scope": "Decisiones simuladas",
-          "path": ["Tu producto", "Rivales concretos", "Decisiones del modelo"]
+          "path": [
+            "Tu producto",
+            "Rivales concretos",
+            "Decisiones del modelo"
+          ]
         },
         {
           "id": "listings",
@@ -17231,7 +17368,11 @@
   "beautyPage": {
     "record": {
       "label": "Explora una pregunta de compra",
-      "tabs": ["Hidratante", "Protección solar", "Champú"],
+      "tabs": [
+        "Hidratante",
+        "Protección solar",
+        "Champú"
+      ],
       "question": "Lo que busca el comprador",
       "facts": "Datos de producto que revisar",
       "claim": {
@@ -17252,7 +17393,11 @@
   },
   "electronicsPage": {
     "selectorLabel": "Explora una pregunta de compra",
-    "scenarioLabels": ["Auriculares", "Portátiles", "Robots aspiradores"],
+    "scenarioLabels": [
+      "Auriculares",
+      "Portátiles",
+      "Robots aspiradores"
+    ],
     "sourceLabel": "Datos de origen que revisar",
     "inspectLabel": "Sigue la pregunta hasta las especificaciones.",
     "mapLabel": "Revisa los seis datos de origen",
@@ -17297,7 +17442,11 @@
       "title": "Actividad. Ajuste. Material.",
       "description": "Abre una pregunta de compra para ver qué datos del producto debe verificar tu equipo.",
       "label": "Preguntas de compra y datos del producto",
-      "contexts": ["Actividad y clima", "Anchura y tallas", "Fibra y cuidado"],
+      "contexts": [
+        "Actividad y clima",
+        "Anchura y tallas",
+        "Fibra y cuidado"
+      ],
       "facts": "Datos del producto que verificar"
     },
     "rules": [
@@ -17551,7 +17700,11 @@
         "input": "Tu tienda, productos y competidores",
         "access": "Escaneo gratis · Requiere cuenta",
         "limit": "Son comparaciones simuladas de productos. No muestran posiciones en directo dentro de las aplicaciones de compra con IA.",
-        "steps": ["Tus productos", "Comparación con IA", "Puntuación y motivos"]
+        "steps": [
+          "Tus productos",
+          "Comparación con IA",
+          "Puntuación y motivos"
+        ]
       },
       "validator": {
         "purpose": "Revisa un perfil de pago",
@@ -17569,7 +17722,11 @@
         "input": "Una tienda con herramientas de compra para agentes",
         "access": "10 mensajes gratis · Sin cuenta",
         "limit": "El agente llama a las herramientas de la tienda. Usa una tienda de pruebas para comprobar el pago.",
-        "steps": ["Búsqueda", "Carrito", "Pago"]
+        "steps": [
+          "Búsqueda",
+          "Carrito",
+          "Pago"
+        ]
       },
       "scanner": {
         "purpose": "Busca indicios de herramientas",
@@ -17587,7 +17744,11 @@
         "input": "Dos URLs de producto",
         "access": "Comparación de productos gratis",
         "limit": "Cada modelo hace una elección simulada con las fichas comparadas. No es un informe de posiciones de compra en directo.",
-        "steps": ["Dos fichas", "Cuatro modelos de IA", "Elección y motivos"]
+        "steps": [
+          "Dos fichas",
+          "Cuatro modelos de IA",
+          "Elección y motivos"
+        ]
       }
     }
   },
@@ -17613,7 +17774,11 @@
       "protectedDestination": "REST + MCP",
       "details": "Cómo funciona esta ruta"
     },
-    "keySteps": ["Crea una cuenta", "Genera una clave", "Guárdala al verla"],
+    "keySteps": [
+      "Crea una cuenta",
+      "Genera una clave",
+      "Guárdala al verla"
+    ],
     "recovery": {
       "label": "Descubrimiento de autenticación tras un 401",
       "response": "Credencial ausente o inválida",
@@ -17625,7 +17790,11 @@
     "navigation": "Explora la documentación",
     "quickstart": {
       "label": "Elige una primera solicitud",
-      "tabs": ["API", "Protocolos", "Planes"],
+      "tabs": [
+        "API",
+        "Protocolos",
+        "Planes"
+      ],
       "request": "Solicitud",
       "response": "Respuesta",
       "access": "No necesitas una clave de API",
@@ -17723,7 +17892,10 @@
     },
     "handshake": {
       "label": "Explora el handshake",
-      "tabs": ["Initialize", "Notificar"],
+      "tabs": [
+        "Initialize",
+        "Notificar"
+      ],
       "request": "El cliente envía",
       "response": "El servidor devuelve",
       "result": [
@@ -17742,7 +17914,11 @@
         "Error de transporte",
         "Excepción de autenticación"
       ],
-      "formats": ["error.code", "application/problem+json", "WWW-Authenticate"]
+      "formats": [
+        "error.code",
+        "application/problem+json",
+        "WWW-Authenticate"
+      ]
     }
   },
   "docsLimitsPage": {
@@ -18059,7 +18235,12 @@
   },
   "interactivePilot": {
     "title": "Planificador del piloto",
-    "stages": ["Referencia", "Mejora", "Nueva prueba", "Resultados"],
+    "stages": [
+      "Referencia",
+      "Mejora",
+      "Nueva prueba",
+      "Resultados"
+    ],
     "happens": "Qué ocurre",
     "people": "Tu equipo",
     "deliverable": "Qué recibes",
@@ -19522,37 +19703,55 @@
     "sectors": [
       {
         "product": "Whisky de malta · ejemplo",
-        "details": ["Perfil de sabor ahumado", "Origen y tamaño de la botella"],
+        "details": [
+          "Perfil de sabor ahumado",
+          "Origen y tamaño de la botella"
+        ],
         "response": "Compara las notas de cata y los datos verificados de la botella.",
         "limit": "Solo investigación. Se aplican restricciones al alcohol."
       },
       {
         "product": "Snack proteico · ejemplo",
-        "details": ["Proteína por ración", "Ingredientes y alérgenos"],
+        "details": [
+          "Proteína por ración",
+          "Ingredientes y alérgenos"
+        ],
         "response": "Contrasta la etiqueta nutricional con tus límites de ración y calorías.",
         "limit": "Confirma la información nutricional y los alérgenos."
       },
       {
         "product": "Hidratante · ejemplo",
-        "details": ["Fórmula sin perfume", "Lista completa de ingredientes"],
+        "details": [
+          "Fórmula sin perfume",
+          "Lista completa de ingredientes"
+        ],
         "response": "Revisa los ingredientes y la formulación declarada del producto.",
         "limit": "Información del producto, no consejo médico."
       },
       {
         "product": "Auriculares inalámbricos · ejemplo",
-        "details": ["Condiciones de prueba de batería", "Cancelación de ruido"],
+        "details": [
+          "Condiciones de prueba de batería",
+          "Cancelación de ruido"
+        ],
         "response": "Compara la autonomía, la carga y las funciones que necesitas.",
         "limit": "Comprueba el precio y la disponibilidad actuales."
       },
       {
         "product": "Sofá cama compacto · ejemplo",
-        "details": ["Ancho: 185 cm", "Fondo abierto: 210 cm"],
+        "details": [
+          "Ancho: 185 cm",
+          "Fondo abierto: 210 cm"
+        ],
         "response": "Comprueba las dimensiones cerrado y el espacio necesario al abrirlo.",
         "limit": "Medidas de ejemplo para esta ilustración."
       },
       {
         "product": "Chaqueta de senderismo · ejemplo",
-        "details": ["Construcción impermeable", "Corte y guía de tallas"],
+        "details": [
+          "Construcción impermeable",
+          "Corte y guía de tallas"
+        ],
         "response": "Compara la protección climática, las medidas y las devoluciones.",
         "limit": "Verifica las prestaciones declaradas del producto."
       },
@@ -19745,5 +19944,53 @@
   },
   "measurementChart": {
     "remainingLabel": "Puntos hasta el máximo"
+  },
+  "authenticationEmail": {
+    "verify": {
+      "subject": "Verifica tu dirección de correo",
+      "preview": "Verifica tu correo para empezar a usar ecentic",
+      "title": "Verifica tu correo",
+      "description": "Empieza a optimizar tus fichas de producto para los agentes de compra de IA.",
+      "body": "Gracias por crear tu cuenta de ecentic. Pulsa el botón para verificar tu dirección de correo.",
+      "requestedFor": "Esta verificación se ha solicitado para {email}.",
+      "action": {
+        "primary": "Verificar correo"
+      },
+      "ignored": "Si no has creado una cuenta en ecentic, puedes ignorar este mensaje.",
+      "linkFallback": "También puedes copiar y pegar este enlace en tu navegador:",
+      "footer": "ecentic — La capa de comercio para la IA."
+    },
+    "reset": {
+      "subject": "Restablece tu contraseña",
+      "preview": "Restablece tu contraseña de ecentic",
+      "title": "Restablece tu contraseña",
+      "description": "Elige una contraseña nueva y vuelve a tus fichas de producto.",
+      "body": "Hemos recibido una solicitud para restablecer la contraseña de tu cuenta de ecentic. Pulsa el botón para elegir una nueva.",
+      "requestedFor": "Se ha solicitado restablecer la contraseña de {email}.",
+      "action": {
+        "primary": "Elegir una contraseña nueva"
+      },
+      "ignored": "Si no has solicitado restablecer tu contraseña, puedes ignorar este mensaje. Tu contraseña actual seguirá activa.",
+      "linkFallback": "También puedes copiar y pegar este enlace en tu navegador:",
+      "footer": "ecentic — La capa de comercio para la IA."
+    }
+  },
+  "promptInput": {
+    "placeholder": "¿Qué te gustaría saber?",
+    "attachments": {
+      "label": "Añadir fotos o archivos"
+    },
+    "screenshot": {
+      "label": "Hacer una captura de pantalla"
+    },
+    "action": {
+      "primary": "Enviar mensaje",
+      "secondary": "Detener"
+    },
+    "errors": {
+      "acceptedTypes": "Ningún archivo tiene un formato admitido.",
+      "maximumSize": "Todos los archivos superan el tamaño máximo.",
+      "maximumCount": "Hay demasiados archivos. Algunos no se han añadido."
+    }
   }
 }

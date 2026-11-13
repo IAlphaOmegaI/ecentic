@@ -1,0 +1,2064 @@
+{
+  "enterpriseSolutions": {
+    "business": {
+      "brands": {
+        "faqTitle": "Questions que les marques se posent",
+        "meta": {
+          "title": "ecentic pour les marques : devenez le produit cité par l’IA",
+          "description": "Découvrez quels produits les modèles d’IA choisissent face à vos concurrents. Améliorez vos données produit existantes et testez le parcours de paiement. Commencez par une vérification gratuite de votre boutique."
+        },
+        "eyebrow": "Pour les marques",
+        "title": "Devenez le produit cité dans la réponse.",
+        "description": "Quand quelqu’un demande à une IA une option dans votre catégorie, elle compare des produits. ecentic montre lesquels des vôtres sont choisis dans des simulations, lesquels perdent face à un concurrent et où vos données doivent être améliorées. Vous choisissez quelles modifications de fiches produit publier.",
+        "actions": [
+          {
+            "label": "Vérifier ma boutique gratuitement",
+            "href": "/sign-up"
+          },
+          {
+            "label": "Réserver une démo",
+            "href": "/demo"
+          }
+        ],
+        "challenges": [
+          {
+            "before": "L’IA choisit un concurrent dans votre propre catégorie.",
+            "after": "Comparez un produit à des concurrents identifiés et consultez le taux de victoire simulé pour chaque modèle.",
+            "href": "/platform/simulate"
+          },
+          {
+            "before": "Les distributeurs présentent vos produits plus clairement.",
+            "after": "Utilisez les informations produit existantes pour améliorer le titre et la description de votre propre boutique. Publiez les données structurées séparément.",
+            "href": "/platform/fix"
+          },
+          {
+            "before": "Personne n’a testé le parcours de paiement des agents d’achat IA.",
+            "after": "Testez le parcours et configurez le paiement des agents d’achat IA sur WooCommerce lorsque c’est pris en charge.",
+            "href": "/platform/sell"
+          },
+          {
+            "before": "Les rapports de trafic référent ne distinguent pas les assistants.",
+            "after": "Consultez les sources de trafic IA reconnues par assistant sur Shopify. Le trafic direct masqué ne peut pas toujours être identifié.",
+            "href": "/platform/track"
+          }
+        ],
+        "sections": [
+          {
+            "id": "challenges",
+            "title": "Là où ça bloque aujourd’hui.",
+            "eyebrow": "[01] Vos défis"
+          },
+          {
+            "id": "one-product",
+            "title": "Suivez un produit.",
+            "eyebrow": "[02] Exemple avec des données d’exemple",
+            "ordered": true,
+            "columns": 5,
+            "items": [
+              {
+                "title": "Connecté",
+                "body": "Huile d’olive vierge extra, 750 ml. La description du fournisseur inclut l’année de récolte et la région ; le titre court ne les mentionne pas."
+              },
+              {
+                "title": "Simulé",
+                "body": "Question : « meilleure huile d’olive vierge extra pour vinaigrette à moins de $25 ». Un concurrent gagne 3 simulations illustratives sur 3, avec des informations source plus claires."
+              },
+              {
+                "title": "Corrigé",
+                "body": "Apply réécrit le titre et la description à partir de l’année et de la région déjà présentes dans la source. Les données structurées sont publiées dans une action distincte."
+              },
+              {
+                "title": "Paiement testé",
+                "body": "Sur une boutique WooCommerce de préproduction, un agent de test trouve le produit, évalue le prix d’un panier et atteint l’étape de transfert du paiement vers la passerelle."
+              },
+              {
+                "title": "Analysé à nouveau",
+                "body": "Le produit est sélectionné dans 2 simulations illustratives de suivi sur 3. Cet exemple ne constitue ni un résultat garanti ni une vente mesurée."
+              }
+            ]
+          },
+          {
+            "id": "integrations",
+            "title": "Travaillez avec les données que vous contrôlez.",
+            "columns": 4,
+            "items": [
+              {
+                "title": "Shopify",
+                "body": "Connexion directe en temps réel.",
+                "href": "/integrations/shopify",
+                "label": "Voir le fonctionnement"
+              },
+              {
+                "title": "WooCommerce",
+                "body": "Connexion directe en temps réel.",
+                "href": "/integrations/woocommerce",
+                "label": "Voir le fonctionnement"
+              },
+              {
+                "title": "Google Merchant Center",
+                "body": "Actif sur Shopify ; synchronisation complémentaire séparée.",
+                "href": "/integrations/google-merchant-center",
+                "label": "Voir le fonctionnement"
+              },
+              {
+                "title": "Flux produits",
+                "body": "Formats pris en charge pour les importations en lecture seule.",
+                "href": "/integrations/product-feeds",
+                "label": "Voir le fonctionnement"
+              }
+            ]
+          },
+          {
+            "id": "start",
+            "title": "Commencez par votre première comparaison.",
+            "eyebrow": "[04] Par où commencer",
+            "description": "Lancez la vérification gratuite de votre boutique, puis choisissez Compete ou Scale selon votre catalogue.",
+            "links": [
+              {
+                "label": "Vérifier ma boutique gratuitement",
+                "href": "/sign-up"
+              },
+              {
+                "label": "Découvrir Scale",
+                "href": "/pricing?plan=scale"
+              }
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Avons-nous besoin d’un développeur ?",
+            "answer": "Les parcours de connexion directe vous guident sur Shopify ou WooCommerce. Un flux produit pris en charge peut lancer un import. La configuration du paiement et du thème peut nécessiter votre équipe boutique."
+          },
+          {
+            "question": "Cela va-t-il modifier notre ton de marque ?",
+            "answer": "Les réécritures partent des informations existantes. Apply génère et publie une réécriture de fiche produit ; les données structurées disposent d’un contrôle distinct. Il n’existe actuellement aucun aperçu du contenu généré avant Apply."
+          },
+          {
+            "question": "Nous vendons aussi via des distributeurs et Amazon. Est-ce utile dans ce cas ?",
+            "answer": "Le produit fonctionne avec les données que vous contrôlez : votre boutique et les flux pris en charge. Les boutiques Shopify peuvent synchroniser séparément les corrections publiées vers Merchant Center. Les fiches des distributeurs leur appartiennent ; un connecteur Amazon Shop Direct est prévu."
+          },
+          {
+            "question": "Combien de temps avant qu’un changement soit visible ?",
+            "answer": "Demandez une nouvelle analyse après publication pour comparer un autre ensemble de décisions. Les assistants réels actualisent leurs données selon leur propre calendrier ; nous ne garantissons donc ni date ni vente."
+          }
+        ],
+        "challengeLabels": {
+          "before": "Aujourd’hui",
+          "after": "Avec ecentic",
+          "link": "Découvrir cette fonctionnalité"
+        }
+      },
+      "retailers-and-marketplaces": {
+        "faqTitle": "Questions que les distributeurs se posent",
+        "meta": {
+          "title": "ecentic pour les distributeurs et places de marché",
+          "description": "Identifiez les lacunes dans les fiches fournisseurs, comparez les produits à ceux des concurrents et choisissez où améliorer votre catalogue. Commencez par une catégorie."
+        },
+        "eyebrow": "Pour les distributeurs et places de marché",
+        "title": "Des milliers de fiches produit. Une seule chance face à l’agent.",
+        "description": "Les données fournisseurs arrivent sous toutes les formes. ecentic vérifie les champs de fiches produit pris en charge et compare les produits à des concurrents identifiés. Utilisez les résultats pour prioriser le travail catalogue que votre équipe peut vérifier, puis choisissez quelles modifications publier.",
+        "actions": [
+          {
+            "label": "Réserver une démo",
+            "href": "/demo"
+          },
+          {
+            "label": "Vérifier ma boutique gratuitement",
+            "href": "/sign-up"
+          }
+        ],
+        "challenges": [
+          {
+            "before": "Les données fournisseurs sont difficiles à comparer.",
+            "after": "Examinez les informations manquantes identifiées dans les comparaisons simulées et les vérifications de fiches produit.",
+            "href": "/platform/simulate"
+          },
+          {
+            "before": "La page et le flux peuvent être incohérents.",
+            "after": "Consultez les diagnostics Merchant Center sur Shopify. Envoyez vos modifications publiées de fiches produit via une synchronisation complémentaire distincte ; cela ne corrige pas tous les écarts de prix ou de stock.",
+            "href": "/platform/fix"
+          },
+          {
+            "before": "Trop de produits à vérifier manuellement.",
+            "after": "Exécutez les 34 règles de vérification des fiches produit sur les champs pris en charge des produits importés actifs.",
+            "href": "/platform/simulate#listing-quality"
+          },
+          {
+            "before": "Aucune vision claire des pertes répétées.",
+            "after": "Consultez le taux de victoire simulé par produit, modèle et concurrent identifié.",
+            "href": "/platform/simulate"
+          }
+        ],
+        "sections": [
+          {
+            "id": "challenges",
+            "title": "Là où ça bloque aujourd’hui.",
+            "eyebrow": "[01] Vos défis"
+          },
+          {
+            "id": "one-product",
+            "title": "Suivez un produit.",
+            "eyebrow": "[02] Exemple avec des données d’exemple",
+            "ordered": true,
+            "columns": 5,
+            "items": [
+              {
+                "title": "Connecté",
+                "body": "Une fiche produit de chaise de bureau comporte trois variantes de couleur. La description du fournisseur indique la plage de hauteur d’assise et la charge maximale, mais le titre court reste vague."
+              },
+              {
+                "title": "Simulé",
+                "body": "Question : « chaise de bureau pour une personne grande avec mal de dos à moins de $400 ». Un concurrent gagne 3 tests illustratifs sur 3 grâce à des spécifications plus claires."
+              },
+              {
+                "title": "Corrigé",
+                "body": "Le titre et la description sont réécrits à partir des spécifications disponibles. Votre équipe obtient l’identifiant correct pour chaque variante ; ecentic n’en invente pas et ne le copie pas d’une variante à l’autre."
+              },
+              {
+                "title": "Paiement testé",
+                "body": "Sur une boutique WooCommerce de préproduction, un agent de test évalue le prix du panier et atteint l’étape de paiement requise."
+              },
+              {
+                "title": "Analysé à nouveau",
+                "body": "La chaise est choisie dans 2 simulations illustratives de suivi sur 3. Votre équipe choisit les prochains produits à tester."
+              }
+            ]
+          },
+          {
+            "id": "integrations",
+            "title": "Partez de votre catalogue existant.",
+            "items": [
+              {
+                "title": "Flux produits et CSV",
+                "body": "Les exports compatibles peuvent être importés. Aucun connecteur de synchronisation vers la source n’est créé lors d’un import.",
+                "href": "/integrations/product-feeds",
+                "label": "Voir le fonctionnement"
+              },
+              {
+                "title": "Google Merchant Center",
+                "body": "Diagnostics et synchronisation complémentaire pour Shopify.",
+                "href": "/integrations/google-merchant-center",
+                "label": "Voir le fonctionnement"
+              },
+              {
+                "title": "Shopify et WooCommerce",
+                "body": "Connexions directes pour les actions de publication prises en charge.",
+                "href": "/integrations",
+                "label": "Voir le fonctionnement"
+              },
+              {
+                "title": "Exports PIM",
+                "body": "Commencez avec un flux compatible depuis votre PIM. La disponibilité des connecteurs dédiés est indiquée dans la liste des intégrations.",
+                "href": "/integrations",
+                "label": "Voir le fonctionnement"
+              }
+            ]
+          },
+          {
+            "id": "start",
+            "title": "Une seule catégorie suffit pour commencer.",
+            "eyebrow": "[04] Par où commencer",
+            "description": "Définissez un pilote entreprise autour d’une seule catégorie. Les catalogues plus petits peuvent utiliser Scale ou Dominate.",
+            "links": [
+              {
+                "label": "Découvrir les pilotes entreprise",
+                "href": "/solutions/enterprise"
+              },
+              {
+                "label": "Voir les offres",
+                "href": "/pricing"
+              }
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Combien de produits pouvez-vous gérer ?",
+            "answer": "Les offres en libre-service vont jusqu’à 1 000 produits. Les comptes Enterprise sont dimensionnés selon votre catalogue ; nous confirmons les limites opérationnelles avant de valider le pilote."
+          },
+          {
+            "question": "Avez-vous besoin de notre PIM ?",
+            "answer": "Non. Un flux produit compatible ou un export CSV peut suffire pour commencer. L’importateur prend en charge des champs et formats définis."
+          },
+          {
+            "question": "Pouvons-nous commencer avec une seule catégorie ?",
+            "answer": "Oui. Commencez avec un marché et une catégorie, avec une référence à la semaine 0 et un bilan à la semaine 6. Définissez le périmètre avant le début du projet."
+          },
+          {
+            "question": "À qui appartiennent les données et les corrections ?",
+            "answer": "Les données de votre boutique restent les vôtres. La publication nécessite une action de votre part. Les formats de livraison des pilotes sur données publiques sont définis avec votre équipe."
+          }
+        ],
+        "challengeLabels": {
+          "before": "Aujourd’hui",
+          "after": "Avec ecentic",
+          "link": "Découvrir cette fonctionnalité"
+        }
+      },
+      "agencies-and-partners": {
+        "faqTitle": "Questions que les partenaires se posent",
+        "meta": {
+          "title": "ecentic pour les agences et partenaires",
+          "description": "Ajoutez les comparaisons de produits par IA et le travail sur les fiches produit à vos services clients. Découvrez les parcours agence, technologie et créateurs avec ecentic."
+        },
+        "eyebrow": "Pour les agences et partenaires",
+        "title": "Ajoutez le commerce IA à ce que vous vendez déjà.",
+        "description": "Vos clients vous demandent comment aborder ChatGPT. ecentic vous apporte des contrôles produit, des corrections de fiches produit et un programme partenaire à présenter dans la relation que vous avez déjà avec eux. Les conditions commerciales sont définies avant tout accord de revente ou de recommandation.",
+        "actions": [
+          {
+            "label": "Devenir partenaire",
+            "href": "/partners"
+          },
+          {
+            "label": "Réserver une démo",
+            "href": "/demo"
+          }
+        ],
+        "challenges": [
+          {
+            "before": "Les clients posent des questions sur l’IA pour les achats.",
+            "after": "Commencez par un contrôle gratuit de la boutique ou un outil public avant la discussion.",
+            "href": "/tools"
+          },
+          {
+            "before": "Les audits sont assemblés manuellement.",
+            "after": "Utilisez les simulations, l’audit d’état de préparation basé sur un échantillon et le contrôle de fiches produit en 34 règles.",
+            "href": "/platform/simulate"
+          },
+          {
+            "before": "L’offre commerciale manque de clarté.",
+            "after": "Définissez une commission de recommandation. ecentic conclut le contrat avec le client et le facture ; la revente nécessite un accord signé distinct.",
+            "href": "/partners"
+          },
+          {
+            "before": "Les clients doivent comprendre ce qui a changé.",
+            "after": "Comparez les scans terminés avant et après les modifications choisies sur les fiches produit. Gardez les estimations distinctes des résultats mesurés.",
+            "href": "/platform/track"
+          }
+        ],
+        "sections": [
+          {
+            "id": "challenges",
+            "title": "Là où ça bloque aujourd’hui.",
+            "eyebrow": "[01] Vos enjeux"
+          },
+          {
+            "id": "tracks",
+            "title": "Comment les partenaires travaillent avec ecentic.",
+            "eyebrow": "[02] Programmes partenaires",
+            "columns": 3,
+            "field": true,
+            "items": [
+              {
+                "title": "Agences et revendeurs",
+                "body": "Recommandez des clients et définissez une commission lors de l’appel. L’inscription est gratuite ; chaque client conserve son compte et ecentic le facture directement."
+              },
+              {
+                "title": "Partenaires technologiques",
+                "body": "Pour les entreprises spécialisées dans les informations produit, les paiements et les données. Développez autour des interfaces documentées de découverte et d’intégration."
+              },
+              {
+                "title": "Créateurs et affiliés",
+                "body": "Aidez votre audience à comprendre le commerce IA. Recevez une commission pour chaque client payant apporté ; le montant est défini lors de votre inscription."
+              }
+            ]
+          },
+          {
+            "id": "access",
+            "title": "Gardez un contrôle explicite des accès aux comptes.",
+            "description": "Un compte peut regrouper les boutiques appartenant à ce compte. Il ne s’agit ni d’un espace agence délégué ni d’un système de comptes utilisateurs pour une équipe. Définissez avec chaque client la manière dont sa boutique est connectée et contrôlée.",
+            "note": "Chaque client est propriétaire de son compte. Vous pouvez partager les rapports ecentic avec ce client en conservant la marque ; nous ne proposons ni rapports en marque blanche ni rôles agence."
+          },
+          {
+            "id": "start",
+            "title": "Commencez avec le bon programme.",
+            "eyebrow": "[04] Par où commencer",
+            "links": [
+              {
+                "label": "Postuler comme partenaire",
+                "href": "/partners"
+              }
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Y a-t-il une marge ou une commission de recommandation ?",
+            "answer": "L’inscription est gratuite. Les agences et affiliés définissent leur commission lors de l’inscription. Les partenaires technologiques collaborent sans frais entre les parties. La revente nécessite un accord signé distinct."
+          },
+          {
+            "question": "Les clients ont-ils besoin de leur propre compte ?",
+            "answer": "Chaque boutique est connectée à un compte ecentic. Un même propriétaire peut gérer plusieurs boutiques, mais les autorisations d’agence déléguée ne sont pas disponibles aujourd’hui. Confirmez l’organisation prévue avec chaque client avant la connexion."
+          },
+          {
+            "question": "Pouvons-nous utiliser les rapports avec les clients ?",
+            "answer": "Oui, avec ce client et en conservant la marque ecentic sur le rapport. Le client reste propriétaire de son compte ; nous ne proposons pas de rapports en marque blanche."
+          }
+        ],
+        "challengeLabels": {
+          "before": "Aujourd’hui",
+          "after": "Avec ecentic",
+          "link": "Explorer cette fonctionnalité"
+        }
+      },
+      "enterprise": {
+        "faqTitle": "Questions fréquentes",
+        "meta": {
+          "title": "ecentic pour les entreprises : exploitez l’IA comme un canal de vente",
+          "description": "Pilotes pour distributeurs, marques et entreprises du voyage à partir de données publiques. Objectifs définis par écrit dès le premier jour, avec un fondateur en charge du compte."
+        },
+        "eyebrow": "Pour les entreprises",
+        "title": "L’IA est un nouveau canal de vente. Gérez-le comme tel.",
+        "description": "Pour les distributeurs, marques et entreprises du voyage avec de nombreuses catégories, marchés ou marques. Nous commençons avec un marché et une catégorie, sur des données publiques, et définissons les objectifs par écrit dès le premier jour.",
+        "actions": [
+          {
+            "label": "Nous contacter",
+            "href": "/demo"
+          },
+          {
+            "label": "Lire la section Sécurité et confiance",
+            "href": "/security"
+          }
+        ],
+        "facts": [
+          "Données publiques d’abord. Aucun identifiant, code sur votre site ou donnée client pour la base de référence.",
+          "Objectifs définis par écrit dès le premier jour.",
+          "Un fondateur, Xhurian ou Iseld, sur chaque compte, avec Alvi côté ingénierie.",
+          "Examen des exigences de traitement des données et de contractualisation avant tout accès."
+        ],
+        "challenges": [
+          {
+            "before": "Personne ne pilote l’IA comme un canal. Les équipes search, marketplace et e-commerce n’en voient chacune qu’une partie.",
+            "after": "Définissez un jeu de questions unique et une restitution portée par l’équipe responsable de la catégorie.",
+            "href": "/platform/simulate"
+          },
+          {
+            "before": "Des marchés différents peuvent produire des réponses différentes.",
+            "after": "Définissez explicitement le marché, les questions et les modèles afin de garantir une méthode cohérente pour les comparaisons.",
+            "href": "/platform/simulate"
+          },
+          {
+            "before": "Les informations produit sont incomplètes ou peu claires.",
+            "after": "Priorisez les faits source vérifiables et les modifications choisies sur les fiches produit. Sur Shopify, envoyez séparément les corrections publiées vers Merchant Center.",
+            "href": "/platform/fix"
+          },
+          {
+            "before": "Personne n’a testé le parcours d’achat des agents.",
+            "after": "Faites passer un agent de test par les étapes prises en charge de recherche, panier et paiement sur une boutique de préproduction.",
+            "href": "/platform/sell"
+          }
+        ],
+        "sections": [
+          {
+            "id": "challenges",
+            "title": "Là où ça bloque aujourd’hui.",
+            "eyebrow": "[01] Vos enjeux"
+          },
+          {
+            "id": "ways-to-start",
+            "title": "Trois façons de commencer.",
+            "eyebrow": "[02] Définir le périmètre",
+            "field": true,
+            "columns": 3,
+            "items": [
+              {
+                "title": "Audit",
+                "body": "4 semaines, forfait fixe. Une base de référence sur la manière dont les assistants répondent aux questions convenues dans une catégorie, les problèmes de données à examiner et une liste priorisée de corrections pour votre équipe."
+              },
+              {
+                "title": "Pilote",
+                "body": "6 semaines, un marché, une catégorie. Base de référence en semaine 0, modifications de données convenues et mêmes questions en semaine 6. Toute commission liée aux résultats et tout objectif sont définis à l’avance."
+              },
+              {
+                "title": "Étude de conception",
+                "body": "3 mois, avec des périmètres pouvant aller jusqu’à 6 mois. Pour les questions de paiement ou de réservation qui nécessitent plus qu’une liste de corrections. Le périmètre peut inclure un prototype avec des données fictives et des restitutions convenues."
+              }
+            ],
+            "note": "Les frais dépendent du périmètre et sont définis lors du premier appel. Il s’agit de prestations de service ; la restitution du pilote suit la méthode convenue avec votre équipe."
+          },
+          {
+            "id": "pilot",
+            "title": "Comment se déroule un pilote.",
+            "eyebrow": "[03] Le pilote",
+            "ordered": true,
+            "columns": 4,
+            "items": [
+              {
+                "title": "Semaine 0 : mesure de référence",
+                "body": "Nous définissons les questions au lancement et exécutons chacune plusieurs fois sur chaque assistant, avant toute modification des données."
+              },
+              {
+                "title": "Semaines 1 à 5 : corrections",
+                "body": "Travail sur la catégorie définie et tests de paiement lorsque cela s’applique. Le travail sur les données publiques est transmis à votre équipe ; les modifications directes nécessitent une autorisation explicite."
+              },
+              {
+                "title": "Semaine 6 · Nouvelle exécution",
+                "body": "Répétez les questions convenues avec les mêmes assistants et le même nombre d’exécutions. Documentez les changements de modèle ou d’accès."
+              },
+              {
+                "title": "Restitution",
+                "body": "Analysez ce qui a évolué, les limites de la méthode et les prochaines étapes proposées. Vous décidez de la suite à donner."
+              }
+            ]
+          },
+          {
+            "id": "measures",
+            "title": "Ce que nous mesurons.",
+            "eyebrow": "[04] Mesures convenues",
+            "columns": 4,
+            "items": [
+              {
+                "title": "Cité",
+                "body": "Fréquence à laquelle une réponse inclut votre produit."
+              },
+              {
+                "title": "Position",
+                "body": "Position du produit parmi les options dans la réponse échantillonnée."
+              },
+              {
+                "title": "Lié",
+                "body": "Présence ou non d’un lien vers votre boutique dans une réponse."
+              },
+              {
+                "title": "Acheté",
+                "body": "Capacité du parcours de test convenu à finaliser une commande ou nécessité d’un transfert vers le paiement."
+              }
+            ],
+            "note": "Nous pouvons également enregistrer les prix, stocks ou spécifications erronés dans les réponses échantillonnées. Les objectifs et méthodes de collecte sont définis par écrit ; toutes ces mesures ne sont pas des fonctionnalités automatisées du tableau de bord."
+          },
+          {
+            "id": "what-we-need",
+            "title": "Ce dont nous avons besoin de votre part.",
+            "eyebrow": "[05] Votre implication",
+            "rows": [
+              {
+                "label": "Pour commencer",
+                "value": "Un responsable métier, généralement en charge de l’e-commerce, du digital ou des réservations directes. La base de référence utilise des pages publiques et des données produit convenues."
+              },
+              {
+                "label": "Plus tard, uniquement si vous le choisissez",
+                "value": "Accès en lecture à un flux ou à Merchant Center, et une boutique de préproduction pour les tests de passage de commande."
+              },
+              {
+                "label": "Temps à prévoir côté équipe",
+                "value": "Un appel de lancement, un point rapide hebdomadaire et la restitution. La phase sur données publiques ne nécessite aucun temps d’ingénierie."
+              }
+            ]
+          },
+          {
+            "id": "security",
+            "title": "Prêt pour votre revue de sécurité.",
+            "eyebrow": "[06] Sécurité et confiance",
+            "items": [
+              {
+                "title": "Modifications contrôlées",
+                "body": "Les imports produit ne réécrivent pas les fiches produit. Les recommandations du pilote sur données publiques sont transmises à votre équipe. La publication directe nécessite une action de votre choix."
+              },
+              {
+                "title": "Vos données",
+                "body": "Un DPA est mis en place sur demande, et nous pouvons signer le vôtre. Confirmez l’entité contractante, les lieux de traitement et les prestataires avant de partager des données personnelles."
+              },
+              {
+                "title": "Des réponses claires",
+                "body": "Le SSO, les accès d’équipe et SOC 2 ne sont pas disponibles aujourd’hui. Nous répondrons aux questions de sécurité dont votre équipe a besoin pour évaluer le périmètre."
+              }
+            ],
+            "links": [
+              {
+                "label": "Lire la section Sécurité et confiance",
+                "href": "/security"
+              }
+            ]
+          },
+          {
+            "id": "scale",
+            "title": "Conçu pour passer à l’échelle.",
+            "eyebrow": "[07] Capacités de la plateforme",
+            "columns": 3,
+            "items": [
+              {
+                "title": "Vos boutiques dans un seul compte",
+                "body": "Regroupez toutes les boutiques appartenant à un même compte sous un identifiant unique. Cela n’inclut ni équipes déléguées ni SSO."
+              },
+              {
+                "title": "REST API",
+                "body": "Une interface publique versionnée avec OpenAPI 3.1, des réponses d’erreur typées et des limites de débit documentées."
+              },
+              {
+                "title": "Serveur MCP et CLI",
+                "body": "Workflows de découverte, plans, connexion et intégration. Les exports de scans du tableau de bord et de trafic ne sont pas exposés aujourd’hui."
+              },
+              {
+                "title": "Synchronisation Merchant Center",
+                "body": "Envoyez les corrections publiées des fiches produit Shopify via une synchronisation distincte des données complémentaires."
+              },
+              {
+                "title": "Passage de commande par les agents IA, sous contrôle",
+                "body": "Paiement WooCommerce avec listes d’autorisation d’agents configurables, exigences de signature et limites de débit. Votre passerelle gère le paiement."
+              },
+              {
+                "title": "Nous publions ce que nous vous demandons de publier.",
+                "body": "Nos llms.txt, catalogue API, profil de paiement et endpoint MCP sont publics.",
+                "href": "/resources",
+                "label": "Voir le fonctionnement"
+              }
+            ]
+          },
+          {
+            "id": "checklist",
+            "title": "Liste de contrôle de l’acheteur.",
+            "eyebrow": "[08] Avant le pilote",
+            "rows": [
+              {
+                "label": "Faut-il un accès aux systèmes pour démarrer ?",
+                "value": "Non. L’audit et la mesure de référence peuvent s’appuyer sur des pages publiques convenues et des données produit."
+              },
+              {
+                "label": "Allez-vous modifier notre site ?",
+                "value": "Uniquement via des actions que vous autorisez après la connexion d’une boutique. Les recommandations basées sur des données publiques sont envoyées à votre équipe avec une liste des modifications et les résultats d’une nouvelle exécution."
+              },
+              {
+                "label": "Traitez-vous des données personnelles clients ?",
+                "value": "Pas dans l’audit ou la mesure de référence proposés à partir de données publiques. Les parcours de commande connectés ont un périmètre de données distinct à examiner."
+              },
+              {
+                "label": "Qui doit être impliqué chez nous ?",
+                "value": "Un responsable métier et une personne habilitée à approuver les modifications de données."
+              },
+              {
+                "label": "Que recevons-nous ?",
+                "value": "Un classeur de mesures de référence, une liste des modifications, les résultats d’une nouvelle exécution avec un journal des modifications et un compte rendu écrit. Vous restez propriétaire des données et des corrections et pouvez partager le compte rendu en interne."
+              },
+              {
+                "label": "Que se passe-t-il après le pilote ?",
+                "value": "Vous décidez lors du compte rendu."
+              },
+              {
+                "label": "Signerez-vous notre NDA ?",
+                "value": "Oui. Nous signons un NDA bilatéral avant de recevoir des données non publiques. La première phase basée sur des données publiques n’en nécessite pas."
+              }
+            ]
+          },
+          {
+            "id": "who",
+            "title": "À qui s’adresse cette offre.",
+            "eyebrow": "[09] Votre entreprise",
+            "items": [
+              {
+                "title": "Groupes de distribution et places de marché",
+                "body": "Grands catalogues, nombreux fournisseurs et plusieurs marchés.",
+                "href": "/solutions/retailers-and-marketplaces",
+                "label": "Voir le fonctionnement"
+              },
+              {
+                "title": "Marques grand public",
+                "body": "Produits vendus sur votre propre site et via des distributeurs.",
+                "href": "/solutions/brands",
+                "label": "Voir le fonctionnement"
+              },
+              {
+                "title": "Voyages et expériences",
+                "body": "Forfaits, billets et séjours que les consommateurs recherchent avec l’IA.",
+                "href": "/solutions/sectors/travel-and-experiences",
+                "label": "Voir le fonctionnement"
+              }
+            ],
+            "note": "Pilotes en cours de cadrage avec des entreprises de la distribution, du voyage et des espaces de travail flexibles."
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Quand verrons-nous des résultats ?",
+            "answer": "Nous mesurons à la semaine 6 par rapport à la mesure de référence de la semaine 0. Les assistants modifient leurs réponses au fil du temps ; le compte rendu montre donc ce qui a évolué et les limites de la comparaison. Aucun résultat commercial n’est garanti."
+          },
+          {
+            "question": "Quels assistants couvrez-vous ?",
+            "answer": "Les scans produits utilisent ChatGPT, Claude et Gemini. Pour un pilote sur mesure, nous convenons des assistants, des questions, des versions et de la méthode de collecte au lancement."
+          },
+          {
+            "question": "Travaillez-vous dans nos marchés et nos langues ?",
+            "answer": "Nous commençons par un seul marché. Indiquez-nous lequel et nous confirmerons le périmètre lors du premier appel."
+          },
+          {
+            "question": "Notre agence ou intégrateur peut-il travailler avec vous ?",
+            "answer": "Oui. Nous pouvons définir avec votre équipe e-commerce existante comment vérifier et déployer les modifications."
+          },
+          {
+            "question": "Une certification SOC 2 est-elle disponible ?",
+            "answer": "Pas encore. Nous ne revendiquons ni certification ni dossier de sécurité existant. Alvi traite les questionnaires de sécurité après signature d’un NDA."
+          }
+        ],
+        "challengeLabels": {
+          "before": "Aujourd’hui",
+          "after": "Avec ecentic",
+          "link": "Explorer cette fonctionnalité"
+        }
+      }
+    },
+    "sectors": {
+      "wine-and-spirits": {
+        "name": "Vins et spiritueux",
+        "meta": {
+          "title": "Vendre des vins et spiritueux via des assistants IA",
+          "description": "Découvrez les caractéristiques des bouteilles que les assistants peuvent comparer : degré d’alcool, âge, région, style, format et disponibilité. Préparez vos données dans le respect des restrictions des plateformes."
+        },
+        "title": "Vendre des vins et spiritueux quand l’IA choisit la bouteille.",
+        "description": "Lorsqu’un utilisateur demande une bouteille à offrir, le degré d’alcool, l’âge, l’origine et le prix comptent. Rendez ces informations disponibles sous forme de texte et de données produit, tout en respectant les restrictions d’âge et régionales de chaque canal de vente.",
+        "questions": [
+          "Single malt fumé à moins de $80 pour un cadeau",
+          "Un Barolo prêt à boire dès maintenant",
+          "Rhum pauvre en sucre pour cocktails"
+        ],
+        "faqs": [
+          {
+            "question": "L’IA peut-elle acheter de l’alcool pour un client ?",
+            "answer": "Cela dépend du canal, de la localisation et du parcours de vérification de l’âge. ecentic n’accorde pas l’autorisation de vendre un produit soumis à restriction et ne garantit pas un achat automatisé conforme."
+          },
+          {
+            "question": "Avons-nous besoin d’un GTIN pour chaque bouteille ?",
+            "answer": "Utilisez l’identifiant attribué par le fabricant lorsqu’il existe. N’inventez pas de GTIN pour une édition limitée et ne réutilisez pas l’identifiant d’un autre produit."
+          },
+          {
+            "question": "Qu’en est-il des éditions limitées sans flux de stock ?",
+            "answer": "Gardez la fiche produit publique et tout import pris en charge exacts. L’importeur ne crée pas de connecteur d’inventaire en temps réel pour une plateforme non prise en charge."
+          },
+          {
+            "question": "Comment fonctionnent les contrôles d’âge avec le paiement par agent ?",
+            "answer": "Validez les exigences exactes de votre boutique sur un parcours de test. L’implémentation actuelle du paiement n’établit pas de solution universelle de vérification de l’âge pour l’alcool."
+          },
+          {
+            "question": "Cela fonctionne-t-il pour des milliers de bouteilles ?",
+            "answer": "Commencez par un import de catalogue pris en charge et une catégorie. Les limites des offres en libre-service restent applicables ; des périmètres plus larges sont définis dans le cadre d’un pilote pour entreprise."
+          }
+        ],
+        "eyebrow": "Vins et spiritueux",
+        "faqTitle": "Questions pour ce secteur",
+        "sections": [
+          {
+            "id": "questions",
+            "eyebrow": "[01] Ce que demandent les acheteurs",
+            "title": "Commencez par une vraie question d’achat.",
+            "items": [
+              {
+                "title": "Single malt fumé à moins de $80 pour un cadeau",
+                "body": "Question d’acheteur illustrative. Il ne s’agit ni d’un volume de requêtes ni d’une demande client enregistrée."
+              },
+              {
+                "title": "Un Barolo prêt à boire dès maintenant",
+                "body": "Question d’acheteur illustrative. Il ne s’agit ni d’un volume de requêtes ni d’une demande client enregistrée."
+              },
+              {
+                "title": "Rhum pauvre en sucre pour cocktails",
+                "body": "Question d’acheteur illustrative. Il ne s’agit ni d’un volume de requêtes ni d’une demande client enregistrée."
+              }
+            ],
+            "columns": 3
+          },
+          {
+            "id": "attributes",
+            "eyebrow": "[02] Ce que l’agent compare",
+            "title": "Ce que vos données produit doivent indiquer.",
+            "items": [
+              {
+                "title": "Degré d’alcool",
+                "body": "Le taux d’alcool (ABV) sous forme de valeur numérique, pas uniquement sur la photo de la bouteille."
+              },
+              {
+                "title": "Âge",
+                "body": "L’âge indiqué ou le millésime comme caractéristique produit distincte."
+              },
+              {
+                "title": "Origine",
+                "body": "Région et appellation, pas seulement le pays."
+              },
+              {
+                "title": "Style",
+                "body": "Fût, cépage ou plantes aromatiques comme informations explicites, pas uniquement dans le texte de dégustation."
+              },
+              {
+                "title": "Format et prix",
+                "body": "Volume et prix correspondant à la boutique et au flux pris en charge."
+              },
+              {
+                "title": "Disponibilité",
+                "body": "Stock et régions de livraison, sous réserve des restrictions de vente applicables."
+              }
+            ],
+            "columns": 3,
+            "note": "Ces attributs doivent être vérifiés par votre équipe ; ecentic ne les invente ni ne les enrichit automatiquement. L’importeur de flux actuel prend en charge une correspondance de champs définie."
+          },
+          {
+            "id": "rules",
+            "eyebrow": "[03] Règles du secteur",
+            "title": "Conservez les règles avec les caractéristiques produit.",
+            "paragraphs": [
+              "La politique de Google sur l’alcool limite la promotion selon le pays ciblé et impose le respect des lois locales applicables. Les données produit ou un paiement fonctionnel ne suppriment pas ces restrictions.",
+              "Ne supposez pas qu’un contrôle d’âge est automatisé. Le marchand doit confirmer que son parcours de vente et de paiement respecte les exigences applicables."
+            ],
+            "note": "Sources vérifiées le 10 novembre 2026. Les exigences peuvent dépendre du produit, du canal et du pays.",
+            "links": [
+              {
+                "label": "Google Merchant Center : alcool",
+                "href": "https://support.google.com/merchants/answer/6150139?hl=en"
+              },
+              {
+                "label": "Identifiants produit Google",
+                "href": "https://support.google.com/merchants/answer/6324461?hl=en"
+              }
+            ]
+          },
+          {
+            "id": "business",
+            "eyebrow": "[04] Votre entreprise",
+            "title": "La même catégorie, des équipes différentes.",
+            "columns": 4,
+            "items": [
+              {
+                "title": "Marques de vins et spiritueux",
+                "body": "Partez de la manière dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/brands",
+                "label": "Voir votre solution"
+              },
+              {
+                "title": "Cavistes et places de marché de spiritueux",
+                "body": "Partez de la manière dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/retailers-and-marketplaces",
+                "label": "Voir votre solution"
+              },
+              {
+                "title": "Groupes vendant sur plusieurs marchés",
+                "body": "Partez de la manière dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/enterprise",
+                "label": "Voir votre solution"
+              },
+              {
+                "title": "Agences gérant des boutiques de boissons",
+                "body": "Partez de la manière dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/agencies-and-partners",
+                "label": "Voir votre solution"
+              }
+            ]
+          }
+        ]
+      },
+      "food-and-beverage": {
+        "name": "Alimentation et boissons",
+        "meta": {
+          "title": "Vendre des produits alimentaires et des boissons via des assistants IA",
+          "description": "Rendez les informations nutritionnelles, ingrédients, allergènes et formats lisibles dans vos données produit. Découvrez les points à vérifier avant d’appliquer des modifications de fiches produit."
+        },
+        "title": "Vendre des produits alimentaires et des boissons quand l’IA lit l’étiquette.",
+        "description": "Les acheteurs recherchent des produits adaptés à un régime, un budget ou une allergie. Intégrez les informations nutritionnelles et les allergènes sous forme de texte ainsi que sur l’emballage. Les caractéristiques produit doivent rester exactes et les allégations de santé nécessitent des preuves à l’appui.",
+        "questions": [
+          "Snack riche en protéines à moins de 150 calories",
+          "Crackers sans gluten que mes enfants mangeront vraiment",
+          "Poudre protéinée vegan sans stévia"
+        ],
+        "faqs": [
+          {
+            "question": "L’IA répétera-t-elle nos allégations de santé ?",
+            "answer": "Un assistant peut utiliser des déclarations publiées. Veillez à ce qu’elles soient exactes et autorisées sur votre marché. Les reformulations partent des caractéristiques produit sources ; elles ne valident pas une allégation de santé."
+          },
+          {
+            "question": "Les données nutritionnelles doivent-elles être disponibles en texte ainsi qu’en photo d’étiquette ?",
+            "answer": "Les fournir sous forme de texte lisible donne aux outils une source explicite à analyser. Une image seule ne fournit pas les mêmes champs structurés."
+          },
+          {
+            "question": "Nous vendons via des supermarchés. Est-ce utile ?",
+            "answer": "Cela vous aide à travailler sur votre propre boutique et les sources de données prises en charge. Un distributeur contrôle ses propres fiches produit ; ecentic ne les réécrit pas via votre compte."
+          },
+          {
+            "question": "Comment les lots doivent-ils apparaître ?",
+            "answer": "Indiquez clairement le nombre d’unités, le format, le nombre de portions et le prix afin que le produit puisse être distingué d’une unité seule."
+          }
+        ],
+        "eyebrow": "Alimentation et boissons",
+        "faqTitle": "Questions pour ce secteur",
+        "sections": [
+          {
+            "id": "questions",
+            "eyebrow": "[01] Ce que demandent les acheteurs",
+            "title": "Commencez par une vraie question d’achat.",
+            "items": [
+              {
+                "title": "En-cas riche en protéines à moins de 150 calories",
+                "body": "Question d’acheteur donnée à titre d’exemple. Il ne s’agit ni d’un volume de requêtes ni d’une demande client enregistrée."
+              },
+              {
+                "title": "Biscuits apéritifs sans gluten que mes enfants mangeront vraiment",
+                "body": "Question d’acheteur donnée à titre d’exemple. Il ne s’agit ni d’un volume de requêtes ni d’une demande client enregistrée."
+              },
+              {
+                "title": "Poudre protéinée vegan sans stévia",
+                "body": "Question d’acheteur donnée à titre d’exemple. Il ne s’agit ni d’un volume de requêtes ni d’une demande client enregistrée."
+              }
+            ],
+            "columns": 3
+          },
+          {
+            "id": "attributes",
+            "eyebrow": "[02] Ce que l’agent compare",
+            "title": "Ce que vos données produit doivent indiquer.",
+            "items": [
+              {
+                "title": "Régime alimentaire",
+                "body": "Mentions alimentaires comme vegan ou sans gluten, conformes aux informations justifiées figurant sur l’emballage."
+              },
+              {
+                "title": "Allergènes",
+                "body": "La déclaration des allergènes sous forme de texte, y compris les mentions « peut contenir »."
+              },
+              {
+                "title": "Valeurs nutritionnelles",
+                "body": "Calories, protéines et sucres avec des unités claires, par portion et par 100 g lorsque ces informations sont fournies."
+              },
+              {
+                "title": "Format et rapport qualité-prix",
+                "body": "Format du lot, nombre de portions par lot et prix unitaire le cas échéant."
+              },
+              {
+                "title": "Ingrédients",
+                "body": "La liste complète des ingrédients sous forme de texte, en conservant l’ordre d’origine."
+              },
+              {
+                "title": "Fraîcheur et livraison",
+                "body": "Durée de conservation, conditions de stockage et couverture de livraison."
+              }
+            ],
+            "columns": 3,
+            "note": "Ces attributs doivent être vérifiés par votre équipe ; ecentic ne les invente ni ne les enrichit automatiquement. L’importateur de flux actuel prend en charge un mappage de champs défini."
+          },
+          {
+            "id": "rules",
+            "eyebrow": "[03] Règles du secteur",
+            "title": "Conservez les règles avec les informations produit.",
+            "paragraphs": [
+              "Le règlement européen 1924/2006 fixe les conditions applicables aux allégations nutritionnelles et de santé portant sur les denrées alimentaires. Limitez les déclarations aux allégations étayées par les sources et vérifiez-les pour le marché où le produit est vendu.",
+              "La réécriture d’une fiche produit ne constitue ni un contrôle réglementaire ni une évaluation de sécurité liée aux allergènes. Vérifiez les informations d’origine avant de sélectionner Appliquer."
+            ],
+            "note": "Sources vérifiées le 10 novembre 2026. Les exigences peuvent dépendre du produit, du canal et du pays.",
+            "links": [
+              {
+                "label": "Règlement européen sur les allégations nutritionnelles et de santé",
+                "href": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32006R1924"
+              }
+            ]
+          },
+          {
+            "id": "business",
+            "eyebrow": "[04] Votre activité",
+            "title": "Une même catégorie, des équipes différentes.",
+            "columns": 4,
+            "items": [
+              {
+                "title": "Marques d’en-cas et de boissons",
+                "body": "Partez de la manière dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/brands",
+                "label": "Voir votre solution"
+              },
+              {
+                "title": "Épiceries en ligne et boutiques spécialisées",
+                "body": "Partez de la manière dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/retailers-and-marketplaces",
+                "label": "Voir votre solution"
+              },
+              {
+                "title": "Groupes alimentaires avec plusieurs marques",
+                "body": "Partez de la manière dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/enterprise",
+                "label": "Voir votre solution"
+              },
+              {
+                "title": "Agences gérant des boutiques alimentaires",
+                "body": "Partez de la manière dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/agencies-and-partners",
+                "label": "Voir votre solution"
+              }
+            ]
+          }
+        ]
+      },
+      "beauty-and-personal-care": {
+        "name": "Beauté et soins personnels",
+        "meta": {
+          "title": "Vendre des produits de beauté via des assistants IA",
+          "description": "Rendez clairs les ingrédients, les types de peau, les formats, les protections testées et les informations de certification dans vos fiches beauté. Vérifiez les allégations avant publication."
+        },
+        "title": "Vendre des produits de beauté quand l’IA lit les ingrédients.",
+        "description": "Les acheteurs recherchent des produits adaptés à leur peau ou sans certains ingrédients. Affichez la liste complète des ingrédients et les allégations étayées dans un texte lisible. Assurez la cohérence des descriptions produit avec l’emballage et les preuves associées à chaque déclaration.",
+        "questions": [
+          "Crème hydratante sans parfum pour peau sensible",
+          "Crème solaire minérale SPF 50 qui ne laisse pas de traces blanches",
+          "Shampoing vegan pour cheveux bouclés"
+        ],
+        "faqs": [
+          {
+            "question": "Chaque produit doit-il avoir sa liste INCI ?",
+            "answer": "Fournissez la liste correcte des ingrédients sous forme de texte lisible lorsque cela s’applique. Cela donne à l’assistant des informations explicites lorsqu’un acheteur demande à éviter un ingrédient."
+          },
+          {
+            "question": "Comment les gammes de teintes doivent-elles apparaître ?",
+            "answer": "Identifiez chaque teinte comme une variante distincte, avec son nom exact et l’identifiant attribué par le fabricant lorsqu’il existe."
+          },
+          {
+            "question": "Une réécriture peut-elle ajouter la mention « testé dermatologiquement » ?",
+            "answer": "N’ajoutez pas cette mention sans preuve issue de la source. La même allégation doit être exacte pour le produit fini concerné."
+          },
+          {
+            "question": "Que faire si la majorité des ventes passe par des distributeurs ?",
+            "answer": "Travaillez sur les sources que vous contrôlez. Les pages et allégations des distributeurs restent sous leur contrôle ; ecentic ne les modifie pas automatiquement."
+          }
+        ],
+        "eyebrow": "Beauté et soins personnels",
+        "faqTitle": "Questions pour ce secteur",
+        "sections": [
+          {
+            "id": "questions",
+            "eyebrow": "[01] Ce que demandent les acheteurs",
+            "title": "Commencez par une vraie question d’achat.",
+            "items": [
+              {
+                "title": "Crème hydratante sans parfum pour peau sensible",
+                "body": "Question d’acheteur donnée à titre d’exemple. Il ne s’agit ni d’un volume de requêtes ni d’une demande client enregistrée."
+              },
+              {
+                "title": "Crème solaire minérale SPF 50 qui ne laisse pas de traces blanches",
+                "body": "Question d’acheteur donnée à titre d’exemple. Il ne s’agit ni d’un volume de requêtes ni d’une demande client enregistrée."
+              },
+              {
+                "title": "Shampoing vegan pour cheveux bouclés",
+                "body": "Question d’acheteur donnée à titre d’exemple. Il ne s’agit ni d’un volume de requêtes ni d’une demande client enregistrée."
+              }
+            ],
+            "columns": 3
+          },
+          {
+            "id": "attributes",
+            "eyebrow": "[02] Ce que l’agent compare",
+            "title": "Ce que vos données produit doivent indiquer.",
+            "items": [
+              {
+                "title": "Type de peau ou de cheveux",
+                "body": "Compatibilité produit explicite, étayée par les données du fabricant."
+              },
+              {
+                "title": "Ingrédients",
+                "body": "La liste complète des ingrédients INCI sous forme de texte."
+              },
+              {
+                "title": "Mentions « sans »",
+                "body": "Mentions telles que sans parfum ou sans sulfates, conformes à l’emballage et aux preuves disponibles."
+              },
+              {
+                "title": "Protection",
+                "body": "Protection SPF et UVA indiquée exactement comme testée et étiquetée."
+              },
+              {
+                "title": "Format et prix",
+                "body": "Quantité en ml ou g et prix sans ambiguïté."
+              },
+              {
+                "title": "Certifications",
+                "body": "La certification revendiquée et l’organisme certificateur, lorsqu’ils sont vérifiés."
+              }
+            ],
+            "columns": 3,
+            "note": "Ces attributs doivent être vérifiés par votre équipe ; ecentic ne les invente ni ne les enrichit automatiquement. L’importateur de flux actuel prend en charge un mappage de champs défini."
+          },
+          {
+            "id": "rules",
+            "eyebrow": "[03] Règles du secteur",
+            "title": "Conservez les règles avec les informations produit.",
+            "paragraphs": [
+              "Le règlement européen 655/2013 impose que les allégations cosmétiques soient véridiques et étayées par des preuves adéquates et vérifiables. Les propriétés des ingrédients ne doivent pas suggérer un effet non prouvé dans le produit fini.",
+              "Utilisez les informations de protection solaire testées par le fabricant. ecentic ne crée ni ne certifie les allégations d’efficacité, médicales ou de protection solaire."
+            ],
+            "note": "Sources vérifiées le 10 novembre 2026. Les exigences peuvent dépendre du produit, du canal et du pays.",
+            "links": [
+              {
+                "label": "Critères communs de l’UE pour les allégations cosmétiques",
+                "href": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32013R0655"
+              }
+            ]
+          },
+          {
+            "id": "business",
+            "eyebrow": "[04] Votre activité",
+            "title": "Une même catégorie, des équipes différentes.",
+            "columns": 4,
+            "items": [
+              {
+                "title": "Marques de soins de la peau et des cheveux",
+                "body": "Partez de la manière dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/brands",
+                "label": "Voir votre solution"
+              },
+              {
+                "title": "Distributeurs et places de marché beauté",
+                "body": "Partez de la manière dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/retailers-and-marketplaces",
+                "label": "Voir votre solution"
+              },
+              {
+                "title": "Groupes beauté avec de nombreuses marques",
+                "body": "Partez de la manière dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/enterprise",
+                "label": "Voir votre solution"
+              },
+              {
+                "title": "Agences gérant des boutiques beauté",
+                "body": "Partez de la manière dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/agencies-and-partners",
+                "label": "Voir votre solution"
+              }
+            ]
+          }
+        ]
+      },
+      "consumer-electronics": {
+        "name": "Électronique grand public",
+        "meta": {
+          "title": "Vendre des produits électroniques via des assistants IA",
+          "description": "Rendez clairs les numéros de modèle, l’autonomie, la compatibilité, les connexions et la garantie. Comparez vos fiches électroniques avec des concurrents identifiés."
+        },
+        "title": "Vendre des produits électroniques quand l’IA compare les fiches techniques.",
+        "description": "Les questions sur les produits électroniques portent souvent sur l’autonomie, la compatibilité ou les ports. Donnez à chaque modèle et variante des identifiants clairs et des spécifications source afin qu’une comparaison ne repose pas uniquement sur le nom du produit.",
+        "questions": [
+          "écouteurs à réduction de bruit avec la meilleure autonomie à moins de $200",
+          "Ordinateur portable pour le montage vidéo avec 32 Go de RAM",
+          "Aspirateur robot compatible avec Google Home"
+        ],
+        "faqs": [
+          {
+            "question": "Nos numéros de modèle diffèrent selon les distributeurs. Est-ce important ?",
+            "answer": "Cela peut rendre la correspondance ambiguë. Utilisez les identifiants corrects de modèle et de variante, et indiquez clairement toute configuration réellement spécifique à un distributeur."
+          },
+          {
+            "question": "Avons-nous besoin de GTIN ?",
+            "answer": "Fournissez le GTIN attribué correct lorsqu’il est disponible. N’en générez jamais un et ne le reprenez pas d’un produit similaire."
+          },
+          {
+            "question": "Un modèle compare-t-il uniquement les prix ?",
+            "answer": "La comparaison dépend de la question posée et des informations disponibles. Indiquez l’autonomie de la batterie, la compatibilité et les autres caractéristiques pertinentes afin que le modèle puisse les analyser."
+          },
+          {
+            "question": "Comment présenter les produits reconditionnés ?",
+            "answer": "Indiquez l’état reconditionné, la configuration réelle, le prix et les conditions de garantie. Ne les présentez pas comme des produits neufs."
+          }
+        ],
+        "eyebrow": "Électronique grand public",
+        "faqTitle": "Questions pour ce secteur",
+        "sections": [
+          {
+            "id": "questions",
+            "eyebrow": "[01] Ce que demandent les acheteurs",
+            "title": "Commencez par une vraie question d’achat.",
+            "items": [
+              {
+                "title": "Écouteurs à réduction de bruit avec la meilleure autonomie à moins de 200 $",
+                "body": "Question d’acheteur donnée à titre d’exemple. Il ne s’agit ni d’un volume de recherche ni d’une demande client enregistrée."
+              },
+              {
+                "title": "Ordinateur portable pour le montage vidéo avec 32 Go de RAM",
+                "body": "Question d’acheteur donnée à titre d’exemple. Il ne s’agit ni d’un volume de recherche ni d’une demande client enregistrée."
+              },
+              {
+                "title": "Aspirateur robot compatible avec Google Home",
+                "body": "Question d’acheteur donnée à titre d’exemple. Il ne s’agit ni d’un volume de recherche ni d’une demande client enregistrée."
+              }
+            ],
+            "columns": 3
+          },
+          {
+            "id": "attributes",
+            "eyebrow": "[02] Ce que l’agent compare",
+            "title": "Ce que vos données produit doivent indiquer.",
+            "items": [
+              {
+                "title": "Modèle",
+                "body": "Numéro de modèle exact et GTIN correct attribué par le fabricant pour la variante, lorsqu’il est disponible."
+              },
+              {
+                "title": "Batterie et alimentation",
+                "body": "Autonomie, temps de charge et consommation électrique avec conditions de test et unités indiquées."
+              },
+              {
+                "title": "Compatibilité",
+                "body": "Appareils pris en charge, systèmes d’exploitation et versions concernées."
+              },
+              {
+                "title": "Connectivité",
+                "body": "Ports, normes sans fil et versions."
+              },
+              {
+                "title": "Garantie",
+                "body": "Durée de la garantie, couverture et entité qui l’applique."
+              },
+              {
+                "title": "État",
+                "body": "Neuf, reconditionné ou d’occasion comme caractéristique produit distincte."
+              }
+            ],
+            "columns": 3,
+            "note": "Ces attributs doivent être vérifiés par votre équipe ; ecentic ne les invente ni ne les enrichit automatiquement. L’importateur de flux actuel prend en charge un mappage de champs défini."
+          },
+          {
+            "id": "rules",
+            "eyebrow": "[03] Règles du secteur",
+            "title": "Conservez les règles avec les informations produit.",
+            "paragraphs": [
+              "Google recommande d’utiliser le GTIN correct lorsqu’un fabricant en a attribué un. Ses consignes indiquent de ne pas deviner ni inventer une valeur. Des identifiants précis aident à distinguer les modèles et les variantes.",
+              "Le Manufacturer Center de Google a abandonné les anciens champs d’efficacité énergétique au profit de l’attribut de certification. Vérifiez les exigences applicables en matière d’étiquetage énergétique pour votre produit et votre marché."
+            ],
+            "note": "Sources vérifiées le 10 novembre 2026. Les exigences peuvent dépendre du produit, du canal et du pays.",
+            "links": [
+              {
+                "label": "Consignes Google sur les GTIN",
+                "href": "https://support.google.com/merchants/answer/6324461?hl=en"
+              },
+              {
+                "label": "Mise à jour Google des attributs d’efficacité énergétique",
+                "href": "https://support.google.com/manufacturers/answer/14711659?hl=en"
+              }
+            ]
+          },
+          {
+            "id": "business",
+            "eyebrow": "[04] Votre entreprise",
+            "title": "Une même catégorie, des équipes différentes.",
+            "columns": 4,
+            "items": [
+              {
+                "title": "Marques d’appareils et d’accessoires",
+                "body": "Partez de la manière dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/brands",
+                "label": "Voir votre solution"
+              },
+              {
+                "title": "Distributeurs et marketplaces d’électronique",
+                "body": "Partez de la manière dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/retailers-and-marketplaces",
+                "label": "Voir votre solution"
+              },
+              {
+                "title": "Groupes de distribution avec des catégories électroniques",
+                "body": "Partez de la manière dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/enterprise",
+                "label": "Voir votre solution"
+              },
+              {
+                "title": "Agences gérant des boutiques d’électronique",
+                "body": "Partez de la manière dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/agencies-and-partners",
+                "label": "Voir votre solution"
+              }
+            ]
+          }
+        ]
+      },
+      "home-and-furniture": {
+        "name": "Maison et ameublement",
+        "meta": {
+          "title": "Vendre des meubles et des articles pour la maison avec l’IA",
+          "description": "Indiquez clairement les dimensions, matériaux, conditions de montage, de livraison et de retour dans les fiches produit de meubles. Commencez par des informations que votre équipe peut vérifier."
+        },
+        "title": "Vendre des meubles quand l’IA doit mesurer la pièce.",
+        "description": "Les clients décrivent leur pièce, leur budget et leurs besoins pratiques. Une comparaison utile nécessite des dimensions, des matériaux et des conditions de livraison rédigés clairement. Gardez les mesures exactes du produit distinctes des photos d’illustration.",
+        "questions": [
+          "Canapé-lit adapté à un mur de 2 mètres",
+          "Table à manger en bois massif pour six personnes à moins de 1 000 €",
+          "Tapis compatible avec un chauffage au sol"
+        ],
+        "faqs": [
+          {
+            "question": "Nos dimensions figurent uniquement dans un dessin. Est-ce un problème ?",
+            "answer": "Ajoutez les mêmes dimensions vérifiées sous forme de texte avec les unités. Cela fournit des valeurs explicites que les outils peuvent analyser sans interpréter le dessin."
+          },
+          {
+            "question": "Comment afficher les délais des produits fabriqués sur commande ?",
+            "answer": "Indiquez les délais réels de production et de livraison et expliquez ce qui peut les modifier. Ne présentez pas un produit fabriqué sur commande comme immédiatement disponible."
+          },
+          {
+            "question": "Nous proposons un canapé dans 20 tissus différents. Comment le présenter ?",
+            "answer": "Identifiez le tissu, la couleur, le prix et la disponibilité de chaque variante. Utilisez les dimensions correctes si une variante les modifie."
+          },
+          {
+            "question": "Une IA peut-elle acheter un canapé pour quelqu’un ?",
+            "answer": "Cela dépend du canal et du parcours de paiement pris en charge. Testez les exigences de livraison et les transferts de paiement sur une boutique de préproduction avant d’activer les commandes par agent."
+          }
+        ],
+        "eyebrow": "Maison et ameublement",
+        "faqTitle": "Questions pour ce secteur",
+        "sections": [
+          {
+            "id": "questions",
+            "eyebrow": "[01] Ce que demandent les acheteurs",
+            "title": "Commencez par une vraie question d’achat.",
+            "items": [
+              {
+                "title": "Canapé-lit adapté à un mur de 2 mètres",
+                "body": "Question d’acheteur donnée à titre d’exemple. Il ne s’agit ni d’un volume de recherche ni d’une demande client enregistrée."
+              },
+              {
+                "title": "Table à manger en bois massif pour six personnes à moins de 1 000 €",
+                "body": "Question d’acheteur donnée à titre d’exemple. Il ne s’agit ni d’un volume de recherche ni d’une demande client enregistrée."
+              },
+              {
+                "title": "Tapis compatible avec un chauffage au sol",
+                "body": "Question d’acheteur donnée à titre d’exemple. Il ne s’agit ni d’un volume de recherche ni d’une demande client enregistrée."
+              }
+            ],
+            "columns": 3
+          },
+          {
+            "id": "attributes",
+            "eyebrow": "[02] Ce que l’agent compare",
+            "title": "Ce que vos données produit doivent indiquer.",
+            "items": [
+              {
+                "title": "Dimensions",
+                "body": "Largeur, profondeur et hauteur avec unités explicites, ainsi que les dimensions du colis lorsqu’elles sont disponibles."
+              },
+              {
+                "title": "Matériaux",
+                "body": "Structure, revêtement et finition décrits séparément."
+              },
+              {
+                "title": "Capacité",
+                "body": "Nombre de places, charge maximale testée ou surface de couchage fournis par le fournisseur."
+              },
+              {
+                "title": "Montage",
+                "body": "Indiquez si un montage est nécessaire, les outils fournis et les instructions."
+              },
+              {
+                "title": "Livraison",
+                "body": "Délais, livraison dans la pièce ou à la porte, et frais associés."
+              },
+              {
+                "title": "Retours",
+                "body": "Délai de retour, conditions et prise en charge des frais de collecte."
+              }
+            ],
+            "columns": 3,
+            "note": "Ces attributs doivent être vérifiés par votre équipe ; ecentic ne les invente ni ne les enrichit automatiquement. L’importateur de flux actuel prend en charge un mappage de champs défini."
+          },
+          {
+            "id": "rules",
+            "eyebrow": "[03] Règles du secteur",
+            "title": "Conservez les règles avec les informations produit.",
+            "paragraphs": [
+              "L’article 19 du règlement européen sur la sécurité générale des produits impose aux offres en ligne d’afficher certaines informations sur le fabricant ou la personne responsable, l’identification du produit et les avertissements pertinents. Vérifiez comment ces exigences s’appliquent au produit que vous vendez.",
+              "Gardez les conditions particulières de livraison explicites. Une réécriture de fiche produit ne modifie pas la configuration d’expédition et ne vérifie pas une déclaration de sécurité liée à la capacité de charge."
+            ],
+            "note": "Sources vérifiées le 10 novembre 2026. Les exigences peuvent dépendre du produit, du canal et du pays.",
+            "links": [
+              {
+                "label": "Règlement européen sur la sécurité générale des produits, article 19",
+                "href": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32023R0988"
+              }
+            ]
+          },
+          {
+            "id": "business",
+            "eyebrow": "[04] Votre entreprise",
+            "title": "Une même catégorie, des équipes différentes.",
+            "columns": 4,
+            "items": [
+              {
+                "title": "Marques de meubles et d’articles pour la maison",
+                "body": "Partez de la manière dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/brands",
+                "label": "Voir votre solution"
+              },
+              {
+                "title": "Distributeurs et marketplaces pour la maison",
+                "body": "Partez de la manière dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/retailers-and-marketplaces",
+                "label": "Voir votre solution"
+              },
+              {
+                "title": "Groupes spécialisés maison présents sur plusieurs marchés",
+                "body": "Partez de la manière dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/enterprise",
+                "label": "Voir votre solution"
+              },
+              {
+                "title": "Agences gérant des boutiques pour la maison",
+                "body": "Partez de la manière dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/agencies-and-partners",
+                "label": "Voir votre solution"
+              }
+            ]
+          }
+        ]
+      },
+      "fashion-and-outdoor": {
+        "name": "Mode et activités de plein air",
+        "meta": {
+          "title": "Vendre des vêtements et équipements de plein air avec l’IA",
+          "description": "Indiquez clairement les tailles, matériaux, indices de performance et variantes. Vérifiez les déclarations textiles et environnementales avant de publier des modifications de fiches produit."
+        },
+        "title": "Vendre des vêtements quand l’IA doit trouver la bonne taille.",
+        "description": "Les acheteurs recherchent un équipement adapté à une morphologie, un climat et une activité. Fournissez des systèmes de tailles, des indications de coupe et des informations sur les tissus qui peuvent être vérifiés. Les déclarations de performance et environnementales nécessitent des preuves pour le produit exact.",
+        "questions": [
+          "Veste imperméable pour la randonnée en Écosse",
+          "Chaussures de running pour pieds larges avec bon amorti",
+          "Sous-couche en mérinos qui ne gratte pas"
+        ],
+        "faqs": [
+          {
+            "question": "Devons-nous inclure le guide des tailles dans le flux ?",
+            "answer": "Transmettez les champs de taille et les variantes pris en charge. Conservez les notes d’ajustement vérifiées et les mesures sous forme de texte lisible ; un importeur générique ne préserve pas tous les formats personnalisés de guide des tailles."
+          },
+          {
+            "question": "Comment 30 variantes de couleurs et de tailles doivent-elles apparaître ?",
+            "answer": "Chaque variante doit comporter la bonne couleur, la bonne taille, le bon prix et la bonne disponibilité. Utilisez son propre identifiant lorsqu’il existe."
+          },
+          {
+            "question": "Peut-on qualifier un produit de durable sur le plan environnemental ?",
+            "answer": "Ne considérez pas une déclaration environnementale générique comme un texte sans conséquence. Vérifiez les preuves et les règles applicables sur le marché ; ecentic ne certifie pas l’allégation."
+          },
+          {
+            "question": "Cela aide-t-il sur une marketplace avec son propre assistant ?",
+            "answer": "Cela vous permet d’améliorer les sources de données que vous contrôlez. Une marketplace contrôle ses propres fiches produit, son assistant et ses règles d’accès."
+          }
+        ],
+        "eyebrow": "Mode et activités de plein air",
+        "faqTitle": "Questions pour ce secteur",
+        "sections": [
+          {
+            "id": "questions",
+            "eyebrow": "[01] Ce que demandent les acheteurs",
+            "title": "Commencez par une vraie question d’achat.",
+            "items": [
+              {
+                "title": "Veste imperméable pour randonnée en Écosse",
+                "body": "Question d’acheteur donnée à titre illustratif. Il ne s’agit ni d’un volume de recherche ni d’une demande client enregistrée."
+              },
+              {
+                "title": "Chaussures de running pour pieds larges avec un bon amorti",
+                "body": "Question d’acheteur donnée à titre illustratif. Il ne s’agit ni d’un volume de recherche ni d’une demande client enregistrée."
+              },
+              {
+                "title": "Sous-couche en mérinos qui ne gratte pas",
+                "body": "Question d’acheteur donnée à titre illustratif. Il ne s’agit ni d’un volume de recherche ni d’une demande client enregistrée."
+              }
+            ],
+            "columns": 3
+          },
+          {
+            "id": "attributes",
+            "eyebrow": "[02] Ce que l’agent compare",
+            "title": "Ce que vos données produit doivent indiquer.",
+            "items": [
+              {
+                "title": "Taille et coupe",
+                "body": "Système de tailles, notes sur la coupe et mesures de tailles disponibles."
+              },
+              {
+                "title": "Matériaux",
+                "body": "Composition des fibres avec des pourcentages."
+              },
+              {
+                "title": "Performance",
+                "body": "Indice d’imperméabilité testé, respirabilité et isolation, avec unités et conditions."
+              },
+              {
+                "title": "Usage",
+                "body": "Activité prévue et recommandations de température correspondantes."
+              },
+              {
+                "title": "Entretien",
+                "body": "Instructions de lavage et d’entretien conformes à l’étiquette."
+              },
+              {
+                "title": "Couleurs et variantes",
+                "body": "Chaque couleur et taille disponible, avec son propre prix et son propre stock le cas échéant."
+              }
+            ],
+            "columns": 3,
+            "note": "Ces attributs doivent être vérifiés par votre équipe ; ecentic ne les invente ni ne les enrichit automatiquement. L’importateur de flux actuel prend en charge une correspondance de champs définie."
+          },
+          {
+            "id": "rules",
+            "eyebrow": "[03] Règles du secteur",
+            "title": "Associez les règles aux informations produit.",
+            "paragraphs": [
+              "Les directives Google sur les tailles exigent des données de taille pour certaines fiches produit de vêtements et de chaussures, avec des exigences variant selon la destination et le format. Vérifiez les attributs vestimentaires exacts pour votre marché.",
+              "Le règlement européen 1007/2011 impose que les informations sur la composition des fibres soient clairement disponibles avant un achat en ligne.",
+              "La directive européenne 2024/825 prévoit des mesures applicables à partir du 27 septembre 2026 interdisant les allégations environnementales génériques sans performance environnementale excellente reconnue et pertinente. Vérifiez la mise en œuvre nationale avant d’utiliser une allégation."
+            ],
+            "note": "Sources vérifiées le 10 novembre 2026. Les exigences peuvent dépendre du produit, du canal et du pays.",
+            "links": [
+              {
+                "label": "Spécification Google des tailles de vêtements",
+                "href": "https://support.google.com/merchants/answer/6324492?hl=en"
+              },
+              {
+                "label": "Informations de l’UE sur les fibres textiles",
+                "href": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32011R1007"
+              },
+              {
+                "label": "Directive européenne sur les allégations environnementales",
+                "href": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32024L0825"
+              }
+            ]
+          },
+          {
+            "id": "business",
+            "eyebrow": "[04] Votre entreprise",
+            "title": "Même catégorie, équipes différentes.",
+            "columns": 4,
+            "items": [
+              {
+                "title": "Marques de mode et de plein air",
+                "body": "Partez de la façon dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/brands",
+                "label": "Voir votre solution"
+              },
+              {
+                "title": "Enseignes de mode et marketplaces",
+                "body": "Partez de la façon dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/retailers-and-marketplaces",
+                "label": "Voir votre solution"
+              },
+              {
+                "title": "Groupes de mode présents sur plusieurs marchés",
+                "body": "Partez de la façon dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/enterprise",
+                "label": "Voir votre solution"
+              },
+              {
+                "title": "Agences gérant des boutiques de mode",
+                "body": "Partez de la façon dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/agencies-and-partners",
+                "label": "Voir votre solution"
+              }
+            ]
+          }
+        ]
+      },
+      "health-wellness-and-pet": {
+        "name": "Santé, bien-être et animaux",
+        "meta": {
+          "title": "Vendre des produits de bien-être et pour animaux via l’IA",
+          "description": "Rendez explicites les ingrédients, le stade de vie, les recommandations d’alimentation et les allégations étayées. Préparez les données des produits de bien-être et pour animaux dans le respect des politiques des plateformes."
+        },
+        "title": "Vendre des produits de bien-être et pour animaux quand l’IA vérifie les faits.",
+        "description": "Les consommateurs demandent ce qu’un produit contient, à qui il s’adresse et comment l’utiliser. Rendez les ingrédients et les instructions du fabricant lisibles, et distinguez les informations produit classiques des allégations médicales ou nutritionnelles qui nécessitent des preuves.",
+        "questions": [
+          "Alimentation sans céréales pour chien senior à l’estomac sensible",
+          "Complément en magnésium sans excipients",
+          "Litière pour chat peu poussiéreuse"
+        ],
+        "faqs": [
+          {
+            "question": "Pouvez-vous rédiger des allégations santé pour nous ?",
+            "answer": "Nous ne proposons ni la création ni la validation d’allégations santé. Le travail sur les fiches produit utilise les informations produit existantes ; vous devez vérifier les déclarations autorisées sur votre marché."
+          },
+          {
+            "question": "Un assistant d’achat peut-il vendre des compléments alimentaires ?",
+            "answer": "L’éligibilité dépend de la plateforme, du produit et du lieu. Certains produits sont restreints ou interdits ; un parcours de paiement fonctionnel ne remplace pas ces politiques."
+          },
+          {
+            "question": "Nos aliments pour animaux existent selon différents stades de vie. Comment doivent-ils apparaître ?",
+            "answer": "Attribuez à chaque produit le bon stade de vie visé, la bonne analyse et le bon guide d’alimentation. Ne transférez pas des instructions provenant d’une formulation différente."
+          },
+          {
+            "question": "Prenez-vous en charge les produits sur ordonnance ?",
+            "answer": "Les produits sur ordonnance ne font pas partie du périmètre marketing et pilote proposé sur cette page."
+          }
+        ],
+        "eyebrow": "Santé, bien-être et animaux",
+        "faqTitle": "Questions pour ce secteur",
+        "sections": [
+          {
+            "id": "questions",
+            "eyebrow": "[01] Ce que demandent les acheteurs",
+            "title": "Commencez par une vraie question d’achat.",
+            "items": [
+              {
+                "title": "Alimentation sans céréales pour chien senior à l’estomac sensible",
+                "body": "Question d’acheteur donnée à titre illustratif. Il ne s’agit ni d’un volume de recherche ni d’une demande client enregistrée."
+              },
+              {
+                "title": "Complément en magnésium sans excipients",
+                "body": "Question d’acheteur donnée à titre illustratif. Il ne s’agit ni d’un volume de recherche ni d’une demande client enregistrée."
+              },
+              {
+                "title": "Litière pour chat peu poussiéreuse",
+                "body": "Question d’acheteur donnée à titre illustratif. Il ne s’agit ni d’un volume de recherche ni d’une demande client enregistrée."
+              }
+            ],
+            "columns": 3
+          },
+          {
+            "id": "attributes",
+            "eyebrow": "[02] Ce que l’agent compare",
+            "title": "Ce que vos données produit doivent indiquer.",
+            "items": [
+              {
+                "title": "Public visé",
+                "body": "Espèce et stade de vie pour les animaux, ou tranche d’âge visée pour les personnes, selon le fabricant."
+              },
+              {
+                "title": "Ingrédients",
+                "body": "La liste complète avec analyse nutritionnelle ou quantités par portion lorsqu’elles sont fournies."
+              },
+              {
+                "title": "Conseils d’alimentation ou d’utilisation",
+                "body": "Les instructions du fabricant sous forme de texte, en conservant les unités et les avertissements."
+              },
+              {
+                "title": "Normes et tests",
+                "body": "La déclaration d’adéquation nutritionnelle le cas échéant et les tests tiers nommés lorsqu’ils sont étayés."
+              },
+              {
+                "title": "Format et portions",
+                "body": "Taille du conditionnement et portions par emballage, avec des unités claires."
+              },
+              {
+                "title": "Finalité du produit",
+                "body": "Une description étayée qui respecte les règles du marché."
+              }
+            ],
+            "columns": 3,
+            "note": "Ces attributs doivent être vérifiés par votre équipe ; ecentic ne les invente ni ne les enrichit automatiquement. L’importateur de flux actuel prend en charge une correspondance de champs définie."
+          },
+          {
+            "id": "rules",
+            "eyebrow": "[03] Règles du secteur",
+            "title": "Associez les règles aux informations produit.",
+            "paragraphs": [
+              "Les allégations nutritionnelles et de santé relatives aux compléments alimentaires destinés aux humains dans l’UE sont soumises au règlement 1924/2006. Une description produit ne constitue pas une autorisation de faire une allégation santé non approuvée.",
+              "Google restreint ou interdit certains produits de santé ainsi que les médicaments ou compléments non approuvés. Vérifiez la catégorie de produit exacte et la politique du pays ciblé.",
+              "ecentic ne diagnostique pas de pathologies, ne prescrit pas de produits et ne certifie pas d’allégations santé. Veillez à ce que les informations reformulées restent liées à des faits sources vérifiés."
+            ],
+            "note": "Sources vérifiées le 10 novembre 2026. Les exigences peuvent dépendre du produit, du canal et du pays.",
+            "links": [
+              {
+                "label": "Règlement européen sur les allégations nutritionnelles et de santé",
+                "href": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32006R1924"
+              },
+              {
+                "label": "Politique Google sur les produits de santé et médicaments",
+                "href": "https://support.google.com/merchants/answer/6150151?hl=en"
+              }
+            ]
+          },
+          {
+            "id": "business",
+            "eyebrow": "[04] Votre entreprise",
+            "title": "Même catégorie, équipes différentes.",
+            "columns": 4,
+            "items": [
+              {
+                "title": "Marques de compléments alimentaires et de produits pour animaux",
+                "body": "Partez de la façon dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/brands",
+                "label": "Voir votre solution"
+              },
+              {
+                "title": "Enseignes d’animalerie et de bien-être",
+                "body": "Partez de la façon dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/retailers-and-marketplaces",
+                "label": "Voir votre solution"
+              },
+              {
+                "title": "Groupes de santé grand public",
+                "body": "Partez de la façon dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/enterprise",
+                "label": "Voir votre solution"
+              },
+              {
+                "title": "Agences gérant des boutiques de bien-être",
+                "body": "Partez de la façon dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/agencies-and-partners",
+                "label": "Voir votre solution"
+              }
+            ]
+          }
+        ]
+      },
+      "travel-and-experiences": {
+        "name": "Voyages et expériences",
+        "meta": {
+          "title": "Vendre des voyages et des expériences via l’IA",
+          "description": "Rendez les dates, les prix totaux, les prestations incluses et les conditions d’annulation faciles à lire. Découvrez un pilote voyage qui démarre à partir de pages publiques et de données produit."
+        },
+        "title": "Vendre des voyages quand l’IA planifie les vacances.",
+        "description": "Les utilisateurs demandent à l’IA où partir, quoi réserver et combien cela coûte. Rendez les dates, les prix et les conditions clairs sur les pages que vous contrôlez. Un pilote voyage démarre à partir de votre site public et de données produit convenues, sans supposer d’intégration avec un moteur de réservation.",
+        "questions": [
+          "Escapade à Lisbonne pour un long week-end en mai",
+          "Circuit gastronomique à Mexico pour deux",
+          "Chalet de ski dans les Alpes pour huit personnes"
+        ],
+        "faqs": [
+          {
+            "question": "L’IA peut-elle réserver un voyage pour quelqu’un ?",
+            "answer": "Cela dépend du canal et du parcours de réservation. Ce pilote ne promet pas d’intégration de réservation automatisée ; nous examinons les informations publiques et le mode de passage de relais convenu."
+          },
+          {
+            "question": "Cela aide-t-il les réservations directes si nous utilisons aussi des sites de réservation ?",
+            "answer": "Cela aide votre équipe à améliorer les informations sur les pages que vous contrôlez. Nous ne garantissons pas qu’un assistant renvoie vers votre site plutôt que vers une plateforme de réservation."
+          },
+          {
+            "question": "Avez-vous besoin de notre moteur de réservation ?",
+            "answer": "Non pour le périmètre de base fondé sur des données publiques. Tout accès ou travail d’intégration ultérieur nécessite un périmètre défini séparément."
+          },
+          {
+            "question": "Quels marchés couvrez-vous ?",
+            "answer": "Nous commençons avec un marché convenu pour chaque pilote et confirmons la couverture linguistique et des données avant de démarrer."
+          }
+        ],
+        "eyebrow": "Voyages et expériences",
+        "faqTitle": "Questions pour ce secteur",
+        "sections": [
+          {
+            "id": "questions",
+            "eyebrow": "[01] Ce que demandent les acheteurs",
+            "title": "Commencez par une vraie question d’achat.",
+            "items": [
+              {
+                "title": "Escapade à Lisbonne pour un long week-end en mai",
+                "body": "Question d’acheteur donnée à titre illustratif. Il ne s’agit ni d’un volume de requêtes ni d’une demande client enregistrée."
+              },
+              {
+                "title": "Circuit gastronomique à Mexico pour deux",
+                "body": "Question d’acheteur donnée à titre illustratif. Il ne s’agit ni d’un volume de requêtes ni d’une demande client enregistrée."
+              },
+              {
+                "title": "Chalet de ski dans les Alpes pour huit personnes",
+                "body": "Question d’acheteur donnée à titre illustratif. Il ne s’agit ni d’un volume de requêtes ni d’une demande client enregistrée."
+              }
+            ],
+            "columns": 3
+          },
+          {
+            "id": "attributes",
+            "eyebrow": "[02] Ce que l’agent compare",
+            "title": "Ce que vos données produit doivent indiquer.",
+            "items": [
+              {
+                "title": "Disponibilité",
+                "body": "Dates et horaires présentés dans des informations lisibles, pas uniquement dans un widget de calendrier."
+              },
+              {
+                "title": "Prix",
+                "body": "La base tarifaire, par exemple par personne, avec les frais obligatoires et les taxes incluses."
+              },
+              {
+                "title": "Prestations incluses",
+                "body": "Repas, transferts, billets et bagages, avec les exclusions applicables."
+              },
+              {
+                "title": "Annulation et modifications",
+                "body": "Les conditions expliquées en langage clair avec les délais et les frais."
+              },
+              {
+                "title": "Localisation et accès",
+                "body": "Adresse, accès aux transports et informations d’accessibilité vérifiées."
+              },
+              {
+                "title": "Pour qui",
+                "body": "Règles d’âge, taille des groupes, règles d’occupation et tarifs enfants."
+              }
+            ],
+            "columns": 3,
+            "note": "Ces attributs doivent être vérifiés par votre équipe ; ecentic ne les invente ni ne les enrichit automatiquement. L’importateur de flux actuel prend en charge un mappage de champs défini."
+          },
+          {
+            "id": "rules",
+            "eyebrow": "[03] Règles du secteur",
+            "title": "Conservez les règles avec les informations produit.",
+            "paragraphs": [
+              "La directive européenne sur les voyages à forfait impose certaines informations avant la conclusion d’un contrat de voyage à forfait, notamment les caractéristiques principales, le prix total et les conditions applicables. Rendez les informations concernées claires avant l’achat.",
+              "Les exigences exactes dépendent du produit de voyage et du marché. Un pilote basé sur des données publiques ne modifie pas votre moteur de réservation et ne valide pas toutes les règles locales applicables au voyage."
+            ],
+            "note": "Sources vérifiées le 10 novembre 2026. Les exigences peuvent dépendre du produit, du canal et du pays.",
+            "links": [
+              {
+                "label": "Directive européenne sur les voyages à forfait",
+                "href": "https://eur-lex.europa.eu/legal-content/EN/TXT/?uri=CELEX:32015L2302"
+              }
+            ]
+          },
+          {
+            "id": "pilot",
+            "title": "Comment démarre un pilote voyage.",
+            "description": "Votre site public et les pages produit convenues d’abord. Aucun accès au moteur de réservation, aucune donnée client et aucun code sur votre site pour le périmètre de base.",
+            "links": [
+              {
+                "label": "Discuter d’un pilote voyage",
+                "href": "/demo"
+              }
+            ]
+          },
+          {
+            "id": "business",
+            "eyebrow": "[04] Votre activité",
+            "title": "Même catégorie, équipes différentes.",
+            "columns": 4,
+            "items": [
+              {
+                "title": "Opérateurs de circuits et d’expériences",
+                "body": "Partez de la façon dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/brands",
+                "label": "Voir votre solution"
+              },
+              {
+                "title": "Distributeurs et agences de voyage",
+                "body": "Partez de la façon dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/retailers-and-marketplaces",
+                "label": "Voir votre solution"
+              },
+              {
+                "title": "Groupes de voyage présents sur plusieurs marchés",
+                "body": "Partez de la façon dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/enterprise",
+                "label": "Voir votre solution"
+              },
+              {
+                "title": "Agences gérant des sites de voyage",
+                "body": "Partez de la façon dont votre entreprise vend et gère son catalogue.",
+                "href": "/solutions/agencies-and-partners",
+                "label": "Voir votre solution"
+              }
+            ]
+          }
+        ]
+      }
+    },
+    "sectorIndex": {
+      "meta": {
+        "title": "Secteurs : ce dont l’IA a besoin pour vendre vos produits",
+        "description": "Découvrez les éléments à vérifier dans les données produit des secteurs de l’alimentation, des boissons, de la beauté, de l’électronique, de la maison, de la mode, du bien-être, des animaux et du voyage."
+      },
+      "eyebrow": "Secteurs",
+      "title": "Ce dont l’IA a besoin pour vendre vos produits.",
+      "description": "Chaque type de produit nécessite des informations différentes. Un canapé a besoin de dimensions, une crème solaire d’informations de protection étayées, un voyage de conditions d’annulation. Commencez par votre catégorie.",
+      "sections": [
+        {
+          "id": "sectors",
+          "title": "Choisissez votre secteur.",
+          "items": [
+            {
+              "title": "Vins et spiritueux",
+              "body": "Vendre des vins et spiritueux quand l’IA choisit la bouteille.",
+              "href": "/solutions/sectors/wine-and-spirits",
+              "label": "Single malt tourbé à moins de 80 $ pour un cadeau"
+            },
+            {
+              "title": "Alimentation et boissons",
+              "body": "Vendre des produits alimentaires quand l’IA lit l’étiquette.",
+              "href": "/solutions/sectors/food-and-beverage",
+              "label": "En-cas riche en protéines à moins de 150 calories"
+            },
+            {
+              "title": "Beauté et soins personnels",
+              "body": "Vendre des produits de beauté quand l’IA lit les ingrédients.",
+              "href": "/solutions/sectors/beauty-and-personal-care",
+              "label": "Crème hydratante sans parfum pour peau sensible"
+            },
+            {
+              "title": "Électronique grand public",
+              "body": "Vendre des produits électroniques quand l’IA compare les fiches techniques.",
+              "href": "/solutions/sectors/consumer-electronics",
+              "label": "écouteurs à réduction de bruit avec la meilleure autonomie à moins de 200 $"
+            },
+            {
+              "title": "Maison et mobilier",
+              "body": "Vendre du mobilier quand l’IA doit mesurer la pièce.",
+              "href": "/solutions/sectors/home-and-furniture",
+              "label": "Canapé-lit adapté à un mur de 2 mètres"
+            },
+            {
+              "title": "Mode et plein air",
+              "body": "Vendre des vêtements quand l’IA doit trouver la bonne taille.",
+              "href": "/solutions/sectors/fashion-and-outdoor",
+              "label": "Veste imperméable pour randonnée en Écosse"
+            },
+            {
+              "title": "Santé, bien-être et animaux",
+              "body": "Vendre des produits de bien-être et pour animaux quand l’IA vérifie les informations.",
+              "href": "/solutions/sectors/health-wellness-and-pet",
+              "label": "Alimentation sans céréales pour chien senior à l’estomac sensible"
+            },
+            {
+              "title": "Voyages et expériences",
+              "body": "Vendre des voyages quand l’IA planifie les vacances.",
+              "href": "/solutions/sectors/travel-and-experiences",
+              "label": "Escapade à Lisbonne pour un long week-end en mai"
+            }
+          ],
+          "columns": 2
+        },
+        {
+          "id": "other-sectors",
+          "title": "Vous ne voyez pas votre secteur ?",
+          "description": "Dites-nous ce que vous vendez.",
+          "links": [
+            {
+              "label": "Nous contacter",
+              "href": "/demo"
+            }
+          ]
+        }
+      ]
+    },
+    "index": {
+      "meta": {
+        "title": "Solutions : ecentic pour les marques, les distributeurs et les entreprises",
+        "description": "Comment ecentic aide les marques, les distributeurs, les équipes d’entreprise et les agences à vendre via l’IA, par activité, par équipe et par secteur."
+      },
+      "eyebrow": "Solutions",
+      "title": "Conçu pour votre façon de vendre.",
+      "description": "Le shopping par IA n’a pas le même visage pour une marque, une marketplace ou une entreprise de voyage. Partez de votre situation.",
+      "sections": [
+        {
+          "id": "business",
+          "title": "Par activité.",
+          "columns": 2,
+          "items": [
+            {
+              "title": "Pour les marques",
+              "body": "Faites de votre produit celui que la réponse cite.",
+              "href": "/solutions/brands",
+              "label": "Voir comment ça marche"
+            },
+            {
+              "title": "Pour les distributeurs et les places de marché",
+              "body": "Des milliers de fiches produit. Une seule chance face à l’agent.",
+              "href": "/solutions/retailers-and-marketplaces",
+              "label": "Voir comment ça marche"
+            },
+            {
+              "title": "Pour les agences et partenaires",
+              "body": "Ajoutez le commerce IA à ce que vous vendez déjà.",
+              "href": "/solutions/agencies-and-partners",
+              "label": "Voir comment ça marche"
+            },
+            {
+              "title": "Pour les entreprises",
+              "body": "L’IA est un nouveau canal de vente. Gérez-le comme tel.",
+              "href": "/solutions/enterprise",
+              "label": "Voir comment ça marche"
+            }
+          ]
+        },
+        {
+          "id": "ecommerce-and-growth",
+          "title": "E-commerce et croissance",
+          "description": "Vous gérez la conversion et le chiffre d’affaires des canaux. Comparez des produits dans des simulations et examinez les visites provenant de sources reconnues sur Shopify, en gardant les tests séparés des visites réelles.",
+          "links": [
+            {
+              "label": "Simuler",
+              "href": "/platform/simulate"
+            },
+            {
+              "label": "Suivre",
+              "href": "/platform/track"
+            }
+          ]
+        },
+        {
+          "id": "marketing",
+          "title": "Marketing",
+          "description": "Vous gérez la marque et le budget. Examinez les comparaisons de produits enregistrées et la fonctionnalité ChatGPT Brand Visibility, puis travaillez sur les informations produit vérifiées que vous contrôlez.",
+          "links": [
+            {
+              "label": "Simuler",
+              "href": "/platform/simulate"
+            },
+            {
+              "label": "Corriger",
+              "href": "/platform/fix"
+            }
+          ]
+        },
+        {
+          "id": "marketplace-and-channel-managers",
+          "title": "Places de marché et gestionnaires de canaux",
+          "description": "Vous gardez le contrôle des flux. Vérifiez les champs de fiches produit pris en charge par rapport aux spécifications de Google et OpenAI. Sur Shopify, envoyez les corrections publiées vers Merchant Center avec une synchronisation distincte.",
+          "links": [
+            {
+              "label": "Corriger",
+              "href": "/platform/fix"
+            },
+            {
+              "label": "Intégrations",
+              "href": "/integrations"
+            }
+          ]
+        },
+        {
+          "id": "sectors",
+          "title": "Par secteur.",
+          "items": [
+            {
+              "title": "Vins et spiritueux",
+              "body": "Vendre des vins et spiritueux quand l’IA choisit la bouteille.",
+              "href": "/solutions/sectors/wine-and-spirits",
+              "label": "Single malt fumé à moins de $80 pour un cadeau"
+            },
+            {
+              "title": "Alimentation et boissons",
+              "body": "Vendre des produits alimentaires et des boissons quand l’IA lit l’étiquette.",
+              "href": "/solutions/sectors/food-and-beverage",
+              "label": "En-cas riche en protéines à moins de 150 calories"
+            },
+            {
+              "title": "Beauté et soins personnels",
+              "body": "Vendre des produits de beauté quand l’IA analyse les ingrédients.",
+              "href": "/solutions/sectors/beauty-and-personal-care",
+              "label": "Crème hydratante sans parfum pour peau sensible"
+            },
+            {
+              "title": "Électronique grand public",
+              "body": "Vendre des produits électroniques quand l’IA compare les fiches techniques.",
+              "href": "/solutions/sectors/consumer-electronics",
+              "label": "Écouteurs à réduction de bruit avec la meilleure autonomie à moins de $200"
+            },
+            {
+              "title": "Maison et mobilier",
+              "body": "Vendre des meubles quand l’IA doit mesurer la pièce.",
+              "href": "/solutions/sectors/home-and-furniture",
+              "label": "Canapé-lit adapté à un mur de 2 mètres"
+            },
+            {
+              "title": "Mode et plein air",
+              "body": "Vendre des vêtements quand l’IA doit trouver la bonne taille.",
+              "href": "/solutions/sectors/fashion-and-outdoor",
+              "label": "Veste imperméable pour randonnée en Écosse"
+            },
+            {
+              "title": "Santé, bien-être et animaux",
+              "body": "Vendre des produits de bien-être et pour animaux quand l’IA vérifie les informations.",
+              "href": "/solutions/sectors/health-wellness-and-pet",
+              "label": "Alimentation sans céréales pour chien senior à l’estomac sensible"
+            },
+            {
+              "title": "Voyages et expériences",
+              "body": "Vendre des voyages quand l’IA planifie les vacances.",
+              "href": "/solutions/sectors/travel-and-experiences",
+              "label": "Séjour urbain à Lisbonne pour un long week-end en mai"
+            }
+          ],
+          "columns": 2,
+          "links": [
+            {
+              "label": "Tous les secteurs",
+              "href": "/solutions/sectors"
+            }
+          ]
+        }
+      ]
+    },
+    "specificationLabels": {
+      "question": "Ce que l’acheteur demande",
+      "data": "Ce que vos données ont à dire"
+    }
+  }
+}

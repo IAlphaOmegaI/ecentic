@@ -12,10 +12,11 @@ import {
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-import { useMessages, useTranslations } from "next-intl";
+import { useLocale, useMessages, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { z } from "zod";
 import { Motion } from "@/components/motion";
+import { localizePath } from "@/i18n/locale";
 import { useRouter } from "@/i18n/navigation";
 import { Spring } from "@/lib/animations";
 import {
@@ -25,6 +26,7 @@ import {
 import * as Authentication from "@/server/app/authentication";
 
 export const SignUpForm = () => {
+  const locale = useLocale();
   const router = useRouter();
   const toast = useToastManager();
   const translate = useTranslations("signUp");
@@ -113,7 +115,7 @@ export const SignUpForm = () => {
 
       if (data.type === "google") {
         const result = await Authentication.signInWithGoogle({
-          callbackURL: "/complete-profile",
+          callbackURL: localizePath("/complete-profile", locale),
         });
 
         if (result.success) window.location.href = result.data.url;
@@ -123,7 +125,7 @@ export const SignUpForm = () => {
       if (data.type === "shopify") {
         const result = await Authentication.signInWithShopify({
           shop: data.data.shop,
-          callbackURL: "/dashboard",
+          callbackURL: localizePath("/dashboard", locale),
         });
 
         if (!result.success) {
@@ -141,6 +143,7 @@ export const SignUpForm = () => {
       }
 
       const result = await Authentication.signUp({
+        locale,
         email: data.data.email,
         password: data.data.password,
         fullName: data.data.fullName,

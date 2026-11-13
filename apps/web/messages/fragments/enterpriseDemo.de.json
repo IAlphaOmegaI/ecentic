@@ -1,0 +1,70 @@
+{
+  "enterpriseDemo": {
+    "meta": {
+      "title": "Demo von ecentic buchen",
+      "description": "Sehen Sie live mit einem Gründer, wie ChatGPT, Claude und Gemini Ihre Produkte mit denen eines Wettbewerbers vergleichen. Bringen Sie eine Kategorie mit."
+    },
+    "eyebrow": "Demo buchen",
+    "title": "Sehen Sie, wie KI in Ihrem Katalog einkauft.",
+    "description": "Ein Gespräch mit einem Gründer. Bringen Sie eine Kategorie mit, und wir zeigen Ihnen live, wie ChatGPT, Claude und Gemini sie mit der eines Wettbewerbers vergleichen. Das Gespräch findet auf Englisch statt.",
+    "sections": [
+      {
+        "id": "what-we-cover",
+        "eyebrow": "Ein praxisnahes Gespräch",
+        "title": "Das besprechen wir.",
+        "ordered": true,
+        "columns": 4,
+        "items": [
+          {
+            "title": "Ein oder zwei Produkte",
+            "body": "Eine Live-Simulation gegen einen Wettbewerber, den Sie nennen."
+          },
+          {
+            "title": "Warum ein Produktangebot gewinnt",
+            "body": "Die Gründe für die Auswahl eines Assistenten innerhalb der Simulation."
+          },
+          {
+            "title": "Was Sie zuerst verbessern sollten",
+            "body": "Die Änderungen in Ihrem Katalog, die Sie zuerst prüfen sollten."
+          },
+          {
+            "title": "Ein Pilotprojekt für Ihr Team",
+            "body": "Umfang, Ausgangsbasis und Auswertung, die wir gemeinsam festlegen würden."
+          }
+        ]
+      },
+      {
+        "id": "request",
+        "title": "Starten Sie mit Ihrer Kategorie.",
+        "description": "Drei kurze Schritte. Erzählen Sie uns von Ihrem Unternehmen, wählen Sie einen Schwerpunkt und prüfen Sie Ihre Anfrage."
+      },
+      {
+        "id": "single-store",
+        "title": "Sie betreiben nur einen Shop?",
+        "description": "Buchen Sie das 15‑minütige Gespräch oder starten Sie mit dem kostenlosen Shop-Check.",
+        "links": [
+          {
+            "label": "15‑minütiges Gespräch buchen",
+            "href": "https://cal.com/ecentic-ai/15min"
+          },
+          {
+            "label": "Meinen Shop kostenlos prüfen",
+            "href": "/sign-up"
+          }
+        ]
+      }
+    ],
+    "form": {
+      "steps": [
+        "Über Sie",
+        "Ihr Anliegen",
+        "Prüfen und senden"
+      ],
+      "progress": "Fortschritt der Demoanfrage",
+      "reviewTitle": "Ein Briefing für Ihre Demo.",
+      "reviewDescription": "Prüfen Sie Ihre Angaben vor dem Senden. Wir melden uns per E-Mail, um den nächsten Schritt abzustimmen.",
+      "bookingNote": "Möchten Sie jetzt direkt einen Termin wählen? Das bestehende Self-Service-Gespräch dauert 15 Minuten. Umfang und Dauer der Enterprise-Demo stimmen wir mit Ihnen ab. Gespräche finden auf Englisch statt.",
+      "sentDescription": "Ihre Demoanfrage wurde gesendet. Wir verwenden Ihre geschäftliche E-Mail-Adresse, um den nächsten Schritt zu vereinbaren."
+    }
+  }
+}

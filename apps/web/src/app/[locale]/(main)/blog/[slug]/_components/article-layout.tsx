@@ -70,6 +70,7 @@ export const ArticleLayout = ({
                 width={1200}
                 height={800}
                 sizes="(min-width: 1024px) 720px, 100vw"
+                loading="eager"
                 unoptimized
                 className="mb-10 h-auto w-full border border-accent-foreground"
               />

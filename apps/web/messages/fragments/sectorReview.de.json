@@ -1,0 +1,86 @@
+{
+  "sectorReview": {
+    "code": {
+      "title": "Dieselben Produkte, leichter lesbar.",
+      "description": "Zwei erfundene Produktangebote, dargestellt als JSON. Stellen Sie eine ausgelassene Information wieder her und sehen Sie, was sich in diesem skriptgesteuerten Vergleich ändert.",
+      "format": "Beispieldatensätze, kein API-Übermittlungsformat. null bedeutet, dass im Produktangebot eine Information nicht angegeben wird.",
+      "questionNote": "Die Frage des Käufers legt die Kriterien für diesen Vergleich fest.",
+      "yourNote": "Es werden nur Informationen wiederhergestellt, die bereits in der Beispielquelle vorhanden sind.",
+      "rivalNote": "Der Datensatz des Wettbewerbers bleibt unverändert. Dies sind Beispielprodukte, kein Katalog einer namentlich genannten Marke.",
+      "question": "Frage des Käufers",
+      "required": "Relevante Felder",
+      "before": "Fehlende Information anzeigen",
+      "after": "Information aus der Quelle wiederherstellen",
+      "sampleNote": "Der folgende Code bezieht sich auf Frage 01. Das fehlende Feld wird aus der Beispielquelle wiederhergestellt; das andere Produktangebot bleibt unverändert."
+    },
+    "references": {
+      "label": "Bekannte Branchenbeispiele",
+      "note": "Markenbeispiele dienen nur zur Orientierung. Daraus ergibt sich weder eine Kundenbeziehung noch eine Empfehlung. Die folgenden Beispieldatensätze sind erfunden und stehen in keinem Zusammenhang mit diesen Marken."
+    },
+    "questions": {
+      "subtitle": "Sehen Sie die Frage, die dafür benötigten Informationen und die Prüfung, die weiterhin beim Händler liegt.",
+      "facts": "Explizit anzugebende Informationen",
+      "verify": "Prüfung durch den Händler",
+      "sample": "Beispielfragen; keine gemessene Suchnachfrage."
+    },
+    "rules": {
+      "help": "So hilft ecentic",
+      "source": "Was weiterhin geprüft werden muss",
+      "modelLabel": "Umfang der Simulation",
+      "models": "Nutzen Sie die Simulationsperspektiven von ChatGPT, Claude und Gemini, um unterstützte Produktinformationen zu vergleichen. Perplexity unterstützt derzeit Shopify-Referral-Tracking; Store-Simulationen folgen in Kürze. Eine Simulation ist keine Freigabe durch den Kanal.",
+      "sectors": {
+        "wine-and-spirits": {
+          "subtitle": "Machen Sie Flascheninformationen explizit, vergleichen Sie das Produktangebot und definieren Sie einen Kaufablauf für den Kanal und Markt, die dies zulassen.",
+          "help": "Verwenden Sie verifizierte Informationen zu Herkunft, Stil, Alkoholgehalt, Preis und Lieferung im Vergleich. Prüfen Sie die Quellinformationen und zulässigen Aussagen, bevor Sie Anwenden wählen; dadurch werden Titel und Beschreibung generiert und veröffentlicht. Produkt- und Zielbeschränkungen gelten weiterhin."
+        },
+        "food-and-beverage": {
+          "subtitle": "Verifizierte Angaben vom Etikett in klarere Produktinformationen überführen und anschließend jede Aussage zu Ernährung und Nährwerten vor der Veröffentlichung prüfen.",
+          "help": "Vergleichen Sie Zutaten, Allergene, Nährwerte und Portionsangaben, die die Quelle tatsächlich bereitstellt. ecentic kann klarere Formulierungen für Produktangebote vorschlagen; Händler prüfen Aussagen und Eignung vor der Übernahme."
+        },
+        "beauty-and-personal-care": {
+          "subtitle": "Belegte Inhaltsstoffe und Produktaussagen leichter vergleichbar machen, während die Nachweise weiter mit der Quelle verknüpft bleiben.",
+          "help": "Vergleichen Sie vorhandene Inhaltsstoffe, Verwendungszweck, Größe und belegte Aussagen. Prüfen Sie vorgeschlagene Formulierungen anhand der Nachweise des Herstellers; ecentic testet keine Wirksamkeit und zertifiziert keinen Schutz."
+        },
+        "consumer-electronics": {
+          "subtitle": "Modell-, Kompatibilitäts- und Garantieinformationen sichtbar machen, bevor Käufer den Shop erreichen.",
+          "help": "Vergleichen Sie das genaue Modell und die Quellspezifikationen und prüfen Sie anschließend vorgeschlagene Änderungen am Produktangebot. Aussagen zu Kompatibilität, elektrischen Eigenschaften und Garantie benötigen weiterhin Nachweise des Händlers."
+        },
+        "home-and-furniture": {
+          "subtitle": "Käufern Maße, Materialien und Lieferbedingungen bereitstellen, die sie mit ihren eigenen räumlichen Gegebenheiten abgleichen können.",
+          "help": "Vergleichen Sie Maße und Bedingungen im Quelldatensatz. ecentic kann fehlende Details im Produktangebot sichtbar machen; die Plattform garantiert weder Passgenauigkeit noch Zugänglichkeit oder einen Liefertermin."
+        },
+        "fashion-and-outdoor": {
+          "subtitle": "Passform-, Material- und Leistungsbeschreibungen an die tatsächlichen Produktspezifikationen koppeln.",
+          "help": "Vergleichen Sie verifizierte Angaben zu Größen, Materialien, Pflege und Verwendungszweck. Prüfen Sie die Formulierungen vor der Veröffentlichung; ecentic bestätigt weder technische Leistungsangaben noch Umweltaussagen."
+        },
+        "health-wellness-and-pet": {
+          "subtitle": "Quellenangaben klarer darstellen, ohne aus einem Produktvergleich eine Gesundheitsberatung zu machen.",
+          "help": "Vergleichen Sie bereitgestellte Inhaltsstoffe, Verwendungszweck, Portions- oder Fütterungsangaben und dokumentierte Standards. ecentic stellt keine Diagnosen, verschreibt nichts und zertifiziert weder Sicherheits- noch Gesundheitsangaben."
+        },
+        "travel-and-experiences": {
+          "subtitle": "Daten, enthaltene Leistungen und Stornierungsbedingungen des Angebots vor der Weiterleitung zur Buchung eindeutig darstellen.",
+          "help": "Vergleichen Sie die Produktinformationen in der Quelle. Live-Verfügbarkeit, Endpreis und Buchungsbedingungen müssen mit dem Händler bestätigt werden; das Beispiel ist keine Reservierung."
+        }
+      },
+      "bespoke": {
+        "title": "Ein individueller Ablauf für altersbeschränkte Käufe.",
+        "description": "Planen Sie gemeinsam mit ecentic einen agentengestützten Kaufablauf rund um Ihre bestehenden Kontrollen. Die Definition des Umfangs erfolgt vor der Implementierung; der Support hängt von Produkt, Land, Kanal und Zahlungsanbieter ab.",
+        "steps": [
+          {
+            "title": "Zulässigen Ablauf bestätigen",
+            "body": "Prüfen Sie die Regeln für Produkt, Zielort und gewählten Kanal, bevor Sie einen Kaufpfad bereitstellen."
+          },
+          {
+            "title": "Altersprüfung des Händlers beibehalten",
+            "body": "Integrieren Sie den bestehenden Prozess zur Altersverifikation des Händlers, sofern erforderlich. Eine integrierte Altersverifikation von ecentic wird nicht vorausgesetzt."
+          },
+          {
+            "title": "Zur Bestätigung und Zahlung übergeben",
+            "body": "Der Käufer schließt die erforderlichen Prüfungen ab und bestätigt die Zahlung im zulässigen Checkout-Ablauf des Händlers."
+          }
+        ],
+        "action": "Individuellen Kaufablauf besprechen"
+      }
+    }
+  }
+}

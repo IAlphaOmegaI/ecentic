@@ -1,0 +1,32 @@
+{
+  "round15Platform": {
+    "replay": {
+      "shopper": "Käufer",
+      "assistant": "Beispielassistent",
+      "writing": "Schreibt …",
+      "complete": "Beispiel-Chat abgeschlossen",
+      "replay": "Chat erneut abspielen",
+      "conversation": "Beispiel für einen Shopping-Chat",
+      "turns": {
+        "listings": "Ich vergleiche diese beiden Beispielangebote anhand Ihres Budgets und der Anforderungen an ein passendes Produkt.",
+        "fields": "Beide liegen unter 400 $. In Ihrem Produktangebot fehlen Angaben zur Sitzhöhe und zur maximalen Belastbarkeit. Das Konkurrenzangebot nennt 44–54 cm und 120 kg.",
+        "fix": "Fügen Sie meinem Produktangebot die vorhandene Sitzhöhen-Spanne und die maximale Belastbarkeit des Lieferanten hinzu und vergleichen Sie dann dieselben zwei Stühle erneut."
+      }
+    }
+  },
+  "commerceFigures": {
+    "officeChair": "Bürostuhl mit gepolsterter Rückenlehne, Armlehnen und Fünfrollenfuß",
+    "partReadouts": {
+      "officeChair": [
+        {
+          "value": "Rückenlehne",
+          "label": "Rückenlehne"
+        },
+        {
+          "value": "Sitzfläche",
+          "label": "Sitzfläche"
+        }
+      ]
+    }
+  }
+}

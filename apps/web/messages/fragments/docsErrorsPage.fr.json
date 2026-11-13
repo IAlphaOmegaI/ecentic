@@ -1,0 +1,50 @@
+{
+  "docsErrorsPage": {
+    "example": "Exemple de réponse",
+    "fields": "Lire la réponse",
+    "fieldItems": [
+      {
+        "name": "type",
+        "description": "L’URI qui nomme le problème, référencée dans cette documentation."
+      },
+      {
+        "name": "code",
+        "description": "L’identifiant stable sur lequel votre client peut s’appuyer pour effectuer un branchement logique."
+      },
+      {
+        "name": "title",
+        "description": "Un court résumé lisible par un humain."
+      },
+      {
+        "name": "status",
+        "description": "Le statut HTTP, répété dans le corps de la réponse."
+      },
+      {
+        "name": "detail",
+        "description": "Ce qui s’est mal passé pour cette requête précise."
+      },
+      {
+        "name": "resolution",
+        "description": "L’étape suivante pour résoudre le problème."
+      },
+      {
+        "name": "documentation",
+        "description": "La page de référence de la réponse."
+      },
+      {
+        "name": "instance",
+        "description": "Le chemin de requête qui l’a produite, lorsqu’il est connu."
+      }
+    ],
+    "catalogue": {
+      "label": "Codes d’erreur publiés",
+      "description": "Ouvrez un code pour consulter sa résolution. Chaque code dispose d’un lien permanent.",
+      "permalink": "Lien permanent vers",
+      "resolution": "Comment résoudre",
+      "action": {
+        "primary": "Tout développer",
+        "secondary": "Tout réduire"
+      }
+    }
+  }
+}

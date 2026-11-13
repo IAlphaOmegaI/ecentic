@@ -1,0 +1,21 @@
+{
+  "commerceFigures": {
+    "documentStack": "Drei Produktdokumente, die angehoben werden, wenn der Mauszeiger ein Blatt auswählt",
+    "partReadouts": {
+      "documentStack": [
+        {
+          "value": "Dokument 1",
+          "label": "Dokument 1"
+        },
+        {
+          "value": "Dokument 2",
+          "label": "Dokument 2"
+        },
+        {
+          "value": "Dokument 3",
+          "label": "Dokument 3"
+        }
+      ]
+    }
+  }
+}

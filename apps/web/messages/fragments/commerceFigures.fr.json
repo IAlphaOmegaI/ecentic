@@ -1,0 +1,13 @@
+{
+  "commerceFigures": {
+    "catalog": "Illustration : un plateau de fiches produit. Pointez une fiche ou utilisez les touches fléchées pour la soulever.",
+    "document": "Illustration : un terminal de documents. Déplacez le pointeur sur les lignes pour en soulever une.",
+    "workflow": "Illustration : un parcours connecté qui se ramifie puis se rejoint. Déplacez le pointeur le long du parcours pour suivre les connexions.",
+    "checkout": "Illustration : un panier d’achat. Il se tourne vers le pointeur et sa poignée le suit.",
+    "inspection": "Illustration : trois tamis d’inspection. Déplacez le pointeur verticalement pour séparer une couche.",
+    "drawer": "Illustration : trois tiroirs de catalogue. Déplacez le pointeur verticalement pour ouvrir un tiroir.",
+    "format": "Illustration : un fichier aux lignes irrégulières. Déplacez le pointeur vers le bas du fichier pour les aligner.",
+    "relay": "Illustration : un réseau ramifié. Pointez une destination pour illuminer l’itinéraire.",
+    "hub": "Illustration : des tuiles connectées autour d’un hub central. Pointez une tuile pour la soulever et mettre sa connexion en évidence."
+  }
+}

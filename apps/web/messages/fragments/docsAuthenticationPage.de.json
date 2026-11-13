@@ -1,0 +1,28 @@
+{
+  "docsAuthenticationPage": {
+    "paths": {
+      "title": "Einen Anfragepfad auswählen",
+      "description": "Entdecken Sie zuerst die API. Fügen Sie einen Bearer-Schlüssel hinzu, wenn Ihr Client im Namen eines Händlerkontos handelt.",
+      "label": "Anfrageauthentifizierung",
+      "open": "Offene Discovery",
+      "authenticated": "Händlerkonto",
+      "client": "Ihr Client",
+      "noCredential": "Keine Zugangsdaten erforderlich",
+      "bearer": "Bearer-Schlüssel erforderlich",
+      "publicDestination": "Discovery + Sandbox",
+      "protectedDestination": "REST + MCP",
+      "details": "So funktioniert dieser Pfad"
+    },
+    "keySteps": [
+      "Konto erstellen",
+      "Schlüssel generieren",
+      "Einmal speichern"
+    ],
+    "recovery": {
+      "label": "Authentifizierung nach einer 401-Antwort ermitteln",
+      "response": "Fehlende oder ungültige Anmeldedaten",
+      "resource": "Metadaten geschützter Ressourcen",
+      "authorization": "Metadaten des Autorisierungsservers"
+    }
+  }
+}

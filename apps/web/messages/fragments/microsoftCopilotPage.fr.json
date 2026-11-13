@@ -1,0 +1,46 @@
+{
+  "microsoftCopilotPage": {
+    "journey": {
+      "title": "La conversation, le catalogue, votre activité",
+      "copilot": "Découverte de produits et paiement",
+      "merchant": "Vous restez l’entité légalement responsable de la vente",
+      "relationship": "Votre logistique. Votre relation client.",
+      "web": "Données produit sur le web",
+      "feeds": "Flux produits des marchands",
+      "checkout": "Attributs de paiement supplémentaires",
+      "dataLabel": "Explorer le parcours des données produit"
+    },
+    "entry": {
+      "label": "Explorer un parcours d’intégration marchand",
+      "language": "Langue du marchand",
+      "languageValue": "Anglais",
+      "buyers": "Acheteurs",
+      "buyersValue": "États-Unis",
+      "currency": "Devise",
+      "currencyValue": "USD",
+      "microsoft": "Microsoft",
+      "shopify": "Shopify",
+      "stripe": "Stripe",
+      "routes": {
+        "microsoft": {
+          "title": "Microsoft Merchant Center",
+          "description": "Préparez les fiches produit et les attributs de paiement supplémentaires indiqués dans le guide d’intégration de Microsoft. Une étape de configuration du flux reste en phase pilote pour certains marchands sélectionnés.",
+          "note": "Il s’agit du parcours marchand de Microsoft. La connexion de flux d’ecentic n’est pas encore disponible."
+        },
+        "shopify": {
+          "title": "Inscription automatique via Shopify",
+          "description": "Shopify fait partie des parcours d’inscription documentés par Microsoft. Les critères d’éligibilité et les exigences du programme de Microsoft s’appliquent toujours.",
+          "note": "ecentic suit actuellement le trafic provenant de Copilot sur les boutiques Shopify connectées."
+        },
+        "stripe": {
+          "title": "Stripe Agentic Commerce Suite",
+          "description": "Stripe Agentic Commerce Suite fait partie des parcours d’accès documentés par Microsoft. Les critères d’éligibilité et les exigences du programme de Microsoft s’appliquent toujours.",
+          "note": "Un parcours d’accès ne garantit ni l’approbation ni les recommandations de produits."
+        }
+      },
+      "action": {
+        "primary": "Lire le guide d’intégration de Microsoft"
+      }
+    }
+  }
+}

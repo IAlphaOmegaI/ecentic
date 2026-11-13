@@ -1,0 +1,32 @@
+{
+  "authenticationEmail": {
+    "verify": {
+      "subject": "Verifica tu dirección de correo",
+      "preview": "Verifica tu correo para empezar a usar ecentic",
+      "title": "Verifica tu correo",
+      "description": "Empieza a optimizar tus fichas de producto para los agentes de compra de IA.",
+      "body": "Gracias por crear tu cuenta de ecentic. Pulsa el botón para verificar tu dirección de correo.",
+      "requestedFor": "Esta verificación se ha solicitado para {email}.",
+      "action": {
+        "primary": "Verificar correo"
+      },
+      "ignored": "Si no has creado una cuenta en ecentic, puedes ignorar este mensaje.",
+      "linkFallback": "También puedes copiar y pegar este enlace en tu navegador:",
+      "footer": "ecentic — La capa de comercio para la IA."
+    },
+    "reset": {
+      "subject": "Restablece tu contraseña",
+      "preview": "Restablece tu contraseña de ecentic",
+      "title": "Restablece tu contraseña",
+      "description": "Elige una contraseña nueva y vuelve a tus fichas de producto.",
+      "body": "Hemos recibido una solicitud para restablecer la contraseña de tu cuenta de ecentic. Pulsa el botón para elegir una nueva.",
+      "requestedFor": "Se ha solicitado restablecer la contraseña de {email}.",
+      "action": {
+        "primary": "Elegir una contraseña nueva"
+      },
+      "ignored": "Si no has solicitado restablecer tu contraseña, puedes ignorar este mensaje. Tu contraseña actual seguirá activa.",
+      "linkFallback": "También puedes copiar y pegar este enlace en tu navegador:",
+      "footer": "ecentic — La capa de comercio para la IA."
+    }
+  }
+}

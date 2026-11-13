@@ -1,0 +1,41 @@
+{
+  "enterprisePilotPreview": {
+    "label": "Pilotbeispiel · Musterbriefing",
+    "title": "Eine Kategorie. Ein Markt. Dieselben Fragen.",
+    "note": "Ein Planungsbeispiel, kein Kundenergebnis. Umfang, Teamrollen und Ergebnisse werden mit Ihrem Team abgestimmt.",
+    "marketLabel": "Markt",
+    "market": "Spanien",
+    "categoryLabel": "Kategorie",
+    "category": "Outdoor-Rucksäcke",
+    "sourceLabel": "Ausgangspunkt",
+    "source": "Öffentliche Produktseiten",
+    "peopleLabel": "Beispielteam",
+    "deliverableLabel": "Beispielergebnis",
+    "stages": [
+      {
+        "people": "Kategorieverantwortliche:r + ecentic Analyst:in",
+        "deliverable": "Fragenset und Basisarbeitsmappe",
+        "exampleLabel": "Beispielfrage",
+        "example": "Welcher Handgepäck-Rucksack eignet sich für eine einwöchige Reise?"
+      },
+      {
+        "people": "Merchandising-Verantwortliche:r + Katalogredakteur:in",
+        "deliverable": "Faktenprüfung und freigegebene Änderungsliste",
+        "exampleLabel": "Beispiel für eine Faktenprüfung",
+        "example": "Kapazität, Abmessungen und Material mit den Quellseiten abgleichen."
+      },
+      {
+        "people": "ecentic Analyst:in + Kategorieverantwortliche:r",
+        "deliverable": "Erneuter Durchlauf mit gleicher Vergleichsgrundlage und Änderungsprotokoll",
+        "exampleLabel": "Beispielvergleich",
+        "example": "Baseline und wiederholte Antworten nebeneinander behalten. Alle Modelländerungen dokumentieren."
+      },
+      {
+        "people": "Geschäftsverantwortliche:r + ecentic Projektleitung",
+        "deliverable": "Zusammenfassung, Einschränkungen und nächste Entscheidung",
+        "exampleLabel": "Beispielagenda",
+        "example": "Erwähnungen, Positionierung, Links und den getesteten Kaufablauf prüfen. Entscheiden, was als Nächstes getestet wird."
+      }
+    ]
+  }
+}

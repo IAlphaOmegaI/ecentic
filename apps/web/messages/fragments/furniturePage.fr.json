@@ -1,0 +1,36 @@
+{
+  "furniturePage": {
+    "introduction": "Reliez l’espace et les besoins pratiques de l’acheteur à des informations que votre équipe peut vérifier.",
+    "widthLabel": "Largeur avec unité",
+    "depthLabel": "Profondeur avec unité",
+    "heightLabel": "Hauteur avec unité",
+    "productLabel": "Le produit exact",
+    "diagramNote": "Un diagramme de relation, pas un produit mesuré ni un résultat d’adaptation.",
+    "relationshipTitle": "Un produit doit s’intégrer à bien plus qu’une pièce.",
+    "relationships": [
+      {
+        "title": "Espace et usage",
+        "body": "Les dimensions et la capacité décrivent le produit avec des informations lisibles et vérifiables."
+      },
+      {
+        "title": "Matériau et finition",
+        "body": "Conservez séparément la structure, le revêtement et la finition, y compris pour la variante sélectionnée."
+      },
+      {
+        "title": "Livraison et retours",
+        "body": "Le montage, la livraison et les retours doivent apparaître à côté des informations produit."
+      }
+    ],
+    "questionLabels": [
+      "Espace et usage",
+      "Matériau et capacité",
+      "Adéquation du produit à l’usage"
+    ],
+    "questionNotes": [
+      "Gardez les dimensions exactes du produit distinctes des photos d’illustration.",
+      "Vérifiez le matériau, le prix et la disponibilité de la variante sélectionnée, ainsi que sa capacité.",
+      "Vérifiez la compatibilité du produit concerné auprès du fournisseur. L’illustration ne garantit pas la compatibilité."
+    ],
+    "sourceLabel": "Vérifier à la source."
+  }
+}

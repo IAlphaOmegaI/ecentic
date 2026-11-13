@@ -1,5 +1,5 @@
-import { slugify } from "babylovegrowth-next-js-blog";
 import { Link } from "@/i18n/navigation";
+import { blogTopicSlug } from "@/lib/blog-locale";
 
 export const TagList = ({ keywords }: { keywords: readonly string[] }) => {
   const unique = Array.from(
@@ -7,7 +7,7 @@ export const TagList = ({ keywords }: { keywords: readonly string[] }) => {
       keywords
         .map((keyword) => keyword.trim())
         .filter(Boolean)
-        .map((keyword) => [slugify(keyword), keyword] as const),
+        .map((keyword) => [blogTopicSlug(keyword), keyword] as const),
     ).entries(),
   ).filter(([slug]) => slug.length > 0);
 

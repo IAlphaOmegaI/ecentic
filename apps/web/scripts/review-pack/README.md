@@ -75,7 +75,7 @@ node apps/web/scripts/review-pack.mjs \
   --notes docs/marketing/design-pass.md
 ```
 
-Omit `--routes` for the complete sitemap/route-table union. Every fresh run resolves the current inventory; `--list-routes` previews it and `manifest.json` records the exact routes. A full pack contains two page screenshots per route plus eight menu/form screenshots. Use those recorded counts in the delivery report because newly published articles can expand the sitemap. The default destination follows the required versioned `hey/review` path.
+Omit `--routes` for the complete sitemap/route-table union. All seven configured locales are expanded from the shared locale registry, with matching browser languages. Every fresh run resolves the current inventory; `--list-routes` previews it and `manifest.json` records the exact routes. A full pack contains two page screenshots per route plus eight menu/form screenshots. Use those recorded counts in the delivery report because newly published articles can expand the sitemap. The default destination follows the required versioned `hey/review` path.
 
 ## Evidence and review behavior
 

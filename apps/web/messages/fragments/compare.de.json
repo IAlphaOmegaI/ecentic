@@ -1,0 +1,224 @@
+{
+  "compare": {
+    "meta": {
+      "title": "KI-Tools für E-Commerce: Ein Leitfaden nach Kategorien",
+      "description": "Vergleichen Sie E-Commerce-Tools für Produktinhalte, Personalisierung, Suche, Analytics und Agent Commerce – übersichtlich nach Kategorien geordnet."
+    },
+    "breadcrumb": {
+      "home": "Startseite",
+      "page": "Die besten KI-Tools für E-Commerce 2026"
+    },
+    "hero": {
+      "eyebrow": "Vergleich",
+      "title": {
+        "primary": "Die besten KI-Tools für E-Commerce",
+        "accent": "im Jahr 2026."
+      },
+      "description": "Nicht jedes KI-Tool für E-Commerce löst dasselbe Problem. Dieser Leitfaden vergleicht zuerst Kategorien und erst danach Anbieter, damit Ihre Shortlist vom tatsächlichen Einsatzzweck ausgeht.",
+      "assurances": [
+        "Sechs Tools aus fünf Kategorien",
+        "Kategorien statt Feature-Checklisten",
+        "Aktualisiert für 2026"
+      ],
+      "art": {
+        "alt": "ASCII-Grafik einer Waage"
+      }
+    },
+    "guide": {
+      "number": "01",
+      "title": "So nutzen Sie diesen Leitfaden.",
+      "description": "Wenn Sie zuerst Kategorien vergleichen, treffen Sie die finale Anbieterentscheidung schneller und vermeiden eher die falsche Shortlist.",
+      "body": [
+        "Wer zwischen einem Tool zur Inhaltserstellung, einer Personalisierungsplattform, einer Suchlösung und einem Agent-Commerce-Workflow wählt, landet schnell auf der falschen Shortlist, wenn alles in eine generische Feature-Tabelle gepresst wird.",
+        "Die bessere Frage lautet: Welche Aufgabe soll das Tool aktuell für Sie übernehmen?"
+      ],
+      "categoriesHeading": "Die fünf Kategorien in diesem Leitfaden",
+      "categories": [
+        {
+          "title": "Inhaltserstellung",
+          "description": "Produktbeschreibungen und Kataloginhalte in großem Umfang."
+        },
+        {
+          "title": "Plattform-native KI",
+          "description": "Integrierte Unterstützung für Händler, die nah an ihrem bestehenden Stack bleiben wollen."
+        },
+        {
+          "title": "Personalisierung & Merchandising",
+          "description": "Onsite-Erlebnisse, Segmentierung und Conversion."
+        },
+        {
+          "title": "Suche & Discovery",
+          "description": "Produktrelevanz und Navigationsstrukturen."
+        },
+        {
+          "title": "Optimierung für Agent Commerce",
+          "description": "Sichtbarkeit in KI-Shopping-Systemen und Produktauswahl."
+        }
+      ]
+    },
+    "tools": {
+      "number": "02",
+      "title": "Die Tools, die Händler am häufigsten vergleichen.",
+      "description": "Eine Zeile pro Tool – inklusive unseres eigenen. Die letzte Spalte ist die wichtigste: Jedes Tool hier ist für manche Unternehmen die falsche Wahl. Wer das früh versteht, kommt schneller zur passenden Shortlist als mit jeder Feature-Checkliste.",
+      "scrollHint": "Zum Vergleichen scrollen →",
+      "usLabel": "·us",
+      "columns": {
+        "tool": "Tool",
+        "category": "Kategorie",
+        "bestAt": "Am besten geeignet für",
+        "wrongPick": "Wann es die falsche Wahl ist"
+      },
+      "items": [
+        {
+          "name": "ecentic",
+          "category": "Optimierung für Agent Commerce",
+          "bestAt": "Verstehen, warum KI-Assistenten Wettbewerber statt Ihrer Produkte auswählen – und Produktangebote so überarbeiten, dass sich das ändert.",
+          "wrongPick": "Käufer kommen weiterhin über Suche und Werbung, und KI-vermittelter Traffic macht bisher keinen relevanten Anteil aus.",
+          "us": true
+        },
+        {
+          "name": "Hypotenuse AI",
+          "category": "Erstellung von Produktinhalten",
+          "bestAt": "Beschreibungen, Bulletpoints und Marktplatztexte für Kataloge erstellen, die zu groß für manuelle Pflege sind.",
+          "wrongPick": "Die Texte sind bereits gut, und das eigentliche Problem ist nicht die Formulierung, sondern welche Produkte sichtbar werden.",
+          "us": false
+        },
+        {
+          "name": "Shopify Magic",
+          "category": "Plattform-native Inhaltserstellung",
+          "bestAt": "Schnelle KI-Unterstützung direkt im bestehenden Adminbereich – ohne neue Tools, Schulungen oder Integrationen.",
+          "wrongPick": "Sie brauchen Wettbewerbskontext. Das Tool sieht nur Ihren eigenen Shop, nie die Produkte, gegen die Sie verlieren.",
+          "us": false
+        },
+        {
+          "name": "Nosto",
+          "category": "Personalisierung",
+          "bestAt": "Die Inhalte für wiederkehrende Besucher im Shop dynamisch anpassen: Empfehlungen, Segmente und Merchandising-Regeln.",
+          "wrongPick": "Der Traffic ist gering oder die Kaufentscheidung fällt, bevor jemand Ihren Shop überhaupt besucht.",
+          "us": false
+        },
+        {
+          "name": "Constructor",
+          "category": "Suche und Discovery",
+          "bestAt": "Große Kataloge auffindbar machen: Suchverständnis, Ranking und relevante Navigation in großem Maßstab.",
+          "wrongPick": "Ihr Katalog ist klein genug, dass Kunden selten suchen, oder Discovery ist nicht der Punkt, an dem Sie sie verlieren.",
+          "us": false
+        },
+        {
+          "name": "Bloomreach",
+          "category": "Unternehmensweite Datenintelligenz",
+          "bestAt": "Suche, Merchandising und Kampagnendaten als einheitlichen Stack in großen Organisationen betreiben.",
+          "wrongPick": "Sie arbeiten mit einem kleinen Team. Die Kosten für Implementierung und Onboarding stehen in keinem Verhältnis zu dem Problem, das Sie heute haben.",
+          "us": false
+        }
+      ]
+    },
+    "bottleneck": {
+      "number": "03",
+      "title": "Ordnen Sie die Kategorie Ihrem Engpass zu.",
+      "description": "Die sinnvollste Bewertung beginnt beim konkreten operativen Engpass – nicht bei der längsten Feature-Checkliste.",
+      "body": [
+        "Ein häufiger Fehler ist, alle KI-Produkte für E-Commerce zu vergleichen, als wären sie reine Textgeneratoren. Das vereinfacht manche Bewertungen, verdeckt aber die eigentliche Kaufentscheidung.",
+        "Erstellen Sie zuerst pro Kategorie eine Shortlist und entscheiden Sie dann anhand des Engpasses, der in diesem Quartal am wichtigsten ist."
+      ],
+      "mappingsHeading": "Was jede Kategorie tatsächlich verbessert",
+      "mappings": [
+        {
+          "title": "Inhaltserstellung",
+          "description": "Produktionsgeschwindigkeit für Beschreibungen und Katalogtexte."
+        },
+        {
+          "title": "Personalisierung",
+          "description": "Relevanz im Shop, Segmentierung und Conversion."
+        },
+        {
+          "title": "Suchtools",
+          "description": "Discovery und Navigation innerhalb Ihres eigenen Shops."
+        },
+        {
+          "title": "Analytics-Tools",
+          "description": "Transparenz im Reporting entlang des gesamten Funnels."
+        },
+        {
+          "title": "Optimierung für Agent Commerce",
+          "description": "Produktauswahl, wenn KI-Systeme konkurrierende Produktangebote vergleichen.",
+          "emphasized": true
+        }
+      ]
+    },
+    "related": {
+      "number": "04",
+      "title": "Entdecken Sie die Seiten hinter der Shortlist.",
+      "description": "Jede der folgenden Seiten beleuchtet einen bestimmten Teil der Entscheidung genauer: Workflow, Plattform oder Optimierung von Produktangeboten.",
+      "links": [
+        {
+          "href": "/features",
+          "name": "Features",
+          "title": "Den zentralen Workflow der KI-Tools für E-Commerce ansehen",
+          "description": "Nutzen Sie die Feature-Seite, wenn Sie zuerst einen produktorientierten Überblick möchten, bevor Sie tiefer in eine bestimmte Plattform oder einen Vergleichspfad einsteigen.",
+          "label": "Feature-Seite öffnen",
+          "color": "primary"
+        },
+        {
+          "href": "/features/product-listings",
+          "name": "Produktangebote",
+          "title": "Mehr zur KI-Optimierung von Produktangeboten",
+          "description": "Diese Seite ist der beste nächste Schritt, wenn bessere Produktinhalte und klarere Attribute die höchste Priorität haben.",
+          "label": "Workflow für Produktangebote ansehen",
+          "color": "accent"
+        },
+        {
+          "href": "/platforms/shopify",
+          "name": "Shopify",
+          "title": "Den Shopify-spezifischen Kaufpfad ansehen",
+          "description": "Wählen Sie diese Seite, wenn Ihre aktuelle Shortlist Shopify-native und Shopify-nahe KI-Tools enthält.",
+          "label": "Shopify-Seite öffnen",
+          "color": "accent"
+        },
+        {
+          "href": "/platforms/woocommerce",
+          "name": "WooCommerce",
+          "title": "Den WooCommerce-spezifischen Kaufpfad ansehen",
+          "description": "Nutzen Sie die WooCommerce-Seite, wenn Sie einen realistischen Kaufpfad für unterstützte Plattformen statt nur eines allgemeinen Vergleichs benötigen.",
+          "label": "WooCommerce-Seite öffnen",
+          "color": "accent"
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "05",
+      "title": "Häufig gestellte Fragen",
+      "description": "Häufige Fragen von Händlern, die KI-Tools und Plattformen für E-Commerce vergleichen."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Was sind die besten KI-Tools für E-Commerce im Jahr 2026?",
+          "answer": "Die besten KI-Tools für E-Commerce im Jahr 2026 hängen von der jeweiligen Aufgabe ab. Händler vergleichen meist Tools für Produktinhalte, Personalisierungsplattformen, Such- und Discovery-Lösungen, Analytics-Software und neuere Tools zur Optimierung für Agent Commerce."
+        },
+        {
+          "question": "Wie sollten Händler KI-Software für E-Commerce vergleichen?",
+          "answer": "Am sinnvollsten ist es, Tools zuerst nach Kategorien zu vergleichen. Entscheiden Sie zunächst, ob das unmittelbare Problem Produktinhalte, Onsite-Personalisierung, Suchrelevanz, Transparenz in Analytics oder die Auswahl in KI-Shopping-Systemen betrifft. Vergleichen Sie erst danach die Anbieter innerhalb dieser Kategorie."
+        },
+        {
+          "question": "Wo passt ecentic in einen solchen Vergleich?",
+          "answer": "ecentic gehört zur Kategorie Optimierung für Agent Commerce. Die Plattform richtet sich an Händler, die KI-Shopping-Entscheidungen simulieren, nachvollziehen möchten, warum Wettbewerber gewinnen, und Produktangebote auf Basis dieses Wettbewerbsvergleichs verbessern wollen."
+        },
+        {
+          "question": "Warum ist ein kategoriebasierter Leitfaden besser als eine riesige Feature-Checkliste?",
+          "answer": "Ein kategoriebasierter Leitfaden ist vertrauenswürdiger, weil er nicht vorgibt, dass jedes Tool dasselbe Problem löst. Käufer verstehen dadurch besser, warum eine Personalisierungsplattform, ein Textgenerator und ein Agent-Commerce-Workflow nicht nach denselben Kriterien bewertet werden sollten."
+        }
+      ]
+    },
+    "footer": {
+      "primary": "Mit ecentic starten",
+      "secondary": "Zurück zur Startseite",
+      "note": "Einrichtung in 2 Minuten · Keine Kreditkarte · Zuerst kostenlosen Score ansehen"
+    },
+    "structuredData": {
+      "articleHeadline": "Die besten KI-Tools für E-Commerce 2026",
+      "itemListName": "Die besten KI-Tools für E-Commerce 2026",
+      "toolDescription": "{category}. Am besten geeignet für: {bestAt} Falsche Wahl, wenn: {wrongPick}"
+    }
+  }
+}

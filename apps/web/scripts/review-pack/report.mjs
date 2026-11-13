@@ -4,6 +4,7 @@ import * as Path from "node:path";
 import * as Util from "node:util";
 import { resultify } from "@zenncore/utils";
 import * as Pdf from "./pdf.mjs";
+import { canonicalRoute, expectedNotFound } from "./routes.mjs";
 import * as Todos from "./todos.mjs";
 
 const markup = (value) =>
@@ -23,7 +24,7 @@ const destination = (entry) =>
 const status = (entry) => {
   const views = entry.views ?? [entry];
   switch (true) {
-    case /^(?:\/es)?\/review-pack-not-found$/.test(entry.route):
+    case canonicalRoute(entry.route) === "/review-pack-not-found":
       return views.every((view) => view.status === 404) ? "404" : "missing";
     case views.some((view) => !view.status || view.status >= 400):
       return "missing";
@@ -155,17 +156,12 @@ export const write = async ({
             ]
           : []),
       ]),
-      ...(/^(?:\/es)?\/(?:review-pack-not-found|research\/ai-shopping-simulations)$/.test(
-        view.route,
-      ) && view.status !== 404
+      ...(expectedNotFound(view.route) && view.status !== 404
         ? [
             `${page.route} ${view.mode}: expected a genuine HTTP 404, received ${view.status}`,
           ]
         : []),
-      ...(!/^(?:\/es)?\/(?:review-pack-not-found|research\/ai-shopping-simulations)$/.test(
-        view.route,
-      ) &&
-      (!view.status || view.status >= 400)
+      ...(!expectedNotFound(view.route) && (!view.status || view.status >= 400)
         ? [
             `${page.route} ${view.mode}: unexpected HTTP status ${view.status ?? "unavailable"}`,
           ]

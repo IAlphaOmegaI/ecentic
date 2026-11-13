@@ -1,0 +1,54 @@
+{
+  "enterpriseChrome": {
+    "skip": "Zum Inhalt springen",
+    "faq": "Antworten auf Ihre Fragen.",
+    "action": {
+      "primary": "Demo buchen",
+      "secondary": "Meinen Shop kostenlos prüfen",
+      "tertiary": "Anmelden",
+      "quaternary": "Mehr erfahren"
+    },
+    "closing": {
+      "title": "Den Verkauf sichern, wenn KI den Einkauf übernimmt.",
+      "description": "Finden Sie heraus, ob Ihre Produkte ausgewählt werden."
+    },
+    "status": {
+      "live": "Live",
+      "feed": "Über Produkt-Feed",
+      "simulated": "Simuliert",
+      "soon": "Demnächst verfügbar",
+      "notYet": "Noch nicht"
+    },
+    "sample": "Beispiel mit Beispieldaten",
+    "screenshot": "Produkt-Screenshot · Beispieldaten",
+    "menu": {
+      "title": "ecentic entdecken",
+      "open": "Menü öffnen",
+      "close": "Menü schließen"
+    },
+    "footer": {
+      "tagline": "Den Verkauf sichern, wenn KI den Einkauf übernimmt.",
+      "copyright": "© 2026 ecentic Inc",
+      "trademark": "Produktnamen und Logos sind Marken ihrer jeweiligen Eigentümer. Ihre Darstellung bedeutet nicht, dass diese Eigentümer ecentic unterstützen oder mit dem Unternehmen zusammenarbeiten.",
+      "platform": "Plattform",
+      "solutions": "Lösungen",
+      "channels": "KI-Kanäle",
+      "integrations": "Integrationen",
+      "resources": "Ressourcen",
+      "company": "Unternehmen",
+      "legal": "Rechtliches",
+      "allSectors": "Alle Branchen",
+      "allChannels": "Alle Kanäle",
+      "allIntegrations": "Alle Integrationen",
+      "requestIntegration": "Integration anfragen",
+      "terms": "Nutzungsbedingungen",
+      "privacy": "Datenschutz",
+      "dpa": "DPA",
+      "subProcessors": "Unterauftragsverarbeiter",
+      "cookies": "Cookie-Einstellungen",
+      "aiInstructions": "KI-Anweisungen",
+      "tools": "Kostenlose Tools"
+    },
+    "loading": "Seite wird geladen"
+  }
+}

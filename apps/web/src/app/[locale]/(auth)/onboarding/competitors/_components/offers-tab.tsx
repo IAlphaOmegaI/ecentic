@@ -7,7 +7,7 @@ import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { formatElapsed } from "@/lib/date";
@@ -29,38 +29,41 @@ const DiscoveryLogLines = ({
 }: {
   logs: LogEntry[];
   active: boolean;
-}) => (
-  <>
-    {logs.map((log, index) => {
-      const age = logs.length - 1 - index;
-      const opacity = active ? Math.max(0.2, 1 - age * 0.1) : 1;
-      return (
-        <motion.div
-          key={log.id}
-          initial={{ opacity: 0, x: -6 }}
-          animate={{ opacity, x: 0 }}
-          transition={{ duration: 0.25, ease: "easeOut" }}
-          className="flex items-baseline gap-2"
-        >
-          <span className="shrink-0 font-mono text-foreground-dimmed/50 tabular-nums">
-            {formatElapsed(log.arrivedAt)}
-          </span>
-          <span
-            className={
-              log.type === "error"
-                ? "text-error leading-relaxed"
-                : log.type === "success"
-                  ? "font-medium text-success leading-relaxed"
-                  : "text-foreground-dimmed leading-relaxed"
-            }
+}) => {
+  const locale = useLocale();
+  return (
+    <>
+      {logs.map((log, index) => {
+        const age = logs.length - 1 - index;
+        const opacity = active ? Math.max(0.2, 1 - age * 0.1) : 1;
+        return (
+          <motion.div
+            key={log.id}
+            initial={{ opacity: 0, x: -6 }}
+            animate={{ opacity, x: 0 }}
+            transition={{ duration: 0.25, ease: "easeOut" }}
+            className="flex items-baseline gap-2"
           >
-            {log.text}
-          </span>
-        </motion.div>
-      );
-    })}
-  </>
-);
+            <span className="shrink-0 font-mono text-foreground-dimmed/50 tabular-nums">
+              {formatElapsed(log.arrivedAt, locale)}
+            </span>
+            <span
+              className={
+                log.type === "error"
+                  ? "text-error leading-relaxed"
+                  : log.type === "success"
+                    ? "font-medium text-success leading-relaxed"
+                    : "text-foreground-dimmed leading-relaxed"
+              }
+            >
+              {log.text}
+            </span>
+          </motion.div>
+        );
+      })}
+    </>
+  );
+};
 
 export namespace OffersTab {
   export type Props = {
@@ -89,6 +92,8 @@ export const OffersTab = ({
   store,
   className,
 }: OffersTab.Props) => {
+  const locale = useLocale();
+
   const toast = useToastManager();
   const router = useRouter();
   const translate = useTranslations("onboarding.competitors.offers");
@@ -302,7 +307,7 @@ export const OffersTab = ({
                 </span>
               </div>
               <span className="font-mono text-foreground-dimmed tabular-nums">
-                {formatElapsed(elapsed)}
+                {formatElapsed(elapsed, locale)}
               </span>
             </div>
 
@@ -349,7 +354,9 @@ export const OffersTab = ({
             ) : (
               <div className="flex items-center justify-between border-accent-foreground border-t p-4">
                 <span className="font-light text-foreground-dimmed">
-                  {translate("finishedIn", { elapsed: formatElapsed(elapsed) })}
+                  {translate("finishedIn", {
+                    elapsed: formatElapsed(elapsed, locale),
+                  })}
                 </span>
                 <Button onClick={handleDiscover} color="accent">
                   {translate("runAgain")}

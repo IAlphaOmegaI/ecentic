@@ -10,7 +10,7 @@ import {
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import { useParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { Link } from "@/i18n/navigation";
 import type * as Simulate from "@/server/app/intelligence/simulate";
@@ -146,6 +146,7 @@ export namespace ScanInsightsCarousel {
 }
 
 export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
+  const locale = useLocale();
   const [index, setIndex] = useState(0);
   const translate = useTranslations("dashboard.products.insights");
   const shared = useTranslations("dashboard.shared");
@@ -154,7 +155,7 @@ export const ScanInsightsCarousel = ({ scans }: ScanInsightsCarousel.Props) => {
 
   if (!current) return null;
 
-  const formatted = new Date(current.date).toLocaleDateString("en-US", {
+  const formatted = new Date(current.date).toLocaleDateString(locale, {
     month: "short",
     day: "numeric",
     year: "numeric",

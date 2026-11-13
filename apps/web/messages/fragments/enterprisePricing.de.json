@@ -1,0 +1,257 @@
+{
+  "enterprisePricing": {
+    "meta": {
+      "title": "Preise: kostenloser Shop-Check, Pläne und Enterprise-Pilotprojekte",
+      "description": "Starten Sie mit einem kostenlosen Shop-Check. Zahlen Sie monatlich oder für KI-zugeordnete Bestellungen, begrenzt auf $500 pro Monat. Enterprise-Pilotprojekte werden gemeinsam mit Ihrem Team definiert."
+    },
+    "eyebrow": "Kostenloser Shop-Check · Keine Kreditkarte zum Starten · Monatlich kündbar",
+    "title": "Kostenlos starten. Skalieren, sobald KI-Agenten Einkäufe tätigen.",
+    "description": "Prüfen Sie Ihren Shop kostenlos und wählen Sie anschließend einen monatlichen Plan oder zahlen Sie für KI-zugeordnete Bestellungen. Sie betreiben mehrere Shops oder Marken? Sprechen Sie mit uns über ein Pilotprojekt.",
+    "actions": [
+      {
+        "label": "Meinen Shop kostenlos prüfen",
+        "href": "/sign-up"
+      },
+      {
+        "label": "Kontakt aufnehmen",
+        "href": "/demo"
+      }
+    ],
+    "sections": [
+      {
+        "id": "free-check",
+        "eyebrow": "01 / Kostenloser Shop-Check",
+        "title": "Sehen Sie, wie KI Ihre Produkte mit Wettbewerbern vergleicht.",
+        "description": "Ein kostenloser Check Ihrer 10 wichtigsten Produkte in ChatGPT, Claude und Gemini. Sehen Sie, was gewinnt, was verliert und welche Details im Produktangebot Sie zuerst verbessern sollten."
+      },
+      {
+        "id": "pricing",
+        "eyebrow": "02 / Pläne",
+        "title": "Wählen Sie, wie Sie zahlen.",
+        "description": "Starten Sie mit einem Self-Service-Plan oder vereinbaren Sie ein Pilotprojekt für Ihre Shops, Ihren Katalog und Ihren Prüfprozess."
+      },
+      {
+        "id": "pay-as-you-go",
+        "eyebrow": "03 / Pay-as-you-go",
+        "title": "Eine Gebühr nach einer zugeordneten Bestellung.",
+        "description": "Pay-as-you-go kann kostenlos aktiviert werden. Die erfolgsabhängige Gebühr gilt für eine Bestellung mit einem expliziten KI-Zuordnungssignal oder für eine Bestellung innerhalb von 7 Tagen nach einem durch KI vermittelten Besuch in Ihrem Shop. Das Zeitfenster gilt auf Shop-Ebene, nicht als Verknüpfung zwischen einem einzelnen Besucher und einer Bestellung."
+      },
+      {
+        "id": "compare",
+        "eyebrow": "04 / Pläne vergleichen",
+        "title": "Alle Details im direkten Vergleich.",
+        "description": "Preise und Produktlimits stammen aus dem bestehenden Plankatalog. Simulationen werden ausgeführt, wenn Sie sie starten. Sie prüfen Änderungen an Produktangeboten und entscheiden, wann Sie sie veröffentlichen."
+      },
+      {
+        "id": "never-billed",
+        "eyebrow": "05 / Nie berechnet",
+        "title": "Der Check. Die Tools. Nicht zugeordnete Bestellungen.",
+        "paragraphs": [
+          "Der kostenlose Store-Check und die öffentlichen Tools sind gebührenfrei. Beim nutzungsbasierten Modell wird eine Bestellung ohne explizites KI-Attributionssignal nicht berechnet, wenn Ihr Store in den vorangegangenen 7 Tagen keinen KI-vermittelten Besuch hatte. Besuche selbst werden niemals berechnet. Pauschale Abonnements enthalten keine erfolgsabhängige Gebühr."
+        ]
+      },
+      {
+        "id": "europe",
+        "eyebrow": "06 / EU Presence-Paket",
+        "title": "Repräsentation und Katalogarbeit aus einer Hand."
+      }
+    ],
+    "sample": {
+      "label": "Beispiel mit Musterdaten",
+      "caption": "Dieser Beispiel-Score ist kein Ergebnis für Ihren Store. Führen Sie Ihren eigenen Check aus, um die Belege hinter jeder Empfehlung zu sehen.",
+      "action": {
+        "primary": "Store kostenlos prüfen"
+      },
+      "figureLabel": "Illustration: Eine Lupe zeigt die Struktur eines Produktdatensatzes.",
+      "sampleTitle": "Die Gründe hinter dem Score ansehen.",
+      "signals": [
+        "Produktvergleiche",
+        "Wettbewerber-Produktangebote",
+        "Zu prüfende Korrekturen am Produktangebot"
+      ]
+    },
+    "plans": {
+      "payg": {
+        "tagline": "Nur zahlen, wenn KI Ihnen Besucher sendet",
+        "note": "Kein Zahlungsmittel zum Start erforderlich. Gebühren gelten gemäß den untenstehenden Attributionsregeln.",
+        "action": {
+          "primary": "Pay-as-you-go wählen"
+        }
+      },
+      "compete": {
+        "action": {
+          "primary": "Compete wählen"
+        }
+      },
+      "scale": {
+        "tagline": "Korrekturen in großem Maßstab umsetzen",
+        "action": {
+          "primary": "Scale wählen"
+        }
+      },
+      "dominate": {
+        "action": {
+          "primary": "Dominate wählen"
+        }
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "tagline": "Gemeinsam mit Ihrem Team definiert, zunächst auf Basis öffentlicher Daten",
+        "figure": "Individuelles Pilotprojekt",
+        "note": "Umfang, Prüfprozess und Ziele werden vor dem Start abgestimmt.",
+        "features": [
+          "Alle Stores in einem Konto",
+          "API, MCP-Server und CLI",
+          "Prüfung der Anforderungen an die Datenverarbeitung",
+          "Ein Gründer als Ansprechpartner",
+          "Pilot-Auswertung mit abgestimmten Zielen"
+        ],
+        "action": {
+          "primary": "Kontakt aufnehmen"
+        }
+      }
+    },
+    "featureCorrections": {
+      "onDemand": "KI-Agenten-Simulationen auf Abruf",
+      "reviewAndApply": "Vorschläge prüfen und mit Apply veröffentlichen",
+      "paygAttribution": "Gebühren für KI-attribuierte Bestellungen gemäß den untenstehenden Regeln"
+    },
+    "availability": "Simulationen laufen auf Abruf. Sie prüfen Vorschläge und entscheiden, wann Änderungen übernommen werden. Die Veröffentlichung erfordert einen unterstützten Direkt-Connector und Ihre Freigabe.",
+    "fee": {
+      "steps": [
+        {
+          "title": "Ein KI-Assistent sendet Ihnen einen Besucher",
+          "body": "Ihr Store erfasst einen Besuch, der von einem KI-Assistenten vermittelt wurde. Damit beginnt das 7-Tage-Attributionsfenster für den Store."
+        },
+        {
+          "title": "Ein Kauf erfolgt: eine Bestellung über $120",
+          "body": "Eine Bestellung qualifiziert sich, wenn sie ein explizites KI-Attributionssignal enthält oder innerhalb des aktiven 7-Tage-Attributionsfensters des Stores erfolgt."
+        },
+        {
+          "title": "Die Gebühr beträgt $3.60",
+          "body": "Beim Standardsatz von 3 % erzeugt eine attribuierte Bestellung über $120 eine Gebühr von $3.60. Ein Besuch allein verursacht keine Gebühr."
+        },
+        {
+          "title": "Gebühren sind auf $500 pro Monat begrenzt",
+          "body": "Die monatliche Standardobergrenze beträgt 500 $. Zum Start ist keine Karte erforderlich; eine Zahlungsmethode wird angefragt, wenn eine Gebühr fällig wird."
+        }
+      ],
+      "example": {
+        "order": "Attribuierte Bestellung",
+        "rate": "Standardsatz",
+        "fee": "Erfolgsabhängige Gebühr",
+        "window": "7-Tage-Fenster auf Store-Ebene",
+        "cap": "Monatliche Obergrenze von $500"
+      },
+      "billingTitle": "Lieber eine feste Monatsrechnung?",
+      "billingBody": "Compete, Scale und Dominate haben keine erfolgsabhängige Gebühr. Die monatlichen Preise sind oben aufgeführt."
+    },
+    "comparison": {
+      "title": "Planvergleich",
+      "feature": "Funktion",
+      "yes": "Enthalten",
+      "no": "Nicht enthalten",
+      "agreed": "Im Pilotprojekt vereinbart",
+      "onDemand": "Auf Abruf",
+      "suggestions": "Vor dem Anwenden prüfen",
+      "publish": "Veröffentlichen mit Apply",
+      "enterpriseRows": [
+        {
+          "label": "Alle Stores in einem Konto",
+          "selfServe": true
+        },
+        {
+          "label": "API, MCP-Server und CLI",
+          "selfServe": true
+        },
+        {
+          "label": "Prüfung der Anforderungen an die Datenverarbeitung",
+          "selfServe": true
+        },
+        {
+          "label": "Ein Gründer als Ansprechpartner",
+          "selfServe": false
+        },
+        {
+          "label": "Pilot-Auswertung mit abgestimmten Zielen",
+          "selfServe": false
+        }
+      ],
+      "enterpriseNote": "Enterprise-Bedingungen, Produktlimits und mögliche Gebühren werden im Umfang des Pilotprojekts vereinbart. Öffentliche API-Discovery sowie MCP- und CLI-Dokumentation sind ohne kostenpflichtigen Plan verfügbar."
+    },
+    "bundle": {
+      "description": "EU Presence übernimmt Repräsentation und Compliance in allen 27 Mitgliedstaaten. Das Bundle kombiniert die bestehenden Services mit dem ecentic-Dominate-Plan zu den unten aufgeführten bestehenden Geschäftskonditionen.",
+      "productDetail": "Produktsimulationen, Vergleiche mit Wettbewerbern und Vorschläge für Produktangebote, die Sie vor der Veröffentlichung prüfen"
+    },
+    "faqTitle": "Fragen zur Preisgestaltung",
+    "faqs": [
+      {
+        "question": "Gibt es wirklich einen kostenlosen Plan?",
+        "answer": "Ja. Der kostenlose Shop-Check führt eine einmalige Simulation Ihrer 10 wichtigsten Produkte mit ChatGPT, Claude und Gemini durch und liefert einen Bericht zur Gewinnquote. Es ist keine Kreditkarte erforderlich."
+      },
+      {
+        "question": "Was ist der Unterschied zwischen Compete, Scale und Dominate?",
+        "answer": "Compete umfasst bis zu 100 Produkte mit Wettbewerbsvergleichen und manuellen Optimierungsvorschlägen. Scale umfasst bis zu 1.000 Produkte mit Vorschlägen für Produktangebote, die Sie prüfen und mit Apply veröffentlichen können. Dominate enthält Scale und ist der Plan, der mit dem Techstars-Angebot verknüpft ist. Das Y Combinator-Angebot kann für jedes Pauschalabonnement gelten. Simulationen laufen auf Abruf; das Produkt verspricht keinen festen Zeitplan."
+      },
+      {
+        "question": "Was ist der Unterschied zwischen Pay-as-you-go und einem Abonnement?",
+        "answer": "Pay-as-you-go hat keine Vorabgebühr und nutzt eine erfolgsabhängige Standardgebühr von 3 %, begrenzt auf $500 pro Monat, gemäß den untenstehenden Attributionsregeln. Compete, Scale und Dominate berechnen einen festen Monatspreis ohne erfolgsabhängige Gebühr. Wählen Sie das Abrechnungsmodell, das zu Ihrem Team passt."
+      },
+      {
+        "question": "Wie funktioniert die erfolgsabhängige Gebühr bei Pay-as-you-go?",
+        "answer": "Eine Bestellung zählt, wenn sie ein explizites KI-Attributionssignal enthält oder wenn in den vorangegangenen 7 Tagen ein KI-vermittelter Besuch Ihren Store erreicht hat. Dies ist ein Fenster auf Store-Ebene, keine Attribution einzelner Käufer. Die Standardgebühr beträgt 3 % qualifizierter Bestellungen, begrenzt auf $500 pro Kalendermonat. Besuche verursachen keine Gebühr. Eine Zahlungsmethode wird erst angefragt, wenn eine Gebühr fällig wird. Der kostenlose Check und Pauschalabonnements enthalten keine erfolgsabhängige Gebühr."
+      },
+      {
+        "question": "Kann ich später den Plan wechseln oder kündigen?",
+        "answer": "Ja. Starten Sie mit dem kostenlosen Check, aktivieren Sie Pay-as-you-go oder wählen Sie ein Pauschalabonnement. Die Pläne laufen monatlich und können gekündigt werden. Sprechen Sie mit uns, um den Umfang eines Enterprise-Pilotprojekts festzulegen, bevor dessen Bedingungen vereinbart werden."
+      },
+      {
+        "question": "Wann sollte ich mit dem Vertrieb sprechen statt Self-Service zu nutzen?",
+        "answer": "Wenn Sie mehrere Stores oder Marken betreiben, Tausende Produkte haben, eine Sicherheitsprüfung benötigen oder ein Pilotprojekt mit schriftlich vereinbarten Zielen wünschen."
+      },
+      {
+        "question": "Was ist das EU Presence-Paket?",
+        "answer": "Das Bundle kombiniert den GDPR-Vertreter, die GPSR-verantwortliche Person und Privacy Center Plus von EU Presence mit ecentic Dominate. Das bestehende Bundle-Angebot enthält 20 % Rabatt, ohne Mindestabnahme und ohne Einrichtungsgebühren. Nutzen Sie den Bundle-Call-Link, um darüber zu sprechen."
+      },
+      {
+        "question": "Was passiert mit unseren Daten, wenn wir kündigen?",
+        "answer": "Fordern Sie die Löschung unter privacy@ecentic.ai an. Wir antworten innerhalb eines Monats und bestätigen, sobald die Daten aus unseren Systemen gelöscht wurden. Abrechnungsdaten werden aufbewahrt, sofern gesetzlich erforderlich; Sicherungskopien werden entfernt, sobald sie ablaufen. Details zu Umfang und Trennungsoptionen finden Sie in der Datenschutzerklärung."
+      },
+      {
+        "question": "Wird etwas berechnet, das wir nicht angefordert haben?",
+        "answer": "Kein Plan wird ohne Aktivierung berechnet. Die Pläne laufen monatlich. Unter den Standardbedingungen für Pay-as-you-go gilt eine Gebühr von 3 % für eine Bestellung mit explizitem KI-Attributionssignal oder für eine Bestellung innerhalb von 7 Tagen nach einem KI-vermittelten Besuch in Ihrem Store, bis maximal $500 pro Kalendermonat. Das Attributionsfenster gilt für den Store, nicht für einen identifizierten Käufer. Pauschalabonnements haben keine erfolgsabhängige Gebühr."
+      },
+      {
+        "question": "Unterzeichnen Sie ein DPA?",
+        "answer": "Ja. Ein DPA wird auf Anfrage eingerichtet, bevor personenbezogene Daten geteilt werden, und wir können auch Ihr DPA unterzeichnen. Die Vertragspartei und die zeichnungsberechtigte Person werden in der Vereinbarung bestätigt."
+      }
+    ],
+    "policyLinks": [
+      {
+        "label": "Datenschutzerklärung lesen",
+        "href": "/privacy-policy"
+      },
+      {
+        "label": "Datenschutz prüfen",
+        "href": "/security#dpa"
+      }
+    ],
+    "offerDescriptions": [
+      "Einmaliger kostenloser Store-Check. Es ist keine Kreditkarte erforderlich.",
+      "Keine Vorabgebühr. Standardmäßige erfolgsabhängige Gebühr von 3 % auf qualifizierte KI-attribuierte Bestellungen, begrenzt auf $500 pro Monat.",
+      "Monatliches Abonnement für bis zu 100 Produkte ohne erfolgsabhängige Gebühr.",
+      "Monatliches Abonnement für bis zu 1.000 Produkte ohne erfolgsabhängige Gebühr.",
+      "Monatliches Abonnement inklusive Scale ohne erfolgsabhängige Gebühr."
+    ],
+    "calculator": {
+      "comparison": "Vergleich der Monatspreise",
+      "details": "So funktioniert diese Schätzung",
+      "payg": "Pay-as-you-go",
+      "flat": "Fester Monatspreis",
+      "lower": "Günstiger",
+      "same": "Gleicher Preis",
+      "orders": "Bestellungen",
+      "rate": "Gebührensatz"
+    }
+  }
+}

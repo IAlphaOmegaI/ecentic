@@ -9,7 +9,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@zenncore/web/components/dialog";
-import { type AppConfig, useTranslations } from "next-intl";
+import { type AppConfig, useLocale, useTranslations } from "next-intl";
 import { useEffect, useId, useRef, useState } from "react";
 
 // Versioned assets match the approved film currently published on ecentic.ai.
@@ -21,6 +21,8 @@ const poster = "/videos/ecentic-launch-poster-20261008.webp";
 const loop = "/videos/ecentic-launch-preview-20261008.mp4";
 
 export const HeroVideo = ({ transcript }: HeroVideo.Props) => {
+  const locale = useLocale();
+  const translateMedia = useTranslations("general.media");
   const translate = useTranslations("home.heroVideo");
   const descriptionId = useId();
   const trigger = useRef<HTMLButtonElement>(null);
@@ -133,7 +135,7 @@ export const HeroVideo = ({ transcript }: HeroVideo.Props) => {
               {translate("sampleLabel")}
             </p>
             <p className="mt-3 max-w-4xl text-foreground-dimmed text-sm">
-              {translate("transcriptIntroduction")}
+              {translate("transcriptIntroduction")} {translateMedia("videoEnglish")}
             </p>
           </div>
           <ol>
@@ -146,7 +148,7 @@ export const HeroVideo = ({ transcript }: HeroVideo.Props) => {
                   {scene.time}
                 </span>
                 <div className="min-w-0">
-                  <p lang="en" className="font-medium text-foreground-rich">
+                  <p lang={locale} className="font-medium text-foreground-rich">
                     <span className="sr-only">
                       {translate("onScreenLabel")}:{" "}
                     </span>

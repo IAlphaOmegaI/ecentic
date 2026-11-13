@@ -1,0 +1,26 @@
+{
+  "webmcpPage": {
+    "scope": {
+      "title": "Quellcode eines Onlineshops genauer betrachtet",
+      "description": "Verfolgen Sie die Deklarationen, prüfen Sie deren Metadaten und sehen Sie anschließend nach, was der Browser noch verifizieren muss.",
+      "pages": "Öffentliche Seiten, maximal",
+      "scripts": "Externe Skripte oder Module, maximal",
+      "runtime": "Browser-Registrierung und Ausführung bleiben unverifiziert."
+    },
+    "checks": {
+      "title": "Verstehen Sie, was jede Prüfung aussagt.",
+      "description": "Sieben Prüfungen unterscheiden zwischen Erkenntnissen aus dem Quellcode, Verbesserungsmöglichkeiten und Nachweisen, die weiterhin einen Browser benötigen.",
+      "workflowsTitle": "Entlang der Shopping Journey",
+      "workflowsNote": "Diese acht Workflows sind hilfreiche Prüfbereiche. Ein Shop muss nicht jeden davon über WebMCP bereitstellen.",
+      "items": {
+        "discovery": "Benannte Deklarationen werden aus HTML-Formularen oder Registrierungscode extrahiert. Eine reine API-Referenz lässt offen, welche Tools verfügbar sind.",
+        "metadata": "Prüfen Sie Tool-Namen, Beschreibungen und mögliche doppelte Namen auf derselben Seite. Kurze Beschreibungen sind ein Qualitätsvorschlag, kein Protokollfehler.",
+        "parameters": "Prüfen Sie rekonstruierbare Eingabenamen, Typen, Beschreibungen und erforderliche Zustände. Ein Tool ohne Parameter kann sein Eingabeschema weglassen; dynamische Schemata können ungelöst bleiben.",
+        "implementation": "Der Quellcode kann einen deklarierten Handler oder eine Formularaktion zeigen. Der Scanner führt den Handler nicht aus, sendet das Formular nicht ab und bestätigt dessen Verhalten nicht.",
+        "forms": "Öffentliche Formulare können Möglichkeiten zur Einführung aufzeigen. Prüfen Sie zuerst vorhandene Tools und erhalten Sie die Validierung und Einwilligung des Formulars; sensible Abläufe benötigen eine manuelle Prüfung.",
+        "coverage": "Der Bericht macht blockierte Ressourcen, Fehler und Scan-Limits sichtbar. Nicht besuchte Seiten, authentifizierte Abläufe und zur Laufzeit erzeugter Code können außerhalb des geprüften Quellcodes liegen.",
+        "runtime": "Diese Prüfung bleibt unbekannt. Bestätigen Sie native Registrierung und Verhalten separat in einem Browser mit WebMCP-Unterstützung; Erkenntnisse aus dem Quellcode können die Nutzung durch KI-Agenten nicht bestätigen."
+      }
+    }
+  }
+}

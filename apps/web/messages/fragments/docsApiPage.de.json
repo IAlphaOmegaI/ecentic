@@ -1,0 +1,25 @@
+{
+  "docsApiPage": {
+    "surfaces": "Nach Bereichen durchsuchen",
+    "all": "Alle Endpunkte",
+    "groups": {
+      "discovery": "Discovery",
+      "sandbox": "Sandbox",
+      "catalog": "Kataloge",
+      "mcp": "MCP",
+      "commerce": "Commerce"
+    },
+    "sourceTitle": "Eine einzige verlässliche Quelle.",
+    "sourceBody": "Öffnen Sie einen Endpunkt, um die genaue Spezifikation einzusehen. Folgen Sie den Schema-Links, um die gemeinsam genutzten Datenstrukturen zu prüfen.",
+    "operations": "Operationen",
+    "schemas": "Gemeinsame Schemas",
+    "responses": "Antwortcodes",
+    "references": "Referenzierte Schemas",
+    "schemaBody": "Diese Definitionen werden von mehreren Operationen gemeinsam genutzt. Jeder Name hat einen permanenten Link, und jede Definition kann als JSON kopiert werden.",
+    "permalink": "Link zu dieser Definition",
+    "navigation": "Referenzabschnitte",
+    "definition": "Quelldefinition · JSON",
+    "securityTitle": "Pro Operation deklariert",
+    "securityBody": "Prüfen Sie vor der Auswahl von Anmeldedaten das Sicherheitsfeld jedes Endpunkts. Das verfügbare Authentifizierungsschema ist hier definiert."
+  }
+}

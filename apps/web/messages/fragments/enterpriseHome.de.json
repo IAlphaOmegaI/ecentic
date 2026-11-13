@@ -1,0 +1,526 @@
+{
+  "enterpriseHome": {
+    "meta": {
+      "title": "KI-Shopping-Optimierung und Agent-Checkout | ecentic",
+      "description": "Die KI-Commerce-Ebene: Optimieren Sie die Produktdaten, die KI-Assistenten auslesen, machen Sie Ihren Checkout fit für KI-Käufe und bleiben Sie auf dem neuesten Stand, wenn sich deren Regeln ändern."
+    },
+    "hero": {
+      "eyebrow": "Die KI-Commerce-Ebene",
+      "title": "Eine Ebene zwischen Ihrem Katalog und der KI, die ihn verkauft.",
+      "description": "Ob Menschen über Google suchen, bei Amazon einkaufen oder einen Chatbot fragen: KI antwortet heute mit einem Produkt, und jeder Assistent hat eigene Regeln dafür, wie Produkte ausgewählt und gekauft werden. ecentic ist die Ebene zwischen Ihrem Katalog und diesen Assistenten. Die Plattform optimiert die Daten, die sie auslesen, macht Ihren Checkout bereit für KI-Käufe und bleibt auf dem neuesten Stand, wenn sich ihre Regeln ändern.",
+      "actions": [
+        {
+          "label": "Demo buchen",
+          "href": "/demo"
+        },
+        {
+          "label": "Meinen Shop kostenlos prüfen",
+          "href": "/sign-up"
+        }
+      ],
+      "facts": [
+        "Verbinden Sie Shopify und WooCommerce oder importieren Sie einen unterstützten Produkt-Feed oder eine CSV-Datei."
+      ],
+      "screenshot": {
+        "alt": "ecentic-Übersicht zur Gewinnquote mit eindeutig gekennzeichneten Beispieldaten.",
+        "caption": "Produkt-Screenshot · Beispieldaten"
+      }
+    },
+    "programs": {
+      "eyebrow": "Programme, an denen wir teilnehmen",
+      "title": "Entwickelt mit Unterstützung dieser Programme.",
+      "items": [
+        {
+          "id": "plug-and-play",
+          "title": "Plug and Play"
+        },
+        {
+          "id": "microsoft-for-startups",
+          "title": "Microsoft for Startups"
+        },
+        {
+          "id": "red-bull-basement",
+          "title": "Red Bull Basement"
+        },
+        {
+          "id": "founder-games",
+          "title": "The Founder Games"
+        },
+        {
+          "id": "fil-rouge-capital",
+          "title": "Fil Rouge Capital"
+        }
+      ],
+      "missingAsset": ""
+    },
+    "businesses": {
+      "eyebrow": "02 · Für wen es gedacht ist",
+      "title": "Unterschiedliche Unternehmen. Derselbe neue Käufer.",
+      "description": "Beginnen Sie mit der Art, wie Sie verkaufen, und den Fragen, die Ihr Team beantworten muss.",
+      "painLabel": "Die typischen Probleme",
+      "items": [
+        {
+          "id": "brands",
+          "eyebrow": "Marken",
+          "title": "Werden Sie zum Produkt, das die Antwort nennt.",
+          "description": "DTC- und Consumer-Brands",
+          "pains": [
+            "Die KI empfiehlt einen Wettbewerber aus Ihrer eigenen Kategorie.",
+            "Händler beschreiben Ihre Produkte besser als Sie selbst.",
+            "Sie sehen nicht, welche Produkte Assistenten überspringen."
+          ],
+          "href": "/solutions/brands",
+          "label": "Marken entdecken"
+        },
+        {
+          "id": "retailers-and-marketplaces",
+          "eyebrow": "Händler und Marktplätze",
+          "title": "Tausende Produktangebote. Eine Chance beim Agenten.",
+          "description": "Große Kataloge, viele Lieferanten",
+          "pains": [
+            "Lieferantendaten, die Assistenten nicht vergleichen können.",
+            "Feed und Website zeigen unterschiedliche Preise oder Bestände.",
+            "Es gibt keine Möglichkeit, jedes Produkt manuell zu prüfen."
+          ],
+          "href": "/solutions/retailers-and-marketplaces",
+          "label": "Händler entdecken"
+        },
+        {
+          "id": "enterprise",
+          "eyebrow": "Enterprise",
+          "title": "KI ist ein neuer Kanal. Behandeln Sie ihn auch so.",
+          "description": "Viele Marken, Märkte und Teams",
+          "pains": [
+            "Jeder Markt bringt andere Shopping-Fragen mit sich.",
+            "Die Sicherheitsprüfung kommt vor dem Zugriff auf den Katalog.",
+            "Niemand verantwortet KI als Vertriebskanal."
+          ],
+          "href": "/solutions/enterprise",
+          "label": "Enterprise entdecken"
+        },
+        {
+          "id": "agencies-and-partners",
+          "eyebrow": "Agenturen und Partner",
+          "title": "Ergänzen Sie Ihr bestehendes Angebot um KI-Commerce.",
+          "description": "Shops für Kundinnen und Kunden betreiben",
+          "pains": [
+            "Kunden fragen nach ChatGPT und Sie brauchen eine Antwort.",
+            "Katalogprüfungen erfolgen noch manuell.",
+            "Sie brauchen ein klares Serviceangebot für diesen neuen Kanal."
+          ],
+          "href": "/solutions/agencies-and-partners",
+          "label": "Agenturen entdecken"
+        }
+      ]
+    },
+    "loop": {
+      "eyebrow": "03 · So funktioniert es",
+      "title": "Vom Produkt-Feed bis zum KI-Checkout.",
+      "description": "Verbinden, vergleichen, optimieren, verkaufen und erneut prüfen. Sie entscheiden, welche Änderungen veröffentlicht werden.",
+      "steps": [
+        {
+          "id": "connect",
+          "title": "Verbinden",
+          "body": "Führen Sie Ihren Katalog an einem Ort zusammen – über Shopify, WooCommerce, einen unterstützten XML- oder JSON-Feed oder eine CSV-Datei.",
+          "tags": [
+            "Shopify",
+            "WooCommerce",
+            "Produkt-Feeds"
+          ],
+          "href": "/platform/connect",
+          "label": "Connect entdecken"
+        },
+        {
+          "id": "simulate",
+          "title": "Simulieren",
+          "body": "Sehen Sie, welches Produkt ChatGPT, Claude und Gemini in einem Vergleich auswählen, und lesen Sie die Begründung hinter jeder simulierten Entscheidung.",
+          "tags": [
+            "Gewinnquote",
+            "Battlecards",
+            "Bereitschaftsprüfung"
+          ],
+          "href": "/platform/simulate",
+          "label": "Simulate entdecken"
+        },
+        {
+          "id": "fix",
+          "title": "Korrigieren",
+          "body": "Apply erstellt und veröffentlicht Titel und Beschreibungen auf Basis bestehender Produktfakten. Strukturierte Daten veröffentlichen und Merchant Center synchronisieren Sie über separate Bedienelemente.",
+          "tags": [
+            "Produktangebote",
+            "Strukturierte Daten",
+            "Merchant Center"
+          ],
+          "href": "/platform/fix",
+          "label": "Fix entdecken"
+        },
+        {
+          "id": "sell",
+          "title": "Verkaufen",
+          "body": "Verbinden Sie Agent-Checkout mit WooCommerce, testen Sie den Ablauf und behalten Sie Ihren eigenen Zahlungsanbieter. Plattformvorgaben und Zahlungsübergaben gelten weiterhin.",
+          "tags": [
+            "Agent-Checkout",
+            "Checkout-Tests",
+            "Ihre Zahlungsabwicklung"
+          ],
+          "href": "/platform/sell",
+          "label": "Sell entdecken"
+        },
+        {
+          "id": "track",
+          "title": "Nachverfolgen",
+          "body": "Verfolgen Sie erkannte KI-Weiterleitungen in Shopify, vergleichen Sie abgeschlossene Simulationen und starten Sie einen neuen Scan, wenn Sie erneut prüfen möchten.",
+          "tags": [
+            "KI-Traffic",
+            "Manuell erneut scannen",
+            "Mehrere Shops"
+          ],
+          "href": "/platform/track",
+          "label": "Track entdecken"
+        }
+      ]
+    },
+    "film": {
+      "eyebrow": "04 · So funktioniert es",
+      "title": "Sehen Sie ecentic in einer Minute.",
+      "description": "Ein kurzer Einblick in das Produkt – vom Vergleich bis zur nächsten Entscheidung für Ihren Katalog.",
+      "caption": "ecentic Produktfilm",
+      "action": {
+        "primary": "Film ansehen"
+      }
+    },
+    "channels": {
+      "eyebrow": "05 · KI-Kanäle",
+      "title": "Ein Katalog. Die Assistenten, denen Ihre Kunden Fragen stellen.",
+      "description": "Jeder Assistent nutzt eigene Produktquellen und Regeln für den Kauf. Sehen Sie, was ecentic heute unterstützt und was geplant ist.",
+      "checked": "Geprüft am 10. November 2026. Jede Kanalseite ist datiert und verweist auf ihre Quellen.",
+      "items": [
+        {
+          "id": "google",
+          "title": "Google AI Mode und Gemini",
+          "body": "Gemini-Simulationen sowie Merchant-Center-Synchronisierung für Shopify.",
+          "status": "simulated",
+          "statusLabel": "Simuliert",
+          "href": "/ai-channels/google-ai-mode-gemini"
+        },
+        {
+          "id": "chatgpt",
+          "title": "ChatGPT",
+          "body": "Simulationen und Prüfungen von Produktangeboten anhand der Feed-Regeln von OpenAI.",
+          "status": "simulated",
+          "statusLabel": "Simuliert",
+          "href": "/ai-channels/chatgpt"
+        },
+        {
+          "id": "claude",
+          "title": "Claude",
+          "body": "Simulationen dazu, wie Claude Ihre Produkte vergleicht.",
+          "status": "simulated",
+          "statusLabel": "Simuliert",
+          "href": "/ai-channels/claude"
+        },
+        {
+          "id": "copilot",
+          "title": "Microsoft Copilot",
+          "body": "Ein Feed-Export für Microsoft Merchant Center ist geplant.",
+          "status": "coming-soon",
+          "statusLabel": "Demnächst verfügbar",
+          "href": "/ai-channels/microsoft-copilot"
+        },
+        {
+          "id": "perplexity",
+          "title": "Perplexity",
+          "body": "Store-Scan-Simulationen und ein Händler-Feed sind geplant.",
+          "status": "coming-soon",
+          "statusLabel": "Demnächst verfügbar",
+          "href": "/ai-channels/perplexity"
+        },
+        {
+          "id": "amazon",
+          "title": "Amazon",
+          "body": "Die Katalogbereitstellung für Shop Direct ist geplant.",
+          "status": "coming-soon",
+          "statusLabel": "Demnächst verfügbar",
+          "href": "/ai-channels/amazon"
+        }
+      ],
+      "link": {
+        "label": "Alle anzeigen",
+        "href": "/ai-channels"
+      }
+    },
+    "integration": {
+      "eyebrow": "06 · Integrationen",
+      "title": "Passt in Ihren bestehenden Stack.",
+      "description": "Direkte Verbindungen, unterstützte Feeds und die Integrationen, die wir als Nächstes entwickeln. Jede Kachel zeigt den aktuellen Status.",
+      "counter": {
+        "live": "verfügbar",
+        "feed": "über Produkt-Feed",
+        "soon": "demnächst verfügbar"
+      },
+      "links": [
+        {
+          "label": "Alle Integrationen anzeigen",
+          "href": "/integrations"
+        },
+        {
+          "label": "Integration anfragen",
+          "href": "/integrations#request"
+        }
+      ]
+    },
+    "mechanisms": {
+      "eyebrow": "07 · Hinter den Kulissen",
+      "title": "Alles zwischen „Die KI hat uns übersprungen“ und „Die KI hat bei uns gekauft“.",
+      "items": [
+        {
+          "id": "simulations",
+          "title": "Agenten-Simulationen",
+          "body": "ChatGPT, Claude und Gemini wählen in einer aufgezeichneten Simulation zwischen Ihrem Produkt und dem eines Wettbewerbers.",
+          "tags": [
+            "Gewinnquote",
+            "Wiedergabe",
+            "Battlecards"
+          ],
+          "href": "/platform/simulate",
+          "label": "Simulationen ansehen"
+        },
+        {
+          "id": "readiness",
+          "title": "Bereitschaftsprüfung",
+          "body": "Prüfen Sie Crawler-Regeln, Stichproben des Seiten-HTMLs, Produktkennungen und die Feed-Eignung. Nicht erreichbare Seiten werden zur Prüfung markiert.",
+          "tags": [
+            "Crawler",
+            "Schema",
+            "GTIN"
+          ],
+          "href": "/platform/simulate#readiness",
+          "label": "Audit ansehen"
+        },
+        {
+          "id": "catalog",
+          "title": "Katalogkorrekturen",
+          "body": "Erstellen und veröffentlichen Sie Titel und Beschreibungen auf Basis Ihrer bestehenden Produktdaten. Strukturierte Daten haben eine eigene Veröffentlichungsaktion.",
+          "tags": [
+            "Produktangebote",
+            "Attribute",
+            "Veröffentlichen"
+          ],
+          "href": "/platform/fix",
+          "label": "Katalogkorrekturen ansehen"
+        },
+        {
+          "id": "merchant-center",
+          "title": "Merchant Center-Synchronisierung",
+          "body": "Senden Sie veröffentlichte Korrekturen an Produktangeboten und Checkout-Attribute über die separate Synchronisierung eines Ergänzungsfeeds für Shopify.",
+          "tags": [
+            "Ergänzungsfeed",
+            "Diagnosen",
+            "Shopify"
+          ],
+          "href": "/platform/fix#merchant-center",
+          "label": "Synchronisierung ansehen"
+        },
+        {
+          "id": "checkout",
+          "title": "Agent-Checkout für WooCommerce",
+          "body": "Ermöglichen Sie unterstützte Abläufe für Agenten über Ihren eigenen Shop und Zahlungsanbieter, mit Checkout-Tests und konfigurierbaren Kontrollen.",
+          "tags": [
+            "Einrichtung",
+            "Tests",
+            "Validator"
+          ],
+          "href": "/platform/sell",
+          "label": "Agent-Checkout ansehen"
+        },
+        {
+          "id": "developers",
+          "title": "API, MCP-Server und CLI",
+          "body": "Nutzen Sie die veröffentlichten Schnittstellen zum Auffinden von Diensten, Abrufen von Tarifen, Verbinden von Shops und Prüfen des Einrichtungsstatus.",
+          "tags": [
+            "REST",
+            "MCP",
+            "CLI"
+          ],
+          "href": "/docs",
+          "label": "Entwicklerdokumentation öffnen"
+        }
+      ]
+    },
+    "proof": {
+      "eyebrow": "08 · Was wir bisher gemessen haben",
+      "title": "Was wir bisher gemessen haben.",
+      "stats": [
+        {
+          "value": "36,797",
+          "title": "Simulierte Käufe",
+          "body": "Über ChatGPT, Claude, Gemini und Perplexity hinweg.",
+          "footnote": "1"
+        },
+        {
+          "value": "2.8×",
+          "title": "So häufig im selben Katalog",
+          "body": "ChatGPT wählte in 51,6 % der Fälle dasselbe Produkt aus; Claude und Gemini jeweils etwa 18,5 %.",
+          "footnote": "1"
+        },
+        {
+          "value": "+12%",
+          "title": "Besuche für DUA Flavours",
+          "body": "Besuche über KI-Assistenten oder Direktzugriffe, April bis Juli 2026. DUA Flavours, ecentic-Pilot, mit Genehmigung veröffentlicht.",
+          "footnote": "2"
+        }
+      ],
+      "study": {
+        "title": "Ein großer Marktplatz für Spirituosen",
+        "body": "88 % von 9.699 Produkten hatten mindestens einen Fehler in den Daten, die Agenten lesen. Auf die Frage, wo zwei vorrätige Flaschen gekauft werden können, nannte ein Agent den Händler in 0 von 20 Fällen.",
+        "note": "Ein anonymisiertes Ergebnis. Eine Momentaufnahme eines einzelnen Katalogs und Fragensets, keine Vorhersage für jeden Store."
+      },
+      "footnotes": [
+        {
+          "marker": "1",
+          "text": "ecentic-Simulationen, 2026. Simulierte Kaufentscheidungen, kein echter Agent-Traffic. Perplexity war Teil des Forschungssets; Store-Scans laufen auf ChatGPT, Claude und Gemini. Die Beschreibung der Methodik ist noch nicht veröffentlicht."
+        },
+        {
+          "marker": "2",
+          "text": "Pilotergebnis, schriftlich von DUA Flavours bestätigt. Besuche, keine Verkäufe. Einschließlich Direktzugriffen und kein Nachweis für durch ecentic verursachte inkrementelle Verkäufe."
+        }
+      ],
+      "pipeline": "Pilotprojekte werden derzeit mit Unternehmen aus dem großen Einzelhandel, der Reisebranche und dem Bereich flexibler Arbeitsplätze abgestimmt."
+    },
+    "procurement": {
+      "eyebrow": "09 · Enterprise",
+      "title": "Bringen Sie die richtigen Fragen in die Sicherheitsprüfung ein.",
+      "items": [
+        {
+          "title": "Sie entscheiden, was veröffentlicht wird.",
+          "body": "Änderungen an Produktangeboten erfordern die von Ihnen gewählte Aktion „Apply“. Strukturierte Daten und die Merchant Center-Synchronisierung haben separate Steuerungen. Die Verbindung mit Shopify installiert zusätzlich das Besuchs-Tracking."
+        },
+        {
+          "title": "Piloten mit öffentlichen Daten.",
+          "body": "Starten Sie mit einem zugänglichen öffentlichen Katalog oder einem unterstützten Feed. Legen Sie den Umfang fest, bevor Systeme verbunden oder Schreibzugriffe gewährt werden."
+        },
+        {
+          "title": "Datenverarbeitung, die Sie prüfen können.",
+          "body": "Prüfen Sie die Datenschutzerklärung und die vom Produkt verwendeten Anbieter. Besprechen Sie die Datenverarbeitungsvereinbarung sowie Deployment- und Vertragsanforderungen für Ihren Piloten."
+        },
+        {
+          "title": "Ein Gründer als Ansprechpartner.",
+          "body": "Ein direkter Austausch mit den Menschen hinter ecentic – von der ersten Kategorie bis zur Auswertung des Piloten."
+        }
+      ],
+      "links": [
+        {
+          "label": "Kontakt aufnehmen",
+          "href": "/demo"
+        },
+        {
+          "label": "Sicherheit und Vertrauen lesen",
+          "href": "/security"
+        }
+      ]
+    },
+    "pricing": {
+      "eyebrow": "10 · Preise",
+      "title": "Kostenlos starten. Skalieren, wenn KI mit einkauft.",
+      "description": "Wählen Sie einen Einstieg, der zu Ihrem Store und Ihrem Team passt.",
+      "items": [
+        {
+          "title": "Kostenloser Store-Check",
+          "body": "Erstellen Sie ein Konto und sehen Sie, wie Ihre Produkte im Vergleich abschneiden.",
+          "href": "/sign-up",
+          "label": "Store kostenlos prüfen"
+        },
+        {
+          "title": "Self-Service-Pläne für einzelne Stores",
+          "body": "Monatliche Pläne oder nutzungsbasierte Abrechnung, mit den aktuellen Limits und Attributionsregeln auf der Seite „Preise“.",
+          "href": "/pricing",
+          "label": "Pläne vergleichen"
+        },
+        {
+          "title": "Enterprise-Piloten, gemeinsam definiert",
+          "body": "Legen Sie Kategorie, Ausgangslage und die Entscheidungen fest, die Ihr Team treffen muss.",
+          "href": "/demo",
+          "label": "Über einen Piloten sprechen"
+        }
+      ],
+      "action": {
+        "label": "Preise ansehen",
+        "href": "/pricing"
+      }
+    },
+    "editorial": {
+      "eyebrow": "11 · Aus dem Team",
+      "title": "Was wir lernen.",
+      "description": "Produktnotizen und praxisnahe Leitfäden vom ecentic-Team.",
+      "loading": "Artikel werden geladen",
+      "empty": "Unsere nächsten Produktnotizen und Leitfäden erscheinen hier.",
+      "read": "Artikel lesen",
+      "links": [
+        {
+          "label": "Ressourcen entdecken",
+          "href": "/resources"
+        }
+      ]
+    },
+    "faq": {
+      "title": "Fragen vor dem Start.",
+      "items": [
+        {
+          "question": "Was macht ecentic?",
+          "answer": "ecentic ist eine Ebene zwischen Ihrem Katalog und den KI-Assistenten, die ihn verkaufen. Es simuliert, wie ChatGPT, Claude und Gemini Produkte vergleichen, hilft bei der Verbesserung der Daten, die sie lesen, und unterstützt Agent-Checkout auf WooCommerce."
+        },
+        {
+          "question": "Welche KI-Assistenten werden unterstützt?",
+          "answer": "Store-Simulationen laufen auf ChatGPT, Claude und Gemini. Das Shopify-Besuchstracking erkennt unterstützte KI-Referral-Signale, darunter ChatGPT, Perplexity, Claude, Gemini und Copilot. Der Checkout hängt von Ihrem Store-Setup und der Eignung der Shopping-Plattform ab. Jede KI-Kanalseite zeigt den aktuellen Status."
+        },
+        {
+          "question": "Ändert ecentic unseren Store ohne Rückfrage?",
+          "answer": "Änderungen an Produktangeboten erfordern die von Ihnen gewählte Aktion „Apply“, die einen Titel und eine Beschreibung erstellt und veröffentlicht. Strukturierte Daten und die Merchant Center-Synchronisierung verwenden separate Steuerungen. Die Verbindung mit Shopify installiert zusätzlich das Besuchs-Tracking-Skript. Das Importieren von Produktinhalten überschreibt diese nicht."
+        },
+        {
+          "question": "Funktioniert es mit unserer Plattform?",
+          "answer": "Shopify und WooCommerce werden direkt verbunden. Andere Plattformen können einen unterstützten XML- oder JSON-Produktfeed oder eine CSV importieren. Die Feed-Unterstützung hängt von der Exportstruktur und den zugeordneten Feldern ab; Feed-Importe schreiben nicht in die ursprüngliche Plattform zurück."
+        },
+        {
+          "question": "Benötigen Sie für einen Piloten Zugriff auf unsere Systeme?",
+          "answer": "Ein Pilot kann mit einem zugänglichen öffentlichen Katalog oder einem unterstützten Produktfeed starten. Wir legen den Umfang gemeinsam mit Ihnen fest, bevor eine Systemintegration oder Schreibzugriff auf den Store erforderlich ist."
+        },
+        {
+          "question": "Wie werden unsere Daten verarbeitet?",
+          "answer": "Die Sicherheitsseite beschreibt den aktuellen Umgang mit Katalogzugriff, Tracking und KI-Anbietern. Prüfen Sie unsere Datenschutzerklärung und die vom Produkt verwendeten Anbieter und stimmen Sie Datenverarbeitung, Deployment- und Vertragsanforderungen vor einem Piloten mit uns ab."
+        },
+        {
+          "question": "Ist das SEO?",
+          "answer": "ecentic konzentriert sich auf die Produktdaten und den Checkout, die KI-Shopping-Assistenten zum Vergleichen und Kaufen verwenden. Die Arbeit kann sich mit Praktiken für strukturierte Daten und Katalogqualität überschneiden, aber die Messungen basieren auf Simulationen, erkannten KI-Referrals und Checkout-Prüfungen statt auf Suchrankings."
+        },
+        {
+          "question": "Was kostet das?",
+          "answer": "Der Store-Check ist mit einem Konto kostenlos. Einzelne Stores können einen monatlichen Plan oder nutzungsbasierte Abrechnung wählen. Die Regeln und Limits für die Performance-Fee-Attribution werden auf der Seite „Preise“ erklärt; Attribution ist kein Nachweis für inkrementelle Verkäufe. Enterprise-Piloten werden gemeinsam mit Ihnen definiert."
+        }
+      ]
+    },
+    "closing": {
+      "title": "Sichern Sie sich den Kaufabschluss, wenn KI den Einkauf übernimmt.",
+      "description": "Finden Sie heraus, ob Ihre Produkte ausgewählt werden.",
+      "actions": [
+        {
+          "label": "Demo buchen",
+          "href": "/demo"
+        },
+        {
+          "label": "Store kostenlos prüfen",
+          "href": "/sign-up"
+        }
+      ]
+    }
+  },
+  "home": {
+    "heroVideo": {
+      "heading": "ecentic in Aktion sehen",
+      "caption": "Produktfilm ansehen",
+      "action": {
+        "primary": "Video abspielen"
+      }
+    }
+  }
+}

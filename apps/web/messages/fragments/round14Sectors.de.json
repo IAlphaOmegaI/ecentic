@@ -1,0 +1,31 @@
+{
+  "round14Sectors": {
+    "introduction": "Sehen Sie, wie eine Kaufanfrage mit den Fakten in einem Produktdatensatz verknüpft ist.",
+    "sample": "Illustrativer Beispiel-Chat mit Produkten.",
+    "questions": "Eine Käuferfrage erkunden",
+    "conversation": "Beispiel-Chat",
+    "shopper": "Käufer",
+    "assistant": "Shopping-Assistent",
+    "assistantIntro": "Ich kann die Anfrage mit den Informationen in diesen Produktangeboten vergleichen. Relevant sind folgende Fakten:",
+    "followUp": "Was können Sie aus dem Produktangebot ableiten?",
+    "inspection": "Beispieldatensätze prüfen",
+    "yourListing": "Ihr Produktangebot",
+    "comparisonListing": "Vergleichsangebot",
+    "sourceFact": "Bereits in der Beispielquelle enthalten",
+    "missing": "Nicht im Produktangebot angegeben",
+    "available": "Im Produktangebot angegeben",
+    "required": "Für diese Frage relevant",
+    "qualification": "Diese Attribute an der Quelle prüfen",
+    "attributesIntro": "Machen Sie die Produktinformationen explizit und prüfen Sie anschließend die Änderung im gemeinsamen Quelldatensatz.",
+    "comparisonIntro": "Dieses Beispiel folgt auf die erste Käuferfrage. Die Darstellung zeigt die vorhandenen Quelldaten vor der untenstehenden Codeänderung.",
+    "sourceHeading": "Die Information aus der Quelle, auf der die Korrektur beruht",
+    "dimensions": {
+      "title": "Prüfen Sie den gesamten Platzbedarf.",
+      "width": "Breite",
+      "depth": "Tiefe",
+      "height": "Höhe",
+      "note": "Schematische Darstellung, nicht maßstabsgetreu. Verwenden Sie die exakten Maße von Produkt, Raum und Zugängen, um zu prüfen, ob es passt."
+    },
+    "assistantFinding": "Im Produktangebot für {product} werden {fields} nicht angegeben. Ich kann diese Anforderungen anhand dieses Produktangebots nicht prüfen. Die Beispielquelle zeigt die Fakten, die explizit angegeben werden müssen."
+  }
+}

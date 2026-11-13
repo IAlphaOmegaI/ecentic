@@ -4,8 +4,11 @@ import { resultify } from "@zenncore/utils";
 import { eq } from "drizzle-orm";
 import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
+import { type AppConfig, createTranslator } from "next-intl";
 import { render } from "react-email";
 import { Resend } from "resend";
+import { localizePath } from "@/i18n/locale";
+import { defaultLocale, isLocale, type Locale } from "@/i18n/locales";
 import { ENTRY_COOKIE, sanitizeRedirect } from "@/lib/redirect";
 import { ResetPasswordEmail } from "@/public/templates/reset-password";
 import { VerifyEmail } from "@/public/templates/verify";
@@ -229,7 +232,11 @@ export const resetPassword = withContext(
 );
 
 export const forgotPassword = withContext(
-  async (context, { email }: { email: string }) => {
+  async (
+    context,
+    { email, locale = defaultLocale }: { email: string; locale?: Locale },
+  ) => {
+    const resolvedLocale = isLocale(locale) ? locale : defaultLocale;
     // Better Auth mails a link to its own `/reset-password/:token` endpoint.
     // That endpoint validates the token and then bounces to `redirectTo`,
     // carrying the token in the query string — so this has to name the page
@@ -239,7 +246,7 @@ export const forgotPassword = withContext(
         await context.auth.requestPasswordReset({
           body: {
             email,
-            redirectTo: "/reset-password",
+            redirectTo: localizePath("/reset-password", resolvedLocale),
           },
         }),
     );
@@ -312,12 +319,17 @@ export const signUp = withContext(
       email: string;
       password: string;
       fullName: string;
+      locale?: Locale;
       company?: string;
       jobTitle?: string;
       source?: string;
     },
   ) => {
     const { name, surname } = parseName(payload.fullName);
+    const locale =
+      payload.locale && isLocale(payload.locale)
+        ? payload.locale
+        : defaultLocale;
 
     const result = await resultify(
       async () =>
@@ -327,7 +339,7 @@ export const signUp = withContext(
             surname,
             email: payload.email,
             password: payload.password,
-            callbackURL: `${process.env.APP_HOST}/verify/success`,
+            callbackURL: `${process.env.APP_HOST}${localizePath("/verify/success", locale)}`,
             role: "user",
             jobTitle: payload.jobTitle,
             company: payload.company,
@@ -379,21 +391,36 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 export const sendVerificationEmail = async ({
   to,
   verificationUrl,
+  locale = defaultLocale,
 }: {
   to: string;
   verificationUrl: string;
+  locale?: Locale;
 }) => {
+  // This module is also imported by the auth proxy. Request-bound next-intl
+  // server helpers would pull next/root-params into middleware.
+  const messages: AppConfig["Messages"] = (
+    await import(`../../../messages/${locale}.json`)
+  ).default;
+  const translate = createTranslator({
+    locale,
+    messages,
+    namespace: "authenticationEmail.verify",
+  });
+  const content = messages.authenticationEmail.verify;
   const html = await render(
     VerifyEmail({
       verificationUrl,
-      userEmail: to,
+      locale,
+      content,
+      requestedFor: translate("requestedFor", { email: to }),
     }),
   );
 
   const result = await resend.emails.send({
     from: process.env.FROM_EMAIL ?? "onboarding@resend.dev",
     to,
-    subject: "Verify your email address",
+    subject: content.subject,
     html,
   });
 
@@ -406,21 +433,36 @@ export const sendVerificationEmail = async ({
 export const sendResetPasswordEmail = async ({
   to,
   resetUrl,
+  locale = defaultLocale,
 }: {
   to: string;
   resetUrl: string;
+  locale?: Locale;
 }) => {
+  // This module is also imported by the auth proxy. Request-bound next-intl
+  // server helpers would pull next/root-params into middleware.
+  const messages: AppConfig["Messages"] = (
+    await import(`../../../messages/${locale}.json`)
+  ).default;
+  const translate = createTranslator({
+    locale,
+    messages,
+    namespace: "authenticationEmail.reset",
+  });
+  const content = messages.authenticationEmail.reset;
   const html = await render(
     ResetPasswordEmail({
       resetUrl,
-      userEmail: to,
+      locale,
+      content,
+      requestedFor: translate("requestedFor", { email: to }),
     }),
   );
 
   const result = await resend.emails.send({
     from: process.env.FROM_EMAIL ?? "onboarding@resend.dev",
     to,
-    subject: "Reset your password",
+    subject: content.subject,
     html,
   });
 

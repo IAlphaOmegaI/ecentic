@@ -1,0 +1,115 @@
+{
+  "dashboard": {
+    "agentic": {
+      "eyebrow": "Einblicke",
+      "title": "Agentic Score",
+      "description": "Wie gut Ihre Storefront für einen KI-Einkaufsagenten nutzbar ist – bewertet von Is Agentic in den Bereichen Auffindbarkeit, Zugänglichkeit, Benutzerfreundlichkeit und Zahlungsprozesse für Agenten.",
+      "sections": {
+        "scan": "01 — Scan",
+        "score": "02 — Punktzahl",
+        "journey": "03 — Agentenaufgabe",
+        "competitors": "04 — Wettbewerber",
+        "checks": "05 — Belege",
+        "methodology": "06 — Methodik"
+      },
+      "scan": {
+        "title": "Scan ausführen",
+        "description": "Jeder Scan analysiert Ihre Live-Storefront. Die Ergebnisse werden hier gespeichert, damit Sie verfolgen können, wie sich der Score verändert.",
+        "action": "Scan ausführen",
+        "running": "Scan läuft …",
+        "starting": "Scan wird gestartet",
+        "progress": "{done} / {total} Prüfungen",
+        "target": "{target} wird gescannt",
+        "lastScanned": "Zuletzt gescannt: {when}.",
+        "never": "Dieser Store wurde noch nicht gescannt.",
+        "blocked": {
+          "running": "Für diesen Shop läuft bereits ein Scan. Er wird hier angezeigt, sobald er abgeschlossen ist.",
+          "cooldown": "Dieser Store wurde vor Kurzem gescannt. Der nächste Scan ist ab {when} verfügbar."
+        },
+        "disclosure": "Scans werden von Is Agentic ausgeführt, einem kostenlosen öffentlichen Dienst von Vercel Labs. Ihre Storefront-Domain wird an is-agentic.com gesendet; keine Kunden- oder Bestelldaten verlassen ecentic.",
+        "disclosureLink": "Is Agentic-Dokumentation",
+        "announceProgress": "Scan zu {percent}% abgeschlossen.",
+        "announceComplete": "Scan abgeschlossen. Score {score} von 100."
+      },
+      "score": {
+        "title": "Ihr aktueller Stand",
+        "description": "Der Score stammt unverändert von Is Agentic. Die Ebenen sind nach ihrer Relevanz für einen Store sortiert.",
+        "scoreLabel": "Agentic Score",
+        "gradeLabel": "Bewertung",
+        "attribution": "Vollständigen Bericht auf is-agentic.com ansehen",
+        "trend": "Score über Ihre Scans hinweg",
+        "fixesTitle": "Optimierungen mit der größten Wirkung",
+        "gain": "+{points}",
+        "gainAria": "{points} Punkte",
+        "layerCounts": "{passed} bestanden · {warning} teilweise · {failed} fehlgeschlagen · {notApplicable} nicht anwendbar",
+        "empty": "Führen Sie Ihren ersten Scan aus, um zu sehen, wie Agenten diesen Shop lesen.",
+        "publicOnly": "Is Agentic hält bereits einen öffentlichen Bericht für diese Domain bereit, mit einer Bewertung von {score} / 100 — {label}. Führen Sie einen Scan aus, um die vollständigen Details zu jeder einzelnen Prüfung abzurufen und den Trend zu verfolgen.",
+        "publicLink": "Öffentlichen Bericht ansehen",
+        "status": {
+          "success": "Stark",
+          "warning": "Verbesserungsbedarf",
+          "error": "Schwach"
+        },
+        "fixesNote": "Diese Liste stammt von Is Agentic und ist nach der Punktzahl sortiert, die jede Korrektur bringt. Punkte zu API-Spezifikationen, SDKs oder Entwicklerportalen gelten für die gesamte Domain, nicht für Ihren Katalog — beginnen Sie mit den Punkten, die ecentic übernehmen kann.",
+        "publicOnlyUnscored": "Is Agentic hält einen Bericht für diese Domain bereit, hat sie aber noch nicht bewertet — {label}. Führen Sie einen Scan aus, um die vollständigen Details zu jeder einzelnen Prüfung abzurufen und den Trend zu verfolgen.",
+        "trendSummary": "{count} Scans seit {since}, von {first} auf {latest} von 100 Punkten."
+      },
+      "journey": {
+        "title": "Was ein Agent tatsächlich getan hat",
+        "description": "Is Agentic schickt einen echten KI-Agenten in diesen Shop und zeichnet den Ablauf auf. Diese Karte dient als unterstützender Nachweis — sie verändert die numerische Bewertung nicht.",
+        "empty": "Für diese Domain liegt noch kein Agentenlauf vor. Er erscheint im Is Agentic-Bericht, sobald ein Durchlauf abgeschlossen ist.",
+        "running": "Ein Agent durchläuft diesen Shop gerade. Die Karte füllt sich währenddessen.",
+        "runningLabel": "In Bearbeitung",
+        "reasoning": "Begründung",
+        "analytics": {
+          "stepLabel": "{count, plural, one {Schritt} other {Schritte}}",
+          "reasoningLabel": "{count, plural, one {Begründungsschritt} other {Begründungsschritte}}",
+          "searchLabel": "{count, plural, one {Suche} other {Suchen}}"
+        },
+        "attribution": "Beobachtete Aufgabe auf is-agentic.com",
+        "verdict": {
+          "satisfied": "Aufgabe erfüllt",
+          "partial": "Teilweise erfüllt",
+          "unsatisfied": "Nicht erfüllt",
+          "not_gradable": "Nicht bewertbar"
+        }
+      },
+      "checks": {
+        "title": "Alle Prüfungen",
+        "description": "Die Nachweise hinter der Bewertung, gruppiert nach Ebenen. Prüfungen, die auf diesen Shop nicht zutreffen, werden mit Begründung zuletzt aufgeführt.",
+        "summary": "{applicable} anwendbar · {failed} zu beheben",
+        "notApplicable": "Diese Prüfung trifft auf Ihren Shop nicht zu.",
+        "remedy": "In ecentic beheben",
+        "empty": "Führen Sie einen Scan aus, um die vollständige Prüfliste zu sehen."
+      },
+      "checkStatus": {
+        "pass": "Bestanden",
+        "warning": "Teilweise",
+        "fail": "Fehlgeschlagen",
+        "error": "Fehler bei der Prüfung",
+        "na": "Nicht anwendbar",
+        "unknown": "Unbekannt"
+      },
+      "competitors": {
+        "title": "So schneiden Wettbewerber ab",
+        "description": "Derselbe Scan wird für die Shops Ihrer ausgewählten Wettbewerber ausgeführt. Jede Domain hat ihre eigene Scan-Wartezeit, daher verbraucht die Prüfung eines Wettbewerbers niemals Ihre eigene.",
+        "action": "Scannen",
+        "scanned": "Zuletzt gescannt: {when}.",
+        "never": "Noch nicht gescannt.",
+        "unscored": "Keine Bewertung",
+        "ahead": "Sie liegen mit {points} vorne",
+        "behind": "Sie liegen mit {points} zurück",
+        "coverage": "{scored} von {total} Shops bewertet",
+        "columnStorefront": "Shop",
+        "columnScanned": "Zuletzt gescannt",
+        "columnScore": "Bewertung",
+        "columnGap": "gegenüber Ihnen",
+        "empty": "Noch keine Shops von Wettbewerbern vorhanden. Fügen Sie Wettbewerber hinzu und ecentic scannt die zugehörigen Domains."
+      },
+      "methodology": {
+        "title": "So funktioniert diese Bewertung",
+        "description": "Die Beschreibung des Bewertungsmodells von Is Agentic, live vom MCP-Server abgerufen."
+      }
+    }
+  }
+}

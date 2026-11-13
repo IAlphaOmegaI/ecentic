@@ -1,0 +1,70 @@
+{
+  "resources": {
+    "tools": {
+      "number": "01",
+      "title": "Quatre outils gratuits pour répondre à quatre questions.",
+      "description": "Mesurez le taux de sélection, vérifiez les protocoles de commerce, trouvez les preuves sources WebMCP ou observez un agent en direct naviguer dans une vitrine. Aucune carte bancaire requise.",
+      "items": [
+        {
+          "number": "Outil 01",
+          "category": "Simulation de taux de victoire",
+          "title": "AI Agent Score Scan",
+          "description": "Lancez une simulation ponctuelle de vos 10 meilleurs produits sur ChatGPT, Claude, Gemini et Perplexity. Identifiez où vous gagnez, où vous perdez et ce qu’il faut corriger en priorité.",
+          "features": [
+            "10 meilleurs produits",
+            "Quatre perspectives de modèles",
+            "Résultats en deux minutes environ"
+          ],
+          "action": {
+            "primary": "Scanner votre boutique gratuitement"
+          }
+        },
+        {
+          "number": "Outil 02",
+          "category": "Vérification de protocole",
+          "title": "UCP Validator",
+          "description": "Vérifiez si une vitrine publie un Universal Commerce Profile valide sur /.well-known/ucp et si les principaux agents d’achat sont autorisés dans robots.txt.",
+          "features": [
+            "Accessibilité du point de terminaison",
+            "Validation du schéma",
+            "Vérification des accès des agents"
+          ],
+          "action": {
+            "primary": "Valider une boutique"
+          }
+        },
+        {
+          "number": "Outil 03",
+          "category": "Bac à sable pour agents",
+          "title": "UCP Playground",
+          "description": "Pilotez un véritable agent d’achat IA sur n’importe quelle vitrine compatible UCP. Recherchez dans les catalogues, créez des paniers, lancez le paiement et inspectez chaque appel d’outil.",
+          "features": [
+            "Recherche et consultation du catalogue",
+            "Opérations sur le panier",
+            "{count} messages gratuits sans compte"
+          ],
+          "action": {
+            "primary": "Ouvrir l’espace d’expérimentation"
+          }
+        },
+        {
+          "number": "Outil 04",
+          "category": "Audit du parcours d'achat",
+          "title": "Scanner WebMCP",
+          "description": "Examinez WebMCP sur huit opérations de boutique, de la recherche produit et de la sélection de variantes jusqu’aux paniers, transferts vers le paiement et commandes. Obtenez des preuves issues des sources et des correctifs concrets pour vos parcours d’achat.",
+          "features": [
+            "Huit parcours d’achat",
+            "Correctifs concrets appuyés par les sources",
+            "Aucun compte requis"
+          ],
+          "action": {
+            "primary": "Auditer les outils d’achat"
+          }
+        }
+      ]
+    },
+    "meta": {
+      "description": "Ressources gratuites ecentic pour les marchands et les développeurs : AI Agent Score Scan, UCP Validator, scanner WebMCP, UCP Playground, guides et API publiques pour agents."
+    }
+  }
+}

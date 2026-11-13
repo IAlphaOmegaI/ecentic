@@ -1,0 +1,11 @@
+{
+  "blogTagPage": {
+    "collection": "Collection de lecture",
+    "description": "Guides et recherches sur {topic}, issus du journal ecentic.",
+    "latestArticle": "Commencer par le dernier article",
+    "takeaways": "Dans cet article",
+    "moreArticles": "Continuer la lecture",
+    "relatedTopics": "Explorer un sujet associé",
+    "relatedDescription": "Explorez les sujets liés à cette collection."
+  }
+}

@@ -1021,10 +1021,13 @@ export const blogPost = pgTable(
   {
     id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
     slug: text("slug").notNull(),
-    /** UI / content locale (`en` | `es`). Same slug may exist per locale. */
+    /** Supported UI/content locale. Same slug may exist per locale. */
     locale: text("locale").notNull().default("en"),
     /** Origin of the row: editorial seed (`local`) or BabyLoveGrowth (`blg`). */
-    source: text("source").$type<"local" | "blg">().notNull().default("local"),
+    source: text("source")
+      .$type<"local" | "blg" | "repo">()
+      .notNull()
+      .default("local"),
     /** BabyLoveGrowth article id when `source = 'blg'`. */
     externalId: text("externalId"),
     status: text("status").notNull().default("published"),
@@ -1083,6 +1086,52 @@ export const blogPost = pgTable(
  * at checkout time so order lifecycle events can be fanned out long after the
  * checkout session itself has expired.
  */
+/** Durable, non-public translation checkpoints; published articles remain untouched until complete. */
+export const blogTranslation = pgTable(
+  "blog_translation",
+  {
+    id: text("id").primaryKey().default(sql`gen_random_uuid()::text`),
+    slug: text("slug").notNull(),
+    locale: text("locale").notNull(),
+    sourceHash: text("sourceHash").notNull(),
+    policyVersion: text("policyVersion").notNull(),
+    status: text("status").notNull().default("pending"),
+    completedUnits: jsonb("completedUnits")
+      .$type<Record<string, string>>()
+      .notNull()
+      .default({}),
+    blockedUnits: jsonb("blockedUnits")
+      .$type<
+        Record<
+          string,
+          {
+            text: string;
+            findings: readonly { id: string; pass: string; message: string }[];
+          }
+        >
+      >()
+      .notNull()
+      .default({}),
+    totalUnits: integer("totalUnits").notNull().default(0),
+    attempts: integer("attempts").notNull().default(0),
+    availableAt: timestamp("availableAt", { mode: "date" })
+      .notNull()
+      .defaultNow(),
+    lockedUntil: timestamp("lockedUntil", { mode: "date" }),
+    lease: text("lease"),
+    error: text("error"),
+    createdAt: timestamp("createdAt", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updatedAt", { mode: "date" }).notNull().defaultNow(),
+  },
+  (table) => [
+    uniqueIndex("blog_translation_slug_locale_unique").on(
+      table.slug,
+      table.locale,
+    ),
+    index("blog_translation_drain_idx").on(table.status, table.availableAt),
+  ],
+);
+
 export const ucpOrder = pgTable(
   "ucp_order",
   {
@@ -1177,6 +1226,7 @@ export const tables = {
   attributedConversion,
   agentApiKey,
   blogPost,
+  blogTranslation,
   dealRedemption,
   ucpOrder,
 };
@@ -1394,6 +1444,7 @@ export const relations = defineRelations(tables, (r) => ({
     }),
   },
   blogPost: {},
+  blogTranslation: {},
   dealRedemption: {},
   ucpOrder: {
     store: r.one.store({

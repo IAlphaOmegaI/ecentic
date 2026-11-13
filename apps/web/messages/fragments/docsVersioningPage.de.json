@@ -1,0 +1,39 @@
+{
+  "docsVersioningPage": {
+    "current": "Aktuelle API-Version",
+    "request": "Fixierte Anfrage- und Antwortversion",
+    "additive": "Zur selben Version hinzufügen",
+    "breaking": "Neuen Versionspfad starten",
+    "notice": "Mindestankündigungsfrist",
+    "days": "Tage",
+    "example": "Format des Deprecation-Headers",
+    "exampleHint": "Beispielhafte Header-Werte, keine Ankündigung zur Abschaltung.",
+    "apiContract": "ecentic API-Vertrag",
+    "protocolContract": "Discovery-Protokollvertrag",
+    "protocolVersion": "Version im Dokument lesen",
+    "lifecycle": {
+      "label": "Antwortsignale zur Abkündigung",
+      "hint": "Wählen Sie einen Header aus, um zu sehen, was er Ihrem Client mitteilt.",
+      "items": [
+        {
+          "header": "Deprecation",
+          "title": "Eine Version wird abgekündigt",
+          "description": "Jede Antwort einer abgekündigten Version enthält diesen Header. Er kündigt die Abkündigung gemäß RFC 9745 an.",
+          "meaning": "Abkündigung angekündigt"
+        },
+        {
+          "header": "Sunset",
+          "title": "Ein Abschaltdatum steht fest",
+          "description": "Sobald ein Abschaltdatum feststeht, enthalten Antworten zusätzlich diesen Header. RFC 8594 definiert das Datum, an dem die Version nicht mehr antwortet.",
+          "meaning": "Abschaltdatum angekündigt"
+        },
+        {
+          "header": "Link",
+          "title": "Die Ersatzversion ist angegeben",
+          "description": "Zusammen mit dem Abschaltdatum verweist ein Link mit rel=\"successor-version\" Ihren Client auf die Ersatzversion.",
+          "meaning": "Ersatzversion verlinkt"
+        }
+      ]
+    }
+  }
+}

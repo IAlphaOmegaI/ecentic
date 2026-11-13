@@ -1,0 +1,9 @@
+{
+  "foodPage": {
+    "description": "Wählen Sie eine Frage zum Einkauf aus und sehen Sie, welche Angaben aus der Quelle Ihr Team prüfen sollte.",
+    "choose": "Frage eines Käufers auswählen",
+    "facts": "Zu prüfende Fakten",
+    "source": "Beginnen Sie mit den Informationen auf der Verpackung.",
+    "allFacts": "Alle sechs Prüfungen der Produktdaten entdecken"
+  }
+}

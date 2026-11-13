@@ -1,0 +1,60 @@
+{
+  "interactiveReplay": {
+    "title": "Verfolgen Sie eine simulierte Entscheidung.",
+    "description": "Sehen Sie, wie ein Agent zwei Produktangebote für Bürostühle vergleicht, fehlende Informationen erkennt und den Vergleich erneut ausführt.",
+    "sample": "Beispiel mit Beispieldaten",
+    "rail": "Simulierte Kaufentscheidung",
+    "controls": {
+      "play": "Abspielen",
+      "pause": "Pausieren",
+      "previous": "Zurück",
+      "next": "Weiter"
+    },
+    "stages": {
+      "question": "Die Frage",
+      "listings": "Zwei Produktangebote",
+      "fields": "Was der Agent liest",
+      "pick": "Die Auswahl",
+      "fix": "Fakten ergänzen",
+      "rerun": "Der erneute Durchlauf"
+    },
+    "question": "Welcher Bürostuhl eignet sich für größere Erwachsene und kostet weniger als $400?",
+    "questionLabel": "Eine Käuferin oder ein Käufer fragt",
+    "questionNote": "Diese Wiedergabe zeigt eine erfundene Kaufentscheidung. Sie misst keinen Live-Traffic von KI-Systemen.",
+    "listingNote": "Der Anbieter nennt den Bereich der Sitzhöhe und die maximale Belastbarkeit. Diese Angaben fehlen in Ihrem verglichenen Produktangebot.",
+    "reading": "Wird geprüft",
+    "missingReading": "Ihr Produktangebot enthält diese Angabe nicht.",
+    "presentReading": "Beide Produktangebote enthalten diese Angabe.",
+    "fieldsNote": "Der Agent prüft die Felder einzeln. Eine fehlende Angabe bleibt als „Nicht angegeben“ sichtbar.",
+    "pickLabel": "Beispielauswahl: das Produktangebot eines Wettbewerbers",
+    "pickReason": "Der Wettbewerber nennt den Bereich der Sitzhöhe und die maximale Belastbarkeit, sodass der Agent prüfen kann, ob diese Anforderungen erfüllt sind.",
+    "fixNote": "Ergänzen Sie die vorhandenen Spezifikationen des Anbieters im verglichenen Produktangebot. Es werden keine Spezifikationen erfunden, und dieses Beispiel ändert nichts in einem Shop.",
+    "rerunLabel": "Beispiel eines erneuten Durchlaufs: Ihr Produktangebot",
+    "rerunReason": "Da beide Spezifikationen angegeben sind, wählt dieser Beispiel-Agent aus den beiden Produktangeboten Ihren günstigeren Stuhl aus.",
+    "outcomeNote": "Diese geänderte Auswahl dient nur zur Veranschaulichung. Eine reale Simulation kann zu einem anderen Ergebnis kommen.",
+    "listing": {
+      "own": "Ihr Produktangebot",
+      "rival": "Produktangebot eines Wettbewerbers",
+      "ownTitle": "Ergonomischer Bürostuhl",
+      "rivalTitle": "Verstellbarer Bürostuhl"
+    },
+    "fields": {
+      "price": "Preis",
+      "seatHeight": "Bereich der Sitzhöhe",
+      "capacity": "Maximale Belastbarkeit",
+      "variants": "Farbvarianten"
+    },
+    "units": {
+      "centimeters": "cm",
+      "kilograms": "kg",
+      "variants": "Farben"
+    },
+    "comparison": {
+      "present": "Angegeben",
+      "missing": "Nicht angegeben",
+      "meets": "Erfüllt die Anforderung",
+      "doesNotMeet": "Erfüllt sie nicht",
+      "required": "In diesem Schritt gelesen"
+    }
+  }
+}

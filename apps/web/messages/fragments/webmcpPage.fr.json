@@ -1,0 +1,26 @@
+{
+  "webmcpPage": {
+    "scope": {
+      "title": "Examen détaillé du code source de la vitrine",
+      "description": "Suivez les déclarations, inspectez leurs métadonnées, puis vérifiez ce que le navigateur doit encore valider.",
+      "pages": "Pages publiques, au maximum",
+      "scripts": "Scripts ou modules externes, au maximum",
+      "runtime": "L’enregistrement et l’exécution dans le navigateur ne sont pas vérifiés."
+    },
+    "checks": {
+      "title": "Comprenez ce que chaque vérification vous indique.",
+      "description": "Sept vérifications distinguent les éléments trouvés dans le code source, les pistes d’amélioration et les éléments qui nécessitent encore un navigateur.",
+      "workflowsTitle": "Tout au long du parcours d’achat",
+      "workflowsNote": "Ces huit parcours constituent des zones d’examen utiles. Une boutique n’a pas besoin d’exposer chacun d’eux via WebMCP.",
+      "items": {
+        "discovery": "Les déclarations nommées sont récupérées à partir des formulaires HTML ou du code d’enregistrement. Une simple référence API ne permet pas d’identifier l’inventaire des outils disponibles.",
+        "metadata": "Examinez les noms d’outils, les descriptions et les éventuels doublons de noms sur une même page. Les descriptions courtes constituent une recommandation de qualité, pas un échec du protocole.",
+        "parameters": "Inspectez les noms d’entrée récupérables, les types, les descriptions et les états requis. Un outil sans paramètre peut omettre son schéma d’entrée ; les schémas dynamiques peuvent rester non résolus.",
+        "implementation": "Le code source peut révéler un gestionnaire déclaré ou une opération de formulaire. Le scanner n’exécute pas le gestionnaire, n’envoie pas le formulaire et ne confirme pas son comportement.",
+        "forms": "Les formulaires publics peuvent révéler des opportunités d’adoption. Vérifiez d’abord les outils existants et préservez la validation et le consentement du formulaire ; les parcours sensibles nécessitent une revue manuelle.",
+        "coverage": "Le rapport maintient visibles les ressources bloquées, les échecs et les limites du scan. Les pages non visitées, les parcours authentifiés et le code généré à l’exécution peuvent se trouver hors du périmètre inspecté.",
+        "runtime": "Cette vérification reste inconnue. Confirmez séparément l’enregistrement natif et le comportement dans un navigateur compatible WebMCP ; les éléments trouvés dans le code source ne peuvent pas certifier l’usage par des agents."
+      }
+    }
+  }
+}

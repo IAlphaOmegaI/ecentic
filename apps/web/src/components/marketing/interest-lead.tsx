@@ -13,6 +13,7 @@ import {
 import type { AppConfig } from "next-intl";
 import { lazy, Suspense, useRef, useState } from "react";
 import { fonts } from "@/components/marketing/fonts";
+import type { Locale } from "@/i18n/locales";
 
 const LazyLeadForm = lazy(() =>
   import("./lead-form").then((module) => ({ default: module.LeadForm })),
@@ -97,7 +98,7 @@ export namespace InterestLead {
     triggerLabel?: string;
     triggerColor?: Button.Props["color"];
     triggerVariant?: Button.Props["variant"];
-    locale: "en" | "es";
+    locale: Locale;
     copy: AppConfig["Messages"]["enterpriseLead"];
   };
 }

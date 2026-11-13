@@ -4,6 +4,7 @@ import { APIError } from "better-auth/api";
 import { nextCookies } from "better-auth/next-js";
 import { genericOAuth } from "better-auth/plugins";
 import { cookies } from "next/headers";
+import { localeFromAuthLink } from "@/i18n/auth-locale";
 import * as Authentication from "@/server/app/authentication";
 import { verifyHmac } from "@/server/app/integration/shopify/hmac";
 import { db, schema } from "@/server/database";
@@ -158,19 +159,21 @@ export const auth = betterAuth({
     // (`RESET_PASSWORD_DISABLED`), so the whole forgot-password flow hangs on
     // it. `url` already points at Better Auth's own `/reset-password/:token`
     // endpoint, which validates the token before handing off to our page.
-    sendResetPassword: async ({ user, url }) => {
+    sendResetPassword: async ({ user, url }, request) => {
       void Authentication.sendResetPasswordEmail({
         to: user.email,
         resetUrl: url,
+        locale: localeFromAuthLink(url, request?.headers),
       });
     },
   },
   emailVerification: {
     autoSignInAfterVerification: true,
-    sendVerificationEmail: async ({ user, url }) => {
+    sendVerificationEmail: async ({ user, url }, request) => {
       void Authentication.sendVerificationEmail({
         to: user.email,
         verificationUrl: url,
+        locale: localeFromAuthLink(url, request?.headers),
       });
     },
   },

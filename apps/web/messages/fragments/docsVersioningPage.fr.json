@@ -1,0 +1,39 @@
+{
+  "docsVersioningPage": {
+    "current": "Version actuelle de l’API",
+    "request": "Version de requête et de réponse fixée",
+    "additive": "Ajouter à la même version",
+    "breaking": "Créer un nouveau chemin de version",
+    "notice": "Préavis minimal",
+    "days": "jours",
+    "example": "Format de l’en-tête de dépréciation",
+    "exampleHint": "Valeurs d’en-tête fournies à titre d’exemple, pas comme annonce de retrait.",
+    "apiContract": "Contrat d’API ecentic",
+    "protocolContract": "Contrat du protocole de découverte",
+    "protocolVersion": "Lire la version dans le document",
+    "lifecycle": {
+      "label": "Signaux de réponse de dépréciation",
+      "hint": "Sélectionnez un en-tête pour voir ce qu’il indique à votre client.",
+      "items": [
+        {
+          "header": "Deprecation",
+          "title": "Une version est dépréciée",
+          "description": "Chaque réponse provenant d’une version dépréciée inclut cet en-tête. Il annonce la dépréciation conformément à la RFC 9745.",
+          "meaning": "Dépréciation annoncée"
+        },
+        {
+          "header": "Sunset",
+          "title": "Une date de retrait est fixée",
+          "description": "Les réponses incluent également cet en-tête lorsqu’une date de retrait est fixée. La RFC 8594 définit la date à laquelle la version cesse de répondre.",
+          "meaning": "Date de retrait annoncée"
+        },
+        {
+          "header": "Link",
+          "title": "La version de remplacement est identifiée",
+          "description": "En plus de la date de retrait, un Link avec rel=\"successor-version\" oriente votre client vers la version de remplacement.",
+          "meaning": "Version de remplacement liée"
+        }
+      ]
+    }
+  }
+}

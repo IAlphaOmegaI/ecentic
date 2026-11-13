@@ -1,0 +1,12 @@
+{
+  "round16Woo": {
+    "title": "Trouvez l’étape qui bloque le paiement.",
+    "passed": "Le produit atteint le paiement",
+    "blocker": "Le blocage",
+    "change": "La modification dans cet exemple",
+    "continues": "Une fois l’exigence corrigée"
+  },
+  "commerceFigures": {
+    "wooMark": "Le logo Woo sous forme de sculpture linéaire en volume ; pointez une lettre pour la soulever."
+  }
+}

@@ -38,6 +38,52 @@ const STRUCTURE = {
     introduction: "Introducción",
     article: "Artículo",
   },
+  fr: {
+    skip: new Set([
+      "table des matières",
+      "sommaire",
+      "recommandé",
+      "recommandations",
+    ]),
+    takeaways: /^(points? clés?|à retenir|principaux enseignements)$/i,
+    faq: /^(faq|foire aux questions|questions fréquentes)/i,
+    editorialFaq: /(faq|foire aux questions|questions fréquentes)/i,
+    introduction: "Introduction",
+    article: "Article",
+  },
+  de: {
+    skip: new Set(["inhaltsverzeichnis", "empfohlen", "empfehlungen"]),
+    takeaways:
+      /^(das wichtigste|wichtigste erkenntnisse|wichtige erkenntnisse|auf einen blick|kernaussagen)$/i,
+    faq: /^(faq|häufig gestellte fragen|häufige fragen)/i,
+    editorialFaq: /(faq|häufig gestellte fragen|häufige fragen)/i,
+    introduction: "Einleitung",
+    article: "Artikel",
+  },
+  it: {
+    skip: new Set(["indice", "sommario", "consigliati", "consigliato"]),
+    takeaways: /^(punti chiave|concetti chiave|in sintesi)$/i,
+    faq: /^(faq|domande frequenti)/i,
+    editorialFaq: /(faq|domande frequenti)/i,
+    introduction: "Introduzione",
+    article: "Articolo",
+  },
+  ja: {
+    skip: new Set(["目次", "おすすめ", "関連記事"]),
+    takeaways: /^(要点|重要なポイント|主なポイント|まとめ)$/,
+    faq: /^(FAQ|よくある質問|よく寄せられる質問)/i,
+    editorialFaq: /(FAQ|よくある質問|よく寄せられる質問)/i,
+    introduction: "はじめに",
+    article: "記事",
+  },
+  "zh-CN": {
+    skip: new Set(["目录", "推荐", "推荐阅读", "相关文章"]),
+    takeaways: /^(要点|关键要点|核心要点|重点摘要)$/,
+    faq: /^(FAQ|常见问题|常见问答)/i,
+    editorialFaq: /(FAQ|常见问题|常见问答)/i,
+    introduction: "简介",
+    article: "文章",
+  },
 } as const satisfies Record<
   Locale,
   {

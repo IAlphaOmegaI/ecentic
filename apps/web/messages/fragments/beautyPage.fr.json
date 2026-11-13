@@ -1,0 +1,28 @@
+{
+  "beautyPage": {
+    "record": {
+      "label": "Explorer une question d’acheteur",
+      "tabs": [
+        "Hydratant",
+        "Protection solaire",
+        "Shampooing"
+      ],
+      "question": "Le besoin de l’acheteur",
+      "facts": "Informations produit à vérifier",
+      "claim": {
+        "title": "Allégation sur le produit fini",
+        "body": "Vérifiez l’allégation à partir des preuves correspondant exactement au produit fini."
+      }
+    },
+    "evidence": {
+      "label": "Conservez les mêmes informations du packaging à la fiche produit",
+      "steps": [
+        "Packaging produit",
+        "Éléments justificatifs",
+        "Description publiée"
+      ],
+      "claims": "Allégations et preuves",
+      "protection": "Protection testée"
+    }
+  }
+}

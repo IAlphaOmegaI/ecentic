@@ -1,0 +1,19 @@
+{
+  "interactiveFee": {
+    "eyebrow": "Estimation des coûts",
+    "title": "Découvrez le coût possible du paiement à l’usage.",
+    "orders": "Commandes attribuées à l’IA par mois",
+    "amount": "Valeur moyenne des commandes (USD)",
+    "invalidOrders": "Saisissez un nombre entier de commandes, égal ou supérieur à zéro.",
+    "invalidAmount": "Saisissez un montant en USD avec jusqu’à deux décimales.",
+    "invalid": "Saisissez des valeurs valides et non négatives pour voir une estimation.",
+    "privacy": "Rien de ce que vous saisissez n’est enregistré.",
+    "result": "Frais mensuels estimés",
+    "staticExample": "Une commande d’une valeur de {order} entraîne des frais de {fee}.",
+    "formula": "Pour chaque commande attribuée à l’IA, les frais représentent {rate}% de sa valeur, arrondis au centime. Le total mensuel est plafonné à {cap}.",
+    "cheaper": "Prix mensuel inférieur :",
+    "tie": "Même prix mensuel :",
+    "noCheaper": "Avec ces valeurs, le paiement à l’usage offre le prix mensuel le plus bas.",
+    "qualification": "Cette estimation utilise le montant moyen de vos commandes. Les frais réels sont calculés commande par commande et les conditions du compte peuvent différer. Comparez les fonctionnalités et les limites des offres avant de choisir."
+  }
+}

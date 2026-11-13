@@ -1,0 +1,113 @@
+{
+  "commerceFigures": {
+    "sofa": "Illustration: ein Zweisitzer-Sofa. Zeigen Sie auf ein Kissen, um es anzuheben und den Bezug zu prüfen.",
+    "headphones": "Illustration: Over-Ear-Kopfhörer. Zeigen Sie auf eine Ohrmuschel, um sie anzuheben und die Polsterung zu prüfen.",
+    "lipstick": "Illustration: ein Lippenstift ohne Kappe. Zeigen Sie auf den Lippenstift oder die Kappe, um ihn bzw. sie anzuheben und zu prüfen.",
+    "custom": {
+      "inspecting": "Wird geprüft"
+    },
+    "partReadouts": {
+      "sofa": [
+        {
+          "value": "Kissen 1",
+          "label": "Linkes Kissen"
+        },
+        {
+          "value": "Kissen 2",
+          "label": "Rechtes Kissen"
+        }
+      ],
+      "headphones": [
+        {
+          "value": "linke Muschel",
+          "label": "Linke Ohrmuschel"
+        },
+        {
+          "value": "rechte Muschel",
+          "label": "Rechte Ohrmuschel"
+        }
+      ],
+      "lipstick": [
+        {
+          "value": "Lippenstift",
+          "label": "Lippenstiftmine"
+        },
+        {
+          "value": "Kappe",
+          "label": "Lippenstiftkappe"
+        }
+      ],
+      "wellnessBottle": [
+        {
+          "value": "Deckel",
+          "label": "Flaschendeckel"
+        },
+        {
+          "value": "Kapsel",
+          "label": "Kapsel"
+        }
+      ],
+      "wineBottle": [
+        {
+          "value": "Korken",
+          "label": "Korken"
+        },
+        {
+          "value": "Flasche",
+          "label": "Weinflasche"
+        },
+        {
+          "value": "Etikett",
+          "label": "Flaschenetikett"
+        }
+      ],
+      "packagedFood": [
+        {
+          "value": "Versiegelung",
+          "label": "Versiegelung der Verpackung"
+        },
+        {
+          "value": "Standbeutel",
+          "label": "Standbeutel"
+        },
+        {
+          "value": "Sichtfenster",
+          "label": "Zutatenfenster"
+        }
+      ],
+      "sneaker": [
+        {
+          "value": "Sohle",
+          "label": "Sohle"
+        },
+        {
+          "value": "Obermaterial",
+          "label": "Obermaterial"
+        },
+        {
+          "value": "Schnürsenkel",
+          "label": "Schnürsenkel"
+        }
+      ],
+      "suitcase": [
+        {
+          "value": "Griff",
+          "label": "Griff"
+        },
+        {
+          "value": "Schale",
+          "label": "Schale"
+        },
+        {
+          "value": "Rollen",
+          "label": "Rollen"
+        }
+      ]
+    },
+    "wellnessBottle": "Illustration: eine Wellnessflasche und eine Kapsel. Zeigen Sie auf den Deckel oder die Kapsel, um das Element anzuheben und zu betrachten.",
+    "wineBottle": "Illustration: eine Weinflasche mit Korken und Etikett. Zeigen Sie auf einen Bereich, um ihn anzuheben und zu betrachten.",
+    "packagedFood": "Illustration: ein Lebensmittelbeutel mit Versiegelung und Zutatenfenster. Zeigen Sie auf einen Bereich, um ihn anzuheben und zu betrachten.",
+    "sneaker": "Illustration: ein Sneaker mit abgerundeter Sohle, Obermaterial und Schnürsenkeln. Zeigen Sie auf einen Bereich, um ihn anzuheben und zu betrachten.",
+    "suitcase": "Illustration: ein Rollkoffer mit ausziehbarem Griff. Zeigen Sie auf einen Bereich, um ihn anzuheben und zu betrachten."
+  }
+}

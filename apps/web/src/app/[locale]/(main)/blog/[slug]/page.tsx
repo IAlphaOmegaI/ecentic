@@ -1,18 +1,17 @@
 import { unwrapResult } from "@zenncore/utils";
-import { readingTimeMinutes } from "babylovegrowth-next-js-blog";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { JsonLd } from "@/components/json-ld";
 import { localizePath } from "@/i18n/locale";
-import type { Locale } from "@/i18n/routing";
-import { routing } from "@/i18n/routing";
+import { localeMetadata } from "@/i18n/locales";
 import {
   hasFaqSection,
   isFaqSectionTitle,
   splitBlogHtmlByH2,
 } from "@/lib/blog-html";
 import { blogImage } from "@/lib/blog-image";
+import { blogDate, blogReadingMinutes } from "@/lib/blog-locale";
 import {
   absoluteUrl,
   brandedTitle,
@@ -30,20 +29,15 @@ const normalize = (value: Date | string) => {
   return new Date(value.includes("T") ? value : `${value}T00:00:00Z`);
 };
 
-const formatBlogDate = (value: Date | string, locale: Locale) =>
-  new Intl.DateTimeFormat(locale === "es" ? "es-ES" : "en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-    timeZone: "UTC",
-  }).format(normalize(value));
-
 const toBlogIsoDate = (value: Date | string) => normalize(value).toISOString();
 
-const languageAlternates = (slug: string) => ({
-  en: `/blog/${slug}`,
-  es: `/es/blog/${slug}`,
-});
+const languageAlternates = async (slug: string) =>
+  Object.fromEntries(
+    (await Blog.listPublishedLocales(slug)).map((locale) => [
+      locale,
+      localizePath(`/blog/${slug}`, locale),
+    ]),
+  );
 
 /**
  * A title tag is not an H1. Where the headline we want on the page is longer
@@ -56,9 +50,7 @@ const BLOG_TITLE_TAGS: Record<string, Record<string, string>> = {
   },
 };
 
-// Keyed on the row's own locale rather than the requested one: a /es page
-// falling back to the stored EN row must not advertise a title its body never
-// uses, and a real ES row later just falls through to its own headline.
+// Reviewed editorial title-tag overrides apply only to their authored locale.
 const blogTitleTag = (post: { slug: string; title: string; locale: string }) =>
   brandedTitle(BLOG_TITLE_TAGS[post.slug]?.[post.locale] ?? post.title);
 
@@ -66,15 +58,14 @@ type BlogPageProps = {
   params: Promise<{ slug: string }>;
 };
 
-export const generateStaticParams = async () => {
-  const slugs = await Blog.listCatalogSlugs();
-  // Prerender every post in every locale. Bodies come from stored
-  // `blog_post` rows (BLG webhook upserts EN + ES); missing locale falls
-  // back in `Blog.resolve` and regenerates after `revalidateTag("blog")`.
-  return routing.locales.flatMap((locale) =>
-    slugs.map((slug) => ({ locale, slug })),
-  );
-};
+export const generateStaticParams = async ({
+  params,
+}: {
+  params: { locale: string };
+}) =>
+  (await Blog.listPublishedPaths())
+    .filter((entry) => entry.locale === params.locale)
+    .map(({ slug }) => ({ slug }));
 
 export const generateMetadata = async ({
   params,
@@ -102,12 +93,12 @@ export const generateMetadata = async ({
     keywords: [...post.tags],
     alternates: {
       canonical: path,
-      languages: languageAlternates(post.slug),
+      languages: await languageAlternates(post.slug),
     },
     openGraph: {
       type: "article",
       url: `https://ecentic.ai${path}`,
-      locale: locale === "es" ? "es_ES" : "en_US",
+      locale: localeMetadata[locale].openGraphLocale,
       title: `${post.title} | ecentic`,
       description: post.description,
       publishedTime: toBlogIsoDate(post.publishedAt),
@@ -140,8 +131,7 @@ export default async ({ params }: BlogPageProps) => {
   const post = resolved.post;
   const path = localizePath(`/blog/${post.slug}`, locale);
 
-  // Answers are stored in the row's own language, so a /es page falling back to
-  // the English row publishes English answers — the same ones it renders.
+  // Stored answers and visible article content use the requested locale.
   const faqSchema = post.faqs.length > 0 ? [createFaqSchema(post.faqs)] : [];
   const thumbnail = post.thumbnailUrl ? blogImage(post.thumbnailUrl) : null;
 
@@ -187,7 +177,7 @@ export default async ({ params }: BlogPageProps) => {
   };
 
   const breadcrumbSchema = createBreadcrumbSchema([
-    { name: "Blog", path: localizePath("/blog", locale) },
+    { name: translate("title"), path: localizePath("/blog", locale) },
     { name: post.title, path },
   ]);
 
@@ -215,9 +205,8 @@ export default async ({ params }: BlogPageProps) => {
   );
 
   if (post.contentHtml) {
-    const minutes = Math.max(1, readingTimeMinutes(post.contentHtml));
-    // Classify against the body's own language: a /es page falling back to the
-    // stored EN row still carries English headings.
+    const minutes = blogReadingMinutes(post.contentHtml, locale);
+    // Classify translated body headings without adding a duplicate FAQ block.
     const sections = splitBlogHtmlByH2(post.contentHtml, post.locale);
     // Newer BabyLoveGrowth articles end in their own FAQ block; the stored
     // pairs are that same block, so rendering them again would print it twice.
@@ -229,8 +218,8 @@ export default async ({ params }: BlogPageProps) => {
         title={post.title}
         meta={
           <p>
-            {translate("published")}: {formatBlogDate(post.publishedAt, locale)}{" "}
-            · {translate("minRead", { minutes })}
+            {translate("published")}: {blogDate(post.publishedAt, locale)} ·{" "}
+            {translate("minRead", { minutes: String(minutes) })}
           </p>
         }
         description={post.description}
@@ -275,8 +264,15 @@ export default async ({ params }: BlogPageProps) => {
       title={post.title}
       meta={
         <p>
-          {translate("published")}: {formatBlogDate(post.publishedAt, locale)} ·{" "}
-          {post.readTime}
+          {translate("published")}: {blogDate(post.publishedAt, locale)} ·{" "}
+          {translate("minRead", {
+            minutes: String(
+              blogReadingMinutes(
+                post.sections.map((section) => section.content).join("\n"),
+                locale,
+              ),
+            ),
+          })}
         </p>
       }
       description={post.description}

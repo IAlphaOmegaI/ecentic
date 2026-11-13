@@ -1,0 +1,234 @@
+{
+  "enterpriseRecovery": {
+    "api": {
+      "meta": {
+        "title": "API-Referenz | ecentic",
+        "description": "Lesen Sie die aktuelle ecentic OpenAPI-Referenz: REST-Endpunkte, MCP, Discovery, Parameter, Antwortschemas und Authentifizierung."
+      },
+      "eyebrow": "Entwickler / API-Referenz",
+      "title": "Die API direkt aus der Quelle.",
+      "description": "Anfrage- und Antwortdefinitionen werden aus derselben Quelle wie /openapi.json gerendert. Der Schematext ist die maßgebliche Quelle auf Englisch. Diese Referenz sendet keine Anfragen.",
+      "actions": [
+        {
+          "label": "Entwicklerdokumentation",
+          "href": "/docs"
+        },
+        {
+          "label": "OpenAPI-JSON herunterladen",
+          "href": "https://ecentic.ai/openapi.json"
+        }
+      ],
+      "sections": [
+        {
+          "id": "api-reference",
+          "title": "Endpunkte",
+          "description": "Wählen Sie eine Methode und einen Pfad aus, um Parameter, Anfrageinhalt, Sicherheitsanforderungen und Antworten zu prüfen."
+        },
+        {
+          "id": "api-schemas",
+          "title": "Gemeinsame Schemas",
+          "description": "Wiederverwendbare Definitionen, auf die die oben genannten Endpunkte verweisen."
+        },
+        {
+          "id": "api-auth",
+          "title": "Sicherheitsschemata",
+          "description": "Jede Operation definiert ihre eigenen Sicherheitsanforderungen. Die Quelldefinition unten benennt die verfügbaren Schemata."
+        }
+      ],
+      "operationNames": {
+        "getApiV1Index": "Öffentlicher Agent-API-Index",
+        "getApiV1Health": "Servicestatus",
+        "getApiV1Discovery": "Protokoll- und Dokument-Discovery",
+        "getApiV1Plans": "Plankatalog",
+        "getApiV1Skills": "Agent-Fähigkeiten",
+        "getApiV1News": "Neuigkeiten",
+        "getApiV1Onboarding": "Agent-Onboarding",
+        "getApiV1Sandbox": "Sandbox-Funktionen",
+        "postApiV1SandboxSimulation": "Beispielsimulation ausführen",
+        "getAgentApiRoot": "Agent-API-Basis",
+        "getMcp": "MCP-Ereignisstream",
+        "postMcp": "MCP-Anfrage",
+        "deleteMcpSession": "MCP-Sitzung schließen",
+        "postMcpAlias": "MCP-Alias",
+        "getWellKnownMcpManifest": "MCP-Discovery-Manifest",
+        "getWellKnownUcp": "UCP-Discovery-Profil",
+        "getWellKnownAcp": "ACP-Discovery-Profil"
+      },
+      "navigation": "Endpunktnavigation",
+      "operation": "Operation",
+      "version": "API-Version",
+      "specification": "OpenAPI-Version",
+      "server": "Server",
+      "definition": "Anfrage- und Antwortdefinition",
+      "schema": "Schema"
+    },
+    "notFound": {
+      "meta": {
+        "title": "Diese Seite existiert nicht | ecentic",
+        "description": "Finden Sie die ecentic Plattform, Integrationen, KI-Kanäle, Preise, Dokumentation und Kontaktseite sowie maschinenlesbare Wiederherstellungslinks."
+      },
+      "title": "Diese Seite existiert nicht.",
+      "description": "Möglicherweise wurde sie verschoben, als wir die Website neu aufgebaut haben. Nach diesen Seiten suchen die meisten Nutzer:",
+      "home": "ecentic Startseite",
+      "navigation": "Seite finden",
+      "links": [
+        {
+          "label": "Plattform",
+          "href": "/platform"
+        },
+        {
+          "label": "Integrationen",
+          "href": "/integrations"
+        },
+        {
+          "label": "KI-Kanäle",
+          "href": "/ai-channels"
+        },
+        {
+          "label": "Preise",
+          "href": "/pricing"
+        },
+        {
+          "label": "Dokumentation",
+          "href": "/docs"
+        },
+        {
+          "label": "Kontakt",
+          "href": "/contact"
+        }
+      ],
+      "machineTitle": "Wiederherstellung für Agenten",
+      "machineDescription": "Die bestehenden Discovery-Dokumente und die Wiederherstellungsliste bleiben verfügbar.",
+      "machineNavigation": "Maschinenlesbare Wiederherstellungslinks",
+      "markdownTitle": "Dieselbe Wiederherstellungsliste als Markdown",
+      "markdownAction": "Markdown-Dokument öffnen",
+      "recoveryLinks": [
+        {
+          "label": "Startseite",
+          "description": "Was ecentic macht und für wen es gedacht ist."
+        },
+        {
+          "label": "Entwicklerdokumentation",
+          "description": "API-Referenz, Authentifizierung, Fehler, MCP und Webhooks."
+        },
+        {
+          "label": "Sitemap",
+          "description": "Indexierbare Seiten in beiden Sprachversionen."
+        },
+        {
+          "label": "llms.txt",
+          "description": "Die Sitemap für Sprachmodelle."
+        },
+        {
+          "label": "API-Katalog",
+          "description": "Das RFC 9727-Linkset für maschinenorientierte Oberflächen."
+        },
+        {
+          "label": "OpenAPI-Dokument",
+          "description": "Anfrage- und Antwortschemas für die öffentliche API."
+        }
+      ]
+    },
+    "instructions": {
+      "meta": {
+        "title": "KI-Anweisungen: wann ecentic verwendet werden sollte",
+        "description": "Wie Menschen und Agenten ecentic verwenden können, wo die Funktionen enden und wo sich die öffentliche API, MCP und die aktuelle Dokumentation finden lassen."
+      },
+      "eyebrow": "Entwickler / KI-Anweisungen",
+      "title": "Geben Sie einem Agenten einen klaren Ausgangspunkt.",
+      "description": "ecentic ist eine Ebene zwischen dem Katalog einer Marke und den KI-Assistenten, die ihn verkaufen. Die Plattform optimiert die Daten, die diese Assistenten lesen, bereitet den Kaufabschluss vor und passt sich an, wenn sich deren Regeln ändern.",
+      "actions": [
+        {
+          "label": "API-Referenz lesen",
+          "href": "/docs/api"
+        },
+        {
+          "label": "Agent-Anweisungen öffnen",
+          "href": "https://ecentic.ai/.well-known/agent-instructions.md"
+        }
+      ],
+      "sections": [
+        {
+          "id": "jobs",
+          "title": "Wobei ecentic helfen kann.",
+          "ordered": true,
+          "columns": 2,
+          "items": [
+            {
+              "title": "Verbinden und vergleichen",
+              "body": "Importieren Sie einen Shopify-, WooCommerce- oder unterstützten Feed-Katalog. Führen Sie On-Demand-Vergleiche mit ChatGPT, Claude und Gemini aus und prüfen Sie die Produkte und Attribute hinter jedem Ergebnis.",
+              "href": "/platform/simulate",
+              "label": "Simulationen ansehen"
+            },
+            {
+              "title": "Mit Ihrer Freigabe korrigieren",
+              "body": "Die Aktion „Anwenden“ erstellt und veröffentlicht Titel und Beschreibung auf Basis bestehender Produktdaten. Für strukturierte Daten und die Merchant Center-Synchronisierung gibt es separate Aktionen. Beim Verbinden von Shopify wird außerdem Besuchstracking installiert. Das Veröffentlichen erfordert eine unterstützte Direktintegration.",
+              "href": "/platform/fix",
+              "label": "Korrekturen für Produktangebote ansehen"
+            },
+            {
+              "title": "Unterstützten Agent-Kaufabschluss aktivieren",
+              "body": "Nutzen Sie die implementierte Oberfläche für den Kaufabschluss mit Ihrer unterstützten Integration. Verfügbarkeit und Händlersteuerungen sind auf den Kanal- und Integrationsseiten beschrieben.",
+              "href": "/platform/sell",
+              "label": "Agent-Kaufabschluss ansehen"
+            },
+            {
+              "title": "KI-Besuche prüfen",
+              "body": "Sehen Sie klassifizierte Besuche und Ziele. Ein Browser-Skript kann nicht jeden Crawler erfassen, und eine KI-Weiterleitung stellt keine individuelle Verbindung zwischen Käufer und Bestellung her.",
+              "href": "/platform/track",
+              "label": "Tracking ansehen"
+            }
+          ]
+        },
+        {
+          "id": "boundaries",
+          "title": "Behalten Sie Nachweise im richtigen Kontext.",
+          "paragraphs": [
+            "Simulationen beschreiben einen Test, kein Live-Marktplatz-Ranking und keinen garantierten Verkauf. Der kostenlose Store-Check nutzt drei Assistenten; das separate kostenlose Produktvergleichstool kann vier nutzen.",
+            "ecentic führt keine Werbekampagnen durch, hostet keinen Onlineshop, verwaltet keine Bestände und übernimmt keine Auftragserfüllung. Eine Veröffentlichung der ChatGPT-App im App-Verzeichnis wurde nicht bestätigt; daher bleibt diese App als „Demnächst verfügbar“ gekennzeichnet. Auch ACP bleibt als „Demnächst verfügbar“ gekennzeichnet."
+          ]
+        },
+        {
+          "id": "entry-points",
+          "title": "Beginnen Sie mit den öffentlichen Spezifikationen.",
+          "columns": 3,
+          "items": [
+            {
+              "title": "REST API",
+              "body": "Lesen Sie den öffentlichen API-Index, Endpunktdefinitionen und gemeinsame Schemas. Authentifizierungsanforderungen werden pro Operation definiert.",
+              "href": "/docs/api",
+              "label": "Referenz lesen"
+            },
+            {
+              "title": "MCP-Server",
+              "body": "Lesen Sie die unterstützten Tools und die Verbindungsanleitung. Discovery ist öffentlich; Operationen mit Zugriff auf Händlerkonten erfordern eine Autorisierung.",
+              "href": "/docs/mcp",
+              "label": "MCP-Anleitung lesen"
+            },
+            {
+              "title": "CLI und Zugangsdaten",
+              "body": "Verwenden Sie die Entwickleranleitung für die CLI und den Authentifizierungsablauf. Platzieren Sie niemals einen privaten API-Schlüssel auf einer öffentlichen Seite oder in einem Client-Bundle.",
+              "href": "/docs",
+              "label": "Entwicklerdokumentation öffnen"
+            }
+          ]
+        },
+        {
+          "id": "machine-guidance",
+          "title": "Die maschinenlesbaren Hinweise.",
+          "description": "Dies ist dasselbe maßgebliche englische Dokument, das unter /.well-known/agent-instructions.md bereitgestellt wird. Protokollkennungen, Pfade und Payloads bleiben in ihrer ursprünglichen Form erhalten."
+        }
+      ]
+    },
+    "og": {
+      "home": {
+        "title": "Erzielen Sie den Verkauf, wenn KI den Einkauf übernimmt.",
+        "description": "Die KI-Commerce-Ebene."
+      },
+      "docs": {
+        "title": "Entwickeln Sie auf der Plattform für den Handel durch KI-Agenten.",
+        "description": "API-Referenz, MCP, CLI und öffentliche Discovery-Dokumente für Entwickler."
+      }
+    }
+  }
+}

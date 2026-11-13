@@ -1,0 +1,20 @@
+{
+  "reviewReplay": {
+    "summary": "Sichtbare Entscheidungsübersicht",
+    "disclosure": "Ein skriptbasiertes Beispiel der geprüften Fakten und der daraus resultierenden Auswahl.",
+    "inspection": "Prüfung des Produktangebots",
+    "budget": "Budget des Käufers",
+    "criteria": "Anforderungen an die Eignung",
+    "evidence": "Nachweise im Produktangebot",
+    "matched": "Im Produktangebot verfügbar",
+    "missing": "Im Produktangebot fehlend",
+    "complete": "Vergleich abgeschlossen",
+    "sampleId": "Beispiel 001",
+    "process": {
+      "matchup": "Produkt im Vergleich zum Wettbewerber",
+      "compare": "Drei Modellperspektiven",
+      "diagnose": "Dokumentierte Entscheidung + genannte Fakten",
+      "improve": "Prüfen → verbessern → erneut vergleichen"
+    }
+  }
+}

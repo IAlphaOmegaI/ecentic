@@ -1,0 +1,19 @@
+{
+  "interactivePilot": {
+    "title": "Planificateur de pilote",
+    "stages": [
+      "État initial",
+      "Corriger",
+      "Relancer",
+      "Compte rendu"
+    ],
+    "happens": "Déroulement",
+    "people": "Votre équipe",
+    "deliverable": "Ce que vous recevez",
+    "duration": "Durée",
+    "pendingPeople": "",
+    "pendingDeliverable": "",
+    "pendingDuration": "",
+    "pending": "À définir avec votre équipe."
+  }
+}

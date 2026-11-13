@@ -1,0 +1,13 @@
+{
+  "commerceFigures": {
+    "shopifyBag": "Shopify-Einkaufstasche mit Katalogkarten, die sich zum Zeiger hin anheben",
+    "shoppingBot": "KI-Shopping-Bot, dessen Scanner einer Produktkarte folgt",
+    "custom": {
+      "rest": "Im Ruhezustand",
+      "product": "Produkt {number}",
+      "selectedProduct": "Ausgewähltes Produkt {number}",
+      "scanning": "Wird gescannt",
+      "selected": "Produkt ausgewählt"
+    }
+  }
+}

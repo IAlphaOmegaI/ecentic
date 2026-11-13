@@ -1,12 +1,18 @@
+import { getTranslations } from "next-intl/server";
+import { defaultLocale, isLocale } from "@/i18n/locales";
 import { createOgImage, ogImageContentType, ogImageSize } from "@/lib/og";
 
-export const alt = "ecentic blog — Agent commerce insights";
+export const alt = "ecentic blog";
 export const size = ogImageSize;
 export const contentType = ogImageContentType;
 
-export default () =>
-  createOgImage({
-    title: "Blog",
-    description:
-      "SEO, structured data, and AI commerce guides for merchants building modern ecommerce catalogs.",
+export default async ({ params }: { params: Promise<{ locale: string }> }) => {
+  const { locale: raw } = await params;
+  const locale = isLocale(raw) ? raw : defaultLocale;
+  const translate = await getTranslations({ locale, namespace: "blog" });
+  return createOgImage({
+    locale,
+    title: translate("title"),
+    description: translate("description"),
   });
+};

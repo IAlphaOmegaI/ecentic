@@ -1,0 +1,424 @@
+{
+  "enterpriseChannels": {
+    "statuses": {
+      "live": "En ligne",
+      "feed": "Via le flux produit",
+      "soon": "Bientôt disponible",
+      "simulated": "Simulé",
+      "not-yet": "Pas encore"
+    },
+    "checked": "Dernière vérification",
+    "date": "10 novembre 2026",
+    "sourceTitle": "Sources",
+    "sourceNote": "Les informations de la plateforme ont été vérifiées à partir de ces sources officielles. L’éligibilité et la disponibilité peuvent évoluer.",
+    "feature": "Fonctionnalité",
+    "status": "Statut",
+    "detail": "Ce que cela signifie",
+    "capabilityNames": {
+      "simulate": "Simuler",
+      "fix": "Corriger",
+      "checkout": "Paiement",
+      "track": "Suivre"
+    },
+    "open": "Explorer le canal",
+    "faqTitle": "Vos questions, nos réponses",
+    "interests": {
+      "google-checkout-onboarding": "Intégration au checkout Google AI Mode",
+      "chatgpt-product-feed": "Flux produit ChatGPT",
+      "chatgpt-app": "Application ChatGPT d’ecentic",
+      "microsoft-merchant-center": "Flux Microsoft Merchant Center",
+      "perplexity-scans": "Perplexity dans les scans de boutiques",
+      "perplexity-merchant-feed": "Flux marchand Perplexity",
+      "amazon-shop-direct": "Amazon Shop Direct"
+    },
+    "names": {
+      "google": "Google AI Mode et Gemini",
+      "chatgpt": "ChatGPT",
+      "claude": "Claude",
+      "copilot": "Microsoft Copilot",
+      "perplexity": "Perplexity",
+      "amazon": "Amazon"
+    },
+    "summaries": {
+      "google": "Simulations Gemini, synchronisation Shopify Merchant Center et préparation au checkout.",
+      "chatgpt": "Simulations et vérifications de fiches produit disponibles aujourd’hui. Flux produit et application ChatGPT à venir.",
+      "claude": "Testez les choix de produits de Claude. Publiez des données produit plus claires sur votre boutique.",
+      "copilot": "Suivi du trafic de référence Shopify disponible aujourd’hui. Flux Microsoft Merchant Center à venir.",
+      "perplexity": "Suivi de l’origine des visites sur Shopify disponible aujourd’hui. Simulations de boutiques et flux marchand bientôt disponibles.",
+      "amazon": "Connexion au catalogue Shop Direct à venir. Aucune connexion ecentic active aujourd’hui."
+    },
+    "sources": {
+      "googleEligibility": "Google : conditions d’éligibilité au checkout natif",
+      "googleIntegration": "Google : guide d’intégration Merchant Center",
+      "googleCart": "Google : annonce Universal Cart, 15 octobre 2026",
+      "openaiOnboarding": "OpenAI : intégration des marchands au flux produit",
+      "openaiProducts": "OpenAI : spécification du flux produit",
+      "openaiPractices": "OpenAI : bonnes pratiques pour les flux produit",
+      "openaiCheckout": "OpenAI : conversion lors du passage de commande des produits, partenaires approuvés",
+      "claudeCommerce": "Anthropic : agents IA pour le commerce, 2 septembre 2026",
+      "microsoftCommerce": "Microsoft : commerce agentique et Copilot Checkout",
+      "perplexityShopping": "Perplexity : shopping et programme marchand, 18 novembre 2024",
+      "amazonWorkspace": "Amazon : Shop Direct Merchant Workspace, 4 novembre 2026",
+      "amazonAssistant": "Amazon : Alexa for Shopping, 13 mai 2026",
+      "perplexityProgram": "Perplexity : formulaire d’intérêt au programme marchand officiel"
+    },
+    "index": {
+      "meta": {
+        "title": "Où l’IA fait ses achats : ChatGPT, Gemini, Copilot et plus encore",
+        "description": "Comment chaque assistant IA trouve, compare et achète des produits, ce dont les marchands ont besoin pour chacun d’eux, et ce qu’ecentic propose aujourd’hui sur ces plateformes."
+      },
+      "title": "Où l’IA fait ses achats.",
+      "description": "Chaque assistant trouve, compare et achète des produits à sa manière. Voici ce dont chacun a besoin, et ce qu’ecentic propose aujourd’hui sur ces plateformes.",
+      "sections": []
+    },
+    "method": {
+      "title": "Comment nous vérifions ces informations",
+      "body": "Nous consultons la documentation et les annonces officielles de chaque plateforme. Chaque page indique la date de notre dernière vérification et renvoie vers ses sources. « Simulé » signifie qu’ecentic exécute des comparaisons de produits avec ce modèle ; cela ne signifie pas qu’il existe une connexion directe avec un canal d’achat.",
+      "note": "Cet annuaire se concentre sur les assistants disposant d’un parcours d’achat documenté ou d’une simulation disponible dans ecentic."
+    },
+    "pages": {
+      "google": {
+        "meta": {
+          "title": "Vendre via Google AI Mode et Gemini",
+          "description": "Comment Google AI Mode et Gemini choisissent et achètent des produits, ce dont Merchant Center a besoin, et ce qu’ecentic propose aujourd’hui pour l’IA de Google."
+        },
+        "title": "Vendre via Google AI Mode et Gemini",
+        "description": "Les réponses IA de Google utilisent les données produit des marchands pour répondre aux questions shopping. Pour certains marchands, les acheteurs peuvent finaliser leur achat via Google.",
+        "sections": [
+          {
+            "id": "shops",
+            "title": "Comment cet assistant achète",
+            "description": "Les expériences shopping de Google utilisent les données catalogue de Merchant Center. Universal Cart a été lancé aux États-Unis le 15 octobre 2026, avec des options pour poursuivre vers le panier du marchand ou utiliser Google Pay lorsque le checkout est activé. Le marchand reste le vendeur officiel."
+          },
+          {
+            "id": "reads",
+            "title": "Ce qu’il lit",
+            "description": "Les données produit Merchant Center, y compris le prix de l’offre, sa disponibilité et son éligibilité au checkout. Des fiches produit précises ainsi que des informations claires sur la livraison et les retours contribuent à maintenir l’offre prête."
+          },
+          {
+            "id": "entry",
+            "title": "Comment les marchands y accèdent",
+            "description": "Google propose le checkout natif à certains marchands disposant de produits éligibles aux États-Unis, au Canada et en Australie. Son hub d’intégration Merchant Center est d’abord déployé aux États-Unis ; le Canada et l’Australie sont prévus au début de l’année prochaine. Les marchands doivent terminer les étapes de validation technique et d’approbation de Google."
+          },
+          {
+            "id": "ecentic",
+            "title": "Ce qu’ecentic propose aujourd’hui",
+            "description": "Ces libellés décrivent les fonctionnalités d’ecentic. L’éligibilité à la plateforme est une étape distincte."
+          },
+          {
+            "id": "next",
+            "title": "La suite",
+            "description": "Aucune date de lancement n’est garantie pour les intégrations à venir. Enregistrez votre intérêt pour nous aider à définir les priorités."
+          }
+        ],
+        "capabilities": {
+          "simulate": "Gemini compare des produits sélectionnés à des concurrents nommés dans les simulations de boutique d’ecentic.",
+          "fix": "Publiez les modifications de fiches produit vers Shopify ou WooCommerce. Les boutiques Shopify peuvent également envoyer les modifications publiées vers Merchant Center.",
+          "checkout": "Les endpoints du plugin WooCommerce et un environnement de test du checkout sont disponibles. Les boutiques Shopify peuvent auditer les paramètres checkout de Merchant Center. L’admission au programme Google reste de votre ressort.",
+          "track": "Reconnaît le trafic de référence Gemini et le trafic pris en charge des agents IA Google sur les boutiques Shopify connectées."
+        },
+        "faqs": [
+          {
+            "question": "Avons-nous besoin de Merchant Center pour le checkout Google ?",
+            "answer": "Oui. Le parcours marchand documenté passe par Merchant Center. Votre compte, vos produits et votre intégration checkout doivent respecter les critères d’éligibilité de Google."
+          },
+          {
+            "question": "ecentic peut-il rejoindre le programme de checkout de Google pour nous ?",
+            "answer": "Non. ecentic aide à préparer et tester les données et les paramètres. La candidature, la validation et l’approbation restent entre votre entreprise et Google."
+          },
+          {
+            "question": "La synchronisation Merchant Center fonctionne-t-elle avec WooCommerce ?",
+            "answer": "Pas encore. La connexion Merchant Center d’ecentic est aujourd’hui disponible pour les boutiques Shopify."
+          }
+        ],
+        "trademark": "Google AI Mode et Gemini sont des marques de Google LLC. ecentic n’est ni affilié à Google LLC ni approuvé par celle-ci."
+      },
+      "chatgpt": {
+        "meta": {
+          "title": "Vendre via le shopping ChatGPT",
+          "description": "Comment ChatGPT recommande des produits, ce que contiennent les flux marchands, comment fonctionnent les intégrations checkout approuvées, et ce qu’ecentic propose aujourd’hui."
+        },
+        "title": "Vendre via ChatGPT",
+        "description": "ChatGPT utilise les données produit des marchands pour recommander des produits. Les acheteurs peuvent suivre des liens vers votre boutique ; des intégrations d’applications approuvées peuvent proposer le checkout directement dans ChatGPT.",
+        "sections": [
+          {
+            "id": "shops",
+            "title": "Comment cet assistant achète",
+            "description": "La documentation commerciale d’OpenAI décrit des flux produit structurés pour la découverte de produits. Sa documentation bêta actuelle sur le checkout permet également à des partenaires approuvés d’ouvrir une expérience checkout via un plugin connecté. La disponibilité dépend de l’intégration approuvée du marchand."
+          },
+          {
+            "id": "reads",
+            "title": "Ce qu’il lit",
+            "description": "Les enregistrements de produits et de variantes avec titres, descriptions, images, URL, prix et disponibilité. Les recommandations d’OpenAI couvrent également l’identité précise du vendeur, la livraison et les retours. Définir un indicateur d’éligibilité au checkout n’active pas le checkout à lui seul."
+          },
+          {
+            "id": "entry",
+            "title": "Comment les marchands y accèdent",
+            "description": "Déposez une candidature via le parcours d’intégration marchand d’OpenAI. L’accès au flux produit est réservé aux partenaires approuvés, avec validation du schéma et méthode de livraison convenue. Une application checkout ChatGPT nécessite sa propre intégration et approbation ; un flux seul ne suffit pas."
+          },
+          {
+            "id": "ecentic",
+            "title": "Ce qu’ecentic propose aujourd’hui",
+            "description": "Ces libellés décrivent les fonctionnalités d’ecentic. L’éligibilité à la plateforme est une étape distincte."
+          },
+          {
+            "id": "next",
+            "title": "La suite",
+            "description": "Aucune date de lancement n’est garantie pour les intégrations à venir. Enregistrez votre intérêt pour nous aider à définir les priorités."
+          }
+        ],
+        "capabilities": {
+          "simulate": "ChatGPT évalue des produits sélectionnés face à des concurrents dans les simulations de boutique.",
+          "fix": "Les vérifications de fiches produit incluent les règles de flux OpenAI. Publiez un titre et une description révisés, ou des données structurées via une action distincte, vers une boutique connectée.",
+          "checkout": "L’application ChatGPT d’ecentic arrive prochainement ; sa publication n’a pas été confirmée. Les outils checkout actuels n’établissent pas d’intégration active avec l’application ChatGPT.",
+          "track": "Suit le trafic de référence ChatGPT et les visites d’agents reconnus sur Shopify."
+        },
+        "faqs": [
+          {
+            "question": "Les acheteurs peuvent-ils acheter directement dans ChatGPT ?",
+            "answer": "La documentation bêta actuelle d’OpenAI décrit un checkout dans ChatGPT pour des intégrations de plugins approuvées. Les autres liens produit redirigent les acheteurs vers le marchand. L’éligibilité dépend de l’intégration ; la publication de l’application d’ecentic n’a pas été confirmée."
+          },
+          {
+            "question": "Nous utilisons Shopify. ecentic inscrit-il notre boutique dans ChatGPT ?",
+            "answer": "Non. L’éligibilité au canal et toute distribution de catalogue par votre plateforme e-commerce sont distinctes d’ecentic. Nous testons les comparaisons de produits et aidons à améliorer les données produit que vous contrôlez."
+          },
+          {
+            "question": "Comment un marchand peut-il envoyer des données produit à OpenAI ?",
+            "answer": "Déposez une candidature via le parcours d’intégration marchand d’OpenAI. Les partenaires approuvés peuvent fournir un flux produit conforme à sa spécification. ecentic vérifie aujourd’hui la qualité des fiches produit ; notre export dédié de flux ChatGPT arrive prochainement."
+          }
+        ],
+        "trademark": "ChatGPT est une marque d’OpenAI. ecentic n’est ni affilié à OpenAI ni approuvé par celle-ci."
+      },
+      "claude": {
+        "meta": {
+          "title": "Comment Claude recommande des produits",
+          "description": "Comment les distributeurs peuvent créer des agents IA pour le commerce avec Claude, et comment ecentic teste les choix de produits de Claude et améliore les données produit."
+        },
+        "title": "Vendre via Claude",
+        "description": "Testez comment Claude compare vos produits. Le parcours commercial documenté d’Anthropic permet aux distributeurs de créer des agents utilisant leur propre catalogue et leur checkout.",
+        "sections": [
+          {
+            "id": "shops",
+            "title": "Comment cet assistant achète",
+            "description": "Le guide commercial d’Anthropic décrit des agents capables de rechercher dans le catalogue d’un distributeur, de comparer des produits et d’interagir avec son panier et son checkout. Ces expériences sont créées par les marchands et leur comportement dépend des outils et données fournis par le distributeur."
+          },
+          {
+            "id": "reads",
+            "title": "Ce qu’il lit",
+            "description": "Le distributeur fournit à son propre agent les outils de catalogue, de stock, de politique commerciale et de panier. Les simulations d’ecentic utilisent les informations produit et concurrentielles réunies pour la comparaison ; il ne s’agit pas d’un rapport de classement en direct provenant de Claude."
+          },
+          {
+            "id": "entry",
+            "title": "Comment les marchands y accèdent",
+            "description": "Anthropic publie un modèle de référence pour créer un agent IA pour le commerce. Il s’agit d’un parcours de développement pour votre propre expérience, et non d’une preuve qu’une connexion à ecentic inscrit votre boutique dans un annuaire shopping Claude."
+          },
+          {
+            "id": "ecentic",
+            "title": "Ce qu’ecentic propose aujourd’hui",
+            "description": "Ces libellés décrivent les fonctionnalités d’ecentic. L’éligibilité à la plateforme est une étape distincte."
+          },
+          {
+            "id": "next",
+            "title": "La suite",
+            "description": "Aucun connecteur checkout dédié à Claude ne figure aujourd’hui dans notre feuille de route annoncée. Vous pouvez déjà utiliser les simulations actives et le workflow de gestion des fiches produit."
+          }
+        ],
+        "capabilities": {
+          "simulate": "Claude compare des produits sélectionnés à des concurrents nommés dans les simulations de boutique.",
+          "fix": "Les mêmes actions de publication de titres, descriptions et données structurées distinctes sont disponibles pour les boutiques Shopify et WooCommerce connectées.",
+          "checkout": "ecentic ne dispose aujourd’hui d’aucune connexion checkout dédiée à Claude.",
+          "track": "Reconnaît le trafic de référence Claude et le trafic d’agents pris en charge sur Shopify."
+        },
+        "faqs": [
+          {
+            "question": "Claude peut-il acheter sur notre boutique ?",
+            "answer": "Un distributeur peut créer un agent propulsé par Claude avec des outils de catalogue, panier et checkout. Cela ne signifie pas qu’ecentic connecte actuellement votre boutique à un checkout Claude destiné aux consommateurs ; ce n’est pas le cas."
+          },
+          {
+            "question": "Pourquoi simuler Claude ?",
+            "answer": "Une comparaison contrôlée vous aide à voir quels éléments produit influencent les choix de Claude. Les résultats s’appliquent à cette configuration de simulation et peuvent différer d’un autre assistant ou d’une session shopping réelle."
+          },
+          {
+            "question": "Les corrections profitent-elles uniquement à Claude ?",
+            "answer": "Les modifications concernent les informations produit de votre propre boutique. D’autres lecteurs peuvent également utiliser ces données plus claires, mais aucun résultat en matière de recommandation ou de ventes n’est garanti."
+          }
+        ],
+        "trademark": "Claude est une marque d’Anthropic PBC. ecentic n’est ni affilié à Anthropic PBC ni approuvé par celle-ci."
+      },
+      "copilot": {
+        "meta": {
+          "title": "Vendre via Microsoft Copilot et Copilot Checkout",
+          "description": "Comment fonctionne Copilot Checkout, qui peut y accéder, et ce qu’ecentic développe pour Microsoft Merchant Center."
+        },
+        "title": "Vendre via Microsoft Copilot",
+        "description": "Copilot recommande des produits et, via Copilot Checkout, permet aux acheteurs éligibles aux États-Unis d’acheter directement dans la conversation.",
+        "sections": [
+          {
+            "id": "shops",
+            "title": "Comment cet assistant achète",
+            "description": "Microsoft décrit la découverte de produits et le checkout sur copilot.com et dans l’application mobile Copilot. Le marchand reste le vendeur officiel et utilise ses propres processus logistiques et sa propre relation client."
+          },
+          {
+            "id": "reads",
+            "title": "Ce qu’il lit",
+            "description": "Données produit issues du web et des flux marchands. La voie Microsoft Merchant Center nécessite des fiches produit avec les attributs de paiement supplémentaires décrits dans le guide d’intégration de Microsoft."
+          },
+          {
+            "id": "entry",
+            "title": "Comment les marchands peuvent rejoindre le programme",
+            "description": "Les critères d’éligibilité actuels de Microsoft concernent les marchands anglophones vendant à des acheteurs américains en USD. Les parcours documentés incluent Microsoft Merchant Center, l’inscription automatique via Shopify et Stripe Agentic Commerce Suite. Une étape de configuration du flux reste en pilote pour certains marchands sélectionnés."
+          },
+          {
+            "id": "ecentic",
+            "title": "Ce qu’ecentic propose aujourd’hui",
+            "description": "Ces libellés décrivent les fonctionnalités d’ecentic. L’éligibilité à la plateforme constitue une étape distincte."
+          },
+          {
+            "id": "next",
+            "title": "Prochaines étapes",
+            "description": "Les intégrations à venir n’ont pas de date de lancement garantie. Indiquez votre intérêt pour nous aider à définir les priorités."
+          }
+        ],
+        "capabilities": {
+          "simulate": "Copilot n’est pas inclus dans le panneau d’analyse de boutique d’ecentic.",
+          "fix": "L’export d’un flux Microsoft Merchant Center figure sur notre feuille de route. Il n’existe actuellement aucune connexion de flux ecentic en production.",
+          "checkout": "Les attributs de paiement du flux Microsoft prévu arrivent bientôt. Les exigences du programme Microsoft continueront de s’appliquer.",
+          "track": "Suit le trafic de référence Copilot sur les boutiques Shopify connectées."
+        },
+        "faqs": [
+          {
+            "question": "Comment rejoindre Copilot Checkout ?",
+            "answer": "Suivez le parcours d’intégration actuel de Microsoft via Microsoft Merchant Center, Shopify ou Stripe. Les marchands anglophones qui s’adressent à des acheteurs américains en USD sont éligibles ; certaines étapes de configuration restent limitées à des marchands sélectionnés."
+          },
+          {
+            "question": "ecentic prend-il en charge Copilot aujourd’hui ?",
+            "answer": "ecentic suit le trafic de référence Copilot sur Shopify. Les simulations Copilot et une connexion directe au flux ne sont pas encore disponibles. Le flux Microsoft Merchant Center figure sur notre feuille de route."
+          },
+          {
+            "question": "Le flux garantit-il l’approbation du processus de paiement ?",
+            "answer": "Non. Microsoft contrôle l’admission et les exigences techniques. L’export ecentic prévu préparera les données ; il ne peut pas garantir une approbation ni des recommandations produit."
+          }
+        ],
+        "trademark": "Microsoft Copilot est une marque de Microsoft Corporation. ecentic n’est ni affilié à Microsoft Corporation ni approuvé par celle-ci."
+      },
+      "perplexity": {
+        "meta": {
+          "title": "Vendre via le shopping de Perplexity",
+          "description": "Comment Perplexity présente les résultats shopping, où son programme marchand est documenté et ce qu’ecentic prend en charge aujourd’hui."
+        },
+        "title": "Vendre via Perplexity",
+        "description": "Perplexity répond aux questions d’achat avec des cartes produit. ecentic suit les visites qu’il envoie vers les boutiques Shopify ; les scans de boutiques et un flux marchand arrivent bientôt.",
+        "sections": [
+          {
+            "id": "shops",
+            "title": "Comment cet assistant effectue des achats",
+            "description": "L’annonce shopping de Perplexity décrit des fiches produit et une expérience Buy with Pro pour les produits éligibles aux États-Unis. Lorsque cette option d’achat n’est pas disponible, les acheteurs suivent un lien vers le site web du marchand."
+          },
+          {
+            "id": "reads",
+            "title": "Ce qu’il lit",
+            "description": "Informations produit provenant des marchands et des résultats shopping. Perplexity décrit des intégrations avec les sites web des marchands et un programme marchand destiné à rendre les prix et les informations produit plus complets."
+          },
+          {
+            "id": "entry",
+            "title": "Comment les marchands peuvent rejoindre le programme",
+            "description": "L’annonce shopping officielle de Perplexity renvoie vers son programme marchand gratuit destiné aux grands distributeurs. Consultez le lien officiel du programme pour connaître les critères d’éligibilité actuels. Nous n’avons pas vérifié l’existence d’un parcours d’inscription plus large ni d’une connexion catalogue ecentic en production.",
+            "links": [
+              {
+                "label": "Ouvrir le formulaire marchand de Perplexity",
+                "href": "https://perplexity.typeform.com/to/oIcfT8U3"
+              }
+            ]
+          },
+          {
+            "id": "ecentic",
+            "title": "Ce qu’ecentic propose aujourd’hui",
+            "description": "Ces libellés décrivent les fonctionnalités d’ecentic. L’éligibilité à la plateforme constitue une étape distincte."
+          },
+          {
+            "id": "next",
+            "title": "Prochaines étapes",
+            "description": "Les intégrations à venir n’ont pas de date de lancement garantie. Indiquez votre intérêt pour nous aider à définir les priorités."
+          }
+        ],
+        "capabilities": {
+          "simulate": "L’ajout de Perplexity aux analyses de boutique figure sur notre feuille de route. Il ne fait pas partie des trois modèles actuels d’analyse de boutique.",
+          "fix": "Un flux marchand dédié à Perplexity arrive bientôt. Les modifications des fiches produit restent disponibles via Shopify et WooCommerce.",
+          "checkout": "ecentic ne dispose actuellement d’aucune connexion de paiement dédiée à Perplexity.",
+          "track": "Suit le trafic de référence issu de Perplexity et le trafic d’agents reconnu sur Shopify."
+        },
+        "faqs": [
+          {
+            "question": "Comment les marchands peuvent-ils rejoindre le programme ?",
+            "answer": "Commencez par le programme marchand mentionné dans l’annonce shopping officielle de Perplexity. Cette source décrit un programme gratuit pour les grands distributeurs ; confirmez les modalités d’accès actuelles auprès de Perplexity."
+          },
+          {
+            "question": "ecentic prend-il en charge Perplexity aujourd’hui ?",
+            "answer": "Nous suivons les visites qu’il envoie vers les boutiques Shopify. L’ajout de Perplexity aux scans de boutiques et la création d’un flux marchand arrivent bientôt."
+          },
+          {
+            "question": "Une simulation prouve-t-elle qu’un produit apparaîtra dans Perplexity ?",
+            "answer": "Non. Une comparaison de modèles est distincte d’une recommandation produit réelle, de l’acceptation d’un flux ou de l’éligibilité au paiement."
+          }
+        ],
+        "trademark": "Perplexity est une marque de Perplexity AI, Inc. ecentic n’est ni affilié à Perplexity AI, Inc. ni approuvé par celle-ci."
+      },
+      "amazon": {
+        "meta": {
+          "title": "Vendre via l’IA d’Amazon : Shop Direct et Alexa",
+          "description": "Comment Shop Direct intègre des produits issus des sites marchands dans la recherche Amazon et Alexa for Shopping, et ce qu’ecentic est en train de développer."
+        },
+        "title": "Vendre via l’IA d’Amazon",
+        "description": "Shop Direct peut intégrer des produits de votre propre site dans l’expérience d’achat d’Amazon. Les achats éligibles via Buy for Me sont finalisés sur le site web du marchand.",
+        "sections": [
+          {
+            "id": "shops",
+            "title": "Comment cet assistant effectue des achats",
+            "description": "Amazon a lancé Alexa for Shopping le 13 mai 2026, réunissant Rufus et Alexa+. Shop Direct affiche des produits provenant de sites web marchands externes dans la recherche Amazon et son assistant shopping. Les acheteurs peuvent visiter le marchand ; les offres éligibles prennent également en charge Buy for Me."
+          },
+          {
+            "id": "reads",
+            "title": "Ce qu’il lit",
+            "description": "Informations catalogue fournies par le marchand via un partenaire de solution ou l’API Selling Partner d’Amazon. Le marchand vérifie son site web et gère sa participation via le Shop Direct Merchant Workspace."
+          },
+          {
+            "id": "entry",
+            "title": "Comment les marchands peuvent rejoindre le programme",
+            "description": "Amazon a lancé le Merchant Workspace gratuit le 4 novembre 2026. Shop Direct est disponible pour les clients américains et accepte les sites web marchands éligibles, y compris ceux des marchands qui vendent aussi sur Amazon. L’inscription, la vérification du site web et le partage du catalogue sont requis."
+          },
+          {
+            "id": "ecentic",
+            "title": "Ce qu’ecentic propose aujourd’hui",
+            "description": "Ces libellés décrivent les fonctionnalités d’ecentic. L’éligibilité à la plateforme constitue une étape distincte."
+          },
+          {
+            "id": "next",
+            "title": "Prochaines étapes",
+            "description": "Les intégrations à venir n’ont pas de date de lancement garantie. Indiquez votre intérêt pour nous aider à définir les priorités."
+          }
+        ],
+        "capabilities": {
+          "simulate": "L’assistant shopping d’Amazon n’est pas inclus dans le panneau d’analyse d’ecentic.",
+          "fix": "L’envoi d’un catalogue optimisé vers Shop Direct figure sur notre feuille de route, sous réserve de l’approbation requise par Amazon.",
+          "checkout": "Il n’existe actuellement aucune connexion ecentic en production avec Buy for Me.",
+          "track": "ecentic ne propose actuellement aucune intégration dédiée au trafic Amazon Shop Direct."
+        },
+        "faqs": [
+          {
+            "question": "Avons-nous besoin d’une boutique sur la marketplace Amazon ?",
+            "answer": "Non. Shop Direct met en avant les produits issus des propres sites web des marchands. Amazon présente la participation comme gratuite et l’expérience d’achat comme disponible pour les clients américains."
+          },
+          {
+            "question": "ecentic se connecte-t-il à Shop Direct aujourd’hui ?",
+            "answer": "Pas encore. Une connexion catalogue Shop Direct figure sur notre feuille de route et nécessitera l’approbation requise par Amazon. Indiquez votre intérêt ci-dessous."
+          },
+          {
+            "question": "Où l’acheteur effectue-t-il son achat ?",
+            "answer": "Shop Direct peut rediriger l’acheteur vers le site web du marchand. Pour les offres Buy for Me éligibles, l’agent d’Amazon finalise l’achat sur ce site web."
+          }
+        ],
+        "trademark": "Amazon et Alexa sont des marques d’Amazon.com, Inc. ou de ses sociétés affiliées. ecentic n’est ni affilié à Amazon ni approuvé par Amazon."
+      }
+    }
+  }
+}

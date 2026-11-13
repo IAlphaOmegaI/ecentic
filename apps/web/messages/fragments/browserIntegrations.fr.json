@@ -1,0 +1,66 @@
+{
+  "browserIntegrations": {
+    "entries": {
+      "shopify": "Connectez-vous avec Shopify OAuth pour importer votre catalogue, publier certaines corrections de fiches produit et suivre les visites issues d’IA détectées. L’analyse d’intégration gratuite couvre jusqu’à 10 produits. Les fonctionnalités continues liées aux fiches produit nécessitent un paiement à l’usage activé ou un abonnement Compete, Scale ou Dominate actif ; les quotas de produits et de simulations de chaque offre sont indiqués sur la page Tarifs.",
+      "woocommerce": "Installez le plugin gratuit pour connecter votre catalogue et permettre aux agents compatibles d’effectuer des recherches produit, de générer des estimations de panier et de passer au paiement via votre propre passerelle. Essayez jusqu’à 10 produits avec l’analyse d’intégration gratuite. Les fonctionnalités continues des fiches produit ecentic nécessitent un paiement à l’usage activé ou un abonnement actif ; la publication nécessite également un accès en lecture/écriture. Le suivi des visites IA n’est pas disponible pour WooCommerce.",
+      "bigcommerce": "Une application BigCommerce native figure sur la feuille de route. Elle n’est pas disponible à l’installation aujourd’hui et aucune date de lancement n’a été annoncée. Consultez les formats de données produit pris en charge ou indiquez votre intérêt pour la connexion directe.",
+      "adobe": "Exportez votre catalogue Adobe Commerce au format CSV et associez les champs aux colonnes prises en charge par ecentic avant l’import. Les enregistrements importés peuvent être comparés à des concurrents nommés ; cette méthode ne republie pas les modifications dans Adobe Commerce et ne se synchronise pas automatiquement.",
+      "shopware": "Exportez les produits depuis Shopware, convertissez le fichier au format CSV et associez les colonnes prises en charge avant l’import. Mettez à jour le catalogue dans Shopware puis réimportez-le après modification ; une connexion de publication directe est toujours prévue.",
+      "wix": "Importez un export CSV de produits physiques depuis Wix Stores et associez-le aux champs pris en charge par ecentic. Utilisez le catalogue importé pour les comparaisons, puis appliquez les modifications dans Wix avant de réimporter. Une application Wix native est prévue.",
+      "prestashop": "Exportez un fichier CSV de produits depuis PrestaShop et associez ses colonnes aux champs correspondants avant l’import. ecentic enregistre les fiches produit prises en charge pour les comparaisons ; cette méthode d’export ne réécrit pas les données dans votre boutique et ne maintient pas le catalogue synchronisé automatiquement.",
+      "googleMerchant": "Pour les boutiques Shopify connectées, envoyez les corrections de fiches produit publiées vers Google Merchant Center comme source de données complémentaire. Vous connectez le compte Merchant Center et exécutez la synchronisation séparément. Les exigences de Google concernant les comptes et les produits continuent de s’appliquer ; cela n’inscrit pas votre boutique au paiement natif de Google.",
+      "productFeeds": "Importez un flux XML ou JSON pris en charge pour enregistrer les fiches produit dans ecentic. Sélectionnez jusqu’à 10 produits pour l’analyse d’intégration gratuite ; les fonctionnalités continues du tableau de bord liées aux fiches produit utilisent votre offre activée. Réimportez lorsque la source change, car l’actualisation planifiée des flux et la republication vers le flux ne sont pas disponibles.",
+      "csv": "Téléversez des données produit séparées par des virgules avec les noms de colonnes pris en charge, avec un produit par ligne. Vérifiez la correspondance des colonnes avant de sélectionner des produits pour une analyse. Le téléversement enregistre les données dans ecentic et laisse votre fichier source inchangé.",
+      "storeAddress": "Importez un catalogue Shopify ou WooCommerce public et accessible à partir de son adresse de boutique. Cela vous offre un point de départ en lecture seule sans identifiants de plateforme. Connectez ensuite l’application Shopify vérifiée ou l’intégration WooCommerce lorsque vous avez besoin de publier des modifications.",
+      "microsoftMerchant": "Une connexion dédiée aux flux marchands pour Microsoft Copilot est prévue. Elle n’est pas disponible aujourd’hui. La page du canal explique les exigences actuelles et le suivi des visites issues de Shopify déjà disponible.",
+      "amazonShopDirect": "Une connexion catalogue pour le programme US Shop Direct d’Amazon figure sur la feuille de route. Aucune connexion ecentic n’est disponible aujourd’hui ; la disponibilité du programme et l’admission des marchands restent soumises aux exigences d’Amazon.",
+      "chatgptFeed": "Un export dédié de flux produit ChatGPT est prévu. Aujourd’hui, ecentic peut simuler le modèle ChatGPT comparant votre fiche produit avec celle d’un concurrent ; une simulation ne soumet pas votre catalogue à ChatGPT et n’inscrit pas votre boutique au paiement.",
+      "perplexityFeed": "Une connexion de flux catalogue marchand vers Perplexity est prévue. Elle est distincte du suivi des visites issues d’IA disponible sur les boutiques Shopify connectées et ne correspond pas actuellement à un flux que vous pouvez activer dans ecentic.",
+      "google": "Utilisez Gemini dans les simulations de boutique pour comparer vos produits à des concurrents nommés. La synchronisation complémentaire avec Google Merchant Center est une connexion Shopify distincte. L’intégration native d’ecentic au paiement Google est toujours prévue.",
+      "chatgpt": "Comparez votre fiche produit avec celle d’un concurrent nommé à l’aide du modèle ChatGPT dans une simulation de décision d’achat. Cela montre le raisonnement du modèle, pas un trafic réel d’acheteurs. Une application ecentic dédiée à ChatGPT et un export de flux produit sont prévus séparément.",
+      "claude": "Incluez Claude dans des comparaisons simulées entre votre fiche produit et celle d’un concurrent nommé. Consultez les champs pris en compte et son explication du choix effectué. Il s’agit de tests de modèle dans ecentic, et non d’une connexion de flux marchand ou de paiement avec Claude.",
+      "copilot": "Consultez dès aujourd’hui les visites issues de Copilot détectées sur les boutiques Shopify connectées. La connexion au flux Microsoft Merchant Center est toujours prévue ; cette entrée ne correspond donc pas à une soumission de catalogue active ni à une inscription au paiement.",
+      "perplexity": "Consultez dès aujourd’hui les visites issues de Perplexity détectées sur les boutiques Shopify connectées. Les analyses de boutiques Perplexity et un flux marchand dédié figurent sur la feuille de route ; aucun des deux n’est actuellement une connexion que vous pouvez activer.",
+      "amazon": "Découvrez le programme Amazon Shop Direct et indiquez votre intérêt pour une connexion catalogue ecentic. Le connecteur est prévu, sans date de lancement confirmée ; Amazon détermine l’éligibilité des marchands et la disponibilité du programme.",
+      "paymentGateway": "Avec le plugin WooCommerce, les agents compatibles peuvent créer une commande et envoyer l’acheteur vers votre lien de paiement. Votre passerelle WooCommerce traite le paiement et vous restez le vendeur. Les paiements Stripe côté serveur en option nécessitent une configuration séparée.",
+      "stripeAcs": "Une connexion dédiée à Stripe Agentic Commerce Suite est prévue. Elle est distincte du flux de paiement Stripe optionnel du plugin WooCommerce et n’est pas disponible aujourd’hui comme intégration ecentic activable.",
+      "plytix": "Exportez les données produit depuis Plytix au format CSV et associez-les aux colonnes prises en charge par ecentic. Importez les données pour les comparaisons puis réimportez après modification. Il s’agit d’une méthode d’export, sans connexion PIM directe ni réécriture automatique.",
+      "akeneo": "Une connexion directe à Akeneo figure sur la feuille de route. Aucune synchronisation native ni réécriture n’est disponible dans ecentic aujourd’hui. Indiquez l’intérêt de votre équipe et décrivez le flux catalogue dont vous avez besoin.",
+      "salsify": "Une connexion directe à Salsify figure sur la feuille de route. Aucune synchronisation native ni réécriture n’est disponible dans ecentic aujourd’hui. Indiquez votre intérêt pour partager le flux de données produit dont votre équipe a besoin."
+    },
+    "flow": {
+      "eyebrow": "Import du catalogue",
+      "title": "Un catalogue, trois façons de l’importer",
+      "description": "Importez les données produit que vous gérez déjà. Chaque méthode d’import prise en charge enregistre les données dans ecentic pour les comparaisons et les vérifications de fiches produit.",
+      "sources": {
+        "productFeeds": "Un flux produit XML ou JSON pris en charge.",
+        "csv": "Colonnes mises en correspondance, un produit par ligne.",
+        "storeAddress": "Un catalogue Shopify ou WooCommerce public."
+      },
+      "catalog": {
+        "title": "Votre catalogue ecentic",
+        "description": "Vérifiez les champs importés, puis sélectionnez les produits à comparer.",
+        "fields": [
+          "Titre du produit",
+          "Description",
+          "Prix",
+          "URL du produit"
+        ]
+      },
+      "outputs": {
+        "simulate": {
+          "title": "Simuler",
+          "description": "Comparez les produits sélectionnés à des concurrents identifiés à l’aide des modèles utilisés pour le scan des boutiques."
+        },
+        "audit": {
+          "title": "Audit",
+          "description": "Vérifiez la qualité des fiches produit et, sur un échantillon de pages, la préparation de la boutique pour guider les modifications de votre équipe."
+        }
+      },
+      "note": "Les importations ne modifient ni le flux source, ni le fichier, ni la boutique. Réimportez lorsque le catalogue change. La publication dans une boutique nécessite une connexion Shopify ou WooCommerce vérifiée ; les fonctionnalités relatives aux fiches produit dans le tableau de bord dépendent de votre offre activée.",
+      "action": {
+        "primary": "Explorer les importations de produits"
+      }
+    }
+  }
+}

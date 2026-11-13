@@ -1,0 +1,54 @@
+{
+  "general": {
+    "media": {
+      "interfaceEnglish": "Product interface shown in English.",
+      "videoEnglish": "English-language film with a transcript in your selected language."
+    },
+    "fileUpload": {
+      "label": "Upload files"
+    },
+    "dismiss": {
+      "label": "Close"
+    },
+    "notifications": {
+      "label": "Notifications"
+    }
+  },
+  "resources": {
+    "mcpArtTitle": "JSON-RPC tools"
+  },
+  "enterprisePlatform": {
+    "artworkStages": {
+      "product": "Product",
+      "cart": "Cart",
+      "checkout": "Checkout"
+    }
+  },
+  "dashboard": {
+    "ucpPlaygroundDashboard": {
+      "cart": {
+        "action": {
+          "primary": "Open cart"
+        }
+      }
+    }
+  },
+  "promptInput": {
+    "placeholder": "What would you like to know?",
+    "attachments": {
+      "label": "Add photos or files"
+    },
+    "screenshot": {
+      "label": "Take screenshot"
+    },
+    "action": {
+      "primary": "Send message",
+      "secondary": "Stop"
+    },
+    "errors": {
+      "acceptedTypes": "No files match the accepted types.",
+      "maximumSize": "All files exceed the maximum size.",
+      "maximumCount": "Too many files. Some were not added."
+    }
+  }
+}

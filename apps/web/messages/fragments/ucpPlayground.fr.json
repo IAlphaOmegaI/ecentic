@@ -1,0 +1,61 @@
+{
+  "ucpPlayground": {
+    "meta": {
+      "title": "UCP Playground pour les agents d’achat IA",
+      "description": "Testez la recherche dans le catalogue, le panier et le paiement sur une vitrine UCP. Inspectez les requêtes et les réponses via MCP ou REST."
+    },
+    "breadcrumb": {
+      "home": "Accueil",
+      "page": "UCP Playground"
+    },
+    "hero": {
+      "eyebrow": "Universal Commerce Protocol",
+      "title": {
+        "primary": "Connectez un agent d’achat IA",
+        "accent": "à n’importe quelle boutique."
+      },
+      "description": "UCP Playground gratuit : pilotez un véritable agent d’achat IA sur n’importe quelle vitrine UCP. Lancez des recherches dans le catalogue, gérez le panier et le paiement via MCP ou REST, puis inspectez les appels.",
+      "art": {
+        "alt": "Illustration ASCII d’un robot"
+      }
+    },
+    "demo": {
+      "title": "Regardez-le rechercher, créer un panier et finaliser le paiement.",
+      "titleLineBreak": "Regardez-le rechercher, créer un panier, <br />et finaliser le paiement.",
+      "description": "Tous les appels d’outils et toutes les réponses sont visibles. Aucun compte requis pour vos {limit} premiers messages."
+    },
+    "capabilities": [
+      {
+        "title": "Recherche et consultation du catalogue",
+        "description": "Demandez à l’agent de rechercher dans le catalogue d’une vitrine ou de récupérer un produit précis, puis inspectez la réponse UCP exacte."
+      },
+      {
+        "title": "Opérations sur le panier",
+        "description": "Créez un panier, ajoutez des articles et regardez les totaux se calculer avec les mêmes appels qu’un agent d’achat IA utiliserait."
+      },
+      {
+        "title": "Transmission vers le paiement",
+        "description": "Lancez un paiement sur la boutique en ligne et confirmez l’URL de continuation qu’un agent transmettrait à l’acheteur."
+      }
+    ],
+    "faq": {
+      "items": [
+        {
+          "question": "Qu’est-ce que l’UCP Playground ?",
+          "answer": "Un environnement sandbox dans lequel un agent d’achat IA exécute en direct des opérations Universal Commerce Protocol sur la vitrine de votre choix. Il résout le profil /.well-known/ucp de la boutique, sélectionne son point d’accès d’achat MCP ou REST, puis affiche chaque appel d’outil et chaque réponse."
+        },
+        {
+          "question": "Quelles boutiques puis-je tester ?",
+          "answer": "Toute vitrine publiant un Universal Commerce Profile valide sur /.well-known/ucp avec un service dev.ucp.shopping. L’environnement de test privilégie le transport MCP et bascule sur REST si nécessaire."
+        },
+        {
+          "question": "Ai-je besoin d’un compte ?",
+          "answer": "Non. Tout le monde peut envoyer jusqu’à {limit} messages gratuitement. Créez un compte pour lancer un nombre illimité de sessions sur votre propre boutique connectée."
+        }
+      ]
+    },
+    "structuredData": {
+      "name": "UCP Playground"
+    }
+  }
+}

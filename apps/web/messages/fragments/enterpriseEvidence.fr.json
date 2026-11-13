@@ -1,0 +1,254 @@
+{
+  "enterpriseEvidence": {
+    "presentation": {
+      "action": {
+        "primary": "Afficher en tableau",
+        "secondary": "Afficher le diagramme"
+      },
+      "dataPending": "Données en attente",
+      "approvalPending": "Approbation de publication en attente",
+      "unknown": "Non fourni",
+      "source": "Source",
+      "checked": "Dernière vérification",
+      "pendingNote": "Cette analyse contient des éléments incomplets. Les valeurs en attente et les conclusions non approuvées ne sont pas affichées sur le site principal."
+    },
+    "simulations": {
+      "title": "Ce que les assistants sélectionnent dans un achat simulé.",
+      "description": "Part des achats simulés dans lesquels chaque assistant a choisi le même produit.",
+      "caption": "{sampleSize} achats simulés sur le même catalogue, 2026. Décisions simulées, pas du trafic réel.",
+      "takeaway": "Les assistants peuvent faire des choix différents. Comparez vos produits sur les trois modèles dans les analyses de boutique d’ecentic, puis améliorez les données vérifiées qu’ils consultent.",
+      "pending": "Les valeurs exactes pour Claude et Gemini, les volumes par modèle et la méthodologie de recherche sont encore en attente. La valeur approximative de 18.5% n’est pas représentée comme une valeur exacte.",
+      "headers": {
+        "model": "Assistant",
+        "rate": "Part des achats simulés",
+        "count": "Sélections",
+        "total": "Décisions du modèle"
+      },
+      "models": {
+        "chatgpt": "ChatGPT",
+        "claude": "Claude",
+        "gemini": "Gemini",
+        "perplexity": "Perplexity"
+      },
+      "countsPending": "Les volumes de sélection et les totaux par modèle sont en attente.",
+      "methodPending": "La méthodologie de recherche et la publication sont en attente.",
+      "ratePending": "Part exacte en attente"
+    },
+    "findings": {
+      "title": "Ce que les agents IA rencontrent sur de vraies boutiques.",
+      "caption": "Audits ecentic, 2026. Les entreprises apparaissent sans leur nom. Plusieurs lignes peuvent concerner la même entreprise ; chacune utilise son propre échantillon.",
+      "note": "Chaque barre représente une part d’échec. Le chiffre de 88% est arrondi ; le nombre exact de produits défaillants n’a pas été fourni. Il s’agit d’instantanés, pas de résultats prédits pour toutes les boutiques.",
+      "headers": {
+        "finding": "Constat",
+        "company": "Entreprise",
+        "share": "Part d’échec",
+        "count": "Échecs observés",
+        "total": "Échantillon"
+      },
+      "count": "{count} sur {total}",
+      "rounded": "{percentage}% de {total}",
+      "companies": {
+        "spiritsMarketplace": "Une grande marketplace de spiritueux",
+        "workspaceNetwork": "Un réseau d’espaces de travail flexibles",
+        "skincareBrand": "Une marque de soins de la peau"
+      },
+      "rows": {
+        "catalogFaults": {
+          "label": "Produits avec au moins une erreur dans les données lues par les agents",
+          "detail": "Un instantané du catalogue d’une grande marketplace de spiritueux."
+        },
+        "missingOfferFacts": {
+          "label": "Pages produit où un agent n’a trouvé ni prix, ni stock, ni note",
+          "detail": "Un échantillon de pages de la même marketplace de spiritueux."
+        },
+        "storeNotNamed": {
+          "label": "Réponses qui ne mentionnaient pas la boutique pour deux bouteilles qu’elle vend",
+          "detail": "La même marketplace de spiritueux n’a été mentionnée dans aucune des 20 réponses testées."
+        },
+        "missingDescriptions": {
+          "label": "Fiches produit sans description exploitable par un agent",
+          "detail": "Un échantillon provenant d’un réseau d’espaces de travail flexibles. L’autorisation de publication est en attente."
+        },
+        "paymentBlocked": {
+          "label": "Pays où un agent ne pouvait pas accéder au paiement à cause d’un paramètre de livraison",
+          "detail": "Un test du parcours de commande d’une marque de soins de la peau dans six pays."
+        }
+      },
+      "roundedDetail": "{percentage}% d’un catalogue de {total} produits. Le pourcentage est arrondi ; le nombre exact de produits défectueux n’a pas été fourni."
+    },
+    "timeline": {
+      "title": "2026 : les règles continuent d’évoluer.",
+      "caption": "Vérifié le {date}. Chaque événement comporte des liens vers ses sources.",
+      "takeaway": "Chaque changement peut impliquer de nouvelles données, de nouveaux flux ou de nouvelles règles de passage de commande. Vérifiez les exigences actuelles de chaque canal avant de publier ou de connecter le passage de commande.",
+      "headers": {
+        "date": "Date",
+        "event": "Changement",
+        "detail": "Ce qui a changé",
+        "source": "Source"
+      },
+      "events": {
+        "googleUcp": {
+          "title": "Google annonce une norme ouverte pour le paiement par agent",
+          "detail": "Le Universal Commerce Protocol connecte des expériences commerciales. Les conditions d’admission des marchands et les exigences techniques restent distinctes.",
+          "source": "Google : nouveaux outils et protocole de commerce agentique"
+        },
+        "amazonAlexa": {
+          "title": "Amazon réunit Rufus et Alexa+ dans Alexa for Shopping",
+          "detail": "Un assistant d’achat intégré à l’application et au site Amazon.",
+          "source": "Amazon : découvrez Alexa for Shopping"
+        },
+        "metaMuse": {
+          "title": "Meta lance Muse, avec achats approuvés",
+          "detail": "Muse peut effectuer des achats via le paiement Link et demande une approbation avant chaque achat.",
+          "source": "Meta : présentation de Muse"
+        },
+        "googleCart": {
+          "title": "Google déploie Universal Cart aux États-Unis",
+          "detail": "Disponible dans Search et Gemini, avec paiement via Google Pay pour les marchands éligibles ou redirection vers le panier du marchand.",
+          "source": "Google : lancement d’Universal Cart"
+        },
+        "shopifyAgentTools": {
+          "title": "Shopify ajoute des outils pour agents aux vitrines et au paiement",
+          "detail": "Les outils WebMCP exposent des opérations d’achat sur les boutiques Liquid et Hydrogen ; la finalisation du paiement nécessite l’approbation de l’acheteur.",
+          "source": "Shopify : Fall ’26 Edition for developers"
+        },
+        "amazonWorkspace": {
+          "title": "Amazon ouvre le Shop Direct Merchant Workspace",
+          "detail": "Les marchands éligibles peuvent s’inscrire, envoyer des flux produit et gérer leur participation. Shop Direct existait déjà avant le lancement de cet espace.",
+          "source": "Amazon : Shop Direct Merchant Workspace"
+        }
+      },
+      "pending": "Données en attente : deux dates d’événements supplémentaires nécessitent des sources primaires lisibles avant de pouvoir être ajoutées à cette chronologie."
+    },
+    "channels": {
+      "title": "Chaque canal a sa propre porte d’entrée.",
+      "description": "La capacité d’achat d’une plateforme et le statut d’intégration avec ecentic sont deux éléments distincts. Chaque page de canal détaille les critères d’éligibilité et renvoie vers les sources actuelles.",
+      "caption": "Comparaison actuelle des canaux. Dernière vérification le {date}.",
+      "headers": {
+        "channel": "Canal IA",
+        "reads": "Ce qu’il lit",
+        "buying": "Permet-il d’acheter directement depuis la réponse ?",
+        "where": "Où",
+        "status": "ecentic aujourd’hui"
+      },
+      "rows": {
+        "google": {
+          "reads": "Données de catalogue Merchant Center et pages produit fiables.",
+          "buying": "Oui, pour les marchands éligibles ; Google Pay ou redirection vers le panier du marchand.",
+          "where": "Universal Cart : États-Unis. L’éligibilité au paiement natif inclut certains marchands aux États-Unis, au Canada et en Australie."
+        },
+        "chatgpt": {
+          "reads": "Flux produit de marchands approuvés, données de fiches produit et liens produit.",
+          "buying": "Les intégrations approuvées via application ou plugin peuvent proposer le paiement ; les autres liens redirigent vers le marchand.",
+          "where": "Dépend de l’intégration approuvée du marchand et du marché pris en charge."
+        },
+        "claude": {
+          "reads": "Informations produit, ainsi qu’un catalogue et des outils de paiement fournis à un agent développé par le marchand.",
+          "buying": "Un agent développé par le marchand peut utiliser des outils de paiement. ecentic ne dispose pas de connexion dédiée au paiement avec Claude.",
+          "where": "Dépend de l’implémentation et des outils propres au distributeur."
+        },
+        "copilot": {
+          "reads": "Données produit du web et flux marchands avec attributs de paiement.",
+          "buying": "Copilot Checkout prend en charge les achats éligibles dans la conversation.",
+          "where": "Acheteurs américains, USD et anglais ; certaines voies d’intégration restent limitées."
+        },
+        "perplexity": {
+          "reads": "Informations produit provenant des sites marchands et des résultats shopping.",
+          "buying": "Le parcours Buy with Pro documenté prend en charge les produits éligibles ; les autres offres redirigent vers la boutique.",
+          "where": "Expérience d’achat aux États-Unis ; l’accès marchand actuel suit le programme officiel."
+        },
+        "amazon": {
+          "reads": "Catalogues marchands partagés via Shop Direct et ses canaux approuvés.",
+          "buying": "Achats Buy for Me éligibles ; sinon, lien vers la boutique du marchand.",
+          "where": "Clients américains ; sites marchands éligibles."
+        }
+      }
+    },
+    "dua": {
+      "title": "Pilote DUA Flavours",
+      "figure": "+{percentage}%",
+      "caption": "Visites issues d’assistants IA ou du trafic direct, d’avril à juillet 2026. Pilote DUA Flavours, publié avec autorisation.",
+      "note": "Visites, pas des ventes. La métrique combine le trafic des assistants IA et le trafic direct ; d’autres changements pendant la période peuvent aussi avoir contribué.",
+      "confirmed": "Confirmé par écrit le 3 septembre 2026.",
+      "action": {
+        "primary": "Lire le récit du pilote"
+      },
+      "headers": {
+        "metric": "Métrique",
+        "change": "Évolution",
+        "period": "Période",
+        "permission": "Autorisation de publication"
+      },
+      "metric": "Visites issues d’assistants IA ou du trafic direct",
+      "period": "D’avril à juillet 2026",
+      "permission": "Confirmé par DUA Flavours"
+    },
+    "market": {
+      "title": "Contexte du marché",
+      "description": "Les prévisions et statistiques de marché ne sont affichées qu’après vérification de leurs sources primaires, périodes et bases de comparaison.",
+      "rows": {
+        "commerceForecast": "Potentiel mondial du commerce IA d’ici 2030",
+        "retailAiTraffic": "Trafic IA vers les distributeurs américains au T1 2026",
+        "relativeConversion": "Amélioration relative du taux de conversion des acheteurs arrivés via l’IA"
+      }
+    },
+    "sources": {
+      "research2026": "Recherche ecentic, 2026. Méthodologie en attente de publication.",
+      "catalogAudits2026": "Audits ecentic, 2026. Vérifications anonymes de catalogues et de réponses ; chaque résultat décrit l’échantillon audité.",
+      "duaPilot": "Pilote DUA Flavours, d’avril à juillet 2026 ; publié avec autorisation.",
+      "mckinseyForecast": "Prévision McKinsey : source primaire en attente.",
+      "adobeTraffic": "Analyse de trafic Adobe : source primaire en attente.",
+      "adobeConversion": "Analyse de conversion Adobe : source primaire en attente."
+    },
+    "pending": {
+      "claudeRate": {
+        "question": "{{TODO: Alvi supplies the exact Claude selection share from the same research.}}"
+      },
+      "geminiRate": {
+        "question": "{{TODO: Alvi supplies the exact Gemini selection share from the same research.}}"
+      },
+      "simulationDenominators": {
+        "question": "{{TODO: Alvi supplies per-model selection counts, decision totals and the definition of the denominator.}}"
+      },
+      "simulationMethod": {
+        "question": "{{TODO: Alvi supplies the products, categories, questions, models, versions, run dates, method and reviewed research publication.}}"
+      },
+      "perplexityComparableRate": {
+        "question": "{{TODO: Alvi confirms whether Perplexity has a comparable rate from the same research before adding its bar.}}"
+      },
+      "missingOfferFactsApproval": {
+        "question": "Publication approuvée dans les réponses de lancement du 12 novembre 2026."
+      },
+      "missingDescriptionsApproval": {
+        "question": "{{TODO: Xhurian approves publishing the 167-of-167 missing descriptions finding.}}"
+      },
+      "paymentBlockedApproval": {
+        "question": "Publication approuvée dans les réponses de lancement du 12 novembre 2026."
+      },
+      "copilotLaunchSource": {
+        "question": "{{TODO: Xhurian supplies a readable first-party source confirming the January 8 Copilot Checkout launch date.}}"
+      },
+      "openaiCheckoutChangeSource": {
+        "question": "{{TODO: Xhurian supplies readable primary wording and scope for the claimed March 24 OpenAI checkout change.}}"
+      },
+      "duaStartingPoint": {
+        "question": "Position de départ approuvée dans les réponses de lancement du 12 novembre 2026."
+      },
+      "duaChanges": {
+        "question": "{{TODO: Xhurian supplies the DUA Flavours products and fields changed, and the dates of the work.}}"
+      },
+      "duaAprilStart": {
+        "question": "{{TODO: Xhurian explains the DUA pilot’s April start and the work before the Shopify app launch.}}"
+      },
+      "commerceForecastSource": {
+        "question": "{{TODO: Xhurian supplies the primary McKinsey source for the $3–5T global AI commerce forecast by 2030, including its scope.}}"
+      },
+      "retailAiTrafficSource": {
+        "question": "{{TODO: Xhurian supplies the primary Adobe source for +393% AI traffic to US retailers in Q1 2026, including the comparison period.}}"
+      },
+      "relativeConversionSource": {
+        "question": "{{TODO: Xhurian supplies the primary Adobe source for the July 2026 60% relative conversion improvement, including its baseline.}}"
+      }
+    }
+  }
+}

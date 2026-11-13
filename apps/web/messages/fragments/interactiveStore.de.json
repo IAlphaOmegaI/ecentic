@@ -1,0 +1,16 @@
+{
+  "interactiveStore": {
+    "label": "Adresse Ihres Shops",
+    "action": {
+      "primary": "Meinen Shop kostenlos prüfen"
+    },
+    "pending": "Ihr Shop wird geprüft…",
+    "hint": "Ihre Adresse wird für die Registrierung und den kostenlosen Scan übernommen. Keine Zahlungsdaten erforderlich.",
+    "errors": {
+      "invalid": "Geben Sie eine gültige Shop-Domain oder eine http/https-Adresse ein.",
+      "limited": "Zurzeit zu viele Prüfungen. Warten Sie einen Moment und versuchen Sie es erneut.",
+      "unreachable": "{host} konnte nicht erreicht werden. Prüfen Sie die Adresse und versuchen Sie es erneut.",
+      "failed": "Die Prüfung konnte nicht abgeschlossen werden. Bitte versuchen Sie es erneut."
+    }
+  }
+}

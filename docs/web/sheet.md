@@ -42,6 +42,7 @@ The sliding panel.
 | Prop | Type | Description |
 |------|------|-------------|
 | `side` | `"top" \| "right" \| "bottom" \| "left"` | Which edge it slides from |
+| `closeLabel` | `string` | Accessible label for the built-in close button; defaults to `Close`. Pass localized text in translated apps. |
 | `classList` | `ClassList` | Style `root`, `backdrop`, `close` |
 
 ### SheetHeader

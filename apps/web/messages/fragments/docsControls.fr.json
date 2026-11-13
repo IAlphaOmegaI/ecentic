@@ -1,0 +1,10 @@
+{
+  "docsControls": {
+    "snippet": "Exemple de code",
+    "action": {
+      "primary": "Copier"
+    },
+    "copied": "Copié",
+    "failed": "Échec de la copie. Sélectionnez le code pour le copier."
+  }
+}

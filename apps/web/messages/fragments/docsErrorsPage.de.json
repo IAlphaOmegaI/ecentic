@@ -1,0 +1,50 @@
+{
+  "docsErrorsPage": {
+    "example": "Beispielantwort",
+    "fields": "Antwort lesen",
+    "fieldItems": [
+      {
+        "name": "type",
+        "description": "Die URI, die das Problem bezeichnet und in dieser Referenz verankert ist."
+      },
+      {
+        "name": "code",
+        "description": "Die stabile Kennung, anhand der Ihr Client unterschiedliche Abläufe steuern kann."
+      },
+      {
+        "name": "title",
+        "description": "Eine kurze, für Menschen lesbare Zusammenfassung."
+      },
+      {
+        "name": "status",
+        "description": "Der HTTP-Status, der im Body wiederholt wird."
+      },
+      {
+        "name": "detail",
+        "description": "Was bei dieser konkreten Anfrage schiefgelaufen ist."
+      },
+      {
+        "name": "resolution",
+        "description": "Der nächste Schritt zur Behebung des Fehlers."
+      },
+      {
+        "name": "Dokumentation",
+        "description": "Die Referenzseite für die Antwort."
+      },
+      {
+        "name": "Instanz",
+        "description": "Der Anfragepfad, der sie erzeugt hat, sofern bekannt."
+      }
+    ],
+    "catalogue": {
+      "label": "Veröffentlichte Fehlercodes",
+      "description": "Öffnen Sie einen Code, um die Lösung zu lesen. Jeder Code hat einen permanenten Link.",
+      "permalink": "Permanenter Link zu",
+      "resolution": "So beheben Sie das Problem",
+      "action": {
+        "primary": "Alle ausklappen",
+        "secondary": "Alle einklappen"
+      }
+    }
+  }
+}

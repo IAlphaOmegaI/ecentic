@@ -3,11 +3,12 @@
 import { cn } from "@zenncore/utils";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { Motion } from "@/components/motion";
 import { Plus } from "@/components/plus";
 import { Spring, Stagger } from "@/lib/animations";
+import { formatElapsed } from "@/lib/date";
 
 const modelColors: Record<string, string> = {
   ChatGPT: "text-blue-500",
@@ -20,8 +21,6 @@ const models = [
   { model: "Claude", logo: "/images/claude.svg" },
   { model: "Gemini", logo: "/images/gemini.svg" },
 ] as const;
-
-const formatElapsed = (index: number) => `${(index * 0.4).toFixed(1)}s`;
 
 export namespace RunningPhase {
   export type Props = {
@@ -41,6 +40,7 @@ export const RunningPhase = ({
   logs,
 }: RunningPhase.Props) => {
   const translate = useTranslations("onboarding.scan");
+  const locale = useLocale();
   const ref = useRef<HTMLDivElement>(null);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: logEntries triggers scroll-to-bottom on new entries
@@ -198,7 +198,7 @@ export const RunningPhase = ({
                     transition={{ duration: 0.25, ease: "easeOut" }}
                   >
                     <span className="shrink-0 font-mono text-foreground-dimmed/50 tabular-nums">
-                      {formatElapsed(index)}
+                      {formatElapsed(index * 400, locale)}
                     </span>
                     <span
                       className={cn(

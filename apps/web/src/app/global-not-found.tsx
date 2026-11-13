@@ -1,6 +1,7 @@
 import { cn } from "@zenncore/utils";
 import { headers } from "next/headers";
 import { fonts } from "@/components/marketing/fonts";
+import { defaultLocale, isPublishedLocale } from "@/i18n/locales";
 import {
   NotFoundContent,
   recoveryMetadata,
@@ -13,8 +14,10 @@ import "./globals.css";
 // HTTP 200 before notFound() is handled. Normal pages retain instant rendering.
 export const instant = false;
 
-const recoveryLocale = async () =>
-  (await headers()).get("x-next-intl-locale") === "es" ? "es" : "en";
+const recoveryLocale = async () => {
+  const locale = (await headers()).get("x-next-intl-locale");
+  return locale && isPublishedLocale(locale) ? locale : defaultLocale;
+};
 
 export const generateMetadata = async () =>
   recoveryMetadata(await recoveryLocale());

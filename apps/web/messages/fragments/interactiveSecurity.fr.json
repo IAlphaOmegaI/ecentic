@@ -1,0 +1,72 @@
+{
+  "interactiveSecurity": {
+    "reviewLabel": "Brouillon pour la relecture d’Alvi",
+    "title": "Circulation des données produit",
+    "description": "Sélectionnez une connexion pour examiner les données proposées, le moment de transmission et le contrôle associé. Chaque connexion nécessite encore la confirmation d’Alvi avant la publication de ce schéma.",
+    "details": {
+      "what": "Données envoyées",
+      "when": "Moment",
+      "control": "Contrôle"
+    },
+    "nodes": {
+      "source": {
+        "label": "Votre boutique ou flux",
+        "description": "Catalogue de produits"
+      },
+      "ecentic": {
+        "label": "ecentic",
+        "description": "Outils de comparaison et de publication"
+      },
+      "providers": {
+        "label": "Fournisseurs d’IA",
+        "description": "Simulations et réécritures · liste des fournisseurs"
+      },
+      "store": {
+        "label": "Boutique connectée",
+        "description": "Shopify ou WooCommerce"
+      },
+      "merchantCenter": {
+        "label": "Merchant Center",
+        "description": "Synchronisation Shopify distincte"
+      }
+    },
+    "connectors": {
+      "import": {
+        "label": "Importer le catalogue",
+        "what": "Champs produit de la boutique ou du flux sélectionné. {{TODO: Alvi confirms}}",
+        "when": "Lors de l’importation ou de la synchronisation du catalogue. {{TODO: Alvi confirms}}",
+        "control": "Utilise les autorisations de connexion de la boutique ou la source que vous choisissez. L’importation ne publie pas les modifications de fiche produit. {{TODO: Alvi confirms}}"
+      },
+      "request": {
+        "label": "Envoyer à l’IA",
+        "what": "Détails sélectionnés des produits et des concurrents pour les comparaisons ou la génération de fiches produit. {{TODO: Alvi confirms}}",
+        "when": "Lors de l’exécution d’une simulation ou d’une action de génération de fiche produit. {{TODO: Alvi confirms}}",
+        "control": "Utilise le mode d’accès configuré pour le fournisseur. Les données du compte Merchant Center connecté restent séparées du catalogue boutique utilisé pour les opérations d’IA. {{TODO: Alvi confirms}}"
+      },
+      "response": {
+        "label": "Retourner les résultats",
+        "what": "Résultats de simulation ou contenu généré pour les fiches produit et les données structurées. {{TODO: Alvi confirms}}",
+        "when": "Lorsque l’opération du modèle demandée renvoie un résultat. {{TODO: Alvi confirms}}",
+        "control": "Appliquer peut générer et publier dans la même action ; les données structurées utilisent leur propre action de publication. {{TODO: Alvi confirms}}"
+      },
+      "apply": {
+        "label": "Appliquer la fiche produit",
+        "what": "Un titre et une description générés pour les produits sélectionnés. {{TODO: Alvi confirms}}",
+        "when": "Lorsque vous choisissez Appliquer ou une action explicite de publication en masse. {{TODO: Alvi confirms}}",
+        "control": "Nécessite une boutique directement connectée et une action de publication explicitement lancée par vos soins. {{TODO: Alvi confirms}}"
+      },
+      "structuredData": {
+        "label": "Publier les données",
+        "what": "JSON-LD produit généré dans les métadonnées produit de la boutique. {{TODO: Alvi confirms}}",
+        "when": "Lors d’une action distincte de publication des données structurées. {{TODO: Alvi confirms}}",
+        "control": "L’intégration de l’application au thème Shopify ou le plugin WooCommerce doit afficher les données publiées. {{TODO: Alvi confirms}}"
+      },
+      "merchantCenter": {
+        "label": "Synchroniser avec Google",
+        "what": "Remplacements publiés des titres et descriptions, ainsi que les attributs de passage de commande sélectionnés. {{TODO: Alvi confirms}}",
+        "when": "Lors d’une synchronisation Google distincte et explicitement lancée pour une boutique Shopify connectée. {{TODO: Alvi confirms}}",
+        "control": "Utilise une source complémentaire en plus du flux principal. L’application d’une fiche produit ne lance pas automatiquement cette synchronisation. {{TODO: Alvi confirms}}"
+      }
+    }
+  }
+}

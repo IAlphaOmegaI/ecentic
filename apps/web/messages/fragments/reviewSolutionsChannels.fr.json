@@ -1,0 +1,133 @@
+{
+  "reviewSolutionsChannels": {
+    "sample": "Exemple illustratif",
+    "assistant": "Assistant d’achat",
+    "discovery": "Extrait de découverte UCP",
+    "discoveryNote": "La découverte du profil n’établit pas l’éligibilité du produit ni celle du parcours de paiement.",
+    "previewNote": "Conversations illustratives et réponses UCP partielles, et non réponses réelles d’un assistant. Les fiches produit suivent les modèles de découverte documentés par Google et OpenAI ; l’intégration commerce de ChatGPT est distincte de l’UCP.",
+    "googleSource": "Google Shopping et UCP",
+    "openaiSource": "Résultats shopping ChatGPT",
+    "sectors": [
+      {
+        "product": "Single malt · exemple",
+        "details": [
+          "Profil de dégustation fumé",
+          "Origine et format de bouteille"
+        ],
+        "response": "Comparez les notes de dégustation vérifiées et les détails de la bouteille.",
+        "limit": "Recherche uniquement. Des restrictions liées à l’alcool s’appliquent."
+      },
+      {
+        "product": "Snack protéiné · exemple",
+        "details": [
+          "Protéines par portion",
+          "Ingrédients et allergènes"
+        ],
+        "response": "Faites correspondre l’étiquette nutritionnelle à vos limites de taille de portion et de calories.",
+        "limit": "Vérifiez les informations nutritionnelles et les allergènes."
+      },
+      {
+        "product": "Crème hydratante · exemple",
+        "details": [
+          "Formule sans parfum",
+          "Liste complète des ingrédients"
+        ],
+        "response": "Consultez la liste des ingrédients et la formulation indiquée du produit.",
+        "limit": "Informations sur le produit, pas un avis médical."
+      },
+      {
+        "product": "Écouteurs sans fil · exemple",
+        "details": [
+          "Conditions de test de la batterie",
+          "Réduction de bruit"
+        ],
+        "response": "Comparez l’autonomie, la recharge et les fonctionnalités dont vous avez besoin.",
+        "limit": "Vérifiez le prix et la disponibilité actuels."
+      },
+      {
+        "product": "Canapé-lit compact · exemple",
+        "details": [
+          "Largeur : 185 cm",
+          "Profondeur dépliée : 210 cm"
+        ],
+        "response": "Vérifiez à la fois les dimensions une fois fermé et l’espace nécessaire une fois ouvert.",
+        "limit": "Mesures d’exemple utilisées pour cette illustration."
+      },
+      {
+        "product": "Veste de randonnée · exemple",
+        "details": [
+          "Conception imperméable",
+          "Coupe et guide des tailles"
+        ],
+        "response": "Comparez la protection contre les intempéries, les mesures et la politique de retour.",
+        "limit": "Vérifiez les performances annoncées du produit."
+      },
+      {
+        "product": "Croquettes pour chien senior · exemple",
+        "details": [
+          "Indication du stade de vie",
+          "Ingrédients et guide d’alimentation"
+        ],
+        "response": "Consultez les ingrédients et les recommandations d’alimentation avant de comparer les options.",
+        "limit": "L’adaptation du régime alimentaire nécessite un avis individualisé."
+      },
+      {
+        "product": "Séjour urbain à Lisbonne · exemple",
+        "details": [
+          "Dates et type de chambre",
+          "Conditions d’annulation"
+        ],
+        "response": "Comparez les détails du séjour, les dates et l’ensemble des conditions de réservation.",
+        "limit": "La disponibilité des voyages et la prise en charge UCP varient."
+      }
+    ],
+    "catalog": {
+      "sample": "Exemples d’enregistrements importés",
+      "products": [
+        "Casque sans fil",
+        "Casque à réduction de bruit",
+        "Écouteurs sans fil"
+      ],
+      "ready": "Champs à vérifier"
+    },
+    "perplexity": {
+      "sample": "Parcours d’achat illustratif",
+      "question": "Quels casques conviendraient bien pour un long vol ?",
+      "answer": "Comparez la réduction de bruit, l’autonomie et le confort.",
+      "product": "Casque sans fil",
+      "details": "Réduction de bruit · circum-aural",
+      "price": "Prix fourni par le marchand",
+      "website": "Page produit du marchand",
+      "record": "Exemple d’enregistrement marchand",
+      "attributes": [
+        {
+          "title": "Détails du produit",
+          "value": "Titre, image et caractéristiques"
+        },
+        {
+          "title": "Prix et disponibilité",
+          "value": "Informations actuelles du marchand"
+        },
+        {
+          "title": "URL du produit",
+          "value": "La page où l’acheteur poursuit son parcours"
+        }
+      ],
+      "productCard": "Fiche produit dans la réponse",
+      "merchantData": "Des informations produit à une fiche d’achat",
+      "merchantNote": "Perplexity indique utiliser les informations des marchands pour enrichir les fiches produit. Des données plus complètes ne garantissent pas une recommandation.",
+      "pathsTitle": "Où l’acheteur va ensuite",
+      "pathsDescription": "Deux parcours depuis une fiche produit, comme décrit dans l’annonce shopping de Perplexity.",
+      "purchaseTitle": "Buy with Pro",
+      "purchaseBody": "L’annonce de novembre 2024 limite cette fonctionnalité aux utilisateurs Pro aux États-Unis et à certains produits de certains marchands. Consultez Perplexity pour connaître les conditions d’accès actuelles.",
+      "purchaseBadge": "Achats sélectionnés",
+      "storeTitle": "Continuer sur le site du marchand",
+      "storeBody": "Lorsque Buy with Pro n’est pas disponible, l’acheteur suit le lien produit vers le site du marchand.",
+      "storeBadge": "Redirection vers le marchand",
+      "trackingTitle": "Le rôle d’ecentic",
+      "trackingBody": "ecentic peut identifier le trafic provenant de Perplexity sur Shopify. Les scans de boutiques avec Perplexity et un flux marchand dédié arrivent bientôt ; ecentic ne propose aucune connexion au passage de commande de Perplexity.",
+      "source": "Lire l’annonce de Perplexity",
+      "sampleNote": "Interface et produit donnés en exemple, pas une réponse ou une offre Perplexity réelle."
+    }
+  }
+}

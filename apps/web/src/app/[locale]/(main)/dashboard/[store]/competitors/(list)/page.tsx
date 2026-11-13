@@ -11,7 +11,7 @@ import { cn, unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import type { SearchParamsProps } from "@zenncore/web/types";
 import { connection } from "next/server";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import {
   QueryTransitionFade,
@@ -106,6 +106,8 @@ export default ({
 );
 
 const LastScanned = async ({ params }: { params: StoreParams }) => {
+  const locale = await getLocale();
+
   await connection();
   const { store } = await params;
   const translate = await getTranslations("dashboard.shared.status");
@@ -117,7 +119,7 @@ const LastScanned = async ({ params }: { params: StoreParams }) => {
     <StatusPill tone={data.scan?.updatedAt ? "success" : "neutral"}>
       {data.scan?.updatedAt
         ? translate("liveLastScanned", {
-            time: formatRelativeTime(data.scan.updatedAt),
+            time: formatRelativeTime(data.scan.updatedAt, locale),
           })
         : translate("noScansYet")}
     </StatusPill>
@@ -494,6 +496,8 @@ const Competitors = async ({
 };
 
 const Insights = async ({ params }: { params: StoreParams }) => {
+  const locale = await getLocale();
+
   await connection();
   const { store } = await params;
   const translate = await getTranslations("dashboard.competitors.insights");
@@ -660,7 +664,7 @@ const Insights = async ({ params }: { params: StoreParams }) => {
                   <div className="flex shrink-0 items-center gap-3">
                     {total > 0 && <WinRateBadge rate={winRate} />}
                     <span className="whitespace-nowrap text-foreground-dimmed text-xs tabular-nums">
-                      {formatRelativeTime(scan.createdAt)}
+                      {formatRelativeTime(scan.createdAt, locale)}
                     </span>
                   </div>
                 </div>

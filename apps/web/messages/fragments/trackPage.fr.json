@@ -1,0 +1,58 @@
+{
+  "trackPage": {
+    "comparisonLabel": "Comparer les signaux",
+    "comparisonHint": "Choisissez un signal pour voir d’où il provient et ce qu’il peut vous indiquer.",
+    "meaningLabel": "Ce que cela vous indique",
+    "limitLabel": "À garder à l’esprit",
+    "signals": [
+      {
+        "id": "visits",
+        "label": "Visites observées",
+        "title": "Chaque visite détectée a une source.",
+        "inputs": [
+          "Référent de l’assistant",
+          "Signal du user-agent"
+        ],
+        "process": "Script exécuté dans le navigateur pour Shopify",
+        "output": "Visite détectée",
+        "meaning": "Les sources d’assistants reconnues peuvent être regroupées dans la répartition des visites et le résumé chronologique.",
+        "limit": "Le script navigateur a besoin de signaux disponibles. Il ne peut pas observer tous les crawlers sans JavaScript, reconstituer chaque visite directe ni prouver qu’un visiteur a ensuite effectué un achat."
+      },
+      {
+        "id": "simulations",
+        "label": "Décisions simulées",
+        "title": "Chaque nouveau scan est une nouvelle comparaison.",
+        "inputs": [
+          "Votre produit",
+          "Un produit concurrent"
+        ],
+        "process": "Un scan que vous lancez",
+        "output": "Décision simulée",
+        "meaning": "Le taux de victoire correspond au pourcentage de simulations où un agent choisit votre produit plutôt qu’un concurrent. Comparez les décisions finalisées après la publication d’une modification.",
+        "limit": "Les décisions simulées sont distinctes des visites observées sur la vitrine et des ventes. Les rescans planifiés ne sont pas actifs aujourd’hui."
+      },
+      {
+        "id": "estimates",
+        "label": "Gain estimé",
+        "title": "Une estimation accompagne la correction.",
+        "inputs": [
+          "Fiche produit actuelle",
+          "Modification proposée"
+        ],
+        "process": "Optimisation de la fiche produit",
+        "output": "Gain estimé",
+        "meaning": "Le gain est une estimation enregistrée avec la modification de la fiche produit. Elle aide à distinguer l’effet attendu d’une correction des tests finalisés ultérieurement.",
+        "limit": "Il ne s’agit ni d’un chiffre d’affaires mesuré ni d’une expérimentation finalisée après publication. Lancez un nouveau scan pour comparer les décisions simulées après une modification."
+      }
+    ],
+    "attributionLabel": "L’attribution a ses limites",
+    "attributionFlow": [
+      "Balise d’attribution explicite, si disponible",
+      "Sinon, une visite récente provenant de l’IA dans cette boutique",
+      "Fenêtre configurée : sept jours par défaut"
+    ],
+    "attributionNote": "Une correspondance à l’échelle de la boutique ne prouve pas qu’il s’agit du même acheteur ayant passé la commande.",
+    "referenceTitle": "Le périmètre du suivi aujourd’hui.",
+    "referenceDescription": "Consultez les limites de collecte, les définitions des estimations et les limites du compte avant d’interpréter les résultats."
+  }
+}

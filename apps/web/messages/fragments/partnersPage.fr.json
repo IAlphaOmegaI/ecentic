@@ -1,0 +1,35 @@
+{
+  "partnersPage": {
+    "tracks": {
+      "description": "Apportez vos services, votre technologie ou votre audience aux boutiques avec lesquelles vous travaillez déjà."
+    },
+    "preparation": {
+      "title": "Préparez votre candidature",
+      "description": "Gardez ces informations à l’esprit avant de remplir le formulaire. Cochez-les au fur et à mesure.",
+      "progress": [
+        "3 informations à préparer",
+        "1 information sur 3 prête",
+        "2 informations sur 3 prêtes",
+        "Prêt(e) à remplir le formulaire"
+      ],
+      "items": [
+        {
+          "title": "Votre entreprise et votre site web",
+          "description": "Préparez le nom de votre entreprise, votre site web et l’adresse e-mail professionnelle la plus adaptée pour l’échange."
+        },
+        {
+          "title": "Votre type de partenariat",
+          "description": "Choisissez entre agences et revendeurs, partenaires technologiques, ou créateurs et affiliés."
+        },
+        {
+          "title": "Les boutiques avec lesquelles vous travaillez",
+          "description": "Ayez une idée du nombre de boutiques que vous accompagnez et de ce que vous aimeriez faire ensemble."
+        }
+      ],
+      "action": {
+        "primary": "Accéder à la candidature"
+      },
+      "note": "Cette liste de vérification est facultative. Ajoutez vos informations dans le formulaire ci-dessous."
+    }
+  }
+}

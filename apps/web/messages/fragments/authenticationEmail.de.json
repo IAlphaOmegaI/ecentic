@@ -1,0 +1,32 @@
+{
+  "authenticationEmail": {
+    "verify": {
+      "subject": "Bestätigen Sie Ihre E-Mail-Adresse",
+      "preview": "Bestätigen Sie Ihre E-Mail-Adresse, um ecentic zu nutzen",
+      "title": "Bestätigen Sie Ihre E-Mail-Adresse",
+      "description": "Beginnen Sie damit, Ihre Produktangebote für KI-Einkaufsagenten zu optimieren.",
+      "body": "Vielen Dank, dass Sie ein ecentic-Konto erstellt haben. Klicken Sie auf die Schaltfläche unten, um Ihre E-Mail-Adresse zu bestätigen.",
+      "requestedFor": "Diese Bestätigung wurde für {email} angefordert.",
+      "action": {
+        "primary": "E-Mail-Adresse bestätigen"
+      },
+      "ignored": "Falls Sie kein Konto bei ecentic erstellt haben, können Sie diese E-Mail ignorieren.",
+      "linkFallback": "Oder kopieren Sie diesen Link und fügen Sie ihn in Ihren Browser ein:",
+      "footer": "ecentic — Die KI-Commerce-Ebene."
+    },
+    "reset": {
+      "subject": "Setzen Sie Ihr Passwort zurück",
+      "preview": "Setzen Sie Ihr ecentic-Passwort zurück",
+      "title": "Setzen Sie Ihr Passwort zurück",
+      "description": "Wählen Sie ein neues Passwort und kehren Sie zu Ihren Produktangeboten zurück.",
+      "body": "Wir haben eine Anfrage erhalten, das Passwort für Ihr ecentic-Konto zurückzusetzen. Klicken Sie auf die Schaltfläche unten, um ein neues Passwort festzulegen.",
+      "requestedFor": "Diese Passwortzurücksetzung wurde für {email} angefordert.",
+      "action": {
+        "primary": "Neues Passwort festlegen"
+      },
+      "ignored": "Wenn Sie keine Passwortzurücksetzung angefordert haben, können Sie diese E-Mail einfach ignorieren. Ihr aktuelles Passwort bleibt weiterhin gültig.",
+      "linkFallback": "Oder kopieren Sie diesen Link und fügen Sie ihn in Ihren Browser ein:",
+      "footer": "ecentic — Die KI-Schicht für den Handel."
+    }
+  }
+}

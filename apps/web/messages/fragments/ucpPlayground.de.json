@@ -1,0 +1,61 @@
+{
+  "ucpPlayground": {
+    "meta": {
+      "title": "UCP Playground für Shopping-Agenten",
+      "description": "Testen Sie Katalogsuche, Warenkorb und Kaufabschluss mit einem UCP-Storefront. Prüfen Sie Anfragen und Antworten über MCP oder REST."
+    },
+    "breadcrumb": {
+      "home": "Startseite",
+      "page": "UCP Playground"
+    },
+    "hero": {
+      "eyebrow": "Universal Commerce Protocol",
+      "title": {
+        "primary": "Verbinden Sie einen KI-Einkaufsagenten",
+        "accent": "mit einem beliebigen Shop."
+      },
+      "description": "Kostenloser UCP Playground: Steuern Sie einen echten KI-Shopping-Agenten mit jedem UCP-Storefront. Führen Sie Katalogsuche, Warenkorb und Kaufabschluss über MCP oder REST aus und prüfen Sie die Aufrufe.",
+      "art": {
+        "alt": "ASCII-Grafik eines Roboters"
+      }
+    },
+    "demo": {
+      "title": "Sehen Sie zu, wie er sucht, einen Warenkorb erstellt und den Kauf abschließt.",
+      "titleLineBreak": "Sehen Sie zu, wie er sucht, einen Warenkorb erstellt <br />und den Kauf abschließt.",
+      "description": "Jeder Tool-Aufruf und jede Antwort offen einsehbar. Für Ihre ersten {limit} Nachrichten ist kein Konto erforderlich."
+    },
+    "capabilities": [
+      {
+        "title": "Katalogsuche & Produktabruf",
+        "description": "Bitten Sie den Agenten, den Katalog eines Storefronts zu durchsuchen oder ein einzelnes Produkt abzurufen, und prüfen Sie die genaue UCP-Antwort."
+      },
+      {
+        "title": "Warenkorb-Operationen",
+        "description": "Erstellen Sie einen Warenkorb, fügen Sie Positionen hinzu und verfolgen Sie, wie Summen berechnet werden — mit denselben Aufrufen, die auch ein KI-Shopping-Agent verwenden würde."
+      },
+      {
+        "title": "Checkout-Übergabe",
+        "description": "Starten Sie einen Checkout im Live-Shop und bestätigen Sie die Weiterleitungs-URL, die ein Agent an den Käufer zurückgeben würde."
+      }
+    ],
+    "faq": {
+      "items": [
+        {
+          "question": "Was ist der UCP Playground?",
+          "answer": "Eine Testumgebung, in der ein KI-Einkaufsagent Vorgänge des Universal Commerce Protocol live in einem von Ihnen gewählten Onlineshop ausführt. Sie ruft das /.well-known/ucp-Profil des Shops ab, wählt dessen MCP- oder REST-Endpunkt für Einkäufe aus und zeigt jeden Tool-Aufruf sowie jede Antwort an."
+        },
+        {
+          "question": "Welche Shops kann ich testen?",
+          "answer": "Jede Storefront, die unter /.well-known/ucp ein gültiges Universal Commerce Profile mit einem dev.ucp.shopping-Service veröffentlicht. Der Playground bevorzugt den MCP-Transport und greift andernfalls auf REST zurück."
+        },
+        {
+          "question": "Brauche ich ein Konto?",
+          "answer": "Nein. Jeder kann kostenlos bis zu {limit} Nachrichten senden. Erstellen Sie ein Konto, um unbegrenzt Sitzungen für Ihren eigenen verbundenen Shop auszuführen."
+        }
+      ]
+    },
+    "structuredData": {
+      "name": "UCP Playground"
+    }
+  }
+}

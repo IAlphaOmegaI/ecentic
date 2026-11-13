@@ -1,3 +1,4 @@
+import * as Sentry from "@sentry/nextjs";
 import { after } from "next/server";
 import { withCron } from "@/server/utils/cron";
 import { Environment } from "@/server/utils/environment";
@@ -59,6 +60,26 @@ export const reconcileBlogCatalog = withCron(
   },
   "Cron.reconcileBlogCatalog",
 );
+
+/** Short independent translation batches, separate from CMS freshness polling. */
+export const drainBlogTranslations = withCron(async () => {
+  after(async () => {
+    const results = await Promise.all([
+      Blog.drainTranslations(),
+      Blog.drainTranslations(),
+    ]);
+    const failed = results.filter(
+      (result) => !result.success || result.data.status === "failed",
+    ).length;
+    if (failed)
+      Sentry.captureMessage("Blog translation batches need attention", {
+        level: "warning",
+        tags: { integration: "blog-translations" },
+        extra: { batches: results.length, failed },
+      });
+  });
+  return { success: true, data: { scheduled: true, batches: 2 } };
+}, "Cron.drainBlogTranslations");
 
 /**
  * Keeps measured competitor prices current. Same handoff as the drain: each

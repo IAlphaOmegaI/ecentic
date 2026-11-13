@@ -1,0 +1,115 @@
+{
+  "dashboard": {
+    "agentic": {
+      "eyebrow": "Intelligence",
+      "title": "Score agentique",
+      "description": "Évalue à quel point votre vitrine en ligne est exploitable par un agent IA, selon Is Agentic, sur les critères de découverte, d’accessibilité, d’utilisabilité et de paiements agentiques.",
+      "sections": {
+        "scan": "01 — Scan",
+        "score": "02 — Score",
+        "journey": "03 — Tâche de l’agent",
+        "competitors": "04 — Concurrents",
+        "checks": "05 — Preuves",
+        "methodology": "06 — Méthodologie"
+      },
+      "scan": {
+        "title": "Lancer un scan",
+        "description": "Chaque scan analyse votre vitrine en ligne en direct. Les résultats sont enregistrés ici afin de suivre l’évolution du score.",
+        "action": "Lancer le scan",
+        "running": "Scan en cours…",
+        "starting": "Démarrage du scan",
+        "progress": "{done} / {total} vérifications",
+        "target": "Scan de {target}",
+        "lastScanned": "Dernier scan : {when}.",
+        "never": "Cette boutique n’a pas encore été analysée.",
+        "blocked": {
+          "running": "Un scan est déjà en cours pour cette boutique. Il apparaîtra ici dès qu’il sera disponible.",
+          "cooldown": "Cette boutique a été analysée récemment. Le prochain scan sera disponible {when}."
+        },
+        "disclosure": "Les scans sont exécutés par Is Agentic, un service public gratuit de Vercel Labs. Le nom de domaine de votre boutique en ligne est envoyé à is-agentic.com ; aucune donnée relative aux clients ou aux commandes ne quitte ecentic.",
+        "disclosureLink": "Documentation Is Agentic",
+        "announceProgress": "Scan effectué à {percent} %.",
+        "announceComplete": "Scan terminé. Score : {score} sur 100."
+      },
+      "score": {
+        "title": "Votre positionnement",
+        "description": "Le score provient d’Is Agentic et est affiché sans modification. Les couches sont classées selon leur importance pour une boutique.",
+        "scoreLabel": "Score agentique",
+        "gradeLabel": "Note",
+        "attribution": "Voir le rapport complet sur is-agentic.com",
+        "trend": "Évolution du score sur vos scans",
+        "fixesTitle": "Correctifs à plus fort impact",
+        "gain": "+{points}",
+        "gainAria": "{points} points",
+        "layerCounts": "{passed} validés · {warning} partiels · {failed} échoués · {notApplicable} non applicables",
+        "empty": "Lancez votre premier scan pour voir comment les agents lisent cette vitrine.",
+        "publicOnly": "Is Agentic dispose déjà d’un rapport public pour ce domaine, avec un score de {score} / 100 — {label}. Lancez un scan pour récupérer le détail complet, vérification par vérification, et commencer à suivre la tendance.",
+        "publicLink": "Voir le rapport public",
+        "status": {
+          "success": "Solide",
+          "warning": "À améliorer",
+          "error": "Faible"
+        },
+        "fixesNote": "Cette liste provient d’Is Agentic et est classée selon le nombre de points apportés par chaque correction. Les éléments liés aux spécifications d’API, aux SDK ou aux portails développeurs s’appliquent à l’ensemble du domaine, pas à votre catalogue — commencez par ceux qu’ecentic peut prendre en charge.",
+        "publicOnlyUnscored": "Is Agentic dispose d’un rapport pour ce domaine mais ne l’a pas encore noté — {label}. Lancez un scan pour récupérer le détail complet, vérification par vérification, et commencer à suivre la tendance.",
+        "trendSummary": "{count} scans depuis {since}, de {first} à {latest} sur 100."
+      },
+      "journey": {
+        "title": "Ce qu’un agent a réellement fait",
+        "description": "Is Agentic envoie un agent réel sur cette boutique en ligne et enregistre son parcours. Cette carte sert d’élément de preuve complémentaire — elle ne modifie pas le score numérique.",
+        "empty": "Aucun parcours d’agent n’est encore enregistré pour ce domaine. Il apparaîtra dans le rapport Is Agentic une fois l’exécution terminée.",
+        "running": "Un agent parcourt actuellement cette vitrine. La carte se complète au fur et à mesure.",
+        "runningLabel": "En cours",
+        "reasoning": "Raisonnement",
+        "analytics": {
+          "stepLabel": "{count, plural, one {étape} many {étapes} other {étapes}}",
+          "reasoningLabel": "{count, plural, one {étape de raisonnement} many {étapes de raisonnement} other {étapes de raisonnement}}",
+          "searchLabel": "{count, plural, one {recherche} many {recherches} other {recherches}}"
+        },
+        "attribution": "Tâche observée sur is-agentic.com",
+        "verdict": {
+          "satisfied": "Tâche accomplie",
+          "partial": "Partiellement accomplie",
+          "unsatisfied": "Non accomplie",
+          "not_gradable": "Non évaluable"
+        }
+      },
+      "checks": {
+        "title": "Toutes les vérifications",
+        "description": "Les éléments de preuve derrière le score, regroupés par couche. Les vérifications qui ne s’appliquent pas à une vitrine sont listées à la fin avec leur justification.",
+        "summary": "{applicable} applicables · {failed} à corriger",
+        "notApplicable": "Cette vérification ne s’applique pas à votre vitrine.",
+        "remedy": "Corriger dans ecentic",
+        "empty": "Lancez un scan pour voir la liste complète des vérifications."
+      },
+      "checkStatus": {
+        "pass": "Validé",
+        "warning": "Partiel",
+        "fail": "Échec",
+        "error": "Erreur de vérification",
+        "na": "Non applicable",
+        "unknown": "Non reconnu"
+      },
+      "competitors": {
+        "title": "Scores des concurrents",
+        "description": "Le même scan exécuté sur les vitrines des concurrents sélectionnés. Chaque domaine a son propre délai entre deux scans, donc vérifier un concurrent n’utilise jamais vos propres scans.",
+        "action": "Scanner",
+        "scanned": "Scanné pour la dernière fois {when}.",
+        "never": "Pas encore scanné.",
+        "unscored": "Aucun score",
+        "ahead": "Vous avez {points} points d’avance",
+        "behind": "Vous avez {points} points de retard",
+        "coverage": "{scored} vitrines notées sur {total}",
+        "columnStorefront": "Vitrine",
+        "columnScanned": "Dernier scan",
+        "columnScore": "Score",
+        "columnGap": "par rapport à vous",
+        "empty": "Aucune vitrine concurrente pour le moment. Ajoutez des concurrents et ecentic scannera les domaines associés."
+      },
+      "methodology": {
+        "title": "Fonctionnement du score",
+        "description": "Description du modèle de notation fournie par Is Agentic, lue en direct depuis leur serveur MCP."
+      }
+    }
+  }
+}

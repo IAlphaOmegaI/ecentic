@@ -1,0 +1,14 @@
+{
+  "electronicsPage": {
+    "selectorLabel": "Eine Käuferfrage erkunden",
+    "scenarioLabels": [
+      "Ohrhörer",
+      "Laptops",
+      "Saugroboter"
+    ],
+    "sourceLabel": "Zu prüfende Quelldatenfelder",
+    "inspectLabel": "Verfolgen Sie die Frage bis in die technischen Daten.",
+    "mapLabel": "Alle sechs Quelldatenfelder prüfen",
+    "boundary": "Ein Ausgangspunkt zur Prüfung von Quelldaten, kein Kompatibilitätsergebnis."
+  }
+}

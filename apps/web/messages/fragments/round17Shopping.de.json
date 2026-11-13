@@ -1,0 +1,22 @@
+{
+  "round17Shopping": {
+    "sample": "Beispielhafte Einkaufsergebnisse",
+    "followUps": "Weitere Frage ansehen",
+    "evidence": "Was im Produktangebot fehlt",
+    "source": "Quelldaten",
+    "missing": "Fehlt im Produktangebot",
+    "present": "Bereits im Produktangebot",
+    "evidenceNote": "Die hervorgehobenen Angaben sind bereits in den Beispiel-Quelldaten vorhanden. Machen Sie sie im Produktangebot explizit, bevor Sie erneut vergleichen.",
+    "qualification": "Beispielhafte Quelldaten. Prüfen Sie diese vor der Veröffentlichung.",
+    "responses": {
+      "wine-and-spirits": "Hier sind zwei Flaschen zum Vergleichen. Prüfen Sie die Verkostungsnotizen, Herkunft und Flaschendetails anhand Ihrer Vorstellungen.",
+      "food-and-beverage": "Diese beiden Optionen lohnen einen Vergleich. Portionsgröße und Zutatenangaben helfen bei der Auswahl.",
+      "beauty-and-personal-care": "Hier sind zwei Optionen zur Auswahl. Ich würde die Formulierung und die angegebene Eignung des Produkts mit Ihren Anforderungen vergleichen.",
+      "consumer-electronics": "Ich würde diese beiden Optionen anhand der für Ihren Einsatz wichtigen Spezifikationen vergleichen. Das enthalten ihre Produktangebote.",
+      "home-and-furniture": "Diese beiden Optionen sind ein guter Ausgangspunkt. Prüfen Sie Maße und Materialien, bevor Sie entscheiden, was zu Ihrem Raum passt.",
+      "fashion-and-outdoor": "Hier sind zwei Optionen zum Vergleichen. Achten Sie auf Passform, Materialien und die angegebene Leistung für Ihren Einsatzzweck.",
+      "health-wellness-and-pet": "Diese beiden Produktangebote liefern einige Fakten zum Vergleichen. Prüfen Sie Zutaten und Hinweise und klären Sie die Eignung mit qualifiziertem Fachpersonal ab.",
+      "travel-and-experiences": "Hier sind zwei Optionen für Ihre Reise. Vergleichen Sie Termine, Ort und vollständige Bedingungen, bevor Sie sich entscheiden."
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "browserShopify": {
+    "sections": {
+      "workflow": "Workflow",
+      "access": "Zugriff",
+      "requirements": "Voraussetzungen",
+      "setup": "Einrichtung"
+    }
+  }
+}

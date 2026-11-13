@@ -1,0 +1,526 @@
+{
+  "enterpriseHome": {
+    "meta": {
+      "title": "Optimisation du shopping IA et paiement par agent | ecentic",
+      "description": "La couche commerce IA : corrigez les données produit lues par les assistants IA, préparez votre paiement pour les achats par IA et adaptez-vous à l’évolution de leurs règles."
+    },
+    "hero": {
+      "eyebrow": "La couche commerce IA",
+      "title": "Une couche entre votre catalogue et l’IA qui le vend.",
+      "description": "Que les clients recherchent sur Google, achètent sur Amazon ou interrogent un chatbot, l’IA répond désormais avec un produit, et chaque assistant applique ses propres règles pour le choisir et l’acheter. ecentic constitue une couche entre votre catalogue et ces assistants. La plateforme corrige les données qu’ils lisent, prépare votre passage de commande pour leur permettre d’acheter et s’adapte à l’évolution de leurs règles.",
+      "actions": [
+        {
+          "label": "Réserver une démo",
+          "href": "/demo"
+        },
+        {
+          "label": "Analyser ma boutique gratuitement",
+          "href": "/sign-up"
+        }
+      ],
+      "facts": [
+        "Connectez Shopify et WooCommerce, ou importez un flux produit compatible ou un CSV."
+      ],
+      "screenshot": {
+        "alt": "Vue d’ensemble du taux de victoire ecentic affichant explicitement des données d’exemple.",
+        "caption": "Capture produit · données d’exemple"
+      }
+    },
+    "programs": {
+      "eyebrow": "Programmes dont nous faisons partie",
+      "title": "Développé avec le soutien de ces programmes.",
+      "items": [
+        {
+          "id": "plug-and-play",
+          "title": "Plug and Play"
+        },
+        {
+          "id": "microsoft-for-startups",
+          "title": "Microsoft for Startups"
+        },
+        {
+          "id": "red-bull-basement",
+          "title": "Red Bull Basement"
+        },
+        {
+          "id": "founder-games",
+          "title": "The Founder Games"
+        },
+        {
+          "id": "fil-rouge-capital",
+          "title": "Fil Rouge Capital"
+        }
+      ],
+      "missingAsset": ""
+    },
+    "businesses": {
+      "eyebrow": "02 · Pour qui",
+      "title": "Des entreprises différentes. Un même nouveau type d’acheteur.",
+      "description": "Commencez par votre mode de vente et les questions auxquelles votre équipe doit répondre.",
+      "painLabel": "Les problèmes habituels",
+      "items": [
+        {
+          "id": "brands",
+          "eyebrow": "Marques",
+          "title": "Devenez le produit cité dans la réponse.",
+          "description": "Marques DTC et grand public",
+          "pains": [
+            "L’IA recommande un concurrent dans votre propre catégorie.",
+            "Les distributeurs décrivent vos produits mieux que vous.",
+            "Vous ne voyez pas quels produits les assistants ignorent."
+          ],
+          "href": "/solutions/brands",
+          "label": "Découvrir les marques"
+        },
+        {
+          "id": "retailers-and-marketplaces",
+          "eyebrow": "Distributeurs et marketplaces",
+          "title": "Des milliers de fiches produit. Une seule chance face à l’agent.",
+          "description": "Grands catalogues, nombreux fournisseurs",
+          "pains": [
+            "Des données fournisseur que les assistants ne peuvent pas comparer.",
+            "Le flux et le site ne concordent pas sur le prix ou le stock.",
+            "Impossible de vérifier chaque produit manuellement."
+          ],
+          "href": "/solutions/retailers-and-marketplaces",
+          "label": "Découvrir les distributeurs"
+        },
+        {
+          "id": "enterprise",
+          "eyebrow": "Enterprise",
+          "title": "L’IA est un nouveau canal. Gérez-le comme tel.",
+          "description": "De nombreuses marques, marchés et équipes",
+          "pains": [
+            "Chaque marché apporte des questions d’achat différentes.",
+            "La revue de sécurité précède l’accès au catalogue.",
+            "Personne n’est responsable de l’IA comme canal de vente."
+          ],
+          "href": "/solutions/enterprise",
+          "label": "Découvrir Enterprise"
+        },
+        {
+          "id": "agencies-and-partners",
+          "eyebrow": "Agences et partenaires",
+          "title": "Ajoutez le commerce IA à ce que vous vendez déjà.",
+          "description": "Gestion de boutiques pour des clients",
+          "pains": [
+            "Les clients posent des questions sur ChatGPT et vous devez répondre.",
+            "Les audits de catalogue se font encore manuellement.",
+            "Vous avez besoin d’une offre claire pour ce nouveau canal."
+          ],
+          "href": "/solutions/agencies-and-partners",
+          "label": "Découvrir les agences"
+        }
+      ]
+    },
+    "loop": {
+      "eyebrow": "03 · Fonctionnement",
+      "title": "Du flux produit au paiement IA.",
+      "description": "Connectez, comparez, améliorez, vendez et vérifiez à nouveau. Vous choisissez les modifications à publier.",
+      "steps": [
+        {
+          "id": "connect",
+          "title": "Connecter",
+          "body": "Centralisez votre catalogue via Shopify, WooCommerce, un flux XML ou JSON compatible, ou un CSV.",
+          "tags": [
+            "Shopify",
+            "WooCommerce",
+            "Flux produit"
+          ],
+          "href": "/platform/connect",
+          "label": "Découvrir la connexion du catalogue"
+        },
+        {
+          "id": "simulate",
+          "title": "Simuler",
+          "body": "Voyez quel produit ChatGPT, Claude et Gemini choisissent dans une comparaison, et consultez le raisonnement derrière chaque choix simulé.",
+          "tags": [
+            "Taux de victoire",
+            "Battlecards",
+            "Audit de préparation"
+          ],
+          "href": "/platform/simulate",
+          "label": "Découvrir les simulations"
+        },
+        {
+          "id": "fix",
+          "title": "Corriger",
+          "body": "Apply génère et publie des titres et descriptions à partir des informations produit existantes. Publiez des données structurées et synchronisez Merchant Center via des contrôles distincts.",
+          "tags": [
+            "Fiches produit",
+            "Données structurées",
+            "Merchant Center"
+          ],
+          "href": "/platform/fix",
+          "label": "Découvrir la correction des fiches"
+        },
+        {
+          "id": "sell",
+          "title": "Vendre",
+          "body": "Connectez le paiement par agent sur WooCommerce, testez le parcours et conservez votre propre prestataire de paiement. Les critères d’éligibilité des plateformes et les transferts de paiement continuent de s’appliquer.",
+          "tags": [
+            "Paiement par agent",
+            "Tests de paiement",
+            "Vos paiements"
+          ],
+          "href": "/platform/sell",
+          "label": "Découvrir la vente par IA"
+        },
+        {
+          "id": "track",
+          "title": "Suivre",
+          "body": "Suivez les visites provenant de l’IA détectées sur Shopify, comparez les simulations terminées et demandez un nouveau scan lorsque vous souhaitez refaire le point.",
+          "tags": [
+            "Trafic IA",
+            "Nouvelles analyses manuelles",
+            "Plusieurs boutiques"
+          ],
+          "href": "/platform/track",
+          "label": "Découvrir le suivi"
+        }
+      ]
+    },
+    "film": {
+      "eyebrow": "04 · Voir en action",
+      "title": "Découvrez ecentic en une minute.",
+      "description": "Un aperçu rapide du produit, de la comparaison à la prochaine décision pour votre catalogue.",
+      "caption": "Vidéo produit ecentic",
+      "action": {
+        "primary": "Voir la vidéo"
+      }
+    },
+    "channels": {
+      "eyebrow": "05 · Canaux IA",
+      "title": "Un seul catalogue. Les assistants que vos clients consultent.",
+      "description": "Chaque assistant utilise ses propres sources produit et règles d’achat. Découvrez ce qu’ecentic prend en charge aujourd’hui et ce qui est prévu.",
+      "checked": "Vérifié le 10 novembre 2026. Chaque page de canal est datée et renvoie vers ses sources.",
+      "items": [
+        {
+          "id": "google",
+          "title": "Google AI Mode et Gemini",
+          "body": "Simulations Gemini, plus synchronisation Merchant Center pour Shopify.",
+          "status": "simulated",
+          "statusLabel": "Simulé",
+          "href": "/ai-channels/google-ai-mode-gemini"
+        },
+        {
+          "id": "chatgpt",
+          "title": "ChatGPT",
+          "body": "Simulations et vérifications de fiches produit selon les règles de flux d’OpenAI.",
+          "status": "simulated",
+          "statusLabel": "Simulé",
+          "href": "/ai-channels/chatgpt"
+        },
+        {
+          "id": "claude",
+          "title": "Claude",
+          "body": "Simulations de la manière dont Claude compare vos produits.",
+          "status": "simulated",
+          "statusLabel": "Simulé",
+          "href": "/ai-channels/claude"
+        },
+        {
+          "id": "copilot",
+          "title": "Microsoft Copilot",
+          "body": "Un export de flux vers Microsoft Merchant Center est prévu.",
+          "status": "coming-soon",
+          "statusLabel": "Bientôt disponible",
+          "href": "/ai-channels/microsoft-copilot"
+        },
+        {
+          "id": "perplexity",
+          "title": "Perplexity",
+          "body": "Des simulations d’analyse de boutique et un flux marchand sont prévus.",
+          "status": "coming-soon",
+          "statusLabel": "Bientôt disponible",
+          "href": "/ai-channels/perplexity"
+        },
+        {
+          "id": "amazon",
+          "title": "Amazon",
+          "body": "La livraison de catalogue vers Shop Direct est prévue.",
+          "status": "coming-soon",
+          "statusLabel": "Bientôt disponible",
+          "href": "/ai-channels/amazon"
+        }
+      ],
+      "link": {
+        "label": "Voir tout",
+        "href": "/ai-channels"
+      }
+    },
+    "integration": {
+      "eyebrow": "06 · Intégrations",
+      "title": "S’intègre à l’infrastructure que vous utilisez déjà.",
+      "description": "Connexions directes, flux compatibles et prochaines intégrations en cours de développement. Chaque carte indique son statut actuel.",
+      "counter": {
+        "live": "en ligne",
+        "feed": "via flux produit",
+        "soon": "bientôt disponible"
+      },
+      "links": [
+        {
+          "label": "Voir toutes les intégrations",
+          "href": "/integrations"
+        },
+        {
+          "label": "Demander une intégration",
+          "href": "/integrations#request"
+        }
+      ]
+    },
+    "mechanisms": {
+      "eyebrow": "07 · Sous le capot",
+      "title": "Tout ce qu’il se passe entre « l’IA nous a ignorés » et « l’IA a acheté chez nous ».",
+      "items": [
+        {
+          "id": "simulations",
+          "title": "Simulations d’agents",
+          "body": "ChatGPT, Claude et Gemini choisissent entre votre produit et celui d’un concurrent dans une simulation enregistrée.",
+          "tags": [
+            "Taux de victoire",
+            "Replay",
+            "Battlecards"
+          ],
+          "href": "/platform/simulate",
+          "label": "Voir les simulations"
+        },
+        {
+          "id": "readiness",
+          "title": "Audit de préparation",
+          "body": "Vérifiez les règles des robots d’exploration, le HTML échantillonné des pages, les identifiants produit et l’éligibilité des flux. Les pages inaccessibles sont signalées pour examen.",
+          "tags": [
+            "Robots d’exploration",
+            "Schéma",
+            "GTIN"
+          ],
+          "href": "/platform/simulate#readiness",
+          "label": "Voir l’audit"
+        },
+        {
+          "id": "catalog",
+          "title": "Corrections du catalogue",
+          "body": "Générez et publiez des titres et descriptions à partir des données produit existantes. Les données structurées disposent de leur propre action de publication.",
+          "tags": [
+            "Fiches produit",
+            "Attributs",
+            "Publier"
+          ],
+          "href": "/platform/fix",
+          "label": "Voir les corrections du catalogue"
+        },
+        {
+          "id": "merchant-center",
+          "title": "Synchronisation du Merchant Center",
+          "body": "Envoyez les corrections de fiches produit publiées et les attributs de paiement via une synchronisation distincte de flux complémentaire pour Shopify.",
+          "tags": [
+            "Flux complémentaire",
+            "Diagnostics",
+            "Shopify"
+          ],
+          "href": "/platform/fix#merchant-center",
+          "label": "Voir la synchronisation"
+        },
+        {
+          "id": "checkout",
+          "title": "Paiement via agent IA pour WooCommerce",
+          "body": "Offrez aux parcours d’achat par agent IA pris en charge un accès via votre propre boutique et fournisseur de paiement, avec des tests de paiement et des contrôles configurables.",
+          "tags": [
+            "Configuration",
+            "Tests",
+            "Validateur"
+          ],
+          "href": "/platform/sell",
+          "label": "Voir le paiement via agent IA"
+        },
+        {
+          "id": "developers",
+          "title": "API, serveur MCP et CLI",
+          "body": "Utilisez les interfaces publiées pour la découverte, les forfaits, la connexion à la boutique et le statut de configuration.",
+          "tags": [
+            "REST",
+            "MCP",
+            "CLI"
+          ],
+          "href": "/docs",
+          "label": "Ouvrir la documentation pour les développeurs"
+        }
+      ]
+    },
+    "proof": {
+      "eyebrow": "08 · Ce que nous avons mesuré jusqu’ici",
+      "title": "Ce que nous avons mesuré jusqu’ici.",
+      "stats": [
+        {
+          "value": "36,797",
+          "title": "Achats simulés",
+          "body": "Sur ChatGPT, Claude, Gemini et Perplexity.",
+          "footnote": "1"
+        },
+        {
+          "value": "2.8×",
+          "title": "Aussi souvent sur le même catalogue",
+          "body": "ChatGPT a choisi le même produit dans 51,6 % des cas ; Claude et Gemini environ 18,5 %.",
+          "footnote": "1"
+        },
+        {
+          "value": "+12%",
+          "title": "Visites pour DUA Flavours",
+          "body": "Visites provenant d’assistants IA ou de trafic direct, d’avril à juillet 2026. DUA Flavours, pilote ecentic, publié avec autorisation.",
+          "footnote": "2"
+        }
+      ],
+      "study": {
+        "title": "Une grande marketplace de spiritueux",
+        "body": "88 % des 9 699 produits présentaient au moins une anomalie dans les données lues par les agents. Lorsqu’on lui demandait où acheter deux bouteilles qu’elle avait en stock, un agent ne l’a citée 0 fois sur 20.",
+        "note": "Résultat anonymisé. Il s’agit d’un instantané d’un catalogue et d’un ensemble de questions, pas d’une prédiction pour toutes les boutiques."
+      },
+      "footnotes": [
+        {
+          "marker": "1",
+          "text": "Simulations ecentic, 2026. Décisions d’achat simulées, pas du trafic réel d’agents. Perplexity faisait partie de l’ensemble de recherche ; les analyses de boutiques sont exécutées sur ChatGPT, Claude et Gemini. La description de la méthodologie n’est pas encore publiée."
+        },
+        {
+          "marker": "2",
+          "text": "Résultat pilote, confirmé par écrit par DUA Flavours. Des visites, pas des ventes. Inclut le trafic direct et n’établit pas de ventes incrémentales causées par ecentic."
+        }
+      ],
+      "pipeline": "Pilotes en cadrage avec des entreprises du retail, du voyage et des espaces de travail flexibles."
+    },
+    "procurement": {
+      "eyebrow": "09 · Enterprise",
+      "title": "Apportez les bonnes questions à l’examen de sécurité.",
+      "items": [
+        {
+          "title": "Vous choisissez ce qui est publié.",
+          "body": "Les modifications des fiches produit nécessitent l’action Appliquer de votre choix. Les données structurées et la synchronisation Merchant Center disposent de contrôles distincts. La connexion à Shopify installe également le suivi des visites."
+        },
+        {
+          "title": "Pilotes sur données publiques.",
+          "body": "Commencez avec un catalogue public accessible ou un flux pris en charge. Définissez le périmètre avant de connecter des systèmes ou d’accorder un accès en écriture."
+        },
+        {
+          "title": "Un traitement des données vérifiable.",
+          "body": "Consultez la politique de confidentialité et les fournisseurs utilisés par le produit. Discutez des exigences de traitement des données, de déploiement et de contractualisation pour votre pilote."
+        },
+        {
+          "title": "Un fondateur dédié à votre compte.",
+          "body": "Un échange direct avec les personnes qui développent ecentic, de la première catégorie jusqu’au bilan du pilote."
+        }
+      ],
+      "links": [
+        {
+          "label": "Nous contacter",
+          "href": "/demo"
+        },
+        {
+          "label": "Lire la page sécurité et confiance",
+          "href": "/security"
+        }
+      ]
+    },
+    "pricing": {
+      "eyebrow": "10 · Tarification",
+      "title": "Commencez gratuitement. Passez à l’échelle quand l’IA commence à acheter.",
+      "description": "Choisissez un point de départ adapté à votre boutique et à votre équipe.",
+      "items": [
+        {
+          "title": "Vérification gratuite de la boutique",
+          "body": "Créez un compte et voyez comment vos produits se comparent.",
+          "href": "/sign-up",
+          "label": "Vérifier ma boutique gratuitement"
+        },
+        {
+          "title": "Forfaits en libre-service pour une seule boutique",
+          "body": "Plans mensuels ou paiement à l’usage, avec les limites actuelles et les règles d’attribution expliquées sur la page Tarification.",
+          "href": "/pricing",
+          "label": "Comparer les plans"
+        },
+        {
+          "title": "Pilotes Enterprise définis avec vous",
+          "body": "Convenez avec nous de la catégorie, du niveau de référence et des décisions que votre équipe doit prendre.",
+          "href": "/demo",
+          "label": "Parler d’un pilote"
+        }
+      ],
+      "action": {
+        "label": "Voir les tarifs",
+        "href": "/pricing"
+      }
+    },
+    "editorial": {
+      "eyebrow": "11 · Par l’équipe",
+      "title": "Ce que nous apprenons.",
+      "description": "Notes produit et guides pratiques rédigés par l’équipe ecentic.",
+      "loading": "Chargement des articles",
+      "empty": "Nos prochaines notes produit et guides apparaîtront ici.",
+      "read": "Lire l’article",
+      "links": [
+        {
+          "label": "Explorer les ressources",
+          "href": "/resources"
+        }
+      ]
+    },
+    "faq": {
+      "title": "Questions avant de commencer.",
+      "items": [
+        {
+          "question": "Que fait ecentic ?",
+          "answer": "ecentic est une couche intermédiaire entre votre catalogue et les assistants IA qui l’utilisent pour vendre. La plateforme simule la manière dont ChatGPT, Claude et Gemini comparent les produits, aide à améliorer les données qu’ils lisent et prend en charge le passage de commande par agent IA sur WooCommerce."
+        },
+        {
+          "question": "Quels assistants IA sont pris en charge ?",
+          "answer": "Les simulations de boutique fonctionnent sur ChatGPT, Claude et Gemini. Le suivi des visites Shopify reconnaît les signaux de provenance IA pris en charge, notamment ChatGPT, Perplexity, Claude, Gemini et Copilot. Le paiement dépend de la configuration de votre boutique et de l’éligibilité de la plateforme d’achat. Chaque page de canal IA affiche le statut actuel."
+        },
+        {
+          "question": "ecentic modifie-t-il notre boutique sans autorisation ?",
+          "answer": "Les modifications des fiches produit nécessitent l’action Appliquer de votre choix, qui génère et publie un titre et une description. Les données structurées et la synchronisation Merchant Center utilisent des contrôles distincts. La connexion à Shopify installe également le script de suivi des visites. L’importation de contenu produit ne le réécrit pas."
+        },
+        {
+          "question": "Est-ce compatible avec notre plateforme ?",
+          "answer": "Shopify et WooCommerce se connectent directement. Les autres plateformes peuvent importer un flux produit XML ou JSON pris en charge, ou un CSV. La prise en charge des flux dépend de la structure d’export et des champs mappés ; les imports de flux ne réécrivent pas les données sur la plateforme d’origine."
+        },
+        {
+          "question": "Avez-vous besoin d’un accès à nos systèmes pour un pilote ?",
+          "answer": "Un pilote peut démarrer à partir d’un catalogue public accessible ou d’un flux produit pris en charge. Nous définissons le périmètre avec vous avant toute intégration système ou tout accès en écriture à la boutique."
+        },
+        {
+          "question": "Comment nos données sont-elles traitées ?",
+          "answer": "La page sécurité décrit les modalités actuelles d’accès au catalogue, de suivi et de traitement par les fournisseurs d’IA. Consultez notre politique de confidentialité et les fournisseurs utilisés par le produit, puis confirmez avec nous les exigences de traitement des données, de déploiement et de contractualisation avant un pilote."
+        },
+        {
+          "question": "Est-ce du SEO ?",
+          "answer": "ecentic se concentre sur les données produit et le paiement utilisés par les assistants d’achat IA pour comparer et acheter. Le travail peut recouper les pratiques liées aux données structurées et à la qualité du catalogue, mais les mesures reposent sur des simulations, des provenances IA détectées et des vérifications de paiement, plutôt que sur des classements de recherche."
+        },
+        {
+          "question": "Combien cela coûte-t-il ?",
+          "answer": "La vérification de la boutique est gratuite avec un compte. Pour une seule boutique, vous pouvez choisir un forfait mensuel ou un paiement à l’usage. Les règles et limites d’attribution de la commission à la performance sont expliquées sur la page Tarifs ; l’attribution ne prouve pas l’existence de ventes supplémentaires. Les pilotes pour grandes entreprises sont définis avec vous."
+        }
+      ]
+    },
+    "closing": {
+      "title": "Obtenez la vente quand l’IA effectue l’achat.",
+      "description": "Découvrez si elle choisit vos produits.",
+      "actions": [
+        {
+          "label": "Réserver une démo",
+          "href": "/demo"
+        },
+        {
+          "label": "Vérifier ma boutique gratuitement",
+          "href": "/sign-up"
+        }
+      ]
+    }
+  },
+  "home": {
+    "heroVideo": {
+      "heading": "Voir ecentic en action",
+      "caption": "Regarder le film produit",
+      "action": {
+        "primary": "Lancer la vidéo"
+      }
+    }
+  }
+}

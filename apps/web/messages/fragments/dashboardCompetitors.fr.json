@@ -1,0 +1,79 @@
+{
+  "dashboard": {
+    "competitors": {
+      "title": "Concurrents",
+      "description": "Comment les agents d’achat IA vous classent face aux marques que vous suivez.",
+      "action": {
+        "primary": "Ajouter un concurrent",
+        "addCompetitor": "Ajouter un concurrent",
+        "addCompetitors": "Ajouter des concurrents"
+      },
+      "stats": {
+        "brandsTracked": "Marques suivies",
+        "winningAgainst": "Concurrents devancés",
+        "mostDangerous": "Le plus menaçant",
+        "totalSimulations": "Total des simulations",
+        "productsMonitored": "{count, plural, one {# produit surveillé} many {# produits surveillés} other {# produits surveillés}}",
+        "sinceLastScan": "depuis le dernier scan",
+        "averageWinRate": "{rate}% de taux de victoire moyen",
+        "winRateAgainstThem": "votre taux de victoire contre eux",
+        "acrossCompetitors": "sur {count, plural, one {# concurrent} many {# concurrents} other {# concurrents}}"
+      },
+      "landscape": {
+        "kicker": "01 — Paysage concurrentiel",
+        "winRateByCompetitor": "Taux de victoire par concurrent",
+        "distribution": "Répartition",
+        "winRateTiers": "Niveaux de taux de victoire",
+        "simAbbrev": "{count} sim",
+        "tiers": {
+          "dominating": "Dominant (≥75%)",
+          "competitive": "Compétitif (50–74%)",
+          "atRisk": "À risque (30–49%)",
+          "losing": "En difficulté (<30%)"
+        }
+      },
+      "table": {
+        "kickerAll": "02 — Tous les concurrents"
+      },
+      "insights": {
+        "kicker": "03 — Analyse",
+        "summary": "Résumé concurrentiel",
+        "keyInsight": "Point clé",
+        "optimizeLosing": "Optimiser les fiches produit perdantes",
+        "recentScanActivity": "Activité récente des scans",
+        "scanCompleted": "Scan terminé — {wins}V / {losses}D",
+        "scanInProgress": "Scan en cours — {completed}/{total}",
+        "completedScans": "{count, plural, one {# scan terminé} many {# scans terminés} other {# scans terminés}}",
+        "viewAllActivity": "Voir toute l’activité",
+        "headlines": {
+          "outrankAll": "Vous devancez les {count} concurrent{plural} simulés (taux de victoire moyen de {overall}%).",
+          "slimmestLead": "Votre plus faible avance est face à {brand} avec {rate}%. Gardez vos fiches produit optimisées pour la défendre.",
+          "biggestOpportunity": "{brand} remporte {lossRate}% des comparaisons d’agents face à vous. C’est votre plus grande opportunité.",
+          "holdMajority": "Vous êtes majoritaire face à {winning} concurrent{plural} sur {total} (moyenne de {overall}%). Optimiser les produits sur lesquels {brand} vous bat aura le plus d’impact.",
+          "defaultHeadline": "Vous êtes majoritaire face à {winning} concurrent{plural} sur {total} (taux de victoire moyen de {overall}%).",
+          "focusOptimization": "Concentrez une optimisation de fiche produit sur les produits où {brand} vous bat.",
+          "toughestRival": "{toughest} est votre rival le plus difficile avec {toughestRate}% ; vous devancez {strongest} avec {strongestRate}%."
+        }
+      },
+      "add": {
+        "title": "Ajouter des concurrents à cette boutique",
+        "shellTitle": "Ajouter des concurrents",
+        "shellDescription": "Les marques auxquelles le catalogue de cette boutique est comparé. Les concurrents sont liés à une seule boutique et ne sont donc jamais mélangés avec vos autres boutiques.",
+        "description": "Détectez-les à partir de votre catalogue, collez des URL de produits ou recherchez une marque. Tout ajout est associé uniquement à cette boutique.",
+        "findKicker": "01 — Trouver",
+        "rosterKicker": "02 — Sélection",
+        "trackedTitle": "Suivis dans cette boutique",
+        "trackedDescription": "Seuls les concurrents sélectionnés sont évalués lorsqu’un scan est lancé sans sélection explicite.",
+        "rosterSummary": "{total} sur {brands, plural, one {# marque} many {# marques} other {# marques}} — {selected} sélectionnés",
+        "emptyRoster": "Aucun concurrent suivi pour le moment. Ajoutez-en ci-dessus et ils apparaîtront ici.",
+        "tabs": {
+          "liveOffers": "Offres actives",
+          "autoDetect": "Détection automatique",
+          "pasteUrls": "Coller des URL",
+          "searchBrand": "Rechercher une marque",
+          "googleMerchant": "Google"
+        }
+      }
+    }
+  }
+}

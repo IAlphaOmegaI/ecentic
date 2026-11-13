@@ -1,0 +1,23 @@
+{
+  "playgroundPage": {
+    "guide": {
+      "title": "Von der Discovery bis zum Checkout",
+      "description": "Entdecken Sie die Aufrufe hinter einer Shopping-Session.",
+      "discovery": {
+        "title": "Den Shop entdecken",
+        "description": "Lesen Sie das UCP-Profil des Shops und wählen Sie anschließend dessen Shopping-Endpunkt aus. Der Playground bevorzugt MCP und greift andernfalls auf REST zurück."
+      },
+      "action": {
+        "primary": "Playground öffnen",
+        "secondary": "UCP-Profil prüfen"
+      }
+    },
+    "session": {
+      "title": "Live-Shopping-Session",
+      "description": "Prüfen Sie Tool-Aufrufe und Antworten, während der Agent einkauft."
+    },
+    "faq": {
+      "title": "Bevor Sie eine Verbindung herstellen"
+    }
+  }
+}

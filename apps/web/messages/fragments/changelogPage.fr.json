@@ -1,0 +1,9 @@
+{
+  "changelogPage": {
+    "archive": "Parcourir l’historique des versions",
+    "action": {
+      "primary": "Afficher toutes les mises à jour",
+      "secondary": "Afficher le dernier mois"
+    }
+  }
+}

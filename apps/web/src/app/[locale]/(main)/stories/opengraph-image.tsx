@@ -18,6 +18,7 @@ export default async ({ params }: { params: Promise<{ locale: string }> }) => {
   const messages = await getMessages({ locale });
   const content = messages.enterpriseCompany.stories;
   return createEnterpriseOgImage({
+    locale,
     title: content.title,
     description: content.description,
     signoff: messages.enterpriseChrome.closing.title,

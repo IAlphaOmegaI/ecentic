@@ -1,0 +1,41 @@
+{
+  "enterprisePage": {
+    "engagements": {
+      "description": "Choisissez la question à laquelle vous devez répondre. Définissez le périmètre et les frais avant le début de la mission.",
+      "label": "Découvrir les missions pour entreprises",
+      "pilotAction": "Voir le déroulé du pilote",
+      "items": [
+        {
+          "duration": "4 semaines",
+          "question": "Par où commencer ?",
+          "path": [
+            "Définir une catégorie et un ensemble de questions",
+            "Établir la référence",
+            "Prioriser la liste des correctifs"
+          ]
+        },
+        {
+          "duration": "6 semaines",
+          "question": "Qu’est-ce qui change après correction des données ?",
+          "path": [
+            "Un marché, une catégorie",
+            "Référence, modifications validées, nouvelle évaluation",
+            "Compte rendu écrit et décision suivante"
+          ]
+        },
+        {
+          "duration": "3 mois",
+          "question": "Comment le paiement ou la réservation pourraient-ils fonctionner ?",
+          "path": [
+            "Définir la question liée au paiement ou à la réservation",
+            "Envisager un prototype avec des données fictives",
+            "Examiner les résultats au mois 3"
+          ]
+        }
+      ]
+    },
+    "measures": {
+      "description": "Suivez la réponse échantillonnée depuis la mention du produit jusqu’à un parcours d’achat testé. Définissez l’objectif et la méthode de collecte pour chaque mesure."
+    }
+  }
+}

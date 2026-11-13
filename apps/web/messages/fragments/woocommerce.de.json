@@ -1,0 +1,261 @@
+{
+  "woocommerce": {
+    "meta": {
+      "title": "AI für WooCommerce — Katalogoptimierung",
+      "description": "AI für WooCommerce-Shops, die Produktangebote optimieren, Wettbewerber analysieren und Erkenntnisse aus Agenten einfacher in veröffentlichte Katalog-Updates umsetzen möchten."
+    },
+    "breadcrumb": {
+      "home": "Startseite",
+      "woocommerce": "AI für WooCommerce"
+    },
+    "hero": {
+      "eyebrow": "WooCommerce",
+      "title": {
+        "primary": "KI für WooCommerce-Shops, die",
+        "accent": "klarere Produkt-Workflows brauchen."
+      },
+      "description": "Importieren Sie Ihren Katalog, sehen Sie, wo Produktangebote in KI-vermittelten Vergleichen gegen Wettbewerber verlieren, und veröffentlichen Sie freigegebene Verbesserungen zurück in WooCommerce — ohne die Plattform zu wechseln.",
+      "assurances": [
+        "Keine Plattformmigration",
+        "Kostenloses Plugin auf WordPress.org",
+        "Freigegebene Updates werden über die REST API veröffentlicht",
+        "Zuerst Ihren kostenlosen Score ansehen"
+      ],
+      "art": {
+        "alt": "ASCII-Grafik eines Einkaufswagens"
+      },
+      "badge": {
+        "alt": "WooCommerce",
+        "label": "Für WooCommerce entwickelt"
+      }
+    },
+    "why": {
+      "number": "01",
+      "title": "Warum WooCommerce-Händler einen fokussierten Kreislauf brauchen.",
+      "description": "WooCommerce-Betreiber brauchen in der Regel eher Einblicke auf Katalogebene als schnellere Texterstellung.",
+      "paragraphs": [
+        "Schnellere Content-Erstellung ist dabei der kleinste Teil. WooCommerce-Kataloge ändern sich schnell, werden von kleinen Teams betrieben und sind auf saubere Produktdaten angewiesen, um wettbewerbsfähig zu bleiben.",
+        "Dadurch entsteht ein praktischer Bedarf für einen dedizierten Optimierungskreislauf. Händler möchten wissen, welche Produkte sich am einfachsten verbessern lassen, welcher Wettbewerber ständig gewinnt und welche Details im Produktangebot am wichtigsten sind, bevor sie Zeit in die Überarbeitung dutzender Seiten investieren."
+      ],
+      "panelTitle": "Für wen diese Seite gedacht ist",
+      "audiences": [
+        {
+          "title": "KI-Workflows evaluieren",
+          "description": "WooCommerce-Betreiber, die bewerten, was KI tatsächlich für Produktseiten leisten sollte."
+        },
+        {
+          "title": "Bei WooCommerce bleiben",
+          "description": "Teams, die bessere Produktsichtbarkeit ohne Wechsel der E-Commerce-Plattform möchten."
+        },
+        {
+          "title": "Einblicke direkt mit Updates verknüpft",
+          "description": "Händler, die Wettbewerbsanalysen benötigen, die direkt mit Änderungen an Produktangeboten verbunden sind."
+        },
+        {
+          "title": "Von der Analyse bis zur Veröffentlichung",
+          "description": "Interessenten, die prüfen möchten, ob ein Workflow von der Analyse bis in den Live-Shop reicht."
+        }
+      ]
+    },
+    "workflow": {
+      "number": "02",
+      "title": "Der WooCommerce-Workflow in ecentic.",
+      "description": "Der Workflow verbindet Produktdaten mit Wettbewerbsanalysen und anschließend mit einem Veröffentlichungsweg zurück in WooCommerce statt mit einer weiteren manuellen Übergabe von Inhalten.",
+      "paragraph": "Installieren Sie das Plugin, importieren Sie den Katalog, vergleichen Sie die relevanten Produkte und geben Sie anschließend Rückveröffentlichungen per REST frei. Sie bleiben in WooCommerce und müssen den Code Ihrer Storefront nie umschreiben.",
+      "panelTitle": "Verbinden, analysieren, veröffentlichen",
+      "advantages": [
+        {
+          "title": "Uneinheitliche Katalogdaten",
+          "description": "Produktdaten sind über einen großen Katalog mit unterschiedlicher Datenqualität verteilt."
+        },
+        {
+          "title": "Von der Analyse bis zur Veröffentlichung",
+          "description": "Ein schnellerer Weg von der Wettbewerbsanalyse zu Live-Updates."
+        },
+        {
+          "title": "Wettbewerb über Spezifikationen",
+          "description": "Wettbewerber gewinnen durch klarere Spezifikationen und besseren Angebotskontext."
+        },
+        {
+          "title": "Wöchentlich wiederholbar",
+          "description": "Ein System, das Betreiber jede Woche nutzen können, statt eines einmaligen Überarbeitungsprojekts."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Verbinden & importieren",
+          "description": "Installieren Sie das kostenlose Plugin und bestätigen Sie die Verbindung in wp-admin. Es müssen keine API-Schlüssel kopiert werden, der Katalog wird beim Verbinden importiert und das Theme bleibt unberührt."
+        },
+        {
+          "title": "Produkte auswählen",
+          "description": "Wählen Sie aus, welche Produkte in den Optimierungskreislauf aufgenommen werden – von einigen wenigen Kernprodukten bis zum gesamten Katalog."
+        },
+        {
+          "title": "Vergleichen & analysieren",
+          "description": "Produkte werden mit Wettbewerbern verglichen, sodass die entscheidenden Änderungen sichtbar werden: Qualität der Titel, Klarheit der Beschreibungen, schwache Details."
+        },
+        {
+          "title": "Freigeben & veröffentlichen",
+          "description": "Freigegebene Optimierungen werden über den dokumentierten REST-Updatepfad zurück nach WooCommerce übertragen, sodass Einblicke direkt mit dem Live-Shop verbunden bleiben."
+        }
+      ]
+    },
+    "agentCommerce": {
+      "number": "03",
+      "title": "KI-Agenten tatsächlich einkaufen lassen.",
+      "description": {
+        "before": "Optimierte Produktangebote entscheiden darüber, ob ein Agent Sie empfiehlt. Das Universal Commerce Protocol entscheidet darüber, ob er den Kauf tatsächlich abschließen kann. Das kostenlose Plugin ",
+        "pluginName": "écentic for WooCommerce",
+        "after": " aktiviert Letzteres."
+      },
+      "action": {
+        "primary": "WordPress-Plugin holen",
+        "secondary": "Prüfen, ob Ihr Shop agentenbereit ist"
+      },
+      "capabilities": [
+        {
+          "title": "Unter Ihrer eigenen URL auffindbar",
+          "description": "Das Plugin stellt /.well-known/ucp auf Ihrer Domain bereit, damit Agenten Ihren Shop unter Ihrer Adresse statt über einen Drittanbieter finden."
+        },
+        {
+          "title": "Preise auf Basis eines echten Warenkorbs",
+          "description": "Angebote werden anhand eines Live-Warenkorbs in WooCommerce berechnet, sodass Ihre Steuertabellen, Versandzonen, Gutscheine und Preis-Plugins von Drittanbietern berücksichtigt werden."
+        },
+        {
+          "title": "Bestellungen landen in WooCommerce",
+          "description": "Agenten-Checkouts erstellen echte Bestellungen über die nativen WooCommerce-Mechanismen, gekennzeichnet mit created_via = ucp, damit Sie sie unterscheiden können."
+        },
+        {
+          "title": "Sie bleiben Merchant of Record",
+          "description": "Die Zahlung wird über Ihr eigenes Gateway abgewickelt, mit Zugangsdaten, die Ihren Server niemals verlassen. ecentic ist niemals Vertragspartei des Verkaufs."
+        }
+      ],
+      "controlsParagraph": "Agent Commerce übergibt Ihren Shop nicht aus der Hand. Sie behalten die Kontrolle darüber, wer einkaufen darf, wie schnell und mit welchen Zugangsdaten.",
+      "controlsTitle": "Was Sie weiterhin kontrollieren",
+      "controls": [
+        {
+          "title": "An oder aus",
+          "description": "Aktivieren oder deaktivieren Sie die gesamte Agentenoberfläche in wp-admin."
+        },
+        {
+          "title": "Zugelassene Agenten",
+          "description": "Legen Sie fest, welche Agentenplattformen mit dem Shop Transaktionen durchführen dürfen."
+        },
+        {
+          "title": "Signierte Anfragen",
+          "description": "Fordern Sie signierte Anfragen (RFC 9421) an oder verwenden Sie stattdessen einen Shop-API-Schlüssel."
+        },
+        {
+          "title": "Anfragelimits & Lagerbestand",
+          "description": "Begrenzen Sie Anfragen pro Agent und schließen Sie nicht verfügbare Produkte ein oder aus."
+        }
+      ]
+    },
+    "evaluate": {
+      "number": "04",
+      "title": "Finden Sie zuerst den Engpass in Ihrem Katalog.",
+      "description": "Das richtige Optimierungstool hängt davon ab, wo der Engpass tatsächlich liegt. WooCommerce-Händler stehen meist vor einer von drei Situationen.",
+      "paragraph": "Treffen Sie Ihre Vorauswahl anhand Ihres aktuellen Engpasses. Geschwindigkeit bei der Content-Erstellung, Klarheit im Wettbewerb und Reibung bei der Veröffentlichung erfordern jeweils unterschiedliche Werkzeuge – und nur zwei davon sind die Aufgabe von ecentic.",
+      "panelTitle": "Drei Situationen für die Vorauswahl",
+      "situations": [
+        {
+          "title": "Content-Produktion",
+          "description": "Der Katalog wächst schneller, als das Team Produkttexte schreiben oder prüfen kann. Ein Tool zur Content-Generierung hilft hier, beantwortet aber nicht, welche Änderungen die Produktauswahl tatsächlich verbessern.",
+          "fit": "Ein Textgenerator deckt das ab",
+          "covered": false
+        },
+        {
+          "title": "Klarheit im Wettbewerb",
+          "description": "Das Team weiß nicht, welche Produkte gegen Wettbewerber verlieren oder warum. Mehr Texte lösen dieses Problem nicht. Hilfreich ist stattdessen die Simulation von Produktvergleichen und das Sichtbarmachen der Merkmale, die den Unterschied ausmachen.",
+          "fit": "Hier passt ecentic",
+          "covered": true
+        },
+        {
+          "title": "Reibung bei der Veröffentlichung",
+          "description": "Gute Erkenntnisse liegen vor, werden aber nur langsam in veröffentlichte Verbesserungen umgesetzt, weil Prüfung und Veröffentlichung vom Shop getrennt sind. Ein Ablauf zum Freigeben und Veröffentlichen direkt in WooCommerce reduziert den Übergabeaufwand.",
+          "fit": "Hier passt ecentic",
+          "covered": true
+        }
+      ]
+    },
+    "related": {
+      "number": "05",
+      "title": "Entdecken Sie den Plattformbereich weiter.",
+      "description": "Von hier aus gelangen Sie zur Optimierung von Produktangeboten, zu Plattformvergleichen oder zu Blog-Inhalten.",
+      "items": [
+        {
+          "href": "/features/product-listings",
+          "name": "Workflow",
+          "title": "Mit KI-Optimierung für Produktangebote starten",
+          "description": "Sehen Sie sich zuerst den Workflow für Produktangebote an, wenn Ihr Team die Erklärung auf Kategorieebene verstehen möchte, bevor es in WooCommerce-spezifische Details einsteigt.",
+          "label": "Workflow für Produktangebote ansehen",
+          "color": "primary"
+        },
+        {
+          "href": "/platforms/shopify",
+          "name": "Shopify",
+          "title": "Den Shopify-Weg mit dem WooCommerce-Weg vergleichen",
+          "description": "Nutzen Sie die Shopify-Seite, wenn Ihr Team die Eignung von Plattformen bewertet oder einen Rollout über mehrere Plattformen plant.",
+          "label": "Shopify-Seite öffnen",
+          "color": "accent"
+        },
+        {
+          "href": "/compare/best-ai-ecommerce-tools",
+          "name": "Vergleich",
+          "title": "Wie KI-E-Commerce-Kategorien zu verschiedenen Teams passen",
+          "description": "Der Leitfaden hilft Interessenten dabei, Tools für Content-Generierung, Analytics, Personalisierung und Agent-Commerce-Optimierung voneinander abzugrenzen.",
+          "label": "Vergleichsleitfaden lesen",
+          "color": "accent"
+        },
+        {
+          "href": "/blog",
+          "name": "Blog",
+          "title": "Den Blog für operative SEO- und Daten-Themen nutzen",
+          "description": "Lesen Sie die Leitfäden zu strukturierten Daten, KI-Shopping-Traffic und Katalogklarheit zur Unterstützung des WooCommerce-Workflows.",
+          "label": "Zum Blog",
+          "color": "accent"
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "06",
+      "title": "Häufig gestellte Fragen",
+      "description": "Häufige Fragen von WooCommerce-Händlern, die KI-Optimierungs-Workflows bewerten."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Was bedeutet KI für WooCommerce-Shops?",
+          "answer": "Für WooCommerce-Händler bedeutet das, den Produktkatalog zu verbinden, zu verstehen, wo Produktangebote gegen Wettbewerber verlieren, und Produktseiten mit einem Workflow zu verbessern, der direkt mit dem Live-Shop verbunden bleibt. Zunehmend bedeutet es auch, dass KI-Shopping-Agenten direkt im Shop einkaufen können – genau das ermöglicht das Plugin écentic."
+        },
+        {
+          "question": "Können WooCommerce-Shops optimierte Produkt-Updates veröffentlichen?",
+          "answer": "Ja. Freigegebene Überarbeitungen werden direkt über die REST API zurück nach WooCommerce veröffentlicht, unter Verwendung von Zugangsdaten mit Lese- und Schreibzugriff. Sie prüfen jede Änderung, bevor sie live geht, und nichts erscheint ohne Ihre Freigabe im Shop."
+        },
+        {
+          "question": "Brauche ich das Plugin oder kann ich mich mit API-Schlüsseln verbinden?",
+          "answer": "Beides funktioniert. Das kostenlose Plugin écentic for WooCommerce ist der empfohlene Weg: Sie bestätigen die Verbindung in wp-admin und das Plugin richtet den REST-Schlüssel automatisch ein, ohne dass Schlüssel kopiert werden müssen. Das Plugin sorgt außerdem dafür, dass der Shop für KI-Agenten transaktionsfähig wird. Wenn Sie nur Produktangebots-Optimierung möchten, können Sie stattdessen einen WooCommerce-REST-Schlüssel und das zugehörige Secret einfügen."
+        },
+        {
+          "question": "Was verändert das Plugin an meinem Shop?",
+          "answer": "Nichts Sichtbares. Es ergänzt eine Discovery-URL unter /.well-known/ucp, einen Endpunkt zur Verknüpfung von Identitäten und eine private REST-Bridge, die nur ecentic mit dem von Ihnen ausgestellten Schlüssel aufrufen kann. Ihr Theme, Ihr Shop und Ihr Checkout bleiben unverändert, und Agentenbestellungen werden über dieselben WooCommerce-Mechanismen erstellt wie jede andere Bestellung."
+        },
+        {
+          "question": "Wie unterscheidet sich ecentic von anderen WooCommerce-Produkt-Plugins?",
+          "answer": "Die meisten WooCommerce-Produkt-Plugins unterstützen Katalogverwaltung oder einfache Texte. ecentic konzentriert sich speziell darauf zu verstehen, warum Produkte gegen Wettbewerber verlieren, diese Analyse in Verbesserungen von Produktangeboten umzusetzen, zurück in den Shop zu veröffentlichen und den Shop für KI-Shopping-Agenten auffindbar und transaktionsfähig zu machen."
+        },
+        {
+          "question": "Was ist der richtige nächste Schritt nach der WooCommerce-Seite?",
+          "answer": "Die meisten Händler starten mit einem kostenlosen Scan, um zu sehen, wo ihre Produktangebote stehen, und installieren anschließend das Plugin, um den Shop agentenbereit zu machen. Wenn Sie noch verschiedene Tool-Kategorien vergleichen, ist der Vergleichsleitfaden der bessere nächste Schritt."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "WooCommerce-Shop verbinden",
+        "secondary": "Zurück zu den Funktionen"
+      },
+      "note": "Keine Plattformmigration · Keine Kreditkarte · Zuerst Ihren kostenlosen Score ansehen"
+    }
+  }
+}

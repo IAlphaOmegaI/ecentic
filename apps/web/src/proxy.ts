@@ -10,6 +10,7 @@ import {
 import { routing } from "@/i18n/routing";
 import { agentHomepageLinkHeader } from "@/lib/agent-discovery";
 import { auth } from "@/lib/auth";
+import { isUnknownMarketingDetailPath } from "@/lib/marketing-routes";
 import { ENTRY_COOKIE, parseEntry } from "@/lib/redirect";
 import { isInternalStaff } from "@/server/database/validators";
 
@@ -97,6 +98,26 @@ export const proxy = async (request: Request) => {
 
   // Locale negotiation / rewrite first so downstream pages see `/[locale]/…`.
   const internationalized = handleI18nRouting(request);
+
+  // The canonical index already enumerates these finite page families. Reject
+  // unknown slugs before a loading boundary can flush a misleading HTTP 200.
+  // Blog slugs and other open-ended routes continue through normal routing.
+  if (isUnknownMarketingDetailPath(pathnameWithoutLocale)) {
+    if (internationalized.headers.has("location")) return internationalized;
+
+    const recovery = request.nextUrl.clone();
+    recovery.pathname = `/${locale}/_not-found`;
+    const requestHeaders = new Headers(request.headers);
+    requestHeaders.set("x-next-intl-locale", locale);
+    const response = Response.rewrite(recovery, {
+      status: 404,
+      request: { headers: requestHeaders },
+    });
+    for (const cookie of internationalized.cookies.getAll()) {
+      response.cookies.set(cookie);
+    }
+    return response;
+  }
 
   // Purely public route — skip the session lookup entirely rather than paying
   // for a cookie verify (and possible database read) on every page view.

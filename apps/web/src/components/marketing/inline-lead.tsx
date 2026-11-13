@@ -2,6 +2,7 @@
 
 import type { AppConfig } from "next-intl";
 import { lazy, Suspense } from "react";
+import type { Locale } from "@/i18n/locales";
 
 const LazyLeadForm = lazy(() =>
   import("./lead-form").then((module) => ({ default: module.LeadForm })),
@@ -27,7 +28,7 @@ export namespace InlineLead {
     kind: "integration" | "partner";
     topic: string;
     title?: string;
-    locale: "en" | "es";
+    locale: Locale;
     copy: AppConfig["Messages"]["enterpriseLead"];
   };
 }

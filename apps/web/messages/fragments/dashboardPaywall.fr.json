@@ -1,0 +1,12 @@
+{
+  "dashboard": {
+    "paywall": {
+      "kicker": "Forfait requis",
+      "title": "Choisissez un forfait pour débloquer votre tableau de bord",
+      "description": "Votre scan gratuit est prêt. Pour continuer à simuler, diagnostiquer et optimiser la façon dont les agents IA classent vos produits, choisissez une formule à l’usage ou un forfait mensuel fixe.",
+      "compare": "Comparer les forfaits en détail",
+      "manage": "Déjà abonné ou vous avez un problème de facturation ?",
+      "manageAction": "Gérer la facturation"
+    }
+  }
+}

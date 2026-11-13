@@ -1,0 +1,52 @@
+{
+  "compareTool": {
+    "page": {
+      "title": "Zwei Produkte vergleichen",
+      "description": "Sehen Sie, welches Produkt KI-Agenten empfehlen würden — und warum."
+    },
+    "form": {
+      "productA": "Produkt A",
+      "productB": "Produkt B",
+      "urlHint": "Fügen Sie eine Produkt-URL aus einem beliebigen E-Commerce-Shop ein",
+      "placeholderA": "https://amazon.com/product/...",
+      "placeholderB": "https://shopify.com/products/...",
+      "prompt": {
+        "title": "Was ist Ihnen am wichtigsten?",
+        "description": "Sagen Sie uns, wonach Sie suchen, und wir vergleichen die Produkte anhand Ihrer Kriterien.",
+        "placeholder": "z. B. Ich suche die besten Noise-Cancelling-Kopfhörer unter $300 mit langer Akkulaufzeit ..."
+      },
+      "defaultPrompt": "Ich möchte das beste Preis-Leistungs-Verhältnis",
+      "footer": "Wir führen den Vergleich über 4 KI-Modelle aus.",
+      "action": {
+        "run": "Vergleich starten",
+        "comparing": "Vergleich läuft..."
+      }
+    },
+    "running": {
+      "title": "Produkte werden verglichen",
+      "modelsProgress": "{completed}/{total} Modelle",
+      "scrapedSuccess": "Beide Produkte erfolgreich ausgelesen",
+      "completeLog": "Vergleich abgeschlossen — {count} Modelle ausgewertet",
+      "footer": "KI-Vergleich wird ausgeführt"
+    },
+    "results": {
+      "overallSplit": "Gesamtverteilung",
+      "byModel": "Ergebnisse nach Modell",
+      "winner": "Gewinner",
+      "modelsChose": "Modelle wählten dieses Produkt",
+      "chose": "wählte {letter}",
+      "finishedIn": "Abgeschlossen in {elapsed}",
+      "action": {
+        "compareAgain": "Erneut vergleichen",
+        "startOptimizing": "Optimierung starten"
+      }
+    },
+    "toast": {
+      "missingUrls": {
+        "title": "Fehlende URLs",
+        "description": "Bitte geben Sie beide Produkt-URLs ein."
+      },
+      "failed": "Vergleich fehlgeschlagen"
+    }
+  }
+}

@@ -1,0 +1,298 @@
+{
+  "ucpValidator": {
+    "meta": {
+      "title": "UCP Validator für Storefronts",
+      "description": "Prüfen Sie mit dem kostenlosen UCP-Validator das Profil des Universal Commerce Protocol, die Erkennungsdaten, das Schema und den robots.txt-Zugriff eines Onlineshops."
+    },
+    "breadcrumb": {
+      "home": "Startseite",
+      "page": "UCP Validator"
+    },
+    "hero": {
+      "eyebrow": "Protokollprüfung",
+      "title": {
+        "primary": "UCP",
+        "accent": "validieren"
+      },
+      "description": "Prüfen Sie, ob ein Onlineshop unter /.well-known/ucp ein gültiges Universal Commerce Profile veröffentlicht und ob Einkaufsagenten problemlos darauf zugreifen können.",
+      "assurances": [
+        "Kostenlos nutzbar",
+        "Kein Konto erforderlich",
+        "Live-Abruf von /.well-known/ucp"
+      ],
+      "art": {
+        "alt": "ASCII-Art-Illustration eines Schilds"
+      },
+      "actions": {
+        "validate": "Domain validieren",
+        "playground": "Playground öffnen"
+      }
+    },
+    "checks": {
+      "number": "01",
+      "title": "Was der Validator prüft.",
+      "description": "Ein Live-Abruf Ihres öffentlichen Profils, geprüft anhand der UCP-Spezifikation, mit aus robots.txt ermitteltem Agentenzugriff.",
+      "items": [
+        {
+          "title": "Erreichbarkeit des Endpunkts",
+          "description": "Wir rufen die öffentliche HTTPS-Domain ab und prüfen, ob /.well-known/ucp antwortet."
+        },
+        {
+          "title": "Schema-Qualität",
+          "description": "Der Antworttext wird als JSON verarbeitet und auf Fehler sowie Warnungen gemäß der UCP-Spezifikation geprüft."
+        },
+        {
+          "title": "Agentenzugriff",
+          "description": "robots.txt wird geprüft, damit Sie sehen können, ob wichtige Shopping- und Indexierungs-Bots blockiert werden."
+        }
+      ]
+    },
+    "validator": {
+      "number": "02",
+      "title": "Live-Validierung ausführen.",
+      "description": "Fügen Sie eine Domain ein und wir rufen das Live-Profil ab, analysieren jeden Service und jede Fähigkeit und melden anschließend Spezifikationsfehler sowie den Agentenzugriff."
+    },
+    "faqSection": {
+      "number": "03",
+      "title": "Fragen vor der Validierung.",
+      "description": "Was der Prüfer abdeckt, wo Profile veröffentlicht werden und wie der Agentenzugriff angezeigt wird."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Was prüft der UCP Validator?",
+          "answer": "Er ruft die öffentliche HTTPS-Domain ab, bestätigt die Antwort von /.well-known/ucp, verarbeitet den Inhalt als JSON und meldet Fehler sowie Warnungen der UCP-Spezifikation, damit Sie wissen, dass das Profil korrekt aufgebaut ist."
+        },
+        {
+          "question": "Wo sollte ein Universal Commerce Profile veröffentlicht werden?",
+          "answer": "Unter /.well-known/ucp auf der öffentlichen HTTPS-Domain Ihrer Storefront. Der Validator ruft genau diesen Pfad ab und zeigt an, ob er erreichbar ist."
+        },
+        {
+          "question": "Prüft der Validator, ob KI-Einkaufsagenten meinen Shop lesen können?",
+          "answer": "Ja. Der Validator prüft robots.txt, damit Sie sehen können, ob große Shopping- und Indexierungs-Bots problemlos auf Ihr Universal Commerce Profile zugreifen dürfen."
+        }
+      ]
+    },
+    "footer": {
+      "primary": "Domain validieren",
+      "secondary": "Alle kostenlosen Tools",
+      "note": "Kostenlos · Kein Konto erforderlich · Live-Abruf"
+    },
+    "structuredData": {
+      "name": "UCP Validator"
+    },
+    "form": {
+      "preview": {
+        "logoAlt": "Logo des Universal Commerce Protocol",
+        "liveFetch": "Live-Abruf",
+        "note": "Wir rufen das öffentliche Profil ab, analysieren Services und Fähigkeiten und zeigen anschließend Spezifikationsprobleme sowie den Agentenzugriff aus robots.txt an."
+      },
+      "targets": {
+        "title": "Was wir validieren",
+        "https": {
+          "label": "HTTPS und Erreichbarkeit",
+          "detail": "Bereitstellung über TLS und Antwort auf Live-Abrufe."
+        },
+        "discovery": {
+          "label": "Profilerkennung",
+          "detail": "Das Live-Discovery-Dokument, das Agenten auf Ihrer Domain abrufen."
+        },
+        "services": {
+          "label": "Services & Transportprotokolle",
+          "detail": "Endpoint-Oberflächen, mit denen Agenten verhandeln."
+        },
+        "capabilities": {
+          "label": "Funktionen",
+          "detail": "Warenkorb-, Checkout- und Bestellabläufe, die die Storefront deklariert."
+        },
+        "paymentHandlers": {
+          "label": "Payment-Handler",
+          "detail": "Tokenisierungs-Endpoints und ihre deklarierten Versionen."
+        },
+        "signingKeys": {
+          "label": "Signaturschlüssel",
+          "detail": "Öffentliche JWKs zur Verifizierung von HTTP Message Signatures."
+        },
+        "supportedVersions": {
+          "label": "Unterstützte Versionen",
+          "detail": "Alle Protokollversionen, die der Händler weiterhin bereitstellt."
+        },
+        "agentAccess": {
+          "label": "Agent-Zugriff",
+          "detail": "Shopping- und Indexierungs-Agenten werden nicht blockiert."
+        }
+      },
+      "issueCategory": {
+        "envelope": "Envelope",
+        "version": "Version",
+        "services": "Services",
+        "capabilities": "Funktionen",
+        "payment_handlers": "Payment-Handler",
+        "signing_keys": "Signaturschlüssel",
+        "supported_versions": "Unterstützte Versionen",
+        "transport": "Transport",
+        "security": "Sicherheit"
+      },
+      "badge": {
+        "pass": "Bestanden",
+        "fail": "Fehlgeschlagen",
+        "recognized": "Erkannt",
+        "custom": "Benutzerdefiniert",
+        "known": "Bekannt",
+        "issues": "Probleme",
+        "valid": "Gültig",
+        "current": "Aktuell",
+        "https": "HTTPS",
+        "insecure": "Unsicher",
+        "allowed": "Erlaubt",
+        "blocked": "Blockiert",
+        "error": "Fehler",
+        "warning": "Warnung",
+        "missing": "Fehlt",
+        "unavailable": "Nicht verfügbar",
+        "embedded": "Eingebettet",
+        "specLinked": "Mit Spezifikation verknüpft",
+        "schemaLinked": "Mit Schema verknüpft",
+        "ucpReady": "UCP-bereit",
+        "needsFixes": "Korrekturen erforderlich",
+        "noIssuesFound": "Keine Probleme gefunden",
+        "signingKeysNotAdvertised": "signing_keys nicht angekündigt",
+        "signingKeysEmpty": "signing_keys ist leer",
+        "missingKid": "(kid fehlt)",
+        "transport": "Transport · {value}",
+        "version": "Version · {value}",
+        "id": "ID · {value}",
+        "kty": "kty · {value}",
+        "use": "use · {value}",
+        "alg": "alg · {value}",
+        "crv": "crv · {value}",
+        "latestSuffix": " · aktuellste Version {version}",
+        "envelope": "envelope: {kind}",
+        "envelopeFlatKind": "flat"
+      },
+      "services": {
+        "title": "Services & Transportprotokolle",
+        "description": "Endpoint-Oberflächen, mit denen ein Agent verhandeln kann. Jeder Eintrag entspricht einem Service-Schlüssel im Reverse-Domain-Format im Profil.",
+        "customNote": "Benutzerdefinierter Service-Schlüssel — kein bekannter UCP-Service-Identifier.",
+        "endpointLabel": "Endpoint:",
+        "schemaLabel": "Schema:"
+      },
+      "capabilities": {
+        "title": "Funktionen",
+        "description": "Abgegrenzte Abläufe, die die Storefront unterstützt. Bestellung, Checkout und Warenkorb sind für transaktionale Agenten erforderlich.",
+        "configLabel": "Konfiguration:"
+      },
+      "paymentHandlers": {
+        "title": "Payment-Handler",
+        "description": "Vom Händler deklarierte Tokenisierungs-Endpoints. Jeder Handler muss eine Version und alle erforderlichen Handler-IDs deklarieren."
+      },
+      "signingKeys": {
+        "title": "Signaturschlüssel & Authentifizierung",
+        "description": "RFC 9421 HTTP Message Signatures sind die Grundlage für Onboarding ohne vorherigen Berechtigungsaustausch. Jede Anfrage muss anhand eines hier veröffentlichten öffentlichen JWK verifizierbar sein.",
+        "notAdvertisedBody": "Das Profil kündigt keine Signaturschlüssel an, daher können Plattformen RFC 9421 HTTP Message Signatures nicht ohne einen externen Geheimnisaustausch verifizieren. UCP erlaubt dies, aber Agenten greifen dann auf klassische Authentifizierung zurück (API-Keys, OAuth, mTLS).",
+        "privateMaterial": "Enthält privates Material — muss entfernt werden.",
+        "publicJwk": "Öffentlicher JWK"
+      },
+      "supportedVersions": {
+        "title": "Unterstützte Versionen",
+        "description": "Profil-URIs für alle Protokollversionen, die dieser Händler weiterhin bereitstellt. Agenten wählen die höchste Version, die sie unterstützen."
+      },
+      "spec": {
+        "title": "Spezifikationsvalidierung",
+        "description": "{errors, plural, one {# Fehler} other {# Fehler}}, {warnings, plural, one {# Warnung} other {# Warnungen}} gruppiert nach Spezifikationsbereich.",
+        "noIssuesBody": "Das aktuelle Profil hat den Validator ohne Schemafehler oder Warnungen bestanden."
+      },
+      "results": {
+        "responseHealth": "Antwortstatus",
+        "responseHealthOk": "Endpoint hat geantwortet und das Profil konnte ausgewertet werden.",
+        "detectedSurface": "Erkannte Oberfläche",
+        "detectedSurfaceValue": "{services, plural, one {# Service} other {# Services}}, {capabilities, plural, one {# Funktion} other {# Funktionen}}, {handlers, plural, one {# Payment-Handler} other {# Payment-Handler}}, {keys, plural, one {# Signaturschlüssel} other {# Signaturschlüssel}}."
+      },
+      "summary": {
+        "latency": {
+          "label": "Latenz",
+          "unavailableDetail": "Wir konnten keine Live-Antwortzeit messen.",
+          "detail": "Antwortzeit des UCP-Endpoints."
+        },
+        "specErrors": {
+          "label": "Spezifikationsfehler",
+          "noneDetail": "Keine blockierenden Probleme im Schema gefunden.",
+          "someDetail": "Blockierende Probleme, die zuerst behoben werden sollten."
+        },
+        "capabilities": {
+          "label": "Funktionen",
+          "noneDetail": "Keine Funktionen deklariert.",
+          "someDetail": "Erkannte im Verhältnis zu allen deklarierten Funktionen."
+        },
+        "botAccess": {
+          "label": "Bot-Zugriff",
+          "detail": "Wichtige Shopping- und Indexierungs-Bots sind in der robots.txt erlaubt."
+        }
+      },
+      "coreChecks": {
+        "title": "Kernprüfungen",
+        "description": "Diese Prüfungen bestätigen, dass das öffentliche Profil erreichbar, sicher und maschinenlesbar ist.",
+        "https": {
+          "label": "HTTPS",
+          "detail": "Die Domain muss über eine sichere HTTPS-Verbindung bereitgestellt werden."
+        },
+        "wellKnown": {
+          "label": "/.well-known/ucp vorhanden",
+          "httpStatus": "HTTP {status}.",
+          "httpStatusNotJson": "HTTP {status} (Antwortinhalt ist kein JSON).",
+          "responded": "Endpoint hat geantwortet.",
+          "noResponse": "Keine Antwort unter /.well-known/ucp."
+        },
+        "validJson": {
+          "label": "Gültiges JSON",
+          "contentType": "Content-Type: {contentType}",
+          "contentTypeWithStatus": "Content-Type: {contentType} · HTTP {status}",
+          "invalid": "Antwortinhalt ist kein gültiges JSON."
+        },
+        "latency": {
+          "label": "Website-Latenz",
+          "unmeasured": "Die Latenz konnte nicht gemessen werden, da der Endpoint nicht geantwortet hat.",
+          "responded": "Der UCP-Endpoint hat in {latency} geantwortet."
+        },
+        "version": {
+          "label": "Neueste Protokollversion",
+          "latest": "Das Profil deklariert {version} — die neueste veröffentlichte UCP-Version.",
+          "outdated": "Das Profil deklariert {version}; die neueste Version ist {latest}.",
+          "none": "Keine Version im Profil-Root deklariert."
+        },
+        "signingKeys": {
+          "label": "Signaturschlüssel angekündigt",
+          "published": "{count, plural, one {# JWK} other {# JWKs}} für RFC 9421-Verifizierung veröffentlicht.",
+          "none": "Keine signing_keys angekündigt — Verifizierung ohne vorherigen Berechtigungsaustausch nicht möglich."
+        }
+      },
+      "robots": {
+        "title": "KI-Agent-Zugriff",
+        "description": "Basierend auf den aktuellen robots.txt-Regeln der Website."
+      },
+      "response": {
+        "title": "UCP-Antwort",
+        "description": "Syntaxhervorgehobene JSON-Vorschau des Live-Dokuments unter /.well-known/ucp."
+      },
+      "toast": {
+        "failedTitle": "Prüfung fehlgeschlagen"
+      },
+      "action": {
+        "checking": "Wird geprüft...",
+        "primary": "Domain prüfen"
+      },
+      "panel": {
+        "checkADomain": "Eine Domain prüfen",
+        "storefrontDomain": "Storefront-Domain",
+        "domain": "Domain",
+        "placeholder": "yourdomain.com",
+        "rootDomainNote": "Nur die Domain ohne Subdomains — <code>acme.com</code> oder <code>www.acme.com</code>. Wir validieren immer die HTTPS-Version."
+      },
+      "intro": {
+        "eyebrow": "Live-Validierung",
+        "title": "Live-Validierung ausführen",
+        "description": "Fügen Sie eine Domain ein und wir rufen das Live-Dokument <code>/.well-known/ucp</code> ab, analysieren jeden Service, jede Funktion, jeden Zahlungs-Handler und jeden Signaturschlüssel und validieren alles anschließend gegen die Spezifikation <code>{version}</code>."
+      }
+    }
+  }
+}

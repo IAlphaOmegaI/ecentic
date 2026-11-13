@@ -1,0 +1,35 @@
+{
+  "partnersPage": {
+    "tracks": {
+      "description": "Bringen Sie Ihre Services, Technologie oder Reichweite in die Shops ein, mit denen Sie bereits zusammenarbeiten."
+    },
+    "preparation": {
+      "title": "Bewerbung vorbereiten",
+      "description": "Halten Sie diese Angaben bereit, bevor Sie das Formular ausfüllen. Haken Sie sie Schritt für Schritt ab.",
+      "progress": [
+        "3 Angaben vorbereiten",
+        "1 von 3 Angaben bereit",
+        "2 von 3 Angaben bereit",
+        "Bereit zum Ausfüllen des Formulars"
+      ],
+      "items": [
+        {
+          "title": "Ihr Unternehmen und Ihre Website",
+          "description": "Halten Sie Ihren Unternehmensnamen, Ihre Website und die passende geschäftliche E-Mail-Adresse für den Austausch bereit."
+        },
+        {
+          "title": "Ihr Partnerschaftsmodell",
+          "description": "Wählen Sie zwischen Agenturen und Resellern, Technologiepartnern oder Creators und Affiliates."
+        },
+        {
+          "title": "Die Shops, mit denen Sie arbeiten",
+          "description": "Haben Sie eine Vorstellung davon, wie viele Shops Sie betreuen und was Sie gemeinsam umsetzen möchten."
+        }
+      ],
+      "action": {
+        "primary": "Zur Bewerbung"
+      },
+      "note": "Diese Checkliste ist optional. Tragen Sie Ihre Angaben im Formular unten ein."
+    }
+  }
+}

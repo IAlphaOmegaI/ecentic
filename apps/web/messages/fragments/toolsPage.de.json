@@ -1,0 +1,65 @@
+{
+  "toolsPage": {
+    "description": "Beginnen Sie mit der Frage, die Sie beantworten möchten. Wählen Sie ein Tool aus, um zu sehen, welche Eingaben erforderlich sind und wie das Ergebnis zu verstehen ist.",
+    "inputLabel": "Benötigte Angaben",
+    "accessLabel": "Zugriff",
+    "resultLabel": "So lesen Sie das Ergebnis",
+    "tools": {
+      "score": {
+        "purpose": "Ihren Katalog bewerten",
+        "input": "Ihr Shop, Ihre Produkte und Ihre Wettbewerber",
+        "access": "Kostenloser Scan · Konto erforderlich",
+        "limit": "Dies sind simulierte Produktvergleiche. Sie zeigen keine Live-Rankings in KI-Shopping-Apps.",
+        "steps": [
+          "Ihre Produkte",
+          "KI-Vergleich",
+          "Bewertung & Begründung"
+        ]
+      },
+      "validator": {
+        "purpose": "Ein Checkout-Profil prüfen",
+        "input": "Die URL Ihres Shops",
+        "access": "Kostenlos · Kein Konto erforderlich",
+        "limit": "Ein gültiges veröffentlichtes Profil bestätigt nicht, dass Käufer den Kaufabschluss durchführen können. Nutzen Sie den Playground, um Shop-Tools zu testen.",
+        "steps": [
+          "Shop-URL",
+          "Veröffentlichtes Profil",
+          "Strukturprüfungen"
+        ]
+      },
+      "playground": {
+        "purpose": "Einen Einkaufsablauf testen",
+        "input": "Ein Shop, der Einkaufstools für Agenten bereitstellt",
+        "access": "10 kostenlose Nachrichten · Kein Konto erforderlich",
+        "limit": "Der Agent nutzt die Shop-Tools. Verwenden Sie für Checkout-Tests einen Staging-Shop.",
+        "steps": [
+          "Suche",
+          "Warenkorb",
+          "Checkout"
+        ]
+      },
+      "scanner": {
+        "purpose": "Hinweise auf Browser-Tools finden",
+        "input": "Eine öffentliche Onlineshop-URL",
+        "access": "Kostenlos · Kein Konto erforderlich",
+        "limit": "Prüft eine kleine Stichprobe von Seiten und Skripten. Das Tool führt kein JavaScript aus, sendet keine Formulare ab und überprüft nicht, ob Browser-Tools funktionieren.",
+        "steps": [
+          "Quellcode des Onlineshops",
+          "Tools & Formulare",
+          "Hinweise & Einschränkungen"
+        ]
+      },
+      "compare": {
+        "purpose": "Zwei Produktangebote vergleichen",
+        "input": "Zwei Produkt-URLs",
+        "access": "Kostenloser Produktvergleich",
+        "limit": "Jedes Modell trifft anhand der verglichenen Produktangebote eine simulierte Auswahl. Dies ist kein Bericht über Live-Platzierungen in Shopping-Apps.",
+        "steps": [
+          "Zwei Produktangebote",
+          "Vier KI-Modelle",
+          "Auswahl & Begründung"
+        ]
+      }
+    }
+  }
+}

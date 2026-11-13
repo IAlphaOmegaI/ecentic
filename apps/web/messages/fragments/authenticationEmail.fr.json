@@ -1,0 +1,32 @@
+{
+  "authenticationEmail": {
+    "verify": {
+      "subject": "Vérifiez votre adresse e-mail",
+      "preview": "Vérifiez votre e-mail pour commencer à utiliser ecentic",
+      "title": "Vérifiez votre e-mail",
+      "description": "Commencez à optimiser vos fiches produit pour les agents d’achat IA.",
+      "body": "Merci d’avoir créé votre compte ecentic. Sélectionnez le bouton ci-dessous pour vérifier votre adresse e-mail.",
+      "requestedFor": "Cette vérification a été demandée pour {email}.",
+      "action": {
+        "primary": "Vérifier l’adresse e-mail"
+      },
+      "ignored": "Si vous n’avez pas créé de compte sur ecentic, vous pouvez ignorer cet e-mail en toute sécurité.",
+      "linkFallback": "Ou copiez et collez ce lien dans votre navigateur :",
+      "footer": "ecentic — La couche IA du commerce."
+    },
+    "reset": {
+      "subject": "Réinitialisez votre mot de passe",
+      "preview": "Réinitialisez votre mot de passe ecentic",
+      "title": "Réinitialisez votre mot de passe",
+      "description": "Choisissez un nouveau mot de passe et retrouvez vos fiches produit.",
+      "body": "Nous avons reçu une demande de réinitialisation du mot de passe de votre compte ecentic. Cliquez sur le bouton ci-dessous pour en choisir un nouveau.",
+      "requestedFor": "Cette demande de réinitialisation du mot de passe a été effectuée pour {email}.",
+      "action": {
+        "primary": "Choisir un nouveau mot de passe"
+      },
+      "ignored": "Si vous n’avez pas demandé la réinitialisation de votre mot de passe, vous pouvez ignorer cet e-mail en toute sécurité. Votre mot de passe actuel reste actif.",
+      "linkFallback": "Ou copiez et collez ce lien dans votre navigateur :",
+      "footer": "ecentic — La couche IA du commerce."
+    }
+  }
+}

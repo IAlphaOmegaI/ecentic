@@ -1,0 +1,76 @@
+{
+  "dashboard": {
+    "simulations": {
+      "title": "Simulations",
+      "description": "Relancez à tout moment la découverte de concurrents et les simulations de taux de victoire.",
+      "stats": {
+        "productsSelected": "Produits sélectionnés",
+        "competitorsSelected": "Concurrents sélectionnés",
+        "estimatedSimulations": "Simulations estimées",
+        "estimatedTime": "Temps estimé",
+        "pickedForScan": "sélectionnés pour le prochain scan",
+        "productsCompetitorsModels": "produits × concurrents × 3 modèles",
+        "atCurrentSelection": "avec la sélection actuelle"
+      },
+      "discovery": {
+        "kicker": "01 — Découverte",
+        "title": "Découverte des concurrents",
+        "description": "Relancez la détection de concurrents par IA à partir de vos produits actuels.",
+        "totalCompetitors": "Nombre actuel de concurrents : {count}"
+      },
+      "setup": {
+        "kicker": "02 — Configuration du scan",
+        "title": "Choisir les éléments à simuler",
+        "description": "Choisissez les produits et les concurrents pour la prochaine simulation. L’estimation se met à jour au fur et à mesure de votre sélection.",
+        "products": "Produits",
+        "competitors": "Concurrents",
+        "clearAll": "Tout effacer",
+        "selectAll": "Tout sélectionner",
+        "nothingYet": "Rien ici pour le moment.",
+        "estimate": "{products} produits × {competitors} concurrents × 3 modèles",
+        "estimateTotal": "{total} simulations · {duration}"
+      },
+      "run": {
+        "kicker": "03 — Simulation",
+        "title": "Simulation du taux de victoire",
+        "description": "Relancez des simulations comparant vos produits à ceux des concurrents sur ChatGPT, Claude et Gemini.",
+        "reset": "Réinitialiser",
+        "runSimulation": "Lancer la simulation",
+        "progress": "Progression de la simulation",
+        "phase": "Phase",
+        "winsLosses": "Victoires / Défaites",
+        "elapsed": "Temps écoulé",
+        "currentStage": "étape en cours",
+        "acrossAllModels": "sur l’ensemble des modèles",
+        "sinceStart": "depuis le début",
+        "liveOutput": "Journal en direct",
+        "lineCount": "{count, plural, one {# ligne} many {# lignes} other {# lignes}}",
+        "noLogsYet": "Aucun journal pour le moment. Lancez une simulation pour voir le journal en direct.",
+        "status": {
+          "done": "Terminé",
+          "running": "En cours",
+          "queued": "En file d’attente"
+        }
+      },
+      "complete": {
+        "winRate": "Taux de victoire",
+        "products": "Produits",
+        "wins": "Victoires",
+        "losses": "Défaites",
+        "topFinding": "{name} perd sur {attributes}. {impact} Cela vous coûte {loss}% des simulations."
+      },
+      "toast": {
+        "simulationFailed": "Échec de la simulation",
+        "nothingSelected": "Aucune sélection",
+        "selectProduct": "Sélectionnez au moins un produit pour l’analyse.",
+        "selectCompetitor": "Sélectionnez au moins un concurrent pour l’analyse."
+      },
+      "skeleton": {
+        "phase": "Phase",
+        "progress": "Progression",
+        "winsLosses": "Victoires / Défaites",
+        "elapsed": "Temps écoulé"
+      }
+    }
+  }
+}

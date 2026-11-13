@@ -7,7 +7,7 @@ import {
   AvatarImage,
 } from "@zenncore/web/components/avatar";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { formatPrice } from "@/lib/currency";
 import { formatRelativeTime } from "@/lib/date";
@@ -35,6 +35,8 @@ export namespace OfferShelf {
  * carries a control for that; a second empty state would only add noise.
  */
 export const OfferShelf = ({ store, product }: OfferShelf.Props) => {
+  const locale = useLocale();
+
   const translate = useTranslations("dashboard.products.detail.shelf");
   const [offers, setOffers] = useState<Offers.SellerOffer[] | null>(null);
 
@@ -116,7 +118,10 @@ export const OfferShelf = ({ store, product }: OfferShelf.Props) => {
                 )}
                 <p className="text-foreground-dimmed/70 text-xs">
                   {translate("observed", {
-                    when: formatRelativeTime(new Date(offer.measuredAt)),
+                    when: formatRelativeTime(
+                      new Date(offer.measuredAt),
+                      locale,
+                    ),
                     count: offer.observations,
                   })}
                 </p>

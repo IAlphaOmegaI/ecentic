@@ -1,0 +1,56 @@
+{
+  "brandsPage": {
+    "jobs": {
+      "description": "Wählen Sie den Teil der Customer Journey aus, den Ihr Team verbessern möchte.",
+      "label": "Prioritäten für Marken erkunden",
+      "details": "Alle Herausforderungen und Funktionen anzeigen",
+      "items": [
+        {
+          "id": "compare",
+          "label": "Wettbewerber vergleichen",
+          "scope": "Simulierte Entscheidungen",
+          "path": [
+            "Ihr Produkt",
+            "Benannte Wettbewerber",
+            "Modellentscheidungen"
+          ]
+        },
+        {
+          "id": "listings",
+          "label": "Produktangebote verbessern",
+          "scope": "Vorhandene Produktinformationen",
+          "path": [
+            "Quelldaten",
+            "Titel und Beschreibung",
+            "Separate strukturierte Daten"
+          ]
+        },
+        {
+          "id": "checkout",
+          "label": "Kaufabschluss testen",
+          "scope": "Unterstützte WooCommerce-Abläufe",
+          "path": [
+            "Produktentdeckung",
+            "Preisgestaltung im Warenkorb",
+            "Übergabe zur Zahlung"
+          ]
+        },
+        {
+          "id": "referrals",
+          "label": "Weiterleitungen identifizieren",
+          "scope": "Erkannte Shopify-Weiterleitungen",
+          "path": [
+            "KI-Assistent",
+            "Shop-Besuch",
+            "Berichte zu Weiterleitungen"
+          ]
+        }
+      ]
+    },
+    "sources": {
+      "description": "Starten Sie mit Ihrem Shop oder einem unterstützten Feed. Die Synchronisierung mit Merchant Center bleibt ein separater Schritt.",
+      "store": "Shop verbinden",
+      "catalog": "Andere Katalogpfade"
+    }
+  }
+}

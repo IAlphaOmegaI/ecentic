@@ -14,14 +14,15 @@ import { ExplodedFigure } from "./_components/exploded-figure";
 import { PlatformExplorer } from "./_components/platform-explorer";
 
 export const generateMetadata = async () => {
-  const { enterprisePlatform } = await getMessages();
+  const messages = await getMessages();
+  const { enterprisePlatform } = messages;
   return marketingMetadata(enterprisePlatform.overview.meta, "/platform");
 };
 
 export default async () => {
   const locale = await getLocale();
-  const { enterprisePlatform, hairlinePlatform, interactiveFiles } =
-    await getMessages();
+  const messages = await getMessages();
+  const { enterprisePlatform, hairlinePlatform, interactiveFiles } = messages;
   const content = enterprisePlatform.overview;
   const sections: readonly MarketingPage.Section[] = content.sections;
   const stages = sections.filter((section) => section.items?.length);
@@ -47,7 +48,11 @@ export default async () => {
                 : "/screenshots/enterprise-dashboard-sample.png"
             }
             alt={enterprisePlatform.screenshot.alt}
-            caption={enterprisePlatform.screenshot.caption}
+            caption={
+              locale === "en" || locale === "es"
+                ? enterprisePlatform.screenshot.caption
+                : `${enterprisePlatform.screenshot.caption} ${messages.general.media.interfaceEnglish}`
+            }
           />
         </div>
       </MarketingBand>

@@ -1,0 +1,84 @@
+{
+  "travelPage": {
+    "questions": {
+      "caption": "Chaque voyage est une offre assortie de conditions.",
+      "description": "La question change. Les dates, la base tarifaire et les conditions de réservation doivent toujours rester lisibles."
+    },
+    "attributes": {
+      "description": "Conservez ensemble les informations qui définissent l’offre, des dates disponibles aux conditions de modification."
+    },
+    "roadmap": {
+      "label": "Explorer le pilote voyage",
+      "diagram": "Les informations et le transfert à examiner",
+      "boundary": "Limite du périmètre",
+      "stages": [
+        {
+          "id": "scope",
+          "label": "S’accorder sur le périmètre",
+          "status": "Avant le pilote",
+          "title": "Un marché. Un point de départ validé.",
+          "description": "Confirmez la couverture linguistique et des données avant de commencer. Partez des pages publiques et des données produit validées avec votre équipe.",
+          "steps": [
+            {
+              "title": "Un marché",
+              "body": "Confirmer la couverture linguistique et des données."
+            },
+            {
+              "title": "Pages publiques",
+              "body": "S’accorder sur les offres à examiner."
+            },
+            {
+              "title": "Périmètre du pilote",
+              "body": "Définir la question du transfert vers la réservation."
+            }
+          ],
+          "note": "Un pilote commence par un périmètre validé ; cette feuille de route n’indique pas une intégration de réservation en production."
+        },
+        {
+          "id": "baseline",
+          "label": "Examiner les offres",
+          "status": "Référence des données publiques",
+          "title": "Lire l’offre avant le parcours de réservation.",
+          "description": "Examinez les informations des pages que vous contrôlez et les données produit validées. Votre équipe vérifie les attributs de voyage ; ecentic n’invente pas les informations manquantes.",
+          "steps": [
+            {
+              "title": "Site public",
+              "body": "Commencer à partir des fiches produit validées."
+            },
+            {
+              "title": "Flux pris en charge",
+              "body": "Utiliser la correspondance de champs définie pour l’importateur."
+            },
+            {
+              "title": "Informations sur l’offre",
+              "body": "Vérifier les dates, les prix, les prestations incluses et les conditions."
+            }
+          ],
+          "note": "La référence ne nécessite ni connexion au moteur de réservation, ni données client, ni code sur votre site."
+        },
+        {
+          "id": "handoff",
+          "label": "Examiner le transfert",
+          "status": "Périmètre convenu séparément",
+          "title": "Conserver une limite explicite autour de la réservation.",
+          "description": "Examinez le parcours convenu entre les informations publiques et un flux de réservation. Tout accès ou travail d’intégration ultérieur nécessite un périmètre distinct.",
+          "steps": [
+            {
+              "title": "Offre publique",
+              "body": "Gardez les dates, les prix et les conditions clairement visibles."
+            },
+            {
+              "title": "Canal ou fournisseur",
+              "body": "Le comportement de réservation dépend du canal et du flux."
+            },
+            {
+              "title": "Transmission vers la réservation",
+              "body": "Examinez la destination convenue et l’étape suivante."
+            }
+          ],
+          "note": "Aucune intégration de réservation automatisée n’est promise, et un assistant peut renvoyer vers une plateforme de réservation plutôt que vers votre site."
+        }
+      ]
+    }
+  }
+}

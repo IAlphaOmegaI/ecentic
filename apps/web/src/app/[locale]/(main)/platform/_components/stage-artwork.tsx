@@ -10,6 +10,7 @@ import {
   CommercePlug_3SparkleIcon,
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
+import { useTranslations } from "next-intl";
 import { PlatformProviderStack } from "./provider-stack";
 
 export const platformStageIcons = {
@@ -41,7 +42,9 @@ const Record = ({ active = false }: { active?: boolean }) => (
 );
 
 /** The diagrams show relationships, never fabricated scan results or measurements. */
-export const PlatformStageArtwork = ({ kind }: { kind: string }) => (
+export const PlatformStageArtwork = ({ kind }: { kind: string }) => {
+  const translate = useTranslations("enterprisePlatform.artworkStages");
+  return (
   <div
     aria-hidden
     data-stage-artwork={kind}
@@ -123,11 +126,11 @@ export const PlatformStageArtwork = ({ kind }: { kind: string }) => (
           </div>
         </div>
         <div className="mt-7 flex w-full max-w-72 items-center justify-between border-background-rich/15 border-y py-4 font-mono text-primary-rich text-xs">
-          <span>product</span>
+          <span>{translate("product")}</span>
           <ArrowRightIcon className="size-4" />
-          <span>cart</span>
+          <span>{translate("cart")}</span>
           <ArrowRightIcon className="size-4" />
-          <span>checkout</span>
+          <span>{translate("checkout")}</span>
         </div>
         <div className="mt-7">
           <PlatformProviderStack providers={["woocommerce"]} />
@@ -166,3 +169,4 @@ export const PlatformStageArtwork = ({ kind }: { kind: string }) => (
     )}
   </div>
 );
+};

@@ -1,0 +1,493 @@
+{
+  "webmcpScanner": {
+    "meta": {
+      "name": "WebMCP-Shopping-Audit",
+      "title": "Kostenloses WebMCP-Shopping-Audit für Onlineshops",
+      "description": "Prüfen Sie die WebMCP-Unterstützung Ihres Shops für Produktsuche, Varianten, Warenkörbe, Checkout, Richtlinien und Bestellungen. Erhalten Sie Nachweise zu Shopping-Abläufen und konkrete Handlungsempfehlungen."
+    },
+    "hero": {
+      "title": "Prüfen Sie die Shopping-Tools Ihres Shops",
+      "accent": "von der Suche bis zum Checkout.",
+      "description": "Sehen Sie, welche Shopping-Abläufe Ihr Shop über WebMCP bereitstellt. Prüfen Sie Katalogsuche, Produktauswahl, Warenkörbe und Checkout-Übergaben – mit Quellnachweisen und praxisnahen Empfehlungen für Händler.",
+      "assurances": [
+        "Kostenlos nutzbar",
+        "Kein Konto erforderlich",
+        "Nur Quellprüfung"
+      ],
+      "art": "Eine Konsole aus ASCII-Zeichen",
+      "action": {
+        "primary": "Shop prüfen"
+      }
+    },
+    "form": {
+      "title": "Prüfen Sie Ihren Shop",
+      "description": "Beginnen Sie mit einer öffentlichen Produkt- oder Kategorieseite, um den Shopping-Kontext möglichst klar abzubilden. Der Bericht ordnet Quellnachweise den Shop-Abläufen zu und zeigt, was Sie als Nächstes prüfen sollten.",
+      "fields": {
+        "url": {
+          "label": "Shop-URL",
+          "placeholder": "example.com/products/ihr-produkt",
+          "description": "Eine öffentliche Shop-Domain oder Seiten-URL. Sie können auch den Seitenpfad angeben.",
+          "storeDescription": "Ihr verbundener Shop ist bereits eingetragen. Sie können eine andere Seite auf derselben Domain scannen.",
+          "required": "Geben Sie eine Shop-Domain oder Seiten-URL ein.",
+          "invalid": "Geben Sie eine gültige öffentliche Shop-URL ein."
+        }
+      },
+      "action": {
+        "primary": "WebMCP-Audit starten"
+      },
+      "pending": "Quelle wird geprüft …",
+      "progress": "Öffentliche Seiten, Skripte und referenzierte Module werden gelesen. Das kann einige Augenblicke dauern.",
+      "complete": "Audit abgeschlossen. Prüfen Sie die Ergebnisse unten.",
+      "scope": "Liest die eingegebene Seite sowie bis zu 2 verlinkte Shopping-Seiten, bevorzugt Produkt- und Kategorieseiten, plus höchstens 12 externe Skripte oder Module. Folgt expliziten Referenzen und Imports, ohne JavaScript auszuführen, einen Warenkorb zu ändern oder eine Bestellung auszulösen.",
+      "errors": {
+        "failed": "Der Scan konnte nicht abgeschlossen werden. Bitte versuchen Sie es erneut.",
+        "invalid": "Geben Sie eine öffentliche HTTPS-Shop-URL ein. Dashboard-Scans müssen die Domain des verbundenen Shops verwenden.",
+        "unreachable": "Diese Seite konnte nicht gelesen werden. Prüfen Sie die URL und ob der Shop öffentlich erreichbar ist.",
+        "tooLarge": "Diese Seite ist größer, als der Scanner verarbeiten kann. Versuchen Sie es mit einer Produkt- oder Kategorieseite desselben Shops.",
+        "limited": "Sie haben das Scan-Limit erreicht. Bitte warten Sie, bevor Sie es erneut versuchen.",
+        "retryAfter": "Versuchen Sie es in {seconds, number} Sekunden erneut."
+      },
+      "sources": {
+        "label": "Mehr erfahren:",
+        "specification": "WebMCP-Spezifikation",
+        "chrome": "Chrome-WebMCP-Leitfaden"
+      }
+    },
+    "report": {
+      "label": "WebMCP-Shopping-Audit",
+      "scannedAt": "Gescannt am {date}",
+      "status": {
+        "markupFound": {
+          "title": "WebMCP-Deklarationen gefunden; Namen nicht auflösbar",
+          "description": "Wir haben WebMCP-Deklarationen gefunden, konnten ihre Tool-Namen jedoch nicht aus dem geprüften Quellcode auflösen. Das Tool-Inventar ist unvollständig; das bedeutet nicht, dass der Shop keine Tools hat."
+        },
+        "scriptSignals": {
+          "title": "WebMCP-Hinweise gefunden; Tools nicht auflösbar",
+          "description": "Der geprüfte Code verweist auf WebMCP-APIs, aber das Tool-Inventar konnte nicht aus dem Quellcode aufgelöst werden. Die Tools können im Browser dennoch verfügbar sein. API-Referenzen allein können auch nur Feature-Prüfungen oder nie ausgeführten Code darstellen."
+        },
+        "noEvidence": {
+          "title": "Keine WebMCP-Hinweise in diesem Scan",
+          "description": "Wir haben in der geprüften Quelle keine WebMCP-Deklarationen oder API-Signale gefunden. Das beweist nicht, dass WebMCP fehlt: Andere Seiten, später geladene Skripte oder Tools hinter einem Login können es dennoch bereitstellen."
+        },
+        "toolsFound": {
+          "title": "Benannte WebMCP-Tools im Quellcode gefunden",
+          "description": "Wir haben benannte WebMCP-Tool-Definitionen aus dem geprüften Quellcode extrahiert. Die Anzahl bezieht sich auf diese Definitionen; Registrierung und Verfügbarkeit im Browser wurden nicht verifiziert."
+        }
+      },
+      "counts": {
+        "tools": "Benannte Tool-Definitionen",
+        "signals": "API-Hinweise",
+        "pages": "Gelesene Seiten",
+        "scripts": "Gelesene Skripte",
+        "notResolved": "Nicht aufgelöst"
+      },
+      "tools": {
+        "title": "Tool-Definitionen",
+        "description": "Aus dem Quellcode extrahierte Definitionen einschließlich Parameter-Metadaten und Ausführungsdeklarationen. Dies sind keine bestätigten Browser-Registrierungen.",
+        "unnamed": "Unbenannte Definition",
+        "empty": "Aus dem geprüften Quellcode konnten keine Tool-Definitionen extrahiert werden.",
+        "noDescription": "Aus dieser Definition konnte keine explizite Beschreibung gelesen werden.",
+        "page": "Seite",
+        "source": "Quelle",
+        "inputs": "Gefundene Eingabenamen",
+        "noInputs": "Aus dem Quellcode konnten keine Eingabenamen gelesen werden.",
+        "kind": {
+          "declarative": "HTML-Formulardeklaration",
+          "imperative": "JavaScript-Definition"
+        },
+        "unresolved": "WebMCP-Hinweise wurden erkannt, aber aus dem geprüften Quellcode konnten keine Tool-Namen aufgelöst werden. Das Inventar ist unvollständig; dies ist keine Anzahl von null verfügbaren Tools.",
+        "partiallyResolved": "Einige Definitionen haben nicht auflösbare Namen. Die Anzahl umfasst nur benannte Definitionen, die aus dem Quellcode extrahiert wurden; zusätzliche Tools können im Browser verfügbar sein.",
+        "parametersTitle": "Eingabeparameter der obersten Ebene",
+        "schemaLabel": "Eingabeschema",
+        "executionLabel": "Ausführung",
+        "schema": {
+          "absent": "Kein Schema deklariert; ein Schema ist optional.",
+          "resolved": "Schema-Metadaten aus dem Quellcode aufgelöst.",
+          "unresolved": "Schema konnte nicht aus dem Quellcode aufgelöst werden.",
+          "notApplicable": "Die Eingaben werden durch das HTML-Formular beschrieben."
+        },
+        "execution": {
+          "declared": "Handler im Quellcode deklariert; nicht ausgeführt.",
+          "missing": "In dieser Definition wurde kein Handler identifiziert.",
+          "unresolved": "Handler konnte nicht aus dem Quellcode aufgelöst werden.",
+          "form": "Deklarative Formularübermittlung; nicht gesendet."
+        },
+        "typeUnknown": "Typ nicht auflösbar",
+        "required": "Erforderlich",
+        "optional": "Optional",
+        "requirementUnknown": "Anforderung nicht auflösbar",
+        "parameterDescriptionMissing": "Keine Parameterbeschreibung im Quellcode gefunden."
+      },
+      "issues": {
+        "missingName": "Der Tool-Name konnte aus dieser Definition nicht gelesen werden.",
+        "missingDescription": "Die Tool-Beschreibung konnte aus dieser Definition nicht gelesen werden.",
+        "missingSchema": "Es konnte kein explizites Eingabeschema gelesen werden. Eingabeschemata sind im aktuellen Entwurf optional.",
+        "autoSubmit": "Dieses Formular deklariert eine automatische Übermittlung. Prüfen Sie, ob dieses Verhalten für die Aktion geeignet ist.",
+        "unresolvedDefinition": "Ein Teil dieser Definition ist dynamisch oder indirekt und konnte nicht aus dem Quellcode aufgelöst werden."
+      },
+      "signals": {
+        "title": "API-Hinweise",
+        "description": "Quellcode-Referenzen sind Hinweise auf Integrationscode, aber kein Nachweis für ein registriertes Tool.",
+        "contextApi": "modelContext-API-Referenz",
+        "registerTool": "registerTool-Aufruf",
+        "provideContext": "provideContext-Aufruf"
+      },
+      "coverage": {
+        "title": "Scan-Abdeckung",
+        "scanned": "Gelesene Quelle",
+        "unavailable": "Nicht verfügbar",
+        "skipped": "{scripts, number} externe Skripte oder Module übersprungen · {resources, number} Ressourcen konnten nicht gelesen werden",
+        "totals": "{pages, number} Seiten gelesen · {scripts, number} Skripte oder Module gelesen"
+      },
+      "limitations": {
+        "title": "Was dieser Scan aussagen kann",
+        "staticOnly": "Dies ist ein Quellcode-Scan. Er führt niemals externes JavaScript aus, sendet keine Formulare und ruft keine Tools auf. Laufzeitregistrierung und Ausführung bleiben ungeprüft.",
+        "pageLimit": "Es wurden mehr verlinkte Seiten gefunden, als dieser Scan abdeckt. Scannen Sie eine konkrete Produkt-, Katalog- oder Such-URL, um sie direkt zu prüfen.",
+        "scriptLimit": "Einige externe Skripte oder referenzierte Module lagen außerhalb des Scan-Limits. Ihre Tools fehlen möglicherweise in diesen Ergebnissen.",
+        "resourceFailures": "Einige Seiten oder Skripte konnten nicht gelesen werden. Die Ergebnisse decken nur die zugänglichen Ressourcen ab.",
+        "parseFailures": "Einige Quellen konnten nicht vollständig verarbeitet werden. Dynamische oder nicht unterstützte Definitionen fehlen möglicherweise."
+      },
+      "nextStep": "Bestätigen Sie die Ergebnisse in einem Browser mit WebMCP-Unterstützung und prüfen Sie die registrierten Tools. WebMCP entwickelt sich weiter; diese Ergebnisse sind weder eine Zertifizierung noch ein Sichtbarkeitswert für Agenten.",
+      "tabs": {
+        "label": "Abschnitte des WebMCP-Berichts",
+        "audit": "Audit-Ergebnisse",
+        "tools": "Tools",
+        "forms": "Formulare",
+        "coverage": "Abdeckung"
+      },
+      "audit": {
+        "title": "Prüfen Sie die Shopping-Tools Ihres Shops",
+        "description": "Zuerst Hinweise zu Shopping-Abläufen, danach technische Implementierungsbefunde. Treffer im Quellcode bestätigen weder Browser-Verfügbarkeit, Tool-Ausgaben noch abgeschlossene Käufe.",
+        "summary": {
+          "high": "Hohe Priorität",
+          "improvements": "Verbesserungen",
+          "opportunities": "Formularpotenziale",
+          "tools": "Benannte Tools gefunden"
+        },
+        "checksTitle": "Technische Quellprüfungen",
+        "checksDescription": "Bestanden bedeutet, dass diese Quellprüfung kein Problem gefunden hat. Unbekannt bedeutet, dass die Hinweise nicht ausreichen. Diese Prüfungen sind keine Laufzeitzertifizierung.",
+        "checkStatus": {
+          "pass": "Bestanden",
+          "attention": "Achtung",
+          "unknown": "Unbekannt"
+        },
+        "checks": {
+          "discovery": {
+            "title": "Tool-Erkennung",
+            "description": "Benannte Definitionen oder API-Hinweise im geprüften Quellcode gefunden."
+          },
+          "metadata": {
+            "title": "Namen und Beschreibungen",
+            "description": "Lesbare Tool-Namen und hilfreiche Beschreibungen."
+          },
+          "parameters": {
+            "title": "Eingabe-Metadaten",
+            "description": "Auflösbare Parameterdetails und Beschreibungen, sofern vorhanden."
+          },
+          "implementation": {
+            "title": "Ausführungsdeklaration",
+            "description": "Ein identifizierbarer Handler oder deklarativ definierter Formularvorgang."
+          },
+          "forms": {
+            "title": "Formularpotenziale",
+            "description": "Anmerkungen und mögliche Verknüpfungen zu bestehenden Tools, vorbehaltlich einer Prüfung."
+          },
+          "coverage": {
+            "title": "Quellabdeckung",
+            "description": "Ob der begrenzte Scan seine Zielressourcen lesen und parsen konnte."
+          },
+          "runtime": {
+            "title": "Browserprüfung",
+            "description": "Registrierung, Toolausführung und Verhalten in einem unterstützten Browser."
+          }
+        },
+        "findingsTitle": "Ergebnisse zur Implementierung",
+        "findingsDescription": "Prüfen Sie die Probleme im Quellcode hinter diesen Shopping-Abläufen. Beginnen Sie mit Korrekturen hoher Priorität; mögliche Formularintegrationen müssen mit dem bestehenden Store-Workflow abgeglichen werden.",
+        "priority": {
+          "high": "Hohe Priorität",
+          "medium": "Verbesserung",
+          "low": "Vorschlag",
+          "opportunity": "Potenzial",
+          "info": "Prüfung"
+        },
+        "why": "Warum das wichtig ist",
+        "fix": "Empfohlene Korrektur",
+        "evidence": "Quellnachweis",
+        "relatedTools": "Möglicherweise verwandte Tools",
+        "page": "Seite",
+        "source": "Quelle",
+        "snippet": "Vorgeschlagener Code",
+        "snippetNote": "Nur Entwurfsattribute. Prüfen Sie vor dem Zusammenführen, ob Toolname und Beschreibung zum tatsächlichen Formularvorgang passen. Behalten Sie Aktion, Steuerelemente, Validierung und Einwilligung bei und prüfen Sie zuerst bestehende Tools.",
+        "copied": "Kopiert",
+        "copyFailed": "Kopieren nicht möglich. Wählen Sie den Code aus und kopieren Sie ihn manuell.",
+        "action": {
+          "secondary": "Code kopieren"
+        },
+        "empty": "Es wurden keine umsetzbaren Probleme im Quellcode erkannt. Browserprüfung und die Abdeckungsgrenzen des Scans gelten weiterhin.",
+        "findings": {
+          "missingToolName": {
+            "title": "Geben Sie diesem Tool einen klaren Namen",
+            "why": "Aus der Definition konnte kein Toolname gelesen werden. Agenten benötigen eine stabile Kennung, um den vorgesehenen Vorgang auszuwählen.",
+            "fix": "Prüfen Sie die vollständige Definition und ergänzen Sie einen eindeutigen, beschreibenden Namen, falls er fehlt. Bestätigen Sie, dass derselbe Name in den im Browser registrierten Tools erscheint."
+          },
+          "missingToolDescription": {
+            "title": "Beschreiben Sie die Funktion dieses Tools",
+            "why": "Aus dieser Definition konnte keine Beschreibung gelesen werden. Ohne klare Metadaten weiß ein Agent möglicherweise nicht, wann das Tool verwendet werden soll oder was es zurückgibt.",
+            "fix": "Fügen Sie eine Beschreibung hinzu, die den Vorgang, das erwartete Ergebnis und relevante Einschränkungen erklärt. Wenn die Beschreibung generiert wird, prüfen Sie ihren endgültigen Wert im Browser."
+          },
+          "missingHandler": {
+            "title": "Prüfen Sie den Ausführungshandler des Tools",
+            "why": "Die geprüfte JavaScript-Definition enthält keinen identifizierbaren Ausführungshandler. Metadaten allein implementieren den Vorgang nicht.",
+            "fix": "Verbinden Sie die Definition mit dem vorgesehenen Execute-Callback oder prüfen Sie einen vorhandenen importierten Handler. Behalten Sie Authentifizierung, Validierung und Benutzerbestätigung im Ausführungspfad bei."
+          },
+          "unresolvedDefinition": {
+            "title": "Lösen Sie diese Tooldefinition auf",
+            "why": "Ein Teil der Definition ist dynamisch, indirekt oder außerhalb der geprüften Quelle. Metadaten oder Implementierung können durch diesen Scan nicht bestätigt werden.",
+            "fix": "Verfolgen Sie die referenzierten Variablen und Module und prüfen Sie anschließend die endgültig registrierte Definition in einem Browser mit WebMCP-Unterstützung. Verifizieren Sie dort Name, Beschreibung, Eingaben und Handler."
+          },
+          "briefDescription": {
+            "title": "Machen Sie die Toolbeschreibung hilfreicher",
+            "why": "Die Beschreibung ist kürzer als 40 Zeichen und erklärt den Vorgang möglicherweise nicht ausreichend, damit ein Agent das Tool auswählen kann. Dieser Schwellenwert ist eine Heuristik zur Verständlichkeit und keine Anforderung der WebMCP-Spezifikation.",
+            "fix": "Erläutern Sie, wann das Tool verwendet werden soll, was es zurückgibt und welche wichtigen Einschränkungen gelten. Beschreiben Sie bei einer Produktsuche die unterstützten Suchkriterien und Ergebnisdetails."
+          },
+          "missingParameterDescriptions": {
+            "title": "Erläutern Sie die Eingaben des Tools",
+            "why": "Einigen Eingabeeigenschaften auf oberster Ebene fehlen Beschreibungen im geprüften Schema. Beschreibungen helfen Agenten dabei, die richtigen Werte zu übergeben; sie sind nicht für jede Eigenschaft verpflichtend.",
+            "fix": "Beschreiben Sie die Shopping-Bedeutung jedes relevanten Parameters: Suchanfrage und Filter, Produkt- oder Varianten-IDs, Warenkorbzeilen-IDs, absolute oder geänderte Menge, Währung oder Postleitzahl. Halten Sie erforderliche Eingaben mit dem Handler abgestimmt und geben Sie hilfreiche Beispiele an."
+          },
+          "duplicateToolName": {
+            "title": "Prüfen Sie überlappende Toolnamen",
+            "why": "Verschiedene Quelldefinitionen verwenden denselben Toolnamen. Sie können in demselben Seitenkontext Konflikte verursachen; eine Wiederverwendung auf separaten Seiten ist nicht zwangsläufig problematisch.",
+            "fix": "Prüfen Sie, wo jede Definition registriert wird. Falls beide Tools gleichzeitig vorhanden sind, vergeben Sie unterschiedliche Namen für unterschiedliche Vorgänge. Stellen Sie andernfalls sicher, dass die vorgesehene Definition im Browser bereitgestellt wird."
+          },
+          "automaticSubmission": {
+            "title": "Prüfen Sie die automatische Formularübermittlung",
+            "why": "Dieses Formular deklariert eine automatische Übermittlung. Je nach Vorgang könnte dadurch ein erwarteter Prüf- oder Bestätigungsschritt umgangen werden.",
+            "fix": "Bestätigen Sie, dass die automatische Übermittlung beabsichtigt und geeignet ist. Behalten Sie Validierung und Einwilligung bei und entfernen Sie das Attribut für automatische Übermittlung, wenn die Aktion auf eine Benutzerprüfung warten soll."
+          },
+          "unnamedFields": {
+            "title": "Prüfen Sie Formularfelder ohne Namen",
+            "why": "Einige Formularsteuerelemente haben im geprüften Markup keinen Namen. Solche Steuerelemente lassen sich möglicherweise nicht sinnvollen Tooleingaben zuordnen.",
+            "fix": "Fügen Sie Steuerelementen, die übermittelt und als Eingaben bereitgestellt werden sollen, beschreibende Namen hinzu. Behalten Sie Labels und Validierung bei und schließen Sie Zugangsdaten, Tokens und interne Felder aus den Toolmetadaten aus."
+          },
+          "formOpportunity": {
+            "title": "Prüfen Sie diesen Storefront-Workflow für Agenten",
+            "why": "Dieses öffentliche Formular enthält im geprüften Markup keine WebMCP-Formularannotationen, und es wurde kein eindeutig zugehöriges benanntes Tool erkannt. Ein vorhandenes JavaScript-Tool könnte den Workflow dennoch abdecken.",
+            "fix": "Prüfen Sie zuerst bestehende Tools. Falls dieser Workflow für Agenten hilfreich wäre, integrieren Sie toolname und tooldescription in das bestehende Formular. Behalten Sie Aktion, Steuerelemente, Validierung und Einwilligung bei; ersetzen Sie das Formular nicht und aktivieren Sie nicht standardmäßig die automatische Übermittlung."
+          },
+          "formReview": {
+            "title": "Prüfen Sie dieses Formular vor dem Hinzufügen eines Tools",
+            "why": "Das Formular könnte einem bestehenden Tool entsprechen oder sensible Felder enthalten. Eine reine Quellcodeprüfung kann nicht bestimmen, ob ein weiteres Tool erforderlich oder geeignet ist.",
+            "fix": "Prüfen Sie alle zugehörigen Tools und bestätigen Sie, wie das Formular mit Authentifizierung, sensiblen Eingaben und Einwilligung umgeht. Nutzen Sie nach Möglichkeit einen bestehenden Vorgang weiter und halten Sie sensible Aktionen unter den vorgesehenen Benutzerkontrollen."
+          },
+          "incompleteCoverage": {
+            "title": "Prüfen Sie die Bereiche außerhalb dieses Scans",
+            "why": "Einige Seiten, Skripte oder Definitionen konnten nicht vollständig geprüft werden. Die Ergebnisse und die Anzahl der Tools decken nur die aufgelöste Quelle ab.",
+            "fix": "Prüfen Sie den Tab „Abdeckung“, scannen Sie relevante Produkt- oder Suchseiten direkt und untersuchen Sie verbleibende Importe oder geschützte Abläufe im Browser. Führen Sie den Scan erneut aus, sobald nicht zugängliche Ressourcen verfügbar sind."
+          },
+          "noToolEvidence": {
+            "title": "Bestätigen Sie, ob dieser Store WebMCP bereitstellt",
+            "why": "In der geprüften Quelle wurden keine Tooldefinitionen oder API-Hinweise gefunden. Das beweist nicht, dass der Store keine WebMCP-Tools hat.",
+            "fix": "Prüfen Sie die registrierten Tools der Website in einem unterstützten Browser und testen Sie eine relevante Produkt- oder Suchseite. Falls keine Tools vorhanden sind, beginnen Sie mit einem nützlichen, klar definierten Workflow wie der Katalogsuche."
+          },
+          "runtimeUnverified": {
+            "title": "Überprüfen Sie Registrierung und Verhalten im Browser",
+            "why": "Die Quellcodeprüfung kann nicht bestätigen, dass der Browser ein Tool registriert oder dass dessen Handler funktioniert. Dieses Audit führt keine Skripte aus, sendet keine Formulare ab und ruft keine Tools auf.",
+            "fix": "Verwenden Sie einen Browser mit WebMCP-Unterstützung, um registrierte Metadaten zu prüfen und einen sicheren schreibgeschützten Vorgang zu testen. Verifizieren Sie Eingaben, Ausgaben und Fehlerbehandlung und behalten Sie die vorgesehenen Bestätigungen für Aktionen bei, die den Store-Zustand ändern."
+          }
+        },
+        "occurrences": "An {count, number} Stellen gefunden"
+      },
+      "forms": {
+        "title": "Im Quellcode gefundene Formulare",
+        "description": "Prüfen Sie Formulare im Kontext realer Store-Abläufe. Labels werden aus Quellmetadaten abgeleitet. Prüfen Sie bestehende Tools, bevor Sie Unterstützung hinzufügen; unbekannte Formulare sowie sensible Kauf- oder Kontoabläufe erfordern eine manuelle Prüfung.",
+        "declared": "WebMCP-Formularannotationen gefunden",
+        "unannotated": "Keine WebMCP-Formularannotationen in diesem Markup",
+        "selector": "Selektor",
+        "page": "Seite",
+        "action": "Formularaktion",
+        "method": "Methode",
+        "currentPage": "Aktuelle Seite",
+        "toolName": "Deklarierter Toolname",
+        "relatedTools": "Möglicherweise verwandte Tools",
+        "relatedNote": "Diese Toolnamen wurden irgendwo in diesem Scan gefunden. Ihre Verfügbarkeit auf dieser Seite und ihre Verbindung zu diesem Formular sind nicht verifiziert; bestätigen Sie beides, bevor Sie eine weitere Integration hinzufügen.",
+        "sensitive": "Es wurden sensible Felder erkannt. Prüfen Sie Authentifizierung, Datenschutz und Einwilligung, bevor Sie diesen Workflow einem Agenten zugänglich machen.",
+        "fields": "Formularfelder",
+        "unnamedField": "Unbenanntes Feld",
+        "required": "Erforderlich",
+        "optional": "Optional",
+        "noFields": "Aus diesem Formular konnten keine Feldmetadaten gelesen werden.",
+        "empty": "Im geprüften HTML wurden keine öffentlichen Formulare gefunden. Durch JavaScript erzeugte oder hinter einer Anmeldung verborgene Formulare können dennoch vorhanden sein.",
+        "intent": {
+          "search": "Suchformular",
+          "cart": "Warenkorbformular",
+          "newsletter": "Newsletter-Anmeldung",
+          "contact": "Kontaktformular",
+          "account": "Kontoformular",
+          "other": "Storefront-Formular",
+          "product": "Produktformular",
+          "variant": "Variantenauswahl",
+          "coupon": "Gutscheinformular",
+          "shipping": "Versandkostenschätzung",
+          "checkout": "Checkout-Ablauf",
+          "orderTracking": "Bestellverfolgung",
+          "returns": "Retourenablauf"
+        },
+        "autoSubmit": "Dieses Formular deklariert eine automatische Übermittlung. Prüfen Sie die vorgesehene Benutzerbestätigung und Validierung, bevor Sie die WebMCP-Integration ändern.",
+        "guidance": {
+          "search": {
+            "why": "Der Quellcode deutet auf ein Formular zur Katalogsuche hin. Ein JavaScript-Tool könnte diesen Workflow bereits abdecken; das Formular-Markup allein belegt keine fehlende Integration.",
+            "fix": "Prüfen Sie zuerst bestehende Suchtools. Kontrollieren Sie Suchfeld, Katalogfilter, Paginierung und Ergebniskennungen. Falls eine neue Integration sinnvoll ist, beschreiben Sie die tatsächlichen Sucheingaben und behalten Sie Validierung und Verhalten des Formulars bei."
+          },
+          "product": {
+            "why": "Dies scheint ein Produkt-Workflow zu sein. Agenten benötigen eine stabile Produktidentität und aktuelle Shopping-Informationen statt einer generischen Formularübermittlung.",
+            "fix": "Bestätigen Sie die Produkt- oder SKU-Kennung und den Zweck des Vorgangs. Beschreiben Sie bei Produktabfragen Metadaten zu Preis, Währung, Bestand und kanonischer URL; wenn das Formular einen Warenkorb ändert, prüfen Sie stattdessen das Verhalten von Warenkorb und Varianten."
+          },
+          "variant": {
+            "why": "Dieses Formular scheint Produktoptionen oder eine Variante auszuwählen. Ein ausgewähltes Label allein identifiziert möglicherweise weder den kaufbaren Artikel noch dessen aktuelle Verfügbarkeit.",
+            "fix": "Prüfen Sie Produkt- und Varianten-IDs, zulässige Optionswerte, Bestand und Variantenpreis. Behalten Sie die Validierung der Optionen bei und unterscheiden Sie zwischen der Auswahl einer Variante und dem Hinzufügen zum Warenkorb."
+          },
+          "cart": {
+            "why": "Dies scheint den Warenkorbinhalt zu ändern. Ein generischer Formular-Wrapper kann verbergen, welcher Artikel geändert wird oder was ein Mengenwert bedeutet.",
+            "fix": "Prüfen Sie die Varianten- oder Warenkorbzeilen-Kennung und ob die Menge absolut oder als Delta angegeben wird. Validieren Sie den Bestand, geben Sie aktualisierte Summen mit Währung zurück und verhindern Sie unbeabsichtigte Duplikate bei wiederholten Anfragen. Nutzen Sie ein bestehendes Warenkorb-Tool weiter, wenn es diesen Vorgang abdeckt."
+          },
+          "coupon": {
+            "why": "Dies scheint einen Rabatt anzuwenden oder zu entfernen. Die Gültigkeit des Gutscheins und der resultierende Preis hängen vom aktuellen Warenkorb und den Store-Regeln ab.",
+            "fix": "Validieren Sie Codes serverseitig gegen den richtigen Warenkorb. Erklären Sie Annahme und Ablehnung, geben Sie aktualisierte Rabatte und Summen mit Währung zurück und behalten Sie die bestehenden Gutscheinbeschränkungen des Stores bei."
+          },
+          "shipping": {
+            "why": "Dies scheint Versandinformationen zu erfassen oder eine Schätzung anzufordern. Eine Schätzung unterscheidet sich von der Bestätigung von Lieferdetails oder der Aufgabe einer Bestellung.",
+            "fix": "Verwenden Sie nur die Länder- oder Postleitzahldaten, die für eine Schätzung erforderlich sind. Beschreiben Sie zurückgegebene Versandarten, Kosten, Währung und Einschränkungen der Schätzung. Behalten Sie Adressvalidierung und Checkout-Einwilligung bei; geben Sie Kundendaten nicht unnötig preis."
+          },
+          "checkout": {
+            "why": "Dieses Formular scheint den Checkout oder die Kaufbestätigung einzuleiten. Wenn es als generisches Formular-Tool bereitgestellt wird, könnte ein folgenreicher Schritt verschleiert werden.",
+            "fix": "Prüfen Sie diesen Ablauf manuell. Unterscheiden Sie zwischen der Navigation zum Checkout und dem Absenden einer Bestellung, behalten Sie Warenkorbstatus und Validierung bei und erhalten Sie die vorgesehene Authentifizierung, Zahlungsweiterleitung und ausdrückliche Kaufbestätigung."
+          },
+          "orderTracking": {
+            "why": "Dies scheint sich auf eine bestehende Bestellung zu beziehen. Die Navigation im Bestellverlauf allein bedeutet nicht, dass ein Agent autorisierte Bestelldaten lesen kann.",
+            "fix": "Prüfen Sie diesen Ablauf manuell. Fordern Sie die korrekte Authentifizierung und Eigentumsprüfung an, bevor Status-, Tracking- oder Kundendaten zurückgegeben werden. Begrenzen Sie Kennungen auf den aktuellen Käufer und behalten Sie vorhandene sichere Übergaben an den Nutzer bei."
+          },
+          "returns": {
+            "why": "Dies scheint eine Rückgabe oder einen anderen Vorgang nach dem Kauf zu betreffen. Eine Rückgaberichtlinie zu lesen und eine Rückgabe zu erstellen, sind unterschiedliche Funktionen.",
+            "fix": "Prüfen Sie diesen Ablauf manuell. Prüfen Sie die Zuordnung der Bestellung zum Käufer, die Rückgabeberechtigung der Artikel und die Shoprichtlinien, begrenzen Sie personenbezogene Daten und verlangen Sie die vorgesehene Bestätigung, bevor eine Rückgabe, Erstattung oder Bestelländerung ausgelöst wird."
+          },
+          "newsletter": {
+            "why": "Dies scheint ein Formular für Marketing-Abonnements zu sein und kein zentraler Vorgang für die Produktsuche oder den Warenkorb. Möglicherweise besteht dafür bereits eine separate Integration.",
+            "fix": "Halten Sie die Marketingeinwilligung ausdrücklich und getrennt von Einkaufsaktionen. Prüfen Sie bestehende Integrationen, bevor Sie ein Agent-Tool in Betracht ziehen; melden Sie Käufer nicht als Nebeneffekt von Suche, Warenkorbänderungen oder Kaufabschluss an."
+          },
+          "contact": {
+            "why": "Dies scheint ein Kontakt- oder Supportformular zu sein. Seine Existenz allein rechtfertigt kein neues Shopping-Tool.",
+            "fix": "Bestätigen Sie den Support-Anwendungsfall und bestehende Integrationen. Behalten Sie Validierung, Spam-Schutz und Einwilligungen bei und stellen Sie keinen allgemeinen Absendevorgang ohne klaren Händlerzweck bereit."
+          },
+          "account": {
+            "why": "Dies scheint den Kontozugriff oder Kundendaten zu betreffen. Die Authentifizierung darf nicht durch ein generisches Formular-Tool ersetzt werden.",
+            "fix": "Prüfen Sie diesen Ablauf manuell. Belassen Sie Authentifizierung und Prüfungen der Kontoinhaberschaft im bestehenden sicheren Ablauf, schützen Sie Passwörter und Tokens und verwenden Sie eine ausdrückliche Übergabe an den Nutzer, wenn eine Anmeldung erforderlich ist."
+          },
+          "other": {
+            "why": "Die Quelle hat keinen spezifischen Shopping-Zweck für dieses Formular festgestellt. Eine fehlende Kennzeichnung allein reicht nicht aus, um ein neues Tool zu empfehlen.",
+            "fix": "Identifizieren Sie den Händler-Workflow und prüfen Sie bestehende Tools, bevor Sie Änderungen vornehmen. Dieser Scan allein empfiehlt weder das Einbinden eines unbekannten Formulars noch die Automatisierung seiner Übermittlung."
+          }
+        }
+      },
+      "commerce": {
+        "title": "Einkaufsabläufe",
+        "description": "Quellennachweise über acht Shopvorgänge hinweg. Öffnen Sie einen Workflow für Quelllinks und Händlerprüfungen. Dieses Audit ruft keine Tools auf und testet deren Ausgaben nicht.",
+        "unconfirmed": {
+          "title": "Shop-Kontext nicht bestätigt",
+          "description": "Diese Seite lieferte nicht genügend Nachweise für Produkte, Katalog, Warenkorb oder Commerce-Tools. Versuchen Sie eine öffentliche Produkt- oder Kategorie-URL. Die folgenden Workflows dienen als Prüfhinweise, nicht als Liste fehlender Shopfunktionen."
+        },
+        "status": {
+          "toolFound": "Tool-Nachweis gefunden",
+          "formOnly": "Nur Formularnachweis",
+          "notObserved": "Nicht beobachtet",
+          "review": "Zuordnung prüfen"
+        },
+        "toolEvidence": "Im Quellcode gefundene Tool-Namen",
+        "formEvidence": "{count, number} zugehörige Formulare im Quellcode",
+        "guidance": "Was Sie für Ihren Shop prüfen sollten",
+        "notObserved": "„Nicht beobachtet“ bedeutet, dass in diesem Scan keine passenden Nachweise gefunden wurden. Es ist weder ein Fehler noch ein Beleg dafür, dass eine Shopping-Funktion fehlt.",
+        "evidenceNote": "Treffer werden aus Quellnamen, Beschreibungen, Feldern und URLs abgeleitet. Ein zugehöriges Tool kann auf einer anderen Seite registriert sein; Verfügbarkeit, Ausgaben und die Verbindung zu diesen Formularen bleiben unbestätigt.",
+        "workflows": {
+          "catalogSearch": {
+            "title": "Katalogsuche",
+            "purpose": "Relevante Produkte über Suchanfragen und Einkaufsfilter finden.",
+            "guidance": "Prüfen Sie Eingaben für Suchanfrage, Kategorie, Preis, Verfügbarkeit und Paginierung. Suchergebnisse sollten jedes Produkt eindeutig kennzeichnen und Preis, Währung sowie Verfügbarkeit klar anzeigen."
+          },
+          "productDetails": {
+            "title": "Produktdetails",
+            "purpose": "Die Informationen lesen, die ein Agent zum Produktvergleich benötigt.",
+            "guidance": "Prüfen Sie Produktkennungen, kanonische URLs, Beschreibungen, aktuelle Preise, Währung und Lagerbestands-Metadaten. Ein Link zu einer Produktseite ist kein Nachweis dafür, dass ein Tool diese Details zurückgibt."
+          },
+          "variants": {
+            "title": "Variantenauswahl",
+            "purpose": "Größe, Farbe und andere Optionen einer kaufbaren Variante zuordnen.",
+            "guidance": "Prüfen Sie Produkt- und Varianten-IDs, zulässige Optionswerte, aktuellen Lagerbestand und Variantenpreise. Bestätigen Sie, wie ungültige oder nicht verfügbare Kombinationen gemeldet werden, bevor ein Warenkorb geändert wird."
+          },
+          "cartRead": {
+            "title": "Warenkorbinhalt",
+            "purpose": "Aktuelle Artikel und Summen des Käufers prüfen.",
+            "guidance": "Prüfen Sie, ob der Vorgang Warenkorb- und Positionskennungen, ausgewählte Varianten, Mengen, Rabatte, Summen und Währung zurückgibt. Das Öffnen der Warenkorbseite weist nicht nach, dass diese Werte gelesen werden können."
+          },
+          "cartUpdate": {
+            "title": "Warenkorbänderungen",
+            "purpose": "Artikel hinzufügen, entfernen oder aktualisieren, ohne unbeabsichtigte Duplikate zu erzeugen.",
+            "guidance": "Prüfen Sie, ob die Menge einen absoluten Wert oder eine Änderung bedeutet. Validieren Sie Varianten- und Positions-IDs, Lagerbestand, Gutscheincodes, neu berechnete Summen und Währung; bestätigen Sie außerdem, wie wiederholte Anfragen verarbeitet werden."
+          },
+          "checkout": {
+            "title": "Checkout-Übergabe",
+            "purpose": "Den Käufer in den vorgesehenen Checkout- und Bestätigungsablauf überführen.",
+            "guidance": "Unterscheiden Sie zwischen dem Öffnen des Checkouts und dem Absenden einer Bestellung. Prüfen Sie Warenkorbkontinuität, Validierung, erforderliche Authentifizierung sowie die manuelle Übergabe für Zahlung und Kaufbestätigung."
+          },
+          "policies": {
+            "title": "Versand- und Rückgaberichtlinien",
+            "purpose": "Lieferung, Rückgaben und die Bedingungen erläutern, die einen Kauf beeinflussen.",
+            "guidance": "Prüfen Sie zugängliche Versand- und Rückgabebedingungen. Versandschätzungen benötigen passende Länder- oder Postleitzahleingaben, Kosten und Währung; eine Richtlinienseite allein belegt nicht die Verfügbarkeit einer aktuellen Versandkostenberechnung."
+          },
+          "orders": {
+            "title": "Bestellungen und Service nach dem Kauf",
+            "purpose": "Autorisierte Fragen zu Bestellungen und Anfragen nach dem Kauf unterstützen.",
+            "guidance": "Das Öffnen des Bestellverlaufs ist nicht dasselbe wie das Lesen von Bestelldaten. Verifizieren Sie die Authentifizierung und die Zuordnung der Bestellung zum Käufer für Tracking oder Rückgaben, begrenzen Sie personenbezogene Daten und stellen Sie sicher, dass vor dem Auslösen einer Rückgabe oder dem Ändern einer Bestellung eine Bestätigung erfolgt."
+          }
+        }
+      }
+    },
+    "dashboard": {
+      "label": "Kostenloses Shop-Tool",
+      "title": "WebMCP-Audit",
+      "description": "Prüfen Sie, wie Ihr Shop Shopping-Vorgänge für Browser-Agenten bereitstellt – von Produktsuche und Variantenauswahl bis zu Warenkorb und Checkout. Erhalten Sie Quellnachweise und Korrekturen ohne kostenpflichtigen Plan.",
+      "store": "Verbundener Shop: {name}"
+    },
+    "faq": {
+      "title": "Verstehen Sie Ihr Audit.",
+      "description": "Ein Shop-Audit ordnet die im Quellcode gefundenen WebMCP-Hinweise dem Einkaufsablauf zu. Die Prüfung im Browser bestätigt, ob die Tools die erwarteten Daten liefern und sich wie erwartet verhalten.",
+      "items": [
+        {
+          "question": "Was ergänzt WebMCP in einem Shop?",
+          "answer": "WebMCP ermöglicht es einer Website, Tools für Browser-Agenten zu beschreiben, etwa Produktsuche oder Warenkorbaktionen. Der Entwurf umfasst JavaScript-Registrierung und HTML-Formulardeklarationen. Ein Tool ist nur verfügbar, wenn Website und Browser es erfolgreich bereitstellen."
+        },
+        {
+          "question": "Wie findet der Scanner WebMCP?",
+          "answer": "Er liest die eingegebene öffentliche Seite, bis zu zwei verlinkte Katalog-, Produkt- oder Suchseiten sowie höchstens zwölf externe Skripte oder Module einschließlich CDN-Ressourcen. Er folgt expliziten Skriptverweisen und Imports, einschließlich dynamischer Modul-URLs. Er sucht nach Formularattributen wie toolname und tooldescription sowie nach JavaScript-Verweisen auf document.modelContext oder die frühere API navigator.modelContext. Der Code wird nicht ausgeführt."
+        },
+        {
+          "question": "Bedeutet ein Fund, dass ein Agent das Tool verwenden kann?",
+          "answer": "Nein. Der Quellcode kann deaktivierten Code, Feature-Prüfungen oder Definitionen enthalten, die zur Laufzeit fehlschlagen. Dieser Scanner führt kein JavaScript aus und ruft keine Tools auf. Bestätigen Sie die Registrierung in einem Browser, der die API unterstützt."
+        },
+        {
+          "question": "Was sollte ich tun, wenn nichts gefunden wird?",
+          "answer": "Versuchen Sie direkt eine Produkt-, Katalog- oder Suchseite. Tools können nach der Ausführung von JavaScript registriert, von anderen Skripten geladen oder erst nach der Anmeldung bereitgestellt werden. Fehlende Nachweise in diesem Scan beweisen nicht, dass Ihr Shop keine WebMCP-Unterstützung hat."
+        }
+      ]
+    }
+  },
+  "dashboard": {
+    "nav": {
+      "webmcp": "WebMCP"
+    }
+  },
+  "footer": {
+    "links": {
+      "webmcpScanner": "WebMCP-Scanner"
+    }
+  }
+}

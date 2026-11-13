@@ -1,0 +1,60 @@
+{
+  "interactiveReplay": {
+    "title": "Suivez une décision simulée.",
+    "description": "Regardez un agent comparer deux fiches produit de fauteuils de bureau, repérer les informations manquantes et relancer la comparaison.",
+    "sample": "Exemple avec des données de démonstration",
+    "rail": "Décision d’achat simulée",
+    "controls": {
+      "play": "Lancer",
+      "pause": "Pause",
+      "previous": "Retour",
+      "next": "Suivant"
+    },
+    "stages": {
+      "question": "La question",
+      "listings": "Deux fiches produit",
+      "fields": "Ce qu’il lit",
+      "pick": "Le choix",
+      "fix": "Ajouter les informations",
+      "rerun": "Nouvelle simulation"
+    },
+    "question": "Quel fauteuil de bureau convient à un adulte de grande taille pour moins de 400 $ ?",
+    "questionLabel": "Question d’un acheteur",
+    "questionNote": "Cette simulation rejouée illustre une décision d’achat fictive. Elle ne mesure pas le trafic IA réel.",
+    "listingNote": "Le fournisseur indique la plage de hauteur d’assise et la capacité de charge. Ces informations ne figurent pas dans votre fiche produit comparée.",
+    "reading": "Lecture",
+    "missingReading": "Votre fiche produit ne mentionne pas cette information.",
+    "presentReading": "Les deux fiches produit mentionnent cette information.",
+    "fieldsNote": "L’agent vérifie les champs un par un. Une information manquante reste affichée comme « Non indiqué ».",
+    "pickLabel": "Exemple de choix : la fiche produit d’un concurrent",
+    "pickReason": "Le concurrent indique la plage de hauteur d’assise et la capacité de charge ; l’agent peut donc vérifier ces critères d’adéquation.",
+    "fixNote": "Ajoutez les spécifications existantes du fournisseur à la fiche produit comparée. Aucune spécification n’est inventée, et cet exemple ne modifie rien dans une boutique.",
+    "rerunLabel": "Exemple de nouvelle simulation : votre fiche produit",
+    "rerunReason": "Avec les deux spécifications indiquées, cet agent d’exemple choisit votre fauteuil moins cher parmi les deux fiches produit.",
+    "outcomeNote": "Ce changement de choix est donné à titre illustratif. Une simulation réelle peut aboutir à un résultat différent.",
+    "listing": {
+      "own": "Votre fiche produit",
+      "rival": "La fiche produit d’un concurrent",
+      "ownTitle": "Fauteuil de bureau ergonomique",
+      "rivalTitle": "Fauteuil de bureau réglable"
+    },
+    "fields": {
+      "price": "Prix",
+      "seatHeight": "Plage de hauteur d’assise",
+      "capacity": "Capacité de charge",
+      "variants": "Variantes de couleur"
+    },
+    "units": {
+      "centimeters": "cm",
+      "kilograms": "kg",
+      "variants": "couleurs"
+    },
+    "comparison": {
+      "present": "Indiqué",
+      "missing": "Non indiqué",
+      "meets": "Répond au critère",
+      "doesNotMeet": "N’y répond pas",
+      "required": "Lu à cette étape"
+    }
+  }
+}

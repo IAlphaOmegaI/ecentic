@@ -123,7 +123,10 @@ export const generateMetadata = async (): Promise<Metadata> => {
     verification: {
       google: "BPZoE9wenU7B37RID4Zs8k55_-bf7QJ1Is2_Ym85kio",
     },
-    manifest: "/manifest.webmanifest",
+    manifest:
+      locale === "en"
+        ? "/manifest.webmanifest"
+        : `/${locale}/manifest.webmanifest`,
     other: {
       "msapplication-config": "/browserconfig.xml",
       "msapplication-TileColor": "#1572fa",
@@ -179,8 +182,10 @@ export default async ({ children }: PropsWithChildren) => {
                           / locale `Link` need the client provider. */}
                     <CookieConsent />
                     <SupportChat />
+                    <ToastList
+                      types={["error", "success", "info", "loading"]}
+                    />
                   </ClientMessages>
-                  <ToastList types={["error", "success", "info", "loading"]} />
                 </ToastProvider>
               </MotionProvider>
             </ThemeProvider>

@@ -1,0 +1,9 @@
+{
+  "changelogPage": {
+    "archive": "Release-Verlauf durchsuchen",
+    "action": {
+      "primary": "Alle Updates anzeigen",
+      "secondary": "Neuesten Monat anzeigen"
+    }
+  }
+}

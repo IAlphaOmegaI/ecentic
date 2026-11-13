@@ -1,6 +1,7 @@
 import { withSentryConfig } from "@sentry/nextjs";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import { defaultLocale, publishedLocales as locales } from "./src/i18n/locales";
 
 // Keep in sync with `agentHomepageLinkHeader` in `src/lib/agent-discovery.ts`.
 // next.config cannot import that module (path aliases / Node resolution).
@@ -36,61 +37,64 @@ export default withSentryConfig(
     // paths crawlers and agents guess first; a permanent redirect is cheaper
     // than four copies of the same page and keeps one URL in the index.
     redirects: async () => [
-      ...["", "/es"].flatMap((prefix) => [
-        {
-          source: `${prefix}/stories/dua-flavors`,
-          destination: `${prefix}/stories/dua-flavours`,
-          statusCode: 301 as const,
-        },
-        {
-          source: `${prefix}/features`,
-          destination: `${prefix}/platform`,
-          statusCode: 301 as const,
-        },
-        {
-          source: `${prefix}/how-it-works`,
-          destination: `${prefix}/platform`,
-          statusCode: 301 as const,
-        },
-        {
-          source: `${prefix}/features/product-listings`,
-          destination: `${prefix}/platform/fix`,
-          statusCode: 301 as const,
-        },
-        {
-          source: `${prefix}/enterprise`,
-          destination: `${prefix}/solutions/enterprise`,
-          statusCode: 301 as const,
-        },
-        {
-          source: `${prefix}/platforms/shopify`,
-          destination: `${prefix}/integrations/shopify`,
-          statusCode: 301 as const,
-        },
-        {
-          source: `${prefix}/platforms/woocommerce`,
-          destination: `${prefix}/integrations/woocommerce`,
-          statusCode: 301 as const,
-        },
-      ]),
-      { source: "/developers", destination: "/docs", permanent: true },
-      { source: "/developer", destination: "/docs", permanent: true },
-      { source: "/api-docs", destination: "/docs", permanent: true },
-      { source: "/documentation", destination: "/docs", permanent: true },
-      // Predictable developer-resource URLs. `/docs/webhooks` is a redirect
-      // rather than a page because ecentic receives webhooks but publishes no
-      // outbound ones — a page would be documentation for a feature that does
-      // not exist.
-      {
-        source: "/docs/openapi",
-        destination: "/openapi.json",
-        permanent: false,
-      },
-      {
-        source: "/docs/webhooks",
-        destination: "/docs#webhooks",
-        permanent: false,
-      },
+      ...locales
+        .map((locale) => (locale === defaultLocale ? "" : `/${locale}`))
+        .flatMap((prefix) => [
+          {
+            source: `${prefix}/stories/dua-flavors`,
+            destination: `${prefix}/stories/dua-flavours`,
+            statusCode: 301 as const,
+          },
+          {
+            source: `${prefix}/features`,
+            destination: `${prefix}/platform`,
+            statusCode: 301 as const,
+          },
+          {
+            source: `${prefix}/how-it-works`,
+            destination: `${prefix}/platform`,
+            statusCode: 301 as const,
+          },
+          {
+            source: `${prefix}/features/product-listings`,
+            destination: `${prefix}/platform/fix`,
+            statusCode: 301 as const,
+          },
+          {
+            source: `${prefix}/enterprise`,
+            destination: `${prefix}/solutions/enterprise`,
+            statusCode: 301 as const,
+          },
+          {
+            source: `${prefix}/platforms/shopify`,
+            destination: `${prefix}/integrations/shopify`,
+            statusCode: 301 as const,
+          },
+          {
+            source: `${prefix}/platforms/woocommerce`,
+            destination: `${prefix}/integrations/woocommerce`,
+            statusCode: 301 as const,
+          },
+          ...["developers", "developer", "api-docs", "documentation"].map(
+            (alias) => ({
+              source: `${prefix}/${alias}`,
+              destination: `${prefix}/docs`,
+              permanent: true,
+            }),
+          ),
+          // Discovery documents are machine-readable and have one canonical URL.
+          {
+            source: `${prefix}/docs/openapi`,
+            destination: "/openapi.json",
+            permanent: false,
+          },
+          // ecentic receives webhooks but does not publish outbound webhooks.
+          {
+            source: `${prefix}/docs/webhooks`,
+            destination: `${prefix}/docs#webhooks`,
+            permanent: false,
+          },
+        ]),
     ],
     rewrites: async () => {
       return [
@@ -134,20 +138,13 @@ export default withSentryConfig(
     // Markdown-for-Agents negotiates on Accept; CDN must vary HTML vs markdown.
     // Homepage also advertises agent discovery Links (RFC 8288 / RFC 9727).
     headers: async () => [
-      {
-        source: "/",
+      ...locales.map((locale) => ({
+        source: locale === defaultLocale ? "/" : `/${locale}`,
         headers: [
           { key: "Vary", value: "Accept" },
           { key: "Link", value: agentHomepageLinkHeader },
         ],
-      },
-      {
-        source: "/es",
-        headers: [
-          { key: "Vary", value: "Accept" },
-          { key: "Link", value: agentHomepageLinkHeader },
-        ],
-      },
+      })),
       // The MCP GET answers `405` for `Accept: text/event-stream` and `200`
       // otherwise, so its representation varies by `Accept`. A route handler
       // cannot emit this itself — the App Router writes its own `Vary` over

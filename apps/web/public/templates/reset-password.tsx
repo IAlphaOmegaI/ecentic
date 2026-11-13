@@ -1,3 +1,4 @@
+import type { AppConfig } from "next-intl";
 import {
   Body,
   Button,
@@ -14,6 +15,7 @@ import {
   Tailwind,
   Text,
 } from "react-email";
+import type { Locale } from "@/i18n/locales";
 
 const config = {
   theme: {
@@ -43,17 +45,21 @@ const config = {
 export namespace ResetPasswordEmail {
   export type Props = {
     resetUrl: string;
-    userEmail: string;
+    requestedFor: string;
+    locale: Locale;
+    content: AppConfig["Messages"]["authenticationEmail"]["reset"];
   };
 }
 
 export const ResetPasswordEmail = ({
   resetUrl,
-  userEmail,
+  requestedFor,
+  locale,
+  content,
 }: ResetPasswordEmail.Props) => (
-  <Html>
+  <Html lang={locale}>
     <Head />
-    <Preview>Reset your ecentic password</Preview>
+    <Preview>{content.preview}</Preview>
     <Tailwind config={config}>
       <Body className="bg-background font-sans">
         <Container className="mx-auto my-10 max-w-[560px] border border-background-dimmed bg-background-rich">
@@ -88,10 +94,10 @@ export const ResetPasswordEmail = ({
               />
               <Column className="px-6 py-6">
                 <Heading className="m-0 font-medium text-[32px] text-emphasis-dimmed leading-[1.2] tracking-[-0.5px]">
-                  Reset your password
+                  {content.title}
                 </Heading>
                 <Text className="m-0 mt-2 font-light text-[18px] text-foreground-dimmed leading-[1.4]">
-                  Pick a new one and get back to your listings.
+                  {content.description}
                 </Text>
               </Column>
               <Column
@@ -109,19 +115,17 @@ export const ResetPasswordEmail = ({
               />
               <Column className="px-6 py-6">
                 <Text className="m-0 mb-4 text-[15px] text-foreground leading-6">
-                  We received a request to reset the password on your ecentic
-                  account. Click the button below to choose a new one.
+                  {content.body}
                 </Text>
                 <Text className="m-0 mb-6 text-[13px] text-foreground-dimmed leading-5">
-                  This reset was requested for {userEmail}. The link expires in
-                  one hour.
+                  {requestedFor}
                 </Text>
                 <Button
                   className="bg-primary px-6 py-3 font-medium text-[15px] text-background-rich"
                   style={{ textDecoration: "none" }}
                   href={resetUrl}
                 >
-                  Choose a new password
+                  {content.action.primary}
                 </Button>
               </Column>
               <Column
@@ -139,11 +143,10 @@ export const ResetPasswordEmail = ({
               />
               <Column className="px-6 py-5">
                 <Text className="m-0 mb-3 text-foreground-dimmed text-xs leading-[18px]">
-                  If you didn&apos;t ask to reset your password, you can safely
-                  ignore this email — your current password stays active.
+                  {content.ignored}
                 </Text>
                 <Text className="m-0 text-foreground-dimmed text-xs leading-[18px]">
-                  Or copy and paste this link into your browser:{" "}
+                  {content.linkFallback}{" "}
                   <Link
                     href={resetUrl}
                     className="text-primary"
@@ -168,7 +171,7 @@ export const ResetPasswordEmail = ({
               />
               <Column className="px-6 py-5">
                 <Text className="m-0 text-foreground-dimmed text-xs leading-[18px]">
-                  ecentic — Win every agent&apos;s cart.
+                  {content.footer}
                 </Text>
               </Column>
               <Column

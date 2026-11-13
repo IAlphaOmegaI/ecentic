@@ -1,0 +1,27 @@
+{
+  "enterpriseLayer": {
+    "eyebrow": "01 · So passt es zusammen",
+    "title": "Ihr Stack auf der einen Seite. Die KI-Kanäle auf der anderen. Dazwischen: ecentic.",
+    "description": "Nutzen Sie den Katalog, den Sie bereits betreiben. Mit ecentic bereiten Sie ihn für die Assistenten Ihrer Kunden auf – inklusive der aktuell verfügbaren Funktionen je Kanal.",
+    "stack": "Ihr Stack",
+    "channels": "KI-Kanäle",
+    "layer": "Die KI-Commerce-Schicht",
+    "stages": [
+      "Simulieren",
+      "Korrigieren",
+      "Verkaufen",
+      "Verfolgen"
+    ],
+    "inputs": [
+      "Shopify",
+      "WooCommerce",
+      "Produkt-Feeds / CSV",
+      "PIM",
+      "Google Merchant Center"
+    ],
+    "legend": "Durchgezogene Linien: heute verfügbar, einschließlich Simulationen. Gestrichelte Linien: bald verfügbar. Die Kanalverfügbarkeit ist keine Garantie für einen nativen Kaufabschluss.",
+    "action": "Alle KI-Kanäle ansehen",
+    "diagram": "Ihre bestehende E-Commerce-Infrastruktur verbindet sich mit ecentic. Die Plattform bereitet Produktdaten und unterstützte Checkout-Funktionen für sechs KI-Kanäle vor.",
+    "google": "Google AI Mode / Gemini"
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "chatgptPage": {
+    "shopping": {
+      "feed": "Flux produit du marchand",
+      "discovery": "Découverte de produits",
+      "store": "Boutique du marchand",
+      "checkout": "Paiement approuvé",
+      "link": "Lien produit",
+      "approval": "Approbation distincte de l’application"
+    },
+    "reading": {
+      "label": "Explorer ce que ChatGPT lit",
+      "caption": "Schéma des informations, et non un modèle de soumission de flux.",
+      "records": [
+        {
+          "id": "product",
+          "title": "Fiche produit",
+          "record": "produit / variante",
+          "fields": [
+            "Titre + description",
+            "Images + URL produit",
+            "Prix + disponibilité"
+          ]
+        },
+        {
+          "id": "seller",
+          "title": "Conditions du vendeur",
+          "record": "marchand",
+          "fields": [
+            "Identité du vendeur",
+            "Informations de livraison",
+            "Politique de retour"
+          ]
+        },
+        {
+          "id": "checkout",
+          "title": "Accès au paiement",
+          "record": "paiement",
+          "fields": [
+            "Indicateur d’éligibilité",
+            "Application connectée",
+            "Approbation de l’intégration"
+          ]
+        }
+      ]
+    },
+    "entry": {
+      "label": "Conditions d’accès pour les marchands",
+      "steps": [
+        "Intégration du marchand",
+        "Accès au flux produit",
+        "Approbation de l’application de paiement"
+      ]
+    }
+  }
+}

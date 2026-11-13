@@ -1,0 +1,17 @@
+{
+  "reviewDiff": {
+    "view": "Diff unifié",
+    "added": "Ajouté",
+    "removed": "Supprimé",
+    "unchanged": "Contexte inchangé",
+    "annotations": "Pourquoi ces champs sont importants",
+    "action": {
+      "primary": "Copier l’enregistrement mis à jour"
+    },
+    "copyState": {
+      "copied": "Copié",
+      "failed": "Copie indisponible"
+    },
+    "imageNote": "Photo produit illustrative. L’enregistrement d’exemple ne décrit pas le modèle représenté."
+  }
+}

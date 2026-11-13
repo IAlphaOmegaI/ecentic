@@ -1,0 +1,677 @@
+/** Standalone write rail: no Next request APIs, so CLI and cron share resumable work. */
+
+import { randomUUID } from "node:crypto";
+import { resultify } from "@zenncore/utils";
+import { and, asc, eq, inArray, isNull, lte, or, sql } from "drizzle-orm";
+import { z } from "zod";
+import { isLocale, type Locale, locales } from "@/i18n/locales";
+import { translationReviewPasses } from "@/i18n/translation/policy";
+import { translationRetryDisposition } from "@/i18n/translation/retry";
+import {
+  type TranslationGenerator,
+  type TranslationReviewReport,
+  type TranslationUnit,
+  TranslationValidationError,
+  translateTextUnits,
+  translationPolicyVersion,
+  validateTranslationUnit,
+} from "@/i18n/translation/runner";
+import { blogReadingMinutes } from "@/lib/blog-locale";
+import {
+  type BlogTranslationSource,
+  blogBatchContext,
+  blogSourceHash,
+  createBlogTranslation,
+  nextBlogTranslationBatch,
+} from "@/lib/blog-translation-content";
+import { db, schema } from "@/server/database";
+
+export type BlogTargetLocale = Exclude<Locale, "en">;
+export const blogTargetLocales = locales.filter(
+  (locale): locale is BlogTargetLocale => locale !== "en",
+);
+const jobs = schema.blogTranslation;
+const posts = schema.blogPost;
+
+export const toBlogTranslationSource = (
+  post: typeof posts.$inferSelect,
+): BlogTranslationSource => ({
+  slug: post.slug,
+  source: post.source,
+  externalId: post.externalId,
+  title: post.title,
+  description: post.description,
+  introduction: post.introduction,
+  category: post.category,
+  tags: post.tags,
+  takeaways: post.takeaways,
+  faqs: post.faqs,
+  sections: post.sections,
+  contentHtml: post.contentHtml,
+  publishedAt: post.publishedAt,
+  thumbnailUrl: post.thumbnailUrl,
+});
+
+export const listBlogTranslationSources = async () =>
+  db
+    .select()
+    .from(posts)
+    .where(and(eq(posts.locale, "en"), eq(posts.status, "published")))
+    .orderBy(asc(posts.publishedAt), asc(posts.slug));
+
+/** Snapshot locale coverage once, then upsert bounded job groups. Existing reviewed legacy rows stay intact. */
+export const enqueueBlogTranslationSources = async (
+  sources: readonly (typeof posts.$inferSelect)[],
+  targets: readonly BlogTargetLocale[] = blogTargetLocales,
+  { replacePublished = false } = {},
+) => {
+  if (!sources.length || !targets.length) return [];
+  const slugs = sources.map((source) => source.slug);
+  const [published, tracked] = await Promise.all([
+    db
+      .select({ slug: posts.slug, locale: posts.locale })
+      .from(posts)
+      .where(
+        and(
+          inArray(posts.slug, slugs),
+          inArray(posts.locale, [...targets]),
+          eq(posts.status, "published"),
+        ),
+      ),
+    db
+      .select({ slug: jobs.slug, locale: jobs.locale })
+      .from(jobs)
+      .where(
+        and(inArray(jobs.slug, slugs), inArray(jobs.locale, [...targets])),
+      ),
+  ]);
+  const key = (slug: string, locale: string) => JSON.stringify([slug, locale]);
+  const existing = new Set(published.map((row) => key(row.slug, row.locale)));
+  const known = new Set(tracked.map((row) => key(row.slug, row.locale)));
+  const values = sources.flatMap((source) => {
+    const content = toBlogTranslationSource(source);
+    const sourceHash = blogSourceHash(content, translationPolicyVersion);
+    const totalUnits = createBlogTranslation(content).units.length;
+    return targets
+      .filter(
+        (locale) =>
+          replacePublished ||
+          !existing.has(key(source.slug, locale)) ||
+          known.has(key(source.slug, locale)),
+      )
+      .map((locale) => ({
+        slug: source.slug,
+        locale,
+        sourceHash,
+        policyVersion: translationPolicyVersion,
+        totalUnits,
+      }));
+  });
+  for (const offset of Array.from(
+    { length: Math.ceil(values.length / 100) },
+    (_, index) => index * 100,
+  )) {
+    await db
+      .insert(jobs)
+      .values(values.slice(offset, offset + 100))
+      .onConflictDoUpdate({
+        target: [jobs.slug, jobs.locale],
+        set: {
+          sourceHash: sql`excluded."sourceHash"`,
+          policyVersion: sql`excluded."policyVersion"`,
+          totalUnits: sql`excluded."totalUnits"`,
+          status: "pending",
+          completedUnits: {},
+          blockedUnits: {},
+          attempts: 0,
+          availableAt: new Date(),
+          lockedUntil: null,
+          lease: null,
+          error: null,
+          updatedAt: new Date(),
+        },
+        setWhere: sql`${jobs.sourceHash} <> excluded."sourceHash"`,
+      });
+  }
+  return values.map(({ slug, locale }) => ({ slug, locale }));
+};
+
+export const enqueueBlogTranslations = async (
+  source: typeof posts.$inferSelect,
+  targets: readonly BlogTargetLocale[] = blogTargetLocales,
+  options = {},
+) =>
+  (await enqueueBlogTranslationSources([source], targets, options)).map(
+    (job) => job.locale,
+  );
+
+export { nextBlogTranslationBatch } from "@/lib/blog-translation-content";
+
+const claim = async (
+  targets: readonly BlogTargetLocale[],
+  slugs?: readonly string[],
+) =>
+  db.transaction(async (transaction) => {
+    const now = new Date();
+    const [job] = await transaction
+      .select()
+      .from(jobs)
+      .where(
+        and(
+          inArray(jobs.status, ["pending", "processing"]),
+          inArray(jobs.locale, [...targets]),
+          lte(jobs.availableAt, now),
+          or(isNull(jobs.lockedUntil), lte(jobs.lockedUntil, now)),
+          slugs ? inArray(jobs.slug, [...slugs]) : undefined,
+        ),
+      )
+      .orderBy(asc(jobs.availableAt), asc(jobs.createdAt))
+      .limit(1)
+      .for("update", { skipLocked: true });
+    if (!job) return null;
+    const lease = randomUUID();
+    const [claimed] = await transaction
+      .update(jobs)
+      .set({
+        lease,
+        status: "processing",
+        lockedUntil: new Date(Date.now() + 10 * 60_000),
+        updatedAt: now,
+      })
+      .where(eq(jobs.id, job.id))
+      .returning();
+    return claimed ?? null;
+  });
+
+const reset = (source: typeof posts.$inferSelect) => {
+  const content = toBlogTranslationSource(source);
+  return {
+    sourceHash: blogSourceHash(content, translationPolicyVersion),
+    policyVersion: translationPolicyVersion,
+    totalUnits: createBlogTranslation(content).units.length,
+    completedUnits: {},
+    blockedUnits: {},
+    status: "pending",
+    attempts: 0,
+    availableAt: new Date(),
+    lockedUntil: null,
+    lease: null,
+    error: null,
+    updatedAt: new Date(),
+  };
+};
+
+/** Source row + lease are locked for the atomic publication, so stale source work cannot win a race. */
+const finish = async (
+  job: typeof jobs.$inferSelect,
+  completed: Record<string, string>,
+) =>
+  db.transaction(async (transaction) => {
+    const [owned] = await transaction
+      .select()
+      .from(jobs)
+      .where(and(eq(jobs.id, job.id), eq(jobs.lease, job.lease ?? "")))
+      .limit(1)
+      .for("update");
+    if (!owned) return "lease-lost" as const;
+    const [source] = await transaction
+      .select()
+      .from(posts)
+      .where(
+        and(
+          eq(posts.slug, job.slug),
+          eq(posts.locale, "en"),
+          eq(posts.status, "published"),
+        ),
+      )
+      .limit(1)
+      .for("update");
+    if (!source) {
+      await transaction
+        .update(jobs)
+        .set({
+          status: "blocked",
+          error: "English source is not published",
+          lease: null,
+          lockedUntil: null,
+          updatedAt: new Date(),
+        })
+        .where(eq(jobs.id, job.id));
+      return "blocked" as const;
+    }
+    const content = toBlogTranslationSource(source);
+    if (blogSourceHash(content, translationPolicyVersion) !== job.sourceHash) {
+      await transaction
+        .update(jobs)
+        .set(reset(source))
+        .where(eq(jobs.id, job.id));
+      return "source-changed" as const;
+    }
+    if (!isLocale(job.locale) || job.locale === "en")
+      throw new Error("Invalid translation target locale");
+    const translated = createBlogTranslation(content).apply(
+      new Map(Object.entries(completed)),
+    );
+    const payload = {
+      ...translated,
+      source: source.source,
+      locale: job.locale,
+      status: "published",
+      readTime: `${blogReadingMinutes(translated.contentHtml ?? translated.sections.map((section) => section.content).join("\n"), job.locale)} min`,
+      updatedAt: new Date(),
+    };
+    await transaction
+      .insert(posts)
+      .values(payload)
+      .onConflictDoUpdate({ target: [posts.slug, posts.locale], set: payload });
+    await transaction
+      .update(jobs)
+      .set({
+        status: "completed",
+        completedUnits: completed,
+        lease: null,
+        lockedUntil: null,
+        error: null,
+        attempts: 0,
+        updatedAt: new Date(),
+      })
+      .where(eq(jobs.id, job.id));
+    return "published" as const;
+  });
+
+export const drainBlogTranslationBatch = async ({
+  generate,
+  targets = blogTargetLocales,
+  slug,
+  slugs,
+  characterLimit = 4500,
+  unitLimit = 48,
+  onReview,
+}: {
+  generate: TranslationGenerator;
+  targets?: readonly BlogTargetLocale[];
+  slug?: string;
+  slugs?: readonly string[];
+  characterLimit?: number;
+  unitLimit?: number;
+  onReview?: (report: TranslationReviewReport) => void | Promise<void>;
+}) => {
+  const job = await claim(targets, slugs ?? (slug ? [slug] : undefined));
+  if (!job) return { status: "idle" as const };
+  const work = {
+    units: [] as readonly TranslationUnit[],
+    batch: [] as readonly TranslationUnit[],
+  };
+  const operation = await resultify(async () => {
+    if (!isLocale(job.locale) || job.locale === "en")
+      throw new Error("Invalid translation target locale");
+    const [source] = await db
+      .select()
+      .from(posts)
+      .where(
+        and(
+          eq(posts.slug, job.slug),
+          eq(posts.locale, "en"),
+          eq(posts.status, "published"),
+        ),
+      )
+      .limit(1);
+    if (!source) throw new Error("English source is not published");
+    const content = toBlogTranslationSource(source);
+    if (blogSourceHash(content, translationPolicyVersion) !== job.sourceHash) {
+      await db
+        .update(jobs)
+        .set(reset(source))
+        .where(and(eq(jobs.id, job.id), eq(jobs.lease, job.lease ?? "")));
+      return "source-changed" as const;
+    }
+    const article = createBlogTranslation(content);
+    work.units = article.units;
+    const batch = nextBlogTranslationBatch(
+      article.units,
+      job.completedUnits,
+      characterLimit,
+      job.blockedUnits,
+      unitLimit,
+    );
+    work.batch = batch;
+    if (!batch.length && Object.keys(job.blockedUnits).length) {
+      await db
+        .update(jobs)
+        .set({
+          status: "blocked",
+          lease: null,
+          lockedUntil: null,
+          updatedAt: new Date(),
+        })
+        .where(and(eq(jobs.id, job.id), eq(jobs.lease, job.lease ?? "")));
+      return "blocked" as const;
+    }
+    const context = blogBatchContext(
+      article.units,
+      batch,
+      article.documentContext,
+    );
+    const translated = batch.length
+      ? await translateTextUnits({
+          units: context.units,
+          targetLocale: job.locale,
+          documentContext: context.documentContext,
+          generate,
+          onReview: async (report) => {
+            const renewed = await db
+              .update(jobs)
+              .set({
+                lockedUntil: new Date(Date.now() + 10 * 60 * 1000),
+                updatedAt: new Date(),
+              })
+              .where(and(eq(jobs.id, job.id), eq(jobs.lease, job.lease ?? "")))
+              .returning({ id: jobs.id });
+            if (!renewed.length)
+              throw new Error("Translation job lease lost during review");
+            await onReview?.(report);
+          },
+        })
+      : [];
+    const completed = {
+      ...job.completedUnits,
+      ...Object.fromEntries(translated.map((unit) => [unit.id, unit.text])),
+    };
+    if (article.units.every((unit) => completed[unit.id] !== undefined))
+      return finish(job, completed);
+    const updated = await db
+      .update(jobs)
+      .set({
+        completedUnits: completed,
+        status: "pending",
+        lease: null,
+        lockedUntil: null,
+        attempts: 0,
+        availableAt: new Date(),
+        error: null,
+        updatedAt: new Date(),
+      })
+      .where(and(eq(jobs.id, job.id), eq(jobs.lease, job.lease ?? "")))
+      .returning({ id: jobs.id });
+    return updated.length ? ("checkpointed" as const) : ("lease-lost" as const);
+  });
+  if (!operation.success) {
+    const error =
+      operation.error instanceof Error
+        ? operation.error.message
+        : String(operation.error);
+    const retry = translationRetryDisposition(error, job.attempts);
+    const attempts = retry.attempts;
+    const semantic =
+      operation.error instanceof TranslationValidationError ||
+      /protected|missing.*unit|markup|fidelity/i.test(error);
+    const approved =
+      operation.error instanceof TranslationValidationError
+        ? operation.error.approvedUnits
+        : [];
+    const completedUnits = {
+      ...job.completedUnits,
+      ...Object.fromEntries(approved.map((unit) => [unit.id, unit.text])),
+    };
+    const rejected =
+      operation.error instanceof TranslationValidationError
+        ? operation.error.rejectedUnits
+        : [];
+    const findings =
+      operation.error instanceof TranslationValidationError
+        ? operation.error.findings
+        : [];
+    const blockedUnits = {
+      ...job.blockedUnits,
+      ...(semantic
+        ? Object.fromEntries(
+            (rejected.length
+              ? rejected
+              : work.batch
+                  .filter((unit) => completedUnits[unit.id] === undefined)
+                  .map((unit) => ({ id: unit.id, text: "" }))
+            ).map((unit) => [
+              unit.id,
+              {
+                text: unit.text,
+                findings: findings.filter(
+                  (finding) => finding.id === unit.id || finding.id === "batch",
+                ),
+              },
+            ]),
+          )
+        : {}),
+    };
+    const hasIndependentUnits = work.units.some(
+      (unit) =>
+        completedUnits[unit.id] === undefined &&
+        blockedUnits[unit.id] === undefined,
+    );
+    await db
+      .update(jobs)
+      .set({
+        status: semantic
+          ? hasIndependentUnits
+            ? "pending"
+            : "blocked"
+          : retry.exhausted
+            ? "blocked"
+            : "pending",
+        completedUnits,
+        blockedUnits,
+        attempts,
+        availableAt: new Date(Date.now() + (semantic ? 0 : retry.delayMs)),
+        lease: null,
+        lockedUntil: null,
+        error: error.slice(0, 1500),
+        updatedAt: new Date(),
+      })
+      .where(and(eq(jobs.id, job.id), eq(jobs.lease, job.lease ?? "")));
+    return {
+      status: retry.rateLimited
+        ? ("rate-limited" as const)
+        : ("failed" as const),
+      slug: job.slug,
+      locale: job.locale,
+      error,
+    };
+  }
+  return { status: operation.data, slug: job.slug, locale: job.locale };
+};
+
+export const blogTranslationProgress = async (
+  targets: readonly BlogTargetLocale[] = blogTargetLocales,
+) =>
+  db
+    .select({
+      slug: jobs.slug,
+      locale: jobs.locale,
+      status: jobs.status,
+      sourceHash: jobs.sourceHash,
+      blocked: sql<number>`(SELECT count(*)::int FROM jsonb_object_keys(${jobs.blockedUnits}))`,
+      completed: sql<number>`(SELECT count(*)::int FROM jsonb_object_keys(${jobs.completedUnits}))`,
+      totalUnits: jobs.totalUnits,
+      error: jobs.error,
+    })
+    .from(jobs)
+    .where(inArray(jobs.locale, [...targets]));
+
+/** Targeted corrections require the exact source version and a clean six-pass review of the supplied targets. */
+export const blogReviewPatchSchema = z.object({
+  slug: z.string().min(1),
+  locale: z.string(),
+  sourceHash: z.string().min(1),
+  policyVersion: z.string().min(1),
+  units: z.array(z.object({ id: z.string(), text: z.string().min(1) })).min(1),
+  review: z.object({
+    policyVersion: z.string(),
+    targetLocale: z.string(),
+    passes: z.array(z.string()),
+    findings: z.array(
+      z.object({ id: z.string(), pass: z.string(), message: z.string() }),
+    ),
+    reviewedUnits: z.array(
+      z.object({ id: z.string(), text: z.string(), target: z.string() }),
+    ),
+  }),
+});
+
+export const applyBlogTranslationReview = async (input: unknown) => {
+  const patch = blogReviewPatchSchema.parse(input);
+  if (!isLocale(patch.locale) || patch.locale === "en")
+    throw new Error("Invalid target locale");
+  const locale = patch.locale;
+  if (
+    patch.policyVersion !== translationPolicyVersion ||
+    patch.review.policyVersion !== translationPolicyVersion ||
+    patch.review.targetLocale !== locale ||
+    patch.review.findings.length ||
+    !translationReviewPasses.every((pass) => patch.review.passes.includes(pass))
+  )
+    throw new Error("A clean current-policy six-pass review is required");
+  if (
+    new Set(patch.review.reviewedUnits.map((unit) => unit.id)).size !==
+    patch.review.reviewedUnits.length
+  )
+    throw new Error("Duplicate review record IDs");
+  if (new Set(patch.units.map((unit) => unit.id)).size !== patch.units.length)
+    throw new Error("Duplicate review patch IDs");
+  return db.transaction(async (transaction) => {
+    const [job] = await transaction
+      .select()
+      .from(jobs)
+      .where(and(eq(jobs.slug, patch.slug), eq(jobs.locale, locale)))
+      .limit(1)
+      .for("update");
+    if (!job || job.sourceHash !== patch.sourceHash)
+      throw new Error("Review patch source hash does not match the job");
+    if (job.lockedUntil && job.lockedUntil.getTime() > Date.now())
+      throw new Error("Translation job is currently leased");
+    const [source] = await transaction
+      .select()
+      .from(posts)
+      .where(
+        and(
+          eq(posts.slug, patch.slug),
+          eq(posts.locale, "en"),
+          eq(posts.status, "published"),
+        ),
+      )
+      .limit(1)
+      .for("update");
+    if (
+      !source ||
+      blogSourceHash(
+        toBlogTranslationSource(source),
+        translationPolicyVersion,
+      ) !== patch.sourceHash
+    )
+      throw new Error("English source changed after this review");
+    const article = createBlogTranslation(toBlogTranslationSource(source));
+    const byId = new Map(article.units.map((unit) => [unit.id, unit]));
+    for (const correction of patch.units) {
+      const unit = byId.get(correction.id);
+      if (!unit || !job.blockedUnits[correction.id])
+        throw new Error(`Unit is not awaiting review: ${correction.id}`);
+      const reviewed = patch.review.reviewedUnits.find(
+        (entry) => entry.id === correction.id,
+      );
+      if (
+        !reviewed ||
+        reviewed.text !== unit.text ||
+        reviewed.target !== correction.text
+      )
+        throw new Error(
+          `Review does not cover the exact source and target: ${correction.id}`,
+        );
+      const findings = validateTranslationUnit(unit, correction.text, locale);
+      if (findings.length) throw new TranslationValidationError(findings);
+    }
+    const corrected = new Set(patch.units.map((unit) => unit.id));
+    const blockedUnits = Object.fromEntries(
+      Object.entries(job.blockedUnits).filter(([id]) => !corrected.has(id)),
+    );
+    const completedUnits = {
+      ...job.completedUnits,
+      ...Object.fromEntries(patch.units.map((unit) => [unit.id, unit.text])),
+    };
+    const independent = article.units.some(
+      (unit) =>
+        completedUnits[unit.id] === undefined &&
+        blockedUnits[unit.id] === undefined,
+    );
+    const status =
+      !Object.keys(blockedUnits).length || independent ? "pending" : "blocked";
+    await transaction
+      .update(jobs)
+      .set({
+        completedUnits,
+        blockedUnits,
+        status,
+        attempts: 0,
+        availableAt: new Date(),
+        lease: null,
+        lockedUntil: null,
+        error: null,
+        updatedAt: new Date(),
+      })
+      .where(eq(jobs.id, job.id));
+    return {
+      slug: patch.slug,
+      locale,
+      accepted: patch.units.map((unit) => unit.id),
+      status,
+    };
+  });
+};
+
+export const exportBlockedBlogUnits = async (
+  slugs: readonly string[],
+  targets: readonly BlogTargetLocale[],
+) => {
+  if (!slugs.length) return [];
+  const records = await db
+    .select()
+    .from(jobs)
+    .where(
+      and(inArray(jobs.slug, [...slugs]), inArray(jobs.locale, [...targets])),
+    );
+  const sources = await listBlogTranslationSources();
+  return records
+    .filter((job) => Object.keys(job.blockedUnits).length)
+    .map((job) => {
+      const source = sources.find((post) => post.slug === job.slug);
+      const article = source
+        ? createBlogTranslation(toBlogTranslationSource(source))
+        : null;
+      const units =
+        article?.units.filter((unit) => job.blockedUnits[unit.id]) ?? [];
+      return {
+        slug: job.slug,
+        locale: job.locale,
+        sourceHash: job.sourceHash,
+        policyVersion: job.policyVersion,
+        sourceStillCurrent: Boolean(
+          source &&
+            blogSourceHash(
+              toBlogTranslationSource(source),
+              translationPolicyVersion,
+            ) === job.sourceHash,
+        ),
+        documentContext: article?.documentContext ?? "",
+        contextUnits:
+          article?.units.map((unit) => ({
+            ...unit,
+            target:
+              job.completedUnits[unit.id] ??
+              job.blockedUnits[unit.id]?.text ??
+              null,
+          })) ?? [],
+        units: units.map((unit) => ({
+          ...unit,
+          ...job.blockedUnits[unit.id],
+          source: unit.text,
+        })),
+      };
+    });
+};

@@ -1,0 +1,19 @@
+{
+  "interactiveFee": {
+    "eyebrow": "Kostenschätzung",
+    "title": "Sehen Sie, welche Kosten bei nutzungsbasierter Abrechnung entstehen könnten.",
+    "orders": "KI-zugeordnete Bestellungen pro Monat",
+    "amount": "Durchschnittlicher Bestellwert (USD)",
+    "invalidOrders": "Geben Sie eine ganze Zahl von Bestellungen ein, null oder mehr.",
+    "invalidAmount": "Geben Sie einen USD-Betrag mit bis zu zwei Dezimalstellen ein.",
+    "invalid": "Geben Sie gültige, nichtnegative Werte ein, um eine Schätzung zu sehen.",
+    "privacy": "Nichts von Ihren Eingaben wird gespeichert.",
+    "result": "Geschätzte monatliche Gebühr",
+    "staticExample": "Eine Bestellung über {order} ergibt eine Gebühr von {fee}.",
+    "formula": "Für jede KI-zugeordnete Bestellung beträgt die Gebühr {rate}% ihres Werts, auf Cent gerundet. Der monatliche Gesamtbetrag ist auf {cap} begrenzt.",
+    "cheaper": "Niedrigerer monatlicher Preis:",
+    "tie": "Gleicher monatlicher Preis:",
+    "noCheaper": "Bei diesen Eingaben hat die nutzungsbasierte Abrechnung den niedrigsten monatlichen Preis.",
+    "qualification": "Diese Schätzung verwendet Ihren durchschnittlichen Bestellwert. Die tatsächlichen Gebühren werden pro Bestellung berechnet, und die Kontobedingungen können abweichen. Vergleichen Sie Planfunktionen und Limits, bevor Sie sich entscheiden."
+  }
+}

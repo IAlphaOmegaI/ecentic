@@ -1,0 +1,11 @@
+# Locale choices for this translation rollout.
+# Language defaults resolved from the user's requested languages; Simplified Chinese explicitly confirmed.
+source: en-US
+neutral_variants_allowed: false
+locales:
+  es: {market: es-ES, register: "Existing product register; concise professional Spanish"}
+  fr: {market: fr-FR, register: "Professional B2B, vous; concise action labels"}
+  de: {market: de-DE, register: "Professional B2B, Sie; direct verbal prose"}
+  it: {market: it-IT, register: "Professional B2B, natural direct prose; concise labels"}
+  ja: {market: ja-JP, register: "Professional B2B, desu/masu prose; compact UI labels"}
+  zh-CN: {market: zh-CN, script: Hans, register: "Mainland Chinese, concise professional B2B"}

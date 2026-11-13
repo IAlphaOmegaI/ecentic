@@ -1,0 +1,21 @@
+{
+  "interactiveFiles": {
+    "title": "Wir veröffentlichen, was wir auch von Ihnen verlangen.",
+    "description": "Prüfen Sie die Dateien, die diese Website tatsächlich bereitstellt.",
+    "tabs": [
+      "llms.txt",
+      "API-Katalog",
+      "Agenten-Checkout-Profil",
+      "MCP-Endpunkt"
+    ],
+    "failed": "Diese Datei konnte nicht abgerufen werden. Öffnen Sie den obigen Link, um den Endpunkt zu prüfen.",
+    "loading": "Datei wird abgerufen…",
+    "fetched": "Abgerufen am",
+    "idle": "Öffnen Sie die obige Datei oder laden Sie eine Vorschau.",
+    "action": {
+      "primary": "Aktuelle Datei laden"
+    },
+    "preview": "Dateivorschau",
+    "limit": "Vorschau: erste 30 Zeilen, bis zu 64 KiB. Dies ist eine Live-Antwort vom oben angezeigten Origin-Server."
+  }
+}

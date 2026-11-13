@@ -1,0 +1,31 @@
+{
+  "round14Sectors": {
+    "introduction": "Découvrez comment une question d’achat se relie aux informations d’une fiche produit.",
+    "sample": "Conversation illustrative avec des produits d’exemple.",
+    "questions": "Explorer une question d’acheteur",
+    "conversation": "Exemple de conversation",
+    "shopper": "Acheteur",
+    "assistant": "Assistant d’achat",
+    "assistantIntro": "Je peux comparer la demande avec les informations indiquées dans ces fiches produit. Les informations pertinentes sont les suivantes :",
+    "followUp": "Que pouvez-vous établir à partir de la fiche produit ?",
+    "inspection": "Examiner les enregistrements d’exemple",
+    "yourListing": "Votre fiche produit",
+    "comparisonListing": "Fiche produit de comparaison",
+    "sourceFact": "Déjà présent dans la source d’exemple",
+    "missing": "Non indiqué dans la fiche produit",
+    "available": "Indiqué dans la fiche produit",
+    "required": "Pertinent pour cette question",
+    "qualification": "Vérifiez ces attributs à la source",
+    "attributesIntro": "Rendez les caractéristiques produit explicites, puis examinez la modification dans l’enregistrement source partagé.",
+    "comparisonIntro": "Cet exemple reprend la première question de l’acheteur. Le visuel montre les informations source existantes avant la modification du code ci-dessous.",
+    "sourceHeading": "L’information source à l’origine de la correction",
+    "dimensions": {
+      "title": "Vérifiez l’encombrement complet.",
+      "width": "Largeur",
+      "depth": "Profondeur",
+      "height": "Hauteur",
+      "note": "Schéma non à l’échelle. Utilisez les dimensions exactes du produit, de la pièce et des accès pour vérifier la compatibilité."
+    },
+    "assistantFinding": "La fiche produit de {product} n’indique pas {fields}. Je ne peux pas vérifier ces exigences à partir de cette fiche produit. La source d’exemple montre les informations qui doivent être rendues explicites."
+  }
+}

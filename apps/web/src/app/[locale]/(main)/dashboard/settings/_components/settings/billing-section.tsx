@@ -3,7 +3,7 @@
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 import { formatPlanPrice } from "@/lib/agent-api";
@@ -115,23 +115,26 @@ const PlanCheckoutButtons = ({
   isCheckingOut: boolean;
   checkoutPlan: SubscriptionPlan | null;
   translate: BillingTranslate;
-}) => (
-  <div className="flex flex-wrap gap-3">
-    {PLAN_ORDER.map((plan) => (
-      <Button
-        key={plan}
-        color="neutral"
-        className="flex-1"
-        disabled={isCheckingOut}
-        onClick={() => onCheckout(plan)}
-      >
-        {isCheckingOut && checkoutPlan === plan
-          ? translate("loading")
-          : `${planName(plan, translate)} · $${PLAN_PRICES[plan]}${translate("perMonth")}`}
-      </Button>
-    ))}
-  </div>
-);
+}) => {
+  const { formatAmount } = useBillingFormatting();
+  return (
+    <div className="flex flex-wrap gap-3">
+      {PLAN_ORDER.map((plan) => (
+        <Button
+          key={plan}
+          color="neutral"
+          className="flex-1"
+          disabled={isCheckingOut}
+          onClick={() => onCheckout(plan)}
+        >
+          {isCheckingOut && checkoutPlan === plan
+            ? translate("loading")
+            : `${planName(plan, translate)} · ${formatAmount(Number(PLAN_PRICES[plan]) * 100, "USD")}${translate("perMonth")}`}
+        </Button>
+      ))}
+    </div>
+  );
+};
 
 const STATUS_PILL_CLASS_NAME =
   "rounded-full px-2 py-0.5 font-semibold text-[11px] uppercase tracking-[0.05em]";
@@ -147,23 +150,28 @@ const STATUS_STYLES: Record<string, string> = {
   paused: "bg-background-dimmed text-foreground-dimmed",
 };
 
-const formatDate = (date: Date | null) =>
-  date
-    ? date.toLocaleDateString("en-US", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
-    : "—";
-
-const formatAmount = (amountCents: number, currency: string) =>
-  new Intl.NumberFormat("en-US", {
-    style: "currency",
-    currency: currency.toUpperCase(),
-  }).format(amountCents / 100);
-
-const formatRate = (rateBps: number) =>
-  (rateBps / 100).toFixed(rateBps % 100 === 0 ? 0 : 2);
+const useBillingFormatting = () => {
+  const locale = useLocale();
+  return {
+    formatDate: (date: Date | null) =>
+      date
+        ? new Intl.DateTimeFormat(locale, {
+            year: "numeric",
+            month: "long",
+            day: "numeric",
+          }).format(date)
+        : "—",
+    formatAmount: (amountCents: number, currency: string) =>
+      new Intl.NumberFormat(locale, {
+        style: "currency",
+        currency: currency.toUpperCase(),
+      }).format(amountCents / 100),
+    formatRate: (rateBps: number) =>
+      new Intl.NumberFormat(locale, { maximumFractionDigits: 2 }).format(
+        rateBps / 100,
+      ),
+  };
+};
 
 const ActivePlan = ({
   subscription,
@@ -182,6 +190,7 @@ const ActivePlan = ({
   checkoutPlan: SubscriptionPlan | null;
   translate: BillingTranslate;
 }) => {
+  const { formatDate, formatAmount } = useBillingFormatting();
   const planKey =
     subscription.plan === "compete" ||
     subscription.plan === "scale" ||
@@ -207,7 +216,7 @@ const ActivePlan = ({
           </p>
           {planKey && (
             <p className="mt-1 font-bold text-2xl text-primary tracking-[-0.02em]">
-              ${PLAN_PRICES[planKey]}
+              {formatAmount(Number(PLAN_PRICES[planKey]) * 100, "USD")}
               <span className="font-medium text-foreground-dimmed text-sm">
                 {translate("perMonth")}
               </span>
@@ -278,56 +287,61 @@ const PaygPlan = ({
   isCheckingOut: boolean;
   checkoutPlan: SubscriptionPlan | null;
   translate: BillingTranslate;
-}) => (
-  <>
-    <div className="flex items-start justify-between">
-      <div>
-        <p className="font-semibold text-base text-foreground-rich">
-          {translate("payAsYouGo.title")}
+}) => {
+  const { formatAmount, formatRate } = useBillingFormatting();
+  return (
+    <>
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="font-semibold text-base text-foreground-rich">
+            {translate("payAsYouGo.title")}
+          </p>
+          <p className="mt-1 text-foreground-dimmed text-sm">
+            {translate("payAsYouGo.description")}
+          </p>
+        </div>
+        <span
+          className={`${STATUS_PILL_CLASS_NAME} bg-success/10 text-success`}
+        >
+          {translate("payAsYouGo.active")}
+        </span>
+      </div>
+      <div className="mt-4 flex flex-col gap-2">
+        <div className="flex justify-between">
+          <span className="text-foreground-dimmed text-sm">
+            {translate("payAsYouGo.fee")}
+          </span>
+          <span className="font-medium text-foreground text-sm">
+            {translate("payAsYouGo.feeDetail", {
+              rate: formatRate(summary.rateBps),
+            })}
+          </span>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-foreground-dimmed text-sm">
+            {translate("payAsYouGo.monthlyCap")}
+          </span>
+          <span className="font-medium text-foreground text-sm">
+            {formatAmount(summary.capCents, "USD")}
+          </span>
+        </div>
+      </div>
+      <div className="mt-6">
+        <p className="text-foreground-dimmed text-sm">
+          {translate("payAsYouGo.switchHint")}
         </p>
-        <p className="mt-1 text-foreground-dimmed text-sm">
-          {translate("payAsYouGo.description")}
-        </p>
+        <div className="mt-3">
+          <PlanCheckoutButtons
+            onCheckout={onCheckout}
+            isCheckingOut={isCheckingOut}
+            checkoutPlan={checkoutPlan}
+            translate={translate}
+          />
+        </div>
       </div>
-      <span className={`${STATUS_PILL_CLASS_NAME} bg-success/10 text-success`}>
-        {translate("payAsYouGo.active")}
-      </span>
-    </div>
-    <div className="mt-4 flex flex-col gap-2">
-      <div className="flex justify-between">
-        <span className="text-foreground-dimmed text-sm">
-          {translate("payAsYouGo.fee")}
-        </span>
-        <span className="font-medium text-foreground text-sm">
-          {translate("payAsYouGo.feeDetail", {
-            rate: formatRate(summary.rateBps),
-          })}
-        </span>
-      </div>
-      <div className="flex justify-between">
-        <span className="text-foreground-dimmed text-sm">
-          {translate("payAsYouGo.monthlyCap")}
-        </span>
-        <span className="font-medium text-foreground text-sm">
-          {formatAmount(summary.capCents, "USD")}
-        </span>
-      </div>
-    </div>
-    <div className="mt-6">
-      <p className="text-foreground-dimmed text-sm">
-        {translate("payAsYouGo.switchHint")}
-      </p>
-      <div className="mt-3">
-        <PlanCheckoutButtons
-          onCheckout={onCheckout}
-          isCheckingOut={isCheckingOut}
-          checkoutPlan={checkoutPlan}
-          translate={translate}
-        />
-      </div>
-    </div>
-  </>
-);
+    </>
+  );
+};
 
 const NoPlan = ({
   onStartPayg,
@@ -385,6 +399,7 @@ const PerformanceFeeCard = ({
   isAddingPayment: boolean;
   translate: BillingTranslate;
 }) => {
+  const { formatDate, formatAmount, formatRate } = useBillingFormatting();
   const usedPercent =
     summary.capCents > 0
       ? Math.min(
@@ -529,6 +544,7 @@ export const BillingSection = ({
   invoices,
   performanceFee,
 }: Props) => {
+  const { formatDate, formatAmount } = useBillingFormatting();
   const router = useRouter();
   const toast = useToastManager();
   const translate = useTranslations("dashboard.settings.billing");

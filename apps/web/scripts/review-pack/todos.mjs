@@ -1,6 +1,7 @@
 import * as Files from "node:fs/promises";
 import * as Path from "node:path";
 import { resultify } from "@zenncore/utils";
+import { canonicalRoute, localeForRoute } from "./routes.mjs";
 
 const chartRoutes = {
   C1: ["/", "/platform/simulate"],
@@ -250,8 +251,10 @@ export const collect = async (project) => {
 };
 
 export const forPage = (registry, route) => {
-  const locale = /^\/es(?:\/|$)/.test(route) ? "es" : "en";
-  const canonical = locale === "es" ? route.replace(/^\/es/, "") || "/" : route;
+  // Source review questions are authored in EN/ES; every translated placement
+  // points back to that same authoritative input rather than creating another TODO.
+  const locale = localeForRoute(route) === "es" ? "es" : "en";
+  const canonical = canonicalRoute(route);
   return registry.records.filter(
     (record) =>
       record.locale === locale &&

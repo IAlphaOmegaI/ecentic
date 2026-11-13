@@ -11,7 +11,7 @@ import {
 } from "@zenncore/web/components/inferred-form";
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { z } from "zod";
 import { Motion } from "@/components/motion";
@@ -19,6 +19,7 @@ import { Spring } from "@/lib/animations";
 import * as Authentication from "@/server/app/authentication";
 
 export const ForgotPasswordForm = () => {
+  const locale = useLocale();
   const toast = useToastManager();
   const translate = useTranslations("forgotPassword");
   const translateAuthChrome = useTranslations("authChrome");
@@ -41,7 +42,7 @@ export const ForgotPasswordForm = () => {
 
   const [handleSubmit, isPending] = useAsyncAction(
     async ({ email }: FormEntries<typeof config>) => {
-      const result = await Authentication.forgotPassword({ email });
+      const result = await Authentication.forgotPassword({ email, locale });
 
       if (!result.success) {
         toast.add({

@@ -1,0 +1,28 @@
+{
+  "docsAuthenticationPage": {
+    "paths": {
+      "title": "Choisir un chemin de requête",
+      "description": "Explorez d’abord l’API. Ajoutez une clé Bearer lorsque votre client agit sur un compte marchand.",
+      "label": "Authentification de la requête",
+      "open": "Découverte ouverte",
+      "authenticated": "Compte marchand",
+      "client": "Votre client",
+      "noCredential": "Aucun identifiant requis",
+      "bearer": "Clé Bearer requise",
+      "publicDestination": "Découverte + sandbox",
+      "protectedDestination": "REST + MCP",
+      "details": "Fonctionnement de ce chemin"
+    },
+    "keySteps": [
+      "Créer un compte",
+      "Générer une clé",
+      "L’enregistrer une fois"
+    ],
+    "recovery": {
+      "label": "Découverte de l’authentification après une erreur 401",
+      "response": "Informations d’authentification manquantes ou invalides",
+      "resource": "Métadonnées de la ressource protégée",
+      "authorization": "Métadonnées du serveur d’autorisation"
+    }
+  }
+}

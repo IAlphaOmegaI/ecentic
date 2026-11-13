@@ -1,0 +1,72 @@
+{
+  "interactiveSecurity": {
+    "reviewLabel": "Entwurf zur Prüfung durch Alvi",
+    "title": "Wohin Produktdaten fließen",
+    "description": "Wählen Sie eine Verbindung aus, um die vorgeschlagenen Daten, Zeitpunkte und Kontrollmöglichkeiten zu prüfen. Jede Verbindung benötigt weiterhin Alvis Bestätigung, bevor dieses Diagramm veröffentlicht werden kann.",
+    "details": {
+      "what": "Was gesendet wird",
+      "when": "Wann",
+      "control": "Kontrolle"
+    },
+    "nodes": {
+      "source": {
+        "label": "Ihr Shop oder Feed",
+        "description": "Produktkatalog"
+      },
+      "ecentic": {
+        "label": "ecentic",
+        "description": "Vergleichs- und Veröffentlichungstools"
+      },
+      "providers": {
+        "label": "AI-Anbieter",
+        "description": "Simulationen und Neufassungen · Anbieterliste"
+      },
+      "store": {
+        "label": "Verbundener Shop",
+        "description": "Shopify oder WooCommerce"
+      },
+      "merchantCenter": {
+        "label": "Merchant Center",
+        "description": "Separate Shopify-Synchronisierung"
+      }
+    },
+    "connectors": {
+      "import": {
+        "label": "Katalog importieren",
+        "what": "Produktfelder aus dem ausgewählten Shop oder Feed. {{TODO: Alvi confirms}}",
+        "when": "Während des Katalogimports oder der Synchronisierung. {{TODO: Alvi confirms}}",
+        "control": "Verwendet die Berechtigungen der Shop-Verbindung oder die von Ihnen gewählte Quelle. Der Import veröffentlicht keine Änderungen an Produktangeboten. {{TODO: Alvi confirms}}"
+      },
+      "request": {
+        "label": "An AI senden",
+        "what": "Ausgewählte Produkt- und Wettbewerberdetails für Vergleiche oder die Erstellung von Produktangeboten. {{TODO: Alvi confirms}}",
+        "when": "Wenn eine Simulation oder Aktion zur Erstellung von Produktangeboten ausgeführt wird. {{TODO: Alvi confirms}}",
+        "control": "Verwendet die konfigurierte Anbieterroute. Daten verbundener Merchant Center-Konten bleiben getrennt vom Shop-Katalog, der für AI-Aufgaben verwendet wird. {{TODO: Alvi confirms}}"
+      },
+      "response": {
+        "label": "Ergebnisse zurückgeben",
+        "what": "Simulationsergebnisse oder generierte Inhalte für Produktangebote und strukturierte Daten. {{TODO: Alvi confirms}}",
+        "when": "Wenn die angeforderte Modelloperation eine Antwort zurückgibt. {{TODO: Alvi confirms}}",
+        "control": "Über Anwenden lassen sich Inhalte innerhalb derselben Aktion generieren und veröffentlichen; strukturierte Daten verwenden eine separate Veröffentlichungsaktion. {{TODO: Alvi confirms}}"
+      },
+      "apply": {
+        "label": "Produktangebot anwenden",
+        "what": "Ein generierter Titel und eine Beschreibung für ausgewählte Produkte. {{TODO: Alvi confirms}}",
+        "when": "Wenn Sie „Anwenden“ oder eine explizite Aktion zur Massenveröffentlichung auswählen. {{TODO: Alvi confirms}}",
+        "control": "Erfordert einen direkt verbundenen Store und Ihre ausdrückliche Veröffentlichungsaktion. {{TODO: Alvi confirms}}"
+      },
+      "structuredData": {
+        "label": "Daten veröffentlichen",
+        "what": "Generierte Produkt-JSON-LD in den Produktmetadaten des Stores. {{TODO: Alvi confirms}}",
+        "when": "Über die separate Aktion „Strukturierte Daten veröffentlichen“. {{TODO: Alvi confirms}}",
+        "control": "Das Shopify-Theme-App-Embed oder das WooCommerce-Plugin muss die veröffentlichten Daten ausgeben. {{TODO: Alvi confirms}}"
+      },
+      "merchantCenter": {
+        "label": "Google synchronisieren",
+        "what": "Veröffentlichte Überschreibungen für Titel und Beschreibung sowie ausgewählte Checkout-Attribute. {{TODO: Alvi confirms}}",
+        "when": "Bei einer separaten, ausdrücklichen Google-Synchronisierung für einen verbundenen Shopify-Store. {{TODO: Alvi confirms}}",
+        "control": "Verwendet eine ergänzende Quelle neben dem Haupt-Feed. Das Anwenden eines Produktangebots startet diese Synchronisierung nicht automatisch. {{TODO: Alvi confirms}}"
+      }
+    }
+  }
+}

@@ -1,0 +1,84 @@
+{
+  "travelPage": {
+    "questions": {
+      "caption": "Jede Reise ist ein Angebot mit Bedingungen.",
+      "description": "Die Frage ändert sich. Reisedaten, Preisgrundlage und Buchungsbedingungen müssen weiterhin klar lesbar sein."
+    },
+    "attributes": {
+      "description": "Halten Sie die Informationen zusammen, die das Angebot definieren – von verfügbaren Reisedaten bis zu den Bedingungen für Änderungen."
+    },
+    "roadmap": {
+      "label": "Travel-Pilot ansehen",
+      "diagram": "Die Informationen und Übergabe zur Prüfung",
+      "boundary": "Grenze des Umfangs",
+      "stages": [
+        {
+          "id": "scope",
+          "label": "Umfang abstimmen",
+          "status": "Vor dem Pilotprojekt",
+          "title": "Ein Markt. Ein abgestimmter Ausgangspunkt.",
+          "description": "Bestätigen Sie vor dem Start Sprach- und Datenabdeckung. Beginnen Sie mit den öffentlichen Seiten und Produktdaten, die mit Ihrem Team abgestimmt wurden.",
+          "steps": [
+            {
+              "title": "Ein Markt",
+              "body": "Sprach- und Datenabdeckung bestätigen."
+            },
+            {
+              "title": "Öffentliche Seiten",
+              "body": "Festlegen, welche Angebote geprüft werden."
+            },
+            {
+              "title": "Pilotumfang",
+              "body": "Die Frage zur Buchungsübergabe definieren."
+            }
+          ],
+          "note": "Ein Pilotprojekt beginnt mit einem abgestimmten Umfang; diese Roadmap weist nicht auf eine Live-Buchungsintegration hin."
+        },
+        {
+          "id": "baseline",
+          "label": "Angebote prüfen",
+          "status": "Grundlage aus öffentlichen Daten",
+          "title": "Das Angebot vor dem Buchungsprozess lesen.",
+          "description": "Prüfen Sie die Informationen auf Seiten, die Sie kontrollieren, sowie abgestimmte Produktdaten. Ihr Team verifiziert Reiseattribute; ecentic ergänzt keine fehlenden Informationen.",
+          "steps": [
+            {
+              "title": "Öffentliche Website",
+              "body": "Mit abgestimmten Produktseiten beginnen."
+            },
+            {
+              "title": "Unterstützter Feed",
+              "body": "Das definierte Feld-Mapping des Importers verwenden."
+            },
+            {
+              "title": "Angebotsinformationen",
+              "body": "Reisedaten, Preise, enthaltene Leistungen und Bedingungen prüfen."
+            }
+          ],
+          "note": "Für die Grundlage sind weder ein Login in die Buchungsengine noch Kundendaten oder Code auf Ihrer Website erforderlich."
+        },
+        {
+          "id": "handoff",
+          "label": "Übergabe prüfen",
+          "status": "Separat abgestimmter Umfang",
+          "title": "Die Grenze zur Buchung klar definieren.",
+          "description": "Prüfen Sie den abgestimmten Weg von öffentlichen Informationen bis zum Buchungsablauf. Spätere Zugriffs- oder Integrationsarbeiten benötigen einen separaten Leistungsumfang.",
+          "steps": [
+            {
+              "title": "Öffentliches Angebot",
+              "body": "Halten Sie Daten, Preise und Bedingungen klar verständlich."
+            },
+            {
+              "title": "Kanal oder Anbieter",
+              "body": "Das Buchungsverhalten hängt vom Kanal und Ablauf ab."
+            },
+            {
+              "title": "Übergabe zur Buchung",
+              "body": "Prüfen Sie das abgestimmte Ziel und den nächsten Schritt."
+            }
+          ],
+          "note": "Es wird keine automatisierte Buchungsintegration zugesagt, und ein Assistent kann statt auf Ihre Website auf eine Buchungsplattform verlinken."
+        }
+      ]
+    }
+  }
+}

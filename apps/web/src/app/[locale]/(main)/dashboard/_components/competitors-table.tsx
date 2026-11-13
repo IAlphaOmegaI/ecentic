@@ -15,7 +15,7 @@ import {
   DataTableProvider,
 } from "@zenncore/web/components/data-table";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { usePaginationChangeHandler } from "@/hooks/pagination";
 import { formatPrice } from "@/lib/currency";
 import { formatRelativeTime } from "@/lib/date";
@@ -47,6 +47,7 @@ const WinRateBar = ({ rate }: { rate: number }) => {
 };
 
 const buildColumns = (
+  locale: string,
   fields: {
     brand: string;
     price: string;
@@ -128,7 +129,7 @@ const buildColumns = (
     header: fields.lastUpdated,
     cell: ({ row }) => (
       <span className="text-foreground-dimmed">
-        {formatRelativeTime(new Date(row.original.updatedAt))}
+        {formatRelativeTime(new Date(row.original.updatedAt), locale)}
       </span>
     ),
   },
@@ -143,10 +144,13 @@ export const CompetitorsTable = ({
   paginated = false,
   ...props
 }: CompetitorsTable.Props) => {
+  const locale = useLocale();
+
   const translate = useTranslations("dashboard.competitors.table");
   const pagination = useTranslations("dashboard.shared.pagination");
   const handlePaginationChange = usePaginationChangeHandler();
   const columns = buildColumns(
+    locale,
     {
       brand: translate("fields.brand"),
       price: translate("fields.price"),

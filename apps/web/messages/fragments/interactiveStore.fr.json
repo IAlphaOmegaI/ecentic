@@ -1,0 +1,16 @@
+{
+  "interactiveStore": {
+    "label": "Adresse de votre boutique",
+    "action": {
+      "primary": "Vérifier ma boutique gratuitement"
+    },
+    "pending": "Vérification de votre boutique…",
+    "hint": "Votre adresse est transmise à l’inscription et au scan gratuit déjà proposé. Aucune information de paiement n’est requise.",
+    "errors": {
+      "invalid": "Saisissez un domaine de boutique valide ou une adresse http/https.",
+      "limited": "Trop de vérifications en ce moment. Attendez un instant et réessayez.",
+      "unreachable": "Impossible de joindre {host}. Vérifiez l’adresse et réessayez.",
+      "failed": "La vérification n’a pas pu aboutir. Veuillez réessayer."
+    }
+  }
+}

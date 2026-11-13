@@ -1,0 +1,36 @@
+{
+  "furniturePage": {
+    "introduction": "Verbinden Sie Raum und praktische Anforderungen des Käufers mit Angaben, die Ihr Team prüfen kann.",
+    "widthLabel": "Breite mit Einheit",
+    "depthLabel": "Tiefe mit Einheit",
+    "heightLabel": "Höhe mit Einheit",
+    "productLabel": "Das genaue Produkt",
+    "diagramNote": "Ein Diagramm der Zusammenhänge, keine Darstellung eines vermessenen Produkts und kein Ergebnis einer Prüfung, ob das Produkt passt.",
+    "relationshipTitle": "Ein Produkt muss zu mehr passen als nur zum Raum.",
+    "relationships": [
+      {
+        "title": "Raum und Nutzung",
+        "body": "Abmessungen und Kapazität beschreiben das Produkt in verständlicher und überprüfbarer Form."
+      },
+      {
+        "title": "Material und Oberfläche",
+        "body": "Halten Sie Rahmen, Polsterung und Oberfläche getrennt, einschließlich der ausgewählten Variante."
+      },
+      {
+        "title": "Lieferung und Rückgabe",
+        "body": "Montage, Lieferung und Rückgabe gehören direkt neben die Produktinformationen."
+      }
+    ],
+    "questionLabels": [
+      "Platzbedarf und Nutzung",
+      "Material und Kapazität",
+      "Produkteignung"
+    ],
+    "questionNotes": [
+      "Exakte Produktmaße getrennt von illustrativen Fotos aufführen.",
+      "Prüfen Sie Material, Preis und Verfügbarkeit der gewählten Variante zusammen mit ihrer Kapazität.",
+      "Prüfen Sie die Eignung für das genaue Produkt mit dem Anbieter. Die Abbildung stellt keine Kompatibilität sicher."
+    ],
+    "sourceLabel": "An der Quelle prüfen."
+  }
+}

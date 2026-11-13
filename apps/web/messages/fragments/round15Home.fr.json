@@ -1,0 +1,39 @@
+{
+  "commerceFigures": {
+    "repairTools": "Illustration : une clé à molette et un tournevis. Déplacez le pointeur sur un outil pour le soulever et l’examiner.",
+    "moneyStack": "Illustration : des billets et des pièces. Déplacez le pointeur sur une pile pour l’examiner.",
+    "readinessScanner": "Illustration : un scanner de documents ouvert. Déplacez le pointeur sur le couvercle ou la page pour les examiner.",
+    "partReadouts": {
+      "repairTools": [
+        {
+          "value": "clé à molette",
+          "label": "Clé à molette"
+        },
+        {
+          "value": "tournevis",
+          "label": "Tournevis"
+        }
+      ],
+      "moneyStack": [
+        {
+          "value": "billets",
+          "label": "Billets"
+        },
+        {
+          "value": "pièces",
+          "label": "Pièces"
+        }
+      ],
+      "readinessScanner": [
+        {
+          "value": "couvercle du scanner",
+          "label": "Couvercle du scanner"
+        },
+        {
+          "value": "document",
+          "label": "Document"
+        }
+      ]
+    }
+  }
+}

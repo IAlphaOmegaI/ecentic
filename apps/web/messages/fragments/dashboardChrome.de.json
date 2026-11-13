@@ -1,0 +1,1235 @@
+{
+  "dashboard": {
+    "nav": {
+      "overview": "Übersicht",
+      "products": "Produkte",
+      "competitors": "Wettbewerber",
+      "simulations": "Simulationen",
+      "optimize": "Optimieren",
+      "visibility": "Sichtbarkeit",
+      "agentic": "Agentic Score",
+      "googleShopping": "Google Shopping",
+      "quality": "Datenqualität",
+      "brand": "Marke",
+      "discovery": "Auffindbarkeit",
+      "ucp": "UCP",
+      "ucpPlayground": "UCP Playground",
+      "ucpComparison": "UCP-Vergleich",
+      "reports": "Berichte",
+      "settings": "Einstellungen",
+      "billing": "Abrechnung",
+      "integrations": "Integrationen",
+      "stores": "Shops",
+      "groups": {
+        "catalog": "Katalog",
+        "intelligence": "Analysen",
+        "channels": "Kanäle"
+      }
+    },
+    "sidebar": {
+      "allStores": "Alle Shops"
+    },
+    "stores": {
+      "empty": "Noch keine Shops",
+      "select": "Shop auswählen",
+      "selectStore": "Shop auswählen",
+      "allStores": "Alle Shops",
+      "action": {
+        "primary": "Shop verbinden"
+      }
+    },
+    "hub": {
+      "workspace": "Arbeitsbereich",
+      "title": "Ihre Shops",
+      "description": "Wählen Sie einen Shop aus, um zu sehen, wie KI-Einkaufsagenten dessen Katalog bewerten, oder verbinden Sie einen weiteren.",
+      "action": {
+        "primary": "Shop verbinden"
+      },
+      "aggregates": {
+        "stores": "Shops",
+        "products": "Produkte",
+        "avgWinRate": "Durchschn. Gewinnquote",
+        "agentVisits30d": "Agentenbesuche · 30 T."
+      },
+      "storeCard": {
+        "winRate": "Gewinnquote",
+        "products": "Produkte",
+        "agents30d": "Agenten 30 T.",
+        "synced": "Synchronisiert {time}",
+        "notSyncedYet": "Noch nicht synchronisiert",
+        "openDashboard": "Dashboard öffnen",
+        "status": {
+          "connected": "verbunden"
+        }
+      },
+      "platforms": {
+        "shopify": "Shopify",
+        "woocommerce": "WooCommerce",
+        "feed": "Produkt-Feed",
+        "csv": "CSV-Import"
+      },
+      "empty": {
+        "title": "Verbinden Sie Ihren ersten Shop",
+        "description": "Verbinden Sie einen Shop, um Produkte zu importieren und nachzuverfolgen, wie KI-Einkaufsagenten sie mit Wettbewerbern vergleichen."
+      }
+    },
+    "commandPalette": {
+      "trigger": "Produkte, Wettbewerber suchen ...",
+      "placeholder": "Produkte, Wettbewerber und Seiten suchen ...",
+      "keyboardShortcut": "⌘K",
+      "keyboardEscape": "esc",
+      "states": {
+        "searching": "Suche läuft…",
+        "empty": "Keine Ergebnisse",
+        "emptyForQuery": "Keine Ergebnisse für „{query}“"
+      },
+      "sections": {
+        "products": "Produkte",
+        "competitors": "Wettbewerber",
+        "pages": "Seiten"
+      },
+      "hints": {
+        "open": "zum Öffnen",
+        "close": "zum Schließen"
+      },
+      "nav": {
+        "overview": "Übersicht",
+        "products": "Produkte",
+        "competitors": "Wettbewerber",
+        "simulations": "Simulationen",
+        "ucpStructuredData": "UCP & strukturierte Daten",
+        "optimize": "Optimieren",
+        "settings": "Einstellungen"
+      }
+    },
+    "notifications": {
+      "title": "Benachrichtigungen",
+      "ariaLabel": "Benachrichtigungen",
+      "states": {
+        "empty": {
+          "primary": "Keine Benachrichtigungen",
+          "secondary": "Sie sind auf dem neuesten Stand. Wir informieren Sie, wenn etwas Ihre Aufmerksamkeit erfordert."
+        }
+      }
+    },
+    "subscription": {
+      "payAsYouGo": "Nutzungsbasierte Abrechnung",
+      "noPlan": "Kein Tarif",
+      "status": {
+        "trial": "Testphase",
+        "pastDue": "Überfällig",
+        "unpaid": "Unbezahlt",
+        "paused": "Pausiert"
+      }
+    },
+    "trial": {
+      "badge": "Kostenlose Testphase",
+      "daysLeft": "Noch {days} Tage",
+      "endsOn": "Kostenlos bis {date}",
+      "upgradeHint": "Fügen Sie vor Ablauf eine Zahlungskarte hinzu",
+      "modal": {
+        "endingIn": "Testphase endet am {date}",
+        "title": "{plan} behalten",
+        "description": "Behalten Sie vollen Zugriff auf Simulationen, Einblicke und Wettbewerbsanalysen.",
+        "progress": "Fortschritt der Testphase",
+        "daysUsed": "{used}/{total} Tage genutzt",
+        "featuresHeading": "Alles in {plan}",
+        "pricePerMonth": "/month",
+        "action": {
+          "primary": "Zur Abrechnung",
+          "secondary": "Vielleicht später ({days} Tage verbleibend)"
+        }
+      },
+      "features": [
+        "Unbegrenzte KI-Simulationen",
+        "Alle 4 Modellperspektiven",
+        "Automatische Wettbewerber-Erkennung",
+        "Export strukturierter UCP-Daten",
+        "Priorisierter Support"
+      ]
+    },
+    "simulation": {
+      "action": {
+        "primary": "Simulation starten",
+        "secondary": "Erneut ausführen",
+        "tertiary": "Dashboard anzeigen"
+      },
+      "title": {
+        "pre": "Simulation starten",
+        "running": "Simulation läuft",
+        "complete": "Simulation abgeschlossen"
+      },
+      "states": {
+        "live": "Live",
+        "done": "Abgeschlossen",
+        "running": "Läuft",
+        "queued": "In Warteschlange",
+        "initializing": "Simulations-Engine wird initialisiert..."
+      },
+      "pre": {
+        "heading": "KI-Shopping-Simulation",
+        "description": "Simulieren Sie, wie ChatGPT, Claude und Gemini Ihre Produkte mit denen Ihrer Wettbewerber vergleichen und welche Produkte sie auswählen.",
+        "addCompetitors": "Wettbewerber hinzufügen",
+        "noCompetitors": "Dieser Shop hat noch keine Wettbewerber. Fügen Sie welche hinzu, damit die Modelle Vergleichsmöglichkeiten haben."
+      },
+      "running": {
+        "heading": "Live-Intelligence-Scan",
+        "comparisons": "Simulationen für {count} Vergleiche werden ausgeführt"
+      },
+      "complete": {
+        "overallWinRate": "Gesamtgewinnquote",
+        "completedIn": "Abgeschlossen in {elapsed}",
+        "winRateByModel": "Gewinnquote nach Modell",
+        "stats": {
+          "wins": "Siege",
+          "losses": "Verluste",
+          "products": "Produkte"
+        },
+        "results": {
+          "low": "KI-Einkaufsagenten wählen meist Ihre Wettbewerber aus. Das können Sie verbessern.",
+          "medium": "Sie sind wettbewerbsfähig, haben aber noch deutliches Potenzial, häufiger ausgewählt zu werden.",
+          "high": "Sie liegen vor den meisten Wettbewerbern. Sorgen Sie dafür, dass das so bleibt."
+        },
+        "topFinding": "{name} verliert bei {attributes}. {impact} Das kostet Sie {lossPercentage}% der Simulationen."
+      },
+      "providers": {
+        "gpt4": {
+          "description": "Bewertung mit Fokus auf Spezifikationen"
+        },
+        "claude": {
+          "description": "Analyse des Wertversprechens"
+        },
+        "gemini": {
+          "description": "Preis-Leistungs-Verhältnis"
+        }
+      },
+      "toast": {
+        "failed": {
+          "title": "Simulation fehlgeschlagen"
+        }
+      }
+    },
+    "overview": {
+      "action": {
+        "primary": "Simulation starten"
+      },
+      "tabs": {
+        "products": "Top-Produkte",
+        "competitors": "Wettbewerber",
+        "agents": "Agentenbesuche"
+      },
+      "charts": {
+        "kickers": {
+          "performance": "01 — Performance",
+          "recentActivity": "01.5 — Letzte Aktivitäten"
+        },
+        "winRateByModel": "Gewinnquote nach Modell",
+        "winRateTrend": "Trend der Gewinnquote",
+        "states": {
+          "noModels": "Starten Sie eine Simulation, um die Performance je Modell zu sehen.",
+          "noTrend": "Nicht genügend Daten für einen Trend vorhanden.",
+          "noTrendHint": "Starten Sie mit einer Simulation.",
+          "noActivity": "Noch keine Aktivität. Starten Sie Ihre erste Simulation, um hier Ergebnisse zu sehen."
+        },
+        "action": {
+          "primary": "Alle Produkte anzeigen",
+          "secondary": "Optimierungen"
+        }
+      }
+    },
+    "agentVisits": {
+      "kicker": "04 — Agenten-Traffic",
+      "title": "Besuche nach Agenten (letzte 30 Tage)",
+      "description": "Nur aus Ihrem ScriptTag-Tracker sowie browserseitig sichtbaren KI- und Referral-Signalen.",
+      "total": "gesamt",
+      "states": {
+        "empty": "Bisher keine Besuche von KI-Agenten erfasst. Traffic erscheint, wenn Käufer über KI-Referrer oder vom Tracker erkannte User-Agents kommen oder wenn der Probe-Modus aktiviert ist."
+      }
+    },
+    "products": {
+      "action": {
+        "primary": "Produkt hinzufügen"
+      },
+      "table": {
+        "title": "Produktkatalog",
+        "fields": {
+          "product": "Produkt",
+          "price": "Preis",
+          "winRate": "Gewinnquote",
+          "quality": "Qualität",
+          "lastScan": "Letzter Scan"
+        },
+        "states": {
+          "empty": {
+            "primary": "Keine Produkte gefunden",
+            "secondary": "Importieren Sie Produkte und führen Sie eine Simulation aus, um hier Gewinnquoten zu sehen."
+          }
+        }
+      }
+    },
+    "competitors": {
+      "action": {
+        "primary": "Wettbewerber hinzufügen"
+      },
+      "table": {
+        "title": "Wettbewerbermarken",
+        "fields": {
+          "brand": "Marke",
+          "price": "Beobachteter Preis",
+          "measured": "Gemessen",
+          "unmeasured": "Nicht gemessen",
+          "winRate": "Gewinnquote",
+          "simulations": "Simulationen",
+          "lastUpdated": "Zuletzt aktualisiert"
+        },
+        "productCount": "{count, plural, one {# Produkt} other {# Produkte}}",
+        "states": {
+          "empty": {
+            "primary": "Noch keine Wettbewerber erfasst",
+            "secondary": "Fügen Sie Wettbewerber hinzu, um Ihre Wettbewerbslandschaft zu analysieren."
+          }
+        }
+      }
+    },
+    "grid": {
+      "topFinding": "Wichtigste Erkenntnis",
+      "winRateBadge": "{rate}% Gewinnquote"
+    },
+    "optimize": {
+      "statusPill": "{count, plural, one {# ausstehender Vorschlag} other {# ausstehende Vorschläge}}",
+      "title": "Optimierungszentrum",
+      "description": "Genehmigen Sie KI-optimierte Produktangebote und übertragen Sie sie direkt in Ihren Shop.",
+      "action": {
+        "optimizeStore": "{store} für KI-Einkaufsagenten optimieren",
+        "preview": "Vorschau",
+        "primary": "Genehmigen",
+        "approveAll": "Alle genehmigen ({count})",
+        "reconsider": "Erneut prüfen",
+        "viewProduct": "Produkt ansehen"
+      },
+      "stats": {
+        "lowWinRate": {
+          "label": "Produkte mit niedriger Gewinnquote",
+          "detail": "In den meisten simulierten Vergleichen wählen Agenten Wettbewerbsprodukte statt dieser Produkte."
+        },
+        "publishable": {
+          "label": "Automatisch veröffentlichbar",
+          "detail": "Kann durch Überarbeitung des Produktangebots behoben werden. Zum Veröffentlichen freigeben."
+        },
+        "manualFix": {
+          "label": "Nur manuell behebbar",
+          "detail": "Erfordert manuelle Änderungen an Plattform oder Daten."
+        }
+      },
+      "categories": {
+        "seo": "SEO",
+        "content": "Inhalt",
+        "structured_data": "Strukturierte Daten",
+        "platform": "Plattform"
+      },
+      "severity": {
+        "high": "Hoch",
+        "medium": "Mittel",
+        "low": "Niedrig"
+      },
+      "listingType": "Titel + Beschreibung",
+      "unknownProduct": "Unbekanntes Produkt",
+      "publishedAt": "Veröffentlicht am {date}",
+      "winRateChange": "Geschätzte Gewinnquote: {before}% → {after}%",
+      "dismissAriaLabel": "Vorschlag verwerfen",
+      "diagnostics": {
+        "kicker": "{index} — Diagnosen",
+        "title": "Diagnosen für niedrige Gewinnquote",
+        "description": "Diese Empfehlungen decken SEO-, Datenqualitäts- und Plattformprobleme zusätzlich zu Optimierungen des Produktangebots ab."
+      },
+      "queue": {
+        "kicker": "{index} — Optimierungswarteschlange",
+        "title": "Vorschläge für Produktangebote",
+        "description": "Mit „Freigeben“ wird ein KI-optimiertes Produktangebot erstellt und in Ihrem Shop veröffentlicht (Shopify oder WooCommerce)."
+      },
+      "tabs": {
+        "pending": "Ausstehend",
+        "published": "Veröffentlicht",
+        "dismissed": "Verworfen"
+      },
+      "states": {
+        "pendingEmpty": {
+          "title": "Keine ausstehenden Optimierungen",
+          "description": "Produkte aus Shopify oder WooCommerce mit einer simulierten Gewinnquote unter 55 % erscheinen hier. Führen Sie einen Scan aus und geben Sie anschließend KI-optimierte Titel und Beschreibungen zur Veröffentlichung in Ihrem Shop frei."
+        },
+        "publishedEmpty": {
+          "title": "Noch keine veröffentlichten Optimierungen",
+          "description": "Freigegebene Änderungen werden hier zusammen mit den geschätzten Auswirkungen auf die Gewinnquote erfasst."
+        },
+        "dismissedEmpty": {
+          "title": "Nichts verworfen",
+          "description": "Verworfene Vorschläge erscheinen hier und können jederzeit wiederhergestellt werden."
+        }
+      },
+      "roadmap": {
+        "kicker": "01 — Was Sie erwarten können",
+        "title": "Optimierungsausblick",
+        "description": "So steigt die Gewinnquote Ihrer Produkte bei KI-Einkaufsagenten typischerweise über sechs Monate: erste Verbesserungen nach der Veröffentlichung innerhalb von 24–48 Std., Shop-Traffic etwa ab Tag {trafficDays}; danach verstärken sich die Effekte im gesamten Katalog.",
+        "phaseLabel": "Phase: {title}",
+        "current": "Aktuell",
+        "liftPoints": "+{points} Pkt.",
+        "metrics": {
+          "ceiling": {
+            "label": "Prognostizierte Obergrenze",
+            "detail": "Von aktuell {baseline}% · +{delta} Pkt. Potenzial"
+          },
+          "simulationLift": {
+            "label": "Erster Simulationsanstieg",
+            "detail": "Ein erneuter Scan nach der Veröffentlichung zeigt in der Regel innerhalb von 48 Stunden Veränderungen der Gewinnquote."
+          },
+          "trafficSignals": {
+            "label": "Erste Traffic-Signale",
+            "detail": "Agent-Besuche und zugeordnete Verkäufe zeigen sich meist nach etwa einem Monat."
+          }
+        },
+        "chart": {
+          "title": "Prognostizierte Gewinnquote",
+          "coverage": "Auf Ihren Katalog abgestimmt · Indikator: {coverage}% Katalogabdeckung",
+          "today": "Heute",
+          "weekZero": "Woche 0",
+          "week": "Woche {week}",
+          "winRate": "% Gewinnquote",
+          "listingsOptimized": "Produktangebote optimiert",
+          "surfacesLive": "Agent-Kanäle live",
+          "signalIntensity": "Signalintensität"
+        },
+        "phases": {
+          "foundation": {
+            "title": "Grundlage",
+            "window": "Tage 0–14",
+            "summary": "Scannen Sie Ihren Katalog, überarbeiten Sie schwache Produktangebote und veröffentlichen Sie strukturierte Daten, damit KI-Einkaufsagenten Ihre Inhalte lesen können. Die simulierte Gewinnquote verändert sich zuerst, meist innerhalb von 24–48 Stunden nach der Veröffentlichung.",
+            "outcomes": [
+              "Ausstehende Überarbeitungen von Produktangeboten freigeben (Titel + Beschreibung)",
+              "JSON-LD- bzw. feedbereite Attribute für wichtige SKUs veröffentlichen",
+              "Erneuter Scan bestätigt frühe Verbesserung der Gewinnquote gegenüber Wettbewerbern"
+            ]
+          },
+          "traction": {
+            "title": "Traktion",
+            "window": "Wochen 2–6",
+            "summary": "Agent-Kanäle lesen Ihren Katalog erneut ein (Shopify Catalog, Merchant Center, Crawler). Erste Signale tatsächlicher Besuche und Zugriffe über Verweislinks zeigen sich typischerweise um Tag 30.",
+            "outcomes": [
+              "ChatGPT / Claude / Gemini / Perplexity bewerten aktualisierte Produktangebote neu",
+              "Signale aus Agent-Besuchen und Referral-Klicks beginnen sich zu verstärken",
+              "Muster aus Kundenfällen: messbarer Anstieg bei Besuchen und Verkäufen nach etwa 30 Tagen"
+            ]
+          },
+          "compound": {
+            "title": "Skalierungseffekt",
+            "window": "Monate 2–6",
+            "summary": "Katalogweite Abdeckung, Reaktionszyklen auf Wettbewerber und erneute Optimierung bei Modelländerungen. Die Gewinnquote nähert sich Ihrer geschätzten Obergrenze, je mehr SKUs für KI-Einkaufsagenten optimiert bleiben.",
+            "outcomes": [
+              "Kontinuierliche Prüfungen erkennen Abweichungen bei Modell-Updates",
+              "Änderungen an Produktangeboten von Wettbewerbern lösen neue Battlecards aus",
+              "Dauerhafter Agent-Traffic und zugeordneter Umsatz wachsen mit der Abdeckung"
+            ]
+          }
+        }
+      },
+      "toast": {
+        "publishFailed": "Veröffentlichung fehlgeschlagen",
+        "listingUpdated": "Produktangebot aktualisiert",
+        "listingUpdatedDescription": "Die Änderungen wurden in Ihren verbundenen Shop übertragen.",
+        "dismissFailed": "Verwerfen fehlgeschlagen",
+        "restoreFailed": "Wiederherstellung nicht möglich",
+        "someFailed": "Einige Aktualisierungen sind fehlgeschlagen",
+        "allUpdated": "Alle ausstehenden Produktangebote aktualisiert",
+        "allUpdatedDescription": "{count} Produkt(e) in Ihrem Shop veröffentlicht.",
+        "optimizationFailed": "Optimierung fehlgeschlagen",
+        "storeOptimized": "Shop für KI-Einkaufsagenten optimiert",
+        "storeOptimizedDescription": "{published}/{total} Produkte veröffentlicht, {rewritten} Produktangebote überarbeitet{metafields}."
+      }
+    },
+    "visibility": {
+      "eyebrow": "Sichtbarkeit für KI-Agenten",
+      "title": "Wo KI-Einkaufsagenten diesen Shop tatsächlich sehen",
+      "description": "Die Bereitschaftsprüfungen laufen gegen die tatsächlichen Ingestionsquellen: robots.txt, gerendertes Storefront-HTML, Angebotsidentität und Feeds. Das Ranking wird live im Shopify Global Catalog gemessen, den ChatGPT, Perplexity und Copilot abfragen.",
+      "rankSection": {
+        "eyebrow": "Live-Position im Regal",
+        "title": "Den Rang dieses Shops im Global Catalog für eine Käuferanfrage ermitteln"
+      },
+      "audit": {
+        "scoreDetail": "Bereitschaft für KI-Agenten anhand automatisierter Prüfungen, gemessen daran, was KI-Systeme tatsächlich lesen, statt an den eigenen Daten von ecentic",
+        "checkStatus": {
+          "pass": "Bestanden",
+          "warn": "Warnung",
+          "fail": "Fehlgeschlagen",
+          "manual": "Manuell"
+        },
+        "feed": {
+          "title": "Produktfeed ({count} Produkte{skipped})",
+          "skipped": ", {count} übersprungen",
+          "description": "Eine URL für Google Merchant Center und das Perplexity Merchant Program."
+        }
+      },
+      "feedUrl": {
+        "action": {
+          "primary": "Feed-URL kopieren"
+        },
+        "toast": {
+          "title": "Feed-URL kopiert",
+          "description": "Fügen Sie die Feed-URL im Google Merchant Center (geplanter Abruf) und im Perplexity Merchant Program ein."
+        }
+      },
+      "rankChecker": {
+        "fields": {
+          "query": {
+            "label": "Käuferanfrage",
+            "placeholder": "z. B. wasserdichte Trailrunning-Schuhe",
+            "validation": "Geben Sie eine Käuferanfrage ein"
+          },
+          "country": {
+            "label": "Markt"
+          }
+        },
+        "action": {
+          "primary": "Ranking prüfen"
+        },
+        "credentialsMissing": {
+          "title": "Anmeldedaten für den Global Catalog fehlen",
+          "description": "Setzen Sie SHOPIFY_CATALOG_CLIENT_ID und SHOPIFY_CATALOG_CLIENT_SECRET (Dev Dashboard → Catalogs → Get an API key), um zu messen, wo dieser Shop im Retrieval-Index platziert ist, den KI-Einkaufsagenten abfragen."
+        },
+        "notFound": "Nicht gefunden",
+        "resultNotFound": "dieser Shop erschien nicht in den Top-{total}-Live-Ergebnissen für „{query}“",
+        "resultFound": "von {total} Live-Ergebnissen für „{query}“",
+        "you": "Sie",
+        "toast": {
+          "failed": "Ranking-Prüfung fehlgeschlagen"
+        }
+      }
+    },
+    "discovery": {
+      "statusPill": "KI-Sichtbarkeit — Shops finden",
+      "title": "KI-Auffindbarkeit",
+      "description": "Sehen Sie, welche Shops KI-Einkaufsagenten für eine Anfrage empfehlen, warum Ihr Shop ausgewählt wurde oder nicht und auf welchem Rang er erschien.",
+      "targetStore": {
+        "label": "Ziel-Shop",
+        "placeholder": "your-store.example.com",
+        "yourStore": "Ihr Shop",
+        "description": "Der Shop, nach dem wir in den Empfehlungen der einzelnen KI-Einkaufsagenten suchen."
+      },
+      "queries": {
+        "label": "Einkaufsanfragen",
+        "placeholders": [
+          "blaue Sneaker unter $80",
+          "wasserdichte Wanderstiefel",
+          "Geschenke für Läufer"
+        ],
+        "anotherPlaceholder": "weitere Einkaufsanfrage",
+        "add": "Anfrage hinzufügen",
+        "removeAriaLabel": "Anfrage {index} entfernen",
+        "description": "Jede Suchanfrage wird an ChatGPT, Claude, Gemini und Perplexity gesendet. Anschließend erstellen wir eine Rangliste der Shops, die das jeweilige Modell vorschlägt."
+      },
+      "action": {
+        "primary": "Discovery starten",
+        "running": "KI wird befragt …"
+      },
+      "hint": {
+        "ready": "Stellen Sie {count, plural, one {# Suchanfrage} other {# Suchanfragen}} an 4 KI-Modelle.",
+        "notReady": "Geben Sie einen Ziel-Shop und mindestens eine Suchanfrage ein, um Discovery zu starten."
+      },
+      "errors": {
+        "targetRequired": "Geben Sie die Domain des Ziel-Shops ein.",
+        "queryRequired": "Geben Sie mindestens eine Shopping-Suchanfrage ein.",
+        "generic": "Etwas ist schiefgelaufen."
+      },
+      "loading": "ChatGPT, Claude, Gemini und Perplexity werden abgefragt …",
+      "empty": {
+        "status": "Noch kein Durchlauf",
+        "description": "Fügen Sie oben eine oder mehrere Shopping-Suchanfragen hinzu und starten Sie Discovery, um zu sehen, welche Shops von KI-Agenten empfohlen werden und wie Ihr Shop im Vergleich abschneidet."
+      },
+      "results": {
+        "targetStore": "Ziel-Shop"
+      },
+      "model": {
+        "failed": "Fehlgeschlagen",
+        "notSuggested": "Nicht empfohlen",
+        "ranked": "Platz #{rank} von {total}",
+        "whyRanked": "Warum Ihr Shop hier platziert wurde",
+        "whyLeftOut": "Warum Ihr Shop nicht berücksichtigt wurde",
+        "noExplanation": "Keine Erklärung zurückgegeben.",
+        "noStores": "Keine Shops zurückgegeben.",
+        "unreachable": "Dieses Modell konnte nicht erreicht werden."
+      }
+    },
+    "ucp": {
+      "statusPill": "Universal Commerce Protocol",
+      "title": "UCP & strukturierte Daten",
+      "description": "Ihre Händleridentität für KI-Einkaufsagenten.",
+      "protocolKicker": "01 — Protokoll",
+      "structuredDataTitle": "Strukturierte Daten",
+      "manager": {
+        "tabs": {
+          "profile": "Händlerprofil",
+          "products": "Produkt-JSON-LD",
+          "validator": "Erweiterter Validator"
+        },
+        "fields": {
+          "merchantName": {
+            "label": "Händlername",
+            "placeholder": "Acme Store"
+          },
+          "description": {
+            "label": "Beschreibung",
+            "placeholder": "Premium-Audioausstattung für moderne Wohnräume"
+          },
+          "logoUrl": {
+            "label": "Logo-URL",
+            "placeholder": "https://acme.store/logo.png"
+          },
+          "paymentMethods": {
+            "label": "Zahlungsmethoden",
+            "placeholder": "Visa, Mastercard, PayPal, Apple Pay"
+          },
+          "shippingPolicy": {
+            "label": "Versandrichtlinie",
+            "placeholder": "Kostenlos ab $50 · 3–5 Werktage"
+          },
+          "returnPolicy": {
+            "label": "Rückgaberichtlinie",
+            "placeholder": "30 Tage kostenlose Rückgabe"
+          },
+          "contactEmail": {
+            "label": "Kontakt-E-Mail",
+            "placeholder": "support@acme.store"
+          },
+          "sustainability": {
+            "label": "Nachhaltigkeit",
+            "placeholder": "CO₂-neutraler Versand · recycelte Verpackung"
+          },
+          "certifications": {
+            "label": "Zertifizierungen",
+            "placeholder": "B-Corp, ISO 9001"
+          }
+        },
+        "action": {
+          "generate": "JSON generieren",
+          "generateWithAi": "Mit KI generieren",
+          "generating": "Wird generiert…",
+          "generatingAll": "Wird generiert...",
+          "save": "Speichern",
+          "saveProfile": "Profil speichern",
+          "saving": "Wird gespeichert…",
+          "copy": "Kopieren",
+          "copied": "Kopiert",
+          "reset": "Zurücksetzen",
+          "publishShopify": "In Shopify veröffentlichen",
+          "pushTo": "An {store} übertragen",
+          "pushing": "Wird übertragen…",
+          "generateAll": "Alle generieren",
+          "generateOne": "Generieren",
+          "regenerate": "Neu generieren"
+        },
+        "products": {
+          "tab": "Produktdaten",
+          "validateTab": "Validieren",
+          "coverage": "{covered} von {total} Produkten abgedeckt",
+          "columnProduct": "Produkt",
+          "columnStatus": "Status",
+          "statusComplete": "Vollständig",
+          "statusMissing": "Fehlend",
+          "empty": "Keine Produkte gefunden. Verbinden Sie zuerst einen Shop und synchronisieren Sie die Produkte."
+        },
+        "profile": {
+          "fieldsTitle": "Profilfelder",
+          "jsonPreview": "JSON-Vorschau",
+          "aiEnhanced": "KI-gestützt",
+          "jsonPreviewDescription": "Live-Vorschau Ihres /.well-known/ucp-Dokuments."
+        },
+        "toast": {
+          "pushProfileFailed": "UCP konnte nicht an Shopify übertragen werden",
+          "pushProfileSuccess": "UCP-Profil wurde an Shopify übertragen",
+          "pushProfileSuccessDescription": "{written} Metafeld(er) wurden unter dem Namespace \"ucp\" in {store} geschrieben.",
+          "pushProductsFailed": "Produkt-Metafelder konnten nicht übertragen werden",
+          "pushProductsSuccess": "Strukturierte Produktdaten wurden übertragen",
+          "pushProductsSuccessDescription": "{pushed} von {total} Produkten wurden in {store} aktualisiert."
+        },
+        "install": {
+          "title": "Installieren",
+          "description": "Stellen Sie dieses JSON unter /.well-known/ucp bereit, damit KI-Agenten Ihr Händlerprofil erkennen können."
+        }
+      },
+      "advancedValidator": {
+        "kicker": "Erweiterte Tests",
+        "title": "Endpoint- und Lifecycle-Tests",
+        "description": "Prüft alle im Profil deklarierten Service-Endpoints und simuliert den vollständigen Checkout-Lifecycle für KI-Agenten: Create → Update → Complete → Cancel.",
+        "fields": {
+          "domain": {
+            "label": "Domain",
+            "placeholder": "yourdomain.com"
+          }
+        },
+        "action": {
+          "primary": "Erweiterte Tests ausführen",
+          "running": "Wird getestet…"
+        },
+        "hint": "Sendet Live-HTTP-Anfragen an den Händler-Server. Testanfragen können Test-Warenkörbe erstellen.",
+        "toast": {
+          "failed": "Erweiterte Prüfung fehlgeschlagen"
+        },
+        "grades": {
+          "A": {
+            "description": "Bereit für Agenten"
+          },
+          "B": {
+            "description": "Größtenteils bereit"
+          },
+          "C": {
+            "description": "Benötigt Nacharbeit"
+          },
+          "F": {
+            "description": "Kritische Probleme"
+          }
+        },
+        "transport": {
+          "rest": "REST",
+          "mcp": "MCP",
+          "a2a": "A2A",
+          "embedded": "Eingebettet",
+          "streamableHttp": "Streambares HTTP",
+          "sse": "SSE",
+          "unknown": "Unbekannt"
+        },
+        "chips": {
+          "noResponse": "Keine Antwort",
+          "corsOk": "CORS ✓",
+          "noCors": "Kein CORS",
+          "skipped": "Übersprungen",
+          "pass": "Bestanden",
+          "fail": "Fehlgeschlagen",
+          "missing": "Fehlend",
+          "search": "Suche",
+          "checkout": "Checkout",
+          "failing": "{count} fehlerhaft",
+          "ok": "{total} OK",
+          "toolsDeclared": "{count, plural, one {# Tool deklariert} other {# Tools deklariert}}",
+          "sseWarning": "SSE — Tool-Aufrufe erfordern einen Streaming-Client",
+          "agentCardFound": "Agent Card gefunden",
+          "noAgentCard": "Keine Agent Card",
+          "ucpExtension": "UCP-Erweiterung",
+          "noUcpExtension": "Keine UCP-Erweiterung"
+        },
+        "headers": {
+          "service": "Service",
+          "endpoint": "Endpoint",
+          "status": "Status",
+          "latency": "Latenz",
+          "cors": "CORS",
+          "tool": "Tool",
+          "result": "Ergebnis",
+          "note": "Hinweis"
+        },
+        "sections": {
+          "endpoints": {
+            "title": "Service-Endpoint-Prüfungen",
+            "description": "Live-HEAD-Anfrage an jeden im UCP-Profil deklarierten Service-Endpoint. Die Latenz wird von diesem Server aus gemessen."
+          },
+          "mcp": {
+            "title": "MCP-Endpoints",
+            "description": "Prüft MCP-Service-Endpoints über JSON-RPC initialize + tools/list. Zeigt die Protokollversion, die Serveridentität und alle Tools an, die der Agent aufrufen kann."
+          },
+          "a2a": {
+            "title": "A2A-Endpoints",
+            "description": "Prüft Agent-to-Agent-Service-Endpoints. Überprüft Erreichbarkeit, das Vorhandensein einer Agent Card unter /.well-known/agent-card.json und den UCP-Erweiterungs-Header."
+          },
+          "checkout": {
+            "title": "Checkout-Lifecycle",
+            "description": "Simuliert den Warenkorb- → Checkout-Session-Ablauf gemäß der UCP-REST-Spezifikation: POST /carts → PUT /carts/{id} → POST /checkout-sessions → complete → cancel. 400/422-Antworten werden für Testeingaben erwartet."
+          }
+        },
+        "emptyEndpoints": "Keine Service-Endpoints mit URLs im UCP-Profil gefunden. Fügen Sie ",
+        "emptyEndpointsSuffix": "-Felder hinzu, um Live-Tests zu aktivieren.",
+        "emptyEndpointsField": "endpoint"
+      }
+    },
+    "ucpComparison": {
+      "statusPill": "Sandbox — Vergleich mehrerer Stores",
+      "title": "UCP-Store-Vergleich",
+      "description": "Fügen Sie Ihren Store und die Stores Ihrer Wettbewerber hinzu, führen Sie in jedem dieselbe Katalogsuche aus und sehen Sie, wie Ihre Produktangebote im agentengestützten Einkauf abschneiden.",
+      "sectionKicker": "01 — Vergleich",
+      "sectionTitle": "Katalogsuche im direkten Vergleich",
+      "sourceStore": {
+        "label": "Ihr Store",
+        "placeholder": "your-store.example.com",
+        "description": "Der Händlerkatalog, den Sie mit Wettbewerbern vergleichen möchten."
+      },
+      "buyerRequest": {
+        "label": "Kaufanfrage",
+        "placeholder": "z. B. \"kabellose Maus unter 200 ALL\"",
+        "description": "Wird einmal in Suchparameter umgewandelt und dann identisch für jeden Store ausgeführt."
+      },
+      "competitors": {
+        "label": "Stores von Wettbewerbern",
+        "placeholder": "competitor-{index}.example.com",
+        "add": "Wettbewerber hinzufügen",
+        "removeAriaLabel": "Wettbewerber {index} entfernen",
+        "description": "Jedes /.well-known/ucp-Profil wird aufgelöst, anschließend wird search_catalog mit denselben abgeleiteten Parametern wie für Ihren Store ausgeführt."
+      },
+      "action": {
+        "primary": "Stores vergleichen",
+        "running": "Vergleich läuft…"
+      },
+      "hint": {
+        "ready": "Eine gemeinsame Agentensuche über {count} Stores.",
+        "notReady": "Fügen Sie Ihren Store und mindestens einen Wettbewerber hinzu, um einen Vergleich auszuführen."
+      },
+      "searchParams": {
+        "title": "Abgeleitete Suchparameter",
+        "description": "Einmal aus der Kaufanfrage abgeleitet und auf jeden Store angewendet.",
+        "showRaw": "Rohes JSON anzeigen",
+        "hideRaw": "Rohes JSON ausblenden"
+      },
+      "results": {
+        "title": "Ergebnisse im direkten Vergleich",
+        "description": "Produkte, die jede Storefront für dieselbe Suche zurückgegeben hat, in der Reihenfolge, in der der Agent sie erhalten hat.",
+        "yourStore": "Ihr Store",
+        "competitor": "Wettbewerber",
+        "noProducts": "Für diese Suche wurden keine Produkte zurückgegeben.",
+        "moreHidden": "+{count} weitere wurden zurückgegeben, aber nicht angezeigt."
+      },
+      "summary": {
+        "title": "Vergleichszusammenfassung",
+        "generating": "Wird erstellt"
+      },
+      "eventLog": {
+        "title": "Ereignisprotokoll",
+        "live": "Live",
+        "done": "Abgeschlossen",
+        "error": "Fehler",
+        "events": "{count, plural, one {# Ereignis} other {# Ereignisse}}",
+        "clear": "Leeren",
+        "complete": "✓ Vergleich abgeschlossen"
+      },
+      "storeStatus": {
+        "idle": "In Warteschlange",
+        "discovering": "Profil wird aufgelöst",
+        "searching": "Suche läuft",
+        "done": "Abgeschlossen",
+        "error": "Fehler"
+      }
+    },
+    "ucpPlaygroundDashboard": {
+      "statusPill": "Sandbox — UCP-Flow-Tests",
+      "title": "UCP Playground",
+      "description": "Testen Sie Katalogsuche, Produktsuche, Warenkorb- und Kaufabschluss-Vorgänge mit jedem UCP-kompatiblen Store.",
+      "connect": {
+        "title": "UCP-Store verbinden",
+        "description": "Geben Sie eine Store-Domain ein, um das UCP-Profil aufzulösen und eine Sitzung zu starten.",
+        "fields": {
+          "storeUrl": {
+            "label": "Store-Domain",
+            "placeholder": "shop.beispiel.de",
+            "validation": "Store-Domain eingeben"
+          }
+        },
+        "action": {
+          "primary": "Verbinden",
+          "connecting": "Wird verbunden…"
+        }
+      },
+      "session": {
+        "changeStore": "Store wechseln",
+        "emptyTitle": "Was soll der Agent tun?",
+        "emptyDescription": "Sie sind mit {host} verbunden. Der Agent führt Live-UCP-Aufrufe aus: den Katalog durchsuchen, ein Produkt prüfen, einen Warenkorb erstellen oder einen Kaufabschluss starten.",
+        "suggestions": [
+          "Zeige mir Details zum ersten Produkt",
+          "Füge das erste Produkt zu einem neuen Warenkorb hinzu",
+          "Starte einen Kaufabschluss für den Warenkorb"
+        ]
+      },
+      "product": {
+        "noImage": "Kein Bild",
+        "untitled": "Produkt ohne Titel",
+        "variants": "{count} Varianten"
+      },
+      "tool": {
+        "failed": "Fehlgeschlagen",
+        "running": "Wird ausgeführt",
+        "done": "Abgeschlossen",
+        "error": "Fehler",
+        "arguments": "Argumente",
+        "result": "Ergebnis",
+        "rawJson": "Rohes JSON"
+      },
+      "cart": {
+        "title": "Warenkorb",
+        "items": "{count, plural, one {# Artikel} other {# Artikel}}",
+        "states": {
+          "creating": "Warenkorb wird erstellt…",
+          "loading": "Warenkorb wird geladen…",
+          "updating": "Warenkorb wird aktualisiert…",
+          "failed": "Warenkorbvorgang fehlgeschlagen"
+        }
+      },
+      "catalog": {
+        "searching": "Katalog wird durchsucht…",
+        "failed": "Kataloganfrage fehlgeschlagen",
+        "productCount": "{count, plural, one {# Produkt} other {# Produkte}}"
+      },
+      "composer": {
+        "placeholder": "Bitten Sie den Agenten, bei {host} einzukaufen…",
+        "hint": "Enter zum Senden · Shift + Enter für eine neue Zeile",
+        "remaining": "Noch {remaining} von {limit} kostenlosen {limit, plural, one {Nachricht} other {Nachrichten}} in diesem Testbereich verfügbar."
+      },
+      "quota": {
+        "title": "Sie haben alle {limit} kostenlosen Nachrichten im Testbereich genutzt",
+        "description": "Erstellen Sie ein Konto, um weiterhin UCP-Flows für Ihren eigenen Store ohne Nachrichtenlimit auszuführen.",
+        "action": {
+          "primary": "Kostenloses Konto erstellen"
+        }
+      },
+      "availability": {
+        "inStock": "Auf Lager",
+        "backorder": "Bestellbar trotz Lieferrückstand",
+        "preorder": "Vorbestellung",
+        "available": "Verfügbar",
+        "outOfStock": "Nicht auf Lager",
+        "discontinued": "Eingestellt",
+        "unavailable": "Nicht verfügbar",
+        "quantityLeft": " · noch {count} verfügbar"
+      },
+      "errors": {
+        "generic": "Etwas ist schiefgelaufen"
+      }
+    },
+    "settings": {
+      "statusPill": "Konto & Arbeitsbereich",
+      "title": "Einstellungen",
+      "description": "Verwalten Sie Ihr Konto, Integrationen und Einstellungen.",
+      "tabs": {
+        "account": "Konto",
+        "integrations": "Integrationen",
+        "notifications": "Benachrichtigungen",
+        "simulation": "Simulation",
+        "billing": "Abrechnung"
+      },
+      "account": {
+        "language": {
+          "title": "Sprache",
+          "description": "Wählen Sie die Sprache der ecentic-Benutzeroberfläche aus."
+        },
+        "profile": {
+          "title": "Profil",
+          "description": "Aktualisieren Sie Ihre Profilinformationen.",
+          "fields": {
+            "name": {
+              "label": "Vorname",
+              "validation": "Erforderlich"
+            },
+            "surname": {
+              "label": "Nachname",
+              "validation": "Erforderlich"
+            },
+            "email": {
+              "label": "E-Mail",
+              "validation": "Ungültige E-Mail-Adresse"
+            },
+            "role": {
+              "label": "Rolle"
+            }
+          },
+          "roles": [
+            "Gründer / CEO",
+            "Marketing-Leitung",
+            "E-Commerce-Manager",
+            "Agentur",
+            "Entwickler",
+            "Sonstiges"
+          ],
+          "action": {
+            "primary": "Änderungen speichern",
+            "saving": "Wird gespeichert..."
+          }
+        },
+        "password": {
+          "title": "Passwort ändern",
+          "description": "Verwenden Sie ein sicheres Passwort, das Sie nicht auf anderen Websites nutzen.",
+          "fields": {
+            "current": {
+              "label": "Aktuelles Passwort",
+              "validation": "Erforderlich"
+            },
+            "new": {
+              "label": "Neues Passwort",
+              "validation": "Mindestens 8 Zeichen"
+            },
+            "confirm": {
+              "label": "Neues Passwort bestätigen",
+              "validation": "Mindestens 8 Zeichen"
+            }
+          },
+          "action": {
+            "primary": "Passwort aktualisieren",
+            "updating": "Wird aktualisiert..."
+          },
+          "toast": {
+            "mismatch": "Passwörter stimmen nicht überein"
+          }
+        },
+        "session": {
+          "title": "Sitzung",
+          "description": "Melden Sie sich von diesem Gerät ab. Sie müssen sich erneut anmelden, um auf Ihr Dashboard zuzugreifen.",
+          "action": {
+            "primary": "Abmelden",
+            "signingOut": "Wird abgemeldet..."
+          }
+        },
+        "danger": {
+          "title": "Gefahrenbereich",
+          "description": "Löschen Sie Ihr Konto und alle zugehörigen Daten dauerhaft. Diese Aktion kann nicht rückgängig gemacht werden.",
+          "prompt": "Dieses Konto und alle zugehörigen Daten löschen.",
+          "action": {
+            "primary": "Konto löschen"
+          }
+        },
+        "toast": {
+          "error": "Fehler",
+          "profileSaved": "Profil gespeichert",
+          "passwordUpdated": "Passwort aktualisiert",
+          "signOutFailed": "Abmeldung fehlgeschlagen"
+        }
+      },
+      "notifications": {
+        "title": "E-Mail-Benachrichtigungen",
+        "items": {
+          "winRateDrop": {
+            "label": "Rückgang der Gewinnquote",
+            "description": "Benachrichtigen, wenn die Gewinnquote eines Produkts um >5 % sinkt"
+          },
+          "simulationComplete": {
+            "label": "Simulation abgeschlossen",
+            "description": "Wenn ein Simulationslauf abgeschlossen ist"
+          },
+          "optimizationReady": {
+            "label": "Optimierung verfügbar",
+            "description": "Neue Optimierungsvorschläge verfügbar"
+          },
+          "autoPub": {
+            "label": "Automatisch veröffentlicht",
+            "description": "Wenn die automatische Optimierung Änderungen veröffentlicht"
+          },
+          "modelDrift": {
+            "label": "Modellabweichung erkannt",
+            "description": "Wenn ein KI-Modell sein Verhalten aktualisiert"
+          },
+          "competitorUpdate": {
+            "label": "Aktualisierungen von Wettbewerbern",
+            "description": "Wenn sich beobachtete Produktangebote von Wettbewerbern ändern"
+          },
+          "newCompetitor": {
+            "label": "Neue Wettbewerber",
+            "description": "Wenn ein neuer Wettbewerber erkannt wird"
+          },
+          "weeklyDigest": {
+            "label": "Wochenübersicht",
+            "description": "Zusammenfassung der Wochenergebnisse"
+          }
+        }
+      },
+      "simulation": {
+        "models": {
+          "title": "KI-Modelle",
+          "dominateBadge": "Dominate+"
+        },
+        "frequency": {
+          "title": "Simulationshäufigkeit",
+          "options": [
+            "Nur manuell",
+            "Täglich",
+            "Wöchentlich"
+          ]
+        },
+        "persona": {
+          "title": "Käuferprofil",
+          "options": [
+            "Preisbewusster Käufer",
+            "Premium-Käufer",
+            "Technisch orientierter Käufer",
+            "Geschenkkauf",
+            "Benutzerdefiniert..."
+          ]
+        }
+      },
+      "integrations": {
+        "title": "Verbundene Shops",
+        "empty": "Noch keine Shops verbunden.",
+        "connected": "Verbunden",
+        "action": {
+          "sync": "Jetzt synchronisieren",
+          "syncing": "Wird synchronisiert…",
+          "connectAnother": "Weiteren Shop verbinden"
+        },
+        "toast": {
+          "syncing": "Produkte werden synchronisiert…",
+          "synced": "Produkte synchronisiert",
+          "reconnectRequired": "Erneute Verbindung erforderlich",
+          "syncFailed": "Synchronisierung fehlgeschlagen",
+          "reconnectAction": "Erneut verbinden",
+          "genericError": "Etwas ist schiefgelaufen"
+        },
+        "google": {
+          "comingSoon": "Demnächst verfügbar",
+          "notConnected": "Nicht verbunden",
+          "active": "Aktiv · {count, number} live",
+          "linked": "Verknüpft",
+          "setupInProgress": "Einrichtung läuft",
+          "manage": "Verwalten →"
+        }
+      },
+      "billing": {
+        "currentPlan": "Aktueller Plan",
+        "invoiceHistory": "Rechnungsverlauf",
+        "noInvoices": "Noch keine Rechnungen.",
+        "download": "Herunterladen",
+        "loading": "Wird geladen…",
+        "monthly": "Monatlich",
+        "perMonth": "/mo",
+        "billingCycle": "Abrechnungszeitraum",
+        "endsOn": "Endet am",
+        "nextBillingDate": "Nächstes Abrechnungsdatum",
+        "cancelNotice": "Ihr Tarif ist zum Ende des aktuellen Zeitraums gekündigt.",
+        "manageBilling": "Abrechnung verwalten",
+        "upgradeTo": "Zu {plan} wechseln",
+        "noActivePlan": "Kein aktiver Plan",
+        "payAsYouGo": {
+          "title": "Pay-as-you-go",
+          "description": "Kostenlos starten · Sie zahlen nur, wenn KI-Agenten Verkäufe erzielen.",
+          "active": "Aktiv",
+          "fee": "Gebühr",
+          "feeDetail": "{rate}% auf Bestellungen, die KI zugeordnet werden",
+          "monthlyCap": "Monatliche Obergrenze",
+          "switchHint": "Sie bevorzugen planbare Kosten? Wechseln Sie zu einem festen Monatsplan (ohne Performance-Gebühr):"
+        },
+        "choosePlan": {
+          "title": "Wählen Sie Ihre Zahlungsart",
+          "description": "Starten Sie kostenlos mit Pay-as-you-go oder wählen Sie ein festes Monatsabo ohne Performance-Gebühr.",
+          "startPayg": "Pay-as-you-go starten (kostenlos, keine Kreditkarte erforderlich)"
+        },
+        "performanceFee": {
+          "title": "Performance-Gebühr",
+          "description": "{rate}% auf Bestellungen, die KI zugeordnet werden · gedeckelt auf {cap}/Monat. Kostenloser Einstieg. Sie zahlen nur, wenn ein Agent aufgrund einer von uns vorgenommenen Optimierung kauft, niemals für Ihre anderen Verkäufe.",
+          "actionNeeded": "Aktion erforderlich",
+          "active": "Aktiv",
+          "off": "Aus",
+          "due": "{amount} fällig",
+          "dueHint": "Fügen Sie eine Zahlungsmethode hinzu, um die Gebühr für diesen Zeitraum zu begleichen.",
+          "addPayment": "Zahlungsmethode hinzufügen",
+          "ofCap": "von maximal {cap} in diesem Zeitraum",
+          "billedSoFar": "Bisher {amount} berechnet",
+          "resets": "Wird am {date} zurückgesetzt",
+          "attributedOrders": "Zugeordnete Bestellungen",
+          "order": "Bestellung {id}"
+        },
+        "plans": {
+          "compete": "Compete",
+          "scale": "Scale",
+          "dominate": "Dominate",
+          "competeLabel": "Compete Plan",
+          "scaleLabel": "Scale Plan",
+          "dominateLabel": "Dominate Plan"
+        },
+        "status": {
+          "active": "Aktiv",
+          "trialing": "Testphase",
+          "pastDue": "Überfällig",
+          "unpaid": "Unbezahlt",
+          "canceled": "Gekündigt",
+          "incomplete": "Unvollständig",
+          "expired": "Abgelaufen",
+          "paused": "Pausiert"
+        },
+        "toast": {
+          "portalFailed": "Abrechnungsportal konnte nicht geöffnet werden",
+          "paygFailed": "Pay-as-you-go konnte nicht gestartet werden",
+          "paymentSetupFailed": "Einrichtung der Zahlungsmethode konnte nicht geöffnet werden",
+          "checkoutFailed": "Checkout konnte nicht gestartet werden"
+        }
+      },
+      "team": {
+        "title": "Teammitglieder",
+        "inviteMember": "Mitglied einladen",
+        "inviteByEmail": "Per E-Mail einladen",
+        "sendInvite": "Einladung senden",
+        "remove": "Entfernen",
+        "roles": {
+          "owner": "Inhaber",
+          "admin": "Admin",
+          "editor": "Bearbeiter",
+          "viewer": "Betrachter"
+        },
+        "fields": {
+          "email": {
+            "label": "E-Mail-Adresse",
+            "placeholder": "colleague@company.com",
+            "validation": "Ungültige E-Mail-Adresse"
+          },
+          "role": {
+            "label": "Rolle"
+          }
+        },
+        "toast": {
+          "inviteSent": {
+            "title": "Einladung gesendet",
+            "description": "Die Einladung an das Teammitglied wurde versendet."
+          }
+        }
+      }
+    },
+    "reports": {
+      "dataStatus": {
+        "asOf": "Datenstand: {time}",
+        "noScans": "Noch keine abgeschlossenen Scans"
+      },
+      "title": "Berichte & Exporte",
+      "description": "Laden Sie Berichte zur Performance Ihrer Agenten herunter oder planen Sie automatisierte Berichte.",
+      "shareable": {
+        "title": "Teilbarer Gewinnquoten-Bericht",
+        "description": "Erstellen Sie eine öffentliche URL für Ihren Gewinnquoten-Bericht, optimiert zum Teilen auf Twitter, LinkedIn oder mit Ihrem Team.",
+        "action": {
+          "primary": "Teilbaren Bericht erstellen"
+        },
+        "runScanFirst": "Führen Sie zuerst einen Scan aus"
+      },
+      "library": {
+        "kicker": "01 — Bibliothek",
+        "title": "Verfügbare Berichte"
+      },
+      "automation": {
+        "kicker": "02 — Automatisierung",
+        "title": "Geplante Berichte",
+        "comingSoon": "Geplante Berichte und die wöchentliche Zusammenfassung erscheinen in Kürze."
+      },
+      "items": {
+        "winRateSummary": {
+          "title": "Zusammenfassung der Gewinnquote",
+          "description": "Gesamtleistung über alle Produkte und Modelle hinweg"
+        },
+        "productPerformance": {
+          "title": "Produktleistung",
+          "description": "Detaillierter Bericht pro Produkt mit Trends und Wettbewerbsvergleich"
+        },
+        "competitorAnalysis": {
+          "title": "Wettbewerbsanalyse",
+          "description": "Vollständiger Wettbewerbsüberblick mit Battlecards für alle beobachteten Marken"
+        },
+        "optimizationImpact": {
+          "title": "Auswirkungen der Optimierung",
+          "description": "Vorher-/Nachher-Analyse aller veröffentlichten Optimierungen"
+        }
+      },
+      "tiers": {
+        "all": "Alle Tarife",
+        "compete": "Compete+",
+        "dominate": "Dominate+"
+      },
+      "action": {
+        "downloadCsv": "CSV"
+      }
+    }
+  }
+}

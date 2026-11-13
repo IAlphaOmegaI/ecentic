@@ -1,0 +1,91 @@
+{
+  "googleChannelPage": {
+    "explorer": {
+      "label": "Explorer le parcours d’achat de Google",
+      "stages": [
+        {
+          "id": "catalog",
+          "label": "Catalogue",
+          "title": "Commencez par l’offre du marchand",
+          "description": "Merchant Center fournit les données produit utilisées par les expériences d’achat de Google.",
+          "details": [
+            "Prix et disponibilité",
+            "Informations de livraison et de retour"
+          ],
+          "destination": "Merchant Center",
+          "action": {
+            "primary": "Explorer les données produit"
+          }
+        },
+        {
+          "id": "assistant",
+          "label": "Réponses IA",
+          "title": "Intégrer les données produit à la conversation",
+          "description": "Les réponses IA de Google répondent aux questions d’achat à l’aide des données produit des marchands.",
+          "details": [
+            "AI Mode dans Search",
+            "Gemini"
+          ],
+          "destination": "AI Mode et Gemini",
+          "action": {
+            "primary": "Consulter les exigences pour les marchands"
+          }
+        },
+        {
+          "id": "checkout",
+          "label": "Paiement",
+          "title": "Le parcours d’achat dépend de l’éligibilité",
+          "description": "Les acheteurs peuvent poursuivre vers le panier du marchand ou utiliser Google Pay lorsque le passage de commande est activé. Le marchand reste le vendeur responsable de la transaction.",
+          "details": [
+            "Poursuivre vers le panier du marchand",
+            "Google Pay lorsque le paiement est activé"
+          ],
+          "destination": "Paiement chez le marchand",
+          "action": {
+            "primary": "Consulter les exigences pour les marchands"
+          }
+        }
+      ]
+    },
+    "reading": {
+      "label": "Une offre maintenue cohérente",
+      "rows": [
+        {
+          "title": "Données produit",
+          "detail": "Prix et disponibilité",
+          "field": "prix / disponibilité"
+        },
+        {
+          "title": "Fiche produit",
+          "detail": "Informations produit exactes",
+          "field": "lien"
+        },
+        {
+          "title": "Livraison et retours",
+          "detail": "Informations claires sur la livraison et les retours",
+          "field": "livraison / politique de retour"
+        },
+        {
+          "title": "Éligibilité au passage de commande",
+          "detail": "L’éligibilité fait partie de l’offre",
+          "field": "checkout_eligibility"
+        }
+      ],
+      "action": {
+        "primary": "Explorer Merchant Center"
+      }
+    },
+    "entry": {
+      "label": "Exigences Google pour les marchands",
+      "steps": [
+        "Marchands et produits éligibles",
+        "Déploiement du hub d’intégration",
+        "Validation technique et approbation"
+      ],
+      "note": "ecentic aide à préparer et tester les données et les paramètres. La demande, la validation et l’approbation restent entre votre entreprise et Google.",
+      "action": {
+        "primary": "Explorer la préparation au passage de commande"
+      }
+    }
+  }
+}

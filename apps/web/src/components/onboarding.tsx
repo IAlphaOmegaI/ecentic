@@ -36,19 +36,20 @@ export const Onboarding = ({
     animate={{ x: 0, opacity: 1 }}
     transition={Spring.Gentle}
   >
-    <div className="absolute inset-0 bg-primary" />
-    <Image
-      src={image}
-      alt={imageAlt}
-      fill
-      sizes="(max-width: 1023px) 0vw, (min-width: 2330px) 1280px, 55vw"
-      className={cn(
-        "object-contain object-bottom opacity-60 brightness-0 invert",
-        classList.image,
-      )}
-      loading="eager"
-      aria-hidden="true"
-    />
+    <div className="absolute inset-0 bg-primary">
+      <Image
+        src={image}
+        alt={imageAlt}
+        fill
+        sizes="(max-width: 1023px) 0vw, (min-width: 2330px) 1280px, 55vw"
+        className={cn(
+          "object-contain object-bottom opacity-60 brightness-0 invert",
+          classList.image,
+        )}
+        loading="eager"
+        aria-hidden="true"
+      />
+    </div>
     <div className="relative z-10 flex h-full w-full flex-col justify-between p-8">
       <motion.div
         initial={{ opacity: 0, y: -8 }}

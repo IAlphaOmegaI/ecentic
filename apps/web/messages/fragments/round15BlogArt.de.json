@@ -1,0 +1,17 @@
+{
+  "commerceFigures": {
+    "openBook": "Illustration: ein geöffnetes Buch. Bewegen Sie den Mauszeiger über eine der Seiten, damit sich die Blätter auffächern.",
+    "partReadouts": {
+      "openBook": [
+        {
+          "value": "linke Seiten",
+          "label": "Linke Seiten"
+        },
+        {
+          "value": "rechte Seiten",
+          "label": "Rechte Seiten"
+        }
+      ]
+    }
+  }
+}

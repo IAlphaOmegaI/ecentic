@@ -1,0 +1,58 @@
+{
+  "trackPage": {
+    "comparisonLabel": "Signale vergleichen",
+    "comparisonHint": "Wählen Sie ein Signal aus, um zu sehen, woher es stammt und was es aussagen kann.",
+    "meaningLabel": "Was es aussagt",
+    "limitLabel": "Bitte beachten",
+    "signals": [
+      {
+        "id": "visits",
+        "label": "Erkannte Besuche",
+        "title": "Jeder erkannte Besuch hat eine Quelle.",
+        "inputs": [
+          "Referrer des Assistenten",
+          "User-Agent-Signal"
+        ],
+        "process": "Shopify-Browser-Skript",
+        "output": "Erkannter Besuch",
+        "meaning": "Erkannte Assistenten-Quellen lassen sich in der Besuchsaufschlüsselung und der Zeitreihenübersicht gruppieren.",
+        "limit": "Das Browser-Skript benötigt verfügbare Signale. Es kann nicht alle Crawler erfassen, die kein JavaScript ausführen, nicht jeden Direktzugriff nachvollziehen und nicht nachweisen, dass ein Besucher später gekauft hat."
+      },
+      {
+        "id": "simulations",
+        "label": "Simulierte Entscheidungen",
+        "title": "Jeder neue Scan ist ein neuer Vergleich.",
+        "inputs": [
+          "Ihr Produkt",
+          "Ein Wettbewerber"
+        ],
+        "process": "Ein von Ihnen angeforderter Scan",
+        "output": "Simulierte Entscheidung",
+        "meaning": "Die Gewinnquote ist der Prozentsatz der Simulationen, in denen ein Agent Ihr Produkt gegenüber einem Wettbewerber auswählt. Vergleichen Sie abgeschlossene Entscheidungen nach der Veröffentlichung einer Änderung.",
+        "limit": "Simulierte Entscheidungen sind getrennt von beobachteten Shop-Besuchen und Verkäufen. Geplante erneute Scans sind derzeit nicht aktiv."
+      },
+      {
+        "id": "estimates",
+        "label": "Geschätzte Verbesserung",
+        "title": "Zur Korrektur gehört eine Schätzung.",
+        "inputs": [
+          "Aktuelles Produktangebot",
+          "Vorgeschlagene Änderung"
+        ],
+        "process": "Optimierung des Produktangebots",
+        "output": "Geschätzte Verbesserung",
+        "meaning": "Die Verbesserung ist eine Schätzung, die zusammen mit der Änderung am Produktangebot gespeichert wird. Sie hilft dabei, den erwarteten Effekt einer Korrektur von später abgeschlossenen Tests zu unterscheiden.",
+        "limit": "Dabei handelt es sich weder um gemessenen Umsatz noch um ein abgeschlossenes Experiment nach der Veröffentlichung. Fordern Sie einen neuen Scan an, um simulierte Entscheidungen nach einer Änderung zu vergleichen."
+      }
+    ],
+    "attributionLabel": "Attribution hat Grenzen",
+    "attributionFlow": [
+      "Explizites Attributions-Tag, falls verfügbar",
+      "Andernfalls ein aktueller KI-Referrer in diesem Shop",
+      "Konfiguriertes Zeitfenster: standardmäßig sieben Tage"
+    ],
+    "attributionNote": "Eine shopweite Zuordnung belegt nicht, dass derselbe Käufer die Bestellung aufgegeben hat.",
+    "referenceTitle": "Der aktuelle Umfang des Trackings.",
+    "referenceDescription": "Lesen Sie die Grenzen der Datenerfassung, die Definitionen der Schätzwerte und die Kontogrenzen, bevor Sie die Ergebnisse interpretieren."
+  }
+}

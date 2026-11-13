@@ -1,0 +1,12 @@
+{
+  "blogArticlePage": {
+    "contents": "Dans cet article",
+    "introduction": "Introduction",
+    "takeaways": "À retenir",
+    "byline": "Par ecentic",
+    "topics": "Sujets à explorer",
+    "action": {
+      "primary": "Retour en haut"
+    }
+  }
+}

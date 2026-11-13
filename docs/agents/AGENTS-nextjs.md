@@ -66,6 +66,14 @@ export default async () => {
 
 Use semantic skeleton fallbacks (e.g. `PageContentSkeleton`, `TableSkeleton`) so layout shift is minimal when content streams in.
 
+Public dynamic marketing routes use `loading.tsx` with the shared marketing
+hero skeleton so awaiting a pillar, business, sector or integration slug stays
+inside a streaming boundary. Unknown slugs in these finite families are checked
+against the canonical `lib/marketing-routes.ts` index in `proxy.ts`, before any
+loading HTML is sent; recovery renders the localized global 404 with HTTP 404.
+Do not constrain open-ended blog slugs with that index. `dynamicParams = false`
+is incompatible with this app's Cache Components configuration.
+
 ---
 
 ## 21c. Colocate Page-Specific Components

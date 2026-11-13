@@ -335,7 +335,9 @@ export const LlmsArt = () => (
   </div>
 );
 
-export const McpArt = () => (
+export const McpArt = async () => {
+  const translate = await getTranslations("resources");
+  return (
   <div className="relative overflow-hidden rounded-lg border border-accent-foreground bg-background p-4">
     <div
       aria-hidden
@@ -346,7 +348,7 @@ export const McpArt = () => (
         <CodeIcon className="size-5 text-primary" />
       </span>
       <div>
-        <p className="font-medium text-foreground text-sm">JSON-RPC tools</p>
+        <p className="font-medium text-foreground text-sm">{translate("mcpArtTitle")}</p>
         <p className="font-mono text-foreground-dimmed text-xs">/api/mcp</p>
       </div>
     </div>
@@ -355,6 +357,7 @@ export const McpArt = () => (
     </pre>
   </div>
 );
+};
 
 export const GuideArt = ({ kind }: GuideArt.Props) => {
   switch (kind) {

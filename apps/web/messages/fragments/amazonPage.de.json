@@ -1,0 +1,56 @@
+{
+  "amazonPage": {
+    "journey": {
+      "label": "Die Shop-Direct-Kaufpfade erkunden",
+      "discovery": "Auf Amazon entdeckt",
+      "surface": "Amazon-Suche und Alexa for Shopping",
+      "destination": "Auf der Website des Händlers gekauft",
+      "paths": [
+        {
+          "id": "visit",
+          "title": "Den Händler besuchen",
+          "actor": "Der Käufer besucht Ihre Website",
+          "heading": "Die Produktsuche führt Käufer zu Ihnen",
+          "description": "Shop Direct kann auf Produkte auf Ihrer eigenen Website verlinken. Der Käufer besucht Ihre Website, um einzukaufen.",
+          "condition": "Die Händler-Website ist das Ziel für den Kaufabschluss."
+        },
+        {
+          "id": "buy",
+          "title": "Buy for Me",
+          "actor": "Der Agent von Amazon schließt den Kauf ab",
+          "heading": "Ein Agent kauft auf der Website des Händlers ein",
+          "description": "Bei Buy for Me-Angeboten, die die Voraussetzungen erfüllen, schließt der Agent von Amazon den Kauf auf der Website des Händlers ab.",
+          "condition": "Buy for Me ist nur für Angebote verfügbar, die die Voraussetzungen erfüllen."
+        }
+      ]
+    },
+    "catalog": {
+      "label": "So wird der Katalog bereitgestellt",
+      "source": "Ihr Produktkatalog",
+      "route": "Lösungsanbieter oder Selling Partner API",
+      "destination": "Shop Direct"
+    },
+    "access": {
+      "title": "Für die Teilnahme gelten eigene Voraussetzungen",
+      "market": "Kunden in den USA",
+      "eligibility": "Teilnahmeberechtigte Händler-Websites",
+      "steps": [
+        {
+          "id": "register",
+          "title": "Registrieren",
+          "description": "Verwalten Sie die Teilnahme über den kostenlosen Shop Direct Merchant Workspace. Ein Amazon Marketplace-Store ist nicht erforderlich."
+        },
+        {
+          "id": "verify",
+          "title": "Website verifizieren",
+          "description": "Die Verifizierung der Website ist erforderlich. Teilnahmeberechtigte Händler können teilnehmen, auch wenn sie zusätzlich auf Amazon verkaufen."
+        },
+        {
+          "id": "share",
+          "title": "Katalog bereitstellen",
+          "description": "Stellen Sie Kataloginformationen über einen Lösungsanbieter oder die Selling Partner API von Amazon bereit."
+        }
+      ]
+    }
+  }
+}

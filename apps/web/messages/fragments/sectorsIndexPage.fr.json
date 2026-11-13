@@ -1,0 +1,11 @@
+{
+  "sectorsIndexPage": {
+    "description": "Explorez une question d’achat, puis les informations que votre catalogue doit rendre explicites.",
+    "question": "Un acheteur pourrait demander",
+    "productData": "Informations à rendre explicites",
+    "attributeHint": "Ouvrez un champ pour voir ce qu’il doit préciser.",
+    "action": {
+      "primary": "Explorer ce secteur"
+    }
+  }
+}

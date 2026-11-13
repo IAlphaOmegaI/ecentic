@@ -1,0 +1,31 @@
+{
+  "healthPage": {
+    "reader": {
+      "description": "Öffnen Sie eine Käuferfrage, um die zugrunde liegenden Produktinformationen zu prüfen.",
+      "label": "Käuferfragen und Produktinformationen",
+      "facts": "Produktinformationen zur Prüfung durch Ihr Team",
+      "allFacts": "Alle Produktattribute anzeigen"
+    },
+    "relationship": {
+      "title": "Zwei Prüfungen, eine Produktbeschreibung.",
+      "label": "Fakten des Herstellers sowie Produkt-, Kanal- und Länderbedingungen fließen gemeinsam in eine belastbare Produktbeschreibung ein.",
+      "inputs": [
+        {
+          "title": "Herstellerangaben",
+          "description": "Inhaltsstoffe, Verwendungszweck und Anweisungen."
+        },
+        {
+          "title": "Produkt, Kanal und Land",
+          "description": "Nachweise und Zulassungsvoraussetzungen."
+        }
+      ],
+      "output": "Belastbare Produktinformationen",
+      "description": "Stützen Sie die Beschreibung auf verifizierte Angaben aus der Quelle."
+    },
+    "rules": [
+      "Nährwert- und Gesundheitsangaben",
+      "Voraussetzungen für den Kanal"
+    ],
+    "role": "Die Rolle von ecentic"
+  }
+}

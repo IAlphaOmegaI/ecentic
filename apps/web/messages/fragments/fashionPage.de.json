@@ -1,0 +1,20 @@
+{
+  "fashionPage": {
+    "trail": {
+      "title": "Aktivität. Passform. Material.",
+      "description": "Öffnen Sie eine Käuferfrage, um zu sehen, welche Produktinformationen Ihr Team prüfen sollte.",
+      "label": "Käuferfragen und Produktinformationen",
+      "contexts": [
+        "Aktivität und Wetter",
+        "Breite und Größenangaben",
+        "Fasern und Pflege"
+      ],
+      "facts": "Zu prüfende Produktinformationen"
+    },
+    "rules": [
+      "Größen nach Zielmarkt",
+      "Faserzusammensetzung",
+      "Umweltaussagen"
+    ]
+  }
+}

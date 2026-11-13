@@ -1,6 +1,6 @@
 import { DocumentPdfIcon, ShareIcon } from "@zenncore/icons";
 import { connection } from "next/server";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { formatRelativeTime } from "@/lib/date";
 import * as Report from "@/server/app/report";
@@ -146,6 +146,8 @@ export default async () => {
 };
 
 const DataStatus = async () => {
+  const locale = await getLocale();
+
   await connection();
   const translate = await getTranslations("dashboard.reports.dataStatus");
   // Renders beneath the paywall overlay for accounts without a plan — see
@@ -159,7 +161,7 @@ const DataStatus = async () => {
     <StatusPill tone={availability.scan ? "success" : "neutral"}>
       {availability.scan
         ? translate("asOf", {
-            time: formatRelativeTime(availability.scan.createdAt),
+            time: formatRelativeTime(availability.scan.createdAt, locale),
           })
         : translate("noScans")}
     </StatusPill>

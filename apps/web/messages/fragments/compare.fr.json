@@ -1,0 +1,224 @@
+{
+  "compare": {
+    "meta": {
+      "title": "Outils IA pour l’e-commerce : guide des catégories",
+      "description": "Comparez les outils e-commerce pour le contenu produit, la personnalisation, la recherche, l’analytique et le commerce piloté par des agents, organisés par catégorie."
+    },
+    "breadcrumb": {
+      "home": "Accueil",
+      "page": "Les meilleurs outils IA pour l’e-commerce en 2026"
+    },
+    "hero": {
+      "eyebrow": "Comparatif",
+      "title": {
+        "primary": "Les meilleurs outils IA pour l’e-commerce",
+        "accent": "en 2026."
+      },
+      "description": "Tous les outils IA pour l’e-commerce ne répondent pas au même besoin. Ce guide compare d’abord les catégories, puis les marques, afin que votre présélection parte du travail que vous attendez réellement de l’outil.",
+      "assurances": [
+        "Six outils dans cinq catégories",
+        "Approche par catégorie, pas par liste de fonctionnalités",
+        "Mis à jour pour 2026"
+      ],
+      "art": {
+        "alt": "Illustration ASCII d’une balance"
+      }
+    },
+    "guide": {
+      "number": "01",
+      "title": "Comment utiliser ce guide.",
+      "description": "Comparer les catégories en premier permet d’accélérer le choix final du fournisseur et réduit le risque de partir sur une mauvaise présélection.",
+      "body": [
+        "Un marchand qui hésite entre un générateur de contenu, une plateforme de personnalisation, un outil de recherche et un workflow de commerce piloté par des agents peut facilement aboutir à une mauvaise présélection si tout est regroupé dans un tableau générique de fonctionnalités.",
+        "La meilleure question à se poser est : quelle tâche voulez-vous confier à cet outil aujourd’hui ?"
+      ],
+      "categoriesHeading": "Les cinq catégories de ce guide",
+      "categories": [
+        {
+          "title": "Génération de contenu",
+          "description": "Descriptions des produits et contenu du catalogue à grande échelle."
+        },
+        {
+          "title": "IA intégrée à la plateforme",
+          "description": "Assistance intégrée pour les marchands qui restent dans leur environnement technique habituel."
+        },
+        {
+          "title": "Personnalisation et merchandising",
+          "description": "Expériences sur site, segmentation et conversion."
+        },
+        {
+          "title": "Recherche et découverte",
+          "description": "Pertinence des produits et infrastructure de navigation."
+        },
+        {
+          "title": "Optimisation du commerce piloté par des agents",
+          "description": "Visibilité auprès des systèmes d’achat IA et sélection des produits."
+        }
+      ]
+    },
+    "tools": {
+      "number": "02",
+      "title": "Les outils que les marchands comparent le plus.",
+      "description": "Une ligne par outil, y compris le nôtre. La dernière colonne est la plus utile : chaque outil présenté ici est un mauvais choix pour certaines entreprises, et savoir lesquelles permet de raccourcir une présélection plus vite qu’une liste de fonctionnalités.",
+      "scrollHint": "Faites défiler pour comparer →",
+      "usLabel": "·us",
+      "columns": {
+        "tool": "Outil",
+        "category": "Catégorie",
+        "bestAt": "Le plus adapté pour",
+        "wrongPick": "Quand ce n’est pas le bon choix"
+      },
+      "items": [
+        {
+          "name": "ecentic",
+          "category": "Optimisation du commerce piloté par des agents",
+          "bestAt": "Comprendre pourquoi les assistants IA choisissent un concurrent plutôt que vous, puis réécrire la fiche produit pour que cela cesse.",
+          "wrongPick": "Les acheteurs arrivent encore principalement via la recherche et la publicité, et la part de votre trafic médiée par l’IA reste marginale.",
+          "us": true
+        },
+        {
+          "name": "Hypotenuse AI",
+          "category": "Génération de contenu produit",
+          "bestAt": "Rédiger des descriptions, des listes à puces et du contenu marketplace pour un catalogue trop vaste pour être écrit à la main.",
+          "wrongPick": "Les textes sont déjà de bonne qualité et le vrai problème concerne les produits mis en avant, pas leur rédaction.",
+          "us": false
+        },
+        {
+          "name": "Shopify Magic",
+          "category": "Rédaction intégrée à la plateforme",
+          "bestAt": "Une assistance IA rapide directement dans l’interface d’administration que vous utilisez déjà, sans nouvel achat, apprentissage ou intégration.",
+          "wrongPick": "Vous avez besoin de contexte concurrentiel. L’outil ne voit que votre propre boutique, jamais les produits face auxquels vous perdez.",
+          "us": false
+        },
+        {
+          "name": "Nosto",
+          "category": "Personnalisation",
+          "bestAt": "Modifier ce que chaque visiteur récurrent voit sur le site : recommandations, segments et règles de merchandising.",
+          "wrongPick": "Le trafic est faible, ou la décision d’achat se prend avant même qu’un utilisateur arrive sur votre boutique.",
+          "us": false
+        },
+        {
+          "name": "Constructor",
+          "category": "Recherche et découverte",
+          "bestAt": "Rendre un grand catalogue facile à explorer : compréhension des requêtes, classement et pertinence de navigation à grande échelle.",
+          "wrongPick": "Votre catalogue est suffisamment petit pour que les clients recherchent rarement des produits, ou la découverte n’est pas le point où vous les perdez.",
+          "us": false
+        },
+        {
+          "name": "Bloomreach",
+          "category": "Intelligence d’entreprise",
+          "bestAt": "Piloter la recherche, le merchandising et les données de campagne dans un environnement unifié à l’échelle d’une grande organisation.",
+          "wrongPick": "Votre équipe est réduite. Le coût d’implémentation et d’intégration dépasse le problème que vous avez aujourd’hui.",
+          "us": false
+        }
+      ]
+    },
+    "bottleneck": {
+      "number": "03",
+      "title": "Associez la catégorie à votre goulot d’étranglement.",
+      "description": "L’évaluation la plus utile commence par identifier le goulot d’étranglement opérationnel précis, pas la liste de fonctionnalités la plus longue.",
+      "body": [
+        "Une erreur fréquente consiste à comparer tous les produits IA pour l’e-commerce comme s’il s’agissait d’outils de rédaction. Cela simplifie certaines évaluations, mais masque aussi la véritable décision d’achat.",
+        "Présélectionnez d’abord un outil par catégorie, puis affinez selon le goulot d’étranglement le plus important ce trimestre."
+      ],
+      "mappingsHeading": "Ce que chaque catégorie améliore réellement",
+      "mappings": [
+        {
+          "title": "Génération de contenu",
+          "description": "Vitesse de production des descriptions et du contenu catalogue."
+        },
+        {
+          "title": "Personnalisation",
+          "description": "Pertinence sur site, segmentation et conversion."
+        },
+        {
+          "title": "Outils de recherche",
+          "description": "Découverte et navigation dans votre propre boutique."
+        },
+        {
+          "title": "Outils d’analyse",
+          "description": "Visibilité des rapports sur l’ensemble du parcours d’achat."
+        },
+        {
+          "title": "Optimisation du commerce piloté par des agents",
+          "description": "Sélection des produits lorsque des systèmes IA comparent des fiches produit concurrentes.",
+          "emphasized": true
+        }
+      ]
+    },
+    "related": {
+      "number": "04",
+      "title": "Explorez les pages derrière la présélection.",
+      "description": "Chaque page ci-dessous approfondit une partie précise de la décision : workflow, plateforme ou optimisation des fiches produit.",
+      "links": [
+        {
+          "href": "/features",
+          "name": "Fonctionnalités",
+          "title": "Découvrez le workflow principal des outils IA pour l’e-commerce",
+          "description": "Consultez la page des fonctionnalités si vous souhaitez une vue d’ensemble orientée produit avant d’explorer une plateforme ou un parcours de comparaison spécifique.",
+          "label": "Ouvrir la page des fonctionnalités",
+          "color": "primary"
+        },
+        {
+          "href": "/features/product-listings",
+          "name": "Fiches produit",
+          "title": "En savoir plus sur l’optimisation des fiches produit avec l’IA",
+          "description": "Cette page est la meilleure étape suivante si l’amélioration du contenu produit et la clarification des attributs sont votre priorité principale.",
+          "label": "Voir le workflow des fiches produit",
+          "color": "accent"
+        },
+        {
+          "href": "/platforms/shopify",
+          "name": "Shopify",
+          "title": "Voir le parcours d’achat spécifique à Shopify",
+          "description": "Choisissez cette page si votre présélection inclut actuellement des outils IA natifs Shopify ou liés à Shopify.",
+          "label": "Ouvrir la page Shopify",
+          "color": "accent"
+        },
+        {
+          "href": "/platforms/woocommerce",
+          "name": "WooCommerce",
+          "title": "Voir le parcours d’achat spécifique à WooCommerce",
+          "description": "Consultez la page WooCommerce pour un parcours fondé sur les fonctionnalités réellement prises en charge par la plateforme, plutôt qu’un simple comparatif générique.",
+          "label": "Ouvrir la page WooCommerce",
+          "color": "accent"
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "05",
+      "title": "Questions fréquentes",
+      "description": "Questions fréquentes des marchands qui comparent les outils et plateformes IA pour l’e-commerce."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Quels sont les meilleurs outils IA pour l’e-commerce en 2026 ?",
+          "answer": "Les meilleurs outils IA pour l’e-commerce en 2026 dépendent du besoin à couvrir. Les marchands comparent généralement les outils de contenu produit, les plateformes de personnalisation, les solutions de recherche et découverte, les logiciels d’analytique et les nouveaux outils d’optimisation du commerce piloté par des agents."
+        },
+        {
+          "question": "Comment les marchands doivent-ils comparer les logiciels IA pour l’e-commerce ?",
+          "answer": "La méthode la plus claire consiste à comparer d’abord les outils par catégorie. Déterminez si le problème immédiat concerne le contenu produit, la personnalisation sur site, la pertinence de la recherche, la visibilité analytique ou la sélection dans les achats IA. Comparez ensuite les fournisseurs au sein de cette catégorie."
+        },
+        {
+          "question": "Où se situe ecentic dans ce type de comparaison ?",
+          "answer": "ecentic appartient à la catégorie de l’optimisation du commerce piloté par des agents. La plateforme est conçue pour les marchands qui doivent simuler des décisions d’achat par IA, diagnostiquer pourquoi les concurrents gagnent et améliorer leurs fiches produit à partir de ce contexte concurrentiel."
+        },
+        {
+          "question": "Pourquoi un guide basé sur les catégories est-il préférable à une énorme liste de fonctionnalités ?",
+          "answer": "Un guide basé sur les catégories inspire davantage confiance, car il évite de prétendre que tous les outils résolvent le même problème. Il aide les acheteurs à comprendre pourquoi une plateforme de personnalisation, un générateur de texte et un workflow de commerce piloté par des agents ne doivent pas être évalués avec la même grille de lecture."
+        }
+      ]
+    },
+    "footer": {
+      "primary": "Commencer avec ecentic",
+      "secondary": "Retour à l’accueil",
+      "note": "Configuration en 2 minutes · Sans carte bancaire · Consultez d’abord votre score gratuit"
+    },
+    "structuredData": {
+      "articleHeadline": "Les meilleurs outils IA pour l’e-commerce en 2026",
+      "itemListName": "Les meilleurs outils IA pour l’e-commerce en 2026",
+      "toolDescription": "{category}. Le plus adapté pour : {bestAt} Mauvais choix lorsque : {wrongPick}"
+    }
+  }
+}

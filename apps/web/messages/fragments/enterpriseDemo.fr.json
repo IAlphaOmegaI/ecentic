@@ -1,0 +1,70 @@
+{
+  "enterpriseDemo": {
+    "meta": {
+      "title": "Réserver une démo d’ecentic",
+      "description": "Découvrez en direct, avec un fondateur, comment ChatGPT, Claude et Gemini comparent vos produits à ceux d’un concurrent. Apportez une catégorie."
+    },
+    "eyebrow": "Réserver une démo",
+    "title": "Découvrez comment l’IA sélectionne des produits dans votre catalogue.",
+    "description": "Un échange avec un fondateur. Apportez une catégorie et nous vous montrerons en direct comment ChatGPT, Claude et Gemini la comparent à celle d’un concurrent. L’appel se déroule en anglais.",
+    "sections": [
+      {
+        "id": "what-we-cover",
+        "eyebrow": "Une discussion concrète",
+        "title": "Ce que nous couvrirons.",
+        "ordered": true,
+        "columns": 4,
+        "items": [
+          {
+            "title": "Un ou deux produits",
+            "body": "Une simulation en direct face à un concurrent de votre choix."
+          },
+          {
+            "title": "Pourquoi une fiche produit l’emporte",
+            "body": "Les raisons du choix d’un assistant dans la simulation."
+          },
+          {
+            "title": "Ce qu’il faut corriger en priorité",
+            "body": "Les changements à examiner en priorité dans votre catalogue."
+          },
+          {
+            "title": "Un pilote pour votre équipe",
+            "body": "Le périmètre, la base de référence et le compte rendu que nous définirions ensemble."
+          }
+        ]
+      },
+      {
+        "id": "request",
+        "title": "Commencez par votre catégorie.",
+        "description": "Trois étapes rapides. Présentez votre activité, choisissez un sujet et vérifiez votre demande."
+      },
+      {
+        "id": "single-store",
+        "title": "Vous gérez une seule boutique ?",
+        "description": "Réservez un appel de 15 minutes ou commencez par l’analyse gratuite de votre boutique.",
+        "links": [
+          {
+            "label": "Réserver un appel de 15 minutes",
+            "href": "https://cal.com/ecentic-ai/15min"
+          },
+          {
+            "label": "Analyser ma boutique gratuitement",
+            "href": "/sign-up"
+          }
+        ]
+      }
+    ],
+    "form": {
+      "steps": [
+        "À votre sujet",
+        "Ce que vous recherchez",
+        "Vérifier et envoyer"
+      ],
+      "progress": "Progression de la demande de démo",
+      "reviewTitle": "Un brief pour votre démo.",
+      "reviewDescription": "Vérifiez vos informations avant l’envoi. Nous vous contacterons par e-mail pour convenir de la prochaine étape.",
+      "bookingNote": "Vous préférez choisir un créneau maintenant ? L’appel en libre-service existant dure 15 minutes. Le périmètre et la durée de la démo Enterprise sont définis avec vous. Les appels se déroulent en anglais.",
+      "sentDescription": "Votre demande de démo a bien été envoyée. Nous utiliserons votre adresse e-mail professionnelle pour organiser la prochaine étape."
+    }
+  }
+}

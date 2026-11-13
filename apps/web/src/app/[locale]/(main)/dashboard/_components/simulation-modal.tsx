@@ -13,7 +13,7 @@ import {
 import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useScanRunner } from "@/app/[locale]/(auth)/onboarding/scan/_components/use-scan-runner";
 import { Motion } from "@/components/motion";
@@ -65,6 +65,8 @@ export const SimulationModal = ({
   open,
   onClose,
 }: SimulationModal.Props) => {
+  const locale = useLocale();
+
   const toast = useToastManager();
   const translate = useTranslations("dashboard.simulation");
   const general = useTranslations("general");
@@ -166,8 +168,11 @@ export const SimulationModal = ({
             )}
           </div>
           {closable && (
-            <DialogClose className="size-7 border-0 bg-transparent px-0 text-foreground-dimmed hover:bg-transparent hover:text-foreground active:bg-transparent">
-              <XIcon className="size-4" />
+            <DialogClose
+              aria-label={general("dismiss.label")}
+              className="size-7 border-0 bg-transparent px-0 text-foreground-dimmed hover:bg-transparent hover:text-foreground active:bg-transparent"
+            >
+              <XIcon aria-hidden className="size-4" />
             </DialogClose>
           )}
         </div>
@@ -293,7 +298,7 @@ export const SimulationModal = ({
                       </div>
                       <div className="flex items-center gap-4">
                         <span className="font-mono text-foreground-dimmed text-xs tabular-nums">
-                          {formatElapsed(elapsed)}
+                          {formatElapsed(elapsed, locale)}
                         </span>
                         <span className="font-mono text-primary text-xs tabular-nums">
                           {stats.progress}%
@@ -389,7 +394,7 @@ export const SimulationModal = ({
                               }}
                             >
                               <span className="shrink-0 font-mono text-foreground-dimmed/50 text-xs tabular-nums">
-                                {formatElapsed(entry.elapsed)}
+                                {formatElapsed(entry.elapsed, locale)}
                               </span>
                               <span
                                 className={cn(
@@ -481,6 +486,8 @@ const CompletePhaseModal = ({
   onClose,
   onRunAgain,
 }: CompletePhaseModalProps) => {
+  const locale = useLocale();
+
   const translate = useTranslations("dashboard.simulation");
   const winRate =
     wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : 0;
@@ -538,7 +545,7 @@ const CompletePhaseModal = ({
             </p>
             <p className="mt-1 font-light text-foreground-dimmed/60 text-xs">
               {translate("complete.completedIn", {
-                elapsed: formatElapsed(elapsed),
+                elapsed: formatElapsed(elapsed, locale),
               })}
             </p>
           </div>

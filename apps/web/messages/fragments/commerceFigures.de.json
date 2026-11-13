@@ -1,0 +1,13 @@
+{
+  "commerceFigures": {
+    "catalog": "Illustration: ein Tablett mit Produktdatensätzen. Zeigen Sie auf einen Datensatz oder verwenden Sie die Pfeiltasten, um ihn anzuheben.",
+    "document": "Illustration: ein Dokumententerminal. Bewegen Sie den Zeiger durch die Zeilen, um eine Zeile anzuheben.",
+    "workflow": "Illustration: ein verbundener Pfad, der sich verzweigt und wieder zusammenläuft. Bewegen Sie den Zeiger entlang des Pfads, um die Verbindungen nachzuverfolgen.",
+    "checkout": "Illustration: ein Einkaufskorb. Er dreht sich zum Zeiger und sein Griff folgt der Bewegung.",
+    "inspection": "Illustration: drei Prüfsiebe. Bewegen Sie den Zeiger vertikal, um eine Schicht zu trennen.",
+    "drawer": "Illustration: drei Katalogschubladen. Bewegen Sie den Zeiger vertikal, um eine Schublade zu öffnen.",
+    "format": "Illustration: eine Datei mit ungleichmäßigen Zeilen. Bewegen Sie den Zeiger entlang der Datei nach unten, um sie auszurichten.",
+    "relay": "Illustration: ein verzweigtes Netzwerk. Zeigen Sie auf ein Ziel, um die Route hervorzuheben.",
+    "hub": "Illustration: verbundene Kacheln um einen zentralen Hub. Zeigen Sie auf eine Kachel, um sie anzuheben und ihre Verbindung hervorzuheben."
+  }
+}

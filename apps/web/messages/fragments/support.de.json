@@ -1,0 +1,104 @@
+{
+  "support": {
+    "meta": {
+      "title": "Support — Hilfe bei Scans, Abrechnung und Agenten",
+      "description": "Hilfe zu ecentic erhalten: per E-Mail-Support, in einer Live-Besprechung Ihrer Scan-Ergebnisse oder über einen dedizierten Eskalationspfad für Enterprise- und Agent-Commerce-Konten."
+    },
+    "breadcrumb": {
+      "home": "Startseite",
+      "support": "Support"
+    },
+    "hero": {
+      "eyebrow": "Support",
+      "title": {
+        "primary": "Wir sind für Sie da,",
+        "accent": "um zu helfen."
+      },
+      "description": "Fragen zu Ihren Scan-Ergebnissen, einer Integration, der Abrechnung oder etwas anderem? Wählen Sie einfach den passenden Kanal aus, wir kümmern uns um den Rest.",
+      "assurances": [
+        "Echte Menschen als Ansprechpartner",
+        "Kostenlose Besprechungen der Scan-Ergebnisse",
+        "Eskalationspfad für Enterprise"
+      ],
+      "art": {
+        "alt": "ASCII-Art-Illustration eines Support-Headsets"
+      }
+    },
+    "channels": {
+      "number": "01",
+      "title": "Wählen Sie Ihren Kanal.",
+      "description": "E-Mail für die meisten Anliegen, ein Live-Call, wenn Sie eine Erklärung der Ergebnisse möchten, und ein direkter Kontaktweg für Enterprise-Teams.",
+      "items": [
+        {
+          "id": "email",
+          "title": "E-Mail-Support",
+          "description": "Der schnellste Weg, uns bei Fragen zu Konto, Abrechnung oder Integrationen zu erreichen. Geben Sie Ihre Shop-URL an, damit wir vor der Antwort bereits nachsehen können.",
+          "highlighted": true,
+          "action": {
+            "primary": "support@ecentic.ai"
+          }
+        },
+        {
+          "id": "walkthrough",
+          "title": "Live-Besprechung",
+          "description": "Ein 15-minütiger Call, in dem wir Ihre Produkte live durch die KI-Shopping-Modelle laufen lassen und die Ergebnisse verständlich erklären.",
+          "highlighted": false,
+          "action": {
+            "primary": "Call buchen"
+          }
+        },
+        {
+          "id": "enterprise",
+          "title": "Enterprise-Eskalation",
+          "description": "Enterprise-Konten erhalten einen festen CSM, vierteljährliche Reviews und einen direkten Eskalationsweg zum Engineering-Team.",
+          "highlighted": false,
+          "action": {
+            "primary": "Enterprise ansehen"
+          }
+        }
+      ]
+    },
+    "selfServe": {
+      "number": "02",
+      "title": "Finden Sie Antworten schneller selbst.",
+      "description": "Die meisten Fragen sind auf diesen Seiten bereits beantwortet.",
+      "items": [
+        {
+          "href": "/how-it-works",
+          "name": "Funktionsweise",
+          "title": "Den Zyklus aus Simulation, Diagnose und Optimierung verstehen",
+          "description": "Die vollständige Erklärung, was nach dem Verbinden Ihres Shops Schritt für Schritt passiert.",
+          "label": "Funktionsweise lesen"
+        },
+        {
+          "href": "/features",
+          "name": "Funktionen",
+          "title": "Alle Tools der Plattform ansehen",
+          "description": "Gewinnquoten, Wettbewerbsanalysen, Überarbeitungen von Produktangeboten, Agent-Traffic, UCP-Profile und erneute Scans.",
+          "label": "Funktionsseite öffnen"
+        },
+        {
+          "href": "/pricing",
+          "name": "Preise",
+          "title": "Pläne vergleichen — vom kostenlosen Scan bis Enterprise",
+          "description": "Der kostenlose Scan, Pay-as-you-go sowie die Abonnements Compete und Dominate im direkten Vergleich.",
+          "label": "Preise ansehen"
+        },
+        {
+          "href": "/privacy-policy",
+          "name": "Datenschutz",
+          "title": "Prüfen, welche Daten wir speichern — und welche nie",
+          "description": "Nur produktbezogene Zugriffsbereiche, keine personenbezogenen Kundendaten, ausschließlich essenzielle Cookies und Informationen zum Löschen von Daten.",
+          "label": "Richtlinie lesen"
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Kostenlosen Scan starten",
+        "secondary": "Zur Startseite"
+      },
+      "note": "2 Minuten Einrichtung · Keine Kreditkarte · Erst den kostenlosen Score ansehen"
+    }
+  }
+}

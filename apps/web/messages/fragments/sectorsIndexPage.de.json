@@ -1,0 +1,11 @@
+{
+  "sectorsIndexPage": {
+    "description": "Entdecken Sie eine Kauffrage und anschließend die Fakten, die Ihr Katalog klar darstellen sollte.",
+    "question": "Ein Käufer könnte fragen",
+    "productData": "Explizit anzugebende Fakten",
+    "attributeHint": "Öffnen Sie ein Feld, um zu sehen, welche Angaben erforderlich sind.",
+    "action": {
+      "primary": "Diesen Sektor entdecken"
+    }
+  }
+}

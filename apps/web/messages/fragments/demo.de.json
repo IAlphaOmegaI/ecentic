@@ -1,0 +1,119 @@
+{
+  "demo": {
+    "meta": {
+      "title": "Demo buchen — Ihre KI-Gewinnquote live sehen",
+      "description": "Buchen Sie eine 15‑minütige Demo von ecentic. Wir testen Ihre wichtigsten Produkte live mit ChatGPT, Claude, Gemini und Perplexity und definieren die Änderungen an Ihren Produktangeboten mit dem größten Effekt."
+    },
+    "breadcrumb": {
+      "home": "Startseite",
+      "demo": "Demo buchen"
+    },
+    "hero": {
+      "eyebrow": "Demo buchen",
+      "title": {
+        "primary": "Sehen Sie Ihre KI-Gewinnquote",
+        "accent": "live in 15 Minuten."
+      },
+      "description": "Wir testen Ihre wichtigsten Produkte live mit ChatGPT, Claude, Gemini und Perplexity, zeigen Ihnen, warum Sie gewinnen oder verlieren, und definieren die Änderungen an Ihren Produktangeboten mit dem größten Effekt. Wählen Sie unten einen Termin aus.",
+      "assurances": [
+        "15 Minuten, keine Folienschlacht",
+        "Kein Konto und keine Kataloganbindung erforderlich",
+        "Keine Präsentation für den Einkauf erforderlich"
+      ],
+      "art": {
+        "alt": "ASCII-Art-Illustration eines Tischkalenders"
+      }
+    },
+    "whatWeCover": {
+      "number": "01",
+      "title": "Das erwartet Sie.",
+      "description": "Eine fokussierte 15‑minütige Arbeitssession. Sie gehen mit konkreten nächsten Schritten heraus.",
+      "body": [
+        "Wir halten den Termin kurz und praxisnah. Bringen Sie eine Shop-URL oder einige relevante Produktlinks mit, den Rest machen wir live. Danach besteht keinerlei Verpflichtung, weiterzumachen."
+      ],
+      "label": "Agenda",
+      "agentStripLabel": "Live-Simulation im Gespräch",
+      "items": [
+        {
+          "title": "Simulation live durchführen",
+          "description": "Ihre wichtigsten Produkte werden live durch die führenden KI-Shopping-Modelle geprüft, während Sie zusehen."
+        },
+        {
+          "title": "Verstehen, warum Sie gewinnen oder verlieren",
+          "description": "Attribut für Attribut — im Vergleich zu den Wettbewerbern, die die Agenten tatsächlich auswählen."
+        },
+        {
+          "title": "Mit konkreten Verbesserungen gehen",
+          "description": "Die Änderungen an Produktangeboten mit dem größten Effekt, die Sie zuerst umsetzen sollten."
+        },
+        {
+          "title": "Den Optimierungsprozess skizzieren",
+          "description": "Wie ein laufender Optimierungsprozess für Ihren Katalog aussehen könnte."
+        }
+      ]
+    },
+    "whoShouldBook": {
+      "number": "02",
+      "title": "Für wen sich die Demo lohnt.",
+      "description": "Der Termin ist besonders hilfreich, wenn Sie einen echten Katalog analysieren möchten und die Ergebnisse auch umsetzen wollen.",
+      "body": [
+        "Eine Demo ist der schnellste Weg, wenn Sie eine zweite Einschätzung zu den Ergebnissen möchten, statt den Bericht allein durchzugehen.",
+        "Sie möchten zuerst Ihre Zahlen sehen? Der kostenlose Scan führt dieselbe Simulation für Ihre 10 wichtigsten Produkte in etwa zwei Minuten durch."
+      ],
+      "label": "Der Termin ist besonders hilfreich, wenn Sie",
+      "action": {
+        "primary": "Kostenlosen Scan starten"
+      },
+      "items": [
+        {
+          "title": "Wettbewerbsintensive Kataloge verwalten",
+          "description": "Große oder stark umkämpfte Kategorien, in denen fehlende Attribute unbemerkt Auswahlchancen kosten."
+        },
+        {
+          "title": "Tool-Kategorien vergleichen",
+          "description": "Wenn Sie Optimierung für KI‑gestützten Commerce mit Content-Generatoren oder Analytics-Tools vergleichen."
+        },
+        {
+          "title": "Mehrere Shops betreiben",
+          "description": "Wenn Sie ein individuelles Enterprise-Setup über mehrere Marken hinweg prüfen."
+        },
+        {
+          "title": "Wenig Zeit haben",
+          "description": "Sie möchten die Diagnose in klarer Sprache erklärt bekommen — nicht noch einen weiteren Bericht lesen."
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "03",
+      "title": "Häufig gestellte Fragen",
+      "description": "Häufige Fragen zum Demo-Termin."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Was passiert im Termin?",
+          "answer": "Wir testen Ihre wichtigsten Produkte live mit den führenden KI-Shopping-Modellen, zeigen Schritt für Schritt, warum Agenten Sie oder einen Wettbewerber auswählen, und geben Ihnen die Änderungen an Ihren Produktangeboten mit dem größten Effekt, die Sie zuerst umsetzen sollten."
+        },
+        {
+          "question": "Wie lange dauert die Demo?",
+          "answer": "Fünfzehn Minuten. Ein gezielter Arbeitstermin, keine Folienpräsentation. Wenn Ihr Team anschließend ein ausführlicheres Gespräch zum Umfang des Unternehmenseinsatzes benötigt, vereinbaren wir dafür einen separaten Termin."
+        },
+        {
+          "question": "Muss ich etwas vorbereiten?",
+          "answer": "Nur die Shop-URL oder einige relevante Produktlinks. Sie müssen vor dem Termin weder Ihren Katalog verbinden noch ein Konto erstellen."
+        },
+        {
+          "question": "Kann ich den Termin überspringen und direkt starten?",
+          "answer": "Ja. Der kostenlose Scan-Tarif führt dieselbe Simulation für Ihre 10 wichtigsten Produkte in etwa zwei Minuten durch — ohne Kreditkarte. Buchen Sie einen Termin, wenn Sie die Ergebnisse lieber gemeinsam mit uns durchgehen möchten."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Stattdessen kostenlos starten",
+        "secondary": "Preise ansehen"
+      },
+      "note": "Sie möchten lieber selbst starten? Führen Sie Ihren ersten Scan ohne Kreditkarte durch."
+    }
+  }
+}

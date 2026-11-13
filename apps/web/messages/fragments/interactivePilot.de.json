@@ -1,0 +1,19 @@
+{
+  "interactivePilot": {
+    "title": "Pilotprojekt-Planer",
+    "stages": [
+      "Ausgangslage",
+      "Korrigieren",
+      "Erneut ausführen",
+      "Auswertung"
+    ],
+    "happens": "Ablauf",
+    "people": "Ihr Team",
+    "deliverable": "Was Sie erhalten",
+    "duration": "Dauer",
+    "pendingPeople": "",
+    "pendingDeliverable": "",
+    "pendingDuration": "",
+    "pending": "Wird mit Ihrem Team abgestimmt."
+  }
+}

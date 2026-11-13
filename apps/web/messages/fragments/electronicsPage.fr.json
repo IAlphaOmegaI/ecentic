@@ -1,0 +1,14 @@
+{
+  "electronicsPage": {
+    "selectorLabel": "Explorer une question d’acheteur",
+    "scenarioLabels": [
+      "Écouteurs sans fil",
+      "Ordinateurs portables",
+      "Aspirateurs robots"
+    ],
+    "sourceLabel": "Champs source à examiner",
+    "inspectLabel": "Suivez la question jusqu’aux spécifications.",
+    "mapLabel": "Examiner les six champs source",
+    "boundary": "Un point de départ pour examiner les données source, pas un résultat de compatibilité."
+  }
+}

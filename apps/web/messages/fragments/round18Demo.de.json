@@ -1,0 +1,15 @@
+{
+  "demoPage": {
+    "agenda": {
+      "description": "Beginnen Sie mit einem Produkt, verfolgen Sie die Entscheidung und legen Sie anschließend gemeinsam fest, was verbessert werden soll. So gehen wir im Gespräch gemeinsam vor."
+    },
+    "progress": {
+      "completed": "Abgeschlossen",
+      "current": "Sie sind hier",
+      "upcoming": "Als Nächstes"
+    }
+  },
+  "commerceFigures": {
+    "demoPlane": "Illustration: ein gefalteter Papierflieger, der sich neigt und sich zum Mauszeiger hin anhebt."
+  }
+}

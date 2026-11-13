@@ -1,0 +1,94 @@
+{
+  "reviewCode": {
+    "recordNote": "Illustrativer Datensatz, keine API-Anfrage.",
+    "platform": {
+      "connect": [
+        {
+          "key": "title",
+          "note": "Der ursprüngliche Titel bleibt beim Import erhalten."
+        },
+        {
+          "key": "source",
+          "note": "Der Datensatz wird aus Ihrer Datei in den Katalog übernommen."
+        },
+        {
+          "key": "publish_access",
+          "note": "Das Importieren eines Feeds gewährt keinen Schreibzugriff auf einen Store."
+        }
+      ],
+      "simulate": [
+        {
+          "key": "question",
+          "note": "Halten Sie die Anfrage des Käufers explizit, damit der Vergleich Kontext hat."
+        },
+        {
+          "key": "decision",
+          "note": "Ein simulierter Durchlauf erfasst, welches Produktangebot ausgewählt wurde."
+        },
+        {
+          "key": "reasoning",
+          "note": "Das Ergebnis verweist auf ein angegebenes Attribut, nicht auf ein angenommenes."
+        }
+      ],
+      "fix": [
+        {
+          "key": "title",
+          "note": "Der Titel verwendet eine Tatsache, die bereits in der Quelle vorhanden ist."
+        },
+        {
+          "key": "description",
+          "note": "Dieselben Produktinformationen werden klarer formuliert."
+        },
+        {
+          "key": "price_and_stock",
+          "note": "Die Aktion für das Produktangebot lässt Preis und Bestand unverändert."
+        }
+      ],
+      "track": [
+        {
+          "key": "referrer",
+          "note": "Die Ursprungsdomain dient als Nachweis für die Klassifizierung des Besuchs."
+        },
+        {
+          "key": "classification",
+          "note": "Eine erkannte Weiterleitung wird zu einem Tracking-Datensatz."
+        },
+        {
+          "key": "revenue",
+          "note": "Ein Besuch allein belegt weder eine Bestellung noch zugeordneten Umsatz."
+        }
+      ]
+    },
+    "checkout": {
+      "filename": "checkout-example.json",
+      "label": "Checkout-Anforderungen",
+      "note": "Beispielhafter Pseudocode. Die Pflicht zur Angabe einer Telefonnummer wird gelockert; die Zahlung läuft weiterhin über das Gateway des Händlers.",
+      "rows": [
+        {
+          "key": "phone_required",
+          "before": true,
+          "after": false,
+          "note": "Die Blockierung entsteht durch die erforderliche Telefonnummer, die dem Agenten nicht vorliegt."
+        },
+        {
+          "key": "phone",
+          "before": null,
+          "after": null,
+          "note": "Es werden keine Kontaktdaten erfunden, um die Prüfung zu bestehen."
+        },
+        {
+          "key": "contact_step",
+          "before": "blockiert",
+          "after": "bereit",
+          "note": "Das Entfernen dieser Anforderung ermöglicht es dem Beispiel, mit der Zahlung fortzufahren."
+        },
+        {
+          "key": "payment",
+          "before": "not_reached",
+          "after": "merchant_gateway",
+          "note": "Das Zahlungs-Gateway des Stores verarbeitet die Zahlung; eine Übergabe an den Käufer kann weiterhin erforderlich sein."
+        }
+      ]
+    }
+  }
+}

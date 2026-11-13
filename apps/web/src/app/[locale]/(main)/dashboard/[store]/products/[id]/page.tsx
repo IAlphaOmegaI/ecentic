@@ -9,7 +9,7 @@ import {
 import { cn, unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import { connection } from "next/server";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import { Link } from "@/i18n/navigation";
 import { formatPrice } from "@/lib/currency";
@@ -60,6 +60,8 @@ const rateBarColor = (rate: number) => {
 const ProductDetailContent = async ({
   params,
 }: Pick<PageProps<"/dashboard/[store]/products/[id]">, "params">) => {
+  const locale = await getLocale();
+
   await connection();
   const { id, store } = await params;
   const translate = await getTranslations("dashboard.products.detail");
@@ -103,7 +105,7 @@ const ProductDetailContent = async ({
             <StatusPill tone={latestSimulatedAt ? "success" : "neutral"}>
               {latestSimulatedAt
                 ? shared("status.liveProductUpdated", {
-                    time: formatRelativeTime(latestSimulatedAt),
+                    time: formatRelativeTime(latestSimulatedAt, locale),
                   })
                 : translate("noSimulationsYet")}
             </StatusPill>

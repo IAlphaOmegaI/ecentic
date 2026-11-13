@@ -1,0 +1,38 @@
+{
+  "dashboard": {
+    "lifecycle": {
+      "action": {
+        "secondary": "Abbrechen",
+        "pending": "Wird ausgeführt…"
+      },
+      "error": "Diese Anfrage konnte nicht abgeschlossen werden. Bitte versuchen Sie es erneut oder kontaktieren Sie den Support.",
+      "disconnected": "Getrennt",
+      "disconnect": {
+        "title": "Diesen Store trennen?",
+        "description": "Entfernen Sie die gespeicherten Zugangsdaten des Stores und beenden Sie den Zugriff auf {domain}. Ihr importierter Katalog und Verlauf bleiben in ecentic erhalten. Dadurch wird weder ein Plugin deinstalliert noch werden Schlüssel im Store widerrufen; entfernen Sie diese zusätzlich beim jeweiligen Anbieter. Melden Sie sich erneut an, wenn Ihre Sitzung älter als fünf Minuten ist.",
+        "action": {
+          "primary": "Store trennen"
+        }
+      },
+      "delete": {
+        "title": "Ihr Konto löschen?",
+        "description": "Dadurch werden Ihr Profil, importierte Kataloge, Scans und generierte Änderungen dauerhaft gelöscht. Trennen Sie zuerst Ihren Store und Ihre Google-Integrationen. Geben Sie zur Bestätigung die E-Mail-Adresse Ihres Kontos ein. Sie müssen sich innerhalb der letzten fünf Minuten angemeldet haben.",
+        "email": "E-Mail-Adresse des Kontos",
+        "validation": "Geben Sie eine gültige E-Mail-Adresse ein.",
+        "assistance": "Konten mit Abrechnungs- oder Bestelldaten erfordern eine unterstützte Löschung, damit erforderliche Datensätze und die Abrechnung korrekt verarbeitet werden. Kontaktieren Sie",
+        "action": {
+          "primary": "Konto löschen"
+        }
+      },
+      "blocked": {
+        "reauthenticate": "Melden Sie sich ab und wieder an und kehren Sie dann innerhalb von fünf Minuten hierher zurück.",
+        "confirmation": "Geben Sie die E-Mail-Adresse des Kontos ein, mit dem Sie angemeldet sind.",
+        "notFound": "Dieses Konto oder dieser Store ist nicht mehr verfügbar.",
+        "googleConnected": "Trennen Sie Google Shopping zuerst auf der entsprechenden Einstellungsseite, damit die Google-Datenquelle und die Berechtigung korrekt entfernt werden können.",
+        "shopifyBilling": "Deinstallieren Sie ecentic zuerst in Shopify, um die Shopify-Abrechnungsvereinbarung zu beenden, und kontaktieren Sie anschließend den Support, falls diese Verbindung weiterhin besteht.",
+        "billingRecords": "Dieses Konto enthält Abrechnungs- oder Bestelldaten. Kontaktieren Sie privacy@ecentic.ai für eine unterstützte Löschung; wir müssen die Abrechnung abschließen und gesetzlich vorgeschriebene Datensätze aufbewahren.",
+        "storeConnections": "Trennen Sie Ihre Stores und Google-Shopping-Integrationen in den Einstellungen, bevor Sie das Konto löschen."
+      }
+    }
+  }
+}

@@ -7,12 +7,12 @@ export const dismiss = async (page) => {
     localStorage.getItem("ecentic-cookie-consent"),
   );
   if (decision === "denied") return;
-  const banner = page.locator('aside[aria-label="Cookie consent"]');
+  const banner = page.locator("aside[data-cookie-consent]");
   const available = await resultify(() =>
     banner.waitFor({ state: "visible", timeout: 15000 }),
   );
   if (!available.success) return;
-  await banner.getByRole("button", { name: /^(Decline|Rechazar)$/ }).click();
+  await banner.locator('[data-consent-action="reject"]').click();
   await banner.waitFor({ state: "hidden" });
 };
 
@@ -226,7 +226,11 @@ export const inspect = (page) =>
       headings: Array.from(content.querySelectorAll("h1")).map((heading) =>
         heading.textContent.trim(),
       ),
-      words: visible.trim().split(/\s+/).filter(Boolean).length,
+      words: [
+        ...new Intl.Segmenter(document.documentElement.lang || "en", {
+          granularity: "word",
+        }).segment(visible),
+      ].filter((segment) => segment.isWordLike).length,
       placeholders,
       media: Array.from(
         document.querySelectorAll("video[data-review-media]"),
@@ -244,9 +248,7 @@ export const inspect = (page) =>
       },
       consent: {
         decision: localStorage.getItem("ecentic-cookie-consent"),
-        banner: Boolean(
-          document.querySelector('aside[aria-label="Cookie consent"]'),
-        ),
+        banner: Boolean(document.querySelector("aside[data-cookie-consent]")),
       },
       images: {
         count: document.images.length,

@@ -1,0 +1,58 @@
+{
+  "interactiveCheckout": {
+    "sampleLabel": "Beispiel mit Beispieldaten",
+    "title": "Ein Checkout, vorher und nachher",
+    "description": "Ein Beispiel-Checkout in WooCommerce für eine verstellbare Schreibtischlampe. Der Zahlungsschritt enthält eine Käuferweiterleitung über das Gateway des Stores; dieses Beispiel erstellt keine echte Bestellung.",
+    "controlsLabel": "Wählen Sie ein Checkout-Ergebnis",
+    "states": {
+      "before": "Vor der Korrektur",
+      "after": "Nach der Korrektur"
+    },
+    "statuses": {
+      "complete": "Abgeschlossen",
+      "stopped": "Gestoppt",
+      "pending": "Nicht erreicht"
+    },
+    "outcomes": {
+      "before": "Der Ablauf stoppt bei den Kontaktdaten. Zahlung und Bestellabschluss werden nicht erreicht.",
+      "after": "Der Beispielablauf erreicht den Bestellabschluss, nachdem die Anforderung für die Telefonnummer korrigiert wurde und der Käufer die Zahlung abgeschlossen hat."
+    },
+    "steps": {
+      "find": {
+        "label": "Produkt finden",
+        "before": "Verstellbare Schreibtischlampe",
+        "after": "Verstellbare Schreibtischlampe"
+      },
+      "availability": {
+        "label": "Preis und Bestand prüfen",
+        "before": "Preis und Verfügbarkeit sind vorhanden.",
+        "after": "Preis und Verfügbarkeit sind vorhanden."
+      },
+      "cart": {
+        "label": "Zum Warenkorb hinzufügen",
+        "before": "Der Beispielartikel wird in den Warenkorb gelegt.",
+        "after": "Der Beispielartikel wird in den Warenkorb gelegt."
+      },
+      "shipping": {
+        "label": "Versand wählen",
+        "before": "Eine Versandoption ist verfügbar.",
+        "after": "Eine Versandoption ist verfügbar."
+      },
+      "contact": {
+        "label": "Kontaktdaten",
+        "before": "Der Checkout verlangt eine Telefonnummer, die dem Agenten nicht vorliegt.",
+        "after": "Die Telefonnummer ist in diesem Beispiel optional; die erforderlichen Kontaktdaten sind vorhanden."
+      },
+      "payment": {
+        "label": "Zahlung",
+        "before": "Warten auf Kontaktdaten.",
+        "after": "Der Käufer schließt die Zahlung über das Gateway des Shops ab."
+      },
+      "order": {
+        "label": "Bestellung aufgegeben",
+        "before": "Der blockierte Durchlauf erstellt keine Bestellung.",
+        "after": "Das Beispiel führt zu einer WooCommerce-Bestellung."
+      }
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "round15Platform": {
+    "replay": {
+      "shopper": "Acheteur",
+      "assistant": "Assistant d’exemple",
+      "writing": "Rédaction…",
+      "complete": "Conversation d’exemple terminée",
+      "replay": "Rejouer la conversation",
+      "conversation": "Exemple de conversation d’achat",
+      "turns": {
+        "listings": "Je vais comparer ces deux fiches produit d’exemple avec votre budget et vos exigences de compatibilité.",
+        "fields": "Les deux sont à moins de 400 $. Votre fiche produit n’indique ni la hauteur d’assise ni la capacité de charge. La fiche concurrente indique 44–54 cm et 120 kg.",
+        "fix": "Ajoutez à ma fiche produit la plage de hauteur d’assise existante du fournisseur ainsi que la charge maximale, puis comparez à nouveau les deux mêmes chaises."
+      }
+    }
+  },
+  "commerceFigures": {
+    "officeChair": "Fauteuil de bureau avec dossier rembourré, accoudoirs et piètement à cinq roulettes",
+    "partReadouts": {
+      "officeChair": [
+        {
+          "value": "dossier",
+          "label": "Dossier"
+        },
+        {
+          "value": "assise",
+          "label": "Assise"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,396 @@
+{
+  "docs": {
+    "meta": {
+      "title": "ecentic API-Dokumentation",
+      "description": "Entwicklerdokumentation für die REST API, den MCP-Server, CLI, Authentifizierung, Fehler, Rate Limits und Versionierung."
+    },
+    "breadcrumb": {
+      "home": "Startseite",
+      "docs": "Dokumentation",
+      "errors": "Fehler",
+      "rateLimits": "Rate Limits",
+      "versioning": "Versionierung",
+      "mcp": "MCP-Server",
+      "authentication": "Authentifizierung"
+    },
+    "hero": {
+      "title": "ecentic:",
+      "accent": "Dokumentation für Entwickler.",
+      "description": "Alles, was ein Agent oder Entwickler benötigt, um ecentic aufzurufen: eine versionierte REST-API, ein MCP-Server, typisierte Fehler, veröffentlichte Rate-Limits und die Discovery-Dokumente, mit denen ein Crawler all das ohne menschliches Zutun finden kann.",
+      "assurances": [
+        "Öffentliche Endpunkte benötigen keinen Schlüssel",
+        "OpenAPI 3.1",
+        "RFC 9457-Fehler"
+      ],
+      "art": {
+        "alt": "ASCII-Art-Illustration einer Terminalkonsole"
+      },
+      "action": {
+        "primary": "OpenAPI-Dokument öffnen",
+        "secondary": "auth.md lesen"
+      }
+    },
+    "quickstart": {
+      "number": "01",
+      "title": "ecentic mit einer einzigen Anfrage aufrufen",
+      "description": "Die öffentliche Oberfläche ist ohne Authentifizierung zugänglich und CORS-offen. Starten Sie hier und erstellen Sie erst dann einen Schlüssel, wenn Sie Aktionen für ein Händlerkonto ausführen müssen.",
+      "intro": "Jeder öffentliche Endpunkt antwortet mit JSON, sendet Live-Rate-Limit-Header und verweist über einen Link-Header auf seine eigene maschinenlesbare Beschreibung.",
+      "steps": [
+        {
+          "title": "Schnittstellen entdecken",
+          "description": "Eine Anfrage liefert alle Endpunkte, die Versionierungsrichtlinie, die Rate-Limit-Richtlinie und die Dokumentation der Fehler."
+        },
+        {
+          "title": "Protokollübersicht lesen",
+          "description": "MCP, UCP, ACP, OpenAPI und x402 mit ihren Versionen, Transportprotokollen und Manifest-Speicherorten."
+        },
+        {
+          "title": "Plankatalog prüfen",
+          "description": "Dieselben Preise wie auf der Preisseite, maschinenlesbar in den kleinsten Währungseinheiten."
+        }
+      ]
+    },
+    "authentication": {
+      "number": "02",
+      "title": "Authentifizierung",
+      "description": "Öffentliche Lesezugriffe sind offen. Alles, was ein Händlerkonto betrifft, benötigt einen Bearer-Schlüssel.",
+      "body": "ecentic stellt langlebige API-Schlüssel aus, nachdem ein Mensch ein Konto angelegt hat. Erstellen Sie das Konto, erzeugen Sie einen Schlüssel im Dashboard oder über das authentifizierte MCP-Tool `create_api_key` und senden Sie ihn dann bei jedem geschützten Aufruf als Bearer-Token mit. Der Schlüssel wird nur einmal angezeigt.\n\nGeschützte Aufrufe ohne gültigen Schlüssel liefern HTTP 401 und einen `WWW-Authenticate`-Header, der das Protected Resource Metadata-Dokument benennt, damit ein Agent die Discovery direkt aus dem Fehler heraus erneut ausführen kann, statt zu raten.\n\n- `mcp` — MCP-Tools gegen den ecentic MCP-Endpunkt aufrufen\n- `onboarding` — Shopify-, WooCommerce- und Produktfeed-Shops verbinden",
+      "linkLabel": "Vollständige Anleitung für Registrierung und Zugangsdaten"
+    },
+    "endpoints": {
+      "number": "03",
+      "title": "Endpunkte",
+      "description": "Die versionierte REST-Oberfläche. Pfade unter /api/v1 bleiben während der gesamten Laufzeit von v1 stabil.",
+      "columns": {
+        "method": "Methode",
+        "path": "Pfad",
+        "authentication": "Auth",
+        "summary": "Zusammenfassung"
+      },
+      "authentication": {
+        "none": "Öffentlich",
+        "bearer": "Bearer-Schlüssel",
+        "x402": "x402-Zahlung"
+      }
+    },
+    "protocols": {
+      "number": "04",
+      "title": "Agentenprotokolle",
+      "description": "ecentic unterstützt die Commerce- und Tool-Protokolle, die Agenten bereits verwenden, und veröffentlicht für jedes ein Manifest.",
+      "columns": {
+        "protocol": "Protokoll",
+        "version": "Version",
+        "endpoint": "Endpunkt",
+        "manifest": "Manifest"
+      }
+    },
+    "reliability": {
+      "number": "05",
+      "title": "Fehler, Limits und Versionen",
+      "description": "Die drei Schnittstellenvereinbarungen, auf denen eine Integration beruht – jeweils auf einer eigenen Seite dokumentiert und maschinenlesbar.",
+      "cards": [
+        {
+          "title": "Typisierte Fehler",
+          "description": "Jeder Fehler wird als application/problem+json mit stabilem maschinenlesbarem Code und einem Hinweis zur Behebung zurückgegeben."
+        },
+        {
+          "title": "Rate-Limits",
+          "description": "Live-RateLimit-Header bei jeder Antwort und Retry-After bei einem 429, damit ein Agent sich selbst drosseln kann."
+        },
+        {
+          "title": "Versionierung",
+          "description": "Version im URL-Pfad, mit Deprecation- und Sunset-Headern, bevor etwas entfernt wird."
+        }
+      ]
+    },
+    "mcp": {
+      "number": "06",
+      "title": "MCP-Server",
+      "description": "Claude, ChatGPT und jeder MCP-Client können ecentic nativ aufrufen.",
+      "body": "Der ecentic MCP-Server spricht JSON-RPC 2.0 über HTTP und ist sowohl unter `/mcp` als auch unter `/api/mcp` erreichbar. Sein Manifest wird am üblichen Well-Known-Pfad sowie als SEP-1649-Serverbeschreibung veröffentlicht.\n\nTools, die nur lesen (`list_plans`), funktionieren ohne Authentifizierung. Tools, die den Kontostatus ändern – Schlüssel erstellen, den Checkout starten oder einen Shop verbinden – benötigen einen Bearer-Schlüssel.\n\n- `list_plans` — Pläne und ihre Stripe-Verfügbarkeit\n- `create_api_key` — langlebigen Agentenschlüssel erstellen\n- `create_checkout` — Stripe-Checkout-Sitzung öffnen\n- `connect_shopify`, `connect_woocommerce`, `connect_feed` — Shop-Onboarding"
+    },
+    "webhooks": {
+      "number": "07",
+      "title": "Webhooks",
+      "description": "ecentic empfängt Webhooks, versendet sie derzeit aber noch nicht.",
+      "body": "Eingehende Endpunkte werden per Signatur verifiziert und lehnen alles ab, was die Prüfung nicht besteht, bevor ein Handler ausgeführt wird. Shopify-Compliance-Webhooks prüfen ein HMAC, Stripe prüft seinen eigenen Signatur-Header und Partner-Endpunkte prüfen ein Bearer-Secret.\n\nAusgehende Webhooks – also Benachrichtigungen von ecentic an Ihr System, wenn ein Scan abgeschlossen oder ein Produktangebot erneut veröffentlicht wurde – sind noch nicht veröffentlicht. Lesen Sie Scan- und Produktangebots-Ergebnisse im Dashboard aus. Die veröffentlichte REST-API stellt diese Dashboard-Ergebnisse derzeit nicht bereit; verwenden Sie die API-Referenz für die aktuell verfügbaren Operationen. MCP-Anfragen sind zustandslos; es gibt keine Subskriptionssitzung."
+    },
+    "cli": {
+      "number": "08",
+      "title": "Kommandozeile",
+      "description": "ecentic skripten, ohne einen HTTP-Client zu schreiben.",
+      "body": "Die ecentic CLI kapselt dieselbe öffentliche Oberfläche, die hier dokumentiert ist – Discovery, Tarife, Skills, Statusprüfungen und MCP-Tool-Aufrufe –, sodass ein Agent oder Entwickler Shell-Befehle verwenden kann, statt eine Integration zu bauen.\n\nFür authentifizierte Befehle liest sie `ECENTIC_API_KEY` aus der Umgebung und gibt JSON auf stdout aus, sodass sich jeder Befehl mit `jq` kombinieren lässt."
+    },
+    "footer": {
+      "note": "Jedes Dokument auf dieser Seite ist maschinenlesbar und ohne Schlüssel erreichbar."
+    },
+    "errorsPage": {
+      "meta": {
+        "title": "ecentic API-Fehler",
+        "description": "API-Fehlercodes, HTTP-Statuswerte und Hinweise zur Behebung nachschlagen. Antworten verwenden das RFC 9457-Problemformat."
+      },
+      "hero": {
+        "title": "ecentic API:",
+        "accent": "Fehler.",
+        "description": "Jeder Fehler in der ecentic API ist ein typisiertes Problemdokument, keine HTML-Seite. Der Code ist der Vertrag: stabil, maschinenlesbar und sicher für Verzweigungen nutzbar.",
+        "assurances": [
+          "RFC 9457",
+          "Stabile Codes",
+          "Hinweise zur Behebung"
+        ],
+        "art": {
+          "alt": "ASCII-Art-Illustration eines Schilds"
+        },
+        "action": {
+          "primary": "Zurück zur Dokumentation"
+        }
+      },
+      "shape": {
+        "number": "01",
+        "title": "Die Struktur eines Problems",
+        "description": "Ein Medientyp, ein Schema – bei jedem 4xx- und 5xx-Fehler, den die API zurückgibt.",
+        "body": "Antworten enthalten `Content-Type: application/problem+json` – bewusst nicht `application/json`, weil der Medientyp einem generischen Client signalisiert, dass der Body einen Fehler beschreibt und nicht die angeforderte Ressource.\n\n- `type` — URI, die den Fehler benennt und auf dieser Seite verankert ist\n- `code` — der stabile maschinenlesbare Identifikator für Verzweigungen\n- `title` — kurze Zusammenfassung für Menschen\n- `status` — der HTTP-Status, im Body wiederholt\n- `detail` — was bei dieser konkreten Anfrage schiefgelaufen ist\n- `resolution` — was dagegen zu tun ist\n- `instance` — der Pfad, der den Fehler erzeugt hat, sofern bekannt"
+      },
+      "catalogue": {
+        "number": "02",
+        "title": "Fehlerkatalog",
+        "description": "Codes werden nach ihrer Veröffentlichung eingefroren. Titel und Hinweise können umformuliert werden, Codes nicht.",
+        "columns": {
+          "code": "Code",
+          "status": "Status",
+          "title": "Bedeutung",
+          "resolution": "So beheben Sie den Fehler"
+        }
+      }
+    },
+    "rateLimitsPage": {
+      "meta": {
+        "title": "ecentic API-Rate-Limits",
+        "description": "Die Rate-Limit-Richtlinie der öffentlichen ecentic API, die RateLimit-Header in jeder Antwort und wie Agenten sich selbst drosseln sollten."
+      },
+      "hero": {
+        "title": "ecentic API:",
+        "accent": "Rate-Limits.",
+        "description": "Jede öffentliche Antwort enthält den Live-Status Ihres Rate-Limit-Fensters, damit ein Agent sein Tempo anpassen kann, statt das Limit erst durch eine Ablehnung zu entdecken.",
+        "assurances": [
+          "Live-Header",
+          "Retry-After bei 429",
+          "Fenster pro Schlüssel"
+        ],
+        "art": {
+          "alt": "ASCII-Art-Illustration einer Waage"
+        },
+        "action": {
+          "primary": "Zurück zur Dokumentation"
+        }
+      },
+      "policy": {
+        "number": "01",
+        "title": "Die Richtlinie",
+        "description": "Ein festes Fenster auf der öffentlichen Oberfläche, gezählt pro Zugriffsschlüssel.",
+        "body": "Anfragen mit Bearer-Schlüssel werden gegen diesen Schlüssel gezählt; alles andere wird gegen die Client-IP gezählt, damit ein einzelner überaktiver Agent nicht das Budget einer gemeinsam genutzten Adresse verbraucht.\n\nDas Fenster ist fest und nicht gleitend: Es wird an einer festen Uhrzeit zurückgesetzt, und der `reset`-Wert in den Headern ist die Anzahl der Sekunden bis zu diesem Zeitpunkt."
+      },
+      "headers": {
+        "number": "02",
+        "title": "Header",
+        "description": "Beide Schreibweisen werden gesendet. Verwenden Sie diejenige, die Ihr Client bereits versteht.",
+        "body": "`RateLimit-Policy` ist immer vorhanden, weil die Richtlinie unabhängig davon gilt, ob eine bestimmte Anfrage gezählt werden konnte. Die Live-Zähler werden nur gesendet, wenn tatsächlich ein Zählerwert dahintersteht – eine Umgebung, die den Zähler nicht erreichen kann, lässt sie weg, statt ein Budget zu behaupten, das niemand gemessen hat.",
+        "columns": {
+          "header": "Header",
+          "example": "Beispiel",
+          "meaning": "Bedeutung"
+        },
+        "items": [
+          {
+            "meaning": "Die aktive Richtlinie: Kontingent und Fensterlänge in Sekunden."
+          },
+          {
+            "meaning": "Live-Status: verbleibende Anfragen und Sekunden bis zum Reset."
+          },
+          {
+            "meaning": "Im aktuellen Fenster erlaubte Anfragen."
+          },
+          {
+            "meaning": "Im aktuellen Fenster verbleibende Anfragen."
+          },
+          {
+            "meaning": "Sekunden bis zum Zurücksetzen des Fensters."
+          },
+          {
+            "meaning": "Wird nur bei einem 429 gesendet. Warten Sie diese Anzahl an Sekunden und versuchen Sie es dann erneut."
+          }
+        ]
+      },
+      "exceeded": {
+        "number": "03",
+        "title": "Wenn Sie das Limit überschreiten",
+        "description": "Ein 429 ist wie jeder andere Fehler ein typisiertes Problemdokument.",
+        "body": "Die Antwort ist `application/problem+json` mit dem Code `rate-limited` und enthält `Retry-After` zusammen mit den Rate-Limit-Headern. Warten Sie die angegebene Anzahl an Sekunden ab, statt sofort erneut zu versuchen – ein erneuter Versuch innerhalb desselben Fensters wird gezählt und erneut abgelehnt."
+      }
+    },
+    "versioningPage": {
+      "meta": {
+        "title": "ecentic API-Versionierung",
+        "description": "Erfahren Sie, wie ecentic seine API versioniert und Abkündigungen über Deprecation- und Sunset-Header ankündigt."
+      },
+      "hero": {
+        "title": "ecentic API:",
+        "accent": "Versionierung.",
+        "description": "Die Version steht im Pfad. Eine Integration, die eine Version festlegt, behält den Vertrag, für den sie entwickelt wurde, und verliert ihn nie ohne Vorwarnung.",
+        "assurances": [
+          "Versionierung im URL-Pfad",
+          "180 Tage Vorlauf",
+          "Deprecation- und Sunset-Header"
+        ],
+        "art": {
+          "alt": "ASCII-Art-Illustration eines Kalenders"
+        },
+        "action": {
+          "primary": "Zurück zur Dokumentation"
+        }
+      },
+      "strategy": {
+        "number": "01",
+        "title": "So funktioniert die Versionierung",
+        "description": "Eine Nummer im Pfad, geändert nur bei einer inkompatiblen Änderung.",
+        "body": "Die aktuelle Version ist v1 und wird unter `/api/v1` bereitgestellt. Jede Antwort gibt die Version zusätzlich in einem `API-Version`-Header zurück, damit ein Client, der einer Weiterleitung oder einem Link folgt, bestätigen kann, womit er tatsächlich kommuniziert.\n\nAdditive Änderungen werden innerhalb einer Version ausgeliefert: neue Endpunkte, neue optionale Anfragefelder oder neue Felder in einer bestehenden Antwort. Behandeln Sie unbekannte Antwortfelder als Vorwärtskompatibilität und nicht als Fehler.\n\nEine Änderung, die ein Feld entfernt, umbenennt, einen Typ einschränkt oder die Bedeutung eines bestehenden Werts verändert, ist ein Breaking Change und wird als neuer Versionspfad neben dem alten ausgeliefert – niemals direkt an dessen Stelle."
+      },
+      "deprecation": {
+        "number": "02",
+        "title": "Deprecation und Sunset",
+        "description": "Zwei Standard-Header und ein ausreichend langes Zeitfenster, um darauf zu reagieren.",
+        "body": "Wenn eine Version abgekündigt wird, enthält jede Antwort daraus einen `Deprecation`-Header (RFC 9745). Sobald ein Entfernungsdatum feststeht, enthalten Antworten zusätzlich einen `Sunset`-Header (RFC 8594) mit dem Datum, an dem die Version keine Antworten mehr liefert, sowie einen `Link` mit `rel=\"successor-version\"`, der auf die Nachfolgeversion verweist.\n\nDie Mindestfrist zwischen der Ankündigung der Abkündigung und dem Sunset-Datum beträgt 180 Tage. Keine Version wird entfernt, ohne dass beide Header während dieses gesamten Zeitfensters ausgeliefert wurden."
+      },
+      "support": {
+        "number": "03",
+        "title": "Was nicht versioniert wird",
+        "description": "Discovery-Dokumente führen stattdessen die Version ihres jeweiligen Protokolls.",
+        "body": "Die `.well-known`-Discovery-Dokumente werden nach dem jeweils implementierten Protokoll versioniert, nicht nach der ecentic API-Version — das UCP-Profil enthält eine UCP-Version, die MCP-Serverkarte eine Protokollversion und so weiter. Die Version direkt im Dokument auszulesen, ist immer korrekt; sie aus der ecentic API-Version abzuleiten, nicht."
+      }
+    },
+    "mcpPage": {
+      "meta": {
+        "title": "ecentic MCP-Server",
+        "description": "Verbinden Sie einen MCP-Client mit ecentic. Lesen Sie die Referenz zu Transport, Handshake, unterstützten Tools, Authentifizierung und Fehlerbehandlung."
+      },
+      "hero": {
+        "title": "ecentic MCP:",
+        "accent": "Server.",
+        "description": "Claude, ChatGPT und jeder Model Context Protocol-Client können ecentic nativ über JSON-RPC 2.0 aufrufen. Diese Seite ist die Verbindungsreferenz: der Endpoint, der Transport, der Handshake und jedes bereitgestellte Tool.",
+        "assurances": [
+          "Streamable HTTP",
+          "JSON-RPC 2.0",
+          "7 Tools"
+        ],
+        "art": {
+          "alt": "ASCII-Art-Illustration eines Roboters"
+        },
+        "action": {
+          "primary": "Zurück zur Doku",
+          "secondary": "Server-Manifest öffnen"
+        }
+      },
+      "connect": {
+        "number": "01",
+        "title": "Verbinden",
+        "description": "Ein Endpoint, zwei Pfade, keine zu verwaltende Sitzung.",
+        "body": "Der Server ist unter `/mcp` und unter `/api/mcp` erreichbar. Beide verwenden denselben Handler; der einfache Pfad existiert, weil die meisten Clients und Scanner ihn zuerst prüfen.\n\nDer Transport ist Streamable HTTP. Jede Anfrage ist ein `POST` mit JSON-RPC 2.0, und jede Antwort kommt über denselben POST zurück. ecentic öffnet keinen serverinitiierten Stream, daher antwortet ein `GET` mit `Accept: text/event-stream` mit `405`, statt Ihren Client an einen Stream zu hängen, der nie Daten senden wird.\n\nEs gibt keine Sitzung. ecentic vergibt keine `Mcp-Session-Id`, und `DELETE` — das Verb zum Beenden einer Sitzung — antwortet aus demselben Grund mit `405`. Es muss nichts beendet werden."
+      },
+      "handshake": {
+        "number": "02",
+        "title": "Handshake",
+        "description": "Zuerst initialisieren, dann die initialized-Benachrichtigung senden.",
+        "body": "`initialize` gibt die ausgehandelte Protokollversion, die Serveridentität, ihre Fähigkeiten und einen `instructions`-String zurück, der beschreibt, wofür ecentic gedacht ist. Wenn Sie eine von ecentic unterstützte Version anfragen, erhalten Sie genau diese Version zurück; alles andere fällt auf die beworbene Version zurück.\n\nDie folgende Nachricht `notifications/initialized` ist eine JSON-RPC-**Benachrichtigung** — sie hat keine `id` und erzeugt keine Antwort. ecentic beantwortet sie transportkonform mit `202 Accepted` und einem leeren Body. Ein Server, der auf eine Benachrichtigung mit einem JSON-RPC-Fehler antwortet, unterbricht den Handshake. Deshalb lohnt es sich, genau diesen Austausch zuerst zu prüfen, wenn ein Client keine Verbindung herstellen kann.",
+        "supported": "Beim Initialisieren akzeptierte Protokollversionen"
+      },
+      "tools": {
+        "number": "03",
+        "title": "Tools",
+        "description": "Welche Funktionen der Server bereitstellt und welche Aufrufe einen Schlüssel benötigen.",
+        "columns": {
+          "tool": "Tool",
+          "authentication": "Auth",
+          "summary": "Funktion"
+        },
+        "items": {
+          "listPlans": "Gibt den öffentlichen Plankatalog mit Preisen, Abrechnungsmodell und Bedingungen für Performance-Gebühren zurück.",
+          "createApiKey": "Erstellt einen langlebigen Agent-API-Schlüssel für das Konto des Aufrufers. Wird nur einmal angezeigt.",
+          "createCheckout": "Öffnet eine Stripe-Checkout-Sitzung für einen Abonnementplan.",
+          "connectShopify": "Startet die Shopify-OAuth-Installation für eine Shop-Domain.",
+          "connectWooCommerce": "Verbindet einen WooCommerce-Store mit REST-Consumer-Zugangsdaten.",
+          "connectFeed": "Verbindet einen Produkt-Feed per URL und erkennt XML oder JSON automatisch.",
+          "getOnboardingStatus": "Zeigt an, welche Onboarding-Schritte das Konto abgeschlossen hat."
+        },
+        "none": "keine",
+        "bearer": "Bearer"
+      },
+      "authentication": {
+        "number": "04",
+        "title": "Authentifizierung",
+        "description": "Read-only-Tools sind offen; alles, was auf ein Konto zugreift, benötigt einen Bearer-Schlüssel.",
+        "body": "Senden Sie `Authorization: Bearer ecentic_sk_…` bei Tool-Aufrufen, die den Kontostatus verändern. Ein Aufruf, der Zugangsdaten benötigt und keine enthält, gibt HTTP 401 mit einem `WWW-Authenticate`-Header zurück, der auf das Protected Resource Metadata-Dokument verweist, damit ein Client die Discovery direkt aus dem Fehler erneut starten kann.\n\nSchlüssel sind Self-Service: Erstellen Sie ein Konto und erzeugen Sie dann einen Schlüssel im Dashboard oder über den Aufruf von `create_api_key` in einer authentifizierten Sitzung. Zu keinem Zeitpunkt ist ein Kontakt mit dem Vertrieb erforderlich.",
+        "linkLabel": "Registrierung und Zugangsdaten"
+      },
+      "errors": {
+        "number": "05",
+        "title": "Fehler",
+        "description": "Zwei Fehlerebenen und woran Sie erkennen, welche vorliegt.",
+        "body": "Ein **JSON-RPC-Fehler** — eine unbekannte Methode, ungültige Parameter oder ein abgelehntes Tool — kommt als HTTP 200 mit einem `error`-Element zurück, genau wie von JSON-RPC spezifiziert. Verzweigen Sie nach `error.code`.\n\nEin **Transportfehler** — eine Methode, die der Endpoint nicht anbietet — kommt als RFC 9457-Problem-Dokument mit `Content-Type: application/problem+json` und einem maschinenlesbaren `code` zurück. Dasselbe Fehlermodell verwendet auch die REST-Oberfläche.\n\nDie einzige Ausnahme ist 401: Hier wird der JSON-RPC-Umschlag mitgeliefert, damit ein Client, der bereits JSON-RPC verarbeitet, keinen zweiten Parser benötigt, zusätzlich zum `WWW-Authenticate`-Header für die Discovery."
+      },
+      "footer": {
+        "note": "Jede Aussage auf dieser Seite lässt sich überprüfen: Das Manifest, die Serverkarte und das OpenAPI-Dokument beschreiben alle denselben Endpoint."
+      }
+    },
+    "authenticationPage": {
+      "meta": {
+        "title": "ecentic API-Authentifizierung",
+        "description": "Erfahren Sie, welche API-Oberflächen öffentlich sind, wie Sie einen Agent-API-Schlüssel erhalten, Bearer-Tokens senden und Authentifizierungsfehler behandeln."
+      },
+      "hero": {
+        "title": "ecentic API:",
+        "accent": "Authentifizierung.",
+        "description": "Für die öffentliche Discovery sind keinerlei Zugangsdaten erforderlich. Alles, was ein Händlerkonto liest oder verändert, benötigt einen Bearer-Schlüssel, den Sie selbst erstellen — kein Vertriebsgespräch, keine manuelle Bereitstellung.",
+        "assurances": [
+          "Self-Service-Schlüssel",
+          "Bearer-Tokens",
+          "OAuth-Metadaten"
+        ],
+        "art": {
+          "alt": "ASCII-Art-Illustration eines Schilds"
+        },
+        "action": {
+          "primary": "Zurück zur Doku",
+          "secondary": "auth.md lesen"
+        }
+      },
+      "open": {
+        "number": "01",
+        "title": "Was keinen Schlüssel benötigt",
+        "description": "Discovery ist bewusst offen.",
+        "body": "Jeder Endpoint unter `/api/v1` antwortet ohne `Authorization`-Header, ebenso die Well-Known-Discovery-Dokumente, das OpenAPI-Dokument und das MCP-Tool `list_plans`. Ein Agent kann die gesamte Struktur der API kennenlernen — Endpoints, Pläne, Protokolle, Fähigkeiten, Rate Limits und Fehlercodes — bevor überhaupt ein Konto erstellt wurde.\n\nAuch die Sandbox ist offen: `POST /api/v1/sandbox/simulation` liefert exakt dieselbe Antwortstruktur wie eine echte Simulation, berechnet aus synthetischem Scoring, sodass sich ein Client vollständig ohne Zugangsdaten entwickeln und testen lässt."
+      },
+      "keys": {
+        "number": "02",
+        "title": "Einen Schlüssel erstellen",
+        "description": "Zwei Self-Service-Wege, beide unter Ihrer Kontrolle.",
+        "body": "Erstellen Sie ein Konto und erzeugen Sie anschließend einen Schlüssel entweder im Dashboard oder durch Aufruf des MCP-Tools `create_api_key` aus einer authentifizierten Sitzung. Schlüssel sehen aus wie `ecentic_sk_…`, sind langlebig und werden genau einmal angezeigt — ecentic speichert nur einen Hash, daher wird ein verlorener Schlüssel ersetzt statt wiederhergestellt.\n\nFür eine Rotation erstellen Sie einen neuen Schlüssel und widerrufen den alten. Kein Teil dieses Prozesses erfordert den Kontakt mit einer Person.",
+        "linkLabel": "Vollständige Registrierungsanleitung"
+      },
+      "sending": {
+        "number": "03",
+        "title": "Einen Schlüssel verwenden",
+        "description": "Ein Header, überall.",
+        "body": "Senden Sie den Schlüssel als Bearer-Token bei jeder geschützten Anfrage. Derselbe Header funktioniert sowohl für die REST-Oberfläche als auch für MCP-Tool-Aufrufe.\n\nLegen Sie den Schlüssel nicht in einem Query-String ab: Query-Strings landen in Logs, Proxys und Referrer-Headern, und ecentic liest ihn dort nicht aus."
+      },
+      "failures": {
+        "number": "04",
+        "title": "Wenn es fehlschlägt",
+        "description": "Ein 401 zeigt Ihnen, wie es weitergeht.",
+        "body": "Fehlende oder ungültige Zugangsdaten führen zu HTTP 401 mit einem `WWW-Authenticate`-Header, der auf das Protected Resource Metadata-Dokument (RFC 9728) verweist. Von dort gelangt ein Client zu den Metadaten des Authorization-Servers (RFC 8414), sodass ein Client nach einem 401 selbstständig erkennen kann, wie die Authentifizierung funktioniert, ohne dass jemand die Dokumentation lesen muss.\n\nAuf der REST-Oberfläche ist der Body ein RFC 9457-Problem mit `code: \"unauthenticated\"`. Auf dem MCP-Endpoint ist es ein JSON-RPC-Fehler mit dem Code `-32001` und einem `resource_metadata`-Hinweis in `error.data`."
+      },
+      "footer": {
+        "note": "Zugangsdaten sind nie erforderlich, um ecentic zu bewerten — nur für Aktionen auf einem Händlerkonto."
+      }
+    }
+  }
+}

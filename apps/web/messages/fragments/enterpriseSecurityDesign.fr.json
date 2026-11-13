@@ -1,0 +1,12 @@
+{
+  "enterpriseSecurityDesign": {
+    "accessTitle": "Importer et publier",
+    "permissionsTitle": "Autorisations de connexion",
+    "trackingTitle": "Mesure des visites sur la boutique en ligne",
+    "checkoutTitle": "Paiement via agent",
+    "routingTitle": "Routage des requêtes vers les modèles",
+    "catalogLabel": "Catalogue de la boutique connectée",
+    "modelLabel": "Fournisseurs d’IA",
+    "outputLabel": "Comparaisons et corrections de fiches produit"
+  }
+}

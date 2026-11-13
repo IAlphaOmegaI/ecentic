@@ -1,0 +1,298 @@
+{
+  "ucpValidator": {
+    "meta": {
+      "title": "UCP Validator pour vitrines e-commerce",
+      "description": "Vérifiez le profil Universal Commerce Protocol d’une boutique, les données de découverte, le schéma et les règles d’accès de robots.txt avec le validateur UCP gratuit."
+    },
+    "breadcrumb": {
+      "home": "Accueil",
+      "page": "UCP Validator"
+    },
+    "hero": {
+      "eyebrow": "Vérification du protocole",
+      "title": {
+        "primary": "UCP",
+        "accent": ": validateur"
+      },
+      "description": "Vérifiez si une vitrine publie un Universal Commerce Profile valide sur /.well-known/ucp et si les agents d’achat peuvent le lire sans friction.",
+      "assurances": [
+        "Utilisation gratuite",
+        "Aucun compte requis",
+        "Récupération en direct de /.well-known/ucp"
+      ],
+      "art": {
+        "alt": "Illustration ASCII d’un bouclier"
+      },
+      "actions": {
+        "validate": "Valider un domaine",
+        "playground": "Ouvrir l’environnement de test"
+      }
+    },
+    "checks": {
+      "number": "01",
+      "title": "Ce que le validateur inspecte.",
+      "description": "Récupération en direct de votre profil public, analysé selon la spécification UCP, avec visibilité sur l’accès des agents via robots.txt.",
+      "items": [
+        {
+          "title": "Accessibilité du point d’accès",
+          "description": "Nous interrogeons le domaine HTTPS public et vérifions que /.well-known/ucp répond."
+        },
+        {
+          "title": "Conformité du schéma",
+          "description": "Le corps de la réponse est analysé comme du JSON et vérifié pour détecter les erreurs et avertissements liés à la spécification UCP."
+        },
+        {
+          "title": "Accès des agents",
+          "description": "Le fichier robots.txt est analysé afin de voir si les principaux bots d’achat et d’indexation sont bloqués."
+        }
+      ]
+    },
+    "validator": {
+      "number": "02",
+      "title": "Lancer une validation en direct.",
+      "description": "Collez un domaine et nous récupérons le profil en direct, analysons chaque service et capacité, puis signalons les erreurs de spécification et l’accès des agents."
+    },
+    "faqSection": {
+      "number": "03",
+      "title": "Questions avant de valider.",
+      "description": "Ce que couvre le vérificateur, où se trouvent les profils et comment l’accès des agents est affiché."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Que vérifie l’UCP Validator ?",
+          "answer": "Il interroge le domaine HTTPS public, confirme que /.well-known/ucp répond, analyse le contenu comme du JSON et signale les erreurs et avertissements liés à la spécification UCP afin de vérifier que le profil est correctement formé."
+        },
+        {
+          "question": "Où publier un Universal Commerce Profile ?",
+          "answer": "Sur /.well-known/ucp du domaine HTTPS public de votre vitrine. Le validateur récupère ce chemin exact et indique s’il est accessible."
+        },
+        {
+          "question": "Vérifie-t-il si les agents d’achat IA peuvent lire ma boutique ?",
+          "answer": "Oui. Le validateur analyse robots.txt afin de montrer si les principaux bots d’achat et d’indexation sont autorisés à accéder à votre Universal Commerce Profile sans friction."
+        }
+      ]
+    },
+    "footer": {
+      "primary": "Valider un domaine",
+      "secondary": "Tous les outils gratuits",
+      "note": "Gratuit · Aucun compte requis · Récupération en direct"
+    },
+    "structuredData": {
+      "name": "UCP Validator"
+    },
+    "form": {
+      "preview": {
+        "logoAlt": "Logo Universal Commerce Protocol",
+        "liveFetch": "Récupération en direct",
+        "note": "Nous récupérons le profil public, analysons les services et capacités, puis signalons les écarts par rapport à la spécification et les conditions d’accès des agents indiquées par robots.txt."
+      },
+      "targets": {
+        "title": "Ce que nous validons",
+        "https": {
+          "label": "HTTPS et accessibilité",
+          "detail": "Servi via TLS et répondant aux requêtes en direct."
+        },
+        "discovery": {
+          "label": "Découverte du profil",
+          "detail": "Le document de découverte en direct que les agents récupèrent sur votre domaine."
+        },
+        "services": {
+          "label": "Services et transports",
+          "detail": "Points d’accès utilisés pour la négociation avec les agents."
+        },
+        "capabilities": {
+          "label": "Capacités",
+          "detail": "Parcours de panier, de paiement et de commande déclarés par la vitrine."
+        },
+        "paymentHandlers": {
+          "label": "Gestionnaires de paiement",
+          "detail": "Points de terminaison de tokenisation et leurs versions déclarées."
+        },
+        "signingKeys": {
+          "label": "Clés de signature",
+          "detail": "JWK publics pour la vérification des signatures de messages HTTP."
+        },
+        "supportedVersions": {
+          "label": "Versions prises en charge",
+          "detail": "Toutes les versions du protocole encore exposées par le marchand."
+        },
+        "agentAccess": {
+          "label": "Accès des agents",
+          "detail": "Les agents d’achat et d’indexation ne sont pas bloqués."
+        }
+      },
+      "issueCategory": {
+        "envelope": "Enveloppe",
+        "version": "Version",
+        "services": "Services",
+        "capabilities": "Capacités",
+        "payment_handlers": "Gestionnaires de paiement",
+        "signing_keys": "Clés de signature",
+        "supported_versions": "Versions prises en charge",
+        "transport": "Transport",
+        "security": "Sécurité"
+      },
+      "badge": {
+        "pass": "Réussi",
+        "fail": "Échec",
+        "recognized": "Reconnu",
+        "custom": "Personnalisé",
+        "known": "Connu",
+        "issues": "Problèmes",
+        "valid": "Valide",
+        "current": "Actuel",
+        "https": "HTTPS",
+        "insecure": "Non sécurisé",
+        "allowed": "Autorisé",
+        "blocked": "Bloqué",
+        "error": "Erreur",
+        "warning": "Avertissement",
+        "missing": "Manquant",
+        "unavailable": "Indisponible",
+        "embedded": "Intégré",
+        "specLinked": "spécification liée",
+        "schemaLinked": "schéma lié",
+        "ucpReady": "Compatible UCP",
+        "needsFixes": "Corrections nécessaires",
+        "noIssuesFound": "Aucun problème détecté",
+        "signingKeysNotAdvertised": "signing_keys non publié",
+        "signingKeysEmpty": "Le champ signing_keys est vide",
+        "missingKid": "(kid manquant)",
+        "transport": "Transport · {value}",
+        "version": "Version · {value}",
+        "id": "ID · {value}",
+        "kty": "kty · {value}",
+        "use": "use · {value}",
+        "alg": "alg · {value}",
+        "crv": "crv · {value}",
+        "latestSuffix": " · dernière version {version}",
+        "envelope": "enveloppe : {kind}",
+        "envelopeFlatKind": "flat"
+      },
+      "services": {
+        "title": "Services et transports",
+        "description": "Points d’accès avec lesquels un agent peut négocier. Chaque entrée correspond à une clé de service en domaine inversé dans le profil.",
+        "customNote": "Clé de service personnalisée — ne fait pas partie des identifiants de service UCP connus.",
+        "endpointLabel": "Point d’accès :",
+        "schemaLabel": "Schéma :"
+      },
+      "capabilities": {
+        "title": "Capacités",
+        "description": "Parcours distincts pris en charge par la vitrine. La commande, le paiement et le panier sont requis pour les agents transactionnels.",
+        "configLabel": "Configuration :"
+      },
+      "paymentHandlers": {
+        "title": "Gestionnaires de paiement",
+        "description": "Points de terminaison de tokenisation déclarés par le marchand. Chaque gestionnaire doit déclarer une version et tous les identifiants de gestionnaire requis."
+      },
+      "signingKeys": {
+        "title": "Clés de signature et authentification",
+        "description": "Les signatures de messages HTTP RFC 9421 constituent la base de l’intégration sans autorisation préalable. Chaque requête doit pouvoir être vérifiée à partir d’un JWK public publié ici.",
+        "notAdvertisedBody": "Le profil n’annonce aucune clé de signature ; les plateformes ne peuvent donc pas vérifier les signatures de messages HTTP RFC 9421 sans échange de secret hors bande. UCP l’autorise, mais les agents reviendront à une authentification traditionnelle (clés API, OAuth, mTLS).",
+        "privateMaterial": "Contient des éléments privés — doit être supprimé.",
+        "publicJwk": "JWK public"
+      },
+      "supportedVersions": {
+        "title": "Versions prises en charge",
+        "description": "URI de profil pour chaque version du protocole encore exposée par ce marchand. Les agents choisissent la version la plus élevée qu’ils comprennent."
+      },
+      "spec": {
+        "title": "Validation de la spécification",
+        "description": "{errors, plural, one {# erreur} many {# erreurs} other {# erreurs}}, {warnings, plural, one {# avertissement} many {# avertissements} other {# avertissements}} regroupés par section de la spécification.",
+        "noIssuesBody": "Le profil actuel a passé la validation sans erreur ni avertissement de schéma."
+      },
+      "results": {
+        "responseHealth": "État de la réponse",
+        "responseHealthOk": "Le point d’accès a répondu et le profil a pu être évalué.",
+        "detectedSurface": "Surface détectée",
+        "detectedSurfaceValue": "{services, plural, one {# service} many {# services} other {# services}}, {capabilities, plural, one {# capacité} many {# capacités} other {# capacités}}, {handlers, plural, one {# gestionnaire de paiement} many {# gestionnaires de paiement} other {# gestionnaires de paiement}}, {keys, plural, one {# clé de signature} many {# clés de signature} other {# clés de signature}}."
+      },
+      "summary": {
+        "latency": {
+          "label": "Latence",
+          "unavailableDetail": "Nous n’avons pas pu mesurer un temps de réponse en direct.",
+          "detail": "Temps de réponse du point d’accès UCP."
+        },
+        "specErrors": {
+          "label": "Erreurs de spécification",
+          "noneDetail": "Aucun problème de schéma bloquant détecté.",
+          "someDetail": "Problèmes bloquants à corriger en priorité."
+        },
+        "capabilities": {
+          "label": "Capacités",
+          "noneDetail": "Aucune capacité déclarée.",
+          "someDetail": "Capacités reconnues par rapport au total des capacités déclarées."
+        },
+        "botAccess": {
+          "label": "Accès des bots",
+          "detail": "Les principaux bots d’achat et d’indexation sont autorisés dans robots.txt."
+        }
+      },
+      "coreChecks": {
+        "title": "Contrôles principaux",
+        "description": "Ces contrôles confirment que le profil public est accessible, sécurisé et exploitable par des machines.",
+        "https": {
+          "label": "HTTPS",
+          "detail": "Le domaine doit être accessible via une connexion HTTPS sécurisée."
+        },
+        "wellKnown": {
+          "label": "/.well-known/ucp existe",
+          "httpStatus": "HTTP {status}.",
+          "httpStatusNotJson": "HTTP {status} (le corps n’est pas du JSON).",
+          "responded": "Le point d’accès a répondu.",
+          "noResponse": "Aucune réponse sur /.well-known/ucp."
+        },
+        "validJson": {
+          "label": "JSON valide",
+          "contentType": "Content-Type: {contentType}",
+          "contentTypeWithStatus": "Content-Type: {contentType} · HTTP {status}",
+          "invalid": "Le corps de la réponse n’est pas un JSON valide."
+        },
+        "latency": {
+          "label": "Latence du site",
+          "unmeasured": "La latence n’a pas pu être mesurée car le point d’accès n’a pas répondu.",
+          "responded": "Le point d’accès UCP a répondu en {latency}."
+        },
+        "version": {
+          "label": "Dernière version du protocole",
+          "latest": "Le profil déclare {version} — la dernière version UCP publiée.",
+          "outdated": "Le profil déclare {version} ; la dernière version est {latest}.",
+          "none": "Aucune version déclarée à la racine du profil."
+        },
+        "signingKeys": {
+          "label": "Clés de signature annoncées",
+          "published": "{count, plural, one {# JWK} many {# JWKs} other {# JWKs}} publiés pour la vérification RFC 9421.",
+          "none": "Aucune clé signing_keys publiée — vérification sans autorisation préalable impossible."
+        }
+      },
+      "robots": {
+        "title": "Accès des agents IA",
+        "description": "Basé sur les règles robots.txt actuelles du site."
+      },
+      "response": {
+        "title": "Réponse UCP",
+        "description": "Aperçu JSON du document well-known en direct avec coloration syntaxique."
+      },
+      "toast": {
+        "failedTitle": "Échec de la vérification"
+      },
+      "action": {
+        "checking": "Vérification...",
+        "primary": "Vérifier le domaine"
+      },
+      "panel": {
+        "checkADomain": "Vérifier un domaine",
+        "storefrontDomain": "Domaine de la vitrine",
+        "domain": "Domaine",
+        "placeholder": "votredomaine.com",
+        "rootDomainNote": "Domaine racine uniquement — <code>acme.com</code> ou <code>www.acme.com</code>. Nous validons toujours la version HTTPS."
+      },
+      "intro": {
+        "eyebrow": "Validation en direct",
+        "title": "Lancer une validation en direct",
+        "description": "Collez un domaine et nous récupérerons en direct le document <code>/.well-known/ucp</code>, analyserons chaque service, capacité, gestionnaire de paiement et clé de signature, puis le validerons selon la spécification <code>{version}</code>."
+      }
+    }
+  }
+}

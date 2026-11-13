@@ -1,0 +1,56 @@
+{
+  "brandsPage": {
+    "jobs": {
+      "description": "Choisissez l’étape du parcours d’achat que votre équipe doit améliorer.",
+      "label": "Explorer les priorités de la marque",
+      "details": "Voir tous les enjeux et fonctionnalités",
+      "items": [
+        {
+          "id": "compare",
+          "label": "Comparer les concurrents",
+          "scope": "Décisions simulées",
+          "path": [
+            "Votre produit",
+            "Concurrents identifiés",
+            "Décisions du modèle"
+          ]
+        },
+        {
+          "id": "listings",
+          "label": "Améliorer les fiches produit",
+          "scope": "Informations produit existantes",
+          "path": [
+            "Données source",
+            "Titre et description",
+            "Données structurées distinctes"
+          ]
+        },
+        {
+          "id": "checkout",
+          "label": "Tester le paiement",
+          "scope": "Parcours WooCommerce pris en charge",
+          "path": [
+            "Découverte produit",
+            "Tarification du panier",
+            "Transmission au paiement"
+          ]
+        },
+        {
+          "id": "referrals",
+          "label": "Identifier les sources de trafic",
+          "scope": "Sources de trafic Shopify reconnues",
+          "path": [
+            "Assistant IA",
+            "Visite de la boutique",
+            "Rapports sur les sources de trafic"
+          ]
+        }
+      ]
+    },
+    "sources": {
+      "description": "Commencez à partir de votre boutique ou d’un flux pris en charge. La synchronisation Merchant Center reste une action distincte.",
+      "store": "Connecter une boutique",
+      "catalog": "Autres sources de catalogue"
+    }
+  }
+}

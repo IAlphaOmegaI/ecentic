@@ -1,0 +1,25 @@
+{
+  "docsApiPage": {
+    "surfaces": "Parcourir par surface",
+    "all": "Tous les points de terminaison",
+    "groups": {
+      "discovery": "Découverte",
+      "sandbox": "Sandbox",
+      "catalog": "Catalogues",
+      "mcp": "MCP",
+      "commerce": "Commerce"
+    },
+    "sourceTitle": "Une référence unique.",
+    "sourceBody": "Ouvrez un point de terminaison pour consulter le contrat exact. Suivez ses liens de schéma afin d’examiner les structures de données partagées.",
+    "operations": "Opérations",
+    "schemas": "Schémas partagés",
+    "responses": "Codes de réponse",
+    "references": "Schémas référencés",
+    "schemaBody": "Ces définitions sont partagées entre les opérations. Chaque nom dispose d’un lien permanent, et chaque définition peut être copiée au format JSON.",
+    "permalink": "Lien vers cette définition",
+    "navigation": "Sections de référence",
+    "definition": "Définition source · JSON",
+    "securityTitle": "Déclaré pour chaque opération",
+    "securityBody": "Consultez le champ de sécurité de chaque point de terminaison avant de choisir des identifiants d’authentification. Le mécanisme disponible est défini ici."
+  }
+}

@@ -16,11 +16,12 @@ import { Checkbox } from "@zenncore/web/components/checkbox";
 import { Progress } from "@zenncore/web/components/progress";
 import { useToastManager } from "@zenncore/web/components/toast";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { OffersTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/offers-tab";
 import { useScanRunner } from "@/app/[locale]/(auth)/onboarding/scan/_components/use-scan-runner";
 import { isJudgeable } from "@/lib/competitor-evidence";
+import { formatElapsed } from "@/lib/date";
 import {
   countSimulations,
   formatScanEstimate,
@@ -49,12 +50,6 @@ const modelColors: Record<string, string> = {
   Claude: "text-warning",
   Gemini: "text-success",
   System: "text-foreground-dimmed",
-};
-
-const formatElapsed = (ms: number) => {
-  const seconds = ms / 1000;
-  if (seconds < 60) return `${seconds.toFixed(1)}s`;
-  return `${Math.floor(seconds / 60)}m ${(seconds % 60).toFixed(0)}s`;
 };
 
 type LastScan = {
@@ -216,6 +211,7 @@ export const SimulationsClient = ({
 }: SimulationsClient.Props) => {
   const toast = useToastManager();
   const translate = useTranslations("dashboard.simulations");
+  const locale = useLocale();
   const run = useTranslations("dashboard.simulations.run");
 
   // The roster for the next run. Detection can append competitors mid-session,
@@ -626,7 +622,7 @@ export const SimulationsClient = ({
                   icon={
                     <ClockIcon className="size-7.5 text-foreground-dimmed" />
                   }
-                  value={formatElapsed(elapsed)}
+                  value={formatElapsed(elapsed, locale)}
                   caption={run("sinceStart")}
                 />
               </div>

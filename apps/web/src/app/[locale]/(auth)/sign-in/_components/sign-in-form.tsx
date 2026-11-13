@@ -14,16 +14,18 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useSearchParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
 import { z } from "zod";
 import { Motion } from "@/components/motion";
+import { localizePath } from "@/i18n/locale";
 import { Link, useRouter } from "@/i18n/navigation";
 import { Spring } from "@/lib/animations";
 import { sanitizeRedirect } from "@/lib/redirect";
 import * as Authentication from "@/server/app/authentication";
 
 export const SignInForm = () => {
+  const locale = useLocale();
   const router = useRouter();
   const toast = useToastManager();
   const searchParameters = useSearchParams();
@@ -95,7 +97,10 @@ export const SignInForm = () => {
         // store-less accounts to onboarding); first-time Google users are
         // routed to /complete-profile via `newUserCallbackURL` server-side.
         const result = await Authentication.signInWithGoogle({
-          callbackURL: sanitizeRedirect(requestedRedirect, "/dashboard"),
+          callbackURL: sanitizeRedirect(
+            requestedRedirect,
+            localizePath("/dashboard", locale),
+          ),
         });
 
         if (!result.success) {
@@ -115,7 +120,10 @@ export const SignInForm = () => {
       if (data.type === "shopify") {
         const result = await Authentication.signInWithShopify({
           shop: data.data.shop,
-          callbackURL: sanitizeRedirect(requestedRedirect, "/dashboard"),
+          callbackURL: sanitizeRedirect(
+            requestedRedirect,
+            localizePath("/dashboard", locale),
+          ),
         });
 
         if (!result.success) {

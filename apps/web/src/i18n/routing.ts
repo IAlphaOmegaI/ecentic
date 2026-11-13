@@ -1,12 +1,10 @@
 import { defineRouting } from "next-intl/routing";
+import { defaultLocale, publishedLocales } from "./locales";
+
+export { isLocale, type Locale } from "./locales";
 
 export const routing = defineRouting({
-  locales: ["en", "es"],
-  defaultLocale: "en",
+  locales: publishedLocales,
+  defaultLocale,
   localePrefix: "as-needed",
 });
-
-export type Locale = (typeof routing.locales)[number];
-
-export const isLocale = (value: string): value is Locale =>
-  (routing.locales as readonly string[]).includes(value);

@@ -1,0 +1,188 @@
+{
+  "features": {
+    "meta": {
+      "title": "KI-E-Commerce-Tools für Produktangebote von Händlern",
+      "description": "KI-E-Commerce-Tools zur Optimierung von Produktangeboten, Wettbewerbsanalyse und Sichtbarkeit in KI-Einkaufssystemen. Erfahren Sie, wie ecentic Händlern hilft, dass ihre Produkte heute häufiger zum Kauf ausgewählt werden."
+    },
+    "breadcrumb": {
+      "home": "Startseite",
+      "features": "Funktionen"
+    },
+    "hero": {
+      "eyebrow": "Funktionen",
+      "title": {
+        "primary": "Alle Tools, die Sie brauchen, um",
+        "accent": "von KI-Einkaufsagenten ausgewählt zu werden."
+      },
+      "description": "Simulieren Sie, wie KI-Einkaufsagenten Ihre Produkte mit Wettbewerbern vergleichen, sehen Sie genau, warum Wettbewerber gewinnen, und veröffentlichen Sie Korrekturen an Produktangeboten, die das Ergebnis drehen – alles in einem durchgängigen Ablauf.",
+      "assurances": [
+        "Simuliert ChatGPT, Claude, Gemini & Perplexity",
+        "Produktangebote mit einem Klick umschreiben",
+        "Live-Zugriffe von KI-Agenten"
+      ],
+      "art": {
+        "alt": "ASCII-Illustration einer Steuerkonsole"
+      }
+    },
+    "loop": {
+      "number": "01",
+      "title": "Ein Kreislauf von fehlender Sichtbarkeit zur Empfehlung.",
+      "description": "Sichtbarkeit im KI-gestützten Shopping ist keine Markenkennzahl. Sie ist ein operativer Ablauf – und ecentic übernimmt alle vier Schritte für jedes Produkt in Ihrem Katalog.",
+      "steps": [
+        {
+          "step": "Schritt 01",
+          "title": "Simulieren",
+          "description": "ecentic lässt führende KI-Einkaufsagenten Ihren Katalog beim Einkauf mit echten Wettbewerbern vergleichen – genauso, wie Käufer es tun."
+        },
+        {
+          "step": "Schritt 02",
+          "title": "Analysieren",
+          "description": "Sehen Sie genau, welche Produkte Agenten überspringen, wen sie stattdessen auswählen und welches fehlende Attribut dazu führt, dass Ihr Produkt nicht gewählt wird."
+        },
+        {
+          "step": "Schritt 03",
+          "title": "Optimieren",
+          "description": "Geben Sie umgeschriebene Titel, Beschreibungen und strukturierte Daten frei und veröffentlichen Sie sie mit einem Klick zurück in Ihrem Shop."
+        },
+        {
+          "step": "Schritt 04",
+          "title": "Verfolgen",
+          "description": "Verfolgen Sie Woche für Woche Ihre Gewinnquote, Besuche durch KI-Agenten und den zugeordneten Umsatz – und scannen Sie anschließend erneut und wiederholen Sie den Ablauf."
+        }
+      ]
+    },
+    "capabilities": {
+      "number": "02",
+      "title": "Was nötig ist, um ausgewählt zu werden.",
+      "description": "Kein weiteres Dashboard und kein reiner Textgenerator. ecentic ist eine Entscheidungsebene über Ihrem Shop, die Erkenntnisse aus KI-Agenten in veröffentlichte Updates für Produktangebote umsetzt.",
+      "items": [
+        {
+          "title": "KI-Gewinnquoten-Score",
+          "description": "Sehen Sie, wie oft ChatGPT, Claude, Gemini und Perplexity Ihre Produkte auswählen, wenn Käufer fragen, was sie kaufen sollen.",
+          "features": [
+            "Gewinnquoten pro Agent",
+            "Bewertung auf Produktebene",
+            "Verlauf der Bewertungen"
+          ],
+          "highlighted": true
+        },
+        {
+          "title": "Analyse von Wettbewerbsunterschieden",
+          "description": "Erfahren Sie, wen Agenten statt Ihrer Produkte empfehlen und was deren Produktangebot genau enthält, das Ihrem fehlt.",
+          "features": [
+            "Direkte Vergleiche",
+            "Erkennung fehlender Attribute",
+            "Kategorie-Benchmarks"
+          ]
+        },
+        {
+          "title": "Produktangebote mit einem Klick umschreiben",
+          "description": "Freigabefertige Überarbeitungen von Titeln, Beschreibungen und strukturierten Produktdaten, die direkt zurück in Ihren Shop veröffentlicht werden.",
+          "features": [
+            "Freigabefertige Entwürfe",
+            "Rückschreiben für Shopify + WooCommerce",
+            "Verbesserungen im Vorher-nachher-Vergleich messen"
+          ]
+        },
+        {
+          "title": "Analyse der Zugriffe von KI-Agenten",
+          "description": "Erkennen Sie, wann ein KI-Agent Ihren Shop besucht, welche Produkte er liest und welchen Umsatz diese Besuche erzeugen.",
+          "features": [
+            "Erkennung von KI-Agent-Besuchen",
+            "Tägliche Traffic-Zusammenfassungen",
+            "Referral-Zuordnung"
+          ]
+        },
+        {
+          "title": "UCP-Profil",
+          "description": "Ein maschinenlesbares Händlerprofil auf Basis des Universal Commerce Protocol, damit Agenten Ihrem Shop vertrauen und ihn verifizieren können.",
+          "features": [
+            "Automatisch generiertes Profil",
+            "Strukturierte Produktdaten",
+            "Für Agenten verifizierbare Identität"
+          ]
+        },
+        {
+          "title": "Kontinuierliche Rescans",
+          "description": "Bewertungen veralten, sobald ein Wettbewerber sein Produktangebot aktualisiert. Geplante erneute Scans sorgen dafür, dass jedes Produkt mit aktuellen Vergleichswerten bewertet wird.",
+          "features": [
+            "Geplante Katalog-Scans",
+            "Benachrichtigungen bei Änderungen der Gewinnquote",
+            "Regressionserkennung"
+          ]
+        }
+      ]
+    },
+    "workflows": {
+      "number": "03",
+      "title": "Wählen Sie den Weg, der zu Ihrem Stack passt.",
+      "description": "Jeder Weg konzentriert sich auf einen bestimmten Teil des Optimierungsablaufs: Qualität der Produktangebote, Plattform-Kompatibilität oder Wettbewerbsanalyse.",
+      "items": [
+        {
+          "href": "/features/product-listings",
+          "eyebrow": "Produktangebote",
+          "title": "Verbessern Sie Titel, Beschreibungen und strukturierte Produktdaten",
+          "description": "Machen Sie aus unterlegenen Produktseiten klarere Kaufgrundlagen für KI-Einkaufsagenten und kaufbereite Interessenten.",
+          "label": "Workflow für Produktangebote ansehen",
+          "color": "primary"
+        },
+        {
+          "href": "/platforms/shopify",
+          "eyebrow": "Shopify",
+          "title": "Shopify-Katalog verbinden und freigegebene Updates veröffentlichen",
+          "description": "Vergleichen Sie Produkte, prüfen Sie, warum Agenten Wettbewerber bevorzugen, und senden Sie freigegebene Änderungen an Produktangeboten zurück an Shopify.",
+          "label": "Shopify-Seite ansehen",
+          "color": "accent"
+        },
+        {
+          "href": "/platforms/woocommerce",
+          "eyebrow": "WooCommerce",
+          "title": "Den gleichen Optimierungsablauf für WooCommerce-Shops nutzen",
+          "description": "Importieren Sie Produktdaten, vergleichen Sie sie mit Wettbewerbern und verwalten Sie Verbesserungen an Produktangeboten, ohne Ihren Stack neu aufzubauen.",
+          "label": "WooCommerce-Seite ansehen",
+          "color": "accent"
+        },
+        {
+          "href": "/compare/best-ai-ecommerce-tools",
+          "eyebrow": "Vergleich",
+          "title": "Verstehen, wo die Optimierung für Agent-Commerce einzuordnen ist",
+          "description": "Nutzen Sie den Einkaufsleitfaden, um Content-Generatoren, Personalisierungstools, Analyseplattformen und agentenorientierte Workflows zu vergleichen.",
+          "label": "Leitfaden lesen",
+          "color": "accent"
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "04",
+      "title": "Häufig gestellte Fragen",
+      "description": "Häufige Fragen von Händlern, die KI-E-Commerce-Tools bewerten."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Was unterscheidet KI-E-Commerce-Tools von herkömmlicher E-Commerce-Software?",
+          "answer": "KI-E-Commerce-Tools müssen Händlern helfen, Produktdaten zu strukturieren, zu erklären, warum Produktangebote im Vergleich verlieren, und Seiten zu verbessern, die KI-Shopping-Systeme innerhalb von Sekunden vergleichen. Das unterscheidet sie von generischen Dashboards oder Textgeneratoren, die nur Beschreibungen umschreiben."
+        },
+        {
+          "question": "Ersetzt ecentic eine E-Commerce-Plattform?",
+          "answer": "Nein. ecentic ergänzt einen bestehenden Shop-Stack. Es verbindet sich mit dem Katalog, führt Simulationen gegen Wettbewerber aus und hilft Händlern dabei, klarere Updates für Produktangebote in die Plattform zurückzuspielen, die sie bereits nutzen."
+        },
+        {
+          "question": "Wer sollte zuerst die Funktionsseite lesen?",
+          "answer": "Teams, die KI-E-Commerce-Tools, Agent-Commerce-Workflows oder die Optimierung von Produktangeboten bewerten, beginnen meist hier, weil die Seite den vollständigen Ablauf aus Simulation, Analyse und Optimierung erklärt, bevor sie sich für einen plattformspezifischen Weg entscheiden."
+        },
+        {
+          "question": "Welche Seiten sollten Händler als Nächstes lesen?",
+          "answer": "Die meisten Händler wechseln von der Funktionsseite zur Seite für KI-Optimierung von Produktangeboten, dann zu einer Plattformseite wie Shopify oder WooCommerce und schließlich zu Vergleichs- oder Blog-Inhalten für eine vertiefte Recherche."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Jetzt starten",
+        "secondary": "Zurück zur Startseite"
+      },
+      "note": "Einrichtung in 2 Minuten · Keine Kreditkarte · Kostenlosen Score zuerst ansehen"
+    }
+  }
+}

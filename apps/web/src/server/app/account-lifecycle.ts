@@ -7,6 +7,7 @@ import { cookies, headers } from "next/headers";
 import { redirect } from "next/navigation";
 import { z } from "zod";
 import { localizePath } from "@/i18n/locale";
+import { defaultLocale, locales } from "@/i18n/locales";
 import { auth } from "@/lib/auth";
 import { ENTRY_COOKIE } from "@/lib/redirect";
 import { db, schema } from "../database";
@@ -104,7 +105,7 @@ export const deleteAccount = withAuthentication(
     const parsed = z
       .object({
         email: z.email().max(320),
-        locale: z.enum(["en", "es"]).default("en"),
+        locale: z.enum(locales).default(defaultLocale),
       })
       .safeParse(input);
     if (!parsed.success)

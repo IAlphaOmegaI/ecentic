@@ -1,0 +1,38 @@
+{
+  "compare": {
+    "meta": {
+      "title": "KI-Tools für E-Commerce: Ein Leitfaden nach Kategorien",
+      "description": "Vergleichen Sie E-Commerce-Tools für Produktinhalte, Personalisierung, Suche, Analytics und Agent Commerce – übersichtlich nach Kategorien geordnet."
+    }
+  },
+  "docs": {
+    "meta": {
+      "title": "ecentic API-Dokumentation",
+      "description": "Entwicklerdokumentation für die REST API, den MCP-Server, CLI, Authentifizierung, Fehler, Rate Limits und Versionierung."
+    },
+    "mcpPage": {
+      "meta": {
+        "title": "ecentic MCP-Server",
+        "description": "Verbinden Sie einen MCP-Client mit ecentic. Lesen Sie die Referenz zu Transport, Handshake, unterstützten Tools, Authentifizierung und Fehlerbehandlung."
+      }
+    },
+    "authenticationPage": {
+      "meta": {
+        "title": "ecentic API-Authentifizierung",
+        "description": "Erfahren Sie, welche API-Oberflächen öffentlich sind, wie Sie einen Agent-API-Schlüssel erhalten, Bearer-Tokens senden und Authentifizierungsfehler behandeln."
+      }
+    },
+    "errorsPage": {
+      "meta": {
+        "title": "ecentic API-Fehler",
+        "description": "API-Fehlercodes, HTTP-Statuswerte und Hinweise zur Behebung nachschlagen. Antworten verwenden das RFC 9457-Problemformat."
+      }
+    },
+    "versioningPage": {
+      "meta": {
+        "title": "ecentic API-Versionierung",
+        "description": "Erfahren Sie, wie ecentic seine API versioniert und Abkündigungen über Deprecation- und Sunset-Header ankündigt."
+      }
+    }
+  }
+}

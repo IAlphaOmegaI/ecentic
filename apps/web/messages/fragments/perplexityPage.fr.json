@@ -1,0 +1,32 @@
+{
+  "perplexityPage": {
+    "shopping": {
+      "label": "Explorer la destination d’achat",
+      "result": "Carte produit",
+      "destination": "Destination d’achat",
+      "purchase": "Buy with Pro",
+      "store": "Site du marchand",
+      "purchaseTitle": "Un achat éligible",
+      "purchaseDescription": "L’expérience Buy with Pro annoncée concerne les produits éligibles aux États-Unis.",
+      "storeTitle": "Poursuivre chez le marchand",
+      "storeDescription": "Lorsque cette option d’achat n’est pas disponible, l’acheteur suit un lien vers le site du marchand.",
+      "caption": "Explorez les deux parcours décrits dans l’annonce shopping de Perplexity."
+    },
+    "reading": {
+      "merchant": "Informations sur le marchand",
+      "product": "Détails du produit",
+      "price": "Prix",
+      "website": "Site du marchand",
+      "result": "Résultats d’achat",
+      "caption": "Un programme marchand aide à rendre les informations produit plus complètes."
+    },
+    "entry": {
+      "label": "Explorer les exigences d’accès pour les marchands",
+      "steps": [
+        "Le programme annoncé",
+        "Éligibilité actuelle",
+        "Ce qui reste à vérifier"
+      ]
+    }
+  }
+}

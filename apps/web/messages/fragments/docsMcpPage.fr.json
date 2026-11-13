@@ -1,0 +1,44 @@
+{
+  "docsMcpPage": {
+    "transport": {
+      "label": "Référence de connexion",
+      "endpoint": "Point de terminaison principal",
+      "alias": "Même gestionnaire",
+      "details": [
+        "Chemins des points de terminaison",
+        "Requêtes et réponses",
+        "Comportement de session"
+      ]
+    },
+    "handshake": {
+      "label": "Explorer la négociation initiale",
+      "tabs": [
+        "Initialiser",
+        "Notifier"
+      ],
+      "request": "Le client envoie",
+      "response": "Le serveur renvoie",
+      "result": [
+        "Protocole négocié + capacités du serveur",
+        "Accepté avec un corps vide"
+      ],
+      "example": "Exemple complet de négociation initiale"
+    },
+    "authentication": {
+      "credential": "Envoyer une clé Bearer",
+      "create": "Créer votre clé d’authentification"
+    },
+    "errors": {
+      "labels": [
+        "Erreur JSON-RPC",
+        "Erreur de transport",
+        "Exception d’authentification"
+      ],
+      "formats": [
+        "error.code",
+        "application/problem+json",
+        "WWW-Authenticate"
+      ]
+    }
+  }
+}

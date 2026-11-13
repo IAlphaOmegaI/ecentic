@@ -7,7 +7,7 @@ import {
 import { cn, unwrapResult } from "@zenncore/utils";
 import Image from "next/image";
 import { connection } from "next/server";
-import { getMessages, getTranslations } from "next-intl/server";
+import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { Motion } from "@/components/motion";
 import { Plus } from "@/components/plus";
 import {
@@ -44,6 +44,7 @@ const statColors = {
 export default async () => {
   await connection();
 
+  const locale = await getLocale();
   const translate = await getTranslations("onboarding.scan");
   const messages = await getMessages();
   const models = messages.onboarding.scan.models;
@@ -79,15 +80,15 @@ export default async () => {
   const labels = [
     {
       key: "products" as const,
-      value: productCount.toLocaleString(),
+      value: productCount.toLocaleString(locale),
     },
     {
       key: "competitorsMatched" as const,
-      value: competitorCounts.judgeable.toLocaleString(),
+      value: competitorCounts.judgeable.toLocaleString(locale),
     },
     {
       key: "simulations" as const,
-      value: simulations.toLocaleString(),
+      value: simulations.toLocaleString(locale),
     },
     {
       key: "estimatedTime" as const,

@@ -1,0 +1,78 @@
+{
+  "techstars": {
+    "meta": {
+      "title": "ecentic für Techstars — Gründerangebot einlösen",
+      "description": "Ein exklusives ecentic-Angebot für Techstars-Gründer: verlängerter Zugriff auf Dominate, White-Glove-Onboarding und Gründerkonditionen. In weniger als zwei Minuten einlösen."
+    },
+    "breadcrumb": {
+      "home": "Startseite",
+      "page": "Techstars"
+    },
+    "hero": {
+      "eyebrow": "Techstars",
+      "title": {
+        "primary": "Ihr ecentic-Angebot,",
+        "accent": "bereit zum Einlösen."
+      },
+      "description": "Ein exklusives ecentic-Angebot für Techstars-Gründer: verlängerter Zugriff auf Dominate, White-Glove-Onboarding und Gründerkonditionen. In weniger als zwei Minuten einlösen.",
+      "art": {
+        "alt": "ASCII-Grafik einer Handschlag-Szene"
+      },
+      "badge": {
+        "alt": "Techstars",
+        "label": "Exklusives Partnerangebot"
+      }
+    },
+    "deal": {
+      "number": "01",
+      "title": "Das ist im Angebot enthalten",
+      "description": "Für Techstars-Gründer entwickelt, die lieber Empfehlungen von KI-Einkaufsagenten gewinnen als Tabellen mit Produktangeboten manuell zu pflegen.",
+      "content": "ecentic zeigt Ihnen, wie KI-Einkaufsagenten Ihre Produkte mit Wettbewerbern vergleichen, analysiert, warum Sie gewinnen oder verlieren, und überarbeitet Ihre Produktangebote, um die Lücke zu schließen. Das Techstars-Angebot schaltet die gesamte Plattform frei:\n\n- Verlängerter Zugriff auf ecentic Dominate mit kontinuierlichen Simulationen über ChatGPT, Claude, Gemini und Perplexity\n- Automatische Optimierung mit Veröffentlichung per Klick und Warnungen bei Modelldrift\n- UCP-Generierung, damit Agenten Ihren Katalog direkt verifizieren können\n- persönlich begleitete Einrichtung für Ihren Katalog und Gründerkonditionen nach Ablauf des Angebotszeitraums\n\nLösen Sie das Angebot unten ein. Wir verifizieren anschließend Ihren Jahrgang und senden Ihnen innerhalb eines Werktags Ihren Aktivierungslink per E-Mail zu."
+    },
+    "redeem": {
+      "number": "02",
+      "title": "Angebot einlösen",
+      "description": "Sagen Sie uns, wer Sie sind und welche Ergebnisse Sie erzielen möchten. Wir verifizieren Ihren Techstars-Jahrgang und aktivieren Ihr Angebot. Keine Kreditkarte erforderlich."
+    },
+    "howItWorks": {
+      "number": "03",
+      "title": "So funktioniert die Einlösung",
+      "description": "Drei Schritte vom Formular bis zum aktiven Angebot. Die meisten Gründer führen noch am selben Tag ihre erste Simulation aus.",
+      "content": "Hier gibt es keinen Beschaffungsdschungel. Ziel ist es, Sie schnell mit Simulationen starten zu lassen.\n\n- Senden Sie das Formular mit Ihrem Unternehmen, Ihrem Jahrgang und den Ergebnissen ein, bei denen ecentic Sie unterstützen soll\n- Wir verifizieren Ihren Jahrgang anhand des Techstars-Portfolios, in der Regel noch am selben Tag\n- Sie erhalten einen Aktivierungslink und persönliche Unterstützung beim Import Ihres Katalogs\n\nSobald Ihr Katalog importiert ist, prüft ecentic ihn mit den führenden KI-Shopping-Modellen, zeigt Ihnen, warum Wettbewerber ausgewählt werden, und wandelt die Erkenntnisse in Änderungen an Ihren Produktangeboten um, die Sie mit einem Klick freigeben können."
+    },
+    "faqSection": {
+      "number": "04",
+      "title": "FAQ zur Einlösung",
+      "description": "Teilnahmeberechtigung, enthaltene Leistungen und wie schnell Sie einsatzbereit sind."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Wer ist für dieses Angebot berechtigt?",
+          "answer": "Jedes Unternehmen, das an einem aktuellen oder früheren Techstars-Programm teilgenommen hat. Wir verifizieren Ihren Jahrgang nach dem Absenden anhand des Techstars-Portfolios. Verwenden Sie daher die bei Techstars hinterlegte E-Mail-Adresse und den dort registrierten Firmennamen, um den Prozess zu beschleunigen."
+        },
+        {
+          "question": "Was genau erhalte ich?",
+          "answer": "Verlängerten Zugriff auf ecentic Dominate: kontinuierliche Simulationen von KI-Agenten über ChatGPT, Claude, Gemini und Perplexity, automatische Optimierung mit Veröffentlichung per Klick, Warnungen bei Modelldrift und UCP-Generierung. Außerdem enthalten sind eine persönlich begleitete Einrichtung für Ihren Katalog und Gründerkonditionen nach Ende des Angebotszeitraums."
+        },
+        {
+          "question": "Brauche ich zuerst ein Konto?",
+          "answer": "Nein. Lösen Sie das Angebot hier ein, und wir senden Ihnen innerhalb eines Werktags die Aktivierungsdetails per E-Mail. Sie können Ihr Konto jetzt erstellen oder auf den Aktivierungslink warten — beides führt zum selben Ziel."
+        },
+        {
+          "question": "Wie lange dauert die Einlösung?",
+          "answer": "Das Formular dauert etwa zwei Minuten. Die Verifizierung erfolgt in der Regel noch am selben Tag und nie später als innerhalb eines Werktags. Sie erhalten eine E-Mail, sobald Ihr Angebot aktiv ist."
+        }
+      ]
+    },
+    "footer": {
+      "primary": "Konto erstellen",
+      "secondary": "Demo buchen",
+      "note": "Nur für Techstars-Gründer. Wir verifizieren Ihren Jahrgang, bevor wir das Angebot aktivieren."
+    },
+    "structuredData": {
+      "offerName": "ecentic Techstars-Gründerangebot",
+      "eligibleCustomerType": "Techstars-Portfoliounternehmen"
+    }
+  }
+}

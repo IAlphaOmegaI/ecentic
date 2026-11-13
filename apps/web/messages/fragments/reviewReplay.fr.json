@@ -1,0 +1,20 @@
+{
+  "reviewReplay": {
+    "summary": "Résumé visible de la décision",
+    "disclosure": "Exemple scénarisé des informations vérifiées et de la sélection obtenue.",
+    "inspection": "Inspection de la fiche produit",
+    "budget": "Budget de l’acheteur",
+    "criteria": "Critères d’adéquation du produit",
+    "evidence": "Preuves de la fiche produit",
+    "matched": "Présent dans la fiche produit",
+    "missing": "Absent de la fiche produit",
+    "complete": "Comparaison terminée",
+    "sampleId": "Exemple 001",
+    "process": {
+      "matchup": "Produit + produit concurrent",
+      "compare": "Le point de vue de trois modèles",
+      "diagnose": "Décision enregistrée + faits déclarés",
+      "improve": "Vérifier → améliorer → comparer à nouveau"
+    }
+  }
+}

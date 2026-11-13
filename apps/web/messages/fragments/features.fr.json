@@ -1,0 +1,188 @@
+{
+  "features": {
+    "meta": {
+      "title": "Outils IA ecommerce pour les fiches produit",
+      "description": "Outils IA ecommerce pour l’optimisation des fiches produit, l’analyse concurrentielle et la visibilité dans les achats assistés par IA. Découvrez comment ecentic aide les marchands à faire choisir plus souvent leurs produits dès aujourd’hui."
+    },
+    "breadcrumb": {
+      "home": "Accueil",
+      "features": "Fonctionnalités"
+    },
+    "hero": {
+      "eyebrow": "Fonctionnalités",
+      "title": {
+        "primary": "Tous les outils qu’il vous faut pour",
+        "accent": "faire choisir vos produits par les agents d’achat IA."
+      },
+      "description": "Simulez la façon dont les agents d’achat IA comparent vos produits, identifiez précisément pourquoi les concurrents l’emportent et publiez les corrections de fiches produit qui inversent le résultat, le tout dans une seule boucle.",
+      "assurances": [
+        "Simulation de ChatGPT, Claude, Gemini et Perplexity",
+        "Réécriture des fiches produit en un clic",
+        "Trafic des agents en direct"
+      ],
+      "art": {
+        "alt": "Illustration ASCII d’une console de contrôle"
+      }
+    },
+    "loop": {
+      "number": "01",
+      "title": "Une seule boucle, de l’invisible au recommandé.",
+      "description": "La visibilité dans les achats assistés par IA n’est pas un indicateur de marque. C’est une boucle opérationnelle, et ecentic exécute les quatre étapes pour chaque produit de votre catalogue.",
+      "steps": [
+        {
+          "step": "Étape 01",
+          "title": "Simuler",
+          "description": "ecentic demande aux principaux agents d’achat IA d’évaluer votre catalogue face à de vrais concurrents, comme le font les acheteurs."
+        },
+        {
+          "step": "Étape 02",
+          "title": "Diagnostiquer",
+          "description": "Identifiez précisément quels produits les agents ignorent, quels concurrents ils choisissent à la place et quel attribut manquant a fait pencher le choix en faveur de la concurrence."
+        },
+        {
+          "step": "Étape 03",
+          "title": "Optimiser",
+          "description": "Validez les titres, descriptions et données structurées réécrits, puis republiez-les dans votre boutique en un clic."
+        },
+        {
+          "step": "Étape 04",
+          "title": "Suivre",
+          "description": "Suivez votre taux de victoire, les visites des agents IA et les revenus attribués semaine après semaine, puis relancez un scan et recommencez."
+        }
+      ]
+    },
+    "capabilities": {
+      "number": "02",
+      "title": "Ce qu’il faut pour être choisi.",
+      "description": "Pas un tableau de bord de plus ni un générateur de texte. ecentic est une couche décisionnelle qui s’ajoute à votre boutique et transforme les informations des agents en mises à jour publiées des fiches produit.",
+      "items": [
+        {
+          "title": "Taux de victoire IA",
+          "description": "Découvrez à quelle fréquence ChatGPT, Claude, Gemini et Perplexity choisissent vos produits lorsqu’un acheteur demande quoi acheter.",
+          "features": [
+            "Taux de victoire par agent",
+            "Score par produit",
+            "Historique des scores dans le temps"
+          ],
+          "highlighted": true
+        },
+        {
+          "title": "Analyse des écarts concurrentiels",
+          "description": "Découvrez quels concurrents les agents recommandent à votre place et ce que leur fiche produit contient précisément que la vôtre n’a pas.",
+          "features": [
+            "Comparaisons côte à côte",
+            "Détection des attributs manquants",
+            "Références par catégorie"
+          ]
+        },
+        {
+          "title": "Réécriture des fiches produit en un clic",
+          "description": "Réécritures prêtes à validation des titres, descriptions et données produit structurées, publiées directement dans votre boutique.",
+          "features": [
+            "Brouillons prêts à validation",
+            "Publication vers Shopify + WooCommerce",
+            "Suivi des gains de performance avant / après"
+          ]
+        },
+        {
+          "title": "Analyses du trafic des agents",
+          "description": "Sachez quand un agent IA visite votre boutique, quels produits il consulte et quels revenus ces visites génèrent.",
+          "features": [
+            "Détection des visites d’agents IA",
+            "Synthèses quotidiennes du trafic",
+            "Attribution des sources de trafic"
+          ]
+        },
+        {
+          "title": "Profil UCP",
+          "description": "Un profil marchand lisible par machine basé sur l’Universal Commerce Protocol, afin que les agents puissent faire confiance à votre boutique et la vérifier.",
+          "features": [
+            "Profil généré automatiquement",
+            "Données produit structurées",
+            "Identité vérifiable par les agents"
+          ]
+        },
+        {
+          "title": "Nouvelles analyses continues",
+          "description": "Les scores deviennent obsolètes dès qu’un concurrent met à jour une fiche produit. Les nouvelles analyses planifiées permettent de comparer en continu chaque produit à ses concurrents.",
+          "features": [
+            "Nouvelles analyses planifiées du catalogue",
+            "Alertes sur les variations du taux de victoire",
+            "Détection des régressions"
+          ]
+        }
+      ]
+    },
+    "workflows": {
+      "number": "03",
+      "title": "Choisissez le parcours adapté à votre environnement technique.",
+      "description": "Chaque parcours cible une partie spécifique de la boucle d’optimisation : qualité des fiches produit, compatibilité avec la plateforme ou analyse concurrentielle.",
+      "items": [
+        {
+          "href": "/features/product-listings",
+          "eyebrow": "Fiches produit",
+          "title": "Améliorez les titres, descriptions et données produit structurées",
+          "description": "Transformez les pages produit qui perdent les comparaisons en informations d’achat plus claires pour les agents d’achat IA et les acheteurs ayant une forte intention d’achat.",
+          "label": "Voir le parcours des fiches produit",
+          "color": "primary"
+        },
+        {
+          "href": "/platforms/shopify",
+          "eyebrow": "Shopify",
+          "title": "Connectez un catalogue Shopify et publiez les mises à jour validées",
+          "description": "Comparez vos produits aux concurrents, analysez pourquoi les agents préfèrent d’autres offres et renvoyez les modifications validées des fiches produit vers Shopify.",
+          "label": "Voir la page Shopify",
+          "color": "accent"
+        },
+        {
+          "href": "/platforms/woocommerce",
+          "eyebrow": "WooCommerce",
+          "title": "Exécutez la même boucle d’optimisation pour les boutiques WooCommerce",
+          "description": "Importez les données produit, comparez-les aux concurrents et gérez les améliorations des fiches produit sans reconstruire votre environnement technique.",
+          "label": "Voir la page WooCommerce",
+          "color": "accent"
+        },
+        {
+          "href": "/compare/best-ai-ecommerce-tools",
+          "eyebrow": "Comparaison",
+          "title": "Comprenez où s’intègre l’optimisation pour le commerce piloté par agents",
+          "description": "Utilisez le guide d’achat pour comparer les générateurs de contenu, outils de personnalisation, plateformes d’analyse et parcours orientés agents.",
+          "label": "Lire le guide",
+          "color": "accent"
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "04",
+      "title": "Questions fréquentes",
+      "description": "Questions fréquentes des marchands qui évaluent des outils IA pour l’e-commerce."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Qu’est-ce qui différencie les outils IA pour l’e-commerce des logiciels e-commerce classiques ?",
+          "answer": "Les outils IA ecommerce doivent aider les marchands à structurer les données produit, expliquer pourquoi des fiches produit ne sont pas retenues et améliorer les pages que les systèmes d’achat IA comparent en quelques secondes. C’est différent d’un tableau de bord générique ou d’un générateur de texte qui se contente de réécrire des descriptions."
+        },
+        {
+          "question": "ecentic remplace-t-il une plateforme ecommerce ?",
+          "answer": "Non. ecentic s’ajoute à un environnement e-commerce existant. Il se connecte au catalogue, exécute des simulations face aux concurrents et aide les marchands à publier des mises à jour plus claires des fiches produit dans la plateforme qu’ils utilisent déjà."
+        },
+        {
+          "question": "Qui devrait commencer par la page des fonctionnalités ?",
+          "answer": "Les équipes qui évaluent des outils IA pour l’e-commerce, des processus de commerce par agents ou l’optimisation des fiches produit commencent généralement ici, car cette page explique le cycle complet de simulation, de diagnostic et d’optimisation avant le choix d’un parcours propre à une plateforme."
+        },
+        {
+          "question": "Quelles pages les marchands devraient-ils consulter ensuite ?",
+          "answer": "La plupart des marchands passent de la page des fonctionnalités à la page d’optimisation des fiches produit par IA, puis à une page de plateforme comme Shopify ou WooCommerce, avant de poursuivre avec des comparatifs ou des articles de blog pour approfondir leurs recherches."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Commencer",
+        "secondary": "Retour à l’accueil"
+      },
+      "note": "Configuration en 2 minutes · Sans carte bancaire · Découvrez d’abord votre score gratuit"
+    }
+  }
+}

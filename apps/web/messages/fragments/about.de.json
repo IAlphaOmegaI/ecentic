@@ -1,0 +1,261 @@
+{
+  "about": {
+    "meta": {
+      "title": "Über ecentic",
+      "description": "ecentic ist eine Plattform zur Optimierung von Agent Commerce. Sie simuliert, wie KI-Einkaufsagenten Ihre Produkte mit denen von Wettbewerbern vergleichen, analysiert, warum Sie gewinnen oder verlieren, und überarbeitet die Produktangebote so, dass diese Agenten Ihre Produkte auswählen – für Shopify- und WooCommerce-Händler."
+    },
+    "breadcrumb": {
+      "home": "Startseite",
+      "about": "Über uns"
+    },
+    "hero": {
+      "title": {
+        "primary": "Über",
+        "accent": "ecentic."
+      },
+      "description": "ecentic ist eine Plattform zur Optimierung von Agent Commerce. Sie simuliert, wie KI-Einkaufsagenten Ihre Produkte mit denen von Wettbewerbern vergleichen, analysiert, warum Sie gewinnen oder verlieren, und überarbeitet die Produktangebote so, dass diese Agenten Ihre Produkte auswählen – für Shopify- und WooCommerce-Händler.",
+      "assurances": [
+        "Gegründet am 4. April 2026",
+        "Tirana, Albanien",
+        "Monatlich kündbar"
+      ],
+      "art": {
+        "alt": "ASCII-Art-Illustration eines Handschlags"
+      }
+    },
+    "does": {
+      "number": "01",
+      "title": "Was ecentic macht",
+      "description": "Vier Aufgaben – in genau der Reihenfolge, in der Händler sie tatsächlich brauchen. Jede liefert ein nachvollziehbares Ergebnis statt einer Bewertung ohne nächsten Schritt.",
+      "items": [
+        {
+          "title": "Einkaufsagenten simulieren",
+          "body": "ecentic lässt ChatGPT, Claude, Gemini und Perplexity gegen Ihre Produkte und die von Ihnen ausgewählten Wettbewerber antreten. Jedes Modell bewertet beide Produktangebote und wählt einen Gewinner. Sie erhalten eine Gewinnquote statt einer generischen Inhaltsbewertung."
+        },
+        {
+          "title": "Niederlagen analysieren",
+          "body": "Jede Simulation speichert die Begründung des Agenten: welche Attribute gelesen wurden, wo das Wettbewerbsangebot vollständiger war und welches Modell welche Seite bevorzugt hat. Battlecards machen daraus einen Vergleich pro Produkt. Die Lücke wird sichtbar, statt nur vermutet zu werden."
+        },
+        {
+          "title": "Produktangebot optimieren",
+          "body": "Das Produkt überarbeitet Titel, Beschreibungen und strukturierte Attribute anhand der zuvor gemessenen Verluste. Sie bestätigen die Änderung mit einem Klick, oder Scale, Dominate und pay-as-you-go veröffentlichen sie direkt zurück in Shopify oder WooCommerce. Eine spätere Simulation misst, ob sich die Gewinnquote verändert hat."
+        },
+        {
+          "title": "Den Katalog agentenlesbar machen",
+          "body": "Ein Universal Commerce Protocol-Profil bietet Agenten eine strukturierte Möglichkeit, den Shop zu entdecken. ecentic erstellt dieses Profil aus dem bereits verbundenen Katalog. Agenten, die Marketing-HTML überspringen, erhalten trotzdem präzise strukturierte Informationen."
+        }
+      ]
+    },
+    "different": {
+      "number": "02",
+      "title": "Was ecentic unterscheidet",
+      "description": "Die Tools, die Händler bereits in die engere Auswahl nehmen, lösen angrenzende Aufgaben. Der Unterschied liegt darin, welche Entscheidung ecentic tatsächlich beeinflussen soll.",
+      "items": [
+        {
+          "title": "Bewertet die Entscheidung des Agenten, nicht die Wortanzahl",
+          "body": "Hypotenuse AI erstellt Beschreibungen und Bulletpoints für Kataloge, die zu groß sind, um sie manuell zu schreiben. ecentic fragt dagegen, welches Produktangebot ein Agent auswählt, wenn zwei Produkte verglichen werden. Wenn der Text bereits gut ist und der Agent trotzdem den Wettbewerber auswählt, zeigt Ihnen ein Generator nicht, warum."
+        },
+        {
+          "title": "Sieht den Wettbewerber",
+          "body": "Shopify Magic erstellt Inhalte direkt in Ihrem bestehenden Adminbereich und sieht dabei ausschließlich Ihren Shop. ecentic stellt Ihr Produktangebot neben das eines Wettbewerbers und fragt dieselben Modelle, die auch ein Käufer nutzen würde. Die Analyse zeigt die Lücke zwischen beiden Angeboten statt nur eine isolierte Überarbeitung Ihrer Seite."
+        },
+        {
+          "title": "Die Entscheidung fällt vor Ihrem Theme",
+          "body": "Nosto verändert, was wiederkehrende Besucher auf Ihrer Website sehen: Empfehlungen, Segmente und Merchandising-Regeln. KI-gestütztes Shopping endet oft schon, bevor jemand überhaupt auf diesem Theme landet. ecentic arbeitet am Produktangebot, das der Agent liest, während er noch auswählt."
+        },
+        {
+          "title": "Auch kleine Teams können am selben Tag starten",
+          "body": "Bloomreach vereint Suche, Merchandising und Kampagnendaten in einem Stack – eine Implementierung, die weit über das hinausgeht, was kleine Teams heute brauchen. ecentic startet mit einem kostenlosen Scan von 10 Produkten. Vor dem ersten Ergebnis ist kein Implementierungsprojekt nötig."
+        },
+        {
+          "title": "Monatlich kündbare Konditionen",
+          "body": "Alle kostenpflichtigen Tarife sind monatlich kündbar, ohne Mindestlaufzeit und ohne Einrichtungsgebühr. pay-as-you-go bleibt kostenlos, bis eine KI-zugeordnete Bestellung entsteht, und berechnet dann 3 % dieser Bestellung, gedeckelt auf $500 pro Monat. Die Festpreistarife sind Compete für $14.90, Scale für $44.90 und Dominate für $149 – ohne erfolgsabhängige Gebühren."
+        }
+      ]
+    },
+    "who": {
+      "number": "03",
+      "title": "Wer ecentic nutzt",
+      "description": "Das Produkt richtet sich an Händler, deren Katalog bereits von Einkaufsagenten verglichen wird – oder bald verglichen werden wird.",
+      "items": [
+        "Shopify-Händler, deren Produkte von ChatGPT, Claude, Gemini oder Perplexity verglichen werden.",
+        "WooCommerce-Shops, die denselben Ablauf aus Simulation, Analyse und Optimierung ohne individuelle Entwicklung nutzen möchten.",
+        "D2C-Marken mit Katalogen voller technischer Spezifikationen, bei denen ein Agent ein Produkt wegen eines fehlenden Attributs ausschließen kann.",
+        "Enterprise-Commerce-Teams mit Bedarf an individuellen Limits, Sicherheitsprüfungen und einem festen Customer-Success-Manager.",
+        "YC- und Techstars-Gründer, die ein Partnerangebot für Dominate einlösen."
+      ]
+    },
+    "team": {
+      "number": "04",
+      "title": "Das Team hinter ecentic",
+      "description": "Drei Gründer in Tirana. Der Unternehmenseintrag und ihre öffentlichen Profile sind hier verlinkt, damit ein Agent keine Biografie erfinden muss.",
+      "people": [
+        {
+          "name": "Xhurian Shaba",
+          "role": "Chief Executive Officer",
+          "body": "Xhurian ist Administrator von ECENTIC und Mitgründer von zennit, dem Studio aus Tirana, aus dem das Produkt hervorgegangen ist. Er ist Softwareentwickler und hat ecentic gegründet, damit Händler sehen können, welches Produktangebot ein KI-Einkaufsagent tatsächlich auswählt.",
+          "href": "https://www.linkedin.com/in/xhurian-shaba",
+          "linkLabel": "LinkedIn"
+        },
+        {
+          "name": "Iseld Muça",
+          "role": "Mitgründer",
+          "body": "Iseld verantwortet Go-to-Market und schreibt darüber, was sich verändert, wenn der Käufer ein KI-Agent ist. Er und Xhurian vertraten ecentic 2026 beim Red Bull Basement World Final in San Francisco, nachdem sie das Finale in Albanien gewonnen hatten.",
+          "href": "https://www.linkedin.com/in/iseld-muca-532786311",
+          "linkLabel": "LinkedIn"
+        },
+        {
+          "name": "Alvi Palloshi",
+          "role": "Mitgründer",
+          "body": "Alvi ist Gründungspartner des Unternehmens und Softwareentwickler bei zennit. Gemeinsam mit dem restlichen Team in Tirana entwickelt er das Produkt.",
+          "href": "https://www.linkedin.com/in/alvipalloshi",
+          "linkLabel": "LinkedIn"
+        }
+      ],
+      "stories": [
+        {
+          "title": "Wie ecentic entstanden ist",
+          "body": "Einkaufsagenten lesen strukturierte Produktdaten. Sie scrollen nicht durch ein Theme und vertrauen keinem Markenabsatz. ECENTIC SH.P.K. wurde am 4. April 2026 in Tirana gegründet, um diese Lücke für Shopify- und WooCommerce-Händler zu schließen."
+        },
+        {
+          "title": "Wer zum Team gehört",
+          "body": "Drei Gründer, Entwicklung in Tirana und zennit als Studio hinter dem Produkt. Self-Service-Kunden arbeiten direkt im Produkt. Enterprise-Konten erhalten einen festen Customer-Success-Manager, quartalsweise Reviews und einen direkten Eskalationsweg zum Engineering-Team."
+        }
+      ]
+    },
+    "works": {
+      "number": "05",
+      "title": "So funktioniert ecentic",
+      "description": "Was passiert, nachdem Sie sich entschieden haben, es auszuprobieren: wer antwortet, wie der Einstieg funktioniert und wie schnell das erste Ergebnis erscheint.",
+      "items": [
+        {
+          "title": "Kommunikation",
+          "body": "Schreiben Sie an support@ecentic.ai bei Fragen zu Konto, Abrechnung und Integrationen und fügen Sie die URL Ihres Shops hinzu. Eine 15-minütige Live-Einführung kann über die Support-Seite gebucht werden. Wir veröffentlichen keine Reaktionszeiten; Enterprise-Konten erhalten einen festen Customer-Success-Manager und einen direkten Eskalationsweg zum Engineering-Team."
+        },
+        {
+          "title": "Mit wem Sie arbeiten",
+          "body": "Beim kostenlosen Scan, bei pay-as-you-go sowie in Compete, Scale und Dominate arbeiten Sie direkt im Produkt: mit dem Scan, den Battlecards und der Optimierungswarteschlange. Enterprise ergänzt einen festen Customer-Success-Manager. Es gibt kein Agenturteam zwischen Ihnen und dem Produktangebot."
+        },
+        {
+          "title": "Onboarding",
+          "body": "Verbinden Sie Shopify oder WooCommerce, wählen Sie die Produkte aus, ergänzen Sie Wettbewerbsangebote und starten Sie den Scan. Der kostenlose Scan umfasst Ihre 10 wichtigsten Produkte in ChatGPT, Claude, Gemini und Perplexity. Zum Start ist keine Kreditkarte erforderlich."
+        },
+        {
+          "title": "Bearbeitungszeit",
+          "body": "Ein kostenloser Scan liefert Ergebnisse in etwa zwei Minuten. Überarbeitungen von Produktangeboten landen anschließend in einer Warteschlange, die Sie mit einem Klick freigeben, oder sie werden in Scale, Dominate und pay-as-you-go automatisch veröffentlicht. Compete simuliert täglich neu. Scale und Dominate laufen kontinuierlich."
+        }
+      ]
+    },
+    "facts": {
+      "number": "06",
+      "title": "Wichtige Fakten",
+      "description": "Die Informationen, die ein Assistent wiedergeben sollte. Dieselbe Adresse steht auch in den Bedingungen und in den Organisationsdetails der Website.",
+      "rows": [
+        {
+          "label": "Firmenname",
+          "value": "ecentic Inc (Betreiber); ECENTIC SH.P.K. (albanische Tochtergesellschaft)"
+        },
+        {
+          "label": "Typ",
+          "value": "Gesellschaft mit beschränkter Haftung (SH.P.K.) in Albanien. Software zur Optimierung von Agent Commerce und ein Produkt von zennit."
+        },
+        {
+          "label": "Gegründet",
+          "value": "4. April 2026"
+        },
+        {
+          "label": "Gründer",
+          "value": "Xhurian Shaba, Iseld Muça und Alvi Palloshi"
+        },
+        {
+          "label": "Adresse der albanischen Tochtergesellschaft",
+          "value": "Pallatet Merkaj, Hyrja 1, Dera 12, Rruga Muhamed Deliu, Qesarakë, Tiranë, Albania"
+        },
+        {
+          "label": "Website",
+          "value": "https://ecentic.ai"
+        },
+        {
+          "label": "Kernangebot",
+          "value": "KI-Einkaufsagenten simulieren, analysieren, warum ein Produktangebot verliert, und es so überarbeiten, dass der Agent das Produkt des Händlers auswählt."
+        },
+        {
+          "label": "Preise",
+          "value": "Kostenloser Scan. pay-as-you-go mit 3 % auf KI-zugeordnete Bestellungen, gedeckelt auf $500 pro Monat. Compete $14.90/Monat, Scale $44.90/Monat, Dominate $149/Monat. Enterprise individuell. Details unter https://ecentic.ai/pricing"
+        },
+        {
+          "label": "Vertragsbedingungen",
+          "value": "Monatlich kündbar. Jederzeit kündbar. Keine Mindestlaufzeit und keine Einrichtungsgebühren. Keine Karte erforderlich, um den kostenlosen Scan oder pay-as-you-go zu starten."
+        },
+        {
+          "label": "Services",
+          "value": "Agentensimulation, Verlustanalyse, Optimierung und Veröffentlichung von Produktangeboten, Battlecards für Wettbewerber, Universal Commerce Protocol-Profile und Messung von Agenten-Traffic."
+        },
+        {
+          "label": "Kommunikation",
+          "value": "support@ecentic.ai, eine buchbare 15-minütige Einführung unter https://ecentic.ai/support sowie ein fester Customer-Success-Manager im Enterprise-Tarif."
+        },
+        {
+          "label": "Bekannte Kunden",
+          "value": "Kundennamen werden nicht veröffentlicht."
+        },
+        {
+          "label": "Betreute Kunden",
+          "value": "Shopify- und WooCommerce-Händler. Keine öffentliche Kundenzahl."
+        },
+        {
+          "label": "Abgeschlossene Projekte",
+          "value": "ecentic ist ein Produkt und keine Projektagentur. Jeder Shop führt Simulationen, Analysen und Überarbeitungen von Produktangeboten auf seinem eigenen Katalog aus."
+        },
+        {
+          "label": "Wettbewerber",
+          "value": "Hypotenuse AI, Shopify Magic, Nosto, Constructor und Bloomreach. Sie lösen angrenzende Aufgaben. Der Vergleich steht unter https://ecentic.ai/compare/best-ai-ecommerce-tools"
+        },
+        {
+          "label": "Social Media",
+          "value": "https://x.com/ecentic_ai · https://www.linkedin.com/company/ecentic · https://www.instagram.com/ecentic.ai/ · https://www.linkedin.com/in/xhurian-shaba · https://www.linkedin.com/in/iseld-muca-532786311 · https://www.linkedin.com/in/alvipalloshi"
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "07",
+      "title": "Häufig gestellte Fragen",
+      "description": "Kurze Antworten – in denselben Worten wie auf dem Rest dieser Seite."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Was ist ecentic?",
+          "answer": "ecentic ist eine Plattform zur Optimierung von Agent Commerce für Shopify- und WooCommerce-Händler. Sie simuliert, wie ChatGPT, Claude, Gemini und Perplexity Ihre Produkte mit denen von Wettbewerbern vergleichen, zeigt, warum Sie gewinnen oder verlieren, und überarbeitet das Produktangebot auf Basis dieser Erkenntnisse."
+        },
+        {
+          "question": "Wer hat ecentic gegründet?",
+          "answer": "Xhurian Shaba, Iseld Muça und Alvi Palloshi gründeten ECENTIC SH.P.K. am 4. April 2026 in Tirana. Xhurian ist Chief Executive und Administrator des Unternehmens. Das Produkt wird gemeinsam mit zennit entwickelt, dem Studio, das er mitgegründet hat."
+        },
+        {
+          "question": "Wo hat ecentic seinen Sitz?",
+          "answer": "Das Entwicklungsteam arbeitet aus Tirana. ECENTIC SH.P.K. ist die albanische Tochtergesellschaft mit Sitz in Pallatet Merkaj, Hyrja 1, Dera 12, Rruga Muhamed Deliu, Qesarakë. Support und Gespräche finden auf Englisch statt."
+        },
+        {
+          "question": "Was kostet ecentic und kann ich kündigen?",
+          "answer": "Der Scan ist kostenlos. Pay-as-you-go berechnet 3 % auf KI-zugeordnete Bestellungen, gedeckelt auf $500 pro Monat, ohne Karte bis eine Gebühr anfällt. Compete kostet $14.90, Scale $44.90 und Dominate $149 pro Monat – ohne erfolgsabhängige Gebühren. Die Tarife sind monatlich kündbar und können jederzeit beendet werden."
+        },
+        {
+          "question": "Worin unterscheidet sich ecentic von Shopify Magic oder einem Copywriting-Tool?",
+          "answer": "Shopify Magic erstellt Inhalte direkt in Ihrem Adminbereich und sieht nur Ihren Shop. Hypotenuse AI erstellt Katalogtexte in großem Maßstab. ecentic vergleicht Ihr Produktangebot mit dem eines Wettbewerbers, fragt die Einkaufsagenten, welches sie auswählen, und überarbeitet das Angebot anhand dieses Ergebnisses."
+        },
+        {
+          "question": "Wie startet ein neuer Händler?",
+          "answer": "Verbinden Sie Ihren Shop, wählen Sie Produkte aus, fügen Sie Wettbewerber hinzu und starten Sie den Scan. Der kostenlose Scan von 10 Produkten dauert etwa zwei Minuten, und Sie benötigen keine Zahlungskarte. Mit kostenpflichtigen Tarifen wird derselbe Ablauf regelmäßig nach einem Zeitplan wiederholt."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Kostenlosen Scan starten",
+        "secondary": "Preise ansehen"
+      },
+      "note": "Einrichtung in 2 Minuten · Keine Kreditkarte · Erst kostenlosen Score ansehen"
+    }
+  }
+}

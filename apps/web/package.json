@@ -34,6 +34,7 @@
     "@ai-sdk/react": "^4.0.93",
     "@ai-sdk/rsc": "^3.0.90",
     "@calcom/embed-react": "^1.5.3",
+    "@formatjs/icu-messageformat-parser": "3.5.17",
     "@hookform/resolvers": "^5.9.1",
     "@lucasmarkes/hairline": "^0.5.1",
     "@next/env": "^16.3.4",

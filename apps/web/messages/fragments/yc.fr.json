@@ -1,0 +1,78 @@
+{
+  "yc": {
+    "meta": {
+      "title": "ecentic pour Y Combinator — profitez de votre offre",
+      "description": "Une offre exclusive ecentic pour les étudiants Y Combinator : accès prolongé sur tous les plans, accompagnement premium à l’intégration et tarif étudiant. Activez-la en moins de deux minutes."
+    },
+    "breadcrumb": {
+      "home": "Accueil",
+      "page": "Y Combinator"
+    },
+    "hero": {
+      "eyebrow": "Y Combinator",
+      "title": {
+        "primary": "Votre offre ecentic,",
+        "accent": "prête à être activée."
+      },
+      "description": "Une offre exclusive ecentic pour les étudiants Y Combinator : accès prolongé sur tous les plans, accompagnement premium à l’intégration et tarif étudiant. Activez-la en moins de deux minutes.",
+      "art": {
+        "alt": "Illustration ASCII d'une poignée de main"
+      },
+      "badge": {
+        "alt": "Y Combinator",
+        "label": "Offre partenaire exclusive"
+      }
+    },
+    "deal": {
+      "number": "01",
+      "title": "Ce que comprend l'offre",
+      "description": "Conçu pour les étudiants YC qui préfèrent être recommandés par les agents d’achat IA plutôt que gérer manuellement des feuilles de calcul de fiches produit.",
+      "content": "ecentic vous montre comment les agents d’achat IA comparent vos produits à ceux de vos concurrents, identifie pourquoi vous gagnez ou perdez, puis réécrit vos fiches produit pour combler l’écart. Votre réduction YC s’applique au plan qui vous convient : Compete, Scale ou Dominate.\n\n- Simulations d’agents sur ChatGPT, Claude, Gemini et Perplexity dans tous les plans\n- Simulations continues et optimisation automatique avec publication en un clic à partir du plan Scale\n- Alertes de dérive des modèles et génération UCP dans Dominate, afin que les agents puissent vérifier directement votre catalogue\n- Accompagnement premium à l’intégration de votre catalogue et tarif étudiant après la période promotionnelle\n\nActivez l’offre ci-dessous et nous vérifierons votre batch avant de vous envoyer votre lien d’activation sous un jour ouvré."
+    },
+    "redeem": {
+      "number": "02",
+      "title": "Activer votre offre",
+      "description": "Dites-nous qui vous êtes et quels résultats vous cherchez à obtenir. Nous vérifions votre batch YC et activons votre offre. Aucune carte bancaire requise."
+    },
+    "howItWorks": {
+      "number": "03",
+      "title": "Comment fonctionne l’activation",
+      "description": "Trois étapes entre le formulaire et l’activation de l’offre. La plupart des étudiants lancent leur première simulation le jour même.",
+      "content": "Ici, pas de processus d’achat complexe. L’objectif est de vous permettre de lancer des simulations rapidement.\n\n- Remplissez le formulaire avec votre entreprise, votre batch et les résultats pour lesquels vous souhaitez l’aide d’ecentic\n- Nous vérifions votre batch dans l’annuaire YC, généralement le jour même\n- Vous recevez un lien d’activation et un accompagnement premium pour importer votre catalogue\n\nUne fois votre catalogue importé, ecentic le teste avec les principaux modèles d’IA d’achat, vous montre pourquoi les concurrents sont choisis et transforme les résultats en modifications de fiches produit que vous pouvez approuver en un clic."
+    },
+    "faqSection": {
+      "number": "04",
+      "title": "FAQ sur l’activation",
+      "description": "Éligibilité, contenu de l’offre et délai d’activation."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Qui peut bénéficier de cette offre ?",
+          "answer": "Toute entreprise issue d’un batch Y Combinator actuel ou passé. Nous vérifions votre batch dans l’annuaire YC après votre demande. Utilisez donc l’adresse e-mail et le nom d’entreprise enregistrés chez YC pour accélérer le traitement."
+        },
+        {
+          "question": "Que comprend exactement l’offre ?",
+          "answer": "Votre réduction étudiant sur le plan ecentic de votre choix : Compete, Scale ou Dominate. Tous les plans incluent des simulations d’agents IA sur ChatGPT, Claude, Gemini et Perplexity ; Scale ajoute les simulations continues et l’optimisation automatique avec publication en un clic ; Dominate ajoute les alertes de dérive des modèles et la génération UCP. Tous incluent également un accompagnement premium à l’intégration de votre catalogue et un tarif étudiant à la fin de la période promotionnelle."
+        },
+        {
+          "question": "Dois-je d’abord créer un compte ?",
+          "answer": "Non. Activez l’offre ici et nous vous enverrons les détails d’activation sous un jour ouvré. Vous pouvez créer votre compte maintenant ou attendre le lien d’activation ; les deux options mènent au même résultat."
+        },
+        {
+          "question": "Combien de temps prend l’activation ?",
+          "answer": "Le formulaire prend environ deux minutes. La vérification se fait généralement le jour même, et jamais au-delà d’un jour ouvré. Vous recevrez un e-mail dès que votre offre sera activée."
+        }
+      ]
+    },
+    "footer": {
+      "primary": "Créer votre compte",
+      "secondary": "Réserver une démo",
+      "note": "Réservé aux étudiants YC. Nous vérifions votre batch avant d’activer l’offre."
+    },
+    "structuredData": {
+      "offerName": "Offre étudiant ecentic Y Combinator",
+      "eligibleCustomerType": "Étudiants Y Combinator"
+    }
+  }
+}

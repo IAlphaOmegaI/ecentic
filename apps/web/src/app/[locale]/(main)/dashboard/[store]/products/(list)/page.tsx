@@ -11,7 +11,7 @@ import { cn, parseSearchParam, unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import type { SearchParamsProps } from "@zenncore/web/types";
 import { connection } from "next/server";
-import { getTranslations } from "next-intl/server";
+import { getLocale, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import {
   QueryTransitionFade,
@@ -183,6 +183,8 @@ export default ({
 );
 
 const LastScanned = async ({ params }: { params: StoreParams }) => {
+  const locale = await getLocale();
+
   await connection();
   const { store } = await params;
   const translate = await getTranslations("dashboard.shared.status");
@@ -194,7 +196,7 @@ const LastScanned = async ({ params }: { params: StoreParams }) => {
     <StatusPill tone={data.scan?.updatedAt ? "success" : "neutral"}>
       {data.scan?.updatedAt
         ? translate("liveLastScanned", {
-            time: formatRelativeTime(data.scan.updatedAt),
+            time: formatRelativeTime(data.scan.updatedAt, locale),
           })
         : translate("noScansYet")}
     </StatusPill>
@@ -382,6 +384,8 @@ const StatCards = async ({ params }: { params: StoreParams }) => {
 };
 
 const Performance = async ({ params }: { params: StoreParams }) => {
+  const locale = await getLocale();
+
   await connection();
   const { store } = await params;
   const translate = await getTranslations("dashboard.products");
@@ -432,7 +436,9 @@ const Performance = async ({ params }: { params: StoreParams }) => {
     });
 
   const data = trend.map((point) => point.winRate);
-  const labels = trend.map((point) => formatRelativeTime(new Date(point.date)));
+  const labels = trend.map((point) =>
+    formatRelativeTime(new Date(point.date), locale),
+  );
 
   const change = (() => {
     if (data.length < 2) return 0;

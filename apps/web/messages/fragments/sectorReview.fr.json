@@ -1,0 +1,86 @@
+{
+  "sectorReview": {
+    "code": {
+      "title": "Les mêmes produits, plus faciles à lire.",
+      "description": "Deux fiches produit fictives, représentées en JSON. Restaurez un fait omis pour voir ce qui change dans cette comparaison scénarisée.",
+      "format": "Enregistrements illustratifs, et non un format de soumission API. null signifie que la fiche produit ne précise pas ce fait.",
+      "questionNote": "La question de l’acheteur définit les critères de cette comparaison.",
+      "yourNote": "Seuls les faits déjà présents dans la source d’exemple sont restaurés.",
+      "rivalNote": "La fiche concurrente reste inchangée. Il s’agit de produits d’exemple, et non du catalogue d’une marque identifiée.",
+      "question": "Question de l’acheteur",
+      "required": "Champs pertinents",
+      "before": "Afficher le fait manquant",
+      "after": "Restaurer le fait source",
+      "sampleNote": "Le code ci-dessous suit la question 01. Le champ manquant est restauré à partir de la source d’exemple ; l’autre fiche reste inchangée."
+    },
+    "references": {
+      "label": "Références sectorielles connues",
+      "note": "Exemples de marques fournis uniquement à titre indicatif. Aucune relation client ni approbation n’est impliquée. Les enregistrements d’exemple ci-dessous sont fictifs et sans lien avec ces marques."
+    },
+    "questions": {
+      "subtitle": "Consultez la question, les faits nécessaires et la vérification qui relève toujours du marchand.",
+      "facts": "Faits à expliciter",
+      "verify": "Vérification du marchand",
+      "sample": "Questions illustratives ; elles ne reflètent pas une demande de recherche mesurée."
+    },
+    "rules": {
+      "help": "Comment ecentic aide",
+      "source": "Ce qui nécessite encore une vérification",
+      "modelLabel": "Périmètre de la simulation",
+      "models": "Utilisez les points de vue de ChatGPT, Claude et Gemini dans les simulations pour comparer les faits produit pris en charge. Perplexity prend actuellement en charge le suivi de l’origine des visites sur Shopify ; ses simulations de boutique arrivent prochainement. Une simulation ne constitue pas une approbation du canal.",
+      "sectors": {
+        "wine-and-spirits": {
+          "subtitle": "Explicitez les informations sur les bouteilles, comparez la fiche produit et définissez un parcours d’achat adapté au canal et au marché qui l’autorisent.",
+          "help": "Utilisez dans la comparaison des informations vérifiées sur l’origine, le style, le degré d’alcool, le prix et la livraison. Vérifiez les faits source et les allégations autorisées avant de sélectionner Appliquer, qui génère et publie le titre et la description. Les restrictions liées au produit et à la destination continuent de s’appliquer."
+        },
+        "food-and-beverage": {
+          "subtitle": "Transformez des informations vérifiées sur l’étiquette en fiches produit plus claires, puis vérifiez chaque déclaration nutritionnelle et alimentaire avant publication.",
+          "help": "Comparez les ingrédients, allergènes, informations nutritionnelles et portions réellement fournis par la source. ecentic peut suggérer des formulations plus claires pour la fiche produit ; le marchand vérifie les déclarations et leur pertinence avant application."
+        },
+        "beauty-and-personal-care": {
+          "subtitle": "Facilitez la comparaison des ingrédients et allégations produit étayés, tout en conservant les preuves liées à la source.",
+          "help": "Comparez les ingrédients existants, l’usage prévu, le format et les allégations étayées. Vérifiez les formulations proposées par rapport aux preuves du fabricant ; ecentic ne teste pas l’efficacité et ne certifie aucune protection."
+        },
+        "consumer-electronics": {
+          "subtitle": "Affichez les informations sur le modèle, la compatibilité et la garantie avant que l’acheteur n’arrive sur la boutique.",
+          "help": "Comparez le modèle exact et les spécifications fournies par la source, puis vérifiez les modifications suggérées pour la fiche produit. Les déclarations de compatibilité, de caractéristiques électriques et de garantie nécessitent toujours les preuves du marchand."
+        },
+        "home-and-furniture": {
+          "subtitle": "Donnez aux acheteurs des dimensions, matériaux et conditions de livraison qu’ils peuvent vérifier par rapport à leur propre espace.",
+          "help": "Comparez les dimensions et conditions présentes dans les données source. ecentic peut faire ressortir les détails manquants de la fiche produit ; la plateforme ne garantit ni l’adéquation, ni l’accès, ni une date de livraison."
+        },
+        "fashion-and-outdoor": {
+          "subtitle": "Gardez les descriptions de coupe, de tissu et de performance liées aux spécifications réelles du produit.",
+          "help": "Comparez les informations vérifiées sur les tailles, matériaux, consignes d’entretien et usages prévus. Vérifiez les formulations avant publication ; ecentic ne certifie ni les performances techniques ni les allégations environnementales."
+        },
+        "health-wellness-and-pet": {
+          "subtitle": "Clarifiez les informations source sans transformer une comparaison de produits en conseil de santé.",
+          "help": "Comparez les ingrédients fournis, l’usage prévu, les informations de portion ou d’alimentation et les normes documentées. ecentic ne pose pas de diagnostic, ne prescrit pas et ne certifie ni la sécurité ni les allégations de santé."
+        },
+        "travel-and-experiences": {
+          "subtitle": "Rendez explicites les dates, éléments inclus et conditions d’annulation de l’offre avant le transfert vers la réservation.",
+          "help": "Comparez les informations produit fournies par la source. La disponibilité en temps réel, le prix final et les conditions de réservation doivent être confirmés auprès du marchand ; cet exemple ne constitue pas une réservation."
+        }
+      },
+      "bespoke": {
+        "title": "Un parcours personnalisé pour les achats soumis à une restriction d’âge.",
+        "description": "Planifiez avec ecentic un parcours d’achat assisté par agent autour de vos contrôles existants. Le cadrage précède la mise en œuvre ; l’assistance dépend du produit, du pays, du canal et du prestataire de paiement.",
+        "steps": [
+          {
+            "title": "Confirmer le parcours autorisé",
+            "body": "Vérifiez les règles liées au produit, à la destination et au canal choisi avant d’exposer un parcours d’achat."
+          },
+          {
+            "title": "Conserver le contrôle d’âge du marchand",
+            "body": "Intégrez le processus existant de vérification d’âge du marchand lorsque cela est requis. Une vérification d’âge intégrée à ecentic n’est pas incluse par défaut."
+          },
+          {
+            "title": "Transférer pour confirmation et paiement",
+            "body": "L’acheteur effectue les vérifications requises et confirme le paiement dans le parcours de paiement autorisé du marchand."
+          }
+        ],
+        "action": "Discuter d’un parcours d’achat personnalisé"
+      }
+    }
+  }
+}

@@ -1,6 +1,5 @@
 import { ArrowRightIcon } from "@zenncore/icons";
 import { Button } from "@zenncore/web/components/button";
-import { slugify } from "babylovegrowth-next-js-blog";
 import Image from "next/image";
 import { getLocale, getMessages, getTranslations } from "next-intl/server";
 import { Suspense } from "react";
@@ -11,8 +10,8 @@ import {
 import { Plus } from "@/components/plus";
 import { localizePath } from "@/i18n/locale";
 import { Link } from "@/i18n/navigation";
-import type { Locale } from "@/i18n/routing";
 import { blogImage } from "@/lib/blog-image";
+import { blogDate, blogReadingMinutes, blogTopicSlug } from "@/lib/blog-locale";
 import * as Blog from "@/server/app/blog";
 import { SectionGutter } from "../../dashboard/_components/grid";
 import { BlogIndexArchive } from "./blog-index-archive";
@@ -22,36 +21,20 @@ const normalize = (value: Date | string) => {
   return new Date(value.includes("T") ? value : `${value}T00:00:00Z`);
 };
 
-const formatBlogDate = (value: Date | string, locale: Locale) =>
-  new Intl.DateTimeFormat(locale === "es" ? "es-ES" : "en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-    timeZone: "UTC",
-  }).format(normalize(value));
-
 export const BlogIndexContent = async () => {
   const locale = await getLocale();
-  const [translate, messages, englishPosts, spanishPosts] = await Promise.all([
+  const [translate, messages, posts] = await Promise.all([
     getTranslations("blog"),
     getMessages(),
-    Blog.listPublished("en"),
-    locale === "es" ? Blog.listPublished("es") : Promise.resolve([]),
+    Blog.listPublished(locale),
   ]);
   const copy = messages.blogIndexPage;
-  const spanishBySlug = new Map(spanishPosts.map((post) => [post.slug, post]));
-  // Keep the published Postgres catalog and editorial ordering. Spanish rows
-  // replace their English counterpart without changing the shared article slug.
-  const entries = englishPosts
-    .map((post) =>
-      locale === "es" ? (spanishBySlug.get(post.slug) ?? post) : post,
-    )
-    .sort(
-      (left, right) =>
-        Number(right.source === "local") - Number(left.source === "local") ||
-        normalize(right.publishedAt).getTime() -
-          normalize(left.publishedAt).getTime(),
-    );
+  const entries = posts.sort(
+    (left, right) =>
+      Number(right.source === "local") - Number(left.source === "local") ||
+      normalize(right.publishedAt).getTime() -
+        normalize(left.publishedAt).getTime(),
+  );
   const chronological = [...entries].sort(
     (left, right) =>
       normalize(right.publishedAt).getTime() -
@@ -65,7 +48,7 @@ export const BlogIndexContent = async () => {
   const topics = [
     ...new Map(
       entries.flatMap((entry) =>
-        entry.tags.map((label) => [slugify(label), label] as const),
+        entry.tags.map((label) => [blogTopicSlug(label), label] as const),
       ),
     ).entries(),
   ]
@@ -73,7 +56,7 @@ export const BlogIndexContent = async () => {
       label,
       slug,
       count: entries.filter((entry) =>
-        entry.tags.some((tag) => slugify(tag) === slug),
+        entry.tags.some((tag) => blogTopicSlug(tag) === slug),
       ).length,
     }))
     .filter((topic) => topic.slug)
@@ -82,7 +65,7 @@ export const BlogIndexContent = async () => {
   const structuredData = {
     "@context": "https://schema.org",
     "@type": "Blog",
-    name: "ecentic Blog",
+    name: `ecentic ${translate("title")}`,
     description: translate("description"),
     url: `https://ecentic.ai${localizePath("/blog", locale)}`,
     inLanguage: locale,
@@ -154,7 +137,7 @@ export const BlogIndexContent = async () => {
                     <time
                       dateTime={normalize(featured.publishedAt).toISOString()}
                     >
-                      {formatBlogDate(featured.publishedAt, locale)}
+                      {blogDate(featured.publishedAt, locale)}
                     </time>
                     <span>{featured.readTime}</span>
                     <span className="ml-auto inline-flex items-center gap-2 text-primary-text">
@@ -176,8 +159,7 @@ export const BlogIndexContent = async () => {
                 </h2>
                 {latest && (
                   <p className="mt-2 text-foreground-dimmed text-sm">
-                    {translate("updated")}:{" "}
-                    {formatBlogDate(latest.updatedAt, locale)}
+                    {translate("updated")}: {blogDate(latest.updatedAt, locale)}
                   </p>
                 )}
               </div>
@@ -191,9 +173,21 @@ export const BlogIndexContent = async () => {
                   <MarketingEdgeCrosses edge="bottom" />
                   <p className="flex flex-wrap gap-x-4 gap-y-2 text-foreground-dimmed text-sm">
                     <time dateTime={normalize(entry.publishedAt).toISOString()}>
-                      {formatBlogDate(entry.publishedAt, locale)}
+                      {blogDate(entry.publishedAt, locale)}
                     </time>
-                    <span>{entry.readTime}</span>
+                    <span>
+                      {translate("minRead", {
+                        minutes: String(
+                          blogReadingMinutes(
+                            entry.contentHtml ??
+                              entry.sections
+                                .map((section) => section.content)
+                                .join("\n"),
+                            locale,
+                          ),
+                        ),
+                      })}
+                    </span>
                   </p>
                   <h3 className="text-foreground text-xl leading-snug tracking-[-0.02em] group-hover:text-primary-text group-focus-visible:text-primary-text">
                     {entry.title}
@@ -284,10 +278,20 @@ export const BlogIndexContent = async () => {
                   title: entry.title,
                   description: entry.description,
                   thumbnailUrl: entry.thumbnailUrl,
-                  date: formatBlogDate(entry.publishedAt, locale),
+                  date: blogDate(entry.publishedAt, locale),
                   isoDate: normalize(entry.publishedAt).toISOString(),
                   timestamp: normalize(entry.publishedAt).getTime(),
-                  readTime: entry.readTime,
+                  readTime: translate("minRead", {
+                    minutes: String(
+                      blogReadingMinutes(
+                        entry.contentHtml ??
+                          entry.sections
+                            .map((section) => section.content)
+                            .join("\n"),
+                        locale,
+                      ),
+                    ),
+                  }),
                 }))}
               />
             </Suspense>

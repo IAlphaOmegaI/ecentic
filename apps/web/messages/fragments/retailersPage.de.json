@@ -1,0 +1,47 @@
+{
+  "retailersPage": {
+    "challengeIntro": "Beginnen Sie mit dem Produktangebot, vergleichen Sie die Nachweise und entscheiden Sie dann, welche Arbeiten am Katalog als Nächstes anstehen.",
+    "catalogIntro": "Wählen Sie, wo Ihre Produktdaten verwaltet werden. Sehen Sie, was die Verbindung unterstützt und welche Entscheidungen bei Ihrem Team bleiben.",
+    "catalog": {
+      "select": "Ihre Katalogquelle",
+      "capability": "Was diese Verbindung unterstützt",
+      "dataLabel": "Produktdaten",
+      "decisionLabel": "Entscheidung zur Veröffentlichung",
+      "routes": [
+        {
+          "data": "Bereiten Sie einen kompatiblen Feed oder eine CSV mit unterstützten Feldern und Formaten vor.",
+          "decision": "Ein Import erstellt keinen Write-back-Connector. Entscheiden Sie, wie freigegebene Änderungen an Ihre Quelle zurückgegeben werden."
+        },
+        {
+          "data": "Prüfen Sie die Merchant Center-Diagnosen für Ihren Shopify-Katalog.",
+          "decision": "Führen Sie die ergänzende Synchronisierung nach der Veröffentlichung von Änderungen am Produktangebot separat aus. Sie behebt nicht jede Preis- oder Bestandsabweichung."
+        },
+        {
+          "data": "Verbinden Sie einen unterstützten Shopify- oder WooCommerce-Shop und importieren Sie dessen Produkte.",
+          "decision": "Ihr Team entscheidet, welche unterstützten Änderungen am Produktangebot im verbundenen Shop veröffentlicht werden."
+        },
+        {
+          "data": "Verwenden Sie einen kompatiblen Produkt-Feed aus Ihrem PIM.",
+          "decision": "Prüfen Sie die Verfügbarkeit spezieller Connectoren auf der Integrationsübersicht, bevor Sie ein Write-back planen."
+        }
+      ]
+    },
+    "pilot": {
+      "label": "Pilotumfang zuerst abstimmen",
+      "steps": [
+        {
+          "title": "Ein Markt, eine Kategorie",
+          "body": "Wählen Sie die Produkte aus, die Ihr Team prüfen kann."
+        },
+        {
+          "title": "Baseline in Woche 0",
+          "body": "Legen Sie den Ausgangspunkt für Ihren definierten Piloten fest."
+        },
+        {
+          "title": "Auswertung in Woche 6",
+          "body": "Prüfen Sie die Ergebnisse, bevor Sie die nächste Kategorie auswählen."
+        }
+      ]
+    }
+  }
+}

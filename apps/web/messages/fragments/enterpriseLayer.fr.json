@@ -1,0 +1,27 @@
+{
+  "enterpriseLayer": {
+    "eyebrow": "01 · Fonctionnement",
+    "title": "Votre infrastructure d’un côté. Les canaux IA de l’autre. ecentic entre les deux.",
+    "description": "Importez le catalogue que vous utilisez déjà. ecentic le prépare pour les assistants utilisés par vos clients, avec la disponibilité actuelle de chaque canal affichée.",
+    "stack": "Votre infrastructure",
+    "channels": "Canaux IA",
+    "layer": "La couche IA pour le commerce",
+    "stages": [
+      "Simuler",
+      "Corriger",
+      "Vendre",
+      "Suivre"
+    ],
+    "inputs": [
+      "Shopify",
+      "WooCommerce",
+      "Flux de produits / CSV",
+      "PIM",
+      "Google Merchant Center"
+    ],
+    "legend": "Lignes pleines : disponibles aujourd’hui, simulations incluses. Lignes pointillées : bientôt disponibles. La disponibilité d’un canal ne garantit pas un paiement natif.",
+    "action": "Voir tous les canaux IA",
+    "diagram": "Votre infrastructure e-commerce existante se connecte à ecentic, qui prépare les données produit et le paiement pris en charge pour six canaux IA.",
+    "google": "Google AI Mode / Gemini"
+  }
+}

@@ -1,3 +1,4 @@
+import type { AppConfig } from "next-intl";
 import {
   Body,
   Button,
@@ -14,6 +15,7 @@ import {
   Tailwind,
   Text,
 } from "react-email";
+import type { Locale } from "@/i18n/locales";
 
 const config = {
   theme: {
@@ -43,17 +45,21 @@ const config = {
 export namespace VerifyEmail {
   export type Props = {
     verificationUrl: string;
-    userEmail: string;
+    requestedFor: string;
+    locale: Locale;
+    content: AppConfig["Messages"]["authenticationEmail"]["verify"];
   };
 }
 
 export const VerifyEmail = ({
   verificationUrl,
-  userEmail,
+  requestedFor,
+  locale,
+  content,
 }: VerifyEmail.Props) => (
-  <Html>
+  <Html lang={locale}>
     <Head />
-    <Preview>Verify your email to start using ecentic</Preview>
+    <Preview>{content.preview}</Preview>
     <Tailwind config={config}>
       <Body className="bg-background font-sans">
         <Container className="mx-auto my-10 max-w-[560px] border border-background-dimmed bg-background-rich">
@@ -88,10 +94,10 @@ export const VerifyEmail = ({
               />
               <Column className="px-6 py-6">
                 <Heading className="m-0 font-medium text-[32px] text-emphasis-dimmed leading-[1.2] tracking-[-0.5px]">
-                  Verify your email
+                  {content.title}
                 </Heading>
                 <Text className="m-0 mt-2 font-light text-[18px] text-foreground-dimmed leading-[1.4]">
-                  Start optimizing your listings for AI shopping agents.
+                  {content.description}
                 </Text>
               </Column>
               <Column
@@ -109,18 +115,17 @@ export const VerifyEmail = ({
               />
               <Column className="px-6 py-6">
                 <Text className="m-0 mb-4 text-[15px] text-foreground leading-6">
-                  Thanks for creating your ecentic account. Click the button
-                  below to verify your email address.
+                  {content.body}
                 </Text>
                 <Text className="m-0 mb-6 text-[13px] text-foreground-dimmed leading-5">
-                  This verification was requested for {userEmail}.
+                  {requestedFor}
                 </Text>
                 <Button
                   className="bg-primary px-6 py-3 font-medium text-[15px] text-background-rich"
                   style={{ textDecoration: "none" }}
                   href={verificationUrl}
                 >
-                  Verify email address
+                  {content.action.primary}
                 </Button>
               </Column>
               <Column
@@ -138,11 +143,10 @@ export const VerifyEmail = ({
               />
               <Column className="px-6 py-5">
                 <Text className="m-0 mb-3 text-foreground-dimmed text-xs leading-[18px]">
-                  If you didn&apos;t create an account on ecentic, you can
-                  safely ignore this email.
+                  {content.ignored}
                 </Text>
                 <Text className="m-0 text-foreground-dimmed text-xs leading-[18px]">
-                  Or copy and paste this link into your browser:{" "}
+                  {content.linkFallback}{" "}
                   <Link
                     href={verificationUrl}
                     className="text-primary"
@@ -167,7 +171,7 @@ export const VerifyEmail = ({
               />
               <Column className="px-6 py-5">
                 <Text className="m-0 text-foreground-dimmed text-xs leading-[18px]">
-                  ecentic — Win every agent&apos;s cart.
+                  {content.footer}
                 </Text>
               </Column>
               <Column

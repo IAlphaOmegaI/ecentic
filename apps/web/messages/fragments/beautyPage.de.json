@@ -1,0 +1,28 @@
+{
+  "beautyPage": {
+    "record": {
+      "label": "Eine Käuferfrage erkunden",
+      "tabs": [
+        "Feuchtigkeitscreme",
+        "Sonnenschutz",
+        "Shampoo"
+      ],
+      "question": "Die Anfrage des Käufers",
+      "facts": "Zu prüfende Produktangaben",
+      "claim": {
+        "title": "Aussage zum Endprodukt",
+        "body": "Prüfen Sie die Aussage anhand von Nachweisen für das exakte Endprodukt."
+      }
+    },
+    "evidence": {
+      "label": "Dieselben Angaben von der Verpackung bis zum Produktangebot beibehalten",
+      "steps": [
+        "Produktverpackung",
+        "Unterstützende Nachweise",
+        "Veröffentlichte Beschreibung"
+      ],
+      "claims": "Aussagen und Nachweise",
+      "protection": "Geprüfter Schutz"
+    }
+  }
+}

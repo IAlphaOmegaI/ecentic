@@ -1,0 +1,21 @@
+{
+  "interactiveFiles": {
+    "title": "Nous publions ce que nous vous demandons de publier.",
+    "description": "Inspectez les fichiers réellement fournis par ce site.",
+    "tabs": [
+      "llms.txt",
+      "Catalogue API",
+      "Profil de passage de commande pour les agents",
+      "Point de terminaison MCP"
+    ],
+    "failed": "Impossible de récupérer ce fichier. Ouvrez le lien ci-dessus pour inspecter le point de terminaison.",
+    "loading": "Récupération du fichier…",
+    "fetched": "Récupéré le",
+    "idle": "Ouvrez le fichier ci-dessus ou chargez un aperçu.",
+    "action": {
+      "primary": "Charger le fichier actuel"
+    },
+    "preview": "Aperçu du fichier",
+    "limit": "Aperçu : 30 premières lignes, jusqu’à 64 KiB. Il s’agit d’une réponse en direct depuis l’origine affichée ci-dessus."
+  }
+}

@@ -2,38 +2,41 @@ import { ArrowRightIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import Image from "next/image";
-import type { getMessages } from "next-intl/server";
+import { type getMessages, getTranslations } from "next-intl/server";
 import { MarketingLightBand } from "@/components/marketing/light-band";
 import { Link } from "@/i18n/navigation";
 import type { Locale } from "@/i18n/routing";
 import { blogImage } from "@/lib/blog-image";
+import { blogDate, blogReadingMinutes } from "@/lib/blog-locale";
 import type * as Blog from "@/server/app/blog";
 
-const formatBlogDate = (value: Date | string, locale: Locale) => {
-  const date = value instanceof Date ? value : new Date(value);
-  if (Number.isNaN(date.getTime())) return "";
-  return new Intl.DateTimeFormat(locale === "es" ? "es-ES" : "en-US", {
-    month: "long",
-    day: "numeric",
-    year: "numeric",
-    timeZone: "UTC",
-  }).format(date);
-};
-
-const TagArticleMeta = ({
+const TagArticleMeta = async ({
   article,
   locale,
 }: {
   article: Blog.Type;
   locale: Locale;
-}) => (
-  <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-foreground-dimmed text-sm">
-    <time dateTime={new Date(article.publishedAt).toISOString()}>
-      {formatBlogDate(article.publishedAt, locale)}
-    </time>
-    <span>{article.readTime}</span>
-  </div>
-);
+}) => {
+  const translate = await getTranslations({ locale, namespace: "blog" });
+  return (
+    <div className="flex flex-wrap items-center gap-x-4 gap-y-2 text-foreground-dimmed text-sm">
+      <time dateTime={new Date(article.publishedAt).toISOString()}>
+        {blogDate(article.publishedAt, locale)}
+      </time>
+      <span>
+        {translate("minRead", {
+          minutes: String(
+            blogReadingMinutes(
+              article.contentHtml ??
+                article.sections.map((section) => section.content).join("\n"),
+              locale,
+            ),
+          ),
+        })}
+      </span>
+    </div>
+  );
+};
 
 export const TagCollection = ({
   articles,

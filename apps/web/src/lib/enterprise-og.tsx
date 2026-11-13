@@ -1,6 +1,8 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { ImageResponse } from "next/og";
+import type { Locale } from "@/i18n/locales";
+import { cjkOgFont } from "./og-fonts";
 
 const asset = (path: string, type: string) =>
   `data:${type};base64,${readFileSync(join(process.cwd(), "public", path)).toString("base64")}`;
@@ -21,10 +23,12 @@ export const createEnterpriseOgImage = ({
   title,
   description,
   signoff,
+  locale,
 }: {
   title: string;
   description: string;
   signoff: string;
+  locale?: Locale;
 }) =>
   new ImageResponse(
     <div
@@ -36,7 +40,7 @@ export const createEnterpriseOgImage = ({
           "linear-gradient(180deg, #111111 25%, #092645 72%, #005fd6 100%)",
         color: "white",
         position: "relative",
-        fontFamily: "LTSuperior",
+        fontFamily: "LTSuperior, NotoSansCJK",
       }}
     >
       {/* biome-ignore lint/performance/noImgElement: Satori renders an image response, not a browser document. */}
@@ -101,7 +105,7 @@ export const createEnterpriseOgImage = ({
               fontSize: title.length > 66 ? 56 : 68,
               fontWeight: 500,
               letterSpacing: "-.04em",
-              lineHeight: 1.04,
+              lineHeight: locale === "ja" || locale === "zh-CN" ? 1.2 : 1.04,
               maxWidth: 960,
             }}
           >
@@ -110,7 +114,7 @@ export const createEnterpriseOgImage = ({
           <p
             style={{
               margin: 0,
-              fontFamily: "RedHatDisplay",
+              fontFamily: "RedHatDisplay, NotoSansCJK",
               fontSize: 25,
               lineHeight: 1.35,
               color: "rgba(255,255,255,.82)",
@@ -123,7 +127,7 @@ export const createEnterpriseOgImage = ({
         <div
           style={{
             display: "flex",
-            fontFamily: "RedHatDisplay",
+            fontFamily: "RedHatDisplay, NotoSansCJK",
             fontSize: 20,
             opacity: 0.82,
           }}
@@ -183,6 +187,7 @@ export const createEnterpriseOgImage = ({
     {
       ...enterpriseOgSize,
       fonts: [
+        ...cjkOgFont(`${title} ${description} ${signoff}`, locale),
         { name: "LTSuperior", data: font, weight: 500, style: "normal" },
         { name: "RedHatDisplay", data: bodyFont, weight: 400, style: "normal" },
       ],
