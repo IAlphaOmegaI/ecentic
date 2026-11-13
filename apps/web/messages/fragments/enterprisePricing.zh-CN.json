@@ -1,0 +1,257 @@
+{
+  "enterprisePricing": {
+    "meta": {
+      "title": "价格方案：免费店铺检测、订阅计划与企业试点",
+      "description": "先进行免费店铺检测。可按月付费，或按 AI 归因订单付费，每月最高 $500。企业试点将与您的团队共同确定范围。"
+    },
+    "eyebrow": "免费店铺检测 · 无需绑卡即可开始 · 按月订阅",
+    "title": "免费开始。AI 开始带来订单后再扩展。",
+    "description": "先免费检测店铺，再选择月度订阅方案或按 AI 归因订单付费。运营多个店铺或品牌？欢迎联系我们讨论试点方案。",
+    "actions": [
+      {
+        "label": "免费检测我的店铺",
+        "href": "/sign-up"
+      },
+      {
+        "label": "联系我们",
+        "href": "/demo"
+      }
+    ],
+    "sections": [
+      {
+        "id": "free-check",
+        "eyebrow": "01 / 免费店铺检测",
+        "title": "查看 AI 如何比较您的商品。",
+        "description": "免费检测一次您的前 10 个商品，在 ChatGPT、Claude 和 Gemini 中进行模拟。查看哪些胜出、哪些落选，以及应优先修复哪些商品信息细节。"
+      },
+      {
+        "id": "pricing",
+        "eyebrow": "02 / 订阅方案",
+        "title": "选择您的付费方式。",
+        "description": "可先使用自助方案，或围绕您的店铺、商品目录和审核流程协商试点。"
+      },
+      {
+        "id": "pay-as-you-go",
+        "eyebrow": "03 / 按量付费",
+        "title": "归因订单产生后再收费。",
+        "description": "按量付费可免费启用。当订单带有明确的 AI 归因信号，或消费者在 AI 引导访问店铺后的 7 天内下单时，将收取绩效费用。该时间窗口以店铺为单位，而非单个访客与订单之间的关联。"
+      },
+      {
+        "id": "compare",
+        "eyebrow": "04 / 方案对比",
+        "title": "详细功能并排查看。",
+        "description": "价格和商品数量限制来自现有方案目录。模拟仅在您主动启动时运行。商品信息修改建议需由您审核并决定何时发布。"
+      },
+      {
+        "id": "never-billed",
+        "eyebrow": "05 / 永不收费",
+        "title": "检测、工具与未归因订单。",
+        "paragraphs": [
+          "免费店铺检测和公开工具均不收费。在按量付费模式下，如果订单没有明确的 AI 归因信号，且店铺在前 7 天内没有 AI 引导访问，则不会收费。访问本身永不收费。固定订阅方案不收取绩效费用。"
+        ]
+      },
+      {
+        "id": "europe",
+        "eyebrow": "06 / EU Presence 套餐",
+        "title": "合规代表服务与商品目录工作同步进行。"
+      }
+    ],
+    "sample": {
+      "label": "示例：使用样本数据",
+      "caption": "此示例评分并非您店铺的实际结果。请运行您自己的检测，查看每项建议背后的依据。",
+      "action": {
+        "primary": "免费检测我的店铺"
+      },
+      "figureLabel": "示意图：放大镜展示商品记录的结构。",
+      "sampleTitle": "查看评分背后的原因。",
+      "signals": [
+        "商品对比",
+        "竞品商品信息",
+        "待审核的商品信息修复建议"
+      ]
+    },
+    "plans": {
+      "payg": {
+        "tagline": "仅在 AI 带来访客后付费",
+        "note": "无需绑卡即可开始。费用按下方归因规则计算。",
+        "action": {
+          "primary": "选择按量付费"
+        }
+      },
+      "compete": {
+        "action": {
+          "primary": "选择 Compete"
+        }
+      },
+      "scale": {
+        "tagline": "大规模修复",
+        "action": {
+          "primary": "选择 Scale"
+        }
+      },
+      "dominate": {
+        "action": {
+          "primary": "选择 Dominate"
+        }
+      },
+      "enterprise": {
+        "name": "企业版",
+        "tagline": "先基于公开数据，与您的团队共同确定范围",
+        "figure": "定制试点",
+        "note": "开始前先确认范围、审核流程和目标。",
+        "features": [
+          "一个账户管理所有店铺",
+          "API、MCP server 和 CLI",
+          "数据处理要求审查",
+          "创始人参与账户支持",
+          "按约定目标输出试点结果"
+        ],
+        "action": {
+          "primary": "联系我们"
+        }
+      }
+    },
+    "featureCorrections": {
+      "onDemand": "按需运行智能体模拟",
+      "reviewAndApply": "审核建议，并通过 Apply 发布",
+      "paygAttribution": "按下方规则对 AI 归因订单收费"
+    },
+    "availability": "模拟按需运行。您可审核建议，并自行决定何时应用更改。发布功能需要支持的直连连接器以及您的批准。",
+    "fee": {
+      "steps": [
+        {
+          "title": "AI 助手为您带来访客",
+          "body": "您的店铺记录到一次来自 AI 助手的引导访问。这将开启该店铺的 7 天归因窗口。"
+        },
+        {
+          "title": "完成购买：一笔 $120 订单",
+          "body": "当订单带有明确的 AI 归因信号，或处于店铺有效的 7 天引导窗口内时，即符合条件。"
+        },
+        {
+          "title": "费用为 $3.60",
+          "body": "按标准 3% 费率计算，一笔已归因的 $120 订单将产生 $3.60 费用。单纯访问不会收费。"
+        },
+        {
+          "title": "每月费用最高 $500",
+          "body": "标准月度费用上限为 $500。开始时无需绑卡；产生费用时才会要求提供支付方式。"
+        }
+      ],
+      "example": {
+        "order": "归因订单",
+        "rate": "标准费率",
+        "fee": "绩效费用",
+        "window": "7 天店铺级窗口",
+        "cap": "每月 $500 上限"
+      },
+      "billingTitle": "更倾向固定月费？",
+      "billingBody": "Compete、Scale 和 Dominate 均不收取绩效费用。对应月费已在上方列出。"
+    },
+    "comparison": {
+      "title": "方案对比",
+      "feature": "功能",
+      "yes": "包含",
+      "no": "不包含",
+      "agreed": "试点中协商确定",
+      "onDemand": "按需",
+      "suggestions": "应用前审核",
+      "publish": "通过 Apply 发布",
+      "enterpriseRows": [
+        {
+          "label": "一个账户管理所有店铺",
+          "selfServe": true
+        },
+        {
+          "label": "API、MCP server 和 CLI",
+          "selfServe": true
+        },
+        {
+          "label": "数据处理要求审查",
+          "selfServe": true
+        },
+        {
+          "label": "创始人参与账户支持",
+          "selfServe": false
+        },
+        {
+          "label": "按约定目标输出试点结果",
+          "selfServe": false
+        }
+      ],
+      "enterpriseNote": "企业版的条款、商品数量限制及相关费用将在试点范围内协商确定。公开 API 发现、MCP 和 CLI 文档无需付费方案即可使用。"
+    },
+    "bundle": {
+      "description": "EU Presence 提供覆盖全部 27 个成员国的代表与合规服务。该套餐将其现有服务与 ecentic Dominate 方案结合，并沿用下方现有商务条款。",
+      "productDetail": "商品模拟、竞品对比，以及发布前需审核的商品信息建议"
+    },
+    "faqTitle": "价格常见问题",
+    "faqs": [
+      {
+        "question": "真的有免费方案吗？",
+        "answer": "有。免费店铺检测会对您的前 10 个商品在 ChatGPT、Claude 和 Gemini 中进行一次性模拟，并返回胜率报告。无需信用卡。"
+      },
+      {
+        "question": "Compete、Scale 和 Dominate 有什么区别？",
+        "answer": "Compete 支持最多 100 个商品，包含竞品对比和手动优化建议。Scale 支持最多 1,000 个商品，提供可通过 Apply 审核并发布的商品信息建议。Dominate 包含 Scale 功能，并与 Techstars 优惠关联。Y Combinator 优惠可适用于任何固定订阅方案。模拟按需运行，产品不承诺固定执行频率。"
+      },
+      {
+        "question": "按量付费与订阅方案有什么区别？",
+        "answer": "按量付费无需预付费用，并按下方归因规则收取标准 3% 绩效费用，每月最高 $500。Compete、Scale 和 Dominate 则收取固定月费，不包含绩效费用。请选择适合您团队的计费模式。"
+      },
+      {
+        "question": "按量付费的绩效费用如何计算？",
+        "answer": "当订单带有明确的 AI 归因信号，或您的店铺在前 7 天内收到任何 AI 引导访问时，该订单将计入收费。这是店铺级窗口，而非针对单个消费者的归因。标准费用为符合条件订单金额的 3%，每个自然月最高 $500。访问本身不收费。只有产生费用时才会要求提供支付方式。免费检测和固定订阅方案均不收取绩效费用。"
+      },
+      {
+        "question": "之后可以更换方案或取消吗？",
+        "answer": "可以。您可先进行免费检测、启用按量付费，或选择固定订阅方案。所有方案均按月订阅，可随时取消。企业试点可先与我们沟通范围，再确认条款。"
+      },
+      {
+        "question": "什么时候应该联系销售，而不是自助使用？",
+        "answer": "当您运营多个店铺或品牌、拥有数千个商品、需要安全审查，或希望开展带有书面目标的试点时。"
+      },
+      {
+        "question": "什么是 EU Presence 套餐？",
+        "answer": "该套餐将 EU Presence 的 GDPR representative、GPSR responsible person 和 Privacy Center Plus 与 ecentic Dominate 组合提供。现有套餐可享 20% 折扣，无最低消费，也无设置费用。可通过套餐咨询链接进一步沟通。"
+      },
+      {
+        "question": "如果停止使用，我们的数据会如何处理？",
+        "answer": "可发送删除请求至 privacy@ecentic.ai。我们将在一个月内响应，并在数据从系统中删除后进行确认。法律要求保留的账单记录将继续保存；备份副本会在到期后移除。具体范围和断开控制方式请参阅 Privacy policy。"
+      },
+      {
+        "question": "会不会有我们未主动申请的收费？",
+        "answer": "任何方案都不会在未激活的情况下收费。所有方案均按月订阅。在标准按量付费条款下，当订单带有明确的 AI 归因信号，或订单发生在 AI 引导访问店铺后的 7 天内时，将收取 3% 费用，每个自然月最高 $500。引导窗口针对店铺，而非特定消费者。固定订阅方案不收取绩效费用。"
+      },
+      {
+        "question": "你们会签署 DPA 吗？",
+        "answer": "会。在共享个人数据前，可按要求安排 DPA，也可以签署您提供的版本。合同主体和签署方将在协议中确认。"
+      }
+    ],
+    "policyLinks": [
+      {
+        "label": "查看 Privacy policy",
+        "href": "/privacy-policy"
+      },
+      {
+        "label": "查看数据保护",
+        "href": "/security#dpa"
+      }
+    ],
+    "offerDescriptions": [
+      "一次性免费店铺检测。无需信用卡。",
+      "无需预付费用。符合条件的 AI 归因订单按标准 3% 绩效费率收费，每月最高 $500。",
+      "最多支持 100 个商品的月度订阅，无绩效费用。",
+      "最多支持 1,000 个商品的月度订阅，无绩效费用。",
+      "包含 Scale 的月度订阅，无绩效费用。"
+    ],
+    "calculator": {
+      "comparison": "月度价格对比",
+      "details": "估算方式说明",
+      "payg": "按量付费",
+      "flat": "固定月费",
+      "lower": "价格更低",
+      "same": "价格相同",
+      "orders": "订单数",
+      "rate": "费率"
+    }
+  }
+}

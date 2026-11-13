@@ -1,0 +1,44 @@
+{
+  "docsMcpPage": {
+    "transport": {
+      "label": "连接参考",
+      "endpoint": "主端点",
+      "alias": "相同处理器",
+      "details": [
+        "端点路径",
+        "请求与响应",
+        "会话行为"
+      ]
+    },
+    "handshake": {
+      "label": "探索握手流程",
+      "tabs": [
+        "初始化",
+        "通知"
+      ],
+      "request": "客户端发送",
+      "response": "服务器返回",
+      "result": [
+        "协商后的协议与服务器能力",
+        "接受请求并返回空响应体"
+      ],
+      "example": "完整握手示例"
+    },
+    "authentication": {
+      "credential": "发送 bearer key",
+      "create": "创建凭证"
+    },
+    "errors": {
+      "labels": [
+        "JSON-RPC 错误",
+        "传输错误",
+        "身份验证异常"
+      ],
+      "formats": [
+        "error.code",
+        "application/problem+json",
+        "WWW-Authenticate"
+      ]
+    }
+  }
+}

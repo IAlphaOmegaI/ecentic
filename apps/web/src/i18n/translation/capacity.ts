@@ -27,12 +27,27 @@ export const translationOutputBudget = (request: TranslationGeneration) => {
       case "adjudicate":
         return 1000 + (payload.findings?.length ?? 0) * 400;
       case "review":
-        return 1500 + identifiers / 2.5 + units.length * 70;
+        return 1500 + identifiers / 2.5 + units.length * 24;
       default:
-        return 1500 + identifiers / 2.5 + text * 0.85;
+        return 1500 + identifiers / 2.5 + text * 0.55;
     }
   })();
   return Math.min(24_000, Math.max(2000, Math.ceil(estimated)));
+};
+
+/** Retry an output-limit failure once; partial output never leaves this boundary. */
+export const withTranslationOutputBudget = async <Value>(
+  request: TranslationGeneration,
+  run: (maxOutputTokens: number) => Promise<Value>,
+  isTruncated: (error: unknown) => boolean,
+): Promise<Value> => {
+  const budget = translationOutputBudget(request);
+  try {
+    return await run(budget);
+  } catch (error) {
+    if (!isTruncated(error) || budget >= 24_000) throw error;
+    return run(Math.min(24_000, budget * 2));
+  }
 };
 
 /** One process shares reservations across workers; Azure 429s remain authoritative. */

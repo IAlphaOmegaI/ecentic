@@ -1,0 +1,72 @@
+{
+  "interactiveSecurity": {
+    "reviewLabel": "Alvi レビュー用ドラフト",
+    "title": "商品データの流れ",
+    "description": "接続を選択して、提案されているデータ内容、タイミング、制御方法を確認してください。この図を公開するには、すべての接続で引き続き Alvi の確認が必要です。",
+    "details": {
+      "what": "送信内容",
+      "when": "タイミング",
+      "control": "制御"
+    },
+    "nodes": {
+      "source": {
+        "label": "ストアまたはフィード",
+        "description": "商品カタログ"
+      },
+      "ecentic": {
+        "label": "ecentic",
+        "description": "比較・公開ツール"
+      },
+      "providers": {
+        "label": "AIプロバイダー",
+        "description": "シミュレーションと書き換え・プロバイダー一覧"
+      },
+      "store": {
+        "label": "接続済みストア",
+        "description": "Shopify または WooCommerce"
+      },
+      "merchantCenter": {
+        "label": "Merchant Center",
+        "description": "Shopifyとの個別同期"
+      }
+    },
+    "connectors": {
+      "import": {
+        "label": "カタログをインポート",
+        "what": "選択したストアまたはフィードの商品フィールド。{{TODO: Alvi confirms}}",
+        "when": "カタログのインポートまたは同期時。{{TODO: Alvi confirms}}",
+        "control": "ストア接続の権限、または選択したソースを使用します。インポートしても商品情報の変更は公開されません。{{TODO: Alvi confirms}}"
+      },
+      "request": {
+        "label": "AIに送信",
+        "what": "比較または商品情報生成用の、選択した商品と競合商品の詳細。{{TODO: Alvi confirms}}",
+        "when": "シミュレーションまたは商品情報生成アクションの実行時。{{TODO: Alvi confirms}}",
+        "control": "設定されたプロバイダーへの経路を使います。接続済みのMerchant Centerアカウントデータは、AI処理に使うストアカタログとは別に扱われます。{{TODO: Alvi confirms}}"
+      },
+      "response": {
+        "label": "結果を返す",
+        "what": "シミュレーション結果、または生成された商品情報と構造化データの内容。{{TODO: Alvi confirms}}",
+        "when": "要求したモデル処理から応答が戻ったとき。{{TODO: Alvi confirms}}",
+        "control": "「適用」では同じ操作内で生成と公開を実行できます。構造化データは個別の公開アクションを使用します。{{TODO: Alvi confirms}}"
+      },
+      "apply": {
+        "label": "商品情報を適用",
+        "what": "選択した商品の生成済みタイトルと説明文。{{TODO: Alvi confirms}}",
+        "when": "「適用」または明示的な一括公開アクションを選択した時。{{TODO: Alvi confirms}}",
+        "control": "直接接続されたストアと、明示的な公開操作が必要です。{{TODO: Alvi confirms}}"
+      },
+      "structuredData": {
+        "label": "データを公開",
+        "what": "ストアの商品メタデータ内の生成済み Product JSON-LD。{{TODO: Alvi confirms}}",
+        "when": "個別の「構造化データを公開」アクション時。{{TODO: Alvi confirms}}",
+        "control": "公開データを表示するには、Shopifyテーマアプリ埋め込みまたはWooCommerceプラグインが必要です。{{TODO: Alvi confirms}}"
+      },
+      "merchantCenter": {
+        "label": "Googleと同期",
+        "what": "公開済みタイトルと説明文の上書き、および選択した購入手続き属性。{{TODO: Alvi confirms}}",
+        "when": "接続済みShopifyストア向けの、個別の明示的なGoogle同期時。{{TODO: Alvi confirms}}",
+        "control": "メインフィードと並行して補助ソースを使用します。商品情報を適用しても、この同期は自動実行されません。{{TODO: Alvi confirms}}"
+      }
+    }
+  }
+}

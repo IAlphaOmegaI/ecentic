@@ -1,0 +1,9 @@
+{
+  "changelogPage": {
+    "archive": "查看发布历史",
+    "action": {
+      "primary": "显示全部更新",
+      "secondary": "显示最近一个月"
+    }
+  }
+}

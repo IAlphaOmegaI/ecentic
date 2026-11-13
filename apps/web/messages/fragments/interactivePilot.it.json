@@ -1,0 +1,19 @@
+{
+  "interactivePilot": {
+    "title": "Pianificatore pilota",
+    "stages": [
+      "Baseline",
+      "Correggi",
+      "Nuova esecuzione",
+      "Risultati"
+    ],
+    "happens": "Cosa succede",
+    "people": "Il tuo team",
+    "deliverable": "Cosa ricevi",
+    "duration": "Durata",
+    "pendingPeople": "",
+    "pendingDeliverable": "",
+    "pendingDuration": "",
+    "pending": "Da concordare con il tuo team."
+  }
+}

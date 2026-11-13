@@ -1,0 +1,11 @@
+{
+  "cookieConsent": {
+    "support": {
+      "action": {
+        "primary": "サポートチャットを開く"
+      },
+      "pending": "サポートチャットを開いています…",
+      "unavailable": "チャットは利用できません。support@ecentic.ai までメールしてください"
+    }
+  }
+}

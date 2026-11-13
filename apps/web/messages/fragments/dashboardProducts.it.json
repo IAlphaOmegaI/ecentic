@@ -1,0 +1,227 @@
+{
+  "dashboard": {
+    "products": {
+      "title": "Prodotti",
+      "description": "Come si comporta ogni prodotto del tuo catalogo nei diversi agenti AI per gli acquisti.",
+      "action": {
+        "primary": "Aggiungi prodotto",
+        "addProducts": "Aggiungi prodotti"
+      },
+      "stats": {
+        "totalProducts": "Prodotti totali",
+        "averageWinRate": "Percentuale media di vittorie",
+        "highPerformers": "Migliori risultati",
+        "needsAttention": "Richiede attenzione",
+        "highPerformersHint": "prodotti con ≥60% di percentuale di vittorie",
+        "needsAttentionHint": "prodotti sotto il 30% di percentuale di vittorie"
+      },
+      "embedBanner": {
+        "title": "I dati strutturati non raggiungono le tue pagine prodotto",
+        "description": "L'embed dell'app \"Agentic structured data\" è disattivato, quindi gli agenti AI non vedono dati leggibili dalle macchine sui tuoi prodotti. Attivalo una volta e ogni prodotto di questo store avrà dati strutturati.",
+        "action": "Attiva l'embed dell'app"
+      },
+      "quality": {
+        "good": "Buona (≥75%)",
+        "fair": "Discreta (50-74%)",
+        "poor": "Scarsa (<50%)",
+        "distribution": "Distribuzione della qualità",
+        "avgQuality": "qualità media",
+        "kicker": "01.1 — Qualità"
+      },
+      "optimization": {
+        "readiness": "Prontezza del prodotto",
+        "optimized": "Ottimizzato",
+        "pending": "In attesa",
+        "unoptimized": "Non ottimizzato",
+        "kicker": "01.2 — Ottimizzazione"
+      },
+      "detail": {
+        "backToProducts": "Torna ai prodotti",
+        "optimize": "Ottimizza",
+        "noSimulationsYet": "Nessuna simulazione eseguita",
+        "winRate": "Percentuale di vittorie",
+        "dataQuality": "Qualità dei dati",
+        "simulationsRun": "Simulazioni eseguite",
+        "bestModel": "Modello migliore",
+        "winsSimulations": "{wins} vittorie · {simulations} simulazioni",
+        "listingCompleteness": "punteggio di completezza della scheda prodotto",
+        "acrossCompetitors": "tra {count, plural, one {# concorrente} many {# concorrenti} other {# concorrenti}}",
+        "modelWinRate": "percentuale di vittorie di {model}",
+        "tabs": {
+          "winRate": "Percentuale di vittorie",
+          "agentReplay": "Replay dell'agente",
+          "battlecard": "Scheda di confronto",
+          "optimize": "Ottimizza"
+        },
+        "overview": {
+          "winRateVsCompetitor": "Percentuale di vittorie contro ogni concorrente",
+          "viewAll": "Vedi tutto",
+          "noCompetitors": "Nessun concorrente monitorato.",
+          "wLTotal": "{wins} V · {losses} S",
+          "totalCount": "{count} totali"
+        },
+        "replay": {
+          "empty": "Nessuna simulazione disponibile. Esegui una scansione per vedere i replay delle decisioni degli agenti.",
+          "decisionReplay": "Replay decisionale di {model}",
+          "simulationCount": "{count, plural, one {# simulazione} many {# simulazioni} other {# simulazioni}}",
+          "vsCompetitor": "vs. {title}",
+          "won": "Vinto",
+          "lost": "Perso",
+          "reasoning": "Ragionamento di {model}",
+          "noReasoning": "Nessun ragionamento registrato. Decisione presa in base al punteggio ({productScore} vs {competitorScore})."
+        },
+        "fields": {
+          "title": "Titolo",
+          "description": "Descrizione",
+          "price": "Prezzo",
+          "sku": "SKU",
+          "structuredData": "Dati strutturati",
+          "images": "Immagini"
+        },
+        "publish": {
+          "applyFix": "Applica la correzione al negozio",
+          "connectStore": "Collega Shopify o WooCommerce",
+          "dialogTitle": "Pubblicare la scheda prodotto ottimizzata?",
+          "dialogDescription": "ecentic genera per \"{title}\" un titolo e una descrizione ottimizzati con l’AI e li salva direttamente nel tuo negozio collegato, sostituendo la scheda prodotto pubblicata. La percentuale di vittorie attuale è {winRate}%.",
+          "publishing": "Pubblicazione in corso…",
+          "publishToStore": "Pubblica nello store",
+          "failed": "Pubblicazione non riuscita",
+          "successTitle": "Scheda prodotto pubblicata",
+          "successDescription": "Una scheda prodotto ottimizzata con l’AI è stata inviata al tuo negozio."
+        },
+        "applyOptimization": {
+          "title": "Riduci automaticamente il divario",
+          "description": "ecentic riscrive questa scheda prodotto partendo dai punti di forza dei concorrenti vincenti e la pubblica direttamente nel tuo store, senza modifiche manuali da parte tua.",
+          "reviewQueue": "Coda di revisione",
+          "optimizePublish": "Ottimizza e pubblica"
+        },
+        "shelf": {
+          "kicker": "Scaffale osservato",
+          "title": "Chi altro lo vende",
+          "description": "Venditori che abbiamo visto offrire questo prodotto, in ordine di prezzo crescente, con eventuali variazioni di prezzo dall'ultimo controllo.",
+          "position": "#{position} su Google",
+          "observed": "{count, plural, one {Visto una volta, {when}} many {Visto # volte, ultima volta {when}} other {Visto # volte, ultima volta {when}}}",
+          "total": "{total} con spedizione",
+          "down": "↓ {amount} dall'ultimo controllo",
+          "up": "↑ {amount} dall'ultimo controllo"
+        },
+        "findOffers": {
+          "action": "Trova chi altro lo vende",
+          "finding": "Controllo dei venditori in corso…",
+          "toast": {
+            "failed": "Impossibile cercare le offerte",
+            "found": {
+              "title": "Trovate offerte concorrenti",
+              "description": "{count, plural, one {# venditore vende questo prodotto} many {# venditori vendono questo prodotto} other {# venditori vendono questo prodotto}}"
+            },
+            "none": {
+              "title": "Nessuna offerta concorrente",
+              "exclusive": "Nessun altro venditore sembra offrire questo prodotto.",
+              "budget": "Hai utilizzato le ricerche offerte di questo mese.",
+              "unconfigured": "La ricerca offerte non è abilitata in questo ambiente."
+            }
+          }
+        },
+        "battlecard": {
+          "empty": "Nessun dato sui concorrenti disponibile. Esegui una scansione per generare le schede di confronto.",
+          "headToHead": "Risultati testa a testa",
+          "vsProduct": "vs. {title}",
+          "won": "Vinto",
+          "lost": "Perso",
+          "noWins": "Nessuna vittoria registrata",
+          "noLosses": "Nessuna sconfitta registrata",
+          "kicker": "01 — Schede di confronto"
+        },
+        "audit": {
+          "aiContentQuality": "Qualità dei contenuti AI",
+          "brandPositioning": "Posizionamento del brand",
+          "positioning": "posizionamento"
+        },
+        "optimizeTab": {
+          "title": "Ottimizza la scheda prodotto",
+          "description": "Punteggi della qualità dei contenuti per categoria per i campi letti dagli agenti AI, oltre a come questa scheda prodotto è posizionata per il suo pubblico.",
+          "completeness": "Completezza:",
+          "currentListing": "02 — Scheda prodotto attuale",
+          "characters": "{count} caratteri",
+          "noDescription": "Nessuna descrizione trovata",
+          "liveOnStore": "Pubblicato nel negozio",
+          "whatAgentsRead": "ciò che gli agenti AI leggono davvero",
+          "enableAppEmbed": "Attiva l'embed dell'app",
+          "structuredDataHelp": "L’embed dell’app inserisce già i dati strutturati predefiniti ricavati dai contenuti del prodotto pubblicati. Quando pubblichi, questa versione ottimizzata con l’AI viene salvata nel metacampo {metafield} e usata dall’embed al posto di quella predefinita.",
+          "publishStructuredData": "Pubblica dati strutturati ottimizzati",
+          "publishing": "Pubblicazione in corso…",
+          "noStructuredDataYet": "Non ci sono ancora dati strutturati ottimizzati. L’embed dell’app inserisce il markup predefinito ricavato dai contenuti del prodotto pubblicati. Genera una versione ottimizzata con l’AI per sostituirlo.",
+          "generateJsonLd": "Genera JSON-LD ottimizzato",
+          "generating": "Generazione in corso…",
+          "generationFailed": "Generazione non riuscita",
+          "structuredDataPublished": "Dati strutturati ottimizzati pubblicati",
+          "structuredDataPublishedDescription": "Scritti nel metafield ecentic.structured_data. L'embed dell'app ora li mostra al posto del markup prodotto predefinito. Se l'embed è disattivato, attivalo nell'editor del tema e premi Salva.",
+          "openThemeEditor": "Apri l'editor del tema",
+          "listingAuditKicker": "01 — Audit AI della scheda prodotto",
+          "status": {
+            "optimizedByEcentic": "Ottimizzato da ecentic",
+            "ecenticStandard": "standard ecentic",
+            "storeDefault": "Predefinito del negozio",
+            "optimizedEmbedOff": "Ottimizzato — embed disattivato",
+            "noStructuredData": "Nessun dato strutturato",
+            "pageUnreachable": "Pagina non raggiungibile"
+          },
+          "embedNotice": {
+            "embedOffTitle": "L'embed dell'app è disattivato",
+            "embedOffText": "Per questo prodotto sono pubblicati dati strutturati ottimizzati, ma l'embed dell'app \"Agentic structured data\" è disattivato, quindi nessun markup ecentic raggiunge la pagina. Attivandolo una volta verrà applicato a tutti i prodotti del negozio.",
+            "missingTitle": "Nessun dato strutturato nella pagina",
+            "missingText": "Gli agenti AI non vedono dati prodotto leggibili dalle macchine. Attiva l'embed dell'app \"Agentic structured data\". Questa singola opzione aggiunge dati strutturati a tutti i prodotti del negozio.",
+            "storeDefaultTitle": "Markup predefinito del negozio",
+            "storeDefaultText": "È attivo solo il markup del tema, che di solito è limitato: nessun GTIN, una sola offerta, nessun dettaglio sulle varianti. Attiva l'embed dell'app ecentic, che si applica a tutti i prodotti, quindi pubblica qui sotto i dati strutturati ottimizzati per questo prodotto.",
+            "standardTitle": "Uso del markup standard ecentic",
+            "standardText": "L'embed dell'app genera dati strutturati predefiniti a partire dai contenuti live del prodotto. Pubblica qui sotto la versione ottimizzata per l'AI per offrire agli agenti un markup più ricco e competitivo per questo prodotto."
+          }
+        }
+      },
+      "add": {
+        "title": "Aggiungi prodotti",
+        "description": "Importa altri elementi del tuo catalogo dalla piattaforma a cui è collegato questo negozio. Tutto ciò che aggiungi qui appartiene solo a questo negozio.",
+        "backToProducts": "Torna ai prodotti",
+        "catalogNeverSynced": "mai sincronizzato",
+        "catalogSynced": "sincronizzato {time}",
+        "platformSync": {
+          "pullFrom": "Importa da {platform}",
+          "description": "Rilegge {domain} e aggiunge ogni prodotto che non è ancora presente in questo negozio. I prodotti già presenti vengono aggiornati sul posto, così scansioni e ottimizzazioni vengono mantenute.",
+          "syncing": "Sincronizzazione in corso…",
+          "syncNow": "Sincronizza ora",
+          "toastLoading": "Sincronizzazione prodotti in corso…",
+          "toastSuccess": "Catalogo sincronizzato",
+          "reconnectRequired": "Riconnessione richiesta",
+          "syncFailed": "Sincronizzazione non riuscita",
+          "reconnect": "Riconnetti"
+        },
+        "csv": {
+          "title": "Carica un CSV",
+          "description": "Questo negozio è stato creato da un file, non da una piattaforma collegata, quindi non c’è una fonte esterna da cui importare altri dati. Carica un altro CSV per aggiungere dati al catalogo.",
+          "fieldLabel": "CSV prodotti",
+          "importing": "Importazione in corso…",
+          "importCsv": "Importa CSV",
+          "noFileTitle": "Nessun file selezionato",
+          "noFileDescription": "Carica prima un file CSV.",
+          "noProductsTitle": "Nessun prodotto trovato",
+          "noProductsDescription": "Controlla che il CSV abbia una riga di intestazione con una colonna titolo o nome.",
+          "importFailed": "Importazione non riuscita",
+          "importSuccess": "{count, plural, one {# prodotto importato} many {# prodotti importati} other {# prodotti importati}}"
+        },
+        "platforms": {
+          "feed": "il tuo feed prodotti"
+        }
+      },
+      "insights": {
+        "scanResults": "Risultati della scansione",
+        "simulationsCount": "{count} simulazioni",
+        "impact": "Impatto",
+        "simsLost": "delle simulazioni perse",
+        "missingAttributes": "Attributi mancanti",
+        "noFindingTitle": "Nessun risultato registrato per questa scansione.",
+        "noFindingHint": "Esegui di nuovo la scansione per vedere gli insight.",
+        "fixThis": "Correggi"
+      }
+    }
+  }
+}

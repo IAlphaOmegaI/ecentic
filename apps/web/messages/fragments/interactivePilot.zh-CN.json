@@ -1,0 +1,19 @@
+{
+  "interactivePilot": {
+    "title": "试点计划",
+    "stages": [
+      "基线",
+      "修复",
+      "重新运行",
+      "结果解读"
+    ],
+    "happens": "流程说明",
+    "people": "您的团队",
+    "deliverable": "交付内容",
+    "duration": "周期",
+    "pendingPeople": "",
+    "pendingDeliverable": "",
+    "pendingDuration": "",
+    "pending": "与您的团队协商确定。"
+  }
+}

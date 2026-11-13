@@ -1,16 +1,13 @@
 "use client";
 
 import { cn } from "@zenncore/utils";
+import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import {
-  channelLine,
-  count,
-  offerLabels,
   offerTitle,
   type Snapshot,
   settled,
-  stageLabels,
-  uploadLine,
+  useLiveCopy,
   usePoll,
 } from "@/app/[locale]/(main)/agents/_components/live";
 import { Motion } from "@/components/motion";
@@ -96,40 +93,43 @@ const Line = ({ children }: { children: string }) => (
   </p>
 );
 
-/** One destination, because the full list would push the product's name off the line. */
-const listing = ({ destinations }: Catalog.OfferLine) =>
-  destinations
+const Offer = ({ line }: { line: Catalog.OfferLine }) => {
+  const translate = useTranslations("agentReadiness");
+  const { offerLabels } = useLiveCopy();
+  const listing = line.destinations
     .find((destination) => destination.startsWith("FREE_LISTINGS"))
-    ?.replace("FREE_LISTINGS", "Free listings");
-
-const Offer = ({ line }: { line: Catalog.OfferLine }) => (
-  <Motion.Up
-    initial="hidden"
-    animate="visible"
-    className="flex items-baseline justify-between gap-[2vw] border-accent-foreground border-t pt-[0.8vh] text-[length:clamp(1rem,min(1.9vw,3.4vh),2.5rem)] leading-tight"
-  >
-    <span className="min-w-0 flex-1 truncate text-foreground-rich">
-      {offerTitle(line)}
-    </span>
-    {listing(line) && (
-      <span className="shrink-0 text-foreground-dimmed">{listing(line)}</span>
-    )}
-    <span
-      className={cn(
-        "shrink-0 font-medium",
-        (line.status === "pending" || line.status === "skipped") &&
-          "text-foreground-dimmed",
-        line.status === "accepted" && "text-primary-rich",
-        line.status === "merged" && "text-success-rich",
-        line.status === "rejected" && "text-error-rich",
-      )}
+    ?.replace("FREE_LISTINGS", translate("presentation.freeListings"));
+  return (
+    <Motion.Up
+      initial="hidden"
+      animate="visible"
+      className="flex items-baseline justify-between gap-[2vw] border-accent-foreground border-t pt-[0.8vh] text-[length:clamp(1rem,min(1.9vw,3.4vh),2.5rem)] leading-tight"
     >
-      {offerLabels[line.status]}
-    </span>
-  </Motion.Up>
-);
+      <span className="min-w-0 flex-1 truncate text-foreground-rich">
+        {offerTitle(line)}
+      </span>
+      {listing && (
+        <span className="shrink-0 text-foreground-dimmed">{listing}</span>
+      )}
+      <span
+        className={cn(
+          "shrink-0 font-medium",
+          (line.status === "pending" || line.status === "skipped") &&
+            "text-foreground-dimmed",
+          line.status === "accepted" && "text-primary-rich",
+          line.status === "merged" && "text-success-rich",
+          line.status === "rejected" && "text-error-rich",
+        )}
+      >
+        {offerLabels[line.status]}
+      </span>
+    </Motion.Up>
+  );
+};
 
 export const Stage = ({ id }: Stage.Props) => {
+  const translate = useTranslations("agentReadiness");
+  const { channelLine, uploadLine, stageLabels } = useLiveCopy();
   const { data, receivedAt, missing, failed } = usePoll<Snapshot>(
     `/api/agents/runs/${id}`,
     { interval: 1000, until: settled },
@@ -138,16 +138,16 @@ export const Stage = ({ id }: Stage.Props) => {
   if (!data && missing)
     return (
       <Message
-        title="We can't find this run"
-        detail="Check the link on the results page."
+        title={translate("notice.missingTitle")}
+        detail={translate("presentation.missing")}
       />
     );
 
   if (!data && failed)
     return (
       <Message
-        title="Waiting for this run"
-        detail="This screen picks up as soon as it answers."
+        title={translate("presentation.waiting")}
+        detail={translate("presentation.waitingBody")}
       />
     );
 
@@ -166,7 +166,7 @@ export const Stage = ({ id }: Stage.Props) => {
         </p>
         <p className="shrink-0 text-foreground-dimmed">
           {summary.stage === "reading"
-            ? `${stageLabels.reading}: ${count(summary.read, "product", "products")} so far`
+            ? translate("presentation.reading", { count: summary.read })
             : stageLabels[summary.stage]}
         </p>
       </div>
@@ -175,14 +175,14 @@ export const Stage = ({ id }: Stage.Props) => {
 
       {summary.stage === "failed" ? (
         <p className="text-[length:clamp(1.5rem,3vw,4rem)] text-error-rich leading-tight">
-          {summary.error ?? "We couldn't finish this store."}
+          {summary.error ?? translate("errors.finish")}
         </p>
       ) : (
         <div className="flex flex-col gap-[1vh]">
           <Line>{channelLine("Google & Gemini", summary.google)}</Line>
           <Line>{channelLine("ChatGPT", summary.chatgpt)}</Line>
           <p className="font-medium text-[length:clamp(1.75rem,min(3vw,5.4vh),4.5rem)] text-primary-rich tabular-nums leading-tight">
-            {count(summary.fixes, "fix", "fixes")} applied
+            {translate("presentation.fixes", { count: summary.fixes })}
           </p>
         </div>
       )}

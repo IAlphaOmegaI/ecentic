@@ -1,0 +1,104 @@
+{
+  "support": {
+    "meta": {
+      "title": "Supporto — aiuto con scansioni, fatturazione e agenti",
+      "description": "Ricevi assistenza con ecentic: supporto via email, una spiegazione guidata in diretta dei risultati della scansione o un percorso di escalation dedicato agli account Enterprise e a quelli dedicati al commercio tramite agenti AI."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "support": "Supporto"
+    },
+    "hero": {
+      "eyebrow": "Supporto",
+      "title": {
+        "primary": "Siamo qui",
+        "accent": "per aiutarti."
+      },
+      "description": "Domande sui risultati della scansione, un'integrazione, la fatturazione o altro: scegli il canale più adatto e ce ne occupiamo noi.",
+      "assurances": [
+        "Persone reali dall'altra parte",
+        "Spiegazioni guidate gratuite della scansione",
+        "Percorso di escalation Enterprise"
+      ],
+      "art": {
+        "alt": "Illustrazione ASCII di una cuffia per supporto"
+      }
+    },
+    "channels": {
+      "number": "01",
+      "title": "Scegli il tuo canale.",
+      "description": "Email per la maggior parte delle richieste, una chiamata dal vivo se vuoi una spiegazione dei risultati e un canale diretto per i team Enterprise.",
+      "items": [
+        {
+          "id": "email",
+          "title": "Supporto via email",
+          "description": "Il modo più rapido per contattarci per domande su account, fatturazione o integrazioni. Includi l'URL del tuo store così possiamo verificare le informazioni prima di rispondere.",
+          "highlighted": true,
+          "action": {
+            "primary": "support@ecentic.ai"
+          }
+        },
+        {
+          "id": "walkthrough",
+          "title": "Panoramica dal vivo",
+          "description": "Una chiamata di 15 minuti in cui analizziamo in tempo reale i tuoi prodotti con i modelli AI per gli acquisti e spieghiamo i risultati in modo chiaro.",
+          "highlighted": false,
+          "action": {
+            "primary": "Prenota una chiamata"
+          }
+        },
+        {
+          "id": "enterprise",
+          "title": "Escalation Enterprise",
+          "description": "Gli account Enterprise hanno un CSM dedicato, revisioni trimestrali e un canale diretto di escalation verso il team di ingegneria.",
+          "highlighted": false,
+          "action": {
+            "primary": "Scopri Enterprise"
+          }
+        }
+      ]
+    },
+    "selfServe": {
+      "number": "02",
+      "title": "Trova subito quello che ti serve.",
+      "description": "La maggior parte delle domande trova già risposta in queste pagine.",
+      "items": [
+        {
+          "href": "/how-it-works",
+          "name": "Come funziona",
+          "title": "Comprendi il ciclo simulazione, diagnosi e ottimizzazione",
+          "description": "La spiegazione completa di cosa succede dopo aver collegato il tuo store, passo dopo passo.",
+          "label": "Scopri come funziona"
+        },
+        {
+          "href": "/features",
+          "name": "Funzionalità",
+          "title": "Scopri tutti gli strumenti della piattaforma",
+          "description": "Punteggi del tasso di vittoria, analisi dei divari rispetto ai concorrenti, riscrittura delle schede prodotto, traffico degli agenti, profili UCP e nuove scansioni.",
+          "label": "Apri la pagina funzionalità"
+        },
+        {
+          "href": "/pricing",
+          "name": "Prezzi",
+          "title": "Confronta i piani, dalla scansione gratuita in poi",
+          "description": "Scan gratuito, Pay-as-you-go e abbonamenti Compete e Dominate spiegati a confronto.",
+          "label": "Scopri i prezzi"
+        },
+        {
+          "href": "/privacy-policy",
+          "name": "Privacy",
+          "title": "Controlla quali dati archiviamo e quali non archiviamo mai",
+          "description": "Ambiti limitati ai prodotti, nessun dato personale degli acquirenti, solo cookie essenziali e spiegazione del processo di eliminazione.",
+          "label": "Leggi l'informativa"
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Avvia la tua scansione gratuita",
+        "secondary": "Torna alla home"
+      },
+      "note": "Configurazione in 2 minuti · Nessuna carta di credito · Scopri prima il tuo punteggio gratuito"
+    }
+  }
+}

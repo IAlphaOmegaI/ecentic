@@ -1,0 +1,79 @@
+{
+  "dashboard": {
+    "competitors": {
+      "title": "竞品",
+      "description": "AI 购物智能体如何将您与所跟踪品牌进行对比排名。",
+      "action": {
+        "primary": "添加竞品",
+        "addCompetitor": "添加竞品",
+        "addCompetitors": "添加竞品"
+      },
+      "stats": {
+        "brandsTracked": "已跟踪品牌",
+        "winningAgainst": "领先于",
+        "mostDangerous": "最强对手",
+        "totalSimulations": "模拟总数",
+        "productsMonitored": "已监控 {count, plural, other {# 个商品}}",
+        "sinceLastScan": "自上次检测以来",
+        "averageWinRate": "平均胜率 {rate}%",
+        "winRateAgainstThem": "您对其的胜率",
+        "acrossCompetitors": "覆盖 {count, plural, other {# 个竞品}}"
+      },
+      "landscape": {
+        "kicker": "01 — 竞争格局",
+        "winRateByCompetitor": "按竞品划分的胜率",
+        "distribution": "分布",
+        "winRateTiers": "胜率等级",
+        "simAbbrev": "{count} 次模拟",
+        "tiers": {
+          "dominating": "绝对领先（≥75%）",
+          "competitive": "竞争中（50–74%）",
+          "atRisk": "存在风险（30–49%）",
+          "losing": "落后（<30%）"
+        }
+      },
+      "table": {
+        "kickerAll": "02 — 所有竞品"
+      },
+      "insights": {
+        "kicker": "03 — 竞争情报",
+        "summary": "竞争摘要",
+        "keyInsight": "关键洞察",
+        "optimizeLosing": "优化落败商品信息",
+        "recentScanActivity": "最近检测活动",
+        "scanCompleted": "检测完成 — {wins}胜 / {losses}负",
+        "scanInProgress": "检测进行中 — {completed}/{total}",
+        "completedScans": "{count, plural, other {# 次已完成检测}}",
+        "viewAllActivity": "查看全部活动",
+        "headlines": {
+          "outrankAll": "在模拟比较中，您领先于全部{count, plural, other {#个竞争对手}}（平均胜率为{overall}%）。",
+          "slimmestLead": "您最微弱的领先优势来自对 {brand} 的竞争，胜率为 {rate}%。请持续优化商品信息以保持优势。",
+          "biggestOpportunity": "在与您的对比中，{brand} 赢得了 {lossRate}% 的智能体比较。这是您最大的机会点。",
+          "holdMajority": "在与{total, plural, other {#个竞争对手}}中的{winning}个进行的比较中，您赢得了多数比较（平均为{overall}%）。优先优化输给{brand}的商品，最能改善表现。",
+          "defaultHeadline": "在与{total, plural, other {#个竞争对手}}中的{winning}个进行的比较中，您赢得了多数比较（平均胜率为{overall}%）。",
+          "focusOptimization": "重点优化被 {brand} 超越的商品信息。",
+          "toughestRival": "{toughest} 是您最难对付的竞争对手，胜率为 {toughestRate}%；您对 {strongest} 的领先胜率为 {strongestRate}%。"
+        }
+      },
+      "add": {
+        "title": "为此店铺添加竞品",
+        "shellTitle": "添加竞品",
+        "shellDescription": "此店铺商品目录的对比品牌。竞品仅属于单个店铺，因此不会与您的其他店铺混合。",
+        "description": "从您的商品目录中检测竞品、粘贴商品 URL 或搜索品牌。添加的所有内容仅属于此店铺。",
+        "findKicker": "01 — 查找",
+        "rosterKicker": "02 — 名单",
+        "trackedTitle": "此店铺中已跟踪",
+        "trackedDescription": "当检测运行时未明确指定名单，仅会评估已选中的竞品。",
+        "rosterSummary": "{total} 个，覆盖 {brands, plural, other {# 个品牌}} — 已选择 {selected} 个",
+        "emptyRoster": "尚未跟踪竞品。在上方添加后，它们会显示在这里。",
+        "tabs": {
+          "liveOffers": "实时报价",
+          "autoDetect": "自动检测",
+          "pasteUrls": "粘贴 URL",
+          "searchBrand": "搜索品牌",
+          "googleMerchant": "Google"
+        }
+      }
+    }
+  }
+}

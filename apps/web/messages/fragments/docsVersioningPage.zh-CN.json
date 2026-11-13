@@ -1,0 +1,39 @@
+{
+  "docsVersioningPage": {
+    "current": "当前 API 版本",
+    "request": "固定请求与响应版本",
+    "additive": "添加到同一版本",
+    "breaking": "启用新的版本路径",
+    "notice": "最短通知期",
+    "days": "天",
+    "example": "弃用响应头格式",
+    "exampleHint": "示例响应头值，并非停用公告。",
+    "apiContract": "ecentic API 合约",
+    "protocolContract": "发现协议合约",
+    "protocolVersion": "读取文档中的版本号",
+    "lifecycle": {
+      "label": "弃用响应信号",
+      "hint": "选择一个响应头，查看它向客户端传达的信息。",
+      "items": [
+        {
+          "header": "Deprecation",
+          "title": "版本已弃用",
+          "description": "已弃用版本的每个响应都会携带此响应头。它使用 RFC 9745 宣布版本弃用。",
+          "meaning": "已宣布弃用"
+        },
+        {
+          "header": "Sunset",
+          "title": "已确定移除日期",
+          "description": "确定移除日期后，响应也会携带此响应头。RFC 8594 定义了该版本停止响应的日期。",
+          "meaning": "已宣布移除日期"
+        },
+        {
+          "header": "Link",
+          "title": "已标明替代版本",
+          "description": "在移除日期之外，带有 rel=\"successor-version\" 的 Link 会将客户端指向替代版本。",
+          "meaning": "已关联替代版本"
+        }
+      ]
+    }
+  }
+}

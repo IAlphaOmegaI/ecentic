@@ -1,0 +1,16 @@
+{
+  "interactiveStore": {
+    "label": "您的店铺地址",
+    "action": {
+      "primary": "免费检测我的店铺"
+    },
+    "pending": "正在检测您的店铺…",
+    "hint": "您的地址会带入注册流程和现有免费检测。无需支付信息。",
+    "errors": {
+      "invalid": "请输入有效的店铺域名或 http/https 地址。",
+      "limited": "当前检测请求过多，请稍后再试。",
+      "unreachable": "无法访问 {host}。请检查地址后重试。",
+      "failed": "检测未能完成，请重试。"
+    }
+  }
+}

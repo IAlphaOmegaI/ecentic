@@ -1,0 +1,27 @@
+{
+  "enterpriseLayer": {
+    "eyebrow": "01 · Come si integra",
+    "title": "Il tuo stack da una parte. I canali AI dall’altra. ecentic nel mezzo.",
+    "description": "Porta il catalogo che usi già. Usa ecentic per prepararlo agli assistenti che i tuoi clienti utilizzano, con la disponibilità attuale di ogni canale mostrata chiaramente.",
+    "stack": "Il tuo stack",
+    "channels": "Canali AI",
+    "layer": "Il layer AI per il commercio",
+    "stages": [
+      "Simula",
+      "Correggi",
+      "Vendi",
+      "Monitora"
+    ],
+    "inputs": [
+      "Shopify",
+      "WooCommerce",
+      "Feed di prodotti / CSV",
+      "PIM",
+      "Google Merchant Center"
+    ],
+    "legend": "Linee continue: disponibili oggi, incluse le simulazioni. Linee tratteggiate: in arrivo. La disponibilità del canale non garantisce un checkout nativo.",
+    "action": "Vedi tutti i canali AI",
+    "diagram": "Il tuo stack ecommerce esistente si collega a ecentic, che prepara i dati prodotto e il checkout supportato per sei canali AI.",
+    "google": "Google AI Mode / Gemini"
+  }
+}

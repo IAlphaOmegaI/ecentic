@@ -1,0 +1,1433 @@
+{
+  "enterprisePlatform": {
+    "overview": {
+      "actions": [
+        {
+          "label": "Prenota una demo",
+          "href": "/demo"
+        },
+        {
+          "label": "Controlla gratis il mio store",
+          "href": "/sign-up"
+        }
+      ],
+      "faqTitle": "Domande sulla piattaforma",
+      "meta": {
+        "title": "La piattaforma ecentic: collega, simula, correggi, vendi, monitora",
+        "description": "Collega il tuo catalogo, confronta i prodotti con modelli AI, pubblica le modifiche che scegli, testa il checkout degli agenti e monitora i referral Shopify rilevati."
+      },
+      "eyebrow": "Piattaforma",
+      "title": "Tutto ciò che serve a uno store per vendere tramite l’AI.",
+      "description": "Cinque passaggi, in ordine. Collega il tuo catalogo, scopri come i modelli AI lo confrontano, migliora i dati che leggono, testa il percorso fino al checkout e monitora ciò che puoi osservare. Scegli tu cosa pubblicare e quando eseguire una nuova scansione.",
+      "sections": [
+        {
+          "id": "connect",
+          "title": "Il tuo catalogo, in un unico posto. I contenuti prodotto restano sotto il tuo controllo.",
+          "eyebrow": "[01] Collega",
+          "description": "Il tuo catalogo, in un unico posto. Shopify, WooCommerce, un feed prodotto supportato o CSV. Importa prima i dati prodotto; scegli la pubblicazione separatamente.",
+          "field": false,
+          "items": [
+            {
+              "title": "App Shopify",
+              "body": "Collega tramite Shopify OAuth. Le importazioni dei prodotti non riscrivono le tue schede prodotto. Il collegamento installa anche lo script Shopify per il monitoraggio delle visite.",
+              "href": "/platform/connect#shopify",
+              "label": "Esplora"
+            },
+            {
+              "title": "Plugin WooCommerce o REST API",
+              "body": "Collega con il plugin ecentic o le chiavi REST API. La pubblicazione richiede permessi di scrittura; una chiave in sola lettura può importare i prodotti.",
+              "href": "/platform/connect#woocommerce",
+              "label": "Esplora"
+            },
+            {
+              "title": "Feed prodotto",
+              "body": "Importa feed RSS/XML supportati o array di prodotti JSON, incluse raccolte products o items. Il feed deve rispettare la mappatura supportata e il limite di 10 MiB.",
+              "href": "/platform/connect#product-feeds",
+              "label": "Esplora"
+            },
+            {
+              "title": "Caricamento CSV",
+              "body": "Inizia da un’esportazione di foglio di calcolo usando le colonne supportate dall’importatore. Questo non collega un canale di scrittura alla piattaforma originale.",
+              "href": "/platform/connect#csv",
+              "label": "Esplora"
+            },
+            {
+              "title": "Importa da un indirizzo store",
+              "body": "Inizia da un catalogo Shopify o WooCommerce pubblico e accessibile. Devi creare un account prima che il catalogo venga importato. I cataloghi protetti da password o non supportati richiedono un altro metodo di collegamento.",
+              "href": "/platform/connect#store-address",
+              "label": "Esplora"
+            },
+            {
+              "title": "Google Merchant Center",
+              "body": "Collega separatamente per gli store Shopify. Leggi le diagnostiche, prepara dati supplementari e scegli quando inviare le correzioni pubblicate.",
+              "href": "/platform/connect#merchant-center",
+              "label": "Esplora"
+            }
+          ],
+          "links": [
+            {
+              "label": "Scopri Connect",
+              "href": "/platform/connect"
+            }
+          ]
+        },
+        {
+          "id": "simulate",
+          "title": "Scopri come l’AI valuta il tuo catalogo. Prodotto per prodotto.",
+          "eyebrow": "[02] Simula",
+          "description": "Scopri quali prodotti scelgono i modelli e perché. ChatGPT, Claude e Gemini confrontano il tuo prodotto con un concorrente identificato e registrano il loro ragionamento.",
+          "items": [
+            {
+              "title": "Simulazioni di agenti",
+              "body": "Confronti di prodotto controllati su ChatGPT, Claude e Gemini. Una scansione raggruppa i confronti che richiedi.",
+              "href": "/platform/simulate#simulations",
+              "label": "Esplora"
+            },
+            {
+              "title": "Percentuale di vittorie AI",
+              "body": "Analizza le decisioni simulate completate per prodotto, modello e concorrente. Non è una misura di quota di mercato o vendite reali.",
+              "href": "/platform/simulate#win-rate",
+              "label": "Esplora"
+            },
+            {
+              "title": "Schede di confronto con i concorrenti",
+              "body": "Esamina il confronto registrato e i punti di forza o le lacune descritte dal modello. Verifica qualsiasi suggerimento sui prodotti rispetto ai dati del tuo catalogo sorgente.",
+              "href": "/platform/simulate#battlecards",
+              "label": "Esplora"
+            },
+            {
+              "title": "Replay dell’agente",
+              "body": "Segui il ragionamento registrato durante una simulazione. Questa è la spiegazione del modello, non la registrazione della sessione di un acquirente.",
+              "href": "/platform/simulate#replay",
+              "label": "Esplora"
+            },
+            {
+              "title": "Audit di preparazione per gli agenti",
+              "body": "Controlla le regole AI crawler in robots.txt, i dati Product JSON-LD nell’HTML delle pagine campionate, gli identificatori prodotto, la profondità dei contenuti e l’idoneità dei feed generati. Le pagine che non possono essere recuperate vengono segnalate come avvisi. L’audit non esegue un browser né certifica l’assenza di barriere per i bot.",
+              "href": "/platform/simulate#readiness",
+              "label": "Esplora"
+            },
+            {
+              "title": "Controllo qualità delle schede prodotto",
+              "body": "Esegui 34 regole basate sulle specifiche feed di Google e OpenAI sui campi supportati dei prodotti importati attivi. I controlli includono identificatori, brand e informazioni obbligatorie della scheda prodotto.",
+              "href": "/platform/simulate#listing-quality",
+              "label": "Esplora"
+            },
+            {
+              "title": "Brand Visibility",
+              "body": "La funzione dashboard pone a ChatGPT una serie di domande sul brand. La copertura attuale riguarda ChatGPT, separatamente dalla scansione prodotti a tre modelli.",
+              "href": "/platform/simulate#brand-visibility",
+              "label": "Esplora"
+            }
+          ],
+          "links": [
+            {
+              "label": "Scopri le simulazioni",
+              "href": "/platform/simulate"
+            }
+          ]
+        },
+        {
+          "id": "fix",
+          "title": "Correggi i dati che l’AI legge. Pubblica quando sei pronto.",
+          "eyebrow": "[03] Correggi",
+          "description": "Riscrivi titoli e descrizioni partendo da dati esistenti. Pubblica i dati strutturati separatamente e scegli quando inviare le correzioni pubblicate a Merchant Center su Shopify.",
+          "field": false,
+          "items": [
+            {
+              "title": "Riscrittura delle schede prodotto",
+              "body": "Applica genera e pubblica modifiche a titoli e descrizioni sugli store Shopify o WooCommerce collegati direttamente. Le riscritture riorganizzano fatti esistenti. Conferma prima eventuali dati mancanti nel catalogo sorgente.",
+              "href": "/platform/fix#listings",
+              "label": "Esplora"
+            },
+            {
+              "title": "Dati strutturati",
+              "body": "Pubblica dati Product schema.org tramite un’azione separata. Gli store Shopify richiedono l’attivazione dell’app embed perché il metafield prodotto venga renderizzato; il plugin WooCommerce renderizza i metadati prodotto.",
+              "href": "/platform/fix#structured-data",
+              "label": "Esplora"
+            },
+            {
+              "title": "Attributi mancanti",
+              "body": "Le simulazioni e i controlli delle schede prodotto possono evidenziare lacune. ecentic non genera GTIN, non certifica dichiarazioni sui prodotti e non inventa specifiche che non possiedi.",
+              "href": "/platform/fix#attributes",
+              "label": "Esplora"
+            },
+            {
+              "title": "Scegli tu quando pubblicare ogni modifica.",
+              "body": "Per la riscrittura di una scheda prodotto, Applica è l’azione di pubblicazione. I dati strutturati usano un’azione di pubblicazione separata. Puoi anche scegliere un’azione collettiva esplicita per i prodotti inclusi.",
+              "href": "/platform/fix#publish",
+              "label": "Esplora"
+            },
+            {
+              "title": "Invia le correzioni pubblicate a Merchant Center.",
+              "body": "Su Shopify, invia le correzioni pubblicate tramite i controlli Google Shopping. Questo crea dati supplementari senza sostituire il feed principale. Apply sulle schede prodotto non esegue automaticamente questa sincronizzazione.",
+              "href": "/platform/fix#merchant-center",
+              "label": "Esplora"
+            }
+          ],
+          "links": [
+            {
+              "label": "Scopri come correggere le schede",
+              "href": "/platform/fix"
+            }
+          ]
+        },
+        {
+          "id": "sell",
+          "title": "Consenti all’AI di completare il checkout. Alle tue condizioni.",
+          "eyebrow": "[04] Vendi",
+          "description": "Testa ciò che un agente incontra al checkout. Su WooCommerce, fornisci un percorso verso carrello e ordini usando il gateway del tuo store e i controlli di accesso configurati.",
+          "items": [
+            {
+              "title": "Checkout degli agenti su WooCommerce",
+              "body": "Espone ricerca prodotti, carrelli reali e checkout tramite il plugin ecentic e endpoint ospitati. Gli ordini appartengono al tuo store. I controlli di accesso sono configurabili: una allow-list vuota consente tutte le piattaforme e le firme sono obbligatorie solo quando l’opzione è abilitata.",
+              "href": "/platform/sell#checkout",
+              "label": "Esplora"
+            },
+            {
+              "title": "Vendi dentro ChatGPT",
+              "body": "Prossimamente. La pubblicazione dell’app ecentic nella directory app di ChatGPT non è stata confermata. Le simulazioni prodotto sono disponibili separatamente.",
+              "href": "/platform/sell#chatgpt",
+              "label": "Esplora"
+            },
+            {
+              "title": "Ambiente di test checkout",
+              "body": "Esegui un agente di test sui tool del tuo store. Sono disponibili dieci messaggi anonimi; usa uno store di staging per i test di checkout.",
+              "href": "/platform/sell#playground",
+              "label": "Esplora"
+            },
+            {
+              "title": "Validatore checkout",
+              "body": "Recupera il profilo di discovery di uno store ed esamina i controlli segnalati. Un risultato di validazione non iscrive il merchant a un programma di una piattaforma AI.",
+              "href": "/platform/sell#validator",
+              "label": "Esplora"
+            },
+            {
+              "title": "Scanner WebMCP",
+              "body": "Esamina le evidenze sorgente di strumenti e moduli su un piccolo campione di pagine. Lo scanner non esegue strumenti browser né invia moduli.",
+              "href": "/platform/sell#webmcp",
+              "label": "Esplora"
+            }
+          ],
+          "links": [
+            {
+              "label": "Scopri come vendere tramite AI",
+              "href": "/platform/sell"
+            }
+          ]
+        },
+        {
+          "id": "track",
+          "title": "Scopri cosa ti invia l’AI. Store per store.",
+          "eyebrow": "[05] Monitora",
+          "description": "Visualizza i referral AI rilevati su Shopify. Richiedi nuove scansioni dopo le modifiche e mantieni separate le visite dai risultati simulati e dalle stime.",
+          "field": false,
+          "items": [
+            {
+              "title": "Traffico AI su Shopify",
+              "body": "Riconosce i domini referral di ChatGPT, Perplexity, Claude, Gemini, Copilot e You.com, oltre ai segnali noti degli user-agent. Richiede lo script browser e segnali disponibili; non osserva ogni crawler senza JavaScript né identifica ogni visita diretta.",
+              "href": "/platform/track#traffic",
+              "label": "Esplora"
+            },
+            {
+              "title": "Incremento stimato per correzione",
+              "body": "L’incremento è una stima registrata insieme alla modifica della scheda prodotto. Non rappresenta ricavi misurati né un esperimento completato dopo la pubblicazione.",
+              "href": "/platform/track#lift",
+              "label": "Esplora"
+            },
+            {
+              "title": "Nuove scansioni su richiesta",
+              "body": "Esegui una nuova scansione quando vuoi confrontare di nuovo i prodotti. Le nuove scansioni pianificate non sono attive oggi.",
+              "href": "/platform/track#rescans",
+              "label": "Esplora"
+            },
+            {
+              "title": "Tutti i tuoi store in un unico account",
+              "body": "L’hub multi-store contiene store appartenenti a un unico account. Non fornisce posti team, accesso delegato per agenzie o single sign-on.",
+              "href": "/platform/track#stores",
+              "label": "Esplora"
+            },
+            {
+              "title": "API, server MCP e CLI",
+              "body": "Gli strumenti per sviluppatori supportano discovery, piani, connessione e workflow di onboarding. Le interfacce pubbliche attuali non esportano i risultati delle scansioni dashboard né i dati di monitoraggio delle visite.",
+              "href": "/platform/track#developers",
+              "label": "Esplora"
+            }
+          ],
+          "links": [
+            {
+              "label": "Scopri il monitoraggio",
+              "href": "/platform/track"
+            }
+          ]
+        },
+        {
+          "id": "control",
+          "title": "Cosa ecentic non farà.",
+          "paragraphs": [
+            "L’importazione dei dati prodotto non riscrive le tue schede prodotto. La pubblicazione richiede un’azione scelta da te. I modelli decidono cosa consigliare; una simulazione non può promettere una vendita futura."
+          ]
+        },
+        {
+          "id": "developers",
+          "title": "Pubblichiamo ciò che chiediamo a te di pubblicare.",
+          "description": "llms.txt, catalogo API, OAuth discovery, profilo agent checkout ed endpoint MCP di ecentic sono pubblici. La REST API è versionata e documentata in OpenAPI 3.1, e la CLI funziona con npx @ecentic/cli.",
+          "note": "Le attuali interfacce per sviluppatori supportano discovery e onboarding, non l’esportazione dei risultati dashboard.",
+          "links": [
+            {
+              "label": "Leggi la documentazione",
+              "href": "/docs"
+            },
+            {
+              "label": "Vedi endpoint pubblici",
+              "href": "/resources"
+            }
+          ]
+        }
+      ],
+      "faqs": [
+        {
+          "question": "Ho bisogno di tutti e cinque i passaggi?",
+          "answer": "No. Puoi iniziare collegando il catalogo e avviando le simulazioni, poi decidere quali prodotti modificare."
+        },
+        {
+          "question": "Quali piattaforme funzionano oggi?",
+          "answer": "Shopify e WooCommerce si collegano direttamente. I feed prodotto compatibili e i file CSV supportano le importazioni da altri sistemi."
+        },
+        {
+          "question": "Una simulazione equivale al traffico AI in tempo reale?",
+          "answer": "No. È un confronto controllato con concorrenti identificati. I referral AI rilevati in tempo reale vengono misurati separatamente su Shopify."
+        },
+        {
+          "question": "Dove posso vedere i prezzi?",
+          "answer": "Consulta la pagina Prezzi. I progetti pilota Enterprise vengono definiti durante una call."
+        }
+      ]
+    },
+    "pages": {
+      "connect": {
+        "actions": [
+          {
+            "label": "Prenota una demo",
+            "href": "/demo"
+          },
+          {
+            "label": "Controlla gratis il mio store",
+            "href": "/sign-up"
+          }
+        ],
+        "faqTitle": "Domande sulla piattaforma",
+        "meta": {
+          "title": "Collega il tuo catalogo a ecentic",
+          "description": "Collega Shopify o WooCommerce, importa un feed supportato o un CSV e scegli i prodotti da confrontare. Le importazioni dei prodotti sono in sola lettura."
+        },
+        "eyebrow": "Collega",
+        "title": "Il tuo catalogo, in un unico posto. I contenuti prodotto restano sotto il tuo controllo.",
+        "description": "Collega Shopify o WooCommerce, importa un feed prodotto supportato o un CSV, oppure inizia da un indirizzo Shopify o WooCommerce accessibile. ecentic importa il tuo catalogo così puoi scegliere i prodotti da confrontare. La pubblicazione delle modifiche ai prodotti è un’azione separata.",
+        "sections": [
+          {
+            "id": "problem",
+            "title": "I tuoi dati prodotto si trovano in più posti.",
+            "eyebrow": "[01] Il problema",
+            "description": "Lo store ha una versione, Merchant Center ne ha un’altra e il feed creato dalla tua agenzia una terza. Le informazioni prodotto possono differire tra queste fonti.",
+            "items": [
+              {
+                "title": "Feed non aggiornati",
+                "body": "Prezzi e descrizioni potrebbero non corrispondere più allo store."
+              },
+              {
+                "title": "Un account Merchant Center non gestito direttamente",
+                "body": "Il team che modifica il catalogo potrebbe non gestire il feed Google."
+              },
+              {
+                "title": "Nessun punto di partenza condiviso",
+                "body": "Decidi quale catalogo e quali prodotti il tuo team confronterà."
+              }
+            ]
+          },
+          {
+            "id": "how-it-works",
+            "title": "Importa il catalogo. Decidi cosa succede dopo.",
+            "eyebrow": "[02] Come funziona",
+            "ordered": true,
+            "columns": 4,
+            "items": [
+              {
+                "title": "Collega una fonte",
+                "body": "Collega Shopify o WooCommerce, carica un CSV oppure incolla l’URL di un feed XML o JSON supportato."
+              },
+              {
+                "title": "Importa i dati prodotto",
+                "body": "ecentic importa i campi supportati come titoli, descrizioni, prezzi, immagini e identificatori prodotto. Le importazioni da feed non conservano attributi personalizzati arbitrari."
+              },
+              {
+                "title": "Collega Merchant Center se necessario",
+                "body": "Gli store Shopify possono collegare Google Merchant Center separatamente per diagnostica e dati supplementari."
+              },
+              {
+                "title": "Scegli i prodotti",
+                "body": "Seleziona cosa confrontare. L’importazione non riscrive i contenuti prodotto; la pubblicazione richiede un’azione esplicita da parte tua."
+              }
+            ]
+          },
+          {
+            "id": "example",
+            "title": "Un prodotto, pronto per il confronto.",
+            "eyebrow": "[03] Cosa cambia",
+            "description": "Esempio con dati di esempio. L’importazione crea una copia di lavoro in ecentic. Non arricchisce informazioni prodotto mancanti."
+          },
+          {
+            "id": "why-it-works",
+            "title": "Un punto di partenza chiaro per ogni negozio.",
+            "eyebrow": "[04] Perché funziona",
+            "columns": 3,
+            "items": [
+              {
+                "title": "Prima i dati prodotto",
+                "body": "Confronta i campi del catalogo supportati invece di fare ipotesi dalla homepage."
+              },
+              {
+                "title": "Importazione e pubblicazione separate",
+                "body": "Importa prima i prodotti. Autorizza le modifiche ai contenuti in un secondo momento."
+              },
+              {
+                "title": "Un account per i tuoi negozi",
+                "body": "Riunisci i negozi che possiedi sotto un unico accesso."
+              }
+            ]
+          },
+          {
+            "id": "what-to-track",
+            "title": "Cosa può monitorare il tuo team.",
+            "eyebrow": "[05] Dopo la connessione",
+            "items": [
+              {
+                "title": "Prodotti collegati",
+                "body": "Quali prodotti sono stati importati correttamente."
+              },
+              {
+                "title": "Campi disponibili",
+                "body": "Quali campi supportati sono presenti in ogni origine dati."
+              },
+              {
+                "title": "Problemi dell’origine dati",
+                "body": "Errori di importazione e diagnostica di Merchant Center, se collegato."
+              }
+            ]
+          },
+          {
+            "id": "shopify",
+            "title": "App Shopify",
+            "paragraphs": [
+              "Connettiti tramite Shopify OAuth. L’importazione dei prodotti non riscrive le tue schede prodotto. La connessione installa anche lo script Shopify di monitoraggio delle visite."
+            ],
+            "links": [
+              {
+                "label": "Vedi l’integrazione Shopify",
+                "href": "/integrations/shopify"
+              }
+            ]
+          },
+          {
+            "id": "woocommerce",
+            "title": "Plugin WooCommerce o REST API",
+            "paragraphs": [
+              "Connettiti con il plugin ecentic o le chiavi REST API. La pubblicazione richiede permessi di scrittura; una chiave in sola lettura può importare i prodotti."
+            ],
+            "links": [
+              {
+                "label": "Vedi l’integrazione WooCommerce",
+                "href": "/integrations/woocommerce"
+              }
+            ]
+          },
+          {
+            "id": "product-feeds",
+            "title": "Feed di prodotti",
+            "paragraphs": [
+              "Importa feed RSS/XML supportati o array di prodotti JSON, incluse raccolte products o items. Il feed deve rispettare la mappatura supportata e il limite di 10 MiB."
+            ],
+            "links": [
+              {
+                "label": "Vedi i formati supportati",
+                "href": "/integrations/product-feeds"
+              }
+            ]
+          },
+          {
+            "id": "csv",
+            "title": "Caricamento CSV",
+            "paragraphs": [
+              "Parti da un’esportazione in foglio di calcolo usando le colonne supportate dall’importatore. Questo non collega un canale di scrittura alla piattaforma originale."
+            ]
+          },
+          {
+            "id": "store-address",
+            "title": "Importa dall’indirizzo di un negozio",
+            "paragraphs": [
+              "Inizia da un catalogo Shopify o WooCommerce pubblico e accessibile. Crei un account prima che il catalogo venga importato. I cataloghi protetti da password o non supportati richiedono un altro metodo di connessione."
+            ]
+          },
+          {
+            "id": "merchant-center",
+            "title": "Google Merchant Center",
+            "paragraphs": [
+              "Configura una connessione separata per i negozi Shopify. Leggi la diagnostica, prepara dati supplementari e scegli quando inviare le correzioni pubblicate."
+            ],
+            "links": [
+              {
+                "label": "Vedi Merchant Center",
+                "href": "/integrations/google-merchant-center"
+              }
+            ]
+          },
+          {
+            "id": "next",
+            "title": "Prossimo passo: confronta i prodotti.",
+            "links": [
+              {
+                "label": "Simula",
+                "href": "/platform/simulate"
+              },
+              {
+                "label": "Panoramica della piattaforma",
+                "href": "/platform"
+              }
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Collegare ecentic modifica il mio negozio?",
+            "answer": "L’importazione non riscrive i contenuti prodotto. Shopify OAuth installa anche il monitoraggio delle visite. La pubblicazione di schede prodotto e dati strutturati richiede azioni separate che scegli tu."
+          },
+          {
+            "question": "Quali piattaforme funzionano oggi?",
+            "answer": "Shopify e WooCommerce si collegano direttamente. Le altre piattaforme possono iniziare con un feed di prodotto compatibile o un’esportazione CSV."
+          },
+          {
+            "question": "Avete bisogno dell’accesso al nostro Merchant Center?",
+            "answer": "Solo per le funzionalità Merchant Center, e oggi solo su Shopify. Le simulazioni possono essere eseguite senza quella connessione."
+          },
+          {
+            "question": "Possiamo iniziare solo da dati pubblici?",
+            "answer": "Sì. Cataloghi Shopify o WooCommerce accessibili e feed pubblici compatibili possono supportare una prima scansione. I progetti pilota Enterprise possono iniziare con pagine e dati pubblici concordati."
+          }
+        ]
+      },
+      "simulate": {
+        "actions": [
+          {
+            "label": "Prenota una demo",
+            "href": "/demo"
+          },
+          {
+            "label": "Controlla gratis il tuo negozio",
+            "href": "/sign-up"
+          }
+        ],
+        "faqTitle": "Domande sulla piattaforma",
+        "meta": {
+          "title": "Scopri come l’AI confronta i tuoi prodotti | ecentic",
+          "description": "Confronta prodotti con concorrenti identificati su ChatGPT, Claude e Gemini. Visualizza percentuali di vittorie simulate, motivazioni, controlli di preparazione e qualità delle schede prodotto."
+        },
+        "eyebrow": "Simula",
+        "title": "Scopri come l’AI sceglie cosa acquistare dal tuo catalogo. Prodotto per prodotto.",
+        "description": "ecentic mette i tuoi prodotti accanto a quelli di un concorrente identificato nelle simulazioni di ChatGPT, Claude e Gemini e registra quale viene scelto dal modello, e perché. Visualizzi la percentuale di vittorie per prodotto, per modello e per concorrente. Si tratta di decisioni simulate, non di sessioni di acquisto reali.",
+        "sections": [
+          {
+            "id": "problem",
+            "title": "Non puoi vedere ogni decisione che ti costa una vendita.",
+            "eyebrow": "[01] Il problema",
+            "description": "Un acquirente cerca un’opzione entro un certo budget. Un assistente confronta i prodotti e risponde. Se il tuo manca, i tuoi strumenti di analisi potrebbero non registrare mai quel confronto.",
+            "items": [
+              {
+                "title": "Prodotti ignorati",
+                "body": "Individua le schede prodotto che perdono nei confronti che esegui."
+              },
+              {
+                "title": "Concorrenti scelti",
+                "body": "Scopri quale concorrente identificato vince ogni simulazione."
+              },
+              {
+                "title": "Informazioni mancanti",
+                "body": "Leggi la spiegazione del modello su ciò che ha fatto la differenza."
+              }
+            ]
+          },
+          {
+            "id": "how-it-works",
+            "title": "Rendi esplicito il confronto.",
+            "eyebrow": "[02] Come funziona",
+            "ordered": true,
+            "columns": 4,
+            "items": [
+              {
+                "title": "Scegli il confronto",
+                "body": "Seleziona i prodotti e i concorrenti che vuoi confrontare."
+              },
+              {
+                "title": "Esegui tre modelli",
+                "body": "ChatGPT, Claude e Gemini effettuano ciascuno una scelta simulata."
+              },
+              {
+                "title": "Leggi il report",
+                "body": "Ogni esecuzione completata registra la scelta, la motivazione e i punteggi del confronto."
+              },
+              {
+                "title": "Scegli l’azione successiva",
+                "body": "Usa i risultati per definire le priorità. Una simulazione non pubblica modifiche né garantisce un acquisto reale."
+              }
+            ]
+          },
+          {
+            "id": "example",
+            "title": "Una domanda, con la motivazione accanto.",
+            "eyebrow": "[03] Cosa cambia",
+            "description": "Esempio con dati di esempio. L’esempio mostra un confronto registrato, non un risultato cliente misurato."
+          },
+          {
+            "id": "why-it-works",
+            "title": "Un risultato che puoi analizzare.",
+            "eyebrow": "[04] Perché funziona",
+            "items": [
+              {
+                "title": "Concorrenti identificati",
+                "body": "Un confronto tra prodotti dà contesto al risultato."
+              },
+              {
+                "title": "Motivazione registrata",
+                "body": "Leggi cosa ha detto il modello su quella decisione specifica."
+              },
+              {
+                "title": "Tre prospettive",
+                "body": "Confronta le scelte registrate e le spiegazioni di ChatGPT, Claude e Gemini. Ogni modello può valutare gli stessi dati prodotto in modo diverso."
+              }
+            ]
+          },
+          {
+            "id": "what-to-track",
+            "title": "Cosa può monitorare il tuo team.",
+            "eyebrow": "[05] Dopo una scansione",
+            "items": [
+              {
+                "title": "Percentuale di vittorie per prodotto",
+                "body": "La quota di simulazioni completate in cui il prodotto viene scelto."
+              },
+              {
+                "title": "Percentuale di vittorie per modello",
+                "body": "Differenze tra i tre modelli sugli stessi confronti."
+              },
+              {
+                "title": "Perdite ricorrenti",
+                "body": "Prodotti in cui il concorrente identificato vince ripetutamente nei tuoi test."
+              }
+            ]
+          },
+          {
+            "id": "simulations",
+            "title": "Simulazioni degli agenti AI per gli acquisti",
+            "paragraphs": [
+              "Confronti controllati tra prodotti su ChatGPT, Claude e Gemini. Una scansione raggruppa i confronti che richiedi."
+            ]
+          },
+          {
+            "id": "win-rate",
+            "title": "Percentuale di vittorie nelle simulazioni AI",
+            "paragraphs": [
+              "Analizza le decisioni simulate completate per prodotto, modello e concorrente. Non è una misura di quota di mercato o vendite reali."
+            ]
+          },
+          {
+            "id": "battlecards",
+            "title": "Schede di confronto con i concorrenti",
+            "paragraphs": [
+              "Analizza il confronto registrato e i punti di forza o le lacune descritti dal modello. Verifica qualsiasi dato prodotto suggerito rispetto ai tuoi dati di origine."
+            ]
+          },
+          {
+            "id": "replay",
+            "title": "Replay dell’agente",
+            "paragraphs": [
+              "Segui la motivazione registrata durante una simulazione. Questa è la spiegazione del modello, non la registrazione della sessione di un acquirente."
+            ]
+          },
+          {
+            "id": "readiness",
+            "title": "Audit di preparazione per gli agenti",
+            "paragraphs": [
+              "Controlla le regole AI crawler in robots.txt, il Product JSON-LD nell’HTML delle pagine campione, gli identificatori prodotto, la profondità dei contenuti e l’idoneità alla generazione dei feed. Le pagine che non possono essere recuperate vengono segnalate come avvisi. L’audit non esegue un browser né certifica l’assenza di blocchi per bot."
+            ]
+          },
+          {
+            "id": "listing-quality",
+            "title": "Controllo qualità delle schede prodotto",
+            "paragraphs": [
+              "Esegui 34 regole basate sulle specifiche dei feed di Google e OpenAI sui campi supportati dei prodotti importati attivi. I controlli includono identificatori, brand e informazioni obbligatorie della scheda prodotto."
+            ]
+          },
+          {
+            "id": "brand-visibility",
+            "title": "Visibilità del brand",
+            "paragraphs": [
+              "La funzione della dashboard pone a ChatGPT una serie di domande sul brand. Attualmente copre ChatGPT, separatamente dalla scansione prodotti a tre modelli."
+            ]
+          },
+          {
+            "id": "next",
+            "title": "Prossimo passo: scegli cosa correggere.",
+            "links": [
+              {
+                "label": "Collega",
+                "href": "/platform/connect"
+              },
+              {
+                "label": "Correggi",
+                "href": "/platform/fix"
+              }
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Sono dati di ranking in tempo reale?",
+            "answer": "No. Le percentuali di vittorie derivano da simulazioni contro concorrenti specifici. Le visite reali provenienti da siti esterni vengono monitorate separatamente su Shopify."
+          },
+          {
+            "question": "Quali modelli simulate?",
+            "answer": "Oggi ChatGPT, Claude e Gemini nelle scansioni dei negozi."
+          },
+          {
+            "question": "Cosa controlla l’audit di preparazione?",
+            "answer": "Regole dei crawler, HTML recuperato delle pagine prodotto, identificatori, contenuti e idoneità dei feed. Analizza pagine campione e non esegue controlli con rendering del browser."
+          },
+          {
+            "question": "Cos’è il controllo qualità delle schede prodotto?",
+            "answer": "34 regole basate sulle specifiche dei feed di Google e OpenAI, applicate ai campi supportati nei prodotti importati attivi."
+          }
+        ]
+      },
+      "fix": {
+        "actions": [
+          {
+            "label": "Prenota una demo",
+            "href": "/demo"
+          },
+          {
+            "label": "Controlla gratis il mio negozio",
+            "href": "/sign-up"
+          }
+        ],
+        "faqTitle": "Domande sulla piattaforma",
+        "meta": {
+          "title": "Correggi le schede prodotto per gli acquisti tramite AI | ecentic",
+          "description": "Riscrivi titoli e descrizioni prodotto quando lo scegli tu. Pubblica separatamente i dati strutturati, poi invia le correzioni pubblicate a Merchant Center su Shopify."
+        },
+        "eyebrow": "Correggi",
+        "title": "Correggi i dati che l’AI legge. Pubblica quando sei pronto.",
+        "description": "Usa i risultati delle simulazioni per decidere quali schede prodotto devono essere migliorate. ecentic riscrive titoli e descrizioni a partire dalle informazioni prodotto già disponibili quando applichi una modifica alla scheda. I dati strutturati e la sincronizzazione con Merchant Center hanno controlli di pubblicazione separati.",
+        "sections": [
+          {
+            "id": "problem",
+            "title": "I prodotti sono più difficili da confrontare quando mancano informazioni.",
+            "eyebrow": "[01] Il problema",
+            "description": "Una durata della batteria mancante, una misura poco chiara o una descrizione che non corrisponde più al prodotto. Ogni lacuna rende il confronto meno utile. Le informazioni di origine devono provenire da te o dal tuo fornitore.",
+            "items": [
+              {
+                "title": "Troppe schede prodotto",
+                "body": "Decidi da dove iniziare con i prodotti che perdono nelle tue simulazioni."
+              },
+              {
+                "title": "Informazioni prodotto poco chiare",
+                "body": "Rendi le informazioni che hai più facili da leggere e confrontare."
+              },
+              {
+                "title": "Più superfici di pubblicazione",
+                "body": "Mantieni separati i contenuti del negozio, i dati strutturati e il feed Google."
+              }
+            ]
+          },
+          {
+            "id": "how-it-works",
+            "title": "Tre controlli di pubblicazione. La decisione è tua, ogni volta.",
+            "eyebrow": "[02] Come funziona",
+            "ordered": true,
+            "columns": 4,
+            "items": [
+              {
+                "title": "Scegli una scheda prodotto",
+                "body": "Leggi il confronto e decidi quale prodotto migliorare."
+              },
+              {
+                "title": "Applica la riscrittura della scheda",
+                "body": "Apply genera e pubblica un titolo e una descrizione a partire dalle informazioni prodotto correnti. Non esiste un’anteprima completa della riscrittura prima di questa azione."
+              },
+              {
+                "title": "Pubblica gli altri dati separatamente",
+                "body": "Usa l’azione separata per i dati strutturati. Su Shopify, scegli quando inviare a Merchant Center le correzioni pubblicate delle schede prodotto."
+              },
+              {
+                "title": "Esegui di nuovo la scansione per confrontare",
+                "body": "L’incremento mostrato per una correzione è una stima. Esegui tu stesso una nuova scansione per confrontare il set successivo di decisioni."
+              }
+            ]
+          },
+          {
+            "id": "example",
+            "title": "Le stesse informazioni, scritte in modo più chiaro.",
+            "eyebrow": "[03] Cosa cambia",
+            "description": "Esempio con dati di esempio. Illustra una possibile riscrittura, non una funzione di anteprima. Non vengono inventate nuove specifiche o identificatori."
+          },
+          {
+            "id": "why-it-works",
+            "title": "Mantieni chiaro l’ambito di ogni modifica.",
+            "eyebrow": "[04] Perché funziona",
+            "items": [
+              {
+                "title": "Una riscrittura mirata",
+                "body": "Il generatore lavora a partire dal titolo, dalla descrizione e dalla percentuale di vittorie esistenti. Non utilizza l’elenco degli attributi mancanti di un concorrente."
+              },
+              {
+                "title": "Pubblicazione esplicita",
+                "body": "Le modifiche alla scheda prodotto e ai dati strutturati vengono eseguite solo dopo un’azione scelta da te."
+              },
+              {
+                "title": "Una sincronizzazione Google separata",
+                "body": "I record delle schede prodotto pubblicate possono essere inviati come dati supplementari di Merchant Center per Shopify."
+              }
+            ]
+          },
+          {
+            "id": "what-to-track",
+            "title": "Cosa può monitorare il tuo team.",
+            "eyebrow": "[05] Dopo la pubblicazione",
+            "items": [
+              {
+                "title": "Prodotti modificati",
+                "body": "I prodotti che hai selezionato per la pubblicazione."
+              },
+              {
+                "title": "Nuovi risultati della scansione",
+                "body": "Confronta le scansioni completate prima e dopo il lavoro, separatamente dalla stima dell’incremento."
+              },
+              {
+                "title": "Problemi di Merchant Center",
+                "body": "Controlla la diagnostica dopo aver inviato i tuoi dati supplementari."
+              }
+            ]
+          },
+          {
+            "id": "listings",
+            "title": "Riscritture delle schede prodotto",
+            "paragraphs": [
+              "Apply genera e pubblica modifiche a titolo e descrizione su negozi Shopify o WooCommerce collegati direttamente. Le riscritture riorganizzano informazioni esistenti. Conferma prima le informazioni mancanti nel catalogo di origine."
+            ]
+          },
+          {
+            "id": "structured-data",
+            "title": "Dati strutturati",
+            "paragraphs": [
+              "Pubblica i dati schema.org Product tramite un’azione separata. I negozi Shopify richiedono che l’app embed sia abilitato affinché il metafield del prodotto venga visualizzato; il plugin WooCommerce visualizza i metadati del prodotto."
+            ]
+          },
+          {
+            "id": "attributes",
+            "title": "Attributi mancanti",
+            "paragraphs": [
+              "Le simulazioni e i controlli delle schede prodotto possono evidenziare lacune. ecentic non genera GTIN, non certifica dichiarazioni sui prodotti e non crea specifiche che non possiedi."
+            ]
+          },
+          {
+            "id": "publish",
+            "title": "Scegli tu quando pubblicare ogni modifica.",
+            "paragraphs": [
+              "Per una riscrittura della scheda prodotto, Apply è l’azione di pubblicazione. I dati strutturati usano un’azione di pubblicazione separata. Puoi anche scegliere un’azione bulk esplicita per i prodotti coinvolti."
+            ]
+          },
+          {
+            "id": "merchant-center",
+            "title": "Invia le correzioni pubblicate a Merchant Center.",
+            "paragraphs": [
+              "Su Shopify, invia le correzioni pubblicate tramite i controlli Google Shopping. Questo crea dati supplementari senza sostituire il feed principale. Listing Apply non esegue automaticamente questa sincronizzazione."
+            ],
+            "links": [
+              {
+                "label": "Vedi la sincronizzazione Merchant Center",
+                "href": "/integrations/google-merchant-center"
+              }
+            ]
+          },
+          {
+            "id": "next",
+            "title": "Successivo: testa il percorso fino al checkout.",
+            "links": [
+              {
+                "label": "Simula",
+                "href": "/platform/simulate"
+              },
+              {
+                "label": "Vendi",
+                "href": "/platform/sell"
+              }
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "question": "ecentic pubblica qualcosa automaticamente?",
+            "answer": "L’attuale flusso delle schede prodotto richiede un’azione Apply esplicita, incluse eventuali azioni bulk che scegli. I dati strutturati e la sincronizzazione con Merchant Center hanno controlli separati."
+          },
+          {
+            "question": "Cosa viene scritto esattamente?",
+            "answer": "Listing Apply scrive titolo e descrizione. I dati strutturati vengono pubblicati separatamente. I negozi Shopify possono inviare le correzioni pubblicate a Merchant Center con una sincronizzazione separata. Prezzi e disponibilità non vengono riscritti dall’azione sulla scheda prodotto."
+          },
+          {
+            "question": "L’incremento che mostrate è misurato?",
+            "answer": "È una stima per ogni correzione. Una nuova scansione ti consente di confrontare un successivo insieme di decisioni simulate. Non è una misurazione di vendite aggiuntive."
+          },
+          {
+            "question": "Cambierà il tono del nostro brand?",
+            "answer": "La riscrittura parte dalle informazioni prodotto esistenti. Apply la genera e la pubblica, quindi scegli questa azione solo quando sei pronto a modificare la scheda prodotto. Al momento non esiste una fase di anteprima del testo generato."
+          }
+        ]
+      },
+      "sell": {
+        "actions": [
+          {
+            "label": "Prenota una demo",
+            "href": "/demo"
+          },
+          {
+            "label": "Controlla gratis il mio negozio",
+            "href": "/sign-up"
+          }
+        ],
+        "faqTitle": "Domande sulla piattaforma",
+        "meta": {
+          "title": "Checkout degli agenti AI alle tue condizioni | ecentic",
+          "description": "Testa il checkout degli agenti AI e prepara WooCommerce agli ordini degli agenti tramite il tuo gateway. Configura i controlli di accesso e verifica la configurazione."
+        },
+        "eyebrow": "Vendi",
+        "title": "Lascia che l’AI completi il checkout. Alle tue condizioni.",
+        "description": "Essere scelti è solo una parte dell’acquisto. Su WooCommerce, ecentic fornisce agli agenti un percorso di catalogo, carrello e checkout tramite il tuo negozio e il tuo gateway di pagamento. Testa il flusso e configura i relativi controlli. L’adesione al programma di acquisto di una piattaforma AI resta un passaggio separato.",
+        "sections": [
+          {
+            "id": "problem",
+            "title": "La scelta di un prodotto richiede comunque un checkout funzionante.",
+            "eyebrow": "[01] Il problema",
+            "description": "Un agente ha bisogno di informazioni chiare su disponibilità del prodotto, spedizione e requisiti di pagamento. Se non riesce a completare un passaggio, il flusso può richiedere il passaggio a un acquirente umano.",
+            "items": [
+              {
+                "title": "Campi checkout obbligatori",
+                "body": "Identifica le informazioni che l’agente deve fornire."
+              },
+              {
+                "title": "Spedizione e tasse",
+                "body": "Verifica come il carrello applica le regole del tuo negozio."
+              },
+              {
+                "title": "Passaggi al pagamento",
+                "body": "Controlla quando l’acquirente deve completare una fase del pagamento."
+              }
+            ]
+          },
+          {
+            "id": "how-it-works",
+            "title": "Testa il percorso completo.",
+            "eyebrow": "[02] Come funziona",
+            "ordered": true,
+            "columns": 4,
+            "items": [
+              {
+                "title": "Controlla la configurazione",
+                "body": "Usa il validatore del checkout. I negozi Shopify possono anche verificare le impostazioni di checkout supportate di Merchant Center."
+              },
+              {
+                "title": "Collega WooCommerce",
+                "body": "Il plugin e gli endpoint ospitati supportano ricerca prodotti, carrelli, checkout e ordini. Il pagamento viene gestito dal tuo gateway."
+              },
+              {
+                "title": "Avvia il playground",
+                "body": "Esegui un agente di test attraverso il flusso. Usa un negozio di staging: le chiamate di checkout possono creare ordini reali."
+              },
+              {
+                "title": "Configura l’accesso e riprova",
+                "body": "Controlla se il checkout degli agenti AI è abilitato. Configura allow-list, firme richieste e limiti di frequenza, poi esegui di nuovo il test."
+              }
+            ]
+          },
+          {
+            "id": "example",
+            "title": "Scopri dove un agente di test ha bisogno di aiuto.",
+            "eyebrow": "[03] Cosa cambia",
+            "description": "Esempio con dati di esempio. Il completamento del checkout dipende dal negozio, dal gateway e dal flusso di pagamento supportato."
+          },
+          {
+            "id": "why-it-works",
+            "title": "Mantieni l’ordine nel tuo negozio.",
+            "eyebrow": "[04] Perché funziona",
+            "items": [
+              {
+                "title": "I tuoi pagamenti",
+                "body": "Il tuo gateway esistente gestisce il pagamento; alcuni flussi richiedono il passaggio all’acquirente."
+              },
+              {
+                "title": "Un flusso di test reale",
+                "body": "Il playground richiama gli strumenti del negozio per consentirti di controllare il risultato."
+              },
+              {
+                "title": "Endpoint documentati",
+                "body": "Gli endpoint per individuazione e checkout degli agenti seguono l’implementazione del protocollo pubblicato."
+              }
+            ]
+          },
+          {
+            "id": "what-to-track",
+            "title": "Cosa può monitorare il tuo team.",
+            "eyebrow": "[05] Dopo il test",
+            "items": [
+              {
+                "title": "Esecuzioni di test completate",
+                "body": "Quali flussi di test arrivano alla creazione dell’ordine o al passaggio richiesto per il pagamento."
+              },
+              {
+                "title": "Blocchi risolti",
+                "body": "I requisiti di checkout che il tuo team ha corretto e testato di nuovo."
+              },
+              {
+                "title": "Ordini degli agenti AI",
+                "body": "Controlla gli ordini degli agenti AI nel negozio WooCommerce collegato."
+              }
+            ]
+          },
+          {
+            "id": "checkout",
+            "title": "Checkout degli agenti AI su WooCommerce",
+            "paragraphs": [
+              "Espone ricerca prodotti, carrelli reali e checkout tramite il plugin ecentic e gli endpoint ospitati. Gli ordini appartengono al tuo negozio. I controlli di accesso sono configurabili: una allow-list vuota consente tutte le piattaforme e le firme sono obbligatorie solo quando l’opzione è abilitata."
+            ],
+            "links": [
+              {
+                "label": "Esplora il checkout WooCommerce",
+                "href": "/integrations/woocommerce"
+              }
+            ]
+          },
+          {
+            "id": "chatgpt",
+            "title": "Vendi dentro ChatGPT",
+            "paragraphs": [
+              "Prossimamente. La pubblicazione dell’app ecentic nella directory delle app di ChatGPT non è stata confermata. Le simulazioni prodotto sono disponibili separatamente."
+            ],
+            "note": "L’app ecentic per ChatGPT non è ancora pubblicata.",
+            "links": [
+              {
+                "label": "Vedi il canale ChatGPT",
+                "href": "/ai-channels/chatgpt"
+              }
+            ]
+          },
+          {
+            "id": "playground",
+            "title": "Playground del checkout",
+            "paragraphs": [
+              "Esegui un agente di test sugli strumenti del tuo negozio. Sono disponibili dieci messaggi anonimi; usa un negozio di staging per i test di checkout."
+            ],
+            "links": [
+              {
+                "label": "Apri UCP Playground",
+                "href": "/ucp-playground"
+              }
+            ]
+          },
+          {
+            "id": "validator",
+            "title": "Validatore checkout",
+            "paragraphs": [
+              "Recupera il profilo discovery di un negozio e controlla le verifiche riportate. Un risultato di validazione non iscrive il merchant al programma di una piattaforma AI."
+            ],
+            "links": [
+              {
+                "label": "Apri UCP Validator",
+                "href": "/ucp-validator"
+              }
+            ]
+          },
+          {
+            "id": "webmcp",
+            "title": "Scanner WebMCP",
+            "paragraphs": [
+              "Ispeziona le evidenze nel codice sorgente di strumenti e moduli su un piccolo campione di pagine. Lo scanner non esegue strumenti del browser né invia moduli."
+            ],
+            "links": [
+              {
+                "label": "Scansiona un sito",
+                "href": "/webmcp-scanner"
+              }
+            ]
+          },
+          {
+            "id": "next",
+            "title": "Passaggio successivo: misura ciò che puoi osservare.",
+            "links": [
+              {
+                "label": "Correggi",
+                "href": "/platform/fix"
+              },
+              {
+                "label": "Monitora",
+                "href": "/platform/track"
+              }
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Dobbiamo cambiare provider di pagamento?",
+            "answer": "Il flusso WooCommerce usa il gateway del tuo negozio. Gli strumenti supportati e gli eventuali passaggi del cliente dipendono dal gateway e dalla configurazione; testa il flusso esatto prima di abilitarlo."
+          },
+          {
+            "question": "Shopify gestisce già il checkout degli agenti AI?",
+            "answer": "Shopify controlla autonomamente l’idoneità dei canali e l’infrastruttura di checkout. Le funzionalità Shopify di ecentic si concentrano su confronti tra prodotti, modifiche alle schede prodotto, monitoraggio e controlli supportati di Merchant Center. Verifica l’idoneità attuale nelle pagine dei canali."
+          },
+          {
+            "question": "L’AI può acquistare da noi dentro ChatGPT?",
+            "answer": "Non abbiamo ancora confermato la pubblicazione dell’app ChatGPT di ecentic, quindi è contrassegnata come Coming soon. La pagina del canale ChatGPT spiega i percorsi per merchant attualmente verificati."
+          },
+          {
+            "question": "Quali canali AI supportano gli acquisti oggi?",
+            "answer": "Ogni canale ha le proprie regole di idoneità e pagamento. Le nostre pagine dei canali mostrano fonti datate e distinguono le funzionalità implementate da ecentic dai connettori pianificati."
+          }
+        ]
+      },
+      "track": {
+        "actions": [
+          {
+            "label": "Prenota una demo",
+            "href": "/demo"
+          },
+          {
+            "label": "Controlla gratis il mio negozio",
+            "href": "/sign-up"
+          }
+        ],
+        "faqTitle": "Domande sulla piattaforma",
+        "meta": {
+          "title": "Monitora i referral AI verso il tuo negozio Shopify | ecentic",
+          "description": "Visualizza i referral AI rilevati su Shopify e confronta i nuovi risultati delle simulazioni dopo una correzione. Gestisci i negozi che possiedi in un unico account."
+        },
+        "eyebrow": "Monitora",
+        "title": "Scopri cosa ti invia l’AI. Negozio per negozio.",
+        "description": "Monitora i referral AI rilevati verso il tuo negozio Shopify e confronta i nuovi risultati delle scansioni dopo il lavoro sulle schede prodotto. Visite e simulazioni sono misure separate. Gestisci i negozi che possiedi in un unico account senza trattare l’incremento stimato come vendite misurate.",
+        "sections": [
+          {
+            "id": "problem",
+            "title": "Un referral è utile solo se riesci a identificarlo.",
+            "eyebrow": "[01] Il problema",
+            "description": "Le visite assistite dall’AI possono arrivare con informazioni di referral limitate. ecentic raggruppa i segnali che riesce a rilevare; non può recuperare ogni visita che appare come traffico diretto.",
+            "items": [
+              {
+                "title": "Origini poco chiare",
+                "body": "Separa gli assistenti riconosciuti nel traffico che puoi osservare."
+              },
+              {
+                "title": "Modifiche senza verifica successiva",
+                "body": "Esegui un’altra simulazione dopo la pubblicazione invece di trattare una stima come un risultato."
+              },
+              {
+                "title": "Negozi distribuiti in più posti",
+                "body": "Riunisci i negozi che possiedi sotto un unico accesso."
+              }
+            ]
+          },
+          {
+            "id": "how-it-works",
+            "title": "Tieni separate visite, test e stime.",
+            "eyebrow": "[02] Come funziona",
+            "ordered": true,
+            "columns": 4,
+            "items": [
+              {
+                "title": "Rileva il referral",
+                "body": "Su Shopify, lo script del browser controlla i referrer degli assistenti riconosciuti e i segnali user-agent."
+              },
+              {
+                "title": "Leggi il dettaglio",
+                "body": "Visualizza le visite rilevate per assistente e il riepilogo delle serie temporali."
+              },
+              {
+                "title": "Esegui una nuova scansione dopo una modifica",
+                "body": "Richiedi una nuova scansione e confronta le decisioni simulate completate."
+              },
+              {
+                "title": "Scegli cosa fare dopo",
+                "body": "Aggiungi i negozi che possiedi e scegli autonomamente ulteriori scansioni o azioni di pubblicazione."
+              }
+            ]
+          },
+          {
+            "id": "example",
+            "title": "Un’origine associata alle visite che puoi rilevare.",
+            "eyebrow": "[03] Cosa cambia",
+            "description": "Esempio con dati campione. Questa è una classificazione dei referral, non una prova di una vendita incrementale o di una visita nascosta recuperata."
+          },
+          {
+            "id": "why-it-works",
+            "title": "Rendi comprensibile ogni misura.",
+            "eyebrow": "[04] Perché funziona",
+            "items": [
+              {
+                "title": "Referral a livello di assistente",
+                "body": "Le origini riconosciute vengono raggruppate per assistente invece di essere combinate sotto un’unica etichetta."
+              },
+              {
+                "title": "Modifiche e nuove scansioni",
+                "body": "Mantieni uno storico del lavoro pubblicato sulle schede prodotto e confronta i test successivi."
+              },
+              {
+                "title": "Una regola di attribuzione dichiarata",
+                "body": "Pay-as-you-go usa la finestra documentata. Il fallback è a livello di negozio, quindi l’attribuzione non prova che lo stesso visitatore abbia effettuato l’acquisto."
+              }
+            ]
+          },
+          {
+            "id": "what-to-track",
+            "title": "Cosa può monitorare il tuo team.",
+            "eyebrow": "[05] Dopo il rollout",
+            "items": [
+              {
+                "title": "Visite rilevate provenienti da referral AI",
+                "body": "Visite riconosciute per assistente su Shopify."
+              },
+              {
+                "title": "Percentuale di vittorie dopo una nuova scansione",
+                "body": "La serie successiva di decisioni simulate dopo le tue modifiche."
+              },
+              {
+                "title": "Prodotti modificati",
+                "body": "Le schede prodotto che hai scelto di pubblicare."
+              }
+            ]
+          },
+          {
+            "id": "traffic",
+            "title": "Traffico AI su Shopify",
+            "paragraphs": [
+              "Riconosce i domini di referral di ChatGPT, Perplexity, Claude, Gemini, Copilot e You.com, oltre ai segnali user-agent noti. Richiede lo script del browser e i segnali disponibili; non osserva ogni crawler senza JavaScript né identifica ogni visita diretta."
+            ]
+          },
+          {
+            "id": "lift",
+            "title": "Incremento stimato per correzione",
+            "paragraphs": [
+              "L’incremento è una stima registrata insieme alla modifica della scheda prodotto. Non rappresenta ricavi misurati né un esperimento completato dopo la pubblicazione."
+            ]
+          },
+          {
+            "id": "rescans",
+            "title": "Nuove scansioni richieste da te",
+            "paragraphs": [
+              "Esegui una nuova scansione quando vuoi confrontare di nuovo i prodotti. Le nuove scansioni pianificate non sono attive oggi."
+            ]
+          },
+          {
+            "id": "stores",
+            "title": "Tutti i tuoi negozi in un unico account",
+            "paragraphs": [
+              "L’hub multi-store contiene i negozi posseduti da un unico account. Non fornisce accessi per team, accesso delegato per agenzie o single sign-on."
+            ]
+          },
+          {
+            "id": "developers",
+            "title": "API, server MCP e CLI",
+            "paragraphs": [
+              "Gli strumenti per sviluppatori supportano i flussi di individuazione, pianificazione, connessione e onboarding. Le interfacce pubbliche attuali non esportano i risultati delle scansioni della dashboard né i dati di monitoraggio delle visite."
+            ],
+            "links": [
+              {
+                "label": "Leggi la documentazione per sviluppatori",
+                "href": "/docs"
+              }
+            ]
+          },
+          {
+            "id": "next",
+            "title": "Continua a migliorare il confronto.",
+            "links": [
+              {
+                "label": "Vendi",
+                "href": "/platform/sell"
+              },
+              {
+                "label": "Collega un altro negozio",
+                "href": "/platform/connect"
+              }
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "question": "Il monitoraggio funziona su WooCommerce?",
+            "answer": "Non ancora. Oggi l’installazione del monitoraggio delle visite funziona su Shopify."
+          },
+          {
+            "question": "Come viene attribuito un ordine all’AI?",
+            "answer": "Pay-as-you-go accetta prima un tag di attribuzione esplicito, se disponibile. In caso contrario cerca un referral AI recente in qualsiasi punto di quel negozio entro la finestra configurata, sette giorni per impostazione predefinita. Questo non dimostra che lo stesso cliente abbia effettuato l’ordine."
+          },
+          {
+            "question": "Possiamo esportare i dati di monitoraggio tramite API?",
+            "answer": "Non tramite l’attuale API pubblica, server MCP o CLI. Queste interfacce coprono i flussi di individuazione e onboarding; i dati delle visite sono disponibili nella dashboard."
+          }
+        ]
+      }
+    },
+    "examples": {
+      "connect": {
+        "product": "Cuffie wireless",
+        "note": "Entrambe le viste usano gli stessi dati di origine. Gli attributi mancanti restano mancanti.",
+        "rows": [
+          {
+            "label": "Titolo",
+            "before": "Cuffie wireless, batteria da 30 ore",
+            "after": "Cuffie wireless, batteria da 30 ore"
+          },
+          {
+            "label": "Origine",
+            "before": "Esportazione CSV supportata",
+            "after": "Prodotto importato in ecentic"
+          },
+          {
+            "label": "Accesso alla pubblicazione",
+            "before": "Nessun connettore",
+            "after": "Nessun connettore; solo importazione"
+          }
+        ],
+        "label": "Esempio con dati campione",
+        "before": "Prima",
+        "after": "Dopo"
+      },
+      "simulate": {
+        "product": "Cuffie wireless",
+        "note": "Risultato illustrativo di una singola esecuzione, non una promessa che un assistente reale farà questa scelta.",
+        "rows": [
+          {
+            "label": "Domanda",
+            "before": "Cuffie sotto i $100 per un volo lungo",
+            "after": "La stessa domanda, con un concorrente nominato"
+          },
+          {
+            "label": "Decisione",
+            "before": "Nessun confronto registrato",
+            "after": "Concorrente selezionato in questa esecuzione di esempio"
+          },
+          {
+            "label": "Motivazione",
+            "before": "Non registrata",
+            "after": "Il concorrente dichiara la cancellazione del rumore; questa scheda prodotto no."
+          }
+        ],
+        "label": "Esempio con dati campione",
+        "before": "Prima",
+        "after": "Dopo"
+      },
+      "fix": {
+        "product": "Cuffie wireless",
+        "note": "L’informazione sulla batteria da 30 ore esiste già nella descrizione di origine. Questo esempio non è un’anteprima nel prodotto.",
+        "rows": [
+          {
+            "label": "Titolo",
+            "before": "Cuffie wireless",
+            "after": "Cuffie wireless con batteria da 30 ore"
+          },
+          {
+            "label": "Descrizione",
+            "before": "Cuffie wireless over-ear. Batteria: 30 ore. Ricarica USB-C.",
+            "after": "Ascolta fino a 30 ore con queste cuffie wireless over-ear. Ricarica tramite USB-C."
+          },
+          {
+            "label": "Prezzo e disponibilità",
+            "before": "Valori originali del negozio",
+            "after": "Invariati dall’azione sulla scheda prodotto"
+          }
+        ],
+        "label": "Esempio con dati campione",
+        "before": "Prima",
+        "after": "Dopo"
+      },
+      "sell": {
+        "product": "Cuffie wireless in uno store di staging",
+        "note": "Per il pagamento potrebbe comunque essere necessario un passaggio all’acquirente. Esegui il test con il tuo gateway e la configurazione di staging.",
+        "rows": [
+          {
+            "label": "Scoperta",
+            "before": "Profilo non configurato",
+            "after": "Profilo di scoperta disponibile"
+          },
+          {
+            "label": "Carrello",
+            "before": "Nessun test degli agenti registrato",
+            "after": "Carrello campione con prezzo calcolato secondo le regole dello store"
+          },
+          {
+            "label": "Pagamento",
+            "before": "Flusso del gateway non testato",
+            "after": "Passaggio per il pagamento identificato e testato"
+          }
+        ],
+        "label": "Esempio con dati campione",
+        "before": "Prima",
+        "after": "Dopo"
+      },
+      "track": {
+        "product": "Pagina prodotto delle cuffie wireless",
+        "note": "Un referral rilevato non dimostra che lo stesso utente abbia poi effettuato un ordine.",
+        "rows": [
+          {
+            "label": "Provenienza",
+            "before": "chatgpt.com",
+            "after": "chatgpt.com"
+          },
+          {
+            "label": "Classificazione",
+            "before": "Nessun record di tracciamento ecentic",
+            "after": "Referral da ChatGPT rilevato"
+          },
+          {
+            "label": "Significato del fatturato",
+            "before": "Non stabilito",
+            "after": "Non stabilito solo da questa visita"
+          }
+        ],
+        "label": "Esempio con dati campione",
+        "before": "Prima",
+        "after": "Dopo"
+      }
+    },
+    "screenshot": {
+      "alt": "Il grafico della percentuale di vittorie e il dettaglio del confronto prodotti nella dashboard ecentic con dati campione.",
+      "caption": "Screenshot del prodotto · dati campione"
+    },
+    "screenshots": {
+      "connect": {
+        "alt": "Impostazioni degli store collegati in ecentic con store campione chiaramente etichettati",
+        "caption": "Interfaccia del prodotto · store campione. Nessun account merchant è stato collegato."
+      },
+      "simulate": {
+        "alt": "Il grafico della percentuale di vittorie e il dettaglio del confronto prodotti nella dashboard ecentic con dati campione.",
+        "caption": "Screenshot del prodotto · dati campione"
+      },
+      "fix": {
+        "alt": "Cronologia di pubblicazione ecentic con record prodotto campione senza dati sulle prestazioni",
+        "caption": "Interfaccia del prodotto · record campione della cronologia di pubblicazione. Non vengono mostrati incrementi misurati o risultati dei clienti."
+      },
+      "sell": {
+        "alt": "Validatore UCP di ecentic nel suo stato iniziale prima di un controllo dello store",
+        "caption": "Interfaccia del prodotto · validatore prima di un controllo. Non si tratta di una procedura d'acquisto completata né di un’approvazione della piattaforma."
+      },
+      "track": {
+        "alt": "Grafico delle visite degli agenti in ecentic con dati campione illustrativi",
+        "caption": "Interfaccia del prodotto · visite di esempio a scopo illustrativo, non risultati di un cliente."
+      }
+    }
+  }
+}

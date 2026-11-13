@@ -1,0 +1,25 @@
+{
+  "docsApiPage": {
+    "surfaces": "按接口分类浏览",
+    "all": "全部端点",
+    "groups": {
+      "discovery": "开放探索",
+      "sandbox": "测试环境",
+      "catalog": "商品目录",
+      "mcp": "MCP",
+      "commerce": "电商"
+    },
+    "sourceTitle": "统一可信来源。",
+    "sourceBody": "打开任一端点即可查看准确的接口契约。通过其 schema 链接，可进一步检查共享数据结构。",
+    "operations": "操作",
+    "schemas": "共享 schema",
+    "responses": "响应代码",
+    "references": "引用的 schema",
+    "schemaBody": "这些定义在多个操作间共享。每个名称都有永久链接，且所有定义都可复制为 JSON。",
+    "permalink": "链接到此定义",
+    "navigation": "参考章节",
+    "definition": "源定义 · JSON",
+    "securityTitle": "按操作声明",
+    "securityBody": "选择凭证前，请先检查每个端点的 security 字段。可用方案定义如下。"
+  }
+}

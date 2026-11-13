@@ -1,0 +1,12 @@
+{
+  "reviewNotFound": {
+    "status": "ページが見つかりません",
+    "description": "このアドレスのページは見つかりませんでした。ホームへ戻るか、前のページへ戻るか、以下のリンクをご覧ください。",
+    "exploreTitle": "おすすめの移動先",
+    "action": {
+      "primary": "ホームへ戻る",
+      "secondary": "前へ戻る",
+      "tertiary": "ecenticを見る"
+    }
+  }
+}

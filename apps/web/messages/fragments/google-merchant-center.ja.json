@@ -1,0 +1,24 @@
+{
+  "googleMerchantDesign": {
+    "constraints": [
+      "Shopify接続",
+      "アカウントアクセス",
+      "オファーマッチング",
+      "明示的同期"
+    ],
+    "stages": [
+      "認可",
+      "プロビジョニング",
+      "確認",
+      "同期"
+    ],
+    "diagram": {
+      "mainSource": "メインソース",
+      "supplemental": "補足ソース",
+      "published": "公開済み変更",
+      "diagnostics": "診断",
+      "processing": "Google処理",
+      "sync": "同期を実行"
+    }
+  }
+}

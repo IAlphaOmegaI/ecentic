@@ -1,0 +1,14 @@
+{
+  "electronicsPage": {
+    "selectorLabel": "Esplora una domanda dell’acquirente",
+    "scenarioLabels": [
+      "Auricolari",
+      "Laptop",
+      "Robot aspirapolvere"
+    ],
+    "sourceLabel": "Campi sorgente da controllare",
+    "inspectLabel": "Segui la domanda fino alle specifiche.",
+    "mapLabel": "Controlla tutti e sei i campi sorgente",
+    "boundary": "Un punto di partenza per verificare i dati sorgente, non un risultato di compatibilità."
+  }
+}

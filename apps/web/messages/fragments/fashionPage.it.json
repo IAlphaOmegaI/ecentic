@@ -1,0 +1,20 @@
+{
+  "fashionPage": {
+    "trail": {
+      "title": "Attività. Vestibilità. Materiale.",
+      "description": "Apri una domanda di un cliente per vedere quali informazioni sul prodotto il tuo team deve verificare.",
+      "label": "Domande dei clienti e informazioni sul prodotto",
+      "contexts": [
+        "Attività e meteo",
+        "Larghezza e taglie",
+        "Fibre e cura"
+      ],
+      "facts": "Informazioni sul prodotto da verificare"
+    },
+    "rules": [
+      "Taglie per destinazione",
+      "Composizione delle fibre",
+      "Dichiarazioni ambientali"
+    ]
+  }
+}

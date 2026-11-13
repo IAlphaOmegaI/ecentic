@@ -1,0 +1,17 @@
+{
+  "commerceFigures": {
+    "openBook": "イラスト: 開いた本。左右いずれかのページ上にポインターを移動すると、ページが扇状に開きます。",
+    "partReadouts": {
+      "openBook": [
+        {
+          "value": "左ページ",
+          "label": "左ページ"
+        },
+        {
+          "value": "右ページ",
+          "label": "右ページ"
+        }
+      ]
+    }
+  }
+}

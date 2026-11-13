@@ -1,0 +1,826 @@
+{
+  "interactiveShelf": {
+    "shared": {
+      "exampleLabel": "Esempio con dati campione",
+      "description": "Un confronto guidato tra prodotti inventati. La correzione rende esplicite informazioni prodotto già esistenti.",
+      "questionsLabel": "Scegli una domanda dell'acquirente",
+      "leftLabel": "La tua scheda prodotto",
+      "rightLabel": "Scheda prodotto di un concorrente",
+      "beforeLabel": "Prima della correzione",
+      "afterLabel": "Dopo la correzione",
+      "resultLabel": "Scelta illustrativa",
+      "labels": {
+        "present": "Presente",
+        "missing": "Non indicato",
+        "meets": "Soddisfa questo requisito",
+        "doesNotMeet": "Non soddisfa questo requisito",
+        "required": "Necessario per questa domanda"
+      },
+      "action": {
+        "primary": "Dopo la correzione"
+      }
+    },
+    "sectors": {
+      "wine-and-spirits": {
+        "scenarios": [
+          {
+            "leftTitle": "Single malt A",
+            "rightTitle": "Single malt B",
+            "rows": [
+              {
+                "left": "46% ABV",
+                "right": "40% ABV"
+              },
+              {
+                "left": "12 anni",
+                "right": "10 anni"
+              },
+              {
+                "left": "Islay, Scozia",
+                "right": "Highlands, Scozia"
+              },
+              {
+                "left": "Single malt torbato; botte bourbon",
+                "right": "Single malt affumicato; botte bourbon"
+              },
+              {
+                "left": "700 ml · $72",
+                "right": "700 ml · $76"
+              },
+              {
+                "left": "Disponibile; solo aree di consegna idonee",
+                "right": "Disponibile; solo aree di consegna idonee"
+              }
+            ],
+            "before": "La scheda prodotto di un concorrente indica lo stile affumicato e un prezzo inferiore a $80. La tua scheda prodotto non indica lo stile.",
+            "after": "La tua scheda prodotto ora indica lo stile single malt affumicato. Entrambi corrispondono alla domanda; in questo esempio il prezzo inferiore della bottiglia determina la scelta."
+          },
+          {
+            "leftTitle": "Barolo A",
+            "rightTitle": "Barolo B",
+            "rows": [
+              {
+                "left": "14% ABV",
+                "right": "14.5% ABV"
+              },
+              {
+                "left": "Annata 2020",
+                "right": "Annata 2021"
+              },
+              {
+                "left": "Barolo DOCG, Piemonte",
+                "right": "Barolo DOCG, Piemonte"
+              },
+              {
+                "left": "Nebbiolo; finestra di consumo indicata 2026–2032",
+                "right": "Nebbiolo; finestra di consumo indicata 2026–2029"
+              },
+              {
+                "left": "750 ml · $52",
+                "right": "750 ml · $64"
+              },
+              {
+                "left": "Disponibile; solo aree di consegna idonee",
+                "right": "Disponibile; solo aree di consegna idonee"
+              }
+            ],
+            "before": "La scheda prodotto di un concorrente indica una finestra di consumo attuale. La tua scheda prodotto non dice quando il produttore ne consiglia l'apertura.",
+            "after": "La tua scheda prodotto ora include la finestra di consumo del produttore. Entrambi sono indicati come pronti da bere ora; questo esempio sceglie la bottiglia dal prezzo più basso."
+          },
+          {
+            "leftTitle": "Rum da cocktail A",
+            "rightTitle": "Rum da cocktail B",
+            "rows": [
+              {
+                "left": "40% ABV",
+                "right": "40% ABV"
+              },
+              {
+                "left": "Non invecchiato",
+                "right": "Non invecchiato"
+              },
+              {
+                "left": "Blend caraibico",
+                "right": "Blend caraibico"
+              },
+              {
+                "left": "Rum bianco; zucchero dichiarato dal fornitore 0 g/L",
+                "right": "Rum bianco; zucchero dichiarato dal fornitore 2 g/L"
+              },
+              {
+                "left": "700 ml · $28",
+                "right": "700 ml · $30"
+              },
+              {
+                "left": "Disponibile; solo aree di consegna idonee",
+                "right": "Disponibile; solo aree di consegna idonee"
+              }
+            ],
+            "before": "La scheda prodotto di un concorrente indica una quantità di zucchero. La tua scheda prodotto dice “morbido” ma non fornisce alcun valore di zucchero da confrontare.",
+            "after": "La tua scheda prodotto ora indica la quantità di zucchero del fornitore. In questo esempio viene scelta per la domanda sui cocktail grazie al contenuto di zucchero dichiarato più basso."
+          }
+        ]
+      },
+      "food-and-beverage": {
+        "scenarios": [
+          {
+            "leftTitle": "Snack proteico A",
+            "rightTitle": "Snack proteico B",
+            "rows": [
+              {
+                "left": "Vegano",
+                "right": "Vegano"
+              },
+              {
+                "left": "Contiene soia; può contenere avena",
+                "right": "Contiene soia; può contenere latte"
+              },
+              {
+                "left": "Per 40 g: 140 kcal, 20 g proteine, 2 g zucchero",
+                "right": "Per 40 g: 145 kcal, 15 g proteine, 3 g zucchero"
+              },
+              {
+                "left": "6 × 40 g · $12",
+                "right": "6 × 40 g · $15"
+              },
+              {
+                "left": "Proteine di soia, avena, olio di girasole, sale",
+                "right": "Proteine di soia, farina di riso, olio di semi di girasole, sale"
+              },
+              {
+                "left": "Conservare in luogo asciutto; durata di conservazione 6 mesi; consegna nazionale",
+                "right": "Conservare in luogo asciutto; durata di conservazione 6 mesi; consegna nazionale"
+              }
+            ],
+            "before": "La scheda prodotto di un concorrente indica proteine e calorie per porzione. La tua scheda prodotto non può essere verificata rispetto al limite di 150 calorie.",
+            "after": "La tua scheda prodotto ora indica 20 g di proteine e 140 calorie per porzione. In questo esempio fornisce più proteine entro lo stesso limite calorico."
+          },
+          {
+            "leftTitle": "Cracker semplici A",
+            "rightTitle": "Cracker semplici B",
+            "rows": [
+              {
+                "left": "Senza glutine, come indicato sulla confezione",
+                "right": "Senza glutine, come indicato sulla confezione"
+              },
+              {
+                "left": "Nessun allergene elencato; nessuna indicazione di possibile presenza",
+                "right": "Nessun allergene elencato; nessuna indicazione di possibile presenza"
+              },
+              {
+                "left": "Per 25 g: 110 kcal, 2 g di proteine, 1 g di zucchero",
+                "right": "Per 25 g: 112 kcal, 2 g di proteine, 1 g di zucchero"
+              },
+              {
+                "left": "200 g · $3.20",
+                "right": "200 g · $4.00"
+              },
+              {
+                "left": "Farina di riso, fecola di patate, olio di semi di girasole, sale",
+                "right": "Farina di riso, fecola di patate, olio di semi di girasole, sale"
+              },
+              {
+                "left": "Conservare in luogo asciutto; durata di conservazione 8 mesi; consegna nazionale",
+                "right": "Conservare in luogo asciutto; durata di conservazione 8 mesi; consegna nazionale"
+              }
+            ],
+            "before": "La scheda prodotto di un concorrente indica esplicitamente che il prodotto è senza glutine. La tua scheda prodotto include un elenco degli ingredienti, ma manca l’indicazione senza glutine.",
+            "after": "Ora entrambe le schede prodotto riportano la stessa indicazione senza glutine. In questo esempio, il prezzo inferiore della confezione rompe il pareggio; le preferenze di gusto del bambino restano sconosciute."
+          },
+          {
+            "leftTitle": "Proteine di pisello A",
+            "rightTitle": "Proteine di pisello B",
+            "rows": [
+              {
+                "left": "Vegano",
+                "right": "Vegano"
+              },
+              {
+                "left": "Può contenere soia",
+                "right": "Può contenere soia"
+              },
+              {
+                "left": "Per 30 g: 24 g di proteine, 118 kcal",
+                "right": "Per 30 g: 18 g di proteine, 120 kcal"
+              },
+              {
+                "left": "600 g · 20 porzioni · $24",
+                "right": "600 g · 20 porzioni · $24"
+              },
+              {
+                "left": "Isolato di proteine di pisello; senza dolcificanti",
+                "right": "Proteine di pisello, farina di riso; senza dolcificanti"
+              },
+              {
+                "left": "Conservare in luogo asciutto; durata di conservazione 12 mesi; consegna nazionale",
+                "right": "Conservare in luogo asciutto; durata di conservazione 12 mesi; consegna nazionale"
+              }
+            ],
+            "before": "La scheda prodotto di un concorrente include ingredienti verificabili per la presenza di stevia. La tua scheda prodotto non riporta l'elenco ingredienti.",
+            "after": "La tua scheda prodotto ora mostra l'assenza di dolcificanti negli ingredienti. Entrambi soddisfano le preferenze indicate; in questo esempio, la scelta dipende dal maggior contenuto di proteine per porzione."
+          }
+        ]
+      },
+      "beauty-and-personal-care": {
+        "scenarios": [
+          {
+            "leftTitle": "Crema idratante A",
+            "rightTitle": "Crema idratante B",
+            "rows": [
+              {
+                "left": "Produttore: adatto alla pelle sensibile",
+                "right": "Produttore: adatto alla pelle sensibile"
+              },
+              {
+                "left": "Aqua, Glycerin, Squalane",
+                "right": "Aqua, Glycerin, Squalane"
+              },
+              {
+                "left": "Indicazione in etichetta: senza profumo",
+                "right": "Indicazione in etichetta: senza profumo"
+              },
+              {
+                "left": "Nessun SPF dichiarato",
+                "right": "Nessun SPF dichiarato"
+              },
+              {
+                "left": "50 ml · $18",
+                "right": "50 ml · $24"
+              },
+              {
+                "left": "Nessuna certificazione dichiarata",
+                "right": "Nessuna certificazione dichiarata"
+              }
+            ],
+            "before": "La scheda prodotto di un concorrente indica l'idoneità per pelle sensibile e l'etichetta senza profumo. La tua scheda prodotto non riporta nessuna delle due informazioni.",
+            "after": "La tua scheda prodotto ora include le stesse indicazioni di idoneità e assenza di profumo. In questo esempio, il prezzo più basso a parità di volume rompe il pareggio."
+          },
+          {
+            "leftTitle": "Protezione solare minerale colorata A",
+            "rightTitle": "Protezione solare minerale colorata B",
+            "rows": [
+              {
+                "left": "Finitura colorata; dichiarazione del fornitore: nessun effetto bianco",
+                "right": "Finitura colorata; dichiarazione del fornitore: nessun effetto bianco"
+              },
+              {
+                "left": "Zinc Oxide, Aqua, Glycerin, Iron Oxides",
+                "right": "Zinc Oxide, Aqua, Glycerin, Iron Oxides"
+              },
+              {
+                "left": "Indicazione in etichetta: senza profumo",
+                "right": "Indicazione in etichetta: senza profumo"
+              },
+              {
+                "left": "Etichetta: SPF 50, ampio spettro UVA/UVB",
+                "right": "Etichetta: SPF 50, ampio spettro UVA/UVB"
+              },
+              {
+                "left": "50 ml · $22",
+                "right": "50 ml · $28"
+              },
+              {
+                "left": "Nessuna certificazione dichiarata",
+                "right": "Nessuna certificazione dichiarata"
+              }
+            ],
+            "before": "La scheda prodotto di un concorrente indica ingredienti minerali, SPF 50 e l’effetto finale dichiarato dal fornitore. La tua scheda prodotto omette l’indicazione sulla protezione.",
+            "after": "Ora entrambe le schede prodotto riportano SPF 50, ingredienti minerali e la dichiarazione del fornitore sul finish. In questo esempio decide il prezzo; il finish può comunque variare in base al tono della pelle."
+          },
+          {
+            "leftTitle": "Shampoo per capelli ricci A",
+            "rightTitle": "Shampoo per capelli ricci B",
+            "rows": [
+              {
+                "left": "Produttore: formulato per capelli ricci",
+                "right": "Produttore: formulato per capelli ricci"
+              },
+              {
+                "left": "Aqua, Decyl Glucoside, Glycerin, Citric Acid",
+                "right": "Aqua, Decyl Glucoside, Glycerin, Citric Acid"
+              },
+              {
+                "left": "Vegano; nessun ingrediente di origine animale dichiarato",
+                "right": "Vegano; nessun ingrediente di origine animale dichiarato"
+              },
+              {
+                "left": "Nessun SPF dichiarato",
+                "right": "Nessun SPF dichiarato"
+              },
+              {
+                "left": "300 ml · $15",
+                "right": "250 ml · $18"
+              },
+              {
+                "left": "Nessuna certificazione dichiarata",
+                "right": "Nessuna certificazione dichiarata"
+              }
+            ],
+            "before": "La scheda prodotto di un concorrente indica sia l'idoneità per capelli ricci sia la dichiarazione vegana. La tua scheda prodotto non riporta la dichiarazione vegana.",
+            "after": "La tua scheda prodotto ora riporta la dichiarazione vegana insieme alle indicazioni sul tipo di capelli. Entrambi corrispondono; in questo esempio la scelta dipende dal prezzo inferiore per ml."
+          }
+        ]
+      },
+      "consumer-electronics": {
+        "scenarios": [
+          {
+            "leftTitle": "Auricolari con cancellazione del rumore A",
+            "rightTitle": "Auricolari con cancellazione del rumore B",
+            "rows": [
+              {
+                "left": "Modello EB-A · ANC · $189",
+                "right": "Modello EB-B · ANC · $179"
+              },
+              {
+                "left": "12 ore, ANC attivo al 50% del volume",
+                "right": "8 ore, ANC attivo al 50% del volume"
+              },
+              {
+                "left": "Audio Bluetooth su telefoni e laptop",
+                "right": "Audio Bluetooth su telefoni e laptop"
+              },
+              {
+                "left": "Bluetooth 5.3; ricarica USB-C",
+                "right": "Bluetooth 5.3; ricarica USB-C"
+              },
+              {
+                "left": "2 anni, copertura hardware del produttore",
+                "right": "2 anni, copertura hardware del produttore"
+              },
+              {
+                "left": "Nuovo",
+                "right": "Nuovo"
+              }
+            ],
+            "before": "La scheda prodotto di un concorrente indica la durata della batteria con la cancellazione del rumore attiva. La tua scheda prodotto non fornisce un'autonomia comparabile.",
+            "after": "La tua scheda prodotto ora indica 12 ore nelle stesse condizioni di test, contro 8 ore. Entrambi costano meno di $200, quindi in questo esempio la scelta dipende dall'autonomia maggiore."
+          },
+          {
+            "leftTitle": "Laptop per editing A",
+            "rightTitle": "Laptop per editing B",
+            "rows": [
+              {
+                "left": "Modello LP-A · 32 GB RAM · 1 TB SSD",
+                "right": "Modello LP-B · 32 GB RAM · 1 TB SSD"
+              },
+              {
+                "left": "10 ore nel test di riproduzione video del fornitore",
+                "right": "6 ore nello stesso test di riproduzione video"
+              },
+              {
+                "left": "Supportato dal software di editing dell'acquirente",
+                "right": "Supportato dal software di editing dell'acquirente"
+              },
+              {
+                "left": "2 × USB-C; HDMI; Wi‑Fi 6",
+                "right": "2 × USB-C; HDMI; Wi‑Fi 6"
+              },
+              {
+                "left": "2 anni, copertura hardware del produttore",
+                "right": "2 anni, copertura hardware del produttore"
+              },
+              {
+                "left": "Nuovo",
+                "right": "Nuovo"
+              }
+            ],
+            "before": "La scheda prodotto di un concorrente identifica la variante da 32 GB. La tua scheda prodotto non specifica il modello esatto né la variante di memoria.",
+            "after": "La tua scheda prodotto ora identifica la variante da 32 GB. Entrambi soddisfano questo requisito; in questo esempio il pareggio è risolto dalla maggiore autonomia dichiarata in riproduzione, non da una dichiarazione sulle prestazioni di editing."
+          },
+          {
+            "leftTitle": "Robot aspirapolvere A",
+            "rightTitle": "Robot aspirapolvere B",
+            "rows": [
+              {
+                "left": "Modello RV-A",
+                "right": "Modello RV-B"
+              },
+              {
+                "left": "120 minuti in modalità di pulizia standard",
+                "right": "120 minuti in modalità di pulizia standard"
+              },
+              {
+                "left": "Google Home: avvio, arresto e ritorno alla base",
+                "right": "Google Home: avvio, arresto e ritorno alla base"
+              },
+              {
+                "left": "Wi‑Fi 2.4 GHz",
+                "right": "Wi‑Fi 2.4 GHz"
+              },
+              {
+                "left": "2 anni, copertura hardware del produttore",
+                "right": "1 anno, copertura hardware del venditore"
+              },
+              {
+                "left": "Nuovo",
+                "right": "Ricondizionato"
+              }
+            ],
+            "before": "La scheda prodotto di un concorrente indica esplicitamente Google Home e i comandi supportati. La tua scheda prodotto include solo campi generici di connettività.",
+            "after": "La tua scheda prodotto ora conferma gli stessi comandi Google Home. In questo esempio, la scelta dipende dalla condizione nuova e dalla garanzia più lunga."
+          }
+        ]
+      },
+      "home-and-furniture": {
+        "scenarios": [
+          {
+            "leftTitle": "Divano letto A",
+            "rightTitle": "Divano letto B",
+            "rows": [
+              {
+                "left": "192 × 90 × 84 cm; larghezza 192 cm",
+                "right": "198 × 92 × 85 cm; larghezza 198 cm"
+              },
+              {
+                "left": "Struttura in legno; rivestimento in poliestere",
+                "right": "Struttura in legno; rivestimento in poliestere"
+              },
+              {
+                "left": "3 posti; superficie letto 140 × 190 cm",
+                "right": "3 posti; superficie letto 140 × 190 cm"
+              },
+              {
+                "left": "Montare le gambe; attrezzi e istruzioni inclusi",
+                "right": "Montare le gambe; attrezzi e istruzioni inclusi"
+              },
+              {
+                "left": "7 giorni; consegna al portone · €30",
+                "right": "7 giorni; consegna al portone · €30"
+              },
+              {
+                "left": "30 giorni; non utilizzato; costo di ritiro €30",
+                "right": "30 giorni; non utilizzato; costo di ritiro €30"
+              }
+            ],
+            "before": "La scheda prodotto di un concorrente indica una larghezza inferiore a 200 cm. La tua scheda prodotto non include dimensioni da verificare rispetto alla parete.",
+            "after": "La tua scheda prodotto ora indica 192 cm, lasciando più spazio rispetto a 198 cm. In questo esempio la scelta dipende da questa differenza dichiarata; le misure della stanza e degli accessi restano comunque importanti."
+          },
+          {
+            "leftTitle": "Tavolo da pranzo A · €899",
+            "rightTitle": "Tavolo da pranzo B · €979",
+            "rows": [
+              {
+                "left": "180 × 90 × 75 cm",
+                "right": "180 × 90 × 75 cm"
+              },
+              {
+                "left": "Piano e gambe in rovere massello; finitura a olio",
+                "right": "Piano e gambe in pino massello; finitura a olio"
+              },
+              {
+                "left": "6 posti",
+                "right": "6 posti"
+              },
+              {
+                "left": "Montare le gambe; chiave inclusa",
+                "right": "Montare le gambe; chiave inclusa"
+              },
+              {
+                "left": "14 giorni; consegna al portone inclusa",
+                "right": "14 giorni; consegna al portone inclusa"
+              },
+              {
+                "left": "30 giorni; non utilizzato; ritiro a carico dell'acquirente",
+                "right": "30 giorni; non utilizzato; ritiro a carico dell'acquirente"
+              }
+            ],
+            "before": "La scheda prodotto di un concorrente indica esplicitamente legno massello e sei posti. La tua scheda prodotto non specifica il materiale della struttura.",
+            "after": "La tua scheda prodotto ora conferma legno massello e sei posti. Entrambi costano meno di €1.000 inclusa la consegna; in questo esempio la scelta dipende dal prezzo totale più basso."
+          },
+          {
+            "leftTitle": "Tappeto compatibile con riscaldamento A",
+            "rightTitle": "Tappeto compatibile con riscaldamento B",
+            "rows": [
+              {
+                "left": "160 × 230 cm; pelo 6 mm",
+                "right": "160 × 230 cm; pelo 6 mm"
+              },
+              {
+                "left": "Lana; il fornitore conferma compatibilità con riscaldamento a pavimento fino a 27°C",
+                "right": "Lana; il fornitore conferma compatibilità con riscaldamento a pavimento fino a 27°C"
+              },
+              {
+                "left": "Rivestimento per pavimenti; nessuna capacità di seduta",
+                "right": "Rivestimento per pavimenti; nessuna capacità di seduta"
+              },
+              {
+                "left": "Nessun montaggio; seguire la guida di posizionamento del fornitore",
+                "right": "Nessun montaggio; seguire la guida di posizionamento del fornitore"
+              },
+              {
+                "left": "5 giorni; consegna inclusa",
+                "right": "5 giorni; consegna inclusa"
+              },
+              {
+                "left": "30 giorni; non utilizzato; ritiro per il reso gratuito",
+                "right": "14 giorni; non utilizzato; ritiro a carico dell'acquirente"
+              }
+            ],
+            "before": "La scheda prodotto di un concorrente riporta la compatibilità con il riscaldamento approvata dal fornitore e il relativo limite. La tua scheda prodotto non include le indicazioni rilevanti sui materiali.",
+            "after": "La tua scheda prodotto ora include lo stesso limite di compatibilità indicato dal fornitore. Entrambi soddisfano il requisito indicato; in questo esempio la scelta dipende dal periodo di reso più lungo."
+          }
+        ]
+      },
+      "fashion-and-outdoor": {
+        "scenarios": [
+          {
+            "leftTitle": "Giacca da trekking A",
+            "rightTitle": "Giacca da trekking B",
+            "rows": [
+              {
+                "left": "Unisex M; vestibilità regolare; torace 100–106 cm",
+                "right": "Unisex M; vestibilità regolare; torace 100–106 cm"
+              },
+              {
+                "left": "Esterno 100% poliestere riciclato",
+                "right": "Esterno 100% poliestere riciclato"
+              },
+              {
+                "left": "Colonna d'acqua 20.000 mm; cuciture nastrate",
+                "right": "Colonna d'acqua 10.000 mm; cuciture nastrate"
+              },
+              {
+                "left": "Trekking in condizioni di bagnato; da usare a strati in base alla temperatura",
+                "right": "Trekking in condizioni di bagnato; da usare a strati in base alla temperatura"
+              },
+              {
+                "left": "Lavaggio in lavatrice a 30°C; senza ammorbidente",
+                "right": "Lavaggio in lavatrice a 30°C; senza ammorbidente"
+              },
+              {
+                "left": "Blu navy, M · $160 · disponibile",
+                "right": "Blu navy, M · $160 · disponibile"
+              }
+            ],
+            "before": "La scheda prodotto di un concorrente include un indice di impermeabilità e informazioni sulle cuciture. La tua scheda prodotto non riporta dati sulle prestazioni.",
+            "after": "La tua scheda prodotto ora indica il livello di impermeabilità più alto con cuciture nastrate. Per questo esempio di trekking con pioggia, la scelta dipende dal valore dichiarato."
+          },
+          {
+            "leftTitle": "Scarpa da running A",
+            "rightTitle": "Scarpa da running larga B",
+            "rows": [
+              {
+                "left": "EU 42; calzata larga 2E",
+                "right": "EU 42; calzata ampia 2E"
+              },
+              {
+                "left": "Tomaia in mesh; suola in gomma",
+                "right": "Tomaia in mesh; suola in gomma"
+              },
+              {
+                "left": "Spessore della schiuma 28 mm; 220 g per scarpa in questa misura",
+                "right": "Spessore della schiuma 24 mm; 290 g per scarpa in questa misura"
+              },
+              {
+                "left": "Corsa su strada; supporto neutro",
+                "right": "Corsa su strada; supporto neutro"
+              },
+              {
+                "left": "Pulire a mano; asciugare all’aria",
+                "right": "Pulire a mano; asciugare all’aria"
+              },
+              {
+                "left": "Blu, EU 42 · $110 · disponibile",
+                "right": "Blu, EU 42 calzata ampia · $110 · disponibile"
+              }
+            ],
+            "before": "La scheda prodotto di un concorrente identifica esplicitamente la variante a calzata ampia e i dati dell’ammortizzazione. La tua scheda non indica la larghezza.",
+            "after": "La tua scheda ora conferma la calzata ampia. In questo esempio viene scelta la scarpa più leggera con l’intersuola dichiarata più spessa; calzata e comfort restano soggettivi."
+          },
+          {
+            "leftTitle": "Strato base in merino A",
+            "rightTitle": "Strato base in merino B",
+            "rows": [
+              {
+                "left": "Unisex M; vestibilità aderente",
+                "right": "Unisex M; vestibilità aderente"
+              },
+              {
+                "left": "100% merino; diametro della fibra dichiarato 17,5 micron",
+                "right": "100% merino; diametro della fibra dichiarato 19,5 micron"
+              },
+              {
+                "left": "Tessuto 150 g/m²; nessuna dichiarazione di impermeabilità",
+                "right": "Tessuto 150 g/m²; nessuna dichiarazione di impermeabilità"
+              },
+              {
+                "left": "Strato base da trekking a contatto con la pelle",
+                "right": "Strato base da trekking a contatto con la pelle"
+              },
+              {
+                "left": "Ciclo lana 30°C; asciugare in piano",
+                "right": "Ciclo lana 30°C; asciugare in piano"
+              },
+              {
+                "left": "Antracite, M · $70 · disponibile",
+                "right": "Antracite, M · $70 · disponibile"
+              }
+            ],
+            "before": "La scheda prodotto di un concorrente include la composizione in merino e il diametro della fibra. La tua scheda non specifica il materiale.",
+            "after": "La tua scheda ora indica il diametro della fibra dichiarato più fine. Questa informazione determina la scelta nell’esempio; nessuna delle due schede può garantire che ogni persona la trovi priva di irritazioni."
+          }
+        ]
+      },
+      "health-wellness-and-pet": {
+        "scenarios": [
+          {
+            "leftTitle": "Cibo per cani senior A",
+            "rightTitle": "Cibo per cani senior B",
+            "rows": [
+              {
+                "left": "Produttore: cani da 7 anni in su",
+                "right": "Produttore: cani da 7 anni in su"
+              },
+              {
+                "left": "Tacchino, patata, piselli, olio, minerali; nessun cereale indicato",
+                "right": "Tacchino, patata, piselli, olio, minerali; nessun cereale indicato"
+              },
+              {
+                "left": "Tabella alimentare basata sul peso; guida al cambio alimentazione sulla confezione",
+                "right": "Tabella alimentare basata sul peso; guida al cambio alimentazione sulla confezione"
+              },
+              {
+                "left": "Dichiarazione del fornitore sull’adeguatezza nutrizionale disponibile",
+                "right": "Dichiarazione del fornitore sull’adeguatezza nutrizionale disponibile"
+              },
+              {
+                "left": "2 kg · $20",
+                "right": "2 kg · $25"
+              },
+              {
+                "left": "Posizionato dal fornitore per cani senior con digestione sensibile",
+                "right": "Posizionato dal fornitore per cani senior con digestione sensibile"
+              }
+            ],
+            "before": "La scheda prodotto di un concorrente indica la fase di vita e gli ingredienti completi. La tua scheda non permette di verificare il posizionamento richiesto senza cereali per cani senior.",
+            "after": "La tua scheda ora include le stesse informazioni su fase di vita e ingredienti. In questo esempio il prezzo unitario più basso rompe il pareggio; si tratta di dichiarazioni di prodotto, non di risultati clinici."
+          },
+          {
+            "leftTitle": "Magnesio in polvere A",
+            "rightTitle": "Magnesio in polvere B",
+            "rows": [
+              {
+                "left": "Produttore: solo per adulti",
+                "right": "Produttore: solo per adulti"
+              },
+              {
+                "left": "Solo bisglicinato di magnesio; nessun eccipiente aggiunto",
+                "right": "Solo bisglicinato di magnesio; nessun eccipiente aggiunto"
+              },
+              {
+                "left": "Seguire l’etichetta fornita; avvertenze incluse",
+                "right": "Seguire l’etichetta fornita; avvertenze incluse"
+              },
+              {
+                "left": "Nessuna dichiarazione di test di terze parti",
+                "right": "Nessuna dichiarazione di test di terze parti"
+              },
+              {
+                "left": "60 porzioni indicate in etichetta · $18",
+                "right": "60 porzioni indicate in etichetta · $24"
+              },
+              {
+                "left": "Integratore alimentare; nessuna dichiarazione terapeutica",
+                "right": "Integratore alimentare; nessuna dichiarazione terapeutica"
+              }
+            ],
+            "before": "La scheda prodotto di un concorrente include un elenco ingredienti senza eccipienti aggiunti. La tua scheda non fornisce gli ingredienti per la verifica.",
+            "after": "La tua scheda ora include le stesse informazioni sugli ingredienti. In questo esempio il costo inferiore per porzione indicata in etichetta rompe il pareggio; non viene effettuato alcun confronto sugli effetti sulla salute."
+          },
+          {
+            "leftTitle": "Lettiera a bassa polvere A",
+            "rightTitle": "Lettiera a bassa polvere B",
+            "rows": [
+              {
+                "left": "Per gatti adulti",
+                "right": "Per gatti adulti"
+              },
+              {
+                "left": "Argilla bentonitica senza profumo",
+                "right": "Argilla bentonitica senza profumo"
+              },
+              {
+                "left": "Riempire fino a 7 cm; rimuovere ogni giorno; non gettare nel WC",
+                "right": "Riempire fino a 7 cm; rimuovere ogni giorno; non gettare nel WC"
+              },
+              {
+                "left": "Metodo di laboratorio di esempio: massa di polvere 0,2%",
+                "right": "Stesso metodo di laboratorio di esempio: massa di polvere 0,5%"
+              },
+              {
+                "left": "10 L · $12",
+                "right": "10 L · $12"
+              },
+              {
+                "left": "Lettiera agglomerante; posizionamento a bassa polvere",
+                "right": "Lettiera agglomerante; posizionamento a bassa polvere"
+              }
+            ],
+            "before": "La scheda prodotto di un concorrente include un risultato del test sulla polvere. La tua scheda dichiara “bassa polvere” senza informazioni di test comparabili.",
+            "after": "La tua scheda ora include un risultato sulla polvere inferiore usando lo stesso metodo di campionamento. Questo valore di test comparabile determina la scelta illustrativa."
+          }
+        ]
+      },
+      "travel-and-experiences": {
+        "scenarios": [
+          {
+            "leftTitle": "Soggiorno a Lisbona A",
+            "rightTitle": "Soggiorno a Lisbona B",
+            "rows": [
+              {
+                "left": "7–10 maggio 2027; tre notti disponibili",
+                "right": "14–17 maggio 2027; tre notti disponibili"
+              },
+              {
+                "left": "€480 totali per due persone; tasse e costi obbligatori inclusi",
+                "right": "€540 totali per due persone; tasse e costi obbligatori inclusi"
+              },
+              {
+                "left": "Camera e colazione; trasferimenti esclusi",
+                "right": "Camera e colazione; trasferimenti esclusi"
+              },
+              {
+                "left": "Cancellazione gratuita fino a 7 giorni prima dell’arrivo",
+                "right": "Cancellazione gratuita fino a 7 giorni prima dell’arrivo"
+              },
+              {
+                "left": "Centro di Lisbona; a 300 m da una fermata metro",
+                "right": "Centro di Lisbona; a 300 m da una fermata metro"
+              },
+              {
+                "left": "Una camera per due adulti",
+                "right": "Una camera per due adulti"
+              }
+            ],
+            "before": "La scheda prodotto di un concorrente indica un weekend lungo disponibile a maggio. La tua scheda non mostra date verificabili.",
+            "after": "La tua scheda ora include un weekend lungo a maggio e un prezzo totale completo. Entrambe soddisfano la richiesta di esempio; il prezzo totale più basso rompe il pareggio."
+          },
+          {
+            "leftTitle": "Tour gastronomico di Città del Messico A",
+            "rightTitle": "Tour gastronomico di Città del Messico B",
+            "rows": [
+              {
+                "left": "Data di esempio: 15 maggio 2027 alle 12:00",
+                "right": "Data di esempio: 15 maggio 2027 alle 12:00"
+              },
+              {
+                "left": "$90 totali per due persone; tasse e costi inclusi",
+                "right": "$110 totali per due persone; tasse e costi inclusi"
+              },
+              {
+                "left": "Guida e cinque degustazioni; trasferimenti esclusi",
+                "right": "Guida e cinque degustazioni; trasferimenti esclusi"
+              },
+              {
+                "left": "Cancellazione gratuita fino a 48 ore prima",
+                "right": "Cancellazione gratuita fino a 48 ore prima"
+              },
+              {
+                "left": "Punto di ritrovo di esempio nel Centro di Città del Messico",
+                "right": "Punto di ritrovo di esempio nel Centro di Città del Messico"
+              },
+              {
+                "left": "Due posti per adulti disponibili; gruppo massimo 8 persone",
+                "right": "Due posti per adulti disponibili; gruppo massimo 8 persone"
+              }
+            ],
+            "before": "La scheda prodotto di un concorrente conferma due posti nel tour indicato. La tua scheda non specifica dimensione del gruppo e disponibilità.",
+            "after": "La tua scheda ora conferma due posti e le degustazioni incluse. Entrambe soddisfano la richiesta di esempio; il totale inferiore per due persone determina questa scelta."
+          },
+          {
+            "leftTitle": "Chalet alpino A",
+            "rightTitle": "Chalet alpino B",
+            "rows": [
+              {
+                "left": "Settimana di esempio: 6–13 febbraio 2027",
+                "right": "Settimana di esempio: 6–13 febbraio 2027"
+              },
+              {
+                "left": "€2.400 a settimana; tasse e costi inclusi",
+                "right": "€2.800 a settimana; tasse e costi inclusi"
+              },
+              {
+                "left": "Biancheria e pulizia finale; skipass esclusi",
+                "right": "Biancheria e pulizia finale; skipass esclusi"
+              },
+              {
+                "left": "Cancellazione gratuita fino a 30 giorni prima dell’arrivo",
+                "right": "Cancellazione gratuita fino a 30 giorni prima dell’arrivo"
+              },
+              {
+                "left": "Località alpina di esempio; a 400 m dagli impianti di risalita",
+                "right": "Località alpina di esempio; a 900 m dagli impianti di risalita"
+              },
+              {
+                "left": "Quattro camere da letto; occupazione massima 8 persone",
+                "right": "Quattro camere da letto; occupazione massima 8 persone"
+              }
+            ],
+            "before": "La scheda prodotto di un concorrente conferma spazio per otto persone. La tua scheda non indica il limite di occupazione.",
+            "after": "La tua scheda ora conferma la capacità per otto persone. In questo esempio determinano la scelta la distanza a piedi dichiarata più breve dagli impianti e il prezzo totale più basso."
+          }
+        ]
+      }
+    }
+  }
+}

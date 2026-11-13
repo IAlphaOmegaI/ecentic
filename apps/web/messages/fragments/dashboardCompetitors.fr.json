@@ -46,11 +46,11 @@
         "completedScans": "{count, plural, one {# scan terminé} many {# scans terminés} other {# scans terminés}}",
         "viewAllActivity": "Voir toute l’activité",
         "headlines": {
-          "outrankAll": "Vous devancez les {count} concurrent{plural} simulés (taux de victoire moyen de {overall}%).",
+          "outrankAll": "Vous devancez {count, plural, one {# concurrent simulé} many {les # concurrents simulés} other {les # concurrents simulés}} (taux de victoire moyen de {overall}%).",
           "slimmestLead": "Votre plus faible avance est face à {brand} avec {rate}%. Gardez vos fiches produit optimisées pour la défendre.",
           "biggestOpportunity": "{brand} remporte {lossRate}% des comparaisons d’agents face à vous. C’est votre plus grande opportunité.",
-          "holdMajority": "Vous êtes majoritaire face à {winning} concurrent{plural} sur {total} (moyenne de {overall}%). Optimiser les produits sur lesquels {brand} vous bat aura le plus d’impact.",
-          "defaultHeadline": "Vous êtes majoritaire face à {winning} concurrent{plural} sur {total} (taux de victoire moyen de {overall}%).",
+          "holdMajority": "Vous remportez la majorité des comparaisons contre {winning} sur {total, plural, one {# concurrent comparé} many {# concurrents comparés} other {# concurrents comparés}} (moyenne de {overall}%). Optimiser les produits sur lesquels {brand} vous bat aura le plus d’impact.",
+          "defaultHeadline": "Vous remportez la majorité des comparaisons contre {winning} sur {total, plural, one {# concurrent comparé} many {# concurrents comparés} other {# concurrents comparés}} (taux de victoire moyen de {overall}%).",
           "focusOptimization": "Concentrez une optimisation de fiche produit sur les produits où {brand} vous bat.",
           "toughestRival": "{toughest} est votre rival le plus difficile avec {toughestRate}% ; vous devancez {strongest} avec {strongestRate}%."
         }

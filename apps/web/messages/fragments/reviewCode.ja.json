@@ -1,0 +1,94 @@
+{
+  "reviewCode": {
+    "recordNote": "説明用の記録であり、APIリクエストではありません。",
+    "platform": {
+      "connect": [
+        {
+          "key": "title",
+          "note": "インポート時に元のタイトルは保持されます。"
+        },
+        {
+          "key": "source",
+          "note": "レコードはファイルからカタログへ移動します。"
+        },
+        {
+          "key": "publish_access",
+          "note": "フィードのインポートではストアへの書き込み権限は付与されません。"
+        }
+      ],
+      "simulate": [
+        {
+          "key": "question",
+          "note": "比較に文脈を持たせるため、購入者のリクエストは明確に保ってください。"
+        },
+        {
+          "key": "decision",
+          "note": "シミュレーション実行では、どの商品情報が選択されたかを記録します。"
+        },
+        {
+          "key": "reasoning",
+          "note": "結果は推測ではなく、明示された属性を指します。"
+        }
+      ],
+      "fix": [
+        {
+          "key": "title",
+          "note": "タイトルには、ソース内に既に存在する事実を使用しています。"
+        },
+        {
+          "key": "description",
+          "note": "同じ商品情報をより明確に表現しています。"
+        },
+        {
+          "key": "price_and_stock",
+          "note": "商品情報アクションでは価格や在庫は変更されません。"
+        }
+      ],
+      "track": [
+        {
+          "key": "referrer",
+          "note": "訪問分類の根拠として、参照元ドメインを使用します。"
+        },
+        {
+          "key": "classification",
+          "note": "検出されたリファラーはトラッキング記録になります。"
+        },
+        {
+          "key": "revenue",
+          "note": "訪問だけでは、注文や帰属売上は成立しません。"
+        }
+      ]
+    },
+    "checkout": {
+      "filename": "checkout-example.json",
+      "label": "購入手続きの要件",
+      "note": "疑似コード例。電話番号要件は緩和されていますが、決済には引き続き加盟店のゲートウェイを使用します。",
+      "rows": [
+        {
+          "key": "phone_required",
+          "before": true,
+          "after": false,
+          "note": "AIショッピングエージェントが持っていない必須電話番号がブロッカーになっています。"
+        },
+        {
+          "key": "phone",
+          "before": null,
+          "after": null,
+          "note": "チェックを通過するために連絡先情報を捏造することはありません。"
+        },
+        {
+          "key": "contact_step",
+          "before": "blocked",
+          "after": "ready",
+          "note": "この要件を削除すると、サンプルは決済まで続行できます。"
+        },
+        {
+          "key": "payment",
+          "before": "not_reached",
+          "after": "merchant_gateway",
+          "note": "決済はストアの決済ゲートウェイが処理しますが、購入者への引き継ぎが必要な場合があります。"
+        }
+      ]
+    }
+  }
+}

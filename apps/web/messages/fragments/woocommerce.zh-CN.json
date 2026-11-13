@@ -1,0 +1,261 @@
+{
+  "woocommerce": {
+    "meta": {
+      "title": "WooCommerce AI — 商品目录优化",
+      "description": "适用于 WooCommerce 店铺的 AI 工具，帮助优化商品信息、分析竞品，并让智能体洞察更顺畅地转化为已发布的商品目录更新。"
+    },
+    "breadcrumb": {
+      "home": "首页",
+      "woocommerce": "WooCommerce AI"
+    },
+    "hero": {
+      "eyebrow": "WooCommerce",
+      "title": {
+        "primary": "为 WooCommerce 店铺提供 AI，",
+        "accent": "让商品管理流程更清晰。"
+      },
+      "description": "导入商品目录，查看商品在 AI 参与的对比中为何输给竞品，并在无需更换平台的情况下，将已批准的优化直接发布回 WooCommerce。",
+      "assurances": [
+        "无需迁移平台",
+        "WordPress.org 免费插件",
+        "已批准更新通过 REST API 发布",
+        "先查看免费评分"
+      ],
+      "art": {
+        "alt": "购物车的 ASCII 艺术插图"
+      },
+      "badge": {
+        "alt": "WooCommerce",
+        "label": "专为 WooCommerce 打造"
+      }
+    },
+    "why": {
+      "number": "01",
+      "title": "为什么 WooCommerce 商家需要专门的优化闭环。",
+      "description": "WooCommerce 运营团队通常更需要商品目录层面的洞察，而不是更快生成文案。",
+      "paragraphs": [
+        "更快生成内容只是其中很小的一部分。WooCommerce 商品目录变化快、团队精简，而且依赖高质量商品数据来保持竞争力。",
+        "这就带来了对专门优化闭环的实际需求。商家希望知道哪些商品最容易改进、哪个竞品总是胜出，以及在花时间重写几十个页面之前，哪些商品信息细节最关键。"
+      ],
+      "panelTitle": "本页面适合哪些人",
+      "audiences": [
+        {
+          "title": "研究 AI 工作流",
+          "description": "正在评估 AI 应该如何真正服务商品页面的 WooCommerce 运营者。"
+        },
+        {
+          "title": "继续使用 WooCommerce",
+          "description": "希望在不更换电商平台的情况下提升商品曝光的团队。"
+        },
+        {
+          "title": "洞察与更新联动",
+          "description": "需要将竞品分析直接关联到商品信息更新的商家。"
+        },
+        {
+          "title": "从诊断到发布",
+          "description": "评估工作流是否能从分析一路推进到线上店铺的采购方。"
+        }
+      ]
+    },
+    "workflow": {
+      "number": "02",
+      "title": "ecentic 中的 WooCommerce 工作流。",
+      "description": "该工作流将商品数据连接到竞品分析，再连接回 WooCommerce 内部的发布路径，而不是再次依赖手动内容交接。",
+      "paragraph": "安装插件、导入商品目录、对关键商品进行基准分析，然后批准通过 REST 回写发布。全程留在 WooCommerce 中，无需重写店铺前端。",
+      "panelTitle": "连接、诊断、发布",
+      "advantages": [
+        {
+          "title": "商品目录数据不一致",
+          "description": "大型商品目录中的商品数据分散且一致性参差不齐。"
+        },
+        {
+          "title": "从诊断到发布",
+          "description": "从竞争诊断到线上更新的路径更快。"
+        },
+        {
+          "title": "规格驱动的竞争",
+          "description": "竞品凭借更清晰的规格和商品报价信息胜出。"
+        },
+        {
+          "title": "每周可重复执行",
+          "description": "这是运营团队每周都能运行的系统，而不是一次性的重写项目。"
+        }
+      ],
+      "steps": [
+        {
+          "title": "连接并导入",
+          "description": "安装免费插件，并在 wp-admin 中批准连接。无需复制 API 密钥，连接后自动导入商品目录，也无需修改主题。"
+        },
+        {
+          "title": "选择商品",
+          "description": "选择哪些商品进入优化闭环，可从少量主推商品扩展到整个商品目录。"
+        },
+        {
+          "title": "基准分析与诊断",
+          "description": "将商品与竞品进行对比，找出真正影响结果的变化：标题质量、描述清晰度以及薄弱的细节信息。"
+        },
+        {
+          "title": "批准并发布",
+          "description": "已批准的优化会通过文档化 REST 更新路径回写到 WooCommerce，让洞察始终与线上店铺保持同步。"
+        }
+      ]
+    },
+    "agentCommerce": {
+      "number": "03",
+      "title": "让 AI 智能体真正完成购买。",
+      "description": {
+        "before": "优化后的商品信息决定智能体是否推荐您的商品。Universal Commerce Protocol 决定它是否真的能完成购买。免费的 ",
+        "pluginName": "écentic for WooCommerce",
+        "after": " 插件会启用后者。"
+      },
+      "action": {
+        "primary": "获取 WordPress 插件",
+        "secondary": "检查店铺是否已支持智能体"
+      },
+      "capabilities": [
+        {
+          "title": "通过您的专属 URL 被发现",
+          "description": "插件会在您的域名下提供 /.well-known/ucp，因此智能体会在您的地址发现店铺，而不是第三方地址。"
+        },
+        {
+          "title": "基于真实购物车定价",
+          "description": "报价基于实时 WooCommerce 购物车生成，因此税率表、配送区域、优惠券和第三方定价插件都会生效。"
+        },
+        {
+          "title": "订单进入 WooCommerce",
+          "description": "智能体结账会通过 WooCommerce 原生内部机制创建真实订单，并标记 created_via = ucp，方便区分。"
+        },
+        {
+          "title": "您仍是 Merchant of Record",
+          "description": "支付由您的支付网关直接扣款，凭证始终保留在您的服务器中。ecentic 绝不会成为销售交易的一方。"
+        }
+      ],
+      "controlsParagraph": "智能体商业不会接管店铺。决定谁能购买、购买速度以及使用哪些凭证的控制权，仍然由您掌握。",
+      "controlsTitle": "您仍可控制的内容",
+      "controls": [
+        {
+          "title": "开启或关闭",
+          "description": "在 wp-admin 中开启或关闭完整的智能体接口。"
+        },
+        {
+          "title": "允许接入的智能体",
+          "description": "通过允许列表指定哪些智能体平台可以与店铺交易。"
+        },
+        {
+          "title": "签名请求",
+          "description": "要求使用签名（RFC 9421）请求，或改为设置店铺 API 密钥。"
+        },
+        {
+          "title": "速率限制与库存",
+          "description": "可按智能体设置速率限制，并决定是否包含缺货商品。"
+        }
+      ]
+    },
+    "evaluate": {
+      "number": "04",
+      "title": "先找到商品目录的瓶颈。",
+      "description": "合适的优化工具取决于瓶颈真正出在哪里。WooCommerce 商家通常会面临以下三种情况之一。",
+      "paragraph": "先根据当前瓶颈筛选方案。内容生成速度、竞争信息清晰度和发布阻力分别需要不同类型的工具，其中只有两类属于 ecentic 的工作范围。",
+      "panelTitle": "三种需要重点评估的情况",
+      "situations": [
+        {
+          "title": "内容生产",
+          "description": "商品目录增长速度超过团队编写或审核商品文案的能力。内容生成工具适合这种情况，但它无法回答哪些修改真正能提升商品被选择的概率。",
+          "fit": "文案生成工具适合这里",
+          "covered": false
+        },
+        {
+          "title": "竞争信息清晰度",
+          "description": "团队不清楚哪些商品输给了竞品，也不知道原因。增加更多文案无法解决这个问题。真正有帮助的是模拟商品对比，并找出影响结果的关键属性。",
+          "fit": "ecentic 的定位",
+          "covered": true
+        },
+        {
+          "title": "发布阻力",
+          "description": "已经有不错的洞察，但由于审核和发布与店铺脱节，导致线上改进推进缓慢。在 WooCommerce 内部完成批准和发布，可以减少交接成本。",
+          "fit": "ecentic 的定位",
+          "covered": true
+        }
+      ]
+    },
+    "related": {
+      "number": "05",
+      "title": "继续探索平台生态。",
+      "description": "从这里继续了解商品信息优化、平台对比或博客内容。",
+      "items": [
+        {
+          "href": "/features/product-listings",
+          "name": "工作流",
+          "title": "从 AI 商品信息优化开始",
+          "description": "如果团队希望先了解类别层面的整体流程，再深入 WooCommerce 细节，建议先查看商品信息工作流。",
+          "label": "查看商品信息工作流",
+          "color": "primary"
+        },
+        {
+          "href": "/platforms/shopify",
+          "name": "Shopify",
+          "title": "对比 Shopify 与 WooCommerce 路径",
+          "description": "如果团队正在评估平台适配性或计划多平台部署，可查看 Shopify 页面。",
+          "label": "打开 Shopify 页面",
+          "color": "accent"
+        },
+        {
+          "href": "/compare/best-ai-ecommerce-tools",
+          "name": "对比",
+          "title": "了解 AI 电商类别如何适配不同团队",
+          "description": "本指南帮助采购方区分内容生成、分析、个性化和智能体商业优化工具。",
+          "label": "阅读对比指南",
+          "color": "accent"
+        },
+        {
+          "href": "/blog",
+          "name": "博客",
+          "title": "通过博客了解运营 SEO 和数据层",
+          "description": "阅读有关结构化数据、AI 购物流量和商品目录清晰度的指南，为 WooCommerce 工作流提供支持。",
+          "label": "访问博客",
+          "color": "accent"
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "06",
+      "title": "常见问题",
+      "description": "WooCommerce 商家在评估 AI 优化工作流时的常见问题。"
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "WooCommerce 店铺中的 AI 指什么？",
+          "answer": "对于 WooCommerce 商家来说，这意味着连接商品目录、了解商品信息为何输给竞品，并通过与线上店铺保持联动的工作流优化商品页面。如今，它也越来越意味着让 AI 购物智能体能够直接在店铺中完成购买，而这正是 écentic 插件实现的能力。"
+        },
+        {
+          "question": "WooCommerce 店铺可以发布优化后的商品更新吗？",
+          "answer": "可以。已批准的重写内容会通过 REST API 直接发布回 WooCommerce，使用具有读写权限的凭证。每项变更都会在上线前由您审核，未经批准不会进入店铺前端。"
+        },
+        {
+          "question": "我必须使用插件，还是可以通过 API 密钥连接？",
+          "answer": "两种方式都可以。推荐使用免费的 écentic for WooCommerce 插件：您只需在 wp-admin 中批准连接，系统会自动为您配置 REST 密钥，无需手动复制。该插件还会让店铺支持 AI 智能体交易。如果您只需要商品信息优化，也可以直接粘贴 WooCommerce REST key 和 secret。"
+        },
+        {
+          "question": "插件会对我的店铺前端做什么修改？",
+          "answer": "没有任何可见改动。它会在 /.well-known/ucp 添加发现 URL、一个身份关联端点，以及一个仅允许 ecentic 使用您签发密钥调用的私有 REST 桥接。您的主题、店铺前端和结账流程都不会被修改，智能体订单也会通过与普通订单相同的 WooCommerce 原生内部机制创建。"
+        },
+        {
+          "question": "ecentic 与其他 WooCommerce 商品插件相比有什么不同？",
+          "answer": "大多数 WooCommerce 商品插件主要帮助管理商品目录或生成基础文案。ecentic 专注于分析商品为何输给竞品，将分析结果转化为回写到店铺中的商品信息优化，并让 AI 购物智能体能够发现并交易您的店铺。"
+        },
+        {
+          "question": "查看完 WooCommerce 页面后，下一步应该做什么？",
+          "answer": "大多数商家会先运行免费扫描，了解商品信息当前表现，然后安装插件，让店铺支持智能体。如果您还在比较不同类别的工具，对比指南会是更合适的下一步。"
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "连接您的 WooCommerce 店铺",
+        "secondary": "返回功能页"
+      },
+      "note": "无需迁移平台 · 无需信用卡 · 先查看免费评分"
+    }
+  }
+}

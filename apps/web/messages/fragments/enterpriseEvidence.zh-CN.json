@@ -1,0 +1,254 @@
+{
+  "enterpriseEvidence": {
+    "presentation": {
+      "action": {
+        "primary": "显示为表格",
+        "secondary": "显示图表"
+      },
+      "dataPending": "数据待补充",
+      "approvalPending": "等待发布批准",
+      "unknown": "未提供",
+      "source": "来源",
+      "checked": "最后检查时间",
+      "pendingNote": "本次评估包含不完整证据。待确认数据和未获批准的发现不会显示在正式网站中。"
+    },
+    "simulations": {
+      "title": "助手在模拟购买中的选择。",
+      "description": "在模拟购买中，各助手选择同一商品的占比。",
+      "caption": "2026年，同一商品目录上的{sampleSize}次模拟购买。为模拟决策，并非真实流量。",
+      "takeaway": "不同助手可能做出不同选择。在ecentic店铺扫描中对比三种模型对您商品的判断，再优化它们读取的已验证数据。",
+      "pending": "Claude和Gemini的精确数值、各模型计数和研究方法仍待确认。约18.5%的数值并未作为精确值绘制。",
+      "headers": {
+        "model": "助手",
+        "rate": "模拟购买占比",
+        "count": "选择次数",
+        "total": "模型决策"
+      },
+      "models": {
+        "chatgpt": "ChatGPT",
+        "claude": "Claude",
+        "gemini": "Gemini",
+        "perplexity": "Perplexity"
+      },
+      "countsPending": "各模型的选择次数和总数待确认。",
+      "methodPending": "研究方法和发布内容待确认。",
+      "ratePending": "精确占比待确认"
+    },
+    "findings": {
+      "title": "AI智能体在真实店铺中遇到的问题。",
+      "caption": "ecentic检测，2026年。公司以匿名方式展示。不同数据行可能来自同一家公司；每行使用各自样本。",
+      "note": "每个柱状图显示失败占比。88%为四舍五入结果；未提供精确的故障商品数量。这些是快照，而非对所有店铺结果的预测。",
+      "headers": {
+        "finding": "发现",
+        "company": "公司",
+        "share": "失败占比",
+        "count": "观测到的失败数",
+        "total": "样本"
+      },
+      "count": "{count} / {total}",
+      "rounded": "{percentage}% / {total}",
+      "companies": {
+        "spiritsMarketplace": "某大型烈酒电商平台",
+        "workspaceNetwork": "某灵活办公空间网络",
+        "skincareBrand": "某护肤品牌"
+      },
+      "rows": {
+        "catalogFaults": {
+          "label": "智能体读取的数据中至少存在一项错误的商品",
+          "detail": "某大型烈酒电商平台的商品目录快照。"
+        },
+        "missingOfferFacts": {
+          "label": "智能体无法找到价格、库存或评分的商品页面",
+          "detail": "来自同一烈酒电商平台的页面样本。"
+        },
+        "storeNotNamed": {
+          "label": "回答中未提及其有库存的两款酒对应店铺",
+          "detail": "在测试的20个回答中，同一烈酒电商平台均未被提及。"
+        },
+        "missingDescriptions": {
+          "label": "缺少智能体可用描述的商品信息",
+          "detail": "来自某灵活办公空间网络的样本。等待发布批准。"
+        },
+        "paymentBlocked": {
+          "label": "因一项配送设置导致智能体无法进入支付环节的国家",
+          "detail": "某护肤品牌在六个国家的结账测试。"
+        }
+      },
+      "roundedDetail": "占{total}件商品目录的{percentage}%。该比例为四舍五入结果；未提供精确的故障商品数量。"
+    },
+    "timeline": {
+      "title": "2026年：规则持续变化。",
+      "caption": "检查时间：{date}。每个事件均附来源链接。",
+      "takeaway": "每次变化都可能意味着新的数据、新的 Feed 或新的结账规则。发布或连接结账前，请检查当前渠道要求。",
+      "headers": {
+        "date": "日期",
+        "event": "变更",
+        "detail": "变更内容",
+        "source": "来源"
+      },
+      "events": {
+        "googleUcp": {
+          "title": "Google发布智能体结账开放标准",
+          "detail": "Universal Commerce Protocol用于连接商业体验。商家准入和技术要求仍分别管理。",
+          "source": "Google：新的智能体商业工具与协议"
+        },
+        "amazonAlexa": {
+          "title": "Amazon在Alexa for Shopping中整合Rufus与Alexa+",
+          "detail": "适用于Amazon购物应用和网站的购物助手。",
+          "source": "Amazon：认识Alexa for Shopping"
+        },
+        "metaMuse": {
+          "title": "Meta推出Muse，支持经批准的购买",
+          "detail": "Muse可通过Link checkout购物，并会在购买前请求批准。",
+          "source": "Meta：推出Muse"
+        },
+        "googleCart": {
+          "title": "Google在美国推出Universal Cart",
+          "detail": "适用于Search和Gemini，支持Google Pay结账（适用于符合条件的商家）或跳转至商家购物车。",
+          "source": "Google：Universal Cart发布"
+        },
+        "shopifyAgentTools": {
+          "title": "Shopify为店铺和结账增加智能体工具",
+          "detail": "WebMCP工具可在Liquid和Hydrogen店铺中提供购物操作；完成结账需要买家批准。",
+          "source": "Shopify：面向开发者的Fall ’26 Edition"
+        },
+        "amazonWorkspace": {
+          "title": "Amazon开放Shop Direct Merchant Workspace",
+          "detail": "符合条件的商家可注册、提交商品 Feed 并管理参与情况。Shop Direct 在该工作区发布前已存在。",
+          "source": "Amazon：Shop Direct Merchant Workspace"
+        }
+      },
+      "pending": "数据待补充：还有两个事件日期需要可读的主要来源后才能加入此时间线。"
+    },
+    "channels": {
+      "title": "每个渠道都有自己的接入方式。",
+      "description": "平台购买能力与ecentic集成状态是两回事。各渠道页面会说明资格要求并链接到当前来源。",
+      "caption": "当前渠道对比。最后检查时间：{date}。",
+      "headers": {
+        "channel": "AI渠道",
+        "reads": "读取内容",
+        "buying": "能否在回答中完成购买？",
+        "where": "地区",
+        "status": "ecentic当前状态"
+      },
+      "rows": {
+        "google": {
+          "reads": "Merchant Center商品目录数据和准确的商品页面。",
+          "buying": "可以，适用于符合条件的商家；支持Google Pay或跳转至商家购物车。",
+          "where": "Universal Cart：美国。原生结账资格包括美国、加拿大和澳大利亚的部分商家。"
+        },
+        "chatgpt": {
+          "reads": "已批准的商家商品Feed、商品信息数据和商品链接。",
+          "buying": "已批准的应用/插件集成可提供结账；其他链接会跳转至商家。",
+          "where": "取决于商家获批的集成和支持市场。"
+        },
+        "claude": {
+          "reads": "商品信息，以及提供给商家自建智能体的商品目录和结账工具。",
+          "buying": "商家自建智能体可使用结账工具。ecentic没有专门的Claude结账连接。",
+          "where": "取决于零售商自身的实现和工具。"
+        },
+        "copilot": {
+          "reads": "网页商品数据和带有结账属性的商家Feed。",
+          "buying": "Copilot Checkout支持在对话中完成符合条件的购买。",
+          "where": "美国买家、USD和英文；部分接入路径仍有限制。"
+        },
+        "perplexity": {
+          "reads": "来自商家网站和购物结果的商品信息。",
+          "buying": "文档中的Buy with Pro流程支持符合条件的商品；其他商品会链接至店铺。",
+          "where": "美国购物体验；当前商家接入遵循官方计划。"
+        },
+        "amazon": {
+          "reads": "通过Shop Direct及其批准渠道共享的商家商品目录。",
+          "buying": "符合条件时支持Buy for Me购买；否则链接至商家店铺。",
+          "where": "美国客户；符合条件的商家网站。"
+        }
+      }
+    },
+    "dua": {
+      "title": "DUA Flavours试点",
+      "figure": "+{percentage}%",
+      "caption": "2026年4月至7月来自AI助手或直接流量的访问。DUA Flavours试点，经许可发布。",
+      "note": "为访问量而非销售额。该指标结合AI助手和直接流量；同期其他变化也可能产生影响。",
+      "confirmed": "已于2026年9月3日书面确认。",
+      "action": {
+        "primary": "阅读试点案例"
+      },
+      "headers": {
+        "metric": "指标",
+        "change": "变化",
+        "period": "周期",
+        "permission": "发布许可"
+      },
+      "metric": "来自AI助手或直接流量的访问",
+      "period": "2026年4月至7月",
+      "permission": "已由DUA Flavours确认"
+    },
+    "market": {
+      "title": "市场背景",
+      "description": "只有在验证主要来源、周期和比较基准后，才会展示预测和市场统计数据。",
+      "rows": {
+        "commerceForecast": "到2030年的全球AI商业潜在规模",
+        "retailAiTraffic": "2026 年 Q1 流向美国零售商的 AI 流量",
+        "relativeConversion": "AI 引荐用户带来的相对转化率提升"
+      }
+    },
+    "sources": {
+      "research2026": "ecentic 研究，2026。方法论待发布。",
+      "catalogAudits2026": "ecentic 检测，2026。匿名商品目录与回答检查；每项结果仅代表被检测样本。",
+      "duaPilot": "DUA Flavours 试点项目，2026年4月至7月；经授权发布。",
+      "mckinseyForecast": "McKinsey 预测：主要来源待发布。",
+      "adobeTraffic": "Adobe 流量分析：主要来源待发布。",
+      "adobeConversion": "Adobe 转化分析：主要来源待发布。"
+    },
+    "pending": {
+      "claudeRate": {
+        "question": "{{TODO: Alvi supplies the exact Claude selection share from the same research.}}"
+      },
+      "geminiRate": {
+        "question": "{{TODO: Alvi supplies the exact Gemini selection share from the same research.}}"
+      },
+      "simulationDenominators": {
+        "question": "{{TODO: Alvi supplies per-model selection counts, decision totals and the definition of the denominator.}}"
+      },
+      "simulationMethod": {
+        "question": "{{TODO: Alvi supplies the products, categories, questions, models, versions, run dates, method and reviewed research publication.}}"
+      },
+      "perplexityComparableRate": {
+        "question": "{{TODO: Alvi confirms whether Perplexity has a comparable rate from the same research before adding its bar.}}"
+      },
+      "missingOfferFactsApproval": {
+        "question": "已在 2026年11月12日的发布答复中批准发布。"
+      },
+      "missingDescriptionsApproval": {
+        "question": "{{TODO: Xhurian approves publishing the 167-of-167 missing descriptions finding.}}"
+      },
+      "paymentBlockedApproval": {
+        "question": "已在 2026年11月12日的发布答复中批准发布。"
+      },
+      "copilotLaunchSource": {
+        "question": "{{TODO: Xhurian supplies a readable first-party source confirming the January 8 Copilot Checkout launch date.}}"
+      },
+      "openaiCheckoutChangeSource": {
+        "question": "{{TODO: Xhurian supplies readable primary wording and scope for the claimed March 24 OpenAI checkout change.}}"
+      },
+      "duaStartingPoint": {
+        "question": "已在 2026年11月12日的发布答复中批准初始状态。"
+      },
+      "duaChanges": {
+        "question": "{{TODO: Xhurian supplies the DUA Flavours products and fields changed, and the dates of the work.}}"
+      },
+      "duaAprilStart": {
+        "question": "{{TODO: Xhurian explains the DUA pilot’s April start and the work before the Shopify app launch.}}"
+      },
+      "commerceForecastSource": {
+        "question": "{{TODO: Xhurian supplies the primary McKinsey source for the $3–5T global AI commerce forecast by 2030, including its scope.}}"
+      },
+      "retailAiTrafficSource": {
+        "question": "{{TODO: Xhurian supplies the primary Adobe source for +393% AI traffic to US retailers in Q1 2026, including the comparison period.}}"
+      },
+      "relativeConversionSource": {
+        "question": "{{TODO: Xhurian supplies the primary Adobe source for the July 2026 60% relative conversion improvement, including its baseline.}}"
+      }
+    }
+  }
+}

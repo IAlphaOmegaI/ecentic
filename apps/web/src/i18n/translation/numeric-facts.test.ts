@@ -1,6 +1,6 @@
 import { expect, test } from "bun:test";
 import type { Locale } from "../locales";
-import { normalizeCjkMagnitudes } from "./numeric-facts";
+import { normalizeCjkDates, normalizeCjkMagnitudes } from "./numeric-facts";
 import { validateTranslationUnit } from "./validation";
 
 const findings = (source: string, target: string, locale: Locale = "zh-CN") =>
@@ -36,6 +36,94 @@ test("exact decimal shifting keeps precision beyond safe JavaScript integers", (
   );
 });
 
+test("an implicit billion-dollar valuation retains the exact amount and currency", () => {
+  const source = "Raised $96 million at a reported billion-dollar valuation.";
+  expect(
+    findings(source, "評価額10億米ドルで9,600万米ドルを調達。", "ja"),
+  ).toEqual([]);
+  expect(findings(source, "以10亿美元的估值融资9,600万美元。")).toEqual([]);
+  expect(
+    findings(source, "評価額1億米ドルで9,600万米ドルを調達。", "ja").length,
+  ).toBeGreaterThan(0);
+  expect(
+    findings(source, "評価額10億ユーロで9,600万米ドルを調達。", "ja").length,
+  ).toBeGreaterThan(0);
+  expect(
+    findings("`a billion-dollar valuation`", "`10億米ドルの評価額`", "ja")
+      .length,
+  ).toBeGreaterThan(0);
+  expect(normalizeCjkMagnitudes("a 2 billion-dollar valuation", "ja")).toBe(
+    "a 2000000000-dollar valuation",
+  );
+  expect(
+    normalizeCjkMagnitudes(
+      "a multi-billion-dollar valuation; billion-dollar market",
+      "ja",
+    ),
+  ).toBe("a multi-billion-dollar valuation; billion-dollar market");
+  expect(
+    normalizeCjkMagnitudes("a reported billion-dollar valuation", "fr"),
+  ).toBe("a reported billion-dollar valuation");
+});
+
+test("currency-prefixed magnitude abbreviations preserve value and currency", () => {
+  expect(findings("$67B", "670億米ドル", "ja")).toEqual([]);
+  expect(findings("USD 1.25M", "125万美元")).toEqual([]);
+  expect(findings("€3T", "3兆ユーロ", "ja")).toEqual([]);
+  expect(findings("-$67B", "-670亿美元")).toEqual([]);
+  expect(findings("$67B", "67億米ドル", "ja").length).toBeGreaterThan(0);
+  expect(findings("$67B", "670亿欧元").length).toBeGreaterThan(0);
+  expect(findings("`$67B`", "`670亿美元`").length).toBeGreaterThan(0);
+  expect(normalizeCjkMagnitudes("67B model, 10MB file", "ja")).toBe(
+    "67B model, 10MB file",
+  );
+  expect(normalizeCjkMagnitudes("$67B", "fr")).toBe("$67B");
+});
+
+test("a monetary range can repeat its shared magnitude in CJK", () => {
+  const source = "$3 to $5 trillion globally by 2030";
+  expect(findings(source, "到2030年全球规模为3万亿美元至5万亿美元")).toEqual(
+    [],
+  );
+  expect(
+    findings(source, "2030年までに世界で3兆米ドルから5兆米ドル", "ja"),
+  ).toEqual([]);
+  expect(
+    findings(source, "到2030年全球规模为3亿美元至5万亿美元").length,
+  ).toBeGreaterThan(0);
+  expect(
+    findings(source, "到2030年全球规模为3万欧元至5万亿欧元").length,
+  ).toBeGreaterThan(0);
+  expect(
+    findings(source, "到2030年全球规模为5万亿美元").length,
+  ).toBeGreaterThan(0);
+  expect(
+    findings("`$3 to $5 trillion`", "`3万亿美元至5万亿美元`").length,
+  ).toBeGreaterThan(0);
+  expect(normalizeCjkMagnitudes("3 to 5 trillion parameters", "ja")).toBe(
+    "3 to 5000000000000 parameters",
+  );
+  expect(normalizeCjkMagnitudes("$3 to $5 trillion", "fr")).toBe(
+    "$3 to $5 trillion",
+  );
+});
+
+test("sub-dollar transactions retain their dollar threshold", () => {
+  expect(findings("sub-dollar transactions", "低于1美元的交易")).toEqual([]);
+  expect(
+    findings("sub-dollar transactions", "1米ドル未満の取引", "ja"),
+  ).toEqual([]);
+  expect(
+    findings("sub-dollar transactions", "低于2美元的交易").length,
+  ).toBeGreaterThan(0);
+  expect(
+    findings("sub-dollar transactions", "低于1欧元的交易").length,
+  ).toBeGreaterThan(0);
+  expect(
+    findings("`sub-dollar transactions`", "`低于1美元的交易`").length,
+  ).toBeGreaterThan(0);
+});
+
 test("incorrect magnitude, amount, currency and lost negative signs still fail", () => {
   for (const target of [
     "670万元",
@@ -57,6 +145,26 @@ test("ordinary CJK words containing currency characters are not money", () => {
   expect(findings("A smooth process", "円滑なプロセス", "ja")).toEqual([]);
 });
 
+test("a dollar can use a natural CJK amount without changing currency", () => {
+  const source = "Under $50 or $100, rather than a dollar above them.";
+  expect(findings(source, "低于$50或$100，而不是高出1美元。")).toEqual([]);
+  expect(findings(source, "低于$50或$100，而不是高出一美元。")).toEqual([]);
+  expect(
+    findings(
+      source,
+      "$50または$100未満にし、1米ドル上回らないようにします。",
+      "ja",
+    ),
+  ).toEqual([]);
+  expect(
+    findings(source, "低于$50或$100，而不是高出2美元。").length,
+  ).toBeGreaterThan(0);
+  expect(
+    findings(source, "低于$50或$100，而不是高出1欧元。").length,
+  ).toBeGreaterThan(0);
+  expect(findings("`a dollar`", "`1美元`").length).toBeGreaterThan(0);
+});
+
 test("normalization does not loosen code, other locales or unknown yen identity", () => {
   expect(findings("`$67 billion`", "`670亿美元`").length).toBeGreaterThan(0);
   expect(findings("$67 billion", "670亿人民币").length).toBeGreaterThan(0);
@@ -75,6 +183,20 @@ test("dated month names preserve their calendar value when CJK uses digits", () 
     findings("Between April and July 2026", "2026年4月至8月").length,
   ).toBeGreaterThan(0);
   expect(findings("In October 2026", "2026年").length).toBeGreaterThan(0);
+});
+
+test("dated month abbreviations preserve their value without rewriting prose or code", () => {
+  expect(findings("Oct 2025", "2025年10月", "ja")).toEqual([]);
+  expect(findings("Sept. 2026", "2026年9月")).toEqual([]);
+  expect(findings("Nov. 12, 2026", "2026年11月12日", "ja")).toEqual([]);
+  expect(findings("Oct 2025", "2025年11月", "ja").length).toBeGreaterThan(0);
+  expect(findings("`Oct 2025`", "`2025年10月`", "ja").length).toBeGreaterThan(
+    0,
+  );
+  expect(normalizeCjkDates("May improve in 2026; Oct release", "ja")).toBe(
+    "May improve in 2026; Oct release",
+  );
+  expect(normalizeCjkDates("Oct 2025", "fr")).toBe("Oct 2025");
 });
 
 test("a four-digit year is never partially swallowed as a three-digit grouping", () => {

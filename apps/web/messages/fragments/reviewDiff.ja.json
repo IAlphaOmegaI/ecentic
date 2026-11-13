@@ -1,0 +1,17 @@
+{
+  "reviewDiff": {
+    "view": "Unified diff",
+    "added": "追加",
+    "removed": "削除",
+    "unchanged": "変更なしの文脈",
+    "annotations": "これらのフィールドが重要な理由",
+    "action": {
+      "primary": "更新済みレコードをコピー"
+    },
+    "copyState": {
+      "copied": "コピー済み",
+      "failed": "コピーできません"
+    },
+    "imageNote": "説明用の商品写真です。サンプルレコードの内容は、写っている商品の説明ではありません。"
+  }
+}

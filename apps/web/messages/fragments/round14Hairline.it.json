@@ -1,0 +1,113 @@
+{
+  "commerceFigures": {
+    "sofa": "Illustrazione: un divano a due posti. Punta un cuscino per sollevarlo e ispezionarne il rivestimento.",
+    "headphones": "Illustrazione: cuffie over-ear. Punta un padiglione per sollevarlo e ispezionarne l’imbottitura.",
+    "lipstick": "Illustrazione: un rossetto senza tappo. Punta il rossetto o il tappo per sollevarlo e ispezionarlo.",
+    "custom": {
+      "inspecting": "Ispezione"
+    },
+    "partReadouts": {
+      "sofa": [
+        {
+          "value": "cuscino 1",
+          "label": "Cuscino sinistro"
+        },
+        {
+          "value": "cuscino 2",
+          "label": "Cuscino destro"
+        }
+      ],
+      "headphones": [
+        {
+          "value": "padiglione sinistro",
+          "label": "Padiglione sinistro"
+        },
+        {
+          "value": "padiglione destro",
+          "label": "Padiglione destro"
+        }
+      ],
+      "lipstick": [
+        {
+          "value": "rossetto",
+          "label": "Stick del rossetto"
+        },
+        {
+          "value": "tappo",
+          "label": "Tappo del rossetto"
+        }
+      ],
+      "wellnessBottle": [
+        {
+          "value": "tappo",
+          "label": "Tappo della bottiglia"
+        },
+        {
+          "value": "capsula",
+          "label": "Capsula"
+        }
+      ],
+      "wineBottle": [
+        {
+          "value": "tappo di sughero",
+          "label": "Tappo di sughero"
+        },
+        {
+          "value": "bottiglia",
+          "label": "Bottiglia di vino"
+        },
+        {
+          "value": "etichetta",
+          "label": "Etichetta della bottiglia"
+        }
+      ],
+      "packagedFood": [
+        {
+          "value": "sigillo",
+          "label": "Sigillo della confezione"
+        },
+        {
+          "value": "busta",
+          "label": "Busta alimentare"
+        },
+        {
+          "value": "finestra",
+          "label": "Finestra ingredienti"
+        }
+      ],
+      "sneaker": [
+        {
+          "value": "suola",
+          "label": "Suola"
+        },
+        {
+          "value": "tomaia",
+          "label": "Tomaia"
+        },
+        {
+          "value": "lacci",
+          "label": "Lacci"
+        }
+      ],
+      "suitcase": [
+        {
+          "value": "maniglia",
+          "label": "Maniglia"
+        },
+        {
+          "value": "guscio",
+          "label": "Guscio"
+        },
+        {
+          "value": "ruote",
+          "label": "Ruote"
+        }
+      ]
+    },
+    "wellnessBottle": "Illustrazione: una bottiglia wellness e una capsula. Punta il tappo o la capsula per sollevarla e ispezionarla.",
+    "wineBottle": "Illustrazione: una bottiglia di vino con tappo di sughero ed etichetta. Punta una parte per sollevarla e ispezionarla.",
+    "packagedFood": "Illustrazione: una busta alimentare con sigillo e finestra ingredienti. Punta una parte per sollevarla e ispezionarla.",
+    "sneaker": "Illustrazione: una sneaker con suola arrotondata, tomaia e lacci. Punta una parte per sollevarla e ispezionarla.",
+    "suitcase": "Illustrazione: una valigia con ruote e maniglia estensibile. Punta una parte per sollevarla e ispezionarla."
+  }
+}

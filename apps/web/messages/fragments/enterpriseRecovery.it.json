@@ -1,0 +1,238 @@
+{
+  "enterpriseRecovery": {
+    "api": {
+      "meta": {
+        "title": "Riferimento API | ecentic",
+        "description": "Consulta l'attuale riferimento OpenAPI di ecentic: endpoint REST, MCP, discovery, parametri, schemi di risposta e autenticazione."
+      },
+      "eyebrow": "Sviluppatori / Riferimento API",
+      "title": "L'API, dalla fonte.",
+      "description": "Definizioni di richieste e risposte generate dalla stessa fonte di /openapi.json. Il testo degli schemi è la fonte canonica in inglese. Questo riferimento non invia richieste.",
+      "actions": [
+        {
+          "label": "Documentazione sviluppatori",
+          "href": "/docs"
+        },
+        {
+          "label": "Scarica OpenAPI JSON",
+          "href": "https://ecentic.ai/openapi.json"
+        }
+      ],
+      "sections": [
+        {
+          "id": "api-reference",
+          "title": "Endpoint",
+          "description": "Seleziona un metodo e un percorso per esaminarne parametri, corpo della richiesta, requisiti di sicurezza e risposte."
+        },
+        {
+          "id": "api-schemas",
+          "title": "Schemi condivisi",
+          "description": "Definizioni riutilizzabili richiamate dagli endpoint sopra."
+        },
+        {
+          "id": "api-auth",
+          "title": "Schemi di sicurezza",
+          "description": "Ogni operazione dichiara i propri requisiti di sicurezza. La definizione sorgente qui sotto indica gli schemi disponibili."
+        }
+      ],
+      "operationNames": {
+        "getApiV1Index": "Indice API pubblica per agenti",
+        "getApiV1Health": "Stato del servizio",
+        "getApiV1Discovery": "Discovery di protocolli e documenti",
+        "getApiV1Plans": "Catalogo piani",
+        "getApiV1Skills": "Competenze degli agenti",
+        "getApiV1News": "Notizie",
+        "getApiV1Onboarding": "Onboarding per agenti",
+        "getApiV1Sandbox": "Funzionalità sandbox",
+        "postApiV1SandboxSimulation": "Esegui una simulazione di esempio",
+        "getAgentApiRoot": "Endpoint principale dell'API per agenti",
+        "getMcp": "Flusso eventi MCP",
+        "postMcp": "Richiesta MCP",
+        "deleteMcpSession": "Chiudi una sessione MCP",
+        "postMcpAlias": "Alias MCP",
+        "getWellKnownMcpManifest": "Manifest di discovery MCP",
+        "getWellKnownUcp": "Profilo discovery UCP",
+        "getWellKnownAcp": "Profilo discovery ACP"
+      },
+      "navigation": "Navigazione degli endpoint",
+      "operation": "Operazione",
+      "version": "Versione API",
+      "specification": "Versione OpenAPI",
+      "server": "Server",
+      "definition": "Definizione di richiesta e risposta",
+      "schema": "Schema"
+    },
+    "notFound": {
+      "meta": {
+        "title": "Questa pagina non esiste | ecentic",
+        "description": "Trova la piattaforma ecentic, integrazioni, canali AI, prezzi, documentazione e pagina contatti, oltre ai link di recupero leggibili dalle macchine."
+      },
+      "title": "Questa pagina non esiste.",
+      "description": "Potrebbe essere stata spostata durante il rifacimento del sito. Queste sono le pagine che la maggior parte delle persone cerca:",
+      "home": "Home ecentic",
+      "navigation": "Trova una pagina",
+      "links": [
+        {
+          "label": "Piattaforma",
+          "href": "/platform"
+        },
+        {
+          "label": "Integrazioni",
+          "href": "/integrations"
+        },
+        {
+          "label": "Canali AI",
+          "href": "/ai-channels"
+        },
+        {
+          "label": "Prezzi",
+          "href": "/pricing"
+        },
+        {
+          "label": "Documentazione",
+          "href": "/docs"
+        },
+        {
+          "label": "Contatti",
+          "href": "/contact"
+        }
+      ],
+      "machineTitle": "Recupero per agenti",
+      "machineDescription": "I documenti di discovery esistenti e l'elenco di recupero restano disponibili.",
+      "machineNavigation": "Link di recupero leggibili dalle macchine",
+      "markdownTitle": "Lo stesso elenco di recupero in Markdown",
+      "markdownAction": "Apri il documento Markdown",
+      "recoveryLinks": [
+        {
+          "label": "Homepage",
+          "description": "Cosa fa ecentic e a chi si rivolge."
+        },
+        {
+          "label": "Documentazione sviluppatori",
+          "description": "Riferimento API, autenticazione, errori, MCP e webhook."
+        },
+        {
+          "label": "Mappa del sito",
+          "description": "Pagine indicizzabili in entrambe le versioni locali."
+        },
+        {
+          "label": "llms.txt",
+          "description": "La mappa del sito per i modelli linguistici."
+        },
+        {
+          "label": "Catalogo API",
+          "description": "Il linkset RFC 9727 delle superfici rivolte alle macchine."
+        },
+        {
+          "label": "Documento OpenAPI",
+          "description": "Schemi di richiesta e risposta per l'API pubblica."
+        }
+      ]
+    },
+    "instructions": {
+      "meta": {
+        "title": "Istruzioni AI: quando usare ecentic",
+        "description": "Come persone e agenti possono usare ecentic, dove si fermano le sue funzionalità e dove trovare API pubblica, MCP e documentazione aggiornata."
+      },
+      "eyebrow": "Sviluppatori / Istruzioni AI",
+      "title": "Dai a un agente un punto di partenza chiaro.",
+      "description": "ecentic è un livello tra il catalogo di un brand e gli assistenti AI che lo vendono. Ottimizza i dati che leggono, prepara il checkout per permettere loro di acquistare e si adatta quando cambiano le loro regole.",
+      "actions": [
+        {
+          "label": "Leggi il riferimento API",
+          "href": "/docs/api"
+        },
+        {
+          "label": "Apri le istruzioni per agenti",
+          "href": "https://ecentic.ai/.well-known/agent-instructions.md"
+        }
+      ],
+      "sections": [
+        {
+          "id": "jobs",
+          "title": "In cosa può aiutare ecentic.",
+          "ordered": true,
+          "columns": 2,
+          "items": [
+            {
+              "title": "Connetti e confronta",
+              "body": "Importa un catalogo Shopify, WooCommerce o un feed supportato. Esegui confronti on demand con ChatGPT, Claude e Gemini ed esamina i prodotti e gli attributi dietro ogni risultato.",
+              "href": "/platform/simulate",
+              "label": "Esplora le simulazioni"
+            },
+            {
+              "title": "Correggi con la tua approvazione",
+              "body": "Apply genera e pubblica un titolo e una descrizione usando i dati prodotto esistenti. I dati strutturati e la sincronizzazione con Merchant Center hanno controlli separati. Collegando Shopify viene installato anche il monitoraggio delle visite. La pubblicazione richiede un connettore diretto supportato.",
+              "href": "/platform/fix",
+              "label": "Esplora le correzioni delle schede prodotto"
+            },
+            {
+              "title": "Abilita il checkout supportato per agenti",
+              "body": "Usa l’interfaccia di checkout implementata con la tua integrazione supportata. La disponibilità e i controlli del venditore sono descritti nelle pagine dei canali e delle integrazioni.",
+              "href": "/platform/sell",
+              "label": "Esplora il checkout per agenti"
+            },
+            {
+              "title": "Esamina le visite AI",
+              "body": "Visualizza visite e destinazioni classificate. Uno script del browser non può osservare ogni crawler e un referral AI non stabilisce un collegamento individuale tra acquirente e ordine.",
+              "href": "/platform/track",
+              "label": "Esplora il monitoraggio"
+            }
+          ]
+        },
+        {
+          "id": "boundaries",
+          "title": "Mantieni le evidenze nel loro contesto.",
+          "paragraphs": [
+            "Le simulazioni descrivono un test, non una classifica live del marketplace né una vendita garantita. Il controllo gratuito del negozio usa tre assistenti; lo strumento separato gratuito di confronto prodotti può usarne quattro.",
+            "ecentic non gestisce campagne pubblicitarie, non ospita vetrine online, non gestisce inventario e non evade ordini. La pubblicazione di un'app ChatGPT non è stata confermata, quindi quell'app resta Coming soon. ACP resta Coming soon."
+          ]
+        },
+        {
+          "id": "entry-points",
+          "title": "Parti dai contratti pubblici.",
+          "columns": 3,
+          "items": [
+            {
+              "title": "API REST",
+              "body": "Consulta l'indice dell'API pubblica, le definizioni degli endpoint e gli schemi condivisi. I requisiti di autenticazione sono dichiarati per ogni operazione.",
+              "href": "/docs/api",
+              "label": "Leggi il riferimento"
+            },
+            {
+              "title": "Server MCP",
+              "body": "Consulta gli strumenti supportati e la guida alla connessione. La discovery è pubblica; le operazioni che coinvolgono un account merchant richiedono autorizzazione.",
+              "href": "/docs/mcp",
+              "label": "Leggi la guida MCP"
+            },
+            {
+              "title": "CLI e credenziali",
+              "body": "Usa la guida per sviluppatori per il CLI e il flusso di autenticazione. Non inserire mai una chiave API privata in una pagina pubblica o in un bundle client-side.",
+              "href": "/docs",
+              "label": "Apri la documentazione sviluppatori"
+            }
+          ]
+        },
+        {
+          "id": "machine-guidance",
+          "title": "Le istruzioni leggibili dalle macchine.",
+          "description": "Questo è lo stesso documento canonico in inglese pubblicato su /.well-known/agent-instructions.md. Identificatori di protocollo, percorsi e payload restano nella loro forma originale."
+        }
+      ]
+    },
+    "og": {
+      "home": {
+        "title": "Ottieni la vendita quando è l'AI a fare l'acquisto.",
+        "description": "Il livello AI per il commerce."
+      },
+      "docs": {
+        "title": "Sviluppa sulla piattaforma per il commerce con agenti AI.",
+        "description": "Riferimento API, MCP, CLI e documenti pubblici di discovery per sviluppatori."
+      },
+      "blog": {
+        "title": "Il magazine sul commercio tramite AI.",
+        "description": "Guide pratiche ai dati prodotto, alle raccomandazioni dell’AI e al checkout per agenti."
+      }
+    }
+  }
+}

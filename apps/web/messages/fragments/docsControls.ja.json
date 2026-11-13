@@ -1,0 +1,10 @@
+{
+  "docsControls": {
+    "snippet": "コード例",
+    "action": {
+      "primary": "コピー"
+    },
+    "copied": "コピーしました",
+    "failed": "コピーに失敗しました。コードを選択してコピーしてください。"
+  }
+}

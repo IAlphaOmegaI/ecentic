@@ -133,7 +133,9 @@ Use findings to identify shared causes, then inspect affected consumers. Keep ge
 dividers, accessibility labels, truthful product facts and legitimate controls. After an authorized
 source fix, rerun the relevant source/runtime cases and inspect the affected visual states.
 
-The original full-history audit is preserved under `output/learn-taste-2026-11-12/` locally. Its
+The original full-history audit is preserved outside the app repository under the local artifact
+archive recorded in the [review ledger](design-review-history.md), at
+`output/learn-taste-2026-11-12/` within that archive. Its
 33 measured structural joins and other findings describe that snapshot, not a frozen expected
 failure count. Current command output is authoritative for the current tree. Historical provenance
 remains in the [review ledger](design-review-history.md).

@@ -1,0 +1,58 @@
+{
+  "interactiveCheckout": {
+    "sampleLabel": "示例数据演示",
+    "title": "一次结账，修复前后对比",
+    "description": "这是一个可调节台灯的 WooCommerce 结账示例。支付步骤包含通过店铺网关将买家交接给支付流程；此示例不会创建真实订单。",
+    "controlsLabel": "选择结账结果",
+    "states": {
+      "before": "修复前",
+      "after": "修复后"
+    },
+    "statuses": {
+      "complete": "完成",
+      "stopped": "中断",
+      "pending": "未到达"
+    },
+    "outcomes": {
+      "before": "流程在联系信息步骤停止，未进入支付和下单。",
+      "after": "修正手机号要求并完成支付后，示例流程可成功进入下单。"
+    },
+    "steps": {
+      "find": {
+        "label": "查找商品",
+        "before": "可调节台灯",
+        "after": "可调节台灯"
+      },
+      "availability": {
+        "label": "读取价格与库存",
+        "before": "价格和库存信息已提供。",
+        "after": "价格和库存信息已提供。"
+      },
+      "cart": {
+        "label": "加入购物车",
+        "before": "示例商品已加入购物车。",
+        "after": "示例商品已加入购物车。"
+      },
+      "shipping": {
+        "label": "选择配送方式",
+        "before": "已有可用配送方式。",
+        "after": "已有可用配送方式。"
+      },
+      "contact": {
+        "label": "联系信息",
+        "before": "结账要求提供智能体没有的手机号。",
+        "after": "此示例中手机号为可选项；必填联系信息已提供。"
+      },
+      "payment": {
+        "label": "支付",
+        "before": "等待联系信息。",
+        "after": "买家通过店铺网关完成支付。"
+      },
+      "order": {
+        "label": "订单已创建",
+        "before": "被阻止的流程不会创建订单。",
+        "after": "示例流程已生成 WooCommerce 订单。"
+      }
+    }
+  }
+}

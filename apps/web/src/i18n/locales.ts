@@ -4,7 +4,15 @@ export const locales = ["en", "es", "fr", "de", "it", "ja", "zh-CN"] as const;
 export type Locale = (typeof locales)[number];
 
 /** Expose a language only after its complete catalog has passed review. */
-export const publishedLocales: readonly Locale[] = ["en", "es", "fr", "de"];
+export const publishedLocales: readonly Locale[] = [
+  "en",
+  "es",
+  "fr",
+  "de",
+  "it",
+  "ja",
+  "zh-CN",
+];
 
 export const isPublishedLocale = (value: string): value is Locale =>
   (publishedLocales as readonly string[]).includes(value);

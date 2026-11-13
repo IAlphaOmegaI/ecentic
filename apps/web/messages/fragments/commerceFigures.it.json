@@ -1,0 +1,13 @@
+{
+  "commerceFigures": {
+    "catalog": "Illustrazione: un vassoio di schede prodotto. Punta una scheda o usa i tasti freccia per sollevarla.",
+    "document": "Illustrazione: un terminale documentale. Sposta il puntatore tra le righe per sollevare una riga.",
+    "workflow": "Illustrazione: un percorso collegato che si dirama e si ricongiunge. Sposta il puntatore lungo il percorso per seguirne le connessioni.",
+    "checkout": "Illustrazione: un cestino della spesa. Si gira verso il puntatore e il manico lo segue.",
+    "inspection": "Illustrazione: tre setacci di ispezione. Sposta il puntatore in verticale per separare uno strato.",
+    "drawer": "Illustrazione: tre cassetti del catalogo. Sposta il puntatore in verticale per aprire un cassetto.",
+    "format": "Illustrazione: un file con righe irregolari. Sposta il puntatore lungo il file per allinearle.",
+    "relay": "Illustrazione: una rete ramificata. Punta una destinazione per illuminare il percorso.",
+    "hub": "Illustrazione: tessere collegate attorno a un hub centrale. Punta una tessera per sollevarla ed evidenziarne la connessione."
+  }
+}

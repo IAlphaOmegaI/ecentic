@@ -1,0 +1,31 @@
+{
+  "round14Sectors": {
+    "introduction": "Scopri come una domanda d’acquisto si collega ai fatti presenti in un record prodotto.",
+    "sample": "Conversazione illustrativa con prodotti di esempio.",
+    "questions": "Esplora una domanda di un acquirente",
+    "conversation": "Conversazione di esempio",
+    "shopper": "Acquirente",
+    "assistant": "Assistente per gli acquisti",
+    "assistantIntro": "Posso confrontare la richiesta con le informazioni dichiarate in queste schede prodotto. I fatti rilevanti sono:",
+    "followUp": "Cosa puoi stabilire dalla scheda prodotto?",
+    "inspection": "Esamina i record di esempio",
+    "yourListing": "La tua scheda prodotto",
+    "comparisonListing": "Scheda prodotto di confronto",
+    "sourceFact": "Già presente nella fonte di esempio",
+    "missing": "Non dichiarato nella scheda prodotto",
+    "available": "Dichiarato nella scheda prodotto",
+    "required": "Rilevante per questa domanda",
+    "qualification": "Verifica questi attributi alla fonte",
+    "attributesIntro": "Rendi espliciti i dati del prodotto, poi controlla la modifica nel record sorgente condiviso.",
+    "comparisonIntro": "Questo esempio segue la prima domanda dell’acquirente. La visualizzazione mostra i dati sorgente esistenti prima della modifica al codice qui sotto.",
+    "sourceHeading": "Il dato sorgente alla base della correzione",
+    "dimensions": {
+      "title": "Controlla l’ingombro completo.",
+      "width": "Larghezza",
+      "depth": "Profondità",
+      "height": "Altezza",
+      "note": "Schema non in scala. Usa le misure esatte del prodotto, della stanza e degli accessi per verificare l’ingombro."
+    },
+    "assistantFinding": "La scheda prodotto di {product} non indica {fields}. Non posso verificare questi requisiti da quella scheda prodotto. La fonte di esempio mostra i dati che devono essere resi espliciti."
+  }
+}

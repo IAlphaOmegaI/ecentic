@@ -78,8 +78,8 @@
         },
         {
           "key": "contact_step",
-          "before": "blockiert",
-          "after": "bereit",
+          "before": "blocked",
+          "after": "ready",
           "note": "Das Entfernen dieser Anforderung ermöglicht es dem Beispiel, mit der Zahlung fortzufahren."
         },
         {

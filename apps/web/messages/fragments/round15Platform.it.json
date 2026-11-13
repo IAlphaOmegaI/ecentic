@@ -1,0 +1,32 @@
+{
+  "round15Platform": {
+    "replay": {
+      "shopper": "Acquirente",
+      "assistant": "Assistente di esempio",
+      "writing": "Sta scrivendo…",
+      "complete": "Conversazione di esempio completata",
+      "replay": "Riproduci la conversazione",
+      "conversation": "Conversazione d’acquisto di esempio",
+      "turns": {
+        "listings": "Confronterò queste due schede prodotto di esempio con il tuo budget e i requisiti di vestibilità.",
+        "fields": "Entrambe sono sotto i $400. La tua scheda prodotto non indica altezza della seduta né capacità di carico. Quella concorrente indica 44–54 cm e 120 kg.",
+        "fix": "Aggiungi alla mia scheda prodotto l’intervallo di altezza della seduta e la capacità di carico già presenti nei dati del fornitore, poi confronta di nuovo le stesse due sedie."
+      }
+    }
+  },
+  "commerceFigures": {
+    "officeChair": "Sedia da ufficio con schienale imbottito, braccioli e base a cinque ruote",
+    "partReadouts": {
+      "officeChair": [
+        {
+          "value": "schienale",
+          "label": "Schienale"
+        },
+        {
+          "value": "seduta",
+          "label": "Seduta"
+        }
+      ]
+    }
+  }
+}

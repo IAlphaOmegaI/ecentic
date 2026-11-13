@@ -1,0 +1,61 @@
+{
+  "ucpPlayground": {
+    "meta": {
+      "title": "ショッピングエージェント向けUCP Playground",
+      "description": "UCPストアフロントに対して、カタログ検索、カート、購入手続きをテストできます。MCPまたはREST経由のリクエストとレスポンスを確認できます。"
+    },
+    "breadcrumb": {
+      "home": "ホーム",
+      "page": "UCPテスト環境"
+    },
+    "hero": {
+      "eyebrow": "Universal Commerce Protocol",
+      "title": {
+        "primary": "AIショッピングエージェントを",
+        "accent": "あらゆるストアへ。"
+      },
+      "description": "無料のUCP Playground。実際のAIショッピングエージェントを任意のUCPストアフロントに接続できます。MCPまたはREST経由でカタログ検索、カート、購入手続きを実行し、呼び出し内容を確認できます。",
+      "art": {
+        "alt": "ロボットを表したASCIIアート"
+      }
+    },
+    "demo": {
+      "title": "検索、カート作成、購入手続きを確認。",
+      "titleLineBreak": "検索、カート作成、<br />購入手続きを確認。",
+      "description": "すべてのツール呼び出しとレスポンスをそのまま確認できます。最初の{limit}件のメッセージはアカウント不要です。"
+    },
+    "capabilities": [
+      {
+        "title": "カタログ検索と商品参照",
+        "description": "エージェントにストアフロントのカタログ検索や単一商品の取得を指示し、正確なUCPレスポンスを確認できます。"
+      },
+      {
+        "title": "カート操作",
+        "description": "AIショッピングエージェントと同じ呼び出しを使って、カート作成、商品追加、合計金額の反映を確認できます。"
+      },
+      {
+        "title": "購入手続きへの引き継ぎ",
+        "description": "実際のストアに対して購入手続きを開始し、エージェントが購入者に返す継続URLを確認できます。"
+      }
+    ],
+    "faq": {
+      "items": [
+        {
+          "question": "UCP Playgroundとは何ですか？",
+          "answer": "選択したストアフロントに対して、AIショッピングエージェントがUniversal Commerce Protocolの実際の操作を実行するサンドボックスです。ストアの/.well-known/ucpプロファイルを解決し、MCPまたはRESTのショッピングエンドポイントを選択して、すべてのツール呼び出しとレスポンスを表示します。"
+        },
+        {
+          "question": "どのストアをテストできますか？",
+          "answer": "/.well-known/ucpで有効なUniversal Commerce Profileを公開し、dev.ucp.shoppingサービスを提供しているストアフロントであれば利用できます。PlaygroundはMCPトランスポートを優先し、利用できない場合はRESTにフォールバックします。"
+        },
+        {
+          "question": "アカウントは必要ですか？",
+          "answer": "不要です。誰でも最大{limit}件のメッセージを無料で送信できます。自身の接続済みストアに対して無制限のセッションを実行するには、アカウントを作成してください。"
+        }
+      ]
+    },
+    "structuredData": {
+      "name": "UCPテスト環境"
+    }
+  }
+}

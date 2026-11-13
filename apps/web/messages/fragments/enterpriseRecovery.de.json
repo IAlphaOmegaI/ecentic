@@ -228,6 +228,10 @@
       "docs": {
         "title": "Entwickeln Sie auf der Plattform für den Handel durch KI-Agenten.",
         "description": "API-Referenz, MCP, CLI und öffentliche Discovery-Dokumente für Entwickler."
+      },
+      "blog": {
+        "title": "Das Journal für den Handel mit KI.",
+        "description": "Praktische Leitfäden zu Produktdaten, KI-Empfehlungen und Kaufabschlüssen durch KI-Agenten."
       }
     }
   }

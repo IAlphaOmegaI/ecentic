@@ -1,0 +1,11 @@
+{
+  "sectorsIndexPage": {
+    "description": "購入に関する問いから始め、その回答に必要なカタログ情報を確認してください。",
+    "question": "購入者からの質問例",
+    "productData": "明示すべき情報",
+    "attributeHint": "項目を開くと、記載すべき内容を確認できます。",
+    "action": {
+      "primary": "この業界を見る"
+    }
+  }
+}

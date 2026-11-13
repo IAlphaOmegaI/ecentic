@@ -1,0 +1,32 @@
+{
+  "dealRedemption": {
+    "programs": {
+      "techstars": {
+        "batchLabel": "Programma Techstars / anno",
+        "batchPlaceholder": "Seleziona la tua edizione",
+        "action": {
+          "primary": "Richiedi l’offerta Techstars"
+        }
+      },
+      "yc": {
+        "batchLabel": "Edizione YC",
+        "batchPlaceholder": "Seleziona la tua edizione",
+        "action": {
+          "primary": "Richiedi l’offerta YC"
+        }
+      }
+    },
+    "options": {
+      "earlier": "Edizioni precedenti",
+      "other": "Altro",
+      "customHeadless": "Su misura / headless",
+      "preLaunch": "Prima del lancio"
+    },
+    "cohorts": {
+      "winter": "Inverno {year}",
+      "spring": "Primavera {year}",
+      "summer": "Estate {year}",
+      "fall": "Autunno {year}"
+    }
+  }
+}

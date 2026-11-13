@@ -172,6 +172,20 @@
       "exposure": 0.75,
       "backgroundFeather": 0.08,
       "marks": 4329
+    },
+    {
+      "subject": "catalog-commerce",
+      "source": "/images/marketing/source/catalog-commerce.png",
+      "sourceSha256": "2463aafbb966ea2fc130584f77380b7e813f05e9753d6c66ed1cbe5a9b31492f",
+      "asset": "/images/ascii/tonal/catalog-commerce.svg",
+      "assetSha256": "e0abc08cd3a1fdcd93060ba17d486f7c7db7f9993b35619a6a7540f98617a216",
+      "grid": [
+        240,
+        160
+      ],
+      "exposure": 1.0,
+      "backgroundFeather": 0.055,
+      "marks": 14873
     }
   ]
 }

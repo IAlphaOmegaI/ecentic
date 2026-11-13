@@ -1,4 +1,5 @@
 import { describe, expect, test } from "bun:test";
+import { validateTranslationUnit } from "@/i18n/translation/runner";
 import { hasFaqSection, splitBlogHtmlByH2 } from "../blog-html";
 import { blogReadingMinutes, blogTopicSlug } from "../blog-locale";
 import {
@@ -32,6 +33,39 @@ const source: BlogTranslationSource = {
   publishedAt: "2026-11-12",
   thumbnailUrl: "/example.png",
 };
+
+test("reviewed ordinary scale headings translate without renaming the Scale plan", () => {
+  const heading = "Running Audits at Scale: What Actually Works";
+  const article = createBlogTranslation({
+    ...source,
+    title: heading,
+    contentHtml: `<h2>${heading}</h2><p>Scale costs $44.90 per month.</p>`,
+  });
+  const headings = article.units.filter((unit) => unit.text === heading);
+  expect(headings).toHaveLength(2);
+  for (const unit of headings) {
+    expect(unit.translatableTerms).toEqual(["Scale"]);
+    expect(
+      validateTranslationUnit(
+        unit,
+        "Audits in großem Maßstab durchführen: Was tatsächlich funktioniert",
+        "de",
+      ),
+    ).toEqual([]);
+  }
+  const plan = article.units.find((unit) =>
+    unit.text.startsWith("Scale costs"),
+  );
+  if (!plan) throw new Error("Expected plan source unit");
+  expect(plan.translatableTerms).toBeUndefined();
+  expect(
+    validateTranslationUnit(
+      plan,
+      "Wachstum kostet $44.90 pro Monat.",
+      "de",
+    ).some((issue) => issue.message.includes("Scale")),
+  ).toBe(true);
+});
 
 describe("blog translation preservation", () => {
   test("translates visible and accessible text without serializing protected HTML", () => {
@@ -244,4 +278,70 @@ test("source layouts preserve inline code, links, entities and omitted batch sib
   ).toBe(
     '<p>A <a href="/catalog?a=1&amp;b=2">catalog</a> uses <code>data.a</code> &amp; <strong>verified facts</strong>.</p>',
   );
+});
+
+test("only standalone grammatical articles outside links and attributes may be omitted", () => {
+  const article = createBlogHtmlTranslation(
+    '<p>The <a href="/guide" title="The">guide</a> explains <code>data.a</code>.</p><p><a href="/a"><strong>A</strong></a> fact.</p><p>The</p><p>A <strong>catalog</strong> entry.</p>',
+  );
+  const allowed = article.units.filter((unit) => unit.grammaticalArticle);
+  expect(allowed.map((unit) => unit.text)).toEqual(["The", "A"]);
+  for (const unit of allowed) {
+    expect(validateTranslationUnit(unit, "", "ja")).toEqual([]);
+    expect(validateTranslationUnit(unit, "", "zh-CN")).toEqual([]);
+    expect(validateTranslationUnit(unit, "", "fr").length).toBeGreaterThan(0);
+  }
+  expect(allowed.every((unit) => unit.context.includes("Source layout"))).toBe(
+    true,
+  );
+  const values = new Map(
+    article.units.map((unit) => [
+      unit.id,
+      unit.grammaticalArticle ? "" : unit.text,
+    ]),
+  );
+  const result = article.apply(values);
+  expect(result).toContain(
+    '<p> <a href="/guide" title="The">guide</a> explains <code>data.a</code>.</p>',
+  );
+  expect(result).toContain('<a href="/a"><strong>A</strong></a> fact.');
+  expect(result).toContain("<p>The</p>");
+  expect(result).toContain("<p> <strong>catalog</strong> entry.</p>");
+  const linkLabel = article.units.find((unit) => unit.text === "guide");
+  if (!linkLabel) throw new Error("Expected source link label");
+  values.set(linkLabel.id, "");
+  expect(() => article.apply(values)).toThrow("Missing translated HTML unit");
+  values.set(linkLabel.id, linkLabel.text);
+  const accessible = article.units.find((unit) =>
+    unit.id.endsWith("attribute.title"),
+  );
+  if (!accessible) throw new Error("Expected source title attribute");
+  values.set(accessible.id, "");
+  expect(() => article.apply(values)).toThrow("Missing translated HTML unit");
+});
+
+test("batch instructions occur once while every inline scaffold and source slot remains", () => {
+  const article = createBlogHtmlTranslation(
+    Array.from(
+      { length: 40 },
+      (_, index) =>
+        `<p>Read <a href="/guide/${index}">guide ${index}</a> with <code>data.${index}</code>.</p>`,
+    ).join(""),
+  );
+  const context = blogBatchContext(
+    article.units,
+    article.units,
+    "Commerce guide",
+  );
+  expect(context.documentContext.match(/Each ⟦id⟧/g)).toHaveLength(1);
+  expect(context.units.map((unit) => [unit.id, unit.text, unit.group])).toEqual(
+    article.units.map((unit) => [unit.id, unit.text, unit.group]),
+  );
+  expect(context.units.every((unit) => unit.context === "Article p text")).toBe(
+    true,
+  );
+  for (const index of Array.from({ length: 40 }, (_, value) => value)) {
+    expect(context.documentContext).toContain(`/guide/${index}`);
+    expect(context.documentContext).toContain(`<code>data.${index}</code>`);
+  }
 });

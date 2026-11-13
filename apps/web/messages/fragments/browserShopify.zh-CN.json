@@ -1,0 +1,10 @@
+{
+  "browserShopify": {
+    "sections": {
+      "workflow": "工作流",
+      "access": "访问权限",
+      "requirements": "要求",
+      "setup": "设置"
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "microsoftCopilotPage": {
+    "journey": {
+      "title": "会話、カタログ、ビジネス",
+      "copilot": "商品発見から購入手続きまで",
+      "merchant": "販売主体は引き続き自社です",
+      "relationship": "フルフィルメントも顧客関係も自社で管理。",
+      "web": "Web上の商品データ",
+      "feeds": "マーチャントの商品フィード",
+      "checkout": "追加の購入手続き属性",
+      "dataLabel": "商品データの流れを見る"
+    },
+    "entry": {
+      "label": "マーチャント参加ルートを見る",
+      "language": "マーチャント言語",
+      "languageValue": "英語",
+      "buyers": "購入者",
+      "buyersValue": "米国",
+      "currency": "通貨",
+      "currencyValue": "USD",
+      "microsoft": "Microsoft",
+      "shopify": "Shopify",
+      "stripe": "Stripe",
+      "routes": {
+        "microsoft": {
+          "title": "Microsoft Merchant Center",
+          "description": "Microsoftのオンボーディングガイドに従って、商品レコードと追加のチェックアウト属性を準備してください。フィード設定ステップは、現在一部マーチャント向けのパイロット提供です。",
+          "note": "これはMicrosoftのマーチャント参加ルートです。ecenticのフィード連携はまだ提供開始していません。"
+        },
+        "shopify": {
+          "title": "Shopifyの自動登録",
+          "description": "Shopifyは、Microsoftが案内している登録ルートのひとつです。Microsoftの参加条件およびプログラム要件は引き続き適用されます。",
+          "note": "ecenticは現在、接続済みShopifyストアでCopilot経由の流入を追跡しています。"
+        },
+        "stripe": {
+          "title": "Stripe Agentic Commerce Suite",
+          "description": "Stripe Agentic Commerce Suiteは、Microsoftが案内している参加ルートのひとつです。Microsoftの参加条件およびプログラム要件は引き続き適用されます。",
+          "note": "参加ルートがあっても、承認や商品レコメンドは保証されません。"
+        }
+      },
+      "action": {
+        "primary": "Microsoftのオンボーディングガイドを読む"
+      }
+    }
+  }
+}

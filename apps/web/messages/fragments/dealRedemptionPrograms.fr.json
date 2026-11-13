@@ -1,0 +1,35 @@
+{
+  "dealRedemption": {
+    "programs": {
+      "techstars": {
+        "batchLabel": "Programme Techstars / année",
+        "batchPlaceholder": "Sélectionnez votre promotion",
+        "action": {
+          "primary": "Activer mon offre Techstars"
+        }
+      },
+      "yc": {
+        "batchLabel": "Promotion YC",
+        "batchPlaceholder": "Sélectionnez votre promotion",
+        "action": {
+          "primary": "Activer mon offre YC"
+        }
+      }
+    },
+    "options": {
+      "earlier": "Avant ces dates",
+      "other": "Autre",
+      "customHeadless": "Sur mesure / headless",
+      "preLaunch": "Avant le lancement"
+    },
+    "cohorts": {
+      "winter": "Hiver {year}",
+      "spring": "Printemps {year}",
+      "summer": "Été {year}",
+      "fall": "Automne {year}"
+    },
+    "toast": {
+      "successDescription": "Nous vérifierons la promotion indiquée et vous contacterons par e-mail sous 1 jour ouvré."
+    }
+  }
+}

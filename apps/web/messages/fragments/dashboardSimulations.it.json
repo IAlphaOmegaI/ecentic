@@ -1,0 +1,76 @@
+{
+  "dashboard": {
+    "simulations": {
+      "title": "Simulazioni",
+      "description": "Esegui nuovamente il rilevamento dei concorrenti e le simulazioni delle percentuali di vittoria in qualsiasi momento.",
+      "stats": {
+        "productsSelected": "Prodotti selezionati",
+        "competitorsSelected": "Concorrenti selezionati",
+        "estimatedSimulations": "Simulazioni stimate",
+        "estimatedTime": "Tempo stimato",
+        "pickedForScan": "selezionati per la prossima scansione",
+        "productsCompetitorsModels": "prodotti × concorrenti × 3 modelli",
+        "atCurrentSelection": "con la selezione attuale"
+      },
+      "discovery": {
+        "kicker": "01 — Scoperta",
+        "title": "Ricerca dei concorrenti",
+        "description": "Ripeti la ricerca dei concorrenti con l’AI usando i tuoi prodotti attuali.",
+        "totalCompetitors": "Totale concorrenti attuali: {count}"
+      },
+      "setup": {
+        "kicker": "02 — Configurazione scansione",
+        "title": "Scegli cosa simulare",
+        "description": "Scegli i prodotti e i concorrenti per la prossima esecuzione. La stima si aggiorna mentre selezioni.",
+        "products": "Prodotti",
+        "competitors": "Concorrenti",
+        "clearAll": "Cancella tutto",
+        "selectAll": "Seleziona tutto",
+        "nothingYet": "Non c'è ancora nulla qui.",
+        "estimate": "{products} prodotti × {competitors} concorrenti × 3 modelli",
+        "estimateTotal": "{total} simulazioni · {duration}"
+      },
+      "run": {
+        "kicker": "03 — Simulazione",
+        "title": "Simulazione della percentuale di vittorie",
+        "description": "Riesegui i confronti simulati tra i tuoi prodotti e quelli dei concorrenti con ChatGPT, Claude e Gemini.",
+        "reset": "Reimposta",
+        "runSimulation": "Avvia la simulazione",
+        "progress": "Avanzamento simulazione",
+        "phase": "Fase",
+        "winsLosses": "Vittorie / Sconfitte",
+        "elapsed": "Tempo trascorso",
+        "currentStage": "fase corrente",
+        "acrossAllModels": "su tutti i modelli",
+        "sinceStart": "dall'inizio",
+        "liveOutput": "Output in tempo reale",
+        "lineCount": "{count, plural, one {# riga} many {# righe} other {# righe}}",
+        "noLogsYet": "Ancora nessun log. Avvia una simulazione per vedere l'output in tempo reale.",
+        "status": {
+          "done": "Completato",
+          "running": "In esecuzione",
+          "queued": "In coda"
+        }
+      },
+      "complete": {
+        "winRate": "Percentuale di vittorie",
+        "products": "Prodotti",
+        "wins": "Vittorie",
+        "losses": "Sconfitte",
+        "topFinding": "{name} perde su {attributes}. {impact} Ti costa il {loss}% delle simulazioni."
+      },
+      "toast": {
+        "simulationFailed": "Simulazione non riuscita",
+        "nothingSelected": "Nessuna selezione",
+        "selectProduct": "Seleziona almeno un prodotto per la scansione.",
+        "selectCompetitor": "Seleziona almeno un concorrente per la scansione."
+      },
+      "skeleton": {
+        "phase": "Fase",
+        "progress": "Avanzamento",
+        "winsLosses": "Vittorie / Sconfitte",
+        "elapsed": "Tempo trascorso"
+      }
+    }
+  }
+}

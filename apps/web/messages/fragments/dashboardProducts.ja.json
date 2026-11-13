@@ -1,0 +1,227 @@
+{
+  "dashboard": {
+    "products": {
+      "title": "商品",
+      "description": "カタログ内の各商品がAIショッピングエージェント全体でどのような成果を出しているかを表示します。",
+      "action": {
+        "primary": "商品を追加",
+        "addProducts": "商品を追加"
+      },
+      "stats": {
+        "totalProducts": "商品数",
+        "averageWinRate": "平均勝率",
+        "highPerformers": "高パフォーマンス商品",
+        "needsAttention": "要対応",
+        "highPerformersHint": "勝率60%以上の商品",
+        "needsAttentionHint": "勝率30%未満の商品"
+      },
+      "embedBanner": {
+        "title": "構造化データが商品ページに届いていません",
+        "description": "「Agentic structured data」アプリ埋め込みがオフのため、AIエージェントが商品の機械可読データを認識できません。一度有効化すると、このストア内のすべての商品に構造化データが適用されます。",
+        "action": "アプリ埋め込みを有効化"
+      },
+      "quality": {
+        "good": "良好（75%以上）",
+        "fair": "標準（50〜74%）",
+        "poor": "低い（50%未満）",
+        "distribution": "品質分布",
+        "avgQuality": "平均品質",
+        "kicker": "01.1 — 品質"
+      },
+      "optimization": {
+        "readiness": "商品準備状況",
+        "optimized": "最適化済み",
+        "pending": "保留中",
+        "unoptimized": "未最適化",
+        "kicker": "01.2 — 最適化"
+      },
+      "detail": {
+        "backToProducts": "商品一覧に戻る",
+        "optimize": "最適化",
+        "noSimulationsYet": "シミュレーションはまだ実行されていません",
+        "winRate": "勝率",
+        "dataQuality": "データ品質",
+        "simulationsRun": "実行済みシミュレーション",
+        "bestModel": "最良モデル",
+        "winsSimulations": "{wins}勝 · {simulations}件のシミュレーション",
+        "listingCompleteness": "商品情報の完全性スコア",
+        "acrossCompetitors": "{count, plural, other {#件の競合商品で比較}}",
+        "modelWinRate": "{model}の勝率",
+        "tabs": {
+          "winRate": "勝率",
+          "agentReplay": "エージェント再生",
+          "battlecard": "バトルカード",
+          "optimize": "最適化"
+        },
+        "overview": {
+          "winRateVsCompetitor": "各競合商品との勝率",
+          "viewAll": "すべて表示",
+          "noCompetitors": "追跡中の競合商品はまだありません。",
+          "wLTotal": "{wins}勝 · {losses}敗",
+          "totalCount": "合計{count}件"
+        },
+        "replay": {
+          "empty": "シミュレーションはまだありません。スキャンを実行すると、エージェントの意思決定リプレイが表示されます。",
+          "decisionReplay": "{model} 意思決定リプレイ",
+          "simulationCount": "{count, plural, other {#件のシミュレーション}}",
+          "vsCompetitor": "{title}との比較",
+          "won": "勝利",
+          "lost": "敗北",
+          "reasoning": "{model}の判断理由",
+          "noReasoning": "判断理由は記録されていません。スコアで判定されました（{productScore} vs {competitorScore}）。"
+        },
+        "fields": {
+          "title": "タイトル",
+          "description": "説明",
+          "price": "価格",
+          "sku": "SKU",
+          "structuredData": "構造化データ",
+          "images": "画像"
+        },
+        "publish": {
+          "applyFix": "修正をストアに適用",
+          "connectStore": "Shopify または WooCommerce を接続",
+          "dialogTitle": "最適化した商品情報を公開しますか？",
+          "dialogDescription": "ecentic は「{title}」向けにAI最適化されたタイトルと説明を生成し、接続済みストアの公開中の商品情報を直接置き換えます。現在の勝率は {winRate}% です。",
+          "publishing": "公開中…",
+          "publishToStore": "ストアに公開",
+          "failed": "公開に失敗しました",
+          "successTitle": "商品情報を公開しました",
+          "successDescription": "AI最適化された商品情報をストアに反映しました。"
+        },
+        "applyOptimization": {
+          "title": "差を自動で解消",
+          "description": "ecentic は勝っている競合商品の強みをもとにこの商品情報を書き換え、手動編集なしでそのままストアに公開します。",
+          "reviewQueue": "レビューキュー",
+          "optimizePublish": "最適化して公開"
+        },
+        "shelf": {
+          "kicker": "観測された掲載状況",
+          "title": "この商品を扱う他の販売者",
+          "description": "この商品を扱っていることを確認した販売者を、最安値順に表示します。前回確認時からの価格変動も含まれます。",
+          "position": "Googleで#{position}位",
+          "observed": "{count, plural, other {#回確認済み、最終確認 {when}}}",
+          "total": "送料込み {total}",
+          "down": "前回確認時より ↓ {amount}",
+          "up": "前回確認時より ↑ {amount}"
+        },
+        "findOffers": {
+          "action": "他の販売者を探す",
+          "finding": "販売者を確認中…",
+          "toast": {
+            "failed": "オファーを取得できませんでした",
+            "found": {
+              "title": "競合オファーが見つかりました",
+              "description": "{count, plural, other {#件の販売者がこの商品を扱っています}}"
+            },
+            "none": {
+              "title": "競合オファーはありません",
+              "exclusive": "この商品を扱う他の販売者は見つかりませんでした。",
+              "budget": "今月のオファー検索上限に達しました。",
+              "unconfigured": "この環境ではオファー検索が有効になっていません。"
+            }
+          }
+        },
+        "battlecard": {
+          "empty": "競合データがありません。スキャンを実行してバトルカードを生成してください。",
+          "headToHead": "直接対決結果",
+          "vsProduct": "{title}との比較",
+          "won": "勝利",
+          "lost": "敗北",
+          "noWins": "勝利記録なし",
+          "noLosses": "敗北記録なし",
+          "kicker": "01 — バトルカード"
+        },
+        "audit": {
+          "aiContentQuality": "AIコンテンツ品質",
+          "brandPositioning": "ブランドポジショニング",
+          "positioning": "ポジショニング"
+        },
+        "optimizeTab": {
+          "title": "商品情報を最適化",
+          "description": "AIエージェントが読み取る項目について、カテゴリに応じたコンテンツ品質スコアと、この商品情報が対象ユーザーに対してどのようにポジショニングされているかを表示します。",
+          "completeness": "完全性:",
+          "currentListing": "02 — 現在の商品情報",
+          "characters": "{count}文字",
+          "noDescription": "説明がありません",
+          "liveOnStore": "ストアで公開中",
+          "whatAgentsRead": "AIエージェントが実際に読み取る内容",
+          "enableAppEmbed": "アプリ埋め込みを有効化",
+          "structuredDataHelp": "アプリ埋め込みは、公開中の商品コンテンツから生成されたデフォルトの構造化データをすでに出力しています。公開すると、このAI最適化版が {metafield} メタフィールドに書き込まれ、デフォルトの代わりに出力されます。",
+          "publishStructuredData": "最適化した構造化データを公開",
+          "publishing": "公開中…",
+          "noStructuredDataYet": "最適化された構造化データはまだありません。アプリ埋め込みは、公開中の商品コンテンツから生成されたデフォルトのマークアップを出力しています。AI最適化版を生成すると上書きできます。",
+          "generateJsonLd": "最適化したJSON-LDを生成",
+          "generating": "生成中…",
+          "generationFailed": "生成に失敗しました",
+          "structuredDataPublished": "最適化した構造化データを公開しました",
+          "structuredDataPublishedDescription": "ecentic.structured_data メタフィールドに書き込みました。アプリ埋め込みは現在、デフォルトの商品マークアップの代わりにこれを出力しています。埋め込みがオフの場合は、テーマエディターで有効化して「Save」を押してください。",
+          "openThemeEditor": "テーマエディターを開く",
+          "listingAuditKicker": "01 — AI商品情報監査",
+          "status": {
+            "optimizedByEcentic": "ecenticで最適化済み",
+            "ecenticStandard": "ecentic標準",
+            "storeDefault": "ストア既定",
+            "optimizedEmbedOff": "最適化済み — 埋め込みオフ",
+            "noStructuredData": "構造化データなし",
+            "pageUnreachable": "ページにアクセスできません"
+          },
+          "embedNotice": {
+            "embedOffTitle": "アプリ埋め込みがオフです",
+            "embedOffText": "この商品には最適化済みの構造化データが公開されていますが、「Agentic structured data」アプリ埋め込みがオフのため、ecenticのマークアップがページに反映されていません。一度オンにすると、ストア内のすべての商品に適用されます。",
+            "missingTitle": "ページに構造化データがありません",
+            "missingText": "AIエージェントから機械可読な商品データが見えていません。「Agentic structured data」アプリ埋め込みをオンにしてください。この切り替えだけで、ストア内のすべての商品に構造化データが追加されます。",
+            "storeDefaultTitle": "ストア既定のマークアップ",
+            "storeDefaultText": "テーマ標準のマークアップのみが有効で、通常は情報が不足しています。GTINなし、オファーは1件のみ、バリエーション詳細なし。まずすべての商品に適用されるecenticアプリ埋め込みをオンにし、その後この商品の最適化済み構造化データを下で公開してください。",
+            "standardTitle": "ecentic標準マークアップを使用中",
+            "standardText": "アプリ埋め込みは、公開中の商品コンテンツから既定の構造化データを生成します。下のAI最適化版を公開すると、この商品についてAIエージェントにより充実した競争力のあるマークアップを提供できます。"
+          }
+        }
+      },
+      "add": {
+        "title": "商品を追加",
+        "description": "このストアが接続しているプラットフォームから、さらに多くの商品をカタログに取り込みます。ここで追加した商品は、このストアのみに属します。",
+        "backToProducts": "商品一覧に戻る",
+        "catalogNeverSynced": "未同期",
+        "catalogSynced": "{time}に同期",
+        "platformSync": {
+          "pullFrom": "{platform}から取得",
+          "description": "{domain}を再読み込みし、まだこのストアに存在しない商品をすべて追加します。すでに存在する商品はそのまま更新されるため、スキャン結果と最適化内容は保持されます。",
+          "syncing": "同期中…",
+          "syncNow": "今すぐ同期",
+          "toastLoading": "商品を同期中…",
+          "toastSuccess": "カタログを同期しました",
+          "reconnectRequired": "再接続が必要です",
+          "syncFailed": "同期に失敗しました",
+          "reconnect": "再接続"
+        },
+        "csv": {
+          "title": "CSVをアップロード",
+          "description": "このストアは接続済みプラットフォームではなくファイルから作成されているため、取得元となるデータはありません。追加するには別のCSVをアップロードしてください。",
+          "fieldLabel": "商品CSV",
+          "importing": "インポート中…",
+          "importCsv": "CSVをインポート",
+          "noFileTitle": "ファイルが選択されていません",
+          "noFileDescription": "先にCSVファイルをアップロードしてください。",
+          "noProductsTitle": "商品が見つかりません",
+          "noProductsDescription": "CSVにタイトルまたは名前の列を含むヘッダー行があるか確認してください。",
+          "importFailed": "インポートに失敗しました",
+          "importSuccess": "{count, plural, other {#件の商品をインポートしました}}"
+        },
+        "platforms": {
+          "feed": "商品フィード"
+        }
+      },
+      "insights": {
+        "scanResults": "スキャン結果",
+        "simulationsCount": "{count}件のシミュレーション",
+        "impact": "影響度",
+        "simsLost": "シミュレーション敗北率",
+        "missingAttributes": "不足している属性",
+        "noFindingTitle": "このスキャンには記録された検出結果がありません。",
+        "noFindingHint": "インサイトを表示するには、スキャンを再実行してください。",
+        "fixThis": "修正する"
+      }
+    }
+  }
+}

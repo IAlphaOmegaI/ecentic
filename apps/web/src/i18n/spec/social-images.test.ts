@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
 import { createMetadata } from "@/lib/seo";
+import { publishedLocales } from "../locales";
 
 const content = {
   title: "Pricing",
@@ -7,12 +8,12 @@ const content = {
 } as const;
 
 describe("social image metadata", () => {
-  test.each([
-    ["/pricing", "en"],
-    ["/es/pricing", "es"],
-    ["/fr/pricing", "fr"],
-    ["/de/pricing", "de"],
-  ])(
+  test.each(
+    publishedLocales.map((locale) => [
+      locale === "en" ? "/pricing" : `/${locale}/pricing`,
+      locale,
+    ]),
+  )(
     "%s advertises a localized image without changing its canonical",
     (path, locale) => {
       const metadata = createMetadata({ ...content, path });
@@ -31,10 +32,12 @@ describe("social image metadata", () => {
       expect(metadata.alternates).toEqual({
         canonical: path,
         languages: {
-          en: "/pricing",
-          es: "/es/pricing",
-          fr: "/fr/pricing",
-          de: "/de/pricing",
+          ...Object.fromEntries(
+            publishedLocales.map((locale) => [
+              locale,
+              locale === "en" ? "/pricing" : `/${locale}/pricing`,
+            ]),
+          ),
           "x-default": "/pricing",
         },
       });

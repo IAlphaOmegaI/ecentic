@@ -1,0 +1,58 @@
+{
+  "trackPage": {
+    "comparisonLabel": "Confronta i segnali",
+    "comparisonHint": "Scegli un segnale per vedere da dove proviene e cosa può indicarti.",
+    "meaningLabel": "Cosa ti indica",
+    "limitLabel": "Da tenere presente",
+    "signals": [
+      {
+        "id": "visits",
+        "label": "Visite osservate",
+        "title": "Una visita rilevata ha una fonte.",
+        "inputs": [
+          "Referrer dell'assistente",
+          "Segnale user-agent"
+        ],
+        "process": "Script del browser Shopify",
+        "output": "Visita rilevata",
+        "meaning": "Le fonti degli assistenti riconosciute possono essere raggruppate nella suddivisione delle visite e nel riepilogo delle serie temporali.",
+        "limit": "Lo script del browser richiede segnali disponibili. Non può osservare ogni crawler senza JavaScript, recuperare ogni visita diretta o dimostrare che un visitatore abbia poi effettuato un acquisto."
+      },
+      {
+        "id": "simulations",
+        "label": "Decisioni simulate",
+        "title": "Una nuova scansione è un nuovo confronto.",
+        "inputs": [
+          "Il tuo prodotto",
+          "Un concorrente"
+        ],
+        "process": "Una scansione che richiedi",
+        "output": "Decisione simulata",
+        "meaning": "La percentuale di vittorie è la percentuale di simulazioni in cui un agente sceglie il tuo prodotto rispetto a quello di un concorrente. Confronta le decisioni completate dopo aver pubblicato una modifica.",
+        "limit": "Le decisioni simulate sono separate dalle visite e dalle vendite osservate nel negozio online. Le scansioni ripetute a intervalli programmati non sono attive al momento."
+      },
+      {
+        "id": "estimates",
+        "label": "Incremento stimato",
+        "title": "Una stima accompagna la correzione.",
+        "inputs": [
+          "Scheda prodotto attuale",
+          "Modifica proposta"
+        ],
+        "process": "Ottimizzazione della scheda prodotto",
+        "output": "Incremento stimato",
+        "meaning": "L'incremento è una stima registrata insieme alla modifica della scheda prodotto. Aiuta a distinguere l'effetto previsto di una correzione dai test completati successivamente.",
+        "limit": "Non si tratta di ricavi misurati né di un esperimento completato dopo la pubblicazione. Richiedi una nuova scansione per confrontare le decisioni simulate dopo una modifica."
+      }
+    ],
+    "attributionLabel": "L'attribuzione ha un limite",
+    "attributionFlow": [
+      "Tag di attribuzione esplicito, se disponibile",
+      "Altrimenti, una visita recente a quel negozio proveniente da un’AI",
+      "Finestra configurata: sette giorni per impostazione predefinita"
+    ],
+    "attributionNote": "Una corrispondenza a livello di negozio non stabilisce che l'ordine sia stato effettuato dallo stesso acquirente.",
+    "referenceTitle": "L'ambito del monitoraggio oggi.",
+    "referenceDescription": "Leggi i limiti di raccolta, le definizioni delle stime e i limiti dell'account prima di interpretare i risultati."
+  }
+}

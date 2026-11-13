@@ -1,0 +1,91 @@
+{
+  "googleChannelPage": {
+    "explorer": {
+      "label": "探索 Google 的购物路径",
+      "stages": [
+        {
+          "id": "catalog",
+          "label": "商品目录",
+          "title": "从商家的商品信息开始",
+          "description": "Merchant Center 提供 Google 购物体验使用的商品数据。",
+          "details": [
+            "价格与库存",
+            "配送与退货信息"
+          ],
+          "destination": "Merchant Center",
+          "action": {
+            "primary": "查看商品数据"
+          }
+        },
+        {
+          "id": "assistant",
+          "label": "AI 回答",
+          "title": "让商品数据进入对话",
+          "description": "Google 的 AI 会使用商家的商品数据回答购物问题。",
+          "details": [
+            "Search 中的 AI Mode",
+            "Gemini"
+          ],
+          "destination": "AI Mode 和 Gemini",
+          "action": {
+            "primary": "查看商家要求"
+          }
+        },
+        {
+          "id": "checkout",
+          "label": "结账",
+          "title": "购买路径取决于资格条件",
+          "description": "消费者可以继续前往商家的购物车，或在启用结账功能时使用 Google Pay。商家仍然是记录在案的卖家。",
+          "details": [
+            "继续前往商家购物车",
+            "在支持结账功能时使用 Google Pay"
+          ],
+          "destination": "商家结账",
+          "action": {
+            "primary": "查看商家要求"
+          }
+        }
+      ]
+    },
+    "reading": {
+      "label": "保持一致的商品报价",
+      "rows": [
+        {
+          "title": "商品数据",
+          "detail": "价格与库存",
+          "field": "price / availability"
+        },
+        {
+          "title": "商品页面",
+          "detail": "准确的商品信息",
+          "field": "link"
+        },
+        {
+          "title": "配送与退货",
+          "detail": "清晰的配送和退货信息",
+          "field": "shipping / return policy"
+        },
+        {
+          "title": "结账资格",
+          "detail": "资格条件属于商品信息的一部分",
+          "field": "checkout_eligibility"
+        }
+      ],
+      "action": {
+        "primary": "探索 Merchant Center"
+      }
+    },
+    "entry": {
+      "label": "Google 商家要求",
+      "steps": [
+        "符合条件的商家和商品",
+        "集成中心逐步推出",
+        "技术验证与审核"
+      ],
+      "note": "ecentic 帮助准备并测试数据和设置。申请、验证和审核仍由您的企业与 Google 处理。",
+      "action": {
+        "primary": "探索结账准备情况"
+      }
+    }
+  }
+}

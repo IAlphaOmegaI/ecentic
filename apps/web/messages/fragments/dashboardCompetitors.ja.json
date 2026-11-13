@@ -1,0 +1,79 @@
+{
+  "dashboard": {
+    "competitors": {
+      "title": "競合",
+      "description": "追跡中のブランドに対して、AIショッピングエージェントがどのように評価しているかを表示します。",
+      "action": {
+        "primary": "競合を追加",
+        "addCompetitor": "競合を追加",
+        "addCompetitors": "競合を追加"
+      },
+      "stats": {
+        "brandsTracked": "追跡中のブランド",
+        "winningAgainst": "勝っている相手",
+        "mostDangerous": "最大の脅威",
+        "totalSimulations": "総シミュレーション数",
+        "productsMonitored": "{count, plural, other {# 商品を監視中}}",
+        "sinceLastScan": "前回のスキャン以降",
+        "averageWinRate": "平均勝率 {rate}%",
+        "winRateAgainstThem": "対象ブランドに対する勝率",
+        "acrossCompetitors": "{count, plural, other {# 競合}}にわたって"
+      },
+      "landscape": {
+        "kicker": "01 — 競争状況",
+        "winRateByCompetitor": "競合別勝率",
+        "distribution": "分布",
+        "winRateTiers": "勝率区分",
+        "simAbbrev": "シミュレーション{count}回",
+        "tiers": {
+          "dominating": "圧倒的優位（≥75%）",
+          "competitive": "競合状態（50–74%）",
+          "atRisk": "要注意（30–49%）",
+          "losing": "劣勢（<30%）"
+        }
+      },
+      "table": {
+        "kickerAll": "02 — すべての競合"
+      },
+      "insights": {
+        "kicker": "03 — インサイト",
+        "summary": "競合サマリー",
+        "keyInsight": "主要インサイト",
+        "optimizeLosing": "負けている商品情報を改善",
+        "recentScanActivity": "最近のスキャン状況",
+        "scanCompleted": "スキャン完了 — {wins}勝 / {losses}敗",
+        "scanInProgress": "スキャン中 — {completed}/{total}",
+        "completedScans": "{count, plural, other {# 件の完了済みスキャン}}",
+        "viewAllActivity": "すべてのアクティビティを表示",
+        "headlines": {
+          "outrankAll": "シミュレーションで{count, plural, other {競合#社すべて}}を上回っています（平均勝率{overall}%）。",
+          "slimmestLead": "最も僅差なのは {brand} に対する {rate}% です。商品情報を最適化して優位性を維持してください。",
+          "biggestOpportunity": "{brand} は比較の {lossRate}% で自社商品を上回っています。ここが最大の改善機会です。",
+          "holdMajority": "{total, plural, other {競合#社}}のうち{winning}社に対し、比較の過半数で勝利しています（平均{overall}%）。{brand}に負けている商品の情報を最適化すると、最も大きな効果が見込めます。",
+          "defaultHeadline": "{total, plural, other {競合#社}}のうち{winning}社に対し、比較の過半数で勝利しています（平均勝率{overall}%）。",
+          "focusOptimization": "{brand} に負けている商品の商品情報の最適化に集中してください。",
+          "toughestRival": "{toughest} が最も手強い競合で勝率は {toughestRate}%、{strongest} に対しては {strongestRate}% で優勢です。"
+        }
+      },
+      "add": {
+        "title": "このストアに競合を追加",
+        "shellTitle": "競合を追加",
+        "shellDescription": "このストアのカタログが比較対象となるブランドです。競合は1つのストアにのみ紐づくため、他のストアと混在することはありません。",
+        "description": "カタログから検出するか、商品URLを貼り付けるか、ブランドを検索してください。追加した競合はこのストアにのみ紐づきます。",
+        "findKicker": "01 — 検索",
+        "rosterKicker": "02 — 一覧",
+        "trackedTitle": "このストアで追跡中",
+        "trackedDescription": "明示的な一覧を指定せずにスキャンを実行した場合、選択された競合のみが評価対象になります。",
+        "rosterSummary": "合計 {total} 件（{brands, plural, other {# ブランド}}） — {selected} 件を選択中",
+        "emptyRoster": "まだ競合が登録されていません。上で追加するとここに表示されます。",
+        "tabs": {
+          "liveOffers": "ライブオファー",
+          "autoDetect": "自動検出",
+          "pasteUrls": "URLを貼り付け",
+          "searchBrand": "ブランド検索",
+          "googleMerchant": "Google"
+        }
+      }
+    }
+  }
+}

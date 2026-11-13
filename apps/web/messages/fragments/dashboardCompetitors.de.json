@@ -46,11 +46,11 @@
         "completedScans": "{count, plural, one {# abgeschlossener Scan} other {# abgeschlossene Scans}}",
         "viewAllActivity": "Alle Aktivitäten anzeigen",
         "headlines": {
-          "outrankAll": "Sie liegen vor allen {count} simulierten Wettbewerber{plural} (durchschn. {overall}% Gewinnquote).",
+          "outrankAll": "Sie liegen vor {count, plural, one {dem # simulierten Wettbewerber} other {allen # simulierten Wettbewerbern}} (durchschnittliche Gewinnquote: {overall}%).",
           "slimmestLead": "Ihr knappster Vorsprung besteht gegenüber {brand} mit {rate}%. Halten Sie Ihre Produktangebote optimiert, um ihn zu verteidigen.",
           "biggestOpportunity": "{brand} gewinnt {lossRate}% der Agentenvergleiche gegen Sie. Das ist Ihre größte Chance.",
-          "holdMajority": "Sie liegen gegen {winning} von {total} Wettbewerber{plural} vorn (durchschn. {overall}%). Die größte Wirkung erzielen Sie, wenn Sie die Produkte optimieren, bei denen Sie gegen {brand} verlieren.",
-          "defaultHeadline": "Sie liegen gegen {winning} von {total} Wettbewerber{plural} vorn (durchschn. {overall}% Gewinnquote).",
+          "holdMajority": "Sie liegen gegen {winning} von {total, plural, one {# Wettbewerber} other {# Wettbewerbern}} vorn (durchschnittlich {overall}%). Die größte Wirkung erzielen Sie, wenn Sie die Produkte optimieren, bei denen Sie gegen {brand} verlieren.",
+          "defaultHeadline": "Sie liegen gegen {winning} von {total, plural, one {# Wettbewerber} other {# Wettbewerbern}} vorn (durchschnittliche Gewinnquote: {overall}%).",
           "focusOptimization": "Konzentrieren Sie die Optimierung Ihrer Produktangebote auf die Produkte, bei denen {brand} Sie schlägt.",
           "toughestRival": "{toughest} ist mit {toughestRate}% Ihr stärkster Rivale; gegen {strongest} führen Sie mit {strongestRate}%."
         }

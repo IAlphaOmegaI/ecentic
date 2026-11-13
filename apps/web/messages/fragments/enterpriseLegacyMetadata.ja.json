@@ -1,0 +1,38 @@
+{
+  "compare": {
+    "meta": {
+      "title": "eコマース向けAIツール：カテゴリ別ガイド",
+      "description": "商品コンテンツ、パーソナライズ、検索、分析、エージェントコマース向けのeコマースツールをカテゴリ別に比較できます。"
+    }
+  },
+  "docs": {
+    "meta": {
+      "title": "ecentic APIドキュメント",
+      "description": "REST API、MCPサーバー、CLI、認証、エラー、レート制限、バージョン管理に関する開発者向けドキュメント。"
+    },
+    "mcpPage": {
+      "meta": {
+        "title": "ecentic MCPサーバー",
+        "description": "MCPクライアントをecenticに接続します。トランスポート、ハンドシェイク、対応ツール、認証、エラーハンドリング仕様を確認できます。"
+      }
+    },
+    "authenticationPage": {
+      "meta": {
+        "title": "ecentic API認証",
+        "description": "どのAPIが公開されているか、エージェントAPIキーの取得方法、bearerトークンの送信方法、認証エラーの処理方法を説明します。"
+      }
+    },
+    "errorsPage": {
+      "meta": {
+        "title": "ecentic APIエラー",
+        "description": "APIエラーコード、HTTPステータス値、解決ヒントを確認できます。レスポンスはRFC 9457のproblemドキュメント形式を使用します。"
+      }
+    },
+    "versioningPage": {
+      "meta": {
+        "title": "ecentic APIバージョン管理",
+        "description": "ecenticのAPIバージョン管理方式と、DeprecationおよびSunsetヘッダーによる廃止通知について説明します。"
+      }
+    }
+  }
+}

@@ -23,6 +23,7 @@ test("compact transport preserves prose and restores every review envelope ID", 
   expect(alias.length).toBeLessThan(original.length);
   expect(payload.units[0].text).toBe(original);
   expect(payload.units[0].context).toBe(`Heading: ${original}`);
+  expect(payload.units[0].originalId).toBe(original);
   expect(payload.requestedIds).toEqual([alias]);
   expect(
     transport.decode({
@@ -79,7 +80,13 @@ test("aliases cannot collide with a real source ID", () => {
   expect(payload.units.map((unit: { id: string }) => unit.id)).not.toContain(
     "_t0",
   );
-  expect(transport.decode({ units: payload.units })).toEqual({
+  expect(
+    transport.decode({
+      units: payload.units.map(
+        ({ id, text }: { id: string; text: string }) => ({ id, text }),
+      ),
+    }),
+  ).toEqual({
     units: [
       { id: "_t0", text: "One" },
       { id: "full.key", text: "Two" },

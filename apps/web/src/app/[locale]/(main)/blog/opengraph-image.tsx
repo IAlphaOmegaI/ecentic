@@ -9,7 +9,10 @@ export const contentType = ogImageContentType;
 export default async ({ params }: { params: Promise<{ locale: string }> }) => {
   const { locale: raw } = await params;
   const locale = isPublishedLocale(raw) ? raw : defaultLocale;
-  const translate = await getTranslations({ locale, namespace: "blog" });
+  const translate = await getTranslations({
+    locale,
+    namespace: "enterpriseRecovery.og.blog",
+  });
   return createOgImage({
     locale,
     title: translate("title"),

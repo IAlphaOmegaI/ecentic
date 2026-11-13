@@ -1,0 +1,113 @@
+{
+  "commerceFigures": {
+    "sofa": "插图：一张双人沙发。指向坐垫即可抬起并检查其面料。",
+    "headphones": "插图：一副头戴式耳机。指向耳罩即可抬起并检查其衬垫。",
+    "lipstick": "插图：一支去盖口红。指向口红或盖子即可抬起并检查。",
+    "custom": {
+      "inspecting": "检查中"
+    },
+    "partReadouts": {
+      "sofa": [
+        {
+          "value": "坐垫1",
+          "label": "左侧坐垫"
+        },
+        {
+          "value": "坐垫2",
+          "label": "右侧坐垫"
+        }
+      ],
+      "headphones": [
+        {
+          "value": "左耳罩",
+          "label": "左侧耳罩"
+        },
+        {
+          "value": "右耳罩",
+          "label": "右侧耳罩"
+        }
+      ],
+      "lipstick": [
+        {
+          "value": "口红",
+          "label": "口红膏体"
+        },
+        {
+          "value": "盖子",
+          "label": "口红盖"
+        }
+      ],
+      "wellnessBottle": [
+        {
+          "value": "瓶盖",
+          "label": "瓶盖"
+        },
+        {
+          "value": "胶囊",
+          "label": "胶囊"
+        }
+      ],
+      "wineBottle": [
+        {
+          "value": "软木塞",
+          "label": "软木塞"
+        },
+        {
+          "value": "瓶身",
+          "label": "酒瓶"
+        },
+        {
+          "value": "标签",
+          "label": "瓶身标签"
+        }
+      ],
+      "packagedFood": [
+        {
+          "value": "封口",
+          "label": "包装封口"
+        },
+        {
+          "value": "包装袋",
+          "label": "食品包装袋"
+        },
+        {
+          "value": "透明窗",
+          "label": "成分展示窗"
+        }
+      ],
+      "sneaker": [
+        {
+          "value": "鞋底",
+          "label": "鞋底"
+        },
+        {
+          "value": "鞋面",
+          "label": "鞋面"
+        },
+        {
+          "value": "鞋带",
+          "label": "鞋带"
+        }
+      ],
+      "suitcase": [
+        {
+          "value": "拉手",
+          "label": "拉手"
+        },
+        {
+          "value": "外壳",
+          "label": "外壳"
+        },
+        {
+          "value": "轮子",
+          "label": "轮子"
+        }
+      ]
+    },
+    "wellnessBottle": "插图：一只健康产品瓶和胶囊。将指针移到瓶盖或胶囊上即可抬起并查看细节。",
+    "wineBottle": "插图：一瓶带软木塞和标签的葡萄酒。将指针移到某个部件上即可抬起并查看细节。",
+    "packagedFood": "插图：一个带封口和配料窗口的食品包装袋。将指针移到某个部件上即可抬起并查看细节。",
+    "sneaker": "插图：一只带圆形鞋底、鞋面和鞋带的运动鞋。将指针移到某个部件上即可抬起并查看细节。",
+    "suitcase": "插图：一个带可伸缩拉杆的行李箱。将指针移到某个部件上即可抬起并查看细节。"
+  }
+}

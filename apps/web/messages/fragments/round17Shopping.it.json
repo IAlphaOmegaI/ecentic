@@ -1,0 +1,22 @@
+{
+  "round17Shopping": {
+    "sample": "Risultati shopping illustrativi",
+    "followUps": "Esplora un’altra domanda",
+    "evidence": "Cosa manca nella scheda prodotto",
+    "source": "Dati sorgente",
+    "missing": "Manca nella scheda prodotto",
+    "present": "Già nella scheda prodotto",
+    "evidenceNote": "I dati evidenziati esistono già nella fonte di esempio. Rendili espliciti nella scheda prodotto prima di confrontare di nuovo.",
+    "qualification": "Dati sorgente di esempio. Verificali prima della pubblicazione.",
+    "responses": {
+      "wine-and-spirits": "Ecco due bottiglie da confrontare. Controlla note di degustazione, origine e dettagli della bottiglia rispetto a ciò che cerchi.",
+      "food-and-beverage": "Queste due opzioni meritano un confronto. Le dimensioni della porzione e i dettagli sugli ingredienti aiuteranno a restringere la scelta.",
+      "beauty-and-personal-care": "Ecco due opzioni da valutare. Controllerei la formulazione e l’idoneità dichiarata del prodotto rispetto ai tuoi requisiti.",
+      "consumer-electronics": "Confronterei queste due opzioni sulle specifiche che contano per il tuo utilizzo. Ecco cosa riportano le loro schede prodotto.",
+      "home-and-furniture": "Queste due opzioni ci danno un punto di partenza. Controlla misure e materiali prima di decidere quale si adatta al tuo spazio.",
+      "fashion-and-outdoor": "Ecco due opzioni da confrontare. Guarda vestibilità, materiali e prestazioni dichiarate per l’uso che intendi farne.",
+      "health-wellness-and-pet": "Queste due schede prodotto ci danno alcuni dati da confrontare. Controlla ingredienti e indicazioni, e conferma l’idoneità con un professionista qualificato.",
+      "travel-and-experiences": "Ecco due opzioni per il tuo viaggio. Confronta date, posizione e condizioni complete prima di scegliere."
+    }
+  }
+}

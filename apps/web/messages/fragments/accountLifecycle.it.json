@@ -1,0 +1,38 @@
+{
+  "dashboard": {
+    "lifecycle": {
+      "action": {
+        "secondary": "Annulla",
+        "pending": "Elaborazione…"
+      },
+      "error": "Non è stato possibile completare questa richiesta. Riprova o contatta l'assistenza.",
+      "disconnected": "Disconnesso",
+      "disconnect": {
+        "title": "Disconnettere questo negozio?",
+        "description": "Rimuovi le credenziali salvate del negozio e interrompi l'accesso a {domain}. Il catalogo importato e la cronologia rimarranno in ecentic. Questa operazione non disinstalla un plugin né revoca le chiavi nel negozio; rimuovile anche presso il provider. Accedi di nuovo prima se la tua sessione ha più di cinque minuti.",
+        "action": {
+          "primary": "Disconnetti il negozio"
+        }
+      },
+      "delete": {
+        "title": "Eliminare il tuo account?",
+        "description": "Questa operazione elimina definitivamente il tuo profilo, i cataloghi importati, le scansioni e le modifiche generate. Disconnetti prima il tuo negozio e le integrazioni Google. Inserisci l'email del tuo account per confermare. Devi aver effettuato l'accesso negli ultimi cinque minuti.",
+        "email": "Email dell'account",
+        "validation": "Inserisci un indirizzo email valido.",
+        "assistance": "Gli account con record di fatturazione o ordini richiedono un'eliminazione assistita per gestire correttamente i record obbligatori e la fatturazione. Contatta",
+        "action": {
+          "primary": "Elimina l'account"
+        }
+      },
+      "blocked": {
+        "reauthenticate": "Esci e accedi di nuovo, quindi torna qui entro cinque minuti.",
+        "confirmation": "Inserisci l'indirizzo email dell'account con cui hai effettuato l'accesso.",
+        "notFound": "Questo account o negozio non è più disponibile.",
+        "googleConnected": "Disconnetti prima Google Shopping dalla sua pagina delle impostazioni in modo che l'origine dati Google e l'autorizzazione possano essere rimosse correttamente.",
+        "shopifyBilling": "Disinstalla prima ecentic da Shopify per terminare il contratto di fatturazione Shopify, poi contatta l'assistenza se questa connessione rimane attiva.",
+        "billingRecords": "Questo account contiene record di fatturazione o ordini. Contatta privacy@ecentic.ai per un'eliminazione assistita; dobbiamo regolare la fatturazione e conservare i record richiesti dalla legge.",
+        "storeConnections": "Disconnetti i tuoi negozi e le integrazioni Google Shopping in Impostazioni prima di eliminare l'account."
+      }
+    }
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "enterpriseSecurityDesign": {
+    "accessTitle": "Importa e pubblica",
+    "permissionsTitle": "Permessi di connessione",
+    "trackingTitle": "Misurazione delle visite al negozio online",
+    "checkoutTitle": "Pagamento tramite agente",
+    "routingTitle": "Come vengono instradate le richieste ai modelli",
+    "catalogLabel": "Catalogo del negozio collegato",
+    "modelLabel": "Fornitori di AI",
+    "outputLabel": "Confronti e correzioni delle schede prodotto"
+  }
+}

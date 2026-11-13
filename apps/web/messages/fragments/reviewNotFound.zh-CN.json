@@ -1,0 +1,12 @@
+{
+  "reviewNotFound": {
+    "status": "页面未找到",
+    "description": "找不到此地址对应的页面。可以返回首页、返回上一页，或浏览下方路径。",
+    "exploreTitle": "可以前往这些页面。",
+    "action": {
+      "primary": "返回首页",
+      "secondary": "返回上一页",
+      "tertiary": "了解 ecentic"
+    }
+  }
+}

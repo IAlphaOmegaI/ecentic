@@ -1,0 +1,52 @@
+{
+  "compareTool": {
+    "page": {
+      "title": "2つの商品を比較",
+      "description": "AIエージェントがどちらの商品を推奨するか、その理由まで確認できます。"
+    },
+    "form": {
+      "productA": "商品A",
+      "productB": "商品B",
+      "urlHint": "任意のECサイトの商品URLを貼り付け",
+      "placeholderA": "https://amazon.com/product/...",
+      "placeholderB": "https://shopify.com/products/...",
+      "prompt": {
+        "title": "重視する条件は？",
+        "description": "求める条件を入力すると、その条件に基づいて商品を比較します。",
+        "placeholder": "例: バッテリー持続時間が長く、$300以下で最高のノイズキャンセリング性能を持つヘッドホンが欲しい..."
+      },
+      "defaultPrompt": "コストパフォーマンスを重視したい",
+      "footer": "4つのAIモデルで比較を実行します。",
+      "action": {
+        "run": "比較を実行",
+        "comparing": "比較中..."
+      }
+    },
+    "running": {
+      "title": "商品を比較中",
+      "modelsProgress": "{completed}/{total} モデル",
+      "scrapedSuccess": "両方の商品情報を正常に取得しました",
+      "completeLog": "比較完了 — {count} モデルの評価が完了",
+      "footer": "AI比較を実行中"
+    },
+    "results": {
+      "overallSplit": "全体の内訳",
+      "byModel": "モデル別結果",
+      "winner": "勝者",
+      "modelsChose": "のモデルがこの商品を選びました",
+      "chose": "{letter} を選択",
+      "finishedIn": "{elapsed} で完了",
+      "action": {
+        "compareAgain": "もう一度比較",
+        "startOptimizing": "最適化を開始"
+      }
+    },
+    "toast": {
+      "missingUrls": {
+        "title": "URLが不足しています",
+        "description": "両方の商品URLを入力してください。"
+      },
+      "failed": "比較に失敗しました"
+    }
+  }
+}

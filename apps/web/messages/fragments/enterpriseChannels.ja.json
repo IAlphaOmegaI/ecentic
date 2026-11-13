@@ -1,0 +1,424 @@
+{
+  "enterpriseChannels": {
+    "statuses": {
+      "live": "提供中",
+      "feed": "商品フィード経由",
+      "soon": "近日公開",
+      "simulated": "シミュレーション",
+      "not-yet": "未対応"
+    },
+    "checked": "最終確認日",
+    "date": "2026年11月10日",
+    "sourceTitle": "参照元",
+    "sourceNote": "各プラットフォームの情報は公式ソースをもとに確認しています。利用条件や提供状況は変更される場合があります。",
+    "feature": "機能",
+    "status": "ステータス",
+    "detail": "内容",
+    "capabilityNames": {
+      "simulate": "シミュレーション",
+      "fix": "修正",
+      "checkout": "チェックアウト",
+      "track": "追跡"
+    },
+    "open": "チャネルを見る",
+    "faqTitle": "よくある質問",
+    "interests": {
+      "google-checkout-onboarding": "Google AI Mode チェックアウト導入",
+      "chatgpt-product-feed": "ChatGPT 商品フィード",
+      "chatgpt-app": "ecentic ChatGPT アプリ",
+      "microsoft-merchant-center": "Microsoft Merchant Center フィード",
+      "perplexity-scans": "Perplexity 店舗スキャン",
+      "perplexity-merchant-feed": "Perplexity マーチャントフィード",
+      "amazon-shop-direct": "Amazon Shop Direct"
+    },
+    "names": {
+      "google": "Google AI Mode と Gemini",
+      "chatgpt": "ChatGPT",
+      "claude": "Claude",
+      "copilot": "Microsoft Copilot",
+      "perplexity": "Perplexity",
+      "amazon": "Amazon"
+    },
+    "summaries": {
+      "google": "Gemini シミュレーション、Shopify Merchant Center 同期、チェックアウト対応状況の確認に対応。",
+      "chatgpt": "現在はシミュレーションと商品情報チェックに対応。商品フィードと ChatGPT アプリは近日公開予定です。",
+      "claude": "Claude の商品選定をテスト。より明確な商品情報をストアに反映できます。",
+      "copilot": "現在は Shopify のリファラル追跡に対応。Microsoft Merchant Center フィードは近日公開予定です。",
+      "perplexity": "現在は Shopify のリファラル追跡に対応。ストアシミュレーションとマーチャントフィードは近日公開予定です。",
+      "amazon": "Shop Direct カタログ連携は近日公開予定です。現在、ecentic とのライブ接続はありません。"
+    },
+    "sources": {
+      "googleEligibility": "Google: ネイティブチェックアウト利用条件",
+      "googleIntegration": "Google: Merchant Center 統合ガイド",
+      "googleCart": "Google: Universal Cart 発表、2026年10月15日",
+      "openaiOnboarding": "OpenAI: マーチャント商品フィード導入",
+      "openaiProducts": "OpenAI: 商品フィード仕様",
+      "openaiPractices": "OpenAI: 商品フィードのベストプラクティス",
+      "openaiCheckout": "OpenAI: 商品チェックアウト連携、承認済みパートナー",
+      "claudeCommerce": "Anthropic: コマースエージェント、2026年9月2日",
+      "microsoftCommerce": "Microsoft: エージェント型コマースと Copilot Checkout",
+      "perplexityShopping": "Perplexity: ショッピングとマーチャントプログラム、2024年11月18日",
+      "amazonWorkspace": "Amazon: Shop Direct Merchant Workspace、2026年11月4日",
+      "amazonAssistant": "Amazon: Alexa for Shopping、2026年5月13日",
+      "perplexityProgram": "Perplexity: 公式マーチャントプログラム登録フォーム"
+    },
+    "index": {
+      "meta": {
+        "title": "AI が買い物する場所: ChatGPT、Gemini、Copilot ほか",
+        "description": "各 AI アシスタントが商品を見つけ、比較し、購入する方法や、マーチャント側で必要な対応、そして ecentic が現在提供している機能を紹介します。"
+      },
+      "title": "AI が買い物する場所。",
+      "description": "各アシスタントは、それぞれ異なる方法で商品を見つけ、比較し、購入します。必要な条件と、ecentic が現在提供している機能を紹介します。",
+      "sections": []
+    },
+    "method": {
+      "title": "情報確認の方法",
+      "body": "各プラットフォームの公式ドキュメントと発表内容を確認しています。すべてのページに最終確認日と参照元リンクを掲載しています。「シミュレーション」は、ecentic がそのモデルで商品比較を実行することを意味し、ショッピングチャネルへの直接接続を意味するものではありません。",
+      "note": "このディレクトリでは、公式にコマース導線が公開されているアシスタント、または ecentic でシミュレーション可能なアシスタントを対象としています。"
+    },
+    "pages": {
+      "google": {
+        "meta": {
+          "title": "Google AI Mode と Gemini 経由で販売する",
+          "description": "Google の AI Mode と Gemini がどのように商品を選び購入するか、Merchant Center に必要な要件、そして ecentic が Google の AI に対して現在提供している機能を紹介します。"
+        },
+        "title": "Google AI Mode と Gemini 経由で販売する",
+        "description": "Google の AI は、マーチャントの商品データを使ってショッピング関連の質問に回答します。一部のマーチャントでは、Google 経由でのチェックアウトにも対応しています。",
+        "sections": [
+          {
+            "id": "shops",
+            "title": "このアシスタントの購入方法",
+            "description": "Google のショッピング体験では Merchant Center のカタログデータが利用されます。Universal Cart は 2026年10月15日に米国で開始され、チェックアウト対応時には、マーチャントのカートへ進むか Google Pay を利用する選択肢が提供されます。販売主体は引き続きマーチャントです。"
+          },
+          {
+            "id": "reads",
+            "title": "参照データ",
+            "description": "Merchant Center の商品データ（価格、在庫状況、チェックアウト利用可否など）が参照されます。正確な商品ページと明確な配送・返品情報も、オファーを有効な状態に保つために重要です。"
+          },
+          {
+            "id": "entry",
+            "title": "マーチャント参加方法",
+            "description": "Google のネイティブチェックアウトは、米国・カナダ・オーストラリアの対象商品を扱う一部マーチャント向けに提供されています。Merchant Center 統合ハブはまず米国で展開され、カナダとオーストラリアでは来年前半の提供が予定されています。マーチャントは Google の技術検証と承認プロセスを完了する必要があります。"
+          },
+          {
+            "id": "ecentic",
+            "title": "現在の ecentic の対応",
+            "description": "これらのラベルは ecentic の機能を示しています。プラットフォーム側の利用資格は別途必要です。"
+          },
+          {
+            "id": "next",
+            "title": "今後の予定",
+            "description": "今後の統合機能に確定したリリース日はありません。優先順位付けの参考として、関心登録をご利用ください。"
+          }
+        ],
+        "capabilities": {
+          "simulate": "Gemini は、ecentic のストアスキャンで選択した商品を指定した競合商品と比較します。",
+          "fix": "商品情報の変更を Shopify または WooCommerce に公開できます。Shopify ストアでは、公開済みの変更を Merchant Center に送信することも可能です。",
+          "checkout": "WooCommerce プラグインのエンドポイントとチェックアウト検証環境は提供中です。Shopify ストアでは Merchant Center のチェックアウト設定を監査できます。Google プログラムへの参加申請は別途必要です。",
+          "track": "接続済みの Shopify ストアで、Gemini 経由のリファラと対応する Google AI エージェントのトラフィックを認識します。"
+        },
+        "faqs": [
+          {
+            "question": "Google のチェックアウトには Merchant Center が必要ですか？",
+            "answer": "はい。公式に案内されているマーチャント導線は Merchant Center 経由です。アカウント、商品、チェックアウト統合は Google の利用条件を満たす必要があります。"
+          },
+          {
+            "question": "ecentic が Google のチェックアウトプログラムへ申請できますか？",
+            "answer": "いいえ。ecentic はデータや設定の準備・検証を支援します。申請、検証、承認は事業者と Google 間で行われます。"
+          },
+          {
+            "question": "Merchant Center 同期は WooCommerce に対応していますか？",
+            "answer": "まだ対応していません。ecentic の Merchant Center 接続は現在 Shopify ストア向けに提供されています。"
+          }
+        ],
+        "trademark": "Google AI Mode と Gemini は Google LLC の商標です。ecentic は Google LLC と提携しておらず、承認も受けていません。"
+      },
+      "chatgpt": {
+        "meta": {
+          "title": "ChatGPT ショッピング経由で販売する",
+          "description": "ChatGPT がどのように商品を推薦するか、マーチャントフィードに含まれる内容、承認済みチェックアウト統合の仕組み、そして ecentic が現在提供している機能を紹介します。"
+        },
+        "title": "ChatGPT 経由で販売する",
+        "description": "ChatGPT はマーチャントの商品データを使って商品を推薦します。購入者はストアへのリンクを開けるほか、承認済みアプリ統合では ChatGPT 内でチェックアウトを提供できます。",
+        "sections": [
+          {
+            "id": "shops",
+            "title": "このアシスタントの購入方法",
+            "description": "OpenAI のコマース関連ドキュメントでは、商品発見向けの構造化商品フィードが説明されています。現在のベータ版チェックアウト仕様では、承認済みパートナーが接続済みプラグイン経由でチェックアウト体験を提供することも可能です。利用可否はマーチャントの承認済み統合状況によって異なります。"
+          },
+          {
+            "id": "reads",
+            "title": "参照データ",
+            "description": "商品およびバリエーション情報（タイトル、説明、画像、URL、価格、在庫状況など）が参照されます。OpenAI のガイドラインでは、販売者情報、配送、返品情報の正確性も求められています。チェックアウト利用フラグを設定しても、それだけでチェックアウトが有効になるわけではありません。"
+          },
+          {
+            "id": "entry",
+            "title": "マーチャント参加方法",
+            "description": "OpenAI のマーチャント導入ルートから申請します。商品フィードの利用は承認済みパートナー向けで、スキーマ検証と合意済みの配信方法が必要です。ChatGPT のチェックアウトアプリには別途統合と承認が必要であり、フィードだけでは利用できません。"
+          },
+          {
+            "id": "ecentic",
+            "title": "現在の ecentic の対応",
+            "description": "これらのラベルは ecentic の機能を示しています。プラットフォーム側の利用資格は別途必要です。"
+          },
+          {
+            "id": "next",
+            "title": "今後の予定",
+            "description": "今後の統合機能に確定したリリース日はありません。優先順位付けの参考として、関心登録をご利用ください。"
+          }
+        ],
+        "capabilities": {
+          "simulate": "ChatGPT はストアスキャンで選択した商品を指定した競合商品と比較評価します。",
+          "fix": "商品情報チェックには OpenAI のフィードルールが含まれます。修正したタイトルや説明、または別操作で構造化データを接続済みストアへ公開できます。",
+          "checkout": "ecentic ChatGPT アプリは近日公開予定ですが、ディレクトリ掲載はまだ確定していません。現在のチェックアウト機能は、ChatGPT アプリとのライブ統合を意味するものではありません。",
+          "track": "Shopify で ChatGPT 経由のリファラと認識済みエージェント訪問を追跡します。"
+        },
+        "faqs": [
+          {
+            "question": "購入者は ChatGPT 内で購入できますか？",
+            "answer": "OpenAI の現在のベータ版ドキュメントでは、承認済みプラグイン統合向けに ChatGPT 内チェックアウトが説明されています。それ以外の商品リンクでは、購入者はマーチャントサイトへ移動します。利用可否は統合内容によって異なり、ecentic のアプリ公開はまだ確定していません。"
+          },
+          {
+            "question": "Shopify を利用しています。ecentic がストアを ChatGPT に登録しますか？",
+            "answer": "いいえ。チャネルの利用資格やコマースプラットフォームによるカタログ配信は、ecenticとは別です。当社は商品比較をテストし、ストア側で管理できる商品情報の改善を支援します。"
+          },
+          {
+            "question": "マーチャントはどのように OpenAI に商品データを送信できますか？",
+            "answer": "OpenAI のマーチャント導入ルートから申請します。承認済みパートナーは、仕様に準拠した商品フィードを提供できます。ecentic は現在、商品情報品質をチェックしています。専用の ChatGPT フィード出力は近日公開予定です。"
+          }
+        ],
+        "trademark": "ChatGPT は OpenAI の商標です。ecentic は OpenAI と提携しておらず、承認も受けていません。"
+      },
+      "claude": {
+        "meta": {
+          "title": "Claude が商品を推薦する仕組み",
+          "description": "小売事業者が Claude を使ってコマースエージェントを構築する方法と、ecentic が Claude の商品選定をテストし商品情報を改善する方法を紹介します。"
+        },
+        "title": "Claude 経由で販売する",
+        "description": "Claude が商品をどのように比較するかをテストできます。Anthropic の公開ルートでは、小売事業者が自社カタログとチェックアウトを使ったエージェントを構築できます。",
+        "sections": [
+          {
+            "id": "shops",
+            "title": "このアシスタントの購入方法",
+            "description": "Anthropic のコマースガイドでは、小売事業者のカタログを検索し、商品比較を行い、カートやチェックアウトと連携するエージェントが説明されています。これらはマーチャント自身が構築する体験であり、動作は提供するツールやデータに依存します。"
+          },
+          {
+            "id": "reads",
+            "title": "参照データ",
+            "description": "小売事業者は、自社エージェントにカタログ、在庫、ポリシー、カート関連ツールを提供します。ecentic のシミュレーションでは、比較用に構成された商品情報と競合情報を使用しており、Claude のライブランキングレポートではありません。"
+          },
+          {
+            "id": "entry",
+            "title": "マーチャント参加方法",
+            "description": "Anthropic はコマースエージェント構築用の設計例を公開しています。これは独自体験を構築するための開発ルートであり、ecentic に接続することで Claude のショッピングディレクトリへ登録されることを意味するものではありません。"
+          },
+          {
+            "id": "ecentic",
+            "title": "現在の ecentic の対応",
+            "description": "これらのラベルは ecentic の機能を示しています。プラットフォーム側の利用資格は別途必要です。"
+          },
+          {
+            "id": "next",
+            "title": "今後の予定",
+            "description": "Claude 専用チェックアウトコネクタは、現在発表済みの開発予定には含まれていません。ライブシミュレーションと商品情報ワークフローは現在利用できます。"
+          }
+        ],
+        "capabilities": {
+          "simulate": "Claude はストアスキャンで選択した商品を指定した競合商品と比較します。",
+          "fix": "接続済みのShopifyストアとWooCommerceストアでは、タイトルと説明に対する操作、および構造化データを別途公開する操作を同様に利用できます。",
+          "checkout": "現在、ecentic に Claude 専用のチェックアウト接続はありません。",
+          "track": "Shopify で Claude 経由のリファラと対応エージェントトラフィックを認識します。"
+        },
+        "faqs": [
+          {
+            "question": "Claude はストアの商品を購入できますか？",
+            "answer": "小売事業者は、カタログ、カート、チェックアウト機能を備えた Claude ベースのエージェントを構築できます。ただし、ecentic が現在、消費者向け Claude チェックアウトへストアを接続しているわけではありません。対応していません。"
+          },
+          {
+            "question": "なぜ Claude をシミュレーションするのですか？",
+            "answer": "制御された比較によって、どの商品情報が Claude の選定に影響するかを確認できます。結果はそのシミュレーション設定に基づくものであり、他のアシスタントや実際の購買セッションとは異なる場合があります。"
+          },
+          {
+            "question": "修正内容は Claude にしか効果がありませんか？",
+            "answer": "変更対象は自社ストアの商品情報です。より明確なデータは他の読み手にも利用される可能性がありますが、推薦や売上結果を保証するものではありません。"
+          }
+        ],
+        "trademark": "Claude は Anthropic PBC の商標です。ecentic は Anthropic PBC と提携しておらず、承認も受けていません。"
+      },
+      "copilot": {
+        "meta": {
+          "title": "Microsoft Copilot と Copilot Checkout 経由で販売する",
+          "description": "Copilot Checkout の仕組み、参加条件、そして ecentic が Microsoft Merchant Center 向けに開発中の機能を紹介します。"
+        },
+        "title": "Microsoft Copilot 経由で販売する",
+        "description": "Copilot は商品を推薦し、Copilot Checkout を通じて、対象となる米国の購入者が会話内で購入できるようにします。",
+        "sections": [
+          {
+            "id": "shops",
+            "title": "このアシスタントの購入方法",
+            "description": "Microsoft は copilot.com と Copilot モバイルアプリでの商品発見とチェックアウトを説明しています。販売主体は引き続きマーチャントであり、配送や顧客対応もマーチャント自身が行います。"
+          },
+          {
+            "id": "reads",
+            "title": "参照データ",
+            "description": "Web 上の商品データとマーチャントフィードが参照されます。Microsoft Merchant Center 経由では、Microsoft の導入ガイドに記載された追加のチェックアウト属性を含む商品情報が必要です。"
+          },
+          {
+            "id": "entry",
+            "title": "マーチャント参加方法",
+            "description": "Microsoft の現在の利用条件は、USD 建てで米国の購入者向けに販売する英語圏マーチャントです。公開されている導線には Microsoft Merchant Center、自動 Shopify 登録、Stripe Agentic Commerce Suite が含まれます。フィード設定の一部は現在も対象マーチャント向けパイロット提供です。"
+          },
+          {
+            "id": "ecentic",
+            "title": "現在の ecentic の対応",
+            "description": "これらのラベルは ecentic の機能を示しています。プラットフォーム側の利用資格は別途必要です。"
+          },
+          {
+            "id": "next",
+            "title": "今後の予定",
+            "description": "今後の統合機能に確定したリリース日はありません。優先順位付けの参考として、関心登録をご利用ください。"
+          }
+        ],
+        "capabilities": {
+          "simulate": "Copilot は ecentic のストアスキャン対象には含まれていません。",
+          "fix": "Microsoft Merchant Center フィード出力は開発予定に含まれています。現在、ecentic にライブフィード接続はありません。",
+          "checkout": "計画中の Microsoft フィード向けチェックアウト属性は近日公開予定です。Microsoft のプログラム要件は引き続き適用されます。",
+          "track": "接続済み Shopify ストアで Copilot 経由のリファラを追跡します。"
+        },
+        "faqs": [
+          {
+            "question": "Copilot Checkout に参加するには？",
+            "answer": "Microsoft Merchant Center、Shopify、または Stripe を通じた Microsoft の現在の導入ルートを利用してください。対象は、USD 建てで米国の購入者向けに販売する英語圏マーチャントです。一部設定は現在も対象マーチャント限定です。"
+          },
+          {
+            "question": "ecentic は現在 Copilot に対応していますか？",
+            "answer": "ecentic は Shopify で Copilot 経由のリファラを追跡します。Copilot シミュレーションと直接フィード接続は未提供です。Microsoft Merchant Center フィードは開発予定に含まれています。"
+          },
+          {
+            "question": "フィードでチェックアウト承認は保証されますか？",
+            "answer": "いいえ。参加承認と技術要件は Microsoft が管理します。計画中の ecentic 出力機能はデータ準備を支援するものであり、承認や推薦を保証するものではありません。"
+          }
+        ],
+        "trademark": "Microsoft Copilot は Microsoft Corporation の商標です。ecentic は Microsoft Corporation と提携しておらず、承認も受けていません。"
+      },
+      "perplexity": {
+        "meta": {
+          "title": "Perplexity ショッピング経由で販売する",
+          "description": "Perplexity がショッピング結果をどのように表示するか、マーチャントプログラムの公式情報、そして ecentic が現在対応している内容を紹介します。"
+        },
+        "title": "Perplexity 経由で販売する",
+        "description": "Perplexity は商品カードでショッピング関連の質問に回答します。ecentic は Shopify 上のリファラ追跡に対応しており、ストアスキャンとマーチャントフィードは近日公開予定です。",
+        "sections": [
+          {
+            "id": "shops",
+            "title": "このアシスタントの購入方法",
+            "description": "Perplexity のショッピング発表では、米国の対象商品向けに商品カードと Buy with Pro 体験が説明されています。この購入オプションが利用できない場合、購入者はマーチャントの Web サイトへ移動します。"
+          },
+          {
+            "id": "reads",
+            "title": "参照データ",
+            "description": "マーチャントの商品情報とショッピング結果が参照されます。Perplexity は、価格や商品詳細をより充実させるためのマーチャントサイト連携とマーチャントプログラムについて説明しています。"
+          },
+          {
+            "id": "entry",
+            "title": "マーチャント参加方法",
+            "description": "Perplexity の公式ショッピング発表では、大規模小売事業者向け無料マーチャントプログラムへのリンクが提供されています。最新の利用条件は公式プログラムリンクで確認してください。より広範な登録導線や、ecentic とのライブカタログ接続は確認できていません。",
+            "links": [
+              {
+                "label": "Perplexity のマーチャントフォームを開く",
+                "href": "https://perplexity.typeform.com/to/oIcfT8U3"
+              }
+            ]
+          },
+          {
+            "id": "ecentic",
+            "title": "現在の ecentic の対応",
+            "description": "これらのラベルは ecentic の機能を示しています。プラットフォーム側の利用資格は別途必要です。"
+          },
+          {
+            "id": "next",
+            "title": "今後の予定",
+            "description": "今後の統合機能に確定したリリース日はありません。優先順位付けの参考として、関心登録をご利用ください。"
+          }
+        ],
+        "capabilities": {
+          "simulate": "Perplexity のストアスキャン追加は開発予定に含まれています。現在の3つのストアスキャンモデルには含まれていません。",
+          "fix": "Perplexity 専用マーチャントフィードは近日公開予定です。ストアの商品情報変更は引き続き Shopify と WooCommerce 経由で利用できます。",
+          "checkout": "現在、ecentic に Perplexity 専用のチェックアウト接続はありません。",
+          "track": "Shopify で Perplexity 経由のリファラと認識済みエージェントトラフィックを追跡します。"
+        },
+        "faqs": [
+          {
+            "question": "マーチャントはどのように参加できますか？",
+            "answer": "Perplexity の公式ショッピング発表に掲載されているマーチャントプログラムから開始してください。この情報源では、大規模小売事業者向け無料プログラムとして説明されています。最新の利用可否は Perplexity に確認してください。"
+          },
+          {
+            "question": "ecentic は現在 Perplexity に対応していますか？",
+            "answer": "Shopify ストアでのリファラ追跡に対応しています。Perplexity のストアスキャン追加とマーチャントフィード構築は近日公開予定です。"
+          },
+          {
+            "question": "シミュレーション結果は、商品が Perplexity に表示されることの証明になりますか？",
+            "answer": "いいえ。モデル比較は、実際の商品推薦、フィード承認、チェックアウト利用資格とは別です。"
+          }
+        ],
+        "trademark": "Perplexity は Perplexity AI, Inc. の商標です。ecentic は Perplexity AI, Inc. と提携しておらず、承認も受けていません。"
+      },
+      "amazon": {
+        "meta": {
+          "title": "Amazon の AI 経由で販売する: Shop Direct と Alexa",
+          "description": "Shop Direct がどのようにマーチャントサイトの商品を Amazon 検索や Alexa for Shopping に表示するか、そして ecentic が開発中の機能を紹介します。"
+        },
+        "title": "Amazon の AI 経由で販売する",
+        "description": "Shop Direct は、自社サイトの商品を Amazon のショッピング体験に表示できます。対象となる Buy for Me 購入はマーチャントサイト上で完了します。",
+        "sections": [
+          {
+            "id": "shops",
+            "title": "このアシスタントの購入方法",
+            "description": "Amazon は 2026年5月13日に Alexa for Shopping を発表し、Rufus と Alexa+ を統合しました。Shop Direct は Amazon 検索とショッピングアシスタント内で外部マーチャントサイトの商品を表示します。購入者はマーチャントサイトへ移動でき、対象オファーでは Buy for Me にも対応します。"
+          },
+          {
+            "id": "reads",
+            "title": "参照データ",
+            "description": "ソリューションプロバイダーまたは Amazon の Selling Partner API を通じてマーチャントが提供するカタログ情報が参照されます。マーチャントは Web サイトを確認し、Shop Direct Merchant Workspace で参加管理を行います。"
+          },
+          {
+            "id": "entry",
+            "title": "マーチャント参加方法",
+            "description": "Amazon は 2026年11月4日に無料の Merchant Workspace を開始しました。Shop Direct は米国の顧客向けに提供され、Amazon でも販売しているマーチャントを含む対象 Web サイトを受け付けています。登録、サイト確認、カタログ共有が必要です。"
+          },
+          {
+            "id": "ecentic",
+            "title": "現在の ecentic の対応",
+            "description": "これらのラベルは ecentic の機能を示しています。プラットフォーム側の利用資格は別途必要です。"
+          },
+          {
+            "id": "next",
+            "title": "今後の予定",
+            "description": "今後の統合機能に確定したリリース日はありません。優先順位付けの参考として、関心登録をご利用ください。"
+          }
+        ],
+        "capabilities": {
+          "simulate": "Amazon のショッピングアシスタントは ecentic のスキャン対象には含まれていません。",
+          "fix": "最適化済みカタログを Shop Direct に送信する機能は、必要な申請承認を前提として開発予定に含まれています。",
+          "checkout": "現在、ecentic に Buy for Me とのライブ接続はありません。",
+          "track": "現在、ecentic は Amazon Shop Direct 向け専用トラフィック統合を提供していません。"
+        },
+        "faqs": [
+          {
+            "question": "Amazon マーケットプレイスのストアは必要ですか？",
+            "answer": "いいえ。Shop Direct はマーチャント自身の Web サイトの商品を掲載します。Amazon は参加無料であり、ショッピング体験は米国顧客向けに提供されると説明しています。"
+          },
+          {
+            "question": "ecentic は現在 Shop Direct に接続していますか？",
+            "answer": "まだ対応していません。Shop Direct カタログ接続は開発予定に含まれており、関連する Amazon の申請承認が必要になります。下記から関心登録してください。"
+          },
+          {
+            "question": "購入はどこで行われますか？",
+            "answer": "Shop Directでは、購入者を加盟店のWebサイトへ誘導できます。対象となるBuy for Meオファーでは、AmazonのエージェントがそのWebサイト上で購入を完了します。"
+          }
+        ],
+        "trademark": "AmazonおよびAlexaは、Amazon.com, Inc.またはその関連会社の商標です。ecenticはAmazonと提携しておらず、Amazonによる承認も受けていません。"
+      }
+    }
+  }
+}

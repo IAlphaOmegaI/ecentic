@@ -1,0 +1,56 @@
+{
+  "chatgptPage": {
+    "shopping": {
+      "feed": "マーチャント商品フィード",
+      "discovery": "商品発見",
+      "store": "マーチャントストア",
+      "checkout": "承認済み購入手続き",
+      "link": "商品リンク",
+      "approval": "個別アプリ承認"
+    },
+    "reading": {
+      "label": "ChatGPTが読む情報を見る",
+      "caption": "フィード送信テンプレートではなく、情報構造の模式図です。",
+      "records": [
+        {
+          "id": "product",
+          "title": "商品レコード",
+          "record": "product / variant",
+          "fields": [
+            "タイトル + 説明",
+            "画像 + 商品URL",
+            "価格 + 在庫状況"
+          ]
+        },
+        {
+          "id": "seller",
+          "title": "販売条件",
+          "record": "マーチャント",
+          "fields": [
+            "販売者情報",
+            "配送情報",
+            "返品ポリシー"
+          ]
+        },
+        {
+          "id": "checkout",
+          "title": "決済アクセス",
+          "record": "購入手続き",
+          "fields": [
+            "利用資格フラグ",
+            "接続済みアプリ",
+            "連携承認"
+          ]
+        }
+      ]
+    },
+    "entry": {
+      "label": "マーチャント参加要件",
+      "steps": [
+        "マーチャント登録",
+        "商品フィードアクセス",
+        "決済アプリ承認"
+      ]
+    }
+  }
+}

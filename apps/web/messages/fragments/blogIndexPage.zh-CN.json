@@ -1,0 +1,26 @@
+{
+  "blogIndexPage": {
+    "featured": "精选阅读",
+    "latest": "最新文章",
+    "archive": "发现下一篇值得阅读的内容",
+    "archiveDescription": "浏览实用指南与研究内容，为下一步电商策略提供参考。",
+    "topics": "探索主题",
+    "topicsDescription": "深入了解文章背后的核心问题。",
+    "collection": "专题合集",
+    "order": "阅读顺序",
+    "all": "全部文章",
+    "editorial": "编辑指南",
+    "recommended": "推荐",
+    "newest": "最新优先",
+    "articles": "文章",
+    "page": "页",
+    "empty": "此合集暂无文章。",
+    "loading": "正在加载文章",
+    "action": {
+      "primary": "浏览全部文章",
+      "secondary": "上一页",
+      "tertiary": "下一页",
+      "quaternary": "探索资源"
+    }
+  }
+}

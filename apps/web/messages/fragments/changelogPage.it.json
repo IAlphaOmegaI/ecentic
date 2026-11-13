@@ -1,0 +1,9 @@
+{
+  "changelogPage": {
+    "archive": "Sfoglia la cronologia delle release",
+    "action": {
+      "primary": "Mostra tutti gli aggiornamenti",
+      "secondary": "Mostra l’ultimo mese"
+    }
+  }
+}

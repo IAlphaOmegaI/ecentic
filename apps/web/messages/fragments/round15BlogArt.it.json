@@ -1,0 +1,17 @@
+{
+  "commerceFigures": {
+    "openBook": "Illustrazione: un libro aperto. Sposta il puntatore su una delle pagine per aprire a ventaglio i fogli.",
+    "partReadouts": {
+      "openBook": [
+        {
+          "value": "pagine sinistre",
+          "label": "Pagine sinistre"
+        },
+        {
+          "value": "pagine destre",
+          "label": "Pagine destre"
+        }
+      ]
+    }
+  }
+}

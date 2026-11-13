@@ -1,0 +1,304 @@
+{
+  "ucpValidator": {
+    "meta": {
+      "title": "面向店铺的 UCP 验证器",
+      "description": "使用免费的 UCP 验证器检查店铺的 Universal Commerce Protocol 配置、发现数据、Schema 和 robots.txt 访问权限。"
+    },
+    "breadcrumb": {
+      "home": "首页",
+      "page": "UCP 验证器"
+    },
+    "hero": {
+      "eyebrow": "协议检查",
+      "title": {
+        "primary": "UCP",
+        "accent": "验证器"
+      },
+      "description": "检查店铺是否在 /.well-known/ucp 发布了有效的 Universal Commerce Protocol 配置，以及购物智能体能否顺畅读取。",
+      "assurances": [
+        "免费使用",
+        "无需账号",
+        "实时获取 /.well-known/ucp"
+      ],
+      "art": {
+        "alt": "盾牌 ASCII 艺术插图"
+      },
+      "actions": {
+        "validate": "验证域名",
+        "playground": "打开试验区"
+      }
+    },
+    "checks": {
+      "number": "01",
+      "title": "验证器检查内容",
+      "description": "实时获取你的公开配置，按 UCP 规范解析，并从 robots.txt 中识别智能体访问权限。",
+      "items": [
+        {
+          "title": "端点可访问性",
+          "description": "我们会请求公开 HTTPS 域名，并确认 /.well-known/ucp 是否正常响应。"
+        },
+        {
+          "title": "Schema 规范性",
+          "description": "响应内容会按 JSON 解析，并检查是否存在 UCP 规范错误和警告。"
+        },
+        {
+          "title": "智能体访问权限",
+          "description": "系统会检查 robots.txt，方便你查看主流购物与索引机器人是否被阻止。"
+        }
+      ]
+    },
+    "validator": {
+      "number": "02",
+      "title": "运行实时验证。",
+      "description": "粘贴域名后，我们会获取实时配置，解析所有服务与能力，并报告规范错误和智能体访问权限。"
+    },
+    "faqSection": {
+      "number": "03",
+      "title": "验证前常见问题",
+      "description": "包括检查范围、配置文件位置以及如何识别智能体访问权限。"
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "UCP 验证器会检查什么？",
+          "answer": "它会请求公开 HTTPS 域名，确认 /.well-known/ucp 正常响应，将内容解析为 JSON，并报告 UCP 规范错误和警告，以确保配置格式正确。"
+        },
+        {
+          "question": "Universal Commerce Protocol 配置应该发布在哪里？",
+          "answer": "应发布在店铺公开 HTTPS 域名下的 /.well-known/ucp。验证器会请求该精确路径，并显示其是否可访问。"
+        },
+        {
+          "question": "它会检查 AI 购物智能体能否读取我的店铺吗？",
+          "answer": "会。验证器会检查 robots.txt，方便你确认主流购物与索引智能体是否能够无障碍访问你的 Universal Commerce Protocol 配置。"
+        }
+      ]
+    },
+    "footer": {
+      "primary": "验证域名",
+      "secondary": "所有免费工具",
+      "note": "免费 · 无需账号 · 实时获取"
+    },
+    "structuredData": {
+      "name": "UCP 验证器"
+    },
+    "form": {
+      "preview": {
+        "logoAlt": "Universal Commerce Protocol 标志",
+        "liveFetch": "实时获取",
+        "note": "我们会请求公开配置，解析服务与能力，并从 robots.txt 中识别规范问题和智能体访问权限。"
+      },
+      "targets": {
+        "title": "验证内容",
+        "https": {
+          "label": "HTTPS 与可访问性",
+          "detail": "通过 TLS 提供服务，并能响应实时请求。"
+        },
+        "discovery": {
+          "label": "配置发现",
+          "detail": "智能体会在你的域名上获取的实时发现文档。"
+        },
+        "services": {
+          "label": "服务与传输方式",
+          "detail": "智能体协商使用的端点能力。"
+        },
+        "capabilities": {
+          "label": "能力",
+          "detail": "店铺声明支持的购物车、结账和订单流程。"
+        },
+        "paymentHandlers": {
+          "label": "支付处理器",
+          "detail": "Tokenization 端点及其声明的版本。"
+        },
+        "signingKeys": {
+          "label": "签名密钥",
+          "detail": "用于 HTTP 消息签名验证的公开 JWK。"
+        },
+        "supportedVersions": {
+          "label": "支持版本",
+          "detail": "商家当前仍在提供的所有协议版本。"
+        },
+        "agentAccess": {
+          "label": "智能体访问权限",
+          "detail": "购物与索引智能体未被阻止。"
+        }
+      },
+      "issueCategory": {
+        "envelope": "封装",
+        "version": "版本",
+        "services": "服务",
+        "capabilities": "能力",
+        "payment_handlers": "支付处理器",
+        "signing_keys": "签名密钥",
+        "supported_versions": "支持版本",
+        "transport": "传输",
+        "security": "安全"
+      },
+      "badge": {
+        "pass": "通过",
+        "fail": "失败",
+        "recognized": "已识别",
+        "custom": "自定义",
+        "known": "已知",
+        "issues": "问题",
+        "valid": "有效",
+        "current": "当前",
+        "https": "HTTPS",
+        "insecure": "不安全",
+        "allowed": "允许",
+        "blocked": "已阻止",
+        "error": "错误",
+        "warning": "警告",
+        "missing": "缺失",
+        "unavailable": "不可用",
+        "embedded": "已嵌入",
+        "specLinked": "已关联规范",
+        "schemaLinked": "已关联 schema",
+        "ucpReady": "UCP 就绪",
+        "needsFixes": "需要修复",
+        "noIssuesFound": "未发现问题",
+        "signingKeysNotAdvertised": "未公布签名密钥",
+        "signingKeysEmpty": "签名密钥数组为空",
+        "missingKid": "（缺少 kid）",
+        "transport": "传输 · {value}",
+        "version": "版本 · {value}",
+        "id": "ID · {value}",
+        "kty": "kty · {value}",
+        "use": "use · {value}",
+        "alg": "alg · {value}",
+        "crv": "crv · {value}",
+        "latestSuffix": " · 最新版 {version}",
+        "envelope": "封装：{kind}",
+        "envelopeFlatKind": "扁平",
+        "notValidated": "未验证",
+        "notValidatedSuffix": " · 未验证"
+      },
+      "services": {
+        "title": "服务与传输",
+        "description": "智能体可协商的端点接口。每个条目都会映射到配置文件中的反向域名服务键。",
+        "customNote": "自定义服务键——不属于已知的 UCP 服务标识符。",
+        "endpointLabel": "端点：",
+        "schemaLabel": "Schema："
+      },
+      "capabilities": {
+        "title": "能力",
+        "description": "店面支持的独立流程。订单、结账和购物车是交易型智能体的必需能力。",
+        "configLabel": "配置："
+      },
+      "paymentHandlers": {
+        "title": "支付处理器",
+        "description": "商家声明的令牌化端点。每个处理器都必须声明版本以及所需的处理器 ID。"
+      },
+      "signingKeys": {
+        "title": "签名密钥与身份验证",
+        "description": "RFC 9421 HTTP Message Signatures 是无许可接入的基础。每个请求都必须能通过此处发布的公开 JWK 进行验证。",
+        "notAdvertisedBody": "该配置文件未公布任何签名密钥，因此平台无法在不进行带外密钥交换的情况下验证 RFC 9421 HTTP 消息签名。UCP 允许这种方式，但智能体会回退到传统认证方式（API 密钥、OAuth、mTLS）。",
+        "privateMaterial": "包含私密内容——必须移除。",
+        "publicJwk": "公开 JWK"
+      },
+      "supportedVersions": {
+        "title": "支持的版本",
+        "description": "商家当前仍提供服务的所有协议版本配置文件 URI。智能体会选择其支持的最高版本。"
+      },
+      "spec": {
+        "title": "规范验证",
+        "description": "按规范区域分组：{errors, plural, other {# 个错误}}，{warnings, plural, other {# 个警告}}。",
+        "noIssuesBody": "当前配置文件已通过验证器检查，没有 schema 错误或警告。",
+        "noProfileBody": "未读取到配置文件，因此没有可验证的内容。"
+      },
+      "results": {
+        "responseHealth": "响应状态",
+        "responseHealthOk": "端点已响应，且配置文件可被评估。",
+        "detectedSurface": "检测到的接口",
+        "detectedSurfaceValue": "{services, plural, other {# 个服务}}，{capabilities, plural, other {# 项能力}}，{handlers, plural, other {# 个支付处理器}}，{keys, plural, other {# 个签名密钥}}。"
+      },
+      "summary": {
+        "latency": {
+          "label": "延迟",
+          "unavailableDetail": "无法测量实时响应时间。",
+          "detail": "UCP 端点的响应时间。"
+        },
+        "specErrors": {
+          "label": "规范错误",
+          "noneDetail": "未发现阻塞性 schema 问题。",
+          "someDetail": "应优先修复的阻塞性问题。",
+          "notValidatedDetail": "未针对该修订版本进行验证。",
+          "noProfileDetail": "未读取到配置文件，因此未进行任何检查。"
+        },
+        "capabilities": {
+          "label": "能力",
+          "noneDetail": "未声明任何能力。",
+          "someDetail": "已识别能力与声明能力总数的对比。"
+        },
+        "botAccess": {
+          "label": "机器人访问",
+          "detail": "robots.txt 已允许主要购物与索引机器人访问。"
+        }
+      },
+      "coreChecks": {
+        "title": "核心检查",
+        "description": "这些检查用于确认公开配置文件可访问、安全且可被机器读取。",
+        "https": {
+          "label": "HTTPS",
+          "detail": "该域名必须通过安全的 HTTPS 连接提供服务。"
+        },
+        "wellKnown": {
+          "label": "/.well-known/ucp 存在",
+          "httpStatus": "HTTP {status}。",
+          "httpStatusNotJson": "HTTP {status}（响应体不是 JSON）。",
+          "responded": "端点已响应。",
+          "noResponse": "/.well-known/ucp 无响应。"
+        },
+        "validJson": {
+          "label": "有效 JSON",
+          "contentType": "Content-Type: {contentType}",
+          "contentTypeWithStatus": "Content-Type: {contentType} · HTTP {status}",
+          "invalid": "响应体不是有效的 JSON。"
+        },
+        "latency": {
+          "label": "网站延迟",
+          "unmeasured": "由于端点未响应，无法测量延迟。",
+          "responded": "UCP 端点响应时间为 {latency}。"
+        },
+        "version": {
+          "label": "最新协议版本",
+          "latest": "配置文件声明了 {version}——当前发布的最新 UCP 版本。",
+          "outdated": "配置文件声明的版本为 {version}；最新版本为 {latest}。",
+          "none": "配置文件根节点未声明版本。",
+          "notValidated": "配置文件声明了 {version}，该修订版本未被当前验证器实现（{revisions}）。因此未针对该版本进行验证。"
+        },
+        "signingKeys": {
+          "label": "已公布签名密钥",
+          "published": "已发布 {count, plural, other {# 个 JWK}} 用于 RFC 9421 验证。",
+          "none": "未公布签名密钥——无法进行无许可验证。"
+        }
+      },
+      "robots": {
+        "title": "AI 智能体访问",
+        "description": "基于网站当前 robots.txt 规则。"
+      },
+      "response": {
+        "title": "UCP 响应",
+        "description": "实时 well-known 文档的 JSON 语法高亮预览。"
+      },
+      "toast": {
+        "failedTitle": "检查失败"
+      },
+      "action": {
+        "checking": "检查中...",
+        "primary": "检查域名"
+      },
+      "panel": {
+        "checkADomain": "检查域名",
+        "storefrontDomain": "店面域名",
+        "domain": "域名",
+        "placeholder": "yourdomain.com",
+        "rootDomainNote": "仅支持根域名——<code>acme.com</code> 或 <code>www.acme.com</code>。我们始终验证 HTTPS 版本。"
+      },
+      "intro": {
+        "eyebrow": "实时验证",
+        "title": "运行实时验证",
+        "description": "粘贴域名后，我们会获取实时 <code>/.well-known/ucp</code> 文档，解析其中的所有服务、能力、支付处理器和签名密钥，并根据其声明的规范修订版本进行验证，最高支持到 <code>{version}</code>。"
+      }
+    }
+  }
+}

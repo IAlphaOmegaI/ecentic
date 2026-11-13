@@ -1,0 +1,38 @@
+{
+  "compare": {
+    "meta": {
+      "title": "AI 电商工具：分类指南",
+      "description": "按类别对比商品内容、个性化、搜索、分析和智能体商业相关电商工具。"
+    }
+  },
+  "docs": {
+    "meta": {
+      "title": "ecentic API 文档",
+      "description": "REST API、MCP 服务器、CLI、认证、错误、速率限制和版本控制的开发者文档。"
+    },
+    "mcpPage": {
+      "meta": {
+        "title": "ecentic MCP 服务器",
+        "description": "将 MCP 客户端连接到 ecentic。了解传输方式、握手、支持的工具、认证和错误处理参考。"
+      }
+    },
+    "authenticationPage": {
+      "meta": {
+        "title": "ecentic API 认证",
+        "description": "了解哪些 API 接口是公开的、如何获取智能体 API key、如何发送 bearer token，以及如何处理认证错误。"
+      }
+    },
+    "errorsPage": {
+      "meta": {
+        "title": "ecentic API 错误",
+        "description": "查询 API 错误代码、HTTP 状态值和解决建议。响应采用 RFC 9457 problem 格式。"
+      }
+    },
+    "versioningPage": {
+      "meta": {
+        "title": "ecentic API 版本控制",
+        "description": "了解 ecentic 如何为 API 做版本管理，以及如何通过 Deprecation 和 Sunset 响应头发布弃用通知。"
+      }
+    }
+  }
+}

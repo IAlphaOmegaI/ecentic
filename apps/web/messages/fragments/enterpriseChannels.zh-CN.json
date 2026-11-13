@@ -1,0 +1,424 @@
+{
+  "enterpriseChannels": {
+    "statuses": {
+      "live": "已上线",
+      "feed": "通过商品数据源",
+      "soon": "即将推出",
+      "simulated": "模拟",
+      "not-yet": "尚未支持"
+    },
+    "checked": "最后检查时间",
+    "date": "2026年11月10日",
+    "sourceTitle": "来源",
+    "sourceNote": "平台信息已根据以下官方来源核实。资格条件和可用性可能会发生变化。",
+    "feature": "功能",
+    "status": "状态",
+    "detail": "说明",
+    "capabilityNames": {
+      "simulate": "模拟",
+      "fix": "修复",
+      "checkout": "结账",
+      "track": "跟踪"
+    },
+    "open": "查看渠道",
+    "faqTitle": "常见问题解答",
+    "interests": {
+      "google-checkout-onboarding": "Google AI Mode 结账接入",
+      "chatgpt-product-feed": "ChatGPT 商品 Feed",
+      "chatgpt-app": "ecentic ChatGPT 应用",
+      "microsoft-merchant-center": "Microsoft Merchant Center 数据源",
+      "perplexity-scans": "Perplexity 门店扫描",
+      "perplexity-merchant-feed": "Perplexity 商家 Feed",
+      "amazon-shop-direct": "Amazon Shop Direct"
+    },
+    "names": {
+      "google": "Google AI Mode 与 Gemini",
+      "chatgpt": "ChatGPT",
+      "claude": "Claude",
+      "copilot": "Microsoft Copilot",
+      "perplexity": "Perplexity",
+      "amazon": "Amazon"
+    },
+    "summaries": {
+      "google": "支持 Gemini 模拟、Shopify Merchant Center 同步和结账就绪检测。",
+      "chatgpt": "目前支持模拟和商品信息检查。商品 Feed 和 ChatGPT 应用即将推出。",
+      "claude": "测试 Claude 如何选择商品。将更清晰的商品信息发布到您的店铺。",
+      "copilot": "目前支持 Shopify 引荐跟踪。Microsoft Merchant Center Feed 即将推出。",
+      "perplexity": "目前支持 Shopify 引荐跟踪。门店模拟和商家 Feed 即将推出。",
+      "amazon": "Shop Direct 商品目录连接即将推出。目前尚无 ecentic 实时连接。"
+    },
+    "sources": {
+      "googleEligibility": "Google：原生结账资格",
+      "googleIntegration": "Google：Merchant Center 集成指南",
+      "googleCart": "Google：Universal Cart 公告，2026年10月15日",
+      "openaiOnboarding": "OpenAI：商家商品 Feed 接入",
+      "openaiProducts": "OpenAI：商品 Feed 规范",
+      "openaiPractices": "OpenAI：商品 Feed 最佳实践",
+      "openaiCheckout": "OpenAI：商品结账转化，已批准合作伙伴",
+      "claudeCommerce": "Anthropic：商业智能体，2026年9月2日",
+      "microsoftCommerce": "Microsoft：AI 智能体商业与 Copilot Checkout",
+      "perplexityShopping": "Perplexity：购物与商家计划，2024年11月18日",
+      "amazonWorkspace": "Amazon：Shop Direct Merchant Workspace，2026年11月4日",
+      "amazonAssistant": "Amazon：Alexa for Shopping，2026年5月13日",
+      "perplexityProgram": "Perplexity：官方商家计划意向表"
+    },
+    "index": {
+      "meta": {
+        "title": "AI 在哪里购物：ChatGPT、Gemini、Copilot 等",
+        "description": "了解各 AI 助手如何发现、比较和购买商品，商家分别需要满足哪些条件，以及 ecentic 当前支持哪些能力。"
+      },
+      "title": "AI 在哪里购物。",
+      "description": "每个 AI 助手都有自己的商品发现、比较和购买方式。这里介绍它们各自需要什么，以及 ecentic 当前提供哪些支持。",
+      "sections": []
+    },
+    "method": {
+      "title": "我们如何核实这些信息",
+      "body": "我们会查阅各平台自己的文档和公告。每个页面都会显示我们最后核查日期，并附上来源链接。“模拟”表示 ecentic 使用该模型进行商品比较，不代表已建立直接购物渠道连接。",
+      "note": "本目录重点介绍已公开商业接入路径或已可在 ecentic 中模拟的 AI 助手。"
+    },
+    "pages": {
+      "google": {
+        "meta": {
+          "title": "通过 Google AI Mode 和 Gemini 销售",
+          "description": "了解 Google AI Mode 和 Gemini 如何选择和购买商品、Merchant Center 的要求，以及 ecentic 当前为 Google AI 提供哪些支持。"
+        },
+        "title": "通过 Google AI Mode 和 Gemini 销售",
+        "description": "Google 的 AI 会利用商家商品数据回答购物问题。部分符合条件的商家可让消费者直接通过 Google 完成结账。",
+        "sections": [
+          {
+            "id": "shops",
+            "title": "这个 AI 助手如何购物",
+            "description": "Google 的购物体验使用 Merchant Center 商品目录数据。Universal Cart 已于 2026 年 10 月 15 日在美国上线，消费者可选择继续前往商家购物车，或在支持结账的情况下使用 Google Pay。商家仍然是销售主体。"
+          },
+          {
+            "id": "reads",
+            "title": "它会读取什么",
+            "description": "Merchant Center 商品数据，包括报价的价格、库存状态和结账资格。准确的商品页面以及清晰的配送和退货信息，也是保持报价可用的一部分。"
+          },
+          {
+            "id": "entry",
+            "title": "商家如何接入",
+            "description": "Google 已向美国、加拿大和澳大利亚部分符合条件且商品合规的商家开放原生结账。其 Merchant Center 集成中心首先在美国推出，加拿大和澳大利亚预计于明年初上线。商家必须完成 Google 的技术验证和审批流程。"
+          },
+          {
+            "id": "ecentic",
+            "title": "ecentic 当前在这里提供什么",
+            "description": "这些标签描述的是 ecentic 功能。是否符合平台资格要求，需要另行确认。"
+          },
+          {
+            "id": "next",
+            "title": "下一步计划",
+            "description": "即将推出的集成暂无确定上线日期。提交意向可帮助我们确定优先级。"
+          }
+        ],
+        "capabilities": {
+          "simulate": "Gemini 会在 ecentic 门店扫描中，将选定商品与指定竞品进行比较。",
+          "fix": "可将商品信息变更发布到 Shopify 或 WooCommerce。Shopify 店铺还可单独将已发布变更同步至 Merchant Center。",
+          "checkout": "WooCommerce 插件端点和结账演示环境已上线。Shopify 店铺可检测 Merchant Center 结账设置。Google 项目准入仍需由商家自行完成。",
+          "track": "可识别已连接 Shopify 店铺中的 Gemini 引荐和受支持的 Google AI 智能体流量。"
+        },
+        "faqs": [
+          {
+            "question": "使用 Google 结账功能需要 Merchant Center 吗？",
+            "answer": "需要。官方商家接入路径基于 Merchant Center。您的账号、商品和结账集成都必须满足 Google 的资格要求。"
+          },
+          {
+            "question": "ecentic 能代替我们加入 Google 的结账计划吗？",
+            "answer": "不能。ecentic 可帮助准备和测试数据及设置。申请、验证和审批仍需由您的企业与 Google 直接完成。"
+          },
+          {
+            "question": "Merchant Center 同步支持 WooCommerce 吗？",
+            "answer": "暂不支持。ecentic 当前的 Merchant Center 连接仅适用于 Shopify 店铺。"
+          }
+        ],
+        "trademark": "Google AI Mode 和 Gemini 是 Google LLC 的商标。ecentic 与 Google LLC 无关联，也未获得其认可。"
+      },
+      "chatgpt": {
+        "meta": {
+          "title": "通过 ChatGPT 购物销售",
+          "description": "了解 ChatGPT 如何推荐商品、商家 Feed 包含哪些内容、已批准的结账集成如何运作，以及 ecentic 当前提供哪些支持。"
+        },
+        "title": "通过 ChatGPT 销售",
+        "description": "ChatGPT 使用商家商品数据推荐商品。消费者可以通过链接访问您的店铺；已获批准的应用集成可在 ChatGPT 内提供结账功能。",
+        "sections": [
+          {
+            "id": "shops",
+            "title": "这个 AI 助手如何购物",
+            "description": "OpenAI 的商业文档介绍了用于商品发现的结构化商品 Feed。其当前测试版结账文档也支持已批准合作伙伴通过连接插件开启结账体验。具体可用性取决于商家已获批准的集成。"
+          },
+          {
+            "id": "reads",
+            "title": "它会读取什么",
+            "description": "包括标题、描述、图片、URL、价格和库存状态在内的商品与变体记录。OpenAI 的指南还要求准确的卖家身份、配送和退货信息。设置结账资格标记本身并不会启用结账。"
+          },
+          {
+            "id": "entry",
+            "title": "商家如何接入",
+            "description": "通过 OpenAI 的商家接入渠道申请。商品 Feed 访问仅向已批准合作伙伴开放，并需完成 Schema 验证和约定的数据交付方式。ChatGPT 结账应用还需要单独集成和审批；仅有 Feed 并不提供该能力。"
+          },
+          {
+            "id": "ecentic",
+            "title": "ecentic 当前在这里提供什么",
+            "description": "这些标签描述的是 ecentic 功能。是否符合平台资格要求，需要另行确认。"
+          },
+          {
+            "id": "next",
+            "title": "下一步计划",
+            "description": "即将推出的集成暂无确定上线日期。提交意向可帮助我们确定优先级。"
+          }
+        ],
+        "capabilities": {
+          "simulate": "ChatGPT 会在门店扫描中，将选定商品与竞品进行比较。",
+          "fix": "商品信息检查包括 OpenAI Feed 规则。可将修改后的标题、描述或通过单独操作发布的结构化数据发布到已连接店铺。",
+          "checkout": "ecentic ChatGPT 应用即将推出；其目录发布尚未确认。当前结账工具并不代表已建立实时 ChatGPT 应用集成。",
+          "track": "可在 Shopify 上跟踪 ChatGPT 引荐和已识别的智能体访问。"
+        },
+        "faqs": [
+          {
+            "question": "消费者可以直接在 ChatGPT 内购买吗？",
+            "answer": "OpenAI 当前测试版文档描述了已批准插件集成可在 ChatGPT 内完成结账。其他商品链接会将消费者带到商家网站。具体资格取决于集成情况；ecentic 应用是否发布尚未确认。"
+          },
+          {
+            "question": "我们使用 Shopify。ecentic 会帮我们的店铺接入 ChatGPT 吗？",
+            "answer": "不会。渠道资格以及电商平台是否分发您的商品目录，均独立于 ecentic。我们负责测试商品比较，并帮助优化您可控制的商品信息。"
+          },
+          {
+            "question": "商家如何向 OpenAI 提交商品数据？",
+            "answer": "通过 OpenAI 的商家接入渠道申请。已批准合作伙伴可提供符合其规范的商品 Feed。ecentic 当前可检查商品信息质量；专用 ChatGPT Feed 导出功能即将推出。"
+          }
+        ],
+        "trademark": "ChatGPT 是 OpenAI 的商标。ecentic 与 OpenAI 无关联，也未获得其认可。"
+      },
+      "claude": {
+        "meta": {
+          "title": "Claude 如何推荐商品",
+          "description": "了解零售商如何使用 Claude 构建商业智能体，以及 ecentic 如何测试 Claude 的商品选择并优化商品信息。"
+        },
+        "title": "通过 Claude 销售",
+        "description": "测试 Claude 如何比较您的商品。Anthropic 已公开的商业接入方式允许零售商基于自己的商品目录和结账系统构建智能体。",
+        "sections": [
+          {
+            "id": "shops",
+            "title": "这个 AI 助手如何购物",
+            "description": "Anthropic 的商业指南介绍了可搜索零售商商品目录、比较商品并与购物车和结账系统协作的智能体。这些体验由商家自行构建，其行为取决于零售商提供的工具和数据。"
+          },
+          {
+            "id": "reads",
+            "title": "它会读取什么",
+            "description": "零售商会向自己的智能体提供商品目录、库存、政策和购物车工具。ecentic 的模拟使用的是为比较整理的商品和竞品信息；并非 Claude 的实时排名报告。"
+          },
+          {
+            "id": "entry",
+            "title": "商家如何接入",
+            "description": "Anthropic 发布了构建商业智能体的蓝图。这是用于构建自有体验的开发路径，并不代表连接 ecentic 后，您的店铺会加入 Claude 的购物目录。"
+          },
+          {
+            "id": "ecentic",
+            "title": "ecentic 当前在这里提供什么",
+            "description": "这些标签描述的是 ecentic 功能。是否符合平台资格要求，需要另行确认。"
+          },
+          {
+            "id": "next",
+            "title": "下一步计划",
+            "description": "我们已公布的开发计划中暂无专用 Claude 结账连接器。目前可使用实时模拟和商品信息工作流。"
+          }
+        ],
+        "capabilities": {
+          "simulate": "Claude 会在门店扫描中，将选定商品与指定竞品进行比较。",
+          "fix": "已连接的 Shopify 和 WooCommerce 店铺均可使用相同的标题、描述和独立结构化数据发布操作。",
+          "checkout": "ecentic 当前没有专用 Claude 结账连接。",
+          "track": "可识别 Shopify 上的 Claude 引荐和受支持的智能体流量。"
+        },
+        "faqs": [
+          {
+            "question": "Claude 可以从我们的店铺购买商品吗？",
+            "answer": "零售商可以构建带有商品目录、购物车和结账工具的 Claude 智能体。但这并不意味着 ecentic 当前可将您的店铺连接到面向消费者的 Claude 结账，我们并不提供此能力。"
+          },
+          {
+            "question": "为什么要模拟 Claude？",
+            "answer": "受控比较可帮助您了解哪些商品信息会影响 Claude 的选择。结果仅适用于该模拟设置，可能与其他 AI 助手或真实购物场景不同。"
+          },
+          {
+            "question": "这些修复只对 Claude 有帮助吗？",
+            "answer": "这些变更作用于您自己店铺中的商品信息。其他读取方也可能受益于更清晰的数据，但不保证推荐或销售结果。"
+          }
+        ],
+        "trademark": "Claude 是 Anthropic PBC 的商标。ecentic 与 Anthropic PBC 无关联，也未获得其认可。"
+      },
+      "copilot": {
+        "meta": {
+          "title": "通过 Microsoft Copilot 和 Copilot Checkout 销售",
+          "description": "了解 Copilot Checkout 如何运作、谁可以加入，以及 ecentic 正在为 Microsoft Merchant Center 构建哪些功能。"
+        },
+        "title": "通过 Microsoft Copilot 销售",
+        "description": "Copilot 会推荐商品，并通过 Copilot Checkout 让符合条件的美国消费者在对话中直接购买。",
+        "sections": [
+          {
+            "id": "shops",
+            "title": "这个 AI 助手如何购物",
+            "description": "Microsoft 介绍了在 copilot.com 和 Copilot 移动应用中的商品发现与结账流程。商家仍然是销售主体，并使用自己的履约和客户关系体系。"
+          },
+          {
+            "id": "reads",
+            "title": "它会读取什么",
+            "description": "来自网页和商家 Feed 的商品数据。Microsoft Merchant Center 接入路径要求商品记录包含 Microsoft 接入指南中描述的额外结账属性。"
+          },
+          {
+            "id": "entry",
+            "title": "商家如何接入",
+            "description": "Microsoft 当前的资格要求为：面向美国买家、使用 USD 结算的英文商家。官方接入路径包括 Microsoft Merchant Center、Shopify 自动接入和 Stripe Agentic Commerce Suite。Feed 配置目前仍处于面向部分商家的试点阶段。"
+          },
+          {
+            "id": "ecentic",
+            "title": "ecentic 当前在这里提供什么",
+            "description": "这些标签描述的是 ecentic 功能。是否符合平台资格要求，需要另行确认。"
+          },
+          {
+            "id": "next",
+            "title": "下一步计划",
+            "description": "即将推出的集成暂无确定上线日期。提交意向可帮助我们确定优先级。"
+          }
+        ],
+        "capabilities": {
+          "simulate": "Copilot 尚未加入 ecentic 门店扫描面板。",
+          "fix": "Microsoft Merchant Center Feed 导出已列入开发计划。目前尚无 ecentic 实时 Feed 连接。",
+          "checkout": "计划中的 Microsoft Feed 结账属性即将推出。Microsoft 的项目要求仍然适用。",
+          "track": "可跟踪已连接 Shopify 店铺中的 Copilot 引荐。"
+        },
+        "faqs": [
+          {
+            "question": "如何加入 Copilot Checkout？",
+            "answer": "请按照 Microsoft 当前的接入流程，通过 Microsoft Merchant Center、Shopify 或 Stripe 开始接入。面向美国买家、使用 USD 的英语商家符合资格；部分设置仍仅向指定商家开放。"
+          },
+          {
+            "question": "ecentic 当前支持 Copilot 吗？",
+            "answer": "ecentic 可在 Shopify 上跟踪 Copilot 引荐。Copilot 模拟和直接 Feed 连接尚未上线。Microsoft Merchant Center Feed 已列入我们的开发计划。"
+          },
+          {
+            "question": "Feed 能保证获得结账批准吗？",
+            "answer": "不能。Microsoft 负责准入和技术要求。计划中的 ecentic 导出功能可帮助准备数据，但无法保证审批通过或商品推荐。"
+          }
+        ],
+        "trademark": "Microsoft Copilot 是 Microsoft Corporation 的商标。ecentic 与 Microsoft Corporation 无关联，也未获得其认可。"
+      },
+      "perplexity": {
+        "meta": {
+          "title": "通过 Perplexity 购物销售",
+          "description": "了解 Perplexity 如何展示购物结果、其商家计划在哪里公布，以及 ecentic 当前支持哪些功能。"
+        },
+        "title": "通过 Perplexity 销售",
+        "description": "Perplexity 会通过商品卡片回答购物问题。ecentic 当前可在 Shopify 上跟踪其引荐；门店扫描和商家 Feed 即将推出。",
+        "sections": [
+          {
+            "id": "shops",
+            "title": "这个 AI 助手如何购物",
+            "description": "Perplexity 的购物公告介绍了商品卡片，以及面向美国符合条件商品的 Buy with Pro 体验。当该购买选项不可用时，消费者会通过链接访问商家网站。"
+          },
+          {
+            "id": "reads",
+            "title": "它会读取什么",
+            "description": "来自商家和购物结果的商品信息。Perplexity 提到了与商家网站的集成，以及旨在完善价格和商品详情的商家计划。"
+          },
+          {
+            "id": "entry",
+            "title": "商家如何接入",
+            "description": "Perplexity 官方购物公告链接了其面向大型零售商的免费商家计划。请通过官方项目链接确认当前资格。我们尚未验证更广泛的接入路径或实时 ecentic 商品目录连接。",
+            "links": [
+              {
+                "label": "打开 Perplexity 商家表单",
+                "href": "https://perplexity.typeform.com/to/oIcfT8U3"
+              }
+            ]
+          },
+          {
+            "id": "ecentic",
+            "title": "ecentic 当前在这里提供什么",
+            "description": "这些标签描述的是 ecentic 功能。是否符合平台资格要求，需要另行确认。"
+          },
+          {
+            "id": "next",
+            "title": "下一步计划",
+            "description": "即将推出的集成暂无确定上线日期。提交意向可帮助我们确定优先级。"
+          }
+        ],
+        "capabilities": {
+          "simulate": "将 Perplexity 加入门店扫描已列入开发计划。目前它还不是三个现有门店扫描模型之一。",
+          "fix": "专用 Perplexity 商家 Feed 即将推出。店铺商品信息变更仍可通过 Shopify 和 WooCommerce 发布。",
+          "checkout": "ecentic 当前没有专用 Perplexity 结账连接。",
+          "track": "可在 Shopify 上跟踪 Perplexity 引荐和已识别的智能体流量。"
+        },
+        "faqs": [
+          {
+            "question": "商家如何加入？",
+            "answer": "请从 Perplexity 官方购物公告中的商家计划开始。该来源说明这是一个面向大型零售商的免费项目；当前接入资格请向 Perplexity 确认。"
+          },
+          {
+            "question": "ecentic 当前支持 Perplexity 吗？",
+            "answer": "我们可在 Shopify 店铺中跟踪其引荐。Perplexity 门店扫描和商家 Feed 功能即将推出。"
+          },
+          {
+            "question": "模拟结果能证明商品一定会出现在 Perplexity 中吗？",
+            "answer": "不能。模型比较与真实商品推荐、Feed 接收或结账资格是不同的。"
+          }
+        ],
+        "trademark": "Perplexity 是 Perplexity AI, Inc. 的商标。ecentic 与 Perplexity AI, Inc. 无关联，也未获得其认可。"
+      },
+      "amazon": {
+        "meta": {
+          "title": "通过 Amazon AI 销售：Shop Direct 与 Alexa",
+          "description": "了解 Shop Direct 如何将商家网站商品接入 Amazon 搜索和 Alexa for Shopping，以及 ecentic 正在构建哪些功能。"
+        },
+        "title": "通过 Amazon AI 销售",
+        "description": "Shop Direct 可将您网站上的商品接入 Amazon 购物体验。符合条件的 Buy for Me 购买会在商家网站上完成。",
+        "sections": [
+          {
+            "id": "shops",
+            "title": "这个 AI 助手如何购物",
+            "description": "Amazon 于 2026 年 5 月 13 日推出 Alexa for Shopping，将 Rufus 与 Alexa+ 整合在一起。Shop Direct 会在 Amazon 搜索和购物助手中展示外部商家网站的商品。消费者可访问商家网站；符合条件的报价还支持 Buy for Me。"
+          },
+          {
+            "id": "reads",
+            "title": "它会读取什么",
+            "description": "商家通过解决方案提供商或 Amazon Selling Partner API 提供的商品目录信息。商家需验证自己的网站，并通过 Shop Direct Merchant Workspace 管理参与情况。"
+          },
+          {
+            "id": "entry",
+            "title": "商家如何接入",
+            "description": "Amazon 于 2026 年 11 月 4 日推出免费的 Merchant Workspace。Shop Direct 面向美国客户开放，并接受符合条件的商家网站，包括同时在 Amazon 销售的商家。需要完成注册、网站验证和商品目录共享。"
+          },
+          {
+            "id": "ecentic",
+            "title": "ecentic 当前可提供的功能",
+            "description": "这些标签描述的是 ecentic 功能。平台资格审核需要单独完成。"
+          },
+          {
+            "id": "next",
+            "title": "后续计划",
+            "description": "即将推出的集成暂无确定上线日期。欢迎登记意向，帮助我们确定优先级。"
+          }
+        ],
+        "capabilities": {
+          "simulate": "Amazon 的购物助手尚未纳入 ecentic 的扫描面板。",
+          "fix": "向 Shop Direct 发送优化后的商品目录已列入开发计划，但需获得相应的申请批准。",
+          "checkout": "ecentic 目前尚未与 Buy for Me 建立实时连接。",
+          "track": "ecentic 目前不提供专门的 Amazon Shop Direct 流量集成。"
+        },
+        "faqs": [
+          {
+            "question": "是否需要 Amazon Marketplace 店铺？",
+            "answer": "不需要。Shop Direct 展示的是商家自有网站上的商品。Amazon 表示该项目可免费参与，购物体验面向美国客户开放。"
+          },
+          {
+            "question": "ecentic 现在是否已连接 Shop Direct？",
+            "answer": "还没有。Shop Direct 商品目录连接已列入我们的开发计划，并且需要获得相应的 Amazon 申请批准。可在下方登记意向。"
+          },
+          {
+            "question": "消费者在哪里完成购买？",
+            "answer": "Shop Direct 可将消费者引导至商家网站。对于符合条件的 Buy for Me 商品，Amazon 的智能体会在该网站上完成购买。"
+          }
+        ],
+        "trademark": "Amazon 和 Alexa 是 Amazon.com, Inc. 或其关联公司的商标。ecentic 与 Amazon 不存在关联，也未获得其认可。"
+      }
+    }
+  }
+}

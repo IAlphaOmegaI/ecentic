@@ -1,0 +1,76 @@
+{
+  "dashboard": {
+    "simulations": {
+      "title": "模拟",
+      "description": "可随时重新运行竞品发现与胜率模拟。",
+      "stats": {
+        "productsSelected": "已选商品",
+        "competitorsSelected": "已选竞品",
+        "estimatedSimulations": "预计模拟次数",
+        "estimatedTime": "预计耗时",
+        "pickedForScan": "已加入下一次扫描",
+        "productsCompetitorsModels": "商品 × 竞品 × 3个模型",
+        "atCurrentSelection": "按当前选择"
+      },
+      "discovery": {
+        "kicker": "01 — 发现",
+        "title": "竞品发现",
+        "description": "使用当前商品重新运行 AI 竞品检测。",
+        "totalCompetitors": "当前竞品总数：{count}"
+      },
+      "setup": {
+        "kicker": "02 — 扫描设置",
+        "title": "选择要模拟的内容",
+        "description": "选择下次运行的商品和竞品。选择后会实时更新预估值。",
+        "products": "商品",
+        "competitors": "竞品",
+        "clearAll": "全部清除",
+        "selectAll": "全选",
+        "nothingYet": "这里还没有内容。",
+        "estimate": "{products}件商品 × {competitors}个竞品 × 3个模型",
+        "estimateTotal": "{total}次模拟 · {duration}"
+      },
+      "run": {
+        "kicker": "03 — 模拟",
+        "title": "胜率模拟",
+        "description": "在 ChatGPT、Claude 和 Gemini 上重新运行商品与竞品对比模拟。",
+        "reset": "重置",
+        "runSimulation": "运行模拟",
+        "progress": "模拟进度",
+        "phase": "阶段",
+        "winsLosses": "胜出 / 失利",
+        "elapsed": "已耗时",
+        "currentStage": "当前阶段",
+        "acrossAllModels": "所有模型汇总",
+        "sinceStart": "自开始以来",
+        "liveOutput": "实时输出",
+        "lineCount": "{count, plural, other {#行}}",
+        "noLogsYet": "暂无日志。开始模拟后可查看实时输出。",
+        "status": {
+          "done": "完成",
+          "running": "运行中",
+          "queued": "排队中"
+        }
+      },
+      "complete": {
+        "winRate": "胜率",
+        "products": "商品",
+        "wins": "胜出",
+        "losses": "失利",
+        "topFinding": "{name}在{attributes}方面落后。{impact} 导致{loss}%的模拟中失利。"
+      },
+      "toast": {
+        "simulationFailed": "模拟失败",
+        "nothingSelected": "未选择任何内容",
+        "selectProduct": "请至少选择一件商品进行扫描。",
+        "selectCompetitor": "请至少选择一个竞品进行扫描。"
+      },
+      "skeleton": {
+        "phase": "阶段",
+        "progress": "进度",
+        "winsLosses": "胜出 / 失利",
+        "elapsed": "已耗时"
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "docsApiPage": {
+    "surfaces": "サーフェス別に表示",
+    "all": "すべてのエンドポイント",
+    "groups": {
+      "discovery": "Discovery",
+      "sandbox": "Sandbox",
+      "catalog": "カタログ",
+      "mcp": "MCP",
+      "commerce": "Commerce"
+    },
+    "sourceTitle": "信頼できる唯一の情報源。",
+    "sourceBody": "正確な仕様を確認するには、エンドポイントを開いてください。スキーマのリンクをたどると、共有データ構造を確認できます。",
+    "operations": "オペレーション",
+    "schemas": "共有スキーマ",
+    "responses": "レスポンスコード",
+    "references": "参照スキーマ",
+    "schemaBody": "これらの定義は複数のオペレーションで共有されています。各名称には固定リンクがあり、すべての定義をJSONとしてコピーできます。",
+    "permalink": "この定義へのリンク",
+    "navigation": "リファレンスセクション",
+    "definition": "ソース定義・JSON",
+    "securityTitle": "オペレーションごとに定義",
+    "securityBody": "認証情報を選択する前に、各エンドポイントの security フィールドを確認してください。利用可能なスキームはここで定義されています。"
+  }
+}

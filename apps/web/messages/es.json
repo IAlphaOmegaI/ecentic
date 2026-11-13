@@ -812,11 +812,11 @@
         "completedScans": "{count, plural, one {# escaneo completado} other {# escaneos completados}}",
         "viewAllActivity": "Ver toda la actividad",
         "headlines": {
-          "outrankAll": "Superas a los {count} competidor{plural} simulados (media {overall}% de tasa de victoria).",
+          "outrankAll": "Superas a {count, plural, one {# competidor simulado} many {los # competidores simulados} other {los # competidores simulados}} (tasa de victoria media del {overall}%).",
           "slimmestLead": "Tu ventaja más estrecha es frente a {brand} con {rate}%. Mantén las fichas optimizadas para defenderla.",
           "biggestOpportunity": "{brand} gana el {lossRate}% de las comparaciones de agentes contra ti. Esa es tu mayor oportunidad.",
-          "holdMajority": "Tienes la mayoría frente a {winning} de {total} competidor{plural} (media {overall}%). Optimizar los productos que pierdes frente a {brand} mueve la aguja.",
-          "defaultHeadline": "Tienes la mayoría frente a {winning} de {total} competidor{plural} (media {overall}% de tasa de victoria).",
+          "holdMajority": "Obtienes la mayoría de las victorias frente a {winning} de {total, plural, one {# competidor} many {# competidores} other {# competidores}} (media del {overall}%). Optimizar los productos que pierden frente a {brand} tendrá el mayor impacto.",
+          "defaultHeadline": "Obtienes la mayoría de las victorias frente a {winning} de {total, plural, one {# competidor} many {# competidores} other {# competidores}} (tasa de victoria media del {overall}%).",
           "focusOptimization": "Enfoca una optimización de ficha en los productos en los que {brand} te gana.",
           "toughestRival": "{toughest} es tu rival más duro con {toughestRate}%; lideras frente a {strongest} con {strongestRate}%."
         }
@@ -7339,6 +7339,34 @@
       "failedTitle": "No se pudo canjear",
       "successTitle": "Canje recibido",
       "successDescription": "Verificaremos tu batch y te escribiremos en un plazo de 1 día laborable."
+    },
+    "programs": {
+      "techstars": {
+        "batchLabel": "Programa de Techstars / año",
+        "batchPlaceholder": "Selecciona tu promoción",
+        "action": {
+          "primary": "Canjear mi oferta de Techstars"
+        }
+      },
+      "yc": {
+        "batchLabel": "Promoción de YC",
+        "batchPlaceholder": "Selecciona tu promoción",
+        "action": {
+          "primary": "Canjear mi oferta de YC"
+        }
+      }
+    },
+    "options": {
+      "earlier": "Anterior",
+      "other": "Otro",
+      "customHeadless": "A medida / headless",
+      "preLaunch": "Antes del lanzamiento"
+    },
+    "cohorts": {
+      "winter": "Invierno de {year}",
+      "spring": "Primavera de {year}",
+      "summer": "Verano de {year}",
+      "fall": "Otoño de {year}"
     }
   },
   "docs": {
@@ -16133,6 +16161,10 @@
       "docs": {
         "title": "Construye sobre la plataforma de comercio agéntico.",
         "description": "Referencia de la API, MCP, CLI y documentos públicos para desarrolladores."
+      },
+      "blog": {
+        "title": "La revista del comercio con IA.",
+        "description": "Guías prácticas sobre datos de producto, recomendaciones de la IA y finalización de compras mediante agentes."
       }
     }
   },
@@ -19998,5 +20030,145 @@
       "maximumSize": "Todos los archivos superan el tamaño máximo.",
       "maximumCount": "Hay demasiados archivos. Algunos no se han añadido."
     }
+  },
+  "agentReadiness": {
+    "meta": {
+      "title": "Prepara tu tienda para las compras con IA",
+      "description": "Pega la URL de cualquier tienda. ecentic lee tus productos, corrige lo que los canales de IA no pueden usar y te entrega un feed para Google Merchant Center y otro para ChatGPT.",
+      "run": "Ejecución de tu tienda",
+      "board": "Panel para la sala",
+      "stage": "Pantalla para el escenario"
+    },
+    "hero": {
+      "title": "Pega tu tienda.",
+      "accent": "La prepararemos para Google, Gemini y ChatGPT.",
+      "description": "Leemos todos los productos, hasta 40, corregimos lo que podemos desde las propias páginas de tu tienda, indicamos lo que no y te entregamos ambos feeds.",
+      "runTitle": "Preparando tu tienda para Google, Gemini y ChatGPT"
+    },
+    "form": {
+      "address": "Dirección de tu tienda",
+      "placeholder": "yourstore.com",
+      "starting": "Iniciando",
+      "action": {
+        "primary": "Preparar la tienda"
+      },
+      "note": "Sin registro. Leemos hasta 40 productos de tus páginas públicas."
+    },
+    "errors": {
+      "fallback": "Algo ha fallado de nuestra parte. Inténtalo de nuevo.",
+      "invalid": "No parece ser la dirección de una tienda que podamos leer. Compruébala y vuelve a intentarlo.",
+      "limited": "Has iniciado muchas tiendas seguidas. Espera unos minutos y vuelve a intentarlo.",
+      "capacity": "Hoy ya hemos preparado todas las tiendas que podemos. Vuelve a intentarlo mañana.",
+      "unavailable": "No hemos podido iniciar esta ejecución. Vuelve a intentarlo dentro de un momento.",
+      "connect": "No se ha podido completar. Inténtalo de nuevo.",
+      "connectLimited": "Demasiados intentos seguidos. Espera un minuto.",
+      "unreachable": "No hemos podido acceder a {host} ahora mismo.",
+      "address": "No hemos podido leer la dirección de esa tienda.",
+      "finish": "No hemos podido completar esta ejecución para la tienda. Vuelve a intentarlo."
+    },
+    "actions": {
+      "primary": "Probar otra tienda",
+      "secondary": "Abrir la pantalla del escenario",
+      "download": "Descargar el {format}",
+      "nothing": "Todavía no hay nada que descargar",
+      "connect": "Conecta tu Merchant Center"
+    },
+    "counts": {
+      "products": "{count, plural, one {# producto} many {# productos} other {# productos}}",
+      "stores": "{count, plural, one {# tienda} many {# tiendas} other {# tiendas}}",
+      "fixes": "{count, plural, one {# corrección} many {# correcciones} other {# correcciones}}",
+      "issues": "{count, plural, one {# problema} many {# problemas} other {# problemas}}"
+    },
+    "channelSummary": "{label}: {ready} de {total, plural, one {# producto listo} many {# productos listos} other {# productos listos}}",
+    "uploadSummary": "Subido al feed de productos de OpenAI: {status}",
+    "uploadStatus": {
+      "uploading": "Subiendo",
+      "received": "Recibido",
+      "processing": "Procesando",
+      "completed": "Completado",
+      "completed_with_errors": "Completado con errores",
+      "failed": "Fallido"
+    },
+    "stage": {
+      "reading": "Leyendo la tienda",
+      "preparing": "Corrigiendo lo que podemos",
+      "channels": "Creando los feeds",
+      "done": "Hecho",
+      "failed": "Esta ejecución se ha detenido"
+    },
+    "offer": {
+      "pending": "Esperando la API de Google",
+      "accepted": "Aceptado por la API de Google",
+      "merged": "Fusionado por Google",
+      "rejected": "Rechazado por la API de Google",
+      "skipped": "Omitido"
+    },
+    "kinds": {
+      "inferred": "Inferido",
+      "rewritten": "Reescrito",
+      "cleaned": "Limpiado"
+    },
+    "merchant": {
+      "ownership": "Solo publicamos en cuentas de Merchant Center que sean propietarias del sitio web de la tienda.",
+      "account": "Cuenta {account}"
+    },
+    "product": {
+      "missingValue": "La tienda no lo indica",
+      "before": "Antes",
+      "after": "Después",
+      "error": "Lo deja fuera del feed",
+      "warning": "Se incluye en el feed con una advertencia",
+      "policy": "Marcado según la política de productos prohibidos de OpenAI: {category}",
+      "policyUnchecked": "La comprobación de la política de productos prohibidos de OpenAI no se ha ejecutado para este producto, así que no se ha validado.",
+      "summary": "{fixes, plural, one {# corrección} many {# correcciones} other {# correcciones}}, {issues, plural, one {# problema} many {# problemas} other {# problemas}}",
+      "googleReady": "Listo para Google",
+      "googleNotReady": "No está listo para Google",
+      "chatgptReady": "Listo para ChatGPT",
+      "chatgptUnchecked": "Listo para ChatGPT, política sin comprobar",
+      "chatgptNotReady": "No está listo para ChatGPT",
+      "nothing": "No hay nada que corregir ni nada pendiente por resolver."
+    },
+    "products": {
+      "title": "Todos los productos",
+      "description": "Qué hemos cambiado, qué hemos inferido y qué solo puedes resolver tú.",
+      "empty": "No hemos encontrado productos para mostrar.",
+      "failed": "No hemos podido cargar la lista de productos. Seguimos intentándolo.",
+      "loading": "Cargando la lista de productos."
+    },
+    "done": {
+      "summary": "{fixes, plural, one {# corrección aplicada} many {# correcciones aplicadas} other {# correcciones aplicadas}}, {issues, plural, one {# problema necesita la intervención del comerciante} many {# problemas necesitan la intervención del comerciante} other {# problemas necesitan la intervención del comerciante}}",
+      "xml": "Feed XML",
+      "csv": "Feed CSV",
+      "chatgptReady": "Listo para ChatGPT.",
+      "chatgptEmpty": "Todavía no hay productos listos para ChatGPT.",
+      "chatgptNote": "ChatGPT solo acepta feeds de productos de partners aprobados, así que este es el archivo que debes enviar cuando lo seas.",
+      "notes": "Información útil"
+    },
+    "notice": {
+      "missingTitle": "No encontramos esta ejecución",
+      "missingBody": "Las ejecuciones se guardan durante un tiempo y luego se eliminan. Vuelve a pegar la tienda para iniciar una nueva.",
+      "failedTitle": "No podemos acceder a esta ejecución ahora mismo",
+      "failedBody": "Seguimos intentándolo. Esta página se actualizará en cuanto responda."
+    },
+    "stats": {
+      "products": "Productos leídos",
+      "issues": "Problemas encontrados",
+      "fixes": "Correcciones aplicadas"
+    },
+    "board": {
+      "qr": "Código QR para {url}",
+      "readiness": "{ready} de {total}",
+      "headline": "<storeCount>{stores, plural, one {# tienda} many {# tiendas} other {# tiendas}}</storeCount> y <productCount>{products, plural, one {# producto} many {# productos} other {# productos}}</productCount> preparados para IA esta noche",
+      "empty": "Todavía no hay tiendas. Escanea el código y pega la tuya."
+    },
+    "presentation": {
+      "freeListings": "Fichas gratuitas",
+      "missing": "Comprueba el enlace en la página de resultados.",
+      "waiting": "Esperando esta ejecución",
+      "waitingBody": "Esta pantalla se actualizará en cuanto responda.",
+      "reading": "Leyendo la tienda: {count, plural, one {# producto} many {# productos} other {# productos}} hasta ahora",
+      "fixes": "{count, plural, one {# corrección aplicada} many {# correcciones aplicadas} other {# correcciones aplicadas}}"
+    },
+    "outputLanguage": "El contenido de la tienda y los diagnósticos del proveedor permanecen en su idioma original."
   }
 }

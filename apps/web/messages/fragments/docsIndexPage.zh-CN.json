@@ -1,0 +1,24 @@
+{
+  "docsIndexPage": {
+    "navigation": "浏览文档",
+    "quickstart": {
+      "label": "选择第一个请求",
+      "tabs": [
+        "API",
+        "协议",
+        "套餐"
+      ],
+      "request": "请求",
+      "response": "响应",
+      "access": "无需 API key",
+      "action": {
+        "primary": "打开 JSON"
+      }
+    },
+    "contracts": [
+      "application/problem+json",
+      "RateLimit / Retry-After",
+      "Deprecation / Sunset"
+    ]
+  }
+}

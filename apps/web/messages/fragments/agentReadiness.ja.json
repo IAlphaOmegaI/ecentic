@@ -1,0 +1,142 @@
+{
+  "agentReadiness": {
+    "meta": {
+      "title": "ストアをAIショッピングに対応させる",
+      "description": "ストアのURLを貼り付けるだけ。ecenticが商品を読み取り、AIチャネルで使えない部分を修正して、Google Merchant Center用とChatGPT用の商品フィードをお渡しします。",
+      "run": "ストアの処理状況",
+      "board": "会場ボード",
+      "stage": "ステージ画面"
+    },
+    "hero": {
+      "title": "ストアのURLを貼り付けてください。",
+      "accent": "Google、Gemini、ChatGPTに対応できるよう準備します。",
+      "description": "最大40商品まですべて読み取り、ストア自身のページをもとに修正できる部分を修正します。修正できない部分も一覧にし、両方のフィードをお渡しします。",
+      "runTitle": "ストアをGoogle、Gemini、ChatGPT向けに準備しています"
+    },
+    "form": {
+      "address": "ストアのアドレス",
+      "placeholder": "yourstore.com",
+      "starting": "開始しています",
+      "action": {
+        "primary": "準備を始める"
+      },
+      "note": "登録は不要です。公開ページから最大40商品を読み取ります。"
+    },
+    "errors": {
+      "fallback": "こちらで問題が発生しました。もう一度お試しください。",
+      "invalid": "読み取れるストアのアドレスではないようです。確認して、もう一度お試しください。",
+      "limited": "短時間に多くのストアの処理を開始しました。数分待ってから、もう一度お試しください。",
+      "capacity": "本日処理できるストア数の上限に達しました。明日もう一度お試しください。",
+      "unavailable": "この処理を開始できませんでした。少し待ってから、もう一度お試しください。",
+      "connect": "接続できませんでした。もう一度お試しください。",
+      "connectLimited": "短時間に試行が集中しています。1分ほどお待ちください。",
+      "unreachable": "現在、{host}にアクセスできません。",
+      "address": "ストアのアドレスを読み取れませんでした。",
+      "finish": "このストアの処理を完了できませんでした。もう一度お試しください。"
+    },
+    "actions": {
+      "primary": "別のストアを試す",
+      "secondary": "ステージ画面を開く",
+      "download": "{format}をダウンロード",
+      "nothing": "まだダウンロードできるものはありません",
+      "connect": "Merchant Centerを接続"
+    },
+    "counts": {
+      "products": "{count, plural, other {#商品}}",
+      "stores": "{count, plural, other {#ストア}}",
+      "fixes": "{count, plural, other {#件の修正}}",
+      "issues": "{count, plural, other {#件の問題}}"
+    },
+    "channelSummary": "{label}：{total, plural, other {#商品}}中、{ready}商品の準備が完了",
+    "uploadSummary": "OpenAIの商品フィードへのアップロード：{status}",
+    "uploadStatus": {
+      "uploading": "アップロード中",
+      "received": "受信済み",
+      "processing": "処理中",
+      "completed": "完了",
+      "completed_with_errors": "エラーありで完了",
+      "failed": "失敗"
+    },
+    "stage": {
+      "reading": "ストアを読み取っています",
+      "preparing": "修正できる部分を修正しています",
+      "channels": "フィードを作成しています",
+      "done": "完了",
+      "failed": "この処理は停止しました"
+    },
+    "offer": {
+      "pending": "GoogleのAPIからの応答待ち",
+      "accepted": "GoogleのAPIが受理",
+      "merged": "Googleが統合済み",
+      "rejected": "GoogleのAPIが拒否",
+      "skipped": "スキップ済み"
+    },
+    "kinds": {
+      "inferred": "推定",
+      "rewritten": "書き換え",
+      "cleaned": "整形"
+    },
+    "merchant": {
+      "ownership": "ストアのウェブサイトの所有権を持つMerchant Centerアカウントにのみ公開します。",
+      "account": "アカウント {account}"
+    },
+    "product": {
+      "missingValue": "ストアに記載なし",
+      "before": "修正前",
+      "after": "修正後",
+      "error": "フィードに含められない原因",
+      "warning": "警告付きで出力",
+      "policy": "OpenAIの禁止商品ポリシーに該当と判定：{category}",
+      "policyUnchecked": "この商品ではOpenAIの禁止商品ポリシーチェックが実行されていないため、問題がないことは確認されていません。",
+      "summary": "{fixes, plural, other {#件の修正}}、{issues, plural, other {#件の問題}}",
+      "googleReady": "Google向けの準備完了",
+      "googleNotReady": "Google向けの準備未完了",
+      "chatgptReady": "ChatGPT向けの準備完了",
+      "chatgptUnchecked": "ChatGPT向けの準備完了、ポリシー未確認",
+      "chatgptNotReady": "ChatGPT向けの準備未完了",
+      "nothing": "修正が必要な点も、未解決の問題もありません。"
+    },
+    "products": {
+      "title": "すべての商品",
+      "description": "修正した内容、推定した内容、ストア側でのみ解決できる内容を確認できます。",
+      "empty": "表示できる商品が見つかりませんでした。",
+      "failed": "商品一覧を読み込めませんでした。引き続き再試行しています。",
+      "loading": "商品一覧を読み込んでいます。"
+    },
+    "done": {
+      "summary": "{fixes, plural, other {#件の修正を適用}}、{issues, plural, other {#件の問題はマーチャントの対応が必要}}",
+      "xml": "XMLフィード",
+      "csv": "CSVフィード",
+      "chatgptReady": "ChatGPT向けの準備が完了しました。",
+      "chatgptEmpty": "ChatGPT向けの準備が完了した商品はまだありません。",
+      "chatgptNote": "ChatGPTが商品フィードを受け付けるのは承認済みパートナーからのみです。承認済みパートナーになった際に提出するためのファイルです。",
+      "notes": "確認しておきたい点"
+    },
+    "notice": {
+      "missingTitle": "この処理が見つかりません",
+      "missingBody": "処理結果は一定期間保管した後に削除されます。ストアのURLをもう一度貼り付けて、新しい処理を開始してください。",
+      "failedTitle": "現在、この処理にアクセスできません",
+      "failedBody": "引き続き再試行しています。応答があり次第、このページに反映されます。"
+    },
+    "stats": {
+      "products": "読み取った商品",
+      "issues": "見つかった問題",
+      "fixes": "適用した修正"
+    },
+    "board": {
+      "qr": "{url}のQRコード",
+      "readiness": "{total}中{ready}",
+      "headline": "今夜、<storeCount>{stores, plural, other {#ストア}}</storeCount>と<productCount>{products, plural, other {#商品}}</productCount>のAI対応準備が完了",
+      "empty": "まだストアがありません。コードを読み取り、ストアのURLを貼り付けてください。"
+    },
+    "presentation": {
+      "freeListings": "無料リスティング",
+      "missing": "結果ページのリンクを確認してください。",
+      "waiting": "この処理の応答待ち",
+      "waitingBody": "応答があり次第、この画面に反映されます。",
+      "reading": "ストアを読み取り中：これまでに{count, plural, other {#商品}}",
+      "fixes": "{count, plural, other {#件の修正を適用}}"
+    },
+    "outputLanguage": "ストアのコンテンツとプロバイダーの診断結果は、元の言語で表示されます。"
+  }
+}

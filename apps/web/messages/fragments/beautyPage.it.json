@@ -1,0 +1,28 @@
+{
+  "beautyPage": {
+    "record": {
+      "label": "Esplora una domanda dell’acquirente",
+      "tabs": [
+        "Crema idratante",
+        "Protezione solare",
+        "Shampoo"
+      ],
+      "question": "Le esigenze dell’acquirente",
+      "facts": "Dati prodotto da verificare",
+      "claim": {
+        "title": "Claim del prodotto finito",
+        "body": "Verifica il claim in base alle prove relative all’esatto prodotto finito."
+      }
+    },
+    "evidence": {
+      "label": "Mantieni gli stessi dati dalla confezione alla scheda prodotto",
+      "steps": [
+        "Confezione del prodotto",
+        "Prove a supporto",
+        "Descrizione pubblicata"
+      ],
+      "claims": "Claim e prove",
+      "protection": "Protezione testata"
+    }
+  }
+}

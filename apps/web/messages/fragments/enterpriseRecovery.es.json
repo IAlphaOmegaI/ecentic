@@ -228,6 +228,10 @@
       "docs": {
         "title": "Construye sobre la plataforma de comercio agéntico.",
         "description": "Referencia de la API, MCP, CLI y documentos públicos para desarrolladores."
+      },
+      "blog": {
+        "title": "La revista del comercio con IA.",
+        "description": "Guías prácticas sobre datos de producto, recomendaciones de la IA y finalización de compras mediante agentes."
       }
     }
   }

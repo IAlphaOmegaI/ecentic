@@ -1,0 +1,12 @@
+{
+  "blogArticlePage": {
+    "contents": "この記事の内容",
+    "introduction": "概要",
+    "takeaways": "主なポイント",
+    "byline": "ecentic による執筆",
+    "topics": "関連トピックを確認",
+    "action": {
+      "primary": "ページ上部へ"
+    }
+  }
+}

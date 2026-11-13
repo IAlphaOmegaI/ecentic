@@ -1,0 +1,76 @@
+{
+  "dashboard": {
+    "simulations": {
+      "title": "シミュレーション",
+      "description": "競合検出と勝率シミュレーションをいつでも再実行できます。",
+      "stats": {
+        "productsSelected": "選択済み商品",
+        "competitorsSelected": "選択済み競合",
+        "estimatedSimulations": "推定シミュレーション数",
+        "estimatedTime": "推定時間",
+        "pickedForScan": "次回スキャンに選択済み",
+        "productsCompetitorsModels": "商品 × 競合 × 3モデル",
+        "atCurrentSelection": "現在の選択内容に基づく"
+      },
+      "discovery": {
+        "kicker": "01 — 発見",
+        "title": "競合検出",
+        "description": "現在の商品を使用して、AIによる競合検出を再実行します。",
+        "totalCompetitors": "現在の競合総数: {count}"
+      },
+      "setup": {
+        "kicker": "02 — スキャン設定",
+        "title": "シミュレーション対象を選択",
+        "description": "次回の実行に含める商品と競合商品を選択してください。選択内容に応じて推定値が更新されます。",
+        "products": "商品",
+        "competitors": "競合商品",
+        "clearAll": "すべて解除",
+        "selectAll": "すべて選択",
+        "nothingYet": "まだ何もありません。",
+        "estimate": "{products}商品 × {competitors}競合商品 × 3モデル",
+        "estimateTotal": "{total}件のシミュレーション · {duration}"
+      },
+      "run": {
+        "kicker": "03 — シミュレーション",
+        "title": "勝率シミュレーション",
+        "description": "ChatGPT、Claude、Gemini 全体で、自社商品と競合商品のシミュレーションを再実行します。",
+        "reset": "リセット",
+        "runSimulation": "シミュレーションを実行",
+        "progress": "シミュレーション進行状況",
+        "phase": "フェーズ",
+        "winsLosses": "勝利数 / 敗北数",
+        "elapsed": "経過時間",
+        "currentStage": "現在のステージ",
+        "acrossAllModels": "全モデル合計",
+        "sinceStart": "開始から",
+        "liveOutput": "ライブ出力",
+        "lineCount": "{count, plural, other {#行}}",
+        "noLogsYet": "まだログはありません。シミュレーションを開始するとライブ出力が表示されます。",
+        "status": {
+          "done": "完了",
+          "running": "実行中",
+          "queued": "キュー待ち"
+        }
+      },
+      "complete": {
+        "winRate": "勝率",
+        "products": "商品",
+        "wins": "勝利数",
+        "losses": "敗北数",
+        "topFinding": "{name} は {attributes} が原因で選ばれていません。{impact} これによりシミュレーションの {loss}% を失っています。"
+      },
+      "toast": {
+        "simulationFailed": "シミュレーションに失敗しました",
+        "nothingSelected": "何も選択されていません",
+        "selectProduct": "スキャン対象の商品を1つ以上選択してください。",
+        "selectCompetitor": "スキャン対象の競合商品を1つ以上選択してください。"
+      },
+      "skeleton": {
+        "phase": "フェーズ",
+        "progress": "進捗",
+        "winsLosses": "勝ち / 負け",
+        "elapsed": "経過時間"
+      }
+    }
+  }
+}

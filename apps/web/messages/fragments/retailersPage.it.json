@@ -1,0 +1,47 @@
+{
+  "retailersPage": {
+    "challengeIntro": "Parti dalla scheda prodotto, confronta le evidenze e decidi quale lavoro sul catalogo affrontare dopo.",
+    "catalogIntro": "Scegli dove si trovano i dati dei tuoi prodotti. Scopri cosa supporta la connessione e quali decisioni restano al tuo team.",
+    "catalog": {
+      "select": "Origine del tuo catalogo",
+      "capability": "Cosa supporta questo percorso",
+      "dataLabel": "Dati prodotto",
+      "decisionLabel": "Decisione di pubblicazione",
+      "routes": [
+        {
+          "data": "Prepara un feed o un CSV compatibile utilizzando campi e formati supportati.",
+          "decision": "Un’importazione non crea un connettore che scriva le modifiche nel sistema di origine. Scegli come riportare alla fonte le modifiche approvate."
+        },
+        {
+          "data": "Controlla la diagnostica di Merchant Center per il tuo catalogo Shopify.",
+          "decision": "Esegui la sincronizzazione supplementare separatamente dopo aver pubblicato le modifiche alle schede prodotto. Non corregge ogni discrepanza di prezzo o disponibilità."
+        },
+        {
+          "data": "Collega un negozio Shopify o WooCommerce supportato e importa i suoi prodotti.",
+          "decision": "Il tuo team sceglie quali modifiche supportate alle schede prodotto pubblicare nel negozio collegato."
+        },
+        {
+          "data": "Usa un feed prodotto compatibile esportato dal tuo PIM.",
+          "decision": "Verifica la disponibilità del connettore dedicato nella sezione integrazioni prima di pianificare la scrittura delle modifiche nel sistema di origine."
+        }
+      ]
+    },
+    "pilot": {
+      "label": "Definisci prima l'ambito del progetto pilota",
+      "steps": [
+        {
+          "title": "Un mercato, una categoria",
+          "body": "Scegli i prodotti che il tuo team può esaminare."
+        },
+        {
+          "title": "Baseline della settimana 0",
+          "body": "Definisci il punto di partenza per il tuo progetto pilota."
+        },
+        {
+          "title": "Risultati della settimana 6",
+          "body": "Esamina i risultati prima di scegliere la categoria successiva."
+        }
+      ]
+    }
+  }
+}

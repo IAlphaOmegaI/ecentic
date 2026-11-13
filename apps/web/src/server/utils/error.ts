@@ -231,6 +231,12 @@ export const isTransientConnectionError = (
   if (typeof code === "string" && TRANSIENT_CONNECTION_CODES.has(code))
     return true;
 
+  // The pooler can time out its authentication handshake during parallel
+  // prerender reads. This exact failure precedes query execution; other 08P01
+  // protocol errors and rejected credentials must not be retried as outages.
+  if (code === "08P01" && error.message === "Authentication timed out")
+    return true;
+
   return isTransientConnectionError(error.cause, depth + 1);
 };
 

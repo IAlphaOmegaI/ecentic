@@ -228,6 +228,10 @@
       "docs": {
         "title": "Développez sur la plateforme de commerce piloté par agents.",
         "description": "Référence API, MCP, CLI et documents publics de découverte pour les développeurs."
+      },
+      "blog": {
+        "title": "Le journal du commerce à l’ère de l’IA.",
+        "description": "Des guides pratiques sur les données produit, les recommandations de l’IA et le passage en caisse par des agents."
       }
     }
   }

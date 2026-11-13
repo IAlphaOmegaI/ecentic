@@ -1,0 +1,56 @@
+{
+  "brandsPage": {
+    "jobs": {
+      "description": "Scegli la fase del percorso d’acquisto che il tuo team deve migliorare.",
+      "label": "Esplora le priorità del brand",
+      "details": "Scopri tutte le sfide e le capacità",
+      "items": [
+        {
+          "id": "compare",
+          "label": "Confronta i concorrenti",
+          "scope": "Decisioni simulate",
+          "path": [
+            "Il tuo prodotto",
+            "Concorrenti identificati",
+            "Decisioni del modello"
+          ]
+        },
+        {
+          "id": "listings",
+          "label": "Migliora le schede prodotto",
+          "scope": "Informazioni prodotto esistenti",
+          "path": [
+            "Dati di origine",
+            "Titolo e descrizione",
+            "Dati strutturati separati"
+          ]
+        },
+        {
+          "id": "checkout",
+          "label": "Testa il checkout",
+          "scope": "Flussi WooCommerce supportati",
+          "path": [
+            "Scoperta del prodotto",
+            "Prezzi nel carrello",
+            "Trasferimento al pagamento"
+          ]
+        },
+        {
+          "id": "referrals",
+          "label": "Identifica i referral",
+          "scope": "Referral Shopify riconosciuti",
+          "path": [
+            "Assistente AI",
+            "Visita allo store",
+            "Monitoraggio dei referral"
+          ]
+        }
+      ]
+    },
+    "sources": {
+      "description": "Inizia dal tuo store o da un feed supportato. La sincronizzazione con Merchant Center resta un’azione separata.",
+      "store": "Collega uno store",
+      "catalog": "Altri percorsi del catalogo"
+    }
+  }
+}

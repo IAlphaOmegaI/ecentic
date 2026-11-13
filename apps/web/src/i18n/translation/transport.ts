@@ -13,6 +13,7 @@ const mapIdentifiers = (
   value: JsonValue,
   identifiers: ReadonlyMap<string, string>,
   field = "",
+  includeOriginalId = false,
 ): JsonValue => {
   if (typeof value === "string") {
     return ["id", "reviewedIds", "requestedIds"].includes(field)
@@ -20,14 +21,21 @@ const mapIdentifiers = (
       : value;
   }
   if (Array.isArray(value))
-    return value.map((entry) => mapIdentifiers(entry, identifiers, field));
-  if (value && typeof value === "object")
-    return Object.fromEntries(
-      Object.entries(value).map(([key, entry]) => [
-        key,
-        mapIdentifiers(entry, identifiers, key),
-      ]),
+    return value.map((entry) =>
+      mapIdentifiers(entry, identifiers, field, includeOriginalId),
     );
+  if (value && typeof value === "object") {
+    const { id } = value;
+    return Object.fromEntries([
+      ...Object.entries(value).map(([key, entry]) => [
+        key,
+        mapIdentifiers(entry, identifiers, key, includeOriginalId),
+      ]),
+      ...(includeOriginalId && typeof id === "string" && identifiers.has(id)
+        ? [["originalId", id]]
+        : []),
+    ]);
+  }
   return value;
 };
 
@@ -75,7 +83,8 @@ export const compactTranslationTransport = (request: TranslationGeneration) => {
   return {
     request: {
       ...request,
-      prompt: `${request.prompt.slice(0, boundary)}${JSON.stringify(mapIdentifiers(payload, aliases))}`,
+      prompt: `${request.prompt.slice(0, boundary)}${JSON.stringify(mapIdentifiers(payload, aliases, "", true))}`,
+      system: `${request.system}\nTransport: return the short id in each requested row. originalId links that row to source-layout slots and context; it is context only and must not appear as an extra output field.`,
     },
     // Unknown IDs remain unknown, so the runner's exact-coverage gate rejects them.
     decode: (value: unknown) => mapIdentifiers(value as JsonValue, originals),

@@ -1,0 +1,11 @@
+{
+  "sectorsIndexPage": {
+    "description": "Esplora una domanda d’acquisto, poi i fatti che il tuo catalogo deve rendere chiari.",
+    "question": "Un acquirente potrebbe chiedere",
+    "productData": "Dati da rendere espliciti",
+    "attributeHint": "Apri un campo per vedere cosa deve indicare.",
+    "action": {
+      "primary": "Esplora questo settore"
+    }
+  }
+}

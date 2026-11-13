@@ -1,0 +1,91 @@
+{
+  "googleChannelPage": {
+    "explorer": {
+      "label": "Googleのショッピング導線を見る",
+      "stages": [
+        {
+          "id": "catalog",
+          "label": "カタログ",
+          "title": "マーチャントのオファーから開始",
+          "description": "Merchant Centerは、Googleのショッピング体験で使用される商品データを提供します。",
+          "details": [
+            "価格と在庫状況",
+            "配送と返品情報"
+          ],
+          "destination": "Merchant Center",
+          "action": {
+            "primary": "商品データを見る"
+          }
+        },
+        {
+          "id": "assistant",
+          "label": "AI回答",
+          "title": "商品データを会話に反映",
+          "description": "GoogleのAI回答は、マーチャントの商品データを使ってショッピング関連の質問に回答します。",
+          "details": [
+            "検索のAI Mode",
+            "Gemini"
+          ],
+          "destination": "AI ModeとGemini",
+          "action": {
+            "primary": "マーチャント要件を確認"
+          }
+        },
+        {
+          "id": "checkout",
+          "label": "決済",
+          "title": "購入導線は利用資格によって異なります",
+          "description": "決済が有効な場合、購入者はマーチャントのカートに進むか、Google Payを利用できます。販売主体は引き続きマーチャントです。",
+          "details": [
+            "マーチャントのカートへ進む",
+            "決済が有効な場合はGoogle Pay"
+          ],
+          "destination": "マーチャント決済",
+          "action": {
+            "primary": "マーチャント要件を確認"
+          }
+        }
+      ]
+    },
+    "reading": {
+      "label": "一貫性のあるオファー",
+      "rows": [
+        {
+          "title": "商品データ",
+          "detail": "価格と在庫状況",
+          "field": "price / availability"
+        },
+        {
+          "title": "商品ページ",
+          "detail": "正確な商品情報",
+          "field": "link"
+        },
+        {
+          "title": "配送と返品",
+          "detail": "明確な配送・返品情報",
+          "field": "shipping / return policy"
+        },
+        {
+          "title": "決済利用資格",
+          "detail": "利用資格はオファーの一部です",
+          "field": "checkout_eligibility"
+        }
+      ],
+      "action": {
+        "primary": "Merchant Centerを見る"
+      }
+    },
+    "entry": {
+      "label": "Googleマーチャント要件",
+      "steps": [
+        "対象マーチャントと対象商品",
+        "Integration hubの展開",
+        "技術検証と承認"
+      ],
+      "note": "ecenticはデータや設定の準備とテストを支援します。申請、検証、承認は引き続き事業者とGoogleの間で行われます。",
+      "action": {
+        "primary": "決済準備状況を見る"
+      }
+    }
+  }
+}

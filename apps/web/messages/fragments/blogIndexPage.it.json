@@ -1,0 +1,26 @@
+{
+  "blogIndexPage": {
+    "featured": "In evidenza",
+    "latest": "Novità nella rivista",
+    "archive": "Trova la tua prossima lettura",
+    "archiveDescription": "Sfoglia guide pratiche e ricerche per il prossimo passo della tua strategia ecommerce.",
+    "topics": "Esplora un argomento",
+    "topicsDescription": "Segui le domande alla base degli articoli.",
+    "collection": "Raccolta",
+    "order": "Ordine di lettura",
+    "all": "Tutti gli articoli",
+    "editorial": "Guide editoriali",
+    "recommended": "Consigliati",
+    "newest": "Più recenti prima",
+    "articles": "Articoli",
+    "page": "Pagina",
+    "empty": "Ancora nessun articolo in questa raccolta.",
+    "loading": "Caricamento articoli",
+    "action": {
+      "primary": "Sfoglia tutti gli articoli",
+      "secondary": "Precedente",
+      "tertiary": "Successivo",
+      "quaternary": "Esplora le risorse"
+    }
+  }
+}

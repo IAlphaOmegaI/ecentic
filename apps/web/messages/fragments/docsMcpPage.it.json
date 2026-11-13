@@ -1,0 +1,44 @@
+{
+  "docsMcpPage": {
+    "transport": {
+      "label": "Riferimento della connessione",
+      "endpoint": "Endpoint principale",
+      "alias": "Stesso handler",
+      "details": [
+        "Percorsi degli endpoint",
+        "Richieste e risposte",
+        "Comportamento della sessione"
+      ]
+    },
+    "handshake": {
+      "label": "Esplora l’handshake",
+      "tabs": [
+        "Inizializza",
+        "Notifica"
+      ],
+      "request": "Il client invia",
+      "response": "Il server restituisce",
+      "result": [
+        "Protocollo negoziato + capacità del server",
+        "Accettato con corpo vuoto"
+      ],
+      "example": "Esempio completo di handshake"
+    },
+    "authentication": {
+      "credential": "Invia una chiave bearer",
+      "create": "Crea la tua credenziale"
+    },
+    "errors": {
+      "labels": [
+        "Errore JSON-RPC",
+        "Errore di trasporto",
+        "Eccezione di autenticazione"
+      ],
+      "formats": [
+        "error.code",
+        "application/problem+json",
+        "WWW-Authenticate"
+      ]
+    }
+  }
+}

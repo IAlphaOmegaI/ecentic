@@ -1,0 +1,17 @@
+{
+  "reviewConnect": {
+    "problem": {
+      "store": "店铺商品目录",
+      "merchant": "Merchant Center",
+      "feed": "商品数据源",
+      "note": "同一商品在各个来源中可能有不同记录。"
+    },
+    "flow": {
+      "sources": "选择要导入的来源。",
+      "catalog": "您的工作商品目录",
+      "merchant": "Merchant Center是独立的Shopify连接。",
+      "selection": "选择要进行对比的已导入商品。",
+      "control": "先导入支持的商品字段。发布变更仍是单独操作。"
+    }
+  }
+}

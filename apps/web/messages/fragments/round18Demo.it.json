@@ -1,0 +1,15 @@
+{
+  "demoPage": {
+    "agenda": {
+      "description": "Parti da un prodotto, segui il processo decisionale e poi concorda cosa migliorare. Ecco la conversazione che affronteremo insieme."
+    },
+    "progress": {
+      "completed": "Completato",
+      "current": "Ti trovi qui",
+      "upcoming": "Prossimo"
+    }
+  },
+  "commerceFigures": {
+    "demoPlane": "Illustrazione: un aeroplanino di carta piegato che vira e si solleva verso il puntatore."
+  }
+}

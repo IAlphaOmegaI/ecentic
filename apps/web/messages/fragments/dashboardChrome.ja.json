@@ -1,0 +1,1235 @@
+{
+  "dashboard": {
+    "nav": {
+      "overview": "概要",
+      "products": "商品",
+      "competitors": "競合商品",
+      "simulations": "シミュレーション",
+      "optimize": "最適化",
+      "visibility": "可視性",
+      "agentic": "Agenticスコア",
+      "googleShopping": "Google Shopping",
+      "quality": "データ品質",
+      "brand": "ブランド",
+      "discovery": "発見",
+      "ucp": "UCP",
+      "ucpPlayground": "UCPテスト環境",
+      "ucpComparison": "UCP比較",
+      "reports": "レポート",
+      "settings": "設定",
+      "billing": "請求管理",
+      "integrations": "連携",
+      "stores": "ストア",
+      "groups": {
+        "catalog": "カタログ",
+        "intelligence": "インテリジェンス",
+        "channels": "チャネル"
+      }
+    },
+    "sidebar": {
+      "allStores": "すべてのストア"
+    },
+    "stores": {
+      "empty": "ストアがまだありません",
+      "select": "ストアを選択",
+      "selectStore": "ストアを選択",
+      "allStores": "すべてのストア",
+      "action": {
+        "primary": "ストアを接続"
+      }
+    },
+    "hub": {
+      "workspace": "ワークスペース",
+      "title": "ストア一覧",
+      "description": "ストアを選択すると、AIショッピングエージェントがそのカタログをどのようにランク付けしているかを確認できます。別のストアを接続することもできます。",
+      "action": {
+        "primary": "ストアを接続"
+      },
+      "aggregates": {
+        "stores": "ストア",
+        "products": "商品",
+        "avgWinRate": "平均勝率",
+        "agentVisits30d": "エージェントの訪問数・30日"
+      },
+      "storeCard": {
+        "winRate": "勝率",
+        "products": "商品",
+        "agents30d": "エージェントの訪問数・30日",
+        "synced": "{time}に同期",
+        "notSyncedYet": "未同期",
+        "openDashboard": "ダッシュボードを開く",
+        "status": {
+          "connected": "接続済み"
+        }
+      },
+      "platforms": {
+        "shopify": "Shopify",
+        "woocommerce": "WooCommerce",
+        "feed": "商品フィード",
+        "csv": "CSVインポート"
+      },
+      "empty": {
+        "title": "最初のストアを接続",
+        "description": "ストアを連携して商品をインポートし、AIショッピングエージェントが自社商品を競合商品と比較した際の動向追跡を開始します。"
+      }
+    },
+    "commandPalette": {
+      "trigger": "商品、競合商品を検索...",
+      "placeholder": "商品、競合商品、ページを検索...",
+      "keyboardShortcut": "⌘K",
+      "keyboardEscape": "esc",
+      "states": {
+        "searching": "検索中…",
+        "empty": "結果がありません",
+        "emptyForQuery": "\"{query}\" の検索結果はありません"
+      },
+      "sections": {
+        "products": "商品",
+        "competitors": "競合商品",
+        "pages": "ページ"
+      },
+      "hints": {
+        "open": "で開く",
+        "close": "で閉じる"
+      },
+      "nav": {
+        "overview": "概要",
+        "products": "商品",
+        "competitors": "競合商品",
+        "simulations": "シミュレーション",
+        "ucpStructuredData": "UCP・構造化データ",
+        "optimize": "最適化",
+        "settings": "設定"
+      }
+    },
+    "notifications": {
+      "title": "通知",
+      "ariaLabel": "通知",
+      "states": {
+        "empty": {
+          "primary": "通知はありません",
+          "secondary": "現在、対応が必要な通知はありません。必要な場合はお知らせします。"
+        }
+      }
+    },
+    "subscription": {
+      "payAsYouGo": "従量課金",
+      "noPlan": "プランなし",
+      "status": {
+        "trial": "トライアル",
+        "pastDue": "支払い期限超過",
+        "unpaid": "未払い",
+        "paused": "一時停止中"
+      }
+    },
+    "trial": {
+      "badge": "無料トライアル",
+      "daysLeft": "残り{days}日",
+      "endsOn": "{date}まで無料",
+      "upgradeHint": "終了前にカードを追加してください",
+      "modal": {
+        "endingIn": "トライアル終了日: {date}",
+        "title": "{plan}を継続",
+        "description": "シミュレーション、インサイト、競合分析機能を引き続きすべて利用できます。",
+        "progress": "トライアル利用状況",
+        "daysUsed": "{used}/{total}日を利用済み",
+        "featuresHeading": "{plan}の全機能",
+        "pricePerMonth": "/month",
+        "action": {
+          "primary": "請求設定へ",
+          "secondary": "後で行う（残り{days}日）"
+        }
+      },
+      "features": [
+        "AIシミュレーション無制限",
+        "4つすべてのモデルの視点",
+        "競合商品の自動検出",
+        "UCP構造化データのエクスポート",
+        "優先サポート"
+      ]
+    },
+    "simulation": {
+      "action": {
+        "primary": "シミュレーションを実行",
+        "secondary": "再実行",
+        "tertiary": "ダッシュボードを表示"
+      },
+      "title": {
+        "pre": "シミュレーションを実行",
+        "running": "シミュレーション実行中",
+        "complete": "シミュレーション完了"
+      },
+      "states": {
+        "live": "ライブ",
+        "done": "完了",
+        "running": "実行中",
+        "queued": "キュー待ち",
+        "initializing": "シミュレーションエンジンを初期化しています..."
+      },
+      "pre": {
+        "heading": "AIショッピングシミュレーション",
+        "description": "ChatGPT、Claude、Geminiが自社商品と競合商品をどのように比較し、どの商品を選ぶかをシミュレーションします。",
+        "addCompetitors": "競合商品を追加",
+        "noCompetitors": "このストアにはまだ競合商品がありません。モデルが比較できるよう追加してください。"
+      },
+      "running": {
+        "heading": "リアルタイム分析スキャン",
+        "comparisons": "{count}件の比較でシミュレーションを実行中"
+      },
+      "complete": {
+        "overallWinRate": "全体勝率",
+        "completedIn": "{elapsed}で完了",
+        "winRateByModel": "モデル別勝率",
+        "stats": {
+          "wins": "選択数",
+          "losses": "非選択数",
+          "products": "商品"
+        },
+        "results": {
+          "low": "AIショッピングエージェントは多くの場合、競合商品を選んでいます。改善していきましょう。",
+          "medium": "競争力はありますが、さらに選ばれる余地があります。",
+          "high": "多くの競合より優位に立っています。この状態を維持しましょう。"
+        },
+        "topFinding": "{name} は {attributes} で競合に劣っています。{impact} シミュレーションの {lossPercentage}% で選ばれていません。"
+      },
+      "providers": {
+        "gpt4": {
+          "description": "仕様重視の評価"
+        },
+        "claude": {
+          "description": "価値訴求の分析"
+        },
+        "gemini": {
+          "description": "価格対機能比"
+        }
+      },
+      "toast": {
+        "failed": {
+          "title": "シミュレーションに失敗しました"
+        }
+      }
+    },
+    "overview": {
+      "action": {
+        "primary": "シミュレーションを実行"
+      },
+      "tabs": {
+        "products": "注目商品",
+        "competitors": "競合",
+        "agents": "エージェント経由の訪問"
+      },
+      "charts": {
+        "kickers": {
+          "performance": "01 — パフォーマンス",
+          "recentActivity": "01.5 — 最近のアクティビティ"
+        },
+        "winRateByModel": "モデル別勝率",
+        "winRateTrend": "勝率の推移",
+        "states": {
+          "noModels": "シミュレーションを実行すると、モデルごとのパフォーマンスを確認できます。",
+          "noTrend": "推移を表示するにはデータが不足しています。",
+          "noTrendHint": "シミュレーションを実行して開始してください。",
+          "noActivity": "まだアクティビティがありません。最初のシミュレーションを実行すると、ここに結果が表示されます。"
+        },
+        "action": {
+          "primary": "すべての商品を表示",
+          "secondary": "最適化"
+        }
+      }
+    },
+    "agentVisits": {
+      "kicker": "04 — エージェントトラフィック",
+      "title": "エージェント別訪問数（過去30日間）",
+      "description": "ScriptTagトラッカー、ブラウザ上で確認可能なAIシグナル、およびリファラーシグナルのみを対象としています。",
+      "total": "合計",
+      "states": {
+        "empty": "AIエージェントからの訪問はまだ記録されていません。AIリファラーやトラッカーが認識するユーザーエージェント経由で訪問が発生した場合、またはプローブモードが有効な場合にトラフィックが表示されます。"
+      }
+    },
+    "products": {
+      "action": {
+        "primary": "商品を追加"
+      },
+      "table": {
+        "title": "商品カタログ",
+        "fields": {
+          "product": "商品",
+          "price": "価格",
+          "winRate": "勝率",
+          "quality": "品質",
+          "lastScan": "最終スキャン"
+        },
+        "states": {
+          "empty": {
+            "primary": "商品が見つかりません",
+            "secondary": "商品をインポートしてシミュレーションを実行すると、ここに勝率が表示されます。"
+          }
+        }
+      }
+    },
+    "competitors": {
+      "action": {
+        "primary": "競合を追加"
+      },
+      "table": {
+        "title": "競合ブランド",
+        "fields": {
+          "brand": "ブランド",
+          "price": "観測した価格",
+          "measured": "測定済み",
+          "unmeasured": "未測定",
+          "winRate": "勝率",
+          "simulations": "シミュレーション",
+          "lastUpdated": "最終更新"
+        },
+        "productCount": "{count, plural, other {# 商品}}",
+        "states": {
+          "empty": {
+            "primary": "まだ競合が登録されていません",
+            "secondary": "競合を追加して競争環境の分析を開始してください。"
+          }
+        }
+      }
+    },
+    "grid": {
+      "topFinding": "注目の分析結果",
+      "winRateBadge": "勝率 {rate}%"
+    },
+    "optimize": {
+      "statusPill": "{count, plural, other {#件の保留中の提案}}",
+      "title": "最適化センター",
+      "description": "AI が改善した商品情報を承認し、そのままストアへ反映できます。",
+      "action": {
+        "optimizeStore": "{store} をエージェント向けに最適化",
+        "preview": "プレビュー",
+        "primary": "承認",
+        "approveAll": "すべて承認 ({count})",
+        "reconsider": "再検討",
+        "viewProduct": "商品を見る"
+      },
+      "stats": {
+        "lowWinRate": {
+          "label": "勝率の低い商品",
+          "detail": "競合商品とのシミュレーション比較で、エージェントの選定に最も負けている商品。"
+        },
+        "publishable": {
+          "label": "自動公開可能",
+          "detail": "商品情報を書き換えることで修正可能です。承認すると公開されます。"
+        },
+        "manualFix": {
+          "label": "手動修正のみ",
+          "detail": "プラットフォームまたはデータを手動で変更する必要があります。"
+        }
+      },
+      "categories": {
+        "seo": "SEO",
+        "content": "コンテンツ",
+        "structured_data": "構造化データ",
+        "platform": "プラットフォーム"
+      },
+      "severity": {
+        "high": "高",
+        "medium": "中",
+        "low": "低"
+      },
+      "listingType": "タイトル + 説明文",
+      "unknownProduct": "不明な商品",
+      "publishedAt": "公開日 {date}",
+      "winRateChange": "推定勝率: {before}% → {after}%",
+      "dismissAriaLabel": "提案を非表示",
+      "diagnostics": {
+        "kicker": "{index} — 診断",
+        "title": "勝率が低い原因の診断",
+        "description": "これらの推奨事項には、商品情報テキストの最適化に加えて、SEO、データ品質、プラットフォームに関する問題への対応が含まれます。"
+      },
+      "queue": {
+        "kicker": "{index} — 最適化キュー",
+        "title": "商品情報改善の提案",
+        "description": "承認すると、AIで改善された商品情報を生成し、ストア（Shopify または WooCommerce）に公開します。"
+      },
+      "tabs": {
+        "pending": "保留中",
+        "published": "公開済み",
+        "dismissed": "非表示"
+      },
+      "states": {
+        "pendingEmpty": {
+          "title": "保留中の最適化はありません",
+          "description": "シミュレーション勝率が55%未満の Shopify または WooCommerce の商品がここに表示されます。スキャンを実行し、承認すると、AIで改善されたタイトルと説明文がストアに反映されます。"
+        },
+        "publishedEmpty": {
+          "title": "公開済みの最適化はまだありません",
+          "description": "承認された変更は、推定勝率への影響とともにここに記録されます。"
+        },
+        "dismissedEmpty": {
+          "title": "非表示にした提案はありません",
+          "description": "非表示にした提案はここに保存され、いつでも復元できます。"
+        }
+      },
+      "roadmap": {
+        "kicker": "01 — 想定される流れ",
+        "title": "最適化の見通し",
+        "description": "AIショッピングエージェントの勝率が6か月間でどのように積み上がるかの一般的な流れ: 公開後24〜48時間で最初の改善、その後約{trafficDays}日でストアフロントへのトラフィックが現れ、続いてカタログ全体へ波及します。",
+        "phaseLabel": "{title} フェーズ",
+        "current": "現在",
+        "liftPoints": "+{points}ポイント",
+        "metrics": {
+          "ceiling": {
+            "label": "予測上限",
+            "detail": "現在 {baseline}% · +{delta} pts の可能性"
+          },
+          "simulationLift": {
+            "label": "最初のシミュレーション改善",
+            "detail": "公開後に再スキャンすると、通常48時間以内に勝率の変化が確認されます。"
+          },
+          "trafficSignals": {
+            "label": "初期トラフィックシグナル",
+            "detail": "AIエージェント経由の訪問と帰属売上は、1か月前後で現れ始める傾向があります。"
+          }
+        },
+        "chart": {
+          "title": "予測勝率",
+          "coverage": "カタログに基づくパーソナライズ · カバレッジシグナル {coverage}%",
+          "today": "今日",
+          "weekZero": "0週目",
+          "week": "{week}週目",
+          "winRate": "勝率%",
+          "listingsOptimized": "最適化済み商品情報",
+          "surfacesLive": "AIエージェントの各画面で公開中",
+          "signalIntensity": "シグナル強度"
+        },
+        "phases": {
+          "foundation": {
+            "title": "基盤構築",
+            "window": "0〜14日",
+            "summary": "スキャンを実行し、弱い商品情報を書き換え、AIエージェントが読み取れるよう構造化データを公開します。シミュレーション勝率は最初に変化し、通常は公開後24〜48時間以内に反映されます。",
+            "outcomes": [
+              "保留中の商品情報リライト（タイトル + 説明文）を承認",
+              "主要SKUに JSON-LD / フィード対応属性を公開",
+              "再スキャンで競合商品に対する初期の勝率向上を確認"
+            ]
+          },
+          "traction": {
+            "title": "拡大",
+            "window": "2〜6週",
+            "summary": "AIエージェント向け表示面がカタログを再取得します（Shopify Catalog、Merchant Center、クローラー）。最初の実際の訪問や流入シグナルは通常30日前後で現れます。",
+            "outcomes": [
+              "ChatGPT / Claude / Gemini / Perplexity が更新済み商品情報を再評価",
+              "AIエージェント経由の訪問ビーコンと流入クリックが積み上がり始める",
+              "顧客事例の傾向：約30日で計測可能な訪問数・売上の増加"
+            ]
+          },
+          "compound": {
+            "title": "複利成長",
+            "window": "2〜6か月",
+            "summary": "カタログ全体のカバレッジ、競合対応ループ、モデルドリフトへの再最適化。より多くのSKUがAIエージェント対応を維持することで、勝率は推定上限に近づきます。",
+            "outcomes": [
+              "継続的なスイープでモデル更新時のドリフトを捕捉",
+              "競合の商品情報変更により新しいバトルカードを生成",
+              "AIエージェント経由の継続的なトラフィックと計測対象売上がカバレッジ拡大とともに増加"
+            ]
+          }
+        }
+      },
+      "toast": {
+        "publishFailed": "公開に失敗しました",
+        "listingUpdated": "商品情報を更新しました",
+        "listingUpdatedDescription": "変更内容を接続済みストアに反映しました。",
+        "dismissFailed": "非表示に失敗しました",
+        "restoreFailed": "復元できませんでした",
+        "someFailed": "一部の更新に失敗しました",
+        "allUpdated": "保留中の商品情報をすべて更新しました",
+        "allUpdatedDescription": "{count} 件の商品をストアに公開しました。",
+        "optimizationFailed": "最適化に失敗しました",
+        "storeOptimized": "ストアをAIエージェント向けに最適化しました",
+        "storeOptimizedDescription": "{published}/{total} 件の商品を公開し、{rewritten} 件の商品情報を書き換えました{metafields}。"
+      }
+    },
+    "visibility": {
+      "eyebrow": "エージェント可視性",
+      "title": "AIショッピングエージェントに実際にこのストアが表示される場所",
+      "description": "準備状況チェックは、robots.txt、レンダリング後のストアフロントHTML、商品オファーの識別情報、フィードといった実際の取り込み対象に対して実行されます。順位は、ChatGPT、Perplexity、Copilot が参照する Shopify Global Catalog 上でライブ計測されます。",
+      "rankSection": {
+        "eyebrow": "ライブ掲載順位",
+        "title": "購入者クエリに対する Global Catalog 内でのストア順位"
+      },
+      "audit": {
+        "scoreDetail": "ecentic 独自データではなく、AIサーフェスが実際に読み取る情報を基準に測定した、自動チェック全体でのエージェント対応状況",
+        "checkStatus": {
+          "pass": "合格",
+          "warn": "警告",
+          "fail": "不合格",
+          "manual": "手動"
+        },
+        "feed": {
+          "title": "商品フィード（{count}件{skipped}）",
+          "skipped": "、{count}件をスキップ",
+          "description": "Google Merchant Center と Perplexity Merchant Program の両方で使える1つのURL。"
+        }
+      },
+      "feedUrl": {
+        "action": {
+          "primary": "フィードURLをコピー"
+        },
+        "toast": {
+          "title": "フィードURLをコピーしました",
+          "description": "Google Merchant Center（定期取得）と Perplexity Merchant Program に貼り付けてください。"
+        }
+      },
+      "rankChecker": {
+        "fields": {
+          "query": {
+            "label": "購入者クエリ",
+            "placeholder": "例：防水トレイルランニングシューズ",
+            "validation": "購入者クエリを入力してください"
+          },
+          "country": {
+            "label": "市場"
+          }
+        },
+        "action": {
+          "primary": "順位を確認"
+        },
+        "credentialsMissing": {
+          "title": "Global Catalog の認証情報がありません",
+          "description": "AIショッピングエージェントが参照する検索インデックス内でこのストアがどの順位にあるかを測定するには、SHOPIFY_CATALOG_CLIENT_ID と SHOPIFY_CATALOG_CLIENT_SECRET を設定してください（Dev Dashboard → Catalogs → Get an API key）。"
+        },
+        "notFound": "見つかりません",
+        "resultNotFound": "\"{query}\" のライブ結果上位 {total} 件にこのストアは表示されませんでした",
+        "resultFound": "\"{query}\" のライブ結果 {total} 件中",
+        "you": "このストア",
+        "toast": {
+          "failed": "順位チェックに失敗しました"
+        }
+      }
+    },
+    "discovery": {
+      "statusPill": "AI可視性 — ストア発見",
+      "title": "AIによる発見",
+      "description": "AIショッピングエージェントがクエリに対してどのストアを推奨しているか、自社ストアが選ばれた／選ばれなかった理由、そして順位を確認できます。",
+      "targetStore": {
+        "label": "対象ストア",
+        "placeholder": "your-store.example.com",
+        "yourStore": "自社ストア",
+        "description": "各AIエージェントのおすすめの中から探す対象となるストアです。"
+      },
+      "queries": {
+        "label": "ショッピングクエリ",
+        "placeholders": [
+          "$80以下の青いスニーカー",
+          "防水ハイキングブーツ",
+          "ランナー向けギフト"
+        ],
+        "anotherPlaceholder": "別のショッピングクエリ",
+        "add": "クエリを追加",
+        "removeAriaLabel": "クエリ {index} を削除",
+        "description": "各クエリをChatGPT、Claude、Gemini、Perplexityに送信し、それぞれが提案したストアをランキング表示します。"
+      },
+      "action": {
+        "primary": "ディスカバリーを実行",
+        "running": "AIに問い合わせ中…"
+      },
+      "hint": {
+        "ready": "4つのAIモデルに{count, plural, other {#件の質問}}をします。",
+        "notReady": "ディスカバリーを実行するには、対象ストアと1件以上のクエリを入力してください。"
+      },
+      "errors": {
+        "targetRequired": "対象ストアのドメインを入力してください。",
+        "queryRequired": "ショッピングクエリを1件以上入力してください。",
+        "generic": "問題が発生しました。"
+      },
+      "loading": "ChatGPT、Claude、Gemini、Perplexityに問い合わせ中…",
+      "empty": {
+        "status": "未実行",
+        "description": "上に1件以上のショッピングクエリを追加してディスカバリーを実行すると、AIショッピングエージェントが推奨するストアと、自社ストアの比較結果を確認できます。"
+      },
+      "results": {
+        "targetStore": "対象ストア"
+      },
+      "model": {
+        "failed": "失敗",
+        "notSuggested": "提案されませんでした",
+        "ranked": "{total}件中{rank}位",
+        "whyRanked": "この順位になった理由",
+        "whyLeftOut": "ストアが選ばれなかった理由",
+        "noExplanation": "説明は返されませんでした。",
+        "noStores": "ストアは返されませんでした。",
+        "unreachable": "このモデルに接続できませんでした。"
+      }
+    },
+    "ucp": {
+      "statusPill": "Universal Commerce Protocol",
+      "title": "UCPと構造化データ",
+      "description": "AIショッピングエージェント向けのマーチャント情報。",
+      "protocolKicker": "01 — プロトコル",
+      "structuredDataTitle": "構造化データ",
+      "manager": {
+        "tabs": {
+          "profile": "マーチャントプロフィール",
+          "products": "商品JSON-LD",
+          "validator": "高度なバリデーター"
+        },
+        "fields": {
+          "merchantName": {
+            "label": "マーチャント名",
+            "placeholder": "Acme Store"
+          },
+          "description": {
+            "label": "説明",
+            "placeholder": "現代的な住まい向けのプレミアムオーディオ機器"
+          },
+          "logoUrl": {
+            "label": "ロゴURL",
+            "placeholder": "https://acme.store/logo.png"
+          },
+          "paymentMethods": {
+            "label": "決済方法",
+            "placeholder": "Visa, Mastercard, PayPal, Apple Pay"
+          },
+          "shippingPolicy": {
+            "label": "配送ポリシー",
+            "placeholder": "$50以上で送料無料 · 3〜5営業日"
+          },
+          "returnPolicy": {
+            "label": "返品ポリシー",
+            "placeholder": "30日以内の返品無料"
+          },
+          "contactEmail": {
+            "label": "連絡先メールアドレス",
+            "placeholder": "support@acme.store"
+          },
+          "sustainability": {
+            "label": "サステナビリティ",
+            "placeholder": "カーボンニュートラル配送 · リサイクル梱包"
+          },
+          "certifications": {
+            "label": "認証",
+            "placeholder": "B-Corp, ISO 9001"
+          }
+        },
+        "action": {
+          "generate": "JSONを生成",
+          "generateWithAi": "AIで生成",
+          "generating": "生成中…",
+          "generatingAll": "生成中...",
+          "save": "保存",
+          "saveProfile": "プロフィールを保存",
+          "saving": "保存中…",
+          "copy": "コピー",
+          "copied": "コピー済み",
+          "reset": "リセット",
+          "publishShopify": "Shopifyに公開",
+          "pushTo": "{store}に反映",
+          "pushing": "反映中…",
+          "generateAll": "すべて生成",
+          "generateOne": "生成",
+          "regenerate": "再生成"
+        },
+        "products": {
+          "tab": "商品情報",
+          "validateTab": "検証",
+          "coverage": "{total}件中{covered}件の商品をカバー",
+          "columnProduct": "商品",
+          "columnStatus": "ステータス",
+          "statusComplete": "完了",
+          "statusMissing": "不足",
+          "empty": "商品が見つかりません。先にストアを接続して商品を同期してください。"
+        },
+        "profile": {
+          "fieldsTitle": "プロフィール項目",
+          "jsonPreview": "JSONプレビュー",
+          "aiEnhanced": "AIで強化",
+          "jsonPreviewDescription": "/.well-known/ucp ドキュメントのライブプレビューです。"
+        },
+        "toast": {
+          "pushProfileFailed": "UCPをShopifyに反映できませんでした",
+          "pushProfileSuccess": "UCPプロフィールをShopifyに反映しました",
+          "pushProfileSuccessDescription": "namespace \"ucp\" の下で{written}件のメタフィールドを{store}に書き込みました。",
+          "pushProductsFailed": "商品メタフィールドを反映できませんでした",
+          "pushProductsSuccess": "商品構造化データを反映しました",
+          "pushProductsSuccessDescription": "{store}上の{total}件中{pushed}件の商品を更新しました。"
+        },
+        "install": {
+          "title": "インストール",
+          "description": "AIショッピングエージェントがマーチャントプロフィールを検出できるよう、このJSONを /.well-known/ucp で配信してください。"
+        }
+      },
+      "advancedValidator": {
+        "kicker": "高度なテスト",
+        "title": "エンドポイントとライフサイクルのテスト",
+        "description": "プロフィールで宣言されたすべてのサービスエンドポイントを検証し、AIショッピングエージェントの購入手続きライフサイクル全体をシミュレーションします: Create → Update → Complete → Cancel。",
+        "fields": {
+          "domain": {
+            "label": "ドメイン",
+            "placeholder": "yourdomain.com"
+          }
+        },
+        "action": {
+          "primary": "高度なテストを実行",
+          "running": "テスト中…"
+        },
+        "hint": "マーチャントサーバーに対してライブHTTPリクエストを実行します。検証入力によってテスト用カートが作成される場合があります。",
+        "toast": {
+          "failed": "高度なチェックに失敗しました"
+        },
+        "grades": {
+          "A": {
+            "description": "エージェント利用可能"
+          },
+          "B": {
+            "description": "ほぼ利用可能"
+          },
+          "C": {
+            "description": "要改善"
+          },
+          "F": {
+            "description": "重大な問題あり"
+          }
+        },
+        "transport": {
+          "rest": "REST",
+          "mcp": "MCP",
+          "a2a": "A2A",
+          "embedded": "埋め込み",
+          "streamableHttp": "ストリーミングHTTP",
+          "sse": "SSE",
+          "unknown": "不明"
+        },
+        "chips": {
+          "noResponse": "応答なし",
+          "corsOk": "CORS ✓",
+          "noCors": "CORSなし",
+          "skipped": "スキップ",
+          "pass": "成功",
+          "fail": "失敗",
+          "missing": "不足",
+          "search": "検索",
+          "checkout": "購入手続き",
+          "failing": "{count}件失敗",
+          "ok": "{total}件OK",
+          "toolsDeclared": "{count, plural, other {#件のツールを宣言}}",
+          "sseWarning": "SSE — ツール呼び出しにはストリーミング対応クライアントが必要です",
+          "agentCardFound": "エージェントカードを検出",
+          "noAgentCard": "エージェントカードなし",
+          "ucpExtension": "UCP拡張",
+          "noUcpExtension": "UCP拡張なし"
+        },
+        "headers": {
+          "service": "サービス",
+          "endpoint": "エンドポイント",
+          "status": "ステータス",
+          "latency": "レイテンシ",
+          "cors": "CORS",
+          "tool": "ツール",
+          "result": "結果",
+          "note": "メモ"
+        },
+        "sections": {
+          "endpoints": {
+            "title": "サービスエンドポイント検証",
+            "description": "UCPプロフィールで宣言された各サービスエンドポイントに対してライブHEADリクエストを実行します。レイテンシはこのサーバーから計測されます。"
+          },
+          "mcp": {
+            "title": "MCPエンドポイント",
+            "description": "JSON-RPC initialize + tools/list を通じてMCPサービスエンドポイントを検証します。プロトコルバージョン、サーバー識別情報、エージェントが呼び出せるすべてのツールを表示します。"
+          },
+          "a2a": {
+            "title": "A2Aエンドポイント",
+            "description": "Agent-to-Agentサービスエンドポイントを検証します。到達可能性、/.well-known/agent-card.json にあるエージェントカードの有無、およびUCP拡張ヘッダーを確認します。"
+          },
+          "checkout": {
+            "title": "購入手続きライフサイクル",
+            "description": "UCP REST仕様に基づき、カート → 購入手続きセッションのフローをシミュレーションします: POST /carts → PUT /carts/{id} → POST /checkout-sessions → complete → cancel。検証入力では400/422レスポンスが想定されます。"
+          }
+        },
+        "emptyEndpoints": "UCPプロフィールにURL付きのサービスエンドポイントが見つかりません。ライブテストを有効にするには、サービスに",
+        "emptyEndpointsSuffix": "フィールドを追加してください。",
+        "emptyEndpointsField": "endpoint"
+      }
+    },
+    "ucpComparison": {
+      "statusPill": "Sandbox — 複数ストア比較",
+      "title": "UCPストア比較",
+      "description": "自社ストアと競合ストアを追加し、各ストアで同じカタログ検索を実行して、エージェント主導のショッピングで商品情報がどのように比較されるかを確認できます。",
+      "sectionKicker": "01 — 比較",
+      "sectionTitle": "カタログ検索の並列比較",
+      "sourceStore": {
+        "label": "自社ストア",
+        "placeholder": "your-store.example.com",
+        "description": "競合と比較評価したいマーチャントのカタログです。"
+      },
+      "buyerRequest": {
+        "label": "購入リクエスト",
+        "placeholder": "例: 「200 ALL以下のワイヤレスマウス」",
+        "description": "購入リクエストを一度検索パラメータに解析し、そのパラメータをすべてのストアに同一条件で適用します。"
+      },
+      "competitors": {
+        "label": "競合ストア",
+        "placeholder": "competitor-{index}.example.com",
+        "add": "競合を追加",
+        "removeAriaLabel": "競合 {index} を削除",
+        "description": "各 /.well-known/ucp プロファイルを解決した後、自社ストアと同じ導出パラメータで search_catalog を実行します。"
+      },
+      "action": {
+        "primary": "ストアを比較",
+        "running": "比較中…"
+      },
+      "hint": {
+        "ready": "{count} ストアを対象に1つの共有エージェント検索を実行します。",
+        "notReady": "比較を実行するには、自社ストアと少なくとも1つの競合ストアを追加してください。"
+      },
+      "searchParams": {
+        "title": "導出された検索パラメータ",
+        "description": "購入リクエストから一度解析され、すべてのストアに適用されます。",
+        "showRaw": "生のJSONを表示",
+        "hideRaw": "生のJSONを非表示"
+      },
+      "results": {
+        "title": "並列比較結果",
+        "description": "同じ検索に対して各ストアフロントが返した商品を、エージェントが受け取った順に表示します。",
+        "yourStore": "自社ストア",
+        "competitor": "競合",
+        "noProducts": "この検索では商品が返されませんでした。",
+        "moreHidden": "+{count} 件の結果がありますが表示していません。"
+      },
+      "summary": {
+        "title": "比較サマリー",
+        "generating": "生成中"
+      },
+      "eventLog": {
+        "title": "イベントログ",
+        "live": "ライブ",
+        "done": "完了",
+        "error": "エラー",
+        "events": "{count, plural, other {# 件のイベント}}",
+        "clear": "クリア",
+        "complete": "✓ 比較完了"
+      },
+      "storeStatus": {
+        "idle": "待機中",
+        "discovering": "プロファイルを解決中",
+        "searching": "検索中",
+        "done": "完了",
+        "error": "エラー"
+      }
+    },
+    "ucpPlaygroundDashboard": {
+      "statusPill": "Sandbox — UCPフローテスト",
+      "title": "UCPテスト環境",
+      "description": "任意のUCP準拠ストアに対して、カタログ検索、商品参照、カート、購入手続きの操作をテストできます。",
+      "connect": {
+        "title": "UCPストアを接続",
+        "description": "ストアドメインを入力してUCPプロファイルを解決し、セッションを開始します。",
+        "fields": {
+          "storeUrl": {
+            "label": "ストアドメイン",
+            "placeholder": "store.example.com",
+            "validation": "ストアドメインを入力"
+          }
+        },
+        "action": {
+          "primary": "接続",
+          "connecting": "接続中…"
+        }
+      },
+      "session": {
+        "changeStore": "ストアを変更",
+        "emptyTitle": "エージェントは何をするべきですか？",
+        "emptyDescription": "{host} に接続されています。エージェントはライブの UCP 呼び出しを実行し、カタログ検索、商品の詳細確認、カート作成、購入手続きの開始を行えます。",
+        "suggestions": [
+          "最初の商品について詳細を表示",
+          "最初の商品を新しいカートに追加",
+          "カートの購入手続きを開始"
+        ]
+      },
+      "product": {
+        "noImage": "画像なし",
+        "untitled": "無題の商品",
+        "variants": "{count}件のバリエーション"
+      },
+      "tool": {
+        "failed": "失敗",
+        "running": "実行中",
+        "done": "完了",
+        "error": "エラー",
+        "arguments": "引数",
+        "result": "結果",
+        "rawJson": "生のJSON"
+      },
+      "cart": {
+        "title": "カート",
+        "items": "{count, plural, other {#件の商品}}",
+        "states": {
+          "creating": "カートを作成中…",
+          "loading": "カートを読み込み中…",
+          "updating": "カートを更新中…",
+          "failed": "カート操作に失敗しました"
+        }
+      },
+      "catalog": {
+        "searching": "カタログを検索中…",
+        "failed": "カタログリクエストに失敗しました",
+        "productCount": "{count, plural, other {#件の商品}}"
+      },
+      "composer": {
+        "placeholder": "エージェントに {host} での買い物を依頼…",
+        "hint": "Enter で送信 · Shift + Enter で改行",
+        "remaining": "このプレイグラウンドの無料{limit, plural, other {メッセージ}}：全{limit}件中、残り{remaining}件。"
+      },
+      "quota": {
+        "title": "無料プレイグラウンドメッセージ {limit} 件をすべて使用しました",
+        "description": "アカウントを作成すると、メッセージ数の制限なしで、自社ストアに対して UCP フローを実行し続けられます。",
+        "action": {
+          "primary": "無料アカウントを作成"
+        }
+      },
+      "availability": {
+        "inStock": "在庫あり",
+        "backorder": "取り寄せ",
+        "preorder": "予約注文",
+        "available": "利用可能",
+        "outOfStock": "在庫切れ",
+        "discontinued": "販売終了",
+        "unavailable": "利用不可",
+        "quantityLeft": " · 残り{count}点"
+      },
+      "errors": {
+        "generic": "問題が発生しました"
+      }
+    },
+    "settings": {
+      "statusPill": "アカウントとワークスペース",
+      "title": "設定",
+      "description": "アカウント、連携、設定を管理します。",
+      "tabs": {
+        "account": "アカウント",
+        "integrations": "連携",
+        "notifications": "通知",
+        "simulation": "シミュレーション",
+        "billing": "請求"
+      },
+      "account": {
+        "language": {
+          "title": "言語",
+          "description": "ecenticインターフェースの表示言語を選択します。"
+        },
+        "profile": {
+          "title": "プロフィール",
+          "description": "プロフィール情報を更新します。",
+          "fields": {
+            "name": {
+              "label": "名",
+              "validation": "必須"
+            },
+            "surname": {
+              "label": "姓",
+              "validation": "必須"
+            },
+            "email": {
+              "label": "メールアドレス",
+              "validation": "無効なメールアドレス"
+            },
+            "role": {
+              "label": "役割"
+            }
+          },
+          "roles": [
+            "創業者 / CEO",
+            "マーケティング責任者",
+            "ECマネージャー",
+            "代理店",
+            "開発者",
+            "その他"
+          ],
+          "action": {
+            "primary": "変更を保存",
+            "saving": "保存中..."
+          }
+        },
+        "password": {
+          "title": "パスワードを変更",
+          "description": "他のサイトで使い回していない強力なパスワードを使用してください。",
+          "fields": {
+            "current": {
+              "label": "現在のパスワード",
+              "validation": "必須"
+            },
+            "new": {
+              "label": "新しいパスワード",
+              "validation": "8文字以上"
+            },
+            "confirm": {
+              "label": "新しいパスワードを確認",
+              "validation": "8文字以上"
+            }
+          },
+          "action": {
+            "primary": "パスワードを更新",
+            "updating": "更新中..."
+          },
+          "toast": {
+            "mismatch": "パスワードが一致しません"
+          }
+        },
+        "session": {
+          "title": "セッション",
+          "description": "このデバイスからサインアウトします。ダッシュボードにアクセスするには再度サインインが必要です。",
+          "action": {
+            "primary": "サインアウト",
+            "signingOut": "サインアウト中..."
+          }
+        },
+        "danger": {
+          "title": "危険な操作",
+          "description": "アカウントと関連するすべてのデータを完全に削除します。この操作は元に戻せません。",
+          "prompt": "このアカウントとすべてのデータを削除します。",
+          "action": {
+            "primary": "アカウントを削除"
+          }
+        },
+        "toast": {
+          "error": "エラー",
+          "profileSaved": "プロフィールを保存しました",
+          "passwordUpdated": "パスワードを更新しました",
+          "signOutFailed": "サインアウトできませんでした"
+        }
+      },
+      "notifications": {
+        "title": "メール通知",
+        "items": {
+          "winRateDrop": {
+            "label": "勝率の低下",
+            "description": "いずれかの商品で勝率が5%超低下した場合に通知"
+          },
+          "simulationComplete": {
+            "label": "シミュレーション完了",
+            "description": "シミュレーションバッチの完了時"
+          },
+          "optimizationReady": {
+            "label": "最適化の準備完了",
+            "description": "新しい最適化提案が利用可能です"
+          },
+          "autoPub": {
+            "label": "自動公開",
+            "description": "自動最適化によって変更が公開された場合"
+          },
+          "modelDrift": {
+            "label": "モデルドリフトを検出しました",
+            "description": "AIモデルの動作が更新された場合"
+          },
+          "competitorUpdate": {
+            "label": "競合商品の更新",
+            "description": "追跡中の競合商品情報に変更があった場合"
+          },
+          "newCompetitor": {
+            "label": "新しい競合",
+            "description": "新しい競合が検出された場合"
+          },
+          "weeklyDigest": {
+            "label": "週間ダイジェスト",
+            "description": "週間パフォーマンスの概要"
+          }
+        }
+      },
+      "simulation": {
+        "models": {
+          "title": "AIモデル",
+          "dominateBadge": "Dominate+"
+        },
+        "frequency": {
+          "title": "シミュレーション頻度",
+          "options": [
+            "手動のみ",
+            "毎日",
+            "毎週"
+          ]
+        },
+        "persona": {
+          "title": "購入ペルソナ",
+          "options": [
+            "価格重視の購入者",
+            "プレミアム志向の購入者",
+            "技術調査型ユーザー",
+            "ギフト購入",
+            "カスタム..."
+          ]
+        }
+      },
+      "integrations": {
+        "title": "接続済みストア",
+        "empty": "接続済みのストアはありません。",
+        "connected": "接続済み",
+        "action": {
+          "sync": "今すぐ同期",
+          "syncing": "同期中…",
+          "connectAnother": "別のストアを接続"
+        },
+        "toast": {
+          "syncing": "商品を同期中…",
+          "synced": "商品の同期が完了しました",
+          "reconnectRequired": "再接続が必要です",
+          "syncFailed": "同期に失敗しました",
+          "reconnectAction": "再接続",
+          "genericError": "問題が発生しました"
+        },
+        "google": {
+          "comingSoon": "近日公開",
+          "notConnected": "未接続",
+          "active": "有効 · {count, number} 件稼働中",
+          "linked": "連携済み",
+          "setupInProgress": "セットアップ中",
+          "manage": "管理 →"
+        }
+      },
+      "billing": {
+        "currentPlan": "現在のプラン",
+        "invoiceHistory": "請求履歴",
+        "noInvoices": "請求書はまだありません。",
+        "download": "ダウンロード",
+        "loading": "読み込み中…",
+        "monthly": "月額",
+        "perMonth": "/mo",
+        "billingCycle": "請求サイクル",
+        "endsOn": "終了日",
+        "nextBillingDate": "次回請求日",
+        "cancelNotice": "現在の期間終了時にプランがキャンセルされる設定です。",
+        "manageBilling": "請求を管理",
+        "upgradeTo": "{plan}にアップグレード",
+        "noActivePlan": "有効なプランがありません",
+        "payAsYouGo": {
+          "title": "従量課金",
+          "description": "開始は無料 · AIショッピングエージェントが売上を生み出した場合のみ料金が発生します。",
+          "active": "有効",
+          "fee": "手数料",
+          "feeDetail": "AI経由の注文に対して {rate}%",
+          "monthlyCap": "月額上限",
+          "switchHint": "請求額を固定したい場合は、定額の月額プラン（成果報酬なし）に切り替えできます："
+        },
+        "choosePlan": {
+          "title": "支払い方法を選択",
+          "description": "従量課金なら無料で開始可能。成果報酬なしの定額月額サブスクリプションも選択できます。",
+          "startPayg": "従量課金を開始（無料・カード不要）"
+        },
+        "performanceFee": {
+          "title": "成果報酬",
+          "description": "AI経由の注文に対して {rate}% · 月額上限は {cap}/月。開始は無料です。最適化によってAIショッピングエージェントが購入した場合にのみ料金が発生し、その他の売上には課金されません。",
+          "actionNeeded": "対応が必要です",
+          "active": "有効",
+          "off": "無効",
+          "due": "請求額 {amount}",
+          "dueHint": "今期間の手数料を支払うため、支払い方法を追加してください。",
+          "addPayment": "支払い方法を追加",
+          "ofCap": "今期間の上限 {cap} のうち",
+          "billedSoFar": "これまでの請求額 {amount}",
+          "resets": "{date} にリセット",
+          "attributedOrders": "対象注文",
+          "order": "注文 {id}"
+        },
+        "plans": {
+          "compete": "Compete",
+          "scale": "Scale",
+          "dominate": "Dominate",
+          "competeLabel": "Competeプラン",
+          "scaleLabel": "Scaleプラン",
+          "dominateLabel": "Dominateプラン"
+        },
+        "status": {
+          "active": "有効",
+          "trialing": "トライアル",
+          "pastDue": "支払い遅延",
+          "unpaid": "未払い",
+          "canceled": "キャンセル済み",
+          "incomplete": "未完了",
+          "expired": "期限切れ",
+          "paused": "一時停止中"
+        },
+        "toast": {
+          "portalFailed": "請求ポータルを開けませんでした",
+          "paygFailed": "従量課金を開始できませんでした",
+          "paymentSetupFailed": "支払い設定を開けませんでした",
+          "checkoutFailed": "購入手続きを開始できませんでした"
+        }
+      },
+      "team": {
+        "title": "チームメンバー",
+        "inviteMember": "メンバーを招待",
+        "inviteByEmail": "メールで招待",
+        "sendInvite": "招待を送信",
+        "remove": "削除",
+        "roles": {
+          "owner": "オーナー",
+          "admin": "管理者",
+          "editor": "編集者",
+          "viewer": "閲覧者"
+        },
+        "fields": {
+          "email": {
+            "label": "メールアドレス",
+            "placeholder": "colleague@company.com",
+            "validation": "無効なメールアドレス"
+          },
+          "role": {
+            "label": "役割"
+          }
+        },
+        "toast": {
+          "inviteSent": {
+            "title": "招待を送信しました",
+            "description": "チームメンバーへの招待を送信しました。"
+          }
+        }
+      }
+    },
+    "reports": {
+      "dataStatus": {
+        "asOf": "{time}時点のデータ",
+        "noScans": "完了したスキャンはまだありません"
+      },
+      "title": "レポートとエクスポート",
+      "description": "AIエージェントでのパフォーマンスに関するレポートをダウンロードしたり、自動レポートをスケジュールしたりできます。",
+      "shareable": {
+        "title": "共有用勝率レポート",
+        "description": "Twitter、LinkedIn、またはチーム内で共有できる形式の勝率レポート用公開URLを生成します。",
+        "action": {
+          "primary": "共有用レポートを生成"
+        },
+        "runScanFirst": "先にスキャンを実行してください"
+      },
+      "library": {
+        "kicker": "01 — ライブラリ",
+        "title": "利用可能なレポート"
+      },
+      "automation": {
+        "kicker": "02 — 自動化",
+        "title": "定期レポート",
+        "comingSoon": "定期レポートと週次ダイジェストは近日公開予定です。"
+      },
+      "items": {
+        "winRateSummary": {
+          "title": "勝率サマリー",
+          "description": "全商品・全モデルにおける全体パフォーマンス"
+        },
+        "productPerformance": {
+          "title": "商品パフォーマンス",
+          "description": "トレンドと競合比較を含む商品別詳細レポート"
+        },
+        "competitorAnalysis": {
+          "title": "競合分析",
+          "description": "追跡中の全ブランドのバトルカードを含む競争環境の全体像"
+        },
+        "optimizationImpact": {
+          "title": "最適化の効果",
+          "description": "公開済みのすべての最適化に関する実施前後の分析"
+        }
+      },
+      "tiers": {
+        "all": "すべてのプラン",
+        "compete": "Compete+",
+        "dominate": "Dominate+"
+      },
+      "action": {
+        "downloadCsv": "CSV"
+      }
+    }
+  }
+}

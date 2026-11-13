@@ -1,4 +1,5 @@
 import type { PropsWithChildren } from "react";
+import { ClientMessages } from "@/i18n/client-messages";
 
 /**
  * Room screens: full viewport, dark, no navbar, no scrolling. The theme system's
@@ -7,7 +8,9 @@ import type { PropsWithChildren } from "react";
  * `border-accent-foreground` keep working on the dark surface beneath.
  */
 export default ({ children }: PropsWithChildren) => (
-  <div className="dark h-dvh overflow-hidden bg-background text-foreground [--color-accent-foreground:var(--color-emphasis-rich)] [--color-background-dimmed:var(--color-emphasis)] [--color-background-rich:var(--color-emphasis-rich)] [--color-background:var(--color-emphasis-dimmed)] [--color-foreground-dimmed:var(--color-accent-rich)] [--color-foreground-rich:var(--color-white)] [--color-foreground:var(--color-white)] [color-scheme:dark]">
-    {children}
-  </div>
+  <ClientMessages scope="agentStage">
+    <div className="dark h-dvh overflow-hidden bg-background text-foreground [--color-accent-foreground:var(--color-emphasis-rich)] [--color-background-dimmed:var(--color-emphasis)] [--color-background-rich:var(--color-emphasis-rich)] [--color-background:var(--color-emphasis-dimmed)] [--color-foreground-dimmed:var(--color-accent-rich)] [--color-foreground-rich:var(--color-white)] [--color-foreground:var(--color-white)] [color-scheme:dark]">
+      {children}
+    </div>
+  </ClientMessages>
 );

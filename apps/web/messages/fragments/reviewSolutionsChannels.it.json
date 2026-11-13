@@ -1,0 +1,133 @@
+{
+  "reviewSolutionsChannels": {
+    "sample": "Esempio illustrativo",
+    "assistant": "Assistente agli acquisti",
+    "discovery": "Estratto della discovery UCP",
+    "discoveryNote": "L’individuazione del profilo non stabilisce l’idoneità del prodotto o della procedura d'acquisto.",
+    "previewNote": "Conversazioni illustrative e risposte UCP parziali, non risposte live dell’assistente. Le schede prodotto seguono i modelli di individuazione documentati da Google e OpenAI; l’integrazione commerce di ChatGPT è separata da UCP.",
+    "googleSource": "Google Shopping e UCP",
+    "openaiSource": "Risultati shopping di ChatGPT",
+    "sectors": [
+      {
+        "product": "Single malt · esempio",
+        "details": [
+          "Profilo aromatico affumicato",
+          "Origine e formato della bottiglia"
+        ],
+        "response": "Confronta le note di degustazione verificate e i dettagli della bottiglia.",
+        "limit": "Solo a scopo informativo. Si applicano restrizioni sugli alcolici."
+      },
+      {
+        "product": "Snack proteico · esempio",
+        "details": [
+          "Proteine per porzione",
+          "Ingredienti e allergeni"
+        ],
+        "response": "Confronta l’etichetta nutrizionale con i tuoi limiti di porzione e calorie.",
+        "limit": "Conferma le informazioni nutrizionali e sugli allergeni."
+      },
+      {
+        "product": "Crema idratante · esempio",
+        "details": [
+          "Formula senza profumo",
+          "Elenco completo degli ingredienti"
+        ],
+        "response": "Controlla l’elenco degli ingredienti e la formulazione dichiarata del prodotto.",
+        "limit": "Informazioni sul prodotto, non consigli medici."
+      },
+      {
+        "product": "Auricolari wireless · esempio",
+        "details": [
+          "Condizioni del test della batteria",
+          "Cancellazione del rumore"
+        ],
+        "response": "Confronta autonomia, ricarica e le funzionalità di cui hai bisogno.",
+        "limit": "Controlla prezzo e disponibilità attuali."
+      },
+      {
+        "product": "Divano letto compatto · esempio",
+        "details": [
+          "Larghezza: 185 cm",
+          "Profondità da aperto: 210 cm"
+        ],
+        "response": "Controlla sia le dimensioni da chiuso sia lo spazio necessario da aperto.",
+        "limit": "Misure di esempio per questa illustrazione."
+      },
+      {
+        "product": "Giacca da trekking · esempio",
+        "details": [
+          "Struttura impermeabile",
+          "Vestibilità e tabella taglie"
+        ],
+        "response": "Confronta protezione dagli agenti atmosferici, misure e politica di reso.",
+        "limit": "Verifica le dichiarazioni sulle prestazioni del prodotto."
+      },
+      {
+        "product": "Cibo per cani senior · esempio",
+        "details": [
+          "Indicazione della fascia d’età",
+          "Ingredienti e guida all’alimentazione"
+        ],
+        "response": "Leggi ingredienti e indicazioni di alimentazione prima di confrontare le opzioni.",
+        "limit": "L’idoneità della dieta richiede un consiglio personalizzato."
+      },
+      {
+        "product": "Weekend a Lisbona · esempio",
+        "details": [
+          "Date e tipo di camera",
+          "Condizioni di cancellazione"
+        ],
+        "response": "Confronta i dettagli del soggiorno, le date e le condizioni complete di prenotazione.",
+        "limit": "Disponibilità dei viaggi e supporto UCP variano."
+      }
+    ],
+    "catalog": {
+      "sample": "Record importati di esempio",
+      "products": [
+        "Cuffie wireless",
+        "Cuffie con cancellazione del rumore",
+        "Auricolari wireless"
+      ],
+      "ready": "Campi da controllare"
+    },
+    "perplexity": {
+      "sample": "Percorso d’acquisto illustrativo",
+      "question": "Quali cuffie andrebbero bene per un volo lungo?",
+      "answer": "Confronta cancellazione del rumore, autonomia e comfort.",
+      "product": "Cuffie wireless",
+      "details": "Cancellazione del rumore · over-ear",
+      "price": "Prezzo fornito dal merchant",
+      "website": "Pagina prodotto del merchant",
+      "record": "Record merchant di esempio",
+      "attributes": [
+        {
+          "title": "Dettagli del prodotto",
+          "value": "Titolo, immagine e specifiche"
+        },
+        {
+          "title": "Prezzo e disponibilità",
+          "value": "Informazioni attuali del merchant"
+        },
+        {
+          "title": "URL del prodotto",
+          "value": "La pagina in cui prosegue l’acquirente"
+        }
+      ],
+      "productCard": "Scheda prodotto nella risposta",
+      "merchantData": "Dalle informazioni prodotto a una scheda shopping",
+      "merchantNote": "Perplexity descrive l’uso delle informazioni del merchant per arricchire le schede prodotto. Dati più completi non garantiscono una raccomandazione.",
+      "pathsTitle": "Dove va l’acquirente dopo",
+      "pathsDescription": "Due percorsi da una scheda prodotto, come descritto nell’annuncio shopping di Perplexity.",
+      "purchaseTitle": "Acquista con Pro",
+      "purchaseBody": "L’annuncio di novembre 2024 limita questa funzione agli utenti Pro negli Stati Uniti e a prodotti selezionati di merchant selezionati. Controlla Perplexity per l’accesso aggiornato.",
+      "purchaseBadge": "Acquisti selezionati",
+      "storeTitle": "Continua sul sito del merchant",
+      "storeBody": "Quando Acquista con Pro non è disponibile, l’acquirente segue il link del prodotto verso il sito del merchant.",
+      "storeBadge": "Passaggio al merchant",
+      "trackingTitle": "Dove si inserisce ecentic",
+      "trackingBody": "ecentic può riconoscere i referral di Perplexity su Shopify. Le scansioni dello store Perplexity e un feed merchant dedicato arriveranno presto; non esiste una connessione ecentic al checkout di Perplexity.",
+      "source": "Leggi l’annuncio di Perplexity",
+      "sampleNote": "Interfaccia e prodotto di esempio, non una risposta o un’offerta live di Perplexity."
+    }
+  }
+}

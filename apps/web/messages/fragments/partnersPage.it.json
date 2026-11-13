@@ -1,0 +1,35 @@
+{
+  "partnersPage": {
+    "tracks": {
+      "description": "Porta i tuoi servizi, la tua tecnologia o il tuo pubblico nei negozi con cui lavori già."
+    },
+    "preparation": {
+      "title": "Prepara la tua candidatura",
+      "description": "Tieni a mente questi dettagli prima di compilare il modulo. Spuntali man mano.",
+      "progress": [
+        "3 dettagli da preparare",
+        "1 dettaglio su 3 pronto",
+        "2 dettagli su 3 pronti",
+        "Pronto per compilare il modulo"
+      ],
+      "items": [
+        {
+          "title": "La tua azienda e il tuo sito web",
+          "description": "Tieni a portata di mano il nome della tua azienda, il sito web e l'indirizzo email di lavoro migliore per la conversazione."
+        },
+        {
+          "title": "Il tuo percorso di partnership",
+          "description": "Scegli tra agenzie e rivenditori, partner tecnologici oppure creator e affiliati."
+        },
+        {
+          "title": "I negozi con cui lavori",
+          "description": "Fatti un'idea di quanti negozi servi e di cosa vorresti fare insieme."
+        }
+      ],
+      "action": {
+        "primary": "Vai alla candidatura"
+      },
+      "note": "Questa checklist è facoltativa. Inserisci i tuoi dati nel modulo qui sotto."
+    }
+  }
+}

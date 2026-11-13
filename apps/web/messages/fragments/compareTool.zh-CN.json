@@ -1,0 +1,52 @@
+{
+  "compareTool": {
+    "page": {
+      "title": "比较两款商品",
+      "description": "查看 AI 智能体会推荐哪款商品，以及原因。"
+    },
+    "form": {
+      "productA": "商品 A",
+      "productB": "商品 B",
+      "urlHint": "粘贴任意电商网站的商品 URL",
+      "placeholderA": "https://amazon.com/product/...",
+      "placeholderB": "https://shopify.com/products/...",
+      "prompt": {
+        "title": "您最看重什么？",
+        "description": "告诉我们您的需求，我们会根据您的标准比较商品。",
+        "placeholder": "例如：我想要一款 300 美元以下、降噪效果最好且续航时间长的耳机..."
+      },
+      "defaultPrompt": "我想要性价比最高的商品",
+      "footer": "我们会在 4 个 AI 模型中运行比较。",
+      "action": {
+        "run": "开始比较",
+        "comparing": "比较中..."
+      }
+    },
+    "running": {
+      "title": "商品比较中",
+      "modelsProgress": "{completed}/{total} 个模型",
+      "scrapedSuccess": "两款商品抓取成功",
+      "completeLog": "比较完成——已评估 {count} 个模型",
+      "footer": "正在运行 AI 比较"
+    },
+    "results": {
+      "overallSplit": "整体结果",
+      "byModel": "按模型查看结果",
+      "winner": "胜出商品",
+      "modelsChose": "个模型选择了此商品",
+      "chose": "选择了 {letter}",
+      "finishedIn": "耗时 {elapsed}",
+      "action": {
+        "compareAgain": "再次比较",
+        "startOptimizing": "开始优化"
+      }
+    },
+    "toast": {
+      "missingUrls": {
+        "title": "缺少 URL",
+        "description": "请输入两个商品 URL。"
+      },
+      "failed": "比较失败"
+    }
+  }
+}

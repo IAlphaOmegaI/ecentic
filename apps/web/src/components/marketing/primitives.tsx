@@ -240,10 +240,27 @@ export const MarketingHero = ({
       />
     )}
     {illustration && (
-      <div className="relative flex min-w-0 items-center border-accent-foreground border-l py-6 max-sm:py-2 max-md:border-t max-md:border-l-0">
+      <div
+        className={cn(
+          "relative flex min-w-0 items-center border-accent-foreground border-l",
+          dark
+            ? "max-lg:border-t max-lg:border-l-0"
+            : "py-6 max-sm:py-2 max-md:border-t max-md:border-l-0",
+        )}
+      >
         <Plus className="top-0 left-0 size-4 -translate-x-1/2 -translate-y-1/2 [&>span]:bg-cross" />
-        <Plus className="bottom-0 left-0 size-4 -translate-x-1/2 translate-y-1/2 max-md:hidden [&>span]:bg-cross" />
-        <Plus className="top-0 right-0 size-4 translate-x-1/2 -translate-y-1/2 md:hidden [&>span]:bg-cross" />
+        <Plus
+          className={cn(
+            "bottom-0 left-0 size-4 -translate-x-1/2 translate-y-1/2 [&>span]:bg-cross",
+            dark ? "max-lg:hidden" : "max-md:hidden",
+          )}
+        />
+        <Plus
+          className={cn(
+            "top-0 right-0 size-4 translate-x-1/2 -translate-y-1/2 [&>span]:bg-cross",
+            dark ? "lg:hidden" : "md:hidden",
+          )}
+        />
         {illustration}
       </div>
     )}

@@ -40,6 +40,7 @@ const { values } = parseArgs({
     slug: { type: "string" },
     "apply-review": { type: "string" },
     "export-blocked": { type: "string" },
+    "review-blocked": { type: "boolean", default: false },
     "report-dir": {
       type: "string",
       default: "/tmp/ecentic-blog-translation-reviews",
@@ -61,10 +62,10 @@ const limit = positive(values.limit, "limit");
 const concurrency = Math.min(8, positive(values.concurrency, "concurrency"));
 const maxBatches = positive(values["max-batches"], "max-batches");
 const characterLimit = Math.min(
-  18000,
+  24000,
   positive(values["batch-chars"], "batch-chars"),
 );
-const unitLimit = Math.min(160, positive(values["batch-units"], "batch-units"));
+const unitLimit = Math.min(300, positive(values["batch-units"], "batch-units"));
 const tokensPerMinute = Math.min(
   500000,
   positive(values["tokens-per-minute"], "tokens-per-minute"),
@@ -151,13 +152,20 @@ console.log(
     unitLimit,
     tokensPerMinute,
     timeoutMs,
+    reviewBlocked: values["review-blocked"],
   }),
 );
 const generate = createAzureTranslationGenerator({
   tokensPerMinute,
   timeoutMs,
   onUsage: (usage) =>
-    console.log(JSON.stringify({ event: "model-usage", ...usage })),
+    console.log(
+      JSON.stringify({
+        event: "model-usage",
+        at: new Date().toISOString(),
+        ...usage,
+      }),
+    ),
 });
 const counter = { next: 0, stopped: false };
 process.on("SIGUSR1", () => {
@@ -170,24 +178,39 @@ const worker = async (): Promise<void> => {
   const sequence = counter.next++;
   if (sequence >= maxBatches) return;
   const startedAt = Date.now();
-  const outcome = await drainBlogTranslationBatch({
-    generate,
-    targets,
-    slugs: sourceSlugs,
-    characterLimit,
-    unitLimit,
-    onReview: async (report) => {
-      await writeFile(
-        resolve(reportDirectory, `${Date.now()}-${randomUUID()}.json`),
-        JSON.stringify(report, null, 2),
-        { flag: "wx" },
-      );
-    },
-  });
+  const drain = (reviewBlocked: boolean) =>
+    drainBlogTranslationBatch({
+      generate,
+      targets,
+      slugs: sourceSlugs,
+      characterLimit,
+      unitLimit,
+      reviewBlocked,
+      onReview: async (report) => {
+        await writeFile(
+          resolve(reportDirectory, `${Date.now()}-${randomUUID()}.json`),
+          JSON.stringify(report, null, 2),
+          { flag: "wx" },
+        );
+      },
+    });
+  const reviewBlocked = values["review-blocked"] && sequence % 2 === 0;
+  const initial = await drain(reviewBlocked);
+  const outcome =
+    initial.status === "idle" && values["review-blocked"]
+      ? await drain(!reviewBlocked)
+      : initial;
   outcomes.push(outcome);
   console.log(
     JSON.stringify({
       ...outcome,
+      mode: (
+        initial.status === "idle" && values["review-blocked"]
+          ? !reviewBlocked
+          : reviewBlocked
+      )
+        ? "review-existing"
+        : "translate-pending",
       ...("error" in outcome && typeof outcome.error === "string"
         ? { error: outcome.error.slice(0, 300), details: "See review reports" }
         : {}),

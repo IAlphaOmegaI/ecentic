@@ -68,3 +68,9 @@ ds-bundle/
 
 # Third-party SEO plugin (belongs in ~/.claude, not this repo)
 claude-seo/
+
+# Local review, translation checkpoints, and generated exports
+/output/
+/tmp/
+__pycache__/
+*.py[cod]

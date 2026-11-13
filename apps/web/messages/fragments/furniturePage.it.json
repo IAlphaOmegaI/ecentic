@@ -1,0 +1,36 @@
+{
+  "furniturePage": {
+    "introduction": "Collega lo spazio e le esigenze pratiche dell’acquirente a dati che il tuo team può verificare.",
+    "widthLabel": "Larghezza con unità",
+    "depthLabel": "Profondità con unità",
+    "heightLabel": "Altezza con unità",
+    "productLabel": "Il prodotto esatto",
+    "diagramNote": "Uno schema delle relazioni, non un prodotto misurato né un risultato di compatibilità.",
+    "relationshipTitle": "Un prodotto deve adattarsi a più di una stanza.",
+    "relationships": [
+      {
+        "title": "Spazio e utilizzo",
+        "body": "Dimensioni e capacità descrivono il prodotto in termini leggibili e verificabili."
+      },
+      {
+        "title": "Materiale e finitura",
+        "body": "Mantieni separati struttura, rivestimento e finitura, inclusa la variante selezionata."
+      },
+      {
+        "title": "Consegna e reso",
+        "body": "Montaggio, consegna e resi devono comparire accanto ai dati del prodotto."
+      }
+    ],
+    "questionLabels": [
+      "Spazio e utilizzo",
+      "Materiale e capacità",
+      "Idoneità del prodotto"
+    ],
+    "questionNotes": [
+      "Tieni separate le misure esatte del prodotto dalle foto illustrative.",
+      "Controlla materiale, prezzo e disponibilità della variante selezionata insieme alla sua capacità.",
+      "Verifica l’idoneità del prodotto specifico con il fornitore. L’illustrazione non garantisce la compatibilità."
+    ],
+    "sourceLabel": "Verifica alla fonte."
+  }
+}

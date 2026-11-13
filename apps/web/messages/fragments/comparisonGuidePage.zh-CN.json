@@ -1,0 +1,17 @@
+{
+  "comparisonGuidePage": {
+    "navigation": {
+      "label": "本指南内容",
+      "guide": "分类",
+      "tools": "比较工具",
+      "bottleneck": "找出瓶颈",
+      "related": "延伸阅读",
+      "faq": "问题"
+    },
+    "views": {
+      "label": "比较视图",
+      "table": "比较所有工具",
+      "tool": "按工具阅读"
+    }
+  }
+}

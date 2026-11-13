@@ -1,0 +1,12 @@
+{
+  "enterpriseSecurityDesign": {
+    "accessTitle": "导入与发布",
+    "permissionsTitle": "连接权限",
+    "trackingTitle": "店铺访问追踪",
+    "checkoutTitle": "智能体结账",
+    "routingTitle": "模型请求路由方式",
+    "catalogLabel": "已连接的店铺商品目录",
+    "modelLabel": "AI 提供商",
+    "outputLabel": "对比结果与商品信息修复"
+  }
+}

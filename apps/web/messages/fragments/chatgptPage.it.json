@@ -1,0 +1,56 @@
+{
+  "chatgptPage": {
+    "shopping": {
+      "feed": "Feed prodotti del venditore",
+      "discovery": "Scoperta dei prodotti",
+      "store": "Negozio del venditore",
+      "checkout": "Checkout approvato",
+      "link": "Link al prodotto",
+      "approval": "Approvazione separata per l'app"
+    },
+    "reading": {
+      "label": "Esplora cosa legge ChatGPT",
+      "caption": "Uno schema delle informazioni, non un modello di invio del feed.",
+      "records": [
+        {
+          "id": "product",
+          "title": "Scheda prodotto",
+          "record": "prodotto / variante",
+          "fields": [
+            "Titolo + descrizione",
+            "Immagini + URL del prodotto",
+            "Prezzo + disponibilità"
+          ]
+        },
+        {
+          "id": "seller",
+          "title": "Condizioni del venditore",
+          "record": "venditore",
+          "fields": [
+            "Identità del venditore",
+            "Informazioni sulla spedizione",
+            "Politica di reso"
+          ]
+        },
+        {
+          "id": "checkout",
+          "title": "Accesso al checkout",
+          "record": "checkout",
+          "fields": [
+            "Flag di idoneità",
+            "App collegata",
+            "Approvazione dell'integrazione"
+          ]
+        }
+      ]
+    },
+    "entry": {
+      "label": "Requisiti di accesso per i merchant",
+      "steps": [
+        "Onboarding del venditore",
+        "Accesso al feed prodotti",
+        "Approvazione dell'app di checkout"
+      ]
+    }
+  }
+}

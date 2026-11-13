@@ -1,0 +1,12 @@
+{
+  "reviewNotFound": {
+    "status": "Pagina non trovata",
+    "description": "Non abbiamo trovato una pagina a questo indirizzo. Torna alla home, indietro oppure esplora i percorsi qui sotto.",
+    "exploreTitle": "Alcuni buoni punti da cui partire.",
+    "action": {
+      "primary": "Torna alla home",
+      "secondary": "Indietro",
+      "tertiary": "Esplora ecentic"
+    }
+  }
+}

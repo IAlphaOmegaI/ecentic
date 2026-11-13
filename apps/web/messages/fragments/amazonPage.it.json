@@ -1,0 +1,56 @@
+{
+  "amazonPage": {
+    "journey": {
+      "label": "Esplora i percorsi di acquisto Shop Direct",
+      "discovery": "Scoperto su Amazon",
+      "surface": "Ricerca Amazon e Alexa for Shopping",
+      "destination": "Acquistato sul sito del merchant",
+      "paths": [
+        {
+          "id": "visit",
+          "title": "Visita il merchant",
+          "actor": "L’acquirente visita il tuo sito web",
+          "heading": "La scoperta porta l’acquirente da te",
+          "description": "Shop Direct può collegarsi ai prodotti sul tuo sito. L’acquirente visita il tuo sito web per acquistare.",
+          "condition": "Il sito del merchant è la destinazione dell’acquisto."
+        },
+        {
+          "id": "buy",
+          "title": "Buy for Me",
+          "actor": "L’agente di Amazon completa l’acquisto",
+          "heading": "Un agente acquista sul sito del merchant",
+          "description": "Per le offerte Buy for Me idonee, l’agente di Amazon completa l’acquisto sul sito web del merchant.",
+          "condition": "Buy for Me è disponibile solo per le offerte idonee."
+        }
+      ]
+    },
+    "catalog": {
+      "label": "Percorso di distribuzione del catalogo",
+      "source": "Il tuo catalogo prodotti",
+      "route": "Provider di soluzioni o Selling Partner API",
+      "destination": "Shop Direct"
+    },
+    "access": {
+      "title": "La partecipazione prevede requisiti specifici",
+      "market": "Clienti negli Stati Uniti",
+      "eligibility": "Siti web di merchant idonei",
+      "steps": [
+        {
+          "id": "register",
+          "title": "Registrati",
+          "description": "Gestisci la partecipazione tramite il gratuito Shop Direct Merchant Workspace. Non è necessario avere uno store nel marketplace Amazon."
+        },
+        {
+          "id": "verify",
+          "title": "Verifica il tuo sito web",
+          "description": "La verifica del sito web è obbligatoria. I merchant idonei possono partecipare anche se vendono già su Amazon."
+        },
+        {
+          "id": "share",
+          "title": "Condividi il tuo catalogo",
+          "description": "Fornisci le informazioni del catalogo tramite un provider di soluzioni o la Selling Partner API di Amazon."
+        }
+      ]
+    }
+  }
+}

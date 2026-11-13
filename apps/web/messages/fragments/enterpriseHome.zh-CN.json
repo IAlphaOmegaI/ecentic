@@ -1,0 +1,526 @@
+{
+  "enterpriseHome": {
+    "meta": {
+      "title": "AI 购物优化与 AI 智能体结账 | ecentic",
+      "description": "AI 电商层：修正智能助手读取的商品数据，让结账流程支持智能体代购，并在其规则变化时持续跟进。"
+    },
+    "hero": {
+      "eyebrow": "AI 商业层",
+      "title": "一层连接，打通您的商品目录与负责销售的 AI。",
+      "description": "无论用户是在 Google 搜索、在 Amazon 购物，还是向聊天机器人提问，如今 AI 都会直接给出商品答案，而每个助手都有自己选择和购买商品的规则。ecentic 位于您的商品目录与这些助手之间，负责修复它们读取的数据，让结账流程支持它们购买，并在规则变化时持续跟进。",
+      "actions": [
+        {
+          "label": "预约演示",
+          "href": "/demo"
+        },
+        {
+          "label": "免费检查我的商店",
+          "href": "/sign-up"
+        }
+      ],
+      "facts": [
+        "连接 Shopify 和 WooCommerce，或导入支持的商品 feed 或 CSV。"
+      ],
+      "screenshot": {
+        "alt": "ecentic 胜率概览，显示明确标注的示例数据。",
+        "caption": "产品截图 · 示例数据"
+      }
+    },
+    "programs": {
+      "eyebrow": "我们参与的项目",
+      "title": "在这些项目支持下构建。",
+      "items": [
+        {
+          "id": "plug-and-play",
+          "title": "Plug and Play"
+        },
+        {
+          "id": "microsoft-for-startups",
+          "title": "Microsoft for Startups"
+        },
+        {
+          "id": "red-bull-basement",
+          "title": "Red Bull Basement"
+        },
+        {
+          "id": "founder-games",
+          "title": "The Founder Games"
+        },
+        {
+          "id": "fil-rouge-capital",
+          "title": "Fil Rouge Capital"
+        }
+      ],
+      "missingAsset": ""
+    },
+    "businesses": {
+      "eyebrow": "02 · 适用对象",
+      "title": "不同业务，同一种新消费者。",
+      "description": "从您的销售方式，以及团队需要回答的问题开始。",
+      "painLabel": "常见问题",
+      "items": [
+        {
+          "id": "brands",
+          "eyebrow": "品牌",
+          "title": "成为答案中被点名的商品。",
+          "description": "DTC 与消费品牌",
+          "pains": [
+            "AI 在您的品类中推荐了竞品。",
+            "零售商对您商品的描述比您自己还清楚。",
+            "无法查看哪些商品被助手跳过。"
+          ],
+          "href": "/solutions/brands",
+          "label": "查看品牌方案"
+        },
+        {
+          "id": "retailers-and-marketplaces",
+          "eyebrow": "零售商与平台",
+          "title": "数千条商品信息，只有一次被智能体选中的机会。",
+          "description": "大型商品目录，多供应商",
+          "pains": [
+            "供应商数据无法让助手进行对比。",
+            "feed 与网站上的价格或库存不一致。",
+            "无法手动检查每一件商品。"
+          ],
+          "href": "/solutions/retailers-and-marketplaces",
+          "label": "查看零售方案"
+        },
+        {
+          "id": "enterprise",
+          "eyebrow": "企业版",
+          "title": "AI 是新的渠道，要像运营渠道一样运营它。",
+          "description": "多个品牌、市场与团队",
+          "pains": [
+            "每个市场都会带来不同的购物问题。",
+            "商品目录访问前必须先通过安全审核。",
+            "没有人负责 AI 这个销售渠道。"
+          ],
+          "href": "/solutions/enterprise",
+          "label": "查看企业方案"
+        },
+        {
+          "id": "agencies-and-partners",
+          "eyebrow": "代理商与合作伙伴",
+          "title": "为现有业务增添 AI 电商服务。",
+          "description": "为客户运营商店",
+          "pains": [
+            "客户会问 ChatGPT，您需要给出答案。",
+            "商品目录检测仍然靠人工完成。",
+            "您需要为这个新渠道提供清晰的服务方案。"
+          ],
+          "href": "/solutions/agencies-and-partners",
+          "label": "查看代理商方案"
+        }
+      ]
+    },
+    "loop": {
+      "eyebrow": "03 · 工作方式",
+      "title": "从商品数据源到 AI 结账。",
+      "description": "连接、对比、优化、销售，再次检查。由您决定发布哪些更改。",
+      "steps": [
+        {
+          "id": "connect",
+          "title": "连接",
+          "body": "通过 Shopify、WooCommerce、支持的 XML 或 JSON 数据源，或 CSV，将商品目录统一接入。",
+          "tags": [
+            "Shopify",
+            "WooCommerce",
+            "商品数据源"
+          ],
+          "href": "/platform/connect",
+          "label": "查看连接"
+        },
+        {
+          "id": "simulate",
+          "title": "模拟",
+          "body": "查看 ChatGPT、Claude 和 Gemini 在对比中会选择哪件商品，并阅读每次模拟选择背后的原因。",
+          "tags": [
+            "胜率",
+            "Battlecards",
+            "准备度检测"
+          ],
+          "href": "/platform/simulate",
+          "label": "查看模拟"
+        },
+        {
+          "id": "fix",
+          "title": "修复",
+          "body": "Apply 会基于现有商品事实生成并发布标题和描述。结构化数据发布与 Merchant Center 同步通过单独的控制项完成。",
+          "tags": [
+            "商品信息",
+            "结构化数据",
+            "Merchant Center"
+          ],
+          "href": "/platform/fix",
+          "label": "查看修复"
+        },
+        {
+          "id": "sell",
+          "title": "销售",
+          "body": "在 WooCommerce 上连接 AI 智能体结账，测试流程，并继续使用您自己的支付服务商。平台资格限制与支付交接规则仍然适用。",
+          "tags": [
+            "AI 智能体结账",
+            "结账测试",
+            "您的支付"
+          ],
+          "href": "/platform/sell",
+          "label": "查看销售"
+        },
+        {
+          "id": "track",
+          "title": "追踪",
+          "body": "追踪 Shopify 中检测到的 AI 引荐流量，对比已完成的模拟结果，并在需要重新检查时发起新的扫描。",
+          "tags": [
+            "AI 流量",
+            "手动重新扫描",
+            "多店铺"
+          ],
+          "href": "/platform/track",
+          "label": "查看追踪"
+        }
+      ]
+    },
+    "film": {
+      "eyebrow": "04 · 查看实际效果",
+      "title": "一分钟了解 ecentic。",
+      "description": "快速了解产品，从商品对比到商品目录的下一步决策。",
+      "caption": "ecentic 产品演示视频",
+      "action": {
+        "primary": "观看视频"
+      }
+    },
+    "channels": {
+      "eyebrow": "05 · AI 渠道",
+      "title": "一个商品目录，覆盖客户会使用的助手。",
+      "description": "每个助手都有自己的商品来源与购买规则。查看 ecentic 当前支持的内容以及已规划功能。",
+      "checked": "检查日期：2026 年 11 月 10 日。每个渠道页面都标注日期并链接到来源。",
+      "items": [
+        {
+          "id": "google",
+          "title": "Google AI Mode 和 Gemini",
+          "body": "支持 Gemini 模拟，以及 Shopify 的 Merchant Center 同步。",
+          "status": "simulated",
+          "statusLabel": "已模拟",
+          "href": "/ai-channels/google-ai-mode-gemini"
+        },
+        {
+          "id": "chatgpt",
+          "title": "ChatGPT",
+          "body": "基于 OpenAI 数据源规则的模拟与商品信息检查。",
+          "status": "simulated",
+          "statusLabel": "已模拟",
+          "href": "/ai-channels/chatgpt"
+        },
+        {
+          "id": "claude",
+          "title": "Claude",
+          "body": "模拟 Claude 如何对比您的商品。",
+          "status": "simulated",
+          "statusLabel": "已模拟",
+          "href": "/ai-channels/claude"
+        },
+        {
+          "id": "copilot",
+          "title": "Microsoft Copilot",
+          "body": "已规划 Microsoft Merchant Center 数据源导出。",
+          "status": "coming-soon",
+          "statusLabel": "即将推出",
+          "href": "/ai-channels/microsoft-copilot"
+        },
+        {
+          "id": "perplexity",
+          "title": "Perplexity",
+          "body": "已规划店铺扫描模拟与商家数据源。",
+          "status": "coming-soon",
+          "statusLabel": "即将推出",
+          "href": "/ai-channels/perplexity"
+        },
+        {
+          "id": "amazon",
+          "title": "Amazon",
+          "body": "已规划向 Shop Direct 传输商品目录。",
+          "status": "coming-soon",
+          "statusLabel": "即将推出",
+          "href": "/ai-channels/amazon"
+        }
+      ],
+      "link": {
+        "label": "查看全部",
+        "href": "/ai-channels"
+      }
+    },
+    "integration": {
+      "eyebrow": "06 · 集成",
+      "title": "接入您现有的技术栈。",
+      "description": "直接连接、支持的数据源，以及我们下一步正在开发的集成。每个卡片都会标明当前状态。",
+      "counter": {
+        "live": "已上线",
+        "feed": "通过商品数据源",
+        "soon": "即将推出"
+      },
+      "links": [
+        {
+          "label": "查看全部集成",
+          "href": "/integrations"
+        },
+        {
+          "label": "申请集成",
+          "href": "/integrations#request"
+        }
+      ]
+    },
+    "mechanisms": {
+      "eyebrow": "07 · 底层机制",
+      "title": "从“AI 跳过了我们”到“AI 从我们这里购买”之间的一切。",
+      "items": [
+        {
+          "id": "simulations",
+          "title": "智能体模拟",
+          "body": "ChatGPT、Claude 和 Gemini 会在您的商品与竞品之间进行选择，并记录整个模拟过程。",
+          "tags": [
+            "胜率",
+            "回放",
+            "Battlecards"
+          ],
+          "href": "/platform/simulate",
+          "label": "查看模拟"
+        },
+        {
+          "id": "readiness",
+          "title": "准备度检测",
+          "body": "检查爬虫规则、抽样页面的 HTML、商品标识符，以及是否符合商品数据源要求。无法访问的页面会被标记，供您复核。",
+          "tags": [
+            "爬虫",
+            "Schema",
+            "GTIN"
+          ],
+          "href": "/platform/simulate#readiness",
+          "label": "查看检测结果"
+        },
+        {
+          "id": "catalog",
+          "title": "商品目录修复",
+          "body": "基于现有商品事实生成并发布标题和描述。结构化数据拥有独立的发布操作。",
+          "tags": [
+            "商品信息",
+            "属性",
+            "发布"
+          ],
+          "href": "/platform/fix",
+          "label": "查看商品目录修复"
+        },
+        {
+          "id": "merchant-center",
+          "title": "Merchant Center 同步",
+          "body": "通过 Shopify 的独立补充数据源同步，发送已发布的商品信息修复与结账属性。",
+          "tags": [
+            "补充数据源",
+            "诊断",
+            "Shopify"
+          ],
+          "href": "/platform/fix#merchant-center",
+          "label": "查看同步"
+        },
+        {
+          "id": "checkout",
+          "title": "WooCommerce 的智能体结账",
+          "body": "让支持的智能体流程通过您的店铺和支付服务商完成交易，并提供结账测试与可配置控制项。",
+          "tags": [
+            "设置",
+            "测试",
+            "验证器"
+          ],
+          "href": "/platform/sell",
+          "label": "查看智能体结账"
+        },
+        {
+          "id": "developers",
+          "title": "API、MCP 服务器和 CLI",
+          "body": "使用已发布的接口，进行服务发现、查询套餐、连接店铺和查看接入状态。",
+          "tags": [
+            "REST",
+            "MCP",
+            "CLI"
+          ],
+          "href": "/docs",
+          "label": "打开开发者文档"
+        }
+      ]
+    },
+    "proof": {
+      "eyebrow": "08 · 当前测得的数据",
+      "title": "当前测得的数据。",
+      "stats": [
+        {
+          "value": "36,797",
+          "title": "模拟购买",
+          "body": "覆盖 ChatGPT、Claude、Gemini 和 Perplexity。",
+          "footnote": "1"
+        },
+        {
+          "value": "2.8×",
+          "title": "同一商品目录中选中同一商品的频率",
+          "body": "ChatGPT 有 51.6% 的时间会选择同一商品；Claude 和 Gemini 约为 18.5%。",
+          "footnote": "1"
+        },
+        {
+          "value": "+12%",
+          "title": "DUA Flavours 的访问量",
+          "body": "2026 年 4 月至 7 月，来自 AI 助手或直接访问的访问量。DUA Flavours，ecentic 试点项目，经授权发布。",
+          "footnote": "2"
+        }
+      ],
+      "study": {
+        "title": "大型烈酒平台",
+        "body": "9,699 个商品中有 88% 至少存在一个智能体读取的数据问题。当被问到哪里可以买到其库存中的两瓶商品时，某智能体在 20 次回答中 0 次提到该平台。",
+        "note": "匿名研究结果。基于单个商品目录和问题集的快照，并不代表所有店铺的预测结果。"
+      },
+      "footnotes": [
+        {
+          "marker": "1",
+          "text": "ecentic 模拟数据，2026 年。为模拟购物决策，并非真实智能体流量。Perplexity 属于研究范围；店铺扫描运行于 ChatGPT、Claude 和 Gemini。方法说明尚未发布。"
+        },
+        {
+          "marker": "2",
+          "text": "试点结果，经 DUA Flavours 书面确认。统计的是访问量，而非销售额。包含直接流量，且不能证明 ecentic 带来了增量销售。"
+        }
+      ],
+      "pipeline": "正在与企业零售、旅游和灵活办公领域的公司推进试点范围确认。"
+    },
+    "procurement": {
+      "eyebrow": "09 · 企业",
+      "title": "安全审查，先问对问题。",
+      "items": [
+        {
+          "title": "由您决定发布内容。",
+          "body": "商品信息修改需要您主动执行 Apply 操作。结构化数据和 Merchant Center 同步分别由独立控制项管理。连接 Shopify 时还会安装访问跟踪。"
+        },
+        {
+          "title": "基于公开数据开展试点。",
+          "body": "可从可访问的公开商品目录或支持的商品数据源开始。在连接系统或授予写入权限前，先确认试点范围。"
+        },
+        {
+          "title": "可审核的数据处理方式。",
+          "body": "查看隐私政策及产品使用的服务提供商。在试点前，与我们确认数据处理协议、部署和合同要求。"
+        },
+        {
+          "title": "创始人直接参与。",
+          "body": "从首个品类到试点结果解读，直接与打造 ecentic 的团队沟通。"
+        }
+      ],
+      "links": [
+        {
+          "label": "联系我们",
+          "href": "/demo"
+        },
+        {
+          "label": "查看安全与信任",
+          "href": "/security"
+        }
+      ]
+    },
+    "pricing": {
+      "eyebrow": "10 · 定价",
+      "title": "免费开始。等 AI 开始购物时再扩展规模。",
+      "description": "选择适合您的店铺和团队的起点。",
+      "items": [
+        {
+          "title": "免费店铺检测",
+          "body": "创建账号，查看您的商品与竞品的对比表现。",
+          "href": "/sign-up",
+          "label": "免费检测我的店铺"
+        },
+        {
+          "title": "单店自助套餐",
+          "body": "提供月付套餐或按量计费，当前限制和归因规则详见 Pricing 页面。",
+          "href": "/pricing",
+          "label": "对比套餐"
+        },
+        {
+          "title": "与您共同定义企业试点",
+          "body": "共同确认品类、基线和团队需要做出的决策。",
+          "href": "/demo",
+          "label": "讨论试点方案"
+        }
+      ],
+      "action": {
+        "label": "查看定价",
+        "href": "/pricing"
+      }
+    },
+    "editorial": {
+      "eyebrow": "11 · 来自团队",
+      "title": "我们的最新观察。",
+      "description": "由 ecentic 团队撰写的产品笔记与实用指南。",
+      "loading": "正在加载文章",
+      "empty": "下一批产品笔记和指南将在这里发布。",
+      "read": "阅读文章",
+      "links": [
+        {
+          "label": "探索资源",
+          "href": "/resources"
+        }
+      ]
+    },
+    "faq": {
+      "title": "开始前常见问题。",
+      "items": [
+        {
+          "question": "ecentic 是做什么的？",
+          "answer": "ecentic 位于您的商品目录与销售商品的 AI 助手之间。它会模拟 ChatGPT、Claude 和 Gemini 如何比较商品，帮助优化它们读取的数据，并支持 WooCommerce 的智能体结账。"
+        },
+        {
+          "question": "支持哪些 AI 助手？",
+          "answer": "店铺模拟运行于 ChatGPT、Claude 和 Gemini。Shopify 访问跟踪可识别支持的 AI 来源信号，包括 ChatGPT、Perplexity、Claude、Gemini 和 Copilot。结账能力取决于您的店铺配置及购物平台资格。每个 AI 渠道页面都会显示当前状态。"
+        },
+        {
+          "question": "ecentic 会未经许可修改我们的店铺吗？",
+          "answer": "商品信息修改需要您主动执行 Apply 操作，该操作会生成并发布标题和描述。结构化数据和 Merchant Center 同步使用独立控制项。连接 Shopify 时还会安装访问跟踪脚本。导入商品内容不会重写原内容。"
+        },
+        {
+          "question": "支持我们的平台吗？",
+          "answer": "Shopify 和 WooCommerce 可直接连接。其他平台可导入支持的 XML、JSON 商品数据源或 CSV。数据源支持取决于导出结构和字段映射；数据源导入不会回写到原平台。"
+        },
+        {
+          "question": "试点需要访问我们的系统吗？",
+          "answer": "试点可以从可访问的公开商品目录或支持的商品数据源开始。在需要系统集成或店铺写入权限前，我们会先与您确认范围。"
+        },
+        {
+          "question": "我们的数据如何处理？",
+          "answer": "安全页面说明了当前的商品目录访问、跟踪和 AI 服务商处理方式。请在试点前查看我们的隐私政策及产品使用的服务商，并与我们确认数据处理、部署和合同要求。"
+        },
+        {
+          "question": "这是 SEO 吗？",
+          "answer": "ecentic 专注于 AI 购物助手用于比较和购买的商品数据与结账流程。部分工作会与结构化数据和商品目录质量实践重叠，但衡量指标是模拟结果、识别到的 AI 来源流量和结账检查，而非搜索排名。"
+        },
+        {
+          "question": "费用是多少？",
+          "answer": "注册账号后可免费进行店铺检测。单店可选择月付套餐或按量计费。绩效费用的归因规则和限制详见 Pricing 页面；归因不代表能够证明增量销售。企业试点将与您共同定义范围。"
+        }
+      ]
+    },
+    "closing": {
+      "title": "当 AI 负责下单时，也能拿下订单。",
+      "description": "看看它是否正在选择您的商品。",
+      "actions": [
+        {
+          "label": "预约演示",
+          "href": "/demo"
+        },
+        {
+          "label": "免费检测我的店铺",
+          "href": "/sign-up"
+        }
+      ]
+    }
+  },
+  "home": {
+    "heroVideo": {
+      "heading": "查看ecentic实际运行效果",
+      "caption": "观看产品影片",
+      "action": {
+        "primary": "播放视频"
+      }
+    }
+  }
+}

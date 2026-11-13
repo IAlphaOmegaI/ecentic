@@ -1,6 +1,6 @@
 import { cn } from "@zenncore/utils";
 import type { ReactNode } from "react";
-import type { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
 import { MarketingHero } from "@/components/marketing/primitives";
 
 /** Keep dedicated content pages on the same hero as the public marketing pages. */
@@ -23,7 +23,18 @@ export const PageBanner = ({
     dark={!compact}
     artwork={compact ? undefined : artwork}
     identity={identity}
-    illustration={illustration}
+    illustration={
+      illustration ??
+      (!compact &&
+      (!artwork || artwork === "commerce" || artwork === "console") ? (
+        <div className="relative flex min-h-80 w-full items-center justify-center self-stretch overflow-hidden bg-linear-to-br from-background-rich/8 via-transparent to-emphasis-dimmed/15 max-sm:min-h-64">
+          <EvolvingAscii
+            artwork="catalogCommerce"
+            className="aspect-[3/2] h-auto w-full text-background-rich"
+          />
+        </div>
+      ) : undefined)
+    }
     meta={
       badge || meta ? (
         <>

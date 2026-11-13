@@ -1,0 +1,16 @@
+{
+  "interactiveStore": {
+    "label": "Indirizzo del tuo negozio",
+    "action": {
+      "primary": "Controlla gratis il mio negozio"
+    },
+    "pending": "Controllo del tuo negozio in corso…",
+    "hint": "Il tuo indirizzo viene riportato nella registrazione e nella scansione gratuita esistente. Nessun dettaglio di pagamento richiesto.",
+    "errors": {
+      "invalid": "Inserisci un dominio del negozio valido o un indirizzo http/https.",
+      "limited": "Troppi controlli in questo momento. Attendi un istante e riprova.",
+      "unreachable": "Non è stato possibile raggiungere {host}. Controlla l'indirizzo e riprova.",
+      "failed": "Impossibile completare il controllo. Riprova."
+    }
+  }
+}

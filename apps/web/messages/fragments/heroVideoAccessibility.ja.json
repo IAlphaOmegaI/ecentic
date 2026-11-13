@@ -1,0 +1,77 @@
+{
+  "home": {
+    "heroVideo": {
+      "sampleLabel": "サンプル商品、ショッピング画面、結果を用いたイメージ動画です。実際の結果や成果保証ではありません。",
+      "transcriptTitle": "映像説明トランスクリプト",
+      "transcriptIntroduction": "58秒の映像に表示されるテキストと視覚演出です。シーン時間はおおよそのものです。これは音声の文字起こしではなく、映像内容の説明です。",
+      "onScreenLabel": "画面表示テキスト",
+      "transcript": [
+        {
+          "time": "0:00–0:03",
+          "onScreen": "次の顧客は、人ではありません。",
+          "description": "ドット調で描かれた手が、宙に浮かぶヘッドホンへ伸びる。"
+        },
+        {
+          "time": "0:03–0:05",
+          "onScreen": "AIエージェントです。",
+          "description": "「Agent」の文字が青色で表示される。"
+        },
+        {
+          "time": "0:05–0:09",
+          "onScreen": "$50以下で最高のノイズキャンセリングイヤホン",
+          "description": "買い物客がこのリクエストをChatGPT風の会話画面に入力する。"
+        },
+        {
+          "time": "0:09–0:13",
+          "onScreen": "買い物客はAIに質問する。AIはリンクを提示する。購入前に、AIがどのストアを見せるかを選んでいる。",
+          "description": "回答例には、Soundcore P25i（$29.99）、JLab Go Air Pop+（$24.88）、TOZO T10（$25.99）が販売リンク付きで表示される。ChatGPT、Claude、Gemini、Perplexityのロゴも表示される。"
+        },
+        {
+          "time": "0:13–0:17",
+          "onScreen": "ストアの存在が見えていません。AIエージェントは、読み取れない商品をおすすめできません。回答にも載らず、購入にもつながりません。",
+          "description": "「Your Store」と表示されたカードが、Product data missing の警告とともに回答の外側に配置される。「Invisible」の文字が消えていく。"
+        },
+        {
+          "time": "0:17–0:20",
+          "onScreen": "écentic 登場",
+          "description": "ecenticのボックスとロゴタイプが描かれ、続いて色が付く。"
+        },
+        {
+          "time": "0:20–0:26",
+          "onScreen": "AIエージェントが読み取れない箇所を修正する。",
+          "description": "ecenticダッシュボードのサンプル画面に、低い勝率に対するDiagnosticsと、Aura ANC Wireless Earbuds向けのListing Suggestionsが表示される。ポインターがApproveを選択すると、項目がPendingからPublishedへ移動し、「Listing updated — Changes were published to your connected store」というメッセージが表示される。"
+        },
+        {
+          "time": "0:26–0:30",
+          "onScreen": "可視性が上がっていく様子を確認。",
+          "description": "Overviewダッシュボードのイメージで、勝率チャートが上昇し、最終的な全体勝率86%が表示される。ChatGPT、Claude、Geminiごとの結果も並ぶ。"
+        },
+        {
+          "time": "0:30–0:34",
+          "onScreen": "チャット内で購入できるストアへ。",
+          "description": "$39.99のAura ANC Wireless Earbudsを掲載したShopifyの商品ページ例が、チャットのショッピング結果内の商品カードへ変化する。"
+        },
+        {
+          "time": "0:34–0:41",
+          "onScreen": "AI検索結果の上位へ。1つのカタログで、あらゆるAIに見つかる。",
+          "description": "ecenticのOptimizeコントロールが、ChatGPT、Google AI Mode、Perplexityのショッピング画面モックと並んで表示される。各イラストで「Your Store」が推薦順位#3から#1へ移動し、小さな車が加速しながら画面を横切る。"
+        },
+        {
+          "time": "0:41–0:49",
+          "onScreen": "発見を売上へ。",
+          "description": "商品カードの後に、「Show me the Aura earbuds」というチャットリクエストが表示される。回答には商品画像、$39.99の価格、「Buy now」が表示される。続いて「Review your order」「Complete purchase」「Order confirmed — Your purchase is complete」へと進む流れが描かれる。"
+        },
+        {
+          "time": "0:49–0:53",
+          "onScreen": "発見を売上へ。",
+          "description": "Shopify Analyticsのイメージチャートが上昇し、総売上$48,920.00に到達する。これはサンプルアニメーションであり、顧客実績ではありません。"
+        },
+        {
+          "time": "0:53–0:58",
+          "onScreen": "AIが買い物をする時代に、販売機会を勝ち取る。今すぐShopifyとWooCommerceにインストール。ecentic.ai",
+          "description": "ecenticのロゴが、締めのメッセージ、プラットフォームロゴ、Webサイトアドレスの上に再表示される。"
+        }
+      ]
+    }
+  }
+}

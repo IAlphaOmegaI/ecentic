@@ -1,0 +1,115 @@
+{
+  "dashboard": {
+    "agentic": {
+      "eyebrow": "インテリジェンス",
+      "title": "Agenticスコア",
+      "description": "検出性、アクセシビリティ、ユーザビリティ、エージェント対応決済の観点から、AIエージェントにとってストアフロントがどれだけ利用しやすいかを Is Agentic が評価したスコアです。",
+      "sections": {
+        "scan": "01 — スキャン",
+        "score": "02 — スコア",
+        "journey": "03 — エージェントタスク",
+        "competitors": "04 — 競合",
+        "checks": "05 — エビデンス",
+        "methodology": "06 — 評価方法"
+      },
+      "scan": {
+        "title": "スキャンを実行",
+        "description": "各スキャンではライブのストアフロントを読み取ります。結果はここに保存され、スコアの変化を追跡できます。",
+        "action": "スキャンを実行",
+        "running": "スキャン中…",
+        "starting": "スキャンを開始しています",
+        "progress": "{done} / {total} チェック",
+        "target": "{target} をスキャン中",
+        "lastScanned": "前回のスキャン: {when}。",
+        "never": "このストアはまだスキャンされていません。",
+        "blocked": {
+          "running": "このストアではすでにスキャンが実行中です。完了するとここに表示されます。",
+          "cooldown": "このストアは最近スキャンされました。次回のスキャンは {when} に利用可能です。"
+        },
+        "disclosure": "スキャンは、Vercel Labs が提供する無料の公開サービス Is Agentic によって実行されます。ストアフロントのドメインは is-agentic.com に送信されますが、顧客データや注文データが ecentic から外部に送信されることはありません。",
+        "disclosureLink": "Is Agentic ドキュメント",
+        "announceProgress": "スキャン完了率 {percent}%。",
+        "announceComplete": "スキャン完了。スコアは100点中 {score} 点です。"
+      },
+      "score": {
+        "title": "現在の状況",
+        "description": "このスコアは Is Agentic によるもので、変更せずそのまま表示しています。レイヤーは、ストアにとって重要度の高い順に並んでいます。",
+        "scoreLabel": "Agentic スコア",
+        "gradeLabel": "評価",
+        "attribution": "is-agentic.com で完全なレポートを見る",
+        "trend": "スキャン全体のスコア推移",
+        "fixesTitle": "優先度の高い修正項目",
+        "gain": "+{points}",
+        "gainAria": "{points} ポイント",
+        "layerCounts": "{passed} 件合格 · {warning} 件一部対応 · {failed} 件未対応 · {notApplicable} 件対象外",
+        "empty": "最初のスキャンを実行して、このストアフロントがエージェントにどう認識されるか確認しましょう。",
+        "publicOnly": "Is Agentic には、このドメインの公開レポートがすでにあり、スコアは100点中 {score} 点 — {label} です。スキャンを実行すると、各チェック項目の詳細を取り込み、推移の追跡を開始できます。",
+        "publicLink": "公開レポートを見る",
+        "status": {
+          "success": "良好",
+          "warning": "改善が必要",
+          "error": "低評価"
+        },
+        "fixesNote": "この一覧は Is Agentic によるもので、各修正で得られるポイント順に並んでいます。API 仕様、SDK、開発者ポータルに関する項目はカタログではなくドメイン全体に適用されます。まずは ecentic で対応できる項目から始めてください。",
+        "publicOnlyUnscored": "Is Agentic にはこのドメインのレポートがありますが、まだスコアは付与されていません — {label}。スキャンを実行すると、各チェック項目の詳細を取り込み、推移の追跡を開始できます。",
+        "trendSummary": "{since} 以降の {count} 回のスキャン。スコアは100点中 {first} 点から {latest} 点へ推移。"
+      },
+      "journey": {
+        "title": "エージェントが実際に行った操作",
+        "description": "Is Agentic は実際のエージェントをこのストアフロントに送り、その行動を記録します。このマップは補足的な証拠であり、数値スコア自体には影響しません。",
+        "empty": "このドメインでは、まだエージェントの操作記録がありません。実行完了後に Is Agentic のレポートへ表示されます。",
+        "running": "現在、エージェントがこのストアフロントを操作中です。進行に合わせてマップが更新されます。",
+        "runningLabel": "進行中",
+        "reasoning": "推論",
+        "analytics": {
+          "stepLabel": "{count, plural, other {ステップ}}",
+          "reasoningLabel": "{count, plural, other {推論ステップ}}",
+          "searchLabel": "{count, plural, other {検索}}"
+        },
+        "attribution": "is-agentic.com で観測されたタスク",
+        "verdict": {
+          "satisfied": "タスク達成",
+          "partial": "一部達成",
+          "unsatisfied": "未達成",
+          "not_gradable": "評価不可"
+        }
+      },
+      "checks": {
+        "title": "すべてのチェック項目",
+        "description": "スコアの根拠をレイヤーごとに表示します。ストアフロントに該当しないチェックは、理由付きで最後に一覧表示されます。",
+        "summary": "{applicable} 件適用 · {failed} 件要修正",
+        "notApplicable": "このチェックはストアフロントには適用されません。",
+        "remedy": "ecentic で修正",
+        "empty": "スキャンを実行すると、すべてのチェック項目を確認できます。"
+      },
+      "checkStatus": {
+        "pass": "合格",
+        "warning": "一部対応",
+        "fail": "未対応",
+        "error": "チェックエラー",
+        "na": "対象外",
+        "unknown": "不明"
+      },
+      "competitors": {
+        "title": "競合のスコア比較",
+        "description": "選択した競合のストアフロントに対して同じスキャンを実行します。各ドメインには個別のスキャン待機時間が設定されているため、競合をチェックしても自社の利用枠は消費されません。",
+        "action": "スキャン",
+        "scanned": "最終スキャン: {when}。",
+        "never": "未スキャン",
+        "unscored": "スコアなし",
+        "ahead": "{points} ポイントリード",
+        "behind": "{points} ポイント差で後れ",
+        "coverage": "{total} 件中 {scored} 件のストアフロントを採点済み",
+        "columnStorefront": "ストアフロント",
+        "columnScanned": "最終スキャン",
+        "columnScore": "スコア",
+        "columnGap": "自社比",
+        "empty": "競合ストアフロントがまだありません。競合を追加すると、ecentic が関連ドメインをスキャンします。"
+      },
+      "methodology": {
+        "title": "このスコアの仕組み",
+        "description": "スコアリングモデルに関する Is Agentic 独自の説明を、同社の MCP サーバーからリアルタイムで取得しています。"
+      }
+    }
+  }
+}

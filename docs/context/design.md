@@ -337,6 +337,19 @@ ASCII coexists with Hairline and explanatory graphics. Before creating, converti
 ASCII, read the complete [ecentic-art contract](../../.agents/skills/ecentic-art/SKILL.md#tonal-ascii),
 including accepted rationale, source provenance, production guidance and literal-text exceptions.
 
+### Social previews and generic banners
+
+Social previews share one composition across the site: official lockup, a concise localized title,
+readable supporting copy, continuous rails and crosses, and contained tonal commerce artwork.
+Keep raster artwork free of text so translated headings remain sharp. Fit complete CJK graphemes
+and check long European titles at the actual 1200 × 630 export size.
+
+The 13 November refresh uses an open blue shipping box with three product catalog cards. Generic
+content banners may use its tonal silhouette in a separate full illustration plane. Preserve
+page-specific Hairline figures, real brand marks, product photos and article imagery; those were
+outside the requested refresh. Source, sampling settings and regeneration instructions live in
+[social artwork](../marketing/social-artwork.md).
+
 ## 8. Hairline figures and commerce illustrations
 
 Use meaningful custom subjects, complete recognizable silhouettes and no visible production/rest

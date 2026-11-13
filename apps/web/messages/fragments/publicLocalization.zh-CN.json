@@ -1,0 +1,54 @@
+{
+  "general": {
+    "media": {
+      "interfaceEnglish": "产品界面以英语展示。",
+      "videoEnglish": "视频为英语，附有您所选语言的文字稿。"
+    },
+    "fileUpload": {
+      "label": "上传文件"
+    },
+    "dismiss": {
+      "label": "关闭"
+    },
+    "notifications": {
+      "label": "通知"
+    }
+  },
+  "resources": {
+    "mcpArtTitle": "JSON-RPC 工具"
+  },
+  "enterprisePlatform": {
+    "artworkStages": {
+      "product": "商品",
+      "cart": "购物车",
+      "checkout": "结账"
+    }
+  },
+  "dashboard": {
+    "ucpPlaygroundDashboard": {
+      "cart": {
+        "action": {
+          "primary": "打开购物车"
+        }
+      }
+    }
+  },
+  "promptInput": {
+    "placeholder": "您想了解什么？",
+    "attachments": {
+      "label": "添加照片或文件"
+    },
+    "screenshot": {
+      "label": "截屏"
+    },
+    "action": {
+      "primary": "发送消息",
+      "secondary": "停止"
+    },
+    "errors": {
+      "acceptedTypes": "没有符合支持格式的文件。",
+      "maximumSize": "所有文件都超过了大小上限。",
+      "maximumCount": "文件过多，部分文件未添加。"
+    }
+  }
+}

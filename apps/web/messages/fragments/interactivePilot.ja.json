@@ -1,0 +1,19 @@
+{
+  "interactivePilot": {
+    "title": "パイロット計画",
+    "stages": [
+      "ベースライン",
+      "修正",
+      "再実行",
+      "結果確認"
+    ],
+    "happens": "実施内容",
+    "people": "担当チーム",
+    "deliverable": "提供内容",
+    "duration": "期間",
+    "pendingPeople": "",
+    "pendingDeliverable": "",
+    "pendingDuration": "",
+    "pending": "チームと協議のうえ決定します。"
+  }
+}

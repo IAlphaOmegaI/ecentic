@@ -1,0 +1,72 @@
+{
+  "interactiveSecurity": {
+    "reviewLabel": "供Alvi审核的草稿",
+    "title": "商品数据流向",
+    "description": "选择一个连接，查看拟议的数据、时间点和控制方式。在此图表发布前，所有连接仍需Alvi确认。",
+    "details": {
+      "what": "发送内容",
+      "when": "时间",
+      "control": "控制"
+    },
+    "nodes": {
+      "source": {
+        "label": "您的店铺或数据源",
+        "description": "商品目录"
+      },
+      "ecentic": {
+        "label": "ecentic",
+        "description": "对比与发布工具"
+      },
+      "providers": {
+        "label": "AI服务提供商",
+        "description": "模拟与改写 · 服务商列表"
+      },
+      "store": {
+        "label": "已连接店铺",
+        "description": "Shopify或WooCommerce"
+      },
+      "merchantCenter": {
+        "label": "Merchant Center",
+        "description": "独立的Shopify同步"
+      }
+    },
+    "connectors": {
+      "import": {
+        "label": "导入目录",
+        "what": "来自所选店铺或数据源的商品字段。{{TODO: Alvi confirms}}",
+        "when": "在商品目录导入或同步期间。{{TODO: Alvi confirms}}",
+        "control": "使用店铺连接权限或您选择的数据源。导入不会发布商品信息变更。{{TODO: Alvi confirms}}"
+      },
+      "request": {
+        "label": "发送至AI",
+        "what": "用于对比或生成商品信息的所选商品和竞品详情。{{TODO: Alvi confirms}}",
+        "when": "运行模拟或生成商品信息操作时。{{TODO: Alvi confirms}}",
+        "control": "使用已配置的服务商路由。已连接的Merchant Center账户数据与用于AI操作的店铺商品目录保持分离。{{TODO: Alvi confirms}}"
+      },
+      "response": {
+        "label": "返回结果",
+        "what": "模拟结果或生成的商品信息与结构化数据内容。{{TODO: Alvi confirms}}",
+        "when": "请求的模型操作返回时。{{TODO: Alvi confirms}}",
+        "control": "应用可在同一操作中生成并发布；结构化数据使用单独的发布操作。{{TODO: Alvi confirms}}"
+      },
+      "apply": {
+        "label": "应用商品信息",
+        "what": "为所选商品生成的标题和描述。{{TODO: Alvi confirms}}",
+        "when": "当您选择“应用”或明确的批量发布操作时。{{TODO: Alvi confirms}}",
+        "control": "需要直接连接的店铺以及您明确执行发布操作。{{TODO: Alvi confirms}}"
+      },
+      "structuredData": {
+        "label": "发布数据",
+        "what": "生成并保存在店铺商品元数据中的 Product JSON-LD。{{TODO: Alvi confirms}}",
+        "when": "执行单独的“发布结构化数据”操作时。{{TODO: Alvi confirms}}",
+        "control": "必须由Shopify主题应用嵌入或WooCommerce插件渲染已发布的数据。{{TODO: Alvi confirms}}"
+      },
+      "merchantCenter": {
+        "label": "同步Google",
+        "what": "已发布的标题和描述覆盖项，以及选定的结账属性。{{TODO: Alvi confirms}}",
+        "when": "针对已连接Shopify店铺执行单独且明确的Google同步时。{{TODO: Alvi confirms}}",
+        "control": "使用主数据源旁的补充数据源。应用商品信息不会自动执行此同步。{{TODO: Alvi confirms}}"
+      }
+    }
+  }
+}

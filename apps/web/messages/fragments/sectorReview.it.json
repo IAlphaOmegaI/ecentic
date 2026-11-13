@@ -1,0 +1,86 @@
+{
+  "sectorReview": {
+    "code": {
+      "title": "Gli stessi prodotti, più facili da leggere.",
+      "description": "Due schede prodotto inventate, rappresentate come JSON. Ripristina un fatto omesso per vedere cosa cambia in questo confronto guidato.",
+      "format": "Record illustrativi, non un formato di invio API. null indica che la scheda prodotto non specifica un fatto.",
+      "questionNote": "La domanda dell’acquirente definisce i criteri di questo confronto.",
+      "yourNote": "Vengono ripristinati solo i fatti già presenti nella fonte di esempio.",
+      "rivalNote": "Il record concorrente resta invariato. Questi sono prodotti di esempio, non il catalogo di un brand specifico.",
+      "question": "Domanda dell’acquirente",
+      "required": "Campi rilevanti",
+      "before": "Mostra il fatto mancante",
+      "after": "Ripristina il fatto dalla fonte",
+      "sampleNote": "Il codice qui sotto segue la domanda 01. Il campo mancante viene ripristinato dalla fonte di esempio; l’altra scheda prodotto resta invariata."
+    },
+    "references": {
+      "label": "Riferimenti di settore familiari",
+      "note": "Esempi di brand solo a scopo orientativo. Non implicano alcun rapporto commerciale o approvazione. I record di esempio qui sotto sono inventati e non correlati a questi brand."
+    },
+    "questions": {
+      "subtitle": "Guarda la domanda, i fatti necessari e la verifica che resta in carico al merchant.",
+      "facts": "Fatti da esplicitare",
+      "verify": "Revisione del merchant",
+      "sample": "Domande illustrative; non rappresentano una domanda di ricerca misurata."
+    },
+    "rules": {
+      "help": "Come aiuta ecentic",
+      "source": "Cosa richiede ancora una revisione",
+      "modelLabel": "Ambito della simulazione",
+      "models": "Usa le prospettive di simulazione di ChatGPT, Claude e Gemini per confrontare i fatti prodotto supportati. Perplexity supporta attualmente il tracciamento referral Shopify; le sue simulazioni store arriveranno presto. Una simulazione non equivale all’approvazione del canale.",
+      "sectors": {
+        "wine-and-spirits": {
+          "subtitle": "Rendi espliciti i dati della bottiglia, confronta la scheda prodotto e definisci una procedura d'acquisto in base al canale e al mercato che la consentono.",
+          "help": "Usa informazioni verificate su origine, stile, gradazione, prezzo e consegna nel confronto. Verifica i dati della fonte e le affermazioni consentite prima di scegliere Applica, che genera e pubblica titolo e descrizione. Restano valide le restrizioni sul prodotto e sulla destinazione."
+        },
+        "food-and-beverage": {
+          "subtitle": "Trasforma i dati verificati dell’etichetta in informazioni prodotto più chiare, poi controlla ogni dichiarazione nutrizionale e alimentare prima della pubblicazione.",
+          "help": "Confronta ingredienti, allergeni, valori nutrizionali e informazioni sulle porzioni realmente forniti dalla fonte. ecentic può suggerire un linguaggio più chiaro per la scheda prodotto; il merchant verifica dichiarazioni e idoneità prima di applicarlo."
+        },
+        "beauty-and-personal-care": {
+          "subtitle": "Rendi più facili da confrontare ingredienti supportati e dichiarazioni sul prodotto, mantenendo le prove collegate alla fonte.",
+          "help": "Confronta ingredienti esistenti, uso previsto, dimensioni e dichiarazioni supportate. Verifica il testo proposto rispetto alle prove del produttore; ecentic non testa l’efficacia né certifica la protezione."
+        },
+        "consumer-electronics": {
+          "subtitle": "Rendi visibili modello, compatibilità e informazioni sulla garanzia prima che l’acquirente arrivi allo store.",
+          "help": "Confronta il modello esatto e le specifiche della fonte, poi verifica le modifiche suggerite alla scheda prodotto. Compatibilità, caratteristiche elettriche e dichiarazioni sulla garanzia richiedono comunque le prove del merchant."
+        },
+        "home-and-furniture": {
+          "subtitle": "Fornisci agli acquirenti dimensioni, materiali e condizioni di consegna che possano confrontare con il proprio spazio.",
+          "help": "Confronta misure e condizioni nel record sorgente. ecentic può evidenziare dettagli mancanti nella scheda prodotto; non garantisce compatibilità, accesso o una data di consegna."
+        },
+        "fashion-and-outdoor": {
+          "subtitle": "Mantieni descrizioni di vestibilità, tessuto e prestazioni legate alle specifiche reali del prodotto.",
+          "help": "Confronta taglie verificate, materiali, istruzioni di cura e informazioni sull’uso previsto. Verifica il testo prima della pubblicazione; ecentic non certifica prestazioni tecniche o dichiarazioni ambientali."
+        },
+        "health-wellness-and-pet": {
+          "subtitle": "Rendi più chiari i dati della fonte senza trasformare un confronto prodotto in un consiglio medico.",
+          "help": "Confronta ingredienti forniti, uso previsto, informazioni su porzioni o alimentazione e standard documentati. ecentic non effettua diagnosi, non prescrive e non certifica dichiarazioni di sicurezza o salute."
+        },
+        "travel-and-experiences": {
+          "subtitle": "Rendi esplicite date, inclusioni e condizioni di cancellazione dell’offerta prima del passaggio alla prenotazione.",
+          "help": "Confronta le informazioni prodotto presenti nella fonte. Disponibilità in tempo reale, prezzo finale e condizioni di prenotazione devono essere confermati con il merchant; l’esempio non è una prenotazione."
+        }
+      },
+      "bespoke": {
+        "title": "Un percorso personalizzato per acquisti con limiti di età.",
+        "description": "Pianifica una procedura d'acquisto assistita da agenti AI insieme a ecentic attorno ai tuoi controlli esistenti. L’ambito viene definito prima dell’implementazione; il supporto dipende da prodotto, paese, canale e fornitore di pagamenti.",
+        "steps": [
+          {
+            "title": "Conferma il percorso consentito",
+            "body": "Controlla le regole del prodotto, della destinazione e del canale scelto prima di esporre un percorso di acquisto."
+          },
+          {
+            "title": "Mantieni il controllo dell’età del merchant",
+            "body": "Integra il processo esistente di verifica dell’età del merchant dove richiesto. Non è prevista una verifica dell’età integrata di ecentic."
+          },
+          {
+            "title": "Passa alla conferma e al pagamento",
+            "body": "L’acquirente completa le verifiche richieste e conferma il pagamento nella procedura d'acquisto consentita del merchant."
+          }
+        ],
+        "action": "Parla di una procedura d'acquisto personalizzata"
+      }
+    }
+  }
+}

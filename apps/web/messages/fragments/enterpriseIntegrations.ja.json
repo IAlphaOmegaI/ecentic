@@ -1,0 +1,817 @@
+{
+  "enterpriseIntegrations": {
+    "statuses": {
+      "live": "稼働中",
+      "feed": "商品フィード経由",
+      "soon": "近日対応予定",
+      "simulated": "シミュレーション"
+    },
+    "counter": "{live} 稼働中 · {feed} 商品フィード経由 · {soon} 近日対応予定",
+    "counterNote": "件数は掲載されている接続先と対応画面を示しており、個別ベンダー数ではありません。シミュレーション対象のアシスタントは含まれません。",
+    "checked": "最終確認日",
+    "date": "2026年11月10日",
+    "sourceTitle": "公式ドキュメント",
+    "sourceLink": "参照元",
+    "field": "項目またはアクセス",
+    "read": "ecentic が読み取る内容",
+    "write": "ecentic が書き込む内容",
+    "faqTitle": "よくある質問",
+    "open": "詳細を見る",
+    "directSoon": "直接連携アプリ：近日対応予定",
+    "interest": "提供開始時に通知を受け取る",
+    "groups": {
+      "commerce": "コマースプラットフォーム",
+      "feeds": "フィードとデータ",
+      "channels": "AI チャネル",
+      "payments": "決済と購入手続き",
+      "pim": "商品情報管理（PIM）"
+    },
+    "groupNotes": {
+      "commerce": "Shopify と WooCommerce では直接公開に対応しています。フィード経由では、対応カラムにマッピングされたエクスポートが必要です。",
+      "feeds": "商品データをインポートするか、特定のチャネル向けに商品データを整備できます。チャネルごとの掲載要件は引き続き適用されます。",
+      "channels": "シミュレーション対象のアシスタントは、現在テスト中のモデルです。直接的なフィード接続や購入手続きへの登録を意味するものではありません。",
+      "payments": "決済は WooCommerce のゲートウェイが処理します。完全なインコンテキスト決済は、対応フローとマーチャント設定に依存します。",
+      "pim": "商品情報システムから対応エクスポートを取り込めます。PIM との直接連携は開発予定です。"
+    },
+    "legend": {
+      "title": "ラベルの意味",
+      "items": [
+        {
+          "title": "稼働中",
+          "body": "ページに記載された制限の範囲内で利用できる、稼働中の ecentic 接続またはインポート機能です。"
+        },
+        {
+          "title": "商品フィード経由",
+          "body": "カラムをマッピングした対応 CSV エクスポートを利用します。シミュレーションと監査は利用できますが、公開には直接コネクタが必要です。"
+        },
+        {
+          "title": "シミュレーション",
+          "body": "ecentic は現在そのアシスタントのモデルをテストしています。マーチャントのフィードをそのアシスタントへ接続するものではありません。"
+        },
+        {
+          "title": "近日対応予定",
+          "body": "開発候補に含まれていますが、提供開始日は未定です。今後の開発優先順位の参考として、関心登録をお願いします。"
+        }
+      ]
+    },
+    "request": {
+      "title": "お使いのサービスが見つかりませんか？",
+      "description": "必要な連携機能と、管理しているカタログ規模をお知らせください。",
+      "button": "連携をリクエスト"
+    },
+    "standards": {
+      "title": "対応標準",
+      "description": "構造化された商品データ、識別子、エージェント向けインターフェースに対応しています。各標準には用途があり、プラットフォーム認定を意味するものではありません。",
+      "items": [
+        {
+          "title": "schema.org Product",
+          "body": "商品構造化データの検証と公開。"
+        },
+        {
+          "title": "GTIN",
+          "body": "識別子の網羅性を確認します。ecenticはGTINを生成しません。"
+        },
+        {
+          "title": "MCP",
+          "body": "エージェントツールと購入手続きを支える通信方式。"
+        },
+        {
+          "title": "WebMCP",
+          "body": "公開ソースのスキャナーです。ブラウザツールは実行しません。"
+        },
+        {
+          "title": "エージェント購入手続き",
+          "body": "カタログ、実際のカート見積もり、対応するWooCommerce注文フロー。"
+        },
+        {
+          "title": "ACP · 近日公開",
+          "body": "ChatGPT専用の商品フィード書き出し。"
+        }
+      ]
+    },
+    "feedPlatformsTitle": "検証済みエクスポート方法",
+    "feedPlatformsNote": "これらのプラットフォームはCSVエクスポートをサポートしています。アップロード前に列を当社テンプレートへマッピングし、区切り文字はカンマを使用し、各商品を1行に収めてください。エクスポート対応は、ネイティブコネクターや自動更新を意味するものではありません。",
+    "sources": {
+      "shopify": "Shopify App Store掲載ページ",
+      "woocommerce": "WordPress.orgプラグイン掲載ページ",
+      "wooRequirements": "公開されているプラグイン要件と動作",
+      "googleMerchant": "Google: Merchant Center連携ガイド",
+      "googleEligibility": "Google: ネイティブ購入手続きの利用条件",
+      "adobe": "Adobe Commerce: データを書き出し",
+      "shopware": "Shopware: インポートとエクスポート",
+      "wix": "Wix: 商品リストを書き出し",
+      "prestashop": "PrestaShop: 商品CSVエクスポート実装",
+      "plytix": "Plytix: 商品データを書き出し"
+    },
+    "index": {
+      "meta": {
+        "title": "連携: Shopify、WooCommerce、フィード、AIチャネル",
+        "description": "Shopify、WooCommerce、Google Merchant Center、または対応商品フィードを接続できます。現在利用可能な機能、フィード経由で利用できる機能、今後追加予定の機能を確認できます。"
+      },
+      "title": "連携",
+      "description": "現在利用中のスタックを接続できます。今すぐ利用可能なもの、商品フィード経由のもの、提供予定のものを確認できます。",
+      "sections": []
+    },
+    "labelNote": "各ラベルは、現在の製品機能に基づいて確認されています。「近日公開」は開発予定であり、提供日の約束ではありません。",
+    "entries": {
+      "shopify": {
+        "name": "Shopify",
+        "description": "無料チェック後、任意のプランを利用できます。"
+      },
+      "woocommerce": {
+        "name": "WooCommerce向け",
+        "description": "無料プラグインです。シミュレーションと修正機能にはecenticプランが必要です。"
+      },
+      "bigcommerce": {
+        "name": "BigCommerce",
+        "description": "直接連携アプリ: 近日公開。"
+      },
+      "adobe": {
+        "name": "Adobe Commerce (Magento)",
+        "description": "ecenticの列にマッピングされたCSVエクスポート。"
+      },
+      "shopware": {
+        "name": "Shopware",
+        "description": "カンマ区切り列に変換されたCSVエクスポート。"
+      },
+      "wix": {
+        "name": "Wix",
+        "description": "実物商品のCSVを書き出し、アップロード前にマッピングします。"
+      },
+      "prestashop": {
+        "name": "PrestaShop",
+        "description": "商品CSVを書き出し、アップロード前にマッピングします。"
+      },
+      "googleMerchant": {
+        "name": "Google Merchant Center",
+        "description": "Shopifyストア向け。別途、手動の補足同期が必要です。"
+      },
+      "productFeeds": {
+        "name": "商品フィード (XML, JSON)",
+        "description": "対応している商品レコード。再インポートは手動です。"
+      },
+      "csv": {
+        "name": "CSVアップロード",
+        "description": "対応する列名を使用し、商品ごとに1行で記載します。"
+      },
+      "storeAddress": {
+        "name": "ストアURLからインポート",
+        "description": "公開アクセス可能なShopifyおよびWooCommerceカタログをインポートできます。"
+      },
+      "microsoftMerchant": {
+        "name": "Microsoft Merchant Center",
+        "description": "Copilotへのフィード連携を予定しています。"
+      },
+      "amazonShopDirect": {
+        "name": "Amazon Shop Direct",
+        "description": "米国ショッピングプログラム向けのカタログ接続を予定しています。"
+      },
+      "chatgptFeed": {
+        "name": "ChatGPT商品フィード (ACP)",
+        "description": "専用エクスポート: 近日公開。"
+      },
+      "perplexityFeed": {
+        "name": "Perplexityマーチャントフィード",
+        "description": "マーチャントカタログフィード: 近日公開。"
+      },
+      "google": {
+        "name": "Google AI Mode と Gemini",
+        "description": "Geminiシミュレーション。Google購入手続きオンボーディングは近日公開予定です。"
+      },
+      "chatgpt": {
+        "name": "ChatGPT",
+        "description": "現在はシミュレーションに対応。ecentic ChatGPTアプリは近日公開予定です。"
+      },
+      "claude": {
+        "name": "Claude",
+        "description": "シミュレーション。"
+      },
+      "copilot": {
+        "name": "Microsoft Copilot",
+        "description": "フィード連携は近日公開予定。Shopifyリファラルトラッキングは利用可能です。"
+      },
+      "perplexity": {
+        "name": "Perplexity",
+        "description": "ストアスキャンは近日公開予定。Shopifyリファラルトラッキングは利用可能です。"
+      },
+      "amazon": {
+        "name": "Amazon",
+        "description": "Shop Direct連携: 近日公開。"
+      },
+      "paymentGateway": {
+        "name": "利用中の決済ゲートウェイ",
+        "description": "決済はWooCommerceの決済ゲートウェイで処理されます。"
+      },
+      "stripeAcs": {
+        "name": "Stripe Agentic Commerce Suite",
+        "description": "専用接続: 近日公開。"
+      },
+      "plytix": {
+        "name": "Plytix",
+        "description": "CSVを書き出し、ecenticの列にマッピングします。"
+      },
+      "akeneo": {
+        "name": "Akeneo",
+        "description": "直接接続: 近日公開。"
+      },
+      "salsify": {
+        "name": "Salsify",
+        "description": "直接接続: 近日公開。"
+      }
+    },
+    "interests": {
+      "bigcommerce-direct": "BigCommerce直接連携アプリ",
+      "adobe-commerce-direct": "Adobe Commerce直接連携アプリ",
+      "shopware-direct": "Shopware直接連携アプリ",
+      "wix-direct": "Wix直接連携アプリ",
+      "microsoft-merchant-center": "Microsoft Merchant Centerフィード",
+      "amazon-shop-direct": "Amazon Shop Direct",
+      "chatgpt-product-feed": "ChatGPT商品フィード",
+      "perplexity-merchant-feed": "Perplexityマーチャントフィード",
+      "perplexity-scans": "Perplexityストアスキャン",
+      "stripe-acs": "Stripe Agentic Commerce Suite",
+      "akeneo": "Akeneo",
+      "salsify": "Salsify",
+      "google-checkout-onboarding": "Google AI Mode購入手続きオンボーディング",
+      "chatgpt-app": "ecentic ChatGPTアプリ"
+    },
+    "pages": {
+      "shopify": {
+        "meta": {
+          "title": "ecentic for Shopify: AIアシスタント経由で販売",
+          "description": "Shopifyを接続し、AIアシスタントで商品を比較し、選択した商品情報の変更を公開できます。公開した変更は、別同期でMerchant Centerへ送信できます。"
+        },
+        "title": "ecentic for Shopify",
+        "description": "ストアを接続し、AIアシスタントが競合商品を選ぶ理由を確認し、選択した修正をShopifyへ公開できます。公開した修正は、必要に応じてMerchant Centerへ送信できます。",
+        "actions": [
+          {
+            "label": "Shopify App Storeからインストール",
+            "href": "https://apps.shopify.com/ecentic-ai"
+          },
+          {
+            "label": "デモを予約",
+            "href": "/demo"
+          }
+        ],
+        "sections": [
+          {
+            "id": "workflow",
+            "title": "カタログから、より明確な商品情報へ",
+            "description": "",
+            "items": [
+              {
+                "title": "シミュレーション",
+                "body": "ChatGPT、Claude、Geminiを使用して、選択した商品を指定した競合商品と比較します。"
+              },
+              {
+                "title": "修正して公開",
+                "body": "Applyで、修正版のタイトルと説明を作成して公開します。構造化データは別操作で公開し、theme app embedの有効化が必要です。"
+              },
+              {
+                "title": "追跡",
+                "body": "検出されたAIリファラルとエージェント訪問を、アシスタント別・時系列で確認できます。"
+              }
+            ]
+          },
+          {
+            "id": "access",
+            "title": "ecenticによる読み取りと書き込み",
+            "description": "商品コンテンツをインポートしても、自動的に書き換えられることはありません。接続時にはストアフロントのトラッキングスクリプトもインストールされます。公開と構造化データ更新は明示的な操作です。"
+          },
+          {
+            "id": "requirements",
+            "title": "要件と制限",
+            "description": "",
+            "paragraphs": [
+              "Shopify OAuth権限 read_products、write_products、write_script_tags、read_script_tags を承認してください。この接続ではShopify Plus要件は課されません。",
+              "カタログ同期では、250商品×10ページ、最大2,500レコードまで読み込みます。無料オンボーディングスキャンでは最大10商品を選択できます。有料プランの上限は料金ページに記載されています。",
+              "この接続はShopify Admin APIアクセスとそのレート制限を使用します。同期はページ数で制限されており、追加の固定リクエスト数/分は保証されません。公開カタログのみのインポートでは変更を公開できません。"
+            ],
+            "links": [
+              {
+                "label": "プランを比較",
+                "href": "/pricing"
+              }
+            ]
+          },
+          {
+            "id": "setup",
+            "title": "ストアを設定",
+            "description": "",
+            "ordered": true,
+            "columns": 2,
+            "items": [
+              {
+                "title": "インストールして承認",
+                "body": "アプリをインストールし、Shopifyの権限を承認してください。認証とカタログインポートの時間は異なるため、数分かかる場合があります。"
+              },
+              {
+                "title": "比較対象を選択",
+                "body": "初回スキャン用に商品と競合商品を選択します。スキャン時間は比較規模とモデル応答によって異なります。"
+              },
+              {
+                "title": "選択した変更を公開",
+                "body": "Applyで修正版のタイトルと説明を適用します。構造化データは別途公開し、表示にはtheme app embedを有効化してください。"
+              },
+              {
+                "title": "Googleを別途接続",
+                "body": "Merchant Centerを連携し、Googleコントロールから公開済みの修正を明示的に同期してください。"
+              }
+            ],
+            "note": "ヒント: 本番カタログへ変更を公開する前に、まずShopify開発ストアを接続してフローを確認してください。"
+          }
+        ],
+        "ledger": [
+          {
+            "field": "タイトルと説明",
+            "read": "既存の商品タイトルとHTML形式の説明文。",
+            "write": "Applyまたは明示的な一括操作を実行した場合、Admin API経由で更新されます。"
+          },
+          {
+            "field": "構造化データmetafield",
+            "read": "Product JSON-LDの生成に使用される商品情報。",
+            "write": "別の公開操作でmetafieldへ書き込みます。表示にはtheme app embedの有効化が必要です。"
+          },
+          {
+            "field": "価格と在庫",
+            "read": "バリエーション価格とインポート済み商品ペイロード。個別の在庫同期はありません。",
+            "write": "商品情報公開操作では変更されません。"
+          },
+          {
+            "field": "画像と商品URL",
+            "read": "既存の画像URLとストアフロントの商品リンク。",
+            "write": "変更されません。画像生成機能はありません。"
+          },
+          {
+            "field": "ストアフロントスクリプト",
+            "read": "検出されたAIリファラルおよびエージェント訪問シグナル。",
+            "write": "訪問追跡のため、接続時にonload ScriptTagがインストールされます。"
+          },
+          {
+            "field": "注文",
+            "read": "利用可能な場合、アトリビューション用に支払い済み注文Webhookを試行します。注文履歴のインポートは行いません。",
+            "write": "Shopify注文の作成・編集は行いません。"
+          }
+        ],
+        "faqs": [
+          {
+            "question": "ecenticは確認なしで商品コンテンツを変更しますか？",
+            "answer": "いいえ。商品情報の変更にはApplyまたは明示的な一括操作が必要です。構造化データは別途公開されます。接続時にはトラッキングスクリプトがインストールされるため、ストア設定が一切変更されないことを保証するものではありません。"
+          },
+          {
+            "question": "Shopifyがすでにカタログを配信しているのに、なぜecenticを使うのですか？",
+            "answer": "カタログ配信と商品品質は別の役割です。ecenticは選択した商品情報を競合商品と比較し、管理しているデータへの変更を公開できます。どのチャネルでも推奨表示を保証するものではありません。"
+          },
+          {
+            "question": "Google Merchant Centerを接続できますか？",
+            "answer": "はい。Shopifyストアで利用できます。別のGoogle同期コントロールを使用して、公開済みのタイトル・説明の上書きと、選択した購入手続き属性を送信できます。商品情報でApplyをクリックしても、Googleへ自動同期はされません。"
+          },
+          {
+            "question": "トラッキングスクリプトはどのように読み込まれますか？",
+            "answer": "Shopifyのonloadイベントでインストールされます。このスクリプトは対応するリファラルまたはエージェントシグナルを検出し、小さなビーコンをecenticへ送信します。普遍的なパフォーマンス影響は測定しておらず、オーバーヘッドゼロも保証していません。"
+          }
+        ]
+      },
+      "woocommerce": {
+        "meta": {
+          "title": "ecentic for WooCommerce: AIアシスタント経由で販売",
+          "description": "WooCommerce向け無料ecenticプラグイン。商品比較、商品情報変更の公開、対応エージェントによるストア経由の購入手続きに対応しています。"
+        },
+        "title": "ecentic for WooCommerce",
+        "description": "無料プラグインをインストールし、自社商品を競合商品と比較して、選択した修正を公開できます。対応するAIエージェントは自社ストア経由で購入手続きを行えます。",
+        "actions": [
+          {
+            "label": "無料プラグインを入手",
+            "href": "https://wordpress.org/plugins/ecentic-for-woocommerce/"
+          },
+          {
+            "label": "デモを予約",
+            "href": "/demo"
+          }
+        ],
+        "sections": [
+          {
+            "id": "workflow",
+            "title": "エージェントが利用できるカタログと購入手続き",
+            "description": "",
+            "items": [
+              {
+                "title": "シミュレーション",
+                "body": "ChatGPT、Claude、Gemini上で、選択した自社商品を指定した競合商品と比較します。"
+              },
+              {
+                "title": "修正して公開",
+                "body": "Applyで、修正版の商品名と説明をWooCommerce REST API経由で公開します。構造化データは別操作で、プラグインによって表示されます。"
+              },
+              {
+                "title": "エージェント購入手続き",
+                "body": "対応エージェントが商品検索、実際のカート見積もり、WooCommerce注文の作成を行えます。決済は利用中の決済ゲートウェイで処理されます。"
+              }
+            ]
+          },
+          {
+            "id": "agent-checkout",
+            "title": "エージェント購入手続きを管理",
+            "description": "",
+            "paragraphs": [
+              "プラグインは、自社ドメイン上の標準URLに検出用プロファイルを公開します。カート見積もりでは、WooCommerceの在庫、税、配送、クーポンルールを使用します。注文にはエージェント注文タグが付与され、法的な販売主体は引き続きマーチャントです。",
+              "購入手続きをオン・オフでき、エージェント許可リスト、署名付きリクエスト必須設定、レート制限を構成できます。許可リストが空の場合、すべての対応エージェントを許可します。署名要件は任意設定です。",
+              "デフォルトでは、エージェントは未払い注文を作成し、購入者は購入手続きリンク経由で支払います。サーバー側Stripe決済はオプションで、初期状態では無効です。また、WooCommerce Stripe Gatewayが必要です。決済シークレットはサーバー上に保持されます。"
+            ],
+            "links": [
+              {
+                "label": "エージェント購入手続きをテスト",
+                "href": "/ucp-playground"
+              }
+            ]
+          },
+          {
+            "id": "access",
+            "title": "ecenticによる読み取りと書き込み",
+            "description": "プラグインと承認済みREST認証情報により、選択した機能に必要なカタログおよび注文操作を提供します。"
+          },
+          {
+            "id": "requirements",
+            "title": "要件と制限",
+            "description": "",
+            "paragraphs": [
+              "公開プラグインにはWordPress 6.0+、WooCommerce 7.0+、PHP 8.0+が必要です。wp-adminから接続するか、WooCommerce RESTキーを指定してください。公開には読み書きアクセス権が必要です。",
+              "カタログ同期では、100商品×20ページ、最大2,000レコードまで読み込みます。無料オンボーディングスキャンでは最大10商品を選択できます。",
+              "ホスト型エージェントエンドポイントの初期設定は、ストアおよびクライアントIDごとに毎分120リクエストです。上限はマーチャント側で設定できます。エージェント購入手続きにはプラグインが必要で、RESTカタログキーのみでは購入手続き機能は提供されません。",
+              "AI訪問トラッキングとecenticのMerchant Center同期は、現在WooCommerceでは利用できません。"
+            ],
+            "links": [
+              {
+                "label": "プランと上限を確認",
+                "href": "/pricing"
+              }
+            ]
+          },
+          {
+            "id": "setup",
+            "title": "ストアを設定",
+            "description": "",
+            "ordered": true,
+            "columns": 2,
+            "items": [
+              {
+                "title": "プラグインをインストール",
+                "body": "WordPress.orgから無料プラグインをインストールして有効化してください。有効化だけではecenticへ接続されません。"
+              },
+              {
+                "title": "wp-adminで承認",
+                "body": "プラグイン設定からecenticへ接続し、接続を承認してください。このフローではキーのコピーは不要です。RESTキーも利用できます。"
+              },
+              {
+                "title": "最初の比較を実行",
+                "body": "商品と競合商品を選択してスキャンを実行します。設定には数分程度を見込んでください。カタログとモデル処理時間は状況によって異なります。"
+              },
+              {
+                "title": "公開して購入手続きをテスト",
+                "body": "選択した商品情報変更を適用します。準備ができたらエージェント購入手続きを有効化し、決済フローをテストしてください。"
+              }
+            ],
+            "note": "ヒント: まずステージングサイトを使用し、実際の購入を有効化する前に購入手続きプレイグラウンドでテストしてください。"
+          }
+        ],
+        "ledger": [
+          {
+            "field": "商品名と説明",
+            "read": "現在の商品名、説明、商品データ。",
+            "write": "Applyまたは明示的な一括操作を実行した場合の修正版の商品名と説明。"
+          },
+          {
+            "field": "構造化商品データ",
+            "read": "Product JSON-LD生成に使用される既存の商品情報。",
+            "write": "別の操作で保護対象の商品メタデータを書き込み、プラグインがその内容を表示します。"
+          },
+          {
+            "field": "価格、在庫、画像、バリエーション",
+            "read": "インポート済みカタログデータとリアルタイムカート情報。",
+            "write": "商品情報の修正ではこれらの項目は変更されません。通常の購入手続きではWooCommerce経由で在庫が変動する場合があります。"
+          },
+          {
+            "field": "カート、配送、税、クーポン",
+            "read": "実際のWooCommerceカート計算とストア設定。",
+            "write": "プライベートブリッジ経由のカートセッションと購入者の購入手続き選択。"
+          },
+          {
+            "field": "注文と購入者情報",
+            "read": "エージェント注文ステータスと、その注文履行に必要な購入者情報。",
+            "write": "エージェント注文としてタグ付けされたWooCommerceネイティブ注文。対応する購入手続き操作で更新できます。"
+          },
+          {
+            "field": "決済認証情報",
+            "read": "決済結果と対応する支払い方法情報。",
+            "write": "ecenticでは決済シークレットを保存しません。マーチャントの決済ゲートウェイが承認済み支払い方法へ請求するか、購入者がストアリンク経由で支払います。"
+          }
+        ],
+        "faqs": [
+          {
+            "question": "プラグインは無料ですか？",
+            "answer": "はい。WordPress.orgから無料でインストールできます。ecenticプランはシミュレーションと商品情報機能に適用されます。最新条件は料金ページをご確認ください。"
+          },
+          {
+            "question": "ecenticが決済を処理しますか？",
+            "answer": "既存の決済ゲートウェイで決済が処理され、注文データも自社に帰属します。標準フローでは購入者は自社の決済ページに遷移します。任意のサーバーサイドStripe決済を利用するには、ゲートウェイとその設定を有効にする必要があります。"
+          },
+          {
+            "question": "WooCommerceでAI経由の訪問を追跡できますか？",
+            "answer": "まだ対応していません。現在、AI訪問トラッキングはShopifyで利用できます。"
+          },
+          {
+            "question": "エージェントによる購入手続きを無効にできますか？",
+            "answer": "はい。プラグイン設定から無効にできます。エージェントの制限、署名の必須化、接続認証情報の無効化も可能です。"
+          },
+          {
+            "question": "テーマの変更やAPIキーのコピーは必要ですか？",
+            "answer": "プラグインが検出機能とブリッジ機能を提供します。キーをコピーせずにwp-adminで接続を承認するか、カタログ公開用に読み取り／書き込み対応のRESTキーを使用できます。テーマや決済設定は、まずステージング環境でテストしてください。"
+          }
+        ]
+      },
+      "googleMerchant": {
+        "meta": {
+          "title": "ecenticとGoogle Merchant Center",
+          "description": "公開済みの修正をMerchant Centerに送信し、商品診断を確認して、Googleのエージェントによる購入手続きに必要な設定をチェックできます。Shopifyストア向け。"
+        },
+        "title": "Google Merchant Center",
+        "description": "公開済みの商品情報の変更を補足商品データとしてGoogleに送信します。診断の確認や購入手続き設定の準備を1か所で行えます。Shopifyストアで利用可能です。",
+        "actions": [
+          {
+            "label": "Merchant Centerを接続",
+            "href": "/sign-up"
+          },
+          {
+            "label": "デモを予約",
+            "href": "/demo"
+          }
+        ],
+        "sections": [
+          {
+            "id": "workflow",
+            "title": "Googleの商品データを常に最新の状態に",
+            "description": "",
+            "columns": 2,
+            "items": [
+              {
+                "title": "補足データ",
+                "body": "公開済みのタイトルと説明の変更を、個別の同期アクションで送信します。メインの商品データソースは保持されます。"
+              },
+              {
+                "title": "購入手続き属性",
+                "body": "対象商品の購入手続き属性を設定し、補足同期に含めます。"
+              },
+              {
+                "title": "商品診断",
+                "body": "Googleの商品に関する問題や、補足変更が反映されたかどうかを確認できます。"
+              },
+              {
+                "title": "購入手続き準備状況",
+                "body": "アカウント、配送、返品、カスタマーサポート設定を確認します。Googleプログラムへの登録はマーチャント側の作業です。"
+              }
+            ],
+            "note": "Googleは2026年9月にecenticのMerchant Center書き込みアクセスを承認しました。これはアクセス承認であり、推奨を意味するものではありません。"
+          },
+          {
+            "id": "access",
+            "title": "ecenticの読み取り・書き込み範囲",
+            "description": "この接続ではGoogle Content APIのOAuthスコープを要求します。同意すると、以下のアカウント操作が許可されますが、Google購入手続きへの登録は行われません。"
+          },
+          {
+            "id": "requirements",
+            "title": "要件と制限",
+            "description": "",
+            "paragraphs": [
+              "接続済みのShopifyストアと、認可可能なMerchant Centerアカウントが必要です。現在のecentic接続はWooCommerceに対応していません。",
+              "Google OAuthスコープ: https://www.googleapis.com/auth/content。接続フローで対象のマーチャントアカウントを選択し、表示されるアカウント連携手順を完了してください。",
+              "照合はShopifyの商品識別情報とMerchant Centerのオファーに基づいて行われます。各変更が受け入れられるかどうかはGoogleの診断と処理によって決まります。特定の時間内に同期が完了する保証はありません。",
+              "公開済みの商品情報の変更は、同期アクションを実行した場合にのみ送信されます。バックグラウンドのメンテナンスチェックでは既存のオーバーライドとアカウント連携を確認しますが、新しく公開された修正を自動送信することはありません。"
+            ]
+          },
+          {
+            "id": "setup",
+            "title": "接続、確認、同期",
+            "description": "",
+            "ordered": true,
+            "columns": 2,
+            "items": [
+              {
+                "title": "Googleアカウントを認証",
+                "body": "ShopifyストアのGoogle接続を開き、対象のMerchant Centerアカウントへのアクセスを許可します。"
+              },
+              {
+                "title": "補足ソースを設定",
+                "body": "アカウント連携とデータソース設定を完了します。照合対象の商品とソース優先順位を確認してください。"
+              },
+              {
+                "title": "商品変更を選択",
+                "body": "商品情報の更新をShopifyに公開し、対象の購入手続き属性を設定します。Googleの診断も確認してください。"
+              },
+              {
+                "title": "オーバーライドを送信",
+                "body": "個別の補足同期を実行し、処理済みオファーの状態を確認します。Googleの処理時間を考慮してください。"
+              }
+            ],
+            "note": "ヒント: 利用可能な場合はテスト用Merchant Center環境を使い、まず少数の一致オファーで確認してください。"
+          }
+        ],
+        "ledger": [
+          {
+            "field": "マーチャントアカウントとデータソース",
+            "read": "アカウント情報、接続済みソース、およびその設定。",
+            "write": "アカウント連携リクエスト、ecenticの補足ソース、および設定時のソース優先順位ルール。"
+          },
+          {
+            "field": "商品タイトルと説明",
+            "read": "公開済みのecentic商品情報レコードと、処理済みのMerchant Centerオファー。",
+            "write": "明示的な同期時の補足タイトルと説明のオーバーライド。"
+          },
+          {
+            "field": "価格、在庫、メイン商品フィード",
+            "read": "照合と診断に必要な処理済みオファー。",
+            "write": "メイン商品ソースは置き換えられません。設定済みの補足値は、対象フィールドで優先されます。"
+          },
+          {
+            "field": "購入手続き属性",
+            "read": "保存済みの商品設定と、Googleで処理された購入手続き対象ステータス。",
+            "write": "補足ソース経由で選択された購入手続き属性。"
+          },
+          {
+            "field": "配送、返品、サポート",
+            "read": "アカウントの配送設定、返品ポリシー、カスタマーサポート情報。",
+            "write": "カスタマーサポート情報または返品ポリシーは、明示的な保存アクション経由でのみ書き込みます。配送レートの書き込み機能はありません。"
+          },
+          {
+            "field": "診断",
+            "read": "商品に関する問題とオーバーライドの受け入れ状況。",
+            "write": "Googleの診断結果は編集できません。"
+          }
+        ],
+        "faqs": [
+          {
+            "question": "メインフィードは上書きされますか？",
+            "answer": "メインのデータソースは保持されます。ecenticは補足ソースを作成し、メインソースのルール内でその優先順位を更新します。そのため、選択した補足属性によって、Googleが対象フィールドで使用する実効値を置き換えられる場合があります。"
+          },
+          {
+            "question": "WooCommerceでも利用できますか？",
+            "answer": "まだ対応していません。現在、ecenticのMerchant Center連携はShopifyに対応しています。"
+          },
+          {
+            "question": "これでGoogleの購入手続きプログラムに参加できますか？",
+            "answer": "いいえ。対象条件と承認はGoogleが決定します。ecenticはデータ準備、設定確認、準備状況のテスト支援を行いますが、登録は別途必要です。"
+          },
+          {
+            "question": "ApplyでGoogleも自動更新されますか？",
+            "answer": "いいえ。Applyでは選択したストアの商品情報変更を公開します。公開済みオーバーライドをGoogleに送信するには、別途Merchant Center同期アクションを実行してください。"
+          }
+        ]
+      },
+      "productFeeds": {
+        "meta": {
+          "title": "商品フィードまたはCSVでecenticを利用",
+          "description": "対応するXMLまたはJSONの商品フィード、CSV、または公開アクセス可能なShopify・WooCommerceカタログをインポートして、シミュレーションや監査に利用できます。"
+        },
+        "title": "商品フィードとCSV",
+        "description": "エクスポート可能な商品データから開始できます。直接公開接続がなくても、対応フィードやCSV、公開アクセス可能なShopifyまたはWooCommerceカタログを利用できます。",
+        "actions": [
+          {
+            "label": "商品データをインポート",
+            "href": "/sign-up"
+          },
+          {
+            "label": "デモを予約",
+            "href": "/demo"
+          }
+        ],
+        "sections": [
+          {
+            "id": "workflow",
+            "title": "商品データから開始",
+            "description": "",
+            "items": [
+              {
+                "title": "シミュレーション",
+                "body": "ストアスキャンモデルを使用して、インポートした商品と指定した競合商品を比較します。"
+              },
+              {
+                "title": "監査",
+                "body": "商品情報の品質と、サンプリングされたストアフロントの準備状況を確認します。結果をチームの修正作業に活用できます。"
+              },
+              {
+                "title": "公開が必要になったら接続",
+                "body": "ストアへの公開にはShopifyまたはWooCommerce接続が必要です。Google同期はShopify専用です。エージェントによる購入手続きにはWooCommerceプラグインが必要で、トラッキングはShopifyで動作します。"
+              }
+            ]
+          },
+          {
+            "id": "formats",
+            "title": "インポーター対応形式",
+            "description": "以下の定義済み形式を使用してください。XMLまたはJSONであるだけでは互換性はありません。",
+            "rows": [
+              {
+                "label": "XML",
+                "value": "Google Shopping形式の商品フィールドを含む、RSS channel/item または feed/entry の商品レコード。"
+              },
+              {
+                "label": "JSON",
+                "value": "商品配列、またはproducts・itemsを配列として含むオブジェクト。対応フィールドにはtitle、description、price、currency、image、URL、SKU、IDが含まれます。"
+              },
+              {
+                "label": "CSV",
+                "value": "カンマ区切りのテキスト。各行に1商品。列：title または name、description、price、image、image_link または image_url、url または link、sku、id。",
+                "detail": "titleのない行はスキップされます。priceには通貨コードを含めてください（例: 29.99 EUR）。CSVの通貨専用列はインポートされません。改行の埋め込みは避けてください。"
+              },
+              {
+                "label": "フィードサイズ",
+                "value": "XMLおよびJSONのダウンロードは10 MiBまでに制限されています。"
+              },
+              {
+                "label": "ストアアドレス",
+                "value": "公開アクセス可能なShopifyおよびWooCommerceカタログに対応しています。すべてのWebサイト向けの汎用インポートではありません。"
+              }
+            ]
+          },
+          {
+            "id": "access",
+            "title": "ecenticの読み取り・書き込み範囲",
+            "description": "インポートでは商品レコードがecenticに保存されます。元のフィード、ファイル、ストアフロントは変更されません。"
+          },
+          {
+            "id": "export-platforms",
+            "title": "対応エクスポートを利用",
+            "description": "以下の検証済みプラットフォーム経路では列マッピングが必要です。ネイティブの直接接続は別機能です。"
+          },
+          {
+            "id": "setup",
+            "title": "インポートして比較",
+            "description": "",
+            "ordered": true,
+            "columns": 2,
+            "items": [
+              {
+                "title": "ファイルを準備",
+                "body": "対応フィードURLを使用するか、CSVを対応列名とカンマ区切り形式に正規化してください。"
+              },
+              {
+                "title": "カタログをインポート",
+                "body": "フィードを接続するかCSVをアップロードします。商品選択前に、タイトル、価格、通貨、商品URLを確認してください。"
+              },
+              {
+                "title": "比較対象を選択",
+                "body": "無料オンボーディングスキャン用に最大10商品を選択し、競合商品を追加します。"
+              },
+              {
+                "title": "確認して再インポート",
+                "body": "監査結果をもとに元システムを更新してください。カタログ変更時は再インポートが必要です。定期的なフィード更新機能はありません。"
+              }
+            ],
+            "note": "ヒント: カタログをインポートする前に、小規模なサンプルエクスポートでマッピングを確認してください。"
+          }
+        ],
+        "ledger": [
+          {
+            "field": "タイトル、説明、価格、通貨",
+            "read": "フィードまたはCSV内の対応フィールド。CSVでは通貨をprice値に含めることができます。",
+            "write": "ecentic内に商品レコードとして保存されます。元データは変更されません。"
+          },
+          {
+            "field": "画像、商品URL、SKU、ID",
+            "read": "対応する画像URL、リンク、識別子。",
+            "write": "ecentic内に保存されます。新しい画像や識別子は生成されません。"
+          },
+          {
+            "field": "在庫、カスタム属性、プラットフォーム固有フィールド",
+            "read": "インポーター対応フィールドのみ使用されます。任意のエクスポートスキーマには対応していません。",
+            "write": "コマースプラットフォームへの書き戻しはありません。"
+          },
+          {
+            "field": "監査とシミュレーション",
+            "read": "インポート済みの商品レコードと、アクセス可能なストアフロントのサンプル。",
+            "write": "結果はecentic内で利用できます。生成された商品情報リライトのダウンロードファイルは現在提供していません。"
+          }
+        ],
+        "faqs": [
+          {
+            "question": "フィードのインポートは読み取り専用ですか？",
+            "answer": "元データに対しては読み取り専用です。ecenticがフィード、ファイル、ストアフロントを変更することはありません。ただし、インポートした商品レコードはecenticアカウント内に保存されます。"
+          },
+          {
+            "question": "フィードはどの頻度で更新されますか？",
+            "answer": "カタログ変更時に再インポートしてください。定期的なフィード更新機能は現在ありません。"
+          },
+          {
+            "question": "修正内容をファイルとしてダウンロードできますか？",
+            "answer": "現在、生成された商品情報リライトのエクスポート機能はありません。監査結果をもとに元システムで編集するか、対応する公開機能を利用するためにShopifyまたはWooCommerceを接続してください。"
+          },
+          {
+            "question": "どのXMLまたはJSONエクスポートでも利用できますか？",
+            "answer": "いいえ。パーサーは上記の商品レコード形式に対応しています。構造が異なるエクスポート形式は事前に変換が必要です。通常はCSV列マッピングが最も簡単です。"
+          }
+        ]
+      }
+    },
+    "action": {
+      "primary": "通知を受け取る"
+    }
+  }
+}

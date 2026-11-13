@@ -525,14 +525,12 @@ const Insights = async ({ params }: { params: StoreParams }) => {
     const overall = Math.round(
       scored.reduce((sum, brand) => sum + brand.winRate, 0) / scored.length,
     );
-    const plural = scored.length === 1 ? "" : "s";
 
     switch (true) {
       case winning === scored.length:
         return {
           headline: translate("headlines.outrankAll", {
             count: scored.length,
-            plural,
             overall,
           }),
           detail: translate("headlines.slimmestLead", {
@@ -549,7 +547,6 @@ const Insights = async ({ params }: { params: StoreParams }) => {
           detail: translate("headlines.holdMajority", {
             winning,
             total: scored.length,
-            plural,
             overall,
             brand: toughest.brand,
           }),
@@ -559,7 +556,6 @@ const Insights = async ({ params }: { params: StoreParams }) => {
           headline: translate("headlines.defaultHeadline", {
             winning,
             total: scored.length,
-            plural,
             overall,
           }),
           detail:

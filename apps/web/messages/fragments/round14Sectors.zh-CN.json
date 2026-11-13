@@ -1,0 +1,31 @@
+{
+  "round14Sectors": {
+    "introduction": "查看购买问题如何关联到商品记录中的事实信息。",
+    "sample": "使用示例商品的演示对话。",
+    "questions": "查看购物问题",
+    "conversation": "示例对话",
+    "shopper": "购物者",
+    "assistant": "购物助手",
+    "assistantIntro": "我可以根据这些商品信息中的内容对比需求。相关事实包括：",
+    "followUp": "可以从商品信息中确认哪些内容？",
+    "inspection": "查看示例记录",
+    "yourListing": "您的商品信息",
+    "comparisonListing": "对比商品信息",
+    "sourceFact": "示例源数据中已包含",
+    "missing": "商品信息中未说明",
+    "available": "商品信息中已说明",
+    "required": "与此问题相关",
+    "qualification": "请在源数据中核实这些属性",
+    "attributesIntro": "先明确商品事实，再查看共享源记录中的变更。",
+    "comparisonIntro": "此示例基于第一个购物问题。图示展示的是下方代码变更前已有的源数据事实。",
+    "sourceHeading": "修复背后的源数据事实",
+    "dimensions": {
+      "title": "检查完整尺寸。",
+      "width": "宽度",
+      "depth": "深度",
+      "height": "高度",
+      "note": "示意图，不按比例绘制。请使用商品、房间和通道的准确尺寸确认是否适配。"
+    },
+    "assistantFinding": "{product} 的商品信息未说明 {fields}。我无法根据该商品信息验证这些要求。示例源数据展示了需要明确说明的事实。"
+  }
+}

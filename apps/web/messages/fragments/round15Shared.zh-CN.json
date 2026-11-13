@@ -1,0 +1,21 @@
+{
+  "commerceFigures": {
+    "documentStack": "三份产品文档，指针选中某一页时会抬起",
+    "partReadouts": {
+      "documentStack": [
+        {
+          "value": "文档1",
+          "label": "文档1"
+        },
+        {
+          "value": "文档2",
+          "label": "文档2"
+        },
+        {
+          "value": "文档3",
+          "label": "文档3"
+        }
+      ]
+    }
+  }
+}

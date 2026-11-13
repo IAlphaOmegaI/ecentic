@@ -1036,11 +1036,11 @@
         "completedScans": "{count, plural, one {# abgeschlossener Scan} other {# abgeschlossene Scans}}",
         "viewAllActivity": "Alle Aktivitäten anzeigen",
         "headlines": {
-          "outrankAll": "Sie liegen vor allen {count} simulierten Wettbewerber{plural} (durchschn. {overall}% Gewinnquote).",
+          "outrankAll": "Sie liegen vor {count, plural, one {dem # simulierten Wettbewerber} other {allen # simulierten Wettbewerbern}} (durchschnittliche Gewinnquote: {overall}%).",
           "slimmestLead": "Ihr knappster Vorsprung besteht gegenüber {brand} mit {rate}%. Halten Sie Ihre Produktangebote optimiert, um ihn zu verteidigen.",
           "biggestOpportunity": "{brand} gewinnt {lossRate}% der Agentenvergleiche gegen Sie. Das ist Ihre größte Chance.",
-          "holdMajority": "Sie liegen gegen {winning} von {total} Wettbewerber{plural} vorn (durchschn. {overall}%). Die größte Wirkung erzielen Sie, wenn Sie die Produkte optimieren, bei denen Sie gegen {brand} verlieren.",
-          "defaultHeadline": "Sie liegen gegen {winning} von {total} Wettbewerber{plural} vorn (durchschn. {overall}% Gewinnquote).",
+          "holdMajority": "Sie liegen gegen {winning} von {total, plural, one {# Wettbewerber} other {# Wettbewerbern}} vorn (durchschnittlich {overall}%). Die größte Wirkung erzielen Sie, wenn Sie die Produkte optimieren, bei denen Sie gegen {brand} verlieren.",
+          "defaultHeadline": "Sie liegen gegen {winning} von {total, plural, one {# Wettbewerber} other {# Wettbewerbern}} vorn (durchschnittliche Gewinnquote: {overall}%).",
           "focusOptimization": "Konzentrieren Sie die Optimierung Ihrer Produktangebote auf die Produkte, bei denen {brand} Sie schlägt.",
           "toughestRival": "{toughest} ist mit {toughestRate}% Ihr stärkster Rivale; gegen {strongest} führen Sie mit {strongestRate}%."
         }
@@ -7339,6 +7339,34 @@
       "failedTitle": "Einlösung fehlgeschlagen",
       "successTitle": "Einlösung erhalten",
       "successDescription": "Wir prüfen Ihren Jahrgang und senden Ihnen innerhalb von 1 Werktag eine E-Mail."
+    },
+    "programs": {
+      "techstars": {
+        "batchLabel": "Techstars-Programm / Jahr",
+        "batchPlaceholder": "Wählen Sie Ihren Jahrgang",
+        "action": {
+          "primary": "Mein Techstars-Angebot einlösen"
+        }
+      },
+      "yc": {
+        "batchLabel": "YC-Jahrgang",
+        "batchPlaceholder": "Wählen Sie Ihren Jahrgang",
+        "action": {
+          "primary": "Mein YC-Angebot einlösen"
+        }
+      }
+    },
+    "options": {
+      "earlier": "Früher",
+      "other": "Sonstige",
+      "customHeadless": "Individuell / Headless",
+      "preLaunch": "Vor dem Start"
+    },
+    "cohorts": {
+      "winter": "Winter {year}",
+      "spring": "Frühjahr {year}",
+      "summer": "Sommer {year}",
+      "fall": "Herbst {year}"
     }
   },
   "docs": {
@@ -16133,6 +16161,10 @@
       "docs": {
         "title": "Entwickeln Sie auf der Plattform für den Handel durch KI-Agenten.",
         "description": "API-Referenz, MCP, CLI und öffentliche Discovery-Dokumente für Entwickler."
+      },
+      "blog": {
+        "title": "Das Journal für den Handel mit KI.",
+        "description": "Praktische Leitfäden zu Produktdaten, KI-Empfehlungen und Kaufabschlüssen durch KI-Agenten."
       }
     }
   },
@@ -19311,8 +19343,8 @@
         },
         {
           "key": "contact_step",
-          "before": "blockiert",
-          "after": "bereit",
+          "before": "blocked",
+          "after": "ready",
           "note": "Das Entfernen dieser Anforderung ermöglicht es dem Beispiel, mit der Zahlung fortzufahren."
         },
         {
@@ -19998,5 +20030,145 @@
       "maximumSize": "Alle Dateien überschreiten die maximale Größe.",
       "maximumCount": "Zu viele Dateien. Einige wurden nicht hinzugefügt."
     }
+  },
+  "agentReadiness": {
+    "meta": {
+      "title": "Machen Sie Ihren Shop fit für KI-Shopping",
+      "description": "Fügen Sie eine beliebige Shop-URL ein. ecentic liest Ihre Produkte aus, korrigiert Angaben, die KI-Kanäle nicht nutzen können, und stellt Ihnen einen Feed für Google Merchant Center sowie einen Feed für ChatGPT bereit.",
+      "run": "Durchlauf für Ihren Shop",
+      "board": "Anzeigetafel im Veranstaltungsraum",
+      "stage": "Bühnenansicht"
+    },
+    "hero": {
+      "title": "Fügen Sie die Adresse Ihres Shops ein.",
+      "accent": "Wir machen ihn fit für Google, Gemini und ChatGPT.",
+      "description": "Wir lesen jedes Produkt aus, bis zu 40 insgesamt, beheben, was wir anhand der Seiten Ihres Shops korrigieren können, listen den Rest auf und stellen Ihnen beide Feeds bereit.",
+      "runTitle": "Ihr Shop wird für Google, Gemini und ChatGPT vorbereitet"
+    },
+    "form": {
+      "address": "Adresse Ihres Shops",
+      "placeholder": "yourstore.com",
+      "starting": "Wird gestartet",
+      "action": {
+        "primary": "Jetzt vorbereiten"
+      },
+      "note": "Keine Anmeldung. Wir lesen bis zu 40 Produkte aus Ihren öffentlichen Seiten aus."
+    },
+    "errors": {
+      "fallback": "Bei uns ist etwas schiefgelaufen. Versuchen Sie es erneut.",
+      "invalid": "Diese Shop-Adresse können wir offenbar nicht lesen. Prüfen Sie sie und versuchen Sie es erneut.",
+      "limited": "Sie haben viele Shops direkt hintereinander gestartet. Warten Sie ein paar Minuten und versuchen Sie es erneut.",
+      "capacity": "Wir haben heute so viele Shops vorbereitet, wie es möglich ist. Bitte versuchen Sie es morgen erneut.",
+      "unavailable": "Dieser Durchlauf konnte nicht gestartet werden. Bitte versuchen Sie es gleich noch einmal.",
+      "connect": "Das hat nicht funktioniert. Versuchen Sie es erneut.",
+      "connectLimited": "Zu viele Versuche hintereinander. Warten Sie kurz.",
+      "unreachable": "Wir konnten {host} gerade nicht erreichen.",
+      "address": "Wir konnten die Adresse dieses Shops nicht lesen.",
+      "finish": "Wir konnten diesen Shop nicht abschließen. Versuchen Sie es erneut."
+    },
+    "actions": {
+      "primary": "Anderen Shop testen",
+      "secondary": "Bühnenansicht öffnen",
+      "download": "{format} herunterladen",
+      "nothing": "Noch nichts zum Herunterladen",
+      "connect": "Merchant Center verbinden"
+    },
+    "counts": {
+      "products": "{count, plural, one {# Produkt} other {# Produkte}}",
+      "stores": "{count, plural, one {# Shop} other {# Shops}}",
+      "fixes": "{count, plural, one {# Korrektur} other {# Korrekturen}}",
+      "issues": "{count, plural, one {# Problem} other {# Probleme}}"
+    },
+    "channelSummary": "{label}: {ready} von {total, plural, one {# Produkt} other {# Produkten}} bereit",
+    "uploadSummary": "In den Produkt-Feed von OpenAI hochgeladen: {status}",
+    "uploadStatus": {
+      "uploading": "Wird hochgeladen",
+      "received": "Empfangen",
+      "processing": "Wird verarbeitet",
+      "completed": "Abgeschlossen",
+      "completed_with_errors": "Mit Fehlern abgeschlossen",
+      "failed": "Fehlgeschlagen"
+    },
+    "stage": {
+      "reading": "Shop wird gelesen",
+      "preparing": "Wir beheben, was möglich ist",
+      "channels": "Feeds werden erstellt",
+      "done": "Fertig",
+      "failed": "Dieser Durchlauf wurde gestoppt"
+    },
+    "offer": {
+      "pending": "Wartet auf die API von Google",
+      "accepted": "Von der API von Google akzeptiert",
+      "merged": "Von Google zusammengeführt",
+      "rejected": "Von der API von Google abgelehnt",
+      "skipped": "Übersprungen"
+    },
+    "kinds": {
+      "inferred": "Abgeleitet",
+      "rewritten": "Überarbeitet",
+      "cleaned": "Bereinigt"
+    },
+    "merchant": {
+      "ownership": "Wir veröffentlichen nur über Merchant Center-Konten des Inhabers der Shop-Website.",
+      "account": "Konto {account}"
+    },
+    "product": {
+      "missingValue": "Vom Shop nicht angegeben",
+      "before": "Vorher",
+      "after": "Nachher",
+      "error": "Wird nicht in den Feed aufgenommen",
+      "warning": "Wird mit einer Warnung übernommen",
+      "policy": "Nach der Richtlinie von OpenAI für verbotene Produkte markiert: {category}",
+      "policyUnchecked": "Die Prüfung nach der Richtlinie von OpenAI für verbotene Produkte wurde für dieses Produkt nicht ausgeführt, daher wurde es nicht freigegeben.",
+      "summary": "{fixes, plural, one {# Korrektur} other {# Korrekturen}}, {issues, plural, one {# Problem} other {# Probleme}}",
+      "googleReady": "Bereit für Google",
+      "googleNotReady": "Nicht bereit für Google",
+      "chatgptReady": "Bereit für ChatGPT",
+      "chatgptUnchecked": "Bereit für ChatGPT, Richtlinie nicht geprüft",
+      "chatgptNotReady": "Nicht bereit für ChatGPT",
+      "nothing": "Nichts zu korrigieren und keine offenen Probleme mehr."
+    },
+    "products": {
+      "title": "Alle Produkte",
+      "description": "Was wir geändert haben, was wir abgeleitet haben und was nur Sie lösen können.",
+      "empty": "Wir haben keine Produkte zum Anzeigen gefunden.",
+      "failed": "Die Produktliste konnte nicht geladen werden. Es wird weiter versucht.",
+      "loading": "Produktliste wird geladen."
+    },
+    "done": {
+      "summary": "{fixes, plural, one {# Korrektur angewendet} other {# Korrekturen angewendet}}, {issues, plural, one {# Problem erfordert den Händler} other {# Probleme erfordern den Händler}}",
+      "xml": "XML-Feed",
+      "csv": "CSV-Feed",
+      "chatgptReady": "Bereit für ChatGPT.",
+      "chatgptEmpty": "Noch sind keine Produkte für ChatGPT bereit.",
+      "chatgptNote": "ChatGPT akzeptiert Produkt-Feeds nur von zugelassenen Partnern. Diese Datei reichen Sie ein, wenn Sie dazugehören.",
+      "notes": "Gut zu wissen"
+    },
+    "notice": {
+      "missingTitle": "Wir können diesen Durchlauf nicht finden",
+      "missingBody": "Durchläufe werden eine Zeit lang gespeichert und dann gelöscht. Fügen Sie den Shop erneut ein, um einen neuen Durchlauf zu starten.",
+      "failedTitle": "Wir können diesen Durchlauf gerade nicht erreichen",
+      "failedBody": "Es wird weiter versucht. Diese Seite aktualisiert sich, sobald eine Antwort kommt."
+    },
+    "stats": {
+      "products": "Produkte gelesen",
+      "issues": "Probleme gefunden",
+      "fixes": "Korrekturen angewendet"
+    },
+    "board": {
+      "qr": "QR-Code für {url}",
+      "readiness": "{ready} von {total}",
+      "headline": "<storeCount>{stores, plural, one {# Shop} other {# Shops}}</storeCount> und <productCount>{products, plural, one {# Produkt} other {# Produkte}}</productCount> heute Abend für KI vorbereitet",
+      "empty": "Noch keine Shops. Scannen Sie den Code und fügen Sie Ihren Shop ein."
+    },
+    "presentation": {
+      "freeListings": "Kostenlose Einträge",
+      "missing": "Prüfen Sie den Link auf der Ergebnisseite.",
+      "waiting": "Warten auf Rückmeldung zu diesem Durchlauf",
+      "waitingBody": "Diese Ansicht aktualisiert sich, sobald eine Antwort kommt.",
+      "reading": "Shop wird gelesen: bisher {count, plural, one {# Produkt} other {# Produkte}}",
+      "fixes": "{count, plural, one {# Korrektur angewendet} other {# Korrekturen angewendet}}"
+    },
+    "outputLanguage": "Shop-Inhalte und Diagnosen der Anbieter bleiben in ihrer Originalsprache."
   }
 }

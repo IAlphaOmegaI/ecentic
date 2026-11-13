@@ -1,0 +1,40 @@
+{
+  "share": {
+    "sidebar": {
+      "headline": {
+        "line1": "I tuoi risultati",
+        "line2": "sono pronti."
+      },
+      "points": [
+        "Confronti d'acquisto reali simulati con ChatGPT, Claude, Gemini e Perplexity",
+        "Ogni prodotto è stato valutato in un confronto diretto con i concorrenti",
+        "Questo report mostra dove vinci e dove perdi"
+      ]
+    },
+    "page": {
+      "title": "Come si posiziona il tuo store?",
+      "description": "Scopri nel dettaglio come il tuo store si posiziona rispetto alla concorrenza."
+    },
+    "score": {
+      "label": "Punteggio agenti AI",
+      "simulations": "{count} simulazioni",
+      "wins": "Vittorie",
+      "losses": "Sconfitte",
+      "messages": {
+        "high": "Davanti alla maggior parte dei concorrenti.",
+        "medium": "Competitivo, ma con margini di crescita.",
+        "low": "Gli agenti AI stanno scegliendo i concorrenti."
+      }
+    },
+    "finding": {
+      "impact": "Impatto",
+      "simsLost": "delle simulazioni perse",
+      "missingAttributes": "Attributi mancanti"
+    },
+    "cta": {
+      "title": "Pronto a far scegliere i tuoi prodotti a ogni agente AI per gli acquisti?",
+      "description": "ecentic ottimizza automaticamente le tue schede prodotto. Gratis per iniziare.",
+      "action": "Inizia gratis"
+    }
+  }
+}

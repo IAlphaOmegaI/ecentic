@@ -1,0 +1,50 @@
+{
+  "docsErrorsPage": {
+    "example": "レスポンス例",
+    "fields": "レスポンスを確認",
+    "fieldItems": [
+      {
+        "name": "type",
+        "description": "このリファレンス内で問題を識別するURIです。"
+      },
+      {
+        "name": "code",
+        "description": "クライアント側で分岐処理に利用できる安定した識別子です。"
+      },
+      {
+        "name": "title",
+        "description": "人が読める短い概要です。"
+      },
+      {
+        "name": "status",
+        "description": "HTTPステータスを本文内でも繰り返し示します。"
+      },
+      {
+        "name": "detail",
+        "description": "このリクエストで発生した具体的な問題です。"
+      },
+      {
+        "name": "resolution",
+        "description": "障害を解決するための次の手順です。"
+      },
+      {
+        "name": "documentation",
+        "description": "このレスポンスに対応するリファレンスページです。"
+      },
+      {
+        "name": "instance",
+        "description": "判明している場合、この結果を生成したリクエストパスです。"
+      }
+    ],
+    "catalogue": {
+      "label": "公開済み問題コード",
+      "description": "解決方法を確認するにはコードを開いてください。各コードには固定リンクがあります。",
+      "permalink": "固定リンク:",
+      "resolution": "解決方法",
+      "action": {
+        "primary": "すべて展開",
+        "secondary": "すべて折りたたむ"
+      }
+    }
+  }
+}

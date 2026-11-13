@@ -3,183 +3,217 @@ import { join } from "node:path";
 import { ImageResponse } from "next/og";
 import type { Locale } from "@/i18n/locales";
 import { cjkOgFont } from "./og-fonts";
+import { ogTextLayout } from "./og-layout";
 
-const background = `data:image/png;base64,${readFileSync(
-  join(process.cwd(), "public/images/background.png"),
-).toString("base64")}`;
-
-const medium = readFileSync(
+const asset = (path: string, type: string) =>
+  `data:${type};base64,${readFileSync(join(process.cwd(), "public", path)).toString("base64")}`;
+const lockup = asset("images/marketing/trademark-on-dark.svg", "image/svg+xml");
+const artwork = asset("images/marketing/og-commerce.png", "image/png");
+const headingFont = readFileSync(
   join(process.cwd(), "public/fonts/LTSuperior/LTSuperior-Medium.ttf"),
 );
-
-const semibold = readFileSync(
-  join(process.cwd(), "public/fonts/LTSuperior/LTSuperior-SemiBold.ttf"),
+const bodyFont = readFileSync(
+  join(process.cwd(), "public/fonts/marketing/RedHatDisplay-Regular.ttf"),
 );
-
-const truncate = (value: string, max: number) =>
-  value.length > max ? `${value.slice(0, max - 1).trimEnd()}…` : value;
 
 export const ogImageSize = { width: 1200, height: 630 } as const;
 export const ogImageContentType = "image/png" as const;
 
-// Satori has no calc(): the column's negative margins pull it past the frame's
-// horizontal rules, so its height is the full canvas minus those two hairlines.
-const columnHeight = ogImageSize.height - 2;
-
+/** Satori uses literal values corresponding to the design canon's dark surface and primary tokens. */
 export const createOgImage = ({
   title,
   description,
   locale,
 }: createOgImage.Params) => {
-  const displayTitle = truncate(title || "ecentic", 110);
-  const displayDescription = truncate(
-    description || "Infrastructure for the agent economy",
-    180,
-  );
-
+  const layout = ogTextLayout(title, description, locale);
   return new ImageResponse(
     <div
       style={{
+        display: "flex",
         width: "100%",
         height: "100%",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "space-between",
-        padding: "44px 0",
-        backgroundColor: "#1572fa",
-        color: "#0a0a0a",
-        fontFamily: "LTSuperior, NotoSansCJK",
         position: "relative",
+        background:
+          "linear-gradient(125deg, #080b10 35%, #0b1930 76%, #123d78 100%)",
+        color: "#f5f7fb",
+        fontFamily: "LTSuperior, NotoSansCJK",
       }}
     >
-      {/* biome-ignore lint/performance/noImgElement: next/og Satori only supports plain img elements */}
-      <img
-        src={background}
-        width={1200}
-        height={630}
-        alt="Background"
+      <div
         style={{
+          display: "flex",
           position: "absolute",
-          top: 0,
-          left: 0,
-          width: 1200,
-          height: 630,
-          objectFit: "cover",
+          right: 0,
+          top: 113,
+          width: 448,
+          height: 468,
+          background:
+            "radial-gradient(ellipse at 78% 78%, rgba(21,114,250,.3), rgba(21,114,250,0) 72%)",
         }}
       />
-
-      <section
+      {/* biome-ignore lint/performance/noImgElement: Satori renders raster assets, not browser image components. */}
+      <img
+        src={artwork}
+        alt=""
+        width={600}
+        height={400}
         style={{
-          borderTop: "1px solid white",
-          borderBottom: "1px solid white",
-          width: "100%",
-          height: "100%",
-          padding: "0 44px",
+          position: "absolute",
+          left: 652,
+          top: 157,
+          width: 600,
+          height: 400,
+          objectFit: "contain",
+        }}
+      />
+      <div
+        style={{
+          display: "flex",
+          position: "absolute",
+          left: 78,
+          right: 78,
+          top: 37,
+          height: 40,
+          justifyContent: "space-between",
+          alignItems: "center",
         }}
       >
-        <section
+        {/* biome-ignore lint/performance/noImgElement: Preserve the official logo paths in the social image. */}
+        <img src={lockup} alt="ecentic" width={168} height={42} />
+        <span
+          style={{
+            fontFamily: "RedHatDisplay, NotoSansCJK",
+            fontSize: 21,
+            color: "#a4b2c5",
+          }}
+        >
+          ecentic.ai
+        </span>
+      </div>
+      <div
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          position: "absolute",
+          left: 78,
+          top: 148,
+          width: 664,
+          height: 402,
+          gap: 22,
+        }}
+      >
+        <div
           style={{
             display: "flex",
             flexDirection: "column",
-            width: "100%",
-            gap: 24,
-            height: columnHeight,
-            borderLeft: "1px solid white",
-            borderRight: "1px solid white",
-            margin: "-44px 0",
-            padding: "74px 30px",
+            fontWeight: 500,
+            fontSize: layout.titleSize,
+            letterSpacing:
+              locale === "ja" || locale === "zh-CN" ? "-0.015em" : "-0.04em",
+            lineHeight: layout.titleLineHeight,
           }}
         >
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: 14,
-              position: "relative",
-              marginBottom: "auto",
-            }}
-          >
-            <span
-              style={{
-                fontSize: 32,
-                fontWeight: 500,
-                letterSpacing: "-0.02em",
-                color: "#ffffff",
-              }}
-            >
-              ecentic
+          {layout.titleLines.map((line, index) => (
+            // biome-ignore lint/suspicious/noArrayIndexKey: Static raster text lines have no mutable list state.
+            <span key={index} style={{ whiteSpace: "pre" }}>
+              {line}
             </span>
-          </div>
-
+          ))}
+        </div>
+        {layout.descriptionLines.length > 0 && (
           <div
             style={{
               display: "flex",
               flexDirection: "column",
-              gap: 22,
-              position: "relative",
+              fontFamily: "RedHatDisplay, NotoSansCJK",
+              fontSize: 24,
+              lineHeight: 1.34,
+              color: "#b7c3d4",
             }}
           >
-            <h1
-              style={{
-                margin: 0,
-                fontSize: 72,
-                letterSpacing: "-0.035em",
-                fontWeight: 600,
-                color: "#ffffff",
-                maxWidth: 880,
-              }}
-            >
-              {displayTitle}
-            </h1>
-
-            <p
-              style={{
-                margin: 0,
-                fontSize: 28,
-                color: "white",
-                letterSpacing: "-0.01em",
-                maxWidth: 980,
-                fontWeight: 200,
-                marginTop: -8,
-              }}
-            >
-              {displayDescription}
-            </p>
+            {layout.descriptionLines.map((line, index) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: Static raster text lines have no mutable list state.
+              <span key={index} style={{ whiteSpace: "pre" }}>
+                {line}
+              </span>
+            ))}
           </div>
-
+        )}
+      </div>
+      {[48, 1152].map((left) => (
+        <div
+          key={left}
+          style={{
+            display: "flex",
+            position: "absolute",
+            left,
+            top: 0,
+            width: 1,
+            height: 630,
+            background: "#344152",
+          }}
+        />
+      ))}
+      {[112, 581].map((top) => (
+        <div
+          key={top}
+          style={{
+            display: "flex",
+            position: "absolute",
+            top,
+            left: 0,
+            height: 1,
+            width: 1200,
+            background: "#344152",
+          }}
+        />
+      ))}
+      {[48, 1152].flatMap((left) =>
+        [112, 581].map((top) => (
           <div
+            key={`${left}-${top}`}
             style={{
               display: "flex",
-              justifyContent: "space-between",
-              alignItems: "center",
-              fontSize: 22,
-              color: "rgba(255,255,255,0.75)",
-              letterSpacing: "-0.01em",
-              position: "relative",
+              position: "absolute",
+              left: left - 7,
+              top: top - 7,
+              width: 15,
+              height: 15,
             }}
           >
-            <span>ecentic.ai</span>
-            <span>ecentic</span>
+            <div
+              style={{
+                display: "flex",
+                position: "absolute",
+                left: 0,
+                top: 7,
+                width: 15,
+                height: 1,
+                background: "#9eb5d4",
+              }}
+            />
+            <div
+              style={{
+                display: "flex",
+                position: "absolute",
+                left: 7,
+                top: 0,
+                width: 1,
+                height: 15,
+                background: "#9eb5d4",
+              }}
+            />
           </div>
-        </section>
-      </section>
+        )),
+      )}
     </div>,
     {
       ...ogImageSize,
       fonts: [
         ...cjkOgFont(`${title} ${description}`, locale),
-        {
-          name: "LTSuperior",
-          data: medium,
-          style: "normal",
-          weight: 500,
-        },
-        {
-          name: "LTSuperior",
-          data: semibold,
-          style: "normal",
-          weight: 600,
-        },
+        { name: "LTSuperior", data: headingFont, weight: 500, style: "normal" },
+        { name: "RedHatDisplay", data: bodyFont, weight: 400, style: "normal" },
       ],
     },
   );
@@ -189,6 +223,7 @@ export namespace createOgImage {
   export type Params = {
     title: string;
     description: string;
+    signoff?: string;
     locale?: Locale;
   };
 }

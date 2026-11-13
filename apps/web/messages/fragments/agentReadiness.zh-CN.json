@@ -1,0 +1,142 @@
+{
+  "agentReadiness": {
+    "meta": {
+      "title": "让您的店铺为AI购物做好准备",
+      "description": "粘贴任意店铺网址。ecentic会读取商品、修复AI渠道无法使用的内容，并提供Google Merchant Center和ChatGPT商品Feed。",
+      "run": "店铺处理进度",
+      "board": "现场看板",
+      "stage": "演示大屏"
+    },
+    "hero": {
+      "title": "粘贴店铺网址。",
+      "accent": "我们会帮您做好面向Google、Gemini和ChatGPT的准备。",
+      "description": "我们会逐一读取商品，最多40件；根据店铺自身的页面修复可修复的内容，列出无法修复的问题，并交付两份Feed。",
+      "runTitle": "正在为店铺做好面向Google、Gemini和ChatGPT的准备"
+    },
+    "form": {
+      "address": "店铺网址",
+      "placeholder": "yourstore.com",
+      "starting": "正在启动",
+      "action": {
+        "primary": "开始准备"
+      },
+      "note": "无需注册。我们会从公开页面读取最多40件商品。"
+    },
+    "errors": {
+      "fallback": "我们这边出了点问题，请重试。",
+      "invalid": "这似乎不是我们可以读取的店铺网址，请检查后重试。",
+      "limited": "您连续启动了多家店铺的处理任务，请等几分钟后重试。",
+      "capacity": "今天可处理的店铺数量已达上限，请明天再试。",
+      "unavailable": "无法启动本次处理，请稍后重试。",
+      "connect": "连接未成功，请重试。",
+      "connectLimited": "连续尝试次数过多，请等1分钟。",
+      "unreachable": "暂时无法访问{host}。",
+      "address": "无法读取该店铺的网址。",
+      "finish": "未能完成这家店铺的处理，请重试。"
+    },
+    "actions": {
+      "primary": "试试其他店铺",
+      "secondary": "打开演示大屏",
+      "download": "下载{format}",
+      "nothing": "暂无可下载内容",
+      "connect": "连接Merchant Center"
+    },
+    "counts": {
+      "products": "{count, plural, other {#件商品}}",
+      "stores": "{count, plural, other {#家店铺}}",
+      "fixes": "{count, plural, other {#项修复}}",
+      "issues": "{count, plural, other {#个问题}}"
+    },
+    "channelSummary": "{label}：{total, plural, other {#件商品}}中已有{ready}件准备就绪",
+    "uploadSummary": "上传至OpenAI商品Feed：{status}",
+    "uploadStatus": {
+      "uploading": "上传中",
+      "received": "已接收",
+      "processing": "处理中",
+      "completed": "已完成",
+      "completed_with_errors": "已完成，但存在错误",
+      "failed": "失败"
+    },
+    "stage": {
+      "reading": "正在读取店铺",
+      "preparing": "正在修复可修复的问题",
+      "channels": "正在生成Feed",
+      "done": "完成",
+      "failed": "本次处理已停止"
+    },
+    "offer": {
+      "pending": "等待Google API响应",
+      "accepted": "Google API已接受",
+      "merged": "Google已合并",
+      "rejected": "Google API已拒绝",
+      "skipped": "已跳过"
+    },
+    "kinds": {
+      "inferred": "已推断",
+      "rewritten": "已改写",
+      "cleaned": "已清理"
+    },
+    "merchant": {
+      "ownership": "我们只会发布到拥有该店铺网站所有权的Merchant Center账号。",
+      "account": "账号{account}"
+    },
+    "product": {
+      "missingValue": "店铺未提供",
+      "before": "修复前",
+      "after": "修复后",
+      "error": "导致无法纳入Feed",
+      "warning": "带警告输出",
+      "policy": "根据OpenAI禁止商品政策被标记：{category}",
+      "policyUnchecked": "该商品尚未执行OpenAI禁止商品政策检查，因此尚未确认通过。",
+      "summary": "{fixes, plural, other {#项修复}}，{issues, plural, other {#个问题}}",
+      "googleReady": "已为Google准备就绪",
+      "googleNotReady": "尚未为Google准备就绪",
+      "chatgptReady": "已为ChatGPT准备就绪",
+      "chatgptUnchecked": "已为ChatGPT准备就绪，未检查政策",
+      "chatgptNotReady": "尚未为ChatGPT准备就绪",
+      "nothing": "无需修复，也没有待解决的问题。"
+    },
+    "products": {
+      "title": "全部商品",
+      "description": "查看我们修改了什么、推断了什么，以及哪些问题只能由您解决。",
+      "empty": "未找到可列出的商品。",
+      "failed": "无法加载商品列表，仍在重试。",
+      "loading": "正在加载商品列表。"
+    },
+    "done": {
+      "summary": "{fixes, plural, other {#项修复已应用}}，{issues, plural, other {#个问题需要商家处理}}",
+      "xml": "XML Feed",
+      "csv": "CSV Feed",
+      "chatgptReady": "已为ChatGPT准备就绪。",
+      "chatgptEmpty": "目前尚无商品为ChatGPT准备就绪。",
+      "chatgptNote": "ChatGPT只接受获批合作伙伴提交的商品Feed；当您成为获批合作伙伴后，提交这份文件即可。",
+      "notes": "需要了解的事项"
+    },
+    "notice": {
+      "missingTitle": "找不到这次处理记录",
+      "missingBody": "处理记录会保留一段时间后清除。请再次粘贴店铺网址，开始新的处理。",
+      "failedTitle": "暂时无法获取这次处理记录",
+      "failedBody": "仍在重试，收到响应后本页会立即更新。"
+    },
+    "stats": {
+      "products": "已读取商品",
+      "issues": "发现的问题",
+      "fixes": "已应用修复"
+    },
+    "board": {
+      "qr": "{url}的二维码",
+      "readiness": "{total}中已有{ready}",
+      "headline": "今晚已为<storeCount>{stores, plural, other {#家店铺}}</storeCount>和<productCount>{products, plural, other {#件商品}}</productCount>做好AI准备",
+      "empty": "暂无店铺。扫描二维码，粘贴您的店铺网址。"
+    },
+    "presentation": {
+      "freeListings": "免费商品详情",
+      "missing": "请查看结果页上的链接。",
+      "waiting": "等待本次处理响应",
+      "waitingBody": "收到响应后，此屏幕会立即更新。",
+      "reading": "正在读取店铺：目前已读取{count, plural, other {#件商品}}",
+      "fixes": "{count, plural, other {#项修复已应用}}"
+    },
+    "outputLanguage": "店铺内容和服务提供商的诊断结果保留原始语言。"
+  }
+}

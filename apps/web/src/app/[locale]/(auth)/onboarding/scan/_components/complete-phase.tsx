@@ -16,7 +16,7 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import { motion } from "motion/react";
 import Image from "next/image";
 import { useLinkStatus } from "next/link";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { Counter } from "@/app/[locale]/(main)/_components/counter";
 import { Motion } from "@/components/motion";
 import { Link, useRouter } from "@/i18n/navigation";
@@ -50,6 +50,7 @@ export const CompletePhase = ({
   scanId,
 }: CompletePhase.Props) => {
   const translate = useTranslations("onboarding.scan");
+  const format = useFormatter();
   const winRate =
     wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : 0;
 
@@ -141,15 +142,17 @@ export const CompletePhase = ({
                   <span className="mt-auto font-medium text-foreground text-lg">
                     {label}
                   </span>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-wrap items-center gap-2">
                     <span className="font-light text-sm text-success leading-tight">
-                      {rates?.wins ?? 0} W
+                      {format.number(rates?.wins ?? 0)}{" "}
+                      {translate("complete.stats.wins")}
                     </span>
                     <span className="text-foreground-dimmed/30 text-sm leading-tight">
                       —
                     </span>
                     <span className="font-light text-error text-sm leading-tight">
-                      {rates?.losses ?? 0} L
+                      {format.number(rates?.losses ?? 0)}{" "}
+                      {translate("complete.stats.losses")}
                     </span>
                   </div>
                   <div className="flex items-center gap-2">
@@ -183,7 +186,9 @@ export const CompletePhase = ({
               <p className="font-light text-foreground">
                 {translate("complete.topFindingBody", {
                   name: topFinding.name,
-                  attributes: topFinding.missingAttributes.join(" and "),
+                  attributes: format.list(topFinding.missingAttributes, {
+                    type: "conjunction",
+                  }),
                   impact: topFinding.impactDescription,
                   percentage: String(topFinding.lossPercentage),
                 })}

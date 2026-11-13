@@ -1,0 +1,646 @@
+{
+  "enterpriseNav": {
+    "pricing": "定价",
+    "home": "ecentic 首页",
+    "groups": [
+      {
+        "id": "platform",
+        "label": "平台",
+        "columns": [
+          {
+            "title": "连接",
+            "items": [
+              {
+                "href": "/integrations/shopify",
+                "label": "Shopify 应用",
+                "description": "从 Shopify App Store 安装。",
+                "status": ""
+              },
+              {
+                "href": "/integrations/woocommerce",
+                "label": "WooCommerce 插件",
+                "description": "免费插件或 REST API 密钥。",
+                "status": ""
+              },
+              {
+                "href": "/platform/connect#product-feeds",
+                "label": "商品数据源",
+                "description": "导入支持的 XML 或 JSON 数据源。",
+                "status": ""
+              },
+              {
+                "href": "/platform/connect#csv",
+                "label": "CSV 上传",
+                "description": "从导出的电子表格文件开始。",
+                "status": ""
+              },
+              {
+                "href": "/platform/connect#store-address",
+                "label": "店铺地址",
+                "description": "导入公开商品页面。",
+                "status": ""
+              },
+              {
+                "href": "/integrations/google-merchant-center",
+                "label": "Google Merchant Center",
+                "description": "在 Shopify 上将已发布的修复同步到 Google。",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "模拟",
+            "items": [
+              {
+                "href": "/platform/simulate#simulations",
+                "label": "智能体模拟",
+                "description": "ChatGPT、Claude 和 Gemini 对比商品信息。",
+                "status": ""
+              },
+              {
+                "href": "/platform/simulate#win-rate",
+                "label": "AI 胜率",
+                "description": "按商品、模型和竞品查看。",
+                "status": ""
+              },
+              {
+                "href": "/platform/simulate#battlecards",
+                "label": "竞品对比卡",
+                "description": "查看对方商品信息为何胜出。",
+                "status": ""
+              },
+              {
+                "href": "/platform/simulate#replay",
+                "label": "智能体回放",
+                "description": "查看记录的推理过程。",
+                "status": ""
+              },
+              {
+                "href": "/platform/simulate#readiness",
+                "label": "就绪度检测",
+                "description": "爬虫规则、结构化数据和标识符。",
+                "status": ""
+              },
+              {
+                "href": "/platform/simulate#listing-quality",
+                "label": "商品信息质量检查",
+                "description": "34 条商品数据规则。",
+                "status": ""
+              },
+              {
+                "href": "/platform/simulate#brand-visibility",
+                "label": "品牌可见度",
+                "description": "测试 ChatGPT 如何描述您的品牌。",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "修复",
+            "items": [
+              {
+                "href": "/platform/fix#listings",
+                "label": "商品信息重写",
+                "description": "新的标题和描述。",
+                "status": ""
+              },
+              {
+                "href": "/platform/fix#structured-data",
+                "label": "结构化数据",
+                "description": "单独生成并发布 Product 数据。",
+                "status": ""
+              },
+              {
+                "href": "/platform/fix#attributes",
+                "label": "缺失属性",
+                "description": "查看缺少了哪些商品信息字段。",
+                "status": ""
+              },
+              {
+                "href": "/platform/fix#publish",
+                "label": "应用后发布",
+                "description": "由您选择要修改的每件商品。",
+                "status": ""
+              },
+              {
+                "href": "/platform/fix#merchant-center",
+                "label": "Merchant Center 同步",
+                "description": "按您的选择发送已发布的修复。",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "销售",
+            "items": [
+              {
+                "href": "/platform/sell#checkout",
+                "label": "智能体结账",
+                "description": "适用于 WooCommerce，使用您的支付方式。",
+                "status": ""
+              },
+              {
+                "href": "/platform/sell#chatgpt",
+                "label": "在 ChatGPT 内销售",
+                "description": "ecentic 应用，等待发布。",
+                "status": "soon"
+              },
+              {
+                "href": "/ucp-playground",
+                "label": "结账试验区",
+                "description": "在您的店铺中测试购物智能体。",
+                "status": ""
+              },
+              {
+                "href": "/ucp-validator",
+                "label": "结账验证器",
+                "description": "检查您的智能体结账档案。",
+                "status": ""
+              },
+              {
+                "href": "/webmcp-scanner",
+                "label": "WebMCP 扫描器",
+                "description": "检查店铺前端源码中的操作。",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "追踪",
+            "items": [
+              {
+                "href": "/platform/track#traffic",
+                "label": "AI 流量",
+                "description": "Shopify 上各助手的访问量。",
+                "status": ""
+              },
+              {
+                "href": "/platform/track#lift",
+                "label": "预估提升",
+                "description": "基于重新扫描验证的预估值。",
+                "status": ""
+              },
+              {
+                "href": "/platform/track#rescans",
+                "label": "重新扫描",
+                "description": "修复后再次运行模拟。",
+                "status": ""
+              },
+              {
+                "href": "/platform/track#stores",
+                "label": "一个账户管理所有店铺",
+                "description": "集中管理您的所有店铺。",
+                "status": ""
+              },
+              {
+                "href": "/docs",
+                "label": "API、MCP 服务器和 CLI",
+                "description": "发现与店铺接入工具。",
+                "status": ""
+              }
+            ]
+          }
+        ],
+        "featured": {
+          "href": "/platform",
+          "title": "一分钟了解 ecentic",
+          "description": "了解商品目录从连接到结账的完整流程。"
+        }
+      },
+      {
+        "id": "solutions",
+        "label": "解决方案",
+        "columns": [
+          {
+            "title": "按业务类型",
+            "items": [
+              {
+                "href": "/solutions/brands",
+                "label": "品牌方",
+                "description": "让回答直接提到您的商品。",
+                "status": ""
+              },
+              {
+                "href": "/solutions/retailers-and-marketplaces",
+                "label": "零售商与平台",
+                "description": "处理大型供应商商品目录。",
+                "status": ""
+              },
+              {
+                "href": "/solutions/enterprise",
+                "label": "企业",
+                "description": "将 AI 作为销售渠道运营。",
+                "status": ""
+              },
+              {
+                "href": "/solutions/agencies-and-partners",
+                "label": "代理机构与合作伙伴",
+                "description": "将 AI 商务加入您的服务。",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "按团队",
+            "items": [
+              {
+                "href": "/solutions#ecommerce-and-growth",
+                "label": "电商与增长团队",
+                "description": "了解 AI 选择了哪些商品。",
+                "status": ""
+              },
+              {
+                "href": "/solutions#marketing",
+                "label": "市场营销",
+                "description": "检查 AI 读取的商品事实信息。",
+                "status": ""
+              },
+              {
+                "href": "/solutions#marketplace-and-channel-managers",
+                "label": "平台与渠道经理",
+                "description": "优化您管理的 Feed。",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "按行业",
+            "items": [
+              {
+                "href": "/solutions/sectors/food-and-beverage",
+                "label": "食品与饮料",
+                "description": "适用于您行业的商品数据。",
+                "status": ""
+              },
+              {
+                "href": "/solutions/sectors/wine-and-spirits",
+                "label": "葡萄酒与烈酒",
+                "description": "适用于您行业的商品数据。",
+                "status": ""
+              },
+              {
+                "href": "/solutions/sectors/beauty-and-personal-care",
+                "label": "美妆与个人护理",
+                "description": "适用于您行业的商品数据。",
+                "status": ""
+              },
+              {
+                "href": "/solutions/sectors/consumer-electronics",
+                "label": "消费电子",
+                "description": "适用于您行业的商品数据。",
+                "status": ""
+              },
+              {
+                "href": "/solutions/sectors/home-and-furniture",
+                "label": "家居与家具",
+                "description": "适用于您行业的商品数据。",
+                "status": ""
+              },
+              {
+                "href": "/solutions/sectors/fashion-and-outdoor",
+                "label": "时尚与户外",
+                "description": "适用于您行业的商品数据。",
+                "status": ""
+              },
+              {
+                "href": "/solutions/sectors/health-wellness-and-pet",
+                "label": "健康、养生与宠物",
+                "description": "适用于您行业的商品数据。",
+                "status": ""
+              },
+              {
+                "href": "/solutions/sectors/travel-and-experiences",
+                "label": "旅行与体验",
+                "description": "适用于您行业的商品数据。",
+                "status": ""
+              },
+              {
+                "href": "/solutions/sectors",
+                "label": "全部行业",
+                "description": "找到您的行业。",
+                "status": ""
+              }
+            ]
+          }
+        ],
+        "featured": {
+          "href": "/stories/dua-flavors",
+          "title": "DUA Flavours 试点",
+          "description": "来自 AI 助手或直接流量的访问量提升 +12%。"
+        }
+      },
+      {
+        "id": "channels",
+        "label": "AI 渠道",
+        "columns": [
+          {
+            "title": "AI 渠道",
+            "items": [
+              {
+                "href": "/ai-channels/google-ai-mode-gemini",
+                "label": "Google AI Mode 和 Gemini",
+                "description": "当前覆盖范围和平台要求。",
+                "status": "simulated"
+              },
+              {
+                "href": "/ai-channels/chatgpt",
+                "label": "ChatGPT",
+                "description": "当前覆盖范围和平台要求。",
+                "status": "simulated"
+              },
+              {
+                "href": "/ai-channels/claude",
+                "label": "Claude",
+                "description": "当前覆盖范围和平台要求。",
+                "status": "simulated"
+              },
+              {
+                "href": "/ai-channels/microsoft-copilot",
+                "label": "Microsoft Copilot",
+                "description": "当前覆盖范围和平台要求。",
+                "status": "soon"
+              },
+              {
+                "href": "/ai-channels/perplexity",
+                "label": "Perplexity",
+                "description": "当前覆盖范围和平台要求。",
+                "status": "soon"
+              },
+              {
+                "href": "/ai-channels/amazon",
+                "label": "Amazon",
+                "description": "当前覆盖范围和平台要求。",
+                "status": "soon"
+              }
+            ]
+          }
+        ],
+        "featured": {
+          "href": "/ai-channels",
+          "title": "AI 在哪里购物",
+          "description": "了解每个助手的要求，以及我们当前支持的内容。"
+        }
+      },
+      {
+        "id": "integrations",
+        "label": "集成",
+        "columns": [
+          {
+            "title": "电商平台",
+            "items": [
+              {
+                "href": "/integrations/shopify",
+                "label": "Shopify",
+                "description": "直接连接商品目录。",
+                "status": "live"
+              },
+              {
+                "href": "/integrations/woocommerce",
+                "label": "WooCommerce",
+                "description": "免费插件或 REST API。",
+                "status": "live"
+              },
+              {
+                "href": "/integrations#commerce",
+                "label": "BigCommerce",
+                "description": "导入支持的 Feed 或 CSV。",
+                "status": "feed"
+              },
+              {
+                "href": "/integrations#commerce",
+                "label": "Adobe Commerce",
+                "description": "导入支持的 Feed 或 CSV。",
+                "status": "feed"
+              },
+              {
+                "href": "/integrations#commerce",
+                "label": "Shopware",
+                "description": "导入支持的 Feed 或 CSV。",
+                "status": "feed"
+              },
+              {
+                "href": "/integrations#commerce",
+                "label": "Wix",
+                "description": "导入支持的数据 feed 或 CSV。",
+                "status": "feed"
+              }
+            ]
+          },
+          {
+            "title": "数据源与数据",
+            "items": [
+              {
+                "href": "/integrations/google-merchant-center",
+                "label": "Google Merchant Center",
+                "description": "适用于 Shopify 商店。",
+                "status": "live"
+              },
+              {
+                "href": "/integrations/product-feeds",
+                "label": "商品数据源与 CSV",
+                "description": "只读商品目录导入。",
+                "status": "live"
+              },
+              {
+                "href": "/integrations#feeds",
+                "label": "Microsoft Merchant Center",
+                "description": "数据源导出已列入开发计划。",
+                "status": "soon"
+              },
+              {
+                "href": "/integrations#feeds",
+                "label": "Amazon Shop Direct",
+                "description": "商品目录导出已列入开发计划。",
+                "status": "soon"
+              }
+            ]
+          },
+          {
+            "title": "商品信息",
+            "items": [
+              {
+                "href": "/integrations#pim",
+                "label": "Plytix 和 Pimcore",
+                "description": "通过兼容的商品导出接入。",
+                "status": "feed"
+              },
+              {
+                "href": "/integrations#pim",
+                "label": "Akeneo",
+                "description": "直连已列入开发计划。",
+                "status": "soon"
+              },
+              {
+                "href": "/integrations#pim",
+                "label": "Salsify",
+                "description": "直连已列入开发计划。",
+                "status": "soon"
+              }
+            ]
+          },
+          {
+            "title": "支付与结账",
+            "items": [
+              {
+                "href": "/platform/sell",
+                "label": "您的支付网关",
+                "description": "用于 WooCommerce AI 智能体结账。",
+                "status": "live"
+              },
+              {
+                "href": "/integrations#payments",
+                "label": "Stripe Agentic Commerce Suite",
+                "description": "集成已列入开发计划。",
+                "status": "soon"
+              }
+            ]
+          }
+        ],
+        "featured": {
+          "href": "/integrations",
+          "title": "连接您的技术栈",
+          "description": "支持实时连接、数据源接入，或已列入开发计划。"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "资源",
+        "columns": [
+          {
+            "title": "学习",
+            "items": [
+              {
+                "href": "/blog",
+                "label": "博客",
+                "description": "来自 ecentic 的文章。",
+                "status": ""
+              },
+              {
+                "href": "/resources",
+                "label": "指南",
+                "description": "商品数据与智能体电商。",
+                "status": ""
+              },
+              {
+                "href": "/stories",
+                "label": "试点案例",
+                "description": "结果及其背后的方法。",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "免费工具",
+            "items": [
+              {
+                "href": "/sign-up",
+                "label": "AI 智能体评分",
+                "description": "先进行一次免费的商店检测。",
+                "status": ""
+              },
+              {
+                "href": "/ucp-validator",
+                "label": "结账验证器",
+                "description": "检查 AI 智能体结账资料。",
+                "status": ""
+              },
+              {
+                "href": "/ucp-playground",
+                "label": "结账测试环境",
+                "description": "运行测试购物智能体。",
+                "status": ""
+              },
+              {
+                "href": "/webmcp-scanner",
+                "label": "WebMCP 扫描器",
+                "description": "检查店铺源码。",
+                "status": ""
+              },
+              {
+                "href": "/compare",
+                "label": "对比",
+                "description": "跨助手对比商品。",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "开发者",
+            "items": [
+              {
+                "href": "/docs",
+                "label": "文档",
+                "description": "使用 ecentic 开发。",
+                "status": ""
+              },
+              {
+                "href": "/docs/api",
+                "label": "API 参考",
+                "description": "易读的端点参考文档。",
+                "status": ""
+              },
+              {
+                "href": "/docs/mcp",
+                "label": "MCP 服务器",
+                "description": "连接您的智能体工具。",
+                "status": ""
+              },
+              {
+                "href": "/docs#cli",
+                "label": "CLI",
+                "description": "在终端中使用 ecentic。",
+                "status": ""
+              },
+              {
+                "href": "/changelog",
+                "label": "更新日志",
+                "description": "已发布内容。",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "公司",
+            "items": [
+              {
+                "href": "/about",
+                "label": "关于我们",
+                "description": "认识创始团队。",
+                "status": ""
+              },
+              {
+                "href": "/security",
+                "label": "安全与信任",
+                "description": "数据、访问与控制。",
+                "status": ""
+              },
+              {
+                "href": "/partners",
+                "label": "合作伙伴",
+                "description": "与 ecentic 合作。",
+                "status": ""
+              },
+              {
+                "href": "/contact",
+                "label": "联系我们",
+                "description": "找到合适的沟通渠道。",
+                "status": ""
+              },
+              {
+                "href": "/support",
+                "label": "帮助中心",
+                "description": "获取账户帮助。",
+                "status": ""
+              }
+            ]
+          }
+        ],
+        "featured": {
+          "href": "/tools",
+          "title": "先进行一次免费检测",
+          "description": "面向商品数据与结账的实用工具。"
+        }
+      }
+    ]
+  }
+}

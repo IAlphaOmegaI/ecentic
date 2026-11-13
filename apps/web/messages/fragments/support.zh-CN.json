@@ -1,0 +1,104 @@
+{
+  "support": {
+    "meta": {
+      "title": "支持 — 扫描、计费和智能体相关帮助",
+      "description": "获取 ecentic 支持：邮件支持、实时讲解扫描结果，或面向企业版和智能体商业相关账户的专属升级处理通道。"
+    },
+    "breadcrumb": {
+      "home": "首页",
+      "support": "支持"
+    },
+    "hero": {
+      "eyebrow": "支持",
+      "title": {
+        "primary": "随时",
+        "accent": "为您提供帮助。"
+      },
+      "description": "无论是扫描结果、集成、计费还是其他问题：选择适合的渠道，剩下的交给我们。",
+      "assurances": [
+        "真人支持",
+        "免费扫描讲解",
+        "企业版专属升级处理通道"
+      ],
+      "art": {
+        "alt": "支持耳机的 ASCII 艺术插图"
+      }
+    },
+    "channels": {
+      "number": "01",
+      "title": "选择联系渠道。",
+      "description": "大多数问题适合邮件沟通；如果需要讲解结果，可预约实时通话；企业版团队则提供专属直连通道。",
+      "items": [
+        {
+          "id": "email",
+          "title": "邮件支持",
+          "description": "账户、计费或集成问题，最快的联系方式就是邮件。请附上店铺 URL，方便我们在回复前先查看相关信息。",
+          "highlighted": true,
+          "action": {
+            "primary": "support@ecentic.ai"
+          }
+        },
+        {
+          "id": "walkthrough",
+          "title": "实时讲解",
+          "description": "15分钟通话，我们会实时用 AI 购物模型分析您的商品，并用通俗语言解释结果。",
+          "highlighted": false,
+          "action": {
+            "primary": "预约通话"
+          }
+        },
+        {
+          "id": "enterprise",
+          "title": "企业版升级支持",
+          "description": "企业版账户可获得指定的客户成功经理（CSM）、季度回顾，以及直连工程团队的升级通道。",
+          "highlighted": false,
+          "action": {
+            "primary": "查看企业版"
+          }
+        }
+      ]
+    },
+    "selfServe": {
+      "number": "02",
+      "title": "自己更快找到答案。",
+      "description": "大多数问题都已经在这些页面中解答。",
+      "items": [
+        {
+          "href": "/how-it-works",
+          "name": "工作原理",
+          "title": "了解模拟、诊断、优化循环",
+          "description": "逐步了解连接店铺后会发生什么。",
+          "label": "查看工作原理"
+        },
+        {
+          "href": "/features",
+          "name": "功能",
+          "title": "查看平台全部工具",
+          "description": "胜率评分、竞品差距分析、商品信息重写、智能体流量、UCP 档案和重新扫描。",
+          "label": "打开功能页面"
+        },
+        {
+          "href": "/pricing",
+          "name": "价格",
+          "title": "对比从免费扫描开始的各类方案",
+          "description": "并排说明免费 Scan、按量付费，以及 Compete 和 Dominate 订阅方案。",
+          "label": "查看价格"
+        },
+        {
+          "href": "/privacy-policy",
+          "name": "隐私",
+          "title": "查看我们会存储和绝不会存储的数据",
+          "description": "仅商品范围权限、不包含购物者个人数据、仅使用必要 Cookie，以及删除机制说明。",
+          "label": "阅读政策"
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "运行免费扫描",
+        "secondary": "返回首页"
+      },
+      "note": "2分钟完成设置 · 无需信用卡 · 先查看免费评分"
+    }
+  }
+}

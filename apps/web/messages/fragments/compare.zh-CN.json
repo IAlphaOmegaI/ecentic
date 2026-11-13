@@ -1,0 +1,224 @@
+{
+  "compare": {
+    "meta": {
+      "title": "AI 电商工具：分类指南",
+      "description": "按类别对比商品内容、个性化、搜索、分析和智能体商业相关电商工具。"
+    },
+    "breadcrumb": {
+      "home": "首页",
+      "page": "2026 年最佳 AI 电商工具"
+    },
+    "hero": {
+      "eyebrow": "对比",
+      "title": {
+        "primary": "最佳 AI 电商工具",
+        "accent": "（2026 年）。"
+      },
+      "description": "并非所有 AI 电商工具都在解决同一个问题。本指南先比较类别，再比较品牌，让您的候选名单从真正需要解决的任务出发。",
+      "assurances": [
+        "五大类别中的六款工具",
+        "先看类别，而不是功能清单",
+        "已更新至 2026 年"
+      ],
+      "art": {
+        "alt": "天平的 ASCII 艺术插图"
+      }
+    },
+    "guide": {
+      "number": "01",
+      "title": "如何使用本指南。",
+      "description": "先比较类别，可以更快完成最终供应商选择，也能降低进入错误候选名单的风险。",
+      "body": [
+        "如果把内容生成工具、个性化平台、搜索产品和智能体商业工作流都塞进同一张通用功能表，商家很容易得出错误的候选名单。",
+        "更好的问题是：您现在希望这个工具完成什么工作？"
+      ],
+      "categoriesHeading": "本指南中的五大类别",
+      "categories": [
+        {
+          "title": "内容生成",
+          "description": "大规模生成商品描述和商品目录内容。"
+        },
+        {
+          "title": "平台原生 AI",
+          "description": "为希望保持现有技术栈的商家提供内置辅助能力。"
+        },
+        {
+          "title": "个性化与商品运营",
+          "description": "站内体验、用户分群和转化。"
+        },
+        {
+          "title": "搜索与发现",
+          "description": "商品相关性和导航基础设施。"
+        },
+        {
+          "title": "智能体商业优化",
+          "description": "AI 购物可见性与商品选择。"
+        }
+      ]
+    },
+    "tools": {
+      "number": "02",
+      "title": "商家最常对比的工具。",
+      "description": "每个工具占一行，包括我们自己的产品。最值得看的其实是最后一列：这里的每款工具都不适合某些人，而知道哪些人不适合，往往比功能清单更能快速缩小候选范围。",
+      "scrollHint": "滚动查看对比 →",
+      "usLabel": "·我们",
+      "columns": {
+        "tool": "工具",
+        "category": "类别",
+        "bestAt": "最擅长",
+        "wrongPick": "什么时候不适合"
+      },
+      "items": [
+        {
+          "name": "ecentic",
+          "category": "智能体商业优化",
+          "bestAt": "了解 AI 助手为什么选择竞品而不是您的商品，并重写商品信息来改变这一结果。",
+          "wrongPick": "用户目前仍主要来自搜索和广告，而 AI 参与的流量占比还很低。",
+          "us": true
+        },
+        {
+          "name": "Hypotenuse AI",
+          "category": "商品内容生成",
+          "bestAt": "为大型商品目录批量生成描述、卖点和平台文案，减少人工撰写工作。",
+          "wrongPick": "文案本身已经足够好，真正的问题是哪些商品会被展示，而不是文案怎么写。",
+          "us": false
+        },
+        {
+          "name": "Shopify Magic",
+          "category": "平台原生文案生成",
+          "bestAt": "直接在现有后台中获得快速 AI 辅助，无需额外购买、学习或集成。",
+          "wrongPick": "你需要的是竞争环境视角。它只能看到你的店铺，看不到那些抢走订单的竞品。",
+          "us": false
+        },
+        {
+          "name": "Nosto",
+          "category": "个性化",
+          "bestAt": "根据每位回访用户动态调整站内内容：推荐、用户分群和商品运营规则。",
+          "wrongPick": "流量太少，或者用户在进入店铺之前就已经完成了决策。",
+          "us": false
+        },
+        {
+          "name": "Constructor",
+          "category": "搜索与发现",
+          "bestAt": "让大型商品目录更容易被找到：包括查询理解、排序和大规模浏览相关性优化。",
+          "wrongPick": "你的商品目录规模较小，用户很少搜索，或者用户流失并不发生在发现阶段。",
+          "us": false
+        },
+        {
+          "name": "Bloomreach",
+          "category": "企业级智能",
+          "bestAt": "在大型组织中统一管理搜索、商品运营和营销活动数据。",
+          "wrongPick": "你的团队规模精简，实施和上线成本已经超过当前问题本身。",
+          "us": false
+        }
+      ]
+    },
+    "bottleneck": {
+      "number": "03",
+      "title": "先明确真正的瓶颈类别。",
+      "description": "最有效的评估方式，是先锁定具体的运营瓶颈，而不是先比较冗长的功能清单。",
+      "body": [
+        "一个常见错误，是把所有 AI 电商产品都当作文案工具来比较。这样看似更简单，但也会掩盖真正的采购决策。",
+        "先在每个类别中筛选一个候选工具，再根据本季度最关键的瓶颈进一步缩小范围。"
+      ],
+      "mappingsHeading": "各类别真正改善的是什么",
+      "mappings": [
+        {
+          "title": "内容生成",
+          "description": "提升商品描述和商品目录文案的生产效率。"
+        },
+        {
+          "title": "个性化",
+          "description": "提升站内相关性、用户分群和转化率。"
+        },
+        {
+          "title": "搜索工具",
+          "description": "优化店铺内部的商品发现和导航体验。"
+        },
+        {
+          "title": "分析工具",
+          "description": "提升整个转化漏斗的数据可见性。"
+        },
+        {
+          "title": "AI 智能体电商优化",
+          "description": "在 AI 系统比较竞品商品信息时，提高商品被选中的概率。",
+          "emphasized": true
+        }
+      ]
+    },
+    "related": {
+      "number": "04",
+      "title": "深入了解候选方案对应页面。",
+      "description": "以下页面会进一步拆解具体决策环节：工作流、平台选择或商品信息优化。",
+      "links": [
+        {
+          "href": "/features",
+          "name": "功能",
+          "title": "查看 AI 电商工具的核心工作流",
+          "description": "如果你希望先了解产品整体能力，再深入具体平台或对比路径，请先查看功能页面。",
+          "label": "打开功能页面",
+          "color": "primary"
+        },
+        {
+          "href": "/features/product-listings",
+          "name": "商品信息",
+          "title": "深入了解 AI 商品信息优化",
+          "description": "如果当前重点是提升商品内容和完善商品属性，这个页面最适合下一步查看。",
+          "label": "查看商品信息工作流",
+          "color": "accent"
+        },
+        {
+          "href": "/platforms/shopify",
+          "name": "Shopify",
+          "title": "查看 Shopify 专属采购路径",
+          "description": "如果你的候选名单中包含 Shopify 原生或 Shopify 生态 AI 工具，请查看此页面。",
+          "label": "打开 Shopify 页面",
+          "color": "accent"
+        },
+        {
+          "href": "/platforms/woocommerce",
+          "name": "WooCommerce",
+          "title": "查看 WooCommerce 专属采购路径",
+          "description": "如果你需要真实支持的平台路径，而不只是泛化对比，请查看 WooCommerce 页面。",
+          "label": "打开 WooCommerce 页面",
+          "color": "accent"
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "05",
+      "title": "常见问题",
+      "description": "商家在比较 AI 电商工具和平台时最常见的问题。"
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "2026 年最好的 AI 电商工具有哪些？",
+          "answer": "2026 年最好的 AI 电商工具，取决于你要解决的问题。商家通常会比较商品内容工具、个性化平台、搜索与发现产品、分析软件，以及新兴的 AI 智能体电商优化工具。"
+        },
+        {
+          "question": "商家应该如何比较 AI 电商软件？",
+          "answer": "最清晰的方式，是先按类别比较工具。先判断当前最紧迫的问题是商品内容、站内个性化、搜索相关性、数据分析可见性，还是 AI 购物选择优化。然后再比较该类别中的供应商。"
+        },
+        {
+          "question": "ecentic 在这类对比中属于什么定位？",
+          "answer": "ecentic 属于 AI 智能体电商优化类别。它面向需要模拟 AI 购物决策、诊断竞品为何胜出，并基于竞争环境优化商品信息的商家。"
+        },
+        {
+          "question": "为什么按类别划分的指南比超长功能清单更好？",
+          "answer": "按类别划分更值得信任，因为它不会假装所有工具都在解决同一个问题。它能帮助买家理解：个性化平台、文案生成器和 AI 智能体电商工作流，不应该用同一套标准评估。"
+        }
+      ]
+    },
+    "footer": {
+      "primary": "开始使用 ecentic",
+      "secondary": "返回首页",
+      "note": "2 分钟完成设置 · 无需信用卡 · 先查看免费评分"
+    },
+    "structuredData": {
+      "articleHeadline": "2026 年最佳 AI 电商工具",
+      "itemListName": "2026 年最佳 AI 电商工具",
+      "toolDescription": "{category}。最适合：{bestAt} 不适合的情况：{wrongPick}"
+    }
+  }
+}

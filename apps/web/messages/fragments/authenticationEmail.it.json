@@ -1,0 +1,32 @@
+{
+  "authenticationEmail": {
+    "verify": {
+      "subject": "Verifica il tuo indirizzo email",
+      "preview": "Verifica la tua email per iniziare a usare ecentic",
+      "title": "Verifica la tua email",
+      "description": "Inizia a ottimizzare le tue schede prodotto per gli agenti AI per gli acquisti.",
+      "body": "Grazie per aver creato il tuo account ecentic. Seleziona il pulsante qui sotto per verificare il tuo indirizzo email.",
+      "requestedFor": "Questa verifica è stata richiesta per {email}.",
+      "action": {
+        "primary": "Verifica indirizzo email"
+      },
+      "ignored": "Se non hai creato un account su ecentic, puoi ignorare tranquillamente questa email.",
+      "linkFallback": "Oppure copia e incolla questo link nel browser:",
+      "footer": "ecentic — Il livello commerce per l’AI."
+    },
+    "reset": {
+      "subject": "Reimposta la password",
+      "preview": "Reimposta la password di ecentic",
+      "title": "Reimposta la password",
+      "description": "Scegli una nuova password e torna alle tue schede prodotto.",
+      "body": "Abbiamo ricevuto una richiesta di reimpostazione della password del tuo account ecentic. Seleziona il pulsante qui sotto per sceglierne una nuova.",
+      "requestedFor": "Questa reimpostazione della password è stata richiesta per {email}.",
+      "action": {
+        "primary": "Scegli una nuova password"
+      },
+      "ignored": "Se non hai richiesto la reimpostazione della password, puoi ignorare tranquillamente questa email. La tua password attuale rimarrà attiva.",
+      "linkFallback": "Oppure copia e incolla questo link nel browser:",
+      "footer": "ecentic — Il livello commerce per l’AI."
+    }
+  }
+}

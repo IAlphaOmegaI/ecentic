@@ -1,0 +1,60 @@
+{
+  "interactiveReplay": {
+    "title": "跟踪一次模拟决策。",
+    "description": "查看智能体如何比较两个办公椅商品信息、发现缺失信息，并再次进行比较。",
+    "sample": "示例数据演示",
+    "rail": "模拟购物决策",
+    "controls": {
+      "play": "播放",
+      "pause": "暂停",
+      "previous": "上一步",
+      "next": "下一步"
+    },
+    "stages": {
+      "question": "问题",
+      "listings": "两个商品信息",
+      "fields": "读取内容",
+      "pick": "选择结果",
+      "fix": "补充信息",
+      "rerun": "重新运行"
+    },
+    "question": "哪款办公椅更适合身材较高的成年人，且价格低于$400？",
+    "questionLabel": "购物者提问",
+    "questionNote": "此回放是一次虚构的购物决策，不用于衡量真实 AI 流量。",
+    "listingNote": "供应商提供了座椅高度范围和承重能力，但这些信息在您参与比较的商品信息中缺失。",
+    "reading": "读取中",
+    "missingReading": "您的商品信息未说明此项。",
+    "presentReading": "两个商品信息均说明了此项。",
+    "fieldsNote": "智能体会逐项检查字段。缺失信息会持续显示为“未说明”。",
+    "pickLabel": "示例选择：竞品商品信息",
+    "pickReason": "竞品说明了座椅高度范围和承重能力，因此智能体可以判断其是否满足这些适配要求。",
+    "fixNote": "将现有供应商规格补充到参与比较的商品信息中。不会虚构任何规格，此示例也不会修改店铺中的任何内容。",
+    "rerunLabel": "示例重新运行：您的商品信息",
+    "rerunReason": "在两个规格都已说明后，此示例中的智能体会在两个商品信息中选择您价格更低的办公椅。",
+    "outcomeNote": "此选择结果变化仅用于演示。真实模拟可能得到不同结果。",
+    "listing": {
+      "own": "您的商品信息",
+      "rival": "竞品商品信息",
+      "ownTitle": "人体工学办公椅",
+      "rivalTitle": "可调节办公椅"
+    },
+    "fields": {
+      "price": "价格",
+      "seatHeight": "座椅高度范围",
+      "capacity": "承重能力",
+      "variants": "颜色款式"
+    },
+    "units": {
+      "centimeters": "cm",
+      "kilograms": "kg",
+      "variants": "种颜色"
+    },
+    "comparison": {
+      "present": "已说明",
+      "missing": "未说明",
+      "meets": "满足要求",
+      "doesNotMeet": "不满足要求",
+      "required": "此步骤读取"
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "round16Shopping": {
+    "response": "我会根据您的要求对比这两个选项。以下是商品信息中提供的内容。",
+    "followUps": "尝试其他购物问题",
+    "inspection": "商品记录内部",
+    "sourceRecord": "现有源数据事实",
+    "evidenceHeading": "问题需要的信息",
+    "evidenceBody": "将需求与该示例商品提供的事实信息进行对比。",
+    "needsDetail": "商品信息缺失",
+    "stated": "商品信息中已包含",
+    "sourceHint": "示例源数据中已存在；请在商品信息中明确说明。",
+    "inspectionNote": "示意商品图片和记录。此处展示的是证据检查，而非实时推荐或模型的私有推理。"
+  }
+}

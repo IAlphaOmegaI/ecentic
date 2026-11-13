@@ -64,13 +64,13 @@ describe("supported web locales", () => {
     ).toBe("en");
   });
 
-  test("unpublished catalog locales cannot enter authentication or routing", () => {
-    expect(isLocale("ja")).toBe(true);
-    expect(isPublishedLocale("ja")).toBe(false);
+  test("unsupported locales cannot enter authentication or routing", () => {
+    expect(isLocale("pt-BR")).toBe(false);
+    expect(isPublishedLocale("pt-BR")).toBe(false);
     expect(
       localeFromAuthLink(
         "https://ecentic.ai/api/auth/verify-email",
-        new Headers({ "x-next-intl-locale": "ja" }),
+        new Headers({ "x-next-intl-locale": "pt-BR" }),
       ),
     ).toBe("en");
   });

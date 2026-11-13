@@ -1,0 +1,1229 @@
+{
+  "enterpriseCompany": {
+    "security": {
+      "meta": {
+        "title": "Sicurezza e affidabilità in ecentic",
+        "description": "Come ecentic gestisce i dati del catalogo, l’accesso al negozio e i dati degli acquirenti. Consulta i controlli implementati e parlaci dei tuoi requisiti di protezione dei dati."
+      },
+      "eyebrow": "Sicurezza e affidabilità",
+      "title": "Sicurezza e affidabilità",
+      "description": "Come ecentic gestisce il tuo catalogo, l’accesso al tuo negozio e i dati dei tuoi clienti. Aggiorniamo questa pagina man mano che cresciamo e la data qui sotto cambia quando lo facciamo.",
+      "facts": [
+        "Importazioni in sola lettura",
+        "Dati pubblici prima di tutto per i progetti pilota",
+        "Parla con noi dei requisiti del DPA",
+        "Finalità dei provider documentate"
+      ],
+      "actions": [
+        {
+          "label": "Parla con noi",
+          "href": "/demo"
+        },
+        {
+          "label": "Leggi l’informativa sulla privacy",
+          "href": "/privacy-policy"
+        }
+      ],
+      "sections": [
+        {
+          "id": "reviewed",
+          "title": "Ultimo aggiornamento: 12 novembre 2026",
+          "description": "Questa pagina descrive i controlli del prodotto attuale. Prima di condividere dati non pubblici, conferma la distribuzione, le sedi del trattamento e i requisiti contrattuali per il tuo account."
+        },
+        {
+          "id": "store-access",
+          "title": "Come interagiamo con il tuo negozio",
+          "paragraphs": [
+            "L’importazione dei contenuti prodotto non li riscrive. Apply genera e pubblica un titolo e una descrizione su un negozio Shopify o WooCommerce collegato direttamente. I dati strutturati usano un’azione di pubblicazione separata. Collegando Shopify viene installato anche lo script di tracciamento delle visite.",
+            "Se colleghi Merchant Center per Shopify, ecentic aggiunge una fonte dati supplementare per le correzioni pubblicate e gli attributi di checkout. Non sostituisce il feed principale.",
+            "Su Shopify, uno script del negozio online registra le visite quando rileva un referrer di un assistente AI o uno user-agent noto di un agente. Invia l’URL completo della pagina, lo user-agent del browser, il referrer, il tipo di pagina, l’agente rilevato e il metodo di rilevamento, oltre a un identificatore prodotto, se disponibile. Il record include il negozio e l’orario di ricezione.",
+            "Questo script del browser osserva le visite che eseguono JavaScript. Non misura ogni richiesta dei crawler né stabilisce che un ordine successivo provenga dallo stesso acquirente.",
+            "L’accesso a Shopify usa la Shopify Admin API e le autorizzazioni mostrate nella schermata di installazione. Puoi disinstallare in qualsiasi momento. WooCommerce si collega tramite il plugin ecentic o chiavi REST API che crei e puoi revocare.",
+            "Quando abiliti il checkout degli agenti su WooCommerce, il bridge di checkout crea ordini reali nel tuo negozio. Il tuo gateway gestisce il pagamento e rimani il merchant of record. Il checkout degli agenti supporta richieste firmate, allow-list di agenti e limiti di frequenza configurabili; l’applicazione segue le impostazioni del tuo negozio.",
+            "I progetti pilota Enterprise possono iniziare da pagine pubbliche e dati prodotto, senza accesso ai tuoi sistemi."
+          ]
+        },
+        {
+          "id": "infrastructure",
+          "title": "Infrastruttura e protezione dei dati",
+          "rows": [
+            {
+              "label": "Hosting dell’applicazione",
+              "value": "Vercel: hosting dell’applicazione, processi pianificati e instradamento AI Gateway."
+            },
+            {
+              "label": "Database",
+              "value": "Neon PostgreSQL su AWS us-east-1 (Northern Virginia)."
+            },
+            {
+              "label": "Crittografia",
+              "value": "I dati sono crittografati in transito (TLS 1.2+) e a riposo (AES-256) dai nostri provider di hosting e database."
+            },
+            {
+              "label": "Password degli account",
+              "value": "Le password sono sottoposte ad hashing con scrypt tramite Better Auth."
+            },
+            {
+              "label": "Webhook e OAuth",
+              "value": "I webhook Shopify usano la verifica HMAC. Le callback OAuth convalidano lo stato; le richieste di checkout supportate possono usare firme dei messaggi HTTP."
+            },
+            {
+              "label": "Accesso alla produzione",
+              "value": ""
+            },
+            {
+              "label": "Backup e ripristino",
+              "value": ""
+            }
+          ]
+        },
+        {
+          "id": "ai-data",
+          "title": "Modelli AI e i tuoi dati",
+          "paragraphs": [
+            "Il catalogo prodotti che colleghi viene inviato ai provider AI per confrontare le schede prodotto e scrivere correzioni. Le scansioni dello store usano ChatGPT, Claude e Gemini. GPT genera anche riscritture delle schede prodotto e dati strutturati. Perplexity viene usato negli strumenti separati di confronto e discovery, non nelle scansioni dello store.",
+            "GPT viene eseguito tramite Azure OpenAI quando è configurato un deployment Azure. Le richieste verso Anthropic, Google e Perplexity usano il Vercel AI Gateway; GPT può usare quel gateway come fallback.",
+            "I dati letti da un account Google Merchant Center collegato vengono mantenuti separati dal catalogo dello store usato per il lavoro AI, come descritto nell'informativa sulla privacy.",
+            "Alle richieste si applicano le policy di conservazione dei provider. Alcuni provider conservano le richieste per il monitoraggio degli abusi; non garantiamo assenza totale di conservazione su tutti i percorsi dei modelli."
+          ]
+        },
+        {
+          "id": "privacy",
+          "title": "Privacy e GDPR",
+          "rows": [
+            {
+              "label": "Società operativa",
+              "value": "ecentic Inc · Delaware, Stati Uniti"
+            },
+            {
+              "label": "Dati di checkout degli agenti",
+              "value": "Tu sei il titolare del trattamento ed ecentic è il responsabile del trattamento per i dati degli acquirenti gestiti per completare il checkout."
+            },
+            {
+              "label": "Richieste sui dati",
+              "value": "Richiedi accesso, correzione o cancellazione tramite privacy@ecentic.ai. Rispondiamo entro un mese."
+            }
+          ],
+          "links": [
+            {
+              "label": "Leggi l'informativa sulla privacy",
+              "href": "/privacy-policy"
+            }
+          ]
+        },
+        {
+          "id": "dpa",
+          "title": "Accordo sul trattamento dei dati",
+          "description": "Un DPA viene predisposto su richiesta prima della condivisione di dati personali. Possiamo firmare il tuo DPA; l'entità contrattuale e il firmatario vengono confermati nell'accordo.",
+          "note": "Firmiamo un NDA reciproco prima di ricevere dati non pubblici. La fase iniziale basata su dati pubblici non ne richiede uno.",
+          "links": [
+            {
+              "label": "Parla con noi delle tue esigenze",
+              "href": "/demo"
+            }
+          ]
+        },
+        {
+          "id": "sub-processors",
+          "title": "Provider usati dal prodotto",
+          "description": "Provider e finalità identificati nel codice del prodotto, revisionati il 12 novembre 2026. I responsabili del trattamento contrattualizzati e le sedi di trattamento vengono confermati per il servizio e l'accordo pertinenti.",
+          "note": ""
+        },
+        {
+          "id": "compliance",
+          "title": "Roadmap di conformità",
+          "paragraphs": [
+            "SOC 2 non è disponibile al momento. Non dichiariamo alcuna certificazione né un audit completato. Discuti i tuoi requisiti di sicurezza prima di concordare un pilot.",
+            "Alvi, il nostro CTO, gestisce i questionari di sicurezza dopo un NDA. Non offriamo un security pack pre-approvato."
+          ]
+        },
+        {
+          "id": "report",
+          "title": "Segnala una vulnerabilità",
+          "description": ""
+        }
+      ],
+      "subprocessors": {
+        "caption": "Provider del prodotto e finalità revisionati il 12 novembre 2026",
+        "headers": [
+          "Fornitore",
+          "Finalità",
+          "Luogo del trattamento"
+        ],
+        "rows": [
+          {
+            "name": "Azure OpenAI",
+            "purpose": "Simulazioni GPT, riscritture delle schede prodotto e dati strutturati.",
+            "location": ""
+          },
+          {
+            "name": "Anthropic",
+            "purpose": "Confronti tra schede prodotto con Claude tramite Vercel AI Gateway.",
+            "location": ""
+          },
+          {
+            "name": "Google",
+            "purpose": "Confronti tra schede prodotto con Gemini tramite Vercel AI Gateway.",
+            "location": ""
+          },
+          {
+            "name": "Perplexity",
+            "purpose": "Strumenti separati di confronto e discovery tramite Vercel AI Gateway.",
+            "location": ""
+          },
+          {
+            "name": "Vercel",
+            "purpose": "Hosting dell'applicazione e instradamento delle richieste tramite AI Gateway.",
+            "location": ""
+          },
+          {
+            "name": "Neon",
+            "purpose": "Record dell'applicazione, dati dei cataloghi collegati e credenziali.",
+            "location": ""
+          },
+          {
+            "name": "Upstash",
+            "purpose": "Cache Redis, dati di sessione e contatori di rate limiting.",
+            "location": ""
+          },
+          {
+            "name": "Sentry",
+            "purpose": "Monitoraggio degli errori e telemetria dell'applicazione.",
+            "location": ""
+          },
+          {
+            "name": "PostHog",
+            "purpose": "Analisi del prodotto dopo il consenso all'analisi.",
+            "location": ""
+          },
+          {
+            "name": "Google Analytics 4",
+            "purpose": "Analisi del sito web dopo il consenso all'analisi.",
+            "location": ""
+          },
+          {
+            "name": "Resend",
+            "purpose": "Invio di email transazionali.",
+            "location": ""
+          },
+          {
+            "name": "UploadThing",
+            "purpose": "Archiviazione dei file caricati.",
+            "location": ""
+          },
+          {
+            "name": "Stripe",
+            "purpose": "Fatturazione dei piani ecentic e delle commissioni sulle performance.",
+            "location": ""
+          },
+          {
+            "name": "SerpAPI",
+            "purpose": "Ricerca di offerte prodotto.",
+            "location": ""
+          },
+          {
+            "name": "Chatwoot",
+            "purpose": "Chat di supporto del sito web.",
+            "location": ""
+          },
+          {
+            "name": "BabyLoveGrowth",
+            "purpose": "Contenuti editoriali del blog.",
+            "location": ""
+          },
+          {
+            "name": "Clearbit",
+            "purpose": "Immagini dei loghi aziendali.",
+            "location": ""
+          },
+          {
+            "name": "Google Merchant API",
+            "purpose": "Connessione opzionale a Merchant Center.",
+            "location": ""
+          },
+          {
+            "name": "Shopify Catalog MCP",
+            "purpose": "Misurazione dei prodotti nel catalogo di Shopify.",
+            "location": ""
+          },
+          {
+            "name": "x402",
+            "purpose": "Facilitatore di pagamento per i percorsi supportati.",
+            "location": ""
+          },
+          {
+            "name": "ScrapeLLM",
+            "purpose": "Strumento interno di acquisizione; non è una funzionalità per i clienti.",
+            "location": ""
+          }
+        ]
+      }
+    },
+    "about": {
+      "meta": {
+        "title": "Informazioni su ecentic: il team dietro ecentic",
+        "description": "ecentic aiuta i negozi online a vendere quando è l’AI a fare gli acquisti. Scopri i tre fondatori che lavorano insieme da sette anni."
+      },
+      "title": "Costruiamo l’infrastruttura commerciale per gli agenti AI che fanno acquisti.",
+      "description": "Tre fondatori che lavorano insieme da sette anni. ecentic esiste perché quando è l’AI a fare gli acquisti, un negozio deve essere pronto per un cliente che legge dati invece di pagine.",
+      "sections": [
+        {
+          "id": "why",
+          "title": "Perché abbiamo iniziato",
+          "paragraphs": [
+            "Che si cerchi su Google, si acquisti su Amazon o si faccia una domanda a un chatbot, oggi l’AI risponde con un prodotto. La maggior parte dei negozi non sa come fare in modo che sia il proprio. Non vede la decisione, non sa perché il suo prodotto non sia stato scelto e i suoi strumenti di analisi registrano il traffico come diretto. Abbiamo creato ecentic per rendere visibile quella scelta ai negozi e aiutarli a intervenire, prodotto per prodotto."
+          ]
+        },
+        {
+          "id": "how",
+          "title": "Come lavoriamo",
+          "items": [
+            {
+              "title": "Pubblichiamo ciò che chiediamo anche a te di pubblicare.",
+              "body": "Il nostro llms.txt, il catalogo API, il profilo di checkout per agenti e l'endpoint MCP sono pubblici.",
+              "href": "/resources#public-endpoints",
+              "label": "Esplora i nostri endpoint pubblici"
+            },
+            {
+              "title": "Diciamo cosa è già disponibile e cosa arriverà.",
+              "body": "Ogni integrazione e canale AI è etichettato e le pagine dei canali riportano la data dell'ultima verifica.",
+              "href": "/integrations",
+              "label": "Vedi le integrazioni"
+            },
+            {
+              "title": "Partiamo dai dati pubblici.",
+              "body": "I nostri pilot iniziano dalle tue pagine pubbliche, non dai tuoi sistemi.",
+              "href": "/solutions/enterprise",
+              "label": "Esplora i pilot enterprise"
+            }
+          ]
+        },
+        {
+          "id": "team",
+          "title": "Il team",
+          "description": "Tre fondatori, con sviluppo e vendite al lavoro sullo stesso prodotto.",
+          "note": ""
+        },
+        {
+          "id": "before",
+          "title": "Prima di ecentic",
+          "items": [
+            {
+              "title": "zennit",
+              "body": "Lo studio di sviluppo che i fondatori gestivano mentre andavano a scuola, creando software per Eurocar, Albuji e le piattaforme britanniche Exelor e Ubix."
+            },
+            {
+              "title": "LookUp",
+              "body": "La loro prima startup, una piattaforma per il parcheggio. Ha raggiunto €10K di ricavi mensili, raccolto un pre-seed da $125K e avuto una piccola exit."
+            },
+            {
+              "title": "Shopify Plus",
+              "body": "Iseld è stato consulente commerciale per Shopify Plus."
+            }
+          ]
+        },
+        {
+          "id": "programs",
+          "title": "Programmi di cui facciamo parte"
+        },
+        {
+          "id": "recognition",
+          "title": "Riconoscimenti",
+          "items": [
+            {
+              "title": "Startup World Cup",
+              "body": "Finalista regionale di Santa Cruz."
+            },
+            {
+              "title": "Junction Helsinki 2024",
+              "body": "Menzione d'onore."
+            },
+            {
+              "title": "Entrepreneur First",
+              "body": "Nominati."
+            }
+          ]
+        },
+        {
+          "id": "company",
+          "title": "Dettagli aziendali",
+          "rows": [
+            {
+              "label": "Società operativa",
+              "value": "ecentic Inc · Delaware, Stati Uniti"
+            },
+            {
+              "label": "Agente registrato — solo servizio legale",
+              "value": "LEGALINC CORPORATE SERVICES INC. · 131 Continental Drive, Suite 305, Newark, New Castle County, DE 19713, United States"
+            },
+            {
+              "label": "Controllata albanese",
+              "value": "ECENTIC SH.P.K. · Pallatet Merkaj, Hyrja 1, Dera 12, Rruga Muhamed Deliu, Qesarakë, Tiranë, Albania"
+            },
+            {
+              "label": "Telefono",
+              "value": ""
+            },
+            {
+              "label": "Supporto",
+              "value": "support@ecentic.ai"
+            }
+          ],
+          "links": [
+            {
+              "label": "Contattaci",
+              "href": "/contact"
+            }
+          ]
+        }
+      ],
+      "people": [
+        {
+          "name": "Xhurian Shaba",
+          "role": "Amministratore delegato",
+          "body": "Xhurian è l’amministratore di ECENTIC e cofondatore di zennit, lo studio di Tirana da cui nasce il prodotto. È un ingegnere del software ed ecentic è l’azienda che ha fondato per permettere a un venditore di vedere quale scheda prodotto viene effettivamente scelta da un agente AI per gli acquisti.",
+          "href": "https://www.linkedin.com/in/xhurian-shaba",
+          "linkLabel": "LinkedIn"
+        },
+        {
+          "name": "Alvi Palloshi",
+          "role": "Direttore tecnologico",
+          "body": "Alvi è partner fondatore dell'azienda e software engineer in zennit. Costruisce il prodotto insieme al resto del team di Tirana.",
+          "href": "https://www.linkedin.com/in/alvipalloshi",
+          "linkLabel": "LinkedIn"
+        },
+        {
+          "name": "Iseld Muça",
+          "role": "Responsabile vendite",
+          "body": "Iseld guida il go-to-market e scrive di cosa cambia quando l'acquirente è un agente AI. Insieme a Xhurian ha rappresentato ecentic alla Red Bull Basement World Final di San Francisco nel 2026, dopo aver vinto la finale albanese.",
+          "href": "https://www.linkedin.com/in/iseld-muca-532786311",
+          "linkLabel": "LinkedIn"
+        }
+      ],
+      "programs": [
+        {
+          "name": "Plug and Play",
+          "description": "Programma GOAL Silicon Valley"
+        },
+        {
+          "name": "Microsoft for Startups",
+          "description": "Programma per startup"
+        },
+        {
+          "name": "Red Bull Basement",
+          "description": "Vincitore nazionale, finale mondiale nella Silicon Valley"
+        },
+        {
+          "name": "The Founder Games",
+          "description": "Programma per startup"
+        },
+        {
+          "name": "Fil Rouge Capital",
+          "description": "Acceleratore."
+        }
+      ]
+    },
+    "partners": {
+      "meta": {
+        "title": "Collabora con ecentic",
+        "description": "Agenzie, aziende tecnologiche e creator: integra il commercio tramite AI nel tuo lavoro, sviluppa con l’API di ecentic e candidati per collaborare con noi."
+      },
+      "title": "Collabora con ecentic.",
+      "description": "Per agenzie, software house e creator che lavorano con negozi online e cercano una risposta alla domanda “come affrontiamo gli acquisti tramite AI?”",
+      "actions": [
+        {
+          "label": "Candidati per collaborare",
+          "href": "#application"
+        },
+        {
+          "label": "Esplora l’API",
+          "href": "/docs"
+        }
+      ],
+      "sections": [
+        {
+          "id": "tracks",
+          "title": "Scegli il tuo percorso",
+          "items": [
+            {
+              "title": "Agenzie e rivenditori",
+              "body": "Segnala clienti Shopify, WooCommerce o marketplace e concorda una commissione di referral durante la call. Non ci sono costi di adesione. ecentic stipula il contratto e fattura direttamente il cliente; la rivendita richiede un accordo separato firmato."
+            },
+            {
+              "title": "Partner tecnologici",
+              "body": "Sviluppa con la nostra REST API e il server MCP e vendiamo insieme. I partner tecnologici non si addebitano commissioni reciproche. Pubblichiamo la tua integrazione e il tuo logo solo con un accordo scritto."
+            },
+            {
+              "title": "Creator e affiliati",
+              "body": "Condividi ecentic con il tuo pubblico e ricevi una commissione per ogni cliente pagante che porti. L’importo viene concordato al momento dell’adesione."
+            }
+          ]
+        },
+        {
+          "id": "process",
+          "title": "Come funziona",
+          "ordered": true,
+          "columns": 4,
+          "items": [
+            {
+              "title": "Candidati",
+              "body": "Raccontaci cosa fai e con quali negozi lavori."
+            },
+            {
+              "title": "Parla con noi",
+              "body": "Una call di 20 minuti per scegliere il percorso e concordare i termini."
+            },
+            {
+              "title": "Ottieni accesso e materiali",
+              "body": "Ricevi gli accessi e i materiali concordati per iniziare. Ogni cliente mantiene il proprio account."
+            },
+            {
+              "title": "Collabora con noi",
+              "body": "Segnala clienti o lavora su un’opportunità condivisa. Puoi condividere report con quel cliente mantenendo il branding ecentic."
+            }
+          ]
+        },
+        {
+          "id": "application",
+          "title": "Candidati per collaborare",
+          "description": "Parlaci della tua azienda, del tuo percorso e dei negozi con cui lavori. Le call e i follow-up sono in inglese."
+        }
+      ],
+      "faqTitle": "Domande dei partner",
+      "faqs": [
+        {
+          "question": "Chi non è adatto?",
+          "answer": "Le aziende che vendono la stessa cosa che vendiamo noi. Collaboriamo con chi vende qualcosa di diverso agli stessi negozi."
+        },
+        {
+          "question": "Mostrate i loghi dei partner?",
+          "answer": "Solo con l’accordo scritto del partner."
+        },
+        {
+          "question": "Ci sono costi per aderire?",
+          "answer": "Non ci sono costi di adesione. Le commissioni di referral o affiliazione vengono concordate al momento dell’adesione; la rivendita richiede un accordo separato firmato."
+        }
+      ],
+      "formTitle": "Candidatura partner"
+    },
+    "stories": {
+      "meta": {
+        "title": "Storie pilota di ecentic",
+        "description": "Risultati dei progetti pilota ecentic, pubblicati con autorizzazione e con il metodo dietro ogni dato."
+      },
+      "title": "Storie pilota.",
+      "description": "Risultati dei progetti pilota ecentic, pubblicati con l’autorizzazione di ogni azienda e con il metodo dietro ogni dato.",
+      "sections": [
+        {
+          "id": "pilots",
+          "title": "DUA Flavours",
+          "description": "Un brand britannico di aromi. Da aprile a luglio 2026.",
+          "paragraphs": [
+            "12% di visite in più da assistenti AI o traffico diretto. Visite, non vendite."
+          ],
+          "links": [
+            {
+              "label": "Leggi la storia pilota",
+              "href": "/stories/dua-flavours"
+            }
+          ]
+        }
+      ]
+    },
+    "duaFlavours": {
+      "meta": {
+        "title": "Progetto pilota DUA Flavours: 12% di visite in più da AI e traffico diretto",
+        "description": "Un brand britannico di aromi ha registrato un aumento del 12% delle visite da assistenti AI o traffico diretto da aprile a luglio 2026. Leggi il risultato del progetto pilota e i suoi limiti."
+      },
+      "eyebrow": "Storia pilota",
+      "title": "DUA Flavours: 12% di visite in più da assistenti AI o traffico diretto.",
+      "description": "Un progetto pilota con un brand britannico di aromi, pubblicato con autorizzazione. Il risultato misura le visite, non le vendite.",
+      "sections": [
+        {
+          "id": "at-a-glance",
+          "title": "In sintesi",
+          "rows": [
+            {
+              "label": "Settore",
+              "value": "Brand britannico di aromi"
+            },
+            {
+              "label": "Azienda",
+              "value": "Brand britannico di aromi"
+            },
+            {
+              "label": "Periodo",
+              "value": "Da aprile a luglio 2026"
+            },
+            {
+              "label": "Cosa è cambiato",
+              "value": "Corrette lacune nei dati strutturati e nel feed prodotti."
+            },
+            {
+              "label": "Risultato",
+              "value": "+12% di visite da assistenti AI o traffico diretto"
+            }
+          ]
+        },
+        {
+          "id": "starting-point",
+          "title": "Situazione iniziale",
+          "paragraphs": [
+            "DUA Flavours è un brand britannico di aromi su Shopify con circa 28 prodotti. È diventato il primo cliente pagante di ecentic il 20 aprile 2026."
+          ]
+        },
+        {
+          "id": "changes",
+          "title": "Cosa abbiamo cambiato",
+          "paragraphs": [
+            "ecentic ha corretto le lacune nei suoi dati strutturati e nel feed prodotti."
+          ]
+        },
+        {
+          "id": "result",
+          "title": "Cosa è cambiato",
+          "paragraphs": [
+            "Le visite da assistenti AI o traffico diretto sono aumentate del 12% da aprile a luglio 2026."
+          ]
+        },
+        {
+          "id": "method",
+          "title": "Come abbiamo misurato questo risultato",
+          "paragraphs": [
+            "Cosa è stato misurato: visite da assistenti AI o traffico diretto, da aprile a luglio 2026. Cosa non è stato misurato: le vendite. Altri cambiamenti in quel periodo potrebbero aver contribuito.",
+            "Il 12% è una misurazione aggregata effettuata da DUA. ecentic non detiene la fonte analytics; non pubblichiamo una suddivisione per prodotto né una serie temporale."
+          ]
+        },
+        {
+          "id": "permission",
+          "title": "Pubblicato con autorizzazione",
+          "description": "Confermato per iscritto da DUA Flavours il 3 settembre 2026.",
+          "links": [
+            {
+              "label": "Vedi tutte le storie pilota",
+              "href": "/stories"
+            }
+          ]
+        }
+      ]
+    },
+    "tools": {
+      "meta": {
+        "title": "Strumenti gratuiti per gli acquisti tramite AI e il checkout per agenti",
+        "description": "Controlla il tuo AI Agent Score, valida il checkout degli agenti, testa un agente AI per gli acquisti, confronta due prodotti o esamina i riscontri WebMCP di un negozio online."
+      },
+      "title": "Strumenti gratuiti per il commercio tramite agenti AI.",
+      "description": "Controlla quanto il tuo negozio è pronto per gli acquirenti AI. Per la maggior parte degli strumenti non serve un account.",
+      "actions": [
+        {
+          "label": "Controlla gratis il mio negozio",
+          "href": "/sign-up"
+        },
+        {
+          "label": "Leggi le guide",
+          "href": "/resources#guides"
+        }
+      ],
+      "sections": [
+        {
+          "id": "free-tools",
+          "title": "Scegli cosa controllare",
+          "columns": 2,
+          "items": [
+            {
+              "title": "AI Agent Score",
+              "body": "Una scansione gratuita dei tuoi 10 prodotti principali rispetto ai concorrenti su ChatGPT, Claude e Gemini. È richiesto un account.",
+              "href": "/sign-up",
+              "label": "Controlla gratis il mio negozio"
+            },
+            {
+              "title": "Validatore checkout",
+              "body": "Recupera in tempo reale il profilo di checkout per agenti AI del tuo negozio e ne controlla la struttura pubblicata. Nessun account richiesto.",
+              "href": "/ucp-validator",
+              "label": "Apri UCP Validator"
+            },
+            {
+              "title": "Ambiente di test checkout",
+              "body": "Esegui un agente di test nel flusso di ricerca, carrello e checkout del tuo negozio. Dieci messaggi gratuiti senza account.",
+              "href": "/ucp-playground",
+              "label": "Apri UCP Playground"
+            },
+            {
+              "title": "Scanner WebMCP",
+              "body": "Analizza nel codice sorgente del negozio online le prove delle azioni di acquisto esposte agli agenti browser. I risultati distinguono gli strumenti osservati dai moduli e dai comportamenti in esecuzione non confermati.",
+              "href": "/webmcp-scanner",
+              "label": "Analizza un negozio online"
+            },
+            {
+              "title": "Confronta",
+              "body": "Incolla gli URL di due prodotti e confronta le loro schede prodotto su ChatGPT, Claude, Gemini e Perplexity. Leggi la scelta simulata e la motivazione di ciascun modello.",
+              "href": "/compare",
+              "label": "Confronta due prodotti"
+            }
+          ]
+        }
+      ]
+    },
+    "resources": {
+      "meta": {
+        "title": "Risorse: guide, ricerca e strumenti gratuiti",
+        "description": "Guide e strumenti gratuiti per vendere tramite assistenti AI, storie pilota e endpoint pubblici per sviluppatori di ecentic."
+      },
+      "title": "Risorse",
+      "description": "Guide, storie pilota e strumenti gratuiti per vendere quando è l’AI a fare gli acquisti.",
+      "actions": [
+        {
+          "label": "Esplora gli strumenti gratuiti",
+          "href": "/tools"
+        },
+        {
+          "label": "Apri la documentazione per sviluppatori",
+          "href": "/docs"
+        }
+      ],
+      "sections": [
+        {
+          "id": "free-tools",
+          "title": "Strumenti gratuiti",
+          "columns": 2,
+          "items": [
+            {
+              "title": "AI Agent Score",
+              "body": "Una scansione gratuita dei tuoi 10 prodotti principali rispetto ai concorrenti su ChatGPT, Claude e Gemini. È richiesto un account.",
+              "href": "/sign-up",
+              "label": "Controlla gratis il mio negozio"
+            },
+            {
+              "title": "Validatore checkout",
+              "body": "Recupera in tempo reale il profilo di checkout per agenti AI del tuo negozio e ne controlla la struttura pubblicata. Nessun account richiesto.",
+              "href": "/ucp-validator",
+              "label": "Apri UCP Validator"
+            },
+            {
+              "title": "Ambiente di test checkout",
+              "body": "Esegui un agente di test nel flusso di ricerca, carrello e checkout del tuo negozio. Dieci messaggi gratuiti senza account.",
+              "href": "/ucp-playground",
+              "label": "Apri UCP Playground"
+            },
+            {
+              "title": "Scanner WebMCP",
+              "body": "Analizza nel codice sorgente del negozio online le prove delle azioni di acquisto esposte agli agenti browser. I risultati distinguono gli strumenti osservati dai moduli e dai comportamenti in esecuzione non confermati.",
+              "href": "/webmcp-scanner",
+              "label": "Analizza un negozio online"
+            },
+            {
+              "title": "Confronta",
+              "body": "Incolla gli URL di due prodotti e confronta le loro schede prodotto su ChatGPT, Claude, Gemini e Perplexity. Leggi la scelta simulata e la motivazione di ciascun modello.",
+              "href": "/compare",
+              "label": "Confronta due prodotti"
+            }
+          ],
+          "links": [
+            {
+              "label": "Tutti gli strumenti gratuiti",
+              "href": "/tools"
+            }
+          ]
+        },
+        {
+          "id": "guides",
+          "title": "Guide",
+          "description": "Comprendi la piattaforma, confronta software in base al lavoro che svolgono oppure segui la guida per il tuo negozio.",
+          "columns": 2,
+          "items": [
+            {
+              "title": "Panoramica della piattaforma",
+              "body": "Collega un catalogo, confronta schede prodotto, correggi i dati prodotto, prepara il checkout e monitora i referral supportati.",
+              "href": "/platform",
+              "label": "Esplora la piattaforma"
+            },
+            {
+              "title": "I migliori strumenti AI per l’ecommerce",
+              "body": "Un confronto per categoria tra strumenti per commercio, contenuti, personalizzazione, ricerca e analisi.",
+              "href": "/compare/best-ai-ecommerce-tools",
+              "label": "Leggi la guida all’acquisto"
+            },
+            {
+              "title": "Guida Shopify",
+              "body": "Importa un catalogo pubblico o collega l’app, poi applica le correzioni alle schede prodotto con accesso al negozio.",
+              "href": "/integrations/shopify",
+              "label": "Leggi la guida Shopify"
+            },
+            {
+              "title": "Guida WooCommerce",
+              "body": "Collega il plugin o le chiavi REST API, confronta le schede prodotto e applica le correzioni al tuo negozio.",
+              "href": "/integrations/woocommerce",
+              "label": "Leggi la guida WooCommerce"
+            }
+          ]
+        },
+        {
+          "id": "editorial",
+          "title": "Dal nostro team editoriale",
+          "description": "Guide ai prodotti e ricerche dal nostro archivio di contenuti originali.",
+          "links": [
+            {
+              "label": "Sfoglia l’archivio completo del blog",
+              "href": "/blog"
+            }
+          ]
+        },
+        {
+          "id": "pilot-stories",
+          "title": "Storie pilota",
+          "items": [
+            {
+              "title": "DUA Flavours",
+              "body": "12% di visite in più dagli assistenti AI o dal traffico diretto, da aprile a luglio 2026. Pubblicato con autorizzazione, incluse le limitazioni della misurazione.",
+              "href": "/stories/dua-flavours",
+              "label": "Leggi la storia pilota"
+            }
+          ],
+          "columns": 1
+        },
+        {
+          "id": "public-endpoints",
+          "title": "Pubblichiamo ciò che chiediamo a te di pubblicare.",
+          "description": "ecentic pubblica anche in proprio tutto ciò che chiede ai venditori di pubblicare.",
+          "columns": 2,
+          "items": [
+            {
+              "title": "llms.txt",
+              "body": "Un indice leggibile dalle macchine delle pagine, degli strumenti e degli articoli di ecentic.",
+              "href": "https://ecentic.ai/llms.txt",
+              "label": "Apri llms.txt"
+            },
+            {
+              "title": "Catalogo API",
+              "body": "Un linkset RFC 9727 per le API pubbliche degli agenti, le specifiche e la documentazione.",
+              "href": "https://ecentic.ai/.well-known/api-catalog",
+              "label": "Apri il catalogo API"
+            },
+            {
+              "title": "Discovery OAuth",
+              "body": "Metadati RFC 8414 dell’authorization server per l’autenticazione degli agenti.",
+              "href": "https://ecentic.ai/.well-known/oauth-authorization-server",
+              "label": "Apri OAuth discovery"
+            },
+            {
+              "title": "Profilo agente per il checkout",
+              "body": "Il profilo pubblico di ecentic per gli agenti, destinato alla discovery commerciale.",
+              "href": "https://ecentic.ai/ucp/agent-profile",
+              "label": "Apri il profilo"
+            },
+            {
+              "title": "Endpoint MCP",
+              "body": "Strumenti JSON-RPC per agenti che si collegano a ecentic.",
+              "href": "https://ecentic.ai/api/mcp",
+              "label": "Apri l’endpoint MCP"
+            },
+            {
+              "title": "Documento di individuazione del checkout",
+              "body": "Il documento well-known di discovery commerciale pubblicato da questo sito.",
+              "href": "https://ecentic.ai/.well-known/ucp",
+              "label": "Apri il documento di discovery"
+            },
+            {
+              "title": "Indice delle competenze degli agenti",
+              "body": "Istruzioni pubbliche per l’ottimizzazione delle schede prodotto, la validazione del checkout e il commercio tramite agenti.",
+              "href": "https://ecentic.ai/.well-known/agent-skills/index.json",
+              "label": "Apri l’indice delle competenze"
+            }
+          ]
+        }
+      ],
+      "faqTitle": "Domande prima di iniziare",
+      "faqs": [
+        {
+          "question": "Questi strumenti sono davvero gratuiti?",
+          "answer": "Sì. AI Agent Score è una scansione gratuita una tantum senza carta di credito. Il Validator è gratuito e il Playground include dieci messaggi senza account. L’ottimizzazione continuativa segue i piani della pagina prezzi."
+        },
+        {
+          "question": "Serve un account per usare gli strumenti di checkout?",
+          "answer": "UCP Validator funziona senza accesso all’account. UCP Playground offre dieci messaggi gratuiti senza account. Accedi per continuare a testare il tuo negozio collegato entro i limiti del prodotto."
+        },
+        {
+          "question": "Qual è la differenza tra UCP Validator e Playground?",
+          "answer": "Il Validator controlla il profilo di checkout pubblicato e verifica se l’endpoint è raggiungibile. Il Playground esegue un agente AI nelle operazioni supportate di catalogo, carrello e checkout così puoi ispezionarne le chiamate agli strumenti e le risposte."
+        },
+        {
+          "question": "Da dove dovrei iniziare se sono nuovo nel commercio tramite agenti?",
+          "answer": "Inizia con il controllo gratuito del negozio se hai un catalogo Shopify o WooCommerce. Per verificare prima il supporto al checkout, esegui il validatore sul tuo dominio, poi leggi la panoramica della piattaforma."
+        }
+      ],
+      "editorial": {
+        "empty": "Il nostro archivio editoriale è in preparazione. Le guide sopra sono già disponibili.",
+        "read": "Leggi l’articolo",
+        "loading": "Caricamento degli articoli editoriali"
+      }
+    },
+    "support": {
+      "meta": {
+        "title": "Aiuto e supporto",
+        "description": "Ricevi assistenza per il tuo account ecentic, scansioni, correzioni e fatturazione. Contatta il supporto via email, prenota una demo guidata o leggi la documentazione."
+      },
+      "title": "Aiuto e supporto",
+      "description": "Ricevi assistenza per il tuo account, scansioni, correzioni e fatturazione. Scegli il contatto più adatto alla tua domanda. Supporto e chiamate sono in inglese.",
+      "actions": [
+        {
+          "label": "Contatta il supporto via email",
+          "href": "mailto:support@ecentic.ai"
+        },
+        {
+          "label": "Apri la documentazione per sviluppatori",
+          "href": "/docs"
+        }
+      ],
+      "sections": [
+        {
+          "id": "help",
+          "title": "Come possiamo aiutarti?",
+          "columns": 2,
+          "items": [
+            {
+              "title": "Supporto email",
+              "body": "Invia la tua domanda e l’URL del negozio a support@ecentic.ai. Rispondiamo in inglese.",
+              "href": "mailto:support@ecentic.ai",
+              "label": "Contatta il supporto via email"
+            },
+            {
+              "title": "Demo guidata live",
+              "body": "Prenota una chiamata di 15 minuti per esaminare il tuo negozio e il prodotto. La chiamata è in inglese.",
+              "href": "https://cal.com/ecentic-ai/15min",
+              "label": "Prenota la chiamata di 15 minuti"
+            },
+            {
+              "title": "Enterprise",
+              "body": "Parla con noi di un progetto pilota, della portata del tuo catalogo o di una revisione della sicurezza.",
+              "href": "/demo",
+              "label": "Parla con noi"
+            },
+            {
+              "title": "Documentazione per sviluppatori",
+              "body": "Consulta il riferimento API, la guida all’autenticazione, gli strumenti MCP e la documentazione degli errori.",
+              "href": "/docs",
+              "label": "Apri la documentazione per sviluppatori"
+            }
+          ]
+        },
+        {
+          "id": "self-service",
+          "title": "Trova quello che ti serve",
+          "columns": 2,
+          "items": [
+            {
+              "title": "Piattaforma",
+              "body": "Scopri cosa fa ogni parte del prodotto.",
+              "href": "/platform",
+              "label": "Piattaforma"
+            },
+            {
+              "title": "Integrazioni",
+              "body": "Verifica la connessione e il supporto alla pubblicazione per il tuo negozio.",
+              "href": "/integrations",
+              "label": "Integrazioni"
+            },
+            {
+              "title": "Prezzi",
+              "body": "Confronta la scansione gratuita, i piani pay-as-you-go e gli abbonamenti.",
+              "href": "/pricing",
+              "label": "Prezzi"
+            },
+            {
+              "title": "Sicurezza",
+              "body": "Esamina l’accesso al negozio, le misure di protezione e il trattamento dei dati.",
+              "href": "/security",
+              "label": "Sicurezza"
+            },
+            {
+              "title": "Informativa sulla privacy",
+              "body": "Scopri quali dati vengono raccolti e come funziona l’eliminazione.",
+              "href": "/privacy-policy",
+              "label": "Informativa sulla privacy"
+            }
+          ]
+        }
+      ]
+    },
+    "contact": {
+      "meta": {
+        "title": "Contatta ecentic",
+        "description": "Contatta il team vendite, ricevi supporto, candidati per collaborare o trova informazioni su privacy e sicurezza di ecentic."
+      },
+      "title": "Contatta ecentic",
+      "description": "Trova il canale giusto per la tua domanda. Supporto e chiamate sono in inglese.",
+      "sections": [
+        {
+          "id": "contacts",
+          "title": "Mettiti in contatto",
+          "columns": 3,
+          "items": [
+            {
+              "title": "Vendite",
+              "body": "Progetti pilota, account enterprise e demo.",
+              "href": "/demo",
+              "label": "Prenota una demo"
+            },
+            {
+              "title": "Supporto",
+              "body": "Aiuto per account, scansioni e fatturazione. Scrivi a support@ecentic.ai.",
+              "href": "/support",
+              "label": "Apri aiuto e supporto"
+            },
+            {
+              "title": "Partner",
+              "body": "Per agenzie, aziende tecnologiche e creator.",
+              "href": "/partners",
+              "label": "Candidati per collaborare"
+            },
+            {
+              "title": "Stampa",
+              "body": ""
+            },
+            {
+              "title": "Sicurezza",
+              "body": "Scopri di più sull’accesso al negozio, sui controlli implementati e sulla gestione dei dati.",
+              "href": "/security",
+              "label": "Scopri di più sulla sicurezza"
+            },
+            {
+              "title": "Privacy",
+              "body": "Richieste di accesso, correzione o eliminazione dei dati e domande sul DPA: privacy@ecentic.ai.",
+              "href": "/security#dpa",
+              "label": "Leggi il DPA"
+            }
+          ]
+        },
+        {
+          "id": "company",
+          "title": "Dettagli aziendali",
+          "rows": [
+            {
+              "label": "Società operativa",
+              "value": "ecentic Inc · Delaware, United States"
+            },
+            {
+              "label": "Registered agent — solo servizio legale",
+              "value": "LEGALINC CORPORATE SERVICES INC. · 131 Continental Drive, Suite 305, Newark, New Castle County, DE 19713, United States"
+            }
+          ],
+          "links": [
+            {
+              "label": "Conosci il team",
+              "href": "/about"
+            }
+          ]
+        }
+      ]
+    },
+    "changelog": {
+      "meta": {
+        "title": "Changelog: novità in ecentic",
+        "description": "Aggiornamenti del prodotto rilasciati in ecentic, dal più recente al meno recente."
+      },
+      "title": "Changelog",
+      "description": "Cosa abbiamo rilasciato, dal più recente al meno recente.",
+      "sections": [
+        {
+          "id": "updates",
+          "title": "Aggiornamenti del prodotto",
+          "description": "Le date seguono la cronologia di sviluppo del prodotto."
+        }
+      ],
+      "entries": [
+        {
+          "date": "2026-09-14",
+          "label": "Nuovo",
+          "title": "Ispeziona il supporto WebMCP del negozio online.",
+          "body": "Lo scanner WebMCP gratuito esamina i riscontri presenti nelle fonti sulle azioni di acquisto e segnala ciò che ha potuto e non ha potuto osservare.",
+          "commit": "2edebb8e"
+        },
+        {
+          "date": "2026-09-13",
+          "label": "Migliorato",
+          "title": "Confronta offerte in valute diverse.",
+          "body": "La valutazione delle offerte concorrenti converte le valute supportate prima di verificare le fasce di prezzo.",
+          "commit": "404dfc2c"
+        },
+        {
+          "date": "2026-09-13",
+          "label": "Corretto",
+          "title": "Collega Shopify al dominio del tuo negozio.",
+          "body": "La connessione Shopify accetta domini personalizzati del negozio e risolve l'host di amministrazione corrispondente.",
+          "commit": "5644d6a9"
+        },
+        {
+          "date": "2026-09-11",
+          "label": "Nuovo",
+          "title": "Inizia con un'importazione del catalogo pubblico.",
+          "body": "Inserisci l'indirizzo del tuo negozio, crea un account e importa il catalogo pubblico Shopify o WooCommerce in sola lettura.",
+          "commit": "fc5c0436"
+        },
+        {
+          "date": "2026-09-01",
+          "label": "Migliorato",
+          "title": "Esamina le offerte concorrenti misurate.",
+          "body": "L'individuazione dei concorrenti mostra offerte a livello di prodotto con le evidenze usate per selezionarle.",
+          "commit": "075058b5"
+        },
+        {
+          "date": "2026-08-25",
+          "label": "Nuovo",
+          "title": "Usa ecentic dalla riga di comando.",
+          "body": "@ecentic/cli offre comandi per discovery, piani, stato del servizio, skill e strumenti MCP.",
+          "commit": "14d92423"
+        },
+        {
+          "date": "2026-08-25",
+          "label": "Nuovo",
+          "title": "Prova la sandbox API.",
+          "body": "L'onboarding e i comandi sandbox includono una simulazione di esempio per valutare l'API.",
+          "commit": "19b1b78b"
+        },
+        {
+          "date": "2026-08-24",
+          "label": "Migliorato",
+          "title": "Trova la documentazione di riferimento per sviluppatori in un unico posto.",
+          "body": "La documentazione copre autenticazione, errori, limiti di richiesta e versioni API, con link di recupero per endpoint sconosciuti.",
+          "commit": "3a203235"
+        },
+        {
+          "date": "2026-08-06",
+          "label": "Nuovo",
+          "title": "Scegli se consentire l’uso degli strumenti di analisi.",
+          "body": "Il banner dei cookie controlla Google Analytics e PostHog. Le impostazioni dei cookie ti permettono di modificare la scelta in seguito.",
+          "commit": "8c2fddcf"
+        },
+        {
+          "date": "2026-07-30",
+          "label": "Nuovo",
+          "title": "Verifica i prerequisiti del checkout di Merchant Center.",
+          "body": "I negozi Shopify possono verificare l'idoneità e gestire gli attributi di checkout dei prodotti in Google Shopping.",
+          "commit": "bbc6818d"
+        },
+        {
+          "date": "2026-07-29",
+          "label": "Corretto",
+          "title": "Reimposta la password via email.",
+          "body": "La procedura di reimpostazione della password include un modulo per la nuova password e una gestione chiara dei link scaduti.",
+          "commit": "e16d3fe7"
+        },
+        {
+          "date": "2026-07-26",
+          "label": "Nuovo",
+          "title": "Gestisci le schede prodotto di Google Merchant Center.",
+          "body": "Collega Merchant Center e invia contenuti prodotto approvati tramite una fonte dati supplementare di ecentic.",
+          "commit": "4434a4e9"
+        },
+        {
+          "date": "2026-07-08",
+          "label": "Nuovo",
+          "title": "Testa il checkout degli agenti AI nel playground.",
+          "body": "Il playground pubblico per il checkout include dieci messaggi senza account.",
+          "commit": "b86550e0"
+        },
+        {
+          "date": "2026-07-03",
+          "label": "Nuovo",
+          "title": "Collega WooCommerce al checkout ospitato per agenti AI.",
+          "body": "Le operazioni di catalogo, carrello e checkout usano il bridge del negozio per creare ordini WooCommerce reali.",
+          "commit": "b7d1902c"
+        }
+      ]
+    },
+    "researchDraft": {
+      "meta": {
+        "title": "36.797 acquisti AI simulati: cosa abbiamo scoperto",
+        "description": "Cosa è successo in 36.797 decisioni d'acquisto simulate tra ChatGPT, Claude, Gemini e Perplexity, e cosa significa per i merchant."
+      },
+      "eyebrow": "Bozza di ricerca non pubblicata",
+      "title": "Cosa ci raccontano 36.797 acquisti AI simulati.",
+      "description": "Abbiamo chiesto agli assistenti AI di scegliere tra prodotti, decine di migliaia di volte. Spesso non erano d'accordo.",
+      "actions": [
+        {
+          "label": "Esegui il controllo gratuito del negozio",
+          "href": "/sign-up"
+        }
+      ],
+      "sections": [
+        {
+          "id": "summary",
+          "title": "Riepilogo",
+          "paragraphs": [
+            "Sullo stesso catalogo, ChatGPT ha scelto lo stesso prodotto il 51,6% delle volte; Claude e Gemini lo hanno scelto circa il 18,5% delle volte.",
+            "{{TODO: confirm whether all products in the research were real products}}"
+          ]
+        },
+        {
+          "id": "question",
+          "title": "La domanda",
+          "description": "Quando un assistente AI sceglie tra due prodotti, cosa determina la scelta e ogni assistente decide allo stesso modo?"
+        },
+        {
+          "id": "method",
+          "title": "Metodo",
+          "rows": [
+            {
+              "label": "Prodotti",
+              "value": "{{TODO: number of products}}"
+            },
+            {
+              "label": "Categorie",
+              "value": "{{TODO: categories represented}}"
+            },
+            {
+              "label": "Domande",
+              "value": "{{TODO: question set and selection method}}"
+            },
+            {
+              "label": "Esecuzioni",
+              "value": "{{TODO: runs per question and total allocation}}"
+            },
+            {
+              "label": "Modelli",
+              "value": "{{TODO: models and exact versions}}"
+            },
+            {
+              "label": "Date",
+              "value": "{{TODO: research dates}}"
+            },
+            {
+              "label": "Definizione di acquisto",
+              "value": "{{TODO: definition of a simulated purchase}}"
+            }
+          ]
+        },
+        {
+          "id": "findings",
+          "title": "Risultati",
+          "paragraphs": [
+            "ChatGPT ha selezionato lo stesso prodotto il 51,6% delle volte, rispetto a circa il 18,5% per Claude e Gemini.",
+            "{{TODO: add only further findings supported by the research data}}"
+          ]
+        },
+        {
+          "id": "merchants",
+          "title": "Cosa significa per i merchant",
+          "description": "Ottimizzare per un solo assistente non basta, perché non sono d'accordo tra loro. I dati che ciascuno legge devono essere abbastanza completi per tutti."
+        },
+        {
+          "id": "limits",
+          "title": "Limiti",
+          "paragraphs": [
+            "Si tratta di decisioni simulate, non di traffico reale. I modelli cambiano e i risultati possono cambiare con loro. Perplexity ha fatto parte di questa ricerca; le scansioni dei negozi di ecentic vengono eseguite su ChatGPT, Claude e Gemini."
+          ]
+        },
+        {
+          "id": "download",
+          "title": "Scarica la ricerca",
+          "description": "{{TODO: supply the final, reviewed PDF before enabling its download}}"
+        },
+        {
+          "id": "citation",
+          "title": "Cita questa ricerca",
+          "description": "ecentic, “36.797 acquisti AI simulati”, {{TODO: publication month}} 2026."
+        }
+      ]
+    }
+  }
+}

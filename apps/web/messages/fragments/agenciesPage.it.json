@@ -1,0 +1,55 @@
+{
+  "agenciesPage": {
+    "challenges": {
+      "description": "Trasforma la domanda del cliente in una verifica del prodotto, una modifica verificata e un confronto chiaro.",
+      "details": "Esplora le domande dei clienti"
+    },
+    "tracks": {
+      "description": "Scegli il lavoro che porti nella collaborazione. Ambito e condizioni commerciali vengono concordati prima della rivendita o della segnalazione.",
+      "label": "Percorsi partner",
+      "pathLabel": "Cosa comprende la collaborazione",
+      "paths": [
+        [
+          "Catalogo del cliente",
+          "Verifiche prodotto",
+          "Modifiche verificate"
+        ],
+        [
+          "Il tuo prodotto",
+          "Interfacce documentate",
+          "Analisi iniziale e onboarding"
+        ],
+        [
+          "Il tuo pubblico",
+          "Formazione sul commercio con AI",
+          "Conversazione con il partner"
+        ]
+      ]
+    },
+    "access": {
+      "label": "Proprietà dell’account",
+      "single": "Un proprietario, più store",
+      "separate": "Account separati per i clienti",
+      "singleTitle": "Un account contiene i propri store.",
+      "singleDescription": "Gli store possono essere raggruppati se appartengono allo stesso proprietario dell’account.",
+      "separateTitle": "Ogni cliente controlla il proprio account.",
+      "separateDescription": "Proprietari diversi mantengono account separati. Conferma la configurazione con ogni cliente prima di collegarti.",
+      "owner": "Account proprietario",
+      "store": "Store di proprietà",
+      "anotherStore": "Altro store di proprietà",
+      "firstClient": "Account cliente A",
+      "secondClient": "Account cliente B",
+      "firstStore": "Store cliente A",
+      "secondStore": "Store cliente B",
+      "boundary": "Nessun permesso delegato per agenzie o accessi del team"
+    },
+    "start": {
+      "description": "Porta alla conversazione il tuo percorso per partner, il caso d’uso del cliente e la configurazione proposta per l’account.",
+      "items": [
+        "Scegli il tuo percorso",
+        "Conferma la proprietà dell’account",
+        "Definisci ambito e termini"
+      ]
+    }
+  }
+}

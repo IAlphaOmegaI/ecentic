@@ -1,0 +1,12 @@
+{
+  "enterpriseSecurityDesign": {
+    "accessTitle": "インポートと公開",
+    "permissionsTitle": "接続権限",
+    "trackingTitle": "ストアフロント訪問測定",
+    "checkoutTitle": "エージェント購入手続き",
+    "routingTitle": "モデルリクエストのルーティング方法",
+    "catalogLabel": "接続済みストアのカタログ",
+    "modelLabel": "AIプロバイダー",
+    "outputLabel": "比較結果と商品情報の修正"
+  }
+}

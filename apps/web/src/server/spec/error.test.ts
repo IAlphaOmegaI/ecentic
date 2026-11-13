@@ -169,6 +169,25 @@ describe("isTransientConnectionError", () => {
     expect(isTransientConnectionError(new DatabaseError("boom"))).toBe(false);
   });
 
+  test("retries the pooler authentication timeout, not protocol or credential failures", () => {
+    const failure = (code: string, message: string) =>
+      drizzleError(Object.assign(new Error(message), { code }));
+    expect(
+      isTransientConnectionError(failure("08P01", "Authentication timed out")),
+    ).toBe(true);
+    expect(
+      isTransientConnectionError(failure("08P01", "invalid startup packet")),
+    ).toBe(false);
+    expect(
+      isTransientConnectionError(
+        failure("28P01", "password authentication failed"),
+      ),
+    ).toBe(false);
+    expect(
+      isTransientConnectionError(failure("28P01", "Authentication timed out")),
+    ).toBe(false);
+  });
+
   test("survives non-Error input rather than throwing on it", () => {
     // `resultify` types its error as `E` but genuinely captures whatever was
     // thrown, so this can be handed a string or a null.

@@ -1,0 +1,304 @@
+{
+  "ucpValidator": {
+    "meta": {
+      "title": "UCP Validator per vetrine online",
+      "description": "Controlla il profilo Universal Commerce Protocol, i dati di discovery, lo schema e l’accesso tramite robots.txt di una vetrina online con il validator UCP gratuito."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "page": "UCP Validator"
+    },
+    "hero": {
+      "eyebrow": "Controllo del protocollo",
+      "title": {
+        "primary": "UCP",
+        "accent": "— validatore"
+      },
+      "description": "Verifica se un negozio online pubblica un profilo Universal Commerce Protocol valido in /.well-known/ucp e se gli agenti AI per gli acquisti possono leggerlo senza ostacoli.",
+      "assurances": [
+        "Gratis",
+        "Nessun account richiesto",
+        "Recupero live di /.well-known/ucp"
+      ],
+      "art": {
+        "alt": "Illustrazione ASCII art di uno scudo"
+      },
+      "actions": {
+        "validate": "Valida un dominio",
+        "playground": "Apri playground"
+      }
+    },
+    "checks": {
+      "number": "01",
+      "title": "Cosa controlla il validator.",
+      "description": "Un recupero live del tuo profilo pubblico, analizzato rispetto alla specifica UCP, con le informazioni sull’accesso degli agenti ricavate da robots.txt.",
+      "items": [
+        {
+          "title": "Raggiungibilità dell’endpoint",
+          "description": "Richiediamo il dominio HTTPS pubblico e confermiamo che /.well-known/ucp risponda."
+        },
+        {
+          "title": "Integrità dello schema",
+          "description": "Il corpo della risposta viene analizzato come JSON e controllato per rilevare errori e avvisi della specifica UCP."
+        },
+        {
+          "title": "Accesso degli agenti",
+          "description": "robots.txt viene controllato per mostrarti se i principali bot di acquisto e indicizzazione sono bloccati."
+        }
+      ]
+    },
+    "validator": {
+      "number": "02",
+      "title": "Esegui una validazione live.",
+      "description": "Incolla un dominio e recupereremo il profilo live, analizzeremo ogni servizio e capacità, quindi segnaleremo errori della specifica e informazioni sull’accesso degli agenti."
+    },
+    "faqSection": {
+      "number": "03",
+      "title": "Domande prima della validazione.",
+      "description": "Cosa copre il controllo, dove si trovano i profili e come viene mostrato l’accesso degli agenti."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Cosa controlla UCP Validator?",
+          "answer": "Richiede il dominio HTTPS pubblico, conferma che /.well-known/ucp risponda, analizza il contenuto come JSON e segnala errori e avvisi della specifica UCP così puoi verificare che il profilo sia ben formato."
+        },
+        {
+          "question": "Dove deve essere pubblicato un profilo Universal Commerce Protocol?",
+          "answer": "In /.well-known/ucp sul dominio HTTPS pubblico della tua vetrina online. Il validator recupera quel percorso esatto e mostra se è raggiungibile."
+        },
+        {
+          "question": "Controlla se gli agenti AI per gli acquisti possono leggere il mio negozio?",
+          "answer": "Sì. Il validatore controlla il file robots.txt così puoi vedere se i principali bot di shopping e indicizzazione possono raggiungere il tuo profilo Universal Commerce Protocol senza ostacoli."
+        }
+      ]
+    },
+    "footer": {
+      "primary": "Valida un dominio",
+      "secondary": "Tutti gli strumenti gratuiti",
+      "note": "Gratis · Nessun account richiesto · Recupero live"
+    },
+    "structuredData": {
+      "name": "UCP Validator"
+    },
+    "form": {
+      "preview": {
+        "logoAlt": "Logo Universal Commerce Protocol",
+        "liveFetch": "Recupero live",
+        "note": "Richiediamo il profilo pubblico, analizziamo servizi e capacità, quindi mostriamo problemi della specifica e informazioni sull’accesso degli agenti ricavate da robots.txt."
+      },
+      "targets": {
+        "title": "Cosa validiamo",
+        "https": {
+          "label": "HTTPS e raggiungibilità",
+          "detail": "Distribuito tramite TLS e in grado di rispondere a richieste live."
+        },
+        "discovery": {
+          "label": "Rilevamento del profilo",
+          "detail": "Il documento di rilevamento live che gli agenti recuperano dal tuo dominio."
+        },
+        "services": {
+          "label": "Servizi e modalità di trasporto",
+          "detail": "Endpoint con cui gli agenti possono negoziare."
+        },
+        "capabilities": {
+          "label": "Funzionalità",
+          "detail": "Flussi di carrello, checkout e ordine dichiarati dal negozio online."
+        },
+        "paymentHandlers": {
+          "label": "Gestori di pagamento",
+          "detail": "Endpoint di tokenizzazione e relative versioni dichiarate."
+        },
+        "signingKeys": {
+          "label": "Chiavi di firma",
+          "detail": "JWK pubblici per la verifica delle firme dei messaggi HTTP."
+        },
+        "supportedVersions": {
+          "label": "Versioni supportate",
+          "detail": "Tutte le versioni del protocollo ancora servite dal merchant."
+        },
+        "agentAccess": {
+          "label": "Accesso degli agenti",
+          "detail": "Gli agenti per acquisti e indicizzazione non sono bloccati."
+        }
+      },
+      "issueCategory": {
+        "envelope": "Struttura",
+        "version": "Versione",
+        "services": "Servizi",
+        "capabilities": "Funzionalità",
+        "payment_handlers": "Gestori di pagamento",
+        "signing_keys": "Chiavi di firma",
+        "supported_versions": "Versioni supportate",
+        "transport": "Trasporto",
+        "security": "Sicurezza"
+      },
+      "badge": {
+        "pass": "Superato",
+        "fail": "Non superato",
+        "recognized": "Riconosciuto",
+        "custom": "Personalizzato",
+        "known": "Conosciuto",
+        "issues": "Problemi",
+        "valid": "Valido",
+        "current": "Corrente",
+        "https": "HTTPS",
+        "insecure": "Non sicuro",
+        "allowed": "Consentito",
+        "blocked": "Bloccato",
+        "error": "Errore",
+        "warning": "Avviso",
+        "missing": "Mancante",
+        "unavailable": "Non disponibile",
+        "embedded": "Incorporato",
+        "specLinked": "spec collegata",
+        "schemaLinked": "schema collegato",
+        "ucpReady": "Pronto per UCP",
+        "needsFixes": "Correzioni necessarie",
+        "noIssuesFound": "Nessun problema rilevato",
+        "signingKeysNotAdvertised": "Nessuna chiave di firma dichiarata",
+        "signingKeysEmpty": "L’array delle chiavi di firma è vuoto",
+        "missingKid": "(kid mancante)",
+        "transport": "Trasporto · {value}",
+        "version": "Versione · {value}",
+        "id": "ID · {value}",
+        "kty": "kty · {value}",
+        "use": "use · {value}",
+        "alg": "alg · {value}",
+        "crv": "crv · {value}",
+        "latestSuffix": " · ultima versione {version}",
+        "envelope": "struttura: {kind}",
+        "envelopeFlatKind": "flat",
+        "notValidated": "Non validato",
+        "notValidatedSuffix": " · non validato"
+      },
+      "services": {
+        "title": "Servizi e modalità di trasporto",
+        "description": "Endpoint con cui un agente può negoziare. Ogni voce corrisponde a una chiave di servizio con dominio inverso nel profilo.",
+        "customNote": "Chiave di servizio personalizzata — non è uno degli identificatori di servizio UCP conosciuti.",
+        "endpointLabel": "Endpoint:",
+        "schemaLabel": "Schema:"
+      },
+      "capabilities": {
+        "title": "Funzionalità",
+        "description": "Flussi distinti supportati dal negozio online. Ordine, checkout e carrello sono obbligatori per gli agenti che eseguono transazioni.",
+        "configLabel": "Configurazione:"
+      },
+      "paymentHandlers": {
+        "title": "Gestori di pagamento",
+        "description": "Endpoint di tokenizzazione dichiarati dal merchant. Ogni gestore deve dichiarare una versione e tutti gli ID gestore richiesti."
+      },
+      "signingKeys": {
+        "title": "Chiavi di firma e autenticazione",
+        "description": "Le HTTP Message Signatures RFC 9421 sono la base dell’integrazione iniziale senza approvazione preventiva. Ogni richiesta deve poter essere verificata con una chiave pubblica JWK pubblicata qui.",
+        "notAdvertisedBody": "Il profilo non pubblicizza alcuna chiave di firma, quindi le piattaforme non possono verificare le firme dei messaggi HTTP RFC 9421 senza uno scambio di segreti fuori banda. UCP lo consente, ma gli agenti useranno metodi di autenticazione tradizionali (chiavi API, OAuth, mTLS).",
+        "privateMaterial": "Contiene materiale privato — deve essere rimosso.",
+        "publicJwk": "JWK pubblico"
+      },
+      "supportedVersions": {
+        "title": "Versioni supportate",
+        "description": "URI del profilo per ogni versione del protocollo ancora servita da questo merchant. Gli agenti scelgono la versione più alta che comprendono."
+      },
+      "spec": {
+        "title": "Validazione della specifica",
+        "description": "{errors, plural, one {# errore} many {# errori} other {# errori}}, {warnings, plural, one {# avviso} many {# avvisi} other {# avvisi}} raggruppati per area della specifica.",
+        "noIssuesBody": "Il profilo corrente ha superato il validatore senza errori o avvisi dello schema.",
+        "noProfileBody": "Nessun profilo letto, quindi non c’era nulla da validare."
+      },
+      "results": {
+        "responseHealth": "Stato della risposta",
+        "responseHealthOk": "L'endpoint ha risposto ed è stato possibile valutare il profilo.",
+        "detectedSurface": "Superficie rilevata",
+        "detectedSurfaceValue": "{services, plural, one {# servizio} many {# servizi} other {# servizi}}, {capabilities, plural, one {# funzionalità} many {# funzionalità} other {# funzionalità}}, {handlers, plural, one {# gestore di pagamento} many {# gestori di pagamento} other {# gestori di pagamento}}, {keys, plural, one {# chiave di firma} many {# chiavi di firma} other {# chiavi di firma}}."
+      },
+      "summary": {
+        "latency": {
+          "label": "Latenza",
+          "unavailableDetail": "Non è stato possibile misurare il tempo di risposta live.",
+          "detail": "Tempo di risposta dell'endpoint UCP."
+        },
+        "specErrors": {
+          "label": "Errori della specifica",
+          "noneDetail": "Nessun problema bloccante dello schema rilevato.",
+          "someDetail": "Problemi bloccanti da correggere prima.",
+          "notValidatedDetail": "Non validato rispetto a questa revisione.",
+          "noProfileDetail": "Nessun profilo letto, quindi non è stato controllato nulla."
+        },
+        "capabilities": {
+          "label": "Funzionalità",
+          "noneDetail": "Nessuna funzionalità dichiarata.",
+          "someDetail": "Funzionalità riconosciute rispetto al totale dichiarato."
+        },
+        "botAccess": {
+          "label": "Accesso ai bot",
+          "detail": "I principali bot per acquisti e indicizzazione sono consentiti nel robots.txt."
+        }
+      },
+      "coreChecks": {
+        "title": "Controlli principali",
+        "description": "Questi controlli confermano che il profilo pubblico è raggiungibile, sicuro e leggibile dalle macchine.",
+        "https": {
+          "label": "HTTPS",
+          "detail": "Il dominio deve essere servito tramite una connessione HTTPS sicura."
+        },
+        "wellKnown": {
+          "label": "/.well-known/ucp esiste",
+          "httpStatus": "HTTP {status}.",
+          "httpStatusNotJson": "HTTP {status} (il body non è JSON).",
+          "responded": "L'endpoint ha risposto.",
+          "noResponse": "Nessuna risposta da /.well-known/ucp."
+        },
+        "validJson": {
+          "label": "JSON valido",
+          "contentType": "Content-Type: {contentType}",
+          "contentTypeWithStatus": "Content-Type: {contentType} · HTTP {status}",
+          "invalid": "Il body della risposta non è JSON valido."
+        },
+        "latency": {
+          "label": "Latenza del sito",
+          "unmeasured": "Non è stato possibile misurare la latenza perché l'endpoint non ha risposto.",
+          "responded": "L'endpoint UCP ha risposto in {latency}."
+        },
+        "version": {
+          "label": "Ultima versione del protocollo",
+          "latest": "Il profilo dichiara {version} — l'ultima versione UCP pubblicata.",
+          "outdated": "Il profilo dichiara {version}; l'ultima è {latest}.",
+          "none": "Nessuna versione dichiarata nella radice del profilo.",
+          "notValidated": "Il profilo dichiara {version}, una revisione che questo validatore non implementa ({revisions}). Non è stato validato rispetto a essa."
+        },
+        "signingKeys": {
+          "label": "Chiavi di firma pubblicizzate",
+          "published": "{count, plural, one {# JWK} many {# JWK} other {# JWK}} pubblicati per la verifica RFC 9421.",
+          "none": "Nessuna chiave di firma dichiarata — non è possibile verificare senza richiedere un’autorizzazione."
+        }
+      },
+      "robots": {
+        "title": "Accesso degli agenti AI",
+        "description": "Basato sulle regole robots.txt attuali del sito."
+      },
+      "response": {
+        "title": "Risposta UCP",
+        "description": "Anteprima JSON con evidenziazione della sintassi del documento well-known live."
+      },
+      "toast": {
+        "failedTitle": "Controllo non riuscito"
+      },
+      "action": {
+        "checking": "Controllo in corso...",
+        "primary": "Controlla il dominio"
+      },
+      "panel": {
+        "checkADomain": "Controlla un dominio",
+        "storefrontDomain": "Dominio del negozio online",
+        "domain": "Dominio",
+        "placeholder": "tuodominio.com",
+        "rootDomainNote": "Solo dominio principale — <code>acme.com</code> o <code>www.acme.com</code>. Convalidiamo sempre la versione HTTPS."
+      },
+      "intro": {
+        "eyebrow": "Convalida in tempo reale",
+        "title": "Esegui una convalida in tempo reale",
+        "description": "Incolla un dominio e recupereremo il documento live <code>/.well-known/ucp</code>, analizzeremo ogni servizio, capacità, gestore di pagamento e chiave di firma, quindi lo valideremo rispetto alla revisione della specifica dichiarata, fino a <code>{version}</code>."
+      }
+    }
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "commerceFigures": {
+    "repairTools": "Illustrazione: una chiave inglese e un cacciavite. Sposta il puntatore su uno strumento per sollevarlo e ispezionarlo.",
+    "moneyStack": "Illustrazione: banconote e monete. Sposta il puntatore su una pila per ispezionarla.",
+    "readinessScanner": "Illustrazione: uno scanner documentale aperto. Sposta il puntatore sul coperchio o sulla pagina per ispezionarli.",
+    "partReadouts": {
+      "repairTools": [
+        {
+          "value": "chiave inglese",
+          "label": "Chiave inglese"
+        },
+        {
+          "value": "cacciavite",
+          "label": "Cacciavite"
+        }
+      ],
+      "moneyStack": [
+        {
+          "value": "banconote",
+          "label": "Banconote"
+        },
+        {
+          "value": "monete",
+          "label": "Monete"
+        }
+      ],
+      "readinessScanner": [
+        {
+          "value": "coperchio dello scanner",
+          "label": "Coperchio dello scanner"
+        },
+        {
+          "value": "documento",
+          "label": "Documento"
+        }
+      ]
+    }
+  }
+}

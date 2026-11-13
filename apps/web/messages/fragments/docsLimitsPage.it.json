@@ -1,0 +1,18 @@
+{
+  "docsLimitsPage": {
+    "requests": "richieste",
+    "window": "ogni {seconds} secondi",
+    "publicScope": "Ogni endpoint /api/v1",
+    "policySource": "Policy applicate dall’API",
+    "headerExample": "Esempi di header di risposta",
+    "headerHint": "Seleziona un header per leggerne il significato. Questi valori illustrano una risposta; non sono un contatore in tempo reale.",
+    "windowTitle": "Un solo limite, due interpretazioni",
+    "remaining": "Richieste rimanenti",
+    "reset": "Secondi al ripristino",
+    "windowHint": "In questo esempio, entrambi i formati di header descrivono la stessa finestra.",
+    "responseExample": "Esempio: risposta 429",
+    "retryTitle": "Attendi, poi riprova",
+    "retryLabel": "Secondi di attesa in questo esempio",
+    "retryHint": "Leggi Retry-After nella risposta effettiva. Una richiesta inviata prima di quel momento viene conteggiata e rifiutata di nuovo."
+  }
+}

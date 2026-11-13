@@ -100,6 +100,8 @@ const SCOPES: ReadonlyArray<{
     entries: entriesUnder(join(APP, "(main)/dashboard")),
   },
   { scope: "auth", entries: entriesUnder(join(APP, "(auth)")) },
+  { scope: "agents", entries: entriesUnder(join(APP, "(main)/agents")) },
+  { scope: "agentStage", entries: entriesUnder(join(APP, "(stage)")) },
 ];
 
 /** Marketing routes with no scope of their own — they inherit `marketing`. */

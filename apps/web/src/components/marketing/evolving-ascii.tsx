@@ -15,6 +15,7 @@ const artwork = {
   closing: "/images/ascii/tonal/home-bag.svg",
   selection: "/images/ascii/tonal/selection.svg",
   catalog: "/images/ascii/tonal/catalog.svg",
+  catalogCommerce: "/images/ascii/tonal/catalog-commerce.svg",
   headphones: "/images/ascii/tonal/headphones.svg",
   homeBag: "/images/ascii/tonal/home-bag.svg",
   homeCart: "/images/ascii/tonal/shopping-cart.svg",

@@ -1,0 +1,11 @@
+{
+  "blogTagPage": {
+    "collection": "読書コレクション",
+    "description": "ecentic ジャーナルによる、{topic} に関するガイドと調査資料。",
+    "latestArticle": "最新記事から読む",
+    "takeaways": "この記事の内容",
+    "moreArticles": "続きを読む",
+    "relatedTopics": "関連トピックを確認",
+    "relatedDescription": "このコレクションに関連するテーマを確認できます。"
+  }
+}

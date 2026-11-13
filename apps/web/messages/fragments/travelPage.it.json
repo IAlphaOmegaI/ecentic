@@ -1,0 +1,84 @@
+{
+  "travelPage": {
+    "questions": {
+      "caption": "Ogni viaggio è un’offerta con condizioni.",
+      "description": "La domanda cambia. Date, base tariffaria e condizioni di prenotazione devono comunque essere leggibili."
+    },
+    "attributes": {
+      "description": "Mantieni insieme le informazioni che definiscono l’offerta, dalle date disponibili alle condizioni di modifica."
+    },
+    "roadmap": {
+      "label": "Esplora il progetto pilota per il turismo",
+      "diagram": "Le informazioni e il passaggio alla revisione",
+      "boundary": "Confine dell’ambito",
+      "stages": [
+        {
+          "id": "scope",
+          "label": "Concorda l’ambito",
+          "status": "Prima del pilot",
+          "title": "Un mercato. Un punto di partenza concordato.",
+          "description": "Conferma lingua e copertura dei dati prima di iniziare. Parti dalle pagine pubbliche e dai dati prodotto concordati con il tuo team.",
+          "steps": [
+            {
+              "title": "Un mercato",
+              "body": "Conferma lingua e copertura dei dati."
+            },
+            {
+              "title": "Pagine pubbliche",
+              "body": "Concorda quali offerte esaminare."
+            },
+            {
+              "title": "Ambito del pilot",
+              "body": "Definisci la domanda per il passaggio alla prenotazione."
+            }
+          ],
+          "note": "Un pilot inizia con un ambito concordato; questa roadmap non indica un’integrazione di prenotazione live."
+        },
+        {
+          "id": "baseline",
+          "label": "Esamina le offerte",
+          "status": "Situazione iniziale basata su dati pubblici",
+          "title": "Leggi l’offerta prima della procedura di prenotazione.",
+          "description": "Esamina le informazioni nelle pagine che controlli e nei dati prodotto concordati. Il tuo team verifica gli attributi di viaggio; ecentic non inventa informazioni mancanti.",
+          "steps": [
+            {
+              "title": "Sito pubblico",
+              "body": "Parti dalle pagine prodotto concordate."
+            },
+            {
+              "title": "Feed supportato",
+              "body": "Usa la mappatura dei campi dell’importatore definita."
+            },
+            {
+              "title": "Informazioni sull’offerta",
+              "body": "Verifica date, prezzi, inclusioni e condizioni."
+            }
+          ],
+          "note": "Il riferimento non richiede accesso al motore di prenotazione, dati cliente o codice sul tuo sito."
+        },
+        {
+          "id": "handoff",
+          "label": "Esamina il passaggio",
+          "status": "Ambito concordato separatamente",
+          "title": "Mantieni esplicito il confine della prenotazione.",
+          "description": "Esamina il percorso concordato dalle informazioni pubbliche alla procedura di prenotazione. Eventuali accessi o lavori di integrazione successivi richiedono un ambito separato.",
+          "steps": [
+            {
+              "title": "Offerta pubblica",
+              "body": "Mantieni chiare date, prezzi e condizioni."
+            },
+            {
+              "title": "Canale o fornitore",
+              "body": "Il comportamento della prenotazione dipende dal canale e dalla procedura."
+            },
+            {
+              "title": "Passaggio alla prenotazione",
+              "body": "Controlla la destinazione concordata e il passaggio successivo."
+            }
+          ],
+          "note": "Non è promessa alcuna integrazione automatizzata per la prenotazione e un assistente potrebbe rimandare a una piattaforma di prenotazione invece che al tuo sito."
+        }
+      ]
+    }
+  }
+}

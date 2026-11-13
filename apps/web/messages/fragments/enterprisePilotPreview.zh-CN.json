@@ -1,0 +1,41 @@
+{
+  "enterprisePilotPreview": {
+    "label": "示例试点·样例简介",
+    "title": "一个品类。一个市场。同样的问题。",
+    "note": "这是规划示例，并非客户成果。范围、团队角色和交付内容将与您的团队共同确认。",
+    "marketLabel": "市场",
+    "market": "西班牙",
+    "categoryLabel": "品类",
+    "category": "户外背包",
+    "sourceLabel": "起点",
+    "source": "公开商品页面",
+    "peopleLabel": "示例团队",
+    "deliverableLabel": "示例交付物",
+    "stages": [
+      {
+        "people": "品类负责人 + ecentic 分析师",
+        "deliverable": "问题集和基线工作簿",
+        "exampleLabel": "示例问题",
+        "example": "哪款登机背包适合一周旅行？"
+      },
+      {
+        "people": "商品运营负责人 + 商品目录编辑",
+        "deliverable": "事实核查和已批准的变更清单",
+        "exampleLabel": "示例事实核查",
+        "example": "将容量、尺寸和材质与源页面进行匹配。"
+      },
+      {
+        "people": "ecentic 分析师 + 品类负责人",
+        "deliverable": "匹配后的重新运行结果和变更日志",
+        "exampleLabel": "示例对比",
+        "example": "并排保留基线结果和重复回答。记录所有模型变更。"
+      },
+      {
+        "people": "业务负责人 + ecentic 负责人",
+        "deliverable": "总结、限制条件和下一步决策",
+        "exampleLabel": "示例议程",
+        "example": "查看提及情况、排序、链接和已测试的购买流程。决定下一步测试内容。"
+      }
+    ]
+  }
+}

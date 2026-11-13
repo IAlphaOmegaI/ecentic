@@ -1,0 +1,56 @@
+{
+  "chatgptPage": {
+    "shopping": {
+      "feed": "商家商品 Feed",
+      "discovery": "商品发现",
+      "store": "商家店铺",
+      "checkout": "已获准结账",
+      "link": "商品链接",
+      "approval": "单独应用审批"
+    },
+    "reading": {
+      "label": "查看 ChatGPT 读取的内容",
+      "caption": "这是信息结构示意图，并非数据源提交模板。",
+      "records": [
+        {
+          "id": "product",
+          "title": "商品记录",
+          "record": "商品 / 变体",
+          "fields": [
+            "标题 + 描述",
+            "图片 + 商品 URL",
+            "价格 + 库存状态"
+          ]
+        },
+        {
+          "id": "seller",
+          "title": "卖家条款",
+          "record": "商家",
+          "fields": [
+            "卖家身份",
+            "物流信息",
+            "退货政策"
+          ]
+        },
+        {
+          "id": "checkout",
+          "title": "结账访问",
+          "record": "结账",
+          "fields": [
+            "资格标记",
+            "已连接应用",
+            "集成审批"
+          ]
+        }
+      ]
+    },
+    "entry": {
+      "label": "商家接入要求",
+      "steps": [
+        "商家入驻",
+        "商品 Feed 访问权限",
+        "结账应用审批"
+      ]
+    }
+  }
+}

@@ -1,0 +1,46 @@
+{
+  "microsoftCopilotPage": {
+    "journey": {
+      "title": "对话、商品目录与您的业务",
+      "copilot": "商品发现与结账",
+      "merchant": "您仍然是记录在案的卖家",
+      "relationship": "由您履约，由您维护客户关系。",
+      "web": "网页上的商品数据",
+      "feeds": "商家商品数据源",
+      "checkout": "额外的结账属性",
+      "dataLabel": "探索商品数据路径"
+    },
+    "entry": {
+      "label": "探索商家接入路径",
+      "language": "商家语言",
+      "languageValue": "英语",
+      "buyers": "买家",
+      "buyersValue": "美国",
+      "currency": "货币",
+      "currencyValue": "USD",
+      "microsoft": "Microsoft",
+      "shopify": "Shopify",
+      "stripe": "Stripe",
+      "routes": {
+        "microsoft": {
+          "title": "Microsoft Merchant Center",
+          "description": "根据 Microsoft 的接入指南准备商品记录和额外的结账属性。数据源设置步骤目前仍是面向部分商家的试点功能。",
+          "note": "这是 Microsoft 的商家接入路径。ecentic 的数据源连接目前尚未上线。"
+        },
+        "shopify": {
+          "title": "Shopify 自动接入",
+          "description": "Shopify 是 Microsoft 文档说明中的接入路径之一。仍需满足 Microsoft 的资格和项目要求。",
+          "note": "ecentic 当前可跟踪已连接 Shopify 店铺中的 Copilot 引荐。"
+        },
+        "stripe": {
+          "title": "Stripe Agentic Commerce Suite",
+          "description": "Stripe Agentic Commerce Suite 是 Microsoft 文档说明中的接入路径之一。仍需满足 Microsoft 的资格和项目要求。",
+          "note": "接入路径并不保证审核通过或获得商品推荐。"
+        }
+      },
+      "action": {
+        "primary": "阅读 Microsoft 接入指南"
+      }
+    }
+  }
+}

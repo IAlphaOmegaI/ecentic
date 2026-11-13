@@ -1,0 +1,32 @@
+{
+  "perplexityPage": {
+    "shopping": {
+      "label": "Esplora la destinazione shopping",
+      "result": "Scheda prodotto",
+      "destination": "Destinazione shopping",
+      "purchase": "Acquista con Pro",
+      "store": "Sito del merchant",
+      "purchaseTitle": "Un acquisto idoneo",
+      "purchaseDescription": "L’esperienza Buy with Pro annunciata è disponibile per prodotti idonei negli Stati Uniti.",
+      "storeTitle": "Continua sul sito del merchant",
+      "storeDescription": "Quando questa opzione di acquisto non è disponibile, l’utente segue un link al sito del merchant.",
+      "caption": "Esplora i due percorsi descritti nell’annuncio shopping di Perplexity."
+    },
+    "reading": {
+      "merchant": "Informazioni sul merchant",
+      "product": "Dettagli prodotto",
+      "price": "Prezzo",
+      "website": "Sito del merchant",
+      "result": "Risultati shopping",
+      "caption": "Un programma merchant aiuta a rendere più complete le informazioni prodotto."
+    },
+    "entry": {
+      "label": "Esplora i requisiti di accesso per i merchant",
+      "steps": [
+        "Il programma annunciato",
+        "Idoneità attuale",
+        "Cosa resta non verificato"
+      ]
+    }
+  }
+}

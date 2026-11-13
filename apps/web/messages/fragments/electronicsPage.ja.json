@@ -1,0 +1,14 @@
+{
+  "electronicsPage": {
+    "selectorLabel": "購入者の質問を確認",
+    "scenarioLabels": [
+      "イヤホン",
+      "ノートPC",
+      "ロボット掃除機"
+    ],
+    "sourceLabel": "確認するソース項目",
+    "inspectLabel": "質問をたどって仕様情報を確認します。",
+    "mapLabel": "6つのソース項目をすべて確認",
+    "boundary": "ソース情報を確認するための出発点であり、互換性の結果ではありません。"
+  }
+}

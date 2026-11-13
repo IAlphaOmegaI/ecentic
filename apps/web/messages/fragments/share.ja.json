@@ -1,0 +1,40 @@
+{
+  "share": {
+    "sidebar": {
+      "headline": {
+        "line1": "結果が",
+        "line2": "出ました。"
+      },
+      "points": [
+        "ChatGPT、Claude、Gemini、Perplexityで実際の購買比較をシミュレーション",
+        "すべての商品を競合商品と直接比較してスコアを算出",
+        "このレポートでは、選ばれる点と選ばれない点を確認できます"
+      ]
+    },
+    "page": {
+      "title": "ストアの競争力をチェック",
+      "description": "ストアが競合と比べてどの位置にいるのかを詳しく確認できます。"
+    },
+    "score": {
+      "label": "AIエージェントスコア",
+      "simulations": "{count}件のシミュレーション",
+      "wins": "勝利",
+      "losses": "敗北",
+      "messages": {
+        "high": "多くの競合商品より優勢です。",
+        "medium": "競争力はありますが、さらに伸ばせます。",
+        "low": "AIエージェントは競合商品を選んでいます。"
+      }
+    },
+    "finding": {
+      "impact": "影響度",
+      "simsLost": "非選定となったシミュレーションの割合",
+      "missingAttributes": "不足している属性"
+    },
+    "cta": {
+      "title": "すべてのAIショッピングエージェントに選ばれる商品へ",
+      "description": "ecenticが商品情報を自動最適化します。無料で開始できます。",
+      "action": "無料で始める"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "dealRedemption": {
+    "programs": {
+      "techstars": {
+        "batchLabel": "Techstars program / year",
+        "batchPlaceholder": "Select your cohort",
+        "action": {
+          "primary": "Redeem my Techstars deal"
+        }
+      },
+      "yc": {
+        "batchLabel": "YC batch",
+        "batchPlaceholder": "Select your batch",
+        "action": {
+          "primary": "Redeem my YC deal"
+        }
+      }
+    },
+    "options": {
+      "earlier": "Earlier",
+      "other": "Other",
+      "customHeadless": "Custom / Headless",
+      "preLaunch": "Pre-launch"
+    },
+    "cohorts": {
+      "winter": "Winter {year}",
+      "spring": "Spring {year}",
+      "summer": "Summer {year}",
+      "fall": "Fall {year}"
+    }
+  }
+}

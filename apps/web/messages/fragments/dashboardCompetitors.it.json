@@ -1,0 +1,79 @@
+{
+  "dashboard": {
+    "competitors": {
+      "title": "Concorrenti",
+      "description": "Come gli agenti AI per gli acquisti ti classificano rispetto ai brand che monitori.",
+      "action": {
+        "primary": "Aggiungi concorrente",
+        "addCompetitor": "Aggiungi concorrente",
+        "addCompetitors": "Aggiungi concorrenti"
+      },
+      "stats": {
+        "brandsTracked": "Brand monitorati",
+        "winningAgainst": "In vantaggio contro",
+        "mostDangerous": "Più pericoloso",
+        "totalSimulations": "Simulazioni totali",
+        "productsMonitored": "{count, plural, one {# prodotto monitorato} many {# prodotti monitorati} other {# prodotti monitorati}}",
+        "sinceLastScan": "dall'ultima scansione",
+        "averageWinRate": "{rate}% di vittorie medie",
+        "winRateAgainstThem": "la tua percentuale di vittorie contro di loro",
+        "acrossCompetitors": "su {count, plural, one {# concorrente} many {# concorrenti} other {# concorrenti}}"
+      },
+      "landscape": {
+        "kicker": "01 — Panorama",
+        "winRateByCompetitor": "Percentuale di vittorie per concorrente",
+        "distribution": "Distribuzione",
+        "winRateTiers": "Fasce di percentuale di vittorie",
+        "simAbbrev": "{count} sim",
+        "tiers": {
+          "dominating": "Dominante (≥75%)",
+          "competitive": "Competitivo (50–74%)",
+          "atRisk": "A rischio (30–49%)",
+          "losing": "In svantaggio (<30%)"
+        }
+      },
+      "table": {
+        "kickerAll": "02 — Tutti i concorrenti"
+      },
+      "insights": {
+        "kicker": "03 — Analisi",
+        "summary": "Riepilogo competitivo",
+        "keyInsight": "Insight principale",
+        "optimizeLosing": "Ottimizza le schede prodotto in svantaggio",
+        "recentScanActivity": "Attività di scansione recenti",
+        "scanCompleted": "Scansione completata — {wins}V / {losses}S",
+        "scanInProgress": "Scansione in corso — {completed}/{total}",
+        "completedScans": "{count, plural, one {# scansione completata} many {# scansioni completate} other {# scansioni completate}}",
+        "viewAllActivity": "Visualizza tutta l'attività",
+        "headlines": {
+          "outrankAll": "Superi {count, plural, one {# concorrente simulato} many {tutti i # concorrenti simulati} other {tutti i # concorrenti simulati}} (tasso medio di vittoria: {overall}%).",
+          "slimmestLead": "Il tuo margine più ridotto è contro {brand} al {rate}%. Mantieni ottimizzate le schede prodotto per difenderlo.",
+          "biggestOpportunity": "{brand} vince il {lossRate}% dei confronti effettuati dagli agenti AI per gli acquisti contro di te. È la tua opportunità principale.",
+          "holdMajority": "Sei in vantaggio rispetto a {winning} su {total, plural, one {# concorrente} many {# concorrenti} other {# concorrenti}} (media: {overall}%). Ottimizzare i prodotti che perdono contro {brand} avrà il maggiore impatto.",
+          "defaultHeadline": "Sei in vantaggio rispetto a {winning} su {total, plural, one {# concorrente} many {# concorrenti} other {# concorrenti}} (tasso medio di vittoria: {overall}%).",
+          "focusOptimization": "Concentra l'ottimizzazione delle schede prodotto sui prodotti su cui {brand} ti supera.",
+          "toughestRival": "{toughest} è il tuo rivale più difficile con il {toughestRate}%; sei in vantaggio su {strongest} con il {strongestRate}%."
+        }
+      },
+      "add": {
+        "title": "Aggiungi concorrenti a questo negozio",
+        "shellTitle": "Aggiungi concorrenti",
+        "shellDescription": "I brand rispetto a cui viene valutato il catalogo di questo negozio. I concorrenti appartengono a un solo negozio, quindi non vengono mai mescolati con gli altri tuoi negozi.",
+        "description": "Rilevali dal tuo catalogo, incolla gli URL dei prodotti oppure cerca un brand. Tutto ciò che aggiungi appartiene solo a questo negozio.",
+        "findKicker": "01 — Trova",
+        "rosterKicker": "02 — Elenco",
+        "trackedTitle": "Monitorati in questo negozio",
+        "trackedDescription": "Quando una scansione viene eseguita senza un elenco esplicito, vengono valutati solo i concorrenti selezionati.",
+        "rosterSummary": "{total} distribuiti tra {brands, plural, one {# marchio} many {# marchi} other {# marchi}} — {selected} selezionati",
+        "emptyRoster": "Nessun concorrente monitorato. Aggiungine alcuni sopra e appariranno qui.",
+        "tabs": {
+          "liveOffers": "Offerte live",
+          "autoDetect": "Rilevamento automatico",
+          "pasteUrls": "Incolla URL",
+          "searchBrand": "Cerca brand",
+          "googleMerchant": "Google"
+        }
+      }
+    }
+  }
+}

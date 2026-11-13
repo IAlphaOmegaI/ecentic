@@ -1,0 +1,94 @@
+{
+  "reviewCode": {
+    "recordNote": "示例记录，并非API请求。",
+    "platform": {
+      "connect": [
+        {
+          "key": "title",
+          "note": "导入期间会保留源标题。"
+        },
+        {
+          "key": "source",
+          "note": "记录会从您的文件移动到商品目录中。"
+        },
+        {
+          "key": "publish_access",
+          "note": "导入数据源不会授予店铺写入权限。"
+        }
+      ],
+      "simulate": [
+        {
+          "key": "question",
+          "note": "保持买家请求明确，以便对比具有上下文。"
+        },
+        {
+          "key": "decision",
+          "note": "模拟运行会记录被选中的商品信息。"
+        },
+        {
+          "key": "reasoning",
+          "note": "结果指向已声明的属性，而非假设属性。"
+        }
+      ],
+      "fix": [
+        {
+          "key": "title",
+          "note": "标题使用了源数据中已存在的事实。"
+        },
+        {
+          "key": "description",
+          "note": "相同的商品事实表达得更清晰。"
+        },
+        {
+          "key": "price_and_stock",
+          "note": "商品信息操作不会改动价格和库存。"
+        }
+      ],
+      "track": [
+        {
+          "key": "referrer",
+          "note": "来源域名是访问分类的依据。"
+        },
+        {
+          "key": "classification",
+          "note": "检测到的引荐来源会成为跟踪记录。"
+        },
+        {
+          "key": "revenue",
+          "note": "一次访问本身并不能证明存在订单或归因收入。"
+        }
+      ]
+    },
+    "checkout": {
+      "filename": "checkout-example.json",
+      "label": "结账要求",
+      "note": "示例伪代码。手机号要求已放宽；支付仍通过商家的支付网关处理。",
+      "rows": [
+        {
+          "key": "phone_required",
+          "before": true,
+          "after": false,
+          "note": "阻碍因素是智能体缺少必填手机号。"
+        },
+        {
+          "key": "phone",
+          "before": null,
+          "after": null,
+          "note": "不会虚构联系信息来通过检查。"
+        },
+        {
+          "key": "contact_step",
+          "before": "blocked",
+          "after": "ready",
+          "note": "移除此要求后，示例可继续进入支付流程。"
+        },
+        {
+          "key": "payment",
+          "before": "not_reached",
+          "after": "merchant_gateway",
+          "note": "支付由店铺的支付网关处理；仍可能需要转交给买家完成。"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,238 @@
+{
+  "enterpriseRecovery": {
+    "api": {
+      "meta": {
+        "title": "API 参考文档 | ecentic",
+        "description": "阅读当前 ecentic OpenAPI 参考文档：REST 端点、MCP、发现机制、参数、响应结构定义和身份验证。"
+      },
+      "eyebrow": "开发者 / API 参考",
+      "title": "来自源定义的 API。",
+      "description": "请求与响应定义来自与 /openapi.json 相同的源文件。Schema 文本的英文版本为权威来源。此参考文档不会发送请求。",
+      "actions": [
+        {
+          "label": "开发者文档",
+          "href": "/docs"
+        },
+        {
+          "label": "下载 OpenAPI JSON",
+          "href": "https://ecentic.ai/openapi.json"
+        }
+      ],
+      "sections": [
+        {
+          "id": "api-reference",
+          "title": "端点",
+          "description": "选择方法与路径，查看其参数、请求体、安全要求和响应。"
+        },
+        {
+          "id": "api-schemas",
+          "title": "共享结构定义",
+          "description": "由上述端点引用的可复用定义。"
+        },
+        {
+          "id": "api-auth",
+          "title": "安全方案",
+          "description": "每个操作都会声明自己的安全要求。下方源定义列出了可用方案。"
+        }
+      ],
+      "operationNames": {
+        "getApiV1Index": "公开智能体 API 索引",
+        "getApiV1Health": "服务健康状态",
+        "getApiV1Discovery": "协议与文档发现",
+        "getApiV1Plans": "方案目录",
+        "getApiV1Skills": "智能体能力",
+        "getApiV1News": "新闻",
+        "getApiV1Onboarding": "智能体接入",
+        "getApiV1Sandbox": "沙箱能力",
+        "postApiV1SandboxSimulation": "运行示例模拟",
+        "getAgentApiRoot": "智能体 API 根路径",
+        "getMcp": "MCP 事件流",
+        "postMcp": "MCP 请求",
+        "deleteMcpSession": "关闭 MCP 会话",
+        "postMcpAlias": "MCP 别名",
+        "getWellKnownMcpManifest": "MCP 发现清单",
+        "getWellKnownUcp": "UCP 发现配置文件",
+        "getWellKnownAcp": "ACP 发现配置文件"
+      },
+      "navigation": "端点导航",
+      "operation": "操作",
+      "version": "API 版本",
+      "specification": "OpenAPI 版本",
+      "server": "服务器",
+      "definition": "请求与响应定义",
+      "schema": "结构定义"
+    },
+    "notFound": {
+      "meta": {
+        "title": "页面不存在｜ecentic",
+        "description": "查找ecentic平台、集成、AI渠道、定价、文档和联系页面，以及机器可读的恢复链接。"
+      },
+      "title": "此页面不存在。",
+      "description": "我们重建网站时，该页面可能已移动。以下是大多数人会查找的页面：",
+      "home": "ecentic首页",
+      "navigation": "查找页面",
+      "links": [
+        {
+          "label": "平台",
+          "href": "/platform"
+        },
+        {
+          "label": "集成",
+          "href": "/integrations"
+        },
+        {
+          "label": "AI渠道",
+          "href": "/ai-channels"
+        },
+        {
+          "label": "定价",
+          "href": "/pricing"
+        },
+        {
+          "label": "文档",
+          "href": "/docs"
+        },
+        {
+          "label": "联系",
+          "href": "/contact"
+        }
+      ],
+      "machineTitle": "面向智能体的恢复入口",
+      "machineDescription": "现有的发现文档和恢复列表仍可访问。",
+      "machineNavigation": "机器可读的恢复链接",
+      "markdownTitle": "同一恢复列表的 Markdown 版本",
+      "markdownAction": "打开 Markdown 文档",
+      "recoveryLinks": [
+        {
+          "label": "首页",
+          "description": "了解ecentic的功能及适用对象。"
+        },
+        {
+          "label": "开发者文档",
+          "description": "API 参考、身份验证、错误、MCP 和 Webhook。"
+        },
+        {
+          "label": "网站地图",
+          "description": "两个语言版本中的可索引页面。"
+        },
+        {
+          "label": "llms.txt",
+          "description": "面向语言模型的网站地图。"
+        },
+        {
+          "label": "API目录",
+          "description": "面向机器接口的RFC 9727 linkset。"
+        },
+        {
+          "label": "OpenAPI文档",
+          "description": "公开 API 的请求与响应结构定义。"
+        }
+      ]
+    },
+    "instructions": {
+      "meta": {
+        "title": "AI说明：何时使用ecentic",
+        "description": "说明用户和智能体如何使用ecentic、其能力边界，以及在哪里查找公开API、MCP和最新文档。"
+      },
+      "eyebrow": "开发者 / AI说明",
+      "title": "为智能体提供清晰的起点。",
+      "description": "ecentic位于品牌商品目录与销售商品的AI助手之间。它会优化AI读取的数据，为其完成结账准备，并在规则变化时同步调整。",
+      "actions": [
+        {
+          "label": "查看API参考",
+          "href": "/docs/api"
+        },
+        {
+          "label": "打开智能体说明",
+          "href": "https://ecentic.ai/.well-known/agent-instructions.md"
+        }
+      ],
+      "sections": [
+        {
+          "id": "jobs",
+          "title": "ecentic可提供的帮助",
+          "ordered": true,
+          "columns": 2,
+          "items": [
+            {
+              "title": "连接并比较",
+              "body": "导入 Shopify、WooCommerce 或受支持的商品数据源目录。按需运行 ChatGPT、Claude 和 Gemini 比较，查看每个结果背后的商品和属性。",
+              "href": "/platform/simulate",
+              "label": "查看模拟结果"
+            },
+            {
+              "title": "经您批准后修复",
+              "body": "Apply会基于现有商品事实生成并发布标题和描述。结构化数据和Merchant Center同步有单独的控制项。连接Shopify还会安装访问跟踪。发布需要受支持的直连集成。",
+              "href": "/platform/fix",
+              "label": "查看商品信息修复"
+            },
+            {
+              "title": "启用受支持的智能体结账",
+              "body": "通过受支持的集成使用已实现的结账接口。可用性和商家控制项详见渠道与集成页面。",
+              "href": "/platform/sell",
+              "label": "查看智能体结账"
+            },
+            {
+              "title": "查看AI访问",
+              "body": "查看已分类的访问和目标页面。浏览器脚本无法观测所有爬虫，AI来源访问也不能证明单个用户与订单之间的关联。",
+              "href": "/platform/track",
+              "label": "查看跟踪"
+            }
+          ]
+        },
+        {
+          "id": "boundaries",
+          "title": "结合上下文理解这些证据。",
+          "paragraphs": [
+            "模拟描述的是测试结果，而非真实市场排名或销售保证。免费店铺检测使用三个助手；独立的免费商品对比工具可使用四个助手。",
+            "ecentic不投放广告、不托管店铺、不管理库存，也不履行订单。已发布的ChatGPT应用上架尚未确认，因此该应用仍显示为Coming soon。ACP仍为Coming soon。"
+          ]
+        },
+        {
+          "id": "entry-points",
+          "title": "从公开协议开始。",
+          "columns": 3,
+          "items": [
+            {
+              "title": "REST API",
+              "body": "查看公开API索引、端点定义和共享Schema。每个操作都会声明身份验证要求。",
+              "href": "/docs/api",
+              "label": "查看参考文档"
+            },
+            {
+              "title": "MCP服务器",
+              "body": "查看受支持工具和连接指南。发现能力公开可用；涉及商家账户的操作需要授权。",
+              "href": "/docs/mcp",
+              "label": "查看MCP指南"
+            },
+            {
+              "title": "CLI与凭证",
+              "body": "有关 CLI 和身份验证流程，请参阅开发者指南。切勿将私有 API 密钥放在公开页面或客户端打包代码中。",
+              "href": "/docs",
+              "label": "打开开发者文档"
+            }
+          ]
+        },
+        {
+          "id": "machine-guidance",
+          "title": "机器可读指南",
+          "description": "这是与/.well-known/agent-instructions.md提供的规范英文文档相同的内容。协议标识符、路径和负载保持源格式不变。"
+        }
+      ]
+    },
+    "og": {
+      "home": {
+        "title": "当AI负责购买时，拿下订单。",
+        "description": "AI商业层。"
+      },
+      "docs": {
+        "title": "基于 AI 智能体商业平台构建。",
+        "description": "面向开发者的API参考、MCP、CLI和公开发现文档。"
+      },
+      "blog": {
+        "title": "AI 电商期刊。",
+        "description": "商品数据、AI 推荐与智能体结账实用指南。"
+      }
+    }
+  }
+}

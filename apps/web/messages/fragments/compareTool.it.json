@@ -1,0 +1,52 @@
+{
+  "compareTool": {
+    "page": {
+      "title": "Confronta due prodotti",
+      "description": "Scopri quale prodotto verrebbe consigliato dagli agenti AI e perché."
+    },
+    "form": {
+      "productA": "Prodotto A",
+      "productB": "Prodotto B",
+      "urlHint": "Incolla l'URL di un prodotto da qualsiasi sito e-commerce",
+      "placeholderA": "https://amazon.com/product/...",
+      "placeholderB": "https://shopify.com/products/...",
+      "prompt": {
+        "title": "Cosa conta di più per te?",
+        "description": "Dicci cosa stai cercando e confronteremo i prodotti in base ai tuoi criteri.",
+        "placeholder": "es. Voglio le migliori cuffie con cancellazione del rumore sotto i $300 e con lunga autonomia della batteria..."
+      },
+      "defaultPrompt": "Voglio il miglior rapporto qualità-prezzo",
+      "footer": "Eseguiremo il confronto su 4 modelli AI.",
+      "action": {
+        "run": "Avvia confronto",
+        "comparing": "Confronto in corso..."
+      }
+    },
+    "running": {
+      "title": "Confronto dei prodotti",
+      "modelsProgress": "{completed}/{total} modelli",
+      "scrapedSuccess": "Dati di entrambi i prodotti recuperati correttamente",
+      "completeLog": "Confronto completato — valutati {count} modelli",
+      "footer": "Confronto AI in corso"
+    },
+    "results": {
+      "overallSplit": "Ripartizione complessiva",
+      "byModel": "Risultati per modello",
+      "winner": "Vincitore",
+      "modelsChose": "modelli hanno scelto questo prodotto",
+      "chose": "ha scelto {letter}",
+      "finishedIn": "Completato in {elapsed}",
+      "action": {
+        "compareAgain": "Confronta di nuovo",
+        "startOptimizing": "Inizia l'ottimizzazione"
+      }
+    },
+    "toast": {
+      "missingUrls": {
+        "title": "URL mancanti",
+        "description": "Inserisci gli URL di entrambi i prodotti."
+      },
+      "failed": "Confronto non riuscito"
+    }
+  }
+}

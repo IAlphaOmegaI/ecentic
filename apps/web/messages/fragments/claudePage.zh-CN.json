@@ -1,0 +1,53 @@
+{
+  "claudePage": {
+    "explorer": {
+      "label": "探索商家自建的购物智能体",
+      "scope": "在零售商自己的体验内",
+      "tools": "由零售商提供的工具",
+      "stages": [
+        {
+          "id": "catalog",
+          "title": "商品目录",
+          "headline": "从您的商品信息开始",
+          "body": "零售商提供商品目录和库存工具，供其基于 Claude 的智能体搜索商品。",
+          "tools": [
+            "商品目录",
+            "库存"
+          ]
+        },
+        {
+          "id": "compare",
+          "title": "对比",
+          "headline": "提供对比所需上下文",
+          "body": "智能体会使用零售商提供的信息和工具（包括商品目录和店铺政策）进行商品对比。",
+          "tools": [
+            "商品信息",
+            "店铺政策"
+          ]
+        },
+        {
+          "id": "cart",
+          "title": "购物车",
+          "headline": "连接您自己的商业工具",
+          "body": "购物车和结账工具属于商家自建体验的一部分。ecentic 当前没有专门的 Claude 结账连接。",
+          "tools": [
+            "零售商购物车",
+            "零售商结账"
+          ]
+        }
+      ]
+    },
+    "reading": {
+      "merchant": "您的购物智能体",
+      "simulation": "ecentic 的对比"
+    },
+    "entry": {
+      "tools": "零售商提供的工具",
+      "experience": "您自己的商业体验"
+    },
+    "action": {
+      "primary": "探索模拟结果",
+      "secondary": "优化商品信息页"
+    }
+  }
+}

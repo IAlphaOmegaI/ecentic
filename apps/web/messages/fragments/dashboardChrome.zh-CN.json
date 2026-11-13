@@ -1,0 +1,1235 @@
+{
+  "dashboard": {
+    "nav": {
+      "overview": "概览",
+      "products": "商品",
+      "competitors": "竞品",
+      "simulations": "模拟",
+      "optimize": "优化",
+      "visibility": "可见度",
+      "agentic": "Agentic Score",
+      "googleShopping": "Google Shopping",
+      "quality": "数据质量",
+      "brand": "品牌",
+      "discovery": "发现",
+      "ucp": "UCP",
+      "ucpPlayground": "UCP 试验区",
+      "ucpComparison": "UCP 对比",
+      "reports": "报告",
+      "settings": "设置",
+      "billing": "账单",
+      "integrations": "集成",
+      "stores": "店铺",
+      "groups": {
+        "catalog": "商品目录",
+        "intelligence": "洞察",
+        "channels": "渠道"
+      }
+    },
+    "sidebar": {
+      "allStores": "所有店铺"
+    },
+    "stores": {
+      "empty": "暂无店铺",
+      "select": "选择店铺",
+      "selectStore": "选择店铺",
+      "allStores": "所有店铺",
+      "action": {
+        "primary": "连接店铺"
+      }
+    },
+    "hub": {
+      "workspace": "工作区",
+      "title": "您的店铺",
+      "description": "选择一个店铺，查看 AI 购物智能体如何对其商品目录进行排名，或连接其他店铺。",
+      "action": {
+        "primary": "连接店铺"
+      },
+      "aggregates": {
+        "stores": "店铺",
+        "products": "商品",
+        "avgWinRate": "平均胜率",
+        "agentVisits30d": "智能体访问 · 30天"
+      },
+      "storeCard": {
+        "winRate": "胜率",
+        "products": "商品",
+        "agents30d": "30天智能体访问",
+        "synced": "已同步 {time}",
+        "notSyncedYet": "尚未同步",
+        "openDashboard": "打开控制台",
+        "status": {
+          "connected": "已连接"
+        }
+      },
+      "platforms": {
+        "shopify": "Shopify",
+        "woocommerce": "WooCommerce",
+        "feed": "商品数据源",
+        "csv": "CSV 导入"
+      },
+      "empty": {
+        "title": "连接您的第一个店铺",
+        "description": "连接店铺以导入商品，并开始跟踪 AI 购物智能体如何将它们与竞品进行比较。"
+      }
+    },
+    "commandPalette": {
+      "trigger": "搜索商品、竞品...",
+      "placeholder": "搜索商品、竞品、页面...",
+      "keyboardShortcut": "⌘K",
+      "keyboardEscape": "esc",
+      "states": {
+        "searching": "搜索中…",
+        "empty": "无结果",
+        "emptyForQuery": "未找到“{query}”的结果"
+      },
+      "sections": {
+        "products": "商品",
+        "competitors": "竞品",
+        "pages": "页面"
+      },
+      "hints": {
+        "open": "打开",
+        "close": "关闭"
+      },
+      "nav": {
+        "overview": "概览",
+        "products": "商品",
+        "competitors": "竞品",
+        "simulations": "模拟",
+        "ucpStructuredData": "UCP 与结构化数据",
+        "optimize": "优化",
+        "settings": "设置"
+      }
+    },
+    "notifications": {
+      "title": "通知",
+      "ariaLabel": "通知",
+      "states": {
+        "empty": {
+          "primary": "暂无通知",
+          "secondary": "当前没有待处理事项。如有需要关注的内容，我们会通知您。"
+        }
+      }
+    },
+    "subscription": {
+      "payAsYouGo": "按量付费",
+      "noPlan": "无套餐",
+      "status": {
+        "trial": "试用中",
+        "pastDue": "逾期",
+        "unpaid": "未支付",
+        "paused": "已暂停"
+      }
+    },
+    "trial": {
+      "badge": "免费试用",
+      "daysLeft": "剩余 {days} 天",
+      "endsOn": "免费至 {date}",
+      "upgradeHint": "结束前添加卡片",
+      "modal": {
+        "endingIn": "试用将于 {date} 结束",
+        "title": "继续使用 {plan}",
+        "description": "继续完整使用模拟、洞察和竞品分析功能。",
+        "progress": "试用进度",
+        "daysUsed": "已使用 {used}/{total} 天",
+        "featuresHeading": "{plan} 包含的全部功能",
+        "pricePerMonth": "/month",
+        "action": {
+          "primary": "前往账单",
+          "secondary": "稍后再说（剩余 {days} 天）"
+        }
+      },
+      "features": [
+        "无限 AI 模拟",
+        "全部 4 种模型视角",
+        "竞品自动识别",
+        "UCP 结构化数据导出",
+        "优先支持"
+      ]
+    },
+    "simulation": {
+      "action": {
+        "primary": "运行模拟",
+        "secondary": "再次运行",
+        "tertiary": "查看控制台"
+      },
+      "title": {
+        "pre": "运行模拟",
+        "running": "模拟运行中",
+        "complete": "模拟完成"
+      },
+      "states": {
+        "live": "实时",
+        "done": "完成",
+        "running": "运行中",
+        "queued": "排队中",
+        "initializing": "正在初始化模拟引擎..."
+      },
+      "pre": {
+        "heading": "AI 购物模拟",
+        "description": "模拟 ChatGPT、Claude 和 Gemini 如何将您的商品与竞品进行比较，并查看它们会选择哪些商品。",
+        "addCompetitors": "添加竞品",
+        "noCompetitors": "该店铺还没有竞品。请添加竞品，以便模型进行比较。"
+      },
+      "running": {
+        "heading": "实时智能扫描",
+        "comparisons": "正在对 {count} 个比较运行模拟"
+      },
+      "complete": {
+        "overallWinRate": "整体胜率",
+        "completedIn": "耗时 {elapsed} 完成",
+        "winRateByModel": "按模型划分的胜率",
+        "stats": {
+          "wins": "胜出",
+          "losses": "落败",
+          "products": "商品"
+        },
+        "results": {
+          "low": "AI 智能体大多数时候都在选择您的竞品。我们来解决这个问题。",
+          "medium": "您具备竞争力，但仍有很大空间提升胜率。",
+          "high": "您领先于大多数竞品。接下来要确保保持优势。"
+        },
+        "topFinding": "{name} 在 {attributes} 上表现落后。{impact} 导致其在 {lossPercentage}% 的模拟中落败。"
+      },
+      "providers": {
+        "gpt4": {
+          "description": "以规格参数为核心的评估"
+        },
+        "claude": {
+          "description": "价值叙事分析"
+        },
+        "gemini": {
+          "description": "价格与功能比"
+        }
+      },
+      "toast": {
+        "failed": {
+          "title": "模拟失败"
+        }
+      }
+    },
+    "overview": {
+      "action": {
+        "primary": "运行模拟"
+      },
+      "tabs": {
+        "products": "热门商品",
+        "competitors": "竞品",
+        "agents": "智能体访问量"
+      },
+      "charts": {
+        "kickers": {
+          "performance": "01 — 表现",
+          "recentActivity": "01.5 — 最近活动"
+        },
+        "winRateByModel": "按模型划分的胜率",
+        "winRateTrend": "胜率趋势",
+        "states": {
+          "noModels": "运行一次模拟以查看各模型表现。",
+          "noTrend": "数据不足，无法显示趋势。",
+          "noTrendHint": "运行一次模拟即可开始。",
+          "noActivity": "暂无活动。运行首次模拟后即可在此查看结果。"
+        },
+        "action": {
+          "primary": "查看所有商品",
+          "secondary": "优化"
+        }
+      }
+    },
+    "agentVisits": {
+      "kicker": "04 — 智能体流量",
+      "title": "按智能体划分的访问量（最近30天）",
+      "description": "仅包含来自 ScriptTag 跟踪器、浏览器可见 AI 和引荐信号的数据。",
+      "total": "总计",
+      "states": {
+        "empty": "尚未记录到 AI 智能体访问。当用户通过 AI 引荐来源访问、使用跟踪器可识别的 user-agent，或启用探测模式后，将显示相关流量。"
+      }
+    },
+    "products": {
+      "action": {
+        "primary": "添加商品"
+      },
+      "table": {
+        "title": "商品目录",
+        "fields": {
+          "product": "商品",
+          "price": "价格",
+          "winRate": "胜率",
+          "quality": "数据质量",
+          "lastScan": "上次扫描"
+        },
+        "states": {
+          "empty": {
+            "primary": "未找到商品",
+            "secondary": "导入商品并运行模拟，即可在此查看胜率。"
+          }
+        }
+      }
+    },
+    "competitors": {
+      "action": {
+        "primary": "添加竞品"
+      },
+      "table": {
+        "title": "竞品品牌",
+        "fields": {
+          "brand": "品牌",
+          "price": "观察到的价格",
+          "measured": "已测得",
+          "unmeasured": "暂无测量数据",
+          "winRate": "胜率",
+          "simulations": "模拟",
+          "lastUpdated": "最后更新"
+        },
+        "productCount": "{count, plural, other {# 个商品}}",
+        "states": {
+          "empty": {
+            "primary": "尚未跟踪竞品",
+            "secondary": "添加竞品以开始分析竞争格局。"
+          }
+        }
+      }
+    },
+    "grid": {
+      "topFinding": "最高优先级发现",
+      "winRateBadge": "{rate}% 胜率"
+    },
+    "optimize": {
+      "statusPill": "{count, plural, other {#条待处理建议}}",
+      "title": "优化中心",
+      "description": "批准 AI 优化后的商品信息，并直接发布到店铺。",
+      "action": {
+        "optimizeStore": "为智能体优化{store}",
+        "preview": "预览",
+        "primary": "批准",
+        "approveAll": "全部批准（{count}）",
+        "reconsider": "重新评估",
+        "viewProduct": "查看商品"
+      },
+      "stats": {
+        "lowWinRate": {
+          "label": "低胜率商品",
+          "detail": "在与竞品的模拟智能体对比中大多落败。"
+        },
+        "publishable": {
+          "label": "可自动发布",
+          "detail": "可通过重写商品信息修复。批准后即可发布。"
+        },
+        "manualFix": {
+          "label": "仅支持手动修复",
+          "detail": "需要手动修改平台设置或数据。"
+        }
+      },
+      "categories": {
+        "seo": "SEO",
+        "content": "内容",
+        "structured_data": "结构化数据",
+        "platform": "平台"
+      },
+      "severity": {
+        "high": "高",
+        "medium": "中",
+        "low": "低"
+      },
+      "listingType": "标题 + 描述",
+      "unknownProduct": "未知商品",
+      "publishedAt": "发布于{date}",
+      "winRateChange": "预计胜率：{before}% → {after}%",
+      "dismissAriaLabel": "忽略建议",
+      "diagnostics": {
+        "kicker": "{index} — 诊断",
+        "title": "低胜率诊断",
+        "description": "这些建议除商品信息文本优化外，还涵盖 SEO、数据质量和平台问题。"
+      },
+      "queue": {
+        "kicker": "{index} — 优化队列",
+        "title": "商品信息建议",
+        "description": "批准后会生成 AI 优化的商品信息，并发布到店铺（Shopify 或 WooCommerce）。"
+      },
+      "tabs": {
+        "pending": "待处理",
+        "published": "已发布",
+        "dismissed": "已忽略"
+      },
+      "states": {
+        "pendingEmpty": {
+          "title": "暂无待处理优化",
+          "description": "来自 Shopify 或 WooCommerce 且模拟胜率低于55%的商品会显示在这里。运行扫描后，批准即可将 AI 优化的标题和描述发布到店铺。"
+        },
+        "publishedEmpty": {
+          "title": "尚无已发布优化",
+          "description": "已批准的变更会记录在这里，并显示预计胜率影响。"
+        },
+        "dismissedEmpty": {
+          "title": "暂无已忽略内容",
+          "description": "被忽略的建议会显示在这里，可随时恢复。"
+        }
+      },
+      "roadmap": {
+        "kicker": "01 — 效果预期",
+        "title": "优化趋势",
+        "description": "智能体胜率通常会在六个月内持续提升：首次发布后24–48小时内出现提升，约在第{trafficDays}天开始出现店铺流量，随后带动整个商品目录持续增长。",
+        "phaseLabel": "{title}阶段",
+        "current": "当前",
+        "liftPoints": "+{points}点",
+        "metrics": {
+          "ceiling": {
+            "label": "预计上限",
+            "detail": "当前为{baseline}% · 预计可提升+{delta}点"
+          },
+          "simulationLift": {
+            "label": "首次模拟提升",
+            "detail": "发布后重新扫描，通常会在48小时内看到胜率变化。"
+          },
+          "trafficSignals": {
+            "label": "首批流量信号",
+            "detail": "智能体访问和归因销售通常会在约一个月后出现。"
+          }
+        },
+        "chart": {
+          "title": "预计胜率",
+          "coverage": "根据您的商品目录定制 · 覆盖率指标 {coverage}%",
+          "today": "今天",
+          "weekZero": "第0周",
+          "week": "第{week}周",
+          "winRate": "%胜率",
+          "listingsOptimized": "已优化商品信息",
+          "surfacesLive": "智能体入口已上线",
+          "signalIntensity": "信号强度"
+        },
+        "phases": {
+          "foundation": {
+            "title": "基础阶段",
+            "window": "第0–14天",
+            "summary": "扫描商品信息、重写表现较弱的商品信息，并发布结构化数据，让智能体能够读取您的内容。模拟胜率通常会最先变化，一般在发布后24–48小时内体现。",
+            "outcomes": [
+              "批准待处理的商品信息重写（标题+描述）",
+              "为关键 SKU 发布 JSON-LD / 可用于 Feed 的属性",
+              "重新扫描确认相较竞品的早期胜率提升"
+            ]
+          },
+          "traction": {
+            "title": "增长阶段",
+            "window": "第2–6周",
+            "summary": "智能体入口会重新抓取您的商品目录（Shopify Catalog、Merchant Center、爬虫）。首批真实访问和引荐信号通常会在第30天左右出现。",
+            "outcomes": [
+              "ChatGPT / Claude / Gemini / Perplexity 重新评估更新后的商品信息",
+              "智能体访问追踪信号和引荐点击开始叠加增长",
+              "客户案例规律：约30天后可测得访问量和销售额提升"
+            ]
+          },
+          "compound": {
+            "title": "复利增长阶段",
+            "window": "第2–6个月",
+            "summary": "覆盖整个商品目录、持续响应竞品变化并针对模型漂移重新优化。随着更多 SKU 保持智能体就绪状态，胜率会逐步接近预估上限。",
+            "outcomes": [
+              "模型更新时，持续扫描可发现漂移问题",
+              "竞品商品信息变化会触发新的对比分析卡",
+              "随着覆盖范围扩大，来自智能体的持续流量和归因收入同步增长"
+            ]
+          }
+        }
+      },
+      "toast": {
+        "publishFailed": "发布失败",
+        "listingUpdated": "商品信息已更新",
+        "listingUpdatedDescription": "更改已推送至已连接的店铺。",
+        "dismissFailed": "忽略失败",
+        "restoreFailed": "无法恢复",
+        "someFailed": "部分更新失败",
+        "allUpdated": "所有待处理商品信息已更新",
+        "allUpdatedDescription": "{count} 个商品已发布到店铺。",
+        "optimizationFailed": "优化失败",
+        "storeOptimized": "店铺已针对 AI 智能体完成优化",
+        "storeOptimizedDescription": "已发布 {published}/{total} 个商品，已重写 {rewritten} 条商品信息{metafields}。"
+      }
+    },
+    "visibility": {
+      "eyebrow": "智能体可见性",
+      "title": "AI 购物智能体实际看到此店铺的位置",
+      "description": "就绪检测基于真实抓取入口运行：robots.txt、渲染后的店铺 HTML、商品标识和 Feed。排名则在 ChatGPT、Perplexity 和 Copilot 查询的 Shopify Global Catalog 中实时测量。",
+      "rankSection": {
+        "eyebrow": "实时货架排名",
+        "title": "根据买家查询为此店铺在 Global Catalog 中排名"
+      },
+      "audit": {
+        "scoreDetail": "基于自动化检测的智能体就绪状态，按 AI 界面实际读取的数据衡量，而非 ecentic 自身数据",
+        "checkStatus": {
+          "pass": "通过",
+          "warn": "警告",
+          "fail": "失败",
+          "manual": "手动"
+        },
+        "feed": {
+          "title": "商品数据源（{count} 个商品{skipped}）",
+          "skipped": "，{count} 个已跳过",
+          "description": "Google Merchant Center 和 Perplexity Merchant Program 共用同一个 URL。"
+        }
+      },
+      "feedUrl": {
+        "action": {
+          "primary": "复制 Feed URL"
+        },
+        "toast": {
+          "title": "数据源 URL 已复制",
+          "description": "请将其粘贴到 Google Merchant Center（定时抓取）和 Perplexity Merchant Program 中。"
+        }
+      },
+      "rankChecker": {
+        "fields": {
+          "query": {
+            "label": "买家搜索词",
+            "placeholder": "例如：防水越野跑鞋",
+            "validation": "请输入买家搜索词"
+          },
+          "country": {
+            "label": "市场"
+          }
+        },
+        "action": {
+          "primary": "查询排名"
+        },
+        "credentialsMissing": {
+          "title": "缺少 Global Catalog 凭证",
+          "description": "设置 SHOPIFY_CATALOG_CLIENT_ID 和 SHOPIFY_CATALOG_CLIENT_SECRET（Dev Dashboard → Catalogs → Get an API key），以衡量此店铺在 AI 购物智能体查询的检索索引中的排名。"
+        },
+        "notFound": "未找到",
+        "resultNotFound": "此店铺未出现在“{query}”的前 {total} 条实时结果中",
+        "resultFound": "在“{query}”的 {total} 条实时结果中",
+        "you": "您的店铺",
+        "toast": {
+          "failed": "排名检查失败"
+        }
+      }
+    },
+    "discovery": {
+      "statusPill": "AI 可见性 — 店铺发现",
+      "title": "AI 发现",
+      "description": "查看 AI 购物智能体针对某个搜索词推荐了哪些店铺、您的店铺为何入选或未入选，以及具体排名。",
+      "targetStore": {
+        "label": "目标店铺",
+        "placeholder": "your-store.example.com",
+        "yourStore": "您的店铺",
+        "description": "我们会在每个 AI 购物智能体的推荐结果中查找这个店铺。"
+      },
+      "queries": {
+        "label": "购物搜索词",
+        "placeholders": [
+          "80 美元以下的蓝色运动鞋",
+          "防水徒步靴",
+          "送给跑步爱好者的礼物"
+        ],
+        "anotherPlaceholder": "另一个购物搜索词",
+        "add": "添加搜索词",
+        "removeAriaLabel": "移除搜索词 {index}",
+        "description": "每个搜索词都会发送给 ChatGPT、Claude、Gemini 和 Perplexity，然后我们对各自推荐的店铺进行排名。"
+      },
+      "action": {
+        "primary": "运行发现任务",
+        "running": "正在询问 AI…"
+      },
+      "hint": {
+        "ready": "向 4 个 AI 模型发送 {count, plural, other {# 个搜索词}}。",
+        "notReady": "请输入目标店铺以及至少一个搜索词后再开始发现。"
+      },
+      "errors": {
+        "targetRequired": "请输入目标店铺域名。",
+        "queryRequired": "请至少输入一个购物搜索词。",
+        "generic": "发生错误。"
+      },
+      "loading": "正在查询 ChatGPT、Claude、Gemini 和 Perplexity…",
+      "empty": {
+        "status": "尚未运行",
+        "description": "在上方添加一个或多个购物搜索词，然后运行发现任务，查看 AI 购物智能体推荐哪些店铺，以及您的店铺与它们相比表现如何。"
+      },
+      "results": {
+        "targetStore": "目标店铺"
+      },
+      "model": {
+        "failed": "失败",
+        "notSuggested": "未被推荐",
+        "ranked": "排名 #{rank}（共 {total} 个）",
+        "whyRanked": "您的店铺为何排在这里",
+        "whyLeftOut": "您的店铺为何未被纳入",
+        "noExplanation": "未返回说明。",
+        "noStores": "未返回店铺。",
+        "unreachable": "无法连接到该模型。"
+      }
+    },
+    "ucp": {
+      "statusPill": "Universal Commerce Protocol",
+      "title": "UCP 与结构化数据",
+      "description": "面向 AI 购物智能体的商家身份。",
+      "protocolKicker": "01 — 协议",
+      "structuredDataTitle": "结构化数据",
+      "manager": {
+        "tabs": {
+          "profile": "商家资料",
+          "products": "商品 JSON-LD",
+          "validator": "高级验证器"
+        },
+        "fields": {
+          "merchantName": {
+            "label": "商家名称",
+            "placeholder": "Acme Store"
+          },
+          "description": {
+            "label": "描述",
+            "placeholder": "适合现代家居的高端音频设备"
+          },
+          "logoUrl": {
+            "label": "Logo 地址",
+            "placeholder": "https://acme.store/logo.png"
+          },
+          "paymentMethods": {
+            "label": "支付方式",
+            "placeholder": "Visa、Mastercard、PayPal、Apple Pay"
+          },
+          "shippingPolicy": {
+            "label": "配送政策",
+            "placeholder": "满 $50 免运费 · 3–5 个工作日送达"
+          },
+          "returnPolicy": {
+            "label": "退货政策",
+            "placeholder": "30 天免费退货"
+          },
+          "contactEmail": {
+            "label": "联系邮箱",
+            "placeholder": "support@acme.store"
+          },
+          "sustainability": {
+            "label": "可持续发展",
+            "placeholder": "碳中和配送 · 使用可回收包装"
+          },
+          "certifications": {
+            "label": "认证",
+            "placeholder": "B-Corp、ISO 9001"
+          }
+        },
+        "action": {
+          "generate": "生成 JSON",
+          "generateWithAi": "使用 AI 生成",
+          "generating": "生成中…",
+          "generatingAll": "生成中...",
+          "save": "保存",
+          "saveProfile": "保存资料",
+          "saving": "保存中…",
+          "copy": "复制",
+          "copied": "已复制",
+          "reset": "重置",
+          "publishShopify": "发布到 Shopify",
+          "pushTo": "推送到 {store}",
+          "pushing": "推送中…",
+          "generateAll": "全部生成",
+          "generateOne": "生成",
+          "regenerate": "重新生成"
+        },
+        "products": {
+          "tab": "商品数据",
+          "validateTab": "验证",
+          "coverage": "已覆盖 {covered}/{total} 个商品",
+          "columnProduct": "商品",
+          "columnStatus": "状态",
+          "statusComplete": "已完成",
+          "statusMissing": "缺失",
+          "empty": "未找到商品。请先连接店铺并同步商品。"
+        },
+        "profile": {
+          "fieldsTitle": "资料字段",
+          "jsonPreview": "JSON 预览",
+          "aiEnhanced": "AI 增强",
+          "jsonPreviewDescription": "实时预览您的 /.well-known/ucp 文档。"
+        },
+        "toast": {
+          "pushProfileFailed": "无法将 UCP 推送到 Shopify",
+          "pushProfileSuccess": "UCP 资料已推送到 Shopify",
+          "pushProfileSuccessDescription": "已向 {store} 的“ucp”命名空间写入 {written} 个 metafield。",
+          "pushProductsFailed": "无法推送商品 metafield",
+          "pushProductsSuccess": "商品结构化数据已推送",
+          "pushProductsSuccessDescription": "{store} 上的 {total} 个商品中有 {pushed} 个已更新。"
+        },
+        "install": {
+          "title": "安装",
+          "description": "在 /.well-known/ucp 提供此 JSON，方便 AI 智能体发现您的商家资料。"
+        }
+      },
+      "advancedValidator": {
+        "kicker": "高级测试",
+        "title": "端点与生命周期测试",
+        "description": "探测资料中声明的所有服务端点，并模拟完整的 AI 智能体结账生命周期：Create → Update → Complete → Cancel。",
+        "fields": {
+          "domain": {
+            "label": "域名",
+            "placeholder": "yourdomain.com"
+          }
+        },
+        "action": {
+          "primary": "运行高级测试",
+          "running": "测试中…"
+        },
+        "hint": "会向商家服务器发送实时 HTTP 请求。探测输入可能会创建测试购物车。",
+        "toast": {
+          "failed": "高级检查失败"
+        },
+        "grades": {
+          "A": {
+            "description": "已适配智能体"
+          },
+          "B": {
+            "description": "基本就绪"
+          },
+          "C": {
+            "description": "需要改进"
+          },
+          "F": {
+            "description": "存在严重问题"
+          }
+        },
+        "transport": {
+          "rest": "REST",
+          "mcp": "MCP",
+          "a2a": "A2A",
+          "embedded": "嵌入式",
+          "streamableHttp": "可流式 HTTP",
+          "sse": "SSE",
+          "unknown": "未知"
+        },
+        "chips": {
+          "noResponse": "无响应",
+          "corsOk": "CORS ✓",
+          "noCors": "无 CORS",
+          "skipped": "已跳过",
+          "pass": "通过",
+          "fail": "失败",
+          "missing": "缺失",
+          "search": "搜索",
+          "checkout": "结账",
+          "failing": "{count} 项失败",
+          "ok": "{total} 项正常",
+          "toolsDeclared": "{count, plural, other {已声明 # 个工具}}",
+          "sseWarning": "SSE — 工具调用需要支持流式传输的客户端",
+          "agentCardFound": "已找到智能体卡片",
+          "noAgentCard": "未找到智能体卡片",
+          "ucpExtension": "UCP 扩展",
+          "noUcpExtension": "无 UCP 扩展"
+        },
+        "headers": {
+          "service": "服务",
+          "endpoint": "端点",
+          "status": "状态",
+          "latency": "延迟",
+          "cors": "CORS",
+          "tool": "工具",
+          "result": "结果",
+          "note": "备注"
+        },
+        "sections": {
+          "endpoints": {
+            "title": "服务端点探测",
+            "description": "对 UCP 资料中声明的每个服务端点发送实时 HEAD 请求。延迟由此服务器测量。"
+          },
+          "mcp": {
+            "title": "MCP 端点",
+            "description": "通过 JSON-RPC initialize + tools/list 探测 MCP 服务端点。显示协议版本、服务器身份以及智能体可调用的全部工具。"
+          },
+          "a2a": {
+            "title": "A2A 端点",
+            "description": "探测 Agent-to-Agent 服务端点。检查可达性、/.well-known/agent-card.json 中的智能体卡片，以及 UCP 扩展头。"
+          },
+          "checkout": {
+            "title": "结账生命周期",
+            "description": "根据 UCP REST 规范模拟购物车 → 结账会话流程：POST /carts → PUT /carts/{id} → POST /checkout-sessions → complete → cancel。对于探测输入，400/422 响应属于预期结果。"
+          }
+        },
+        "emptyEndpoints": "在 UCP 资料中未找到带 URL 的服务端点。请为服务添加",
+        "emptyEndpointsSuffix": "字段以启用实时测试。",
+        "emptyEndpointsField": "端点"
+      }
+    },
+    "ucpComparison": {
+      "statusPill": "Sandbox — 多店铺对比",
+      "title": "UCP 店铺对比",
+      "description": "添加您的店铺和竞品店铺，对每个店铺运行相同的商品目录搜索，并查看在由智能体主导的购物流程中，您的商品信息表现如何。",
+      "sectionKicker": "01 — 对比",
+      "sectionTitle": "并排商品目录搜索",
+      "sourceStore": {
+        "label": "您的店铺",
+        "placeholder": "your-store.example.com",
+        "description": "要与竞品进行评估对比的商家商品目录。"
+      },
+      "buyerRequest": {
+        "label": "买家需求",
+        "placeholder": "例如：“200 ALL 以下的无线鼠标”",
+        "description": "系统会先解析为搜索参数，然后以完全相同的参数对所有店铺执行搜索。"
+      },
+      "competitors": {
+        "label": "竞品店铺",
+        "placeholder": "competitor-{index}.example.com",
+        "add": "添加竞品",
+        "removeAriaLabel": "移除竞品 {index}",
+        "description": "系统会解析每个 /.well-known/ucp 资料，然后使用与您的店铺相同的派生参数运行 search_catalog。"
+      },
+      "action": {
+        "primary": "对比店铺",
+        "running": "对比中…"
+      },
+      "hint": {
+        "ready": "跨 {count} 个店铺执行一次共享的智能体搜索。",
+        "notReady": "添加您的店铺以及至少一个竞品后即可运行对比。"
+      },
+      "searchParams": {
+        "title": "派生搜索参数",
+        "description": "从买家需求中解析一次，并应用到所有店铺。",
+        "showRaw": "显示原始 JSON",
+        "hideRaw": "隐藏原始 JSON"
+      },
+      "results": {
+        "title": "并排结果",
+        "description": "每个店铺针对相同搜索返回的商品，按智能体接收顺序展示。",
+        "yourStore": "您的店铺",
+        "competitor": "竞品",
+        "noProducts": "此搜索未返回商品。",
+        "moreHidden": "+{count} 个结果已返回但未显示。"
+      },
+      "summary": {
+        "title": "对比摘要",
+        "generating": "生成中"
+      },
+      "eventLog": {
+        "title": "事件日志",
+        "live": "实时",
+        "done": "完成",
+        "error": "错误",
+        "events": "{count, plural, other {# 条事件}}",
+        "clear": "清除",
+        "complete": "✓ 对比完成"
+      },
+      "storeStatus": {
+        "idle": "排队中",
+        "discovering": "正在解析资料",
+        "searching": "搜索中",
+        "done": "完成",
+        "error": "错误"
+      }
+    },
+    "ucpPlaygroundDashboard": {
+      "statusPill": "沙盒 — UCP 流程测试",
+      "title": "UCP 试验区",
+      "description": "针对任意兼容 UCP 的商店，测试商品目录搜索、商品查询、购物车和结账操作。",
+      "connect": {
+        "title": "连接 UCP 商店",
+        "description": "输入商店域名，解析其 UCP 配置并启动会话。",
+        "fields": {
+          "storeUrl": {
+            "label": "商店域名",
+            "placeholder": "store.example.com",
+            "validation": "请输入商店域名"
+          }
+        },
+        "action": {
+          "primary": "连接",
+          "connecting": "连接中…"
+        }
+      },
+      "session": {
+        "changeStore": "更换商店",
+        "emptyTitle": "智能体需要执行什么操作？",
+        "emptyDescription": "已连接到 {host}。智能体会执行实时 UCP 调用：搜索商品目录、查看商品详情、创建购物车或发起结账。",
+        "suggestions": [
+          "显示第一个商品的详情",
+          "将第一个商品加入新购物车",
+          "为购物车发起结账"
+        ]
+      },
+      "product": {
+        "noImage": "无图片",
+        "untitled": "未命名商品",
+        "variants": "{count} 个变体"
+      },
+      "tool": {
+        "failed": "失败",
+        "running": "运行中",
+        "done": "完成",
+        "error": "错误",
+        "arguments": "参数",
+        "result": "结果",
+        "rawJson": "原始 JSON"
+      },
+      "cart": {
+        "title": "购物车",
+        "items": "{count, plural, other {# 件商品}}",
+        "states": {
+          "creating": "正在创建购物车…",
+          "loading": "正在加载购物车…",
+          "updating": "正在更新购物车…",
+          "failed": "购物车操作失败"
+        }
+      },
+      "catalog": {
+        "searching": "正在搜索商品目录…",
+        "failed": "商品目录请求失败",
+        "productCount": "{count, plural, other {# 个商品}}"
+      },
+      "composer": {
+        "placeholder": "让智能体在 {host} 购物…",
+        "hint": "按 Enter 发送 · Shift + Enter 换行",
+        "remaining": "此沙盒剩余 {remaining}/{limit} 条免费{limit, plural, other {消息}}。"
+      },
+      "quota": {
+        "title": "已用完全部 {limit} 条免费沙盒消息",
+        "description": "创建账户后，可继续针对自己的商店运行 UCP 流程，不受消息数量限制。",
+        "action": {
+          "primary": "创建免费账户"
+        }
+      },
+      "availability": {
+        "inStock": "有库存",
+        "backorder": "延期发货",
+        "preorder": "预售",
+        "available": "可用",
+        "outOfStock": "缺货",
+        "discontinued": "已停售",
+        "unavailable": "不可用",
+        "quantityLeft": " · 剩余 {count} 件"
+      },
+      "errors": {
+        "generic": "出现错误"
+      }
+    },
+    "settings": {
+      "statusPill": "账户与工作区",
+      "title": "设置",
+      "description": "管理账户、集成和偏好设置。",
+      "tabs": {
+        "account": "账户",
+        "integrations": "集成",
+        "notifications": "通知",
+        "simulation": "模拟",
+        "billing": "账单"
+      },
+      "account": {
+        "language": {
+          "title": "语言",
+          "description": "选择 ecentic 界面语言。"
+        },
+        "profile": {
+          "title": "个人资料",
+          "description": "更新个人资料信息。",
+          "fields": {
+            "name": {
+              "label": "名字",
+              "validation": "必填"
+            },
+            "surname": {
+              "label": "姓氏",
+              "validation": "必填"
+            },
+            "email": {
+              "label": "邮箱",
+              "validation": "邮箱格式无效"
+            },
+            "role": {
+              "label": "角色"
+            }
+          },
+          "roles": [
+            "创始人 / CEO",
+            "市场负责人",
+            "电商经理",
+            "代理机构",
+            "开发者",
+            "其他"
+          ],
+          "action": {
+            "primary": "保存更改",
+            "saving": "保存中…"
+          }
+        },
+        "password": {
+          "title": "修改密码",
+          "description": "请使用强密码，并避免与其他网站重复。",
+          "fields": {
+            "current": {
+              "label": "当前密码",
+              "validation": "必填"
+            },
+            "new": {
+              "label": "新密码",
+              "validation": "至少 8 个字符"
+            },
+            "confirm": {
+              "label": "确认新密码",
+              "validation": "至少 8 个字符"
+            }
+          },
+          "action": {
+            "primary": "更新密码",
+            "updating": "更新中…"
+          },
+          "toast": {
+            "mismatch": "两次输入的密码不一致"
+          }
+        },
+        "session": {
+          "title": "会话",
+          "description": "退出当前设备。重新访问仪表板时需要再次登录。",
+          "action": {
+            "primary": "退出登录",
+            "signingOut": "正在退出登录..."
+          }
+        },
+        "danger": {
+          "title": "危险操作区",
+          "description": "永久删除账户及所有关联数据。此操作无法撤销。",
+          "prompt": "删除此账户及其所有数据。",
+          "action": {
+            "primary": "删除账户"
+          }
+        },
+        "toast": {
+          "error": "错误",
+          "profileSaved": "个人资料已保存",
+          "passwordUpdated": "密码已更新",
+          "signOutFailed": "无法退出登录"
+        }
+      },
+      "notifications": {
+        "title": "邮件通知",
+        "items": {
+          "winRateDrop": {
+            "label": "胜率下降",
+            "description": "任意商品下降超过 5% 时提醒"
+          },
+          "simulationComplete": {
+            "label": "模拟完成",
+            "description": "模拟批次完成时"
+          },
+          "optimizationReady": {
+            "label": "优化已就绪",
+            "description": "有新的优化建议可用"
+          },
+          "autoPub": {
+            "label": "已自动发布",
+            "description": "自动优化发布变更时"
+          },
+          "modelDrift": {
+            "label": "检测到模型漂移",
+            "description": "AI 模型更新行为时"
+          },
+          "competitorUpdate": {
+            "label": "竞品更新",
+            "description": "跟踪的竞品商品信息发生变化时"
+          },
+          "newCompetitor": {
+            "label": "新竞品",
+            "description": "检测到新的竞品时"
+          },
+          "weeklyDigest": {
+            "label": "每周摘要",
+            "description": "本周表现汇总"
+          }
+        }
+      },
+      "simulation": {
+        "models": {
+          "title": "AI 模型",
+          "dominateBadge": "Dominate+"
+        },
+        "frequency": {
+          "title": "模拟频率",
+          "options": [
+            "仅手动",
+            "每日",
+            "每周"
+          ]
+        },
+        "persona": {
+          "title": "购买画像",
+          "options": [
+            "注重预算的消费者",
+            "高端消费者",
+            "技术研究型用户",
+            "礼品购买",
+            "自定义..."
+          ]
+        }
+      },
+      "integrations": {
+        "title": "已连接的商店",
+        "empty": "尚未连接任何商店。",
+        "connected": "已连接",
+        "action": {
+          "sync": "立即同步",
+          "syncing": "同步中…",
+          "connectAnother": "连接其他商店"
+        },
+        "toast": {
+          "syncing": "正在同步商品…",
+          "synced": "商品已同步",
+          "reconnectRequired": "需要重新连接",
+          "syncFailed": "同步失败",
+          "reconnectAction": "重新连接",
+          "genericError": "出现错误"
+        },
+        "google": {
+          "comingSoon": "即将推出",
+          "notConnected": "未连接",
+          "active": "已启用 · 已上线 {count, number} 项",
+          "linked": "已关联",
+          "setupInProgress": "正在设置",
+          "manage": "管理 →"
+        }
+      },
+      "billing": {
+        "currentPlan": "当前方案",
+        "invoiceHistory": "发票历史",
+        "noInvoices": "暂无发票。",
+        "download": "下载",
+        "loading": "加载中…",
+        "monthly": "按月",
+        "perMonth": "/mo",
+        "billingCycle": "账单周期",
+        "endsOn": "结束于",
+        "nextBillingDate": "下次账单日期",
+        "cancelNotice": "当前方案将在本周期结束后取消。",
+        "manageBilling": "管理账单",
+        "upgradeTo": "升级到 {plan}",
+        "noActivePlan": "无有效方案",
+        "payAsYouGo": {
+          "title": "按量付费",
+          "description": "免费开始 · 仅在 AI 智能体带来销售时付费。",
+          "active": "已启用",
+          "fee": "费用",
+          "feeDetail": "AI 归因订单收取 {rate}%",
+          "monthlyCap": "月度上限",
+          "switchHint": "想要更稳定的账单？可切换为固定月费方案（无绩效费用）："
+        },
+        "choosePlan": {
+          "title": "选择付费方式",
+          "description": "可免费开始按量付费，或选择无绩效费用的固定月费订阅。",
+          "startPayg": "开始按量付费（免费，无需绑卡）"
+        },
+        "performanceFee": {
+          "title": "绩效费用",
+          "description": "AI 归因订单收取 {rate}% · 每月上限 {cap}。可免费开始。只有当智能体因我们的优化而完成购买时才会收费，其他销售不收费。",
+          "actionNeeded": "需要操作",
+          "active": "已启用",
+          "off": "关闭",
+          "due": "待支付 {amount}",
+          "dueHint": "请添加支付方式以结清本周期费用。",
+          "addPayment": "添加支付方式",
+          "ofCap": "本周期上限：{cap}",
+          "billedSoFar": "目前已计费 {amount}",
+          "resets": "将于 {date} 重置",
+          "attributedOrders": "归因订单",
+          "order": "订单 {id}"
+        },
+        "plans": {
+          "compete": "Compete",
+          "scale": "Scale",
+          "dominate": "Dominate",
+          "competeLabel": "Compete 方案",
+          "scaleLabel": "Scale 方案",
+          "dominateLabel": "Dominate 方案"
+        },
+        "status": {
+          "active": "已启用",
+          "trialing": "试用中",
+          "pastDue": "逾期未付",
+          "unpaid": "未支付",
+          "canceled": "已取消",
+          "incomplete": "未完成",
+          "expired": "已过期",
+          "paused": "已暂停"
+        },
+        "toast": {
+          "portalFailed": "无法打开账单门户",
+          "paygFailed": "无法启动按量计费",
+          "paymentSetupFailed": "无法打开支付设置",
+          "checkoutFailed": "无法启动结账"
+        }
+      },
+      "team": {
+        "title": "团队成员",
+        "inviteMember": "邀请成员",
+        "inviteByEmail": "通过邮箱邀请",
+        "sendInvite": "发送邀请",
+        "remove": "移除",
+        "roles": {
+          "owner": "所有者",
+          "admin": "管理员",
+          "editor": "编辑者",
+          "viewer": "查看者"
+        },
+        "fields": {
+          "email": {
+            "label": "邮箱地址",
+            "placeholder": "colleague@company.com",
+            "validation": "邮箱格式无效"
+          },
+          "role": {
+            "label": "角色"
+          }
+        },
+        "toast": {
+          "inviteSent": {
+            "title": "邀请已发送",
+            "description": "团队成员邀请已发送。"
+          }
+        }
+      }
+    },
+    "reports": {
+      "dataStatus": {
+        "asOf": "数据截至{time}",
+        "noScans": "暂无已完成的扫描"
+      },
+      "title": "报告与导出",
+      "description": "下载智能体表现报告，或设置自动报告的生成时间。",
+      "shareable": {
+        "title": "可分享的胜率报告",
+        "description": "为胜率报告生成公开 URL，方便分享到 Twitter、LinkedIn 或团队内部。",
+        "action": {
+          "primary": "生成可分享报告"
+        },
+        "runScanFirst": "请先运行扫描"
+      },
+      "library": {
+        "kicker": "01 — 报告库",
+        "title": "可用报告"
+      },
+      "automation": {
+        "kicker": "02 — 自动化",
+        "title": "定时报表",
+        "comingSoon": "定时报表和每周摘要即将上线。"
+      },
+      "items": {
+        "winRateSummary": {
+          "title": "胜率摘要",
+          "description": "所有商品和模型的整体表现"
+        },
+        "productPerformance": {
+          "title": "商品表现",
+          "description": "按商品查看详细报告，包含趋势和竞品对比"
+        },
+        "competitorAnalysis": {
+          "title": "竞品分析",
+          "description": "完整竞品格局分析，包含所有已跟踪品牌的对战卡"
+        },
+        "optimizationImpact": {
+          "title": "优化效果",
+          "description": "所有已发布优化的前后对比分析"
+        }
+      },
+      "tiers": {
+        "all": "所有套餐",
+        "compete": "Compete+",
+        "dominate": "Dominate+"
+      },
+      "action": {
+        "downloadCsv": "CSV"
+      }
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "playgroundPage": {
+    "guide": {
+      "title": "商品発見から決済まで",
+      "description": "ショッピングセッションの裏側で行われる呼び出しを確認できます。",
+      "discovery": {
+        "title": "ストアを見つける",
+        "description": "ストアのUCPプロファイルを読み取り、ショッピングエンドポイントを選択します。PlaygroundはMCPを優先し、利用できない場合はRESTにフォールバックします。"
+      },
+      "action": {
+        "primary": "Playgroundを開く",
+        "secondary": "UCPプロファイルを確認"
+      }
+    },
+    "session": {
+      "title": "ライブショッピングセッション",
+      "description": "エージェントが買い物を進める間のツール呼び出しとレスポンスを確認できます。"
+    },
+    "faq": {
+      "title": "接続前の確認事項"
+    }
+  }
+}

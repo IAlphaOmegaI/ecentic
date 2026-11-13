@@ -1,0 +1,668 @@
+{
+  "onboarding": {
+    "layout": {
+      "steps": {
+        "catalog": "カタログ",
+        "products": "商品を選択",
+        "competitors": "競合商品",
+        "scan": "スキャンを実行"
+      },
+      "stepProgress": "ステップ {current} / {total}",
+      "sidebar": {
+        "connect": {
+          "headline": {
+            "line1": "自社カタログを",
+            "line2": "接続。"
+          },
+          "points": [
+            "ストアURLを貼り付けるだけで、商品を即座に同期します",
+            "Shopify、WooCommerce、カスタムフィードに対応",
+            "カタログは常に最新の状態に保たれます"
+          ]
+        },
+        "shopify": {
+          "headline": {
+            "line1": "Shopify",
+            "line2": "OAuth。"
+          },
+          "points": [
+            "ワンクリックで認証。パスワードが表示されることはありません",
+            "商品カタログへの読み取り専用アクセス",
+            "商品は自動で同期されます"
+          ]
+        },
+        "woocommerce": {
+          "headline": {
+            "line1": "WooCommerce",
+            "line2": "APIキー。"
+          },
+          "points": [
+            "WooCommerceでREST APIキーを生成します（ecenticから商品情報の更新を公開する場合は read/write、同期のみの場合は read-only）",
+            "3項目を貼り付けるだけで、残りは自動で処理します",
+            "認証情報は暗号化され、安全に保存されます"
+          ]
+        },
+        "feed": {
+          "headline": {
+            "line1": "商品",
+            "line2": "フィード。"
+          },
+          "points": [
+            "Google Shopping XMLおよびJSONフィードに対応",
+            "形式を自動検出し、すべての商品を解析します",
+            "いつでも再同期して変更を反映できます"
+          ]
+        },
+        "products": {
+          "headline": {
+            "line1": "ベスト商品を",
+            "line2": "選びましょう。"
+          },
+          "points": [
+            "AIショッピングエージェントのシミュレーションに使用する商品を選択します",
+            "主力商品や競争の激しいSKUに集中できます",
+            "商品はいつでも追加できます"
+          ]
+        },
+        "competitors": {
+          "headline": {
+            "line1": "競合を",
+            "line2": "把握。"
+          },
+          "points": [
+            "競合商品を追加すると、直接比較でベンチマークできます",
+            "エージェントがどの競合商品を選んだのか、その理由まで正確に確認できます",
+            "差を把握し、より迅速に改善できます"
+          ]
+        },
+        "scan": {
+          "headline": {
+            "line1": "どの商品が",
+            "line2": "選ばれているか確認。"
+          },
+          "points": [
+            "ChatGPT、Claude、Gemini、Perplexityが実際の購買クエリをシミュレーション",
+            "すべての商品を競合商品と比較してスコア化します",
+            "このページを離れる前に、修正すべき点を正確に把握できます"
+          ]
+        }
+      }
+    },
+    "connect": {
+      "page": {
+        "title": "ストアを接続",
+        "description": "2分でAIショッピングエージェントに選ばれ始めましょう。"
+      },
+      "footer": {
+        "settingsHint": "追加のストアは後で設定から接続できます。",
+        "backToPlatforms": "プラットフォーム一覧へ戻る"
+      },
+      "action": {
+        "skip": "今はスキップ"
+      },
+      "badges": {
+        "recommended": "おすすめ",
+        "linkNow": "今すぐ接続",
+        "comingSoon": "近日対応"
+      },
+      "platforms": [
+        {
+          "id": "shopify",
+          "name": "Shopify",
+          "description": "OAuthで接続"
+        },
+        {
+          "id": "woocommerce",
+          "name": "WooCommerce",
+          "description": "APIキー接続"
+        },
+        {
+          "id": "bigcommerce",
+          "name": "BigCommerce",
+          "description": "OAuth — 完全同期"
+        },
+        {
+          "id": "amazon",
+          "name": "Amazon Seller",
+          "description": "SP-API OAuth"
+        },
+        {
+          "id": "feed",
+          "name": "カスタムフィード",
+          "description": "XMLまたはJSONフィードURL"
+        },
+        {
+          "id": "csv",
+          "name": "CSVアップロード",
+          "description": "ドラッグ＆ドロップまたはファイルを選択"
+        }
+      ],
+      "shopify": {
+        "title": "Shopifyを接続",
+        "description": "OAuth接続です。当社がShopifyのパスワードを見ることはありません。",
+        "howItWorks": "仕組みを見る",
+        "steps": [
+          "下にストアのドメインを入力してください。顧客に表示されるURL（yourbrand.com）または yourstore.myshopify.com を使用できます。",
+          "Shopifyにリダイレクトされ、商品カタログへの読み取り専用アクセスを承認します。リクエストするのは商品関連の権限のみで、注文や顧客情報にはアクセスしません。",
+          "承認後、Shopifyはecenticにストアの商品データへの読み取りおよび書き込みアクセスを許可します。"
+        ],
+        "fields": {
+          "shop": {
+            "label": "ショップドメイン",
+            "placeholder": "yourbrand.com",
+            "validation": "ショップドメインは必須です",
+            "description": {
+              "beforeExample": "公開ストアURLまたはShopify管理ドメインを入力してください。例:",
+              "exampleAdmin": "yourbrand.com",
+              "middle": ",",
+              "exampleHandle": "acmestore",
+              "orFull": "または",
+              "exampleDomain": "acmestore.myshopify.com"
+            }
+          }
+        },
+        "action": {
+          "primary": "Shopifyに接続",
+          "connecting": "接続中..."
+        },
+        "errors": {
+          "generic": "Shopifyストアへの接続を完了できませんでした。もう一度お試しください。",
+          "missing_parameters": "Shopifyからの応答に必要なパラメータが含まれていませんでした。接続をやり直してください。",
+          "invalid_state": "接続の試行が期限切れになったか、すでに使用されています。もう一度開始してください。",
+          "invalid_hmac": "Shopifyからの応答を検証できませんでした。接続をやり直してください。",
+          "already_connected": "このストアはすでに別のécenticアカウントに接続されています。そのアカウントでサインインするか、移行についてサポートにお問い合わせください。",
+          "invalidShop": "そのドメインにShopifyストアが見つかりませんでした。顧客に表示されるURL（yourbrand.com）または yourstore.myshopify.com をお試しください。"
+        },
+        "toast": {
+          "invalidDomain": {
+            "title": "そのShopifyストアが見つかりませんでした",
+            "description": "顧客に表示されるURL（yourbrand.com）または yourstore.myshopify.com をお試しください。"
+          },
+          "connectionFailed": "接続に失敗しました",
+          "connected": {
+            "title": "ストアを接続しました",
+            "description": "カタログの同期が完了し、利用可能です。"
+          }
+        }
+      },
+      "woocommerce": {
+        "title": "WooCommerceを接続",
+        "description": "ecenticプラグインでワンクリック接続、またはAPIキーで手動接続できます。",
+        "oneClick": {
+          "title": "ワンクリック接続",
+          "recommended": "（推奨）",
+          "description": "ストアURLを入力し、WordPress管理画面から接続を承認してください。APIキーをコピーする必要はありません。事前に無料の écentic for WooCommerce プラグインをインストールして有効化しておく必要があります。未導入の場合は、追加方法をご案内します。これによりホスト型UCPも有効になり、AIショッピングエージェントがストアで取引できるようになります。",
+          "placeholder": "https://yourstore.com",
+          "action": {
+            "connect": "プラグインで接続",
+            "tryAgain": "再試行"
+          },
+          "installRequired": {
+            "title": "{store} にécenticプラグインが見つかりませんでした。",
+            "thatStore": "このストア",
+            "steps": [
+              "WordPress管理画面から écentic for WooCommerce をインストールして有効化してください。",
+              "ここに戻って再度「接続」を押すか、wp-admin の WooCommerce → UCP (AI Agents) を開いて「Connect to ecentic.ai」をクリックしてください。"
+            ],
+            "openPluginScreen": "プラグイン画面を開く"
+          },
+          "errors": {
+            "missing_store_url": "接続を開始するにはストアURLを入力してください。",
+            "bad_store_url": "有効な公開ストアURLではないようです。確認してもう一度お試しください。",
+            "invalid_state": "接続の試行が期限切れになったか、すでに使用されています。もう一度開始してください。",
+            "token_exchange": "ストア側で接続は承認されましたが、キー交換に失敗しました。プラグインの設定ページから再接続してください。"
+          }
+        },
+        "manual": {
+          "title": "または手動接続：APIキーの確認方法",
+          "steps": [
+            "WordPress管理画面にログインし、WooCommerce → Settings → Advanced → REST API に移動してください。",
+            "「Add key」をクリックします。説明には「ecentic」などを入力し、ecenticから商品情報の変更を反映したい場合は権限を Read/Write、同期のみの場合は Read に設定して、「Generate」をクリックしてください。",
+            "Consumer key（ck_で始まる）と Consumer secret（cs_で始まる）をコピーしてください。secretは後から再表示できないため、すぐにここへ貼り付けてください。"
+          ]
+        },
+        "fields": {
+          "domain": {
+            "label": "ストアURL",
+            "placeholder": "https://yourstore.com",
+            "validation": "ストアURLは必須です",
+            "description": {
+              "before": "WooCommerceストアの公開URLを入力してください。例:",
+              "example": "https://acmestore.com",
+              "after": "。WordPress管理画面のURLではなく、ホームページURLを指定してください。"
+            }
+          },
+          "consumerKey": {
+            "label": "Consumer Key",
+            "placeholder": "ck_...",
+            "validation": "Consumer keyは必須です",
+            "description": "WooCommerceが生成したキーです。必ず ck_ に続く長い英数字で始まります。APIリクエストの認証に使用されます（カタログ同期には読み取り権限が必要で、ダッシュボードから最適化済み商品情報を公開するにはキーに read/write 権限が必要です）。"
+          },
+          "consumerSecret": {
+            "label": "Consumer Secret",
+            "placeholder": "cs_...",
+            "validation": "Consumer secretは必須です",
+            "description": "キーと対になるsecretで、cs_で始まります。WooCommerceではキー生成時に一度しか表示されないため、画面を離れる前にコピーしてください。"
+          }
+        },
+        "action": {
+          "primary": "WooCommerceに接続",
+          "connecting": "接続中..."
+        },
+        "toast": {
+          "connectionFailed": "接続に失敗しました",
+          "connected": {
+            "title": "ストアを接続しました",
+            "description": "カタログの同期が完了し、利用可能です。"
+          }
+        }
+      },
+      "feed": {
+        "title": "商品フィードを接続",
+        "description": "フィードは自動で取得・解析されます。",
+        "formats": {
+          "title": "対応フォーマット",
+          "googleShopping": {
+            "label": "Google Shopping XML",
+            "description": "は最も一般的な形式です。Google Merchant Center を使用している場合は、すでに利用可能です。RSS/Atomフィード形式で、各 <item> に g:title、g:price、g:image_link などが含まれます。"
+          },
+          "json": {
+            "label": "JSON",
+            "description": "はシンプルな商品オブジェクト配列です。title、price、image、url フィールドを探します。products または items キー配下にネストされていても問題ありません。"
+          }
+        },
+        "fields": {
+          "feedUrl": {
+            "label": "フィードURL",
+            "placeholder": "https://yourstore.com/products.xml",
+            "validation": "有効なURLを入力してください",
+            "description": {
+              "before": "商品フィードを配信している公開URLを入力してください。例:",
+              "example": "https://yourstore.com/feed/products.xml",
+              "after": "URLはインターネットからアクセス可能である必要があります。localhost やプライベートネットワークURLは利用できません。コンテンツからXMLかJSONかを自動判別します。"
+            }
+          }
+        },
+        "action": {
+          "primary": "フィードをインポート",
+          "importing": "インポート中..."
+        },
+        "toast": {
+          "connectionFailed": "接続に失敗しました",
+          "connected": {
+            "title": "フィードを接続しました",
+            "description": "商品をインポートしています。しばらくお待ちください。"
+          }
+        }
+      },
+      "csv": {
+        "title": "CSVをインポート",
+        "description": "任意のプラットフォームからエクスポートしたスプレッドシートをアップロードできます。",
+        "columns": {
+          "title": "必要な列",
+          "required": "title または name — 必須",
+          "optional": "description、price、sku、image、url、id — 任意",
+          "hint": "列名の大文字・小文字は区別されません。追加列は無視されます。"
+        },
+        "fields": {
+          "file": {
+            "label": "CSVファイルをアップロード",
+            "description": "商品をインポートするにはCSVファイルをアップロードしてください。"
+          }
+        },
+        "action": {
+          "primary": "CSVをインポート",
+          "importing": "インポート中..."
+        },
+        "toast": {
+          "noFile": {
+            "title": "ファイルが選択されていません",
+            "description": "先にCSVファイルをアップロードしてください。"
+          },
+          "noProducts": {
+            "title": "商品が見つかりません",
+            "description": "CSVに title または name 列を含むヘッダー行があることを確認してください。"
+          },
+          "importFailed": "インポートに失敗しました",
+          "imported": {
+            "title": "{count, plural, other {#件の商品をインポートしました}}",
+            "description": "カタログの準備が完了しました。"
+          }
+        }
+      },
+      "entry": {
+        "running": {
+          "title": "{host} をインポート中",
+          "description": "ストアの公開カタログから商品を取得しています。ストアへのログインは不要です。"
+        },
+        "steps": {
+          "reached": "{host} に接続しました",
+          "detected": "{platform} ストアを検出しました",
+          "products": "公開カタログ内の商品数: {count, plural, other {#件}}",
+          "importing": "カタログをインポートしています…",
+          "slow": "大規模なカタログでは最大1分ほどかかる場合があります。"
+        },
+        "busy": "このインポートは別のタブですでに実行中です…",
+        "failed": {
+          "title": "現在 {host} をインポートできませんでした",
+          "description": "ストアからの応答に時間がかかりすぎました。もう一度試すか、下の別の方法で接続してください。"
+        },
+        "claimed": {
+          "title": "{host} はすでに別のecenticアカウントに接続されています",
+          "description": "自社ストアの場合は、確認済みアクセスで接続してこのアカウントに紐付けてください。"
+        },
+        "locked": {
+          "shopify": {
+            "title": "{host} はパスワード保護されています",
+            "description": "カタログはまだ公開されていません。インポートするにはShopifyアプリをインストールしてください。"
+          },
+          "woocommerce": {
+            "title": "{host} の商品APIは非公開です",
+            "description": "カタログをインポートするには、ecenticプラグインまたはREST APIキーで接続してください。"
+          }
+        },
+        "unsupported": {
+          "title": "{host} にShopifyまたはWooCommerceのカタログが見つかりませんでした",
+          "description": "どのストアでも、下の方法から商品フィードまたはCSVで接続できます。"
+        },
+        "action": {
+          "primary": "再試行",
+          "secondary": "別の方法を選択"
+        },
+        "verified": {
+          "shopify": "Shopifyアプリをインストール",
+          "woocommerce": "プラグインで接続"
+        }
+      }
+    },
+    "products": {
+      "empty": {
+        "title": "商品が見つかりません",
+        "description": "開始するにはストアを接続して商品を同期してください。",
+        "action": "ストアを接続して商品を同期"
+      },
+      "page": {
+        "title": "スキャンする商品を選択",
+        "freeLimit": "無料: 10商品",
+        "description": "AIショッピングエージェントとのテスト対象にする商品を選択してください。まずは売れ筋商品から始めることをおすすめします。"
+      },
+      "selection": "{limit}件中 {selected}件の商品を選択済み",
+      "table": {
+        "headers": [
+          "商品",
+          "価格",
+          "通貨",
+          "ステータス",
+          "品質"
+        ]
+      },
+      "states": {
+        "active": "有効",
+        "draft": "下書き"
+      },
+      "quality": {
+        "good": "良好",
+        "partial": "一部不足",
+        "poor": "不十分"
+      },
+      "action": {
+        "back": "戻る",
+        "next": "次へ: 競合商品を追加"
+      }
+    },
+    "competitors": {
+      "page": {
+        "title": "競合する商品はどれですか？",
+        "description": "AIエージェントシミュレーションで、これらの競合商品と自社商品を直接比較します。"
+      },
+      "tabs": {
+        "offers": "リアルタイムオファー",
+        "auto": "自動検出",
+        "url": "URLを貼り付け",
+        "search": "ブランドを検索",
+        "merchant": "Google"
+      },
+      "offers": {
+        "title": "同じ商品を販売している他の販売者",
+        "description": "各商品を検索し、現在その商品を扱っている販売者と実際の価格を記録します。",
+        "action": "掲載中のオファーを検索",
+        "measuring": "計測中",
+        "complete": "完了",
+        "checking": "販売者を確認中",
+        "runAgain": "再実行",
+        "finishedIn": "所要時間: {elapsed}",
+        "sellerLog": "{seller} — {price}",
+        "exclusiveLog": "{title}を扱う他の販売者はありません",
+        "categoryLog": "{title}: 一致する販売者なし — Shopping のカテゴリ競合 {count, plural, other {#件}}",
+        "budgetLog": "現在、オファー検索の上限に達しています",
+        "measured": "{count, plural, other {#件の競合オファーを計測}}",
+        "errors": {
+          "failed": "オファー検索に失敗しました",
+          "noneFound": "これらの商品に対する競合オファーは見つかりませんでした"
+        },
+        "toast": {
+          "failed": "オファーを検索できませんでした",
+          "found": {
+            "title": "競合オファーを追加しました",
+            "description": "{count, plural, other {実際の価格が確認された競合オファー #件を追加しました}}"
+          },
+          "noneFound": {
+            "title": "競合オファーなし",
+            "description": "これらの商品を販売している他社は見つからず、カテゴリ内の類似競合も確認できませんでした。ブランドまたは URL から競合商品を追加するには、別のタブをお試しください。"
+          }
+        }
+      },
+      "merchant": {
+        "label": "Googleが計測した競合商品",
+        "description": "Google Shopping の検索結果で自社商品と並んで表示された競合です。推定ではなく、実際に観測されたデータに基づいています。",
+        "loading": "Google Shopping レポートを読み込み中…",
+        "categoryPlaceholder": "カテゴリを選択",
+        "country": "市場: {country}",
+        "measured": "{count, plural, other {#件の競合を計測済み}}",
+        "overlap": "共通の結果ページ {value}件",
+        "higher": "{value}回、自社より上位にランクイン",
+        "traffic": {
+          "organic": "無料掲載",
+          "ads": "Shopping 広告"
+        },
+        "reason": {
+          "unsupported": "Google Shopping データは現在 Shopify ストアで利用できます。他のプラットフォームにも近日対応予定です。",
+          "unlinked": "Google Merchant Center アカウントを接続すると、Google がストアの比較対象として計測した競合商品を確認できます。",
+          "unknownCategory": "カタログの販売カテゴリを判別できませんでした。上でカテゴリを選択すると、そのカテゴリの Google ランキングを取得します。",
+          "noData": "このストアには、Google Shopping のインプレッションデータがまだ十分にありません。商品配信が数週間続くと表示されます。それまでは他のタブを利用してください。"
+        },
+        "validation": {
+          "summary": "Google では、リスト内の競合商品 {total}件中 {confirmed}件が確認されています。残りは、このカテゴリで自社商品と一緒に表示されていません。"
+        },
+        "action": {
+          "connect": "Google Merchant Center を接続",
+          "add": "{count, plural, =0 {選択項目を追加} other {#件の競合商品を追加}}",
+          "adding": "追加中…",
+          "validate": "リストを確認",
+          "validating": "確認中…"
+        },
+        "toast": {
+          "failed": "Google の競合レポートを読み込めませんでした",
+          "added": {
+            "title": "競合商品を追加しました",
+            "description": "計測済みの競合商品 {count}件をリストに追加しました。"
+          }
+        }
+      },
+      "action": {
+        "back": "戻る",
+        "skip": "スキップ — 自動マッチ",
+        "nextReview": "次へ: 確認"
+      },
+      "autoDetect": {
+        "title": "競合他社を自動検出",
+        "description": "商品を分析し、AIを使って市場で最も関連性の高い競合商品を見つけます。",
+        "action": "競合他社を自動検出",
+        "scanning": "ライブインテリジェンススキャン",
+        "complete": "スキャン完了",
+        "initializing": "インテリジェンススキャンを初期化中...",
+        "analyzing": "市場シグナルを分析中",
+        "finishedIn": "完了時間: {elapsed}",
+        "runAgain": "再実行",
+        "foundLog": "検出 · {title}",
+        "identified": "{count, plural, other {#件の競合相手を特定しました}}",
+        "errors": {
+          "failed": "検出に失敗しました。もう一度お試しください。",
+          "noneFound": "新しい競合商品が見つかりませんでした。もう一度お試しください。"
+        },
+        "toast": {
+          "failed": "検出に失敗しました",
+          "noneFound": {
+            "title": "競合商品が見つかりません",
+            "description": "新しい競合商品を特定できませんでした。もう一度お試しください。"
+          },
+          "found": {
+            "title": "競合商品が見つかりました",
+            "description": "{count, plural, other {#件の競合商品が見つかりました。}}"
+          }
+        }
+      },
+      "search": {
+        "label": "ブランドまたはカテゴリで検索",
+        "placeholder": "例: SoundMax、$150以下のワイヤレスイヤホン...",
+        "clearAria": "検索をクリア",
+        "action": {
+          "search": "検索",
+          "searching": "検索中..."
+        },
+        "productHint": "または自社商品を検索",
+        "empty": "競合商品を見つけるには、上でブランドまたは商品を検索してください",
+        "loading": "競争状況を検索中...",
+        "toast": {
+          "failed": "検索に失敗しました",
+          "found": {
+            "title": "商品が見つかりました",
+            "description": "{count}件の競合商品が見つかりました。"
+          }
+        }
+      },
+      "url": {
+        "label": "競合商品のURLを貼り付け（各行に1つ）",
+        "placeholder": "https://amazon.com/dp/B0XXXXX\nhttps://competitorstore.com/products/example\nhttps://amazon.com/dp/B0YYYYY",
+        "placeholderMore": "さらにURLを貼り付けて抽出...",
+        "action": {
+          "extract": "商品データを抽出",
+          "extracting": "商品データを抽出中...",
+          "extractShort": "抽出",
+          "extractingShort": "抽出中..."
+        },
+        "toast": {
+          "failed": "抽出に失敗しました",
+          "success": {
+            "title": "商品を抽出しました",
+            "description": "URLから{count}件の商品を抽出しました。"
+          }
+        }
+      },
+      "results": {
+        "countCompetitorFound": "{count, plural, other {#件の競合商品が見つかりました}}",
+        "countProductExtracted": "{count, plural, other {#件の商品を抽出しました}}",
+        "clear": "クリア",
+        "measured": "計測済み",
+        "verified": "価格確認済み"
+      },
+      "review": {
+        "title": "競合商品を確認",
+        "description": "AIエージェントのシミュレーションに含める競合商品を選択してください。",
+        "summary": "{brands}ブランド・{total}件の競合商品 — {selected}件を選択中",
+        "table": {
+          "headers": [
+            "競合",
+            "価格",
+            "通貨",
+            "ブランド"
+          ]
+        },
+        "action": {
+          "back": "戻る",
+          "next": "次へ：スキャンを実行"
+        }
+      }
+    },
+    "scan": {
+      "page": {
+        "title": "どの商品が選ばれているかを確認。",
+        "description": "ChatGPT、Claude、Gemini が、自社商品と競合商品を対象に実際の購買クエリをシミュレーションします。"
+      },
+      "models": [
+        {
+          "model": "ChatGPT",
+          "description": "仕様重視"
+        },
+        {
+          "model": "Claude",
+          "description": "コンテキスト分析"
+        },
+        {
+          "model": "Gemini",
+          "description": "価格と品質のバランス"
+        }
+      ],
+      "stats": {
+        "products": "商品",
+        "competitorsMatched": "一致した競合商品",
+        "simulations": "実行予定のシミュレーション",
+        "estimatedTime": "推定時間"
+      },
+      "pre": {
+        "action": {
+          "back": "戻る",
+          "run": "シミュレーションを実行"
+        }
+      },
+      "running": {
+        "title": "シミュレーションを実行中です。",
+        "description": "ChatGPT、Claude、Gemini が現在、自社商品と競合商品を比較しています。",
+        "liveScan": "ライブインテリジェンススキャン",
+        "initializing": "シミュレーションエンジンを初期化しています...",
+        "progress": "{count}件の比較でシミュレーションを実行中",
+        "status": {
+          "done": "完了",
+          "running": "実行中",
+          "queued": "待機中"
+        }
+      },
+      "complete": {
+        "title": "スキャン完了。",
+        "messages": {
+          "low": "AIエージェントは多くの場合、競合商品を選択しています。改善点を確認しましょう。",
+          "medium": "競争力はありますが、さらに選ばれる余地があります。どこを改善できるか確認しましょう。",
+          "high": "多くの競合商品を上回っています。この優位性を維持しましょう。"
+        },
+        "topFinding": "主な発見",
+        "topFindingBody": "{name}は{attributes}で負けています。{impact} この問題により、シミュレーションの{percentage}%で敗北しています。",
+        "stats": {
+          "winRate": "勝率",
+          "products": "商品",
+          "wins": "勝利",
+          "losses": "敗北"
+        },
+        "action": {
+          "back": "スキャンに戻る",
+          "share": "共有",
+          "startFree": "無料で開始"
+        },
+        "toast": {
+          "paygFailed": "従量課金を開始できませんでした"
+        }
+      },
+      "toast": {
+        "failed": "スキャンに失敗しました",
+        "transport": "サーバーとの接続が切断されました。ページを再読み込みしてスキャンを再開してください。",
+        "enqueueTransport": "スキャン開始のためにサーバーへ接続できませんでした。接続を確認して再試行してください。",
+        "simulationFailed": "シミュレーションに失敗しました。再試行してください。",
+        "noStore": "シミュレーションを実行する前にストアを接続してください。",
+        "missingData": {
+          "title": "データが不足しています",
+          "noProducts": "シミュレーションを実行する前に商品を追加してください。",
+          "noCompetitors": "シミュレーションを実行する前に、少なくとも1件の競合商品を選択してください。"
+        }
+      }
+    }
+  }
+}

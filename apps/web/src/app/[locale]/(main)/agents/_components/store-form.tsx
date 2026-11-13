@@ -5,16 +5,22 @@ import { cn, resultify } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
+import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "@/i18n/navigation";
 
 /** A started run carries its id; a refusal carries the sentence to show. */
-type Outcome = { id: string } | { message?: string };
-
-const fallback = "Something went wrong on our side. Try again.";
+type Outcome =
+  | { id: string }
+  | {
+      kind?: "invalid" | "limited" | "capacity" | "unavailable";
+      message?: string;
+    };
 
 /** Sits on the primary banner, so its text stays solid white (see `PageBanner`). */
 export const StoreForm = () => {
+  const translate = useTranslations("agentReadiness");
+  const fallback = translate("errors.fallback");
   const router = useRouter();
   const form = useRef<HTMLFormElement>(null);
   const [url, setUrl] = useState("");
@@ -58,7 +64,9 @@ export const StoreForm = () => {
       return;
     }
 
-    setProblem(body.data.message ?? fallback);
+    setProblem(
+      body.data.kind ? translate(`errors.${body.data.kind}`) : fallback,
+    );
   });
 
   return (
@@ -94,8 +102,8 @@ export const StoreForm = () => {
             autoCorrect="off"
             spellCheck={false}
             enterKeyHint="go"
-            placeholder="yourstore.com"
-            aria-label="Your store's address"
+            placeholder={translate("form.placeholder")}
+            aria-label={translate("form.address")}
             aria-invalid={problem !== null}
             aria-describedby="store-form-message"
             className="text-base text-foreground-rich placeholder:text-foreground-dimmed/60"
@@ -107,7 +115,9 @@ export const StoreForm = () => {
           disabled={isPending || !url.trim()}
           className="h-12 w-full shrink-0 px-5 text-base sm:h-11 sm:w-auto"
         >
-          {isPending ? "Starting" : "Get it ready"}
+          {isPending
+            ? translate("form.starting")
+            : translate("form.action.primary")}
           {isPending ? (
             <LoaderIcon className="size-4 animate-spin" />
           ) : (
@@ -124,8 +134,7 @@ export const StoreForm = () => {
           problem && "font-medium",
         )}
       >
-        {problem ??
-          "No sign-up. We read up to 40 products from your public pages."}
+        {problem ?? translate("form.note")}
       </p>
     </form>
   );

@@ -6,7 +6,10 @@ import { and, asc, eq, inArray, isNull, lte, or, sql } from "drizzle-orm";
 import { z } from "zod";
 import { isLocale, type Locale, locales } from "@/i18n/locales";
 import { translationReviewPasses } from "@/i18n/translation/policy";
-import { translationRetryDisposition } from "@/i18n/translation/retry";
+import {
+  isTranslationEnvelopeFailure,
+  translationRetryDisposition,
+} from "@/i18n/translation/retry";
 import {
   type TranslationGenerator,
   type TranslationReviewReport,
@@ -25,6 +28,11 @@ import {
   nextBlogTranslationBatch,
 } from "@/lib/blog-translation-content";
 import { db, schema } from "@/server/database";
+import {
+  blogBlockedReviewVersion,
+  nextBlockedBlogBatch,
+  reviewExistingBlogUnits,
+} from "./blog-translation-review";
 
 export type BlogTargetLocale = Exclude<Locale, "en">;
 export const blogTargetLocales = locales.filter(
@@ -150,6 +158,7 @@ export { nextBlogTranslationBatch } from "@/lib/blog-translation-content";
 const claim = async (
   targets: readonly BlogTargetLocale[],
   slugs?: readonly string[],
+  reviewBlocked = false,
 ) =>
   db.transaction(async (transaction) => {
     const now = new Date();
@@ -158,14 +167,32 @@ const claim = async (
       .from(jobs)
       .where(
         and(
-          inArray(jobs.status, ["pending", "processing"]),
+          inArray(
+            jobs.status,
+            reviewBlocked
+              ? ["pending", "processing", "blocked"]
+              : ["pending", "processing"],
+          ),
+          reviewBlocked
+            ? sql`EXISTS (SELECT 1 FROM jsonb_each(${jobs.blockedUnits}) AS entry WHERE entry.value->>'reviewVersion' IS DISTINCT FROM ${blogBlockedReviewVersion})`
+            : undefined,
           inArray(jobs.locale, [...targets]),
           lte(jobs.availableAt, now),
           or(isNull(jobs.lockedUntil), lte(jobs.lockedUntil, now)),
           slugs ? inArray(jobs.slug, [...slugs]) : undefined,
         ),
       )
-      .orderBy(asc(jobs.availableAt), asc(jobs.createdAt))
+      .orderBy(
+        ...(reviewBlocked
+          ? [
+              asc(sql`${jobs.totalUnits}
+                - (SELECT count(*)::int FROM jsonb_object_keys(${jobs.completedUnits}))
+                - (SELECT count(*)::int FROM jsonb_object_keys(${jobs.blockedUnits}))`),
+            ]
+          : []),
+        asc(jobs.availableAt),
+        asc(jobs.createdAt),
+      )
       .limit(1)
       .for("update", { skipLocked: true });
     if (!job) return null;
@@ -269,6 +296,7 @@ const finish = async (
       .set({
         status: "completed",
         completedUnits: completed,
+        blockedUnits: {},
         lease: null,
         lockedUntil: null,
         error: null,
@@ -287,6 +315,7 @@ export const drainBlogTranslationBatch = async ({
   characterLimit = 4500,
   unitLimit = 48,
   onReview,
+  reviewBlocked = false,
 }: {
   generate: TranslationGenerator;
   targets?: readonly BlogTargetLocale[];
@@ -295,8 +324,13 @@ export const drainBlogTranslationBatch = async ({
   characterLimit?: number;
   unitLimit?: number;
   onReview?: (report: TranslationReviewReport) => void | Promise<void>;
+  reviewBlocked?: boolean;
 }) => {
-  const job = await claim(targets, slugs ?? (slug ? [slug] : undefined));
+  const job = await claim(
+    targets,
+    slugs ?? (slug ? [slug] : undefined),
+    reviewBlocked,
+  );
   if (!job) return { status: "idle" as const };
   const work = {
     units: [] as readonly TranslationUnit[],
@@ -327,13 +361,20 @@ export const drainBlogTranslationBatch = async ({
     }
     const article = createBlogTranslation(content);
     work.units = article.units;
-    const batch = nextBlogTranslationBatch(
-      article.units,
-      job.completedUnits,
-      characterLimit,
-      job.blockedUnits,
-      unitLimit,
-    );
+    const batch = reviewBlocked
+      ? nextBlockedBlogBatch(
+          article.units,
+          job.blockedUnits,
+          characterLimit,
+          unitLimit,
+        )
+      : nextBlogTranslationBatch(
+          article.units,
+          job.completedUnits,
+          characterLimit,
+          job.blockedUnits,
+          unitLimit,
+        );
     work.batch = batch;
     if (!batch.length && Object.keys(job.blockedUnits).length) {
       await db
@@ -351,13 +392,18 @@ export const drainBlogTranslationBatch = async ({
       article.units,
       batch,
       article.documentContext,
+      job.completedUnits,
     );
+    const translate = reviewBlocked
+      ? reviewExistingBlogUnits
+      : translateTextUnits;
     const translated = batch.length
-      ? await translateTextUnits({
+      ? await translate({
           units: context.units,
           targetLocale: job.locale,
           documentContext: context.documentContext,
           generate,
+          blocked: job.blockedUnits,
           onReview: async (report) => {
             const renewed = await db
               .update(jobs)
@@ -377,12 +423,18 @@ export const drainBlogTranslationBatch = async ({
       ...job.completedUnits,
       ...Object.fromEntries(translated.map((unit) => [unit.id, unit.text])),
     };
+    const blockedUnits = Object.fromEntries(
+      Object.entries(job.blockedUnits).filter(
+        ([id]) => completed[id] === undefined,
+      ),
+    );
     if (article.units.every((unit) => completed[unit.id] !== undefined))
       return finish(job, completed);
     const updated = await db
       .update(jobs)
       .set({
         completedUnits: completed,
+        blockedUnits,
         status: "pending",
         lease: null,
         lockedUntil: null,
@@ -401,10 +453,13 @@ export const drainBlogTranslationBatch = async ({
         ? operation.error.message
         : String(operation.error);
     const retry = translationRetryDisposition(error, job.attempts);
-    const attempts = retry.attempts;
     const semantic =
-      operation.error instanceof TranslationValidationError ||
-      /protected|missing.*unit|markup|fidelity/i.test(error);
+      !isTranslationEnvelopeFailure(error) &&
+      (operation.error instanceof TranslationValidationError ||
+        /protected|missing.*unit|markup|fidelity/i.test(error));
+    // A completed editorial review is not a transport failure. Keep the retry
+    // budget for consecutive network/envelope failures on the next request.
+    const attempts = semantic ? 0 : retry.attempts;
     const approved =
       operation.error instanceof TranslationValidationError
         ? operation.error.approvedUnits
@@ -422,7 +477,11 @@ export const drainBlogTranslationBatch = async ({
         ? operation.error.findings
         : [];
     const blockedUnits = {
-      ...job.blockedUnits,
+      ...Object.fromEntries(
+        Object.entries(job.blockedUnits).filter(
+          ([id]) => completedUnits[id] === undefined,
+        ),
+      ),
       ...(semantic
         ? Object.fromEntries(
             (rejected.length
@@ -437,6 +496,9 @@ export const drainBlogTranslationBatch = async ({
                 findings: findings.filter(
                   (finding) => finding.id === unit.id || finding.id === "batch",
                 ),
+                ...(reviewBlocked
+                  ? { reviewVersion: blogBlockedReviewVersion }
+                  : {}),
               },
             ]),
           )
@@ -468,9 +530,10 @@ export const drainBlogTranslationBatch = async ({
       })
       .where(and(eq(jobs.id, job.id), eq(jobs.lease, job.lease ?? "")));
     return {
-      status: retry.rateLimited
-        ? ("rate-limited" as const)
-        : ("failed" as const),
+      status:
+        !semantic && retry.rateLimited
+          ? ("rate-limited" as const)
+          : ("failed" as const),
       slug: job.slug,
       locale: job.locale,
       error,
@@ -502,7 +565,7 @@ export const blogReviewPatchSchema = z.object({
   locale: z.string(),
   sourceHash: z.string().min(1),
   policyVersion: z.string().min(1),
-  units: z.array(z.object({ id: z.string(), text: z.string().min(1) })).min(1),
+  units: z.array(z.object({ id: z.string(), text: z.string() })).min(1),
   review: z.object({
     policyVersion: z.string(),
     targetLocale: z.string(),
@@ -586,6 +649,28 @@ export const applyBlogTranslationReview = async (input: unknown) => {
         );
       const findings = validateTranslationUnit(unit, correction.text, locale);
       if (findings.length) throw new TranslationValidationError(findings);
+      if (!correction.text.trim() && unit.grammaticalArticle) {
+        const group = article.units.filter(
+          (entry) => entry.group === unit.group,
+        );
+        for (const sibling of group) {
+          const target =
+            patch.units.find((entry) => entry.id === sibling.id)?.text ??
+            job.completedUnits[sibling.id];
+          const evidence = patch.review.reviewedUnits.find(
+            (entry) => entry.id === sibling.id,
+          );
+          if (
+            target === undefined ||
+            !evidence ||
+            evidence.text !== sibling.text ||
+            evidence.target !== target
+          )
+            throw new Error(
+              `Grammatical article omission requires the complete reviewed inline group: ${unit.group}`,
+            );
+        }
+      }
     }
     const corrected = new Set(patch.units.map((unit) => unit.id));
     const blockedUnits = Object.fromEntries(

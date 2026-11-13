@@ -12,5 +12,10 @@ export default async ({ params }: { params: Promise<{ locale: string }> }) => {
   const { locale } = await params;
   if (!hasLocale(routing.locales, locale)) notFound();
   const messages = await getMessages({ locale });
-  return createOgImage({ locale, ...messages.woocommerce.meta });
+  const content = messages.woocommerce.hero;
+  return createOgImage({
+    locale,
+    title: `${content.title.primary} ${content.title.accent}`,
+    description: content.description,
+  });
 };

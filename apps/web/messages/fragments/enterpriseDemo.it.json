@@ -1,0 +1,70 @@
+{
+  "enterpriseDemo": {
+    "meta": {
+      "title": "Prenota una demo di ecentic",
+      "description": "Scopri dal vivo, insieme a un fondatore, come ChatGPT, Claude e Gemini confrontano i tuoi prodotti con quelli di un concorrente. Porta una categoria."
+    },
+    "eyebrow": "Prenota una demo",
+    "title": "Scopri come l’AI fa acquisti nel tuo catalogo.",
+    "description": "Una chiamata con un fondatore. Porta una categoria e ti mostreremo dal vivo come ChatGPT, Claude e Gemini la confrontano con quella di un concorrente. La chiamata è in inglese.",
+    "sections": [
+      {
+        "id": "what-we-cover",
+        "eyebrow": "Una conversazione operativa",
+        "title": "Cosa vedremo.",
+        "ordered": true,
+        "columns": 4,
+        "items": [
+          {
+            "title": "Uno o due prodotti",
+            "body": "Una simulazione dal vivo contro un concorrente che scegli tu."
+          },
+          {
+            "title": "Perché una scheda prodotto vince",
+            "body": "I motivi dietro la scelta di un assistente AI per gli acquisti, all’interno della simulazione."
+          },
+          {
+            "title": "Cosa correggere prima",
+            "body": "Le modifiche che vale la pena rivedere nel tuo catalogo."
+          },
+          {
+            "title": "Un progetto pilota per il tuo team",
+            "body": "L’ambito, la baseline e il resoconto che definiremmo insieme."
+          }
+        ]
+      },
+      {
+        "id": "request",
+        "title": "Parti dalla tua categoria.",
+        "description": "Tre passaggi rapidi. Raccontaci della tua attività, scegli un focus e rivedi la richiesta."
+      },
+      {
+        "id": "single-store",
+        "title": "Gestisci un solo store?",
+        "description": "Prenota la call di 15 minuti oppure inizia con il controllo gratuito dello store.",
+        "links": [
+          {
+            "label": "Prenota la call di 15 minuti",
+            "href": "https://cal.com/ecentic-ai/15min"
+          },
+          {
+            "label": "Controlla gratis il mio store",
+            "href": "/sign-up"
+          }
+        ]
+      }
+    ],
+    "form": {
+      "steps": [
+        "Chi sei",
+        "Cosa vuoi",
+        "Rivedi e invia"
+      ],
+      "progress": "Avanzamento della richiesta demo",
+      "reviewTitle": "Un brief per la tua demo.",
+      "reviewDescription": "Controlla i tuoi dati prima dell’invio. Ti contatteremo via email per concordare il prossimo passo.",
+      "bookingNote": "Preferisci scegliere subito un orario? La call self-service attuale dura 15 minuti. Ambito e durata della demo enterprise vengono concordati con te. Le call si svolgono in inglese.",
+      "sentDescription": "La tua richiesta di demo è stata inviata. Useremo la tua email di lavoro per organizzare il prossimo passo."
+    }
+  }
+}

@@ -1,0 +1,1229 @@
+{
+  "enterpriseCompany": {
+    "security": {
+      "meta": {
+        "title": "ecenticのセキュリティと信頼性",
+        "description": "ecenticによるカタログデータ、ストアアクセス、顧客データの取り扱い方法を説明します。実装済みの管理策を確認し、データ保護要件についてご相談ください。"
+      },
+      "eyebrow": "セキュリティと信頼性",
+      "title": "セキュリティと信頼性",
+      "description": "ecenticによるカタログ、ストアアクセス、顧客データの取り扱い方法を説明します。このページは事業の成長に合わせて更新され、更新時には以下の日付も変更されます。",
+      "facts": [
+        "読み取り専用のインポート",
+        "パイロットでは公開データを優先",
+        "DPA要件を相談",
+        "文書化されたプロバイダーの利用目的"
+      ],
+      "actions": [
+        {
+          "label": "お問い合わせ",
+          "href": "/demo"
+        },
+        {
+          "label": "プライバシーポリシーを読む",
+          "href": "/privacy-policy"
+        }
+      ],
+      "sections": [
+        {
+          "id": "reviewed",
+          "title": "最終更新日: 2026年11月12日",
+          "description": "このページでは現在のプロダクトにおける管理策を説明しています。非公開データを共有する前に、アカウントに適用されるデプロイ環境、処理場所、契約要件をご確認ください。"
+        },
+        {
+          "id": "store-access",
+          "title": "ストアへのアクセス方法",
+          "paragraphs": [
+            "商品コンテンツをインポートしても内容は書き換えられません。Applyは、直接接続されたShopifyまたはWooCommerceストアにタイトルと説明文を生成・公開します。構造化データは別の公開操作を使用します。Shopifyを接続すると、訪問トラッキングスクリプトもインストールされます。",
+            "Shopify向けMerchant Centerを接続すると、ecenticは公開済み修正内容と購入手続き属性用の補足データソースを追加します。メインフィードを置き換えるものではありません。",
+            "Shopifyでは、AIアシスタントのリファラーまたは既知のエージェントuser-agentを検出すると、ストアフロントスクリプトが訪問を記録します。送信される情報には、完全なページURL、ブラウザuser-agent、リファラー、ページタイプ、検出されたエージェントと検出方法、利用可能な商品識別子が含まれます。記録にはストア情報と受信時刻も含まれます。",
+            "このブラウザスクリプトは、JavaScriptを実行する訪問を観測します。すべてのクローラーリクエストを測定するものではなく、後続の注文が同一の購入者によるものと特定するものでもありません。",
+            "ShopifyへのアクセスにはShopify Admin APIとインストール画面に表示される権限を使用します。いつでもアンインストールできます。WooCommerceは、ecenticプラグインまたは作成・無効化可能なREST APIキーを通じて接続します。",
+            "WooCommerceでエージェント購入手続きを有効にすると、checkout bridgeがストア内に実際の注文を作成します。決済は利用中のゲートウェイで処理され、merchant of recordとしての立場は引き続き保持されます。エージェント購入手続きは、署名付きリクエスト、エージェント許可リスト、設定可能なレート制限に対応しており、適用はストア設定に従います。",
+            "エンタープライズパイロットは、システムへのアクセスなしで、公開ページと商品データから開始できます。"
+          ]
+        },
+        {
+          "id": "infrastructure",
+          "title": "インフラストラクチャとデータ保護",
+          "rows": [
+            {
+              "label": "アプリケーションホスティング",
+              "value": "Vercel: アプリケーションホスティング、定期実行ジョブ、AI Gatewayルーティング。"
+            },
+            {
+              "label": "データベース",
+              "value": "AWS us-east-1（北バージニア）上のNeon PostgreSQL。"
+            },
+            {
+              "label": "暗号化",
+              "value": "データは、ホスティングおよびデータベースプロバイダーによって、転送時（TLS 1.2+）と保存時（AES-256）の両方で暗号化されます。"
+            },
+            {
+              "label": "アカウントパスワード",
+              "value": "パスワードはBetter Authを通じてscryptでハッシュ化されます。"
+            },
+            {
+              "label": "WebhookとOAuth",
+              "value": "Shopify webhookはHMAC検証を使用します。OAuthコールバックはstateを検証し、対応する購入手続きリクエストではHTTPメッセージ署名を使用できます。"
+            },
+            {
+              "label": "本番環境へのアクセス",
+              "value": ""
+            },
+            {
+              "label": "バックアップと復旧",
+              "value": ""
+            }
+          ]
+        },
+        {
+          "id": "ai-data",
+          "title": "AIモデルとデータ",
+          "paragraphs": [
+            "接続された商品カタログは、商品情報の比較と修正内容の生成のためにAIプロバイダーへ送信されます。ストアスキャンではChatGPT、Claude、Geminiを使用します。GPTは商品情報のリライトと構造化データ生成にも使用されます。Perplexityは、ストアスキャンではなく、別の比較・発見ツールで使用されます。",
+            "Azure環境が設定されている場合、GPTはAzure OpenAI経由で実行されます。Anthropic、Google、PerplexityへのリクエストはVercel AI Gatewayを使用し、GPTもフォールバックとして同ゲートウェイを利用する場合があります。",
+            "接続されたGoogle Merchant Centerアカウントから読み取られたデータは、プライバシーポリシーに記載のとおり、AI処理に使用されるストアカタログとは分離して保持されます。",
+            "リクエストには各プロバイダーの保持ポリシーが適用されます。一部のプロバイダーは不正利用監視のためにリクエストを保持します。当社は、すべてのモデルルートで保持がゼロであることを保証しません。"
+          ]
+        },
+        {
+          "id": "privacy",
+          "title": "プライバシーとGDPR",
+          "rows": [
+            {
+              "label": "運営会社",
+              "value": "ecentic Inc · 米国デラウェア州"
+            },
+            {
+              "label": "エージェント購入手続きデータ",
+              "value": "購入手続きの実行に必要な購入者情報について、データ管理者は利用者であり、ecenticは処理者として機能します。"
+            },
+            {
+              "label": "データリクエスト",
+              "value": "アクセス、訂正、削除のリクエストはprivacy@ecentic.aiまでご連絡ください。1か月以内に対応します。"
+            }
+          ],
+          "links": [
+            {
+              "label": "プライバシーポリシーを読む",
+              "href": "/privacy-policy"
+            }
+          ]
+        },
+        {
+          "id": "dpa",
+          "title": "データ処理契約",
+          "description": "個人データ共有前に、要望に応じてDPAを締結します。利用者独自のDPAにも署名可能であり、契約主体および署名者は契約内で確認されます。",
+          "note": "非公開データを受領する前に、相互NDAを締結します。公開データ優先フェーズでは不要です。",
+          "links": [
+            {
+              "label": "要件を相談する",
+              "href": "/demo"
+            }
+          ]
+        },
+        {
+          "id": "sub-processors",
+          "title": "プロダクトで使用するプロバイダー",
+          "description": "プロダクトコード内で識別されたプロバイダーと利用目的。2026年11月12日にレビュー済み。契約済みの処理者および処理場所は、該当サービスと契約ごとに確認されます。",
+          "note": ""
+        },
+        {
+          "id": "compliance",
+          "title": "コンプライアンスロードマップ",
+          "paragraphs": [
+            "SOC 2は現在利用できません。認証取得済みまたは監査完了済みとは表明していません。パイロット契約前にセキュリティ要件をご相談ください。",
+            "CTOのAlviが、NDA締結後にセキュリティ質問票へ対応します。事前承認済みのセキュリティパックは提供していません。"
+          ]
+        },
+        {
+          "id": "report",
+          "title": "脆弱性を報告",
+          "description": ""
+        }
+      ],
+      "subprocessors": {
+        "caption": "プロダクトプロバイダーと利用目的（2026年11月12日確認）",
+        "headers": [
+          "プロバイダー",
+          "利用目的",
+          "処理場所"
+        ],
+        "rows": [
+          {
+            "name": "Azure OpenAI",
+            "purpose": "GPTシミュレーション、商品情報リライト、構造化データ。",
+            "location": ""
+          },
+          {
+            "name": "Anthropic",
+            "purpose": "Vercel AI Gateway経由のClaude商品情報比較。",
+            "location": ""
+          },
+          {
+            "name": "Google",
+            "purpose": "Vercel AI Gateway経由のGemini商品情報比較。",
+            "location": ""
+          },
+          {
+            "name": "Perplexity",
+            "purpose": "Vercel AI Gateway経由の別個の比較・発見ツール。",
+            "location": ""
+          },
+          {
+            "name": "Vercel",
+            "purpose": "アプリケーションホスティングとAI Gatewayリクエストルーティング。",
+            "location": ""
+          },
+          {
+            "name": "Neon",
+            "purpose": "アプリケーション記録、接続済みカタログデータ、認証情報。",
+            "location": ""
+          },
+          {
+            "name": "Upstash",
+            "purpose": "Redisキャッシュ、セッションデータ、レート制限カウンター。",
+            "location": ""
+          },
+          {
+            "name": "Sentry",
+            "purpose": "エラー監視とアプリケーションテレメトリー。",
+            "location": ""
+          },
+          {
+            "name": "PostHog",
+            "purpose": "分析同意後の商品分析。",
+            "location": ""
+          },
+          {
+            "name": "Google Analytics 4",
+            "purpose": "分析同意後のWebサイト分析。",
+            "location": ""
+          },
+          {
+            "name": "Resend",
+            "purpose": "トランザクションメール配信。",
+            "location": ""
+          },
+          {
+            "name": "UploadThing",
+            "purpose": "アップロードファイルの保存。",
+            "location": ""
+          },
+          {
+            "name": "Stripe",
+            "purpose": "ecenticプランおよび成果報酬の請求。",
+            "location": ""
+          },
+          {
+            "name": "SerpAPI",
+            "purpose": "商品オファー検索。",
+            "location": ""
+          },
+          {
+            "name": "Chatwoot",
+            "purpose": "Webサイトサポートチャット。",
+            "location": ""
+          },
+          {
+            "name": "BabyLoveGrowth",
+            "purpose": "編集ブログコンテンツ。",
+            "location": ""
+          },
+          {
+            "name": "Clearbit",
+            "purpose": "企業ロゴ画像。",
+            "location": ""
+          },
+          {
+            "name": "Google Merchant API",
+            "purpose": "任意のMerchant Center接続。",
+            "location": ""
+          },
+          {
+            "name": "Shopify Catalog MCP",
+            "purpose": "Shopifyのカタログにおける商品に関する測定。",
+            "location": ""
+          },
+          {
+            "name": "x402",
+            "purpose": "対応ルート向けの決済ファシリテーター。",
+            "location": ""
+          },
+          {
+            "name": "ScrapeLLM",
+            "purpose": "内部取得ツール。顧客向け機能ではありません。",
+            "location": ""
+          }
+        ]
+      }
+    },
+    "about": {
+      "meta": {
+        "title": "ecenticについて: ecenticを支えるチーム",
+        "description": "ecenticは、AIが買い物を行う時代にオンラインストアの販売を支援します。7年間ともにプロダクトを構築してきた3人の創業者を紹介します。"
+      },
+      "title": "AIショッピング向けのコマースレイヤーを構築しています。",
+      "description": "7年間ともに構築を続けてきた3人の創業者。AIが買い物を行う時代では、ページではなくデータを読む顧客に対応できるストアが必要になるという考えから、ecenticは生まれました。",
+      "sections": [
+        {
+          "id": "why",
+          "title": "創業の背景",
+          "paragraphs": [
+            "Google検索、Amazonでの買い物、チャットボットへの質問など、現在はAIが商品を提示します。しかし、多くのストアは「選ばれる商品」になる方法を把握していません。どのように判断されたのかも、なぜ負けたのかも見えず、分析ではトラフィックがダイレクトとして計上されます。ecenticは、その判断を可視化し、商品ごとに改善できるよう支援するために始まりました。"
+          ]
+        },
+        {
+          "id": "how",
+          "title": "私たちの進め方",
+          "items": [
+            {
+              "title": "自分たちが求める内容を、自分たちでも公開します。",
+              "body": "独自のllms.txt、APIカタログ、エージェント購入手続きプロファイル、MCPエンドポイントを公開しています。",
+              "href": "/resources#public-endpoints",
+              "label": "公開エンドポイントを見る"
+            },
+            {
+              "title": "実装済みと今後の予定を明示します。",
+              "body": "すべての連携とAIチャネルにはラベルを付け、チャネルページには最終確認日を記載しています。",
+              "href": "/integrations",
+              "label": "連携を見る"
+            },
+            {
+              "title": "公開データから始めます。",
+              "body": "パイロットは、システムではなく公開ページから開始します。",
+              "href": "/solutions/enterprise",
+              "label": "エンタープライズパイロットを見る"
+            }
+          ]
+        },
+        {
+          "id": "team",
+          "title": "チーム",
+          "description": "エンジニアリングと営業が同じプロダクトに取り組む、3人の創業チームです。",
+          "note": ""
+        },
+        {
+          "id": "before",
+          "title": "ecentic以前",
+          "items": [
+            {
+              "title": "zennit",
+              "body": "創業者たちが学生時代に並行して運営していた開発スタジオ。Eurocar、Albuji、英国プラットフォームのExelorとUbix向けにソフトウェアを開発していました。"
+            },
+            {
+              "title": "LookUp",
+              "body": "初めてのスタートアップである駐車場プラットフォーム。月間売上€10Kを達成し、$125Kのプレシード調達後、小規模なエグジットを実現しました。"
+            },
+            {
+              "title": "Shopify Plus",
+              "body": "IseldはShopify Plusの営業アドバイザーを務めていました。"
+            }
+          ]
+        },
+        {
+          "id": "programs",
+          "title": "参加プログラム"
+        },
+        {
+          "id": "recognition",
+          "title": "受賞・選出歴",
+          "items": [
+            {
+              "title": "Startup World Cup",
+              "body": "Santa Cruz地域ファイナリスト。"
+            },
+            {
+              "title": "Junction Helsinki 2024",
+              "body": "佳作受賞。"
+            },
+            {
+              "title": "Entrepreneur First",
+              "body": "ノミネート。"
+            }
+          ]
+        },
+        {
+          "id": "company",
+          "title": "会社情報",
+          "rows": [
+            {
+              "label": "運営会社",
+              "value": "ecentic Inc · 米国デラウェア州"
+            },
+            {
+              "label": "登録代理人 — 法務サービスのみ",
+              "value": "LEGALINC CORPORATE SERVICES INC. · 131 Continental Drive, Suite 305, Newark, New Castle County, DE 19713, United States"
+            },
+            {
+              "label": "アルバニア子会社",
+              "value": "ECENTIC SH.P.K. · Pallatet Merkaj, Hyrja 1, Dera 12, Rruga Muhamed Deliu, Qesarakë, Tiranë, Albania"
+            },
+            {
+              "label": "電話",
+              "value": ""
+            },
+            {
+              "label": "サポート",
+              "value": "support@ecentic.ai"
+            }
+          ],
+          "links": [
+            {
+              "label": "お問い合わせ",
+              "href": "/contact"
+            }
+          ]
+        }
+      ],
+      "people": [
+        {
+          "name": "Xhurian Shaba",
+          "role": "最高経営責任者",
+          "body": "XhurianはECENTICの管理者であり、プロダクトの出発点となったティラナのスタジオzennitの共同創業者です。ソフトウェアエンジニアでもあり、AIショッピングエージェントが実際にどの商品情報を選ぶのかを加盟店が把握できるようにするため、ecenticを立ち上げました。",
+          "href": "https://www.linkedin.com/in/xhurian-shaba",
+          "linkLabel": "LinkedIn"
+        },
+        {
+          "name": "Alvi Palloshi",
+          "role": "最高技術責任者",
+          "body": "Alviは会社の創業パートナーであり、zennitのソフトウェアエンジニアです。ティラナチームとともにプロダクトを開発しています。",
+          "href": "https://www.linkedin.com/in/alvipalloshi",
+          "linkLabel": "LinkedIn"
+        },
+        {
+          "name": "Iseld Muça",
+          "role": "営業責任者",
+          "body": "IseldはGo-to-Marketを統括し、買い手がAIエージェントになることで何が変わるかについて発信しています。アルバニア大会優勝後、2026年にXhurianとともにサンフランシスコ開催のRed Bull Basement World Finalでecenticを代表しました。",
+          "href": "https://www.linkedin.com/in/iseld-muca-532786311",
+          "linkLabel": "LinkedIn"
+        }
+      ],
+      "programs": [
+        {
+          "name": "Plug and Play",
+          "description": "GOAL Silicon Valleyプログラム"
+        },
+        {
+          "name": "Microsoft for Startups",
+          "description": "スタートアッププログラム"
+        },
+        {
+          "name": "Red Bull Basement",
+          "description": "国内優勝、シリコンバレー世界大会出場"
+        },
+        {
+          "name": "The Founder Games",
+          "description": "スタートアッププログラム"
+        },
+        {
+          "name": "Fil Rouge Capital",
+          "description": "アクセラレーター。"
+        }
+      ]
+    },
+    "partners": {
+      "meta": {
+        "title": "ecenticとのパートナーシップ",
+        "description": "代理店、テクノロジー企業、クリエイター向け。AIコマースを事業に取り入れ、ecentic API上で構築し、協業に応募できます。"
+      },
+      "title": "ecenticとのパートナーシップ。",
+      "description": "オンラインストアを支援し、「AIショッピングにどう対応するべきか？」への答えを求める代理店、ソフトウェア企業、クリエイター向け。",
+      "actions": [
+        {
+          "label": "協業に応募",
+          "href": "#application"
+        },
+        {
+          "label": "APIを見る",
+          "href": "/docs"
+        }
+      ],
+      "sections": [
+        {
+          "id": "tracks",
+          "title": "パートナー種別を選択",
+          "items": [
+            {
+              "title": "代理店・リセラー",
+              "body": "Shopify、WooCommerce、またはマーケットプレイスの顧客を紹介し、通話内で紹介料を取り決めます。参加費は不要です。ecenticが顧客と直接契約・請求を行います。再販には別途署名済み契約が必要です。"
+            },
+            {
+              "title": "テクノロジーパートナー",
+              "body": "REST APIとMCPサーバーを利用して構築し、共同販売を行います。テクノロジーパートナー間で料金は発生しません。連携情報とロゴの掲載は、書面による合意がある場合のみ行います。"
+            },
+            {
+              "title": "クリエイター・アフィリエイト",
+              "body": "ecenticをオーディエンスに紹介し、獲得した有料顧客ごとに報酬を受け取れます。報酬額は参加時に合意します。"
+            }
+          ]
+        },
+        {
+          "id": "process",
+          "title": "進め方",
+          "ordered": true,
+          "columns": 4,
+          "items": [
+            {
+              "title": "応募",
+              "body": "事業内容と、取引のあるストアについてお知らせください。"
+            },
+            {
+              "title": "打ち合わせ",
+              "body": "20分間の通話で、パートナー種別と条件を決定します。"
+            },
+            {
+              "title": "アクセス権と資料を受け取る",
+              "body": "合意したアクセス権と開始用資料を提供します。各顧客は自身のアカウントを所有します。"
+            },
+            {
+              "title": "協業開始",
+              "body": "顧客を紹介するか、共同案件に取り組みます。ecenticブランドを維持したまま、その顧客とレポートを共有できます。"
+            }
+          ]
+        },
+        {
+          "id": "application",
+          "title": "協業に応募",
+          "description": "会社情報、希望するパートナー種別、取引先ストアについてお知らせください。通話とフォローアップは英語で行われます。"
+        }
+      ],
+      "faqTitle": "パートナーに関する質問",
+      "faqs": [
+        {
+          "question": "適さないケースはありますか？",
+          "answer": "当社と同じものを販売する企業です。同じストアに対して異なるサービスを提供する企業との協業を行っています。"
+        },
+        {
+          "question": "パートナーロゴは掲載されますか？",
+          "answer": "パートナーから書面による同意を得た場合のみ掲載します。"
+        },
+        {
+          "question": "参加費はかかりますか？",
+          "answer": "参加費は不要です。紹介料やアフィリエイト報酬は参加時に合意します。再販には別途署名済み契約が必要です。"
+        }
+      ],
+      "formTitle": "パートナー申請"
+    },
+    "stories": {
+      "meta": {
+        "title": "ecenticのパイロット事例",
+        "description": "ecenticパイロットの成果を、公開許可と各数値の算出方法付きで掲載しています。"
+      },
+      "title": "パイロット事例。",
+      "description": "ecenticパイロットの成果を、各社の許可を得たうえで、各数値の算出方法とともに掲載しています。",
+      "sections": [
+        {
+          "id": "pilots",
+          "title": "DUA Flavours",
+          "description": "英国のフレーバーブランド。2026年4月〜7月。",
+          "paragraphs": [
+            "AIアシスタントまたはダイレクト経由の訪問数が12%増加。売上ではなく訪問数です。"
+          ],
+          "links": [
+            {
+              "label": "パイロット事例を読む",
+              "href": "/stories/dua-flavours"
+            }
+          ]
+        }
+      ]
+    },
+    "duaFlavours": {
+      "meta": {
+        "title": "DUA Flavoursパイロット: AIおよびダイレクト訪問が12%増加",
+        "description": "英国のフレーバーブランドで、2026年4月から7月にかけてAIアシスタントまたはダイレクト経由の訪問が12%増加しました。パイロット結果とその制限事項をご確認ください。"
+      },
+      "eyebrow": "パイロット事例",
+      "title": "DUA Flavours: AIアシスタントまたはダイレクト経由の訪問が12%増加。",
+      "description": "英国のフレーバーブランドとのパイロット事例。許可を得て公開しています。結果は売上ではなく訪問数を測定したものです。",
+      "sections": [
+        {
+          "id": "at-a-glance",
+          "title": "概要",
+          "rows": [
+            {
+              "label": "業種",
+              "value": "英国のフレーバーブランド"
+            },
+            {
+              "label": "会社名",
+              "value": "英国のフレーバーブランド"
+            },
+            {
+              "label": "期間",
+              "value": "2026年4月〜7月"
+            },
+            {
+              "label": "変更内容",
+              "value": "構造化データと商品フィードのギャップを解消。"
+            },
+            {
+              "label": "結果",
+              "value": "AIアシスタントまたは直接流入からの訪問数が12%増加"
+            }
+          ]
+        },
+        {
+          "id": "starting-point",
+          "title": "導入時の状況",
+          "paragraphs": [
+            "DUA Flavoursは、Shopifyを利用する英国のフレーバーブランドで、約28の商品を展開しています。2026年4月20日に、ecentic初の有料顧客となりました。"
+          ]
+        },
+        {
+          "id": "changes",
+          "title": "実施した改善",
+          "paragraphs": [
+            "ecenticは、構造化データと商品フィードのギャップを解消しました。"
+          ]
+        },
+        {
+          "id": "result",
+          "title": "変化した指標",
+          "paragraphs": [
+            "AIアシスタントまたは直接流入からの訪問数が、2026年4月から7月にかけて12%増加しました。"
+          ]
+        },
+        {
+          "id": "method",
+          "title": "測定方法",
+          "paragraphs": [
+            "測定対象：2026年4月〜7月のAIアシスタントまたは直接流入からの訪問数。測定対象外：売上。同期間中の他の変更が影響した可能性があります。",
+            "この12%は、DUA独自の集計測定値です。ecenticは分析データの元情報を保有しておらず、商品別の内訳や時系列データは公開していません。"
+          ]
+        },
+        {
+          "id": "permission",
+          "title": "許可を得て公開",
+          "description": "2026年9月3日にDUA Flavoursから書面で確認を取得。",
+          "links": [
+            {
+              "label": "すべてのパイロット事例を見る",
+              "href": "/stories"
+            }
+          ]
+        }
+      ]
+    },
+    "tools": {
+      "meta": {
+        "title": "AIショッピングとエージェントによる購入手続き向け無料ツール",
+        "description": "AI Agent Scoreの確認、エージェントによる購入手続きの検証、ショッピングエージェントのテスト、2商品の比較、またはストアフロントのWebMCP証跡の確認ができます。"
+      },
+      "title": "エージェントコマース向け無料ツール",
+      "description": "ストアのAIショッピングエージェント対応状況を確認できます。ほとんどのツールはアカウント不要です。",
+      "actions": [
+        {
+          "label": "無料でストアを確認",
+          "href": "/sign-up"
+        },
+        {
+          "label": "ガイドを見る",
+          "href": "/resources#guides"
+        }
+      ],
+      "sections": [
+        {
+          "id": "free-tools",
+          "title": "確認する項目を選択",
+          "columns": 2,
+          "items": [
+            {
+              "title": "AI Agent Score",
+              "body": "ChatGPT、Claude、Gemini上で、自社の上位10商品を競合商品と比較する無料スキャンです。アカウント登録が必要です。",
+              "href": "/sign-up",
+              "label": "無料でストアを確認"
+            },
+            {
+              "title": "Checkout Validator",
+              "body": "ストアのエージェントによる購入手続きプロファイルをリアルタイムで取得し、公開されている構造を確認します。アカウント不要です。",
+              "href": "/ucp-validator",
+              "label": "UCP Validatorを開く"
+            },
+            {
+              "title": "Checkout Playground",
+              "body": "テスト用エージェントで、ストア内の検索、カート、購入手続きを実行します。アカウントなしで10メッセージまで無料です。",
+              "href": "/ucp-playground",
+              "label": "UCP Playgroundを開く"
+            },
+            {
+              "title": "WebMCPスキャナー",
+              "body": "ブラウザーエージェント向けに公開されているショッピング操作について、ストアフロントのソース証跡を確認します。結果では、観測されたツール、フォーム、未確認の実行時動作を区別して表示します。",
+              "href": "/webmcp-scanner",
+              "label": "ストアフロントをスキャン"
+            },
+            {
+              "title": "比較",
+              "body": "2つの商品URLを貼り付け、ChatGPT、Claude、Gemini、Perplexity上の商品情報を比較します。各モデルのシミュレーションによる選択結果と理由を確認できます。",
+              "href": "/compare",
+              "label": "2商品を比較"
+            }
+          ]
+        }
+      ]
+    },
+    "resources": {
+      "meta": {
+        "title": "リソース：ガイド、調査、無料ツール",
+        "description": "AIアシスタント経由で販売するためのガイドと無料ツール、パイロット事例、ecenticの公開開発者エンドポイントを提供しています。"
+      },
+      "title": "リソース",
+      "description": "AIが買い物を行う環境での販売に向けたガイド、パイロット事例、無料ツール。",
+      "actions": [
+        {
+          "label": "無料ツールを見る",
+          "href": "/tools"
+        },
+        {
+          "label": "開発者ドキュメントを開く",
+          "href": "/docs"
+        }
+      ],
+      "sections": [
+        {
+          "id": "free-tools",
+          "title": "無料ツール",
+          "columns": 2,
+          "items": [
+            {
+              "title": "AI Agent Score",
+              "body": "ChatGPT、Claude、Gemini上で、自社の上位10商品を競合商品と比較する無料スキャンです。アカウント登録が必要です。",
+              "href": "/sign-up",
+              "label": "無料でストアを確認"
+            },
+            {
+              "title": "Checkout Validator",
+              "body": "ストアのエージェントによる購入手続きプロファイルをリアルタイムで取得し、公開されている構造を確認します。アカウント不要です。",
+              "href": "/ucp-validator",
+              "label": "UCP Validatorを開く"
+            },
+            {
+              "title": "Checkout Playground",
+              "body": "テスト用エージェントで、ストア内の検索、カート、購入手続きを実行します。アカウントなしで10メッセージまで無料です。",
+              "href": "/ucp-playground",
+              "label": "UCP Playgroundを開く"
+            },
+            {
+              "title": "WebMCPスキャナー",
+              "body": "ブラウザーエージェント向けに公開されているショッピング操作について、ストアフロントのソース証跡を確認します。結果では、観測されたツール、フォーム、未確認の実行時動作を区別して表示します。",
+              "href": "/webmcp-scanner",
+              "label": "ストアフロントをスキャン"
+            },
+            {
+              "title": "比較",
+              "body": "2つの商品URLを貼り付け、ChatGPT、Claude、Gemini、Perplexity上の商品情報を比較します。各モデルのシミュレーションによる選択結果と理由を確認できます。",
+              "href": "/compare",
+              "label": "2商品を比較"
+            }
+          ],
+          "links": [
+            {
+              "label": "すべての無料ツール",
+              "href": "/tools"
+            }
+          ]
+        },
+        {
+          "id": "guides",
+          "title": "ガイド",
+          "description": "プラットフォームの理解、機能別のソフトウェア比較、またはストア向けガイドを確認できます。",
+          "columns": 2,
+          "items": [
+            {
+              "title": "プラットフォームガイド",
+              "body": "カタログの接続、商品情報の比較、商品データの修正、購入手続き準備、対応リファラルの追跡を行います。",
+              "href": "/platform",
+              "label": "プラットフォームを見る"
+            },
+            {
+              "title": "eコマース向け最適なAIツール",
+              "body": "コマース、コンテンツ、パーソナライズ、検索、分析ツールをカテゴリ別に比較しています。",
+              "href": "/compare/best-ai-ecommerce-tools",
+              "label": "購入ガイドを読む"
+            },
+            {
+              "title": "Shopifyガイド",
+              "body": "公開カタログをインポートするかアプリを接続し、ストアアクセスを使って商品情報を修正します。",
+              "href": "/integrations/shopify",
+              "label": "Shopifyガイドを読む"
+            },
+            {
+              "title": "WooCommerceガイド",
+              "body": "プラグインまたはREST APIキーを接続し、商品情報を比較してストアに修正を適用します。",
+              "href": "/integrations/woocommerce",
+              "label": "WooCommerceガイドを読む"
+            }
+          ]
+        },
+        {
+          "id": "editorial",
+          "title": "編集チームより",
+          "description": "自社で執筆した記事アーカイブの商品ガイドと調査記事。",
+          "links": [
+            {
+              "label": "ブログアーカイブをすべて見る",
+              "href": "/blog"
+            }
+          ]
+        },
+        {
+          "id": "pilot-stories",
+          "title": "パイロット事例",
+          "items": [
+            {
+              "title": "DUA Flavours",
+              "body": "2026年4月〜7月に、AIアシスタントまたは直接流入からの訪問数が12%増加。測定上の制限を含め、許可を得て公開しています。",
+              "href": "/stories/dua-flavours",
+              "label": "パイロット事例を読む"
+            }
+          ],
+          "columns": 1
+        },
+        {
+          "id": "public-endpoints",
+          "title": "公開をお願いしている情報は、当社自身も公開しています。",
+          "description": "ecenticは、加盟店に公開を求める内容をすべて自社でも公開しています。",
+          "columns": 2,
+          "items": [
+            {
+              "title": "llms.txt",
+              "body": "ecenticのページ、ツール、記事を機械可読形式で一覧化したインデックス。",
+              "href": "https://ecentic.ai/llms.txt",
+              "label": "llms.txtを開く"
+            },
+            {
+              "title": "APIカタログ",
+              "body": "公開エージェントAPI、仕様、ドキュメント向けのRFC 9727リンクセット。",
+              "href": "https://ecentic.ai/.well-known/api-catalog",
+              "label": "APIカタログを開く"
+            },
+            {
+              "title": "OAuthディスカバリー",
+              "body": "エージェント認証向けのRFC 8414 authorization-serverメタデータ。",
+              "href": "https://ecentic.ai/.well-known/oauth-authorization-server",
+              "label": "OAuthディスカバリーを開く"
+            },
+            {
+              "title": "エージェントによる購入手続きプロファイル",
+              "body": "コマースディスカバリー向けのecentic公開エージェントプロファイル。",
+              "href": "https://ecentic.ai/ucp/agent-profile",
+              "label": "プロファイルを開く"
+            },
+            {
+              "title": "MCPエンドポイント",
+              "body": "ecenticに接続するエージェント向けのJSON-RPCツール。",
+              "href": "https://ecentic.ai/api/mcp",
+              "label": "MCPエンドポイントを開く"
+            },
+            {
+              "title": "購入手続きディスカバリードキュメント",
+              "body": "このサイトから配信される.well-knownコマースディスカバリードキュメント。",
+              "href": "https://ecentic.ai/.well-known/ucp",
+              "label": "ディスカバリードキュメントを開く"
+            },
+            {
+              "title": "エージェントスキルインデックス",
+              "body": "商品情報最適化、購入手続き検証、エージェントコマース向けの公開インストラクション。",
+              "href": "https://ecentic.ai/.well-known/agent-skills/index.json",
+              "label": "スキルインデックスを開く"
+            }
+          ]
+        }
+      ],
+      "faqTitle": "利用前によくある質問",
+      "faqs": [
+        {
+          "question": "これらのツールは本当に無料ですか？",
+          "answer": "はい。AI Agent Scoreは、クレジットカード不要の1回限り無料スキャンです。Validatorは無料で、Playgroundではアカウントなしで10メッセージ利用できます。継続的な最適化は料金ページのプランに従います。"
+        },
+        {
+          "question": "購入手続きツールの利用にアカウントは必要ですか？",
+          "answer": "UCP Validatorはサインイン不要で利用できます。UCP Playgroundでは、アカウントなしで10メッセージまで無料です。接続済みストアのテストを製品の利用制限内で継続するには、サインインが必要です。"
+        },
+        {
+          "question": "UCP ValidatorとPlaygroundの違いは何ですか？",
+          "answer": "Validatorは、公開されている決済プロファイルとエンドポイントへの到達可否を確認します。Playgroundでは、AIエージェントが対応済みのカタログ、カート、購入手続き操作を実行し、そのツール呼び出しと応答を確認できます。"
+        },
+        {
+          "question": "エージェントコマースが初めての場合、どこから始めればよいですか？",
+          "answer": "ShopifyまたはWooCommerceのカタログがある場合は、無料のストアチェックから始めてください。購入手続きへの対応状況を先に確認するには、検証ツールにドメインを入力して実行し、プラットフォーム概要をお読みください。"
+        }
+      ],
+      "editorial": {
+        "empty": "編集アーカイブは現在準備中です。上記のガイドはすでに利用できます。",
+        "read": "記事を読む",
+        "loading": "記事を読み込み中"
+      }
+    },
+    "support": {
+      "meta": {
+        "title": "ヘルプとサポート",
+        "description": "ecenticアカウント、スキャン、修正、請求に関するサポートを提供します。サポートへのメール、ウォークスルーの予約、またはドキュメントの確認ができます。"
+      },
+      "title": "ヘルプとサポート",
+      "description": "アカウント、スキャン、修正、請求に関するサポートを提供します。質問内容に合った連絡先を選択してください。サポートと通話は英語対応です。",
+      "actions": [
+        {
+          "label": "サポートにメール",
+          "href": "mailto:support@ecentic.ai"
+        },
+        {
+          "label": "開発者ドキュメントを開く",
+          "href": "/docs"
+        }
+      ],
+      "sections": [
+        {
+          "id": "help",
+          "title": "どのようなサポートが必要ですか？",
+          "columns": 2,
+          "items": [
+            {
+              "title": "メールサポート",
+              "body": "質問内容とストアURLをsupport@ecentic.aiまで送信してください。英語で返信します。",
+              "href": "mailto:support@ecentic.ai",
+              "label": "サポートにメール"
+            },
+            {
+              "title": "ライブウォークスルー",
+              "body": "15分間の通話を予約し、ストアと製品をご案内します。通話は英語です。",
+              "href": "https://cal.com/ecentic-ai/15min",
+              "label": "15分通話を予約"
+            },
+            {
+              "title": "エンタープライズ",
+              "body": "パイロット導入、カタログ規模、またはセキュリティレビューについてご相談ください。",
+              "href": "/demo",
+              "label": "お問い合わせ"
+            },
+            {
+              "title": "開発者ドキュメント",
+              "body": "APIリファレンス、認証ガイド、MCPツール、エラードキュメントを確認できます。",
+              "href": "/docs",
+              "label": "開発者ドキュメントを開く"
+            }
+          ]
+        },
+        {
+          "id": "self-service",
+          "title": "自分で調べる",
+          "columns": 2,
+          "items": [
+            {
+              "title": "プラットフォーム",
+              "body": "製品の各機能について確認できます。",
+              "href": "/platform",
+              "label": "プラットフォーム"
+            },
+            {
+              "title": "連携",
+              "body": "ストア向けの接続および公開サポートを確認できます。",
+              "href": "/integrations",
+              "label": "連携"
+            },
+            {
+              "title": "料金",
+              "body": "無料スキャン、従量課金、サブスクリプションプランを比較できます。",
+              "href": "/pricing",
+              "label": "料金"
+            },
+            {
+              "title": "セキュリティ",
+              "body": "ストアアクセス、保護対策、データ処理について確認できます。",
+              "href": "/security",
+              "label": "セキュリティ"
+            },
+            {
+              "title": "プライバシーポリシー",
+              "body": "収集されるデータと削除方法を確認できます。",
+              "href": "/privacy-policy",
+              "label": "プライバシーポリシー"
+            }
+          ]
+        }
+      ]
+    },
+    "contact": {
+      "meta": {
+        "title": "ecenticへのお問い合わせ",
+        "description": "営業への相談、サポート依頼、協業応募、またはecenticのプライバシーとセキュリティ情報を確認できます。"
+      },
+      "title": "ecenticへのお問い合わせ",
+      "description": "質問内容に合った窓口をご利用ください。サポートと通話は英語対応です。",
+      "sections": [
+        {
+          "id": "contacts",
+          "title": "お問い合わせ先",
+          "columns": 3,
+          "items": [
+            {
+              "title": "営業",
+              "body": "パイロット導入、エンタープライズアカウント、デモのご相談。",
+              "href": "/demo",
+              "label": "デモを予約"
+            },
+            {
+              "title": "サポート",
+              "body": "アカウント、スキャン、請求に関するサポートです。support@ecentic.aiまでメールしてください。",
+              "href": "/support",
+              "label": "ヘルプとサポートを開く"
+            },
+            {
+              "title": "パートナー",
+              "body": "代理店、テクノロジー企業、クリエイター向け。",
+              "href": "/partners",
+              "label": "協業に応募"
+            },
+            {
+              "title": "報道関係",
+              "body": ""
+            },
+            {
+              "title": "セキュリティ",
+              "body": "ストアアクセス、実装済み管理策、データ取り扱いについて確認できます。",
+              "href": "/security",
+              "label": "セキュリティについて読む"
+            },
+            {
+              "title": "プライバシー",
+              "body": "データアクセス、修正・削除依頼、DPAに関する問い合わせ：privacy@ecentic.ai",
+              "href": "/security#dpa",
+              "label": "DPAについて読む"
+            }
+          ]
+        },
+        {
+          "id": "company",
+          "title": "会社情報",
+          "rows": [
+            {
+              "label": "運営会社",
+              "value": "ecentic Inc · アメリカ合衆国デラウェア州"
+            },
+            {
+              "label": "登録代理人 — 法務サービス専用",
+              "value": "LEGALINC CORPORATE SERVICES INC. · 131 Continental Drive, Suite 305, Newark, New Castle County, DE 19713, United States"
+            }
+          ],
+          "links": [
+            {
+              "label": "チームを見る",
+              "href": "/about"
+            }
+          ]
+        }
+      ]
+    },
+    "changelog": {
+      "meta": {
+        "title": "Changelog: ecenticの最新情報",
+        "description": "ecenticでリリースした製品アップデートを新しい順に掲載しています。"
+      },
+      "title": "更新履歴",
+      "description": "リリース済みアップデートを新しい順に掲載しています。",
+      "sections": [
+        {
+          "id": "updates",
+          "title": "製品アップデート",
+          "description": "日付は製品の開発履歴に基づいています。"
+        }
+      ],
+      "entries": [
+        {
+          "date": "2026-09-14",
+          "label": "新機能",
+          "title": "ストアフロントのWebMCP対応を確認。",
+          "body": "無料のWebMCPスキャナーが、ショッピング操作に関するソースエビデンスを確認し、観測できた内容と観測できなかった内容をレポートします。",
+          "commit": "2edebb8e"
+        },
+        {
+          "date": "2026-09-13",
+          "label": "改善",
+          "title": "異なる通貨間でオファーを比較。",
+          "body": "競合オファー評価で、価格帯を確認する前に対応通貨を換算するようになりました。",
+          "commit": "404dfc2c"
+        },
+        {
+          "date": "2026-09-13",
+          "label": "修正",
+          "title": "Shopifyをストアドメインに接続。",
+          "body": "Shopify接続でカスタムストアドメインに対応し、対応する管理ホストを特定します。",
+          "commit": "5644d6a9"
+        },
+        {
+          "date": "2026-09-11",
+          "label": "新機能",
+          "title": "公開カタログのインポートから開始。",
+          "body": "ストアのアドレスを入力し、アカウントを作成すると、公開されているShopifyまたはWooCommerceのカタログを読み取り専用でインポートできます。",
+          "commit": "fc5c0436"
+        },
+        {
+          "date": "2026-09-01",
+          "label": "改善",
+          "title": "測定済みの競合商品のオファーを確認。",
+          "body": "競合商品の検出では、選定に使用した根拠とともに商品レベルのオファーを表示します。",
+          "commit": "075058b5"
+        },
+        {
+          "date": "2026-08-25",
+          "label": "新機能",
+          "title": "コマンドラインからecenticを利用。",
+          "body": "@ecentic/cliでは、discovery、plans、health、skills、MCPツールのコマンドを利用できます。",
+          "commit": "14d92423"
+        },
+        {
+          "date": "2026-08-25",
+          "label": "新機能",
+          "title": "APIサンドボックスを試す。",
+          "body": "オンボーディングとサンドボックスコマンドには、API評価用のサンプルシミュレーションが含まれます。",
+          "commit": "19b1b78b"
+        },
+        {
+          "date": "2026-08-24",
+          "label": "改善",
+          "title": "開発者向けリファレンスを一か所で確認。",
+          "body": "ドキュメントには認証、エラー、レート制限、APIバージョンが含まれており、不明なエンドポイント向けの復旧リンクも用意されています。",
+          "commit": "3a203235"
+        },
+        {
+          "date": "2026-08-06",
+          "label": "新機能",
+          "title": "分析の許可を選択。",
+          "body": "Cookieバナーで、Google AnalyticsとPostHogを有効にするかどうかを制御します。Cookie設定で、後から選択を変更できます。",
+          "commit": "8c2fddcf"
+        },
+        {
+          "date": "2026-07-30",
+          "label": "新機能",
+          "title": "Merchant Centerの購入手続き要件を確認。",
+          "body": "Shopifyストアでは、Google Shoppingで準備状況を確認し、商品の購入手続きに関する属性を管理できます。",
+          "commit": "bbc6818d"
+        },
+        {
+          "date": "2026-07-29",
+          "label": "修正",
+          "title": "メールでパスワードをリセット。",
+          "body": "パスワードリセットのフローに、新しいパスワード入力フォームと期限切れリンクへの明確な対応を追加しました。",
+          "commit": "e16d3fe7"
+        },
+        {
+          "date": "2026-07-26",
+          "label": "新機能",
+          "title": "Google Merchant Centerの商品情報を管理。",
+          "body": "Merchant Centerを接続し、承認済みの商品コンテンツをecenticの補足データソース経由で送信します。",
+          "commit": "4434a4e9"
+        },
+        {
+          "date": "2026-07-08",
+          "label": "新機能",
+          "title": "プレイグラウンドでエージェント向け購入手続きをテスト。",
+          "body": "公開チェックアウトプレイグラウンドでは、アカウントなしで10件のメッセージを利用できます。",
+          "commit": "b86550e0"
+        },
+        {
+          "date": "2026-07-03",
+          "label": "新機能",
+          "title": "WooCommerceをホスト型エージェント購入手続きに接続。",
+          "body": "カタログ、カート、購入手続きの操作では、ストアブリッジを使用して実際のWooCommerce注文を作成します。",
+          "commit": "b7d1902c"
+        }
+      ]
+    },
+    "researchDraft": {
+      "meta": {
+        "title": "36,797件のAI購入シミュレーションから見えたこと",
+        "description": "ChatGPT、Claude、Gemini、Perplexityによる36,797件のショッピング判断で何が起きたのか。そしてその結果がマーチャントに何を意味するのか。"
+      },
+      "eyebrow": "未公開の調査ドラフト",
+      "title": "36,797件のAI購入シミュレーションが示すもの。",
+      "description": "AIアシスタントに商品選択を何万回も依頼したところ、判断はしばしば一致しませんでした。",
+      "actions": [
+        {
+          "label": "無料のストアチェックを実行",
+          "href": "/sign-up"
+        }
+      ],
+      "sections": [
+        {
+          "id": "summary",
+          "title": "概要",
+          "paragraphs": [
+            "同じカタログでも、ChatGPTは51.6%の割合で同じ商品を選択しました。一方、ClaudeとGeminiは約18.5%でした。",
+            "{{TODO: confirm whether all products in the research were real products}}"
+          ]
+        },
+        {
+          "id": "question",
+          "title": "問い",
+          "description": "AIアシスタントが2つの商品から選ぶとき、何が判断を左右するのか。また、すべてのアシスタントは同じように判断するのか。"
+        },
+        {
+          "id": "method",
+          "title": "手法",
+          "rows": [
+            {
+              "label": "商品",
+              "value": "{{TODO: number of products}}"
+            },
+            {
+              "label": "カテゴリ",
+              "value": "{{TODO: categories represented}}"
+            },
+            {
+              "label": "質問",
+              "value": "{{TODO: question set and selection method}}"
+            },
+            {
+              "label": "実行回数",
+              "value": "{{TODO: runs per question and total allocation}}"
+            },
+            {
+              "label": "モデル",
+              "value": "{{TODO: models and exact versions}}"
+            },
+            {
+              "label": "日付",
+              "value": "{{TODO: research dates}}"
+            },
+            {
+              "label": "購入の定義",
+              "value": "{{TODO: definition of a simulated purchase}}"
+            }
+          ]
+        },
+        {
+          "id": "findings",
+          "title": "調査結果",
+          "paragraphs": [
+            "ChatGPTは51.6%の割合で同じ商品を選択しましたが、ClaudeとGeminiは約18.5%でした。",
+            "{{TODO: add only further findings supported by the research data}}"
+          ]
+        },
+        {
+          "id": "merchants",
+          "title": "マーチャントにとっての意味",
+          "description": "アシスタントごとに判断が一致しないため、1つのアシスタント向けだけの最適化では不十分です。それぞれが参照するデータは、すべてのアシスタントにとって十分に完全である必要があります。"
+        },
+        {
+          "id": "limits",
+          "title": "制限事項",
+          "paragraphs": [
+            "これはライブトラフィックではなく、シミュレーションによる判断です。モデルは変化するため、結果もそれに応じて変動する可能性があります。Perplexityは本調査に含まれていましたが、ecenticのストアスキャンはChatGPT、Claude、Geminiで実行されています。"
+          ]
+        },
+        {
+          "id": "download",
+          "title": "調査をダウンロード",
+          "description": "{{TODO: supply the final, reviewed PDF before enabling its download}}"
+        },
+        {
+          "id": "citation",
+          "title": "この調査を引用",
+          "description": "ecentic, “36,797 simulated AI purchases”, {{TODO: publication month}} 2026."
+        }
+      ]
+    }
+  }
+}

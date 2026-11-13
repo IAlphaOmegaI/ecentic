@@ -1,0 +1,1433 @@
+{
+  "enterprisePlatform": {
+    "overview": {
+      "actions": [
+        {
+          "label": "预约演示",
+          "href": "/demo"
+        },
+        {
+          "label": "免费检测我的店铺",
+          "href": "/sign-up"
+        }
+      ],
+      "faqTitle": "关于平台的常见问题",
+      "meta": {
+        "title": "ecentic 平台：连接、模拟、修复、销售、追踪",
+        "description": "连接商品目录，通过 AI 模型比较商品，发布所选更改，测试智能体结账，并追踪检测到的 Shopify 引荐流量。"
+      },
+      "eyebrow": "平台",
+      "title": "店铺通过 AI 渠道销售所需的一切。",
+      "description": "按顺序分为五步。连接商品目录，查看 AI 模型如何比较该商品目录，改进它们读取的数据，测试结账路径，并追踪可观察到的数据。由您决定发布哪些内容，以及何时重新扫描。",
+      "sections": [
+        {
+          "id": "connect",
+          "title": "在一个地方管理商品目录。商品内容始终由您掌控。",
+          "eyebrow": "[01] 连接",
+          "description": "在一个地方管理商品目录。支持 Shopify、WooCommerce、受支持的商品 Feed 或 CSV。先导入商品数据；发布功能可单独选择。",
+          "field": false,
+          "items": [
+            {
+              "title": "Shopify 应用",
+              "body": "通过 Shopify OAuth 连接。商品导入不会覆盖您的商品刊登信息。连接后还会安装 Shopify 访问追踪脚本。",
+              "href": "/platform/connect#shopify",
+              "label": "了解详情"
+            },
+            {
+              "title": "WooCommerce 插件或 REST API",
+              "body": "通过 ecentic 插件或 REST API 密钥连接。发布功能需要写入权限；只读密钥可用于导入商品。",
+              "href": "/platform/connect#woocommerce",
+              "label": "了解详情"
+            },
+            {
+              "title": "商品数据源",
+              "body": "导入受支持的 RSS/XML 数据源或 JSON 商品数组，包括 products 或 items 集合。数据源必须符合支持的映射规则以及 10 MiB 限制。",
+              "href": "/platform/connect#product-feeds",
+              "label": "查看"
+            },
+            {
+              "title": "CSV 上传",
+              "body": "使用导入器支持的列，从电子表格导出文件开始。这不会为原始平台建立可写回通道。",
+              "href": "/platform/connect#csv",
+              "label": "查看"
+            },
+            {
+              "title": "从店铺地址导入",
+              "body": "从可访问的公开 Shopify 或 WooCommerce 商品目录开始。在导入商品目录前，需要先创建账户。受密码保护或不受支持的商品目录需要使用其他连接方式。",
+              "href": "/platform/connect#store-address",
+              "label": "查看"
+            },
+            {
+              "title": "Google Merchant Center",
+              "body": "Shopify 店铺需单独连接。可查看诊断信息、准备补充数据，并选择何时发送已发布的修复。",
+              "href": "/platform/connect#merchant-center",
+              "label": "查看"
+            }
+          ],
+          "links": [
+            {
+              "label": "查看连接",
+              "href": "/platform/connect"
+            }
+          ]
+        },
+        {
+          "id": "simulate",
+          "title": "查看 AI 如何选购您的商品目录。逐个商品分析。",
+          "eyebrow": "[02] 模拟",
+          "description": "查看模型会选择哪些商品，以及原因。ChatGPT、Claude 和 Gemini 会将您的商品与指定竞品进行对比，并记录其推理过程。",
+          "items": [
+            {
+              "title": "智能体模拟",
+              "body": "在 ChatGPT、Claude 和 Gemini 上进行受控商品对比。一次扫描会汇总您请求的对比。",
+              "href": "/platform/simulate#simulations",
+              "label": "查看"
+            },
+            {
+              "title": "AI 胜率",
+              "body": "按商品、模型和竞品拆解已完成的模拟决策。这不是实时市场份额或销售数据。",
+              "href": "/platform/simulate#win-rate",
+              "label": "查看"
+            },
+            {
+              "title": "竞品对战卡",
+              "body": "查看记录下来的对比结果，以及模型指出的优势或差距。任何建议的商品事实都应与您自己的源数据核对。",
+              "href": "/platform/simulate#battlecards",
+              "label": "查看"
+            },
+            {
+              "title": "智能体回放",
+              "body": "跟踪模拟过程中记录的推理。这是模型给出的解释，不是购物者会话记录。",
+              "href": "/platform/simulate#replay",
+              "label": "查看"
+            },
+            {
+              "title": "智能体就绪检测",
+              "body": "检查 robots.txt 中的 AI 爬虫规则、示例页面 HTML 中的 Product JSON-LD、商品标识符、内容深度以及生成 Feed 的资格。无法抓取的页面会被标记为警告。该检测不会执行浏览器，也不保证不存在机器人拦截。",
+              "href": "/platform/simulate#readiness",
+              "label": "查看"
+            },
+            {
+              "title": "商品信息质量检查",
+              "body": "针对已导入且处于激活状态商品的支持字段，运行基于 Google 和 OpenAI 规范的 34 项 Feed 规则检查。检查内容包括标识符、品牌和必填商品信息。",
+              "href": "/platform/simulate#listing-quality",
+              "label": "查看"
+            },
+            {
+              "title": "品牌可见度",
+              "body": "该仪表盘功能会向 ChatGPT 提出一组品牌相关问题。目前仅覆盖 ChatGPT，与三模型商品扫描分开。",
+              "href": "/platform/simulate#brand-visibility",
+              "label": "查看"
+            }
+          ],
+          "links": [
+            {
+              "label": "查看模拟",
+              "href": "/platform/simulate"
+            }
+          ]
+        },
+        {
+          "id": "fix",
+          "title": "修复 AI 读取的数据。准备好后再发布。",
+          "eyebrow": "[03] 修复",
+          "description": "基于现有事实重写标题和描述。结构化数据需单独发布，并可选择何时将已发布的修复发送到 Shopify 上的 Merchant Center。",
+          "field": false,
+          "items": [
+            {
+              "title": "商品信息重写",
+              "body": "Apply 会在直接连接的 Shopify 或 WooCommerce 店铺中生成并发布标题和描述修改。重写仅重新组织现有事实。请先在源商品目录中确认缺失事实。",
+              "href": "/platform/fix#listings",
+              "label": "查看"
+            },
+            {
+              "title": "结构化数据",
+              "body": "通过单独操作发布 schema.org Product 数据。Shopify 店铺需要启用 app embed 才能渲染商品 metafield；WooCommerce 插件会渲染其商品元数据。",
+              "href": "/platform/fix#structured-data",
+              "label": "查看"
+            },
+            {
+              "title": "缺失属性",
+              "body": "模拟和商品信息检查可以发现缺口。ecentic 不会生成 GTIN、认证商品声明，也不会编造您没有的规格信息。",
+              "href": "/platform/fix#attributes",
+              "label": "查看"
+            },
+            {
+              "title": "每项变更何时发布，由您决定。",
+              "body": "对于商品信息重写，Apply 是发布操作。结构化数据使用单独的发布操作。也可以针对覆盖的商品选择明确的批量操作。",
+              "href": "/platform/fix#publish",
+              "label": "查看"
+            },
+            {
+              "title": "将已发布的修复发送到 Merchant Center。",
+              "body": "在 Shopify 上，通过 Google Shopping 控件发送已发布的修复。这会创建补充数据，而不会替换主 Feed。商品信息 Apply 不会自动执行此同步。",
+              "href": "/platform/fix#merchant-center",
+              "label": "查看"
+            }
+          ],
+          "links": [
+            {
+              "label": "查看修复",
+              "href": "/platform/fix"
+            }
+          ]
+        },
+        {
+          "id": "sell",
+          "title": "让 AI 完成结账。按您的规则进行。",
+          "eyebrow": "[04] 销售",
+          "description": "测试智能体在结账时会遇到什么。在 WooCommerce 上，可通过店铺的网关和已配置的访问控制，提供通往购物车和订单的路径。",
+          "items": [
+            {
+              "title": "WooCommerce 智能体结账",
+              "body": "通过 ecentic 插件和托管端点开放商品搜索、真实购物车和结账功能。订单归属于您的店铺。访问控制可配置：空的允许列表表示允许所有平台，仅在启用对应选项时才强制要求签名。",
+              "href": "/platform/sell#checkout",
+              "label": "查看"
+            },
+            {
+              "title": "在 ChatGPT 中销售",
+              "body": "即将推出。ecentic 应用是否会发布到 ChatGPT 的应用目录尚未确认。商品模拟功能可单独使用。",
+              "href": "/platform/sell#chatgpt",
+              "label": "查看"
+            },
+            {
+              "title": "结账演练场",
+              "body": "针对您的店铺工具运行测试智能体。提供 10 条匿名消息；结账测试请使用预发布店铺。",
+              "href": "/platform/sell#playground",
+              "label": "查看"
+            },
+            {
+              "title": "结账验证器",
+              "body": "获取店铺的服务发现配置文件，查看报告中的检查结果。通过验证并不意味着商家已加入某个 AI 平台的计划。",
+              "href": "/platform/sell#validator",
+              "label": "查看"
+            },
+            {
+              "title": "WebMCP 扫描器",
+              "body": "检查少量页面样本中的工具和表单源证据。扫描器不会执行浏览器工具或提交表单。",
+              "href": "/platform/sell#webmcp",
+              "label": "查看"
+            }
+          ],
+          "links": [
+            {
+              "label": "查看销售",
+              "href": "/platform/sell"
+            }
+          ]
+        },
+        {
+          "id": "track",
+          "title": "查看 AI 为您带来了什么。逐店铺分析。",
+          "eyebrow": "[05] 跟踪",
+          "description": "查看 Shopify 上检测到的 AI 引荐流量。在完成变更后请求新的扫描，并将访问量与模拟结果和估算值区分开。",
+          "field": false,
+          "items": [
+            {
+              "title": "Shopify 上的 AI 流量",
+              "body": "可识别 ChatGPT、Perplexity、Claude、Gemini、Copilot 和 You.com 的引荐域名，以及已知 user-agent 信号。需要浏览器脚本和可用信号支持；无法观察所有非 JavaScript 爬虫，也无法识别所有直接访问。",
+              "href": "/platform/track#traffic",
+              "label": "查看"
+            },
+            {
+              "title": "每项修复的预估提升",
+              "body": "提升值是随商品信息变更记录的估算值，不是实际营收，也不是发布后已完成的实验结果。",
+              "href": "/platform/track#lift",
+              "label": "查看"
+            },
+            {
+              "title": "按需重新扫描",
+              "body": "当需要再次比较商品时，可运行新的扫描。目前尚未启用定时重新扫描。",
+              "href": "/platform/track#rescans",
+              "label": "查看"
+            },
+            {
+              "title": "一个账户管理所有店铺",
+              "body": "多店铺中心仅包含同一账户拥有的店铺。不提供团队席位、代理机构委托访问或单点登录。",
+              "href": "/platform/track#stores",
+              "label": "查看"
+            },
+            {
+              "title": "API、MCP 服务器和 CLI",
+              "body": "开发者工具支持发现、套餐、连接和入驻流程。目前公开接口不导出仪表盘扫描结果或访问跟踪数据。",
+              "href": "/platform/track#developers",
+              "label": "查看"
+            }
+          ],
+          "links": [
+            {
+              "label": "查看追踪",
+              "href": "/platform/track"
+            }
+          ]
+        },
+        {
+          "id": "control",
+          "title": "ecentic 不会做什么。",
+          "paragraphs": [
+            "导入商品数据不会重写您的商品信息。发布需要您主动选择操作。模型自行决定推荐内容；模拟无法保证未来销售。"
+          ]
+        },
+        {
+          "id": "developers",
+          "title": "我们只发布您要求发布的内容。",
+          "description": "ecentic 的 llms.txt、API 目录、OAuth 服务发现信息、智能体结账配置文件和 MCP 端点均已公开。REST API 提供版本管理，并采用 OpenAPI 3.1 文档规范；CLI 可通过 npx @ecentic/cli 运行。",
+          "note": "当前开发者接口支持发现和入驻，不支持导出仪表盘结果。",
+          "links": [
+            {
+              "label": "阅读文档",
+              "href": "/docs"
+            },
+            {
+              "label": "查看公开端点",
+              "href": "/resources"
+            }
+          ]
+        }
+      ],
+      "faqs": [
+        {
+          "question": "必须使用全部五个步骤吗？",
+          "answer": "不需要。可以先连接商品目录并运行模拟，再决定哪些商品需要调整。"
+        },
+        {
+          "question": "目前支持哪些平台？",
+          "answer": "Shopify 和 WooCommerce 支持直接连接。兼容的商品 Feed 和 CSV 文件支持从其他系统导入。"
+        },
+        {
+          "question": "模拟和真实 AI 流量是一回事吗？",
+          "answer": "不是。模拟是与指定竞品进行的受控对比。检测到的真实 AI 引荐流量会在 Shopify 上单独统计。"
+        },
+        {
+          "question": "在哪里查看价格？",
+          "answer": "请查看 Pricing 页面。企业试点项目会通过电话沟通确定范围。"
+        }
+      ]
+    },
+    "pages": {
+      "connect": {
+        "actions": [
+          {
+            "label": "预约演示",
+            "href": "/demo"
+          },
+          {
+            "label": "免费检查我的店铺",
+            "href": "/sign-up"
+          }
+        ],
+        "faqTitle": "关于平台的问题",
+        "meta": {
+          "title": "将您的商品目录连接到 ecentic",
+          "description": "连接 Shopify 或 WooCommerce，导入支持的 Feed 或 CSV，并选择要比较的商品。商品导入为只读。"
+        },
+        "eyebrow": "连接",
+        "title": "您的商品目录，集中管理。商品内容始终由您控制。",
+        "description": "连接 Shopify 或 WooCommerce，导入支持的商品 Feed 或 CSV，或直接从可访问的 Shopify 或 WooCommerce 店铺地址开始。ecentic 会导入您的商品目录，供您选择需要比较的商品。发布商品变更是单独操作。",
+        "sections": [
+          {
+            "id": "problem",
+            "title": "您的商品数据分散在多个地方。",
+            "eyebrow": "[01] 问题",
+            "description": "店铺是一份版本，Merchant Center 是另一份，代理机构搭建的 Feed 又是第三份。不同来源中的商品信息可能并不一致。",
+            "items": [
+              {
+                "title": "未及时更新的数据源",
+                "body": "价格和描述可能已经与店铺不一致。"
+              },
+              {
+                "title": "无人负责的 Merchant Center 账户",
+                "body": "负责修改商品目录的团队，可能并不管理 Google Feed。"
+              },
+              {
+                "title": "缺少统一起点",
+                "body": "确定团队要比较的商品目录和商品。"
+              }
+            ]
+          },
+          {
+            "id": "how-it-works",
+            "title": "导入商品目录。后续操作由您决定。",
+            "eyebrow": "[02] 工作方式",
+            "ordered": true,
+            "columns": 4,
+            "items": [
+              {
+                "title": "连接数据源",
+                "body": "连接 Shopify 或 WooCommerce，上传 CSV，或粘贴支持的 XML 或 JSON Feed URL。"
+              },
+              {
+                "title": "导入商品数据",
+                "body": "ecentic 会导入标题、描述、价格、图片和商品标识符等支持字段。Feed 导入不会保留任意自定义属性。"
+              },
+              {
+                "title": "按需连接 Merchant Center",
+                "body": "Shopify 店铺可单独连接 Google Merchant Center，用于诊断和补充数据。"
+              },
+              {
+                "title": "选择商品",
+                "body": "选择要比较的内容。导入不会重写商品内容；发布需要您明确执行操作。"
+              }
+            ]
+          },
+          {
+            "id": "example",
+            "title": "一个已准备好进行比较的商品。",
+            "eyebrow": "[03] 有哪些变化",
+            "description": "示例使用样本数据。导入会在 ecentic 中创建工作副本，不会补充缺失的商品事实。"
+          },
+          {
+            "id": "why-it-works",
+            "title": "为每家店铺建立清晰起点。",
+            "eyebrow": "[04] 为什么有效",
+            "columns": 3,
+            "items": [
+              {
+                "title": "以商品数据为先",
+                "body": "基于支持的商品目录字段进行比较，而不是从首页猜测。"
+              },
+              {
+                "title": "导入与发布分离",
+                "body": "先导入商品，再授权内容变更。"
+              },
+              {
+                "title": "一个账户管理您的店铺",
+                "body": "通过一个登录账户统一管理您拥有的店铺。"
+              }
+            ]
+          },
+          {
+            "id": "what-to-track",
+            "title": "团队可跟踪的内容。",
+            "eyebrow": "[05] 连接后",
+            "items": [
+              {
+                "title": "已连接商品",
+                "body": "哪些商品已成功导入。"
+              },
+              {
+                "title": "可用字段",
+                "body": "每个来源中有哪些支持字段。"
+              },
+              {
+                "title": "来源问题",
+                "body": "导入错误，以及已连接时的 Merchant Center 诊断信息。"
+              }
+            ]
+          },
+          {
+            "id": "shopify",
+            "title": "Shopify 应用",
+            "paragraphs": [
+              "通过 Shopify OAuth 连接。商品导入不会重写您的商品信息。连接时还会安装 Shopify 访问跟踪脚本。"
+            ],
+            "links": [
+              {
+                "label": "查看 Shopify 集成",
+                "href": "/integrations/shopify"
+              }
+            ]
+          },
+          {
+            "id": "woocommerce",
+            "title": "WooCommerce 插件或 REST API",
+            "paragraphs": [
+              "使用 ecentic 插件或 REST API 密钥连接。发布需要写入权限；只读密钥可用于导入商品。"
+            ],
+            "links": [
+              {
+                "label": "查看 WooCommerce 集成",
+                "href": "/integrations/woocommerce"
+              }
+            ]
+          },
+          {
+            "id": "product-feeds",
+            "title": "商品数据源",
+            "paragraphs": [
+              "导入支持的 RSS/XML Feed 或 JSON 商品数组，包括 products 或 items 集合。Feed 必须符合支持的映射规则和 10 MiB 限制。"
+            ],
+            "links": [
+              {
+                "label": "查看支持格式",
+                "href": "/integrations/product-feeds"
+              }
+            ]
+          },
+          {
+            "id": "csv",
+            "title": "CSV 上传",
+            "paragraphs": [
+              "使用导入器支持的列，从电子表格导出文件开始。这不会为原始平台建立可写回通道。"
+            ]
+          },
+          {
+            "id": "store-address",
+            "title": "从店铺地址导入",
+            "paragraphs": [
+              "从可访问的公开 Shopify 或 WooCommerce 商品目录开始。在导入商品目录前，需要先创建账户。受密码保护或不受支持的商品目录需要使用其他连接方式。"
+            ]
+          },
+          {
+            "id": "merchant-center",
+            "title": "Google Merchant Center",
+            "paragraphs": [
+              "Shopify 店铺需单独连接。可查看诊断信息、准备补充数据，并选择何时发送已发布的修复。"
+            ],
+            "links": [
+              {
+                "label": "查看 Merchant Center",
+                "href": "/integrations/google-merchant-center"
+              }
+            ]
+          },
+          {
+            "id": "next",
+            "title": "下一步：比较商品。",
+            "links": [
+              {
+                "label": "模拟",
+                "href": "/platform/simulate"
+              },
+              {
+                "label": "平台概览",
+                "href": "/platform"
+              }
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "question": "连接 ecentic 会修改我的店铺吗？",
+            "answer": "导入不会重写商品内容。Shopify OAuth 还会安装访问跟踪功能。商品信息和结构化数据的发布需要您单独执行操作。"
+          },
+          {
+            "question": "目前支持哪些平台？",
+            "answer": "Shopify 和 WooCommerce 支持直接连接。其他平台可从兼容的商品 Feed 或 CSV 导出开始。"
+          },
+          {
+            "question": "需要访问我们的 Merchant Center 吗？",
+            "answer": "仅在使用 Merchant Center 功能时需要，而且目前仅支持 Shopify。无需该连接也可运行模拟。"
+          },
+          {
+            "question": "能否只使用公开数据开始？",
+            "answer": "可以。可访问的 Shopify 或 WooCommerce 商品目录，以及兼容的公开 Feed，都可以支持首次扫描。企业试点项目也可基于双方确认的公开页面和数据启动。"
+          }
+        ]
+      },
+      "simulate": {
+        "actions": [
+          {
+            "label": "预约演示",
+            "href": "/demo"
+          },
+          {
+            "label": "免费检查我的店铺",
+            "href": "/sign-up"
+          }
+        ],
+        "faqTitle": "关于平台的问题",
+        "meta": {
+          "title": "查看 AI 如何比较您的商品 | ecentic",
+          "description": "在 ChatGPT、Claude 和 Gemini 上，将商品与指定竞品进行比较。查看模拟胜率、推理过程、就绪检查和商品信息质量。"
+        },
+        "eyebrow": "模拟",
+        "title": "查看 AI 如何选购您的商品目录。逐个商品分析。",
+        "description": "ecentic 会在 ChatGPT、Claude 和 Gemini 的模拟中，将您的商品与指定竞品并列比较，并记录模型选择了哪一个以及原因。您可以查看按商品、模型和竞品划分的胜率。这些是模拟决策，不是真实购物会话。",
+        "sections": [
+          {
+            "id": "problem",
+            "title": "并非每一次导致失单的决策都能被看到。",
+            "eyebrow": "[01] 问题",
+            "description": "购物者提出预算范围内的需求。AI 助手比较商品并给出答案。如果您的商品未被纳入，您自己的分析系统可能永远不会记录这次比较。",
+            "items": [
+              {
+                "title": "被跳过的商品",
+                "body": "找出在您运行的对比中落败的商品信息。"
+              },
+              {
+                "title": "被选中的竞品",
+                "body": "了解每次模拟中获胜的是哪个指定竞品。"
+              },
+              {
+                "title": "缺失的信息",
+                "body": "查看模型对关键因素的解释。"
+              }
+            ]
+          },
+          {
+            "id": "how-it-works",
+            "title": "让对比过程清晰可见。",
+            "eyebrow": "[02] 工作方式",
+            "ordered": true,
+            "columns": 4,
+            "items": [
+              {
+                "title": "选择对比组合",
+                "body": "选择要对比的商品和竞品。"
+              },
+              {
+                "title": "运行三个模型",
+                "body": "ChatGPT、Claude 和 Gemini 各自做出一次模拟选择。"
+              },
+              {
+                "title": "查看记录",
+                "body": "每次完成的运行都会记录选择结果、推理过程和对比评分。"
+              },
+              {
+                "title": "选择下一步操作",
+                "body": "根据结果确定工作优先级。模拟不会发布变更，也不保证真实购买发生。"
+              }
+            ]
+          },
+          {
+            "id": "example",
+            "title": "一个问题，旁边附有推理过程。",
+            "eyebrow": "[03] 会发生哪些变化",
+            "description": "示例使用样本数据。该示例展示的是已记录的对比结果，不代表真实客户结果。"
+          },
+          {
+            "id": "why-it-works",
+            "title": "可深入查看的结果。",
+            "eyebrow": "[04] 为什么有效",
+            "items": [
+              {
+                "title": "指定竞品",
+                "body": "商品与商品之间的直接对比，为结果提供上下文。"
+              },
+              {
+                "title": "已记录的推理",
+                "body": "查看模型对该具体决策的说明。"
+              },
+              {
+                "title": "三种视角",
+                "body": "对比 ChatGPT、Claude 和 Gemini 的记录结果与解释。不同模型可能会对同样的商品信息赋予不同权重。"
+              }
+            ]
+          },
+          {
+            "id": "what-to-track",
+            "title": "团队可追踪的数据。",
+            "eyebrow": "[05] 检测之后",
+            "items": [
+              {
+                "title": "商品胜率",
+                "body": "商品在已完成模拟中被选中的占比。"
+              },
+              {
+                "title": "模型胜率",
+                "body": "三个模型在相同对比中的差异。"
+              },
+              {
+                "title": "持续失利",
+                "body": "指定竞品在测试中反复胜过的商品。"
+              }
+            ]
+          },
+          {
+            "id": "simulations",
+            "title": "智能体模拟",
+            "paragraphs": [
+              "在 ChatGPT、Claude 和 Gemini 上进行受控商品对比。一次检测包含您请求的一组对比。"
+            ]
+          },
+          {
+            "id": "win-rate",
+            "title": "AI 胜率",
+            "paragraphs": [
+              "按商品、模型和竞品拆分已完成的模拟决策。这不是实时市场份额或销售指标。"
+            ]
+          },
+          {
+            "id": "battlecards",
+            "title": "竞品对战卡",
+            "paragraphs": [
+              "查看记录的对比结果，以及模型指出的优势或差距。任何建议的商品信息都应与您的源数据核对。"
+            ]
+          },
+          {
+            "id": "replay",
+            "title": "智能体回放",
+            "paragraphs": [
+              "查看模拟过程中记录的推理。这是模型给出的解释，不是购物者会话的录制。"
+            ]
+          },
+          {
+            "id": "readiness",
+            "title": "智能体就绪度检测",
+            "paragraphs": [
+              "检查 robots.txt 中的 AI 爬虫规则、抽样页面 HTML 中的 Product JSON-LD、商品标识符、内容深度，以及是否符合生成商品数据源的要求。无法抓取的页面会在报告中标记为警告。此项检测不会运行浏览器，也不能证明网站不存在机器人访问拦截。"
+            ]
+          },
+          {
+            "id": "listing-quality",
+            "title": "商品信息质量检查",
+            "paragraphs": [
+              "基于 Google 和 OpenAI 的 feed 规范，对已导入且处于启用状态的商品的受支持字段运行 34 项规则检查。检查内容包括标识符、品牌和必需的商品信息。"
+            ]
+          },
+          {
+            "id": "brand-visibility",
+            "title": "品牌可见度",
+            "paragraphs": [
+              "仪表板功能会向 ChatGPT 提出一组品牌相关问题。目前仅覆盖 ChatGPT，与三模型商品检测分开。"
+            ]
+          },
+          {
+            "id": "next",
+            "title": "下一步：选择需要修复的问题。",
+            "links": [
+              {
+                "label": "连接",
+                "href": "/platform/connect"
+              },
+              {
+                "label": "修复",
+                "href": "/platform/fix"
+              }
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "question": "这是实时排名数据吗？",
+            "answer": "不是。胜率来自与指定竞品的模拟对比。实时引荐访问会在 Shopify 中单独跟踪。"
+          },
+          {
+            "question": "你们模拟哪些模型？",
+            "answer": "目前店铺检测支持 ChatGPT、Claude 和 Gemini。"
+          },
+          {
+            "question": "就绪度检测会检查什么？",
+            "answer": "检查爬虫规则、抓取的商品页 HTML、标识符、内容，以及是否符合商品数据源要求。检测会抽样页面，不会通过浏览器渲染页面进行检查。"
+          },
+          {
+            "question": "什么是商品信息质量检查？",
+            "answer": "基于 Google 和 OpenAI 的 feed 规范制定的 34 项规则，应用于已导入且处于启用状态的商品的受支持字段。"
+          }
+        ]
+      },
+      "fix": {
+        "actions": [
+          {
+            "label": "预约演示",
+            "href": "/demo"
+          },
+          {
+            "label": "免费检查我的店铺",
+            "href": "/sign-up"
+          }
+        ],
+        "faqTitle": "关于平台的问题",
+        "meta": {
+          "title": "为 AI 购物优化商品信息 | ecentic",
+          "description": "根据您的选择重写商品标题和描述。结构化数据单独发布，然后将已发布的修复同步到 Shopify 上的 Merchant Center。"
+        },
+        "eyebrow": "修复",
+        "title": "修复 AI 读取的数据。准备好后再发布。",
+        "description": "根据模拟结果决定哪些商品信息需要优化。应用商品信息变更时，ecentic 会基于现有商品信息重写标题和描述。结构化数据和 Merchant Center 同步分别拥有独立的发布控制。",
+        "sections": [
+          {
+            "id": "problem",
+            "title": "缺少信息时，商品更难比较。",
+            "eyebrow": "[01] 问题所在",
+            "description": "缺失的续航时间、模糊的尺寸描述，或与商品不再匹配的介绍内容。每一个缺口都会降低对比的有效性。源信息需要由您或供应商提供。",
+            "items": [
+              {
+                "title": "商品信息过多",
+                "body": "从在模拟中落败的商品开始，决定优先处理哪些内容。"
+              },
+              {
+                "title": "商品信息不清晰",
+                "body": "让已有信息更易阅读和比较。"
+              },
+              {
+                "title": "多个发布位置",
+                "body": "区分店铺内容、结构化数据和 Google feed。"
+              }
+            ]
+          },
+          {
+            "id": "how-it-works",
+            "title": "三种发布控制。每次都由您决定。",
+            "eyebrow": "[02] 工作原理",
+            "ordered": true,
+            "columns": 4,
+            "items": [
+              {
+                "title": "选择商品信息",
+                "body": "查看对比结果，并决定要优化哪件商品。"
+              },
+              {
+                "title": "应用商品信息重写",
+                "body": "应用后，系统会基于当前商品信息生成并发布标题和描述。执行前不会提供完整重写预览。"
+              },
+              {
+                "title": "单独发布其他数据",
+                "body": "使用独立的结构化数据操作。在 Shopify 上，可自行决定何时将已发布的商品信息修复同步到 Merchant Center。"
+              },
+              {
+                "title": "重新检测并比较",
+                "body": "修复带来的提升为预估值。请自行运行新的检测，对比下一组决策结果。"
+              }
+            ]
+          },
+          {
+            "id": "example",
+            "title": "相同信息，更清晰的表达。",
+            "eyebrow": "[03] 会发生哪些变化",
+            "description": "示例使用样本数据。该示例展示的是一种可能的重写结果，而非预览功能。不会虚构新的规格或标识符。"
+          },
+          {
+            "id": "why-it-works",
+            "title": "清晰界定每项变更的范围。",
+            "eyebrow": "[04] 为什么有效",
+            "items": [
+              {
+                "title": "聚焦式重写",
+                "body": "生成器基于现有标题、描述和胜率工作，不会读取竞品的缺失属性列表。"
+              },
+              {
+                "title": "明确发布",
+                "body": "商品信息和结构化数据变更，只有在您执行操作后才会生效。"
+              },
+              {
+                "title": "独立的 Google 同步",
+                "body": "已发布的商品信息记录可作为补充 Merchant Center 数据发送到 Shopify。"
+              }
+            ]
+          },
+          {
+            "id": "what-to-track",
+            "title": "团队可追踪的数据。",
+            "eyebrow": "[05] 发布之后",
+            "items": [
+              {
+                "title": "已修改商品",
+                "body": "您选择发布的商品。"
+              },
+              {
+                "title": "新的检测结果",
+                "body": "对比工作前后的已完成检测结果，与预估提升分开查看。"
+              },
+              {
+                "title": "Merchant Center 问题",
+                "body": "发送补充数据后查看诊断结果。"
+              }
+            ]
+          },
+          {
+            "id": "listings",
+            "title": "商品信息重写",
+            "paragraphs": [
+              "Apply 会在直接连接的 Shopify 或 WooCommerce 店铺中生成并发布标题和描述变更。重写只会重新组织现有信息。请先在源商品目录中确认缺失信息。"
+            ]
+          },
+          {
+            "id": "structured-data",
+            "title": "结构化数据",
+            "paragraphs": [
+              "通过独立操作发布 schema.org Product 数据。Shopify 店铺需要启用应用嵌入才能渲染商品元字段；WooCommerce 插件则会渲染其商品元数据。"
+            ]
+          },
+          {
+            "id": "attributes",
+            "title": "缺失属性",
+            "paragraphs": [
+              "模拟和商品信息检查可以发现信息缺口。ecentic 不会生成 GTIN、认证商品声明，也不会虚构您没有的规格信息。"
+            ]
+          },
+          {
+            "id": "publish",
+            "title": "每项变更的发布时间由您决定。",
+            "paragraphs": [
+              "对于商品信息重写，Apply 即为发布操作。结构化数据使用单独的发布操作。您也可以为所覆盖的商品选择明确的批量操作。"
+            ]
+          },
+          {
+            "id": "merchant-center",
+            "title": "将已发布修复同步到 Merchant Center。",
+            "paragraphs": [
+              "在 Shopify 上，通过 Google Shopping 控制发送已发布修复。这会创建补充数据，而不会替换主 feed。商品信息 Apply 不会自动执行该同步。"
+            ],
+            "links": [
+              {
+                "label": "查看 Merchant Center 同步",
+                "href": "/integrations/google-merchant-center"
+              }
+            ]
+          },
+          {
+            "id": "next",
+            "title": "下一步：测试结账路径。",
+            "links": [
+              {
+                "label": "模拟",
+                "href": "/platform/simulate"
+              },
+              {
+                "label": "销售",
+                "href": "/platform/sell"
+              }
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "question": "ecentic 会自行发布任何内容吗？",
+            "answer": "当前商品信息流程需要明确执行 Apply 操作，包括您选择的任何批量操作。结构化数据和 Merchant Center 同步拥有独立控制。"
+          },
+          {
+            "question": "具体会写入什么内容？",
+            "answer": "商品信息 Apply 会写入标题和描述。结构化数据需单独发布。Shopify 店铺可通过独立同步将已发布修复发送到 Merchant Center。商品信息操作不会重写价格和库存。"
+          },
+          {
+            "question": "你们展示的提升是实际测量结果吗？",
+            "answer": "这是针对每项修复的预估值。新的检测可以让您对比后续模拟决策结果。这不是新增销售额的测量数据。"
+          },
+          {
+            "question": "会改变我们的品牌语调吗？",
+            "answer": "重写基于现有商品信息开始。Apply 会生成并发布内容，因此只有在准备好修改商品信息时才应执行该操作。目前还没有生成内容预览步骤。"
+          }
+        ]
+      },
+      "sell": {
+        "actions": [
+          {
+            "label": "预约演示",
+            "href": "/demo"
+          },
+          {
+            "label": "免费检查我的店铺",
+            "href": "/sign-up"
+          }
+        ],
+        "faqTitle": "关于平台的问题",
+        "meta": {
+          "title": "按您的规则实现智能体结账 | ecentic",
+          "description": "测试智能体结账，并通过自己的支付网关为 WooCommerce 做好智能体订单准备。配置访问控制并检查您的设置。"
+        },
+        "eyebrow": "销售",
+        "title": "让 AI 完成结账。由您掌控规则。",
+        "description": "被选中只是购买的一部分。在 WooCommerce 上，ecentic 通过您的店铺和支付网关，为智能体提供商品目录、购物车和结账路径。测试整个流程并配置相关控制。加入 AI 平台的购买计划仍需单独完成。",
+        "sections": [
+          {
+            "id": "problem",
+            "title": "商品被选中后，仍需要可用的结账流程。",
+            "eyebrow": "[01] 问题所在",
+            "description": "智能体需要清晰的商品库存、配送和支付要求。当无法完成某一步时，流程可能需要转交给购物者继续。",
+            "items": [
+              {
+                "title": "必填结账字段",
+                "body": "确认智能体必须提供的信息。"
+              },
+              {
+                "title": "配送与税费",
+                "body": "测试购物车如何应用您的店铺规则。"
+              },
+              {
+                "title": "支付交接",
+                "body": "确认在哪一步需要购物者完成支付。"
+              }
+            ]
+          },
+          {
+            "id": "how-it-works",
+            "title": "测试完整流程。",
+            "eyebrow": "[02] 工作原理",
+            "ordered": true,
+            "columns": 4,
+            "items": [
+              {
+                "title": "检查设置",
+                "body": "使用结账验证器。Shopify 店铺还可以检测 Merchant Center 中受支持的结账设置。"
+              },
+              {
+                "title": "连接 WooCommerce",
+                "body": "插件和托管端点支持商品搜索、购物车、结账和订单。支付由您的网关处理。"
+              },
+              {
+                "title": "运行试验区测试",
+                "body": "让测试智能体跑完整个流程。请使用测试店铺：结账调用可能会创建真实订单。"
+              },
+              {
+                "title": "选择访问方式并重试",
+                "body": "控制是否启用智能体结账。配置 allow-list、必需签名和速率限制，然后重新测试。"
+              }
+            ]
+          },
+          {
+            "id": "example",
+            "title": "查看测试智能体在哪些步骤需要帮助。",
+            "eyebrow": "[03] 会发生哪些变化",
+            "description": "示例使用样本数据。结账是否完成取决于店铺、支付网关和受支持的支付流程。"
+          },
+          {
+            "id": "why-it-works",
+            "title": "订单仍保留在您的店铺中。",
+            "eyebrow": "[04] 为什么有效",
+            "items": [
+              {
+                "title": "您的支付体系",
+                "body": "支付由您现有的网关处理；某些流程需要购物者接手完成。"
+              },
+              {
+                "title": "真实测试流程",
+                "body": "试验区会调用店铺工具，方便您检查结果。"
+              },
+              {
+                "title": "已文档化的端点",
+                "body": "智能体发现与结账端点遵循已发布的协议实现。"
+              }
+            ]
+          },
+          {
+            "id": "what-to-track",
+            "title": "团队可追踪的数据。",
+            "eyebrow": "[05] 测试之后",
+            "items": [
+              {
+                "title": "已完成的测试运行",
+                "body": "哪些测试流程达到订单创建或所需的支付交接。"
+              },
+              {
+                "title": "已修复的阻塞问题",
+                "body": "团队已修复并重新测试的结账要求。"
+              },
+              {
+                "title": "智能体订单",
+                "body": "在已连接的 WooCommerce 店铺中查看智能体订单。"
+              }
+            ]
+          },
+          {
+            "id": "checkout",
+            "title": "WooCommerce 智能体结账",
+            "paragraphs": [
+              "通过 ecentic 插件和托管端点开放商品搜索、真实购物车和结账功能。订单归属于您的店铺。访问控制可配置：空 allow-list 允许所有平台访问，而签名只有在启用该选项时才是必需的。"
+            ],
+            "links": [
+              {
+                "label": "探索 WooCommerce 结账",
+                "href": "/integrations/woocommerce"
+              }
+            ]
+          },
+          {
+            "id": "chatgpt",
+            "title": "在 ChatGPT 中销售",
+            "paragraphs": [
+              "即将推出。ecentic app 是否会发布到 ChatGPT 的应用目录尚未确认。商品模拟功能可单独使用。"
+            ],
+            "note": "ecentic ChatGPT app 尚未发布。",
+            "links": [
+              {
+                "label": "查看 ChatGPT 渠道",
+                "href": "/ai-channels/chatgpt"
+              }
+            ]
+          },
+          {
+            "id": "playground",
+            "title": "结账试验区",
+            "paragraphs": [
+              "让测试智能体调用您的店铺工具。可使用 10 条匿名消息；结账测试请使用测试店铺。"
+            ],
+            "links": [
+              {
+                "label": "打开 UCP 试验区",
+                "href": "/ucp-playground"
+              }
+            ]
+          },
+          {
+            "id": "validator",
+            "title": "结账验证器",
+            "paragraphs": [
+              "获取店铺的发现配置文件，并检查报告中的检测结果。验证结果并不意味着商家已加入某个 AI 平台计划。"
+            ],
+            "links": [
+              {
+                "label": "打开 UCP 验证器",
+                "href": "/ucp-validator"
+              }
+            ]
+          },
+          {
+            "id": "webmcp",
+            "title": "WebMCP 扫描器",
+            "paragraphs": [
+              "检查少量页面样本中的工具和表单源证据。扫描器不会执行浏览器工具或提交表单。"
+            ],
+            "links": [
+              {
+                "label": "扫描网站",
+                "href": "/webmcp-scanner"
+              }
+            ]
+          },
+          {
+            "id": "next",
+            "title": "下一步：衡量可观测的数据。",
+            "links": [
+              {
+                "label": "修复",
+                "href": "/platform/fix"
+              },
+              {
+                "label": "追踪",
+                "href": "/platform/track"
+              }
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "question": "我们需要更换支付服务商吗？",
+            "answer": "WooCommerce 流程使用您店铺现有的支付网关。支持的支付方式以及是否需要购物者接手，取决于网关和配置；启用前请测试完整流程。"
+          },
+          {
+            "question": "Shopify 是否已经支持智能体结账？",
+            "answer": "Shopify 自行管理渠道资格和结账基础设施。ecentic 的 Shopify 功能主要聚焦于商品对比、商品信息修改、追踪以及受支持的 Merchant Center 检查。请在对应渠道页面查看当前资格要求。"
+          },
+          {
+            "question": "AI 可以直接在 ChatGPT 中向我们购买吗？",
+            "answer": "我们尚未确认 ecentic ChatGPT app 的发布，因此目前标记为“即将推出”。ChatGPT 渠道页面会说明当前已验证的商家接入方式。"
+          },
+          {
+            "question": "目前哪些 AI 渠道支持购买？",
+            "answer": "每个渠道都有各自的资格和支付规则。我们的渠道页面会展示带日期的来源，并区分 ecentic 已实现的功能与计划中的连接器。"
+          }
+        ]
+      },
+      "track": {
+        "actions": [
+          {
+            "label": "预约演示",
+            "href": "/demo"
+          },
+          {
+            "label": "免费检查我的店铺",
+            "href": "/sign-up"
+          }
+        ],
+        "faqTitle": "关于平台的问题",
+        "meta": {
+          "title": "追踪 AI 向 Shopify 店铺带来的流量 | ecentic",
+          "description": "查看 Shopify 中检测到的 AI 引荐流量，并对比修复后的新模拟结果。在一个账户下管理您拥有的多个店铺。"
+        },
+        "eyebrow": "追踪",
+        "title": "查看 AI 带来了什么。逐店铺查看。",
+        "description": "跟踪导向 Shopify 商店的已识别 AI 引荐流量，并在完成商品信息优化后比较新的扫描结果。访问量与模拟结果是两项独立指标。可在同一账户中管理您拥有的所有商店，但不要将预估提升视为实际销售额。",
+        "sections": [
+          {
+            "id": "problem",
+            "title": "只有识别出来源，引荐流量才有价值。",
+            "eyebrow": "[01] 问题所在",
+            "description": "AI 辅助访问可能只附带有限的引荐信息。ecentic 会归类其能够识别的信号，但无法还原所有显示为直接流量的访问。",
+            "items": [
+              {
+                "title": "来源不清晰",
+                "body": "在可观测流量中区分已识别的 AI 助手来源。"
+              },
+              {
+                "title": "变更后没有复查",
+                "body": "发布后重新运行模拟，而不是把预估结果当成最终结果。"
+              },
+              {
+                "title": "商店分散在多个位置",
+                "body": "在一个登录账户下集中管理您拥有的商店。"
+              }
+            ]
+          },
+          {
+            "id": "how-it-works",
+            "title": "将访问、测试和预估结果分开看待。",
+            "eyebrow": "[02] 工作原理",
+            "ordered": true,
+            "columns": 4,
+            "items": [
+              {
+                "title": "识别引荐来源",
+                "body": "在 Shopify 上，浏览器脚本会检查已识别的助手引荐来源以及 user-agent 信号。"
+              },
+              {
+                "title": "查看明细",
+                "body": "按助手查看已识别访问量和时间序列汇总。"
+              },
+              {
+                "title": "变更后重新扫描",
+                "body": "请求新的扫描，并比较已完成的模拟决策。"
+              },
+              {
+                "title": "自行决定下一步",
+                "body": "添加您拥有的商店，并自行决定是否继续扫描或发布变更。"
+              }
+            ]
+          },
+          {
+            "id": "example",
+            "title": "为可检测的访问标明来源。",
+            "eyebrow": "[03] 有哪些变化",
+            "description": "示例使用样本数据。这只是引荐来源分类，并不代表新增销售，也不能证明恢复了隐藏访问。"
+          },
+          {
+            "id": "why-it-works",
+            "title": "让每项指标都清晰易懂。",
+            "eyebrow": "[04] 为什么有效",
+            "items": [
+              {
+                "title": "按助手划分的引荐来源",
+                "body": "已识别来源会按助手分类，而不是合并为一个统一标签。"
+              },
+              {
+                "title": "变更与重新扫描",
+                "body": "保留已发布商品信息优化记录，并比较后续测试结果。"
+              },
+              {
+                "title": "明确的归因规则",
+                "body": "按量付费方案使用其文档说明中的归因窗口。回退规则基于整个商店，因此归因结果并不能证明是同一位访客完成了购买。"
+              }
+            ]
+          },
+          {
+            "id": "what-to-track",
+            "title": "团队可跟踪的内容。",
+            "eyebrow": "[05] 上线后",
+            "items": [
+              {
+                "title": "已识别的 AI 引荐访问",
+                "body": "Shopify 上按助手分类的已识别访问。"
+              },
+              {
+                "title": "重新扫描后的胜率",
+                "body": "完成变更后的下一组模拟决策结果。"
+              },
+              {
+                "title": "已变更商品",
+                "body": "您选择发布的商品信息。"
+              }
+            ]
+          },
+          {
+            "id": "traffic",
+            "title": "Shopify 上的 AI 流量",
+            "paragraphs": [
+              "可识别来自 ChatGPT、Perplexity、Claude、Gemini、Copilot 和 You.com 的引荐域名，以及已知的 user-agent 信号。此功能依赖浏览器脚本和可用信号；无法观测所有非 JavaScript 爬虫，也无法识别所有直接访问。"
+            ]
+          },
+          {
+            "id": "lift",
+            "title": "每项修复的预估提升",
+            "paragraphs": [
+              "提升值是随商品信息变更记录的预估结果，并非实际营收，也不是发布后的完整实验结果。"
+            ]
+          },
+          {
+            "id": "rescans",
+            "title": "您请求的重新扫描",
+            "paragraphs": [
+              "当您想再次比较商品时，可运行新的扫描。目前尚未启用定时重新扫描。"
+            ]
+          },
+          {
+            "id": "stores",
+            "title": "一个账户管理所有商店",
+            "paragraphs": [
+              "多商店中心仅用于管理同一账户拥有的商店。不提供团队席位、代理访问权限或单点登录。"
+            ]
+          },
+          {
+            "id": "developers",
+            "title": "API、MCP server 和 CLI",
+            "paragraphs": [
+              "开发者工具支持发现、计划、连接和接入流程。当前公开接口不导出仪表盘扫描结果或访问跟踪数据。"
+            ],
+            "links": [
+              {
+                "label": "阅读开发者文档",
+                "href": "/docs"
+              }
+            ]
+          },
+          {
+            "id": "next",
+            "title": "持续改进商品对比。",
+            "links": [
+              {
+                "label": "销售",
+                "href": "/platform/sell"
+              },
+              {
+                "label": "连接其他商店",
+                "href": "/platform/connect"
+              }
+            ]
+          }
+        ],
+        "faqs": [
+          {
+            "question": "WooCommerce 支持跟踪吗？",
+            "answer": "暂不支持。目前访问跟踪安装仅适用于 Shopify。"
+          },
+          {
+            "question": "订单如何归因为 AI？",
+            "answer": "按量付费方案会优先使用可用的明确归因标签。否则，它会在配置的时间窗口内（默认七天）查找该商店中的近期 AI 引荐来源。这并不能证明下单的是同一位访客。"
+          },
+          {
+            "question": "可以通过 API 导出跟踪数据吗？",
+            "answer": "当前公开 API、MCP server 或 CLI 暂不支持。这些接口主要覆盖发现和接入流程；访问数据可在仪表盘中查看。"
+          }
+        ]
+      }
+    },
+    "examples": {
+      "connect": {
+        "product": "无线耳机",
+        "note": "两个视图使用相同的源数据事实。缺失属性仍会保持缺失。",
+        "rows": [
+          {
+            "label": "标题",
+            "before": "无线耳机，30 小时续航",
+            "after": "无线耳机，30 小时续航"
+          },
+          {
+            "label": "来源",
+            "before": "支持的 CSV 导出",
+            "after": "导入到 ecentic 的商品"
+          },
+          {
+            "label": "发布权限",
+            "before": "无连接器",
+            "after": "无连接器；仅支持导入"
+          }
+        ],
+        "label": "样本数据示例",
+        "before": "之前",
+        "after": "之后"
+      },
+      "simulate": {
+        "product": "无线耳机",
+        "note": "仅为单次运行示例结果，并不保证真实助手会做出相同选择。",
+        "rows": [
+          {
+            "label": "问题",
+            "before": "适合长途飞行、价格低于 $100 的耳机",
+            "after": "相同问题，但加入指定竞品"
+          },
+          {
+            "label": "决策",
+            "before": "无已记录比较",
+            "after": "本次样本运行选择了竞品"
+          },
+          {
+            "label": "原因",
+            "before": "未记录",
+            "after": "竞品明确标注了降噪功能，而该商品信息没有。"
+          }
+        ],
+        "label": "样本数据示例",
+        "before": "之前",
+        "after": "之后"
+      },
+      "fix": {
+        "product": "无线耳机",
+        "note": "30 小时续航信息已存在于源描述中。本示例不是产品内预览。",
+        "rows": [
+          {
+            "label": "标题",
+            "before": "无线耳机",
+            "after": "30 小时续航无线耳机"
+          },
+          {
+            "label": "描述",
+            "before": "无线头戴式耳机。续航：30 小时。USB-C 充电。",
+            "after": "这款无线头戴式耳机续航最长可达 30 小时，并支持 USB-C 充电。"
+          },
+          {
+            "label": "价格与库存",
+            "before": "原始商店数据",
+            "after": "商品信息操作后保持不变"
+          }
+        ],
+        "label": "样本数据示例",
+        "before": "之前",
+        "after": "之后"
+      },
+      "sell": {
+        "product": "预发布商店中的无线耳机",
+        "note": "支付仍可能需要买家跳转操作。请结合您的支付网关和预发布环境进行测试。",
+        "rows": [
+          {
+            "label": "发现",
+            "before": "未配置资料",
+            "after": "服务发现配置文件可用"
+          },
+          {
+            "label": "购物车",
+            "before": "无已记录智能体测试",
+            "after": "使用商店规则定价的样例购物车"
+          },
+          {
+            "label": "支付",
+            "before": "未测试支付网关流程",
+            "after": "已识别并测试支付跳转流程"
+          }
+        ],
+        "label": "样本数据示例",
+        "before": "之前",
+        "after": "之后"
+      },
+      "track": {
+        "product": "无线耳机商品页",
+        "note": "检测到引荐来源，并不代表同一位访客之后下了订单。",
+        "rows": [
+          {
+            "label": "引荐来源",
+            "before": "chatgpt.com",
+            "after": "chatgpt.com"
+          },
+          {
+            "label": "分类",
+            "before": "无 ecentic 跟踪记录",
+            "after": "检测到 ChatGPT 引荐"
+          },
+          {
+            "label": "收入含义",
+            "before": "未确认",
+            "after": "仅凭此次访问无法确认"
+          }
+        ],
+        "label": "样本数据示例",
+        "before": "之前",
+        "after": "之后"
+      }
+    },
+    "screenshot": {
+      "alt": "ecentic 仪表盘中的胜率图表与商品比较明细，使用样本数据展示。",
+      "caption": "产品截图 · 样本数据"
+    },
+    "screenshots": {
+      "connect": {
+        "alt": "ecentic 已连接商店设置界面，包含清晰标注的样例商店",
+        "caption": "产品界面 · 样例商店。未连接任何商家账户。"
+      },
+      "simulate": {
+        "alt": "ecentic 仪表盘中的胜率图表与商品比较明细，使用样本数据展示。",
+        "caption": "产品截图 · 样本数据"
+      },
+      "fix": {
+        "alt": "ecentic 发布历史记录，展示不含业绩数据的样例商品记录",
+        "caption": "产品界面 · 样例发布历史记录。未展示实际提升或客户结果。"
+      },
+      "sell": {
+        "alt": "ecentic UCP 验证器在商店检查前的初始状态",
+        "caption": "产品界面 · 检查前的验证器。这不是已完成的结账流程，也不代表平台批准。"
+      },
+      "track": {
+        "alt": "ecentic 智能体访问图表，使用说明性样本数据",
+        "caption": "产品界面 · 说明性样本访问数据，并非客户结果。"
+      }
+    }
+  }
+}

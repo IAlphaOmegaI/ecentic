@@ -1,0 +1,58 @@
+{
+  "interactiveCheckout": {
+    "sampleLabel": "Esempio con dati campione",
+    "title": "Una procedura d'acquisto, prima e dopo",
+    "description": "Una procedura d'acquisto WooCommerce di esempio per una lampada da scrivania regolabile. La fase di pagamento include il passaggio dell'acquirente tramite il gateway del negozio; questo esempio non crea alcun ordine reale.",
+    "controlsLabel": "Scegli un esito della procedura d'acquisto",
+    "states": {
+      "before": "Prima della correzione",
+      "after": "Dopo la correzione"
+    },
+    "statuses": {
+      "complete": "Completato",
+      "stopped": "Interrotto",
+      "pending": "Non raggiunto"
+    },
+    "outcomes": {
+      "before": "L'esecuzione si interrompe ai dettagli di contatto. Pagamento e invio dell'ordine non vengono raggiunti.",
+      "after": "L'esecuzione di esempio arriva all'invio dell'ordine dopo la correzione del requisito del numero di telefono e il completamento del pagamento da parte dell'acquirente."
+    },
+    "steps": {
+      "find": {
+        "label": "Trova il prodotto",
+        "before": "Lampada da scrivania regolabile",
+        "after": "Lampada da scrivania regolabile"
+      },
+      "availability": {
+        "label": "Leggi prezzo e disponibilità",
+        "before": "Prezzo e disponibilità sono presenti.",
+        "after": "Prezzo e disponibilità sono presenti."
+      },
+      "cart": {
+        "label": "Aggiungi al carrello",
+        "before": "L'articolo di esempio viene aggiunto al carrello.",
+        "after": "L'articolo di esempio viene aggiunto al carrello."
+      },
+      "shipping": {
+        "label": "Scegli la spedizione",
+        "before": "È disponibile un'opzione di spedizione.",
+        "after": "È disponibile un'opzione di spedizione."
+      },
+      "contact": {
+        "label": "Dettagli di contatto",
+        "before": "La procedura d'acquisto richiede un numero di telefono che l'agente non possiede.",
+        "after": "In questo esempio il telefono è facoltativo; i dettagli di contatto richiesti sono presenti."
+      },
+      "payment": {
+        "label": "Pagamento",
+        "before": "In attesa dei dettagli di contatto.",
+        "after": "L'acquirente completa il pagamento tramite il gateway del negozio."
+      },
+      "order": {
+        "label": "Ordine inviato",
+        "before": "L'esecuzione bloccata non crea alcun ordine.",
+        "after": "L'esempio arriva alla creazione di un ordine WooCommerce."
+      }
+    }
+  }
+}

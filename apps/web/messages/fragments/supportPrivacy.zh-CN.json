@@ -1,0 +1,11 @@
+{
+  "cookieConsent": {
+    "support": {
+      "action": {
+        "primary": "打开支持聊天"
+      },
+      "pending": "正在打开支持聊天…",
+      "unavailable": "聊天不可用。请发送邮件至 support@ecentic.ai"
+    }
+  }
+}

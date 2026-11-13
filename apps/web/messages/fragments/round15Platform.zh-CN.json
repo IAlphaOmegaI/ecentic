@@ -1,0 +1,32 @@
+{
+  "round15Platform": {
+    "replay": {
+      "shopper": "购物者",
+      "assistant": "示例助手",
+      "writing": "正在输入…",
+      "complete": "示例对话已完成",
+      "replay": "重播对话",
+      "conversation": "示例购物对话",
+      "turns": {
+        "listings": "我会根据您的预算和适配要求，对比这两个示例商品信息。",
+        "fields": "两者价格都低于 $400。您的商品信息未说明座椅高度或承重能力。竞品标明为 44–54 cm 和 120 kg。",
+        "fix": "将供应商已有的座椅高度范围和承重能力添加到我的商品信息中，然后再次对比这两把椅子。"
+      }
+    }
+  },
+  "commerceFigures": {
+    "officeChair": "办公椅，带软垫靠背、扶手和五轮底座",
+    "partReadouts": {
+      "officeChair": [
+        {
+          "value": "椅背",
+          "label": "椅背"
+        },
+        {
+          "value": "座椅",
+          "label": "座椅"
+        }
+      ]
+    }
+  }
+}

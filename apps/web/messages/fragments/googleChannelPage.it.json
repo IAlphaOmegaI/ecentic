@@ -1,0 +1,91 @@
+{
+  "googleChannelPage": {
+    "explorer": {
+      "label": "Esplora il percorso di acquisto di Google",
+      "stages": [
+        {
+          "id": "catalog",
+          "label": "Catalogo",
+          "title": "Inizia dall'offerta del commerciante",
+          "description": "Merchant Center fornisce i dati prodotto utilizzati dalle esperienze di acquisto di Google.",
+          "details": [
+            "Prezzo e disponibilità",
+            "Informazioni su spedizione e resi"
+          ],
+          "destination": "Merchant Center",
+          "action": {
+            "primary": "Esplora i dati prodotto"
+          }
+        },
+        {
+          "id": "assistant",
+          "label": "Risposte AI",
+          "title": "Porta i dati prodotto nella conversazione",
+          "description": "Le risposte AI di Google rispondono alle domande di acquisto utilizzando i dati prodotto dei commercianti.",
+          "details": [
+            "AI Mode nella Ricerca",
+            "Gemini"
+          ],
+          "destination": "AI Mode e Gemini",
+          "action": {
+            "primary": "Controlla i requisiti per i commercianti"
+          }
+        },
+        {
+          "id": "checkout",
+          "label": "Pagamento",
+          "title": "La procedura d'acquisto dipende dall'idoneità",
+          "description": "Gli acquirenti possono proseguire al carrello del commerciante o usare Google Pay dove il checkout è abilitato. Il commerciante rimane il venditore responsabile della transazione.",
+          "details": [
+            "Continua verso il carrello del commerciante",
+            "Google Pay dove il checkout è abilitato"
+          ],
+          "destination": "Pagamento sul sito del merchant",
+          "action": {
+            "primary": "Verifica i requisiti merchant"
+          }
+        }
+      ]
+    },
+    "reading": {
+      "label": "L’offerta, sempre coerente",
+      "rows": [
+        {
+          "title": "Dati prodotto",
+          "detail": "Prezzo e disponibilità",
+          "field": "prezzo / disponibilità"
+        },
+        {
+          "title": "Pagina prodotto",
+          "detail": "Informazioni prodotto accurate",
+          "field": "link"
+        },
+        {
+          "title": "Spedizioni e resi",
+          "detail": "Informazioni chiare su consegna e resi",
+          "field": "spedizione / politica di reso"
+        },
+        {
+          "title": "Idoneità al checkout",
+          "detail": "L’idoneità fa parte dell’offerta",
+          "field": "checkout_eligibility"
+        }
+      ],
+      "action": {
+        "primary": "Esplora Merchant Center"
+      }
+    },
+    "entry": {
+      "label": "Requisiti Google per i merchant",
+      "steps": [
+        "Merchant e prodotti idonei",
+        "Distribuzione dell’hub di integrazione",
+        "Validazione tecnica e approvazione"
+      ],
+      "note": "ecentic aiuta a preparare e testare dati e impostazioni. Candidatura, validazione e approvazione restano tra la tua azienda e Google.",
+      "action": {
+        "primary": "Esplora i requisiti per il checkout"
+      }
+    }
+  }
+}

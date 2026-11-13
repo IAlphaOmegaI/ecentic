@@ -1,0 +1,18 @@
+{
+  "docsLimitsPage": {
+    "requests": "リクエスト",
+    "window": "{seconds}秒ごと",
+    "publicScope": "すべての /api/v1 エンドポイント",
+    "policySource": "APIで適用されるポリシー",
+    "headerExample": "レスポンスヘッダー例",
+    "headerHint": "意味を確認するにはヘッダーを選択してください。これらの値はレスポンス例であり、リアルタイムのカウンターではありません。",
+    "windowTitle": "1つの制限枠、2つの表現",
+    "remaining": "残りリクエスト数",
+    "reset": "リセットまでの秒数",
+    "windowHint": "この例では、両方のヘッダー形式が同じ制限枠を示しています。",
+    "responseExample": "例: 429レスポンス",
+    "retryTitle": "待機して再試行",
+    "retryLabel": "この例で待機する秒数",
+    "retryHint": "実際のレスポンスで Retry-After を確認してください。その時刻より前のリクエストはカウントされ、再び拒否されます。"
+  }
+}

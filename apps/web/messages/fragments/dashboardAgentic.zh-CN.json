@@ -1,0 +1,115 @@
+{
+  "dashboard": {
+    "agentic": {
+      "eyebrow": "智能分析",
+      "title": "智能体化评分",
+      "description": "Is Agentic 从可发现性、无障碍访问、易用性和智能体支付四个方面评分，衡量您的店铺对 AI 智能体是否易用。",
+      "sections": {
+        "scan": "01 — 扫描",
+        "score": "02 — 评分",
+        "journey": "03 — 智能体任务",
+        "competitors": "04 — 竞品",
+        "checks": "05 — 依据",
+        "methodology": "06 — 方法论"
+      },
+      "scan": {
+        "title": "运行扫描",
+        "description": "每次扫描都会读取您当前在线的店铺。结果会保存在这里，方便追踪评分变化。",
+        "action": "开始扫描",
+        "running": "扫描中…",
+        "starting": "正在启动扫描",
+        "progress": "{done} / {total} 项检查",
+        "target": "正在扫描 {target}",
+        "lastScanned": "上次扫描时间：{when}。",
+        "never": "该店铺尚未扫描。",
+        "blocked": {
+          "running": "该店铺已有扫描正在进行。完成后会显示在这里。",
+          "cooldown": "该店铺最近刚完成扫描。下次可扫描时间为 {when}。"
+        },
+        "disclosure": "扫描由 Is Agentic 提供支持，这是 Vercel Labs 的免费公共服务。您的店铺域名会发送至 is-agentic.com；不会有任何客户或订单数据离开 ecentic。",
+        "disclosureLink": "Is Agentic 文档",
+        "announceProgress": "扫描已完成 {percent}%。",
+        "announceComplete": "扫描完成。评分 {score} / 100。"
+      },
+      "score": {
+        "title": "当前表现",
+        "description": "评分来自 Is Agentic，原样展示。各层级按对店铺的重要性排序。",
+        "scoreLabel": "智能体化评分",
+        "gradeLabel": "等级",
+        "attribution": "在 is-agentic.com 查看完整报告",
+        "trend": "扫描评分趋势",
+        "fixesTitle": "影响最大的修复项",
+        "gain": "+{points}",
+        "gainAria": "{points} 分",
+        "layerCounts": "{passed} 项通过 · {warning} 项部分通过 · {failed} 项失败 · {notApplicable} 项不适用",
+        "empty": "运行首次扫描，查看智能体如何读取该店铺。",
+        "publicOnly": "Is Agentic 已为该域名生成公开报告，评分为 {score} / 100 — {label}。运行扫描可获取完整逐项检查详情并开始跟踪趋势。",
+        "publicLink": "查看公开报告",
+        "status": {
+          "success": "强",
+          "warning": "需要改进",
+          "error": "较弱"
+        },
+        "fixesNote": "该列表来自 Is Agentic，按每项修复可提升的分值排序。涉及 API 规范、SDK 或开发者门户的项目适用于整个域名，而非您的商品目录——建议优先处理 ecentic 可直接优化的部分。",
+        "publicOnlyUnscored": "Is Agentic 已为该域名生成报告，但尚未评分 — {label}。运行扫描可获取完整逐项检查详情并开始跟踪趋势。",
+        "trendSummary": "自 {since} 以来共进行了 {count} 次扫描，评分从 {first} 到 {latest}（满分 100）。"
+      },
+      "journey": {
+        "title": "智能体实际执行了什么",
+        "description": "Is Agentic 会让真实 AI 智能体浏览该店铺并记录完整路径。该路径图仅作为辅助依据，不影响数值评分。",
+        "empty": "该域名尚无智能体执行记录。运行完成后会显示在 Is Agentic 报告中。",
+        "running": "智能体正在浏览该店铺。路径图会随着执行过程逐步更新。",
+        "runningLabel": "进行中",
+        "reasoning": "推理过程",
+        "analytics": {
+          "stepLabel": "{count, plural, other {个步骤}}",
+          "reasoningLabel": "{count, plural, other {个推理步骤}}",
+          "searchLabel": "{count, plural, other {次搜索}}"
+        },
+        "attribution": "在 is-agentic.com 上观察到的任务",
+        "verdict": {
+          "satisfied": "任务已满足",
+          "partial": "部分满足",
+          "unsatisfied": "未满足",
+          "not_gradable": "无法评分"
+        }
+      },
+      "checks": {
+        "title": "全部检查项",
+        "description": "评分依据按层级分组展示。不适用于该店铺的检查项会列在最后，并附带原因说明。",
+        "summary": "{applicable} 项适用 · {failed} 项待修复",
+        "notApplicable": "该检查项不适用于您的店铺。",
+        "remedy": "在 ecentic 中修复",
+        "empty": "运行扫描以查看完整检查列表。"
+      },
+      "checkStatus": {
+        "pass": "通过",
+        "warning": "部分通过",
+        "fail": "失败",
+        "error": "检查出错",
+        "na": "不适用",
+        "unknown": "无法识别"
+      },
+      "competitors": {
+        "title": "竞品评分",
+        "description": "使用同样的扫描方式检查所选竞品背后的店铺。每个域名都有独立的扫描冷却时间，因此扫描竞品不会占用您的扫描次数。",
+        "action": "扫描",
+        "scanned": "上次扫描时间：{when}。",
+        "never": "尚未扫描。",
+        "unscored": "暂无评分",
+        "ahead": "领先 {points} 分",
+        "behind": "落后 {points} 分",
+        "coverage": "{total} 个店铺中已有 {scored} 个获得评分",
+        "columnStorefront": "店铺",
+        "columnScanned": "上次扫描",
+        "columnScore": "评分",
+        "columnGap": "与您相比",
+        "empty": "暂无竞品店铺。添加竞品后，ecentic 会扫描其对应域名。"
+      },
+      "methodology": {
+        "title": "评分机制说明",
+        "description": "Is Agentic 对其评分模型的官方说明，实时读取自其 MCP 服务器。"
+      }
+    }
+  }
+}

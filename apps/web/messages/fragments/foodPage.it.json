@@ -1,0 +1,9 @@
+{
+  "foodPage": {
+    "description": "Seleziona una domanda d’acquisto per esaminare le informazioni delle fonti che il tuo team dovrebbe verificare.",
+    "choose": "Scegli una domanda di un acquirente",
+    "facts": "Dati da verificare",
+    "source": "Inizia dalle informazioni sulla confezione.",
+    "allFacts": "Esplora tutti e sei i controlli sui dati prodotto"
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "docsLimitsPage": {
+    "requests": "请求",
+    "window": "每 {seconds} 秒",
+    "publicScope": "所有 /api/v1 端点",
+    "policySource": "API 强制执行的策略",
+    "headerExample": "响应头示例",
+    "headerHint": "选择一个响应头查看其含义。这些值仅用于演示响应，不是实时计数器。",
+    "windowTitle": "同一时间窗口，两种表示方式",
+    "remaining": "剩余请求数",
+    "reset": "距离重置的秒数",
+    "windowHint": "在此示例中，两种响应头格式描述的是同一个时间窗口。",
+    "responseExample": "示例：429 响应",
+    "retryTitle": "等待后重试",
+    "retryLabel": "此示例中的等待秒数",
+    "retryHint": "请读取实际响应中的 Retry-After。在该时间之前发出的请求会被计入并再次拒绝。"
+  }
+}

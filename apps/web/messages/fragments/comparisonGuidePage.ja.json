@@ -1,0 +1,17 @@
+{
+  "comparisonGuidePage": {
+    "navigation": {
+      "label": "このガイドの内容",
+      "guide": "カテゴリ",
+      "tools": "ツールを比較",
+      "bottleneck": "ボトルネックを見つける",
+      "related": "関連資料",
+      "faq": "質問"
+    },
+    "views": {
+      "label": "比較表示",
+      "table": "すべてのツールを比較",
+      "tool": "ツール別に読む"
+    }
+  }
+}

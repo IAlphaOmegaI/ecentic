@@ -1,0 +1,55 @@
+{
+  "agenciesPage": {
+    "challenges": {
+      "description": "把客户的问题转化为商品检测、已验证的变更和清晰的对比结果。",
+      "details": "了解客户问题"
+    },
+    "tracks": {
+      "description": "选择希望在合作中承担的工作内容。转售或推荐前需先确认范围和商业条款。",
+      "label": "合作伙伴路径",
+      "pathLabel": "合作包含哪些内容",
+      "paths": [
+        [
+          "客户商品目录",
+          "商品检测",
+          "已验证的变更"
+        ],
+        [
+          "您的产品",
+          "已文档化的接口",
+          "需求沟通与接入"
+        ],
+        [
+          "您的受众",
+          "AI 电商教育",
+          "合作伙伴沟通"
+        ]
+      ]
+    },
+    "access": {
+      "label": "账户归属",
+      "single": "一个所有者，多个店铺",
+      "separate": "独立客户账户",
+      "singleTitle": "一个账户可管理自己的店铺。",
+      "singleDescription": "属于同一账户所有者的店铺可以统一管理。",
+      "separateTitle": "每位客户自行管理其账户。",
+      "separateDescription": "不同所有者使用独立账户。连接前请与每位客户确认安排。",
+      "owner": "所有者账户",
+      "store": "所属店铺",
+      "anotherStore": "另一家所属店铺",
+      "firstClient": "客户A账户",
+      "secondClient": "客户B账户",
+      "firstStore": "客户A店铺",
+      "secondStore": "客户B店铺",
+      "boundary": "不提供代理机构委托权限或团队席位"
+    },
+    "start": {
+      "description": "在沟通时说明您的合作模式、客户使用场景以及拟定的账户安排。",
+      "items": [
+        "选择合作模式",
+        "确认账户归属",
+        "确认范围和条款"
+      ]
+    }
+  }
+}

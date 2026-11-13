@@ -24,6 +24,7 @@ import {
   flattenCatalog,
   mapCatalog,
   projectCatalogFragment,
+  unresolvedCatalogFailures,
 } from "./lib/catalog-translation";
 
 const options = new Map(
@@ -84,6 +85,9 @@ const generate = options.has("dry-run")
         console.log(JSON.stringify({ event: "usage", ...usage })),
     });
 const hash = (text: string) => createHash("sha256").update(text).digest("hex");
+const sourceHashes = new Map(
+  allUnits.map((unit) => [unit.id, hash(unit.text)]),
+);
 type Checkpoint = {
   locale: string;
   policy: string;
@@ -109,6 +113,11 @@ const states = targets.map((locale) => {
       text: unit.text,
     };
   }
+  checkpoint.failures = unresolvedCatalogFailures(
+    checkpoint.failures,
+    checkpoint.entries,
+    sourceHashes,
+  );
   return { locale: locale as Exclude<Locale, "en">, path, checkpoint };
 });
 const jobs = states.flatMap((state) => {
@@ -140,7 +149,8 @@ const jobs = states.flatMap((state) => {
       current.reduce((sum, item) => sum + item.text.length, 0) +
         unit.text.length >
         maxCharacters ||
-      (current.length >= 50 &&
+      (!options.has("combine-namespaces") &&
+        current.length >= 50 &&
         catalogBatchGroup(current[0]?.id ?? "") !== catalogBatchGroup(unit.id))
     ) {
       batches.push([unit]);
@@ -214,6 +224,11 @@ const worker = async () => {
         };
       }
       delete job.state.checkpoint.failures[job.id];
+      job.state.checkpoint.failures = unresolvedCatalogFailures(
+        job.state.checkpoint.failures,
+        job.state.checkpoint.entries,
+        sourceHashes,
+      );
       progress.completed++;
       writeAtomic(job.state.path, job.state.checkpoint);
       console.log(
@@ -249,6 +264,11 @@ const worker = async () => {
           .map((unit) => unit.id),
         reason,
       };
+      job.state.checkpoint.failures = unresolvedCatalogFailures(
+        job.state.checkpoint.failures,
+        job.state.checkpoint.entries,
+        sourceHashes,
+      );
       writeAtomic(job.state.path, job.state.checkpoint);
       console.error(
         JSON.stringify({

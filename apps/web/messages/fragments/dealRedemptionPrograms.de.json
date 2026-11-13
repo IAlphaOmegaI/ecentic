@@ -1,0 +1,32 @@
+{
+  "dealRedemption": {
+    "programs": {
+      "techstars": {
+        "batchLabel": "Techstars-Programm / Jahr",
+        "batchPlaceholder": "Wählen Sie Ihren Jahrgang",
+        "action": {
+          "primary": "Mein Techstars-Angebot einlösen"
+        }
+      },
+      "yc": {
+        "batchLabel": "YC-Jahrgang",
+        "batchPlaceholder": "Wählen Sie Ihren Jahrgang",
+        "action": {
+          "primary": "Mein YC-Angebot einlösen"
+        }
+      }
+    },
+    "options": {
+      "earlier": "Früher",
+      "other": "Sonstige",
+      "customHeadless": "Individuell / Headless",
+      "preLaunch": "Vor dem Start"
+    },
+    "cohorts": {
+      "winter": "Winter {year}",
+      "spring": "Frühjahr {year}",
+      "summer": "Sommer {year}",
+      "fall": "Herbst {year}"
+    }
+  }
+}

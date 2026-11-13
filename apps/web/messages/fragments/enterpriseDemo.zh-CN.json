@@ -1,0 +1,70 @@
+{
+  "enterpriseDemo": {
+    "meta": {
+      "title": "预约 ecentic 演示",
+      "description": "与创始人一起实时查看 ChatGPT、Claude 和 Gemini 如何将您的商品与竞品进行对比。带上一个商品类目即可。"
+    },
+    "eyebrow": "预约演示",
+    "title": "查看 AI 如何选购您的商品目录。",
+    "description": "与创始人通话。带上一个商品类目，我们会实时演示 ChatGPT、Claude 和 Gemini 如何将其与竞品进行对比。通话使用英语。",
+    "sections": [
+      {
+        "id": "what-we-cover",
+        "eyebrow": "一次实际工作交流",
+        "title": "演示内容",
+        "ordered": true,
+        "columns": 4,
+        "items": [
+          {
+            "title": "1 到 2 个商品",
+            "body": "针对您指定竞品的实时模拟。"
+          },
+          {
+            "title": "商品信息为何胜出",
+            "body": "在模拟过程中，解析助手做出选择的原因。"
+          },
+          {
+            "title": "优先修复什么",
+            "body": "值得优先检查的商品目录调整项。"
+          },
+          {
+            "title": "为您的团队设计试点",
+            "body": "双方共同确认试点范围、基线和结果输出方式。"
+          }
+        ]
+      },
+      {
+        "id": "request",
+        "title": "从您的商品类目开始。",
+        "description": "三个简短步骤。介绍您的业务、选择重点方向并确认请求内容。"
+      },
+      {
+        "id": "single-store",
+        "title": "只运营一家店铺？",
+        "description": "可预约 15 分钟通话，或先进行免费店铺检测。",
+        "links": [
+          {
+            "label": "预约 15 分钟通话",
+            "href": "https://cal.com/ecentic-ai/15min"
+          },
+          {
+            "label": "免费检测我的店铺",
+            "href": "/sign-up"
+          }
+        ]
+      }
+    ],
+    "form": {
+      "steps": [
+        "关于您",
+        "您的需求",
+        "检查并发送"
+      ],
+      "progress": "演示申请进度",
+      "reviewTitle": "您的演示需求摘要",
+      "reviewDescription": "发送前请确认信息。我们会通过电子邮件跟进并确认下一步安排。",
+      "bookingNote": "想立即选择时间？当前自助预约通话为 15 分钟。企业演示的范围和时长将与您协商确定。通话使用英语。",
+      "sentDescription": "您的演示申请已发送。我们将使用您的工作邮箱安排下一步。"
+    }
+  }
+}

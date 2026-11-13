@@ -1,0 +1,41 @@
+{
+  "enterprisePage": {
+    "engagements": {
+      "description": "Scegli la domanda a cui devi rispondere. Definisci ambito e costo prima dell'inizio del lavoro.",
+      "label": "Esplora i progetti enterprise",
+      "pilotAction": "Vedi le fasi del progetto pilota",
+      "items": [
+        {
+          "duration": "4 settimane",
+          "question": "Da dove iniziamo?",
+          "path": [
+            "Definisci una categoria e un set di domande",
+            "Stabilisci la baseline",
+            "Dai priorità all'elenco delle correzioni"
+          ]
+        },
+        {
+          "duration": "6 settimane",
+          "question": "Cosa cambia dopo aver corretto i dati?",
+          "path": [
+            "Un mercato, una categoria",
+            "Situazione iniziale, modifiche concordate, ripetizione del ciclo",
+            "Report scritto e decisione successiva"
+          ]
+        },
+        {
+          "duration": "3 mesi",
+          "question": "Come potrebbe funzionare la procedura d'acquisto o la prenotazione?",
+          "path": [
+            "Definisci la domanda sulla procedura d'acquisto o sulla prenotazione",
+            "Valuta un prototipo con dati fittizi",
+            "Esamina i risultati al mese 3"
+          ]
+        }
+      ]
+    },
+    "measures": {
+      "description": "Segui la risposta campionata dalla menzione del prodotto fino a un flusso d'acquisto testato. Definisci l'obiettivo e il metodo di raccolta per ogni metrica."
+    }
+  }
+}

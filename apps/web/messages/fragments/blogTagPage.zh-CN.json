@@ -1,0 +1,11 @@
+{
+  "blogTagPage": {
+    "collection": "阅读合集",
+    "description": "来自 ecentic 专栏的 {topic} 指南与研究内容。",
+    "latestArticle": "从最新内容开始",
+    "takeaways": "本文包含",
+    "moreArticles": "继续阅读",
+    "relatedTopics": "关注相关主题",
+    "relatedDescription": "探索与此合集相关的主题内容。"
+  }
+}

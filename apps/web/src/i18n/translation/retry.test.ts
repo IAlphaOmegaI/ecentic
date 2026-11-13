@@ -1,5 +1,8 @@
 import { expect, test } from "bun:test";
-import { translationRetryDisposition } from "./retry";
+import {
+  isTranslationEnvelopeFailure,
+  translationRetryDisposition,
+} from "./retry";
 
 test("Azure capacity limits do not exhaust article translation attempts", () => {
   const state = translationRetryDisposition(
@@ -15,6 +18,30 @@ test("Azure capacity limits do not exhaust article translation attempts", () => 
   expect(
     translationRetryDisposition("HTTP 429 Too Many Requests", 0).attempts,
   ).toBe(0);
+});
+
+test("only exact malformed response envelopes receive a bounded transport retry", () => {
+  expect(
+    isTranslationEnvelopeFailure(
+      "Translation did not pass review: batch: Draft returned missing, duplicate or unexpected unit IDs.",
+    ),
+  ).toBe(true);
+  expect(
+    isTranslationEnvelopeFailure(
+      "Translation did not pass review: html.body.1: Nonempty source was omitted.",
+    ),
+  ).toBe(false);
+  expect(
+    isTranslationEnvelopeFailure(
+      "Translation did not pass review: batch: Draft returned missing, duplicate or unexpected unit IDs.; html.body.1: Numeric facts differ.",
+    ),
+  ).toBe(false);
+  expect(
+    translationRetryDisposition(
+      "Translation did not pass review: batch: Draft returned missing, duplicate or unexpected unit IDs.",
+      2,
+    ).exhausted,
+  ).toBe(true);
 });
 test("ordinary transport failures retain a finite retry budget", () => {
   expect(translationRetryDisposition("Request timed out", 0)).toEqual({

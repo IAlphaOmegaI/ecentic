@@ -1,0 +1,94 @@
+{
+  "reviewCode": {
+    "recordNote": "Record illustrativo, non una richiesta API.",
+    "platform": {
+      "connect": [
+        {
+          "key": "title",
+          "note": "Il titolo sorgente viene preservato durante l’importazione."
+        },
+        {
+          "key": "source",
+          "note": "Il record passa dal tuo file al catalogo."
+        },
+        {
+          "key": "publish_access",
+          "note": "Importare un feed non concede accesso in scrittura a un negozio."
+        }
+      ],
+      "simulate": [
+        {
+          "key": "question",
+          "note": "Mantieni esplicita la richiesta dell’acquirente così il confronto resta contestualizzato."
+        },
+        {
+          "key": "decision",
+          "note": "Un’esecuzione simulata registra quale scheda prodotto è stata selezionata."
+        },
+        {
+          "key": "reasoning",
+          "note": "Il risultato fa riferimento a un attributo dichiarato, non presunto."
+        }
+      ],
+      "fix": [
+        {
+          "key": "title",
+          "note": "Il titolo usa un fatto già presente nella sorgente."
+        },
+        {
+          "key": "description",
+          "note": "Gli stessi dati prodotto vengono espressi in modo più chiaro."
+        },
+        {
+          "key": "price_and_stock",
+          "note": "L’azione sulla scheda prodotto non modifica prezzo e inventario."
+        }
+      ],
+      "track": [
+        {
+          "key": "referrer",
+          "note": "Il dominio di origine è una prova per la classificazione della visita."
+        },
+        {
+          "key": "classification",
+          "note": "Un referral rilevato diventa un record di tracciamento."
+        },
+        {
+          "key": "revenue",
+          "note": "Una visita da sola non dimostra un ordine o ricavi attribuiti."
+        }
+      ]
+    },
+    "checkout": {
+      "filename": "checkout-example.json",
+      "label": "Requisiti del checkout",
+      "note": "Pseudocodice di esempio. Il requisito del numero di telefono è allentato; il pagamento usa comunque il gateway del merchant.",
+      "rows": [
+        {
+          "key": "phone_required",
+          "before": true,
+          "after": false,
+          "note": "Il blocco è il numero di telefono obbligatorio che l’agente non possiede."
+        },
+        {
+          "key": "phone",
+          "before": null,
+          "after": null,
+          "note": "Nessuna informazione di contatto viene inventata per superare il controllo."
+        },
+        {
+          "key": "contact_step",
+          "before": "blocked",
+          "after": "ready",
+          "note": "Rimuovere questo requisito permette all’esempio di proseguire al pagamento."
+        },
+        {
+          "key": "payment",
+          "before": "not_reached",
+          "after": "merchant_gateway",
+          "note": "Il gateway di pagamento del negozio gestisce il pagamento; potrebbe comunque essere necessario il passaggio all’acquirente."
+        }
+      ]
+    }
+  }
+}

@@ -1036,11 +1036,11 @@
         "completedScans": "{count, plural, one {# completed scan} other {# completed scans}}",
         "viewAllActivity": "View all activity",
         "headlines": {
-          "outrankAll": "You out-rank all {count} simulated competitor{plural} (avg {overall}% win rate).",
+          "outrankAll": "You out-rank {count, plural, one {the # simulated competitor} other {all # simulated competitors}} (avg {overall}% win rate).",
           "slimmestLead": "Your slimmest lead is against {brand} at {rate}%. Keep listings optimized to defend it.",
           "biggestOpportunity": "{brand} wins {lossRate}% of agent comparisons against you. That's your biggest opportunity.",
-          "holdMajority": "You hold the majority against {winning} of {total} competitor{plural} (avg {overall}%). Optimizing the products you lose to {brand} moves the needle most.",
-          "defaultHeadline": "You hold the majority against {winning} of {total} competitor{plural} (avg {overall}% win rate).",
+          "holdMajority": "You hold the majority against {winning} of {total, plural, one {# competitor} other {# competitors}} (avg {overall}%). Optimizing the products you lose to {brand} moves the needle most.",
+          "defaultHeadline": "You hold the majority against {winning} of {total, plural, one {# competitor} other {# competitors}} (avg {overall}% win rate).",
           "focusOptimization": "Focus a listing optimization on the products {brand} beats you on.",
           "toughestRival": "{toughest} is your toughest rival at {toughestRate}%; you lead {strongest} at {strongestRate}%."
         }
@@ -7339,6 +7339,34 @@
       "failedTitle": "Redemption failed",
       "successTitle": "Redemption received",
       "successDescription": "We'll verify your batch and email you within 1 business day."
+    },
+    "programs": {
+      "techstars": {
+        "batchLabel": "Techstars program / year",
+        "batchPlaceholder": "Select your cohort",
+        "action": {
+          "primary": "Redeem my Techstars deal"
+        }
+      },
+      "yc": {
+        "batchLabel": "YC batch",
+        "batchPlaceholder": "Select your batch",
+        "action": {
+          "primary": "Redeem my YC deal"
+        }
+      }
+    },
+    "options": {
+      "earlier": "Earlier",
+      "other": "Other",
+      "customHeadless": "Custom / Headless",
+      "preLaunch": "Pre-launch"
+    },
+    "cohorts": {
+      "winter": "Winter {year}",
+      "spring": "Spring {year}",
+      "summer": "Summer {year}",
+      "fall": "Fall {year}"
     }
   },
   "docs": {
@@ -16133,6 +16161,10 @@
       "docs": {
         "title": "Build on the agentic commerce platform.",
         "description": "API reference, MCP, CLI and public discovery documents for developers."
+      },
+      "blog": {
+        "title": "The AI commerce journal.",
+        "description": "Practical guides to product data, AI recommendations and agent checkout."
       }
     }
   },
@@ -19998,5 +20030,145 @@
       "maximumSize": "All files exceed the maximum size.",
       "maximumCount": "Too many files. Some were not added."
     }
+  },
+  "agentReadiness": {
+    "meta": {
+      "title": "Get your store ready for AI shopping",
+      "description": "Paste any store URL. ecentic reads your products, fixes what AI channels cannot use, and hands you a Google Merchant Center feed and a ChatGPT feed.",
+      "run": "Your store’s run",
+      "board": "Room board",
+      "stage": "Stage screen"
+    },
+    "hero": {
+      "title": "Paste your store.",
+      "accent": "We’ll get it ready for Google, Gemini and ChatGPT.",
+      "description": "We read every product, up to 40, fix what we can from your store’s own pages, list what we can’t, and hand you both feeds.",
+      "runTitle": "Getting your store ready for Google, Gemini and ChatGPT"
+    },
+    "form": {
+      "address": "Your store’s address",
+      "placeholder": "yourstore.com",
+      "starting": "Starting",
+      "action": {
+        "primary": "Get it ready"
+      },
+      "note": "No sign-up. We read up to 40 products from your public pages."
+    },
+    "errors": {
+      "fallback": "Something went wrong on our side. Try again.",
+      "invalid": "That does not look like a store address we can read. Check it and try again.",
+      "limited": "You have started a lot of stores in a row. Give it a few minutes and try again.",
+      "capacity": "We have prepared as many stores as we can for today. Please try again tomorrow.",
+      "unavailable": "We could not start this run. Please try again in a moment.",
+      "connect": "That didn’t go through. Try again.",
+      "connectLimited": "Too many tries in a row. Give it a minute.",
+      "unreachable": "We couldn’t reach {host} just now.",
+      "address": "We couldn’t read that store’s address.",
+      "finish": "We couldn’t finish this store. Try it again."
+    },
+    "actions": {
+      "primary": "Try another store",
+      "secondary": "Open the stage screen",
+      "download": "Download the {format}",
+      "nothing": "Nothing to download yet",
+      "connect": "Connect your Merchant Center"
+    },
+    "counts": {
+      "products": "{count, plural, one {# product} other {# products}}",
+      "stores": "{count, plural, one {# store} other {# stores}}",
+      "fixes": "{count, plural, one {# fix} other {# fixes}}",
+      "issues": "{count, plural, one {# issue} other {# issues}}"
+    },
+    "channelSummary": "{label}: {ready} of {total, plural, one {# product} other {# products}} ready",
+    "uploadSummary": "Uploaded to OpenAI’s product feed: {status}",
+    "uploadStatus": {
+      "uploading": "Uploading",
+      "received": "Received",
+      "processing": "Processing",
+      "completed": "Completed",
+      "completed_with_errors": "Completed with errors",
+      "failed": "Failed"
+    },
+    "stage": {
+      "reading": "Reading the store",
+      "preparing": "Fixing what we can",
+      "channels": "Building the feeds",
+      "done": "Done",
+      "failed": "This run stopped"
+    },
+    "offer": {
+      "pending": "Waiting on Google’s API",
+      "accepted": "Accepted by Google’s API",
+      "merged": "Merged by Google",
+      "rejected": "Rejected by Google’s API",
+      "skipped": "Skipped"
+    },
+    "kinds": {
+      "inferred": "Inferred",
+      "rewritten": "Rewritten",
+      "cleaned": "Cleaned"
+    },
+    "merchant": {
+      "ownership": "We only publish to Merchant Center accounts that own the store’s website.",
+      "account": "Account {account}"
+    },
+    "product": {
+      "missingValue": "Not stated by the store",
+      "before": "Before",
+      "after": "After",
+      "error": "Keeps it out of the feed",
+      "warning": "Ships with a warning",
+      "policy": "Flagged under OpenAI’s prohibited products policy: {category}",
+      "policyUnchecked": "OpenAI’s prohibited products policy check did not run for this product, so it has not been cleared.",
+      "summary": "{fixes, plural, one {# fix} other {# fixes}}, {issues, plural, one {# issue} other {# issues}}",
+      "googleReady": "Ready for Google",
+      "googleNotReady": "Not ready for Google",
+      "chatgptReady": "Ready for ChatGPT",
+      "chatgptUnchecked": "Ready for ChatGPT, policy not checked",
+      "chatgptNotReady": "Not ready for ChatGPT",
+      "nothing": "Nothing to fix and nothing left to resolve."
+    },
+    "products": {
+      "title": "Every product",
+      "description": "What we changed, what we inferred, and what only you can resolve.",
+      "empty": "We didn’t find any products to list.",
+      "failed": "We couldn’t load the product list. Still trying.",
+      "loading": "Loading the product list."
+    },
+    "done": {
+      "summary": "{fixes, plural, one {# fix applied} other {# fixes applied}}, {issues, plural, one {# issue needs the merchant} other {# issues need the merchant}}",
+      "xml": "XML feed",
+      "csv": "CSV feed",
+      "chatgptReady": "Ready for ChatGPT.",
+      "chatgptEmpty": "No products are ready for ChatGPT yet.",
+      "chatgptNote": "ChatGPT only takes product feeds from approved partners, so this is the file you submit when you are one.",
+      "notes": "Worth knowing"
+    },
+    "notice": {
+      "missingTitle": "We can’t find this run",
+      "missingBody": "Runs are kept for a while, then cleared. Paste the store again to start a new one.",
+      "failedTitle": "We can’t reach this run right now",
+      "failedBody": "Still trying. This page picks up as soon as it answers."
+    },
+    "stats": {
+      "products": "Products read",
+      "issues": "Issues found",
+      "fixes": "Fixes applied"
+    },
+    "board": {
+      "qr": "QR code for {url}",
+      "readiness": "{ready} of {total}",
+      "headline": "<storeCount>{stores, plural, one {# store} other {# stores}}</storeCount> and <productCount>{products, plural, one {# product} other {# products}}</productCount> prepared for AI tonight",
+      "empty": "No stores yet. Scan the code and paste yours."
+    },
+    "presentation": {
+      "freeListings": "Free listings",
+      "missing": "Check the link on the results page.",
+      "waiting": "Waiting for this run",
+      "waitingBody": "This screen picks up as soon as it answers.",
+      "reading": "Reading the store: {count, plural, one {# product} other {# products}} so far",
+      "fixes": "{count, plural, one {# fix applied} other {# fixes applied}}"
+    },
+    "outputLanguage": "Store content and provider diagnostics remain in their original language."
   }
 }

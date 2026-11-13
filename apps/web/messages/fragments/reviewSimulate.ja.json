@@ -1,0 +1,16 @@
+{
+  "reviewSimulate": {
+    "roadmap": {
+      "title": "シミュレーションの判断の裏側",
+      "stages": [
+        "商品を比較",
+        "選択を追跡",
+        "判断理由を確認"
+      ],
+      "play": "再生",
+      "pause": "一時停止"
+    },
+    "assistant": "ecenticシミュレーション",
+    "response": "アシスタントの応答"
+  }
+}

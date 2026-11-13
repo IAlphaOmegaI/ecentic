@@ -1,0 +1,44 @@
+{
+  "docsMcpPage": {
+    "transport": {
+      "label": "接続リファレンス",
+      "endpoint": "プライマリエンドポイント",
+      "alias": "同一ハンドラー",
+      "details": [
+        "エンドポイントパス",
+        "リクエストとレスポンス",
+        "セッション動作"
+      ]
+    },
+    "handshake": {
+      "label": "ハンドシェイクを確認",
+      "tabs": [
+        "初期化",
+        "通知"
+      ],
+      "request": "クライアントが送信",
+      "response": "サーバーが返す内容",
+      "result": [
+        "ネゴシエート済みプロトコルとサーバー機能",
+        "空の本文で受理"
+      ],
+      "example": "完全なハンドシェイク例"
+    },
+    "authentication": {
+      "credential": "Bearer key を送信",
+      "create": "認証情報を作成"
+    },
+    "errors": {
+      "labels": [
+        "JSON-RPCエラー",
+        "トランスポートエラー",
+        "認証例外"
+      ],
+      "formats": [
+        "error.code",
+        "application/problem+json",
+        "WWW-Authenticate"
+      ]
+    }
+  }
+}

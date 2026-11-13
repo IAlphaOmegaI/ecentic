@@ -1,0 +1,188 @@
+{
+  "features": {
+    "meta": {
+      "title": "Strumenti AI per ecommerce e schede prodotto dei merchant",
+      "description": "Strumenti AI per ecommerce per l’ottimizzazione delle schede prodotto, l’analisi dei concorrenti e la visibilità negli acquisti AI. Scopri come ecentic aiuta i merchant a far scegliere più spesso i propri prodotti."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "features": "Funzionalità"
+    },
+    "hero": {
+      "eyebrow": "Funzionalità",
+      "title": {
+        "primary": "Tutti gli strumenti per",
+        "accent": "farti scegliere dall’agente AI per gli acquisti."
+      },
+      "description": "Simula come gli agenti AI per gli acquisti confrontano i tuoi prodotti, scopri esattamente perché i concorrenti vincono e pubblica le modifiche alle schede prodotto che ribaltano il risultato, tutto in un unico flusso.",
+      "assurances": [
+        "Simula ChatGPT, Claude, Gemini e Perplexity",
+        "Riscrittura delle schede prodotto in un clic",
+        "Traffico reale degli agenti"
+      ],
+      "art": {
+        "alt": "Illustrazione ASCII di una console di controllo"
+      }
+    },
+    "loop": {
+      "number": "01",
+      "title": "Un unico ciclo, da invisibile a consigliato.",
+      "description": "La visibilità negli acquisti assistiti dall’AI non è una metrica di brand. È un processo operativo, ed ecentic gestisce tutti e quattro i passaggi per ogni prodotto del tuo catalogo.",
+      "steps": [
+        {
+          "step": "Passaggio 01",
+          "title": "Simula",
+          "description": "ecentic chiede ai principali agenti AI per gli acquisti di confrontare i prodotti del tuo catalogo con quelli di concorrenti reali per scegliere cosa acquistare, proprio come fanno gli acquirenti."
+        },
+        {
+          "step": "Passaggio 02",
+          "title": "Analizza",
+          "description": "Scopri esattamente quali prodotti gli agenti ignorano, quali scelgono al loro posto e quale attributo mancante ti è costato la vendita."
+        },
+        {
+          "step": "Passaggio 03",
+          "title": "Ottimizza",
+          "description": "Approva le versioni riscritte di titoli, descrizioni e dati strutturati, poi pubblicale nel tuo store con un clic."
+        },
+        {
+          "step": "Passaggio 04",
+          "title": "Monitora",
+          "description": "Monitora la tua percentuale di vittorie, le visite degli agenti AI e i ricavi attribuiti settimana dopo settimana, poi esegui una nuova scansione e ripeti il ciclo."
+        }
+      ]
+    },
+    "capabilities": {
+      "number": "02",
+      "title": "Cosa serve per essere scelti.",
+      "description": "Non l’ennesima dashboard o generatore di testi. ecentic è un livello decisionale che si integra con il tuo store e trasforma gli insight degli agenti in aggiornamenti pubblicati delle schede prodotto.",
+      "items": [
+        {
+          "title": "Punteggio della percentuale di vittorie AI",
+          "description": "Scopri con quale frequenza ChatGPT, Claude, Gemini e Perplexity scelgono i tuoi prodotti quando un cliente chiede cosa acquistare.",
+          "features": [
+            "Percentuali di vittorie per agente",
+            "Punteggio a livello di prodotto",
+            "Storico del punteggio nel tempo"
+          ],
+          "highlighted": true
+        },
+        {
+          "title": "Analisi dei gap rispetto ai concorrenti",
+          "description": "Scopri chi gli agenti consigliano al posto tuo e cosa contiene la loro scheda prodotto che alla tua manca.",
+          "features": [
+            "Confronti affiancati",
+            "Rilevamento degli attributi mancanti",
+            "Benchmark di categoria"
+          ]
+        },
+        {
+          "title": "Riscrittura delle schede prodotto in un clic",
+          "description": "Versioni riscritte di titoli, descrizioni e dati strutturati dei prodotti pronte per l’approvazione, pubblicate direttamente nel tuo store.",
+          "features": [
+            "Bozze pronte per l’approvazione",
+            "Pubblicazione degli aggiornamenti su Shopify e WooCommerce",
+            "Monitoraggio dei miglioramenti prima/dopo"
+          ]
+        },
+        {
+          "title": "Analisi del traffico degli agenti",
+          "description": "Scopri quando un agente AI visita il tuo store, quali prodotti consulta e quali ricavi generano quelle visite.",
+          "features": [
+            "Rilevamento delle visite degli agenti AI",
+            "Riepiloghi giornalieri del traffico",
+            "Attribuzione dei referral"
+          ]
+        },
+        {
+          "title": "Profilo UCP",
+          "description": "Un profilo merchant leggibile dalle macchine basato su Universal Commerce Protocol, così gli agenti possono verificare e considerare affidabile il tuo store.",
+          "features": [
+            "Profilo generato automaticamente",
+            "Dati strutturati dei prodotti",
+            "Identità verificabile dagli agenti"
+          ]
+        },
+        {
+          "title": "Nuove scansioni continue",
+          "description": "I punteggi diventano obsoleti non appena un concorrente aggiorna una scheda prodotto. Le nuove scansioni programmate mantengono aggiornato il confronto di ogni prodotto con i concorrenti.",
+          "features": [
+            "Scansioni programmate del catalogo",
+            "Avvisi sulle variazioni della percentuale di vittorie",
+            "Rilevamento delle regressioni"
+          ]
+        }
+      ]
+    },
+    "workflows": {
+      "number": "03",
+      "title": "Scegli il percorso adatto al tuo stack.",
+      "description": "Ogni percorso si concentra su una parte specifica del ciclo di ottimizzazione: qualità delle schede prodotto, compatibilità con la piattaforma o ricerca competitiva.",
+      "items": [
+        {
+          "href": "/features/product-listings",
+          "eyebrow": "Schede prodotto",
+          "title": "Migliora titoli, descrizioni e dati strutturati dei prodotti",
+          "description": "Trasforma pagine prodotto che non vengono scelte in informazioni d’acquisto più chiare per gli agenti AI per gli acquisti e per gli utenti con alta intenzione d’acquisto.",
+          "label": "Visualizza il flusso delle schede prodotto",
+          "color": "primary"
+        },
+        {
+          "href": "/platforms/shopify",
+          "eyebrow": "Shopify",
+          "title": "Collega un catalogo Shopify e pubblica gli aggiornamenti approvati",
+          "description": "Confronta i prodotti con i benchmark, scopri perché gli agenti preferiscono i concorrenti e invia le modifiche approvate alle schede prodotto direttamente su Shopify.",
+          "label": "Vedi la pagina Shopify",
+          "color": "accent"
+        },
+        {
+          "href": "/platforms/woocommerce",
+          "eyebrow": "WooCommerce",
+          "title": "Usa lo stesso ciclo di ottimizzazione per gli store WooCommerce",
+          "description": "Importa i dati prodotto, confrontali con quelli dei concorrenti e gestisci i miglioramenti delle schede prodotto senza ricostruire il tuo stack.",
+          "label": "Vedi la pagina WooCommerce",
+          "color": "accent"
+        },
+        {
+          "href": "/compare/best-ai-ecommerce-tools",
+          "eyebrow": "Confronto",
+          "title": "Scopri dove si inserisce l’ottimizzazione per il commercio tramite agenti",
+          "description": "Usa la guida all’acquisto per confrontare generatori di contenuti, strumenti di personalizzazione, piattaforme di analytics e workflow orientati agli agenti.",
+          "label": "Leggi la guida",
+          "color": "accent"
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "04",
+      "title": "Domande frequenti",
+      "description": "Domande comuni dei merchant che valutano strumenti AI per ecommerce."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Cosa distingue gli strumenti AI per ecommerce dai software ecommerce tradizionali?",
+          "answer": "Gli strumenti AI per ecommerce devono aiutare i merchant a strutturare i dati prodotto, spiegare perché le schede prodotto non vengono scelte e migliorare le pagine che i sistemi AI per gli acquisti confrontano in pochi secondi. È diverso da una dashboard generica o da un generatore di testi che si limita a riscrivere descrizioni."
+        },
+        {
+          "question": "ecentic sostituisce una piattaforma ecommerce?",
+          "answer": "No. ecentic si integra con uno stack ecommerce esistente. Si collega al catalogo, esegue simulazioni rispetto ai concorrenti e aiuta i merchant a pubblicare aggiornamenti più chiari delle schede prodotto nella piattaforma che già utilizzano."
+        },
+        {
+          "question": "Chi dovrebbe iniziare dalla pagina delle funzionalità?",
+          "answer": "I team che valutano strumenti AI per ecommerce, workflow per il commercio tramite agenti o ottimizzazione delle schede prodotto di solito iniziano da qui, perché questa pagina spiega l’intero ciclo di simulazione, analisi e ottimizzazione prima di scegliere un percorso specifico per piattaforma."
+        },
+        {
+          "question": "Quali pagine dovrebbero leggere dopo i merchant?",
+          "answer": "La maggior parte dei merchant passa dalla pagina delle funzionalità alla pagina sull’ottimizzazione AI delle schede prodotto, poi a una pagina dedicata alla piattaforma come Shopify o WooCommerce, e infine ai contenuti comparativi o del blog per approfondire la ricerca."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Inizia ora",
+        "secondary": "Torna alla home"
+      },
+      "note": "Configurazione in 2 minuti · Nessuna carta di credito · Visualizza prima il tuo punteggio gratuito"
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "enterpriseLayer": {
+    "eyebrow": "01 · 如何协同工作",
+    "title": "一侧是您的技术栈，另一侧是AI渠道，中间由ecentic连接。",
+    "description": "接入您现有的商品目录。使用ecentic为客户使用的AI助手做好准备，并显示各渠道当前可用状态。",
+    "stack": "您的技术栈",
+    "channels": "AI渠道",
+    "layer": "AI商业层",
+    "stages": [
+      "模拟",
+      "修复",
+      "销售",
+      "跟踪"
+    ],
+    "inputs": [
+      "Shopify",
+      "WooCommerce",
+      "商品 Feed / CSV",
+      "PIM",
+      "Google Merchant Center"
+    ],
+    "legend": "实线：当前已可用，包括模拟。虚线：即将推出。渠道可用性不代表一定支持原生结账。",
+    "action": "查看所有AI渠道",
+    "diagram": "您现有的商业技术栈连接到ecentic，由其为六个AI渠道准备商品数据和受支持的结账能力。",
+    "google": "Google AI Mode / Gemini"
+  }
+}

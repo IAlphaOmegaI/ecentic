@@ -1,0 +1,77 @@
+{
+  "winePage": {
+    "explorer": {
+      "label": "Esplora una domanda d’acquisto",
+      "question": "Un acquirente potrebbe chiedere",
+      "criteria": "Cosa richiede la domanda",
+      "verify": "Dati da verificare",
+      "entries": [
+        {
+          "id": "gift",
+          "label": "Un regalo",
+          "criteria": [
+            {
+              "label": "Stile",
+              "value": "Single malt torbato"
+            },
+            {
+              "label": "Budget",
+              "value": "Sotto gli 80 $"
+            },
+            {
+              "label": "Occasione",
+              "value": "Un regalo"
+            }
+          ],
+          "verification": "Verifica i dettagli sulla botte o sullo stile, il prezzo attuale e la disponibilità di spedizione nella scheda prodotto di origine."
+        },
+        {
+          "id": "ready",
+          "label": "Pronto da bere",
+          "criteria": [
+            {
+              "label": "Vino",
+              "value": "Barolo"
+            },
+            {
+              "label": "Tempistica",
+              "value": "Pronto da bere subito"
+            },
+            {
+              "label": "Dati della bottiglia",
+              "value": "Origine e annata"
+            }
+          ],
+          "verification": "Controlla regione e denominazione insieme all’annata indicata. Verifica eventuali indicazioni sulla finestra di consumo nella scheda prodotto di origine."
+        },
+        {
+          "id": "cocktails",
+          "label": "Per cocktail",
+          "criteria": [
+            {
+              "label": "Distillato",
+              "value": "Rum"
+            },
+            {
+              "label": "Preferenza",
+              "value": "Basso contenuto di zucchero"
+            },
+            {
+              "label": "Occasione",
+              "value": "Cocktail"
+            }
+          ],
+          "verification": "Mantieni l’indicazione “basso contenuto di zucchero” collegata a informazioni della fonte che il tuo team può verificare. Non dedurla dalle note di degustazione."
+        }
+      ]
+    },
+    "attributes": {
+      "caption": "Dalla bottiglia alla scheda prodotto",
+      "description": "Mantieni origine, stile e disponibilità leggibili accanto all’immagine della bottiglia."
+    },
+    "rules": {
+      "market": "Canale e paese",
+      "age": "Verifica dell’età"
+    }
+  }
+}

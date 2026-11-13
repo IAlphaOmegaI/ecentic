@@ -1,0 +1,14 @@
+{
+  "electronicsPage": {
+    "selectorLabel": "探索一个消费者问题",
+    "scenarioLabels": [
+      "耳机",
+      "笔记本电脑",
+      "扫地机器人"
+    ],
+    "sourceLabel": "需要检查的源字段",
+    "inspectLabel": "根据问题查看对应规格。",
+    "mapLabel": "查看全部六个源字段",
+    "boundary": "这是审查源数据事实的起点，并非兼容性结果。"
+  }
+}

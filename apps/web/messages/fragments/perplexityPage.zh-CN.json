@@ -1,0 +1,32 @@
+{
+  "perplexityPage": {
+    "shopping": {
+      "label": "探索购物目的地",
+      "result": "商品卡片",
+      "destination": "购物目的地",
+      "purchase": "Buy with Pro",
+      "store": "商家网站",
+      "purchaseTitle": "符合条件的购买",
+      "purchaseDescription": "已公布的 Buy with Pro 体验仅适用于美国的符合条件商品。",
+      "storeTitle": "前往商家页面继续",
+      "storeDescription": "当该购买选项不可用时，消费者会通过链接前往商家网站。",
+      "caption": "探索 Perplexity 购物公告中描述的两种路径。"
+    },
+    "reading": {
+      "merchant": "商家信息",
+      "product": "商品详情",
+      "price": "价格",
+      "website": "商家网站",
+      "result": "购物结果",
+      "caption": "商家计划有助于完善商品信息。"
+    },
+    "entry": {
+      "label": "探索商家访问要求",
+      "steps": [
+        "已公布的计划",
+        "当前资格条件",
+        "尚未验证的内容"
+      ]
+    }
+  }
+}

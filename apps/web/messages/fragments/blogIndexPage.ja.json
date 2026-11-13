@@ -1,0 +1,26 @@
+{
+  "blogIndexPage": {
+    "featured": "注目記事",
+    "latest": "ジャーナルの新着",
+    "archive": "次に読む記事を探す",
+    "archiveDescription": "次のコマース戦略に役立つ実践ガイドや調査資料を確認できます。",
+    "topics": "トピックを確認",
+    "topicsDescription": "記事の背景にある問いをたどります。",
+    "collection": "コレクション",
+    "order": "閲覧順",
+    "all": "すべての記事",
+    "editorial": "編集ガイド",
+    "recommended": "おすすめ",
+    "newest": "新着順",
+    "articles": "記事",
+    "page": "ページ",
+    "empty": "このコレクションにはまだ記事がありません。",
+    "loading": "記事を読み込み中",
+    "action": {
+      "primary": "すべての記事を見る",
+      "secondary": "前へ",
+      "tertiary": "次へ",
+      "quaternary": "リソースを確認"
+    }
+  }
+}

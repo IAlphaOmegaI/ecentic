@@ -1,0 +1,78 @@
+{
+  "techstars": {
+    "meta": {
+      "title": "Techstars 专属 ecentic 优惠——立即领取创业者权益",
+      "description": "Techstars 创业者专属 ecentic 优惠：延长 Dominate 使用权限、专属人工协助入门支持和创业者专属价格。2 分钟内即可领取。"
+    },
+    "breadcrumb": {
+      "home": "首页",
+      "page": "Techstars"
+    },
+    "hero": {
+      "eyebrow": "Techstars",
+      "title": {
+        "primary": "您的 ecentic 优惠，",
+        "accent": "立即领取。"
+      },
+      "description": "Techstars 创业者专属 ecentic 优惠：延长 Dominate 使用权限、专属人工协助入门支持和创业者专属价格。2 分钟内即可领取。",
+      "art": {
+        "alt": "握手 ASCII 艺术插图"
+      },
+      "badge": {
+        "alt": "Techstars",
+        "label": "独家合作伙伴优惠"
+      }
+    },
+    "deal": {
+      "number": "01",
+      "title": "优惠内容",
+      "description": "专为希望赢得 AI 智能体推荐、而不是反复维护商品信息表格的 Techstars 创业者打造。",
+      "content": "ecentic 会展示 AI 购物智能体如何将你的商品与竞品进行比较，诊断胜负原因，并重写商品信息以缩小差距。Techstars 优惠可解锁完整平台：\n\n- 延长使用 ecentic Dominate，在 ChatGPT、Claude、Gemini 和 Perplexity 上持续运行模拟\n- 自动优化，支持一键发布和模型漂移提醒\n- 生成 UCP，让智能体直接验证你的商品目录\n- 商品目录专属人工协助入门支持，以及优惠期结束后的创业者专属价格\n\n在下方领取优惠后，我们会验证你的 Techstars 批次，并在 1 个工作日内通过邮件发送激活链接。"
+    },
+    "redeem": {
+      "number": "02",
+      "title": "领取你的优惠",
+      "description": "告诉我们您的身份，以及希望在哪些方面胜出。我们会核实您的 Techstars 参加期次并开通优惠。无需信用卡。"
+    },
+    "howItWorks": {
+      "number": "03",
+      "title": "领取流程",
+      "description": "从提交表单到优惠生效仅需三步。大多数创业者当天就能运行第一次模拟。",
+      "content": "这里没有繁琐的采购流程。重点就是让你尽快开始模拟。\n\n- 提交表单，填写公司、批次，以及希望 ecentic 帮助你赢得的目标\n- 我们会根据 Techstars 投资组合验证你的批次，通常当天完成\n- 你会收到激活链接，以及商品目录导入的专属人工协助\n\n商品目录导入后，ecentic 会通过主流 AI 购物模型运行模拟，展示竞品为何被选中，并将结果转化为你可一键批准的商品信息优化建议。"
+    },
+    "faqSection": {
+      "number": "04",
+      "title": "优惠领取 FAQ",
+      "description": "资格条件、包含内容以及多久可以上线。"
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "哪些公司可以领取这项优惠？",
+          "answer": "任何参与过当前或历史 Techstars 项目的公司都符合资格。提交后，我们会根据 Techstars 投资组合验证你的批次，因此建议使用 Techstars 记录中的邮箱和公司名称，以加快处理速度。"
+        },
+        {
+          "question": "我实际能获得什么？",
+          "answer": "延长使用 ecentic Dominate：在 ChatGPT、Claude、Gemini 和 Perplexity 上持续进行 AI 智能体模拟，支持一键发布的自动优化、模型漂移提醒和 UCP 生成。同时包含商品目录专属人工协助入门支持，以及优惠期结束后的创业者专属价格。"
+        },
+        {
+          "question": "我需要先注册账号吗？",
+          "answer": "不需要。直接在这里领取优惠，我们会在 1 个工作日内通过邮件发送激活信息。你现在创建账号或等待激活链接都可以，最终效果相同。"
+        },
+        {
+          "question": "领取需要多久？",
+          "answer": "填写表单大约需要 2 分钟。验证通常当天完成，最长不超过 1 个工作日。优惠生效后，你会立即收到邮件通知。"
+        }
+      ]
+    },
+    "footer": {
+      "primary": "创建账号",
+      "secondary": "预约演示",
+      "note": "仅限 Techstars 创业者。我们会核实您的参加期次，再激活优惠。"
+    },
+    "structuredData": {
+      "offerName": "ecentic Techstars 创业者优惠",
+      "eligibleCustomerType": "Techstars 投资组合公司"
+    }
+  }
+}

@@ -1,0 +1,190 @@
+{
+  "productListings": {
+    "meta": {
+      "title": "Ottimizzazione AI delle schede prodotto per commercianti",
+      "description": "Ottimizzazione AI delle schede prodotto per titoli, descrizioni e dati strutturati dei prodotti. Scopri come ecentic aiuta i commercianti a migliorare la visibilità con gli agenti AI."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "features": "Funzionalità",
+      "productListings": "Schede prodotto"
+    },
+    "hero": {
+      "eyebrow": "Schede prodotto",
+      "title": {
+        "primary": "Ottimizzazione AI delle schede prodotto",
+        "accent": "per pagine che vengono scelte."
+      },
+      "description": "I sistemi di acquisto AI confrontano i dati prodotto in pochi secondi. ecentic trasforma le schede prodotto che perdono terreno in informazioni d’acquisto più chiare, per gli agenti AI e per gli acquirenti ad alta intenzione che ti portano.",
+      "assurances": [
+        "Titoli, descrizioni e dati strutturati",
+        "Riscritture pronte per l’approvazione",
+        "Pubblicazione diretta su Shopify e WooCommerce"
+      ],
+      "art": {
+        "alt": "Illustrazione ASCII di una scheda prodotto"
+      }
+    },
+    "whyListingsLose": {
+      "number": "01",
+      "title": "Perché le schede prodotto faticano negli acquisti mediati dall’AI.",
+      "description": "La maggior parte dei problemi del catalogo nasce dallo stesso divario: dati prodotto pensati per la navigazione umana, non per il confronto da parte dei sistemi AI.",
+      "paragraphs": [
+        "I sistemi di acquisto AI non leggono una pagina come farebbe una persona. Confrontano titoli, descrizioni, attributi strutturati, contesto del prezzo, dettagli di compatibilità e segnali di fiducia in una finestra decisionale compressa. Se una scheda prodotto è più chiara, completa e facile da confrontare, viene scelta prima ancora che l’acquirente capisca il perché.",
+        "La soluzione non è riempire una pagina di parole chiave. È rendere le informazioni prodotto più facili da recuperare, valutare e considerare affidabili."
+      ],
+      "principlesTitle": "Cosa fanno le schede prodotto vincenti",
+      "principles": [
+        {
+          "title": "Dichiara chiaramente cos’è il prodotto",
+          "description": "E per chi è pensato, con un linguaggio che acquirenti e modelli comprendono rapidamente."
+        },
+        {
+          "title": "Metti in evidenza gli attributi confrontati",
+          "description": "I campi specifici della categoria che acquirenti e agenti valutano più spesso."
+        },
+        {
+          "title": "Mantieni descrizioni decisive",
+          "description": "Concentrate sulla decisione da prendere, invece che su contenuti riempitivi che nascondono i dettagli."
+        },
+        {
+          "title": "Mantieni coerenza ovunque",
+          "description": "Dati strutturati, dati dell’offerta e contenuti della pagina devono raccontare la stessa storia."
+        }
+      ]
+    },
+    "layers": {
+      "number": "02",
+      "title": "Quattro livelli, migliorati insieme.",
+      "description": "Riscrivere le descrizioni è solo una parte del lavoro. Un’ottimizzazione efficace delle schede prodotto collega contenuti, qualità dei dati e fiducia in un unico processo.",
+      "items": [
+        {
+          "title": "Identità del prodotto",
+          "description": "Il titolo include informazioni utili all’acquisto senza risultare dispersivo: tipo di prodotto, elemento distintivo e variante o dettaglio di compatibilità rilevante."
+        },
+        {
+          "title": "Spiegazione del prodotto",
+          "description": "La descrizione facilita il confronto spiegando ciò che conta davvero, come il prodotto si adatta al caso d’uso e cosa potrebbe altrimenti generare dubbi."
+        },
+        {
+          "title": "Completezza degli attributi",
+          "description": "Dimensioni, materiali, campi di compatibilità, dettagli sulla garanzia o quantità per confezione mancanti indeboliscono silenziosamente un prodotto nelle categorie competitive."
+        },
+        {
+          "title": "Affidabilità del merchant",
+          "description": "Link alle policy, copertura delle recensioni, accuratezza della disponibilità e contesto di supporto chiaro rafforzano l’offerta intorno al prodotto stesso."
+        }
+      ]
+    },
+    "workflow": {
+      "number": "03",
+      "title": "Un ciclo continuo, non una riscrittura una tantum.",
+      "description": "Il flusso di lavoro va dalla simulazione alla diagnosi fino all’aggiornamento della scheda prodotto pronto per l’approvazione, senza ricostruire il catalogo da zero.",
+      "paragraph": "Simula chi vince, individua le lacune e pubblica la correzione direttamente nello store. Lo stesso ciclo funziona sia per ottimizzare pochi SKU prioritari sia per gestire operazioni continue sul catalogo.",
+      "panelTitle": "Simula, diagnostica, pubblica",
+      "audiences": [
+        {
+          "title": "Scoperta senza una riscrittura completa",
+          "description": "Migliora la scoperta dei prodotti senza riscrivere tutto il catalogo in una sola volta."
+        },
+        {
+          "title": "Cataloghi grandi e disomogenei",
+          "description": "Centinaia o migliaia di SKU in cui la qualità dei dati varia in base alla categoria e all’età del contenuto."
+        },
+        {
+          "title": "Categorie guidate dalle specifiche",
+          "description": "Vittorie determinate da specifiche, compatibilità e segnali di fiducia del merchant."
+        },
+        {
+          "title": "Operazioni sui contenuti ripetibili",
+          "description": "Team che hanno bisogno di un processo scalabile per i contenuti prodotto, non di modifiche occasionali."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Simula",
+          "description": "Le simulazioni di valutazione dei sistemi di acquisto AI vengono eseguite sui tuoi prodotti e sulle schede prodotto dei concorrenti, così il team può vedere chi vince e perché."
+        },
+        {
+          "title": "Diagnostica",
+          "description": "Analizza le lacune negli attributi e le ragioni dietro ogni scelta: dati mancanti, posizionamento debole o contesto prodotto incompleto."
+        },
+        {
+          "title": "Pubblica",
+          "description": "Titoli, descrizioni e dati prodotto approvati vengono inviati direttamente alle piattaforme supportate invece di essere copiati manualmente."
+        }
+      ]
+    },
+    "nextSteps": {
+      "number": "04",
+      "title": "Dove andare dopo questa pagina.",
+      "description": "Passa dal flusso di lavoro delle schede prodotto ai contenuti della piattaforma o di ricerca più adatti al tuo prossimo passo.",
+      "items": [
+        {
+          "href": "/platforms/shopify",
+          "name": "Shopify",
+          "title": "Scopri il flusso di lavoro per i cataloghi Shopify",
+          "description": "Collega i prodotti, confronta i concorrenti e pubblica aggiornamenti approvati delle schede prodotto direttamente in Shopify.",
+          "label": "Apri la pagina Shopify",
+          "color": "primary"
+        },
+        {
+          "href": "/platforms/woocommerce",
+          "name": "WooCommerce",
+          "title": "Applica lo stesso ciclo ai prodotti WooCommerce",
+          "description": "Usa il percorso WooCommerce se il tuo team vuole migliorare i prodotti senza cambiare piattaforma.",
+          "label": "Apri la pagina WooCommerce",
+          "color": "accent"
+        },
+        {
+          "href": "/compare/best-ai-ecommerce-tools",
+          "name": "Confronto",
+          "title": "Confronta le categorie AI per ecommerce prima di acquistare",
+          "description": "Usa la guida per distinguere i generatori di contenuti dagli strumenti di ottimizzazione per il commercio con agenti AI.",
+          "label": "Leggi la guida comparativa",
+          "color": "accent"
+        },
+        {
+          "href": "/blog",
+          "name": "Blog",
+          "title": "Approfondisci dati strutturati, traffico AI e visibilità del catalogo",
+          "description": "Il blog trasforma l’ottimizzazione delle schede prodotto in checklist operative ripetibili per merchant e team.",
+          "label": "Visita il blog",
+          "color": "accent"
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "05",
+      "title": "Domande frequenti",
+      "description": "Domande comuni dei merchant che valutano l’ottimizzazione AI delle schede prodotto."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Che cos’è l’ottimizzazione AI delle schede prodotto?",
+          "answer": "L’ottimizzazione AI delle schede prodotto è il processo di miglioramento di titoli, descrizioni, attributi e contesto di supporto del prodotto affinché i sistemi di acquisto AI e gli acquirenti ad alta intenzione possano confrontare la scheda prodotto con maggiore sicurezza."
+        },
+        {
+          "question": "L’ottimizzazione delle schede prodotto modifica solo i testi?",
+          "answer": "No. Testi migliori aiutano, ma l’ottimizzazione delle schede prodotto include anche dati prodotto strutturati, specifiche più chiare, contesto di categoria, dettagli di fiducia e informazioni di supporto che aiutano un sistema a valutare l’offerta."
+        },
+        {
+          "question": "Qual è la differenza tra descrizioni prodotto AI e ottimizzazione completa delle schede prodotto?",
+          "answer": "Le descrizioni prodotto AI si concentrano sulla riscrittura più rapida dei testi. L’ottimizzazione completa delle schede prodotto migliora insieme titoli, descrizioni, attributi strutturati e segnali di fiducia del merchant, così che la scheda sia più facile da valutare sia per gli acquirenti sia per i sistemi di acquisto AI."
+        },
+        {
+          "question": "In che modo ecentic aiuta nell’ottimizzazione delle schede prodotto?",
+          "answer": "ecentic simula il modo in cui gli agenti AI per gli acquisti confrontano i prodotti, mostra perché vince un concorrente e trasforma questi risultati in titoli, descrizioni e aggiornamenti delle schede prodotto che i merchant possono approvare e pubblicare."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Inizia a ottimizzare le schede prodotto",
+        "secondary": "Torna alle funzionalità"
+      },
+      "note": "Configurazione in 2 minuti · Nessuna carta di credito · Visualizza prima il tuo punteggio gratuito"
+    }
+  }
+}

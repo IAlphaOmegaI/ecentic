@@ -158,6 +158,32 @@ const uniqueFindings = (findings: readonly TranslationFinding[]) => [
   ).values(),
 ];
 
+/** Corrections keep whole inline groups and adjacent groups, never isolated slots. */
+const connectedContext = <T extends TranslationUnit>(
+  units: readonly T[],
+  identifiers: ReadonlySet<string>,
+) => {
+  const selected = units.filter((unit) => identifiers.has(unit.id));
+  // Catalog fragments and article metadata can depend on the whole batch.
+  if (!selected.length || selected.some((unit) => !unit.group)) return units;
+  const selectedGroups = new Set(selected.map((unit) => unit.group));
+  const contextualGroups = new Set(selectedGroups);
+  const contextualIds = new Set(identifiers);
+  units.forEach((unit, index) => {
+    if (!unit.group || !selectedGroups.has(unit.group)) return;
+    for (const neighbor of [units[index - 1], units[index + 1]]) {
+      if (!neighbor) continue;
+      contextualIds.add(neighbor.id);
+      if (neighbor.group) contextualGroups.add(neighbor.group);
+    }
+  });
+  return units.filter(
+    (unit) =>
+      contextualIds.has(unit.id) ||
+      (unit.group && contextualGroups.has(unit.group)),
+  );
+};
+
 /** A fresh evidence-only request resolves disputed editorial findings after final QA. */
 export const adjudicateTranslationReport = async ({
   report,
@@ -206,7 +232,10 @@ For every finding return its ID, classification (material, not-material, uncerta
             sourceLocale: "en-US",
             targetLocale: report.targetLocale,
             documentContext,
-            units: report.reviewedUnits,
+            units: connectedContext(
+              report.reviewedUnits,
+              new Set(disputed.map(({ finding }) => finding.id)),
+            ),
             findings: disputed,
           }),
           schemaName: "ecentic_translation_adjudication",
@@ -411,11 +440,13 @@ export const translateTextUnits = async ({
     if (findings.length === 0) return draft.units;
     const affected = new Set(findings.map((finding) => finding.id));
     const correcting = translating.filter((unit) => affected.has(unit.id));
+    const correctionContext = connectedContext(translating, affected);
+    const contextualIds = new Set(correctionContext.map((unit) => unit.id));
     const correction = artifactSchema.parse(
       await generate({
         phase: "correct",
         system: translationInstructions(targetLocale),
-        prompt: `Correct only the affected units listed in requestedIds. This is the single correction attempt. Preserve unaffected neighboring meaning and resolve every finding without adding claims or changing syntax. Return one {id,text} row for each requested ID only.\n${JSON.stringify({ ...context, currentTargets: draft.units, requestedIds: correcting.map((unit) => unit.id), findings })}`,
+        prompt: `Correct only the affected units listed in requestedIds. This is the single correction attempt. Preserve unaffected neighboring meaning and resolve every finding without adding claims or changing syntax. Complete connected inline groups and their adjacent groups are included as context. Return one {id,text} row for each requested ID only.\n${JSON.stringify({ ...context, units: correctionContext, currentTargets: draft.units.filter((unit) => contextualIds.has(unit.id)), requestedIds: correcting.map((unit) => unit.id), findings })}`,
         schemaName: "ecentic_translation_correction",
         schema: artifactSchema,
       }),

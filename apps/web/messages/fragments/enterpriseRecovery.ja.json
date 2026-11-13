@@ -1,0 +1,238 @@
+{
+  "enterpriseRecovery": {
+    "api": {
+      "meta": {
+        "title": "APIリファレンス | ecentic",
+        "description": "最新のecentic OpenAPIリファレンスで、RESTエンドポイント、MCP、ディスカバリー、パラメータ、レスポンススキーマ、認証を確認できます。"
+      },
+      "eyebrow": "開発者向け / APIリファレンス",
+      "title": "ソースそのままの API。",
+      "description": "リクエストおよびレスポンス定義は /openapi.json と同じソースから生成されています。スキーマテキストの正式版は英語です。このリファレンスはリクエストを送信しません。",
+      "actions": [
+        {
+          "label": "開発者ドキュメント",
+          "href": "/docs"
+        },
+        {
+          "label": "OpenAPI JSON をダウンロード",
+          "href": "https://ecentic.ai/openapi.json"
+        }
+      ],
+      "sections": [
+        {
+          "id": "api-reference",
+          "title": "エンドポイント",
+          "description": "メソッドとパスを選択して、パラメータ、リクエストボディ、セキュリティ要件、レスポンスを確認します。"
+        },
+        {
+          "id": "api-schemas",
+          "title": "共有スキーマ",
+          "description": "上記エンドポイントから参照される再利用可能な定義。"
+        },
+        {
+          "id": "api-auth",
+          "title": "セキュリティスキーム",
+          "description": "各オペレーションは独自のセキュリティ要件を定義します。以下のソース定義では利用可能なスキーム名を確認できます。"
+        }
+      ],
+      "operationNames": {
+        "getApiV1Index": "公開エージェントAPIインデックス",
+        "getApiV1Health": "サービス状態",
+        "getApiV1Discovery": "プロトコルとドキュメントのディスカバリー",
+        "getApiV1Plans": "プランカタログ",
+        "getApiV1Skills": "エージェントスキル",
+        "getApiV1News": "ニュース",
+        "getApiV1Onboarding": "エージェントオンボーディング",
+        "getApiV1Sandbox": "Sandbox 機能",
+        "postApiV1SandboxSimulation": "サンプルシミュレーションを実行",
+        "getAgentApiRoot": "エージェントAPIルート",
+        "getMcp": "MCP イベントストリーム",
+        "postMcp": "MCP リクエスト",
+        "deleteMcpSession": "MCP セッションを終了",
+        "postMcpAlias": "MCP エイリアス",
+        "getWellKnownMcpManifest": "MCP ディスカバリーマニフェスト",
+        "getWellKnownUcp": "UCP ディスカバリープロファイル",
+        "getWellKnownAcp": "ACP ディスカバリープロファイル"
+      },
+      "navigation": "エンドポイントナビゲーション",
+      "operation": "オペレーション",
+      "version": "API バージョン",
+      "specification": "OpenAPI バージョン",
+      "server": "サーバー",
+      "definition": "リクエストおよびレスポンス定義",
+      "schema": "スキーマ"
+    },
+    "notFound": {
+      "meta": {
+        "title": "このページは存在しません | ecentic",
+        "description": "ecentic のプラットフォーム、連携、AIチャネル、料金、ドキュメント、お問い合わせページ、および機械可読な復旧リンクを確認できます。"
+      },
+      "title": "このページは存在しません。",
+      "description": "サイト再構築時に移動された可能性があります。多くのユーザーが探しているページはこちらです：",
+      "home": "ecentic ホーム",
+      "navigation": "ページを探す",
+      "links": [
+        {
+          "label": "プラットフォーム",
+          "href": "/platform"
+        },
+        {
+          "label": "連携",
+          "href": "/integrations"
+        },
+        {
+          "label": "AIチャネル",
+          "href": "/ai-channels"
+        },
+        {
+          "label": "料金",
+          "href": "/pricing"
+        },
+        {
+          "label": "ドキュメント",
+          "href": "/docs"
+        },
+        {
+          "label": "お問い合わせ",
+          "href": "/contact"
+        }
+      ],
+      "machineTitle": "エージェント向け復旧",
+      "machineDescription": "既存のディスカバリードキュメントと復旧リストは引き続き利用できます。",
+      "machineNavigation": "機械可読な復旧リンク",
+      "markdownTitle": "同じ復旧リストを Markdown で表示",
+      "markdownAction": "Markdown ドキュメントを開く",
+      "recoveryLinks": [
+        {
+          "label": "ホームページ",
+          "description": "ecentic の機能と対象ユーザー。"
+        },
+        {
+          "label": "開発者ドキュメント",
+          "description": "API リファレンス、認証、エラー、MCP、Webhook。"
+        },
+        {
+          "label": "サイトマップ",
+          "description": "両ロケールにまたがるインデックス可能ページ。"
+        },
+        {
+          "label": "llms.txt",
+          "description": "言語モデル向けのサイトマップ。"
+        },
+        {
+          "label": "API カタログ",
+          "description": "マシン向けサーフェスの RFC 9727 linkset。"
+        },
+        {
+          "label": "OpenAPI ドキュメント",
+          "description": "公開API用のリクエストおよびレスポンススキーマ。"
+        }
+      ]
+    },
+    "instructions": {
+      "meta": {
+        "title": "AI向けガイド: ecentic を使うべき場面",
+        "description": "人とエージェントによる ecentic の利用方法、対応範囲、公開API・MCP・最新ドキュメントの参照先。"
+      },
+      "eyebrow": "Developers / AI向けガイド",
+      "title": "エージェントに明確な出発点を。",
+      "description": "ecentic は、ブランドのカタログと販売を行うAIアシスタントの間に位置するレイヤーです。AIが読み取るデータを最適化し、購入可能な状態に決済を整備し、ルール変更にも追従します。",
+      "actions": [
+        {
+          "label": "API reference を読む",
+          "href": "/docs/api"
+        },
+        {
+          "label": "エージェント向けガイドを開く",
+          "href": "https://ecentic.ai/.well-known/agent-instructions.md"
+        }
+      ],
+      "sections": [
+        {
+          "id": "jobs",
+          "title": "ecentic が支援できること。",
+          "ordered": true,
+          "columns": 2,
+          "items": [
+            {
+              "title": "接続して比較",
+              "body": "Shopify、WooCommerce、または対応フィードカタログを取り込みます。ChatGPT、Claude、Gemini を使ったオンデマンド比較を実行し、各結果の背景となる商品と属性を確認できます。",
+              "href": "/platform/simulate",
+              "label": "シミュレーションを見る"
+            },
+            {
+              "title": "承認後に修正",
+              "body": "Apply は既存の商品情報を使ってタイトルと説明を生成・公開します。構造化データと Merchant Center 同期には個別の制御があります。Shopify 連携では訪問トラッキングもインストールされます。公開には対応する直接連携が必要です。",
+              "href": "/platform/fix",
+              "label": "商品情報の修正を見る"
+            },
+            {
+              "title": "対応エージェント決済を有効化",
+              "body": "対応する連携で実装済みの決済サーフェスを利用します。利用可否とマーチャント制御についてはチャネルページと連携ページに記載されています。",
+              "href": "/platform/sell",
+              "label": "エージェント決済を見る"
+            },
+            {
+              "title": "AI訪問を確認",
+              "body": "分類済みの訪問と遷移先を確認できます。ブラウザスクリプトではすべてのクローラーを観測できず、AI経由の紹介だけでは個別購入者と注文の関連付けは成立しません。",
+              "href": "/platform/track",
+              "label": "トラッキングを見る"
+            }
+          ]
+        },
+        {
+          "id": "boundaries",
+          "title": "根拠を文脈とともに保持。",
+          "paragraphs": [
+            "シミュレーションはテスト結果を示すものであり、実際のマーケットプレイス順位や売上保証ではありません。無料ストアチェックでは3つのアシスタントを使用し、別提供の無料商品比較ツールでは4つを使用できます。",
+            "ecentic は広告キャンペーンの運用、ストアフロントのホスティング、在庫管理、注文処理は行いません。公開済み ChatGPT アプリ掲載は未確認のため、そのアプリは引き続き Coming soon です。ACP も引き続き Coming soon です。"
+          ]
+        },
+        {
+          "id": "entry-points",
+          "title": "まず公開契約から始める。",
+          "columns": 3,
+          "items": [
+            {
+              "title": "REST API",
+              "body": "公開APIインデックス、エンドポイント定義、共有スキーマを確認します。認証要件はオペレーションごとに定義されています。",
+              "href": "/docs/api",
+              "label": "リファレンスを読む"
+            },
+            {
+              "title": "MCPサーバー",
+              "body": "対応ツールと接続ガイドを確認してください。ディスカバリーは公開されていますが、マーチャントアカウントに関わる操作には認可が必要です。",
+              "href": "/docs/mcp",
+              "label": "MCP ガイドを読む"
+            },
+            {
+              "title": "CLI と認証情報",
+              "body": "CLI と認証フローについては開発者ガイドを利用してください。秘密APIキーを公開ページやクライアントバンドルに配置しないでください。",
+              "href": "/docs",
+              "label": "開発者ドキュメントを開く"
+            }
+          ]
+        },
+        {
+          "id": "machine-guidance",
+          "title": "機械可読のガイダンス",
+          "description": "これは /.well-known/agent-instructions.md で提供される正規の英語ドキュメントと同一です。プロトコル識別子、パス、ペイロードは原文の形式のまま保持されます。"
+        }
+      ]
+    },
+    "og": {
+      "home": {
+        "title": "AIが購入を決める時代に、選ばれる商品へ。",
+        "description": "AIコマースレイヤー"
+      },
+      "docs": {
+        "title": "エージェント型コマースプラットフォーム上に構築",
+        "description": "開発者向けの API リファレンス、MCP、CLI、公開ディスカバリードキュメント。"
+      },
+      "blog": {
+        "title": "AIコマースジャーナル。",
+        "description": "商品データ、AIによるおすすめ、エージェントによる購入手続きを解説する実践ガイド。"
+      }
+    }
+  }
+}

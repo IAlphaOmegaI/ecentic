@@ -1,0 +1,1229 @@
+{
+  "enterpriseCompany": {
+    "security": {
+      "meta": {
+        "title": "ecentic 的安全与信任",
+        "description": "了解 ecentic 如何处理商品目录数据、店铺访问权限和购物者信息。查看已实施的控制措施，并讨论您的数据保护需求。"
+      },
+      "eyebrow": "安全与信任",
+      "title": "安全与信任",
+      "description": "了解 ecentic 如何处理您的商品目录、店铺访问权限以及客户数据。随着产品发展，我们会更新此页面，以下日期也会同步变更。",
+      "facts": [
+        "只读导入",
+        "试点项目优先使用公开数据",
+        "讨论 DPA 要求",
+        "已记录的服务提供商用途"
+      ],
+      "actions": [
+        {
+          "label": "联系我们",
+          "href": "/demo"
+        },
+        {
+          "label": "阅读隐私政策",
+          "href": "/privacy-policy"
+        }
+      ],
+      "sections": [
+        {
+          "id": "reviewed",
+          "title": "最后更新于 2026 年 11 月 12 日",
+          "description": "本页面描述当前产品中的控制措施。在共享非公开数据前，请确认适用于您账户的部署方式、处理地点和合同要求。"
+        },
+        {
+          "id": "store-access",
+          "title": "我们如何访问您的店铺",
+          "paragraphs": [
+            "导入商品内容不会重写原内容。Apply 功能会在直接连接的 Shopify 或 WooCommerce 店铺中生成并发布标题和描述。结构化数据使用单独的发布操作。连接 Shopify 时还会安装访问跟踪脚本。",
+            "如果您为 Shopify 连接 Merchant Center，ecentic 会为已发布的修复和结账属性添加一个补充数据源。不会替换您的主 feed。",
+            "在 Shopify 上，店铺脚本会在检测到 AI 助手来源或已知智能体 user-agent 时记录访问。它会发送完整页面 URL、浏览器 user-agent、referrer、页面类型、检测到的智能体及检测方式，以及可用的商品标识符。记录中还包括店铺信息和接收时间。",
+            "此浏览器脚本会观察运行 JavaScript 的访问。它不会统计所有爬虫请求，也无法确认后续订单是否来自同一购物者。",
+            "Shopify 访问通过 Shopify Admin API 和安装页面中显示的权限实现。您可以随时卸载。WooCommerce 通过 ecentic 插件或您创建并可撤销的 REST API 密钥进行连接。",
+            "在 WooCommerce 中启用智能体结账后，结账桥接服务会在您的店铺中创建真实订单。您的支付网关负责收款，您仍作为商户承担交易责任。智能体结账支持签名请求、智能体允许列表和可配置的速率限制，具体执行方式取决于您的店铺设置。",
+            "企业试点项目可以从公开页面和商品数据开始，无需访问您的系统。"
+          ]
+        },
+        {
+          "id": "infrastructure",
+          "title": "基础设施与数据保护",
+          "rows": [
+            {
+              "label": "应用托管",
+              "value": "Vercel：应用托管、定时任务和 AI Gateway 路由。"
+            },
+            {
+              "label": "数据库",
+              "value": "运行于 AWS us-east-1（Northern Virginia）的 Neon PostgreSQL。"
+            },
+            {
+              "label": "加密",
+              "value": "数据在传输过程中（TLS 1.2+）以及静态存储时（AES-256）均由我们的托管和数据库服务商进行加密。"
+            },
+            {
+              "label": "账户密码",
+              "value": "密码通过 Better Auth 使用 scrypt 哈希处理。"
+            },
+            {
+              "label": "Webhooks 与 OAuth",
+              "value": "Shopify webhook 使用 HMAC 验证。OAuth 回调会验证 state；受支持的结账请求可使用 HTTP 消息签名。"
+            },
+            {
+              "label": "生产环境访问",
+              "value": ""
+            },
+            {
+              "label": "备份与恢复",
+              "value": ""
+            }
+          ]
+        },
+        {
+          "id": "ai-data",
+          "title": "AI 模型与您的数据",
+          "paragraphs": [
+            "您连接的商品目录会发送给 AI 服务提供商，用于比较商品信息并生成修复建议。店铺扫描使用 ChatGPT、Claude 和 Gemini。GPT 还用于生成商品信息改写和结构化数据。Perplexity 用于独立的比较和发现工具，不用于店铺扫描。",
+            "配置 Azure 部署时，GPT 会通过 Azure OpenAI 运行。Anthropic、Google 和 Perplexity 请求使用 Vercel AI Gateway；GPT 也可将该网关作为备用路由。",
+            "从已连接的 Google Merchant Center 账户读取的数据，会与用于 AI 工作的店铺商品目录分开保存，具体说明见隐私政策。",
+            "请求会受到服务提供商保留政策约束。部分服务提供商会为滥用监控保留请求；我们不承诺所有模型路由都实现零保留。"
+          ]
+        },
+        {
+          "id": "privacy",
+          "title": "隐私与 GDPR",
+          "rows": [
+            {
+              "label": "运营公司",
+              "value": "ecentic Inc · 美国特拉华州"
+            },
+            {
+              "label": "智能体结账数据",
+              "value": "对于为完成结账而处理的购物者信息，您是数据控制者，ecentic 是您的数据处理方。"
+            },
+            {
+              "label": "数据请求",
+              "value": "可通过 privacy@ecentic.ai 请求访问、更正或删除数据。我们会在一个月内回复。"
+            }
+          ],
+          "links": [
+            {
+              "label": "阅读隐私政策",
+              "href": "/privacy-policy"
+            }
+          ]
+        },
+        {
+          "id": "dpa",
+          "title": "数据处理协议",
+          "description": "在共享个人数据前，可按要求安排签署 DPA。我们可以签署您提供的 DPA；合同主体和签署方将在协议中确认。",
+          "note": "在接收非公开数据前，我们会签署双向 NDA。仅使用公开数据的阶段无需签署。",
+          "links": [
+            {
+              "label": "讨论您的要求",
+              "href": "/demo"
+            }
+          ]
+        },
+        {
+          "id": "sub-processors",
+          "title": "产品使用的服务提供商",
+          "description": "产品代码中标识的服务提供商及用途，审核日期为 2026 年 11 月 12 日。实际签约的数据处理方和处理地点会根据相关服务与协议确认。",
+          "note": ""
+        },
+        {
+          "id": "compliance",
+          "title": "合规路线图",
+          "paragraphs": [
+            "当前尚未提供 SOC 2。我们不声明已获得认证或完成审计。在同意试点项目之前，请先讨论您的安全要求。",
+            "我们的 CTO Alvi 会在 NDA 签署后处理安全问卷。我们不提供预先批准的安全资料包。"
+          ]
+        },
+        {
+          "id": "report",
+          "title": "报告漏洞",
+          "description": ""
+        }
+      ],
+      "subprocessors": {
+        "caption": "产品服务提供商及用途，审核日期为 2026 年 11 月 12 日",
+        "headers": [
+          "服务提供商",
+          "用途",
+          "处理地点"
+        ],
+        "rows": [
+          {
+            "name": "Azure OpenAI",
+            "purpose": "GPT 模拟、商品信息改写和结构化数据。",
+            "location": ""
+          },
+          {
+            "name": "Anthropic",
+            "purpose": "通过 Vercel AI Gateway 进行 Claude 商品信息比较。",
+            "location": ""
+          },
+          {
+            "name": "Google",
+            "purpose": "通过 Vercel AI Gateway 进行 Gemini 商品信息比较。",
+            "location": ""
+          },
+          {
+            "name": "Perplexity",
+            "purpose": "通过 Vercel AI Gateway 提供独立的比较与发现工具。",
+            "location": ""
+          },
+          {
+            "name": "Vercel",
+            "purpose": "应用托管和 AI Gateway 请求路由。",
+            "location": ""
+          },
+          {
+            "name": "Neon",
+            "purpose": "应用记录、已连接的商品目录数据和凭据。",
+            "location": ""
+          },
+          {
+            "name": "Upstash",
+            "purpose": "Redis 缓存、会话数据和速率限制计数器。",
+            "location": ""
+          },
+          {
+            "name": "Sentry",
+            "purpose": "错误监控与应用遥测。",
+            "location": ""
+          },
+          {
+            "name": "PostHog",
+            "purpose": "在获得分析同意后进行产品分析。",
+            "location": ""
+          },
+          {
+            "name": "Google Analytics 4",
+            "purpose": "在获得分析同意后进行网站分析。",
+            "location": ""
+          },
+          {
+            "name": "Resend",
+            "purpose": "事务邮件发送。",
+            "location": ""
+          },
+          {
+            "name": "UploadThing",
+            "purpose": "上传文件存储。",
+            "location": ""
+          },
+          {
+            "name": "Stripe",
+            "purpose": "ecentic 套餐和绩效费用计费。",
+            "location": ""
+          },
+          {
+            "name": "SerpAPI",
+            "purpose": "商品报价查询。",
+            "location": ""
+          },
+          {
+            "name": "Chatwoot",
+            "purpose": "网站支持聊天。",
+            "location": ""
+          },
+          {
+            "name": "BabyLoveGrowth",
+            "purpose": "编辑类博客内容。",
+            "location": ""
+          },
+          {
+            "name": "Clearbit",
+            "purpose": "公司 Logo 图片。",
+            "location": ""
+          },
+          {
+            "name": "Google Merchant API",
+            "purpose": "可选的 Merchant Center 连接。",
+            "location": ""
+          },
+          {
+            "name": "Shopify Catalog MCP",
+            "purpose": "衡量商品在 Shopify 目录中的表现。",
+            "location": ""
+          },
+          {
+            "name": "x402",
+            "purpose": "受支持路径的支付协调服务。",
+            "location": ""
+          },
+          {
+            "name": "ScrapeLLM",
+            "purpose": "内部采集工具；并非客户功能。",
+            "location": ""
+          }
+        ]
+      }
+    },
+    "about": {
+      "meta": {
+        "title": "关于 ecentic：ecentic 背后的团队",
+        "description": "ecentic 帮助在线商店在 AI 主导购物时实现销售。认识这三位已经共同创业七年的创始人。"
+      },
+      "title": "我们为 AI 购物智能体构建商业基础层。",
+      "description": "三位创始人已共同创业七年。ecentic 的诞生源于一个变化：当 AI 开始负责购物，商店必须为一种“读取数据而非浏览页面”的客户做好准备。",
+      "sections": [
+        {
+          "id": "why",
+          "title": "我们为何创立",
+          "paragraphs": [
+            "无论是在 Google 搜索、Amazon 购物，还是向聊天机器人提问，如今 AI 都会直接给出商品推荐。大多数商店并不知道如何成为那个被选中的商品。他们看不到 AI 的决策过程，不知道为什么落选，分析系统还会把这些流量统计为直接访问。我们创立 ecentic，就是为了让商店看清这些决策，并逐个商品地帮助他们改进。"
+          ]
+        },
+        {
+          "id": "how",
+          "title": "我们的工作方式",
+          "items": [
+            {
+              "title": "我们要求商家公开的内容，我们自己也会公开。",
+              "body": "我们自己的 llms.txt、API 目录、智能体结账配置和 MCP 端点都是公开的。",
+              "href": "/resources#public-endpoints",
+              "label": "查看公开端点"
+            },
+            {
+              "title": "哪些已上线、哪些即将推出，我们都会明确说明。",
+              "body": "每个集成和 AI 渠道都会标注状态，我们的渠道页面也会注明最近一次检查日期。",
+              "href": "/integrations",
+              "label": "查看集成"
+            },
+            {
+              "title": "我们从公开数据开始。",
+              "body": "我们的试点项目从您的公开页面开始，而不是直接接入您的系统。",
+              "href": "/solutions/enterprise",
+              "label": "了解企业试点"
+            }
+          ]
+        },
+        {
+          "id": "team",
+          "title": "团队",
+          "description": "三位创始人，工程与销售团队围绕同一款产品协作。",
+          "note": ""
+        },
+        {
+          "id": "before",
+          "title": "创立 ecentic 之前",
+          "items": [
+            {
+              "title": "zennit",
+              "body": "创始人在求学期间共同运营的软件开发工作室，为 Eurocar、Albuji，以及英国平台 Exelor 和 Ubix 开发软件。"
+            },
+            {
+              "title": "LookUp",
+              "body": "他们创办的第一家初创公司，一个停车平台。月收入达到 €10K，获得 $125K 种子前融资，并完成小规模退出。"
+            },
+            {
+              "title": "Shopify Plus",
+              "body": "Iseld 曾担任 Shopify Plus 销售顾问。"
+            }
+          ]
+        },
+        {
+          "id": "programs",
+          "title": "我们参与的项目"
+        },
+        {
+          "id": "recognition",
+          "title": "认可与奖项",
+          "items": [
+            {
+              "title": "Startup World Cup",
+              "body": "Santa Cruz 区域决赛入围。"
+            },
+            {
+              "title": "Junction Helsinki 2024",
+              "body": "荣誉提名。"
+            },
+            {
+              "title": "Entrepreneur First",
+              "body": "获提名。"
+            }
+          ]
+        },
+        {
+          "id": "company",
+          "title": "公司信息",
+          "rows": [
+            {
+              "label": "运营公司",
+              "value": "ecentic Inc · 美国特拉华州"
+            },
+            {
+              "label": "注册代理机构——仅提供法律服务",
+              "value": "LEGALINC CORPORATE SERVICES INC. · 131 Continental Drive, Suite 305, Newark, New Castle County, DE 19713, United States"
+            },
+            {
+              "label": "阿尔巴尼亚子公司",
+              "value": "ECENTIC SH.P.K. · Pallatet Merkaj, Hyrja 1, Dera 12, Rruga Muhamed Deliu, Qesarakë, Tiranë, Albania"
+            },
+            {
+              "label": "电话",
+              "value": ""
+            },
+            {
+              "label": "支持",
+              "value": "support@ecentic.ai"
+            }
+          ],
+          "links": [
+            {
+              "label": "联系我们",
+              "href": "/contact"
+            }
+          ]
+        }
+      ],
+      "people": [
+        {
+          "name": "Xhurian Shaba",
+          "role": "首席执行官",
+          "body": "Xhurian 是 ECENTIC 的管理负责人，也是产品起源地——地拉那工作室 zennit 的联合创始人。他是一名软件工程师，创立 ecentic 的目标，是让商家能够看清 AI 购物智能体实际会选择哪条商品信息。",
+          "href": "https://www.linkedin.com/in/xhurian-shaba",
+          "linkLabel": "LinkedIn"
+        },
+        {
+          "name": "Alvi Palloshi",
+          "role": "首席技术官",
+          "body": "Alvi 是公司创始合伙人，也是 zennit 的软件工程师。他与地拉那团队共同开发这款产品。",
+          "href": "https://www.linkedin.com/in/alvipalloshi",
+          "linkLabel": "LinkedIn"
+        },
+        {
+          "name": "Iseld Muça",
+          "role": "销售负责人",
+          "body": "Iseld 负责市场拓展，并持续撰写关于“当买家变成 AI 智能体后会发生什么变化”的内容。在赢得阿尔巴尼亚总决赛后，他与 Xhurian 于 2026 年代表 ecentic 参加了在旧金山举办的 Red Bull Basement 世界总决赛。",
+          "href": "https://www.linkedin.com/in/iseld-muca-532786311",
+          "linkLabel": "LinkedIn"
+        }
+      ],
+      "programs": [
+        {
+          "name": "Plug and Play",
+          "description": "GOAL Silicon Valley 项目"
+        },
+        {
+          "name": "Microsoft for Startups",
+          "description": "创业项目"
+        },
+        {
+          "name": "Red Bull Basement",
+          "description": "国家赛冠军，进入硅谷世界总决赛"
+        },
+        {
+          "name": "The Founder Games",
+          "description": "创业项目"
+        },
+        {
+          "name": "Fil Rouge Capital",
+          "description": "加速器。"
+        }
+      ]
+    },
+    "partners": {
+      "meta": {
+        "title": "与 ecentic 合作",
+        "description": "面向代理机构、技术公司和内容创作者：将 AI 商业能力加入您的业务，基于 ecentic API 构建产品，并申请合作。"
+      },
+      "title": "与 ecentic 合作。",
+      "description": "适用于服务在线商店的代理机构、软件公司和创作者，希望回答“AI 购物时代我们该怎么做？”这一问题。",
+      "actions": [
+        {
+          "label": "申请合作",
+          "href": "#application"
+        },
+        {
+          "label": "查看 API",
+          "href": "/docs"
+        }
+      ],
+      "sections": [
+        {
+          "id": "tracks",
+          "title": "选择合作方向",
+          "items": [
+            {
+              "title": "代理机构与经销商",
+              "body": "可推荐 Shopify、WooCommerce 或电商平台客户，并在沟通时协商推荐佣金。加入无需付费。ecentic 将直接与客户签约并收款；如需转售，则需单独签署协议。"
+            },
+            {
+              "title": "技术合作伙伴",
+              "body": "基于我们的 REST API 和 MCP 服务器构建产品并联合销售。技术合作伙伴之间无需支付费用。只有在签署书面协议后，我们才会展示您的集成和 logo。"
+            },
+            {
+              "title": "创作者与联盟伙伴",
+              "body": "向您的受众推荐 ecentic，并按带来的付费客户获得佣金。具体金额将在加入时协商。"
+            }
+          ]
+        },
+        {
+          "id": "process",
+          "title": "合作流程",
+          "ordered": true,
+          "columns": 4,
+          "items": [
+            {
+              "title": "提交申请",
+              "body": "告诉我们您的业务内容，以及您合作的商店类型。"
+            },
+            {
+              "title": "与我们沟通",
+              "body": "进行一次 20 分钟通话，确定合作方向并确认合作条款。"
+            },
+            {
+              "title": "获取权限与资料",
+              "body": "收到约定的权限和资料后即可开始。每位客户都拥有自己的独立账户。"
+            },
+            {
+              "title": "共同合作",
+              "body": "推荐客户，或共同推进联合机会。您可以向客户分享报告，同时保留 ecentic 品牌标识。"
+            }
+          ]
+        },
+        {
+          "id": "application",
+          "title": "申请合作",
+          "description": "请介绍您的公司、合作方向以及服务的商店类型。沟通电话和后续联系均使用英语。"
+        }
+      ],
+      "faqTitle": "合作伙伴常见问题",
+      "faqs": [
+        {
+          "question": "哪些公司不适合合作？",
+          "answer": "销售与我们相同产品的公司。我们更适合与向同一类商店销售不同产品的团队合作。"
+        },
+        {
+          "question": "会展示合作伙伴 logo 吗？",
+          "answer": "仅在获得合作伙伴书面同意后展示。"
+        },
+        {
+          "question": "加入需要付费吗？",
+          "answer": "加入无需付费。推荐或联盟佣金将在加入时协商；转售需另行签署协议。"
+        }
+      ],
+      "formTitle": "合作伙伴申请"
+    },
+    "stories": {
+      "meta": {
+        "title": "ecentic 试点案例",
+        "description": "经授权发布的 ecentic 试点结果，并公开每项数据背后的测量方法。"
+      },
+      "title": "试点案例。",
+      "description": "经企业授权发布的 ecentic 试点结果，并附上每项数据背后的测量方法。",
+      "sections": [
+        {
+          "id": "pilots",
+          "title": "DUA Flavours",
+          "description": "英国香精品牌。2026 年 4 月至 7 月。",
+          "paragraphs": [
+            "来自 AI 助手或直接流量的访问量提升 12%。这里统计的是访问量，而非销售额。"
+          ],
+          "links": [
+            {
+              "label": "阅读试点案例",
+              "href": "/stories/dua-flavours"
+            }
+          ]
+        }
+      ]
+    },
+    "duaFlavours": {
+      "meta": {
+        "title": "DUA Flavours 试点：AI 与直接访问量提升 12%",
+        "description": "一家英国香精品牌在 2026 年 4 月至 7 月期间，来自 AI 助手或直接访问的流量提升了 12%。查看试点结果及其限制条件。"
+      },
+      "eyebrow": "试点案例",
+      "title": "DUA Flavours：来自 AI 助手或直接流量的访问量提升 12%。",
+      "description": "与一家英国香精品牌开展的试点项目，经授权发布。结果统计的是访问量，而非销售额。",
+      "sections": [
+        {
+          "id": "at-a-glance",
+          "title": "概览",
+          "rows": [
+            {
+              "label": "行业",
+              "value": "英国香精品牌"
+            },
+            {
+              "label": "公司",
+              "value": "英国香精品牌"
+            },
+            {
+              "label": "周期",
+              "value": "2026 年 4 月至 7 月"
+            },
+            {
+              "label": "变更内容",
+              "value": "补全了结构化数据和商品数据源中的缺口。"
+            },
+            {
+              "label": "结果",
+              "value": "来自 AI 助手或直接流量的访问量 +12%"
+            }
+          ]
+        },
+        {
+          "id": "starting-point",
+          "title": "初始情况",
+          "paragraphs": [
+            "DUA Flavours 是一家使用 Shopify 的英国香精品牌，约有 28 款产品。它于 2026 年 4 月 20 日成为 ecentic 的首位付费客户。"
+          ]
+        },
+        {
+          "id": "changes",
+          "title": "我们做了哪些调整",
+          "paragraphs": [
+            "ecentic 补全了其结构化数据和商品数据源中的缺口。"
+          ]
+        },
+        {
+          "id": "result",
+          "title": "哪些指标发生了变化",
+          "paragraphs": [
+            "2026 年 4 月至 7 月期间，来自 AI 助手或直接流量的访问量提升了 12%。"
+          ]
+        },
+        {
+          "id": "method",
+          "title": "测量方式",
+          "paragraphs": [
+            "测量内容：2026 年 4 月至 7 月期间，来自 AI 助手或直接流量的访问量。未测量内容：销售额。该期间内的其他变化也可能产生了影响。",
+            "这 12% 来自 DUA 自身的汇总测量数据。ecentic 不持有其分析数据源；我们也未发布商品级拆分数据或时间序列。"
+          ]
+        },
+        {
+          "id": "permission",
+          "title": "经授权发布",
+          "description": "DUA Flavours 已于 2026 年 9 月 3 日书面确认。",
+          "links": [
+            {
+              "label": "查看全部试点案例",
+              "href": "/stories"
+            }
+          ]
+        }
+      ]
+    },
+    "tools": {
+      "meta": {
+        "title": "面向 AI 购物与智能体结账的免费工具",
+        "description": "检查您的 AI Agent Score、验证智能体结账、测试购物智能体、比较两款商品，或检查店铺的 WebMCP 证据。"
+      },
+      "title": "智能体电商免费工具。",
+      "description": "检查您的商店对 AI 购物者的准备情况。大多数工具无需账户即可使用。",
+      "actions": [
+        {
+          "label": "免费检查我的商店",
+          "href": "/sign-up"
+        },
+        {
+          "label": "阅读指南",
+          "href": "/resources#guides"
+        }
+      ],
+      "sections": [
+        {
+          "id": "free-tools",
+          "title": "选择要检查的内容",
+          "columns": 2,
+          "items": [
+            {
+              "title": "AI 智能体评分",
+              "body": "免费扫描您的前 10 款商品，并在 ChatGPT、Claude 和 Gemini 中与竞品对比。需要账户。",
+              "href": "/sign-up",
+              "label": "免费检查我的商店"
+            },
+            {
+              "title": "结账验证工具",
+              "body": "实时获取您商店的智能体结账配置，并检查其公开结构。无需账户。",
+              "href": "/ucp-validator",
+              "label": "打开 UCP 验证器"
+            },
+            {
+              "title": "结账演练场",
+              "body": "让测试智能体在您的商店中完成搜索、加入购物车和结账流程。无需账户即可免费发送 10 条消息。",
+              "href": "/ucp-playground",
+              "label": "打开 UCP 试验区"
+            },
+            {
+              "title": "WebMCP 扫描工具",
+              "body": "检查店铺前端中向浏览器智能体开放的购物操作证据。结果会区分已观察到的工具、表单以及未经确认的运行时行为。",
+              "href": "/webmcp-scanner",
+              "label": "扫描店铺"
+            },
+            {
+              "title": "对比",
+              "body": "粘贴两个商品 URL，在 ChatGPT、Claude、Gemini 和 Perplexity 中对比它们的商品信息。查看各模型的模拟选择结果及原因。",
+              "href": "/compare",
+              "label": "对比两款商品"
+            }
+          ]
+        }
+      ]
+    },
+    "resources": {
+      "meta": {
+        "title": "资源：指南、研究与免费工具",
+        "description": "关于通过 AI 助手销售的指南与免费工具、试点案例，以及 ecentic 的公开开发者端点。"
+      },
+      "title": "资源",
+      "description": "当 AI 开始负责购物时，帮助您销售商品的指南、试点案例与免费工具。",
+      "actions": [
+        {
+          "label": "查看免费工具",
+          "href": "/tools"
+        },
+        {
+          "label": "打开开发者文档",
+          "href": "/docs"
+        }
+      ],
+      "sections": [
+        {
+          "id": "free-tools",
+          "title": "免费工具",
+          "columns": 2,
+          "items": [
+            {
+              "title": "AI 智能体评分",
+              "body": "免费扫描您的前 10 款商品，并在 ChatGPT、Claude 和 Gemini 中与竞品对比。需要账户。",
+              "href": "/sign-up",
+              "label": "免费检查我的商店"
+            },
+            {
+              "title": "结账验证工具",
+              "body": "实时获取您商店的智能体结账配置，并检查其公开结构。无需账户。",
+              "href": "/ucp-validator",
+              "label": "打开 UCP 验证器"
+            },
+            {
+              "title": "结账演练场",
+              "body": "让测试智能体在您的商店中完成搜索、加入购物车和结账流程。无需账户即可免费发送 10 条消息。",
+              "href": "/ucp-playground",
+              "label": "打开 UCP 试验区"
+            },
+            {
+              "title": "WebMCP 扫描工具",
+              "body": "检查店铺前端中向浏览器智能体开放的购物操作证据。结果会区分已观察到的工具、表单以及未经确认的运行时行为。",
+              "href": "/webmcp-scanner",
+              "label": "扫描店铺"
+            },
+            {
+              "title": "对比",
+              "body": "粘贴两个商品 URL，在 ChatGPT、Claude、Gemini 和 Perplexity 中对比它们的商品信息。查看各模型的模拟选择结果及原因。",
+              "href": "/compare",
+              "label": "对比两款商品"
+            }
+          ],
+          "links": [
+            {
+              "label": "全部免费工具",
+              "href": "/tools"
+            }
+          ]
+        },
+        {
+          "id": "guides",
+          "title": "指南",
+          "description": "了解平台、按实际用途比较软件，或查看适用于您商店的操作指南。",
+          "columns": 2,
+          "items": [
+            {
+              "title": "平台操作指南",
+              "body": "连接商品目录、对比商品信息、修复商品数据、准备结账流程，并跟踪受支持的引荐来源。",
+              "href": "/platform",
+              "label": "了解平台"
+            },
+            {
+              "title": "最佳电商 AI 工具",
+              "body": "按类别对商业、内容、个性化、搜索和分析工具进行对比。",
+              "href": "/compare/best-ai-ecommerce-tools",
+              "label": "阅读买家指南"
+            },
+            {
+              "title": "Shopify 指南",
+              "body": "导入公开商品目录或连接应用，然后在获得商店访问权限后应用商品信息修复。",
+              "href": "/integrations/shopify",
+              "label": "阅读 Shopify 指南"
+            },
+            {
+              "title": "WooCommerce 指南",
+              "body": "连接插件或 REST API 密钥，对比商品信息并将修复应用到您的商店。",
+              "href": "/integrations/woocommerce",
+              "label": "阅读 WooCommerce 指南"
+            }
+          ]
+        },
+        {
+          "id": "editorial",
+          "title": "来自编辑团队",
+          "description": "来自本地原创内容库的产品指南与研究。",
+          "links": [
+            {
+              "label": "浏览完整博客归档",
+              "href": "/blog"
+            }
+          ]
+        },
+        {
+          "id": "pilot-stories",
+          "title": "试点案例",
+          "items": [
+            {
+              "title": "DUA Flavours",
+              "body": "2026 年 4 月至 7 月，来自 AI 助手或直接流量的访问量提升 12%。经授权发布，并附带测量限制说明。",
+              "href": "/stories/dua-flavours",
+              "label": "阅读试点案例"
+            }
+          ],
+          "columns": 1
+        },
+        {
+          "id": "public-endpoints",
+          "title": "我们要求商家公开的内容，我们自己也会公开。",
+          "description": "ecentic 要求商家公开的所有内容，它自己也会公开。",
+          "columns": 2,
+          "items": [
+            {
+              "title": "llms.txt",
+              "body": "ecentic 页面、工具和文章的机器可读索引。",
+              "href": "https://ecentic.ai/llms.txt",
+              "label": "打开 llms.txt"
+            },
+            {
+              "title": "API 目录",
+              "body": "面向公开智能体 API、规范和文档的 RFC 9727 链接集。",
+              "href": "https://ecentic.ai/.well-known/api-catalog",
+              "label": "打开 API 目录"
+            },
+            {
+              "title": "OAuth 发现",
+              "body": "用于智能体身份验证的 RFC 8414 授权服务器元数据。",
+              "href": "https://ecentic.ai/.well-known/oauth-authorization-server",
+              "label": "打开 OAuth 发现"
+            },
+            {
+              "title": "智能体结账配置",
+              "body": "ecentic 用于商业发现的公开智能体资料。",
+              "href": "https://ecentic.ai/ucp/agent-profile",
+              "label": "打开配置"
+            },
+            {
+              "title": "MCP 端点",
+              "body": "供智能体连接 ecentic 的 JSON-RPC 工具。",
+              "href": "https://ecentic.ai/api/mcp",
+              "label": "打开 MCP 端点"
+            },
+            {
+              "title": "结账发现文档",
+              "body": "由本站提供的 .well-known 商业发现文档。",
+              "href": "https://ecentic.ai/.well-known/ucp",
+              "label": "打开发现文档"
+            },
+            {
+              "title": "智能体技能索引",
+              "body": "面向商品信息优化、结账验证和智能体商业的公开说明。",
+              "href": "https://ecentic.ai/.well-known/agent-skills/index.json",
+              "label": "打开技能索引"
+            }
+          ]
+        }
+      ],
+      "faqTitle": "开始前常见问题",
+      "faqs": [
+        {
+          "question": "这些工具真的免费吗？",
+          "answer": "是的。AI Agent Score 是一次性免费检测，无需信用卡。验证器免费使用，演练场无需账号即可发送十条消息。持续优化按定价页面中的方案收费。"
+        },
+        {
+          "question": "使用结账工具需要账号吗？",
+          "answer": "UCP 验证器无需登录即可使用。UCP 试验区无需账号即可免费发送十条消息。登录后，可在产品限制范围内继续测试已连接的店铺。"
+        },
+        {
+          "question": "UCP 验证器和试验区有什么区别？",
+          "answer": "验证器会检查已发布的结账配置，以及端点是否可访问。试验区会让 AI 智能体执行支持的商品目录、购物车和结账操作，便于检查其工具调用和响应。"
+        },
+        {
+          "question": "刚接触智能体商业，应该从哪里开始？",
+          "answer": "如果使用 Shopify 或 WooCommerce 商品目录，可先从免费店铺检测开始。如果想先检查结账支持，请先对域名运行验证器，再阅读平台概览。"
+        }
+      ],
+      "editorial": {
+        "empty": "编辑内容归档正在准备中。以上指南现已可用。",
+        "read": "阅读文章",
+        "loading": "正在加载文章"
+      }
+    },
+    "support": {
+      "meta": {
+        "title": "帮助与支持",
+        "description": "获取 ecentic 账号、检测、修复和账单相关帮助。可发送邮件联系支持、预约产品演示或阅读文档。"
+      },
+      "title": "帮助与支持",
+      "description": "获取账号、检测、修复和账单相关帮助。请选择适合您问题的联系方式。支持和通话服务仅提供英文。",
+      "actions": [
+        {
+          "label": "联系支持",
+          "href": "mailto:support@ecentic.ai"
+        },
+        {
+          "label": "打开开发者文档",
+          "href": "/docs"
+        }
+      ],
+      "sections": [
+        {
+          "id": "help",
+          "title": "需要什么帮助？",
+          "columns": 2,
+          "items": [
+            {
+              "title": "邮件联系支持",
+              "body": "将问题和店铺 URL 发送至 support@ecentic.ai。我们将以英文回复。",
+              "href": "mailto:support@ecentic.ai",
+              "label": "联系支持"
+            },
+            {
+              "title": "在线演示",
+              "body": "预约一次 15 分钟通话，一起了解您的店铺和产品。通话使用英文。",
+              "href": "https://cal.com/ecentic-ai/15min",
+              "label": "预约 15 分钟通话"
+            },
+            {
+              "title": "企业版",
+              "body": "与我们讨论试点项目、商品目录范围或安全审查。",
+              "href": "/demo",
+              "label": "联系我们"
+            },
+            {
+              "title": "开发者文档",
+              "body": "阅读 API 参考、身份验证指南、MCP 工具和错误文档。",
+              "href": "/docs",
+              "label": "打开开发者文档"
+            }
+          ]
+        },
+        {
+          "id": "self-service",
+          "title": "自行查找",
+          "columns": 2,
+          "items": [
+            {
+              "title": "平台",
+              "body": "了解产品各部分的功能。",
+              "href": "/platform",
+              "label": "平台"
+            },
+            {
+              "title": "集成",
+              "body": "检查店铺的连接和发布支持情况。",
+              "href": "/integrations",
+              "label": "集成"
+            },
+            {
+              "title": "定价",
+              "body": "比较免费检测、按量付费和订阅方案。",
+              "href": "/pricing",
+              "label": "定价"
+            },
+            {
+              "title": "安全",
+              "body": "查看店铺访问、保护措施和数据处理方式。",
+              "href": "/security",
+              "label": "安全"
+            },
+            {
+              "title": "隐私政策",
+              "body": "查看收集哪些数据，以及如何执行删除。",
+              "href": "/privacy-policy",
+              "label": "隐私政策"
+            }
+          ]
+        }
+      ]
+    },
+    "contact": {
+      "meta": {
+        "title": "联系 ecentic",
+        "description": "联系销售、获取支持、申请合作，或了解 ecentic 的隐私与安全信息。"
+      },
+      "title": "联系 ecentic",
+      "description": "根据问题找到合适的联系方式。支持和通话服务仅提供英文。",
+      "sections": [
+        {
+          "id": "contacts",
+          "title": "联系我们",
+          "columns": 3,
+          "items": [
+            {
+              "title": "销售",
+              "body": "试点项目、企业账号和演示。",
+              "href": "/demo",
+              "label": "预约演示"
+            },
+            {
+              "title": "支持",
+              "body": "获取账号、检测和账单相关帮助。请发送邮件至 support@ecentic.ai。",
+              "href": "/support",
+              "label": "打开帮助与支持"
+            },
+            {
+              "title": "合作伙伴",
+              "body": "面向代理机构、科技公司和创作者。",
+              "href": "/partners",
+              "label": "申请合作"
+            },
+            {
+              "title": "媒体",
+              "body": ""
+            },
+            {
+              "title": "安全",
+              "body": "了解店铺访问、已实施的控制措施和数据处理方式。",
+              "href": "/security",
+              "label": "了解安全信息"
+            },
+            {
+              "title": "隐私",
+              "body": "数据访问、更正或删除请求，以及 DPA 相关问题：privacy@ecentic.ai。",
+              "href": "/security#dpa",
+              "label": "查看 DPA"
+            }
+          ]
+        },
+        {
+          "id": "company",
+          "title": "公司信息",
+          "rows": [
+            {
+              "label": "运营公司",
+              "value": "ecentic Inc · 美国特拉华州"
+            },
+            {
+              "label": "注册代理机构 — 仅提供法律服务",
+              "value": "LEGALINC CORPORATE SERVICES INC. · 131 Continental Drive, Suite 305, Newark, New Castle County, DE 19713, United States"
+            }
+          ],
+          "links": [
+            {
+              "label": "认识团队",
+              "href": "/about"
+            }
+          ]
+        }
+      ]
+    },
+    "changelog": {
+      "meta": {
+        "title": "更新日志：ecentic 最新动态",
+        "description": "ecentic 已发布的产品更新，按时间倒序排列。"
+      },
+      "title": "更新日志",
+      "description": "已发布的内容，按时间倒序排列。",
+      "sections": [
+        {
+          "id": "updates",
+          "title": "产品更新",
+          "description": "日期按产品开发历程排列。"
+        }
+      ],
+      "entries": [
+        {
+          "date": "2026-09-14",
+          "label": "新增",
+          "title": "检查店铺前台的 WebMCP 支持。",
+          "body": "免费 WebMCP 扫描器会检查购物操作的源证据，并报告其能够和无法观察到的内容。",
+          "commit": "2edebb8e"
+        },
+        {
+          "date": "2026-09-13",
+          "label": "优化",
+          "title": "跨币种比较商品报价。",
+          "body": "竞品报价评估会先转换支持的货币，再检查价格区间。",
+          "commit": "404dfc2c"
+        },
+        {
+          "date": "2026-09-13",
+          "label": "修复",
+          "title": "使用店铺域名连接 Shopify。",
+          "body": "Shopify 连接现支持自定义店铺域名，并会解析对应的管理后台主机。",
+          "commit": "5644d6a9"
+        },
+        {
+          "date": "2026-09-11",
+          "label": "新增",
+          "title": "从公开商品目录导入开始。",
+          "body": "输入店铺地址、创建账号，并以只读方式导入公开的 Shopify 或 WooCommerce 商品目录。",
+          "commit": "fc5c0436"
+        },
+        {
+          "date": "2026-09-01",
+          "label": "优化",
+          "title": "查看经过评估的竞品报价。",
+          "body": "竞品发现功能会显示商品级报价，以及用于选择这些报价的证据。",
+          "commit": "075058b5"
+        },
+        {
+          "date": "2026-08-25",
+          "label": "新增",
+          "title": "通过命令行使用 ecentic。",
+          "body": "@ecentic/cli 提供 discovery、plans、health、skills 和 MCP 工具命令。",
+          "commit": "14d92423"
+        },
+        {
+          "date": "2026-08-25",
+          "label": "新增",
+          "title": "试用 API 沙箱。",
+          "body": "入门流程和沙箱命令包含一个用于评估 API 的示例模拟。",
+          "commit": "19b1b78b"
+        },
+        {
+          "date": "2026-08-24",
+          "label": "优化",
+          "title": "在一处查看开发者参考文档。",
+          "body": "文档涵盖身份验证、错误、速率限制和 API 版本，并为未知端点提供恢复链接。",
+          "commit": "3a203235"
+        },
+        {
+          "date": "2026-08-06",
+          "label": "新增",
+          "title": "选择是否允许分析。",
+          "body": "Cookie 横幅根据您的选择控制 Google Analytics 和 PostHog 的启用。您之后可以在 Cookie 设置中更改选择。",
+          "commit": "8c2fddcf"
+        },
+        {
+          "date": "2026-07-30",
+          "label": "新增",
+          "title": "检查 Merchant Center 结账前置条件。",
+          "body": "Shopify 店铺可检查就绪状态，并在 Google Shopping 中管理商品结账属性。",
+          "commit": "bbc6818d"
+        },
+        {
+          "date": "2026-07-29",
+          "label": "修复",
+          "title": "通过邮件重置密码。",
+          "body": "密码重置流程新增了新密码表单，并改进了过期链接处理。",
+          "commit": "e16d3fe7"
+        },
+        {
+          "date": "2026-07-26",
+          "label": "新增",
+          "title": "管理 Google Merchant Center 商品刊登信息。",
+          "body": "连接 Merchant Center，并通过 ecentic 补充数据源发送已批准的商品内容。",
+          "commit": "4434a4e9"
+        },
+        {
+          "date": "2026-07-08",
+          "label": "新增",
+          "title": "在演练场中测试智能体结账。",
+          "body": "公开结账演练场无需账号即可发送十条消息。",
+          "commit": "b86550e0"
+        },
+        {
+          "date": "2026-07-03",
+          "label": "新增",
+          "title": "将 WooCommerce 连接到托管式智能体结账。",
+          "body": "商品目录、购物车和结账操作会通过店铺桥接创建真实的 WooCommerce 订单。",
+          "commit": "b7d1902c"
+        }
+      ]
+    },
+    "researchDraft": {
+      "meta": {
+        "title": "36,797 次 AI 模拟购买：我们学到了什么",
+        "description": "在 ChatGPT、Claude、Gemini 和 Perplexity 上进行的 36,797 次模拟购物决策中发生了什么，以及这对商家意味着什么。"
+      },
+      "eyebrow": "未发布研究草稿",
+      "title": "36,797 次 AI 模拟购买说明了什么。",
+      "description": "我们让 AI 助手在商品之间做出选择，进行了数万次测试。它们经常给出不同结果。",
+      "actions": [
+        {
+          "label": "免费检测我的店铺",
+          "href": "/sign-up"
+        }
+      ],
+      "sections": [
+        {
+          "id": "summary",
+          "title": "摘要",
+          "paragraphs": [
+            "在同一商品目录中，ChatGPT 有 51.6% 的情况下会选择相同商品；Claude 和 Gemini 的这一比例约为 18.5%。",
+            "{{TODO: confirm whether all products in the research were real products}}"
+          ]
+        },
+        {
+          "id": "question",
+          "title": "研究问题",
+          "description": "当 AI 助手在两件商品之间做选择时，是什么决定了它的选择？不同助手会以相同方式做决定吗？"
+        },
+        {
+          "id": "method",
+          "title": "方法",
+          "rows": [
+            {
+              "label": "商品",
+              "value": "{{TODO: number of products}}"
+            },
+            {
+              "label": "类别",
+              "value": "{{TODO: categories represented}}"
+            },
+            {
+              "label": "问题",
+              "value": "{{TODO: question set and selection method}}"
+            },
+            {
+              "label": "运行次数",
+              "value": "{{TODO: runs per question and total allocation}}"
+            },
+            {
+              "label": "模型",
+              "value": "{{TODO: models and exact versions}}"
+            },
+            {
+              "label": "日期",
+              "value": "{{TODO: research dates}}"
+            },
+            {
+              "label": "购买定义",
+              "value": "{{TODO: definition of a simulated purchase}}"
+            }
+          ]
+        },
+        {
+          "id": "findings",
+          "title": "研究发现",
+          "paragraphs": [
+            "ChatGPT 有 51.6% 的情况下会选择相同商品，而 Claude 和 Gemini 约为 18.5%。",
+            "{{TODO: add only further findings supported by the research data}}"
+          ]
+        },
+        {
+          "id": "merchants",
+          "title": "对商家的意义",
+          "description": "只针对单一助手优化并不够，因为它们并不会达成一致。每个助手读取的数据都必须足够完整。"
+        },
+        {
+          "id": "limits",
+          "title": "限制",
+          "paragraphs": [
+            "这些是模拟决策，并非真实流量。模型会变化，结果也可能随之变化。Perplexity 参与了本次研究；ecentic 的店铺扫描运行于 ChatGPT、Claude 和 Gemini。"
+          ]
+        },
+        {
+          "id": "download",
+          "title": "下载研究",
+          "description": "{{TODO: supply the final, reviewed PDF before enabling its download}}"
+        },
+        {
+          "id": "citation",
+          "title": "引用本研究",
+          "description": "ecentic，《36,797 simulated AI purchases》，{{TODO: publication month}} 2026。"
+        }
+      ]
+    }
+  }
+}

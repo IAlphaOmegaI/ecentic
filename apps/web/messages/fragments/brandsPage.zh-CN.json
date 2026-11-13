@@ -1,0 +1,56 @@
+{
+  "brandsPage": {
+    "jobs": {
+      "description": "选择团队需要优化的购物旅程环节。",
+      "label": "探索品牌重点",
+      "details": "查看所有挑战与能力",
+      "items": [
+        {
+          "id": "compare",
+          "label": "对比竞品",
+          "scope": "模拟决策",
+          "path": [
+            "您的商品",
+            "指定竞品",
+            "模型决策"
+          ]
+        },
+        {
+          "id": "listings",
+          "label": "优化商品信息",
+          "scope": "现有商品事实",
+          "path": [
+            "源数据事实",
+            "标题与描述",
+            "独立的结构化数据"
+          ]
+        },
+        {
+          "id": "checkout",
+          "label": "测试结账",
+          "scope": "支持的 WooCommerce 流程",
+          "path": [
+            "商品发现",
+            "购物车定价",
+            "跳转至支付"
+          ]
+        },
+        {
+          "id": "referrals",
+          "label": "识别引荐来源",
+          "scope": "已识别的 Shopify 引荐",
+          "path": [
+            "AI 助手",
+            "访问店铺",
+            "引荐报告"
+          ]
+        }
+      ]
+    },
+    "sources": {
+      "description": "从您的店铺或受支持的 Feed 开始。Merchant Center 同步仍需单独操作。",
+      "store": "连接店铺",
+      "catalog": "其他商品目录路径"
+    }
+  }
+}

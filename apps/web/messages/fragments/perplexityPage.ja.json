@@ -1,0 +1,32 @@
+{
+  "perplexityPage": {
+    "shopping": {
+      "label": "ショッピング先を見る",
+      "result": "商品カード",
+      "destination": "ショッピング先",
+      "purchase": "Buy with Pro",
+      "store": "マーチャントサイト",
+      "purchaseTitle": "対象購入",
+      "purchaseDescription": "発表されているBuy with Pro体験は、米国内の対象商品向けです。",
+      "storeTitle": "マーチャント側で続行",
+      "storeDescription": "その購入オプションが利用できない場合、購入者はマーチャントのウェブサイトへのリンクに進みます。",
+      "caption": "Perplexityのショッピング発表で説明されている2つの導線を確認してください。"
+    },
+    "reading": {
+      "merchant": "マーチャント情報",
+      "product": "商品詳細",
+      "price": "価格",
+      "website": "マーチャントサイト",
+      "result": "ショッピング結果",
+      "caption": "マーチャント向けプログラムにより、商品情報をより充実させられます。"
+    },
+    "entry": {
+      "label": "マーチャント参加要件を見る",
+      "steps": [
+        "発表済みのプログラム",
+        "現在の参加条件",
+        "未検証の内容"
+      ]
+    }
+  }
+}

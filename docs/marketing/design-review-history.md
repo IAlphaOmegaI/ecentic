@@ -16,6 +16,14 @@ inspiration brief; the current inventory includes the five later archived files.
 Some numbered-comment files also contain unnumbered follow-up requests; those requests inform the synthesis without increasing the numbered count.
 No screenshots or image contents are reproduced here.
 
+The 13 November cleanup moved generated review receipts, decks and render outputs out of the
+application repository. Historical `output/` paths in this ledger now resolve beneath this local
+archive; the original annotated review backup above remains intact:
+
+```text
+/Users/xhurianshaba/Documents/Claude/Projects/écentic/Archived project artifacts 2026-11-13/
+```
+
 ## Reading and precedence
 
 - Read the canonical design system for the current implementation rules; use this ledger to understand why they changed.
@@ -178,11 +186,11 @@ all split sections, a claim that the redesign shipped, or permission to invent E
 
 ## 12 November full-history learn-taste approval
 
-The user approved the [full-history report](../../output/learn-taste-2026-11-12/report.md) with
+The user approved the [full-history report](</Users/xhurianshaba/Documents/Claude/Projects/écentic/Archived project artifacts 2026-11-13/output/learn-taste-2026-11-12/report.md>) with
 **“write all”**. The pass read and reconciled all 428 numbered comments, the inspiration brief,
 earlier implementation briefs and direct chat choices. Exact correction text, context and source
-lines remain in [all-corrections.json](../../output/learn-taste-2026-11-12/all-corrections.json);
-the [archive manifest](../../output/learn-taste-2026-11-12/archive-manifest.json) records the 26
+lines remain in [all-corrections.json](</Users/xhurianshaba/Documents/Claude/Projects/écentic/Archived project artifacts 2026-11-13/output/learn-taste-2026-11-12/all-corrections.json>);
+the [archive manifest](</Users/xhurianshaba/Documents/Claude/Projects/écentic/Archived project artifacts 2026-11-13/output/learn-taste-2026-11-12/archive-manifest.json>) records the 26
 source paths and hashes. This is completed review coverage, not proof that prior source edits
 satisfied every annotation.
 

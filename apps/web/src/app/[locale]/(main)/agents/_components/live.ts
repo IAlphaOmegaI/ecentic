@@ -1,11 +1,11 @@
 "use client";
 
 import { resultify } from "@zenncore/utils";
+import { useFormatter, useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import type * as Catalog from "@/server/app/storefront/catalog";
 
-// Copy on every /agents surface is hardcoded English tonight, like the internal
-// /dev pages, so the shared message catalogs stay untouched.
+// UI copy is localized; product facts and provider diagnostics retain their source language.
 
 /** What `GET /api/agents/runs/[id]` returns: `now` lets the stage absorb clock skew. */
 export type Snapshot = { summary: Catalog.Summary; now: number };
@@ -128,31 +128,35 @@ export const settled = ({ summary, now }: Snapshot) => {
   return !waiting && !uploading;
 };
 
-export const count = (amount: number, singular: string, plural: string) =>
-  `${amount} ${amount === 1 ? singular : plural}`;
-
-export const channelLine = (
-  label: string,
-  { ready, total }: Catalog.Summary["google"],
-) => `${label}: ${ready} of ${count(total, "product", "products")} ready`;
-
-export const uploadLine = ({ status }: Catalog.Upload) =>
-  `Uploaded to OpenAI's product feed: ${status.replaceAll("_", " ")}`;
-
-export const stageLabels: Record<Catalog.Stage, string> = {
-  reading: "Reading the store",
-  preparing: "Fixing what we can",
-  channels: "Building the feeds",
-  done: "Done",
-  failed: "This run stopped",
-};
-
-export const offerLabels: Record<Catalog.OfferLine["status"], string> = {
-  pending: "Waiting on Google's API",
-  accepted: "Accepted by Google's API",
-  merged: "Merged by Google",
-  rejected: "Rejected by Google's API",
-  skipped: "Skipped",
+export const useLiveCopy = () => {
+  const translate = useTranslations("agentReadiness");
+  const format = useFormatter();
+  return {
+    channelLine: (label: string, { ready, total }: Catalog.Summary["google"]) =>
+      translate("channelSummary", {
+        label,
+        ready: format.number(ready),
+        total,
+      }),
+    uploadLine: ({ status }: Catalog.Upload) =>
+      translate("uploadSummary", {
+        status: translate(`uploadStatus.${status}`),
+      }),
+    stageLabels: {
+      reading: translate("stage.reading"),
+      preparing: translate("stage.preparing"),
+      channels: translate("stage.channels"),
+      done: translate("stage.done"),
+      failed: translate("stage.failed"),
+    } satisfies Record<Catalog.Stage, string>,
+    offerLabels: {
+      pending: translate("offer.pending"),
+      accepted: translate("offer.accepted"),
+      merged: translate("offer.merged"),
+      rejected: translate("offer.rejected"),
+      skipped: translate("offer.skipped"),
+    } satisfies Record<Catalog.OfferLine["status"], string>,
+  };
 };
 
 /** What Google now shows once the override has merged, what we sent before that. */

@@ -1,0 +1,16 @@
+{
+  "reviewSimulate": {
+    "roadmap": {
+      "title": "模拟决策内部",
+      "stages": [
+        "对比商品",
+        "跟踪选择过程",
+        "查看推理过程"
+      ],
+      "play": "重播",
+      "pause": "暂停"
+    },
+    "assistant": "ecentic模拟",
+    "response": "助手响应"
+  }
+}

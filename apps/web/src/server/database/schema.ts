@@ -1115,6 +1115,7 @@ export const blogTranslation = pgTable(
           {
             text: string;
             findings: readonly { id: string; pass: string; message: string }[];
+            reviewVersion?: string;
           }
         >
       >()

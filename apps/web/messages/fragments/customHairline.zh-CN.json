@@ -1,0 +1,13 @@
+{
+  "commerceFigures": {
+    "shopifyBag": "带有商品目录卡片的Shopify购物袋，卡片会朝指针方向抬起",
+    "shoppingBot": "AI购物机器人，其扫描器会跟随商品卡片移动",
+    "custom": {
+      "rest": "静止状态",
+      "product": "商品{number}",
+      "selectedProduct": "已选中商品{number}",
+      "scanning": "扫描中",
+      "selected": "已选中商品"
+    }
+  }
+}

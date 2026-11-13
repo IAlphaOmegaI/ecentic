@@ -1,0 +1,17 @@
+{
+  "reviewDiff": {
+    "view": "统一差异视图",
+    "added": "新增",
+    "removed": "删除",
+    "unchanged": "未变更上下文",
+    "annotations": "这些字段为何重要",
+    "action": {
+      "primary": "复制更新后的记录"
+    },
+    "copyState": {
+      "copied": "已复制",
+      "failed": "无法复制"
+    },
+    "imageNote": "示意商品图片。示例记录并不描述图中型号。"
+  }
+}

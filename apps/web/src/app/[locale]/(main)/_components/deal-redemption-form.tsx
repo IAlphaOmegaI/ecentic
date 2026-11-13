@@ -11,7 +11,7 @@ import {
   InferredForm,
 } from "@zenncore/web/components/inferred-form";
 import { useToastManager } from "@zenncore/web/components/toast";
-import { useTranslations } from "next-intl";
+import { useFormatter, useTranslations } from "next-intl";
 import { z } from "zod";
 import { useRouter } from "@/i18n/navigation";
 
@@ -27,26 +27,39 @@ const monthlyOrders = [
 
 type Props = {
   /** Deal program this form redeems against, e.g. "ycombinator". */
-  merchant: string;
-  batchLabel: string;
-  batchPlaceholder: string;
+  merchant: "techstars" | "ycombinator";
   batches: readonly string[];
-  cta: string;
   /** Where to send the founder once the redemption is recorded. */
   redirectTo?: string;
 };
 
 export const DealRedemptionForm = ({
   merchant,
-  batchLabel,
-  batchPlaceholder,
   batches,
-  cta,
   redirectTo = "/sign-up",
 }: Props) => {
   const router = useRouter();
   const toast = useToastManager();
   const translate = useTranslations("dealRedemption");
+  const format = useFormatter();
+  const program = merchant === "techstars" ? "techstars" : "yc";
+  const cohortLabel = (value: string) => {
+    if (value === "Earlier") return translate("options.earlier");
+    if (value === "Other") return translate("options.other");
+    const [season, year] = value.split(" ");
+    switch (season) {
+      case "Winter":
+        return translate("cohorts.winter", { year: year ?? "" });
+      case "Spring":
+        return translate("cohorts.spring", { year: year ?? "" });
+      case "Summer":
+        return translate("cohorts.summer", { year: year ?? "" });
+      case "Fall":
+        return translate("cohorts.fall", { year: year ?? "" });
+      default:
+        return value;
+    }
+  };
 
   const config = {
     companyName: field({
@@ -59,8 +72,9 @@ export const DealRedemptionForm = ({
     batch: field({
       shape: "select",
       validator: z.literal([...batches]),
-      label: batchLabel,
-      placeholder: batchPlaceholder,
+      label: translate(`programs.${program}.batchLabel`),
+      placeholder: translate(`programs.${program}.batchPlaceholder`),
+      items: batches.map((value) => ({ value, label: cohortLabel(value) })),
       classList: { field: "col-span-2 md:col-span-1" },
     }),
     contactName: field({
@@ -88,6 +102,15 @@ export const DealRedemptionForm = ({
       shape: "select",
       // @ts-expect-error - optional literal union is not narrowed by the form types
       validator: z.literal(platforms).optional(),
+      items: platforms.map((value) => ({
+        value,
+        label:
+          value === "Other"
+            ? translate("options.other")
+            : value === "Custom / Headless"
+              ? translate("options.customHeadless")
+              : value,
+      })),
       label: translate("fields.platform.label"),
       placeholder: translate("fields.platform.placeholder"),
       classList: { field: "col-span-2 md:col-span-1" },
@@ -96,6 +119,15 @@ export const DealRedemptionForm = ({
       shape: "select",
       // @ts-expect-error - optional literal union is not narrowed by the form types
       validator: z.literal(monthlyOrders).optional(),
+      items: monthlyOrders.map((value) => ({
+        value,
+        label:
+          value === "Pre-launch"
+            ? translate("options.preLaunch")
+            : value.replace(/\d+(?:,\d{3})*/g, (number) =>
+                format.number(Number(number.replaceAll(",", ""))),
+              ),
+      })),
       label: translate("fields.monthlyOrders.label"),
       placeholder: translate("fields.monthlyOrders.placeholder"),
       classList: { field: "col-span-2 md:col-span-1" },
@@ -167,7 +199,7 @@ export const DealRedemptionForm = ({
           </>
         ) : (
           <>
-            {cta}
+            {translate(`programs.${program}.action.primary`)}
             <ArrowRightIcon className="size-4" />
           </>
         )}

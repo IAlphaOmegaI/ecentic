@@ -1,0 +1,41 @@
+{
+  "enterprisePilotPreview": {
+    "label": "パイロット例・サンプル概要",
+    "title": "1つのカテゴリ。1つの市場。同じ質問。",
+    "note": "顧客実績ではなく計画例です。範囲、チーム役割、成果物はチームと合意のうえ決定します。",
+    "marketLabel": "市場",
+    "market": "スペイン",
+    "categoryLabel": "カテゴリ",
+    "category": "アウトドアバックパック",
+    "sourceLabel": "開始点",
+    "source": "公開商品ページ",
+    "peopleLabel": "チーム例",
+    "deliverableLabel": "成果物例",
+    "stages": [
+      {
+        "people": "カテゴリ責任者 + ecenticアナリスト",
+        "deliverable": "質問セットとベースラインワークブック",
+        "exampleLabel": "質問例",
+        "example": "1週間の旅行に適した機内持ち込みバックパックはどれですか？"
+      },
+      {
+        "people": "マーチャンダイジング責任者 + カタログ編集者",
+        "deliverable": "事実確認と承認済み変更リスト",
+        "exampleLabel": "事実確認例",
+        "example": "容量、寸法、素材を元ページと照合します。"
+      },
+      {
+        "people": "ecenticアナリスト + カテゴリ責任者",
+        "deliverable": "条件一致の再実行と変更ログ",
+        "exampleLabel": "比較例",
+        "example": "ベースライン回答と再実行回答を並べて保持します。モデル変更はすべて記録します。"
+      },
+      {
+        "people": "事業責任者 + ecentic担当者",
+        "deliverable": "要約、制限事項、次の判断",
+        "exampleLabel": "アジェンダ例",
+        "example": "言及内容、掲載位置、リンク、テストした購入フローを確認します。次にテストする内容を選択してください。"
+      }
+    ]
+  }
+}

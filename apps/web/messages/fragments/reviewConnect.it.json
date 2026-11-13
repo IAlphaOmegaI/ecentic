@@ -1,0 +1,17 @@
+{
+  "reviewConnect": {
+    "problem": {
+      "store": "Catalogo del negozio",
+      "merchant": "Merchant Center",
+      "feed": "Feed prodotti",
+      "note": "Un prodotto può avere record diversi in ogni sorgente."
+    },
+    "flow": {
+      "sources": "Scegli la sorgente che vuoi importare.",
+      "catalog": "Il tuo catalogo di lavoro",
+      "merchant": "Merchant Center è una connessione Shopify separata.",
+      "selection": "Scegli quali prodotti importati confrontare.",
+      "control": "Importa prima i campi prodotto supportati. La pubblicazione delle modifiche resta un’azione separata."
+    }
+  }
+}

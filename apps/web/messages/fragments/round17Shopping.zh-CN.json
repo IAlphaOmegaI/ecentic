@@ -1,0 +1,22 @@
+{
+  "round17Shopping": {
+    "sample": "示例购物结果",
+    "followUps": "查看其他问题",
+    "evidence": "商品信息遗漏的内容",
+    "source": "源数据事实",
+    "missing": "商品信息缺失",
+    "present": "商品信息中已存在",
+    "evidenceNote": "高亮显示的事实已存在于示例源数据中。再次对比前，请先在商品信息中明确说明。",
+    "qualification": "示例源数据。发布前请先核实。",
+    "responses": {
+      "wine-and-spirits": "这里有两款酒可供对比。请根据您的偏好查看品鉴说明、产地和酒瓶详情。",
+      "food-and-beverage": "这两个选项值得比较。份量和配料详情有助于进一步筛选。",
+      "beauty-and-personal-care": "这里有两个选项可供查看。我会根据配方以及商品声明的适用性，对照您的需求进行比较。",
+      "consumer-electronics": "我会根据对您的使用场景重要的规格，对比这两个选项。以下是它们商品信息中提供的内容。",
+      "home-and-furniture": "这两个选项可以作为起点。决定哪一个适合您的空间前，请先确认尺寸和材质。",
+      "fashion-and-outdoor": "这里有两个选项可供比较。请查看它们的版型、材质以及针对预期用途声明的性能。",
+      "health-wellness-and-pet": "这两个商品信息提供了一些可对比的事实。请查看成分和使用建议，并向具备资质的专业人士确认适用性。",
+      "travel-and-experiences": "这里有两个旅行选项。选择前，请比较日期、地点以及完整条款。"
+    }
+  }
+}

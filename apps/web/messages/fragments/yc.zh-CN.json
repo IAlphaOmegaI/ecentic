@@ -1,0 +1,78 @@
+{
+  "yc": {
+    "meta": {
+      "title": "ecentic for Y Combinator——领取专属优惠",
+      "description": "Y Combinator 学员专属 ecentic 优惠：任意套餐延长使用期、白手套式接入支持和学生定价。两分钟内即可领取。"
+    },
+    "breadcrumb": {
+      "home": "首页",
+      "page": "Y Combinator"
+    },
+    "hero": {
+      "eyebrow": "Y Combinator",
+      "title": {
+        "primary": "您的 ecentic 优惠，",
+        "accent": "立即领取。"
+      },
+      "description": "Y Combinator 学员专属 ecentic 优惠：任意套餐延长使用期、白手套式接入支持和学生定价。两分钟内即可领取。",
+      "art": {
+        "alt": "握手的 ASCII 艺术插图"
+      },
+      "badge": {
+        "alt": "Y Combinator",
+        "label": "专属合作伙伴优惠"
+      }
+    },
+    "deal": {
+      "number": "01",
+      "title": "优惠内容",
+      "description": "专为 YC 学员打造：相比维护商品表格，更想赢得 AI 智能体推荐。",
+      "content": "ecentic 可展示 AI 购物智能体如何将您的商品与竞品进行比较，诊断您胜出或落选的原因，并重写商品信息以缩小差距。您的 YC 优惠适用于最适合您的套餐：Compete、Scale 或 Dominate。\n\n- 所有套餐均支持在 ChatGPT、Claude、Gemini 和 Perplexity 上进行智能体模拟\n- 从 Scale 开始，支持持续模拟与自动优化，并可一键发布\n- Dominate 提供模型漂移提醒和 UCP 生成功能，让智能体直接验证您的商品目录\n- 提供商品目录白手套式接入支持，并在优惠期结束后继续享受学生定价\n\n在下方领取优惠后，我们会验证您的 YC 批次，并在一个工作日内通过邮件发送激活链接。"
+    },
+    "redeem": {
+      "number": "02",
+      "title": "领取您的优惠",
+      "description": "告诉我们您的身份以及希望赢得什么。我们会验证您的 YC 批次并激活优惠。无需信用卡。"
+    },
+    "howItWorks": {
+      "number": "03",
+      "title": "领取流程",
+      "description": "从提交表单到优惠生效只需三步。大多数学员当天就能运行第一次模拟。",
+      "content": "这里没有繁琐的采购流程。重点就是让您尽快开始模拟。\n\n- 提交表单，填写公司、批次以及希望 ecentic 帮助您赢得的目标\n- 我们会根据 YC 名录验证您的批次，通常当天完成\n- 您将收到激活链接，并获得白手套式商品目录导入支持\n\n导入商品目录后，ecentic 会在主流 AI 购物模型中运行模拟，展示竞品为何被优先选择，并将结果转化为可一键批准的商品信息修改建议。"
+    },
+    "faqSection": {
+      "number": "04",
+      "title": "优惠领取 FAQ",
+      "description": "资格要求、包含内容以及上线速度。"
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "谁有资格领取该优惠？",
+          "answer": "任何当前或过往 Y Combinator 批次中的公司均可申请。提交后，我们会根据 YC 名录验证您的批次，因此建议使用 YC 记录中的邮箱和公司名称，以加快处理速度。"
+        },
+        {
+          "question": "我实际能获得什么？",
+          "answer": "您可在选择的 ecentic 套餐中享受学生折扣：Compete、Scale 或 Dominate。所有套餐均支持在 ChatGPT、Claude、Gemini 和 Perplexity 上进行 AI 智能体模拟；Scale 增加持续模拟与自动优化，以及一键发布；Dominate 增加模型漂移提醒和 UCP 生成功能。所有套餐均包含商品目录白手套式接入支持，并在优惠期结束后继续享受学生定价。"
+        },
+        {
+          "question": "需要先注册账户吗？",
+          "answer": "不需要。在这里领取优惠后，我们会在一个工作日内通过邮件发送激活详情。您可以现在创建账户，也可以等待激活链接；两种方式最终都会进入同一个流程。"
+        },
+        {
+          "question": "领取流程需要多久？",
+          "answer": "填写表单大约需要两分钟。验证通常当天完成，最长不超过一个工作日。优惠生效后，您会立即收到邮件通知。"
+        }
+      ]
+    },
+    "footer": {
+      "primary": "创建账户",
+      "secondary": "预约演示",
+      "note": "仅限 YC 学员。我们会核实您的参加期次，再激活优惠。"
+    },
+    "structuredData": {
+      "offerName": "ecentic Y Combinator 学员优惠",
+      "eligibleCustomerType": "Y Combinator 学员"
+    }
+  }
+}

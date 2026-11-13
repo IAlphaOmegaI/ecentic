@@ -1,0 +1,70 @@
+{
+  "resources": {
+    "tools": {
+      "number": "01",
+      "title": "四款免费工具，回答四个关键问题。",
+      "description": "衡量商品被选择的胜率、检查商业协议、查找 WebMCP 源证据，或观看真实 AI 智能体操作店铺流程。无需信用卡。",
+      "items": [
+        {
+          "number": "工具 01",
+          "category": "胜率模拟",
+          "title": "AI 智能体评分扫描",
+          "description": "对前 10 款商品在 ChatGPT、Claude、Gemini 和 Perplexity 中进行一次性模拟。查看哪些商品胜出、哪些落选，以及应优先修复的问题。",
+          "features": [
+            "前 10 款商品",
+            "四种模型视角",
+            "约两分钟出结果"
+          ],
+          "action": {
+            "primary": "免费检测店铺"
+          }
+        },
+        {
+          "number": "工具 02",
+          "category": "协议检查",
+          "title": "UCP 验证器",
+          "description": "检查店铺是否在 /.well-known/ucp 发布有效的 Universal Commerce Profile，以及 robots.txt 是否允许主流购物智能体访问。",
+          "features": [
+            "端点可达性",
+            "Schema 验证",
+            "智能体访问检查"
+          ],
+          "action": {
+            "primary": "验证店铺"
+          }
+        },
+        {
+          "number": "工具 03",
+          "category": "智能体沙盒",
+          "title": "UCP 试验区",
+          "description": "让真实 AI 购物智能体操作任何符合 UCP 标准的店铺。搜索商品目录、构建购物车、发起结账，并查看每一次工具调用。",
+          "features": [
+            "商品目录搜索与查询",
+            "购物车操作",
+            "无需账户即可免费发送 {count} 条消息"
+          ],
+          "action": {
+            "primary": "打开试验区"
+          }
+        },
+        {
+          "number": "工具 04",
+          "category": "购物流程检测",
+          "title": "WebMCP 扫描器",
+          "description": "检查 WebMCP 在八类店铺操作中的表现，包括商品搜索、规格选择、购物车、结账交接和订单流程。获取源证据与可落地的购物流程修复建议。",
+          "features": [
+            "八类购物流程",
+            "基于源证据的店铺修复建议",
+            "无需账户"
+          ],
+          "action": {
+            "primary": "检测购物工具"
+          }
+        }
+      ]
+    },
+    "meta": {
+      "description": "面向商家和开发者的免费 ecentic 资源：AI 智能体评分扫描、UCP 验证器、WebMCP 扫描器、UCP 试验区、指南以及公开智能体 API。"
+    }
+  }
+}

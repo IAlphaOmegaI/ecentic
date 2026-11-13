@@ -1,0 +1,20 @@
+{
+  "reviewReplay": {
+    "summary": "可见的决策摘要",
+    "disclosure": "按预设脚本展示所核查的商品信息及由此产生的选择结果。",
+    "inspection": "商品信息检查",
+    "budget": "消费者预算",
+    "criteria": "适配要求",
+    "evidence": "商品信息证据",
+    "matched": "商品信息中已提供",
+    "missing": "商品信息中缺失",
+    "complete": "对比完成",
+    "sampleId": "样例 001",
+    "process": {
+      "matchup": "商品 + 竞品",
+      "compare": "三种模型视角",
+      "diagnose": "已记录的决策 + 已说明事实",
+      "improve": "审核 → 改进 → 再次比较"
+    }
+  }
+}

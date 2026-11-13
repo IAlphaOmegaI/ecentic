@@ -1,0 +1,38 @@
+{
+  "dashboard": {
+    "lifecycle": {
+      "action": {
+        "secondary": "取消",
+        "pending": "处理中…"
+      },
+      "error": "无法完成此请求。请重试或联系支持团队。",
+      "disconnected": "已断开连接",
+      "disconnect": {
+        "title": "断开此店铺连接？",
+        "description": "移除已保存的店铺凭证并停止访问 {domain}。已导入的商品目录和历史记录会保留在 ecentic 中。此操作不会卸载插件，也不会撤销店铺中的密钥；请同时在对应服务提供方处完成移除。如果当前登录会话超过五分钟，请先重新登录。",
+        "action": {
+          "primary": "断开店铺连接"
+        }
+      },
+      "delete": {
+        "title": "删除账户？",
+        "description": "此操作将永久删除您的资料、已导入商品目录、扫描记录和已生成的更改。请先断开店铺和 Google 集成。输入账户邮箱以确认操作。您必须在最近五分钟内登录过账户。",
+        "email": "账户邮箱",
+        "validation": "请输入有效的邮箱地址。",
+        "assistance": "包含账单或订单记录的账户需要协助删除，以确保正确处理必要记录和账单。请联系",
+        "action": {
+          "primary": "删除账户"
+        }
+      },
+      "blocked": {
+        "reauthenticate": "请退出并重新登录，然后在五分钟内返回此页面。",
+        "confirmation": "请输入当前登录账户的邮箱地址。",
+        "notFound": "该账户或店铺已不可用。",
+        "googleConnected": "请先在设置页面断开 Google Shopping，以便正确移除 Google 数据源和授权。",
+        "shopifyBilling": "请先在 Shopify 中卸载 ecentic 以终止 Shopify 账单协议；如果连接仍然存在，请联系支持团队。",
+        "billingRecords": "该账户包含账单或订单记录。请联系 privacy@ecentic.ai 申请协助删除；我们需要先完成账单结算并保留法律要求的记录。",
+        "storeConnections": "删除账户前，请先在“设置”中断开店铺和 Google Shopping 集成。"
+      }
+    }
+  }
+}

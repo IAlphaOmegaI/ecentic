@@ -1,0 +1,17 @@
+{
+  "commerceFigures": {
+    "openBook": "插图：一本打开的书。将指针移到任意页面上即可翻动书页。",
+    "partReadouts": {
+      "openBook": [
+        {
+          "value": "左页",
+          "label": "左页"
+        },
+        {
+          "value": "右页",
+          "label": "右页"
+        }
+      ]
+    }
+  }
+}

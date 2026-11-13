@@ -47,6 +47,8 @@ export const CLIENT_MESSAGES = {
   /** Root layout: only the cookie banner renders above the route groups. */
   root: ["cookieConsent", "general.dismiss", "general.notifications"],
   marketing: MARKETING,
+  agents: [...MARKETING, "agentReadiness"],
+  agentStage: ["agentReadiness"],
   home: [...MARKETING, "home.heroVideo"],
   features: [...MARKETING, "productListings"],
   platforms: [...MARKETING, "shopify", "woocommerce"],

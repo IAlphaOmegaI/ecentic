@@ -16,6 +16,10 @@ const scaleDecimal = (decimal: string, exponent: number) => {
 };
 
 const magnitudePowers: Readonly<Record<string, number>> = {
+  K: 3,
+  M: 6,
+  B: 9,
+  T: 12,
   thousand: 3,
   million: 6,
   billion: 9,
@@ -45,6 +49,36 @@ const sumDecimals = (values: readonly string[]) => {
   return scaleDecimal(`${total}`, -scale);
 };
 
+// This compound supplies its own unit amount. Keep the match limited to the
+// explicit valuation phrase; bare magnitudes and differently qualified amounts
+// must not acquire an invented numeral or currency.
+const normalizeImplicitDollarAmounts = (text: string) =>
+  text
+    .replace(
+      /\ba(?: reported)? billion-dollar(?= valuation\b)/giu,
+      "USD 1 billion",
+    )
+    .replace(/\bsub-dollar(?= transactions\b)/giu, "under USD 1");
+
+/** Both endpoints of “$3 to $5 trillion” share the trailing magnitude. */
+const expandMonetaryRange = (text: string) =>
+  text.replace(
+    /((?:US\$|[$€£¥]|\b(?:USD|EUR|GBP|JPY|CNY)))\s*(\d+(?:,\d{3})*(?:\.\d+)?)(\s+(?:to|through|[–—-])\s+)((?:US\$|[$€£¥]|\b(?:USD|EUR|GBP|JPY|CNY)))\s*(\d+(?:,\d{3})*(?:\.\d+)?)\s+(thousand\b|million\b|billion\b|trillion\b)/gu,
+    (
+      match,
+      firstCurrency: string,
+      firstAmount: string,
+      connector: string,
+      secondCurrency: string,
+      secondAmount: string,
+      magnitude: string,
+    ) => {
+      if (firstCurrency !== secondCurrency) return match;
+      const exponent = magnitudePowers[magnitude] ?? 0;
+      return `${firstCurrency}${scaleDecimal(firstAmount, exponent)}${connector}${secondCurrency}${scaleDecimal(secondAmount, exponent)}`;
+    },
+  );
+
 /**
  * CJK changes the grouping unit, not the quantity: $67 billion = 670亿美元.
  * Only explicit magnitudes are normalized; ordinary counts, versions and signs
@@ -52,7 +86,15 @@ const sumDecimals = (values: readonly string[]) => {
  */
 export const normalizeCjkMagnitudes = (text: string, locale: Locale) => {
   if (locale !== "ja" && locale !== "zh-CN") return text;
-  const english = text.replace(
+  // A monetary $67B is unambiguous; a model ID, file size or bare 67B is not.
+  const monetary = expandMonetaryRange(
+    normalizeImplicitDollarAmounts(text),
+  ).replace(
+    /((?:US\$|[$€£¥]|\b(?:USD|EUR|GBP|JPY|CNY)\s*)\s*)([−-]?\d+(?:,\d{3})*(?:\.\d+)?)\s*([KMBT])\b/gu,
+    (_, currency: string, decimal: string, magnitude: string) =>
+      `${currency}${scaleDecimal(decimal, magnitudePowers[magnitude] ?? 0)}`,
+  );
+  const english = monetary.replace(
     /([−-]?\d+(?:,\d{3})*(?:\.\d+)?)\s*(thousand\b|million\b|billion\b|trillion\b)/giu,
     (_, decimal: string, magnitude: string) =>
       scaleDecimal(decimal, magnitudePowers[magnitude.toLowerCase()] ?? 0),
@@ -103,7 +145,12 @@ const monthNames = [
 /** Named months become numeric months in CJK dates, including dated ranges. */
 export const normalizeCjkDates = (text: string, locale: Locale) => {
   if (locale !== "ja" && locale !== "zh-CN") return text;
-  const monthPattern = monthNames.join("|");
+  const monthLabels = [
+    ...monthNames,
+    ...monthNames.map((month) => month.slice(0, 3)),
+    "Sept",
+  ];
+  const monthPattern = `(?:${[...new Set(monthLabels)].join("|")})\\b\\.?`;
   return text.replace(
     new RegExp(
       `\\b(?:${monthPattern})(?:\\s*(?:and|to|through|[–—-])\\s*(?:${monthPattern}))?(?:\\s+\\d{1,2}(?:st|nd|rd|th)?[,]?)?\\s+\\d{4}\\b`,
@@ -111,9 +158,9 @@ export const normalizeCjkDates = (text: string, locale: Locale) => {
     ),
     (date) =>
       date.replace(
-        new RegExp(`\\b(${monthPattern})\\b`, "g"),
+        new RegExp(`\\b${monthPattern}`, "g"),
         (month) =>
-          `${monthNames.indexOf(month as (typeof monthNames)[number]) + 1}|`,
+          `${monthNames.findIndex((name) => name.startsWith(month.replace(/\.$/u, ""))) + 1}|`,
       ),
   );
 };
@@ -154,9 +201,11 @@ export const currencyAndPercentFacts = (text: string, locale: Locale) => {
     "％": "%",
   };
   return Array.from(
-    text.matchAll(
-      /US\$|\b(?:USD|EUR|GBP|JPY|CNY)\b|アメリカドル|米ドル|英ポンド|ユーロ|人民币|人民元|美元|欧元|英镑|日元|日円|(?<=[\d万萬亿億兆])\s*[元円]|[$€£¥%％]/gu,
-    ),
+    normalizeImplicitDollarAmounts(text)
+      .replace(/\ba dollar\b/giu, "USD")
+      .matchAll(
+        /US\$|\b(?:USD|EUR|GBP|JPY|CNY)\b|アメリカドル|米ドル|英ポンド|ユーロ|人民币|人民元|美元|欧元|英镑|日元|日円|(?<=[\d万萬亿億兆])\s*[元円]|[$€£¥%％]/gu,
+      ),
     ([token]) => currencies[token.trim()] ?? token,
   );
 };

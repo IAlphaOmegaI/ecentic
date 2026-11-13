@@ -1,0 +1,17 @@
+{
+  "reviewConnect": {
+    "problem": {
+      "store": "ストアカタログ",
+      "merchant": "Merchant Center",
+      "feed": "商品フィード",
+      "note": "1つの商品でも、ソースごとに異なるレコードを持つ場合があります。"
+    },
+    "flow": {
+      "sources": "取り込むソースを選択してください。",
+      "catalog": "作業用カタログ",
+      "merchant": "Merchant CenterはShopify向けの別接続です。",
+      "selection": "比較するインポート済み商品を選択してください。",
+      "control": "まず対応済みの商品フィールドをインポートします。変更の公開は別アクションです。"
+    }
+  }
+}

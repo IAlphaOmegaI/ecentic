@@ -248,6 +248,8 @@ export const createMetadata = ({
       "/integrations",
       "/pricing",
       "/resources",
+      "/blog",
+      "/privacy-policy",
       "/security",
       "/about",
       "/stories",

@@ -1,0 +1,72 @@
+{
+  "interactiveSecurity": {
+    "reviewLabel": "Bozza per la revisione di Alvi",
+    "title": "Dove si spostano i dati di prodotto",
+    "description": "Seleziona una connessione per esaminare i dati proposti, la tempistica e il controllo. Ogni connessione richiede comunque la conferma di Alvi prima che questo diagramma possa essere pubblicato.",
+    "details": {
+      "what": "Cosa viene inviato",
+      "when": "Quando",
+      "control": "Controllo"
+    },
+    "nodes": {
+      "source": {
+        "label": "Il tuo negozio o feed",
+        "description": "Catalogo prodotti"
+      },
+      "ecentic": {
+        "label": "ecentic",
+        "description": "Strumenti di confronto e pubblicazione"
+      },
+      "providers": {
+        "label": "Provider AI",
+        "description": "Simulazioni e riscritture · elenco provider"
+      },
+      "store": {
+        "label": "Negozio collegato",
+        "description": "Shopify o WooCommerce"
+      },
+      "merchantCenter": {
+        "label": "Merchant Center",
+        "description": "Sincronizzazione Shopify separata"
+      }
+    },
+    "connectors": {
+      "import": {
+        "label": "Importa catalogo",
+        "what": "Campi prodotto del negozio o feed selezionato. {{TODO: Alvi confirms}}",
+        "when": "Durante l’importazione o la sincronizzazione del catalogo. {{TODO: Alvi confirms}}",
+        "control": "Usa i permessi della connessione al negozio o la sorgente che scegli. L’importazione non pubblica modifiche alle schede prodotto. {{TODO: Alvi confirms}}"
+      },
+      "request": {
+        "label": "Invia all’AI",
+        "what": "Dettagli selezionati di prodotti e concorrenti per confronti o generazione di schede prodotto. {{TODO: Alvi confirms}}",
+        "when": "Quando viene eseguita una simulazione o un’azione di generazione della scheda prodotto. {{TODO: Alvi confirms}}",
+        "control": "Usa il percorso provider configurato. I dati dell’account Merchant Center collegato restano separati dal catalogo del negozio usato per il lavoro AI. {{TODO: Alvi confirms}}"
+      },
+      "response": {
+        "label": "Restituisci risultati",
+        "what": "Risultati della simulazione o contenuti generati per schede prodotto e dati strutturati. {{TODO: Alvi confirms}}",
+        "when": "Quando l’operazione richiesta del modello restituisce un risultato. {{TODO: Alvi confirms}}",
+        "control": "Applica può generare e pubblicare nella stessa azione; i dati strutturati usano un’azione di pubblicazione separata. {{TODO: Alvi confirms}}"
+      },
+      "apply": {
+        "label": "Applica scheda prodotto",
+        "what": "Titolo e descrizione generati per i prodotti selezionati. {{TODO: Alvi confirms}}",
+        "when": "Quando scegli Applica o un’azione esplicita di pubblicazione in blocco. {{TODO: Alvi confirms}}",
+        "control": "Richiede un negozio collegato direttamente e un’azione di pubblicazione esplicita da parte tua. {{TODO: Alvi confirms}}"
+      },
+      "structuredData": {
+        "label": "Pubblica dati",
+        "what": "Product JSON-LD generato nei metadati prodotto del negozio. {{TODO: Alvi confirms}}",
+        "when": "Con l’azione separata Pubblica dati strutturati. {{TODO: Alvi confirms}}",
+        "control": "L’app embed del tema Shopify o il plugin WooCommerce devono mostrare i dati pubblicati. {{TODO: Alvi confirms}}"
+      },
+      "merchantCenter": {
+        "label": "Sincronizza Google",
+        "what": "Sostituzioni pubblicate di titolo e descrizione più attributi selezionati del checkout. {{TODO: Alvi confirms}}",
+        "when": "Con una sincronizzazione Google esplicita e separata per un negozio Shopify collegato. {{TODO: Alvi confirms}}",
+        "control": "Usa una sorgente supplementare insieme al feed principale. Applicare una scheda prodotto non avvia automaticamente questa sincronizzazione. {{TODO: Alvi confirms}}"
+      }
+    }
+  }
+}

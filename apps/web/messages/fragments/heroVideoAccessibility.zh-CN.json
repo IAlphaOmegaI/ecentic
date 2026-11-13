@@ -1,0 +1,77 @@
+{
+  "home": {
+    "heroVideo": {
+      "sampleLabel": "演示影片包含示例商品、购物界面与结果。并非真实结果，也不构成保证。",
+      "transcriptTitle": "视觉字幕",
+      "transcriptIntroduction": "58秒影片中的屏幕文字与视觉动作。场景时间为大致时间。这是视觉字幕，不是语音转录。",
+      "onScreenLabel": "屏幕文字",
+      "transcript": [
+        {
+          "time": "0:00–0:03",
+          "onScreen": "你的下一位客户，不一定是人。",
+          "description": "由色调圆点构成的手伸向一副悬浮耳机。"
+        },
+        {
+          "time": "0:03–0:05",
+          "onScreen": "而是一个智能体。",
+          "description": "“Agent”一词以蓝色显示。"
+        },
+        {
+          "time": "0:05–0:09",
+          "onScreen": "50美元以内最好的降噪耳塞",
+          "description": "一位消费者在类似ChatGPT的对话中输入这条请求。"
+        },
+        {
+          "time": "0:09–0:13",
+          "onScreen": "消费者向AI提问，AI返回链接。在消费者购买前，AI已经决定他们会看到哪些店铺。",
+          "description": "示例回复列出了售价$29.99的Soundcore P25i、售价$24.88的JLab Go Air Pop+以及售价$25.99的TOZO T10，并附带零售商链接。画面中出现ChatGPT、Claude、Gemini和Perplexity标志。"
+        },
+        {
+          "time": "0:13–0:17",
+          "onScreen": "你的店铺处于不可见状态。智能体无法推荐它们读不到的内容。进不了答案，也进不了成交。",
+          "description": "一张标有“Your Store”的卡片位于答案区域之外，并显示“Product data missing”警告。“Invisible”一词逐渐消散。"
+        },
+        {
+          "time": "0:17–0:20",
+          "onScreen": "进入écentic",
+          "description": "ecentic 图标和文字标识逐渐进入画面，然后填充颜色。"
+        },
+        {
+          "time": "0:20–0:26",
+          "onScreen": "修复智能体无法读取的内容。",
+          "description": "示例 ecentic 仪表板显示 Aura ANC Wireless Earbuds 的低胜率诊断和商品信息建议。指针点击“批准”。该项目从“待处理”移至“已发布”，并显示消息：商品信息已更新——更改已发布到已连接的店铺。"
+        },
+        {
+          "time": "0:26–0:30",
+          "onScreen": "看着曝光持续增长。",
+          "description": "示例概览仪表板展示了不断上升的胜率图表，最终整体胜率达到 86%，同时显示 ChatGPT、Claude 和 Gemini 的结果。"
+        },
+        {
+          "time": "0:30–0:34",
+          "onScreen": "让店铺可在聊天中直接购买。",
+          "description": "Aura ANC Wireless Earbuds 的 Shopify 商品页示例，售价 $39.99，被转换为聊天购物结果中的商品卡片。"
+        },
+        {
+          "time": "0:34–0:41",
+          "onScreen": "登上 AI 结果顶部。一个商品目录，覆盖各大 AI。",
+          "description": "ecentic 的 Optimize 控件显示在 ChatGPT、Google AI Mode 和 Perplexity 的购物界面示例旁。每个示例中，“您的店铺”都从推荐第 #3 位上升到第 #1 位，同时一辆小车快速驶过屏幕。"
+        },
+        {
+          "time": "0:41–0:49",
+          "onScreen": "把发现转化为销售。",
+          "description": "商品卡片切换为聊天请求：“给我看看 Aura 耳机。” 回复中显示商品图片、$39.99 价格以及“立即购买”。随后示例流程继续展示“查看订单”“完成购买”和“订单已确认——购买已完成”。"
+        },
+        {
+          "time": "0:49–0:53",
+          "onScreen": "把发现转化为销售。",
+          "description": "示例 Shopify Analytics 图表增长至总销售额 $48,920.00。这只是示例动画，并非真实客户结果。"
+        },
+        {
+          "time": "0:53–0:58",
+          "onScreen": "当 AI 负责购物时，赢得这笔订单。立即在 Shopify 和 WooCommerce 安装。ecentic.ai",
+          "description": "ecentic 标志重新出现，位于结束语、平台标志和网站地址上方。"
+        }
+      ]
+    }
+  }
+}

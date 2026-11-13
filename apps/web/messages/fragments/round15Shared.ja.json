@@ -1,0 +1,21 @@
+{
+  "commerceFigures": {
+    "documentStack": "ポインターでシートを選択すると持ち上がる3つの商品ドキュメント",
+    "partReadouts": {
+      "documentStack": [
+        {
+          "value": "ドキュメント 1",
+          "label": "ドキュメント 1"
+        },
+        {
+          "value": "ドキュメント 2",
+          "label": "ドキュメント 2"
+        },
+        {
+          "value": "ドキュメント 3",
+          "label": "ドキュメント 3"
+        }
+      ]
+    }
+  }
+}

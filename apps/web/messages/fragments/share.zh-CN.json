@@ -1,0 +1,40 @@
+{
+  "share": {
+    "sidebar": {
+      "headline": {
+        "line1": "您的结果",
+        "line2": "已生成。"
+      },
+      "points": [
+        "ChatGPT、Claude、Gemini 和 Perplexity 已模拟真实购物对比",
+        "每个商品都已与竞品进行逐一评分比较",
+        "此报告展示您的优势与劣势"
+      ]
+    },
+    "page": {
+      "title": "您的店铺竞争力如何？",
+      "description": "深入了解您的店铺与竞争对手相比表现如何。"
+    },
+    "score": {
+      "label": "AI 智能体评分",
+      "simulations": "{count} 次模拟",
+      "wins": "胜场",
+      "losses": "失利",
+      "messages": {
+        "high": "领先于大多数竞争对手。",
+        "medium": "具备竞争力，但仍有增长空间。",
+        "low": "AI 购物智能体正在选择竞争对手。"
+      }
+    },
+    "finding": {
+      "impact": "影响",
+      "simsLost": "模拟失利占比",
+      "missingAttributes": "缺失属性"
+    },
+    "cta": {
+      "title": "准备让每个 AI 购物智能体都选择您的商品？",
+      "description": "ecentic 自动优化您的商品信息。可免费开始。",
+      "action": "免费开始"
+    }
+  }
+}

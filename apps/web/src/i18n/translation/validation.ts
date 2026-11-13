@@ -17,6 +17,8 @@ export type TranslationUnit = {
   context: string;
   /** Connected inline slots or a question/answer pair; batch together when possible. */
   group?: string;
+  /** Extracted standalone English article; its connected group still receives semantic review. */
+  grammaticalArticle?: true;
   format?: "plain" | "icu" | "markdown";
   invariant?: boolean;
   protectedTerms?: readonly string[];
@@ -38,18 +40,20 @@ const matches = (text: string, expression: RegExp) =>
 const escapePattern = (text: string) =>
   text.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 
-const literalOccurrences = (text: string, term: string) =>
+const literalMatches = (text: string, term: string, ignoreCase = false) =>
   matches(
     text,
     new RegExp(
       `(?<![A-Za-z0-9_])${escapePattern(term)}${["API", "MCP", "UCP"].includes(term) ? "s?" : ""}(?![A-Za-z0-9_])`,
-      "g",
+      ignoreCase ? "gi" : "g",
     ),
-  ).map(() => term);
+  );
+const literalOccurrences = (text: string, term: string) =>
+  literalMatches(text, term).map(() => term);
 
 const syntaxExpressions = {
   code: /```[\s\S]*?```|~~~[\s\S]*?~~~|`+[^`\n]*`+/g,
-  urls: /(?:https?:\/\/|mailto:|tel:)[^\s<>"'\])）。，；»«’”「」『』【】〈〉《》、]+/g,
+  urls: /(?:https?:\/\/|mailto:|tel:)[^\s<>`"'\])）。，；»«’”「」『』【】〈〉《》、]+/g,
   emails: /[A-Za-z0-9.!#$%&'*+/=?^_`{|}~-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}/g,
   tags: /<\/?[A-Za-z][^>]*>/g,
   placeholders: /\{\{[^{}]+\}\}|\{[A-Za-z_][A-Za-z0-9_.-]*\}|%\d*\$?[sdif]/g,
@@ -139,7 +143,10 @@ const spelledCounts = (text: string) => {
     text.toLowerCase(),
     /\b(?:a|an) (?:second|minute|hour|day|week|month|year)\b/g,
   ).map(() => "1");
-  return [...cardinals, ...ordinalCounts, ...singleDurations];
+  const singleDollars = matches(text.toLowerCase(), /\ba dollar\b/g).map(
+    () => "1",
+  );
+  return [...cardinals, ...ordinalCounts, ...singleDurations, ...singleDollars];
 };
 
 const numericValue = (token: string, locale: Locale) => {
@@ -220,19 +227,57 @@ const urls = (text: string) =>
   matches(text, syntaxExpressions.urls).map((url) =>
     url.replace(/[.,;:!?]+$/, ""),
   );
+// Legacy editorial sources occasionally capitalize ecentic or lowercase named
+// providers. Accept preserved source spelling or canonicalized brand spelling,
+// never a newly introduced case variant. Legal company spellings stay intact.
+// Ambiguous common words/plan names (Scale, Compete, Visa) stay exact.
+const canonicalBrandSpelling = new Set([
+  "ecentic",
+  "écentic",
+  "ecentic Inc",
+  "ChatGPT",
+  "OpenAI",
+  "Anthropic",
+  "Claude",
+  "Gemini",
+  "Google",
+  "Google Merchant Center",
+  "Perplexity",
+  "Microsoft",
+  "Copilot",
+  "Shopify",
+  "WooCommerce",
+  "WordPress",
+  "WebMCP",
+]);
+const brandProse = (text: string) =>
+  stripCode(text)
+    .replace(syntaxExpressions.urls, "")
+    .replace(syntaxExpressions.emails, "");
 const termFindings = (
   source: string,
   target: string,
   terms: readonly string[],
 ) =>
   terms
-    .filter(
-      (term) =>
-        !equal(
+    .filter((term) => {
+      if (!canonicalBrandSpelling.has(term))
+        return !equal(
           literalOccurrences(source, term),
           literalOccurrences(target, term),
-        ),
-    )
+        );
+      const original = literalMatches(brandProse(source), term, true);
+      const translated = literalMatches(brandProse(target), term, true);
+      return (
+        original.length !== translated.length ||
+        translated.some(
+          (spelling) =>
+            spelling !== term &&
+            translated.filter((value) => value === spelling).length >
+              original.filter((value) => value === spelling).length,
+        )
+      );
+    })
     .map(
       (term) =>
         `Protected term changed or its occurrence count differs: ${term}`,
@@ -456,7 +501,13 @@ export const validateTranslationUnit = (
             message: "Invariant content changed.",
           },
         ];
-  if (unit.text.trim() && !target.trim())
+  const omittedArticle =
+    unit.grammaticalArticle === true &&
+    Boolean(unit.group) &&
+    unit.format === "plain" &&
+    (locale === "ja" || locale === "zh-CN") &&
+    /^(?:a|an|the)$/i.test(unit.text.trim());
+  if (unit.text.trim() && !target.trim() && !omittedArticle)
     return [
       {
         id: unit.id,

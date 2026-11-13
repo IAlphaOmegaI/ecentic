@@ -228,6 +228,10 @@
       "docs": {
         "title": "Build on the agentic commerce platform.",
         "description": "API reference, MCP, CLI and public discovery documents for developers."
+      },
+      "blog": {
+        "title": "The AI commerce journal.",
+        "description": "Practical guides to product data, AI recommendations and agent checkout."
       }
     }
   }

@@ -1,0 +1,396 @@
+{
+  "docs": {
+    "meta": {
+      "title": "ecentic API 文档",
+      "description": "REST API、MCP 服务器、CLI、认证、错误、速率限制和版本控制的开发者文档。"
+    },
+    "breadcrumb": {
+      "home": "首页",
+      "docs": "文档",
+      "errors": "错误",
+      "rateLimits": "速率限制",
+      "versioning": "版本控制",
+      "mcp": "MCP 服务器",
+      "authentication": "认证"
+    },
+    "hero": {
+      "title": "ecentic 开发者",
+      "accent": "文档。",
+      "description": "智能体或工程师调用 ecentic 所需的一切：版本化 REST API、MCP 服务器、类型化错误、公开的速率限制，以及让爬虫无需人工介入即可发现全部内容的发现文档。",
+      "assurances": [
+        "公开端点无需密钥",
+        "OpenAPI 3.1",
+        "RFC 9457 错误"
+      ],
+      "art": {
+        "alt": "终端控制台的 ASCII 艺术插图"
+      },
+      "action": {
+        "primary": "打开 OpenAPI 文档",
+        "secondary": "阅读 auth.md"
+      }
+    },
+    "quickstart": {
+      "number": "01",
+      "title": "一次请求调用 ecentic",
+      "description": "公开接口无需认证并开放 CORS。先从这里开始，只有在需要操作商家账户时才创建密钥。",
+      "intro": "所有公开端点均返回 JSON、发送实时速率限制头，并通过 Link 头指向自身的机器可读描述。",
+      "steps": [
+        {
+          "title": "发现接口",
+          "description": "一次请求即可返回所有端点、版本控制策略、速率限制策略以及错误文档位置。"
+        },
+        {
+          "title": "查看协议映射",
+          "description": "MCP、UCP、ACP、OpenAPI 和 x402 的版本、传输方式与清单位置。"
+        },
+        {
+          "title": "查看套餐目录",
+          "description": "与定价页面一致的价格，以机器可读的最小货币单位表示。"
+        }
+      ]
+    },
+    "authentication": {
+      "number": "02",
+      "title": "认证",
+      "description": "公开读取接口开放访问。任何涉及商家账户的操作都需要 Bearer key。",
+      "body": "ecentic 会在人工创建账户后签发长期有效的 API key。创建账户后，可在控制台或通过已认证的 MCP 工具 `create_api_key` 创建密钥，然后在每个受保护请求中将其作为 bearer token 发送。密钥仅显示一次。\n\n没有有效密钥的受保护请求会返回 HTTP 401，并附带 `WWW-Authenticate` header，指向 Protected Resource Metadata 文档，使智能体能够根据失败结果重新执行发现流程，而无需猜测。\n\n- `mcp` — 调用 ecentic MCP 端点上的 MCP 工具\n- `onboarding` — 连接 Shopify、WooCommerce 和商品 feed 店铺",
+      "linkLabel": "完整注册与凭证指南"
+    },
+    "endpoints": {
+      "number": "03",
+      "title": "端点",
+      "description": "版本化 REST 接口。/api/v1 下的路径在 v1 生命周期内保持稳定。",
+      "columns": {
+        "method": "方法",
+        "path": "路径",
+        "authentication": "认证",
+        "summary": "摘要"
+      },
+      "authentication": {
+        "none": "公开",
+        "bearer": "Bearer key",
+        "x402": "x402 支付"
+      }
+    },
+    "protocols": {
+      "number": "04",
+      "title": "智能体协议",
+      "description": "ecentic 支持智能体已在使用的电商与工具协议，并为每种协议发布对应清单。",
+      "columns": {
+        "protocol": "协议",
+        "version": "版本",
+        "endpoint": "端点",
+        "manifest": "清单"
+      }
+    },
+    "reliability": {
+      "number": "05",
+      "title": "错误、限制与版本",
+      "description": "集成依赖的三项契约，均有独立文档页面，并支持机器读取。",
+      "cards": [
+        {
+          "title": "类型化错误",
+          "description": "所有失败响应均为 application/problem+json，并包含稳定的机器可读错误代码与解决提示。"
+        },
+        {
+          "title": "速率限制",
+          "description": "每个响应都包含实时 RateLimit headers，429 响应附带 Retry-After，便于智能体自我限流。"
+        },
+        {
+          "title": "版本控制",
+          "description": "版本号位于 URL 路径中，任何内容移除前都会先发送 Deprecation 和 Sunset headers。"
+        }
+      ]
+    },
+    "mcp": {
+      "number": "06",
+      "title": "MCP 服务器",
+      "description": "Claude、ChatGPT 及任何 MCP 客户端都可原生调用 ecentic。",
+      "body": "ecentic MCP 服务器通过 HTTP 使用 JSON-RPC 2.0，可通过 `/mcp` 和 `/api/mcp` 访问。其清单发布在约定的 well-known 路径，同时也以 SEP-1649 服务器卡片形式发布。\n\n只读取数据的工具（`list_plans`）无需身份验证。会更改账户状态的工具——创建密钥、发起结账、连接店铺——需要 Bearer 密钥。\n\n- `list_plans` — 套餐及其 Stripe 可用性\n- `create_api_key` — 签发长期有效的智能体密钥\n- `create_checkout` — 创建 Stripe 结账会话\n- `connect_shopify`、`connect_woocommerce`、`connect_feed` — 店铺接入"
+    },
+    "webhooks": {
+      "number": "07",
+      "title": "Webhook",
+      "description": "ecentic 接收 webhooks；目前尚不支持向外发送。",
+      "body": "入站端点会先验证签名，未通过校验的请求会在任何处理程序运行前被拒绝。Shopify 合规 webhook 会验证 HMAC，Stripe 会验证自己的签名头，合作方端点则会验证 bearer secret。\n\n出站 webhook（例如 ecentic 在扫描完成或商品信息重新发布时通知您的系统）尚未发布。请在控制台查看扫描和商品信息结果。当前公开的 REST API 不提供这些控制台结果；请参考 API 文档了解目前可用的操作。MCP 请求是无状态的，不存在订阅会话。"
+    },
+    "cli": {
+      "number": "08",
+      "title": "命令行",
+      "description": "无需编写 HTTP 客户端即可为 ecentic 编写脚本。",
+      "body": "ecentic CLI 封装了这里文档中相同的公开能力——发现、套餐、技能、健康状态以及 MCP 工具调用——因此智能体或开发者可以直接通过 shell 调用，而无需构建集成。\n\nCLI 会从环境变量读取 `ECENTIC_API_KEY` 用于需要认证的命令，并将 JSON 输出到 stdout，因此每个命令都可以与 `jq` 配合使用。"
+    },
+    "footer": {
+      "note": "本页所有文档都支持机器读取，并且无需密钥即可访问。"
+    },
+    "errorsPage": {
+      "meta": {
+        "title": "ecentic API 错误",
+        "description": "查询 API 错误代码、HTTP 状态值和解决建议。响应采用 RFC 9457 problem 格式。"
+      },
+      "hero": {
+        "title": "ecentic API",
+        "accent": "错误。",
+        "description": "ecentic API 上的每一次失败都会返回类型化的 problem 文档，而不是 HTML 页面。代码即契约：稳定、可机器读取，并且可以安全地用于分支处理。",
+        "assurances": [
+          "RFC 9457",
+          "稳定代码",
+          "解决建议"
+        ],
+        "art": {
+          "alt": "盾牌的 ASCII 艺术插图"
+        },
+        "action": {
+          "primary": "返回文档"
+        }
+      },
+      "shape": {
+        "number": "01",
+        "title": "problem 的结构",
+        "description": "API 返回的每个 4xx 和 5xx 都使用同一种媒体类型和同一种 schema。",
+        "body": "响应会携带 `Content-Type: application/problem+json`——有意不使用 `application/json`，因为通用客户端需要通过媒体类型判断响应体描述的是错误，而不是请求的资源。\n\n- `type` — 标识错误的 URI，并锚定到本页\n- `code` — 用于分支处理的稳定机器可读标识符\n- `title` — 面向人的简短摘要\n- `status` — HTTP 状态码，在响应体中重复提供\n- `detail` — 本次请求具体出了什么问题\n- `resolution` — 应如何处理\n- `instance` — 产生该错误的路径（如已知）"
+      },
+      "catalogue": {
+        "number": "02",
+        "title": "错误目录",
+        "description": "代码一经发布即被冻结。标题和提示可以调整措辞；代码不可以。",
+        "columns": {
+          "code": "代码",
+          "status": "状态",
+          "title": "含义",
+          "resolution": "解决方式"
+        }
+      }
+    },
+    "rateLimitsPage": {
+      "meta": {
+        "title": "ecentic API 速率限制",
+        "description": "了解 ecentic 公共 API 的速率限制策略、每个响应中的 RateLimit 响应头，以及智能体应如何自行限流。"
+      },
+      "hero": {
+        "title": "ecentic API",
+        "accent": "速率限制。",
+        "description": "每个公开响应都会携带当前窗口的实时状态，因此智能体可以自行控制请求节奏，而不是等被拒绝后才知道达到限制。",
+        "assurances": [
+          "实时响应头",
+          "429 时返回 Retry-After",
+          "按密钥划分窗口"
+        ],
+        "art": {
+          "alt": "天平的 ASCII 艺术插图"
+        },
+        "action": {
+          "primary": "返回文档"
+        }
+      },
+      "policy": {
+        "number": "01",
+        "title": "策略",
+        "description": "公共接口使用固定窗口，并按凭证计数。",
+        "body": "携带 bearer key 的请求会计入该密钥的额度；其他请求则按客户端 IP 计数，因此单个高频智能体无法耗尽共享地址的配额。\n\n窗口为固定窗口，而非滑动窗口：它会在时钟边界重置，响应头中的 `reset` 值表示距离下一个重置边界还剩多少秒。"
+      },
+      "headers": {
+        "number": "02",
+        "title": "响应头",
+        "description": "两种拼写都会发送。读取客户端已经支持的即可。",
+        "body": "`RateLimit-Policy` 始终存在，因为无论请求是否被计数，策略本身都成立。实时计数器仅在确实存在计数时才会发送——如果某个环境无法访问计数器，就会省略这些字段，而不是声称存在未实际测量的配额。",
+        "columns": {
+          "header": "响应头",
+          "example": "示例",
+          "meaning": "含义"
+        },
+        "items": [
+          {
+            "meaning": "当前生效的策略：配额和窗口时长（秒）。"
+          },
+          {
+            "meaning": "实时状态：剩余请求数和距离重置的秒数。"
+          },
+          {
+            "meaning": "当前窗口允许的请求数。"
+          },
+          {
+            "meaning": "当前窗口剩余的请求数。"
+          },
+          {
+            "meaning": "距离窗口重置的秒数。"
+          },
+          {
+            "meaning": "仅在 429 时发送。等待指定秒数后再重试。"
+          }
+        ]
+      },
+      "exceeded": {
+        "number": "03",
+        "title": "超出限制时",
+        "description": "429 与其他失败一样，也是类型化的 problem。",
+        "body": "响应为 `application/problem+json`，代码为 `rate-limited`，并会与速率限制响应头一起返回 `Retry-After`。请按其中指定的秒数退避，而不是立即重试——在同一窗口内重试仍会被计数，并再次被拒绝。"
+      }
+    },
+    "versioningPage": {
+      "meta": {
+        "title": "ecentic API 版本控制",
+        "description": "了解 ecentic 如何为 API 做版本管理，以及如何通过 Deprecation 和 Sunset 响应头发布弃用通知。"
+      },
+      "hero": {
+        "title": "ecentic API",
+        "accent": "版本控制。",
+        "description": "版本号位于路径中。固定版本的集成会持续获得其开发时对应的契约，且不会在没有预警的情况下失效。",
+        "assurances": [
+          "URL 路径版本控制",
+          "180 天通知期",
+          "Deprecation 和 Sunset 响应头"
+        ],
+        "art": {
+          "alt": "日历的 ASCII 艺术插图"
+        },
+        "action": {
+          "primary": "返回文档"
+        }
+      },
+      "strategy": {
+        "number": "01",
+        "title": "版本如何运作",
+        "description": "一个数字，位于路径中，仅在出现破坏性变更时才会改变。",
+        "body": "当前版本为 v1，服务路径为 `/api/v1`。每个响应还会在 `API-Version` 响应头中回显版本，因此跟随重定向或链接的客户端可以确认自己实际连接的是哪个版本。\n\n向后兼容的新增变更会在同一版本内发布：新端点、新的可选请求字段，以及现有响应中的新增字段。请将未知响应字段视为前向兼容，而不是错误。\n\n删除字段、重命名字段、收窄类型或改变现有值含义的变更都属于破坏性变更，会作为新版本路径与旧版本并存发布——绝不会原地替换。"
+      },
+      "deprecation": {
+        "number": "02",
+        "title": "弃用与 Sunset",
+        "description": "两个标准响应头，以及足够长的处理窗口。",
+        "body": "当某个版本被弃用时，该版本的每个响应都会携带 `Deprecation` 响应头（RFC 9745）。确定移除日期后，响应还会携带 `Sunset` 响应头（RFC 8594），说明该版本停止响应的日期，并通过带有 `rel=\"successor-version\"` 的 `Link` 指向替代版本。\n\n从宣布弃用到停止提供服务，通知期至少为 180 天。只有在整个通知期内持续提供上述两个响应头后，才会移除该版本。"
+      },
+      "support": {
+        "number": "03",
+        "title": "哪些内容不做版本控制",
+        "description": "发现文档改为跟随各自协议的版本。",
+        "body": "`.well-known` 发现文档按其实现的协议进行版本控制，而不是按 ecentic API 版本——UCP profile 带有 UCP 版本，MCP server card 带有协议版本，等等。始终以文档内部的版本信息为准；根据 ecentic API 版本推断并不正确。"
+      }
+    },
+    "mcpPage": {
+      "meta": {
+        "title": "ecentic MCP 服务器",
+        "description": "将 MCP 客户端连接到 ecentic。了解传输方式、握手、支持的工具、认证和错误处理参考。"
+      },
+      "hero": {
+        "title": "ecentic MCP",
+        "accent": "服务器。",
+        "description": "Claude、ChatGPT 以及任何支持 Model Context Protocol 的客户端，都可以通过 JSON-RPC 2.0 原生调用 ecentic。本页是连接参考：包括端点、传输方式、握手以及其公开的所有工具。",
+        "assurances": [
+          "流式 HTTP",
+          "JSON-RPC 2.0",
+          "7 个工具"
+        ],
+        "art": {
+          "alt": "机器人的 ASCII 艺术插图"
+        },
+        "action": {
+          "primary": "返回文档",
+          "secondary": "打开服务器清单"
+        }
+      },
+      "connect": {
+        "number": "01",
+        "title": "连接",
+        "description": "一个端点、两条路径，无需管理会话。",
+        "body": "服务器可通过 `/mcp` 和 `/api/mcp` 访问。两者使用同一个处理程序；之所以提供简短路径，是因为大多数客户端和扫描器会优先探测它。\n\n传输方式为 Streamable HTTP。所有请求都是携带 JSON-RPC 2.0 的 `POST` 请求，所有响应也都通过同一个 POST 返回。ecentic 不会主动发起服务器流，因此带有 `Accept: text/event-stream` 的 `GET` 请求会返回 `405`，而不会让客户端挂在一个永远不会产生事件的流上。\n\n不存在会话。ecentic 不会发放 `Mcp-Session-Id`，而用于终止会话的 `DELETE` 方法也会因同样原因返回 `405`。无需进行任何清理。"
+      },
+      "handshake": {
+        "number": "02",
+        "title": "握手",
+        "description": "先 initialize，再发送 initialized 通知。",
+        "body": "`initialize` 会返回协商后的协议版本、服务器身份、其能力，以及说明 ecentic 用途的 `instructions` 字符串。如果请求的版本是 ecentic 支持的版本，就会返回该版本；否则会回退到其公开声明的版本。\n\n随后发送的 `notifications/initialized` 消息是 JSON-RPC **notification**——它没有 `id`，也不会收到回复。按照传输协议要求，ecentic 会返回 `202 Accepted` 和空响应体。若服务器对 notification 返回 JSON-RPC 错误，就会破坏握手，因此当客户端无法连接时，最值得优先检查的就是这一步。",
+        "supported": "initialize 支持的协议版本"
+      },
+      "tools": {
+        "number": "03",
+        "title": "工具",
+        "description": "服务器公开了哪些工具，以及哪些调用需要密钥。",
+        "columns": {
+          "tool": "工具",
+          "authentication": "认证",
+          "summary": "功能说明"
+        },
+        "items": {
+          "listPlans": "返回公开套餐目录，包括价格、计费方式和绩效费用条款。",
+          "createApiKey": "为调用方账户生成长期有效的智能体 API key。仅显示一次。",
+          "createCheckout": "为订阅套餐创建 Stripe checkout session。",
+          "connectShopify": "为店铺域名启动 Shopify OAuth 安装流程。",
+          "connectWooCommerce": "使用 REST consumer credentials 连接 WooCommerce 商店。",
+          "connectFeed": "通过 URL 连接商品 feed，并自动识别 XML 或 JSON。",
+          "getOnboardingStatus": "报告账户已完成哪些 onboarding 步骤。"
+        },
+        "none": "无",
+        "bearer": "bearer"
+      },
+      "authentication": {
+        "number": "04",
+        "title": "认证",
+        "description": "只读工具公开开放；任何涉及账户操作的请求都需要 bearer key。",
+        "body": "对会修改账户状态的工具调用发送 `Authorization: Bearer ecentic_sk_…`。如果调用需要凭证但未提供，系统会返回 HTTP 401，并附带 `WWW-Authenticate` 响应头指向 Protected Resource Metadata 文档，使客户端能够直接从错误中重新执行发现流程。\n\n密钥完全自助获取：创建账户后，可在控制台生成，也可以在已认证会话中通过 `create_api_key` 调用生成。整个过程都无需联系销售。",
+        "linkLabel": "注册与凭证"
+      },
+      "errors": {
+        "number": "05",
+        "title": "错误",
+        "description": "两类错误接口，以及如何区分当前看到的是哪一种。",
+        "body": "**JSON-RPC 错误**——例如未知方法、错误参数或工具拒绝执行——会按照 JSON-RPC 规范，以带有 `error` 成员的 HTTP 200 返回。请根据 `error.code` 做分支处理。\n\n**传输错误**——例如调用了端点不支持的方法——会以 RFC 9457 problem 文档返回，携带 `Content-Type: application/problem+json` 和机器可读的 `code`。这与 REST 接口使用的是同一种错误模型。\n\n唯一例外是 401：它会保留 JSON-RPC 包装结构，因此已在解析 JSON-RPC 的客户端无需实现第二套解析器，同时还会附带用于发现流程的 `WWW-Authenticate` 响应头。"
+      },
+      "footer": {
+        "note": "本页所有声明都可验证：manifest、server card 和 OpenAPI 文档描述的是同一个端点。"
+      }
+    },
+    "authenticationPage": {
+      "meta": {
+        "title": "ecentic API 认证",
+        "description": "了解哪些 API 接口是公开的、如何获取智能体 API key、如何发送 bearer token，以及如何处理认证错误。"
+      },
+      "hero": {
+        "title": "ecentic API",
+        "accent": "认证。",
+        "description": "公开发现完全无需凭证。任何读取或修改商家账户的操作，都需要您自行生成的 bearer key——无需销售电话，也无需人工开通。",
+        "assurances": [
+          "自助密钥",
+          "Bearer token",
+          "OAuth 元数据"
+        ],
+        "art": {
+          "alt": "盾牌的 ASCII 艺术插图"
+        },
+        "action": {
+          "primary": "返回文档",
+          "secondary": "阅读 auth.md"
+        }
+      },
+      "open": {
+        "number": "01",
+        "title": "哪些无需密钥",
+        "description": "发现接口是有意开放的。",
+        "body": "`/api/v1` 下的所有端点都无需 `Authorization` 请求头即可访问，well-known 发现文档、OpenAPI 文档以及 MCP `list_plans` 工具也是如此。智能体在任何人创建账户之前，就可以了解 API 的完整结构——端点、套餐、协议、技能、速率限制、错误代码等。\n\nsandbox 也同样开放：`POST /api/v1/sandbox/simulation` 会返回与真实模拟完全一致的响应结构，但结果基于合成评分计算，因此客户端无需任何凭证即可开发和测试。"
+      },
+      "keys": {
+        "number": "02",
+        "title": "生成密钥",
+        "description": "两种自助方式，均由您自行控制。",
+        "body": "创建账户后，可通过控制台生成密钥，或在已认证会话中调用 `create_api_key` MCP 工具生成。密钥格式类似 `ecentic_sk_…`，长期有效，并且只显示一次——ecentic 仅存储其哈希值，因此密钥丢失后只能替换，无法恢复。\n\n轮换方式是生成新密钥并撤销旧密钥。整个过程无需联系任何人工人员。",
+        "linkLabel": "完整注册指南"
+      },
+      "sending": {
+        "number": "03",
+        "title": "发送密钥",
+        "description": "一个请求头，适用于所有场景。",
+        "body": "在每个受保护的请求中，将密钥作为 bearer token 发送。同一个请求头适用于 REST 接口和 MCP 工具调用。\n\n不要将密钥放入查询字符串：查询字符串可能被日志、代理和来源请求头记录，ecentic 也不会从查询字符串中读取密钥。"
+      },
+      "failures": {
+        "number": "04",
+        "title": "失败时",
+        "description": "401 会告诉您下一步该去哪里。",
+        "body": "缺少或无效凭证会返回 HTTP 401，并附带 `WWW-Authenticate` 响应头，指向 Protected Resource Metadata 文档（RFC 9728）。继续跟随即可访问授权服务器元数据（RFC 8414），因此客户端即使遇到 401，也无需人工阅读文档即可发现认证方式。\n\n在 REST 接口中，响应体是 RFC 9457 problem，包含 `code: \"unauthenticated\"`。在 MCP 端点中，则会返回代码为 `-32001` 的 JSON-RPC 错误，并在 `error.data` 中附带 `resource_metadata` 提示。"
+      },
+      "footer": {
+        "note": "评估 ecentic 永远不需要凭证——只有操作商家账户时才需要。"
+      }
+    }
+  }
+}

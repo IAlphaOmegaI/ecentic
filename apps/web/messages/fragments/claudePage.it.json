@@ -1,0 +1,53 @@
+{
+  "claudePage": {
+    "explorer": {
+      "label": "Esplora un agente commerciale creato dal merchant",
+      "scope": "All’interno dell’esperienza del retailer",
+      "tools": "Strumenti forniti dal retailer",
+      "stages": [
+        {
+          "id": "catalog",
+          "title": "Catalogo",
+          "headline": "Inizia dalle informazioni sui tuoi prodotti",
+          "body": "Il retailer fornisce strumenti di catalogo e inventario affinché il suo agente basato su Claude possa cercare prodotti.",
+          "tools": [
+            "Catalogo",
+            "Inventario"
+          ]
+        },
+        {
+          "id": "compare",
+          "title": "Confronta",
+          "headline": "Fornisci il contesto del confronto",
+          "body": "L’agente confronta i prodotti utilizzando le informazioni e gli strumenti forniti dal retailer, inclusi il catalogo e le policy del negozio.",
+          "tools": [
+            "Informazioni sul prodotto",
+            "Policy del negozio"
+          ]
+        },
+        {
+          "id": "cart",
+          "title": "Carrello",
+          "headline": "Collega i tuoi strumenti ecommerce",
+          "body": "Gli strumenti per carrello e checkout fanno parte dell’esperienza sviluppata dal merchant. Oggi ecentic non dispone di un’integrazione dedicata al checkout di Claude.",
+          "tools": [
+            "Carrello del retailer",
+            "Checkout del retailer"
+          ]
+        }
+      ]
+    },
+    "reading": {
+      "merchant": "Il tuo agente AI per gli acquisti",
+      "simulation": "Confronto di ecentic"
+    },
+    "entry": {
+      "tools": "Strumenti forniti dal retailer",
+      "experience": "La tua esperienza di acquisto"
+    },
+    "action": {
+      "primary": "Esplora le simulazioni",
+      "secondary": "Migliora le tue schede prodotto"
+    }
+  }
+}

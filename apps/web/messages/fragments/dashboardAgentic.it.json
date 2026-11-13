@@ -1,0 +1,115 @@
+{
+  "dashboard": {
+    "agentic": {
+      "eyebrow": "Intelligenza",
+      "title": "Punteggio per agenti AI",
+      "description": "Is Agentic valuta quanto il tuo negozio online sia utilizzabile da un agente AI in termini di reperibilità, accessibilità, usabilità e pagamenti tramite agenti AI.",
+      "sections": {
+        "scan": "01 — Scansione",
+        "score": "02 — Punteggio",
+        "journey": "03 — Attività dell'agente",
+        "competitors": "04 — Concorrenti",
+        "checks": "05 — Evidenze",
+        "methodology": "06 — Metodologia"
+      },
+      "scan": {
+        "title": "Esegui una scansione",
+        "description": "Ogni scansione analizza il tuo negozio online in tempo reale. I risultati vengono salvati qui così puoi vedere come cambia il punteggio.",
+        "action": "Esegui scansione",
+        "running": "Scansione in corso…",
+        "starting": "Avvio scansione",
+        "progress": "{done} / {total} controlli",
+        "target": "Scansione di {target}",
+        "lastScanned": "Ultima scansione {when}.",
+        "never": "Questo negozio non è ancora stato sottoposto a scansione.",
+        "blocked": {
+          "running": "È già in corso una scansione per questo negozio. Apparirà qui quando sarà completata.",
+          "cooldown": "Questo negozio è stato sottoposto a scansione di recente. La prossima scansione sarà disponibile {when}."
+        },
+        "disclosure": "Le scansioni sono eseguite da Is Agentic, un servizio pubblico gratuito di Vercel Labs. Il dominio del tuo negozio online viene inviato a is-agentic.com; nessun dato di clienti o ordini lascia ecentic.",
+        "disclosureLink": "Documentazione di Is Agentic",
+        "announceProgress": "Scansione completata al {percent}%.",
+        "announceComplete": "Scansione completata. Punteggio {score} su 100."
+      },
+      "score": {
+        "title": "La tua posizione",
+        "description": "Il punteggio è quello di Is Agentic, mostrato senza modifiche. I livelli sono ordinati in base a ciò che conta di più per un negozio.",
+        "scoreLabel": "Punteggio agentic",
+        "gradeLabel": "Valutazione",
+        "attribution": "Visualizza il report completo su is-agentic.com",
+        "trend": "Punteggio nelle tue scansioni",
+        "fixesTitle": "Correzioni con maggiore impatto",
+        "gain": "+{points}",
+        "gainAria": "{points} punti",
+        "layerCounts": "{passed} superati · {warning} parziali · {failed} falliti · {notApplicable} non applicabili",
+        "empty": "Esegui la prima scansione per vedere come gli agenti leggono questo negozio online.",
+        "publicOnly": "Is Agentic ha già un report pubblico per questo dominio, con un punteggio di {score} / 100 — {label}. Esegui una scansione per ottenere tutti i dettagli di ogni controllo e iniziare a monitorare l’andamento.",
+        "publicLink": "Visualizza il report pubblico",
+        "status": {
+          "success": "Solido",
+          "warning": "Da migliorare",
+          "error": "Debole"
+        },
+        "fixesNote": "Questo elenco proviene da Is Agentic ed è ordinato in base ai punti assegnati a ogni correzione. Gli elementi relativi a specifiche API, SDK o portali per sviluppatori si applicano all’intero dominio, non al tuo catalogo: inizia da quelli che ecentic può gestire.",
+        "publicOnlyUnscored": "Is Agentic ha un report per questo dominio ma non gli ha ancora assegnato un punteggio — {label}. Esegui una scansione per ottenere tutti i dettagli di ogni controllo e iniziare a monitorare l’andamento.",
+        "trendSummary": "{count} scansioni dal {since}, da {first} a {latest} su 100."
+      },
+      "journey": {
+        "title": "Cosa ha fatto davvero un agente",
+        "description": "Is Agentic invia un agente reale su questo negozio online e ne registra il percorso. Questa mappa è un’evidenza di supporto: non modifica il punteggio numerico.",
+        "empty": "Nessun percorso agente registrato per questo dominio al momento. Apparirà nel report di Is Agentic una volta completata l’esecuzione.",
+        "running": "Un agente sta navigando questo negozio online in questo momento. La mappa si aggiorna man mano che procede.",
+        "runningLabel": "In corso",
+        "reasoning": "Ragionamento",
+        "analytics": {
+          "stepLabel": "{count, plural, one {passaggio} many {passaggi} other {passaggi}}",
+          "reasoningLabel": "{count, plural, one {passaggio di ragionamento} many {passaggi di ragionamento} other {passaggi di ragionamento}}",
+          "searchLabel": "{count, plural, one {ricerca} many {ricerche} other {ricerche}}"
+        },
+        "attribution": "Attività osservata su is-agentic.com",
+        "verdict": {
+          "satisfied": "Attività completata",
+          "partial": "Attività completata parzialmente",
+          "unsatisfied": "Attività non completata",
+          "not_gradable": "Non valutabile"
+        }
+      },
+      "checks": {
+        "title": "Tutti i controlli",
+        "description": "Le evidenze alla base del punteggio, raggruppate per livello. I controlli che non si applicano a un negozio online sono elencati alla fine con la relativa motivazione.",
+        "summary": "{applicable} applicabili · {failed} da correggere",
+        "notApplicable": "Questo controllo non si applica al tuo negozio online.",
+        "remedy": "Correggi in ecentic",
+        "empty": "Esegui una scansione per vedere l’elenco completo dei controlli."
+      },
+      "checkStatus": {
+        "pass": "Superato",
+        "warning": "Parziale",
+        "fail": "Fallito",
+        "error": "Errore nel controllo",
+        "na": "Non applicabile",
+        "unknown": "Non riconosciuto"
+      },
+      "competitors": {
+        "title": "Come si posizionano i concorrenti",
+        "description": "La stessa scansione eseguita sui negozi online dei concorrenti selezionati. Ogni dominio ha il proprio tempo di attesa tra scansioni, quindi controllare un concorrente non consuma le tue scansioni.",
+        "action": "Scansiona",
+        "scanned": "Ultima scansione {when}.",
+        "never": "Mai scansionato.",
+        "unscored": "Nessun punteggio",
+        "ahead": "Hai un vantaggio di {points}",
+        "behind": "Sei indietro di {points}",
+        "coverage": "{scored} negozi online su {total} con punteggio",
+        "columnStorefront": "Negozio online",
+        "columnScanned": "Ultima scansione",
+        "columnScore": "Punteggio",
+        "columnGap": "vs te",
+        "empty": "Nessun negozio online concorrente disponibile al momento. Aggiungi concorrenti ed ecentic eseguirà la scansione dei relativi domini."
+      },
+      "methodology": {
+        "title": "Come funziona questo punteggio",
+        "description": "La descrizione del modello di punteggio fornita direttamente da Is Agentic, letta in tempo reale dal loro server MCP."
+      }
+    }
+  }
+}

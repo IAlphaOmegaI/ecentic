@@ -1,0 +1,28 @@
+{
+  "docsAuthenticationPage": {
+    "paths": {
+      "title": "リクエストパスを選択",
+      "description": "まずはAPIを確認してください。クライアントがマーチャントアカウントに対して操作を行う場合は Bearer key を追加します。",
+      "label": "リクエスト認証",
+      "open": "オープンディスカバリー",
+      "authenticated": "マーチャントアカウント",
+      "client": "クライアント",
+      "noCredential": "認証情報は不要",
+      "bearer": "Bearer key が必要",
+      "publicDestination": "Discovery + Sandbox",
+      "protectedDestination": "REST + MCP",
+      "details": "このパスの仕組み"
+    },
+    "keySteps": [
+      "アカウントを作成",
+      "キーを発行",
+      "キーを一度だけ保存"
+    ],
+    "recovery": {
+      "label": "401後の認証ディスカバリー",
+      "response": "認証情報が不足しているか無効です",
+      "resource": "保護されたリソースメタデータ",
+      "authorization": "認可サーバーメタデータ"
+    }
+  }
+}

@@ -1,0 +1,32 @@
+{
+  "dealRedemption": {
+    "programs": {
+      "techstars": {
+        "batchLabel": "Techstarsプログラム / 参加年",
+        "batchPlaceholder": "参加期を選択",
+        "action": {
+          "primary": "Techstars特典を利用する"
+        }
+      },
+      "yc": {
+        "batchLabel": "YC参加期",
+        "batchPlaceholder": "参加期を選択",
+        "action": {
+          "primary": "YC特典を利用する"
+        }
+      }
+    },
+    "options": {
+      "earlier": "それ以前の参加期",
+      "other": "その他",
+      "customHeadless": "カスタム / ヘッドレス",
+      "preLaunch": "公開前"
+    },
+    "cohorts": {
+      "winter": "{year}年冬期",
+      "spring": "{year}年春期",
+      "summer": "{year}年夏期",
+      "fall": "{year}年秋期"
+    }
+  }
+}

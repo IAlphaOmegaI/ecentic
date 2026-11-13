@@ -1,0 +1,39 @@
+{
+  "docsVersioningPage": {
+    "current": "現在のAPIバージョン",
+    "request": "固定されたリクエスト／レスポンスバージョン",
+    "additive": "同じバージョンに追加",
+    "breaking": "新しいバージョンパスを開始",
+    "notice": "最小通知期間",
+    "days": "日",
+    "example": "Deprecationヘッダー形式",
+    "exampleHint": "ヘッダー値は例示であり、提供終了の告知ではありません。",
+    "apiContract": "ecentic API契約",
+    "protocolContract": "Discoveryプロトコル契約",
+    "protocolVersion": "ドキュメント内のバージョンを確認",
+    "lifecycle": {
+      "label": "廃止予定レスポンスシグナル",
+      "hint": "クライアントへの通知内容を確認するにはヘッダーを選択してください。",
+      "items": [
+        {
+          "header": "Deprecation",
+          "title": "バージョンは非推奨です",
+          "description": "非推奨バージョンからのすべてのレスポンスにこのヘッダーが含まれます。RFC 9745 に基づいて非推奨が通知されます。",
+          "meaning": "非推奨を告知済み"
+        },
+        {
+          "header": "Sunset",
+          "title": "提供終了日が確定",
+          "description": "削除日が確定すると、このヘッダーもレスポンスに含まれます。RFC 8594 により、そのバージョンが応答を停止する日付が定義されます。",
+          "meaning": "提供終了日を告知済み"
+        },
+        {
+          "header": "Link",
+          "title": "後継バージョンを特定",
+          "description": "削除日に加えて、rel=\"successor-version\" を持つ Link により、クライアントを後継バージョンへ案内します。",
+          "meaning": "後継バージョンへのリンク"
+        }
+      ]
+    }
+  }
+}

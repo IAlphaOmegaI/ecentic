@@ -1,0 +1,20 @@
+{
+  "reviewReplay": {
+    "summary": "Riepilogo visibile della decisione",
+    "disclosure": "Un esempio guidato dei fatti verificati e della selezione risultante.",
+    "inspection": "Ispezione della scheda prodotto",
+    "budget": "Budget dell’acquirente",
+    "criteria": "Requisiti di compatibilità",
+    "evidence": "Prove nella scheda prodotto",
+    "matched": "Disponibile nella scheda prodotto",
+    "missing": "Assente dalla scheda prodotto",
+    "complete": "Confronto completato",
+    "sampleId": "Esempio 001",
+    "process": {
+      "matchup": "Prodotto + concorrente",
+      "compare": "Tre prospettive del modello",
+      "diagnose": "Decisione registrata + fatti dichiarati",
+      "improve": "Rivedi → migliora → confronta di nuovo"
+    }
+  }
+}

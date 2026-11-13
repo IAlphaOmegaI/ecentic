@@ -1,0 +1,23 @@
+{
+  "playgroundPage": {
+    "guide": {
+      "title": "Dalla scoperta al checkout",
+      "description": "Esplora le chiamate dietro una sessione di acquisto.",
+      "discovery": {
+        "title": "Scopri il negozio",
+        "description": "Leggi il profilo UCP del negozio, poi seleziona il suo endpoint di acquisto. Il playground preferisce MCP e usa REST come fallback."
+      },
+      "action": {
+        "primary": "Apri il playground",
+        "secondary": "Controlla un profilo UCP"
+      }
+    },
+    "session": {
+      "title": "Sessione di acquisto live",
+      "description": "Analizza chiamate agli strumenti e risposte mentre l’agente effettua acquisti."
+    },
+    "faq": {
+      "title": "Prima di connetterti"
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "amazonPage": {
+    "journey": {
+      "label": "探索 Shop Direct 的购买路径",
+      "discovery": "在 Amazon 上被发现",
+      "surface": "Amazon 搜索和 Alexa for Shopping",
+      "destination": "在商家网站完成购买",
+      "paths": [
+        {
+          "id": "visit",
+          "title": "访问商家",
+          "actor": "消费者访问您的网站",
+          "heading": "商品发现将消费者带到您这里",
+          "description": "Shop Direct 可以链接到您自己网站上的商品。消费者会访问您的网站完成购买。",
+          "condition": "商家网站是购买目的地。"
+        },
+        {
+          "id": "buy",
+          "title": "Buy for Me",
+          "actor": "由 Amazon 的智能体完成购买",
+          "heading": "智能体在商家网站下单",
+          "description": "对于符合条件的 Buy for Me 商品，Amazon 的智能体会在商家网站上完成购买。",
+          "condition": "Buy for Me 仅适用于符合条件的商品。"
+        }
+      ]
+    },
+    "catalog": {
+      "label": "商品目录供给路径",
+      "source": "您的商品目录",
+      "route": "解决方案提供商或 Selling Partner API",
+      "destination": "Shop Direct"
+    },
+    "access": {
+      "title": "参与需要满足特定要求",
+      "market": "美国客户",
+      "eligibility": "符合条件的商家网站",
+      "steps": [
+        {
+          "id": "register",
+          "title": "注册",
+          "description": "通过免费的 Shop Direct Merchant Workspace 管理参与资格。无需拥有 Amazon Marketplace 店铺。"
+        },
+        {
+          "id": "verify",
+          "title": "验证您的网站",
+          "description": "必须完成网站验证。即使商家也在 Amazon 销售商品，只要符合条件仍可参与。"
+        },
+        {
+          "id": "share",
+          "title": "共享您的商品目录",
+          "description": "通过解决方案提供商或 Amazon 的 Selling Partner API 提供商品目录信息。"
+        }
+      ]
+    }
+  }
+}

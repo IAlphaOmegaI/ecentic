@@ -12,11 +12,5 @@ const batches = [
 ];
 
 export const YcRedemptionForm = () => (
-  <DealRedemptionForm
-    merchant="ycombinator"
-    batchLabel="YC batch"
-    batchPlaceholder="Select your batch"
-    batches={batches}
-    cta="Redeem my YC deal"
-  />
+  <DealRedemptionForm merchant="ycombinator" batches={batches} />
 );

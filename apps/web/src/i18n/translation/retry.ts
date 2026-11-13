@@ -1,3 +1,9 @@
+/** No usable reviewed artifact exists after a malformed response envelope. */
+export const isTranslationEnvelopeFailure = (message: string) =>
+  /^Translation did not pass review: batch: (?:Draft|Review|Correction) returned missing, duplicate or unexpected unit IDs\.$/.test(
+    message,
+  );
+
 /** Provider capacity is not a failed translation or a reason to discard reviewed work. */
 export const translationRetryDisposition = (
   message: string,

@@ -1,0 +1,54 @@
+{
+  "enterpriseChrome": {
+    "skip": "コンテンツへスキップ",
+    "faq": "ご質問にお答えします",
+    "action": {
+      "primary": "デモを予約",
+      "secondary": "無料でストアをチェック",
+      "tertiary": "ログイン",
+      "quaternary": "詳細を見る"
+    },
+    "closing": {
+      "title": "AIが買い物をするときも、売上につなげる。",
+      "description": "自社商品が選ばれているかを確認できます。"
+    },
+    "status": {
+      "live": "稼働中",
+      "feed": "商品フィード経由",
+      "simulated": "シミュレーション",
+      "soon": "近日公開",
+      "notYet": "未対応"
+    },
+    "sample": "サンプルデータ使用例",
+    "screenshot": "製品スクリーンショット・サンプルデータ",
+    "menu": {
+      "title": "ecenticを詳しく見る",
+      "open": "メニューを開く",
+      "close": "メニューを閉じる"
+    },
+    "footer": {
+      "tagline": "AIが購入を決める時代でも、選ばれる商品へ。",
+      "copyright": "© 2026 ecentic Inc",
+      "trademark": "製品名とロゴは各権利者の商標です。表示は、その権利者がecenticを推奨したり、提携したりしていることを示すものではありません。",
+      "platform": "プラットフォーム",
+      "solutions": "ソリューション",
+      "channels": "AIチャネル",
+      "integrations": "連携",
+      "resources": "リソース",
+      "company": "会社情報",
+      "legal": "法務",
+      "allSectors": "すべての業種",
+      "allChannels": "すべてのチャネル",
+      "allIntegrations": "すべての連携",
+      "requestIntegration": "連携をリクエスト",
+      "terms": "利用規約",
+      "privacy": "プライバシー",
+      "dpa": "DPA",
+      "subProcessors": "サブプロセッサ",
+      "cookies": "Cookie設定",
+      "aiInstructions": "AI向け指示",
+      "tools": "無料ツール"
+    },
+    "loading": "ページを読み込み中"
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "docsAuthenticationPage": {
+    "paths": {
+      "title": "Scegli un percorso di richiesta",
+      "description": "Esplora prima l’API. Aggiungi una chiave bearer quando il tuo client agisce su un account merchant.",
+      "label": "Autenticazione della richiesta",
+      "open": "Apri la modalità esplorazione",
+      "authenticated": "Account commerciante",
+      "client": "Il tuo client",
+      "noCredential": "Nessuna credenziale richiesta",
+      "bearer": "Chiave bearer richiesta",
+      "publicDestination": "Discovery + sandbox",
+      "protectedDestination": "REST + MCP",
+      "details": "Come funziona questo percorso"
+    },
+    "keySteps": [
+      "Crea un account",
+      "Genera una chiave",
+      "Salvala una sola volta"
+    ],
+    "recovery": {
+      "label": "Discovery dell’autenticazione dopo un 401",
+      "response": "Credenziale mancante o non valida",
+      "resource": "Metadati della risorsa protetta",
+      "authorization": "Metadati del server di autorizzazione"
+    }
+  }
+}

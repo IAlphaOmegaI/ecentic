@@ -1,0 +1,50 @@
+{
+  "docsErrorsPage": {
+    "example": "响应示例",
+    "fields": "响应解析",
+    "fieldItems": [
+      {
+        "name": "type",
+        "description": "用于标识问题的 URI，并锚定到本参考文档。"
+      },
+      {
+        "name": "code",
+        "description": "客户端可据此进行分支处理的稳定标识符。"
+      },
+      {
+        "name": "title",
+        "description": "简短的人类可读摘要。"
+      },
+      {
+        "name": "status",
+        "description": "HTTP 状态码，并在响应体中重复返回。"
+      },
+      {
+        "name": "detail",
+        "description": "本次请求具体出现的问题。"
+      },
+      {
+        "name": "resolution",
+        "description": "解决失败问题的下一步操作。"
+      },
+      {
+        "name": "documentation",
+        "description": "此响应对应的参考页面。"
+      },
+      {
+        "name": "instance",
+        "description": "生成该响应的请求路径（如已知）。"
+      }
+    ],
+    "catalogue": {
+      "label": "已发布的问题代码",
+      "description": "打开任意代码即可查看其解决方法。每个代码都有永久链接。",
+      "permalink": "永久链接到",
+      "resolution": "解决方法",
+      "action": {
+        "primary": "全部展开",
+        "secondary": "全部收起"
+      }
+    }
+  }
+}

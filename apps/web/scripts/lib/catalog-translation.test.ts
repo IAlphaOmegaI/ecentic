@@ -3,7 +3,29 @@ import {
   catalogInvariantReason,
   catalogTranslationUnit,
   projectCatalogFragment,
+  unresolvedCatalogFailures,
 } from "./catalog-translation";
+
+test("split retries clear stale failures only for the approved current source", () => {
+  expect(
+    unresolvedCatalogFailures(
+      {
+        originalBatch: { ids: ["title", "body"], reason: "timed out" },
+        oldSource: { ids: ["changed", "removed"], reason: "review failed" },
+      },
+      {
+        title: { sourceHash: "title-v1", text: "Titre" },
+        body: { sourceHash: "body-v1", text: "Texte" },
+        changed: { sourceHash: "changed-v1", text: "Ancien texte" },
+      },
+      new Map([
+        ["title", "title-v1"],
+        ["body", "body-v1"],
+        ["changed", "changed-v2"],
+      ]),
+    ),
+  ).toEqual({ oldSource: { ids: ["changed"], reason: "review failed" } });
+});
 
 test("translated lead labels cannot change the submitted enum", () => {
   expect(
@@ -55,4 +77,19 @@ test("marketing Scale can translate without relaxing the plan name elsewhere", (
   expect(
     catalogTranslationUnit("pricing.plans.scale.name", "Scale").invariant,
   ).toBe(true);
+});
+
+test("checkout enum values remain code while their explanation is translated", () => {
+  expect(
+    catalogInvariantReason("reviewCode.checkout.rows.2.before", "blocked"),
+  ).not.toBeNull();
+  expect(
+    catalogInvariantReason("reviewCode.checkout.rows.2.after", "ready"),
+  ).not.toBeNull();
+  expect(
+    catalogInvariantReason(
+      "reviewCode.checkout.rows.2.note",
+      "Removing this requirement lets the sample continue to payment.",
+    ),
+  ).toBeNull();
 });

@@ -1,0 +1,39 @@
+{
+  "commerceFigures": {
+    "repairTools": "イラスト: レンチとドライバー。ツール上にポインターを移動すると持ち上がり、確認できます。",
+    "moneyStack": "イラスト: 紙幣と硬貨。束の上にポインターを移動すると確認できます。",
+    "readinessScanner": "イラスト: 開いたドキュメントスキャナー。ふたまたはページ上にポインターを移動すると確認できます。",
+    "partReadouts": {
+      "repairTools": [
+        {
+          "value": "レンチ",
+          "label": "レンチ"
+        },
+        {
+          "value": "ドライバー",
+          "label": "ドライバー"
+        }
+      ],
+      "moneyStack": [
+        {
+          "value": "紙幣",
+          "label": "紙幣"
+        },
+        {
+          "value": "硬貨",
+          "label": "硬貨"
+        }
+      ],
+      "readinessScanner": [
+        {
+          "value": "スキャナーのふた",
+          "label": "スキャナーのふた"
+        },
+        {
+          "value": "ドキュメント",
+          "label": "ドキュメント"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "home": {
+    "heroVideo": {
+      "sampleLabel": "Film illustrativo con prodotti di esempio, schermate di acquisto e risultati. Non si tratta di risultati reali né di esiti garantiti.",
+      "transcriptTitle": "Trascrizione visiva",
+      "transcriptIntroduction": "Testo sullo schermo e azione visiva del filmato di 58 secondi. I tempi delle scene sono approssimativi. Questa è una trascrizione visiva, non la trascrizione del parlato.",
+      "onScreenLabel": "Testo sullo schermo",
+      "transcript": [
+        {
+          "time": "0:00–0:03",
+          "onScreen": "Il tuo prossimo cliente non sarà una persona.",
+          "description": "Mani composte da punti tonali si allungano verso un paio di cuffie sospese."
+        },
+        {
+          "time": "0:03–0:05",
+          "onScreen": "Sarà un agente.",
+          "description": "La parola Agent appare in blu."
+        },
+        {
+          "time": "0:05–0:09",
+          "onScreen": "migliori auricolari con cancellazione del rumore sotto $50",
+          "description": "Un acquirente inserisce questa richiesta in una conversazione in stile ChatGPT."
+        },
+        {
+          "time": "0:09–0:13",
+          "onScreen": "Gli acquirenti chiedono all’AI. L’AI condivide i link. Prima che gli acquirenti comprino, l’AI sceglie quali negozi vedranno.",
+          "description": "La risposta di esempio elenca Soundcore P25i a $29.99, JLab Go Air Pop+ a $24.88 e TOZO T10 a $25.99, con link ai retailer. Compaiono i loghi di ChatGPT, Claude, Gemini e Perplexity."
+        },
+        {
+          "time": "0:13–0:17",
+          "onScreen": "Il tuo store è invisibile. Gli agenti non possono consigliare ciò che non riescono a leggere. Fuori dalla risposta. Fuori dalla vendita.",
+          "description": "Una scheda con etichetta Your Store resta fuori dalla risposta con un avviso Product data missing. La parola Invisible si dissolve."
+        },
+        {
+          "time": "0:17–0:20",
+          "onScreen": "Entra in scena écentic",
+          "description": "Il riquadro e il logotipo ecentic appaiono sullo schermo, poi si riempiono di colore."
+        },
+        {
+          "time": "0:20–0:26",
+          "onScreen": "Correggi ciò che gli agenti non riescono a leggere.",
+          "description": "Una dashboard di esempio di ecentic mostra Diagnostics per una bassa percentuale di vittorie e Listing Suggestions per Aura ANC Wireless Earbuds. Il puntatore seleziona Approve. L’elemento passa da Pending a Published e compare un messaggio: Listing updated — Changes were published to your connected store."
+        },
+        {
+          "time": "0:26–0:30",
+          "onScreen": "Guarda crescere la tua visibilità.",
+          "description": "La dashboard illustrativa Overview anima un grafico con percentuale di vittorie in crescita e una percentuale di vittorie finale dell’86%, insieme ai risultati per ChatGPT, Claude e Gemini."
+        },
+        {
+          "time": "0:30–0:34",
+          "onScreen": "Il tuo store, acquistabile in chat.",
+          "description": "Una pagina prodotto Shopify di esempio per Aura ANC Wireless Earbuds, al prezzo di $39.99, si trasforma in una scheda prodotto nei risultati di acquisto della chat."
+        },
+        {
+          "time": "0:34–0:41",
+          "onScreen": "Raggiungi la cima dei risultati AI. Un solo catalogo. Individuabile dai sistemi AI.",
+          "description": "Un controllo Optimize di ecentic viene mostrato accanto ai mockup shopping di ChatGPT, Google AI Mode e Perplexity. Your Store passa dalla posizione #3 alla #1 in ogni illustrazione, mentre una piccola auto accelera sullo schermo."
+        },
+        {
+          "time": "0:41–0:49",
+          "onScreen": "Trasforma la scoperta in vendite.",
+          "description": "Le schede prodotto lasciano spazio a una richiesta in chat: Show me the Aura earbuds. La risposta mostra foto del prodotto, un prezzo di $39.99 e Buy now. Il flusso illustrato continua con Review your order, Complete purchase e Order confirmed — Your purchase is complete."
+        },
+        {
+          "time": "0:49–0:53",
+          "onScreen": "Trasforma la scoperta in vendite.",
+          "description": "Un grafico illustrativo di Shopify Analytics sale fino a vendite totali di $48,920.00. Si tratta di un’animazione di esempio, non di un risultato reale di un cliente."
+        },
+        {
+          "time": "0:53–0:58",
+          "onScreen": "Conquista la vendita quando è l’AI a fare acquisti. Installa ora su Shopify e WooCommerce. ecentic.ai",
+          "description": "Il logo ecentic riappare sopra il messaggio finale, i loghi delle piattaforme e l’indirizzo del sito web."
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,61 @@
+{
+  "ucpPlayground": {
+    "meta": {
+      "title": "UCP Playground per agenti AI per gli acquisti",
+      "description": "Testa la ricerca nel catalogo, il carrello e il checkout di un negozio UCP. Esamina richieste e risposte tramite MCP o REST."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "page": "UCP Playground"
+    },
+    "hero": {
+      "eyebrow": "Universal Commerce Protocol",
+      "title": {
+        "primary": "Collega un agente AI per gli acquisti",
+        "accent": "a qualsiasi negozio."
+      },
+      "description": "UCP Playground gratuito: usa un vero agente AI per gli acquisti su qualsiasi negozio UCP. Esegui ricerche nel catalogo e operazioni sul carrello e sul checkout tramite MCP o REST, poi esamina le chiamate.",
+      "art": {
+        "alt": "Illustrazione ASCII di un robot"
+      }
+    },
+    "demo": {
+      "title": "Guardalo cercare, creare un carrello e completare il checkout.",
+      "titleLineBreak": "Guardalo cercare, creare un carrello <br />e completare il checkout.",
+      "description": "Ogni chiamata agli strumenti e ogni risposta sono visibili. Nessun account richiesto per i tuoi primi {limit} messaggi."
+    },
+    "capabilities": [
+      {
+        "title": "Ricerca e consultazione del catalogo",
+        "description": "Chiedi all’agente di cercare nel catalogo di un negozio online o recuperare un singolo prodotto e ispeziona l’esatta risposta UCP."
+      },
+      {
+        "title": "Operazioni sul carrello",
+        "description": "Crea un carrello, aggiungi articoli e osserva il calcolo dei totali usando le stesse chiamate che farebbe un agente AI per gli acquisti."
+      },
+      {
+        "title": "Passaggio al checkout",
+        "description": "Avvia un checkout sul negozio live e conferma l’URL di continuazione che un agente restituirebbe all’acquirente."
+      }
+    ],
+    "faq": {
+      "items": [
+        {
+          "question": "Che cos’è UCP Playground?",
+          "answer": "Un ambiente sandbox in cui un agente AI per gli acquisti esegue operazioni live di Universal Commerce Protocol su una vetrina online a tua scelta. Risolve il profilo /.well-known/ucp del negozio, seleziona il relativo endpoint MCP o REST per gli acquisti e mostra ogni chiamata agli strumenti e ogni risposta."
+        },
+        {
+          "question": "Quali negozi posso testare?",
+          "answer": "Qualsiasi vetrina online che pubblichi un Universal Commerce Profile valido in /.well-known/ucp con un servizio dev.ucp.shopping. Il playground preferisce il trasporto MCP e usa REST come fallback."
+        },
+        {
+          "question": "Serve un account?",
+          "answer": "No. Chiunque può inviare gratuitamente fino a {limit} messaggi. Crea un account per eseguire sessioni illimitate sul tuo negozio collegato."
+        }
+      ]
+    },
+    "structuredData": {
+      "name": "UCP Playground"
+    }
+  }
+}

@@ -14,7 +14,8 @@ No generated text, invented outlines, API calls, or product attributes are used.
 from hashlib import sha256
 from pathlib import Path
 import json
-from PIL import Image
+import xml.etree.ElementTree as ET
+from PIL import Image, ImageDraw
 
 WEB = Path(__file__).resolve().parents[1]
 DESTINATION = WEB / "public/images/ascii/tonal"
@@ -31,6 +32,7 @@ SUBJECTS = (
     ("crown", "images/ascii/tonal/crown-source.png", 160, 0.75, 0.08),
     ("home-bag", "images/ascii/tonal/home-bag-source.png", 160, 0.75, 0.08),
     ("home-cart", "images/ascii/tonal/home-cart-source.png", 160, 0.75, 0.08),
+    ("catalog-commerce", "images/marketing/source/catalog-commerce.png", 240, 1.0, 0.055),
 )
 
 
@@ -67,6 +69,18 @@ def main():
         svg, rows, marks = tonal_mask(source, columns, exposure, background_feather)
         destination = DESTINATION / f"{subject}.svg"
         destination.write_text(svg)
+        if subject == "catalog-commerce":
+            # Social renderers embed a raster: supersample the same circle mask,
+            # retaining transparency and pale blue-white dots on dark surfaces.
+            canvas = Image.new("RGBA", (2800, round(2800 * rows / columns)), (0, 0, 0, 0))
+            drawing = ImageDraw.Draw(canvas)
+            scale = 2800 / columns
+            for circle in ET.fromstring(svg).iter("{http://www.w3.org/2000/svg}circle"):
+                x, y, radius = (float(circle.attrib[key]) * scale for key in ("cx", "cy", "r"))
+                drawing.ellipse((x - radius, y - radius, x + radius, y + radius), fill=(237, 246, 255, 255))
+            canvas.resize((1400, round(1400 * rows / columns)), Image.Resampling.LANCZOS).save(
+                WEB / "public/images/marketing/og-commerce.png", optimize=True
+            )
         records.append({
             "subject": subject,
             "source": "/" + relative_source,

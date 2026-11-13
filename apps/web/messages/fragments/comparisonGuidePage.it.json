@@ -1,0 +1,17 @@
+{
+  "comparisonGuidePage": {
+    "navigation": {
+      "label": "In questa guida",
+      "guide": "Categorie",
+      "tools": "Confronta gli strumenti",
+      "bottleneck": "Trova il tuo collo di bottiglia",
+      "related": "Approfondimenti",
+      "faq": "Domande"
+    },
+    "views": {
+      "label": "Vista comparativa",
+      "table": "Confronta tutti gli strumenti",
+      "tool": "Leggi per strumento"
+    }
+  }
+}

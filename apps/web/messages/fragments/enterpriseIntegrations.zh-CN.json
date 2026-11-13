@@ -1,0 +1,817 @@
+{
+  "enterpriseIntegrations": {
+    "statuses": {
+      "live": "已上线",
+      "feed": "通过商品数据源",
+      "soon": "即将推出",
+      "simulated": "模拟"
+    },
+    "counter": "{live} 已上线 · {feed} 通过商品数据源 · {soon} 即将推出",
+    "counterNote": "统计数量代表已列出的连接与接入方式，并非独立厂商数量。不包含模拟助手。",
+    "checked": "最后检查",
+    "date": "2026 年 11 月 10 日",
+    "sourceTitle": "官方文档",
+    "sourceLink": "来源",
+    "field": "字段或权限",
+    "read": "ecentic 读取的内容",
+    "write": "ecentic 写入的内容",
+    "faqTitle": "常见问题解答",
+    "open": "查看",
+    "directSoon": "直接应用：即将推出",
+    "interest": "上线时通知我",
+    "groups": {
+      "commerce": "电商平台",
+      "feeds": "数据源与数据",
+      "channels": "AI 渠道",
+      "payments": "支付与结账",
+      "pim": "商品信息管理（PIM）"
+    },
+    "groupNotes": {
+      "commerce": "Shopify 和 WooCommerce 支持直接发布。数据源方式需要导出并映射到支持的字段列。",
+      "feeds": "导入商品数据或为特定渠道做准备。渠道自身的准入要求仍然适用。",
+      "channels": "“模拟助手”是指我们目前测试的模型，不代表已直接连接商品数据源，也不代表已加入结账计划。",
+      "payments": "支付由您的 WooCommerce 支付网关处理。完整的原生支付体验取决于支持的流程和商家配置。",
+      "pim": "从您的商品信息系统导出支持的文件格式。直接 PIM 连接已列入开发计划。"
+    },
+    "legend": {
+      "title": "标签说明",
+      "items": [
+        {
+          "title": "已上线",
+          "body": "ecentic 已可用的连接或导入方式，具体限制详见对应页面。"
+        },
+        {
+          "title": "通过商品数据源",
+          "body": "使用支持的 CSV 导出，并完成字段映射。支持模拟与检测；若需回写发布，则需要直接连接器。"
+        },
+        {
+          "title": "模拟",
+          "body": "ecentic 当前测试该助手模型，但不会将商家数据源直接连接到该助手。"
+        },
+        {
+          "title": "即将推出",
+          "body": "已列入开发计划，但尚未承诺上线日期。欢迎登记需求，帮助我们决定下一步优先开发内容。"
+        }
+      ]
+    },
+    "request": {
+      "title": "没看到您的平台？",
+      "description": "告诉我们您的团队需要哪种集成，以及管理的商品目录规模。",
+      "button": "申请集成"
+    },
+    "standards": {
+      "title": "支持的标准",
+      "description": "结构化商品数据、标识符与智能体接口。每项标准都有特定用途，并不代表平台认证。",
+      "items": [
+        {
+          "title": "schema.org Product",
+          "body": "商品结构化数据检测与发布。"
+        },
+        {
+          "title": "GTIN",
+          "body": "标识符覆盖率检查。ecentic 不生成 GTIN。"
+        },
+        {
+          "title": "MCP",
+          "body": "智能体工具与结账传输流程。"
+        },
+        {
+          "title": "WebMCP",
+          "body": "公开来源扫描器。不执行浏览器工具。"
+        },
+        {
+          "title": "智能体结账",
+          "body": "商品目录、真实购物车报价及支持的 WooCommerce 订单流程。"
+        },
+        {
+          "title": "ACP · 即将推出",
+          "body": "专用 ChatGPT 商品数据源导出。"
+        }
+      ]
+    },
+    "feedPlatformsTitle": "已验证的导出平台",
+    "feedPlatformsNote": "这些平台提供 CSV 导出文档。上传前请将字段映射到我们的模板，使用逗号分隔，并确保每个商品占一行。支持导出不代表提供原生连接或自动刷新。",
+    "sources": {
+      "shopify": "Shopify App Store 页面",
+      "woocommerce": "WordPress.org 插件页面",
+      "wooRequirements": "已发布的插件要求与行为说明",
+      "googleMerchant": "Google：Merchant Center 集成指南",
+      "googleEligibility": "Google：原生结账资格要求",
+      "adobe": "Adobe Commerce：导出数据",
+      "shopware": "Shopware：导入与导出",
+      "wix": "Wix：导出商品列表",
+      "prestashop": "PrestaShop：商品 CSV 导出实现",
+      "plytix": "Plytix：导出商品数据"
+    },
+    "index": {
+      "meta": {
+        "title": "集成：Shopify、WooCommerce、数据源与 AI 渠道",
+        "description": "连接 Shopify、WooCommerce、Google Merchant Center 或受支持的商品数据源。了解哪些集成已上线、哪些通过数据源连接，以及后续计划。"
+      },
+      "title": "集成",
+      "description": "连接您当前使用的技术栈。已上线、可通过商品数据源接入，或即将推出。",
+      "sections": []
+    },
+    "labelNote": "每个标签都对应产品当前实际能力。“即将推出”表示已列入开发计划，并非发布日期承诺。",
+    "entries": {
+      "shopify": {
+        "name": "Shopify",
+        "description": "先免费检测，再选择任意套餐。"
+      },
+      "woocommerce": {
+        "name": "适用于 WooCommerce",
+        "description": "插件免费。模拟和修复功能使用您的 ecentic 套餐。"
+      },
+      "bigcommerce": {
+        "name": "BigCommerce",
+        "description": "直接应用：即将推出。"
+      },
+      "adobe": {
+        "name": "Adobe Commerce（Magento）",
+        "description": "CSV 导出，映射到 ecentic 字段。"
+      },
+      "shopware": {
+        "name": "Shopware",
+        "description": "CSV 导出，转换为逗号分隔字段。"
+      },
+      "wix": {
+        "name": "Wix",
+        "description": "实体商品 CSV 导出，上传前完成映射。"
+      },
+      "prestashop": {
+        "name": "PrestaShop",
+        "description": "商品 CSV 导出，上传前完成映射。"
+      },
+      "googleMerchant": {
+        "name": "Google Merchant Center",
+        "description": "适用于 Shopify 店铺。补充数据需单独手动同步。"
+      },
+      "productFeeds": {
+        "name": "商品数据源（XML、JSON）",
+        "description": "支持的商品记录；需手动重新导入。"
+      },
+      "csv": {
+        "name": "CSV 上传",
+        "description": "每行一个商品，并使用支持的字段名。"
+      },
+      "storeAddress": {
+        "name": "从店铺地址导入",
+        "description": "可访问的 Shopify 与 WooCommerce 公开商品目录。"
+      },
+      "microsoftMerchant": {
+        "name": "Microsoft Merchant Center",
+        "description": "计划中的 Copilot 数据源接入。"
+      },
+      "amazonShopDirect": {
+        "name": "Amazon Shop Direct",
+        "description": "面向美国购物项目的计划中商品目录连接。"
+      },
+      "chatgptFeed": {
+        "name": "ChatGPT 商品数据源（ACP）",
+        "description": "专用导出：即将推出。"
+      },
+      "perplexityFeed": {
+        "name": "Perplexity 商家数据源",
+        "description": "商家商品目录 Feed：即将推出。"
+      },
+      "google": {
+        "name": "Google AI Mode 与 Gemini",
+        "description": "Gemini 模拟。Google 结账接入即将推出。"
+      },
+      "chatgpt": {
+        "name": "ChatGPT",
+        "description": "当前支持模拟。ecentic ChatGPT 应用即将推出。"
+      },
+      "claude": {
+        "name": "Claude",
+        "description": "模拟。"
+      },
+      "copilot": {
+        "name": "Microsoft Copilot",
+        "description": "数据源连接即将推出；Shopify 来源跟踪已上线。"
+      },
+      "perplexity": {
+        "name": "Perplexity",
+        "description": "店铺扫描即将推出；Shopify 来源跟踪已上线。"
+      },
+      "amazon": {
+        "name": "Amazon",
+        "description": "Shop Direct 连接：即将推出。"
+      },
+      "paymentGateway": {
+        "name": "您的支付网关",
+        "description": "支付由您的 WooCommerce 支付网关处理。"
+      },
+      "stripeAcs": {
+        "name": "Stripe Agentic Commerce Suite",
+        "description": "专用连接：即将推出。"
+      },
+      "plytix": {
+        "name": "Plytix",
+        "description": "CSV 导出，映射到 ecentic 字段。"
+      },
+      "akeneo": {
+        "name": "Akeneo",
+        "description": "直接连接：即将推出。"
+      },
+      "salsify": {
+        "name": "Salsify",
+        "description": "直接连接：即将推出。"
+      }
+    },
+    "interests": {
+      "bigcommerce-direct": "BigCommerce 直接应用",
+      "adobe-commerce-direct": "Adobe Commerce 直接应用",
+      "shopware-direct": "Shopware 直接应用",
+      "wix-direct": "Wix 直接应用",
+      "microsoft-merchant-center": "Microsoft Merchant Center 数据源",
+      "amazon-shop-direct": "Amazon Shop Direct",
+      "chatgpt-product-feed": "ChatGPT 商品数据源",
+      "perplexity-merchant-feed": "Perplexity 商家数据源",
+      "perplexity-scans": "Perplexity 店铺扫描",
+      "stripe-acs": "Stripe Agentic Commerce Suite",
+      "akeneo": "Akeneo",
+      "salsify": "Salsify",
+      "google-checkout-onboarding": "Google AI Mode 结账启用引导",
+      "chatgpt-app": "ecentic ChatGPT 应用"
+    },
+    "pages": {
+      "shopify": {
+        "meta": {
+          "title": "ecentic for Shopify：通过 AI 助手销售商品",
+          "description": "连接 Shopify，使用 AI 助手对比商品并发布选定的商品信息变更。已发布的变更可通过单独同步发送到 Merchant Center。"
+        },
+        "title": "适用于 Shopify 的 ecentic",
+        "description": "连接店铺，查看 AI 助手为何选择竞品，并将选定修复发布到 Shopify。可按需将已发布的修复发送到 Merchant Center。",
+        "actions": [
+          {
+            "label": "从 Shopify App Store 安装",
+            "href": "https://apps.shopify.com/ecentic-ai"
+          },
+          {
+            "label": "预约演示",
+            "href": "/demo"
+          }
+        ],
+        "sections": [
+          {
+            "id": "workflow",
+            "title": "从商品目录到更清晰的商品信息",
+            "description": "",
+            "items": [
+              {
+                "title": "模拟",
+                "body": "使用 ChatGPT、Claude 和 Gemini，将选定商品与指定竞品进行对比。"
+              },
+              {
+                "title": "修复并发布",
+                "body": "Apply 会创建并发布修订后的标题和描述。结构化数据需单独发布，并要求启用主题应用嵌入。"
+              },
+              {
+                "title": "追踪",
+                "body": "按助手和时间维度查看检测到的 AI 引荐和 AI 购物智能体访问。"
+              }
+            ]
+          },
+          {
+            "id": "access",
+            "title": "ecentic 的读取与写入范围",
+            "description": "导入商品内容不会重写原内容。连接时还会安装店铺前端追踪脚本。发布和结构化数据更新均需明确操作。"
+          },
+          {
+            "id": "requirements",
+            "title": "要求与限制",
+            "description": "",
+            "paragraphs": [
+              "批准 Shopify OAuth 权限：read_products、write_products、write_script_tags 和 read_script_tags。此连接不要求 Shopify Plus。",
+              "一次商品目录同步最多读取 10 页、每页 250 个商品：单次运行最多 2,500 条记录。免费引导检测最多选择 10 个商品。付费方案额度请查看 Pricing。",
+              "该连接使用 Shopify Admin API 访问及其速率限制。同步受页面数量限制；不承诺额外固定的每分钟请求额度。仅公开商品目录导入无法发布变更。"
+            ],
+            "links": [
+              {
+                "label": "比较方案",
+                "href": "/pricing"
+              }
+            ]
+          },
+          {
+            "id": "setup",
+            "title": "设置店铺",
+            "description": "",
+            "ordered": true,
+            "columns": 2,
+            "items": [
+              {
+                "title": "安装并授权",
+                "body": "安装应用并批准 Shopify 权限。请预留几分钟；授权和商品目录导入时间会有所不同。"
+              },
+              {
+                "title": "选择对比内容",
+                "body": "为首次扫描选择商品和指定竞品。扫描时长取决于对比规模和模型响应。"
+              },
+              {
+                "title": "发布所选变更",
+                "body": "使用 Apply 发布修订后的标题和描述。结构化数据需单独发布，并启用主题应用嵌入后才能显示。"
+              },
+              {
+                "title": "单独连接 Google",
+                "body": "关联 Merchant Center，然后通过 Google 控件明确同步已发布的修复。"
+              }
+            ],
+            "note": "提示：建议先连接 Shopify 开发店铺，在向线上商品目录发布变更前检查整个流程。"
+          }
+        ],
+        "ledger": [
+          {
+            "field": "标题和描述",
+            "read": "现有商品标题和 HTML 描述。",
+            "write": "当选择 Apply 或明确的批量操作时，通过 Admin API 更新。"
+          },
+          {
+            "field": "结构化数据 metafield",
+            "read": "用于生成 Product JSON-LD 的商品信息。",
+            "write": "metafield 需通过单独发布操作写入。必须启用主题应用嵌入才能渲染。"
+          },
+          {
+            "field": "价格和库存",
+            "read": "变体价格和导入的商品数据。无单独库存同步。",
+            "write": "商品信息发布操作不会修改这些内容。"
+          },
+          {
+            "field": "图片和商品 URL",
+            "read": "现有图片 URL 和店铺前端商品链接。",
+            "write": "不会修改；不生成图片。"
+          },
+          {
+            "field": "店铺前端脚本",
+            "read": "检测到的 AI 引荐和 AI 购物智能体访问信号。",
+            "write": "连接期间会安装一个 onload ScriptTag，用于访客访问跟踪。"
+          },
+          {
+            "field": "订单",
+            "read": "在可用情况下，会尝试使用已支付订单 webhook 进行归因；不导入订单历史。",
+            "write": "不会创建或编辑 Shopify 订单。"
+          }
+        ],
+        "faqs": [
+          {
+            "question": "ecentic 会未经确认直接修改商品内容吗？",
+            "answer": "不会。商品信息内容变更需要使用 Apply 或明确的批量操作。结构化数据需单独发布。连接时会安装追踪脚本，因此连接并不意味着店铺配置完全不会发生变化。"
+          },
+          {
+            "question": "如果 Shopify 已经分发我的商品目录，为什么还要使用 ecentic？",
+            "answer": "商品目录分发和商品质量是两项不同工作。ecentic 会将选定商品信息与竞品进行对比，并允许发布您可控的数据变更。它不保证在任何渠道获得推荐。"
+          },
+          {
+            "question": "可以连接 Google Merchant Center 吗？",
+            "answer": "可以，适用于 Shopify 店铺。使用单独的 Google 同步控件发送已发布的标题和描述覆盖，以及选定的结账属性。在商品信息中点击 Apply 不会自动同步到 Google。"
+          },
+          {
+            "question": "追踪脚本如何加载？",
+            "answer": "Shopify 会通过其 onload 事件安装脚本。该脚本会检测支持的引荐或智能体信号，并向 ecentic 发送一个小型数据上报请求。我们尚未测量统一的性能影响，也不宣称零开销。"
+          }
+        ]
+      },
+      "woocommerce": {
+        "meta": {
+          "title": "ecentic for WooCommerce：通过 AI 助手销售商品",
+          "description": "适用于 WooCommerce 的免费 ecentic 插件：对比商品、发布商品信息变更，并让受支持的智能体通过您的店铺完成结账。"
+        },
+        "title": "适用于 WooCommerce 的 ecentic",
+        "description": "安装免费插件，将您的商品与竞品进行对比，发布选定修复，并让受支持的 AI 智能体通过您自己的店铺完成结账。",
+        "actions": [
+          {
+            "label": "获取免费插件",
+            "href": "https://wordpress.org/plugins/ecentic-for-woocommerce/"
+          },
+          {
+            "label": "预约演示",
+            "href": "/demo"
+          }
+        ],
+        "sections": [
+          {
+            "id": "workflow",
+            "title": "让智能体可用的商品目录与结账功能",
+            "description": "",
+            "items": [
+              {
+                "title": "模拟",
+                "body": "在 ChatGPT、Claude 和 Gemini 上，将您选定的商品与指定竞品进行对比。"
+              },
+              {
+                "title": "修复并发布",
+                "body": "Apply 会通过 WooCommerce REST API 发布修订后的名称和描述。结构化数据是单独操作，由插件渲染。"
+              },
+              {
+                "title": "智能体结账",
+                "body": "让兼容的智能体搜索商品、为真实购物车报价并创建 WooCommerce 订单。支付由您的支付网关处理。"
+              }
+            ]
+          },
+          {
+            "id": "agent-checkout",
+            "title": "由您控制智能体结账",
+            "description": "",
+            "paragraphs": [
+              "插件会在您自己的域名下的标准地址发布发现配置文件。购物车报价使用 WooCommerce 的库存、税费、配送和优惠券规则。订单会标记为智能体订单；您仍然是记录在案的卖家。",
+              "可开启或关闭结账，配置智能体允许名单、要求签名请求并设置速率限制。空白允许名单表示允许所有受支持的智能体。签名要求是可选设置。",
+              "默认情况下，智能体会创建未支付订单，买家通过您的结账链接完成支付。服务端 Stripe 支付为可选功能，默认关闭，并要求安装 WooCommerce Stripe Gateway。支付密钥保留在您的服务器上。"
+            ],
+            "links": [
+              {
+                "label": "测试智能体结账",
+                "href": "/ucp-playground"
+              }
+            ]
+          },
+          {
+            "id": "access",
+            "title": "ecentic 的读取与写入范围",
+            "description": "插件和已批准的 REST 凭据会提供所选功能所需的商品目录和订单操作。"
+          },
+          {
+            "id": "requirements",
+            "title": "要求与限制",
+            "description": "",
+            "paragraphs": [
+              "已发布插件要求 WordPress 6.0+、WooCommerce 7.0+ 和 PHP 8.0+。可从 wp-admin 连接，或提供 WooCommerce REST 密钥；发布功能需要读写权限。",
+              "商品目录同步最多读取 20 页、每页 100 个商品：单次运行最多 2,000 条记录。免费引导检测最多选择 10 个商品。",
+              "托管智能体端点默认限制为每个店铺、每个客户端身份每分钟 120 次请求。商家可自行配置限制。智能体结账需要插件；仅 REST 商品目录密钥不会安装结账功能。",
+              "WooCommerce 目前不支持 AI 访问追踪和 ecentic 的 Merchant Center 同步。"
+            ],
+            "links": [
+              {
+                "label": "查看方案与额度",
+                "href": "/pricing"
+              }
+            ]
+          },
+          {
+            "id": "setup",
+            "title": "设置店铺",
+            "description": "",
+            "ordered": true,
+            "columns": 2,
+            "items": [
+              {
+                "title": "安装插件",
+                "body": "从 WordPress.org 安装并启用免费插件。仅激活插件不会联系 ecentic。"
+              },
+              {
+                "title": "在 wp-admin 中授权",
+                "body": "在插件设置中连接 ecentic 并批准连接。此流程无需复制密钥；REST 密钥是另一种方式。"
+              },
+              {
+                "title": "运行首次对比",
+                "body": "选择商品和竞品，然后运行扫描。请预留几分钟完成设置；商品目录和模型处理时间会有所不同。"
+              },
+              {
+                "title": "发布并测试结账",
+                "body": "应用您选择的商品信息变更。准备就绪后启用智能体结账，并测试支付流程。"
+              }
+            ],
+            "note": "提示：建议先使用预发布站点，然后在启用真实购买前，先在该站点上测试结账演练环境。"
+          }
+        ],
+        "ledger": [
+          {
+            "field": "商品名称和描述",
+            "read": "当前名称、描述和商品数据。",
+            "write": "当选择 Apply 或明确的批量操作时，写入修订后的名称和描述。"
+          },
+          {
+            "field": "结构化商品数据",
+            "read": "用于生成 Product JSON-LD 的现有商品信息。",
+            "write": "通过单独操作写入受保护的商品元字段，由插件渲染。"
+          },
+          {
+            "field": "价格、库存、图片和变体",
+            "read": "导入的商品目录数据和实时购物车信息。",
+            "write": "商品信息修复不会修改这些字段。正常结账可能会通过 WooCommerce 影响库存。"
+          },
+          {
+            "field": "购物车、配送、税费和优惠券",
+            "read": "真实 WooCommerce 购物车计算和店铺设置。",
+            "write": "通过私有桥接处理购物车会话和买家结账选择。"
+          },
+          {
+            "field": "订单和买家详情",
+            "read": "智能体订单状态，以及履行这些订单所需的买家详情。",
+            "write": "标记为智能体订单的原生 WooCommerce 订单；受支持的结账操作可更新这些订单。"
+          },
+          {
+            "field": "支付凭据",
+            "read": "支付结果和受支持的支付方式信息。",
+            "write": "ecentic 不存储支付密钥。商家支付网关会扣取已批准的支付方式，或由买家通过店铺链接支付。"
+          }
+        ],
+        "faqs": [
+          {
+            "question": "插件免费吗？",
+            "answer": "是的。可从 WordPress.org 免费安装。ecentic 方案适用于模拟和商品信息功能；当前条款请查看 Pricing。"
+          },
+          {
+            "question": "ecentic 会处理支付吗？",
+            "answer": "支付由您现有的支付网关处理，订单归您所有。默认流程会将买家引导至您的支付页面。可选的服务端 Stripe 支付需要启用相应网关及其设置。"
+          },
+          {
+            "question": "会在 WooCommerce 上追踪 AI 访问吗？",
+            "answer": "暂未支持。AI 访问追踪目前运行于 Shopify。"
+          },
+          {
+            "question": "可以关闭智能体结账吗？",
+            "answer": "可以。可在插件设置中关闭。您还可以限制智能体、要求签名或撤销连接凭据。"
+          },
+          {
+            "question": "需要修改主题或复制 API 密钥吗？",
+            "answer": "插件提供发现和桥接功能。可在 wp-admin 中批准连接而无需复制密钥，也可使用读写 REST 密钥进行商品目录发布。建议先在预发布环境测试主题或支付设置。"
+          }
+        ]
+      },
+      "googleMerchant": {
+        "meta": {
+          "title": "ecentic 与 Google Merchant Center",
+          "description": "将已发布修复发送到 Merchant Center，检查商品诊断信息，并检查 Google AI 购物智能体结账所需设置。适用于 Shopify 店铺。"
+        },
+        "title": "Google Merchant Center",
+        "description": "将已发布的商品信息变更作为补充商品数据发送到 Google。在一个地方查看诊断信息并准备结账设置。适用于 Shopify 店铺。",
+        "actions": [
+          {
+            "label": "连接 Merchant Center",
+            "href": "/sign-up"
+          },
+          {
+            "label": "预约演示",
+            "href": "/demo"
+          }
+        ],
+        "sections": [
+          {
+            "id": "workflow",
+            "title": "让 Google 商品数据保持就绪",
+            "description": "",
+            "columns": 2,
+            "items": [
+              {
+                "title": "补充数据",
+                "body": "通过单独同步操作发送已发布的标题和描述变更。保留您的主商品来源。"
+              },
+              {
+                "title": "结账属性",
+                "body": "设置符合条件的商品结账属性，并将其包含在补充同步中。"
+              },
+              {
+                "title": "商品诊断",
+                "body": "查看 Google 商品问题以及补充变更是否已生效。"
+              },
+              {
+                "title": "结账就绪状态",
+                "body": "检查账户、配送、退货和客户支持设置。Google 项目注册仍需由商家完成。"
+              }
+            ],
+            "note": "Google 于 2026 年 9 月批准了 ecentic 的 Merchant Center 写入权限。这是访问权限批准，不代表认可。"
+          },
+          {
+            "id": "access",
+            "title": "ecentic 的读取与写入范围",
+            "description": "该连接会请求 Google Content API OAuth 权限范围。您的授权允许执行以下账户操作；这并不意味着您已加入 Google 结账。"
+          },
+          {
+            "id": "requirements",
+            "title": "要求与限制",
+            "description": "",
+            "paragraphs": [
+              "需要已连接的 Shopify 店铺以及您可授权的 Merchant Center 账户。当前 ecentic 连接不支持 WooCommerce。",
+              "Google OAuth 范围：https://www.googleapis.com/auth/content。请选择商家账户，并完成连接流程中显示的账户关联步骤。",
+              "匹配依赖 Shopify 商品标识和 Merchant Center 商品。Google 的诊断和处理决定每项变更是否被接受。不保证固定同步完成时间。",
+              "只有在运行同步操作时，才会发送已发布的商品信息变更。后台维护会检查现有覆盖和账户关联；不会自动发送新发布的商品信息修复。"
+            ]
+          },
+          {
+            "id": "setup",
+            "title": "连接、检查并同步",
+            "description": "",
+            "ordered": true,
+            "columns": 2,
+            "items": [
+              {
+                "title": "授权 Google 账户",
+                "body": "为 Shopify 店铺打开 Google 连接，并向目标 Merchant Center 账户授予访问权限。"
+              },
+              {
+                "title": "配置补充来源",
+                "body": "完成账户关联和数据源设置。检查匹配商品和来源优先级。"
+              },
+              {
+                "title": "选择商品变更",
+                "body": "将商品信息更新发布到 Shopify，并设置符合条件的结账属性。查看 Google 的诊断信息。"
+              },
+              {
+                "title": "发送覆盖数据",
+                "body": "运行单独的补充同步，并验证已处理的商品状态。请预留 Google 处理时间。"
+              }
+            ],
+            "note": "提示：如条件允许，请先使用测试 Merchant Center 环境，并先验证一小部分已匹配商品。"
+          }
+        ],
+        "ledger": [
+          {
+            "field": "商家账户和数据源",
+            "read": "账户身份、已连接来源及其配置。",
+            "write": "账户关联请求、ecentic 补充来源，以及配置时的来源优先级规则。"
+          },
+          {
+            "field": "商品标题和描述",
+            "read": "已发布的 ecentic 商品信息记录和已处理的 Merchant Center 商品。",
+            "write": "在明确同步时写入补充标题和描述覆盖。"
+          },
+          {
+            "field": "价格、库存和主商品 Feed",
+            "read": "用于匹配和诊断的已处理商品。",
+            "write": "不会替换主商品来源；已配置的补充值会在对应字段中优先生效。"
+          },
+          {
+            "field": "结账属性",
+            "read": "已保存的商品设置和 Google 已处理的结账资格状态。",
+            "write": "通过补充来源写入选定的结账属性。"
+          },
+          {
+            "field": "配送、退货和支持",
+            "read": "账户配送设置、退货政策和客户支持详情。",
+            "write": "仅通过明确保存操作写入客户支持详情或退货政策。不提供配送费率写入。"
+          },
+          {
+            "field": "诊断信息",
+            "read": "商品问题和覆盖数据的接受状态。",
+            "write": "不会修改 Google 的诊断决定。"
+          }
+        ],
+        "faqs": [
+          {
+            "question": "会覆盖我们的主 Feed 吗？",
+            "answer": "主数据源会被保留。ecentic 会创建一个补充来源，并在主来源规则中更新其优先级。因此，选定的补充属性可能会替换 Google 在这些字段中使用的实际值。"
+          },
+          {
+            "question": "支持 WooCommerce 吗？",
+            "answer": "暂未支持。ecentic 的 Merchant Center 集成目前支持 Shopify。"
+          },
+          {
+            "question": "这能让我们加入 Google 的结账项目吗？",
+            "answer": "不能。资格和批准由 Google 决定。ecentic 会准备数据、检查设置并帮助测试就绪状态；注册仍需您单独完成。"
+          },
+          {
+            "question": "Apply 会自动更新 Google 吗？",
+            "answer": "不会。Apply 会发布选定的店铺商品信息变更。请使用单独的 Merchant Center 同步操作，将已发布的覆盖数据发送到 Google。"
+          }
+        ]
+      },
+      "productFeeds": {
+        "meta": {
+          "title": "通过商品数据源或 CSV 使用 ecentic",
+          "description": "导入受支持的 XML 或 JSON 商品 Feed、CSV，或可访问的公开 Shopify 或 WooCommerce 商品目录，用于模拟和检测。"
+        },
+        "title": "商品数据源和 CSV",
+        "description": "从可导出的商品数据开始。无需直接发布连接，即可导入受支持的 Feed 或 CSV，或使用可访问的公开 Shopify 或 WooCommerce 商品目录。",
+        "actions": [
+          {
+            "label": "导入商品数据",
+            "href": "/sign-up"
+          },
+          {
+            "label": "预约演示",
+            "href": "/demo"
+          }
+        ],
+        "sections": [
+          {
+            "id": "workflow",
+            "title": "从商品数据开始",
+            "description": "",
+            "items": [
+              {
+                "title": "模拟",
+                "body": "使用店铺检测模型，将导入商品与指定竞品进行对比。"
+              },
+              {
+                "title": "检测",
+                "body": "检查商品信息质量和抽样店铺前端就绪状态。使用结果指导团队编辑。"
+              },
+              {
+                "title": "需要发布时再连接",
+                "body": "发布到店铺需要 Shopify 或 WooCommerce 连接。Google 同步仅支持 Shopify；智能体结账需要 WooCommerce 插件；访问追踪运行于 Shopify。"
+              }
+            ]
+          },
+          {
+            "id": "formats",
+            "title": "导入器支持的格式",
+            "description": "请使用以下文档定义的数据结构。仅为 XML 或 JSON 格式并不代表兼容。",
+            "rows": [
+              {
+                "label": "XML",
+                "value": "RSS channel/item 或 feed/entry 商品记录，包括 Google Shopping 风格的商品字段。"
+              },
+              {
+                "label": "JSON",
+                "value": "产品数组，或包含 products 或 items 数组的对象。支持的字段包括 title、description、price、currency、image、URL、SKU 和 ID。"
+              },
+              {
+                "label": "CSV",
+                "value": "逗号分隔文本，每行一个商品。列包括：title 或 name；description；price；image、image_link 或 image_url；url 或 link；sku；id。",
+                "detail": "没有标题的行会被跳过。请在价格中包含货币代码，例如 29.99 EUR；不会导入单独的 CSV 货币列。避免嵌入换行符。"
+              },
+              {
+                "label": "数据源大小",
+                "value": "XML 和 JSON 下载限制为 10 MiB。"
+              },
+              {
+                "label": "店铺地址",
+                "value": "支持可公开访问的 Shopify 和 WooCommerce 商品目录。这并非适用于所有网站的通用导入功能。"
+              }
+            ]
+          },
+          {
+            "id": "access",
+            "title": "ecentic 的读取与写入范围",
+            "description": "导入会将商品记录保存到 ecentic 中。不会更改源 feed、文件或店铺。"
+          },
+          {
+            "id": "export-platforms",
+            "title": "使用受支持的导出",
+            "description": "以下已验证的平台导出方式需要进行列映射。原生直连是单独的功能。"
+          },
+          {
+            "id": "setup",
+            "title": "导入并比较",
+            "description": "",
+            "ordered": true,
+            "columns": 2,
+            "items": [
+              {
+                "title": "准备文件",
+                "body": "使用受支持的 feed URL，或将 CSV 规范化为受支持的列名和逗号分隔格式。"
+              },
+              {
+                "title": "导入商品目录",
+                "body": "连接 feed 或上传 CSV。选择商品前，请检查标题、价格、货币和商品 URL。"
+              },
+              {
+                "title": "选择比较内容",
+                "body": "免费入门检测最多可选择 10 个商品，并添加已命名的竞品。"
+              },
+              {
+                "title": "查看并重新导入",
+                "body": "根据检测结果更新源系统。商品目录变更后请重新导入；当前不支持定时 feed 刷新。"
+              }
+            ],
+            "note": "提示：建议先用小规模样本导出检查映射，再导入完整商品目录。"
+          }
+        ],
+        "ledger": [
+          {
+            "field": "标题、描述、价格和货币",
+            "read": "feed 或 CSV 中支持的字段。CSV 中的货币可包含在价格值内。",
+            "write": "作为商品记录存储在 ecentic 中。不会修改源数据。"
+          },
+          {
+            "field": "图片、商品 URL、SKU 和 ID",
+            "read": "支持图片 URL、链接和标识符。",
+            "write": "存储在 ecentic 中；不会生成新的图片或标识符。"
+          },
+          {
+            "field": "库存、自定义属性和平台专用字段",
+            "read": "仅使用导入器支持的字段；不支持任意导出 schema。",
+            "write": "不会回写到您的电商平台。"
+          },
+          {
+            "field": "检测与模拟",
+            "read": "已导入的商品记录和可访问的店铺样本。",
+            "write": "结果保存在 ecentic 中。当前不提供生成后的商品信息改写文件下载。"
+          }
+        ],
+        "faqs": [
+          {
+            "question": "导入 feed 是只读的吗？",
+            "answer": "对于您的源数据来说是只读的：ecentic 不会更改您的 feed、文件或店铺。但会将导入的商品记录保存到您的 ecentic 账户中。"
+          },
+          {
+            "question": "feed 多久刷新一次？",
+            "answer": "商品目录变更后请重新导入。当前不支持定时 feed 刷新。"
+          },
+          {
+            "question": "可以将修复结果下载为文件吗？",
+            "answer": "当前不支持导出生成后的商品信息改写结果。可根据检测结果在源系统中进行编辑，或连接 Shopify 或 WooCommerce 使用受支持的发布操作。"
+          },
+          {
+            "question": "任何 XML 或 JSON 导出都能使用吗？",
+            "answer": "不能。解析器仅接受上述商品记录结构。其他结构的导出格式需要先转换。通常最简单的方式是使用 CSV 列映射。"
+          }
+        ]
+      }
+    },
+    "action": {
+      "primary": "通知我"
+    }
+  }
+}

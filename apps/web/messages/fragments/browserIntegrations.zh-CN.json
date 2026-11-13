@@ -1,0 +1,66 @@
+{
+  "browserIntegrations": {
+    "entries": {
+      "shopify": "通过 Shopify OAuth 连接以导入商品目录、发布选定的商品信息修复，并跟踪检测到的 AI 引荐。免费初始检测最多覆盖 10 件商品。持续使用商品信息功能需要启用按量计费，或拥有有效的 Compete、Scale 或 Dominate 订阅；各套餐的商品和模拟额度请参见 Pricing。",
+      "woocommerce": "安装免费插件即可连接商品目录，并通过自有网关为兼容智能体提供商品搜索、购物车报价和结账功能。免费初始检测可试用最多 10 件商品。持续使用 ecentic 商品信息功能需要启用按量计费或有效订阅；发布功能还需要读写权限。WooCommerce 不支持 AI 访问跟踪。",
+      "bigcommerce": "原生 BigCommerce 应用已列入开发计划。目前尚不可安装，也未承诺上线日期。可先了解支持的商品数据格式，或登记对直连功能的需求。",
+      "adobe": "将 Adobe Commerce 商品目录导出为 CSV，并在上传前将字段映射到 ecentic 支持的列。导入后的记录可与指定竞品比较；此方式不会将更改回写到 Adobe Commerce，也不会自动刷新。",
+      "shopware": "从 Shopware 导出商品，将文件转换为逗号分隔的 CSV，并在上传前映射支持的列。商品目录变更后，请在 Shopware 更新并重新导入；直连发布功能仍在规划中。",
+      "wix": "从 Wix Stores 导出实体商品 CSV，并映射到 ecentic 支持的字段。导入后的商品目录可用于比较，后续修改需在 Wix 中完成并重新导入。原生 Wix 应用已在规划中。",
+      "prestashop": "从 PrestaShop 导出商品 CSV，并在导入前映射其列。ecentic 会保存支持的商品记录用于比较；此导出方式不会回写到店铺，也不会自动刷新商品目录。",
+      "googleMerchant": "对于已连接的 Shopify 店铺，可将已发布的商品信息修复同步到 Google Merchant Center 作为补充数据源。需要单独连接 Merchant Center 账户并运行同步。Google 的账户和商品要求仍然适用；此功能不会让店铺加入原生 Google 结账。",
+      "productFeeds": "导入支持的 XML 或 JSON feed，将商品记录保存到 ecentic。免费初始检测最多可选择 10 件商品；持续使用仪表盘商品信息功能需使用已启用的套餐。源数据变更后需重新导入，因为目前不支持定时 feed 刷新或回写发布。",
+      "csv": "使用支持的列名上传逗号分隔的商品数据，每行一件商品。在选择商品进行检测前，请检查映射关系。上传后会将记录保存到 ecentic，不会修改源文件。",
+      "storeAddress": "通过店铺地址导入可访问的公开 Shopify 或 WooCommerce 商品目录。无需平台凭证即可获得只读起点。后续需要发布更改时，再连接已验证的 Shopify 应用或 WooCommerce 集成。",
+      "microsoftMerchant": "面向 Microsoft Copilot 的专用商家 feed 连接已在规划中，目前尚不可用。频道页面说明了当前要求，以及已可用的 Shopify 引荐跟踪功能。",
+      "amazonShopDirect": "面向 Amazon US Shop Direct 项目的商品目录连接已列入开发计划。目前没有可启用的 ecentic 连接；项目可用性和商家准入仍受 Amazon 要求限制。",
+      "chatgptFeed": "专用的 ChatGPT 商品数据源导出功能已在规划中。目前，ecentic 可以模拟 ChatGPT 模型比较您的商品信息与竞品信息；模拟不会将您的商品目录提交给 ChatGPT，也不会让您的店铺加入结账服务。",
+      "perplexityFeed": "面向 Perplexity 的商家商品目录 feed 连接已在规划中。它独立于已连接 Shopify 店铺中的 AI 引荐跟踪，目前尚不能作为 ecentic 中可启用的 feed。",
+      "google": "在店铺模拟中使用 Gemini，将您的商品与指定竞品进行比较。Google Merchant Center 补充同步是单独的 Shopify 连接。ecentic 的原生 Google 结账初始接入仍在规划中。",
+      "chatgpt": "使用 ChatGPT 模型，在模拟购物决策中将您的商品信息与指定竞品比较。此功能展示的是模型推理，而非真实购物流量。专用的 ecentic ChatGPT 应用和商品 feed 导出功能另行规划中。",
+      "claude": "在模拟比较中加入 Claude，对比您的商品信息与指定竞品。查看它参考的字段及其选择理由。这是在 ecentic 内进行的模型测试，不是连接 Claude 的商家 feed 或结账功能。",
+      "copilot": "目前可在已连接的 Shopify 店铺中查看检测到的 Copilot 引荐。Microsoft Merchant Center feed 连接仍在规划中，因此此项不代表已进行真实商品目录提交或开通结账。",
+      "perplexity": "目前可在已连接的 Shopify 店铺中查看检测到的 Perplexity 引荐。Perplexity 店铺扫描和专用商家 feed 已列入开发计划；目前均不是可启用的连接。",
+      "amazon": "了解 Amazon Shop Direct 方案，并登记对 ecentic 商品目录连接的需求。该连接已在规划中，但尚未承诺上线日期；商家资格和项目可用性由 Amazon 决定。",
+      "paymentGateway": "通过 WooCommerce 插件，兼容智能体可以创建订单，并将买家引导至您的结账链接完成支付。支付由 WooCommerce 网关处理，您仍是卖家。可选的服务端 Stripe 支付需要单独配置。",
+      "stripeAcs": "专用的 Stripe Agentic Commerce Suite 连接已在规划中。它独立于 WooCommerce 插件中的可选 Stripe 支付流程，目前尚不能作为 ecentic 集成启用。",
+      "plytix": "将 Plytix 的商品数据导出为 CSV，并映射到 ecentic 支持的列。导入记录用于比较，变更后需重新导入。这只是导出方式，不包含直连 PIM 或自动回写。",
+      "akeneo": "直连 Akeneo 已列入开发计划。目前 ecentic 不提供原生同步或回写功能。欢迎登记团队需求，并说明所需的商品目录工作流。",
+      "salsify": "直连 Salsify 已列入开发计划。目前 ecentic 不提供原生同步或回写功能。欢迎登记需求，说明团队需要的商品数据工作流。"
+    },
+    "flow": {
+      "eyebrow": "商品目录导入",
+      "title": "一个商品目录，三种导入方式",
+      "description": "导入您已维护的商品数据。每种支持的导入方式都会将记录保存到 ecentic，用于比较和商品信息检测。",
+      "sources": {
+        "productFeeds": "支持的 XML 或 JSON 商品 feed。",
+        "csv": "已映射列，每行一件商品。",
+        "storeAddress": "公开的 Shopify 或 WooCommerce 商品目录。"
+      },
+      "catalog": {
+        "title": "您的 ecentic 商品目录",
+        "description": "检查导入字段，然后选择要比较的商品。",
+        "fields": [
+          "商品标题",
+          "描述",
+          "价格",
+          "商品 URL"
+        ]
+      },
+      "outputs": {
+        "simulate": {
+          "title": "模拟",
+          "description": "使用店铺扫描模型，将选定商品与指定竞品比较。"
+        },
+        "audit": {
+          "title": "检测",
+          "description": "检查商品信息质量和抽样店铺前端就绪情况，为团队修改提供指导。"
+        }
+      },
+      "note": "导入不会修改源 feed、文件或店铺前端。商品目录变更后请重新导入。发布到店铺需要已验证的 Shopify 或 WooCommerce 连接；仪表盘商品信息功能使用您已启用的套餐。",
+      "action": {
+        "primary": "查看商品导入方式"
+      }
+    }
+  }
+}

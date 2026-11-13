@@ -1,0 +1,133 @@
+{
+  "reviewSolutionsChannels": {
+    "sample": "示例",
+    "assistant": "购物助手",
+    "discovery": "UCP 发现结果摘录",
+    "discoveryNote": "资料发现结果不代表商品或结账资格已获确认。",
+    "previewNote": "示例对话和部分 UCP 响应，并非实时助手回答。商品卡片遵循 Google 和 OpenAI 文档中的发现模式；ChatGPT 的电商集成独立于 UCP。",
+    "googleSource": "Google 购物和 UCP",
+    "openaiSource": "ChatGPT 购物结果",
+    "sectors": [
+      {
+        "product": "单一麦芽威士忌·示例",
+        "details": [
+          "烟熏风味",
+          "产地和瓶装规格"
+        ],
+        "response": "比较已验证的风味说明和瓶装详情。",
+        "limit": "仅供研究参考。酒类限制适用。"
+      },
+      {
+        "product": "蛋白零食·示例",
+        "details": [
+          "每份蛋白质含量",
+          "配料和过敏原"
+        ],
+        "response": "根据每份规格和热量限制匹配营养标签。",
+        "limit": "请确认营养和过敏原信息。"
+      },
+      {
+        "product": "保湿霜·示例",
+        "details": [
+          "无香精配方",
+          "完整成分列表"
+        ],
+        "response": "检查成分列表和商品声明的配方。",
+        "limit": "商品信息，不构成医疗建议。"
+      },
+      {
+        "product": "无线耳塞·示例",
+        "details": [
+          "电池测试条件",
+          "降噪功能"
+        ],
+        "response": "比较电池续航、充电方式以及所需功能。",
+        "limit": "请查看当前价格和库存。"
+      },
+      {
+        "product": "紧凑型沙发床·示例",
+        "details": [
+          "宽度：185 cm",
+          "展开深度：210 cm"
+        ],
+        "response": "同时检查收起尺寸和展开所需空间。",
+        "limit": "本插图中的尺寸为示例数据。"
+      },
+      {
+        "product": "徒步夹克·示例",
+        "details": [
+          "防水结构",
+          "版型和尺码表"
+        ],
+        "response": "比较防护性能、尺寸和退货政策。",
+        "limit": "请核实商品性能声明。"
+      },
+      {
+        "product": "老年犬粮·示例",
+        "details": [
+          "适用年龄阶段标签",
+          "配料和喂养指南"
+        ],
+        "response": "比较选项前，请阅读配料和喂养说明。",
+        "limit": "饮食适配性需要个别建议。"
+      },
+      {
+        "product": "里斯本城市短途游·示例",
+        "details": [
+          "日期和房型",
+          "取消条款"
+        ],
+        "response": "比较住宿详情、日期和完整预订条款。",
+        "limit": "旅行库存和 UCP 支持情况会有所不同。"
+      }
+    ],
+    "catalog": {
+      "sample": "示例导入记录",
+      "products": [
+        "无线头戴式耳机",
+        "降噪头戴式耳机",
+        "无线耳塞"
+      ],
+      "ready": "待审核字段"
+    },
+    "perplexity": {
+      "sample": "示例购物流程",
+      "question": "哪款耳机适合长途飞行？",
+      "answer": "比较降噪、电池续航和佩戴舒适度。",
+      "product": "无线头戴式耳机",
+      "details": "降噪·头戴式",
+      "price": "价格由商家提供",
+      "website": "商家商品页面",
+      "record": "示例商家记录",
+      "attributes": [
+        {
+          "title": "商品详情",
+          "value": "标题、图片和规格"
+        },
+        {
+          "title": "价格和库存",
+          "value": "当前商家信息"
+        },
+        {
+          "title": "商品 URL",
+          "value": "消费者继续浏览的页面"
+        }
+      ],
+      "productCard": "回答中的商品卡片",
+      "merchantData": "从商品信息到购物卡片",
+      "merchantNote": "Perplexity 表示会使用商家信息丰富商品卡片。更完整的数据并不保证获得推荐。",
+      "pathsTitle": "消费者接下来的去向",
+      "pathsDescription": "根据 Perplexity 的购物公告，从商品卡片出发的两种路径。",
+      "purchaseTitle": "使用 Pro 购买",
+      "purchaseBody": "2024年11月的公告将该功能限制为美国的 Pro 用户，以及部分商家的部分商品。请查看 Perplexity 获取最新开放范围。",
+      "purchaseBadge": "特定购买交易",
+      "storeTitle": "继续前往商家网站",
+      "storeBody": "当 Buy with Pro 不可用时，购物者会通过商品链接进入商家网站。",
+      "storeBadge": "跳转至商家",
+      "trackingTitle": "ecentic 如何提供帮助",
+      "trackingBody": "ecentic 可以识别 Shopify 上来自 Perplexity 的引荐流量。Perplexity 店铺扫描和专用商家数据源即将推出；目前没有 ecentic 与 Perplexity 结账的连接。",
+      "source": "阅读 Perplexity 公告",
+      "sampleNote": "示例界面和商品，并非真实的 Perplexity 回答或报价。"
+    }
+  }
+}

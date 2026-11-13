@@ -1,0 +1,39 @@
+{
+  "docsVersioningPage": {
+    "current": "Versione API attuale",
+    "request": "Versione bloccata di richiesta e risposta",
+    "additive": "Aggiungi alla stessa versione",
+    "breaking": "Avvia un nuovo percorso di versione",
+    "notice": "Preavviso minimo",
+    "days": "giorni",
+    "example": "Formato dell’header Deprecation",
+    "exampleHint": "Valori di header illustrativi, non un annuncio di ritiro della versione.",
+    "apiContract": "Contratto API di ecentic",
+    "protocolContract": "Contratto del protocollo Discovery",
+    "protocolVersion": "Leggi la versione nel documento",
+    "lifecycle": {
+      "label": "Segnali di risposta di deprecazione",
+      "hint": "Seleziona un header per vedere cosa comunica al tuo client.",
+      "items": [
+        {
+          "header": "Deprecation",
+          "title": "Una versione è deprecata",
+          "description": "Ogni risposta di una versione deprecata include questo header. Annuncia la deprecazione tramite RFC 9745.",
+          "meaning": "Deprecazione annunciata"
+        },
+        {
+          "header": "Sunset",
+          "title": "È stata fissata una data di rimozione",
+          "description": "Le risposte includono anche questo header una volta fissata una data di rimozione. RFC 8594 definisce la data in cui la versione smette di rispondere.",
+          "meaning": "Data di rimozione annunciata"
+        },
+        {
+          "header": "Link",
+          "title": "La versione sostitutiva è identificata",
+          "description": "Accanto alla data di rimozione, un Link con rel=\"successor-version\" indirizza il tuo client alla versione sostitutiva.",
+          "meaning": "Versione sostitutiva collegata"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,304 @@
+{
+  "ucpValidator": {
+    "meta": {
+      "title": "ストアフロント向けUCP Validator",
+      "description": "無料のUCP Validatorで、ストアフロントのUniversal Commerce Protocolプロファイル、検出データ、スキーマ、robots.txtアクセスを確認できます。"
+    },
+    "breadcrumb": {
+      "home": "ホーム",
+      "page": "UCP検証ツール"
+    },
+    "hero": {
+      "eyebrow": "プロトコルチェック",
+      "title": {
+        "primary": "UCP",
+        "accent": "検証ツール"
+      },
+      "description": "ストアフロントが/.well-known/ucpで有効なUniversal Commerce Protocolプロファイルを公開しているか、またショッピングエージェントが問題なく読み取れるかを確認します。",
+      "assurances": [
+        "無料で利用可能",
+        "アカウント不要",
+        "/.well-known/ucpをライブ取得"
+      ],
+      "art": {
+        "alt": "盾のASCIIアートイラスト"
+      },
+      "actions": {
+        "validate": "ドメインを検証",
+        "playground": "Playgroundを開く"
+      }
+    },
+    "checks": {
+      "number": "01",
+      "title": "検証ツールで確認する項目",
+      "description": "公開プロファイルをライブ取得し、UCP仕様に基づいて解析。robots.txtからエージェントアクセス状況も表示します。",
+      "items": [
+        {
+          "title": "エンドポイント到達性",
+          "description": "公開HTTPSドメインにリクエストを送信し、/.well-known/ucpが応答することを確認します。"
+        },
+        {
+          "title": "スキーマ整合性",
+          "description": "レスポンス本文をJSONとして解析し、UCP仕様に対するエラーと警告を確認します。"
+        },
+        {
+          "title": "エージェントアクセス",
+          "description": "robots.txtを確認し、主要なショッピングボットやインデックスボットがブロックされていないかを確認できます。"
+        }
+      ]
+    },
+    "validator": {
+      "number": "02",
+      "title": "ライブ検証を実行",
+      "description": "ドメインを貼り付けると、ライブプロファイルを取得し、すべてのサービスと機能を解析したうえで、仕様エラーとエージェントアクセス状況をレポートします。"
+    },
+    "faqSection": {
+      "number": "03",
+      "title": "検証前によくある質問",
+      "description": "チェッカーの対象範囲、プロファイルの公開場所、エージェントアクセスの表示方法を説明します。"
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "UCP Validatorでは何を確認しますか？",
+          "answer": "公開HTTPSドメインにリクエストを送信し、/.well-known/ucpが応答することを確認したうえで、本文をJSONとして解析し、UCP仕様のエラーと警告を表示します。これにより、プロファイルが適切な形式か確認できます。"
+        },
+        {
+          "question": "Universal Commerce Protocolプロファイルはどこに公開すべきですか？",
+          "answer": "ストアフロントの公開HTTPSドメイン上の/.well-known/ucpです。Validatorはこの正確なパスを取得し、アクセス可能かどうかを表示します。"
+        },
+        {
+          "question": "AIショッピングエージェントがストアを読み取れるかも確認できますか？",
+          "answer": "はい。Validatorはrobots.txtを確認し、主要なショッピングボットやインデックスボットがUniversal Commerce Protocolプロファイルに問題なくアクセスできるかを表示します。"
+        }
+      ]
+    },
+    "footer": {
+      "primary": "ドメインを検証",
+      "secondary": "すべての無料ツール",
+      "note": "無料・アカウント不要・ライブ取得"
+    },
+    "structuredData": {
+      "name": "UCP検証ツール"
+    },
+    "form": {
+      "preview": {
+        "logoAlt": "Universal Commerce Protocolロゴ",
+        "liveFetch": "ライブ取得",
+        "note": "公開プロファイルを取得し、サービスと機能を解析したうえで、仕様上の問題とrobots.txtから確認できるエージェントアクセス状況を表示します。"
+      },
+      "targets": {
+        "title": "検証項目",
+        "https": {
+          "label": "HTTPSと到達性",
+          "detail": "TLS経由で配信され、ライブリクエストに応答していることを確認します。"
+        },
+        "discovery": {
+          "label": "プロファイル検出",
+          "detail": "エージェントがドメイン上で取得するライブ検出ドキュメント。"
+        },
+        "services": {
+          "label": "サービスとトランスポート",
+          "detail": "エージェントがネゴシエーションを行うエンドポイント。"
+        },
+        "capabilities": {
+          "label": "機能",
+          "detail": "ストアフロントで宣言されているカート、購入手続き、注文フロー。"
+        },
+        "paymentHandlers": {
+          "label": "決済ハンドラー",
+          "detail": "トークン化エンドポイントと宣言されているバージョン。"
+        },
+        "signingKeys": {
+          "label": "署名鍵",
+          "detail": "HTTPメッセージ署名検証用の公開JWK。"
+        },
+        "supportedVersions": {
+          "label": "サポート対象バージョン",
+          "detail": "マーチャントが現在も提供しているすべてのプロトコルバージョン。"
+        },
+        "agentAccess": {
+          "label": "エージェントアクセス",
+          "detail": "ショッピングおよびインデックス作成エージェントはブロックされていません。"
+        }
+      },
+      "issueCategory": {
+        "envelope": "エンベロープ",
+        "version": "バージョン",
+        "services": "サービス",
+        "capabilities": "機能",
+        "payment_handlers": "決済ハンドラー",
+        "signing_keys": "署名鍵",
+        "supported_versions": "サポート対象バージョン",
+        "transport": "トランスポート",
+        "security": "セキュリティ"
+      },
+      "badge": {
+        "pass": "合格",
+        "fail": "失敗",
+        "recognized": "認識済み",
+        "custom": "カスタム",
+        "known": "既知",
+        "issues": "問題あり",
+        "valid": "有効",
+        "current": "最新",
+        "https": "HTTPS",
+        "insecure": "非セキュア",
+        "allowed": "許可済み",
+        "blocked": "ブロック済み",
+        "error": "エラー",
+        "warning": "警告",
+        "missing": "未設定",
+        "unavailable": "利用不可",
+        "embedded": "埋め込み",
+        "specLinked": "仕様リンク済み",
+        "schemaLinked": "スキーマリンク済み",
+        "ucpReady": "UCP対応",
+        "needsFixes": "修正が必要",
+        "noIssuesFound": "問題は見つかりませんでした",
+        "signingKeysNotAdvertised": "署名鍵が公開されていません",
+        "signingKeysEmpty": "署名鍵配列が空です",
+        "missingKid": "（kidなし）",
+        "transport": "トランスポート · {value}",
+        "version": "バージョン · {value}",
+        "id": "ID · {value}",
+        "kty": "kty · {value}",
+        "use": "use · {value}",
+        "alg": "alg · {value}",
+        "crv": "crv · {value}",
+        "latestSuffix": " · 最新 {version}",
+        "envelope": "エンベロープ: {kind}",
+        "envelopeFlatKind": "フラット",
+        "notValidated": "未検証",
+        "notValidatedSuffix": " · 未検証"
+      },
+      "services": {
+        "title": "サービスとトランスポート",
+        "description": "エージェントがネゴシエーション可能なエンドポイントです。各エントリは、プロファイル内の逆ドメイン形式サービスキーに対応します。",
+        "customNote": "カスタムサービスキー — 既知のUCPサービス識別子ではありません。",
+        "endpointLabel": "エンドポイント:",
+        "schemaLabel": "スキーマ:"
+      },
+      "capabilities": {
+        "title": "機能",
+        "description": "ストアフロントがサポートする個別フローです。トランザクション型エージェントには、購入手続き、カート、注文が必須です。",
+        "configLabel": "設定:"
+      },
+      "paymentHandlers": {
+        "title": "決済ハンドラー",
+        "description": "マーチャントが宣言したトークン化エンドポイントです。各ハンドラーはバージョンと必要なハンドラーIDを宣言する必要があります。"
+      },
+      "signingKeys": {
+        "title": "署名鍵と認証",
+        "description": "RFC 9421 HTTP Message Signaturesは、許可不要のオンボーディングの基盤です。すべてのリクエストは、ここで公開される公開JWKを使って検証可能である必要があります。",
+        "notAdvertisedBody": "このプロファイルでは署名鍵が公開されていないため、プラットフォームは帯域外の秘密情報交換なしではRFC 9421 HTTP Message Signaturesを検証できません。UCPでは許可されていますが、エージェントは従来の認証方式（APIキー、OAuth、mTLS）にフォールバックします。",
+        "privateMaterial": "秘密情報を含んでいます — 削除が必要です。",
+        "publicJwk": "公開JWK"
+      },
+      "supportedVersions": {
+        "title": "サポート対象バージョン",
+        "description": "このマーチャントが現在も提供しているすべてのプロトコルバージョンのプロファイルURIです。エージェントは理解可能な最も高いバージョンを選択します。"
+      },
+      "spec": {
+        "title": "仕様検証",
+        "description": "仕様領域ごとに分類された{errors, plural, other {# 件のエラー}}、{warnings, plural, other {# 件の警告}}。",
+        "noIssuesBody": "現在のプロファイルは、スキーマエラーや警告なしでバリデーターを通過しました。",
+        "noProfileBody": "プロファイルが読み込まれなかったため、検証対象がありませんでした。"
+      },
+      "results": {
+        "responseHealth": "レスポンスの状態",
+        "responseHealthOk": "エンドポイントが応答し、プロファイルを評価できました。",
+        "detectedSurface": "検出されたサーフェス",
+        "detectedSurfaceValue": "{services, plural, other {# 件のサービス}}、{capabilities, plural, other {# 件の機能}}、{handlers, plural, other {# 件の決済ハンドラー}}、{keys, plural, other {# 件の署名鍵}}。"
+      },
+      "summary": {
+        "latency": {
+          "label": "レイテンシ",
+          "unavailableDetail": "ライブ応答時間を測定できませんでした。",
+          "detail": "UCPエンドポイントの応答時間。"
+        },
+        "specErrors": {
+          "label": "仕様エラー",
+          "noneDetail": "ブロッキングとなるスキーマの問題は見つかりませんでした。",
+          "someDetail": "最初に修正すべきブロッキング問題です。",
+          "notValidatedDetail": "このリビジョンに対しては検証されていません。",
+          "noProfileDetail": "プロファイルが読み込まれなかったため、何もチェックされませんでした。"
+        },
+        "capabilities": {
+          "label": "機能",
+          "noneDetail": "機能が宣言されていません。",
+          "someDetail": "認識済み機能数と宣言済み機能総数の比較。"
+        },
+        "botAccess": {
+          "label": "ボットアクセス",
+          "detail": "主要なショッピングボットとインデックス作成ボットがrobots.txtで許可されています。"
+        }
+      },
+      "coreChecks": {
+        "title": "コアチェック",
+        "description": "これらのチェックでは、公開プロファイルが到達可能で、安全かつ機械可読であることを確認します。",
+        "https": {
+          "label": "HTTPS",
+          "detail": "ドメインは安全なHTTPS接続で提供されている必要があります。"
+        },
+        "wellKnown": {
+          "label": "/.well-known/ucp が存在",
+          "httpStatus": "HTTP {status}。",
+          "httpStatusNotJson": "HTTP {status}（本文はJSONではありません）。",
+          "responded": "エンドポイントが応答しました。",
+          "noResponse": "/.well-known/ucp から応答がありません。"
+        },
+        "validJson": {
+          "label": "有効なJSON",
+          "contentType": "Content-Type: {contentType}",
+          "contentTypeWithStatus": "Content-Type: {contentType} · HTTP {status}",
+          "invalid": "レスポンス本文が有効なJSONではありません。"
+        },
+        "latency": {
+          "label": "Webサイトのレイテンシ",
+          "unmeasured": "エンドポイントが応答しなかったため、レイテンシを測定できませんでした。",
+          "responded": "UCPエンドポイントは {latency} で応答しました。"
+        },
+        "version": {
+          "label": "最新のプロトコルバージョン",
+          "latest": "プロファイルは {version} を宣言しています — これは公開済みの最新UCPバージョンです。",
+          "outdated": "プロファイルは {version} を宣言しています。最新は {latest} です。",
+          "none": "プロファイルルートでバージョンが宣言されていません。",
+          "notValidated": "プロファイルは {version} を宣言していますが、このバリデーターはそのリビジョン（{revisions}）を実装していません。そのため、このリビジョンに対する検証は行われませんでした。"
+        },
+        "signingKeys": {
+          "label": "署名鍵を公開中",
+          "published": "RFC 9421検証用に {count, plural, other {# 件のJWK}} を公開中。",
+          "none": "署名鍵が公開されていません — 許可不要の検証は利用できません。"
+        }
+      },
+      "robots": {
+        "title": "AIエージェントアクセス",
+        "description": "サイトの現在のrobots.txtルールに基づきます。"
+      },
+      "response": {
+        "title": "UCPレスポンス",
+        "description": "実際に配信されているwell-knownドキュメントを、JSONの構文ハイライト付きでプレビューします。"
+      },
+      "toast": {
+        "failedTitle": "チェックに失敗しました"
+      },
+      "action": {
+        "checking": "確認中...",
+        "primary": "ドメインを確認"
+      },
+      "panel": {
+        "checkADomain": "ドメインを確認",
+        "storefrontDomain": "ストアフロントのドメイン",
+        "domain": "ドメイン",
+        "placeholder": "yourdomain.com",
+        "rootDomainNote": "ルートドメインのみ — <code>acme.com</code> または <code>www.acme.com</code>。常にHTTPS版を検証します。"
+      },
+      "intro": {
+        "eyebrow": "ライブ検証",
+        "title": "ライブ検証を実行",
+        "description": "ドメインを貼り付けると、ライブの <code>/.well-known/ucp</code> ドキュメントを取得し、すべてのサービス、機能、決済ハンドラー、署名鍵を解析したうえで、宣言されている仕様リビジョン（最大 <code>{version}</code>）に対して検証します。"
+      }
+    }
+  }
+}

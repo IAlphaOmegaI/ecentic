@@ -1,0 +1,142 @@
+{
+  "agentReadiness": {
+    "meta": {
+      "title": "Prepara il tuo negozio agli acquisti tramite AI",
+      "description": "Incolla l’URL di un negozio. ecentic legge i tuoi prodotti, corregge ciò che i canali AI non possono usare e ti fornisce un feed per Google Merchant Center e uno per ChatGPT.",
+      "run": "Elaborazione del tuo negozio",
+      "board": "Tabellone della sala",
+      "stage": "Schermata di presentazione"
+    },
+    "hero": {
+      "title": "Incolla l’indirizzo del tuo negozio.",
+      "accent": "Lo prepariamo per Google, Gemini e ChatGPT.",
+      "description": "Leggiamo ogni prodotto, fino a un massimo di 40. Correggiamo ciò che possiamo usando le pagine del tuo negozio, elenchiamo ciò che non possiamo correggere e ti forniamo entrambi i feed.",
+      "runTitle": "Stiamo preparando il tuo negozio per Google, Gemini e ChatGPT"
+    },
+    "form": {
+      "address": "Indirizzo del tuo negozio",
+      "placeholder": "yourstore.com",
+      "starting": "Avvio in corso",
+      "action": {
+        "primary": "Prepara il negozio"
+      },
+      "note": "Non serve registrarsi. Leggiamo fino a 40 prodotti dalle tue pagine pubbliche."
+    },
+    "errors": {
+      "fallback": "Si è verificato un problema da parte nostra. Riprova.",
+      "invalid": "Non sembra un indirizzo di negozio che possiamo leggere. Controllalo e riprova.",
+      "limited": "Hai avviato l’elaborazione di molti negozi di seguito. Attendi qualche minuto e riprova.",
+      "capacity": "Per oggi abbiamo preparato tutti i negozi che possiamo gestire. Riprova domani.",
+      "unavailable": "Non siamo riusciti ad avviare questa elaborazione. Riprova tra poco.",
+      "connect": "L’operazione non è riuscita. Riprova.",
+      "connectLimited": "Troppi tentativi consecutivi. Attendi un minuto.",
+      "unreachable": "Al momento non siamo riusciti a raggiungere {host}.",
+      "address": "Non siamo riusciti a leggere l’indirizzo di quel negozio.",
+      "finish": "Non siamo riusciti a completare la preparazione di questo negozio. Riprova."
+    },
+    "actions": {
+      "primary": "Prova un altro negozio",
+      "secondary": "Apri la schermata di presentazione",
+      "download": "Scarica {format}",
+      "nothing": "Non c’è ancora nulla da scaricare",
+      "connect": "Collega il tuo Merchant Center"
+    },
+    "counts": {
+      "products": "{count, plural, one {# prodotto} many {# prodotti} other {# prodotti}}",
+      "stores": "{count, plural, one {# negozio} many {# negozi} other {# negozi}}",
+      "fixes": "{count, plural, one {# correzione} many {# correzioni} other {# correzioni}}",
+      "issues": "{count, plural, one {# problema} many {# problemi} other {# problemi}}"
+    },
+    "channelSummary": "{label} · pronti: {ready} su {total, plural, one {# prodotto} many {# prodotti} other {# prodotti}}",
+    "uploadSummary": "Caricamento nel feed prodotti di OpenAI: {status}",
+    "uploadStatus": {
+      "uploading": "Caricamento in corso",
+      "received": "Ricevuto",
+      "processing": "Elaborazione in corso",
+      "completed": "Completato",
+      "completed_with_errors": "Completato con errori",
+      "failed": "Non riuscito"
+    },
+    "stage": {
+      "reading": "Lettura del negozio",
+      "preparing": "Correzione dei problemi risolvibili",
+      "channels": "Creazione dei feed",
+      "done": "Completato",
+      "failed": "Questa elaborazione si è interrotta"
+    },
+    "offer": {
+      "pending": "In attesa dell’API di Google",
+      "accepted": "Accettato dall’API di Google",
+      "merged": "Integrato da Google",
+      "rejected": "Rifiutato dall’API di Google",
+      "skipped": "Saltato"
+    },
+    "kinds": {
+      "inferred": "Dedotto",
+      "rewritten": "Riscritto",
+      "cleaned": "Ripulito"
+    },
+    "merchant": {
+      "ownership": "Pubblichiamo solo negli account Merchant Center che possiedono il sito web del negozio.",
+      "account": "Account {account}"
+    },
+    "product": {
+      "missingValue": "Non indicato dal negozio",
+      "before": "Prima",
+      "after": "Dopo",
+      "error": "Impedisce l’inclusione nel feed",
+      "warning": "Incluso con un avviso",
+      "policy": "Segnalato in base alle norme di OpenAI sui prodotti vietati: {category}",
+      "policyUnchecked": "Il controllo delle norme di OpenAI sui prodotti vietati non è stato eseguito per questo prodotto: la sua conformità non è quindi stata verificata.",
+      "summary": "{fixes, plural, one {# correzione} many {# correzioni} other {# correzioni}}, {issues, plural, one {# problema} many {# problemi} other {# problemi}}",
+      "googleReady": "Pronto per Google",
+      "googleNotReady": "Non pronto per Google",
+      "chatgptReady": "Pronto per ChatGPT",
+      "chatgptUnchecked": "Pronto per ChatGPT, norme non verificate",
+      "chatgptNotReady": "Non pronto per ChatGPT",
+      "nothing": "Non c’è nulla da correggere e non restano problemi da risolvere."
+    },
+    "products": {
+      "title": "Tutti i prodotti",
+      "description": "Cosa abbiamo modificato, cosa abbiamo dedotto e cosa puoi risolvere solo tu.",
+      "empty": "Non abbiamo trovato prodotti da elencare.",
+      "failed": "Non siamo riusciti a caricare l’elenco dei prodotti. Stiamo riprovando.",
+      "loading": "Caricamento dell’elenco dei prodotti."
+    },
+    "done": {
+      "summary": "{fixes, plural, one {# correzione applicata} many {# correzioni applicate} other {# correzioni applicate}}, {issues, plural, one {# problema richiede l’intervento del venditore} many {# problemi richiedono l’intervento del venditore} other {# problemi richiedono l’intervento del venditore}}",
+      "xml": "Feed XML",
+      "csv": "Feed CSV",
+      "chatgptReady": "Pronto per ChatGPT.",
+      "chatgptEmpty": "Nessun prodotto è ancora pronto per ChatGPT.",
+      "chatgptNote": "ChatGPT accetta feed di prodotti solo da partner approvati: questo è il file da inviare se sei un partner approvato.",
+      "notes": "Da sapere"
+    },
+    "notice": {
+      "missingTitle": "Non troviamo questa elaborazione",
+      "missingBody": "Le elaborazioni vengono conservate per un certo periodo, poi eliminate. Incolla di nuovo l’indirizzo del negozio per avviarne un’altra.",
+      "failedTitle": "Al momento non riusciamo a recuperare questa elaborazione",
+      "failedBody": "Stiamo riprovando. La pagina riprende non appena l’elaborazione risponde."
+    },
+    "stats": {
+      "products": "Prodotti letti",
+      "issues": "Problemi trovati",
+      "fixes": "Correzioni applicate"
+    },
+    "board": {
+      "qr": "Codice QR per {url}",
+      "readiness": "{ready} su {total}",
+      "headline": "<storeCount>{stores, plural, one {# negozio} many {# negozi} other {# negozi}}</storeCount> e <productCount>{products, plural, one {# prodotto} many {# prodotti} other {# prodotti}}</productCount> preparati per l’AI questa sera",
+      "empty": "Non ci sono ancora negozi. Scansiona il codice e incolla l’indirizzo del tuo."
+    },
+    "presentation": {
+      "freeListings": "Schede gratuite",
+      "missing": "Controlla il link nella pagina dei risultati.",
+      "waiting": "In attesa di questa elaborazione",
+      "waitingBody": "La schermata riprende non appena l’elaborazione risponde.",
+      "reading": "Lettura del negozio: finora {count, plural, one {# prodotto} many {# prodotti} other {# prodotti}}",
+      "fixes": "{count, plural, one {# correzione applicata} many {# correzioni applicate} other {# correzioni applicate}}"
+    },
+    "outputLanguage": "I contenuti del negozio e la diagnostica dei fornitori restano nella lingua originale."
+  }
+}

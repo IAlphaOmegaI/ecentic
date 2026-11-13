@@ -1,0 +1,261 @@
+{
+  "woocommerce": {
+    "meta": {
+      "title": "AI per WooCommerce — ottimizzazione del catalogo",
+      "description": "AI per store WooCommerce che hanno bisogno di ottimizzare le schede prodotto, analizzare i concorrenti e passare più facilmente dagli insight degli agenti agli aggiornamenti pubblicati del catalogo."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "woocommerce": "AI per WooCommerce"
+    },
+    "hero": {
+      "eyebrow": "WooCommerce",
+      "title": {
+        "primary": "AI per negozi WooCommerce che hanno bisogno di",
+        "accent": "flussi di gestione dei prodotti più ordinati."
+      },
+      "description": "Importa il tuo catalogo, scopri dove le schede prodotto perdono contro i concorrenti nei confronti mediati dall'AI e pubblica miglioramenti approvati direttamente in WooCommerce senza cambiare piattaforma.",
+      "assurances": [
+        "Nessuna migrazione della piattaforma",
+        "Plugin gratuito su WordPress.org",
+        "Gli aggiornamenti approvati vengono pubblicati tramite la REST API",
+        "Visualizza prima il tuo punteggio gratuito"
+      ],
+      "art": {
+        "alt": "Illustrazione in arte ASCII di un carrello della spesa"
+      },
+      "badge": {
+        "alt": "WooCommerce",
+        "label": "Pensato per WooCommerce"
+      }
+    },
+    "why": {
+      "number": "01",
+      "title": "Perché i merchant WooCommerce hanno bisogno di un ciclo mirato.",
+      "description": "Chi gestisce WooCommerce di solito ha più bisogno di visibilità a livello di catalogo che di produrre testi più velocemente.",
+      "paragraphs": [
+        "La creazione più rapida dei contenuti è solo una piccola parte del problema. I cataloghi WooCommerce cambiano rapidamente, sono gestiti da team snelli e dipendono da dati prodotto puliti per restare competitivi.",
+        "Questo crea un'esigenza concreta di un ciclo di ottimizzazione dedicato. I merchant vogliono sapere quali prodotti sono più facili da migliorare, quale concorrente continua a vincere e quali dettagli della scheda prodotto contano davvero prima di perdere tempo a riscrivere decine di pagine."
+      ],
+      "panelTitle": "Per chi è pensata questa pagina",
+      "audiences": [
+        {
+          "title": "Valutare i workflow AI",
+          "description": "Operatori WooCommerce che stanno valutando cosa dovrebbe fare davvero l'AI per le pagine prodotto."
+        },
+        {
+          "title": "Restare su WooCommerce",
+          "description": "Team che vogliono migliorare la visibilità dei prodotti senza cambiare piattaforma ecommerce."
+        },
+        {
+          "title": "Analisi collegate agli aggiornamenti",
+          "description": "Merchant che hanno bisogno di un'analisi dei concorrenti collegata direttamente alle modifiche delle schede prodotto."
+        },
+        {
+          "title": "Dalla diagnosi alla pubblicazione",
+          "description": "Chi valuta se un workflow può passare dall'analisi fino al negozio online attivo."
+        }
+      ]
+    },
+    "workflow": {
+      "number": "02",
+      "title": "Il workflow WooCommerce in ecentic.",
+      "description": "Il workflow collega i dati prodotto all'analisi dei concorrenti e poi a un percorso di pubblicazione direttamente dentro WooCommerce, evitando ulteriori passaggi manuali dei contenuti.",
+      "paragraph": "Installa il plugin, importa il catalogo, confronta i prodotti che contano e approva la pubblicazione degli aggiornamenti nel negozio tramite REST. Lavori sempre in WooCommerce e non riscrivi mai il negozio online.",
+      "panelTitle": "Collega, diagnostica, pubblica",
+      "advantages": [
+        {
+          "title": "Dati catalogo disomogenei",
+          "description": "Dati prodotto distribuiti in un catalogo ampio con livelli di coerenza variabili."
+        },
+        {
+          "title": "Dalla diagnosi alla pubblicazione",
+          "description": "Un percorso più rapido dall’analisi della concorrenza agli aggiornamenti pubblicati."
+        },
+        {
+          "title": "Competizione guidata dalle specifiche",
+          "description": "Concorrenti che vincono grazie a specifiche più chiare e a un contesto dell'offerta più completo."
+        },
+        {
+          "title": "Ripetibilità settimanale",
+          "description": "Un sistema che gli operatori possono usare ogni settimana, non un progetto di riscrittura una tantum."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Collega e importa",
+          "description": "Installa il plugin gratuito e approva la connessione in wp-admin. Non ci sono chiavi API da copiare, il catalogo viene importato durante la connessione e non devi mai toccare il tema."
+        },
+        {
+          "title": "Scegli i prodotti",
+          "description": "Seleziona quali articoli entrano nel ciclo di ottimizzazione, da pochi prodotti principali fino all'intero catalogo."
+        },
+        {
+          "title": "Confronta e diagnostica",
+          "description": "I prodotti vengono confrontati con quelli dei concorrenti, evidenziando le modifiche che contano davvero: qualità del titolo, chiarezza della descrizione, dettagli deboli."
+        },
+        {
+          "title": "Approva e pubblica",
+          "description": "Le ottimizzazioni approvate tornano in WooCommerce tramite la procedura documentata di aggiornamento REST, collegando i risultati dell’analisi al negozio in produzione."
+        }
+      ]
+    },
+    "agentCommerce": {
+      "number": "03",
+      "title": "Permetti agli agenti AI di acquistare davvero.",
+      "description": {
+        "before": "Le schede prodotto ottimizzate determinano se un agente ti consiglia. Universal Commerce Protocol determina se può effettivamente completare l'acquisto. Il plugin gratuito ",
+        "pluginName": "écentic for WooCommerce",
+        "after": " abilita la seconda parte."
+      },
+      "action": {
+        "primary": "Ottieni il plugin WordPress",
+        "secondary": "Verifica se il tuo store è pronto per gli agenti AI"
+      },
+      "capabilities": [
+        {
+          "title": "Rilevabile dal tuo URL",
+          "description": "Il plugin pubblica /.well-known/ucp sul tuo dominio, così gli agenti trovano il tuo store al tuo indirizzo invece che su quello di terze parti."
+        },
+        {
+          "title": "Prezzi calcolati su un carrello reale",
+          "description": "I preventivi vengono calcolati su un carrello WooCommerce effettivo: si applicano quindi le tue tabelle fiscali, le zone di spedizione, i coupon e i plugin di terze parti per la gestione dei prezzi."
+        },
+        {
+          "title": "Gli ordini arrivano in WooCommerce",
+          "description": "I checkout degli agenti creano ordini reali tramite i meccanismi nativi di WooCommerce, contrassegnati con created_via = ucp così puoi distinguerli."
+        },
+        {
+          "title": "Resti Merchant of Record",
+          "description": "Il pagamento viene addebitato tramite il tuo gateway, con credenziali che non lasciano mai il tuo server. ecentic non è mai parte della vendita."
+        }
+      ],
+      "controlsParagraph": "Il commercio tramite agenti AI non ti toglie il controllo dello store. Restano a te le impostazioni che decidono chi può acquistare, con quale velocità e con quali credenziali.",
+      "controlsTitle": "Cosa continui a controllare",
+      "controls": [
+        {
+          "title": "Attivo o disattivo",
+          "description": "Attiva o disattiva tutte le funzionalità per gli agenti da wp-admin."
+        },
+        {
+          "title": "Agenti autorizzati",
+          "description": "Definisci quali piattaforme di agenti possono effettuare transazioni con lo store."
+        },
+        {
+          "title": "Richieste firmate",
+          "description": "Accetta solo richieste firmate (RFC 9421) oppure configura una chiave API del negozio."
+        },
+        {
+          "title": "Limiti di frequenza e stock",
+          "description": "Imposta limiti per agente e includi o escludi i prodotti esauriti."
+        }
+      ]
+    },
+    "evaluate": {
+      "number": "04",
+      "title": "Individua prima il collo di bottiglia del catalogo.",
+      "description": "Lo strumento di ottimizzazione giusto dipende da dove si trova davvero il collo di bottiglia. I merchant WooCommerce si trovano di solito in una di queste tre situazioni.",
+      "paragraph": "Seleziona gli strumenti in base al collo di bottiglia che hai oggi. Velocità dei contenuti, chiarezza competitiva e attrito nella pubblicazione richiedono ciascuno un tipo diverso di soluzione, e solo due sono aree in cui opera ecentic.",
+      "panelTitle": "Tre situazioni da valutare",
+      "situations": [
+        {
+          "title": "Produzione di contenuti",
+          "description": "Il catalogo cresce più velocemente di quanto il team riesca a scrivere o revisionare i testi prodotto. Uno strumento di generazione contenuti aiuta in questo caso, anche se non risponde mai alla domanda su quali modifiche migliorano davvero la scelta dei prodotti.",
+          "fit": "Qui serve un generatore di testi",
+          "covered": false
+        },
+        {
+          "title": "Chiarezza competitiva",
+          "description": "Il team non sa quali prodotti stanno perdendo rispetto ai concorrenti né perché. Più testi non risolvono il problema. Serve invece simulare il confronto tra prodotti ed evidenziare gli attributi che fanno la differenza.",
+          "fit": "Dove entra in gioco ecentic",
+          "covered": true
+        },
+        {
+          "title": "Attrito nella pubblicazione",
+          "description": "Esistono buoni insight, ma si trasformano lentamente in miglioramenti reali perché revisione e pubblicazione sono scollegate dallo store. Un percorso di approvazione e pubblicazione dentro WooCommerce riduce il costo del passaggio.",
+          "fit": "Dove entra in gioco ecentic",
+          "covered": true
+        }
+      ]
+    },
+    "related": {
+      "number": "05",
+      "title": "Continua a esplorare l'ecosistema della piattaforma.",
+      "description": "Da qui puoi approfondire l'ottimizzazione delle schede prodotto, il confronto tra piattaforme o i contenuti del blog.",
+      "items": [
+        {
+          "href": "/features/product-listings",
+          "name": "Flusso di lavoro",
+          "title": "Inizia dall'ottimizzazione AI delle schede prodotto",
+          "description": "Consulta prima il workflow delle schede prodotto se il tuo team vuole una spiegazione a livello di categoria prima di entrare nei dettagli di WooCommerce.",
+          "label": "Visualizza il workflow delle schede prodotto",
+          "color": "primary"
+        },
+        {
+          "href": "/platforms/shopify",
+          "name": "Shopify",
+          "title": "Confronta il percorso Shopify con quello WooCommerce",
+          "description": "Usa la pagina Shopify se il tuo team sta valutando l'idoneità della piattaforma o pianificando un'implementazione multi-piattaforma.",
+          "label": "Apri la pagina Shopify",
+          "color": "accent"
+        },
+        {
+          "href": "/compare/best-ai-ecommerce-tools",
+          "name": "Confronto",
+          "title": "Scopri come le categorie AI per ecommerce si adattano a team diversi",
+          "description": "La guida aiuta i buyer a distinguere tra strumenti per generazione contenuti, analytics, personalizzazione e ottimizzazione per il commercio tramite agenti AI.",
+          "label": "Leggi la guida al confronto",
+          "color": "accent"
+        },
+        {
+          "href": "/blog",
+          "name": "Blog",
+          "title": "Usa il blog per gli aspetti operativi della SEO e per la gestione dei dati",
+          "description": "Leggi le guide su dati strutturati, traffico AI per gli acquisti e chiarezza del catalogo per supportare il workflow WooCommerce.",
+          "label": "Visita il blog",
+          "color": "accent"
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "06",
+      "title": "Domande frequenti",
+      "description": "Domande comuni dei merchant WooCommerce che valutano workflow di ottimizzazione AI."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Cosa significa AI per gli store WooCommerce?",
+          "answer": "Per i merchant WooCommerce significa collegare il catalogo prodotti, capire dove le schede prodotto perdono rispetto ai concorrenti e migliorare le pagine prodotto con un workflow che resta collegato al negozio online attivo. Sempre più spesso significa anche permettere agli agenti AI per gli acquisti di acquistare direttamente dallo store, ed è ciò che abilita il plugin écentic."
+        },
+        {
+          "question": "Gli store WooCommerce possono pubblicare aggiornamenti prodotto ottimizzati?",
+          "answer": "Sì. Le riscritture approvate vengono pubblicate direttamente in WooCommerce tramite la REST API, usando credenziali con accesso in lettura e scrittura. Controlli ogni modifica prima della pubblicazione e nulla arriva al tuo negozio online senza la tua approvazione."
+        },
+        {
+          "question": "Ho bisogno del plugin o posso collegarmi con le chiavi API?",
+          "answer": "Entrambe le opzioni funzionano. Il plugin gratuito écentic for WooCommerce è il percorso consigliato: approvi la connessione dentro wp-admin e il sistema genera per te la chiave REST, senza nulla da copiare. Il plugin è anche ciò che rende lo store transazionabile dagli agenti AI. Se vuoi solo l'ottimizzazione delle schede prodotto, puoi invece incollare una chiave e un secret REST di WooCommerce."
+        },
+        {
+          "question": "Cosa fa il plugin al mio negozio online?",
+          "answer": "Nulla di visibile. Aggiunge un URL di discovery in /.well-known/ucp, un endpoint per collegare le identità e un bridge REST privato che solo ecentic può chiamare usando la chiave che hai emesso. Tema, negozio online e checkout restano invariati, e gli ordini degli agenti vengono creati tramite gli stessi meccanismi interni di WooCommerce usati per qualsiasi altro ordine."
+        },
+        {
+          "question": "Come si confronta ecentic con gli altri plugin prodotto per WooCommerce?",
+          "answer": "La maggior parte dei plugin prodotto per WooCommerce aiuta con la gestione del catalogo o con testi base. ecentic si concentra invece sul capire perché i prodotti perdono rispetto ai concorrenti, trasformare quell'analisi in miglioramenti delle schede prodotto pubblicati di nuovo nello store e rendere lo store rilevabile e transazionabile dagli agenti AI per gli acquisti."
+        },
+        {
+          "question": "Qual è il passo successivo giusto dopo aver consultato la pagina WooCommerce?",
+          "answer": "La maggior parte dei merchant inizia con una scansione gratuita per vedere a che punto sono le proprie schede prodotto, poi installa il plugin per rendere lo store pronto per gli agenti AI. Se stai ancora confrontando categorie di strumenti, la guida al confronto è il passo successivo più adatto."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Collega il tuo store WooCommerce",
+        "secondary": "Torna alle funzionalità"
+      },
+      "note": "Nessuna migrazione della piattaforma · Nessuna carta di credito · Prima vedi il tuo punteggio gratuito"
+    }
+  }
+}

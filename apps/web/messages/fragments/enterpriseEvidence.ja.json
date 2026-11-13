@@ -1,0 +1,254 @@
+{
+  "enterpriseEvidence": {
+    "presentation": {
+      "action": {
+        "primary": "表で表示",
+        "secondary": "グラフを表示"
+      },
+      "dataPending": "データ保留中",
+      "approvalPending": "公開承認待ち",
+      "unknown": "未提供",
+      "source": "出典",
+      "checked": "最終確認",
+      "pendingNote": "このレビューには未完了のエビデンスが含まれています。保留中の値と未承認の調査結果は通常サイトには表示されません。"
+    },
+    "simulations": {
+      "title": "シミュレーション購入でアシスタントが選ぶ商品。",
+      "description": "各アシスタントが同じ商品を選択したシミュレーション購入の割合。",
+      "caption": "同一カタログでの {sampleSize} 件のシミュレーション購入、2026年。シミュレーション上の判断であり、実トラフィックではありません。",
+      "takeaway": "アシスタントごとに選択は異なります。ecentic のストアスキャンで3つのモデル間の比較結果を確認し、各モデルが参照する検証済みデータを改善できます。",
+      "pending": "Claude と Gemini の正確な値、モデル別件数、調査手法は現在保留中です。概算の 18.5% は正確な値としてプロットされていません。",
+      "headers": {
+        "model": "アシスタント",
+        "rate": "シミュレーション購入比率",
+        "count": "選択数",
+        "total": "モデル判断数"
+      },
+      "models": {
+        "chatgpt": "ChatGPT",
+        "claude": "Claude",
+        "gemini": "Gemini",
+        "perplexity": "Perplexity"
+      },
+      "countsPending": "モデル別の選択数と総数は保留中です。",
+      "methodPending": "調査手法と公開は保留中です。",
+      "ratePending": "正確な比率は保留中"
+    },
+    "findings": {
+      "title": "実際のストアでAIエージェントが直面する問題。",
+      "caption": "ecentic 監査、2026年。企業名は匿名化されています。同じ企業を指す行が含まれる場合がありますが、それぞれ独自サンプルを使用しています。",
+      "note": "各バーは失敗率を示します。88% の数値は四捨五入されており、正確な不具合商品数は提供されていません。これはスナップショットであり、すべてのストアの結果を予測するものではありません。",
+      "headers": {
+        "finding": "調査結果",
+        "company": "企業",
+        "share": "失敗率",
+        "count": "確認された失敗",
+        "total": "サンプル"
+      },
+      "count": "{total} 件中 {count} 件",
+      "rounded": "{total} のうち {percentage}%",
+      "companies": {
+        "spiritsMarketplace": "大手スピリッツマーケットプレイス",
+        "workspaceNetwork": "フレキシブルワークスペースネットワーク",
+        "skincareBrand": "スキンケアブランド"
+      },
+      "rows": {
+        "catalogFaults": {
+          "label": "エージェントが参照するデータに少なくとも1件の不備がある商品",
+          "detail": "大手スピリッツマーケットプレイスのカタログスナップショット。"
+        },
+        "missingOfferFacts": {
+          "label": "価格、在庫、評価をエージェントが見つけられなかった商品ページ",
+          "detail": "同じスピリッツマーケットプレイスのページサンプル。"
+        },
+        "storeNotNamed": {
+          "label": "在庫のある2本のボトルについて、ストア名が示されなかった回答",
+          "detail": "テストした20件の回答すべてで、このスピリッツマーケットプレイス名は表示されませんでした。"
+        },
+        "missingDescriptions": {
+          "label": "エージェントが利用できる説明文が存在しない商品情報",
+          "detail": "フレキシブルワークスペースネットワークのサンプル。公開承認待ちです。"
+        },
+        "paymentBlocked": {
+          "label": "1つの配送設定により、エージェントが決済まで到達できなかった国",
+          "detail": "6か国におけるスキンケアブランドの購入手続きテスト。"
+        }
+      },
+      "roundedDetail": "{total} 商品カタログのうち {percentage}%。割合は四捨五入されており、正確な不具合商品数は提供されていません。"
+    },
+    "timeline": {
+      "title": "2026年: ルールは変化し続けています。",
+      "caption": "{date} 時点で確認。各イベントに出典リンクがあります。",
+      "takeaway": "変更ごとに、新しいデータ、フィード、決済ルールが必要になる場合があります。公開や決済接続の前に、最新のチャネル要件を確認してください。",
+      "headers": {
+        "date": "日付",
+        "event": "変更",
+        "detail": "変更内容",
+        "source": "出典"
+      },
+      "events": {
+        "googleUcp": {
+          "title": "Google、エージェント決済向けオープン標準を発表",
+          "detail": "Universal Commerce Protocol はコマース体験を接続します。加盟店承認と技術要件は別途定義されています。",
+          "source": "Google: 新しいエージェント型コマースツールとプロトコル"
+        },
+        "amazonAlexa": {
+          "title": "Amazon、Rufus と Alexa+ を Alexa for Shopping に統合",
+          "detail": "Amazon のショッピングアプリとウェブサイト上のショッピングアシスタント。",
+          "source": "Amazon: Alexa for Shopping の紹介"
+        },
+        "metaMuse": {
+          "title": "Meta、承認付き購入機能を備えた Muse を公開",
+          "detail": "Muse は Link checkout を利用して購入でき、購入前に承認を求めます。",
+          "source": "Meta: Muse の紹介"
+        },
+        "googleCart": {
+          "title": "Google、米国で Universal Cart を展開",
+          "detail": "Search と Gemini 全体で利用可能。対応加盟店では Google Pay 決済、または加盟店カートへの引き継ぎに対応。",
+          "source": "Google: Universal Cart 公開"
+        },
+        "shopifyAgentTools": {
+          "title": "Shopify、ストアフロントと決済にエージェントツールを追加",
+          "detail": "WebMCP ツールにより、Liquid および Hydrogen ストアのショッピング操作を利用できます。決済完了には購入者の承認が必要です。",
+          "source": "Shopify: 開発者向け Fall ’26 Edition"
+        },
+        "amazonWorkspace": {
+          "title": "Amazon、Shop Direct Merchant Workspace を公開",
+          "detail": "対象加盟店は登録、商品フィード提出、参加管理が可能です。Shop Direct 自体はこの Workspace 公開以前から存在していました。",
+          "source": "Amazon: Shop Direct Merchant Workspace"
+        }
+      },
+      "pending": "データ保留中: このタイムラインに追加するには、追加の2件のイベント日付について可読な一次情報源が必要です。"
+    },
+    "channels": {
+      "title": "各チャネルに、それぞれ独自の参加条件があります。",
+      "description": "プラットフォームの購入機能と ecentic の統合状況は別です。各チャネルページで対象条件と最新ソースを確認できます。",
+      "caption": "現在のチャネル比較。最終確認日: {date}。",
+      "headers": {
+        "channel": "AIチャネル",
+        "reads": "参照データ",
+        "buying": "回答内で購入可能か",
+        "where": "対象地域",
+        "status": "ecentic の現状"
+      },
+      "rows": {
+        "google": {
+          "reads": "Merchant Center のカタログデータと正確な商品ページ。",
+          "buying": "はい。対象加盟店では Google Pay または加盟店カートへの引き継ぎに対応。",
+          "where": "Universal Cart: 米国。ネイティブ決済対象には、米国、カナダ、オーストラリアの一部加盟店が含まれます。"
+        },
+        "chatgpt": {
+          "reads": "承認済み加盟店の商品フィード、商品情報、商品リンク。",
+          "buying": "承認済みアプリ/プラグイン統合では決済提供が可能。それ以外のリンクは加盟店サイトへ遷移します。",
+          "where": "加盟店の承認済み統合と対応市場によって異なります。"
+        },
+        "claude": {
+          "reads": "商品情報に加え、加盟店構築エージェント向けに提供されるカタログおよび決済ツール。",
+          "buying": "加盟店構築エージェントは決済ツールを利用可能です。ecentic に Claude 専用の決済接続はありません。",
+          "where": "小売事業者自身の実装とツールによって異なります。"
+        },
+        "copilot": {
+          "reads": "チェックアウト属性を含むウェブ商品データと加盟店フィード。",
+          "buying": "Copilot Checkout は会話内で対象商品の購入に対応しています。",
+          "where": "米国ユーザー、USD、英語に対応。一部オンボーディング経路は依然限定されています。"
+        },
+        "perplexity": {
+          "reads": "加盟店サイトおよびショッピング結果の商品情報。",
+          "buying": "公開されている Buy with Pro フローは対象商品に対応。それ以外の商品はストアへのリンクを表示します。",
+          "where": "米国向けショッピング体験。現在の加盟店アクセスは公式プログラムに従います。"
+        },
+        "amazon": {
+          "reads": "Shop Direct と承認済み経路を通じて共有される加盟店カタログ。",
+          "buying": "対象商品の Buy for Me 購入に対応。それ以外は加盟店ストアへのリンクを表示。",
+          "where": "米国顧客向け。対象加盟店サイト。"
+        }
+      }
+    },
+    "dua": {
+      "title": "DUA Flavours パイロット",
+      "figure": "+{percentage}%",
+      "caption": "AIアシスタントまたは直接流入からの訪問数、2026年4月〜7月。DUA Flavours パイロット、許可を得て公開。",
+      "note": "売上ではなく訪問数です。この指標はAIアシスタント経由と直接流入を合算しており、期間中の他の変化も影響している可能性があります。",
+      "confirmed": "2026年9月3日に書面で確認済み。",
+      "action": {
+        "primary": "パイロット事例を読む"
+      },
+      "headers": {
+        "metric": "指標",
+        "change": "変化",
+        "period": "期間",
+        "permission": "公開許可"
+      },
+      "metric": "AIアシスタントまたは直接流入からの訪問数",
+      "period": "2026年4月〜7月",
+      "permission": "DUA Flavours により確認済み"
+    },
+    "market": {
+      "title": "市場背景",
+      "description": "予測と市場統計は、一次情報源、期間、比較基準の検証後にのみ表示されます。",
+      "rows": {
+        "commerceForecast": "2030年までの世界AIコマース潜在規模",
+        "retailAiTraffic": "2026年第1四半期の米国小売業者へのAI流入",
+        "relativeConversion": "AI経由訪問ユーザーによる相対コンバージョン改善"
+      }
+    },
+    "sources": {
+      "research2026": "ecentic 調査、2026年。手法公開待ち。",
+      "catalogAudits2026": "ecentic 監査、2026年。匿名化されたカタログと回答チェック。各結果は監査対象サンプルを示します。",
+      "duaPilot": "DUA Flavours パイロット、2026年4月〜7月。許可を得て公開。",
+      "mckinseyForecast": "McKinsey 予測: 一次情報源保留中。",
+      "adobeTraffic": "Adobe トラフィック分析: 一次情報源保留中。",
+      "adobeConversion": "Adobe コンバージョン分析: 一次情報源保留中。"
+    },
+    "pending": {
+      "claudeRate": {
+        "question": "{{TODO: Alvi supplies the exact Claude selection share from the same research.}}"
+      },
+      "geminiRate": {
+        "question": "{{TODO: Alvi supplies the exact Gemini selection share from the same research.}}"
+      },
+      "simulationDenominators": {
+        "question": "{{TODO: Alvi supplies per-model selection counts, decision totals and the definition of the denominator.}}"
+      },
+      "simulationMethod": {
+        "question": "{{TODO: Alvi supplies the products, categories, questions, models, versions, run dates, method and reviewed research publication.}}"
+      },
+      "perplexityComparableRate": {
+        "question": "{{TODO: Alvi confirms whether Perplexity has a comparable rate from the same research before adding its bar.}}"
+      },
+      "missingOfferFactsApproval": {
+        "question": "2026年11月12日のローンチ回答で公開承認済み。"
+      },
+      "missingDescriptionsApproval": {
+        "question": "{{TODO: Xhurian approves publishing the 167-of-167 missing descriptions finding.}}"
+      },
+      "paymentBlockedApproval": {
+        "question": "2026年11月12日のローンチ回答で公開承認済み。"
+      },
+      "copilotLaunchSource": {
+        "question": "{{TODO: Xhurian supplies a readable first-party source confirming the January 8 Copilot Checkout launch date.}}"
+      },
+      "openaiCheckoutChangeSource": {
+        "question": "{{TODO: Xhurian supplies readable primary wording and scope for the claimed March 24 OpenAI checkout change.}}"
+      },
+      "duaStartingPoint": {
+        "question": "2026年11月12日のローンチ回答で開始時点を承認済み。"
+      },
+      "duaChanges": {
+        "question": "{{TODO: Xhurian supplies the DUA Flavours products and fields changed, and the dates of the work.}}"
+      },
+      "duaAprilStart": {
+        "question": "{{TODO: Xhurian explains the DUA pilot’s April start and the work before the Shopify app launch.}}"
+      },
+      "commerceForecastSource": {
+        "question": "{{TODO: Xhurian supplies the primary McKinsey source for the $3–5T global AI commerce forecast by 2030, including its scope.}}"
+      },
+      "retailAiTrafficSource": {
+        "question": "{{TODO: Xhurian supplies the primary Adobe source for +393% AI traffic to US retailers in Q1 2026, including the comparison period.}}"
+      },
+      "relativeConversionSource": {
+        "question": "{{TODO: Xhurian supplies the primary Adobe source for the July 2026 60% relative conversion improvement, including its baseline.}}"
+      }
+    }
+  }
+}

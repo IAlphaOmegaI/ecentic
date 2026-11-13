@@ -1,0 +1,21 @@
+{
+  "interactiveFiles": {
+    "title": "Pubblichiamo ciò che ti chiediamo di pubblicare.",
+    "description": "Controlla i file effettivamente forniti da questo sito.",
+    "tabs": [
+      "llms.txt",
+      "Catalogo API",
+      "Profilo checkout per agenti",
+      "Endpoint MCP"
+    ],
+    "failed": "Impossibile recuperare questo file. Apri il link sopra per controllare l'endpoint.",
+    "loading": "Recupero del file in corso…",
+    "fetched": "Recuperato alle",
+    "idle": "Apri il file sopra oppure carica un'anteprima.",
+    "action": {
+      "primary": "Carica file corrente"
+    },
+    "preview": "Anteprima file",
+    "limit": "Anteprima: prime 30 righe, fino a 64 KiB. Questa è una risposta in tempo reale dall'origine mostrata sopra."
+  }
+}

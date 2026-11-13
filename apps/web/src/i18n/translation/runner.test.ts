@@ -603,3 +603,53 @@ test("compact reviews cannot omit a clean unit or invent an issue ID", async () 
     ).rejects.toBeInstanceOf(TranslationValidationError);
   }
 });
+
+test("focused corrections retain complete inline and adjacent groups without changing clean targets", async () => {
+  const units = Array.from({ length: 10 }, (_, index) =>
+    source(`Label ${index}`, {
+      id: `label-${index}`,
+      group: `paragraph-${Math.floor(index / 2)}`,
+    }),
+  );
+  const targets = units.map((unit, index) => ({
+    id: unit.id,
+    text: `Libellé ${index === 4 ? 999 : index}`,
+  }));
+  const requests: string[][] = [];
+  const result = await translateTextUnits({
+    units,
+    targetLocale: "fr",
+    documentContext: "All source paragraphs remain in the document scaffold.",
+    generate: async (request) => {
+      const payload = JSON.parse(
+        request.prompt.slice(request.prompt.lastIndexOf("\n") + 1),
+      );
+      switch (request.phase) {
+        case "draft":
+          return { units: targets };
+        case "correct":
+          requests.push(payload.units.map((unit: TranslationUnit) => unit.id));
+          expect(
+            payload.currentTargets.map((unit: TranslationUnit) => unit.id),
+          ).toEqual(requests[0]);
+          expect(payload.requestedIds).toEqual(["label-4"]);
+          expect(payload.documentContext).toBe(
+            "All source paragraphs remain in the document scaffold.",
+          );
+          return { units: [{ id: "label-4", text: "Libellé 4" }] };
+        case "review":
+          return reviewed(
+            payload.units.map((unit: TranslationUnit) => unit.id),
+          );
+        default:
+          throw new Error("Unexpected adjudication");
+      }
+    },
+  });
+  expect(requests).toEqual([
+    ["label-2", "label-3", "label-4", "label-5", "label-6", "label-7"],
+  ]);
+  expect(result).toEqual(
+    units.map((unit, index) => ({ id: unit.id, text: `Libellé ${index}` })),
+  );
+});

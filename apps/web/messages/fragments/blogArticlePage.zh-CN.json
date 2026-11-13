@@ -1,0 +1,12 @@
+{
+  "blogArticlePage": {
+    "contents": "本文内容",
+    "introduction": "简介",
+    "takeaways": "核心要点",
+    "byline": "作者：ecentic",
+    "topics": "探索相关主题",
+    "action": {
+      "primary": "返回顶部"
+    }
+  }
+}

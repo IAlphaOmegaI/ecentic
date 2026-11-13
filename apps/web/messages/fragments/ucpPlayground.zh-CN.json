@@ -1,0 +1,61 @@
+{
+  "ucpPlayground": {
+    "meta": {
+      "title": "面向购物智能体的 UCP 试验区",
+      "description": "针对 UCP 店铺测试商品目录搜索、购物车和结账流程。可通过 MCP 或 REST 检查请求与响应。"
+    },
+    "breadcrumb": {
+      "home": "首页",
+      "page": "UCP 试验区"
+    },
+    "hero": {
+      "eyebrow": "Universal Commerce Protocol",
+      "title": {
+        "primary": "让 AI 购物智能体",
+        "accent": "访问任意店铺。"
+      },
+      "description": "免费 UCP 试验区：让真实 AI 购物智能体连接任意 UCP 店铺。通过 MCP 或 REST 执行商品目录搜索、购物车和结账操作，并检查调用过程。",
+      "art": {
+        "alt": "机器人 ASCII 艺术插图"
+      }
+    },
+    "demo": {
+      "title": "看它搜索、构建购物车并完成结账。",
+      "titleLineBreak": "看它搜索、构建购物车，<br />并完成结账。",
+      "description": "所有工具调用和响应完全公开。首次无需账号即可免费发送 {limit} 条消息。"
+    },
+    "capabilities": [
+      {
+        "title": "商品目录搜索与查询",
+        "description": "让智能体搜索店铺商品目录或获取单个商品，并检查精确的 UCP 响应。"
+      },
+      {
+        "title": "购物车操作",
+        "description": "创建购物车、添加商品项，并查看总价如何计算，使用的正是 AI 购物智能体会发起的调用。"
+      },
+      {
+        "title": "结账跳转",
+        "description": "针对真实店铺发起结账，并确认智能体会返回给消费者的继续访问 URL。"
+      }
+    ],
+    "faq": {
+      "items": [
+        {
+          "question": "什么是 UCP 试验区？",
+          "answer": "一个沙盒环境，AI 购物智能体会针对你选择的店铺实时执行 Universal Commerce Protocol 操作。它会解析店铺的 /.well-known/ucp 配置，选择 MCP 或 REST 购物端点，并展示所有工具调用与响应。"
+        },
+        {
+          "question": "我可以测试哪些店铺？",
+          "answer": "任何在 /.well-known/ucp 发布有效 Universal Commerce Profile，并提供 dev.ucp.shopping 服务的店铺都可以。试验区优先使用 MCP 传输方式，必要时回退到 REST。"
+        },
+        {
+          "question": "需要账号吗？",
+          "answer": "不需要。任何人都可以免费发送最多 {limit} 条消息。创建账号后，可针对你自己连接的店铺运行不限次数的会话。"
+        }
+      ]
+    },
+    "structuredData": {
+      "name": "UCP 试验区"
+    }
+  }
+}

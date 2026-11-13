@@ -1,0 +1,32 @@
+{
+  "dealRedemption": {
+    "programs": {
+      "techstars": {
+        "batchLabel": "Techstars 项目 / 年份",
+        "batchPlaceholder": "选择参加期次",
+        "action": {
+          "primary": "领取我的 Techstars 优惠"
+        }
+      },
+      "yc": {
+        "batchLabel": "YC 期次",
+        "batchPlaceholder": "选择参加期次",
+        "action": {
+          "primary": "领取我的 YC 优惠"
+        }
+      }
+    },
+    "options": {
+      "earlier": "更早的期次",
+      "other": "其他",
+      "customHeadless": "自定义 / 无头架构",
+      "preLaunch": "尚未上线"
+    },
+    "cohorts": {
+      "winter": "{year}年冬季",
+      "spring": "{year}年春季",
+      "summer": "{year}年夏季",
+      "fall": "{year}年秋季"
+    }
+  }
+}

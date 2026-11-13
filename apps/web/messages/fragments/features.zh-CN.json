@@ -1,0 +1,188 @@
+{
+  "features": {
+    "meta": {
+      "title": "面向商家商品信息的 AI 电商工具",
+      "description": "用于商品信息优化、竞品分析和 AI 购物曝光的 AI 电商工具。了解 ecentic 如何帮助商家赢得更多购物智能体选择。"
+    },
+    "breadcrumb": {
+      "home": "首页",
+      "features": "功能"
+    },
+    "hero": {
+      "eyebrow": "功能",
+      "title": {
+        "primary": "赢得 AI 购物者青睐",
+        "accent": "所需的全部工具。"
+      },
+      "description": "模拟 AI 购物智能体如何比较您的商品，精准查看竞品胜出的原因，并发布能扭转结果的商品信息修复，全部在一个闭环中完成。",
+      "assurances": [
+        "模拟 ChatGPT、Claude、Gemini 和 Perplexity",
+        "一键重写商品信息",
+        "实时智能体流量"
+      ],
+      "art": {
+        "alt": "控制台 ASCII 艺术插图"
+      }
+    },
+    "loop": {
+      "number": "01",
+      "title": "从不可见到被推荐的一体化闭环。",
+      "description": "AI 辅助购物中的可见性不是品牌指标，而是一套运营闭环。ecentic 为您商品目录中的每个商品运行完整四步流程。",
+      "steps": [
+        {
+          "step": "步骤 01",
+          "title": "模拟",
+          "description": "ecentic 会像真实买家一样，让主流 AI 购物智能体在真实竞品环境中比较您的商品目录。"
+        },
+        {
+          "step": "步骤 02",
+          "title": "诊断",
+          "description": "准确查看智能体跳过了哪些商品、转而选择了哪些竞品，以及缺少哪项属性让您失去了订单。"
+        },
+        {
+          "step": "步骤 03",
+          "title": "优化",
+          "description": "审核重写后的标题、描述和结构化数据，然后一键发布回您的店铺。"
+        },
+        {
+          "step": "步骤 04",
+          "title": "追踪",
+          "description": "按周追踪胜率、AI 智能体访问量和归因收入，然后重新检测并重复优化。"
+        }
+      ]
+    },
+    "capabilities": {
+      "number": "02",
+      "title": "被选中需要做到什么。",
+      "description": "不是另一个仪表板或文案生成器。ecentic 是覆盖在店铺之上的决策层，将智能体洞察转化为已发布的商品信息更新。",
+      "items": [
+        {
+          "title": "AI 胜率评分",
+          "description": "查看当消费者询问买什么时，ChatGPT、Claude、Gemini 和 Perplexity 有多频繁会选择您的商品。",
+          "features": [
+            "按智能体划分的胜率",
+            "商品级评分",
+            "评分历史趋势"
+          ],
+          "highlighted": true
+        },
+        {
+          "title": "竞品差距分析",
+          "description": "了解智能体为什么推荐竞品而不是您，以及对方商品信息中具体有哪些您缺失的内容。",
+          "features": [
+            "并排对比",
+            "缺失属性检测",
+            "品类基准"
+          ]
+        },
+        {
+          "title": "一键重写商品信息",
+          "description": "生成可直接审核的标题、描述和结构化商品数据重写内容，并直接发布回店铺。",
+          "features": [
+            "可直接审核的草稿",
+            "Shopify + WooCommerce 回写",
+            "优化前后效果追踪"
+          ]
+        },
+        {
+          "title": "智能体流量分析",
+          "description": "了解 AI 智能体何时访问您的店铺、查看了哪些商品，以及这些访问最终带来了多少收入。",
+          "features": [
+            "AI 智能体访问检测",
+            "每日流量汇总",
+            "来源归因"
+          ]
+        },
+        {
+          "title": "UCP 配置文件",
+          "description": "基于 Universal Commerce Protocol 构建的机器可读商家档案，让智能体能够信任并验证您的店铺。",
+          "features": [
+            "自动生成档案",
+            "结构化商品数据",
+            "可供智能体验证的身份"
+          ]
+        },
+        {
+          "title": "持续重新检测",
+          "description": "竞品一更新商品信息，评分就会立即过时。定期重新检测可持续保持所有商品的基准对比。",
+          "features": [
+            "定期商品目录检测",
+            "胜率变化提醒",
+            "回归检测"
+          ]
+        }
+      ]
+    },
+    "workflows": {
+      "number": "03",
+      "title": "选择适合您技术栈的路径。",
+      "description": "每条路径都聚焦优化闭环中的特定部分：商品信息质量、平台适配或竞品研究。",
+      "items": [
+        {
+          "href": "/features/product-listings",
+          "eyebrow": "商品信息",
+          "title": "优化标题、描述和结构化商品数据",
+          "description": "将表现不佳的商品页面转变为更清晰的购买决策信息，供 AI 购物智能体和高购买意向消费者参考。",
+          "label": "查看商品信息工作流",
+          "color": "primary"
+        },
+        {
+          "href": "/platforms/shopify",
+          "eyebrow": "Shopify",
+          "title": "连接 Shopify 商品目录并发布已审核更新",
+          "description": "对商品进行基准比较，查看智能体为何更偏好竞品，并将已审核的商品信息变更同步回 Shopify。",
+          "label": "查看 Shopify 页面",
+          "color": "accent"
+        },
+        {
+          "href": "/platforms/woocommerce",
+          "eyebrow": "WooCommerce",
+          "title": "为 WooCommerce 店铺运行相同的优化闭环",
+          "description": "导入商品数据、与竞品比较，并在无需重建技术栈的情况下管理商品信息优化。",
+          "label": "查看 WooCommerce 页面",
+          "color": "accent"
+        },
+        {
+          "href": "/compare/best-ai-ecommerce-tools",
+          "eyebrow": "对比",
+          "title": "了解智能体商业优化适合落地的位置",
+          "description": "使用买家指南，对比内容生成工具、个性化工具、分析平台以及面向智能体的工作流。",
+          "label": "阅读指南",
+          "color": "accent"
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "04",
+      "title": "常见问题",
+      "description": "商家在评估 AI 电商工具时最常见的问题。"
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "AI 电商工具与传统电商软件有什么不同？",
+          "answer": "AI 电商工具需要帮助商家构建商品数据、解释商品信息为何在对比中落选，并优化会被 AI 购物系统在几秒内完成比较的页面。这与通用仪表盘或只会改写描述的文案生成工具不同。"
+        },
+        {
+          "question": "ecentic 会替代电商平台吗？",
+          "answer": "不会。ecentic 运行在现有店铺技术栈之上。它会连接商品目录、与竞品进行模拟对比，并帮助商家将更清晰的商品信息更新发布回当前使用的平台。"
+        },
+        {
+          "question": "哪些团队应该先阅读功能页面？",
+          "answer": "正在评估 AI 电商工具、智能体电商工作流或商品信息优化方案的团队，通常会先从这里开始，因为这里会在选择具体平台方案前，完整说明模拟、诊断和优化的整体流程。"
+        },
+        {
+          "question": "商家接下来应该阅读哪些页面？",
+          "answer": "大多数商家会先从功能页面进入 AI 商品信息优化页面，然后查看 Shopify 或 WooCommerce 等平台页面，最后再阅读对比内容或博客文章进行深入研究。"
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "立即开始",
+        "secondary": "返回首页"
+      },
+      "note": "2 分钟完成设置 · 无需信用卡 · 先查看免费评分"
+    }
+  }
+}

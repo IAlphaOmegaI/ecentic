@@ -1,0 +1,13 @@
+{
+  "commerceFigures": {
+    "shopifyBag": "Borsa shopping Shopify con schede catalogo che si sollevano verso il puntatore",
+    "shoppingBot": "Bot AI per gli acquisti con scanner che segue una scheda prodotto",
+    "custom": {
+      "rest": "Inattivo",
+      "product": "Prodotto {number}",
+      "selectedProduct": "Prodotto selezionato {number}",
+      "scanning": "Scansione",
+      "selected": "Prodotto selezionato"
+    }
+  }
+}

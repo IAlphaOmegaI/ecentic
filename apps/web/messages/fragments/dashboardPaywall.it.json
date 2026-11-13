@@ -1,0 +1,12 @@
+{
+  "dashboard": {
+    "paywall": {
+      "kicker": "Piano richiesto",
+      "title": "Scegli un piano per sbloccare la dashboard",
+      "description": "La tua scansione gratuita è pronta. Per continuare a simulare, diagnosticare e ottimizzare il modo in cui gli agenti AI classificano i tuoi prodotti, scegli il pagamento a consumo o un piano mensile a tariffa fissa.",
+      "compare": "Confronta i piani nel dettaglio",
+      "manage": "Hai già un abbonamento o un problema di fatturazione?",
+      "manageAction": "Gestisci la fatturazione"
+    }
+  }
+}

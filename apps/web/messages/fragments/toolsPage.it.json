@@ -1,0 +1,65 @@
+{
+  "toolsPage": {
+    "description": "Inizia dalla domanda a cui vuoi rispondere. Seleziona uno strumento per vedere cosa richiede e cosa significa il risultato.",
+    "inputLabel": "Cosa ti serve",
+    "accessLabel": "Accesso",
+    "resultLabel": "Come leggere il risultato",
+    "tools": {
+      "score": {
+        "purpose": "Valuta il tuo catalogo",
+        "input": "Il tuo negozio, i tuoi prodotti e i concorrenti",
+        "access": "Scansione gratuita · Account richiesto",
+        "limit": "Questi sono confronti di prodotti simulati. Non riportano classifiche in tempo reale nelle app che usano l’AI per gli acquisti.",
+        "steps": [
+          "I tuoi prodotti",
+          "Confronto AI",
+          "Punteggio e motivazione"
+        ]
+      },
+      "validator": {
+        "purpose": "Controlla un profilo di checkout",
+        "input": "URL del tuo store",
+        "access": "Gratis · Nessun account richiesto",
+        "limit": "Un profilo pubblicato valido non conferma che un acquirente possa completare il checkout. Usa il playground per testare gli strumenti dello store.",
+        "steps": [
+          "URL dello store",
+          "Profilo pubblicato",
+          "Controlli della struttura"
+        ]
+      },
+      "playground": {
+        "purpose": "Prova un percorso di acquisto",
+        "input": "Uno store che espone strumenti di acquisto per agenti AI",
+        "access": "10 messaggi gratuiti · Nessun account richiesto",
+        "limit": "L’agente richiama gli strumenti dello store. Usa uno store di staging per i test di checkout.",
+        "steps": [
+          "Ricerca",
+          "Carrello",
+          "Checkout"
+        ]
+      },
+      "scanner": {
+        "purpose": "Trova riscontri sugli strumenti del browser",
+        "input": "L’URL pubblico di uno storefront",
+        "access": "Gratis · Nessun account richiesto",
+        "limit": "Analizza un piccolo campione di pagine e script. Non esegue JavaScript, non invia moduli e non verifica che gli strumenti del browser funzionino.",
+        "steps": [
+          "Sorgente dello storefront",
+          "Strumenti e moduli",
+          "Prove e limiti"
+        ]
+      },
+      "compare": {
+        "purpose": "Confronta due schede prodotto",
+        "input": "Due URL di prodotto",
+        "access": "Confronto gratuito dei prodotti",
+        "limit": "Ogni modello effettua una scelta simulata usando le schede prodotto confrontate. Questo non è un report live sul posizionamento negli acquisti.",
+        "steps": [
+          "Due schede prodotto",
+          "Quattro modelli AI",
+          "Scelta e motivazione"
+        ]
+      }
+    }
+  }
+}

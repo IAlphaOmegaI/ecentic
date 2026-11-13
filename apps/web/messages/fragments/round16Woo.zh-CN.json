@@ -1,0 +1,12 @@
+{
+  "round16Woo": {
+    "title": "找出阻止结账的环节。",
+    "passed": "商品已进入结账流程",
+    "blocker": "阻碍因素",
+    "change": "此示例中的变更",
+    "continues": "修正要求后"
+  },
+  "commerceFigures": {
+    "wooMark": "Woo 标志以立体线条雕塑呈现；将指针移到字母上即可抬起。"
+  }
+}

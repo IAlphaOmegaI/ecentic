@@ -1,0 +1,70 @@
+{
+  "resources": {
+    "tools": {
+      "number": "01",
+      "title": "4つの無料ツールで、4つの疑問を解決。",
+      "description": "選定状況の測定、コマースプロトコルの確認、WebMCP のソース証跡の発見、ライブエージェントによるストア操作の確認が可能です。クレジットカードは不要です。",
+      "items": [
+        {
+          "number": "ツール 01",
+          "category": "勝率シミュレーション",
+          "title": "AI Agent Scoreのスキャン",
+          "description": "ChatGPT、Claude、Gemini、Perplexity を対象に、自社商品の上位10商品を1回限りでシミュレーションします。どこで選ばれ、どこで競合商品に負けているか、何から修正すべきかを確認できます。",
+          "features": [
+            "上位10商品",
+            "4つのモデル視点",
+            "約2分で結果表示"
+          ],
+          "action": {
+            "primary": "無料でストアをスキャン"
+          }
+        },
+        {
+          "number": "ツール 02",
+          "category": "プロトコル確認",
+          "title": "UCP検証ツール",
+          "description": "ストアフロントが /.well-known/ucp で有効な Universal Commerce Profile を公開しているか、また主要なショッピングエージェントが robots.txt で許可されているかを確認します。",
+          "features": [
+            "エンドポイント到達性",
+            "スキーマ検証",
+            "エージェントアクセス確認"
+          ],
+          "action": {
+            "primary": "ストアを検証"
+          }
+        },
+        {
+          "number": "ツール 03",
+          "category": "エージェントサンドボックス",
+          "title": "UCPテスト環境",
+          "description": "実際の AI ショッピングエージェントを使って、任意の UCP 準拠ストアフロントを操作できます。カタログ検索、カート作成、購入手続き開始、各ツールコールの確認が可能です。",
+          "features": [
+            "カタログ検索と参照",
+            "カート操作",
+            "アカウントなしで {count} 件の無料メッセージを利用可能"
+          ],
+          "action": {
+            "primary": "Playground を開く"
+          }
+        },
+        {
+          "number": "ツール 04",
+          "category": "ショッピングワークフロー監査",
+          "title": "WebMCPスキャナー",
+          "description": "商品検索やバリアント選択から、カート、購入手続き連携、注文まで、8つのストア操作全体にわたって WebMCP をレビューします。ソース証跡と、ショッピングワークフロー向けの実践的な改善案を提供します。",
+          "features": [
+            "8つのショッピングワークフロー",
+            "ソースに基づく実践的なストア改善案",
+            "アカウント不要"
+          ],
+          "action": {
+            "primary": "ショッピングツールを監査"
+          }
+        }
+      ]
+    },
+    "meta": {
+      "description": "マーチャントと開発者向けの無料 ecentic リソース。AI Agent Score Scan、UCP Validator、WebMCP scanner、UCP Playground、ガイド、公開エージェント API を利用できます。"
+    }
+  }
+}

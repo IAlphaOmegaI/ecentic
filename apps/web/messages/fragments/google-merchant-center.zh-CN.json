@@ -1,0 +1,24 @@
+{
+  "googleMerchantDesign": {
+    "constraints": [
+      "Shopify 连接",
+      "账户访问权限",
+      "商品匹配",
+      "显式同步"
+    ],
+    "stages": [
+      "授权",
+      "配置",
+      "审核",
+      "同步"
+    ],
+    "diagram": {
+      "mainSource": "主数据源",
+      "supplemental": "补充数据源",
+      "published": "已发布变更",
+      "diagnostics": "诊断",
+      "processing": "Google 处理",
+      "sync": "运行同步"
+    }
+  }
+}

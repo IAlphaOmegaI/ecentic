@@ -1,0 +1,50 @@
+{
+  "docsErrorsPage": {
+    "example": "Esempio di risposta",
+    "fields": "Leggi la risposta",
+    "fieldItems": [
+      {
+        "name": "type",
+        "description": "L’URI che identifica il problema, ancorato a questo riferimento."
+      },
+      {
+        "name": "code",
+        "description": "L’identificatore stabile su cui il tuo client può basare la logica condizionale."
+      },
+      {
+        "name": "title",
+        "description": "Un breve riepilogo leggibile dalle persone."
+      },
+      {
+        "name": "status",
+        "description": "Lo stato HTTP, ripetuto nel body."
+      },
+      {
+        "name": "detail",
+        "description": "Cosa è andato storto in questa specifica richiesta."
+      },
+      {
+        "name": "resolution",
+        "description": "Il passaggio successivo per risolvere l’errore."
+      },
+      {
+        "name": "documentation",
+        "description": "La pagina di riferimento per la risposta."
+      },
+      {
+        "name": "instance",
+        "description": "Il percorso della richiesta che lo ha generato, quando noto."
+      }
+    ],
+    "catalogue": {
+      "label": "Codici problema pubblicati",
+      "description": "Apri un codice per leggerne la risoluzione. Ogni codice ha un link permanente.",
+      "permalink": "Link permanente a",
+      "resolution": "Come risolvere",
+      "action": {
+        "primary": "Espandi tutto",
+        "secondary": "Comprimi tutto"
+      }
+    }
+  }
+}

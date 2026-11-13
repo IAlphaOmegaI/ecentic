@@ -1,0 +1,15 @@
+{
+  "demoPage": {
+    "agenda": {
+      "description": "从一个商品开始，跟踪决策过程，再一起确定需要优化的内容。以下是我们将共同展开的讨论。"
+    },
+    "progress": {
+      "completed": "已完成",
+      "current": "当前位置",
+      "upcoming": "下一步"
+    }
+  },
+  "commerceFigures": {
+    "demoPlane": "插图：一架折叠纸飞机，会朝指针方向倾斜并上升。"
+  }
+}

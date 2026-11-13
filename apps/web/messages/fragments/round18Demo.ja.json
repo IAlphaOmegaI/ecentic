@@ -1,0 +1,15 @@
+{
+  "demoPage": {
+    "agenda": {
+      "description": "商品から始めて、意思決定の流れを確認し、改善点を合意します。ここでは一緒に進める内容を紹介します。"
+    },
+    "progress": {
+      "completed": "完了",
+      "current": "現在位置",
+      "upcoming": "次のステップ"
+    }
+  },
+  "commerceFigures": {
+    "demoPlane": "イラスト: 折り紙の紙飛行機。ポインター方向へ傾きながら浮き上がります。"
+  }
+}

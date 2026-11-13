@@ -28,6 +28,17 @@ const escapeText = (value: string) =>
   value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const meaningful = (value: string) => /\p{L}/u.test(value);
 
+// Reviewed source headings use ordinary scale, not the ecentic Scale plan.
+// Keep this exact allowlist scoped to source copy; all other plan mentions stay protected.
+const translatableBlogTerms = (text: string) =>
+  [
+    "Can These Tools Scale as Your Business Grows?",
+    "Running Audits at Scale: What Actually Works",
+    "How to Scale Product Copy With AI Without Breaking Your Catalog",
+  ].includes(text)
+    ? { translatableTerms: ["Scale"] as const }
+    : {};
+
 /** Only replace source-located text/accessible attribute values. All other HTML bytes survive. */
 export const createBlogHtmlTranslation = (html: string) => {
   const slots: Slot[] = [];
@@ -38,7 +49,9 @@ export const createBlogHtmlTranslation = (html: string) => {
     path: string,
     context: string,
     group = path,
+    insideAnchor = false,
   ) => {
+    const anchor = insideAnchor || ("tagName" in node && node.tagName === "a");
     if (
       "tagName" in node &&
       ["script", "style", "pre", "code", "svg", "math", "template"].includes(
@@ -69,6 +82,9 @@ export const createBlogHtmlTranslation = (html: string) => {
         text: node.value.trim(),
         context,
         group,
+        ...(!anchor && /^(a|an|the)$/i.test(node.value.trim())
+          ? { grammaticalArticle: true as const }
+          : {}),
         start: location.startOffset,
         end: location.endOffset,
         encode: (value) => prefix + escapeText(value) + suffix,
@@ -145,11 +161,33 @@ export const createBlogHtmlTranslation = (html: string) => {
           end: node.sourceCodeLocation.endOffset,
         });
       for (const [index, child] of node.childNodes.entries()) {
-        visit(child, `${path}.${index}`, surrounding, block ? path : group);
+        visit(
+          child,
+          `${path}.${index}`,
+          surrounding,
+          block ? path : group,
+          anchor,
+        );
       }
     }
   };
   visit(fragment, "body", "Article body");
+  const grammaticalArticles = new Set(
+    slots
+      .filter(
+        (slot) =>
+          slot.grammaticalArticle &&
+          blocks.has(slot.group ?? "") &&
+          slots.some(
+            (following) =>
+              following.group === slot.group &&
+              following.start > slot.end &&
+              !following.id.includes(".attribute.") &&
+              !/^(a|an|the)$/i.test(following.text),
+          ),
+      )
+      .map((slot) => slot.id),
+  );
   // Exact source offsets avoid replacing an article such as "a" inside code,
   // entity text or an href. Prose is sent once as units; the template preserves
   // inline order, link/emphasis boundaries, punctuation and untranslatable code.
@@ -173,8 +211,19 @@ export const createBlogHtmlTranslation = (html: string) => {
   );
   return {
     units: slots.map(
-      ({ start: _start, end: _end, encode: _encode, ...unit }) => ({
+      ({
+        start: _start,
+        end: _end,
+        encode: _encode,
+        grammaticalArticle: _article,
+        ...unit
+      }) => ({
         ...unit,
+        ...translatableBlogTerms(unit.text),
+        format: "plain" as const,
+        ...(grammaticalArticles.has(unit.id)
+          ? { grammaticalArticle: true as const }
+          : {}),
         context: templates.get(unit.group ?? "") ?? unit.context,
       }),
     ),
@@ -183,7 +232,10 @@ export const createBlogHtmlTranslation = (html: string) => {
         .sort((left, right) => right.start - left.start)
         .reduce((output, slot) => {
           const value = values.get(slot.id);
-          if (value === undefined || !value.trim())
+          if (
+            value === undefined ||
+            (!value.trim() && !grammaticalArticles.has(slot.id))
+          )
             throw new Error(`Missing translated HTML unit ${slot.id}`);
           return (
             output.slice(0, slot.start) +
@@ -210,6 +262,7 @@ export const createBlogTranslation = (source: BlogTranslationSource) => {
         id,
         text,
         context,
+        ...translatableBlogTerms(text),
         group: /^(faqs|sections)\.\d+\./.test(id)
           ? id.split(".").slice(0, 2).join(".")
           : id,
@@ -308,6 +361,7 @@ export const blogBatchContext = (
   allUnits: readonly TranslationUnit[],
   batch: readonly TranslationUnit[],
   documentContext: string,
+  knownTargets: Readonly<Record<string, string>> = {},
 ) => {
   const grouped = new Map<string, TranslationUnit[]>();
   for (const unit of allUnits) {
@@ -331,17 +385,25 @@ export const blogBatchContext = (
     ...neighbors,
   ].map(([group, units]) => ({
     group,
-    context: [...new Set(units.map((unit) => unit.context))],
+    context: [
+      ...new Set(units.map((unit) => unit.context.split(". Each ⟦id⟧")[0])),
+    ],
     // The requested batch already has its source text; only neighbors need additional prose.
     contextOnlyUnits: units
       .filter((unit) => !requested.has(unit.id))
-      .map((unit) => ({ id: unit.id, text: unit.text })),
+      .map((unit) => ({
+        id: unit.id,
+        text: unit.text,
+        ...(knownTargets[unit.id] !== undefined
+          ? { approvedTarget: knownTargets[unit.id] }
+          : {}),
+      })),
   }));
   return {
-    documentContext: `${documentContext} Connected source groups and up to three neighboring paragraphs (context only, do not add rows): ${JSON.stringify(context)}`,
+    documentContext: `${documentContext} Each ⟦id⟧ in a source layout denotes its corresponding source text, not literal output. Read connected slots in order as one passage; preserve code and link/emphasis boundaries. Requested units identify their group; context-only sibling targets are already approved and must stay unchanged. Connected source groups and up to three neighboring paragraphs (context only, do not add rows): ${JSON.stringify(context)}`,
     units: batch.map((unit) => ({
       ...unit,
-      context: `Requested ${unit.format ?? "plain"} text. Preserve meaning with group ${unit.group ?? unit.id}; its contextual purpose and neighboring prose appear in documentContext.`,
+      context: unit.context.split(". Source layout:")[0] ?? unit.context,
     })),
   };
 };

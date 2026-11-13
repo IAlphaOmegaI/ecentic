@@ -1,0 +1,119 @@
+{
+  "demo": {
+    "meta": {
+      "title": "Prenota una demo — guarda in diretta la tua percentuale di vittorie AI",
+      "description": "Prenota una demo ecentic di 15 minuti. Facciamo passare i tuoi prodotti principali attraverso ChatGPT, Claude, Gemini e Perplexity in diretta e definiamo gli interventi sulle schede prodotto con l’impatto più alto."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "demo": "Prenota una demo"
+    },
+    "hero": {
+      "eyebrow": "Prenota una demo",
+      "title": {
+        "primary": "Scopri la tua percentuale di vittorie nelle simulazioni AI,",
+        "accent": "in diretta in 15 minuti."
+      },
+      "description": "Facciamo passare i tuoi prodotti principali attraverso ChatGPT, Claude, Gemini e Perplexity mentre guardi, ti mostriamo perché vinci o perdi e definiamo gli interventi sulle schede prodotto con l’impatto più alto. Scegli uno slot qui sotto.",
+      "assurances": [
+        "15 minuti, non una presentazione",
+        "Nessun account o collegamento al catalogo richiesto",
+        "Nessuna presentazione per gli acquisti richiesta"
+      ],
+      "art": {
+        "alt": "Illustrazione ASCII art di un calendario da scrivania"
+      }
+    },
+    "whatWeCover": {
+      "number": "01",
+      "title": "Cosa vedremo.",
+      "description": "Una sessione operativa focalizzata di 15 minuti. Alla fine avrai indicazioni concrete su cui agire.",
+      "body": [
+        "Manteniamo la chiamata breve e pratica. Porta l’URL del tuo store o qualche link ai prodotti che ti interessano e faremo il resto in diretta. Non c’è alcun obbligo di proseguire dopo."
+      ],
+      "label": "L’agenda",
+      "agentStripLabel": "Simulato in diretta durante la chiamata",
+      "items": [
+        {
+          "title": "Simulazione in diretta",
+          "description": "I tuoi prodotti principali passano attraverso i principali modelli AI per gli acquisti mentre guardi."
+        },
+        {
+          "title": "Scopri perché vinci o perdi",
+          "description": "Attributo per attributo, rispetto ai prodotti concorrenti che gli agenti scelgono davvero."
+        },
+        {
+          "title": "Esci con interventi concreti",
+          "description": "Le modifiche alle schede prodotto con l’impatto più alto da fare per prime."
+        },
+        {
+          "title": "Definisci il ciclo",
+          "description": "Come potrebbe funzionare un ciclo continuo di ottimizzazione per il tuo catalogo."
+        }
+      ]
+    },
+    "whoShouldBook": {
+      "number": "02",
+      "title": "Per chi è adatta la demo.",
+      "description": "La chiamata è più utile quando hai un catalogo reale da analizzare e un motivo concreto per agire sui risultati.",
+      "body": [
+        "Una demo è la strada più rapida quando vuoi un secondo parere sui risultati invece di leggere il report da solo.",
+        "Preferisci vedere prima i tuoi numeri? La Scan gratuita esegue la stessa simulazione sui tuoi 10 prodotti principali in circa due minuti."
+      ],
+      "label": "La chiamata è particolarmente utile se",
+      "action": {
+        "primary": "Esegui la scan gratuita"
+      },
+      "items": [
+        {
+          "title": "Gestisci cataloghi competitivi",
+          "description": "Categorie ampie o molto competitive in cui attributi mancanti riducono silenziosamente le possibilità di essere scelti."
+        },
+        {
+          "title": "Confronti categorie di strumenti",
+          "description": "Valuti l’ottimizzazione per l’economia degli agenti rispetto a generatori di contenuti o strumenti di analytics."
+        },
+        {
+          "title": "Gestisci più store",
+          "description": "Stai valutando una configurazione Enterprise personalizzata per più brand."
+        },
+        {
+          "title": "Hai poco tempo",
+          "description": "Vuoi una spiegazione chiara della diagnosi, non un altro report da leggere."
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "03",
+      "title": "Domande frequenti",
+      "description": "Le domande più comuni sulla chiamata demo."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Cosa succede durante la chiamata?",
+          "answer": "Facciamo passare i tuoi prodotti principali attraverso i principali modelli AI per gli acquisti mentre guardi, analizziamo perché gli agenti scelgono te o un concorrente e ti indichiamo le modifiche alle schede prodotto con l’impatto più alto da fare per prime."
+        },
+        {
+          "question": "Quanto dura la demo?",
+          "answer": "Quindici minuti. È una sessione operativa focalizzata, non una presentazione. Se poi il tuo team avrà bisogno di una chiamata più approfondita per definire un setup enterprise, la programmeremo separatamente."
+        },
+        {
+          "question": "Devo preparare qualcosa?",
+          "answer": "Solo l’URL dello store o qualche link ai prodotti che ti interessano. Non serve collegare il catalogo né creare un account prima della chiamata."
+        },
+        {
+          "question": "Posso saltare la chiamata e iniziare direttamente?",
+          "answer": "Sì. Il piano Scan gratuito esegue la stessa simulazione sui tuoi 10 prodotti principali in circa due minuti e senza carta di credito. Prenota una chiamata se preferisci che analizziamo insieme i risultati."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Inizia gratis invece",
+        "secondary": "Vedi i prezzi"
+      },
+      "note": "Preferisci fare da solo? Esegui la tua prima scan senza carta di credito."
+    }
+  }
+}

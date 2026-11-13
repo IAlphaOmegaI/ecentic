@@ -1,0 +1,46 @@
+{
+  "microsoftCopilotPage": {
+    "journey": {
+      "title": "La conversazione, il catalogo, il tuo business",
+      "copilot": "Scoperta dei prodotti e checkout",
+      "merchant": "Resti il venditore responsabile della transazione",
+      "relationship": "La tua evasione ordini. La tua relazione con il cliente.",
+      "web": "Dati prodotto sul web",
+      "feeds": "Feed di prodotto del merchant",
+      "checkout": "Attributi aggiuntivi per il checkout",
+      "dataLabel": "Esplora il percorso dei dati prodotto"
+    },
+    "entry": {
+      "label": "Esplora un percorso di accesso per i merchant",
+      "language": "Lingua del merchant",
+      "languageValue": "Inglese",
+      "buyers": "Acquirenti",
+      "buyersValue": "Stati Uniti",
+      "currency": "Valuta",
+      "currencyValue": "USD",
+      "microsoft": "Microsoft",
+      "shopify": "Shopify",
+      "stripe": "Stripe",
+      "routes": {
+        "microsoft": {
+          "title": "Microsoft Merchant Center",
+          "description": "Prepara i record prodotto e gli attributi aggiuntivi per il checkout seguendo la guida di onboarding di Microsoft. Una fase della configurazione del feed resta in pilot per merchant selezionati.",
+          "note": "Questo è il percorso merchant di Microsoft. La connessione feed di ecentic non è ancora attiva."
+        },
+        "shopify": {
+          "title": "Registrazione automatica Shopify",
+          "description": "Shopify è uno dei percorsi di registrazione documentati da Microsoft. Restano validi i requisiti di idoneità e di programma di Microsoft.",
+          "note": "Oggi ecentic monitora i referral Copilot sui negozi Shopify collegati."
+        },
+        "stripe": {
+          "title": "Stripe Agentic Commerce Suite",
+          "description": "Stripe Agentic Commerce Suite è uno dei percorsi di accesso documentati da Microsoft. Restano validi i requisiti di idoneità e di programma di Microsoft.",
+          "note": "Un percorso di accesso non garantisce l’approvazione o le raccomandazioni di prodotto."
+        }
+      },
+      "action": {
+        "primary": "Leggi la guida di onboarding di Microsoft"
+      }
+    }
+  }
+}

@@ -1,0 +1,227 @@
+{
+  "dashboard": {
+    "products": {
+      "title": "商品",
+      "description": "查看商品目录中每个商品在 AI 购物智能体中的表现。",
+      "action": {
+        "primary": "添加商品",
+        "addProducts": "添加商品"
+      },
+      "stats": {
+        "totalProducts": "商品总数",
+        "averageWinRate": "平均胜率",
+        "highPerformers": "高表现商品",
+        "needsAttention": "需关注",
+        "highPerformersHint": "胜率 ≥60% 的商品",
+        "needsAttentionHint": "胜率低于 30% 的商品"
+      },
+      "embedBanner": {
+        "title": "结构化数据未覆盖您的商品页面",
+        "description": "“Agentic structured data”应用嵌入功能未开启，因此 AI 智能体无法读取您商品中的机器可读数据。开启一次后，该店铺中的所有商品都会获得结构化数据。",
+        "action": "启用应用嵌入"
+      },
+      "quality": {
+        "good": "优秀（≥75%）",
+        "fair": "一般（50-74%）",
+        "poor": "较差（<50%）",
+        "distribution": "数据质量分布",
+        "avgQuality": "平均数据质量",
+        "kicker": "01.1 — 质量"
+      },
+      "optimization": {
+        "readiness": "商品准备度",
+        "optimized": "已优化",
+        "pending": "待处理",
+        "unoptimized": "未优化",
+        "kicker": "01.2 — 优化"
+      },
+      "detail": {
+        "backToProducts": "返回商品列表",
+        "optimize": "优化",
+        "noSimulationsYet": "尚未运行模拟",
+        "winRate": "胜率",
+        "dataQuality": "数据质量",
+        "simulationsRun": "模拟运行次数",
+        "bestModel": "最佳模型",
+        "winsSimulations": "{wins} 次胜出 · {simulations} 次模拟",
+        "listingCompleteness": "商品信息完整度评分",
+        "acrossCompetitors": "覆盖 {count, plural, other {# 个竞品}}",
+        "modelWinRate": "{model} 胜率",
+        "tabs": {
+          "winRate": "胜率",
+          "agentReplay": "智能体回放",
+          "battlecard": "竞品对比卡",
+          "optimize": "优化"
+        },
+        "overview": {
+          "winRateVsCompetitor": "对各竞品的胜率",
+          "viewAll": "查看全部",
+          "noCompetitors": "尚未跟踪竞品。",
+          "wLTotal": "{wins} 胜 · {losses} 负",
+          "totalCount": "共 {count} 个"
+        },
+        "replay": {
+          "empty": "暂无模拟。运行检测以查看智能体决策回放。",
+          "decisionReplay": "{model} 决策回放",
+          "simulationCount": "{count, plural, other {# 次模拟}}",
+          "vsCompetitor": "对比 {title}",
+          "won": "胜出",
+          "lost": "落败",
+          "reasoning": "{model} 的推理",
+          "noReasoning": "未记录推理过程。根据评分决定（{productScore} 对比 {competitorScore}）。"
+        },
+        "fields": {
+          "title": "标题",
+          "description": "描述",
+          "price": "价格",
+          "sku": "SKU",
+          "structuredData": "结构化数据",
+          "images": "图片"
+        },
+        "publish": {
+          "applyFix": "将修复应用到店铺",
+          "connectStore": "连接 Shopify 或 WooCommerce",
+          "dialogTitle": "发布优化后的商品信息？",
+          "dialogDescription": "ecentic 会为“{title}”生成经过 AI 优化的标题和描述，并直接写入已连接的店铺，替换当前在线商品信息。当前胜率为 {winRate}%。",
+          "publishing": "发布中…",
+          "publishToStore": "发布到店铺",
+          "failed": "发布失败",
+          "successTitle": "商品信息已发布",
+          "successDescription": "AI 优化后的商品信息已推送到您的店铺。"
+        },
+        "applyOptimization": {
+          "title": "自动缩小差距",
+          "description": "ecentic 会基于胜出竞品的优势重写此商品信息，并直接发布到您的店铺，无需手动编辑。",
+          "reviewQueue": "审核队列",
+          "optimizePublish": "优化并发布"
+        },
+        "shelf": {
+          "kicker": "观察到的货架",
+          "title": "还有谁在销售此商品",
+          "description": "我们观察到销售此商品的商家，按价格从低到高排序，并显示自上次检查以来的价格变化。",
+          "position": "Google 排名第 #{position}",
+          "observed": "{count, plural, other {观测到 # 次，最近一次为 {when}}}",
+          "total": "含运费共 {total}",
+          "down": "较上次检查下降 {amount}",
+          "up": "较上次检查上涨 {amount}"
+        },
+        "findOffers": {
+          "action": "查找还有谁在销售此商品",
+          "finding": "正在检查销售方…",
+          "toast": {
+            "failed": "无法查询商品报价",
+            "found": {
+              "title": "已找到竞品报价",
+              "description": "{count, plural, other {# 个销售方销售此商品}}"
+            },
+            "none": {
+              "title": "无竞品报价",
+              "exclusive": "似乎没有其他销售方在销售此商品。",
+              "budget": "本月的报价查询次数已用完。",
+              "unconfigured": "当前环境未启用报价查询。"
+            }
+          }
+        },
+        "battlecard": {
+          "empty": "暂无竞品数据。运行检测以生成竞品对比卡。",
+          "headToHead": "正面对比结果",
+          "vsProduct": "对比 {title}",
+          "won": "胜出",
+          "lost": "落败",
+          "noWins": "暂无胜出记录",
+          "noLosses": "暂无失败记录",
+          "kicker": "01 — 竞品对比卡"
+        },
+        "audit": {
+          "aiContentQuality": "AI 内容质量",
+          "brandPositioning": "品牌定位",
+          "positioning": "定位"
+        },
+        "optimizeTab": {
+          "title": "优化商品信息",
+          "description": "为 AI 智能体读取的字段提供按类目划分的内容质量评分，并展示该商品信息面向目标受众的定位。",
+          "completeness": "完整度：",
+          "currentListing": "02 — 当前商品信息",
+          "characters": "{count} 个字符",
+          "noDescription": "未找到描述",
+          "liveOnStore": "店铺在线版本",
+          "whatAgentsRead": "AI 智能体实际读取的内容",
+          "enableAppEmbed": "启用应用嵌入",
+          "structuredDataHelp": "应用嵌入已根据当前在线商品内容渲染默认结构化数据。发布后会将此 AI 优化版本写入 {metafield} 元字段，嵌入将渲染该版本而非默认版本。",
+          "publishStructuredData": "发布优化后的结构化数据",
+          "publishing": "发布中…",
+          "noStructuredDataYet": "尚无优化后的结构化数据。应用嵌入当前渲染基于在线商品内容生成的默认标记。生成 AI 优化版本后即可覆盖默认版本。",
+          "generateJsonLd": "生成优化后的 JSON-LD",
+          "generating": "生成中…",
+          "generationFailed": "生成失败",
+          "structuredDataPublished": "优化后的结构化数据已发布",
+          "structuredDataPublishedDescription": "已写入 ecentic.structured_data 元字段。应用嵌入现在会渲染该数据，而不是默认商品标记。如果嵌入处于关闭状态，请在主题编辑器中开启并点击保存。",
+          "openThemeEditor": "打开主题编辑器",
+          "listingAuditKicker": "01 — AI 商品信息检测",
+          "status": {
+            "optimizedByEcentic": "由 ecentic 优化",
+            "ecenticStandard": "ecentic 标准",
+            "storeDefault": "店铺默认",
+            "optimizedEmbedOff": "已优化 — 嵌入已关闭",
+            "noStructuredData": "无结构化数据",
+            "pageUnreachable": "页面无法访问"
+          },
+          "embedNotice": {
+            "embedOffTitle": "应用嵌入已关闭",
+            "embedOffText": "此商品已发布优化后的结构化数据，但“Agentic structured data”应用嵌入处于关闭状态，因此页面不会加载任何 ecentic 标记。开启一次后即可应用到店铺中的所有商品。",
+            "missingTitle": "页面上没有结构化数据",
+            "missingText": "AI 智能体无法读取任何机器可读的商品数据。请开启“Agentic structured data”应用嵌入。只需这一个开关，即可为店铺中的所有商品添加结构化数据。",
+            "storeDefaultTitle": "店铺默认标记",
+            "storeDefaultText": "当前仅启用了主题自带标记，通常信息较少：没有 GTIN、只有一个报价、没有变体详情。请开启适用于所有商品的 ecentic 应用嵌入，然后为此商品发布下方的优化结构化数据。",
+            "standardTitle": "使用 ecentic 标准标记",
+            "standardText": "应用嵌入会根据当前在线商品内容渲染默认结构化数据。请发布下方的 AI 优化版本，为该商品提供更丰富、更具竞争力的标记。"
+          }
+        }
+      },
+      "add": {
+        "title": "添加商品",
+        "description": "从当前店铺连接的平台导入更多商品目录内容。在这里添加的所有内容仅属于此店铺。",
+        "backToProducts": "返回商品",
+        "catalogNeverSynced": "从未同步",
+        "catalogSynced": "已于 {time} 同步",
+        "platformSync": {
+          "pullFrom": "从 {platform} 拉取",
+          "description": "重新读取 {domain}，并添加所有尚未存在于此店铺中的商品。已存在的商品会原位更新，因此其检测和优化记录会被保留。",
+          "syncing": "同步中…",
+          "syncNow": "立即同步",
+          "toastLoading": "正在同步商品…",
+          "toastSuccess": "商品目录已同步",
+          "reconnectRequired": "需要重新连接",
+          "syncFailed": "同步失败",
+          "reconnect": "重新连接"
+        },
+        "csv": {
+          "title": "上传 CSV",
+          "description": "此店铺是通过文件创建的，而非连接的平台，因此没有上游数据可拉取。请上传新的 CSV 文件以添加商品。",
+          "fieldLabel": "商品 CSV",
+          "importing": "导入中…",
+          "importCsv": "导入 CSV",
+          "noFileTitle": "未选择文件",
+          "noFileDescription": "请先上传 CSV 文件。",
+          "noProductsTitle": "未找到商品",
+          "noProductsDescription": "请检查 CSV 是否包含带有标题或名称列的表头行。",
+          "importFailed": "导入失败",
+          "importSuccess": "{count, plural, other {已导入 # 个商品}}"
+        },
+        "platforms": {
+          "feed": "您的商品数据源"
+        }
+      },
+      "insights": {
+        "scanResults": "检测结果",
+        "simulationsCount": "{count} 次模拟",
+        "impact": "影响",
+        "simsLost": "模拟落败占比",
+        "missingAttributes": "缺失属性",
+        "noFindingTitle": "此次检测未记录发现。",
+        "noFindingHint": "重新运行检测以查看洞察。",
+        "fixThis": "修复此问题"
+      }
+    }
+  }
+}

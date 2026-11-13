@@ -1,0 +1,185 @@
+{
+  "enterprise": {
+    "meta": {
+      "title": "ecentic per enterprise: gestisci l’AI come un canale di vendita",
+      "description": "Progetti pilota per rivenditori, marchi e aziende del settore turistico, inizialmente basati su dati pubblici. Obiettivi concordati per iscritto dal primo giorno, con un fondatore che segue il cliente."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "enterprise": "Enterprise"
+    },
+    "hero": {
+      "eyebrow": "Enterprise",
+      "title": {
+        "primary": "L’AI è un nuovo canale di vendita.",
+        "accent": "Gestiscilo come tale."
+      },
+      "description": "Per retailer, brand e aziende travel con molte categorie, mercati o marchi. Partiamo da un mercato e una categoria, usando dati pubblici, e definiamo gli obiettivi per iscritto dal primo giorno.",
+      "assurances": [
+        "Prima i dati pubblici. Nessun login, codice sul tuo sito o dati cliente per la baseline.",
+        "Obiettivi concordati per iscritto dal primo giorno.",
+        "Un fondatore segue il cliente, con un contatto diretto con il team di sviluppo.",
+        "Limiti del prodotto spiegati chiaramente"
+      ],
+      "art": {
+        "alt": "Illustrazione ASCII di un edificio per uffici"
+      },
+      "action": {
+        "primary": "Contatta il team vendite",
+        "secondary": "Visualizza i prezzi"
+      }
+    },
+    "why": {
+      "number": "01",
+      "title": "Inizia con un mercato e una categoria.",
+      "description": "I pilot Enterprise vengono definiti in base al tuo catalogo, alle esigenze di business e alla revisione della sicurezza.",
+      "paragraphs": [
+        "Enterprise è un servizio professionale con domande concordate, modifiche ai dati e un report scritto. Restano validi gli attuali limiti del prodotto.",
+        "Inizia con dati pubblici. Definisci scope, obiettivi e requisiti di accesso prima dell’inizio del lavoro."
+      ],
+      "panelTitle": "A chi si adatta",
+      "audiences": [
+        {
+          "title": "Gruppi retail e marketplace",
+          "description": "Cataloghi ampi, molti fornitori e diversi mercati."
+        },
+        {
+          "title": "Brand consumer",
+          "description": "Prodotti venduti sul tuo sito e tramite retailer."
+        },
+        {
+          "title": "Travel ed esperienze",
+          "description": "Pacchetti, biglietti e soggiorni che le persone cercano con l’AI."
+        },
+        {
+          "title": "Agenzie e partner",
+          "description": "Team store che verificano e pubblicano le modifiche concordate."
+        }
+      ]
+    },
+    "capabilities": {
+      "number": "02",
+      "title": "Progettato per scalare.",
+      "description": "Funzionalità attuali e relativi limiti.",
+      "items": [
+        {
+          "title": "I tuoi store in un unico account",
+          "description": "Gestisci tutti gli store di un account con un solo accesso. Non include team delegati o SSO."
+        },
+        {
+          "title": "REST API",
+          "description": "Interfaccia pubblica versionata con OpenAPI 3.1, risposte di errore tipizzate e limiti di frequenza documentati."
+        },
+        {
+          "title": "Server MCP e CLI",
+          "description": "Workflow di discovery, piani, connessione e onboarding. La scansione della dashboard e le esportazioni del traffico non sono disponibili oggi."
+        },
+        {
+          "title": "Sincronizzazione Merchant Center",
+          "description": "Invia le correzioni pubblicate delle schede prodotto Shopify tramite una sincronizzazione separata dei dati supplementari."
+        },
+        {
+          "title": "Procedura d'acquisto controllata per agenti",
+          "description": "Checkout WooCommerce con allow-list configurabili per agenti, requisiti di firma e limiti di frequenza. Il pagamento viene gestito dal tuo gateway."
+        },
+        {
+          "title": "Pubblichiamo ciò che chiediamo di pubblicare anche a te.",
+          "description": "Il nostro llms.txt, catalogo API, profilo checkout ed endpoint MCP sono pubblici."
+        }
+      ],
+      "paragraph": "I costi dipendono dallo scope e vengono concordati nella prima call. Si tratta di servizi professionali; il report del pilot segue il metodo concordato con il tuo team.",
+      "panelTitle": "Come funziona la definizione dello scope",
+      "scoping": [
+        {
+          "title": "Prima conversazione",
+          "description": "Definisci categoria, mercato e domande."
+        },
+        {
+          "title": "Scope definito per iscritto",
+          "description": "Definisci baseline, modifiche, costi e report finale."
+        },
+        {
+          "title": "Revisione della sicurezza",
+          "description": "Conferma gestione dei dati e accessi prima di collegare i sistemi."
+        }
+      ]
+    },
+    "compare": {
+      "number": "03",
+      "title": "Un piano o un pilot con scope definito.",
+      "description": "Scegli tra accesso self-service al prodotto o un servizio professionale con obiettivi concordati.",
+      "dominate": {
+        "badge": "Dominate",
+        "title": "Gestione self-service del catalogo.",
+        "description": "Simulazioni on-demand e azioni di pubblicazione supportate, entro gli attuali limiti del piano.",
+        "strengths": [
+          "Abbonamento mensile senza commissioni sui risultati",
+          "Le simulazioni vengono eseguite quando le richiedi",
+          "Prezzi attuali e limiti prodotto nella pagina Prezzi"
+        ]
+      },
+      "enterprise": {
+        "badge": "Enterprise",
+        "title": "Un pilot definito insieme al tuo team.",
+        "description": "6 settimane, un mercato, una categoria. Baseline alla settimana 0, modifiche ai dati concordate e le stesse domande alla settimana 6. Eventuali commissioni legate ai risultati e obiettivi vengono concordati in anticipo.",
+        "strengths": [
+          "Si parte con un mercato e una categoria",
+          "Baseline concordata e report alla settimana 6",
+          "Un fondatore segue il cliente"
+        ]
+      },
+      "paragraph": "Lo scope del pilot definisce il lavoro e gli accessi necessari. Non aggiunge SSO, posti team o esportazioni API dei risultati della dashboard al prodotto attuale.",
+      "triggersTitle": "Quando Enterprise diventa la scelta più adatta",
+      "triggers": [
+        {
+          "title": "Più brand o mercati",
+          "description": "Inizia dalla categoria e dal mercato che rispondono a una chiara esigenza di business."
+        },
+        {
+          "title": "Una revisione della sicurezza",
+          "description": "Conferma requisiti operativi e contrattuali prima dell’accesso."
+        },
+        {
+          "title": "Un metodo che il tuo team può valutare",
+          "description": "Definisci set di domande, baseline e report scritto."
+        },
+        {
+          "title": "Un referente dedicato",
+          "description": "Lavora con un fondatore e con il team che già gestisce il tuo negozio."
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "04",
+      "title": "FAQ Enterprise",
+      "description": "Domande frequenti su piani Enterprise, sicurezza e onboarding."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Quando dovrei valutare un pilot enterprise?",
+          "answer": "Quando gestisci più store o brand, hai migliaia di prodotti, hai bisogno di una revisione della sicurezza o vuoi un pilot con obiettivi concordati per iscritto."
+        },
+        {
+          "question": "Come inizia un pilot?",
+          "answer": "Si parte con un mercato e una categoria usando dati pubblici. Scope, costi e metodo di raccolta vengono concordati prima dell’inizio del lavoro."
+        },
+        {
+          "question": "SOC 2 è disponibile oggi?",
+          "answer": "No. Una certificazione o un audit completato non sono disponibili oggi. Discuti i requisiti di sicurezza prima di concordare un pilot."
+        },
+        {
+          "question": "Possiamo esportare i risultati della dashboard tramite API?",
+          "answer": "Non oggi. La REST API pubblica, il server MCP e la CLI supportano workflow di discovery, piani, connessione e onboarding."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Prenota una demo",
+        "secondary": "Visualizza i prezzi"
+      },
+      "note": "Prima i dati pubblici · Obiettivi concordati per iscritto"
+    }
+  }
+}

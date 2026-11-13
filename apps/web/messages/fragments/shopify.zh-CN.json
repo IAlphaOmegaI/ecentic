@@ -1,0 +1,224 @@
+{
+  "shopify": {
+    "meta": {
+      "title": "Shopify AI 工具——商品信息与商品目录优化",
+      "description": "适用于需要更强商品信息优化、更清晰竞品分析，以及将审核后更新直接回传 Shopify Admin 的 Shopify 店铺 AI 工具。"
+    },
+    "breadcrumb": {
+      "home": "首页",
+      "shopify": "Shopify 店铺 AI 工具"
+    },
+    "hero": {
+      "eyebrow": "Shopify",
+      "title": {
+        "primary": "为 Shopify 店铺打造的 AI，",
+        "accent": "不止于自动生成文案。"
+      },
+      "description": "连接商品目录，查看 AI 购物智能体为何选择竞品而不是您的商品，并将审核后的标题和描述更新直接发布回 Shopify。",
+      "assurances": [
+        "2 分钟安装，无需开发人员",
+        "审核后的更新可通过 Admin API 回写",
+        "先查看免费评分"
+      ],
+      "art": {
+        "alt": "购物袋的 ASCII 艺术插图"
+      },
+      "badge": {
+        "alt": "Shopify",
+        "label": "Built for Shopify"
+      },
+      "action": {
+        "primary": "安装到 Shopify",
+        "secondary": "查看工作方式"
+      }
+    },
+    "why": {
+      "number": "01",
+      "title": "为什么 Shopify 商家会超出原生 AI 工具的能力范围。",
+      "description": "大多数 Shopify 商家最终都会遇到原生生成工具的瓶颈。接下来需要的是这些能力。",
+      "paragraphs": [
+        "大多数 Shopify 团队已经具备基础条件：店铺、商品目录和商品运营流程。真正的挑战在于，商品可见性如今不再只取决于主题设计或广告表现。标题、描述、属性和竞品背景，都会影响商品是否容易被推荐。",
+        "对 Shopify 店铺来说，更有价值的 AI 工作流不只是生成内容。商家还需要知道哪些商品表现不佳、哪些竞品商品信息持续胜出，以及哪些改动最值得优先上线。"
+      ],
+      "panelTitle": "适合这类决策场景的团队",
+      "audiences": [
+        {
+          "title": "评估工具类别",
+          "description": "正在研究 Shopify AI 工具，并决定哪些能力需要纳入技术栈的团队。"
+        },
+        {
+          "title": "补充 Shopify Magic",
+          "description": "寻找原生内容生成工具替代方案或补充方案的商家。"
+        },
+        {
+          "title": "将改动与结果关联",
+          "description": "希望将商品信息优化与可衡量竞争结果关联起来的运营团队。"
+        },
+        {
+          "title": "打通发布闭环",
+          "description": "需要在商品目录洞察与实际发布之间建立更紧密闭环的店铺。"
+        }
+      ]
+    },
+    "workflow": {
+      "number": "02",
+      "title": "ecentic 中的 Shopify 工作流。",
+      "description": "该工作流可连接商品目录、发现竞争差距，并将优化结果直接发布回 Shopify，而不是停留在额外的孤立文档中。",
+      "paragraph": "连接店铺，选择关键商品，与竞品进行基准比较，然后通过 Admin API 审核并回写更新。整个流程始终围绕 Shopify 商品目录展开。",
+      "panelTitle": "连接、诊断、发布",
+      "outcomes": [
+        {
+          "title": "优先处理正确的 SKU",
+          "description": "更高效地决定哪些商品需要优先优化。"
+        },
+        {
+          "title": "了解页面为何落败",
+          "description": "更清晰地了解商品页面为何输给特定竞品。"
+        },
+        {
+          "title": "上线前审核",
+          "description": "在商品信息更新发布到店铺前，更快完成审核。"
+        },
+        {
+          "title": "留在 Shopify 内完成",
+          "description": "发布路径贴合现有 Shopify 商品目录工作流。"
+        }
+      ],
+      "steps": [
+        {
+          "title": "连接并导入",
+          "description": "从 Shopify App Store 安装后，商品目录会在引导过程中自动导入，无需修改主题。"
+        },
+        {
+          "title": "选择商品",
+          "description": "选择进入优化与模拟流程的商品，从单个核心商品到整个商品目录都支持。"
+        },
+        {
+          "title": "基准比较与诊断",
+          "description": "系统会将所选商品与竞品进行比较，让您了解 AI 系统为何偏向其他选项，以及具体原因。"
+        },
+        {
+          "title": "审核并回写",
+          "description": "审核每个商品信息的优化版本，并通过 Admin API 将批准的修改发布回 Shopify。"
+        }
+      ]
+    },
+    "compare": {
+      "number": "03",
+      "title": "它如何与 Shopify Magic 配合使用。",
+      "description": "原生生成工具帮助商家快速生成文案。ecentic 则帮助商家评估、排序和优化商品信息，并直接关联竞争结果。",
+      "shopifyMagic": {
+        "badge": "Shopify Magic",
+        "title": "非常适合快速起草。",
+        "description": "当任务只是生成文案时，原生 AI 工具可以显著节省时间，尤其适用于早期商品运营工作。",
+        "strengths": [
+          "Shopify 后台内置原生 AI 内容生成",
+          "适用于早期商品运营的快速描述草稿",
+          "当唯一目标是速度时，可快速生成不同文案版本"
+        ]
+      },
+      "ecentic": {
+        "badge": "基于 Shopify 的 ecentic",
+        "title": "专为赢得比较而打造。",
+        "description": "改写文案只是简单的一半。真正有价值的是了解 AI 购物系统是否容易评估您的页面，以及建议修改是否能提高被选中的概率。",
+        "strengths": [
+          "模拟 AI 购物智能体如何比较商品",
+          "将商品信息与持续胜出的竞品进行基准比较",
+          "诊断页面失败原因：数据缺失、定位薄弱、背景信息不清晰",
+          "将分析结果转化为可审核更新，并发布回 Shopify"
+        ]
+      },
+      "paragraph": "如果唯一目标是速度，仅靠生成能力已经足够。但一旦商品目录规模、竞品压力或审核流程开始成为问题，两者的差异就会显现。",
+      "triggersTitle": "什么时候这种差异开始重要",
+      "triggers": [
+        {
+          "title": "商品目录规模",
+          "description": "商品目录大到每次更新都被人工审核拖慢。"
+        },
+        {
+          "title": "证明改动价值",
+          "description": "团队在上线前需要解释商品信息修改为何重要。"
+        },
+        {
+          "title": "清晰度比价格更重要",
+          "description": "竞品持续凭借商品信息清晰度，而不只是价格优势获胜。"
+        },
+        {
+          "title": "可复用闭环",
+          "description": "商品运营负责人需要的是一套流程，而不是零散的一次性修改。"
+        }
+      ]
+    },
+    "related": {
+      "number": "04",
+      "title": "继续探索 Shopify 相关内容。",
+      "description": "继续查看商品信息优化、平台对比或博客内容，建立更完整的认知。",
+      "items": [
+        {
+          "href": "/features/product-listings",
+          "name": "工作流",
+          "title": "从 AI 商品信息优化开始",
+          "description": "了解商品信息工作流如何在发布前优化标题、描述和结构化商品背景信息。",
+          "label": "查看商品信息工作流",
+          "color": "primary"
+        },
+        {
+          "href": "/compare/best-ai-ecommerce-tools",
+          "name": "对比",
+          "title": "在投入前比较 AI 电商工具类别",
+          "description": "通过指南了解何时 Shopify 原生生成能力已足够，何时更完整的优化闭环能带来额外价值。",
+          "label": "阅读对比指南",
+          "color": "accent"
+        },
+        {
+          "href": "/blog",
+          "name": "博客",
+          "title": "阅读 AI 流量与结构化数据相关指南",
+          "description": "通过博客了解运营细节，持续强化 Shopify 商品页面优化效果。",
+          "label": "访问博客",
+          "color": "accent"
+        },
+        {
+          "href": "/features",
+          "name": "功能",
+          "title": "查看更完整的 AI 电商工具栈",
+          "description": "如果团队正在评估整个工作流而不仅是单个平台，可返回主功能页面继续查看。",
+          "label": "打开功能页面",
+          "color": "accent"
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "05",
+      "title": "常见问题",
+      "description": "Shopify 商家在评估 AI 优化工作流时最常提出的问题。"
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Shopify 店铺 AI 工具在实际中意味着什么？",
+          "answer": "对于 Shopify 商家来说，这意味着连接商品目录、了解商品在 AI 驱动比较中的表现，并将这些发现转化为可审核、可回写至 Shopify 的商品信息更新。"
+        },
+        {
+          "question": "这与只使用 Shopify Magic 有什么不同？",
+          "answer": "Shopify Magic 提供原生内容生成能力。ecentic 则增加了模拟、竞品基准比较、诊断和可审核优化工作流，让商家能够了解商品为何落败以及下一步该优化什么。"
+        },
+        {
+          "question": "Shopify 商家可以将修改发布回店铺吗？",
+          "answer": "可以。文档中的工作流包括通过 Shopify Admin API 将审核后的标题和描述更新回传至店铺，适合希望让优化闭环持续连接在线商品目录的商家。"
+        },
+        {
+          "question": "Shopify 团队什么时候应该超越原生 AI 工具？",
+          "answer": "当团队需要了解为什么某个竞品持续胜出、哪些商品信息属性最关键，以及如何在大量 SKU 中优先安排商品目录优化时。此时，专门的优化工作流比单纯的内置生成能力更有价值。"
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "连接 Shopify 店铺",
+        "secondary": "返回功能页"
+      },
+      "note": "2分钟完成安装 · 无需信用卡 · 先查看免费评分"
+    }
+  }
+}

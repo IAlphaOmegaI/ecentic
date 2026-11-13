@@ -78,8 +78,8 @@
         },
         {
           "key": "contact_step",
-          "before": "bloqué",
-          "after": "prêt",
+          "before": "blocked",
+          "after": "ready",
           "note": "La suppression de cette exigence permet à l’exemple de poursuivre jusqu’au paiement."
         },
         {

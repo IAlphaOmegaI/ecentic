@@ -1,0 +1,257 @@
+{
+  "enterprisePricing": {
+    "meta": {
+      "title": "Prezzi: controllo gratuito dello store, piani e progetti pilota enterprise",
+      "description": "Inizia con un controllo gratuito dello store. Paga mensilmente oppure sugli ordini attribuiti all’AI, con un tetto massimo di $500 al mese. I progetti pilota enterprise vengono definiti insieme al tuo team."
+    },
+    "eyebrow": "Controllo gratuito dello store · Nessuna carta per iniziare · Mensile senza vincoli",
+    "title": "Inizia gratis. Cresci quando l’AI inizia a scegliere cosa acquistare.",
+    "description": "Controlla gratis il tuo store, poi scegli un piano mensile oppure paga sugli ordini attribuiti all’AI. Gestisci più store o brand? Parla con noi di un progetto pilota.",
+    "actions": [
+      {
+        "label": "Controlla gratis il mio store",
+        "href": "/sign-up"
+      },
+      {
+        "label": "Parla con noi",
+        "href": "/demo"
+      }
+    ],
+    "sections": [
+      {
+        "id": "free-check",
+        "eyebrow": "01 / Controllo gratuito dello store",
+        "title": "Scopri come l’AI confronta i tuoi prodotti.",
+        "description": "Un controllo gratuito dei tuoi 10 prodotti principali su ChatGPT, Claude e Gemini. Scopri cosa vince, cosa perde nel confronto e quali dettagli delle schede prodotto correggere per primi."
+      },
+      {
+        "id": "pricing",
+        "eyebrow": "02 / Piani",
+        "title": "Scegli come pagare.",
+        "description": "Inizia con un piano self-service oppure definisci un progetto pilota intorno ai tuoi store, al catalogo e al processo di valutazione."
+      },
+      {
+        "id": "pay-as-you-go",
+        "eyebrow": "03 / Pay-as-you-go",
+        "title": "Una commissione dopo un ordine attribuito.",
+        "description": "Il modello pay-as-you-go è gratuito da attivare. La commissione sulle performance si applica a un ordine con un segnale esplicito di attribuzione all’AI oppure a un ordine effettuato entro 7 giorni da una visita al tuo store proveniente dall’AI. La finestra è a livello di store, non un collegamento tra un singolo visitatore e un ordine."
+      },
+      {
+        "id": "compare",
+        "eyebrow": "04 / Confronta i piani",
+        "title": "Tutti i dettagli, affiancati.",
+        "description": "Prezzi e limiti di prodotto provengono dal catalogo piani esistente. Le simulazioni vengono eseguite quando le avvii. Rivedi le modifiche alle schede prodotto e scegli quando pubblicarle."
+      },
+      {
+        "id": "never-billed",
+        "eyebrow": "05 / Mai fatturati",
+        "title": "Il controllo. Gli strumenti. Gli ordini non attribuiti.",
+        "paragraphs": [
+          "Il controllo gratuito del negozio e gli strumenti pubblici non hanno alcun costo. Con il modello pay-as-you-go, un ordine senza un segnale esplicito di attribuzione AI non viene fatturato se il tuo negozio non ha ricevuto visite provenienti dall’AI nei 7 giorni precedenti. Le visite in sé non vengono mai fatturate. Gli abbonamenti a tariffa fissa non prevedono commissioni sulle prestazioni."
+        ]
+      },
+      {
+        "id": "europe",
+        "eyebrow": "06 / EU Presence bundle",
+        "title": "Rappresentanza e gestione del catalogo, insieme."
+      }
+    ],
+    "sample": {
+      "label": "Esempio con dati campione",
+      "caption": "Questo punteggio di esempio non è un risultato del tuo negozio. Esegui il tuo controllo per vedere gli elementi a supporto di ogni raccomandazione.",
+      "action": {
+        "primary": "Controlla gratis il mio negozio"
+      },
+      "figureLabel": "Illustrazione: una lente d’ingrandimento mostra la struttura di una scheda prodotto.",
+      "sampleTitle": "Scopri i motivi dietro il punteggio.",
+      "signals": [
+        "Confronti tra prodotti",
+        "Schede prodotto concorrenti",
+        "Correzioni delle schede prodotto da verificare"
+      ]
+    },
+    "plans": {
+      "payg": {
+        "tagline": "Paghi solo dopo che l’AI ti invia visitatori",
+        "note": "Nessuna carta richiesta per iniziare. Le commissioni seguono le regole di attribuzione riportate sotto.",
+        "action": {
+          "primary": "Scegli pay-as-you-go"
+        }
+      },
+      "compete": {
+        "action": {
+          "primary": "Scegli Compete"
+        }
+      },
+      "scale": {
+        "tagline": "Correggi su larga scala",
+        "action": {
+          "primary": "Scegli Scale"
+        }
+      },
+      "dominate": {
+        "action": {
+          "primary": "Scegli Dominate"
+        }
+      },
+      "enterprise": {
+        "name": "Enterprise",
+        "tagline": "Definito con il tuo team, partendo dai dati pubblici",
+        "figure": "Pilota personalizzato",
+        "note": "Concorda l’ambito, il processo di revisione e gli obiettivi prima di iniziare.",
+        "features": [
+          "Tutti i negozi in un unico account",
+          "API, server MCP e CLI",
+          "Revisione dei requisiti per il trattamento dei dati",
+          "Un fondatore segue l’account",
+          "Report del pilota con obiettivi concordati"
+        ],
+        "action": {
+          "primary": "Contattaci"
+        }
+      }
+    },
+    "featureCorrections": {
+      "onDemand": "Simulazioni di agenti AI on demand",
+      "reviewAndApply": "Verifica i suggerimenti e pubblica con Apply",
+      "paygAttribution": "Commissioni sugli ordini attribuiti all’AI secondo le regole sotto"
+    },
+    "availability": "Le simulazioni vengono eseguite on demand. Verifichi i suggerimenti e scegli quando applicare le modifiche. La pubblicazione richiede un connettore diretto supportato e la tua approvazione.",
+    "fee": {
+      "steps": [
+        {
+          "title": "Un assistente AI ti invia un visitatore",
+          "body": "Il tuo negozio registra una visita proveniente da un assistente AI. Questo avvia la finestra di attribuzione di 7 giorni per il negozio."
+        },
+        {
+          "title": "Acquisto: un ordine da $120",
+          "body": "Un ordine è idoneo quando contiene un segnale esplicito di attribuzione AI oppure rientra nella finestra attiva di referral di 7 giorni del negozio."
+        },
+        {
+          "title": "La commissione è di $3.60",
+          "body": "Con la tariffa standard del 3%, un ordine attribuito da $120 genera una commissione di $3.60. Una visita da sola non comporta alcun costo."
+        },
+        {
+          "title": "Le commissioni si fermano a $500 al mese",
+          "body": "Il limite mensile standard è di $500. Non serve una carta per iniziare; un metodo di pagamento viene richiesto quando è dovuta una commissione."
+        }
+      ],
+      "example": {
+        "order": "Ordine attribuito",
+        "rate": "Tariffa standard",
+        "fee": "Commissione sulle prestazioni",
+        "window": "Finestra di 7 giorni a livello di negozio",
+        "cap": "Limite mensile di $500"
+      },
+      "billingTitle": "Preferisci una fattura mensile fissa?",
+      "billingBody": "Compete, Scale e Dominate non prevedono commissioni sulle prestazioni. I relativi prezzi mensili sono mostrati sopra."
+    },
+    "comparison": {
+      "title": "Confronto tra piani",
+      "feature": "Funzionalità",
+      "yes": "Incluso",
+      "no": "Non incluso",
+      "agreed": "Concordato nel pilota",
+      "onDemand": "On demand",
+      "suggestions": "Verifica prima di applicare",
+      "publish": "Pubblicazione con Apply",
+      "enterpriseRows": [
+        {
+          "label": "Tutti i negozi in un unico account",
+          "selfServe": true
+        },
+        {
+          "label": "API, server MCP e CLI",
+          "selfServe": true
+        },
+        {
+          "label": "Revisione dei requisiti per il trattamento dei dati",
+          "selfServe": true
+        },
+        {
+          "label": "Un fondatore segue l’account",
+          "selfServe": false
+        },
+        {
+          "label": "Report del pilota con obiettivi concordati",
+          "selfServe": false
+        }
+      ],
+      "enterpriseNote": "I termini Enterprise, i limiti di prodotto ed eventuali commissioni vengono concordati nell’ambito del pilota. La documentazione pubblica per API discovery, MCP e CLI è disponibile senza un piano a pagamento."
+    },
+    "bundle": {
+      "description": "EU Presence gestisce rappresentanza e conformità in tutti i 27 stati membri. Il pacchetto combina i suoi servizi esistenti con il piano ecentic Dominate, secondo i termini commerciali esistenti riportati sotto.",
+      "productDetail": "Simulazioni di prodotto, confronti con i concorrenti e suggerimenti per le schede prodotto da verificare prima della pubblicazione"
+    },
+    "faqTitle": "Domande sui prezzi",
+    "faqs": [
+      {
+        "question": "Esiste davvero un piano gratuito?",
+        "answer": "Sì. Il controllo gratuito del negozio esegue una simulazione una tantum dei tuoi 10 prodotti principali su ChatGPT, Claude e Gemini e restituisce un report sulla percentuale di vittorie. Non è richiesta alcuna carta di credito."
+      },
+      {
+        "question": "Qual è la differenza tra Compete, Scale e Dominate?",
+        "answer": "Compete copre fino a 100 prodotti con confronti con i concorrenti e suggerimenti di ottimizzazione manuale. Scale copre fino a 1.000 prodotti con suggerimenti per le schede prodotto che puoi verificare e pubblicare usando Apply. Dominate include Scale ed è il piano collegato all’offerta Techstars. L’offerta Y Combinator può essere applicata a qualsiasi abbonamento a tariffa fissa. Le simulazioni sono on demand; il prodotto non promette una frequenza programmata."
+      },
+      {
+        "question": "Qual è la differenza tra pay-as-you-go e un abbonamento?",
+        "answer": "Il modello pay-as-you-go non ha costi iniziali e utilizza una commissione standard del 3% sulle prestazioni, con un limite di $500 al mese, secondo le regole di attribuzione riportate sotto. Compete, Scale e Dominate prevedono un prezzo mensile fisso senza commissioni sulle prestazioni. Scegli il modello di fatturazione più adatto al tuo team."
+      },
+      {
+        "question": "Come funziona la commissione sulle prestazioni del pay-as-you-go?",
+        "answer": "Un ordine viene conteggiato se contiene un segnale esplicito di attribuzione AI oppure se il tuo negozio ha ricevuto una visita proveniente dall’AI nei 7 giorni precedenti. Si tratta di una finestra a livello di negozio, non di un’attribuzione del singolo acquirente. La commissione standard è pari al 3% degli ordini idonei, con un limite di $500 per mese di calendario. Le visite non hanno costi. Un metodo di pagamento viene richiesto solo quando è dovuta una commissione. Il controllo gratuito e gli abbonamenti a tariffa fissa non prevedono commissioni sulle prestazioni."
+      },
+      {
+        "question": "Posso cambiare piano o annullare in seguito?",
+        "answer": "Sì. Puoi iniziare con il controllo gratuito, attivare il pay-as-you-go oppure scegliere un abbonamento a tariffa fissa. I piani sono mensili e puoi annullare in qualsiasi momento. Contattaci per definire un pilota enterprise prima di concordarne i termini."
+      },
+      {
+        "question": "Quando dovrei parlare con il team vendite invece di procedere in autonomia?",
+        "answer": "Quando gestisci più negozi o brand, hai migliaia di prodotti, hai bisogno di una revisione della sicurezza oppure vuoi un pilota con obiettivi concordati per iscritto."
+      },
+      {
+        "question": "Che cos’è il pacchetto EU Presence?",
+        "answer": "Il pacchetto combina il rappresentante GDPR di EU Presence, il responsabile GPSR e Privacy Center Plus con ecentic Dominate. L’offerta esistente del pacchetto prevede uno sconto del 20%, senza minimi né costi di configurazione. Usa il link per prenotare una call dedicata al pacchetto."
+      },
+      {
+        "question": "Che cosa succede ai nostri dati se interrompiamo il servizio?",
+        "answer": "Richiedi la cancellazione a privacy@ecentic.ai. Rispondiamo entro un mese e confermiamo quando i dati sono stati eliminati dai nostri sistemi. I registri di fatturazione vengono conservati dove richiesto dalla legge; le copie di backup vengono rimosse alla loro scadenza. Consulta l’Informativa sulla privacy per l’ambito e i controlli di disconnessione."
+      },
+      {
+        "question": "Viene fatturato qualcosa che non abbiamo richiesto?",
+        "answer": "Nessun piano viene fatturato senza attivazione. I piani sono mensili. In base ai termini standard del pay-as-you-go, si applica una commissione del 3% a un ordine con un segnale esplicito di attribuzione AI oppure a un ordine effettuato entro 7 giorni da una visita al tuo negozio proveniente dall’AI, fino a un massimo di $500 per mese di calendario. La finestra di referral riguarda il negozio, non un acquirente identificato. Gli abbonamenti a tariffa fissa non prevedono commissioni sulle prestazioni."
+      },
+      {
+        "question": "Firmate un DPA?",
+        "answer": "Sì. Un DPA viene predisposto su richiesta prima della condivisione dei dati personali e possiamo firmare anche il vostro. L’entità contrattuale e il firmatario vengono confermati nell’accordo."
+      }
+    ],
+    "policyLinks": [
+      {
+        "label": "Leggi l’Informativa sulla privacy",
+        "href": "/privacy-policy"
+      },
+      {
+        "label": "Verifica la protezione dei dati",
+        "href": "/security#dpa"
+      }
+    ],
+    "offerDescriptions": [
+      "Controllo gratuito del negozio una tantum. Nessuna carta di credito richiesta.",
+      "Nessun costo iniziale. Commissione standard del 3% sulle prestazioni per gli ordini idonei attribuiti all’AI, con limite di $500 al mese.",
+      "Abbonamento mensile fino a 100 prodotti, senza commissioni sulle prestazioni.",
+      "Abbonamento mensile fino a 1.000 prodotti, senza commissioni sulle prestazioni.",
+      "Abbonamento mensile che include Scale, senza commissioni sulle prestazioni."
+    ],
+    "calculator": {
+      "comparison": "Confronto dei prezzi mensili",
+      "details": "Come funziona questa stima",
+      "payg": "Pay-as-you-go",
+      "flat": "Tariffa mensile fissa",
+      "lower": "Prezzo inferiore",
+      "same": "Stesso prezzo",
+      "orders": "Ordini",
+      "rate": "Tasso di commissione"
+    }
+  }
+}

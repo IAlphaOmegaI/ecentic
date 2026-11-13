@@ -1,0 +1,23 @@
+{
+  "playgroundPage": {
+    "guide": {
+      "title": "从发现到结账",
+      "description": "探索购物会话背后的调用过程。",
+      "discovery": {
+        "title": "发现店铺",
+        "description": "读取店铺的 UCP 配置文件，然后选择其购物端点。交互演示优先使用 MCP，必要时回退到 REST。"
+      },
+      "action": {
+        "primary": "打开 playground",
+        "secondary": "检查 UCP 配置文件"
+      }
+    },
+    "session": {
+      "title": "实时购物会话",
+      "description": "查看智能体购物时的工具调用与响应。"
+    },
+    "faq": {
+      "title": "连接前须知"
+    }
+  }
+}

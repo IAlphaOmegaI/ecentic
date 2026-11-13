@@ -1,0 +1,120 @@
+{
+  "dashboard": {
+    "shared": {
+      "status": {
+        "liveUpdated": "实时 — 更新于{time}",
+        "liveLastScanned": "实时 — 上次扫描于{time}",
+        "liveProductUpdated": "实时 — 更新于{time}",
+        "lastSimulation": "上次模拟于{time}",
+        "noScansYet": "尚未进行扫描",
+        "noSimulationsYet": "尚未进行模拟"
+      },
+      "stats": {
+        "noDataYet": "暂无数据",
+        "overallWinRate": "总体胜率",
+        "productsScanned": "已扫描商品",
+        "topPerformer": "表现最佳",
+        "biggestOpportunity": "最大机会",
+        "vsLastScan": "较上次扫描",
+        "acrossProducts": "覆盖{count, plural, other {#件商品}}",
+        "slotsRemaining": "剩余{count}个名额",
+        "viewDetails": "查看详情",
+        "optimizeNow": "立即优化"
+      },
+      "sections": {
+        "performance": "01 — 表现",
+        "performanceHalf": "01.5 — 最近活动",
+        "catalog": "02 — 商品目录",
+        "competitiveLandscape": "03 — 竞争格局",
+        "traffic": "03 — 流量",
+        "insights": "04 — 洞察",
+        "agentTraffic": "04 — 智能体流量"
+      },
+      "performance": {
+        "winRateByModel": "各模型胜率",
+        "winRateTrend": "胜率趋势",
+        "noModelData": "运行模拟后可查看各模型表现。",
+        "notEnoughTrendData": "数据不足，无法显示趋势。",
+        "runSimulationHint": "运行模拟即可开始。",
+        "runMoreSimulationsHint": "运行更多模拟以查看历史记录。"
+      },
+      "activity": {
+        "simulationComplete": "模拟完成 — {wins}次胜出，{losses}次失利",
+        "simulationInProgress": "模拟进行中 — {completed}/{total}",
+        "noActivityTitle": "暂无活动。运行",
+        "noActivityHint": "首次模拟后即可在此查看结果。"
+      },
+      "action": {
+        "optimizations": "优化",
+        "viewAllProducts": "查看全部商品",
+        "viewAll": "查看全部",
+        "runSimulation": "运行模拟",
+        "ucpManager": "UCP 管理器"
+      },
+      "table": {
+        "product": "商品",
+        "price": "价格",
+        "winRate": "胜率",
+        "quality": "质量",
+        "lastScan": "上次扫描",
+        "brand": "品牌",
+        "simulations": "模拟次数",
+        "lastUpdated": "最后更新",
+        "competitor": "竞品",
+        "wins": "胜出",
+        "losses": "失利",
+        "total": "总计",
+        "productWinRates": "商品胜率",
+        "productCatalog": "商品目录",
+        "competitorBrands": "竞品品牌",
+        "topCompetitors": "主要竞品"
+      },
+      "empty": {
+        "noProducts": "未找到商品",
+        "noProductsHint": "导入商品并运行模拟后，即可在此查看胜率。",
+        "noCompetitors": "尚未跟踪竞品",
+        "noCompetitorsHint": "添加竞品以开始分析竞争格局。"
+      },
+      "count": {
+        "products": "{count, plural, other {#件商品}}",
+        "competitors": "{count, plural, other {#个竞品}}",
+        "productSingular": "商品",
+        "productsPlural": "商品",
+        "competitorSingular": "竞品",
+        "competitorsPlural": "竞品",
+        "totalSimulations": "共{count}次模拟",
+        "last30d": "最近30天"
+      },
+      "agentVisits": {
+        "title": "AI 购物智能体访问商品",
+        "description": "来自 ScriptTag 跟踪器的浏览器可见 AI 与引荐信号。",
+        "panelTitle": "按智能体统计的访问量（最近30天）",
+        "panelDescription": "仅包含来自 ScriptTag 跟踪器的浏览器可见 AI 与引荐信号。",
+        "total": "总计",
+        "empty": "尚未记录到 AI 购物智能体访问。当购物者通过跟踪器识别的 AI 引荐来源或 user-agent 访问时，将显示流量。",
+        "emptyOverview": "尚未记录到 AI 购物智能体访问。当购物者通过跟踪器识别的 AI 引荐来源或 user-agent 访问，或启用探测模式后，将显示流量。"
+      },
+      "present": "已存在",
+      "missing": "缺失",
+      "cancel": "取消",
+      "sku": "SKU：{sku}",
+      "pagination": {
+        "navigation": "分页",
+        "page": "第{page, number}页，共{pages, number}页",
+        "first": "第一页",
+        "previous": "上一页",
+        "next": "下一页",
+        "last": "最后一页"
+      }
+    },
+    "overview": {
+      "title": "概览",
+      "description": "查看 AI 购物智能体如何将您的商品目录与竞品进行排名。",
+      "tabs": {
+        "topProducts": "热门商品",
+        "competitors": "竞品",
+        "agentVisits": "智能体访问量"
+      }
+    }
+  }
+}

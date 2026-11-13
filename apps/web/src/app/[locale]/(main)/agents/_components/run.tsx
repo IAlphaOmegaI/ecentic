@@ -10,21 +10,17 @@ import {
   AccordionTrigger,
 } from "@zenncore/web/components/accordion";
 import { Button } from "@zenncore/web/components/button";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { type ComponentProps, type ReactNode, useState } from "react";
 import { StatusPill } from "@/app/[locale]/(main)/dashboard/_components/grid";
 import { Link } from "@/i18n/navigation";
 import * as Entry from "@/server/app/entry";
 import type * as Catalog from "@/server/app/storefront/catalog";
 import {
-  channelLine,
-  count,
-  offerLabels,
   offerTitle,
   type Snapshot,
   settled,
-  stageLabels,
-  uploadLine,
+  useLiveCopy,
   usePoll,
 } from "./live";
 import { RunSkeleton } from "./skeletons";
@@ -36,9 +32,9 @@ const isWeb = (url: string | null): url is string =>
   url !== null && /^https?:\/\//i.test(url);
 
 const kinds = {
-  inferred: { label: "Inferred", tone: "warning" },
-  rewritten: { label: "Rewritten", tone: "primary" },
-  cleaned: { label: "Cleaned", tone: "neutral" },
+  inferred: { tone: "warning" },
+  rewritten: { tone: "primary" },
+  cleaned: { tone: "neutral" },
 } as const;
 
 const offerTones = {
@@ -97,22 +93,25 @@ const Notice = ({
   title: string;
   description: string;
   retry?: boolean;
-}) => (
-  <div className="flex flex-col items-start gap-4 bg-background px-6 py-10 sm:px-8">
-    <div>
-      <p className="font-medium text-2xl text-foreground">{title}</p>
-      <p className="mt-2 max-w-2xl font-light text-foreground-dimmed">
-        {description}
-      </p>
+}) => {
+  const translate = useTranslations("agentReadiness");
+  return (
+    <div className="flex flex-col items-start gap-4 bg-background px-6 py-10 sm:px-8">
+      <div>
+        <p className="font-medium text-2xl text-foreground">{title}</p>
+        <p className="mt-2 max-w-2xl font-light text-foreground-dimmed">
+          {description}
+        </p>
+      </div>
+      {retry && (
+        <Button color="accent" render={<Link href="/agents" />}>
+          {translate("actions.primary")}
+          <ArrowRightIcon className="size-4" />
+        </Button>
+      )}
     </div>
-    {retry && (
-      <Button color="accent" render={<Link href="/agents" />}>
-        Try another store
-        <ArrowRightIcon className="size-4" />
-      </Button>
-    )}
-  </div>
-);
+  );
+};
 
 const Channel = ({
   label,
@@ -126,27 +125,32 @@ const Channel = ({
   format: string;
   href: string;
   children?: ReactNode;
-}) => (
-  <div className="flex flex-col items-start gap-4 bg-background-rich px-6 py-6 sm:px-8">
-    <p className="font-medium text-2xl text-foreground leading-snug">
-      {channelLine(label, channel)}
-    </p>
-    {channel.ready > 0 ? (
-      <Button color="primary" render={<a href={href} download />}>
-        <DownloadIcon className="size-4" />
-        Download the {format}
-      </Button>
-    ) : (
-      <Button color="primary" disabled>
-        <DownloadIcon className="size-4" />
-        Nothing to download yet
-      </Button>
-    )}
-    {children}
-  </div>
-);
+}) => {
+  const translate = useTranslations("agentReadiness");
+  const { channelLine } = useLiveCopy();
+  return (
+    <div className="flex flex-col items-start gap-4 bg-background-rich px-6 py-6 sm:px-8">
+      <p className="font-medium text-2xl text-foreground leading-snug">
+        {channelLine(label, channel)}
+      </p>
+      {channel.ready > 0 ? (
+        <Button color="primary" render={<a href={href} download />}>
+          <DownloadIcon className="size-4" />
+          {translate("actions.download", { format })}
+        </Button>
+      ) : (
+        <Button color="primary" disabled>
+          <DownloadIcon className="size-4" />
+          {translate("actions.nothing")}
+        </Button>
+      )}
+      {children}
+    </div>
+  );
+};
 
 const Connect = ({ origin }: { origin: string }) => {
+  const translate = useTranslations("agentReadiness");
   const locale = useLocale();
   const [problem, setProblem] = useState<string | null>(null);
 
@@ -156,34 +160,35 @@ const Connect = ({ origin }: { origin: string }) => {
     // A resolved store redirects from the action and never returns here.
     const call = await resultify(() => Entry.begin({ url: origin, locale }));
     if (!call.success || !call.data?.success) {
-      setProblem("That didn't go through. Try again.");
+      setProblem(translate("errors.connect"));
       return;
     }
 
     switch (call.data.data.kind) {
       case "limited":
-        setProblem("Too many tries in a row. Give it a minute.");
+        setProblem(translate("errors.connectLimited"));
         return;
       case "unreachable":
-        setProblem(`We couldn't reach ${call.data.data.host} just now.`);
+        setProblem(
+          translate("errors.unreachable", { host: call.data.data.host }),
+        );
         return;
       default:
-        setProblem("We couldn't read that store's address.");
+        setProblem(translate("errors.address"));
     }
   });
 
   return (
     <div className="flex flex-col items-start gap-3 bg-background-rich px-6 py-6 sm:px-8">
       <p className="max-w-2xl text-foreground">
-        We only publish to Merchant Center accounts that own the store's
-        website.
+        {translate("merchant.ownership")}
       </p>
       <Button
         color="primary"
         disabled={isPending}
         onClick={() => void handleConnect()}
       >
-        Connect your Merchant Center
+        {translate("actions.connect")}
         {isPending ? (
           <LoaderIcon className="size-4 animate-spin" />
         ) : (
@@ -199,51 +204,61 @@ const Connect = ({ origin }: { origin: string }) => {
   );
 };
 
-const Offer = ({ line }: { line: Catalog.OfferLine }) => (
-  <div className="flex flex-col gap-2 bg-background-rich px-6 py-4 sm:px-8">
-    <div className="flex flex-wrap items-center justify-between gap-2">
-      <p className="min-w-0 font-medium text-foreground">{offerTitle(line)}</p>
-      <Pill tone={offerTones[line.status]}>{offerLabels[line.status]}</Pill>
-    </div>
-    {line.destinations.length > 0 && (
-      <p className="font-light text-foreground-dimmed text-sm">
-        {line.destinations.join(", ")}
-      </p>
-    )}
-    {line.response && (
-      <p className="break-all font-mono text-foreground-dimmed text-xs">
-        {line.response}
-      </p>
-    )}
-    {line.issues.map((issue) => (
-      <p key={issue} className="text-error text-sm">
-        {issue}
-      </p>
-    ))}
-  </div>
-);
-
-const Merchant = ({ summary }: { summary: Catalog.Summary }) => (
-  <section className="border-accent-foreground border-t">
-    <Heading
-      title="Google Merchant Center"
-      description={
-        summary.merchant?.eligible && summary.merchant.account
-          ? `Account ${summary.merchant.account}`
-          : undefined
-      }
-    />
-    {summary.merchant?.eligible ? (
-      <div className="flex flex-col gap-px bg-accent-foreground">
-        {summary.merchant.lines.map((line) => (
-          <Offer key={line.offerId} line={line} />
-        ))}
+const Offer = ({ line }: { line: Catalog.OfferLine }) => {
+  const { offerLabels } = useLiveCopy();
+  return (
+    <div className="flex flex-col gap-2 bg-background-rich px-6 py-4 sm:px-8">
+      <div className="flex flex-wrap items-center justify-between gap-2">
+        <p className="min-w-0 font-medium text-foreground">
+          {offerTitle(line)}
+        </p>
+        <Pill tone={offerTones[line.status]}>{offerLabels[line.status]}</Pill>
       </div>
-    ) : (
-      <Connect origin={summary.origin} />
-    )}
-  </section>
-);
+      {line.destinations.length > 0 && (
+        <p className="font-light text-foreground-dimmed text-sm">
+          {line.destinations.join(", ")}
+        </p>
+      )}
+      {line.response && (
+        <p className="break-all font-mono text-foreground-dimmed text-xs">
+          {line.response}
+        </p>
+      )}
+      {line.issues.map((issue) => (
+        <p key={issue} className="text-error text-sm">
+          {issue}
+        </p>
+      ))}
+    </div>
+  );
+};
+
+const Merchant = ({ summary }: { summary: Catalog.Summary }) => {
+  const translate = useTranslations("agentReadiness");
+  return (
+    <section className="border-accent-foreground border-t">
+      <Heading
+        title="Google Merchant Center"
+        description={
+          summary.merchant?.eligible && summary.merchant.account
+            ? translate("merchant.account", {
+                account: summary.merchant.account,
+              })
+            : undefined
+        }
+      />
+      {summary.merchant?.eligible ? (
+        <div className="flex flex-col gap-px bg-accent-foreground">
+          {summary.merchant.lines.map((line) => (
+            <Offer key={line.offerId} line={line} />
+          ))}
+        </div>
+      ) : (
+        <Connect origin={summary.origin} />
+      )}
+    </section>
+  );
+};
 
 const Thumbnail = ({ product }: { product: Catalog.Product }) => {
   const [broken, setBroken] = useState(false);
@@ -271,57 +286,68 @@ const Thumbnail = ({ product }: { product: Catalog.Product }) => {
   );
 };
 
-const Value = ({ label, value }: { label: string; value: string | null }) => (
-  <div className="flex min-w-0 flex-col gap-1 bg-background-rich px-3 py-2">
-    <p className="font-medium text-foreground-dimmed text-xs">{label}</p>
-    <p className="line-clamp-6 whitespace-pre-line break-words text-foreground text-sm">
-      {value ?? "Not stated by the store"}
-    </p>
-  </div>
-);
+const Value = ({ label, value }: { label: string; value: string | null }) => {
+  const translate = useTranslations("agentReadiness");
+  return (
+    <div className="flex min-w-0 flex-col gap-1 bg-background-rich px-3 py-2">
+      <p className="font-medium text-foreground-dimmed text-xs">{label}</p>
+      <p className="line-clamp-6 whitespace-pre-line break-words text-foreground text-sm">
+        {value ?? translate("product.missingValue")}
+      </p>
+    </div>
+  );
+};
 
-const FixRow = ({ fix }: { fix: Catalog.Fix }) => (
-  <div className="flex flex-col gap-2 py-3">
-    <div className="flex flex-wrap items-center gap-2">
-      <Pill tone={kinds[fix.kind].tone}>{kinds[fix.kind].label}</Pill>
-      <span className="font-mono text-foreground-dimmed text-xs">
-        {fix.field}
-      </span>
+const FixRow = ({ fix }: { fix: Catalog.Fix }) => {
+  const translate = useTranslations("agentReadiness");
+  return (
+    <div className="flex flex-col gap-2 py-3">
+      <div className="flex flex-wrap items-center gap-2">
+        <Pill tone={kinds[fix.kind].tone}>
+          {translate(`kinds.${fix.kind}`)}
+        </Pill>
+        <span className="font-mono text-foreground-dimmed text-xs">
+          {fix.field}
+        </span>
+      </div>
+      <p className="font-light text-foreground-dimmed text-sm">{fix.reason}</p>
+      <div className="grid gap-px border border-accent-foreground bg-accent-foreground sm:grid-cols-2">
+        <Value label={translate("product.before")} value={fix.before} />
+        <Value label={translate("product.after")} value={fix.after} />
+      </div>
     </div>
-    <p className="font-light text-foreground-dimmed text-sm">{fix.reason}</p>
-    <div className="grid gap-px border border-accent-foreground bg-accent-foreground sm:grid-cols-2">
-      <Value label="Before" value={fix.before} />
-      <Value label="After" value={fix.after} />
-    </div>
-  </div>
-);
+  );
+};
 
-const FindingRow = ({ finding }: { finding: Catalog.Finding }) => (
-  <div className="flex flex-col gap-1 py-3">
-    <div className="flex flex-wrap items-center gap-2">
-      <Pill tone={finding.severity === "error" ? "error" : "warning"}>
-        {finding.severity === "error"
-          ? "Keeps it out of the feed"
-          : "Ships with a warning"}
-      </Pill>
-      <span className="text-foreground-dimmed text-xs">
-        {channels[finding.channel]}
-      </span>
-      <span className="font-mono text-foreground-dimmed text-xs">
-        {finding.field}
-      </span>
+const FindingRow = ({ finding }: { finding: Catalog.Finding }) => {
+  const translate = useTranslations("agentReadiness");
+  return (
+    <div className="flex flex-col gap-1 py-3">
+      <div className="flex flex-wrap items-center gap-2">
+        <Pill tone={finding.severity === "error" ? "error" : "warning"}>
+          {finding.severity === "error"
+            ? translate("product.error")
+            : translate("product.warning")}
+        </Pill>
+        <span className="text-foreground-dimmed text-xs">
+          {channels[finding.channel]}
+        </span>
+        <span className="font-mono text-foreground-dimmed text-xs">
+          {finding.field}
+        </span>
+      </div>
+      <p className="text-foreground text-sm">{finding.message}</p>
     </div>
-    <p className="text-foreground text-sm">{finding.message}</p>
-  </div>
-);
+  );
+};
 
 const PolicyLine = ({ prepared }: { prepared: Catalog.Prepared }) => {
+  const translate = useTranslations("agentReadiness");
   if (prepared.policy)
     return (
       <div className="flex flex-col gap-1 py-3">
         <p className="font-medium text-error text-sm">
-          Flagged under OpenAI's prohibited products policy:{" "}
-          {prepared.policy.category}
+          {translate("product.policy", { category: prepared.policy.category })}
         </p>
         <p className="font-light text-foreground-dimmed text-sm">
           {prepared.policy.reason}
@@ -332,8 +358,7 @@ const PolicyLine = ({ prepared }: { prepared: Catalog.Prepared }) => {
   if (!prepared.policyChecked)
     return (
       <p className="py-3 font-light text-foreground-dimmed text-sm">
-        OpenAI's prohibited products policy check did not run for this product,
-        so it has not been cleared.
+        {translate("product.policyUnchecked")}
       </p>
     );
 
@@ -341,6 +366,7 @@ const PolicyLine = ({ prepared }: { prepared: Catalog.Prepared }) => {
 };
 
 const ProductItem = ({ prepared }: { prepared: Catalog.Prepared }) => {
+  const translate = useTranslations("agentReadiness");
   const { product, fixes, findings, ready } = prepared;
   const url = isWeb(product.url) ? product.url : null;
 
@@ -357,21 +383,25 @@ const ProductItem = ({ prepared }: { prepared: Catalog.Prepared }) => {
               {product.title}
             </span>
             <span className="font-light text-foreground-dimmed text-xs">
-              {count(fixes.length, "fix", "fixes")},{" "}
-              {count(findings.length, "issue", "issues")}
+              {translate("product.summary", {
+                fixes: fixes.length,
+                issues: findings.length,
+              })}
             </span>
           </span>
         </span>
         <span className="hidden shrink-0 items-center gap-2 sm:flex">
           <Pill tone={ready.google ? "success" : "warning"}>
-            {ready.google ? "Ready for Google" : "Not ready for Google"}
+            {ready.google
+              ? translate("product.googleReady")
+              : translate("product.googleNotReady")}
           </Pill>
           <Pill tone={ready.chatgpt ? "success" : "warning"}>
             {ready.chatgpt
               ? prepared.policyChecked
-                ? "Ready for ChatGPT"
-                : "Ready for ChatGPT, policy not checked"
-              : "Not ready for ChatGPT"}
+                ? translate("product.chatgptReady")
+                : translate("product.chatgptUnchecked")
+              : translate("product.chatgptNotReady")}
           </Pill>
         </span>
       </AccordionTrigger>
@@ -379,14 +409,16 @@ const ProductItem = ({ prepared }: { prepared: Catalog.Prepared }) => {
         <div className="flex flex-col divide-y divide-accent-foreground border-accent-foreground border-t bg-background px-6 pb-3 sm:px-8">
           <div className="flex flex-wrap items-center gap-2 py-3 sm:hidden">
             <Pill tone={ready.google ? "success" : "warning"}>
-              {ready.google ? "Ready for Google" : "Not ready for Google"}
+              {ready.google
+                ? translate("product.googleReady")
+                : translate("product.googleNotReady")}
             </Pill>
             <Pill tone={ready.chatgpt ? "success" : "warning"}>
               {ready.chatgpt
                 ? prepared.policyChecked
-                  ? "Ready for ChatGPT"
-                  : "Ready for ChatGPT, policy not checked"
-                : "Not ready for ChatGPT"}
+                  ? translate("product.chatgptReady")
+                  : translate("product.chatgptUnchecked")
+                : translate("product.chatgptNotReady")}
             </Pill>
           </div>
           <PolicyLine prepared={prepared} />
@@ -401,7 +433,7 @@ const ProductItem = ({ prepared }: { prepared: Catalog.Prepared }) => {
           ))}
           {fixes.length === 0 && findings.length === 0 && (
             <p className="py-3 font-light text-foreground-dimmed text-sm">
-              Nothing to fix and nothing left to resolve.
+              {translate("product.nothing")}
             </p>
           )}
           {url && (
@@ -421,6 +453,7 @@ const ProductItem = ({ prepared }: { prepared: Catalog.Prepared }) => {
 };
 
 const Products = ({ id }: { id: string }) => {
+  const translate = useTranslations("agentReadiness");
   const prepared = usePoll<Catalog.Prepared[]>(
     `/api/agents/runs/${id}/prepared`,
     { interval: 3000, until: once },
@@ -429,8 +462,8 @@ const Products = ({ id }: { id: string }) => {
   return (
     <section className="border-accent-foreground border-t">
       <Heading
-        title="Every product"
-        description="What we changed, what we inferred, and what only you can resolve."
+        title={translate("products.title")}
+        description={translate("products.description")}
       />
       {(() => {
         switch (true) {
@@ -445,19 +478,19 @@ const Products = ({ id }: { id: string }) => {
           case prepared.data !== null:
             return (
               <p className="px-6 py-6 font-light text-foreground-dimmed sm:px-8">
-                We didn't find any products to list.
+                {translate("products.empty")}
               </p>
             );
           case prepared.missing || prepared.failed:
             return (
               <p className="px-6 py-6 font-light text-foreground-dimmed sm:px-8">
-                We couldn't load the product list. Still trying.
+                {translate("products.failed")}
               </p>
             );
           default:
             return (
               <p className="px-6 py-6 font-light text-foreground-dimmed sm:px-8">
-                Loading the product list.
+                {translate("products.loading")}
               </p>
             );
         }
@@ -466,76 +499,80 @@ const Products = ({ id }: { id: string }) => {
   );
 };
 
-const Done = ({ id, summary }: { id: string; summary: Catalog.Summary }) => (
-  <>
-    <div className="border-accent-foreground border-t bg-background px-6 py-8 sm:px-8">
-      <p className="text-balance font-medium text-3xl text-foreground md:text-4xl">
-        {count(summary.fixes, "fix", "fixes")} applied,{" "}
-        {summary.needsMerchant === 1
-          ? "1 issue needs"
-          : `${summary.needsMerchant} issues need`}{" "}
-        the merchant
-      </p>
-    </div>
-
-    <div className="grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-2">
-      <Channel
-        label="Google & Gemini"
-        channel={summary.google}
-        format="XML feed"
-        href={`/api/agents/runs/${id}/feed/google`}
-      />
-      <Channel
-        label="ChatGPT"
-        channel={summary.chatgpt}
-        format="CSV feed"
-        href={`/api/agents/runs/${id}/feed/chatgpt`}
-      >
-        <p className="font-light text-foreground-dimmed text-sm leading-relaxed">
-          {summary.chatgpt.ready > 0
-            ? "Ready for ChatGPT."
-            : "No products are ready for ChatGPT yet."}{" "}
-          ChatGPT only takes product feeds from approved partners, so this is
-          the file you submit when you are one.
+const Done = ({ id, summary }: { id: string; summary: Catalog.Summary }) => {
+  const translate = useTranslations("agentReadiness");
+  const { uploadLine } = useLiveCopy();
+  return (
+    <>
+      <div className="border-accent-foreground border-t bg-background px-6 py-8 sm:px-8">
+        <p className="text-balance font-medium text-3xl text-foreground md:text-4xl">
+          {translate("done.summary", {
+            fixes: summary.fixes,
+            issues: summary.needsMerchant,
+          })}
         </p>
-        {summary.upload && (
-          <p className="font-medium text-foreground text-sm">
-            {uploadLine(summary.upload)}
-          </p>
-        )}
-        {summary.upload?.diagnostics.map((diagnostic) => (
-          <p
-            key={diagnostic}
-            className="font-light text-foreground-dimmed text-sm"
-          >
-            {diagnostic}
-          </p>
-        ))}
-      </Channel>
-    </div>
+      </div>
 
-    {summary.notes.length > 0 && (
-      <section className="border-accent-foreground border-t">
-        <Heading title="Worth knowing" />
-        <ul className="flex flex-col gap-2 bg-background px-6 py-4 sm:px-8">
-          {summary.notes.map((note) => (
-            <li
-              key={note}
+      <div className="grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground md:grid-cols-2">
+        <Channel
+          label="Google & Gemini"
+          channel={summary.google}
+          format={translate("done.xml")}
+          href={`/api/agents/runs/${id}/feed/google`}
+        />
+        <Channel
+          label="ChatGPT"
+          channel={summary.chatgpt}
+          format={translate("done.csv")}
+          href={`/api/agents/runs/${id}/feed/chatgpt`}
+        >
+          <p className="font-light text-foreground-dimmed text-sm leading-relaxed">
+            {summary.chatgpt.ready > 0
+              ? translate("done.chatgptReady")
+              : translate("done.chatgptEmpty")}{" "}
+            {translate("done.chatgptNote")}
+          </p>
+          {summary.upload && (
+            <p className="font-medium text-foreground text-sm">
+              {uploadLine(summary.upload)}
+            </p>
+          )}
+          {summary.upload?.diagnostics.map((diagnostic) => (
+            <p
+              key={diagnostic}
               className="font-light text-foreground-dimmed text-sm"
             >
-              {note}
-            </li>
+              {diagnostic}
+            </p>
           ))}
-        </ul>
-      </section>
-    )}
+        </Channel>
+      </div>
 
-    <Merchant summary={summary} />
-    <Products id={id} />
-  </>
-);
+      {summary.notes.length > 0 && (
+        <section className="border-accent-foreground border-t">
+          <Heading title={translate("done.notes")} />
+          <ul className="flex flex-col gap-2 bg-background px-6 py-4 sm:px-8">
+            {summary.notes.map((note) => (
+              <li
+                key={note}
+                className="font-light text-foreground-dimmed text-sm"
+              >
+                {note}
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      <Merchant summary={summary} />
+      <Products id={id} />
+    </>
+  );
+};
 
 export const Run = ({ id }: Run.Props) => {
+  const translate = useTranslations("agentReadiness");
+  const { stageLabels } = useLiveCopy();
   const { data, missing, failed } = usePoll<Snapshot>(
     `/api/agents/runs/${id}`,
     {
@@ -547,8 +584,8 @@ export const Run = ({ id }: Run.Props) => {
   if (!data && missing)
     return (
       <Notice
-        title="We can't find this run"
-        description="Runs are kept for a while, then cleared. Paste the store again to start a new one."
+        title={translate("notice.missingTitle")}
+        description={translate("notice.missingBody")}
       />
     );
 
@@ -556,8 +593,8 @@ export const Run = ({ id }: Run.Props) => {
     return (
       <Notice
         retry={false}
-        title="We can't reach this run right now"
-        description="Still trying. This page picks up as soon as it answers."
+        title={translate("notice.failedTitle")}
+        description={translate("notice.failedBody")}
       />
     );
 
@@ -567,6 +604,9 @@ export const Run = ({ id }: Run.Props) => {
 
   return (
     <div className="flex flex-col">
+      <p className="border-accent-foreground border-b px-6 py-4 text-foreground-dimmed text-sm sm:px-8">
+        {translate("outputLanguage")}
+      </p>
       <div className="flex flex-col gap-3 border-accent-foreground border-b bg-background-rich px-6 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-8">
         <div className="min-w-0">
           <p className="truncate font-medium text-foreground text-lg">
@@ -587,24 +627,22 @@ export const Run = ({ id }: Run.Props) => {
             />
           }
         >
-          Open the stage screen
+          {translate("actions.secondary")}
           <ArrowRightIcon className="size-4" />
         </Button>
       </div>
 
       <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-3">
-        <Stat label="Products read" value={summary.read} />
-        <Stat label="Issues found" value={summary.issues} />
-        <Stat label="Fixes applied" value={summary.fixes} />
+        <Stat label={translate("stats.products")} value={summary.read} />
+        <Stat label={translate("stats.issues")} value={summary.issues} />
+        <Stat label={translate("stats.fixes")} value={summary.fixes} />
       </div>
 
       {summary.stage === "failed" && (
         <div className="border-accent-foreground border-t">
           <Notice
             title={stageLabels.failed}
-            description={
-              summary.error ?? "We couldn't finish this store. Try it again."
-            }
+            description={summary.error ?? translate("errors.finish")}
           />
         </div>
       )}

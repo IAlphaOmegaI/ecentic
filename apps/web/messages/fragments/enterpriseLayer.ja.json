@@ -1,0 +1,27 @@
+{
+  "enterpriseLayer": {
+    "eyebrow": "01 · 仕組み",
+    "title": "既存のスタックはそのまま。反対側にはAIチャネル。その間をつなぐのが ecentic。",
+    "description": "現在運用中のカタログをそのまま利用できます。ecentic が、顧客の利用するアシスタント向けに商品情報を整備し、各チャネルの現在の提供状況も表示します。",
+    "stack": "既存スタック",
+    "channels": "AIチャネル",
+    "layer": "AIコマースレイヤー",
+    "stages": [
+      "シミュレーション",
+      "修正",
+      "販売",
+      "追跡"
+    ],
+    "inputs": [
+      "Shopify",
+      "WooCommerce",
+      "商品フィード / CSV",
+      "PIM",
+      "Google Merchant Center"
+    ],
+    "legend": "実線: 現在利用可能（シミュレーションを含む）。破線: 近日提供予定。チャネル対応はネイティブ決済を保証するものではありません。",
+    "action": "すべてのAIチャネルを見る",
+    "diagram": "既存のコマーススタックを ecentic に接続すると、6つのAIチャネル向けに商品データと対応決済を準備できます。",
+    "google": "Google AI Mode / Gemini"
+  }
+}

@@ -1,0 +1,194 @@
+{
+  "enterpriseLead": {
+    "kinds": {
+      "interest": {
+        "title": "公開されたら知らせる",
+        "description": "連絡先を入力すると、この連携についてご案内します。",
+        "action": {
+          "primary": "通知を受け取る"
+        }
+      },
+      "integration": {
+        "title": "連携をリクエスト",
+        "description": "接続したいツールとカタログ規模をお知らせください。",
+        "action": {
+          "primary": "リクエストを送信"
+        }
+      },
+      "partner": {
+        "title": "ecenticと新しい取り組みを。",
+        "description": "協業先や実現したい内容をお知らせください。",
+        "action": {
+          "primary": "応募を送信"
+        }
+      }
+    },
+    "fields": {
+      "name": {
+        "label": "氏名",
+        "placeholder": "氏名を入力"
+      },
+      "email": {
+        "label": "勤務先メールアドレス",
+        "placeholder": "you@company.com"
+      },
+      "company": {
+        "label": "会社名",
+        "placeholder": "会社名を入力"
+      },
+      "website": {
+        "label": "Webサイト",
+        "placeholder": "yourstore.com"
+      },
+      "businessType": {
+        "label": "事業形態",
+        "placeholder": "事業形態を選択"
+      },
+      "catalogSize": {
+        "label": "カタログ規模",
+        "placeholder": "カタログ規模を選択"
+      },
+      "markets": {
+        "label": "販売市場",
+        "placeholder": "販売している国・地域"
+      },
+      "goals": {
+        "label": "取り組みたい内容を教えてください",
+        "placeholder": "カテゴリ、目標、質問内容などを入力してください。"
+      },
+      "aiChannel": {
+        "label": "最も重視するAIアシスタントはどれですか？",
+        "placeholder": "アシスタントを選択"
+      },
+      "tool": {
+        "label": "どのツールまたは連携ですか？",
+        "placeholder": "接続したいツール名を入力"
+      },
+      "track": {
+        "label": "パートナートラック",
+        "placeholder": "トラックを選択"
+      },
+      "stores": {
+        "label": "何店舗と取引していますか？",
+        "placeholder": "例：クライアント店舗数 12"
+      },
+      "note": {
+        "label": "補足メモ（任意）",
+        "placeholder": "一緒に実現したい内容をお聞かせください。"
+      }
+    },
+    "options": {
+      "businessType": [
+        {
+          "value": "brand",
+          "label": "ブランド"
+        },
+        {
+          "value": "retailer",
+          "label": "小売事業者またはマーケットプレイス"
+        },
+        {
+          "value": "enterprise",
+          "label": "エンタープライズ"
+        },
+        {
+          "value": "agency",
+          "label": "代理店"
+        }
+      ],
+      "catalogSize": [
+        {
+          "value": "under-1000",
+          "label": "1,000商品未満"
+        },
+        {
+          "value": "1000-10000",
+          "label": "1,000〜10,000商品"
+        },
+        {
+          "value": "10000-100000",
+          "label": "10,000〜100,000商品"
+        },
+        {
+          "value": "over-100000",
+          "label": "100,000商品超"
+        }
+      ],
+      "aiChannel": [
+        {
+          "value": "chatgpt",
+          "label": "ChatGPT"
+        },
+        {
+          "value": "claude",
+          "label": "Claude"
+        },
+        {
+          "value": "gemini",
+          "label": "Gemini"
+        },
+        {
+          "value": "copilot",
+          "label": "Microsoft Copilot"
+        },
+        {
+          "value": "perplexity",
+          "label": "Perplexity"
+        },
+        {
+          "value": "amazon",
+          "label": "Amazon"
+        },
+        {
+          "value": "unsure",
+          "label": "まだ決まっていない"
+        }
+      ],
+      "track": [
+        {
+          "value": "agency",
+          "label": "代理店"
+        },
+        {
+          "value": "technology",
+          "label": "テクノロジーパートナー"
+        },
+        {
+          "value": "creator",
+          "label": "クリエイター"
+        }
+      ]
+    },
+    "validation": {
+      "required": "この項目を入力してください。",
+      "email": "有効なメールアドレスを入力してください。",
+      "website": "yourstore.com のような有効なWebサイトを入力してください。",
+      "choice": "選択してください。",
+      "tooLong": "入力内容を短くしてください。"
+    },
+    "privacy": {
+      "text": "これらの情報は英語での返信に使用します。お問い合わせ内容は最終連絡から最長24か月間保持されます。削除を希望する場合は、それ以前でも依頼できます。",
+      "link": "プライバシーポリシー"
+    },
+    "action": {
+      "primary": "デモリクエストを送信",
+      "secondary": "戻る",
+      "tertiary": "続行",
+      "quaternary": "15分の通話を予約"
+    },
+    "pending": "送信中…",
+    "status": {
+      "sentTitle": "リクエストを受け付けました。",
+      "sentDescription": "入力されたメールアドレス宛にご連絡します。このページは閉じても問題ありません。",
+      "invalid": "入力内容を確認して、もう一度お試しください。",
+      "limited": "リクエストが多すぎます。10分後にもう一度お試しください。",
+      "unavailable": "リクエストを送信できませんでした。入力内容は保持されています。もう一度お試しいただくか、support@ecentic.ai までお問い合わせください。"
+    },
+    "dialog": {
+      "loading": "フォームを読み込み中…",
+      "action": {
+        "primary": "閉じる"
+      }
+    }
+  }
+}

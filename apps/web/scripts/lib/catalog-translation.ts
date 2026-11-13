@@ -9,6 +9,23 @@ export type CatalogValue =
   | CatalogValue[]
   | { [key: string]: CatalogValue };
 
+/** Retries may split a failed batch; only current, unapproved IDs still fail. */
+export const unresolvedCatalogFailures = (
+  failures: Record<string, { ids: string[]; reason: string }>,
+  entries: Record<string, { sourceHash: string; text: string }>,
+  sourceHashes: ReadonlyMap<string, string>,
+) =>
+  Object.fromEntries(
+    Object.entries(failures).flatMap(([batch, failure]) => {
+      const ids = failure.ids.filter(
+        (id) =>
+          sourceHashes.has(id) &&
+          entries[id]?.sourceHash !== sourceHashes.get(id),
+      );
+      return ids.length ? [[batch, { ...failure, ids }]] : [];
+    }),
+  );
+
 export const flattenCatalog = (
   value: CatalogValue,
   path = "",
@@ -84,6 +101,9 @@ export const catalogInvariantReason = (
   const field = path.split(".").at(-1) ?? "";
   if (["id", "key", "href", "src", "slug", "color"].includes(field)) {
     return "Resource identifier, route or presentation token";
+  }
+  if (/^reviewCode\.checkout\.rows\.2\.(before|after)$/.test(path)) {
+    return "Checkout contact_step enum in a serialized code example";
   }
   if (/^enterpriseLead\.options\.[^.]+\.\d+\.value$/.test(path)) {
     return "Submitted form option identifier; its adjacent label is translated";
@@ -168,7 +188,15 @@ export const catalogTranslationUnit = (
       : undefined,
     context: invariant
       ? invariant
-      : `ecentic website resource ${id}. ${/legal\.|privacy|terms|consent/i.test(id) ? "Legal or consent copy: preserve every obligation, qualification and scope." : /title|headline|accent/.test(id) ? "Heading or headline fragment; read adjacent fields as one thought." : /action|button|label|primary|secondary/.test(id) ? "Concise interface label or action; retain what the action actually does." : /description|body|answer|paragraph|content/.test(id) ? "Explanatory prose; write idiomatically while preserving all facts and qualifiers." : "Visible interface, marketing or accessibility copy."}`,
+      : /legal\.|privacy|terms|consent/i.test(id)
+        ? "Legal or consent copy."
+        : /title|headline|accent/.test(id)
+          ? "Heading fragment; read adjacent fields together."
+          : /action|button|label|primary|secondary/.test(id)
+            ? "Interface label or action."
+            : /description|body|answer|paragraph|content/.test(id)
+              ? "Explanatory prose."
+              : "Interface, marketing or accessibility copy.",
   };
 };
 

@@ -1,0 +1,224 @@
+{
+  "shopify": {
+    "meta": {
+      "title": "AI per Shopify — ottimizzazione di schede prodotto e catalogo",
+      "description": "AI per negozi Shopify che hanno bisogno di schede prodotto più efficaci, analisi dei concorrenti più chiare e aggiornamenti approvati inviati direttamente all’Admin di Shopify."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "shopify": "AI per negozi Shopify"
+    },
+    "hero": {
+      "eyebrow": "Shopify",
+      "title": {
+        "primary": "AI per negozi Shopify che hanno bisogno di",
+        "accent": "più di semplici testi generati automaticamente."
+      },
+      "description": "Collega il tuo catalogo, scopri perché gli agenti AI per gli acquisti scelgono i concorrenti invece dei tuoi prodotti e pubblica aggiornamenti approvati di titoli e descrizioni direttamente in Shopify.",
+      "assurances": [
+        "Installazione in 2 minuti, nessuno sviluppatore necessario",
+        "Gli aggiornamenti approvati vengono pubblicati nel negozio tramite l’Admin API",
+        "Visualizza prima il tuo punteggio gratuito"
+      ],
+      "art": {
+        "alt": "Illustrazione ASCII art di una borsa per acquisti"
+      },
+      "badge": {
+        "alt": "Shopify",
+        "label": "Built for Shopify"
+      },
+      "action": {
+        "primary": "Installa su Shopify",
+        "secondary": "Scopri come funziona"
+      }
+    },
+    "why": {
+      "number": "01",
+      "title": "Perché i merchant Shopify superano i limiti dell’AI nativa.",
+      "description": "La maggior parte dei merchant Shopify prima o poi raggiunge un limite con gli strumenti di generazione nativi. Ecco cosa viene dopo.",
+      "paragraphs": [
+        "La maggior parte dei team Shopify ha già le basi: un negozio online, un catalogo e un flusso di gestione dell’assortimento. La vera sfida è che oggi la visibilità dei prodotti dipende da molto più del design del tema o dei risultati pubblicitari. Titoli, descrizioni, attributi e contesto competitivo contribuiscono tutti a rendere un prodotto facile da consigliare.",
+        "Il workflow AI più utile per i negozi Shopify va oltre la semplice generazione. I merchant devono sapere quali prodotti hanno prestazioni inferiori, quale scheda prodotto concorrente continua a prevalere e quali modifiche vale la pena pubblicare per prime."
+      ],
+      "panelTitle": "Per chi è adatto questo momento decisionale",
+      "audiences": [
+        {
+          "title": "Valutazione della categoria",
+          "description": "Team che stanno valutando soluzioni AI per negozi Shopify e decidendo cosa includere nello stack."
+        },
+        {
+          "title": "Integrare Shopify Magic",
+          "description": "Merchant che cercano un’alternativa o un complemento alla generazione nativa di contenuti."
+        },
+        {
+          "title": "Collegare le modifiche ai risultati",
+          "description": "Operatori che vogliono miglioramenti delle schede prodotto collegati a risultati competitivi misurabili."
+        },
+        {
+          "title": "Chiudere il ciclo di pubblicazione",
+          "description": "Negozi che hanno bisogno di un collegamento più stretto tra insight sul catalogo e ciò che viene realmente pubblicato."
+        }
+      ]
+    },
+    "workflow": {
+      "number": "02",
+      "title": "Il workflow Shopify in ecentic.",
+      "description": "Il workflow collega il catalogo, mette in evidenza i gap competitivi e rende possibile pubblicare i miglioramenti direttamente in Shopify invece di creare un altro documento scollegato.",
+      "paragraph": "Collega il negozio, scegli i prodotti che contano, confrontali con i concorrenti e approva poi la pubblicazione degli aggiornamenti nel negozio tramite l’Admin API. Non esci mai dal flusso di lavoro del catalogo Shopify.",
+      "panelTitle": "Collega, analizza, pubblica",
+      "outcomes": [
+        {
+          "title": "Dai priorità agli SKU giusti",
+          "description": "Un modo più chiaro per decidere quali prodotti richiedono attenzione per primi."
+        },
+        {
+          "title": "Scopri perché le pagine perdono",
+          "description": "Maggiore visibilità sui motivi per cui le pagine prodotto perdono rispetto a concorrenti specifici."
+        },
+        {
+          "title": "Rivedi prima della pubblicazione",
+          "description": "Revisione più rapida degli aggiornamenti delle schede prodotto prima che vengano pubblicati nel negozio online."
+        },
+        {
+          "title": "Resta in Shopify",
+          "description": "Un flusso di pubblicazione che si integra con il workflow esistente del catalogo Shopify."
+        }
+      ],
+      "steps": [
+        {
+          "title": "Collega e importa",
+          "description": "Installa dall’App Store di Shopify e il tuo catalogo verrà importato durante l’onboarding, senza modifiche al tema."
+        },
+        {
+          "title": "Scegli i prodotti",
+          "description": "Decidi quali articoli inserire nel ciclo di ottimizzazione e simulazione, da un singolo prodotto di punta all’intero catalogo."
+        },
+        {
+          "title": "Confronta e analizza",
+          "description": "I prodotti selezionati vengono confrontati con i concorrenti così puoi vedere dove i sistemi AI preferiscono un’altra opzione e perché."
+        },
+        {
+          "title": "Approva e pubblica gli aggiornamenti",
+          "description": "Rivedi la versione migliorata di ogni scheda prodotto e pubblica le modifiche approvate su Shopify tramite l’Admin API."
+        }
+      ]
+    },
+    "compare": {
+      "number": "03",
+      "title": "Dove si posiziona rispetto a Shopify Magic.",
+      "description": "La generazione nativa aiuta i merchant a creare testi. ecentic aiuta i merchant a valutare, dare priorità e migliorare le schede prodotto con un collegamento diretto ai risultati competitivi.",
+      "shopifyMagic": {
+        "badge": "Shopify Magic",
+        "title": "Ideale per scrivere bozze più velocemente.",
+        "description": "Gli strumenti AI nativi fanno risparmiare tempo quando l’obiettivo è produrre testi, soprattutto nelle prime fasi del merchandising.",
+        "strengths": [
+          "Generazione nativa di contenuti all’interno dell’admin Shopify",
+          "Bozze rapide di descrizioni per le prime attività di merchandising",
+          "Varianti di testo rapide quando la velocità è l’unico obiettivo"
+        ]
+      },
+      "ecentic": {
+        "badge": "ecentic sopra Shopify",
+        "title": "Pensato per vincere il confronto.",
+        "description": "Riscrivere il testo è la parte facile. La parte utile è capire se la tua pagina è facile da valutare per un sistema AI per gli acquisti e se la modifica proposta aumenta le probabilità che il tuo prodotto venga scelto.",
+        "strengths": [
+          "Simula come gli agenti AI per gli acquisti confrontano i tuoi prodotti",
+          "Confronta le schede prodotto con i concorrenti che continuano a prevalere",
+          "Analizza perché una pagina perde: dati mancanti, posizionamento debole, contesto poco chiaro",
+          "Trasforma gli insight in aggiornamenti pronti per l’approvazione e pubblicati su Shopify"
+        ]
+      },
+      "paragraph": "La sola generazione è sufficiente quando l’unico obiettivo è la velocità. La differenza conta quando il catalogo, i concorrenti o il processo di revisione diventano un ostacolo.",
+      "triggersTitle": "Quando la differenza inizia a contare",
+      "triggers": [
+        {
+          "title": "Dimensione del catalogo",
+          "description": "Il catalogo è abbastanza grande da rallentare ogni aggiornamento con la revisione manuale."
+        },
+        {
+          "title": "Giustificare le modifiche",
+          "description": "Il team deve spiegare perché una modifica alla scheda prodotto è importante prima di pubblicarla."
+        },
+        {
+          "title": "Chiarezza oltre il prezzo",
+          "description": "I concorrenti continuano a prevalere grazie alla chiarezza del prodotto più che al solo prezzo."
+        },
+        {
+          "title": "Workflow ripetibili",
+          "description": "I responsabili merchandising vogliono un processo invece di modifiche isolate e occasionali."
+        }
+      ]
+    },
+    "related": {
+      "number": "04",
+      "title": "Continua a esplorare l’ecosistema Shopify.",
+      "description": "Approfondisci l’ottimizzazione delle schede prodotto, il confronto tra piattaforme o i contenuti del blog per avere più contesto.",
+      "items": [
+        {
+          "href": "/features/product-listings",
+          "name": "Flusso di lavoro",
+          "title": "Inizia con l’ottimizzazione AI delle schede prodotto",
+          "description": "Scopri come il workflow delle schede prodotto migliora titoli, descrizioni e contesto strutturato dei prodotti prima della pubblicazione.",
+          "label": "Visualizza il workflow delle schede prodotto",
+          "color": "primary"
+        },
+        {
+          "href": "/compare/best-ai-ecommerce-tools",
+          "name": "Confronto",
+          "title": "Confronta le categorie di strumenti AI per ecommerce prima di decidere",
+          "description": "Usa la guida per capire quando la generazione nativa Shopify è sufficiente e quando un workflow di ottimizzazione più ampio aggiunge valore.",
+          "label": "Leggi la guida al confronto",
+          "color": "accent"
+        },
+        {
+          "href": "/blog",
+          "name": "Blog",
+          "title": "Leggi le guide di supporto su traffico AI e dati strutturati",
+          "description": "Usa il blog per approfondire gli aspetti operativi che rafforzano nel tempo i miglioramenti delle tue pagine prodotto Shopify.",
+          "label": "Visita il blog",
+          "color": "accent"
+        },
+        {
+          "href": "/features",
+          "name": "Funzionalità",
+          "title": "Esamina l’intero stack di strumenti AI per ecommerce",
+          "description": "Torna alla pagina principale delle funzionalità se il tuo team sta valutando l’intero workflow invece di una sola piattaforma.",
+          "label": "Apri la pagina funzionalità",
+          "color": "accent"
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "05",
+      "title": "Domande frequenti",
+      "description": "Domande comuni dei merchant Shopify che valutano workflow di ottimizzazione AI."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Cosa significa in pratica AI per negozi Shopify?",
+          "answer": "Per i commercianti Shopify significa collegare il catalogo, capire come si comportano i prodotti nei confronti svolti dall’AI e trasformare i risultati in aggiornamenti approvati delle schede prodotto, che possono essere pubblicati su Shopify."
+        },
+        {
+          "question": "In cosa si differenzia dall’utilizzo del solo Shopify Magic?",
+          "answer": "Shopify Magic aiuta con la generazione nativa di contenuti. ecentic aggiunge simulazione, benchmarking dei concorrenti, analisi e workflow di ottimizzazione pronti per l’approvazione, così i merchant possono capire perché i prodotti perdono e cosa correggere dopo."
+        },
+        {
+          "question": "I merchant Shopify possono pubblicare le modifiche direttamente nel negozio?",
+          "answer": "Sì. Il workflow documentato include la scrittura degli aggiornamenti approvati di titoli e descrizioni tramite la Shopify Admin API per i merchant che vogliono mantenere il ciclo di ottimizzazione collegato al catalogo live."
+        },
+        {
+          "question": "Quando i team Shopify dovrebbero andare oltre gli strumenti AI nativi?",
+          "answer": "Quando il team deve capire perché un concorrente specifico continua a prevalere, quali attributi della scheda prodotto contano di più e come dare priorità ai miglioramenti del catalogo su un gran numero di SKU. È in questo momento che un workflow di ottimizzazione dedicato aggiunge più valore rispetto alla sola generazione integrata."
+        }
+      ]
+    },
+    "footer": {
+      "action": {
+        "primary": "Collega il tuo negozio Shopify",
+        "secondary": "Torna alle funzionalità"
+      },
+      "note": "Installazione in 2 minuti · Nessuna carta di credito · Visualizza prima il tuo punteggio gratuito"
+    }
+  }
+}

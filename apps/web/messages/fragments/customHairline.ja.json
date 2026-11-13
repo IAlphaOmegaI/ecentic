@@ -1,0 +1,13 @@
+{
+  "commerceFigures": {
+    "shopifyBag": "ポインター方向へ持ち上がるカタログカード付きのShopifyショッピングバッグ",
+    "shoppingBot": "商品カードを追跡するスキャナーを備えたAIショッピングボット",
+    "custom": {
+      "rest": "待機中",
+      "product": "商品 {number}",
+      "selectedProduct": "選択済み商品 {number}",
+      "scanning": "スキャン中",
+      "selected": "商品を選択済み"
+    }
+  }
+}

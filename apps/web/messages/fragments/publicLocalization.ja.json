@@ -1,0 +1,54 @@
+{
+  "general": {
+    "media": {
+      "interfaceEnglish": "製品の画面は英語で表示しています。",
+      "videoEnglish": "動画の音声は英語です。選択した言語の書き起こしをご覧いただけます。"
+    },
+    "fileUpload": {
+      "label": "ファイルをアップロード"
+    },
+    "dismiss": {
+      "label": "閉じる"
+    },
+    "notifications": {
+      "label": "通知"
+    }
+  },
+  "resources": {
+    "mcpArtTitle": "JSON-RPCツール"
+  },
+  "enterprisePlatform": {
+    "artworkStages": {
+      "product": "商品",
+      "cart": "カート",
+      "checkout": "購入手続き"
+    }
+  },
+  "dashboard": {
+    "ucpPlaygroundDashboard": {
+      "cart": {
+        "action": {
+          "primary": "カートを開く"
+        }
+      }
+    }
+  },
+  "promptInput": {
+    "placeholder": "何を知りたいですか？",
+    "attachments": {
+      "label": "写真やファイルを追加"
+    },
+    "screenshot": {
+      "label": "スクリーンショットを撮影"
+    },
+    "action": {
+      "primary": "メッセージを送信",
+      "secondary": "停止"
+    },
+    "errors": {
+      "acceptedTypes": "対応する形式のファイルがありません。",
+      "maximumSize": "すべてのファイルがサイズの上限を超えています。",
+      "maximumCount": "ファイル数が多すぎるため、一部を追加できませんでした。"
+    }
+  }
+}

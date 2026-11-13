@@ -1,0 +1,526 @@
+{
+  "enterpriseHome": {
+    "meta": {
+      "title": "AIショッピング最適化とエージェントによる購入手続き | ecentic",
+      "description": "AIアシスタントが読み取る商品データを改善し、AIが購入できるよう購入手続きを整備し、そのルール変更にも対応するAIコマースレイヤー。"
+    },
+    "hero": {
+      "eyebrow": "AIコマースレイヤー",
+      "title": "商品カタログと、販売を担うAIをつなぐレイヤー。",
+      "description": "Googleで検索しても、Amazonで買い物しても、チャットボットに質問しても、今やAIは商品を提示します。そして各アシスタントには、商品を選び購入するための独自ルールがあります。ecenticは、カタログとそれらのアシスタントの間に入るレイヤーです。AIが読み取るデータを改善し、AIが購入できるよう購入手続きを整備し、そのルール変更にも対応します。",
+      "actions": [
+        {
+          "label": "デモを予約",
+          "href": "/demo"
+        },
+        {
+          "label": "無料でストアを診断",
+          "href": "/sign-up"
+        }
+      ],
+      "facts": [
+        "Shopify・WooCommerceとの連携、または対応商品フィードやCSVのインポートに対応。"
+      ],
+      "screenshot": {
+        "alt": "サンプルデータであることを明示したecentic勝率概要画面。",
+        "caption": "製品画面 · サンプルデータ"
+      }
+    },
+    "programs": {
+      "eyebrow": "参加プログラム",
+      "title": "以下のプログラムの支援を受けて開発。",
+      "items": [
+        {
+          "id": "plug-and-play",
+          "title": "Plug and Play"
+        },
+        {
+          "id": "microsoft-for-startups",
+          "title": "Microsoft for Startups"
+        },
+        {
+          "id": "red-bull-basement",
+          "title": "Red Bull Basement"
+        },
+        {
+          "id": "founder-games",
+          "title": "The Founder Games"
+        },
+        {
+          "id": "fil-rouge-capital",
+          "title": "Fil Rouge Capital"
+        }
+      ],
+      "missingAsset": ""
+    },
+    "businesses": {
+      "eyebrow": "02 · 対象ビジネス",
+      "title": "業種は違っても、向き合うのは同じ新しい購買者。",
+      "description": "販売方法と、チームが答えるべき問いから始めましょう。",
+      "painLabel": "よくある課題",
+      "items": [
+        {
+          "id": "brands",
+          "eyebrow": "ブランド",
+          "title": "AIの回答で選ばれる商品へ。",
+          "description": "DTCブランド・消費財ブランド",
+          "pains": [
+            "AIが同カテゴリの競合商品を推奨している。",
+            "小売業者のほうが自社商品をうまく説明している。",
+            "AIアシスタントがどの商品をスキップしているか把握できない。"
+          ],
+          "href": "/solutions/brands",
+          "label": "ブランド向けを見る"
+        },
+        {
+          "id": "retailers-and-marketplaces",
+          "eyebrow": "小売・マーケットプレイス",
+          "title": "数千の商品情報。AIエージェントに選ばれる機会は一度。",
+          "description": "大規模カタログ・多数のサプライヤー",
+          "pains": [
+            "AIアシスタントが比較できないサプライヤーデータ。",
+            "フィードとサイトで価格や在庫情報が一致していない。",
+            "すべての商品を手作業で確認するのは不可能。"
+          ],
+          "href": "/solutions/retailers-and-marketplaces",
+          "label": "小売向けを見る"
+        },
+        {
+          "id": "enterprise",
+          "eyebrow": "エンタープライズ",
+          "title": "AIは新しい販売チャネル。チャネルとして運用する。",
+          "description": "複数ブランド・複数市場・複数チーム",
+          "pains": [
+            "市場ごとに異なる購買質問が発生する。",
+            "カタログへのアクセス前にセキュリティ審査が必要。",
+            "AIを販売チャネルとして統括する担当がいない。"
+          ],
+          "href": "/solutions/enterprise",
+          "label": "エンタープライズ向けを見る"
+        },
+        {
+          "id": "agencies-and-partners",
+          "eyebrow": "代理店・パートナー",
+          "title": "既存サービスにAIコマースを追加。",
+          "description": "顧客ストアの運営代行",
+          "pains": [
+            "顧客からChatGPTについて質問され、回答が必要。",
+            "カタログ監査が今も手作業で行われている。",
+            "この新しいチャネル向けに明確なサービスが必要。"
+          ],
+          "href": "/solutions/agencies-and-partners",
+          "label": "代理店向けを見る"
+        }
+      ]
+    },
+    "loop": {
+      "eyebrow": "03 · 仕組み",
+      "title": "商品フィードからAIによる購入手続きまで。",
+      "description": "接続、比較、改善、販売、再確認。公開する変更内容は選択できます。",
+      "steps": [
+        {
+          "id": "connect",
+          "title": "接続",
+          "body": "Shopify、WooCommerce、対応XML・JSONフィード、またはCSVを通じて、カタログを一元化します。",
+          "tags": [
+            "Shopify",
+            "WooCommerce",
+            "商品フィード"
+          ],
+          "href": "/platform/connect",
+          "label": "接続を見る"
+        },
+        {
+          "id": "simulate",
+          "title": "シミュレーション",
+          "body": "比較時にChatGPT、Claude、Geminiがどの商品を選ぶかを確認し、それぞれのシミュレーション判断理由を確認できます。",
+          "tags": [
+            "勝率",
+            "競合比較カード",
+            "対応状況監査"
+          ],
+          "href": "/platform/simulate",
+          "label": "シミュレーションを見る"
+        },
+        {
+          "id": "fix",
+          "title": "改善",
+          "body": "Applyでは既存の商品情報をもとにタイトルと説明文を生成・公開します。構造化データの公開とMerchant Center同期は別操作で行います。",
+          "tags": [
+            "商品情報",
+            "構造化データ",
+            "Merchant Center"
+          ],
+          "href": "/platform/fix",
+          "label": "改善を見る"
+        },
+        {
+          "id": "sell",
+          "title": "販売",
+          "body": "WooCommerceでエージェントによる購入手続きを接続してフローをテストし、既存の決済プロバイダーをそのまま利用します。プラットフォームの利用条件や、決済処理の引き継ぎは引き続き必要です。",
+          "tags": [
+            "エージェントによる購入手続き",
+            "購入手続きテスト",
+            "利用中の決済方法"
+          ],
+          "href": "/platform/sell",
+          "label": "販売を見る"
+        },
+        {
+          "id": "track",
+          "title": "追跡",
+          "body": "Shopifyで検出されたAI経由流入を追跡し、完了済みシミュレーションを比較し、再確認したいタイミングで新しいスキャンを依頼できます。",
+          "tags": [
+            "AIトラフィック",
+            "手動再スキャン",
+            "複数ストア"
+          ],
+          "href": "/platform/track",
+          "label": "計測を見る"
+        }
+      ]
+    },
+    "film": {
+      "eyebrow": "04 · 動作を見る",
+      "title": "1分でわかるecentic。",
+      "description": "比較からカタログの次の意思決定まで、製品を短時間で紹介します。",
+      "caption": "ecentic製品紹介動画",
+      "action": {
+        "primary": "動画を見る"
+      }
+    },
+    "channels": {
+      "eyebrow": "05 · AIチャネル",
+      "title": "1つのカタログを、顧客が利用するAIアシスタントへ。",
+      "description": "各アシスタントには独自の商品ソースと購入ルールがあります。ecenticが現在対応している内容と今後の予定を確認できます。",
+      "checked": "2026年11月10日時点で確認。各チャネルページには日付とソースへのリンクを掲載しています。",
+      "items": [
+        {
+          "id": "google",
+          "title": "Google AI Mode と Gemini",
+          "body": "Geminiシミュレーションに加え、Shopify向けMerchant Center同期に対応。",
+          "status": "simulated",
+          "statusLabel": "シミュレーション",
+          "href": "/ai-channels/google-ai-mode-gemini"
+        },
+        {
+          "id": "chatgpt",
+          "title": "ChatGPT",
+          "body": "OpenAIのフィードルールに基づくシミュレーションと商品情報チェック。",
+          "status": "simulated",
+          "statusLabel": "シミュレーション",
+          "href": "/ai-channels/chatgpt"
+        },
+        {
+          "id": "claude",
+          "title": "Claude",
+          "body": "Claudeが自社商品をどのように比較するかをシミュレーション。",
+          "status": "simulated",
+          "statusLabel": "シミュレーション",
+          "href": "/ai-channels/claude"
+        },
+        {
+          "id": "copilot",
+          "title": "Microsoft Copilot",
+          "body": "Microsoft Merchant Centerフィードのエクスポートを予定しています。",
+          "status": "coming-soon",
+          "statusLabel": "近日公開",
+          "href": "/ai-channels/microsoft-copilot"
+        },
+        {
+          "id": "perplexity",
+          "title": "Perplexity",
+          "body": "ストアスキャンシミュレーションとマーチャントフィードを予定しています。",
+          "status": "coming-soon",
+          "statusLabel": "近日公開",
+          "href": "/ai-channels/perplexity"
+        },
+        {
+          "id": "amazon",
+          "title": "Amazon",
+          "body": "Shop Directへのカタログ配信を予定しています。",
+          "status": "coming-soon",
+          "statusLabel": "近日公開",
+          "href": "/ai-channels/amazon"
+        }
+      ],
+      "link": {
+        "label": "すべて見る",
+        "href": "/ai-channels"
+      }
+    },
+    "integration": {
+      "eyebrow": "06 · 連携",
+      "title": "今お使いのシステムに接続。",
+      "description": "直接連携、対応フィード、現在開発中の連携機能を掲載。各タイルに現在の対応状況を表示しています。",
+      "counter": {
+        "live": "提供中",
+        "feed": "商品フィード経由",
+        "soon": "近日公開"
+      },
+      "links": [
+        {
+          "label": "すべての連携を見る",
+          "href": "/integrations"
+        },
+        {
+          "label": "連携をリクエスト",
+          "href": "/integrations#request"
+        }
+      ]
+    },
+    "mechanisms": {
+      "eyebrow": "07 · 内部機能",
+      "title": "「AIに選ばれない」から「AI経由で購入される」までのすべて。",
+      "items": [
+        {
+          "id": "simulations",
+          "title": "エージェントシミュレーション",
+          "body": "ChatGPT、Claude、Geminiが、自社商品と競合商品のどちらを選ぶかを記録付きでシミュレーションします。",
+          "tags": [
+            "勝率",
+            "リプレイ",
+            "競合比較カード"
+          ],
+          "href": "/platform/simulate",
+          "label": "シミュレーションを見る"
+        },
+        {
+          "id": "readiness",
+          "title": "対応状況監査",
+          "body": "クローラールール、サンプルページHTML、商品識別子、フィード適格性を確認します。アクセスできないページはレビュー対象として表示されます。",
+          "tags": [
+            "クローラー",
+            "スキーマ",
+            "GTIN"
+          ],
+          "href": "/platform/simulate#readiness",
+          "label": "監査を見る"
+        },
+        {
+          "id": "catalog",
+          "title": "カタログ改善",
+          "body": "既存の商品情報をもとにタイトルと説明文を生成・公開します。構造化データには専用の公開操作があります。",
+          "tags": [
+            "商品情報",
+            "属性",
+            "公開"
+          ],
+          "href": "/platform/fix",
+          "label": "カタログ改善を見る"
+        },
+        {
+          "id": "merchant-center",
+          "title": "Merchant Center同期",
+          "body": "公開済みの商品情報改善内容と購入手続き属性を、Shopify向けの個別サプリメンタルフィード同期で送信します。",
+          "tags": [
+            "サプリメンタルフィード",
+            "診断",
+            "Shopify"
+          ],
+          "href": "/platform/fix#merchant-center",
+          "label": "同期を見る"
+        },
+        {
+          "id": "checkout",
+          "title": "WooCommerce向けエージェントによる購入手続き",
+          "body": "対応するエージェントの購入フローが、自社ストアと利用中の決済プロバイダーを経由できるようにします。購入手続きのテストと、設定可能な制御機能も備えています。",
+          "tags": [
+            "設定",
+            "テスト",
+            "検証ツール"
+          ],
+          "href": "/platform/sell",
+          "label": "エージェントによる購入手続きを見る"
+        },
+        {
+          "id": "developers",
+          "title": "API、MCPサーバー、CLI",
+          "body": "公開インターフェースを利用して、検出、プラン、ストア接続、オンボーディング状況を確認できます。",
+          "tags": [
+            "REST",
+            "MCP",
+            "CLI"
+          ],
+          "href": "/docs",
+          "label": "開発者ドキュメントを開く"
+        }
+      ]
+    },
+    "proof": {
+      "eyebrow": "08 · 現時点での測定結果",
+      "title": "現時点での測定結果。",
+      "stats": [
+        {
+          "value": "36,797",
+          "title": "シミュレーション購入",
+          "body": "ChatGPT、Claude、Gemini、Perplexityで実施。",
+          "footnote": "1"
+        },
+        {
+          "value": "2.8×",
+          "title": "同一カタログで同じ商品が選ばれる頻度",
+          "body": "ChatGPTは51.6%の割合で同じ商品を選択。ClaudeとGeminiは約18.5%。",
+          "footnote": "1"
+        },
+        {
+          "value": "+12%",
+          "title": "DUA Flavoursの訪問数",
+          "body": "2026年4月〜7月のAIアシスタント経由または直接流入による訪問数。DUA Flavours、ecenticパイロット、許可を得て公開。",
+          "footnote": "2"
+        }
+      ],
+      "study": {
+        "title": "大手スピリッツマーケットプレイス",
+        "body": "9,699商品のうち88%に、エージェントが読み取るデータの不備が少なくとも1件ありました。在庫にあるボトル2本の購入先をエージェントに尋ねたところ、そのマーケットプレイスが挙がったのは20回中0回でした。",
+        "note": "匿名化された調査結果です。1つのカタログと質問セットのスナップショットであり、すべてのストアに対する予測ではありません。"
+      },
+      "footnotes": [
+        {
+          "marker": "1",
+          "text": "ecenticシミュレーション、2026年。シミュレーションによる購買判断であり、実際のAIエージェント流入ではありません。Perplexityは調査対象に含まれていましたが、ストアスキャンはChatGPT、Claude、Geminiで実施しています。手法説明はまだ公開されていません。"
+        },
+        {
+          "marker": "2",
+          "text": "DUA Flavoursが書面で確認したパイロット結果です。売上ではなく訪問数です。直接流入を含み、ecenticによる増分売上を証明するものではありません。"
+        }
+      ],
+      "pipeline": "大規模小売、旅行、フレキシブルワークスペース分野の企業とパイロット導入を協議中。"
+    },
+    "procurement": {
+      "eyebrow": "09 · エンタープライズ",
+      "title": "セキュリティ審査で確認すべき問いを整理。",
+      "items": [
+        {
+          "title": "公開内容は選択可能。",
+          "body": "商品情報の変更には、選択したApply操作が必要です。この操作でタイトルと説明文を生成・公開します。構造化データとMerchant Center同期には別の制御があります。Shopify接続時には訪問トラッキングもインストールされます。"
+        },
+        {
+          "title": "公開データでパイロット開始。",
+          "body": "アクセス可能な公開カタログまたは対応フィードから開始します。システム接続や書き込み権限付与の前に、対象範囲を合意します。"
+        },
+        {
+          "title": "確認可能なデータ取り扱い。",
+          "body": "プライバシーポリシーと製品で使用するプロバイダーを確認できます。パイロット向けのデータ処理契約、導入方式、契約要件について協議可能です。"
+        },
+        {
+          "title": "創業メンバーが対応。",
+          "body": "最初のカテゴリ選定からパイロット結果の共有まで、ecenticを開発するメンバーと直接やり取りできます。"
+        }
+      ],
+      "links": [
+        {
+          "label": "お問い合わせ",
+          "href": "/demo"
+        },
+        {
+          "label": "セキュリティと信頼性を見る",
+          "href": "/security"
+        }
+      ]
+    },
+    "pricing": {
+      "eyebrow": "10 · 料金",
+      "title": "無料で開始。AIが購入を始めたら拡張。",
+      "description": "ストアとチームに合った開始方法を選べます。",
+      "items": [
+        {
+          "title": "無料ストア診断",
+          "body": "アカウントを作成して、自社商品がどう比較されるか確認できます。",
+          "href": "/sign-up",
+          "label": "無料でストアを診断"
+        },
+        {
+          "title": "単一ストア向けセルフサーブプラン",
+          "body": "月額プランまたは従量課金制。現在の上限とアトリビューションルールは料金ページに記載しています。",
+          "href": "/pricing",
+          "label": "プランを比較"
+        },
+        {
+          "title": "要件に合わせたエンタープライズパイロット",
+          "body": "カテゴリ、基準値、チームが必要とする意思決定内容を事前に整理します。",
+          "href": "/demo",
+          "label": "パイロットについて相談"
+        }
+      ],
+      "action": {
+        "label": "料金を見る",
+        "href": "/pricing"
+      }
+    },
+    "editorial": {
+      "eyebrow": "11 · チームより",
+      "title": "現在わかっていること。",
+      "description": "ecenticチームによる製品ノートと実践ガイド。",
+      "loading": "記事を読み込み中",
+      "empty": "次回の製品ノートとガイドはここに表示されます。",
+      "read": "記事を読む",
+      "links": [
+        {
+          "label": "リソースを見る",
+          "href": "/resources"
+        }
+      ]
+    },
+    "faq": {
+      "title": "導入前によくある質問。",
+      "items": [
+        {
+          "question": "ecenticとは何ですか？",
+          "answer": "ecenticは、カタログと販売を担うAIアシスタントの間に入るレイヤーです。ChatGPT、Claude、Geminiがどのように商品を比較するかをシミュレーションし、AIが読み取るデータの改善を支援し、WooCommerceでのエージェントによる購入手続きにも対応します。"
+        },
+        {
+          "question": "どのAIアシスタントに対応していますか？",
+          "answer": "ストアシミュレーションはChatGPT、Claude、Geminiで実行されます。Shopifyの訪問トラッキングでは、ChatGPT、Perplexity、Claude、Gemini、Copilotを含む対応AIリファラルシグナルを認識します。購入手続き対応はストア構成とショッピングプラットフォームの利用条件に依存します。各AIチャネルページで現在の対応状況を確認できます。"
+        },
+        {
+          "question": "ecenticが許可なくストアを変更することはありますか？",
+          "answer": "商品情報の変更には、選択したApply操作が必要です。この操作でタイトルと説明文を生成・公開します。構造化データとMerchant Center同期には別の制御があります。Shopify接続時には訪問トラッキングスクリプトもインストールされます。商品コンテンツをインポートしても内容を書き換えることはありません。"
+        },
+        {
+          "question": "利用中のプラットフォームに対応していますか？",
+          "answer": "Shopify と WooCommerce は直接接続できます。その他のプラットフォームでは、対応する XML または JSON の商品フィード、もしくは CSV をインポートできます。フィード対応はエクスポート構造とマッピングされた項目に依存します。フィード経由のインポートでは、元のプラットフォームへ書き戻しは行いません。"
+        },
+        {
+          "question": "パイロット導入にシステムアクセスは必要ですか？",
+          "answer": "パイロット導入は、公開されているカタログまたは対応する商品フィードから開始できます。システム連携やストアへの書き込みアクセスが必要になる前に、範囲を事前に合意します。"
+        },
+        {
+          "question": "データはどのように扱われますか？",
+          "answer": "セキュリティページでは、現在のカタログへのアクセス、トラッキング、AIプロバイダーによるデータの取り扱いについて説明しています。プライバシーポリシーと製品で利用するプロバイダーを確認したうえで、パイロットの開始前に、データ処理、デプロイ、契約の要件を当社と確認してください。"
+        },
+        {
+          "question": "これは SEO ですか？",
+          "answer": "ecentic は、AI ショッピングアシスタントが商品比較や購入時に利用する商品データと購入手続きに注力しています。構造化データやカタログ品質の改善と重なる部分はありますが、測定対象は検索順位ではなく、シミュレーション、検出された AI 経由の流入、購入手続きのチェックです。"
+        },
+        {
+          "question": "料金はいくらですか？",
+          "answer": "ストアチェックは、アカウントがあれば無料で利用できます。各ストアでは月額プランまたは従量課金を選べます。成果報酬のアトリビューションルールと上限は料金ページで説明しています。アトリビューションは売上の純増を証明するものではありません。エンタープライズ向けパイロットの範囲は、ご相談のうえで定めます。"
+        }
+      ]
+    },
+    "closing": {
+      "title": "AIが買い物をするときも、売上につなげる。",
+      "description": "自社商品が選ばれているか確認できます。",
+      "actions": [
+        {
+          "label": "デモを予約",
+          "href": "/demo"
+        },
+        {
+          "label": "無料でストアをチェック",
+          "href": "/sign-up"
+        }
+      ]
+    }
+  },
+  "home": {
+    "heroVideo": {
+      "heading": "ecenticの動作を見る",
+      "caption": "プロダクト動画を見る",
+      "action": {
+        "primary": "動画を再生"
+      }
+    }
+  }
+}

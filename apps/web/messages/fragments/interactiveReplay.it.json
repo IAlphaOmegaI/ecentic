@@ -1,0 +1,60 @@
+{
+  "interactiveReplay": {
+    "title": "Segui una decisione simulata.",
+    "description": "Guarda un agente confrontare due schede prodotto di sedie da ufficio, trovare informazioni mancanti e ripetere il confronto.",
+    "sample": "Esempio con dati campione",
+    "rail": "Decisione d'acquisto simulata",
+    "controls": {
+      "play": "Riproduci",
+      "pause": "Pausa",
+      "previous": "Indietro",
+      "next": "Avanti"
+    },
+    "stages": {
+      "question": "La domanda",
+      "listings": "Due schede prodotto",
+      "fields": "Cosa legge",
+      "pick": "La scelta",
+      "fix": "Aggiungi le informazioni",
+      "rerun": "La nuova esecuzione"
+    },
+    "question": "Quale sedia da ufficio è adatta a un adulto più alto con meno di $400?",
+    "questionLabel": "Un acquirente chiede",
+    "questionNote": "Questa riproduzione è una decisione d'acquisto inventata. Non misura traffico AI reale.",
+    "listingNote": "Il fornitore indica l'intervallo di altezza della seduta e la capacità di carico. Queste informazioni mancano nella tua scheda prodotto confrontata.",
+    "reading": "Lettura",
+    "missingReading": "La tua scheda prodotto non indica questa informazione.",
+    "presentReading": "Entrambe le schede prodotto indicano questa informazione.",
+    "fieldsNote": "L'agente controlla i campi uno alla volta. Un'informazione mancante resta visibile come “Non indicato”.",
+    "pickLabel": "Scelta di esempio: scheda prodotto di un concorrente",
+    "pickReason": "Il concorrente indica l'intervallo di altezza della seduta e la capacità di carico, quindi l'agente può verificare questi requisiti di compatibilità.",
+    "fixNote": "Aggiungi le specifiche esistenti del fornitore alla scheda prodotto confrontata. Nessuna specifica viene inventata e questo esempio non modifica nulla in un negozio.",
+    "rerunLabel": "Nuova esecuzione di esempio: la tua scheda prodotto",
+    "rerunReason": "Con entrambe le specifiche indicate, questo agente di esempio sceglie la tua sedia dal prezzo più basso tra le due schede prodotto.",
+    "outcomeNote": "Questo cambiamento nella scelta è illustrativo. Una simulazione reale può portare a un risultato diverso.",
+    "listing": {
+      "own": "La tua scheda prodotto",
+      "rival": "Scheda prodotto di un concorrente",
+      "ownTitle": "Sedia da ufficio ergonomica",
+      "rivalTitle": "Sedia da ufficio regolabile"
+    },
+    "fields": {
+      "price": "Prezzo",
+      "seatHeight": "Intervallo di altezza della seduta",
+      "capacity": "Capacità di carico",
+      "variants": "Varianti colore"
+    },
+    "units": {
+      "centimeters": "cm",
+      "kilograms": "kg",
+      "variants": "colori"
+    },
+    "comparison": {
+      "present": "Indicato",
+      "missing": "Non indicato",
+      "meets": "Soddisfa il requisito",
+      "doesNotMeet": "Non lo soddisfa",
+      "required": "Letto in questa fase"
+    }
+  }
+}

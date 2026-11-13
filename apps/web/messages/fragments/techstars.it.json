@@ -1,0 +1,78 @@
+{
+  "techstars": {
+    "meta": {
+      "title": "ecentic per Techstars — riscatta la tua offerta per fondatori",
+      "description": "Un’offerta ecentic esclusiva per i fondatori Techstars: accesso esteso a Dominate, avvio con assistenza personalizzata e prezzi dedicati ai fondatori. Riscattala in meno di due minuti."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "page": "Techstars"
+    },
+    "hero": {
+      "eyebrow": "Techstars",
+      "title": {
+        "primary": "La tua offerta ecentic,",
+        "accent": "pronta da riscattare."
+      },
+      "description": "Un’offerta ecentic esclusiva per i fondatori Techstars: accesso esteso a Dominate, avvio con assistenza personalizzata e prezzi dedicati ai fondatori. Riscattala in meno di due minuti.",
+      "art": {
+        "alt": "Illustrazione ASCII di una stretta di mano"
+      },
+      "badge": {
+        "alt": "Techstars",
+        "label": "Offerta partner esclusiva"
+      }
+    },
+    "deal": {
+      "number": "01",
+      "title": "Cosa include l’offerta",
+      "description": "Pensato per i fondatori Techstars che preferiscono far scegliere i propri prodotti dagli agenti AI per gli acquisti invece di gestire manualmente un foglio di calcolo delle schede prodotto.",
+      "content": "ecentic ti mostra come gli agenti AI per gli acquisti confrontano i tuoi prodotti con quelli dei concorrenti, individua perché vinci o perdi e riscrive le tue schede prodotto per colmare il divario. L’offerta Techstars dà accesso all’intera piattaforma:\n\n- Accesso esteso a ecentic Dominate, con simulazioni continue su ChatGPT, Claude, Gemini e Perplexity\n- Ottimizzazione automatica con pubblicazione in un clic e avvisi sui cambiamenti di comportamento dei modelli\n- Generazione UCP per consentire agli agenti di verificare direttamente il tuo catalogo\n- Assistenza personalizzata per importare il tuo catalogo e prezzi dedicati ai fondatori dopo il periodo dell’offerta\n\nRiscatta l’offerta qui sotto: verificheremo la tua edizione del programma e ti invieremo il link di attivazione entro un giorno lavorativo."
+    },
+    "redeem": {
+      "number": "02",
+      "title": "Riscatta la tua offerta",
+      "description": "Dicci chi sei e cosa vuoi ottenere. Verifichiamo a quale edizione di Techstars hai partecipato e attiviamo la tua offerta. Non serve una carta di credito."
+    },
+    "howItWorks": {
+      "number": "03",
+      "title": "Come funziona il riscatto",
+      "description": "Tre passaggi dal modulo all’attivazione dell’offerta. La maggior parte dei fondatori esegue la prima simulazione già lo stesso giorno.",
+      "content": "Qui non ci sono procedure d’acquisto labirintiche. L’obiettivo è farti iniziare rapidamente con le simulazioni.\n\n- Invia il modulo con la tua azienda, l’edizione del programma a cui hai partecipato e ciò che vuoi ottenere con ecentic\n- Verifichiamo la tua partecipazione a quell’edizione nel portafoglio Techstars, di solito il giorno stesso\n- Ricevi un link di attivazione e assistenza personalizzata per importare il catalogo\n\nUna volta importato il catalogo, ecentic lo sottopone ai principali modelli AI per gli acquisti, ti mostra perché vengono scelti i concorrenti e trasforma i risultati in modifiche alle schede prodotto che puoi approvare con un clic."
+    },
+    "faqSection": {
+      "number": "04",
+      "title": "FAQ sul riscatto",
+      "description": "Requisiti di accesso, cosa è incluso e quanto tempo serve per andare live."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Chi può accedere a questa offerta?",
+          "answer": "Qualsiasi azienda che abbia partecipato a un programma Techstars attuale o passato. Dopo l’invio verifichiamo la tua edizione del programma nel portafoglio Techstars: per velocizzare la procedura, usa l’email e il nome dell’azienda già registrati."
+        },
+        {
+          "question": "Cosa ottengo concretamente?",
+          "answer": "Accesso esteso a ecentic Dominate: simulazioni continue di agenti AI su ChatGPT, Claude, Gemini e Perplexity, ottimizzazione automatica con pubblicazione in un clic, avvisi di deriva del modello e generazione UCP. Include anche un avvio con assistenza personalizzata per il tuo catalogo e prezzi dedicati ai fondatori al termine del periodo dell’offerta."
+        },
+        {
+          "question": "Devo prima creare un account?",
+          "answer": "No. Riscatta qui l’offerta e ti invieremo i dettagli di attivazione entro un giorno lavorativo. Puoi creare subito il tuo account oppure aspettare il link di attivazione: in entrambi i casi arriverai allo stesso risultato."
+        },
+        {
+          "question": "Quanto tempo richiede il riscatto?",
+          "answer": "Il modulo richiede circa due minuti. La verifica avviene di solito in giornata e mai oltre un giorno lavorativo. Riceverai un’email non appena la tua offerta sarà attiva."
+        }
+      ]
+    },
+    "footer": {
+      "primary": "Crea il tuo account",
+      "secondary": "Prenota una demo",
+      "note": "Solo per i fondatori di aziende Techstars. Verifichiamo la tua edizione del programma prima di attivare l’offerta."
+    },
+    "structuredData": {
+      "offerName": "Offerta ecentic Techstars per fondatori",
+      "eligibleCustomerType": "Aziende del portfolio Techstars"
+    }
+  }
+}

@@ -1,0 +1,224 @@
+{
+  "compare": {
+    "meta": {
+      "title": "Strumenti AI per ecommerce: guida alle categorie",
+      "description": "Confronta, per categoria, gli strumenti e-commerce per i contenuti di prodotto, la personalizzazione, la ricerca, l’analisi dei dati e il commercio tramite agenti AI."
+    },
+    "breadcrumb": {
+      "home": "Home",
+      "page": "I migliori strumenti AI per ecommerce nel 2026"
+    },
+    "hero": {
+      "eyebrow": "Confronto",
+      "title": {
+        "primary": "I migliori strumenti AI per l’e-commerce",
+        "accent": "nel 2026."
+      },
+      "description": "Non tutti gli strumenti AI per ecommerce risolvono lo stesso problema. Questa guida confronta prima le categorie e poi i brand, così la tua shortlist parte dal compito che vuoi affidare allo strumento.",
+      "assurances": [
+        "Sei strumenti in cinque categorie",
+        "Approccio basato sulle categorie, non su checklist di funzionalità",
+        "Aggiornato al 2026"
+      ],
+      "art": {
+        "alt": "Illustrazione ASCII di una bilancia"
+      }
+    },
+    "guide": {
+      "number": "01",
+      "title": "Come usare questa guida.",
+      "description": "Confrontare prima le categorie rende la scelta finale del fornitore più rapida e riduce il rischio di finire con la shortlist sbagliata.",
+      "body": [
+        "Un venditore che deve scegliere tra un generatore di contenuti, una piattaforma di personalizzazione, uno strumento di ricerca e un flusso di commercio tramite agenti AI rischia di selezionare gli strumenti sbagliati se tutto viene ricondotto a un’unica tabella generica di funzionalità.",
+        "La domanda migliore è: quale compito vuoi affidare allo strumento in questo momento?"
+      ],
+      "categoriesHeading": "Le cinque categorie di questa guida",
+      "categories": [
+        {
+          "title": "Generazione di contenuti",
+          "description": "Descrizioni prodotto e contenuti di catalogo su larga scala."
+        },
+        {
+          "title": "AI integrata nella piattaforma",
+          "description": "Assistenza integrata per merchant che vogliono restare vicini al proprio stack."
+        },
+        {
+          "title": "Personalizzazione e merchandising",
+          "description": "Esperienze onsite, segmentazione e conversione."
+        },
+        {
+          "title": "Ricerca e discovery",
+          "description": "Rilevanza dei prodotti e infrastruttura di navigazione."
+        },
+        {
+          "title": "Ottimizzazione del commercio tramite agenti AI",
+          "description": "Visibilità negli acquisti AI e selezione dei prodotti."
+        }
+      ]
+    },
+    "tools": {
+      "number": "02",
+      "title": "Gli strumenti che i merchant confrontano più spesso.",
+      "description": "Una riga per ogni strumento, incluso il nostro. L’ultima colonna è quella da leggere davvero: ogni strumento qui è la scelta sbagliata per qualcuno, e sapere per chi lo è accorcia la shortlist più velocemente di una checklist di funzionalità.",
+      "scrollHint": "Scorri per confrontare →",
+      "usLabel": "·noi",
+      "columns": {
+        "tool": "Strumento",
+        "category": "Categoria",
+        "bestAt": "Ideale per",
+        "wrongPick": "Quando è la scelta sbagliata"
+      },
+      "items": [
+        {
+          "name": "ecentic",
+          "category": "Ottimizzazione del commercio tramite agenti AI",
+          "bestAt": "Capire perché gli assistenti AI scelgono un concorrente al posto tuo e riscrivere la scheda prodotto perché smettano di farlo.",
+          "wrongPick": "I clienti arrivano ancora da ricerca e advertising, e il traffico mediato dall’AI non rappresenta ancora una quota significativa.",
+          "us": true
+        },
+        {
+          "name": "Hypotenuse AI",
+          "category": "Generazione di contenuti prodotto",
+          "bestAt": "Creare descrizioni, bullet point e testi per marketplace su un catalogo troppo grande da gestire manualmente.",
+          "wrongPick": "I testi funzionano già bene e il vero problema è quali prodotti vengono mostrati, non come sono scritti.",
+          "us": false
+        },
+        {
+          "name": "Shopify Magic",
+          "category": "Scrittura integrata nella piattaforma",
+          "bestAt": "Assistenza AI rapida direttamente nell’admin che usi già, senza nulla di nuovo da acquistare, imparare o integrare.",
+          "wrongPick": "Ti serve un confronto con la concorrenza. Lo strumento vede solo il tuo negozio, mai i prodotti che vengono preferiti ai tuoi.",
+          "us": false
+        },
+        {
+          "name": "Nosto",
+          "category": "Personalizzazione",
+          "bestAt": "Modificare ciò che ogni visitatore di ritorno vede sul sito: consigli, segmenti e regole di merchandising.",
+          "wrongPick": "Il traffico è limitato oppure la decisione viene presa prima ancora che qualcuno arrivi sul tuo negozio online.",
+          "us": false
+        },
+        {
+          "name": "Constructor",
+          "category": "Ricerca e discovery",
+          "bestAt": "Rendere trovabile un grande catalogo: comprensione delle query, ranking e rilevanza della navigazione su larga scala.",
+          "wrongPick": "Il tuo catalogo è abbastanza piccolo da rendere rara la ricerca da parte degli utenti, oppure non è nella discovery che li perdi.",
+          "us": false
+        },
+        {
+          "name": "Bloomreach",
+          "category": "Intelligence per grandi aziende",
+          "bestAt": "Gestire ricerca, merchandising e dati delle campagne come un unico stack in una grande organizzazione.",
+          "wrongPick": "Hai un team snello. I costi di implementazione e onboarding superano il problema che hai oggi.",
+          "us": false
+        }
+      ]
+    },
+    "bottleneck": {
+      "number": "03",
+      "title": "Abbina la categoria al tuo collo di bottiglia.",
+      "description": "La valutazione più utile parte prima dallo specifico collo di bottiglia operativo, non dalla checklist di funzionalità più lunga.",
+      "body": [
+        "Un errore comune è confrontare tutti i prodotti AI per ecommerce come se fossero strumenti per la scrittura di testi. Questo rende alcune valutazioni apparentemente più semplici, ma nasconde anche la vera decisione d’acquisto.",
+        "Crea prima una shortlist con uno strumento per categoria, poi restringi la scelta in base al collo di bottiglia più importante di questo trimestre."
+      ],
+      "mappingsHeading": "Cosa migliora davvero ogni categoria",
+      "mappings": [
+        {
+          "title": "Generazione di contenuti",
+          "description": "Velocità di produzione per descrizioni e testi di catalogo."
+        },
+        {
+          "title": "Personalizzazione",
+          "description": "Rilevanza onsite, segmentazione e conversione."
+        },
+        {
+          "title": "Strumenti di ricerca",
+          "description": "Discovery e navigazione all’interno del tuo store."
+        },
+        {
+          "title": "Strumenti di analytics",
+          "description": "Visibilità sui dati lungo tutto il funnel."
+        },
+        {
+          "title": "Ottimizzazione del commercio tramite agenti AI",
+          "description": "Selezione dei prodotti quando i sistemi AI confrontano schede prodotto concorrenti.",
+          "emphasized": true
+        }
+      ]
+    },
+    "related": {
+      "number": "04",
+      "title": "Esplora le pagine dietro la shortlist.",
+      "description": "Ogni pagina qui sotto approfondisce una parte specifica della decisione: workflow, piattaforma o ottimizzazione delle schede prodotto.",
+      "links": [
+        {
+          "href": "/features",
+          "name": "Funzionalità",
+          "title": "Scopri il workflow principale degli strumenti AI per ecommerce",
+          "description": "Usa la pagina delle funzionalità se vuoi una panoramica orientata al prodotto prima di approfondire una piattaforma o un percorso di confronto specifico.",
+          "label": "Apri la pagina funzionalità",
+          "color": "primary"
+        },
+        {
+          "href": "/features/product-listings",
+          "name": "Schede prodotto",
+          "title": "Approfondisci l’ottimizzazione AI delle schede prodotto",
+          "description": "Questa pagina è il passo successivo migliore se la priorità principale è migliorare i contenuti prodotto e rendere più chiari gli attributi.",
+          "label": "Visualizza il workflow delle schede prodotto",
+          "color": "accent"
+        },
+        {
+          "href": "/platforms/shopify",
+          "name": "Shopify",
+          "title": "Scopri il percorso d’acquisto specifico per Shopify",
+          "description": "Scegli questa pagina se la tua shortlist include attualmente strumenti AI nativi per Shopify o compatibili con Shopify.",
+          "label": "Apri la pagina Shopify",
+          "color": "accent"
+        },
+        {
+          "href": "/platforms/woocommerce",
+          "name": "WooCommerce",
+          "title": "Scopri il percorso d’acquisto specifico per WooCommerce",
+          "description": "Usa la pagina WooCommerce se hai bisogno di un percorso basato sulle piattaforme realmente supportate, non solo di un confronto generico.",
+          "label": "Apri la pagina WooCommerce",
+          "color": "accent"
+        }
+      ]
+    },
+    "faqSection": {
+      "number": "05",
+      "title": "Domande frequenti",
+      "description": "Domande comuni dei merchant che confrontano strumenti e piattaforme AI per ecommerce."
+    },
+    "faq": {
+      "items": [
+        {
+          "question": "Quali sono i migliori strumenti AI per ecommerce nel 2026?",
+          "answer": "I migliori strumenti AI per l’e-commerce nel 2026 dipendono dal compito da svolgere. In genere i venditori confrontano strumenti per i contenuti di prodotto, piattaforme di personalizzazione, prodotti per la ricerca e la scoperta di articoli, software di analisi dei dati e i più recenti strumenti di ottimizzazione del commercio tramite agenti AI."
+        },
+        {
+          "question": "Come dovrebbero i merchant confrontare i software AI per ecommerce?",
+          "answer": "Il modo più chiaro è confrontare prima gli strumenti per categoria. Decidi se il problema immediato riguarda i contenuti prodotto, la personalizzazione onsite, la rilevanza della ricerca, la visibilità analytics o la selezione negli acquisti AI. Poi confronta i fornitori all’interno di quella categoria."
+        },
+        {
+          "question": "Dove si colloca ecentic in un confronto come questo?",
+          "answer": "ecentic rientra nella categoria dell’ottimizzazione del commercio tramite agenti AI. È pensato per i venditori che vogliono simulare le decisioni di acquisto dell’AI, capire perché i concorrenti vincono e migliorare le schede prodotto sulla base di quel confronto."
+        },
+        {
+          "question": "Perché una guida basata sulle categorie è migliore di una gigantesca checklist di funzionalità?",
+          "answer": "Una guida per categorie ispira più fiducia perché non presenta ogni strumento come la soluzione allo stesso problema. Aiuta chi acquista a capire perché una piattaforma di personalizzazione, un generatore di testi e un flusso di commercio tramite agenti AI vadano valutati con criteri diversi."
+        }
+      ]
+    },
+    "footer": {
+      "primary": "Inizia con ecentic",
+      "secondary": "Torna alla home",
+      "note": "Setup in 2 minuti · Nessuna carta di credito · Guarda prima il tuo punteggio gratuito"
+    },
+    "structuredData": {
+      "articleHeadline": "I migliori strumenti AI per ecommerce nel 2026",
+      "itemListName": "I migliori strumenti AI per ecommerce nel 2026",
+      "toolDescription": "{category}. Ideale per: {bestAt} Scelta sbagliata quando: {wrongPick}"
+    }
+  }
+}

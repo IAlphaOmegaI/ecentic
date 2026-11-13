@@ -1,0 +1,19 @@
+{
+  "interactiveFee": {
+    "eyebrow": "Stima dei costi",
+    "title": "Scopri quanto potrebbe costare il pagamento a consumo.",
+    "orders": "Ordini mensili attribuiti all'AI",
+    "amount": "Valore medio dell'ordine (USD)",
+    "invalidOrders": "Inserisci un numero intero di ordini, pari o superiore a zero.",
+    "invalidAmount": "Inserisci un importo in USD con un massimo di due decimali.",
+    "invalid": "Inserisci valori validi e non negativi per vedere una stima.",
+    "privacy": "Nulla di ciò che inserisci viene salvato.",
+    "result": "Commissione mensile stimata",
+    "staticExample": "Un ordine da {order} comporta una commissione di {fee}.",
+    "formula": "Per ogni ordine attribuito all'AI, la commissione è pari al {rate}% del suo valore, arrotondata ai centesimi. Il totale mensile è limitato a {cap}.",
+    "cheaper": "Prezzo mensile inferiore:",
+    "tie": "Stesso prezzo mensile:",
+    "noCheaper": "Con questi valori, il pagamento a consumo ha il prezzo mensile più basso.",
+    "qualification": "Questa stima usa il tuo valore medio dell'ordine. Le commissioni effettive vengono calcolate per ordine e i termini dell'account possono variare. Confronta funzionalità e limiti dei piani prima di scegliere."
+  }
+}

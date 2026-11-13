@@ -1,0 +1,31 @@
+{
+  "healthPage": {
+    "reader": {
+      "description": "Apri una domanda di un acquirente per verificare le informazioni sul prodotto a cui fa riferimento.",
+      "label": "Domande degli acquirenti e informazioni sul prodotto",
+      "facts": "Informazioni sul prodotto che il tuo team può verificare",
+      "allFacts": "Visualizza tutti gli attributi del prodotto"
+    },
+    "relationship": {
+      "title": "Due controlli, una descrizione del prodotto.",
+      "label": "Le informazioni del produttore e le condizioni relative a prodotto, canale e paese contribuiscono entrambe a formulare una descrizione del prodotto fondata su riscontri.",
+      "inputs": [
+        {
+          "title": "Informazioni del produttore",
+          "description": "Ingredienti, uso previsto e istruzioni."
+        },
+        {
+          "title": "Prodotto, canale e paese",
+          "description": "Condizioni relative a prove e idoneità."
+        }
+      ],
+      "output": "Informazioni sul prodotto fondate su riscontri",
+      "description": "Mantieni la descrizione collegata a informazioni di origine verificate."
+    },
+    "rules": [
+      "Indicazioni nutrizionali e sulla salute",
+      "Idoneità del canale"
+    ],
+    "role": "Il ruolo di ecentic"
+  }
+}

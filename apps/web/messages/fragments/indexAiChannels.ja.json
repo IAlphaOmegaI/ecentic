@@ -1,0 +1,9 @@
+{
+  "indexAiChannels": {
+    "title": "次のチャネルを選択",
+    "description": "各アシスタントを確認し、機能を選択して、現在ecenticが対応している内容を確認してください。",
+    "providersLabel": "AIアシスタント",
+    "capabilitiesLabel": "ecenticの機能",
+    "interestTitle": "今後の展開づくりに参加する"
+  }
+}

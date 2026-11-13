@@ -1,0 +1,54 @@
+{
+  "enterpriseChrome": {
+    "skip": "Vai al contenuto",
+    "faq": "Domande e risposte.",
+    "action": {
+      "primary": "Prenota una demo",
+      "secondary": "Controlla gratis il mio store",
+      "tertiary": "Accedi",
+      "quaternary": "Scopri di più"
+    },
+    "closing": {
+      "title": "Concludi la vendita quando è l’AI a fare gli acquisti.",
+      "description": "Scopri se sta scegliendo i tuoi prodotti."
+    },
+    "status": {
+      "live": "Disponibile",
+      "feed": "Tramite feed di prodotto",
+      "simulated": "Simulato",
+      "soon": "Prossimamente",
+      "notYet": "Non ancora"
+    },
+    "sample": "Esempio con dati di esempio",
+    "screenshot": "Screenshot del prodotto · dati di esempio",
+    "menu": {
+      "title": "Esplora ecentic",
+      "open": "Apri menu",
+      "close": "Chiudi menu"
+    },
+    "footer": {
+      "tagline": "Concludi la vendita quando è l’AI a fare gli acquisti.",
+      "copyright": "© 2026 ecentic Inc",
+      "trademark": "I nomi e i loghi dei prodotti sono marchi dei rispettivi proprietari. La loro presenza non implica approvazione o partnership con ecentic.",
+      "platform": "Piattaforma",
+      "solutions": "Soluzioni",
+      "channels": "Canali AI",
+      "integrations": "Integrazioni",
+      "resources": "Risorse",
+      "company": "Azienda",
+      "legal": "Legale",
+      "allSectors": "Tutti i settori",
+      "allChannels": "Tutti i canali",
+      "allIntegrations": "Tutte le integrazioni",
+      "requestIntegration": "Richiedi un’integrazione",
+      "terms": "Termini",
+      "privacy": "Privacy",
+      "dpa": "DPA",
+      "subProcessors": "Sub-responsabili del trattamento",
+      "cookies": "Impostazioni cookie",
+      "aiInstructions": "Istruzioni AI",
+      "tools": "Strumenti gratuiti"
+    },
+    "loading": "Caricamento della pagina"
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "amazonPage": {
+    "journey": {
+      "label": "Shop Directの購入経路を見る",
+      "discovery": "Amazon上で発見",
+      "surface": "Amazon検索とAlexa for Shopping",
+      "destination": "マーチャントのWebサイトで購入",
+      "paths": [
+        {
+          "id": "visit",
+          "title": "マーチャントサイトへ移動",
+          "actor": "購入者が自社サイトを訪問",
+          "heading": "商品発見から自社サイトへ誘導",
+          "description": "Shop Directでは、自社サイト上の商品へリンクできます。購入者は自社サイトを訪問して購入します。",
+          "condition": "購入先はマーチャントのWebサイトです。"
+        },
+        {
+          "id": "buy",
+          "title": "Buy for Me",
+          "actor": "Amazonのエージェントが購入を完了",
+          "heading": "エージェントがマーチャントサイトで購入",
+          "description": "対象となるBuy for Meオファーでは、AmazonのエージェントがマーチャントのWebサイト上で購入を完了します。",
+          "condition": "Buy for Meは対象オファーでのみ利用できます。"
+        }
+      ]
+    },
+    "catalog": {
+      "label": "カタログ提供経路",
+      "source": "自社の商品カタログ",
+      "route": "ソリューションプロバイダーまたはSelling Partner API",
+      "destination": "Shop Direct"
+    },
+    "access": {
+      "title": "参加には独自の要件があります",
+      "market": "米国の顧客",
+      "eligibility": "対象マーチャントサイト",
+      "steps": [
+        {
+          "id": "register",
+          "title": "登録",
+          "description": "無料のShop Direct Merchant Workspaceで参加管理を行います。Amazonマーケットプレイス店舗は必須ではありません。"
+        },
+        {
+          "id": "verify",
+          "title": "Webサイトを検証",
+          "description": "Webサイト確認が必要です。対象マーチャントは、Amazonでも販売している場合でも参加できます。"
+        },
+        {
+          "id": "share",
+          "title": "カタログを共有",
+          "description": "ソリューションプロバイダーまたはAmazonのSelling Partner APIを通じてカタログ情報を提供します。"
+        }
+      ]
+    }
+  }
+}

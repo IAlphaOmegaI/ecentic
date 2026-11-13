@@ -1,0 +1,9 @@
+{
+  "changelogPage": {
+    "archive": "リリース履歴を見る",
+    "action": {
+      "primary": "すべての更新を表示",
+      "secondary": "最新月を表示"
+    }
+  }
+}

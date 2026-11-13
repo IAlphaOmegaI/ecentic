@@ -1,0 +1,14 @@
+{
+  "round16Shopping": {
+    "response": "Confronterei queste due opzioni con i tuoi requisiti. Ecco cosa ci dicono le schede prodotto.",
+    "followUps": "Prova un’altra domanda d’acquisto",
+    "inspection": "Dentro il record prodotto",
+    "sourceRecord": "Dati sorgente esistenti",
+    "evidenceHeading": "Cosa richiede la domanda",
+    "evidenceBody": "Confronta la richiesta con i dati forniti per questo prodotto di esempio.",
+    "needsDetail": "Manca nella scheda prodotto",
+    "stated": "Nella scheda prodotto",
+    "sourceHint": "Presente nella fonte di esempio; rendilo esplicito nella scheda prodotto.",
+    "inspectionNote": "Immagini e record prodotto illustrativi. Questo mostra un controllo delle evidenze, non una raccomandazione live o il ragionamento privato di un modello."
+  }
+}

@@ -1,0 +1,19 @@
+{
+  "interactiveFee": {
+    "eyebrow": "费用预估",
+    "title": "查看按量计费的大致成本。",
+    "orders": "每月 AI 归因订单数",
+    "amount": "平均订单金额（USD）",
+    "invalidOrders": "请输入整数订单数，可为 0 或更大。",
+    "invalidAmount": "请输入最多两位小数的 USD 金额。",
+    "invalid": "请输入有效且非负的数值以查看预估。",
+    "privacy": "输入内容不会被保存。",
+    "result": "预估月费",
+    "staticExample": "一笔 {order} 订单对应 {fee} 费用。",
+    "formula": "每笔 AI 归因订单按订单金额的 {rate}% 收费，并四舍五入到美分。每月总费用上限为 {cap}。",
+    "cheaper": "更低月费：",
+    "tie": "相同月费：",
+    "noCheaper": "在当前输入下，按量计费的月费最低。",
+    "qualification": "此预估基于您的平均订单金额。实际费用按每笔订单计算，账户条款也可能不同。选择前请比较各套餐功能与限制。"
+  }
+}

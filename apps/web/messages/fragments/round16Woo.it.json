@@ -1,0 +1,12 @@
+{
+  "round16Woo": {
+    "title": "Trova il passaggio che blocca il checkout.",
+    "passed": "Il prodotto arriva al checkout",
+    "blocker": "Il blocco",
+    "change": "La modifica in questo esempio",
+    "continues": "Dopo la correzione del requisito"
+  },
+  "commerceFigures": {
+    "wooMark": "Il marchio Woo come scultura lineare tridimensionale; punta una lettera per sollevarla."
+  }
+}

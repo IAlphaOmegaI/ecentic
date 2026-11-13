@@ -1,0 +1,54 @@
+{
+  "enterpriseChrome": {
+    "skip": "跳转到内容",
+    "faq": "常见问题解答",
+    "action": {
+      "primary": "预约演示",
+      "secondary": "免费检测我的店铺",
+      "tertiary": "登录",
+      "quaternary": "了解更多"
+    },
+    "closing": {
+      "title": "当 AI 决定购买时，拿下这笔订单。",
+      "description": "看看它是否选择了您的商品。"
+    },
+    "status": {
+      "live": "已上线",
+      "feed": "通过商品 Feed",
+      "simulated": "模拟",
+      "soon": "即将推出",
+      "notYet": "尚未支持"
+    },
+    "sample": "使用示例数据",
+    "screenshot": "产品截图·示例数据",
+    "menu": {
+      "title": "探索 ecentic",
+      "open": "打开菜单",
+      "close": "关闭菜单"
+    },
+    "footer": {
+      "tagline": "当 AI 决定购买时，拿下这笔订单。",
+      "copyright": "© 2026 ecentic Inc",
+      "trademark": "产品名称和 Logo 均为其各自所有者的商标。展示这些内容并不代表其认可或与 ecentic 存在合作关系。",
+      "platform": "平台",
+      "solutions": "解决方案",
+      "channels": "AI 渠道",
+      "integrations": "集成",
+      "resources": "资源",
+      "company": "公司",
+      "legal": "法律",
+      "allSectors": "全部行业",
+      "allChannels": "全部渠道",
+      "allIntegrations": "全部集成",
+      "requestIntegration": "申请集成",
+      "terms": "条款",
+      "privacy": "隐私",
+      "dpa": "DPA",
+      "subProcessors": "子处理方",
+      "cookies": "Cookie 设置",
+      "aiInstructions": "AI 指令",
+      "tools": "免费工具"
+    },
+    "loading": "页面加载中"
+  }
+}

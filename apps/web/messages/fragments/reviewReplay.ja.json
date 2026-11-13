@@ -1,0 +1,20 @@
+{
+  "reviewReplay": {
+    "summary": "表示される判断サマリー",
+    "disclosure": "確認された事実と選択結果を示すスクリプト化されたサンプルです。",
+    "inspection": "商品情報の検査",
+    "budget": "購入者の予算",
+    "criteria": "適合条件",
+    "evidence": "商品情報内の根拠",
+    "matched": "商品情報に記載あり",
+    "missing": "商品情報に未記載",
+    "complete": "比較完了",
+    "sampleId": "サンプル 001",
+    "process": {
+      "matchup": "商品 + 競合商品",
+      "compare": "3つのモデル視点",
+      "diagnose": "記録された判断 + 商品情報に記載された事実",
+      "improve": "確認 → 改善 → 再比較"
+    }
+  }
+}

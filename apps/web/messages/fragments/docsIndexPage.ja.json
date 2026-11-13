@@ -1,0 +1,24 @@
+{
+  "docsIndexPage": {
+    "navigation": "ドキュメントを見る",
+    "quickstart": {
+      "label": "最初のリクエストを選択",
+      "tabs": [
+        "API",
+        "プロトコル",
+        "プラン"
+      ],
+      "request": "リクエスト",
+      "response": "レスポンス",
+      "access": "APIキー不要",
+      "action": {
+        "primary": "JSONを開く"
+      }
+    },
+    "contracts": [
+      "application/problem+json",
+      "RateLimit / Retry-After",
+      "Deprecation / Sunset"
+    ]
+  }
+}

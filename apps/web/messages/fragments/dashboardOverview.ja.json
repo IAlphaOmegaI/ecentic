@@ -1,0 +1,120 @@
+{
+  "dashboard": {
+    "shared": {
+      "status": {
+        "liveUpdated": "稼働中 — {time}に更新",
+        "liveLastScanned": "稼働中 — 最終スキャン {time}",
+        "liveProductUpdated": "稼働中 — {time}に更新",
+        "lastSimulation": "前回のシミュレーション {time}",
+        "noScansYet": "まだスキャンが実行されていません",
+        "noSimulationsYet": "まだシミュレーションが実行されていません"
+      },
+      "stats": {
+        "noDataYet": "まだデータがありません",
+        "overallWinRate": "全体の勝率",
+        "productsScanned": "スキャン済み商品数",
+        "topPerformer": "最高パフォーマンス商品",
+        "biggestOpportunity": "最大の改善機会",
+        "vsLastScan": "前回のスキャン比",
+        "acrossProducts": "{count, plural, other {# 商品}}にわたって",
+        "slotsRemaining": "残り {count} スロット",
+        "viewDetails": "詳細を見る",
+        "optimizeNow": "今すぐ最適化"
+      },
+      "sections": {
+        "performance": "01 — パフォーマンス",
+        "performanceHalf": "01.5 — 最近のアクティビティ",
+        "catalog": "02 — カタログ",
+        "competitiveLandscape": "03 — 競合状況",
+        "traffic": "03 — トラフィック",
+        "insights": "04 — インサイト",
+        "agentTraffic": "04 — エージェントトラフィック"
+      },
+      "performance": {
+        "winRateByModel": "モデル別勝率",
+        "winRateTrend": "勝率の推移",
+        "noModelData": "シミュレーションを実行すると、モデル別のパフォーマンスを確認できます。",
+        "notEnoughTrendData": "推移を表示するにはデータが不足しています。",
+        "runSimulationHint": "シミュレーションを実行して開始してください。",
+        "runMoreSimulationsHint": "履歴を表示するには、さらにシミュレーションを実行してください。"
+      },
+      "activity": {
+        "simulationComplete": "シミュレーション完了 — {wins} 勝、{losses} 敗",
+        "simulationInProgress": "シミュレーション実行中 — {completed}/{total}",
+        "noActivityTitle": "まだアクティビティがありません。",
+        "noActivityHint": "最初のシミュレーションを実行すると、ここに結果が表示されます。"
+      },
+      "action": {
+        "optimizations": "最適化",
+        "viewAllProducts": "すべての商品を見る",
+        "viewAll": "すべて表示",
+        "runSimulation": "シミュレーションを実行",
+        "ucpManager": "UCP管理"
+      },
+      "table": {
+        "product": "商品",
+        "price": "価格",
+        "winRate": "勝率",
+        "quality": "品質",
+        "lastScan": "最終スキャン",
+        "brand": "ブランド",
+        "simulations": "シミュレーション",
+        "lastUpdated": "最終更新",
+        "competitor": "競合",
+        "wins": "勝利数",
+        "losses": "敗因",
+        "total": "合計",
+        "productWinRates": "商品の勝率",
+        "productCatalog": "商品カタログ",
+        "competitorBrands": "競合ブランド",
+        "topCompetitors": "主要競合"
+      },
+      "empty": {
+        "noProducts": "商品が見つかりません",
+        "noProductsHint": "商品をインポートしてシミュレーションを実行すると、ここに勝率が表示されます。",
+        "noCompetitors": "まだ競合が追跡されていません",
+        "noCompetitorsHint": "競合を追加して、競争環境の分析を開始してください。"
+      },
+      "count": {
+        "products": "{count, plural, other {#件の商品}}",
+        "competitors": "{count, plural, other {#件の競合}}",
+        "productSingular": "商品",
+        "productsPlural": "商品",
+        "competitorSingular": "競合",
+        "competitorsPlural": "競合",
+        "totalSimulations": "合計 {count} 件のシミュレーション",
+        "last30d": "過去30日"
+      },
+      "agentVisits": {
+        "title": "AIエージェントの商品訪問数",
+        "description": "ScriptTagトラッカーで確認された、ブラウザで可視のAIおよびリファラーシグナル。",
+        "panelTitle": "エージェント別訪問数（過去30日）",
+        "panelDescription": "ScriptTagトラッカーで確認された、ブラウザで可視のAIおよびリファラーシグナルのみ。",
+        "total": "合計",
+        "empty": "AIエージェントの訪問はまだ記録されていません。トラッカーが認識するAIリファラーまたはユーザーエージェント文字列経由で訪問が発生すると、トラフィックが表示されます。",
+        "emptyOverview": "AIエージェントの訪問はまだ記録されていません。トラフィックは、トラッカーが認識するAIリファラーまたはユーザーエージェント文字列経由で訪問が発生した場合、またはプローブモードが有効な場合に表示されます。"
+      },
+      "present": "あり",
+      "missing": "なし",
+      "cancel": "キャンセル",
+      "sku": "SKU: {sku}",
+      "pagination": {
+        "navigation": "ページネーション",
+        "page": "{pages, number}ページ中 {page, number}ページ",
+        "first": "最初のページ",
+        "previous": "前のページ",
+        "next": "次のページ",
+        "last": "最後のページ"
+      }
+    },
+    "overview": {
+      "title": "概要",
+      "description": "AIショッピングエージェントが競合商品と比較してカタログをどのように評価しているかを確認できます。",
+      "tabs": {
+        "topProducts": "注目商品",
+        "competitors": "競合",
+        "agentVisits": "エージェント経由の訪問"
+      }
+    }
+  }
+}

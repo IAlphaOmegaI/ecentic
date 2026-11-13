@@ -1,0 +1,41 @@
+{
+  "enterprisePilotPreview": {
+    "label": "Pilot illustrativo · brief di esempio",
+    "title": "Una categoria. Un mercato. Le stesse domande.",
+    "note": "Esempio di pianificazione, non risultato di un cliente. Ambito, ruoli del team e risultati previsti vengono concordati con il tuo team.",
+    "marketLabel": "Mercato",
+    "market": "Spagna",
+    "categoryLabel": "Categoria",
+    "category": "Zaini outdoor",
+    "sourceLabel": "Punto di partenza",
+    "source": "Pagine prodotto pubbliche",
+    "peopleLabel": "Team di esempio",
+    "deliverableLabel": "Risultato previsto di esempio",
+    "stages": [
+      {
+        "people": "Responsabile categoria + analista ecentic",
+        "deliverable": "Serie di domande e cartella di lavoro per la situazione iniziale",
+        "exampleLabel": "Domanda di esempio",
+        "example": "Quale zaino da cabina è adatto a un viaggio di una settimana?"
+      },
+      {
+        "people": "Responsabile merchandising + editor del catalogo",
+        "deliverable": "Verifiche dei dati e un elenco di modifiche approvato",
+        "exampleLabel": "Verifica di esempio",
+        "example": "Confronta capacità, dimensioni e materiale con le pagine sorgente."
+      },
+      {
+        "people": "Analista ecentic + responsabile categoria",
+        "deliverable": "Nuova esecuzione allineata e registro delle modifiche",
+        "exampleLabel": "Confronto di esempio",
+        "example": "Mantieni affiancate le risposte iniziali e quelle ripetute. Documenta eventuali modifiche del modello."
+      },
+      {
+        "people": "Responsabile business + lead ecentic",
+        "deliverable": "Riepilogo, limiti e decisione successiva",
+        "exampleLabel": "Agenda di esempio",
+        "example": "Esamina menzioni, posizione, link e procedura d'acquisto testata. Scegli cosa testare dopo."
+      }
+    ]
+  }
+}

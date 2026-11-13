@@ -1,0 +1,77 @@
+{
+  "winePage": {
+    "explorer": {
+      "label": "探索一个购买问题",
+      "question": "消费者可能会问",
+      "criteria": "问题需要哪些条件",
+      "verify": "需要核实的事实信息",
+      "entries": [
+        {
+          "id": "gift",
+          "label": "送礼",
+          "criteria": [
+            {
+              "label": "风格",
+              "value": "烟熏风味单一麦芽"
+            },
+            {
+              "label": "预算",
+              "value": "低于$80"
+            },
+            {
+              "label": "场合",
+              "value": "送礼"
+            }
+          ],
+          "verification": "在源商品信息中检查酒桶或风格细节、当前价格以及配送可用性。"
+        },
+        {
+          "id": "ready",
+          "label": "即饮",
+          "criteria": [
+            {
+              "label": "葡萄酒",
+              "value": "巴罗洛"
+            },
+            {
+              "label": "饮用时间",
+              "value": "现在即可饮用"
+            },
+            {
+              "label": "酒瓶信息",
+              "value": "产地与年份"
+            }
+          ],
+          "verification": "结合标注年份检查产区和法定产区信息。核实源商品信息中的适饮期描述。"
+        },
+        {
+          "id": "cocktails",
+          "label": "适合调酒",
+          "criteria": [
+            {
+              "label": "烈酒",
+              "value": "朗姆酒"
+            },
+            {
+              "label": "偏好",
+              "value": "低糖"
+            },
+            {
+              "label": "场合",
+              "value": "鸡尾酒"
+            }
+          ],
+          "verification": "低糖声明必须关联到团队可验证的源信息，不要根据品鉴文案推断。"
+        }
+      ]
+    },
+    "attributes": {
+      "caption": "从酒瓶到商品记录",
+      "description": "让产地、风格和可售状态与酒瓶图片一起清晰展示。"
+    },
+    "rules": {
+      "market": "渠道与国家",
+      "age": "年龄验证"
+    }
+  }
+}

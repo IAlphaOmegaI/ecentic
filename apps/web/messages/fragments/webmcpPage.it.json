@@ -1,0 +1,26 @@
+{
+  "webmcpPage": {
+    "scope": {
+      "title": "Uno sguardo più approfondito alla sorgente della vetrina",
+      "description": "Segui le dichiarazioni, analizzane i metadati, poi verifica cosa il browser deve ancora confermare.",
+      "pages": "Pagine pubbliche, al massimo",
+      "scripts": "Script o moduli esterni, al massimo",
+      "runtime": "La registrazione e l’esecuzione nel browser non sono ancora verificate."
+    },
+    "checks": {
+      "title": "Scopri cosa indica ogni controllo.",
+      "description": "Sette controlli separano i risultati della sorgente, le opportunità di miglioramento e le evidenze che richiedono ancora un browser.",
+      "workflowsTitle": "Lungo il percorso d’acquisto",
+      "workflowsNote": "Questi otto workflow sono aree utili da verificare. Un negozio non deve necessariamente esporli tutti tramite WebMCP.",
+      "items": {
+        "discovery": "Le dichiarazioni con nome vengono recuperate da form HTML o codice di registrazione. Un semplice riferimento API non basta a determinare l’inventario degli strumenti disponibili.",
+        "metadata": "Controlla nomi degli strumenti, descrizioni ed eventuali duplicati nella stessa pagina. Le descrizioni brevi sono un suggerimento di qualità, non un errore di protocollo.",
+        "parameters": "Analizza nomi degli input recuperabili, tipi, descrizioni e stato obbligatorio. Uno strumento senza parametri può omettere il suo schema di input; gli schemi dinamici possono restare irrisolti.",
+        "implementation": "La sorgente può mostrare un handler dichiarato o l’operazione di un form. Lo scanner non esegue l’handler, non invia il form e non ne conferma il comportamento.",
+        "forms": "I form pubblici possono rivelare opportunità di adozione. Controlla prima gli strumenti esistenti e preserva validazione e consenso del form; i flussi sensibili richiedono una revisione manuale.",
+        "coverage": "Il report mantiene visibili risorse bloccate, errori e limiti della scansione. Pagine non visitate, flussi autenticati e codice generato a runtime possono rimanere fuori dalla sorgente ispezionata.",
+        "runtime": "Questo controllo resta sconosciuto. Conferma separatamente registrazione nativa e comportamento in un browser con supporto WebMCP; i risultati della sorgente non possono certificare l’uso da parte degli agenti."
+      }
+    }
+  }
+}

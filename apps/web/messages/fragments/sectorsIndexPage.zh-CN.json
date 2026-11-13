@@ -1,0 +1,11 @@
+{
+  "sectorsIndexPage": {
+    "description": "从一个购买问题开始，进一步了解您的商品目录需要明确表达哪些事实信息。",
+    "question": "消费者可能会问",
+    "productData": "需要明确的事实信息",
+    "attributeHint": "打开字段查看需要说明的内容。",
+    "action": {
+      "primary": "探索该行业"
+    }
+  }
+}

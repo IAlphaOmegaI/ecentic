@@ -1,0 +1,28 @@
+{
+  "docsAuthenticationPage": {
+    "paths": {
+      "title": "选择请求路径",
+      "description": "先探索 API。当客户端需要操作商家账户时，再添加 bearer key。",
+      "label": "请求认证",
+      "open": "开放探索",
+      "authenticated": "商家账户",
+      "client": "您的客户端",
+      "noCredential": "无需凭证",
+      "bearer": "需要 bearer key",
+      "publicDestination": "开放探索 + 测试环境",
+      "protectedDestination": "REST + MCP",
+      "details": "此路径的工作方式"
+    },
+    "keySteps": [
+      "创建账户",
+      "生成密钥",
+      "保存一次"
+    ],
+    "recovery": {
+      "label": "401 后的认证发现",
+      "response": "缺少或无效的凭证",
+      "resource": "受保护资源元数据",
+      "authorization": "授权服务器元数据"
+    }
+  }
+}

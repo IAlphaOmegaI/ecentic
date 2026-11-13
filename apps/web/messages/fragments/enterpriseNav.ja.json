@@ -1,0 +1,646 @@
+{
+  "enterpriseNav": {
+    "pricing": "料金",
+    "home": "ecenticホームページ",
+    "groups": [
+      {
+        "id": "platform",
+        "label": "プラットフォーム",
+        "columns": [
+          {
+            "title": "接続",
+            "items": [
+              {
+                "href": "/integrations/shopify",
+                "label": "Shopifyアプリ",
+                "description": "Shopify App Storeからインストールできます。",
+                "status": ""
+              },
+              {
+                "href": "/integrations/woocommerce",
+                "label": "WooCommerceプラグイン",
+                "description": "無料プラグイン、またはREST APIキーを利用できます。",
+                "status": ""
+              },
+              {
+                "href": "/platform/connect#product-feeds",
+                "label": "商品フィード",
+                "description": "対応するXMLまたはJSONフィードをインポートできます。",
+                "status": ""
+              },
+              {
+                "href": "/platform/connect#csv",
+                "label": "CSVアップロード",
+                "description": "スプレッドシートのエクスポートから開始します。",
+                "status": ""
+              },
+              {
+                "href": "/platform/connect#store-address",
+                "label": "ストア住所",
+                "description": "公開中の商品ページをインポートします。",
+                "status": ""
+              },
+              {
+                "href": "/integrations/google-merchant-center",
+                "label": "Google Merchant Center",
+                "description": "Shopify上で公開済みの修正をGoogleに送信します。",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "シミュレーション",
+            "items": [
+              {
+                "href": "/platform/simulate#simulations",
+                "label": "エージェントシミュレーション",
+                "description": "ChatGPT、Claude、Geminiが商品情報を比較します。",
+                "status": ""
+              },
+              {
+                "href": "/platform/simulate#win-rate",
+                "label": "AI勝率",
+                "description": "商品別、モデル別、競合別。",
+                "status": ""
+              },
+              {
+                "href": "/platform/simulate#battlecards",
+                "label": "競合比較カード",
+                "description": "他社の商品情報が選ばれた理由を確認できます。",
+                "status": ""
+              },
+              {
+                "href": "/platform/simulate#replay",
+                "label": "エージェントリプレイ",
+                "description": "記録された推論を確認できます。",
+                "status": ""
+              },
+              {
+                "href": "/platform/simulate#readiness",
+                "label": "対応状況監査",
+                "description": "クローラールール、構造化データ、識別子。",
+                "status": ""
+              },
+              {
+                "href": "/platform/simulate#listing-quality",
+                "label": "商品情報品質チェック",
+                "description": "商品データ向け34ルール。",
+                "status": ""
+              },
+              {
+                "href": "/platform/simulate#brand-visibility",
+                "label": "ブランド可視性",
+                "description": "ChatGPTがブランドをどう説明するかをテストします。",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "修正",
+            "items": [
+              {
+                "href": "/platform/fix#listings",
+                "label": "商品情報リライト",
+                "description": "新しいタイトルと説明文。",
+                "status": ""
+              },
+              {
+                "href": "/platform/fix#structured-data",
+                "label": "構造化データ",
+                "description": "商品データを個別に生成・公開します。",
+                "status": ""
+              },
+              {
+                "href": "/platform/fix#attributes",
+                "label": "不足属性",
+                "description": "不足している商品情報フィールドを確認できます。",
+                "status": ""
+              },
+              {
+                "href": "/platform/fix#publish",
+                "label": "適用時に公開",
+                "description": "変更する商品は個別に選択できます。",
+                "status": ""
+              },
+              {
+                "href": "/platform/fix#merchant-center",
+                "label": "Merchant Center同期",
+                "description": "選択したタイミングで公開済みの修正を送信します。",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "販売",
+            "items": [
+              {
+                "href": "/platform/sell#checkout",
+                "label": "エージェントによる購入手続き",
+                "description": "WooCommerce向け。既存の決済を利用できます。",
+                "status": ""
+              },
+              {
+                "href": "/platform/sell#chatgpt",
+                "label": "ChatGPT内で販売",
+                "description": "公開待ちのecenticアプリ。",
+                "status": "soon"
+              },
+              {
+                "href": "/ucp-playground",
+                "label": "購入手続きテスト環境",
+                "description": "ストア上でショッピングエージェントをテストします。",
+                "status": ""
+              },
+              {
+                "href": "/ucp-validator",
+                "label": "購入手続き検証ツール",
+                "description": "エージェントによる購入手続きプロファイルを確認します。",
+                "status": ""
+              },
+              {
+                "href": "/webmcp-scanner",
+                "label": "WebMCPスキャナー",
+                "description": "ストアフロントのソース内アクションを検査します。",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "計測",
+            "items": [
+              {
+                "href": "/platform/track#traffic",
+                "label": "AIトラフィック",
+                "description": "Shopifyでのアシスタント別訪問数。",
+                "status": ""
+              },
+              {
+                "href": "/platform/track#lift",
+                "label": "推定改善率",
+                "description": "再スキャンで確認する推定値です。",
+                "status": ""
+              },
+              {
+                "href": "/platform/track#rescans",
+                "label": "再スキャン",
+                "description": "修正後に別のシミュレーションを実行します。",
+                "status": ""
+              },
+              {
+                "href": "/platform/track#stores",
+                "label": "全ストアを1アカウントで",
+                "description": "複数のストアフロントをまとめて管理できます。",
+                "status": ""
+              },
+              {
+                "href": "/docs",
+                "label": "API、MCPサーバー、CLI",
+                "description": "検出とストア導入のツール。",
+                "status": ""
+              }
+            ]
+          }
+        ],
+        "featured": {
+          "href": "/platform",
+          "title": "1分でわかるecentic",
+          "description": "接続から購入手続きまで、カタログの流れを確認できます。"
+        }
+      },
+      {
+        "id": "solutions",
+        "label": "ソリューション",
+        "columns": [
+          {
+            "title": "ビジネス別",
+            "items": [
+              {
+                "href": "/solutions/brands",
+                "label": "ブランド",
+                "description": "回答で指名される商品へ。",
+                "status": ""
+              },
+              {
+                "href": "/solutions/retailers-and-marketplaces",
+                "label": "小売・マーケットプレイス",
+                "description": "大規模なサプライヤーカタログに対応します。",
+                "status": ""
+              },
+              {
+                "href": "/solutions/enterprise",
+                "label": "エンタープライズ",
+                "description": "AIを販売チャネルとして運用します。",
+                "status": ""
+              },
+              {
+                "href": "/solutions/agencies-and-partners",
+                "label": "代理店・パートナー",
+                "description": "AIコマースをサービスに追加します。",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "チーム別",
+            "items": [
+              {
+                "href": "/solutions#ecommerce-and-growth",
+                "label": "EC・グロース",
+                "description": "AIが選ぶ商品を把握します。",
+                "status": ""
+              },
+              {
+                "href": "/solutions#marketing",
+                "label": "マーケティング",
+                "description": "AIが読み取る商品情報を確認します。",
+                "status": ""
+              },
+              {
+                "href": "/solutions#marketplace-and-channel-managers",
+                "label": "マーケットプレイス・チャネル管理",
+                "description": "管理中のフィードを改善します。",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "業界別",
+            "items": [
+              {
+                "href": "/solutions/sectors/food-and-beverage",
+                "label": "食品・飲料",
+                "description": "業界に適した商品データ。",
+                "status": ""
+              },
+              {
+                "href": "/solutions/sectors/wine-and-spirits",
+                "label": "ワイン・スピリッツ",
+                "description": "業界に適した商品データ。",
+                "status": ""
+              },
+              {
+                "href": "/solutions/sectors/beauty-and-personal-care",
+                "label": "美容・パーソナルケア",
+                "description": "業界に適した商品データ。",
+                "status": ""
+              },
+              {
+                "href": "/solutions/sectors/consumer-electronics",
+                "label": "家電",
+                "description": "業界に適した商品データ。",
+                "status": ""
+              },
+              {
+                "href": "/solutions/sectors/home-and-furniture",
+                "label": "家具・インテリア",
+                "description": "業界に適した商品データ。",
+                "status": ""
+              },
+              {
+                "href": "/solutions/sectors/fashion-and-outdoor",
+                "label": "ファッション・アウトドア",
+                "description": "業界に適した商品データ。",
+                "status": ""
+              },
+              {
+                "href": "/solutions/sectors/health-wellness-and-pet",
+                "label": "健康・ウェルネス・ペット",
+                "description": "業界に適した商品データ。",
+                "status": ""
+              },
+              {
+                "href": "/solutions/sectors/travel-and-experiences",
+                "label": "旅行・体験",
+                "description": "業界に適した商品データ。",
+                "status": ""
+              },
+              {
+                "href": "/solutions/sectors",
+                "label": "すべての業界",
+                "description": "該当カテゴリを探します。",
+                "status": ""
+              }
+            ]
+          }
+        ],
+        "featured": {
+          "href": "/stories/dua-flavors",
+          "title": "DUA Flavoursパイロット",
+          "description": "AIアシスタントまたは直接流入からの訪問数が+12%。"
+        }
+      },
+      {
+        "id": "channels",
+        "label": "AIチャネル",
+        "columns": [
+          {
+            "title": "AIチャネル",
+            "items": [
+              {
+                "href": "/ai-channels/google-ai-mode-gemini",
+                "label": "Google AI Mode と Gemini",
+                "description": "現在の対応範囲とプラットフォーム要件。",
+                "status": "simulated"
+              },
+              {
+                "href": "/ai-channels/chatgpt",
+                "label": "ChatGPT",
+                "description": "現在の対応範囲とプラットフォーム要件。",
+                "status": "simulated"
+              },
+              {
+                "href": "/ai-channels/claude",
+                "label": "Claude",
+                "description": "現在の対応範囲とプラットフォーム要件。",
+                "status": "simulated"
+              },
+              {
+                "href": "/ai-channels/microsoft-copilot",
+                "label": "Microsoft Copilot",
+                "description": "現在の対応範囲とプラットフォーム要件。",
+                "status": "soon"
+              },
+              {
+                "href": "/ai-channels/perplexity",
+                "label": "Perplexity",
+                "description": "現在の対応範囲とプラットフォーム要件。",
+                "status": "soon"
+              },
+              {
+                "href": "/ai-channels/amazon",
+                "label": "Amazon",
+                "description": "現在の対応範囲とプラットフォーム要件。",
+                "status": "soon"
+              }
+            ]
+          }
+        ],
+        "featured": {
+          "href": "/ai-channels",
+          "title": "AIが購入する場所",
+          "description": "各アシスタントに必要な要件と、現在の対応内容。"
+        }
+      },
+      {
+        "id": "integrations",
+        "label": "連携",
+        "columns": [
+          {
+            "title": "コマースプラットフォーム",
+            "items": [
+              {
+                "href": "/integrations/shopify",
+                "label": "Shopify",
+                "description": "カタログを直接接続。",
+                "status": "live"
+              },
+              {
+                "href": "/integrations/woocommerce",
+                "label": "WooCommerce",
+                "description": "無料プラグインまたはREST API。",
+                "status": "live"
+              },
+              {
+                "href": "/integrations#commerce",
+                "label": "BigCommerce",
+                "description": "対応フィードまたはCSVをインポート。",
+                "status": "feed"
+              },
+              {
+                "href": "/integrations#commerce",
+                "label": "Adobe Commerce",
+                "description": "対応フィードまたはCSVをインポート。",
+                "status": "feed"
+              },
+              {
+                "href": "/integrations#commerce",
+                "label": "Shopware",
+                "description": "対応フィードまたはCSVをインポート。",
+                "status": "feed"
+              },
+              {
+                "href": "/integrations#commerce",
+                "label": "Wix",
+                "description": "対応フィードまたはCSVをインポート。",
+                "status": "feed"
+              }
+            ]
+          },
+          {
+            "title": "フィードとデータ",
+            "items": [
+              {
+                "href": "/integrations/google-merchant-center",
+                "label": "Google Merchant Center",
+                "description": "Shopifyストア向け。",
+                "status": "live"
+              },
+              {
+                "href": "/integrations/product-feeds",
+                "label": "商品フィードとCSV",
+                "description": "読み取り専用のカタログインポート。",
+                "status": "live"
+              },
+              {
+                "href": "/integrations#feeds",
+                "label": "Microsoft Merchant Center",
+                "description": "フィードエクスポートを開発予定。",
+                "status": "soon"
+              },
+              {
+                "href": "/integrations#feeds",
+                "label": "Amazon Shop Direct",
+                "description": "カタログエクスポートを開発予定。",
+                "status": "soon"
+              }
+            ]
+          },
+          {
+            "title": "商品情報",
+            "items": [
+              {
+                "href": "/integrations#pim",
+                "label": "Plytix と Pimcore",
+                "description": "互換性のある商品エクスポート経由。",
+                "status": "feed"
+              },
+              {
+                "href": "/integrations#pim",
+                "label": "Akeneo",
+                "description": "直接接続を開発予定。",
+                "status": "soon"
+              },
+              {
+                "href": "/integrations#pim",
+                "label": "Salsify",
+                "description": "直接接続を開発予定。",
+                "status": "soon"
+              }
+            ]
+          },
+          {
+            "title": "決済と購入手続き",
+            "items": [
+              {
+                "href": "/platform/sell",
+                "label": "利用中の決済ゲートウェイ",
+                "description": "WooCommerceのエージェントによる購入手続きで利用可能。",
+                "status": "live"
+              },
+              {
+                "href": "/integrations#payments",
+                "label": "Stripe Agentic Commerce Suite",
+                "description": "連携を開発予定。",
+                "status": "soon"
+              }
+            ]
+          }
+        ],
+        "featured": {
+          "href": "/integrations",
+          "title": "利用中のスタックを接続",
+          "description": "ライブ接続、フィード経由、または開発予定。"
+        }
+      },
+      {
+        "id": "resources",
+        "label": "リソース",
+        "columns": [
+          {
+            "title": "学ぶ",
+            "items": [
+              {
+                "href": "/blog",
+                "label": "ブログ",
+                "description": "ecenticの記事。",
+                "status": ""
+              },
+              {
+                "href": "/resources",
+                "label": "ガイド",
+                "description": "商品データとエージェントコマース。",
+                "status": ""
+              },
+              {
+                "href": "/stories",
+                "label": "パイロット事例",
+                "description": "成果とその背景にある手法。",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "無料ツール",
+            "items": [
+              {
+                "href": "/sign-up",
+                "label": "AI Agent Score",
+                "description": "無料のストアチェックから開始。",
+                "status": ""
+              },
+              {
+                "href": "/ucp-validator",
+                "label": "購入手続き検証ツール",
+                "description": "エージェントによる購入手続きプロファイルを確認します。",
+                "status": ""
+              },
+              {
+                "href": "/ucp-playground",
+                "label": "購入手続きテスト環境",
+                "description": "テスト用ショッピングエージェントを実行します。",
+                "status": ""
+              },
+              {
+                "href": "/webmcp-scanner",
+                "label": "WebMCPスキャナー",
+                "description": "ストアフロントのソースを検査します。",
+                "status": ""
+              },
+              {
+                "href": "/compare",
+                "label": "比較",
+                "description": "アシスタント間で商品を比較します。",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "開発者",
+            "items": [
+              {
+                "href": "/docs",
+                "label": "ドキュメント",
+                "description": "ecenticで開発。",
+                "status": ""
+              },
+              {
+                "href": "/docs/api",
+                "label": "APIリファレンス",
+                "description": "読みやすいエンドポイントリファレンス。",
+                "status": ""
+              },
+              {
+                "href": "/docs/mcp",
+                "label": "MCPサーバー",
+                "description": "エージェントツールを接続します。",
+                "status": ""
+              },
+              {
+                "href": "/docs#cli",
+                "label": "CLI",
+                "description": "ターミナルからecenticを利用できます。",
+                "status": ""
+              },
+              {
+                "href": "/changelog",
+                "label": "変更履歴",
+                "description": "リリース済み機能。",
+                "status": ""
+              }
+            ]
+          },
+          {
+            "title": "会社情報",
+            "items": [
+              {
+                "href": "/about",
+                "label": "会社概要",
+                "description": "創業者を紹介します。",
+                "status": ""
+              },
+              {
+                "href": "/security",
+                "label": "セキュリティと信頼",
+                "description": "データ、アクセス、管理。",
+                "status": ""
+              },
+              {
+                "href": "/partners",
+                "label": "パートナー",
+                "description": "ecenticと協業。",
+                "status": ""
+              },
+              {
+                "href": "/contact",
+                "label": "お問い合わせ",
+                "description": "適切な窓口をご案内します。",
+                "status": ""
+              },
+              {
+                "href": "/support",
+                "label": "ヘルプセンター",
+                "description": "アカウントに関するサポート。",
+                "status": ""
+              }
+            ]
+          }
+        ],
+        "featured": {
+          "href": "/tools",
+          "title": "無料チェックから開始",
+          "description": "商品データと購入手続きの実用ツール。"
+        }
+      }
+    ]
+  }
+}

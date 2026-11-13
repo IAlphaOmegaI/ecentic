@@ -1,0 +1,39 @@
+{
+  "commerceFigures": {
+    "repairTools": "插图：一把扳手和一把螺丝刀。将指针移到工具上即可抬起查看。",
+    "moneyStack": "插图：纸币和硬币。将指针移到一叠钱币上即可查看。",
+    "readinessScanner": "插图：一台打开的文档扫描仪。将指针移到盖板或页面上即可查看。",
+    "partReadouts": {
+      "repairTools": [
+        {
+          "value": "扳手",
+          "label": "扳手"
+        },
+        {
+          "value": "螺丝刀",
+          "label": "螺丝刀"
+        }
+      ],
+      "moneyStack": [
+        {
+          "value": "纸币",
+          "label": "纸币"
+        },
+        {
+          "value": "硬币",
+          "label": "硬币"
+        }
+      ],
+      "readinessScanner": [
+        {
+          "value": "扫描仪盖板",
+          "label": "扫描仪盖板"
+        },
+        {
+          "value": "文档",
+          "label": "文档"
+        }
+      ]
+    }
+  }
+}

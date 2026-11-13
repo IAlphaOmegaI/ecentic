@@ -46,11 +46,11 @@
         "completedScans": "{count, plural, one {# escaneo completado} other {# escaneos completados}}",
         "viewAllActivity": "Ver toda la actividad",
         "headlines": {
-          "outrankAll": "Superas a los {count} competidor{plural} simulados (media {overall}% de tasa de victoria).",
+          "outrankAll": "Superas a {count, plural, one {# competidor simulado} many {los # competidores simulados} other {los # competidores simulados}} (tasa de victoria media del {overall}%).",
           "slimmestLead": "Tu ventaja más estrecha es frente a {brand} con {rate}%. Mantén las fichas optimizadas para defenderla.",
           "biggestOpportunity": "{brand} gana el {lossRate}% de las comparaciones de agentes contra ti. Esa es tu mayor oportunidad.",
-          "holdMajority": "Tienes la mayoría frente a {winning} de {total} competidor{plural} (media {overall}%). Optimizar los productos que pierdes frente a {brand} mueve la aguja.",
-          "defaultHeadline": "Tienes la mayoría frente a {winning} de {total} competidor{plural} (media {overall}% de tasa de victoria).",
+          "holdMajority": "Obtienes la mayoría de las victorias frente a {winning} de {total, plural, one {# competidor} many {# competidores} other {# competidores}} (media del {overall}%). Optimizar los productos que pierden frente a {brand} tendrá el mayor impacto.",
+          "defaultHeadline": "Obtienes la mayoría de las victorias frente a {winning} de {total, plural, one {# competidor} many {# competidores} other {# competidores}} (tasa de victoria media del {overall}%).",
           "focusOptimization": "Enfoca una optimización de ficha en los productos en los que {brand} te gana.",
           "toughestRival": "{toughest} es tu rival más duro con {toughestRate}%; lideras frente a {strongest} con {strongestRate}%."
         }
