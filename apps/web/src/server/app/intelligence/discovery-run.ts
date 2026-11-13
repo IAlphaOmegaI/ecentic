@@ -8,6 +8,7 @@ import { resultify } from "@zenncore/utils";
 import { z } from "zod";
 import { withInstrumentation } from "@/server/utils/context";
 import * as AI from "../../utils/ai";
+import { alphanumeric, normalizeDomain, rootLabel } from "../../utils/domain";
 import { ValidationError } from "../../utils/error";
 
 // The AI shopping agents we simulate. The first three are the same Azure-gateway
@@ -116,24 +117,6 @@ export type DiscoveryRunResult = {
   totalModels: number;
   queries: DiscoveryQueryResult[];
 };
-
-// Reduce a store URL/domain to a bare host for comparison: drop protocol, a
-// leading www., any path, and lowercase it. "https://www.Nike.com/shoes" → "nike.com".
-const normalizeDomain = (value: string): string =>
-  value
-    .trim()
-    .toLowerCase()
-    .replace(/^https?:\/\//, "")
-    .replace(/^www\./, "")
-    .replace(/\/.*$/, "")
-    .replace(/\/+$/, "");
-
-// The brand label of a domain — its first dot-separated segment. "allbirds.com" → "allbirds".
-const rootLabel = (domain: string): string =>
-  normalizeDomain(domain).split(".")[0] ?? "";
-
-const alphanumeric = (value: string): string =>
-  value.toLowerCase().replace(/[^a-z0-9]/g, "");
 
 // Decide whether a suggested store is the target. Models are inconsistent about
 // echoing the exact domain, so match either on normalized domain or on the
