@@ -210,12 +210,12 @@ const sameNumbers = (source: string, target: string, locale: Locale) => {
         link.slice(0, link.indexOf("](") + 1),
       );
   const monetarySource =
-    locale === "it"
+    locale === "it" || locale === "fr"
       ? monetaryMagnitudeFacts(monetaryProse(source), "en")
       : { remainder: source, values: [] };
   const monetaryTarget =
-    locale === "it"
-      ? monetaryMagnitudeFacts(monetaryProse(target), "it")
+    locale === "it" || locale === "fr"
+      ? monetaryMagnitudeFacts(monetaryProse(target), locale)
       : { remainder: target, values: [] };
   if (!equal(monetarySource.values, monetaryTarget.values)) return false;
   const originals = numericTokens(

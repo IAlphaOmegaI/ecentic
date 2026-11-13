@@ -34,11 +34,15 @@ const magnitudePowers: Readonly<Record<string, number>> = {
 };
 
 /**
- * Italian uses the long scale: one English trillion is 1.000 miliardi.
+ * Italian and French use the long scale: one English trillion is
+ * 1.000 miliardi / 1 000 milliards.
  * Extract only explicit currency amounts, keeping their currency and value
  * paired. Bare product counts, versions and other magnitudes stay untouched.
  */
-export const monetaryMagnitudeFacts = (text: string, locale: "en" | "it") => {
+export const monetaryMagnitudeFacts = (
+  text: string,
+  locale: "en" | "it" | "fr",
+) => {
   const powers: Readonly<Record<string, number>> =
     locale === "en"
       ? {
@@ -51,35 +55,60 @@ export const monetaryMagnitudeFacts = (text: string, locale: "en" | "it") => {
           billion: 9,
           trillion: 12,
         }
-      : {
-          k: 3,
-          m: 6,
-          b: 9,
-          t: 12,
-          mille: 3,
-          mila: 3,
-          milione: 6,
-          milioni: 6,
-          miliardo: 9,
-          miliardi: 9,
-          bilione: 12,
-          bilioni: 12,
-          biliardo: 15,
-          biliardi: 15,
-          trilione: 18,
-          trilioni: 18,
-        };
-  const grouping = locale === "en" ? "," : "\\.";
+      : locale === "it"
+        ? {
+            k: 3,
+            m: 6,
+            b: 9,
+            t: 12,
+            mille: 3,
+            mila: 3,
+            milione: 6,
+            milioni: 6,
+            miliardo: 9,
+            miliardi: 9,
+            bilione: 12,
+            bilioni: 12,
+            biliardo: 15,
+            biliardi: 15,
+            trilione: 18,
+            trilioni: 18,
+          }
+        : {
+            k: 3,
+            m: 6,
+            mille: 3,
+            millier: 3,
+            milliers: 3,
+            million: 6,
+            millions: 6,
+            milliard: 9,
+            milliards: 9,
+            billion: 12,
+            billions: 12,
+            billiard: 15,
+            billiards: 15,
+            trillion: 18,
+            trillions: 18,
+          };
+  const grouping = {
+    en: ",",
+    it: "\\.",
+    fr: "[ \\u00a0\\u202f]",
+  }[locale];
   const decimal = locale === "en" ? "\\." : ",";
   const number = `[−-]?(?:\\d{1,3}(?:${grouping}\\d{3})+|\\d+)(?:${decimal}\\d+)?`;
   const currency = "(?:\\bUS\\$|[$€£¥]|\\b(?:USD|EUR|GBP|JPY|CNY)\\b)";
   const magnitude = `(?:${Object.keys(powers).join("|")})(?![\\p{L}\\p{N}_])`;
+  const preposition = locale === "fr" ? "(?:de\\s+)?" : "(?:di\\s+)?";
   const values: string[] = [];
   const extract = (marker: string, amount: string, unit: string) => {
     const canonical =
-      locale === "it"
-        ? amount.replaceAll(".", "").replace(",", ".")
-        : amount.replaceAll(",", "");
+      locale === "en"
+        ? amount.replaceAll(",", "")
+        : amount
+            .replace(locale === "it" ? /\./gu : /[ \u00a0\u202f]/gu, "")
+            .replace(",", ".");
     const scaled = scaleDecimal(canonical, powers[unit.toLowerCase()] ?? 0)
       .replace(/(\.\d*?)0+$/u, "$1")
       .replace(/\.$/u, "");
@@ -114,7 +143,7 @@ export const monetaryMagnitudeFacts = (text: string, locale: "en" | "it") => {
   );
   const remainder = prefix.replace(
     new RegExp(
-      `(?<![\\p{L}\\p{N}_.,])(${number})\\s*(${magnitude})\\s*(?:di\\s+)?(${currency})`,
+      `(?<![\\p{L}\\p{N}_.,])(${number})\\s*(${magnitude})\\s*${preposition}(${currency})`,
       "giu",
     ),
     (_, amount: string, unit: string, marker: string) =>
@@ -185,9 +214,10 @@ export const normalizeCjkMagnitudes = (text: string, locale: Locale) => {
       `${currency}${scaleDecimal(decimal, magnitudePowers[magnitude] ?? 0)}`,
   );
   const english = monetary.replace(
-    /([−-]?\d+(?:,\d{3})*(?:\.\d+)?)\s*(thousand\b|million\b|billion\b|trillion\b)/giu,
-    (_, decimal: string, magnitude: string) =>
-      scaleDecimal(decimal, magnitudePowers[magnitude.toLowerCase()] ?? 0),
+    /([−-]?\d+(?:,\d{3})*(?:\.\d+)?)(\+)?\s*(thousand\b|million\b|billion\b|trillion\b)/giu,
+    (_, decimal: string, floor: string | undefined, magnitude: string) =>
+      // A trailing + is a lower-bound qualifier, not a sign or another digit.
+      `${scaleDecimal(decimal, magnitudePowers[magnitude.toLowerCase()] ?? 0)}${floor ?? ""}`,
   );
   return english.replace(
     /[−-]?(?:\d+(?:,\d{3})*(?:\.\d+)?\s*(?:万亿|萬億|万|萬|亿|億|兆))+(?:\d+(?:\.\d+)?)?/gu,

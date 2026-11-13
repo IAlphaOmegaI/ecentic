@@ -40,6 +40,43 @@ test("exact decimal shifting keeps precision beyond safe JavaScript integers", (
   );
 });
 
+test("CJK magnitude conversion retains a trailing-plus lower bound", () => {
+  expect(normalizeCjkMagnitudes("50+ billion listings", "zh-CN")).toBe(
+    "50000000000+ listings",
+  );
+  expect(normalizeCjkMagnitudes("2.5+ billion listings", "ja")).toBe(
+    "2500000000+ listings",
+  );
+  expect(normalizeCjkMagnitudes("50++ billion listings", "zh-CN")).toBe(
+    "50++ billion listings",
+  );
+  expect(normalizeCjkMagnitudes("50+ billion listings", "fr")).toBe(
+    "50+ billion listings",
+  );
+  const source =
+    "On the data quality side, Google’s Shopping Graph processes more than 2 billion updates per hour across 50+ billion listings.";
+  expect(
+    findings(
+      source,
+      "在数据质量方面，Google 的 Shopping Graph 每小时处理超过 20 亿次更新，覆盖 500 亿条以上的商品信息。",
+    ),
+  ).toEqual([]);
+  expect(
+    findings("50+ billion listings", "500億件以上の商品情報", "ja"),
+  ).toEqual([]);
+  for (const target of [
+    "50亿条以上的商品信息",
+    "501亿条以上的商品信息",
+    "-500亿条以上的商品信息",
+  ])
+    expect(findings("50+ billion listings", target).length).toBeGreaterThan(0);
+  expect(findings("`50+ billion`", "`500亿以上`").length).toBeGreaterThan(0);
+  expect(
+    findings("https://example.com/50+billion", "https://example.com/500亿以上")
+      .length,
+  ).toBeGreaterThan(0);
+});
+
 test("an implicit billion-dollar valuation retains the exact amount and currency", () => {
   const source = "Raised $96 million at a reported billion-dollar valuation.";
   expect(
@@ -348,6 +385,126 @@ test("Italian monetary magnitudes preserve exact short-scale values", () => {
   expect(
     findings("$1 trillion", "$1.001 miliardi", "it").length,
   ).toBeGreaterThan(0);
+});
+
+test("French monetary magnitudes preserve long-scale values and native grouping", () => {
+  for (const target of [
+    "Plus de 1 000 milliards $ d’ici 2029",
+    "Plus de 1\u00a0000 milliards de $ d’ici 2029",
+    "Plus de 1\u202f000 milliards de $ d’ici 2029",
+  ])
+    expect(findings("Over $1 trillion by 2029", target, "fr")).toEqual([]);
+  expect(findings("$15 trillion", "15 000 milliards de $", "fr")).toEqual([]);
+  expect(findings("€1.5 trillion", "1 500 milliards €", "fr")).toEqual([]);
+  expect(findings("USD 1.25 billion", "1 250 millions USD", "fr")).toEqual([]);
+  expect(findings("$1 trillion", "$1 billion", "fr")).toEqual([]);
+  expect(findings("$1 trillion", "$1 trillion", "fr").length).toBeGreaterThan(
+    0,
+  );
+});
+
+test("French monetary matching keeps exact precision, signs and currency pairs", () => {
+  expect(
+    findings(
+      "$9007199254.740993 billion",
+      "9 007 199 254,740993 milliards de $",
+      "fr",
+    ),
+  ).toEqual([]);
+  expect(
+    findings("$0.0000000000001 trillion", "0,000000000100 milliard $", "fr"),
+  ).toEqual([]);
+  for (const target of [
+    "999 milliards $",
+    "1 001 milliards $",
+    "1 milliard $",
+    "1 trillion $",
+    "1 000 milliards €",
+    "1 000 milliards",
+  ])
+    expect(findings("$1 trillion", target, "fr").length).toBeGreaterThan(0);
+  for (const source of [
+    "-$1 trillion",
+    "$-1 trillion",
+    "Balance: - $1 trillion",
+  ])
+    expect(findings(source, "-1 000 milliards de $", "fr")).toEqual([]);
+  expect(
+    findings("-$1 trillion", "1 000 milliards $", "fr").length,
+  ).toBeGreaterThan(0);
+  expect(
+    findings("$1 trillion", "-1 000 milliards $", "fr").length,
+  ).toBeGreaterThan(0);
+  expect(
+    findings(
+      "$1 trillion and €2 trillion",
+      "2 000 milliards $ et 1 000 milliards €",
+      "fr",
+    ).length,
+  ).toBeGreaterThan(0);
+  expect(
+    findings(
+      "$9007199254.740993 billion",
+      "9 007 199 254,740992 milliards de $",
+      "fr",
+    ).length,
+  ).toBeGreaterThan(0);
+});
+
+test("French monetary k and M abbreviations preserve value without assuming B or T", () => {
+  expect(findings("$20M", "20 M$", "fr")).toEqual([]);
+  expect(findings("$20M", "$20M", "fr")).toEqual([]);
+  expect(findings("$20 million", "20 M$", "fr")).toEqual([]);
+  expect(findings("€250K", "250 k€", "fr")).toEqual([]);
+  expect(findings("USD 250 thousand", "250 k USD", "fr")).toEqual([]);
+  expect(findings("$20M", "20 k$", "fr").length).toBeGreaterThan(0);
+  expect(findings("$20M", "20 M€", "fr").length).toBeGreaterThan(0);
+  expect(findings("$20 billion", "20 B$", "fr").length).toBeGreaterThan(0);
+  expect(findings("$20 trillion", "20 T$", "fr").length).toBeGreaterThan(0);
+  expect(monetaryMagnitudeFacts("20M model, 250K samples", "fr")).toEqual({
+    remainder: "20M model, 250K samples",
+    values: [],
+  });
+  expect(findings("Use `$20M`", "Utilisez `$20M`", "fr")).toEqual([]);
+  expect(
+    findings("Use `$20M`", "Utilisez `20 M$`", "fr").length,
+  ).toBeGreaterThan(0);
+});
+
+test("French monetary conversion leaves ordinary counts, versions and percentages exact", () => {
+  const source = "$1 trillion; 1,000 products; version 0.5; 5 steps; 40%";
+  const target =
+    "1 000 milliards $ ; 1 000 produits ; version 0.5 ; 5 étapes ; 40 %";
+  expect(findings(source, target, "fr")).toEqual([]);
+  for (const changed of [
+    target.replace("1 000 produits", "999 produits"),
+    target.replace("version 0.5", "version 0.6"),
+    target.replace("5 étapes", "6 étapes"),
+    target.replace("40 %", "41 %"),
+  ])
+    expect(findings(source, changed, "fr").length).toBeGreaterThan(0);
+  expect(monetaryMagnitudeFacts("1 000 milliards de produits", "fr")).toEqual({
+    remainder: "1 000 milliards de produits",
+    values: [],
+  });
+  expect(
+    findings("1 trillion products", "1 000 milliards de produits", "fr").length,
+  ).toBeGreaterThan(0);
+});
+
+test("French monetary prose never rewrites code, links or attributes", () => {
+  const source =
+    'Use `$1 trillion`, https://example.com/$1trillion and [guide](/cost/$1trillion); <span title="$1 trillion">amount</span>.';
+  const target =
+    'Utilisez `$1 trillion`, https://example.com/$1trillion et [guide](/cost/$1trillion) ; <span title="$1 trillion">montant</span>.';
+  expect(findings(source, target, "fr")).toEqual([]);
+  for (const changed of [
+    target.replace("`$1 trillion`", "`1 000 milliards $`"),
+    target.replace("example.com/$1trillion", "example.com/$1000milliards"),
+    target.replace("/cost/$1trillion", "/cost/$1000milliards"),
+    target.replace('title="$1 trillion"', 'title="1 000 milliards $"'),
+  ])
+    expect(findings(source, changed, "fr").length).toBeGreaterThan(0);
 });
 
 test("monetary magnitude matching preserves precision, signs and currency association", () => {
