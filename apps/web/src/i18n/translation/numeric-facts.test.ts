@@ -1,6 +1,10 @@
 import { expect, test } from "bun:test";
 import type { Locale } from "../locales";
-import { normalizeCjkDates, normalizeCjkMagnitudes } from "./numeric-facts";
+import {
+  monetaryMagnitudeFacts,
+  normalizeCjkDates,
+  normalizeCjkMagnitudes,
+} from "./numeric-facts";
 import { validateTranslationUnit } from "./validation";
 
 const findings = (source: string, target: string, locale: Locale = "zh-CN") =>
@@ -317,4 +321,168 @@ test("hyphenated year modifiers do not turn dates into negative quantities", () 
   expect(findings("`mid-2025`", "`Mitte 2025`", "de").length).toBeGreaterThan(
     0,
   );
+});
+
+test("Italian monetary magnitudes preserve exact short-scale values", () => {
+  expect(
+    findings(
+      "Over $1 trillion by 2029",
+      "Oltre $1.000 miliardi entro il 2029",
+      "it",
+    ),
+  ).toEqual([]);
+  expect(findings("$15 trillion", "$15.000 miliardi", "it")).toEqual([]);
+  expect(findings("€1.5 trillion", "1.500 miliardi di €", "it")).toEqual([]);
+  expect(findings("USD 1.25 billion", "1.250 milioni USD", "it")).toEqual([]);
+  expect(findings("€70M", "70 milioni €", "it")).toEqual([]);
+  expect(findings("$1 billion", "$1M", "it").length).toBeGreaterThan(0);
+  expect(findings("$1 trillion", "$1 miliardo", "it").length).toBeGreaterThan(
+    0,
+  );
+  expect(findings("$1 trillion", "$1 trilione", "it").length).toBeGreaterThan(
+    0,
+  );
+  expect(
+    findings("$1 trillion", "€1.000 miliardi", "it").length,
+  ).toBeGreaterThan(0);
+  expect(
+    findings("$1 trillion", "$1.001 miliardi", "it").length,
+  ).toBeGreaterThan(0);
+});
+
+test("monetary magnitude matching preserves precision, signs and currency association", () => {
+  expect(
+    findings(
+      "$9007199254.740993 billion",
+      "$9.007.199.254,740993 miliardi",
+      "it",
+    ),
+  ).toEqual([]);
+  expect(
+    findings("$0.0000000000001 trillion", "$0,000000000100 miliardi", "it"),
+  ).toEqual([]);
+  expect(
+    findings(
+      "$9007199254.740993 billion",
+      "$9.007.199.254,740992 miliardi",
+      "it",
+    ).length,
+  ).toBeGreaterThan(0);
+  for (const source of [
+    "-$1 trillion",
+    "$-1 trillion",
+    "Balance: - $1 trillion",
+    "Balance − $1 trillion",
+  ]) {
+    expect(findings(source, "-1.000 miliardi $", "it")).toEqual([]);
+    expect(findings(source, "$1.000 miliardi", "it").length).toBeGreaterThan(0);
+  }
+  // A leading spaced hyphen also forms a Markdown list; keep its topology.
+  expect(findings("- $1 trillion", "- $1.000 miliardi", "it")).toEqual([]);
+  expect(monetaryMagnitudeFacts("- $1 trillion", "en").values).toEqual([
+    "$:-1000000000000",
+  ]);
+  expect(
+    findings("Value - $1 trillion", "Valore – $1.000 miliardi", "it"),
+  ).toEqual([]);
+  expect(
+    findings(
+      "$1 trillion and €2 trillion",
+      "$2.000 miliardi e €1.000 miliardi",
+      "it",
+    ).length,
+  ).toBeGreaterThan(0);
+});
+
+test("Italian magnitude equivalence never loosens prose counts or literal code", () => {
+  const source = "$1 trillion; 1,000 products; version 0.5; 5 steps; 40%";
+  expect(
+    findings(
+      source,
+      "$1.000 miliardi; 1.000 prodotti; versione 0.5; 5 passi; 40%",
+      "it",
+    ),
+  ).toEqual([]);
+  for (const target of [
+    "$1.000 miliardi; 1 prodotto; versione 0.5; 5 passi; 40%",
+    "$1.000 miliardi; 1.000 prodotti; versione 0.6; 5 passi; 40%",
+    "$1.000 miliardi; 1.000 prodotti; versione 0.5; 6 passi; 40%",
+    "$1.000 miliardi; 1.000 prodotti; versione 0.5; 5 passi; 41%",
+  ])
+    expect(findings(source, target, "it").length).toBeGreaterThan(0);
+  expect(
+    monetaryMagnitudeFacts("1 trillion products, 10M model, version 0.5", "en"),
+  ).toEqual({
+    remainder: "1 trillion products, 10M model, version 0.5",
+    values: [],
+  });
+  expect(
+    findings("1 trillion products", "1.000 miliardi di prodotti", "it").length,
+  ).toBeGreaterThan(0);
+  expect(
+    findings("`$1 trillion`", "`$1.000 miliardi`", "it").length,
+  ).toBeGreaterThan(0);
+  expect(
+    findings(
+      "https://example.com/$1trillion",
+      "https://example.com/$1000miliardi",
+      "it",
+    ).length,
+  ).toBeGreaterThan(0);
+  expect(
+    findings(
+      "Use `$1 trillion` for 3 examples.",
+      "Usa `$1 trillion` per 3 esempi.",
+      "it",
+    ),
+  ).toEqual([]);
+  expect(
+    findings(
+      "Use https://example.com/$1trillion",
+      "Usa https://example.com/$1trillion",
+      "it",
+    ),
+  ).toEqual([]);
+  expect(
+    findings("[See](/amount/$1trillion)", "[Vedi](/amount/$1trillion)", "it"),
+  ).toEqual([]);
+  expect(
+    findings("[See](/amount/$1trillion)", "[Vedi](/amount/$1000miliardi)", "it")
+      .length,
+  ).toBeGreaterThan(0);
+  expect(
+    findings(
+      '<span title="$1 trillion">Amount</span>',
+      '<span title="$1 trillion">Importo</span>',
+      "it",
+    ),
+  ).toEqual([]);
+});
+
+test("pre/post year qualifiers preserve dates without accepting negative changes", () => {
+  expect(findings("Classic SEO (pre-2015)", "经典 SEO（2015 年前）")).toEqual(
+    [],
+  );
+  expect(findings("post-2026", "2026 年后")).toEqual([]);
+  expect(findings("pre-2015", "2016 年前").length).toBeGreaterThan(0);
+  expect(findings("Balance: -2015", "余额：2015").length).toBeGreaterThan(0);
+  expect(findings("`pre-2015`", "`2015 年前`").length).toBeGreaterThan(0);
+});
+
+test("CSV prose plurals keep counts while code and URLs stay literal", () => {
+  expect(findings("Export CSVs", "Exporter des fichiers CSV", "fr")).toEqual(
+    [],
+  );
+  expect(findings("CSV and CSVs", "CSV et CSV", "fr")).toEqual([]);
+  expect(findings("CSV and CSVs", "CSV", "fr").length).toBeGreaterThan(0);
+  expect(
+    findings("Export CSVs", "Exporter des fichiers TSV", "fr").length,
+  ).toBeGreaterThan(0);
+  expect(
+    findings("Export `CSVs`", "Exporter `CSV`", "fr").length,
+  ).toBeGreaterThan(0);
+  expect(
+    findings("https://example.com/CSVs", "https://example.com/CSV", "fr")
+      .length,
+  ).toBeGreaterThan(0);
 });

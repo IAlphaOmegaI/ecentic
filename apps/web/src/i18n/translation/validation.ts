@@ -6,6 +6,7 @@ import {
 import { type Locale, localeMetadata } from "../locales";
 import {
   currencyAndPercentFacts,
+  monetaryMagnitudeFacts,
   normalizeCjkDates,
   normalizeCjkMagnitudes,
 } from "./numeric-facts";
@@ -48,7 +49,7 @@ const literalMatches = (text: string, term: string, ignoreCase = false) =>
   matches(
     text,
     new RegExp(
-      `(?<![A-Za-z0-9_])${escapePattern(term)}${["API", "MCP", "UCP"].includes(term) ? "s?" : ""}(?![A-Za-z0-9_])`,
+      `(?<![A-Za-z0-9_])${escapePattern(term)}${["API", "MCP", "UCP", "CSV"].includes(term) ? "s?" : ""}(?![A-Za-z0-9_])`,
       ignoreCase ? "gi" : "g",
     ),
   );
@@ -84,7 +85,9 @@ const numericTokens = (value: string) => {
       match[0].startsWith("-") &&
       (/[\d%]/.test(text[(match.index ?? 0) - 1] ?? "") ||
         (/^-\d{4}$/u.test(match[0]) &&
-          /\b(?:early|mid|late)$/i.test(text.slice(0, match.index ?? 0))) ||
+          /\b(?:early|mid|late|pre|post)$/i.test(
+            text.slice(0, match.index ?? 0),
+          )) ||
         (/\b\d+-to$/i.test(text.slice(0, match.index ?? 0)) &&
           /^-(?:second|minute|hour|day|week|month|year)s?\b/i.test(
             text.slice((match.index ?? 0) + match[0].length),
@@ -196,12 +199,37 @@ const numericValue = (token: string, locale: Locale) => {
 
 /** Accept unchanged spelling first, then an equivalent value in target conventions. */
 const sameNumbers = (source: string, target: string, locale: Locale) => {
+  // These literals receive exact parity checks separately. They must not be
+  // interpreted as localized monetary prose just because their currency is real.
+  const monetaryProse = (text: string) =>
+    text
+      .replace(syntaxExpressions.code, "\uFFFC")
+      .replace(syntaxExpressions.urls, "\uFFFC")
+      .replace(syntaxExpressions.tags, "\uFFFC")
+      .replace(syntaxExpressions.links, (link) =>
+        link.slice(0, link.indexOf("](") + 1),
+      );
+  const monetarySource =
+    locale === "it"
+      ? monetaryMagnitudeFacts(monetaryProse(source), "en")
+      : { remainder: source, values: [] };
+  const monetaryTarget =
+    locale === "it"
+      ? monetaryMagnitudeFacts(monetaryProse(target), "it")
+      : { remainder: target, values: [] };
+  if (!equal(monetarySource.values, monetaryTarget.values)) return false;
   const originals = numericTokens(
-    normalizeCjkDates(normalizeCjkMagnitudes(source, locale), locale),
+    normalizeCjkDates(
+      normalizeCjkMagnitudes(monetarySource.remainder, locale),
+      locale,
+    ),
   );
   const remaining = [
     ...numericTokens(
-      normalizeCjkDates(normalizeCjkMagnitudes(target, locale), locale),
+      normalizeCjkDates(
+        normalizeCjkMagnitudes(monetaryTarget.remainder, locale),
+        locale,
+      ),
     ),
   ];
   const unmatched = originals.filter((token) => {

@@ -35,6 +35,7 @@ const translatableBlogTerms = (text: string) => {
     case "Can These Tools Scale as Your Business Grows?":
     case "Running Audits at Scale: What Actually Works":
     case "How to Scale Product Copy With AI Without Breaking Your Catalog":
+    case "How Do You Scale GEO Across a Larger Catalog?":
       return { translatableTerms: ["Scale"] as const };
     case "Compete With Amazon in AI: Simulate Shopify and WooCommerce Feeds":
       return { translatableTerms: ["Compete"] as const };

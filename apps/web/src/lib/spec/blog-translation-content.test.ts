@@ -171,38 +171,43 @@ test("the reviewed Compete verb heading translates without renaming the plan", (
   ).toBe(true);
 });
 
-test("reviewed ordinary scale headings translate without renaming the Scale plan", () => {
-  const heading = "Running Audits at Scale: What Actually Works";
-  const article = createBlogTranslation({
-    ...source,
-    title: heading,
-    contentHtml: `<h2>${heading}</h2><p>Scale costs $44.90 per month.</p>`,
-  });
-  const headings = article.units.filter((unit) => unit.text === heading);
-  expect(headings).toHaveLength(2);
-  for (const unit of headings) {
-    expect(unit.translatableTerms).toEqual(["Scale"]);
+test.each([
+  [
+    "Running Audits at Scale: What Actually Works",
+    "Audits in großem Maßstab durchführen: Was tatsächlich funktioniert",
+  ],
+  [
+    "How Do You Scale GEO Across a Larger Catalog?",
+    "Wie weiten Sie GEO auf einen größeren Katalog aus?",
+  ],
+])(
+  "ordinary heading %s translates without renaming the Scale plan",
+  (heading, target) => {
+    const article = createBlogTranslation({
+      ...source,
+      title: heading,
+      contentHtml: `<h2>${heading}</h2><p>Scale costs $44.90 per month.</p>`,
+    });
+    const headings = article.units.filter((unit) => unit.text === heading);
+    expect(headings).toHaveLength(2);
+    for (const unit of headings) {
+      expect(unit.translatableTerms).toEqual(["Scale"]);
+      expect(validateTranslationUnit(unit, target, "de")).toEqual([]);
+    }
+    const plan = article.units.find((unit) =>
+      unit.text.startsWith("Scale costs"),
+    );
+    if (!plan) throw new Error("Expected plan source unit");
+    expect(plan.translatableTerms).toBeUndefined();
     expect(
       validateTranslationUnit(
-        unit,
-        "Audits in großem Maßstab durchführen: Was tatsächlich funktioniert",
+        plan,
+        "Wachstum kostet $44.90 pro Monat.",
         "de",
-      ),
-    ).toEqual([]);
-  }
-  const plan = article.units.find((unit) =>
-    unit.text.startsWith("Scale costs"),
-  );
-  if (!plan) throw new Error("Expected plan source unit");
-  expect(plan.translatableTerms).toBeUndefined();
-  expect(
-    validateTranslationUnit(
-      plan,
-      "Wachstum kostet $44.90 pro Monat.",
-      "de",
-    ).some((issue) => issue.message.includes("Scale")),
-  ).toBe(true);
-});
+      ).some((issue) => issue.message.includes("Scale")),
+    ).toBe(true);
+  },
+);
 
 describe("blog translation preservation", () => {
   test("translates visible and accessible text without serializing protected HTML", () => {

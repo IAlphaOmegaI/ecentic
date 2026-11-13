@@ -33,6 +33,96 @@ const magnitudePowers: Readonly<Record<string, number>> = {
   兆: 12,
 };
 
+/**
+ * Italian uses the long scale: one English trillion is 1.000 miliardi.
+ * Extract only explicit currency amounts, keeping their currency and value
+ * paired. Bare product counts, versions and other magnitudes stay untouched.
+ */
+export const monetaryMagnitudeFacts = (text: string, locale: "en" | "it") => {
+  const powers: Readonly<Record<string, number>> =
+    locale === "en"
+      ? {
+          k: 3,
+          m: 6,
+          b: 9,
+          t: 12,
+          thousand: 3,
+          million: 6,
+          billion: 9,
+          trillion: 12,
+        }
+      : {
+          k: 3,
+          m: 6,
+          b: 9,
+          t: 12,
+          mille: 3,
+          mila: 3,
+          milione: 6,
+          milioni: 6,
+          miliardo: 9,
+          miliardi: 9,
+          bilione: 12,
+          bilioni: 12,
+          biliardo: 15,
+          biliardi: 15,
+          trilione: 18,
+          trilioni: 18,
+        };
+  const grouping = locale === "en" ? "," : "\\.";
+  const decimal = locale === "en" ? "\\." : ",";
+  const number = `[−-]?(?:\\d{1,3}(?:${grouping}\\d{3})+|\\d+)(?:${decimal}\\d+)?`;
+  const currency = "(?:\\bUS\\$|[$€£¥]|\\b(?:USD|EUR|GBP|JPY|CNY)\\b)";
+  const magnitude = `(?:${Object.keys(powers).join("|")})(?![\\p{L}\\p{N}_])`;
+  const values: string[] = [];
+  const extract = (marker: string, amount: string, unit: string) => {
+    const canonical =
+      locale === "it"
+        ? amount.replaceAll(".", "").replace(",", ".")
+        : amount.replaceAll(",", "");
+    const scaled = scaleDecimal(canonical, powers[unit.toLowerCase()] ?? 0)
+      .replace(/(\.\d*?)0+$/u, "$1")
+      .replace(/\.$/u, "");
+    values.push(`${marker}:${scaled}`);
+    // A nonnumeric boundary prevents adjacent prose counts from joining.
+    return "\uFFFC";
+  };
+  const prefix = text.replace(
+    new RegExp(
+      `([−-]\\s*)?(${currency})\\s*(${number})\\s*(${magnitude})`,
+      "giu",
+    ),
+    (
+      match,
+      sign: string | undefined,
+      marker: string,
+      amount: string,
+      unit: string,
+      offset: number,
+    ) => {
+      if (sign && /^[−-]/u.test(amount)) return match;
+      const labelSeparator =
+        sign !== undefined &&
+        /^-\s/u.test(sign) &&
+        /[\p{L}\p{N}]\s+$/u.test(text.slice(0, offset));
+      return extract(
+        marker,
+        sign && !labelSeparator ? `${sign.trim()}${amount}` : amount,
+        unit,
+      );
+    },
+  );
+  const remainder = prefix.replace(
+    new RegExp(
+      `(?<![\\p{L}\\p{N}_.,])(${number})\\s*(${magnitude})\\s*(?:di\\s+)?(${currency})`,
+      "giu",
+    ),
+    (_, amount: string, unit: string, marker: string) =>
+      extract(marker, amount, unit),
+  );
+  return { remainder, values };
+};
+
 const sumDecimals = (values: readonly string[]) => {
   const parts = values.map((value) => {
     const [integer = "0", fraction = ""] = value.split(".");
