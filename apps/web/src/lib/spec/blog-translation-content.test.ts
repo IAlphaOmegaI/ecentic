@@ -139,6 +139,70 @@ test("only the reviewed owned pricing passage carries explicit dollar context", 
   }
 });
 
+test("only the exact reviewed tooling no-spend idiom can omit its dollar marker", () => {
+  const paragraph =
+    "That last step is the quick win worth testing this week: take one competitor, one hour, and one AI summary, then judge whether the output actually changes a decision. If it does, you’ve validated the approach before spending a dollar on tooling.";
+  const target =
+    "最后一步是本周值得尝试的快速验证：选择一个竞争对手，花一小时，做一份AI摘要，再判断结果是否真的改变了某个决策。如果有，您就已经在还没为工具花钱之前，验证了这套方法。";
+  const unitFor = (slug = "ai-competitor-analysis", text = paragraph) => {
+    const article = createBlogTranslation({
+      ...source,
+      slug,
+      contentHtml: `<p>${text}</p>`,
+    });
+    const unit = article.units.find((entry) => entry.id === "html.body.0.0");
+    if (!unit) throw new Error("Expected source paragraph");
+    return unit;
+  };
+  const idiom = unitFor();
+  expect(idiom.nonMonetaryDollarPhrase).toBe(
+    "before spending a dollar on tooling",
+  );
+  expect(validateTranslationUnit(idiom, target, "zh-CN")).toEqual([]);
+  expect(validateTranslationUnit(idiom, paragraph, "zh-CN")).toEqual([]);
+  for (const incorrect of [
+    target.replace("花钱", "花一欧元"),
+    target.replace("花钱", "花2美元"),
+    target.replace("花一小时", "花2小时"),
+  ])
+    expect(
+      validateTranslationUnit(idiom, incorrect, "zh-CN").length,
+    ).toBeGreaterThan(0);
+  for (const unowned of [
+    unitFor("another-article"),
+    unitFor("ai-competitor-analysis", paragraph.replace("a dollar", "$1")),
+    unitFor(
+      "ai-competitor-analysis",
+      paragraph.replace("a dollar", "five dollars"),
+    ),
+    unitFor("ai-competitor-analysis", `${paragraph} The tool costs $5.`),
+  ])
+    expect(unowned.nonMonetaryDollarPhrase).toBeUndefined();
+  expect(
+    validateTranslationUnit(unitFor("another-article"), target, "zh-CN").length,
+  ).toBeGreaterThan(0);
+  expect(
+    validateTranslationUnit(
+      unitFor("ai-competitor-analysis", paragraph.replace("a dollar", "$1")),
+      target,
+      "zh-CN",
+    ).length,
+  ).toBeGreaterThan(0);
+  for (const [literal, changed] of [
+    [" `USD 5`", " `EUR 5`"],
+    [" https://example.com/price?usd=5", " https://example.com/price?eur=5"],
+    [" The tool costs $5.", " 工具收费5欧元。"],
+    [" The tool costs $5.", " 工具收费6美元。"],
+  ])
+    expect(
+      validateTranslationUnit(
+        { ...idiom, text: paragraph + literal },
+        target + changed,
+        "zh-CN",
+      ).length,
+    ).toBeGreaterThan(0);
+});
+
 test("the reviewed Compete verb heading translates without renaming the plan", () => {
   const heading =
     "Compete With Amazon in AI: Simulate Shopify and WooCommerce Feeds";
@@ -184,6 +248,7 @@ test.each([
     "What Actually Matters When You Scale This",
     "Was bei der Ausweitung wirklich zählt",
   ],
+  ["Scale and pricing model.", "Skalierung und Preismodell."],
 ])(
   "ordinary heading %s translates without renaming the Scale plan",
   (heading, target) => {
@@ -212,6 +277,30 @@ test.each([
     ).toBe(true);
   },
 );
+
+test("HPOS table scalability heading translates while Scale pricing remains protected", () => {
+  const article = createBlogHtmlTranslation(
+    "<table><tr><th>HPOS / Scale</th><td>Scale costs $44.90 per month.</td></tr></table>",
+  );
+  const heading = article.units.find((unit) => unit.text === "HPOS / Scale");
+  const plan = article.units.find((unit) =>
+    unit.text.startsWith("Scale costs"),
+  );
+  if (!heading || !plan) throw new Error("Expected both table source units");
+  expect(heading.translatableTerms).toEqual(["Scale"]);
+  expect(validateTranslationUnit(heading, "HPOS / Scalabilità", "it")).toEqual(
+    [],
+  );
+  expect(plan.translatableTerms).toBeUndefined();
+  expect(
+    validateTranslationUnit(plan, "Crescita costa $44.90 al mese.", "it").some(
+      (issue) => issue.message.includes("Scale"),
+    ),
+  ).toBe(true);
+  expect(
+    validateTranslationUnit(plan, "Scale costa $44.90 al mese.", "it"),
+  ).toEqual([]);
+});
 
 describe("blog translation preservation", () => {
   test("joins punctuation-only translations to an inline link without its old word separator", () => {

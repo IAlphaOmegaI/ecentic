@@ -29,6 +29,8 @@ export type TranslationUnit = {
   translatableTerms?: readonly string[];
   /** Source-owned editorial context for an otherwise unqualified dollar reference. */
   dollarCurrency?: "USD";
+  /** Exact source-owned no-spend idiom; it states no literal monetary amount. */
+  nonMonetaryDollarPhrase?: "before spending a dollar on tooling";
 };
 
 export type TranslationFinding = {
@@ -345,7 +347,24 @@ const textFindings = (
   target: string,
   locale: Locale,
   dollarCurrency?: "USD",
+  nonMonetaryDollarPhrase?: TranslationUnit["nonMonetaryDollarPhrase"],
 ) => {
+  const originalCurrency = currencyAndPercentFacts(
+    source,
+    locale,
+    dollarCurrency,
+  );
+  const targetCurrency = currencyAndPercentFacts(target, locale);
+  // Preserve literal renderings too. Only the annotated no-spend idiom may
+  // disappear from currency facts; all other amounts and currencies remain.
+  const sourceCurrency =
+    nonMonetaryDollarPhrase && !equal(originalCurrency, targetCurrency)
+      ? currencyAndPercentFacts(
+          source.replace(nonMonetaryDollarPhrase, ""),
+          locale,
+          dollarCurrency,
+        )
+      : originalCurrency;
   const checks = [
     [
       "code",
@@ -378,11 +397,7 @@ const textFindings = (
       markdownTopology(source),
       markdownTopology(target),
     ],
-    [
-      "currency and percent markers",
-      currencyAndPercentFacts(source, locale, dollarCurrency),
-      currencyAndPercentFacts(target, locale),
-    ],
+    ["currency and percent markers", sourceCurrency, targetCurrency],
   ] as const;
   return [
     ...checks
@@ -583,7 +598,13 @@ export const validateTranslationUnit = (
   const structural = (() => {
     if (unit.format !== "icu")
       return [
-        ...textFindings(unit.text, target, locale, unit.dollarCurrency),
+        ...textFindings(
+          unit.text,
+          target,
+          locale,
+          unit.dollarCurrency,
+          unit.nonMonetaryDollarPhrase,
+        ),
         ...termFindings(unit.text, target, protectedTerms, unit.canonicalTerms),
         ...(!equal(
           matches(unit.text, syntaxExpressions.placeholders),
