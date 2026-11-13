@@ -9,6 +9,7 @@ import {
   monetaryMagnitudeFacts,
   normalizeCjkDates,
   normalizeCjkMagnitudes,
+  normalizeSpanishNumericProse,
 } from "./numeric-facts";
 import { protectedProductTerms, type TranslationReviewPass } from "./policy";
 
@@ -212,24 +213,34 @@ const sameNumbers = (source: string, target: string, locale: Locale) => {
         link.slice(0, link.indexOf("](") + 1),
       );
   const monetarySource =
-    locale === "it" || locale === "fr"
+    locale === "it" || locale === "fr" || locale === "es"
       ? monetaryMagnitudeFacts(monetaryProse(source), "en")
       : { remainder: source, values: [] };
   const monetaryTarget =
-    locale === "it" || locale === "fr"
+    locale === "it" || locale === "fr" || locale === "es"
       ? monetaryMagnitudeFacts(monetaryProse(target), locale)
       : { remainder: target, values: [] };
   if (!equal(monetarySource.values, monetaryTarget.values)) return false;
   const originals = numericTokens(
     normalizeCjkDates(
-      normalizeCjkMagnitudes(monetarySource.remainder, locale),
+      normalizeCjkMagnitudes(
+        locale === "es"
+          ? normalizeSpanishNumericProse(monetarySource.remainder, "en")
+          : monetarySource.remainder,
+        locale,
+      ),
       locale,
     ),
   );
   const remaining = [
     ...numericTokens(
       normalizeCjkDates(
-        normalizeCjkMagnitudes(monetaryTarget.remainder, locale),
+        normalizeCjkMagnitudes(
+          locale === "es"
+            ? normalizeSpanishNumericProse(monetaryTarget.remainder, "es")
+            : monetaryTarget.remainder,
+          locale,
+        ),
         locale,
       ),
     ),

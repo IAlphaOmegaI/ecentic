@@ -357,14 +357,61 @@ describe("blog translation preservation", () => {
         `<p><a href="/docs">Guide</a> ${punctuation}</p>`,
       );
     }
-    for (const target of [" .", "\u00a0.", "\u202f;", ". ", ".\n"]) {
+    for (const target of [" .", "\u00a0.", "\u202f;"]) {
       expect(render(" ", target)).toBe(
         `<p><a href="/docs">Guide</a> ${target}</p>`,
+      );
+    }
+    for (const target of [". ", ".\n", ".\u00a0", ".\u202f"]) {
+      expect(render(" ", target)).toBe(
+        `<p><a href="/docs">Guide</a>${target}</p>`,
       );
     }
     for (const prefix of ["\n  ", "\r\n\t", "\u00a0", "\u202f"]) {
       expect(render(prefix, ".")).toBe(
         `<p><a href="/docs">Guide</a>${prefix}.</p>`,
+      );
+    }
+  });
+
+  test("joins a moved inline noun's following sentence without altering decimal or word prefixes", () => {
+    const render = (prefix: string, target: string) => {
+      const article = createBlogHtmlTranslation(
+        `<p>You need an <code>Offer</code>${prefix}block. Merchant listings need a price.</p>`,
+      );
+      return article.apply(
+        new Map(
+          article.units.map((unit) => [
+            unit.id,
+            unit.text === "You need an" ? "Necesitas un bloque" : target,
+          ]),
+        ),
+      );
+    };
+    for (const prefix of [" ", "\t", " \t"]) {
+      expect(render(prefix, ". Las fichas necesitan un precio.")).toBe(
+        "<p>Necesitas un bloque <code>Offer</code>. Las fichas necesitan un precio.</p>",
+      );
+    }
+    for (const target of [
+      ".NET sigue siendo compatible.",
+      ".5 is the threshold.",
+      ",5 es el umbral.",
+      "。商品情報",
+      ": les fiches",
+      "; les fiches",
+      "! Les fiches",
+      "? Les fiches",
+      " . Las fichas",
+      "\u00a0. Las fichas",
+    ]) {
+      expect(render(" ", target)).toBe(
+        `<p>Necesitas un bloque <code>Offer</code> ${target}</p>`,
+      );
+    }
+    for (const prefix of ["\n  ", "\r\n\t", "\u00a0", "\u202f"]) {
+      expect(render(prefix, ". Las fichas")).toBe(
+        `<p>Necesitas un bloque <code>Offer</code>${prefix}. Las fichas</p>`,
       );
     }
   });

@@ -33,15 +33,67 @@ const magnitudePowers: Readonly<Record<string, number>> = {
   兆: 12,
 };
 
+/** Spanish prose may spell out a quarter or regroup an explicit large count. */
+export const normalizeSpanishNumericProse = (
+  text: string,
+  language: "en" | "es",
+) => {
+  const quarters: Readonly<Record<string, string>> = {
+    primer: "1",
+    segundo: "2",
+    tercer: "3",
+    cuarto: "4",
+  };
+  const prose =
+    language === "es"
+      ? text.replace(
+          /\b(primer|segundo|tercer|cuarto)\s+trimestre\b/giu,
+          (_, ordinal: string) => `Q${quarters[ordinal.toLowerCase()]}`,
+        )
+      : text;
+  const powers: Readonly<Record<string, number>> =
+    language === "en"
+      ? { thousand: 3, million: 6, billion: 9, trillion: 12 }
+      : {
+          "mil millones": 9,
+          mil: 3,
+          millón: 6,
+          millones: 6,
+          billón: 12,
+          billones: 12,
+        };
+  const number =
+    language === "en"
+      ? "[−-]?\\d+(?:,\\d{3})*(?:\\.\\d+)?"
+      : "[−-]?(?:\\d{1,3}(?:[. \\u00a0\\u202f]\\d{3})+|\\d+)(?:,\\d+)?";
+  return prose.replace(
+    new RegExp(
+      `(?<![\\p{L}\\p{N}_.,])(${number})\\s+(${Object.keys(powers).join("|")})(?![\\p{L}\\p{N}_])`,
+      "giu",
+    ),
+    (_, amount: string, magnitude: string) => {
+      const decimal =
+        language === "en"
+          ? amount.replaceAll(",", "")
+          : amount.replace(/[. \u00a0\u202f]/gu, "").replace(",", ".");
+      const scaled = scaleDecimal(
+        decimal,
+        powers[magnitude.toLowerCase()] ?? 0,
+      );
+      return language === "es" ? scaled.replace(".", ",") : scaled;
+    },
+  );
+};
+
 /**
- * Italian and French use the long scale: one English trillion is
- * 1.000 miliardi / 1 000 milliards.
+ * Italian, French and Spanish use the long scale: one English trillion is
+ * 1.000 miliardi / 1 000 milliards / 1 billón.
  * Extract only explicit currency amounts, keeping their currency and value
  * paired. Bare product counts, versions and other magnitudes stay untouched.
  */
 export const monetaryMagnitudeFacts = (
   text: string,
-  locale: "en" | "it" | "fr",
+  locale: "en" | "it" | "fr" | "es",
 ) => {
   const powers: Readonly<Record<string, number>> =
     locale === "en"
@@ -74,42 +126,68 @@ export const monetaryMagnitudeFacts = (
             trilione: 18,
             trilioni: 18,
           }
-        : {
-            k: 3,
-            m: 6,
-            mille: 3,
-            millier: 3,
-            milliers: 3,
-            million: 6,
-            millions: 6,
-            milliard: 9,
-            milliards: 9,
-            billion: 12,
-            billions: 12,
-            billiard: 15,
-            billiards: 15,
-            trillion: 18,
-            trillions: 18,
-          };
+        : locale === "es"
+          ? {
+              k: 3,
+              m: 6,
+              "mil millones": 9,
+              mil: 3,
+              millón: 6,
+              millones: 6,
+              billón: 12,
+              billones: 12,
+            }
+          : {
+              k: 3,
+              m: 6,
+              mille: 3,
+              millier: 3,
+              milliers: 3,
+              million: 6,
+              millions: 6,
+              milliard: 9,
+              milliards: 9,
+              billion: 12,
+              billions: 12,
+              billiard: 15,
+              billiards: 15,
+              trillion: 18,
+              trillions: 18,
+            };
   const grouping = {
     en: ",",
     it: "\\.",
     fr: "[ \\u00a0\\u202f]",
+    es: "[. \\u00a0\\u202f]",
   }[locale];
   const decimal = locale === "en" ? "\\." : ",";
   const number = `[−-]?(?:\\d{1,3}(?:${grouping}\\d{3})+|\\d+)(?:${decimal}\\d+)?`;
   const currency = "(?:\\bUS\\$|[$€£¥]|\\b(?:USD|EUR|GBP|JPY|CNY)\\b)";
-  const magnitude = `(?:${Object.keys(powers).join("|")})(?![\\p{L}\\p{N}_])`;
-  const preposition = locale === "fr" ? "(?:de\\s+)?" : "(?:di\\s+)?";
+  const magnitude = `(?:${Object.keys(powers)
+    .map((unit) => (locale === "es" ? unit.replaceAll(" ", "\\s+") : unit))
+    .join("|")})(?![\\p{L}\\p{N}_])`;
+  const preposition =
+    locale === "fr" || locale === "es" ? "(?:de\\s+)?" : "(?:di\\s+)?";
   const values: string[] = [];
   const extract = (marker: string, amount: string, unit: string) => {
     const canonical =
       locale === "en"
         ? amount.replaceAll(",", "")
         : amount
-            .replace(locale === "it" ? /\./gu : /[ \u00a0\u202f]/gu, "")
+            .replace(
+              locale === "it"
+                ? /\./gu
+                : locale === "es"
+                  ? /[. \u00a0\u202f]/gu
+                  : /[ \u00a0\u202f]/gu,
+              "",
+            )
             .replace(",", ".");
-    const scaled = scaleDecimal(canonical, powers[unit.toLowerCase()] ?? 0)
+    const magnitudeKey =
+      locale === "es"
+        ? unit.toLowerCase().replace(/\s+/gu, " ")
+        : unit.toLowerCase();
+    const scaled = scaleDecimal(canonical, powers[magnitudeKey] ?? 0)
       .replace(/(\.\d*?)0+$/u, "$1")
       .replace(/\.$/u, "");
     values.push(`${marker}:${scaled}`);

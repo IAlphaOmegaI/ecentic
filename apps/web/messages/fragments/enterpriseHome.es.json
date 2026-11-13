@@ -145,7 +145,7 @@
         {
           "id": "sell",
           "title": "Vende",
-          "body": "Conecta el checkout para agentes en WooCommerce, prueba el proceso y conserva tu proveedor de pagos. Se aplican los requisitos de cada plataforma y los pasos de pago necesarios.",
+          "body": "Conecta el checkout para agentes en WooCommerce, prueba el proceso y conserva tu proveedor de pagos. Siguen aplicándose los requisitos de cada plataforma y las derivaciones necesarias para completar el pago.",
           "tags": ["Checkout para agentes", "Pruebas de checkout", "Tus pagos"],
           "href": "/platform/sell",
           "label": "Explora Vende"
@@ -427,7 +427,7 @@
       "items": [
         {
           "question": "¿Qué hace ecentic?",
-          "answer": "ecentic es una capa entre tu catálogo y los asistentes de IA que venden sus productos. Simula cómo ChatGPT, Claude y Gemini comparan productos, ayuda a mejorar los datos que leen y permite el pago con agentes en WooCommerce."
+          "answer": "ecentic es una capa entre tu catálogo y los asistentes de IA que venden tus productos. Simula cómo ChatGPT, Claude y Gemini comparan productos, ayuda a mejorar los datos que leen y admite el checkout para agentes en WooCommerce."
         },
         {
           "question": "¿Qué asistentes de IA cubre?",

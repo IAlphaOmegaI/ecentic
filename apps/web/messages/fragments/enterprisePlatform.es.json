@@ -191,7 +191,7 @@
               "label": "Ver más"
             },
             {
-              "title": "Entorno de pruebas de pago",
+              "title": "Entorno de pruebas de checkout",
               "body": "Ejecuta un agente de prueba con las herramientas de tu tienda. Hay diez mensajes sin cuenta; usa una tienda de pruebas para el pago.",
               "href": "/platform/sell#playground",
               "label": "Ver más"
@@ -615,7 +615,7 @@
                 "body": "El porcentaje de simulaciones completadas que eligen el producto."
               },
               {
-                "title": "Tasa por modelo",
+                "title": "Tasa de victorias por modelo",
                 "body": "Diferencias entre los tres modelos en las mismas comparaciones."
               },
               {
@@ -952,7 +952,7 @@
               },
               {
                 "title": "Configura el acceso y repite",
-                "body": "Controla si el pago con agentes está activo. Configura la lista de acceso, las firmas obligatorias y los límites, y vuelve a probar."
+                "body": "Controla si el checkout para agentes está activo. Configura la lista de agentes permitidos, las firmas obligatorias y los límites de frecuencia de las peticiones, y vuelve a probar."
               }
             ]
           },
@@ -1042,7 +1042,7 @@
           },
           {
             "id": "validator",
-            "title": "Validador de pago",
+            "title": "Validador de checkout",
             "paragraphs": [
               "Obtén el perfil de descubrimiento de una tienda y revisa las comprobaciones. Validarlo no inscribe al comercio en el programa de una plataforma."
             ],
@@ -1200,7 +1200,7 @@
                 "body": "Visitas reconocidas por asistente en Shopify."
               },
               {
-                "title": "Tasa tras repetir un análisis",
+                "title": "Tasa de victorias tras repetir el análisis",
                 "body": "El siguiente grupo de decisiones simuladas tras tus cambios."
               },
               {

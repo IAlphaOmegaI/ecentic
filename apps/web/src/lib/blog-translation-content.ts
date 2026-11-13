@@ -96,11 +96,11 @@ export const createBlogHtmlTranslation = (html: string) => {
         start: location.startOffset,
         end: location.endOffset,
         encode: (value) => {
-          // A moved noun can leave only punctuation after an inline link. Its
-          // old word separator must not create “</a> .”. Never trim authored
-          // target spacing, newline layout or French spaced punctuation.
+          // Moving a noun before an inline element can leave punctuation and
+          // another sentence after it. Drop only its old word separator, not
+          // authored spacing, line breaks, French punctuation or “.NET”.
           const sourcePrefix =
-            /^[ \t]+$/u.test(prefix) && /^[.,。，、．…]+$/u.test(value)
+            /^[ \t]+$/u.test(prefix) && /^[.,。，、．…]+(?=\s|$)/u.test(value)
               ? ""
               : prefix;
           return sourcePrefix + escapeText(value) + suffix;

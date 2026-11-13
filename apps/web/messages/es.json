@@ -2,10 +2,10 @@
   "general": {
     "brand": "ecentic",
     "meta": {
-      "title": "ecentic — Gana el carrito de cada agente de compras con IA",
+      "title": "ecentic — Haz que cada agente de compras con IA elija tus productos",
       "description": "Optimiza tus fichas de producto para los agentes de compras con IA. Simula las decisiones de ChatGPT, Claude, Gemini y Perplexity, diagnostica por qué pierdes y mejora tu tasa de victoria.",
       "openGraphDescription": "Simula cómo los agentes de compras con IA eligen tus productos, diagnostica por qué no lo hacen y optimiza tus fichas automáticamente. Creado para la economía de agentes.",
-      "twitterDescription": "Simula cómo ChatGPT, Claude, Gemini y Perplexity eligen tus productos frente a los de la competencia. Diagnostica pérdidas. Optimiza automáticamente. Gana cada carrito.",
+      "twitterDescription": "Simula cómo ChatGPT, Claude, Gemini y Perplexity eligen entre tus productos y los de la competencia. Detecta por qué pierden. Optimiza automáticamente. Consigue que los elijan en cada compra.",
       "keywords": [
         "optimización para agentes de compras con IA",
         "optimización de comercio electrónico con IA",
@@ -5786,7 +5786,7 @@
         },
         {
           "question": "¿Qué hace el plugin en mi tienda?",
-          "answer": "Nada visible. Añade una URL de descubrimiento en /.well-known/ucp, un endpoint de vinculación de identidad y un puente REST privado que solo ecentic puede llamar con la clave que emitiste. Tu tema, tienda y checkout no se tocan, y los pedidos de agentes se crean con los mismos internals de WooCommerce que cualquier otro pedido."
+          "answer": "Nada visible. Añade una URL de descubrimiento en /.well-known/ucp, un endpoint de vinculación de identidad y un puente REST privado al que solo ecentic puede llamar con la clave que emitiste. Tu tema, tienda y checkout no se modifican, y los pedidos de agentes se crean mediante los mismos mecanismos internos de WooCommerce que cualquier otro pedido."
         },
         {
           "question": "¿Cómo se compara ecentic con otros plugins de producto WooCommerce?",
@@ -9098,7 +9098,7 @@
         {
           "id": "sell",
           "title": "Vende",
-          "body": "Conecta el checkout para agentes en WooCommerce, prueba el proceso y conserva tu proveedor de pagos. Se aplican los requisitos de cada plataforma y los pasos de pago necesarios.",
+          "body": "Conecta el checkout para agentes en WooCommerce, prueba el proceso y conserva tu proveedor de pagos. Siguen aplicándose los requisitos de cada plataforma y las derivaciones necesarias para completar el pago.",
           "tags": [
             "Checkout para agentes",
             "Pruebas de checkout",
@@ -9408,7 +9408,7 @@
       "items": [
         {
           "question": "¿Qué hace ecentic?",
-          "answer": "ecentic es una capa entre tu catálogo y los asistentes de IA que venden sus productos. Simula cómo ChatGPT, Claude y Gemini comparan productos, ayuda a mejorar los datos que leen y permite el pago con agentes en WooCommerce."
+          "answer": "ecentic es una capa entre tu catálogo y los asistentes de IA que venden tus productos. Simula cómo ChatGPT, Claude y Gemini comparan productos, ayuda a mejorar los datos que leen y admite el checkout para agentes en WooCommerce."
         },
         {
           "question": "¿Qué asistentes de IA cubre?",
@@ -9871,7 +9871,7 @@
             "description": "",
             "paragraphs": [
               "El plugin publica un perfil de descubrimiento en una dirección estándar de tu dominio. Los carritos usan las existencias y reglas de impuestos, envíos y cupones de WooCommerce. Los pedidos quedan marcados como pedidos de agentes; tú sigues siendo el vendedor responsable.",
-              "Activa o desactiva el checkout, configura una lista de agentes permitidos, exige peticiones firmadas y define límites. Una lista vacía permite todos los agentes compatibles. Exigir firmas es opcional.",
+              "Activa o desactiva el checkout, configura una lista de agentes permitidos, exige peticiones firmadas y define límites de frecuencia de las peticiones. Una lista vacía permite todos los agentes compatibles. Exigir firmas es opcional.",
               "Por defecto, el agente crea un pedido pendiente de pago y el comprador paga en tu enlace de checkout. Los pagos de Stripe en el servidor son opcionales, están desactivados inicialmente y requieren WooCommerce Stripe Gateway. Los secretos de pago permanecen en tu servidor."
             ],
             "links": [
@@ -11881,7 +11881,7 @@
               "label": "Ver más"
             },
             {
-              "title": "Entorno de pruebas de pago",
+              "title": "Entorno de pruebas de checkout",
               "body": "Ejecuta un agente de prueba con las herramientas de tu tienda. Hay diez mensajes sin cuenta; usa una tienda de pruebas para el pago.",
               "href": "/platform/sell#playground",
               "label": "Ver más"
@@ -12305,7 +12305,7 @@
                 "body": "El porcentaje de simulaciones completadas que eligen el producto."
               },
               {
-                "title": "Tasa por modelo",
+                "title": "Tasa de victorias por modelo",
                 "body": "Diferencias entre los tres modelos en las mismas comparaciones."
               },
               {
@@ -12642,7 +12642,7 @@
               },
               {
                 "title": "Configura el acceso y repite",
-                "body": "Controla si el pago con agentes está activo. Configura la lista de acceso, las firmas obligatorias y los límites, y vuelve a probar."
+                "body": "Controla si el checkout para agentes está activo. Configura la lista de agentes permitidos, las firmas obligatorias y los límites de frecuencia de las peticiones, y vuelve a probar."
               }
             ]
           },
@@ -12732,7 +12732,7 @@
           },
           {
             "id": "validator",
-            "title": "Validador de pago",
+            "title": "Validador de checkout",
             "paragraphs": [
               "Obtén el perfil de descubrimiento de una tienda y revisa las comprobaciones. Validarlo no inscribe al comercio en el programa de una plataforma."
             ],
@@ -12890,7 +12890,7 @@
                 "body": "Visitas reconocidas por asistente en Shopify."
               },
               {
-                "title": "Tasa tras repetir un análisis",
+                "title": "Tasa de victorias tras repetir el análisis",
                 "body": "El siguiente grupo de decisiones simuladas tras tus cambios."
               },
               {

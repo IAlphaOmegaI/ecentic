@@ -36,7 +36,7 @@ test("Spanish policy changes leave all other locale source hashes unchanged", ()
       originalHash,
     );
   }
-  expect(translationPolicyVersionFor("es")).toBe("2026-11-13.1");
+  expect(translationPolicyVersionFor("es")).toBe("2026-11-13.2");
   expect(blogSourceHash(source, translationPolicyVersionFor("es"))).not.toBe(
     originalHash,
   );
@@ -70,5 +70,5 @@ test("Spanish reviewed artifacts pin the actual Spanish requirements", async () 
     },
   });
   expect(reports).toHaveLength(1);
-  expect(reports[0]?.policyVersion).toBe("2026-11-13.1");
+  expect(reports[0]?.policyVersion).toBe("2026-11-13.2");
 });

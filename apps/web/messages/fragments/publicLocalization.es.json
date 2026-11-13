@@ -12,6 +12,10 @@
     },
     "notifications": {
       "label": "Notificaciones"
+    },
+    "meta": {
+      "title": "ecentic — Haz que cada agente de compras con IA elija tus productos",
+      "twitterDescription": "Simula cómo ChatGPT, Claude, Gemini y Perplexity eligen entre tus productos y los de la competencia. Detecta por qué pierden. Optimiza automáticamente. Consigue que los elijan en cada compra."
     }
   },
   "resources": {

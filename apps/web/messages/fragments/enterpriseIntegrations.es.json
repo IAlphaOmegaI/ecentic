@@ -415,7 +415,7 @@
             "description": "",
             "paragraphs": [
               "El plugin publica un perfil de descubrimiento en una dirección estándar de tu dominio. Los carritos usan las existencias y reglas de impuestos, envíos y cupones de WooCommerce. Los pedidos quedan marcados como pedidos de agentes; tú sigues siendo el vendedor responsable.",
-              "Activa o desactiva el checkout, configura una lista de agentes permitidos, exige peticiones firmadas y define límites. Una lista vacía permite todos los agentes compatibles. Exigir firmas es opcional.",
+              "Activa o desactiva el checkout, configura una lista de agentes permitidos, exige peticiones firmadas y define límites de frecuencia de las peticiones. Una lista vacía permite todos los agentes compatibles. Exigir firmas es opcional.",
               "Por defecto, el agente crea un pedido pendiente de pago y el comprador paga en tu enlace de checkout. Los pagos de Stripe en el servidor son opcionales, están desactivados inicialmente y requieren WooCommerce Stripe Gateway. Los secretos de pago permanecen en tu servidor."
             ],
             "links": [

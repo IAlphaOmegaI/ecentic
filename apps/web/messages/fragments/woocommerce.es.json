@@ -238,7 +238,7 @@
         },
         {
           "question": "¿Qué hace el plugin en mi tienda?",
-          "answer": "Nada visible. Añade una URL de descubrimiento en /.well-known/ucp, un endpoint de vinculación de identidad y un puente REST privado que solo ecentic puede llamar con la clave que emitiste. Tu tema, tienda y checkout no se tocan, y los pedidos de agentes se crean con los mismos internals de WooCommerce que cualquier otro pedido."
+          "answer": "Nada visible. Añade una URL de descubrimiento en /.well-known/ucp, un endpoint de vinculación de identidad y un puente REST privado al que solo ecentic puede llamar con la clave que emitiste. Tu tema, tienda y checkout no se modifican, y los pedidos de agentes se crean mediante los mismos mecanismos internos de WooCommerce que cualquier otro pedido."
         },
         {
           "question": "¿Cómo se compara ecentic con otros plugins de producto WooCommerce?",
