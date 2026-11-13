@@ -7,7 +7,7 @@ import {
   type ShoppingCard,
   type Surface,
 } from "@/lib/llm-scraping";
-import { RequestError, TimeoutError } from "./error";
+import { TimeoutError } from "./error";
 import { parse, request } from "./http";
 
 // ScrapeLLM adapter — the first implementation of the provider interface from
@@ -199,7 +199,11 @@ const merge = (citations: Citation[]): Citation[] => {
 // Cards can appear here that never surface in citations[] — observed 3 modules
 // against 1 citation card on the same answer — so the markdown is the
 // authoritative card list and citation-derived cards only supplement it.
-const PRODUCT_ANCHOR = /<a href="([^"]*[?&]prds=[^"]*)">([^<]+)<\/a>/;
+// The href arrives HTML-escaped (`&amp;prds=`, observed 2026-11-13), so the
+// separator before prds can be the `;` of `&amp;` — decode before parsing.
+const PRODUCT_ANCHOR = /<a href="([^"]*[?&;]prds=[^"]*)">([^<]+)<\/a>/;
+// Google suffixes the headline seller with "& more" when others also stock it.
+const MORE_SELLERS = /\s*&\s*more$/i;
 const PLAIN_DIV = /<div>\s*([^<>]+?)\s*<\/div>/g;
 const PRICE = /[$€£][\d,]+(?:\.\d{2})?/;
 const RATING = /^\d(?:\.\d)? \(/;
@@ -223,7 +227,7 @@ const markdownCards = (markdown: string | null): ShoppingCard[] => {
     const name = anchor?.[2];
     if (!anchor || !url || !name) return [];
 
-    const identifiers = shoppingIdentifiers(url);
+    const identifiers = shoppingIdentifiers(decode(url));
     if (!identifiers) return [];
 
     const trailing = module.slice((anchor.index ?? 0) + anchor[0].length);
@@ -236,7 +240,9 @@ const markdownCards = (markdown: string | null): ShoppingCard[] => {
 
     return {
       productName: decode(name),
-      merchant: texts.find((entry) => !RATING.test(entry)),
+      merchant: texts
+        .find((entry) => !RATING.test(entry))
+        ?.replace(MORE_SELLERS, ""),
       price: trailing.match(PRICE)?.[0],
       rating: texts.find((entry) => RATING.test(entry)),
       identifiers,
@@ -252,6 +258,9 @@ const markdownCards = (markdown: string | null): ShoppingCard[] => {
 // accessibility artifacts dropped. Falls back to the plain result text, which
 // carries the same artifacts but no HTML.
 const CONTENT_NOISE = [
+  // Each card module carries a hidden image-hash div whose text would
+  // otherwise survive tag stripping as a bare hex line.
+  { pattern: /<div style="display:\s*none">[^<]*<\/div>/g, replacement: "" },
   { pattern: /<[^>]*>/g, replacement: "" },
   { pattern: /\(\[[^\]]*\]\[\d+\]\)/g, replacement: "" },
   { pattern: /^\[\d+\]:\s.*$/gm, replacement: "" },
@@ -273,12 +282,26 @@ const contentOf = (markdown: string | null): string | null => {
   return content || null;
 };
 
+// Each card module opens with `<div html-index=…>` at the start of a line and,
+// as a CommonMark HTML block, ends at the first blank line — the price, seller
+// and rating inside it never reach the reader as prose.
+const CARD_MODULE = /^<div html-index="\d+"[\s\S]*?(?=\n[ \t]*\n|(?![\s\S]))/gm;
+
+/**
+ * The answer's prose alone: `answerContent` without the shopping-card modules,
+ * so a store named only as a card's seller is not also counted as a mention.
+ */
+export const proseOf = (markdown: string | null): string | null =>
+  contentOf(markdown?.replace(CARD_MODULE, "") ?? null);
+
 // The commerce identity of a card — gpcid appears in both prds formats,
 // catalogid is the backstop.
-const identity = (card: ShoppingCard): string | undefined =>
-  Object.entries(card.identifiers ?? {}).find(
-    ([key]) => key === "gpcid" || key === "catalogid",
-  )?.[1];
+// gpcid first regardless of key order — one format can list catalogid ahead
+// of gpcid, which would split one product into two cards.
+const identity = (card: ShoppingCard): string | undefined => {
+  const { gpcid, catalogid } = card.identifiers ?? {};
+  return gpcid ?? catalogid;
+};
 
 // Markdown cards win (they carry price/seller/offers and the full card list);
 // citation-derived cards are appended only when they name a product the
@@ -404,13 +427,16 @@ const RETRYABLE = [408, 429, 500, 502, 503, 504];
 
 // Splits provider failures so the future queue retries transient ones and never
 // burns credits re-sending a prompt the platform already rejected (401/422).
-export const isRetryable = (error: Error): boolean => {
+// By name and status code, never `instanceof`: `error()` re-points instances at
+// their parent's prototype, so `instanceof TimeoutError` is always false — and
+// a non-JSON 502 page arrives as a ParseError that still carries its status.
+export const isRetryable = (
+  error: Error & { statusCode?: number },
+): boolean => {
   switch (true) {
-    case error instanceof TimeoutError:
+    case error.name === TimeoutError.errorName:
       return true;
-    case error instanceof RequestError:
-      return RETRYABLE.includes(error.statusCode ?? 0);
     default:
-      return false;
+      return RETRYABLE.includes(error.statusCode ?? 0);
   }
 };

@@ -68,12 +68,21 @@ worth the credits.
 | [dev/llm-scraping/page.tsx](<../../apps/web/src/app/(main)/dev/llm-scraping/page.tsx>) | Sandbox page — static shell, mirrors `/dev/ai-playground` |
 | [\_components/scraper.tsx](<../../apps/web/src/app/(main)/dev/llm-scraping/_components/scraper.tsx>) | Prompt / surfaces / country / repeats / bypass-cache controls; one request per surface×run, all parallel, abortable |
 | [\_components/capture-column.tsx](<../../apps/web/src/app/(main)/dev/llm-scraping/_components/capture-column.tsx>) | Per-run column: answer, citations, search results, credits/latency/cached metrics, raw payload |
+| [api/dev/ai-answers/route.ts](<../../apps/web/src/app/(provider)/api/dev/ai-answers/route.ts>) | Headless twin of the dev route for scripts and chat surfaces — GET/POST `prompt` + `provider` (required, comma list) + `country` (alias `region`) + optional `store`/`brand`; Markdown by default, `format=json`. Guarded by the `DEV_DISCOVERY_TOKEN` access code, like `/api/dev/discovery` |
+| [intelligence/answer-report.ts](../../apps/web/src/server/app/intelligence/answer-report.ts) | Pure input resolution + store evidence + Markdown/JSON rendering for that endpoint. Store evidence is literal (prose mentions with excerpts, links written into the answer, cited positions, card seller/offer matches) — no score; Google `/goto` citations match on publisher name only and a miss among them is reported as such, never as "absent" |
 
 Setup: put `SCRAPELLM_API_KEY` in `apps/web/.env.local` (key from
 [scrapellm.com](https://scrapellm.com)), run `bun run dev:web`, open
 `/dev/llm-scraping`. Every capture costs 3 credits — **cached responses still
 bill**, and repeats > 1 force `bypass_cache` (a cached repeat would measure the
 cache, not the surface's stochasticity).
+
+Headless: `curl -H "Authorization: Bearer $DEV_DISCOVERY_TOKEN"
+"http://localhost:3000/api/dev/ai-answers?prompt=best+wool+sneakers&provider=chatgpt,google_ai_mode&country=US&store=allbirds.com"`.
+Locally the access code falls back to the development literal in
+`discovery-report.ts`; deployed, it refuses every request until
+`DEV_DISCOVERY_TOKEN` is set. The endpoint keeps the ScrapeLLM cache on unless
+`fresh=true`, so a re-fetched GET does not re-bill a fresh capture.
 
 ---
 
@@ -138,6 +147,15 @@ page doesn't state; verified against a live payload:
   where some wrapped citations resolve to direct urls — an alternate recovery
   path if the twin-merge ever proves insufficient.
 - Extra fields: `api_version`, `raw_url` (ephemeral Google async URL).
+- **2026-11-13 re-capture:** card-module anchors now arrive HTML-escaped
+  (`href="…?ibp=oshop&amp;prds=…"`), which silently parsed 0 of 5 cards until
+  the adapter accepted `&amp;prds=` and decoded the href. The headline seller
+  reads `"<Merchant>& more"` when others stock it (stripped to the merchant),
+  each module carries a hidden image-hash `<div style="display: none">`
+  (dropped from `answerContent`), and `citations[]` came back empty while
+  the markdown held all 5 cards. Each module is one CommonMark HTML block
+  ending at the first blank line — `proseOf()` removes them so card text is
+  not double-counted as prose.
 - `search_results[]` can be empty even when citations are rich.
 - `elapsed_ms` ≈ 57s on the observed run — timeouts must stay generous.
 - **Most citation urls are session-bound `goto` redirect wrappers** — absolute
@@ -173,6 +191,15 @@ page doesn't state; verified against a live payload:
 - Citations are sparse vs. AI Mode — 3 links vs. 17 citations on the same
   prompt — and there are no product entities / shopping cards.
 - `elapsed_ms` ≈ 29s.
+- **2026-11-13 re-capture:** `llm_model` reports `gpt-6` and inline
+  `result_markdown` is back. The markdown now carries **product cards** — an
+  `<img title="<product> at <retailer>">`, a `## $price` heading, a
+  `Retailer · 4.7/5 (N reviews)` line and a `**Buy:** [Retailer](<url>)`
+  placement link tagged `utm_campaign=genai_shopping`. Those buy links are
+  **not** in `links[]` (3 editorial links vs. 5 answer links on the same
+  run), and the adapter does not yet parse these cards into `shoppingCards`
+  — their text lands in `answerContent`. The `/api/dev/ai-answers` report
+  reads the buy links directly from the markdown ("Linked in the answer").
 
 ---
 

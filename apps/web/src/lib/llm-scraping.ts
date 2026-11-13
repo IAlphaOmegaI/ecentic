@@ -26,7 +26,10 @@ export const SURFACES = {
   { label: string; accent: string; note: string }
 >;
 
-export const isSurface = (value: string): value is Surface => value in SURFACES;
+// Own keys only — `in` would also admit inherited names like "constructor",
+// which then become a ScrapeLLM path segment.
+export const isSurface = (value: string): value is Surface =>
+  Object.hasOwn(SURFACES, value);
 
 // ScrapeLLM rejects prompts past this.
 export const PROMPT_LIMIT = 4000;
