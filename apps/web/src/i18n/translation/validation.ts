@@ -322,7 +322,13 @@ const canonicalBrandSpelling = new Set([
 const brandProse = (text: string) =>
   stripCode(text)
     .replace(syntaxExpressions.urls, "")
-    .replace(syntaxExpressions.emails, "");
+    .replace(syntaxExpressions.emails, "")
+    // This possessive names the same product; do not generalize other brands
+    // or touch literal code, URLs or HTML (which retain separate exact checks).
+    .replace(
+      /(?<![A-Za-z0-9_])Google['’]s Merchant Center(?![A-Za-z0-9_])/g,
+      "Google Merchant Center",
+    );
 const termFindings = (
   source: string,
   target: string,

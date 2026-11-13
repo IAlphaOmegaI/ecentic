@@ -129,7 +129,7 @@ export const AuthShell = async ({
           </Link>
           <LanguageSwitcher />
         </header>
-        <div className="mx-auto flex w-full max-w-xl flex-1 flex-col justify-center px-6 py-10 sm:px-10 sm:py-12 lg:py-14">
+        <main className="mx-auto flex w-full max-w-xl flex-1 flex-col justify-center px-6 py-10 sm:px-10 sm:py-12 lg:py-14">
           <div className="mb-7">
             <h1 className="text-balance font-heading text-3xl text-foreground leading-tight sm:text-4xl">
               {title}
@@ -145,7 +145,7 @@ export const AuthShell = async ({
               {footer}
             </div>
           ) : null}
-        </div>
+        </main>
       </div>
     </div>
   );

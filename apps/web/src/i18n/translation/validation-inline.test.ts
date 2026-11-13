@@ -72,6 +72,73 @@ test("brand normalization never edits code or URLs or protects ordinary plan ver
   ).toBeGreaterThan(0);
 });
 
+test("Merchant Center possessive prose keeps exact product mention counts", () => {
+  const findings = (source: string, target: string) =>
+    validateTranslationUnit(
+      {
+        id: "merchant",
+        text: source,
+        context: "Product prose",
+        format: "plain",
+      },
+      target,
+      "es",
+    );
+  for (const possessive of [
+    "Google's Merchant Center",
+    "Google’s Merchant Center",
+  ]) {
+    expect(
+      findings(`Use ${possessive}.`, "Usa Google Merchant Center."),
+    ).toEqual([]);
+    expect(
+      findings(`Use ${possessive}.`, "Usa Google.").length,
+    ).toBeGreaterThan(0);
+    expect(
+      findings(
+        `Use ${possessive}.`,
+        "Usa Google Merchant Center y Google Merchant Center.",
+      ).length,
+    ).toBeGreaterThan(0);
+    expect(
+      findings(
+        `Use ${possessive} and Google Merchant Center.`,
+        "Usa Google Merchant Center.",
+      ).length,
+    ).toBeGreaterThan(0);
+    expect(
+      findings(
+        `Use ${possessive} and Google Merchant Center.`,
+        "Usa Google Merchant Center y Google Merchant Center.",
+      ),
+    ).toEqual([]);
+    expect(
+      findings(`Use ${possessive}.`, "Usa google merchant center.").length,
+    ).toBeGreaterThan(0);
+    expect(
+      findings(`Use \`${possessive}\`.`, "Usa `Google Merchant Center`.")
+        .length,
+    ).toBeGreaterThan(0);
+    expect(
+      findings(`Use \`${possessive}\`.`, `Usa \`${possessive}\`.`),
+    ).toEqual([]);
+  }
+  expect(
+    findings("Use Google's Merchant Centerless.", "Usa Google Merchant Center.")
+      .length,
+  ).toBeGreaterThan(0);
+  expect(
+    findings("Use Microsoft's Merchant Center.", "Usa Google Merchant Center.")
+      .length,
+  ).toBeGreaterThan(0);
+  expect(
+    findings(
+      "See https://example.com/Google%27s-Merchant-Center",
+      "Consulta https://example.com/Google-Merchant-Center",
+    ).length,
+  ).toBeGreaterThan(0);
+});
+
 test("only trusted inline English articles may have empty CJK targets", () => {
   const unit = {
     id: "html.body.1.0",
