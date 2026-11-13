@@ -100,6 +100,61 @@ test("Spanish monetary matching keeps amount and currency paired", () => {
   expect(check("$1 trillion", "1 millón de $").length).toBeGreaterThan(0);
 });
 
+test("Spanish monetary ranges can repeat the source's shared trailing magnitude", () => {
+  const source = "$3 to $5 trillion globally by 2030";
+  const target = "entre 3 billones $ y 5 billones $ a nivel global para 2030";
+  expect(check(source, target)).toEqual([]);
+  expect(monetaryMagnitudeFacts(source, "en").values).toEqual([
+    "$:3000000000000",
+    "$:5000000000000",
+  ]);
+  expect(
+    check("€1.5 through €2 billion", "entre 1500 millones € y 2000 millones €"),
+  ).toEqual([]);
+  expect(
+    check("USD 3 – USD 5 million", "de 3 millones USD a 5 millones USD"),
+  ).toEqual([]);
+  expect(
+    check("-$3 to $5 trillion", "de -3 billones $ a 5 billones $"),
+  ).toEqual([]);
+  for (const changed of [
+    target.replace("3 billones", "3 millones"),
+    target.replace("5 billones", "6 billones"),
+    target.replace("5 billones $", "5 billones €"),
+    target.replace("3 billones $", "3 billones"),
+    target.replace("3 billones", "-3 billones"),
+    target.replace("2030", "2031"),
+  ])
+    expect(check(source, changed).length).toBeGreaterThan(0);
+  expect(
+    check("$3 to €5 trillion", "de 3 billones $ a 5 billones €").length,
+  ).toBeGreaterThan(0);
+  expect(
+    check(
+      "3 to 5 trillion records",
+      "de 3 billones de registros a 5 billones de registros",
+    ).length,
+  ).toBeGreaterThan(0);
+});
+
+test("Spanish shared monetary ranges do not rewrite code, links or attributes", () => {
+  const source =
+    'Use `$3 to $5 trillion`; read [guide](/cost/3-5); <span title="$3 to $5 trillion">range</span>. Version 3.5.';
+  const target =
+    'Usa `$3 to $5 trillion`; lee [guía](/cost/3-5); <span title="$3 to $5 trillion">intervalo</span>. Versión 3.5.';
+  expect(check(source, target)).toEqual([]);
+  for (const changed of [
+    target.replace("`$3 to $5 trillion`", "`3 billones $ a 5 billones $`"),
+    target.replace("/cost/3-5", "/cost/3-6"),
+    target.replace(
+      'title="$3 to $5 trillion"',
+      'title="3 billones $ a 5 billones $"',
+    ),
+    target.replace("3.5.", "3.6."),
+  ])
+    expect(check(source, changed).length).toBeGreaterThan(0);
+});
+
 test("Spanish monetary conversion preserves signs and precision beyond safe integers", () => {
   for (const source of [
     "-$1 trillion",
@@ -159,4 +214,22 @@ test("Spanish monetary prose leaves code, link destinations and HTML attributes 
     target.replace('title="$1 trillion"', 'title="1 billón $"'),
   ])
     expect(check(source, changed).length).toBeGreaterThan(0);
+});
+
+test("Spanish large counts preserve an attached plus before the magnitude", () => {
+  expect(
+    check(
+      "More than 2 billion updates across 50+ billion listings",
+      "Más de 2.000 millones de actualizaciones en 50.000 millones de fichas o más",
+    ),
+  ).toEqual([]);
+  expect(
+    check("50+ billion listings", "50 millones de fichas o más").length,
+  ).toBeGreaterThan(0);
+  expect(
+    check("50+ billion listings", "50 billones de fichas o más").length,
+  ).toBeGreaterThan(0);
+  expect(
+    check("Use `50+ billion`", "Usa `50.000 millones o más`").length,
+  ).toBeGreaterThan(0);
 });

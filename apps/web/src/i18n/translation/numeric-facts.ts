@@ -68,10 +68,10 @@ export const normalizeSpanishNumericProse = (
       : "[−-]?(?:\\d{1,3}(?:[. \\u00a0\\u202f]\\d{3})+|\\d+)(?:,\\d+)?";
   return prose.replace(
     new RegExp(
-      `(?<![\\p{L}\\p{N}_.,])(${number})\\s+(${Object.keys(powers).join("|")})(?![\\p{L}\\p{N}_])`,
+      `(?<![\\p{L}\\p{N}_.,])(${number})(\\+?)\\s+(${Object.keys(powers).join("|")})(?![\\p{L}\\p{N}_])`,
       "giu",
     ),
-    (_, amount: string, magnitude: string) => {
+    (_, amount: string, lowerBound: string, magnitude: string) => {
       const decimal =
         language === "en"
           ? amount.replaceAll(",", "")
@@ -80,7 +80,7 @@ export const normalizeSpanishNumericProse = (
         decimal,
         powers[magnitude.toLowerCase()] ?? 0,
       );
-      return language === "es" ? scaled.replace(".", ",") : scaled;
+      return `${language === "es" ? scaled.replace(".", ",") : scaled}${lowerBound}`;
     },
   );
 };
@@ -95,6 +95,7 @@ export const monetaryMagnitudeFacts = (
   text: string,
   locale: "en" | "it" | "fr" | "es",
 ) => {
+  const prose = locale === "en" ? expandMonetaryRange(text) : text;
   const powers: Readonly<Record<string, number>> =
     locale === "en"
       ? {
@@ -194,7 +195,7 @@ export const monetaryMagnitudeFacts = (
     // A nonnumeric boundary prevents adjacent prose counts from joining.
     return "\uFFFC";
   };
-  const prefix = text.replace(
+  const prefix = prose.replace(
     new RegExp(
       `([−-]\\s*)?(${currency})\\s*(${number})\\s*(${magnitude})`,
       "giu",
@@ -211,7 +212,7 @@ export const monetaryMagnitudeFacts = (
       const labelSeparator =
         sign !== undefined &&
         /^-\s/u.test(sign) &&
-        /[\p{L}\p{N}]\s+$/u.test(text.slice(0, offset));
+        /[\p{L}\p{N}]\s+$/u.test(prose.slice(0, offset));
       return extract(
         marker,
         sign && !labelSeparator ? `${sign.trim()}${amount}` : amount,
@@ -271,8 +272,7 @@ const expandMonetaryRange = (text: string) =>
       magnitude: string,
     ) => {
       if (firstCurrency !== secondCurrency) return match;
-      const exponent = magnitudePowers[magnitude] ?? 0;
-      return `${firstCurrency}${scaleDecimal(firstAmount, exponent)}${connector}${secondCurrency}${scaleDecimal(secondAmount, exponent)}`;
+      return `${firstCurrency} ${firstAmount} ${magnitude}${connector}${secondCurrency} ${secondAmount} ${magnitude}`;
     },
   );
 
