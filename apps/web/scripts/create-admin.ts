@@ -8,7 +8,7 @@ const parseArgs = (): { email: string; password: string; name: string } => {
     const match = arg.match(/^--([^=]+)=(.*)$/);
 
     if (!match) continue;
-    const [, key, value] = match;
+    const [, key, value] = match; 
 
     if (key !== undefined && value !== undefined) args.set(key, value);
   }
