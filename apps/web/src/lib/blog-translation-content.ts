@@ -267,6 +267,12 @@ export const createBlogTranslation = (source: BlogTranslationSource) => {
         text,
         context,
         ...translatableBlogTerms(text),
+        ...(source.source === "blg" &&
+        source.slug === "ucp-product-profile" &&
+        (id === "meta.category" || id === "tags.1") &&
+        text === "ucp product profile"
+          ? { canonicalTerms: ["UCP"] as const }
+          : {}),
         group: /^(faqs|sections)\.\d+\./.test(id)
           ? id.split(".").slice(0, 2).join(".")
           : id,

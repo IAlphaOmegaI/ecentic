@@ -34,6 +34,72 @@ const source: BlogTranslationSource = {
   thumbnailUrl: "/example.png",
 };
 
+test("only reviewed protocol topic labels may use canonical acronym case", () => {
+  const articleFor = (
+    slug: string,
+    origin: string,
+    label = "ucp product profile",
+  ) =>
+    createBlogTranslation({
+      ...source,
+      slug,
+      source: origin,
+      category: label,
+      tags: [label, label],
+      contentHtml: `<p>${label}</p><code>ucp</code>`,
+    });
+  const article = articleFor("ucp-product-profile", "blg");
+  const allowed = article.units.filter((unit) => unit.canonicalTerms);
+  expect(allowed.map((unit) => unit.id)).toEqual(["meta.category", "tags.1"]);
+  for (const unit of allowed) {
+    expect(validateTranslationUnit(unit, "Profilo prodotto UCP", "it")).toEqual(
+      [],
+    );
+    expect(validateTranslationUnit(unit, "Profilo prodotto ucp", "it")).toEqual(
+      [],
+    );
+    for (const target of [
+      "Profilo prodotto",
+      "Profilo prodotto UCP UCP",
+      "Profilo prodotto Ucp",
+      "Profilo prodotto MCP",
+    ]) {
+      expect(
+        validateTranslationUnit(unit, target, "it").length,
+      ).toBeGreaterThan(0);
+    }
+    expect(
+      validateTranslationUnit(
+        { ...unit, text: "`ucp` product profile" },
+        "Profilo prodotto `UCP`",
+        "it",
+      ).length,
+    ).toBeGreaterThan(0);
+    expect(
+      validateTranslationUnit(
+        { ...unit, text: "https://example.com/ucp product profile" },
+        "Profilo prodotto https://example.com/UCP",
+        "it",
+      ).length,
+    ).toBeGreaterThan(0);
+  }
+  for (const candidate of [
+    articleFor("another-article", "blg"),
+    articleFor("ucp-product-profile", "repo"),
+    articleFor("ucp-product-profile", "blg", "ucp product profiles"),
+  ]) {
+    expect(candidate.units.some((unit) => unit.canonicalTerms)).toBe(false);
+  }
+  for (const id of ["tags.0", "html.body.0.0"]) {
+    const unit = article.units.find((entry) => entry.id === id);
+    if (!unit) throw new Error("Expected unannotated source label");
+    expect(unit.canonicalTerms).toBeUndefined();
+    expect(
+      validateTranslationUnit(unit, "Profilo prodotto UCP", "it").length,
+    ).toBeGreaterThan(0);
+  }
+});
+
 test("only the reviewed owned pricing passage carries explicit dollar context", () => {
   const paragraph =
     "Every tool in this list charges a flat fee except one. I am biased here, obviously, but I think a store that gets little AI traffic today should not pay a few hundred dollars a month to find that out. That is the case our pay-as-you-go plan was built for.";

@@ -22,6 +22,8 @@ export type TranslationUnit = {
   format?: "plain" | "icu" | "markdown";
   invariant?: boolean;
   protectedTerms?: readonly string[];
+  /** Reviewed plain editorial labels may use canonical spelling, with counts still protected. */
+  canonicalTerms?: readonly string[];
   /** Explicit contextual exceptions, e.g. Scale used as a verb rather than a plan. */
   translatableTerms?: readonly string[];
   /** Source-owned editorial context for an otherwise unqualified dollar reference. */
@@ -284,10 +286,11 @@ const termFindings = (
   source: string,
   target: string,
   terms: readonly string[],
+  canonicalTerms: readonly string[] = [],
 ) =>
   terms
     .filter((term) => {
-      if (!canonicalBrandSpelling.has(term))
+      if (!canonicalBrandSpelling.has(term) && !canonicalTerms.includes(term))
         return !equal(
           literalOccurrences(source, term),
           literalOccurrences(target, term),
@@ -553,7 +556,7 @@ export const validateTranslationUnit = (
     if (unit.format !== "icu")
       return [
         ...textFindings(unit.text, target, locale, unit.dollarCurrency),
-        ...termFindings(unit.text, target, protectedTerms),
+        ...termFindings(unit.text, target, protectedTerms, unit.canonicalTerms),
         ...(!equal(
           matches(unit.text, syntaxExpressions.placeholders),
           matches(target, syntaxExpressions.placeholders),
