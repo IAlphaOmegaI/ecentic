@@ -24,6 +24,8 @@ export type TranslationUnit = {
   protectedTerms?: readonly string[];
   /** Explicit contextual exceptions, e.g. Scale used as a verb rather than a plan. */
   translatableTerms?: readonly string[];
+  /** Source-owned editorial context for an otherwise unqualified dollar reference. */
+  dollarCurrency?: "USD";
 };
 
 export type TranslationFinding = {
@@ -115,10 +117,28 @@ const spelledCounts = (text: string) => {
     "nineteen",
     "twenty",
   ];
+  const tens: Readonly<Record<string, number>> = {
+    twenty: 20,
+    thirty: 30,
+    forty: 40,
+    fifty: 50,
+    sixty: 60,
+    seventy: 70,
+    eighty: 80,
+    ninety: 90,
+  };
   const cardinals = matches(
     text.toLowerCase(),
-    new RegExp(`\\b(?:${words.join("|")})\\b`, "g"),
-  ).map((word) => String(words.indexOf(word)));
+    new RegExp(
+      `\\b(?:(?:${Object.keys(tens).join("|")})-(?:${words.slice(1, 10).join("|")})|(?:${words.join("|")}))\\b`,
+      "g",
+    ),
+  ).map((word) => {
+    const [ten, one] = word.split("-");
+    return String(
+      one ? (tens[ten ?? ""] ?? 0) + words.indexOf(one) : words.indexOf(word),
+    );
+  });
   const ordinals = [
     "first",
     "second",
@@ -287,7 +307,12 @@ const termFindings = (
         `Protected term changed or its occurrence count differs: ${term}`,
     );
 
-const textFindings = (source: string, target: string, locale: Locale) => {
+const textFindings = (
+  source: string,
+  target: string,
+  locale: Locale,
+  dollarCurrency?: "USD",
+) => {
   const checks = [
     [
       "code",
@@ -322,7 +347,7 @@ const textFindings = (source: string, target: string, locale: Locale) => {
     ],
     [
       "currency and percent markers",
-      currencyAndPercentFacts(source, locale),
+      currencyAndPercentFacts(source, locale, dollarCurrency),
       currencyAndPercentFacts(target, locale),
     ],
   ] as const;
@@ -525,7 +550,7 @@ export const validateTranslationUnit = (
   const structural = (() => {
     if (unit.format !== "icu")
       return [
-        ...textFindings(unit.text, target, locale),
+        ...textFindings(unit.text, target, locale, unit.dollarCurrency),
         ...termFindings(unit.text, target, protectedTerms),
         ...(!equal(
           matches(unit.text, syntaxExpressions.placeholders),

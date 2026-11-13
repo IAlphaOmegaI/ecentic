@@ -17,7 +17,7 @@ import { translationPolicyVersion } from "@/i18n/translation/runner";
 import { blogReadingMinutes, blogTopicSlug } from "@/lib/blog-locale";
 import { RETIRED_BLOG_POSTS } from "@/lib/blog-redirects";
 import { blogSourceHash } from "@/lib/blog-translation-content";
-import { schema } from "../database";
+import { db, schema } from "../database";
 import * as BlogContent from "../utils/blog-content";
 import {
   blogTargetLocales,
@@ -29,7 +29,7 @@ import {
 import { withContext } from "../utils/context";
 import { Environment } from "../utils/environment";
 import { UnauthenticatedError } from "../utils/error";
-import { type Document, repository } from "../utils/repository";
+import { type Document, repository, resultifyRead } from "../utils/repository";
 // Safe one-way edge: `./babylovegrowth` deliberately does not import this
 // module (it re-declares `BLOG_CACHE_TAG` rather than pull it from here).
 import * as BabyLoveGrowth from "./babylovegrowth";
@@ -250,6 +250,21 @@ export const listPublishedLocales = async (slug: string) => {
   });
   if (!rows.success) throw rows.error;
   return rows.data.map((row) => row.locale).filter(isPublishedLocale);
+};
+
+/** Lightweight cached link availability: never advertise an absent translation. */
+export const listPublishedSlugs = async (locale: Locale) => {
+  "use cache";
+  cacheLife("hours");
+  cacheTag(BLOG_CACHE_TAG);
+  const rows = await resultifyRead(() =>
+    db
+      .select({ slug: schema.blogPost.slug })
+      .from(schema.blogPost)
+      .where(and(published, eq(schema.blogPost.locale, locale))),
+  );
+  if (!rows.success) throw rows.error;
+  return rows.data.filter(isListed).map((row) => row.slug);
 };
 
 export const listPublishedPaths = async () => {

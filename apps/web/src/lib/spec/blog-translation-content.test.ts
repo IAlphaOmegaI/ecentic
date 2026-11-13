@@ -34,6 +34,77 @@ const source: BlogTranslationSource = {
   thumbnailUrl: "/example.png",
 };
 
+test("only the reviewed owned pricing passage carries explicit dollar context", () => {
+  const paragraph =
+    "Every tool in this list charges a flat fee except one. I am biased here, obviously, but I think a store that gets little AI traffic today should not pay a few hundred dollars a month to find that out. That is the case our pay-as-you-go plan was built for.";
+  const target =
+    "这份清单中的工具，除了一款之外都收取固定费用。我显然有自己的立场，但我认为，一家目前从AI获得的流量很少的商店，不应该每月花几百美元来确认这一点。我们的按效果付费方案正是为这种情况设计的。";
+  const unitFor = (slug: string, origin: string, text = paragraph) => {
+    const article = createBlogTranslation({
+      ...source,
+      slug,
+      source: origin,
+      contentHtml: `<p>${text}</p>`,
+    });
+    const unit = article.units.find((entry) => entry.id === "html.body.0.0");
+    if (!unit) throw new Error("Expected source paragraph");
+    return unit;
+  };
+  const owned = unitFor("vizby-alternatives", "repo");
+  expect(owned.dollarCurrency).toBe("USD");
+  expect(validateTranslationUnit(owned, target, "zh-CN")).toEqual([]);
+  expect(
+    validateTranslationUnit(owned, target.replace("美元", "欧元"), "zh-CN")
+      .length,
+  ).toBeGreaterThan(0);
+  for (const unit of [
+    unitFor("another-article", "repo"),
+    unitFor("vizby-alternatives", "blg"),
+    unitFor(
+      "vizby-alternatives",
+      "repo",
+      paragraph.replace("hundred dollars", "hundred Canadian dollars"),
+    ),
+  ]) {
+    expect(unit.dollarCurrency).toBeUndefined();
+    expect(
+      validateTranslationUnit(unit, target, "zh-CN").length,
+    ).toBeGreaterThan(0);
+  }
+});
+
+test("the reviewed Compete verb heading translates without renaming the plan", () => {
+  const heading =
+    "Compete With Amazon in AI: Simulate Shopify and WooCommerce Feeds";
+  const article = createBlogTranslation({
+    ...source,
+    title: heading,
+    contentHtml: `<h2>${heading}</h2><p>Compete costs $14.90 per month.</p>`,
+  });
+  const headings = article.units.filter((unit) => unit.text === heading);
+  expect(headings).toHaveLength(2);
+  for (const unit of headings) {
+    expect(unit.translatableTerms).toEqual(["Compete"]);
+    expect(
+      validateTranslationUnit(
+        unit,
+        "在AI购物中与Amazon竞争：模拟Shopify和WooCommerce商品数据源",
+        "zh-CN",
+      ),
+    ).toEqual([]);
+  }
+  const plan = article.units.find((unit) =>
+    unit.text.startsWith("Compete costs"),
+  );
+  if (!plan) throw new Error("Expected plan source unit");
+  expect(plan.translatableTerms).toBeUndefined();
+  expect(
+    validateTranslationUnit(plan, "竞争方案每月$14.90。", "zh-CN").some(
+      (issue) => issue.message.includes("Compete"),
+    ),
+  ).toBe(true);
+});
+
 test("reviewed ordinary scale headings translate without renaming the Scale plan", () => {
   const heading = "Running Audits at Scale: What Actually Works";
   const article = createBlogTranslation({

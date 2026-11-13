@@ -28,16 +28,20 @@ const escapeText = (value: string) =>
   value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
 const meaningful = (value: string) => /\p{L}/u.test(value);
 
-// Reviewed source headings use ordinary scale, not the ecentic Scale plan.
+// Reviewed source headings use ordinary verbs, not ecentic plan names.
 // Keep this exact allowlist scoped to source copy; all other plan mentions stay protected.
-const translatableBlogTerms = (text: string) =>
-  [
-    "Can These Tools Scale as Your Business Grows?",
-    "Running Audits at Scale: What Actually Works",
-    "How to Scale Product Copy With AI Without Breaking Your Catalog",
-  ].includes(text)
-    ? { translatableTerms: ["Scale"] as const }
-    : {};
+const translatableBlogTerms = (text: string) => {
+  switch (text) {
+    case "Can These Tools Scale as Your Business Grows?":
+    case "Running Audits at Scale: What Actually Works":
+    case "How to Scale Product Copy With AI Without Breaking Your Catalog":
+      return { translatableTerms: ["Scale"] as const };
+    case "Compete With Amazon in AI: Simulate Shopify and WooCommerce Feeds":
+      return { translatableTerms: ["Compete"] as const };
+    default:
+      return {};
+  }
+};
 
 /** Only replace source-located text/accessible attribute values. All other HTML bytes survive. */
 export const createBlogHtmlTranslation = (html: string) => {
@@ -332,7 +336,16 @@ export const createBlogTranslation = (source: BlogTranslationSource) => {
     : null;
   units.push(...(html?.units ?? []));
   return {
-    units,
+    // This owned pricing paragraph refers to the USD plans listed in the same
+    // article. Do not infer a currency for arbitrary dollar-denominated prose.
+    units: units.map((unit) =>
+      source.source === "repo" &&
+      source.slug === "vizby-alternatives" &&
+      unit.text ===
+        "Every tool in this list charges a flat fee except one. I am biased here, obviously, but I think a store that gets little AI traffic today should not pay a few hundred dollars a month to find that out. That is the case our pay-as-you-go plan was built for."
+        ? { ...unit, dollarCurrency: "USD" as const }
+        : unit,
+    ),
     documentContext: `ecentic commerce article, English source, /blog/${source.slug}. Headline: ${source.title}. Description: ${source.description}. Category: ${source.category}. Write like an editor for online merchants and technical commerce teams; keep claims, obligations, product and provider distinctions unchanged. Section outline: ${JSON.stringify([...source.sections.map((section) => section.title), ...(html?.units.filter((unit) => /^Article h[1-6] text/.test(unit.context)).map((unit) => unit.text) ?? [])])}.`,
     apply: (values: ReadonlyMap<string, string>) => ({
       ...source,

@@ -145,6 +145,45 @@ test("ordinary CJK words containing currency characters are not money", () => {
   expect(findings("A smooth process", "円滑なプロセス", "ja")).toEqual([]);
 });
 
+test("hyphenated English cardinal compounds preserve one whole quantity", () => {
+  const source =
+    "Twenty-five audits a month for a 60-product store; a 600-product catalog takes two years.";
+  expect(
+    findings(
+      source,
+      "60商品を扱う店舗では月25件の監査が可能で、600商品のカタログには2年かかります。",
+      "ja",
+    ),
+  ).toEqual([]);
+  expect(findings("Thirty-one products", "31件商品")).toEqual([]);
+  expect(findings("Ninety-nine products", "99件商品")).toEqual([]);
+  expect(
+    findings("Twenty-five audits", "24件の監査", "ja").length,
+  ).toBeGreaterThan(0);
+  expect(
+    findings("Twenty-five audits", "20件と5件の監査", "ja").length,
+  ).toBeGreaterThan(0);
+  expect(findings("Twenty minus five", "25件", "ja").length).toBeGreaterThan(0);
+  expect(
+    findings("`Twenty-five audits`", "`25件の監査`", "ja").length,
+  ).toBeGreaterThan(0);
+});
+
+test("explicit US dollar names preserve currency when localized in CJK", () => {
+  const source = "Prices are monthly, in US dollars.";
+  expect(findings(source, "料金は月額で、米ドル建てです。", "ja")).toEqual([]);
+  expect(findings(source, "价格为月费，以美元计价。")).toEqual([]);
+  expect(findings("The US dollar", "米ドル", "ja")).toEqual([]);
+  expect(
+    findings(source, "料金は月額で、ユーロ建てです。", "ja").length,
+  ).toBeGreaterThan(0);
+  expect(findings(source, "价格为月费。").length).toBeGreaterThan(0);
+  expect(findings("Canadian dollars", "米ドル", "ja").length).toBeGreaterThan(
+    0,
+  );
+  expect(findings("`US dollars`", "`米ドル`", "ja").length).toBeGreaterThan(0);
+});
+
 test("a dollar can use a natural CJK amount without changing currency", () => {
   const source = "Under $50 or $100, rather than a dollar above them.";
   expect(findings(source, "低于$50或$100，而不是高出1美元。")).toEqual([]);

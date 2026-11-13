@@ -12,6 +12,7 @@ import {
   splitBlogHtmlByH2,
 } from "@/lib/blog-html";
 import { blogImage } from "@/lib/blog-image";
+import { localizeBlogHtmlLinks } from "@/lib/blog-links";
 import { blogDate, blogReadingMinutes } from "@/lib/blog-locale";
 import {
   absoluteUrl,
@@ -279,7 +280,14 @@ export default async ({ params }: BlogPageProps) => {
   if (post.contentHtml) {
     const minutes = blogReadingMinutes(post.contentHtml, locale);
     // Classify translated body headings without adding a duplicate FAQ block.
-    const sections = splitBlogHtmlByH2(post.contentHtml, post.locale);
+    const html = localizeBlogHtmlLinks(post.contentHtml, {
+      locale,
+      articlePath: `/blog/${post.slug}`,
+      publishedSlugs: new Set(
+        locale === "en" ? [] : await Blog.listPublishedSlugs(locale),
+      ),
+    });
+    const sections = splitBlogHtmlByH2(html, post.locale);
     // Newer BabyLoveGrowth articles end in their own FAQ block; the stored
     // pairs are that same block, so rendering them again would print it twice.
     const showsFaq =

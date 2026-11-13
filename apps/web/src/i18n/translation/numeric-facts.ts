@@ -166,7 +166,11 @@ export const normalizeCjkDates = (text: string, locale: Locale) => {
 };
 
 /** Unambiguous currency names may be localized, but never exchanged. */
-export const currencyAndPercentFacts = (text: string, locale: Locale) => {
+export const currencyAndPercentFacts = (
+  text: string,
+  locale: Locale,
+  dollarCurrency?: "USD",
+) => {
   if (locale !== "ja" && locale !== "zh-CN")
     return Array.from(
       text.matchAll(/[$€£¥%％]|\b(?:USD|EUR|GBP|JPY|CNY)\b/g),
@@ -201,8 +205,11 @@ export const currencyAndPercentFacts = (text: string, locale: Locale) => {
     "％": "%",
   };
   return Array.from(
-    normalizeImplicitDollarAmounts(text)
+    normalizeImplicitDollarAmounts(
+      dollarCurrency === "USD" ? text.replace(/\bdollars?\b/giu, "USD") : text,
+    )
       .replace(/\ba dollar\b/giu, "USD")
+      .replace(/\bUS dollars?\b/giu, "USD")
       .matchAll(
         /US\$|\b(?:USD|EUR|GBP|JPY|CNY)\b|アメリカドル|米ドル|英ポンド|ユーロ|人民币|人民元|美元|欧元|英镑|日元|日円|(?<=[\d万萬亿億兆])\s*[元円]|[$€£¥%％]/gu,
       ),
