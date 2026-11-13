@@ -255,15 +255,41 @@ export const normalizeCjkDates = (text: string, locale: Locale) => {
   );
 };
 
+/** Written units after explicit numerals are equivalent to the percent symbol. */
+const normalizePercentageWords = (text: string, locale: Locale) => {
+  const localeUnits: Readonly<Record<Locale, string>> = {
+    en: "percent|per[ \\u00a0\\u202f]+cent",
+    es: "por[ \\u00a0\\u202f]+ciento",
+    fr: "pour[ \\u00a0\\u202f]*cents?",
+    de: "Prozent",
+    it: "per[ \\u00a0\\u202f]+cento",
+    ja: "パーセント",
+    "zh-CN": "",
+  };
+  const units = [localeUnits.en, localeUnits[locale]].filter(Boolean).join("|");
+  const suffix = text.replace(
+    new RegExp(
+      `(\\d(?:[.,]\\d+)*[ \\u00a0\\u202f]*)(?:${units})(?![\\p{L}\\p{N}_])`,
+      "giu",
+    ),
+    "$1%",
+  );
+  // Chinese places the unit before its numeral; keep the numeral untouched.
+  return locale === "zh-CN"
+    ? suffix.replace(/百分之(?=[ \u00a0\u202f]*[−-]?\d)/gu, "%")
+    : suffix;
+};
+
 /** Unambiguous currency names may be localized, but never exchanged. */
 export const currencyAndPercentFacts = (
   text: string,
   locale: Locale,
   dollarCurrency?: "USD",
 ) => {
+  const normalized = normalizePercentageWords(text, locale);
   if (locale !== "ja" && locale !== "zh-CN")
     return Array.from(
-      text.matchAll(/[$€£¥%％]|\b(?:USD|EUR|GBP|JPY|CNY)\b/g),
+      normalized.matchAll(/[$€£¥%％]|\b(?:USD|EUR|GBP|JPY|CNY)\b/g),
       ([token]) => token.replace("％", "%"),
     );
   const currencies: Readonly<Record<string, string>> = {
@@ -296,7 +322,9 @@ export const currencyAndPercentFacts = (
   };
   return Array.from(
     normalizeImplicitDollarAmounts(
-      dollarCurrency === "USD" ? text.replace(/\bdollars?\b/giu, "USD") : text,
+      dollarCurrency === "USD"
+        ? normalized.replace(/\bdollars?\b/giu, "USD")
+        : normalized,
     )
       .replace(/\ba dollar\b/giu, "USD")
       .replace(/\bUS dollars?\b/giu, "USD")

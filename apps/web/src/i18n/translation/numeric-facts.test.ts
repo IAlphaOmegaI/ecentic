@@ -486,3 +486,67 @@ test("CSV prose plurals keep counts while code and URLs stay literal", () => {
       .length,
   ).toBeGreaterThan(0);
 });
+
+test("written percentage units preserve both endpoints and native notation", () => {
+  expect(findings("15 to 20 percent", "15 à 20 %", "fr")).toEqual([]);
+  expect(findings("20 to 40 per cent", "20 à 40\u00a0%", "fr")).toEqual([]);
+  expect(findings("15 to 20 percent", "15 à 20 pour cent", "fr")).toEqual([]);
+  expect(findings("20%", "20 pour cent", "fr")).toEqual([]);
+  expect(findings("20 percent", "20 Prozent", "de")).toEqual([]);
+  expect(findings("20 per cent", "20 per cento", "it")).toEqual([]);
+  expect(findings("20 percent", "20 por ciento", "es")).toEqual([]);
+  expect(findings("20 percent", "20パーセント", "ja")).toEqual([]);
+  expect(findings("20 percent", "百分之20", "zh-CN")).toEqual([]);
+  expect(findings("20 percent", "20％", "zh-CN")).toEqual([]);
+  expect(findings("20.5 percent", "20,5 %", "fr")).toEqual([]);
+});
+
+test("percentage notation never discards changed amounts, signs or currencies", () => {
+  for (const target of [
+    "14 à 20 %",
+    "15 à 21 %",
+    "15 %",
+    "15 à 20",
+    "15 à 20 €",
+  ])
+    expect(findings("15 to 20 percent", target, "fr").length).toBeGreaterThan(
+      0,
+    );
+  expect(findings("-20 percent", "20 %", "fr").length).toBeGreaterThan(0);
+  expect(findings("-20 percent", "-20 %", "fr")).toEqual([]);
+  expect(
+    findings("$15 and 20 percent", "15 € et 20 %", "fr").length,
+  ).toBeGreaterThan(0);
+  expect(
+    findings("15 items and 20 percent", "14 articles et 20 %", "fr").length,
+  ).toBeGreaterThan(0);
+  expect(
+    findings("The percentile is 20", "Le percentile est de 20 %", "fr").length,
+  ).toBeGreaterThan(0);
+});
+
+test("percentage prose conversion leaves literal code and URLs protected", () => {
+  const source =
+    "Use `15 percent` and https://example.com/20percent for 30 percent.";
+  expect(
+    findings(
+      source,
+      "Utilisez `15 percent` et https://example.com/20percent pour 30 %.",
+      "fr",
+    ),
+  ).toEqual([]);
+  expect(
+    findings(
+      source,
+      "Utilisez `15 %` et https://example.com/20percent pour 30 %.",
+      "fr",
+    ).length,
+  ).toBeGreaterThan(0);
+  expect(
+    findings(
+      source,
+      "Utilisez `15 percent` et https://example.com/20% pour 30 %.",
+      "fr",
+    ).length,
+  ).toBeGreaterThan(0);
+});
