@@ -139,6 +139,66 @@ test("Merchant Center possessive prose keeps exact product mention counts", () =
   ).toBeGreaterThan(0);
 });
 
+test("Spanish Merchant Center ownership keeps product identity and exact counts", () => {
+  const findings = (source: string, target: string) =>
+    validateTranslationUnit(
+      { id: "merchant-es", text: source, context: "Product prose" },
+      target,
+      "es",
+    );
+  for (const source of [
+    "Google Merchant Center",
+    "Google's Merchant Center",
+    "Google’s Merchant Center",
+  ]) {
+    expect(
+      findings(`Use ${source}.`, "Usa Merchant Center de Google."),
+    ).toEqual([]);
+    for (const target of [
+      "Usa Merchant Center.",
+      "Usa Merchant Center de Microsoft.",
+      "Usa Merchant Center de Google y Merchant Center de Google.",
+      "Usa merchant center de Google.",
+      "Usa Merchant Center de google.",
+      "Usa Merchant Center de Googleless.",
+    ])
+      expect(findings(`Use ${source}.`, target).length).toBeGreaterThan(0);
+    expect(
+      findings(
+        `Use ${source} and Google Merchant Center.`,
+        "Usa Merchant Center de Google.",
+      ).length,
+    ).toBeGreaterThan(0);
+    expect(
+      findings(
+        `Use ${source} and Google Merchant Center.`,
+        "Usa Merchant Center de Google y Google Merchant Center.",
+      ),
+    ).toEqual([]);
+    expect(
+      findings(`Use \`${source}\`.`, "Usa `Merchant Center de Google`.").length,
+    ).toBeGreaterThan(0);
+    expect(findings(`Use \`${source}\`.`, `Usa \`${source}\`.`)).toEqual([]);
+  }
+  expect(
+    findings(
+      "Use Google’s Merchant Center at https://example.com/Google-Merchant-Center.",
+      "Usa Merchant Center de Google en https://example.com/Merchant-Center-de-Google.",
+    ).length,
+  ).toBeGreaterThan(0);
+  expect(
+    validateTranslationUnit(
+      {
+        id: "merchant-fr",
+        text: "Use Google's Merchant Center.",
+        context: "Product prose",
+      },
+      "Utilisez Merchant Center de Google.",
+      "fr",
+    ).length,
+  ).toBeGreaterThan(0);
+});
+
 test("only trusted inline English articles may have empty CJK targets", () => {
   const unit = {
     id: "html.body.1.0",

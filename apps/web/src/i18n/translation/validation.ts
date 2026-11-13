@@ -319,8 +319,8 @@ const canonicalBrandSpelling = new Set([
   "WordPress",
   "WebMCP",
 ]);
-const brandProse = (text: string) =>
-  stripCode(text)
+const brandProse = (text: string, locale: Locale) => {
+  const prose = stripCode(text)
     .replace(syntaxExpressions.urls, "")
     .replace(syntaxExpressions.emails, "")
     // This possessive names the same product; do not generalize other brands
@@ -329,10 +329,18 @@ const brandProse = (text: string) =>
       /(?<![A-Za-z0-9_])Google['’]s Merchant Center(?![A-Za-z0-9_])/g,
       "Google Merchant Center",
     );
+  return locale === "es"
+    ? prose.replace(
+        /(?<![A-Za-z0-9_])Merchant Center de Google(?![A-Za-z0-9_])/g,
+        "Google Merchant Center",
+      )
+    : prose;
+};
 const termFindings = (
   source: string,
   target: string,
   terms: readonly string[],
+  locale: Locale,
   canonicalTerms: readonly string[] = [],
 ) =>
   terms
@@ -342,8 +350,8 @@ const termFindings = (
           literalOccurrences(source, term),
           literalOccurrences(target, term),
         );
-      const original = literalMatches(brandProse(source), term, true);
-      const translated = literalMatches(brandProse(target), term, true);
+      const original = literalMatches(brandProse(source, locale), term, true);
+      const translated = literalMatches(brandProse(target, locale), term, true);
       return (
         original.length !== translated.length ||
         translated.some(
@@ -485,7 +493,7 @@ const compareMessages = (
     .join("");
   const literals = [
     ...textFindings(sourceText, targetText, locale),
-    ...termFindings(sourceText, targetText, terms),
+    ...termFindings(sourceText, targetText, terms, locale),
   ].map((finding) => `${scope}: ${finding}`);
   if (!equal(original.map(identity), translated.map(identity)))
     return [
@@ -622,7 +630,13 @@ export const validateTranslationUnit = (
           unit.dollarCurrency,
           unit.nonMonetaryDollarPhrase,
         ),
-        ...termFindings(unit.text, target, protectedTerms, unit.canonicalTerms),
+        ...termFindings(
+          unit.text,
+          target,
+          protectedTerms,
+          locale,
+          unit.canonicalTerms,
+        ),
         ...(!equal(
           matches(unit.text, syntaxExpressions.placeholders),
           matches(target, syntaxExpressions.placeholders),
