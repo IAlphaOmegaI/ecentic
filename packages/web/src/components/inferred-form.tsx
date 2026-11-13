@@ -61,6 +61,8 @@ type Interface = {
     z.ZodString,
     TextField.Props & {
       maskToggleLabels?: TextFieldMaskToggle.Props["labels"];
+      leadingContent?: ReactNode;
+      trailingContent?: ReactNode;
       autoComplete?: TextFieldInput.Props["autoComplete"];
       inputMode?: TextFieldInput.Props["inputMode"];
     }
@@ -234,6 +236,8 @@ export const InferredFormField = <Field extends GenericField>(
             case "text": {
               const {
                 maskToggleLabels,
+                leadingContent,
+                trailingContent,
                 autoComplete,
                 inputMode,
                 ...textProps
@@ -247,11 +251,13 @@ export const InferredFormField = <Field extends GenericField>(
                     className,
                   )}
                 >
+                  {leadingContent}
                   <TextFieldInput
                     placeholder={props.placeholder}
                     {...(autoComplete === undefined ? {} : { autoComplete })}
                     {...(inputMode === undefined ? {} : { inputMode })}
                   />
+                  {trailingContent}
                   {props.type === "password" && (
                     <TextFieldMaskToggle labels={maskToggleLabels} />
                   )}

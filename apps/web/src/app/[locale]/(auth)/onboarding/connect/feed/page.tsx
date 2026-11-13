@@ -1,3 +1,4 @@
+import { CommerceFilePenIcon } from "@zenncore/icons";
 import { getMessages, getTranslations } from "next-intl/server";
 import { SetupPage } from "../../_components/setup-page";
 import { FeedForm } from "./_components/feed-form";
@@ -9,7 +10,12 @@ export default async () => {
     <SetupPage
       title={translate("feed.title")}
       description={translate("feed.description")}
-      image="/images/custom.svg"
+      icon={
+        <CommerceFilePenIcon
+          aria-hidden
+          className="mb-6 size-10 text-primary-text"
+        />
+      }
       guidance={
         <section>
           <h2 className="mb-6 font-medium text-foreground-rich text-lg">

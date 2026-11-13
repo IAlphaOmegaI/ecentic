@@ -1,6 +1,5 @@
 import { PageSkeleton } from "../_components/chrome-skeletons";
 
-// Reports renders bare content inside the dashboard frame — no sidebar and no
-// header of its own — so it needs the content placeholder alone. Inheriting the
-// parent fallback drew a sidebar and topbar that never arrive.
+// The reports layout owns the compact account header. Only its content needs
+// a placeholder; the per-store sidebar is not part of this route.
 export default () => <PageSkeleton />;

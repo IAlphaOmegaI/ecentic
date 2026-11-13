@@ -4,10 +4,8 @@
  */
 export const CatalogSkeleton = () => (
   <div aria-hidden>
-    <div className="space-y-4 border-accent-foreground border-b px-6 py-6 sm:px-8">
-      <div className="h-4 w-40 animate-pulse rounded bg-accent-foreground/60" />
-      <div className="h-10 w-full animate-pulse rounded-md bg-accent-foreground/40" />
-      <div className="h-4 w-24 animate-pulse rounded bg-accent-foreground/40" />
+    <div className="border-accent-foreground border-b bg-background-rich px-6 py-4 sm:px-8">
+      <div className="h-12 w-full animate-pulse rounded-lg bg-accent-foreground/40" />
     </div>
     <div className="border-accent-foreground border-b bg-background px-6 py-4 sm:px-8">
       <div className="h-6 w-40 animate-pulse rounded bg-accent-foreground/60" />

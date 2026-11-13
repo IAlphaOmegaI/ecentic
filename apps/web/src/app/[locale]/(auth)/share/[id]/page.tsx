@@ -5,6 +5,8 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
 import { getMessages, getTranslations } from "next-intl/server";
+import { Suspense } from "react";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { Motion } from "@/components/motion";
 import { Onboarding } from "@/components/onboarding";
 import { Link } from "@/i18n/navigation";
@@ -106,13 +108,25 @@ export default async ({ params }: SharePageProps) => {
           className="flex flex-col overflow-y-auto"
         >
           <Motion.Item className="border-accent-foreground border-b px-8">
-            <div className="border-accent-foreground border-x p-6">
-              <h2 className="font-medium text-4xl text-foreground">
-                {translate("page.title")}
-              </h2>
-              <p className="mt-1 font-light text-2xl text-foreground-dimmed">
-                {translate("page.description")}
-              </p>
+            <div className="flex flex-wrap items-start justify-between gap-4 border-accent-foreground border-x p-6">
+              <div className="min-w-0 flex-1">
+                <h2 className="font-medium text-4xl text-foreground">
+                  {translate("page.title")}
+                </h2>
+                <p className="mt-1 font-light text-2xl text-foreground-dimmed">
+                  {translate("page.description")}
+                </p>
+              </div>
+              <Suspense
+                fallback={
+                  <div
+                    aria-hidden
+                    className="h-10 w-20 shrink-0 animate-pulse rounded-sm bg-foreground/10"
+                  />
+                }
+              >
+                <LanguageSwitcher />
+              </Suspense>
             </div>
           </Motion.Item>
           <Motion.Item className="border-accent-foreground border-b px-8">

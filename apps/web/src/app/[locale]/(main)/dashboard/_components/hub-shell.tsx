@@ -1,5 +1,6 @@
 import Image from "next/image";
-import type { ReactNode } from "react";
+import { type ReactNode, Suspense } from "react";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { Link } from "@/i18n/navigation";
 import { Crosshair } from "./grid";
 import { HubShellCopy } from "./hub-shell-copy";
@@ -22,7 +23,7 @@ export const HubShell = ({
   stores: ReactNode;
 }) => (
   <div className="flex flex-1 flex-col overflow-hidden">
-    <header className="flex h-14 shrink-0 items-center justify-between border-accent-foreground border-b bg-background-rich px-8">
+    <header className="flex h-14 shrink-0 items-center justify-between gap-4 border-accent-foreground border-b bg-background-rich px-4 sm:px-8">
       <Link href="/dashboard" aria-label="ecentic">
         <Image
           src="/images/trademark.svg"
@@ -33,6 +34,16 @@ export const HubShell = ({
         />
       </Link>
       <div className="flex items-center gap-3">
+        <Suspense
+          fallback={
+            <div
+              aria-hidden
+              className="h-10 w-20 shrink-0 animate-pulse rounded-sm bg-foreground/10"
+            />
+          }
+        >
+          <LanguageSwitcher />
+        </Suspense>
         <NotificationBell />
         {userBadge}
       </div>

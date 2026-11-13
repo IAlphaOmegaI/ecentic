@@ -1,5 +1,6 @@
 import { ArrowLeftIcon } from "@zenncore/icons";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
 import { getLocale } from "next-intl/server";
 import { type PropsWithChildren, Suspense } from "react";
 import { Link, redirect } from "@/i18n/navigation";
@@ -31,32 +32,36 @@ const UserBadge = async () => {
 // Account-level chrome. Settings is not scoped to a single store, so it gets a
 // slim header with a route back to the store hub instead of the per-store
 // sidebar.
-export default ({ children }: PropsWithChildren) => (
-  <div className="flex flex-1 flex-col overflow-hidden">
-    <header className="flex h-14 shrink-0 items-center justify-between border-accent-foreground border-b bg-background-rich px-8">
-      <div className="flex items-center gap-4">
-        <Link href="/dashboard" aria-label="ecentic">
-          <Image
-            src="/images/trademark.svg"
-            alt="ecentic"
-            width={96}
-            height={28}
-            loading="eager"
-          />
-        </Link>
-        <span className="text-accent-foreground">/</span>
-        <Link
-          href="/dashboard"
-          className="inline-flex items-center gap-1.5 text-foreground-dimmed text-sm transition-colors hover:text-foreground"
-        >
-          <ArrowLeftIcon className="size-4" />
-          All stores
-        </Link>
-      </div>
-      <Suspense fallback={<div className="size-8 bg-accent-foreground/30" />}>
-        <UserBadge />
-      </Suspense>
-    </header>
-    <main className="flex-1 overflow-y-auto">{children}</main>
-  </div>
-);
+export default function SettingsLayout({ children }: PropsWithChildren) {
+  const translate = useTranslations("dashboard.sidebar");
+
+  return (
+    <div className="flex flex-1 flex-col overflow-hidden">
+      <header className="flex h-14 shrink-0 items-center justify-between border-accent-foreground border-b bg-background-rich px-8">
+        <div className="flex items-center gap-4">
+          <Link href="/dashboard" aria-label="ecentic">
+            <Image
+              src="/images/trademark.svg"
+              alt="ecentic"
+              width={96}
+              height={28}
+              loading="eager"
+            />
+          </Link>
+          <span className="text-accent-foreground">/</span>
+          <Link
+            href="/dashboard"
+            className="inline-flex items-center gap-1.5 text-foreground-dimmed text-sm transition-colors hover:text-foreground"
+          >
+            <ArrowLeftIcon className="size-4" />
+            {translate("allStores")}
+          </Link>
+        </div>
+        <Suspense fallback={<div className="size-8 bg-accent-foreground/30" />}>
+          <UserBadge />
+        </Suspense>
+      </header>
+      <main className="flex-1 overflow-y-auto">{children}</main>
+    </div>
+  );
+}

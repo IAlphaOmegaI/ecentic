@@ -687,7 +687,9 @@ page navigation on ordinary public tables.
 
 The four steps are Connect → Products → Competitors → Scan. Each screen names the task and
 explains the next action. The desktop narrative panel occupies its intended side of the split;
-on smaller screens it yields to the task. Mobile progress shows four dots and the step count.
+on smaller screens it yields to the task. Progress is a connected visual roadmap: relevant
+commerce illustrations above one route, with completed segments and the current checkpoint
+distinguished. Mobile retains the current illustration, stage label, count and compact route.
 
 Catalog import, selected products and named competitors retain their actual behavior. Loading
 and scan phases describe real work; no decorative success can get ahead of the result. Provide
@@ -706,12 +708,19 @@ not a CSS filter that erases the box artwork. Keep the existing fonts and use me
 headings and stronger local labels to establish hierarchy. At narrow widths, return to
 ordinary document flow rather than squeezing both panes together.
 
-Onboarding progress uses four numbered cells on desktop and compact progress on mobile.
 The platform directory is searchable and distinguishes direct connections, supported
 feed/CSV import routes and planned integrations. A provider mark does not imply a live
-native connection. Uploads use one continuous surface, localized picker copy and an
+native connection. Compose search as one compact field, with its icon and result count
+inside the control and a properly associated accessible label. Uploads use one continuous
+surface, localized picker copy and an
 obvious way to replace the selected file. Empty product states pair a relevant illustration
 with working store-connection and CSV-import actions.
+
+Keep the shared flag language switcher available in public, auth, onboarding, dashboard
+and shared-report chrome. Place it outside scrollable task content and billing overlays
+where the shell permits. Preserve the current route, query and fragment when switching.
+Settings may use its existing inline language selector; internal staff and presentation
+stages are separate surfaces, not reasons to omit it from the customer workspace.
 
 Notifications appear at the top center, clear of the support launcher, with a dark opaque
 surface, readable title/body contrast, a status icon and a visible dismiss control. Stacks

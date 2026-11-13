@@ -126,16 +126,6 @@ const groups = ["direct", "exports", "planned"] as const;
 export const PlatformGrid = () => {
   const translate = useTranslations("onboardingDirectory");
   const [query, setQuery] = useState("");
-  const config = {
-    search: field({
-      shape: "text",
-      validator: z.string(),
-      label: translate("search.label"),
-      placeholder: translate("search.placeholder"),
-      autoComplete: "off",
-      classList: { label: "font-medium text-foreground-rich" },
-    }),
-  };
   const matches = platforms.filter((platform) => {
     const aliases = "aliases" in platform ? platform.aliases : "";
     const content = `${aliases} ${translate(`providers.${platform.id}.name`)} ${translate(`providers.${platform.id}.description`)} ${translate(`modes.${platform.mode}`)}`;
@@ -144,24 +134,43 @@ export const PlatformGrid = () => {
       .includes(query.trim().toLocaleLowerCase());
   });
 
+  const config = {
+    search: field({
+      shape: "text",
+      validator: z.string(),
+      label: translate("search.label"),
+      placeholder: translate("search.label"),
+      autoComplete: "off",
+      className:
+        "h-12 min-w-0 gap-4 rounded-lg bg-background px-4 [&_input]:placeholder:text-foreground-dimmed",
+      classList: { label: "sr-only" },
+      leadingContent: (
+        <SearchIcon
+          aria-hidden="true"
+          className="size-4 shrink-0 text-primary-text"
+        />
+      ),
+      trailingContent: (
+        <span
+          aria-live="polite"
+          aria-atomic="true"
+          className="pointer-events-none shrink-0 border-accent-foreground border-l pl-4 text-foreground-dimmed text-xs tabular-nums"
+        >
+          {translate("search.count", { count: matches.length })}
+        </span>
+      ),
+    }),
+  };
+
   return (
     <div className="min-w-0">
-      <div className="relative border-accent-foreground border-b bg-background-rich px-6 py-6 sm:px-8">
-        <div className="flex items-end gap-4">
-          <SearchIcon
-            aria-hidden="true"
-            className="mb-2 size-4 shrink-0 text-primary-text"
-          />
-          <InferredForm
-            config={config}
-            defaultValues={{ search: "" }}
-            onChange={({ search }) => setQuery(search ?? "")}
-            className="min-w-0 flex-1"
-          />
-        </div>
-        <p aria-live="polite" className="mt-3 text-foreground-dimmed text-sm">
-          {translate("search.count", { count: matches.length })}
-        </p>
+      <div className="border-accent-foreground border-b bg-background-rich px-6 py-4 sm:px-8">
+        <InferredForm
+          config={config}
+          defaultValues={{ search: "" }}
+          onChange={({ search }) => setQuery(search ?? "")}
+          className="min-w-0"
+        />
       </div>
       {groups.map((group) => {
         const entries = matches.filter((platform) => platform.group === group);

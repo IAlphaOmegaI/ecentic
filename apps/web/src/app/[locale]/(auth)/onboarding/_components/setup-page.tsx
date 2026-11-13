@@ -14,12 +14,14 @@ export const SetupPage = ({
   title,
   description,
   image,
+  icon,
   children,
   guidance,
 }: {
   title: string;
   description: string;
-  image: string;
+  image?: string;
+  icon?: ReactNode;
   children: ReactNode;
   guidance: ReactNode;
 }) => (
@@ -34,13 +36,16 @@ export const SetupPage = ({
             aria-hidden="true"
             className="pointer-events-none absolute inset-0 -z-10 bg-linear-to-br from-primary/10 via-background-rich to-background-rich [clip-path:polygon(0_0,100%_0,100%_calc(100%_-_16px),calc(100%_-_16px)_100%,16px_100%,0_calc(100%_-_16px))]"
           />
-          <Image
-            src={image}
-            alt=""
-            width={64}
-            height={48}
-            className="mb-6 h-10 w-20 object-contain object-left"
-          />
+          {icon ??
+            (image && (
+              <Image
+                src={image}
+                alt=""
+                width={64}
+                height={48}
+                className="mb-6 h-10 w-20 object-contain object-left"
+              />
+            ))}
           <h1 className="font-heading font-medium text-3xl text-foreground-rich tracking-tight sm:text-4xl">
             {title}
           </h1>

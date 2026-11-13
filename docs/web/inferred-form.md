@@ -64,6 +64,15 @@ field({
 });
 ```
 
+### Text field content
+
+For `shape: "text"`, optional `leadingContent` and `trailingContent` React nodes
+render inside the shared `TextField`, before and after `TextFieldInput`. Use them
+for decorative search icons or contextual counts, while retaining a real field
+label (which may be visually hidden). Mark decorative content `aria-hidden`;
+announce changing status text only when it helps the task. These slots do not
+replace the input or change form value handling.
+
 ### Select control styling
 
 For `shape: "select"`, `classList.control` styles the trigger and the portaled

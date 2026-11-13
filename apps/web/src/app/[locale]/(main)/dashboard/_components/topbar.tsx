@@ -1,5 +1,6 @@
 import { unwrapResult } from "@zenncore/utils";
 import { Suspense } from "react";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import * as Authentication from "@/server/app/authentication";
 import * as Subscription from "@/server/app/subscription";
 import { Environment } from "@/server/utils/environment";
@@ -18,12 +19,22 @@ import { SubscriptionBadge } from "./subscription-badge";
  * wait, and they no longer wait on each other.
  */
 export const Topbar = () => (
-  <header className="flex h-14 shrink-0 items-center justify-between border-accent-foreground border-b bg-background-rich px-8">
-    <div className="flex max-w-md flex-1 items-center gap-2">
+  <header className="flex min-h-14 shrink-0 flex-wrap items-center justify-between gap-x-4 gap-y-2 border-accent-foreground border-b bg-background-rich px-4 py-2 sm:flex-nowrap sm:px-8">
+    <div className="flex min-w-24 max-w-md flex-1 items-center gap-2">
       <CommandPalette />
     </div>
 
-    <div className="flex items-center gap-3">
+    <div className="ml-auto flex shrink-0 items-center gap-2 sm:gap-3">
+      <Suspense
+        fallback={
+          <div
+            aria-hidden
+            className="h-10 w-20 shrink-0 animate-pulse rounded-sm bg-foreground/10"
+          />
+        }
+      >
+        <LanguageSwitcher />
+      </Suspense>
       <NotificationBell />
 
       <Suspense fallback={<SubscriptionBadgeSkeleton />}>
@@ -58,7 +69,7 @@ const Account = async () => {
       <div className="flex size-8 items-center justify-center rounded-md bg-primary font-bold text-background-rich text-sm">
         {user.name.charAt(0)}
       </div>
-      <span className="hidden font-medium text-base text-foreground md:block">
+      <span className="hidden max-w-40 truncate font-medium text-base text-foreground md:block">
         {user.name} {user.surname}
       </span>
     </button>

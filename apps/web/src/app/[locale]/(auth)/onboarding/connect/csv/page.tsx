@@ -1,3 +1,4 @@
+import { FileIcon } from "@zenncore/icons";
 import { getTranslations } from "next-intl/server";
 import { SetupPage } from "../../_components/setup-page";
 import { CsvForm } from "./_components/csv-form";
@@ -8,7 +9,7 @@ export default async () => {
     <SetupPage
       title={translate("csv.title")}
       description={translate("csv.description")}
-      image="/images/custom.svg"
+      icon={<FileIcon aria-hidden className="mb-6 size-10 text-primary-text" />}
       guidance={
         <section>
           <h2 className="mb-6 font-medium text-foreground-rich text-lg">

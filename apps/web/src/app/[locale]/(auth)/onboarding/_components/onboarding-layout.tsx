@@ -1,31 +1,26 @@
 "use client";
 
-import {
-  CheckIcon,
-  CircleBoltIcon,
-  FaceSearchIcon,
-  PhotoIcon,
-  ShoppingCartIcon,
-} from "@zenncore/icons";
-import { cn } from "@zenncore/utils";
 import { useMessages, useTranslations } from "next-intl";
+import { LanguageSwitcher } from "@/components/language-switcher";
 import { Onboarding } from "@/components/onboarding";
 import { Plus } from "@/components/plus";
 import { usePathname } from "@/i18n/navigation";
+import {
+  OnboardingRoadmap,
+  OnboardingRoadmapFigure,
+} from "./onboarding-roadmap";
 
 const stepPaths = [
   {
     key: "catalog",
     path: "/onboarding/connect",
-    icon: ShoppingCartIcon,
   },
-  { key: "products", path: "/onboarding/products", icon: PhotoIcon },
+  { key: "products", path: "/onboarding/products" },
   {
     key: "competitors",
     path: "/onboarding/competitors",
-    icon: FaceSearchIcon,
   },
-  { key: "scan", path: "/onboarding/scan", icon: CircleBoltIcon },
+  { key: "scan", path: "/onboarding/scan" },
 ] as const;
 
 type SidebarKey =
@@ -99,93 +94,30 @@ export const OnboardingLayout = ({
           })}
           className="relative shrink-0 border-accent-foreground border-b"
         >
-          <ol className="hidden grid-cols-4 md:grid">
-            {steps.map((step, index) => {
-              const isCompleted = index < current;
-              const isCurrent = index === current;
-              const StepIcon = isCompleted ? CheckIcon : step.icon;
-              return (
-                <li
-                  key={step.path}
-                  aria-current={isCurrent ? "step" : undefined}
-                  className={cn(
-                    "relative flex min-h-24 min-w-0 items-center gap-4 border-accent-foreground border-r px-4 py-4 last:border-r-0 xl:px-6",
-                    isCurrent &&
-                      "bg-linear-to-br from-primary/12 to-background-rich",
-                  )}
-                >
-                  <span
-                    aria-hidden="true"
-                    className={cn(
-                      "shrink-0 font-heading font-medium text-2xl tabular-nums",
-                      isCurrent || isCompleted
-                        ? "text-primary-text"
-                        : "text-foreground-dimmed/60",
-                    )}
-                  >
-                    {String(index + 1).padStart(2, "0")}
-                  </span>
-                  <div className="flex min-w-0 flex-col gap-2">
-                    <StepIcon
-                      aria-hidden="true"
-                      className={cn(
-                        "size-4",
-                        isCurrent || isCompleted
-                          ? "text-primary-text"
-                          : "text-foreground-dimmed",
-                      )}
-                    />
-                    <span
-                      className={cn(
-                        "text-sm leading-snug",
-                        isCurrent
-                          ? "font-semibold text-foreground-rich"
-                          : "font-medium text-foreground-dimmed",
-                      )}
-                    >
-                      {step.label}
-                    </span>
-                  </div>
-                  <span
-                    aria-hidden="true"
-                    className={cn(
-                      "absolute inset-x-0 bottom-0 h-0.5",
-                      isCurrent
-                        ? "bg-primary"
-                        : isCompleted
-                          ? "bg-primary/40"
-                          : "bg-transparent",
-                    )}
-                  />
-                </li>
-              );
-            })}
-          </ol>
-          <div className="flex items-center justify-between gap-4 px-6 py-4 md:hidden">
-            <div className="min-w-0">
-              <p className="font-semibold text-foreground-rich">
-                {steps[current]?.label}
-              </p>
-              <p className="mt-1 text-foreground-dimmed text-sm">
-                {translate("stepProgress", {
-                  current: String(current + 1),
-                  total: String(steps.length),
-                })}
-              </p>
-            </div>
-            <div className="flex gap-2" aria-hidden="true">
-              {steps.map((step, index) => (
-                <span
-                  key={step.path}
-                  className={cn(
-                    "size-2 rounded-full",
-                    index <= current ? "bg-primary" : "bg-accent-foreground",
-                    index === current && "ring-4 ring-primary/10",
-                  )}
+          <div className="flex min-h-10 items-center justify-between gap-4 px-6 md:px-8">
+            <div className="flex min-w-0 items-center gap-2">
+              <div className="md:hidden">
+                <OnboardingRoadmapFigure
+                  index={current}
+                  active
+                  className="h-12 w-16"
                 />
-              ))}
+              </div>
+              <div className="min-w-0 py-2">
+                <p className="font-semibold text-foreground-rich md:hidden">
+                  {steps[current]?.label}
+                </p>
+                <p className="text-foreground-dimmed text-sm">
+                  {translate("stepProgress", {
+                    current: String(current + 1),
+                    total: String(steps.length),
+                  })}
+                </p>
+              </div>
             </div>
+            <LanguageSwitcher />
           </div>
+          <OnboardingRoadmap steps={steps} current={current} />
           <Plus className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Plus className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
         </nav>

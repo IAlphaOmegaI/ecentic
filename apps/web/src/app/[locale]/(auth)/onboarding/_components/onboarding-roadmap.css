@@ -1,0 +1,5 @@
+@media (prefers-reduced-motion: reduce) {
+  [data-hairline="onboarding-roadmap"] path {
+    transition: none;
+  }
+}

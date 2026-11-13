@@ -61,12 +61,12 @@ export const CommandPalette = () => {
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTrigger className="flex h-9 flex-1 items-center gap-2 rounded-lg border border-accent-foreground bg-background px-3 text-left transition-[border-color,box-shadow] hover:border-primary/40 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-primary/15">
+      <DialogTrigger className="flex h-9 min-w-0 flex-1 items-center gap-2 rounded-lg border border-accent-foreground bg-background px-3 text-left transition-[border-color,box-shadow] hover:border-primary/40 focus-visible:border-primary focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-primary/15">
         <SearchIcon className="size-4 shrink-0 text-foreground-dimmed" />
-        <span className="font-light text-foreground-dimmed text-sm">
+        <span className="min-w-0 truncate font-light text-foreground-dimmed text-sm">
           {translate("trigger")}
         </span>
-        <kbd className="ml-auto rounded border border-accent-foreground bg-background-rich px-1 py-px font-medium text-[10px] text-foreground-dimmed">
+        <kbd className="ml-auto hidden shrink-0 rounded border border-accent-foreground bg-background-rich px-1 py-px font-medium text-[10px] text-foreground-dimmed sm:block">
           {translate("keyboardShortcut")}
         </kbd>
       </DialogTrigger>
