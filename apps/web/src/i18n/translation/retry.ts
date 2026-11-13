@@ -1,5 +1,6 @@
 /** No usable reviewed artifact exists after a malformed response envelope. */
 export const isTranslationEnvelopeFailure = (message: string) =>
+  message === "Translation response contains unsupported Unicode text." ||
   /^Translation did not pass review: batch: (?:Draft|Review|Correction) returned missing, duplicate or unexpected unit IDs\.$/.test(
     message,
   );

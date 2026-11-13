@@ -93,3 +93,27 @@ test("aliases cannot collide with a real source ID", () => {
     ],
   });
 });
+
+test("invalid Unicode is rejected before a target or review finding can be persisted", () => {
+  const request = {
+    phase: "draft" as const,
+    system: "",
+    prompt: JSON.stringify({ units: [{ id: "body.1", text: "Source" }] }),
+    schemaName: "draft",
+    schema: z.object({}),
+  };
+  for (const prompt of [request.prompt, "unstructured prompt"]) {
+    const transport = compactTranslationTransport({ ...request, prompt });
+    for (const value of [
+      { units: [{ id: "_t0", text: "bad\u0000text" }] },
+      { issues: [{ id: "_t0", message: "bad\uD800text" }] },
+      { decisions: [{ reason: "bad\uDC00text" }] },
+    ]) {
+      expect(() => transport.decode(value)).toThrow(
+        "Translation response contains unsupported Unicode text.",
+      );
+    }
+    const safe = { text: "日本語 😀\n\tLiteral code: \\u0000" };
+    expect(transport.decode(safe)).toEqual(safe);
+  }
+});

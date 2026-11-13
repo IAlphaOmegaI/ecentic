@@ -54,3 +54,17 @@ test("ordinary transport failures retain a finite retry budget", () => {
     true,
   );
 });
+
+test("unsupported Unicode is a bounded transport failure, not reviewable copy", () => {
+  expect(
+    isTranslationEnvelopeFailure(
+      "Translation response contains unsupported Unicode text.",
+    ),
+  ).toBe(true);
+  expect(
+    translationRetryDisposition(
+      "Translation response contains unsupported Unicode text.",
+      2,
+    ).exhausted,
+  ).toBe(true);
+});

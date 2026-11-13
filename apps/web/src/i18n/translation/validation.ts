@@ -79,6 +79,10 @@ const numericTokens = (value: string) => {
     (match) =>
       match[0].startsWith("-") &&
       (/[\d%]/.test(text[(match.index ?? 0) - 1] ?? "") ||
+        (/\b\d+-to$/i.test(text.slice(0, match.index ?? 0)) &&
+          /^-(?:second|minute|hour|day|week|month|year)s?\b/i.test(
+            text.slice((match.index ?? 0) + match[0].length),
+          )) ||
         /\b(?:week|day|month|year|phase|stage|step|top|iso)$/i.test(
           text.slice(0, match.index ?? 0),
         ))

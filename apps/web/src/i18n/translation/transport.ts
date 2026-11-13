@@ -8,6 +8,28 @@ type JsonValue =
   | JsonValue[]
   | { [key: string]: JsonValue };
 
+const assertDatabaseSafeText = (value: unknown): void => {
+  if (typeof value === "string") {
+    // PostgreSQL JSONB rejects NUL and lone UTF-16 surrogates. Reject the
+    // response, not just the unit: even a rejected target or finding is stored.
+    if (value.includes("\0") || /[\uD800-\uDFFF]/u.test(value))
+      throw new Error(
+        "Translation response contains unsupported Unicode text.",
+      );
+    return;
+  }
+  if (Array.isArray(value)) {
+    for (const entry of value) assertDatabaseSafeText(entry);
+    return;
+  }
+  if (value && typeof value === "object") {
+    for (const [key, entry] of Object.entries(value)) {
+      assertDatabaseSafeText(key);
+      assertDatabaseSafeText(entry);
+    }
+  }
+};
+
 /** Only envelope identifiers change. Prose, code, contexts and group boundaries do not. */
 const mapIdentifiers = (
   value: JsonValue,
@@ -49,7 +71,14 @@ export const compactTranslationTransport = (request: TranslationGeneration) => {
       return null;
     }
   })();
-  if (!payload) return { request, decode: (value: unknown) => value };
+  if (!payload)
+    return {
+      request,
+      decode: (value: unknown) => {
+        assertDatabaseSafeText(value);
+        return value;
+      },
+    };
 
   const originalIds = new Set<string>();
   const collect = (value: JsonValue): void => {
@@ -87,6 +116,9 @@ export const compactTranslationTransport = (request: TranslationGeneration) => {
       system: `${request.system}\nTransport: return the short id in each requested row. originalId links that row to source-layout slots and context; it is context only and must not appear as an extra output field.`,
     },
     // Unknown IDs remain unknown, so the runner's exact-coverage gate rejects them.
-    decode: (value: unknown) => mapIdentifiers(value as JsonValue, originals),
+    decode: (value: unknown) => {
+      assertDatabaseSafeText(value);
+      return mapIdentifiers(value as JsonValue, originals);
+    },
   };
 };

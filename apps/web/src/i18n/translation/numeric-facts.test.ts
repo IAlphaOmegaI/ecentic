@@ -237,3 +237,29 @@ test("a price-label dash is a separator but a monetary minus stays negative", ()
     findings("`Add to Cart - $139`", "`Add to Cart – $139`", "de").length,
   ).toBeGreaterThan(0);
 });
+
+test("hyphenated duration ranges do not invent a negative upper endpoint", () => {
+  const source = "Run a 30-to-60-day pilot before committing annually.";
+  expect(
+    findings(
+      source,
+      "Avvia un progetto pilota da 30 a 60 giorni prima di sottoscrivere un impegno annuale.",
+      "it",
+    ),
+  ).toEqual([]);
+  expect(
+    findings(
+      source,
+      "Avvia un progetto pilota di 30–60 giorni prima di sottoscrivere un impegno annuale.",
+      "it",
+    ),
+  ).toEqual([]);
+  expect(
+    findings(source, "Avvia un progetto pilota da 30 a 90 giorni.", "it")
+      .length,
+  ).toBeGreaterThan(0);
+  expect(
+    findings("`30-to-60-day`", "`30–60 giorni`", "it").length,
+  ).toBeGreaterThan(0);
+  expect(findings("Balance: -60", "Saldo: 60", "it").length).toBeGreaterThan(0);
+});
