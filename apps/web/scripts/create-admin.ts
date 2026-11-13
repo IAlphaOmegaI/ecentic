@@ -5,7 +5,7 @@ import { db, schema } from "@/server/database";
 const parseArgs = (): { email: string; password: string; name: string } => {
   const args = new Map<string, string>();
   for (const arg of process.argv.slice(2)) {
-    const match = arg.match(/^--([^=]+)=(.*)$/);
+    const match = arg.match(/^--([^=]+)=(.*)$/); 
 
     if (!match) continue;
     const [, key, value] = match;
