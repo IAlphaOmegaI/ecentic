@@ -180,6 +180,10 @@ test.each([
     "How Do You Scale GEO Across a Larger Catalog?",
     "Wie weiten Sie GEO auf einen größeren Katalog aus?",
   ],
+  [
+    "What Actually Matters When You Scale This",
+    "Was bei der Ausweitung wirklich zählt",
+  ],
 ])(
   "ordinary heading %s translates without renaming the Scale plan",
   (heading, target) => {
@@ -210,6 +214,105 @@ test.each([
 );
 
 describe("blog translation preservation", () => {
+  test("joins punctuation-only translations to an inline link without its old word separator", () => {
+    const html =
+      '<p>Use <a href="/features/product-listings?mode=all#example" rel="noopener">product listing optimization</a> \ttools.</p>';
+    const article = createBlogHtmlTranslation(html);
+    const targets = new Map([
+      ["Use", "Usa gli strumenti per"],
+      [
+        "product listing optimization",
+        "l’ottimizzazione delle schede prodotto",
+      ],
+      ["tools.", "."],
+    ]);
+    expect(
+      article.apply(
+        new Map(
+          article.units.map((unit) => [
+            unit.id,
+            targets.get(unit.text) ?? unit.text,
+          ]),
+        ),
+      ),
+    ).toBe(
+      '<p>Usa gli strumenti per <a href="/features/product-listings?mode=all#example" rel="noopener">l’ottimizzazione delle schede prodotto</a>.</p>',
+    );
+    for (const punctuation of [",", "...", "…", "。", "，", "、", "．"]) {
+      const values = new Map(
+        article.units.map((unit) => [
+          unit.id,
+          unit.text === "tools." ? punctuation : unit.text,
+        ]),
+      );
+      expect(article.apply(values)).toContain(`</a>${punctuation}</p>`);
+    }
+  });
+
+  test("punctuation joins preserve explicit target spacing, French spacing and newline layout", () => {
+    const render = (prefix: string, target: string) => {
+      const article = createBlogHtmlTranslation(
+        `<p><a href="/docs">Guide</a>${prefix}word.</p>`,
+      );
+      return article.apply(
+        new Map(
+          article.units.map((unit) => [
+            unit.id,
+            unit.text === "word." ? target : unit.text,
+          ]),
+        ),
+      );
+    };
+    for (const punctuation of [":", ";", "?", "!"]) {
+      expect(render(" ", punctuation)).toBe(
+        `<p><a href="/docs">Guide</a> ${punctuation}</p>`,
+      );
+    }
+    for (const target of [" .", "\u00a0.", "\u202f;", ". ", ".\n"]) {
+      expect(render(" ", target)).toBe(
+        `<p><a href="/docs">Guide</a> ${target}</p>`,
+      );
+    }
+    for (const prefix of ["\n  ", "\r\n\t", "\u00a0", "\u202f"]) {
+      expect(render(prefix, ".")).toBe(
+        `<p><a href="/docs">Guide</a>${prefix}.</p>`,
+      );
+    }
+  });
+
+  test("ordinary translated words retain all source spacing and protected HTML", () => {
+    const html =
+      '<p title="Keep  spacing"> \tRead <a href="https://example.com/a,b?q=word#part" data-copy=" . ">Guide</a> tools. \n</p><pre>  tools. </pre><code> tools.</code>';
+    const article = createBlogHtmlTranslation(html);
+    const values = new Map(
+      article.units.map((unit) => [
+        unit.id,
+        unit.text === "tools." ? "strumenti." : unit.text,
+      ]),
+    );
+    expect(article.apply(values)).toBe(
+      html.replace("</a> tools.", "</a> strumenti."),
+    );
+    expect(article.units.filter((unit) => unit.text === "tools.")).toHaveLength(
+      1,
+    );
+  });
+
+  test("accessible attributes keep their explicit spacing when translated to punctuation", () => {
+    const article = createBlogHtmlTranslation(
+      '<img src="/a,b.png" alt="Description" title="Name">',
+    );
+    const values = new Map(
+      article.units.map((unit) => [
+        unit.id,
+        unit.id.endsWith(".alt") ? " . " : " ; ",
+      ]),
+    );
+    expect(article.apply(values)).toBe(
+      '<img src="/a,b.png" alt=" . " title=" ; ">',
+    );
+  });
+
   test("translates visible and accessible text without serializing protected HTML", () => {
     const html = `<section id='intro' data-item="a>b"><h2>Product guide</h2>\n<p>Compare <strong>your listing</strong> now &amp; later.</p><a href='/docs?x=1&amp;y=2' title="Read &quot;docs&quot;">Read the guide</a><img src="/product.jpg" alt='A product' /><img src=/empty.png alt=""><script type='application/ld+json'>{"name":"Keep English JSON"}</script><pre><code>const title = "Do not translate";</code></pre><!-- keep exact --></section>`;
     const result = createBlogHtmlTranslation(html);

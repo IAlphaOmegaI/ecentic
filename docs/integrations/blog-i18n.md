@@ -52,6 +52,8 @@ A cron batch contains up to 48 text units / approximately 4,500 source character
 
 `src/lib/blog-translation-content.ts` extracts visible text and meaningful `alt`, `title`, `aria-label` and `placeholder` values using parse5 source locations. Returned text is escaped and inserted into its original source positions. It never asks the model to regenerate HTML.
 
+When a translated text slot contains only a period, comma, ellipsis or their CJK equivalents, ordinary source spaces/tabs before that slot are omitted so a moved noun does not leave `</a> .`. Explicit target spacing, French colon/semicolon/question/exclamation spacing, newline layout, nonbreaking source spaces and accessible attributes keep their existing treatment; code, URLs and surrounding markup remain untouched.
+
 Tags, attribute syntax, URLs, IDs, classes, `data-*`, comments, image/link counts, heading order and code remain intact. Script/style/pre/code/SVG/Math/template regions and `translate="no"` regions are protected. Decorative empty alt text stays empty. CMS scripts are preserved in storage and removed by the article presentation renderer, while article/FAQ structured data is rebuilt from localized fields.
 
 Metadata, category/tags, introductions, takeaways, FAQ pairs, and editorial section headings/bodies are explicit units. Editorial Markdown syntax and destinations are protected. Missing output throws; no English fallback repairs incomplete arrays or FAQs. Section numbers, dates, thumbnails and source identity remain unchanged.

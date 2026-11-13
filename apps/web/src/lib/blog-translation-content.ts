@@ -36,6 +36,7 @@ const translatableBlogTerms = (text: string) => {
     case "Running Audits at Scale: What Actually Works":
     case "How to Scale Product Copy With AI Without Breaking Your Catalog":
     case "How Do You Scale GEO Across a Larger Catalog?":
+    case "What Actually Matters When You Scale This":
       return { translatableTerms: ["Scale"] as const };
     case "Compete With Amazon in AI: Simulate Shopify and WooCommerce Feeds":
       return { translatableTerms: ["Compete"] as const };
@@ -92,7 +93,16 @@ export const createBlogHtmlTranslation = (html: string) => {
           : {}),
         start: location.startOffset,
         end: location.endOffset,
-        encode: (value) => prefix + escapeText(value) + suffix,
+        encode: (value) => {
+          // A moved noun can leave only punctuation after an inline link. Its
+          // old word separator must not create “</a> .”. Never trim authored
+          // target spacing, newline layout or French spaced punctuation.
+          const sourcePrefix =
+            /^[ \t]+$/u.test(prefix) && /^[.,。，、．…]+$/u.test(value)
+              ? ""
+              : prefix;
+          return sourcePrefix + escapeText(value) + suffix;
+        },
       });
     }
     if ("attrs" in node) {
