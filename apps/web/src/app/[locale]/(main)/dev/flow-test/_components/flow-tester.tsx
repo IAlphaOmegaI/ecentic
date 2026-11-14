@@ -46,7 +46,7 @@ const ProfileLine = ({
       <span className="font-medium text-primary">Profile resolved</span>
       <span
         className={cn(
-          "rounded-full px-2 py-0.5 font-semibold text-[11px] uppercase tracking-[0.05em]",
+          "rounded-full px-2 py-0.5 font-semibold text-xs uppercase tracking-wider",
           line.transport === "mcp"
             ? "bg-primary/10 text-primary"
             : "bg-warning/10 text-warning",
@@ -255,7 +255,7 @@ export const FlowTester = () => {
       {/* Input panel */}
       <div className="rounded-lg border border-accent-foreground bg-background-rich">
         <div className="border-accent-foreground border-b px-4 py-2.5">
-          <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+          <p className="font-medium text-xs text-foreground-dimmed uppercase tracking-widest">
             Store endpoint
           </p>
           <p className="mt-1 text-foreground-dimmed text-xs">
@@ -302,7 +302,7 @@ export const FlowTester = () => {
           </Button>
         </div>
         <div className="border-accent-foreground border-t px-4 py-3">
-          <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+          <p className="font-medium text-xs text-foreground-dimmed uppercase tracking-widest">
             Agent profile fixture
           </p>
           <p className="mt-1 text-foreground-dimmed text-xs">
@@ -316,7 +316,7 @@ export const FlowTester = () => {
       <div className="rounded-lg border border-accent-foreground bg-background-rich">
         <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-2.5">
           <div className="flex items-center gap-2">
-            <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+            <p className="font-medium text-xs text-foreground-dimmed uppercase tracking-widest">
               Output
             </p>
             {phase === "running" && (
@@ -341,7 +341,7 @@ export const FlowTester = () => {
 
         <div
           ref={logRef}
-          className="m-4 max-h-[520px] min-h-40 overflow-y-auto rounded-md bg-background-dimmed p-4 font-mono text-xs"
+          className="m-4 max-h-130 min-h-40 overflow-y-auto rounded-sm bg-background-dimmed p-4 font-mono text-xs"
         >
           {isEmpty ? (
             <p className="font-light text-foreground-dimmed/50 text-xs">
@@ -424,7 +424,7 @@ const CheckoutResult = ({ lines }: { lines: LogLine[] }) => {
   return (
     <div className="rounded-lg border border-accent-foreground bg-background-rich">
       <div className="border-accent-foreground border-b px-4 py-2.5">
-        <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+        <p className="font-medium text-xs text-foreground-dimmed uppercase tracking-widest">
           Checkout session
         </p>
         <p className="mt-1 text-foreground-dimmed text-xs">
@@ -465,7 +465,7 @@ const CheckoutResult = ({ lines }: { lines: LogLine[] }) => {
             {continueUrl}
           </a>
         )}
-        <pre className="max-h-72 overflow-auto rounded-md bg-background-dimmed p-4 font-mono text-foreground/80 text-xs leading-relaxed">
+        <pre className="max-h-72 overflow-auto rounded-sm bg-background-dimmed p-4 font-mono text-foreground/80 text-xs leading-relaxed">
           {JSON.stringify(raw, null, 2)}
         </pre>
       </div>
@@ -491,14 +491,14 @@ const CartResult = ({ lines }: { lines: LogLine[] }) => {
   return (
     <div className="rounded-lg border border-accent-foreground bg-background-rich">
       <div className="border-accent-foreground border-b px-4 py-2.5">
-        <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+        <p className="font-medium text-xs text-foreground-dimmed uppercase tracking-widest">
           Cart state
         </p>
         <p className="mt-1 text-foreground-dimmed text-xs">
           Last <span className="font-mono">get_cart</span> response
         </p>
       </div>
-      <pre className="m-4 max-h-72 overflow-auto rounded-md bg-background-dimmed p-4 font-mono text-foreground/80 text-xs leading-relaxed">
+      <pre className="m-4 max-h-72 overflow-auto rounded-sm bg-background-dimmed p-4 font-mono text-foreground/80 text-xs leading-relaxed">
         {json}
       </pre>
     </div>

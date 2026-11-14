@@ -1,0 +1,55 @@
+{
+  "dashboard": {
+    "reports": {
+      "unavailable": "暂无已保存的数据"
+    },
+    "googleShopping": {
+      "workspaceTitle": "Google 购物",
+      "workspaceDescription": "管理 Merchant Center 连接、商品信息更新和结账准备情况。",
+      "unsupportedWorkspace": {
+        "status": "此来源暂不支持",
+        "title": "连接受支持的商品目录",
+        "description": "Google 购物投放适用于已连接的 Shopify 商店。此商品目录来源暂时无法通过 ecentic 连接到 Merchant Center。你仍可查看商品和其他渠道设置。",
+        "action": {
+          "primary": "连接 Shopify",
+          "secondary": "查看连接"
+        }
+      }
+    },
+    "ucpPlaygroundDashboard": {
+      "composer": {
+        "remaining": "此沙盒剩余 {remaining, number}/{limit, number} 条免费{limit, plural, other {消息}}。"
+      }
+    },
+    "agentic": {
+      "scan": {
+        "workspaceTitle": "店铺前台扫描",
+        "awaitingFirst": "尚未扫描",
+        "report": "打开报告",
+        "providerNote": "您的域名将发送给 <provider>Is Agentic</provider>，不会共享客户或订单数据。"
+      },
+      "score": {
+        "preview": {
+          "emptyTitle": "从这里开始首次扫描",
+          "publicTitle": "已有公开报告",
+          "payments": {
+            "title": "支付",
+            "description": "对结账和支付协议的支持。"
+          },
+          "discovery": {
+            "title": "可发现性",
+            "description": "帮助智能体找到店铺的信号。"
+          },
+          "accessibility": {
+            "title": "可访问性",
+            "description": "智能体能否访问并读取店铺前台。"
+          },
+          "usability": {
+            "title": "易用性",
+            "description": "供智能体与店铺交互的接口。"
+          }
+        }
+      }
+    }
+  }
+}

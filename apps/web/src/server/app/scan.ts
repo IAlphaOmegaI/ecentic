@@ -24,13 +24,19 @@ export const getForCurrentUser = withAuthentication(async (context) => {
 
 export const getLatest = dedupe(
   withAuthentication(
-    async (context, options: { limit?: number; store?: string } = {}) => {
+    async (
+      context,
+      options: { limit?: number; store?: string; status?: Type["status"] } = {},
+    ) => {
       const limit = options.limit ?? 10;
-      const { store } = options;
+      const { store, status } = options;
 
       if (!store) {
         return find(Environment.SERVER, {
-          where: eq(schema.scan.userId, context.session.user.id),
+          where: and(
+            eq(schema.scan.userId, context.session.user.id),
+            status ? eq(schema.scan.status, status) : undefined,
+          ),
           orderBy: [{ column: schema.scan.createdAt, direction: "desc" }],
           limit,
         });
@@ -55,7 +61,11 @@ export const getLatest = dedupe(
         return { success: true as const, data: [] as Type[] };
 
       const scans = await find(Environment.SERVER, {
-        where: inArray(schema.scan.id, scanIds),
+        where: and(
+          eq(schema.scan.userId, context.session.user.id),
+          inArray(schema.scan.id, scanIds),
+          status ? eq(schema.scan.status, status) : undefined,
+        ),
         orderBy: [{ column: schema.scan.createdAt, direction: "desc" }],
         limit,
       });

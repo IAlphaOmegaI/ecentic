@@ -1,384 +1,273 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import type { ReactNode } from "react";
-import { Crosshair, SectionGutter, Slot } from "../../../_components/grid";
+import {
+  AlertCircleIcon,
+  ArrowRightIcon,
+  LoaderIcon,
+  PlusIcon,
+} from "@zenncore/icons";
+import { Button } from "@zenncore/web/components/button";
+import { useFormatter, useTranslations } from "next-intl";
+import { type ReactNode, useTransition } from "react";
+import { EvolvingAscii } from "@/components/marketing/evolving-ascii";
+import { Link, useRouter } from "@/i18n/navigation";
+import { Crosshair, Slot } from "../../../_components/grid";
 
-/**
- * The page's static frame, rendered by both `page.tsx` and `loading.tsx`.
- *
- * Every region that needs a query is a slot; the heading, the section chrome
- * and the gutters need no data and prerender. `banner` renders nothing until
- * the embed status resolves, so it has no placeholder.
- */
+import { DashboardHeaderFigure } from "../../../_components/header-figure";
+
 export const ProductsShell = ({
-  statusPill,
   action,
   banner,
   stats,
-  performance,
   table,
-  traffic,
-  insights,
 }: {
-  statusPill: ReactNode;
   action: ReactNode;
   banner?: ReactNode;
   stats: ReactNode;
-  performance: ReactNode;
   table: ReactNode;
-  traffic: ReactNode;
-  insights: ReactNode;
 }) => {
-  const translate = useTranslations("dashboard.products");
-
+  const translate = useTranslations("dashboard.products.catalog");
   return (
-    <div className="flex flex-col">
-      <div className="mx-8 border-accent-foreground border-x">
-        <div className="-mx-8 border-accent-foreground border-b">
-          <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <div>
-              <Slot>{statusPill}</Slot>
-              <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
-                {translate("title")}
-              </h1>
-              <p className="mt-1 text-foreground-dimmed text-sm">
-                {translate("description")}
-              </p>
-            </div>
-            <div className="flex items-center gap-2">{action}</div>
+    <div className="flex min-w-0 flex-col">
+      <header className="flex min-w-0 flex-wrap items-center justify-between gap-5 px-4 py-6 sm:px-6">
+        <div className="flex min-w-0 items-center gap-4">
+          <DashboardHeaderFigure subject="products" />
+          <div className="min-w-0">
+            <h1 className="font-heading font-semibold text-3xl text-foreground-rich tracking-tight">
+              {translate("title")}
+            </h1>
+            <p className="mt-1 max-w-xl text-foreground-dimmed text-sm leading-6">
+              {translate("description")}
+            </p>
           </div>
         </div>
-
-        <Slot>{banner}</Slot>
-
-        <div className="-mx-8 border-accent-foreground border-b">
-          <div className="relative mx-8 bg-background-rich">
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <Slot>{stats}</Slot>
-          </div>
-        </div>
-
-        <SectionGutter />
-
-        <div className="-mx-8 border-accent-foreground border-t border-b">
-          <div className="relative mx-8 bg-background-rich">
-            <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <Slot>{performance}</Slot>
-          </div>
-        </div>
-
-        <SectionGutter />
-
-        <div className="-mx-8 border-accent-foreground border-t border-b">
-          <div className="relative mx-8 bg-background-rich">
-            <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <Slot>{table}</Slot>
-          </div>
-        </div>
-
-        <SectionGutter />
-
-        <div className="-mx-8 border-accent-foreground border-t border-b">
-          <div className="relative mx-8 bg-background-rich">
-            <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <Slot>{traffic}</Slot>
-          </div>
-        </div>
-
-        <SectionGutter />
-
-        <div className="-mx-8 border-accent-foreground border-t border-b">
-          <div className="relative mx-8 bg-background-rich">
-            <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <Slot>{insights}</Slot>
-          </div>
-        </div>
+        <Slot>{action}</Slot>
+      </header>
+      <Slot>{banner}</Slot>
+      <div className="relative min-w-0 border-accent-foreground border-y">
+        <Crosshair className="top-0 right-0 -translate-y-1/2" />
+        <Slot>{stats}</Slot>
       </div>
+      <section
+        className="relative min-w-0 border-accent-foreground border-b bg-background-rich"
+        aria-label={translate("tableLabel")}
+      >
+        <Slot>{table}</Slot>
+        <Crosshair className="bottom-0 left-0 translate-y-1/2" />
+      </section>
     </div>
   );
 };
 
-// Sized to the "Add Products" button it stands in for.
+export const CatalogSummary = ({
+  total,
+  compared,
+  incomplete,
+}: {
+  total: number;
+  compared: number;
+  incomplete: number;
+}) => {
+  const translate = useTranslations("dashboard.products.catalog");
+  const formatter = useFormatter();
+  const count = (value: number) => {
+    const exact = formatter.number(value);
+    return (
+      <span title={exact}>
+        <span aria-hidden>
+          {value >= 100_000
+            ? formatter.number(value, {
+                notation: "compact",
+                maximumFractionDigits: 1,
+              })
+            : exact}
+        </span>
+        <span className="sr-only">{exact}</span>
+      </span>
+    );
+  };
+  const metrics = [
+    { key: "compared", value: compared },
+    { key: "incomplete", value: incomplete },
+  ] as const;
+  return (
+    <dl className="grid grid-cols-2 lg:grid-cols-3">
+      <div className="relative col-span-2 flex min-w-0 items-center justify-between gap-3 overflow-hidden bg-primary/5 px-4 py-5 text-foreground-rich sm:px-6 lg:col-span-1">
+        <div className="relative z-1 min-w-0">
+          <dt className="font-medium text-foreground text-sm">
+            {translate("summary.imported")}
+          </dt>
+          <dd
+            className={`mt-2 font-semibold tabular-nums tracking-tight ${total >= 100_000 ? "text-3xl" : "text-4xl"}`}
+          >
+            {count(total)}
+          </dd>
+          <p className="mt-2 text-foreground-dimmed text-xs leading-5">
+            {translate("summary.importedHint")}
+          </p>
+        </div>
+        <div aria-hidden className="size-24 shrink-0 text-primary sm:size-28">
+          <EvolvingAscii artwork="catalogCommerce" />
+        </div>
+      </div>
+      {metrics.map(({ key, value }) => (
+        <div
+          key={key}
+          className="flex min-w-0 flex-col border-accent-foreground border-t px-4 py-5 last:border-l sm:px-6 lg:border-t-0 lg:border-l"
+        >
+          <dt className="min-h-10 font-medium text-foreground text-sm sm:min-h-5">
+            {translate(`summary.${key}`)}
+          </dt>
+          <dd className="mt-2 flex flex-wrap items-baseline gap-x-2 tabular-nums">
+            <span className="font-semibold text-3xl text-foreground-rich tracking-tight">
+              {count(value)}
+            </span>
+            {total > 0 && (
+              <span className="text-foreground-dimmed text-sm">
+                / {count(total)}
+              </span>
+            )}
+          </dd>
+          <div
+            aria-hidden
+            className="mt-4 h-2.5 overflow-hidden rounded-sm bg-accent-foreground"
+          >
+            <div
+              className={`h-full ${key === "compared" ? "bg-primary" : "bg-warning"}`}
+              style={{
+                width: `${total > 0 ? Math.min(100, Math.max(0, (value / total) * 100)) : 0}%`,
+              }}
+            />
+          </div>
+          <p className="mt-2 text-foreground-dimmed text-xs leading-5">
+            {translate(`summary.${key}Hint`)}
+          </p>
+        </div>
+      ))}
+    </dl>
+  );
+};
+
+export const CatalogFeedback = ({
+  kind,
+  store,
+}: {
+  kind: "empty" | "noMatches" | "error";
+  store?: string;
+}) => {
+  const translate = useTranslations("dashboard.products.catalog");
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  return (
+    <div
+      className="flex min-h-72 flex-col items-center justify-center gap-3 px-6 py-10 text-center"
+      role={kind === "error" ? "alert" : undefined}
+      aria-busy={pending}
+    >
+      {kind === "error" ? (
+        <AlertCircleIcon className="size-10 text-error-dimmed" />
+      ) : (
+        <div aria-hidden className="size-20 text-primary">
+          <EvolvingAscii artwork="catalog" />
+        </div>
+      )}
+      <h2 className="font-semibold text-foreground-rich text-xl">
+        {translate(`states.${kind}.title`)}
+      </h2>
+      <p className="max-w-md text-foreground-dimmed text-sm leading-6">
+        {translate(`states.${kind}.description`)}
+      </p>
+      {kind === "error" ? (
+        <Button
+          variant="soft"
+          color="neutral"
+          disabled={pending}
+          onClick={() => startTransition(() => router.refresh())}
+        >
+          {pending && (
+            <LoaderIcon
+              className="size-4 animate-spin motion-reduce:animate-none"
+              aria-hidden
+            />
+          )}
+          {translate("action.retry")}
+        </Button>
+      ) : (
+        store && (
+          <Button
+            color={kind === "empty" ? "primary" : "neutral"}
+            variant={kind === "empty" ? "default" : "soft"}
+            render={
+              <Link
+                href={`/dashboard/${store}/products${kind === "empty" ? "/add" : ""}`}
+              />
+            }
+          >
+            {kind === "empty" ? (
+              <PlusIcon className="size-4" />
+            ) : (
+              <ArrowRightIcon className="size-4" />
+            )}
+            {translate(kind === "empty" ? "action.add" : "action.clear")}
+          </Button>
+        )
+      )}
+    </div>
+  );
+};
+
 export const AddActionSkeleton = () => (
-  <div className="h-9 w-36 animate-pulse bg-foreground/10" />
+  <div className="h-9 w-36 animate-pulse rounded-lg bg-foreground/10 motion-reduce:animate-none" />
 );
-
-// Suspense fallbacks for the products page, shared with loading.tsx so the
-// route-level skeleton and the streamed page render the exact same shapes.
-
 export const StatsSkeleton = () => (
-  <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
-    {(["a", "b", "c", "d"] as const).map((key) => (
+  <div aria-hidden className="grid grid-cols-2 lg:grid-cols-3">
+    <div className="col-span-2 flex min-w-0 items-center justify-between gap-3 bg-primary/5 px-4 py-5 sm:px-6 lg:col-span-1">
+      <div className="min-w-0">
+        <div className="h-5 w-24 max-w-full animate-pulse rounded-sm bg-foreground/10 motion-reduce:animate-none" />
+        <div className="mt-2 h-10 w-16 animate-pulse rounded-sm bg-foreground/10 motion-reduce:animate-none" />
+        <div className="mt-2 h-5 w-28 max-w-full animate-pulse rounded-sm bg-foreground/10 motion-reduce:animate-none" />
+      </div>
+      <div className="size-24 shrink-0 animate-pulse rounded-sm bg-primary/10 motion-reduce:animate-none sm:size-28" />
+    </div>
+    {["compared", "incomplete"].map((key) => (
       <div
         key={key}
-        className="relative flex h-44 flex-col justify-between bg-background-rich p-5"
+        className="min-w-0 border-accent-foreground border-t px-4 py-5 last:border-l sm:px-6 lg:border-t-0 lg:border-l"
       >
-        <div className="flex items-center justify-between">
-          <div className="h-3 w-28 animate-pulse bg-foreground/10" />
-          <div className="absolute top-5 right-5 size-7.5 animate-pulse bg-foreground/10" />
-        </div>
-        <div>
-          <div className="h-10 w-24 animate-pulse bg-foreground/10" />
-          <div className="mt-3 h-4 w-32 animate-pulse bg-foreground/10" />
-        </div>
+        <div className="h-10 w-20 max-w-full animate-pulse rounded-sm bg-foreground/10 motion-reduce:animate-none sm:h-5" />
+        <div className="mt-2 h-9 w-24 max-w-full animate-pulse rounded-sm bg-foreground/10 motion-reduce:animate-none" />
+        <div className="mt-4 h-2.5 w-full animate-pulse rounded-sm bg-foreground/10 motion-reduce:animate-none" />
+        <div className="mt-2 h-10 w-full animate-pulse rounded-sm bg-foreground/10 motion-reduce:animate-none sm:h-5" />
       </div>
     ))}
   </div>
 );
-
-export const ChartSkeleton = () => (
-  <div className="grid grid-cols-1 gap-px bg-accent-foreground xl:grid-cols-3">
-    <div className="bg-background-rich xl:col-span-2">
-      <div className="p-4">
-        <div className="h-3 w-32 animate-pulse bg-foreground/10" />
-        <div className="mt-2 h-8 w-44 animate-pulse bg-foreground/10" />
-      </div>
-      <div className="grid grid-cols-4 divide-x divide-accent-foreground border-accent-foreground border-y px-4">
-        {(["a", "b", "c", "d"] as const).map((key) => (
-          <div
-            key={key}
-            className="flex flex-col items-center gap-1 p-6 first:pl-0 last:pr-0"
-          >
-            <div className="flex w-full flex-row items-center justify-between">
-              <div className="flex items-center gap-2">
-                <div className="size-8 animate-pulse bg-foreground/10" />
-                <div className="h-3 w-14 animate-pulse bg-foreground/10" />
-              </div>
-              <div className="flex items-baseline gap-0.5">
-                <div className="h-9 w-10 animate-pulse bg-foreground/10" />
-                <div className="h-4 w-3 animate-pulse bg-foreground/10" />
-              </div>
-            </div>
-            <div className="mt-2 h-1 w-full animate-pulse rounded-full bg-foreground/10" />
-          </div>
-        ))}
-      </div>
-      <div className="p-4">
-        <div className="mb-4 h-3 w-28 animate-pulse bg-foreground/10" />
-        <div className="h-64 w-full animate-pulse bg-foreground/10" />
-      </div>
-    </div>
-    <div className="flex flex-col gap-px bg-accent-foreground">
-      <div className="flex-1 bg-background-rich p-4">
-        <div className="h-6 w-40 animate-pulse bg-foreground/10" />
-        <div className="mt-6 h-1 w-full animate-pulse rounded-full bg-foreground/10" />
-        <div className="mt-4 grid grid-cols-3 gap-4">
-          {(["x", "y", "z"] as const).map((key) => (
-            <div key={key} className="space-y-2">
-              <div className="h-3 w-16 animate-pulse bg-foreground/10" />
-              <div className="h-4 w-8 animate-pulse bg-foreground/10" />
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="flex-1 bg-background-rich p-4">
-        <div className="h-6 w-40 animate-pulse bg-foreground/10" />
-        <div className="mt-6 h-1 w-full animate-pulse rounded-full bg-foreground/10" />
-        <div className="mt-4 grid grid-cols-3 gap-4">
-          {(["x", "y", "z"] as const).map((key) => (
-            <div key={key} className="space-y-2">
-              <div className="h-3 w-16 animate-pulse bg-foreground/10" />
-              <div className="h-8 w-10 animate-pulse bg-foreground/10" />
-            </div>
-          ))}
-        </div>
-      </div>
-      <div className="flex items-center justify-between bg-background-rich p-4">
-        <div className="h-9 w-28 animate-pulse bg-foreground/10" />
-        <div className="h-9 w-36 animate-pulse bg-foreground/10" />
-      </div>
-    </div>
-  </div>
-);
-
-// Mirrors the filter toolbar above the products table: a growing search
-// field and the "Add filter" trigger pinned to the right.
-export const FiltersSkeleton = () => (
-  <div className="flex items-center gap-2 border-accent-foreground border-b p-4">
-    <div className="h-10 w-0 min-w-0 flex-1 animate-pulse bg-foreground/10" />
-    <div className="h-10 w-28 shrink-0 animate-pulse bg-foreground/10" />
-  </div>
-);
-
 export const TableSkeleton = () => (
-  <div>
-    <div className="flex items-end justify-between border-accent-foreground border-b p-4">
-      <div className="space-y-2">
-        <div className="h-3 w-28 animate-pulse bg-foreground/10" />
-        <div className="h-7 w-40 animate-pulse bg-foreground/10" />
+  <div aria-hidden>
+    <div className="flex flex-wrap items-center gap-2 border-accent-foreground border-b px-4 py-4 sm:px-6">
+      <div className="h-10 min-w-48 flex-1 animate-pulse rounded-lg bg-foreground/10 motion-reduce:animate-none" />
+      <div className="h-10 w-24 animate-pulse rounded-lg bg-foreground/10 motion-reduce:animate-none" />
+      <div className="h-10 w-24 animate-pulse rounded-lg bg-foreground/10 motion-reduce:animate-none" />
+      <div className="w-full">
+        <div className="h-4 w-52 max-w-full animate-pulse rounded-sm bg-foreground/10 motion-reduce:animate-none" />
       </div>
-      <div className="h-4 w-24 animate-pulse bg-foreground/10" />
     </div>
-    <div className="overflow-x-auto bg-background-rich">
-      <table className="w-full">
-        <thead>
-          <tr className="border-accent-foreground border-b">
-            {[
-              "Product",
-              "Price",
-              "Win Rate",
-              "ChatGPT",
-              "Claude",
-              "Gemini",
-              "Quality",
-              "Last Scan",
-              "",
-            ].map((header) => (
-              <th key={header} className="px-4 py-3 text-left">
-                {header && (
-                  <div className="h-3 w-16 animate-pulse bg-foreground/10" />
-                )}
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {(["a", "b", "c", "d", "e"] as const).map((key) => (
-            <tr
-              key={key}
-              className="border-accent-foreground border-b last:border-b-0"
-            >
-              <td className="px-4 py-4">
-                <div className="flex items-center gap-3">
-                  <div className="size-9 shrink-0 animate-pulse bg-foreground/10" />
-                  <div className="space-y-1.5">
-                    <div className="h-4 w-32 animate-pulse bg-foreground/10" />
-                    <div className="h-3 w-16 animate-pulse bg-foreground/10" />
-                  </div>
-                </div>
-              </td>
-              <td className="px-4 py-4">
-                <div className="h-4 w-14 animate-pulse bg-foreground/10" />
-              </td>
-              <td className="px-4 py-4">
-                <div className="flex items-center gap-2">
-                  <div className="h-1 w-12 animate-pulse rounded-full bg-foreground/10" />
-                  <div className="h-4 w-8 animate-pulse bg-foreground/10" />
-                </div>
-              </td>
-              <td className="px-4 py-4">
-                <div className="h-4 w-8 animate-pulse bg-foreground/10" />
-              </td>
-              <td className="px-4 py-4">
-                <div className="h-4 w-8 animate-pulse bg-foreground/10" />
-              </td>
-              <td className="px-4 py-4">
-                <div className="h-4 w-8 animate-pulse bg-foreground/10" />
-              </td>
-              <td className="px-4 py-4">
-                <div className="flex items-center gap-2">
-                  <div className="h-1 w-10 animate-pulse rounded-full bg-foreground/10" />
-                  <div className="h-4 w-6 animate-pulse bg-foreground/10" />
-                </div>
-              </td>
-              <td className="px-4 py-4">
-                <div className="h-3 w-14 animate-pulse bg-foreground/10" />
-              </td>
-              <td className="px-4 py-4">
-                <div className="h-4 w-10 animate-pulse bg-foreground/10" />
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  </div>
-);
-
-export const TrafficSkeleton = () => (
-  <div className="bg-background-rich">
-    <div className="flex flex-col gap-6 p-4 sm:flex-row sm:items-end sm:justify-between">
-      <div>
-        <div className="h-3 w-24 animate-pulse bg-foreground/10" />
-        <div className="mt-2 h-8 w-64 animate-pulse bg-foreground/10" />
-        <div className="mt-1 h-4 w-72 animate-pulse bg-foreground/10" />
-      </div>
-      <div className="h-10 w-28 animate-pulse bg-foreground/10" />
-    </div>
-    <div className="flex items-center gap-6 px-4">
-      {(["a", "b", "c", "d"] as const).map((key) => (
-        <div key={key} className="flex items-center gap-2">
-          <div className="size-4 animate-pulse bg-foreground/10" />
-          <div className="h-3 w-14 animate-pulse bg-foreground/10" />
+    <div className="h-14 border-accent-foreground border-b bg-background-dimmed/50" />
+    {["a", "b", "c", "d", "e"].map((key) => (
+      <div
+        key={key}
+        className="flex items-center gap-4 border-accent-foreground border-b px-4 py-3 sm:px-6"
+      >
+        <div className="size-5 animate-pulse rounded-sm bg-foreground/10 motion-reduce:animate-none" />
+        <div className="size-11 shrink-0 animate-pulse rounded-lg bg-foreground/10 motion-reduce:animate-none" />
+        <div className="min-w-0 flex-1">
+          <div className="h-4 w-52 max-w-full animate-pulse rounded-sm bg-foreground/10 motion-reduce:animate-none" />
+          <div className="mt-2 h-3 w-24 animate-pulse rounded-sm bg-foreground/10 motion-reduce:animate-none" />
         </div>
-      ))}
-    </div>
-    <div className="px-4 pt-4 pb-6">
-      <div className="h-64 w-full animate-pulse bg-foreground/10" />
-    </div>
-    <div className="flex flex-col gap-3 px-4 pb-4">
-      {(["d", "e", "f"] as const).map((key) => (
-        <div key={key}>
-          <div className="mb-1 flex items-center justify-between">
-            <div className="h-4 w-28 animate-pulse bg-foreground/10" />
-            <div className="h-4 w-8 animate-pulse bg-foreground/10" />
-          </div>
-          <div className="h-1 w-full animate-pulse rounded-full bg-foreground/10" />
-        </div>
-      ))}
-    </div>
-  </div>
-);
-
-export const InsightsSkeleton = () => (
-  <div className="bg-background-rich">
-    <div className="flex items-start justify-between border-accent-foreground border-b p-4">
-      <div className="space-y-2">
-        <div className="h-3 w-24 animate-pulse bg-foreground/10" />
-        <div className="h-7 w-32 animate-pulse bg-foreground/10" />
+        <div className="hidden h-4 w-20 animate-pulse rounded-sm bg-foreground/10 motion-reduce:animate-none sm:block" />
+        <div className="h-4 w-16 animate-pulse rounded-sm bg-foreground/10 motion-reduce:animate-none" />
       </div>
-      <div className="space-y-1.5">
-        <div className="h-4 w-24 animate-pulse bg-foreground/10" />
-        <div className="h-3 w-28 animate-pulse bg-foreground/10" />
-      </div>
-    </div>
-    <div className="p-6">
-      <div className="h-5 w-3/4 animate-pulse bg-foreground/10" />
-    </div>
-    <div className="grid grid-cols-1 gap-px border-accent-foreground border-y bg-accent-foreground sm:grid-cols-[1fr_auto]">
-      <div className="bg-background-rich p-6">
-        <div className="size-7.5 animate-pulse bg-foreground/10" />
-        <div className="mt-4 h-3 w-16 animate-pulse bg-foreground/10" />
-        <div className="mt-2 h-4 w-full animate-pulse bg-foreground/10" />
-      </div>
-      <div className="flex flex-col items-center justify-center bg-background-rich p-6 sm:min-w-44">
-        <div className="h-10 w-20 animate-pulse bg-foreground/10" />
-        <div className="mt-2 h-4 w-16 animate-pulse bg-foreground/10" />
-      </div>
-    </div>
-    <div className="flex flex-col gap-4 p-4">
-      <div className="h-3 w-32 animate-pulse bg-foreground/10" />
-      <div className="flex flex-wrap gap-2">
-        {(["a", "b", "c", "d"] as const).map((key) => (
-          <div
-            key={key}
-            className="h-5 w-20 animate-pulse rounded bg-foreground/10"
-          />
-        ))}
-      </div>
-    </div>
-    <div className="flex items-center justify-between border-accent-foreground border-t p-4">
-      <div className="space-y-2">
-        <div className="h-3 w-16 animate-pulse bg-foreground/10" />
-        <div className="h-7 w-28 animate-pulse bg-foreground/10" />
-      </div>
-      <div className="h-9 w-24 animate-pulse bg-foreground/10" />
-    </div>
+    ))}
+    <div className="h-16" />
   </div>
 );

@@ -119,7 +119,7 @@ export const Board = () => {
 
   return (
     <main className="flex h-full flex-col gap-[4vh] p-[clamp(1.5rem,4vw,5rem)]">
-      <h1 className="text-balance font-semibold text-[length:clamp(2.5rem,min(5.4vw,9.6vh),7rem)] text-foreground-rich leading-[1.05] tracking-tight">
+      <h1 className="text-balance font-semibold text-[length:clamp(2.5rem,min(5.4vw,9.6vh),7rem)] text-foreground-rich leading-none tracking-tight">
         {translate.rich("board.headline", {
           stores: data?.stores ?? 0,
           products: data?.products ?? 0,

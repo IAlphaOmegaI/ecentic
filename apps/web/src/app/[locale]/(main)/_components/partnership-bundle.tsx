@@ -34,7 +34,7 @@ export const PartnershipBundle = async ({
     <section
       id="partnership"
       aria-label={translate("partnershipBundle.ariaLabel")}
-      className="relative scroll-mt-[5.5rem] bg-background-rich"
+      className="relative scroll-mt-22 bg-background-rich"
     >
       <header className="grid items-start gap-8 px-7 py-10 max-sm:px-4 max-sm:py-8 lg:grid-cols-2">
         <div className="flex items-start gap-4">

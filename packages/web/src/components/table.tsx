@@ -98,7 +98,7 @@ export const TableHead = ({
     render,
     props: mergeProps<"th">(props, {
       className: cn(
-        "whitespace-nowrap px-4 py-3 text-left font-semibold text-[11px] text-foreground-dimmed uppercase tracking-[0.06em] [&:has([role=checkbox])]:pr-0",
+        "whitespace-nowrap px-4 py-3 text-left font-medium text-foreground-dimmed text-sm [&:has([role=checkbox])]:pr-0",
         className,
       ),
     }),

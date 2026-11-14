@@ -51,7 +51,7 @@ export const SubscriptionBadge = async ({
       case isPayg:
         return "border-primary/40 bg-primary/10 text-primary";
       case isPremium:
-        return "animate-gold-shine border-[hsl(42_78%_45%)] capitalize";
+        return "animate-gold-shine border-warning capitalize";
       case hasActivePlan && needsAttention:
         return "border-warning/40 bg-warning/10 text-warning capitalize";
       case hasActivePlan:
@@ -63,7 +63,7 @@ export const SubscriptionBadge = async ({
 
   return (
     <span
-      className={`cursor-default rounded-md border px-3 py-1 font-semibold text-sm ${variantClassName}`}
+      className={`cursor-default rounded-sm border px-3 py-1 font-semibold text-sm ${variantClassName}`}
     >
       {label}
     </span>

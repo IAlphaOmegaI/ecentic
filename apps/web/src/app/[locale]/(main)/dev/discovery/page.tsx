@@ -48,7 +48,7 @@ const AccessCode = async () => {
 const AccessCodeSkeleton = () => (
   <>
     <div className="h-11 animate-pulse rounded-lg border border-accent-foreground bg-background-dimmed" />
-    <div className="h-4 w-64 animate-pulse rounded bg-background-dimmed" />
+    <div className="h-4 w-64 animate-pulse rounded-sm bg-background-dimmed" />
   </>
 );
 
@@ -64,7 +64,7 @@ export default () => (
             <StatusPill tone="neutral">
               AI Visibility — Store discovery
             </StatusPill>
-            <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
+            <h1 className="mt-3 font-bold text-3xl text-foreground-rich tracking-tight">
               AI Discovery
             </h1>
             <p className="mt-1 text-foreground-dimmed text-sm">

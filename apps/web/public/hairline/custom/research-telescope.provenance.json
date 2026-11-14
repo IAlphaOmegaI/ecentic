@@ -1,0 +1,32 @@
+{
+  "name": "research-telescope",
+  "subject": "research",
+  "meaning": "A focusing telescope on a tripod: extend the eyepiece to examine the evidence.",
+  "part": "eyepiece",
+  "answer": [
+    9,
+    36,
+    69
+  ],
+  "bounds": [
+    [
+      -30,
+      -5,
+      0
+    ],
+    [
+      113,
+      77,
+      127
+    ]
+  ],
+  "scale": 1.8,
+  "figure": "/hairline/custom/research-telescope.js",
+  "rest": "apps/web/src/components/hairline/rest/research-telescope.json",
+  "sourceSha256": "05538bda01e8b61ce91d9fc480ed05736979e8a74eeedd709f98f4e1999550d9",
+  "restSha256": "ef4f3caaf6cd862b436e363b4c5431963cc4de8c5810f8a237a4fdc5c771e9b0",
+  "engine": "Unmodified fixed Hairline kernel",
+  "interaction": "Fixed rest hit area; 700ms EASE_LIFT tween; bounded reach; linked responses delayed 40ms; loop sleeps after settlement.",
+  "reducedMotion": "SSR rest geometry remains complete. Shared CustomHairlineFigure disables pointer code and asset enhancement for reduced motion.",
+  "validation": "output/dashboard-hairline-2026-11-14/research-telescope.validation.txt"
+}

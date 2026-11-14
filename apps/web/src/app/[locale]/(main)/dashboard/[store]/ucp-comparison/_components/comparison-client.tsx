@@ -5,6 +5,11 @@ import { PlusIcon, XCircleIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
+import {
+  Collapsible,
+  CollapsiblePanel,
+  CollapsibleTrigger,
+} from "@zenncore/web/components/collapsible";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { useLocale, useTranslations } from "next-intl";
 import {
@@ -114,7 +119,7 @@ const ParamChips = ({ params }: { params: unknown }) => {
           key={key}
           className="inline-flex items-center gap-1.5 border border-accent-foreground bg-background px-2.5 py-1 text-xs"
         >
-          <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.06em]">
+          <span className="font-medium text-foreground-dimmed text-sm">
             {key}
           </span>
           <span className="font-medium text-foreground tabular-nums">
@@ -211,7 +216,7 @@ const StoreCard = ({ store }: { store: StoreState }) => {
         {!store.error &&
           store.products.length === 0 &&
           store.status === "done" && (
-            <p className="px-4 py-4 font-light text-foreground-dimmed text-sm">
+            <p className="px-4 py-4 font-normal text-foreground-dimmed text-sm">
               {translate("results.noProducts")}
             </p>
           )}
@@ -223,13 +228,13 @@ const StoreCard = ({ store }: { store: StoreState }) => {
                 key={product.id}
                 className="flex items-baseline gap-3 px-4 py-2.5"
               >
-                <span className="w-5 shrink-0 font-mono text-[11px] text-foreground-dimmed tabular-nums">
+                <span className="w-5 shrink-0 text-foreground-dimmed text-xs tabular-nums">
                   {String(index + 1).padStart(2, "0")}
                 </span>
                 <p className="min-w-0 flex-1 truncate font-medium text-foreground text-sm">
                   {product.title}
                 </p>
-                <span className="shrink-0 font-mono text-foreground-dimmed text-xs tabular-nums">
+                <span className="shrink-0 text-foreground-dimmed text-xs tabular-nums">
                   {productPrice(product, locale)}
                 </span>
               </li>
@@ -238,9 +243,9 @@ const StoreCard = ({ store }: { store: StoreState }) => {
         )}
 
         {store.products.length > 8 && (
-          <p className="border-accent-foreground border-t px-4 py-2 text-[11px] text-foreground-dimmed">
+          <p className="border-accent-foreground border-t px-4 py-2 text-foreground-dimmed text-xs">
             {translate("results.moreHidden", {
-              count: store.products.length - 8,
+              count: String(store.products.length - 8),
             })}
           </p>
         )}
@@ -267,9 +272,13 @@ const createCompetitorInput = (url = ""): CompetitorInput => ({
   url,
 });
 
-export const ComparisonClient = () => {
+export const ComparisonClient = ({
+  initialSourceStore = "",
+}: {
+  initialSourceStore?: string;
+}) => {
   const translate = useTranslations("dashboard.ucpComparison");
-  const [sourceStoreUrl, setSourceStoreUrl] = useState("");
+  const [sourceStoreUrl, setSourceStoreUrl] = useState(initialSourceStore);
   const [competitorInputs, setCompetitorInputs] = useState<CompetitorInput[]>([
     createCompetitorInput(),
   ]);
@@ -277,6 +286,7 @@ export const ComparisonClient = () => {
   const [lines, setLines] = useState<ComparisonLine[]>([]);
   const [stores, setStores] = useState<StoreState[]>([]);
   const [searchParams, setSearchParams] = useState<unknown>(null);
+  const [logOpen, setLogOpen] = useState(false);
   const [phase, setPhase] = useState<"idle" | "running" | "done" | "error">(
     "idle",
   );
@@ -325,6 +335,7 @@ export const ComparisonClient = () => {
     setLines([]);
     setSearchParams(null);
     setPhase("running");
+    setLogOpen(true);
     setStores([
       {
         url: source,
@@ -463,11 +474,11 @@ export const ComparisonClient = () => {
     <div className="flex flex-col">
       {/* Setup — inputs left, competitor list right, like the validator header */}
       <div className="grid lg:grid-cols-2">
-        <div className="flex flex-col gap-6 px-6 py-6 sm:px-8 sm:py-8">
+        <div className="flex flex-col gap-6 px-4 py-6 sm:px-6">
           <div>
             <label
               htmlFor="comparison-source"
-              className="block font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
+              className="block font-medium text-foreground-dimmed text-sm"
             >
               {translate("sourceStore.label")}
             </label>
@@ -482,7 +493,7 @@ export const ComparisonClient = () => {
                 className="font-mono"
               />
             </TextField>
-            <p className="mt-2 font-light text-foreground-dimmed text-sm">
+            <p className="mt-2 font-normal text-foreground-dimmed text-sm">
               {translate("sourceStore.description")}
             </p>
           </div>
@@ -490,7 +501,7 @@ export const ComparisonClient = () => {
           <div>
             <label
               htmlFor="comparison-query"
-              className="block font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
+              className="block font-medium text-foreground-dimmed text-sm"
             >
               {translate("buyerRequest.label")}
             </label>
@@ -500,18 +511,18 @@ export const ComparisonClient = () => {
                 placeholder={translate("buyerRequest.placeholder")}
               />
             </TextField>
-            <p className="mt-2 font-light text-foreground-dimmed text-sm">
+            <p className="mt-2 font-normal text-foreground-dimmed text-sm">
               {translate("buyerRequest.description")}
             </p>
           </div>
         </div>
 
-        <div className="border-accent-foreground border-t px-6 py-6 sm:px-8 sm:py-8 lg:border-t-0 lg:border-l">
+        <div className="border-accent-foreground border-t px-4 py-6 sm:px-6 lg:border-t-0 lg:border-l">
           <div className="flex items-center justify-between">
-            <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+            <span className="font-medium text-foreground-dimmed text-sm">
               {translate("competitors.label")}
             </span>
-            <span className="font-mono text-[11px] text-foreground-dimmed tabular-nums">
+            <span className="text-foreground-dimmed text-xs tabular-nums">
               {validCompetitorCount}/5
             </span>
           </div>
@@ -528,20 +539,20 @@ export const ComparisonClient = () => {
                 >
                   <TextFieldInput
                     placeholder={translate("competitors.placeholder", {
-                      index: index + 1,
+                      index: String(index + 1),
                     })}
                     className="font-mono"
                   />
                 </TextField>
                 <Button
-                  variant="outline"
-                  color="accent"
+                  variant="soft"
+                  color="neutral"
                   size="icon"
                   onClick={() => removeCompetitor(input.id)}
                   disabled={competitorInputs.length <= 1 || isRunning}
                   className="size-10 shrink-0"
                   aria-label={translate("competitors.removeAriaLabel", {
-                    index: index + 1,
+                    index: String(index + 1),
                   })}
                 >
                   <XCircleIcon className="size-4" />
@@ -551,27 +562,27 @@ export const ComparisonClient = () => {
           </div>
 
           <Button
-            variant="outline"
-            color="accent"
+            variant="soft"
+            color="neutral"
             onClick={addCompetitor}
             disabled={isRunning || competitorInputs.length >= 5}
-            className="mt-2 w-full"
+            className="mt-4"
           >
             <PlusIcon className="size-4" />
             {translate("competitors.add")}
           </Button>
-          <p className="mt-2 font-light text-foreground-dimmed text-sm">
+          <p className="mt-2 font-normal text-foreground-dimmed text-sm">
             {translate("competitors.description")}
           </p>
         </div>
       </div>
 
       {/* Action bar */}
-      <div className="flex flex-col gap-3 border-accent-foreground border-t px-6 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-8">
-        <p className="font-light text-foreground-dimmed text-sm">
+      <div className="flex flex-col gap-3 border-accent-foreground border-t px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+        <p className="font-normal text-foreground-dimmed text-sm">
           {canCompare
             ? translate("hint.ready", {
-                count: validCompetitorCount + 1,
+                count: String(validCompetitorCount + 1),
               })
             : translate("hint.notReady")}
         </p>
@@ -594,29 +605,26 @@ export const ComparisonClient = () => {
 
       {searchParams !== null && (
         <div className="border-accent-foreground border-t">
-          <div className="border-accent-foreground border-b bg-background-dimmed px-6 py-3 sm:px-8">
-            <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+          <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3 sm:px-6">
+            <p className="font-medium text-foreground-dimmed text-sm">
               {translate("searchParams.title")}
             </p>
-            <p className="mt-1 font-light text-foreground-dimmed text-xs">
+            <p className="mt-1 font-normal text-foreground-dimmed text-xs">
               {translate("searchParams.description")}
             </p>
           </div>
-          <div className="space-y-3 px-6 py-4 sm:px-8">
+          <div className="space-y-3 px-4 py-4 sm:px-6">
             <ParamChips params={searchParams} />
-            <details className="group">
-              <summary className="w-fit cursor-pointer list-none font-medium text-foreground-dimmed text-xs hover:text-foreground [&::-webkit-details-marker]:hidden">
-                <span className="group-open:hidden">
-                  {translate("searchParams.showRaw")}
-                </span>
-                <span className="hidden group-open:inline">
-                  {translate("searchParams.hideRaw")}
-                </span>
-              </summary>
-              <pre className="mt-2 overflow-auto border border-accent-foreground bg-background-dimmed p-4 font-mono text-foreground text-xs leading-relaxed">
-                {JSON.stringify(searchParams, null, 2)}
-              </pre>
-            </details>
+            <Collapsible className="group w-full min-w-0">
+              <CollapsibleTrigger className="w-fit font-medium text-foreground-dimmed text-xs hover:text-foreground">
+                {translate("searchParams.showRaw")}
+              </CollapsibleTrigger>
+              <CollapsiblePanel className="bg-transparent duration-200 motion-reduce:transition-none">
+                <pre className="mt-2 overflow-auto border border-accent-foreground bg-background-dimmed p-4 font-mono text-foreground text-xs leading-relaxed">
+                  {JSON.stringify(searchParams, null, 2)}
+                </pre>
+              </CollapsiblePanel>
+            </Collapsible>
           </div>
         </div>
       )}
@@ -624,11 +632,11 @@ export const ComparisonClient = () => {
       {/* Side-by-side results — one gap-px grid, your store first */}
       {stores.length > 0 && (
         <div className="border-accent-foreground border-t">
-          <div className="border-accent-foreground border-b bg-background-dimmed px-6 py-3 sm:px-8">
-            <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+          <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3 sm:px-6">
+            <p className="font-medium text-foreground-dimmed text-sm">
               {translate("results.title")}
             </p>
-            <p className="mt-1 font-light text-foreground-dimmed text-xs">
+            <p className="mt-1 font-normal text-foreground-dimmed text-xs">
               {translate("results.description")}
             </p>
           </div>
@@ -645,8 +653,8 @@ export const ComparisonClient = () => {
 
       {(summaryText || phase === "running") && (
         <div className="border-accent-foreground border-t">
-          <div className="flex flex-wrap items-center gap-3 border-accent-foreground border-b bg-background-dimmed px-6 py-3 sm:px-8">
-            <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+          <div className="flex flex-wrap items-center gap-3 border-accent-foreground border-b bg-background-dimmed px-4 py-3 sm:px-6">
+            <p className="font-medium text-foreground-dimmed text-sm">
               {translate("summary.title")}
             </p>
             {phase === "running" && !summaryText && (
@@ -655,7 +663,7 @@ export const ComparisonClient = () => {
               </StatusPill>
             )}
           </div>
-          <div className="max-w-3xl whitespace-pre-wrap px-6 py-5 text-foreground text-sm leading-relaxed sm:px-8">
+          <div className="max-w-3xl whitespace-pre-wrap px-6 py-5 text-foreground text-sm leading-relaxed sm:px-6">
             {summaryText || (
               <span className="inline-block h-3 w-1.5 animate-pulse bg-primary/60" />
             )}
@@ -667,36 +675,41 @@ export const ComparisonClient = () => {
           stays hidden until a run starts, collapses by default, and only
           auto-opens while a run streams. */}
       {(lines.length > 0 || phase !== "idle") && (
-        <details
-          open={phase === "running"}
+        <Collapsible
+          open={logOpen}
+          onOpenChange={setLogOpen}
           className="group border-accent-foreground border-t"
         >
-          <summary className="flex cursor-pointer list-none items-center justify-between bg-background-dimmed px-6 py-3 sm:px-8 [&::-webkit-details-marker]:hidden">
-            <div className="flex items-center gap-3">
-              <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-                {translate("eventLog.title")}
-              </p>
-              {phase === "running" && (
-                <StatusPill tone="primary">
-                  {translate("eventLog.live")}
-                </StatusPill>
-              )}
-              {phase === "done" && (
-                <StatusPill tone="success">
-                  {translate("eventLog.done")}
-                </StatusPill>
-              )}
-              {phase === "error" && (
-                <StatusPill tone="error">
-                  {translate("eventLog.error")}
-                </StatusPill>
-              )}
-              <span className="text-foreground-dimmed text-xs tabular-nums">
-                {translate("eventLog.events", { count: lines.length })}
-              </span>
-            </div>
+          <div className="flex items-center justify-between border-accent-foreground border-b bg-background px-4 py-3 sm:px-6">
+            <CollapsibleTrigger className="flex flex-1 items-center text-left">
+              <div className="flex items-center gap-3">
+                <p className="font-medium text-foreground-dimmed text-sm">
+                  {translate("eventLog.title")}
+                </p>
+                {phase === "running" && (
+                  <StatusPill tone="primary">
+                    {translate("eventLog.live")}
+                  </StatusPill>
+                )}
+                {phase === "done" && (
+                  <StatusPill tone="success">
+                    {translate("eventLog.done")}
+                  </StatusPill>
+                )}
+                {phase === "error" && (
+                  <StatusPill tone="error">
+                    {translate("eventLog.error")}
+                  </StatusPill>
+                )}
+                <span className="text-foreground-dimmed text-xs tabular-nums">
+                  {translate("eventLog.events", { count: lines.length })}
+                </span>
+              </div>
+            </CollapsibleTrigger>
             {lines.length > 0 && (
-              <button
+              <Button
+                variant="soft"
+                color="neutral"
                 type="button"
                 onClick={(event) => {
                   event.preventDefault();
@@ -709,97 +722,98 @@ export const ComparisonClient = () => {
                 className="font-medium text-foreground-dimmed text-xs hover:text-foreground"
               >
                 {translate("eventLog.clear")}
-              </button>
+              </Button>
             )}
-          </summary>
+          </div>
+          <CollapsiblePanel className="bg-transparent duration-200 motion-reduce:transition-none">
+            <div
+              ref={logRef}
+              className="max-h-80 min-h-40 overflow-y-auto px-6 py-4 font-mono text-xs sm:px-6"
+            >
+              <div className="space-y-1.5 text-xs">
+                {lines.map((line) => {
+                  const lineKey = (() => {
+                    switch (line.kind) {
+                      case "search_params":
+                        return "search-params";
+                      case "store_profile":
+                        return `profile-${line.storeUrl}`;
+                      case "store_searching":
+                        return `searching-${line.storeUrl}`;
+                      case "store_result":
+                        return `result-${line.storeUrl}`;
+                      case "store_error":
+                        return `error-${line.storeUrl}`;
+                      case "error":
+                        return `fatal-${line.message}`;
+                      case "done":
+                        return "done";
+                      default:
+                        return null;
+                    }
+                  })();
 
-          <div
-            ref={logRef}
-            className="max-h-80 min-h-40 overflow-y-auto border-accent-foreground border-t px-6 py-4 font-mono text-xs sm:px-8"
-          >
-            <div className="space-y-1.5 text-xs">
-              {lines.map((line) => {
-                const lineKey = (() => {
+                  if (!lineKey) return null;
+
                   switch (line.kind) {
                     case "search_params":
-                      return "search-params";
+                      return (
+                        <p key={lineKey} className="text-info">
+                          search params → {summarise(line.params)}
+                        </p>
+                      );
                     case "store_profile":
-                      return `profile-${line.storeUrl}`;
+                      return (
+                        <p key={lineKey} className="text-primary">
+                          profile resolved → {line.discovery.domain} (
+                          {line.discovery.transport})
+                        </p>
+                      );
                     case "store_searching":
-                      return `searching-${line.storeUrl}`;
+                      return (
+                        <p key={lineKey} className="text-warning">
+                          searching → {line.storeUrl}
+                        </p>
+                      );
                     case "store_result":
-                      return `result-${line.storeUrl}`;
+                      return (
+                        <p key={lineKey} className="text-success">
+                          results → {line.storeUrl} (
+                          {
+                            (line.result as z.infer<typeof productSchema>[])
+                              .length
+                          }{" "}
+                          products)
+                        </p>
+                      );
                     case "store_error":
-                      return `error-${line.storeUrl}`;
+                      return (
+                        <p key={lineKey} className="text-error">
+                          error → {line.storeUrl}: {line.message}
+                        </p>
+                      );
+                    case "text":
+                      return null;
                     case "error":
-                      return `fatal-${line.message}`;
+                      return (
+                        <p key={lineKey} className="text-error">
+                          {line.message}
+                        </p>
+                      );
                     case "done":
-                      return "done";
+                      return (
+                        <p key={lineKey} className="text-primary">
+                          {translate("eventLog.complete")}
+                        </p>
+                      );
                     default:
                       return null;
                   }
-                })();
-
-                if (!lineKey) return null;
-
-                switch (line.kind) {
-                  case "search_params":
-                    return (
-                      <p key={lineKey} className="text-info">
-                        search params → {summarise(line.params)}
-                      </p>
-                    );
-                  case "store_profile":
-                    return (
-                      <p key={lineKey} className="text-primary">
-                        profile resolved → {line.discovery.domain} (
-                        {line.discovery.transport})
-                      </p>
-                    );
-                  case "store_searching":
-                    return (
-                      <p key={lineKey} className="text-warning">
-                        searching → {line.storeUrl}
-                      </p>
-                    );
-                  case "store_result":
-                    return (
-                      <p key={lineKey} className="text-success">
-                        results → {line.storeUrl} (
-                        {
-                          (line.result as z.infer<typeof productSchema>[])
-                            .length
-                        }{" "}
-                        products)
-                      </p>
-                    );
-                  case "store_error":
-                    return (
-                      <p key={lineKey} className="text-error">
-                        error → {line.storeUrl}: {line.message}
-                      </p>
-                    );
-                  case "text":
-                    return null;
-                  case "error":
-                    return (
-                      <p key={lineKey} className="text-error">
-                        {line.message}
-                      </p>
-                    );
-                  case "done":
-                    return (
-                      <p key={lineKey} className="text-primary">
-                        {translate("eventLog.complete")}
-                      </p>
-                    );
-                  default:
-                    return null;
-                }
-              })}
+                })}
+              </div>
             </div>
-          </div>
-        </details>
+          </CollapsiblePanel>
+        </Collapsible>
       )}
     </div>
   );

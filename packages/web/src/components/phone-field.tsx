@@ -184,7 +184,7 @@ export const PhoneField = ({
     render,
     props: mergeProps<"div">(props, {
       className: cn(
-        "flex h-10 items-center gap-2 overflow-hidden border border-accent-foreground px-1 py-1 has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-primary has-[input:focus:not(:focus-visible)]:outline-0 has-[input:focus-visible]:-outline-offset-1",
+        "flex h-10 items-center gap-2 overflow-hidden rounded-lg border border-accent-foreground px-1 py-1 has-[input:focus-visible]:outline-2 has-[input:focus-visible]:outline-primary has-[input:focus:not(:focus-visible)]:outline-0 has-[input:focus-visible]:-outline-offset-1",
         disabled && "cursor-not-allowed opacity-50",
         resolveClassName(className, state),
       ),
@@ -399,7 +399,7 @@ export const PhoneFieldCountryCombobox = ({
                 classList={classList?.item}
               >
                 {option.flag} {option.iso} {/* TODO: add classList to span  */}
-                <span className="ml-auto text-foreground-dimmed group-data-highlighted:text-white/70">
+                <span className="ml-auto text-foreground-dimmed group-data-highlighted:text-background-rich/70">
                   +{option.prefix}
                 </span>
               </ComboboxItem>

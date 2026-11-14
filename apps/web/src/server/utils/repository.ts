@@ -36,7 +36,7 @@ export type Insertable<T extends TableWithId> = Omit<
 > & { id?: string };
 
 export type OrderByEntry<_T extends TableWithId> = {
-  column: AnyColumn;
+  column: AnyColumn | SQL;
   direction: "asc" | "desc";
 };
 

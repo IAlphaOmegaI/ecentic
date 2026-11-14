@@ -106,12 +106,12 @@ export const PlaygroundArt = ({ className }: PlaygroundArt.Props) => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: -6, transition: { duration: 0.35, ease } }}
               transition={{ duration: 0.5, ease }}
-              className="max-w-[88%] self-end rounded-2xl rounded-br-sm bg-primary px-4 py-2.5 text-sm text-white"
+              className="max-w-[88%] self-end rounded-lg rounded-br-sm bg-primary px-4 py-2.5 text-sm text-background-rich"
             >
               {questionText}
               {showCursor && (
                 <motion.span
-                  className="ml-px inline-block h-3.5 w-px translate-y-0.5 bg-white"
+                  className="ml-px inline-block h-3.5 w-px translate-y-0.5 bg-background-rich"
                   animate={{ opacity: [1, 0, 1] }}
                   transition={{
                     duration: 0.8,
@@ -161,7 +161,7 @@ export const PlaygroundArt = ({ className }: PlaygroundArt.Props) => {
               transition={{ duration: 0.55, ease }}
               className="flex gap-4 rounded-lg border border-accent-foreground bg-background-rich p-4"
             >
-              <div className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-md border border-accent-foreground bg-white p-2">
+              <div className="flex size-20 shrink-0 items-center justify-center overflow-hidden rounded-sm border border-accent-foreground bg-background-rich p-2">
                 <Image
                   src={PRODUCT_IMAGE}
                   alt="Pro Wireless Earbuds"
@@ -181,7 +181,7 @@ export const PlaygroundArt = ({ className }: PlaygroundArt.Props) => {
                   Lightweight fit, 32-hour battery, and multipoint pairing. Top
                   pick for the budget.
                 </p>
-                <span className="mt-1 w-fit rounded-full bg-primary px-3 py-1 font-medium text-white text-xs">
+                <span className="mt-1 w-fit rounded-full bg-primary px-3 py-1 font-medium text-background-rich text-xs">
                   Buy now — $139
                 </span>
               </div>
@@ -197,7 +197,7 @@ export const PlaygroundArt = ({ className }: PlaygroundArt.Props) => {
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, transition: { duration: 0.35, ease } }}
               transition={{ duration: 0.5, ease, delay: 0.1 }}
-              className="flex max-w-[90%] items-center gap-2 self-start rounded-2xl rounded-bl-sm border border-success/30 bg-success/10 px-4 py-2.5 text-foreground text-sm"
+              className="flex max-w-[90%] items-center gap-2 self-start rounded-lg rounded-bl-sm border border-success/30 bg-success/10 px-4 py-2.5 text-foreground text-sm"
             >
               <ShoppingCartIcon className="size-4 shrink-0 text-success" />
               <span>Added to cart · 1 item · $139.00</span>

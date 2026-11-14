@@ -47,7 +47,7 @@ export const generateMetadata = async (): Promise<Metadata> => {
 };
 
 const PlaygroundSkeleton = () => (
-  <div className="flex min-h-[580px] flex-1 items-center justify-center p-8 max-sm:min-h-[520px]">
+  <div className="flex min-h-145 flex-1 items-center justify-center p-8 max-sm:min-h-130">
     <div className="w-full max-w-md space-y-3">
       <div className="mx-auto h-4 w-40 animate-pulse bg-accent-foreground/30 motion-reduce:animate-none" />
       <div className="h-9 w-full animate-pulse bg-accent-foreground/20 motion-reduce:animate-none" />

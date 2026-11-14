@@ -1,0 +1,133 @@
+{
+  "dashboard": {
+    "brand": {
+      "design": {
+        "title": "品牌",
+        "description": "了解品牌在模拟购物回答中的呈现方式。",
+        "updated": "分析时间：{time}",
+        "sample": "{count, plural, other {# 条抽样回答}} · {engines}",
+        "scope": "模型会预先获得你的品牌信息，作为本次分析的背景。这是模拟分析，并非无提示的品牌回忆测试，也不代表真实客户的对话记录。",
+        "action": {
+          "primary": "分析品牌",
+          "secondary": "重新分析",
+          "tertiary": "检查商品目录"
+        },
+        "empty": {
+          "title": "发现品牌的盲点。",
+          "description": "查看品牌是否出现在购物问题的回答中、如何被描述，以及哪些地方需要更清晰的信息。",
+          "note": "根据店铺和商品目录，为 ChatGPT 准备 20 个问题。分析期间可继续处理其他工作。",
+          "visualTitle": "从买家的问题，到下一步行动",
+          "steps": {
+            "questions": {
+              "title": "询问商品品类",
+              "description": "包括提及和未提及品牌名称的问题。"
+            },
+            "answers": {
+              "title": "检查回答",
+              "description": "查看品牌提及、替代选项和回答摘要。"
+            },
+            "actions": {
+              "title": "了解改进方向",
+              "description": "建议以抽样回答为依据。"
+            }
+          }
+        },
+        "summaryTitle": "需要了解的信息",
+        "discoveryTitle": "不同类型问题中的品牌提及",
+        "unprompted": "不含品牌名称的问题",
+        "named": "包含品牌名称的问题",
+        "ratio": "{total} 条回答中的 {count} 条",
+        "noSample": "此组中没有问题",
+        "overall": "在 {total} 条抽样回答中，有 {count} 条提到了品牌。",
+        "noAnswers": "此报告没有保存的回答。请运行新的分析以收集依据。",
+        "tabs": {
+          "plan": "下一步",
+          "answers": "回答",
+          "access": "网站检查"
+        },
+        "findingsTitle": "值得关注的规律",
+        "journeyTitle": "改进方向",
+        "journeyDescription": "这些建议来自本次分析。修改网站前，请先检查依据。",
+        "stage": {
+          "find": "让买家发现",
+          "consider": "进入候选名单",
+          "evaluate": "帮助买家决策",
+          "support": "回答后续问题"
+        },
+        "suggestions": "{count, plural, other {# 条建议}}",
+        "noSuggestions": "此阶段暂无修改建议。",
+        "perceptionTitle": "回答如何描述品牌",
+        "strengths": "有利因素",
+        "concerns": "引发疑问的地方",
+        "alternativesTitle": "回答中的其他品牌",
+        "sourcesTitle": "模型建议的信息来源",
+        "sourcesNote": "这些是模型提到的域名或来源类型，并非实时搜索中经过核实的引用。",
+        "occurrences": "{count, plural, other {# 次提及}}",
+        "accessTitle": "爬虫能访问你的内容吗？",
+        "accessDescription": "这是对用于内容发现的公开文件的一次检查，不衡量搜索收录、排名或结账就绪程度。",
+        "checks": {
+          "robots": "爬虫规则",
+          "llms": "AI 内容指南",
+          "engines": "爬虫访问"
+        },
+        "status": {
+          "pass": "已检查",
+          "warn": "需检查",
+          "fail": "已阻止"
+        },
+        "robots": {
+          "pass": "已读取爬虫规则。",
+          "warn": "请检查已记录的爬虫规则。",
+          "fail": "扫描在 robots.txt 中发现了爬虫访问限制。",
+          "note": "robots.txt 按爬虫控制访问权限。搜索、用户发起的请求和模型训练可能使用不同的爬虫。"
+        },
+        "llms": {
+          "pass": "llms.txt 文件可访问。",
+          "warn": "未记录到可访问的 llms.txt 文件。",
+          "note": "这份可选的内容指南不保证 AI 服务会读取、收录或推荐品牌。"
+        },
+        "engines": {
+          "pass": "未发现针对所检查爬虫的网站根级别访问限制。",
+          "warn": "本次扫描无法确认访问情况。",
+          "fail": "部分已检查的爬虫受到网站根级别访问限制。",
+          "note": "此检查不涵盖特定路径规则、其他爬虫或索引收录情况。"
+        },
+        "failed": {
+          "title": "分析未能完成",
+          "description": "下方仍可查看上一次完成的报告。准备好后可重试。",
+          "emptyDescription": "未保存报告。准备好后可重试。"
+        },
+        "error": "无法启动分析，请重试。",
+        "running": {
+          "title": "正在了解品牌",
+          "description": "ChatGPT 正在处理购物问题。结果准备好后会显示在此处。",
+          "previous": "新分析进行中，目前显示的是上一次的报告。",
+          "steps": "准备问题 · 检查回答 · 生成建议"
+        },
+        "loading": "正在加载品牌分析",
+        "unavailable": {
+          "title": "品牌数据暂时不可用",
+          "description": "无法加载已保存的分析。请刷新此部分后重试。",
+          "action": {
+            "primary": "重试"
+          }
+        },
+        "noFindings": "此报告未保存任何规律或趋势。",
+        "summaryAction": {
+          "primary": "阅读完整分析",
+          "secondary": "收起"
+        },
+        "method": {
+          "action": {
+            "primary": "工作原理"
+          }
+        }
+      },
+      "toast": {
+        "started": {
+          "description": "你可以继续工作。分析完成后，结果会显示在此处。"
+        }
+      }
+    }
+  }
+}

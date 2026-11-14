@@ -85,7 +85,7 @@ export const ChannelComparison = async () => {
                   key={key}
                   className={
                     key === "status"
-                      ? "w-[130px] whitespace-normal px-4 py-4 font-medium text-foreground-rich text-sm normal-case tracking-normal"
+                      ? "w-32.5 whitespace-normal px-4 py-4 font-medium text-foreground-rich text-sm normal-case tracking-normal"
                       : "whitespace-normal px-4 py-4 font-medium text-foreground-rich text-sm normal-case tracking-normal"
                   }
                 >

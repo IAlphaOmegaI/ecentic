@@ -1,5 +1,16 @@
 "use client";
 
+import { AlertCircleIcon } from "@zenncore/icons";
+import { cn } from "@zenncore/utils";
+import { Button } from "@zenncore/web/components/button";
+import {
+  Popover,
+  PopoverDescription,
+  PopoverPopup,
+  PopoverPositioner,
+  PopoverTitle,
+  PopoverTrigger,
+} from "@zenncore/web/components/popover";
 import {
   Tab,
   Tabs,
@@ -8,23 +19,13 @@ import {
   TabsPanel,
 } from "@zenncore/web/components/tabs";
 import { useTranslations } from "next-intl";
-import type { ReactNode } from "react";
-import {
-  Band,
-  PageHeader,
-  SectionGutter,
-  SectionHeader,
-  Slot,
-} from "../../../_components/grid";
+import { type ReactNode, useId, useState, useTransition } from "react";
+import { AnalysisText } from "@/components/analysis-text";
+import { useRouter } from "@/i18n/navigation";
+import { Crosshair, Slot } from "../../../_components/grid";
 
-/**
- * Header plus one slot.
- *
- * The content used to be wrapped in a `Band`, which broke the page rail and set
- * four corner marks — and then every section inside broke out of it again with
- * its own `-mx-8` seam. Sections are siblings on the rail now, the way the
- * overview and visibility pages build theirs.
- */
+import { DashboardHeaderFigure } from "../../../_components/header-figure";
+
 export const BrandShell = ({
   actions,
   content,
@@ -32,136 +33,165 @@ export const BrandShell = ({
   actions?: ReactNode;
   content: ReactNode;
 }) => {
-  const translate = useTranslations("dashboard.brand");
+  const translate = useTranslations("dashboard.brand.design");
 
   return (
-    <div className="flex flex-col">
-      <div className="mx-8 border-accent-foreground border-x">
-        <PageHeader
-          context={translate("eyebrow")}
-          title={translate("title")}
-          description={translate("description")}
-          actions={actions}
-        />
+    <div className="flex min-h-full min-w-0 flex-col">
+      <header className="flex min-w-0 flex-wrap items-center justify-between gap-5 px-4 py-6 sm:px-6">
+        <div className="flex min-w-0 items-center gap-4">
+          <DashboardHeaderFigure subject="brand" />
+          <div className="min-w-0">
+            <h1 className="font-heading font-semibold text-3xl text-foreground-rich tracking-tight">
+              {translate("title")}
+            </h1>
+            <p className="mt-1 text-foreground-dimmed text-sm leading-6">
+              {translate("description")}
+            </p>
+          </div>
+        </div>
+        <Slot>{actions}</Slot>
+      </header>
+      <div className="relative min-w-0 border-accent-foreground border-y">
+        <Crosshair className="top-0 left-0 -translate-y-1/2" />
+        <Crosshair className="top-0 right-0 -translate-y-1/2" />
         <Slot>{content}</Slot>
       </div>
     </div>
   );
 };
 
-/**
- * Tab chrome is client-side; every panel receives server-rendered nodes so the
- * report content itself stays on the server.
- *
- * Crawlability, perception, funnel and landscape used to stack open below the
- * summary — six always-visible sections separated by hatch gutters. They are
- * grouped into four tabs here by the question each answers, which is the same
- * move the overview made on its three stacked panels.
- */
-export const BrandTabs = ({
-  findings,
-  perception,
-  crawlability,
-  queries,
-}: {
-  findings: ReactNode;
-  perception: ReactNode;
-  crawlability: ReactNode;
-  queries: ReactNode;
-}) => {
-  const translate = useTranslations("dashboard.brand.tabs");
+export const BrandMethod = () => {
+  const translate = useTranslations("dashboard.brand.design");
 
   return (
-    <Tabs defaultValue="findings">
-      <Band marks="top">
-        <SectionHeader
-          kicker={translate("kicker")}
-          title={translate("title")}
-          description={translate("description")}
-        />
-        <div className="p-4">
-          {/* Same segmented rail as the overview's detail tabs — design.md §11.6. */}
-          <TabsList className="h-10 w-full max-w-xl rounded-md border-0 bg-background-dimmed p-1">
-            <TabsIndicator className="top-1 h-8 rounded" />
-            <Tab value="findings" className="h-8 flex-1 border-r-0">
-              {translate("findings")}
-            </Tab>
-            <Tab value="perception" className="h-8 flex-1 border-r-0">
-              {translate("perception")}
-            </Tab>
-            <Tab value="crawlability" className="h-8 flex-1 border-r-0">
-              {translate("crawlability")}
-            </Tab>
-            <Tab value="queries" className="h-8 flex-1 border-r-0">
-              {translate("queries")}
-            </Tab>
-          </TabsList>
-        </div>
-        <TabsPanel value="findings" keepMounted>
-          {findings}
-        </TabsPanel>
-        <TabsPanel value="perception" keepMounted>
-          {perception}
-        </TabsPanel>
-        <TabsPanel value="crawlability" keepMounted>
-          {crawlability}
-        </TabsPanel>
-        <TabsPanel value="queries" keepMounted>
-          {queries}
-        </TabsPanel>
-      </Band>
+    <Popover>
+      <PopoverTrigger className="min-h-8 rounded-lg border-transparent bg-transparent px-2 py-1 font-medium text-foreground-dimmed text-xs hover:text-foreground-rich">
+        {translate("method.action.primary")}
+      </PopoverTrigger>
+      <PopoverPositioner align="end" className="z-50">
+        <PopoverPopup className="w-80 max-w-(--available-width) bg-background-rich px-4 py-4">
+          <PopoverTitle className="font-semibold text-sm">
+            {translate("method.action.primary")}
+          </PopoverTitle>
+          <PopoverDescription className="mt-2 text-sm leading-6">
+            {translate("scope")}
+          </PopoverDescription>
+        </PopoverPopup>
+      </PopoverPositioner>
+    </Popover>
+  );
+};
+
+export const BrandTabs = ({
+  plan,
+  answers,
+  access,
+}: {
+  plan: ReactNode;
+  answers: ReactNode;
+  access: ReactNode;
+}) => {
+  const translate = useTranslations("dashboard.brand.design.tabs");
+
+  return (
+    <Tabs defaultValue="plan" className="min-w-0">
+      <div className="relative border-accent-foreground border-y px-4 py-4 sm:px-6">
+        <Crosshair className="top-0 left-0 -translate-y-1/2" />
+        <Crosshair className="top-0 right-0 -translate-y-1/2" />
+        <TabsList className="h-auto max-w-full">
+          <Tab
+            value="plan"
+            className="h-auto min-h-9 min-w-0 px-3 py-2 text-sm"
+          >
+            {translate("plan")}
+          </Tab>
+          <Tab
+            value="answers"
+            className="h-auto min-h-9 min-w-0 px-3 py-2 text-sm"
+          >
+            {translate("answers")}
+          </Tab>
+          <Tab
+            value="access"
+            className="h-auto min-h-9 min-w-0 px-3 py-2 text-sm"
+          >
+            {translate("access")}
+          </Tab>
+          <TabsIndicator className="motion-reduce:transition-none" />
+        </TabsList>
+      </div>
+      <TabsPanel value="plan" keepMounted>
+        {plan}
+      </TabsPanel>
+      <TabsPanel value="answers" keepMounted>
+        {answers}
+      </TabsPanel>
+      <TabsPanel value="access" keepMounted>
+        {access}
+      </TabsPanel>
     </Tabs>
   );
 };
 
-const SkeletonCard = ({ lines }: { lines: readonly string[] }) => (
-  <div className="flex flex-col gap-3 bg-background-rich p-6">
-    <div className="h-4 w-40 animate-pulse rounded-full bg-foreground/10" />
-    {lines.map((line) => (
-      <div
-        key={line}
-        className="h-3 w-full animate-pulse rounded-full bg-foreground/10 last:w-2/3"
-      />
-    ))}
-  </div>
-);
+export const BrandSummary = ({
+  summary,
+  terms,
+}: {
+  summary: string;
+  terms?: readonly string[];
+}) => {
+  const translate = useTranslations("dashboard.brand.design.summaryAction");
+  const [expanded, setExpanded] = useState(false);
+  const contentId = useId();
+  const isLong = summary.length > 420;
 
-const SHORT_CARD = ["a", "b", "c", "d"] as const;
-const TALL_CARD = ["a", "b", "c", "d", "e", "f"] as const;
-const STAT_CELLS = ["a", "b", "c", "d"] as const;
+  return (
+    <div className="mt-4">
+      <p
+        id={contentId}
+        className={cn(
+          "wrap-anywhere max-w-3xl whitespace-pre-line text-foreground text-sm leading-7",
+          isLong && !expanded && "line-clamp-6",
+        )}
+      >
+        <AnalysisText text={summary} terms={terms} />
+      </p>
+      {isLong && (
+        <Button
+          variant="soft"
+          color="neutral"
+          aria-expanded={expanded}
+          aria-controls={contentId}
+          onClick={() => setExpanded((current) => !current)}
+          className="mt-3 text-sm"
+        >
+          {translate(expanded ? "secondary" : "primary")}
+        </Button>
+      )}
+    </div>
+  );
+};
 
-/** Matches the report: a stat band, the summary pair, then the tabbed region. */
-export const BrandSkeleton = () => (
-  <>
-    <Band>
-      <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
-        {STAT_CELLS.map((key) => (
-          <div
-            key={key}
-            className="flex flex-col justify-between gap-6 bg-background-rich p-5"
-          >
-            <div className="h-3 w-24 animate-pulse bg-foreground/10" />
-            <div className="flex flex-col gap-3">
-              <div className="h-9 w-20 animate-pulse bg-foreground/10" />
-              <div className="h-1 w-full animate-pulse rounded-full bg-foreground/10" />
-            </div>
-          </div>
-        ))}
-      </div>
-    </Band>
-    <SectionGutter />
-    <Band marks="top">
-      <div className="grid gap-px bg-accent-foreground lg:grid-cols-[1.6fr_1fr]">
-        <SkeletonCard lines={TALL_CARD} />
-        <SkeletonCard lines={TALL_CARD} />
-      </div>
-    </Band>
-    <SectionGutter />
-    <Band marks="top">
-      <div className="p-4">
-        <div className="h-10 w-full max-w-xl animate-pulse rounded-md bg-foreground/10" />
-      </div>
-      <SkeletonCard lines={SHORT_CARD} />
-    </Band>
-  </>
-);
+export const BrandUnavailable = () => {
+  const translate = useTranslations("dashboard.brand.design.unavailable");
+  const router = useRouter();
+  const [pending, startTransition] = useTransition();
+  return (
+    <div role="alert" className="px-6 py-10">
+      <AlertCircleIcon aria-hidden className="mb-4 size-7 text-warning" />
+      <h2 className="font-semibold text-foreground-rich text-xl">
+        {translate("title")}
+      </h2>
+      <p className="mt-2 text-foreground-dimmed text-sm leading-6">
+        {translate("description")}
+      </p>
+      <Button
+        className="mt-5"
+        disabled={pending}
+        onClick={() => startTransition(() => router.refresh())}
+      >
+        {translate("action.primary")}
+      </Button>
+    </div>
+  );
+};

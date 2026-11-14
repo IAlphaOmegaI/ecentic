@@ -467,7 +467,13 @@
         "channels": "Channels"
       },
       "agentic": "Agentic Score",
-      "webmcp": "WebMCP"
+      "webmcp": "WebMCP",
+      "assistant": {
+        "title": "Ask Judy",
+        "status": "Preview",
+        "description": "Judy is taking shape. Chat and catalog actions are not available yet; use the dashboard tools for now.",
+        "name": "Judy"
+      }
     },
     "sidebar": {
       "allStores": "All stores"
@@ -549,7 +555,8 @@
       "states": {
         "searching": "Searching…",
         "empty": "No results",
-        "emptyForQuery": "No results for \"{query}\""
+        "emptyForQuery": "No results for \"{query}\"",
+        "unavailable": "Search is temporarily unavailable. Try again."
       },
       "sections": {
         "products": "Products",
@@ -568,6 +575,9 @@
         "ucpStructuredData": "UCP & Structured Data",
         "optimize": "Optimize",
         "settings": "Settings"
+      },
+      "action": {
+        "primary": "Try again"
       }
     },
     "notifications": {
@@ -685,29 +695,118 @@
         "products": "Top Products",
         "competitors": "Competitors",
         "agents": "Agent Visits",
-        "topProducts": "Top Products",
-        "agentVisits": "Agent Visits"
+        "topProducts": "Products",
+        "agentVisits": "AI visits"
       },
       "charts": {
         "kickers": {
           "performance": "01 — Performance",
           "recentActivity": "01.5 — Recent Activity"
         },
-        "winRateByModel": "Win Rate by Model",
-        "winRateTrend": "Win Rate Trend",
+        "winRateByModel": "Average product win rate by model",
+        "winRateTrend": "Win rate by scan",
         "states": {
           "noModels": "Run a simulation to see per-model performance.",
-          "noTrend": "Not enough data for trend.",
+          "noTrend": "No completed scans yet.",
           "noTrendHint": "Get started by running a simulation.",
           "noActivity": "No activity yet. Run your first simulation to see results here."
         },
         "action": {
-          "primary": "View all products",
-          "secondary": "Optimizations"
-        }
+          "primary": "Inspect latest scan",
+          "secondary": "Optimizations",
+          "tertiary": "View simulations"
+        },
+        "recentActivity": "Recent scans",
+        "latestScan": "Latest completed scan",
+        "modelHint": "Each model’s average across compared products.",
+        "change": "From the previous scan",
+        "sampleNote": "Each point is a separate scan; selected products and competitors can differ."
       },
       "title": "Overview",
-      "description": "How AI shopping agents rank your catalog against competitors."
+      "description": "What needs attention, what changed and what to do next.",
+      "summary": {
+        "latestWinRate": "Latest simulated win rate",
+        "latestResult": "{wins, plural, one {# win} other {# wins}} from {total, plural, one {# comparison} other {# comparisons}}",
+        "change": "{value} percentage points",
+        "coverage": "Products compared",
+        "coverageDetail": "{count, number} of {total, plural, one {# catalog product} other {# catalog products}}",
+        "coverageHint": "Based on completed product comparisons.",
+        "noResult": "Run your first scan to see results.",
+        "topPerformer": "Strongest product",
+        "opportunity": "Product to improve",
+        "productRate": "Wins {rate} of its comparisons",
+        "updated": "Last completed scan {time}",
+        "action": {
+          "primary": "View product",
+          "secondary": "Improve this product",
+          "tertiary": "Choose products"
+        },
+        "emptyProduct": "Product results appear after your first scan."
+      },
+      "priorities": {
+        "title": "Next steps",
+        "description": "Fix missing product facts, then compare again.",
+        "fields": {
+          "description": {
+            "title": "Add missing descriptions",
+            "detail": "{count, plural, one {# product has no description.} other {# products have no description.}}"
+          },
+          "price": {
+            "title": "Add missing prices",
+            "detail": "{count, plural, one {# product has no price.} other {# products have no price.}}"
+          },
+          "sku": {
+            "title": "Add missing SKUs",
+            "detail": "{count, plural, one {# product has no SKU.} other {# products have no SKU.}}"
+          },
+          "complete": {
+            "title": "Core product fields are present",
+            "detail": "Descriptions, prices and SKUs checked."
+          }
+        },
+        "compare": {
+          "title": "Compare untested products",
+          "detail": "{count, plural, one {# product has not been compared yet.} other {# products have not been compared yet.}}",
+          "complete": {
+            "title": "Your whole catalog has been compared",
+            "detail": "{count, plural, one {# product with completed comparisons.} other {# products with completed comparisons.}}"
+          }
+        },
+        "optimize": {
+          "title": "Review listing opportunities",
+          "detail": "{count, plural, one {# product in your optimization queue.} other {# products in your optimization queue.}}",
+          "complete": {
+            "title": "No listing opportunities queued",
+            "detail": "Review your listing diagnostics after the next scan."
+          }
+        },
+        "action": {
+          "primary": "Review product details",
+          "secondary": "Choose products",
+          "tertiary": "Open Optimize",
+          "quaternary": "View comparisons"
+        }
+      },
+      "traffic": {
+        "title": "Observed AI traffic",
+        "description": "Recorded events in the last 30 days.",
+        "referrals": "AI referrals",
+        "crawlers": "Agent and crawler requests",
+        "hint": "These are recorded visits and requests, not unique shoppers or purchases.",
+        "action": {
+          "primary": "Inspect AI traffic"
+        }
+      },
+      "priorityChecks": {
+        "incomplete": {
+          "title": "Complete your product details",
+          "detail": "{count, plural, one {# product is missing catalog information.} other {# products are missing catalog information.}}"
+        },
+        "unavailable": {
+          "title": "Listing opportunities are unavailable",
+          "description": "Open Optimize to review the checks available for this store."
+        }
+      }
     },
     "agentVisits": {
       "kicker": "04 — Agent Traffic",
@@ -778,6 +877,16 @@
             "primary": "No products match",
             "secondary": "Try a different search or clear your filters."
           }
+        },
+        "overviewTools": {
+          "sort": "Sort",
+          "defaultOrder": "Default order",
+          "ascending": "Ascending",
+          "descending": "Descending",
+          "comparison": "Comparison status",
+          "all": "All products",
+          "compared": "Compared",
+          "notCompared": "Not compared"
         }
       },
       "title": "Products",
@@ -996,6 +1105,69 @@
         "noFindingTitle": "No finding recorded for this scan.",
         "noFindingHint": "Rerun the scan to see insights.",
         "fixThis": "Fix this"
+      },
+      "catalog": {
+        "title": "Products",
+        "description": "Find a product, inspect its results, and improve the fields that matter.",
+        "tableLabel": "Product catalog",
+        "columns": "Columns",
+        "resetColumns": "Reset columns",
+        "sortBy": "Sort by {field}",
+        "noSku": "No SKU",
+        "unmeasured": "Not compared",
+        "rate": "AI win rate: {value}%",
+        "coverage": "Field coverage: {value}%",
+        "coverageHint": "Presence of six catalog fields: title, description, price, image, SKU and structured data. This is not an AI quality review.",
+        "comparisons": "{count, plural, one {# comparison} other {# comparisons}}",
+        "results": "Products: {count, number}",
+        "range": "{from}–{to} of {total}",
+        "summary": {
+          "imported": "In your catalog",
+          "importedHint": "All imported products",
+          "compared": "Compared by AI",
+          "comparedHint": "At least one recorded comparison",
+          "incomplete": "Incomplete listings",
+          "incompleteHint": "One or more of six catalog fields missing",
+          "unavailable": "Catalog totals are temporarily unavailable. You can still browse the list below."
+        },
+        "fields": {
+          "product": "Product",
+          "sku": "SKU",
+          "price": "Price",
+          "currency": "Currency",
+          "winRate": "AI win rate",
+          "quality": "Field coverage",
+          "updatedAt": "Updated"
+        },
+        "selection": {
+          "all": "Select all products on this page",
+          "product": "Select {product}",
+          "count": "{count, number} selected on this page",
+          "hint": "Select products to export their data."
+        },
+        "action": {
+          "add": "Add products",
+          "clear": "Clear search and filters",
+          "retry": "Try again",
+          "export": "Export selected",
+          "deselect": "Clear selection",
+          "open": "Open {product}"
+        },
+        "states": {
+          "empty": {
+            "title": "Your catalog starts here",
+            "description": "Import your products to see their listing details and AI comparison results in one place."
+          },
+          "noMatches": {
+            "title": "No matching products",
+            "description": "Try a different search or remove a filter to see more of your catalog."
+          },
+          "error": {
+            "title": "Your products could not load",
+            "description": "Your catalog is still saved. Try loading the list again."
+          }
+        },
+        "loading": "Loading products…"
       }
     },
     "competitors": {
@@ -1136,7 +1308,9 @@
         "simulationComplete": "Simulation completed — {wins} wins, {losses} losses",
         "simulationInProgress": "Simulation in progress — {completed}/{total}",
         "noActivityTitle": "No activity yet. Run your",
-        "noActivityHint": "first simulation to see results here."
+        "noActivityHint": "first simulation to see results here.",
+        "simulationPending": "Scan queued — {total, plural, one {# comparison} other {# comparisons}}",
+        "simulationFailed": "Scan failed — {completed, plural, one {# comparison completed} other {# comparisons completed}} out of {total, number}"
       },
       "action": {
         "optimizations": "Optimizations",
@@ -1435,7 +1609,7 @@
         "failed": "Brand analysis failed",
         "started": {
           "title": "Brand analysis started",
-          "description": "Keep browsing. Results appear here in about a minute."
+          "description": "You can keep working. Results will appear here when the analysis finishes."
         },
         "alreadyRunning": "An analysis is already running"
       },
@@ -1547,6 +1721,164 @@
         "queries": {
           "label": "Queries audited",
           "detail": "in the latest run"
+        }
+      },
+      "answers": {
+        "title": "Saved answers",
+        "description": "Inspect the questions behind this analysis.",
+        "search": "Search questions, answers or brands",
+        "filter": "Brand mention",
+        "filters": {
+          "all": "All answers",
+          "mentioned": "Mentioned",
+          "absent": "Absent"
+        },
+        "count": "{count, plural, one {# answer} other {# answers}} of {total, number}",
+        "position": {
+          "top": "Primary recommendation",
+          "listed": "Listed",
+          "absent": "Not mentioned"
+        },
+        "context": {
+          "named": "Question includes the brand name",
+          "unbranded": "Question does not include the brand name"
+        },
+        "answer": "Answer summary",
+        "noAnswer": "No answer summary was saved.",
+        "brands": "Brands mentioned",
+        "noBrands": "No brands recorded.",
+        "sources": "Model-suggested sources",
+        "sourcesNote": "These are sources named by the model, not verified citations from a live search.",
+        "noSources": "No sources recorded.",
+        "empty": {
+          "title": "No matching answers",
+          "description": "Try a different search or show all answers.",
+          "saved": "No answers have been saved for this analysis."
+        },
+        "action": {
+          "primary": "Clear search and filters"
+        }
+      },
+      "design": {
+        "title": "Brand",
+        "description": "How your brand appears in simulated shopping answers.",
+        "updated": "Analyzed {time}",
+        "sample": "{count, plural, one {# sampled answer} other {# sampled answers}} · {engines}",
+        "scope": "The model receives your brand as audit context. This is a simulation, not a blind recall test or a record of live customer conversations.",
+        "action": {
+          "primary": "Analyze brand",
+          "secondary": "Run again",
+          "tertiary": "Review catalog"
+        },
+        "empty": {
+          "title": "Find your brand’s blind spots.",
+          "description": "See whether your brand comes up in shopping questions, how it is described, and where clearer information could help.",
+          "note": "Uses your store and catalog to prepare 20 questions for ChatGPT. You can keep working while the analysis runs.",
+          "visualTitle": "From a shopper’s question to your next step",
+          "steps": {
+            "questions": {
+              "title": "Ask about your category",
+              "description": "Questions with and without your brand name."
+            },
+            "answers": {
+              "title": "Inspect the answers",
+              "description": "Brand mentions, alternatives and answer summaries."
+            },
+            "actions": {
+              "title": "See what to improve",
+              "description": "Suggestions grounded in the sampled answers."
+            }
+          }
+        },
+        "summaryTitle": "What to know",
+        "discoveryTitle": "Mentions by question type",
+        "unprompted": "Questions without your brand name",
+        "named": "Questions naming your brand",
+        "ratio": "{count} of {total} answers",
+        "noSample": "No questions in this group",
+        "overall": "Mentioned in {count} of {total} sampled answers.",
+        "noAnswers": "This report has no saved answers. Run a new analysis to build the evidence.",
+        "tabs": {
+          "plan": "Next steps",
+          "answers": "Answers",
+          "access": "Site checks"
+        },
+        "findingsTitle": "Patterns to pay attention to",
+        "journeyTitle": "Where to improve",
+        "journeyDescription": "Suggestions from this analysis. Review the evidence before changing your site.",
+        "stage": {
+          "find": "Get discovered",
+          "consider": "Make the shortlist",
+          "evaluate": "Help shoppers decide",
+          "support": "Answer the follow-up"
+        },
+        "suggestions": "{count, plural, one {# suggestion} other {# suggestions}}",
+        "noSuggestions": "No changes suggested for this stage.",
+        "perceptionTitle": "How the answers describe you",
+        "strengths": "What works in your favor",
+        "concerns": "What raises questions",
+        "alternativesTitle": "Other brands in the answers",
+        "sourcesTitle": "Sources suggested by the model",
+        "sourcesNote": "These are domains or source types named by the model, not verified citations from a live search.",
+        "occurrences": "{count, plural, one {# mention} other {# mentions}}",
+        "accessTitle": "Can crawlers reach your content?",
+        "accessDescription": "A snapshot of public discovery files. These checks do not measure search indexing, rankings or checkout readiness.",
+        "checks": {
+          "robots": "Crawler rules",
+          "llms": "AI content guide",
+          "engines": "Crawler access"
+        },
+        "status": {
+          "pass": "Checked",
+          "warn": "Review",
+          "fail": "Blocked"
+        },
+        "robots": {
+          "pass": "Crawler rules were read.",
+          "warn": "Review the recorded crawler rules.",
+          "fail": "The scan found crawler restrictions in robots.txt.",
+          "note": "robots.txt controls access by crawler. Search, user-initiated requests and model training can use different crawlers."
+        },
+        "llms": {
+          "pass": "An llms.txt file was reachable.",
+          "warn": "No reachable llms.txt file was recorded.",
+          "note": "This optional content guide does not guarantee that an AI service reads, indexes or recommends your brand."
+        },
+        "engines": {
+          "pass": "No root-level blocks were detected for the checked crawlers.",
+          "warn": "Access could not be confirmed in this scan.",
+          "fail": "Some checked crawlers have root-level restrictions.",
+          "note": "Path-specific rules, other crawlers and indexing are outside this check."
+        },
+        "failed": {
+          "title": "The analysis couldn’t finish",
+          "description": "Your last completed report is still available below. Try again when you’re ready.",
+          "emptyDescription": "No report was saved. Try again when you’re ready."
+        },
+        "error": "We couldn’t start the analysis. Please try again.",
+        "running": {
+          "title": "Getting to know your brand",
+          "description": "ChatGPT is working through your shopping questions. Results will appear here when ready.",
+          "previous": "You’re viewing the previous report while the new analysis runs.",
+          "steps": "Prepare questions · Review answers · Build recommendations"
+        },
+        "loading": "Loading brand analysis",
+        "unavailable": {
+          "title": "Brand data is temporarily unavailable",
+          "description": "We couldn’t load your saved analysis. Refresh this section to try again.",
+          "action": {
+            "primary": "Try again"
+          }
+        },
+        "noFindings": "No patterns were saved in this report.",
+        "summaryAction": {
+          "primary": "Read full analysis",
+          "secondary": "Show less"
+        },
+        "method": {
+          "action": {
+            "primary": "How this works"
+          }
         }
       }
     },
@@ -2016,6 +2348,17 @@
       "connection": {
         "title": "Merchant Center connection",
         "description": "Link the Merchant Center account ecentic writes optimization overrides into, then push and verify them."
+      },
+      "workspaceTitle": "Google Shopping",
+      "workspaceDescription": "Manage your Merchant Center connection, listing updates, and checkout readiness.",
+      "unsupportedWorkspace": {
+        "status": "Not available for this source",
+        "title": "Connect a supported catalog",
+        "description": "Google Shopping delivery is available for connected Shopify stores. This catalog source cannot connect to Merchant Center through ecentic yet. You can still review its products and other channel settings.",
+        "action": {
+          "primary": "Connect Shopify",
+          "secondary": "Review connections"
+        }
       }
     },
     "visibility": {
@@ -2140,7 +2483,8 @@
         "noExplanation": "No explanation returned.",
         "noStores": "No stores returned.",
         "unreachable": "This model could not be reached."
-      }
+      },
+      "method": "Your store is named in each prompt. These modeled recommendations do not measure unprompted brand awareness or live search rankings."
     },
     "ucp": {
       "statusPill": "Universal Commerce Protocol",
@@ -2330,6 +2674,31 @@
         "emptyEndpoints": "No service endpoints with URLs found in the UCP profile. Add ",
         "emptyEndpointsSuffix": " fields to your services to enable live testing.",
         "emptyEndpointsField": "endpoint"
+      },
+      "review": {
+        "description": "Check your store’s checkout setup and the product data available to shopping agents.",
+        "tabs": {
+          "check": "Checkout check",
+          "data": "Product data"
+        },
+        "check": {
+          "title": "Check your checkout",
+          "description": "Read your store’s live UCP profile to find missing or invalid checkout configuration.",
+          "hint": "Uses HTTPS. Checks the published profile without placing an order."
+        },
+        "details": {
+          "title": "What this check covers",
+          "description": "Profile discovery, payment setup and agent access."
+        },
+        "advanced": {
+          "title": "Test live endpoints",
+          "summary": "Optional · may create test carts",
+          "description": "Probe the services declared by your store and test its checkout lifecycle."
+        },
+        "products": {
+          "title": "Product data coverage",
+          "description": "Generated product data does not confirm live checkout support. These products belong to this store."
+        }
       }
     },
     "ucpComparison": {
@@ -2462,7 +2831,7 @@
       "composer": {
         "placeholder": "Ask the agent to shop {host}…",
         "hint": "Enter to send · Shift + Enter for a new line",
-        "remaining": "{remaining} of {limit} free {limit, plural, one {message} other {messages}} left in this playground."
+        "remaining": "{remaining, number} of {limit, number} free {limit, plural, one {message} other {messages}} left in this playground."
       },
       "quota": {
         "title": "You've used all {limit} free playground messages",
@@ -2778,13 +3147,13 @@
         "asOf": "Data as of {time}",
         "noScans": "No completed scans yet"
       },
-      "title": "Reports & Exports",
-      "description": "Download or schedule automated reports on your agent performance.",
+      "title": "Reports",
+      "description": "Download saved comparison and catalog data across your stores.",
       "shareable": {
-        "title": "Shareable Win Rate Report",
-        "description": "Generate a public URL for your win rate report, formatted for sharing on Twitter, LinkedIn, or with your team.",
+        "title": "Share a comparison report",
+        "description": "Open a public report of your latest completed comparison. Check its contents before sharing.",
         "action": {
-          "primary": "Generate Shareable Report"
+          "primary": "Open report"
         },
         "runScanFirst": "Run a scan first"
       },
@@ -2800,19 +3169,19 @@
       "items": {
         "winRateSummary": {
           "title": "Win Rate Summary",
-          "description": "Overall performance across all products and models"
+          "description": "Model-level results from the latest completed scan."
         },
         "productPerformance": {
           "title": "Product Performance",
-          "description": "Per-product detailed report with trends and competitor comparison"
+          "description": "Saved product fields and simulated win rates, including model breakdowns."
         },
         "competitorAnalysis": {
           "title": "Competitor Analysis",
-          "description": "Full competitive landscape with battlecards for all tracked brands"
+          "description": "Tracked competitors, observed prices where available, and comparison results."
         },
         "optimizationImpact": {
           "title": "Optimization Impact",
-          "description": "Before/after analysis of all published optimizations"
+          "description": "Saved listing changes, publishing dates and model estimates."
         }
       },
       "tiers": {
@@ -2821,8 +3190,9 @@
         "dominate": "Dominate+"
       },
       "action": {
-        "downloadCsv": "CSV"
-      }
+        "downloadCsv": "Download CSV"
+      },
+      "unavailable": "No saved data yet"
     },
     "paywall": {
       "kicker": "Plan required",
@@ -2861,7 +3231,11 @@
         "disclosure": "Scans are run by Is Agentic, a free public service from Vercel Labs. Your storefront domain is sent to is-agentic.com; no customer or order data leaves ecentic.",
         "disclosureLink": "Is Agentic docs",
         "announceProgress": "Scan {percent}% complete.",
-        "announceComplete": "Scan complete. Score {score} out of 100."
+        "announceComplete": "Scan complete. Score {score} out of 100.",
+        "workspaceTitle": "Storefront scan",
+        "awaitingFirst": "Not scanned yet",
+        "report": "Open report",
+        "providerNote": "Your domain is sent to <provider>Is Agentic</provider>. No customer or order data is shared."
       },
       "score": {
         "title": "Where you stand",
@@ -2884,7 +3258,27 @@
         "publicOnlyUnscored": "Is Agentic holds a report for this domain but has not scored it yet — {label}. Run a scan to pull in the full check-by-check detail and start tracking the trend.",
         "trendSummary": "{count} scans since {since}, from {first} to {latest} out of 100.",
         "gradeLabel": "Grade",
-        "gainAria": "{points} points"
+        "gainAria": "{points} points",
+        "preview": {
+          "emptyTitle": "Your first scan starts here",
+          "publicTitle": "A public report is available",
+          "payments": {
+            "title": "Payments",
+            "description": "Checkout and payment protocol support."
+          },
+          "discovery": {
+            "title": "Discovery",
+            "description": "Signals that help agents find your store."
+          },
+          "accessibility": {
+            "title": "Accessibility",
+            "description": "Whether agents can reach and read your storefront."
+          },
+          "usability": {
+            "title": "Usability",
+            "description": "Interfaces agents can use to work with your store."
+          }
+        }
       },
       "checks": {
         "title": "Every check",
@@ -2976,6 +3370,614 @@
         "shopifyBilling": "Uninstall ecentic in Shopify first to end the Shopify billing agreement, then contact support if this connection remains.",
         "billingRecords": "This account has billing or order records. Contact privacy@ecentic.ai for assisted deletion; we must settle billing and retain legally required records.",
         "storeConnections": "Disconnect your stores and Google Shopping integrations in Settings before deleting the account."
+      }
+    },
+    "traffic": {
+      "title": "AI traffic",
+      "description": "See where recorded AI activity comes from.",
+      "period": "Last 30 days",
+      "source": "Source",
+      "other": "Other sources",
+      "referrals": {
+        "title": "AI referrals",
+        "short": "Referrals",
+        "detail": "Activity classified as an AI referral."
+      },
+      "requests": {
+        "title": "Agent and crawler requests",
+        "short": "Requests",
+        "detail": "Detected user agents, including crawlers and agent browsers."
+      },
+      "empty": {
+        "title": "No AI activity recorded yet",
+        "description": "Activity appears when your tracker detects an AI referral or a recognized user agent."
+      },
+      "action": {
+        "primary": "Check connections",
+        "secondary": "Try again"
+      },
+      "probes": "{count, plural, one {# tracker test ping, excluded from the totals above.} other {# tracker test pings, excluded from the totals above.}}",
+      "limitation": "Counts are recorded events, not unique people or purchases. Browser tracking does not capture every crawler request.",
+      "chart": {
+        "title": "Daily activity",
+        "scope": "OpenAI, Anthropic and Google only.",
+        "hint": "This trend combines referrals and requests. Other providers appear in the source breakdown.",
+        "empty": "No activity recorded for these three providers.",
+        "accessibleLabel": "Daily recorded activity. Use the arrow keys to inspect each date."
+      },
+      "error": {
+        "title": "Traffic could not be loaded",
+        "description": "Your traffic data is temporarily unavailable. Reload this view to try again."
+      }
+    },
+    "qualityWorkspace": {
+      "title": "Data quality",
+      "description": "Find missing or invalid product details and see which listings need attention.",
+      "product": "Product",
+      "productsLabel": "Products",
+      "openProduct": "Open {product}",
+      "search": "Search products or issues",
+      "scope": {
+        "label": "Check scope",
+        "all": "All checks",
+        "universal": "General checks",
+        "google": "Google Merchant",
+        "chatgpt": "ChatGPT feed"
+      },
+      "status": {
+        "label": "Finding status",
+        "all": "All findings",
+        "blocker": "Blocker",
+        "warning": "Warning",
+        "info": "Advisory",
+        "ready": "No findings"
+      },
+      "summary": {
+        "label": "Catalog checks by surface",
+        "title": "Without blockers or warnings",
+        "count": "{count, plural, one {# active product checked} other {# active products checked}}",
+        "passing": "{count} of {total}",
+        "breakdown": "{blocker} with blockers, {warning} with warnings, {info} with advisories only, {ready} with no findings."
+      },
+      "method": {
+        "title": "How this works",
+        "description": "These checks inspect saved active-product data against our rule registry. They do not confirm live storefront access or acceptance by Google or ChatGPT. Advisory-only products count as having no blockers or warnings."
+      },
+      "views": {
+        "label": "Quality view",
+        "issues": "By issue",
+        "products": "By product"
+      },
+      "issueCount": "{count, plural, one {# issue} other {# issues}}",
+      "productCount": "{count, plural, one {# product} other {# products}}",
+      "findings": "{count, plural, one {# finding} other {# findings}}",
+      "issuesHint": "Blockers come first, followed by warnings and advisories. Within each group, issues affecting more products come first. A product may appear under several issues.",
+      "reference": "View {surface} rule documentation",
+      "noFindings": "No findings for this product within the selected checks.",
+      "action": {
+        "primary": "Open catalog",
+        "secondary": "Try again",
+        "tertiary": "Clear filters",
+        "quaternary": "Show more products"
+      },
+      "productAction": {
+        "primary": "Open product"
+      },
+      "searchAction": {
+        "primary": "Clear search"
+      },
+      "states": {
+        "empty": {
+          "title": "No active products to check",
+          "description": "These checks cover active products only. Draft and archived products stay in your catalog, but are not included here."
+        },
+        "error": {
+          "title": "The quality checks could not load",
+          "description": "Your catalog is still saved. Try loading the findings again."
+        },
+        "clear": {
+          "title": "No findings for these checks",
+          "description": "The active products pass the recorded checks for this view. This does not confirm acceptance by a shopping platform."
+        },
+        "noMatches": {
+          "title": "No matching findings or products",
+          "description": "Try another search or clear the filters to see the full list."
+        }
+      }
+    },
+    "productWorkspace": {
+      "title": "Product details",
+      "description": "Review this product’s saved details and recorded AI comparisons.",
+      "status": {
+        "active": "Active",
+        "draft": "Draft",
+        "archived": "Archived",
+        "unknown": "Status unavailable"
+      },
+      "updated": "Updated {time}",
+      "latestComparison": "Last comparison {time}",
+      "priceMissing": "No price saved",
+      "metrics": {
+        "rate": "Simulated win rate",
+        "comparisons": "Comparisons",
+        "coverage": "Saved field coverage",
+        "wins": "Won {wins} of {total}",
+        "competitors": "{count, plural, one {Against # competitor} other {Against # competitors}}"
+      },
+      "method": {
+        "title": "About these numbers",
+        "description": "Win rates use recorded product comparisons. Products and models without comparisons have no measured rate. Field coverage counts six saved fields: title, description, price, image, SKU and structured data. It does not assess how persuasive the content is."
+      },
+      "models": {
+        "title": "Results by model",
+        "description": "Recorded simulations, not live shopping traffic.",
+        "count": "{count, plural, one {# comparison} other {# comparisons}}"
+      },
+      "tabs": {
+        "overview": "Comparisons",
+        "replay": "Agent decisions",
+        "battlecard": "Head-to-head",
+        "optimize": "Listing"
+      },
+      "action": {
+        "primary": "Review with AI",
+        "secondary": "Try again",
+        "tertiary": "Open catalog",
+        "quaternary": "Show more"
+      },
+      "navigation": {
+        "primary": "Back to products",
+        "secondary": "Review optimization queue"
+      },
+      "audit": {
+        "title": "AI content review",
+        "description": "Request a review of the wording, product facts and audience fit. Your saved listing stays unchanged.",
+        "running": "Reviewing the product…",
+        "failed": "The AI review could not be completed. Your saved product details are unchanged.",
+        "savedFields": "Saved product fields",
+        "coverageDescription": "Presence of saved fields is separate from the AI content review.",
+        "ready": "Review completed"
+      },
+      "unmeasured": "Not compared",
+      "noReasoning": "No written reasoning was saved for this comparison.",
+      "states": {
+        "empty": {
+          "title": "No comparisons yet",
+          "description": "This product has no recorded AI comparisons. Its win rate will appear after it has been compared with competitors."
+        },
+        "error": {
+          "title": "This product could not be loaded",
+          "description": "Your catalog is still saved. Try loading this product again."
+        },
+        "missing": {
+          "title": "Product not found",
+          "description": "This product may have been removed or may belong to another store. Open the catalog to choose a product."
+        }
+      },
+      "publishDescription": "Generate an optimized title and description for {title} and publish them to the connected store, replacing the current listing."
+    },
+    "productChannels": {
+      "tab": "Listing & channels",
+      "title": "Your product across channels",
+      "description": "Preview the saved listing, then check its connection and feed records.",
+      "preview": {
+        "title": "Saved listing preview",
+        "description": "Illustrative preview from saved data. Actual placements and layouts vary.",
+        "storefront": "Storefront",
+        "google": "Google",
+        "chatgpt": "ChatGPT",
+        "imageMissing": "No product image saved",
+        "descriptionMissing": "No description saved",
+        "priceMissing": "No price saved",
+        "storefrontNote": "Your imported product details",
+        "googleNote": "Product information for a shopping result",
+        "chatgptNote": "Product information for an assistant’s product card",
+        "sample": "Preview",
+        "googleMode": "AI Mode",
+        "details": "About this product",
+        "store": "Store",
+        "query": "Show me {product}",
+        "action": {
+          "primary": "Visit site"
+        }
+      },
+      "source": {
+        "title": "Catalog connection",
+        "unknown": "Connection details unavailable",
+        "unknownDescription": "Open your integrations to review the catalog connection.",
+        "lastSync": "Catalog synced",
+        "productSync": "Product synced",
+        "notSynced": "No sync recorded",
+        "status": "Connection status",
+        "error": "Needs attention",
+        "unavailable": "Status unavailable",
+        "connected": "Connected",
+        "syncing": "Syncing catalog",
+        "disconnected": "Disconnected",
+        "publicImport": "Public catalog import",
+        "platform": {
+          "feed": "Product feed",
+          "csv": "CSV import",
+          "unknown": "Catalog source"
+        }
+      },
+      "google": {
+        "title": "Google feed records",
+        "description": "These are saved sync records, not a live Google check. A verified override confirms the supplemental update was merged, not that Google displays the product.",
+        "unavailable": "Feed records could not be loaded. Open Google Shopping to check the connection.",
+        "unsupported": "Supplemental Google sync is not available for this catalog source.",
+        "notConnected": "Google Merchant Center is not connected to this catalog.",
+        "setup": "The connection needs setup before product records can be sent.",
+        "ready": "The connection is ready. No feed record has been saved for this product yet.",
+        "pending": "Pending",
+        "live": "Override verified",
+        "disapproved": "Disapproved",
+        "error": "Update failed",
+        "lastSent": "Sent {time}",
+        "lastChecked": "Checked {time}",
+        "offer": "Offer {id}"
+      },
+      "assistant": {
+        "title": "Assistant discovery",
+        "description": "A preview does not confirm that ChatGPT has indexed or recommended this product. Keep product details complete and review your published discovery surfaces."
+      },
+      "action": {
+        "primary": "Manage connection",
+        "secondary": "Open Google Shopping",
+        "tertiary": "View storefront",
+        "quaternary": "Review discovery"
+      }
+    },
+    "optimizeWorkspace": {
+      "title": "Optimize",
+      "description": "Turn comparison findings into better listings. Review the facts before publishing.",
+      "action": {
+        "primary": "Generate & publish",
+        "secondary": "Review listing",
+        "tertiary": "Check data quality",
+        "quaternary": "Try again"
+      },
+      "queue": {
+        "title": "Your next listing changes",
+        "description": "Start with the lowest simulated win rates. Open a product to inspect the evidence.",
+        "sample": "This queue uses saved diagnostic suggestions. Check Data quality for the full active-catalog audit.",
+        "count": "{count, plural, one {# product shown} other {# products shown}}"
+      },
+      "search": "Search products or SKU…",
+      "tabs": {
+        "queue": "To review",
+        "published": "Published",
+        "dismissed": "Dismissed"
+      },
+      "summary": {
+        "candidates": "Eligible for publishing",
+        "manual": "Require manual changes",
+        "published": "Published records"
+      },
+      "row": {
+        "rate": "Simulated win rate",
+        "manual": "Manual changes",
+        "ready": "Publishing available",
+        "context": "Recorded models: {models}"
+      },
+      "method": {
+        "title": "How this queue works",
+        "description": "Candidates have a recorded win rate below 55%. Dismissed products and listings published within the last 14 days are excluded from publishing candidates. A candidate is not a saved draft. Generate & publish creates new copy and immediately replaces the store listing. These suggestions do not predict sales or future win rates."
+      },
+      "states": {
+        "empty": {
+          "title": "Nothing waiting for review",
+          "description": "No listing suggestions are available for this store. Check product data or run a comparison to find the next improvement."
+        },
+        "filtered": {
+          "title": "No matching products",
+          "description": "Try a different product name or SKU."
+        },
+        "error": {
+          "title": "The queue could not be loaded",
+          "description": "Your product data is still saved. Try loading the queue again."
+        }
+      },
+      "confirmation": {
+        "title": "Publish a new listing?",
+        "description": "Generate a new title and description for {title}, then publish them to your connected store. This replaces the current listing without a separate draft review.",
+        "bulkTitle": "Publish changes for this store?",
+        "bulkDescription": "Generate and publish new titles and descriptions for {count, plural, one {# eligible product} other {# eligible products}} in this store. Existing listings will be replaced.",
+        "storeTitle": "Optimize the connected store?",
+        "storeDescription": "Write product structured data and, for Shopify, a store profile. Generate and publish copy for eligible products in this store. This can make several live changes.",
+        "action": {
+          "primary": "Confirm & publish",
+          "secondary": "Keep reviewing"
+        }
+      },
+      "bulk": {
+        "action": "Publish eligible products"
+      },
+      "store": {
+        "action": "Optimize store"
+      },
+      "toast": {
+        "failed": "The change could not be completed",
+        "failedDescription": "Please try again. If publishing started, check the product before retrying.",
+        "published": "{count, plural, one {# listing published} other {# listings published}}",
+        "partial": "{published} published; {failed} could not be completed. Review the remaining products before trying again.",
+        "saved": "Queue updated"
+      },
+      "history": {
+        "unmeasured": "A new comparison is needed to measure the result.",
+        "undated": "Publication time unavailable"
+      },
+      "diagnostics": {
+        "content": "Add useful product facts",
+        "contentHint": "Review the saved title and description. Include accurate specifications and relevant use cases.",
+        "structured_data": "Review structured data",
+        "structured_dataHint": "Check the product’s structured data and add only verified attributes.",
+        "seo": "Add product imagery",
+        "seoHint": "Add a real product image at the source, then sync the catalog.",
+        "platform": "Connect publishing access",
+        "platformHint": "This catalog cannot publish listing changes directly. Connect Shopify or WooCommerce, or update the source manually."
+      }
+    },
+    "channels": {
+      "title": "Channels",
+      "description": "Keep your catalog connected, check delivery and prepare your store for shopping agents.",
+      "source": {
+        "title": "Catalog connection",
+        "description": "Your source catalog and its most recent import.",
+        "synced": "Last imported {date}",
+        "never": "No import recorded",
+        "public": "Public catalog import. Publishing requires an authorized store connection.",
+        "action": {
+          "primary": "Manage connection"
+        }
+      },
+      "google": {
+        "title": "Google delivery",
+        "description": "Saved account and offer records for this store.",
+        "action": {
+          "primary": "Open Google"
+        },
+        "pending": "Pending",
+        "verified": "Verified updates",
+        "issues": "Needs attention",
+        "note": "A verified update is not proof that Google displays the product."
+      },
+      "checkout": {
+        "title": "Checkout",
+        "description": "Review your checkout profile and the products it exposes.",
+        "action": {
+          "primary": "Open checkout"
+        },
+        "scope": "The checkout profile belongs to your account. Product lists are scoped to this store."
+      },
+      "tools": {
+        "title": "Storefront and developer tools",
+        "description": "Inspect one specific capability when you need the underlying evidence.",
+        "checks": "Storefront checks",
+        "access": "Catalog access",
+        "webmcp": "Shopping tools",
+        "playground": "Test checkout",
+        "comparison": "Compare profiles"
+      },
+      "research": {
+        "title": "Looking for catalog rank?",
+        "description": "A catalog query belongs with research. It measures a particular market and query, not storefront readiness.",
+        "action": {
+          "primary": "Open catalog rank"
+        }
+      },
+      "status": {
+        "connected": "Connected",
+        "syncing": "Importing",
+        "disconnected": "Disconnected",
+        "error": "Needs attention",
+        "unavailable": "Unavailable",
+        "unsupported": "Not supported for this source",
+        "setup": "Setup needed",
+        "notConnected": "Not connected"
+      },
+      "error": {
+        "title": "Channel information unavailable",
+        "description": "We could not load the saved connection records. Try again in a moment.",
+        "action": {
+          "primary": "Try again"
+        }
+      },
+      "checks": {
+        "title": "Catalog access",
+        "description": "Check the public files and product feed available to shopping agents."
+      }
+    },
+    "catalogWorkflow": {
+      "reviewTitle": "Review your import",
+      "reviewHint": "{count, number} product rows are ready to import. Rows without a title are skipped.",
+      "fieldsHint": "Use a title or name column. Optional columns: description, price, currency, image, url, sku and id.",
+      "idsHint": "Rows with a matching id update the existing product. Rows without an id create a new product on each import.",
+      "previewHint": "Showing the first {count, number} accepted rows.",
+      "readFailed": "The file could not be read. Choose it again and retry.",
+      "partial": "Imported {imported, number} of {total, number} products. Open the catalog to check the result before importing this file again.",
+      "unknownCurrency": "Currency not specified",
+      "allWork": "All work",
+      "publishable": "Ready to publish",
+      "manual": "Manual review",
+      "reviewLabel": "Filter the work queue",
+      "sourceTitle": "Your catalog source",
+      "sourceHint": "Import from this source, review the saved facts, then compare or improve the listing.",
+      "action": {
+        "primary": "Review file",
+        "secondary": "Choose another file",
+        "tertiary": "Confirm import",
+        "quaternary": "Open catalog"
+      },
+      "improveListing": "Improve listing",
+      "comparisonResults": "Results"
+    },
+    "workspace": {
+      "nav": {
+        "label": "Store workspace",
+        "research": "AI research",
+        "channels": "Channels",
+        "results": "Results",
+        "overview": "Overview",
+        "products": "Products",
+        "optimize": "Optimize"
+      },
+      "sections": {
+        "label": "Workspace sections",
+        "catalog": "Catalog",
+        "quality": "Data quality",
+        "summary": "Summary",
+        "comparisons": "Comparisons",
+        "brand": "Brand",
+        "questions": "Questions",
+        "competitors": "Competitors",
+        "catalogRank": "Catalog rank",
+        "connections": "Connections",
+        "google": "Google",
+        "checks": "Storefront checks",
+        "access": "Catalog access",
+        "checkout": "Checkout",
+        "developer": "Developer tools",
+        "shoppingTools": "Shopping tools",
+        "testCheckout": "Test checkout",
+        "compareProfiles": "Compare profiles"
+      },
+      "results": {
+        "title": "Results",
+        "description": "Recorded AI referrals and crawler activity for this store.",
+        "reportsTitle": "Reports across your stores",
+        "reportsDescription": "Export saved comparisons, catalog data and listing changes. These reports cover your whole account.",
+        "action": {
+          "primary": "Open reports",
+          "secondary": "Review AI research"
+        }
+      },
+      "ready": {
+        "title": "Nothing urgent in the saved checks",
+        "description": "Review your channels or run a new comparison when your catalog changes.",
+        "action": {
+          "primary": "Review channels"
+        }
+      },
+      "reportScope": "All stores in this account",
+      "reportMethod": "Exports contain saved data. Predicted lift is an estimate, not a measured result.",
+      "downloadError": "Could not download the report. Please try again."
+    },
+    "research": {
+      "title": "AI research",
+      "description": "Compare products, inspect saved answers, and decide what to test next.",
+      "unavailable": {
+        "title": "This research could not be loaded",
+        "description": "Please try again. Your saved results have not changed.",
+        "action": {
+          "primary": "Try again"
+        }
+      },
+      "empty": {
+        "title": "Start with a product comparison",
+        "description": "Choose products and real competitors, then see which listing each model selects. Your completed research will appear here."
+      },
+      "comparison": {
+        "title": "Latest completed comparison",
+        "action": {
+          "primary": "Set up a comparison",
+          "secondary": "Inspect results"
+        },
+        "rate": "Simulated win rate",
+        "sample": "{wins} wins in {total} comparisons",
+        "scope": "Results cover this store’s products in this test. They describe model choices, not shopper visits or sales.",
+        "recent": "Earlier comparisons",
+        "first": "This is your first completed comparison.",
+        "cohorts": "Different products, competitors, or models can change the rate. These runs are not a measurement of lift."
+      },
+      "brand": {
+        "title": "Saved brand analysis",
+        "running": "A new analysis is running.",
+        "failed": "The latest analysis did not finish. Open brand analysis to try again.",
+        "empty": "No completed brand analysis yet.",
+        "action": {
+          "primary": "Open brand analysis"
+        },
+        "scope": "These are sampled model answers with your brand supplied as context. Inspect the original questions and answers before acting."
+      },
+      "directions": {
+        "questions": {
+          "title": "Explore shopper questions",
+          "description": "Try the questions shoppers ask and inspect the stores each model suggests.",
+          "action": {
+            "primary": "Explore questions"
+          }
+        },
+        "competitors": {
+          "title": "Choose your competitors",
+          "description": "Review the competing products used in your comparisons and add observed offers.",
+          "action": {
+            "primary": "Manage competitors"
+          }
+        },
+        "rank": {
+          "title": "Check a catalog query",
+          "description": "See where your store appears for one query and country in Shopify Global Catalog.",
+          "action": {
+            "primary": "Check catalog rank"
+          }
+        }
+      },
+      "rank": {
+        "title": "Catalog rank",
+        "description": "A live query against Shopify Global Catalog, scoped to your search and market.",
+        "empty": {
+          "title": "Where does your store appear?",
+          "description": "Enter a shopper’s search and choose a country. This checks the returned catalog offers; it does not establish a universal ChatGPT or Google rank."
+        },
+        "checked": "Shopify Global Catalog · {country} · Checked {time}. Results can change between queries.",
+        "unavailable": {
+          "title": "Catalog rank is not connected",
+          "description": "This workspace cannot query Shopify Global Catalog yet. You can still review your storefront access checks and saved comparisons.",
+          "action": {
+            "primary": "View access checks",
+            "secondary": "View saved comparisons"
+          }
+        }
+      },
+      "comparisons": {
+        "title": "Product comparisons",
+        "description": "Choose the products and competing offers to test, then inspect the models’ selections.",
+        "phases": {
+          "pre": "Ready to compare",
+          "running": "Comparing products",
+          "complete": "Comparison complete"
+        },
+        "unmeasured": "No comparisons for this model"
+      },
+      "questions": {
+        "title": "Shopper questions",
+        "description": "Explore model-generated answers to shopping questions. Suggestions are research, not a verified search ranking."
+      },
+      "competitors": {
+        "title": "Competitors",
+        "description": "Manage competing offers and inspect how your products compare against them.",
+        "action": {
+          "primary": "Add competitors",
+          "secondary": "Set up a comparison",
+          "tertiary": "Back to competitors"
+        },
+        "stats": {
+          "tracked": "Brands in your roster",
+          "tested": "Brands compared",
+          "comparisons": "Stored comparisons"
+        },
+        "empty": {
+          "title": "Choose the alternatives shoppers consider",
+          "description": "Add competing products with observed prices and product details. You can select the relevant offers when setting up a comparison."
+        },
+        "evidence": {
+          "title": "Where your products face the strongest competition",
+          "description": "Your products’ simulated win rate against each brand, starting with the lowest. Only brands with completed comparisons are shown.",
+          "sample": "{count} comparisons"
+        },
+        "roster": "{total} competitors · {selected} selected",
+        "updateFailed": "Could not update this competitor"
       }
     }
   },
@@ -19648,7 +20650,8 @@
     "wooMark": "The Woo mark as a dimensional line sculpture; point at a letter to lift it.",
     "merchantFolio": "A catalog sleeve with product records; point at a sheet to lift it for inspection.",
     "demoPlane": "Illustration: a folded paper plane that banks and lifts toward the pointer.",
-    "partnerCatalogs": "Two merchant catalogs connected for a partner engagement."
+    "partnerCatalogs": "Two merchant catalogs connected for a partner engagement.",
+    "comparisonStand": "Two product listings in a comparison stand"
   },
   "enterprisePilotPreview": {
     "label": "Illustrative pilot · sample brief",

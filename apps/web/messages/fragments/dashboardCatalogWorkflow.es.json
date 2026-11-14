@@ -1,0 +1,28 @@
+{
+  "dashboard": {
+    "catalogWorkflow": {
+      "reviewTitle": "Revisa la importación",
+      "reviewHint": "Hay {count, number} filas de productos listas para importar. Se omiten las filas sin título.",
+      "fieldsHint": "Incluye una columna title o name. Columnas opcionales: description, price, currency, image, url, sku e id.",
+      "idsHint": "Las filas con un id coincidente actualizan el producto existente. Las filas sin id crean un producto nuevo en cada importación.",
+      "previewHint": "Se muestran las primeras {count, number} filas aceptadas.",
+      "readFailed": "No se ha podido leer el archivo. Selecciónalo de nuevo e inténtalo otra vez.",
+      "partial": "Se han importado {imported, number} de {total, number} productos. Revisa el catálogo antes de volver a importar este archivo.",
+      "unknownCurrency": "Moneda no especificada",
+      "allWork": "Todo",
+      "publishable": "Listo para publicar",
+      "manual": "Revisión manual",
+      "reviewLabel": "Filtrar tareas",
+      "sourceTitle": "Origen del catálogo",
+      "sourceHint": "Importa desde este origen, revisa los datos guardados y después compara o mejora la ficha.",
+      "action": {
+        "primary": "Revisar archivo",
+        "secondary": "Elegir otro archivo",
+        "tertiary": "Confirmar importación",
+        "quaternary": "Abrir catálogo"
+      },
+      "improveListing": "Mejorar ficha",
+      "comparisonResults": "Resultados"
+    }
+  }
+}

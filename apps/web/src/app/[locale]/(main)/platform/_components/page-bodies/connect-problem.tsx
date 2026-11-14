@@ -41,7 +41,7 @@ export const ConnectProblem = ({ copy }: ConnectProblem.Props) => (
           <p className="min-h-12 font-medium text-sm leading-snug">
             {copy[key]}
           </p>
-          <ul className="mt-5 grid gap-3 font-mono text-xs max-sm:text-[10px]">
+          <ul className="mt-5 grid gap-3 font-mono text-xs max-sm:text-xs">
             {fields.map((field, index) => (
               <li
                 key={field}

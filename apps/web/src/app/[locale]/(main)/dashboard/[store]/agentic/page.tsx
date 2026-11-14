@@ -98,7 +98,7 @@ const LayerBar = ({
     : 0;
 
   return (
-    <div className="flex flex-col overflow-hidden rounded-lg border border-accent-foreground bg-background">
+    <div className="flex min-w-0 flex-col bg-background-rich">
       <div className="flex items-center justify-between gap-3 border-accent-foreground border-b px-4 py-3">
         <div className="flex min-w-0 items-center gap-2">
           <LayerGlyph
@@ -153,13 +153,14 @@ const ScoreSection = async ({ params }: { params: StoreParams }) => {
     );
 
     return (
-      <div className="flex gap-3 p-4">
-        <GaugeIcon
-          aria-hidden
-          className="mt-0.5 size-4 shrink-0 text-foreground-dimmed"
-        />
-        <div className="flex min-w-0 flex-col gap-3">
-          <p className="text-foreground text-sm">
+      <div className="min-w-0">
+        <div className="flex min-w-0 flex-col gap-2 p-4 sm:px-6 sm:py-5">
+          <h3 className="font-medium text-base text-foreground-rich">
+            {published
+              ? translate("score.preview.publicTitle")
+              : translate("score.preview.emptyTitle")}
+          </h3>
+          <p className="max-w-2xl text-foreground-dimmed text-sm">
             {(() => {
               if (!published) return translate("score.empty");
               // Their API models an unscored report as a null score; rendering it
@@ -185,6 +186,29 @@ const ScoreSection = async ({ params }: { params: StoreParams }) => {
               <ShareIcon aria-hidden className="size-3.5" />
             </a>
           )}
+        </div>
+        <div className="grid gap-px border-accent-foreground border-t bg-accent-foreground sm:grid-cols-2">
+          {(
+            ["payments", "discovery", "accessibility", "usability"] as const
+          ).map((layer) => (
+            <div
+              key={layer}
+              className="flex items-start gap-3 bg-background-rich p-4 sm:px-6 sm:py-5"
+            >
+              <LayerGlyph
+                id={layer}
+                className="mt-0.5 size-6 shrink-0 text-primary-text"
+              />
+              <div className="min-w-0">
+                <h4 className="font-medium text-foreground-rich text-sm">
+                  {translate(`score.preview.${layer}.title`)}
+                </h4>
+                <p className="mt-1 max-w-sm text-foreground-dimmed text-sm">
+                  {translate(`score.preview.${layer}.description`)}
+                </p>
+              </div>
+            </div>
+          ))}
         </div>
       </div>
     );
@@ -246,7 +270,7 @@ const ScoreSection = async ({ params }: { params: StoreParams }) => {
         </div>
       )}
 
-      <div className="grid gap-3 border-accent-foreground border-t p-4 sm:grid-cols-2">
+      <div className="grid gap-px border-accent-foreground border-t bg-accent-foreground sm:grid-cols-2">
         {orderedLayers(report).map((layer) => {
           const counts = tally(layer.checks);
           return (

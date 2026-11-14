@@ -119,7 +119,7 @@ export const StoreAccess = ({ section, labels }: StoreAccess.Props) => {
         <CommerceFigure
           kind={selected.figure}
           surface="field"
-          className="mx-auto max-w-[440px]"
+          className="mx-auto max-w-110"
         />
         <p
           aria-live="polite"

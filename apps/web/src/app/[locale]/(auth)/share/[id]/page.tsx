@@ -18,29 +18,29 @@ const models = [
     id: "gpt4",
     label: "ChatGPT",
     logo: "/images/chatgpt.svg",
-    color: "bg-blue-500",
-    textColor: "text-blue-500",
+    color: "bg-primary",
+    textColor: "text-primary-text",
   },
   {
     id: "claude",
     label: "Claude",
     logo: "/images/claude.svg",
-    color: "bg-orange-500",
-    textColor: "text-orange-500",
+    color: "bg-warning",
+    textColor: "text-warning",
   },
   {
     id: "gemini",
     label: "Gemini",
     logo: "/images/gemini.svg",
-    color: "bg-green-500",
-    textColor: "text-green-500",
+    color: "bg-success",
+    textColor: "text-success",
   },
   {
     id: "perplexity",
     label: "Perplexity",
     logo: "/images/perplexity.svg",
-    color: "bg-teal-500",
-    textColor: "text-teal-500",
+    color: "bg-info",
+    textColor: "text-info",
   },
 ] as const;
 
@@ -138,7 +138,7 @@ export default async ({ params }: SharePageProps) => {
                   </p>
                   <p
                     className={cn(
-                      "font-semibold text-[88px] tabular-nums leading-none",
+                      "font-semibold text-8xl tabular-nums leading-none",
                       color,
                     )}
                   >
@@ -247,10 +247,10 @@ export default async ({ params }: SharePageProps) => {
                 </div>
                 <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-[1fr_auto]">
                   <div className="bg-primary px-6 py-6">
-                    <p className="mb-3 font-light text-white/60 text-xs uppercase tracking-widest">
+                    <p className="mb-3 font-light text-background-rich/60 text-xs uppercase tracking-widest">
                       {translate("finding.impact")}
                     </p>
-                    <p className="font-light text-base text-white leading-relaxed">
+                    <p className="font-light text-base text-background-rich leading-relaxed">
                       {scan.topFinding.impactDescription}
                     </p>
                   </div>

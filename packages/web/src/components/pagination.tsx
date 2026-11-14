@@ -51,6 +51,7 @@ export const PaginationItem = ({
   render,
   isActive,
   size = "icon",
+  variant = "outline",
   className,
   ...props
 }: PaginationItem.Props): JSX.Element => {
@@ -64,10 +65,10 @@ export const PaginationItem = ({
         buttonVariants({
           size,
           color: "accent",
-          variant: "outline",
+          variant,
         }),
-        "bg-background-rich",
-        isActive && "bg-primary-rich text-white",
+        variant === "outline" && "bg-background-rich",
+        isActive && "bg-primary-rich text-background-rich",
         className,
       ),
     }),
@@ -78,7 +79,7 @@ export const PaginationItem = ({
 export namespace PaginationItem {
   export type Props = {
     isActive?: boolean;
-  } & Pick<ComponentProps<typeof Button>, "size"> &
+  } & Pick<ComponentProps<typeof Button>, "size" | "variant"> &
     RenderComponentProps<"li">;
 }
 

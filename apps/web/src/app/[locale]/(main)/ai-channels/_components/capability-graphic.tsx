@@ -80,7 +80,7 @@ export const CapabilityGraphic = ({
               className={cn(
                 "absolute flex h-32 w-[30%] flex-col justify-between rounded-lg border p-4",
                 position === 0
-                  ? "z-1 border-primary-rich/60 bg-linear-to-br from-primary-dimmed to-emphasis-dimmed shadow-[0_0_48px_-20px_var(--color-primary)]"
+                  ? "z-1 border-primary-rich/60 bg-linear-to-br from-primary-dimmed to-emphasis-dimmed shadow-lg shadow-primary/20"
                   : "border-background-rich/20 bg-linear-to-br from-emphasis-rich to-emphasis-dimmed",
               )}
             >
@@ -107,13 +107,13 @@ export const CapabilityGraphic = ({
         </div>
       ) : capability === "checkout" ? (
         <div className="flex w-full max-w-80 items-center justify-center gap-4">
-          <div className="grid size-20 shrink-0 place-items-center rounded-xl border border-primary-rich/40 bg-linear-to-br from-primary-dimmed to-emphasis-dimmed">
+          <div className="grid size-20 shrink-0 place-items-center rounded-lg border border-primary-rich/40 bg-linear-to-br from-primary-dimmed to-emphasis-dimmed">
             <CommerceBasketShoppingIcon className="size-10 text-primary-rich" />
           </div>
           <div className="relative h-px min-w-8 flex-1 bg-linear-to-r from-primary-rich/25 to-primary-rich/60">
             <ArrowRightIcon className="absolute top-1/2 left-1/2 size-4 -translate-x-1/2 -translate-y-1/2 text-primary-rich" />
           </div>
-          <div className="grid size-20 shrink-0 place-items-center rounded-xl border border-background-rich/20 bg-emphasis-dimmed">
+          <div className="grid size-20 shrink-0 place-items-center rounded-lg border border-background-rich/20 bg-emphasis-dimmed">
             <CommerceFileShieldIcon className="size-10 text-background-rich/70" />
           </div>
         </div>

@@ -35,7 +35,7 @@ export const PrivacyOverview = ({ heading, items }: PrivacyOverview.Props) => (
         <p className="mt-4 max-w-[40ch] text-background-rich/75 leading-relaxed">
           {heading.description}
         </p>
-        <div className="mx-auto my-auto w-full max-w-[440px] py-6 max-lg:max-w-[280px]">
+        <div className="mx-auto my-auto w-full max-w-110 py-6 max-lg:max-w-70">
           <CommerceFigure
             kind="documentStack"
             surface="dark"

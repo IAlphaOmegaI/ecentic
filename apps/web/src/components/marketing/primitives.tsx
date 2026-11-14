@@ -142,7 +142,7 @@ export const MarketingStatus = ({
   status,
 }: MarketingStatus.Props) => (
   <span
-    className="marketing-status inline-flex items-center gap-2 font-medium text-[13px] text-foreground [&>span]:size-2 [&>span]:shrink-0 [&>span]:rounded-full [&>span]:bg-primary-text data-[status=not-yet]:[&>span]:border data-[status=soon]:[&>span]:border data-[status=not-yet]:[&>span]:border-current data-[status=soon]:[&>span]:border-current data-[status=feed]:[&>span]:bg-foreground-dimmed data-[status=not-yet]:[&>span]:bg-transparent data-[status=soon]:[&>span]:bg-transparent"
+    className="marketing-status inline-flex items-center gap-2 font-medium text-xs text-foreground [&>span]:size-2 [&>span]:shrink-0 [&>span]:rounded-full [&>span]:bg-primary-text data-[status=not-yet]:[&>span]:border data-[status=soon]:[&>span]:border data-[status=not-yet]:[&>span]:border-current data-[status=soon]:[&>span]:border-current data-[status=feed]:[&>span]:bg-foreground-dimmed data-[status=not-yet]:[&>span]:bg-transparent data-[status=soon]:[&>span]:bg-transparent"
     data-status={status}
   >
     <span aria-hidden="true" />
@@ -173,7 +173,7 @@ export const MarketingHero = ({
       illustration &&
         "[&>.marketing-rail>.marketing-guides]:hidden [&>.marketing-rail]:grid [&>.marketing-rail]:min-h-[calc(100dvh-68px)] [&>.marketing-rail]:grid-cols-2 max-md:[&>.marketing-rail]:grid-cols-1",
       dark &&
-        "marketing-dark enterprise-blue enterprise-journey mx-3 -mt-[68px] mb-3 min-h-dvh overflow-hidden rounded-xl border-0 bg-primary-text text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_22%,transparent)] [--rail-cross:transparent] max-sm:mx-2 max-sm:-mt-[72px] max-sm:mb-2 max-sm:rounded-lg [&>.marketing-rail>.marketing-guides]:hidden [&>.marketing-rail]:grid [&>.marketing-rail]:min-h-dvh [&>.marketing-rail]:grid-cols-[1.15fr_1fr] [&>.marketing-rail]:border-x-background-rich/15 [&>.marketing-rail]:border-y-0 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden max-lg:[&>.marketing-rail]:grid-cols-1 [&_.marketing-eyebrow]:text-background-rich [&_.marketing-screenshot_figcaption]:text-background-rich/85 [&_.marketing-status>span]:bg-background-rich [&_.marketing-status]:text-background-rich [&_:is(h1,h2,h3)]:text-background-rich",
+        "marketing-dark enterprise-blue enterprise-journey mx-3 -mt-17 mb-3 min-h-dvh overflow-hidden rounded-lg border-0 bg-primary-text text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_22%,transparent)] [--rail-cross:transparent] max-sm:mx-2 max-sm:-mt-18 max-sm:mb-2 max-sm:rounded-lg [&>.marketing-rail>.marketing-guides]:hidden [&>.marketing-rail]:grid [&>.marketing-rail]:min-h-dvh [&>.marketing-rail]:grid-cols-[1.15fr_1fr] [&>.marketing-rail]:border-x-background-rich/15 [&>.marketing-rail]:border-y-0 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden max-lg:[&>.marketing-rail]:grid-cols-1 [&_.marketing-eyebrow]:text-background-rich [&_.marketing-screenshot_figcaption]:text-background-rich/85 [&_.marketing-status>span]:bg-background-rich [&_.marketing-status]:text-background-rich [&_:is(h1,h2,h3)]:text-background-rich",
     )}
   >
     {!illustration && !dark && artwork && (
@@ -195,13 +195,13 @@ export const MarketingHero = ({
         dark
           ? "flex w-full flex-col justify-center pt-32 pb-16 max-sm:pt-28 max-sm:pb-10"
           : illustration
-            ? "flex min-h-[480px] flex-col justify-end py-16 max-sm:min-h-0 max-sm:py-12"
-            : "flex min-h-[480px] flex-col justify-center py-16 max-sm:min-h-0 max-sm:py-12",
+            ? "flex min-h-120 flex-col justify-end py-16 max-sm:min-h-0 max-sm:py-12"
+            : "flex min-h-120 flex-col justify-center py-16 max-sm:min-h-0 max-sm:py-12",
       )}
     >
       {identity && <div className="mb-8 max-sm:mb-6">{identity}</div>}
       {eyebrow && <MarketingEyebrow>{eyebrow}</MarketingEyebrow>}
-      <h1 className="max-w-[920px] text-[clamp(3rem,5.2vw,4.8rem)] leading-[1.025] tracking-[-0.043em] max-sm:text-[43px] max-sm:tracking-[-0.036em]">
+      <h1 className="max-w-230 text-5xl xl:text-7xl leading-none tracking-tighter max-sm:text-5xl max-sm:tracking-tight">
         {title}
       </h1>
       {meta && (
@@ -209,7 +209,7 @@ export const MarketingHero = ({
       )}
       <p
         className={cn(
-          "marketing-lead mt-4 max-w-[720px] text-lg leading-relaxed max-sm:text-base",
+          "marketing-lead mt-4 max-w-180 text-lg leading-relaxed max-sm:text-base",
           dark ? "text-background-rich/85" : "text-foreground-dimmed",
         )}
       >
@@ -293,14 +293,14 @@ export const MarketingClosing = ({
 }: MarketingClosing.Props) => (
   <MarketingBand
     data-nav-tone="dark"
-    className="marketing-closing relative m-3 overflow-hidden rounded-xl border-0 bg-emphasis-dimmed text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_20%,transparent)] [--rail-cross:transparent] max-sm:m-2 max-sm:rounded-lg [&>.marketing-rail]:border-y-0 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden [&_.marketing-guides_span]:before:hidden [&_.marketing-guides_span]:after:hidden"
+    className="marketing-closing relative m-3 overflow-hidden rounded-lg border-0 bg-emphasis-dimmed text-background-rich [--rail-color:color-mix(in_oklab,var(--color-background-rich)_20%,transparent)] [--rail-cross:transparent] max-sm:m-2 max-sm:rounded-lg [&>.marketing-rail]:border-y-0 [&>.marketing-rail]:before:hidden [&>.marketing-rail]:after:hidden [&_.marketing-guides_span]:before:hidden [&_.marketing-guides_span]:after:hidden"
   >
     <div
       aria-hidden="true"
       className="pointer-events-none absolute inset-y-0 left-1/2 w-[calc(100dvw-24px)] -translate-x-1/2 bg-radial-[at_bottom_left] from-primary/30 via-primary-dimmed/10 to-transparent max-sm:w-[calc(100dvw-16px)]"
     />
     <div className="relative grid min-w-0 items-center md:grid-cols-[7fr_5fr]">
-      <div className="marketing-cell relative flex min-h-[420px] flex-col justify-center px-7 py-16 max-sm:min-h-0 max-sm:px-4 max-sm:pt-12 max-sm:pb-4">
+      <div className="marketing-cell relative flex min-h-105 flex-col justify-center px-7 py-16 max-sm:min-h-0 max-sm:px-4 max-sm:pt-12 max-sm:pb-4">
         <h2 className="relative max-w-[18ch] text-background-rich">{title}</h2>
         <p className="relative mt-4 max-w-[45ch] text-background-rich/85 text-lg leading-relaxed">
           {description}
@@ -325,7 +325,7 @@ export const MarketingScreenshot = ({
   width = 1280,
   height = 679,
 }: MarketingScreenshot.Props) => (
-  <figure className="marketing-screenshot mt-8 [&_figcaption]:mt-3 [&_figcaption]:text-[13px] [&_figcaption]:text-foreground-dimmed [&_img]:h-auto [&_img]:w-full [&_img]:rounded-lg [&_img]:border [&_img]:border-accent-foreground [&_img]:object-contain">
+  <figure className="marketing-screenshot mt-8 [&_figcaption]:mt-3 [&_figcaption]:text-xs [&_figcaption]:text-foreground-dimmed [&_img]:h-auto [&_img]:w-full [&_img]:rounded-lg [&_img]:border [&_img]:border-accent-foreground [&_img]:object-contain">
     <Image
       src={src}
       alt={alt}

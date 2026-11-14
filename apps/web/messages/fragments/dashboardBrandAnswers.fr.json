@@ -1,0 +1,42 @@
+{
+  "dashboard": {
+    "brand": {
+      "answers": {
+        "title": "Réponses enregistrées",
+        "description": "Consultez les questions sur lesquelles repose cette analyse.",
+        "search": "Rechercher des questions, des réponses ou des marques",
+        "filter": "Mention de la marque",
+        "filters": {
+          "all": "Toutes les réponses",
+          "mentioned": "Avec mention",
+          "absent": "Sans mention"
+        },
+        "count": "{count, plural, one {# réponse} many {# réponses} other {# réponses}} sur {total, number}",
+        "position": {
+          "top": "Recommandation principale",
+          "listed": "Dans la liste",
+          "absent": "Non mentionnée"
+        },
+        "context": {
+          "named": "La question contient le nom de la marque",
+          "unbranded": "La question ne contient pas le nom de la marque"
+        },
+        "answer": "Résumé de la réponse",
+        "noAnswer": "Aucun résumé de la réponse n’a été enregistré.",
+        "brands": "Marques mentionnées",
+        "noBrands": "Aucune marque enregistrée.",
+        "sources": "Sources suggérées par le modèle",
+        "sourcesNote": "Ces sources sont nommées par le modèle. Ce ne sont pas des citations vérifiées issues d’une recherche en direct.",
+        "noSources": "Aucune source enregistrée.",
+        "empty": {
+          "title": "Aucune réponse correspondante",
+          "description": "Essayez une autre recherche ou affichez toutes les réponses.",
+          "saved": "Aucune réponse n’a été enregistrée pour cette analyse."
+        },
+        "action": {
+          "primary": "Effacer la recherche et les filtres"
+        }
+      }
+    }
+  }
+}

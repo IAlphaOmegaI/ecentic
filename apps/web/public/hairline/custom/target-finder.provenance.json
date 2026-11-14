@@ -1,0 +1,32 @@
+{
+  "name": "target-finder",
+  "subject": "addCompetitors",
+  "meaning": "A viewfinder on a focusing rail: slide the sight forward to locate a rival product.",
+  "part": "viewfinder",
+  "answer": [
+    66,
+    20,
+    72
+  ],
+  "bounds": [
+    [
+      -8,
+      -13,
+      0
+    ],
+    [
+      129,
+      71,
+      109
+    ]
+  ],
+  "scale": 1.8,
+  "figure": "/hairline/custom/target-finder.js",
+  "rest": "apps/web/src/components/hairline/rest/target-finder.json",
+  "sourceSha256": "65dd52688cd90cf5e58eccb815efcc204a366a7756410b207ed6894321b92e60",
+  "restSha256": "2161798508a7bd6dcfdeede3638a9e608c26bb643e3a7b1fb502e50c5c724c43",
+  "engine": "Unmodified fixed Hairline kernel",
+  "interaction": "Fixed rest hit area; 700ms EASE_LIFT tween; bounded reach; linked responses delayed 40ms; loop sleeps after settlement.",
+  "reducedMotion": "SSR rest geometry remains complete. Shared CustomHairlineFigure disables pointer code and asset enhancement for reduced motion.",
+  "validation": "output/dashboard-hairline-2026-11-14/target-finder.validation.txt"
+}

@@ -60,7 +60,7 @@ export const ShoppingConversation = ({
     )}
     <div className="min-w-0 px-5 pt-7 pb-6 sm:px-8 sm:pt-8">
       {provider === "chatgpt" && (
-        <div className="mb-8 ml-auto w-fit max-w-[88%] rounded-3xl bg-background px-5 py-3 text-sm leading-relaxed">
+        <div className="mb-8 ml-auto w-fit max-w-[88%] rounded-lg bg-background px-5 py-3 text-sm leading-relaxed">
           {prompt}
         </div>
       )}
@@ -75,7 +75,7 @@ export const ShoppingConversation = ({
           <li key={product.name} className="min-w-0">
             <div
               className={cn(
-                "relative overflow-hidden rounded-xl bg-background-rich",
+                "relative overflow-hidden rounded-lg bg-background-rich",
                 product.imageFit === "cover"
                   ? "aspect-[4/3]"
                   : "aspect-[7/8] max-h-64",

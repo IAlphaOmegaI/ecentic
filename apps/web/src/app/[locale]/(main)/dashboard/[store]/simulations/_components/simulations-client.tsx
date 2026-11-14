@@ -14,9 +14,10 @@ import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { Checkbox } from "@zenncore/web/components/checkbox";
 import { Progress } from "@zenncore/web/components/progress";
+import { ScrollArea } from "@zenncore/web/components/scroll-area";
 import { useToastManager } from "@zenncore/web/components/toast";
 import Image from "next/image";
-import { useLocale, useTranslations } from "next-intl";
+import { useFormatter, useLocale, useTranslations } from "next-intl";
 import { type ReactNode, useEffect, useRef, useState } from "react";
 import { OffersTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/offers-tab";
 import { useScanRunner } from "@/app/[locale]/(auth)/onboarding/scan/_components/use-scan-runner";
@@ -33,7 +34,6 @@ import type * as Product from "@/server/app/product";
 import {
   Crosshair,
   SectionGutter,
-  SectionKicker,
   StatLabel,
   StatusPill,
   TopFindingCallout,
@@ -56,6 +56,7 @@ type LastScan = {
   id: string;
   wins: number;
   losses: number;
+  count: number;
   topFinding: Simulate.TopFinding | null;
   modelRates: Record<string, { wins: number; losses: number; rate: number }>;
 };
@@ -87,10 +88,10 @@ const StatCell = ({
   value: string;
   caption: string;
 }) => (
-  <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
+  <div className="relative flex flex-col justify-between gap-4 bg-background-rich p-4 transition-colors hover:bg-background">
     <StatLabel label={label} icon={icon} />
     <div>
-      <p className="font-bold text-4xl text-foreground-rich capitalize tabular-nums tracking-[-0.02em]">
+      <p className="font-bold text-3xl text-foreground-rich capitalize tabular-nums tracking-tight">
         {value}
       </p>
       <p className="mt-3 text-foreground-dimmed text-xs">{caption}</p>
@@ -136,19 +137,25 @@ const RosterList = ({
   return (
     <div className="flex flex-col bg-background-rich">
       <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
-        <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+        <p className="font-medium text-foreground-dimmed text-sm">
           {label} · {selected.size}/{entries.length}
         </p>
-        <button
+        <Button
+          variant="soft"
+          color="neutral"
           type="button"
           onClick={onToggleAll}
           disabled={disabled || entries.length === 0}
-          className="font-medium text-primary text-xs hover:underline disabled:pointer-events-none disabled:opacity-50"
+          className="text-xs"
         >
           {allSelected ? translate("clearAll") : translate("selectAll")}
-        </button>
+        </Button>
       </div>
-      <div className="max-h-80 flex-1 overflow-y-auto">
+      <ScrollArea
+        className="min-h-0 flex-1"
+        classList={{ viewport: "max-h-80" }}
+        viewportProps={{ role: "region", tabIndex: 0, "aria-label": label }}
+      >
         {entries.length === 0 ? (
           <p className="px-4 py-6 text-foreground-dimmed text-xs">
             {translate("nothingYet")}
@@ -178,10 +185,10 @@ const RosterList = ({
                   onError={() =>
                     setFailed((previous) => new Set(previous).add(entry.id))
                   }
-                  className="size-8 shrink-0 rounded-md bg-background-dimmed object-cover"
+                  className="size-8 shrink-0 rounded-lg bg-background-dimmed object-cover"
                 />
               ) : (
-                <div className="size-8 shrink-0 rounded-md bg-background-dimmed" />
+                <div className="size-8 shrink-0 rounded-lg bg-background-dimmed" />
               )}
               <span
                 className="min-w-0 flex-1 truncate text-foreground text-sm"
@@ -190,14 +197,14 @@ const RosterList = ({
                 {entry.title}
               </span>
               {entry.subtitle && (
-                <span className="shrink-0 text-foreground-dimmed text-xs tabular-nums">
+                <span className="max-w-28 shrink-0 truncate text-foreground-dimmed text-xs tabular-nums">
                   {entry.subtitle}
                 </span>
               )}
             </label>
           ))
         )}
-      </div>
+      </ScrollArea>
     </div>
   );
 };
@@ -212,6 +219,8 @@ export const SimulationsClient = ({
   const toast = useToastManager();
   const translate = useTranslations("dashboard.simulations");
   const locale = useLocale();
+  const format = useFormatter();
+  const research = useTranslations("dashboard.research");
   const run = useTranslations("dashboard.simulations.run");
 
   // The roster for the next run. Detection can append competitors mid-session,
@@ -366,7 +375,7 @@ export const SimulationsClient = ({
         losses: lastScan.losses,
         modelRates: lastScan.modelRates,
         topFinding: lastScan.topFinding,
-        count: products.length,
+        count: lastScan.count,
       };
     }
     return null;
@@ -374,18 +383,18 @@ export const SimulationsClient = ({
 
   return (
     <>
-      <div className="-mx-8 border-accent-foreground border-b">
-        <div className="relative mx-8 bg-background-rich">
+      <div className="border-accent-foreground border-b">
+        <div className="relative bg-background-rich">
           <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
-            <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
+          <div className="grid grid-cols-2 gap-px bg-accent-foreground xl:grid-cols-4">
+            <div className="relative flex flex-col justify-between gap-4 bg-background-rich p-4 transition-colors hover:bg-background">
               <StatLabel
                 label={translate("stats.productsSelected")}
                 icon={<ShoppingCartIcon className="size-7.5 text-primary" />}
               />
               <div>
-                <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
+                <p className="font-bold text-3xl text-foreground-rich tabular-nums tracking-tight">
                   {selectedProducts.size}
                   <span className="ml-1 font-medium text-foreground-dimmed text-xl">
                     / {products.length}
@@ -397,13 +406,13 @@ export const SimulationsClient = ({
               </div>
             </div>
 
-            <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
+            <div className="relative flex flex-col justify-between gap-4 bg-background-rich p-4 transition-colors hover:bg-background">
               <StatLabel
                 label={translate("stats.competitorsSelected")}
-                icon={<BullseyeIcon className="size-7.5 text-error" />}
+                icon={<BullseyeIcon className="size-7.5 text-primary" />}
               />
               <div>
-                <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
+                <p className="font-bold text-3xl text-foreground-rich tabular-nums tracking-tight">
                   {selectedCompetitors.size}
                   <span className="ml-1 font-medium text-foreground-dimmed text-xl">
                     / {competitorList.length}
@@ -415,13 +424,13 @@ export const SimulationsClient = ({
               </div>
             </div>
 
-            <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
+            <div className="relative flex flex-col justify-between gap-4 bg-background-rich p-4 transition-colors hover:bg-background">
               <StatLabel
                 label={translate("stats.estimatedSimulations")}
-                icon={<RadarIcon className="size-7.5 text-warning" />}
+                icon={<RadarIcon className="size-7.5 text-primary" />}
               />
               <div>
-                <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
+                <p className="font-bold text-3xl text-foreground-rich tabular-nums tracking-tight">
                   {totalSimulations}
                 </p>
                 <p className="mt-3 text-foreground-dimmed text-xs">
@@ -430,13 +439,13 @@ export const SimulationsClient = ({
               </div>
             </div>
 
-            <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
+            <div className="relative flex flex-col justify-between gap-4 bg-background-rich p-4 transition-colors hover:bg-background">
               <StatLabel
                 label={translate("stats.estimatedTime")}
                 icon={<ClockIcon className="size-7.5 text-foreground-dimmed" />}
               />
               <div>
-                <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
+                <p className="font-bold text-3xl text-foreground-rich tabular-nums tracking-tight">
                   {estimatedDuration}
                 </p>
                 <p className="mt-3 text-foreground-dimmed text-xs">
@@ -450,51 +459,14 @@ export const SimulationsClient = ({
 
       <SectionGutter />
 
-      <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="relative mx-8 bg-background-rich">
+      <div className="border-accent-foreground border-t border-b">
+        <div className="relative bg-background-rich">
           <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
           <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
           <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
           <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
           <div className="border-accent-foreground border-b p-4">
-            <SectionKicker>{translate("discovery.kicker")}</SectionKicker>
-            <h2 className="mt-2 font-semibold text-foreground-rich text-lg">
-              {translate("discovery.title")}
-            </h2>
-            <p className="mt-1 text-foreground-dimmed text-sm">
-              {translate("discovery.description")}
-            </p>
-            <p className="mt-2 text-foreground-dimmed text-xs">
-              {translate("discovery.totalCompetitors", {
-                count: competitorList.length,
-              })}
-            </p>
-          </div>
-          {/* Measured offers, not model recall. This block builds the roster a
-              scan is about to judge, which is the last place an invented price
-              belongs: `isJudgeable` accepts any non-empty price, so a
-              hallucinated one is fed to the rubric exactly like an observed
-              one — and the resulting win rate is what the whole page reports. */}
-          <OffersTab
-            products={productIds}
-            store={store}
-            onSuccess={handleDetectionSuccess}
-            className="h-[520px] border-0"
-          />
-        </div>
-      </div>
-
-      <SectionGutter />
-
-      <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="relative mx-8 bg-background-rich">
-          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <div className="border-accent-foreground border-b p-4">
-            <SectionKicker>{translate("setup.kicker")}</SectionKicker>
-            <h2 className="mt-2 font-semibold text-foreground-rich text-lg">
+            <h2 className="font-semibold text-foreground-rich text-lg">
               {translate("setup.title")}
             </h2>
             <p className="mt-1 text-foreground-dimmed text-sm">
@@ -532,13 +504,13 @@ export const SimulationsClient = ({
           <div className="flex flex-wrap items-center justify-between gap-3 border-accent-foreground border-t px-4 py-3">
             <p className="text-foreground-dimmed text-xs">
               {translate("setup.estimate", {
-                products: selectedProducts.size,
-                competitors: selectedCompetitors.size,
+                products: format.number(selectedProducts.size),
+                competitors: format.number(selectedCompetitors.size),
               })}
             </p>
             <p className="font-medium text-foreground text-sm tabular-nums">
               {translate("setup.estimateTotal", {
-                total: totalSimulations,
+                total: format.number(totalSimulations),
                 duration: estimatedDuration,
               })}
             </p>
@@ -548,16 +520,16 @@ export const SimulationsClient = ({
 
       <SectionGutter />
 
-      <div className="-mx-8 border-accent-foreground border-t border-b">
-        <div className="relative mx-8 bg-background-rich">
-          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-          <div className="flex items-center justify-between border-accent-foreground border-b p-4">
+      <div
+        id="results"
+        className="scroll-mt-4 border-accent-foreground border-t border-b"
+      >
+        <div className="relative bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 -translate-y-1/2" />
+          <div className="flex flex-wrap items-center justify-between gap-3 border-accent-foreground border-b p-4">
             <div>
-              <SectionKicker>{run("kicker")}</SectionKicker>
-              <h2 className="mt-2 font-semibold text-foreground-rich text-lg">
+              <h2 className="font-semibold text-foreground-rich text-lg">
                 {run("title")}
               </h2>
               <p className="mt-1 text-foreground-dimmed text-sm">
@@ -566,10 +538,11 @@ export const SimulationsClient = ({
             </div>
             <div className="flex items-center gap-2">
               <Button
-                color="accent"
+                color="neutral"
+                variant="soft"
                 type="button"
                 onClick={reset}
-                disabled={isRunning || isStartingScan}
+                disabled={isRunning || isStartingScan || phase === "pre"}
               >
                 {run("reset")}
               </Button>
@@ -592,7 +565,7 @@ export const SimulationsClient = ({
                   between the bands — nobody read that as "progress". */}
               <div className="border-accent-foreground border-b bg-background-rich px-4 py-3.5">
                 <div className="flex items-center justify-between">
-                  <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+                  <p className="font-medium text-foreground-dimmed text-sm">
                     {run("progress")}
                   </p>
                   <span className="font-mono font-semibold text-primary-text text-sm tabular-nums">
@@ -608,7 +581,7 @@ export const SimulationsClient = ({
                 <StatCell
                   label={run("phase")}
                   icon={<RadarIcon className="size-7.5 text-primary" />}
-                  value={phase}
+                  value={research(`comparisons.phases.${phase}`)}
                   caption={run("currentStage")}
                 />
                 <StatCell
@@ -633,7 +606,7 @@ export const SimulationsClient = ({
                 {models.map(({ id, label, logo }) => (
                   <div
                     key={id}
-                    className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background"
+                    className="relative flex flex-col justify-between gap-4 bg-background-rich p-4 transition-colors hover:bg-background"
                   >
                     {/* Logo left, status pinned right — mirrors StatLabel's
                         icon placement in the Discovery cells. */}
@@ -670,7 +643,7 @@ export const SimulationsClient = ({
                       </StatusPill>
                     </div>
                     <div>
-                      <p className="font-bold text-2xl text-foreground-rich tracking-[-0.02em]">
+                      <p className="font-bold text-2xl text-foreground-rich tracking-tight">
                         {label}
                       </p>
                       <div className="mt-2 flex items-center gap-1.5 tabular-nums">
@@ -696,7 +669,7 @@ export const SimulationsClient = ({
                 <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
                 <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
                 <div className="flex items-center justify-between border-accent-foreground border-b bg-background-rich px-5 py-3">
-                  <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+                  <p className="font-medium text-foreground-dimmed text-sm">
                     {run("liveOutput")}
                   </p>
                   <span className="font-mono text-foreground-dimmed text-xs tabular-nums">
@@ -747,6 +720,41 @@ export const SimulationsClient = ({
           )}
         </div>
       </div>
+      <SectionGutter />
+
+      <div className="border-accent-foreground border-t border-b">
+        <div className="relative bg-background-rich">
+          <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+          <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
+          <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
+          <div className="border-accent-foreground border-b p-4">
+            <h2 className="font-semibold text-foreground-rich text-lg">
+              {translate("discovery.title")}
+            </h2>
+            <p className="mt-1 text-foreground-dimmed text-sm">
+              {translate("discovery.description")}
+            </p>
+            <p className="mt-2 text-foreground-dimmed text-xs">
+              {translate("discovery.totalCompetitors", {
+                count: format.number(competitorList.length),
+              })}
+            </p>
+          </div>
+          {/* Measured offers, not model recall. This block builds the roster a
+              scan is about to judge, which is the last place an invented price
+              belongs: `isJudgeable` accepts any non-empty price, so a
+              hallucinated one is fed to the rubric exactly like an observed
+              one — and the resulting win rate is what the whole page reports. */}
+          <OffersTab
+            products={productIds}
+            store={store}
+            onSuccess={handleDetectionSuccess}
+            dashboard
+            className="border-0"
+          />
+        </div>
+      </div>
     </>
   );
 };
@@ -761,11 +769,21 @@ type SimulationCompleteData = {
 
 const SimulationComplete = ({ data }: { data: SimulationCompleteData }) => {
   const translate = useTranslations("dashboard.simulations.complete");
+  const format = useFormatter();
+  const research = useTranslations("dashboard.research.comparisons");
   const { wins, losses, modelRates, topFinding, count } = data;
+  const completedModels = Object.keys(modelRates).map((id) => {
+    const known = [
+      ...models,
+      { id: "perplexity", label: "Perplexity", logo: "/images/perplexity.svg" },
+    ].find((model) => model.id === id);
+    return known ?? { id, label: id, logo: null };
+  });
   const winRate =
-    wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : 0;
+    wins + losses > 0 ? Math.round((wins / (wins + losses)) * 100) : null;
 
   const winRateColor = (() => {
+    if (winRate === null) return "text-foreground-dimmed";
     switch (true) {
       case winRate < 30:
         return "text-error";
@@ -778,94 +796,104 @@ const SimulationComplete = ({ data }: { data: SimulationCompleteData }) => {
 
   return (
     <>
-      <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
-        <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
+      <div className="grid grid-cols-2 gap-px bg-accent-foreground xl:grid-cols-4">
+        <div className="relative flex flex-col justify-between gap-4 bg-background-rich p-4 transition-colors hover:bg-background">
           <StatLabel
             label={translate("winRate")}
             icon={<AwardIcon className="size-7.5 text-success" />}
           />
           <p
             className={cn(
-              "font-bold text-4xl tabular-nums tracking-[-0.02em]",
+              "font-bold text-3xl tabular-nums tracking-tight",
               winRateColor,
             )}
           >
-            {winRate}
-            <span className="ml-0.5 font-medium text-foreground-dimmed text-xl">
-              %
-            </span>
+            {winRate ?? "—"}
+            {winRate !== null && (
+              <span className="ml-0.5 font-medium text-foreground-dimmed text-xl">
+                %
+              </span>
+            )}
           </p>
         </div>
-        <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
+        <div className="relative flex flex-col justify-between gap-4 bg-background-rich p-4 transition-colors hover:bg-background">
           <StatLabel
             label={translate("products")}
             icon={<ShoppingCartIcon className="size-7.5 text-primary" />}
           />
-          <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
+          <p className="font-bold text-3xl text-foreground-rich tabular-nums tracking-tight">
             {count}
           </p>
         </div>
-        <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
+        <div className="relative flex flex-col justify-between gap-4 bg-background-rich p-4 transition-colors hover:bg-background">
           <StatLabel
             label={translate("wins")}
             icon={<TrendUpIcon className="size-7.5 text-success" />}
           />
-          <p className="font-bold text-4xl text-success tabular-nums tracking-[-0.02em]">
+          <p className="font-bold text-3xl text-success tabular-nums tracking-tight">
             {wins}
           </p>
         </div>
-        <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
+        <div className="relative flex flex-col justify-between gap-4 bg-background-rich p-4 transition-colors hover:bg-background">
           <StatLabel
             label={translate("losses")}
-            icon={<TrendDownIcon className="size-7.5 text-error" />}
+            icon={<TrendDownIcon className="size-7.5 text-primary" />}
           />
-          <p className="font-bold text-4xl text-error tabular-nums tracking-[-0.02em]">
+          <p className="font-bold text-3xl text-error tabular-nums tracking-tight">
             {losses}
           </p>
         </div>
       </div>
 
-      {/* 3 models — see note above: a 4-col grid leaves a phantom empty cell. */}
-      <div className="grid grid-cols-1 gap-px border-accent-foreground border-t bg-accent-foreground sm:grid-cols-3">
-        {models.map(({ id, label, logo }) => {
+      <div className="divide-y divide-accent-foreground border-accent-foreground border-t">
+        {completedModels.map(({ id, label, logo }) => {
           const rates = modelRates[id];
-          const rate = rates?.rate ?? 0;
+          const hasSample =
+            rates !== undefined && rates.wins + rates.losses > 0;
           return (
             <div
               key={id}
-              className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background"
+              className="flex items-center gap-4 bg-background-rich px-4 py-4 sm:px-6"
             >
-              {/* Logo left, rate right — same cell language as the running state. */}
-              <div className="flex items-start justify-between gap-2">
+              {logo ? (
                 <Image
                   src={logo}
-                  alt={label}
-                  width={32}
-                  height={32}
-                  className="size-8"
+                  alt=""
+                  width={28}
+                  height={28}
+                  className="size-7 shrink-0"
                 />
-                <span className="font-bold text-foreground-rich text-xl tabular-nums tracking-[-0.02em]">
-                  {rate}
-                  <span className="ml-0.5 font-medium text-foreground-dimmed text-sm">
-                    %
-                  </span>
-                </span>
-              </div>
-              <div>
-                <p className="font-bold text-2xl text-foreground-rich tracking-[-0.02em]">
+              ) : (
+                <span
+                  aria-hidden
+                  className="size-7 shrink-0 rounded-lg bg-background-dimmed"
+                />
+              )}
+              <div className="min-w-0 flex-1">
+                <p className="font-medium text-foreground-rich text-sm">
                   {label}
                 </p>
-                <div className="mt-2 flex items-center gap-1.5 tabular-nums">
-                  <span className="font-medium text-success text-xs">
-                    {rates?.wins ?? 0}W
-                  </span>
-                  <span className="text-foreground-dimmed text-xs">·</span>
-                  <span className="font-medium text-error text-xs">
-                    {rates?.losses ?? 0}L
-                  </span>
-                </div>
-                <Progress value={rate} className="mt-3" />
+                <p className="mt-1 text-foreground-dimmed text-xs">
+                  {hasSample
+                    ? `${format.number(rates.wins)} ${translate("wins")} · ${format.number(rates.losses)} ${translate("losses")}`
+                    : research("unmeasured")}
+                </p>
               </div>
+              {hasSample && (
+                <Progress
+                  value={rates.rate}
+                  aria-label={`${label} ${translate("winRate")}`}
+                  className="hidden w-1/3 sm:block"
+                />
+              )}
+              <p className="w-16 text-right font-semibold text-foreground-rich text-xl tabular-nums">
+                {hasSample
+                  ? format.number(rates.rate / 100, {
+                      style: "percent",
+                      maximumFractionDigits: 0,
+                    })
+                  : "—"}
+              </p>
             </div>
           );
         })}
@@ -876,9 +904,11 @@ const SimulationComplete = ({ data }: { data: SimulationCompleteData }) => {
         <TopFindingCallout className="border-accent-foreground border-t px-5 py-4">
           {translate("topFinding", {
             name: topFinding.name,
-            attributes: topFinding.missingAttributes.join(" and "),
+            attributes: format.list(topFinding.missingAttributes, {
+              type: "conjunction",
+            }),
             impact: topFinding.impactDescription,
-            loss: topFinding.lossPercentage,
+            loss: format.number(topFinding.lossPercentage),
           })}
         </TopFindingCallout>
       )}

@@ -1,0 +1,83 @@
+{
+  "dashboard": {
+    "workspace": {
+      "nav": {
+        "label": "Shop-Arbeitsbereich",
+        "research": "KI-Recherche",
+        "channels": "Kanäle",
+        "results": "Ergebnisse",
+        "overview": "Übersicht",
+        "products": "Produkte",
+        "optimize": "Optimieren"
+      },
+      "sections": {
+        "label": "Arbeitsbereiche",
+        "catalog": "Katalog",
+        "quality": "Datenqualität",
+        "summary": "Zusammenfassung",
+        "comparisons": "Vergleiche",
+        "brand": "Marke",
+        "questions": "Fragen",
+        "competitors": "Wettbewerber",
+        "catalogRank": "Katalogplatzierung",
+        "connections": "Verbindungen",
+        "google": "Google",
+        "checks": "Shop prüfen",
+        "access": "Katalogzugriff",
+        "checkout": "Checkout",
+        "developer": "Entwicklertools",
+        "shoppingTools": "Shopping-Tools",
+        "testCheckout": "Checkout testen",
+        "compareProfiles": "Profile vergleichen"
+      },
+      "results": {
+        "title": "Ergebnisse",
+        "description": "Erfasste KI-Verweise und Crawler-Aktivität für diesen Shop.",
+        "reportsTitle": "Berichte für alle Ihre Shops",
+        "reportsDescription": "Exportieren Sie gespeicherte Vergleiche, Katalogdaten und Änderungen an Produktseiten. Diese Berichte umfassen Ihr gesamtes Konto.",
+        "action": {
+          "primary": "Berichte öffnen",
+          "secondary": "KI-Recherche ansehen"
+        }
+      },
+      "ready": {
+        "title": "Keine dringenden Aufgaben in den gespeicherten Prüfungen",
+        "description": "Prüfen Sie Ihre Kanäle oder starten Sie einen neuen Vergleich, wenn sich Ihr Katalog ändert.",
+        "action": {
+          "primary": "Kanäle prüfen"
+        }
+      },
+      "reportScope": "Alle Shops in diesem Konto",
+      "reportMethod": "Exporte enthalten gespeicherte Daten. Die prognostizierte Verbesserung ist eine Schätzung, kein gemessenes Ergebnis.",
+      "downloadError": "Der Bericht konnte nicht heruntergeladen werden. Bitte versuchen Sie es erneut."
+    },
+    "reports": {
+      "title": "Berichte",
+      "description": "Laden Sie gespeicherte Vergleiche und Katalogdaten aus allen Ihren Shops herunter.",
+      "shareable": {
+        "title": "Vergleichsbericht teilen",
+        "description": "Öffnen Sie den öffentlichen Bericht Ihres letzten abgeschlossenen Vergleichs. Prüfen Sie den Inhalt vor dem Teilen.",
+        "action": {
+          "primary": "Bericht öffnen"
+        }
+      },
+      "action": {
+        "downloadCsv": "CSV herunterladen"
+      },
+      "items": {
+        "winRateSummary": {
+          "description": "Ergebnisse je Modell aus dem letzten abgeschlossenen Scan."
+        },
+        "productPerformance": {
+          "description": "Gespeicherte Produktfelder und simulierte Gewinnquoten, aufgeschlüsselt nach Modell."
+        },
+        "competitorAnalysis": {
+          "description": "Erfasste Wettbewerber, beobachtete Preise soweit verfügbar und Vergleichsergebnisse."
+        },
+        "optimizationImpact": {
+          "description": "Gespeicherte Änderungen an Produktseiten, Veröffentlichungsdaten und Modellschätzungen."
+        }
+      }
+    }
+  }
+}

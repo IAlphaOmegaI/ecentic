@@ -1,169 +1,137 @@
 # @zenncore/data-table
 
-TanStack Table context and hooks for building data tables.
+Typed TanStack Table context and hooks. The [web DataTable](../../web/data-table.md) supplies the shared table renderer and controls.
 
-## Installation
-
-```bash
-bun add @zenncore/data-table
-```
-
-## Usage
+## Exports
 
 ```tsx
 import {
   DataTableProvider,
   useDataTable,
   useInterfacedTable,
-} from '@zenncore/data-table';
+  type DataTableFeatures,
+  type Pagination,
+  type TableRow,
+} from "@zenncore/data-table";
 ```
 
-## Components
+`useInterfacedTable` is the public export of the internally named `useDataTableConfig` hook. Do not import `useDataTableConfig` from the package root.
 
-### DataTableProvider
+## DataTableProvider
 
-Provides table state context to child components.
+The provider passes its configuration to `useInterfacedTable` and exposes the result to descendants.
+
+| Prop | Type | Contract |
+|------|------|----------|
+| `rows` | `Row[]` | Required; every row extends `TableRow` |
+| `columns` | `ColumnDef[]` | Required; definitions bound to `DataTableFeatures` |
+| `handler` | `"client" \| "server"` | Defaults to `"client"` |
+| `pageIndex` | `number` | 1-based; defaults to `1` |
+| `pageSize` | `number` | Defaults to `20` in client mode; required in server mode |
+| `rowCount` | `number` | Server mode only; total rows across all pages |
+| `pageCount` | `number` | Server-mode alternative to `rowCount` |
+| `onPaginationChange` | `(value: PaginationState) => void` | Receives resolved state with a 1-based `pageIndex` |
+| `onSortingChange` | `(value: SortingState) => void` | Receives resolved sort state |
+| `onColumnsFilterChange` | `(value: ColumnFiltersState) => void` | Receives resolved filter state; note the plural **Columns** in the prop name |
+| `onExpandedChange` | `(value: ExpandedState) => void` | Receives resolved expansion state |
+| `children` | `ReactNode` | Provider descendants |
+
+`data`, `total`, `initialState`, and `getRowId` are not exposed by this wrapper. Server mode requires `pageSize` and either `rowCount` or `pageCount`. Pass the current page as `rows`, not the entire server dataset.
+
+Client mode owns pagination locally; `pageIndex`/`pageSize` initialize it. Server mode uses those incoming props as controlled state, so the caller must update them after `onPaginationChange`. The wrapper converts to TanStack's 0-based index internally; do not subtract one at its public boundary.
+
+Sorting and filtering are state-only in both modes: no sorted or filtered row models are registered. The caller supplies appropriately processed rows, including applying server sorting/filtering before pagination. Pagination, expansion, faceting, row selection, and column visibility features are registered.
+
+## Basic setup
 
 ```tsx
-<DataTableProvider
-  columns={columns}
-  data={data}
-  pageCount={totalPages}
->
-  <DataTable />
-  <DataTablePagination />
-</DataTableProvider>
+"use client";
+
+import { DataTableProvider } from "@zenncore/data-table";
+import {
+  createColumnHelper,
+  DataTable,
+  DataTableEmpty,
+  DataTablePagination,
+} from "@zenncore/web/components/data-table";
+
+type User = { _id: string; name: string; email: string };
+const columnHelper = createColumnHelper<User>();
+const columns = [
+  columnHelper.accessor("name", { header: "Name" }),
+  columnHelper.accessor("email", { header: "Email" }),
+];
+
+export const UsersTable = ({ rows }: { rows: User[] }) => (
+  <DataTableProvider rows={rows} columns={columns}>
+    <DataTable>
+      <DataTableEmpty>No users found.</DataTableEmpty>
+    </DataTable>
+    <DataTablePagination />
+  </DataTableProvider>
+);
 ```
 
-**Props:**
+Use localized headings, empty copy, and `DataTablePagination.labels` in app screens. Custom table renderers use the shared `Table`, `TableHeader`, `TableBody`, `TableRow`, `TableHead`, and `TableCell` components from `@zenncore/web/components/table`.
 
-| Prop | Type | Description |
-|------|------|-------------|
-| `columns` | `ColumnDef[]` | TanStack Table columns |
-| `data` | `T[]` | Table data |
-| `pageCount` | `number` | Total pages |
-| `initialState` | `InitialTableState` | Initial table state |
-| `getRowId` | `(row) => string` | Row ID function |
+## useDataTable
 
-### useDataTable
-
-Hook to access table state and methods.
+Call inside the provider:
 
 ```tsx
-const { table, pagination, sorting, rowSelection } = useDataTable();
+const { table, pagination } = useDataTable<User>();
 ```
 
-**Returns:**
+The return value has exactly these two properties. `table` is the TanStack `Table<DataTableFeatures, User>` instance; sorting, filtering, selection, and visibility are accessed through that instance. There are no top-level `sorting` or `rowSelection` context properties.
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `table` | `Table<T>` | TanStack Table instance |
-| `pagination` | `Pagination` | Pagination state & methods |
-| `sorting` | `SortingState` | Sort state |
-| `rowSelection` | `RowSelectionState` | Row selection |
-
----
-
-## Hooks
-
-### useInterfacedTable (useDataTableConfig)
-
-Creates typed table configuration.
-
-```tsx
-const config = useInterfacedTable<User>({
-  columns: columnHelper.columns,
-  data: users,
-});
-```
-
----
-
-## Types
-
-### Pagination
+`pagination` exposes the wrapper's 1-based state and helpers:
 
 ```ts
 type Pagination = {
   pageIndex: number;
-  pageCount: number;
   pageSize: number;
-  goToPage: (page: number) => void;
-  nextPage: () => void;
-  previousPage: () => void;
-  canNextPage: boolean;
-  canPreviousPage: boolean;
+  pageCount: number;
+  canGoNextPage: boolean;
+  canGoPreviousPage: boolean;
+  goToNextPage: () => void;
+  goToPreviousPage: () => void;
+  goToFirstPage: () => void;
+  goToLastPage: () => void;
+  goToPage: (pageIndex: number) => void;
+  setPageSize: (pageSize: number) => void;
 };
 ```
 
-### TableRow
+For example, `pagination.goToPage(1)` requests the first page. In server mode, these helpers invoke `onPaginationChange`; they do not fetch rows.
 
-```ts
-type TableRow = {
-  _id: string;
-  [key: string]: any;
-};
-```
+## useInterfacedTable
 
----
-
-## Examples
-
-### Basic Setup
+Use directly when building a custom context/rendering layer. It accepts the same configuration as the provider, excluding `children`, and returns `{ table, pagination }`.
 
 ```tsx
-import { DataTableProvider, useDataTable } from '@zenncore/data-table';
-import { createColumnHelper } from '@zenncore/web/components/data-table';
-
-type User = { _id: string; name: string; email: string };
-const columnHelper = createColumnHelper<User>();
-
-const columns = [
-  columnHelper.accessor('name', { header: 'Name' }),
-  columnHelper.accessor('email', { header: 'Email' }),
-];
-
-function UserTable() {
-  const { table, pagination } = useDataTable<User>();
-
-  return (
-    <table>
-      <thead>
-        {table.getHeaderGroups().map(group => (
-          <tr key={group.id}>
-            {group.headers.map(header => (
-              <th key={header.id}>
-                {flexRender(header.column.columnDef.header, header.getContext())}
-              </th>
-            ))}
-          </tr>
-        ))}
-      </thead>
-      <tbody>
-        {table.getRowModel().rows.map(row => (
-          <tr key={row.original._id}>
-            {row.getVisibleCells().map(cell => (
-              <td key={cell.id}>
-                {flexRender(cell.column.columnDef.cell, cell.getContext())}
-              </td>
-            ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
-  );
-}
-
-<DataTableProvider columns={columns} data={users} pageCount={10}>
-  <UserTable />
-</DataTableProvider>
+const { table, pagination } = useInterfacedTable<User>({
+  rows: users,
+  columns,
+  pageSize: 20,
+});
 ```
 
----
+The hook alone does not provide context to `DataTable`; use `DataTableProvider` with the standard web renderer.
 
-## Notes
+## Row and column types
 
-- Built on `@tanstack/react-table` v9 — the wrapper registers its own `tableFeatures` set (pagination, expansion, faceting, plus state-only sorting/filtering and the selection/visibility features the `DataTable` renderer needs) and exports it as `DataTableFeatures`
-- Provides pagination, sorting, row selection
-- Used by `@zenncore/web` DataTable component
-- Type-safe with generics
+Rows combine their domain fields with these wrapper properties:
+
+```ts
+type User = {
+  _id: string | number;
+  name: string;
+  email: string;
+  subrows?: User[];
+  href?: string;
+};
+```
+
+`subrows` supplies expandable children. `href` is optional metadata; the web renderer does not automatically turn it into navigation. Define links/actions in column cells.
+
+The raw TanStack v9 types require a feature generic. For application columns, use the pre-bound `ColumnDef<Row>` and `createColumnHelper<Row>()` exports from `@zenncore/web/components/data-table`. The wrapper's column metadata accepts `className?: string`, which the web renderer applies to header and body cells.

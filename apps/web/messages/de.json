@@ -467,7 +467,13 @@
         "channels": "Kanäle"
       },
       "agentic": "Agentic Score",
-      "webmcp": "WebMCP"
+      "webmcp": "WebMCP",
+      "assistant": {
+        "title": "Judy fragen",
+        "status": "Vorschau",
+        "description": "Judy ist noch in Entwicklung. Chat und Katalogaktionen sind noch nicht verfügbar. Nutzen Sie bis dahin die Werkzeuge im Dashboard.",
+        "name": "Judy"
+      }
     },
     "sidebar": {
       "allStores": "Alle Shops"
@@ -549,7 +555,8 @@
       "states": {
         "searching": "Suche läuft…",
         "empty": "Keine Ergebnisse",
-        "emptyForQuery": "Keine Ergebnisse für „{query}“"
+        "emptyForQuery": "Keine Ergebnisse für „{query}“",
+        "unavailable": "Die Suche ist vorübergehend nicht verfügbar. Versuche es erneut."
       },
       "sections": {
         "products": "Produkte",
@@ -568,6 +575,9 @@
         "ucpStructuredData": "UCP & strukturierte Daten",
         "optimize": "Optimieren",
         "settings": "Einstellungen"
+      },
+      "action": {
+        "primary": "Erneut versuchen"
       }
     },
     "notifications": {
@@ -685,29 +695,118 @@
         "products": "Top-Produkte",
         "competitors": "Wettbewerber",
         "agents": "Agentenbesuche",
-        "topProducts": "Top-Produkte",
-        "agentVisits": "Agentenbesuche"
+        "topProducts": "Produkte",
+        "agentVisits": "KI-Besuche"
       },
       "charts": {
         "kickers": {
           "performance": "01 — Performance",
           "recentActivity": "01.5 — Letzte Aktivitäten"
         },
-        "winRateByModel": "Gewinnquote nach Modell",
-        "winRateTrend": "Trend der Gewinnquote",
+        "winRateByModel": "Durchschnittliche Gewinnquote der Produkte je Modell",
+        "winRateTrend": "Gewinnquote je Scan",
         "states": {
           "noModels": "Starten Sie eine Simulation, um die Performance je Modell zu sehen.",
-          "noTrend": "Nicht genügend Daten für einen Trend vorhanden.",
+          "noTrend": "Noch keine abgeschlossenen Scans.",
           "noTrendHint": "Starten Sie mit einer Simulation.",
           "noActivity": "Noch keine Aktivität. Starten Sie Ihre erste Simulation, um hier Ergebnisse zu sehen."
         },
         "action": {
-          "primary": "Alle Produkte anzeigen",
-          "secondary": "Optimierungen"
-        }
+          "primary": "Letzten Scan prüfen",
+          "secondary": "Optimierungen",
+          "tertiary": "Simulationen ansehen"
+        },
+        "recentActivity": "Letzte Scans",
+        "latestScan": "Letzter abgeschlossener Scan",
+        "modelHint": "Der Durchschnitt jedes Modells über die verglichenen Produkte.",
+        "change": "Seit dem vorherigen Scan",
+        "sampleNote": "Jeder Punkt ist ein eigener Scan; die ausgewählten Produkte und Wettbewerber können sich unterscheiden."
       },
       "title": "Übersicht",
-      "description": "Wie KI-Einkaufsagenten Ihren Katalog im Vergleich zu Wettbewerbern bewerten."
+      "description": "Was Aufmerksamkeit braucht, was sich geändert hat und was als Nächstes ansteht.",
+      "summary": {
+        "latestWinRate": "Neueste simulierte Gewinnquote",
+        "latestResult": "{wins, plural, one {# Sieg} other {# Siege}} aus {total, plural, one {# Vergleich} other {# Vergleichen}}",
+        "change": "{value} Prozentpunkte",
+        "coverage": "Verglichene Produkte",
+        "coverageDetail": "{count, number} von {total, plural, one {# Katalogprodukt} other {# Katalogprodukten}}",
+        "coverageHint": "Basierend auf abgeschlossenen Produktvergleichen.",
+        "noResult": "Starten Sie Ihren ersten Scan, um Ergebnisse zu sehen.",
+        "topPerformer": "Stärkstes Produkt",
+        "opportunity": "Produkt mit Verbesserungsbedarf",
+        "productRate": "Gewinnt {rate} seiner Vergleiche",
+        "updated": "Letzter abgeschlossener Scan: {time}",
+        "action": {
+          "primary": "Produkt ansehen",
+          "secondary": "Dieses Produkt verbessern",
+          "tertiary": "Produkte auswählen"
+        },
+        "emptyProduct": "Produktergebnisse erscheinen nach Ihrem ersten Scan."
+      },
+      "priorities": {
+        "title": "Nächste Schritte",
+        "description": "Ergänzen Sie fehlende Produktangaben und vergleichen Sie danach erneut.",
+        "fields": {
+          "description": {
+            "title": "Fehlende Beschreibungen ergänzen",
+            "detail": "{count, plural, one {# Produkt hat keine Beschreibung.} other {# Produkte haben keine Beschreibung.}}"
+          },
+          "price": {
+            "title": "Fehlende Preise ergänzen",
+            "detail": "{count, plural, one {# Produkt hat keinen Preis.} other {# Produkte haben keinen Preis.}}"
+          },
+          "sku": {
+            "title": "Fehlende SKUs ergänzen",
+            "detail": "{count, plural, one {# Produkt hat keine SKU.} other {# Produkte haben keine SKU.}}"
+          },
+          "complete": {
+            "title": "Grundlegende Produktfelder sind ausgefüllt",
+            "detail": "Beschreibungen, Preise und SKUs geprüft."
+          }
+        },
+        "compare": {
+          "title": "Noch nicht verglichene Produkte vergleichen",
+          "detail": "{count, plural, one {# Produkt wurde noch nicht verglichen.} other {# Produkte wurden noch nicht verglichen.}}",
+          "complete": {
+            "title": "Ihr gesamter Katalog wurde verglichen",
+            "detail": "{count, plural, one {# Produkt mit abgeschlossenen Vergleichen.} other {# Produkte mit abgeschlossenen Vergleichen.}}"
+          }
+        },
+        "optimize": {
+          "title": "Verbesserungen für Produkteinträge prüfen",
+          "detail": "{count, plural, one {# Produkt in Ihrer Optimierungswarteschlange.} other {# Produkte in Ihrer Optimierungswarteschlange.}}",
+          "complete": {
+            "title": "Keine Verbesserungen für Produkteinträge vorgemerkt",
+            "detail": "Prüfen Sie die Diagnose Ihrer Produkteinträge nach dem nächsten Scan."
+          }
+        },
+        "action": {
+          "primary": "Produktdetails prüfen",
+          "secondary": "Produkte auswählen",
+          "tertiary": "Optimieren öffnen",
+          "quaternary": "Vergleiche ansehen"
+        }
+      },
+      "traffic": {
+        "title": "Erfasste KI-Zugriffe",
+        "description": "Erfasste Ereignisse der letzten 30 Tage.",
+        "referrals": "Zugriffe über KI-Assistenten",
+        "crawlers": "Anfragen von Agenten und Crawlern",
+        "hint": "Dies sind erfasste Besuche und Anfragen, keine eindeutigen Käufer oder Käufe.",
+        "action": {
+          "primary": "KI-Zugriffe prüfen"
+        }
+      },
+      "priorityChecks": {
+        "incomplete": {
+          "title": "Vervollständigen Sie Ihre Produktangaben",
+          "detail": "{count, plural, one {Bei # Produkt fehlen Katalogangaben.} other {Bei # Produkten fehlen Katalogangaben.}}"
+        },
+        "unavailable": {
+          "title": "Verbesserungsvorschläge sind nicht verfügbar",
+          "description": "Öffnen Sie Optimieren, um die verfügbaren Prüfungen für diesen Shop anzusehen."
+        }
+      }
     },
     "agentVisits": {
       "kicker": "04 — Agenten-Traffic",
@@ -778,6 +877,16 @@
             "primary": "Keine Produkte entsprechen den Filtern",
             "secondary": "Versuchen Sie eine andere Suche oder löschen Sie Ihre Filter."
           }
+        },
+        "overviewTools": {
+          "sort": "Sortieren",
+          "defaultOrder": "Standardreihenfolge",
+          "ascending": "Aufsteigend",
+          "descending": "Absteigend",
+          "comparison": "Vergleichsstatus",
+          "all": "Alle Produkte",
+          "compared": "Verglichen",
+          "notCompared": "Noch nicht verglichen"
         }
       },
       "title": "Produkte",
@@ -996,6 +1105,69 @@
         "noFindingTitle": "Für diesen Scan wurde kein Ergebnis erfasst.",
         "noFindingHint": "Führen Sie den Scan erneut aus, um Erkenntnisse zu sehen.",
         "fixThis": "Das beheben"
+      },
+      "catalog": {
+        "title": "Produkte",
+        "description": "Finden Sie ein Produkt, prüfen Sie seine Ergebnisse und ergänzen Sie wichtige Angaben.",
+        "tableLabel": "Produktkatalog",
+        "columns": "Spalten",
+        "resetColumns": "Spalten zurücksetzen",
+        "sortBy": "Nach {field} sortieren",
+        "noSku": "Keine SKU",
+        "unmeasured": "Nicht verglichen",
+        "rate": "KI-Gewinnrate: {value} %",
+        "coverage": "Ausgefüllte Felder: {value} %",
+        "coverageHint": "Prüft sechs Katalogfelder auf vorhandene Angaben: Titel, Beschreibung, Preis, Bild, SKU und strukturierte Daten. Dies ist keine KI-Qualitätsbewertung.",
+        "comparisons": "{count, plural, one {# Vergleich} other {# Vergleiche}}",
+        "results": "Produkte: {count, number}",
+        "range": "{from}–{to} von {total}",
+        "summary": {
+          "imported": "In Ihrem Katalog",
+          "importedHint": "Alle importierten Produkte",
+          "compared": "Von KI verglichen",
+          "comparedHint": "Mindestens ein gespeicherter Vergleich",
+          "incomplete": "Unvollständige Einträge",
+          "incompleteHint": "Mindestens eines der sechs Felder fehlt",
+          "unavailable": "Die Katalogsummen sind vorübergehend nicht verfügbar. Sie können die Liste weiterhin durchsuchen."
+        },
+        "fields": {
+          "product": "Produkt",
+          "sku": "SKU",
+          "price": "Preis",
+          "currency": "Währung",
+          "winRate": "KI-Gewinnrate",
+          "quality": "Ausgefüllte Felder",
+          "updatedAt": "Aktualisiert"
+        },
+        "selection": {
+          "all": "Alle Produkte auf dieser Seite auswählen",
+          "product": "{product} auswählen",
+          "count": "{count, number} auf dieser Seite ausgewählt",
+          "hint": "Wählen Sie Produkte aus, um ihre Daten zu exportieren."
+        },
+        "action": {
+          "add": "Produkte hinzufügen",
+          "clear": "Suche und Filter zurücksetzen",
+          "retry": "Erneut versuchen",
+          "export": "Auswahl exportieren",
+          "deselect": "Auswahl aufheben",
+          "open": "{product} öffnen"
+        },
+        "states": {
+          "empty": {
+            "title": "Hier beginnt Ihr Katalog",
+            "description": "Importieren Sie Ihre Produkte, um ihre Angaben und KI-Vergleichsergebnisse an einem Ort zu sehen."
+          },
+          "noMatches": {
+            "title": "Keine passenden Produkte",
+            "description": "Ändern Sie die Suche oder entfernen Sie einen Filter, um weitere Produkte zu sehen."
+          },
+          "error": {
+            "title": "Ihre Produkte konnten nicht geladen werden",
+            "description": "Ihr Katalog ist weiterhin gespeichert. Laden Sie die Liste erneut."
+          }
+        },
+        "loading": "Produkte werden geladen…"
       }
     },
     "competitors": {
@@ -1136,7 +1308,9 @@
         "simulationComplete": "Simulation abgeschlossen — {wins} Siege, {losses} Niederlagen",
         "simulationInProgress": "Simulation läuft — {completed}/{total}",
         "noActivityTitle": "Noch keine Aktivität. Führen Sie Ihre",
-        "noActivityHint": "erste Simulation aus, um hier Ergebnisse zu sehen."
+        "noActivityHint": "erste Simulation aus, um hier Ergebnisse zu sehen.",
+        "simulationPending": "Scan in der Warteschlange — {total, plural, one {# Vergleich} other {# Vergleiche}}",
+        "simulationFailed": "Scan fehlgeschlagen — {completed, plural, one {# Vergleich abgeschlossen} other {# Vergleiche abgeschlossen}} von insgesamt {total, number}"
       },
       "action": {
         "optimizations": "Optimierungen",
@@ -1435,7 +1609,7 @@
         "failed": "Markenanalyse fehlgeschlagen",
         "started": {
           "title": "Markenanalyse gestartet",
-          "description": "Sie können weiterarbeiten. Die Ergebnisse erscheinen hier in etwa einer Minute."
+          "description": "Sie können weiterarbeiten. Die Ergebnisse erscheinen hier, sobald die Analyse abgeschlossen ist."
         },
         "alreadyRunning": "Eine Analyse läuft bereits"
       },
@@ -1547,6 +1721,164 @@
         "queries": {
           "label": "Geprüfte Abfragen",
           "detail": "im letzten Durchlauf"
+        }
+      },
+      "answers": {
+        "title": "Gespeicherte Antworten",
+        "description": "Sehen Sie sich die Fragen an, auf denen diese Analyse beruht.",
+        "search": "Fragen, Antworten oder Marken suchen",
+        "filter": "Markennennung",
+        "filters": {
+          "all": "Alle Antworten",
+          "mentioned": "Erwähnt",
+          "absent": "Nicht erwähnt"
+        },
+        "count": "{count, plural, one {# Antwort} other {# Antworten}} von {total, number}",
+        "position": {
+          "top": "Hauptempfehlung",
+          "listed": "In der Liste",
+          "absent": "Nicht erwähnt"
+        },
+        "context": {
+          "named": "Markenname steht in der Frage",
+          "unbranded": "Markenname steht nicht in der Frage"
+        },
+        "answer": "Zusammenfassung der Antwort",
+        "noAnswer": "Es wurde keine Zusammenfassung gespeichert.",
+        "brands": "Genannte Marken",
+        "noBrands": "Keine Marken erfasst.",
+        "sources": "Vom Modell vorgeschlagene Quellen",
+        "sourcesNote": "Diese Quellen wurden vom Modell genannt. Es sind keine verifizierten Quellenbelege aus einer Live-Suche.",
+        "noSources": "Keine Quellen erfasst.",
+        "empty": {
+          "title": "Keine passenden Antworten",
+          "description": "Versuchen Sie eine andere Suche oder zeigen Sie alle Antworten an.",
+          "saved": "Für diese Analyse wurden keine Antworten gespeichert."
+        },
+        "action": {
+          "primary": "Suche und Filter zurücksetzen"
+        }
+      },
+      "design": {
+        "title": "Marke",
+        "description": "Wie Ihre Marke in simulierten Einkaufsantworten erscheint.",
+        "updated": "Analysiert {time}",
+        "sample": "{count, plural, one {# Antwort in der Stichprobe} other {# Antworten in der Stichprobe}} · {engines}",
+        "scope": "Das Modell erhält Ihre Marke als Kontext für die Analyse. Dies ist eine Simulation, kein Test der spontanen Markenerinnerung und keine Aufzeichnung echter Kundengespräche.",
+        "action": {
+          "primary": "Marke analysieren",
+          "secondary": "Erneut analysieren",
+          "tertiary": "Katalog prüfen"
+        },
+        "empty": {
+          "title": "Finden Sie die blinden Flecken Ihrer Marke.",
+          "description": "Sehen Sie, ob Ihre Marke bei Einkaufsfragen auftaucht, wie sie beschrieben wird und wo klarere Informationen helfen könnten.",
+          "note": "Aus Ihrem Shop und Katalog werden 20 Fragen für ChatGPT vorbereitet. Während der Analyse können Sie weiterarbeiten.",
+          "visualTitle": "Von der Einkaufsfrage zum nächsten Schritt",
+          "steps": {
+            "questions": {
+              "title": "Nach Ihrer Kategorie fragen",
+              "description": "Fragen mit und ohne Ihren Markennamen."
+            },
+            "answers": {
+              "title": "Antworten prüfen",
+              "description": "Markennennungen, Alternativen und Zusammenfassungen der Antworten."
+            },
+            "actions": {
+              "title": "Verbesserungsmöglichkeiten erkennen",
+              "description": "Vorschläge auf Grundlage der ausgewerteten Antworten."
+            }
+          }
+        },
+        "summaryTitle": "Das sollten Sie wissen",
+        "discoveryTitle": "Markennennungen nach Fragetyp",
+        "unprompted": "Fragen ohne Ihren Markennamen",
+        "named": "Fragen mit Ihrem Markennamen",
+        "ratio": "{count} von {total} Antworten",
+        "noSample": "Keine Fragen in dieser Gruppe",
+        "overall": "In {count} von {total} ausgewerteten Antworten erwähnt.",
+        "noAnswers": "Dieser Bericht enthält keine gespeicherten Antworten. Starten Sie eine neue Analyse, um eine Datengrundlage zu erhalten.",
+        "tabs": {
+          "plan": "Nächste Schritte",
+          "answers": "Antworten",
+          "access": "Website-Prüfungen"
+        },
+        "findingsTitle": "Muster, die Aufmerksamkeit verdienen",
+        "journeyTitle": "Wo Sie ansetzen können",
+        "journeyDescription": "Vorschläge aus dieser Analyse. Prüfen Sie die Grundlage, bevor Sie Ihre Website ändern.",
+        "stage": {
+          "find": "Entdeckt werden",
+          "consider": "In die engere Auswahl kommen",
+          "evaluate": "Käufern bei der Entscheidung helfen",
+          "support": "Die Anschlussfrage beantworten"
+        },
+        "suggestions": "{count, plural, one {# Vorschlag} other {# Vorschläge}}",
+        "noSuggestions": "Für diese Phase wurden keine Änderungen vorgeschlagen.",
+        "perceptionTitle": "Wie die Antworten Ihre Marke beschreiben",
+        "strengths": "Was für Sie spricht",
+        "concerns": "Was Fragen aufwirft",
+        "alternativesTitle": "Andere Marken in den Antworten",
+        "sourcesTitle": "Vom Modell vorgeschlagene Quellen",
+        "sourcesNote": "Dies sind vom Modell genannte Domains oder Quellentypen, keine verifizierten Belege aus einer Live-Suche.",
+        "occurrences": "{count, plural, one {# Erwähnung} other {# Erwähnungen}}",
+        "accessTitle": "Können Crawler Ihre Inhalte erreichen?",
+        "accessDescription": "Eine Momentaufnahme öffentlicher Dateien zur Auffindbarkeit. Diese Prüfungen messen weder Suchindexierung noch Platzierungen oder die Bereitschaft zur Kaufabwicklung.",
+        "checks": {
+          "robots": "Crawler-Regeln",
+          "llms": "Inhaltsleitfaden für KI",
+          "engines": "Crawler-Zugriff"
+        },
+        "status": {
+          "pass": "Geprüft",
+          "warn": "Prüfen",
+          "fail": "Blockiert"
+        },
+        "robots": {
+          "pass": "Die Crawler-Regeln wurden gelesen.",
+          "warn": "Prüfen Sie die erfassten Crawler-Regeln.",
+          "fail": "Der Scan hat Crawler-Einschränkungen in robots.txt gefunden.",
+          "note": "robots.txt steuert den Zugriff je Crawler. Suche, nutzerinitiierte Anfragen und Modelltraining können unterschiedliche Crawler verwenden."
+        },
+        "llms": {
+          "pass": "Eine llms.txt-Datei war erreichbar.",
+          "warn": "Es wurde keine erreichbare llms.txt-Datei erfasst.",
+          "note": "Dieser optionale Inhaltsleitfaden garantiert nicht, dass ein KI-Dienst Ihre Marke liest, indexiert oder empfiehlt."
+        },
+        "engines": {
+          "pass": "Für die geprüften Crawler wurden keine Sperren auf der Website-Wurzelebene erkannt.",
+          "warn": "Der Zugriff konnte bei diesem Scan nicht bestätigt werden.",
+          "fail": "Für einige geprüfte Crawler bestehen Einschränkungen auf der Website-Wurzelebene.",
+          "note": "Pfadspezifische Regeln, andere Crawler und die Indexierung sind nicht Teil dieser Prüfung."
+        },
+        "failed": {
+          "title": "Die Analyse konnte nicht abgeschlossen werden",
+          "description": "Ihr letzter abgeschlossener Bericht ist unten weiterhin verfügbar. Versuchen Sie es erneut, wenn Sie bereit sind.",
+          "emptyDescription": "Es wurde kein Bericht gespeichert. Versuchen Sie es erneut, wenn Sie bereit sind."
+        },
+        "error": "Die Analyse konnte nicht gestartet werden. Bitte versuchen Sie es erneut.",
+        "running": {
+          "title": "Ihre Marke wird analysiert",
+          "description": "ChatGPT bearbeitet Ihre Einkaufsfragen. Die Ergebnisse erscheinen hier, sobald sie bereit sind.",
+          "previous": "Sie sehen den vorherigen Bericht, während die neue Analyse läuft.",
+          "steps": "Fragen vorbereiten · Antworten prüfen · Empfehlungen erstellen"
+        },
+        "loading": "Markenanalyse wird geladen",
+        "unavailable": {
+          "title": "Markendaten sind vorübergehend nicht verfügbar",
+          "description": "Ihre gespeicherte Analyse konnte nicht geladen werden. Aktualisieren Sie diesen Bereich, um es erneut zu versuchen.",
+          "action": {
+            "primary": "Erneut versuchen"
+          }
+        },
+        "noFindings": "In diesem Bericht wurden keine Muster gespeichert.",
+        "summaryAction": {
+          "primary": "Vollständige Analyse lesen",
+          "secondary": "Weniger anzeigen"
+        },
+        "method": {
+          "action": {
+            "primary": "So funktioniert es"
+          }
         }
       }
     },
@@ -2016,6 +2348,17 @@
       "connection": {
         "title": "Merchant Center-Verbindung",
         "description": "Verknüpfen Sie das Merchant Center-Konto, in das ecentic Optimierungsanpassungen schreibt, und übertragen und prüfen Sie diese anschließend."
+      },
+      "workspaceTitle": "Google Shopping",
+      "workspaceDescription": "Verwalten Sie Ihre Merchant-Center-Verbindung, Produktaktualisierungen und die Checkout-Bereitschaft.",
+      "unsupportedWorkspace": {
+        "status": "Für diese Quelle nicht verfügbar",
+        "title": "Verbinden Sie einen unterstützten Katalog",
+        "description": "Google Shopping ist für verbundene Shopify-Shops verfügbar. Diese Katalogquelle kann noch nicht über ecentic mit dem Merchant Center verbunden werden. Produkte und andere Kanaleinstellungen können Sie weiterhin prüfen.",
+        "action": {
+          "primary": "Shopify verbinden",
+          "secondary": "Verbindungen ansehen"
+        }
       }
     },
     "visibility": {
@@ -2140,7 +2483,8 @@
         "noExplanation": "Keine Erklärung zurückgegeben.",
         "noStores": "Keine Shops zurückgegeben.",
         "unreachable": "Dieses Modell konnte nicht erreicht werden."
-      }
+      },
+      "method": "Dein Shop wird in jeder Anfrage genannt. Diese simulierten Empfehlungen messen weder die ungestützte Markenbekanntheit noch aktuelle Platzierungen in Suchergebnissen."
     },
     "ucp": {
       "statusPill": "Universal Commerce Protocol",
@@ -2330,6 +2674,31 @@
         "emptyEndpoints": "Keine Service-Endpoints mit URLs im UCP-Profil gefunden. Fügen Sie ",
         "emptyEndpointsSuffix": "-Felder hinzu, um Live-Tests zu aktivieren.",
         "emptyEndpointsField": "endpoint"
+      },
+      "review": {
+        "description": "Prüfen Sie die Checkout-Konfiguration Ihres Shops und die Produktdaten, auf die Einkaufsagenten zugreifen können.",
+        "tabs": {
+          "check": "Checkout prüfen",
+          "data": "Produktdaten"
+        },
+        "check": {
+          "title": "Prüfen Sie Ihren Checkout",
+          "description": "Lesen Sie das veröffentlichte UCP-Profil Ihres Shops aus, um fehlende oder ungültige Checkout-Einstellungen zu finden.",
+          "hint": "Verwendet HTTPS. Prüft das veröffentlichte Profil, ohne eine Bestellung aufzugeben."
+        },
+        "details": {
+          "title": "Umfang der Prüfung",
+          "description": "Profilerkennung, Zahlungskonfiguration und Agentenzugriff."
+        },
+        "advanced": {
+          "title": "Live-Endpunkte testen",
+          "summary": "Optional · kann Test-Warenkörbe erstellen",
+          "description": "Prüfen Sie die von Ihrem Shop angegebenen Dienste und testen Sie den Checkout-Ablauf."
+        },
+        "products": {
+          "title": "Abdeckung der Produktdaten",
+          "description": "Generierte Produktdaten bestätigen keine Unterstützung für einen funktionierenden Checkout. Diese Produkte gehören zu diesem Shop."
+        }
       }
     },
     "ucpComparison": {
@@ -2462,7 +2831,7 @@
       "composer": {
         "placeholder": "Bitten Sie den Agenten, bei {host} einzukaufen…",
         "hint": "Enter zum Senden · Shift + Enter für eine neue Zeile",
-        "remaining": "Noch {remaining} von {limit} kostenlosen {limit, plural, one {Nachricht} other {Nachrichten}} in diesem Testbereich verfügbar."
+        "remaining": "Noch {remaining, number} von {limit, number} kostenlosen {limit, plural, one {Nachricht} other {Nachrichten}} in diesem Testbereich verfügbar."
       },
       "quota": {
         "title": "Sie haben alle {limit} kostenlosen Nachrichten im Testbereich genutzt",
@@ -2778,13 +3147,13 @@
         "asOf": "Datenstand: {time}",
         "noScans": "Noch keine abgeschlossenen Scans"
       },
-      "title": "Berichte & Exporte",
-      "description": "Laden Sie Berichte zur Performance Ihrer Agenten herunter oder planen Sie automatisierte Berichte.",
+      "title": "Berichte",
+      "description": "Laden Sie gespeicherte Vergleiche und Katalogdaten aus allen Ihren Shops herunter.",
       "shareable": {
-        "title": "Teilbarer Gewinnquoten-Bericht",
-        "description": "Erstellen Sie eine öffentliche URL für Ihren Gewinnquoten-Bericht, optimiert zum Teilen auf Twitter, LinkedIn oder mit Ihrem Team.",
+        "title": "Vergleichsbericht teilen",
+        "description": "Öffnen Sie den öffentlichen Bericht Ihres letzten abgeschlossenen Vergleichs. Prüfen Sie den Inhalt vor dem Teilen.",
         "action": {
-          "primary": "Teilbaren Bericht erstellen"
+          "primary": "Bericht öffnen"
         },
         "runScanFirst": "Führen Sie zuerst einen Scan aus"
       },
@@ -2800,19 +3169,19 @@
       "items": {
         "winRateSummary": {
           "title": "Zusammenfassung der Gewinnquote",
-          "description": "Gesamtleistung über alle Produkte und Modelle hinweg"
+          "description": "Ergebnisse je Modell aus dem letzten abgeschlossenen Scan."
         },
         "productPerformance": {
           "title": "Produktleistung",
-          "description": "Detaillierter Bericht pro Produkt mit Trends und Wettbewerbsvergleich"
+          "description": "Gespeicherte Produktfelder und simulierte Gewinnquoten, aufgeschlüsselt nach Modell."
         },
         "competitorAnalysis": {
           "title": "Wettbewerbsanalyse",
-          "description": "Vollständiger Wettbewerbsüberblick mit Battlecards für alle beobachteten Marken"
+          "description": "Erfasste Wettbewerber, beobachtete Preise soweit verfügbar und Vergleichsergebnisse."
         },
         "optimizationImpact": {
           "title": "Auswirkungen der Optimierung",
-          "description": "Vorher-/Nachher-Analyse aller veröffentlichten Optimierungen"
+          "description": "Gespeicherte Änderungen an Produktseiten, Veröffentlichungsdaten und Modellschätzungen."
         }
       },
       "tiers": {
@@ -2821,8 +3190,9 @@
         "dominate": "Dominate+"
       },
       "action": {
-        "downloadCsv": "CSV"
-      }
+        "downloadCsv": "CSV herunterladen"
+      },
+      "unavailable": "Noch keine gespeicherten Daten"
     },
     "paywall": {
       "kicker": "Tarif erforderlich",
@@ -2861,7 +3231,11 @@
         "disclosure": "Scans werden von Is Agentic ausgeführt, einem kostenlosen öffentlichen Dienst von Vercel Labs. Ihre Storefront-Domain wird an is-agentic.com gesendet; keine Kunden- oder Bestelldaten verlassen ecentic.",
         "disclosureLink": "Is Agentic-Dokumentation",
         "announceProgress": "Scan zu {percent}% abgeschlossen.",
-        "announceComplete": "Scan abgeschlossen. Score {score} von 100."
+        "announceComplete": "Scan abgeschlossen. Score {score} von 100.",
+        "workspaceTitle": "Shop-Scan",
+        "awaitingFirst": "Noch nicht gescannt",
+        "report": "Bericht öffnen",
+        "providerNote": "Ihre Domain wird an <provider>Is Agentic</provider> gesendet. Kunden- und Bestelldaten werden nicht weitergegeben."
       },
       "score": {
         "title": "Ihr aktueller Stand",
@@ -2884,7 +3258,27 @@
         "publicOnlyUnscored": "Is Agentic hält einen Bericht für diese Domain bereit, hat sie aber noch nicht bewertet — {label}. Führen Sie einen Scan aus, um die vollständigen Details zu jeder einzelnen Prüfung abzurufen und den Trend zu verfolgen.",
         "trendSummary": "{count} Scans seit {since}, von {first} auf {latest} von 100 Punkten.",
         "gradeLabel": "Bewertung",
-        "gainAria": "{points} Punkte"
+        "gainAria": "{points} Punkte",
+        "preview": {
+          "emptyTitle": "Hier beginnt Ihr erster Scan",
+          "publicTitle": "Ein öffentlicher Bericht ist verfügbar",
+          "payments": {
+            "title": "Zahlungen",
+            "description": "Unterstützung für Checkout- und Zahlungsprotokolle."
+          },
+          "discovery": {
+            "title": "Auffindbarkeit",
+            "description": "Signale, mit denen Agenten Ihren Shop finden."
+          },
+          "accessibility": {
+            "title": "Zugänglichkeit",
+            "description": "Ob Agenten Ihren Shop erreichen und lesen können."
+          },
+          "usability": {
+            "title": "Nutzbarkeit",
+            "description": "Schnittstellen, über die Agenten mit Ihrem Shop interagieren können."
+          }
+        }
       },
       "checks": {
         "title": "Alle Prüfungen",
@@ -2976,6 +3370,614 @@
         "shopifyBilling": "Deinstallieren Sie ecentic zuerst in Shopify, um die Shopify-Abrechnungsvereinbarung zu beenden, und kontaktieren Sie anschließend den Support, falls diese Verbindung weiterhin besteht.",
         "billingRecords": "Dieses Konto enthält Abrechnungs- oder Bestelldaten. Kontaktieren Sie privacy@ecentic.ai für eine unterstützte Löschung; wir müssen die Abrechnung abschließen und gesetzlich vorgeschriebene Datensätze aufbewahren.",
         "storeConnections": "Trennen Sie Ihre Stores und Google-Shopping-Integrationen in den Einstellungen, bevor Sie das Konto löschen."
+      }
+    },
+    "traffic": {
+      "title": "KI-Traffic",
+      "description": "Sehen Sie, woher die erfasste KI-Aktivität stammt.",
+      "period": "Letzte 30 Tage",
+      "source": "Quelle",
+      "other": "Andere Quellen",
+      "referrals": {
+        "title": "KI-Verweise",
+        "short": "Verweise",
+        "detail": "Aktivität, die als KI-Verweis eingestuft wurde."
+      },
+      "requests": {
+        "title": "Agenten- und Crawler-Anfragen",
+        "short": "Anfragen",
+        "detail": "Erkannte User-Agents, einschließlich Crawlern und Browsern mit KI-Agenten."
+      },
+      "empty": {
+        "title": "Noch keine KI-Aktivität erfasst",
+        "description": "Aktivität wird angezeigt, sobald das Tracking einen KI-Verweis oder einen bekannten User-Agent erkennt."
+      },
+      "action": {
+        "primary": "Verbindungen prüfen",
+        "secondary": "Erneut versuchen"
+      },
+      "probes": "{count, plural, one {# Tracking-Testsignal, in den obigen Summen nicht enthalten.} other {# Tracking-Testsignale, in den obigen Summen nicht enthalten.}}",
+      "limitation": "Gezählt werden erfasste Ereignisse, keine einzelnen Personen oder Käufe. Browser-Tracking erfasst nicht jede Crawler-Anfrage.",
+      "chart": {
+        "title": "Tägliche Aktivität",
+        "scope": "Nur OpenAI, Anthropic und Google.",
+        "hint": "Dieser Verlauf fasst Verweise und Anfragen zusammen. Andere Anbieter stehen in der Aufschlüsselung nach Quelle.",
+        "empty": "Für diese drei Anbieter wurde keine Aktivität erfasst.",
+        "accessibleLabel": "Täglich erfasste Aktivität. Mit den Pfeiltasten können Sie die einzelnen Tage prüfen."
+      },
+      "error": {
+        "title": "Traffic konnte nicht geladen werden",
+        "description": "Ihre Traffic-Daten sind vorübergehend nicht verfügbar. Laden Sie diese Ansicht neu, um es erneut zu versuchen."
+      }
+    },
+    "qualityWorkspace": {
+      "title": "Datenqualität",
+      "description": "Finden Sie fehlende oder ungültige Produktangaben und sehen Sie, welche Einträge Sie überarbeiten sollten.",
+      "product": "Produkt",
+      "productsLabel": "Produkte",
+      "openProduct": "{product} öffnen",
+      "search": "Produkte oder Probleme suchen",
+      "scope": {
+        "label": "Prüfumfang",
+        "all": "Alle Prüfungen",
+        "universal": "Allgemeine Prüfungen",
+        "google": "Google Merchant",
+        "chatgpt": "ChatGPT-Feed"
+      },
+      "status": {
+        "label": "Art des Befunds",
+        "all": "Alle Befunde",
+        "blocker": "Blockierender Fehler",
+        "warning": "Warnung",
+        "info": "Hinweis",
+        "ready": "Ohne Befund"
+      },
+      "summary": {
+        "label": "Katalogprüfungen nach Plattform",
+        "title": "Ohne blockierende Fehler oder Warnungen",
+        "count": "{count, plural, one {# aktives Produkt geprüft} other {# aktive Produkte geprüft}}",
+        "passing": "{count} von {total}",
+        "breakdown": "{blocker} mit blockierenden Fehlern, {warning} mit Warnungen, {info} nur mit Hinweisen, {ready} ohne Befund."
+      },
+      "method": {
+        "title": "So funktioniert es",
+        "description": "Diese Prüfungen gleichen gespeicherte Daten aktiver Produkte mit unserem Regelwerk ab. Sie bestätigen weder den Zugriff auf den Live-Shop noch die Annahme durch Google oder ChatGPT. Produkte, zu denen es nur Hinweise gibt, zählen als Produkte ohne blockierende Fehler oder Warnungen."
+      },
+      "views": {
+        "label": "Ansicht der Datenqualität",
+        "issues": "Nach Problem",
+        "products": "Nach Produkt"
+      },
+      "issueCount": "{count, plural, one {# Problem} other {# Probleme}}",
+      "productCount": "{count, plural, one {# Produkt} other {# Produkte}}",
+      "findings": "{count, plural, one {# Befund} other {# Befunde}}",
+      "issuesHint": "Zuerst erscheinen blockierende Fehler, dann Warnungen und Hinweise. Innerhalb jeder Gruppe stehen Probleme mit mehr betroffenen Produkten weiter oben. Ein Produkt kann unter mehreren Problemen erscheinen.",
+      "reference": "Regeldokumentation für {surface} ansehen",
+      "noFindings": "Für dieses Produkt wurden im gewählten Prüfumfang keine Probleme festgestellt.",
+      "action": {
+        "primary": "Katalog öffnen",
+        "secondary": "Erneut versuchen",
+        "tertiary": "Filter zurücksetzen",
+        "quaternary": "Weitere Produkte anzeigen"
+      },
+      "productAction": {
+        "primary": "Produkt öffnen"
+      },
+      "searchAction": {
+        "primary": "Suche löschen"
+      },
+      "states": {
+        "empty": {
+          "title": "Keine aktiven Produkte zum Prüfen",
+          "description": "Diese Prüfungen berücksichtigen nur aktive Produkte. Entwürfe und archivierte Produkte bleiben in Ihrem Katalog, werden hier aber nicht einbezogen."
+        },
+        "error": {
+          "title": "Die Qualitätsprüfungen konnten nicht geladen werden",
+          "description": "Ihr Katalog ist weiterhin gespeichert. Versuchen Sie, die Ergebnisse erneut zu laden."
+        },
+        "clear": {
+          "title": "Keine Befunde in diesen Prüfungen",
+          "description": "Die aktiven Produkte bestehen die für diese Ansicht hinterlegten Prüfungen. Das bestätigt nicht ihre Annahme durch eine Einkaufsplattform."
+        },
+        "noMatches": {
+          "title": "Keine passenden Befunde oder Produkte",
+          "description": "Versuchen Sie eine andere Suche oder setzen Sie die Filter zurück, um die gesamte Liste zu sehen."
+        }
+      }
+    },
+    "productWorkspace": {
+      "title": "Produktdetails",
+      "description": "Sehen Sie sich die gespeicherten Produktangaben und aufgezeichneten KI-Vergleiche an.",
+      "status": {
+        "active": "Aktiv",
+        "draft": "Entwurf",
+        "archived": "Archiviert",
+        "unknown": "Status nicht verfügbar"
+      },
+      "updated": "Aktualisiert {time}",
+      "latestComparison": "Letzter Vergleich {time}",
+      "priceMissing": "Kein Preis gespeichert",
+      "metrics": {
+        "rate": "Simulierte Gewinnquote",
+        "comparisons": "Vergleiche",
+        "coverage": "Abdeckung gespeicherter Felder",
+        "wins": "{wins} von {total} gewonnen",
+        "competitors": "{count, plural, one {Gegen # Wettbewerber} other {Gegen # Wettbewerber}}"
+      },
+      "method": {
+        "title": "Zu diesen Zahlen",
+        "description": "Die Gewinnquoten basieren auf aufgezeichneten Produktvergleichen. Für Produkte und Modelle ohne Vergleiche gibt es keine gemessene Quote. Die Feldabdeckung erfasst sechs gespeicherte Felder: Titel, Beschreibung, Preis, Bild, SKU und strukturierte Daten. Sie bewertet nicht, wie überzeugend der Inhalt ist."
+      },
+      "models": {
+        "title": "Ergebnisse nach Modell",
+        "description": "Aufgezeichnete Simulationen, keine echten Besuche im Shop.",
+        "count": "{count, plural, one {# Vergleich} other {# Vergleiche}}"
+      },
+      "tabs": {
+        "overview": "Vergleiche",
+        "replay": "Entscheidungen der Agenten",
+        "battlecard": "Direktvergleich",
+        "optimize": "Produktangebot"
+      },
+      "action": {
+        "primary": "Mit KI prüfen",
+        "secondary": "Erneut versuchen",
+        "tertiary": "Katalog öffnen",
+        "quaternary": "Mehr anzeigen"
+      },
+      "navigation": {
+        "primary": "Zurück zu den Produkten",
+        "secondary": "Anstehende Optimierungen prüfen"
+      },
+      "audit": {
+        "title": "KI-Inhaltsprüfung",
+        "description": "Lassen Sie die Formulierungen, Produktangaben und Eignung für die Zielgruppe prüfen. Ihr gespeichertes Produktangebot bleibt unverändert.",
+        "running": "Produkt wird geprüft…",
+        "failed": "Die KI-Prüfung konnte nicht abgeschlossen werden. Ihre gespeicherten Produktangaben sind unverändert.",
+        "savedFields": "Gespeicherte Produktfelder",
+        "coverageDescription": "Ob die gespeicherten Felder ausgefüllt sind, wird getrennt von der KI-Inhaltsprüfung geprüft.",
+        "ready": "Prüfung abgeschlossen"
+      },
+      "unmeasured": "Nicht verglichen",
+      "noReasoning": "Für diesen Vergleich wurde keine schriftliche Begründung gespeichert.",
+      "states": {
+        "empty": {
+          "title": "Noch keine Vergleiche",
+          "description": "Für dieses Produkt wurden noch keine KI-Vergleiche aufgezeichnet. Die Gewinnquote erscheint, sobald es mit Wettbewerbern verglichen wurde."
+        },
+        "error": {
+          "title": "Dieses Produkt konnte nicht geladen werden",
+          "description": "Ihr Katalog ist weiterhin gespeichert. Versuchen Sie, dieses Produkt erneut zu laden."
+        },
+        "missing": {
+          "title": "Produkt nicht gefunden",
+          "description": "Dieses Produkt wurde möglicherweise entfernt oder gehört zu einem anderen Shop. Öffnen Sie den Katalog, um ein Produkt auszuwählen."
+        }
+      },
+      "publishDescription": "Erstellen Sie einen optimierten Titel und eine optimierte Beschreibung für {title} und veröffentlichen Sie beides im verbundenen Shop. Die aktuellen Produktdaten werden dabei ersetzt."
+    },
+    "productChannels": {
+      "tab": "Produktdaten & Kanäle",
+      "title": "Ihr Produkt in den einzelnen Kanälen",
+      "description": "Sehen Sie sich die gespeicherten Produktdaten in der Vorschau an und prüfen Sie anschließend die Verbindung und Feed-Einträge.",
+      "preview": {
+        "title": "Vorschau der gespeicherten Produktdaten",
+        "description": "Beispielansicht aus gespeicherten Daten. Tatsächliche Platzierungen und Layouts können abweichen.",
+        "storefront": "Onlineshop",
+        "google": "Google",
+        "chatgpt": "ChatGPT",
+        "imageMissing": "Kein Produktbild gespeichert",
+        "descriptionMissing": "Keine Beschreibung gespeichert",
+        "priceMissing": "Kein Preis gespeichert",
+        "storefrontNote": "Ihre importierten Produktdaten",
+        "googleNote": "Produktinformationen für ein Shopping-Ergebnis",
+        "chatgptNote": "Produktinformationen für die Produktkarte eines Assistenten",
+        "sample": "Vorschau",
+        "googleMode": "KI-Modus",
+        "details": "Über dieses Produkt",
+        "store": "Shop",
+        "query": "Zeigen Sie mir {product}",
+        "action": {
+          "primary": "Website besuchen"
+        }
+      },
+      "source": {
+        "title": "Katalogverbindung",
+        "unknown": "Verbindungsdetails nicht verfügbar",
+        "unknownDescription": "Öffnen Sie Ihre Integrationen, um die Katalogverbindung zu prüfen.",
+        "lastSync": "Katalog synchronisiert",
+        "productSync": "Produkt synchronisiert",
+        "notSynced": "Keine Synchronisierung erfasst",
+        "status": "Verbindungsstatus",
+        "error": "Prüfung erforderlich",
+        "unavailable": "Status nicht verfügbar",
+        "connected": "Verbunden",
+        "syncing": "Katalog wird synchronisiert",
+        "disconnected": "Nicht verbunden",
+        "publicImport": "Import eines öffentlichen Katalogs",
+        "platform": {
+          "feed": "Produktfeed",
+          "csv": "CSV-Import",
+          "unknown": "Katalogquelle"
+        }
+      },
+      "google": {
+        "title": "Google-Feed-Einträge",
+        "description": "Dies sind gespeicherte Synchronisierungseinträge, keine Live-Prüfung bei Google. Eine bestätigte Änderung bedeutet, dass die ergänzende Aktualisierung übernommen wurde. Sie bestätigt nicht, dass Google das Produkt anzeigt.",
+        "unavailable": "Die Feed-Einträge konnten nicht geladen werden. Öffnen Sie Google Shopping, um die Verbindung zu prüfen.",
+        "unsupported": "Die ergänzende Google-Synchronisierung ist für diese Katalogquelle nicht verfügbar.",
+        "notConnected": "Google Merchant Center ist nicht mit diesem Katalog verbunden.",
+        "setup": "Richten Sie die Verbindung ein, bevor Produktdaten gesendet werden können.",
+        "ready": "Die Verbindung ist bereit. Für dieses Produkt wurde noch kein Feed-Eintrag gespeichert.",
+        "pending": "Ausstehend",
+        "live": "Änderung bestätigt",
+        "disapproved": "Abgelehnt",
+        "error": "Aktualisierung fehlgeschlagen",
+        "lastSent": "Gesendet {time}",
+        "lastChecked": "Geprüft {time}",
+        "offer": "Angebot {id}"
+      },
+      "assistant": {
+        "title": "Auffindbarkeit durch Assistenten",
+        "description": "Diese Vorschau bestätigt nicht, dass ChatGPT das Produkt indexiert oder empfohlen hat. Halten Sie die Produktdaten vollständig und prüfen Sie die veröffentlichten Ressourcen, über die Assistenten das Produkt finden können."
+      },
+      "action": {
+        "primary": "Verbindung verwalten",
+        "secondary": "Google Shopping öffnen",
+        "tertiary": "Onlineshop ansehen",
+        "quaternary": "Auffindbarkeit prüfen"
+      }
+    },
+    "optimizeWorkspace": {
+      "title": "Optimieren",
+      "description": "Verbessern Sie Ihre Produkttexte anhand der Vergleiche. Prüfen Sie die Fakten vor dem Veröffentlichen.",
+      "action": {
+        "primary": "Erstellen und veröffentlichen",
+        "secondary": "Produkt prüfen",
+        "tertiary": "Datenqualität prüfen",
+        "quaternary": "Erneut versuchen"
+      },
+      "queue": {
+        "title": "Anstehende Verbesserungen",
+        "description": "Beginnen Sie mit den niedrigsten simulierten Gewinnraten. Öffnen Sie ein Produkt, um die Ergebnisse zu prüfen.",
+        "sample": "Diese Liste enthält gespeicherte Diagnosevorschläge. Den vollständigen Check des aktiven Katalogs finden Sie unter Datenqualität.",
+        "count": "{count, plural, one {# Produkt angezeigt} other {# Produkte angezeigt}}"
+      },
+      "search": "Produkte oder SKU suchen…",
+      "tabs": {
+        "queue": "Zu prüfen",
+        "published": "Veröffentlicht",
+        "dismissed": "Verworfen"
+      },
+      "summary": {
+        "candidates": "Zur Veröffentlichung geeignet",
+        "manual": "Manuelle Änderungen nötig",
+        "published": "Gespeicherte Veröffentlichungen"
+      },
+      "row": {
+        "rate": "Simulierte Gewinnrate",
+        "manual": "Manuelle Änderungen",
+        "ready": "Veröffentlichung verfügbar",
+        "context": "Erfasste Modelle: {models}"
+      },
+      "method": {
+        "title": "Wie diese Liste entsteht",
+        "description": "Kandidaten haben eine erfasste Gewinnrate unter 55 %. Verworfene Produkte und in den letzten 14 Tagen veröffentlichte Produkttexte sind ausgeschlossen. Ein Kandidat ist kein gespeicherter Entwurf. Erstellen und veröffentlichen erzeugt neue Texte und ersetzt den Produkttext im Shop sofort. Diese Vorschläge sagen weder Verkäufe noch künftige Gewinnraten voraus."
+      },
+      "states": {
+        "empty": {
+          "title": "Zurzeit nichts zu prüfen",
+          "description": "Für diesen Shop liegen keine Vorschläge vor. Prüfen Sie die Produktdaten oder starten Sie einen Vergleich, um weitere Verbesserungen zu finden."
+        },
+        "filtered": {
+          "title": "Keine passenden Produkte",
+          "description": "Versuchen Sie einen anderen Produktnamen oder eine andere SKU."
+        },
+        "error": {
+          "title": "Die Liste konnte nicht geladen werden",
+          "description": "Ihre Produktdaten sind weiterhin gespeichert. Laden Sie die Liste erneut."
+        }
+      },
+      "confirmation": {
+        "title": "Neuen Produkttext veröffentlichen?",
+        "description": "Ein neuer Titel und eine Beschreibung für {title} werden erstellt und in Ihrem verbundenen Shop veröffentlicht. Sie ersetzen den aktuellen Text ohne separate Entwurfsprüfung.",
+        "bulkTitle": "Änderungen für diesen Shop veröffentlichen?",
+        "bulkDescription": "Neue Titel und Beschreibungen werden für {count, plural, one {# geeignetes Produkt} other {# geeignete Produkte}} dieses Shops erstellt und veröffentlicht. Bestehende Texte werden ersetzt.",
+        "storeTitle": "Verbundenen Shop optimieren?",
+        "storeDescription": "Strukturierte Produktdaten und bei Shopify ein Shopprofil werden geschrieben. Texte für geeignete Produkte dieses Shops werden erstellt und veröffentlicht. Dabei können mehrere veröffentlichte Inhalte geändert werden.",
+        "action": {
+          "primary": "Bestätigen und veröffentlichen",
+          "secondary": "Weiter prüfen"
+        }
+      },
+      "bulk": {
+        "action": "Geeignete Produkte veröffentlichen"
+      },
+      "store": {
+        "action": "Shop optimieren"
+      },
+      "toast": {
+        "failed": "Die Änderung konnte nicht abgeschlossen werden",
+        "failedDescription": "Versuchen Sie es erneut. Falls die Veröffentlichung bereits begonnen hat, prüfen Sie vorher das Produkt.",
+        "published": "{count, plural, one {# Produkttext veröffentlicht} other {# Produkttexte veröffentlicht}}",
+        "partial": "{published} veröffentlicht; {failed} konnten nicht abgeschlossen werden. Prüfen Sie die verbleibenden Produkte vor einem neuen Versuch.",
+        "saved": "Liste aktualisiert"
+      },
+      "history": {
+        "unmeasured": "Um das Ergebnis zu messen, ist ein neuer Vergleich nötig.",
+        "undated": "Veröffentlichungszeit nicht verfügbar"
+      },
+      "diagnostics": {
+        "content": "Nützliche Produktinformationen ergänzen",
+        "contentHint": "Prüfen Sie den gespeicherten Titel und die Beschreibung. Ergänzen Sie zutreffende technische Daten und relevante Anwendungsfälle.",
+        "structured_data": "Strukturierte Daten prüfen",
+        "structured_dataHint": "Prüfen Sie die strukturierten Produktdaten und ergänzen Sie nur bestätigte Attribute.",
+        "seo": "Produktbilder ergänzen",
+        "seoHint": "Fügen Sie an der Quelle ein echtes Produktbild hinzu und synchronisieren Sie dann den Katalog.",
+        "platform": "Veröffentlichungszugriff verbinden",
+        "platformHint": "Änderungen können aus diesem Katalog nicht direkt veröffentlicht werden. Verbinden Sie Shopify oder WooCommerce oder ändern Sie die Quelle manuell."
+      }
+    },
+    "channels": {
+      "title": "Kanäle",
+      "description": "Halten Sie Ihren Katalog verbunden, prüfen Sie Übertragungen und bereiten Sie Ihren Shop auf Einkaufsagenten vor.",
+      "source": {
+        "title": "Katalogverbindung",
+        "description": "Ihr Quellkatalog und der letzte Import.",
+        "synced": "Zuletzt importiert: {date}",
+        "never": "Kein Import erfasst",
+        "public": "Import des öffentlichen Katalogs. Zum Veröffentlichen ist eine autorisierte Shop-Verbindung nötig.",
+        "action": {
+          "primary": "Verbindung verwalten"
+        }
+      },
+      "google": {
+        "title": "Übertragung an Google",
+        "description": "Gespeicherte Konto- und Angebotsdaten für diesen Shop.",
+        "action": {
+          "primary": "Google öffnen"
+        },
+        "pending": "Ausstehend",
+        "verified": "Verifizierte Updates",
+        "issues": "Handlungsbedarf",
+        "note": "Ein verifiziertes Update belegt nicht, dass Google das Produkt anzeigt."
+      },
+      "checkout": {
+        "title": "Checkout",
+        "description": "Prüfen Sie Ihr Checkout-Profil und die darin angebotenen Produkte.",
+        "action": {
+          "primary": "Checkout öffnen"
+        },
+        "scope": "Das Checkout-Profil gehört zu Ihrem Konto. Die Produktlisten beziehen sich auf diesen Shop."
+      },
+      "tools": {
+        "title": "Shop- und Entwicklertools",
+        "description": "Prüfen Sie bei Bedarf die erfassten Daten einer bestimmten Funktion.",
+        "checks": "Shop-Prüfungen",
+        "access": "Katalogzugriff",
+        "webmcp": "Einkaufstools",
+        "playground": "Checkout testen",
+        "comparison": "Profile vergleichen"
+      },
+      "research": {
+        "title": "Suchen Sie den Katalograng?",
+        "description": "Katalogabfragen finden Sie unter KI-Recherche. Sie messen einen bestimmten Markt und eine Suchanfrage, nicht die Einsatzbereitschaft des Shops.",
+        "action": {
+          "primary": "Katalograng öffnen"
+        }
+      },
+      "status": {
+        "connected": "Verbunden",
+        "syncing": "Import läuft",
+        "disconnected": "Getrennt",
+        "error": "Handlungsbedarf",
+        "unavailable": "Nicht verfügbar",
+        "unsupported": "Für diese Quelle nicht unterstützt",
+        "setup": "Einrichtung erforderlich",
+        "notConnected": "Nicht verbunden"
+      },
+      "error": {
+        "title": "Kanalinformationen nicht verfügbar",
+        "description": "Die gespeicherten Verbindungsdaten konnten nicht geladen werden. Versuchen Sie es gleich erneut.",
+        "action": {
+          "primary": "Erneut versuchen"
+        }
+      },
+      "checks": {
+        "title": "Katalogzugriff",
+        "description": "Prüfen Sie die öffentlichen Dateien und den Produktfeed, auf die Einkaufsagenten zugreifen können."
+      }
+    },
+    "catalogWorkflow": {
+      "reviewTitle": "Import prüfen",
+      "reviewHint": "{count, number} Produktzeilen sind für den Import bereit. Zeilen ohne Titel werden übersprungen.",
+      "fieldsHint": "Verwenden Sie eine Spalte title oder name. Optionale Spalten: description, price, currency, image, url, sku und id.",
+      "idsHint": "Zeilen mit einer passenden id aktualisieren das vorhandene Produkt. Ohne id wird bei jedem Import ein neues Produkt angelegt.",
+      "previewHint": "Die ersten {count, number} akzeptierten Zeilen werden angezeigt.",
+      "readFailed": "Die Datei konnte nicht gelesen werden. Wählen Sie sie erneut aus und versuchen Sie es noch einmal.",
+      "partial": "{imported, number} von {total, number} Produkten importiert. Prüfen Sie das Ergebnis im Katalog, bevor Sie diese Datei erneut importieren.",
+      "unknownCurrency": "Währung nicht angegeben",
+      "allWork": "Alle Aufgaben",
+      "publishable": "Bereit zur Veröffentlichung",
+      "manual": "Manuell prüfen",
+      "reviewLabel": "Aufgaben filtern",
+      "sourceTitle": "Katalogquelle",
+      "sourceHint": "Importieren Sie aus dieser Quelle, prüfen Sie die gespeicherten Angaben und vergleichen oder verbessern Sie dann den Produkteintrag.",
+      "action": {
+        "primary": "Datei prüfen",
+        "secondary": "Andere Datei wählen",
+        "tertiary": "Import bestätigen",
+        "quaternary": "Katalog öffnen"
+      },
+      "improveListing": "Produktseite verbessern",
+      "comparisonResults": "Ergebnisse"
+    },
+    "workspace": {
+      "nav": {
+        "label": "Shop-Arbeitsbereich",
+        "research": "KI-Recherche",
+        "channels": "Kanäle",
+        "results": "Ergebnisse",
+        "overview": "Übersicht",
+        "products": "Produkte",
+        "optimize": "Optimieren"
+      },
+      "sections": {
+        "label": "Arbeitsbereiche",
+        "catalog": "Katalog",
+        "quality": "Datenqualität",
+        "summary": "Zusammenfassung",
+        "comparisons": "Vergleiche",
+        "brand": "Marke",
+        "questions": "Fragen",
+        "competitors": "Wettbewerber",
+        "catalogRank": "Katalogplatzierung",
+        "connections": "Verbindungen",
+        "google": "Google",
+        "checks": "Shop prüfen",
+        "access": "Katalogzugriff",
+        "checkout": "Checkout",
+        "developer": "Entwicklertools",
+        "shoppingTools": "Shopping-Tools",
+        "testCheckout": "Checkout testen",
+        "compareProfiles": "Profile vergleichen"
+      },
+      "results": {
+        "title": "Ergebnisse",
+        "description": "Erfasste KI-Verweise und Crawler-Aktivität für diesen Shop.",
+        "reportsTitle": "Berichte für alle Ihre Shops",
+        "reportsDescription": "Exportieren Sie gespeicherte Vergleiche, Katalogdaten und Änderungen an Produktseiten. Diese Berichte umfassen Ihr gesamtes Konto.",
+        "action": {
+          "primary": "Berichte öffnen",
+          "secondary": "KI-Recherche ansehen"
+        }
+      },
+      "ready": {
+        "title": "Keine dringenden Aufgaben in den gespeicherten Prüfungen",
+        "description": "Prüfen Sie Ihre Kanäle oder starten Sie einen neuen Vergleich, wenn sich Ihr Katalog ändert.",
+        "action": {
+          "primary": "Kanäle prüfen"
+        }
+      },
+      "reportScope": "Alle Shops in diesem Konto",
+      "reportMethod": "Exporte enthalten gespeicherte Daten. Die prognostizierte Verbesserung ist eine Schätzung, kein gemessenes Ergebnis.",
+      "downloadError": "Der Bericht konnte nicht heruntergeladen werden. Bitte versuchen Sie es erneut."
+    },
+    "research": {
+      "title": "KI-Recherche",
+      "description": "Vergleichen Sie Produkte, prüfen Sie gespeicherte Antworten und planen Sie den nächsten Test.",
+      "unavailable": {
+        "title": "Diese Recherche konnte nicht geladen werden",
+        "description": "Bitte versuchen Sie es erneut. Ihre gespeicherten Ergebnisse bleiben erhalten.",
+        "action": {
+          "primary": "Erneut versuchen"
+        }
+      },
+      "empty": {
+        "title": "Beginnen Sie mit einem Produktvergleich",
+        "description": "Wählen Sie Produkte und reale Wettbewerber aus. Anschließend sehen Sie, welches Angebot die einzelnen Modelle bevorzugen. Abgeschlossene Tests erscheinen hier."
+      },
+      "comparison": {
+        "title": "Letzter abgeschlossener Vergleich",
+        "action": {
+          "primary": "Vergleich vorbereiten",
+          "secondary": "Ergebnisse ansehen"
+        },
+        "rate": "Simulierte Gewinnquote",
+        "sample": "{wins} Siege bei {total} Vergleichen",
+        "scope": "Die Ergebnisse beziehen sich auf die Produkte dieses Shops in diesem Test. Sie zeigen Modellentscheidungen, keine Besuche oder Verkäufe.",
+        "recent": "Frühere Vergleiche",
+        "first": "Dies ist Ihr erster abgeschlossener Vergleich.",
+        "cohorts": "Andere Produkte, Wettbewerber oder Modelle können die Quote verändern. Diese Tests messen keinen durch Änderungen verursachten Zuwachs."
+      },
+      "brand": {
+        "title": "Gespeicherte Markenanalyse",
+        "running": "Eine neue Analyse läuft.",
+        "failed": "Die letzte Analyse wurde nicht abgeschlossen. Öffnen Sie die Markenanalyse, um sie erneut zu starten.",
+        "empty": "Bisher wurde keine Markenanalyse abgeschlossen.",
+        "action": {
+          "primary": "Markenanalyse öffnen"
+        },
+        "scope": "Dies sind stichprobenartige Modellantworten, bei denen Ihre Marke als Kontext vorgegeben wurde. Prüfen Sie die ursprünglichen Fragen und Antworten, bevor Sie handeln."
+      },
+      "directions": {
+        "questions": {
+          "title": "Kauffragen untersuchen",
+          "description": "Testen Sie typische Kauffragen und prüfen Sie, welche Shops die einzelnen Modelle vorschlagen.",
+          "action": {
+            "primary": "Fragen untersuchen"
+          }
+        },
+        "competitors": {
+          "title": "Wettbewerber auswählen",
+          "description": "Prüfen Sie die Konkurrenzprodukte Ihrer Vergleiche und ergänzen Sie tatsächlich erfasste Angebote.",
+          "action": {
+            "primary": "Wettbewerber verwalten"
+          }
+        },
+        "rank": {
+          "title": "Katalogsuche prüfen",
+          "description": "Prüfen Sie die Position Ihres Shops für eine Suchanfrage und ein Land im Shopify Global Catalog.",
+          "action": {
+            "primary": "Katalogposition prüfen"
+          }
+        }
+      },
+      "rank": {
+        "title": "Katalogposition",
+        "description": "Eine Live-Abfrage des Shopify Global Catalog für Ihre Suchanfrage und Ihren Markt.",
+        "empty": {
+          "title": "Wo erscheint Ihr Shop?",
+          "description": "Geben Sie eine Kauffrage ein und wählen Sie ein Land. Geprüft werden die zurückgegebenen Katalogangebote, keine allgemeingültige Position in ChatGPT oder Google."
+        },
+        "checked": "Shopify Global Catalog · {country} · Geprüft: {time}. Die Ergebnisse können sich zwischen Abfragen ändern.",
+        "unavailable": {
+          "title": "Katalograng ist nicht verbunden",
+          "description": "Dieser Arbeitsbereich kann Shopify Global Catalog noch nicht abfragen. Du kannst weiterhin die Zugriffsprüfungen deines Shops und gespeicherte Vergleiche ansehen.",
+          "action": {
+            "primary": "Zugriffsprüfungen ansehen",
+            "secondary": "Gespeicherte Vergleiche ansehen"
+          }
+        }
+      },
+      "comparisons": {
+        "title": "Produktvergleiche",
+        "description": "Wählen Sie Produkte und Konkurrenzangebote für den Test aus und prüfen Sie anschließend die Modellentscheidungen.",
+        "phases": {
+          "pre": "Bereit zum Vergleich",
+          "running": "Produkte werden verglichen",
+          "complete": "Vergleich abgeschlossen"
+        },
+        "unmeasured": "Keine Vergleiche für dieses Modell"
+      },
+      "questions": {
+        "title": "Kauffragen",
+        "description": "Untersuchen Sie modellgenerierte Antworten auf Kauffragen. Die Vorschläge dienen der Recherche und sind kein verifiziertes Suchranking."
+      },
+      "competitors": {
+        "title": "Wettbewerber",
+        "description": "Verwalten Sie Konkurrenzangebote und prüfen Sie, wie Ihre Produkte im Vergleich abschneiden.",
+        "action": {
+          "primary": "Wettbewerber hinzufügen",
+          "secondary": "Vergleich vorbereiten",
+          "tertiary": "Zurück zu den Wettbewerbern"
+        },
+        "stats": {
+          "tracked": "Marken in Ihrer Liste",
+          "tested": "Verglichene Marken",
+          "comparisons": "Gespeicherte Vergleiche"
+        },
+        "empty": {
+          "title": "Wählen Sie die Alternativen Ihrer Käufer aus",
+          "description": "Fügen Sie Konkurrenzprodukte mit tatsächlich erfassten Preisen und Produktdaten hinzu. Beim Vorbereiten eines Vergleichs wählen Sie die passenden Angebote aus."
+        },
+        "evidence": {
+          "title": "Wo Ihre Produkte auf die stärkste Konkurrenz treffen",
+          "description": "Simulierte Gewinnquote Ihrer Produkte gegenüber jeder Marke, beginnend mit der niedrigsten. Angezeigt werden nur Marken mit abgeschlossenen Vergleichen.",
+          "sample": "{count} Vergleiche"
+        },
+        "roster": "{total} Wettbewerber · {selected} ausgewählt",
+        "updateFailed": "Wettbewerber konnte nicht aktualisiert werden"
       }
     }
   },
@@ -19648,7 +20650,8 @@
     "wooMark": "Das Woo-Logo als räumliche Linienskulptur; zeigen Sie auf einen Buchstaben, um ihn anzuheben.",
     "merchantFolio": "Eine Katalogmappe mit Produktunterlagen; zeigen Sie auf ein Blatt, um es zur Betrachtung anzuheben.",
     "demoPlane": "Illustration: ein gefalteter Papierflieger, der sich neigt und sich zum Mauszeiger hin anhebt.",
-    "partnerCatalogs": "Zwei Händlerkataloge, die für eine Partnerzusammenarbeit verbunden sind."
+    "partnerCatalogs": "Zwei Händlerkataloge, die für eine Partnerzusammenarbeit verbunden sind.",
+    "comparisonStand": "Zwei Produktkarten auf einem Ständer zum Vergleichen"
   },
   "enterprisePilotPreview": {
     "label": "Pilotbeispiel · Musterbriefing",

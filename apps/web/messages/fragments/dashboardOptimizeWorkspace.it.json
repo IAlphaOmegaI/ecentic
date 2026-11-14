@@ -1,0 +1,94 @@
+{
+  "dashboard": {
+    "optimizeWorkspace": {
+      "title": "Ottimizza",
+      "description": "Migliora le schede prodotto partendo dai confronti. Verifica i dati prima di pubblicare.",
+      "action": {
+        "primary": "Genera e pubblica",
+        "secondary": "Esamina la scheda",
+        "tertiary": "Verifica qualità dei dati",
+        "quaternary": "Riprova"
+      },
+      "queue": {
+        "title": "Le prossime modifiche alle schede",
+        "description": "Inizia dai tassi di vittoria simulati più bassi. Apri un prodotto per esaminare i risultati.",
+        "sample": "Questa lista usa suggerimenti diagnostici salvati. In Qualità dei dati trovi la verifica completa del catalogo attivo.",
+        "count": "{count, plural, one {# prodotto mostrato} many {# prodotti mostrati} other {# prodotti mostrati}}"
+      },
+      "search": "Cerca prodotti o SKU…",
+      "tabs": {
+        "queue": "Da esaminare",
+        "published": "Pubblicate",
+        "dismissed": "Scartate"
+      },
+      "summary": {
+        "candidates": "Idonei alla pubblicazione",
+        "manual": "Modifiche manuali necessarie",
+        "published": "Pubblicazioni registrate"
+      },
+      "row": {
+        "rate": "Tasso di vittoria simulato",
+        "manual": "Modifiche manuali",
+        "ready": "Pubblicazione disponibile",
+        "context": "Modelli registrati: {models}"
+      },
+      "method": {
+        "title": "Come funziona questa lista",
+        "description": "I prodotti candidati hanno un tasso di vittoria registrato inferiore al 55%. Sono esclusi i prodotti scartati e le schede pubblicate negli ultimi 14 giorni. Un candidato non è una bozza salvata. Genera e pubblica crea un nuovo testo e sostituisce subito la scheda nel negozio. Questi suggerimenti non prevedono vendite o futuri tassi di vittoria."
+      },
+      "states": {
+        "empty": {
+          "title": "Niente da esaminare al momento",
+          "description": "Non ci sono suggerimenti per le schede di questo negozio. Verifica i dati prodotto o avvia un confronto per trovare il prossimo miglioramento."
+        },
+        "filtered": {
+          "title": "Nessun prodotto corrispondente",
+          "description": "Prova un altro nome di prodotto o SKU."
+        },
+        "error": {
+          "title": "Impossibile caricare la lista",
+          "description": "I dati dei tuoi prodotti sono ancora salvati. Prova a ricaricare la lista."
+        }
+      },
+      "confirmation": {
+        "title": "Pubblicare una nuova scheda?",
+        "description": "Verranno generati un titolo e una descrizione per {title} e pubblicati nel negozio collegato. Sostituiranno la scheda attuale senza una revisione separata della bozza.",
+        "bulkTitle": "Pubblicare le modifiche per questo negozio?",
+        "bulkDescription": "Verranno generati e pubblicati nuovi titoli e descrizioni per {count, plural, one {# prodotto idoneo} many {# prodotti idonei} other {# prodotti idonei}} di questo negozio. Le schede attuali verranno sostituite.",
+        "storeTitle": "Ottimizzare il negozio collegato?",
+        "storeDescription": "Verranno scritti i dati strutturati dei prodotti e, per Shopify, un profilo del negozio. Verranno generati e pubblicati testi per i prodotti idonei di questo negozio. Questo può modificare più contenuti già pubblicati.",
+        "action": {
+          "primary": "Conferma e pubblica",
+          "secondary": "Continua a esaminare"
+        }
+      },
+      "bulk": {
+        "action": "Pubblica i prodotti idonei"
+      },
+      "store": {
+        "action": "Ottimizza il negozio"
+      },
+      "toast": {
+        "failed": "Impossibile completare la modifica",
+        "failedDescription": "Riprova. Se la pubblicazione è iniziata, verifica il prodotto prima di riprovare.",
+        "published": "{count, plural, one {# scheda pubblicata} many {# schede pubblicate} other {# schede pubblicate}}",
+        "partial": "{published} pubblicate; {failed} non completate. Esamina i prodotti rimanenti prima di riprovare.",
+        "saved": "Lista aggiornata"
+      },
+      "history": {
+        "unmeasured": "Serve un nuovo confronto per misurare il risultato.",
+        "undated": "Data di pubblicazione non disponibile"
+      },
+      "diagnostics": {
+        "content": "Aggiungi informazioni utili",
+        "contentHint": "Verifica il titolo e la descrizione salvati. Inserisci specifiche corrette e casi d’uso pertinenti.",
+        "structured_data": "Verifica i dati strutturati",
+        "structured_dataHint": "Controlla i dati strutturati del prodotto e aggiungi solo attributi verificati.",
+        "seo": "Aggiungi immagini del prodotto",
+        "seoHint": "Aggiungi un’immagine reale del prodotto alla fonte, poi sincronizza il catalogo.",
+        "platform": "Collega l’accesso alla pubblicazione",
+        "platformHint": "Questo catalogo non può pubblicare modifiche direttamente. Collega Shopify o WooCommerce oppure aggiorna la fonte manualmente."
+      }
+    }
+  }
+}

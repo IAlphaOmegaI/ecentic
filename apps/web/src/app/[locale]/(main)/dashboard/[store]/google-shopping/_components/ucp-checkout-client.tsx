@@ -4,6 +4,11 @@ import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import {
+  Collapsible,
+  CollapsiblePanel,
+  CollapsibleTrigger,
+} from "@zenncore/web/components/collapsible";
+import {
   field,
   type GenericForm,
   InferredForm,
@@ -116,6 +121,7 @@ const ProductEditor = ({
     >
       <Button
         type="submit"
+        variant="soft"
         color="neutral"
         className="shrink-0"
         disabled={isSaving}
@@ -141,14 +147,23 @@ const Disclosure = ({
   return (
     // `@container` so the forms below track the card's width, not the
     // viewport's — these cards sit in a half-width grid next to a sidebar.
-    <div className="@container flex flex-col gap-3 px-4 pb-4">
-      <div>
-        <Button color="neutral" onClick={() => setOpen((current) => !current)}>
+    <Collapsible
+      open={open}
+      onOpenChange={setOpen}
+      className="@container w-full min-w-0 border-accent-foreground border-t"
+    >
+      <div className="px-4 py-4 sm:px-6">
+        <CollapsibleTrigger
+          className="w-fit"
+          render={<Button variant="soft" color="neutral" />}
+        >
           {open ? translate("hide") : label}
-        </Button>
+        </CollapsibleTrigger>
       </div>
-      {open && children}
-    </div>
+      <CollapsiblePanel className="bg-transparent px-4 pb-4 duration-200 motion-reduce:transition-none sm:px-6">
+        {children}
+      </CollapsiblePanel>
+    </Collapsible>
   );
 };
 

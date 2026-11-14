@@ -578,8 +578,7 @@
       },
       "composer": {
         "placeholder": "Demandez à l’agent de faire des achats sur {host}…",
-        "hint": "Entrée pour envoyer · Maj + Entrée pour une nouvelle ligne",
-        "remaining": "Il reste {remaining} des {limit} {limit, plural, one {message gratuite} many {messages gratuites} other {messages gratuites}} dans cet espace de test."
+        "hint": "Entrée pour envoyer · Maj + Entrée pour une nouvelle ligne"
       },
       "quota": {
         "title": "Vous avez utilisé les {limit} messages gratuits de l’espace d’expérimentation",
@@ -743,11 +742,7 @@
         },
         "frequency": {
           "title": "Fréquence des simulations",
-          "options": [
-            "Manuel uniquement",
-            "Quotidienne",
-            "Hebdomadaire"
-          ]
+          "options": ["Manuel uniquement", "Quotidienne", "Hebdomadaire"]
         },
         "persona": {
           "title": "Persona d’achat",

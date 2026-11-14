@@ -1,0 +1,12 @@
+{
+  "dashboard": {
+    "commandPalette": {
+      "states": {
+        "unavailable": "Search is temporarily unavailable. Try again."
+      },
+      "action": {
+        "primary": "Try again"
+      }
+    }
+  }
+}

@@ -1,0 +1,116 @@
+{
+  "dashboard": {
+    "research": {
+      "title": "KI-Recherche",
+      "description": "Vergleichen Sie Produkte, prüfen Sie gespeicherte Antworten und planen Sie den nächsten Test.",
+      "unavailable": {
+        "title": "Diese Recherche konnte nicht geladen werden",
+        "description": "Bitte versuchen Sie es erneut. Ihre gespeicherten Ergebnisse bleiben erhalten.",
+        "action": {
+          "primary": "Erneut versuchen"
+        }
+      },
+      "empty": {
+        "title": "Beginnen Sie mit einem Produktvergleich",
+        "description": "Wählen Sie Produkte und reale Wettbewerber aus. Anschließend sehen Sie, welches Angebot die einzelnen Modelle bevorzugen. Abgeschlossene Tests erscheinen hier."
+      },
+      "comparison": {
+        "title": "Letzter abgeschlossener Vergleich",
+        "action": {
+          "primary": "Vergleich vorbereiten",
+          "secondary": "Ergebnisse ansehen"
+        },
+        "rate": "Simulierte Gewinnquote",
+        "sample": "{wins} Siege bei {total} Vergleichen",
+        "scope": "Die Ergebnisse beziehen sich auf die Produkte dieses Shops in diesem Test. Sie zeigen Modellentscheidungen, keine Besuche oder Verkäufe.",
+        "recent": "Frühere Vergleiche",
+        "first": "Dies ist Ihr erster abgeschlossener Vergleich.",
+        "cohorts": "Andere Produkte, Wettbewerber oder Modelle können die Quote verändern. Diese Tests messen keinen durch Änderungen verursachten Zuwachs."
+      },
+      "brand": {
+        "title": "Gespeicherte Markenanalyse",
+        "running": "Eine neue Analyse läuft.",
+        "failed": "Die letzte Analyse wurde nicht abgeschlossen. Öffnen Sie die Markenanalyse, um sie erneut zu starten.",
+        "empty": "Bisher wurde keine Markenanalyse abgeschlossen.",
+        "action": {
+          "primary": "Markenanalyse öffnen"
+        },
+        "scope": "Dies sind stichprobenartige Modellantworten, bei denen Ihre Marke als Kontext vorgegeben wurde. Prüfen Sie die ursprünglichen Fragen und Antworten, bevor Sie handeln."
+      },
+      "directions": {
+        "questions": {
+          "title": "Kauffragen untersuchen",
+          "description": "Testen Sie typische Kauffragen und prüfen Sie, welche Shops die einzelnen Modelle vorschlagen.",
+          "action": {
+            "primary": "Fragen untersuchen"
+          }
+        },
+        "competitors": {
+          "title": "Wettbewerber auswählen",
+          "description": "Prüfen Sie die Konkurrenzprodukte Ihrer Vergleiche und ergänzen Sie tatsächlich erfasste Angebote.",
+          "action": {
+            "primary": "Wettbewerber verwalten"
+          }
+        },
+        "rank": {
+          "title": "Katalogsuche prüfen",
+          "description": "Prüfen Sie die Position Ihres Shops für eine Suchanfrage und ein Land im Shopify Global Catalog.",
+          "action": {
+            "primary": "Katalogposition prüfen"
+          }
+        }
+      },
+      "rank": {
+        "title": "Katalogposition",
+        "description": "Eine Live-Abfrage des Shopify Global Catalog für Ihre Suchanfrage und Ihren Markt.",
+        "empty": {
+          "title": "Wo erscheint Ihr Shop?",
+          "description": "Geben Sie eine Kauffrage ein und wählen Sie ein Land. Geprüft werden die zurückgegebenen Katalogangebote, keine allgemeingültige Position in ChatGPT oder Google."
+        },
+        "checked": "Shopify Global Catalog · {country} · Geprüft: {time}. Die Ergebnisse können sich zwischen Abfragen ändern."
+      },
+      "comparisons": {
+        "title": "Produktvergleiche",
+        "description": "Wählen Sie Produkte und Konkurrenzangebote für den Test aus und prüfen Sie anschließend die Modellentscheidungen.",
+        "phases": {
+          "pre": "Bereit zum Vergleich",
+          "running": "Produkte werden verglichen",
+          "complete": "Vergleich abgeschlossen"
+        },
+        "unmeasured": "Keine Vergleiche für dieses Modell"
+      },
+      "questions": {
+        "title": "Kauffragen",
+        "description": "Untersuchen Sie modellgenerierte Antworten auf Kauffragen. Die Vorschläge dienen der Recherche und sind kein verifiziertes Suchranking."
+      },
+      "competitors": {
+        "title": "Wettbewerber",
+        "description": "Verwalten Sie Konkurrenzangebote und prüfen Sie, wie Ihre Produkte im Vergleich abschneiden.",
+        "action": {
+          "primary": "Wettbewerber hinzufügen",
+          "secondary": "Vergleich vorbereiten",
+          "tertiary": "Zurück zu den Wettbewerbern"
+        },
+        "stats": {
+          "tracked": "Marken in Ihrer Liste",
+          "tested": "Verglichene Marken",
+          "comparisons": "Gespeicherte Vergleiche"
+        },
+        "empty": {
+          "title": "Wählen Sie die Alternativen Ihrer Käufer aus",
+          "description": "Fügen Sie Konkurrenzprodukte mit tatsächlich erfassten Preisen und Produktdaten hinzu. Beim Vorbereiten eines Vergleichs wählen Sie die passenden Angebote aus."
+        },
+        "evidence": {
+          "title": "Wo Ihre Produkte auf die stärkste Konkurrenz treffen",
+          "description": "Simulierte Gewinnquote Ihrer Produkte gegenüber jeder Marke, beginnend mit der niedrigsten. Angezeigt werden nur Marken mit abgeschlossenen Vergleichen.",
+          "sample": "{count} Vergleiche"
+        },
+        "roster": "{total} Wettbewerber · {selected} ausgewählt",
+        "updateFailed": "Wettbewerber konnte nicht aktualisiert werden"
+      }
+    }
+  },
+  "commerceFigures": {
+    "comparisonStand": "Zwei Produktkarten auf einem Ständer zum Vergleichen"
+  }
+}

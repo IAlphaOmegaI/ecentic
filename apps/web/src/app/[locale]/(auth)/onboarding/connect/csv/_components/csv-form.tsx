@@ -48,7 +48,7 @@ export const CsvForm = () => {
             <span className="relative z-10 flex w-full min-w-0 flex-col items-start gap-6">
               <span className="flex w-full items-center justify-between gap-4">
                 <FileIcon className="size-10 text-primary-rich" aria-hidden />
-                <span className="rounded-md border border-background-rich/20 px-2 py-1 text-background-rich/80 text-xs">
+                <span className="rounded-sm border border-background-rich/20 px-2 py-1 text-background-rich/80 text-xs">
                   CSV
                 </span>
               </span>
@@ -87,7 +87,7 @@ export const CsvForm = () => {
             control: {
               root: "min-w-0 border-0 p-0",
               input:
-                "flex h-auto min-h-64 min-w-0 overflow-hidden rounded-xl border-0 bg-linear-to-br from-emphasis-dimmed via-emphasis to-primary-text/90 p-6 text-left data-dragging:ring-2 data-dragging:ring-primary-rich data-dragging:ring-inset focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4 sm:p-8",
+                "flex h-auto min-h-64 min-w-0 overflow-hidden rounded-lg border-0 bg-linear-to-br from-emphasis-dimmed via-emphasis to-primary-text/90 p-6 text-left data-dragging:ring-2 data-dragging:ring-primary-rich data-dragging:ring-inset focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4 sm:p-8",
             },
           },
         }),

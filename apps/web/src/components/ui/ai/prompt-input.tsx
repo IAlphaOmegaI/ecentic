@@ -82,7 +82,7 @@ type InputGroupProps = HTMLAttributes<HTMLDivElement>;
 const InputGroup = ({ className, ...props }: InputGroupProps) => (
   <div
     className={cn(
-      "flex w-full flex-col rounded-md border border-accent-foreground bg-background transition-[border-color,box-shadow] duration-200 focus-within:border-primary focus-within:ring-[3px] focus-within:ring-primary/15",
+      "flex w-full flex-col rounded-lg border border-accent-foreground bg-background transition-[border-color,box-shadow] duration-200 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/15",
       className,
     )}
     {...props}
@@ -1249,7 +1249,7 @@ export const PromptInputButton = ({
           <TooltipPopup>
             {tooltipContent}
             {shortcut && (
-              <span className="ml-2 text-muted-foreground">{shortcut}</span>
+              <span className="ml-2 text-background-rich/70">{shortcut}</span>
             )}
           </TooltipPopup>
         </TooltipPositioner>
@@ -1375,7 +1375,7 @@ export const PromptInputSelectTrigger = ({
 }: PromptInputSelectTriggerProps) => (
   <SelectTrigger
     className={cn(
-      "border-none bg-transparent font-medium text-muted-foreground shadow-none transition-colors",
+      "border-none bg-transparent font-medium text-foreground-dimmed shadow-none transition-colors",
       "hover:bg-accent hover:text-foreground aria-expanded:bg-accent aria-expanded:text-foreground",
       className,
     )}
@@ -1465,7 +1465,7 @@ export const PromptInputTabLabel = ({
   // oxlint-disable-next-line eslint-plugin-jsx-a11y(heading-has-content)
   <h3
     className={cn(
-      "mb-2 px-3 font-medium text-muted-foreground text-xs",
+      "mb-2 px-3 font-medium text-foreground-dimmed text-xs",
       className,
     )}
     {...props}

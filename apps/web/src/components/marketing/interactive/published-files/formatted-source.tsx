@@ -9,7 +9,7 @@ export const FormattedSource = ({
   source: string;
   startLine?: number;
 }) => (
-  <pre className="min-w-0 py-5 font-mono text-[13px] text-background-rich/80 leading-6 max-sm:text-xs">
+  <pre className="min-w-0 py-5 font-mono text-xs text-background-rich/80 leading-6 max-sm:text-xs">
     <code>
       {source.split("\n").map((line, index) => (
         <span

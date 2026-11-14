@@ -1,17 +1,15 @@
 import { unwrapResult } from "@zenncore/utils";
 import Image from "next/image";
 import { getFormatter, getTranslations } from "next-intl/server";
-import { Suspense } from "react";
+import { cache, Suspense } from "react";
 import { Link } from "@/i18n/navigation";
 import {
   formatPlanPrice,
   isPlanKey as isCatalogPlanKey,
 } from "@/lib/agent-api";
-import * as Optimizations from "@/server/app/optimization";
 import * as Products from "@/server/app/product";
 import * as Store from "@/server/app/store";
 import * as Subscription from "@/server/app/subscription";
-import { unwrapEntitled } from "@/server/utils/entitlement";
 import { Environment } from "@/server/utils/environment";
 import { isPlanKey, PLANS } from "@/server/utils/stripe";
 import {
@@ -19,39 +17,32 @@ import {
   SidebarNavSkeleton,
   StoreSwitcherSkeleton,
 } from "./chrome-skeletons";
-import { SidebarNav } from "./sidebar-nav";
+import { MobileSidebar, SidebarNav } from "./sidebar-nav";
 import { StoreSwitcher } from "./store-switcher";
 import { TrialCard } from "./trial-card";
 
-type StoreParams = LayoutProps<"/dashboard/[store]">["params"];
+type StoreParams = LayoutProps<"/[locale]/dashboard/[store]">["params"];
+
+// The desktop rail and mobile sheet share request-scoped reads.
+const getCurrentStores = cache(() =>
+  unwrapResult(Store.getForCurrentUser(Environment.SERVER)),
+);
+const getProductCount = cache((store: string) =>
+  unwrapResult(Products.countForCurrentUser(Environment.SERVER, { store })),
+);
 
 /**
  * The sidebar is split by what each region waits on, not rendered as one unit.
  *
  * The frame and the logo need nothing at all, so they belong in the static
  * shell. The nav needs only the store id from the URL — no query — so it paints
- * as soon as params resolve. Only the switcher and the two badge counts touch
+ * as soon as params resolve. Only the switcher and the product count touch
  * the database, and each waits alone. Previously the whole sidebar, logo
  * included, sat behind all three queries.
  */
 export const Sidebar = ({ params }: { params: StoreParams }) => (
-  <aside className="relative hidden min-h-0 w-60 flex-col overflow-hidden border-accent-foreground border-r bg-background-rich md:flex">
-    <Suspense
-      fallback={
-        <div className="flex h-14 items-center justify-center overflow-hidden border-accent-foreground border-b pr-22 pl-5">
-          <Link href="/dashboard" className="w-full">
-            <Image
-              src="/images/trademark.svg"
-              alt="ecentic"
-              width={96}
-              height={28}
-              className="w-full"
-              loading="eager"
-            />
-          </Link>
-        </div>
-      }
-    >
+  <aside className="relative hidden min-h-0 w-60 shrink-0 flex-col overflow-hidden bg-emphasis font-normal text-background-rich md:flex">
+    <Suspense fallback={<WorkspaceMark />}>
       <SidebarLogo />
     </Suspense>
 
@@ -73,11 +64,19 @@ export const Sidebar = ({ params }: { params: StoreParams }) => (
   </aside>
 );
 
+export const MobileNavigation = ({ params }: { params: StoreParams }) => (
+  <MobileSidebar>
+    <Suspense fallback={<StoreSwitcherSkeleton />}>
+      <CurrentStoreSwitcher params={params} />
+    </Suspense>
+    <Suspense fallback={<SidebarNavSkeleton />}>
+      <Navigation params={params} />
+    </Suspense>
+  </MobileSidebar>
+);
+
 const CurrentStoreSwitcher = async ({ params }: { params: StoreParams }) => {
-  const [{ store }, stores] = await Promise.all([
-    params,
-    unwrapResult(Store.getForCurrentUser(Environment.SERVER)),
-  ]);
+  const [{ store }, stores] = await Promise.all([params, getCurrentStores()]);
 
   const current = stores.find((item) => item.id === store) ?? null;
 
@@ -97,26 +96,13 @@ const Navigation = async ({ params }: { params: StoreParams }) => {
           <ProductCount store={store} />
         </Suspense>
       }
-      optimizationBadge={
-        <Suspense fallback={<NavBadgeSkeleton />}>
-          <OptimizationCount store={store} />
-        </Suspense>
-      }
+      optimizationBadge={null}
     />
   );
 };
 
 const ProductCount = async ({ store }: { store: string }) =>
-  unwrapResult(Products.countForCurrentUser(Environment.SERVER, { store }));
-
-// Gated, and this is layout chrome: a throw here takes down the whole route —
-// paywall included — for exactly the accounts the paywall is meant to catch.
-// `unwrapEntitled` drops the badge instead, leaving the sidebar navigable so a
-// blocked account can still reach billing settings.
-const OptimizationCount = async ({ store }: { store: string }) =>
-  unwrapEntitled(
-    await Optimizations.countPublished(Environment.SERVER, { store }),
-  );
+  getProductCount(store);
 
 const DAY = 24 * 60 * 60 * 1000;
 
@@ -177,25 +163,26 @@ const TrialStatus = async () => {
   );
 };
 
+const WorkspaceMark = ({ label }: { label?: string }) => (
+  <div className="flex h-16 shrink-0 items-center px-5">
+    <Link
+      href="/dashboard"
+      aria-label={label}
+      className="w-35 rounded-sm focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4"
+    >
+      <Image
+        src="/images/marketing/trademark-on-dark.svg"
+        alt="ecentic"
+        width={140}
+        height={35}
+        className="h-auto w-full"
+        loading="eager"
+      />
+    </Link>
+  </div>
+);
+
 const SidebarLogo = async () => {
   const translate = await getTranslations("dashboard.sidebar");
-
-  return (
-    <div className="flex h-14 items-center justify-center overflow-hidden border-accent-foreground border-b pr-22 pl-5">
-      <Link
-        href="/dashboard"
-        aria-label={translate("allStores")}
-        className="w-full"
-      >
-        <Image
-          src="/images/trademark.svg"
-          alt="ecentic"
-          width={96}
-          height={28}
-          className="w-full"
-          loading="eager"
-        />
-      </Link>
-    </div>
-  );
+  return <WorkspaceMark label={translate("allStores")} />;
 };

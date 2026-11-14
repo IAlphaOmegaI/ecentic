@@ -200,7 +200,7 @@ export const EnterpriseBody = async ({
                   <MarketingHeading
                     eyebrow={section.eyebrow}
                     title={section.title}
-                    className="max-w-[52rem]"
+                    className="max-w-208"
                   />
                   <div className="relative grid min-w-0 border-[var(--rail-color)] border-t md:grid-cols-3">
                     {section.items?.map((item, index) => {

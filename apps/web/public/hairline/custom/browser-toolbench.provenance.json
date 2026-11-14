@@ -1,0 +1,32 @@
+{
+  "name": "browser-toolbench",
+  "subject": "webmcp",
+  "meaning": "A browser inspection screen with a tool probe: slide the probe over the page controls.",
+  "part": "probe",
+  "answer": [
+    94,
+    40,
+    62
+  ],
+  "bounds": [
+    [
+      -7,
+      -5,
+      0
+    ],
+    [
+      133,
+      79,
+      123
+    ]
+  ],
+  "scale": 1.87,
+  "figure": "/hairline/custom/browser-toolbench.js",
+  "rest": "apps/web/src/components/hairline/rest/browser-toolbench.json",
+  "sourceSha256": "58f0b163446aa855c03a6990b247094d7a1062dca904c65215e8f87f2bccbea2",
+  "restSha256": "8b9db22aa3668f844311094f72bc948d4965e20acc0a9587996bde9298105f8a",
+  "engine": "Unmodified fixed Hairline kernel",
+  "interaction": "Fixed rest hit area; 700ms EASE_LIFT tween; bounded reach; linked responses delayed 40ms; loop sleeps after settlement.",
+  "reducedMotion": "SSR rest geometry remains complete. Shared CustomHairlineFigure disables pointer code and asset enhancement for reduced motion.",
+  "validation": "output/dashboard-hairline-2026-11-14/browser-toolbench.validation.txt"
+}

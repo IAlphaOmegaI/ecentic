@@ -1,0 +1,42 @@
+{
+  "dashboard": {
+    "traffic": {
+      "title": "Traffico AI",
+      "description": "Scopri da dove proviene l’attività AI registrata.",
+      "period": "Ultimi 30 giorni",
+      "source": "Fonte",
+      "other": "Altre fonti",
+      "referrals": {
+        "title": "Referral AI",
+        "short": "Referral",
+        "detail": "Attività classificata come referral AI."
+      },
+      "requests": {
+        "title": "Richieste di agenti e crawler",
+        "short": "Richieste",
+        "detail": "User agent rilevati, inclusi crawler e browser con agenti AI."
+      },
+      "empty": {
+        "title": "Nessuna attività AI registrata",
+        "description": "L’attività appare quando il tracciamento rileva un referral AI o uno user agent riconosciuto."
+      },
+      "action": {
+        "primary": "Verifica le connessioni",
+        "secondary": "Riprova"
+      },
+      "probes": "{count, plural, one {# segnale di test del tracciamento, escluso dai totali sopra.} many {# segnali di test del tracciamento, esclusi dai totali sopra.} other {# segnali di test del tracciamento, esclusi dai totali sopra.}}",
+      "limitation": "I conteggi indicano eventi registrati, non persone uniche o acquisti. Il tracciamento nel browser non rileva tutte le richieste dei crawler.",
+      "chart": {
+        "title": "Attività giornaliera",
+        "scope": "Solo OpenAI, Anthropic e Google.",
+        "hint": "Questo andamento combina referral e richieste. Gli altri fornitori compaiono nel dettaglio per fonte.",
+        "empty": "Nessuna attività registrata per questi tre fornitori.",
+        "accessibleLabel": "Attività giornaliera registrata. Usa i tasti freccia per consultare ogni data."
+      },
+      "error": {
+        "title": "Impossibile caricare il traffico",
+        "description": "I dati sul traffico sono temporaneamente non disponibili. Ricarica questa vista per riprovare."
+      }
+    }
+  }
+}

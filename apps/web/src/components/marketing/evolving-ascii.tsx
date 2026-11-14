@@ -17,6 +17,7 @@ const artwork = {
   catalog: "/images/ascii/tonal/catalog.svg",
   catalogCommerce: "/images/ascii/tonal/catalog-commerce.svg",
   headphones: "/images/ascii/tonal/headphones.svg",
+  qualityInspection: "/images/ascii/tonal/quality-inspection.svg",
   homeBag: "/images/ascii/tonal/home-bag.svg",
   homeCart: "/images/ascii/tonal/shopping-cart.svg",
 };

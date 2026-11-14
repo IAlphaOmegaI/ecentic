@@ -1,0 +1,79 @@
+{
+  "dashboard": {
+    "qualityWorkspace": {
+      "title": "Datenqualität",
+      "description": "Finden Sie fehlende oder ungültige Produktangaben und sehen Sie, welche Einträge Sie überarbeiten sollten.",
+      "product": "Produkt",
+      "productsLabel": "Produkte",
+      "openProduct": "{product} öffnen",
+      "search": "Produkte oder Probleme suchen",
+      "scope": {
+        "label": "Prüfumfang",
+        "all": "Alle Prüfungen",
+        "universal": "Allgemeine Prüfungen",
+        "google": "Google Merchant",
+        "chatgpt": "ChatGPT-Feed"
+      },
+      "status": {
+        "label": "Art des Befunds",
+        "all": "Alle Befunde",
+        "blocker": "Blockierender Fehler",
+        "warning": "Warnung",
+        "info": "Hinweis",
+        "ready": "Ohne Befund"
+      },
+      "summary": {
+        "label": "Katalogprüfungen nach Plattform",
+        "title": "Ohne blockierende Fehler oder Warnungen",
+        "count": "{count, plural, one {# aktives Produkt geprüft} other {# aktive Produkte geprüft}}",
+        "passing": "{count} von {total}",
+        "breakdown": "{blocker} mit blockierenden Fehlern, {warning} mit Warnungen, {info} nur mit Hinweisen, {ready} ohne Befund."
+      },
+      "method": {
+        "title": "So funktioniert es",
+        "description": "Diese Prüfungen gleichen gespeicherte Daten aktiver Produkte mit unserem Regelwerk ab. Sie bestätigen weder den Zugriff auf den Live-Shop noch die Annahme durch Google oder ChatGPT. Produkte, zu denen es nur Hinweise gibt, zählen als Produkte ohne blockierende Fehler oder Warnungen."
+      },
+      "views": {
+        "label": "Ansicht der Datenqualität",
+        "issues": "Nach Problem",
+        "products": "Nach Produkt"
+      },
+      "issueCount": "{count, plural, one {# Problem} other {# Probleme}}",
+      "productCount": "{count, plural, one {# Produkt} other {# Produkte}}",
+      "findings": "{count, plural, one {# Befund} other {# Befunde}}",
+      "issuesHint": "Zuerst erscheinen blockierende Fehler, dann Warnungen und Hinweise. Innerhalb jeder Gruppe stehen Probleme mit mehr betroffenen Produkten weiter oben. Ein Produkt kann unter mehreren Problemen erscheinen.",
+      "reference": "Regeldokumentation für {surface} ansehen",
+      "noFindings": "Für dieses Produkt wurden im gewählten Prüfumfang keine Probleme festgestellt.",
+      "action": {
+        "primary": "Katalog öffnen",
+        "secondary": "Erneut versuchen",
+        "tertiary": "Filter zurücksetzen",
+        "quaternary": "Weitere Produkte anzeigen"
+      },
+      "productAction": {
+        "primary": "Produkt öffnen"
+      },
+      "searchAction": {
+        "primary": "Suche löschen"
+      },
+      "states": {
+        "empty": {
+          "title": "Keine aktiven Produkte zum Prüfen",
+          "description": "Diese Prüfungen berücksichtigen nur aktive Produkte. Entwürfe und archivierte Produkte bleiben in Ihrem Katalog, werden hier aber nicht einbezogen."
+        },
+        "error": {
+          "title": "Die Qualitätsprüfungen konnten nicht geladen werden",
+          "description": "Ihr Katalog ist weiterhin gespeichert. Versuchen Sie, die Ergebnisse erneut zu laden."
+        },
+        "clear": {
+          "title": "Keine Befunde in diesen Prüfungen",
+          "description": "Die aktiven Produkte bestehen die für diese Ansicht hinterlegten Prüfungen. Das bestätigt nicht ihre Annahme durch eine Einkaufsplattform."
+        },
+        "noMatches": {
+          "title": "Keine passenden Befunde oder Produkte",
+          "description": "Versuchen Sie eine andere Suche oder setzen Sie die Filter zurück, um die gesamte Liste zu sehen."
+        }
+      }
+    }
+  }
+}

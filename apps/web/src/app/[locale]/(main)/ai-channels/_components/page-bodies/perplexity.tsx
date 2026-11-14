@@ -175,14 +175,14 @@ const ProductInformation = ({ copy }: { copy: ReviewCopy }) => (
     <div className="grid min-w-0 items-center md:grid-cols-[1fr_80px_1fr]">
       <div className="px-7 py-8 max-sm:px-4">
         <p className="mb-5 text-foreground-dimmed text-sm">{copy.record}</p>
-        <div className="rounded-xl border border-accent-foreground bg-background-rich p-5">
+        <div className="rounded-lg border border-accent-foreground bg-background-rich p-5">
           <div className="flex items-center gap-4 border-accent-foreground border-b pb-5">
             <Image
               src="/images/products/sony-wh-1000xm5.webp"
               alt=""
               width={64}
               height={64}
-              className="size-16 rounded-md bg-background object-contain p-2"
+              className="size-16 rounded-sm bg-background object-contain p-2"
             />
             <p className="font-heading text-foreground-rich text-xl">
               {copy.product}
@@ -204,7 +204,7 @@ const ProductInformation = ({ copy }: { copy: ReviewCopy }) => (
                   <dt className="font-medium text-foreground-rich">
                     <span
                       aria-hidden
-                      className="absolute top-5 left-0 grid size-10 place-items-center rounded-md border border-primary/15 bg-primary/5 text-primary"
+                      className="absolute top-5 left-0 grid size-10 place-items-center rounded-sm border border-primary/15 bg-primary/5 text-primary"
                     >
                       <Icon className="size-6" />
                     </span>

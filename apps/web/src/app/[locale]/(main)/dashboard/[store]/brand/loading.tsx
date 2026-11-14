@@ -1,4 +1,4 @@
-import { BrandShell, BrandSkeleton } from "./_components/shell";
+import { BrandShell } from "./_components/shell";
+import { BrandSkeleton } from "./_components/skeletons";
 
-// Mirrors the brand page shell so navigation lands without layout shift.
 export default () => <BrandShell content={<BrandSkeleton />} />;

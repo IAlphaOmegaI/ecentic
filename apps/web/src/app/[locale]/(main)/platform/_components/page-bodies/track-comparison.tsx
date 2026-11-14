@@ -64,7 +64,7 @@ export const TrackComparison = ({ content }: TrackComparison.Props) => (
             </p>
           </div>
           <div className="min-w-0 px-8 py-10 max-sm:px-4">
-            <h3 className="max-w-[24ch] text-[clamp(1.75rem,2.8vw,2.5rem)]">
+            <h3 className="max-w-[24ch] text-3xl xl:text-4xl">
               {signal.title}
             </h3>
             <dl className="mt-8">

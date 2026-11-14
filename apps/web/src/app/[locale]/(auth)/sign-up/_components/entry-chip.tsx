@@ -39,7 +39,7 @@ export const EntryChip = async () => {
   })();
 
   return (
-    <div className="flex items-center gap-3 rounded-md border border-accent-foreground bg-background-dimmed px-3 py-2.5">
+    <div className="flex items-center gap-3 rounded-sm border border-accent-foreground bg-background-dimmed px-3 py-2.5">
       {platform ? (
         <Image
           src={platform.logo}

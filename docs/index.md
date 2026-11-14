@@ -48,6 +48,7 @@ Central navigation for product context, agent rules, and package/component docum
 
 ### If you are building UI
 
+- [Dashboard structure proposal](./tasks/dashboard-proposal-2026-11-13.md) — draft consolidation into six merchant destinations, measurement boundaries and phased rollout
 - [DESIGN.md — complete design system](./context/design.md) — canonical guide, also available at the repository root; shared tokens, composition, interactions and verification contracts
 - [ecentic-art skill](../.agents/skills/ecentic-art/SKILL.md) — complete tonal ASCII and custom Hairline guidance, subject mappings and engine contract
 - [ecentic-public-pages skill](../.agents/skills/ecentic-public-pages/SKILL.md) — complete public route-family recipes and factual scope limits

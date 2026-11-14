@@ -24,7 +24,7 @@ export const HubEmptyState = async () => {
   return (
     <div data-hub-empty>
       <section className="relative grid bg-background-rich md:grid-cols-[0.9fr_1.1fr]">
-        <div className="relative isolate flex min-w-0 flex-col justify-between bg-linear-to-br from-primary via-primary-text to-emphasis-dimmed px-6 py-5 text-background-rich [clip-path:polygon(0_0,calc(100%_-_24px)_0,100%_24px,100%_100%,0_100%)] md:min-h-[390px] md:px-8 md:py-7">
+        <div className="relative isolate flex min-w-0 flex-col justify-between bg-linear-to-br from-primary via-primary-text to-emphasis-dimmed px-6 py-5 text-background-rich [clip-path:polygon(0_0,calc(100%_-_24px)_0,100%_24px,100%_100%,0_100%)] md:min-h-97.5 md:px-8 md:py-7">
           <p className="relative z-1 max-w-60 font-heading text-xl leading-snug sm:text-2xl">
             {translate("empty.artCaption")}
           </p>

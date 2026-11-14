@@ -1,0 +1,32 @@
+{
+  "name": "checkout-lanes",
+  "subject": "ucpComparison",
+  "meaning": "Two checkout lanes with parcel stops: open one barrier to compare the paths.",
+  "part": "barrier",
+  "answer": [
+    96,
+    58,
+    53
+  ],
+  "bounds": [
+    [
+      -9,
+      -9,
+      0
+    ],
+    [
+      135,
+      102,
+      115
+    ]
+  ],
+  "scale": 1.7,
+  "figure": "/hairline/custom/checkout-lanes.js",
+  "rest": "apps/web/src/components/hairline/rest/checkout-lanes.json",
+  "sourceSha256": "9f1c34c95d8f7aea764c5324ef07472a67e2563728a267014c79268de94e5b85",
+  "restSha256": "7a79bd9a5b6a936f6e7427c96e35398ff4e5f1c980077f5ca56abfa031703f9f",
+  "engine": "Unmodified fixed Hairline kernel",
+  "interaction": "Fixed rest hit area; 700ms EASE_LIFT tween; bounded reach; linked responses delayed 40ms; loop sleeps after settlement.",
+  "reducedMotion": "SSR rest geometry remains complete. Shared CustomHairlineFigure disables pointer code and asset enhancement for reduced motion.",
+  "validation": "output/dashboard-hairline-2026-11-14/checkout-lanes.validation.txt"
+}

@@ -1,0 +1,129 @@
+{
+  "dashboard": {
+    "overview": {
+      "description": "查看待处理事项、变化和下一步行动。",
+      "summary": {
+        "latestWinRate": "最新模拟胜率",
+        "latestResult": "{total, plural, other {# 次比较}}中{wins, plural, other {胜出 # 次}}",
+        "change": "{value} 个百分点",
+        "coverage": "已比较的商品",
+        "coverageDetail": "已比较 {count, number} 款商品，目录内共{total, plural, other { # 款}}",
+        "coverageHint": "根据已完成的商品比较统计。",
+        "noResult": "运行首次扫描即可查看结果。",
+        "topPerformer": "表现最好的商品",
+        "opportunity": "待改进的商品",
+        "productRate": "在 {rate} 的比较中胜出",
+        "updated": "最近完成的扫描：{time}",
+        "action": {
+          "primary": "查看商品",
+          "secondary": "改进此商品",
+          "tertiary": "选择商品"
+        },
+        "emptyProduct": "首次扫描后将显示商品结果。"
+      },
+      "charts": {
+        "recentActivity": "最近的扫描",
+        "latestScan": "最近完成的扫描",
+        "action": {
+          "tertiary": "查看模拟",
+          "primary": "查看最新扫描"
+        },
+        "winRateTrend": "每次扫描的胜率",
+        "winRateByModel": "各模型的商品平均胜率",
+        "modelHint": "每个模型在已比较商品上的平均胜率。",
+        "states": {
+          "noTrend": "暂无已完成的扫描。"
+        },
+        "change": "较上次扫描的变化",
+        "sampleNote": "每个数据点代表一次独立扫描；所选商品和竞品可能不同。"
+      },
+      "tabs": {
+        "topProducts": "商品",
+        "competitors": "竞品",
+        "agentVisits": "AI 访问"
+      },
+      "priorities": {
+        "title": "下一步",
+        "description": "补齐缺失的商品信息，再次比较。",
+        "fields": {
+          "description": {
+            "title": "补充缺失的商品描述",
+            "detail": "{count, plural, other {# 款商品没有描述。}}"
+          },
+          "price": {
+            "title": "补充缺失的价格",
+            "detail": "{count, plural, other {# 款商品没有价格。}}"
+          },
+          "sku": {
+            "title": "补充缺失的 SKU",
+            "detail": "{count, plural, other {# 款商品没有 SKU。}}"
+          },
+          "complete": {
+            "title": "基本商品字段已填写",
+            "detail": "已检查描述、价格和 SKU。"
+          }
+        },
+        "compare": {
+          "title": "比较尚未测试的商品",
+          "detail": "{count, plural, other {# 款商品尚未比较。}}",
+          "complete": {
+            "title": "目录中的所有商品均已比较",
+            "detail": "{count, plural, other {# 款商品已完成比较。}}"
+          }
+        },
+        "optimize": {
+          "title": "查看商品页面的改进机会",
+          "detail": "{count, plural, other {# 款商品在优化队列中。}}",
+          "complete": {
+            "title": "暂无排队等待的商品页面改进项",
+            "detail": "下次扫描后，查看商品页面诊断。"
+          }
+        },
+        "action": {
+          "primary": "检查商品信息",
+          "secondary": "选择商品",
+          "tertiary": "打开优化",
+          "quaternary": "查看比较"
+        }
+      },
+      "traffic": {
+        "title": "已记录的 AI 流量",
+        "description": "过去 30 天记录的事件。",
+        "referrals": "AI 来源访问",
+        "crawlers": "智能体和爬虫请求",
+        "hint": "这些是已记录的访问和请求，并不代表独立买家人数或购买次数。",
+        "action": {
+          "primary": "查看 AI 流量"
+        }
+      }
+    },
+    "shared": {
+      "activity": {
+        "simulationPending": "扫描已排队 — {total, plural, other {# 次比较}}",
+        "simulationFailed": "扫描失败 — 共 {total, number} 次比较，{completed, plural, other {已完成 # 次}}"
+      }
+    },
+    "nav": {
+      "assistant": {
+        "title": "向 Judy 提问",
+        "status": "预览",
+        "description": "Judy 正在开发中，暂不支持聊天或操作商品目录。请先使用仪表板中的工具。",
+        "name": "Judy"
+      }
+    },
+    "products": {
+      "table": {
+        "overviewTools": {
+          "sort": "排序",
+          "defaultOrder": "默认顺序",
+          "ascending": "升序",
+          "descending": "降序",
+          "comparison": "比较状态",
+          "all": "全部商品",
+          "compared": "已比较",
+          "notCompared": "未比较"
+        }
+      }
+    }
+  }
+}

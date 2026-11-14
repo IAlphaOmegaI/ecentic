@@ -1,0 +1,133 @@
+{
+  "dashboard": {
+    "brand": {
+      "design": {
+        "title": "Marca",
+        "description": "Cómo aparece tu marca en respuestas de compra simuladas.",
+        "updated": "Analizado {time}",
+        "sample": "{count, plural, one {# respuesta de muestra} many {# respuestas de muestra} other {# respuestas de muestra}} · {engines}",
+        "scope": "El modelo recibe tu marca como contexto de la auditoría. Es una simulación, no una prueba de recuerdo espontáneo ni un registro de conversaciones reales con clientes.",
+        "action": {
+          "primary": "Analizar marca",
+          "secondary": "Volver a analizar",
+          "tertiary": "Revisar catálogo"
+        },
+        "empty": {
+          "title": "Descubre los puntos ciegos de tu marca.",
+          "description": "Comprueba si tu marca aparece en preguntas de compra, cómo se describe y dónde ayudaría una información más clara.",
+          "note": "El análisis usa tu tienda y tu catálogo para preparar 20 preguntas para ChatGPT. Puedes seguir trabajando mientras se ejecuta el análisis.",
+          "visualTitle": "De la pregunta de un comprador al siguiente paso",
+          "steps": {
+            "questions": {
+              "title": "Preguntar por tu categoría",
+              "description": "Preguntas con y sin el nombre de tu marca."
+            },
+            "answers": {
+              "title": "Revisar las respuestas",
+              "description": "Menciones de marca, alternativas y resúmenes de respuestas."
+            },
+            "actions": {
+              "title": "Ver qué mejorar",
+              "description": "Sugerencias basadas en la muestra de respuestas."
+            }
+          }
+        },
+        "summaryTitle": "Lo que debes saber",
+        "discoveryTitle": "Menciones por tipo de pregunta",
+        "unprompted": "Preguntas sin el nombre de tu marca",
+        "named": "Preguntas que nombran tu marca",
+        "ratio": "{count} de {total} respuestas",
+        "noSample": "No hay preguntas en este grupo",
+        "overall": "Mencionada en {count} de {total} respuestas de la muestra.",
+        "noAnswers": "Este informe no tiene respuestas guardadas. Ejecuta un nuevo análisis para obtener datos.",
+        "tabs": {
+          "plan": "Próximos pasos",
+          "answers": "Respuestas",
+          "access": "Comprobaciones del sitio"
+        },
+        "findingsTitle": "Patrones que conviene revisar",
+        "journeyTitle": "Dónde mejorar",
+        "journeyDescription": "Sugerencias de este análisis. Revisa los datos antes de cambiar tu sitio.",
+        "stage": {
+          "find": "Que te descubran",
+          "consider": "Entrar en la selección",
+          "evaluate": "Ayudar a decidir",
+          "support": "Responder a la siguiente pregunta"
+        },
+        "suggestions": "{count, plural, one {# sugerencia} many {# sugerencias} other {# sugerencias}}",
+        "noSuggestions": "No se sugieren cambios para esta etapa.",
+        "perceptionTitle": "Cómo te describen las respuestas",
+        "strengths": "Lo que juega a tu favor",
+        "concerns": "Lo que genera dudas",
+        "alternativesTitle": "Otras marcas en las respuestas",
+        "sourcesTitle": "Fuentes sugeridas por el modelo",
+        "sourcesNote": "Son dominios o tipos de fuentes nombrados por el modelo, no citas verificadas de una búsqueda en directo.",
+        "occurrences": "{count, plural, one {# mención} many {# menciones} other {# menciones}}",
+        "accessTitle": "¿Pueden los rastreadores acceder a tu contenido?",
+        "accessDescription": "Una instantánea de los archivos públicos de descubrimiento. Estas comprobaciones no miden la indexación, las posiciones en buscadores ni la preparación del proceso de pago.",
+        "checks": {
+          "robots": "Reglas de rastreo",
+          "llms": "Guía de contenido para IA",
+          "engines": "Acceso de rastreadores"
+        },
+        "status": {
+          "pass": "Comprobado",
+          "warn": "Revisar",
+          "fail": "Bloqueado"
+        },
+        "robots": {
+          "pass": "Se leyeron las reglas de rastreo.",
+          "warn": "Revisa las reglas de rastreo registradas.",
+          "fail": "El escaneo detectó restricciones para rastreadores en robots.txt.",
+          "note": "robots.txt controla el acceso de cada rastreador. Las búsquedas, las solicitudes de usuarios y el entrenamiento de modelos pueden usar rastreadores distintos."
+        },
+        "llms": {
+          "pass": "Se pudo acceder a un archivo llms.txt.",
+          "warn": "No se registró ningún archivo llms.txt accesible.",
+          "note": "Esta guía de contenido opcional no garantiza que un servicio de IA lea, indexe o recomiende tu marca."
+        },
+        "engines": {
+          "pass": "No se detectaron bloqueos en la raíz del sitio para los rastreadores comprobados.",
+          "warn": "No se pudo confirmar el acceso en este escaneo.",
+          "fail": "Algunos rastreadores comprobados tienen restricciones en la raíz del sitio.",
+          "note": "Esta comprobación no cubre las reglas de rutas específicas, otros rastreadores ni la indexación."
+        },
+        "failed": {
+          "title": "El análisis no pudo terminar",
+          "description": "Tu último informe completado sigue disponible abajo. Vuelve a intentarlo cuando quieras.",
+          "emptyDescription": "No se guardó ningún informe. Vuelve a intentarlo cuando quieras."
+        },
+        "error": "No hemos podido iniciar el análisis. Vuelve a intentarlo.",
+        "running": {
+          "title": "Analizando tu marca",
+          "description": "ChatGPT está respondiendo a tus preguntas de compra. Los resultados aparecerán aquí cuando estén listos.",
+          "previous": "Estás viendo el informe anterior mientras se ejecuta el nuevo análisis.",
+          "steps": "Preparar preguntas · Revisar respuestas · Crear recomendaciones"
+        },
+        "loading": "Cargando el análisis de marca",
+        "unavailable": {
+          "title": "Los datos de marca no están disponibles temporalmente",
+          "description": "No hemos podido cargar tu análisis guardado. Actualiza esta sección para volver a intentarlo.",
+          "action": {
+            "primary": "Volver a intentar"
+          }
+        },
+        "noFindings": "No se guardaron patrones en este informe.",
+        "summaryAction": {
+          "primary": "Ver el análisis completo",
+          "secondary": "Ver menos"
+        },
+        "method": {
+          "action": {
+            "primary": "Cómo funciona"
+          }
+        }
+      },
+      "toast": {
+        "started": {
+          "description": "Puedes seguir trabajando. Los resultados aparecerán aquí cuando termine el análisis."
+        }
+      }
+    }
+  }
+}

@@ -48,7 +48,7 @@ export const Loop = async () => {
                 key={step.title}
                 className="flex flex-col gap-2 bg-background-dimmed p-6 md:p-8"
               >
-                <p className="font-medium text-foreground-dimmed text-sm uppercase tracking-[0.18em]">
+                <p className="font-medium text-foreground-dimmed text-sm uppercase tracking-widest">
                   {step.step}
                 </p>
                 <IconComponent className="mt-2 size-12 text-primary" />

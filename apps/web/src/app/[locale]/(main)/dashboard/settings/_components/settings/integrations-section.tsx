@@ -1,10 +1,11 @@
 "use client";
 
-import { PlusIcon } from "@zenncore/icons";
+import { FileIcon, GlobeIcon, PlusIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import { useToastManager } from "@zenncore/web/components/toast";
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { seo } from "@/lib/seo";
@@ -50,21 +51,6 @@ const googleSummary = (
         className: "bg-warning/10 text-warning",
       };
   }
-};
-
-const PLATFORM_BADGE: Record<string, { label: string; className: string }> = {
-  shopify: { label: "SH", className: "bg-[#96BF48] text-background-rich" },
-  "shopify-public": {
-    label: "SH",
-    className: "bg-[#96BF48] text-background-rich",
-  },
-  woocommerce: { label: "WC", className: "bg-[#7F54B3] text-background-rich" },
-  "woocommerce-public": {
-    label: "WC",
-    className: "bg-[#7F54B3] text-background-rich",
-  },
-  feed: { label: "FD", className: "bg-primary/80 text-primary-foreground" },
-  csv: { label: "CSV", className: "bg-accent-foreground text-background" },
 };
 
 /**
@@ -146,44 +132,55 @@ export const IntegrationsSection = ({
   return (
     <div className="divide-y divide-accent-foreground">
       <div>
-        <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3">
-          <p className="font-semibold text-foreground-rich text-sm">
+        <div className="border-accent-foreground border-b px-4 py-5 sm:px-6">
+          <h3 className="font-semibold text-base text-foreground-rich">
             {translate("title")}
-          </p>
+          </h3>
         </div>
         {stores.length === 0 ? (
-          <div className="p-6 text-foreground-dimmed text-sm">
+          <div className="px-4 py-6 text-foreground-dimmed text-sm sm:px-6">
             {translate("empty")}
           </div>
         ) : (
           <div className="divide-y divide-accent-foreground">
             {stores.map((store) => {
-              const badge = PLATFORM_BADGE[store.platform] ?? {
-                label: store.platform.slice(0, 2).toUpperCase(),
-                className: "bg-foreground-dimmed text-background",
-              };
+              const platformLogo = store.platform.startsWith("shopify")
+                ? "/providers/shopify.svg"
+                : store.platform.startsWith("woocommerce")
+                  ? "/providers/woocommerce.svg"
+                  : null;
               const status = google[store.id] ?? null;
               const summary = googleSummary(status, translate);
               const upgrade = upgradeFor(store);
 
               return (
-                <div key={store.id} className="px-4 py-4">
-                  <div className="flex flex-wrap items-center justify-between gap-4">
-                    <div className="flex flex-wrap items-center gap-3">
+                <div key={store.id} className="min-w-0">
+                  <div className="flex flex-wrap items-center justify-between gap-4 px-4 py-5 sm:px-6">
+                    <div className="flex min-w-0 items-center gap-3">
                       <div
-                        className={cn(
-                          "flex size-9 items-center justify-center rounded-md font-bold text-sm",
-                          badge.className,
-                        )}
+                        aria-hidden
+                        className="flex size-12 shrink-0 items-center justify-center rounded-lg bg-background-dimmed text-foreground-dimmed"
                       >
-                        {badge.label}
+                        {platformLogo ? (
+                          <Image
+                            width={28}
+                            height={28}
+                            src={platformLogo}
+                            alt=""
+                            className="size-7 object-contain"
+                          />
+                        ) : store.platform === "csv" ? (
+                          <FileIcon className="size-6" />
+                        ) : (
+                          <GlobeIcon className="size-6" />
+                        )}
                       </div>
-                      <div>
-                        <p className="font-medium text-foreground text-sm">
-                          {store.domain}
+                      <div className="min-w-0">
+                        <p className="wrap-anywhere font-semibold text-foreground text-sm">
+                          {store.name}
                         </p>
-                        <p className="mt-0.5 text-foreground-dimmed text-xs capitalize">
-                          {store.platform} · {store.name}
+                        <p className="wrap-anywhere mt-0.5 text-foreground-dimmed text-sm">
+                          {store.domain}
                         </p>
                         {upgrade && (
                           <p className="mt-1 text-foreground-dimmed text-xs">
@@ -198,14 +195,22 @@ export const IntegrationsSection = ({
                         )}
                       </div>
                     </div>
-                    <div className="flex flex-wrap items-center gap-3">
-                      <span className="rounded-full bg-success/10 px-2 py-0.5 font-semibold text-[11px] text-success uppercase tracking-[0.05em]">
+                    <div className="flex flex-wrap items-center gap-2">
+                      <span
+                        className={cn(
+                          "rounded-full px-2 py-1 font-medium text-xs",
+                          store.status === "disconnected"
+                            ? "bg-foreground/5 text-foreground-dimmed"
+                            : "bg-success/10 text-success",
+                        )}
+                      >
                         {store.status === "disconnected"
                           ? lifecycle("disconnected")
                           : translate("connected")}
                       </span>
                       <Button
                         color="neutral"
+                        variant="soft"
                         disabled={isSyncing || store.status === "disconnected"}
                         onClick={() => handleSync(store)}
                       >
@@ -221,13 +226,13 @@ export const IntegrationsSection = ({
                       )}
                     </div>
                   </div>
-                  <div className="mt-3 flex flex-wrap items-center gap-3 border-accent-foreground border-t pt-3">
+                  <div className="flex flex-wrap items-center gap-3 border-accent-foreground border-t bg-background-rich px-4 py-3 sm:px-6">
                     <span className="text-foreground-dimmed text-xs">
                       Google Shopping
                     </span>
                     <span
                       className={cn(
-                        "rounded-full px-2 py-0.5 font-semibold text-[11px] uppercase tracking-[0.05em]",
+                        "rounded-full px-2 py-1 font-medium text-xs",
                         summary.className,
                       )}
                     >
@@ -249,14 +254,15 @@ export const IntegrationsSection = ({
         )}
       </div>
 
-      <div className="p-4">
-        <Link
-          href="/onboarding/connect"
-          className="flex w-fit items-center gap-2 rounded-md border border-accent-foreground border-dashed px-4 py-2.5 text-foreground-dimmed text-sm transition-colors duration-150 hover:border-primary hover:text-primary-text"
+      <div className="px-4 py-4 sm:px-6">
+        <Button
+          variant="soft"
+          color="primary"
+          render={<Link href="/onboarding/connect" />}
         >
-          <PlusIcon className="size-4" />
+          <PlusIcon aria-hidden className="size-4" />
           {translate("action.connectAnother")}
-        </Link>
+        </Button>
       </div>
     </div>
   );

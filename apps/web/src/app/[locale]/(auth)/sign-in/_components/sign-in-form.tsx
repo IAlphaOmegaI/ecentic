@@ -220,7 +220,7 @@ export const SignInForm = () => {
               alt=""
               width={16}
               height={16}
-              className="size-[16px]"
+              className="size-4"
             />
           )}
           {translate("action.shopify")}

@@ -28,12 +28,12 @@ type ButtonVariantsProps = {
 } & ClassProp;
 
 export const buttonVariants: (props?: ButtonVariantsProps) => string = cva(
-  "box-border inline-flex w-fit cursor-pointer items-center justify-center gap-2 overflow-hidden whitespace-nowrap rounded-md px-2.5 py-2 font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-[3px] focus-visible:ring-primary/15 active:scale-99",
+  "box-border inline-flex w-fit cursor-pointer items-center justify-center gap-2 overflow-hidden whitespace-nowrap rounded-lg px-2.5 py-2 font-medium transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/15 active:scale-99",
   {
     variants: {
       variant: {
         default:
-          "border-[1.5px] bg-gradient-to-b py-1.5 shadow-[inset_0px_1px_1px_0px_rgba(255,255,255,0.7)] transition-all duration-300",
+          "border bg-gradient-to-b py-1.5 inset-shadow-sm inset-shadow-background-rich/70 transition-all duration-300",
         flat: "px-4",
         soft: "text-primary backdrop-blur-lg",
         outline: "border px-4",
@@ -43,11 +43,11 @@ export const buttonVariants: (props?: ButtonVariantsProps) => string = cva(
         icon: "flex size-8 items-center justify-center p-2",
       },
       color: {
-        primary: "text-white",
-        secondary: "text-white",
+        primary: "text-background-rich",
+        secondary: "text-background-rich",
         accent: "text-emphasis",
         emphasis: "text-accent",
-        neutral: "text-white",
+        neutral: "text-background-rich",
         error: "text-error-foreground",
         success: "text-success-foreground",
         warning: "text-warning-foreground",
@@ -61,13 +61,14 @@ export const buttonVariants: (props?: ButtonVariantsProps) => string = cva(
       {
         variant: "default",
         color: "primary",
-        className: "border-primary from-primary-rich to-primary text-white",
+        className:
+          "border-primary from-primary-text/90 to-primary-text text-background-rich",
       },
       {
         variant: "default",
         color: "secondary",
         className:
-          "border-secondary from-secondary-rich to-secondary text-white",
+          "border-secondary from-primary-text/90 to-primary-text text-background-rich",
       },
       {
         variant: "default",
@@ -90,22 +91,26 @@ export const buttonVariants: (props?: ButtonVariantsProps) => string = cva(
       {
         variant: "default",
         color: "error",
-        className: "border-error from-error-rich to-error text-white",
+        className:
+          "border-error from-error to-error-dimmed text-background-rich",
       },
       {
         variant: "default",
         color: "success",
-        className: "border-success from-success-rich to-success text-white",
+        className:
+          "border-success from-success-dimmed to-success-dimmed text-background-rich",
       },
       {
         variant: "default",
         color: "warning",
-        className: "border-warning from-warning-rich to-warning text-white",
+        className:
+          "border-warning from-warning-dimmed to-warning-dimmed text-background-rich",
       },
       {
         variant: "default",
         color: "info",
-        className: "border-info from-info-rich to-info text-white",
+        className:
+          "border-info from-primary-text/90 to-primary-text text-background-rich",
       },
       {
         variant: "flat",
@@ -115,65 +120,66 @@ export const buttonVariants: (props?: ButtonVariantsProps) => string = cva(
       {
         variant: "flat",
         color: "emphasis",
-        className: "bg-emphasis-rich text-accent-rich",
+        className: "bg-emphasis-rich text-background-rich",
       },
       {
         variant: "flat",
         color: "primary",
-        className: "bg-primary text-white",
+        className: "bg-primary-text text-background-rich",
       },
       {
         variant: "flat",
         color: "secondary",
-        className: "bg-secondary text-white",
+        className: "bg-primary-text text-background-rich",
       },
       {
         variant: "flat",
         color: "error",
-        className: "bg-error text-white",
+        className: "bg-error text-background-rich",
       },
       {
         variant: "flat",
         color: "info",
-        className: "bg-info text-white",
+        className: "bg-primary-text text-background-rich",
       },
       {
         variant: "flat",
         color: "warning",
-        className: "bg-warning text-white",
+        className: "bg-warning-dimmed text-background-rich",
       },
       {
         variant: "flat",
         color: "success",
-        className: "bg-success text-white",
+        className: "bg-success-dimmed text-background-rich",
       },
       {
         variant: "flat",
         color: "neutral",
-        className: "bg-neutral text-white",
+        className: "bg-neutral text-background-rich",
       },
       {
         variant: "soft",
         color: "primary",
         className:
-          "border-primary/60 bg-primary/10 text-primary-rich hover:bg-primary/20",
+          "border-primary/60 bg-primary/10 text-primary-text hover:bg-primary/20",
       },
       {
         variant: "soft",
         color: "secondary",
         className:
-          "border-secondary/60 bg-secondary/10 text-secondary-rich hover:bg-secondary/20",
+          "border-secondary/60 bg-secondary/10 text-primary-text hover:bg-secondary/20",
       },
       {
         variant: "soft",
         color: "neutral",
         className:
-          "border-neutral/60 bg-neutral/10 text-neutral-rich hover:bg-neutral/20",
+          "border-neutral/60 bg-neutral/10 text-foreground hover:bg-neutral/20",
       },
       {
         variant: "soft",
         color: "info",
-        className: "border-info/60 bg-info/10 text-info-rich hover:bg-info/20",
+        className:
+          "border-info/60 bg-info/10 text-primary-text hover:bg-info/20",
       },
       {
         variant: "soft",
@@ -185,46 +191,46 @@ export const buttonVariants: (props?: ButtonVariantsProps) => string = cva(
         variant: "soft",
         color: "accent",
         className:
-          "border-accent/60 bg-accent/10 text-accent-rich hover:bg-accent/20",
+          "border-accent/60 bg-accent/10 text-foreground hover:bg-accent/20",
       },
       {
         variant: "soft",
         color: "error",
         className:
-          "border-error/60 bg-error/10 text-error-rich hover:bg-error/20",
+          "border-error/60 bg-error/10 text-error-dimmed hover:bg-error/20",
       },
       {
         variant: "soft",
         color: "success",
         className:
-          "border-success/60 bg-success/10 text-success-rich hover:bg-success/20",
+          "border-success/60 bg-success/10 text-success-dimmed hover:bg-success/20",
       },
       {
         variant: "soft",
         color: "warning",
         className:
-          "border-warning/60 bg-warning/10 text-warning-rich hover:bg-warning/20",
+          "border-warning/60 bg-warning/10 text-warning-dimmed hover:bg-warning/20",
       },
 
       {
         variant: "ghost",
         color: "primary",
-        className: "bg-primary/0 text-primary-rich hover:bg-primary/20",
+        className: "bg-primary/0 text-primary-text hover:bg-primary/20",
       },
       {
         variant: "ghost",
         color: "secondary",
-        className: "bg-secondary/0 text-secondary-rich hover:bg-secondary/20",
+        className: "bg-secondary/0 text-primary-text hover:bg-secondary/20",
       },
       {
         variant: "ghost",
         color: "neutral",
-        className: "bg-neutral/0 text-neutral-rich hover:bg-neutral/20",
+        className: "bg-neutral/0 text-foreground hover:bg-neutral/20",
       },
       {
         variant: "ghost",
         color: "info",
-        className: "bg-info/0 text-info-rich hover:bg-info/20",
+        className: "bg-info/0 text-primary-text hover:bg-info/20",
       },
       {
         variant: "ghost",
@@ -234,42 +240,43 @@ export const buttonVariants: (props?: ButtonVariantsProps) => string = cva(
       {
         variant: "ghost",
         color: "accent",
-        className: "bg-accent/0 text-accent-rich hover:bg-accent/20",
+        className: "bg-accent/0 text-foreground hover:bg-accent/20",
       },
       {
         variant: "ghost",
         color: "error",
-        className: "bg-error/0 text-error-rich hover:bg-error/20",
+        className: "bg-error/0 text-error-dimmed hover:bg-error/20",
       },
       {
         variant: "ghost",
         color: "success",
-        className: "bg-success/0 text-success-rich hover:bg-success/20",
+        className: "bg-success/0 text-success-dimmed hover:bg-success/20",
       },
       {
         variant: "ghost",
         color: "warning",
-        className: "bg-warning/0 text-warning-rich hover:bg-warning/20",
+        className: "bg-warning/0 text-warning-dimmed hover:bg-warning/20",
       },
       {
         variant: "outline",
         color: "primary",
-        className: "border-primary text-primary-rich hover:bg-primary/20",
+        className: "border-primary text-primary-text hover:bg-primary/20",
       },
       {
         variant: "outline",
         color: "secondary",
-        className: "border-secondary text-secondary-rich hover:bg-secondary/20",
+        className: "border-secondary text-primary-text hover:bg-secondary/20",
       },
       {
         variant: "outline",
         color: "neutral",
-        className: "border-neutral text-neutral-rich hover:bg-neutral/20",
+        className: "border-neutral text-foreground hover:bg-neutral/20",
       },
       {
         variant: "outline",
         color: "info",
-        className: "border-info border-info/60 text-info-rich hover:bg-info/20",
+        className:
+          "border-info border-info/60 text-primary-text hover:bg-info/20",
       },
       {
         variant: "outline",
@@ -280,22 +287,22 @@ export const buttonVariants: (props?: ButtonVariantsProps) => string = cva(
         variant: "outline",
         color: "accent",
         className:
-          "border-accent-foreground text-accent-rich hover:bg-accent/20",
+          "border-accent-foreground text-foreground hover:bg-accent/20",
       },
       {
         variant: "outline",
         color: "error",
-        className: "border-error text-error-rich hover:bg-error/20",
+        className: "border-error text-error-dimmed hover:bg-error/20",
       },
       {
         variant: "outline",
         color: "success",
-        className: "border-success text-success-rich hover:bg-success/20",
+        className: "border-success text-success-dimmed hover:bg-success/20",
       },
       {
         variant: "outline",
         color: "warning",
-        className: "border-warning text-warning-rich hover:bg-warning/20",
+        className: "border-warning text-warning-dimmed hover:bg-warning/20",
       },
     ],
   },

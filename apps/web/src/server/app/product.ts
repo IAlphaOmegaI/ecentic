@@ -19,6 +19,7 @@ import {
   type ProductFilter,
   sanitizeProductFilters,
 } from "@/lib/filters";
+import { normalizeProductSort, type ProductSort } from "@/lib/products-catalog";
 import { db, schema } from "../database";
 import { withAuthentication } from "../utils/authentication";
 import { withInstrumentation } from "../utils/context";
@@ -26,6 +27,7 @@ import { dedupe } from "../utils/dedupe";
 import { Environment } from "../utils/environment";
 import { DatabaseError } from "../utils/error";
 import type { Pager } from "../utils/pagination";
+import { loadProductChannels } from "../utils/product-channels";
 import type { Document, ExecuteOptions, Insertable } from "../utils/repository";
 import { repository, resultifyRead } from "../utils/repository";
 import * as Competitor from "./competitor";
@@ -455,6 +457,7 @@ export const gatherIntelligence = dedupe(
       return {
         _id: product.id,
         title: product.title,
+        image: firstImage(product.images),
         price: product.price,
         currency: product.currency,
         sku: product.sku,
@@ -465,6 +468,11 @@ export const gatherIntelligence = dedupe(
           gemini: rateFromTally(entry?.models.get("gemini")),
         },
         simulations: total,
+        modelCounts: {
+          gpt4: entry?.models.get("gpt4")?.total ?? 0,
+          claude: entry?.models.get("claude")?.total ?? 0,
+          gemini: entry?.models.get("gemini")?.total ?? 0,
+        },
         quality: computeDataQuality(product),
         updatedAt: product.updatedAt,
       };
@@ -494,6 +502,7 @@ const enrichProduct = (product: Type, simulations: Simulation.Type[]) => {
   return {
     _id: product.id,
     title: product.title,
+    image: firstImage(product.images),
     price: product.price,
     currency: product.currency,
     sku: product.sku,
@@ -504,6 +513,13 @@ const enrichProduct = (product: Type, simulations: Simulation.Type[]) => {
       gemini: computeModelWinRate(productSimulations, "gemini"),
     },
     simulations: total,
+    modelCounts: {
+      gpt4: productSimulations.filter((item) => item.model === "gpt4").length,
+      claude: productSimulations.filter((item) => item.model === "claude")
+        .length,
+      gemini: productSimulations.filter((item) => item.model === "gemini")
+        .length,
+    },
     quality: computeDataQuality(product),
     updatedAt: product.updatedAt,
   };
@@ -524,6 +540,39 @@ const likeEscape = (value: string) =>
  * like a decimal collapses to NULL, which every comparison then rejects.
  */
 const numericPrice = sql`(case when trim(${schema.product.price}) ~ '^-?[0-9]+([.,][0-9]+)?$' then replace(trim(${schema.product.price}), ',', '.')::numeric else null end)`;
+
+// Match computeDataQuality's six-field completeness score, not an AI rating.
+const qualityOrder = sql`(${sql.join(
+  keys.map((field) =>
+    field === "images"
+      ? sql`case when ${schema.product[field]} is not null and ${schema.product[field]} <> '' and ${schema.product[field]} <> '[]' then 1 else 0 end`
+      : sql`case when ${schema.product[field]} is not null and ${schema.product[field]} <> '' then 1 else 0 end`,
+  ),
+  sql` + `,
+)})`;
+
+// The same all-history verdicts used by enrichProduct. Missing comparisons stay
+// separate from a measured 0%; neither direction brings untested products first.
+const winRateOrder = sql`(select round(100.0 * count(*) filter (where ${schema.simulation.winner} = 'product') / nullif(count(*), 0)) from ${schema.simulation} where ${schema.simulation.productId} = ${schema.product.id})`;
+
+const productOrder = (input: unknown) => {
+  const order = normalizeProductSort(input);
+  const expression = {
+    title: sql`lower(${schema.product.title})`,
+    price: numericPrice,
+    quality: qualityOrder,
+    winRate: winRateOrder,
+    updatedAt: schema.product.updatedAt,
+  }[order.field];
+
+  return [
+    ...(order.field === "price" || order.field === "winRate"
+      ? [{ column: sql`${expression} is not null`, direction: "desc" as const }]
+      : []),
+    { column: expression, direction: order.direction },
+    { column: schema.product.id, direction: "asc" as const },
+  ];
+};
 
 const FILTER_COLUMNS = {
   title: schema.product.title,
@@ -585,7 +634,13 @@ export const paginateWithIntelligence = withAuthentication(
       store,
       search,
       filters,
-    }: Pager & { store?: string; search?: string; filters?: ProductFilter[] },
+      sort,
+    }: Pager & {
+      store?: string;
+      search?: string;
+      filters?: ProductFilter[];
+      sort?: ProductSort;
+    },
   ) => {
     // Server actions are callable with arbitrary arguments, so the search term
     // is coerced and capped before it becomes a LIKE pattern.
@@ -607,9 +662,23 @@ export const paginateWithIntelligence = withAuthentication(
         .filter((condition) => condition !== undefined),
     ];
 
-    const result = await paginate(Environment.SERVER, page, size, {
+    const options = {
       where: and(...conditions),
-    });
+      orderBy: productOrder(sort),
+    };
+    const requested = await paginate(Environment.SERVER, page, size, options);
+    if (!requested.success) return requested;
+
+    // A stale bookmark or a shrinking catalog must not look like an empty
+    // store. Keep the filters/order and recover to the final available page.
+    const lastPage = Math.max(
+      1,
+      Math.ceil(requested.data.pagination.total / size),
+    );
+    const result =
+      page > lastPage
+        ? await paginate(Environment.SERVER, lastPage, size, options)
+        : requested;
 
     if (!result.success) return result;
 
@@ -666,6 +735,12 @@ export const getDetail = withAuthentication(
     const store = product.data.storeId
       ? await stores.get(Environment.SERVER, product.data.storeId)
       : null;
+    if (
+      store?.success &&
+      store.data &&
+      store.data.userId !== context.session.user.id
+    )
+      return { success: false, error: new Error("Product not found") };
     const canPublish = Boolean(
       store?.success &&
         store.data &&
@@ -678,6 +753,11 @@ export const getDetail = withAuthentication(
       store?.success && store.data && store.data.platform === "shopify"
         ? themeEmbedDeepLink(store.data.domain)
         : null;
+
+    const channels = await loadProductChannels(
+      product.data,
+      store?.success ? (store.data ?? null) : null,
+    );
 
     const simulations = await Simulation.getForProducts(Environment.SERVER, {
       products: [id],
@@ -762,6 +842,7 @@ export const getDetail = withAuthentication(
       data: {
         product: {
           ...product.data,
+          image: firstImage(product.data.images),
           quality: computeDataQuality(product.data),
           structuredDataStatus: resolveStructuredDataStatus(
             liveSchema,
@@ -770,6 +851,7 @@ export const getDetail = withAuthentication(
         },
         winRate,
         canPublish,
+        channels,
         themeEditorUrl,
         models,
         competitors,

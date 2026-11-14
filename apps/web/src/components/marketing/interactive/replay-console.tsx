@@ -137,7 +137,7 @@ export const ReplayConsole = ({
             tabIndex={0}
             aria-label={conversation.conversation}
             data-chat-log
-            className="flex h-[540px] min-h-0 flex-col gap-6 overflow-y-auto px-8 py-6 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-solid focus-visible:-outline-offset-2 max-sm:px-4"
+            className="flex h-135 min-h-0 flex-col gap-6 overflow-y-auto px-8 py-6 focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-solid focus-visible:-outline-offset-2 max-sm:px-4"
             onWheel={pause}
             onTouchStart={pause}
           >
@@ -179,7 +179,7 @@ export const ReplayConsole = ({
                       initial={false}
                       animate={{ opacity: 1 }}
                       className={cn(
-                        "rounded-xl px-4 py-3 text-sm leading-relaxed",
+                        "rounded-lg px-4 py-3 text-sm leading-relaxed",
                         shopper
                           ? "rounded-tr-sm bg-background-rich/8 text-background-rich"
                           : "rounded-tl-sm text-background-rich/80",

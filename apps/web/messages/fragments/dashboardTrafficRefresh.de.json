@@ -1,0 +1,42 @@
+{
+  "dashboard": {
+    "traffic": {
+      "title": "KI-Traffic",
+      "description": "Sehen Sie, woher die erfasste KI-Aktivität stammt.",
+      "period": "Letzte 30 Tage",
+      "source": "Quelle",
+      "other": "Andere Quellen",
+      "referrals": {
+        "title": "KI-Verweise",
+        "short": "Verweise",
+        "detail": "Aktivität, die als KI-Verweis eingestuft wurde."
+      },
+      "requests": {
+        "title": "Agenten- und Crawler-Anfragen",
+        "short": "Anfragen",
+        "detail": "Erkannte User-Agents, einschließlich Crawlern und Browsern mit KI-Agenten."
+      },
+      "empty": {
+        "title": "Noch keine KI-Aktivität erfasst",
+        "description": "Aktivität wird angezeigt, sobald das Tracking einen KI-Verweis oder einen bekannten User-Agent erkennt."
+      },
+      "action": {
+        "primary": "Verbindungen prüfen",
+        "secondary": "Erneut versuchen"
+      },
+      "probes": "{count, plural, one {# Tracking-Testsignal, in den obigen Summen nicht enthalten.} other {# Tracking-Testsignale, in den obigen Summen nicht enthalten.}}",
+      "limitation": "Gezählt werden erfasste Ereignisse, keine einzelnen Personen oder Käufe. Browser-Tracking erfasst nicht jede Crawler-Anfrage.",
+      "chart": {
+        "title": "Tägliche Aktivität",
+        "scope": "Nur OpenAI, Anthropic und Google.",
+        "hint": "Dieser Verlauf fasst Verweise und Anfragen zusammen. Andere Anbieter stehen in der Aufschlüsselung nach Quelle.",
+        "empty": "Für diese drei Anbieter wurde keine Aktivität erfasst.",
+        "accessibleLabel": "Täglich erfasste Aktivität. Mit den Pfeiltasten können Sie die einzelnen Tage prüfen."
+      },
+      "error": {
+        "title": "Traffic konnte nicht geladen werden",
+        "description": "Ihre Traffic-Daten sind vorübergehend nicht verfügbar. Laden Sie diese Ansicht neu, um es erneut zu versuchen."
+      }
+    }
+  }
+}

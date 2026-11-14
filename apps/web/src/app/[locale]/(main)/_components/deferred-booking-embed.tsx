@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 // Cal's embed is 2.1MB and sets every third-party cookie the page gets flagged
 // for, and it sits at the very bottom of the homepage — nobody has scrolled to
 // it by the time it has finished loading. Mounting it on approach costs a
-// visitor nothing: the surrounding `h-[620px]` box already reserves the space,
+// visitor nothing: the surrounding `h-155` box already reserves the space,
 // so this cannot move layout, and 400px of margin means the calendar is ready
 // before a scrolling reader arrives.
 const BookingEmbed = dynamic(() =>

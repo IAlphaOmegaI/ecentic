@@ -58,7 +58,7 @@ export const IndexExplorer = ({ channels, labels }: IndexExplorer.Props) => (
               </MarketingStatus>
             </div>
             <div>
-              <h3 className="!text-[clamp(1.75rem,3vw,2.75rem)]">
+              <h3 className="!text-3xl xl:!text-4xl 2xl:!text-5xl">
                 {channel.name}
               </h3>
               <p className="mt-4 max-w-[52ch] text-background-rich/65 text-lg leading-relaxed">

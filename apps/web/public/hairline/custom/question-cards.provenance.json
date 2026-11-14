@@ -1,0 +1,32 @@
+{
+  "name": "question-cards",
+  "subject": "questions",
+  "meaning": "Two physical speech cards: lift the foreground question to read it beside the answer.",
+  "part": "question",
+  "answer": [
+    35,
+    24,
+    61
+  ],
+  "bounds": [
+    [
+      -5,
+      -17,
+      0
+    ],
+    [
+      119,
+      38,
+      125
+    ]
+  ],
+  "scale": 1.95,
+  "figure": "/hairline/custom/question-cards.js",
+  "rest": "apps/web/src/components/hairline/rest/question-cards.json",
+  "sourceSha256": "fe75f2b9a2298ec65c6a3dd6198d2ab609954976c2028843d8da07f57ec97516",
+  "restSha256": "1422200d7a16a116566b50c654c8a7305eabb2034a73f58fadc27cab9720b6cb",
+  "engine": "Unmodified fixed Hairline kernel",
+  "interaction": "Fixed rest hit area; 700ms EASE_LIFT tween; bounded reach; linked responses delayed 40ms; loop sleeps after settlement.",
+  "reducedMotion": "SSR rest geometry remains complete. Shared CustomHairlineFigure disables pointer code and asset enhancement for reduced motion.",
+  "validation": "output/dashboard-hairline-2026-11-14/question-cards.validation.txt"
+}

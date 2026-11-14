@@ -1,0 +1,32 @@
+{
+  "name": "report-printer",
+  "subject": "reports",
+  "meaning": "A desktop report printer: feed a finished report out of the front rollers.",
+  "part": "report",
+  "answer": [
+    54,
+    66,
+    20
+  ],
+  "bounds": [
+    [
+      -3,
+      -3,
+      0
+    ],
+    [
+      111,
+      125,
+      108
+    ]
+  ],
+  "scale": 1.7,
+  "figure": "/hairline/custom/report-printer.js",
+  "rest": "apps/web/src/components/hairline/rest/report-printer.json",
+  "sourceSha256": "5f11cf59a659eebdaf880f0ed640bea5f4bdb0741ac63fde1835f1551aeaf18a",
+  "restSha256": "d813d0babf89bb4744167621be723699aaa80917e8a7f7959c46c1a66dd4e796",
+  "engine": "Unmodified fixed Hairline kernel",
+  "interaction": "Fixed rest hit area; 700ms EASE_LIFT tween; bounded reach; linked responses delayed 40ms; loop sleeps after settlement.",
+  "reducedMotion": "SSR rest geometry remains complete. Shared CustomHairlineFigure disables pointer code and asset enhancement for reduced motion.",
+  "validation": "output/dashboard-hairline-2026-11-14/report-printer.validation.txt"
+}

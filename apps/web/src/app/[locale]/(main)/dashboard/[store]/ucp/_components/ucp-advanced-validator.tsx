@@ -1,6 +1,10 @@
 "use client";
 
-import { CheckCircleIcon, XCircleIcon } from "@zenncore/icons";
+import {
+  CheckCircleIcon,
+  CommerceCode_3Icon,
+  XCircleIcon,
+} from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import {
@@ -50,7 +54,7 @@ const formatLatency = (ms: number | null) => (ms === null ? "—" : `${ms} ms`);
 const Chip = ({ label, tone }: { label: string; tone: Tone }) => (
   <span
     className={cn(
-      "inline-flex w-fit items-center rounded-full px-2 py-0.5 font-semibold text-[11px]",
+      "inline-flex w-fit items-center rounded-full px-2 py-0.5 font-semibold text-xs",
       chipToneClasses[tone],
     )}
   >
@@ -101,7 +105,7 @@ const EndpointProbeRow = ({
           {probe.endpoint}
         </p>
         {probe.error && (
-          <p className="mt-1 font-light text-error text-xs">{probe.error}</p>
+          <p className="mt-1 font-normal text-error text-xs">{probe.error}</p>
         )}
       </div>
 
@@ -123,7 +127,7 @@ const EndpointProbeRow = ({
       <div>
         <span
           className={cn(
-            "font-medium font-mono text-sm tabular-nums",
+            "font-medium text-sm tabular-nums",
             probe.latencyMs === null
               ? "text-foreground-dimmed"
               : probe.latencyMs < 400
@@ -177,7 +181,7 @@ const LifecycleStepRow = ({
         )}
       >
         {step.skipped ? (
-          <span className="font-medium text-[10px]">—</span>
+          <span className="font-medium text-xs">—</span>
         ) : step.passed ? (
           <CheckCircleIcon className="size-4" />
         ) : (
@@ -189,7 +193,7 @@ const LifecycleStepRow = ({
 
       <span
         className={cn(
-          "font-medium font-mono text-sm tabular-nums",
+          "font-medium text-sm tabular-nums",
           step.latencyMs === null
             ? "text-foreground-dimmed"
             : step.latencyMs < 400
@@ -213,7 +217,7 @@ const LifecycleStepRow = ({
         tone={tone}
       />
 
-      <p className="font-light text-foreground-dimmed text-sm">{step.note}</p>
+      <p className="font-normal text-foreground-dimmed text-sm">{step.note}</p>
     </div>
   );
 };
@@ -234,7 +238,7 @@ const McpToolTestRow = ({
     <div className="grid gap-3 bg-background-dimmed/40 px-4 py-2.5 md:grid-cols-[28px_minmax(0,200px)_80px_90px_minmax(0,1fr)] md:items-center">
       <span
         className={cn(
-          "inline-flex size-6 shrink-0 items-center justify-center text-[10px]",
+          "inline-flex size-6 shrink-0 items-center justify-center text-xs",
           toneClasses[tone],
         )}
       >
@@ -253,7 +257,7 @@ const McpToolTestRow = ({
 
       <span
         className={cn(
-          "font-medium font-mono text-xs tabular-nums",
+          "font-medium text-xs tabular-nums",
           test.latencyMs === null
             ? "text-foreground-dimmed"
             : test.latencyMs < 400
@@ -277,7 +281,7 @@ const McpToolTestRow = ({
         tone={tone}
       />
 
-      <p className="font-light text-foreground-dimmed text-xs">{test.note}</p>
+      <p className="font-normal text-foreground-dimmed text-xs">{test.note}</p>
     </div>
   );
 };
@@ -303,7 +307,7 @@ const McpProbeRow = ({ probe }: { probe: UcpAdvancedCheck.McpProbeResult }) => {
             {probe.endpoint}
           </p>
           {probe.error && (
-            <p className="mt-1 font-light text-error text-xs">{probe.error}</p>
+            <p className="mt-1 font-normal text-error text-xs">{probe.error}</p>
           )}
         </div>
 
@@ -323,7 +327,7 @@ const McpProbeRow = ({ probe }: { probe: UcpAdvancedCheck.McpProbeResult }) => {
           {probe.serverName && <Chip label={probe.serverName} tone="neutral" />}
           <span
             className={cn(
-              "font-medium font-mono text-sm tabular-nums",
+              "font-medium text-sm tabular-nums",
               probe.latencyMs === null
                 ? "text-foreground-dimmed"
                 : probe.latencyMs < 400
@@ -370,7 +374,7 @@ const McpProbeRow = ({ probe }: { probe: UcpAdvancedCheck.McpProbeResult }) => {
             ).map((header) => (
               <p
                 key={header || "spacer"}
-                className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
+                className="font-medium text-foreground-dimmed text-sm"
               >
                 {header}
               </p>
@@ -401,7 +405,7 @@ const A2aProbeRow = ({ probe }: { probe: UcpAdvancedCheck.A2aProbeResult }) => {
           {probe.endpoint}
         </p>
         {probe.error && (
-          <p className="mt-1 font-light text-error text-xs">{probe.error}</p>
+          <p className="mt-1 font-normal text-error text-xs">{probe.error}</p>
         )}
       </div>
 
@@ -418,7 +422,7 @@ const A2aProbeRow = ({ probe }: { probe: UcpAdvancedCheck.A2aProbeResult }) => {
         {probe.agentName && <Chip label={probe.agentName} tone="neutral" />}
         <span
           className={cn(
-            "font-medium font-mono text-sm tabular-nums",
+            "font-medium text-sm tabular-nums",
             probe.latencyMs === null
               ? "text-foreground-dimmed"
               : probe.latencyMs < 400
@@ -524,7 +528,7 @@ const AdvancedResults = ({
             {endpointHeaders.map((header) => (
               <p
                 key={header}
-                className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
+                className="font-medium text-foreground-dimmed text-sm"
               >
                 {header}
               </p>
@@ -578,7 +582,7 @@ const AdvancedResults = ({
     result.checkoutLifecycle.length > 0 && {
       key: "checkout",
       title: translate("sections.checkout.title"),
-      description: translate("sections.checkout.description"),
+      description: translate("sections.checkout.description", { id: "{id}" }),
       failCount: result.checkoutLifecycle.filter(
         (step) => !step.skipped && !step.passed,
       ).length,
@@ -603,7 +607,7 @@ const AdvancedResults = ({
 
       {sections.length === 0 ? (
         <div className="border-accent-foreground border-t bg-background px-5 py-5">
-          <p className="font-light text-foreground-dimmed text-sm">
+          <p className="font-normal text-foreground-dimmed text-sm">
             {translate("emptyEndpoints")}
             <span className="font-mono text-foreground">
               {translate("emptyEndpointsField")}
@@ -633,16 +637,18 @@ const AdvancedResults = ({
                 }}
               >
                 <span className="flex min-w-0 flex-1 items-center justify-between gap-3">
-                  <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+                  <span className="font-medium text-foreground-dimmed text-sm">
                     {section.title}
                   </span>
                   <Chip
                     label={
                       section.failCount > 0
                         ? translate("chips.failing", {
-                            count: section.failCount,
+                            count: String(section.failCount),
                           })
-                        : translate("chips.ok", { total: section.total })
+                        : translate("chips.ok", {
+                            total: String(section.total),
+                          })
                     }
                     tone={section.failCount > 0 ? "danger" : "success"}
                   />
@@ -662,10 +668,15 @@ const AdvancedResults = ({
   );
 };
 
-export const UcpAdvancedValidator = () => {
+export const UcpAdvancedValidator = ({
+  initialDomain = "",
+}: {
+  initialDomain?: string;
+}) => {
   const translate = useTranslations("dashboard.ucp.advancedValidator");
+  const review = useTranslations("dashboard.ucp.review");
   const toast = useToastManager();
-  const [domain, setDomain] = useState("");
+  const [domain, setDomain] = useState(initialDomain);
   const [result, setResult] =
     useState<UcpAdvancedCheck.AdvancedCheckResult | null>(null);
 
@@ -690,58 +701,78 @@ export const UcpAdvancedValidator = () => {
   };
 
   return (
-    <div className="flex flex-col">
-      <div className="grid lg:grid-cols-2">
-        <div className="px-6 py-6 sm:px-8 sm:py-8">
-          <span className="font-medium text-[11px] text-foreground-dimmed uppercase tracking-[0.1em]">
-            {translate("kicker")}
+    <Accordion>
+      <AccordionItem value="advanced" className="border-accent-foreground">
+        <AccordionTrigger
+          className="items-center px-4 py-5 sm:px-6"
+          classList={{
+            trigger: {
+              icon: "shrink-0 transition-transform duration-200 motion-reduce:transition-none",
+            },
+          }}
+        >
+          <span className="flex min-w-0 items-start gap-3">
+            <CommerceCode_3Icon
+              aria-hidden="true"
+              className="mt-0.5 size-5 shrink-0 text-foreground-dimmed"
+            />
+            <span className="min-w-0">
+              <span className="block font-medium text-foreground text-sm">
+                {review("advanced.title")}
+              </span>
+              <span className="mt-1 block font-normal text-foreground-dimmed text-sm leading-5">
+                {review("advanced.summary")}
+              </span>
+            </span>
           </span>
-          <h2 className="mt-2 font-bold text-foreground-rich text-xl tracking-[-0.02em]">
-            {translate("title")}
-          </h2>
-          <p className="mt-1.5 font-light text-foreground-dimmed text-sm">
-            {translate("description")}
-          </p>
-        </div>
-
-        <div className="flex flex-col justify-center border-accent-foreground border-t px-6 py-6 sm:px-8 sm:py-8 lg:border-t-0 lg:border-l">
-          <form onSubmit={handleSubmit}>
-            <label
-              htmlFor="ucp-advanced-domain"
-              className="block font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
-            >
-              {translate("fields.domain.label")}
-            </label>
-            <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-stretch">
-              <TextField
-                value={domain}
-                onValueChange={setDomain}
-                className="flex-1"
-              >
-                <TextFieldInput
-                  id="ucp-advanced-domain"
-                  placeholder={translate("fields.domain.placeholder")}
-                />
-              </TextField>
-              <Button
-                type="submit"
-                color="primary"
-                disabled={isChecking || !domain.trim()}
-                className="w-full shrink-0 sm:w-auto"
-              >
-                {isChecking
-                  ? translate("action.running")
-                  : translate("action.primary")}
-              </Button>
-            </div>
-            <p className="mt-2 font-light text-foreground-dimmed text-sm">
-              {translate("hint")}
+        </AccordionTrigger>
+        <AccordionPanel className="duration-200 motion-reduce:transition-none">
+          <div className="px-4 pt-1 pb-6 sm:px-6">
+            <p className="max-w-2xl text-foreground-dimmed text-sm leading-6">
+              {review("advanced.description")}
             </p>
-          </form>
-        </div>
-      </div>
-
-      {result && <AdvancedResults result={result} />}
-    </div>
+            <form onSubmit={handleSubmit} className="mt-5 max-w-3xl">
+              <label
+                htmlFor="ucp-advanced-domain"
+                className="block font-medium text-foreground text-sm"
+              >
+                {translate("fields.domain.label")}
+              </label>
+              <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-stretch">
+                <TextField
+                  value={domain}
+                  onValueChange={setDomain}
+                  className="min-w-0 bg-background sm:flex-1"
+                >
+                  <TextFieldInput
+                    id="ucp-advanced-domain"
+                    aria-describedby="ucp-advanced-hint"
+                    placeholder={translate("fields.domain.placeholder")}
+                  />
+                </TextField>
+                <Button
+                  type="submit"
+                  color="neutral"
+                  variant="soft"
+                  disabled={isChecking || !domain.trim()}
+                  className="w-full shrink-0 sm:w-auto"
+                >
+                  {isChecking
+                    ? translate("action.running")
+                    : translate("action.primary")}
+                </Button>
+              </div>
+              <p
+                id="ucp-advanced-hint"
+                className="mt-3 text-foreground-dimmed text-xs leading-5"
+              >
+                {translate("hint")}
+              </p>
+            </form>
+          </div>
+          {result && <AdvancedResults result={result} />}
+        </AccordionPanel>
+      </AccordionItem>
+    </Accordion>
   );
 };

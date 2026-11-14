@@ -62,13 +62,13 @@ export const OneClickConnect = () => {
   return (
     <div className="flex flex-col gap-3">
       {errorMessage && (
-        <p className="rounded-md border border-error/40 bg-error/10 px-3 py-2 font-light text-error text-sm">
+        <p className="rounded-sm border border-error/40 bg-error/10 px-3 py-2 font-light text-error text-sm">
           {errorMessage}
         </p>
       )}
 
       {installRequired && (
-        <div className="flex flex-col gap-3 rounded-md border border-accent-foreground bg-background-dimmed px-4 py-3">
+        <div className="flex flex-col gap-3 rounded-sm border border-accent-foreground bg-background-dimmed px-4 py-3">
           <p className="font-medium text-foreground">
             {translate("woocommerce.oneClick.installRequired.title", {
               store:

@@ -52,10 +52,16 @@
       "/ucp-playground",
       "/webmcp-scanner"
     ],
-    "locale": ["en"],
-    "width": [1135]
+    "locale": [
+      "en"
+    ],
+    "width": [
+      1135
+    ]
   },
-  "additionalRoutes": ["/docs/mcp"],
+  "additionalRoutes": [
+    "/docs/mcp"
+  ],
   "structural": [
     {
       "id": "roadmap-rows",
@@ -114,42 +120,54 @@
       "id": "perplexity-entry",
       "selector": "#entry [data-connected-journey]",
       "source": "apps/web/src/app/[locale]/(main)/ai-channels/_components/page-bodies/perplexity.tsx",
-      "routes": ["/ai-channels/perplexity"],
+      "routes": [
+        "/ai-channels/perplexity"
+      ],
       "required": true
     },
     {
       "id": "travel-pilot",
       "selector": "#pilot > .marketing-rail > div:nth-child(5), #pilot > .marketing-rail > div:nth-child(6)",
       "source": "apps/web/src/app/[locale]/(main)/solutions/sectors/_components/page-bodies/travel-and-experiences-roadmap.tsx",
-      "routes": ["/solutions/sectors/travel-and-experiences"],
+      "routes": [
+        "/solutions/sectors/travel-and-experiences"
+      ],
       "required": true
     },
     {
       "id": "homepage-evidence",
       "selector": "#proof > .marketing-rail > div:nth-child(3), #dua-pilot-evidence",
       "source": "apps/web/src/app/[locale]/(main)/_components/enterprise/closing-sections.tsx",
-      "routes": ["/"],
+      "routes": [
+        "/"
+      ],
       "required": true
     },
     {
       "id": "explorer-header",
       "selector": "#channel-explorer > .marketing-rail > div:nth-child(4), #channel-explorer > .marketing-rail > div:nth-child(5)",
       "source": "apps/web/src/app/[locale]/(main)/ai-channels/page.tsx",
-      "routes": ["/ai-channels"],
+      "routes": [
+        "/ai-channels"
+      ],
       "required": true
     },
     {
       "id": "partner-application",
       "selector": "#application > .marketing-rail > div:nth-child(2)",
       "source": "apps/web/src/app/[locale]/(main)/partners/page.tsx",
-      "routes": ["/partners"],
+      "routes": [
+        "/partners"
+      ],
       "required": true
     },
     {
       "id": "replay-header",
       "selector": "#main-content > section:nth-child(5) header:first-child",
       "source": "apps/web/src/components/marketing/interactive/replay-console.tsx",
-      "routes": ["/demo"],
+      "routes": [
+        "/demo"
+      ],
       "required": true
     },
     {
@@ -171,7 +189,9 @@
   "embedded": [
     {
       "id": "mcp-handshake",
-      "routes": ["/docs/mcp"],
+      "routes": [
+        "/docs/mcp"
+      ],
       "selector": "[data-mcp-handshake-source] > figure",
       "column": "[data-mcp-handshake-source]",
       "wrapper": "[data-mcp-handshake-source]",
@@ -180,7 +200,9 @@
     },
     {
       "id": "perplexity-conversation",
-      "routes": ["/ai-channels/perplexity"],
+      "routes": [
+        "/ai-channels/perplexity"
+      ],
       "selector": "[data-perplexity-conversation]",
       "column": "[data-perplexity-shopping-grid] > :first-child",
       "wrapper": "[data-perplexity-shopping-grid] > :first-child",
@@ -225,7 +247,9 @@
     },
     {
       "id": "copilot-conversation",
-      "routes": ["/ai-channels/microsoft-copilot"],
+      "routes": [
+        "/ai-channels/microsoft-copilot"
+      ],
       "selector": "[data-shopping-conversation]",
       "column": "",
       "wrapper": "",
@@ -278,7 +302,8 @@
     "packaged-food",
     "wine-bottle",
     "sneaker",
-    "suitcase"
+    "suitcase",
+    "comparison-stand"
   ],
   "exclusions": "table,[role=\"table\"],[role=\"grid\"],button,a,input,select,textarea,[role=\"button\"],[role=\"tab\"],[role=\"progressbar\"],[data-hairline-figure],[data-brand-figure],[data-perplexity-product-card],svg,canvas",
   "manual": [

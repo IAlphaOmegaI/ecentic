@@ -38,7 +38,7 @@ export const Tab = ({ className, ...props }: Tab.Props): JSX.Element => {
   return (
     <TabsPrimitive.Tab
       className={createClassName(
-        "flex h-9 select-none items-center justify-center border-0 border-accent-foreground border-r px-3 font-medium text-foreground-dimmed outline-0 before:inset-x-0 before:inset-y-1 before:outline-primary before:-outline-offset-1 last:border-r-0 focus-visible:relative focus-visible:before:absolute focus-visible:before:outline-2 data-[active]:text-white data-selected:text-white",
+        "flex h-9 select-none items-center justify-center border-0 border-accent-foreground border-r px-3 font-medium text-foreground-dimmed outline-0 before:inset-x-0 before:inset-y-1 before:outline-primary before:-outline-offset-1 last:border-r-0 focus-visible:relative focus-visible:before:absolute focus-visible:before:outline-2 data-[active]:text-background-rich data-selected:text-background-rich",
         className,
       )}
       {...props}
@@ -62,7 +62,7 @@ export const TabsIndicator = ({
   return (
     <TabsPrimitive.Indicator
       className={createClassName(
-        "absolute top-0 left-0 z-[-1] h-full w-(--active-tab-width) translate-x-(--active-tab-left) bg-primary transition-all duration-200 ease-in-out",
+        "absolute top-0 left-0 z-[-1] h-full w-(--active-tab-width) translate-x-(--active-tab-left) bg-background-rich bg-linear-to-b from-primary-text/90 to-primary-text inset-shadow-sm inset-shadow-background-rich/30 transition-all duration-200 ease-in-out",
         className,
       )}
       {...props}

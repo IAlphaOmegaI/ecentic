@@ -5,22 +5,44 @@ import Script from "next/script";
 import { useEffect, useRef, useState } from "react";
 import { useInteractive } from "@/components/marketing/interactive/use-interactive";
 import { useDocument } from "@/hooks/use-document";
+import agentTestGaugeRest from "./rest/agent-test-gauge.json";
+import analyticsRecorderRest from "./rest/analytics-recorder.json";
+import brandMegaphoneRest from "./rest/brand-megaphone.json";
+import browserToolbenchRest from "./rest/browser-toolbench.json";
+import channelPlugHubRest from "./rest/channel-plug-hub.json";
+import checkoutLanesRest from "./rest/checkout-lanes.json";
+import checkoutTillRest from "./rest/checkout-till.json";
+import checkoutWorkbenchRest from "./rest/checkout-workbench.json";
+import comparisonStandRest from "./rest/comparison-stand.json";
 import demoPlaneRest from "./rest/demo-plane.json";
 import documentStackRest from "./rest/document-stack.json";
+import feedBeaconRest from "./rest/feed-beacon.json";
 import headphonesRest from "./rest/headphones.json";
+import importChuteRest from "./rest/import-chute.json";
+import inspectionQueueRest from "./rest/inspection-queue.json";
 import lipstickRest from "./rest/lipstick.json";
 import merchantFolioRest from "./rest/merchant-folio.json";
 import moneyStackRest from "./rest/money-stack.json";
 import officeChairRest from "./rest/office-chair.json";
 import openBookRest from "./rest/open-book.json";
+import overviewConsoleRest from "./rest/overview-console.json";
 import packagedFoodRest from "./rest/packaged-food.json";
+import productLabelRest from "./rest/product-label.json";
+import questionCardsRest from "./rest/question-cards.json";
 import readinessScannerRest from "./rest/readiness-scanner.json";
 import repairToolsRest from "./rest/repair-tools.json";
+import reportPrinterRest from "./rest/report-printer.json";
+import researchTelescopeRest from "./rest/research-telescope.json";
+import rivalsBalanceRest from "./rest/rivals-balance.json";
+import settingsGearsRest from "./rest/settings-gears.json";
+import shelfLadderRest from "./rest/shelf-ladder.json";
 import shopifyBagRest from "./rest/shopify-bag.json";
 import shoppingBotRest from "./rest/shopping-bot.json";
 import sneakerRest from "./rest/sneaker.json";
 import sofaRest from "./rest/sofa.json";
+import storefrontRest from "./rest/storefront.json";
 import suitcaseRest from "./rest/suitcase.json";
+import targetFinderRest from "./rest/target-finder.json";
 import wellnessBottleRest from "./rest/wellness-bottle.json";
 import wineBottleRest from "./rest/wine-bottle.json";
 import wooMarkRest from "./rest/woo-mark.json";
@@ -44,6 +66,27 @@ type FigureWindow = Window & {
   customHairline?: Partial<Record<FigureName, FigureDefinition>>;
 };
 const restPoses = {
+  "research-telescope": researchTelescopeRest,
+  "question-cards": questionCardsRest,
+  "brand-megaphone": brandMegaphoneRest,
+  "rivals-balance": rivalsBalanceRest,
+  "target-finder": targetFinderRest,
+  "shelf-ladder": shelfLadderRest,
+  "analytics-recorder": analyticsRecorderRest,
+  "report-printer": reportPrinterRest,
+  "settings-gears": settingsGearsRest,
+  "channel-plug-hub": channelPlugHubRest,
+  "overview-console": overviewConsoleRest,
+  storefront: storefrontRest,
+  "import-chute": importChuteRest,
+  "product-label": productLabelRest,
+  "feed-beacon": feedBeaconRest,
+  "agent-test-gauge": agentTestGaugeRest,
+  "checkout-till": checkoutTillRest,
+  "checkout-workbench": checkoutWorkbenchRest,
+  "checkout-lanes": checkoutLanesRest,
+  "browser-toolbench": browserToolbenchRest,
+  "comparison-stand": comparisonStandRest,
   "demo-plane": demoPlaneRest,
   "shopify-bag": shopifyBagRest,
   "woo-mark": wooMarkRest,
@@ -52,6 +95,7 @@ const restPoses = {
   "repair-tools": repairToolsRest,
   "money-stack": moneyStackRest,
   "readiness-scanner": readinessScannerRest,
+  "inspection-queue": inspectionQueueRest,
   "office-chair": officeChairRest,
   "document-stack": documentStackRest,
   "open-book": openBookRest,

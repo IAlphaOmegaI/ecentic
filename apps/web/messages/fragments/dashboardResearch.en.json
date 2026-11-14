@@ -1,0 +1,116 @@
+{
+  "dashboard": {
+    "research": {
+      "title": "AI research",
+      "description": "Compare products, inspect saved answers, and decide what to test next.",
+      "unavailable": {
+        "title": "This research could not be loaded",
+        "description": "Please try again. Your saved results have not changed.",
+        "action": {
+          "primary": "Try again"
+        }
+      },
+      "empty": {
+        "title": "Start with a product comparison",
+        "description": "Choose products and real competitors, then see which listing each model selects. Your completed research will appear here."
+      },
+      "comparison": {
+        "title": "Latest completed comparison",
+        "action": {
+          "primary": "Set up a comparison",
+          "secondary": "Inspect results"
+        },
+        "rate": "Simulated win rate",
+        "sample": "{wins} wins in {total} comparisons",
+        "scope": "Results cover this store’s products in this test. They describe model choices, not shopper visits or sales.",
+        "recent": "Earlier comparisons",
+        "first": "This is your first completed comparison.",
+        "cohorts": "Different products, competitors, or models can change the rate. These runs are not a measurement of lift."
+      },
+      "brand": {
+        "title": "Saved brand analysis",
+        "running": "A new analysis is running.",
+        "failed": "The latest analysis did not finish. Open brand analysis to try again.",
+        "empty": "No completed brand analysis yet.",
+        "action": {
+          "primary": "Open brand analysis"
+        },
+        "scope": "These are sampled model answers with your brand supplied as context. Inspect the original questions and answers before acting."
+      },
+      "directions": {
+        "questions": {
+          "title": "Explore shopper questions",
+          "description": "Try the questions shoppers ask and inspect the stores each model suggests.",
+          "action": {
+            "primary": "Explore questions"
+          }
+        },
+        "competitors": {
+          "title": "Choose your competitors",
+          "description": "Review the competing products used in your comparisons and add observed offers.",
+          "action": {
+            "primary": "Manage competitors"
+          }
+        },
+        "rank": {
+          "title": "Check a catalog query",
+          "description": "See where your store appears for one query and country in Shopify Global Catalog.",
+          "action": {
+            "primary": "Check catalog rank"
+          }
+        }
+      },
+      "rank": {
+        "title": "Catalog rank",
+        "description": "A live query against Shopify Global Catalog, scoped to your search and market.",
+        "empty": {
+          "title": "Where does your store appear?",
+          "description": "Enter a shopper’s search and choose a country. This checks the returned catalog offers; it does not establish a universal ChatGPT or Google rank."
+        },
+        "checked": "Shopify Global Catalog · {country} · Checked {time}. Results can change between queries."
+      },
+      "comparisons": {
+        "title": "Product comparisons",
+        "description": "Choose the products and competing offers to test, then inspect the models’ selections.",
+        "phases": {
+          "pre": "Ready to compare",
+          "running": "Comparing products",
+          "complete": "Comparison complete"
+        },
+        "unmeasured": "No comparisons for this model"
+      },
+      "questions": {
+        "title": "Shopper questions",
+        "description": "Explore model-generated answers to shopping questions. Suggestions are research, not a verified search ranking."
+      },
+      "competitors": {
+        "title": "Competitors",
+        "description": "Manage competing offers and inspect how your products compare against them.",
+        "action": {
+          "primary": "Add competitors",
+          "secondary": "Set up a comparison",
+          "tertiary": "Back to competitors"
+        },
+        "stats": {
+          "tracked": "Brands in your roster",
+          "tested": "Brands compared",
+          "comparisons": "Stored comparisons"
+        },
+        "empty": {
+          "title": "Choose the alternatives shoppers consider",
+          "description": "Add competing products with observed prices and product details. You can select the relevant offers when setting up a comparison."
+        },
+        "evidence": {
+          "title": "Where your products face the strongest competition",
+          "description": "Your products’ simulated win rate against each brand, starting with the lowest. Only brands with completed comparisons are shown.",
+          "sample": "{count} comparisons"
+        },
+        "roster": "{total} competitors · {selected} selected",
+        "updateFailed": "Could not update this competitor"
+      }
+    }
+  },
+  "commerceFigures": {
+    "comparisonStand": "Two product listings in a comparison stand"
+  }
+}

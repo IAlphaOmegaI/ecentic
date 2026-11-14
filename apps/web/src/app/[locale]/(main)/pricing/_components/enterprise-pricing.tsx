@@ -60,7 +60,7 @@ export const FreeStoreCheck = async () => {
         </div>
       </figure>
       <div className="relative flex min-w-0 flex-col justify-center px-7 py-10 max-sm:px-4">
-        <h3 className="max-w-[19ch] font-heading text-[clamp(24px,3vw,36px)] leading-tight tracking-[-0.035em]">
+        <h3 className="max-w-[19ch] font-heading text-2xl lg:text-3xl xl:text-4xl leading-tight tracking-tight">
           {enterprisePricing.sample.sampleTitle}
         </h3>
         <ul className="mt-8 flex list-none flex-col gap-5 p-0">
@@ -133,7 +133,7 @@ export const EnterprisePlanLedger = async () => {
           <Plus className="right-0 bottom-0 hidden translate-x-1/2 translate-y-1/2 lg:flex" />
         )}
         <Icon aria-hidden className="size-9 text-primary-rich" />
-        <h3 className="font-heading text-[clamp(24px,2.5vw,32px)] tracking-[-0.035em]">
+        <h3 className="font-heading text-2xl xl:text-3xl tracking-tight">
           {source.name}
         </h3>
         <p className="text-background-rich/70 text-base leading-relaxed">
@@ -141,7 +141,7 @@ export const EnterprisePlanLedger = async () => {
         </p>
         <div className="flex flex-col gap-3">
           <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
-            <strong className="font-heading font-medium text-[clamp(38px,4vw,54px)] leading-none tracking-[-0.055em]">
+            <strong className="font-heading font-medium text-4xl xl:text-5xl leading-none tracking-tighter">
               {source.figure}
             </strong>
             <span className="text-background-rich/65 text-sm">
@@ -198,13 +198,13 @@ export const EnterprisePlanLedger = async () => {
             aria-hidden
             className="size-9 text-primary-rich"
           />
-          <h3 className="font-heading text-[clamp(24px,2.5vw,32px)] tracking-[-0.035em]">
+          <h3 className="font-heading text-2xl xl:text-3xl tracking-tight">
             {enterprise.name}
           </h3>
           <p className="text-background-rich/70 text-base leading-relaxed">
             {enterprise.tagline}
           </p>
-          <strong className="font-heading font-medium text-[clamp(30px,3vw,44px)] leading-none tracking-[-0.045em]">
+          <strong className="font-heading font-medium text-3xl xl:text-4xl 2xl:text-5xl leading-none tracking-tighter">
             {enterprise.figure}
           </strong>
           <p className="text-background-rich/65 text-sm leading-relaxed">
@@ -276,7 +276,7 @@ export const PerformanceFeeLedger = async () => {
               <dt className="text-background-rich/80 text-sm">
                 {fee.example.order}
               </dt>
-              <dd className="whitespace-nowrap text-[clamp(28px,4vw,44px)] leading-none tracking-[-0.04em]">
+              <dd className="whitespace-nowrap text-3xl lg:text-4xl xl:text-5xl leading-none tracking-tighter">
                 {money.format(120)}
               </dd>
             </div>
@@ -284,7 +284,7 @@ export const PerformanceFeeLedger = async () => {
               <dt className="text-background-rich/80 text-sm">
                 {fee.example.rate}
               </dt>
-              <dd className="flex items-center gap-4 text-[clamp(28px,4vw,44px)] leading-none tracking-[-0.04em]">
+              <dd className="flex items-center gap-4 text-3xl lg:text-4xl xl:text-5xl leading-none tracking-tighter">
                 <span aria-hidden="true" className="text-background-rich/60">
                   ×
                 </span>
@@ -295,10 +295,10 @@ export const PerformanceFeeLedger = async () => {
               <dt className="text-background-rich/80 text-sm">
                 {fee.example.fee}
               </dt>
-              <dd className="mt-4 flex items-baseline gap-4 text-[clamp(52px,7vw,88px)] leading-none tracking-[-0.06em]">
+              <dd className="mt-4 flex items-baseline gap-4 text-5xl lg:text-7xl xl:text-8xl leading-none tracking-tighter">
                 <span
                   aria-hidden="true"
-                  className="text-[0.6em] text-background-rich/60"
+                  className="text-4xl text-background-rich/60"
                 >
                   =
                 </span>
@@ -383,7 +383,7 @@ export const EnterprisePlanComparison = async () => {
           aria-label={comparison.title}
           classList={{ viewport: "overscroll-y-auto overscroll-x-contain" }}
         >
-          <Table className="m-0 min-w-[1060px] border-b-0 bg-background-rich [&_td:last-child]:bg-background [&_td:nth-child(3)]:bg-primary/5 [&_td]:px-4 [&_td]:py-4 [&_td]:align-top [&_td]:text-foreground-dimmed [&_td]:text-sm [&_th:first-child]:w-[190px] [&_th:last-child]:bg-background [&_th:nth-child(3)]:bg-primary/8 [&_th]:whitespace-normal [&_th]:px-4 [&_th]:py-4 [&_th]:font-medium [&_th]:text-foreground-rich [&_th]:text-sm [&_th]:normal-case [&_th]:leading-normal [&_th]:tracking-normal">
+          <Table className="m-0 min-w-265 border-b-0 bg-background-rich [&_td:last-child]:bg-background [&_td:nth-child(3)]:bg-primary/5 [&_td]:px-4 [&_td]:py-4 [&_td]:align-top [&_td]:text-foreground-dimmed [&_td]:text-sm [&_th:first-child]:w-47.5 [&_th:last-child]:bg-background [&_th:nth-child(3)]:bg-primary/8 [&_th]:whitespace-normal [&_th]:px-4 [&_th]:py-4 [&_th]:font-medium [&_th]:text-foreground-rich [&_th]:text-sm [&_th]:normal-case [&_th]:leading-normal [&_th]:tracking-normal">
             <TableCaption className="sr-only">{comparison.title}</TableCaption>
             <TableHeader className="bg-background-dimmed">
               <TableRow>

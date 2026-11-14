@@ -9,7 +9,7 @@ export const DocumentPdfIcon = ({
     <svg
       height="18"
       width="18"
-      viewBox="0 0 18 18"
+      viewBox="0 0 24 24"
       strokeWidth="1.5"
       {...props}
     >

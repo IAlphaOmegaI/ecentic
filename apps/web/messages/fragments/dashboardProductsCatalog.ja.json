@@ -1,0 +1,69 @@
+{
+  "dashboard": {
+    "products": {
+      "catalog": {
+        "title": "商品",
+        "description": "商品を探し、比較結果を確認して、必要な情報を充実させましょう。",
+        "tableLabel": "商品カタログ",
+        "columns": "表示項目",
+        "resetColumns": "表示項目をリセット",
+        "sortBy": "{field}で並べ替え",
+        "noSku": "SKU未設定",
+        "unmeasured": "未比較",
+        "rate": "AI比較での勝率：{value}%",
+        "coverage": "項目の入力率：{value}%",
+        "coverageHint": "商品名、説明、価格、画像、SKU、構造化データの6項目の有無を確認します。AIによる品質評価ではありません。",
+        "comparisons": "{count, plural, other {比較#回}}",
+        "results": "商品数：{count, number}",
+        "range": "全{total}件中{from}〜{to}件",
+        "summary": {
+          "imported": "カタログの商品",
+          "importedHint": "インポート済みの全商品",
+          "compared": "AI比較済み",
+          "comparedHint": "比較結果が1件以上ある商品",
+          "incomplete": "情報が不足している商品",
+          "incompleteHint": "6項目のうち1つ以上が未入力",
+          "unavailable": "カタログの集計を一時的に取得できません。下の商品一覧は引き続きご利用いただけます。"
+        },
+        "fields": {
+          "product": "商品",
+          "sku": "SKU",
+          "price": "価格",
+          "currency": "通貨",
+          "winRate": "AI比較の勝率",
+          "quality": "項目の入力率",
+          "updatedAt": "更新日時"
+        },
+        "selection": {
+          "all": "このページの全商品を選択",
+          "product": "{product}を選択",
+          "count": "このページで{count, number}件を選択中",
+          "hint": "商品を選択するとデータをエクスポートできます。"
+        },
+        "action": {
+          "add": "商品を追加",
+          "clear": "検索と絞り込みを解除",
+          "retry": "再試行",
+          "export": "選択した商品をエクスポート",
+          "deselect": "選択を解除",
+          "open": "{product}を開く"
+        },
+        "states": {
+          "empty": {
+            "title": "商品カタログを作成しましょう",
+            "description": "商品をインポートすると、商品情報とAIの比較結果をまとめて確認できます。"
+          },
+          "noMatches": {
+            "title": "該当する商品がありません",
+            "description": "検索条件を変更するか、絞り込みを解除してみてください。"
+          },
+          "error": {
+            "title": "商品を読み込めませんでした",
+            "description": "カタログのデータは保存されています。もう一度読み込んでください。"
+          }
+        },
+        "loading": "商品を読み込んでいます…"
+      }
+    }
+  }
+}

@@ -224,14 +224,14 @@ const StoreEntry = ({
             {store.domain}
           </p>
         </div>
-        <dl className="grid min-w-0 grid-cols-1 border-accent-foreground border-t sm:grid-cols-3 sm:grid-rows-[auto_auto_auto] lg:border-t-0 lg:border-l">
+        <dl className="grid min-w-0 grid-cols-1 border-accent-foreground border-t bg-linear-to-br from-primary/10 via-primary/4 to-background-rich sm:grid-cols-3 sm:grid-rows-[auto_auto_auto] lg:border-t-0 lg:border-l">
           <StoreMetric
-            icon={<CommerceFilePenIcon aria-hidden className="size-4" />}
+            icon={<CommerceFilePenIcon aria-hidden className="size-7" />}
             label={translate("storeCard.products")}
             value={numbers.format(store.productCount)}
           />
           <StoreMetric
-            icon={<GaugeIcon aria-hidden className="size-4" />}
+            icon={<GaugeIcon aria-hidden className="size-7" />}
             label={translate("storeCard.winRate")}
             value={
               store.simulations > 0
@@ -245,7 +245,7 @@ const StoreEntry = ({
             }
           />
           <StoreMetric
-            icon={<RadarIcon aria-hidden className="size-4" />}
+            icon={<RadarIcon aria-hidden className="size-7" />}
             label={translate("storeCard.agents30d")}
             value={numbers.format(store.agentVisits)}
           />
@@ -309,14 +309,14 @@ const StoreMetric = ({
   value: string;
   note?: string;
 }) => (
-  <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-2 border-accent-foreground border-b px-6 py-4 last:border-b-0 sm:row-span-3 sm:grid-cols-1 sm:grid-rows-subgrid sm:items-start sm:border-r sm:border-b-0 sm:py-6 sm:last:border-r-0 lg:px-4">
-    <dt className="flex items-center gap-3 text-foreground-dimmed text-sm leading-relaxed sm:block sm:text-xs">
-      <span className="shrink-0 text-primary-text sm:mb-3 sm:block">
+  <div className="grid min-w-0 grid-cols-[minmax(0,1fr)_auto] items-center gap-x-4 gap-y-3 border-accent-foreground border-b px-6 py-5 last:border-b-0 sm:row-span-3 sm:grid-cols-1 sm:grid-rows-subgrid sm:items-start sm:border-r sm:border-b-0 sm:py-6 sm:last:border-r-0 lg:px-4">
+    <dt className="flex items-center gap-3 font-medium text-foreground-dimmed text-sm leading-relaxed sm:block sm:text-xs">
+      <span className="shrink-0 text-primary-text sm:mb-4 sm:block">
         {icon}
       </span>
       {label}
     </dt>
-    <dd className="break-all font-heading font-medium text-2xl text-foreground-rich tabular-nums sm:text-3xl">
+    <dd className="break-all font-heading font-medium text-3xl text-foreground-rich tabular-nums">
       {value}
     </dd>
     {note && (

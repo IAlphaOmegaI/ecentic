@@ -126,7 +126,7 @@ export const Tools = async () => {
                   className={cn(
                     "p-6 md:p-10",
                     tool.highlighted
-                      ? "bg-primary text-white"
+                      ? "bg-primary text-background-rich"
                       : "bg-background-rich text-foreground",
                     reversed && "md:order-1",
                   )}
@@ -135,7 +135,9 @@ export const Tools = async () => {
                     <p
                       className={cn(
                         "font-medium text-sm",
-                        tool.highlighted ? "text-white" : "text-primary",
+                        tool.highlighted
+                          ? "text-background-rich"
+                          : "text-primary",
                       )}
                     >
                       {tool.number} · {tool.category}
@@ -147,7 +149,7 @@ export const Tools = async () => {
                       className={cn(
                         "font-light text-lg leading-relaxed",
                         tool.highlighted
-                          ? "text-white"
+                          ? "text-background-rich"
                           : "text-foreground-dimmed",
                       )}
                     >
@@ -160,7 +162,7 @@ export const Tools = async () => {
                           className={cn(
                             "flex items-center gap-2",
                             tool.highlighted
-                              ? "text-white"
+                              ? "text-background-rich"
                               : "text-foreground-dimmed",
                           )}
                         >
@@ -168,7 +170,7 @@ export const Tools = async () => {
                             className={cn(
                               "size-4 shrink-0",
                               tool.highlighted
-                                ? "text-white/80"
+                                ? "text-background-rich/80"
                                 : "text-primary",
                             )}
                           />

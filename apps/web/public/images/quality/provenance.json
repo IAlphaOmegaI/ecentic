@@ -1,0 +1,30 @@
+{
+  "generator": "Azure gpt-image-2.5-sunburst via ~/.codex/bin/azure-image",
+  "generatedOn": "2026-11-13",
+  "styleReference": "apps/web/public/images/logo.svg",
+  "assets": [
+    {
+      "name": "inspection-emblem",
+      "purpose": "Compact Data Quality inspection header, not a saved pass result",
+      "source": "source/inspection-emblem.png",
+      "output": "inspection-emblem.webp",
+      "width": 500,
+      "height": 512,
+      "prompt": "Use case: stylized-concept. Asset type: small Data Quality dashboard header emblem for ecentic. Primary request: one recognizable dimensional product tag with a small magnifying glass inspecting it; subtle small check-shaped cutout in the tag identifies inspection, but no score or success badge. Style: premium editorial geometric cutout, restrained cobalt-blue planes and fine printed stochastic grain, the same blue-grain visual language as the ecentic open-box logo. Keep the subject simple and legible at 64 pixels, with thick readable shapes and complete clean edges, no hairline drawing or ASCII. Composition: one compact centered emblem filling about 75 percent of a square, three-quarter isometric angle. Colors: cobalt blue close to #1572FA, deep blue shadow close to #09326D, pale blue highlights. Backdrop: perfectly uniform warm off-white #F7F7F5, no texture, no checkerboard. No text, letters, code, numbers, UI cards, stars, sparkles, floating badges, toy faces, photorealistic materials, glossy plastic, extra decorative objects, or cast shadow extending beyond the subject.",
+      "processing": "Border-connected neutral backdrop removal, 0.35px edge feather, alpha-preserving resize, WebP quality92."
+    },
+    {
+      "name": "inspection-queue",
+      "purpose": "Empty catalog inspection workspace; queued records, no completed check or success claim",
+      "source": "source/inspection-queue.png",
+      "backgroundEditSource": "source/inspection-queue-keyed.png",
+      "output": "inspection-queue.webp",
+      "width": 715,
+      "height": 768,
+      "prompt": "Use case: stylized-concept. Asset type: empty catalog-inspection dashboard illustration for ecentic, not a stock icon. Primary request: a small dimensional cobalt-blue inspection tray holding three pale blank product record cards queued in a neat stagger, with a single blue scanner arch above the next card. This is waiting to inspect a catalog, not a successful completed inspection. Style: premium dimensional editorial paper cutout, sculpted clean geometric planes with very fine stochastic printed grain, cohesive with a cobalt-blue open-box brand mark. Strong clear silhouette, sparse composition, usable at 280 pixels wide. Composition: one centered isolated assembly in a square, wide three-quarter view, whole tray and cards visible, generous breathing room. Colors: cobalt blue close to #1572FA, dark blue shadow close to #09326D, pale blue and off-white cards. Backdrop: perfectly uniform warm off-white #F7F7F5, no checkerboard, no scene or scenery. Cards can have one simple small product thumbnail silhouette and two quiet blank lines, but no readable text, symbols, brand marks or numbers. No checks, pass badges, scores, green lights, confetti, arrows, stars, glow, robot, ASCII, browser frames or nested interface cards. Do not imply inspection passed; depict the queue at rest.",
+      "backgroundEditPrompt": "Use case: background-extraction. Input image is the edit target. Change ONLY the plain off-white exterior background to a perfectly uniform bright chroma green #00FF00. Keep the blue inspection tray, scanner arm, all three pale product cards, their rounded edges, product silhouettes, grain textures, lighting, geometry, and arrangement exactly unchanged. Keep every pale card completely opaque; do not recolor or remove its surface. No green tint or reflections on the objects, no transparency checkerboard, no new elements, no text, no crop. The green must be only in the empty space around and between the existing objects so it can be removed cleanly.",
+      "processing": "Chroma-key removal where green exceeds red and blue by25, 1pixel inset, 0.35px feather, alpha-preserving resize, WebP quality92."
+    }
+  ],
+  "verification": "Visually checked at64px and280px on an offwhite interface background. Images inspected only by assigned subagent."
+}

@@ -38,7 +38,7 @@ export const SolutionRoadmap = ({
             {item.eyebrow && (
               <p className="mb-3 text-primary-text text-sm">{item.eyebrow}</p>
             )}
-            <h3 className="max-w-[26ch] text-[clamp(1.6rem,2.6vw,2.2rem)]! leading-tight">
+            <h3 className="max-w-[26ch] text-2xl xl:text-4xl! leading-tight">
               {item.title}
             </h3>
             {item.scope && (

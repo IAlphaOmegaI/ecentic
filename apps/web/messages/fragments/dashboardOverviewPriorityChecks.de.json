@@ -1,0 +1,16 @@
+{
+  "dashboard": {
+    "overview": {
+      "priorityChecks": {
+        "incomplete": {
+          "title": "Vervollständigen Sie Ihre Produktangaben",
+          "detail": "{count, plural, one {Bei # Produkt fehlen Katalogangaben.} other {Bei # Produkten fehlen Katalogangaben.}}"
+        },
+        "unavailable": {
+          "title": "Verbesserungsvorschläge sind nicht verfügbar",
+          "description": "Öffnen Sie Optimieren, um die verfügbaren Prüfungen für diesen Shop anzusehen."
+        }
+      }
+    }
+  }
+}

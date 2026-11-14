@@ -1,0 +1,32 @@
+{
+  "name": "checkout-till",
+  "subject": "ucp",
+  "meaning": "A checkout till with keypad and cash drawer: slide the drawer open.",
+  "part": "drawer",
+  "answer": [
+    55,
+    81,
+    21
+  ],
+  "bounds": [
+    [
+      -4,
+      -3,
+      0
+    ],
+    [
+      117,
+      123,
+      123
+    ]
+  ],
+  "scale": 1.65,
+  "figure": "/hairline/custom/checkout-till.js",
+  "rest": "apps/web/src/components/hairline/rest/checkout-till.json",
+  "sourceSha256": "2a3dc8be1d43d86d1fc2c9fa8c5279d8333355cb68723162d60e38b8fbd78240",
+  "restSha256": "422e177ba977b41a1b0cbfead51736f48dde35f940fa9cb7fe3b9d74a5a7731a",
+  "engine": "Unmodified fixed Hairline kernel",
+  "interaction": "Fixed rest hit area; 700ms EASE_LIFT tween; bounded reach; linked responses delayed 40ms; loop sleeps after settlement.",
+  "reducedMotion": "SSR rest geometry remains complete. Shared CustomHairlineFigure disables pointer code and asset enhancement for reduced motion.",
+  "validation": "output/dashboard-hairline-2026-11-14/checkout-till.validation.txt"
+}

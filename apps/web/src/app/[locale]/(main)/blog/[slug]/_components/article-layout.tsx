@@ -40,10 +40,10 @@ export const ArticleLayout = ({
           </Link>
           <span className="text-primary-text text-sm">{category}</span>
         </div>
-        <h1 className="max-w-[1000px] text-[clamp(2.5rem,5vw,4.5rem)] leading-[1.04] tracking-[-0.045em]">
+        <h1 className="max-w-250 text-4xl lg:text-5xl xl:text-6xl 2xl:text-7xl leading-none tracking-tighter">
           {title}
         </h1>
-        <p className="mt-6 max-w-[760px] text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">
+        <p className="mt-6 max-w-190 text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">
           {description}
         </p>
         <div className="mt-8 flex flex-wrap items-center gap-x-6 gap-y-2 text-foreground-dimmed text-sm">
@@ -69,7 +69,7 @@ export const ArticleLayout = ({
           </div>
         </aside>
         <article className="min-w-0 px-8 py-12 max-sm:px-4 max-sm:py-8 lg:px-12">
-          <div className="mx-auto max-w-[720px]">
+          <div className="mx-auto max-w-180">
             {thumbnail && (
               <Image
                 src={thumbnail}
@@ -99,9 +99,7 @@ export const ArticleLayout = ({
     <MarketingLightBand>
       <div className="relative grid min-w-0 bg-linear-to-br from-primary/6 via-transparent to-transparent md:grid-cols-[minmax(0,1fr)_320px]">
         <div className="px-8 py-12 max-sm:px-4 max-sm:py-8 lg:px-12">
-          <h2 className="max-w-[600px] text-3xl leading-tight">
-            {actions.note}
-          </h2>
+          <h2 className="max-w-150 text-3xl leading-tight">{actions.note}</h2>
           <div className="mt-8 flex flex-wrap gap-4">
             <Button color="neutral" render={<Link href="/blog" />}>
               <ArrowRightIcon className="size-4 rotate-180" />

@@ -1,10 +1,10 @@
-import { unwrapResult } from "@zenncore/utils";
 import { connection } from "next/server";
 import { getTranslations } from "next-intl/server";
 import { Suspense } from "react";
 import * as GoogleMerchant from "@/server/app/integration/google-merchant";
 import { Environment } from "@/server/utils/environment";
-import { SectionGutter, SectionHeader } from "../../_components/grid";
+import { SectionHeader } from "../../_components/grid";
+import { ChannelLoadError } from "../channels/_components/summary";
 import {
   Chip,
   DiagnosticsPanel,
@@ -80,18 +80,7 @@ const UcpContent = async ({ store }: { store: string }) => {
     GoogleMerchant.getUcpProducts(Environment.SERVER, { store }),
   ]);
 
-  if (!readiness.success)
-    return (
-      <p className="p-4 text-foreground-dimmed text-sm">
-        {translate("readinessError", { error: readiness.error.message })}
-      </p>
-    );
-  if (!products.success)
-    return (
-      <p className="p-4 text-foreground-dimmed text-sm">
-        {translate("productsError", { error: products.error.message })}
-      </p>
-    );
+  if (!readiness.success || !products.success) return <ChannelLoadError />;
 
   const labels = {
     unknown: translate("unknown"),
@@ -244,15 +233,18 @@ const ChannelSections = async ({
   await connection();
   const { store } = await params;
   const translate = await getTranslations("dashboard.googleShopping");
-  const status = unwrapResult(
-    await GoogleMerchant.getStatus(Environment.SERVER, { store }),
-  );
+  const statusResult = await GoogleMerchant.getStatus(Environment.SERVER, {
+    store,
+  });
+  if (!statusResult.success) return <ChannelLoadError />;
+  const status = statusResult.data;
+  if (!status.supported)
+    return <GoogleShoppingManager store={store} status={status} />;
 
   return (
     <>
       <SectionBox>
         <SectionHeader
-          kicker={translate("sections.connection")}
           title={translate("connection.title")}
           description={translate("connection.description")}
         />
@@ -260,33 +252,25 @@ const ChannelSections = async ({
       </SectionBox>
 
       {status.googleAccountId !== null && (
-        <>
-          <SectionGutter />
-          <SectionBox marks="top">
-            <SectionHeader
-              kicker={translate("sections.diagnostics")}
-              title={translate("diagnostics.title")}
-              description={translate("diagnostics.eyebrow")}
-            />
-            <DiagnosticsPanel store={store} />
-          </SectionBox>
-        </>
+        <SectionBox marks="top">
+          <SectionHeader
+            title={translate("diagnostics.title")}
+            description={translate("diagnostics.eyebrow")}
+          />
+          <DiagnosticsPanel store={store} />
+        </SectionBox>
       )}
 
       {status.provisioned && (
-        <>
-          <SectionGutter />
-          <SectionBox marks="top">
-            <SectionHeader
-              kicker={translate("sections.checkout")}
-              title={translate("ucp.title")}
-              description={translate("ucp.description")}
-            />
-            <Suspense fallback={<ManagerSkeleton />}>
-              <UcpContent store={store} />
-            </Suspense>
-          </SectionBox>
-        </>
+        <SectionBox marks="top">
+          <SectionHeader
+            title={translate("ucp.title")}
+            description={translate("ucp.description")}
+          />
+          <Suspense fallback={<ManagerSkeleton />}>
+            <UcpContent store={store} />
+          </Suspense>
+        </SectionBox>
       )}
     </>
   );

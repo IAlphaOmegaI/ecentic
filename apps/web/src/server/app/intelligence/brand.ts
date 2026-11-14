@@ -16,6 +16,7 @@ import { after } from "next/server";
 import { z } from "zod";
 import { schema } from "../../database";
 import * as AI from "../../utils/ai";
+import { isBrandSnapshotRunning } from "../../utils/brand-snapshot-state";
 import { withSubscription } from "../../utils/entitlement";
 import { Environment } from "../../utils/environment";
 import * as HTTP from "../../utils/http";
@@ -169,7 +170,7 @@ const synthesisSchema = z.object({
   summary: z
     .string()
     .describe(
-      "A 4-6 sentence diagnostic summary of where the brand shows up, where it is absent, and why.",
+      "A concise 3-4 sentence diagnostic summary, at most 110 words, of where the brand appears, where it is absent, and why. Use **strong phrases** sparingly for the decisive evidence.",
     ),
   keyFindings: z
     .array(z.string())
@@ -293,9 +294,11 @@ const checkCrawlability = async (domain: string): Promise<Crawlability> => {
   const [robotsResponse, llmsResponse] = await Promise.all([
     HTTP.request(`https://${host}/robots.txt`, fetchOptions, {
       timeout: FETCH_TIMEOUT_MS,
+      guard: true,
     }),
     HTTP.request(`https://${host}/llms.txt`, fetchOptions, {
       timeout: FETCH_TIMEOUT_MS,
+      guard: true,
     }),
   ]);
 
@@ -303,13 +306,13 @@ const checkCrawlability = async (domain: string): Promise<Crawlability> => {
     llmsResponse.success && llmsResponse.data.ok
       ? {
           status: "pass",
-          headline: "Published — AI engines have a declarative content map",
+          headline: "An llms.txt file was reachable",
         }
       : {
           status: "warn",
           headline: "Not published",
           detail:
-            "Publish an llms.txt at the domain root so AI engines get a declarative map of the store's key content.",
+            "An llms.txt file is an optional content guide. Its presence does not confirm adoption, indexing or recommendations by AI services.",
         };
 
   if (!robotsResponse.success || !robotsResponse.data.ok)
@@ -318,7 +321,7 @@ const checkCrawlability = async (domain: string): Promise<Crawlability> => {
       robots: {
         status: "warn",
         headline: "Unreachable",
-        detail: `Could not fetch https://${host}/robots.txt — crawlers will assume everything is allowed, but verify the domain is reachable.`,
+        detail: `Could not fetch https://${host}/robots.txt. Access is unconfirmed; crawler behavior can depend on the failure response.`,
       },
       llms,
       engines: {
@@ -340,14 +343,14 @@ const checkCrawlability = async (domain: string): Promise<Crawlability> => {
         return {
           status: "fail" as const,
           headline: "Present — blocks AI crawlers",
-          detail: `Remove the Disallow rules for ${blocked.join(", ")}; blocked agents cannot index or cite this store at all.`,
+          detail: `Root-level restrictions were detected for ${blocked.join(", ")}. Review each crawler's purpose before changing rules; training and search controls are different.`,
         };
       case !hasAiSpecificRules(groups):
         return {
           status: "warn" as const,
           headline: "Present — no AI-specific rules",
           detail:
-            "Explicitly allow the major AI crawlers — OpenAI (GPTBot, ChatGPT-User), Anthropic (ClaudeBot, Claude-User), Perplexity (PerplexityBot), Google (Google-Extended). Naming them signals AI-friendly intent and prevents accidental blocks from broad Disallow rules.",
+            "No crawler-specific groups were recorded. Wildcard rules may still apply; explicit AI groups are not required for access, and access alone does not guarantee indexing or recommendations.",
         };
       default:
         return {
@@ -520,7 +523,6 @@ const buildReport = async (store: StoreRecord) => {
     )
     .join("\n");
 
-  // - Attribute perceptions to "AI engines" or "AI assistants" generically — never name ${ENGINE} or any other engine; which model ran the audit is internal.
   const synthesis = await AI.generate({
     label: "brand.synthesis",
     model: "gpt",
@@ -530,15 +532,19 @@ const buildReport = async (store: StoreRecord) => {
 Rules:
 - Ground every statement in the query log — cite patterns (which query types the brand wins or loses, which competitors and sources dominate), never invent events.
 - Name the engine (${ENGINE}) when attributing a perception.
+- These are simulated API answers, not observed shopper conversations, live search results, or actual referrals. Do not imply otherwise.
+- Source names are suggested by the model without web retrieval. They are not verified citations or proof that a source contains information about this brand.
 - Write for the merchant in plain language: "the brand", "shoppers", no analyst jargon.
+- Use **bold** around one or two short, important evidence phrases in the summary and at most one phrase in each finding, strength, concern, or funnel narrative. Emphasize the complete meaning, including any negation or uncertainty. Keep most words unstyled; never bold whole paragraphs. No HTML, links, headings, or other Markdown.
+- Keep the summary to 3-4 sentences and at most 110 words. Put the most useful finding first; do not repeat the same claim across sentences.
 - keyFindings must be concrete and actionable-adjacent (what is happening and why it matters), one sentence or two each.
 - funnel narratives describe how the brand performs at that stage; improvements are specific actions the merchant can take.`,
     prompt: `Brand: "${store.name}" (${store.domain})
 Category: ${querySet.category}
-Mentioned in ${metrics.mentionRate}% of responses; surfaced unprompted in ${metrics.unpromptedRate}% of unbranded queries; recognized in ${metrics.namedRate}% of brand-named queries.
+Mentioned in ${metrics.mentionRate}% of responses; mentioned in ${metrics.unpromptedRate}% of questions without the brand name and ${metrics.namedRate}% of questions naming the brand. The model received the audited brand as context in every case. These figures do not measure blind or unprompted brand recall.
 Dimension scores (0-100): ${dimensions.map((entry) => `${entry.dimension} ${entry.score} (${entry.level})`).join(", ")}
 Most-recommended competitors: ${topCompetitors.map((entry) => `${entry.name} (${entry.mentions})`).join(", ") || "none observed"}
-Most-cited sources: ${topSources.map((entry) => entry.domain).join(", ") || "none observed"}
+Model-suggested sources (not verified citations): ${topSources.map((entry) => entry.domain).join(", ") || "none observed"}
 
 Query log:
 ${queryLog}`,
@@ -577,13 +583,6 @@ ${queryLog}`,
 };
 
 /**
- * A `running` row older than this is treated as dead (the background function
- * was killed mid-run) rather than in flight — it stops blocking new runs and
- * the page stops showing it as in progress.
- */
-const RUNNING_STALE_MS = 10 * 60 * 1000;
-
-/**
  * Starts a brand visibility analysis for a store and returns immediately with
  * the `running` {@link schema.brandSnapshot} row. The run itself (20 audited
  * queries + synthesis, on the order of a minute) executes via `after()` once
@@ -606,7 +605,6 @@ export const analyze = withSubscription(
       where: and(
         eq(schema.brandSnapshot.storeId, storeId),
         eq(schema.brandSnapshot.userId, userId),
-        eq(schema.brandSnapshot.status, "running"),
       ),
       orderBy: [
         { column: schema.brandSnapshot.createdAt, direction: "desc" as const },
@@ -616,10 +614,7 @@ export const analyze = withSubscription(
     if (!existing.success) return existing;
 
     const inFlight = existing.data[0];
-    if (
-      inFlight &&
-      Date.now() - inFlight.createdAt.getTime() < RUNNING_STALE_MS
-    )
+    if (isBrandSnapshotRunning(inFlight, Date.now()))
       return {
         success: true as const,
         data: { snapshot: inFlight, alreadyRunning: true },

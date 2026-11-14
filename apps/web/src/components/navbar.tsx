@@ -379,7 +379,7 @@ export const Navbar = () => {
         className="absolute inset-x-0 top-0 -bottom-12 -z-1 min-[1281px]:hidden"
       />
       <div
-        className="marketing-nav-inner mx-auto flex h-20 min-w-0 max-w-[1440px] items-center gap-2 px-4 sm:gap-5 sm:px-7 min-[360px]:gap-3"
+        className="marketing-nav-inner mx-auto flex h-20 min-w-0 max-w-360 items-center gap-2 px-4 sm:gap-5 sm:px-7 min-[360px]:gap-3"
         ref={navigationRow}
       >
         <Link
@@ -412,7 +412,7 @@ export const Navbar = () => {
                           }
                         />
                       }
-                      className="marketing-nav-trigger marketing-nav-pricing h-11 whitespace-nowrap rounded-xs bg-transparent px-2 xs:px-2 py-3 text-sm hover:bg-transparent hover:text-primary-text focus-visible:text-primary-text"
+                      className="marketing-nav-trigger marketing-nav-pricing h-11 whitespace-nowrap rounded-sm bg-transparent px-2 xs:px-2 py-3 text-sm hover:bg-transparent hover:text-primary-text focus-visible:text-primary-text"
                     >
                       {navigation.pricing}
                     </NavigationMenuLink>
@@ -420,7 +420,7 @@ export const Navbar = () => {
                 )}
                 <NavigationMenuItem key={group.id} value={group.id}>
                   <NavigationMenuTrigger
-                    className="marketing-nav-trigger h-11 whitespace-nowrap rounded-xs bg-transparent px-2 xs:px-2 py-3 text-sm xs:text-sm hover:bg-transparent hover:text-primary-text focus-visible:text-primary-text data-popup-open:bg-transparent data-popup-open:text-primary-text"
+                    className="marketing-nav-trigger h-11 whitespace-nowrap rounded-sm bg-transparent px-2 xs:px-2 py-3 text-sm xs:text-sm hover:bg-transparent hover:text-primary-text focus-visible:text-primary-text data-popup-open:bg-transparent data-popup-open:text-primary-text"
                     data-menu-trigger={group.id}
                     onKeyDown={(event) => {
                       if (!["ArrowDown", "Enter", " "].includes(event.key))

@@ -3,72 +3,124 @@
 @custom-variant light (&:where(.light, .light *));
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Seven interface foundations. Shades are semantic mixes of these existing
+   colors; components must not introduce their own palette. */
 @theme {
-  /* background shades - more distinct neutral */
-  --color-background-dimmed: #e8e8e8;
   --color-background: #f5f5f5;
   --color-background-rich: #ffffff;
-  /* foreground shades - pure neutral grays with more contrast */
-  /* #919191 measured 2.89:1 on --color-background and 3.15:1 on white, failing
-     AA everywhere it carried body copy. #6b6b6b fixed those two but sat at
-     4.35:1 on --color-background-dimmed, where section descriptions, tag chips
-     and panel captions use it. #666666 clears all three (4.69:1 dimmed, 5.27:1
-     background, 5.74:1 white) while staying clearly recessive against
-     --color-foreground. */
-  --color-foreground-dimmed: #666666;
-  --color-foreground: #404040;
   --color-foreground-rich: #16181d;
-  /* emphasis shades - warmer browns with more distinction */
-  --color-emphasis-dimmed: oklch(14.5% 0 0);
-  --color-emphasis: oklch(20.5% 0 0);
-  --color-emphasis-rich: oklch(26.9% 0 0);
-  --color-emphasis-foreground: oklch(55.6% 0 0);
-  /* accent shades - distinct cool grays */
-  --color-accent-dimmed: oklch(55.3% 0.013 58.071); /* Notably darker */
-  --color-accent: oklch(55.6% 0 0); /* Clean white */
-  --color-accent-rich: oklch(67% 0 0); /* Mid-tone */
-  --color-accent-foreground: oklch(90% 0 0); /* Darker for contrast */
-  /* primary shades - blue */
-  /* Dimmed is the dark tier for focus rings and large text on primary-adjacent
-     surfaces. Banner title accents no longer use it — they use LT Superior +
-     underline on solid white. #08214f clears the 3:1 large-text floor on
-     #1572fa (3.59:1) and improves checkbox focus rings on light backgrounds
-     (11.55:1 -> 14.37:1). */
-  --color-primary-dimmed: #08214f;
   --color-primary: #1572fa;
-  --color-primary-rich: #5b9dff;
-  /* The brand blue is 4.00:1 on --color-background — fine for large display
-     type at the 3:1 floor, short of AA for anything read as body copy. This is
-     the same hue darkened to 5.58:1 for that case; --color-primary stays the
-     brand colour and is not weakened. */
-  --color-primary-text: #0a5bd3;
-  /* secondary shades - purple */
-  --color-secondary-dimmed: oklch(27.1% 0.12 290);
-  --color-secondary: oklch(55% 0.2 290);
-  --color-secondary-rich: oklch(71.2% 0.18 290);
-  /* error shades - rose (Tailwind) */
-  --color-error-dimmed: #9f1239;
-  --color-error: #e11d48;
-  --color-error-rich: #f43f5e;
-  --color-error-foreground: #fda4af;
-  /* success shades - emerald (Tailwind) */
-  --color-success-dimmed: #065f46;
   --color-success: #059669;
-  --color-success-rich: #34d399;
-  --color-success-foreground: #064e3b;
-  /* info shades */
-  --color-info-dimmed: oklch(54.6% 0.245 262.881);
-  --color-info: oklch(62.3% 0.214 259.815);
-  --color-info-rich: oklch(74.6% 0.16 232.661);
-  --color-info-foreground: oklch(82.8% 0.111 230.318);
-  /* warning shades - amber (Tailwind) */
-  --color-warning-dimmed: #b45309;
   --color-warning: #d97706;
-  --color-warning-rich: #fbbf24;
-  --color-warning-foreground: #78350f;
-  /* neutral shades - more contrast */
-  --color-neutral-dimmed: oklch(37.1% 0 0);
-  --color-neutral: oklch(55.4% 0.046 257.417);
-  --color-neutral-rich: oklch(55.1% 0.027 264.364);
-  --color-neutral-foreground: oklch(21% 0.034 264.665);
+  --color-error: #e11d48;
+
+  --color-background-dimmed: color-mix(
+    in srgb,
+    var(--color-foreground-rich) 6%,
+    var(--color-background-rich)
+  );
+  --color-foreground: color-mix(
+    in srgb,
+    var(--color-foreground-rich) 82%,
+    var(--color-background-rich)
+  );
+  --color-foreground-dimmed: color-mix(
+    in srgb,
+    var(--color-foreground-rich) 66%,
+    var(--color-background-rich)
+  );
+
+  --color-emphasis-dimmed: var(--color-foreground-rich);
+  --color-emphasis: var(--color-foreground-rich);
+  --color-emphasis-rich: color-mix(
+    in srgb,
+    var(--color-foreground-rich) 92%,
+    var(--color-background-rich)
+  );
+  --color-emphasis-foreground: var(--color-foreground-dimmed);
+
+  --color-accent-dimmed: var(--color-foreground-dimmed);
+  --color-accent: var(--color-foreground-dimmed);
+  --color-accent-rich: color-mix(
+    in srgb,
+    var(--color-foreground-rich) 45%,
+    var(--color-background-rich)
+  );
+  --color-accent-foreground: color-mix(
+    in srgb,
+    var(--color-foreground-rich) 12%,
+    var(--color-background-rich)
+  );
+
+  --color-primary-dimmed: color-mix(
+    in srgb,
+    var(--color-primary) 25%,
+    var(--color-foreground-rich)
+  );
+  --color-primary-rich: color-mix(
+    in srgb,
+    var(--color-primary) 68%,
+    var(--color-background-rich)
+  );
+  --color-primary-text: color-mix(
+    in srgb,
+    var(--color-primary) 80%,
+    var(--color-foreground-rich)
+  );
+
+  --color-secondary-dimmed: var(--color-primary-dimmed);
+  --color-secondary: var(--color-primary);
+  --color-secondary-rich: var(--color-primary-rich);
+  --color-info-dimmed: var(--color-primary-text);
+  --color-info: var(--color-primary);
+  --color-info-rich: var(--color-primary-rich);
+  --color-info-foreground: var(--color-primary-dimmed);
+
+  --color-error-dimmed: color-mix(
+    in srgb,
+    var(--color-error) 65%,
+    var(--color-foreground-rich)
+  );
+  --color-error-rich: color-mix(
+    in srgb,
+    var(--color-error) 65%,
+    var(--color-background-rich)
+  );
+  --color-error-foreground: var(--color-error-dimmed);
+  --color-success-dimmed: color-mix(
+    in srgb,
+    var(--color-success) 65%,
+    var(--color-foreground-rich)
+  );
+  --color-success-rich: color-mix(
+    in srgb,
+    var(--color-success) 65%,
+    var(--color-background-rich)
+  );
+  --color-success-foreground: var(--color-success-dimmed);
+  --color-warning-dimmed: color-mix(
+    in srgb,
+    var(--color-warning) 65%,
+    var(--color-foreground-rich)
+  );
+  --color-warning-rich: color-mix(
+    in srgb,
+    var(--color-warning) 65%,
+    var(--color-background-rich)
+  );
+  --color-warning-foreground: var(--color-warning-dimmed);
+
+  --color-neutral-dimmed: var(--color-foreground);
+  --color-neutral: var(--color-foreground-dimmed);
+  --color-neutral-rich: var(--color-foreground-dimmed);
+  --color-neutral-foreground: var(--color-foreground-rich);
+
+  /* Existing Tailwind sm/lg values plus square and full are the four approved
+     corner treatments. Legacy size names resolve to the same two theme values. */
+  --radius-xs: var(--radius-sm);
+  --radius-md: var(--radius-sm);
+  --radius-xl: var(--radius-lg);
+  --radius-2xl: var(--radius-lg);
+  --radius-3xl: var(--radius-lg);
+  --radius-4xl: var(--radius-lg);
 }

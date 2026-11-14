@@ -4,14 +4,21 @@ import { LoaderIcon, PlusIcon, XCircleIcon } from "@zenncore/icons";
 import { cn, resultify, unwrapResult } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
+import {
+  Tab,
+  Tabs,
+  TabsIndicator,
+  TabsList,
+  TabsPanel,
+} from "@zenncore/web/components/tabs";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
-import { useMessages, useTranslations } from "next-intl";
+import { useFormatter, useMessages, useTranslations } from "next-intl";
 import { useState } from "react";
 import {
   Crosshair,
-  SectionKicker,
   StatusPill,
 } from "@/app/[locale]/(main)/dashboard/_components/grid";
+import { AnalysisText } from "@/components/analysis-text";
 import * as Discovery from "@/server/app/intelligence/discovery";
 
 const MAX_QUERIES = 8;
@@ -43,12 +50,16 @@ const rankTone = (rank: number | null, total: number): RankTone => {
 
 const RankBadge = ({ rank, total }: { rank: number | null; total: number }) => {
   const translate = useTranslations("dashboard.discovery.model");
+  const format = useFormatter();
   const tone = rankTone(rank, total);
   return (
     <StatusPill tone={tone}>
       {rank === null
         ? translate("notSuggested")
-        : translate("ranked", { rank, total })}
+        : translate("ranked", {
+            rank: format.number(rank),
+            total: format.number(total),
+          })}
     </StatusPill>
   );
 };
@@ -65,13 +76,13 @@ const StoreRow = ({
   return (
     <li
       className={cn(
-        "flex gap-3 border-accent-foreground border-t px-3 py-2.5 first:border-t-0",
+        "flex gap-4 border-accent-foreground border-t px-4 py-4 first:border-t-0 sm:px-6",
         store.isTarget && "bg-primary/5",
       )}
     >
       <span
         className={cn(
-          "mt-px w-5 shrink-0 text-right font-mono font-semibold text-xs tabular-nums",
+          "mt-px w-6 shrink-0 text-right font-semibold text-primary text-sm tabular-nums",
           store.isTarget ? "text-primary" : "text-foreground-dimmed",
         )}
       >
@@ -88,7 +99,7 @@ const StoreRow = ({
             {store.name}
           </span>
           {store.domain && (
-            <span className="font-mono text-[11px] text-foreground-dimmed lowercase">
+            <span className="font-mono text-foreground-dimmed text-xs lowercase">
               {store.domain}
             </span>
           )}
@@ -98,8 +109,8 @@ const StoreRow = ({
             </StatusPill>
           )}
         </div>
-        <p className="mt-0.5 text-foreground-dimmed text-xs leading-snug">
-          {store.reason}
+        <p className="mt-1 text-foreground-dimmed text-sm leading-6">
+          <AnalysisText text={store.reason} terms={[store.name]} />
         </p>
       </div>
     </li>
@@ -113,61 +124,51 @@ const ModelColumn = ({
 }) => {
   const translate = useTranslations("dashboard.discovery.model");
 
+  if (result.status === "error") {
+    return (
+      <div className="flex items-start gap-3 px-4 py-6 sm:px-6" role="status">
+        <StatusPill tone="error">{translate("failed")}</StatusPill>
+        <p className="wrap-anywhere max-w-2xl text-foreground-dimmed text-sm leading-6">
+          {translate("unreachable")}
+        </p>
+      </div>
+    );
+  }
+
   return (
-    <div className="flex min-w-0 flex-col overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
-      <div className="flex items-center justify-between gap-2 border-accent-foreground border-b bg-background-dimmed px-3 py-2">
-        <span className="font-semibold text-foreground-rich text-sm">
-          {result.modelLabel}
-        </span>
-        {result.status === "error" ? (
-          <StatusPill tone="error">{translate("failed")}</StatusPill>
+    <div className="grid min-w-0 lg:grid-cols-3">
+      <div className="min-w-0 border-accent-foreground border-b px-4 py-6 sm:px-6 lg:border-r lg:border-b-0">
+        <RankBadge rank={result.targetRank} total={result.stores.length} />
+        <h3 className="mt-4 font-semibold text-base text-foreground-rich">
+          {result.targetIncluded
+            ? translate("whyRanked")
+            : translate("whyLeftOut")}
+        </h3>
+        <p className="wrap-anywhere mt-2 text-foreground-dimmed text-sm leading-6">
+          <AnalysisText
+            text={result.targetReason || translate("noExplanation")}
+            terms={result.stores.map((store) => store.name)}
+          />
+        </p>
+      </div>
+      <div className="min-w-0 lg:col-span-2">
+        {result.stores.length > 0 ? (
+          <ol>
+            {result.stores.map((store, index) => (
+              <StoreRow
+                // biome-ignore lint/suspicious/noArrayIndexKey: ranked response is immutable
+                key={`${store.name}-${index}`}
+                rank={index + 1}
+                store={store}
+              />
+            ))}
+          </ol>
         ) : (
-          <RankBadge rank={result.targetRank} total={result.stores.length} />
+          <p className="px-4 py-6 text-foreground-dimmed text-sm sm:px-6">
+            {translate("noStores")}
+          </p>
         )}
       </div>
-
-      {result.status === "error" ? (
-        <div className="flex items-start gap-2 p-3 text-error text-xs">
-          <span className="shrink-0">✕</span>
-          <span className="wrap-break-word font-mono">
-            {result.error ?? translate("unreachable")}
-          </span>
-        </div>
-      ) : (
-        <>
-          <div
-            className={cn(
-              "border-accent-foreground border-b px-3 py-2.5",
-              result.targetIncluded ? "bg-success/5" : "bg-error/5",
-            )}
-          >
-            <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-              {result.targetIncluded
-                ? translate("whyRanked")
-                : translate("whyLeftOut")}
-            </p>
-            <p className="mt-1 text-foreground text-xs leading-snug">
-              {result.targetReason || translate("noExplanation")}
-            </p>
-          </div>
-          {result.stores.length > 0 ? (
-            <ol className="flex-1">
-              {result.stores.map((store, index) => (
-                <StoreRow
-                  // biome-ignore lint/suspicious/noArrayIndexKey: static ranked list, never reordered after render
-                  key={`${store.name}-${index}`}
-                  rank={index + 1}
-                  store={store}
-                />
-              ))}
-            </ol>
-          ) : (
-            <p className="px-3 py-4 text-center text-foreground-dimmed text-xs">
-              {translate("noStores")}
-            </p>
-          )}
-        </>
-      )}
     </div>
   );
 };
@@ -191,7 +192,7 @@ const QuerySummaryChip = ({
   return (
     <StatusPill tone={tone}>
       <span className="text-foreground-dimmed">{result.modelLabel}</span>
-      <span className="font-mono">{value}</span>
+      <span className="tabular-nums">{value}</span>
     </StatusPill>
   );
 };
@@ -201,24 +202,38 @@ const QuerySection = ({
 }: {
   result: Discovery.DiscoveryQueryResult;
 }) => (
-  <section className="space-y-3">
-    <div className="space-y-2">
-      <SectionKicker>
-        <span className="text-foreground-rich text-sm normal-case">
-          “{result.query}”
-        </span>
-      </SectionKicker>
-      <div className="flex flex-wrap gap-1.5">
+  <section className="min-w-0 border-accent-foreground border-t">
+    <div className="px-4 py-5 sm:px-6">
+      <h2 className="wrap-anywhere font-semibold text-foreground-rich text-xl leading-7">
+        “{result.query}”
+      </h2>
+      <div className="mt-3 flex flex-wrap gap-2">
         {result.models.map((model) => (
           <QuerySummaryChip key={model.model} result={model} />
         ))}
       </div>
     </div>
-    <div className="grid gap-3 lg:grid-cols-2 2xl:grid-cols-4">
+    <Tabs defaultValue={result.models[0]?.model}>
+      <div className="overflow-x-auto border-accent-foreground border-y px-4 py-3 sm:px-6">
+        <TabsList className="w-max" aria-label={result.query}>
+          <TabsIndicator className="motion-reduce:transition-none" />
+          {result.models.map((model) => (
+            <Tab key={model.model} value={model.model}>
+              {model.modelLabel}
+            </Tab>
+          ))}
+        </TabsList>
+      </div>
       {result.models.map((model) => (
-        <ModelColumn key={model.model} result={model} />
+        <TabsPanel
+          key={model.model}
+          value={model.model}
+          className="m-0 border-0 p-0"
+        >
+          <ModelColumn result={model} />
+        </TabsPanel>
       ))}
-    </div>
+    </Tabs>
   </section>
 );
 
@@ -238,6 +253,7 @@ export const DiscoveryClient = ({
   lockStore = false,
 }: DiscoveryClientProps = {}) => {
   const translate = useTranslations("dashboard.discovery");
+  const format = useFormatter();
   const messages = useMessages();
   const queryPlaceholders = messages.dashboard.discovery.queries.placeholders;
 
@@ -309,7 +325,7 @@ export const DiscoveryClient = ({
     );
 
     if (!response.success) {
-      setError(response.error.message || translate("errors.generic"));
+      setError(translate("errors.generic"));
       return;
     }
 
@@ -317,181 +333,194 @@ export const DiscoveryClient = ({
   });
 
   return (
-    <div className="flex flex-col">
-      {/* Setup — target store left, queries right, like the comparison header */}
-      <div className="grid lg:grid-cols-2">
-        <div className="flex flex-col gap-6 px-6 py-6 sm:px-8 sm:py-8">
-          <div>
-            <label
-              htmlFor="discovery-target"
-              className="block font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]"
+    <div className="flex min-w-0 flex-col">
+      <div className="flex flex-col gap-3 border-accent-foreground border-b px-4 py-4 sm:flex-row sm:items-center sm:gap-6 sm:px-6">
+        <div className="min-w-0 sm:w-72 sm:shrink-0">
+          <p className="font-medium text-foreground-dimmed text-sm">
+            {translate("targetStore.label")}
+          </p>
+          {lockStore ? (
+            <p className="mt-1 truncate font-medium text-foreground-rich text-sm">
+              {defaultTargetStore}
+            </p>
+          ) : (
+            <TextField
+              value={targetStore}
+              onValueChange={setTargetStore}
+              className="mt-2"
             >
-              {translate("targetStore.label")}
-            </label>
-            {lockStore ? (
-              <div className="mt-2 flex items-center gap-2 border border-accent-foreground bg-background-dimmed px-3 py-2">
-                <span className="min-w-0 flex-1 truncate font-medium font-mono text-foreground text-sm">
-                  {defaultTargetStore}
-                </span>
-                <StatusPill tone="primary">
-                  {translate("targetStore.yourStore")}
-                </StatusPill>
-              </div>
-            ) : (
-              <TextField
-                value={targetStore}
-                onValueChange={setTargetStore}
-                className="mt-2"
-              >
-                <TextFieldInput
-                  id="discovery-target"
-                  placeholder={translate("targetStore.placeholder")}
-                  className="font-mono"
-                />
-              </TextField>
-            )}
-            <p className="mt-2 font-light text-foreground-dimmed text-sm">
-              {translate("targetStore.description")}
+              <TextFieldInput
+                id="discovery-target"
+                aria-label={translate("targetStore.label")}
+                placeholder={translate("targetStore.placeholder")}
+                disabled={isRunning}
+              />
+            </TextField>
+          )}
+        </div>
+        <p className="max-w-xl text-foreground-dimmed text-sm leading-6">
+          {translate("targetStore.description")}
+        </p>
+        {lockStore && (
+          <div className="sm:ml-auto">
+            <StatusPill tone="primary">
+              {translate("targetStore.yourStore")}
+            </StatusPill>
+          </div>
+        )}
+      </div>
+
+      <section className="relative">
+        <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
+        <div className="flex items-start justify-between gap-4 px-4 pt-6 pb-5 sm:px-6">
+          <div>
+            <h2 className="font-semibold text-foreground-rich text-xl">
+              {translate("queries.label")}
+            </h2>
+            <p className="mt-2 max-w-2xl text-foreground-dimmed text-sm leading-6">
+              {translate("queries.description")}
             </p>
           </div>
-        </div>
-
-        <div className="border-accent-foreground border-t px-6 py-6 sm:px-8 sm:py-8 lg:border-t-0 lg:border-l">
-          <div className="flex items-center justify-between">
-            <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-              {translate("queries.label")}
-            </span>
-            <span className="font-mono text-[11px] text-foreground-dimmed tabular-nums">
-              {validQueryCount}/{MAX_QUERIES}
-            </span>
-          </div>
-
-          <div className="mt-2 space-y-2">
-            {queryInputs.map((input, index) => (
-              <div key={input.id} className="flex items-center gap-2">
-                <TextField
-                  value={input.value}
-                  onValueChange={(value) => updateQuery(input.id, value)}
-                  className="flex-1"
-                >
-                  <TextFieldInput
-                    placeholder={
-                      queryPlaceholders[index] ??
-                      translate("queries.anotherPlaceholder")
-                    }
-                  />
-                </TextField>
-                <Button
-                  variant="outline"
-                  color="accent"
-                  size="icon"
-                  onClick={() => removeQuery(input.id)}
-                  disabled={queryInputs.length <= 1 || isRunning}
-                  className="size-10 shrink-0"
-                  aria-label={translate("queries.removeAriaLabel", {
-                    index: index + 1,
-                  })}
-                >
-                  <XCircleIcon className="size-4" />
-                </Button>
-              </div>
-            ))}
-          </div>
-
-          <Button
-            variant="outline"
-            color="accent"
-            onClick={addQuery}
-            disabled={isRunning || queryInputs.length >= MAX_QUERIES}
-            className="mt-2 w-full"
-          >
-            <PlusIcon className="size-4" />
-            {translate("queries.add")}
-          </Button>
-          <p className="mt-2 font-light text-foreground-dimmed text-sm">
-            {translate("queries.description")}
+          <p className="shrink-0 text-foreground-dimmed text-sm tabular-nums">
+            {validQueryCount}/{MAX_QUERIES}
           </p>
         </div>
-      </div>
-
-      {/* Action bar */}
-      <div className="flex flex-col gap-3 border-accent-foreground border-t px-6 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-8">
-        <p className="font-light text-foreground-dimmed text-sm">
-          {canRun
-            ? translate("hint.ready", { count: validQueryCount })
-            : translate("hint.notReady")}
-        </p>
-        <Button
-          color="primary"
-          onClick={run}
-          disabled={isRunning || !canRun}
-          className="w-full shrink-0 sm:w-auto"
-        >
-          {isRunning ? (
-            <span className="flex items-center gap-2">
-              <LoaderIcon className="size-4 animate-spin" />
-              {translate("action.running")}
-            </span>
-          ) : (
-            translate("action.primary")
-          )}
-        </Button>
-      </div>
+        <div className="divide-y divide-accent-foreground border-accent-foreground border-y">
+          {queryInputs.map((input, index) => (
+            <div
+              key={input.id}
+              className="flex items-center gap-3 px-4 py-3 sm:gap-4 sm:px-6"
+            >
+              <span
+                aria-hidden
+                className="w-6 shrink-0 font-semibold text-primary text-sm tabular-nums"
+              >
+                {String(index + 1).padStart(2, "0")}
+              </span>
+              <TextField
+                value={input.value}
+                onValueChange={(value) => updateQuery(input.id, value)}
+                className="min-w-0 flex-1"
+              >
+                <TextFieldInput
+                  aria-label={`${translate("queries.label")} ${index + 1}`}
+                  placeholder={
+                    queryPlaceholders[index] ??
+                    translate("queries.anotherPlaceholder")
+                  }
+                  disabled={isRunning}
+                />
+              </TextField>
+              <Button
+                variant="soft"
+                color="neutral"
+                size="icon"
+                onClick={() => removeQuery(input.id)}
+                disabled={queryInputs.length <= 1 || isRunning}
+                aria-label={translate("queries.removeAriaLabel", {
+                  index: format.number(index + 1),
+                })}
+              >
+                <XCircleIcon aria-hidden className="size-4" />
+              </Button>
+            </div>
+          ))}
+        </div>
+        <div className="flex flex-col gap-4 px-4 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
+          <Button
+            variant="soft"
+            color="neutral"
+            onClick={addQuery}
+            disabled={isRunning || queryInputs.length >= MAX_QUERIES}
+            className="w-fit"
+          >
+            <PlusIcon aria-hidden className="size-4" />
+            {translate("queries.add")}
+          </Button>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-4">
+            <p className="text-foreground-dimmed text-xs leading-5">
+              {canRun
+                ? translate("hint.ready", { count: validQueryCount })
+                : translate(
+                    lockStore ? "errors.queryRequired" : "hint.notReady",
+                  )}
+            </p>
+            <Button
+              color="primary"
+              onClick={run}
+              disabled={isRunning || !canRun}
+              className="shrink-0"
+            >
+              {isRunning && (
+                <LoaderIcon
+                  aria-hidden
+                  className="size-4 animate-spin motion-reduce:animate-none"
+                />
+              )}
+              {translate(isRunning ? "action.running" : "action.primary")}
+            </Button>
+          </div>
+        </div>
+      </section>
 
       {error && (
-        <div className="border-accent-foreground border-t bg-error/5 px-6 py-4 sm:px-8">
-          <div className="flex w-fit items-start gap-2 text-error text-xs">
-            <span className="shrink-0">✕</span>
-            <span className="font-mono">{error}</span>
-          </div>
+        <div
+          role="alert"
+          className="wrap-anywhere border-accent-foreground border-t px-4 py-4 text-error text-sm leading-6 sm:px-6"
+        >
+          {error}
         </div>
       )}
 
-      {/* Results */}
-      <div className="border-accent-foreground border-t px-6 py-6 sm:px-8">
-        {(() => {
-          switch (true) {
-            case isRunning && result === null:
-              return (
-                <div className="flex min-h-[24rem] flex-col items-center justify-center gap-3 text-foreground-dimmed">
-                  <LoaderIcon className="size-6 animate-spin" />
-                  <p className="text-sm">{translate("loading")}</p>
-                </div>
-              );
-            case result === null:
-              return (
-                <div className="relative flex min-h-[24rem] flex-col items-center justify-center gap-2 text-center">
-                  <Crosshair className="top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
-                  <StatusPill tone="neutral">
-                    {translate("empty.status")}
-                  </StatusPill>
-                  <p className="max-w-md text-foreground-dimmed text-sm">
-                    {translate("empty.description")}
-                  </p>
-                </div>
-              );
-            default:
-              return (
-                <div className="space-y-6">
-                  <div className="flex items-center gap-2">
-                    <SectionKicker>
-                      {translate("results.targetStore")}
-                    </SectionKicker>
-                    <span className="font-mono font-semibold text-primary text-sm">
-                      {result.targetStore}
-                    </span>
-                  </div>
+      <p className="border-accent-foreground border-t px-4 py-4 text-foreground-dimmed text-xs leading-5 sm:px-6">
+        {translate("method")}
+      </p>
 
-                  <div className="space-y-8">
-                    {result.queries.map((query) => (
-                      <QuerySection key={query.query} result={query} />
-                    ))}
-                  </div>
-                </div>
-              );
-          }
-        })()}
-      </div>
+      <section
+        className="relative border-accent-foreground border-t"
+        aria-busy={isRunning}
+      >
+        <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+        {isRunning && (
+          <p
+            role="status"
+            className="flex items-center gap-3 px-4 py-5 text-foreground-dimmed text-sm sm:px-6"
+          >
+            <LoaderIcon
+              aria-hidden
+              className="size-4 shrink-0 animate-spin motion-reduce:animate-none"
+            />
+            {translate("loading")}
+          </p>
+        )}
+        {result === null ? (
+          !isRunning && (
+            <div className="px-4 py-8 sm:px-6">
+              <p className="font-medium text-foreground-dimmed text-sm">
+                {translate("empty.status")}
+              </p>
+              <p className="mt-3 max-w-2xl text-foreground-dimmed text-sm leading-6">
+                {translate("empty.description")}
+              </p>
+            </div>
+          )
+        ) : (
+          <>
+            <div className="flex flex-wrap items-center gap-x-3 gap-y-1 px-4 py-4 sm:px-6">
+              <p className="font-medium text-foreground-dimmed text-sm">
+                {translate("results.targetStore")}
+              </p>
+              <p className="wrap-anywhere font-medium text-foreground-rich text-sm">
+                {result.targetStore}
+              </p>
+            </div>
+            {result.queries.map((query, index) => (
+              // biome-ignore lint/suspicious/noArrayIndexKey: a response may contain duplicate query text
+              <QuerySection key={`${query.query}-${index}`} result={query} />
+            ))}
+          </>
+        )}
+      </section>
     </div>
   );
 };

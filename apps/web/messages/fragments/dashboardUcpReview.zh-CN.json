@@ -1,0 +1,31 @@
+{
+  "dashboard": {
+    "ucp": {
+      "review": {
+        "description": "检查店铺的结账配置，以及购物智能体可用的商品数据。",
+        "tabs": {
+          "check": "结账检查",
+          "data": "商品数据"
+        },
+        "check": {
+          "title": "检查结账配置",
+          "description": "读取店铺已发布的 UCP 配置文件，找出缺失或无效的结账配置。",
+          "hint": "使用 HTTPS。仅检查已发布的配置文件，不会下单。"
+        },
+        "details": {
+          "title": "检查范围",
+          "description": "配置文件发现、支付设置和智能体访问。"
+        },
+        "advanced": {
+          "title": "测试在线端点",
+          "summary": "可选 · 可能创建测试购物车",
+          "description": "探测店铺声明的服务，并测试完整的结账流程。"
+        },
+        "products": {
+          "title": "商品数据覆盖率",
+          "description": "已生成的商品数据并不代表实际结账功能可用。这里的商品均属于当前店铺。"
+        }
+      }
+    }
+  }
+}

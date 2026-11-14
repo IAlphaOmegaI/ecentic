@@ -96,13 +96,11 @@ const Field = ({
 }) => (
   <div className="flex flex-col gap-1.5">
     <div className="flex items-baseline justify-between gap-3">
-      <span className="font-medium text-[11px] text-foreground-dimmed uppercase tracking-[0.05em]">
+      <span className="font-medium text-xs text-foreground-dimmed uppercase tracking-wider">
         {label}
       </span>
       {hint && (
-        <span className="font-mono text-[11px] text-foreground-dimmed">
-          {hint}
-        </span>
+        <span className="font-mono text-xs text-foreground-dimmed">{hint}</span>
       )}
     </div>
     {children}
@@ -491,7 +489,7 @@ export const Playground = () => {
                 >
                   <span
                     className={cn(
-                      "w-24 shrink-0 font-medium text-[11px] uppercase tracking-[0.05em]",
+                      "w-24 shrink-0 font-medium text-xs uppercase tracking-wider",
                       meta.accent,
                     )}
                   >
@@ -511,7 +509,7 @@ export const Playground = () => {
             })}
 
             <div className="flex flex-wrap items-center gap-2">
-              <span className="w-24 shrink-0 font-medium text-[11px] text-foreground-dimmed uppercase tracking-[0.05em]">
+              <span className="w-24 shrink-0 font-medium text-xs text-foreground-dimmed uppercase tracking-wider">
                 Custom
               </span>
               {config.custom.map((id) => (
@@ -546,7 +544,7 @@ export const Playground = () => {
             </div>
 
             {custom.trim() && (
-              <p className="font-mono text-[11px] text-foreground-dimmed">
+              <p className="font-mono text-xs text-foreground-dimmed">
                 {custom.trim()} → {PROVIDERS[providerOf(custom.trim())].label}
               </p>
             )}

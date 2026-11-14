@@ -71,7 +71,7 @@ export const Channels = ({ copy }: Channels.Props) => (
             {channel && (
               <ProviderLogo provider={channel.key} className="mb-2 size-12" />
             )}
-            <h3 className="text-[28px] transition-colors group-hover:text-primary-text">
+            <h3 className="text-3xl transition-colors group-hover:text-primary-text">
               {item.title}
             </h3>
             <p className="mb-4 text-foreground-dimmed">{item.body}</p>

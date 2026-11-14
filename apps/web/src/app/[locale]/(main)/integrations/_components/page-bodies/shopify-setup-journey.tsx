@@ -58,17 +58,17 @@ const SetupGraphic = ({ stage }: { stage: number }) => (
     ) : stage === 1 ? (
       <CommerceFigure
         kind="shopifyBag"
-        className="max-w-[260px] bg-transparent max-sm:max-w-[220px]"
+        className="max-w-65 bg-transparent max-sm:max-w-55"
       />
     ) : stage === 2 ? (
-      <div className="w-full min-w-0 max-w-64 rounded-md border border-accent-foreground bg-background-rich px-4 py-2 font-mono text-xs leading-6 sm:text-sm">
+      <div className="w-full min-w-0 max-w-64 rounded-sm border border-accent-foreground bg-background-rich px-4 py-2 font-mono text-xs leading-6 sm:text-sm">
         <span className="text-foreground-dimmed">{"{"}</span>
         <p>
           <span className="text-primary-text">{'  "title"'}</span>
           <span className="text-foreground-dimmed">{': "…",'}</span>
         </p>
         <p>
-          <span className="text-success-text">{'  "description"'}</span>
+          <span className="text-success-dimmed">{'  "description"'}</span>
           <span className="text-foreground-dimmed">{': "…"'}</span>
         </p>
         <span className="text-foreground-dimmed">{"}"}</span>
@@ -80,7 +80,7 @@ const SetupGraphic = ({ stage }: { stage: number }) => (
           decorative
           className="h-16 max-w-28 max-sm:h-12 max-sm:max-w-16"
         />
-        <div className="relative h-20 w-20 shrink-0 rounded-tr-3xl rounded-bl-3xl border-primary/30 border-t border-r border-b max-sm:h-14 max-sm:w-8">
+        <div className="relative h-20 w-20 shrink-0 rounded-tr-lg rounded-bl-lg border-primary/30 border-t border-r border-b max-sm:h-14 max-sm:w-8">
           <ArrowRightIcon className="absolute right-0 bottom-0 size-5 translate-x-1/2 translate-y-1/2 text-primary-text" />
         </div>
         <ProviderLogo
@@ -131,7 +131,7 @@ export const ShopifySetupJourney = ({
             >
               <div
                 aria-hidden
-                className="absolute top-8 left-7 grid size-10 place-items-center rounded-md border border-accent-foreground bg-background text-foreground-dimmed group-data-open/stop:border-primary/40 group-data-open/stop:bg-background-rich group-data-open/stop:text-primary-text max-sm:left-3"
+                className="absolute top-8 left-7 grid size-10 place-items-center rounded-sm border border-accent-foreground bg-background text-foreground-dimmed group-data-open/stop:border-primary/40 group-data-open/stop:bg-background-rich group-data-open/stop:text-primary-text max-sm:left-3"
               >
                 <Icon className="size-6" />
               </div>

@@ -35,7 +35,13 @@ import {
   FieldLabel,
   Form,
 } from "./form";
-import { NumberField } from "./number-field";
+import {
+  NumberField,
+  NumberFieldDecrement,
+  NumberFieldGroup,
+  NumberFieldIncrement,
+  NumberFieldInput,
+} from "./number-field";
 import { InputOTP, InputOTPGroup, InputOTPSlot } from "./otp-input";
 import { Radio, RadioGroup } from "./radio";
 import {
@@ -265,17 +271,44 @@ export const InferredFormField = <Field extends GenericField>(
               );
             }
             case "checkbox": {
-              //set checked as value
               return (
                 <Checkbox
-                  {...field}
                   {...props}
-                  checked={field?.value || false}
+                  ref={inherit.ref}
+                  name={inherit.name}
+                  disabled={inherit.disabled || props.disabled}
+                  onBlur={inherit.onBlur}
+                  checked={Boolean(inherit.value)}
+                  onCheckedChange={(checked, details) => {
+                    inherit.onChange(checked);
+                    props.onCheckedChange?.(checked, details);
+                  }}
                 />
               );
             }
             case "number": {
-              return <NumberField {...field} {...props} />;
+              return (
+                <NumberField
+                  {...props}
+                  name={inherit.name}
+                  value={inherit.value ?? null}
+                  disabled={inherit.disabled || props.disabled}
+                  onValueChange={(value, details) => {
+                    inherit.onChange(value);
+                    props.onValueChange?.(value, details);
+                  }}
+                >
+                  <NumberFieldGroup className="w-full">
+                    <NumberFieldDecrement className="size-10 shrink-0" />
+                    <NumberFieldInput
+                      ref={inherit.ref}
+                      onBlur={inherit.onBlur}
+                      className="min-w-0 flex-1"
+                    />
+                    <NumberFieldIncrement className="size-10 shrink-0" />
+                  </NumberFieldGroup>
+                </NumberField>
+              );
             }
             case "select": {
               const multiple =
@@ -351,7 +384,7 @@ export const InferredFormField = <Field extends GenericField>(
                   >
                     <SelectValue>
                       {(value) => (
-                        <div className="max-w-[15rem] overflow-x-auto overflow-y-hidden">
+                        <div className="max-w-60 overflow-x-auto overflow-y-hidden">
                           <div className="whitespace-nowrap">
                             {multiple
                               ? value

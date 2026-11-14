@@ -133,7 +133,7 @@ export const FeeCalculator = ({
           />
           <p className="text-background-rich/70 text-sm">{copy.result}</p>
           <output
-            className="mt-6 block font-heading text-[clamp(56px,7vw,96px)] text-background-rich tabular-nums leading-none tracking-[-0.055em]"
+            className="mt-6 block font-heading text-6xl lg:text-7xl xl:text-8xl text-background-rich tabular-nums leading-none tracking-tighter"
             aria-live="polite"
             aria-atomic="true"
           >

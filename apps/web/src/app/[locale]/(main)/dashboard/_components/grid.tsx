@@ -36,6 +36,7 @@ export const SectionGutter = () => (
  */
 export const Slot = ({ children }: PropsWithChildren) => children;
 
+/** Public-page section labels only; dashboard sections use plain headings. */
 export const SectionKicker = ({
   children,
   className,
@@ -44,7 +45,7 @@ export const SectionKicker = ({
     return (
       <p
         className={cn(
-          "font-medium text-[11px] text-foreground-dimmed uppercase",
+          "font-medium text-foreground-dimmed text-xs uppercase",
           className,
         )}
       >
@@ -58,7 +59,7 @@ export const SectionKicker = ({
   return (
     <p
       className={cn(
-        "font-medium text-[11px] text-foreground-dimmed uppercase",
+        "font-medium text-foreground-dimmed text-xs uppercase",
         className,
       )}
     >
@@ -108,7 +109,7 @@ export const PageHeader = ({
         {context && <StatusPill>{context}</StatusPill>}
         <h1
           className={cn(
-            "font-bold text-[28px] text-foreground-rich tracking-[-0.02em]",
+            "font-bold text-3xl text-foreground-rich tracking-tight",
             context && "mt-3",
           )}
         >
@@ -184,17 +185,15 @@ export const Band = ({
 /**
  * The header of a section inside a band — design.md §5.4, §6.8.
  *
- * Pairs the numbered kicker with a panel title so a section announces both
- * where it sits in the page's order and what question it answers.
+ * Uses a plain heading and optional description. Numbered decorative eyebrows
+ * are reserved for public-page compositions, not dashboard workspaces.
  */
 export const SectionHeader = ({
-  kicker,
   title,
   description,
   actions,
   icon,
 }: {
-  kicker?: string;
   title: string;
   description?: string;
   actions?: ReactNode;
@@ -202,12 +201,11 @@ export const SectionHeader = ({
 }) => (
   <div className="flex flex-col gap-4 border-accent-foreground border-b p-4 sm:flex-row sm:items-end sm:justify-between">
     <div className="min-w-0">
-      {kicker && <SectionKicker>{kicker}</SectionKicker>}
-      <div className={cn("flex items-center gap-2.5", kicker && "mt-2")}>
+      <div className="flex items-center gap-2.5">
         {icon && (
           <span className="shrink-0 text-foreground-dimmed">{icon}</span>
         )}
-        <p className="font-semibold text-foreground-rich text-lg">{title}</p>
+        <h2 className="font-semibold text-foreground-rich text-lg">{title}</h2>
       </div>
       {description && (
         <p className="mt-1 max-w-3xl text-foreground-dimmed text-sm">
@@ -239,7 +237,7 @@ export const StatusPill = ({
 }>) => (
   <span
     className={cn(
-      "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-semibold text-[11px] uppercase tracking-[0.05em]",
+      "inline-flex items-center gap-1.5 rounded-full px-2 py-0.5 font-semibold text-xs",
       statusPillTones[tone],
       className,
     )}
@@ -284,7 +282,7 @@ export const StatCell = ({
   <div className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background">
     <StatLabel label={label} icon={icon} />
     <div>
-      <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
+      <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-tight">
         {value}
         {suffix && (
           <span className="ml-1 font-medium text-foreground-dimmed text-xl">
@@ -324,9 +322,7 @@ export const TopFindingCallout = ({
 
   return (
     <div className={cn("bg-primary/5 px-4 py-3", className)}>
-      <p className="font-medium text-[10px] text-primary uppercase tracking-[0.08em]">
-        {resolvedLabel}
-      </p>
+      <p className="font-medium text-primary text-sm">{resolvedLabel}</p>
       <p className="mt-1 max-w-3xl text-foreground text-sm">{children}</p>
     </div>
   );
@@ -338,7 +334,7 @@ export const WinRateBadge = ({ rate }: { rate: number }) => {
   return (
     <span
       className={cn(
-        "whitespace-nowrap rounded px-1.5 py-0.5 font-semibold text-[10px] uppercase tabular-nums tracking-[0.06em]",
+        "whitespace-nowrap rounded-sm px-1.5 py-0.5 font-semibold text-xs tabular-nums",
         rate >= 50 ? "bg-success/10 text-success" : "bg-error/10 text-error",
       )}
     >
@@ -355,9 +351,7 @@ export const StatLabel = ({
   icon: ReactNode;
 }) => (
   <div className="flex items-center justify-between gap-2">
-    <p className="pr-12 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-      {label}
-    </p>
+    <p className="pr-12 font-medium text-foreground-dimmed text-sm">{label}</p>
     <span className="absolute top-5 right-5 text-foreground-dimmed">
       {icon}
     </span>

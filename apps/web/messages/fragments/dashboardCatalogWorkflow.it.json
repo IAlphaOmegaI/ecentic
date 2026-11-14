@@ -1,0 +1,28 @@
+{
+  "dashboard": {
+    "catalogWorkflow": {
+      "reviewTitle": "Controlla l’importazione",
+      "reviewHint": "{count, number} righe prodotto sono pronte per l’importazione. Le righe senza titolo vengono ignorate.",
+      "fieldsHint": "Usa una colonna title o name. Colonne facoltative: description, price, currency, image, url, sku e id.",
+      "idsHint": "Le righe con un id corrispondente aggiornano il prodotto esistente. Le righe senza id creano un nuovo prodotto a ogni importazione.",
+      "previewHint": "Sono mostrate le prime {count, number} righe accettate.",
+      "readFailed": "Impossibile leggere il file. Selezionalo di nuovo e riprova.",
+      "partial": "Importati {imported, number} prodotti su {total, number}. Controlla il risultato nel catalogo prima di importare nuovamente questo file.",
+      "unknownCurrency": "Valuta non specificata",
+      "allWork": "Tutte le attività",
+      "publishable": "Pronto per la pubblicazione",
+      "manual": "Revisione manuale",
+      "reviewLabel": "Filtra le attività",
+      "sourceTitle": "Origine del catalogo",
+      "sourceHint": "Importa da questa origine, controlla i dati salvati, poi confronta o migliora la scheda.",
+      "action": {
+        "primary": "Controlla il file",
+        "secondary": "Scegli un altro file",
+        "tertiary": "Conferma importazione",
+        "quaternary": "Apri catalogo"
+      },
+      "improveListing": "Migliora la scheda",
+      "comparisonResults": "Risultati"
+    }
+  }
+}

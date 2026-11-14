@@ -1,0 +1,55 @@
+{
+  "dashboard": {
+    "reports": {
+      "unavailable": "Aún no hay datos guardados"
+    },
+    "googleShopping": {
+      "workspaceTitle": "Google Shopping",
+      "workspaceDescription": "Gestiona la conexión con Merchant Center, las actualizaciones de productos y la preparación del proceso de compra.",
+      "unsupportedWorkspace": {
+        "status": "No disponible para esta fuente",
+        "title": "Conecta un catálogo compatible",
+        "description": "La distribución en Google Shopping está disponible para tiendas Shopify conectadas. Esta fuente de catálogo aún no puede conectarse a Merchant Center mediante ecentic. Puedes seguir revisando sus productos y la configuración de otros canales.",
+        "action": {
+          "primary": "Conectar Shopify",
+          "secondary": "Revisar conexiones"
+        }
+      }
+    },
+    "ucpPlaygroundDashboard": {
+      "composer": {
+        "remaining": "{remaining, number} de {limit, number} {limit, plural, one {mensaje} other {mensajes}} gratis restantes en este playground."
+      }
+    },
+    "agentic": {
+      "scan": {
+        "workspaceTitle": "Análisis de la tienda",
+        "awaitingFirst": "Aún sin analizar",
+        "report": "Abrir informe",
+        "providerNote": "El dominio se envía a <provider>Is Agentic</provider>. No se comparten datos de clientes ni de pedidos."
+      },
+      "score": {
+        "preview": {
+          "emptyTitle": "El primer análisis empieza aquí",
+          "publicTitle": "Hay un informe público disponible",
+          "payments": {
+            "title": "Pagos",
+            "description": "Compatibilidad con protocolos de compra y pago."
+          },
+          "discovery": {
+            "title": "Descubrimiento",
+            "description": "Señales que ayudan a los agentes a encontrar tu tienda."
+          },
+          "accessibility": {
+            "title": "Accesibilidad",
+            "description": "Si los agentes pueden acceder a tu tienda y leerla."
+          },
+          "usability": {
+            "title": "Usabilidad",
+            "description": "Interfaces que los agentes pueden usar para interactuar con tu tienda."
+          }
+        }
+      }
+    }
+  }
+}

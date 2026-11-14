@@ -48,7 +48,7 @@ export const Onboarding = ({
         <Link
           href="/"
           aria-label="ecentic"
-          className="w-fit rounded-md focus-visible:outline-2 focus-visible:outline-background-rich focus-visible:outline-offset-8"
+          className="w-fit rounded-sm focus-visible:outline-2 focus-visible:outline-background-rich focus-visible:outline-offset-8"
         >
           <Image
             src="/images/wordmark.svg"
@@ -64,7 +64,7 @@ export const Onboarding = ({
           className="my-auto py-8"
         >
           <Motion.Item>
-            <h2 className="max-w-md font-heading font-medium text-3xl text-background-rich leading-[1.08] tracking-tight xl:text-5xl">
+            <h2 className="max-w-md font-heading font-medium text-3xl text-background-rich leading-none tracking-tight xl:text-5xl">
               {headline}
             </h2>
           </Motion.Item>

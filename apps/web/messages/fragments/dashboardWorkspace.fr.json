@@ -1,0 +1,83 @@
+{
+  "dashboard": {
+    "workspace": {
+      "nav": {
+        "label": "Espace de la boutique",
+        "research": "Recherche IA",
+        "channels": "Canaux",
+        "results": "Résultats",
+        "overview": "Vue d’ensemble",
+        "products": "Produits",
+        "optimize": "Optimiser"
+      },
+      "sections": {
+        "label": "Sections de votre espace",
+        "catalog": "Catalogue",
+        "quality": "Qualité des données",
+        "summary": "Synthèse",
+        "comparisons": "Comparaisons",
+        "brand": "Marque",
+        "questions": "Questions",
+        "competitors": "Concurrents",
+        "catalogRank": "Rang dans le catalogue",
+        "connections": "Connexions",
+        "google": "Google",
+        "checks": "Vérifier la boutique",
+        "access": "Accès au catalogue",
+        "checkout": "Paiement",
+        "developer": "Outils de développement",
+        "shoppingTools": "Outils d’achat",
+        "testCheckout": "Tester le paiement",
+        "compareProfiles": "Comparer les profils"
+      },
+      "results": {
+        "title": "Résultats",
+        "description": "Visites provenant des IA et activité des robots enregistrées pour cette boutique.",
+        "reportsTitle": "Rapports de toutes vos boutiques",
+        "reportsDescription": "Exportez les comparaisons enregistrées, les données du catalogue et les modifications des fiches. Ces rapports couvrent tout votre compte.",
+        "action": {
+          "primary": "Ouvrir les rapports",
+          "secondary": "Consulter la recherche IA"
+        }
+      },
+      "ready": {
+        "title": "Aucune tâche urgente dans les vérifications enregistrées",
+        "description": "Vérifiez vos canaux ou lancez une nouvelle comparaison lorsque votre catalogue change.",
+        "action": {
+          "primary": "Vérifier les canaux"
+        }
+      },
+      "reportScope": "Toutes les boutiques de ce compte",
+      "reportMethod": "Les exports contiennent des données enregistrées. Le gain prévu est une estimation, pas un résultat mesuré.",
+      "downloadError": "Le rapport n’a pas pu être téléchargé. Veuillez réessayer."
+    },
+    "reports": {
+      "title": "Rapports",
+      "description": "Téléchargez les comparaisons et les données de catalogue enregistrées pour toutes vos boutiques.",
+      "shareable": {
+        "title": "Partager un rapport de comparaison",
+        "description": "Ouvrez le rapport public de votre dernière comparaison terminée. Vérifiez son contenu avant de le partager.",
+        "action": {
+          "primary": "Ouvrir le rapport"
+        }
+      },
+      "action": {
+        "downloadCsv": "Télécharger le CSV"
+      },
+      "items": {
+        "winRateSummary": {
+          "description": "Résultats par modèle de la dernière analyse terminée."
+        },
+        "productPerformance": {
+          "description": "Champs produit enregistrés et taux de victoire simulés, détaillés par modèle."
+        },
+        "competitorAnalysis": {
+          "description": "Concurrents suivis, prix observés lorsqu’ils sont disponibles et résultats des comparaisons."
+        },
+        "optimizationImpact": {
+          "description": "Modifications de fiches enregistrées, dates de publication et estimations du modèle."
+        }
+      }
+    }
+  }
+}

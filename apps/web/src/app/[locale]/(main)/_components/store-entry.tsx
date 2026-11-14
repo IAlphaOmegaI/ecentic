@@ -87,7 +87,7 @@ export const StoreEntry = ({ className }: StoreEntry.Props) => {
       }}
       className={cn("flex w-full max-w-xl flex-col gap-2", className)}
     >
-      <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-1.5 sm:rounded-lg sm:border sm:border-accent-foreground sm:bg-background sm:p-1.5 sm:shadow-lg sm:shadow-primary/10 sm:transition-[border-color,box-shadow] sm:duration-200 sm:focus-within:border-primary sm:focus-within:ring-[3px] sm:focus-within:ring-primary/15">
+      <div className="flex w-full flex-col gap-2 sm:flex-row sm:items-center sm:gap-1.5 sm:rounded-lg sm:border sm:border-accent-foreground sm:bg-background sm:p-1.5 sm:shadow-lg sm:shadow-primary/10 sm:transition-[border-color,box-shadow] sm:duration-200 sm:focus-within:border-primary sm:focus-within:ring-2 sm:focus-within:ring-primary/15">
         <TextField
           value={url}
           onValueChange={(value) => {

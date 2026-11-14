@@ -1,0 +1,31 @@
+{
+  "dashboard": {
+    "ucp": {
+      "review": {
+        "description": "Verifica la configurazione del checkout del tuo negozio e i dati dei prodotti disponibili per gli agenti di acquisto.",
+        "tabs": {
+          "check": "Verifica checkout",
+          "data": "Dati dei prodotti"
+        },
+        "check": {
+          "title": "Verifica il tuo checkout",
+          "description": "Leggi il profilo UCP pubblicato del tuo negozio per individuare configurazioni del checkout mancanti o non valide.",
+          "hint": "Usa HTTPS. Verifica il profilo pubblicato senza effettuare ordini."
+        },
+        "details": {
+          "title": "Cosa viene verificato",
+          "description": "Individuazione del profilo, configurazione dei pagamenti e accesso degli agenti."
+        },
+        "advanced": {
+          "title": "Testa gli endpoint",
+          "summary": "Facoltativo · può creare carrelli di prova",
+          "description": "Verifica i servizi dichiarati dal tuo negozio e testa il ciclo di checkout."
+        },
+        "products": {
+          "title": "Copertura dei dati dei prodotti",
+          "description": "I dati generati dei prodotti non confermano il supporto al checkout effettivo. Questi prodotti appartengono a questo negozio."
+        }
+      }
+    }
+  }
+}

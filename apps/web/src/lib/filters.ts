@@ -57,7 +57,7 @@ export const operatorNeedsValue = (operator: ProductFilterOperator) =>
 export const isProductFilterField = (
   value: string | null,
 ): value is ProductFilterField =>
-  value !== null && value in PRODUCT_FILTER_FIELDS;
+  value !== null && Object.hasOwn(PRODUCT_FILTER_FIELDS, value);
 
 const isProductFilter = (entry: unknown): entry is ProductFilter => {
   if (typeof entry !== "object" || entry === null) return false;

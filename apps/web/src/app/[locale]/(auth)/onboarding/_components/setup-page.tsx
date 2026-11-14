@@ -94,7 +94,7 @@ export const SetupSteps = ({
           )}
           <span
             aria-hidden="true"
-            className="relative flex size-8 shrink-0 items-center justify-center rounded-md border border-primary/20 bg-background-rich text-primary-text text-sm tabular-nums"
+            className="relative flex size-8 shrink-0 items-center justify-center rounded-sm border border-primary/20 bg-background-rich text-primary-text text-sm tabular-nums"
           >
             {index + 1}
           </span>

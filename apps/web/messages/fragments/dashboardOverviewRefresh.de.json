@@ -1,0 +1,129 @@
+{
+  "dashboard": {
+    "overview": {
+      "description": "Was Aufmerksamkeit braucht, was sich geändert hat und was als Nächstes ansteht.",
+      "summary": {
+        "latestWinRate": "Neueste simulierte Gewinnquote",
+        "latestResult": "{wins, plural, one {# Sieg} other {# Siege}} aus {total, plural, one {# Vergleich} other {# Vergleichen}}",
+        "change": "{value} Prozentpunkte",
+        "coverage": "Verglichene Produkte",
+        "coverageDetail": "{count, number} von {total, plural, one {# Katalogprodukt} other {# Katalogprodukten}}",
+        "coverageHint": "Basierend auf abgeschlossenen Produktvergleichen.",
+        "noResult": "Starten Sie Ihren ersten Scan, um Ergebnisse zu sehen.",
+        "topPerformer": "Stärkstes Produkt",
+        "opportunity": "Produkt mit Verbesserungsbedarf",
+        "productRate": "Gewinnt {rate} seiner Vergleiche",
+        "updated": "Letzter abgeschlossener Scan: {time}",
+        "action": {
+          "primary": "Produkt ansehen",
+          "secondary": "Dieses Produkt verbessern",
+          "tertiary": "Produkte auswählen"
+        },
+        "emptyProduct": "Produktergebnisse erscheinen nach Ihrem ersten Scan."
+      },
+      "charts": {
+        "recentActivity": "Letzte Scans",
+        "latestScan": "Letzter abgeschlossener Scan",
+        "action": {
+          "tertiary": "Simulationen ansehen",
+          "primary": "Letzten Scan prüfen"
+        },
+        "winRateTrend": "Gewinnquote je Scan",
+        "winRateByModel": "Durchschnittliche Gewinnquote der Produkte je Modell",
+        "modelHint": "Der Durchschnitt jedes Modells über die verglichenen Produkte.",
+        "states": {
+          "noTrend": "Noch keine abgeschlossenen Scans."
+        },
+        "change": "Seit dem vorherigen Scan",
+        "sampleNote": "Jeder Punkt ist ein eigener Scan; die ausgewählten Produkte und Wettbewerber können sich unterscheiden."
+      },
+      "tabs": {
+        "topProducts": "Produkte",
+        "competitors": "Wettbewerber",
+        "agentVisits": "KI-Besuche"
+      },
+      "priorities": {
+        "title": "Nächste Schritte",
+        "description": "Ergänzen Sie fehlende Produktangaben und vergleichen Sie danach erneut.",
+        "fields": {
+          "description": {
+            "title": "Fehlende Beschreibungen ergänzen",
+            "detail": "{count, plural, one {# Produkt hat keine Beschreibung.} other {# Produkte haben keine Beschreibung.}}"
+          },
+          "price": {
+            "title": "Fehlende Preise ergänzen",
+            "detail": "{count, plural, one {# Produkt hat keinen Preis.} other {# Produkte haben keinen Preis.}}"
+          },
+          "sku": {
+            "title": "Fehlende SKUs ergänzen",
+            "detail": "{count, plural, one {# Produkt hat keine SKU.} other {# Produkte haben keine SKU.}}"
+          },
+          "complete": {
+            "title": "Grundlegende Produktfelder sind ausgefüllt",
+            "detail": "Beschreibungen, Preise und SKUs geprüft."
+          }
+        },
+        "compare": {
+          "title": "Noch nicht verglichene Produkte vergleichen",
+          "detail": "{count, plural, one {# Produkt wurde noch nicht verglichen.} other {# Produkte wurden noch nicht verglichen.}}",
+          "complete": {
+            "title": "Ihr gesamter Katalog wurde verglichen",
+            "detail": "{count, plural, one {# Produkt mit abgeschlossenen Vergleichen.} other {# Produkte mit abgeschlossenen Vergleichen.}}"
+          }
+        },
+        "optimize": {
+          "title": "Verbesserungen für Produkteinträge prüfen",
+          "detail": "{count, plural, one {# Produkt in Ihrer Optimierungswarteschlange.} other {# Produkte in Ihrer Optimierungswarteschlange.}}",
+          "complete": {
+            "title": "Keine Verbesserungen für Produkteinträge vorgemerkt",
+            "detail": "Prüfen Sie die Diagnose Ihrer Produkteinträge nach dem nächsten Scan."
+          }
+        },
+        "action": {
+          "primary": "Produktdetails prüfen",
+          "secondary": "Produkte auswählen",
+          "tertiary": "Optimieren öffnen",
+          "quaternary": "Vergleiche ansehen"
+        }
+      },
+      "traffic": {
+        "title": "Erfasste KI-Zugriffe",
+        "description": "Erfasste Ereignisse der letzten 30 Tage.",
+        "referrals": "Zugriffe über KI-Assistenten",
+        "crawlers": "Anfragen von Agenten und Crawlern",
+        "hint": "Dies sind erfasste Besuche und Anfragen, keine eindeutigen Käufer oder Käufe.",
+        "action": {
+          "primary": "KI-Zugriffe prüfen"
+        }
+      }
+    },
+    "shared": {
+      "activity": {
+        "simulationPending": "Scan in der Warteschlange — {total, plural, one {# Vergleich} other {# Vergleiche}}",
+        "simulationFailed": "Scan fehlgeschlagen — {completed, plural, one {# Vergleich abgeschlossen} other {# Vergleiche abgeschlossen}} von insgesamt {total, number}"
+      }
+    },
+    "nav": {
+      "assistant": {
+        "title": "Judy fragen",
+        "status": "Vorschau",
+        "description": "Judy ist noch in Entwicklung. Chat und Katalogaktionen sind noch nicht verfügbar. Nutzen Sie bis dahin die Werkzeuge im Dashboard.",
+        "name": "Judy"
+      }
+    },
+    "products": {
+      "table": {
+        "overviewTools": {
+          "sort": "Sortieren",
+          "defaultOrder": "Standardreihenfolge",
+          "ascending": "Aufsteigend",
+          "descending": "Absteigend",
+          "comparison": "Vergleichsstatus",
+          "all": "Alle Produkte",
+          "compared": "Verglichen",
+          "notCompared": "Noch nicht verglichen"
+        }
+      }
+    }
+  }
+}

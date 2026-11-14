@@ -42,7 +42,7 @@ export const Compare = async () => {
           <Plus className="top-0 right-0 hidden translate-x-1/2 -translate-y-1/2 md:flex" />
 
           <div className="flex flex-col bg-background-rich p-6 md:p-8">
-            <span className="inline-flex w-fit items-center gap-2 border border-[#95BF47]/40 bg-[#95BF47]/10 px-3 py-1 font-medium text-foreground text-sm">
+            <span className="inline-flex w-fit items-center gap-2 border border-success/40 bg-success/10 px-3 py-1 font-medium text-foreground text-sm">
               <Image src={shopify} alt="" className="size-4" />
               {translate("compare.shopifyMagic.badge")}
             </span>
@@ -55,7 +55,7 @@ export const Compare = async () => {
             <div className="mt-8 flex flex-col gap-2.5 border-accent-foreground border-t pt-8 md:mt-auto">
               {nativeStrengths.map((strength) => (
                 <div key={strength} className="flex items-start gap-2">
-                  <CheckIcon className="mt-1 size-4 shrink-0 text-[#5E8E3E]" />
+                  <CheckIcon className="mt-1 size-4 shrink-0 text-success-dimmed" />
                   <p className="font-body font-light text-foreground-dimmed">
                     {strength}
                   </p>
@@ -64,21 +64,23 @@ export const Compare = async () => {
             </div>
           </div>
 
-          <div className="flex flex-col bg-primary p-6 text-white md:p-8">
-            <span className="w-fit border border-white/20 bg-white/10 px-3 py-1 font-medium text-sm">
+          <div className="flex flex-col bg-primary p-6 text-background-rich md:p-8">
+            <span className="w-fit border border-background-rich/20 bg-background-rich/10 px-3 py-1 font-medium text-sm">
               {translate("compare.ecentic.badge")}
             </span>
             <h3 className="mt-4 font-body font-medium text-2xl">
               {translate("compare.ecentic.title")}
             </h3>
-            <p className="mt-2 font-body font-light text-lg text-white">
+            <p className="mt-2 font-body font-light text-lg text-background-rich">
               {translate("compare.ecentic.description")}
             </p>
-            <div className="mt-8 flex flex-col gap-2.5 border-white/20 border-t pt-8 md:mt-auto">
+            <div className="mt-8 flex flex-col gap-2.5 border-background-rich/20 border-t pt-8 md:mt-auto">
               {ecenticStrengths.map((strength) => (
                 <div key={strength} className="flex items-start gap-2">
-                  <CheckIcon className="mt-1 size-4 shrink-0 text-white/80" />
-                  <p className="font-body font-light text-white">{strength}</p>
+                  <CheckIcon className="mt-1 size-4 shrink-0 text-background-rich/80" />
+                  <p className="font-body font-light text-background-rich">
+                    {strength}
+                  </p>
                 </div>
               ))}
             </div>

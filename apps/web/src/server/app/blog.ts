@@ -7,7 +7,7 @@
 import { join } from "node:path";
 import * as Sentry from "@sentry/nextjs";
 import { resultify } from "@zenncore/utils";
-import { and, eq, inArray, or } from "drizzle-orm";
+import { and, desc, eq, inArray, or } from "drizzle-orm";
 import { cacheLife, cacheTag, revalidatePath, revalidateTag } from "next/cache";
 import { after } from "next/server";
 import { z } from "zod";
@@ -269,7 +269,14 @@ export const listPublishedSlugs = async (locale: Locale) => {
 };
 
 export const listPublishedPaths = async () => {
-  const rows = await find(Environment.SERVER, { where: published });
+  // Static path enumeration needs identifiers, not every article body per locale.
+  const rows = await resultifyRead(() =>
+    db
+      .select({ locale: schema.blogPost.locale, slug: schema.blogPost.slug })
+      .from(schema.blogPost)
+      .where(published)
+      .orderBy(desc(schema.blogPost.createdAt)),
+  );
   if (!rows.success) throw rows.error;
   return rows.data
     .filter(isListed)

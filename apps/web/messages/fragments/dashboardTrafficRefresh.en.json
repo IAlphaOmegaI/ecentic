@@ -1,0 +1,42 @@
+{
+  "dashboard": {
+    "traffic": {
+      "title": "AI traffic",
+      "description": "See where recorded AI activity comes from.",
+      "period": "Last 30 days",
+      "source": "Source",
+      "other": "Other sources",
+      "referrals": {
+        "title": "AI referrals",
+        "short": "Referrals",
+        "detail": "Activity classified as an AI referral."
+      },
+      "requests": {
+        "title": "Agent and crawler requests",
+        "short": "Requests",
+        "detail": "Detected user agents, including crawlers and agent browsers."
+      },
+      "empty": {
+        "title": "No AI activity recorded yet",
+        "description": "Activity appears when your tracker detects an AI referral or a recognized user agent."
+      },
+      "action": {
+        "primary": "Check connections",
+        "secondary": "Try again"
+      },
+      "probes": "{count, plural, one {# tracker test ping, excluded from the totals above.} other {# tracker test pings, excluded from the totals above.}}",
+      "limitation": "Counts are recorded events, not unique people or purchases. Browser tracking does not capture every crawler request.",
+      "chart": {
+        "title": "Daily activity",
+        "scope": "OpenAI, Anthropic and Google only.",
+        "hint": "This trend combines referrals and requests. Other providers appear in the source breakdown.",
+        "empty": "No activity recorded for these three providers.",
+        "accessibleLabel": "Daily recorded activity. Use the arrow keys to inspect each date."
+      },
+      "error": {
+        "title": "Traffic could not be loaded",
+        "description": "Your traffic data is temporarily unavailable. Reload this view to try again."
+      }
+    }
+  }
+}

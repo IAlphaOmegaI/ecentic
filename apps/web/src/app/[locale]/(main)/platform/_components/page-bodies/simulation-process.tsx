@@ -100,7 +100,7 @@ export const SimulationProcess = ({
           kind={subjects[selected] ?? "inspection"}
           surface="field"
           label={items[selected]?.title}
-          className="mx-auto max-w-[440px]"
+          className="mx-auto max-w-110"
         />
         <div
           className={cn(

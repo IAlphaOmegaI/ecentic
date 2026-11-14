@@ -1,0 +1,69 @@
+{
+  "dashboard": {
+    "products": {
+      "catalog": {
+        "title": "Prodotti",
+        "description": "Trova un prodotto, consulta i risultati e completa i campi che contano.",
+        "tableLabel": "Catalogo prodotti",
+        "columns": "Colonne",
+        "resetColumns": "Ripristina colonne",
+        "sortBy": "Ordina per {field}",
+        "noSku": "Senza SKU",
+        "unmeasured": "Non confrontato",
+        "rate": "Percentuale di vittorie IA: {value}%",
+        "coverage": "Campi compilati: {value}%",
+        "coverageHint": "Verifica la presenza di sei campi del catalogo: titolo, descrizione, prezzo, immagine, SKU e dati strutturati. Non è una valutazione della qualità da parte dell’IA.",
+        "comparisons": "{count, plural, one {# confronto} many {# confronti} other {# confronti}}",
+        "results": "Prodotti: {count, number}",
+        "range": "{from}–{to} di {total}",
+        "summary": {
+          "imported": "Nel tuo catalogo",
+          "importedHint": "Tutti i prodotti importati",
+          "compared": "Confrontati dall’IA",
+          "comparedHint": "Almeno un confronto registrato",
+          "incomplete": "Schede incomplete",
+          "incompleteHint": "Manca almeno uno dei sei campi",
+          "unavailable": "I totali del catalogo non sono temporaneamente disponibili. Puoi comunque consultare l’elenco."
+        },
+        "fields": {
+          "product": "Prodotto",
+          "sku": "SKU",
+          "price": "Prezzo",
+          "currency": "Valuta",
+          "winRate": "Vittorie IA",
+          "quality": "Campi compilati",
+          "updatedAt": "Aggiornato"
+        },
+        "selection": {
+          "all": "Seleziona tutti i prodotti di questa pagina",
+          "product": "Seleziona {product}",
+          "count": "{count, number} selezionati in questa pagina",
+          "hint": "Seleziona i prodotti per esportarne i dati."
+        },
+        "action": {
+          "add": "Aggiungi prodotti",
+          "clear": "Cancella ricerca e filtri",
+          "retry": "Riprova",
+          "export": "Esporta selezione",
+          "deselect": "Deseleziona tutto",
+          "open": "Apri {product}"
+        },
+        "states": {
+          "empty": {
+            "title": "Il tuo catalogo inizia qui",
+            "description": "Importa i tuoi prodotti per consultare le schede e i risultati dei confronti IA in un unico posto."
+          },
+          "noMatches": {
+            "title": "Nessun prodotto corrispondente",
+            "description": "Prova un’altra ricerca o rimuovi un filtro per vedere altri prodotti."
+          },
+          "error": {
+            "title": "Impossibile caricare i prodotti",
+            "description": "Il tuo catalogo è ancora salvato. Prova a ricaricare l’elenco."
+          }
+        },
+        "loading": "Caricamento dei prodotti…"
+      }
+    }
+  }
+}

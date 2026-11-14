@@ -1,0 +1,55 @@
+{
+  "dashboard": {
+    "reports": {
+      "unavailable": "Non ci sono ancora dati salvati"
+    },
+    "googleShopping": {
+      "workspaceTitle": "Google Shopping",
+      "workspaceDescription": "Gestisci la connessione a Merchant Center, gli aggiornamenti delle schede prodotto e la preparazione del checkout.",
+      "unsupportedWorkspace": {
+        "status": "Non disponibile per questa fonte",
+        "title": "Collega un catalogo supportato",
+        "description": "La distribuzione su Google Shopping è disponibile per i negozi Shopify collegati. Questa fonte di catalogo non può ancora connettersi a Merchant Center tramite ecentic. Puoi comunque consultare i prodotti e le impostazioni degli altri canali.",
+        "action": {
+          "primary": "Collega Shopify",
+          "secondary": "Visualizza connessioni"
+        }
+      }
+    },
+    "ucpPlaygroundDashboard": {
+      "composer": {
+        "remaining": "Ti restano {remaining, number} {limit, plural, one {messaggio gratuito} many {messaggi gratuiti} other {messaggi gratuiti}} su {limit, number} in questo playground."
+      }
+    },
+    "agentic": {
+      "scan": {
+        "workspaceTitle": "Scansione del negozio",
+        "awaitingFirst": "Non ancora analizzato",
+        "report": "Apri il report",
+        "providerNote": "Il dominio viene inviato a <provider>Is Agentic</provider>. Non vengono condivisi dati sui clienti o sugli ordini."
+      },
+      "score": {
+        "preview": {
+          "emptyTitle": "La prima scansione inizia qui",
+          "publicTitle": "È disponibile un report pubblico",
+          "payments": {
+            "title": "Pagamenti",
+            "description": "Supporto dei protocolli di checkout e pagamento."
+          },
+          "discovery": {
+            "title": "Reperibilità",
+            "description": "I segnali che aiutano gli agenti a trovare il negozio."
+          },
+          "accessibility": {
+            "title": "Accessibilità",
+            "description": "La possibilità per gli agenti di accedere al negozio e leggerne i contenuti."
+          },
+          "usability": {
+            "title": "Usabilità",
+            "description": "Le interfacce che gli agenti possono usare per interagire con il negozio."
+          }
+        }
+      }
+    }
+  }
+}

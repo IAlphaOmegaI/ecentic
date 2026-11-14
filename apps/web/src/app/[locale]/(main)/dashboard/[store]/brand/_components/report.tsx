@@ -1,589 +1,542 @@
 import {
+  AlertCircleIcon,
   ArrowRightIcon,
-  BullseyeIcon,
-  CheckBadgeIcon,
-  ChevronRightIcon,
-  RadarIcon,
+  CheckCircleIcon,
+  FaceSearchIcon,
+  FileIcon,
+  GlobeIcon,
+  MegaphoneIcon,
   SearchIcon,
+  ShieldCheckIcon,
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
-import { getFormatter, getTranslations } from "next-intl/server";
-import type * as Brand from "@/server/app/intelligence/brand";
 import {
-  Band,
-  SectionGutter,
-  SectionHeader,
-  StatCell,
-  StatusPill,
-} from "../../../_components/grid";
+  Accordion,
+  AccordionItem,
+  AccordionPanel,
+  AccordionTrigger,
+} from "@zenncore/web/components/accordion";
+import { Button } from "@zenncore/web/components/button";
+import { getFormatter, getTranslations } from "next-intl/server";
+import { AnalysisText } from "@/components/analysis-text";
+import { CommerceFigure } from "@/components/marketing/commerce-figure";
+import { Link } from "@/i18n/navigation";
+import type * as Brand from "@/server/app/intelligence/brand";
+import { EntityMark } from "./entity-mark";
+import { MentionMeter } from "./mention-meter";
+import { QueryExplorer } from "./query-explorer";
 import { RefreshBrand } from "./refresh-brand";
-import { type ShapePoint, VisibilityShapeChart } from "./shape-chart";
-import { BrandTabs } from "./shell";
+import { BrandMethod, BrandSummary, BrandTabs } from "./shell";
 
-const checkDot: Record<Brand.CheckStatus, string> = {
-  pass: "bg-success",
-  warn: "bg-warning",
-  fail: "bg-error",
-};
-
-const positionTone: Record<
-  Brand.QueryPosition,
-  "success" | "warning" | "error"
-> = {
-  top: "success",
-  listed: "warning",
-  absent: "error",
-};
-
-/** design.md §4.4 — the shared thresholds, not a per-page scale. */
-const rateTone = (rate: number) => {
-  switch (true) {
-    case rate >= 60:
-      return "success" as const;
-    case rate >= 30:
-      return "warning" as const;
-    default:
-      return "error" as const;
-  }
-};
-
-/** A panel inside a tab. Panels stack, so each draws its own top seam. */
-const Panel = ({
-  first = false,
-  children,
-}: {
-  first?: boolean;
-  children: React.ReactNode;
-}) => (
-  <div
-    className={cn(
-      "bg-background-rich",
-      !first && "border-accent-foreground border-t",
-    )}
-  >
-    {children}
-  </div>
-);
-
-export const FailedNote = async ({ error }: { error: string | null }) => {
-  const translate = await getTranslations("dashboard.brand.failed");
-
+export const FailedNote = async ({ hasReport }: { hasReport: boolean }) => {
+  const translate = await getTranslations("dashboard.brand.design.failed");
   return (
-    <Band surface={false} className="bg-warning/5 px-6 py-4">
+    <div
+      role="alert"
+      className="flex gap-3 border-accent-foreground border-b bg-warning/5 px-6 py-4"
+    >
+      <AlertCircleIcon
+        aria-hidden
+        className="mt-0.5 size-5 shrink-0 text-warning"
+      />
       <div>
-        <p className="font-medium text-sm text-warning">{translate("title")}</p>
-        <p className="mt-1 text-foreground-dimmed text-xs">
-          {error ?? translate("description")}
+        <p className="font-semibold text-foreground-rich text-sm">
+          {translate("title")}
+        </p>
+        <p className="mt-1 text-foreground-dimmed text-sm">
+          {translate(hasReport ? "description" : "emptyDescription")}
         </p>
       </div>
-    </Band>
+    </div>
   );
 };
 
-export const BrandEmpty = async ({
-  params,
-}: {
-  params: Promise<{ store: string }>;
-}) => {
-  const translate = await getTranslations("dashboard.brand");
-
+export const BrandEmpty = async ({ store }: { store: string }) => {
+  const translate = await getTranslations("dashboard.brand.design");
+  const steps = [
+    { key: "questions", icon: SearchIcon },
+    { key: "answers", icon: FaceSearchIcon },
+    { key: "actions", icon: CheckCircleIcon },
+  ] as const;
   return (
-    <Band>
-      <div className="flex flex-col items-center gap-4 px-6 py-20 text-center">
-        <p className="font-semibold text-foreground-rich text-lg">
+    <div className="grid min-w-0 lg:grid-cols-2">
+      <div className="flex min-w-0 flex-col items-start justify-center px-6 py-10 sm:px-8 sm:py-12">
+        <h2 className="max-w-md font-heading font-semibold text-3xl text-foreground-rich tracking-tight">
           {translate("empty.title")}
-        </p>
-        <p className="max-w-md text-foreground-dimmed text-sm">
+        </h2>
+        <p className="mt-4 max-w-lg text-base text-foreground-dimmed leading-7">
           {translate("empty.description")}
         </p>
-        <RefreshBrand params={params} variant="run" />
+        <div className="mt-7">
+          <RefreshBrand store={store} variant="run" />
+        </div>
+        <p className="mt-5 max-w-md text-foreground-dimmed text-sm leading-6">
+          {translate("empty.note")}
+        </p>
       </div>
-    </Band>
+      <div className="relative min-w-0 border-accent-foreground border-t bg-primary/5 text-foreground-rich lg:border-t-0 lg:border-l">
+        <div className="flex items-center gap-4 px-6 py-6">
+          <div className="size-28 shrink-0 text-primary">
+            <CommerceFigure kind="shoppingBot" className="size-full" />
+          </div>
+          <h2 className="max-w-56 font-semibold text-lg leading-7">
+            {translate("empty.visualTitle")}
+          </h2>
+        </div>
+        <ol className="border-accent-foreground border-t">
+          {steps.map(({ key, icon: Icon }) => (
+            <li
+              key={key}
+              className="flex gap-4 border-accent-foreground border-b px-6 py-5 last:border-b-0"
+            >
+              <Icon
+                aria-hidden
+                className="mt-0.5 size-6 shrink-0 text-primary"
+              />
+              <div>
+                <h3 className="font-semibold text-lg">
+                  {translate(`empty.steps.${key}.title`)}
+                </h3>
+                <p className="mt-1 text-foreground-dimmed text-sm leading-6">
+                  {translate(`empty.steps.${key}.description`)}
+                </p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
   );
 };
 
-/**
- * The page's answer, before any prose.
- *
- * These three rates used to render as dimmed `text-xs` sentences at the bottom
- * of the summary card — the only numbers on a page whose whole question is "how
- * visible is this brand". They lead now, in the same connected stat grid the
- * overview and products pages open with.
- */
-const MetricsBand = async ({ report }: { report: Brand.Report }) => {
-  const translate = await getTranslations("dashboard.brand.metrics");
-  const { mentionRate, unpromptedRate, namedRate } = report.metrics;
+const reportTerms = (report: Brand.Report) => [
+  ...report.engines,
+  ...report.topCompetitors.map((entry) => entry.name),
+  ...report.topSources.map((entry) => entry.domain),
+];
 
-  const rates = [
-    { key: "mentionRate", rate: mentionRate, icon: <RadarIcon /> },
-    { key: "unpromptedRate", rate: unpromptedRate, icon: <BullseyeIcon /> },
-    { key: "namedRate", rate: namedRate, icon: <CheckBadgeIcon /> },
+const Summary = async ({ report }: { report: Brand.Report }) => {
+  const translate = await getTranslations("dashboard.brand.design");
+  const format = await getFormatter();
+  const samples = [
+    {
+      key: "unprompted",
+      queries: report.queries.filter((query) => !query.branded),
+    },
+    { key: "named", queries: report.queries.filter((query) => query.branded) },
   ] as const;
-
+  const mentioned = report.queries.filter((query) => query.mentioned).length;
   return (
-    <Band>
-      <div className="grid grid-cols-1 gap-px bg-accent-foreground sm:grid-cols-2 xl:grid-cols-4">
-        {rates.map(({ key, rate, icon }) => (
-          <StatCell
-            key={key}
-            label={translate(`${key}.label`)}
-            icon={icon}
-            value={rate}
-            suffix="%"
-            progress={rate}
-            tone={rateTone(rate)}
-            detail={translate(`${key}.detail`)}
-          />
-        ))}
-        <StatCell
-          label={translate("queries.label")}
-          icon={<SearchIcon />}
-          value={report.queries.length}
-          detail={translate("queries.detail")}
-        />
-      </div>
-    </Band>
+    <div className="grid min-w-0 lg:grid-cols-2">
+      <section className="min-w-0 px-6 py-7">
+        <h2 className="font-heading font-semibold text-2xl text-foreground-rich">
+          {translate("summaryTitle")}
+        </h2>
+        <BrandSummary summary={report.summary} terms={reportTerms(report)} />
+        <p className="mt-5 text-foreground-dimmed text-sm leading-6">
+          {report.queries.length > 0
+            ? translate("overall", {
+                count: format.number(mentioned),
+                total: format.number(report.queries.length),
+              })
+            : translate("noAnswers")}
+        </p>
+      </section>
+      <section className="min-w-0 border-accent-foreground border-t bg-background-rich lg:border-t-0 lg:border-l">
+        <h2 className="px-6 pt-7 font-heading font-semibold text-2xl text-foreground-rich">
+          {translate("discoveryTitle")}
+        </h2>
+        <dl className="divide-y divide-accent-foreground">
+          {samples.map(({ key, queries }) => {
+            const count = queries.filter((query) => query.mentioned).length;
+            const fraction = queries.length > 0 ? count / queries.length : null;
+            return (
+              <div key={key} className="px-6 py-6">
+                <div className="flex items-start justify-between gap-4">
+                  <dt className="max-w-56 font-medium text-foreground text-sm leading-6">
+                    {translate(key)}
+                  </dt>
+                  <dd className="shrink-0 font-semibold text-4xl text-foreground-rich tabular-nums tracking-tight">
+                    {fraction === null
+                      ? "—"
+                      : format.number(fraction, {
+                          style: "percent",
+                          maximumFractionDigits: 0,
+                        })}
+                  </dd>
+                </div>
+                <MentionMeter count={count} total={queries.length} />
+                <dd className="mt-3 text-foreground-dimmed text-xs leading-5">
+                  {fraction === null
+                    ? translate("noSample")
+                    : translate("ratio", {
+                        count: format.number(count),
+                        total: format.number(queries.length),
+                      })}
+                </dd>
+              </div>
+            );
+          })}
+        </dl>
+      </section>
+    </div>
   );
 };
 
-const SummaryBand = async ({
+const stages = [
+  { key: "find", icon: SearchIcon },
+  { key: "consider", icon: MegaphoneIcon },
+  { key: "evaluate", icon: CheckCircleIcon },
+  { key: "support", icon: FaceSearchIcon },
+] as const;
+
+const Plan = async ({
   report,
-  analyzedAt,
+  store,
 }: {
   report: Brand.Report;
-  analyzedAt: Date;
+  store: string;
 }) => {
-  const translate = await getTranslations("dashboard.brand");
-  const format = await getFormatter();
-
-  const shape: ShapePoint[] = report.dimensions.map((entry) => ({
-    dimension: entry.dimension,
-    label: translate(`shape.dimensions.${entry.dimension}`),
-    level: entry.level,
-    levelLabel: translate(`shape.levels.${entry.level}`),
-    score: entry.score,
-  }));
-
+  const translate = await getTranslations("dashboard.brand.design");
   return (
-    <Band marks="top" surface={false}>
-      <div className="grid gap-px bg-accent-foreground lg:grid-cols-[1.6fr_1fr]">
-        <div className="flex flex-col bg-background-rich">
-          <SectionHeader
-            kicker={translate("sections.diagnosis")}
-            title={translate("summary.title")}
-            actions={
-              <p className="whitespace-nowrap text-foreground-dimmed text-xs">
-                {translate("summary.analyzed", {
-                  time: format.relativeTime(analyzedAt),
-                })}
+    <div className="grid min-w-0 md:grid-cols-2">
+      <section className="min-w-0">
+        <div className="border-accent-foreground border-b bg-primary/5 px-6 py-5 text-foreground-rich">
+          <h2 className="font-heading font-semibold text-2xl">
+            {translate("findingsTitle")}
+          </h2>
+        </div>
+        <ul className="divide-y divide-accent-foreground">
+          {[...new Set(report.keyFindings)].map((finding) => (
+            <li key={finding} className="px-6 py-5">
+              <p className="wrap-anywhere text-foreground text-sm leading-7">
+                <AnalysisText text={finding} terms={reportTerms(report)} />
               </p>
-            }
-          />
-          <p className="flex-1 p-6 text-foreground text-sm leading-relaxed">
-            {report.summary}
+            </li>
+          ))}
+        </ul>
+        {report.keyFindings.length === 0 && (
+          <p className="px-6 py-5 text-foreground-dimmed text-sm leading-6">
+            {translate("noFindings")}
+          </p>
+        )}
+        <div className="border-accent-foreground border-t px-6 py-5">
+          <Button
+            variant="soft"
+            color="neutral"
+            render={<Link href={`/dashboard/${store}/products`} />}
+            className="text-sm"
+          >
+            {translate("action.tertiary")}
+            <ArrowRightIcon aria-hidden className="size-4" />
+          </Button>
+        </div>
+      </section>
+      <section className="min-w-0 border-accent-foreground border-t md:border-t-0 md:border-l">
+        <div className="border-accent-foreground border-b px-6 py-5">
+          <h2 className="font-heading font-semibold text-2xl text-foreground-rich">
+            {translate("journeyTitle")}
+          </h2>
+          <p className="mt-1 text-foreground-dimmed text-sm leading-6">
+            {translate("journeyDescription")}
           </p>
         </div>
-        <div className="flex flex-col bg-background-rich">
-          <SectionHeader title={translate("shape.title")} />
-          <div className="flex flex-1 items-center p-4">
-            <VisibilityShapeChart data={shape} />
-          </div>
-        </div>
-      </div>
-    </Band>
+        <Accordion defaultValue={["find"]} multiple>
+          {stages.map(({ key, icon: Icon }) => {
+            const entry = report.funnel[key];
+            const improvements = [...new Set(entry.improvements)];
+            return (
+              <AccordionItem
+                key={key}
+                value={key}
+                className="border-accent-foreground last:border-b-0"
+              >
+                <AccordionTrigger className="items-center px-6 py-5 hover:bg-background">
+                  <span className="flex min-w-0 items-center gap-3">
+                    <span className="flex size-10 shrink-0 items-center justify-center rounded-sm border border-accent-foreground bg-background-rich text-primary">
+                      <Icon aria-hidden className="size-5" />
+                    </span>
+                    <span className="min-w-0">
+                      <span className="block font-semibold text-base text-foreground-rich">
+                        {translate(`stage.${key}`)}
+                      </span>
+                      <span className="mt-0.5 block font-normal text-foreground-dimmed text-xs">
+                        {translate("suggestions", {
+                          count: improvements.length,
+                        })}
+                      </span>
+                    </span>
+                  </span>
+                </AccordionTrigger>
+                <AccordionPanel className="motion-reduce:transition-none">
+                  <div className="px-6 pb-6">
+                    <p className="wrap-anywhere text-foreground-dimmed text-sm leading-6">
+                      <AnalysisText
+                        text={entry.narrative}
+                        terms={reportTerms(report)}
+                      />
+                    </p>
+                    <ul className="mt-4 space-y-3">
+                      {improvements.map((improvement) => (
+                        <li key={improvement} className="flex gap-3">
+                          <span
+                            aria-hidden
+                            className="mt-2 size-1.5 shrink-0 bg-primary"
+                          />
+                          <p className="wrap-anywhere text-foreground text-sm leading-6">
+                            <AnalysisText
+                              text={improvement}
+                              terms={reportTerms(report)}
+                            />
+                          </p>
+                        </li>
+                      ))}
+                    </ul>
+                    {improvements.length === 0 && (
+                      <p className="mt-3 text-foreground-dimmed text-sm">
+                        {translate("noSuggestions")}
+                      </p>
+                    )}
+                  </div>
+                </AccordionPanel>
+              </AccordionItem>
+            );
+          })}
+        </Accordion>
+      </section>
+    </div>
   );
 };
 
-const FindingsPanel = async ({ report }: { report: Brand.Report }) => {
-  const translate = await getTranslations("dashboard.brand");
-
+const Perception = async ({ report }: { report: Brand.Report }) => {
+  const translate = await getTranslations("dashboard.brand.design");
+  const perceptionGroups = (["strengths", "concerns"] as const).filter(
+    (key) => report.perception[key].length > 0,
+  );
+  if (
+    perceptionGroups.length === 0 &&
+    report.topCompetitors.length === 0 &&
+    report.topSources.length === 0
+  )
+    return null;
   return (
-    <Panel first>
-      <SectionHeader
-        title={translate("findings.title")}
-        description={translate("findings.description")}
-      />
+    <section className="border-accent-foreground border-t">
+      <div className="px-6 py-5">
+        <h2 className="font-heading font-semibold text-2xl text-foreground-rich">
+          {translate("perceptionTitle")}
+        </h2>
+      </div>
+      {perceptionGroups.length > 0 && (
+        <div className="grid border-accent-foreground border-t md:grid-cols-2">
+          {perceptionGroups.map((key) => (
+            <div
+              key={key}
+              className="min-w-0 border-accent-foreground not-last:border-b px-6 py-5 md:not-last:border-r md:not-last:border-b-0 md:only:col-span-2"
+            >
+              <h3 className="flex items-center gap-3 font-heading font-semibold text-foreground-rich text-xl">
+                {key === "strengths" ? (
+                  <CheckCircleIcon
+                    aria-hidden
+                    className="size-5 text-success"
+                  />
+                ) : (
+                  <AlertCircleIcon
+                    aria-hidden
+                    className="size-5 text-warning"
+                  />
+                )}
+                {translate(key)}
+              </h3>
+              <ul className="mt-4 space-y-3">
+                {[...new Set(report.perception[key])].map((entry) => (
+                  <li
+                    key={entry}
+                    className="wrap-anywhere text-foreground-dimmed text-sm leading-6"
+                  >
+                    <AnalysisText text={entry} terms={reportTerms(report)} />
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+      )}
+      {(report.topCompetitors.length > 0 || report.topSources.length > 0) && (
+        <div className="grid border-accent-foreground border-t md:grid-cols-2">
+          {report.topCompetitors.length > 0 && (
+            <div className="min-w-0 border-accent-foreground not-last:border-b px-6 py-5 md:not-last:border-r md:not-last:border-b-0 md:only:col-span-2">
+              <h3 className="font-heading font-semibold text-foreground-rich text-xl">
+                {translate("alternativesTitle")}
+              </h3>
+              <ul className="mt-3 divide-y divide-accent-foreground">
+                {report.topCompetitors.map((entry) => (
+                  <li
+                    key={entry.name}
+                    className="flex items-center gap-3 py-3 text-sm"
+                  >
+                    <EntityMark name={entry.name} />
+                    <span className="min-w-0 flex-1 break-words font-medium text-foreground">
+                      {entry.name}
+                    </span>
+                    <span className="shrink-0 text-foreground-dimmed text-xs tabular-nums">
+                      {translate("occurrences", { count: entry.mentions })}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {report.topSources.length > 0 && (
+            <div className="min-w-0 px-6 py-5 md:only:col-span-2">
+              <h3 className="font-heading font-semibold text-foreground-rich text-xl">
+                {translate("sourcesTitle")}
+              </h3>
+              <p className="mt-2 text-foreground-dimmed text-xs leading-5">
+                {translate("sourcesNote")}
+              </p>
+              <ul className="mt-2 divide-y divide-accent-foreground">
+                {report.topSources.map((entry) => (
+                  <li
+                    key={entry.domain}
+                    className="flex items-center gap-3 py-3 text-sm"
+                  >
+                    <EntityMark name={entry.domain} kind="source" />
+                    <span className="min-w-0 flex-1 break-all font-medium text-foreground">
+                      {entry.domain}
+                    </span>
+                    <span className="shrink-0 text-foreground-dimmed text-xs tabular-nums">
+                      {translate("occurrences", { count: entry.citations })}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+        </div>
+      )}
+    </section>
+  );
+};
+
+const SiteChecks = async ({ report }: { report: Brand.Report }) => {
+  const translate = await getTranslations("dashboard.brand.design");
+  const checks = [
+    {
+      key: "robots",
+      icon: FileIcon,
+      status: report.crawlability.robots.status,
+    },
+    { key: "llms", icon: GlobeIcon, status: report.crawlability.llms.status },
+    {
+      key: "engines",
+      icon: ShieldCheckIcon,
+      status: report.crawlability.engines.status,
+    },
+  ] as const;
+  return (
+    <section>
+      <div className="border-accent-foreground border-b px-6 py-6">
+        <h2 className="font-heading font-semibold text-2xl text-foreground-rich">
+          {translate("accessTitle")}
+        </h2>
+        <p className="mt-2 max-w-3xl text-foreground-dimmed text-sm leading-6">
+          {translate("accessDescription")}
+        </p>
+      </div>
       <ul className="divide-y divide-accent-foreground">
-        {report.keyFindings.map((finding) => (
-          <li key={finding} className="flex gap-3 px-6 py-4">
-            <span className="mt-1.5 size-1.5 shrink-0 rounded-full bg-foreground" />
-            <p className="text-foreground text-sm">{finding}</p>
+        {checks.map(({ key, icon: Icon, status }) => (
+          <li key={key} className="grid gap-4 px-6 py-6 sm:grid-cols-3">
+            <div className="flex items-start gap-3">
+              <Icon aria-hidden className="size-6 shrink-0 text-primary" />
+              <div>
+                <h3 className="font-medium text-foreground-rich text-sm">
+                  {translate(`checks.${key}`)}
+                </h3>
+                <p
+                  className={cn(
+                    "mt-1 text-xs",
+                    status === "pass" ? "text-success" : "text-warning",
+                  )}
+                >
+                  {translate(`status.${status}`)}
+                </p>
+              </div>
+            </div>
+            <div className="min-w-0 sm:col-span-2">
+              <p className="font-medium text-foreground text-sm">
+                {translate(
+                  key === "llms"
+                    ? `llms.${status === "pass" ? "pass" : "warn"}`
+                    : `${key}.${status}`,
+                )}
+              </p>
+              <p className="mt-2 max-w-3xl text-foreground-dimmed text-sm leading-6">
+                {translate(`${key}.note`)}
+              </p>
+              {key === "engines" &&
+                report.crawlability.engines.blocked.length > 0 && (
+                  <p className="wrap-anywhere mt-3 font-mono text-foreground text-xs leading-6">
+                    {report.crawlability.engines.blocked.join(", ")}
+                  </p>
+                )}
+            </div>
           </li>
         ))}
       </ul>
-    </Panel>
+    </section>
   );
 };
 
-const FUNNEL_STAGES = ["find", "consider", "evaluate", "support"] as const;
-
-const levelFill: Record<Brand.DimensionLevel, string> = {
-  weak: "bg-error",
-  developing: "bg-warning",
-  strong: "bg-success",
-};
-
-const levelTone: Record<Brand.DimensionLevel, "error" | "warning" | "success"> =
-  {
-    weak: "error",
-    developing: "warning",
-    strong: "success",
-  };
-
-/**
- * The four stages of a shopper's journey, in order.
- *
- * Full-width rows, not a measure/evidence split. That split earns its keep on
- * the crawlability and visibility checks because the right-hand side is a line
- * or two; here a stage carries a paragraph plus up to four actions, so a fixed
- * label column just parks 13rem of white space beside 350px of text.
- *
- * The actions are what made this section enormous — four stages times four
- * actions is sixteen paragraphs of advice nobody reads in one pass. The
- * diagnosis (score, level, narrative) stays open; the actions collapse behind a
- * count, which is design.md §10.2's answer-then-detail order rather than a way
- * of hiding them.
- */
-const FunnelPanel = async ({ report }: { report: Brand.Report }) => {
-  const translate = await getTranslations("dashboard.brand");
-
-  const scores = new Map(
-    report.dimensions.map((entry) => [entry.dimension, entry.score]),
-  );
-
-  return (
-    <Panel>
-      <SectionHeader
-        title={translate("funnel.title")}
-        description={translate("funnel.description")}
-      />
-      <div className="divide-y divide-accent-foreground">
-        {FUNNEL_STAGES.map((stage, index) => {
-          const entry = report.funnel[stage];
-          const score = scores.get(stage);
-
-          return (
-            <div key={stage} className="flex flex-col gap-3 p-5">
-              {/* Label, track and value on one line: the track spans the gap so
-                the stage name and its score read as one measure rather than
-                two things pinned to opposite edges. */}
-              <div className="flex flex-wrap items-center gap-x-4 gap-y-2">
-                <span className="font-mono font-semibold text-primary text-xs">
-                  {String(index + 1).padStart(2, "0")}
-                </span>
-                <p className="w-20 shrink-0 font-medium text-foreground text-sm">
-                  {translate(`shape.dimensions.${stage}`)}
-                </p>
-                {score !== undefined && (
-                  <div className="h-1 min-w-32 flex-1 rounded-full bg-accent-foreground">
-                    <div
-                      className={cn(
-                        "h-full rounded-full transition-[width] duration-600",
-                        levelFill[entry.level],
-                      )}
-                      style={{ width: `${score}%` }}
-                    />
-                  </div>
-                )}
-                {score !== undefined && (
-                  <span className="w-8 shrink-0 text-right font-bold text-foreground-rich text-lg tabular-nums tracking-[-0.02em]">
-                    {score}
-                  </span>
-                )}
-                <span className="flex w-28 shrink-0 justify-end">
-                  <StatusPill tone={levelTone[entry.level]}>
-                    {translate(`shape.levels.${entry.level}`)}
-                  </StatusPill>
-                </span>
-              </div>
-
-              <p className="max-w-3xl text-foreground text-sm leading-relaxed">
-                {entry.narrative}
-              </p>
-
-              {entry.improvements.length > 0 && (
-                <details className="group">
-                  <summary className="flex w-fit cursor-pointer list-none items-center gap-1.5 font-medium text-primary-text text-sm underline-offset-2 hover:underline">
-                    <ChevronRightIcon
-                      aria-hidden
-                      className="size-3.5 transition-transform group-open:rotate-90"
-                    />
-                    {translate("funnel.actions", {
-                      count: entry.improvements.length,
-                    })}
-                  </summary>
-                  <ul className="mt-3 flex flex-col gap-2 pl-5">
-                    {entry.improvements.map((improvement) => (
-                      <li key={improvement} className="flex gap-2.5">
-                        <ArrowRightIcon
-                          aria-hidden
-                          className="mt-1 size-3.5 shrink-0 text-primary"
-                        />
-                        <p className="max-w-3xl text-foreground-dimmed text-sm">
-                          {improvement}
-                        </p>
-                      </li>
-                    ))}
-                  </ul>
-                </details>
-              )}
-            </div>
-          );
-        })}
-      </div>
-    </Panel>
-  );
-};
-
-const CrawlabilityPanel = async ({ report }: { report: Brand.Report }) => {
-  const translate = await getTranslations("dashboard.brand");
-  const { crawlability } = report;
-
-  const rows = [
-    { key: "robots", check: crawlability.robots },
-    { key: "llms", check: crawlability.llms },
-    { key: "engines", check: crawlability.engines },
-  ] as const;
-
-  return (
-    <Panel first>
-      <SectionHeader
-        title={translate("crawlability.title")}
-        actions={
-          <StatusPill tone={crawlability.ready ? "success" : "warning"}>
-            {crawlability.ready
-              ? translate("crawlability.ready")
-              : translate("crawlability.issues")}
-          </StatusPill>
-        }
-      />
-      <div className="divide-y divide-accent-foreground">
-        {rows.map(({ key, check }) => (
-          <div
-            key={key}
-            className="flex flex-col gap-1 px-6 py-4 sm:grid sm:grid-cols-[10rem_1fr] sm:gap-4"
-          >
-            <div className="flex items-center gap-2">
-              <span
-                className={cn("size-2 rounded-full", checkDot[check.status])}
-              />
-              <p className="font-medium text-[11px] text-foreground-dimmed uppercase tracking-[0.08em]">
-                {translate(`crawlability.checks.${key}`)}
-              </p>
-            </div>
-            <div>
-              <p className="text-foreground text-sm">{check.headline}</p>
-              {check.detail && (
-                <p className="mt-1 text-foreground-dimmed text-xs">
-                  {check.detail}
-                </p>
-              )}
-            </div>
-          </div>
-        ))}
-      </div>
-    </Panel>
-  );
-};
-
-const PerceptionPanel = async ({ report }: { report: Brand.Report }) => {
-  const translate = await getTranslations("dashboard.brand");
-
-  const columns = [
-    {
-      key: "strengths",
-      entries: report.perception.strengths,
-      marker: "+",
-      markerClass: "bg-success/10 text-success",
-    },
-    {
-      key: "concerns",
-      entries: report.perception.concerns,
-      marker: "−",
-      markerClass: "bg-warning/10 text-warning",
-    },
-  ] as const;
-
-  return (
-    <Panel first>
-      <SectionHeader title={translate("perception.title")} />
-      <div className="grid gap-px bg-accent-foreground md:grid-cols-2">
-        {columns.map((column) => (
-          <div key={column.key} className="bg-background-rich p-6">
-            <p className="font-medium text-[11px] text-foreground-dimmed uppercase tracking-[0.08em]">
-              {translate(`perception.${column.key}`)}
-            </p>
-            <ul className="mt-4 flex flex-col gap-3">
-              {column.entries.map((entry) => (
-                <li key={entry} className="flex gap-2.5">
-                  <span
-                    className={cn(
-                      "flex size-4 shrink-0 items-center justify-center rounded-sm font-semibold text-[11px]",
-                      column.markerClass,
-                    )}
-                  >
-                    {column.marker}
-                  </span>
-                  <p className="text-foreground text-sm">{entry}</p>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
-      </div>
-    </Panel>
-  );
-};
-
-const LandscapePanel = async ({ report }: { report: Brand.Report }) => {
-  const translate = await getTranslations("dashboard.brand");
-
-  if (report.topCompetitors.length === 0 && report.topSources.length === 0)
-    return null;
-
-  return (
-    <Panel>
-      <SectionHeader title={translate("landscape.title")} />
-      <div className="grid gap-px bg-accent-foreground md:grid-cols-2">
-        <div className="bg-background-rich p-6">
-          <p className="font-medium text-[11px] text-foreground-dimmed uppercase tracking-[0.08em]">
-            {translate("landscape.competitors")}
-          </p>
-          <ul className="mt-4 flex flex-col gap-2">
-            {report.topCompetitors.map((competitor) => (
-              <li
-                key={competitor.name}
-                className="flex items-baseline justify-between gap-4"
-              >
-                <p className="text-foreground text-sm">{competitor.name}</p>
-                <p className="whitespace-nowrap text-foreground-dimmed text-xs tabular-nums">
-                  {translate("landscape.competitorMentions", {
-                    count: String(competitor.mentions),
-                  })}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </div>
-        <div className="bg-background-rich p-6">
-          <p className="font-medium text-[11px] text-foreground-dimmed uppercase tracking-[0.08em]">
-            {translate("landscape.sources")}
-          </p>
-          <ul className="mt-4 flex flex-col gap-2">
-            {report.topSources.map((source) => (
-              <li
-                key={source.domain}
-                className="flex items-baseline justify-between gap-4"
-              >
-                <p className="text-foreground text-sm">{source.domain}</p>
-                <p className="whitespace-nowrap text-foreground-dimmed text-xs tabular-nums">
-                  {translate("landscape.sourceCitations", {
-                    count: String(source.citations),
-                  })}
-                </p>
-              </li>
-            ))}
-          </ul>
-        </div>
-      </div>
-    </Panel>
-  );
-};
-
-const QueryLogPanel = async ({ report }: { report: Brand.Report }) => {
-  const translate = await getTranslations("dashboard.brand");
-
-  return (
-    <Panel first>
-      <SectionHeader
-        title={translate("tabs.queries")}
-        description={translate("queries.description")}
-      />
-      <div className="overflow-x-auto">
-        <table className="w-full text-left text-sm">
-          <thead>
-            <tr className="border-accent-foreground border-b text-[11px] text-foreground-dimmed uppercase tracking-[0.06em]">
-              <th className="px-6 py-3 font-semibold">
-                {translate("queries.headers.query")}
-              </th>
-              <th className="px-4 py-3 font-semibold">
-                {translate("queries.headers.dimension")}
-              </th>
-              <th className="px-4 py-3 font-semibold">
-                {translate("queries.headers.result")}
-              </th>
-              <th className="px-4 py-3 font-semibold">
-                {translate("queries.headers.brands")}
-              </th>
-              <th className="px-6 py-3 font-semibold">
-                {translate("queries.headers.sources")}
-              </th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-accent-foreground">
-            {report.queries.map((entry) => (
-              <tr
-                key={entry.query}
-                className="align-top transition-colors duration-100 hover:bg-background-dimmed/60"
-              >
-                <td className="max-w-xs px-6 py-3 font-light text-foreground">
-                  “{entry.query}”
-                </td>
-                <td className="whitespace-nowrap px-4 py-3 text-foreground-dimmed text-xs">
-                  {translate(`shape.dimensions.${entry.dimension}`)}
-                  {entry.branded && (
-                    <span className="ml-1.5 rounded bg-background-dimmed px-1 py-0.5 text-[10px]">
-                      {translate("queries.branded")}
-                    </span>
-                  )}
-                </td>
-                <td className="whitespace-nowrap px-4 py-3">
-                  <StatusPill tone={positionTone[entry.position]}>
-                    {translate(`queries.position.${entry.position}`)}
-                  </StatusPill>
-                </td>
-                <td className="max-w-48 px-4 py-3 text-foreground-dimmed text-xs">
-                  {entry.brands.slice(0, 4).join(", ") || "—"}
-                </td>
-                <td className="max-w-48 px-6 py-3 text-foreground-dimmed text-xs">
-                  {entry.sources.slice(0, 4).join(", ") || "—"}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </Panel>
-  );
-};
-
-export const BrandReport = ({
+export const BrandReport = async ({
   report,
   analyzedAt,
+  store,
+  running = false,
 }: {
   report: Brand.Report;
   analyzedAt: Date;
-}) => (
-  <>
-    <MetricsBand report={report} />
-    <SectionGutter />
-    <SummaryBand report={report} analyzedAt={analyzedAt} />
-    <SectionGutter />
-    <BrandTabs
-      findings={
-        <>
-          <FindingsPanel report={report} />
-          <FunnelPanel report={report} />
-        </>
-      }
-      perception={
-        <>
-          <PerceptionPanel report={report} />
-          <LandscapePanel report={report} />
-        </>
-      }
-      crawlability={<CrawlabilityPanel report={report} />}
-      queries={<QueryLogPanel report={report} />}
-    />
-  </>
-);
+  store: string;
+  running?: boolean;
+}) => {
+  const translate = await getTranslations("dashboard.brand.design");
+  const format = await getFormatter();
+  return (
+    <>
+      <div className="flex flex-wrap items-center justify-between gap-3 border-accent-foreground border-b px-6 py-3">
+        <div className="flex min-w-0 items-center gap-3">
+          <div className="flex shrink-0 items-center">
+            {[...new Set(report.engines)].map((engine) => (
+              <EntityMark key={engine} name={engine} kind="engine" />
+            ))}
+          </div>
+          <div>
+            <p className="font-medium text-foreground text-sm">
+              {translate("sample", {
+                count: report.queries.length,
+                engines: report.engines.join(", "),
+              })}
+            </p>
+            <p className="mt-1 text-foreground-dimmed text-xs">
+              {translate("updated", { time: format.relativeTime(analyzedAt) })}
+            </p>
+          </div>
+        </div>
+        <div className="flex flex-wrap items-center gap-2">
+          <BrandMethod />
+          <RefreshBrand store={store} disabled={running} />
+        </div>
+      </div>
+      <Summary report={report} />
+      <BrandTabs
+        plan={<Plan report={report} store={store} />}
+        answers={
+          <>
+            <QueryExplorer queries={report.queries} />
+            <Perception report={report} />
+          </>
+        }
+        access={<SiteChecks report={report} />}
+      />
+    </>
+  );
+};

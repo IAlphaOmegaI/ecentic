@@ -28,7 +28,7 @@ export const ToggleGroup = ({
   return (
     <ToggleGroupPrimitive
       className={createClassName(
-        "flex overflow-hidden rounded-md border border-accent-foreground bg-background",
+        "flex overflow-hidden rounded-sm border border-accent-foreground bg-background",
         className,
       )}
       {...props}

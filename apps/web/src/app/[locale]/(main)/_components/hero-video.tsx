@@ -87,7 +87,7 @@ export const HeroVideo = ({ transcript }: HeroVideo.Props) => {
         what a voice-control user would say out loud. */}
       <DialogTrigger
         ref={trigger}
-        className="group relative h-auto w-full overflow-hidden rounded-2xl border border-accent-foreground bg-emphasis p-0 text-left shadow-2xl shadow-primary/10 outline-offset-4"
+        className="group relative h-auto w-full overflow-hidden rounded-lg border border-accent-foreground bg-emphasis p-0 text-left shadow-2xl shadow-primary/10 outline-offset-4"
       >
         <video
           ref={video}
@@ -120,7 +120,7 @@ export const HeroVideo = ({ transcript }: HeroVideo.Props) => {
               {translate("caption")}
             </span>
           </span>
-          <span className="rounded-md border border-background-rich/30 bg-background/90 px-3.5 py-2 font-body font-medium text-foreground shadow-sm backdrop-blur-md">
+          <span className="rounded-sm border border-background-rich/30 bg-background/90 px-3.5 py-2 font-body font-medium text-foreground shadow-sm backdrop-blur-md">
             {translate("action.primary")}
           </span>
         </span>
@@ -131,11 +131,11 @@ export const HeroVideo = ({ transcript }: HeroVideo.Props) => {
       </p>
 
       <DialogPopup
-        className="marketing-site enterprise-video-dialog text-(length:--text-base) rounded-xs bg-background font-body text-foreground leading-[1.6] [--rail-color:var(--color-accent-foreground)] [--rail-cross:var(--color-cross)] [color-scheme:light] [font-synthesis:none] motion-reduce:[&_*]:animate-none motion-reduce:[&_*]:scroll-auto motion-reduce:[&_*]:transition-none [&_:where(a,button).bg-primary]:rounded-md [&_:where(a,button).bg-primary]:bg-primary-text [&_:where(a,button).from-primary-rich]:rounded-md [&_:where(a,button,input,select,textarea):focus-visible]:outline-2 [&_:where(a,button,input,select,textarea):focus-visible]:outline-primary-text [&_:where(a,button,input,select,textarea):focus-visible]:outline-offset-4 [&_:where(button,[role=button])]:duration-160 [&_:where(button,[role=button])]:ease-[cubic-bezier(0.23,1,0.32,1)] [&_:where(div:has(>input),div:has(>textarea))]:rounded-md [&_:where(input,textarea,select,[role=combobox])]:rounded-md [&_p]:text-pretty [:where(&)_:where(h1)]:max-w-[1040px] [:where(&)_:where(h1)]:text-[clamp(2.75rem,5.5vw,5rem)] [:where(&)_:where(h1,h2,h3,h4)]:text-balance [:where(&)_:where(h1,h2,h3,h4)]:font-heading [:where(&)_:where(h1,h2,h3,h4)]:font-medium [:where(&)_:where(h1,h2,h3,h4)]:text-foreground-rich [:where(&)_:where(h1,h2,h3,h4)]:leading-[1.08] [:where(&)_:where(h1,h2,h3,h4)]:tracking-[-0.035em] [:where(&)_:where(h2)]:max-w-[900px] [:where(&)_:where(h2)]:text-[clamp(2rem,3.6vw,3.5rem)] [:where(&)_:where(h3)]:text-[clamp(1.4rem,2vw,1.85rem)]"
+        className="marketing-site enterprise-video-dialog text-(length:--text-base) rounded-sm bg-background font-body text-foreground leading-relaxed [--rail-color:var(--color-accent-foreground)] [--rail-cross:var(--color-cross)] [color-scheme:light] [font-synthesis:none] motion-reduce:[&_*]:animate-none motion-reduce:[&_*]:scroll-auto motion-reduce:[&_*]:transition-none [&_:where(a,button).bg-primary]:rounded-sm [&_:where(a,button).bg-primary]:bg-primary-text [&_:where(a,button).from-primary-rich]:rounded-sm [&_:where(a,button,input,select,textarea):focus-visible]:outline-2 [&_:where(a,button,input,select,textarea):focus-visible]:outline-primary-text [&_:where(a,button,input,select,textarea):focus-visible]:outline-offset-4 [&_:where(button,[role=button])]:duration-160 [&_:where(button,[role=button])]:ease-[cubic-bezier(0.23,1,0.32,1)] [&_:where(div:has(>input),div:has(>textarea))]:rounded-sm [&_:where(input,textarea,select,[role=combobox])]:rounded-sm [&_p]:text-pretty [:where(&)_:where(h1)]:max-w-260 [:where(&)_:where(h1)]:text-5xl lg:[:where(&)_:where(h1)]:text-6xl xl:[:where(&)_:where(h1)]:text-7xl [:where(&)_:where(h1,h2,h3,h4)]:text-balance [:where(&)_:where(h1,h2,h3,h4)]:font-heading [:where(&)_:where(h1,h2,h3,h4)]:font-medium [:where(&)_:where(h1,h2,h3,h4)]:text-foreground-rich [:where(&)_:where(h1,h2,h3,h4)]:leading-none [:where(&)_:where(h1,h2,h3,h4)]:tracking-tight [:where(&)_:where(h2)]:max-w-225 [:where(&)_:where(h2)]:text-3xl lg:[:where(&)_:where(h2)]:text-4xl xl:[:where(&)_:where(h2)]:text-5xl 2xl:[:where(&)_:where(h2)]:text-6xl [:where(&)_:where(h3)]:text-2xl 2xl:[:where(&)_:where(h3)]:text-3xl"
         classList={{
           backdrop:
             "z-50 bg-emphasis/85 opacity-100 backdrop-blur-md duration-150",
-          root: "z-50 m-0 max-h-[90dvh] w-[min(94vw,1400px)] max-w-none overflow-y-auto rounded-xl border-background-rich/15 bg-emphasis p-0 shadow-2xl duration-150 data-ending-style:scale-95 data-starting-style:scale-95 motion-reduce:transition-none",
+          root: "z-50 m-0 max-h-[90dvh] w-[min(94vw,1400px)] max-w-none overflow-y-auto rounded-lg border-background-rich/15 bg-emphasis p-0 shadow-2xl duration-150 data-ending-style:scale-95 data-starting-style:scale-95 motion-reduce:transition-none",
         }}
       >
         <DialogTitle className="sr-only">{translate("title")}</DialogTitle>

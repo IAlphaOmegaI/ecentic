@@ -58,7 +58,7 @@ export const AgenciesAccess = ({ labels }: AgenciesAccess.Props) => (
           <Tab
             key={option.id}
             value={option.id}
-            className="h-auto min-h-14 rounded-md border-0 px-4 py-4 text-base before:hidden hover:bg-background-rich focus-visible:-outline-offset-4 data-[active]:bg-primary-text data-selected:bg-primary-text"
+            className="h-auto min-h-14 rounded-sm border-0 px-4 py-4 text-base before:hidden hover:bg-background-rich focus-visible:-outline-offset-4 data-[active]:bg-primary-text data-selected:bg-primary-text"
           >
             {option.label}
           </Tab>

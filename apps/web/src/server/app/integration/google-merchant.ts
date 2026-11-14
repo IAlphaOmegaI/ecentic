@@ -9,6 +9,7 @@ import { withContext } from "../../utils/context";
 import { Environment } from "../../utils/environment";
 import { RequestError } from "../../utils/error";
 import * as GoogleMerchantAPI from "../../utils/google-merchant";
+import { GOOGLE_MERCHANT_PLATFORMS } from "../../utils/google-merchant-platform";
 import { normalizeHostname } from "../../utils/tracking";
 import * as GoogleMerchantAccount from "../google-merchant-account";
 import * as GoogleMerchantOffer from "../google-merchant-offer";
@@ -32,7 +33,7 @@ const SUPPLEMENTAL_DATA_SOURCE_NAME = "ecentic Optimizations";
  * WooCommerce's primary accepts the rule patch are unverified — and other
  * platforms have no native Google plugin at all (they'd need Path 2).
  */
-const SUPPORTED_PLATFORMS = ["shopify", "shopify-public"];
+const SUPPORTED_PLATFORMS = GOOGLE_MERCHANT_PLATFORMS;
 
 const unsupportedPlatformError = (platform: string) =>
   new RequestError(

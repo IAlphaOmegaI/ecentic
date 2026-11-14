@@ -1,12 +1,6 @@
 "use client";
 
-import { BoxMinusIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@zenncore/web/components/avatar";
 import type { ColumnDef } from "@zenncore/web/components/data-table";
 import {
   DataTable,
@@ -14,12 +8,11 @@ import {
   DataTablePagination,
   DataTableProvider,
 } from "@zenncore/web/components/data-table";
-import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { usePaginationChangeHandler } from "@/hooks/pagination";
-import { formatPrice } from "@/lib/currency";
+import { normalizePrice } from "@/lib/currency";
 import { formatRelativeTime } from "@/lib/date";
-import { SectionKicker } from "./grid";
+import { EntityMark } from "../[store]/brand/_components/entity-mark";
 
 const WinRateBar = ({ rate }: { rate: number }) => {
   const { bar, text } = (() => {
@@ -61,18 +54,12 @@ const buildColumns = (
 ): ColumnDef<CompetitorsTable.Row>[] => [
   {
     accessorKey: "brand",
-    header: fields.brand,
+    header: () => (
+      <span className="normal-case tracking-normal">{fields.brand}</span>
+    ),
     cell: ({ row }) => (
       <div className="flex items-center gap-2">
-        <Avatar className="size-9 rounded-md bg-background-dimmed">
-          <AvatarImage
-            src={row.original.image ?? "/images/fallback.png"}
-            alt={row.original.brand}
-          />
-          <AvatarFallback className="relative">
-            <Image src="/images/fallback.png" alt="Fallback" fill />
-          </AvatarFallback>
-        </Avatar>
+        <EntityMark name={row.original.brand} className="size-9" />
         <div>
           <p className="font-medium text-foreground-rich">
             {row.original.brand}
@@ -86,7 +73,9 @@ const buildColumns = (
   },
   {
     accessorKey: "lowestPrice",
-    header: fields.price,
+    header: () => (
+      <span className="normal-case tracking-normal">{fields.price}</span>
+    ),
     cell: ({ row }) => {
       // Deliberately shows the OBSERVED price only. A brand whose rows all came
       // from a model has a price stored, but rendering it here beside measured
@@ -101,9 +90,9 @@ const buildColumns = (
       return (
         <div className="flex items-center gap-2">
           <span className="font-medium text-foreground-rich tabular-nums">
-            {formatPrice(price, null)}
+            {normalizePrice(price)}
           </span>
-          <span className="shrink-0 border border-primary/40 bg-primary/10 px-1.5 py-px font-medium text-[10px] text-primary uppercase tracking-wide">
+          <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs">
             {fields.measured}
           </span>
         </div>
@@ -112,12 +101,21 @@ const buildColumns = (
   },
   {
     accessorKey: "winRate",
-    header: fields.winRate,
-    cell: ({ row }) => <WinRateBar rate={row.original.winRate} />,
+    header: () => (
+      <span className="normal-case tracking-normal">{fields.winRate}</span>
+    ),
+    cell: ({ row }) =>
+      row.original.simulations > 0 ? (
+        <WinRateBar rate={row.original.winRate} />
+      ) : (
+        <span className="text-foreground-dimmed">—</span>
+      ),
   },
   {
     accessorKey: "simulations",
-    header: fields.simulations,
+    header: () => (
+      <span className="normal-case tracking-normal">{fields.simulations}</span>
+    ),
     cell: ({ row }) => (
       <span className="text-foreground-dimmed tabular-nums">
         {row.original.simulations}
@@ -126,7 +124,9 @@ const buildColumns = (
   },
   {
     accessorKey: "updatedAt",
-    header: fields.lastUpdated,
+    header: () => (
+      <span className="normal-case tracking-normal">{fields.lastUpdated}</span>
+    ),
     cell: ({ row }) => (
       <span className="text-foreground-dimmed">
         {formatRelativeTime(new Date(row.original.updatedAt), locale)}
@@ -139,7 +139,7 @@ export const CompetitorsTable = ({
   rows,
   pageCount,
   title,
-  kicker,
+  kicker: _kicker,
   action,
   paginated = false,
   ...props
@@ -166,16 +166,11 @@ export const CompetitorsTable = ({
 
   return (
     <>
-      <div className="flex items-end justify-between border-accent-foreground border-b p-4">
+      <div className="flex flex-wrap items-end justify-between gap-3 border-accent-foreground border-b px-4 py-5 sm:px-6">
         <div>
-          {kicker && (
-            <div className="mb-2">
-              <SectionKicker>{kicker}</SectionKicker>
-            </div>
-          )}
-          <p className="font-semibold text-foreground-rich text-lg">
+          <h2 className="font-semibold text-foreground-rich text-lg">
             {resolvedTitle}
-          </p>
+          </h2>
         </div>
         {action}
       </div>
@@ -191,12 +186,11 @@ export const CompetitorsTable = ({
         >
           <DataTable className={cn(!paginated && "border-b-0")}>
             <DataTableEmpty>
-              <div className="flex flex-col items-center justify-center p-8 py-24 text-center">
-                <BoxMinusIcon className="mb-6 size-24" />
-                <p className="font-medium text-2xl text-foreground">
+              <div className="px-4 py-8 sm:px-6">
+                <p className="font-semibold text-foreground-rich text-lg">
                   {translate("states.empty.primary")}
                 </p>
-                <p className="mt-1 text-foreground-dimmed text-lg">
+                <p className="mt-2 text-foreground-dimmed text-sm leading-6">
                   {translate("states.empty.secondary")}
                 </p>
               </div>
@@ -204,6 +198,7 @@ export const CompetitorsTable = ({
           </DataTable>
           {paginated && (
             <DataTablePagination
+              variant="soft"
               labels={{
                 navigation: pagination("navigation"),
                 page: (page, pages) => pagination("page", { page, pages }),

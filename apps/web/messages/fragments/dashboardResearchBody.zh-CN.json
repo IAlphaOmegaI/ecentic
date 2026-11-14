@@ -1,0 +1,19 @@
+{
+  "dashboard": {
+    "discovery": {
+      "method": "每条提示词都会提及你的商店。这些模拟推荐不衡量未提示品牌名称时的品牌认知度，也不代表实时搜索排名。"
+    },
+    "research": {
+      "rank": {
+        "unavailable": {
+          "title": "目录排名尚未连接",
+          "description": "此工作区暂时无法查询 Shopify Global Catalog。你仍可查看店铺访问检查和已保存的比较结果。",
+          "action": {
+            "primary": "查看访问检查",
+            "secondary": "查看已保存的比较"
+          }
+        }
+      }
+    }
+  }
+}

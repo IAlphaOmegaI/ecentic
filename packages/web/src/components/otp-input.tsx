@@ -76,7 +76,7 @@ export const InputOTPSlot = ({
       data-slot="input-otp-slot"
       data-active={isActive}
       className={cn(
-        "relative flex size-12 items-center justify-center border-accent-foreground border-y border-r text-base text-foreground outline-none transition-colors first:border-l aria-invalid:border-error data-[active=true]:z-10 data-[active=true]:outline data-[active=true]:outline-primary data-[active=true]:outline-offset-2 data-[active=true]:aria-invalid:border-error",
+        "relative flex size-12 items-center justify-center border-accent-foreground border-y border-r text-base text-foreground outline-none transition-colors first:rounded-s-lg first:border-l last:rounded-e-lg aria-invalid:border-error data-[active=true]:z-10 data-[active=true]:outline data-[active=true]:outline-primary data-[active=true]:outline-offset-2 data-[active=true]:aria-invalid:border-error",
         className,
       )}
       {...props}

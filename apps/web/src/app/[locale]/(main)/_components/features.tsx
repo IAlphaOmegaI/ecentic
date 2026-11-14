@@ -10,10 +10,10 @@ import { Plus } from "@/components/plus";
 import { Reveal, RevealItem } from "@/components/reveal";
 
 const featureKeys = [
-  { key: "aiScore", icon: BarChartIcon, color: "text-blue-500" },
-  { key: "competitors", icon: ShieldCheckIcon, color: "text-green-500" },
-  { key: "fixes", icon: HammerIcon, color: "text-red-500" },
-  { key: "track", icon: CodeIcon, color: "text-purple-500" },
+  { key: "aiScore", icon: BarChartIcon, color: "text-primary-text" },
+  { key: "competitors", icon: ShieldCheckIcon, color: "text-success" },
+  { key: "fixes", icon: HammerIcon, color: "text-error" },
+  { key: "track", icon: CodeIcon, color: "text-secondary" },
 ] as const;
 
 export const Features = async () => {
@@ -22,7 +22,7 @@ export const Features = async () => {
   return (
     <section
       id="features"
-      className="relative -left-[calc(50vw-50%)] -z-1 w-screen scroll-mt-[5.5rem]"
+      className="relative -left-[calc(50vw-50%)] -z-1 w-screen scroll-mt-22"
     >
       <div className="relative mx-auto max-w-6xl border-accent-foreground border-y">
         <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />

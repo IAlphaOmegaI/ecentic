@@ -1,0 +1,83 @@
+{
+  "dashboard": {
+    "workspace": {
+      "nav": {
+        "label": "Spazio del negozio",
+        "research": "Ricerca IA",
+        "channels": "Canali",
+        "results": "Risultati",
+        "overview": "Panoramica",
+        "products": "Prodotti",
+        "optimize": "Ottimizza"
+      },
+      "sections": {
+        "label": "Sezioni dello spazio di lavoro",
+        "catalog": "Catalogo",
+        "quality": "Qualità dei dati",
+        "summary": "Riepilogo",
+        "comparisons": "Confronti",
+        "brand": "Brand",
+        "questions": "Domande",
+        "competitors": "Concorrenti",
+        "catalogRank": "Posizione nel catalogo",
+        "connections": "Connessioni",
+        "google": "Google",
+        "checks": "Verifica negozio",
+        "access": "Accesso al catalogo",
+        "checkout": "Checkout",
+        "developer": "Strumenti di sviluppo",
+        "shoppingTools": "Strumenti di acquisto",
+        "testCheckout": "Prova il checkout",
+        "compareProfiles": "Confronta profili"
+      },
+      "results": {
+        "title": "Risultati",
+        "description": "Visite provenienti dall’IA e attività dei crawler registrate per questo negozio.",
+        "reportsTitle": "Report di tutti i tuoi negozi",
+        "reportsDescription": "Esporta confronti salvati, dati del catalogo e modifiche alle schede. Questi report riguardano l’intero account.",
+        "action": {
+          "primary": "Apri i report",
+          "secondary": "Consulta la ricerca IA"
+        }
+      },
+      "ready": {
+        "title": "Nessuna attività urgente nei controlli salvati",
+        "description": "Verifica i canali o avvia un nuovo confronto quando cambia il catalogo.",
+        "action": {
+          "primary": "Verifica i canali"
+        }
+      },
+      "reportScope": "Tutti i negozi di questo account",
+      "reportMethod": "Le esportazioni contengono dati salvati. Il miglioramento previsto è una stima, non un risultato misurato.",
+      "downloadError": "Impossibile scaricare il report. Riprova."
+    },
+    "reports": {
+      "title": "Report",
+      "description": "Scarica confronti e dati di catalogo salvati per tutti i tuoi negozi.",
+      "shareable": {
+        "title": "Condividi un report di confronto",
+        "description": "Apri il report pubblico dell’ultimo confronto completato. Controlla il contenuto prima di condividerlo.",
+        "action": {
+          "primary": "Apri il report"
+        }
+      },
+      "action": {
+        "downloadCsv": "Scarica CSV"
+      },
+      "items": {
+        "winRateSummary": {
+          "description": "Risultati per modello dell’ultima analisi completata."
+        },
+        "productPerformance": {
+          "description": "Campi prodotto salvati e tassi di vittoria simulati, suddivisi per modello."
+        },
+        "competitorAnalysis": {
+          "description": "Concorrenti monitorati, prezzi osservati quando disponibili e risultati dei confronti."
+        },
+        "optimizationImpact": {
+          "description": "Modifiche salvate alle schede, date di pubblicazione e stime del modello."
+        }
+      }
+    }
+  }
+}

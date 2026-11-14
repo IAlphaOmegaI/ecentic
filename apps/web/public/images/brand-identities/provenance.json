@@ -1,0 +1,66 @@
+{
+  "retrieved": "2026-11-13",
+  "usage": "Genuine brand identities shown beside saved report references. No endorsement or partnership implied. Fetched once from the brand/source website; no user data is sent to favicon services at runtime.",
+  "assets": [
+    {
+      "name": "bose",
+      "file": "bose.png",
+      "source": "https://www.bose.com/on/demandware.static/Sites-Bose_US-Site/-/default/dw79683a09/images/apple-touch-icon.png",
+      "mime": "image/png"
+    },
+    {
+      "name": "soundcore",
+      "file": "soundcore.png",
+      "source": "https://www.soundcore.com/apple-touch-icon.png",
+      "mime": "image/png"
+    },
+    {
+      "name": "jabra",
+      "file": "jabra.png",
+      "source": "https://www.jabra.com/favicons/jabra/favicon-96x96.png",
+      "mime": "image/png"
+    },
+    {
+      "name": "beatsbydre",
+      "file": "beatsbydre.png",
+      "source": "https://www.beatsbydre.com/assets/resources/images/beats_logo.png",
+      "mime": "image/png"
+    },
+    {
+      "name": "rtings",
+      "file": "rtings.png",
+      "source": "https://i.rtings.com/assets/favicon/current/apple-icon-57x57-43c13a786f7341d3e5ae53df2f00f731de0b409c2bf9a1990b27bee5d5398ffd.png",
+      "mime": "image/png"
+    },
+    {
+      "name": "techradar",
+      "file": "techradar.png",
+      "source": "https://vanilla.futurecdn.net/techradar/1815936/apple-touch-icon.png",
+      "mime": "image/png"
+    },
+    {
+      "name": "theverge",
+      "file": "theverge.png",
+      "source": "https://www.theverge.com/static-assets/icons/favicon.ico",
+      "mime": "image/x-icon"
+    },
+    {
+      "name": "jbl",
+      "file": "jbl.png",
+      "source": "https://www.jbl.com/favicon.ico",
+      "mime": "image/x-icon"
+    },
+    {
+      "name": "sennheiser",
+      "file": "sennheiser.png",
+      "source": "https://www.sennheiser.com/favicon.ico",
+      "mime": "image/x-icon"
+    },
+    {
+      "name": "wirecutter",
+      "file": "wirecutter.png",
+      "source": "https://www-siren.nytimes.com/wirecutter/static/img/apple-touch-icon.png",
+      "mime": "image/png"
+    }
+  ]
+}

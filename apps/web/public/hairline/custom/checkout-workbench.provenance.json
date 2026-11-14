@@ -1,0 +1,32 @@
+{
+  "name": "checkout-workbench",
+  "subject": "ucpPlayground",
+  "meaning": "A checkout test bench with a slotted reader: insert the test card into the terminal.",
+  "part": "test card",
+  "answer": [
+    52,
+    28,
+    98
+  ],
+  "bounds": [
+    [
+      -6,
+      -5,
+      0
+    ],
+    [
+      116,
+      91,
+      137
+    ]
+  ],
+  "scale": 1.72,
+  "figure": "/hairline/custom/checkout-workbench.js",
+  "rest": "apps/web/src/components/hairline/rest/checkout-workbench.json",
+  "sourceSha256": "0f4b2420413fc0c8afd9c8e6a28ea8eb0a413b1ec3214abcbb7117223eada475",
+  "restSha256": "2933438aab9155cc23fa34afb4a6a155c285f6e87168fa36c6101ec1ae5b672a",
+  "engine": "Unmodified fixed Hairline kernel",
+  "interaction": "Fixed rest hit area; 700ms EASE_LIFT tween; bounded reach; linked responses delayed 40ms; loop sleeps after settlement.",
+  "reducedMotion": "SSR rest geometry remains complete. Shared CustomHairlineFigure disables pointer code and asset enhancement for reduced motion.",
+  "validation": "output/dashboard-hairline-2026-11-14/checkout-workbench.validation.txt"
+}

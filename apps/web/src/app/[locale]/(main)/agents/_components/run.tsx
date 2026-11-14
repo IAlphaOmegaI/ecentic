@@ -269,7 +269,7 @@ const Thumbnail = ({ product }: { product: Catalog.Product }) => {
 
   if (!source || broken)
     return (
-      <span className="block size-10 shrink-0 rounded-md bg-background-dimmed" />
+      <span className="block size-10 shrink-0 rounded-sm bg-background-dimmed" />
     );
 
   return (
@@ -281,7 +281,7 @@ const Thumbnail = ({ product }: { product: Catalog.Product }) => {
       loading="lazy"
       referrerPolicy="no-referrer"
       onError={() => setBroken(true)}
-      className="size-10 shrink-0 rounded-md bg-background-dimmed object-cover"
+      className="size-10 shrink-0 rounded-sm bg-background-dimmed object-cover"
     />
   );
 };

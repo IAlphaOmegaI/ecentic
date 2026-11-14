@@ -14,7 +14,7 @@ export const MarketingSkeleton = async ({
           identity ? (
             <span
               aria-hidden
-              className="block size-28 rounded-md bg-background-rich/20 sm:size-36"
+              className="block size-28 rounded-sm bg-background-rich/20 sm:size-36"
             />
           ) : undefined
         }
@@ -39,7 +39,7 @@ export const MarketingSkeleton = async ({
       >
         <div
           aria-hidden="true"
-          className="mt-6 h-10 w-56 max-w-full rounded-md bg-background-rich/20"
+          className="mt-6 h-10 w-56 max-w-full rounded-sm bg-background-rich/20"
         />
       </MarketingHero>
     </MarketingShell>

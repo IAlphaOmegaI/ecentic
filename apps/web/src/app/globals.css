@@ -2,21 +2,25 @@
 @import "@zenncore/web/config/tailwind";
 
 @theme inline {
+  --font-google: var(--font-google-sans), var(--font-cjk-fallback, sans-serif);
   --font-body: var(--font-redhat-display), var(--font-cjk-fallback, sans-serif);
   --font-heading: var(--font-lt-superior), var(--font-cjk-fallback, sans-serif);
-  --font-superior: var(--font-lt-superior), var(--font-cjk-fallback, sans-serif);
+  --font-superior:
+    var(--font-lt-superior), var(--font-cjk-fallback, sans-serif);
 }
 
 /* Keep Latin brand typography; native CJK fonts supply the missing glyphs
    without sending multi-megabyte font files to every browser. */
 html:lang(ja) {
-  --font-cjk-fallback: "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic",
-    "Meiryo", "Noto Sans CJK JP", "Noto Sans JP", sans-serif;
+  --font-cjk-fallback:
+    "Hiragino Kaku Gothic ProN", "Hiragino Sans", "Yu Gothic", "Meiryo",
+    "Noto Sans CJK JP", "Noto Sans JP", sans-serif;
 }
 
 html:lang(zh-CN) {
-  --font-cjk-fallback: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC",
-    "Noto Sans SC", sans-serif;
+  --font-cjk-fallback:
+    "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", "Noto Sans SC",
+    sans-serif;
 }
 
 html:is(:lang(ja), :lang(zh-CN)) :is(h1, h2, h3, h4),
@@ -27,10 +31,10 @@ html:is(:lang(ja), :lang(zh-CN)) .marketing-site :is(h1, h2, h3, h4) {
 }
 
 @theme {
-  --color-cross: #7d8590;
-  --color-band-start: #111111;
-  --color-band-middle: #092645;
-  --color-band-end: #005fd6;
+  --color-cross: var(--color-foreground-dimmed);
+  --color-band-start: var(--color-emphasis);
+  --color-band-middle: var(--color-primary-dimmed);
+  --color-band-end: var(--color-primary);
 }
 
 html {
@@ -73,7 +77,7 @@ html {
   background-color: var(--color-foreground-dimmed);
   background-clip: content-box;
   border: 3px solid transparent;
-  border-radius: 9999px;
+  @apply rounded-full;
 }
 
 ::-webkit-scrollbar-thumb:hover {
@@ -116,13 +120,13 @@ tr {
 @utility animate-gold-shine {
   background-image: linear-gradient(
     90deg,
-    #9a6e0a 0%,
-    #c8920e 18%,
-    #e8b820 36%,
-    #fef090 50%,
-    #e8b820 64%,
-    #c8920e 82%,
-    #9a6e0a 100%
+    var(--color-warning-dimmed) 0%,
+    var(--color-warning) 18%,
+    var(--color-warning-rich) 36%,
+    var(--color-background-rich) 50%,
+    var(--color-warning-rich) 64%,
+    var(--color-warning) 82%,
+    var(--color-warning-dimmed) 100%
   );
   background-size: 200% auto;
   -webkit-background-clip: text;

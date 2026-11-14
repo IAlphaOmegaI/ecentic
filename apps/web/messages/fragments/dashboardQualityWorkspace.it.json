@@ -1,0 +1,79 @@
+{
+  "dashboard": {
+    "qualityWorkspace": {
+      "title": "Qualità dei dati",
+      "description": "Individua i dati prodotto mancanti o non validi e le schede da correggere.",
+      "product": "Prodotto",
+      "productsLabel": "Prodotti",
+      "openProduct": "Apri {product}",
+      "search": "Cerca prodotti o problemi",
+      "scope": {
+        "label": "Ambito dei controlli",
+        "all": "Tutti i controlli",
+        "universal": "Controlli generali",
+        "google": "Google Merchant",
+        "chatgpt": "Feed ChatGPT"
+      },
+      "status": {
+        "label": "Tipo di segnalazione",
+        "all": "Tutte le segnalazioni",
+        "blocker": "Errore bloccante",
+        "warning": "Avviso",
+        "info": "Suggerimento",
+        "ready": "Nessun problema"
+      },
+      "summary": {
+        "label": "Controlli del catalogo per piattaforma",
+        "title": "Senza errori bloccanti o avvisi",
+        "count": "{count, plural, one {# prodotto attivo controllato} many {# prodotti attivi controllati} other {# prodotti attivi controllati}}",
+        "passing": "{count} su {total}",
+        "breakdown": "{blocker} con errori bloccanti, {warning} con avvisi, {info} solo con suggerimenti, {ready} senza problemi."
+      },
+      "method": {
+        "title": "Come funziona",
+        "description": "Questi controlli confrontano i dati salvati dei prodotti attivi con il nostro insieme di regole. Non confermano l’accesso al negozio online né l’accettazione da parte di Google o ChatGPT. I prodotti che ricevono solo suggerimenti sono conteggiati tra quelli senza errori bloccanti o avvisi."
+      },
+      "views": {
+        "label": "Vista della qualità",
+        "issues": "Per problema",
+        "products": "Per prodotto"
+      },
+      "issueCount": "{count, plural, one {# problema} many {# problemi} other {# problemi}}",
+      "productCount": "{count, plural, one {# prodotto} many {# prodotti} other {# prodotti}}",
+      "findings": "{count, plural, one {# segnalazione} many {# segnalazioni} other {# segnalazioni}}",
+      "issuesHint": "Prima gli errori bloccanti, poi gli avvisi e i suggerimenti. In ogni gruppo, i problemi che riguardano più prodotti hanno la precedenza. Un prodotto può comparire sotto più problemi.",
+      "reference": "Consulta le regole di {surface}",
+      "noFindings": "Nessun problema rilevato per questo prodotto nei controlli selezionati.",
+      "action": {
+        "primary": "Apri catalogo",
+        "secondary": "Riprova",
+        "tertiary": "Rimuovi filtri",
+        "quaternary": "Mostra altri prodotti"
+      },
+      "productAction": {
+        "primary": "Apri prodotto"
+      },
+      "searchAction": {
+        "primary": "Cancella ricerca"
+      },
+      "states": {
+        "empty": {
+          "title": "Nessun prodotto attivo da controllare",
+          "description": "Questi controlli includono solo i prodotti attivi. Le bozze e i prodotti archiviati restano nel catalogo, ma non sono inclusi qui."
+        },
+        "error": {
+          "title": "Impossibile caricare i controlli di qualità",
+          "description": "Il catalogo è ancora salvato. Prova a caricare di nuovo i risultati."
+        },
+        "clear": {
+          "title": "Nessun problema in questi controlli",
+          "description": "I prodotti attivi superano i controlli registrati per questa vista. Questo non conferma la loro accettazione da parte di una piattaforma di acquisto."
+        },
+        "noMatches": {
+          "title": "Nessuna segnalazione o prodotto corrispondente",
+          "description": "Prova un’altra ricerca o rimuovi i filtri per vedere l’elenco completo."
+        }
+      }
+    }
+  }
+}

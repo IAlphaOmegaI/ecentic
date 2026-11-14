@@ -1,0 +1,74 @@
+{
+  "dashboard": {
+    "channels": {
+      "title": "Canali",
+      "description": "Mantieni il catalogo collegato, controlla gli invii e prepara il negozio per gli agenti di acquisto.",
+      "source": {
+        "title": "Collegamento del catalogo",
+        "description": "Il catalogo di origine e la sua ultima importazione.",
+        "synced": "Ultima importazione: {date}",
+        "never": "Nessuna importazione registrata",
+        "public": "Importazione del catalogo pubblico. Per pubblicare serve un collegamento autorizzato al negozio.",
+        "action": {
+          "primary": "Gestisci collegamento"
+        }
+      },
+      "google": {
+        "title": "Invii a Google",
+        "description": "Dati salvati dell’account e delle offerte di questo negozio.",
+        "action": {
+          "primary": "Apri Google"
+        },
+        "pending": "In attesa",
+        "verified": "Aggiornamenti verificati",
+        "issues": "Da controllare",
+        "note": "Un aggiornamento verificato non dimostra che Google mostri il prodotto."
+      },
+      "checkout": {
+        "title": "Checkout",
+        "description": "Controlla il profilo di checkout e i prodotti che espone.",
+        "action": {
+          "primary": "Apri checkout"
+        },
+        "scope": "Il profilo di checkout appartiene al tuo account. Le liste di prodotti si riferiscono a questo negozio."
+      },
+      "tools": {
+        "title": "Strumenti del negozio e di sviluppo",
+        "description": "Consulta le prove relative a una funzione specifica quando servono.",
+        "checks": "Controlli del negozio",
+        "access": "Accesso al catalogo",
+        "webmcp": "Strumenti di acquisto",
+        "playground": "Prova checkout",
+        "comparison": "Confronta profili"
+      },
+      "research": {
+        "title": "Cerchi la posizione nel catalogo?",
+        "description": "Le ricerche nel catalogo sono nella sezione Ricerca IA. Misurano un mercato e una query specifici, non la preparazione del negozio.",
+        "action": {
+          "primary": "Apri posizione nel catalogo"
+        }
+      },
+      "status": {
+        "connected": "Collegato",
+        "syncing": "Importazione in corso",
+        "disconnected": "Scollegato",
+        "error": "Da controllare",
+        "unavailable": "Non disponibile",
+        "unsupported": "Origine non supportata",
+        "setup": "Configurazione richiesta",
+        "notConnected": "Non collegato"
+      },
+      "error": {
+        "title": "Informazioni sui canali non disponibili",
+        "description": "Impossibile caricare i collegamenti salvati. Riprova tra un momento.",
+        "action": {
+          "primary": "Riprova"
+        }
+      },
+      "checks": {
+        "title": "Accesso al catalogo",
+        "description": "Controlla i file pubblici e il feed prodotti accessibili agli agenti di acquisto."
+      }
+    }
+  }
+}

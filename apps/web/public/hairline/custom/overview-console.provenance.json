@@ -1,0 +1,32 @@
+{
+  "name": "overview-console",
+  "subject": "overview",
+  "meaning": "A control console with a large dial and two faders: turn the dial to inspect the workspace.",
+  "part": "dial",
+  "answer": [
+    47,
+    31,
+    57
+  ],
+  "bounds": [
+    [
+      -4,
+      -4,
+      0
+    ],
+    [
+      120,
+      79,
+      103
+    ]
+  ],
+  "scale": 1.95,
+  "figure": "/hairline/custom/overview-console.js",
+  "rest": "apps/web/src/components/hairline/rest/overview-console.json",
+  "sourceSha256": "0beed5817f61e07f12980791f05424dcd706d0223cc25c1949861c5d961c0294",
+  "restSha256": "97b7d5f7db7166b8b78f8c0fa1158b807c980413e76e668a0f4752c427112bad",
+  "engine": "Unmodified fixed Hairline kernel",
+  "interaction": "Fixed rest hit area; 700ms EASE_LIFT tween; bounded reach; linked responses delayed 40ms; loop sleeps after settlement.",
+  "reducedMotion": "SSR rest geometry remains complete. Shared CustomHairlineFigure disables pointer code and asset enhancement for reduced motion.",
+  "validation": "output/dashboard-hairline-2026-11-14/overview-console.validation.txt"
+}

@@ -1,7 +1,7 @@
 "use server";
 
 import { resultify } from "@zenncore/utils";
-import { eq } from "drizzle-orm";
+import { and, eq } from "drizzle-orm";
 import { z } from "zod";
 import { formatPrice } from "@/lib/currency";
 import { schema } from "../../../database";
@@ -11,6 +11,7 @@ import { Environment } from "../../../utils/environment";
 import { isIntegrationAuthError } from "../../../utils/error";
 import type { Document } from "../../../utils/repository";
 import { repository } from "../../../utils/repository";
+import { selectUcpGenerationProducts } from "../../../utils/ucp-product-scope";
 import * as Shopify from "../../integration/shopify";
 import * as WooCommerce from "../../integration/woocommerce";
 import * as Product from "../../product";
@@ -198,15 +199,31 @@ URL: ${product.data.url ?? ""}`,
 );
 
 export const generateAllProductStructuredData = withSubscription(
-  async (context) => {
+  async (context, { store }: { store?: string } = {}) => {
+    if (store) {
+      const authorizedStore = await Store.resolveForUser(Environment.SERVER, {
+        store,
+      });
+      if (!authorizedStore.success) return authorizedStore;
+    }
     const products = await Product.find(Environment.SERVER, {
-      where: eq(schema.product.userId, context.session.user.id),
+      where: store
+        ? and(
+            eq(schema.product.userId, context.session.user.id),
+            eq(schema.product.storeId, store),
+          )
+        : eq(schema.product.userId, context.session.user.id),
     });
 
     if (!products.success) return products;
 
+    const candidates = selectUcpGenerationProducts(
+      products.data,
+      context.session.user.id,
+      store,
+    );
     const results = await Promise.all(
-      products.data.map(async (product) => {
+      candidates.map(async (product) => {
         const structured = await resultify(() =>
           generate({
             instructions:

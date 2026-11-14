@@ -1,0 +1,129 @@
+{
+  "dashboard": {
+    "overview": {
+      "description": "Qué necesita atención, qué ha cambiado y qué hacer ahora.",
+      "summary": {
+        "latestWinRate": "Última tasa de victoria simulada",
+        "latestResult": "{wins, plural, one {# victoria} many {# victorias} other {# victorias}} en {total, plural, one {# comparación} many {# comparaciones} other {# comparaciones}}",
+        "change": "{value} puntos porcentuales",
+        "coverage": "Productos comparados",
+        "coverageDetail": "{count, number} de {total, plural, one {# producto del catálogo} many {# productos del catálogo} other {# productos del catálogo}}",
+        "coverageHint": "Según las comparaciones de productos completadas.",
+        "noResult": "Haz tu primer escaneo para ver resultados.",
+        "topPerformer": "Producto con mejor resultado",
+        "opportunity": "Producto por mejorar",
+        "productRate": "Gana el {rate} de sus comparaciones",
+        "updated": "Último escaneo completado {time}",
+        "action": {
+          "primary": "Ver producto",
+          "secondary": "Mejorar este producto",
+          "tertiary": "Elegir productos"
+        },
+        "emptyProduct": "Los resultados de los productos aparecerán después de tu primer escaneo."
+      },
+      "charts": {
+        "recentActivity": "Escaneos recientes",
+        "latestScan": "Último escaneo completado",
+        "action": {
+          "tertiary": "Ver simulaciones",
+          "primary": "Revisar último escaneo"
+        },
+        "winRateTrend": "Tasa de victoria por escaneo",
+        "winRateByModel": "Tasa de victoria media de los productos por modelo",
+        "modelHint": "La media de cada modelo en los productos comparados.",
+        "states": {
+          "noTrend": "Aún no hay escaneos completados."
+        },
+        "change": "Desde el escaneo anterior",
+        "sampleNote": "Cada punto corresponde a un escaneo distinto; los productos y competidores seleccionados pueden variar."
+      },
+      "tabs": {
+        "topProducts": "Productos",
+        "competitors": "Competidores",
+        "agentVisits": "Visitas de IA"
+      },
+      "priorities": {
+        "title": "Próximos pasos",
+        "description": "Completa los datos de producto que faltan y vuelve a comparar.",
+        "fields": {
+          "description": {
+            "title": "Añadir las descripciones que faltan",
+            "detail": "{count, plural, one {# producto no tiene descripción.} many {# productos no tienen descripción.} other {# productos no tienen descripción.}}"
+          },
+          "price": {
+            "title": "Añadir los precios que faltan",
+            "detail": "{count, plural, one {# producto no tiene precio.} many {# productos no tienen precio.} other {# productos no tienen precio.}}"
+          },
+          "sku": {
+            "title": "Añadir los SKU que faltan",
+            "detail": "{count, plural, one {# producto no tiene SKU.} many {# productos no tienen SKU.} other {# productos no tienen SKU.}}"
+          },
+          "complete": {
+            "title": "Los campos básicos están completos",
+            "detail": "Descripciones, precios y SKU comprobados."
+          }
+        },
+        "compare": {
+          "title": "Comparar productos pendientes",
+          "detail": "{count, plural, one {# producto aún no se ha comparado.} many {# productos aún no se han comparado.} other {# productos aún no se han comparado.}}",
+          "complete": {
+            "title": "Todo tu catálogo se ha comparado",
+            "detail": "{count, plural, one {# producto con comparaciones completadas.} many {# productos con comparaciones completadas.} other {# productos con comparaciones completadas.}}"
+          }
+        },
+        "optimize": {
+          "title": "Revisar mejoras de las fichas",
+          "detail": "{count, plural, one {# producto en tu cola de optimización.} many {# productos en tu cola de optimización.} other {# productos en tu cola de optimización.}}",
+          "complete": {
+            "title": "No hay mejoras de fichas en cola",
+            "detail": "Revisa el diagnóstico de tus fichas después del próximo escaneo."
+          }
+        },
+        "action": {
+          "primary": "Revisar datos del producto",
+          "secondary": "Elegir productos",
+          "tertiary": "Abrir Optimizar",
+          "quaternary": "Ver comparaciones"
+        }
+      },
+      "traffic": {
+        "title": "Tráfico de IA registrado",
+        "description": "Eventos registrados en los últimos 30 días.",
+        "referrals": "Visitas desde asistentes de IA",
+        "crawlers": "Solicitudes de agentes y rastreadores",
+        "hint": "Son visitas y solicitudes registradas, no compradores únicos ni compras.",
+        "action": {
+          "primary": "Revisar tráfico de IA"
+        }
+      }
+    },
+    "shared": {
+      "activity": {
+        "simulationPending": "Escaneo en cola — {total, plural, one {# comparación} many {# comparaciones} other {# comparaciones}}",
+        "simulationFailed": "Escaneo fallido — {completed, plural, one {# comparación completada} many {# comparaciones completadas} other {# comparaciones completadas}} de {total, number}"
+      }
+    },
+    "nav": {
+      "assistant": {
+        "title": "Preguntar a Judy",
+        "status": "Vista previa",
+        "description": "Estamos preparando a Judy. El chat y las acciones sobre el catálogo aún no están disponibles; mientras tanto, usa las herramientas del panel.",
+        "name": "Judy"
+      }
+    },
+    "products": {
+      "table": {
+        "overviewTools": {
+          "sort": "Ordenar",
+          "defaultOrder": "Orden predeterminado",
+          "ascending": "Ascendente",
+          "descending": "Descendente",
+          "comparison": "Estado de comparación",
+          "all": "Todos los productos",
+          "compared": "Comparados",
+          "notCompared": "Sin comparar"
+        }
+      }
+    }
+  }
+}

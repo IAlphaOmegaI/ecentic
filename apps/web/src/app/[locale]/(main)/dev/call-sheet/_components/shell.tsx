@@ -33,7 +33,7 @@ export const CallSheetSkeleton = () => (
         {["store", "contact", "company", "rep", "email"].map((field) => (
           <div key={field} className="space-y-2">
             <Line className="h-4 w-24" />
-            <Line className="h-10 w-full rounded-md" />
+            <Line className="h-10 w-full rounded-sm" />
           </div>
         ))}
       </div>

@@ -6,6 +6,11 @@ import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
 import {
+  Collapsible,
+  CollapsiblePanel,
+  CollapsibleTrigger,
+} from "@zenncore/web/components/collapsible";
+import {
   type FormEntries,
   field,
   type GenericForm,
@@ -151,7 +156,7 @@ const Rating = ({
 }) => (
   <span
     className={cn(
-      "flex items-center gap-1 text-[11px] text-foreground-dimmed tabular-nums",
+      "flex items-center gap-1 text-foreground-dimmed text-xs tabular-nums",
       className,
     )}
   >
@@ -195,7 +200,7 @@ const variantAvailability = (
   const quantity = availability.quantity;
   const suffix =
     typeof quantity === "number" && quantity > 0
-      ? translate("availability.quantityLeft", { count: quantity })
+      ? translate("availability.quantityLeft", { count: String(quantity) })
       : "";
 
   const base = ((): { label: string; tone: AvailabilityTone } => {
@@ -234,7 +239,7 @@ const VariantList = ({
         const { label, tone } = variantAvailability(variant, translate);
         return (
           <li
-            className="flex items-center justify-between gap-2 text-[11px] leading-tight"
+            className="flex items-center justify-between gap-2 text-xs leading-tight"
             key={variant.id ?? index}
           >
             <span className="min-w-0 flex-1 truncate text-foreground-dimmed">
@@ -358,7 +363,7 @@ const ProductCard = ({
             src={image}
           />
         ) : (
-          <div className="flex size-full items-center justify-center text-[10px] text-foreground-dimmed/40 uppercase tracking-[0.08em]">
+          <div className="flex size-full items-center justify-center text-foreground-dimmed/40 text-xs">
             {translate("product.noImage")}
           </div>
         )}
@@ -378,14 +383,14 @@ const ProductCard = ({
               </span>
             )}
             {onSale && (
-              <span className="text-[11px] text-foreground-dimmed line-through">
+              <span className="text-foreground-dimmed text-xs line-through">
                 {listPrice}
               </span>
             )}
           </span>
           {variantCount > 1 && (
-            <span className="shrink-0 text-[10px] text-foreground-dimmed uppercase tracking-[0.06em]">
-              {translate("product.variants", { count: variantCount })}
+            <span className="shrink-0 text-foreground-dimmed text-xs">
+              {translate("product.variants", { count: String(variantCount) })}
             </span>
           )}
         </div>
@@ -473,19 +478,22 @@ const ToolView = ({
             "Raw JSON" disclosure used by ProductsCard. */}
         {error && (
           <div>
-            <p className="mb-1 font-medium text-[10px] text-error uppercase tracking-[0.08em]">
+            <p className="mb-1 font-medium text-error text-xs">
               {translate("tool.error")}
             </p>
             <p className="wrap-break-word text-error">{error}</p>
           </div>
         )}
-        <details className="group">
-          <summary className="w-fit cursor-pointer list-none font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em] hover:text-foreground [&::-webkit-details-marker]:hidden">
+        <Collapsible className="group w-full min-w-0">
+          <CollapsibleTrigger
+            className="w-fit"
+            render={<Button variant="soft" color="neutral" />}
+          >
             {translate("tool.rawJson")}
-          </summary>
-          <div className="mt-2 space-y-3">
+          </CollapsibleTrigger>
+          <CollapsiblePanel className="mt-4 space-y-4 bg-transparent duration-200 motion-reduce:transition-none">
             <div>
-              <p className="mb-1 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+              <p className="mb-1 font-medium text-foreground-dimmed text-xs">
                 {translate("tool.arguments")}
               </p>
               <pre className="overflow-x-auto text-foreground/80">
@@ -494,7 +502,7 @@ const ToolView = ({
             </div>
             {output !== undefined && (
               <div>
-                <p className="mb-1 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+                <p className="mb-1 font-medium text-foreground-dimmed text-xs">
                   {translate("tool.result")}
                 </p>
                 <pre className="max-h-64 overflow-auto text-foreground/80">
@@ -502,8 +510,8 @@ const ToolView = ({
                 </pre>
               </div>
             )}
-          </div>
-        </details>
+          </CollapsiblePanel>
+        </Collapsible>
       </div>
     </div>
   );
@@ -543,7 +551,7 @@ const CartView = ({
   );
 
   return (
-    <div className="w-fit overflow-hidden rounded-xl border border-accent-foreground bg-background-rich">
+    <div className="w-fit overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
       <div className="flex items-center justify-between gap-2 border-accent-foreground border-b bg-background-dimmed px-4 py-2.5">
         <div className="flex items-center gap-2">
           <ShoppingCartIcon className="size-4 text-primary" />
@@ -568,7 +576,7 @@ const CartView = ({
               className="flex items-center gap-3 px-4 py-3"
               key={line.id ?? index}
             >
-              <div className="size-12 shrink-0 overflow-hidden rounded-md bg-background-dimmed">
+              <div className="size-12 shrink-0 overflow-hidden rounded-sm bg-background-dimmed">
                 {line.item?.image_url && (
                   // biome-ignore lint/performance/noImgElement: arbitrary store CDNs can't be whitelisted for next/image
                   <img
@@ -638,7 +646,7 @@ const CartView = ({
 };
 
 const ToolLoading = ({ label }: { label: string }) => (
-  <div className="flex items-center gap-2 rounded-xl border border-accent-foreground bg-background-rich px-4 py-3 text-foreground-dimmed text-sm">
+  <div className="flex items-center gap-2 rounded-lg border border-accent-foreground bg-background-rich px-4 py-3 text-foreground-dimmed text-sm">
     <span className="inline-block size-3 animate-spin rounded-full border-2 border-current border-t-transparent" />
     {label}
   </div>
@@ -711,18 +719,23 @@ const ProductsCard = ({
 
   return (
     <div className="space-y-2">
-      <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+      <p className="font-medium text-foreground-dimmed text-xs">
         {translate("catalog.productCount", { count: products.length })}
       </p>
       <ProductGrid products={products} translate={translate} />
-      <details className="group">
-        <summary className="cursor-pointer list-none text-[10px] text-foreground-dimmed uppercase tracking-[0.08em] hover:text-foreground">
+      <Collapsible className="group w-full min-w-0">
+        <CollapsibleTrigger
+          className="w-fit"
+          render={<Button variant="soft" color="neutral" />}
+        >
           {translate("tool.rawJson")}
-        </summary>
-        <pre className="mt-1 max-h-64 overflow-auto rounded-lg border border-accent-foreground bg-background-dimmed p-3 font-mono text-foreground/80 text-xs">
-          {formatJson(output)}
-        </pre>
-      </details>
+        </CollapsibleTrigger>
+        <CollapsiblePanel className="mt-4 bg-transparent duration-200 motion-reduce:transition-none">
+          <pre className="max-h-64 overflow-auto border-accent-foreground border-y bg-background-dimmed p-4 font-mono text-foreground text-xs">
+            {formatJson(output)}
+          </pre>
+        </CollapsiblePanel>
+      </Collapsible>
     </div>
   );
 };
@@ -839,9 +852,9 @@ const MessageQuotaWall = ({ limit }: { limit: number }) => {
   const translate = useTranslations("dashboard.ucpPlaygroundDashboard");
 
   return (
-    <div className="flex flex-col items-center gap-3 rounded-xl border border-accent-foreground bg-background-dimmed px-4 py-6 text-center">
+    <div className="flex flex-col items-center gap-3 rounded-lg border border-accent-foreground bg-background-dimmed px-4 py-6 text-center">
       <p className="font-medium text-foreground-rich text-sm">
-        {translate("quota.title", { limit })}
+        {translate("quota.title", { limit: String(limit) })}
       </p>
       <p className="max-w-sm text-foreground-dimmed text-xs">
         {translate("quota.description")}
@@ -859,7 +872,7 @@ const transport = new DefaultChatTransport<PlaygroundUIMessage>({
 
 type PlaygroundClientProps = {
   /** Public marketing workbench; dashboard sessions retain their compact UI. */
-  appearance?: "default" | "workbench";
+  appearance?: "default" | "workbench" | "dashboard";
   /** Seeds the connect form — the store opened in the dashboard, if any. */
   defaultStoreUrl?: string;
   /** A store already resolved on the server, so the session starts connected. */
@@ -1010,25 +1023,31 @@ export const PlaygroundClient = ({
           "flex flex-1 flex-col items-center justify-center p-8",
           appearance === "workbench" &&
             "relative isolate justify-start overflow-hidden px-8 pt-6 pb-10 max-sm:px-4",
+          appearance === "dashboard" &&
+            "min-w-0 items-stretch justify-start p-0",
         )}
       >
         {appearance === "workbench" && (
           <CommerceFigure
             kind="checkout"
             surface="dark"
-            className="aspect-[5/3] w-full max-w-[440px] max-sm:max-w-[300px]"
+            className="aspect-[5/3] w-full max-w-110 max-sm:max-w-75"
           />
         )}
         <div
           className={cn(
             "w-full max-w-md space-y-4",
             appearance === "workbench" && "max-w-xl",
+            appearance === "dashboard" &&
+              "grid max-w-none space-y-0 lg:grid-cols-3",
           )}
         >
           <div
             className={cn(
               "space-y-1 text-center",
               appearance === "workbench" && "space-y-3 text-left",
+              appearance === "dashboard" &&
+                "space-y-2 border-accent-foreground border-b px-4 py-6 text-left sm:px-6 lg:border-r lg:border-b-0",
             )}
           >
             <h2
@@ -1049,29 +1068,36 @@ export const PlaygroundClient = ({
               {translate("connect.description")}
             </p>
           </div>
-          <InferredForm
+          <div
             className={cn(
-              "flex flex-col gap-3",
-              appearance === "workbench" &&
-                "pt-4 [&_div:has(>input)]:h-12 [&_div:has(>input)]:bg-background-rich [&_div:has(>input)]:px-3 [&_label]:text-background-rich",
+              "space-y-4",
+              appearance === "dashboard" && "px-4 py-6 sm:px-6 lg:col-span-2",
             )}
-            config={connectFormConfig}
-            defaultValues={{ storeUrl: defaultStoreUrl }}
-            onSubmit={handleConnect}
           >
-            <Button
-              className="w-full"
-              color="primary"
-              disabled={isConnecting}
-              type="submit"
+            <InferredForm
+              className={cn(
+                "flex flex-col gap-3",
+                appearance === "workbench" &&
+                  "pt-4 [&_div:has(>input)]:h-12 [&_div:has(>input)]:bg-background-rich [&_div:has(>input)]:px-3 [&_label]:text-background-rich",
+              )}
+              config={connectFormConfig}
+              defaultValues={{ storeUrl: defaultStoreUrl }}
+              onSubmit={handleConnect}
             >
-              {isConnecting && <LoaderIcon className="size-4 animate-spin" />}
-              {isConnecting
-                ? translate("connect.action.connecting")
-                : translate("connect.action.primary")}
-            </Button>
-          </InferredForm>
-          {connectError && <ErrorView message={connectError} />}
+              <Button
+                className={cn("w-full", appearance === "dashboard" && "w-fit")}
+                color="primary"
+                disabled={isConnecting}
+                type="submit"
+              >
+                {isConnecting && <LoaderIcon className="size-4 animate-spin" />}
+                {isConnecting
+                  ? translate("connect.action.connecting")
+                  : translate("connect.action.primary")}
+              </Button>
+            </InferredForm>
+            {connectError && <ErrorView message={connectError} />}
+          </div>
         </div>
       </div>
     );
@@ -1083,7 +1109,8 @@ export const PlaygroundClient = ({
       className={cn(
         "relative flex min-h-40 flex-1 flex-col divide-y divide-accent-foreground",
         appearance === "workbench" &&
-          "h-[700px] min-h-0 bg-background-rich text-foreground max-sm:h-[600px] [&_:is(h2,h3,h4)]:text-foreground-rich!",
+          "h-175 min-h-0 bg-background-rich text-foreground max-sm:h-150 [&_:is(h2,h3,h4)]:text-foreground-rich!",
+        appearance === "dashboard" && "min-h-150 bg-background-rich",
       )}
     >
       {/* Connected store + transport */}
@@ -1098,19 +1125,20 @@ export const PlaygroundClient = ({
             >
               {connection.transport}
             </StatusPill>
-            <span className="min-w-0 truncate font-mono text-[11px] text-foreground-dimmed lowercase">
+            <span className="min-w-0 truncate font-mono text-foreground-dimmed text-xs lowercase">
               {connection.endpoint}
             </span>
           </span>
         </SectionKicker>
         {!lockStore && (
-          <button
-            className="shrink-0 font-medium text-foreground-dimmed text-xs hover:text-foreground"
+          <Button
+            variant="soft"
+            color="neutral"
             onClick={handleDisconnect}
             type="button"
           >
             {translate("session.changeStore")}
-          </button>
+          </Button>
         )}
       </div>
 
@@ -1119,7 +1147,7 @@ export const PlaygroundClient = ({
         <ConversationContent className="mx-auto min-h-full w-full max-w-3xl gap-6 px-4 py-6 sm:px-6">
           {isEmpty ? (
             <div className="flex flex-1 flex-col items-center justify-center gap-6 py-12 text-center">
-              <div className="flex size-12 items-center justify-center rounded-xl border border-accent-foreground bg-background-dimmed">
+              <div className="flex size-12 items-center justify-center rounded-lg border border-accent-foreground bg-background-dimmed">
                 <RobotIcon className="size-6 text-primary" />
               </div>
               <div className="space-y-1.5">
@@ -1189,13 +1217,13 @@ export const PlaygroundClient = ({
                   disabled={isGenerating}
                   onChange={handleTextChange}
                   placeholder={translate("composer.placeholder", {
-                    host: connectedHost,
+                    host: connectedHost ?? hostOf(storeUrl),
                   })}
                   rows={1}
                   value={text}
                 />
                 <div className="flex items-center justify-between gap-2 px-3 pt-1 pb-2.5">
-                  <span className="hidden text-[11px] text-foreground-dimmed sm:block">
+                  <span className="hidden text-foreground-dimmed text-xs sm:block">
                     {translate("composer.hint")}
                   </span>
                   <PromptInputSubmit
@@ -1211,7 +1239,7 @@ export const PlaygroundClient = ({
             </PromptInput>
           )}
           {messageLimit !== undefined && !isOutOfMessages && (
-            <p className="text-center text-[11px] text-foreground-dimmed">
+            <p className="text-center text-foreground-dimmed text-xs">
               {translate("composer.remaining", {
                 remaining: remainingMessages,
                 limit: messageLimit,

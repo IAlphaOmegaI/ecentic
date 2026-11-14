@@ -20,8 +20,6 @@ import * as User from "@/server/app/user";
 
 import { AccountDeletion } from "./lifecycle-controls";
 
-const labelClassName = "font-medium text-sm text-foreground";
-
 export const AccountSection = ({ user }: { user: User.Type }) => {
   const router = useRouter();
   const toast = useToastManager();
@@ -37,7 +35,10 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
             .string()
             .min(1, translate("profile.fields.name.validation")),
           label: translate("profile.fields.name.label"),
-          classList: { field: "col-span-1", label: labelClassName },
+          classList: {
+            field: "col-span-1",
+            label: "font-medium text-sm text-foreground",
+          },
         }),
         surname: field({
           shape: "text",
@@ -45,7 +46,10 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
             .string()
             .min(1, translate("profile.fields.surname.validation")),
           label: translate("profile.fields.surname.label"),
-          classList: { field: "col-span-1", label: labelClassName },
+          classList: {
+            field: "col-span-1",
+            label: "font-medium text-sm text-foreground",
+          },
         }),
         email: field({
           shape: "text",
@@ -53,7 +57,10 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
             .string()
             .email(translate("profile.fields.email.validation")),
           label: translate("profile.fields.email.label"),
-          classList: { field: "col-span-2", label: labelClassName },
+          classList: {
+            field: "sm:col-span-2",
+            label: "font-medium text-sm text-foreground",
+          },
         }),
         role: field({
           shape: "select",
@@ -61,7 +68,10 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
             messages.dashboard.settings.account.profile.roles,
           ),
           label: translate("profile.fields.role.label"),
-          classList: { field: "col-span-2", label: labelClassName },
+          classList: {
+            field: "sm:col-span-2",
+            label: "font-medium text-sm text-foreground",
+          },
         }),
       }) satisfies GenericForm,
     [messages, translate],
@@ -77,7 +87,7 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
             .string()
             .min(1, translate("password.fields.current.validation")),
           label: translate("password.fields.current.label"),
-          classList: { label: labelClassName },
+          classList: { label: "font-medium text-sm text-foreground" },
         }),
         newPassword: field({
           shape: "text",
@@ -86,7 +96,7 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
             .string()
             .min(8, translate("password.fields.new.validation")),
           label: translate("password.fields.new.label"),
-          classList: { label: labelClassName },
+          classList: { label: "font-medium text-sm text-foreground" },
         }),
         confirmPassword: field({
           shape: "text",
@@ -95,7 +105,7 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
             .string()
             .min(8, translate("password.fields.confirm.validation")),
           label: translate("password.fields.confirm.label"),
-          classList: { label: labelClassName },
+          classList: { label: "font-medium text-sm text-foreground" },
         }),
       }) satisfies GenericForm,
     [translate],
@@ -163,156 +173,127 @@ export const AccountSection = ({ user }: { user: User.Type }) => {
 
   return (
     <div className="divide-y divide-accent-foreground">
-      <div className="px-8">
-        <div className="flex items-center justify-between border-accent-foreground border-x p-4">
-          <div>
-            <h3 className="font-semibold text-base text-foreground-rich">
-              {translate("language.title")}
-            </h3>
-            <p className="mt-1 text-foreground-dimmed text-sm">
-              {translate("language.description")}
-            </p>
-          </div>
-          <LanguageSwitcher variant="inline" />
+      <div className="flex flex-wrap items-center justify-between gap-4 px-4 py-6 sm:px-6">
+        <div className="min-w-0">
+          <h3 className="font-semibold text-base text-foreground-rich">
+            {translate("language.title")}
+          </h3>
+          <p className="mt-1 text-foreground-dimmed text-sm">
+            {translate("language.description")}
+          </p>
         </div>
+        <LanguageSwitcher className="min-w-28 rounded-lg bg-background-dimmed px-3 hover:bg-background-dimmed" />
       </div>
 
-      <div className="px-8">
-        <div className="border-accent-foreground border-x p-4">
+      <section className="grid lg:grid-cols-3">
+        <header className="border-accent-foreground border-b px-4 py-6 sm:px-6 lg:border-r lg:border-b-0">
           <h3 className="font-semibold text-base text-foreground-rich">
             {translate("profile.title")}
           </h3>
           <p className="mt-1 text-foreground-dimmed text-sm">
             {translate("profile.description")}
           </p>
-        </div>
-        <div className="-mx-8 border-accent-foreground border-t px-8">
-          <InferredForm
-            config={profile}
-            defaultValues={{
-              name: user.name,
-              surname: user.surname,
-              email: user.email,
-              // @ts-expect-error - user.role is not typed
-              role:
-                user.role ??
-                messages.dashboard.settings.account.profile.roles[0],
-            }}
-            onSubmit={handleProfileSubmit}
-            className="grid grid-cols-2 gap-4 border-accent-foreground border-x p-4"
-          >
-            <div className="col-span-2 -mx-12 border-accent-foreground border-t px-8">
-              <div className="flex justify-end p-4 pb-0">
-                <Button
-                  type="submit"
-                  color="primary"
-                  disabled={isProfilePending}
-                >
-                  {isProfilePending
-                    ? translate("profile.action.saving")
-                    : translate("profile.action.primary")}
-                  {isProfilePending ? (
-                    <LoaderIcon className="size-4 animate-spin" />
-                  ) : (
-                    <ArrowRightIcon className="size-4" />
-                  )}
-                </Button>
-              </div>
-            </div>
-          </InferredForm>
-        </div>
-      </div>
+        </header>
+        <InferredForm
+          config={profile}
+          defaultValues={{
+            name: user.name,
+            surname: user.surname,
+            email: user.email,
+            // @ts-expect-error - user.role is not typed
+            role:
+              user.role ?? messages.dashboard.settings.account.profile.roles[0],
+          }}
+          onSubmit={handleProfileSubmit}
+          className="grid min-w-0 grid-cols-1 gap-4 px-4 pt-6 sm:grid-cols-2 sm:px-6 lg:col-span-2"
+        >
+          <div className="col-span-full -mx-4 flex justify-end border-accent-foreground border-t px-4 py-4 sm:-mx-6 sm:px-6">
+            <Button type="submit" color="primary" disabled={isProfilePending}>
+              {isProfilePending
+                ? translate("profile.action.saving")
+                : translate("profile.action.primary")}
+              {isProfilePending ? (
+                <LoaderIcon className="size-4 animate-spin" />
+              ) : (
+                <ArrowRightIcon className="size-4" />
+              )}
+            </Button>
+          </div>
+        </InferredForm>
+      </section>
 
-      <div className="px-8">
-        <div className="border-accent-foreground border-x p-4">
+      <section className="grid lg:grid-cols-3">
+        <header className="border-accent-foreground border-b px-4 py-6 sm:px-6 lg:border-r lg:border-b-0">
           <h3 className="font-semibold text-base text-foreground-rich">
             {translate("password.title")}
           </h3>
           <p className="mt-1 text-foreground-dimmed text-sm">
             {translate("password.description")}
           </p>
-        </div>
-        <div className="-mx-8 border-accent-foreground border-t px-8">
-          <InferredForm
-            config={password}
-            onSubmit={handlePasswordSubmit}
-            className="grid grid-cols-1 gap-4 border-accent-foreground border-x p-4"
-          >
-            <div className="col-span-1 -mx-12 border-accent-foreground border-t px-8">
-              <div className="flex justify-end p-4 pb-0">
-                <Button
-                  type="submit"
-                  color="primary"
-                  disabled={isPasswordPending}
-                >
-                  {isPasswordPending
-                    ? translate("password.action.updating")
-                    : translate("password.action.primary")}
-                  {isPasswordPending ? (
-                    <LoaderIcon className="size-4 animate-spin" />
-                  ) : (
-                    <ArrowRightIcon className="size-4" />
-                  )}
-                </Button>
-              </div>
-            </div>
-          </InferredForm>
-        </div>
-      </div>
-
-      <div className="px-8">
-        <div className="flex justify-between border-accent-foreground border-x p-4">
-          <div>
-            <h3 className="font-semibold text-base text-foreground-rich">
-              {translate("session.title")}
-            </h3>
-            <p className="mt-1 text-foreground-dimmed text-sm">
-              {translate("session.description")}
-            </p>
+        </header>
+        <InferredForm
+          config={password}
+          onSubmit={handlePasswordSubmit}
+          className="grid min-w-0 grid-cols-1 gap-4 px-4 pt-6 sm:px-6 lg:col-span-2"
+        >
+          <div className="-mx-4 flex justify-end border-accent-foreground border-t px-4 py-4 sm:-mx-6 sm:px-6">
+            <Button type="submit" color="primary" disabled={isPasswordPending}>
+              {isPasswordPending
+                ? translate("password.action.updating")
+                : translate("password.action.primary")}
+              {isPasswordPending ? (
+                <LoaderIcon className="size-4 animate-spin" />
+              ) : (
+                <ArrowRightIcon className="size-4" />
+              )}
+            </Button>
           </div>
-          <Button
-            variant="outline"
-            color="neutral"
-            className="shrink-0"
-            onClick={handleSignOut}
-            disabled={isSignOutPending}
-          >
-            {isSignOutPending ? (
-              <LoaderIcon className="size-4 animate-spin" />
-            ) : (
-              <LogOutIcon className="size-4" />
-            )}
-            {isSignOutPending
-              ? translate("session.action.signingOut")
-              : translate("session.action.primary")}
-          </Button>
-        </div>
-      </div>
+        </InferredForm>
+      </section>
 
-      <div className="px-8">
-        <div className="border-accent-foreground border-x p-4">
+      <section className="flex flex-wrap items-center justify-between gap-4 px-4 py-6 sm:px-6">
+        <div>
+          <h3 className="font-semibold text-base text-foreground-rich">
+            {translate("session.title")}
+          </h3>
+          <p className="mt-1 text-foreground-dimmed text-sm">
+            {translate("session.description")}
+          </p>
+        </div>
+        <Button
+          variant="soft"
+          color="neutral"
+          className="shrink-0"
+          onClick={handleSignOut}
+          disabled={isSignOutPending}
+        >
+          {isSignOutPending ? (
+            <LoaderIcon className="size-4 animate-spin" />
+          ) : (
+            <LogOutIcon className="size-4" />
+          )}
+          {isSignOutPending
+            ? translate("session.action.signingOut")
+            : translate("session.action.primary")}
+        </Button>
+      </section>
+
+      <section>
+        <header className="px-4 pt-6 sm:px-6">
           <h3 className="font-semibold text-base text-error">
             {translate("danger.title")}
           </h3>
           <p className="mt-1 text-foreground-dimmed text-sm">
             {translate("danger.description")}
           </p>
+        </header>
+        <div className="flex flex-wrap items-center justify-between gap-4 px-4 py-6 sm:px-6">
+          <p className="font-medium text-foreground text-sm">
+            {translate("danger.prompt")}
+          </p>
+          <AccountDeletion />
         </div>
-        <div className="-mx-8 border-accent-foreground border-t px-8">
-          <div className="border-accent-foreground border-x">
-            <div className="-mx-8 px-8">
-              <div className="p-4">
-                <div className="flex items-center justify-between gap-4 rounded-lg border border-error/20 bg-error/5 p-4">
-                  <p className="font-medium text-foreground text-sm">
-                    {translate("danger.prompt")}
-                  </p>
-                  <AccountDeletion />
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      </section>
     </div>
   );
 };

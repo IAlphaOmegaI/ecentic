@@ -1,12 +1,12 @@
 "use client";
 
+import { CommerceChartActivity_2Icon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
-import Image from "next/image";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import {
-  Area,
-  AreaChart,
   CartesianGrid,
+  Line,
+  LineChart,
   ResponsiveContainer,
   Tooltip,
   XAxis,
@@ -14,37 +14,13 @@ import {
 } from "recharts";
 import type { TrafficTimeSeriesPoint } from "@/server/app/tracking";
 
-const MODELS = [
-  {
-    key: "chatgpt" as const,
-    label: "ChatGPT",
-    color: "var(--color-primary)",
-    logo: "/images/chatgpt.svg",
-  },
-  {
-    key: "claude" as const,
-    label: "Claude",
-    color: "var(--color-warning)",
-    logo: "/images/claude.svg",
-  },
-  {
-    key: "gemini" as const,
-    label: "Gemini",
-    color: "var(--color-success)",
-    logo: "/images/gemini.svg",
-  },
-  {
-    key: "perplexity" as const,
-    label: "Perplexity",
-    color: "var(--color-info)",
-    logo: "/images/perplexity.svg",
-  },
-];
-
-const formatDate = (date: string, locale: string) => {
-  const parsed = new Date(`${date}T00:00:00`);
-  return parsed.toLocaleDateString(locale, { month: "short", day: "numeric" });
-};
+// The accessor groups provider families, including their crawlers. These are
+// deliberately not labelled as visits from the corresponding chat products.
+const PROVIDERS = [
+  { key: "chatgpt", label: "OpenAI", color: "var(--color-primary)" },
+  { key: "claude", label: "Anthropic", color: "var(--color-warning)" },
+  { key: "gemini", label: "Google", color: "var(--color-success)" },
+] as const;
 
 export namespace AgentVisitsChart {
   export type Props = {
@@ -58,126 +34,158 @@ export const AgentVisitsChart = ({
   className,
 }: AgentVisitsChart.Props) => {
   const locale = useLocale();
+  const translate = useTranslations("dashboard.traffic.chart");
+  const number = new Intl.NumberFormat(locale);
+  const compactNumber = new Intl.NumberFormat(locale, {
+    notation: "compact",
+    maximumFractionDigits: 1,
+  });
   const maximum = Math.max(
-    1,
-    ...data.map((point) => point.chatgpt + point.claude + point.gemini),
+    0,
+    ...data.flatMap((point) => [point.chatgpt, point.claude, point.gemini]),
   );
+  const formatDate = (date: string) =>
+    new Date(`${date}T00:00:00`).toLocaleDateString(locale, {
+      month: "short",
+      day: "numeric",
+    });
 
   return (
-    <div className={cn("flex flex-col gap-4", className)}>
-      <div className="flex items-center gap-6">
-        {MODELS.map((model) => (
-          <div key={model.key} className="flex items-center gap-2">
-            <Image
-              src={model.logo}
-              alt={model.label}
-              width={16}
-              height={16}
-              className="size-4"
+    <figure className={cn("m-0 min-w-0", className)}>
+      <figcaption>
+        <h3 className="font-semibold text-base text-foreground-rich">
+          {translate("title")}
+        </h3>
+        <p className="mt-1 text-foreground-dimmed text-sm leading-5">
+          {translate("scope")}
+        </p>
+      </figcaption>
+      <ul className="mt-4 flex flex-wrap gap-x-5 gap-y-2">
+        {PROVIDERS.map((provider) => (
+          <li key={provider.key} className="flex items-center gap-2 text-sm">
+            <span
+              aria-hidden
+              className="h-0.5 w-4"
+              style={{ backgroundColor: provider.color }}
             />
-            <span className="text-foreground-dimmed text-sm">
-              {model.label}
-            </span>
-          </div>
+            <span className="text-foreground">{provider.label}</span>
+          </li>
         ))}
-      </div>
+      </ul>
 
-      <div className="h-64 w-full">
-        <ResponsiveContainer width="100%" height="100%">
-          <AreaChart
-            data={data}
-            margin={{ top: 6, right: 0, left: 0, bottom: 0 }}
-          >
-            <CartesianGrid
-              stroke="var(--color-foreground-dimmed)"
-              strokeOpacity={0.14}
-              vertical={false}
-            />
-            <XAxis
-              dataKey="date"
-              tickFormatter={(value: string) => formatDate(value, locale)}
-              tick={{
-                fill: "var(--color-foreground-dimmed)",
-                fontSize: 11,
-              }}
-              tickLine={false}
-              axisLine={false}
-              interval="preserveStartEnd"
-            />
-            <YAxis
-              hide
-              domain={[0, Math.ceil(maximum * 1.1)]}
-              allowDecimals={false}
-            />
-            <Tooltip
-              cursor={{
-                stroke: "var(--color-foreground-dimmed)",
-                strokeOpacity: 0.35,
-              }}
-              content={({ active, payload, label }) => {
-                if (!active || !payload || payload.length === 0) return null;
+      {maximum === 0 ? (
+        <div className="flex min-h-56 flex-col justify-center gap-3 py-6">
+          <CommerceChartActivity_2Icon
+            aria-hidden
+            className="size-8 text-primary"
+          />
+          <p className="max-w-sm text-foreground-dimmed text-sm leading-6">
+            {translate("empty")}
+          </p>
+        </div>
+      ) : (
+        <div className="mt-6 h-56 w-full min-w-0">
+          <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+            <LineChart
+              accessibilityLayer
+              aria-label={translate("accessibleLabel")}
+              data={data}
+              margin={{ top: 8, right: 10, left: 0, bottom: 0 }}
+            >
+              <CartesianGrid
+                stroke="var(--color-accent-foreground)"
+                vertical={false}
+              />
+              <XAxis
+                dataKey="date"
+                tickFormatter={formatDate}
+                tick={{
+                  fill: "var(--color-foreground-dimmed)",
+                  fontSize: "var(--text-xs)",
+                }}
+                tickLine={false}
+                axisLine={false}
+                minTickGap={28}
+                interval="preserveStartEnd"
+                tickMargin={10}
+              />
+              <YAxis
+                width={38}
+                domain={[0, Math.max(1, Math.ceil(maximum * 1.1))]}
+                allowDecimals={false}
+                tickCount={4}
+                tickFormatter={(value: number) => compactNumber.format(value)}
+                tick={{
+                  fill: "var(--color-foreground-dimmed)",
+                  fontSize: "var(--text-xs)",
+                }}
+                tickLine={false}
+                axisLine={false}
+              />
+              <Tooltip
+                cursor={{
+                  stroke: "var(--color-foreground-dimmed)",
+                  strokeOpacity: 0.4,
+                }}
+                content={({ active, payload, label }) => {
+                  if (!active || !payload?.length) return null;
 
-                return (
-                  <div className="rounded-md border border-accent-foreground bg-background-rich px-3 py-2 shadow-md">
-                    <p className="mb-1.5 text-foreground-dimmed text-xs">
-                      {formatDate(String(label), locale)}
-                    </p>
-                    {MODELS.map((model) => {
-                      const entry = payload.find(
-                        (item) => item.dataKey === model.key,
-                      );
-                      const value =
-                        typeof entry?.value === "number" ? entry.value : 0;
+                  return (
+                    <div className="rounded-lg border border-background-rich/15 bg-emphasis-dimmed px-4 py-3 text-background-rich shadow-lg">
+                      <p className="mb-2 text-background-rich/70 text-xs">
+                        {formatDate(String(label))}
+                      </p>
+                      {PROVIDERS.map((provider) => {
+                        const entry = payload.find(
+                          (item) => item.dataKey === provider.key,
+                        );
+                        const value =
+                          typeof entry?.value === "number" ? entry.value : 0;
 
-                      return (
-                        <div
-                          key={model.key}
-                          className="flex items-center justify-between gap-6 py-0.5"
-                        >
-                          <div className="flex items-center gap-2">
-                            <Image
-                              src={model.logo}
-                              alt={model.label}
-                              width={20}
-                              height={20}
-                              className="size-5"
-                            />
-                            <span className="text-foreground text-sm">
-                              {model.label}
+                        return (
+                          <div
+                            key={provider.key}
+                            className="flex items-center justify-between gap-8 py-1 text-sm"
+                          >
+                            <span>{provider.label}</span>
+                            <span className="font-semibold tabular-nums">
+                              {number.format(value)}
                             </span>
                           </div>
-                          <span className="font-medium text-foreground-rich text-sm tabular-nums">
-                            {value}
-                          </span>
-                        </div>
-                      );
-                    })}
-                  </div>
-                );
-              }}
-            />
-            {MODELS.map((model) => (
-              <Area
-                key={model.key}
-                type="monotone"
-                dataKey={model.key}
-                stroke={model.color}
-                strokeWidth={1.5}
-                fill="var(--color-primary)"
-                fillOpacity={0.08}
-                dot={false}
-                activeDot={{
-                  r: 4,
-                  fill: "var(--color-background-rich)",
-                  stroke: model.color,
-                  strokeWidth: 2,
+                        );
+                      })}
+                    </div>
+                  );
                 }}
-                isAnimationActive={false}
               />
-            ))}
-          </AreaChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
+              {PROVIDERS.map((provider) => (
+                <Line
+                  key={provider.key}
+                  type="linear"
+                  dataKey={provider.key}
+                  stroke={provider.color}
+                  strokeWidth={2}
+                  dot={
+                    data.length === 1
+                      ? { r: 4, fill: provider.color, strokeWidth: 0 }
+                      : false
+                  }
+                  activeDot={{
+                    r: 4,
+                    fill: "var(--color-background-rich)",
+                    stroke: provider.color,
+                    strokeWidth: 2,
+                  }}
+                  isAnimationActive={false}
+                />
+              ))}
+            </LineChart>
+          </ResponsiveContainer>
+        </div>
+      )}
+      <p className="mt-3 text-foreground-dimmed text-xs leading-5">
+        {translate("hint")}
+      </p>
+    </figure>
   );
 };

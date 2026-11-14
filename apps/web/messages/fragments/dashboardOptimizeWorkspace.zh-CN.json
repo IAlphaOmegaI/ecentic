@@ -1,0 +1,94 @@
+{
+  "dashboard": {
+    "optimizeWorkspace": {
+      "title": "优化",
+      "description": "根据比较结果改进商品信息。发布前请核实内容。",
+      "action": {
+        "primary": "生成并发布",
+        "secondary": "查看商品信息",
+        "tertiary": "检查数据质量",
+        "quaternary": "重试"
+      },
+      "queue": {
+        "title": "下一步改进哪些商品",
+        "description": "从模拟胜率最低的商品开始，打开商品即可查看比较依据。",
+        "sample": "此列表采用已保存的诊断建议。如需完整检查有效商品目录，请前往“数据质量”。",
+        "count": "{count, plural, other {显示#件商品}}"
+      },
+      "search": "搜索商品或SKU…",
+      "tabs": {
+        "queue": "待查看",
+        "published": "已发布",
+        "dismissed": "已忽略"
+      },
+      "summary": {
+        "candidates": "可发布的候选商品",
+        "manual": "需手动修改",
+        "published": "发布记录"
+      },
+      "row": {
+        "rate": "模拟胜率",
+        "manual": "手动修改",
+        "ready": "支持发布",
+        "context": "已记录的模型：{models}"
+      },
+      "method": {
+        "title": "此列表如何生成",
+        "description": "候选商品的已记录胜率低于55%。已忽略的商品和过去14天内发布过的商品信息不会列入发布候选。候选商品不代表已有草稿。“生成并发布”会生成新文案，并立即替换店铺中的商品信息。这些建议不预测销量或未来胜率。"
+      },
+      "states": {
+        "empty": {
+          "title": "暂无待查看的建议",
+          "description": "此店铺暂无商品信息建议。检查商品数据或运行比较，寻找下一步改进方向。"
+        },
+        "filtered": {
+          "title": "没有匹配的商品",
+          "description": "请尝试其他商品名称或SKU。"
+        },
+        "error": {
+          "title": "无法加载列表",
+          "description": "商品数据仍已保存。请尝试重新加载列表。"
+        }
+      },
+      "confirmation": {
+        "title": "发布新的商品信息？",
+        "description": "为{title}生成新标题和描述，并发布到已连接的店铺。这会直接替换现有商品信息，不设单独的草稿审核步骤。",
+        "bulkTitle": "发布此店铺的更改？",
+        "bulkDescription": "{count, plural, other {为此店铺的#件符合条件的商品生成并发布新标题和描述。现有商品信息将被替换。}}",
+        "storeTitle": "优化已连接的店铺？",
+        "storeDescription": "写入商品结构化数据；对于Shopify，还会写入店铺资料。为此店铺符合条件的商品生成并发布文案。这可能修改多项已发布内容。",
+        "action": {
+          "primary": "确认并发布",
+          "secondary": "继续查看"
+        }
+      },
+      "bulk": {
+        "action": "发布符合条件的商品"
+      },
+      "store": {
+        "action": "优化店铺"
+      },
+      "toast": {
+        "failed": "未能完成更改",
+        "failedDescription": "请重试。如果发布已经开始，请先检查商品再重试。",
+        "published": "{count, plural, other {已发布#件商品信息}}",
+        "partial": "已发布{published}件，{failed}件未能完成。请检查剩余商品后再重试。",
+        "saved": "列表已更新"
+      },
+      "history": {
+        "unmeasured": "需要重新比较才能衡量结果。",
+        "undated": "暂无发布时间"
+      },
+      "diagnostics": {
+        "content": "补充实用商品信息",
+        "contentHint": "检查已保存的标题和描述，补充准确的规格和相关用途。",
+        "structured_data": "检查结构化数据",
+        "structured_dataHint": "检查商品的结构化数据，仅添加经过核实的属性。",
+        "seo": "添加商品图片",
+        "seoHint": "先在数据源中添加真实商品图片，再同步目录。",
+        "platform": "连接发布权限",
+        "platformHint": "此目录无法直接发布商品信息更改。请连接Shopify或WooCommerce，或手动更新数据源。"
+      }
+    }
+  }
+}

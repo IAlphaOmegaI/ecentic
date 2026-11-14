@@ -1,9 +1,9 @@
 "use client";
 
-import { CheckIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
+import { Checkbox } from "@zenncore/web/components/checkbox";
 import { ScrollArea } from "@zenncore/web/components/scroll-area";
 import {
   Select,
@@ -18,7 +18,6 @@ import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useOnboardingError } from "@/app/[locale]/(auth)/onboarding/_components/use-onboarding-error";
 import { Link } from "@/i18n/navigation";
-import { Spring } from "@/lib/animations";
 import { callOnboardingAction } from "@/lib/onboarding-errors";
 import type * as Competitor from "@/server/app/competitor";
 import * as GoogleMerchant from "@/server/app/integration/google-merchant";
@@ -30,6 +29,8 @@ export namespace MerchantTab {
     onSuccess?: (competitors: Competitor.Type[]) => void;
     store: string;
     className?: string;
+    /** Compact, flush presentation inside the store dashboard. */
+    dashboard?: boolean;
   };
 }
 
@@ -63,6 +64,7 @@ export const MerchantTab = ({
   onSuccess,
   store,
   className,
+  dashboard = false,
 }: MerchantTab.Props) => {
   const toast = useToastManager();
   const formatError = useOnboardingError();
@@ -201,9 +203,18 @@ export const MerchantTab = ({
 
   return (
     <div
-      className={cn("relative flex h-full flex-col overflow-hidden", className)}
+      className={cn(
+        "relative flex h-full flex-col overflow-hidden",
+        dashboard && "h-auto min-h-64 bg-background-rich",
+        className,
+      )}
     >
-      <div className="border-accent-foreground border-b bg-background-dimmed p-4">
+      <div
+        className={cn(
+          "border-accent-foreground border-b bg-background-dimmed p-4",
+          dashboard && "bg-background-rich py-6 sm:px-6",
+        )}
+      >
         <p className="mb-1 font-medium text-foreground text-sm">
           {translate("label")}
         </p>
@@ -362,26 +373,19 @@ export const MerchantTab = ({
                 const higher = percent(rival.higherPositionRate);
 
                 return (
-                  <motion.button
+                  // biome-ignore lint/a11y/noLabelWithoutControl: package Checkbox renders a native input inside this label
+                  <label
                     key={rival.domain}
-                    type="button"
-                    onClick={() => toggle(rival.domain)}
-                    initial={{ opacity: 0, y: 8 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={Spring.Snappy}
                     className={cn(
-                      "flex w-full items-center gap-3 border-accent-foreground border-b p-3 text-left transition-colors last:border-b-0 hover:bg-background-dimmed/40",
+                      "flex w-full cursor-pointer items-center gap-3 border-accent-foreground border-b p-3 text-left transition-colors last:border-b-0 hover:bg-background-dimmed/40",
                       isSelected && "bg-primary/5",
                     )}
                   >
-                    <span
-                      className={cn(
-                        "flex size-5 shrink-0 items-center justify-center border border-accent-foreground",
-                        isSelected && "border-primary bg-primary text-white",
-                      )}
-                    >
-                      {isSelected && <CheckIcon className="size-3.5" />}
-                    </span>
+                    <Checkbox
+                      checked={isSelected}
+                      onCheckedChange={() => toggle(rival.domain)}
+                      aria-label={rival.domain}
+                    />
 
                     <span className="w-8 shrink-0 font-medium text-foreground-dimmed text-xs tabular-nums">
                       #{rival.rank}
@@ -400,7 +404,7 @@ export const MerchantTab = ({
                           .join(" · ")}
                       </span>
                     </span>
-                  </motion.button>
+                  </label>
                 );
               })}
             </ScrollArea>

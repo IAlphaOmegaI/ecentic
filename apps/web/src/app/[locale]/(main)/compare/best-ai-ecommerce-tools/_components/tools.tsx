@@ -65,7 +65,7 @@ export const Tools = async () => {
                     "overscroll-y-auto focus-visible:outline-2 focus-visible:outline-primary-text",
                 }}
               >
-                <Table className="min-w-[56rem] border-b-0 bg-background text-left">
+                <Table className="min-w-224 border-b-0 bg-background text-left">
                   <TableHeader>
                     <TableRow>
                       {columns.map((column) => (

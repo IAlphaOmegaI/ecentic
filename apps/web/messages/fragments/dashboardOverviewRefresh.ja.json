@@ -1,0 +1,129 @@
+{
+  "dashboard": {
+    "overview": {
+      "description": "対応が必要な項目、変化、次に行うことを確認できます。",
+      "summary": {
+        "latestWinRate": "最新のシミュレーション勝率",
+        "latestResult": "{total, plural, other {#件の比較}}で{wins, plural, other {#勝}}",
+        "change": "{value}パーセントポイント",
+        "coverage": "比較済み商品",
+        "coverageDetail": "{total, plural, other {カタログ内の商品#件}}中{count, number}件",
+        "coverageHint": "完了した商品比較に基づきます。",
+        "noResult": "最初のスキャンを実行すると、結果を確認できます。",
+        "topPerformer": "最も好成績の商品",
+        "opportunity": "改善候補の商品",
+        "productRate": "比較の{rate}で勝利",
+        "updated": "最後に完了したスキャン：{time}",
+        "action": {
+          "primary": "商品を見る",
+          "secondary": "この商品を改善",
+          "tertiary": "商品を選択"
+        },
+        "emptyProduct": "最初のスキャン後に商品の結果が表示されます。"
+      },
+      "charts": {
+        "recentActivity": "最近のスキャン",
+        "latestScan": "最後に完了したスキャン",
+        "action": {
+          "tertiary": "シミュレーションを見る",
+          "primary": "最新スキャンを確認"
+        },
+        "winRateTrend": "スキャンごとの勝率",
+        "winRateByModel": "モデル別の平均商品勝率",
+        "modelHint": "比較済み商品の勝率をモデルごとに平均した値です。",
+        "states": {
+          "noTrend": "完了したスキャンはまだありません。"
+        },
+        "change": "前回のスキャンからの変化",
+        "sampleNote": "各点は個別のスキャンです。選択された商品や競合はスキャンごとに異なる場合があります。"
+      },
+      "tabs": {
+        "topProducts": "商品",
+        "competitors": "競合",
+        "agentVisits": "AIからの訪問"
+      },
+      "priorities": {
+        "title": "次のステップ",
+        "description": "不足している商品情報を補い、もう一度比較しましょう。",
+        "fields": {
+          "description": {
+            "title": "不足している商品説明を追加",
+            "detail": "{count, plural, other {#件の商品に説明がありません。}}"
+          },
+          "price": {
+            "title": "未設定の価格を追加",
+            "detail": "{count, plural, other {#件の商品に価格がありません。}}"
+          },
+          "sku": {
+            "title": "未設定のSKUを追加",
+            "detail": "{count, plural, other {#件の商品にSKUがありません。}}"
+          },
+          "complete": {
+            "title": "基本の商品項目は入力済みです",
+            "detail": "説明、価格、SKUを確認しました。"
+          }
+        },
+        "compare": {
+          "title": "未比較の商品を比較",
+          "detail": "{count, plural, other {#件の商品がまだ比較されていません。}}",
+          "complete": {
+            "title": "カタログ内の全商品を比較済みです",
+            "detail": "{count, plural, other {#件の商品で比較が完了しています。}}"
+          }
+        },
+        "optimize": {
+          "title": "商品ページの改善候補を確認",
+          "detail": "{count, plural, other {#件の商品が最適化待ちです。}}",
+          "complete": {
+            "title": "待機中の改善候補はありません",
+            "detail": "次のスキャン後に商品ページの診断を確認してください。"
+          }
+        },
+        "action": {
+          "primary": "商品情報を確認",
+          "secondary": "商品を選択",
+          "tertiary": "最適化を開く",
+          "quaternary": "比較を見る"
+        }
+      },
+      "traffic": {
+        "title": "記録されたAIアクセス",
+        "description": "過去30日間に記録されたイベントです。",
+        "referrals": "AIからの参照アクセス",
+        "crawlers": "エージェントとクローラーのリクエスト",
+        "hint": "記録された訪問とリクエストの件数です。買い物客の実人数や購入件数ではありません。",
+        "action": {
+          "primary": "AIアクセスを確認"
+        }
+      }
+    },
+    "shared": {
+      "activity": {
+        "simulationPending": "スキャン待機中 — {total, plural, other {#件の比較}}",
+        "simulationFailed": "スキャンに失敗しました — 全{total, number}件中{completed, plural, other {#件の比較が完了}}"
+      }
+    },
+    "nav": {
+      "assistant": {
+        "title": "Judyに質問",
+        "status": "プレビュー",
+        "description": "Judyは開発中です。チャットやカタログの操作はまだ利用できません。それまではダッシュボードのツールをご利用ください。",
+        "name": "Judy"
+      }
+    },
+    "products": {
+      "table": {
+        "overviewTools": {
+          "sort": "並べ替え",
+          "defaultOrder": "標準の順序",
+          "ascending": "昇順",
+          "descending": "降順",
+          "comparison": "比較状況",
+          "all": "すべての商品",
+          "compared": "比較済み",
+          "notCompared": "未比較"
+        }
+      }
+    }
+  }
+}

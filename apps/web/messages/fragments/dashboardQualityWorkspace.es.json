@@ -1,0 +1,79 @@
+{
+  "dashboard": {
+    "qualityWorkspace": {
+      "title": "Calidad de los datos",
+      "description": "Detecta los datos de producto que faltan o no son válidos y revisa las fichas que necesitan atención.",
+      "product": "Producto",
+      "productsLabel": "Productos",
+      "openProduct": "Abrir {product}",
+      "search": "Buscar productos o problemas",
+      "scope": {
+        "label": "Ámbito de las comprobaciones",
+        "all": "Todas",
+        "universal": "Comprobaciones generales",
+        "google": "Google Merchant",
+        "chatgpt": "Feed de ChatGPT"
+      },
+      "status": {
+        "label": "Tipo de resultado",
+        "all": "Todos los resultados",
+        "blocker": "Bloqueo",
+        "warning": "Advertencia",
+        "info": "Recomendación",
+        "ready": "Sin incidencias"
+      },
+      "summary": {
+        "label": "Comprobaciones del catálogo por plataforma",
+        "title": "Sin bloqueos ni advertencias",
+        "count": "{count, plural, one {# producto activo comprobado} many {# productos activos comprobados} other {# productos activos comprobados}}",
+        "passing": "{count} de {total}",
+        "breakdown": "{blocker} con bloqueos, {warning} con advertencias, {info} solo con recomendaciones y {ready} sin incidencias."
+      },
+      "method": {
+        "title": "Cómo funciona",
+        "description": "Estas comprobaciones revisan los datos guardados de los productos activos según nuestro conjunto de reglas. No confirman el acceso a la tienda en línea ni la aceptación por parte de Google o ChatGPT. Los productos que solo tienen recomendaciones cuentan como productos sin bloqueos ni advertencias."
+      },
+      "views": {
+        "label": "Vista de calidad",
+        "issues": "Por problema",
+        "products": "Por producto"
+      },
+      "issueCount": "{count, plural, one {# problema} many {# problemas} other {# problemas}}",
+      "productCount": "{count, plural, one {# producto} many {# productos} other {# productos}}",
+      "findings": "{count, plural, one {# resultado} many {# resultados} other {# resultados}}",
+      "issuesHint": "Primero aparecen los bloqueos, después las advertencias y, por último, las recomendaciones. Dentro de cada grupo, se priorizan los problemas que afectan a más productos. Un producto puede aparecer en varios problemas.",
+      "reference": "Ver la documentación de las reglas de {surface}",
+      "noFindings": "Este producto no presenta incidencias en las comprobaciones seleccionadas.",
+      "action": {
+        "primary": "Abrir catálogo",
+        "secondary": "Reintentar",
+        "tertiary": "Quitar filtros",
+        "quaternary": "Mostrar más productos"
+      },
+      "productAction": {
+        "primary": "Abrir producto"
+      },
+      "searchAction": {
+        "primary": "Borrar búsqueda"
+      },
+      "states": {
+        "empty": {
+          "title": "No hay productos activos que comprobar",
+          "description": "Estas comprobaciones solo incluyen productos activos. Los borradores y los productos archivados siguen en el catálogo, pero no se incluyen aquí."
+        },
+        "error": {
+          "title": "No se han podido cargar las comprobaciones",
+          "description": "Tu catálogo sigue guardado. Intenta cargar los resultados de nuevo."
+        },
+        "clear": {
+          "title": "Sin incidencias en estas comprobaciones",
+          "description": "Los productos activos superan las comprobaciones registradas para esta vista. Esto no confirma su aceptación por parte de una plataforma de compra."
+        },
+        "noMatches": {
+          "title": "No hay resultados ni productos coincidentes",
+          "description": "Prueba otra búsqueda o quita los filtros para ver la lista completa."
+        }
+      }
+    }
+  }
+}

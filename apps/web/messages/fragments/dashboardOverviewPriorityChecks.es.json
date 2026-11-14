@@ -1,0 +1,16 @@
+{
+  "dashboard": {
+    "overview": {
+      "priorityChecks": {
+        "incomplete": {
+          "title": "Completa los datos de tus productos",
+          "detail": "{count, plural, one {A # producto le faltan datos del catálogo.} many {A # productos les faltan datos del catálogo.} other {A # productos les faltan datos del catálogo.}}"
+        },
+        "unavailable": {
+          "title": "Las oportunidades de mejora no están disponibles",
+          "description": "Abre Optimizar para consultar las comprobaciones disponibles para esta tienda."
+        }
+      }
+    }
+  }
+}

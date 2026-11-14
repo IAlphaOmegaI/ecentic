@@ -1,0 +1,83 @@
+{
+  "dashboard": {
+    "workspace": {
+      "nav": {
+        "label": "Espacio de la tienda",
+        "research": "Investigación con IA",
+        "channels": "Canales",
+        "results": "Resultados",
+        "overview": "Resumen",
+        "products": "Productos",
+        "optimize": "Optimizar"
+      },
+      "sections": {
+        "label": "Secciones del espacio de trabajo",
+        "catalog": "Catálogo",
+        "quality": "Calidad de datos",
+        "summary": "Resumen",
+        "comparisons": "Comparaciones",
+        "brand": "Marca",
+        "questions": "Preguntas",
+        "competitors": "Competidores",
+        "catalogRank": "Posición en el catálogo",
+        "connections": "Conexiones",
+        "google": "Google",
+        "checks": "Revisar tienda",
+        "access": "Acceso al catálogo",
+        "checkout": "Pago",
+        "developer": "Herramientas de desarrollo",
+        "shoppingTools": "Herramientas de compra",
+        "testCheckout": "Probar pago",
+        "compareProfiles": "Comparar perfiles"
+      },
+      "results": {
+        "title": "Resultados",
+        "description": "Visitas desde IA y actividad de rastreadores registradas en esta tienda.",
+        "reportsTitle": "Informes de todas tus tiendas",
+        "reportsDescription": "Exporta comparaciones guardadas, datos del catálogo y cambios en las fichas. Estos informes abarcan toda tu cuenta.",
+        "action": {
+          "primary": "Abrir informes",
+          "secondary": "Revisar investigación con IA"
+        }
+      },
+      "ready": {
+        "title": "Sin tareas urgentes en las comprobaciones guardadas",
+        "description": "Revisa tus canales o ejecuta una nueva comparación cuando cambie tu catálogo.",
+        "action": {
+          "primary": "Revisar canales"
+        }
+      },
+      "reportScope": "Todas las tiendas de esta cuenta",
+      "reportMethod": "Las exportaciones contienen datos guardados. La mejora prevista es una estimación, no un resultado medido.",
+      "downloadError": "No se ha podido descargar el informe. Vuelve a intentarlo."
+    },
+    "reports": {
+      "title": "Informes",
+      "description": "Descarga los datos guardados del catálogo y las comparaciones de todas tus tiendas.",
+      "shareable": {
+        "title": "Compartir un informe de comparación",
+        "description": "Abre el informe público de tu última comparación completada. Revisa su contenido antes de compartirlo.",
+        "action": {
+          "primary": "Abrir informe"
+        }
+      },
+      "action": {
+        "downloadCsv": "Descargar CSV"
+      },
+      "items": {
+        "winRateSummary": {
+          "description": "Resultados por modelo del último análisis completado."
+        },
+        "productPerformance": {
+          "description": "Campos de producto guardados y tasas de victoria simuladas, desglosadas por modelo."
+        },
+        "competitorAnalysis": {
+          "description": "Competidores registrados, precios observados cuando están disponibles y resultados de las comparaciones."
+        },
+        "optimizationImpact": {
+          "description": "Cambios guardados en las fichas, fechas de publicación y estimaciones del modelo."
+        }
+      }
+    }
+  }
+}

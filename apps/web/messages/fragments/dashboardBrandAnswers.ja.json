@@ -1,0 +1,42 @@
+{
+  "dashboard": {
+    "brand": {
+      "answers": {
+        "title": "保存された回答",
+        "description": "この分析で使われた質問と回答を確認できます。",
+        "search": "質問・回答・ブランドを検索",
+        "filter": "ブランドへの言及",
+        "filters": {
+          "all": "すべての回答",
+          "mentioned": "言及あり",
+          "absent": "言及なし"
+        },
+        "count": "全{total, number}件中{count, plural, other {#件}}",
+        "position": {
+          "top": "第一候補として推奨",
+          "listed": "一覧に掲載",
+          "absent": "言及なし"
+        },
+        "context": {
+          "named": "質問文にブランド名あり",
+          "unbranded": "質問文にブランド名なし"
+        },
+        "answer": "回答の要約",
+        "noAnswer": "回答の要約は保存されていません。",
+        "brands": "言及されたブランド",
+        "noBrands": "ブランドは記録されていません。",
+        "sources": "モデルが挙げた情報源",
+        "sourcesNote": "モデルが挙げた情報源であり、リアルタイムの検索で確認された引用元ではありません。",
+        "noSources": "情報源は記録されていません。",
+        "empty": {
+          "title": "一致する回答がありません",
+          "description": "検索内容を変えるか、すべての回答を表示してください。",
+          "saved": "この分析には保存された回答がありません。"
+        },
+        "action": {
+          "primary": "検索と絞り込みをクリア"
+        }
+      }
+    }
+  }
+}

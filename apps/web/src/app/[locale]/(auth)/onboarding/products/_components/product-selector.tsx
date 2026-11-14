@@ -170,7 +170,7 @@ export const ProductSelector = ({
           >
             <div className="bg-background-rich">
               <Table className="min-w-160 table-fixed overflow-visible">
-                <TableHeader className="sticky top-0 z-10 [&_th]:bg-background-rich [&_th]:shadow-[inset_0_-1px_0_0_var(--color-accent-foreground)]">
+                <TableHeader className="sticky top-0 z-10 [&_th]:bg-background-rich [&_th]:border-b [&_th]:border-accent-foreground">
                   <TableRow className="border-b-0">
                     <TableHead className="w-10 px-4 py-2" />
                     {tableHeaders.map((header, index) => (
@@ -216,7 +216,7 @@ export const ProductSelector = ({
                         </TableCell>
                         <TableCell>
                           <div className="flex min-w-0 items-center gap-3">
-                            <Avatar className="size-10 min-w-10 rounded-md bg-primary/10">
+                            <Avatar className="size-10 min-w-10 rounded-sm bg-primary/10">
                               <AvatarImage
                                 src={images[0] ?? "/images/fallback.png"}
                                 alt={product.title}

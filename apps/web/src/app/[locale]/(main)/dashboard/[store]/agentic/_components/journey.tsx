@@ -8,6 +8,7 @@ import {
   ShareIcon,
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
+import { Button } from "@zenncore/web/components/button";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import * as Agentic from "@/server/app/intelligence/agentic";
@@ -131,7 +132,7 @@ const graphNodes = (steps: JourneyStep[]): GraphNode[] => {
     }),
   );
 
-  return steps.flatMap((step) => {
+  return steps.flatMap<GraphNode>((step) => {
     switch (true) {
       case step.type === "tool_call":
         return [
@@ -277,7 +278,7 @@ const NodeMark = ({
         return (
           <span
             className={cn(
-              "absolute flex items-center justify-center gap-1 overflow-hidden rounded-full border bg-foreground p-2 font-mono text-xs leading-none",
+              "absolute flex items-center justify-center gap-1 overflow-hidden rounded-full border bg-background-rich p-2 font-mono text-xs leading-none",
               FAMILY_CLASS[node.family],
             )}
             style={box}
@@ -288,7 +289,9 @@ const NodeMark = ({
         );
       case node.detail !== null:
         return (
-          <button
+          <Button
+            variant="soft"
+            color="neutral"
             type="button"
             aria-label={reasoning}
             onMouseEnter={() => onActive(node.id)}
@@ -296,21 +299,21 @@ const NodeMark = ({
             onFocus={() => onActive(node.id)}
             onBlur={() => onActive(null)}
             className={cn(
-              "absolute flex items-center justify-center rounded-full border bg-foreground font-mono text-background/50 text-xs outline-none transition-[border-color,color] duration-150 ease-out hover:border-background/50 hover:text-background/80 focus-visible:border-background/60",
+              "absolute flex items-center justify-center rounded-full border bg-background-rich font-mono text-foreground-dimmed text-xs outline-none transition-[border-color,color] duration-150 ease-out hover:border-primary hover:text-foreground-rich focus-visible:border-primary",
               active
-                ? "border-background/60 text-background/80"
-                : "border-background/30",
+                ? "border-primary text-foreground-rich"
+                : "border-accent-foreground",
             )}
             style={box}
           >
             …
-          </button>
+          </Button>
         );
       default:
         return (
           <span
             aria-hidden
-            className="absolute flex items-center justify-center rounded-full border border-background/30 font-mono text-background/50 text-xs"
+            className="absolute flex items-center justify-center rounded-full border border-accent-foreground font-mono text-foreground-dimmed text-xs"
             style={box}
           >
             …
@@ -372,7 +375,7 @@ const MapCanvas = ({
       >
         <svg
           aria-hidden
-          className="pointer-events-none absolute inset-0 text-background/25"
+          className="pointer-events-none absolute inset-0 text-accent-rich"
           width={canvasWidth}
           height={canvasHeight}
         >
@@ -401,9 +404,9 @@ const MapCanvas = ({
 };
 
 const Stat = ({ count, label }: { count: number; label: string }) => (
-  <p className="font-mono text-xs">
-    <span className="text-background tabular-nums">{count}</span>{" "}
-    <span className="text-background/50">{label}</span>
+  <p className="text-xs">
+    <span className="text-foreground-rich tabular-nums">{count}</span>{" "}
+    <span className="text-foreground-dimmed">{label}</span>
   </p>
 );
 
@@ -501,16 +504,16 @@ export const JourneyTrace = ({
           </p>
         )}
       </div>
-      <div className="p-4">
-        <div className="overflow-hidden rounded-lg bg-foreground">
+      <div>
+        <div className="min-w-0 overflow-hidden bg-background-rich">
           {pills.length > 0 ? (
             <>
               {active && (
-                <div className="border-background/15 border-b p-3">
-                  <p className="text-background/50 text-xs">
+                <div className="border-accent-foreground border-b p-3">
+                  <p className="text-foreground-dimmed text-xs">
                     {translate("journey.reasoning")}
                   </p>
-                  <p className="mt-1 line-clamp-3 max-w-2xl text-background/80 text-sm">
+                  <p className="mt-1 line-clamp-3 max-w-2xl text-foreground-rich text-sm">
                     {previewOf(active.text)}
                   </p>
                 </div>
@@ -522,7 +525,7 @@ export const JourneyTrace = ({
                   onActive={setHovered}
                 />
               </div>
-              <div className="flex flex-wrap gap-x-6 gap-y-1 border-background/15 border-t px-4 py-3">
+              <div className="flex flex-wrap gap-x-6 gap-y-1 border-accent-foreground border-t px-4 py-3">
                 <Stat
                   count={snapshot.steps.length}
                   label={translate("journey.analytics.stepLabel", {
@@ -545,7 +548,7 @@ export const JourneyTrace = ({
             </>
           ) : (
             <div className="flex min-h-48 items-center px-6">
-              <p className="text-background/60 text-sm">
+              <p className="text-foreground-dimmed text-sm">
                 {snapshot.status === "running"
                   ? translate("journey.running")
                   : translate("journey.empty")}
@@ -557,7 +560,7 @@ export const JourneyTrace = ({
           href={snapshot.reportUrl}
           target="_blank"
           rel="noreferrer"
-          className="mt-3 inline-flex w-fit items-center gap-1.5 font-medium text-primary-text text-sm underline-offset-2 hover:underline"
+          className="m-4 inline-flex w-fit items-center gap-1.5 font-medium text-primary-text text-sm underline-offset-2 hover:underline"
         >
           {translate("journey.attribution")}
           <ShareIcon aria-hidden className="size-3.5" />

@@ -70,7 +70,7 @@ const ContentsLinks = ({
               }}
               aria-current={active === item.number ? "location" : undefined}
               className={cn(
-                "relative grid min-h-12 grid-cols-[16px_minmax(0,1fr)_20px] items-start gap-3 rounded-r-md border-transparent border-l-2 px-4 py-3 text-sm leading-5 transition-colors hover:bg-primary/5 hover:text-primary-text focus-visible:outline-2 focus-visible:outline-primary focus-visible:-outline-offset-2 motion-reduce:transition-none",
+                "relative grid min-h-12 grid-cols-[16px_minmax(0,1fr)_20px] items-start gap-3 rounded-r-sm border-transparent border-l-2 px-4 py-3 text-sm leading-5 transition-colors hover:bg-primary/5 hover:text-primary-text focus-visible:outline-2 focus-visible:outline-primary focus-visible:-outline-offset-2 motion-reduce:transition-none",
                 active === item.number
                   ? "border-primary bg-linear-to-r from-primary/10 to-transparent font-medium text-primary-text"
                   : "text-foreground-dimmed",

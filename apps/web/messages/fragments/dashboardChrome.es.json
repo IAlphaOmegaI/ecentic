@@ -687,8 +687,7 @@
       },
       "composer": {
         "placeholder": "Pide al agente que compre en {host}…",
-        "hint": "Enter para enviar · Mayús + Enter para una nueva línea",
-        "remaining": "{remaining} de {limit} {limit, plural, one {mensaje} other {mensajes}} gratis restantes en este playground."
+        "hint": "Enter para enviar · Mayús + Enter para una nueva línea"
       },
       "quota": {
         "title": "Has usado los {limit} mensajes gratis del playground",
@@ -852,11 +851,7 @@
         },
         "frequency": {
           "title": "Frecuencia de simulación",
-          "options": [
-            "Solo manual",
-            "Diaria",
-            "Semanal"
-          ]
+          "options": ["Solo manual", "Diaria", "Semanal"]
         },
         "persona": {
           "title": "Persona de compra",

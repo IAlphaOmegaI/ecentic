@@ -543,7 +543,7 @@ const CompareResults = ({
             transition={{ ...Spring.Gentle, delay: 0.3 }}
           >
             {percentA > 15 && (
-              <span className="font-medium text-sm text-white">
+              <span className="font-medium text-sm text-background-rich">
                 {percentA}%
               </span>
             )}

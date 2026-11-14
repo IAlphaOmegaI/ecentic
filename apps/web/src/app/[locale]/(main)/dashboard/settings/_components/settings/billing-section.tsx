@@ -118,12 +118,13 @@ const PlanCheckoutButtons = ({
 }) => {
   const { formatAmount } = useBillingFormatting();
   return (
-    <div className="flex flex-wrap gap-3">
+    <div className="grid min-w-0 grid-cols-1 gap-3 sm:grid-cols-3">
       {PLAN_ORDER.map((plan) => (
         <Button
           key={plan}
           color="neutral"
-          className="flex-1"
+          variant="soft"
+          className="h-auto min-w-0 whitespace-normal py-2.5 text-center"
           disabled={isCheckingOut}
           onClick={() => onCheckout(plan)}
         >
@@ -135,9 +136,6 @@ const PlanCheckoutButtons = ({
     </div>
   );
 };
-
-const STATUS_PILL_CLASS_NAME =
-  "rounded-full px-2 py-0.5 font-semibold text-[11px] uppercase tracking-[0.05em]";
 
 const STATUS_STYLES: Record<string, string> = {
   active: "bg-success/10 text-success",
@@ -207,7 +205,7 @@ const ActivePlan = ({
 
   return (
     <>
-      <div className="flex items-start justify-between">
+      <div className="flex flex-wrap items-start justify-between gap-4 px-4 py-5 sm:px-6">
         <div>
           <p className="font-semibold text-base text-foreground-rich">
             {planKey
@@ -215,7 +213,7 @@ const ActivePlan = ({
               : translate("noActivePlan")}
           </p>
           {planKey && (
-            <p className="mt-1 font-bold text-2xl text-primary tracking-[-0.02em]">
+            <p className="mt-1 font-bold text-2xl text-primary tracking-tight">
               {formatAmount(Number(PLAN_PRICES[planKey]) * 100, "USD")}
               <span className="font-medium text-foreground-dimmed text-sm">
                 {translate("perMonth")}
@@ -223,12 +221,14 @@ const ActivePlan = ({
             </p>
           )}
         </div>
-        <span className={`${STATUS_PILL_CLASS_NAME} ${statusClass}`}>
+        <span
+          className={`rounded-full px-2 py-1 font-medium text-xs ${statusClass}`}
+        >
           {statusLabel}
         </span>
       </div>
-      <div className="mt-4 flex flex-col gap-2">
-        <div className="flex justify-between">
+      <div className="divide-y divide-accent-foreground border-accent-foreground border-t">
+        <div className="flex flex-wrap justify-between gap-2 px-4 py-3 sm:px-6">
           <span className="text-foreground-dimmed text-sm">
             {translate("billingCycle")}
           </span>
@@ -236,7 +236,7 @@ const ActivePlan = ({
             {translate("monthly")}
           </span>
         </div>
-        <div className="flex justify-between">
+        <div className="flex flex-wrap justify-between gap-2 px-4 py-3 sm:px-6">
           <span className="text-foreground-dimmed text-sm">
             {subscription.cancelAtPeriodEnd
               ? translate("endsOn")
@@ -247,16 +247,15 @@ const ActivePlan = ({
           </span>
         </div>
         {subscription.cancelAtPeriodEnd && (
-          <p className="mt-1 text-foreground-dimmed text-sm">
+          <p className="px-4 py-3 text-foreground-dimmed text-sm sm:px-6">
             {translate("cancelNotice")}
           </p>
         )}
       </div>
-      <div className="mt-6 flex flex-wrap gap-3">
+      <div className="flex flex-wrap gap-3 border-accent-foreground border-t px-4 py-4 sm:px-6">
         {upgradeTarget && (
           <Button
             color="primary"
-            className="flex-1"
             disabled={isCheckingOut}
             onClick={() => onCheckout(upgradeTarget)}
           >
@@ -267,7 +266,12 @@ const ActivePlan = ({
                 })}
           </Button>
         )}
-        <Button color="neutral" onClick={onManage} disabled={isManaging}>
+        <Button
+          color="neutral"
+          variant="soft"
+          onClick={onManage}
+          disabled={isManaging}
+        >
           {isManaging ? translate("loading") : translate("manageBilling")}
         </Button>
       </div>
@@ -291,7 +295,7 @@ const PaygPlan = ({
   const { formatAmount, formatRate } = useBillingFormatting();
   return (
     <>
-      <div className="flex items-start justify-between">
+      <div className="flex flex-wrap items-start justify-between gap-4 px-4 py-5 sm:px-6">
         <div>
           <p className="font-semibold text-base text-foreground-rich">
             {translate("payAsYouGo.title")}
@@ -300,14 +304,12 @@ const PaygPlan = ({
             {translate("payAsYouGo.description")}
           </p>
         </div>
-        <span
-          className={`${STATUS_PILL_CLASS_NAME} bg-success/10 text-success`}
-        >
+        <span className="rounded-full bg-success/10 px-2 py-1 font-medium text-success text-xs">
           {translate("payAsYouGo.active")}
         </span>
       </div>
-      <div className="mt-4 flex flex-col gap-2">
-        <div className="flex justify-between">
+      <div className="divide-y divide-accent-foreground border-accent-foreground border-t">
+        <div className="flex flex-wrap justify-between gap-2 px-4 py-3 sm:px-6">
           <span className="text-foreground-dimmed text-sm">
             {translate("payAsYouGo.fee")}
           </span>
@@ -317,7 +319,7 @@ const PaygPlan = ({
             })}
           </span>
         </div>
-        <div className="flex justify-between">
+        <div className="flex flex-wrap justify-between gap-2 px-4 py-3 sm:px-6">
           <span className="text-foreground-dimmed text-sm">
             {translate("payAsYouGo.monthlyCap")}
           </span>
@@ -326,7 +328,7 @@ const PaygPlan = ({
           </span>
         </div>
       </div>
-      <div className="mt-6">
+      <div className="border-accent-foreground border-t px-4 py-4 sm:px-6">
         <p className="text-foreground-dimmed text-sm">
           {translate("payAsYouGo.switchHint")}
         </p>
@@ -359,7 +361,7 @@ const NoPlan = ({
   translate: BillingTranslate;
 }) => (
   <>
-    <div>
+    <div className="px-4 py-5 sm:px-6">
       <p className="font-semibold text-base text-foreground-rich">
         {translate("choosePlan.title")}
       </p>
@@ -367,7 +369,7 @@ const NoPlan = ({
         {translate("choosePlan.description")}
       </p>
     </div>
-    <div className="mt-6 flex flex-col gap-3">
+    <div className="flex flex-col gap-3 border-accent-foreground border-t px-4 py-4 sm:px-6">
       <Button
         color="primary"
         className="w-full"
@@ -430,16 +432,18 @@ const PerformanceFeeCard = ({
 
   return (
     <div>
-      <div className="flex items-center justify-between border-accent-foreground border-b bg-background-dimmed px-4 py-3">
-        <p className="font-semibold text-foreground-rich text-sm">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-accent-foreground border-b px-4 py-5 sm:px-6">
+        <h3 className="font-semibold text-base text-foreground-rich">
           {translate("performanceFee.title")}
-        </p>
-        <span className={`${STATUS_PILL_CLASS_NAME} ${pill.className}`}>
+        </h3>
+        <span
+          className={`rounded-full px-2 py-1 font-medium text-xs ${pill.className}`}
+        >
           {pill.label}
         </span>
       </div>
-      <div className="p-6">
-        <p className="text-foreground-dimmed text-sm">
+      <div>
+        <p className="px-4 py-4 text-foreground-dimmed text-sm leading-6 sm:px-6">
           {translate("performanceFee.description", {
             rate: formatRate(summary.rateBps),
             cap: formatAmount(summary.capCents, "USD"),
@@ -447,7 +451,7 @@ const PerformanceFeeCard = ({
         </p>
 
         {summary.awaitingPayment && (
-          <div className="mt-4 flex flex-col gap-3 border border-warning/30 bg-warning/5 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap items-center justify-between gap-4 border-accent-foreground border-y bg-warning/5 px-4 py-4 sm:px-6">
             <div>
               <p className="font-semibold text-foreground-rich text-sm">
                 {translate("performanceFee.due", {
@@ -470,9 +474,9 @@ const PerformanceFeeCard = ({
           </div>
         )}
 
-        <div className="mt-4">
-          <div className="flex items-end justify-between">
-            <p className="font-bold text-2xl text-primary tracking-[-0.02em]">
+        <div className="px-4 py-5 sm:px-6">
+          <div className="flex flex-wrap items-end justify-between gap-2">
+            <p className="font-bold text-2xl text-primary tracking-tight">
               {formatAmount(summary.billedCents, "USD")}
             </p>
             <p className="text-foreground-dimmed text-sm">
@@ -487,7 +491,7 @@ const PerformanceFeeCard = ({
               style={{ width: `${usedPercent}%` }}
             />
           </div>
-          <div className="mt-2 flex justify-between text-foreground-dimmed text-xs">
+          <div className="mt-2 flex flex-wrap justify-between gap-2 text-foreground-dimmed text-xs">
             <span>
               {translate("performanceFee.billedSoFar", {
                 amount: formatAmount(summary.reportedCents, "USD"),
@@ -502,18 +506,18 @@ const PerformanceFeeCard = ({
         </div>
 
         {summary.conversions.length > 0 && (
-          <div className="mt-6">
-            <p className="font-semibold text-foreground-rich text-xs uppercase tracking-[0.05em]">
+          <div className="border-accent-foreground border-t">
+            <h4 className="px-4 py-4 font-semibold text-foreground-rich text-sm sm:px-6">
               {translate("performanceFee.attributedOrders")}
-            </p>
-            <div className="mt-2 divide-y divide-accent-foreground border-accent-foreground border-t">
+            </h4>
+            <div className="divide-y divide-accent-foreground border-accent-foreground border-t">
               {summary.conversions.map((conversion) => (
                 <div
                   key={conversion.id}
-                  className="flex items-center justify-between py-2"
+                  className="flex flex-wrap items-center justify-between gap-3 px-4 py-3 sm:px-6"
                 >
-                  <div>
-                    <p className="font-medium text-foreground text-sm">
+                  <div className="min-w-0">
+                    <p className="wrap-anywhere font-medium text-foreground text-sm">
                       {translate("performanceFee.order", {
                         id: conversion.orderExternalId,
                       })}
@@ -632,12 +636,12 @@ export const BillingSection = ({
   return (
     <div className="divide-y divide-accent-foreground">
       <div>
-        <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3">
-          <p className="font-semibold text-foreground-rich text-sm">
+        <div className="border-accent-foreground border-b px-4 py-5 sm:px-6">
+          <h3 className="font-semibold text-base text-foreground-rich">
             {translate("currentPlan")}
-          </p>
+          </h3>
         </div>
-        <div className="p-6">
+        <div>
           {(() => {
             switch (true) {
               case isPayg && performanceFee !== null:
@@ -688,13 +692,13 @@ export const BillingSection = ({
       )}
 
       <div>
-        <div className="border-accent-foreground border-b bg-background-dimmed px-4 py-3">
-          <p className="font-semibold text-foreground-rich text-sm">
+        <div className="border-accent-foreground border-b px-4 py-5 sm:px-6">
+          <h3 className="font-semibold text-base text-foreground-rich">
             {translate("invoiceHistory")}
-          </p>
+          </h3>
         </div>
         {invoices.length === 0 ? (
-          <div className="px-4 py-6 text-foreground-dimmed text-sm">
+          <div className="px-6 py-6 text-foreground-dimmed text-sm">
             {translate("noInvoices")}
           </div>
         ) : (
@@ -713,32 +717,37 @@ export const BillingSection = ({
               return (
                 <div
                   key={invoice.id}
-                  className="flex items-center justify-between px-4 py-3"
+                  className="flex flex-wrap items-center justify-between gap-3 px-4 py-4 sm:px-6"
                 >
-                  <div>
+                  <div className="min-w-0">
                     <p className="font-medium text-foreground text-sm">
                       {formatDate(invoice.createdAt)}
                     </p>
-                    <p className="mt-0.5 text-foreground-dimmed text-xs">
+                    <p className="wrap-anywhere mt-0.5 text-foreground-dimmed text-xs">
                       {formatAmount(invoice.amountPaid, invoice.currency)}
                       {invoice.number ? ` · ${invoice.number}` : ""}
                     </p>
                   </div>
-                  <div className="flex items-center gap-3">
+                  <div className="flex flex-wrap items-center gap-3">
                     <span
-                      className={`${STATUS_PILL_CLASS_NAME} ${statusClass}`}
+                      className={`rounded-full px-2 py-1 font-medium text-xs ${statusClass}`}
                     >
                       {invoice.status}
                     </span>
                     {invoice.pdfUrl && (
-                      <a
-                        href={invoice.pdfUrl}
-                        target="_blank"
-                        rel="noreferrer"
-                        className="text-primary-text text-sm transition-colors hover:text-primary-rich"
+                      <Button
+                        variant="soft"
+                        color="neutral"
+                        render={
+                          <a
+                            href={invoice.pdfUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                          />
+                        }
                       >
                         {translate("download")}
-                      </a>
+                      </Button>
                     )}
                   </div>
                 </div>

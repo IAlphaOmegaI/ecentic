@@ -102,7 +102,7 @@ export const IndexExplorer = ({
               <p className="mb-4 font-medium text-foreground-dimmed text-sm">
                 {copy.question}
               </p>
-              <h3 className="max-w-[24ch] text-[clamp(1.75rem,3vw,2.5rem)] leading-[1.12]">
+              <h3 className="max-w-[24ch] text-3xl xl:text-4xl leading-none">
                 {sector.question}
               </h3>
               <p className="mt-6 max-w-[42ch] text-foreground-dimmed">

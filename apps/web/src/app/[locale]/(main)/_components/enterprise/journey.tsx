@@ -12,7 +12,7 @@ export const Journey = ({ copy }: Journey.Props) => (
     <header className="enterprise-stage-list relative border-[var(--rail-color)] border-y px-8 py-10 max-sm:px-4 max-sm:py-8">
       <Plus className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
       <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-      <h2 className="max-w-[22ch] font-heading text-[clamp(1.75rem,3vw,2.75rem)] leading-[1.15] tracking-tight">
+      <h2 className="max-w-[22ch] font-heading text-3xl xl:text-4xl 2xl:text-5xl leading-tight tracking-tight">
         {copy.title}
       </h2>
       <p className="mt-4 max-w-[60ch] text-background-rich/75 text-base leading-relaxed">

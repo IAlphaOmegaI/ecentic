@@ -1,0 +1,32 @@
+{
+  "name": "rivals-balance",
+  "subject": "competitors",
+  "meaning": "A balance holding two rival parcels: tip the beam to compare their weight.",
+  "part": "balance",
+  "answer": [
+    66,
+    31,
+    89
+  ],
+  "bounds": [
+    [
+      -13,
+      -4,
+      0
+    ],
+    [
+      139,
+      65,
+      124
+    ]
+  ],
+  "scale": 1.6,
+  "figure": "/hairline/custom/rivals-balance.js",
+  "rest": "apps/web/src/components/hairline/rest/rivals-balance.json",
+  "sourceSha256": "5fcda96603053f5f0ae7b0bcd60a13d83e82232bce0d5137fdc1cfeaabe5eef6",
+  "restSha256": "e1e2dfa6b8017ec1de22c78dd570934526b0d600a2058c0a2f01d6c69a95e118",
+  "engine": "Unmodified fixed Hairline kernel",
+  "interaction": "Fixed rest hit area; 700ms EASE_LIFT tween; bounded reach; linked responses delayed 40ms; loop sleeps after settlement.",
+  "reducedMotion": "SSR rest geometry remains complete. Shared CustomHairlineFigure disables pointer code and asset enhancement for reduced motion.",
+  "validation": "output/dashboard-hairline-2026-11-14/rivals-balance.validation.txt"
+}

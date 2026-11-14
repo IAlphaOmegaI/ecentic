@@ -578,8 +578,7 @@
       },
       "composer": {
         "placeholder": "Bitten Sie den Agenten, bei {host} einzukaufen…",
-        "hint": "Enter zum Senden · Shift + Enter für eine neue Zeile",
-        "remaining": "Noch {remaining} von {limit} kostenlosen {limit, plural, one {Nachricht} other {Nachrichten}} in diesem Testbereich verfügbar."
+        "hint": "Enter zum Senden · Shift + Enter für eine neue Zeile"
       },
       "quota": {
         "title": "Sie haben alle {limit} kostenlosen Nachrichten im Testbereich genutzt",
@@ -743,11 +742,7 @@
         },
         "frequency": {
           "title": "Simulationshäufigkeit",
-          "options": [
-            "Nur manuell",
-            "Täglich",
-            "Wöchentlich"
-          ]
+          "options": ["Nur manuell", "Täglich", "Wöchentlich"]
         },
         "persona": {
           "title": "Käuferprofil",

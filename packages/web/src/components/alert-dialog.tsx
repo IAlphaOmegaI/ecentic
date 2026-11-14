@@ -25,7 +25,7 @@ export const AlertDialogTrigger = ({
   return (
     <AlertDialogPrimitive.Trigger
       className={createClassName(
-        "flex h-10 select-none items-center justify-center border border-accent-foreground bg-background px-3.5 font-medium text-base text-red-800 hover:bg-background-dimmed focus-visible:outline-2 focus-visible:outline-primary focus-visible:-outline-offset-1 active:bg-background-dimmed",
+        "flex h-10 select-none items-center justify-center border border-accent-foreground bg-background px-3.5 font-medium text-base text-error-dimmed hover:bg-background-dimmed focus-visible:outline-2 focus-visible:outline-primary focus-visible:-outline-offset-1 active:bg-background-dimmed",
         className,
       )}
       {...props}
@@ -51,7 +51,7 @@ export const AlertDialogPopup = ({
     >
       <AlertDialogPrimitive.Backdrop
         className={createClassName(
-          "fixed inset-0 bg-black opacity-20 transition-all duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 dark:opacity-70",
+          "fixed inset-0 bg-emphasis opacity-20 transition-all duration-150 data-ending-style:opacity-0 data-starting-style:opacity-0 dark:opacity-70",
           classList?.backdrop,
         )}
       />

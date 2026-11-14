@@ -1,0 +1,133 @@
+{
+  "dashboard": {
+    "brand": {
+      "design": {
+        "title": "Brand",
+        "description": "How your brand appears in simulated shopping answers.",
+        "updated": "Analyzed {time}",
+        "sample": "{count, plural, one {# sampled answer} other {# sampled answers}} · {engines}",
+        "scope": "The model receives your brand as audit context. This is a simulation, not a blind recall test or a record of live customer conversations.",
+        "action": {
+          "primary": "Analyze brand",
+          "secondary": "Run again",
+          "tertiary": "Review catalog"
+        },
+        "empty": {
+          "title": "Find your brand’s blind spots.",
+          "description": "See whether your brand comes up in shopping questions, how it is described, and where clearer information could help.",
+          "note": "Uses your store and catalog to prepare 20 questions for ChatGPT. You can keep working while the analysis runs.",
+          "visualTitle": "From a shopper’s question to your next step",
+          "steps": {
+            "questions": {
+              "title": "Ask about your category",
+              "description": "Questions with and without your brand name."
+            },
+            "answers": {
+              "title": "Inspect the answers",
+              "description": "Brand mentions, alternatives and answer summaries."
+            },
+            "actions": {
+              "title": "See what to improve",
+              "description": "Suggestions grounded in the sampled answers."
+            }
+          }
+        },
+        "summaryTitle": "What to know",
+        "discoveryTitle": "Mentions by question type",
+        "unprompted": "Questions without your brand name",
+        "named": "Questions naming your brand",
+        "ratio": "{count} of {total} answers",
+        "noSample": "No questions in this group",
+        "overall": "Mentioned in {count} of {total} sampled answers.",
+        "noAnswers": "This report has no saved answers. Run a new analysis to build the evidence.",
+        "tabs": {
+          "plan": "Next steps",
+          "answers": "Answers",
+          "access": "Site checks"
+        },
+        "findingsTitle": "Patterns to pay attention to",
+        "journeyTitle": "Where to improve",
+        "journeyDescription": "Suggestions from this analysis. Review the evidence before changing your site.",
+        "stage": {
+          "find": "Get discovered",
+          "consider": "Make the shortlist",
+          "evaluate": "Help shoppers decide",
+          "support": "Answer the follow-up"
+        },
+        "suggestions": "{count, plural, one {# suggestion} other {# suggestions}}",
+        "noSuggestions": "No changes suggested for this stage.",
+        "perceptionTitle": "How the answers describe you",
+        "strengths": "What works in your favor",
+        "concerns": "What raises questions",
+        "alternativesTitle": "Other brands in the answers",
+        "sourcesTitle": "Sources suggested by the model",
+        "sourcesNote": "These are domains or source types named by the model, not verified citations from a live search.",
+        "occurrences": "{count, plural, one {# mention} other {# mentions}}",
+        "accessTitle": "Can crawlers reach your content?",
+        "accessDescription": "A snapshot of public discovery files. These checks do not measure search indexing, rankings or checkout readiness.",
+        "checks": {
+          "robots": "Crawler rules",
+          "llms": "AI content guide",
+          "engines": "Crawler access"
+        },
+        "status": {
+          "pass": "Checked",
+          "warn": "Review",
+          "fail": "Blocked"
+        },
+        "robots": {
+          "pass": "Crawler rules were read.",
+          "warn": "Review the recorded crawler rules.",
+          "fail": "The scan found crawler restrictions in robots.txt.",
+          "note": "robots.txt controls access by crawler. Search, user-initiated requests and model training can use different crawlers."
+        },
+        "llms": {
+          "pass": "An llms.txt file was reachable.",
+          "warn": "No reachable llms.txt file was recorded.",
+          "note": "This optional content guide does not guarantee that an AI service reads, indexes or recommends your brand."
+        },
+        "engines": {
+          "pass": "No root-level blocks were detected for the checked crawlers.",
+          "warn": "Access could not be confirmed in this scan.",
+          "fail": "Some checked crawlers have root-level restrictions.",
+          "note": "Path-specific rules, other crawlers and indexing are outside this check."
+        },
+        "failed": {
+          "title": "The analysis couldn’t finish",
+          "description": "Your last completed report is still available below. Try again when you’re ready.",
+          "emptyDescription": "No report was saved. Try again when you’re ready."
+        },
+        "error": "We couldn’t start the analysis. Please try again.",
+        "running": {
+          "title": "Getting to know your brand",
+          "description": "ChatGPT is working through your shopping questions. Results will appear here when ready.",
+          "previous": "You’re viewing the previous report while the new analysis runs.",
+          "steps": "Prepare questions · Review answers · Build recommendations"
+        },
+        "loading": "Loading brand analysis",
+        "unavailable": {
+          "title": "Brand data is temporarily unavailable",
+          "description": "We couldn’t load your saved analysis. Refresh this section to try again.",
+          "action": {
+            "primary": "Try again"
+          }
+        },
+        "noFindings": "No patterns were saved in this report.",
+        "summaryAction": {
+          "primary": "Read full analysis",
+          "secondary": "Show less"
+        },
+        "method": {
+          "action": {
+            "primary": "How this works"
+          }
+        }
+      },
+      "toast": {
+        "started": {
+          "description": "You can keep working. Results will appear here when the analysis finishes."
+        }
+      }
+    }
+  }
+}

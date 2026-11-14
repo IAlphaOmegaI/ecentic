@@ -33,7 +33,7 @@ export const Hero = async () => {
           the bytes are not. */}
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-20 -z-20 h-[34rem] md:top-6 md:h-[44rem]"
+        className="pointer-events-none absolute inset-x-0 top-20 -z-20 h-136 md:top-6 md:h-176"
       >
         <Image
           src={Background}
@@ -47,7 +47,7 @@ export const Hero = async () => {
       </div>
       <div
         aria-hidden
-        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-[500px] bg-radial-[at_50%_0%] from-primary/25 via-primary/5 to-transparent"
+        className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-125 bg-radial-[at_50%_0%] from-primary/25 via-primary/5 to-transparent"
       />
       <p className="font-body text-foreground-dimmed text-sm uppercase tracking-wide">
         {translate("hero.eyebrow")}

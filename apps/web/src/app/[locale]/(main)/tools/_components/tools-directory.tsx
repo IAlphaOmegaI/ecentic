@@ -86,9 +86,7 @@ export const ToolsDirectory = ({ section, copy }: ToolsDirectory.Props) => (
               <div className="grid grid-cols-[7fr_5fr] max-md:grid-cols-1 md:grid-rows-[1fr_auto]">
                 <div className="flex min-w-0 flex-col md:row-span-2 md:grid md:grid-rows-subgrid">
                   <div className="flex min-h-72 flex-1 flex-col items-start px-8 py-10 max-sm:min-h-0 max-sm:px-4 max-sm:py-8">
-                    <h3 className="text-[clamp(1.8rem,2.6vw,2.6rem)]">
-                      {item.title}
-                    </h3>
+                    <h3 className="text-3xl xl:text-4xl">{item.title}</h3>
                     <p className="mt-4 max-w-[52ch] text-background-rich/65 text-lg max-sm:text-base">
                       {item.body}
                     </p>

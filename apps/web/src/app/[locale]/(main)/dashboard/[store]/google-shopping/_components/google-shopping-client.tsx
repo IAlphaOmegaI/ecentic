@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowRightIcon, CheckIcon } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
 import { Button } from "@zenncore/web/components/button";
@@ -7,6 +8,8 @@ import { useToastManager } from "@zenncore/web/components/toast";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
+import { CustomHairlineFigure } from "@/components/hairline/custom-figure";
+import { Link } from "@/i18n/navigation";
 import * as GoogleMerchant from "@/server/app/integration/google-merchant";
 import { StatusPill } from "../../../_components/grid";
 
@@ -31,22 +34,26 @@ export const Chip = ({
   tone: "neutral" | "success" | "warning" | "error";
   children: React.ReactNode;
 }) => {
-  return <StatusPill tone={tone}>{children}</StatusPill>;
+  return (
+    <StatusPill
+      tone={tone}
+      className="w-fit self-start normal-case tracking-normal"
+    >
+      {children}
+    </StatusPill>
+  );
 };
 
 const Step = ({
   title,
-  chip,
   children,
 }: {
   title: string;
-  chip: React.ReactNode;
   children?: React.ReactNode;
 }) => (
   <div className="flex flex-col gap-3 p-5 sm:p-6">
     <div className="flex flex-wrap items-center gap-2">
-      {chip}
-      <p className="font-medium text-foreground text-sm">{title}</p>
+      <h3 className="font-semibold text-foreground-rich text-xl">{title}</h3>
     </div>
     {children}
   </div>
@@ -62,6 +69,7 @@ export const GoogleShoppingManager = ({
   const toast = useToastManager();
   const router = useRouter();
   const translate = useTranslations("dashboard.googleShopping");
+  const channels = useTranslations("dashboard.channels");
 
   const [run, isRunning] = useAsyncAction(
     async (
@@ -86,11 +94,43 @@ export const GoogleShoppingManager = ({
 
   if (!status.supported)
     return (
-      <div className="p-6">
-        <Chip tone="neutral">{translate("unsupported.chip")}</Chip>
-        <p className="mt-3 max-w-2xl text-foreground-dimmed text-sm">
-          {translate("unsupported.description")}
-        </p>
+      <div className="grid flex-1 border-accent-foreground border-b bg-background-rich lg:grid-cols-2">
+        <div
+          aria-hidden
+          className="order-2 flex min-h-72 items-center justify-center border-accent-foreground border-t px-6 py-8 lg:order-1 lg:min-h-120 lg:border-t-0 lg:border-r"
+        >
+          <CustomHairlineFigure
+            name="feed-beacon"
+            label=""
+            surface="rich"
+            className="aspect-square w-full max-w-112"
+          />
+        </div>
+        <div className="order-1 flex min-w-0 flex-col justify-center px-4 py-8 sm:px-6 lg:order-2 lg:px-10">
+          <Chip tone="neutral">{translate("unsupportedWorkspace.status")}</Chip>
+          <h2 className="mt-4 max-w-md font-semibold text-3xl text-foreground-rich tracking-tight">
+            {translate("unsupportedWorkspace.title")}
+          </h2>
+          <p className="mt-4 max-w-lg text-foreground-dimmed text-sm leading-6">
+            {translate("unsupportedWorkspace.description")}
+          </p>
+          <div className="mt-6 flex flex-wrap items-center gap-3">
+            <Button
+              color="primary"
+              render={<Link href="/onboarding/connect/shopify" />}
+            >
+              {translate("unsupportedWorkspace.action.primary")}
+              <ArrowRightIcon className="size-4" />
+            </Button>
+            <Button
+              variant="soft"
+              color="neutral"
+              render={<Link href={`/dashboard/${store}/channels`} />}
+            >
+              {translate("unsupportedWorkspace.action.secondary")}
+            </Button>
+          </div>
+        </div>
       </div>
     );
 
@@ -115,35 +155,25 @@ export const GoogleShoppingManager = ({
     switch (true) {
       case !status.connected:
         return (
-          <Step
-            title={translate("setup.connect.title")}
-            chip={
-              <Chip tone="neutral">
-                {translate("setup.step", { number: 1 })}
-              </Chip>
-            }
-          >
+          <Step title={translate("setup.connect.title")}>
             <p className="max-w-2xl text-foreground-dimmed text-sm">
               {translate("setup.connect.description")}
             </p>
-            <a href={`/api/integrations/google/install?store=${store}`}>
-              <Button color="neutral" disabled={isRunning}>
-                {translate("setup.connect.action")}
-              </Button>
-            </a>
+            <Button
+              color="primary"
+              disabled={isRunning}
+              render={
+                <a href={`/api/integrations/google/install?store=${store}`} />
+              }
+            >
+              {translate("setup.connect.action")}
+            </Button>
           </Step>
         );
 
       case !status.googleAccountId && status.candidateAccounts.length > 0:
         return (
-          <Step
-            title={translate("setup.chooseAccount.title")}
-            chip={
-              <Chip tone="warning">
-                {translate("setup.step", { number: 2 })}
-              </Chip>
-            }
-          >
+          <Step title={translate("setup.chooseAccount.title")}>
             <p className="max-w-2xl text-foreground-dimmed text-sm">
               {translate("setup.chooseAccount.description")}
             </p>
@@ -155,6 +185,7 @@ export const GoogleShoppingManager = ({
                 >
                   <Button
                     color="neutral"
+                    variant="soft"
                     disabled={isRunning}
                     onClick={() =>
                       run(
@@ -195,19 +226,13 @@ export const GoogleShoppingManager = ({
 
       case !status.googleAccountId:
         return (
-          <Step
-            title={translate("setup.waitingAccount.title")}
-            chip={
-              <Chip tone="warning">
-                {translate("setup.step", { number: 2 })}
-              </Chip>
-            }
-          >
+          <Step title={translate("setup.waitingAccount.title")}>
             <p className="max-w-2xl text-foreground-dimmed text-sm">
               {translate("setup.waitingAccount.description")}
             </p>
             <Button
               color="neutral"
+              variant="soft"
               disabled={isRunning}
               onClick={() =>
                 run(
@@ -223,14 +248,7 @@ export const GoogleShoppingManager = ({
 
       case status.linkState === "unlinked":
         return (
-          <Step
-            title={translate("setup.link.title")}
-            chip={
-              <Chip tone="warning">
-                {translate("setup.step", { number: 3 })}
-              </Chip>
-            }
-          >
+          <Step title={translate("setup.link.title")}>
             <p className="max-w-2xl text-foreground-dimmed text-sm">
               {translate("setup.link.description", {
                 account: status.googleAccountId ?? "",
@@ -238,6 +256,7 @@ export const GoogleShoppingManager = ({
             </p>
             <Button
               color="neutral"
+              variant="soft"
               disabled={isRunning}
               onClick={() =>
                 run(
@@ -253,19 +272,13 @@ export const GoogleShoppingManager = ({
 
       case status.linkState === "proposed":
         return (
-          <Step
-            title={translate("setup.linkPending.title")}
-            chip={
-              <Chip tone="warning">
-                {translate("setup.step", { number: 3 })}
-              </Chip>
-            }
-          >
+          <Step title={translate("setup.linkPending.title")}>
             <p className="max-w-2xl text-foreground-dimmed text-sm">
               {translate("setup.linkPending.description")}
             </p>
             <Button
               color="neutral"
+              variant="soft"
               disabled={isRunning}
               onClick={() =>
                 run(
@@ -281,19 +294,13 @@ export const GoogleShoppingManager = ({
 
       case !status.provisioned:
         return (
-          <Step
-            title={translate("setup.feed.title")}
-            chip={
-              <Chip tone="warning">
-                {translate("setup.step", { number: 4 })}
-              </Chip>
-            }
-          >
+          <Step title={translate("setup.feed.title")}>
             <p className="max-w-2xl text-foreground-dimmed text-sm">
               {translate("setup.feed.description")}
             </p>
             <Button
               color="neutral"
+              variant="soft"
               disabled={isRunning}
               onClick={() =>
                 run(
@@ -319,6 +326,7 @@ export const GoogleShoppingManager = ({
       </p>
       <Button
         color="neutral"
+        variant="soft"
         className="shrink-0"
         disabled={isRunning}
         onClick={() =>
@@ -335,42 +343,52 @@ export const GoogleShoppingManager = ({
 
   if (setup)
     return (
-      <div className="grid gap-px bg-accent-foreground lg:grid-cols-[16rem_minmax(0,1fr)]">
-        <div className="bg-background-dimmed p-5">
-          {/* Was the page eyebrow verbatim, which now sits in the header pill
-            — this column labels the step list, so it says so. */}
-          <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-            {translate("setup.label")}
-          </p>
-          <ol className="mt-4 grid grid-cols-4 gap-2 lg:grid-cols-1 lg:gap-0">
+      <div className="grid bg-background-rich lg:grid-cols-2">
+        <div className="flex min-w-0 flex-col border-accent-foreground border-b lg:border-r lg:border-b-0">
+          <div
+            aria-hidden
+            className="flex min-h-64 flex-1 items-center justify-center px-6 py-8"
+          >
+            <CustomHairlineFigure
+              name="feed-beacon"
+              label=""
+              surface="rich"
+              className="aspect-square w-full max-w-96"
+            />
+          </div>
+          <ol className="grid border-accent-foreground border-t sm:grid-cols-2">
             {setupSteps.map((label, index) => {
               const number = index + 1;
               const complete = number < currentStep;
               const active = number === currentStep;
-
               return (
                 <li
                   key={label}
-                  className="relative flex min-w-0 items-center gap-3 py-2 lg:py-3"
+                  className="flex min-w-0 items-center gap-3 px-4 py-3 sm:px-6"
                   aria-current={active ? "step" : undefined}
                 >
                   <span
                     className={cn(
-                      "relative z-10 flex size-7 shrink-0 items-center justify-center rounded-full border font-semibold text-xs tabular-nums",
-                      complete &&
-                        "border-primary bg-primary text-primary-foreground",
-                      active &&
-                        "border-primary bg-background-rich text-primary",
-                      !complete &&
-                        !active &&
-                        "border-accent-rich text-foreground-dimmed",
+                      "flex size-6 shrink-0 items-center justify-center rounded-full border",
+                      complete || active
+                        ? "border-primary text-primary"
+                        : "border-accent-foreground text-foreground-dimmed",
                     )}
                   >
-                    {number}
+                    {complete ? (
+                      <CheckIcon className="size-3.5" />
+                    ) : (
+                      <span
+                        className={cn(
+                          "size-1.5 rounded-full",
+                          active ? "bg-primary" : "bg-accent-foreground",
+                        )}
+                      />
+                    )}
                   </span>
                   <span
                     className={cn(
-                      "hidden min-w-0 text-sm lg:block",
+                      "min-w-0 text-sm",
                       active
                         ? "font-medium text-foreground"
                         : "text-foreground-dimmed",
@@ -383,7 +401,7 @@ export const GoogleShoppingManager = ({
             })}
           </ol>
         </div>
-        <div className="flex min-h-64 flex-col justify-between bg-background-rich">
+        <div className="flex min-h-96 flex-col justify-center bg-background-rich">
           {setup}
           {disconnectRow}
         </div>
@@ -394,7 +412,7 @@ export const GoogleShoppingManager = ({
     <div className="flex flex-col divide-y divide-accent-foreground">
       <div className="grid gap-px bg-accent-foreground sm:grid-cols-3">
         <Stat
-          label={translate("stats.live")}
+          label={channels("google.verified")}
           value={status.offers.live}
           tone="success"
         />
@@ -444,6 +462,7 @@ export const GoogleShoppingManager = ({
           </Button>
           <Button
             color="neutral"
+            variant="soft"
             disabled={isRunning}
             onClick={() =>
               run(
@@ -456,6 +475,7 @@ export const GoogleShoppingManager = ({
           </Button>
           <Button
             color="neutral"
+            variant="soft"
             disabled={isRunning}
             onClick={() =>
               run(
@@ -505,11 +525,9 @@ const Stat = ({
         aria-hidden
         className={cn("size-1.5 shrink-0 rounded-full", STAT_DOTS[tone])}
       />
-      <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-        {label}
-      </p>
+      <p className="font-medium text-foreground-dimmed text-sm">{label}</p>
     </div>
-    <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-[-0.02em]">
+    <p className="font-bold text-4xl text-foreground-rich tabular-nums tracking-tight">
       {value}
     </p>
     {detail && <p className="text-foreground-dimmed text-xs">{detail}</p>}
@@ -549,7 +567,7 @@ const IssueRow = ({
       </Chip>
     </div>
     <div className="min-w-0">
-      <p className="font-medium text-foreground text-sm">{title}</p>
+      <h3 className="font-semibold text-foreground-rich text-xl">{title}</h3>
       {detail && (
         <p className="mt-1 max-w-3xl text-foreground-dimmed text-sm">
           {detail}

@@ -20,7 +20,7 @@ export const Switch = ({
     >
       <SwitchPrimitive.Thumb
         className={createClassName(
-          "size-5 rounded-full bg-background-rich shadow-[0_1px_2px_rgba(0,0,0,0.2)] transition-transform duration-150 ease-out data-checked:translate-x-5",
+          "size-5 rounded-full bg-background-rich shadow-sm shadow-emphasis/20 transition-transform duration-150 ease-out data-checked:translate-x-5",
           classList?.thumb,
         )}
       />

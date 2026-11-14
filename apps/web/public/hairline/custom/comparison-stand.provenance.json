@@ -1,0 +1,17 @@
+{
+  "name": "comparison-stand",
+  "purpose": "Two product listing cards on a shared inspection stand for AI product comparisons",
+  "consumers": [
+    "dashboard/[store]/simulations header",
+    "dashboard/[store]/research latest completed comparison"
+  ],
+  "figure": "/hairline/custom/comparison-stand.js",
+  "sourceSha256": "bd25156d80eb8477e95a9f85d815679aa6a2749eb9119c3da6802cabf7e6a251",
+  "rest": "apps/web/src/components/hairline/rest/comparison-stand.json",
+  "restSha256": "dccc3ef6fdc8a06d9197d9cc16ff05c9544a304f361bdc42565e8129ef7a17db",
+  "engine": "Fixed Hairline kernel, unchanged",
+  "pointer": "Choose either listing by its fixed rest centre; it lifts while the other leans away with a distance-based delay.",
+  "reducedMotion": "Complete server-rendered rest SVG; the shared wrapper does not mount pointer interaction under reduced motion.",
+  "validation": "hairline-create look.mjs passes frame, read-out, console, and stable motion across all eight poses; 240 px rest and response inspected.",
+  "assetRole": "Decorative illustration of listing comparison; it does not encode a metric, selection outcome, or growth claim."
+}

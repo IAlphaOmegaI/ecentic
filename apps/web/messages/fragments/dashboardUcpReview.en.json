@@ -1,0 +1,31 @@
+{
+  "dashboard": {
+    "ucp": {
+      "review": {
+        "description": "Check your store’s checkout setup and the product data available to shopping agents.",
+        "tabs": {
+          "check": "Checkout check",
+          "data": "Product data"
+        },
+        "check": {
+          "title": "Check your checkout",
+          "description": "Read your store’s live UCP profile to find missing or invalid checkout configuration.",
+          "hint": "Uses HTTPS. Checks the published profile without placing an order."
+        },
+        "details": {
+          "title": "What this check covers",
+          "description": "Profile discovery, payment setup and agent access."
+        },
+        "advanced": {
+          "title": "Test live endpoints",
+          "summary": "Optional · may create test carts",
+          "description": "Probe the services declared by your store and test its checkout lifecycle."
+        },
+        "products": {
+          "title": "Product data coverage",
+          "description": "Generated product data does not confirm live checkout support. These products belong to this store."
+        }
+      }
+    }
+  }
+}

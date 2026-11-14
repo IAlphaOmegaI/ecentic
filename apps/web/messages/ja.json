@@ -467,7 +467,13 @@
         "channels": "チャネル"
       },
       "agentic": "Agenticスコア",
-      "webmcp": "WebMCP"
+      "webmcp": "WebMCP",
+      "assistant": {
+        "title": "Judyに質問",
+        "status": "プレビュー",
+        "description": "Judyは開発中です。チャットやカタログの操作はまだ利用できません。それまではダッシュボードのツールをご利用ください。",
+        "name": "Judy"
+      }
     },
     "sidebar": {
       "allStores": "すべてのストア"
@@ -549,7 +555,8 @@
       "states": {
         "searching": "検索中…",
         "empty": "結果がありません",
-        "emptyForQuery": "\"{query}\" の検索結果はありません"
+        "emptyForQuery": "\"{query}\" の検索結果はありません",
+        "unavailable": "現在、検索を利用できません。もう一度お試しください。"
       },
       "sections": {
         "products": "商品",
@@ -568,6 +575,9 @@
         "ucpStructuredData": "UCP・構造化データ",
         "optimize": "最適化",
         "settings": "設定"
+      },
+      "action": {
+        "primary": "再試行"
       }
     },
     "notifications": {
@@ -685,29 +695,118 @@
         "products": "注目商品",
         "competitors": "競合",
         "agents": "エージェント経由の訪問",
-        "topProducts": "注目商品",
-        "agentVisits": "エージェント経由の訪問"
+        "topProducts": "商品",
+        "agentVisits": "AIからの訪問"
       },
       "charts": {
         "kickers": {
           "performance": "01 — パフォーマンス",
           "recentActivity": "01.5 — 最近のアクティビティ"
         },
-        "winRateByModel": "モデル別勝率",
-        "winRateTrend": "勝率の推移",
+        "winRateByModel": "モデル別の平均商品勝率",
+        "winRateTrend": "スキャンごとの勝率",
         "states": {
           "noModels": "シミュレーションを実行すると、モデルごとのパフォーマンスを確認できます。",
-          "noTrend": "推移を表示するにはデータが不足しています。",
+          "noTrend": "完了したスキャンはまだありません。",
           "noTrendHint": "シミュレーションを実行して開始してください。",
           "noActivity": "まだアクティビティがありません。最初のシミュレーションを実行すると、ここに結果が表示されます。"
         },
         "action": {
-          "primary": "すべての商品を表示",
-          "secondary": "最適化"
-        }
+          "primary": "最新スキャンを確認",
+          "secondary": "最適化",
+          "tertiary": "シミュレーションを見る"
+        },
+        "recentActivity": "最近のスキャン",
+        "latestScan": "最後に完了したスキャン",
+        "modelHint": "比較済み商品の勝率をモデルごとに平均した値です。",
+        "change": "前回のスキャンからの変化",
+        "sampleNote": "各点は個別のスキャンです。選択された商品や競合はスキャンごとに異なる場合があります。"
       },
       "title": "概要",
-      "description": "AIショッピングエージェントが競合商品と比較してカタログをどのように評価しているかを確認できます。"
+      "description": "対応が必要な項目、変化、次に行うことを確認できます。",
+      "summary": {
+        "latestWinRate": "最新のシミュレーション勝率",
+        "latestResult": "{total, plural, other {#件の比較}}で{wins, plural, other {#勝}}",
+        "change": "{value}パーセントポイント",
+        "coverage": "比較済み商品",
+        "coverageDetail": "{total, plural, other {カタログ内の商品#件}}中{count, number}件",
+        "coverageHint": "完了した商品比較に基づきます。",
+        "noResult": "最初のスキャンを実行すると、結果を確認できます。",
+        "topPerformer": "最も好成績の商品",
+        "opportunity": "改善候補の商品",
+        "productRate": "比較の{rate}で勝利",
+        "updated": "最後に完了したスキャン：{time}",
+        "action": {
+          "primary": "商品を見る",
+          "secondary": "この商品を改善",
+          "tertiary": "商品を選択"
+        },
+        "emptyProduct": "最初のスキャン後に商品の結果が表示されます。"
+      },
+      "priorities": {
+        "title": "次のステップ",
+        "description": "不足している商品情報を補い、もう一度比較しましょう。",
+        "fields": {
+          "description": {
+            "title": "不足している商品説明を追加",
+            "detail": "{count, plural, other {#件の商品に説明がありません。}}"
+          },
+          "price": {
+            "title": "未設定の価格を追加",
+            "detail": "{count, plural, other {#件の商品に価格がありません。}}"
+          },
+          "sku": {
+            "title": "未設定のSKUを追加",
+            "detail": "{count, plural, other {#件の商品にSKUがありません。}}"
+          },
+          "complete": {
+            "title": "基本の商品項目は入力済みです",
+            "detail": "説明、価格、SKUを確認しました。"
+          }
+        },
+        "compare": {
+          "title": "未比較の商品を比較",
+          "detail": "{count, plural, other {#件の商品がまだ比較されていません。}}",
+          "complete": {
+            "title": "カタログ内の全商品を比較済みです",
+            "detail": "{count, plural, other {#件の商品で比較が完了しています。}}"
+          }
+        },
+        "optimize": {
+          "title": "商品ページの改善候補を確認",
+          "detail": "{count, plural, other {#件の商品が最適化待ちです。}}",
+          "complete": {
+            "title": "待機中の改善候補はありません",
+            "detail": "次のスキャン後に商品ページの診断を確認してください。"
+          }
+        },
+        "action": {
+          "primary": "商品情報を確認",
+          "secondary": "商品を選択",
+          "tertiary": "最適化を開く",
+          "quaternary": "比較を見る"
+        }
+      },
+      "traffic": {
+        "title": "記録されたAIアクセス",
+        "description": "過去30日間に記録されたイベントです。",
+        "referrals": "AIからの参照アクセス",
+        "crawlers": "エージェントとクローラーのリクエスト",
+        "hint": "記録された訪問とリクエストの件数です。買い物客の実人数や購入件数ではありません。",
+        "action": {
+          "primary": "AIアクセスを確認"
+        }
+      },
+      "priorityChecks": {
+        "incomplete": {
+          "title": "商品情報を補完",
+          "detail": "{count, plural, other {#件の商品でカタログ情報が不足しています。}}"
+        },
+        "unavailable": {
+          "title": "改善候補を確認できません",
+          "description": "「最適化」を開いて、このストアで利用できるチェックを確認してください。"
+        }
+      }
     },
     "agentVisits": {
       "kicker": "04 — エージェントトラフィック",
@@ -778,6 +877,16 @@
             "primary": "一致する商品がありません",
             "secondary": "別の検索を試すか、フィルターをクリアしてください。"
           }
+        },
+        "overviewTools": {
+          "sort": "並べ替え",
+          "defaultOrder": "標準の順序",
+          "ascending": "昇順",
+          "descending": "降順",
+          "comparison": "比較状況",
+          "all": "すべての商品",
+          "compared": "比較済み",
+          "notCompared": "未比較"
         }
       },
       "title": "商品",
@@ -996,6 +1105,69 @@
         "noFindingTitle": "このスキャンには記録された検出結果がありません。",
         "noFindingHint": "インサイトを表示するには、スキャンを再実行してください。",
         "fixThis": "修正する"
+      },
+      "catalog": {
+        "title": "商品",
+        "description": "商品を探し、比較結果を確認して、必要な情報を充実させましょう。",
+        "tableLabel": "商品カタログ",
+        "columns": "表示項目",
+        "resetColumns": "表示項目をリセット",
+        "sortBy": "{field}で並べ替え",
+        "noSku": "SKU未設定",
+        "unmeasured": "未比較",
+        "rate": "AI比較での勝率：{value}%",
+        "coverage": "項目の入力率：{value}%",
+        "coverageHint": "商品名、説明、価格、画像、SKU、構造化データの6項目の有無を確認します。AIによる品質評価ではありません。",
+        "comparisons": "{count, plural, other {比較#回}}",
+        "results": "商品数：{count, number}",
+        "range": "全{total}件中{from}〜{to}件",
+        "summary": {
+          "imported": "カタログの商品",
+          "importedHint": "インポート済みの全商品",
+          "compared": "AI比較済み",
+          "comparedHint": "比較結果が1件以上ある商品",
+          "incomplete": "情報が不足している商品",
+          "incompleteHint": "6項目のうち1つ以上が未入力",
+          "unavailable": "カタログの集計を一時的に取得できません。下の商品一覧は引き続きご利用いただけます。"
+        },
+        "fields": {
+          "product": "商品",
+          "sku": "SKU",
+          "price": "価格",
+          "currency": "通貨",
+          "winRate": "AI比較の勝率",
+          "quality": "項目の入力率",
+          "updatedAt": "更新日時"
+        },
+        "selection": {
+          "all": "このページの全商品を選択",
+          "product": "{product}を選択",
+          "count": "このページで{count, number}件を選択中",
+          "hint": "商品を選択するとデータをエクスポートできます。"
+        },
+        "action": {
+          "add": "商品を追加",
+          "clear": "検索と絞り込みを解除",
+          "retry": "再試行",
+          "export": "選択した商品をエクスポート",
+          "deselect": "選択を解除",
+          "open": "{product}を開く"
+        },
+        "states": {
+          "empty": {
+            "title": "商品カタログを作成しましょう",
+            "description": "商品をインポートすると、商品情報とAIの比較結果をまとめて確認できます。"
+          },
+          "noMatches": {
+            "title": "該当する商品がありません",
+            "description": "検索条件を変更するか、絞り込みを解除してみてください。"
+          },
+          "error": {
+            "title": "商品を読み込めませんでした",
+            "description": "カタログのデータは保存されています。もう一度読み込んでください。"
+          }
+        },
+        "loading": "商品を読み込んでいます…"
       }
     },
     "competitors": {
@@ -1136,7 +1308,9 @@
         "simulationComplete": "シミュレーション完了 — {wins} 勝、{losses} 敗",
         "simulationInProgress": "シミュレーション実行中 — {completed}/{total}",
         "noActivityTitle": "まだアクティビティがありません。",
-        "noActivityHint": "最初のシミュレーションを実行すると、ここに結果が表示されます。"
+        "noActivityHint": "最初のシミュレーションを実行すると、ここに結果が表示されます。",
+        "simulationPending": "スキャン待機中 — {total, plural, other {#件の比較}}",
+        "simulationFailed": "スキャンに失敗しました — 全{total, number}件中{completed, plural, other {#件の比較が完了}}"
       },
       "action": {
         "optimizations": "最適化",
@@ -1435,7 +1609,7 @@
         "failed": "ブランド分析に失敗しました",
         "started": {
           "title": "ブランド分析を開始しました",
-          "description": "そのまま操作を続けてください。結果は約1分後にここへ表示されます。"
+          "description": "作業を続けられます。分析が完了すると、ここに結果が表示されます。"
         },
         "alreadyRunning": "分析はすでに実行中です"
       },
@@ -1547,6 +1721,164 @@
         "queries": {
           "label": "監査済みクエリ",
           "detail": "最新の実行結果"
+        }
+      },
+      "answers": {
+        "title": "保存された回答",
+        "description": "この分析で使われた質問と回答を確認できます。",
+        "search": "質問・回答・ブランドを検索",
+        "filter": "ブランドへの言及",
+        "filters": {
+          "all": "すべての回答",
+          "mentioned": "言及あり",
+          "absent": "言及なし"
+        },
+        "count": "全{total, number}件中{count, plural, other {#件}}",
+        "position": {
+          "top": "第一候補として推奨",
+          "listed": "一覧に掲載",
+          "absent": "言及なし"
+        },
+        "context": {
+          "named": "質問文にブランド名あり",
+          "unbranded": "質問文にブランド名なし"
+        },
+        "answer": "回答の要約",
+        "noAnswer": "回答の要約は保存されていません。",
+        "brands": "言及されたブランド",
+        "noBrands": "ブランドは記録されていません。",
+        "sources": "モデルが挙げた情報源",
+        "sourcesNote": "モデルが挙げた情報源であり、リアルタイムの検索で確認された引用元ではありません。",
+        "noSources": "情報源は記録されていません。",
+        "empty": {
+          "title": "一致する回答がありません",
+          "description": "検索内容を変えるか、すべての回答を表示してください。",
+          "saved": "この分析には保存された回答がありません。"
+        },
+        "action": {
+          "primary": "検索と絞り込みをクリア"
+        }
+      },
+      "design": {
+        "title": "ブランド",
+        "description": "買い物の質問への回答をシミュレーションし、ブランドの扱われ方を確認します。",
+        "updated": "分析日時：{time}",
+        "sample": "{count, plural, other {#件の回答サンプル}} · {engines}",
+        "scope": "モデルには分析対象のブランド情報を事前に渡しています。これはシミュレーションであり、ヒントなしでブランドを想起するテストや、実際の顧客との会話記録ではありません。",
+        "action": {
+          "primary": "ブランドを分析",
+          "secondary": "再分析",
+          "tertiary": "カタログを確認"
+        },
+        "empty": {
+          "title": "ブランドの見落とされている課題を見つけましょう。",
+          "description": "買い物の質問でブランドが挙がるか、どう説明されるか、どの情報を明確にすると役立つかを確認できます。",
+          "note": "ストアとカタログをもとに、ChatGPT向けの質問を20件用意します。分析中も作業を続けられます。",
+          "visualTitle": "買い物客の質問から、次のアクションへ",
+          "steps": {
+            "questions": {
+              "title": "商品カテゴリについて質問",
+              "description": "ブランド名を含む質問と含まない質問を用意します。"
+            },
+            "answers": {
+              "title": "回答を確認",
+              "description": "ブランドへの言及、代替候補、回答の要約を確認します。"
+            },
+            "actions": {
+              "title": "改善点を把握",
+              "description": "サンプル回答に基づく提案を確認します。"
+            }
+          }
+        },
+        "summaryTitle": "押さえておきたいこと",
+        "discoveryTitle": "質問の種類別の言及状況",
+        "unprompted": "ブランド名を含まない質問",
+        "named": "ブランド名を含む質問",
+        "ratio": "全{total}件中{count}件の回答",
+        "noSample": "このグループには質問がありません",
+        "overall": "サンプル回答{total}件中{count}件で言及されました。",
+        "noAnswers": "このレポートには保存された回答がありません。新しい分析を実行して確認材料を集めてください。",
+        "tabs": {
+          "plan": "次のステップ",
+          "answers": "回答",
+          "access": "サイトの確認"
+        },
+        "findingsTitle": "注目すべき傾向",
+        "journeyTitle": "改善できる点",
+        "journeyDescription": "この分析に基づく提案です。サイトを変更する前に、根拠を確認してください。",
+        "stage": {
+          "find": "見つけてもらう",
+          "consider": "候補に入る",
+          "evaluate": "購入判断を助ける",
+          "support": "追加の質問に答える"
+        },
+        "suggestions": "{count, plural, other {#件の提案}}",
+        "noSuggestions": "この段階での変更提案はありません。",
+        "perceptionTitle": "回答ではどう説明されているか",
+        "strengths": "有利に働く点",
+        "concerns": "疑問を持たれる点",
+        "alternativesTitle": "回答に登場する他のブランド",
+        "sourcesTitle": "モデルが挙げた情報源",
+        "sourcesNote": "モデルが挙げたドメインや情報源の種類です。ライブ検索で確認された引用元ではありません。",
+        "occurrences": "{count, plural, other {#回の言及}}",
+        "accessTitle": "クローラーはコンテンツにアクセスできますか？",
+        "accessDescription": "公開されたコンテンツ発見用ファイルを、一時点で確認した結果です。検索へのインデックス登録、順位、決済の準備状況は測定していません。",
+        "checks": {
+          "robots": "クローラーのルール",
+          "llms": "AI向けコンテンツガイド",
+          "engines": "クローラーのアクセス"
+        },
+        "status": {
+          "pass": "確認済み",
+          "warn": "要確認",
+          "fail": "ブロック"
+        },
+        "robots": {
+          "pass": "クローラーのルールを読み取りました。",
+          "warn": "記録されたクローラーのルールを確認してください。",
+          "fail": "robots.txtにクローラーの制限が見つかりました。",
+          "note": "robots.txtはクローラーごとのアクセスを制御します。検索、ユーザーによるリクエスト、モデルの学習では、異なるクローラーが使われる場合があります。"
+        },
+        "llms": {
+          "pass": "llms.txtファイルにアクセスできました。",
+          "warn": "アクセス可能なllms.txtファイルは記録されていません。",
+          "note": "この任意のコンテンツガイドは、AIサービスによるブランド情報の読み取り、インデックス登録、推奨を保証するものではありません。"
+        },
+        "engines": {
+          "pass": "確認対象のクローラーについて、サイトのルート階層でのブロックは検出されませんでした。",
+          "warn": "このスキャンではアクセスを確認できませんでした。",
+          "fail": "確認対象の一部のクローラーに、サイトのルート階層での制限があります。",
+          "note": "個別のパスに対するルール、他のクローラー、インデックス登録は確認の対象外です。"
+        },
+        "failed": {
+          "title": "分析を完了できませんでした",
+          "description": "前回完了したレポートは引き続き下に表示されます。準備ができたら再試行してください。",
+          "emptyDescription": "レポートは保存されませんでした。準備ができたら再試行してください。"
+        },
+        "error": "分析を開始できませんでした。もう一度お試しください。",
+        "running": {
+          "title": "ブランドを分析しています",
+          "description": "ChatGPTが買い物の質問に回答しています。準備ができ次第、ここに結果が表示されます。",
+          "previous": "新しい分析の実行中は、前回のレポートを表示しています。",
+          "steps": "質問を準備 · 回答を確認 · 改善提案を作成"
+        },
+        "loading": "ブランド分析を読み込み中",
+        "unavailable": {
+          "title": "ブランドデータを一時的に利用できません",
+          "description": "保存済みの分析を読み込めませんでした。このセクションを更新して再試行してください。",
+          "action": {
+            "primary": "再試行"
+          }
+        },
+        "noFindings": "このレポートには傾向が保存されていません。",
+        "summaryAction": {
+          "primary": "分析の全文を読む",
+          "secondary": "折りたたむ"
+        },
+        "method": {
+          "action": {
+            "primary": "仕組み"
+          }
         }
       }
     },
@@ -2016,6 +2348,17 @@
       "connection": {
         "title": "Merchant Center接続",
         "description": "ecenticが最適化オーバーライドを書き込むMerchant Centerアカウントを連携し、その後プッシュして検証します。"
+      },
+      "workspaceTitle": "Google ショッピング",
+      "workspaceDescription": "Merchant Center との接続、商品情報の更新、チェックアウトの準備状況を管理します。",
+      "unsupportedWorkspace": {
+        "status": "このソースでは利用できません",
+        "title": "対応するカタログを接続",
+        "description": "Google ショッピングへの配信は、接続済みの Shopify ストアで利用できます。このカタログのソースは、まだ ecentic 経由で Merchant Center に接続できません。商品の確認や他のチャネルの設定は引き続き行えます。",
+        "action": {
+          "primary": "Shopify を接続",
+          "secondary": "接続を確認"
+        }
       }
     },
     "visibility": {
@@ -2140,7 +2483,8 @@
         "noExplanation": "説明は返されませんでした。",
         "noStores": "ストアは返されませんでした。",
         "unreachable": "このモデルに接続できませんでした。"
-      }
+      },
+      "method": "各プロンプトにはストア名が含まれます。これらのシミュレーションによる推奨は、ストア名を示さない場合のブランド認知度や、リアルタイムの検索順位を測定するものではありません。"
     },
     "ucp": {
       "statusPill": "Universal Commerce Protocol",
@@ -2330,6 +2674,31 @@
         "emptyEndpoints": "UCPプロフィールにURL付きのサービスエンドポイントが見つかりません。ライブテストを有効にするには、サービスに",
         "emptyEndpointsSuffix": "フィールドを追加してください。",
         "emptyEndpointsField": "endpoint"
+      },
+      "review": {
+        "description": "ストアの決済設定と、ショッピングエージェントが利用できる商品データを確認します。",
+        "tabs": {
+          "check": "決済チェック",
+          "data": "商品データ"
+        },
+        "check": {
+          "title": "決済設定を確認",
+          "description": "ストアで公開されているUCPプロファイルを読み取り、決済設定の不足や不備を確認します。",
+          "hint": "HTTPSを使用します。注文を行わずに、公開済みのプロファイルを確認します。"
+        },
+        "details": {
+          "title": "確認する内容",
+          "description": "プロファイルの検出、支払い設定、エージェントのアクセス。"
+        },
+        "advanced": {
+          "title": "実際のエンドポイントをテスト",
+          "summary": "任意 · テスト用カートが作成される場合があります",
+          "description": "ストアが宣言しているサービスを確認し、決済の一連の処理をテストします。"
+        },
+        "products": {
+          "title": "商品データのカバー率",
+          "description": "生成された商品データだけでは、実際に決済できることは確認できません。表示されている商品はこのストアの商品です。"
+        }
       }
     },
     "ucpComparison": {
@@ -2462,7 +2831,7 @@
       "composer": {
         "placeholder": "エージェントに {host} での買い物を依頼…",
         "hint": "Enter で送信 · Shift + Enter で改行",
-        "remaining": "このプレイグラウンドの無料{limit, plural, other {メッセージ}}：全{limit}件中、残り{remaining}件。"
+        "remaining": "このプレイグラウンドの無料{limit, plural, other {メッセージ}}：全{limit, number}件中、残り{remaining, number}件。"
       },
       "quota": {
         "title": "無料プレイグラウンドメッセージ {limit} 件をすべて使用しました",
@@ -2778,13 +3147,13 @@
         "asOf": "{time}時点のデータ",
         "noScans": "完了したスキャンはまだありません"
       },
-      "title": "レポートとエクスポート",
-      "description": "AIエージェントでのパフォーマンスに関するレポートをダウンロードしたり、自動レポートをスケジュールしたりできます。",
+      "title": "レポート",
+      "description": "全ストアの保存済み比較結果とカタログデータをダウンロードできます。",
       "shareable": {
-        "title": "共有用勝率レポート",
-        "description": "Twitter、LinkedIn、またはチーム内で共有できる形式の勝率レポート用公開URLを生成します。",
+        "title": "比較レポートを共有",
+        "description": "直近に完了した比較の公開レポートを開きます。共有する前に内容を確認してください。",
         "action": {
-          "primary": "共有用レポートを生成"
+          "primary": "レポートを開く"
         },
         "runScanFirst": "先にスキャンを実行してください"
       },
@@ -2800,19 +3169,19 @@
       "items": {
         "winRateSummary": {
           "title": "勝率サマリー",
-          "description": "全商品・全モデルにおける全体パフォーマンス"
+          "description": "直近に完了したスキャンのモデル別結果。"
         },
         "productPerformance": {
           "title": "商品パフォーマンス",
-          "description": "トレンドと競合比較を含む商品別詳細レポート"
+          "description": "保存済みの商品項目と、モデル別の内訳を含むシミュレーション勝率。"
         },
         "competitorAnalysis": {
           "title": "競合分析",
-          "description": "追跡中の全ブランドのバトルカードを含む競争環境の全体像"
+          "description": "登録済みの競合、取得済みの場合は観測価格、および比較結果。"
         },
         "optimizationImpact": {
           "title": "最適化の効果",
-          "description": "公開済みのすべての最適化に関する実施前後の分析"
+          "description": "保存済みの商品情報の変更、公開日、モデルによる推定値。"
         }
       },
       "tiers": {
@@ -2821,8 +3190,9 @@
         "dominate": "Dominate+"
       },
       "action": {
-        "downloadCsv": "CSV"
-      }
+        "downloadCsv": "CSVをダウンロード"
+      },
+      "unavailable": "保存されたデータはまだありません"
     },
     "paywall": {
       "kicker": "プランが必要です",
@@ -2861,7 +3231,11 @@
         "disclosure": "スキャンは、Vercel Labs が提供する無料の公開サービス Is Agentic によって実行されます。ストアフロントのドメインは is-agentic.com に送信されますが、顧客データや注文データが ecentic から外部に送信されることはありません。",
         "disclosureLink": "Is Agentic ドキュメント",
         "announceProgress": "スキャン完了率 {percent}%。",
-        "announceComplete": "スキャン完了。スコアは100点中 {score} 点です。"
+        "announceComplete": "スキャン完了。スコアは100点中 {score} 点です。",
+        "workspaceTitle": "ストアフロントのスキャン",
+        "awaitingFirst": "未スキャン",
+        "report": "レポートを開く",
+        "providerNote": "ドメインは<provider>Is Agentic</provider>に送信されます。顧客情報や注文データは共有されません。"
       },
       "score": {
         "title": "現在の状況",
@@ -2884,7 +3258,27 @@
         "publicOnlyUnscored": "Is Agentic にはこのドメインのレポートがありますが、まだスコアは付与されていません — {label}。スキャンを実行すると、各チェック項目の詳細を取り込み、推移の追跡を開始できます。",
         "trendSummary": "{since} 以降の {count} 回のスキャン。スコアは100点中 {first} 点から {latest} 点へ推移。",
         "gradeLabel": "評価",
-        "gainAria": "{points} ポイント"
+        "gainAria": "{points} ポイント",
+        "preview": {
+          "emptyTitle": "ここから最初のスキャンを始めましょう",
+          "publicTitle": "公開レポートがあります",
+          "payments": {
+            "title": "決済",
+            "description": "チェックアウトと決済プロトコルへの対応。"
+          },
+          "discovery": {
+            "title": "発見性",
+            "description": "エージェントがストアを見つけるための情報。"
+          },
+          "accessibility": {
+            "title": "アクセス性",
+            "description": "エージェントがストアにアクセスし、内容を読み取れるかどうか。"
+          },
+          "usability": {
+            "title": "使いやすさ",
+            "description": "エージェントがストアを操作するためのインターフェース。"
+          }
+        }
       },
       "checks": {
         "title": "すべてのチェック項目",
@@ -2976,6 +3370,614 @@
         "shopifyBilling": "まず Shopify で ecentic をアンインストールして Shopify の請求契約を終了し、その後もこの接続が残っている場合はサポートへお問い合わせください。",
         "billingRecords": "このアカウントには請求または注文履歴があります。請求処理の完了と法的に必要な記録保持が必要なため、削除は privacy@ecentic.ai までお問い合わせください。",
         "storeConnections": "アカウントを削除する前に、設定でストアと Google Shopping 連携の接続を解除してください。"
+      }
+    },
+    "traffic": {
+      "title": "AI経由のアクセス",
+      "description": "記録されたAI関連のアクセス元を確認できます。",
+      "period": "過去30日間",
+      "source": "アクセス元",
+      "other": "その他のアクセス元",
+      "referrals": {
+        "title": "AIからの流入",
+        "short": "流入",
+        "detail": "AIからの流入として分類されたアクセスです。"
+      },
+      "requests": {
+        "title": "エージェント・クローラーのリクエスト",
+        "short": "リクエスト",
+        "detail": "クローラーやAIエージェント搭載ブラウザーなど、検出されたユーザーエージェントからのリクエストです。"
+      },
+      "empty": {
+        "title": "AI関連のアクセスはまだ記録されていません",
+        "description": "トラッカーがAIからの流入や識別可能なユーザーエージェントを検出すると、ここに表示されます。"
+      },
+      "action": {
+        "primary": "接続を確認",
+        "secondary": "再試行"
+      },
+      "probes": "{count, plural, other {トラッカーのテスト信号#件は、上記の集計から除外しています。}}",
+      "limitation": "集計対象は記録されたイベントです。ユニークユーザー数や購入数ではありません。ブラウザーでのトラッキングでは、クローラーのすべてのリクエストを記録できません。",
+      "chart": {
+        "title": "日別のアクセス",
+        "scope": "OpenAI、Anthropic、Googleのみを表示しています。",
+        "hint": "この推移にはAIからの流入とリクエストの両方が含まれます。他のプロバイダーはアクセス元の内訳に表示されます。",
+        "empty": "この3社からのアクセスは記録されていません。",
+        "accessibleLabel": "日別のアクセス記録。矢印キーで各日付のデータを確認できます。"
+      },
+      "error": {
+        "title": "アクセスデータを読み込めませんでした",
+        "description": "アクセスデータを一時的に取得できません。この画面を再読み込みしてお試しください。"
+      }
+    },
+    "qualityWorkspace": {
+      "title": "データ品質",
+      "description": "不足している情報や無効な値を確認し、修正が必要な商品を見つけます。",
+      "product": "商品",
+      "productsLabel": "商品",
+      "openProduct": "「{product}」を開く",
+      "search": "商品や問題を検索",
+      "scope": {
+        "label": "チェック範囲",
+        "all": "すべてのチェック",
+        "universal": "共通チェック",
+        "google": "Google Merchant",
+        "chatgpt": "ChatGPT フィード"
+      },
+      "status": {
+        "label": "検出結果の種類",
+        "all": "すべての結果",
+        "blocker": "重大な問題",
+        "warning": "警告",
+        "info": "改善の提案",
+        "ready": "問題なし"
+      },
+      "summary": {
+        "label": "プラットフォーム別のカタログチェック",
+        "title": "重大な問題や警告がない商品",
+        "count": "{count, plural, other {有効な商品 # 件をチェック済み}}",
+        "passing": "{total} 件中 {count} 件",
+        "breakdown": "重大な問題あり {blocker} 件、警告あり {warning} 件、改善の提案のみ {info} 件、問題なし {ready} 件。"
+      },
+      "method": {
+        "title": "チェックの仕組み",
+        "description": "保存されている有効な商品のデータを、登録済みのルールに照らして確認します。公開中のストアへのアクセスや、Google・ChatGPT による商品の承認を確認するものではありません。改善の提案のみがある商品は、重大な問題や警告がない商品として数えます。"
+      },
+      "views": {
+        "label": "データ品質の表示",
+        "issues": "問題別",
+        "products": "商品別"
+      },
+      "issueCount": "{count, plural, other {問題 # 件}}",
+      "productCount": "{count, plural, other {商品 # 件}}",
+      "findings": "{count, plural, other {検出結果 # 件}}",
+      "issuesHint": "重大な問題、警告、改善の提案の順に表示します。同じ種類の中では、該当する商品が多い問題を優先します。1 つの商品が複数の問題に該当する場合があります。",
+      "reference": "{surface} のルールの説明を開く",
+      "noFindings": "選択したチェックでは、この商品に問題は見つかりませんでした。",
+      "action": {
+        "primary": "カタログを開く",
+        "secondary": "再試行",
+        "tertiary": "フィルターを解除",
+        "quaternary": "商品をさらに表示"
+      },
+      "productAction": {
+        "primary": "商品を開く"
+      },
+      "searchAction": {
+        "primary": "検索をクリア"
+      },
+      "states": {
+        "empty": {
+          "title": "チェック対象の有効な商品がありません",
+          "description": "チェックの対象は有効な商品のみです。下書きやアーカイブ済みの商品はカタログに残っていますが、ここには含まれません。"
+        },
+        "error": {
+          "title": "品質チェックを読み込めませんでした",
+          "description": "カタログのデータは保存されています。結果をもう一度読み込んでください。"
+        },
+        "clear": {
+          "title": "このチェックでは問題は見つかりませんでした",
+          "description": "有効な商品は、この表示に対応する登録済みのチェックを通過しています。購入プラットフォームによる承認を意味するものではありません。"
+        },
+        "noMatches": {
+          "title": "該当する検出結果や商品がありません",
+          "description": "検索内容を変えるか、フィルターを解除して一覧を表示してください。"
+        }
+      }
+    },
+    "productWorkspace": {
+      "title": "商品詳細",
+      "description": "この商品の保存済み情報と、記録された AI 比較を確認します。",
+      "status": {
+        "active": "有効",
+        "draft": "下書き",
+        "archived": "アーカイブ済み",
+        "unknown": "ステータス不明"
+      },
+      "updated": "更新：{time}",
+      "latestComparison": "前回の比較：{time}",
+      "priceMissing": "価格が保存されていません",
+      "metrics": {
+        "rate": "シミュレーション勝率",
+        "comparisons": "比較回数",
+        "coverage": "保存済み項目の充足率",
+        "wins": "{total} 件中 {wins} 件で勝利",
+        "competitors": "{count, plural, other {# 件の競合商品と比較}}"
+      },
+      "method": {
+        "title": "数値について",
+        "description": "勝率は記録済みの商品比較から算出します。比較されていない商品やモデルには、測定済みの勝率はありません。充足率は、タイトル、説明、価格、画像、SKU、構造化データの 6 項目が保存されているかを示します。内容に説得力があるかどうかを評価するものではありません。"
+      },
+      "models": {
+        "title": "モデル別の結果",
+        "description": "記録されたシミュレーションの結果です。実際のストアへのアクセスを示すものではありません。",
+        "count": "{count, plural, other {比較 # 回}}"
+      },
+      "tabs": {
+        "overview": "比較",
+        "replay": "エージェントの判断",
+        "battlecard": "競合との比較",
+        "optimize": "商品情報"
+      },
+      "action": {
+        "primary": "AI でレビュー",
+        "secondary": "再試行",
+        "tertiary": "カタログを開く",
+        "quaternary": "さらに表示"
+      },
+      "navigation": {
+        "primary": "商品一覧に戻る",
+        "secondary": "適用待ちの最適化を確認"
+      },
+      "audit": {
+        "title": "AI によるコンテンツレビュー",
+        "description": "表現、商品情報、想定する顧客層との適合性についてレビューを依頼します。保存済みの商品情報は変更されません。",
+        "running": "商品をレビューしています…",
+        "failed": "AI レビューを完了できませんでした。保存済みの商品情報は変更されていません。",
+        "savedFields": "保存済みの商品項目",
+        "coverageDescription": "項目が保存されているかの確認と、AI によるコンテンツレビューは別のものです。",
+        "ready": "レビューが完了しました"
+      },
+      "unmeasured": "未比較",
+      "noReasoning": "この比較には、判断の理由を説明する文章が保存されていません。",
+      "states": {
+        "empty": {
+          "title": "まだ比較されていません",
+          "description": "この商品には、記録された AI 比較がありません。競合商品と比較すると、勝率が表示されます。"
+        },
+        "error": {
+          "title": "この商品を読み込めませんでした",
+          "description": "カタログのデータは保存されています。この商品をもう一度読み込んでください。"
+        },
+        "missing": {
+          "title": "商品が見つかりません",
+          "description": "この商品は削除されたか、別のストアに属している可能性があります。カタログを開いて商品を選んでください。"
+        }
+      },
+      "publishDescription": "{title}のタイトルと説明を最適化して生成し、接続先のストアに公開して現在の商品情報を置き換えます。"
+    },
+    "productChannels": {
+      "tab": "商品情報とチャネル",
+      "title": "チャネル別の商品表示",
+      "description": "保存済みの商品情報をプレビューし、接続状況とフィードの記録を確認できます。",
+      "preview": {
+        "title": "保存済みの商品情報のプレビュー",
+        "description": "保存データを使った表示例です。実際の掲載位置やレイアウトとは異なる場合があります。",
+        "storefront": "ストア",
+        "google": "Google",
+        "chatgpt": "ChatGPT",
+        "imageMissing": "商品画像が保存されていません",
+        "descriptionMissing": "説明が保存されていません",
+        "priceMissing": "価格が保存されていません",
+        "storefrontNote": "取り込んだ商品情報",
+        "googleNote": "ショッピング検索結果に表示する商品情報",
+        "chatgptNote": "アシスタントの商品カードに表示する商品情報",
+        "sample": "プレビュー",
+        "googleMode": "AI モード",
+        "details": "この商品について",
+        "store": "ショップ",
+        "query": "{product}を見せて",
+        "action": {
+          "primary": "サイトを見る"
+        }
+      },
+      "source": {
+        "title": "カタログの接続",
+        "unknown": "接続の詳細を取得できません",
+        "unknownDescription": "連携設定を開いてカタログの接続を確認してください。",
+        "lastSync": "カタログ同期",
+        "productSync": "商品同期",
+        "notSynced": "同期の記録はありません",
+        "status": "接続状況",
+        "error": "要確認",
+        "unavailable": "状況を取得できません",
+        "connected": "接続済み",
+        "syncing": "カタログを同期中",
+        "disconnected": "未接続",
+        "publicImport": "公開カタログの取り込み",
+        "platform": {
+          "feed": "商品フィード",
+          "csv": "CSV取り込み",
+          "unknown": "カタログの取得元"
+        }
+      },
+      "google": {
+        "title": "Googleフィードの記録",
+        "description": "保存済みの同期記録であり、Googleの現在の状態を確認した結果ではありません。「上書きを確認」は補足更新の反映を確認した状態で、Googleでの商品の表示を保証するものではありません。",
+        "unavailable": "フィードの記録を読み込めませんでした。Google Shoppingを開いて接続を確認してください。",
+        "unsupported": "このカタログの取得元では、Googleとの補足データの同期は利用できません。",
+        "notConnected": "このカタログはGoogle Merchant Centerに接続されていません。",
+        "setup": "商品データを送信するには、接続の設定が必要です。",
+        "ready": "接続の準備はできています。この商品のフィード記録はまだ保存されていません。",
+        "pending": "処理待ち",
+        "live": "上書きを確認",
+        "disapproved": "不承認",
+        "error": "更新できませんでした",
+        "lastSent": "送信：{time}",
+        "lastChecked": "確認：{time}",
+        "offer": "オファー {id}"
+      },
+      "assistant": {
+        "title": "アシスタントによる商品発見",
+        "description": "プレビューが表示されても、ChatGPTがこの商品をインデックスに登録したり、おすすめしたりしたことにはなりません。商品情報を充実させ、アシスタントが商品を見つけるための公開リソースを確認してください。"
+      },
+      "action": {
+        "primary": "接続を管理",
+        "secondary": "Google Shoppingを開く",
+        "tertiary": "ストアを表示",
+        "quaternary": "商品発見の設定を確認"
+      }
+    },
+    "optimizeWorkspace": {
+      "title": "最適化",
+      "description": "比較結果をもとに商品情報を改善します。公開前に内容を確認してください。",
+      "action": {
+        "primary": "生成して公開",
+        "secondary": "商品情報を確認",
+        "tertiary": "データ品質を確認",
+        "quaternary": "再試行"
+      },
+      "queue": {
+        "title": "次に改善する商品情報",
+        "description": "シミュレーション勝率の低い商品から確認しましょう。商品を開くと比較結果を確認できます。",
+        "sample": "この一覧は保存済みの診断提案に基づきます。有効なカタログ全体のチェックは「データ品質」で確認できます。",
+        "count": "{count, plural, other {#件の商品を表示}}"
+      },
+      "search": "商品名またはSKUで検索…",
+      "tabs": {
+        "queue": "要確認",
+        "published": "公開済み",
+        "dismissed": "除外済み"
+      },
+      "summary": {
+        "candidates": "公開可能な候補",
+        "manual": "手動での変更が必要",
+        "published": "公開記録"
+      },
+      "row": {
+        "rate": "シミュレーション勝率",
+        "manual": "手動で変更",
+        "ready": "公開機能を利用可能",
+        "context": "記録されたモデル：{models}"
+      },
+      "method": {
+        "title": "この一覧について",
+        "description": "記録された勝率が55%未満の商品が候補です。除外済みの商品と過去14日以内に公開した商品情報は、公開候補に含まれません。候補は保存済みの下書きではありません。「生成して公開」は新しい文章を生成し、ストアの商品情報を直ちに置き換えます。提案は売上や将来の勝率を予測するものではありません。"
+      },
+      "states": {
+        "empty": {
+          "title": "確認待ちの提案はありません",
+          "description": "このストアの商品情報に対する提案はまだありません。商品データを確認するか、比較を実行して改善点を見つけましょう。"
+        },
+        "filtered": {
+          "title": "該当する商品がありません",
+          "description": "別の商品名またはSKUで検索してください。"
+        },
+        "error": {
+          "title": "一覧を読み込めませんでした",
+          "description": "商品データは保存されています。もう一度一覧を読み込んでください。"
+        }
+      },
+      "confirmation": {
+        "title": "新しい商品情報を公開しますか？",
+        "description": "{title}の新しいタイトルと説明文を生成し、接続済みストアに公開します。下書きを別途確認する手順なしで、現在の商品情報を置き換えます。",
+        "bulkTitle": "このストアの変更を公開しますか？",
+        "bulkDescription": "{count, plural, other {このストアの対象商品#件について、新しいタイトルと説明文を生成して公開します。現在の商品情報は置き換えられます。}}",
+        "storeTitle": "接続済みストアを最適化しますか？",
+        "storeDescription": "商品の構造化データを書き込み、Shopifyではストアプロフィールも書き込みます。このストアの対象商品の文章を生成して公開します。複数の公開済み内容が変更される場合があります。",
+        "action": {
+          "primary": "確認して公開",
+          "secondary": "確認を続ける"
+        }
+      },
+      "bulk": {
+        "action": "対象商品を公開"
+      },
+      "store": {
+        "action": "ストアを最適化"
+      },
+      "toast": {
+        "failed": "変更を完了できませんでした",
+        "failedDescription": "もう一度お試しください。公開が開始されていた場合は、再試行前に商品を確認してください。",
+        "published": "{count, plural, other {#件の商品情報を公開しました}}",
+        "partial": "{published}件を公開しました。{failed}件は完了できませんでした。残りの商品を確認してから再試行してください。",
+        "saved": "一覧を更新しました"
+      },
+      "history": {
+        "unmeasured": "結果を測定するには、新しい比較が必要です。",
+        "undated": "公開日時は不明です"
+      },
+      "diagnostics": {
+        "content": "役立つ商品情報を追加",
+        "contentHint": "保存済みのタイトルと説明文を確認し、正確な仕様や関連する用途を記載してください。",
+        "structured_data": "構造化データを確認",
+        "structured_dataHint": "商品の構造化データを確認し、検証済みの属性のみを追加してください。",
+        "seo": "商品画像を追加",
+        "seoHint": "連携元に実際の商品画像を追加してから、カタログを同期してください。",
+        "platform": "公開用の接続を設定",
+        "platformHint": "このカタログから商品情報の変更を直接公開することはできません。ShopifyまたはWooCommerceを接続するか、連携元を手動で更新してください。"
+      }
+    },
+    "channels": {
+      "title": "チャネル",
+      "description": "カタログの接続と送信状況を確認し、AIショッピングエージェントに対応できるストアを整えます。",
+      "source": {
+        "title": "カタログ接続",
+        "description": "データ元のカタログと最新のインポート状況です。",
+        "synced": "最終インポート：{date}",
+        "never": "インポートの記録はありません",
+        "public": "公開カタログからのインポートです。公開には、権限を確認したストア接続が必要です。",
+        "action": {
+          "primary": "接続を管理"
+        }
+      },
+      "google": {
+        "title": "Googleへの送信",
+        "description": "このストアの保存済みアカウント情報と商品データです。",
+        "action": {
+          "primary": "Googleを開く"
+        },
+        "pending": "処理待ち",
+        "verified": "確認済みの更新",
+        "issues": "要確認",
+        "note": "更新の確認は、Googleに商品が表示されることを保証するものではありません。"
+      },
+      "checkout": {
+        "title": "チェックアウト",
+        "description": "チェックアウトプロファイルと、そこで公開される商品を確認します。",
+        "action": {
+          "primary": "チェックアウトを開く"
+        },
+        "scope": "チェックアウトプロファイルはアカウント全体に適用されます。商品一覧はこのストアに限定されます。"
+      },
+      "tools": {
+        "title": "ストア・開発者向けツール",
+        "description": "必要に応じて、各機能の確認結果を詳しく調べられます。",
+        "checks": "ストアのチェック",
+        "access": "カタログへのアクセス",
+        "webmcp": "ショッピングツール",
+        "playground": "チェックアウトをテスト",
+        "comparison": "プロファイルを比較"
+      },
+      "research": {
+        "title": "カタログ内の順位をお探しですか？",
+        "description": "カタログ検索はAIリサーチにあります。特定の市場と検索条件での結果であり、ストアの対応状況とは異なります。",
+        "action": {
+          "primary": "カタログ順位を開く"
+        }
+      },
+      "status": {
+        "connected": "接続済み",
+        "syncing": "インポート中",
+        "disconnected": "接続解除済み",
+        "error": "要確認",
+        "unavailable": "利用できません",
+        "unsupported": "このデータ元には未対応です",
+        "setup": "設定が必要です",
+        "notConnected": "未接続"
+      },
+      "error": {
+        "title": "チャネル情報を読み込めません",
+        "description": "保存済みの接続情報を読み込めませんでした。少し待ってから再試行してください。",
+        "action": {
+          "primary": "再試行"
+        }
+      },
+      "checks": {
+        "title": "カタログへのアクセス",
+        "description": "ショッピングエージェントが利用できる公開ファイルと商品フィードを確認します。"
+      }
+    },
+    "catalogWorkflow": {
+      "reviewTitle": "インポート内容を確認",
+      "reviewHint": "{count, number}行の商品データをインポートできます。タイトルのない行は除外されます。",
+      "fieldsHint": "title または name 列が必要です。任意の列：description、price、currency、image、url、sku、id。",
+      "idsHint": "id が一致する行は既存の商品を更新します。id のない行は、インポートのたびに新しい商品を作成します。",
+      "previewHint": "読み込めたデータの先頭{count, number}行を表示しています。",
+      "readFailed": "ファイルを読み込めませんでした。もう一度選択してお試しください。",
+      "partial": "{total, number}件中{imported, number}件の商品をインポートしました。このファイルを再度インポートする前に、カタログで結果を確認してください。",
+      "unknownCurrency": "通貨未指定",
+      "allWork": "すべて",
+      "publishable": "公開可能",
+      "manual": "手動確認",
+      "reviewLabel": "作業を絞り込む",
+      "sourceTitle": "カタログの取得元",
+      "sourceHint": "この取得元からインポートし、保存された情報を確認してから、商品の比較や改善に進みます。",
+      "action": {
+        "primary": "ファイルを確認",
+        "secondary": "別のファイルを選択",
+        "tertiary": "インポートを確定",
+        "quaternary": "カタログを開く"
+      },
+      "improveListing": "商品情報の改善",
+      "comparisonResults": "結果"
+    },
+    "workspace": {
+      "nav": {
+        "label": "ストアのワークスペース",
+        "research": "AIリサーチ",
+        "channels": "チャネル",
+        "results": "実績",
+        "overview": "概要",
+        "products": "商品",
+        "optimize": "最適化"
+      },
+      "sections": {
+        "label": "ワークスペースのセクション",
+        "catalog": "カタログ",
+        "quality": "データ品質",
+        "summary": "概要",
+        "comparisons": "商品比較",
+        "brand": "ブランド",
+        "questions": "質問",
+        "competitors": "競合",
+        "catalogRank": "カタログ順位",
+        "connections": "接続",
+        "google": "Google",
+        "checks": "ストアの診断",
+        "access": "カタログへのアクセス",
+        "checkout": "決済",
+        "developer": "開発者ツール",
+        "shoppingTools": "ショッピングツール",
+        "testCheckout": "決済テスト",
+        "compareProfiles": "プロファイル比較"
+      },
+      "results": {
+        "title": "実績",
+        "description": "このストアで記録されたAI経由の流入とクローラーのアクセスを確認できます。",
+        "reportsTitle": "全ストアのレポート",
+        "reportsDescription": "保存済みの比較結果、カタログデータ、商品情報の変更をエクスポートできます。レポートはアカウント全体が対象です。",
+        "action": {
+          "primary": "レポートを開く",
+          "secondary": "AIリサーチを見る"
+        }
+      },
+      "ready": {
+        "title": "保存済みのチェックに緊急の対応事項はありません",
+        "description": "カタログに変更があったら、チャネルを確認するか、新しい比較を実行してください。",
+        "action": {
+          "primary": "チャネルを確認"
+        }
+      },
+      "reportScope": "このアカウントの全ストア",
+      "reportMethod": "エクスポートには保存済みデータが含まれます。予測される改善幅は推定値であり、実測結果ではありません。",
+      "downloadError": "レポートをダウンロードできませんでした。もう一度お試しください。"
+    },
+    "research": {
+      "title": "AIリサーチ",
+      "description": "商品を比較し、保存済みの回答を確認して、次のテストを決めます。",
+      "unavailable": {
+        "title": "リサーチ結果を読み込めませんでした",
+        "description": "もう一度お試しください。保存済みの結果は変更されていません。",
+        "action": {
+          "primary": "再試行"
+        }
+      },
+      "empty": {
+        "title": "まずは商品を比較しましょう",
+        "description": "商品と実在する競合商品を選び、各モデルがどの商品情報を選ぶか確認します。完了したテストはここに表示されます。"
+      },
+      "comparison": {
+        "title": "直近の完了した比較",
+        "action": {
+          "primary": "比較を設定",
+          "secondary": "結果を確認"
+        },
+        "rate": "シミュレーション勝率",
+        "sample": "{total}回の比較で{wins}勝",
+        "scope": "このテストに含まれる、このストアの商品が対象です。結果はモデルの選択を示すもので、訪問数や売上ではありません。",
+        "recent": "過去の比較",
+        "first": "最初の比較が完了しました。",
+        "cohorts": "商品、競合、モデルが変わると勝率も変わります。これらのテストだけでは、変更による改善効果は測定できません。"
+      },
+      "brand": {
+        "title": "保存済みのブランド分析",
+        "running": "新しい分析を実行中です。",
+        "failed": "前回の分析は完了しませんでした。ブランド分析を開いて再試行できます。",
+        "empty": "完了したブランド分析はまだありません。",
+        "action": {
+          "primary": "ブランド分析を開く"
+        },
+        "scope": "ブランドを前提情報として渡したうえで収集した、モデルの回答サンプルです。対応を決める前に、元の質問と回答を確認してください。"
+      },
+      "directions": {
+        "questions": {
+          "title": "購入時の質問を調べる",
+          "description": "買い物客が尋ねる質問を試し、各モデルが提案するストアを確認します。",
+          "action": {
+            "primary": "質問を調べる"
+          }
+        },
+        "competitors": {
+          "title": "競合を選ぶ",
+          "description": "比較対象の競合商品を確認し、実際に確認したオファーを追加します。",
+          "action": {
+            "primary": "競合を管理"
+          }
+        },
+        "rank": {
+          "title": "カタログでの掲載順位を調べる",
+          "description": "検索内容と国を指定し、Shopify Global Catalogでストアが何番目に表示されるか確認します。",
+          "action": {
+            "primary": "掲載順位を確認"
+          }
+        }
+      },
+      "rank": {
+        "title": "カタログ掲載順位",
+        "description": "検索内容と対象市場を指定して、Shopify Global Catalogにリアルタイムで問い合わせます。",
+        "empty": {
+          "title": "ストアはどこに表示されますか？",
+          "description": "商品の検索語を入力し、国を選んでください。確認するのはカタログが返すオファーであり、ChatGPTやGoogle全体での順位ではありません。"
+        },
+        "checked": "Shopify Global Catalog · {country} · 確認日時：{time}。結果は検索のたびに変わる場合があります。",
+        "unavailable": {
+          "title": "カタログ順位の接続が未設定です",
+          "description": "このワークスペースは、まだShopify Global Catalogに照会できません。ストアへのアクセスチェックと保存済みの比較は引き続き確認できます。",
+          "action": {
+            "primary": "アクセスチェックを見る",
+            "secondary": "保存済みの比較を見る"
+          }
+        }
+      },
+      "comparisons": {
+        "title": "商品比較",
+        "description": "テストする商品と競合オファーを選び、各モデルの選択を確認します。",
+        "phases": {
+          "pre": "比較の準備完了",
+          "running": "商品を比較中",
+          "complete": "比較完了"
+        },
+        "unmeasured": "このモデルの比較結果はありません"
+      },
+      "questions": {
+        "title": "購入時の質問",
+        "description": "購入に関する質問へのモデル生成回答を調べます。提案はリサーチの材料であり、検証済みの検索順位ではありません。"
+      },
+      "competitors": {
+        "title": "競合",
+        "description": "競合オファーを管理し、自社商品との比較結果を確認します。",
+        "action": {
+          "primary": "競合を追加",
+          "secondary": "比較を設定",
+          "tertiary": "競合に戻る"
+        },
+        "stats": {
+          "tracked": "登録ブランド数",
+          "tested": "比較済みブランド数",
+          "comparisons": "保存済み比較数"
+        },
+        "empty": {
+          "title": "買い物客が検討する候補を選びましょう",
+          "description": "実際に確認した価格と商品情報を使って競合商品を追加します。比較を設定するときに、適切なオファーを選択できます。"
+        },
+        "evidence": {
+          "title": "自社商品にとって手強い競合",
+          "description": "ブランドごとのシミュレーション勝率を、低い順に表示しています。比較が完了したブランドのみが対象です。",
+          "sample": "比較{count}回"
+        },
+        "roster": "競合{total}件 · 選択中{selected}件",
+        "updateFailed": "競合を更新できませんでした"
       }
     }
   },
@@ -19648,7 +20650,8 @@
     "wooMark": "立体ライン彫刻として表現されたWooマーク。文字をポイントすると持ち上がります。",
     "merchantFolio": "商品レコード入りのカタログフォルダー。シートをポイントすると持ち上がり、確認できます。",
     "demoPlane": "イラスト: 折り紙の紙飛行機。ポインター方向へ傾きながら浮き上がります。",
-    "partnerCatalogs": "パートナー施策向けに接続された2つの加盟店カタログ。"
+    "partnerCatalogs": "パートナー施策向けに接続された2つの加盟店カタログ。",
+    "comparisonStand": "比較用スタンドに並んだ2枚の商品カード"
   },
   "enterprisePilotPreview": {
     "label": "パイロット例・サンプル概要",

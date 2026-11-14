@@ -1,0 +1,31 @@
+{
+  "dashboard": {
+    "ucp": {
+      "review": {
+        "description": "Revisa la configuración de pago de tu tienda y los datos de productos disponibles para los agentes de compra.",
+        "tabs": {
+          "check": "Comprobar el pago",
+          "data": "Datos de productos"
+        },
+        "check": {
+          "title": "Comprueba el proceso de pago",
+          "description": "Lee el perfil UCP publicado de tu tienda para detectar configuraciones de pago incompletas o no válidas.",
+          "hint": "Usa HTTPS. Comprueba el perfil publicado sin realizar pedidos."
+        },
+        "details": {
+          "title": "Qué comprueba",
+          "description": "Detección del perfil, configuración de pagos y acceso de agentes."
+        },
+        "advanced": {
+          "title": "Probar los endpoints",
+          "summary": "Opcional · puede crear carritos de prueba",
+          "description": "Comprueba los servicios declarados por tu tienda y prueba el ciclo de pago."
+        },
+        "products": {
+          "title": "Cobertura de datos de productos",
+          "description": "Los datos generados de productos no confirman que el pago funcione en la tienda. Estos productos pertenecen a esta tienda."
+        }
+      }
+    }
+  }
+}

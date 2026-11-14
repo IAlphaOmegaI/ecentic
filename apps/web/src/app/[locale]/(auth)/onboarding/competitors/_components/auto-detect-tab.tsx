@@ -72,6 +72,8 @@ export namespace AutoDetectTab {
     onSuccess?: (competitors: Competitor.Type[]) => void;
     store: string;
     className?: string;
+    /** Compact, flush presentation inside the store dashboard. */
+    dashboard?: boolean;
   };
 }
 
@@ -80,6 +82,7 @@ export const AutoDetectTab = ({
   onSuccess,
   store,
   className,
+  dashboard = false,
 }: AutoDetectTab.Props) => {
   const locale = useLocale();
 
@@ -211,7 +214,13 @@ export const AutoDetectTab = ({
   });
 
   return (
-    <div className={cn("relative flex h-full bg-background-dimmed", className)}>
+    <div
+      className={cn(
+        "relative flex h-full bg-background-dimmed",
+        dashboard && "h-auto min-h-64 bg-background-rich",
+        className,
+      )}
+    >
       <AnimatePresence mode="wait" initial={false}>
         {!isDetecting && logs.length === 0 && (
           <motion.div
@@ -220,21 +229,36 @@ export const AutoDetectTab = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="m-auto flex size-full h-full flex-1 flex-col items-center justify-center p-4"
+            className={cn(
+              "m-auto flex size-full h-full flex-1 flex-col items-center justify-center p-4",
+              dashboard && "min-h-64 items-start px-4 py-6 sm:px-6",
+            )}
           >
-            <Image
-              src="/images/auto-detect.png"
-              alt=""
-              aria-hidden
-              fill
-              className="pointer-events-none select-none object-contain opacity-10"
-            />
+            {!dashboard && (
+              <Image
+                src="/images/auto-detect.png"
+                alt=""
+                aria-hidden
+                fill
+                className="pointer-events-none select-none object-contain opacity-10"
+              />
+            )}
 
             <div className="relative z-20">
-              <h3 className="text-center font-medium text-2xl text-foreground">
+              <h3
+                className={cn(
+                  "text-center font-medium text-2xl text-foreground",
+                  dashboard && "text-left font-semibold text-lg",
+                )}
+              >
                 {translate("title")}
               </h3>
-              <p className="relative text-center text-foreground-dimmed text-lg">
+              <p
+                className={cn(
+                  "relative text-center text-foreground-dimmed text-lg",
+                  dashboard && "mt-2 max-w-2xl text-left text-sm leading-6",
+                )}
+              >
                 {translate("description")}
               </p>
             </div>
@@ -256,7 +280,10 @@ export const AutoDetectTab = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="flex h-full max-h-full min-h-0 flex-1 flex-col"
+            className={cn(
+              "flex h-full max-h-full min-h-0 flex-1 flex-col",
+              dashboard && "h-96",
+            )}
           >
             <div
               className={cn(
@@ -276,7 +303,7 @@ export const AutoDetectTab = ({
                     className="inline-block size-1.5 rounded-full bg-primary"
                   />
                 )}
-                <span className="font-medium text-foreground uppercase tracking-widest">
+                <span className="font-medium text-foreground text-sm">
                   {isDetecting ? translate("scanning") : translate("complete")}
                 </span>
               </div>
@@ -337,7 +364,7 @@ export const AutoDetectTab = ({
                     elapsed: formatElapsed(elapsed, locale),
                   })}
                 </span>
-                <Button onClick={handleDetect} color="accent">
+                <Button onClick={handleDetect} color="neutral" variant="soft">
                   {translate("runAgain")}
                 </Button>
               </div>

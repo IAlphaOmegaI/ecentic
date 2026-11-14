@@ -4,18 +4,26 @@ import {
   CheckBadgeIcon,
   CheckIcon,
   CircleBoltIcon,
+  CommerceCode_3Icon,
+  CommerceFileShieldIcon,
   CopyIcon,
   LoaderIcon,
   PhotoIcon,
   SunsetIcon,
 } from "@zenncore/icons";
-import { cn, removeUndefinedEntries } from "@zenncore/utils";
+import { cn, removeUndefinedEntries, resultify } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
+import {
+  Avatar,
+  AvatarFallback,
+  AvatarImage,
+} from "@zenncore/web/components/avatar";
 import { Button } from "@zenncore/web/components/button";
 import {
   type ColumnDef,
   DataTable,
   DataTableEmpty,
+  DataTablePagination,
   DataTableProvider,
 } from "@zenncore/web/components/data-table";
 import {
@@ -27,8 +35,14 @@ import {
 } from "@zenncore/web/components/tabs";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
 import { useToastManager } from "@zenncore/web/components/toast";
-import { useTranslations } from "next-intl";
-import { useCallback, useMemo, useState } from "react";
+import { useFormatter, useTranslations } from "next-intl";
+import {
+  type ComponentProps,
+  type ReactElement,
+  useCallback,
+  useMemo,
+  useState,
+} from "react";
 import { UcpValidatorForm } from "@/app/[locale]/(main)/ucp-validator/_components/ucp-validator-form";
 import { formatPrice } from "@/lib/currency";
 import type * as Ucp from "@/server/app/intelligence/ucp/profile";
@@ -100,11 +114,11 @@ const tokenizeJson = (json: string): JToken[] => {
 };
 
 const tokenColor: Record<JToken["type"], string> = {
-  key: "text-blue-400",
-  string: "text-green-400",
-  number: "text-orange-400",
-  boolean: "text-purple-400",
-  null: "text-orange-300/60",
+  key: "text-primary-rich",
+  string: "text-success-rich",
+  number: "text-warning-rich",
+  boolean: "text-secondary-rich",
+  null: "text-warning-rich/60",
   punct: "text-foreground-dimmed/60",
   space: "",
 };
@@ -242,6 +256,8 @@ type ProductRow = Product.Type & { _id: string };
 
 export namespace UcpManager {
   export type Props = {
+    store?: string;
+    domain?: string;
     profile: Ucp.Type | null;
     products: Product.Type[];
     shopifyStores: { id: string; name: string }[];
@@ -249,12 +265,17 @@ export namespace UcpManager {
 }
 
 export const UcpManager = ({
+  store,
+  domain,
   profile,
   products,
   shopifyStores,
 }: UcpManager.Props) => {
   const toast = useToastManager();
   const translate = useTranslations("dashboard.ucp.manager");
+  const review = useTranslations("dashboard.ucp.review");
+  const pagination = useTranslations("dashboard.shared.pagination");
+  const formatter = useFormatter();
   const [state, setState] = useState<Ucp.Profile>(profile ?? {});
   const [generation, setGeneration] = useState<string | null>(
     profile?.generatedJson ?? null,
@@ -324,7 +345,7 @@ export const UcpManager = ({
   });
 
   const [handleGenerateAll, isGeneratingAll] = useAsyncAction(async () => {
-    const r = await generateAllProductStructuredData();
+    const r = await generateAllProductStructuredData({ store });
     if (!r.success) return;
     const updates = Object.fromEntries(
       r.data.items.map(({ productId, json }) => [productId, json]),
@@ -349,7 +370,7 @@ export const UcpManager = ({
       toast.add({
         title: translate("toast.pushProfileSuccess"),
         description: translate("toast.pushProfileSuccessDescription", {
-          written: r.data.written,
+          written: String(r.data.written),
           store: targetStore.name,
         }),
         type: "success",
@@ -372,8 +393,8 @@ export const UcpManager = ({
       toast.add({
         title: translate("toast.pushProductsSuccess"),
         description: translate("toast.pushProductsSuccessDescription", {
-          pushed: r.data.pushed,
-          total: r.data.total,
+          pushed: String(r.data.pushed),
+          total: String(r.data.total),
           store: targetStore.name,
         }),
         type: "success",
@@ -403,19 +424,32 @@ export const UcpManager = ({
     () => [
       {
         id: "product",
+        meta: { className: "overflow-hidden" },
         header: translate("products.columnProduct"),
         cell: ({ row }) => {
           const product = row.original;
+          const images = resultify((): unknown =>
+            JSON.parse(product.images ?? "[]"),
+          );
+          const image =
+            images.success &&
+            Array.isArray(images.data) &&
+            typeof images.data[0] === "string"
+              ? images.data[0]
+              : undefined;
           return (
-            <div className="flex items-center gap-3">
-              <div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10 font-semibold text-[11px] text-primary">
-                {product.title.slice(0, 2).toUpperCase()}
-              </div>
-              <div>
-                <p className="font-medium text-foreground text-sm leading-none">
+            <div className="flex min-w-0 items-center gap-4">
+              <Avatar className="size-12 shrink-0 rounded-lg bg-background-dimmed">
+                <AvatarImage src={image} alt="" />
+                <AvatarFallback className="font-medium text-foreground-dimmed text-sm">
+                  {product.title.slice(0, 2).toUpperCase()}
+                </AvatarFallback>
+              </Avatar>
+              <div className="min-w-0">
+                <p className="truncate font-medium text-foreground text-sm leading-5">
                   {product.title}
                 </p>
-                <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
+                <p className="mt-0.5 font-normal text-foreground-dimmed text-xs">
                   {formatPrice(product.price, product.currency)}
                 </p>
               </div>
@@ -425,11 +459,15 @@ export const UcpManager = ({
       },
       {
         id: "status",
+        meta: { className: "w-36" },
         header: translate("products.columnStatus"),
         cell: ({ row }) => {
           const hasData = Boolean(productData[row.original.id]);
           return (
-            <StatusPill tone={hasData ? "success" : "neutral"}>
+            <StatusPill
+              tone={hasData ? "success" : "neutral"}
+              className="normal-case tracking-normal"
+            >
               {hasData
                 ? translate("products.statusComplete")
                 : translate("products.statusMissing")}
@@ -439,6 +477,7 @@ export const UcpManager = ({
       },
       {
         id: "actions",
+        meta: { className: "w-40" },
         header: "",
         cell: ({ row }) => {
           const product = row.original;
@@ -447,10 +486,10 @@ export const UcpManager = ({
 
           return (
             <Button
-              color="accent"
+              color="neutral"
+              variant="soft"
               onClick={() => handleGenerateProduct(product.id)}
               disabled={isGenerating}
-              className="px-2.5 py-1 text-xs"
             >
               {isGenerating ? (
                 <LoaderIcon className="size-4 animate-spin text-foreground-dimmed" />
@@ -476,87 +515,33 @@ export const UcpManager = ({
   );
 
   return (
-    <div className="space-y-4">
-      {/* Score card */}
-      {/* <div className="border border-accent-foreground bg-background-rich">
-        <div className="flex items-center gap-6 p-5">
-          <div className="relative size-14 shrink-0">
-            <svg
-              className="size-14 -rotate-90"
-              viewBox="0 0 56 56"
-              aria-label={`${score}% complete`}
+    <div className="min-w-0">
+      <Tabs defaultValue="validate">
+        <div className="overflow-x-auto border-accent-foreground border-b px-4 sm:px-6">
+          <TabsList className="w-fit gap-4 overflow-visible rounded-none border-0">
+            <TabsIndicator className="inset-shadow-none top-auto bottom-0 h-0.5 bg-none bg-primary transition-[width,translate] motion-reduce:transition-none" />
+            <Tab
+              value="validate"
+              className="h-12 gap-2 border-r-0 px-0 text-sm data-[active]:text-primary data-selected:text-primary"
             >
-              <circle
-                cx="28"
-                cy="28"
-                r="24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="3"
-                className="text-accent-foreground"
-              />
-              <circle
-                cx="28"
-                cy="28"
-                r="24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="3"
-                strokeLinecap="square"
-                strokeDasharray={`${2 * Math.PI * 24 * (score / 100)} ${2 * Math.PI * 24}`}
-                className="text-primary transition-all duration-700"
-              />
-            </svg>
-            <div className="absolute inset-0 flex items-center justify-center">
-              <span className="font-semibold text-foreground text-sm tabular-nums">
-                {score}%
-              </span>
-            </div>
-          </div>
-
-          <div className="flex-1">
-            <p className="font-medium text-base text-foreground">
-              {filledCount} of {definitions.length} fields complete
-            </p>
-            <p className="mt-0.5 font-light text-foreground-dimmed text-sm">
-              AI shopping agents read this to understand your store identity,
-              policies, and catalog.
-            </p>
-          </div>
-
-          <div className="hidden shrink-0 text-right lg:block">
-            <p className="font-light text-foreground-dimmed text-xs">
-              Served at
-            </p>
-            <p className="mt-0.5 font-mono text-foreground text-xs">
-              your-store.com/.well-known/ucp
-            </p>
-          </div>
+              <CommerceFileShieldIcon aria-hidden="true" className="size-4" />
+              {review("tabs.check")}
+            </Tab>
+            <Tab
+              value="products"
+              className="h-12 gap-2 border-r-0 px-0 text-sm data-[active]:text-primary data-selected:text-primary"
+            >
+              <CommerceCode_3Icon aria-hidden="true" className="size-4" />
+              {review("tabs.data")}
+            </Tab>
+          </TabsList>
         </div>
-      </div> */}
-
-      {/* Tabs */}
-      <Tabs defaultValue="products">
-        {/* w-full + h-8 tabs: the base Tab is h-9 in a 32px content box, so
-            without this the tabs clipped and the labels wrapped to two lines. */}
-        <TabsList className="h-10 w-full rounded-md border-0 bg-background-dimmed p-1">
-          <TabsIndicator className="top-1 h-8 rounded" />
-          {/* <Tab value="profile" className="h-8 flex-1 border-r-0">
-            Merchant Profile
-          </Tab> */}
-          <Tab value="products" className="h-8 flex-1 border-r-0">
-            {translate("products.tab")}
-          </Tab>
-          <Tab value="validate" className="h-8 flex-1 border-r-0">
-            {translate("products.validateTab")}
-          </Tab>
-        </TabsList>
 
         {/* Profile tab */}
         <TabsPanel value="profile">
-          <div className="mt-4 flex flex-col gap-4">
+          <div className="flex flex-col">
             {/* Fields */}
-            <div className="overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
+            <div className="min-w-0 overflow-hidden border-accent-foreground border-b bg-background-rich">
               <div className="border-accent-foreground border-b px-4 py-2.5">
                 <p className="font-medium text-base text-foreground">
                   {translate("profile.fieldsTitle")}
@@ -614,7 +599,7 @@ export const UcpManager = ({
               </div>
               <div className="flex flex-wrap items-center gap-2 border-accent-foreground border-t px-4 py-3">
                 <Button
-                  variant="outline"
+                  variant="soft"
                   color="accent"
                   onClick={handleGenerateJson}
                   disabled={isGeneratingJson}
@@ -658,9 +643,9 @@ export const UcpManager = ({
             </div>
 
             {/* Preview + install sit as a 2-up row below the full-width form. */}
-            <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <div className="grid grid-cols-1 gap-px bg-accent-foreground lg:grid-cols-2">
               {/* JSON Preview */}
-              <div className="overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
+              <div className="min-w-0 overflow-hidden border-accent-foreground border-b bg-background-rich">
                 <div className="flex items-start justify-between gap-3 px-4 py-2.5">
                   <div>
                     <div className="flex items-center gap-2">
@@ -668,19 +653,21 @@ export const UcpManager = ({
                         {translate("profile.jsonPreview")}
                       </p>
                       {generation && (
-                        <span className="rounded-full bg-primary/10 px-2 py-0.5 font-semibold text-[11px] text-primary">
+                        <span className="rounded-full bg-primary/10 px-2 py-0.5 font-semibold text-primary text-xs">
                           {translate("profile.aiEnhanced")}
                         </span>
                       )}
                     </div>
-                    <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
+                    <p className="mt-0.5 font-normal text-foreground-dimmed text-xs">
                       {translate("profile.jsonPreviewDescription")}
                     </p>
                   </div>
-                  <button
+                  <Button
+                    variant="soft"
+                    color="neutral"
                     type="button"
                     onClick={handleCopy}
-                    className="flex shrink-0 items-center gap-1 rounded px-2 py-1 font-medium text-foreground-dimmed text-xs transition-colors hover:bg-accent-foreground hover:text-foreground"
+                    className="flex shrink-0 items-center gap-1 rounded-sm px-2 py-1 font-medium text-foreground-dimmed text-xs transition-colors hover:bg-accent-foreground hover:text-foreground"
                   >
                     {copied ? (
                       <>
@@ -695,7 +682,7 @@ export const UcpManager = ({
                         {translate("action.copy")}
                       </>
                     )}
-                  </button>
+                  </Button>
                 </div>
                 <pre className="max-h-72 overflow-auto border-accent-foreground border-t p-4 font-mono text-xs leading-relaxed">
                   <JsonCode json={result} />
@@ -703,12 +690,12 @@ export const UcpManager = ({
               </div>
 
               {/* Install instructions — always visible. */}
-              <div className="overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
+              <div className="min-w-0 overflow-hidden border-accent-foreground border-b bg-background-rich">
                 <div className="px-4 py-2.5">
                   <p className="font-medium text-base text-foreground">
                     {translate("install.title")}
                   </p>
-                  <p className="mt-0.5 font-light text-foreground-dimmed text-xs">
+                  <p className="mt-0.5 font-normal text-foreground-dimmed text-xs">
                     {translate("install.description")}
                   </p>
                 </div>
@@ -716,26 +703,28 @@ export const UcpManager = ({
                   <span className="text-foreground-dimmed/50">
                     {"// Next.js — app/.well-known/ucp/route.ts\n"}
                   </span>
-                  <span className="text-blue-400">{"export const "}</span>
+                  <span className="text-primary-rich">{"export const "}</span>
                   <span className="text-foreground">{"GET"}</span>
                   <span className="text-foreground-dimmed/60">
                     {" = () => "}
                   </span>
-                  <span className="text-yellow-400">{"Response"}</span>
+                  <span className="text-warning-rich">{"Response"}</span>
                   <span className="text-foreground-dimmed/60">{"."}</span>
-                  <span className="text-yellow-400">{"json"}</span>
+                  <span className="text-warning-rich">{"json"}</span>
                   <span className="text-foreground-dimmed/60">{"("}</span>
-                  <span className="text-green-400">{"ucpData"}</span>
+                  <span className="text-success-rich">{"ucpData"}</span>
                   <span className="text-foreground-dimmed/60">{");\n\n"}</span>
                   <span className="text-foreground-dimmed/50">
                     {"// Static / Nginx\n"}
                   </span>
-                  <span className="text-blue-400">{"location"}</span>
+                  <span className="text-primary-rich">{"location"}</span>
                   <span className="text-foreground-dimmed/60">
                     {" /.well-known/ucp {\n  "}
                   </span>
-                  <span className="text-blue-400">{"alias"}</span>
-                  <span className="text-green-400">{" /path/to/ucp.json"}</span>
+                  <span className="text-primary-rich">{"alias"}</span>
+                  <span className="text-success-rich">
+                    {" /path/to/ucp.json"}
+                  </span>
                   <span className="text-foreground-dimmed/60">{";\n}"}</span>
                 </pre>
               </div>
@@ -745,40 +734,50 @@ export const UcpManager = ({
 
         {/* Validate tab */}
         <TabsPanel value="validate">
-          <div className="mt-4 overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
-            <UcpValidatorForm />
-          </div>
-          <div className="mt-4 overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
-            <UcpAdvancedValidator />
-          </div>
+          <UcpValidatorForm appearance="dashboard" initialDomain={domain} />
+          <UcpAdvancedValidator initialDomain={domain} />
         </TabsPanel>
 
         {/* Products tab */}
         <TabsPanel value="products">
-          <div className="mt-4 overflow-hidden rounded-lg border border-accent-foreground bg-background-rich">
-            <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
+          <div className="min-w-0 overflow-hidden border-accent-foreground border-b bg-background-rich">
+            <div className="px-4 pt-6 sm:px-6">
+              <h2 className="font-heading font-semibold text-foreground-rich text-xl">
+                {review("products.title")}
+              </h2>
+              <p className="mt-2 max-w-2xl text-foreground-dimmed text-sm leading-6">
+                {review("products.description")}
+              </p>
+            </div>
+            <div className="flex flex-wrap items-center justify-between gap-4 border-accent-foreground border-b px-4 py-6 sm:px-6">
               <div className="flex items-center gap-4">
+                <p className="font-heading font-semibold text-3xl text-foreground-rich tabular-nums">
+                  {formatter.number(coverage / 100, {
+                    style: "percent",
+                    maximumFractionDigits: 0,
+                  })}
+                </p>
                 <div>
-                  <p className="font-medium text-base text-foreground">
+                  <p className="font-medium text-foreground text-sm">
                     {translate("products.coverage", {
-                      covered: coveredCount,
-                      total: products.length,
+                      covered: String(coveredCount),
+                      total: String(products.length),
                     })}
                   </p>
-                  <div className="mt-1.5 h-0.5 w-28 bg-accent-foreground">
+                  <div className="mt-2 h-1 w-40 max-w-full overflow-hidden rounded-full bg-accent-foreground">
                     <div
-                      className="h-full bg-primary transition-all duration-700"
+                      className="h-full rounded-full bg-primary transition-[width] duration-200 motion-reduce:transition-none"
                       style={{ width: `${coverage}%` }}
                     />
                   </div>
                 </div>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex flex-wrap items-center gap-2">
                 <Button
                   color="primary"
+                  variant="soft"
                   onClick={handleGenerateAll}
                   disabled={isGeneratingAll || products.length === 0}
-                  className="px-4 py-1.5 text-xs"
                 >
                   {isGeneratingAll
                     ? translate("action.generatingAll")
@@ -786,10 +785,10 @@ export const UcpManager = ({
                 </Button>
                 {targetStore && (
                   <Button
-                    color="primary"
+                    color="neutral"
+                    variant="soft"
                     onClick={handlePublishProducts}
                     disabled={isPublishingProducts || products.length === 0}
-                    className="px-4 py-1.5 text-xs"
                   >
                     {isPublishingProducts
                       ? translate("action.pushing")
@@ -799,19 +798,19 @@ export const UcpManager = ({
               </div>
             </div>
 
-            <div className="overflow-x-auto">
-              <DataTableProvider
-                rows={products.map((product) => ({
-                  ...product,
-                  _id: product.id,
-                }))}
-                columns={columns}
-              >
+            <DataTableProvider
+              rows={products.map((product) => ({
+                ...product,
+                _id: product.id,
+              }))}
+              columns={columns}
+            >
+              <div className="max-w-full overflow-x-auto overscroll-x-contain">
                 <DataTable
-                  className="w-full"
+                  className="w-full min-w-160 table-fixed"
                   classList={{
                     "header-cell":
-                      "px-4 py-2.5 text-left font-medium text-foreground-dimmed text-xs",
+                      "px-4 py-2 text-left font-medium text-foreground-dimmed text-xs normal-case tracking-normal",
                     "body-row":
                       "border-accent-foreground border-b transition-colors last:border-b-0 hover:bg-background-dimmed/40",
                     "body-cell": "px-4 py-3 text-left text-foreground text-sm",
@@ -819,14 +818,27 @@ export const UcpManager = ({
                 >
                   <DataTableEmpty>
                     <div className="p-10 text-center">
-                      <p className="font-light text-foreground-dimmed text-sm">
+                      <p className="font-normal text-foreground-dimmed text-sm">
                         {translate("products.empty")}
                       </p>
                     </div>
                   </DataTableEmpty>
                 </DataTable>
-              </DataTableProvider>
-            </div>
+              </div>
+              {products.length > 0 && (
+                <DataTablePagination
+                  variant="soft"
+                  labels={{
+                    navigation: pagination("navigation"),
+                    page: (page, pages) => pagination("page", { page, pages }),
+                    firstPage: pagination("first"),
+                    previousPage: pagination("previous"),
+                    nextPage: pagination("next"),
+                    lastPage: pagination("last"),
+                  }}
+                />
+              )}
+            </DataTableProvider>
           </div>
         </TabsPanel>
       </Tabs>

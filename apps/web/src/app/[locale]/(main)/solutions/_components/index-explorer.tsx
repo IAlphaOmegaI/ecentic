@@ -36,7 +36,7 @@ export const SolutionsAudience = ({
           <Tab
             key={item.id}
             value={item.id}
-            className="h-auto min-h-16 rounded-md border-0 px-4 py-4 text-center text-base leading-snug before:hidden hover:bg-background-rich focus-visible:-outline-offset-4 data-[active]:bg-primary-text data-selected:bg-primary-text max-sm:px-2 max-sm:text-sm"
+            className="h-auto min-h-16 rounded-sm border-0 px-4 py-4 text-center text-base leading-snug before:hidden hover:bg-background-rich focus-visible:-outline-offset-4 data-[active]:bg-primary-text data-selected:bg-primary-text max-sm:px-2 max-sm:text-sm"
           >
             {item.title}
           </Tab>
@@ -48,8 +48,8 @@ export const SolutionsAudience = ({
         <div className="relative grid grid-cols-[7fr_5fr] border-accent-foreground border-t bg-background-dimmed max-md:grid-cols-1">
           <Plus className="top-0 left-[58.333%] -translate-x-1/2 -translate-y-1/2 max-md:hidden" />
           <Plus className="bottom-0 left-[58.333%] -translate-x-1/2 translate-y-1/2 max-md:hidden" />
-          <div className="relative flex min-h-[380px] min-w-0 flex-col px-8 py-10 max-sm:px-4 max-sm:py-8 max-md:min-h-0">
-            <h3 className="max-w-[20ch] text-[clamp(1.8rem,2.8vw,2.7rem)]!">
+          <div className="relative flex min-h-95 min-w-0 flex-col px-8 py-10 max-sm:px-4 max-sm:py-8 max-md:min-h-0">
+            <h3 className="max-w-[20ch] text-3xl xl:text-4xl 2xl:text-5xl!">
               {item.headline}
             </h3>
             <p className="mt-6 mb-8 max-w-[52ch] text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">
@@ -62,7 +62,7 @@ export const SolutionsAudience = ({
               </Button>
             </div>
           </div>
-          <div className="relative min-h-[380px] border-accent-foreground border-l bg-linear-to-br from-background-dimmed to-background text-primary-text/75 max-md:h-[260px] max-md:min-h-0 max-md:border-t max-md:border-l-0">
+          <div className="relative min-h-95 border-accent-foreground border-l bg-linear-to-br from-background-dimmed to-background text-primary-text/75 max-md:h-65 max-md:min-h-0 max-md:border-t max-md:border-l-0">
             <EvolvingAscii
               artwork={artwork[item.id]}
               className="absolute inset-0"
@@ -102,7 +102,7 @@ export const SolutionsWorkflows = ({
             id={section.id}
             className="scroll-mt-24 border-accent-foreground border-b bg-background-dimmed last:border-b-0"
           >
-            <h3 className="flex items-start gap-6 px-8 py-8 font-heading text-[clamp(1.75rem,3.5vw,3rem)] leading-tight max-sm:gap-4 max-sm:px-4 max-sm:py-6">
+            <h3 className="flex items-start gap-6 px-8 py-8 font-heading text-3xl lg:text-4xl xl:text-5xl leading-tight max-sm:gap-4 max-sm:px-4 max-sm:py-6">
               <span className="text-primary-text">
                 {String(index + 1).padStart(2, "0")}
               </span>
@@ -132,10 +132,10 @@ export const SolutionsWorkflows = ({
             }}
           >
             <span className="flex items-baseline gap-8 max-sm:gap-4">
-              <span className="font-heading text-[clamp(2rem,4vw,3.5rem)] text-primary-text leading-none">
+              <span className="font-heading text-3xl lg:text-4xl xl:text-5xl 2xl:text-6xl text-primary-text leading-none">
                 {String(index + 1).padStart(2, "0")}
               </span>
-              <span className="font-heading text-[clamp(1.75rem,3.5vw,3rem)] text-background-rich leading-tight tracking-tight">
+              <span className="font-heading text-3xl lg:text-4xl xl:text-5xl text-background-rich leading-tight tracking-tight">
                 {section.title}
               </span>
             </span>

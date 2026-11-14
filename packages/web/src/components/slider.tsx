@@ -29,7 +29,7 @@ export const Slider = ({
       >
         <SliderPrimitive.Track
           className={createClassName(
-            "h-2 w-full select-none bg-background-rich shadow-[inset_0_0_0_1px] shadow-background-dimmed",
+            "h-2 w-full select-none bg-background-rich inset-ring inset-ring-background-dimmed",
             classList?.track,
           )}
         >

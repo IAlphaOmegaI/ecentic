@@ -39,7 +39,7 @@ export const BusinessTabs = ({ copy }: BusinessTabs.Props) => (
               key={item.id}
               value={item.id}
               data-tone={appearance.tone}
-              className="group/tab h-auto min-h-16 justify-start gap-3 rounded-md border-0 px-4 py-3 text-left text-base leading-snug before:hidden focus-visible:-outline-offset-4! data-[tone=secondary]:data-[active]:text-secondary data-[tone=secondary]:data-selected:text-secondary data-[tone=success]:data-[active]:text-success-foreground data-[tone=success]:data-selected:text-success-foreground data-[tone=warning]:data-[active]:text-warning-foreground data-[tone=warning]:data-selected:text-warning-foreground data-[active]:bg-background-rich data-selected:bg-background-rich data-[active]:text-primary-text data-selected:text-primary-text max-sm:gap-2 max-sm:px-3 max-sm:text-sm"
+              className="group/tab h-auto min-h-16 justify-start gap-3 rounded-sm border-0 px-4 py-3 text-left text-base leading-snug before:hidden focus-visible:-outline-offset-4! data-[tone=secondary]:data-[active]:text-secondary data-[tone=secondary]:data-selected:text-secondary data-[tone=success]:data-[active]:text-success-foreground data-[tone=success]:data-selected:text-success-foreground data-[tone=warning]:data-[active]:text-warning-foreground data-[tone=warning]:data-selected:text-warning-foreground data-[active]:bg-background-rich data-selected:bg-background-rich data-[active]:text-primary-text data-selected:text-primary-text max-sm:gap-2 max-sm:px-3 max-sm:text-sm"
             >
               <Icon
                 aria-hidden
@@ -64,12 +64,12 @@ export const BusinessTabs = ({ copy }: BusinessTabs.Props) => (
               className="marketing-grid relative grid grid-cols-2 max-sm:grid-cols-1"
               data-columns="2"
             >
-              <div className="relative flex min-h-[460px] min-w-0 flex-col overflow-hidden border-accent-foreground border-r px-8 py-10 max-sm:min-h-[400px] max-sm:border-r-0 max-sm:px-4 max-sm:py-8">
+              <div className="relative flex min-h-115 min-w-0 flex-col overflow-hidden border-accent-foreground border-r px-8 py-10 max-sm:min-h-100 max-sm:border-r-0 max-sm:px-4 max-sm:py-8">
                 <Icon
                   aria-hidden
                   className="relative mb-8 size-10 text-primary-text group-data-[tone=secondary]/audience:text-secondary group-data-[tone=success]/audience:text-success-foreground group-data-[tone=warning]/audience:text-warning-foreground"
                 />
-                <h3 className="relative max-w-[15ch] text-[clamp(2rem,3.2vw,3rem)] leading-[1.08]">
+                <h3 className="relative max-w-[15ch] text-3xl xl:text-4xl 2xl:text-5xl leading-none">
                   {item.title}
                 </h3>
                 <p className="relative mt-6 mb-10 max-w-[40ch] text-foreground-dimmed text-lg leading-relaxed max-sm:text-base">

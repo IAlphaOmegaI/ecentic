@@ -1,0 +1,32 @@
+{
+  "name": "brand-megaphone",
+  "subject": "brand",
+  "meaning": "A handheld megaphone: extend the bell to give the brand a clear voice.",
+  "part": "bell",
+  "answer": [
+    98,
+    34,
+    69
+  ],
+  "bounds": [
+    [
+      -1,
+      -1,
+      0
+    ],
+    [
+      132,
+      75,
+      105
+    ]
+  ],
+  "scale": 2.25,
+  "figure": "/hairline/custom/brand-megaphone.js",
+  "rest": "apps/web/src/components/hairline/rest/brand-megaphone.json",
+  "sourceSha256": "8d450ea3fcf31798c06afc68ec3494665ef6f8599abbd74fc732c023659f3f01",
+  "restSha256": "1751fac49cb57b599752f2015b68e0ce73cb7af120bd7f46aa2fe5003d210ed7",
+  "engine": "Unmodified fixed Hairline kernel",
+  "interaction": "Fixed rest hit area; 700ms EASE_LIFT tween; bounded reach; linked responses delayed 40ms; loop sleeps after settlement.",
+  "reducedMotion": "SSR rest geometry remains complete. Shared CustomHairlineFigure disables pointer code and asset enhancement for reduced motion.",
+  "validation": "output/dashboard-hairline-2026-11-14/brand-megaphone.validation.txt"
+}

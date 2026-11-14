@@ -467,7 +467,13 @@
         "channels": "渠道"
       },
       "agentic": "Agentic Score",
-      "webmcp": "WebMCP"
+      "webmcp": "WebMCP",
+      "assistant": {
+        "title": "向 Judy 提问",
+        "status": "预览",
+        "description": "Judy 正在开发中，暂不支持聊天或操作商品目录。请先使用仪表板中的工具。",
+        "name": "Judy"
+      }
     },
     "sidebar": {
       "allStores": "所有店铺"
@@ -549,7 +555,8 @@
       "states": {
         "searching": "搜索中…",
         "empty": "无结果",
-        "emptyForQuery": "未找到“{query}”的结果"
+        "emptyForQuery": "未找到“{query}”的结果",
+        "unavailable": "搜索暂时不可用，请重试。"
       },
       "sections": {
         "products": "商品",
@@ -568,6 +575,9 @@
         "ucpStructuredData": "UCP 与结构化数据",
         "optimize": "优化",
         "settings": "设置"
+      },
+      "action": {
+        "primary": "重试"
       }
     },
     "notifications": {
@@ -685,29 +695,118 @@
         "products": "热门商品",
         "competitors": "竞品",
         "agents": "智能体访问量",
-        "topProducts": "热门商品",
-        "agentVisits": "智能体访问量"
+        "topProducts": "商品",
+        "agentVisits": "AI 访问"
       },
       "charts": {
         "kickers": {
           "performance": "01 — 表现",
           "recentActivity": "01.5 — 最近活动"
         },
-        "winRateByModel": "按模型划分的胜率",
-        "winRateTrend": "胜率趋势",
+        "winRateByModel": "各模型的商品平均胜率",
+        "winRateTrend": "每次扫描的胜率",
         "states": {
           "noModels": "运行一次模拟以查看各模型表现。",
-          "noTrend": "数据不足，无法显示趋势。",
+          "noTrend": "暂无已完成的扫描。",
           "noTrendHint": "运行一次模拟即可开始。",
           "noActivity": "暂无活动。运行首次模拟后即可在此查看结果。"
         },
         "action": {
-          "primary": "查看所有商品",
-          "secondary": "优化"
-        }
+          "primary": "查看最新扫描",
+          "secondary": "优化",
+          "tertiary": "查看模拟"
+        },
+        "recentActivity": "最近的扫描",
+        "latestScan": "最近完成的扫描",
+        "modelHint": "每个模型在已比较商品上的平均胜率。",
+        "change": "较上次扫描的变化",
+        "sampleNote": "每个数据点代表一次独立扫描；所选商品和竞品可能不同。"
       },
       "title": "概览",
-      "description": "查看 AI 购物智能体如何将您的商品目录与竞品进行排名。"
+      "description": "查看待处理事项、变化和下一步行动。",
+      "summary": {
+        "latestWinRate": "最新模拟胜率",
+        "latestResult": "{total, plural, other {# 次比较}}中{wins, plural, other {胜出 # 次}}",
+        "change": "{value} 个百分点",
+        "coverage": "已比较的商品",
+        "coverageDetail": "已比较 {count, number} 款商品，目录内共{total, plural, other { # 款}}",
+        "coverageHint": "根据已完成的商品比较统计。",
+        "noResult": "运行首次扫描即可查看结果。",
+        "topPerformer": "表现最好的商品",
+        "opportunity": "待改进的商品",
+        "productRate": "在 {rate} 的比较中胜出",
+        "updated": "最近完成的扫描：{time}",
+        "action": {
+          "primary": "查看商品",
+          "secondary": "改进此商品",
+          "tertiary": "选择商品"
+        },
+        "emptyProduct": "首次扫描后将显示商品结果。"
+      },
+      "priorities": {
+        "title": "下一步",
+        "description": "补齐缺失的商品信息，再次比较。",
+        "fields": {
+          "description": {
+            "title": "补充缺失的商品描述",
+            "detail": "{count, plural, other {# 款商品没有描述。}}"
+          },
+          "price": {
+            "title": "补充缺失的价格",
+            "detail": "{count, plural, other {# 款商品没有价格。}}"
+          },
+          "sku": {
+            "title": "补充缺失的 SKU",
+            "detail": "{count, plural, other {# 款商品没有 SKU。}}"
+          },
+          "complete": {
+            "title": "基本商品字段已填写",
+            "detail": "已检查描述、价格和 SKU。"
+          }
+        },
+        "compare": {
+          "title": "比较尚未测试的商品",
+          "detail": "{count, plural, other {# 款商品尚未比较。}}",
+          "complete": {
+            "title": "目录中的所有商品均已比较",
+            "detail": "{count, plural, other {# 款商品已完成比较。}}"
+          }
+        },
+        "optimize": {
+          "title": "查看商品页面的改进机会",
+          "detail": "{count, plural, other {# 款商品在优化队列中。}}",
+          "complete": {
+            "title": "暂无排队等待的商品页面改进项",
+            "detail": "下次扫描后，查看商品页面诊断。"
+          }
+        },
+        "action": {
+          "primary": "检查商品信息",
+          "secondary": "选择商品",
+          "tertiary": "打开优化",
+          "quaternary": "查看比较"
+        }
+      },
+      "traffic": {
+        "title": "已记录的 AI 流量",
+        "description": "过去 30 天记录的事件。",
+        "referrals": "AI 来源访问",
+        "crawlers": "智能体和爬虫请求",
+        "hint": "这些是已记录的访问和请求，并不代表独立买家人数或购买次数。",
+        "action": {
+          "primary": "查看 AI 流量"
+        }
+      },
+      "priorityChecks": {
+        "incomplete": {
+          "title": "完善商品信息",
+          "detail": "{count, plural, other {# 件商品缺少目录信息。}}"
+        },
+        "unavailable": {
+          "title": "暂时无法查看优化建议",
+          "description": "打开“优化”，查看此店铺可用的检查。"
+        }
+      }
     },
     "agentVisits": {
       "kicker": "04 — 智能体流量",
@@ -778,6 +877,16 @@
             "primary": "没有匹配的商品",
             "secondary": "尝试其他搜索条件或清除筛选。"
           }
+        },
+        "overviewTools": {
+          "sort": "排序",
+          "defaultOrder": "默认顺序",
+          "ascending": "升序",
+          "descending": "降序",
+          "comparison": "比较状态",
+          "all": "全部商品",
+          "compared": "已比较",
+          "notCompared": "未比较"
         }
       },
       "title": "商品",
@@ -996,6 +1105,69 @@
         "noFindingTitle": "此次检测未记录发现。",
         "noFindingHint": "重新运行检测以查看洞察。",
         "fixThis": "修复此问题"
+      },
+      "catalog": {
+        "title": "商品",
+        "description": "查找商品、查看比较结果，并补全关键信息。",
+        "tableLabel": "商品目录",
+        "columns": "显示列",
+        "resetColumns": "重置显示列",
+        "sortBy": "按{field}排序",
+        "noSku": "未设置 SKU",
+        "unmeasured": "尚未比较",
+        "rate": "AI 比较胜率：{value}%",
+        "coverage": "字段完整度：{value}%",
+        "coverageHint": "检查商品名称、描述、价格、图片、SKU 和结构化数据这六个字段是否已填写。这不是 AI 对内容质量的评估。",
+        "comparisons": "{count, plural, other {# 次比较}}",
+        "results": "商品数：{count, number}",
+        "range": "共 {total} 件，显示第 {from}–{to} 件",
+        "summary": {
+          "imported": "目录中的商品",
+          "importedHint": "所有已导入的商品",
+          "compared": "已完成 AI 比较",
+          "comparedHint": "至少有一条比较记录",
+          "incomplete": "信息不完整的商品",
+          "incompleteHint": "六个字段中至少有一个未填写",
+          "unavailable": "暂时无法获取目录统计数据，您仍可浏览下方的商品列表。"
+        },
+        "fields": {
+          "product": "商品",
+          "sku": "SKU",
+          "price": "价格",
+          "currency": "币种",
+          "winRate": "AI 比较胜率",
+          "quality": "字段完整度",
+          "updatedAt": "更新时间"
+        },
+        "selection": {
+          "all": "选择本页所有商品",
+          "product": "选择{product}",
+          "count": "本页已选择 {count, number} 件商品",
+          "hint": "选择商品后即可导出数据。"
+        },
+        "action": {
+          "add": "添加商品",
+          "clear": "清除搜索和筛选",
+          "retry": "重试",
+          "export": "导出所选商品",
+          "deselect": "取消选择",
+          "open": "打开{product}"
+        },
+        "states": {
+          "empty": {
+            "title": "从这里建立商品目录",
+            "description": "导入商品，即可集中查看商品信息和 AI 比较结果。"
+          },
+          "noMatches": {
+            "title": "没有匹配的商品",
+            "description": "请尝试其他搜索词，或移除筛选条件以查看更多商品。"
+          },
+          "error": {
+            "title": "无法加载商品",
+            "description": "您的目录数据仍然保留，请重新加载列表。"
+          }
+        },
+        "loading": "正在加载商品…"
       }
     },
     "competitors": {
@@ -1136,7 +1308,9 @@
         "simulationComplete": "模拟完成 — {wins}次胜出，{losses}次失利",
         "simulationInProgress": "模拟进行中 — {completed}/{total}",
         "noActivityTitle": "暂无活动。运行",
-        "noActivityHint": "首次模拟后即可在此查看结果。"
+        "noActivityHint": "首次模拟后即可在此查看结果。",
+        "simulationPending": "扫描已排队 — {total, plural, other {# 次比较}}",
+        "simulationFailed": "扫描失败 — 共 {total, number} 次比较，{completed, plural, other {已完成 # 次}}"
       },
       "action": {
         "optimizations": "优化",
@@ -1435,7 +1609,7 @@
         "failed": "品牌分析失败",
         "started": {
           "title": "品牌分析已开始",
-          "description": "可继续浏览。结果大约一分钟后会显示在这里。"
+          "description": "你可以继续工作。分析完成后，结果会显示在此处。"
         },
         "alreadyRunning": "已有分析正在运行"
       },
@@ -1547,6 +1721,164 @@
         "queries": {
           "label": "已审核查询",
           "detail": "来自最近一次运行"
+        }
+      },
+      "answers": {
+        "title": "已保存的回答",
+        "description": "查看本次分析所依据的问题。",
+        "search": "搜索问题、回答或品牌",
+        "filter": "品牌提及情况",
+        "filters": {
+          "all": "全部回答",
+          "mentioned": "已提及",
+          "absent": "未提及"
+        },
+        "count": "共 {total, number} 条，显示 {count, plural, other {# 条回答}}",
+        "position": {
+          "top": "首选推荐",
+          "listed": "列入列表",
+          "absent": "未提及"
+        },
+        "context": {
+          "named": "问题中包含品牌名称",
+          "unbranded": "问题中不含品牌名称"
+        },
+        "answer": "回答摘要",
+        "noAnswer": "未保存回答摘要。",
+        "brands": "提及的品牌",
+        "noBrands": "未记录品牌。",
+        "sources": "模型建议的信息来源",
+        "sourcesNote": "这些是模型给出的信息来源，并非经过核实的实时搜索引用。",
+        "noSources": "未记录信息来源。",
+        "empty": {
+          "title": "没有匹配的回答",
+          "description": "请换个关键词，或显示全部回答。",
+          "saved": "本次分析没有保存的回答。"
+        },
+        "action": {
+          "primary": "清除搜索和筛选"
+        }
+      },
+      "design": {
+        "title": "品牌",
+        "description": "了解品牌在模拟购物回答中的呈现方式。",
+        "updated": "分析时间：{time}",
+        "sample": "{count, plural, other {# 条抽样回答}} · {engines}",
+        "scope": "模型会预先获得你的品牌信息，作为本次分析的背景。这是模拟分析，并非无提示的品牌回忆测试，也不代表真实客户的对话记录。",
+        "action": {
+          "primary": "分析品牌",
+          "secondary": "重新分析",
+          "tertiary": "检查商品目录"
+        },
+        "empty": {
+          "title": "发现品牌的盲点。",
+          "description": "查看品牌是否出现在购物问题的回答中、如何被描述，以及哪些地方需要更清晰的信息。",
+          "note": "根据店铺和商品目录，为 ChatGPT 准备 20 个问题。分析期间可继续处理其他工作。",
+          "visualTitle": "从买家的问题，到下一步行动",
+          "steps": {
+            "questions": {
+              "title": "询问商品品类",
+              "description": "包括提及和未提及品牌名称的问题。"
+            },
+            "answers": {
+              "title": "检查回答",
+              "description": "查看品牌提及、替代选项和回答摘要。"
+            },
+            "actions": {
+              "title": "了解改进方向",
+              "description": "建议以抽样回答为依据。"
+            }
+          }
+        },
+        "summaryTitle": "需要了解的信息",
+        "discoveryTitle": "不同类型问题中的品牌提及",
+        "unprompted": "不含品牌名称的问题",
+        "named": "包含品牌名称的问题",
+        "ratio": "{total} 条回答中的 {count} 条",
+        "noSample": "此组中没有问题",
+        "overall": "在 {total} 条抽样回答中，有 {count} 条提到了品牌。",
+        "noAnswers": "此报告没有保存的回答。请运行新的分析以收集依据。",
+        "tabs": {
+          "plan": "下一步",
+          "answers": "回答",
+          "access": "网站检查"
+        },
+        "findingsTitle": "值得关注的规律",
+        "journeyTitle": "改进方向",
+        "journeyDescription": "这些建议来自本次分析。修改网站前，请先检查依据。",
+        "stage": {
+          "find": "让买家发现",
+          "consider": "进入候选名单",
+          "evaluate": "帮助买家决策",
+          "support": "回答后续问题"
+        },
+        "suggestions": "{count, plural, other {# 条建议}}",
+        "noSuggestions": "此阶段暂无修改建议。",
+        "perceptionTitle": "回答如何描述品牌",
+        "strengths": "有利因素",
+        "concerns": "引发疑问的地方",
+        "alternativesTitle": "回答中的其他品牌",
+        "sourcesTitle": "模型建议的信息来源",
+        "sourcesNote": "这些是模型提到的域名或来源类型，并非实时搜索中经过核实的引用。",
+        "occurrences": "{count, plural, other {# 次提及}}",
+        "accessTitle": "爬虫能访问你的内容吗？",
+        "accessDescription": "这是对用于内容发现的公开文件的一次检查，不衡量搜索收录、排名或结账就绪程度。",
+        "checks": {
+          "robots": "爬虫规则",
+          "llms": "AI 内容指南",
+          "engines": "爬虫访问"
+        },
+        "status": {
+          "pass": "已检查",
+          "warn": "需检查",
+          "fail": "已阻止"
+        },
+        "robots": {
+          "pass": "已读取爬虫规则。",
+          "warn": "请检查已记录的爬虫规则。",
+          "fail": "扫描在 robots.txt 中发现了爬虫访问限制。",
+          "note": "robots.txt 按爬虫控制访问权限。搜索、用户发起的请求和模型训练可能使用不同的爬虫。"
+        },
+        "llms": {
+          "pass": "llms.txt 文件可访问。",
+          "warn": "未记录到可访问的 llms.txt 文件。",
+          "note": "这份可选的内容指南不保证 AI 服务会读取、收录或推荐品牌。"
+        },
+        "engines": {
+          "pass": "未发现针对所检查爬虫的网站根级别访问限制。",
+          "warn": "本次扫描无法确认访问情况。",
+          "fail": "部分已检查的爬虫受到网站根级别访问限制。",
+          "note": "此检查不涵盖特定路径规则、其他爬虫或索引收录情况。"
+        },
+        "failed": {
+          "title": "分析未能完成",
+          "description": "下方仍可查看上一次完成的报告。准备好后可重试。",
+          "emptyDescription": "未保存报告。准备好后可重试。"
+        },
+        "error": "无法启动分析，请重试。",
+        "running": {
+          "title": "正在了解品牌",
+          "description": "ChatGPT 正在处理购物问题。结果准备好后会显示在此处。",
+          "previous": "新分析进行中，目前显示的是上一次的报告。",
+          "steps": "准备问题 · 检查回答 · 生成建议"
+        },
+        "loading": "正在加载品牌分析",
+        "unavailable": {
+          "title": "品牌数据暂时不可用",
+          "description": "无法加载已保存的分析。请刷新此部分后重试。",
+          "action": {
+            "primary": "重试"
+          }
+        },
+        "noFindings": "此报告未保存任何规律或趋势。",
+        "summaryAction": {
+          "primary": "阅读完整分析",
+          "secondary": "收起"
+        },
+        "method": {
+          "action": {
+            "primary": "工作原理"
+          }
         }
       }
     },
@@ -2016,6 +2348,17 @@
       "connection": {
         "title": "Merchant Center 连接",
         "description": "关联 ecentic 写入优化覆盖内容的 Merchant Center 账号，然后推送并验证这些优化覆盖内容。"
+      },
+      "workspaceTitle": "Google 购物",
+      "workspaceDescription": "管理 Merchant Center 连接、商品信息更新和结账准备情况。",
+      "unsupportedWorkspace": {
+        "status": "此来源暂不支持",
+        "title": "连接受支持的商品目录",
+        "description": "Google 购物投放适用于已连接的 Shopify 商店。此商品目录来源暂时无法通过 ecentic 连接到 Merchant Center。你仍可查看商品和其他渠道设置。",
+        "action": {
+          "primary": "连接 Shopify",
+          "secondary": "查看连接"
+        }
       }
     },
     "visibility": {
@@ -2140,7 +2483,8 @@
         "noExplanation": "未返回说明。",
         "noStores": "未返回店铺。",
         "unreachable": "无法连接到该模型。"
-      }
+      },
+      "method": "每条提示词都会提及你的商店。这些模拟推荐不衡量未提示品牌名称时的品牌认知度，也不代表实时搜索排名。"
     },
     "ucp": {
       "statusPill": "Universal Commerce Protocol",
@@ -2330,6 +2674,31 @@
         "emptyEndpoints": "在 UCP 资料中未找到带 URL 的服务端点。请为服务添加",
         "emptyEndpointsSuffix": "字段以启用实时测试。",
         "emptyEndpointsField": "端点"
+      },
+      "review": {
+        "description": "检查店铺的结账配置，以及购物智能体可用的商品数据。",
+        "tabs": {
+          "check": "结账检查",
+          "data": "商品数据"
+        },
+        "check": {
+          "title": "检查结账配置",
+          "description": "读取店铺已发布的 UCP 配置文件，找出缺失或无效的结账配置。",
+          "hint": "使用 HTTPS。仅检查已发布的配置文件，不会下单。"
+        },
+        "details": {
+          "title": "检查范围",
+          "description": "配置文件发现、支付设置和智能体访问。"
+        },
+        "advanced": {
+          "title": "测试在线端点",
+          "summary": "可选 · 可能创建测试购物车",
+          "description": "探测店铺声明的服务，并测试完整的结账流程。"
+        },
+        "products": {
+          "title": "商品数据覆盖率",
+          "description": "已生成的商品数据并不代表实际结账功能可用。这里的商品均属于当前店铺。"
+        }
       }
     },
     "ucpComparison": {
@@ -2462,7 +2831,7 @@
       "composer": {
         "placeholder": "让智能体在 {host} 购物…",
         "hint": "按 Enter 发送 · Shift + Enter 换行",
-        "remaining": "此沙盒剩余 {remaining}/{limit} 条免费{limit, plural, other {消息}}。"
+        "remaining": "此沙盒剩余 {remaining, number}/{limit, number} 条免费{limit, plural, other {消息}}。"
       },
       "quota": {
         "title": "已用完全部 {limit} 条免费沙盒消息",
@@ -2778,13 +3147,13 @@
         "asOf": "数据截至{time}",
         "noScans": "暂无已完成的扫描"
       },
-      "title": "报告与导出",
-      "description": "下载智能体表现报告，或设置自动报告的生成时间。",
+      "title": "报告",
+      "description": "下载所有店铺已保存的对比结果和商品目录数据。",
       "shareable": {
-        "title": "可分享的胜率报告",
-        "description": "为胜率报告生成公开 URL，方便分享到 Twitter、LinkedIn 或团队内部。",
+        "title": "分享对比报告",
+        "description": "打开最近一次已完成对比的公开报告。分享前请先检查内容。",
         "action": {
-          "primary": "生成可分享报告"
+          "primary": "打开报告"
         },
         "runScanFirst": "请先运行扫描"
       },
@@ -2800,19 +3169,19 @@
       "items": {
         "winRateSummary": {
           "title": "胜率摘要",
-          "description": "所有商品和模型的整体表现"
+          "description": "最近一次已完成扫描的各模型结果。"
         },
         "productPerformance": {
           "title": "商品表现",
-          "description": "按商品查看详细报告，包含趋势和竞品对比"
+          "description": "已保存的商品字段和模拟胜率，含各模型明细。"
         },
         "competitorAnalysis": {
           "title": "竞品分析",
-          "description": "完整竞品格局分析，包含所有已跟踪品牌的对战卡"
+          "description": "已追踪的竞品、可用时的观测价格，以及对比结果。"
         },
         "optimizationImpact": {
           "title": "优化效果",
-          "description": "所有已发布优化的前后对比分析"
+          "description": "已保存的商品信息更改、发布日期和模型估算。"
         }
       },
       "tiers": {
@@ -2821,8 +3190,9 @@
         "dominate": "Dominate+"
       },
       "action": {
-        "downloadCsv": "CSV"
-      }
+        "downloadCsv": "下载CSV"
+      },
+      "unavailable": "暂无已保存的数据"
     },
     "paywall": {
       "kicker": "需要套餐",
@@ -2861,7 +3231,11 @@
         "disclosure": "扫描由 Is Agentic 提供支持，这是 Vercel Labs 的免费公共服务。您的店铺域名会发送至 is-agentic.com；不会有任何客户或订单数据离开 ecentic。",
         "disclosureLink": "Is Agentic 文档",
         "announceProgress": "扫描已完成 {percent}%。",
-        "announceComplete": "扫描完成。评分 {score} / 100。"
+        "announceComplete": "扫描完成。评分 {score} / 100。",
+        "workspaceTitle": "店铺前台扫描",
+        "awaitingFirst": "尚未扫描",
+        "report": "打开报告",
+        "providerNote": "您的域名将发送给 <provider>Is Agentic</provider>，不会共享客户或订单数据。"
       },
       "score": {
         "title": "当前表现",
@@ -2884,7 +3258,27 @@
         "publicOnlyUnscored": "Is Agentic 已为该域名生成报告，但尚未评分 — {label}。运行扫描可获取完整逐项检查详情并开始跟踪趋势。",
         "trendSummary": "自 {since} 以来共进行了 {count} 次扫描，评分从 {first} 到 {latest}（满分 100）。",
         "gradeLabel": "等级",
-        "gainAria": "{points} 分"
+        "gainAria": "{points} 分",
+        "preview": {
+          "emptyTitle": "从这里开始首次扫描",
+          "publicTitle": "已有公开报告",
+          "payments": {
+            "title": "支付",
+            "description": "对结账和支付协议的支持。"
+          },
+          "discovery": {
+            "title": "可发现性",
+            "description": "帮助智能体找到店铺的信号。"
+          },
+          "accessibility": {
+            "title": "可访问性",
+            "description": "智能体能否访问并读取店铺前台。"
+          },
+          "usability": {
+            "title": "易用性",
+            "description": "供智能体与店铺交互的接口。"
+          }
+        }
       },
       "checks": {
         "title": "全部检查项",
@@ -2976,6 +3370,614 @@
         "shopifyBilling": "请先在 Shopify 中卸载 ecentic 以终止 Shopify 账单协议；如果连接仍然存在，请联系支持团队。",
         "billingRecords": "该账户包含账单或订单记录。请联系 privacy@ecentic.ai 申请协助删除；我们需要先完成账单结算并保留法律要求的记录。",
         "storeConnections": "删除账户前，请先在“设置”中断开店铺和 Google Shopping 集成。"
+      }
+    },
+    "traffic": {
+      "title": "AI 访问",
+      "description": "查看已记录的 AI 活动来自哪里。",
+      "period": "最近 30 天",
+      "source": "来源",
+      "other": "其他来源",
+      "referrals": {
+        "title": "AI 引荐",
+        "short": "引荐",
+        "detail": "归类为 AI 引荐的访问活动。"
+      },
+      "requests": {
+        "title": "智能体和爬虫请求",
+        "short": "请求",
+        "detail": "已识别的用户代理，包括爬虫和智能体浏览器。"
+      },
+      "empty": {
+        "title": "尚未记录到 AI 活动",
+        "description": "跟踪器检测到 AI 引荐或可识别的用户代理后，活动就会显示在这里。"
+      },
+      "action": {
+        "primary": "检查连接",
+        "secondary": "重试"
+      },
+      "probes": "{count, plural, other {# 条跟踪器测试信号已从上述总数中排除。}}",
+      "limitation": "统计的是已记录的事件，并非独立访客或购买次数。浏览器跟踪无法捕获所有爬虫请求。",
+      "chart": {
+        "title": "每日活动",
+        "scope": "仅显示 OpenAI、Anthropic 和 Google。",
+        "hint": "此趋势包含引荐和请求。其他提供商的数据列在来源明细中。",
+        "empty": "尚未记录到这三家提供商的活动。",
+        "accessibleLabel": "每日活动记录。使用方向键查看各日期的数据。"
+      },
+      "error": {
+        "title": "无法加载访问数据",
+        "description": "访问数据暂时不可用，请重新加载此页面后再试。"
+      }
+    },
+    "qualityWorkspace": {
+      "title": "数据质量",
+      "description": "查找缺失或无效的商品信息，确认哪些商品需要完善。",
+      "product": "商品",
+      "productsLabel": "商品",
+      "openProduct": "打开{product}",
+      "search": "搜索商品或问题",
+      "scope": {
+        "label": "检查范围",
+        "all": "全部检查",
+        "universal": "通用检查",
+        "google": "Google Merchant",
+        "chatgpt": "ChatGPT 商品 Feed"
+      },
+      "status": {
+        "label": "结果类型",
+        "all": "全部结果",
+        "blocker": "阻断问题",
+        "warning": "警告",
+        "info": "改进建议",
+        "ready": "无问题"
+      },
+      "summary": {
+        "label": "按平台查看目录检查结果",
+        "title": "无阻断问题或警告的商品",
+        "count": "{count, plural, other {已检查 # 件活跃商品}}",
+        "passing": "{total} 件中有 {count} 件",
+        "breakdown": "{blocker} 件存在阻断问题，{warning} 件存在警告，{info} 件仅有改进建议，{ready} 件未发现问题。"
+      },
+      "method": {
+        "title": "检查方式",
+        "description": "这些检查依据已登记的规则，核对已保存的活跃商品数据，并不验证线上商店是否可访问，也不代表 Google 或 ChatGPT 已接受这些商品。仅有改进建议的商品计入无阻断问题或警告的商品。"
+      },
+      "views": {
+        "label": "数据质量视图",
+        "issues": "按问题查看",
+        "products": "按商品查看"
+      },
+      "issueCount": "{count, plural, other {# 个问题}}",
+      "productCount": "{count, plural, other {# 件商品}}",
+      "findings": "{count, plural, other {# 项结果}}",
+      "issuesHint": "先显示阻断问题，再显示警告和改进建议。同一类别中，影响商品更多的问题排在前面。一件商品可能涉及多个问题。",
+      "reference": "查看{surface}的规则文档",
+      "noFindings": "在所选检查范围内，此商品未发现问题。",
+      "action": {
+        "primary": "打开目录",
+        "secondary": "重试",
+        "tertiary": "清除筛选",
+        "quaternary": "显示更多商品"
+      },
+      "productAction": {
+        "primary": "打开商品"
+      },
+      "searchAction": {
+        "primary": "清空搜索"
+      },
+      "states": {
+        "empty": {
+          "title": "暂无可检查的活跃商品",
+          "description": "这些检查仅涵盖活跃商品。草稿和已归档商品仍保留在目录中，但不计入此处的检查。"
+        },
+        "error": {
+          "title": "无法加载质量检查结果",
+          "description": "您的目录数据仍然保留，请重新加载检查结果。"
+        },
+        "clear": {
+          "title": "这些检查未发现问题",
+          "description": "活跃商品已通过当前视图所涵盖的规则检查，但这不代表购物平台已接受这些商品。"
+        },
+        "noMatches": {
+          "title": "没有匹配的结果或商品",
+          "description": "请尝试其他搜索词，或清除筛选条件以查看完整列表。"
+        }
+      }
+    },
+    "productWorkspace": {
+      "title": "商品详情",
+      "description": "查看此商品已保存的信息和已记录的 AI 对比结果。",
+      "status": {
+        "active": "启用",
+        "draft": "草稿",
+        "archived": "已归档",
+        "unknown": "状态暂不可用"
+      },
+      "updated": "更新于{time}",
+      "latestComparison": "上次对比：{time}",
+      "priceMissing": "未保存价格",
+      "metrics": {
+        "rate": "模拟胜率",
+        "comparisons": "对比次数",
+        "coverage": "已保存字段覆盖率",
+        "wins": "{total} 次中获胜 {wins} 次",
+        "competitors": "{count, plural, other {与 # 件竞品对比}}"
+      },
+      "method": {
+        "title": "这些数据的含义",
+        "description": "胜率根据已记录的商品对比计算。未进行过对比的商品和模型没有实测胜率。字段覆盖率统计标题、描述、价格、图片、SKU 和结构化数据这六个字段是否已保存，并不评估内容是否有说服力。"
+      },
+      "models": {
+        "title": "各模型的结果",
+        "description": "这里展示已记录的模拟结果，并非真实购物流量。",
+        "count": "{count, plural, other {# 次对比}}"
+      },
+      "tabs": {
+        "overview": "对比",
+        "replay": "智能体的判断",
+        "battlecard": "竞品对比",
+        "optimize": "商品信息"
+      },
+      "action": {
+        "primary": "使用 AI 评估",
+        "secondary": "重试",
+        "tertiary": "打开目录",
+        "quaternary": "显示更多"
+      },
+      "navigation": {
+        "primary": "返回商品列表",
+        "secondary": "查看待处理的优化"
+      },
+      "audit": {
+        "title": "AI 内容评估",
+        "description": "请求评估文案、商品信息以及内容是否适合目标受众。已保存的商品信息不会改变。",
+        "running": "正在评估商品…",
+        "failed": "未能完成 AI 评估。已保存的商品信息未发生变化。",
+        "savedFields": "已保存的商品字段",
+        "coverageDescription": "检查字段是否已保存，与 AI 内容评估是两回事。",
+        "ready": "评估已完成"
+      },
+      "unmeasured": "尚未对比",
+      "noReasoning": "此次对比未保存判断理由的文字说明。",
+      "states": {
+        "empty": {
+          "title": "尚无对比记录",
+          "description": "此商品尚无 AI 对比记录。与竞品进行对比后，才会显示胜率。"
+        },
+        "error": {
+          "title": "无法加载此商品",
+          "description": "您的目录数据仍然保留，请重新加载此商品。"
+        },
+        "missing": {
+          "title": "未找到商品",
+          "description": "此商品可能已被移除，也可能属于其他商店。请打开目录选择商品。"
+        }
+      },
+      "publishDescription": "为 {title} 生成优化后的标题和描述，并发布到已连接的店铺，替换当前商品信息。"
+    },
+    "productChannels": {
+      "tab": "商品信息与渠道",
+      "title": "商品在各渠道中的展示",
+      "description": "预览已保存的商品信息，并查看连接情况和商品 Feed 记录。",
+      "preview": {
+        "title": "已保存商品信息预览",
+        "description": "此处仅展示保存数据的呈现示例，实际展示位置和布局可能不同。",
+        "storefront": "店铺",
+        "google": "Google",
+        "chatgpt": "ChatGPT",
+        "imageMissing": "未保存商品图片",
+        "descriptionMissing": "未保存商品描述",
+        "priceMissing": "未保存价格",
+        "storefrontNote": "已导入的商品详情",
+        "googleNote": "用于购物搜索结果的商品信息",
+        "chatgptNote": "用于助手商品卡片的商品信息",
+        "sample": "预览",
+        "googleMode": "AI 模式",
+        "details": "商品详情",
+        "store": "商店",
+        "query": "帮我看看{product}",
+        "action": {
+          "primary": "访问网站"
+        }
+      },
+      "source": {
+        "title": "商品目录连接",
+        "unknown": "无法获取连接详情",
+        "unknownDescription": "请打开集成页面，检查商品目录连接。",
+        "lastSync": "目录同步时间",
+        "productSync": "商品同步时间",
+        "notSynced": "暂无同步记录",
+        "status": "连接状态",
+        "error": "需要检查",
+        "unavailable": "无法获取状态",
+        "connected": "已连接",
+        "syncing": "正在同步目录",
+        "disconnected": "未连接",
+        "publicImport": "公开商品目录导入",
+        "platform": {
+          "feed": "商品 Feed",
+          "csv": "CSV 导入",
+          "unknown": "商品目录来源"
+        }
+      },
+      "google": {
+        "title": "Google 商品 Feed 记录",
+        "description": "这里显示的是已保存的同步记录，并非对 Google 的实时检查。“覆盖更新已验证”表示补充更新已合并，不代表 Google 已展示该商品。",
+        "unavailable": "无法加载商品 Feed 记录。请打开 Google Shopping，检查连接情况。",
+        "unsupported": "此商品目录来源暂不支持 Google 补充数据同步。",
+        "notConnected": "Google Merchant Center 尚未连接到此商品目录。",
+        "setup": "需要先完成连接设置，才能发送商品记录。",
+        "ready": "连接已就绪，但尚未保存此商品的 Feed 记录。",
+        "pending": "待处理",
+        "live": "覆盖更新已验证",
+        "disapproved": "未获批准",
+        "error": "更新失败",
+        "lastSent": "发送于{time}",
+        "lastChecked": "检查于{time}",
+        "offer": "商品条目 {id}"
+      },
+      "assistant": {
+        "title": "助手发现商品",
+        "description": "此预览不能证明 ChatGPT 已收录或推荐该商品。请完善商品详情，并检查已发布的商品发现资源，便于助手找到商品。"
+      },
+      "action": {
+        "primary": "管理连接",
+        "secondary": "打开 Google Shopping",
+        "tertiary": "查看店铺",
+        "quaternary": "检查商品发现设置"
+      }
+    },
+    "optimizeWorkspace": {
+      "title": "优化",
+      "description": "根据比较结果改进商品信息。发布前请核实内容。",
+      "action": {
+        "primary": "生成并发布",
+        "secondary": "查看商品信息",
+        "tertiary": "检查数据质量",
+        "quaternary": "重试"
+      },
+      "queue": {
+        "title": "下一步改进哪些商品",
+        "description": "从模拟胜率最低的商品开始，打开商品即可查看比较依据。",
+        "sample": "此列表采用已保存的诊断建议。如需完整检查有效商品目录，请前往“数据质量”。",
+        "count": "{count, plural, other {显示#件商品}}"
+      },
+      "search": "搜索商品或SKU…",
+      "tabs": {
+        "queue": "待查看",
+        "published": "已发布",
+        "dismissed": "已忽略"
+      },
+      "summary": {
+        "candidates": "可发布的候选商品",
+        "manual": "需手动修改",
+        "published": "发布记录"
+      },
+      "row": {
+        "rate": "模拟胜率",
+        "manual": "手动修改",
+        "ready": "支持发布",
+        "context": "已记录的模型：{models}"
+      },
+      "method": {
+        "title": "此列表如何生成",
+        "description": "候选商品的已记录胜率低于55%。已忽略的商品和过去14天内发布过的商品信息不会列入发布候选。候选商品不代表已有草稿。“生成并发布”会生成新文案，并立即替换店铺中的商品信息。这些建议不预测销量或未来胜率。"
+      },
+      "states": {
+        "empty": {
+          "title": "暂无待查看的建议",
+          "description": "此店铺暂无商品信息建议。检查商品数据或运行比较，寻找下一步改进方向。"
+        },
+        "filtered": {
+          "title": "没有匹配的商品",
+          "description": "请尝试其他商品名称或SKU。"
+        },
+        "error": {
+          "title": "无法加载列表",
+          "description": "商品数据仍已保存。请尝试重新加载列表。"
+        }
+      },
+      "confirmation": {
+        "title": "发布新的商品信息？",
+        "description": "为{title}生成新标题和描述，并发布到已连接的店铺。这会直接替换现有商品信息，不设单独的草稿审核步骤。",
+        "bulkTitle": "发布此店铺的更改？",
+        "bulkDescription": "{count, plural, other {为此店铺的#件符合条件的商品生成并发布新标题和描述。现有商品信息将被替换。}}",
+        "storeTitle": "优化已连接的店铺？",
+        "storeDescription": "写入商品结构化数据；对于Shopify，还会写入店铺资料。为此店铺符合条件的商品生成并发布文案。这可能修改多项已发布内容。",
+        "action": {
+          "primary": "确认并发布",
+          "secondary": "继续查看"
+        }
+      },
+      "bulk": {
+        "action": "发布符合条件的商品"
+      },
+      "store": {
+        "action": "优化店铺"
+      },
+      "toast": {
+        "failed": "未能完成更改",
+        "failedDescription": "请重试。如果发布已经开始，请先检查商品再重试。",
+        "published": "{count, plural, other {已发布#件商品信息}}",
+        "partial": "已发布{published}件，{failed}件未能完成。请检查剩余商品后再重试。",
+        "saved": "列表已更新"
+      },
+      "history": {
+        "unmeasured": "需要重新比较才能衡量结果。",
+        "undated": "暂无发布时间"
+      },
+      "diagnostics": {
+        "content": "补充实用商品信息",
+        "contentHint": "检查已保存的标题和描述，补充准确的规格和相关用途。",
+        "structured_data": "检查结构化数据",
+        "structured_dataHint": "检查商品的结构化数据，仅添加经过核实的属性。",
+        "seo": "添加商品图片",
+        "seoHint": "先在数据源中添加真实商品图片，再同步目录。",
+        "platform": "连接发布权限",
+        "platformHint": "此目录无法直接发布商品信息更改。请连接Shopify或WooCommerce，或手动更新数据源。"
+      }
+    },
+    "channels": {
+      "title": "渠道",
+      "description": "保持目录连接，查看提交状态，为 AI 购物助手准备好店铺。",
+      "source": {
+        "title": "目录连接",
+        "description": "查看来源目录及最近一次导入。",
+        "synced": "最近导入：{date}",
+        "never": "暂无导入记录",
+        "public": "通过公开目录导入。发布更改需要获得店铺授权的连接。",
+        "action": {
+          "primary": "管理连接"
+        }
+      },
+      "google": {
+        "title": "提交到 Google",
+        "description": "此店铺已保存的账号和商品记录。",
+        "action": {
+          "primary": "打开 Google"
+        },
+        "pending": "待处理",
+        "verified": "已验证的更新",
+        "issues": "需要处理",
+        "note": "更新通过验证，不代表 Google 已向买家展示该商品。"
+      },
+      "checkout": {
+        "title": "结账",
+        "description": "查看结账配置及其提供的商品。",
+        "action": {
+          "primary": "打开结账"
+        },
+        "scope": "结账配置适用于整个账号，商品列表仅包含此店铺的商品。"
+      },
+      "tools": {
+        "title": "店铺与开发者工具",
+        "description": "需要时，可查看某项功能的具体检查依据。",
+        "checks": "店铺检查",
+        "access": "目录访问",
+        "webmcp": "购物工具",
+        "playground": "测试结账",
+        "comparison": "比较配置"
+      },
+      "research": {
+        "title": "想查看目录排名？",
+        "description": "目录查询位于 AI 研究中，衡量特定市场和查询下的结果，不代表店铺已准备就绪。",
+        "action": {
+          "primary": "查看目录排名"
+        }
+      },
+      "status": {
+        "connected": "已连接",
+        "syncing": "正在导入",
+        "disconnected": "已断开",
+        "error": "需要处理",
+        "unavailable": "暂不可用",
+        "unsupported": "不支持此来源",
+        "setup": "需要设置",
+        "notConnected": "未连接"
+      },
+      "error": {
+        "title": "无法获取渠道信息",
+        "description": "未能加载已保存的连接记录，请稍后重试。",
+        "action": {
+          "primary": "重试"
+        }
+      },
+      "checks": {
+        "title": "目录访问",
+        "description": "检查购物助手可访问的公开文件和商品数据源。"
+      }
+    },
+    "catalogWorkflow": {
+      "reviewTitle": "确认导入内容",
+      "reviewHint": "已有 {count, number} 行商品数据可供导入。没有标题的行会被跳过。",
+      "fieldsHint": "请包含 title 或 name 列。可选列：description、price、currency、image、url、sku 和 id。",
+      "idsHint": "id 匹配的行会更新已有商品。没有 id 的行每次导入都会创建新商品。",
+      "previewHint": "显示前 {count, number} 行可导入的数据。",
+      "readFailed": "无法读取文件。请重新选择文件后再试。",
+      "partial": "已导入 {imported, number} 件商品，共 {total, number} 件。再次导入此文件前，请先打开目录检查结果。",
+      "unknownCurrency": "未指定币种",
+      "allWork": "全部任务",
+      "publishable": "可发布",
+      "manual": "人工检查",
+      "reviewLabel": "筛选任务",
+      "sourceTitle": "商品目录来源",
+      "sourceHint": "从此来源导入，检查保存的信息，然后比较或优化商品详情。",
+      "action": {
+        "primary": "检查文件",
+        "secondary": "选择其他文件",
+        "tertiary": "确认导入",
+        "quaternary": "打开目录"
+      },
+      "improveListing": "改进商品信息",
+      "comparisonResults": "结果"
+    },
+    "workspace": {
+      "nav": {
+        "label": "店铺工作区",
+        "research": "AI研究",
+        "channels": "渠道",
+        "results": "实际数据",
+        "overview": "概览",
+        "products": "商品",
+        "optimize": "优化"
+      },
+      "sections": {
+        "label": "工作区栏目",
+        "catalog": "商品目录",
+        "quality": "数据质量",
+        "summary": "概览",
+        "comparisons": "商品对比",
+        "brand": "品牌",
+        "questions": "问题",
+        "competitors": "竞品",
+        "catalogRank": "目录排名",
+        "connections": "连接",
+        "google": "Google",
+        "checks": "店铺检查",
+        "access": "目录访问",
+        "checkout": "结账",
+        "developer": "开发者工具",
+        "shoppingTools": "购物工具",
+        "testCheckout": "测试结账",
+        "compareProfiles": "对比配置"
+      },
+      "results": {
+        "title": "实际数据",
+        "description": "查看这家店铺已记录的AI引荐访问和爬虫活动。",
+        "reportsTitle": "所有店铺的报告",
+        "reportsDescription": "导出已保存的对比结果、目录数据和商品信息更改。这些报告涵盖整个账户。",
+        "action": {
+          "primary": "打开报告",
+          "secondary": "查看AI研究"
+        }
+      },
+      "ready": {
+        "title": "已保存的检查中没有紧急待办",
+        "description": "目录发生变化后，请检查渠道或运行新的对比。",
+        "action": {
+          "primary": "检查渠道"
+        }
+      },
+      "reportScope": "此账户中的所有店铺",
+      "reportMethod": "导出内容为已保存的数据。预测提升仅为估算，并非实测结果。",
+      "downloadError": "无法下载报告，请重试。"
+    },
+    "research": {
+      "title": "AI 研究",
+      "description": "比较商品、查看已保存的回答，决定接下来测试什么。",
+      "unavailable": {
+        "title": "无法加载研究结果",
+        "description": "请重试。已保存的结果没有变化。",
+        "action": {
+          "primary": "重试"
+        }
+      },
+      "empty": {
+        "title": "从商品比较开始",
+        "description": "选择商品和真实的竞品，看看各个模型会选择哪份商品详情。完成的测试会显示在这里。"
+      },
+      "comparison": {
+        "title": "最近完成的比较",
+        "action": {
+          "primary": "设置比较",
+          "secondary": "查看结果"
+        },
+        "rate": "模拟胜率",
+        "sample": "{total} 次比较中获胜 {wins} 次",
+        "scope": "结果仅涵盖本次测试中这家店铺的商品，反映模型的选择，不代表访客数量或销量。",
+        "recent": "之前的比较",
+        "first": "这是你首次完成的比较。",
+        "cohorts": "商品、竞品或模型不同，胜率就可能变化。这些测试不能衡量修改带来的提升。"
+      },
+      "brand": {
+        "title": "已保存的品牌分析",
+        "running": "新的分析正在进行。",
+        "failed": "上次分析未完成。打开品牌分析即可重试。",
+        "empty": "还没有已完成的品牌分析。",
+        "action": {
+          "primary": "打开品牌分析"
+        },
+        "scope": "这些是向模型提供品牌背景后采集的回答样本。采取行动前，请查看原始问题和回答。"
+      },
+      "directions": {
+        "questions": {
+          "title": "探索购物问题",
+          "description": "试试消费者会问的问题，查看各个模型推荐了哪些店铺。",
+          "action": {
+            "primary": "探索问题"
+          }
+        },
+        "competitors": {
+          "title": "选择竞品",
+          "description": "检查比较中使用的竞品，并添加实际获取的商品报价。",
+          "action": {
+            "primary": "管理竞品"
+          }
+        },
+        "rank": {
+          "title": "查询目录排名",
+          "description": "指定搜索词和国家，查看店铺在 Shopify Global Catalog 中的位置。",
+          "action": {
+            "primary": "查询目录排名"
+          }
+        }
+      },
+      "rank": {
+        "title": "目录排名",
+        "description": "按指定搜索词和市场，实时查询 Shopify Global Catalog。",
+        "empty": {
+          "title": "你的店铺出现在哪里？",
+          "description": "输入购物搜索词并选择国家。这里检查的是目录返回的商品报价，并不代表 ChatGPT 或 Google 的通用排名。"
+        },
+        "checked": "Shopify Global Catalog · {country} · 查询时间：{time}。每次查询的结果可能不同。",
+        "unavailable": {
+          "title": "目录排名尚未连接",
+          "description": "此工作区暂时无法查询 Shopify Global Catalog。你仍可查看店铺访问检查和已保存的比较结果。",
+          "action": {
+            "primary": "查看访问检查",
+            "secondary": "查看已保存的比较"
+          }
+        }
+      },
+      "comparisons": {
+        "title": "商品比较",
+        "description": "选择要测试的商品和竞品报价，再查看各个模型的选择。",
+        "phases": {
+          "pre": "可以开始比较",
+          "running": "正在比较商品",
+          "complete": "比较已完成"
+        },
+        "unmeasured": "此模型暂无比较结果"
+      },
+      "questions": {
+        "title": "购物问题",
+        "description": "探索模型对购物问题生成的回答。这些建议仅供研究，不是经过验证的搜索排名。"
+      },
+      "competitors": {
+        "title": "竞品",
+        "description": "管理竞品报价，查看自家商品与它们的比较结果。",
+        "action": {
+          "primary": "添加竞品",
+          "secondary": "设置比较",
+          "tertiary": "返回竞品"
+        },
+        "stats": {
+          "tracked": "已添加的品牌",
+          "tested": "已比较的品牌",
+          "comparisons": "已保存的比较"
+        },
+        "empty": {
+          "title": "选择消费者会考虑的替代商品",
+          "description": "添加带有实际价格和商品详情的竞品。设置比较时，可以选择相关的商品报价。"
+        },
+        "evidence": {
+          "title": "自家商品面对的强劲对手",
+          "description": "自家商品对各品牌的模拟胜率，按从低到高排序。仅显示已完成比较的品牌。",
+          "sample": "{count} 次比较"
+        },
+        "roster": "{total} 个竞品 · 已选 {selected} 个",
+        "updateFailed": "无法更新此竞品"
       }
     }
   },
@@ -19648,7 +20650,8 @@
     "wooMark": "Woo 标志以立体线条雕塑呈现；将指针移到字母上即可抬起。",
     "merchantFolio": "一个装有产品记录的目录夹；将指针移到某一页上即可抬起查看。",
     "demoPlane": "插图：一架折叠纸飞机，会朝指针方向倾斜并上升。",
-    "partnerCatalogs": "两个商家商品目录已连接，用于合作项目。"
+    "partnerCatalogs": "两个商家商品目录已连接，用于合作项目。",
+    "comparisonStand": "并排放在比较展示架上的两张商品卡片"
   },
   "enterprisePilotPreview": {
     "label": "示例试点·样例简介",

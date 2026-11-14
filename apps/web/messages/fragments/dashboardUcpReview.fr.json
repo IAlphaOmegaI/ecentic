@@ -1,0 +1,31 @@
+{
+  "dashboard": {
+    "ucp": {
+      "review": {
+        "description": "Vérifiez la configuration du paiement de votre boutique et les données produit accessibles aux agents d’achat.",
+        "tabs": {
+          "check": "Vérifier le paiement",
+          "data": "Données produit"
+        },
+        "check": {
+          "title": "Vérifiez votre parcours de paiement",
+          "description": "Consultez le profil UCP publié de votre boutique pour repérer les éléments de configuration du paiement manquants ou non valides.",
+          "hint": "Utilise HTTPS. Vérifie le profil publié sans passer de commande."
+        },
+        "details": {
+          "title": "Ce que couvre la vérification",
+          "description": "Découverte du profil, configuration du paiement et accès des agents."
+        },
+        "advanced": {
+          "title": "Tester les endpoints",
+          "summary": "Facultatif · peut créer des paniers de test",
+          "description": "Vérifiez les services déclarés par votre boutique et testez le cycle de paiement."
+        },
+        "products": {
+          "title": "Couverture des données produit",
+          "description": "Les données produit générées ne confirment pas la prise en charge du paiement en ligne. Ces produits appartiennent à cette boutique."
+        }
+      }
+    }
+  }
+}

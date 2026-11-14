@@ -25,7 +25,7 @@ export const FieldsetLegend = ({
   return (
     <FieldsetPrimitive.Legend
       className={createClassName(
-        "border-gray-200 border-b pb-3 font-medium text-gray-900 text-lg",
+        "border-accent-foreground border-b pb-3 font-medium text-foreground-rich text-lg",
         className,
       )}
       {...props}

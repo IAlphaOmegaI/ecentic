@@ -33,7 +33,7 @@ export const Capabilities = ({ copy }: Capabilities.Props) => (
     <MarketingHeading
       eyebrow={copy.eyebrow}
       title={copy.title}
-      className="pb-12 [&>.marketing-eyebrow]:text-primary-rich [&>h2]:max-w-[940px]"
+      className="pb-12 [&>.marketing-eyebrow]:text-primary-rich [&>h2]:max-w-235"
     />
     <div
       data-capability-grid

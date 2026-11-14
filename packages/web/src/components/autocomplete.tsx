@@ -31,7 +31,7 @@ export const AutocompleteInput = ({
   return (
     <AutocompletePrimitive.Input
       className={createClassName(
-        "h-10 w-[16rem] rounded-md border border-gray-200 bg-[canvas] pl-3.5 font-normal text-base text-gray-900 focus:outline focus:outline-blue-800 focus:-outline-offset-1 md:w-[20rem]",
+        "h-10 w-64 rounded-lg border border-accent-foreground bg-background-rich pl-3.5 font-normal text-base text-foreground-rich focus:outline focus:outline-primary focus:-outline-offset-1 md:w-80",
         className,
       )}
       {...props}
@@ -50,7 +50,7 @@ export const AutocompleteTrigger = ({
   return (
     <AutocompletePrimitive.Trigger
       className={createClassName(
-        "rounded-md border border-gray-200 bg-[canvas] text-[1.25rem] text-gray-900 outline-none hover:bg-gray-100 focus-visible:outline focus-visible:outline-blue-800 focus-visible:-outline-offset-1 data-popup-open:bg-gray-100",
+        "rounded-lg border border-accent-foreground bg-background-rich text-foreground-rich text-xl outline-none hover:bg-background focus-visible:outline focus-visible:outline-primary focus-visible:-outline-offset-1 data-popup-open:bg-background",
         className,
       )}
       {...props}
@@ -128,7 +128,7 @@ export const AutocompletePopup = ({
   return (
     <AutocompletePrimitive.Popup
       className={createClassName(
-        "max-h-[min(var(--available-height),23rem)] w-[var(--anchor-width)] max-w-[var(--available-width)] scroll-pt-2 scroll-pb-2 overflow-y-auto overscroll-contain rounded-md bg-[canvas] py-2 text-gray-900 shadow-gray-200 shadow-lg outline-1 outline-gray-200 dark:shadow-none dark:outline-gray-300 dark:-outline-offset-1",
+        "max-h-[min(var(--available-height),23rem)] w-[var(--anchor-width)] max-w-[var(--available-width)] scroll-pt-2 scroll-pb-2 overflow-y-auto overscroll-contain rounded-lg bg-background-rich py-2 text-foreground-rich shadow-emphasis/10 shadow-lg outline-1 outline-accent-foreground dark:shadow-none dark:outline-accent-foreground dark:-outline-offset-1",
         className,
       )}
       {...props}
@@ -154,7 +154,7 @@ export const AutocompleteStatus = ({
   return (
     <AutocompletePrimitive.Status
       className={createClassName(
-        "flex items-center gap-2 py-1 pr-8 pl-4 text-gray-600 text-sm",
+        "flex items-center gap-2 py-1 pr-8 pl-4 text-foreground-dimmed text-sm",
         className,
       )}
       {...props}
@@ -173,7 +173,7 @@ export const AutocompleteEmpty = ({
   return (
     <AutocompletePrimitive.Empty
       className={createClassName(
-        "px-4 py-2 text-[0.925rem] text-gray-600 leading-4 empty:m-0 empty:p-0",
+        "px-4 py-2 text-foreground-dimmed text-sm leading-4 empty:m-0 empty:p-0",
         className,
       )}
       {...props}
@@ -206,7 +206,7 @@ export const AutocompleteItem = ({
   return (
     <AutocompletePrimitive.Item
       className={createClassName(
-        "flex cursor-default select-none py-2 pr-8 pl-4 text-base leading-4 outline-none data-highlighted:relative data-highlighted:z-0 data-highlighted:text-gray-50 data-highlighted:before:absolute data-highlighted:before:inset-x-2 data-highlighted:before:inset-y-0 data-highlighted:before:z-[-1] data-highlighted:before:rounded data-highlighted:before:bg-gray-900",
+        "flex cursor-default select-none py-2 pr-8 pl-4 text-base leading-4 outline-none data-highlighted:relative data-highlighted:z-0 data-highlighted:text-background-rich data-highlighted:before:absolute data-highlighted:before:inset-x-2 data-highlighted:before:inset-y-0 data-highlighted:before:z-[-1] data-highlighted:before:rounded-sm data-highlighted:before:bg-emphasis",
         className,
       )}
       {...props}
@@ -248,7 +248,7 @@ export const AutocompleteGroupLabel = ({
   return (
     <AutocompletePrimitive.GroupLabel
       className={createClassName(
-        "sticky top-0 z-[1] mt-0 mr-2 mb-0 ml-0 w-[calc(100%-0.5rem)] bg-[canvas] px-4 py-2 font-semibold text-xs uppercase tracking-wider",
+        "sticky top-0 z-[1] mt-0 mr-2 mb-0 ml-0 w-[calc(100%-0.5rem)] bg-background-rich px-4 py-2 font-semibold text-xs uppercase tracking-wider",
         className,
       )}
       {...props}

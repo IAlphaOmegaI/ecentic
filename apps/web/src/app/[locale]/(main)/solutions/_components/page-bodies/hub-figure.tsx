@@ -11,7 +11,7 @@ export const HubFigure = ({ label }: HubFigure.Props) => (
     figure={Hub}
     label={label}
     surface="field"
-    className="mx-auto max-w-[560px]"
+    className="mx-auto max-w-140"
   />
 );
 

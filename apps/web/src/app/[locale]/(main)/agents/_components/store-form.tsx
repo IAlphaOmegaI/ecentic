@@ -80,7 +80,7 @@ export const StoreForm = () => {
       }}
       className="flex w-full max-w-2xl flex-col gap-2"
     >
-      <div className="flex w-full flex-col gap-1.5 rounded-lg border border-accent-foreground bg-background p-1.5 shadow-lg transition-[border-color,box-shadow] duration-200 focus-within:border-primary focus-within:ring-[3px] focus-within:ring-primary/15 sm:flex-row sm:items-center">
+      <div className="flex w-full flex-col gap-1.5 rounded-lg border border-accent-foreground bg-background p-1.5 shadow-lg transition-[border-color,box-shadow] duration-200 focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/15 sm:flex-row sm:items-center">
         <TextField
           value={url}
           onValueChange={(value) => {
@@ -130,7 +130,7 @@ export const StoreForm = () => {
         role="status"
         aria-live="polite"
         className={cn(
-          "min-h-5 text-sm text-white sm:px-2",
+          "min-h-5 text-sm text-background-rich sm:px-2",
           problem && "font-medium",
         )}
       >

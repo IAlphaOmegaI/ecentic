@@ -1,0 +1,19 @@
+{
+  "dashboard": {
+    "discovery": {
+      "method": "Il tuo negozio viene nominato in ogni richiesta. Queste raccomandazioni simulate non misurano la notorietà spontanea del brand né le posizioni nei risultati di ricerca in tempo reale."
+    },
+    "research": {
+      "rank": {
+        "unavailable": {
+          "title": "Il posizionamento nel catalogo non è collegato",
+          "description": "Questo spazio di lavoro non può ancora interrogare Shopify Global Catalog. Puoi comunque consultare i controlli di accesso al negozio e i confronti salvati.",
+          "action": {
+            "primary": "Vedi i controlli di accesso",
+            "secondary": "Vedi i confronti salvati"
+          }
+        }
+      }
+    }
+  }
+}

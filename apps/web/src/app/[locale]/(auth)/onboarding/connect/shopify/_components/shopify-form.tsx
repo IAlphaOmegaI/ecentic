@@ -125,7 +125,7 @@ export const ShopifyForm = () => {
       className="flex flex-col gap-4"
     >
       {errorMessage && (
-        <p className="rounded-md border border-error/40 bg-error/10 px-3 py-2 font-light text-error text-sm">
+        <p className="rounded-sm border border-error/40 bg-error/10 px-3 py-2 font-light text-error text-sm">
           {errorMessage}
         </p>
       )}

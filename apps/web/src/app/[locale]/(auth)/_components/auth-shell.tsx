@@ -44,7 +44,7 @@ export const AuthShell = async ({
           <p className="shrink-0 font-medium text-background-rich/75 text-sm">
             {translate("sidebar.eyebrow")}
           </p>
-          <p className="mt-4 max-w-lg shrink-0 text-balance font-heading font-medium text-4xl leading-[1.12] xl:text-5xl">
+          <p className="mt-4 max-w-lg shrink-0 text-balance font-heading font-medium text-4xl leading-none xl:text-5xl">
             {translate("sidebar.title")}
           </p>
           <p className="mt-6 max-w-md shrink-0 text-background-rich/85 text-base leading-relaxed">
@@ -161,11 +161,11 @@ export const AuthShell = async ({
 
 export const AuthFormSkeleton = () => (
   <div aria-hidden className="space-y-4">
-    <div className="h-10 rounded-md bg-accent" />
-    <div className="h-10 rounded-md bg-accent" />
+    <div className="h-10 rounded-sm bg-accent" />
+    <div className="h-10 rounded-sm bg-accent" />
     <div className="h-6" />
-    <div className="h-16 rounded-md bg-accent" />
-    <div className="h-16 rounded-md bg-accent" />
-    <div className="h-10 rounded-md bg-accent" />
+    <div className="h-16 rounded-sm bg-accent" />
+    <div className="h-16 rounded-sm bg-accent" />
+    <div className="h-10 rounded-sm bg-accent" />
   </div>
 );

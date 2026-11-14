@@ -1,0 +1,116 @@
+{
+  "dashboard": {
+    "research": {
+      "title": "Investigación con IA",
+      "description": "Compara productos, consulta las respuestas guardadas y decide qué probar después.",
+      "unavailable": {
+        "title": "No se ha podido cargar la investigación",
+        "description": "Vuelve a intentarlo. Los resultados guardados no han cambiado.",
+        "action": {
+          "primary": "Reintentar"
+        }
+      },
+      "empty": {
+        "title": "Empieza comparando tus productos",
+        "description": "Elige productos y competidores reales para ver qué ficha selecciona cada modelo. Las comparaciones completadas aparecerán aquí."
+      },
+      "comparison": {
+        "title": "Última comparación completada",
+        "action": {
+          "primary": "Preparar una comparación",
+          "secondary": "Ver resultados"
+        },
+        "rate": "Tasa de victoria simulada",
+        "sample": "{wins} victorias en {total} comparaciones",
+        "scope": "Estos resultados corresponden a los productos de esta tienda en esta prueba. Reflejan elecciones de los modelos, no visitas ni ventas.",
+        "recent": "Comparaciones anteriores",
+        "first": "Esta es tu primera comparación completada.",
+        "cohorts": "Cambiar los productos, los competidores o los modelos puede alterar la tasa. Estas pruebas no miden una mejora atribuible a los cambios."
+      },
+      "brand": {
+        "title": "Análisis de marca guardado",
+        "running": "Hay un nuevo análisis en curso.",
+        "failed": "El último análisis no terminó. Abre el análisis de marca para reintentarlo.",
+        "empty": "Aún no hay ningún análisis de marca completado.",
+        "action": {
+          "primary": "Ver análisis de marca"
+        },
+        "scope": "Son respuestas de una muestra de modelos a los que se ha dado tu marca como contexto. Consulta las preguntas y respuestas originales antes de actuar."
+      },
+      "directions": {
+        "questions": {
+          "title": "Explora preguntas de compra",
+          "description": "Prueba preguntas que haría un comprador y consulta qué tiendas sugiere cada modelo.",
+          "action": {
+            "primary": "Explorar preguntas"
+          }
+        },
+        "competitors": {
+          "title": "Elige a tus competidores",
+          "description": "Revisa los productos rivales de tus comparaciones y añade ofertas con datos observados.",
+          "action": {
+            "primary": "Gestionar competidores"
+          }
+        },
+        "rank": {
+          "title": "Consulta la posición en el catálogo",
+          "description": "Comprueba dónde aparece tu tienda para una búsqueda y un país en Shopify Global Catalog.",
+          "action": {
+            "primary": "Consultar posición"
+          }
+        }
+      },
+      "rank": {
+        "title": "Posición en el catálogo",
+        "description": "Una consulta en directo a Shopify Global Catalog para la búsqueda y el mercado que elijas.",
+        "empty": {
+          "title": "¿Dónde aparece tu tienda?",
+          "description": "Escribe una búsqueda de compra y elige un país. Se consultan las ofertas devueltas por el catálogo, no una posición universal en ChatGPT o Google."
+        },
+        "checked": "Shopify Global Catalog · {country} · Consulta: {time}. Los resultados pueden variar entre consultas."
+      },
+      "comparisons": {
+        "title": "Comparaciones de productos",
+        "description": "Elige tus productos y las ofertas rivales que quieres probar, y consulta las elecciones de cada modelo.",
+        "phases": {
+          "pre": "Todo listo para comparar",
+          "running": "Comparación en curso",
+          "complete": "Comparación completada"
+        },
+        "unmeasured": "No hay comparaciones de este modelo"
+      },
+      "questions": {
+        "title": "Preguntas de compra",
+        "description": "Explora respuestas generadas por modelos a preguntas de compra. Son material de investigación, no posiciones verificadas en un buscador."
+      },
+      "competitors": {
+        "title": "Competidores",
+        "description": "Gestiona las ofertas rivales y consulta cómo se comparan tus productos con ellas.",
+        "action": {
+          "primary": "Añadir competidores",
+          "secondary": "Preparar una comparación",
+          "tertiary": "Volver a competidores"
+        },
+        "stats": {
+          "tracked": "Marcas en tu lista",
+          "tested": "Marcas comparadas",
+          "comparisons": "Comparaciones guardadas"
+        },
+        "empty": {
+          "title": "Elige las alternativas que barajan tus compradores",
+          "description": "Añade productos rivales con precios y detalles observados. Al preparar una comparación podrás seleccionar las ofertas pertinentes."
+        },
+        "evidence": {
+          "title": "Dónde se enfrentan tus productos a más competencia",
+          "description": "Tasa de victoria simulada de tus productos frente a cada marca, de menor a mayor. Solo se muestran marcas con comparaciones completadas.",
+          "sample": "{count} comparaciones"
+        },
+        "roster": "{total} competidores · {selected} seleccionados",
+        "updateFailed": "No se ha podido actualizar el competidor"
+      }
+    }
+  },
+  "commerceFigures": {
+    "comparisonStand": "Dos fichas de producto en un expositor para compararlas"
+  }
+}

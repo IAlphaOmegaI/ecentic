@@ -4,6 +4,7 @@ import { readStreamableValue } from "@ai-sdk/rsc";
 import {
   ClockIcon,
   GlobeIcon,
+  RadarIcon,
   ShareIcon,
   TrendDownIcon,
   TrendUpIcon,
@@ -184,48 +185,69 @@ export const ScanRunner = ({
         {announcement}
       </p>
 
-      <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center sm:justify-between">
-        <div className="flex min-w-0 items-start gap-3">
-          <GlobeIcon
-            aria-hidden
-            className="mt-0.5 size-4 shrink-0 text-foreground-dimmed"
-          />
-          <div className="min-w-0">
-            <p className="font-medium text-foreground text-sm">
-              {translate("scan.target", { target })}
-            </p>
-            <p className="mt-1 flex items-center gap-1.5 text-foreground-dimmed text-sm">
-              <ClockIcon aria-hidden className="size-3.5 shrink-0" />
-              {lastScannedAt
-                ? translate("scan.lastScanned", {
-                    when: format.relativeTime(new Date(lastScannedAt)),
-                  })
-                : translate("scan.never")}
-            </p>
+      <div className="grid gap-x-6 gap-y-4 p-4 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center sm:px-6 sm:py-5">
+        <div className="min-w-0">
+          <div className="flex items-start gap-3">
+            <GlobeIcon
+              aria-hidden
+              className="mt-1 size-6 shrink-0 text-primary-text"
+            />
+            <div className="min-w-0">
+              <h2 className="font-semibold text-base text-foreground-rich">
+                {translate("scan.workspaceTitle")}
+              </h2>
+              <p className="mt-0.5 break-all text-foreground text-sm">
+                {target}
+              </p>
+            </div>
           </div>
+          <p className="mt-3 flex items-center gap-1.5 text-foreground-dimmed text-xs">
+            <ClockIcon aria-hidden className="size-3.5 shrink-0" />
+            {lastScannedAt
+              ? translate("scan.lastScanned", {
+                  when: format.relativeTime(new Date(lastScannedAt)),
+                })
+              : translate("scan.awaitingFirst")}
+          </p>
         </div>
-        <div className="flex w-full shrink-0 flex-col gap-2 sm:w-auto sm:flex-row sm:items-center">
-          {reportUrl && (
-            <Button
-              color="accent"
-              className="w-full whitespace-normal sm:w-auto"
-              render={
-                <a href={reportUrl} target="_blank" rel="noopener noreferrer" />
-              }
-            >
-              {translate("score.attribution")}
-              <ShareIcon aria-hidden className="size-4" />
-            </Button>
-          )}
+        <div className="flex w-full flex-col gap-2 sm:w-auto sm:items-end">
           <Button
             color="primary"
             onClick={handleScan}
             disabled={isScanning}
             className="w-full sm:w-auto"
           >
+            <RadarIcon aria-hidden className="size-4" />
             {isScanning ? translate("scan.running") : translate("scan.action")}
           </Button>
+          {reportUrl && (
+            <Button
+              color="neutral"
+              variant="soft"
+              className="w-full whitespace-normal sm:w-auto"
+              render={
+                <a href={reportUrl} target="_blank" rel="noopener noreferrer" />
+              }
+            >
+              {translate("scan.report")}
+              <ShareIcon aria-hidden className="size-4" />
+            </Button>
+          )}
         </div>
+        <p className="text-foreground-dimmed text-xs leading-relaxed sm:col-span-2">
+          {translate.rich("scan.providerNote", {
+            provider: (label) => (
+              <a
+                href="https://is-agentic.com/docs"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="font-medium text-foreground underline decoration-accent-rich underline-offset-2 hover:text-primary-text"
+              >
+                {label}
+              </a>
+            ),
+          })}
+        </p>
       </div>
 
       {(isScanning || phase) && (
@@ -243,7 +265,7 @@ export const ScanRunner = ({
           </div>
           <div className="h-1.5 w-full overflow-hidden rounded-full bg-background-dimmed">
             <div
-              className="h-full rounded-full bg-primary transition-[width] duration-300"
+              className="h-full rounded-full bg-primary transition-[width] duration-200 motion-reduce:transition-none"
               style={{
                 width: total ? `${(lines.length / total) * 100}%` : "5%",
               }}
@@ -285,19 +307,6 @@ export const ScanRunner = ({
           {notice}
         </p>
       )}
-
-      <p className="border-accent-foreground border-t p-4 text-foreground-dimmed text-sm">
-        {translate("scan.disclosure")}{" "}
-        <a
-          href="https://is-agentic.com/docs"
-          target="_blank"
-          rel="noreferrer"
-          className="inline-flex items-center gap-1 font-medium text-primary-text underline-offset-2 hover:underline"
-        >
-          {translate("scan.disclosureLink")}
-          <ShareIcon aria-hidden className="size-3.5" />
-        </a>
-      </p>
     </div>
   );
 };
@@ -371,7 +380,7 @@ export const ScoreTrend = ({
                 if (!active || !payload?.length) return null;
 
                 return (
-                  <div className="rounded-md border border-accent-foreground bg-background-rich px-3 py-2 shadow-md">
+                  <div className="rounded-sm border border-accent-foreground bg-background-rich px-3 py-2 shadow-sm">
                     <p className="text-foreground-dimmed text-xs">
                       {format.dateTime(new Date(String(label)), {
                         dateStyle: "medium",
@@ -494,7 +503,9 @@ const CompetitorRow = ({
       </TableCell>
       <TableCell className="whitespace-nowrap">
         {score === null ? (
-          <StatusPill>{translate("competitors.unscored")}</StatusPill>
+          <StatusPill className="normal-case tracking-normal">
+            {translate("competitors.unscored")}
+          </StatusPill>
         ) : (
           <p
             className={cn(
@@ -534,7 +545,8 @@ const CompetitorRow = ({
       </TableCell>
       <TableCell className="text-right">
         <Button
-          color="accent"
+          color="neutral"
+          variant="soft"
           onClick={handleScan}
           disabled={isScanning}
           className="shrink-0"
@@ -562,14 +574,21 @@ export const CompetitorScans = ({
   }[];
 }) => {
   const translate = useTranslations("dashboard.agentic");
+  const formatter = useFormatter();
   const scored = rows.filter((row) => row.score !== null).length;
   const coverage =
     rows.length === 0 ? 0 : Math.round((scored / rows.length) * 100);
 
   return (
-    <div className="p-4">
-      <div className="overflow-hidden rounded-lg border border-accent-foreground bg-background">
-        <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
+    <div className="min-w-0">
+      <div className="min-w-0 overflow-hidden bg-background-rich">
+        <div className="flex items-center gap-4 border-accent-foreground border-b px-4 py-6 sm:px-6">
+          <p className="font-semibold text-3xl text-foreground-rich tabular-nums">
+            {formatter.number(coverage / 100, {
+              style: "percent",
+              maximumFractionDigits: 0,
+            })}
+          </p>
           <div>
             <p className="font-medium text-base text-foreground">
               {translate("competitors.coverage", {
@@ -577,31 +596,31 @@ export const CompetitorScans = ({
                 total: String(rows.length),
               })}
             </p>
-            <div className="mt-1.5 h-0.5 w-28 bg-accent-foreground">
+            <div className="mt-2 h-1 w-40 overflow-hidden rounded-full bg-accent-foreground">
               <div
-                className="h-full bg-primary transition-all duration-700"
+                className="h-full bg-primary transition-[width] duration-200 motion-reduce:transition-none"
                 style={{ width: `${coverage}%` }}
               />
             </div>
           </div>
         </div>
         <div className="overflow-x-auto">
-          <Table className="border-b-0">
+          <Table className="min-w-176 table-fixed border-b-0">
             <TableHeader>
               <TableRow>
-                <TableHead className="w-full font-medium text-foreground-dimmed text-xs normal-case tracking-normal">
+                <TableHead className="w-auto font-medium text-foreground-dimmed text-xs normal-case tracking-normal">
                   {translate("competitors.columnStorefront")}
                 </TableHead>
-                <TableHead className="font-medium text-foreground-dimmed text-xs normal-case tracking-normal">
+                <TableHead className="w-48 font-medium text-foreground-dimmed text-xs normal-case tracking-normal">
                   {translate("competitors.columnScanned")}
                 </TableHead>
-                <TableHead className="font-medium text-foreground-dimmed text-xs normal-case tracking-normal">
+                <TableHead className="w-28 font-medium text-foreground-dimmed text-xs normal-case tracking-normal">
                   {translate("competitors.columnScore")}
                 </TableHead>
-                <TableHead className="font-medium text-foreground-dimmed text-xs normal-case tracking-normal">
+                <TableHead className="w-36 font-medium text-foreground-dimmed text-xs normal-case tracking-normal">
                   {translate("competitors.columnGap")}
                 </TableHead>
-                <TableHead className="w-0">
+                <TableHead className="w-28 normal-case tracking-normal">
                   <span className="sr-only">
                     {translate("competitors.action")}
                   </span>

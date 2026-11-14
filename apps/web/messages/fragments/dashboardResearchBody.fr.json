@@ -1,0 +1,19 @@
+{
+  "dashboard": {
+    "discovery": {
+      "method": "Votre boutique est nommée dans chaque requête. Ces recommandations simulées ne mesurent ni la notoriété spontanée de votre marque ni son classement dans les recherches en temps réel."
+    },
+    "research": {
+      "rank": {
+        "unavailable": {
+          "title": "Le classement du catalogue n’est pas connecté",
+          "description": "Cet espace de travail ne peut pas encore interroger Shopify Global Catalog. Vous pouvez consulter les vérifications d’accès à votre boutique et les comparaisons enregistrées.",
+          "action": {
+            "primary": "Voir les vérifications d’accès",
+            "secondary": "Voir les comparaisons enregistrées"
+          }
+        }
+      }
+    }
+  }
+}

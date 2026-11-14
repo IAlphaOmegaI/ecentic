@@ -41,7 +41,7 @@ export const StoriesEvidence = ({
         {sections.find((section) => section.id === "result")?.title}
       </p>
       <div className="grid items-end gap-8 md:grid-cols-[1fr_1fr]">
-        <p className="whitespace-nowrap font-body font-medium text-[clamp(6rem,14vw,11rem)] proportional-nums leading-none tracking-[-0.07em]">
+        <p className="whitespace-nowrap font-body font-medium text-8xl lg:text-9xl proportional-nums leading-none tracking-tighter">
           {figure}
         </p>
         <div className="min-w-0 pb-2">

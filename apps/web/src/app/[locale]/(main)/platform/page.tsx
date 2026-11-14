@@ -62,7 +62,7 @@ export default async () => {
           id={control.id}
           className="[&>.marketing-rail>.marketing-guides]:hidden [&>.marketing-rail]:bg-primary-text"
         >
-          <div className="relative grid min-h-[440px] grid-cols-[7fr_5fr] overflow-hidden max-md:grid-cols-1">
+          <div className="relative grid min-h-110 grid-cols-[7fr_5fr] overflow-hidden max-md:grid-cols-1">
             <div className="relative z-10 flex flex-col justify-center px-7 py-16 max-sm:px-4 max-sm:py-10">
               <h2 className="text-background-rich">{control.title}</h2>
               {control.paragraphs?.map((paragraph) => (
@@ -77,7 +77,7 @@ export default async () => {
             <div
               aria-hidden="true"
               inert
-              className="relative min-h-[300px] text-background-rich/70 max-md:-mt-16 max-md:h-[300px] max-md:min-h-0"
+              className="relative min-h-75 text-background-rich/70 max-md:-mt-16 max-md:h-75 max-md:min-h-0"
             >
               <EvolvingAscii artwork="bag" cycle={["bag", "cart"]} />
             </div>

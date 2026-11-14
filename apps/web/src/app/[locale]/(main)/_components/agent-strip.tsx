@@ -13,7 +13,7 @@ const agents = [
 
 export const AgentStrip = ({ label }: AgentStrip.Props) => (
   <div className="flex flex-col gap-3">
-    <p className="font-medium text-foreground-dimmed text-sm uppercase tracking-[0.16em]">
+    <p className="font-medium text-foreground-dimmed text-sm uppercase tracking-widest">
       {label}
     </p>
     <ul className="flex flex-wrap gap-2">

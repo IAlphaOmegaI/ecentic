@@ -77,7 +77,7 @@ export const CommerceLayer = async () => {
               </div>
               <div
                 data-diagram-hub
-                className="relative flex min-h-96 flex-col items-center justify-center px-8 py-10 text-center before:pointer-events-none before:absolute before:inset-x-0 before:inset-y-0 before:bg-linear-to-r before:from-transparent before:via-primary/20 before:to-transparent lg:min-h-[440px] lg:before:-inset-x-12 before:[mask-image:linear-gradient(180deg,transparent,black_18%,black_82%,transparent)]"
+                className="relative flex min-h-96 flex-col items-center justify-center px-8 py-10 text-center before:pointer-events-none before:absolute before:inset-x-0 before:inset-y-0 before:bg-linear-to-r before:from-transparent before:via-primary/20 before:to-transparent lg:min-h-110 lg:before:-inset-x-12 before:[mask-image:linear-gradient(180deg,transparent,black_18%,black_82%,transparent)]"
               >
                 <Image
                   src="/images/trademark.svg"

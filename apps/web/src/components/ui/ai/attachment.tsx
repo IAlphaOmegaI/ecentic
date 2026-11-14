@@ -101,7 +101,7 @@
 //   ) : (
 //     <img
 //       alt={filename || "Image"}
-//       className="size-full rounded object-cover"
+//       className="size-full rounded-sm object-cover"
 //       height={20}
 //       src={url}
 //       width={20}
@@ -207,7 +207,7 @@
 //           variant === "grid" && "size-24 overflow-hidden rounded-lg",
 //           variant === "inline" && [
 //             "flex h-8 cursor-pointer select-none items-center gap-1.5",
-//             "rounded-md border border-border px-1.5",
+//             "rounded-sm border border-border px-1.5",
 //             "font-medium text-sm transition-all",
 //             "hover:bg-accent hover:text-accent-foreground dark:hover:bg-accent/50",
 //           ],
@@ -264,8 +264,8 @@
 //       className={cn(
 //         "flex shrink-0 items-center justify-center overflow-hidden",
 //         variant === "grid" && "size-full bg-muted",
-//         variant === "inline" && "size-5 rounded bg-background",
-//         variant === "list" && "size-12 rounded bg-muted",
+//         variant === "inline" && "size-5 rounded-sm bg-background",
+//         variant === "list" && "size-12 rounded-sm bg-muted",
 //         className
 //       )}
 //       {...props}
@@ -347,11 +347,11 @@
 //           "[&>svg]:size-3",
 //         ],
 //         variant === "inline" && [
-//           "size-5 rounded p-0",
+//           "size-5 rounded-sm p-0",
 //           "opacity-0 transition-opacity group-hover:opacity-100",
 //           "[&>svg]:size-2.5",
 //         ],
-//         variant === "list" && ["size-8 shrink-0 rounded p-0", "[&>svg]:size-4"],
+//         variant === "list" && ["size-8 shrink-0 rounded-sm p-0", "[&>svg]:size-4"],
 //         className
 //       )}
 //       onClick={handleClick}

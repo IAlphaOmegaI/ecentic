@@ -1,0 +1,42 @@
+{
+  "dashboard": {
+    "brand": {
+      "answers": {
+        "title": "已保存的回答",
+        "description": "查看本次分析所依据的问题。",
+        "search": "搜索问题、回答或品牌",
+        "filter": "品牌提及情况",
+        "filters": {
+          "all": "全部回答",
+          "mentioned": "已提及",
+          "absent": "未提及"
+        },
+        "count": "共 {total, number} 条，显示 {count, plural, other {# 条回答}}",
+        "position": {
+          "top": "首选推荐",
+          "listed": "列入列表",
+          "absent": "未提及"
+        },
+        "context": {
+          "named": "问题中包含品牌名称",
+          "unbranded": "问题中不含品牌名称"
+        },
+        "answer": "回答摘要",
+        "noAnswer": "未保存回答摘要。",
+        "brands": "提及的品牌",
+        "noBrands": "未记录品牌。",
+        "sources": "模型建议的信息来源",
+        "sourcesNote": "这些是模型给出的信息来源，并非经过核实的实时搜索引用。",
+        "noSources": "未记录信息来源。",
+        "empty": {
+          "title": "没有匹配的回答",
+          "description": "请换个关键词，或显示全部回答。",
+          "saved": "本次分析没有保存的回答。"
+        },
+        "action": {
+          "primary": "清除搜索和筛选"
+        }
+      }
+    }
+  }
+}

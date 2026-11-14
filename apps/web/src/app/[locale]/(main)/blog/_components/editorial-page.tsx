@@ -46,7 +46,7 @@ export const EditorialRichText = ({ content }: EditorialRichText.Props) => {
                   key={innerIndex}
                   className="flex gap-3 text-foreground-dimmed leading-relaxed"
                 >
-                  <span className="mt-[0.45rem] size-1.5 shrink-0 rounded-full bg-primary" />
+                  <span className="mt-2 size-1.5 shrink-0 rounded-full bg-primary" />
                   <span>{renderInline(line.slice(2))}</span>
                 </li>
               ))}

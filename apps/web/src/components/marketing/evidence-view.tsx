@@ -33,7 +33,7 @@ export const EvidenceDatum = ({
     <Tooltip>
       <TooltipTrigger
         aria-describedby={description}
-        className="block h-auto w-full min-w-0 cursor-help rounded-xs p-0 text-left text-foreground hover:bg-transparent focus-visible:bg-transparent focus-visible:outline-2 focus-visible:outline-primary-text focus-visible:outline-offset-4 active:bg-transparent data-popup-open:bg-transparent"
+        className="block h-auto w-full min-w-0 cursor-help rounded-sm p-0 text-left text-foreground hover:bg-transparent focus-visible:bg-transparent focus-visible:outline-2 focus-visible:outline-primary-text focus-visible:outline-offset-4 active:bg-transparent data-popup-open:bg-transparent"
       >
         {children}
       </TooltipTrigger>
@@ -43,7 +43,7 @@ export const EvidenceDatum = ({
           role="tooltip"
           className={cn(
             fonts,
-            "max-w-[min(360px,calc(100vw-32px))] gap-2 rounded-md border-accent-foreground bg-background-rich px-4 py-3 font-body text-foreground text-sm leading-relaxed shadow-none [font-synthesis:none]",
+            "max-w-[min(360px,calc(100vw-32px))] gap-2 rounded-sm border-accent-foreground bg-background-rich px-4 py-3 font-body text-foreground text-sm leading-relaxed shadow-none [font-synthesis:none]",
           )}
         >
           <p>{detail}</p>
@@ -95,7 +95,7 @@ export const EvidenceMeter = ({
         <span className="grid min-w-0 gap-4 sm:grid-cols-[max-content_minmax(0,1fr)] sm:items-start">
           <span
             data-evidence-value
-            className="whitespace-nowrap font-body font-medium text-[clamp(2rem,3.5vw,3rem)] text-primary-text proportional-nums leading-none tracking-tight"
+            className="whitespace-nowrap font-body font-medium text-3xl lg:text-4xl xl:text-5xl text-primary-text proportional-nums leading-none tracking-tight"
           >
             {value}
           </span>

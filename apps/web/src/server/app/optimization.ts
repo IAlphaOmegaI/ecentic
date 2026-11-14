@@ -10,6 +10,7 @@ import { withContext, withInstrumentation } from "../utils/context";
 import { withSubscription } from "../utils/entitlement";
 import { Environment } from "../utils/environment";
 import { DatabaseError } from "../utils/error";
+import { scopeOptimizationProducts } from "../utils/optimization-scope";
 import { type Document, repository, resultifyRead } from "../utils/repository";
 import { feedUrl } from "./feed-export";
 import * as Shopify from "./integration/shopify";
@@ -748,84 +749,99 @@ export const publishProductStructuredData = withSubscription(
   "Optimization.publishProductStructuredData",
 );
 
-export const approveAllPending = withSubscription(async (context) => {
-  const userId = context.session.user.id;
+export const approveAllPending = withSubscription(
+  async (context, { store }: { store?: string } = {}) => {
+    const userId = context.session.user.id;
 
-  const [productsResult, storesResult, recordsResult] = await Promise.all([
-    Product.find(Environment.SERVER, {
-      where: eq(schema.product.userId, userId),
-    }),
-    Store.find(Environment.SERVER, {
-      where: eq(schema.store.userId, userId),
-    }),
-    find(Environment.SERVER, {
-      where: eq(schema.listingOptimization.userId, userId),
-    }),
-  ]);
+    const [productsResult, storesResult, recordsResult] = await Promise.all([
+      Product.find(Environment.SERVER, {
+        where: and(
+          eq(schema.product.userId, userId),
+          store ? eq(schema.product.storeId, store) : undefined,
+        ),
+      }),
+      Store.find(Environment.SERVER, {
+        where: eq(schema.store.userId, userId),
+      }),
+      find(Environment.SERVER, {
+        where: eq(schema.listingOptimization.userId, userId),
+      }),
+    ]);
 
-  const products = productsResult.success ? productsResult.data : [];
-  const stores = storesResult.success ? storesResult.data : [];
-  const records = recordsResult.success ? recordsResult.data : [];
+    if (!productsResult.success) return productsResult;
+    if (!storesResult.success) return storesResult;
+    if (!recordsResult.success) return recordsResult;
 
-  const storeById = new Map(stores.map((store) => [store.id, store]));
-  const recordByProductId = new Map(
-    records.map((record) => [record.productId, record]),
-  );
+    const products = scopeOptimizationProducts(
+      productsResult.data,
+      userId,
+      store,
+    );
+    const stores = storesResult.data;
+    const records = recordsResult.data;
 
-  const publishableProductIds = new Set(
-    products
-      .filter((product) => {
-        const store = storeById.get(product.storeId);
-        return store && PUBLISHABLE_PLATFORMS.has(store.platform);
-      })
-      .map((product) => product.id),
-  );
+    const storeById = new Map(stores.map((store) => [store.id, store]));
+    const recordByProductId = new Map(
+      records.map((record) => [record.productId, record]),
+    );
 
-  const fetched = await Simulation.getForProducts({
-    products: products.map((product) => product.id),
-  });
-  const simulations = fetched.success ? fetched.data : [];
+    const publishableProductIds = new Set(
+      products
+        .filter((product) => {
+          const store = storeById.get(product.storeId);
+          return store && PUBLISHABLE_PLATFORMS.has(store.platform);
+        })
+        .map((product) => product.id),
+    );
 
-  const now = Date.now();
-  const pendingProductIds: { id: string; title: string }[] = [];
+    const fetched = await Simulation.getForProducts({
+      products: products.map((product) => product.id),
+    });
+    if (!fetched.success) return fetched;
+    const simulations = fetched.data;
 
-  for (const product of products) {
-    if (!publishableProductIds.has(product.id)) continue;
+    const now = Date.now();
+    const pendingProductIds: { id: string; title: string }[] = [];
 
-    const winRate = computeWinRate(product.id, simulations);
-    if (winRate === null || winRate >= WIN_RATE_THRESHOLD) continue;
+    for (const product of products) {
+      if (!publishableProductIds.has(product.id)) continue;
 
-    const record = recordByProductId.get(product.id);
-    if (record?.status === "dismissed") continue;
+      const winRate = computeWinRate(product.id, simulations);
+      if (winRate === null || winRate >= WIN_RATE_THRESHOLD) continue;
 
-    if (record?.status === "published" && record.publishedAt) {
-      if (now - record.publishedAt.getTime() < PUBLISH_COOLDOWN_MS) continue;
+      const record = recordByProductId.get(product.id);
+      if (record?.status === "dismissed") continue;
+
+      if (record?.status === "published" && record.publishedAt) {
+        if (now - record.publishedAt.getTime() < PUBLISH_COOLDOWN_MS) continue;
+      }
+
+      pendingProductIds.push({ id: product.id, title: product.title });
     }
 
-    pendingProductIds.push({ id: product.id, title: product.title });
-  }
+    const errors: string[] = [];
 
-  const errors: string[] = [];
+    for (const { id, title } of pendingProductIds) {
+      const result = await approveProductListing({ product: id });
+      if (!result.success) errors.push(`${title}: ${result.error.message}`);
+    }
 
-  for (const { id, title } of pendingProductIds) {
-    const result = await approveProductListing({ product: id });
-    if (!result.success) errors.push(`${title}: ${result.error.message}`);
-  }
+    revalidatePath("/dashboard/[store]/optimize", "page");
+    revalidatePath("/dashboard/[store]/products", "page");
 
-  revalidatePath("/dashboard/[store]/optimize", "page");
-  revalidatePath("/dashboard/[store]/products", "page");
+    if (errors.length > 0)
+      return {
+        success: false,
+        error: new Error(errors.slice(0, 3).join("; ")),
+      };
 
-  if (errors.length > 0)
     return {
-      success: false,
-      error: new Error(errors.slice(0, 3).join("; ")),
+      success: true,
+      data: { count: pendingProductIds.length },
     };
-
-  return {
-    success: true,
-    data: { count: pendingProductIds.length },
-  };
-}, "Optimization.approveAllPending");
+  },
+  "Optimization.approveAllPending",
+);
 
 export const optimizeStoreForAgents = withSubscription(
   async (context, { store: storeId }: { store: string }) => {
@@ -870,7 +886,7 @@ export const optimizeStoreForAgents = withSubscription(
       errors.push(`Product structured data: ${products.error.message}`);
     }
 
-    const listings = await approveAllPending();
+    const listings = await approveAllPending({ store: storeId });
     if (!listings.success) {
       errors.push(`Listing rewrites: ${listings.error.message}`);
     }

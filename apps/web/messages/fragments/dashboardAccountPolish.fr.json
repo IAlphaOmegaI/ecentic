@@ -1,0 +1,55 @@
+{
+  "dashboard": {
+    "reports": {
+      "unavailable": "Aucune donnée enregistrée pour le moment"
+    },
+    "googleShopping": {
+      "workspaceTitle": "Google Shopping",
+      "workspaceDescription": "Gérez votre connexion à Merchant Center, les mises à jour des fiches produits et la préparation du paiement.",
+      "unsupportedWorkspace": {
+        "status": "Indisponible pour cette source",
+        "title": "Connectez un catalogue compatible",
+        "description": "La diffusion sur Google Shopping est disponible pour les boutiques Shopify connectées. Cette source de catalogue ne peut pas encore se connecter à Merchant Center via ecentic. Vous pouvez toujours consulter ses produits et les réglages des autres canaux.",
+        "action": {
+          "primary": "Connecter Shopify",
+          "secondary": "Voir les connexions"
+        }
+      }
+    },
+    "ucpPlaygroundDashboard": {
+      "composer": {
+        "remaining": "Il reste {remaining, number} des {limit, number} {limit, plural, one {message gratuit} many {messages gratuits} other {messages gratuits}} dans cet espace de test."
+      }
+    },
+    "agentic": {
+      "scan": {
+        "workspaceTitle": "Analyse de la boutique",
+        "awaitingFirst": "Pas encore analysée",
+        "report": "Ouvrir le rapport",
+        "providerNote": "Votre domaine est transmis à <provider>Is Agentic</provider>. Aucune donnée client ou de commande n’est partagée."
+      },
+      "score": {
+        "preview": {
+          "emptyTitle": "Votre première analyse commence ici",
+          "publicTitle": "Un rapport public est disponible",
+          "payments": {
+            "title": "Paiements",
+            "description": "Prise en charge des protocoles de commande et de paiement."
+          },
+          "discovery": {
+            "title": "Découverte",
+            "description": "Les signaux qui aident les agents à trouver votre boutique."
+          },
+          "accessibility": {
+            "title": "Accessibilité",
+            "description": "La capacité des agents à accéder à votre boutique et à la lire."
+          },
+          "usability": {
+            "title": "Utilisabilité",
+            "description": "Les interfaces que les agents peuvent utiliser pour interagir avec votre boutique."
+          }
+        }
+      }
+    }
+  }
+}

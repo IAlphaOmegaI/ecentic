@@ -37,6 +37,8 @@ export default withSentryConfig(
       "/api/cron/blog": ["./content/blog/*.md"],
     },
     experimental: {
+      // Bound prerender workers: each loads the locale catalog and blog cache.
+      cpus: 2,
       // Required so `app/global-not-found.tsx` works without a pass-through
       // `app/layout.tsx` (locale segment is the root layout for root-params).
       globalNotFound: true,

@@ -34,7 +34,7 @@ import {
   TableRow,
 } from "./table";
 
-export { DataTableProvider, type PaginationState, useDataTable };
+export { DataTableProvider, flexRender, type PaginationState, useDataTable };
 
 // Pre-bound to the wrapper's feature set so consumers keep the v8-style
 // ColumnDef<TData, TValue> signature instead of threading TFeatures everywhere.
@@ -141,6 +141,7 @@ export namespace DataTable {
 
 export const DataTablePagination = <T extends TableRowType>({
   labels,
+  variant,
 }: DataTablePagination.Props = {}): JSX.Element => {
   const { pagination } = useDataTable<T>();
 
@@ -156,50 +157,60 @@ export const DataTablePagination = <T extends TableRowType>({
 
   return (
     <Pagination aria-label={labels?.navigation}>
-      {/* Rendered as div > button so the controls are real, keyboard-reachable
-          buttons instead of clickable list items. */}
+      {/* Keep controls mounted and use aria-disabled at the boundary so moving
+          to the first/last page does not remove the keyboard user's focus. */}
       <PaginationContent render={<div />} className="w-full p-4">
-        <div className="mr-auto text-foreground-dimmed text-xs uppercase tracking-[0.2em]">
+        <div className="mr-auto text-foreground-dimmed text-sm">
           {page(pagination.pageIndex, pagination.pageCount)}
         </div>
         <PaginationItem
-          render={<button type="button" disabled={isFirstPage} />}
-          className="disabled:cursor-not-allowed disabled:opacity-50"
+          variant={variant}
+          render={<button type="button" />}
+          aria-disabled={isFirstPage}
+          tabIndex={isFirstPage ? -1 : undefined}
+          className="aria-disabled:cursor-not-allowed aria-disabled:opacity-50"
           aria-label={labels?.firstPage ?? "First page"}
           onClick={() => {
-            pagination.goToPage(1);
+            if (!isFirstPage) pagination.goToPage(1);
           }}
         >
           <DoubleChevronLeftIcon />
         </PaginationItem>
-        {pagination.pageIndex > 1 && (
-          <PaginationItem
-            render={<button type="button" />}
-            aria-label={labels?.previousPage ?? "Previous page"}
-            onClick={() => {
-              pagination.goToPage(pagination.pageIndex - 1);
-            }}
-          >
-            <ChevronLeftIcon />
-          </PaginationItem>
-        )}
-        {pagination.pageIndex < pagination.pageCount && (
-          <PaginationItem
-            render={<button type="button" />}
-            aria-label={labels?.nextPage ?? "Next page"}
-            onClick={() => {
-              pagination.goToPage(pagination.pageIndex + 1);
-            }}
-          >
-            <ChevronRightIcon />
-          </PaginationItem>
-        )}
         <PaginationItem
-          render={<button type="button" disabled={isLastPage} />}
-          aria-label={labels?.lastPage ?? "Last page"}
-          className="disabled:cursor-not-allowed disabled:opacity-50"
+          variant={variant}
+          render={<button type="button" />}
+          aria-disabled={isFirstPage}
+          tabIndex={isFirstPage ? -1 : undefined}
+          className="aria-disabled:cursor-not-allowed aria-disabled:opacity-50"
+          aria-label={labels?.previousPage ?? "Previous page"}
           onClick={() => {
-            pagination.goToPage(pagination.pageCount);
+            if (!isFirstPage) pagination.goToPage(pagination.pageIndex - 1);
+          }}
+        >
+          <ChevronLeftIcon />
+        </PaginationItem>
+        <PaginationItem
+          variant={variant}
+          render={<button type="button" />}
+          aria-disabled={isLastPage}
+          tabIndex={isLastPage ? -1 : undefined}
+          className="aria-disabled:cursor-not-allowed aria-disabled:opacity-50"
+          aria-label={labels?.nextPage ?? "Next page"}
+          onClick={() => {
+            if (!isLastPage) pagination.goToPage(pagination.pageIndex + 1);
+          }}
+        >
+          <ChevronRightIcon />
+        </PaginationItem>
+        <PaginationItem
+          variant={variant}
+          render={<button type="button" />}
+          aria-disabled={isLastPage}
+          tabIndex={isLastPage ? -1 : undefined}
+          aria-label={labels?.lastPage ?? "Last page"}
+          className="aria-disabled:cursor-not-allowed aria-disabled:opacity-50"
+          onClick={() => {
+            if (!isLastPage) pagination.goToPage(pagination.pageCount);
           }}
         >
           <DoubleChevronRightIcon />
@@ -210,6 +221,7 @@ export const DataTablePagination = <T extends TableRowType>({
 };
 export namespace DataTablePagination {
   export type Props = {
+    variant?: PaginationItem.Props["variant"];
     labels?: {
       navigation?: string;
       page?: (pageIndex: number, pageCount: number) => ReactNode;

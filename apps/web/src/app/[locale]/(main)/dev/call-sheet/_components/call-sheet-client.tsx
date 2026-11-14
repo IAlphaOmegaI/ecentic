@@ -252,7 +252,7 @@ const FindingCard = ({
                       Parsed structured data, reformatted — open the URL above
                       to read it as they published it.
                     </p>
-                    <pre className="mt-1 max-h-40 overflow-auto whitespace-pre-wrap break-all font-mono text-[11px] text-foreground-dimmed">
+                    <pre className="mt-1 max-h-40 overflow-auto whitespace-pre-wrap break-all font-mono text-xs text-foreground-dimmed">
                       {entry.snippet}
                     </pre>
                   </div>
@@ -741,7 +741,7 @@ export const CallSheetClient = () => {
                 Scan log ({log.length})
               </CollapsibleTrigger>
               <CollapsiblePanel className="w-full justify-start bg-transparent">
-                <pre className="mt-2 max-h-56 overflow-auto whitespace-pre-wrap break-all border border-accent-foreground bg-background-dimmed p-3 font-mono text-[11px] text-foreground-dimmed">
+                <pre className="mt-2 max-h-56 overflow-auto whitespace-pre-wrap break-all border border-accent-foreground bg-background-dimmed p-3 font-mono text-xs text-foreground-dimmed">
                   {log.join("\n")}
                 </pre>
               </CollapsiblePanel>

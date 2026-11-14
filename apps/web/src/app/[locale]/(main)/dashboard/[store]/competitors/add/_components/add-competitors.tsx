@@ -7,7 +7,8 @@ import {
   TabsList,
   TabsPanel,
 } from "@zenncore/web/components/tabs";
-import { useTranslations } from "next-intl";
+import { useToastManager } from "@zenncore/web/components/toast";
+import { useFormatter, useTranslations } from "next-intl";
 import { useState } from "react";
 import { AutoDetectTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/auto-detect-tab";
 import { CompetitorList } from "@/app/[locale]/(auth)/onboarding/competitors/_components/competitor-list";
@@ -16,7 +17,6 @@ import { OffersTab } from "@/app/[locale]/(auth)/onboarding/competitors/_compone
 import { SearchTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/search-tab";
 import { UrlTab } from "@/app/[locale]/(auth)/onboarding/competitors/_components/url-tab";
 import * as Competitor from "@/server/app/competitor";
-import { SectionKicker } from "../../../../_components/grid";
 
 export namespace AddCompetitors {
   export type Props = {
@@ -36,6 +36,9 @@ export const AddCompetitors = ({
   existing,
 }: AddCompetitors.Props) => {
   const translate = useTranslations("dashboard.competitors.add");
+  const research = useTranslations("dashboard.research");
+  const toast = useToastManager();
+  const format = useFormatter();
   const [competitors, setCompetitors] = useState<Competitor.Type[]>(existing);
 
   // Each tab persists as it goes and reports back what it created, so the
@@ -48,22 +51,39 @@ export const AddCompetitors = ({
       return [...merged.values()];
     });
 
-  const handleToggle = (id: string) => {
+  const handleToggle = async (id: string) => {
     const target = competitors.find((record) => record.id === id);
     if (!target) return;
-
+    const result = await Competitor.toggleSelection({
+      id,
+      selected: !target.selected,
+    });
+    if (!result.success) {
+      toast.add({
+        title: research("competitors.updateFailed"),
+        description: research("unavailable.description"),
+        type: "error",
+      });
+      return;
+    }
     setCompetitors((previous) =>
       previous.map((record) =>
-        record.id === id ? { ...record, selected: !record.selected } : record,
+        record.id === id ? { ...record, selected: !target.selected } : record,
       ),
     );
-
-    void Competitor.toggleSelection({ id, selected: !target.selected });
   };
 
-  const handleRemove = (id: string) => {
+  const handleRemove = async (id: string) => {
+    const result = await Competitor.removeForUser({ id });
+    if (!result.success) {
+      toast.add({
+        title: research("competitors.updateFailed"),
+        description: research("unavailable.description"),
+        type: "error",
+      });
+      return;
+    }
     setCompetitors((previous) => previous.filter((record) => record.id !== id));
-    void Competitor.removeForUser({ id });
   };
 
   const selected = competitors.filter((record) => record.selected).length;
@@ -74,11 +94,10 @@ export const AddCompetitors = ({
   return (
     <div className="flex flex-col gap-px bg-accent-foreground">
       <div className="bg-background-rich">
-        <div className="p-4">
-          <SectionKicker>{translate("findKicker")}</SectionKicker>
-          <p className="mt-2 font-semibold text-foreground-rich text-lg">
+        <div className="px-4 py-6 sm:px-6">
+          <h2 className="font-semibold text-foreground-rich text-lg">
             {translate("title")}
-          </p>
+          </h2>
           <p className="mt-1 max-w-2xl text-foreground-dimmed text-sm">
             {translate("description")}
           </p>
@@ -88,24 +107,16 @@ export const AddCompetitors = ({
             the only tab whose rivals and prices were observed rather than
             recalled. */}
         <Tabs defaultValue="offers">
-          <TabsList className="w-full rounded-none border-x-0">
-            <TabsIndicator className="top-0 h-full translate-y-0 rounded-none" />
-            <Tab value="offers" className="flex-1">
-              {translate("tabs.liveOffers")}
-            </Tab>
-            <Tab value="auto" className="flex-1">
-              {translate("tabs.autoDetect")}
-            </Tab>
-            <Tab value="url" className="flex-1">
-              {translate("tabs.pasteUrls")}
-            </Tab>
-            <Tab value="search" className="flex-1">
-              {translate("tabs.searchBrand")}
-            </Tab>
-            <Tab value="merchant" className="flex-1">
-              {translate("tabs.googleMerchant")}
-            </Tab>
-          </TabsList>
+          <div className="overflow-x-auto border-accent-foreground border-y px-4 py-3 sm:px-6">
+            <TabsList className="w-max">
+              <TabsIndicator />
+              <Tab value="offers">{translate("tabs.liveOffers")}</Tab>
+              <Tab value="auto">{translate("tabs.autoDetect")}</Tab>
+              <Tab value="url">{translate("tabs.pasteUrls")}</Tab>
+              <Tab value="search">{translate("tabs.searchBrand")}</Tab>
+              <Tab value="merchant">{translate("tabs.googleMerchant")}</Tab>
+            </TabsList>
+          </div>
 
           {/* keepMounted: a detection stream in progress must survive switching
               to another tab instead of being torn down and restarted. */}
@@ -114,7 +125,8 @@ export const AddCompetitors = ({
               products={products}
               store={store}
               onSuccess={handleAdded}
-              className="h-130 border-0"
+              dashboard
+              className="border-0"
             />
           </TabsPanel>
 
@@ -123,12 +135,14 @@ export const AddCompetitors = ({
               products={products}
               store={store}
               onSuccess={handleAdded}
-              className="h-130 border-0"
+              dashboard
+              className="border-0"
             />
           </TabsPanel>
 
           <TabsPanel value="url" keepMounted className="border-0">
             <UrlTab
+              dashboard
               store={store}
               onSuccess={handleAdded}
               className="border-0"
@@ -140,7 +154,8 @@ export const AddCompetitors = ({
               productNames={productNames}
               store={store}
               onSuccess={handleAdded}
-              className="h-130 border-0"
+              dashboard
+              className="border-0"
             />
           </TabsPanel>
 
@@ -148,38 +163,38 @@ export const AddCompetitors = ({
             <MerchantTab
               store={store}
               onSuccess={handleAdded}
-              className="h-130 border-0"
+              dashboard
+              className="border-0"
             />
           </TabsPanel>
         </Tabs>
       </div>
 
       <div className="bg-background-rich">
-        <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-end sm:justify-between">
+        <div className="flex flex-col gap-4 px-4 py-6 sm:flex-row sm:items-end sm:justify-between sm:px-6">
           <div>
-            <SectionKicker>{translate("rosterKicker")}</SectionKicker>
-            <p className="mt-2 font-semibold text-foreground-rich text-lg">
+            <h2 className="font-semibold text-foreground-rich text-lg">
               {translate("trackedTitle")}
-            </p>
+            </h2>
             <p className="mt-1 text-foreground-dimmed text-sm">
               {translate("trackedDescription")}
             </p>
           </div>
           <p className="shrink-0 text-foreground-dimmed text-sm">
             {translate("rosterSummary", {
-              total: competitors.length,
+              total: format.number(competitors.length),
               brands: brands.size,
-              selected,
+              selected: format.number(selected),
             })}
           </p>
         </div>
 
         {competitors.length === 0 ? (
-          <p className="px-4 pb-6 text-foreground-dimmed text-sm">
+          <p className="px-4 pb-6 text-foreground-dimmed text-sm sm:px-6">
             {translate("emptyRoster")}
           </p>
         ) : (
-          <div className="h-105 px-4 pb-4">
+          <div className="h-105 border-accent-foreground border-t">
             <CompetitorList
               competitors={competitors}
               onToggle={handleToggle}

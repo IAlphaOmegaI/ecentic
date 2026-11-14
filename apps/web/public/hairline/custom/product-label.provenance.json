@@ -1,0 +1,32 @@
+{
+  "name": "product-label",
+  "subject": "productDetail",
+  "meaning": "A parcel with a hanging product tag: turn the label out for close inspection.",
+  "part": "tag",
+  "answer": [
+    94,
+    58,
+    70
+  ],
+  "bounds": [
+    [
+      -3,
+      -4,
+      0
+    ],
+    [
+      135,
+      80,
+      119
+    ]
+  ],
+  "scale": 1.85,
+  "figure": "/hairline/custom/product-label.js",
+  "rest": "apps/web/src/components/hairline/rest/product-label.json",
+  "sourceSha256": "e23a9fbf384db7743de57b196c54abf8cf1a42522203c1e384acd5e94c3dc51e",
+  "restSha256": "0a5b33b6a8022ecdc800a5bf8de84f4f3cd91d4d3040c34902337cdedd8be0d7",
+  "engine": "Unmodified fixed Hairline kernel",
+  "interaction": "Fixed rest hit area; 700ms EASE_LIFT tween; bounded reach; linked responses delayed 40ms; loop sleeps after settlement.",
+  "reducedMotion": "SSR rest geometry remains complete. Shared CustomHairlineFigure disables pointer code and asset enhancement for reduced motion.",
+  "validation": "output/dashboard-hairline-2026-11-14/product-label.validation.txt"
+}

@@ -1,0 +1,79 @@
+{
+  "dashboard": {
+    "qualityWorkspace": {
+      "title": "数据质量",
+      "description": "查找缺失或无效的商品信息，确认哪些商品需要完善。",
+      "product": "商品",
+      "productsLabel": "商品",
+      "openProduct": "打开{product}",
+      "search": "搜索商品或问题",
+      "scope": {
+        "label": "检查范围",
+        "all": "全部检查",
+        "universal": "通用检查",
+        "google": "Google Merchant",
+        "chatgpt": "ChatGPT 商品 Feed"
+      },
+      "status": {
+        "label": "结果类型",
+        "all": "全部结果",
+        "blocker": "阻断问题",
+        "warning": "警告",
+        "info": "改进建议",
+        "ready": "无问题"
+      },
+      "summary": {
+        "label": "按平台查看目录检查结果",
+        "title": "无阻断问题或警告的商品",
+        "count": "{count, plural, other {已检查 # 件活跃商品}}",
+        "passing": "{total} 件中有 {count} 件",
+        "breakdown": "{blocker} 件存在阻断问题，{warning} 件存在警告，{info} 件仅有改进建议，{ready} 件未发现问题。"
+      },
+      "method": {
+        "title": "检查方式",
+        "description": "这些检查依据已登记的规则，核对已保存的活跃商品数据，并不验证线上商店是否可访问，也不代表 Google 或 ChatGPT 已接受这些商品。仅有改进建议的商品计入无阻断问题或警告的商品。"
+      },
+      "views": {
+        "label": "数据质量视图",
+        "issues": "按问题查看",
+        "products": "按商品查看"
+      },
+      "issueCount": "{count, plural, other {# 个问题}}",
+      "productCount": "{count, plural, other {# 件商品}}",
+      "findings": "{count, plural, other {# 项结果}}",
+      "issuesHint": "先显示阻断问题，再显示警告和改进建议。同一类别中，影响商品更多的问题排在前面。一件商品可能涉及多个问题。",
+      "reference": "查看{surface}的规则文档",
+      "noFindings": "在所选检查范围内，此商品未发现问题。",
+      "action": {
+        "primary": "打开目录",
+        "secondary": "重试",
+        "tertiary": "清除筛选",
+        "quaternary": "显示更多商品"
+      },
+      "productAction": {
+        "primary": "打开商品"
+      },
+      "searchAction": {
+        "primary": "清空搜索"
+      },
+      "states": {
+        "empty": {
+          "title": "暂无可检查的活跃商品",
+          "description": "这些检查仅涵盖活跃商品。草稿和已归档商品仍保留在目录中，但不计入此处的检查。"
+        },
+        "error": {
+          "title": "无法加载质量检查结果",
+          "description": "您的目录数据仍然保留，请重新加载检查结果。"
+        },
+        "clear": {
+          "title": "这些检查未发现问题",
+          "description": "活跃商品已通过当前视图所涵盖的规则检查，但这不代表购物平台已接受这些商品。"
+        },
+        "noMatches": {
+          "title": "没有匹配的结果或商品",
+          "description": "请尝试其他搜索词，或清除筛选条件以查看完整列表。"
+        }
+      }
+    }
+  }
+}

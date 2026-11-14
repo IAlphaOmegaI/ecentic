@@ -1,6 +1,6 @@
 import { Checkbox as CheckBoxPrimitive } from "@base-ui/react/checkbox";
 import { CheckboxGroup as CheckboxGroupPrimitive } from "@base-ui/react/checkbox-group";
-import { CheckIcon } from "@zenncore/icons";
+import { CheckIcon, MinusIcon } from "@zenncore/icons";
 import { type ClassList, cn } from "@zenncore/utils";
 import type { ComponentProps, JSX } from "react";
 import { createClassName } from "../utils/helpers/class-name";
@@ -8,12 +8,14 @@ import { createClassName } from "../utils/helpers/class-name";
 export const Checkbox = ({
   className,
   classList,
+  indeterminate,
   ...props
 }: Checkbox.Props): JSX.Element => {
   return (
     <CheckBoxPrimitive.Root
+      indeterminate={indeterminate}
       className={createClassName(
-        "flex size-5 items-center justify-center focus-visible:outline-2 focus-visible:outline-primary-dimmed focus-visible:outline-offset-2 data-unchecked:border data-unchecked:border-accent-foreground data-checked:bg-primary",
+        "flex size-5 items-center justify-center focus-visible:outline-2 focus-visible:outline-primary-dimmed focus-visible:outline-offset-2 data-unchecked:border data-unchecked:border-accent-foreground data-checked:bg-primary data-indeterminate:bg-primary",
         className,
         classList?.root,
       )}
@@ -21,13 +23,21 @@ export const Checkbox = ({
     >
       <CheckBoxPrimitive.Indicator
         className={createClassName(
-          "flex text-gray-50 data-unchecked:hidden",
+          "flex text-background-rich data-unchecked:hidden",
           classList?.indicator?.root,
         )}
       >
-        <CheckIcon
-          className={cn("strokeWhite size-4", classList?.indicator?.icon)}
-        />
+        {indeterminate ? (
+          <MinusIcon
+            aria-hidden
+            className={cn("size-4", classList?.indicator?.icon)}
+          />
+        ) : (
+          <CheckIcon
+            aria-hidden
+            className={cn("size-4", classList?.indicator?.icon)}
+          />
+        )}
       </CheckBoxPrimitive.Indicator>
     </CheckBoxPrimitive.Root>
   );

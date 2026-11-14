@@ -13,7 +13,7 @@ export const InlineLead = (props: InlineLead.Props) => (
     fallback={
       <p
         role="status"
-        className="marketing-lead-loading min-h-[280px] py-6 text-foreground-dimmed"
+        className="marketing-lead-loading min-h-70 py-6 text-foreground-dimmed"
       >
         {props.copy.dialog.loading}
       </p>

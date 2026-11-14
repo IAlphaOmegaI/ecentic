@@ -1,0 +1,32 @@
+{
+  "name": "import-chute",
+  "subject": "addProducts",
+  "meaning": "A loading chute with a waiting parcel: lower the product into the catalog intake.",
+  "part": "parcel",
+  "answer": [
+    47,
+    33,
+    107
+  ],
+  "bounds": [
+    [
+      -9,
+      -9,
+      0
+    ],
+    [
+      119,
+      103,
+      147
+    ]
+  ],
+  "scale": 1.55,
+  "figure": "/hairline/custom/import-chute.js",
+  "rest": "apps/web/src/components/hairline/rest/import-chute.json",
+  "sourceSha256": "c9a2e065c260912b77d2e5e2aea84f49255d07cf6e5850f6f376ec8a088c0bc5",
+  "restSha256": "ea451a213014469118eeaa8a9fab9e656caa59b217b89760b94ef371f48b875c",
+  "engine": "Unmodified fixed Hairline kernel",
+  "interaction": "Fixed rest hit area; 700ms EASE_LIFT tween; bounded reach; linked responses delayed 40ms; loop sleeps after settlement.",
+  "reducedMotion": "SSR rest geometry remains complete. Shared CustomHairlineFigure disables pointer code and asset enhancement for reduced motion.",
+  "validation": "output/dashboard-hairline-2026-11-14/import-chute.validation.txt"
+}

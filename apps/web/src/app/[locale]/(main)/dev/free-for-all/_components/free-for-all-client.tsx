@@ -68,7 +68,7 @@ const StoreCard = ({
     <div className="border-accent-foreground border-b px-4 py-3">
       <div className="flex flex-wrap items-center gap-3">
         {isTopRanked && (
-          <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 font-semibold text-[11px] text-success uppercase tracking-[0.05em]">
+          <span className="inline-flex items-center gap-1 rounded-full bg-success/10 px-2 py-0.5 font-semibold text-xs text-success uppercase tracking-wider">
             <AwardIcon className="size-3" />
             Top pick
           </span>
@@ -79,7 +79,7 @@ const StoreCard = ({
         {store.discovery && (
           <span
             className={cn(
-              "rounded-full px-2 py-0.5 font-semibold text-[11px] uppercase tracking-[0.05em]",
+              "rounded-full px-2 py-0.5 font-semibold text-xs uppercase tracking-wider",
               store.discovery.transport === "mcp"
                 ? "bg-primary/10 text-primary"
                 : "bg-warning/10 text-warning",
@@ -157,7 +157,7 @@ const RankingCard = ({ rankings }: { rankings: RankedProduct[] }) => (
   <div className="rounded-lg border border-success/50 bg-success/5">
     <div className="flex items-center gap-2 border-success/30 border-b px-4 py-3">
       <AwardIcon className="size-4 text-success" />
-      <p className="font-semibold text-[10px] text-success uppercase tracking-[0.08em]">
+      <p className="font-semibold text-xs text-success uppercase tracking-widest">
         Agent's Ranking
       </p>
     </div>
@@ -187,21 +187,21 @@ const RankingCard = ({ rankings }: { rankings: RankedProduct[] }) => (
             <p className="mt-0.5 flex flex-wrap items-center gap-2 text-foreground-dimmed text-xs">
               <span className="font-mono">{item.store_domain}</span>
               {item.price && (
-                <span className="rounded bg-background-dimmed px-1.5 py-0.5 font-mono text-foreground">
+                <span className="rounded-sm bg-background-dimmed px-1.5 py-0.5 font-mono text-foreground">
                   {item.price}
                 </span>
               )}
             </p>
             <p className="mt-1 text-foreground text-sm">{item.reason}</p>
             {item.data_signal && (
-              <p className="mt-1.5 rounded border border-info/20 bg-info/5 px-2 py-1 text-foreground-dimmed text-xs">
-                <span className="font-semibold text-info uppercase tracking-[0.04em]">
+              <p className="mt-1.5 rounded-sm border border-info/20 bg-info/5 px-2 py-1 text-foreground-dimmed text-xs">
+                <span className="font-semibold text-info uppercase tracking-wider">
                   Data signal ·{" "}
                 </span>
                 {item.data_signal}
               </p>
             )}
-            <p className="mt-1 font-mono text-[10px] text-foreground-dimmed/60">
+            <p className="mt-1 font-mono text-xs text-foreground-dimmed/60">
               {item.product_id}
             </p>
           </div>
@@ -443,7 +443,7 @@ export const FreeForAllClient = () => {
     <div className="space-y-4">
       <div className="rounded-lg border border-accent-foreground bg-background-rich">
         <div className="border-accent-foreground border-b px-4 py-3">
-          <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+          <p className="font-medium text-xs text-foreground-dimmed uppercase tracking-widest">
             Stores in the ring
           </p>
           <p className="mt-1.5 text-foreground-dimmed text-sm">
@@ -530,14 +530,14 @@ export const FreeForAllClient = () => {
       {searchParams !== null && (
         <div className="rounded-lg border border-accent-foreground bg-background-rich">
           <div className="border-accent-foreground border-b px-4 py-3">
-            <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+            <p className="font-medium text-xs text-foreground-dimmed uppercase tracking-widest">
               Derived Search Parameters
             </p>
             <p className="mt-1.5 text-foreground-dimmed text-sm">
               Parsed once from the buyer request and applied to every store.
             </p>
           </div>
-          <pre className="m-4 overflow-auto rounded-md bg-background-dimmed p-4 font-mono text-foreground text-xs leading-relaxed">
+          <pre className="m-4 overflow-auto rounded-sm bg-background-dimmed p-4 font-mono text-foreground text-xs leading-relaxed">
             {JSON.stringify(searchParams, null, 2)}
           </pre>
         </div>
@@ -545,7 +545,7 @@ export const FreeForAllClient = () => {
 
       {stores.length > 0 && (
         <div>
-          <p className="mb-2 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+          <p className="mb-2 font-medium text-xs text-foreground-dimmed uppercase tracking-widest">
             Store catalogs
           </p>
           <div className="grid gap-4 lg:grid-cols-2">
@@ -567,7 +567,7 @@ export const FreeForAllClient = () => {
         <div className="rounded-lg border border-accent-foreground bg-background-rich">
           <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
             <div className="flex items-center gap-3">
-              <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+              <p className="font-medium text-xs text-foreground-dimmed uppercase tracking-widest">
                 Decision Rationale
               </p>
               {phase === "running" && !verdict && (
@@ -575,7 +575,7 @@ export const FreeForAllClient = () => {
               )}
             </div>
           </div>
-          <div className="m-4 rounded-md bg-background-dimmed p-4">
+          <div className="m-4 rounded-sm bg-background-dimmed p-4">
             {verdict ? (
               <MessageResponse
                 isAnimating={false}
@@ -593,7 +593,7 @@ export const FreeForAllClient = () => {
       <div className="rounded-lg border border-accent-foreground bg-background-rich">
         <div className="flex items-center justify-between border-accent-foreground border-b px-4 py-3">
           <div className="flex items-center gap-3">
-            <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+            <p className="font-medium text-xs text-foreground-dimmed uppercase tracking-widest">
               Event Log
             </p>
             {phase === "running" && (
@@ -615,7 +615,7 @@ export const FreeForAllClient = () => {
 
         <div
           ref={logRef}
-          className="m-4 max-h-80 min-h-40 overflow-y-auto rounded-md bg-background-dimmed p-4 font-mono text-xs"
+          className="m-4 max-h-80 min-h-40 overflow-y-auto rounded-sm bg-background-dimmed p-4 font-mono text-xs"
         >
           {lines.length === 0 ? (
             <p className="font-light text-foreground-dimmed/50 text-xs">

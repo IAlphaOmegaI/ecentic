@@ -1,10 +1,16 @@
 "use client";
 
-import { Tab, Tabs, TabsList, TabsPanel } from "@zenncore/web/components/tabs";
+import {
+  Tab,
+  Tabs,
+  TabsIndicator,
+  TabsList,
+  TabsPanel,
+} from "@zenncore/web/components/tabs";
 import { useTranslations } from "next-intl";
-import { type ReactNode, useState } from "react";
-import { NotificationsSection } from "./settings/notifications-section";
-import { SimulationSection } from "./settings/simulation-section";
+import { parseAsStringLiteral, useQueryState } from "nuqs";
+import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { type ReactNode, Suspense } from "react";
 
 export namespace SettingsClient {
   /**
@@ -20,55 +26,66 @@ export namespace SettingsClient {
   };
 }
 
-export const SettingsClient = ({
+const sections = ["account", "integrations", "billing"] as const;
+type Section = (typeof sections)[number];
+
+export const SettingsClient = (props: SettingsClient.Props) => (
+  <NuqsAdapter>
+    <Suspense fallback={<SettingsPanels {...props} />}>
+      <SettingsSelection {...props} />
+    </Suspense>
+  </NuqsAdapter>
+);
+
+const SettingsSelection = (props: SettingsClient.Props) => {
+  const [selection, setSelection] = useQueryState(
+    "tab",
+    parseAsStringLiteral(sections).withDefault("account"),
+  );
+
+  return (
+    <SettingsPanels
+      {...props}
+      selection={selection}
+      onSelectionChange={(value) => {
+        if (typeof value !== "string") return;
+        const section = sections.find((section) => section === value);
+        if (section) void setSelection(section);
+      }}
+    />
+  );
+};
+
+const SettingsPanels = ({
   account,
   integrations,
   billing,
-}: SettingsClient.Props) => {
+  selection,
+  onSelectionChange,
+}: SettingsClient.Props & {
+  selection?: Section;
+  onSelectionChange?: (value: unknown) => void;
+}) => {
   const translate = useTranslations("dashboard.settings.tabs");
-  const [notifications, setNotifications] = useState({
-    winRateDrop: true,
-    simulationComplete: true,
-    optimizationReady: true,
-    autoPub: false,
-    modelDrift: true,
-    competitorUpdate: false,
-    newCompetitor: true,
-    weeklyDigest: true,
-  });
-
-  const [selectedModels, setSelectedModels] = useState([
-    "gpt",
-    "claude-3-5-sonnet",
-  ]);
-
-  const [frequency, setFrequency] = useState("Daily");
-  const [persona, setPersona] = useState("Budget-conscious shopper");
-
-  const className =
-    "h-auto w-full justify-start rounded-none border-0 border-accent-foreground border-b border-l-[3px] border-l-transparent p-4 text-left font-medium text-foreground-dimmed text-sm transition-colors duration-150 hover:bg-background hover:text-foreground data-selected:border-l-primary data-selected:bg-primary/5 data-selected:font-semibold data-selected:text-primary-text data-[active]:text-primary-text";
 
   return (
-    <div className="flex gap-px bg-accent-foreground">
+    <div className="min-w-0">
       <Tabs
-        orientation="vertical"
         defaultValue="account"
-        className="flex w-full flex-col gap-px md:flex-row md:items-stretch"
+        value={selection}
+        onValueChange={onSelectionChange}
+        className="flex w-full min-w-0 flex-col"
       >
-        <TabsList className="flex w-full shrink-0 flex-col border-0 bg-background-rich md:w-44">
-          <Tab value="account" className={className}>
-            {translate("account")}
-          </Tab>
-          <Tab value="integrations" className={className}>
-            {translate("integrations")}
-          </Tab>
-          <Tab value="notifications" className={className}>
-            {translate("notifications")}
-          </Tab>
-          <Tab value="billing" className={className}>
-            {translate("billing")}
-          </Tab>
-        </TabsList>
+        <div className="border-accent-foreground border-b px-4 py-4 sm:px-6">
+          <TabsList className="max-w-full text-sm">
+            <TabsIndicator />
+            {sections.map((section) => (
+              <Tab key={section} value={section}>
+                {translate(section)}
+              </Tab>
+            ))}
+          </TabsList>
+        </div>
 
         <TabsPanel
           value="account"
@@ -77,47 +94,11 @@ export const SettingsClient = ({
           {account}
         </TabsPanel>
 
-        {/* <TabsPanel
-            value="team"
-            className="min-w-0 flex-1 bg-background-rich outline-none"
-          >
-            <TeamSection user={user} />
-          </TabsPanel> */}
-
         <TabsPanel
           value="integrations"
           className="min-w-0 flex-1 bg-background-rich outline-none"
         >
           {integrations}
-        </TabsPanel>
-
-        <TabsPanel
-          value="notifications"
-          className="min-w-0 flex-1 bg-background-rich outline-none"
-        >
-          <NotificationsSection
-            notifications={notifications}
-            onNotificationChange={(key, checked) =>
-              setNotifications((previous) => ({
-                ...previous,
-                [key]: checked,
-              }))
-            }
-          />
-        </TabsPanel>
-
-        <TabsPanel
-          value="simulation"
-          className="min-w-0 flex-1 bg-background-rich outline-none"
-        >
-          <SimulationSection
-            selectedModels={selectedModels}
-            onSelectedModelsChange={setSelectedModels}
-            frequency={frequency}
-            onFrequencyChange={setFrequency}
-            persona={persona}
-            onPersonaChange={setPersona}
-          />
         </TabsPanel>
 
         <TabsPanel

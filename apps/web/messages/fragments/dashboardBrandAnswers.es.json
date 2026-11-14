@@ -1,0 +1,42 @@
+{
+  "dashboard": {
+    "brand": {
+      "answers": {
+        "title": "Respuestas guardadas",
+        "description": "Revisa las preguntas en las que se basa este análisis.",
+        "search": "Buscar preguntas, respuestas o marcas",
+        "filter": "Mención de la marca",
+        "filters": {
+          "all": "Todas las respuestas",
+          "mentioned": "Con mención",
+          "absent": "Sin mención"
+        },
+        "count": "{count, plural, one {# respuesta} many {# respuestas} other {# respuestas}} de {total, number}",
+        "position": {
+          "top": "Recomendación principal",
+          "listed": "En la lista",
+          "absent": "Sin mención"
+        },
+        "context": {
+          "named": "La pregunta incluye el nombre de la marca",
+          "unbranded": "La pregunta no incluye el nombre de la marca"
+        },
+        "answer": "Resumen de la respuesta",
+        "noAnswer": "No se guardó ningún resumen de la respuesta.",
+        "brands": "Marcas mencionadas",
+        "noBrands": "No se registraron marcas.",
+        "sources": "Fuentes sugeridas por el modelo",
+        "sourcesNote": "Son fuentes que el modelo ha nombrado, no citas verificadas de una búsqueda en tiempo real.",
+        "noSources": "No se registraron fuentes.",
+        "empty": {
+          "title": "No hay respuestas que coincidan",
+          "description": "Prueba otra búsqueda o muestra todas las respuestas.",
+          "saved": "No hay respuestas guardadas para este análisis."
+        },
+        "action": {
+          "primary": "Borrar búsqueda y filtros"
+        }
+      }
+    }
+  }
+}

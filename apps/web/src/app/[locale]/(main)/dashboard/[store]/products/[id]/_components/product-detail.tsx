@@ -4,6 +4,8 @@ import {
   ArrowRightIcon,
   CheckIcon,
   CircleBoltIcon,
+  FileSearchIcon,
+  LoaderIcon,
   TrendUpIcon,
   XIcon,
 } from "@zenncore/icons";
@@ -30,7 +32,6 @@ import { Button } from "@zenncore/web/components/button";
 import type { ColumnDef } from "@zenncore/web/components/data-table";
 import {
   DataTable,
-  DataTableEmpty,
   DataTableProvider,
 } from "@zenncore/web/components/data-table";
 import {
@@ -41,32 +42,28 @@ import {
   TabsPanel,
 } from "@zenncore/web/components/tabs";
 import { useToastManager } from "@zenncore/web/components/toast";
-import { motion } from "motion/react";
 import Image from "next/image";
 import { useParams } from "next/navigation";
-import { useTranslations } from "next-intl";
-import {
-  type ReactNode,
-  useEffect,
-  useMemo,
-  useState,
-  useTransition,
-} from "react";
+import { useFormatter, useTranslations } from "next-intl";
+import { parseAsStringLiteral, useQueryState } from "nuqs";
+import { type ReactNode, useMemo, useState, useTransition } from "react";
+import { AnalysisText } from "@/components/analysis-text";
 import { Link, useRouter } from "@/i18n/navigation";
-import { Spring } from "@/lib/animations";
+import {
+  callOnboardingAction,
+  onboardingErrorKey,
+} from "@/lib/onboarding-errors";
 import * as Audit from "@/server/app/intelligence/audit";
 import * as Optimization from "@/server/app/optimization";
-import { renderInline } from "../../../../../_components/rich-text";
-import {
-  Crosshair,
-  SectionKicker,
-  StatLabel,
-  StatusPill,
-} from "../../../../_components/grid";
+import type { ProductChannels as ProductChannelsData } from "@/server/utils/product-channels";
+import { StatusPill } from "../../../../_components/grid";
+import { ProductChannels } from "./channel-preview";
 import { FindOffers } from "./find-offers";
 import { OfferShelf } from "./offer-shelf";
+import { ProductMetrics } from "./shell";
 
 export type ProductDetailData = {
+  channels?: ProductChannelsData;
   product: {
     id: string;
     title: string;
@@ -74,6 +71,10 @@ export type ProductDetailData = {
     price: string | null;
     currency: string | null;
     sku: string | null;
+    image?: string | null;
+    images?: string | null;
+    status?: string | null;
+    updatedAt?: Date;
     structuredData: string | null;
     /** Single live verdict for the product page's structured data. */
     structuredDataStatus:
@@ -121,26 +122,33 @@ export type ProductDetailData = {
 
 const columns = (
   table: ReturnType<typeof useTranslations<"dashboard.shared.table">>,
+  formatter: ReturnType<typeof useFormatter>,
+  workspace: ReturnType<typeof useTranslations<"dashboard.productWorkspace">>,
 ) =>
   [
     {
       accessorKey: "title",
       header: table("competitor"),
+      meta: { className: "w-auto min-w-52" },
       cell: ({ row }) => (
-        <div className="flex items-center gap-2">
-          <Avatar className="size-9 shrink-0 rounded-md bg-background-dimmed">
-            <AvatarImage
-              src={row.original.image ?? "/images/fallback.png"}
-              alt={row.original.title}
-            />
-            <AvatarFallback className="relative">
-              <Image src="/images/fallback.png" alt="Fallback" fill />
+        <div className="flex min-w-0 items-center gap-3">
+          <Avatar className="size-10 shrink-0 rounded-lg border border-accent-foreground bg-background">
+            <AvatarImage src={row.original.image ?? undefined} alt="" />
+            <AvatarFallback className="font-medium text-foreground-dimmed text-xs">
+              {(row.original.title.trim() || row.original.id)
+                .slice(0, 2)
+                .toUpperCase()}
             </AvatarFallback>
           </Avatar>
-          <div>
-            <p className="font-medium text-foreground">{row.original.title}</p>
+          <div className="min-w-0">
+            <p
+              className="truncate font-medium text-foreground-rich"
+              title={row.original.title}
+            >
+              {row.original.title.trim() || row.original.id}
+            </p>
             {row.original.brand && (
-              <p className="font-light text-foreground-dimmed">
+              <p className="text-foreground-dimmed text-xs">
                 {row.original.brand}
               </p>
             )}
@@ -151,62 +159,38 @@ const columns = (
     {
       accessorKey: "rate",
       header: table("winRate"),
-      cell: ({ row }) => {
-        const rate = row.original.rate;
-        const color = (() => {
-          switch (true) {
-            case rate >= 60:
-              return { bar: "bg-success", text: "text-success" };
-            case rate >= 30:
-              return { bar: "bg-warning", text: "text-warning" };
-            default:
-              return { bar: "bg-error", text: "text-error" };
-          }
-        })();
-        return (
-          <div className="flex items-center gap-2">
-            <div className="h-1 w-20 rounded-full bg-accent-foreground">
-              <div
-                className={cn("h-full rounded-full", color.bar)}
-                style={{ width: `${rate}%` }}
-              />
-            </div>
-            <span className={cn("font-medium tabular-nums", color.text)}>
-              {rate}%
-            </span>
-          </div>
-        );
-      },
-    },
-    {
-      accessorKey: "wins",
-      header: table("wins"),
+      meta: { className: "w-36" },
       cell: ({ row }) => (
-        <span className="font-medium text-success tabular-nums">
-          {row.original.wins}
-        </span>
-      ),
-    },
-    {
-      accessorKey: "losses",
-      header: table("losses"),
-      cell: ({ row }) => (
-        <span className="font-medium text-error tabular-nums">
-          {row.original.total - row.original.wins}
-        </span>
+        <div>
+          <p className="font-semibold text-foreground-rich tabular-nums">
+            {row.original.total
+              ? formatter.number(row.original.rate / 100, {
+                  style: "percent",
+                  maximumFractionDigits: 0,
+                })
+              : "—"}
+          </p>
+          <p className="mt-1 text-foreground-dimmed text-xs">
+            {row.original.total
+              ? workspace("metrics.wins", {
+                  wins: formatter.number(row.original.wins),
+                  total: formatter.number(row.original.total),
+                })
+              : workspace("unmeasured")}
+          </p>
+        </div>
       ),
     },
     {
       accessorKey: "total",
-      header: table("total"),
+      header: workspace("metrics.comparisons"),
+      meta: { className: "w-28 text-right" },
       cell: ({ row }) => (
-        <span className="font-light text-foreground-dimmed tabular-nums">
-          {row.original.total}
+        <span className="font-medium text-foreground tabular-nums">
+          {formatter.number(row.original.total)}
         </span>
       ),
     },
-    // DataTableProvider adds `_id` to each row, so the columns must be typed for
-    // that row shape — not the bare competitor — or ColumnDef won't line up.
   ] satisfies ColumnDef<
     ProductDetailData["competitors"][number] & { _id: string }
   >[];
@@ -221,6 +205,7 @@ const qualityFields = (
     { key: "description", label: fields("description") },
     { key: "price", label: fields("price") },
     { key: "sku", label: fields("sku") },
+    { key: "images", label: fields("images") },
     { key: "structuredData", label: fields("structuredData") },
   ] as const;
 
@@ -239,11 +224,11 @@ const Model = {
 const rateColor = (rate: number) => {
   switch (true) {
     case rate >= 60:
-      return "text-success";
+      return "text-success-dimmed";
     case rate >= 30:
-      return "text-warning";
+      return "text-warning-dimmed";
     default:
-      return "text-error";
+      return "text-error-dimmed";
   }
 };
 
@@ -260,9 +245,8 @@ const barColor = (rate: number) => {
 
 const PublishListing = ({
   product,
-  winRate,
   canPublish,
-  label = "Apply fix to store",
+  label,
   className,
 }: {
   product: ProductDetailData["product"];
@@ -275,17 +259,21 @@ const PublishListing = ({
   const shared = useTranslations("dashboard.shared");
   const router = useRouter();
   const toast = useToastManager();
+  const errorCopy = useTranslations("onboarding.experience.errors");
   const [open, setOpen] = useState(false);
   const defaultLabel = translate("applyFix");
+  const workspace = useTranslations("dashboard.productWorkspace");
 
   const [publish, isPending] = useAsyncAction(async () => {
-    const result = await Optimization.approveProductListing({
-      product: product.id,
-    });
+    const result = await callOnboardingAction(() =>
+      Optimization.approveProductListing({
+        product: product.id,
+      }),
+    );
     if (!result.success) {
       toast.add({
         title: translate("failed"),
-        description: result.error.message,
+        description: errorCopy(onboardingErrorKey(result.error)),
         type: "error",
       });
       return;
@@ -302,7 +290,7 @@ const PublishListing = ({
   return (
     <>
       <Button
-        color="success"
+        color="primary"
         className={cn("shrink-0", className)}
         disabled={!canPublish}
         onClick={() => setOpen(true)}
@@ -315,14 +303,13 @@ const PublishListing = ({
         <AlertDialogPopup>
           <AlertDialogTitle>{translate("dialogTitle")}</AlertDialogTitle>
           <AlertDialogDescription>
-            {translate("dialogDescription", {
-              title: product.title,
-              winRate,
+            {workspace("publishDescription", {
+              title: product.title.trim() || product.id,
             })}
           </AlertDialogDescription>
           <div className="flex justify-end gap-2">
             <Button
-              variant="outline"
+              variant="soft"
               color="neutral"
               onClick={() => setOpen(false)}
               disabled={isPending}
@@ -330,7 +317,7 @@ const PublishListing = ({
               {shared("cancel")}
             </Button>
             <Button
-              color="success"
+              color="primary"
               onClick={() => publish()}
               disabled={isPending}
             >
@@ -363,9 +350,7 @@ const ApplyOptimization = ({
   );
 
   return (
-    <div className="relative flex flex-col gap-4 border-accent-foreground border-b bg-primary/5 p-5 sm:flex-row sm:items-center sm:justify-between">
-      <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-      <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
+    <div className="flex min-w-0 flex-col gap-4 border-accent-foreground border-b bg-background-rich px-4 py-5 sm:flex-row sm:items-center sm:justify-between sm:px-6">
       <div className="flex items-start gap-3">
         <CircleBoltIcon className="size-7 shrink-0 text-primary" />
         <div>
@@ -377,7 +362,7 @@ const ApplyOptimization = ({
           </p>
         </div>
       </div>
-      <div className="flex shrink-0 flex-wrap items-center gap-2">
+      <div className="flex flex-wrap items-center gap-2">
         <PublishListing
           product={product}
           winRate={winRate}
@@ -386,10 +371,8 @@ const ApplyOptimization = ({
         />
         {reviewQueueHref && (
           <Button
-            // color="neutral" draws a blue-gray border (the neutral token is a
-            // cool/blue gray) — "accent" is the plain grid-gray outline.
-            variant="outline"
-            color="accent"
+            variant="soft"
+            color="neutral"
             render={<Link href={reviewQueueHref} />}
           >
             {translate("reviewQueue")}
@@ -403,7 +386,25 @@ const ApplyOptimization = ({
 
 export const ProductDetail = ({ data }: ProductDetail.Props) => {
   const { store } = useParams<{ store: string }>();
-  const translate = useTranslations("dashboard.products.detail");
+  const translate = useTranslations("dashboard.productWorkspace");
+  const channelCopy = useTranslations("dashboard.productChannels");
+  const workflow = useTranslations("dashboard.catalogWorkflow");
+  const [view, setView] = useQueryState(
+    "view",
+    parseAsStringLiteral([
+      "channels",
+      "overview",
+      "replay",
+      "battlecard",
+      "optimize",
+    ] as const).withDefault("channels"),
+  );
+  const primaryView =
+    view === "replay" || view === "battlecard" ? "overview" : view;
+  const comparisonView =
+    view === "replay" || view === "battlecard" ? view : "overview";
+  const [offerVersion, setOfferVersion] = useState(0);
+  const onOffersFound = () => setOfferVersion((version) => version + 1);
   const {
     product,
     winRate,
@@ -415,51 +416,87 @@ export const ProductDetail = ({ data }: ProductDetail.Props) => {
   } = data;
 
   return (
-    <Tabs defaultValue="overview">
-      {/* The list's p-1 leaves a 32px content box, so tabs must be h-8 — the
-          Tab base is h-9 and was overflowing (clipped) and sitting off-centre
-          from the indicator. border-r-0 drops the base divider lines, which
-          don't belong in a segmented control. */}
-      <TabsList className="h-10 w-full rounded-md border-0 bg-background-dimmed p-1">
-        <TabsIndicator className="top-1 h-8 rounded" />
-        <Tab value="overview" className="h-8 flex-1 border-r-0">
-          {translate("tabs.winRate")}
-        </Tab>
-        <Tab value="replay" className="h-8 flex-1 border-r-0">
-          {translate("tabs.agentReplay")}
-        </Tab>
-        <Tab value="battlecard" className="h-8 flex-1 border-r-0">
-          {translate("tabs.battlecard")}
-        </Tab>
-        <Tab value="optimize" className="h-8 flex-1 border-r-0">
-          {translate("tabs.optimize")}
-        </Tab>
-      </TabsList>
+    <Tabs
+      value={primaryView}
+      onValueChange={(value) => {
+        if (
+          value === "channels" ||
+          value === "overview" ||
+          value === "optimize"
+        )
+          void setView(value);
+      }}
+      className="min-w-0"
+    >
+      <div className="min-w-0 border-accent-foreground border-b px-4 py-4 sm:px-6">
+        <div className="max-w-full overflow-x-auto">
+          <TabsList className="min-w-max" aria-label={translate("title")}>
+            <TabsIndicator />
+            <Tab value="channels">{channelCopy("tab")}</Tab>
+            <Tab value="overview">{translate("tabs.overview")}</Tab>
+            <Tab value="optimize">{workflow("improveListing")}</Tab>
+          </TabsList>
+        </div>
+      </div>
+
+      <TabsPanel value="channels">
+        <ProductChannels product={product} channels={data.channels} />
+      </TabsPanel>
 
       <TabsPanel value="overview">
-        <OverviewTab
-          store={store}
-          product={product.id}
-          models={models}
-          competitors={competitors}
-        />
-      </TabsPanel>
+        <ProductMetrics data={data} />
+        <Tabs
+          value={comparisonView}
+          onValueChange={(value) => {
+            if (
+              value === "overview" ||
+              value === "replay" ||
+              value === "battlecard"
+            )
+              void setView(value);
+          }}
+        >
+          <div className="border-accent-foreground border-b px-4 py-4 sm:px-6">
+            <div className="max-w-full overflow-x-auto">
+              <TabsList
+                className="min-w-max"
+                aria-label={translate("tabs.overview")}
+              >
+                <TabsIndicator />
+                <Tab value="overview">{workflow("comparisonResults")}</Tab>
+                <Tab value="replay">{translate("tabs.replay")}</Tab>
+                <Tab value="battlecard">{translate("tabs.battlecard")}</Tab>
+              </TabsList>
+            </div>
+          </div>
+          <TabsPanel value="overview">
+            <OverviewTab
+              store={store}
+              product={product.id}
+              models={models}
+              competitors={competitors}
+              offerVersion={offerVersion}
+              onOffersFound={onOffersFound}
+            />
+          </TabsPanel>
 
-      <TabsPanel value="replay">
-        <ReplayTab simulations={simulations} />
-      </TabsPanel>
+          <TabsPanel value="replay">
+            <ReplayTab simulations={simulations} competitors={competitors} />
+          </TabsPanel>
 
-      <TabsPanel value="battlecard">
-        <BattlecardTab
-          store={store}
-          product={product}
-          winRate={winRate}
-          canPublish={canPublish}
-          competitors={competitors}
-          simulations={simulations}
-        />
+          <TabsPanel value="battlecard">
+            <BattlecardTab
+              store={store}
+              product={product}
+              winRate={winRate}
+              canPublish={canPublish}
+              competitors={competitors}
+              simulations={simulations}
+              onOffersFound={onOffersFound}
+            />
+          </TabsPanel>
+        </Tabs>
       </TabsPanel>
-
       <TabsPanel value="optimize">
         <OptimizeTab
           store={store}
@@ -483,130 +520,139 @@ const OverviewTab = ({
   product,
   models,
   competitors,
+  offerVersion,
+  onOffersFound,
 }: {
   store: string;
-  /** Needed only so the empty state can offer to go and find rivals. */
+  offerVersion: number;
+  onOffersFound: () => void;
   product: string;
   models: ProductDetailData["models"];
   competitors: ProductDetailData["competitors"];
 }) => {
   const translate = useTranslations("dashboard.products.detail.overview");
-  const shared = useTranslations("dashboard.shared");
+  const workspace = useTranslations("dashboard.productWorkspace");
   const table = useTranslations("dashboard.shared.table");
-  const competitorColumns = useMemo(() => columns(table), [table]);
-
+  const formatter = useFormatter();
+  const competitorColumns = useMemo(
+    () => columns(table, formatter, workspace),
+    [table, formatter, workspace],
+  );
   return (
-    <section className="border-accent-foreground border-t">
-      <div className="p-4">
-        <SectionKicker>{shared("sections.performance")}</SectionKicker>
-        <p className="mt-2 font-semibold text-foreground-rich text-lg">
-          {shared("performance.winRateByModel")}
+    <section className="min-w-0">
+      <div className="px-4 py-5 sm:px-6">
+        <h2 className="font-heading font-semibold text-foreground-rich text-xl">
+          {workspace("models.title")}
+        </h2>
+        <p className="mt-1 text-foreground-dimmed text-sm">
+          {workspace("models.description")}
         </p>
       </div>
-      {/* Size to the model count — a fixed 4-col grid left a phantom empty cell
-        with only 3 models. */}
-      <div
-        className="relative grid gap-px border-accent-foreground border-t bg-accent-foreground"
-        style={{
-          gridTemplateColumns: `repeat(${models.length}, minmax(0, 1fr))`,
-        }}
-      >
-        <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-        <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-        {models.map(({ model, label, rate, wins, losses, total }) => {
+      <ul className="divide-y divide-accent-foreground border-accent-foreground border-y">
+        {models.map(({ model, label, rate, total }) => {
           const config = Model[label as keyof typeof Model];
           return (
-            <div
+            <li
               key={model}
-              className="relative flex flex-col justify-between gap-6 bg-background-rich p-5 transition-colors hover:bg-background"
+              className="flex min-w-0 items-center gap-3 px-4 py-4 sm:gap-5 sm:px-6"
             >
-              <StatLabel
-                label={label}
-                icon={
-                  config?.logo && (
-                    <Image
-                      src={config.logo}
-                      alt={label}
-                      width={20}
-                      height={20}
-                      className="size-5 shrink-0"
-                    />
-                  )
-                }
-              />
-              <div>
-                <p
-                  className={cn(
-                    "font-bold text-4xl tabular-nums tracking-[-0.02em]",
-                    rateColor(rate),
-                  )}
-                >
-                  {rate}
-                  <span className="ml-0.5 font-medium text-foreground-dimmed text-xl">
-                    %
-                  </span>
+              {config?.logo && (
+                <Image
+                  src={config.logo}
+                  alt=""
+                  width={20}
+                  height={20}
+                  className="size-5 shrink-0"
+                />
+              )}
+              <div className="min-w-0 flex-1">
+                <p className="font-medium text-foreground-rich">{label}</p>
+                <p className="mt-1 text-foreground-dimmed text-xs">
+                  {total
+                    ? workspace("models.count", { count: total })
+                    : workspace("unmeasured")}
                 </p>
-                <div className="mt-3">
-                  <div className="h-1 w-full rounded-full bg-accent-foreground">
-                    <motion.div
-                      className={cn("h-full rounded-full", barColor(rate))}
-                      initial={{ width: 0 }}
-                      animate={{ width: `${rate}%` }}
-                      transition={{ ...Spring.Gentle, delay: 0.3 }}
-                    />
-                  </div>
-                  <div className="mt-2 flex justify-between text-foreground-dimmed text-xs">
-                    <span>{translate("wLTotal", { wins, losses })}</span>
-                    <span>{translate("totalCount", { count: total })}</span>
-                  </div>
-                </div>
               </div>
-            </div>
+              <div
+                aria-hidden
+                className="hidden h-1.5 w-48 overflow-hidden rounded-full bg-accent-foreground sm:block"
+              >
+                <div
+                  className="h-full rounded-full bg-primary"
+                  style={{ width: `${total ? rate : 0}%` }}
+                />
+              </div>
+              <span className="w-16 shrink-0 text-right font-semibold text-foreground-rich tabular-nums">
+                {total
+                  ? formatter.number(rate / 100, {
+                      style: "percent",
+                      maximumFractionDigits: 0,
+                    })
+                  : "—"}
+              </span>
+            </li>
           );
         })}
-      </div>
-      <div className="relative flex items-end justify-between border-accent-foreground border-y p-4">
-        <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-        <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-        <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-        <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-        <div>
-          <SectionKicker>
-            {shared("sections.competitiveLandscape")}
-          </SectionKicker>
-          <p className="mt-2 font-semibold text-foreground-rich text-lg">
-            {translate("winRateVsCompetitor")}
-          </p>
-        </div>
+      </ul>
+      <div className="flex flex-wrap items-center justify-between gap-3 border-accent-foreground border-b px-4 py-5 sm:px-6">
+        <h2 className="font-heading font-semibold text-foreground-rich text-xl">
+          {translate("winRateVsCompetitor")}
+        </h2>
         <Button
-          color="primary"
+          variant="soft"
+          color="neutral"
           render={<Link href={`/dashboard/${store}/competitors`} />}
         >
           {translate("viewAll")}
           <ArrowRightIcon className="size-4" />
         </Button>
       </div>
-      <DataTableProvider
-        rows={competitors.map((row) => ({ _id: row.id, ...row }))}
-        columns={competitorColumns}
-        handler="client"
-      >
-        <DataTable className="border-b-0">
-          <DataTableEmpty>
-            <div className="flex flex-col items-center gap-3 p-6">
-              <p className="text-center font-light text-foreground-dimmed text-sm">
-                {translate("noCompetitors")}
-              </p>
-              <FindOffers store={store} product={product} />
-            </div>
-          </DataTableEmpty>
-        </DataTable>
-      </DataTableProvider>
-
-      {/* Renders itself away when there is no observed history, so it costs a
-          query and nothing else on a product that has never been resolved. */}
-      <OfferShelf store={store} product={product} />
+      {competitors.length ? (
+        <div className="max-w-full overflow-x-auto border-accent-foreground border-b">
+          <DataTableProvider
+            rows={competitors.map((row) => ({ _id: row.id, ...row }))}
+            columns={competitorColumns}
+            pageSize={competitors.length}
+            handler="client"
+          >
+            <DataTable
+              className="h-auto min-w-144 table-fixed border-b-0"
+              classList={{
+                "header-cell":
+                  "px-4 font-medium normal-case tracking-normal sm:px-6",
+                "body-row": "h-16",
+                "body-cell": "px-4 py-2 font-normal sm:px-6",
+              }}
+            />
+          </DataTableProvider>
+        </div>
+      ) : (
+        <ComparisonEmpty>
+          <FindOffers store={store} product={product} onFound={onOffersFound} />
+        </ComparisonEmpty>
+      )}
+      <OfferShelf
+        key={`${product}-${offerVersion}`}
+        store={store}
+        product={product}
+      />
     </section>
+  );
+};
+
+export const ComparisonEmpty = ({ children }: { children?: ReactNode }) => {
+  const translate = useTranslations("dashboard.productWorkspace");
+  return (
+    <div className="flex min-h-64 flex-col items-center justify-center gap-3 border-accent-foreground border-b px-6 py-8 text-center">
+      <FileSearchIcon aria-hidden className="size-10 text-foreground-dimmed" />
+      <h2 className="font-heading font-semibold text-foreground-rich text-xl">
+        {translate("states.empty.title")}
+      </h2>
+      <p className="max-w-md text-foreground-dimmed text-sm leading-6">
+        {translate("states.empty.description")}
+      </p>
+      {children}
+    </div>
   );
 };
 
@@ -618,6 +664,8 @@ const replayModelLabel = (modelId: string) => {
       return "Claude";
     case "gemini":
       return "Gemini";
+    case "perplexity":
+      return "Perplexity";
     default:
       return modelId;
   }
@@ -625,136 +673,111 @@ const replayModelLabel = (modelId: string) => {
 
 const ReplayTab = ({
   simulations,
+  competitors,
 }: {
   simulations: ProductDetailData["simulations"];
+  competitors: ProductDetailData["competitors"];
 }) => {
   const translate = useTranslations("dashboard.products.detail.replay");
-  const grouped = ["gpt4", "claude", "gemini"].flatMap((modelId) => {
-    const modelSimulations = simulations.filter(
-      (simulation) => simulation.model === modelId,
-    );
-    if (modelSimulations.length === 0) return [];
-    return [
-      {
-        model: modelId,
-        label: replayModelLabel(modelId),
-        simulations: modelSimulations,
-      },
-    ];
-  });
-
-  const [selected, setSelected] = useState(grouped[0]?.model ?? null);
-
-  if (grouped.length === 0)
-    return (
-      <div className="border-accent-foreground border-t bg-background-rich p-8 text-center">
-        <p className="font-light text-foreground-dimmed text-sm">
-          {translate("empty")}
-        </p>
-      </div>
-    );
-
-  const active = grouped.find((g) => g.model === selected) ?? grouped[0];
-
+  const workspace = useTranslations("dashboard.productWorkspace");
+  const formatter = useFormatter();
+  const grouped = Array.from(
+    new Set(simulations.map((simulation) => simulation.model)),
+  ).map((model) => ({
+    model,
+    label: replayModelLabel(model),
+    simulations: simulations.filter((simulation) => simulation.model === model),
+  }));
+  if (!grouped.length) return <ComparisonEmpty />;
   return (
-    <div className="flex border border-accent-foreground border-x-0">
-      <div className="flex shrink-0 flex-col border-accent-foreground border-r">
-        {grouped.map(({ model, label }) => {
-          const config = Model[label as keyof typeof Model];
-          const isSelected = model === selected;
-          return (
-            <button
-              key={model}
-              type="button"
-              onClick={() => setSelected(model)}
-              className={cn(
-                // Selected state was bg-background-rich on bg-background-rich —
-                // invisible. Now a primary tint + left accent, and the logos
-                // stay full-colour (they were dimmed to 40% = gray on gray).
-                "flex flex-col items-center gap-2 border-accent-foreground border-b border-l-2 px-4 py-5 transition-colors last:border-b-0",
-                isSelected
-                  ? "border-l-primary bg-primary/5"
-                  : "border-l-transparent bg-background-rich hover:bg-background-dimmed",
-              )}
-            >
-              {config?.logo && (
+    <Tabs defaultValue={grouped[0]?.model} className="min-w-0">
+      <div className="max-w-full overflow-x-auto border-accent-foreground border-b px-4 py-4 sm:px-6">
+        <TabsList aria-label={workspace("models.title")} className="min-w-max">
+          <TabsIndicator />
+          {grouped.map(({ model, label }) => (
+            <Tab key={model} value={model} className="gap-2">
+              {Model[label as keyof typeof Model]?.logo && (
                 <Image
-                  src={config.logo}
-                  alt={label}
-                  width={20}
-                  height={20}
-                  className="size-8"
+                  src={Model[label as keyof typeof Model].logo}
+                  alt=""
+                  width={16}
+                  height={16}
                 />
               )}
-              <span
-                className={cn(
-                  "font-medium text-[10px] uppercase leading-tight tracking-[0.08em] transition-colors",
-                  isSelected ? "text-primary" : "text-foreground-dimmed",
-                )}
-              >
-                {label}
-              </span>
-            </button>
-          );
-        })}
+              {label}
+            </Tab>
+          ))}
+        </TabsList>
       </div>
-
-      {active && (
-        <div className="flex min-w-0 flex-1 flex-col">
-          {/* Was a monospace terminal wall with raw **markdown**. Each matchup
-              is now a scannable row (competitor · score · verdict); the
-              reasoning collapses and renders its bold markup as real prose. */}
-          <div className="flex items-center justify-between gap-2 border-accent-foreground border-b bg-background-rich px-4 py-2.5">
-            <p className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-              {translate("decisionReplay", { model: active.label })}
-            </p>
-            <span className="text-foreground-dimmed text-xs tabular-nums">
+      {grouped.map((group) => (
+        <TabsPanel key={group.model} value={group.model}>
+          <div className="flex flex-wrap items-center justify-between gap-2 border-accent-foreground border-b px-4 py-4 sm:px-6">
+            <h2 className="font-semibold text-foreground-rich">
+              {translate("decisionReplay", { model: group.label })}
+            </h2>
+            <span className="text-foreground-dimmed text-xs">
               {translate("simulationCount", {
-                count: active.simulations.length,
+                count: group.simulations.length,
               })}
             </span>
           </div>
-
           <Accordion
-            className="text-foreground"
-            // Losses are the actionable matchups — auto-open the first couple.
-            defaultValue={active.simulations
+            multiple
+            defaultValue={group.simulations
               .filter((simulation) => simulation.winner !== "product")
-              .slice(0, 2)
+              .slice(0, 1)
               .map((simulation) => simulation.id)}
           >
-            {active.simulations.map((simulation) => {
+            {group.simulations.map((simulation) => {
               const won = simulation.winner === "product";
+              const competitor = competitors.find(
+                (entry) => entry.id === simulation.competitorId,
+              );
               return (
                 <AccordionItem
                   key={simulation.id}
                   value={simulation.id}
-                  className="border-accent-foreground border-b bg-background-rich"
+                  className="border-accent-foreground bg-background-rich"
                 >
-                  <AccordionTrigger
-                    className="items-center px-4 py-3 hover:bg-background-dimmed/40"
-                    classList={{
-                      trigger: {
-                        icon: "size-4 shrink-0 text-foreground-dimmed group-data-panel-open:rotate-180",
-                      },
-                    }}
-                  >
-                    <span className="flex min-w-0 flex-1 items-center gap-3">
-                      <span className="min-w-0 flex-1 truncate font-medium text-foreground">
+                  <AccordionTrigger className="items-center px-4 py-4 sm:px-6">
+                    <Avatar className="size-10 shrink-0 rounded-lg border border-accent-foreground bg-background">
+                      <AvatarImage
+                        src={competitor?.image ?? undefined}
+                        alt=""
+                      />
+                      <AvatarFallback className="font-medium text-foreground-dimmed text-xs">
+                        {(
+                          simulation.competitorTitle.trim() ||
+                          simulation.competitorId
+                        )
+                          .slice(0, 2)
+                          .toUpperCase()}
+                      </AvatarFallback>
+                    </Avatar>
+                    <span className="flex min-w-0 flex-1 flex-wrap items-center gap-x-4 gap-y-2">
+                      <span
+                        className="min-w-32 flex-1 truncate font-medium"
+                        title={simulation.competitorTitle}
+                      >
                         {translate("vsCompetitor", {
-                          title: simulation.competitorTitle,
+                          title:
+                            simulation.competitorTitle.trim() ||
+                            simulation.competitorId,
                         })}
                       </span>
-                      <span className="shrink-0 font-mono text-foreground-dimmed text-xs tabular-nums">
-                        {simulation.productScore ?? "?"} —{" "}
-                        {simulation.competitorScore ?? "?"}
+                      <span className="shrink-0 text-foreground-dimmed text-xs tabular-nums">
+                        {simulation.productScore === null
+                          ? "—"
+                          : formatter.number(simulation.productScore)}{" "}
+                        ·{" "}
+                        {simulation.competitorScore === null
+                          ? "—"
+                          : formatter.number(simulation.competitorScore)}
                       </span>
                       <span
                         className={cn(
-                          "shrink-0 rounded-full px-2 py-0.5 font-semibold text-[10px] uppercase tracking-[0.06em]",
-                          won
-                            ? "bg-success/10 text-success"
-                            : "bg-error/10 text-error",
+                          "shrink-0 font-medium text-xs",
+                          won ? "text-success-dimmed" : "text-error-dimmed",
                         )}
                       >
                         {won ? translate("won") : translate("lost")}
@@ -762,34 +785,29 @@ const ReplayTab = ({
                     </span>
                   </AccordionTrigger>
                   <AccordionPanel>
-                    <div className="border-accent-foreground border-t px-4 py-4">
-                      <p className="mb-2 font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
-                        {translate("reasoning", { model: active.label })}
+                    <div className="border-accent-foreground border-t px-4 py-5 sm:px-6">
+                      <p className="mb-2 font-medium text-foreground-rich text-sm">
+                        {translate("reasoning", { model: group.label })}
                       </p>
-                      {simulation.reasoning ? (
-                        <p className="text-foreground text-sm leading-relaxed">
-                          {renderInline(simulation.reasoning, {
-                            strongClassName:
-                              "font-semibold text-foreground-rich",
-                          })}
-                        </p>
-                      ) : (
-                        <p className="text-foreground-dimmed text-sm italic">
-                          {translate("noReasoning", {
-                            productScore: simulation.productScore ?? "?",
-                            competitorScore: simulation.competitorScore ?? "?",
-                          })}
-                        </p>
-                      )}
+                      <p className="max-w-3xl whitespace-pre-line break-words text-foreground-dimmed text-sm leading-7">
+                        {simulation.reasoning ? (
+                          <AnalysisText
+                            text={simulation.reasoning}
+                            terms={[group.label, simulation.competitorTitle]}
+                          />
+                        ) : (
+                          workspace("noReasoning")
+                        )}
+                      </p>
                     </div>
                   </AccordionPanel>
                 </AccordionItem>
               );
             })}
           </Accordion>
-        </div>
-      )}
-    </div>
+        </TabsPanel>
+      ))}
+    </Tabs>
   );
 };
 
@@ -807,27 +825,27 @@ const ListingCompleteness = ({
         const value = product[key];
         const filled = (() => {
           if (!value) return false;
-          if (key === "structuredData") return value !== "null";
+          if (key === "images") return value !== "[]";
           return true;
         })();
 
         return (
           <div
             key={key}
-            className="flex items-center justify-between bg-background-rich px-4 py-4 transition-colors hover:bg-background"
+            className="flex items-center justify-between gap-4 bg-background-rich px-4 py-4 sm:px-6"
           >
             <div className="flex items-center gap-3">
               {filled ? (
-                <CheckIcon className="size-6 text-success" />
+                <CheckIcon className="size-5 text-success-dimmed" />
               ) : (
-                <XIcon className="size-6 text-error" />
+                <XIcon className="size-5 text-foreground-dimmed" />
               )}
               <span className="font-medium text-foreground">{label}</span>
             </div>
             <span
               className={cn(
                 "font-medium text-sm",
-                filled ? "text-success" : "text-error",
+                filled ? "text-foreground" : "text-foreground-dimmed",
               )}
             >
               {filled ? shared("present") : shared("missing")}
@@ -848,63 +866,115 @@ const auditFieldKeys = [
   "images",
 ] as const;
 
-const AuditSkeleton = () => (
+export const AuditSkeleton = () => (
   <div className="divide-y divide-accent-foreground border-accent-foreground border-b">
     {auditFieldKeys.map((key) => (
       <div
         key={key}
         className="flex items-center justify-between bg-background-rich px-4 py-4"
       >
-        <div className="h-4 w-40 animate-pulse bg-foreground/10" />
-        <div className="h-2 w-32 animate-pulse rounded-full bg-foreground/10" />
+        <div className="h-4 w-40 animate-pulse bg-foreground/10 motion-reduce:animate-none" />
+        <div className="h-2 w-32 animate-pulse rounded-full bg-foreground/10 motion-reduce:animate-none" />
       </div>
     ))}
   </div>
 );
 
-const ListingAudit = ({
+export const ListingAudit = ({
   product,
 }: {
   product: ProductDetailData["product"];
 }) => {
+  const _auditCopy = useTranslations("dashboard.products.detail.audit");
+  const workspace = useTranslations("dashboard.productWorkspace");
+  const _fields = useTranslations("dashboard.products.detail.fields");
+  const [audit, setAudit] = useState<Audit.Type | null>(null);
+  const [status, setStatus] = useState<"idle" | "loading" | "ready" | "error">(
+    "idle",
+  );
+  const requestReview = async () => {
+    setStatus("loading");
+    const result = await callOnboardingAction(() =>
+      Audit.auditProduct({ product: product.id }),
+    );
+    if (!result.success) {
+      setStatus("error");
+      return;
+    }
+    setAudit(result.data);
+    setStatus("ready");
+  };
+  return (
+    <>
+      <div className="flex flex-wrap items-center justify-between gap-4 border-accent-foreground border-b px-4 py-5 sm:px-6">
+        <div className="min-w-0 max-w-xl">
+          <h2 className="font-heading font-semibold text-foreground-rich text-xl">
+            {workspace("audit.title")}
+          </h2>
+          <p className="mt-1 text-foreground-dimmed text-sm leading-6">
+            {workspace("audit.description")}
+          </p>
+        </div>
+        <Button
+          variant="soft"
+          color="neutral"
+          disabled={status === "loading"}
+          aria-busy={status === "loading"}
+          onClick={() => void requestReview()}
+        >
+          {status === "loading" ? (
+            <LoaderIcon className="size-4 animate-spin motion-reduce:animate-none" />
+          ) : (
+            <FileSearchIcon className="size-4" />
+          )}
+          {status === "error"
+            ? workspace("action.secondary")
+            : workspace("action.primary")}
+        </Button>
+      </div>
+      {status === "loading" ? (
+        <div role="status" aria-label={workspace("audit.running")}>
+          <AuditSkeleton />
+        </div>
+      ) : status === "ready" && audit ? (
+        <AuditResult audit={audit} />
+      ) : (
+        <>
+          {status === "error" && (
+            <p
+              role="alert"
+              className="border-accent-foreground border-b px-4 py-4 text-error-dimmed text-sm sm:px-6"
+            >
+              {workspace("audit.failed")}
+            </p>
+          )}
+          <div className="border-accent-foreground border-b px-4 py-4 sm:px-6">
+            <h3 className="font-semibold text-foreground-rich">
+              {workspace("audit.savedFields")}
+            </h3>
+            <p className="mt-1 text-foreground-dimmed text-xs">
+              {workspace("audit.coverageDescription")}
+            </p>
+          </div>
+          <ListingCompleteness product={product} />
+        </>
+      )}
+    </>
+  );
+};
+
+export const AuditResult = ({ audit }: { audit: Audit.Type }) => {
   const auditCopy = useTranslations("dashboard.products.detail.audit");
   const fields = useTranslations("dashboard.products.detail.fields");
-  const [audit, setAudit] = useState<Audit.Type | null>(null);
-  const [status, setStatus] = useState<"loading" | "ready" | "error">(
-    "loading",
-  );
-
-  useEffect(() => {
-    let active = true;
-    setStatus("loading");
-
-    void (async () => {
-      const result = await Audit.auditProduct({ product: product.id });
-      if (!active) return;
-      if (!result.success) {
-        setStatus("error");
-        return;
-      }
-      setAudit(result.data);
-      setStatus("ready");
-    })();
-
-    return () => {
-      active = false;
-    };
-  }, [product.id]);
-
-  // Fall back to the deterministic completeness checklist if the audit fails.
-  if (status === "error") return <ListingCompleteness product={product} />;
-  if (status === "loading" || !audit) return <AuditSkeleton />;
-
   return (
     <>
       <div className="flex items-center justify-between border-accent-foreground border-b bg-background-rich px-4 py-3">
-        <SectionKicker>{auditCopy("aiContentQuality")}</SectionKicker>
+        <h3 className="font-semibold text-foreground-rich">
+          {auditCopy("aiContentQuality")}
+        </h3>
         <p
           className={cn(
-            "font-bold text-2xl tabular-nums tracking-[-0.02em]",
+            "font-bold text-2xl tabular-nums tracking-tight",
             rateColor(audit.overall),
           )}
         >
@@ -918,7 +988,9 @@ const ListingAudit = ({
       <div className="border-accent-foreground border-b bg-background-rich p-4">
         <div className="flex items-start justify-between gap-4">
           <div className="min-w-0">
-            <SectionKicker>{auditCopy("brandPositioning")}</SectionKicker>
+            <h3 className="font-semibold text-foreground-rich">
+              {auditCopy("brandPositioning")}
+            </h3>
             <p className="mt-1 font-medium text-foreground">
               {audit.positioning.audience}
             </p>
@@ -929,7 +1001,7 @@ const ListingAudit = ({
           <div className="shrink-0 text-right">
             <p
               className={cn(
-                "font-bold text-3xl tabular-nums tracking-[-0.02em]",
+                "font-bold text-3xl tabular-nums tracking-tight",
                 rateColor(audit.positioning.score),
               )}
             >
@@ -943,11 +1015,11 @@ const ListingAudit = ({
             </p>
           </div>
         </div>
-        <p className="mt-3 text-foreground-dimmed text-sm leading-relaxed">
+        <p className="mt-3 break-words text-foreground-dimmed text-sm leading-relaxed">
           {audit.positioning.reasoning}
         </p>
-        <p className="mt-2 text-primary-text text-sm leading-relaxed">
-          → {audit.positioning.suggestion}
+        <p className="mt-2 break-words text-primary-text text-sm leading-relaxed">
+          {audit.positioning.suggestion}
         </p>
       </div>
 
@@ -958,7 +1030,7 @@ const ListingAudit = ({
             className="flex flex-col gap-2 bg-background-rich px-4 py-4 transition-colors hover:bg-background sm:flex-row sm:items-center sm:justify-between sm:gap-6"
           >
             <div className="min-w-0 flex-1">
-              <div className="flex items-baseline gap-2">
+              <div className="flex flex-wrap items-baseline gap-x-2 gap-y-1">
                 <span className="font-medium text-foreground">
                   {fields(
                     field.key as
@@ -970,12 +1042,12 @@ const ListingAudit = ({
                       | "images",
                   )}
                 </span>
-                <span className="truncate text-foreground-dimmed text-xs">
+                <span className="text-foreground-dimmed text-xs">
                   {field.verdict}
                 </span>
               </div>
-              <p className="mt-1 text-foreground-dimmed text-sm leading-relaxed">
-                → {field.suggestion}
+              <p className="mt-1 break-words text-foreground-dimmed text-sm leading-relaxed">
+                {field.suggestion}
               </p>
             </div>
             <div className="flex shrink-0 items-center gap-3 sm:w-44">
@@ -1012,68 +1084,58 @@ const Outcome = ({
   label: string;
   simulations: ProductDetailData["simulations"];
   emptyLabel: string;
-}) => (
-  <div
-    className={cn(
-      "p-5",
-      tone === "success" ? "bg-success/[0.04]" : "bg-error/[0.04]",
-    )}
-  >
-    <div className="mb-3 flex items-center gap-2">
-      <span
+}) => {
+  const translate = useTranslations("dashboard.productWorkspace");
+  const formatter = useFormatter();
+  return (
+    <section className="min-w-0 bg-background-rich px-4 py-5 sm:px-6">
+      <h3
         className={cn(
-          "size-2 shrink-0 rounded-full",
-          tone === "success" ? "bg-success" : "bg-error",
-        )}
-      />
-      <span
-        className={cn(
-          "font-semibold text-xs uppercase tracking-[0.08em]",
-          tone === "success" ? "text-success" : "text-error",
+          "mb-4 font-semibold text-sm",
+          tone === "success" ? "text-success-dimmed" : "text-error-dimmed",
         )}
       >
-        {label} · {simulations.length}
-      </span>
-    </div>
-    {simulations.length > 0 ? (
-      <ol className="space-y-3">
-        {simulations.map((simulation, index) => (
-          <li key={simulation.id} className="flex gap-3">
-            {/* Numbered in mono, reusing SectionKicker's index motif — reads as
-                a findings list rather than a tinted left rule. Preflight strips
-                the native list marker, so this is the only number rendered. */}
-            <span
-              className={cn(
-                "shrink-0 font-mono font-semibold text-xs tabular-nums leading-relaxed",
-                tone === "success" ? "text-success" : "text-error",
-              )}
-            >
-              {String(index + 1).padStart(2, "0")}
-            </span>
-            {/* line-clamp beats the old hardcoded .slice(0, 160) + "…" */}
-            <span className="line-clamp-3 text-foreground text-sm leading-relaxed">
-              {simulation.reasoning ??
-                `${label} with score ${simulation.productScore ?? "?"}`}
-            </span>
-          </li>
-        ))}
-      </ol>
-    ) : (
-      <p className="text-foreground-dimmed text-sm italic">{emptyLabel}</p>
-    )}
-  </div>
-);
+        {label} · {formatter.number(simulations.length)}
+      </h3>
+      {simulations.length ? (
+        <ol className="space-y-5">
+          {simulations.map((simulation) => (
+            <li key={simulation.id}>
+              <p className="mb-1 font-medium text-foreground-rich text-xs">
+                {replayModelLabel(simulation.model)}
+              </p>
+              <p className="whitespace-pre-line break-words text-foreground-dimmed text-sm leading-6">
+                {simulation.reasoning ? (
+                  <AnalysisText
+                    text={simulation.reasoning}
+                    terms={[
+                      replayModelLabel(simulation.model),
+                      simulation.competitorTitle,
+                    ]}
+                  />
+                ) : (
+                  translate("noReasoning")
+                )}
+              </p>
+            </li>
+          ))}
+        </ol>
+      ) : (
+        <p className="text-foreground-dimmed text-sm">{emptyLabel}</p>
+      )}
+    </section>
+  );
+};
 
 const BattlecardTab = ({
   store,
   product,
-  winRate,
-  canPublish,
   competitors,
   simulations,
+  onOffersFound,
 }: {
-  /** The trimmed `product` shape carries no storeId, so it is passed alongside. */
   store: string;
+  onOffersFound: () => void;
   product: ProductDetailData["product"];
   winRate: number;
   canPublish: boolean;
@@ -1081,114 +1143,77 @@ const BattlecardTab = ({
   simulations: ProductDetailData["simulations"];
 }) => {
   const translate = useTranslations("dashboard.products.detail.battlecard");
-  const shared = useTranslations("dashboard.shared");
-
-  if (competitors.length === 0)
+  const workspace = useTranslations("dashboard.productWorkspace");
+  const formatter = useFormatter();
+  if (!competitors.length)
     return (
-      <div className="flex flex-col items-center gap-3 border-accent-foreground border-t bg-background-rich p-8 text-center">
-        <p className="font-light text-foreground-dimmed text-sm">
-          {translate("empty")}
-        </p>
-        <FindOffers store={store} product={product.id} />
-      </div>
+      <ComparisonEmpty>
+        <FindOffers
+          store={store}
+          product={product.id}
+          onFound={onOffersFound}
+        />
+      </ComparisonEmpty>
     );
-
   return (
     <>
-      <ApplyOptimization
-        product={product}
-        winRate={winRate}
-        canPublish={canPublish}
-      />
-      <div className="relative flex items-end justify-between border-accent-foreground border-y p-4">
-        <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-        <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-        <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-        <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-        <div>
-          <SectionKicker>{translate("kicker")}</SectionKicker>
-          <p className="mt-2 font-semibold text-foreground-rich text-lg">
-            {translate("headToHead")}
-          </p>
-        </div>
-        <p className="text-foreground-dimmed text-sm">
-          {shared("count.competitors", { count: competitors.length })}
-        </p>
+      <div className="flex flex-wrap items-center justify-between gap-3 border-accent-foreground border-b px-4 py-5 sm:px-6">
+        <h2 className="font-heading font-semibold text-foreground-rich text-xl">
+          {translate("headToHead")}
+        </h2>
+        <span className="text-foreground-dimmed text-sm">
+          {workspace("metrics.competitors", { count: competitors.length })}
+        </span>
       </div>
-
-      {/* Every competitor used to print all of its win/loss reasoning inline,
-          so the tab scrolled for pages. Each one now collapses to a single
-          summary row and the reasoning sits behind a disclosure. */}
-      <Accordion className="text-foreground">
+      <Accordion multiple>
         {competitors.map((competitor) => {
-          const competitorSimulations = simulations.filter(
+          const rows = simulations.filter(
             (simulation) => simulation.competitorId === competitor.id,
           );
-          const wins = competitorSimulations.filter(
+          const wins = rows.filter(
             (simulation) => simulation.winner === "product",
           );
-          const losses = competitorSimulations.filter(
+          const losses = rows.filter(
             (simulation) => simulation.winner !== "product",
           );
-
+          const title = competitor.title.trim() || competitor.id;
           return (
             <AccordionItem
               key={competitor.id}
               value={competitor.id}
-              className="border-accent-foreground border-b bg-background-rich"
+              className="border-accent-foreground bg-background-rich"
             >
-              {/* The trigger is a <button>, so its contents must be phrasing
-                  content — spans, not divs. */}
-              <AccordionTrigger
-                className="items-center px-5 py-4 hover:bg-background-dimmed/40"
-                classList={{
-                  trigger: {
-                    icon: "size-4 shrink-0 text-foreground-dimmed group-data-panel-open:rotate-180",
-                  },
-                }}
-              >
-                <span className="flex min-w-0 flex-1 items-center gap-4">
+              <AccordionTrigger className="items-center px-4 py-4 sm:px-6">
+                <span className="flex min-w-0 flex-1 items-center gap-3">
+                  <Avatar className="size-10 shrink-0 rounded-lg border border-accent-foreground bg-background">
+                    <AvatarImage src={competitor.image ?? undefined} alt="" />
+                    <AvatarFallback className="font-medium text-foreground-dimmed text-xs">
+                      {title.slice(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
                   <span className="min-w-0 flex-1">
-                    <span className="block truncate font-semibold text-foreground">
-                      {competitor.title}
+                    <span
+                      className="block truncate font-semibold text-foreground-rich"
+                      title={title}
+                    >
+                      {title}
                     </span>
-                    <span className="mt-0.5 block truncate font-normal text-foreground-dimmed text-sm">
-                      {translate("vsProduct", { title: product.title })}
-                    </span>
-                  </span>
-
-                  <span className="hidden w-28 shrink-0 sm:block">
-                    <span className="block h-1.5 overflow-hidden rounded-full bg-accent-foreground">
-                      <span
-                        className={cn(
-                          "block h-full rounded-full",
-                          barColor(competitor.rate),
-                        )}
-                        style={{ width: `${competitor.rate}%` }}
-                      />
+                    <span className="mt-1 block text-foreground-dimmed text-xs">
+                      {workspace("models.count", { count: competitor.total })}
                     </span>
                   </span>
-
-                  <span className="shrink-0 font-normal text-foreground-dimmed text-xs tabular-nums">
-                    {wins.length}W · {losses.length}L
-                  </span>
-
-                  <span
-                    className={cn(
-                      "shrink-0 font-bold text-2xl tabular-nums leading-none tracking-[-0.02em]",
-                      rateColor(competitor.rate),
-                    )}
-                  >
-                    {competitor.rate}
-                    <span className="ml-0.5 font-medium text-foreground-dimmed text-sm">
-                      %
-                    </span>
+                  <span className="shrink-0 font-semibold text-foreground-rich text-lg tabular-nums">
+                    {competitor.total
+                      ? formatter.number(competitor.rate / 100, {
+                          style: "percent",
+                          maximumFractionDigits: 0,
+                        })
+                      : "—"}
                   </span>
                 </span>
               </AccordionTrigger>
-
               <AccordionPanel>
-                <div className="grid grid-cols-1 divide-y divide-accent-foreground border-accent-foreground border-t sm:grid-cols-2 sm:divide-x sm:divide-y-0">
+                <div className="grid min-w-0 divide-y divide-accent-foreground border-accent-foreground border-t md:grid-cols-2 md:divide-x md:divide-y-0">
                   <Outcome
                     tone="success"
                     label={translate("won")}
@@ -1230,22 +1255,22 @@ const ListingField = ({
   >
     {/* The trigger is a <button>, so its contents must be phrasing content. */}
     <AccordionTrigger
-      className="items-center px-5 py-4 hover:bg-background-dimmed/40"
+      className="items-center px-4 py-4 hover:bg-background-dimmed/40 sm:px-6"
       classList={{
         trigger: {
           icon: "size-4 shrink-0 text-foreground-dimmed group-data-panel-open:rotate-180",
         },
       }}
     >
-      <span className="flex min-w-0 flex-1 items-center justify-between gap-4">
-        <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+      <span className="flex min-w-0 flex-1 flex-wrap items-center justify-between gap-x-4 gap-y-2">
+        <span className="font-medium text-foreground-dimmed text-sm tracking-normal">
           {label}
         </span>
         <StatusPill tone={tone}>{status}</StatusPill>
       </span>
     </AccordionTrigger>
     <AccordionPanel>
-      <div className="border-accent-foreground border-t p-5">{children}</div>
+      <div className="border-accent-foreground border-t">{children}</div>
     </AccordionPanel>
   </AccordionItem>
 );
@@ -1264,6 +1289,7 @@ const OptimizeTab = ({
   themeEditorUrl: string | null;
 }) => {
   const translate = useTranslations("dashboard.products.detail.optimizeTab");
+  const formatter = useFormatter();
   const fields = useTranslations("dashboard.products.detail.fields");
   const applyOptimization = useTranslations(
     "dashboard.products.detail.applyOptimization",
@@ -1271,6 +1297,7 @@ const OptimizeTab = ({
   const publish = useTranslations("dashboard.products.detail.publish");
   const shared = useTranslations("dashboard.shared");
   const toast = useToastManager();
+  const errorCopy = useTranslations("onboarding.experience.errors");
   const [isPending, startTransition] = useTransition();
   const [liveStructuredData, setLiveStructuredData] = useState<string | null>(
     null,
@@ -1350,13 +1377,15 @@ const OptimizeTab = ({
 
   const handleGenerateJsonLd = () => {
     startTransition(async () => {
-      const generation = await Optimization.generateStructuredData({
-        product: product.id,
-      });
+      const generation = await callOnboardingAction(() =>
+        Optimization.generateStructuredData({
+          product: product.id,
+        }),
+      );
       if (!generation.success) {
         toast.add({
           title: translate("generationFailed"),
-          description: generation.error.message,
+          description: errorCopy(onboardingErrorKey(generation.error)),
           type: "error",
         });
         return;
@@ -1367,14 +1396,16 @@ const OptimizeTab = ({
 
   const [publishStructured, isPublishingStructured] = useAsyncAction(
     async () => {
-      const result = await Optimization.publishProductStructuredData({
-        product: product.id,
-      });
+      const result = await callOnboardingAction(() =>
+        Optimization.publishProductStructuredData({
+          product: product.id,
+        }),
+      );
 
       if (!result.success) {
         toast.add({
           title: publish("failed"),
-          description: result.error.message,
+          description: errorCopy(onboardingErrorKey(result.error)),
           type: "error",
         });
         return;
@@ -1406,35 +1437,12 @@ const OptimizeTab = ({
         reviewQueueHref={`/dashboard/${store}/optimize`}
       />
 
-      <div className="relative flex items-end justify-between gap-4 border-accent-foreground border-b p-4">
-        <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-        <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-        <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-        <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-        <div>
-          <SectionKicker>{translate("listingAuditKicker")}</SectionKicker>
-          <p className="mt-2 font-semibold text-foreground-rich text-lg">
-            {translate("title")}
-          </p>
-          <p className="mt-1 max-w-prose text-foreground-dimmed text-sm">
-            {translate("description")}
-          </p>
-        </div>
-        <p className="shrink-0 text-foreground-dimmed text-sm">
-          {translate("completeness")}{" "}
-          <span className={cn("font-semibold", rateColor(product.quality))}>
-            {product.quality}
-            <span className="font-normal text-foreground-dimmed">/100</span>
-          </span>
-        </p>
-      </div>
+      <ListingAudit key={product.id} product={product} />
 
-      <ListingAudit product={product} />
-
-      <div className="relative border-accent-foreground border-y p-4">
-        <Crosshair className="top-0 left-0 -translate-x-1/2 -translate-y-1/2" />
-        <Crosshair className="top-0 right-0 translate-x-1/2 -translate-y-1/2" />
-        <SectionKicker>{translate("currentListing")}</SectionKicker>
+      <div className="relative border-accent-foreground border-b px-4 py-5 sm:px-6">
+        <h2 className="font-heading font-semibold text-foreground-rich text-xl">
+          {translate("currentListing")}
+        </h2>
       </div>
 
       {/* Same treatment as the battlecard. Each field collapses to a row with
@@ -1442,6 +1450,7 @@ const OptimizeTab = ({
           fix is one click away without three content dumps (each with its own
           nested scrollbar) sitting open by default. */}
       <Accordion
+        multiple
         className="text-foreground"
         defaultValue={[
           ...(product.description ? [] : [fields("description")]),
@@ -1453,9 +1462,11 @@ const OptimizeTab = ({
         <ListingField
           label={fields("title")}
           tone="neutral"
-          status={translate("characters", { count: product.title.length })}
+          status={translate("characters", {
+            count: formatter.number(product.title.length),
+          })}
         >
-          <p className="text-foreground">{product.title}</p>
+          <p className="px-4 py-5 text-foreground sm:px-6">{product.title}</p>
         </ListingField>
 
         <ListingField
@@ -1465,12 +1476,12 @@ const OptimizeTab = ({
         >
           {product.description ? (
             <div
-              className="text-foreground text-sm leading-relaxed [&_ol]:mt-1 [&_ol]:list-decimal [&_ol]:pl-4 [&_p+p]:mt-2 [&_ul]:mt-1 [&_ul]:list-disc [&_ul]:pl-4"
+              className="break-words px-4 py-5 text-foreground text-sm leading-relaxed sm:px-6 [&_ol]:mt-1 [&_ol]:list-decimal [&_ol]:pl-4 [&_p+p]:mt-2 [&_ul]:mt-1 [&_ul]:list-disc [&_ul]:pl-4"
               // biome-ignore lint/security/noDangerouslySetInnerHtml: product description is HTML sourced from the user's own store
               dangerouslySetInnerHTML={{ __html: product.description }}
             />
           ) : (
-            <p className="text-error text-sm italic">
+            <p className="px-4 py-5 text-foreground-dimmed text-sm sm:px-6">
               {translate("noDescription")}
             </p>
           )}
@@ -1484,14 +1495,14 @@ const OptimizeTab = ({
           tone={liveStatus.tone}
           status={liveStatus.label}
         >
-          <div className="mb-3 flex items-center justify-between gap-3 border-accent-foreground border-b pb-3">
+          <div className="flex flex-wrap items-center justify-between gap-3 border-accent-foreground border-b px-4 py-4 sm:px-6">
             <div className="flex items-center gap-2">
-              <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.08em]">
+              <span className="font-medium text-foreground-dimmed text-sm tracking-normal">
                 {translate("liveOnStore")}
               </span>
               <StatusPill tone={liveStatus.tone}>{liveStatus.label}</StatusPill>
             </div>
-            <span className="text-[10px] text-foreground-dimmed">
+            <span className="text-foreground-dimmed text-xs">
               {translate("whatAgentsRead")}
             </span>
           </div>
@@ -1499,17 +1510,17 @@ const OptimizeTab = ({
           {embedNotice && (
             <div
               className={cn(
-                "mb-3 border p-3",
+                "border-accent-foreground border-b px-4 py-5 sm:px-6",
                 embedNotice.intent === "problem"
-                  ? "border-warning/30 bg-warning/5"
-                  : "border-accent-foreground bg-background-dimmed",
+                  ? "bg-warning/5"
+                  : "bg-background-dimmed",
               )}
             >
               <p
                 className={cn(
-                  "font-medium text-[10px] uppercase tracking-[0.08em]",
+                  "font-medium text-sm tracking-normal",
                   embedNotice.intent === "problem"
-                    ? "text-warning"
+                    ? "text-warning-dimmed"
                     : "text-foreground-dimmed",
                 )}
               >
@@ -1519,7 +1530,7 @@ const OptimizeTab = ({
               {embedNotice.showEnable && themeEditorUrl && (
                 <Button
                   type="button"
-                  color="accent"
+                  color="neutral"
                   className="mt-3"
                   onClick={() => window.open(themeEditorUrl, "_blank")}
                 >
@@ -1531,20 +1542,21 @@ const OptimizeTab = ({
           )}
 
           {structuredData ? (
-            <div className="space-y-3">
-              <p className="text-foreground-dimmed text-sm">
+            <div className="space-y-0">
+              <p className="px-4 py-5 text-foreground-dimmed text-sm sm:px-6">
                 {translate("structuredDataHelp", {
                   metafield: "ecentic.structured_data",
                 })}
               </p>
               {/* JSON-LD is genuinely unbounded, so this one keeps a cap. */}
-              <pre className="max-h-64 overflow-y-auto whitespace-pre-wrap border border-accent-foreground bg-background-dimmed p-3 font-mono text-foreground-dimmed text-xs leading-relaxed">
+              <pre className="max-h-80 max-w-full overflow-auto whitespace-pre-wrap break-all bg-background-dimmed px-4 py-5 font-mono text-foreground-dimmed text-xs leading-relaxed sm:px-6">
                 {structuredData}
               </pre>
               {canPublish && (
                 <Button
                   type="button"
-                  color="accent"
+                  color="neutral"
+                  className="m-4 sm:mx-6"
                   onClick={publishStructured}
                   disabled={isPublishingStructured}
                 >
@@ -1558,13 +1570,13 @@ const OptimizeTab = ({
               )}
             </div>
           ) : (
-            <div className="space-y-3">
+            <div className="space-y-4 px-4 py-5 sm:px-6">
               <p className="text-foreground-dimmed text-sm">
                 {translate("noStructuredDataYet")}
               </p>
               <Button
                 type="button"
-                color="accent"
+                color="neutral"
                 onClick={handleGenerateJsonLd}
                 disabled={isPending}
               >

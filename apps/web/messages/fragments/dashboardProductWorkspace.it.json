@@ -1,0 +1,75 @@
+{
+  "dashboard": {
+    "productWorkspace": {
+      "title": "Dettagli del prodotto",
+      "description": "Consulta i dati salvati di questo prodotto e i confronti con l’IA registrati.",
+      "status": {
+        "active": "Attivo",
+        "draft": "Bozza",
+        "archived": "Archiviato",
+        "unknown": "Stato non disponibile"
+      },
+      "updated": "Aggiornato {time}",
+      "latestComparison": "Ultimo confronto {time}",
+      "priceMissing": "Nessun prezzo salvato",
+      "metrics": {
+        "rate": "Percentuale di vittorie simulate",
+        "comparisons": "Confronti",
+        "coverage": "Copertura dei campi salvati",
+        "wins": "Vittorie: {wins} su {total}",
+        "competitors": "{count, plural, one {Contro # concorrente} many {Contro # concorrenti} other {Contro # concorrenti}}"
+      },
+      "method": {
+        "title": "Come leggere questi dati",
+        "description": "Le percentuali di vittoria si basano sui confronti di prodotti registrati. Per i prodotti e i modelli senza confronti non è disponibile una percentuale misurata. La copertura considera sei campi salvati: titolo, descrizione, prezzo, immagine, SKU e dati strutturati. Non valuta quanto sia convincente il contenuto."
+      },
+      "models": {
+        "title": "Risultati per modello",
+        "description": "Simulazioni registrate, non traffico di acquisto reale.",
+        "count": "{count, plural, one {# confronto} many {# confronti} other {# confronti}}"
+      },
+      "tabs": {
+        "overview": "Confronti",
+        "replay": "Decisioni degli agenti",
+        "battlecard": "Confronto diretto",
+        "optimize": "Scheda prodotto"
+      },
+      "action": {
+        "primary": "Valuta con l’IA",
+        "secondary": "Riprova",
+        "tertiary": "Apri catalogo",
+        "quaternary": "Mostra altro"
+      },
+      "navigation": {
+        "primary": "Torna ai prodotti",
+        "secondary": "Rivedi le ottimizzazioni in attesa"
+      },
+      "audit": {
+        "title": "Revisione del contenuto con l’IA",
+        "description": "Richiedi una revisione del testo, dei dati del prodotto e dell’adeguatezza al pubblico di riferimento. La scheda salvata rimane invariata.",
+        "running": "Revisione del prodotto…",
+        "failed": "Non è stato possibile completare la revisione con l’IA. I dati salvati del prodotto non sono stati modificati.",
+        "savedFields": "Campi prodotto salvati",
+        "coverageDescription": "La presenza dei campi salvati viene verificata separatamente dalla revisione del contenuto con l’IA.",
+        "ready": "Revisione completata"
+      },
+      "unmeasured": "Non confrontato",
+      "noReasoning": "Non è stata salvata alcuna spiegazione scritta per questo confronto.",
+      "states": {
+        "empty": {
+          "title": "Ancora nessun confronto",
+          "description": "Questo prodotto non ha confronti con l’IA registrati. La percentuale di vittorie apparirà dopo il confronto con i concorrenti."
+        },
+        "error": {
+          "title": "Impossibile caricare questo prodotto",
+          "description": "Il catalogo è ancora salvato. Prova a caricare di nuovo questo prodotto."
+        },
+        "missing": {
+          "title": "Prodotto non trovato",
+          "description": "Questo prodotto potrebbe essere stato rimosso o appartenere a un altro negozio. Apri il catalogo per scegliere un prodotto."
+        }
+      },
+      "publishDescription": "Genera un titolo e una descrizione ottimizzati per {title} e pubblicali nel negozio connesso, sostituendo la scheda attuale."
+    }
+  }
+}

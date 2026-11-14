@@ -127,7 +127,7 @@ export const BlogIndexContent = async () => {
                   >
                     {copy.featured}
                   </p>
-                  <h2 className="max-w-3xl text-3xl text-foreground leading-[1.1] tracking-[-0.035em] group-hover:text-primary-text group-focus-visible:text-primary-text sm:text-[42px]">
+                  <h2 className="max-w-3xl text-3xl text-foreground leading-none tracking-tight group-hover:text-primary-text group-focus-visible:text-primary-text sm:text-4xl">
                     {featured.title}
                   </h2>
                   <p className="mt-4 max-w-2xl text-base text-foreground-dimmed leading-relaxed">
@@ -154,7 +154,7 @@ export const BlogIndexContent = async () => {
               <Plus className="top-0 right-0 translate-x-1/2 -translate-y-1/2 lg:hidden" />
               <div className="relative border-accent-foreground border-b p-4 sm:p-8">
                 <MarketingEdgeCrosses edge="bottom" />
-                <h2 className="text-2xl text-foreground tracking-[-0.02em]">
+                <h2 className="text-2xl text-foreground tracking-tight">
                   {copy.latest}
                 </h2>
                 {latest && (
@@ -189,7 +189,7 @@ export const BlogIndexContent = async () => {
                       })}
                     </span>
                   </p>
-                  <h3 className="text-foreground text-xl leading-snug tracking-[-0.02em] group-hover:text-primary-text group-focus-visible:text-primary-text">
+                  <h3 className="text-foreground text-xl leading-snug tracking-tight group-hover:text-primary-text group-focus-visible:text-primary-text">
                     {entry.title}
                   </h3>
                   <ArrowRightIcon
@@ -224,7 +224,7 @@ export const BlogIndexContent = async () => {
           <div className="border-accent-foreground border-b px-4 py-8 sm:p-8">
             <h2
               id="blog-archive-heading"
-              className="text-3xl text-foreground leading-tight tracking-[-0.03em] sm:text-4xl"
+              className="text-3xl text-foreground leading-tight tracking-tight sm:text-4xl"
             >
               {copy.archive}
             </h2>
@@ -314,8 +314,8 @@ export const BlogIndexSkeleton = ({
     aria-label={label}
     className={
       compact
-        ? "min-h-[640px] bg-background p-6"
-        : "mx-auto min-h-[640px] w-[min(1186px,calc(100%-32px))] border-accent-foreground border-x p-6"
+        ? "min-h-160 bg-background p-6"
+        : "mx-auto min-h-160 w-[min(1186px,calc(100%-32px))] border-accent-foreground border-x p-6"
     }
   >
     <span className="sr-only">{label}</span>

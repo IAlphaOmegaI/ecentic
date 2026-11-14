@@ -26,7 +26,7 @@ const LogoTile = ({
   alt: string;
   className?: string;
 }) => (
-  <span className="flex size-10 items-center justify-center rounded-md border border-accent-foreground bg-background p-2">
+  <span className="flex size-10 items-center justify-center rounded-sm border border-accent-foreground bg-background p-2">
     <Image
       src={src}
       alt={alt}
@@ -36,9 +36,9 @@ const LogoTile = ({
 );
 
 const agentScores = [
-  { name: "ChatGPT", logo: chatgpt, score: 78, bar: "bg-emerald-500" },
-  { name: "Claude", logo: claude, score: 71, bar: "bg-orange-400" },
-  { name: "Gemini", logo: gemini, score: 69, bar: "bg-blue-500" },
+  { name: "ChatGPT", logo: chatgpt, score: 78, bar: "bg-success" },
+  { name: "Claude", logo: claude, score: 71, bar: "bg-warning" },
+  { name: "Gemini", logo: gemini, score: 69, bar: "bg-primary" },
 ] as const;
 
 export const ScanArt = async ({
@@ -72,7 +72,7 @@ export const ScanArt = async ({
         className={cn(
           "pointer-events-none absolute inset-0 bg-radial-[at_50%_15%]",
           highlighted
-            ? "from-white/5 to-transparent"
+            ? "from-background-rich/5 to-transparent"
             : "from-primary/5 to-transparent",
         )}
       />
@@ -90,7 +90,7 @@ export const ScanArt = async ({
             }}
             className={cn(
               "font-bold text-8xl leading-none tracking-tight md:text-9xl",
-              highlighted ? "text-white" : "text-primary",
+              highlighted ? "text-background-rich" : "text-primary",
             )}
           >
             72
@@ -98,7 +98,9 @@ export const ScanArt = async ({
           <p
             className={cn(
               "mt-2 font-medium text-sm",
-              highlighted ? "text-white/80" : "text-foreground-dimmed",
+              highlighted
+                ? "text-background-rich/80"
+                : "text-foreground-dimmed",
             )}
           >
             AI Agent Score
@@ -106,7 +108,9 @@ export const ScanArt = async ({
           <p
             className={cn(
               "text-xs",
-              highlighted ? "text-white/60" : "text-foreground-dimmed",
+              highlighted
+                ? "text-background-rich/60"
+                : "text-foreground-dimmed",
             )}
           >
             out of 100
@@ -122,7 +126,9 @@ export const ScanArt = async ({
                   <span
                     className={cn(
                       "truncate font-medium text-xs",
-                      highlighted ? "text-white/90" : "text-foreground",
+                      highlighted
+                        ? "text-background-rich/90"
+                        : "text-foreground",
                     )}
                   >
                     {agent.name}
@@ -130,7 +136,7 @@ export const ScanArt = async ({
                   <span
                     className={cn(
                       "shrink-0 font-semibold text-xs tabular-nums",
-                      highlighted ? "text-white" : "text-primary",
+                      highlighted ? "text-background-rich" : "text-primary",
                     )}
                   >
                     {agent.score}%
@@ -139,7 +145,9 @@ export const ScanArt = async ({
                 <div
                   className={cn(
                     "h-1.5 w-full overflow-hidden rounded-full",
-                    highlighted ? "bg-white/15" : "bg-accent-foreground",
+                    highlighted
+                      ? "bg-background-rich/15"
+                      : "bg-accent-foreground",
                   )}
                 >
                   <motion.div
@@ -209,7 +217,7 @@ export const UcpArt = ({ highlighted = false, className }: UcpArt.Props) => (
         <p
           className={cn(
             "font-medium text-lg md:text-xl",
-            highlighted ? "text-white" : "text-foreground",
+            highlighted ? "text-background-rich" : "text-foreground",
           )}
         >
           Universal Commerce Protocol
@@ -217,7 +225,7 @@ export const UcpArt = ({ highlighted = false, className }: UcpArt.Props) => (
         <p
           className={cn(
             "mt-1.5 font-mono text-sm md:text-base",
-            highlighted ? "text-white/70" : "text-foreground-dimmed",
+            highlighted ? "text-background-rich/70" : "text-foreground-dimmed",
           )}
         >
           /.well-known/ucp
@@ -247,11 +255,17 @@ export const UcpArt = ({ highlighted = false, className }: UcpArt.Props) => (
           className="pl-3"
         >
           <span
-            className={highlighted ? "text-white/40" : "text-foreground-dimmed"}
+            className={
+              highlighted ? "text-background-rich/40" : "text-foreground-dimmed"
+            }
           >
             -{" "}
           </span>
-          <span className={highlighted ? "text-white/85" : "text-foreground"}>
+          <span
+            className={
+              highlighted ? "text-background-rich/85" : "text-foreground"
+            }
+          >
             {capability}
           </span>
         </motion.p>
@@ -271,23 +285,26 @@ export { PlaygroundArt } from "./playground-art-loop";
 
 const llmsLines = [
   { text: "# ecentic", tone: "text-primary" },
-  { text: "> AI agent commerce platform", tone: "text-white/50" },
-  { text: "", tone: "text-white" },
+  { text: "> AI agent commerce platform", tone: "text-background-rich/50" },
+  { text: "", tone: "text-background-rich" },
   { text: "## Core", tone: "text-success" },
-  { text: "- [Scan](/sign-up)", tone: "text-white/85" },
-  { text: "- [UCP Validator](/ucp-validator)", tone: "text-white/85" },
-  { text: "- [Blog](/blog)", tone: "text-white/50" },
+  { text: "- [Scan](/sign-up)", tone: "text-background-rich/85" },
+  {
+    text: "- [UCP Validator](/ucp-validator)",
+    tone: "text-background-rich/85",
+  },
+  { text: "- [Blog](/blog)", tone: "text-background-rich/50" },
 ] as const;
 
 export const LlmsArt = () => (
   <div className="relative flex flex-1 flex-col">
-    <div className="relative -mt-16 flex flex-1 flex-col bg-[#191919] pt-16">
+    <div className="relative -mt-16 flex flex-1 flex-col bg-emphasis pt-16">
       <div
         aria-hidden
         className="pointer-events-none absolute inset-x-0 top-0 z-10 h-112 bg-linear-to-b from-background-dimmed to-background-dimmed/0"
       />
       <p className="relative z-20 px-6 pb-4 font-mono text-sm md:px-8">
-        <span className="animate-[gold-shine_3s_linear_infinite] bg-linear-to-r bg-size-[200%_auto] from-primary via-white to-primary bg-clip-text text-transparent">
+        <span className="animate-[gold-shine_3s_linear_infinite] bg-linear-to-r bg-size-[200%_auto] from-primary via-background-rich to-primary bg-clip-text text-transparent">
           llms.txt
         </span>
         <motion.span
@@ -298,7 +315,7 @@ export const LlmsArt = () => (
             repeat: Number.POSITIVE_INFINITY,
             ease: "linear",
           }}
-          className="ml-0.5 inline-block h-4 w-1.5 translate-y-px bg-white/50"
+          className="ml-0.5 inline-block h-4 w-1.5 translate-y-px bg-background-rich/50"
         />
       </p>
       <div className="relative z-20 flex-1 px-6 pb-5 md:px-8 md:pb-6">
@@ -324,7 +341,7 @@ export const LlmsArt = () => (
               repeat: Number.POSITIVE_INFINITY,
               ease: "linear",
             }}
-            className="mt-1 inline-block h-4 w-1.5 bg-[#191919]/50"
+            className="mt-1 inline-block h-4 w-1.5 bg-emphasis/50"
           />
         </pre>
       </div>
@@ -335,25 +352,27 @@ export const LlmsArt = () => (
 export const McpArt = async () => {
   const translate = await getTranslations("resources");
   return (
-  <div className="relative overflow-hidden rounded-lg border border-accent-foreground bg-background p-4">
-    <div
-      aria-hidden
-      className="pointer-events-none absolute inset-0 bg-radial-[at_100%_100%] from-primary/12 to-transparent"
-    />
-    <div className="relative flex items-center gap-3">
-      <span className="flex size-10 items-center justify-center rounded-md border border-accent-foreground bg-background-rich">
-        <CodeIcon className="size-5 text-primary" />
-      </span>
-      <div>
-        <p className="font-medium text-foreground text-sm">{translate("mcpArtTitle")}</p>
-        <p className="font-mono text-foreground-dimmed text-xs">/api/mcp</p>
+    <div className="relative overflow-hidden rounded-lg border border-accent-foreground bg-background p-4">
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-0 bg-radial-[at_100%_100%] from-primary/12 to-transparent"
+      />
+      <div className="relative flex items-center gap-3">
+        <span className="flex size-10 items-center justify-center rounded-sm border border-accent-foreground bg-background-rich">
+          <CodeIcon className="size-5 text-primary" />
+        </span>
+        <div>
+          <p className="font-medium text-foreground text-sm">
+            {translate("mcpArtTitle")}
+          </p>
+          <p className="font-mono text-foreground-dimmed text-xs">/api/mcp</p>
+        </div>
       </div>
+      <pre className="relative mt-4 overflow-hidden rounded-sm border border-accent-foreground bg-background-rich p-3 font-mono text-xs text-foreground-dimmed leading-relaxed">
+        {`{\n  "jsonrpc": "2.0",\n  "method": "tools/list"\n}`}
+      </pre>
     </div>
-    <pre className="relative mt-4 overflow-hidden rounded-md border border-accent-foreground bg-background-rich p-3 font-mono text-[11px] text-foreground-dimmed leading-relaxed">
-      {`{\n  "jsonrpc": "2.0",\n  "method": "tools/list"\n}`}
-    </pre>
-  </div>
-);
+  );
 };
 
 export const GuideArt = ({ kind }: GuideArt.Props) => {
@@ -372,7 +391,7 @@ export const GuideArt = ({ kind }: GuideArt.Props) => {
           {["Content", "Search", "Agents"].map((label) => (
             <div
               key={label}
-              className="rounded-md border border-accent-foreground bg-background px-3 py-4 text-center font-medium text-foreground-dimmed text-xs"
+              className="rounded-sm border border-accent-foreground bg-background px-3 py-4 text-center font-medium text-foreground-dimmed text-xs"
             >
               {label}
             </div>
@@ -382,7 +401,7 @@ export const GuideArt = ({ kind }: GuideArt.Props) => {
     case "blog":
       return (
         <div className="flex items-center gap-3 rounded-lg border border-accent-foreground bg-background-rich p-4">
-          <span className="flex size-10 items-center justify-center rounded-md border border-accent-foreground bg-background">
+          <span className="flex size-10 items-center justify-center rounded-sm border border-accent-foreground bg-background">
             <FileIcon className="size-5 text-primary" />
           </span>
           <div>

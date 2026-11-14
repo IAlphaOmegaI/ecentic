@@ -1,0 +1,42 @@
+{
+  "dashboard": {
+    "brand": {
+      "answers": {
+        "title": "Saved answers",
+        "description": "Inspect the questions behind this analysis.",
+        "search": "Search questions, answers or brands",
+        "filter": "Brand mention",
+        "filters": {
+          "all": "All answers",
+          "mentioned": "Mentioned",
+          "absent": "Absent"
+        },
+        "count": "{count, plural, one {# answer} other {# answers}} of {total, number}",
+        "position": {
+          "top": "Primary recommendation",
+          "listed": "Listed",
+          "absent": "Not mentioned"
+        },
+        "context": {
+          "named": "Question includes the brand name",
+          "unbranded": "Question does not include the brand name"
+        },
+        "answer": "Answer summary",
+        "noAnswer": "No answer summary was saved.",
+        "brands": "Brands mentioned",
+        "noBrands": "No brands recorded.",
+        "sources": "Model-suggested sources",
+        "sourcesNote": "These are sources named by the model, not verified citations from a live search.",
+        "noSources": "No sources recorded.",
+        "empty": {
+          "title": "No matching answers",
+          "description": "Try a different search or show all answers.",
+          "saved": "No answers have been saved for this analysis."
+        },
+        "action": {
+          "primary": "Clear search and filters"
+        }
+      }
+    }
+  }
+}

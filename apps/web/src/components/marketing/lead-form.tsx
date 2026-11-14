@@ -160,7 +160,7 @@ export const LeadForm = ({
   })();
   return (
     <div
-      className="marketing-lead mt-8 max-w-[720px] text-[clamp(1.125rem,1.6vw,1.35rem)] leading-[1.55]"
+      className="marketing-lead mt-8 max-w-180 text-lg xl:text-xl leading-normal"
       aria-busy={state.isPending}
     >
       {state.sent ? (

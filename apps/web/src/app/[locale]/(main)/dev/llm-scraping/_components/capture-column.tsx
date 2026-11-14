@@ -57,7 +57,7 @@ const seconds = (ms: number | null | undefined): string =>
 
 const Metric = ({ label, value }: { label: string; value: string }) => (
   <div className="flex flex-col gap-0.5">
-    <span className="font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.05em]">
+    <span className="font-medium text-xs text-foreground-dimmed uppercase tracking-wider">
       {label}
     </span>
     <span className="font-mono text-foreground-rich text-xs tabular-nums">
@@ -115,7 +115,7 @@ const CitationList = ({ items }: { items: Citation[] }) => (
     {items.map((citation) => (
       <li
         key={`${citation.position}-${citation.url}`}
-        className="flex gap-2 font-mono text-[11px]"
+        className="flex gap-2 font-mono text-xs"
       >
         <span className="shrink-0 text-foreground-dimmed tabular-nums">
           {citation.position}.
@@ -162,7 +162,7 @@ const Section = ({
   children: React.ReactNode;
 }) => (
   <details className="border-accent-foreground border-l-2 pl-3" open={open}>
-    <summary className="cursor-pointer font-medium text-[10px] text-foreground-dimmed uppercase tracking-[0.05em]">
+    <summary className="cursor-pointer font-medium text-xs text-foreground-dimmed uppercase tracking-wider">
       {label}
     </summary>
     <div className="mt-2">{children}</div>
@@ -180,11 +180,11 @@ export const CaptureColumn = ({ state }: { state: CaptureState }) => {
         <div className="min-w-0">
           <p className="truncate font-semibold text-foreground-rich text-sm">
             {surface.label}
-            <span className="ml-2 font-mono font-normal text-[11px] text-foreground-dimmed">
+            <span className="ml-2 font-mono font-normal text-xs text-foreground-dimmed">
               run {state.runIndex + 1}
             </span>
           </p>
-          <p className="mt-0.5 truncate font-mono text-[11px] text-foreground-dimmed">
+          <p className="mt-0.5 truncate font-mono text-xs text-foreground-dimmed">
             <span className={surface.accent}>scrapellm</span>
             <span className="mx-1.5 opacity-40">/</span>
             {state.surface}
@@ -217,7 +217,7 @@ export const CaptureColumn = ({ state }: { state: CaptureState }) => {
       <div className="flex min-w-0 flex-1 flex-col gap-3 p-4">
         {state.error && (
           <div className="border-error/30 border-l-2 bg-error/5 px-3 py-2">
-            <p className="font-medium text-[10px] text-error uppercase tracking-[0.05em]">
+            <p className="font-medium text-xs text-error uppercase tracking-wider">
               Error
             </p>
             <p className="mt-1 break-words font-mono text-error text-xs">
@@ -256,7 +256,7 @@ export const CaptureColumn = ({ state }: { state: CaptureState }) => {
               {capture.shoppingCards.map((card) => (
                 <li
                   key={`${card.position}-${card.productName}`}
-                  className="flex gap-2 font-mono text-[11px]"
+                  className="flex gap-2 font-mono text-xs"
                 >
                   <span className="shrink-0 text-foreground-dimmed tabular-nums">
                     {card.position}.
@@ -315,7 +315,7 @@ export const CaptureColumn = ({ state }: { state: CaptureState }) => {
 
         {capture && (
           <Section label="Raw payload">
-            <pre className="overflow-x-auto whitespace-pre-wrap break-words font-mono text-[11px] text-foreground-dimmed">
+            <pre className="overflow-x-auto whitespace-pre-wrap break-words font-mono text-xs text-foreground-dimmed">
               {JSON.stringify(capture.raw, null, 2)}
             </pre>
           </Section>
@@ -327,7 +327,7 @@ export const CaptureColumn = ({ state }: { state: CaptureState }) => {
         if (!capture || (!capture.model && !share)) return null;
 
         return (
-          <p className="truncate border-accent-foreground border-t px-4 py-2 font-mono text-[11px] text-foreground-dimmed">
+          <p className="truncate border-accent-foreground border-t px-4 py-2 font-mono text-xs text-foreground-dimmed">
             {capture.model && <span>model: {capture.model}</span>}
             {capture.model && share && (
               <span className="mx-1.5 opacity-40">/</span>

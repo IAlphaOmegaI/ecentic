@@ -1,0 +1,75 @@
+{
+  "dashboard": {
+    "productWorkspace": {
+      "title": "商品详情",
+      "description": "查看此商品已保存的信息和已记录的 AI 对比结果。",
+      "status": {
+        "active": "启用",
+        "draft": "草稿",
+        "archived": "已归档",
+        "unknown": "状态暂不可用"
+      },
+      "updated": "更新于{time}",
+      "latestComparison": "上次对比：{time}",
+      "priceMissing": "未保存价格",
+      "metrics": {
+        "rate": "模拟胜率",
+        "comparisons": "对比次数",
+        "coverage": "已保存字段覆盖率",
+        "wins": "{total} 次中获胜 {wins} 次",
+        "competitors": "{count, plural, other {与 # 件竞品对比}}"
+      },
+      "method": {
+        "title": "这些数据的含义",
+        "description": "胜率根据已记录的商品对比计算。未进行过对比的商品和模型没有实测胜率。字段覆盖率统计标题、描述、价格、图片、SKU 和结构化数据这六个字段是否已保存，并不评估内容是否有说服力。"
+      },
+      "models": {
+        "title": "各模型的结果",
+        "description": "这里展示已记录的模拟结果，并非真实购物流量。",
+        "count": "{count, plural, other {# 次对比}}"
+      },
+      "tabs": {
+        "overview": "对比",
+        "replay": "智能体的判断",
+        "battlecard": "竞品对比",
+        "optimize": "商品信息"
+      },
+      "action": {
+        "primary": "使用 AI 评估",
+        "secondary": "重试",
+        "tertiary": "打开目录",
+        "quaternary": "显示更多"
+      },
+      "navigation": {
+        "primary": "返回商品列表",
+        "secondary": "查看待处理的优化"
+      },
+      "audit": {
+        "title": "AI 内容评估",
+        "description": "请求评估文案、商品信息以及内容是否适合目标受众。已保存的商品信息不会改变。",
+        "running": "正在评估商品…",
+        "failed": "未能完成 AI 评估。已保存的商品信息未发生变化。",
+        "savedFields": "已保存的商品字段",
+        "coverageDescription": "检查字段是否已保存，与 AI 内容评估是两回事。",
+        "ready": "评估已完成"
+      },
+      "unmeasured": "尚未对比",
+      "noReasoning": "此次对比未保存判断理由的文字说明。",
+      "states": {
+        "empty": {
+          "title": "尚无对比记录",
+          "description": "此商品尚无 AI 对比记录。与竞品进行对比后，才会显示胜率。"
+        },
+        "error": {
+          "title": "无法加载此商品",
+          "description": "您的目录数据仍然保留，请重新加载此商品。"
+        },
+        "missing": {
+          "title": "未找到商品",
+          "description": "此商品可能已被移除，也可能属于其他商店。请打开目录选择商品。"
+        }
+      },
+      "publishDescription": "为 {title} 生成优化后的标题和描述，并发布到已连接的店铺，替换当前商品信息。"
+    }
+  }
+}

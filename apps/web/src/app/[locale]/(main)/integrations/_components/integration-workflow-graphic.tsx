@@ -44,7 +44,7 @@ export const IntegrationWorkflowGraphic = ({
       <div className="pointer-events-none absolute inset-0 -z-1 bg-radial-[at_50%_100%] from-primary/15 via-transparent to-transparent" />
       {kind === "compare" ? (
         <div className="relative h-80 w-full max-w-96">
-          <div className="pointer-events-none absolute inset-x-10 top-6 h-20 rounded-[50%] border-primary-rich/25 border-t" />
+          <div className="pointer-events-none absolute inset-x-10 top-6 h-20 rounded-full border-primary-rich/25 border-t" />
           <div
             data-assistant-arc
             className="absolute inset-x-2 top-2 isolate grid grid-cols-3 items-start justify-items-center gap-3 sm:inset-x-7"
@@ -63,7 +63,7 @@ export const IntegrationWorkflowGraphic = ({
                   }}
                   style={{ rotate: `${(index - 1) * 8}deg` }}
                   className={cn(
-                    "relative grid size-12 place-items-center rounded-xl border border-background-rich/40 bg-background-rich shadow-emphasis-dimmed/30 shadow-lg sm:size-14",
+                    "relative grid size-12 place-items-center rounded-lg border border-background-rich/40 bg-background-rich shadow-emphasis-dimmed/30 shadow-lg sm:size-14",
                     index !== 1 && "mt-5",
                   )}
                 >
@@ -106,7 +106,7 @@ export const IntegrationWorkflowGraphic = ({
               className={cn(
                 "absolute flex h-36 w-[30%] flex-col justify-between rounded-lg border p-4",
                 position === 0
-                  ? "z-1 border-primary-rich/65 bg-linear-to-br from-primary-dimmed to-emphasis-dimmed shadow-[0_0_50px_-20px_var(--color-primary)]"
+                  ? "z-1 border-primary-rich/65 bg-linear-to-br from-primary-dimmed to-emphasis-dimmed shadow-lg shadow-primary/20"
                   : "border-background-rich/20 bg-linear-to-br from-emphasis-rich to-emphasis-dimmed",
               )}
             >
@@ -127,7 +127,7 @@ export const IntegrationWorkflowGraphic = ({
           ))}
         </div>
       ) : kind === "publish" ? (
-        <div className="w-full max-w-96 rounded-md border border-background-rich/15 bg-emphasis/70 px-5 py-4 font-mono text-sm leading-7">
+        <div className="w-full max-w-96 rounded-sm border border-background-rich/15 bg-emphasis/70 px-5 py-4 font-mono text-sm leading-7">
           <span className="text-background-rich/45">{"{"}</span>
           <p>
             <span className="text-primary-rich">
@@ -178,7 +178,7 @@ export const IntegrationWorkflowGraphic = ({
             }
             viewport={{ once: true, amount: 0.5 }}
             transition={{ duration: 0.7, ease: [0.23, 1, 0.32, 1] }}
-            className="absolute inset-x-4 top-7 overflow-hidden rounded-lg border border-primary-rich/45 bg-linear-to-br from-emphasis-rich to-emphasis-dimmed shadow-[0_20px_45px_-25px_var(--color-primary)] [transform:rotateY(-16deg)_rotateX(8deg)_rotate(-2deg)]"
+            className="absolute inset-x-4 top-7 overflow-hidden rounded-lg border border-primary-rich/45 bg-linear-to-br from-emphasis-rich to-emphasis-dimmed shadow-lg shadow-primary/20 [transform:rotateY(-16deg)_rotateX(8deg)_rotate(-2deg)]"
           >
             <div className="flex items-center gap-2 border-background-rich/15 border-b px-4 py-3 font-mono text-background-rich/75 text-xs">
               <span className="size-1.5 rounded-full bg-primary-rich" />

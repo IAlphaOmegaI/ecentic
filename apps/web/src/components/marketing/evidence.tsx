@@ -56,7 +56,7 @@ export const EvidenceFrame = async ({
       <header className="relative mb-6">
         <h3
           id={`${id}-title`}
-          className="max-w-[28ch] font-heading text-[clamp(1.65rem,2.5vw,2.4rem)] leading-tight tracking-[-0.025em]"
+          className="max-w-[28ch] font-heading text-2xl xl:text-3xl 2xl:text-4xl leading-tight tracking-tight"
         >
           {title}
         </h3>

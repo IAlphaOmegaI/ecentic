@@ -5,11 +5,19 @@ import {
   CheckIcon,
   CircleMinusIcon,
   CodeIcon,
+  CommerceFileShieldIcon,
+  CommerceGlobePointerIcon,
   ShieldCheckIcon,
   XCircleIcon,
 } from "@zenncore/icons";
 import { cn } from "@zenncore/utils";
 import { useAsyncAction } from "@zenncore/utils/hooks";
+import {
+  Accordion,
+  AccordionItem,
+  AccordionPanel,
+  AccordionTrigger,
+} from "@zenncore/web/components/accordion";
 import { Button } from "@zenncore/web/components/button";
 import { ScrollArea } from "@zenncore/web/components/scroll-area";
 import { TextField, TextFieldInput } from "@zenncore/web/components/text-field";
@@ -18,7 +26,10 @@ import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { type SubmitEvent, useState } from "react";
-import { StatusPill } from "@/app/[locale]/(main)/dashboard/_components/grid";
+import {
+  Crosshair,
+  StatusPill,
+} from "@/app/[locale]/(main)/dashboard/_components/grid";
 import { Reveal, RevealItem } from "@/components/reveal";
 import { Fade } from "@/lib/animations";
 import { LATEST_UCP_VERSION, UCP_REVISIONS } from "@/lib/ucp";
@@ -98,10 +109,10 @@ const DomainCheckPreview = ({ domain, label }: DomainCheckPreview.Props) => {
         </div>
         <ScrollArea
           viewportProps={{ role: "region", "aria-label": label }}
-          className="max-w-full rounded-xs border border-accent-foreground bg-background"
+          className="max-w-full rounded-sm border border-accent-foreground bg-background"
           classList={{
             viewport:
-              "overscroll-y-auto rounded-xs focus-visible:outline-2 focus-visible:outline-primary-text",
+              "overscroll-y-auto rounded-sm focus-visible:outline-2 focus-visible:outline-primary-text",
           }}
         >
           <pre className="w-max min-w-full p-4 font-mono text-foreground-dimmed text-xs leading-relaxed sm:text-sm">
@@ -125,17 +136,23 @@ export namespace DomainCheckPreview {
   };
 }
 
-const ValidationTargetsSection = () => {
+const ValidationTargetsSection = ({
+  hideTitle = false,
+}: {
+  hideTitle?: boolean;
+}) => {
   const translate = useTranslations("ucpValidator.form");
 
   return (
     <div className="border-accent-foreground border-t bg-background">
       <div className="relative">
-        <div className="px-7 pt-6 pb-3 max-sm:px-4">
-          <p className="font-medium text-primary-text text-sm">
-            {translate("targets.title")}
-          </p>
-        </div>
+        {!hideTitle && (
+          <div className="px-7 pt-6 pb-3 max-sm:px-4">
+            <p className="font-medium text-primary-text text-sm">
+              {translate("targets.title")}
+            </p>
+          </div>
+        )}
         <Reveal className="relative grid grid-cols-2 gap-px border-accent-foreground border-t bg-accent-foreground lg:grid-cols-4">
           {validationTargets.map((target) => (
             <RevealItem
@@ -192,11 +209,11 @@ const ValidationBadge = ({ label, tone }: { label: string; tone: Tone }) => (
 );
 
 const tokenColor: Record<JToken["type"], string> = {
-  key: "text-blue-400",
-  string: "text-green-400",
-  number: "text-orange-400",
-  boolean: "text-purple-400",
-  null: "text-orange-300/60",
+  key: "text-primary-rich",
+  string: "text-success-rich",
+  number: "text-warning-rich",
+  boolean: "text-secondary-rich",
+  null: "text-warning-rich/60",
   punct: "text-foreground-dimmed/60",
   space: "",
 };
@@ -931,7 +948,13 @@ const SpecIssuesSection = ({
   );
 };
 
-const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
+const Results = ({
+  result,
+  className,
+}: {
+  result: UcpCheck.UcpCheckResult;
+  className?: string;
+}) => {
   const translate = useTranslations("ucpValidator.form");
   const errorCount = result.specIssues.filter(
     (issue) => issue.severity === "error",
@@ -967,7 +990,7 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
       initial="hidden"
       animate="visible"
       exit={{ opacity: 0, transition: { duration: 0.15 } }}
-      className="border-accent-foreground border-t"
+      className={cn("border-accent-foreground border-t", className)}
     >
       <div className="border-accent-foreground border-b bg-background-rich px-6 py-6 sm:px-8">
         <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
@@ -1307,10 +1330,13 @@ const Results = ({ result }: { result: UcpCheck.UcpCheckResult }) => {
 export const UcpValidatorForm = ({
   hideIntro = false,
   previewLabel,
+  appearance = "default",
+  initialDomain = "",
 }: UcpValidatorForm.Props) => {
   const translate = useTranslations("ucpValidator.form");
+  const review = useTranslations("dashboard.ucp.review");
   const toast = useToastManager();
-  const [domain, setDomain] = useState("");
+  const [domain, setDomain] = useState(initialDomain);
   const [result, setResult] = useState<UcpCheck.UcpCheckResult | null>(null);
   const [run, setRun] = useState(0);
 
@@ -1335,6 +1361,122 @@ export const UcpValidatorForm = ({
     handleCheck();
   };
 
+  if (appearance === "dashboard")
+    return (
+      <div className="min-w-0">
+        <section className="relative border-accent-foreground border-b px-4 py-6 sm:px-6 sm:py-8">
+          <div className="flex items-start gap-3">
+            <CommerceGlobePointerIcon
+              aria-hidden="true"
+              className="mt-0.5 size-6 shrink-0 text-primary"
+            />
+            <div>
+              <h2 className="font-heading font-semibold text-foreground-rich text-xl">
+                {review("check.title")}
+              </h2>
+              <p className="mt-2 max-w-2xl text-foreground-dimmed text-sm leading-6">
+                {review("check.description")}
+              </p>
+            </div>
+          </div>
+          <form onSubmit={handleSubmit} className="mt-6 max-w-3xl">
+            <label
+              htmlFor="ucp-domain"
+              className="font-medium text-foreground text-sm"
+            >
+              {translate("panel.storefrontDomain")}
+            </label>
+            <div className="mt-2 flex flex-col gap-2 sm:flex-row sm:items-stretch">
+              <TextField
+                value={domain}
+                onValueChange={setDomain}
+                className="min-w-0 bg-background sm:flex-1"
+              >
+                <TextFieldInput
+                  id="ucp-domain"
+                  aria-describedby="ucp-domain-hint"
+                  placeholder={translate("panel.placeholder")}
+                />
+              </TextField>
+              <Button
+                type="submit"
+                color="primary"
+                variant="soft"
+                disabled={isChecking || !domain.trim()}
+                className="w-full shrink-0 sm:w-auto"
+              >
+                {isChecking
+                  ? translate("action.checking")
+                  : translate("action.primary")}
+              </Button>
+            </div>
+            <p
+              id="ucp-domain-hint"
+              className="mt-3 text-foreground-dimmed text-xs leading-5"
+            >
+              {review("check.hint")}
+            </p>
+          </form>
+          <Crosshair className="right-1 bottom-0 translate-y-1/2" />
+        </section>
+        <AnimatePresence mode="wait" initial={false}>
+          {result && (
+            <Results
+              key={run}
+              result={result}
+              className="border-t-0 border-b"
+            />
+          )}
+        </AnimatePresence>
+        <Accordion>
+          <AccordionItem value="coverage" className="border-accent-foreground">
+            <AccordionTrigger
+              className="items-center px-4 py-5 sm:px-6"
+              classList={{
+                trigger: {
+                  icon: "shrink-0 transition-transform duration-200 motion-reduce:transition-none",
+                },
+              }}
+            >
+              <span className="flex min-w-0 items-start gap-3">
+                <CommerceFileShieldIcon
+                  aria-hidden="true"
+                  className="mt-0.5 size-5 shrink-0 text-foreground-dimmed"
+                />
+                <span className="min-w-0">
+                  <span className="block font-medium text-foreground text-sm">
+                    {review("details.title")}
+                  </span>
+                  <span className="mt-1 block font-normal text-foreground-dimmed text-sm leading-5">
+                    {review("details.description")}
+                  </span>
+                </span>
+              </span>
+            </AccordionTrigger>
+            <AccordionPanel className="duration-200 motion-reduce:transition-none">
+              <dl className="grid gap-x-8 gap-y-5 px-4 pt-1 pb-6 sm:grid-cols-2 sm:px-6">
+                {validationTargets.map((target) => (
+                  <div key={target.key} className="min-w-0">
+                    <dt className="font-medium text-foreground text-sm">
+                      {translate(`targets.${target.key}.label`)}
+                    </dt>
+                    <dd className="mt-1 text-foreground-dimmed text-sm leading-5">
+                      {translate(`targets.${target.key}.detail`)}
+                      {"code" in target && (
+                        <code className="mt-1 block break-all text-xs">
+                          {target.code}
+                        </code>
+                      )}
+                    </dd>
+                  </div>
+                ))}
+              </dl>
+            </AccordionPanel>
+          </AccordionItem>
+        </Accordion>
+      </div>
+    );
+
   return (
     <div className="flex flex-col">
       {hideIntro ? (
@@ -1354,7 +1496,7 @@ export const UcpValidatorForm = ({
                 <TextField
                   value={domain}
                   onValueChange={setDomain}
-                  className="min-w-0 flex-1"
+                  className="min-w-0 sm:flex-1"
                 >
                   <TextFieldInput
                     id="ucp-domain"
@@ -1422,7 +1564,7 @@ export const UcpValidatorForm = ({
                 <TextField
                   value={domain}
                   onValueChange={setDomain}
-                  className="flex-1"
+                  className="min-w-0 sm:flex-1"
                 >
                   <TextFieldInput
                     id="ucp-domain"
@@ -1466,5 +1608,7 @@ export namespace UcpValidatorForm {
   export type Props = {
     hideIntro?: boolean;
     previewLabel?: string;
+    appearance?: "default" | "dashboard";
+    initialDomain?: string;
   };
 }

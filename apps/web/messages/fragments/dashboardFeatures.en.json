@@ -578,8 +578,7 @@
       },
       "composer": {
         "placeholder": "Ask the agent to shop {host}…",
-        "hint": "Enter to send · Shift + Enter for a new line",
-        "remaining": "{remaining} of {limit} free {limit, plural, one {message} other {messages}} left in this playground."
+        "hint": "Enter to send · Shift + Enter for a new line"
       },
       "quota": {
         "title": "You've used all {limit} free playground messages",

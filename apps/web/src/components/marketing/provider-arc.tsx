@@ -121,7 +121,7 @@ export const ProviderArc = ({
         <svg
           viewBox="0 0 1200 360"
           preserveAspectRatio="none"
-          className="absolute inset-x-0 top-4 hidden h-[360px] w-full text-primary/25 lg:block"
+          className="absolute inset-x-0 top-4 hidden h-90 w-full text-primary/25 lg:block"
         >
           <path
             d="M 0 50 Q 250 212.5 500 239.583 M 700 239.583 Q 950 212.5 1200 50"
@@ -134,7 +134,7 @@ export const ProviderArc = ({
       </div>
       <div
         data-provider-hub
-        className="relative z-1 flex flex-col items-center gap-5 px-4 pt-8 lg:absolute lg:top-[224px] lg:left-1/2 lg:w-52 lg:-translate-x-1/2 lg:p-0"
+        className="relative z-1 flex flex-col items-center gap-5 px-4 pt-8 lg:absolute lg:top-56 lg:left-1/2 lg:w-52 lg:-translate-x-1/2 lg:p-0"
       >
         <Image
           src="/images/trademark.svg"
@@ -147,7 +147,7 @@ export const ProviderArc = ({
       </div>
       <ul
         aria-label={label}
-        className="relative m-0 grid list-none grid-cols-2 gap-x-1 gap-y-12 px-3 pt-12 pb-10 sm:px-5 lg:block lg:h-[360px] lg:p-0 min-[381px]:grid-cols-4"
+        className="relative m-0 grid list-none grid-cols-2 gap-x-1 gap-y-12 px-3 pt-12 pb-10 sm:px-5 lg:block lg:h-90 lg:p-0 min-[381px]:grid-cols-4"
       >
         {items.map((item, index) => {
           const position = (() => {
@@ -170,7 +170,7 @@ export const ProviderArc = ({
             <li
               key={item.provider}
               data-provider-port
-              className="relative min-w-0 lg:absolute lg:top-(--provider-top) lg:left-(--provider-left) lg:w-[104px] lg:-translate-x-1/2"
+              className="relative min-w-0 lg:absolute lg:top-(--provider-top) lg:left-(--provider-left) lg:w-26 lg:-translate-x-1/2"
               style={
                 {
                   "--provider-left": `${position.horizontal}%`,
@@ -204,14 +204,14 @@ export const ProviderArc = ({
                       decorative
                       fallback="none"
                       className={cn(
-                        "h-auto max-h-10 max-w-[62px] shrink-0 rounded-none object-center sm:max-w-20 lg:max-h-11 lg:max-w-[92px]",
+                        "h-auto max-h-10 max-w-15.5 shrink-0 rounded-none object-center sm:max-w-20 lg:max-h-11 lg:max-w-23",
                         providerLogos[item.provider].width /
                           providerLogos[item.provider].height >
                           6 && "sm:min-w-24 lg:min-w-28",
                       )}
                     />
                   </span>
-                  <span className="max-w-full text-[11px] leading-tight sm:text-xs">
+                  <span className="max-w-full text-xs leading-tight sm:text-xs">
                     {name}
                   </span>
                 </Motion.Item>

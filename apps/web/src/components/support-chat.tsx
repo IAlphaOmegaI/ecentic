@@ -20,7 +20,7 @@ export const SupportChat = () => {
       {failed && (
         <p role="status">
           <a
-            className="rounded-md border border-accent-foreground bg-background px-4 py-3 text-foreground text-sm shadow-md"
+            className="rounded-sm border border-accent-foreground bg-background px-4 py-3 text-foreground text-sm shadow-md"
             href="mailto:support@ecentic.ai"
           >
             {translate("unavailable")}

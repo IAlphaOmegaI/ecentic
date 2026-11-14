@@ -32,7 +32,7 @@ const storefrontHost = (domain: string) =>
 const StoreMark = ({ name }: { name: string }) => (
   <span
     aria-hidden
-    className="flex size-8 shrink-0 items-center justify-center rounded-md bg-primary/10 font-semibold text-primary text-xs"
+    className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 font-semibold text-primary-text text-xs"
   >
     {name.slice(0, 1).toUpperCase() || "?"}
   </span>
@@ -47,22 +47,27 @@ export const StoreSwitcher = ({
   const currentName = current?.name ?? translate("selectStore");
 
   return (
-    <div className="border-accent-foreground border-b p-2">
+    <div className="shrink-0 px-3 pt-2 pb-3">
       <DropdownMenu>
-        <DropdownMenuTrigger className="group flex w-full items-center gap-2.5 rounded-md px-2 py-1.5 text-left transition-colors hover:bg-background-dimmed data-popup-open:bg-background-dimmed">
-          <StoreMark name={currentName} />
+        <DropdownMenuTrigger className="group flex w-full items-center gap-2.5 rounded-lg px-2 py-2 text-left transition-colors hover:bg-background-rich/8 focus-visible:outline-2 focus-visible:outline-primary data-popup-open:bg-background-rich/8">
+          <span
+            aria-hidden
+            className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-background-rich/12 font-semibold text-background-rich text-sm"
+          >
+            {currentName.slice(0, 1).toUpperCase() || "?"}
+          </span>
           <div className="flex min-w-0 flex-1 flex-col">
-            <span className="truncate font-semibold text-foreground text-sm">
+            <span className="truncate font-semibold text-background-rich text-sm">
               {currentName}
             </span>
-            <span className="truncate text-[11px] text-foreground-dimmed">
+            <span className="mt-0.5 truncate text-background-rich/60 text-xs">
               {current?.domain ? storefrontHost(current.domain) : "—"}
             </span>
           </div>
-          <ChevronDownIcon className="size-4 shrink-0 text-foreground-dimmed transition-transform group-data-[popup-open]:rotate-180" />
+          <ChevronDownIcon className="size-4 shrink-0 text-background-rich/65 transition-transform group-data-[popup-open]:rotate-180" />
         </DropdownMenuTrigger>
         <DropdownMenuContent
-          className="min-w-64 border border-accent-foreground bg-background-rich p-1"
+          className="min-w-64 border border-accent-foreground bg-background-rich p-1 font-normal"
           sideOffset={6}
         >
           {stores.map((item) => {
@@ -79,7 +84,7 @@ export const StoreSwitcher = ({
                   <span className="truncate font-medium text-foreground text-sm">
                     {item.name}
                   </span>
-                  <span className="truncate text-[11px] text-foreground-dimmed">
+                  <span className="truncate text-xs text-foreground-dimmed">
                     {storefrontHost(item.domain)}
                   </span>
                 </span>

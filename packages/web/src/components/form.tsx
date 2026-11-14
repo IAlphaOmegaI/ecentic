@@ -148,7 +148,7 @@ export const FieldControl = ({
   return (
     <FieldPrimitive.Control
       className={createClassName(
-        "h-10 w-full rounded-md border border-gray-200 pl-3.5 text-base text-gray-900 focus:outline focus:outline-blue-800 focus:-outline-offset-1",
+        "h-10 w-full rounded-lg border border-accent-foreground pl-3.5 text-base text-foreground-rich focus:outline focus:outline-primary focus:-outline-offset-1",
         className,
       )}
       {...props}

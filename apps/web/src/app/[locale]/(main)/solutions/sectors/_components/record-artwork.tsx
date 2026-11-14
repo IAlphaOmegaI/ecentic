@@ -23,7 +23,7 @@ export const SectorRecordArtwork = ({
     <CommerceFigure
       kind={figures[sector]}
       surface={surface}
-      className="mx-auto aspect-[4/3] max-w-[440px]"
+      className="mx-auto aspect-[4/3] max-w-110"
     />
   </div>
 );

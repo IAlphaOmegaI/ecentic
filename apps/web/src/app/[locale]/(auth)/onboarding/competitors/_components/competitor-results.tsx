@@ -1,10 +1,12 @@
 "use client";
 
+import { cn } from "@zenncore/utils";
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
 } from "@zenncore/web/components/avatar";
+import { Button } from "@zenncore/web/components/button";
 import { ScrollArea } from "@zenncore/web/components/scroll-area";
 import { AnimatePresence, motion } from "motion/react";
 import Image from "next/image";
@@ -14,7 +16,7 @@ import {
   isMeasuredCompetitor,
   isVerifiedCompetitor,
 } from "@/lib/competitor-source";
-import { formatPrice } from "@/lib/currency";
+import { formatPrice, normalizePrice } from "@/lib/currency";
 import type * as Competitor from "@/server/app/competitor";
 
 export namespace CompetitorResults {
@@ -23,6 +25,7 @@ export namespace CompetitorResults {
     noun: "competitor" | "product";
     verb: "found" | "extracted";
     onClear: () => void;
+    dashboard?: boolean;
   };
 }
 
@@ -31,12 +34,28 @@ export const CompetitorResults = ({
   noun,
   verb,
   onClear,
+  dashboard = false,
 }: CompetitorResults.Props) => {
   const translate = useTranslations("onboarding.competitors.results");
 
   return (
     <>
-      <ScrollArea className="min-h-0 flex-1 bg-background-rich">
+      <ScrollArea
+        className={cn(
+          "min-h-0 flex-1 bg-background-rich",
+          dashboard && "h-80 flex-none",
+        )}
+        viewportProps={{
+          role: "region",
+          tabIndex: 0,
+          "aria-label": translate(
+            noun === "competitor"
+              ? "countCompetitorFound"
+              : "countProductExtracted",
+            { count: competitors.length },
+          ),
+        }}
+      >
         <AnimatePresence initial={false}>
           {competitors.map((competitor) => (
             <motion.div
@@ -47,7 +66,7 @@ export const CompetitorResults = ({
               transition={Spring.Snappy}
               className="flex items-start gap-3 border-accent-foreground border-b p-3 transition-colors last:border-b-0 hover:bg-background-dimmed/40"
             >
-              <Avatar className="size-10 shrink-0 rounded-none bg-primary/10">
+              <Avatar className="size-10 shrink-0 rounded-lg bg-primary/10">
                 <AvatarImage
                   src={competitor.image ?? "/images/fallback.png"}
                   alt={competitor.title}
@@ -70,13 +89,13 @@ export const CompetitorResults = ({
                     switch (true) {
                       case isVerifiedCompetitor(competitor.confidence):
                         return (
-                          <span className="shrink-0 border border-primary/40 bg-primary/10 px-1.5 py-px font-medium text-[10px] text-primary uppercase tracking-wide">
+                          <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs">
                             {translate("verified")}
                           </span>
                         );
                       case isMeasuredCompetitor(competitor.source):
                         return (
-                          <span className="shrink-0 border border-primary/40 bg-primary/10 px-1.5 py-px font-medium text-[10px] text-primary uppercase tracking-wide">
+                          <span className="shrink-0 rounded-full bg-primary/10 px-2 py-0.5 font-medium text-primary text-xs">
                             {translate("measured")}
                           </span>
                         );
@@ -97,7 +116,12 @@ export const CompetitorResults = ({
                 )}
               </div>
               <p className="shrink-0 font-medium text-primary text-sm tabular-nums">
-                {formatPrice(competitor.price, competitor.currency)}
+                {!isVerifiedCompetitor(competitor.confidence) ||
+                !competitor.price
+                  ? "—"
+                  : competitor.currency
+                    ? formatPrice(competitor.price, competitor.currency)
+                    : normalizePrice(competitor.price)}
               </p>
             </motion.div>
           ))}
@@ -110,13 +134,15 @@ export const CompetitorResults = ({
             ? translate("countCompetitorFound", { count: competitors.length })
             : translate("countProductExtracted", { count: competitors.length })}
         </span>
-        <button
+        <Button
+          variant="soft"
+          color="neutral"
           type="button"
           onClick={onClear}
           className="text-foreground-dimmed text-xs transition-colors hover:text-foreground"
         >
           {translate("clear")}
-        </button>
+        </Button>
       </div>
     </>
   );

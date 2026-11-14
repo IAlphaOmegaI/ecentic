@@ -78,7 +78,7 @@ const Snippet = ({ source }: { source: string }) => {
           {translate(copied ? "copied" : "action.secondary")}
         </Button>
       </div>
-      <pre className="max-h-80 overflow-auto rounded border border-accent-foreground bg-background-dimmed p-4 font-mono text-foreground text-xs leading-relaxed">
+      <pre className="max-h-80 overflow-auto rounded-sm border border-accent-foreground bg-background-dimmed p-4 font-mono text-foreground text-xs leading-relaxed">
         <code>{source}</code>
       </pre>
       <p aria-live="polite" className="text-foreground-dimmed text-xs">

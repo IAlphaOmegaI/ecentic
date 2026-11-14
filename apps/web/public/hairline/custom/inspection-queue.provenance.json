@@ -1,0 +1,14 @@
+{
+  "name": "inspection-queue",
+  "purpose": "Waiting-to-inspect catalog records in the Data quality empty state",
+  "reference": "/images/quality/inspection-queue.webp",
+  "figure": "/hairline/custom/inspection-queue.js",
+  "sourceSha256": "a9a18ef3b7bbb4a8b4911556f8d2f072fbf81ca11b658e92f3b701c3a3165529",
+  "rest": "apps/web/src/components/hairline/rest/inspection-queue.json",
+  "restSha256": "b78b16613984814c3414e1cd001e87928fa56cd32eaf2818f05bd63f7025459a",
+  "engine": "Fixed Hairline kernel, unchanged",
+  "pointer": "Choose a record by its fixed rest position. That record lifts, neighbors part with distance stagger, and scanner follows the same slot.",
+  "reducedMotion": "Complete server rest SVG; shared wrapper does not mount interactive pointer code under reduced motion.",
+  "validation": "hairline-create look.mjs;8poses pass frame/readout/console, rest covers38percent of viewBox; body motion settles within1.8seconds",
+  "assetRole": "Decorative illustration only, no claim that an audit passed or records were submitted."
+}

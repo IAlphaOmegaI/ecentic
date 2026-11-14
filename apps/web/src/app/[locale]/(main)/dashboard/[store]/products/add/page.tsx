@@ -1,5 +1,4 @@
 import { ArrowLeftIcon } from "@zenncore/icons";
-import { unwrapResult } from "@zenncore/utils";
 import { Button } from "@zenncore/web/components/button";
 import { notFound } from "next/navigation";
 import { connection } from "next/server";
@@ -12,6 +11,7 @@ import * as Store from "@/server/app/store";
 import { Environment } from "@/server/utils/environment";
 import { StatusPillSkeleton } from "../../../_components/chrome-skeletons";
 import { StatusPill } from "../../../_components/grid";
+import { CatalogFeedback } from "../_components/shell";
 import { AddProducts } from "./_components/add-products";
 import {
   AddProductsShell,
@@ -19,9 +19,12 @@ import {
   SourcesSkeleton,
 } from "./_components/shell";
 
-type StoreParams = PageProps<"/dashboard/[store]/products/add">["params"];
+type StoreParams =
+  PageProps<"/[locale]/dashboard/[store]/products/add">["params"];
 
-export default ({ params }: PageProps<"/dashboard/[store]/products/add">) => (
+export default ({
+  params,
+}: PageProps<"/[locale]/dashboard/[store]/products/add">) => (
   <AddProductsShell
     statusPill={
       <Suspense fallback={<StatusPillSkeleton />}>
@@ -48,16 +51,17 @@ const CatalogStatus = async ({ params }: { params: StoreParams }) => {
   const translate = await getTranslations("dashboard.products.add");
   const shared = await getTranslations("dashboard.shared");
   const [resolved, total] = await Promise.all([
-    unwrapResult(Store.resolveForUser(Environment.SERVER, { store })),
-    unwrapResult(Product.countForCurrentUser(Environment.SERVER, { store })),
+    Store.resolveForUser(Environment.SERVER, { store }),
+    Product.countForCurrentUser(Environment.SERVER, { store }),
   ]);
 
+  if (!resolved.success || !total.success) return null;
   return (
-    <StatusPill tone={resolved.lastSyncedAt ? "success" : "neutral"}>
-      {`${shared("count.products", { count: total })} · `}
-      {resolved.lastSyncedAt
+    <StatusPill tone={resolved.data.lastSyncedAt ? "success" : "neutral"}>
+      {`${shared("count.products", { count: total.data })} · `}
+      {resolved.data.lastSyncedAt
         ? translate("catalogSynced", {
-            time: formatRelativeTime(resolved.lastSyncedAt, locale),
+            time: formatRelativeTime(resolved.data.lastSyncedAt, locale),
           })
         : translate("catalogNeverSynced")}
     </StatusPill>
@@ -70,7 +74,10 @@ const Sources = async ({ params }: { params: StoreParams }) => {
   // The layout already 404s an unowned store, but this component reads the row
   // itself — resolve through the ownership-checked path rather than a bare get.
   const resolved = await Store.resolveForUser(Environment.SERVER, { store });
-  if (!resolved.success) notFound();
+  if (!resolved.success) {
+    if (resolved.error.name === "not-found-error") notFound();
+    return <CatalogFeedback kind="error" />;
+  }
 
   return (
     <AddProducts
@@ -87,7 +94,8 @@ const BackToProducts = async ({ params }: { params: StoreParams }) => {
 
   return (
     <Button
-      color="accent"
+      variant="soft"
+      color="neutral"
       render={<Link href={`/dashboard/${store}/products`} />}
     >
       <ArrowLeftIcon className="size-4" />

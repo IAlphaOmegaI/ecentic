@@ -1,0 +1,76 @@
+{
+  "dashboard": {
+    "productChannels": {
+      "tab": "商品信息与渠道",
+      "title": "商品在各渠道中的展示",
+      "description": "预览已保存的商品信息，并查看连接情况和商品 Feed 记录。",
+      "preview": {
+        "title": "已保存商品信息预览",
+        "description": "此处仅展示保存数据的呈现示例，实际展示位置和布局可能不同。",
+        "storefront": "店铺",
+        "google": "Google",
+        "chatgpt": "ChatGPT",
+        "imageMissing": "未保存商品图片",
+        "descriptionMissing": "未保存商品描述",
+        "priceMissing": "未保存价格",
+        "storefrontNote": "已导入的商品详情",
+        "googleNote": "用于购物搜索结果的商品信息",
+        "chatgptNote": "用于助手商品卡片的商品信息",
+        "sample": "预览",
+        "googleMode": "AI 模式",
+        "details": "商品详情",
+        "store": "商店",
+        "query": "帮我看看{product}",
+        "action": {
+          "primary": "访问网站"
+        }
+      },
+      "source": {
+        "title": "商品目录连接",
+        "unknown": "无法获取连接详情",
+        "unknownDescription": "请打开集成页面，检查商品目录连接。",
+        "lastSync": "目录同步时间",
+        "productSync": "商品同步时间",
+        "notSynced": "暂无同步记录",
+        "status": "连接状态",
+        "error": "需要检查",
+        "unavailable": "无法获取状态",
+        "connected": "已连接",
+        "syncing": "正在同步目录",
+        "disconnected": "未连接",
+        "publicImport": "公开商品目录导入",
+        "platform": {
+          "feed": "商品 Feed",
+          "csv": "CSV 导入",
+          "unknown": "商品目录来源"
+        }
+      },
+      "google": {
+        "title": "Google 商品 Feed 记录",
+        "description": "这里显示的是已保存的同步记录，并非对 Google 的实时检查。“覆盖更新已验证”表示补充更新已合并，不代表 Google 已展示该商品。",
+        "unavailable": "无法加载商品 Feed 记录。请打开 Google Shopping，检查连接情况。",
+        "unsupported": "此商品目录来源暂不支持 Google 补充数据同步。",
+        "notConnected": "Google Merchant Center 尚未连接到此商品目录。",
+        "setup": "需要先完成连接设置，才能发送商品记录。",
+        "ready": "连接已就绪，但尚未保存此商品的 Feed 记录。",
+        "pending": "待处理",
+        "live": "覆盖更新已验证",
+        "disapproved": "未获批准",
+        "error": "更新失败",
+        "lastSent": "发送于{time}",
+        "lastChecked": "检查于{time}",
+        "offer": "商品条目 {id}"
+      },
+      "assistant": {
+        "title": "助手发现商品",
+        "description": "此预览不能证明 ChatGPT 已收录或推荐该商品。请完善商品详情，并检查已发布的商品发现资源，便于助手找到商品。"
+      },
+      "action": {
+        "primary": "管理连接",
+        "secondary": "打开 Google Shopping",
+        "tertiary": "查看店铺",
+        "quaternary": "检查商品发现设置"
+      }
+    }
+  }
+}

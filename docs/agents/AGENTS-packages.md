@@ -167,11 +167,9 @@ Use `DataTableProvider` + `DataTable` + `DataTablePagination` for all tables.
 import {
   DataTable,
   DataTableEmpty,
-  DataTableFooter,
-  DataTableHeader,
   DataTablePagination,
   DataTableProvider,
-} from "@zenncore/web/components";
+} from "@zenncore/web/components/data-table";
 // ColumnDef is re-exported pre-bound to the data-table feature set — do not
 // import it from @tanstack/react-table (the raw v9 type requires a TFeatures generic).
 import type { ColumnDef } from "@zenncore/web/components/data-table";
@@ -183,8 +181,8 @@ const columns: ColumnDef<Row>[] = [
   { accessorKey: "status", header: "Status" },
 ];
 
-export const UsersTable = ({ data }: { data: Row[] }) => (
-  <DataTableProvider data={data} columns={columns}>
+export const UsersTable = ({ rows }: { rows: Row[] }) => (
+  <DataTableProvider rows={rows} columns={columns}>
     <DataTable>
       <DataTableEmpty>No users found.</DataTableEmpty>
     </DataTable>
@@ -193,10 +191,14 @@ export const UsersTable = ({ data }: { data: Row[] }) => (
 );
 ```
 
-- `DataTableProvider` — wraps data + columns, exposes `useDataTable()` context
+- `DataTableProvider` — requires `rows` + `columns`; each row has a stable `_id`. Client pagination defaults to `pageIndex={1}` and `pageSize={20}`. For server pagination, pass `handler="server"`, the current page's `rows`, `pageSize`, and either `rowCount` or `pageCount`. `pageIndex` and `onPaginationChange` use **1-based** indexes. There are no `data`, `total`, `initialState`, or `getRowId` props.
 - `DataTable` — renders `<Table>` with headers/rows. Accepts `className` and `classList` for `"header-cell"`, `"body-row"`, `"body-cell"`
-- `DataTableHeader` / `DataTableFooter` / `DataTableEmpty` — slot components for customization
-- `DataTablePagination` — renders pagination controls using `useDataTable()` context
+- `DataTableHeader` / `DataTableFooter` / `DataTableEmpty` — slot components placed **inside `DataTable`**, not beside it. Header/footer content uses the shared `TableRow`, `TableHead`, and `TableCell` components.
+- `DataTablePagination` — renders controls using `useDataTable()`; pass translated `labels` in app screens.
+- `useDataTable()` returns `{ table, pagination }`. Sorting, filtering, selection, and visibility are accessed through `table`, not additional context properties. Sorting/filtering row models are not registered: callbacks report state changes, and the caller supplies processed rows.
+- `DataTable` has no `onRowClick` prop. Put an accessible `Link` or shared `Button` in a column cell for row navigation/actions.
+
+See [the web API](../web/data-table.md) and [provider/hooks reference](../shared/data-table/index.md) for the complete contract.
 
 ---
 

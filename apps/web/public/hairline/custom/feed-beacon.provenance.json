@@ -1,0 +1,32 @@
+{
+  "name": "feed-beacon",
+  "subject": "visibility",
+  "meaning": "A catalog feeder with a telescoping beacon: extend the feed antenna above the records.",
+  "part": "antenna",
+  "answer": [
+    91,
+    28,
+    101
+  ],
+  "bounds": [
+    [
+      -6,
+      -5,
+      0
+    ],
+    [
+      124,
+      75,
+      146
+    ]
+  ],
+  "scale": 1.7,
+  "figure": "/hairline/custom/feed-beacon.js",
+  "rest": "apps/web/src/components/hairline/rest/feed-beacon.json",
+  "sourceSha256": "7dadaf8f31f8a03f033c525d74e2f46dabade60f9d0b398581c4179598c05c0b",
+  "restSha256": "cc23fb57a6ed7c132f3a85c15babd950ee874f82ebb78be3b2b2134da1fbdf36",
+  "engine": "Unmodified fixed Hairline kernel",
+  "interaction": "Fixed rest hit area; 700ms EASE_LIFT tween; bounded reach; linked responses delayed 40ms; loop sleeps after settlement.",
+  "reducedMotion": "SSR rest geometry remains complete. Shared CustomHairlineFigure disables pointer code and asset enhancement for reduced motion.",
+  "validation": "output/dashboard-hairline-2026-11-14/feed-beacon.validation.txt"
+}

@@ -1,0 +1,12 @@
+{
+  "dashboard": {
+    "commandPalette": {
+      "states": {
+        "unavailable": "搜索暂时不可用，请重试。"
+      },
+      "action": {
+        "primary": "重试"
+      }
+    }
+  }
+}

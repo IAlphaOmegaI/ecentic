@@ -103,7 +103,7 @@ export const MeasurementDial = ({
         className="absolute inset-0 flex flex-col items-center justify-center text-center"
       >
         <div className="flex items-baseline gap-2">
-          <strong className="font-heading font-medium text-[clamp(76px,8vw,112px)] text-foreground-rich leading-none tracking-[-0.075em]">
+          <strong className="font-heading font-medium text-7xl xl:text-8xl text-foreground-rich leading-none tracking-tighter">
             {value}
           </strong>
           <span className="text-foreground-dimmed">/ {maximum}</span>
@@ -155,7 +155,7 @@ export const MeasurementBars = ({
               className="absolute inset-x-0 border-accent-foreground border-t"
               style={{ bottom: `${(index / (ticks.length - 1)) * 100}%` }}
             >
-              <span className="absolute right-full -mt-2 mr-3 whitespace-nowrap text-[11px] text-foreground-dimmed tabular-nums">
+              <span className="absolute right-full -mt-2 mr-3 whitespace-nowrap text-xs text-foreground-dimmed tabular-nums">
                 {tick}
               </span>
             </div>
@@ -186,7 +186,7 @@ export const MeasurementBars = ({
                   ease: [0.22, 0.68, 0, 1],
                 }}
                 className={cn(
-                  "absolute inset-x-0 bottom-0 rounded-t-md border border-b-0",
+                  "absolute inset-x-0 bottom-0 rounded-t-sm border border-b-0",
                   entry.primary
                     ? "border-primary bg-primary/8"
                     : "border-foreground-dimmed/70 bg-background-rich",
@@ -273,13 +273,13 @@ export const MeasurementRule = ({
   const value = Math.max(0, Math.min(100, percentage));
   return (
     <div aria-hidden data-measurement="rule" className="relative pt-5 pb-6">
-      <div className="relative h-3 rounded-md border border-accent-foreground">
+      <div className="relative h-3 rounded-sm border border-accent-foreground">
         <Motion.Item
           initial={false}
           animate={{ width: `${value}%` }}
           transition={{ duration: reduced ? 0 : 0.3 }}
           className={cn(
-            "absolute inset-y-0 left-0 rounded-md border bg-background-rich",
+            "absolute inset-y-0 left-0 rounded-sm border bg-background-rich",
             tone === "success"
               ? "border-success bg-success/10"
               : tone === "warning"

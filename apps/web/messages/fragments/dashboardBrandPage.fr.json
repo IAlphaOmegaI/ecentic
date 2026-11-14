@@ -1,0 +1,133 @@
+{
+  "dashboard": {
+    "brand": {
+      "design": {
+        "title": "Marque",
+        "description": "Comment votre marque apparaît dans des réponses d’achat simulées.",
+        "updated": "Analyse effectuée {time}",
+        "sample": "{count, plural, one {# réponse dans l’échantillon} many {# réponses dans l’échantillon} other {# réponses dans l’échantillon}} · {engines}",
+        "scope": "Le modèle reçoit le nom de votre marque dans le contexte de l’audit. Il s’agit d’une simulation, pas d’un test de notoriété spontanée ni d’un relevé de conversations réelles avec des clients.",
+        "action": {
+          "primary": "Analyser la marque",
+          "secondary": "Relancer l’analyse",
+          "tertiary": "Examiner le catalogue"
+        },
+        "empty": {
+          "title": "Repérez les angles morts de votre marque.",
+          "description": "Découvrez si votre marque apparaît dans les questions d’achat, comment elle est décrite et où des informations plus claires seraient utiles.",
+          "note": "Votre boutique et votre catalogue servent à préparer 20 questions pour ChatGPT. Vous pouvez continuer à travailler pendant l’analyse.",
+          "visualTitle": "De la question d’un acheteur à votre prochaine étape",
+          "steps": {
+            "questions": {
+              "title": "Interroger votre catégorie",
+              "description": "Des questions avec et sans le nom de votre marque."
+            },
+            "answers": {
+              "title": "Examiner les réponses",
+              "description": "Mentions de marque, alternatives et résumés des réponses."
+            },
+            "actions": {
+              "title": "Voir ce qui peut être amélioré",
+              "description": "Des suggestions fondées sur les réponses échantillonnées."
+            }
+          }
+        },
+        "summaryTitle": "À retenir",
+        "discoveryTitle": "Mentions par type de question",
+        "unprompted": "Questions sans le nom de votre marque",
+        "named": "Questions qui nomment votre marque",
+        "ratio": "{count} réponses sur {total}",
+        "noSample": "Aucune question dans ce groupe",
+        "overall": "Votre marque apparaît dans {count} réponses sur un échantillon de {total}.",
+        "noAnswers": "Ce rapport ne contient aucune réponse enregistrée. Lancez une nouvelle analyse pour recueillir les éléments nécessaires.",
+        "tabs": {
+          "plan": "Prochaines étapes",
+          "answers": "Réponses",
+          "access": "Vérifications du site"
+        },
+        "findingsTitle": "Les tendances à examiner",
+        "journeyTitle": "Où progresser",
+        "journeyDescription": "Suggestions issues de cette analyse. Examinez les éléments disponibles avant de modifier votre site.",
+        "stage": {
+          "find": "Se faire découvrir",
+          "consider": "Faire partie de la sélection",
+          "evaluate": "Aider les acheteurs à décider",
+          "support": "Répondre à la question suivante"
+        },
+        "suggestions": "{count, plural, one {# suggestion} many {# suggestions} other {# suggestions}}",
+        "noSuggestions": "Aucun changement suggéré pour cette étape.",
+        "perceptionTitle": "Comment les réponses vous décrivent",
+        "strengths": "Ce qui joue en votre faveur",
+        "concerns": "Ce qui suscite des questions",
+        "alternativesTitle": "Les autres marques dans les réponses",
+        "sourcesTitle": "Sources suggérées par le modèle",
+        "sourcesNote": "Il s’agit de domaines ou de types de sources nommés par le modèle, pas de citations vérifiées issues d’une recherche en direct.",
+        "occurrences": "{count, plural, one {# mention} many {# mentions} other {# mentions}}",
+        "accessTitle": "Les robots peuvent-ils accéder à votre contenu ?",
+        "accessDescription": "Un instantané des fichiers publics de découverte. Ces vérifications ne mesurent ni l’indexation, ni les classements de recherche, ni la capacité à passer commande.",
+        "checks": {
+          "robots": "Règles d’exploration",
+          "llms": "Guide de contenu pour l’IA",
+          "engines": "Accès des robots"
+        },
+        "status": {
+          "pass": "Vérifié",
+          "warn": "À examiner",
+          "fail": "Bloqué"
+        },
+        "robots": {
+          "pass": "Les règles d’exploration ont été lues.",
+          "warn": "Examinez les règles d’exploration enregistrées.",
+          "fail": "Le scan a détecté des restrictions pour les robots dans robots.txt.",
+          "note": "robots.txt contrôle l’accès de chaque robot. La recherche, les requêtes des utilisateurs et l’entraînement des modèles peuvent utiliser des robots différents."
+        },
+        "llms": {
+          "pass": "Un fichier llms.txt était accessible.",
+          "warn": "Aucun fichier llms.txt accessible n’a été enregistré.",
+          "note": "Ce guide de contenu facultatif ne garantit pas qu’un service d’IA lit, indexe ou recommande votre marque."
+        },
+        "engines": {
+          "pass": "Aucun blocage à la racine du site n’a été détecté pour les robots vérifiés.",
+          "warn": "L’accès n’a pas pu être confirmé lors de ce scan.",
+          "fail": "Certains robots vérifiés sont soumis à des restrictions à la racine du site.",
+          "note": "Les règles propres à certains chemins, les autres robots et l’indexation ne font pas partie de cette vérification."
+        },
+        "failed": {
+          "title": "L’analyse n’a pas pu se terminer",
+          "description": "Votre dernier rapport terminé reste disponible ci-dessous. Réessayez quand vous le souhaitez.",
+          "emptyDescription": "Aucun rapport n’a été enregistré. Réessayez quand vous le souhaitez."
+        },
+        "error": "Nous n’avons pas pu lancer l’analyse. Veuillez réessayer.",
+        "running": {
+          "title": "Analyse de votre marque en cours",
+          "description": "ChatGPT examine vos questions d’achat. Les résultats apparaîtront ici dès qu’ils seront prêts.",
+          "previous": "Vous consultez le rapport précédent pendant la nouvelle analyse.",
+          "steps": "Préparer les questions · Examiner les réponses · Formuler des recommandations"
+        },
+        "loading": "Chargement de l’analyse de marque",
+        "unavailable": {
+          "title": "Les données de marque sont temporairement indisponibles",
+          "description": "Nous n’avons pas pu charger votre analyse enregistrée. Actualisez cette section pour réessayer.",
+          "action": {
+            "primary": "Réessayer"
+          }
+        },
+        "noFindings": "Aucune tendance n’a été enregistrée dans ce rapport.",
+        "summaryAction": {
+          "primary": "Lire l’analyse complète",
+          "secondary": "Afficher moins"
+        },
+        "method": {
+          "action": {
+            "primary": "Comment ça marche"
+          }
+        }
+      },
+      "toast": {
+        "started": {
+          "description": "Vous pouvez continuer à travailler. Les résultats apparaîtront ici une fois l’analyse terminée."
+        }
+      }
+    }
+  }
+}

@@ -78,7 +78,7 @@ export const ToastList = ({ types }: ToastList.Props) => {
               </div>
               <ToastClose
                 aria-label={dismiss("label")}
-                className="top-3 right-3 size-8 rounded-md text-background-rich/70 hover:bg-background-rich/10 hover:text-background-rich focus-visible:outline-2 focus-visible:outline-primary-rich focus-visible:outline-offset-2"
+                className="top-3 right-3 size-8 rounded-sm text-background-rich/70 hover:bg-background-rich/10 hover:text-background-rich focus-visible:outline-2 focus-visible:outline-primary-rich focus-visible:outline-offset-2"
               >
                 <XIcon className="size-4" />
               </ToastClose>

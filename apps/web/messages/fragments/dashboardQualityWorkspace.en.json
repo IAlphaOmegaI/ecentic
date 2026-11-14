@@ -1,0 +1,79 @@
+{
+  "dashboard": {
+    "qualityWorkspace": {
+      "title": "Data quality",
+      "description": "Find missing or invalid product details and see which listings need attention.",
+      "product": "Product",
+      "productsLabel": "Products",
+      "openProduct": "Open {product}",
+      "search": "Search products or issues",
+      "scope": {
+        "label": "Check scope",
+        "all": "All checks",
+        "universal": "General checks",
+        "google": "Google Merchant",
+        "chatgpt": "ChatGPT feed"
+      },
+      "status": {
+        "label": "Finding status",
+        "all": "All findings",
+        "blocker": "Blocker",
+        "warning": "Warning",
+        "info": "Advisory",
+        "ready": "No findings"
+      },
+      "summary": {
+        "label": "Catalog checks by surface",
+        "title": "Without blockers or warnings",
+        "count": "{count, plural, one {# active product checked} other {# active products checked}}",
+        "passing": "{count} of {total}",
+        "breakdown": "{blocker} with blockers, {warning} with warnings, {info} with advisories only, {ready} with no findings."
+      },
+      "method": {
+        "title": "How this works",
+        "description": "These checks inspect saved active-product data against our rule registry. They do not confirm live storefront access or acceptance by Google or ChatGPT. Advisory-only products count as having no blockers or warnings."
+      },
+      "views": {
+        "label": "Quality view",
+        "issues": "By issue",
+        "products": "By product"
+      },
+      "issueCount": "{count, plural, one {# issue} other {# issues}}",
+      "productCount": "{count, plural, one {# product} other {# products}}",
+      "findings": "{count, plural, one {# finding} other {# findings}}",
+      "issuesHint": "Blockers come first, followed by warnings and advisories. Within each group, issues affecting more products come first. A product may appear under several issues.",
+      "reference": "View {surface} rule documentation",
+      "noFindings": "No findings for this product within the selected checks.",
+      "action": {
+        "primary": "Open catalog",
+        "secondary": "Try again",
+        "tertiary": "Clear filters",
+        "quaternary": "Show more products"
+      },
+      "productAction": {
+        "primary": "Open product"
+      },
+      "searchAction": {
+        "primary": "Clear search"
+      },
+      "states": {
+        "empty": {
+          "title": "No active products to check",
+          "description": "These checks cover active products only. Draft and archived products stay in your catalog, but are not included here."
+        },
+        "error": {
+          "title": "The quality checks could not load",
+          "description": "Your catalog is still saved. Try loading the findings again."
+        },
+        "clear": {
+          "title": "No findings for these checks",
+          "description": "The active products pass the recorded checks for this view. This does not confirm acceptance by a shopping platform."
+        },
+        "noMatches": {
+          "title": "No matching findings or products",
+          "description": "Try another search or clear the filters to see the full list."
+        }
+      }
+    }
+  }
+}

@@ -1,80 +1,52 @@
 "use client";
-
 import { useTranslations } from "next-intl";
 import type { ReactNode } from "react";
-import {
-  Crosshair,
-  SectionKicker,
-  StatusPill,
-} from "../../../_components/grid";
-
+import { ChannelsWorkspace } from "../../channels/_components/workspace";
 export const UcpShell = ({ children }: { children: ReactNode }) => {
-  const translate = useTranslations("dashboard.ucp");
-
+  const translate = useTranslations("dashboard.ucp.review");
+  const channels = useTranslations("dashboard.channels");
   return (
-    <div className="flex flex-col">
-      <div className="mx-8 border-accent-foreground border-x">
-        <div className="-mx-8 border-accent-foreground border-b">
-          <div className="relative mx-8 flex flex-col gap-6 px-6 py-8 sm:flex-row sm:items-end sm:justify-between">
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <div>
-              <StatusPill tone="neutral">{translate("statusPill")}</StatusPill>
-              <h1 className="mt-3 font-bold text-[28px] text-foreground-rich tracking-[-0.02em]">
-                {translate("title")}
-              </h1>
-              <p className="mt-1 text-foreground-dimmed text-sm">
-                {translate("description")}
-              </p>
-            </div>
-          </div>
-        </div>
-
-        <div className="-mx-8 border-accent-foreground border-b">
-          <div className="relative mx-8 bg-background-rich">
-            <Crosshair className="bottom-0 left-0 -translate-x-1/2 translate-y-1/2" />
-            <Crosshair className="right-0 bottom-0 translate-x-1/2 translate-y-1/2" />
-            <div className="border-accent-foreground border-b p-4">
-              <SectionKicker>{translate("protocolKicker")}</SectionKicker>
-              <h2 className="mt-2 font-semibold text-foreground-rich text-lg">
-                {translate("structuredDataTitle")}
-              </h2>
-            </div>
-            <div className="p-6">{children}</div>
-          </div>
-        </div>
-      </div>
-    </div>
+    <ChannelsWorkspace
+      subject="ucp"
+      title={channels("checkout.title")}
+      description={translate("description")}
+    >
+      <div className="min-w-0 flex-1 bg-background-rich">{children}</div>
+    </ChannelsWorkspace>
   );
 };
-
 export const UcpSectionSkeleton = () => (
-  <div className="animate-pulse space-y-4">
-    <div className="flex border border-accent-foreground">
-      <div className="h-9 w-36 bg-accent-foreground/20" />
-      <div className="h-9 w-48 bg-accent-foreground/10" />
+  <div className="animate-pulse motion-reduce:animate-none" aria-busy="true">
+    <div className="flex gap-6 border-accent-foreground border-b px-4 py-4 sm:px-6">
+      <div className="h-4 w-28 rounded-sm bg-accent-foreground/20" />
+      <div className="h-4 w-28 rounded-sm bg-accent-foreground/10" />
     </div>
-
-    <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
-      <div className="border border-accent-foreground bg-background-rich">
-        <div className="border-accent-foreground border-b px-4 py-2.5">
-          <div className="h-4 w-24 bg-accent-foreground/20" />
-        </div>
-        <div className="divide-y divide-accent-foreground">
-          {Array.from({ length: 9 }).map((_, index) => (
-            // biome-ignore lint/suspicious/noArrayIndexKey: skeleton
-            <div key={index} className="flex items-center gap-3 px-4 py-2.5">
-              <div className="size-1.5 shrink-0 bg-accent-foreground/30" />
-              <div className="h-3 w-28 bg-accent-foreground/20" />
-              <div className="h-7 flex-1 bg-accent-foreground/10" />
-            </div>
-          ))}
+    <div className="border-accent-foreground border-b px-4 py-6 sm:px-6 sm:py-8">
+      <div className="flex gap-3">
+        <div className="size-6 rounded-sm bg-accent-foreground/20" />
+        <div className="flex-1 space-y-3">
+          <div className="h-6 w-48 max-w-full rounded-sm bg-accent-foreground/20" />
+          <div className="h-4 w-2/3 rounded-sm bg-accent-foreground/10" />
         </div>
       </div>
-      <div className="space-y-4">
-        <div className="h-72 border border-accent-foreground bg-background-rich" />
-        <div className="h-32 border border-accent-foreground bg-background-rich" />
+      <div className="mt-6 h-4 w-24 rounded-sm bg-accent-foreground/10" />
+      <div className="mt-2 flex max-w-3xl flex-col gap-2 sm:flex-row">
+        <div className="h-10 flex-1 rounded-lg bg-accent-foreground/20" />
+        <div className="h-10 w-full rounded-lg bg-accent-foreground/10 sm:w-36" />
       </div>
+      <div className="mt-3 h-3 w-2/3 rounded-sm bg-accent-foreground/10" />
     </div>
+    {["coverage", "advanced"].map((key) => (
+      <div
+        key={key}
+        className="flex gap-3 border-accent-foreground border-b px-4 py-5 sm:px-6"
+      >
+        <div className="size-5 rounded-sm bg-accent-foreground/20" />
+        <div className="flex-1 space-y-2">
+          <div className="h-4 w-40 rounded-sm bg-accent-foreground/20" />
+          <div className="h-4 w-2/3 rounded-sm bg-accent-foreground/10" />
+        </div>
+      </div>
+    ))}
   </div>
 );

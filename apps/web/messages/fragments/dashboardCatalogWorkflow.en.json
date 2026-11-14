@@ -1,0 +1,28 @@
+{
+  "dashboard": {
+    "catalogWorkflow": {
+      "reviewTitle": "Review your import",
+      "reviewHint": "{count, number} product rows are ready to import. Rows without a title are skipped.",
+      "fieldsHint": "Use a title or name column. Optional columns: description, price, currency, image, url, sku and id.",
+      "idsHint": "Rows with a matching id update the existing product. Rows without an id create a new product on each import.",
+      "previewHint": "Showing the first {count, number} accepted rows.",
+      "readFailed": "The file could not be read. Choose it again and retry.",
+      "partial": "Imported {imported, number} of {total, number} products. Open the catalog to check the result before importing this file again.",
+      "unknownCurrency": "Currency not specified",
+      "allWork": "All work",
+      "publishable": "Ready to publish",
+      "manual": "Manual review",
+      "reviewLabel": "Filter the work queue",
+      "sourceTitle": "Your catalog source",
+      "sourceHint": "Import from this source, review the saved facts, then compare or improve the listing.",
+      "action": {
+        "primary": "Review file",
+        "secondary": "Choose another file",
+        "tertiary": "Confirm import",
+        "quaternary": "Open catalog"
+      },
+      "improveListing": "Improve listing",
+      "comparisonResults": "Results"
+    }
+  }
+}

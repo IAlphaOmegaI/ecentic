@@ -64,13 +64,14 @@ export const Scanner = ({
   return (
     <div
       data-scanner-appearance={appearance}
-      className={cn(appearance === "default" && "bg-background-rich")}
+      className={cn(appearance !== "workbench" && "bg-background-rich")}
     >
       <div
         className={cn(
           "grid gap-8 px-7 py-12 max-sm:px-4 max-sm:py-8 lg:grid-cols-[1fr_2fr]",
           appearance === "workbench" &&
             "relative items-center gap-0 p-0! lg:grid-cols-2",
+          appearance === "dashboard" && "gap-0 p-0! lg:grid-cols-3",
         )}
       >
         {appearance === "workbench" ? (
@@ -78,7 +79,7 @@ export const Scanner = ({
             <CommerceFigure
               kind="inspection"
               surface="dark"
-              className="mx-auto aspect-[5/3] w-full max-w-[390px]"
+              className="mx-auto aspect-[5/3] w-full max-w-97.5"
             />
             <h2 className="mt-3 font-medium text-3xl! text-background-rich">
               {translate("title")}
@@ -88,7 +89,13 @@ export const Scanner = ({
             </p>
           </div>
         ) : (
-          <div className="space-y-6">
+          <div
+            className={cn(
+              "space-y-6",
+              appearance === "dashboard" &&
+                "space-y-2 border-accent-foreground border-b px-4 py-6 sm:px-6 lg:border-r lg:border-b-0",
+            )}
+          >
             <SearchIcon className="size-4 text-primary" />
             <h2 className="font-medium text-2xl text-foreground">
               {translate("title")}
@@ -103,6 +110,7 @@ export const Scanner = ({
             "space-y-4",
             appearance === "workbench" &&
               "h-full content-center bg-linear-to-br from-primary/15 to-transparent px-8 py-10 max-sm:px-4 [&_form_.text-foreground-dimmed]:text-background-rich/70 [&_form_div:has(>input)]:h-12 [&_form_div:has(>input)]:bg-background-rich [&_form_div:has(>input)]:px-3 [&_label]:text-background-rich",
+            appearance === "dashboard" && "px-4 py-6 sm:px-6 lg:col-span-2",
           )}
         >
           <InferredForm
@@ -172,6 +180,7 @@ export const Scanner = ({
           "flex flex-wrap gap-x-6 gap-y-2 border-accent-foreground border-t px-7 py-4 text-xs max-sm:px-4",
           appearance === "workbench" &&
             "border-background-rich/15 [&_a]:text-primary-rich",
+          appearance === "dashboard" && "px-4 sm:px-6",
         )}
       >
         <span
@@ -207,6 +216,6 @@ export namespace Scanner {
   export type Props = {
     initialUrl?: string;
     store?: string;
-    appearance?: "default" | "workbench";
+    appearance?: "default" | "workbench" | "dashboard";
   };
 }

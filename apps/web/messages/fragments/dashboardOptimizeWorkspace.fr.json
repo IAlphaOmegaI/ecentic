@@ -1,0 +1,94 @@
+{
+  "dashboard": {
+    "optimizeWorkspace": {
+      "title": "Optimiser",
+      "description": "Améliorez vos fiches à partir des comparaisons. Vérifiez les informations avant de publier.",
+      "action": {
+        "primary": "Générer et publier",
+        "secondary": "Examiner la fiche",
+        "tertiary": "Vérifier les données",
+        "quaternary": "Réessayer"
+      },
+      "queue": {
+        "title": "Les prochaines améliorations",
+        "description": "Commencez par les taux de victoire simulés les plus faibles. Ouvrez un produit pour examiner les résultats.",
+        "sample": "Cette liste repose sur les suggestions de diagnostic enregistrées. Qualité des données présente l’audit complet du catalogue actif.",
+        "count": "{count, plural, one {# produit affiché} many {# produits affichés} other {# produits affichés}}"
+      },
+      "search": "Rechercher un produit ou un SKU…",
+      "tabs": {
+        "queue": "À examiner",
+        "published": "Publiées",
+        "dismissed": "Écartées"
+      },
+      "summary": {
+        "candidates": "Éligibles à la publication",
+        "manual": "Modifications manuelles",
+        "published": "Publications enregistrées"
+      },
+      "row": {
+        "rate": "Taux de victoire simulé",
+        "manual": "Modifications manuelles",
+        "ready": "Publication disponible",
+        "context": "Modèles enregistrés : {models}"
+      },
+      "method": {
+        "title": "Comment fonctionne cette liste",
+        "description": "Les produits candidats ont un taux de victoire enregistré inférieur à 55 %. Les produits écartés et les fiches publiées au cours des 14 derniers jours sont exclus des candidats à la publication. Un candidat n’est pas un brouillon enregistré. Générer et publier crée un nouveau texte et remplace immédiatement la fiche en boutique. Ces suggestions ne prédisent ni les ventes ni les futurs taux de victoire."
+      },
+      "states": {
+        "empty": {
+          "title": "Rien à examiner pour le moment",
+          "description": "Aucune suggestion n’est disponible pour cette boutique. Vérifiez les données produit ou lancez une comparaison pour trouver la prochaine amélioration."
+        },
+        "filtered": {
+          "title": "Aucun produit correspondant",
+          "description": "Essayez un autre nom de produit ou SKU."
+        },
+        "error": {
+          "title": "Impossible de charger la liste",
+          "description": "Vos données produit sont toujours enregistrées. Essayez de recharger la liste."
+        }
+      },
+      "confirmation": {
+        "title": "Publier une nouvelle fiche ?",
+        "description": "Un nouveau titre et une nouvelle description seront générés pour {title}, puis publiés dans votre boutique connectée. Ils remplaceront la fiche actuelle sans étape distincte de validation du brouillon.",
+        "bulkTitle": "Publier les modifications de cette boutique ?",
+        "bulkDescription": "De nouveaux titres et descriptions seront générés et publiés pour {count, plural, one {# produit éligible} many {# produits éligibles} other {# produits éligibles}} de cette boutique. Les fiches actuelles seront remplacées.",
+        "storeTitle": "Optimiser la boutique connectée ?",
+        "storeDescription": "Les données structurées des produits et, pour Shopify, un profil de boutique seront écrits. Des textes seront générés et publiés pour les produits éligibles de cette boutique. Plusieurs contenus en ligne peuvent être modifiés.",
+        "action": {
+          "primary": "Confirmer et publier",
+          "secondary": "Continuer l’examen"
+        }
+      },
+      "bulk": {
+        "action": "Publier les produits éligibles"
+      },
+      "store": {
+        "action": "Optimiser la boutique"
+      },
+      "toast": {
+        "failed": "La modification n’a pas pu aboutir",
+        "failedDescription": "Réessayez. Si la publication a commencé, vérifiez le produit avant de réessayer.",
+        "published": "{count, plural, one {# fiche publiée} many {# fiches publiées} other {# fiches publiées}}",
+        "partial": "{published} publications effectuées ; {failed} n’ont pas abouti. Vérifiez les produits restants avant de réessayer.",
+        "saved": "Liste actualisée"
+      },
+      "history": {
+        "unmeasured": "Une nouvelle comparaison est nécessaire pour mesurer le résultat.",
+        "undated": "Date de publication indisponible"
+      },
+      "diagnostics": {
+        "content": "Ajouter des informations utiles",
+        "contentHint": "Vérifiez le titre et la description enregistrés. Ajoutez des caractéristiques exactes et des usages pertinents.",
+        "structured_data": "Vérifier les données structurées",
+        "structured_dataHint": "Examinez les données structurées du produit et ajoutez uniquement des attributs vérifiés.",
+        "seo": "Ajouter des images produit",
+        "seoHint": "Ajoutez une vraie image du produit à la source, puis synchronisez le catalogue.",
+        "platform": "Connecter l’accès à la publication",
+        "platformHint": "Ce catalogue ne permet pas de publier directement les modifications. Connectez Shopify ou WooCommerce, ou modifiez la source manuellement."
+      }
+    }
+  }
+}

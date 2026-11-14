@@ -1,0 +1,76 @@
+{
+  "dashboard": {
+    "productChannels": {
+      "tab": "Listing & channels",
+      "title": "Your product across channels",
+      "description": "Preview the saved listing, then check its connection and feed records.",
+      "preview": {
+        "title": "Saved listing preview",
+        "description": "Illustrative preview from saved data. Actual placements and layouts vary.",
+        "storefront": "Storefront",
+        "google": "Google",
+        "chatgpt": "ChatGPT",
+        "imageMissing": "No product image saved",
+        "descriptionMissing": "No description saved",
+        "priceMissing": "No price saved",
+        "storefrontNote": "Your imported product details",
+        "googleNote": "Product information for a shopping result",
+        "chatgptNote": "Product information for an assistant’s product card",
+        "sample": "Preview",
+        "googleMode": "AI Mode",
+        "details": "About this product",
+        "store": "Store",
+        "query": "Show me {product}",
+        "action": {
+          "primary": "Visit site"
+        }
+      },
+      "source": {
+        "title": "Catalog connection",
+        "unknown": "Connection details unavailable",
+        "unknownDescription": "Open your integrations to review the catalog connection.",
+        "lastSync": "Catalog synced",
+        "productSync": "Product synced",
+        "notSynced": "No sync recorded",
+        "status": "Connection status",
+        "error": "Needs attention",
+        "unavailable": "Status unavailable",
+        "connected": "Connected",
+        "syncing": "Syncing catalog",
+        "disconnected": "Disconnected",
+        "publicImport": "Public catalog import",
+        "platform": {
+          "feed": "Product feed",
+          "csv": "CSV import",
+          "unknown": "Catalog source"
+        }
+      },
+      "google": {
+        "title": "Google feed records",
+        "description": "These are saved sync records, not a live Google check. A verified override confirms the supplemental update was merged, not that Google displays the product.",
+        "unavailable": "Feed records could not be loaded. Open Google Shopping to check the connection.",
+        "unsupported": "Supplemental Google sync is not available for this catalog source.",
+        "notConnected": "Google Merchant Center is not connected to this catalog.",
+        "setup": "The connection needs setup before product records can be sent.",
+        "ready": "The connection is ready. No feed record has been saved for this product yet.",
+        "pending": "Pending",
+        "live": "Override verified",
+        "disapproved": "Disapproved",
+        "error": "Update failed",
+        "lastSent": "Sent {time}",
+        "lastChecked": "Checked {time}",
+        "offer": "Offer {id}"
+      },
+      "assistant": {
+        "title": "Assistant discovery",
+        "description": "A preview does not confirm that ChatGPT has indexed or recommended this product. Keep product details complete and review your published discovery surfaces."
+      },
+      "action": {
+        "primary": "Manage connection",
+        "secondary": "Open Google Shopping",
+        "tertiary": "View storefront",
+        "quaternary": "Review discovery"
+      }
+    }
+  }
+}

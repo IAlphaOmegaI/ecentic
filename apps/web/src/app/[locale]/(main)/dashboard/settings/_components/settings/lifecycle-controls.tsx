@@ -43,7 +43,7 @@ export const StoreDisconnection = ({
 
   return (
     <>
-      <Button variant="outline" color="neutral" onClick={() => setOpen(true)}>
+      <Button variant="soft" color="neutral" onClick={() => setOpen(true)}>
         {translate("disconnect.action.primary")}
       </Button>
       <AlertDialog
@@ -64,7 +64,7 @@ export const StoreDisconnection = ({
           )}
           <div className="mt-6 flex flex-wrap justify-end gap-2">
             <Button
-              variant="outline"
+              variant="soft"
               color="neutral"
               disabled={pending}
               onClick={() => setOpen(false)}
@@ -150,7 +150,7 @@ export const AccountDeletion = () => {
             <div className="flex flex-wrap justify-end gap-2">
               <Button
                 type="button"
-                variant="outline"
+                variant="soft"
                 color="neutral"
                 disabled={pending}
                 onClick={() => setOpen(false)}

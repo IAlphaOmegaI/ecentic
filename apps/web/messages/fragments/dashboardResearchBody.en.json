@@ -1,0 +1,19 @@
+{
+  "dashboard": {
+    "discovery": {
+      "method": "Your store is named in each prompt. These modeled recommendations do not measure unprompted brand awareness or live search rankings."
+    },
+    "research": {
+      "rank": {
+        "unavailable": {
+          "title": "Catalog rank is not connected",
+          "description": "This workspace cannot query Shopify Global Catalog yet. You can still review your storefront access checks and saved comparisons.",
+          "action": {
+            "primary": "View access checks",
+            "secondary": "View saved comparisons"
+          }
+        }
+      }
+    }
+  }
+}

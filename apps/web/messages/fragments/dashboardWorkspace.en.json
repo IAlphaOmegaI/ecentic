@@ -1,0 +1,83 @@
+{
+  "dashboard": {
+    "workspace": {
+      "nav": {
+        "label": "Store workspace",
+        "research": "AI research",
+        "channels": "Channels",
+        "results": "Results",
+        "overview": "Overview",
+        "products": "Products",
+        "optimize": "Optimize"
+      },
+      "sections": {
+        "label": "Workspace sections",
+        "catalog": "Catalog",
+        "quality": "Data quality",
+        "summary": "Summary",
+        "comparisons": "Comparisons",
+        "brand": "Brand",
+        "questions": "Questions",
+        "competitors": "Competitors",
+        "catalogRank": "Catalog rank",
+        "connections": "Connections",
+        "google": "Google",
+        "checks": "Storefront checks",
+        "access": "Catalog access",
+        "checkout": "Checkout",
+        "developer": "Developer tools",
+        "shoppingTools": "Shopping tools",
+        "testCheckout": "Test checkout",
+        "compareProfiles": "Compare profiles"
+      },
+      "results": {
+        "title": "Results",
+        "description": "Recorded AI referrals and crawler activity for this store.",
+        "reportsTitle": "Reports across your stores",
+        "reportsDescription": "Export saved comparisons, catalog data and listing changes. These reports cover your whole account.",
+        "action": {
+          "primary": "Open reports",
+          "secondary": "Review AI research"
+        }
+      },
+      "ready": {
+        "title": "Nothing urgent in the saved checks",
+        "description": "Review your channels or run a new comparison when your catalog changes.",
+        "action": {
+          "primary": "Review channels"
+        }
+      },
+      "reportScope": "All stores in this account",
+      "reportMethod": "Exports contain saved data. Predicted lift is an estimate, not a measured result.",
+      "downloadError": "Could not download the report. Please try again."
+    },
+    "reports": {
+      "title": "Reports",
+      "description": "Download saved comparison and catalog data across your stores.",
+      "shareable": {
+        "title": "Share a comparison report",
+        "description": "Open a public report of your latest completed comparison. Check its contents before sharing.",
+        "action": {
+          "primary": "Open report"
+        }
+      },
+      "action": {
+        "downloadCsv": "Download CSV"
+      },
+      "items": {
+        "winRateSummary": {
+          "description": "Model-level results from the latest completed scan."
+        },
+        "productPerformance": {
+          "description": "Saved product fields and simulated win rates, including model breakdowns."
+        },
+        "competitorAnalysis": {
+          "description": "Tracked competitors, observed prices where available, and comparison results."
+        },
+        "optimizationImpact": {
+          "description": "Saved listing changes, publishing dates and model estimates."
+        }
+      }
+    }
+  }
+}
